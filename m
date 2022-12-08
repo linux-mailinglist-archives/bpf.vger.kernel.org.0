@@ -2,273 +2,302 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8AC6468AE
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 06:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB6F6468D4
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 07:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbiLHFlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 00:41:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39426 "EHLO
+        id S229592AbiLHGDI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 01:03:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbiLHFlM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 00:41:12 -0500
-Received: from mx02lb.world4you.com (mx02lb.world4you.com [81.19.149.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43308139F;
-        Wed,  7 Dec 2022 21:41:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=OBA3SJgymK1ORXa5PUKP/zSLPqKWHDckBQJ3lVIWm9o=; b=LaCmOAfW+3ddD9V1MEqO4UdcFh
-        S8DK41WqDup6Bx0jMLjKF0/zsXEFYpXvi54yeV8y64GSbmKbVmFkBsZru5TBaT+z7++C1jeuD6RSY
-        i63UnmqeAvgdm6M+zx4JMKc/bXtxG6nKUaMVMplVGfQXB73Fxddfh2MhCPSXkjdSKQ/s=;
-Received: from 88-117-56-227.adsl.highway.telekom.at ([88.117.56.227] helo=hornet.engleder.at)
-        by mx02lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1p39eg-0002ut-4Z; Thu, 08 Dec 2022 06:41:10 +0100
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        Gerhard Engleder <gerhard@engleder-embedded.com>
-Subject: [PATCH net-next v2 6/6] tsnep: Add XDP RX support
-Date:   Thu,  8 Dec 2022 06:40:45 +0100
-Message-Id: <20221208054045.3600-7-gerhard@engleder-embedded.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221208054045.3600-1-gerhard@engleder-embedded.com>
-References: <20221208054045.3600-1-gerhard@engleder-embedded.com>
+        with ESMTP id S229580AbiLHGDH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 01:03:07 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE9E2E9FD
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 22:03:04 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id v3so405052pgh.4
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 22:03:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EPhmNwWi4z0Ewzi20WGpci8FcsM0lxXDqeltE0OefvQ=;
+        b=QD4UFIWqVRmHLPBU3XmHUK7j3Bt96je4dxF214FmmakwbxbdEo29dXdbh5svmH/Z2k
+         lpN/vsfg+I/9XgYL9FgbSqBfxaEfGoRHjMJjBCIzxmlaFzPEd/1J9t6Cr4Ux1FF5gWpD
+         WjFshPkVIbUlhW0bvhh+rPrLVbxLZMSPekKlc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EPhmNwWi4z0Ewzi20WGpci8FcsM0lxXDqeltE0OefvQ=;
+        b=QkGXFoO2/5/cizF28eoKxjbxnyERbvYERcuWIkzJ4QFQDizedpuwOn/95NUq4BoT2/
+         ElAXeRiPmjSm54WHOy19HhqasMQ59FndVrUX7r/mu4Ab7Ykk3nDNGj9pewzZbMui1v1R
+         5jFd9aZpmSzZDX6ZW8SNYlVtLuMrYijxhXYDJYz3/aFaq6Tnqhc/TELjvPAXF0grwZ9c
+         1MZbsOLVOCByBcU2eghcvYTUZguIRv1ZWJy7ZC6tMdrSpRhfMge2zi0X2qvb4v8tH5nc
+         I9GuZOLHyAe2K4RG2Uu8FtPktqgyaaONRU+v7cBEvyKAYmWX21kPU2VzYSApiFbtJTI6
+         nsRQ==
+X-Gm-Message-State: ANoB5plXy5VcyX6kKQN7MWxOG9Ue/CkafZ8UI9h22nihI2bokJBIacsB
+        2kzK6qLFR+NR/YgLZ58VNcvF8g==
+X-Google-Smtp-Source: AA0mqf414Ykmad7rznFNYd/+5XeN2CzT0ozykmt5UR+Aa9lweG4kNTZau2hLBTbSgjVngZQ0XUcvQQ==
+X-Received: by 2002:a05:6a00:1a4c:b0:574:97d4:c10f with SMTP id h12-20020a056a001a4c00b0057497d4c10fmr65265284pfv.81.1670479384355;
+        Wed, 07 Dec 2022 22:03:04 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j4-20020a17090a840400b00219cf5c3829sm2070908pjn.57.2022.12.07.22.03.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Dec 2022 22:03:03 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        pepsipu <soopthegoop@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrii Nakryiko <andrii@kernel.org>, ast@kernel.org,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, jolsa@kernel.org,
+        KP Singh <kpsingh@kernel.org>, martin.lau@linux.dev,
+        Stanislav Fomichev <sdf@google.com>, song@kernel.org,
+        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rasesh Mody <rmody@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Menglong Dong <imagedong@tencent.com>,
+        David Ahern <dsahern@kernel.org>,
+        Richard Gobert <richardbgobert@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        GR-Linux-NIC-Dev@marvell.com, linux-hardening@vger.kernel.org
+Subject: [PATCH net-next v3] skbuff: Introduce slab_build_skb()
+Date:   Wed,  7 Dec 2022 22:02:59 -0800
+Message-Id: <20221208060256.give.994-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7775; h=from:subject:message-id; bh=0NU8DDppqfAVLsDlfD+CO5h/nC1dPBT2P22dmT0qs/s=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjkX4T8itmDqz4eyTltyQjXCELJvJjKlc3Cc8Uy4Uo wA3kFEKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY5F+EwAKCRCJcvTf3G3AJtpJEA CSFMdkjZnrrqIciMt7F/Iys/d0n+Bm7l+cY6KzpPc866MFxjbtFv1bpZY58WcNggumlz0EVVSvLxgQ 3i5EUOP4LV75465l5Y4K8EBgUquHqYUQw6ejtHDoHEDSza1r8Q6YLTBVU3Q2AE1SYRsUTBZpLAxRGS A706N11gpuBeLptE0B3VKTQT3NYBvqLSZ5aWG6B4cjFlSxVb42do2Ip4aQasccTdU1FPD9ceTlCsNg GPkXxwOo6M4+Phr1QgE6OzGNqfHKEMjOTQcrwG3tPaIj8zu3Skzu+wmg38K8eHIdBurcf1NL8Jau96 8i3Am2Akw/4uQ+uBpTVt4M6zBLig6gDB6NmGmGupXSBe3/ChpBIB9WtsTmMlJGW4uwK6eXEUMkcfwe OxLuVS1w75c/yNv+d3mbIfMGtzb/bqv0GhmruHcqKHw1zjN6Ngdipo4H0kqKGhwuU6CtWz73ojFNRb kNA2gW0VkJZQHtwyZQnXPlVEAh7IZNhl6TXV46hBvUSDP2MUU5QonqQs/qULRaw6P4KH5d+yiswesS ucokQWTA1IvyZX1dm3+QK0Ti+Z9TnQen9CIgsPCAdD9BqOapmZArDrEbq33+Ml6bOq9+u5HnNl78uU A5sKU5bKYk3fWyKSURPECICkTXIebhoGmGWHqG4Rf9DwgP/3dot7jelU+Org==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If BPF program is set up, then run BPF program for every received frame
-and execute the selected action.
+syzkaller reported:
 
-Test results with A53 1.2GHz:
+  BUG: KASAN: slab-out-of-bounds in __build_skb_around+0x235/0x340 net/core/skbuff.c:294
+  Write of size 32 at addr ffff88802aa172c0 by task syz-executor413/5295
 
-XDP_DROP (samples/bpf/xdp1)
-proto 17:     883878 pkt/s
+For bpf_prog_test_run_skb(), which uses a kmalloc()ed buffer passed to
+build_skb().
 
-XDP_TX (samples/bpf/xdp2)
-proto 17:     255693 pkt/s
+When build_skb() is passed a frag_size of 0, it means the buffer came
+from kmalloc. In these cases, ksize() is used to find its actual size,
+but since the allocation may not have been made to that size, actually
+perform the krealloc() call so that all the associated buffer size
+checking will be correctly notified (and use the "new" pointer so that
+compiler hinting works correctly). Split this logic out into a new
+interface, slab_build_skb(), but leave the original 0 checking for now
+to catch any stragglers.
 
-XDP_REDIRECT (samples/bpf/xdpsock)
- sock0@eth2:0 rxdrop xdp-drv
-                   pps            pkts           1.00
-rx                 855,582        5,404,523
-tx                 0              0
-
-XDP_REDIRECT (samples/bpf/xdp_redirect)
-eth2->eth1         613,267 rx/s   0 err,drop/s   613,272 xmit/s
-
-Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
+Reported-by: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
+Link: https://groups.google.com/g/syzkaller-bugs/c/UnIKxTtU5-0/m/-wbXinkgAQAJ
+Fixes: 38931d8989b5 ("mm: Make ksize() a reporting-only function")
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Cc: pepsipu <soopthegoop@gmail.com>
+Cc: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: kasan-dev <kasan-dev@googlegroups.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: ast@kernel.org
+Cc: bpf <bpf@vger.kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: jolsa@kernel.org
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: martin.lau@linux.dev
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: song@kernel.org
+Cc: Yonghong Song <yhs@fb.com>
+Cc: netdev@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/net/ethernet/engleder/tsnep_main.c | 126 +++++++++++++++++++++
- 1 file changed, 126 insertions(+)
+v3:
+- make sure "resized" is passed back so compiler hints survive
+- update kerndoc (kuba)
+v2: https://lore.kernel.org/lkml/20221208000209.gonna.368-kees@kernel.org
+v1: https://lore.kernel.org/netdev/20221206231659.never.929-kees@kernel.org/
+---
+ drivers/net/ethernet/broadcom/bnx2.c      |  2 +-
+ drivers/net/ethernet/qlogic/qed/qed_ll2.c |  2 +-
+ include/linux/skbuff.h                    |  1 +
+ net/bpf/test_run.c                        |  2 +-
+ net/core/skbuff.c                         | 70 ++++++++++++++++++++---
+ 5 files changed, 66 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
-index 2b662a98b62a..d59cb714c8cd 100644
---- a/drivers/net/ethernet/engleder/tsnep_main.c
-+++ b/drivers/net/ethernet/engleder/tsnep_main.c
-@@ -27,6 +27,7 @@
- #include <linux/phy.h>
- #include <linux/iopoll.h>
- #include <linux/bpf.h>
-+#include <linux/bpf_trace.h>
+diff --git a/drivers/net/ethernet/broadcom/bnx2.c b/drivers/net/ethernet/broadcom/bnx2.c
+index fec57f1982c8..b2230a4a2086 100644
+--- a/drivers/net/ethernet/broadcom/bnx2.c
++++ b/drivers/net/ethernet/broadcom/bnx2.c
+@@ -3045,7 +3045,7 @@ bnx2_rx_skb(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr, u8 *data,
  
- #define TSNEP_SKB_PAD (NET_SKB_PAD + NET_IP_ALIGN)
- #define TSNEP_HEADROOM ALIGN(max(TSNEP_SKB_PAD, XDP_PACKET_HEADROOM), 4)
-@@ -44,6 +45,9 @@
- #define TSNEP_COALESCE_USECS_MAX     ((ECM_INT_DELAY_MASK >> ECM_INT_DELAY_SHIFT) * \
- 				      ECM_INT_DELAY_BASE_US + ECM_INT_DELAY_BASE_US - 1)
+ 	dma_unmap_single(&bp->pdev->dev, dma_addr, bp->rx_buf_use_size,
+ 			 DMA_FROM_DEVICE);
+-	skb = build_skb(data, 0);
++	skb = slab_build_skb(data);
+ 	if (!skb) {
+ 		kfree(data);
+ 		goto error;
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.c b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+index ed274f033626..e5116a86cfbc 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ll2.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+@@ -200,7 +200,7 @@ static void qed_ll2b_complete_rx_packet(void *cxt,
+ 	dma_unmap_single(&cdev->pdev->dev, buffer->phys_addr,
+ 			 cdev->ll2->rx_size, DMA_FROM_DEVICE);
  
-+#define TSNEP_XDP_TX		BIT(0)
-+#define TSNEP_XDP_REDIRECT	BIT(1)
-+
- enum {
- 	__TSNEP_DOWN,
- };
-@@ -626,6 +630,33 @@ static void tsnep_xdp_xmit_flush(struct tsnep_tx *tx)
- 	iowrite32(TSNEP_CONTROL_TX_ENABLE, tx->addr + TSNEP_CONTROL);
- }
+-	skb = build_skb(buffer->data, 0);
++	skb = slab_build_skb(buffer->data);
+ 	if (!skb) {
+ 		DP_INFO(cdev, "Failed to build SKB\n");
+ 		kfree(buffer->data);
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 7be5bb4c94b6..0b391b635430 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -1253,6 +1253,7 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
+ void skb_attempt_defer_free(struct sk_buff *skb);
  
-+static int tsnep_xdp_xmit_back(struct tsnep_adapter *adapter,
-+			       struct xdp_buff *xdp)
-+{
-+	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
-+	int cpu = smp_processor_id();
-+	int queue;
-+	struct netdev_queue *nq;
-+	int retval;
-+
-+	if (unlikely(!xdpf))
-+		return -EFAULT;
-+
-+	queue = cpu % adapter->num_tx_queues;
-+	nq = netdev_get_tx_queue(adapter->netdev, queue);
-+
-+	__netif_tx_lock(nq, cpu);
-+
-+	/* Avoid transmit queue timeout since we share it with the slow path */
-+	txq_trans_cond_update(nq);
-+
-+	retval = tsnep_xdp_xmit_frame_ring(xdpf, &adapter->tx[queue], false);
-+
-+	__netif_tx_unlock(nq);
-+
-+	return retval;
-+}
-+
- static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
- {
- 	unsigned long flags;
-@@ -792,6 +823,11 @@ static unsigned int tsnep_rx_offset(struct tsnep_rx *rx)
- 	return TSNEP_SKB_PAD;
- }
+ struct sk_buff *napi_build_skb(void *data, unsigned int frag_size);
++struct sk_buff *slab_build_skb(void *data);
  
-+static unsigned int tsnep_rx_offset_xdp(void)
-+{
-+	return XDP_PACKET_HEADROOM;
-+}
-+
- static void tsnep_rx_ring_cleanup(struct tsnep_rx *rx)
- {
- 	struct device *dmadev = rx->adapter->dmadev;
-@@ -997,6 +1033,67 @@ static int tsnep_rx_refill(struct tsnep_rx *rx, int count, bool reuse)
- 	return i;
- }
- 
-+static bool tsnep_xdp_run_prog(struct tsnep_rx *rx, struct bpf_prog *prog,
-+			       struct xdp_buff *xdp, int *status)
-+{
-+	unsigned int length;
-+	unsigned int sync;
-+	u32 act;
-+
-+	length = xdp->data_end - xdp->data_hard_start - tsnep_rx_offset_xdp();
-+
-+	act = bpf_prog_run_xdp(prog, xdp);
-+
-+	/* Due xdp_adjust_tail: DMA sync for_device cover max len CPU touch */
-+	sync = xdp->data_end - xdp->data_hard_start - tsnep_rx_offset_xdp();
-+	sync = max(sync, length);
-+
-+	switch (act) {
-+	case XDP_PASS:
-+		return false;
-+	case XDP_TX:
-+		if (tsnep_xdp_xmit_back(rx->adapter, xdp) < 0)
-+			goto out_failure;
-+		*status |= TSNEP_XDP_TX;
-+		return true;
-+	case XDP_REDIRECT:
-+		if (xdp_do_redirect(rx->adapter->netdev, xdp, prog) < 0)
-+			goto out_failure;
-+		*status |= TSNEP_XDP_REDIRECT;
-+		return true;
-+	default:
-+		bpf_warn_invalid_xdp_action(rx->adapter->netdev, prog, act);
-+		fallthrough;
-+	case XDP_ABORTED:
-+out_failure:
-+		trace_xdp_exception(rx->adapter->netdev, prog, act);
-+		fallthrough;
-+	case XDP_DROP:
-+		page_pool_put_page(rx->page_pool, virt_to_head_page(xdp->data),
-+				   sync, true);
-+		return true;
-+	}
-+}
-+
-+static void tsnep_finalize_xdp(struct tsnep_adapter *adapter, int status)
-+{
-+	int cpu = smp_processor_id();
-+	int queue;
-+	struct netdev_queue *nq;
-+
-+	if (status & TSNEP_XDP_TX) {
-+		queue = cpu % adapter->num_tx_queues;
-+		nq = netdev_get_tx_queue(adapter->netdev, queue);
-+
-+		__netif_tx_lock(nq, cpu);
-+		tsnep_xdp_xmit_flush(&adapter->tx[queue]);
-+		__netif_tx_unlock(nq);
-+	}
-+
-+	if (status & TSNEP_XDP_REDIRECT)
-+		xdp_do_flush();
-+}
-+
- static struct sk_buff *tsnep_build_skb(struct tsnep_rx *rx, struct page *page,
- 				       int length)
- {
-@@ -1035,12 +1132,16 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
- 	int desc_available;
- 	int done = 0;
- 	enum dma_data_direction dma_dir;
-+	struct bpf_prog *prog;
- 	struct tsnep_rx_entry *entry;
-+	struct xdp_buff xdp;
-+	int xdp_status = 0;
- 	struct sk_buff *skb;
- 	int length;
- 
- 	desc_available = tsnep_rx_desc_available(rx);
- 	dma_dir = page_pool_get_dma_dir(rx->page_pool);
-+	prog = READ_ONCE(rx->adapter->xdp_prog);
- 
- 	while (likely(done < budget) && (rx->read != rx->write)) {
- 		entry = &rx->entry[rx->read];
-@@ -1084,6 +1185,28 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
- 		rx->read = (rx->read + 1) % TSNEP_RING_SIZE;
- 		desc_available++;
- 
-+		if (prog) {
-+			bool consume;
-+
-+			xdp_init_buff(&xdp, PAGE_SIZE, &rx->xdp_rxq);
-+			xdp_prepare_buff(&xdp, page_address(entry->page),
-+					 tsnep_rx_offset_xdp() + TSNEP_RX_INLINE_METADATA_SIZE,
-+					 length - TSNEP_RX_INLINE_METADATA_SIZE,
-+					 false);
-+
-+			consume = tsnep_xdp_run_prog(rx, prog, &xdp,
-+						     &xdp_status);
-+			if (consume) {
-+				rx->packets++;
-+				rx->bytes +=
-+					length - TSNEP_RX_INLINE_METADATA_SIZE;
-+
-+				entry->page = NULL;
-+
-+				continue;
-+			}
-+		}
-+
- 		skb = tsnep_build_skb(rx, entry->page, length);
- 		if (skb) {
- 			page_pool_release_page(rx->page_pool, entry->page);
-@@ -1102,6 +1225,9 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
- 		entry->page = NULL;
+ /**
+  * alloc_skb - allocate a network buffer
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 13d578ce2a09..611b1f4082cf 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -1130,7 +1130,7 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
  	}
+ 	sock_init_data(NULL, sk);
  
-+	if (xdp_status)
-+		tsnep_finalize_xdp(rx->adapter, xdp_status);
+-	skb = build_skb(data, 0);
++	skb = slab_build_skb(data);
+ 	if (!skb) {
+ 		kfree(data);
+ 		kfree(ctx);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 1d9719e72f9d..ae5a6f7db37b 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -269,12 +269,10 @@ static struct sk_buff *napi_skb_cache_get(void)
+ 	return skb;
+ }
+ 
+-/* Caller must provide SKB that is memset cleared */
+-static void __build_skb_around(struct sk_buff *skb, void *data,
+-			       unsigned int frag_size)
++static inline void __finalize_skb_around(struct sk_buff *skb, void *data,
++					 unsigned int size)
+ {
+ 	struct skb_shared_info *shinfo;
+-	unsigned int size = frag_size ? : ksize(data);
+ 
+ 	size -= SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+ 
+@@ -296,15 +294,71 @@ static void __build_skb_around(struct sk_buff *skb, void *data,
+ 	skb_set_kcov_handle(skb, kcov_common_handle());
+ }
+ 
++static inline void *__slab_build_skb(struct sk_buff *skb, void *data,
++				     unsigned int *size)
++{
++	void *resized;
 +
- 	if (desc_available)
- 		tsnep_rx_refill(rx, desc_available, false);
- 
++	/* Must find the allocation size (and grow it to match). */
++	*size = ksize(data);
++	/* krealloc() will immediately return "data" when
++	 * "ksize(data)" is requested: it is the existing upper
++	 * bounds. As a result, GFP_ATOMIC will be ignored. Note
++	 * that this "new" pointer needs to be passed back to the
++	 * caller for use so the __alloc_size hinting will be
++	 * tracked correctly.
++	 */
++	resized = krealloc(data, *size, GFP_ATOMIC);
++	WARN_ON_ONCE(resized != data);
++	return resized;
++}
++
++/* build_skb() variant which can operate on slab buffers.
++ * Note that this should be used sparingly as slab buffers
++ * cannot be combined efficiently by GRO!
++ */
++struct sk_buff *slab_build_skb(void *data)
++{
++	struct sk_buff *skb;
++	unsigned int size;
++
++	skb = kmem_cache_alloc(skbuff_head_cache, GFP_ATOMIC);
++	if (unlikely(!skb))
++		return NULL;
++
++	memset(skb, 0, offsetof(struct sk_buff, tail));
++	data = __slab_build_skb(skb, data, &size);
++	__finalize_skb_around(skb, data, size);
++
++	return skb;
++}
++EXPORT_SYMBOL(slab_build_skb);
++
++/* Caller must provide SKB that is memset cleared */
++static void __build_skb_around(struct sk_buff *skb, void *data,
++			       unsigned int frag_size)
++{
++	unsigned int size = frag_size;
++
++	/* frag_size == 0 is considered deprecated now. Callers
++	 * using slab buffer should use slab_build_skb() instead.
++	 */
++	if (WARN_ONCE(size == 0, "Use slab_build_skb() instead"))
++		data = __slab_build_skb(skb, data, &size);
++
++	__finalize_skb_around(skb, data, size);
++}
++
+ /**
+  * __build_skb - build a network buffer
+  * @data: data buffer provided by caller
+- * @frag_size: size of data, or 0 if head was kmalloced
++ * @frag_size: size of data (must not be 0)
+  *
+  * Allocate a new &sk_buff. Caller provides space holding head and
+- * skb_shared_info. @data must have been allocated by kmalloc() only if
+- * @frag_size is 0, otherwise data should come from the page allocator
+- *  or vmalloc()
++ * skb_shared_info. @data must have been allocated from the page
++ * allocator or vmalloc(). (A @frag_size of 0 to indicate a kmalloc()
++ * allocation is deprecated, and callers should use slab_build_skb()
++ * instead.)
+  * The return is the new skb buffer.
+  * On a failure the return is %NULL, and @data is not freed.
+  * Notes :
 -- 
-2.30.2
+2.34.1
 
