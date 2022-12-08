@@ -2,184 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A48646B77
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 10:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB6B646BF0
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 10:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbiLHJIY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 04:08:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
+        id S230092AbiLHJ3z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 04:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbiLHJH4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 04:07:56 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFEC2718;
-        Thu,  8 Dec 2022 01:07:40 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id o1-20020a17090a678100b00219cf69e5f0so4014136pjj.2;
-        Thu, 08 Dec 2022 01:07:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ENJxr9FvEXoX1xujZQToKReVEYQcyg6+XQFDmfXVQhU=;
-        b=nlPE047uAXcYnxsuOVd0h4CrqYD4W2U/gcExvJkbbGDugIynBplXJ3Bwtp2jMSg3Lf
-         LO1H5/UflGvx4WwsqcARtJFLrZ2bG9RKBgheqQwBYyq/cUCisnr3yZT/93/geuCHwIAl
-         gNHoZEHgh7JWDV2VD/s3nY71xbo1u3rtU0E5qx58C0a9/1kh2Dj43J7Z/U7HYzphkUd5
-         w5PBmw4iqH+JHqyyvtow5MG/HZXCkmnRTcHr1qXxkIC62GY3CpoHhAjVGvjOmSRWDSYz
-         ajqHAGgRSWZWofZyz+gf7z/NRC90CheDjtkBLIFDJ1e0FxT5w3JI9oqsJ57jrwSd3V54
-         sJxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ENJxr9FvEXoX1xujZQToKReVEYQcyg6+XQFDmfXVQhU=;
-        b=JPnjAg1PKBv48FiK/L6wBGx9fagu6MrblJ3Aa9LddiaD0LzzkbCg1frF3RU3XZBylA
-         KiUeaIYWvAsbEoDnqgvEjbo8H/b6px+/MGgySKlE9djCOsBcX7JP7pB7VS5cO11K/oHU
-         wgctdv52qa1DLjIKiOrOr5gpx/sp2G8/KnZQIZ6jHV6H5ykWKak6BWm+iNihbBfuknbi
-         0ah+gDLhvktoYolrb+1K4ys4uEvq3+/Oyyk4nqS0oTGtX7X/9HrPsUn2iCn4xYqedCYT
-         oa0cIyvtbBj03f/CfvYx0Vl5A2+hQtA/5sfX2NYwNkJmZNRbv55eSTXAYlg5CCQqQUs2
-         Kjjg==
-X-Gm-Message-State: ANoB5pkn1mYQIs5VppuyosB0UnRBL6GMCO7omThY2BiEWzGr5xEC4L5V
-        YgvFQ6FP8om5uPYRLoNhQAA=
-X-Google-Smtp-Source: AA0mqf4d5ECtHyhoW1R9koTgyv/d1/H/NmgWhR8LvUV9ODP4GAd+n8o0b75dqM6wI1ZAfyyDp8420A==
-X-Received: by 2002:a17:90a:d58c:b0:219:741f:c3af with SMTP id v12-20020a17090ad58c00b00219741fc3afmr35926642pju.68.1670490459893;
-        Thu, 08 Dec 2022 01:07:39 -0800 (PST)
-Received: from localhost ([98.97.38.190])
-        by smtp.gmail.com with ESMTPSA id q15-20020a17090311cf00b00176b63535adsm16168499plh.260.2022.12.08.01.07.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Dec 2022 01:07:39 -0800 (PST)
-Date:   Thu, 08 Dec 2022 01:07:36 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Eric Dumazet <edumazet@google.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     syzbot <syzbot+04c21ed96d861dccc5cd@syzkaller.appspotmail.com>,
-        bpf@vger.kernel.org, davem@davemloft.net, jakub@cloudflare.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Message-ID: <6391a95864c5e_1ec2b208a@john.notmuch>
-In-Reply-To: <CANn89iK2UN1FmdUcH12fv_xiZkv2G+Nskvmq7fG6aA_6VKRf6g@mail.gmail.com>
-References: <00000000000073b14905ef2e7401@google.com>
- <639034dda7f92_bb36208f5@john.notmuch>
- <CANn89iK2UN1FmdUcH12fv_xiZkv2G+Nskvmq7fG6aA_6VKRf6g@mail.gmail.com>
-Subject: Re: [syzbot] BUG: stack guard page was hit in inet6_release
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        with ESMTP id S229786AbiLHJ3v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 04:29:51 -0500
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE3D1D306;
+        Thu,  8 Dec 2022 01:29:49 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4NSTFp12fyz9xFPw;
+        Thu,  8 Dec 2022 17:22:38 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwCXfflzrpFj0QvMAA--.21566S2;
+        Thu, 08 Dec 2022 10:29:31 +0100 (CET)
+Message-ID: <b989b278a16c48e104b32ba7243e4298491a6056.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 2/2] lsm: Add/fix return values in lsm_hooks.h and
+ fix formatting
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     David Howells <dhowells@redhat.com>, casey@schaufler-ca.com,
+        omosnace@redhat.com, john.johansen@canonical.com,
+        kpsingh@kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu, 08 Dec 2022 10:29:20 +0100
+In-Reply-To: <CAHC9VhQZ3VKWsNarUGPcHZuoRLgb8owKgbdLymwR759qVyQ+2Q@mail.gmail.com>
+References: <20221128144240.210110-1-roberto.sassu@huaweicloud.com>
+         <20221128144240.210110-3-roberto.sassu@huaweicloud.com>
+         <CAHC9VhRx=pCcAHMAX+51rpFT+efW7HH=X37YOwUG1tTLxyg=SA@mail.gmail.com>
+         <7225e76c09c7ff68937e37ee041fefdd6ccac1c8.camel@huaweicloud.com>
+         <0682348d9601ca3847ce9ba035e4ab1b586cf712.camel@huaweicloud.com>
+         <CAHC9VhQZ3VKWsNarUGPcHZuoRLgb8owKgbdLymwR759qVyQ+2Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_SBL_A autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwCXfflzrpFj0QvMAA--.21566S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFW8Jr45tryxJFW7XF4fKrg_yoWkuwbEkr
+        Z8Ar48Jw45Crn7Cw12ka1F9r92g3srZw1rZ3WDXr1UWa48GrW5JF40kr93Xrs3CrW8Jrnr
+        WFyDAFZ2kasIvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7xYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267
+        AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+        j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+        kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAABF1jj4ZsWgACsG
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eric Dumazet wrote:
-> On Wed, Dec 7, 2022 at 7:38 AM John Fastabend <john.fastabend@gmail.com> wrote:
-> >
-> > syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    6a30d3e3491d selftests: net: Use "grep -E" instead of "egr..
-> > > git tree:       net
-> > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=1576b11d880000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cc4b2e0a8e8a8366
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=04c21ed96d861dccc5cd
-> > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e1656b880000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1077da23880000
-> > >
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/bbee3d5fc908/disk-6a30d3e3.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/bf9e258de70e/vmlinux-6a30d3e3.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/afaa6696b9e0/bzImage-6a30d3e3.xz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+04c21ed96d861dccc5cd@syzkaller.appspotmail.com
-> > >
-> > > BUG: TASK stack guard page was hit at ffffc90003cd7fa8 (stack is ffffc90003cd8000..ffffc90003ce0000)
-> > > stack guard page: 0000 [#1] PREEMPT SMP KASAN
-> > > CPU: 0 PID: 3636 Comm: syz-executor238 Not tainted 6.1.0-rc7-syzkaller-00135-g6a30d3e3491d #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-> > > RIP: 0010:mark_lock.part.0+0x26/0x1910 kernel/locking/lockdep.c:4593
-> > > Code: 00 00 00 00 41 57 41 56 41 55 41 89 d5 48 ba 00 00 00 00 00 fc ff df 41 54 49 89 f4 55 53 48 81 ec 38 01 00 00 48 8d 5c 24 38 <48> 89 3c 24 48 c7 44 24 38 b3 8a b5 41 48 c1 eb 03 48 c7 44 24 40
-> > > RSP: 0018:ffffc90003cd7fb8 EFLAGS: 00010096
-> > > RAX: 0000000000000004 RBX: ffffc90003cd7ff0 RCX: ffffffff8162a7bf
-> > > RDX: dffffc0000000000 RSI: ffff88801f65e238 RDI: ffff88801f65d7c0
-> > > RBP: ffff88801f65e25a R08: 0000000000000000 R09: ffffffff910f4aff
-> > > R10: fffffbfff221e95f R11: 0000000000000000 R12: ffff88801f65e238
-> > > R13: 0000000000000002 R14: 0000000000000000 R15: 0000000000040000
-> > > FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: ffffc90003cd7fa8 CR3: 000000000c28e000 CR4: 00000000003506f0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > Call Trace:
-> > >  <TASK>
-> > >  mark_lock kernel/locking/lockdep.c:4598 [inline]
-> > >  mark_usage kernel/locking/lockdep.c:4543 [inline]
-> > >  __lock_acquire+0x847/0x56d0 kernel/locking/lockdep.c:5009
-> > >  lock_acquire kernel/locking/lockdep.c:5668 [inline]
-> > >  lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
-> > >  lock_sock_nested+0x3a/0xf0 net/core/sock.c:3447
-> > >  lock_sock include/net/sock.h:1721 [inline]
-> > >  sock_map_close+0x75/0x7b0 net/core/sock_map.c:1610
-> >
-> > I'll take a look likely something recent.
+On Wed, 2022-12-07 at 14:34 -0500, Paul Moore wrote:
+> On Wed, Dec 7, 2022 at 4:18 AM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> > For this patch, I saw it is already in lsm/next. Paul, should I do an
+> > incremental patch or change the one in the repo and you force push it?
+> > I would just remove the three lines after the parameters description.
 > 
-> Fact that sock_map_close  can call itself seems risky.
-> We might issue a one time warning and keep the host alive.
+> Just send a patch against the current lsm/next branch to remove those
+> lines, and please do it ASAP as the merge window opens this
+> weekend/Monday.
 
-Agree seems better to check the condition than loop on close.
-I still need to figure out the bug that got into this state
-though. Thanks.
+Ok, was about to send but I would need a clarification first.
 
-> 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 81beb16ab1ebfcb166f51f89a029fe1c28a629a4..a79771a6627b9b2f38ae6ce153ceff9e8c0be8d4
-> 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -1612,17 +1612,25 @@ void sock_map_close(struct sock *sk, long timeout)
->         psock = sk_psock_get(sk);
->         if (unlikely(!psock)) {
->                 rcu_read_unlock();
-> +               saved_close = sk->sk_prot->close;
->                 release_sock(sk);
-> -               return sk->sk_prot->close(sk, timeout);
-> +       } else {
-> +               saved_close = psock->saved_close;
-> +               sock_map_remove_links(sk, psock);
-> +               rcu_read_unlock();
-> +               sk_psock_stop(psock);
-> +               release_sock(sk);
-> +               cancel_work_sync(&psock->work);
-> +               sk_psock_put(sk, psock);
-> +       }
-> +       /* Make sure we do not recurse to us.
-> +        * This is a bug, we can leak the socket instead
-> +        * of crashing on a stack overflow.
-> +        */
-> +       if (saved_close == sock_map_close) {
-> +               WARN_ON_ONCE(1);
-> +               return;
->         }
-> -
-> -       saved_close = psock->saved_close;
-> -       sock_map_remove_links(sk, psock);
-> -       rcu_read_unlock();
-> -       sk_psock_stop(psock);
-> -       release_sock(sk);
-> -       cancel_work_sync(&psock->work);
-> -       sk_psock_put(sk, psock);
->         saved_close(sk, timeout);
->  }
->  EXPORT_SYMBOL_GPL(sock_map_close);
+In mount_api.rst, there is for security_fs_context_parse_param():
 
+     The value pointed to by param may be modified (if a string) or stolen
+     (provided the value pointer is NULL'd out).  If it is stolen, 0 must be
+     returned to prevent it being passed to the filesystem.
+
+Looking at security.c:
+
+	hlist_for_each_entry(hp, &security_hook_heads.fs_context_parse_param,
+			     list) {
+		trc = hp->hook.fs_context_parse_param(fc, param);
+		if (trc == 0)
+			rc = 0;
+		else if (trc != -ENOPARAM)
+			return trc;
+	}
+
+If, as mount_api.rst says, the value is modified by an LSM or stolen,
+should it be passed to other LSMs too?
+
+Thanks
+
+Roberto
 
