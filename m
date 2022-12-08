@@ -2,276 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD85646590
-	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 01:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F22646601
+	for <lists+bpf@lfdr.de>; Thu,  8 Dec 2022 01:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbiLHACU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Dec 2022 19:02:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
+        id S229841AbiLHAhv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Dec 2022 19:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbiLHACS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Dec 2022 19:02:18 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303978C441
-        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 16:02:16 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id a9so18577671pld.7
-        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 16:02:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dk1yAoyQU+RLCYzQPhP3++n5k0AlqyyhOlwfArVtCN8=;
-        b=CfAuGzp9X4iBKtpuQ05m/nLzqNjWLddivhcjBXfwQpOFO0jBdxJx2iBZedSmSZhQkq
-         xUTzYrTLLf23grDjO0hf/+R8GsE4OfFz5vPRSFlyvyiRbq7JAN5B0OhF2O1LGbvKXpc2
-         dkD25p/EY7gml9MOqEmL3vlNPDCwS8NjoJx1w=
+        with ESMTP id S229828AbiLHAht (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Dec 2022 19:37:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A7C24BF6
+        for <bpf@vger.kernel.org>; Wed,  7 Dec 2022 16:36:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670459809;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/LS2JrAUMlpE3Jgn68BrphN30+PYNiy0lfzD4KeoPIY=;
+        b=bblhM3/VJBhSURfntR+B9aUvByNY0Ob9x2Y6HN95qkfpZ+rFg/urumPv37MK57hCjPBz8p
+        oJW0HJngd8WZ/uN3ZqqXUxZ3sh6PwzkwrpaDxZ8a1tYEthw3pPRk7aKWdvoMcAprWZsAGG
+        pUDfZhbM93R8+0C+gWxGV6FCaWQNgT4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-414-y_rVUNlpOGWrTnVHf8neiA-1; Wed, 07 Dec 2022 19:36:48 -0500
+X-MC-Unique: y_rVUNlpOGWrTnVHf8neiA-1
+Received: by mail-ej1-f71.google.com with SMTP id xc12-20020a170907074c00b007416699ea14so35635ejb.19
+        for <bpf@vger.kernel.org>; Wed, 07 Dec 2022 16:36:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dk1yAoyQU+RLCYzQPhP3++n5k0AlqyyhOlwfArVtCN8=;
-        b=4i6DNN5Bk6DfOfCGMy261EQUvqv56X7XZJYu0JPg2QkmMDriJsgfKE+0FYbFQ+X61S
-         DVC33Tm0FNb8UDNJCAsR92unUjE/91ZYekhHB9a+xz7br2c19BzhMRKQ8P+ulusGZOye
-         94Uhu5i4pq2qrkN2wj4uGrQE5yuOZrzQK4NRSmJ6ri7vbRuG7PpwP+dVsoeP9zUq3aH4
-         rwgOyu7SE7UfqUVl5nXeWDLgHcCHU2od4ybi/JjgeIKFfwiXRPm8mgTUMP8vYawudQlb
-         nSeW1540ECrOyy4nwcALr2UgJNsiD5Tj0KtrIC6MwE9UJDeiEiZ1EqFEEfeQIDrQFurZ
-         iv0g==
-X-Gm-Message-State: ANoB5pmuwl7iNk6nBOZmX9BxA+7k/ismLnTU8taRemWLjye/eE7q2s1f
-        vd3ujscVM1J/Z73aDLcL64PQAg==
-X-Google-Smtp-Source: AA0mqf4HIgFTUJHMRF3JILeCrjw7S70fUUJWDbaPjwiHDjSbqcJpUgdTYeHaVR0Jfy9Z0A83nK/xfA==
-X-Received: by 2002:a17:90b:711:b0:210:9858:2b2c with SMTP id s17-20020a17090b071100b0021098582b2cmr102785702pjz.191.1670457735590;
-        Wed, 07 Dec 2022 16:02:15 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s30-20020a63925e000000b00477def759cbsm5933519pgn.58.2022.12.07.16.02.14
+        bh=/LS2JrAUMlpE3Jgn68BrphN30+PYNiy0lfzD4KeoPIY=;
+        b=7vWNr97zBy87AzioLfU7Sga3/gjI1XDWGuNtjVFV1AD0rGIVCXDzr1G+cAFDowa0W6
+         wN+XZfR2npvRTl4xpI2eD9rfoDK9+CQU+AH1Yz04pHs0JAXcgYfTi6lU7W+McEFq9ljL
+         1MgPeFlpociEVg5qZcTbu/FCPADVjKiXDdVStJV60WT4y2zz711yNXrbcNLsw0qTKJSP
+         i2pboLw4xYLlxd/Nb6ch+Sa+LAh6X74cC8mFuJ3GBXAf21jqp8SEwjTGjP9GETofzUQ+
+         XKkPRWnF0GWaKQekgvm+FlzmZ13AWgvizCN4dbMeUY97+6/MXoagvHq5SVf77/wVyvVn
+         d3rw==
+X-Gm-Message-State: ANoB5pnnMsFYokWD2oLIlaDPRusOl/VwcbekUuydMN7yonpO8IgmLsC2
+        bzf59Rmob/kTbfPLnjeezpQuHxLJEdBVmPAMh+kLPhxx7HFseukDffT5H+OF1W0IUaBUn4vVkd/
+        bx11uZN0A2y4w
+X-Received: by 2002:a17:906:d922:b0:7c1:31c:e884 with SMTP id rn2-20020a170906d92200b007c1031ce884mr802000ejb.17.1670459805069;
+        Wed, 07 Dec 2022 16:36:45 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf4gO/PCXlDmKCQRkLYk3qkK1PALIUxH5oyKGV6g9WLpYd/3ZiNG0OLfhBdow1Oh/3ChUBh+5Q==
+X-Received: by 2002:a17:906:d922:b0:7c1:31c:e884 with SMTP id rn2-20020a170906d92200b007c1031ce884mr801980ejb.17.1670459804044;
+        Wed, 07 Dec 2022 16:36:44 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id r10-20020a17090609ca00b007ad94422cf6sm8964312eje.198.2022.12.07.16.36.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Dec 2022 16:02:15 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        pepsipu <soopthegoop@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrii Nakryiko <andrii@kernel.org>, ast@kernel.org,
-        bpf <bpf@vger.kernel.org>,
+        Wed, 07 Dec 2022 16:36:42 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 07E4C82E7F9; Thu,  8 Dec 2022 01:36:41 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, jolsa@kernel.org,
-        KP Singh <kpsingh@kernel.org>, martin.lau@linux.dev,
-        Stanislav Fomichev <sdf@google.com>, song@kernel.org,
-        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rasesh Mody <rmody@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        David Ahern <dsahern@kernel.org>,
-        Richard Gobert <richardbgobert@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        GR-Linux-NIC-Dev@marvell.com, linux-hardening@vger.kernel.org
-Subject: [PATCH net-next v2] skbuff: Introduce slab_build_skb()
-Date:   Wed,  7 Dec 2022 16:02:13 -0800
-Message-Id: <20221208000209.gonna.368-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Toke Hoiland-Jorgensen <toke@redhat.com>
+Cc:     bpf@vger.kernel.org
+Subject: [PATCH bpf] bpf: Resolve fext program type when checking map compatibility
+Date:   Thu,  8 Dec 2022 01:35:46 +0100
+Message-Id: <20221208003546.14873-1-toke@redhat.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6532; h=from:subject:message-id; bh=I5zpjdf6giyPTGWK3waT0b1aZ9hEwojgcygujraz8dc=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjkSmEkOgkOZcWwciYH5GLWV3obftsCrvUcG4e847b Bi5nkbGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY5EphAAKCRCJcvTf3G3AJrfZD/ 9J2X/Gw9ncWI4dk8wA/WdzHwO05CFaHzRpUpXr+GMG8xWhch5i+SxqJDXVTzXb0YA7TXlpkO9D+otk 5R29AmizYM7EXsl1yZeyMbGQ5hpAufcuX82qAOIodz/lW3bzrzs21vRcUZLrwoV/Fyw0pxzHY5Pf5h ph+jxiId3DghZjSkowXYtsPGXEcnWxRVtUdTcXIwi4Ry8XvyJpqk0jOBV7ZnM8kEJVJ6pUgNjdt61c Gdhjag0bgthVFgM2mpz/QmavD+S+3QlwLB9a3DoVWUJOKJTSQrHNNzbygYMoN5RqmnPz+OcqVneI4E +XcJ6Dh3/v1qbD+rVNET9u/b3bPLy/x06rWB8dgrKn0P/mb601uzlKCKhmm1TG24z1Z9h8w366AVA7 9dU9EwQINOJTDi6NUYcnGa3GApoKuVGCZ03C9xewFJ6BfCrj5qjwQT7CGTH5Vug9puDgl7rBqlIskS WiKGOdtd2hO+BdD3ggipo0i6+bmO07sYVTvcUDv/6GsZZyUy8jET1YpxQS6KU6pKyabXunytY0XNDN o2/3jZeX+Q1xeLy+ge8aeZvS6ypBvKHk51BiHlDd+HM/Ea0wvyjuZr6d5xnNwg9UqO3Po4lIYkKctJ kXJR6WE6EASTgDFD1Xdp19J2MB65NyB2AMFRRTo2I8Nk6cmA+N6Z+5R+M5Sg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzkaller reported:
+The bpf_prog_map_compatible() check makes sure that BPF program types are
+not mixed inside BPF map types that can contain programs (tail call maps,
+cpumaps and devmaps). It does this by setting the fields of the map->owner
+struct to the values of the first program being checked against, and
+rejecting any subsequent programs if the values don't match.
 
-  BUG: KASAN: slab-out-of-bounds in __build_skb_around+0x235/0x340 net/core/skbuff.c:294
-  Write of size 32 at addr ffff88802aa172c0 by task syz-executor413/5295
+One of the values being set in the map owner struct is the program type,
+and since the code did not resolve the prog type for fext programs, the map
+owner type would be set to PROG_TYPE_EXT and subsequent loading of programs
+of the target type into the map would fail.
 
-For bpf_prog_test_run_skb(), which uses a kmalloc()ed buffer passed to
-build_skb().
+This bug is seen in particular for XDP programs that are loaded as
+PROG_TYPE_EXT using libxdp; these cannot insert programs into devmaps and
+cpumaps because the check fails as described above.
 
-When build_skb() is passed a frag_size of 0, it means the buffer came
-from kmalloc. In these cases, ksize() is used to find its actual size,
-but since the allocation may not have been made to that size, actually
-perform the krealloc() call so that all the associated buffer size
-checking will be correctly notified. Split this logic out into a new
-interface, slab_build_skb(), but leave the original 0 checking for now
-to catch any stragglers.
+Fix the bug by resolving the fext program type to its target program type
+as elsewhere in the verifier. This requires constifying the parameter of
+resolve_prog_type() to avoid a compiler warning from the new call site.
 
-Reported-by: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
-Link: https://groups.google.com/g/syzkaller-bugs/c/UnIKxTtU5-0/m/-wbXinkgAQAJ
-Fixes: 38931d8989b5 ("mm: Make ksize() a reporting-only function")
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Pavel Begunkov <asml.silence@gmail.com>
-Cc: pepsipu <soopthegoop@gmail.com>
-Cc: syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: kasan-dev <kasan-dev@googlegroups.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: ast@kernel.org
-Cc: bpf <bpf@vger.kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: jolsa@kernel.org
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: martin.lau@linux.dev
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: song@kernel.org
-Cc: Yonghong Song <yhs@fb.com>
-Cc: netdev@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixes: f45d5b6ce2e8 ("bpf: generalise tail call map compatibility check")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
-Is this what you had in mind for this kind of change?
-v2: introduce separate helper (kuba)
-v1: https://lore.kernel.org/netdev/20221206231659.never.929-kees@kernel.org/
----
- drivers/net/ethernet/broadcom/bnx2.c      |  2 +-
- drivers/net/ethernet/qlogic/qed/qed_ll2.c |  2 +-
- include/linux/skbuff.h                    |  1 +
- net/bpf/test_run.c                        |  2 +-
- net/core/skbuff.c                         | 52 +++++++++++++++++++++--
- 5 files changed, 52 insertions(+), 7 deletions(-)
+ include/linux/bpf_verifier.h | 2 +-
+ kernel/bpf/core.c            | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2.c b/drivers/net/ethernet/broadcom/bnx2.c
-index fec57f1982c8..b2230a4a2086 100644
---- a/drivers/net/ethernet/broadcom/bnx2.c
-+++ b/drivers/net/ethernet/broadcom/bnx2.c
-@@ -3045,7 +3045,7 @@ bnx2_rx_skb(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr, u8 *data,
- 
- 	dma_unmap_single(&bp->pdev->dev, dma_addr, bp->rx_buf_use_size,
- 			 DMA_FROM_DEVICE);
--	skb = build_skb(data, 0);
-+	skb = slab_build_skb(data);
- 	if (!skb) {
- 		kfree(data);
- 		goto error;
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.c b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
-index ed274f033626..e5116a86cfbc 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_ll2.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
-@@ -200,7 +200,7 @@ static void qed_ll2b_complete_rx_packet(void *cxt,
- 	dma_unmap_single(&cdev->pdev->dev, buffer->phys_addr,
- 			 cdev->ll2->rx_size, DMA_FROM_DEVICE);
- 
--	skb = build_skb(buffer->data, 0);
-+	skb = slab_build_skb(buffer->data);
- 	if (!skb) {
- 		DP_INFO(cdev, "Failed to build SKB\n");
- 		kfree(buffer->data);
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 7be5bb4c94b6..0b391b635430 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -1253,6 +1253,7 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
- void skb_attempt_defer_free(struct sk_buff *skb);
- 
- struct sk_buff *napi_build_skb(void *data, unsigned int frag_size);
-+struct sk_buff *slab_build_skb(void *data);
- 
- /**
-  * alloc_skb - allocate a network buffer
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 13d578ce2a09..611b1f4082cf 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -1130,7 +1130,7 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	}
- 	sock_init_data(NULL, sk);
- 
--	skb = build_skb(data, 0);
-+	skb = slab_build_skb(data);
- 	if (!skb) {
- 		kfree(data);
- 		kfree(ctx);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 1d9719e72f9d..2bff6af6a777 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -269,12 +269,10 @@ static struct sk_buff *napi_skb_cache_get(void)
- 	return skb;
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 9e1e6965f407..0eb8f035b3d9 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -642,7 +642,7 @@ static inline u32 type_flag(u32 type)
  }
  
--/* Caller must provide SKB that is memset cleared */
--static void __build_skb_around(struct sk_buff *skb, void *data,
--			       unsigned int frag_size)
-+static inline void __finalize_skb_around(struct sk_buff *skb, void *data,
-+					 unsigned int size)
+ /* only use after check_attach_btf_id() */
+-static inline enum bpf_prog_type resolve_prog_type(struct bpf_prog *prog)
++static inline enum bpf_prog_type resolve_prog_type(const struct bpf_prog *prog)
  {
- 	struct skb_shared_info *shinfo;
--	unsigned int size = frag_size ? : ksize(data);
+ 	return prog->type == BPF_PROG_TYPE_EXT ?
+ 		prog->aux->dst_prog->type : prog->type;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 25a54e04560e..17ab3e15ac25 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2088,6 +2088,7 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+ bool bpf_prog_map_compatible(struct bpf_map *map,
+ 			     const struct bpf_prog *fp)
+ {
++	enum bpf_prog_type prog_type = resolve_prog_type(fp);
+ 	bool ret;
  
- 	size -= SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 
-@@ -296,6 +294,52 @@ static void __build_skb_around(struct sk_buff *skb, void *data,
- 	skb_set_kcov_handle(skb, kcov_common_handle());
- }
- 
-+static inline void __slab_build_skb(struct sk_buff *skb, void *data,
-+				    unsigned int *size)
-+{
-+	void *resized;
-+
-+	*size = ksize(data);
-+	/* krealloc() will immediate return "data" when
-+	 * "ksize(data)" is requested: it is the existing upper
-+	 * bounds. As a result, GFP_ATOMIC will be ignored.
-+	 */
-+	resized = krealloc(data, *size, GFP_ATOMIC);
-+	WARN_ON_ONCE(resized != data);
-+}
-+
-+struct sk_buff *slab_build_skb(void *data)
-+{
-+	struct sk_buff *skb;
-+	unsigned int size;
-+
-+	skb = kmem_cache_alloc(skbuff_head_cache, GFP_ATOMIC);
-+	if (unlikely(!skb))
-+		return NULL;
-+
-+	memset(skb, 0, offsetof(struct sk_buff, tail));
-+	__slab_build_skb(skb, data, &size);
-+	__finalize_skb_around(skb, data, size);
-+
-+	return skb;
-+}
-+EXPORT_SYMBOL(slab_build_skb);
-+
-+/* Caller must provide SKB that is memset cleared */
-+static void __build_skb_around(struct sk_buff *skb, void *data,
-+			       unsigned int frag_size)
-+{
-+	unsigned int size = frag_size;
-+
-+	/* When frag_size == 0, the buffer came from kmalloc, so we
-+	 * must find its true allocation size (and grow it to match).
-+	 */
-+	if (WARN_ONCE(size == 0, "Use slab_build_skb() instead"))
-+		__slab_build_skb(skb, data, &size);
-+
-+	__finalize_skb_around(skb, data, size);
-+}
-+
- /**
-  * __build_skb - build a network buffer
-  * @data: data buffer provided by caller
+ 	if (fp->kprobe_override)
+@@ -2098,12 +2099,12 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
+ 		/* There's no owner yet where we could check for
+ 		 * compatibility.
+ 		 */
+-		map->owner.type  = fp->type;
++		map->owner.type  = prog_type;
+ 		map->owner.jited = fp->jited;
+ 		map->owner.xdp_has_frags = fp->aux->xdp_has_frags;
+ 		ret = true;
+ 	} else {
+-		ret = map->owner.type  == fp->type &&
++		ret = map->owner.type  == prog_type &&
+ 		      map->owner.jited == fp->jited &&
+ 		      map->owner.xdp_has_frags == fp->aux->xdp_has_frags;
+ 	}
 -- 
-2.34.1
+2.38.1
 
