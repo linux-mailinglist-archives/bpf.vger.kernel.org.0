@@ -2,74 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F53A64865E
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 17:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233516486B5
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 17:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbiLIQPA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 11:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
+        id S229777AbiLIQpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 11:45:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbiLIQOi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 11:14:38 -0500
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BE326AA2;
-        Fri,  9 Dec 2022 08:14:37 -0800 (PST)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-381662c78a9so58384907b3.7;
-        Fri, 09 Dec 2022 08:14:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r2qId5xhvUo4Pl0t4FuJRG6nKhrNrqhzhcDasrr5b8g=;
-        b=Eh6kWAW3WPRiHSavpa5GV/wIM6Od+Owf4zJYR02MNkfY+D7bbP9BE5uCIClSvMDfQl
-         sBdg1uLRZhQmnqiMXv/oDitbjE56MnxgbGcwcAapa2seohnx+yuYSpuRRt4zQGOqsG8x
-         PSWtKX8Yxc6HEXPOid6E7qkgMXu/oKqLIuIQ1QnIjN6x9SuPMye5HN5CPBv7hT0TpOuy
-         EKY+KyOzLo8UKUu/YKdklcG2kzs0c12AHHFiHlD123SdjL/P2elvXL8xwIgovVqNAw6L
-         Rs9/qcV8UrFiInhw+tZ9LQBO5KCLv1f+oyYFx50vUaMFK8eeQxpOGSZs84pJkqaTgPWK
-         ecnw==
-X-Gm-Message-State: ANoB5pmd+bKPKcaCwlBUQxYyc5cf+tWa3OMCLu7JZsTdjTWZQkO1hGnz
-        QWF16EfBz3sp4qy0PA7+hRs=
-X-Google-Smtp-Source: AA0mqf7UAzjZVBdSASqXI/YgrB/DuQZC33wUbPvFiInD7u7DL/upFOtLPKSzipZEQTiqIp2qLHBKGg==
-X-Received: by 2002:a05:7500:1447:b0:eb:4b0:19ab with SMTP id q7-20020a057500144700b000eb04b019abmr580376gab.50.1670602476570;
-        Fri, 09 Dec 2022 08:14:36 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:c9a7])
-        by smtp.gmail.com with ESMTPSA id v25-20020a05620a0a9900b006f9f714cb6asm131617qkg.50.2022.12.09.08.14.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 08:14:36 -0800 (PST)
-Date:   Fri, 9 Dec 2022 10:14:33 -0600
-From:   David Vernet <void@manifault.com>
-To:     Donald Hunter <donald.hunter@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229704AbiLIQpa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 11:45:30 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F4289AE5;
+        Fri,  9 Dec 2022 08:45:27 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FE66622B2;
+        Fri,  9 Dec 2022 16:45:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BE0FC433D2;
+        Fri,  9 Dec 2022 16:45:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670604326;
+        bh=y9ju5uWeIvPH5xCPeQBcrFadw2lTaWjzkAGNG7iNTAQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fyE/CIxDGjWaUL0DLNshTMZ1OLUruLbVpHvrC61X21127DREq2ElfVR/r9oxf2evI
+         VE+faV6CiOQrmW+Q5IDLeEttgAIy3f9iLs0Bk8hB8uhjEK0/wSQjCYPLFdRA/wo+X9
+         jNx19EbIQj3FSi/15GyHrmQkaIyTJWXBQXAZld0+8NZPAQlGR9+AuzZL//huJJ/RuT
+         Bh4ek2x38/DIFZRNfDekKCyHTB1eWRG6e6tpIZUnyKppl5ORiKnkeAuLGydtR4MuTT
+         XNv/HG/4jv1y8EFUVbfSSgLIWdLaGV4k/valaLbAuyaBcL48VWWxbNwKpx/aAR9JEt
+         2QMlH8EDn1o1A==
+Date:   Fri, 9 Dec 2022 08:45:24 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Yonghong Song <yhs@meta.com>
-Subject: Re: [PATCH bpf-next v4] docs/bpf: Add documentation for
- BPF_MAP_TYPE_SK_STORAGE
-Message-ID: <Y5Ne6eMENWY+6br5@maniforge.lan>
-References: <20221209112401.69319-1-donald.hunter@gmail.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP
+ metadata
+Message-ID: <20221209084524.01c09d9c@kernel.org>
+In-Reply-To: <87cz8sk59e.fsf@toke.dk>
+References: <20221206024554.3826186-1-sdf@google.com>
+        <20221206024554.3826186-12-sdf@google.com>
+        <875yellcx6.fsf@toke.dk>
+        <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
+        <87359pl9zy.fsf@toke.dk>
+        <CAADnVQ+=71Y+ypQTOgFTJWY7w3YOUdY39is4vpo3aou11=eMmw@mail.gmail.com>
+        <87tu25ju77.fsf@toke.dk>
+        <CAADnVQ+MyE280Q-7iw2Y-P6qGs4xcDML-tUrXEv_EQTmeESVaQ@mail.gmail.com>
+        <87o7sdjt20.fsf@toke.dk>
+        <CAKH8qBswBu7QAWySWOYK4X41mwpdBj0z=6A9WBHjVYQFq9Pzjw@mail.gmail.com>
+        <87cz8sk59e.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221209112401.69319-1-donald.hunter@gmail.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 09, 2022 at 11:24:01AM +0000, Donald Hunter wrote:
-> Add documentation for the BPF_MAP_TYPE_SK_STORAGE including
-> kernel version introduced, usage and examples.
-> 
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+On Fri, 09 Dec 2022 15:42:37 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> If we expect the program to do out of band probing, we could just get
+> rid of the _supported() functions entirely?
+>=20
+> I mean, to me, the whole point of having the separate _supported()
+> function for each item was to have a lower-overhead way of checking if
+> the metadata item was supported. But if the overhead is not actually
+> lower (because both incur a function call), why have them at all? Then
+> we could just change the implementation from this:
+>=20
+> bool mlx5e_xdp_rx_hash_supported(const struct xdp_md *ctx)
+> {
+> 	const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
+>=20
+> 	return _ctx->xdp.rxq->dev->features & NETIF_F_RXHASH;
+> }
+>=20
+> u32 mlx5e_xdp_rx_hash(const struct xdp_md *ctx)
+> {
+> 	const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
+>=20
+> 	return be32_to_cpu(_ctx->cqe->rss_hash_result);
+> }
+>=20
+> to this:
+>=20
+> u32 mlx5e_xdp_rx_hash(const struct xdp_md *ctx)
+> {
+> 	const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
+>=20
+> 	if (!(_ctx->xdp.rxq->dev->features & NETIF_F_RXHASH))
+>                 return 0;
+>=20
+> 	return be32_to_cpu(_ctx->cqe->rss_hash_result);
+> }
 
-Looks great, thanks Donald!
+Are there no corner cases? E.g. in case of an L2 frame you'd then
+expect a hash of 0? Rather than no hash?=20
 
-Acked-by: David Vernet <void@manifault.com>
+If I understand we went for the _supported() thing to make inlining=20
+the check easier than inlining the actual read of the field.
+But we're told inlining is a bit of a wait.. so isn't the motivation
+for the _supported() pretty much gone? And we should we go back to
+returning an error from the actual read?
+
+Is partial inlining hard? (inline just the check and generate a full
+call for the read, ending up with the same code as with _supported())
