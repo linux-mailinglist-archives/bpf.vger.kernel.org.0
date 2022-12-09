@@ -2,96 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A552E647C67
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 03:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 563AB647C77
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 03:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbiLICuV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 21:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        id S229704AbiLIC5t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 21:57:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbiLICuU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 21:50:20 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0705D86F59
-        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 18:50:19 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 826D4B8277C
-        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 02:50:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3D8A7C433EF;
-        Fri,  9 Dec 2022 02:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670554217;
-        bh=2+4/Q4LfP1A/LiSFlJdRGdjADqHeW+rDoEvhkJnmTzs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=oIJcY+nSqP6rSufu3vCG3Ru1ubfinAzK/Y+GR/o1dgrF0+hWbVUjsRcwqSd9wxhnT
-         BuAkW8nRYpOH2DIaQQonfMe0x9o0HefKT/n2ioQKZD/aQffMZqyvTDfvqiMCLDlQ6D
-         vBtf4QLTdcQ1aU4AOE+Bntdr/A9ke7BGHoOqXMaVaVn7VNXcoP0aqvW3Y6dVAYI/c+
-         EdHrp7OrDfzstjzgtesFpaeDaDgJg1f8B8V9rXcT4HdwPMmZMvLHjU9d1ugmzxumK4
-         G0H1+FyA3mCMp2R3TX0xTJnxr+jtdXah057IgSmsPSQvdC392Vmsc0ThtGIp3HGK6P
-         K/FZfBL2JM3ig==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1D5F9C433D7;
-        Fri,  9 Dec 2022 02:50:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229636AbiLIC5q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 21:57:46 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD2B10FEF
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 18:57:43 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 142so2679006pga.1
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 18:57:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V/coKp9zjVolqjPGhEWNOnNKzYKGenInUZCSrBAK7Js=;
+        b=UNuiPncl/4ABZTPBsMCy21lPI0ozEf1DIzpIjE1GXMcF2d2ScJyC+GVuOrMYljfMyQ
+         dFcb74GMeuSyyZhxt9HFZXSdEFGv7JqjxdmGwyvrA7EJxMr9fUeTi/7WQqnmBA/IvJm5
+         +SPinmoqtD2r5iNdzt+pP4EWpLy1A+6pHRF/iPX4BQRdFoewVVpoFyHjBR7C/YC7mAF/
+         xtrkxyWHT7h2gAxBsBaFuENJdUCpivIG6FIOfvRhiTxrhlG/0ezeRbJbEtP/VKWAXTdT
+         yi4z+XvBs5Ucd/lPpM3v1Pw0vOOuz0Yc5FI+Kmr8brxHSeY1G4c3dZmMjxJVwVsfAvu3
+         W9Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V/coKp9zjVolqjPGhEWNOnNKzYKGenInUZCSrBAK7Js=;
+        b=C2nMrcuGnZN2ElSliA2GRlcCSBl8Ks/9ve/7t85LXfbhKc5wTmYibv65beqZzlm5Kd
+         paDBf+B2qCgl3EiMEu66qpGzishxC4cqZcuZFwgFn0C8GgmAWc/l+brlcQU4TKzWMlZ3
+         kFz3XrIhyF77FawofmhydKoLdP7WFmtqDDKYQedFOa5yYSO56A3IkXwiJj22BLG2sWq9
+         9A1kfxiOZq06uRFIR+PL35nIooNSi8ADz1zWjKCw4dIcxwzUdE81ef7xSmNFmOCB71b5
+         gW2+Q/XjKvYiM42kI/hx2tVh1gmWfZTC5aA1rbE2GvMCpIROe9/hudVf2fbOpUtDwPMl
+         F5rw==
+X-Gm-Message-State: ANoB5pldtd1Csyb+vIJ3gWtvy4itK52z9Pso/T0E9RmNFcLsPzDcImuY
+        o0FG6RBUfFzCxLtNDjwrJlZjmpvA+wLrrcIsTymuKQ==
+X-Google-Smtp-Source: AA0mqf5B2Vx/YWatybv77hIV/HI/vXmQ6z8jU1ses4rarDwgiriBATr6FQaS2y4dwfTKLe2q7g2G0PRlWYP1FwAx20w=
+X-Received: by 2002:a63:1747:0:b0:478:1391:fd14 with SMTP id
+ 7-20020a631747000000b004781391fd14mr46875607pgx.112.1670554662836; Thu, 08
+ Dec 2022 18:57:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/7] Dynptr refactorings
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167055421711.8327.12132622553972025169.git-patchwork-notify@kernel.org>
-Date:   Fri, 09 Dec 2022 02:50:17 +0000
-References: <20221207204141.308952-1-memxor@gmail.com>
-In-Reply-To: <20221207204141.308952-1-memxor@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@kernel.org,
-        joannelkoong@gmail.com, void@manifault.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-4-sdf@google.com>
+ <878rjhldv0.fsf@toke.dk> <CAKH8qBvgkTXFEhd9hOa+SFtqKAXuD=WM_h1TZYdQA0d70_drEA@mail.gmail.com>
+ <87zgbxjv7a.fsf@toke.dk>
+In-Reply-To: <87zgbxjv7a.fsf@toke.dk>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 8 Dec 2022 18:57:30 -0800
+Message-ID: <CAKH8qBsK1J5HeSgPN_sYzQRY2jZOO=-E+zyKsn4xJ22zv5HRFg@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 03/12] bpf: XDP metadata RX kfuncs
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Dec 8, 2022 at 4:07 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
+>
+> Stanislav Fomichev <sdf@google.com> writes:
+>
+> >> Another UX thing I ran into is that libbpf will bail out if it can't
+> >> find the kfunc in the kernel vmlinux, even if the code calling the
+> >> function is behind an always-false if statement (which would be
+> >> eliminated as dead code from the verifier). This makes it a bit hard t=
+o
+> >> conditionally use them. Should libbpf just allow the load without
+> >> performing the relocation (and let the verifier worry about it), or
+> >> should we have a bpf_core_kfunc_exists() macro to use for checking?
+> >> Maybe both?
+> >
+> > I'm not sure how libbpf can allow the load without performing the
+> > relocation; maybe I'm missing something.
+> > IIUC, libbpf uses the kfunc name (from the relocation?) and replaces
+> > it with the kfunc id, right?
+>
+> Yeah, so if it can't find the kfunc in vmlinux, just write an id of 0.
+> This will trip the check at the top of fixup_kfunc_call() in the
+> verifier, but if the code is hidden behind an always-false branch (an
+> rodata variable set to zero, say) the instructions should get eliminated
+> before they reach that point. That way you can at least turn it off at
+> runtime (after having done some kind of feature detection) without
+> having to compile it out of your program entirely.
+>
+> > Having bpf_core_kfunc_exists would help, but this probably needs
+> > compiler work first to preserve some of the kfunc traces in vmlinux.h?
+>
+> I am not sure how the existing macros work, TBH. Hopefully someone else
+> can chime in :)
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
++1
 
-On Thu,  8 Dec 2022 02:11:34 +0530 you wrote:
-> This is part 1 of https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com.
-> This thread also gives some background on why the refactor is being done:
-> https://lore.kernel.org/bpf/CAEf4Bzb4beTHgVo+G+jehSj8oCeAjRbRcm6MRe=Gr+cajRBwEw@mail.gmail.com
-> 
-> As requested in patch 6 by Alexei, it only includes patches which
-> refactors the code, on top of which further fixes will be made in part
-> 2. The refactor itself fixes another issue as a side effect. No
-> functional change is intended (except a few modified log messages).
-> 
-> [...]
+I think we need to poke Andrii as a follow up :-)
 
-Here is the summary with links:
-  - [bpf-next,v2,1/7] bpf: Refactor ARG_PTR_TO_DYNPTR checks into process_dynptr_func
-    https://git.kernel.org/bpf/bpf-next/c/6b75bd3d0367
-  - [bpf-next,v2,2/7] bpf: Propagate errors from process_* checks in check_func_arg
-    https://git.kernel.org/bpf/bpf-next/c/ac50fe51ce87
-  - [bpf-next,v2,3/7] bpf: Rework process_dynptr_func
-    https://git.kernel.org/bpf/bpf-next/c/270605317366
-  - [bpf-next,v2,4/7] bpf: Rework check_func_arg_reg_off
-    https://git.kernel.org/bpf/bpf-next/c/184c9bdb8f65
-  - [bpf-next,v2,5/7] bpf: Move PTR_TO_STACK alignment check to process_dynptr_func
-    https://git.kernel.org/bpf/bpf-next/c/f6ee298fa140
-  - [bpf-next,v2,6/7] bpf: Use memmove for bpf_dynptr_{read,write}
-    https://git.kernel.org/bpf/bpf-next/c/76d16077bef0
-  - [bpf-next,v2,7/7] selftests/bpf: Add test for dynptr reinit in user_ringbuf callback
-    https://git.kernel.org/bpf/bpf-next/c/292064cce796
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> -Toke
+>
