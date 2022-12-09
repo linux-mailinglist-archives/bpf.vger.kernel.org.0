@@ -2,68 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A12D648ABD
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 23:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF12B648ACC
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 23:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbiLIWYX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 17:24:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
+        id S229777AbiLIWl1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 17:41:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbiLIWYX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 17:24:23 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8A213F60
-        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 14:24:21 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id i186so7166076ybc.9
-        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 14:24:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Qps69tDaUX4GgluHwWigtRdppzDv1qR9M/+BASYIvU=;
-        b=a7fuU0L+lnDxuF7QFFD6gzSQLStVUIE7NeGaXRRJeEzKBXM8yUSa2VHNoj//Q76uIE
-         EaWKBlZpkdZFhj1b6JUIFntsJJ0ZBYttZGe4obTJsx+/80Ov+FWJjE5joRtVBoOkfcgL
-         q2mcoyKubJUg6f4bRtreejnemVQy8DYIevRZIoks7aeRxsF5jjp4RFnISARfoEJReOoV
-         Djf59pZ9POn6MIAVRodW1e1zvZtZiWuB9CGMFBdWK/5ICXVscDR+fIR9DkNUyt8QeXNk
-         tSSmJ/xTejWkHCAVffyS2Pc6US5okxPjshHymzJE1Sozlz8Go02NE7urq9R6g3pGhIHk
-         evqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3Qps69tDaUX4GgluHwWigtRdppzDv1qR9M/+BASYIvU=;
-        b=4d6TA+tATofaWhzz60eIE7BJ564qnXYZNZM4wAKXPZEloo8BBR30hPvXdWwny+83qS
-         RYArCSbMTgmUzDrGdzfkgkcc2w+sQh90pWcPGlvkW/GOd9vcRerQW89XbcB9IQ1p5p1V
-         RWjriuQMzc55aZVhg0/GN/VX2Y/59bbmJeUbhh5BHsMa2C5Ol4WzUQEh1brAQoHeg95c
-         fUH1jBRxLIjbuAEepmjiJe79C8tysm48nJJ6mH2NqG26xGnTn8PUuPwf5F+X2gDUHIYL
-         yc3Fj8uKofCvNd5g/LXlcXhm51WyqHgklpXs282eaZN2G7zMMpo8BtTsBHPm3aD/FPpg
-         1Q5A==
-X-Gm-Message-State: ANoB5pkcM4/s0DVdz+Nt06I4XC6AJpoBpUNqNJqQ1i1aeBogGhlw9hSq
-        243Bu+T4Qq/TsMpAAVAqw71Dld83Z5dfw5/9sgE=
-X-Google-Smtp-Source: AA0mqf6IbFFWjlKV5DsZ5GMlvPtyBokwGOO5qVB1Conn5wpp9eJdrrGIqMAdJdn0uPad+jxAi6gTD4a7RVQ8YHixg9M=
-X-Received: by 2002:a25:d8d1:0:b0:70c:bbcb:3432 with SMTP id
- p200-20020a25d8d1000000b0070cbbcb3432mr4101473ybg.173.1670624660529; Fri, 09
- Dec 2022 14:24:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20221207205537.860248-1-joannelkoong@gmail.com>
- <20221208015434.ervz6q5j7bb4jt4a@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYGUf=yMry5Ezen2PZqvkfS+o1jSF2e1Fpa+pgAmx+OcA@mail.gmail.com> <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
-In-Reply-To: <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Fri, 9 Dec 2022 14:24:09 -0800
-Message-ID: <CAJnrk1YgfO6fk40cX0bxDko737=_w2sN8rc6we7sNUh=odxQ6Q@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/6] Dynptr convenience helpers
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@meta.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S229563AbiLIWl0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 17:41:26 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29EDA433D;
+        Fri,  9 Dec 2022 14:41:24 -0800 (PST)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1p3m3N-000HgH-5y; Fri, 09 Dec 2022 23:41:13 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1p3m3M-0008wg-If; Fri, 09 Dec 2022 23:41:12 +0100
+Subject: Re: BUG: unable to handle kernel paging request in bpf_dispatcher_xdp
+To:     Jiri Olsa <olsajiri@gmail.com>, Yonghong Song <yhs@meta.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Song Liu <song@kernel.org>, Hao Sun <sunhao.th@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+References: <CAADnVQ+w-xtH=oWPYszG-TqxcHmbrKJK10C=P-o2Ouicx-9OUA@mail.gmail.com>
+ <CAADnVQJ+9oiPEJaSgoXOmZwUEq9FnyLR3Kp38E_vuQo2PmDsbg@mail.gmail.com>
+ <Y5Inw4HtkA2ql8GF@krava> <Y5JkomOZaCETLDaZ@krava> <Y5JtACA8ay5QNEi7@krava>
+ <Y5LfMGbOHpaBfuw4@krava> <Y5MaffJOe1QtumSN@krava> <Y5M9P95l85oMHki9@krava>
+ <Y5NSStSi7h9Vdo/j@krava> <5c9d77bf-75f5-954a-c691-39869bb22127@meta.com>
+ <Y5OuQNmkoIvcV6IL@krava>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ee2a087e-b8c5-fc3e-a114-232490a6c3be@iogearbox.net>
+Date:   Fri, 9 Dec 2022 23:41:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <Y5OuQNmkoIvcV6IL@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26745/Fri Dec  9 12:50:19 2022)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,87 +69,145 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 8, 2022 at 5:30 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Dec 8, 2022 at 4:42 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Dec 7, 2022 at 5:54 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Dec 07, 2022 at 12:55:31PM -0800, Joanne Koong wrote:
-> > > > This patchset is the 3rd in the dynptr series. The 1st can be found here [0]
-> > > > and the 2nd can be found here [1].
-> > > >
-> > > > In this patchset, the following convenience helpers are added for interacting
-> > > > with bpf dynamic pointers:
-> > > >
-> > > >     * bpf_dynptr_data_rdonly
-> > > >     * bpf_dynptr_trim
-> > > >     * bpf_dynptr_advance
-> > > >     * bpf_dynptr_is_null
-> > > >     * bpf_dynptr_is_rdonly
-> > > >     * bpf_dynptr_get_size
-> > > >     * bpf_dynptr_get_offset
-> > > >     * bpf_dynptr_clone
-> > > >     * bpf_dynptr_iterator
-> > >
-> > > This is great, but it really stretches uapi limits.
-> >
-> > Stretches in what sense? They are simple and straightforward getters
-> > and trim/advance/clone are fundamental modifiers to be able to work
-> > with a subset of dynptr's overall memory area.
-> >
-> > > Please convert the above and those in [1] to kfuncs.
-> > > I know that there can be an argument made for consistency with existing dynptr uapi
-> >
-> > yeah, given we have bpf_dynptr_{read,write} and bpf_dynptr_data() as
-> > BPF helpers, it makes sense to have such basic things like is_null and
-> > trim/advance/clone as BPF helpers as well. Both for consistency and
-> > because there is nothing unstable about them. We are not going to
-> > remove dynptr as a concept, it's pretty well defined.
-> >
-> > Out of the above list perhaps only move bpf_dynptr_iterator() might be
-> > a candidate for kfunc. Though, personally, it makes sense to me to
-> > keep it as BPF helper without GPL restriction as well, given it is
-> > meant for networking applications in the first place, and you don't
-> > need to be GPL-compatible to write useful networking BPF program, from
-> > what I understand. But all the other ones is something you'd need to
-> > make actual use of dynptr concept in real-world BPF programs.
-> >
-> > Can we please have those as BPF helpers, and we can decide to move
-> > slightly fancier bpf_dynptr_iterator() (and future dynptr-related
-> > extras) into kfunc?
->
-> Sorry, uapi concerns are more important here.
-> non-gpl and consistency don't even come close.
-> We've been doing everything new as kfuncs and dynptr is not special.
->
-> > > helpers, but we got burned on them once and scrambled to add 'flags' argument.
-> > > kfuncs are unstable and can be adjusted/removed at any time later.
-> >
-> > I don't see why we would remove any of the above list ever? They are
-> > generic and fundamental to dynptr as a concept, they can't restrict
-> > what dynptr can do in the future.
->
-> It's not about removing them, but about changing them.
->
-> Just for example the whole discussion of whether frags should
-> be handled transparently and how write is handled didn't inspire
-> confidence that there is a strong consensus on semantics
-> of these new dynptr accessors.
->
-> Scrambling to add flags to dynptr helpers was another red flag.
->
-> All signs are pointing out that we're not ready do fix dynptr api.
-> It will evolve and has to evolve without uapi pain.
->
-> kfuncs only. For everything. Please.
+On 12/9/22 10:53 PM, Jiri Olsa wrote:
+> On Fri, Dec 09, 2022 at 12:31:06PM -0800, Yonghong Song wrote:
+>>
+>>
+>> On 12/9/22 7:20 AM, Jiri Olsa wrote:
+>>> On Fri, Dec 09, 2022 at 02:50:55PM +0100, Jiri Olsa wrote:
+>>>> On Fri, Dec 09, 2022 at 12:22:37PM +0100, Jiri Olsa wrote:
+>>>>
+>>>> SBIP
+>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> I'm trying to understand the severity of the issues and
+>>>>>>>>>>> whether we need to revert that commit asap since the merge window
+>>>>>>>>>>> is about to start.
+>>>>>>>>>>
+>>>>>>>>>> Jiri, Peter,
+>>>>>>>>>>
+>>>>>>>>>> ping.
+>>>>>>>>>>
+>>>>>>>>>> cc-ing Thorsten, since he's tracking it now.
+>>>>>>>>>>
+>>>>>>>>>> The config has CONFIG_X86_KERNEL_IBT=y.
+>>>>>>>>>> Is it related?
+>>>>>>>>>
+>>>>>>>>> sorry for late reply.. I still did not find the reason,
+>>>>>>>>> but I did not try with IBT yet, will test now
+>>>>>>>>
+>>>>>>>> no difference with IBT enabled, can't reproduce the issue
+>>>>>>>>
+>>>>>>>
+>>>>>>> ok, scratch that.. the reproducer got stuck on wifi init :-\
+>>>>>>>
+>>>>>>> after I fix that I can now reproduce on my local config with
+>>>>>>> IBT enabled or disabled.. it's something else
+>>>>>>
+>>>>>> I'm getting the error also when reverting the static call change,
+>>>>>> looking for good commit, bisecting
+>>>>>>
+>>>>>> I'm getting fail with:
+>>>>>>      f0c4d9fc9cc9 (tag: v6.1-rc4) Linux 6.1-rc4
+>>>>>>
+>>>>>> v6.1-rc1 is ok
+>>>>>
+>>>>> so far I narrowed it down between rc1 and rc3.. bisect got me nowhere so far
+>>>>>
+>>>>> attaching some more logs
+>>>>
+>>>> looking at the code.. how do we ensure that code running through
+>>>> bpf_prog_run_xdp will not get dispatcher image changed while
+>>>> it's being exetuted
+>>>>
+>>>> we use 'the other half' of the image when we add/remove programs,
+>>>> but could bpf_dispatcher_update race with bpf_prog_run_xdp like:
+>>>>
+>>>>
+>>>> cpu 0:                                  cpu 1:
+>>>>
+>>>> bpf_prog_run_xdp
+>>>>      ...
+>>>>      bpf_dispatcher_xdp_func
+>>>>         start exec image at offset 0x0
+>>>>
+>>>>                                           bpf_dispatcher_update
+>>>>                                                   update image at offset 0x800
+>>>>                                           bpf_dispatcher_update
+>>>>                                                   update image at offset 0x0
+>>>>
+>>>>         still in image at offset 0x0
+>>>>
+>>>>
+>>>> that might explain why I wasn't able to trigger that on
+>>>> bare metal just in qemu
+>>>
+>>> I tried patch below and it fixes the issue for me and seems
+>>> to confirm the race above.. but not sure it's the best fix
+>>>
+>>> jirka
+>>>
+>>>
+>>> ---
+>>> diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
+>>> index c19719f48ce0..6a2ced102fc7 100644
+>>> --- a/kernel/bpf/dispatcher.c
+>>> +++ b/kernel/bpf/dispatcher.c
+>>> @@ -124,6 +124,7 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
+>>>    	}
+>>>    	__BPF_DISPATCHER_UPDATE(d, new ?: (void *)&bpf_dispatcher_nop_func);
+>>> +	synchronize_rcu_tasks();
+>>>    	if (new)
+>>>    		d->image_off = noff;
+>>
+>> This might work. In arch/x86/kernel/alternative.c, we have following
+>> code and comments. For text_poke, synchronize_rcu_tasks() might be able
+>> to avoid concurrent execution and update.
+> 
+> so my idea was that we need to ensure all the current callers of
+> bpf_dispatcher_xdp_func (which should have rcu read lock, based
+> on the comment in bpf_prog_run_xdp) are gone before and new ones
+> execute the new image, so the next call to the bpf_dispatcher_update
+> will be safe to overwrite the other half of the image
 
-Thanks for your feedback, Alexei and Andrii. I share the same opinion
-as Andrii about helpers for the APIs that are straightforward (eg
-bpf_dynptr_get_offset), but I see your point as well about doing
-everything new as kfuncs.
+If v6.1-rc1 was indeed okay, then it looks like this may be related to
+the trampoline patching for the static_call? Did it repro on v6.1-rc1
+just with dbe69b299884 ("bpf: Fix dispatcher patchable function entry
+to 5 bytes nop") cherry-picked?
 
-I'll change this to use kfuncs for v3.
+>> /**
+>>   * text_poke_copy - Copy instructions into (an unused part of) RX memory
+>>   * @addr: address to modify
+>>   * @opcode: source of the copy
+>>   * @len: length to copy, could be more than 2x PAGE_SIZE
+>>   *
+>>   * Not safe against concurrent execution; useful for JITs to dump
+>>   * new code blocks into unused regions of RX memory. Can be used in
+>>   * conjunction with synchronize_rcu_tasks() to wait for existing
+>>   * execution to quiesce after having made sure no existing functions
+>>   * pointers are live.
+>>   */
+>> void *text_poke_copy(void *addr, const void *opcode, size_t len)
+>> {
+>>          unsigned long start = (unsigned long)addr;
+>>          size_t patched = 0;
+>>
+>>          if (WARN_ON_ONCE(core_kernel_text(start)))
+>>                  return NULL;
+>>
+>>          mutex_lock(&text_mutex);
+>>          while (patched < len) {
+>>                  unsigned long ptr = start + patched;
+>>                  size_t s;
+>>
+>>                  s = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(ptr), len -
+>> patched);
+>>
+>>                  __text_poke(text_poke_memcpy, (void *)ptr, opcode + patched,
+>> s);
+>>                  patched += s;
+>>          }
+>>          mutex_unlock(&text_mutex);
+>>          return addr;
+>> }
+
