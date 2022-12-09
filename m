@@ -2,112 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A26F1647B2B
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 02:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC2F647B71
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 02:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbiLIBJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 20:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51032 "EHLO
+        id S229498AbiLIBaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 20:30:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbiLIBJ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 20:09:58 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAF183243;
-        Thu,  8 Dec 2022 17:09:57 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NStGl6gqqz4f3pFy;
-        Fri,  9 Dec 2022 09:09:51 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgB3m9jdipJjIEibBw--.55652S6;
-        Fri, 09 Dec 2022 09:09:54 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
+        with ESMTP id S229479AbiLIBaR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 20:30:17 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEFC801CF
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 17:30:16 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id b2so8139754eja.7
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 17:30:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PpgPIRMYXA/NbqFHAY433Lo2QAAdNNBkILQ8YxXvklI=;
+        b=aYZ3LYCNTmJmctkoLRjt28HM0hkikHjp75dreX8udX5HI5IK+d5MclEPtCx5aDQDSD
+         LWJVFqpg/JC+Eax3bMz6WU+kqB1m4LkQComVE14sXKMy11X6lM4atRp0GB9cdCP4MP66
+         +ZIYyV/u42vDDVwh3v4RH4mU72NG8/yzhK7xwgIXrfm+508MVvNG7RpjVYkFJGCVg3hO
+         CIHTnN5noSnQxvhPNlu7GtecASDjsIj9P+8fGkt8RJXe8SLOoRF1ZAPhYjJ7iIlMjqqD
+         sg+VHkLkM588cBMnwIFnKdFPh3uX1DgemjgibEqsglHEV4+6lOVa//oOeE/s0Xd1VwxS
+         HsBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PpgPIRMYXA/NbqFHAY433Lo2QAAdNNBkILQ8YxXvklI=;
+        b=4yTP7DQLyA1KDgowOgfVDuNjE7qka+n1tNVmZyBumQBaVddV/8C1rBAmkC3qGmutzW
+         BggCyZcG+VPbTet83dvPVFihepEK7TaKqjWZQTduR+F8ar2czAhPpKCmcewTEHxv7hhi
+         6Md5HnAPdrsnQNYXZbYK6mjpXZ3EqwaqumbjgPPVg2HGhN26F8FeWVil5n/SZIJRawbJ
+         jG4UmRsBcFaIs1e0RX0hHiA4IQ81sQzcadbJjZ6p5HxvLJdN9OOi/e22QPZSdVcAFot2
+         RLcORQUJMTQYg8otYfuuzDJXn9F3sceTR4lyOn7aMn4aD+Gp75jIym4z0FvewoVv1OYW
+         RS8g==
+X-Gm-Message-State: ANoB5pkuwWqssbp7Ow7C8dazXRSAJEmAU14vGH2BaQ2UvUP9ei/9ftLQ
+        qO6opd96cXxkEUtGGbGC4fATTAO5SnU7v2j6CZY=
+X-Google-Smtp-Source: AA0mqf6t4LBmzhFMupE4KwYPavdVXJINhJjsnO551lplgGRGvFeOht5gQqNW6/8E+xPL8RFcwMGGrQhEW1jBzWO7GNc=
+X-Received: by 2002:a17:906:fc5:b0:7c0:8b4c:e30f with SMTP id
+ c5-20020a1709060fc500b007c08b4ce30fmr34726196ejk.502.1670549414653; Thu, 08
+ Dec 2022 17:30:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20221207205537.860248-1-joannelkoong@gmail.com>
+ <20221208015434.ervz6q5j7bb4jt4a@macbook-pro-6.dhcp.thefacebook.com> <CAEf4BzYGUf=yMry5Ezen2PZqvkfS+o1jSF2e1Fpa+pgAmx+OcA@mail.gmail.com>
+In-Reply-To: <CAEf4BzYGUf=yMry5Ezen2PZqvkfS+o1jSF2e1Fpa+pgAmx+OcA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 8 Dec 2022 17:30:03 -0800
+Message-ID: <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/6] Dynptr convenience helpers
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, kernel-team@meta.com,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: [PATCH bpf-next v2 2/2] bpf: Skip rcu_barrier() if rcu_trace_implies_rcu_gp() is true
-Date:   Fri,  9 Dec 2022 09:09:47 +0800
-Message-Id: <20221209010947.3130477-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20221209010947.3130477-1-houtao@huaweicloud.com>
-References: <20221209010947.3130477-1-houtao@huaweicloud.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgB3m9jdipJjIEibBw--.55652S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw1xCFWxJF4xuF1rArW7XFb_yoW8XFW5pa
-        y2vFyUtr15uF45K3Zaqr1xAw4UAr9Yga17t3s7Wry8Zr1ayryDWrZFvry3XF1YyrZ5Ca4a
-        yrnI9r15t3WUXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+On Thu, Dec 8, 2022 at 4:42 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Dec 7, 2022 at 5:54 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Wed, Dec 07, 2022 at 12:55:31PM -0800, Joanne Koong wrote:
+> > > This patchset is the 3rd in the dynptr series. The 1st can be found here [0]
+> > > and the 2nd can be found here [1].
+> > >
+> > > In this patchset, the following convenience helpers are added for interacting
+> > > with bpf dynamic pointers:
+> > >
+> > >     * bpf_dynptr_data_rdonly
+> > >     * bpf_dynptr_trim
+> > >     * bpf_dynptr_advance
+> > >     * bpf_dynptr_is_null
+> > >     * bpf_dynptr_is_rdonly
+> > >     * bpf_dynptr_get_size
+> > >     * bpf_dynptr_get_offset
+> > >     * bpf_dynptr_clone
+> > >     * bpf_dynptr_iterator
+> >
+> > This is great, but it really stretches uapi limits.
+>
+> Stretches in what sense? They are simple and straightforward getters
+> and trim/advance/clone are fundamental modifiers to be able to work
+> with a subset of dynptr's overall memory area.
+>
+> > Please convert the above and those in [1] to kfuncs.
+> > I know that there can be an argument made for consistency with existing dynptr uapi
+>
+> yeah, given we have bpf_dynptr_{read,write} and bpf_dynptr_data() as
+> BPF helpers, it makes sense to have such basic things like is_null and
+> trim/advance/clone as BPF helpers as well. Both for consistency and
+> because there is nothing unstable about them. We are not going to
+> remove dynptr as a concept, it's pretty well defined.
+>
+> Out of the above list perhaps only move bpf_dynptr_iterator() might be
+> a candidate for kfunc. Though, personally, it makes sense to me to
+> keep it as BPF helper without GPL restriction as well, given it is
+> meant for networking applications in the first place, and you don't
+> need to be GPL-compatible to write useful networking BPF program, from
+> what I understand. But all the other ones is something you'd need to
+> make actual use of dynptr concept in real-world BPF programs.
+>
+> Can we please have those as BPF helpers, and we can decide to move
+> slightly fancier bpf_dynptr_iterator() (and future dynptr-related
+> extras) into kfunc?
 
-If there are pending rcu callback, free_mem_alloc() will use
-rcu_barrier_tasks_trace() and rcu_barrier() to wait for the pending
-__free_rcu_tasks_trace() and __free_rcu() callback.
+Sorry, uapi concerns are more important here.
+non-gpl and consistency don't even come close.
+We've been doing everything new as kfuncs and dynptr is not special.
 
-If rcu_trace_implies_rcu_gp() is true, there will be no pending
-__free_rcu(), so it will be OK to skip rcu_barrier() as well.
+> > helpers, but we got burned on them once and scrambled to add 'flags' argument.
+> > kfuncs are unstable and can be adjusted/removed at any time later.
+>
+> I don't see why we would remove any of the above list ever? They are
+> generic and fundamental to dynptr as a concept, they can't restrict
+> what dynptr can do in the future.
 
-Acked-by: Yonghong Song <yhs@fb.com>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/memalloc.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+It's not about removing them, but about changing them.
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 04d96d1b98a3..ebcc3dd0fa19 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -464,9 +464,17 @@ static void free_mem_alloc(struct bpf_mem_alloc *ma)
- {
- 	/* waiting_for_gp lists was drained, but __free_rcu might
- 	 * still execute. Wait for it now before we freeing percpu caches.
-+	 *
-+	 * rcu_barrier_tasks_trace() doesn't imply synchronize_rcu_tasks_trace(),
-+	 * but rcu_barrier_tasks_trace() and rcu_barrier() below are only used
-+	 * to wait for the pending __free_rcu_tasks_trace() and __free_rcu(),
-+	 * so if call_rcu(head, __free_rcu) is skipped due to
-+	 * rcu_trace_implies_rcu_gp(), it will be OK to skip rcu_barrier() by
-+	 * using rcu_trace_implies_rcu_gp() as well.
- 	 */
- 	rcu_barrier_tasks_trace();
--	rcu_barrier();
-+	if (!rcu_trace_implies_rcu_gp())
-+		rcu_barrier();
- 	free_mem_alloc_no_barrier(ma);
- }
- 
--- 
-2.29.2
+Just for example the whole discussion of whether frags should
+be handled transparently and how write is handled didn't inspire
+confidence that there is a strong consensus on semantics
+of these new dynptr accessors.
 
+Scrambling to add flags to dynptr helpers was another red flag.
+
+All signs are pointing out that we're not ready do fix dynptr api.
+It will evolve and has to evolve without uapi pain.
+
+kfuncs only. For everything. Please.
