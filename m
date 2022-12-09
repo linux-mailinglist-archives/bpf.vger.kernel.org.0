@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EEC6488CF
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 20:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5B96488D1
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 20:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbiLITHc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 14:07:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46722 "EHLO
+        id S230097AbiLITHh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 14:07:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbiLITHc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 14:07:32 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4925B1DF28;
-        Fri,  9 Dec 2022 11:07:31 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id 4so5887358pli.0;
-        Fri, 09 Dec 2022 11:07:31 -0800 (PST)
+        with ESMTP id S230108AbiLITHe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 14:07:34 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9101F269;
+        Fri,  9 Dec 2022 11:07:32 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id gt4so4080691pjb.1;
+        Fri, 09 Dec 2022 11:07:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=KXrM2ORadkXpKfT+cxkMFP7lhWcFFSnPfGCXL/1qN8E=;
-        b=Ir6LiHW8EG6VKzSzj/thAQhYYTnx3MmaP2R6NN1ZoKIajddttTWyEY59GLL6EU9K2c
-         Qkw3/Rd7rMkb2jTrjFIFHguwhk6NVkhWDV2UtQh3YWqRTXj9lCKZ/YHgUufPkWrk6IF9
-         wVH9Y/xUjIdm293VZ14dW4611b2N0ylmpNaVNAepmhsYtU5/HdormZmqRQ/KFC0Pw12q
-         YQ9917FdBHL/3Z0l2HhjAhivWbK1wNulmORRsSwDEmnurD+4JRm70IVbe1Ngar+NsHxn
-         jM7FrWBusAU/LBqpFLgUljJNR7mAVToOsjjyqogAUJc+s50HzZTUHIfQG2X1QDnZMHva
-         62fw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+aIrSZH4sRTZgzrgB2QgBuSdHXwS+g9LIfT5ra6cPpo=;
+        b=dXe8IdfvQ+WkhgsDLHpK9Cf5WKvXRnGBRR7pXw9a5+4bMTBnPKDMbh1G9Cu1yIb2h0
+         R/4dfG3wqUM8tNQ3TyxGGPGR9oG/b9OGGXXH76vh/QODEiGyYMAlzNxVTejXPwo9JMAQ
+         ouGk/kmcDLub+zvBHGQ9adOfc9hHXjiK6i1eYusEv+j9kWwfMj8DIPMgfaq8nNBKBdR2
+         CqavnjMd+bIoXuuc8vK4OqGLqrnPLdaqaLixW3u02I+TKMazu/oPnEvcyKqe+hN6SYHu
+         N82NbB+41U8MCk5GvQ4G82S5Rn9r7Jlf5M94HhGkxdg5bOQPIAIdx8qDJWjblx84ZYTV
+         w1Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KXrM2ORadkXpKfT+cxkMFP7lhWcFFSnPfGCXL/1qN8E=;
-        b=q+oFKXLhRJnfcFLFGQSoTUmHXSXG9Q1rsF/3sag3GK5QCHpFRjM2RH/6/uRjy6j7hy
-         4qprOQo0zkklAlDhj1iOPIihbvRmht+0EJHXVMXLILk59CsHlNVlpjq++wlbdpvoaWcd
-         hhf8Ou3Qlmi/phA+jdcCf5uSh+M403tJ56o8JK8rUhQ8BRNFUblL3UTaau3oMBjQCI1y
-         ePC/X/YNKqYFlZEvDI/6vn2t/ZjTrd68vOr4wIW4UO3SC4zc1L8Q2FmwLQiAk8iyQAJT
-         8TXmBOG+zFPJVymlR/HcRq21npK1Z4TzkmTZXEhZTvDIkNEgc9dJnNuxq1nIsOg6TJd8
-         i1Mg==
-X-Gm-Message-State: ANoB5pnFnjrsQGMMje861FiC50p13SpXmdWA1DTHiHhWADq6V9VmFX6F
-        EsU+sGxKrNiRELaUKtVcT0E=
-X-Google-Smtp-Source: AA0mqf6ZNjEtRGQQzsAPI8MTTWIQ8Bd/pN3sBLI1fZFeE8LQOHRQdtJEuImqf7bMUmNVK6uJjUlTrw==
-X-Received: by 2002:a17:90a:e38a:b0:219:9e19:8259 with SMTP id b10-20020a17090ae38a00b002199e198259mr6957560pjz.46.1670612850547;
-        Fri, 09 Dec 2022 11:07:30 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=+aIrSZH4sRTZgzrgB2QgBuSdHXwS+g9LIfT5ra6cPpo=;
+        b=4wjvcGle6MWBAQLsJZEYqFEGYjWMVzgJBQlQErSsfyQtkRmw+g2NKkR4+pDY9ts1U3
+         A1yRL1i2LiXF7Hzr81JB9NQeOp6ayuI330trZCo42hybG1w3U0tFuplusAud0KCcrI2C
+         xSx3M/DNUoUyRiL3eOdTuCwCAUfbmMvzfQOswrgEQK+S6qIQDclHmdejlTODBFrdBawr
+         0pKbUf9gLxMK0eRLXYElmmpydn3eelUjvByDqKdEI5xNYmat200f7AFGydGoPfazeqna
+         Z8REdmO22pPasqvxCvTXW6OfnsapWqFmEH5PGoX93JFyvxAHCmu8mtgMWNhoiYymEKtA
+         h+cA==
+X-Gm-Message-State: ANoB5ploj0zO4jThF/Klc33Tj0sKKAzq1j+v2IpqjjPC2YV3sYKwlE6b
+        NZtMM2UI3Srn5e0pOSWTZ/k=
+X-Google-Smtp-Source: AA0mqf452IZZuqO+6BdXUcXpbSb7XvVI7Feo29T4TiuAtd1nvcY9yrpXmupI0HRWs4Wrtfb1tIXuDg==
+X-Received: by 2002:a17:90a:7646:b0:219:756b:ec1e with SMTP id s6-20020a17090a764600b00219756bec1emr6813537pjl.28.1670612851956;
+        Fri, 09 Dec 2022 11:07:31 -0800 (PST)
 Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:ff0:c952:d848:9e00:3cce])
-        by smtp.gmail.com with ESMTPSA id nd17-20020a17090b4cd100b002135de3013fsm1431432pjb.32.2022.12.09.11.07.28
+        by smtp.gmail.com with ESMTPSA id nd17-20020a17090b4cd100b002135de3013fsm1431432pjb.32.2022.12.09.11.07.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 11:07:29 -0800 (PST)
+        Fri, 09 Dec 2022 11:07:31 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,10 +60,12 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
         Blake Jones <blakejones@google.com>, bpf@vger.kernel.org
-Subject: [PATCH 0/4] perf lock contention: Support task/addr aggregation mode (v1)
-Date:   Fri,  9 Dec 2022 11:07:23 -0800
-Message-Id: <20221209190727.759804-1-namhyung@kernel.org>
+Subject: [PATCH 1/4] perf lock contention: Add lock_data.h for common data
+Date:   Fri,  9 Dec 2022 11:07:24 -0800
+Message-Id: <20221209190727.759804-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
+In-Reply-To: <20221209190727.759804-1-namhyung@kernel.org>
+References: <20221209190727.759804-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,62 +78,146 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Accessing BPF maps should use the same data types.  Add bpf_skel/lock_data.h
+to define the common data structures.  No functional changes.
 
-This patchset adds two more aggregation modes for perf lock contention.
-
-The first one is the per-task mode with -t/--threads option.  The option
-was there already but it remained broken with BPF for a while.  Now it
-supports the output with and without BPF.
-
-  # perf lock contention -a -b -t -- sleep 1
-   contended   total wait     max wait     avg wait          pid   comm
-
-          11     11.85 us      2.23 us      1.08 us            0   swapper
-           2     11.13 us     10.22 us      5.56 us       749053   ThreadPoolForeg
-           1      8.15 us      8.15 us      8.15 us       321353   Chrome_ChildIOT
-           2      2.73 us      1.77 us      1.37 us       320761   Chrome_ChildIOT
-           1      1.40 us      1.40 us      1.40 us       320502   chrome
-           1       379 ns       379 ns       379 ns       321227   chrome
-
-The other one is the per-lock-instance mode with -l/--lock-addr option.
-If the lock has a symbol, it will be displayed as well.
-
-  # perf lock contention -a -b -l -- sleep 1
-   contended   total wait     max wait     avg wait            address   symbol
-
-           3      4.79 us      2.33 us      1.60 us   ffffffffbaed50c0   rcu_state
-           4      4.19 us      1.62 us      1.05 us   ffffffffbae07a40   jiffies_lock
-           1      1.94 us      1.94 us      1.94 us   ffff9262277861e0
-           1       387 ns       387 ns       387 ns   ffff9260bfda4f60
-
-It's based on the current acme/tmp.perf/core branch.
-You can find the code in the 'perf/lock-con-aggr-v1' branch in
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-Thanks,
-Namhyung
-
-
-Namhyung Kim (4):
-  perf lock contention: Add lock_data.h for common data
-  perf lock contention: Implement -t/--threads option for BPF
-  perf lock contention: Add -l/--lock-addr option
-  perf test: Update perf lock contention test
-
- tools/perf/Documentation/perf-lock.txt        |  4 +
- tools/perf/builtin-lock.c                     | 95 ++++++++++++++-----
- tools/perf/tests/shell/lock_contention.sh     | 48 ++++++++++
- tools/perf/util/bpf_lock_contention.c         | 72 ++++++++++----
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 67 +++++++++----
- tools/perf/util/bpf_skel/lock_data.h          | 30 ++++++
- tools/perf/util/lock-contention.h             |  1 +
- 7 files changed, 255 insertions(+), 62 deletions(-)
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_lock_contention.c         | 19 ++++--------
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 17 ++---------
+ tools/perf/util/bpf_skel/lock_data.h          | 30 +++++++++++++++++++
+ 3 files changed, 38 insertions(+), 28 deletions(-)
  create mode 100644 tools/perf/util/bpf_skel/lock_data.h
 
-
-base-commit: b22802e295a80ec16e355d7208d2fbbd7bbc1b7a
+diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+index f4ebb9a2e380..b6a8eb7164b3 100644
+--- a/tools/perf/util/bpf_lock_contention.c
++++ b/tools/perf/util/bpf_lock_contention.c
+@@ -12,17 +12,10 @@
+ #include <bpf/bpf.h>
+ 
+ #include "bpf_skel/lock_contention.skel.h"
++#include "bpf_skel/lock_data.h"
+ 
+ static struct lock_contention_bpf *skel;
+ 
+-struct lock_contention_data {
+-	u64 total_time;
+-	u64 min_time;
+-	u64 max_time;
+-	u32 count;
+-	u32 flags;
+-};
+-
+ int lock_contention_prepare(struct lock_contention *con)
+ {
+ 	int i, fd;
+@@ -110,8 +103,8 @@ int lock_contention_stop(void)
+ int lock_contention_read(struct lock_contention *con)
+ {
+ 	int fd, stack, err = 0;
+-	s32 prev_key, key;
+-	struct lock_contention_data data = {};
++	struct contention_key *prev_key, key;
++	struct contention_data data = {};
+ 	struct lock_stat *st = NULL;
+ 	struct machine *machine = con->machine;
+ 	u64 *stack_trace;
+@@ -126,8 +119,8 @@ int lock_contention_read(struct lock_contention *con)
+ 	if (stack_trace == NULL)
+ 		return -1;
+ 
+-	prev_key = 0;
+-	while (!bpf_map_get_next_key(fd, &prev_key, &key)) {
++	prev_key = NULL;
++	while (!bpf_map_get_next_key(fd, prev_key, &key)) {
+ 		struct map *kmap;
+ 		struct symbol *sym;
+ 		int idx = 0;
+@@ -184,7 +177,7 @@ int lock_contention_read(struct lock_contention *con)
+ 		}
+ 
+ 		hlist_add_head(&st->hash_entry, con->result);
+-		prev_key = key;
++		prev_key = &key;
+ 
+ 		/* we're fine now, reset the values */
+ 		st = NULL;
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 9681cb59b0df..0f63cc28ccba 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -5,24 +5,11 @@
+ #include <bpf/bpf_tracing.h>
+ #include <bpf/bpf_core_read.h>
+ 
+-/* maximum stack trace depth */
+-#define MAX_STACKS   8
++#include "lock_data.h"
+ 
+ /* default buffer size */
+ #define MAX_ENTRIES  10240
+ 
+-struct contention_key {
+-	__s32 stack_id;
+-};
+-
+-struct contention_data {
+-	__u64 total_time;
+-	__u64 min_time;
+-	__u64 max_time;
+-	__u32 count;
+-	__u32 flags;
+-};
+-
+ struct tstamp_data {
+ 	__u64 timestamp;
+ 	__u64 lock;
+@@ -34,7 +21,7 @@ struct tstamp_data {
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
+ 	__uint(key_size, sizeof(__u32));
+-	__uint(value_size, MAX_STACKS * sizeof(__u64));
++	__uint(value_size, sizeof(__u64));
+ 	__uint(max_entries, MAX_ENTRIES);
+ } stacks SEC(".maps");
+ 
+diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
+new file mode 100644
+index 000000000000..dbdf4caedc4a
+--- /dev/null
++++ b/tools/perf/util/bpf_skel/lock_data.h
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++/* Data structures shared between BPF and tools. */
++#ifndef UTIL_BPF_SKEL_LOCK_DATA_H
++#define UTIL_BPF_SKEL_LOCK_DATA_H
++
++struct contention_key {
++	s32 stack_or_task_id;
++};
++
++#define TASK_COMM_LEN  16
++
++struct contention_task_data {
++	char comm[TASK_COMM_LEN];
++};
++
++struct contention_data {
++	u64 total_time;
++	u64 min_time;
++	u64 max_time;
++	u32 count;
++	u32 flags;
++};
++
++enum lock_aggr_mode {
++	LOCK_AGGR_ADDR = 0,
++	LOCK_AGGR_TASK,
++	LOCK_AGGR_CALLER,
++};
++
++#endif /* UTIL_BPF_SKEL_LOCK_DATA_H */
 -- 
 2.39.0.rc1.256.g54fd8350bd-goog
 
