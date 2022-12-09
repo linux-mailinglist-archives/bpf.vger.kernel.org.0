@@ -2,90 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C646483BB
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 15:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F336483EF
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 15:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbiLIO1t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 09:27:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        id S229940AbiLIOjT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 09:39:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiLIO1r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 09:27:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608F318E3B
-        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 06:26:46 -0800 (PST)
+        with ESMTP id S229997AbiLIOiu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 09:38:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB591B9C1
+        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 06:37:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670596006;
+        s=mimecast20190719; t=1670596671;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kOF+S3PHOW3IehcjpPDFE2HwwX4y4ZzChTg/OVZXIQ8=;
-        b=ihOhTCqbbuUSOrEuL4u/72kJG4otjQmRxXfMO+U5ihsawl6Qoajz7AFQwN1puvmaqEVvZ8
-        HwzlTMVskTuN4ae6tjrk0VC3L5iyXp+7Rcbdhkei3Vy+YbnAE2eqOWoSobvaGv58hGb1mN
-        UGADFz1chgTrqlCAy77AQvUyHUii8tU=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=kU+z23dnqt2NuNhcLN5cEmJinJB43iazq7wqR0qgf8g=;
+        b=OEgNESe3N17I+cZqPnOrE0C88XiV1DkoF/R/1l2RVd7BOb1pyYGq7Qn9Zui+rkKEN2l58r
+        i+DmQ/srQIvI3gjTNuIOWW99sgdIkTOxKxz3dg3ZRBVUWpLwbnSWsbmP1yBKOz0ftnnqAG
+        DW15l2XZ4SLugXRIDSp8u3buw7ntOF4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-168-2e-TpHdBOISYW4V1Fbe3ZQ-1; Fri, 09 Dec 2022 09:26:45 -0500
-X-MC-Unique: 2e-TpHdBOISYW4V1Fbe3ZQ-1
-Received: by mail-ej1-f72.google.com with SMTP id xc12-20020a170907074c00b007416699ea14so3173793ejb.19
-        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 06:26:44 -0800 (PST)
+ us-mta-649-RkL-dCrpMUK1b4Y1C0DmQg-1; Fri, 09 Dec 2022 09:37:50 -0500
+X-MC-Unique: RkL-dCrpMUK1b4Y1C0DmQg-1
+Received: by mail-ed1-f71.google.com with SMTP id m18-20020a056402511200b0046db14dc1c9so1502665edd.10
+        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 06:37:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kOF+S3PHOW3IehcjpPDFE2HwwX4y4ZzChTg/OVZXIQ8=;
-        b=lq2id+LvxuTZTcn33GM4YteXxWTkTTZjwrUBUJZJOttd73p1an5UQP7bb9qT6pioTO
-         5BZnCppYUh6gIj8APvK8krzmr6dgw2+2jq++mPtaB/gPAklX351GonqBCGm/4cdFAxZc
-         9/PJ5kDQ6Zc3539CLJS+KlpVH9Y7QHG4jv1sYn/e3gZo0fXRNYyE+bX+yDBDae5XWM7z
-         f208HU/D4fFbsJbTpLlDm0QRQqnT8XkHfxT7d2dSytvEOTI9NeIdoz0wfQvJ0g6bBrls
-         1AEC9j8kMbSoOsH+KOOkEqPEfn1j1Y8RjozKlvwSROYfXdsxx91fO5pr+jCxbysOYez1
-         8lAw==
-X-Gm-Message-State: ANoB5pnuENhy7AOoWdPXgJR/gw/oFeaC2Vzi13mgrBwM2QnqXtVJT/Of
-        is20SEBqPaO+hfSC8PDeZ8YLbUSef0umg7Bwd/DkrK9H8ocoUOzvO0rm54Mpkd4g/k0MbQOa0GH
-        ea4NybYuX44gV
-X-Received: by 2002:a17:907:2985:b0:7c0:f907:89a2 with SMTP id eu5-20020a170907298500b007c0f90789a2mr4852295ejc.61.1670596002705;
-        Fri, 09 Dec 2022 06:26:42 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf58kecm7GH89VsCVvR2KVQImLWpqMuMRJvCxyhdIn7HOLX36PJxFX0mpqP1eZGplH5iuFTCTg==
-X-Received: by 2002:a17:907:2985:b0:7c0:f907:89a2 with SMTP id eu5-20020a170907298500b007c0f90789a2mr4852228ejc.61.1670596001541;
-        Fri, 09 Dec 2022 06:26:41 -0800 (PST)
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kU+z23dnqt2NuNhcLN5cEmJinJB43iazq7wqR0qgf8g=;
+        b=sapl0y60d6MPZrHvGyOUgPuxlcB0xtAYRcHBp5qnx8L7ktQXCJzZJapfQdzMbEyTRP
+         6oFzuVkvBXkip/7n0St1uAhmr64N5VjoXVbe4za6V9AYxmO13YuK9mxea1L80dvtBoDa
+         tURB34/uonMJoXLo6ihAfTBkWMU5owMGFz/1LhyOoM08fpv5G+yhXQmd6HbBTvbL2Bla
+         pMj6rYPmV0b+Ls7ByONzvsTu6M23AJ59aepAgSCCuCktWt+KI2Ps+8vpUmsf3p1BuFrR
+         5JQQyQhbUXUJScfY97MaYHqf+VTw3dNzb/ta4EJjoZxfns7L6f2aE4rZmgX4casoB8Ui
+         jvhQ==
+X-Gm-Message-State: ANoB5pmD3nj3KAxnLCJ8EXEix4j/YtktUHUS21t/jyxCSdsKG889CzMK
+        ZGtgxewsXRm2PLWMgriAcOr1jTC/BinbdX6MenzUOFJMkX8WJ7g1Yc6dhEqAE2dGRubqBYiV9xN
+        xm3ZlJVP6tX0U
+X-Received: by 2002:a17:907:b607:b0:7ae:f042:de0a with SMTP id vl7-20020a170907b60700b007aef042de0amr5623162ejc.48.1670596667621;
+        Fri, 09 Dec 2022 06:37:47 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5Gymtho0UD4hvufqXRvIZHEVz0hyXMmhci5jsiyXEsDmdMOjQPWfEeLfqcovjq4coVOyjB4A==
+X-Received: by 2002:a17:907:b607:b0:7ae:f042:de0a with SMTP id vl7-20020a170907b60700b007aef042de0amr5623025ejc.48.1670596665435;
+        Fri, 09 Dec 2022 06:37:45 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 10-20020a170906218a00b007815ca7ae57sm603417eju.212.2022.12.09.06.26.39
+        by smtp.gmail.com with ESMTPSA id p13-20020a17090653cd00b007b27fc3a1ffsm610673ejo.121.2022.12.09.06.37.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 06:26:40 -0800 (PST)
+        Fri, 09 Dec 2022 06:37:35 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D0DCD82EB35; Fri,  9 Dec 2022 15:26:38 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id 2CA4C82EB3A; Fri,  9 Dec 2022 15:37:34 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     brouer@redhat.com,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf v2 2/2] selftests/bpf: Add a test for using a cpumap from an freplace-to-XDP program
-Date:   Fri,  9 Dec 2022 15:26:22 +0100
-Message-Id: <20221209142622.154126-2-toke@redhat.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221209142622.154126-1-toke@redhat.com>
-References: <20221209142622.154126-1-toke@redhat.com>
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP
+ metadata
+In-Reply-To: <66fa1861-30dd-6d00-ed14-0cf4a6b39f3c@redhat.com>
+References: <20221206024554.3826186-1-sdf@google.com>
+ <20221206024554.3826186-12-sdf@google.com> <875yellcx6.fsf@toke.dk>
+ <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
+ <87359pl9zy.fsf@toke.dk>
+ <CAADnVQ+=71Y+ypQTOgFTJWY7w3YOUdY39is4vpo3aou11=eMmw@mail.gmail.com>
+ <87tu25ju77.fsf@toke.dk>
+ <CAADnVQ+MyE280Q-7iw2Y-P6qGs4xcDML-tUrXEv_EQTmeESVaQ@mail.gmail.com>
+ <87o7sdjt20.fsf@toke.dk>
+ <CAKH8qBswBu7QAWySWOYK4X41mwpdBj0z=6A9WBHjVYQFq9Pzjw@mail.gmail.com>
+ <Y5LGlgpxpzSu701h@x130> <66fa1861-30dd-6d00-ed14-0cf4a6b39f3c@redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 09 Dec 2022 15:37:34 +0100
+Message-ID: <87fsdok5ht.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,175 +106,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds a simple test for inserting an XDP program into a cpumap that is
-"owned" by an XDP program that was loaded as PROG_TYPE_EXT (as libxdp
-does). Prior to the kernel fix this would fail because the map type
-ownership would be set to PROG_TYPE_EXT instead of being resolved to
-PROG_TYPE_XDP.
+Jesper Dangaard Brouer <jbrouer@redhat.com> writes:
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 53 +++++++++++++++++++
- .../selftests/bpf/progs/freplace_progmap.c    | 24 +++++++++
- tools/testing/selftests/bpf/testing_helpers.c | 24 ++++++++-
- tools/testing/selftests/bpf/testing_helpers.h |  2 +
- 4 files changed, 101 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/freplace_progmap.c
+>> hash/timestap/csum is per packet .. vlan as well depending how you look at
+>> it..
+>
+> True, we cannot cache this as it is *per packet* info.
+>
+>> Sorry I haven't been following the progress of xdp meta data, but why did
+>> we drop the idea of btf and driver copying metdata in front of the xdp
+>> frame ?
+>> 
+>
+> It took me some time to understand this new approach, and why it makes
+> sense.  This is my understanding of the design direction change:
+>
+> This approach gives more control to the XDP BPF-prog to pick and choose
+> which XDP hints are relevant for the specific use-case.  BPF-prog can
+> also skip storing hints anywhere and just read+react on value (that e.g.
+> comes from RX-desc).
+>
+> For the use-cases redirect, AF_XDP, chained BPF-progs, XDP-to-TC,
+> SKB-creation, we *do* need to store hints somewhere, as RX-desc will be
+> out-of-scope.  I this patchset hand-waves and says BPF-prog can just
+> manually store this in a prog custom layout in metadata area.  I'm not
+> super happy with ignoring/hand-waving all these use-case, but I
+> hope/think we later can extend this some more structure to support these
+> use-cases better (with this patchset as a foundation).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-index d1e32e792536..dac088217f0f 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-@@ -500,6 +500,57 @@ static void test_fentry_to_cgroup_bpf(void)
- 	bind4_prog__destroy(skel);
- }
- 
-+static void test_func_replace_progmap(void)
-+{
-+	struct bpf_cpumap_val value = { .qsize = 1 };
-+	struct bpf_object *obj, *tgt_obj = NULL;
-+	struct bpf_program *drop, *redirect;
-+	struct bpf_map *cpumap;
-+	int err, tgt_fd;
-+	__u32 key = 0;
-+
-+	err = bpf_prog_test_open("freplace_progmap.bpf.o", BPF_PROG_TYPE_UNSPEC, &obj);
-+	if (!ASSERT_OK(err, "prog_open"))
-+		return;
-+
-+	err = bpf_prog_test_load("xdp_dummy.bpf.o", BPF_PROG_TYPE_UNSPEC, &tgt_obj, &tgt_fd);
-+	if (!ASSERT_OK(err, "tgt_prog_load"))
-+		goto out;
-+
-+	drop = bpf_object__find_program_by_name(obj, "xdp_drop_prog");
-+	redirect = bpf_object__find_program_by_name(obj, "xdp_cpumap_prog");
-+	cpumap = bpf_object__find_map_by_name(obj, "cpu_map");
-+
-+	if (!ASSERT_OK_PTR(drop, "drop") || !ASSERT_OK_PTR(redirect, "redirect") ||
-+	    !ASSERT_OK_PTR(cpumap, "cpumap"))
-+		goto out;
-+
-+	/* Change the 'redirect' program type to be a PROG_TYPE_EXT
-+	 * with an XDP target
-+	 */
-+	bpf_program__set_type(redirect, BPF_PROG_TYPE_EXT);
-+	bpf_program__set_expected_attach_type(redirect, 0);
-+	err = bpf_program__set_attach_target(redirect, tgt_fd, "xdp_dummy_prog");
-+	if (!ASSERT_OK(err, "set_attach_target"))
-+		goto out;
-+
-+	err = bpf_object__load(obj);
-+	if (!ASSERT_OK(err, "obj_load"))
-+		goto out;
-+
-+	/* This will fail if the map is "owned" by a PROG_TYPE_EXT program,
-+	 * which, prior to fixing the kernel, it will be since the map is used
-+	 * from the 'redirect' prog above
-+	 */
-+	value.bpf_prog.fd = bpf_program__fd(drop);
-+	err = bpf_map_update_elem(bpf_map__fd(cpumap), &key, &value, 0);
-+	ASSERT_OK(err, "map_update");
-+
-+out:
-+	bpf_object__close(tgt_obj);
-+	bpf_object__close(obj);
-+}
-+
- /* NOTE: affect other tests, must run in serial mode */
- void serial_test_fexit_bpf2bpf(void)
- {
-@@ -525,4 +576,6 @@ void serial_test_fexit_bpf2bpf(void)
- 		test_func_replace_global_func();
- 	if (test__start_subtest("fentry_to_cgroup_bpf"))
- 		test_fentry_to_cgroup_bpf();
-+	if (test__start_subtest("func_replace_progmap"))
-+		test_func_replace_progmap();
- }
-diff --git a/tools/testing/selftests/bpf/progs/freplace_progmap.c b/tools/testing/selftests/bpf/progs/freplace_progmap.c
-new file mode 100644
-index 000000000000..68174c3d7b37
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/freplace_progmap.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CPUMAP);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct bpf_cpumap_val));
-+	__uint(max_entries, 1);
-+} cpu_map SEC(".maps");
-+
-+SEC("xdp/cpumap")
-+int xdp_drop_prog(struct xdp_md *ctx)
-+{
-+	return XDP_DROP;
-+}
-+
-+SEC("xdp")
-+int xdp_cpumap_prog(struct xdp_md *ctx)
-+{
-+	return bpf_redirect_map(&cpu_map, 0, XDP_PASS);
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-index 9695318e8132..2050244e6f24 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -174,8 +174,8 @@ __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info)
- 
- int extra_prog_load_log_flags = 0;
- 
--int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
--		       struct bpf_object **pobj, int *prog_fd)
-+int bpf_prog_test_open(const char *file, enum bpf_prog_type type,
-+		       struct bpf_object **pobj)
- {
- 	LIBBPF_OPTS(bpf_object_open_opts, opts,
- 		.kernel_log_level = extra_prog_load_log_flags,
-@@ -201,6 +201,26 @@ int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
- 	flags = bpf_program__flags(prog) | BPF_F_TEST_RND_HI32;
- 	bpf_program__set_flags(prog, flags);
- 
-+	*pobj = obj;
-+	return 0;
-+err_out:
-+	bpf_object__close(obj);
-+	return err;
-+}
-+
-+int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
-+		       struct bpf_object **pobj, int *prog_fd)
-+{
-+	struct bpf_program *prog;
-+	struct bpf_object *obj;
-+	int err;
-+
-+	err = bpf_prog_test_open(file, type, &obj);
-+	if (err)
-+		return err;
-+
-+	prog = bpf_object__next_program(obj, NULL);
-+
- 	err = bpf_object__load(obj);
- 	if (err)
- 		goto err_out;
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index 6ec00bf79cb5..977eb520d119 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -6,6 +6,8 @@
- 
- int parse_num_list(const char *s, bool **set, int *set_len);
- __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info);
-+int bpf_prog_test_open(const char *file, enum bpf_prog_type type,
-+		       struct bpf_object **pobj);
- int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
- 		       struct bpf_object **pobj, int *prog_fd);
- int bpf_test_load_program(enum bpf_prog_type type, const struct bpf_insn *insns,
--- 
-2.38.1
+I don't think this approach "hand-waves" the need to store the metadata,
+it just declares it out of scope :)
+
+Which makes sense, because "accessing the metadata" and "storing it for
+later use" are two different problems, where the second one build on top
+of the first one. I.e., once we have a way to access the data, we can
+build upon that to have a way to store it somewhere.
+
+> I actually like this kfunc design, because the BPF-prog's get an
+> intuitive API, and on driver side we can hide the details of howto
+> extract the HW hints.
+
++1
+
+>> hopefully future HW generations will do that for free ..
+>
+> True.  I think it is worth repeating, that the approach of storing HW
+> hints in metadata area (in-front of packet data) was to allow future HW
+> generations to write this.  Thus, eliminating the 6 ns (that I showed it
+> cost), and then it would be up-to XDP BPF-prog to pick and choose which
+> to read, like this patchset already offers.
+>
+> This patchset isn't incompatible with future HW generations doing this,
+> as the kfunc would hide the details and point to this area instead of
+> the RX-desc.  While we get the "store for free" from hardware, I do
+> worry that reading this memory area (which will part of DMA area) is
+> going to be slower than reading from RX-desc.
+
+Agreed (choked on the "isn't incompatible" double negative at first). If
+the hardware stores the data next to the packet data, the kfuncs can
+just read them from there. If it turns out that we can even make the
+layout for some fields the same across drivers, we could even have the
+generic kfunc implementations just read this area (which also nicely
+solves the "storage" problem).
+
+-Toke
 
