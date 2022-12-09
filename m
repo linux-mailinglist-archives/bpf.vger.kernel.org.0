@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0D86488D2
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 20:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0B66488D4
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 20:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbiLITHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 14:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
+        id S230132AbiLITHo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 14:07:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbiLITHf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 14:07:35 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D406D1012;
-        Fri,  9 Dec 2022 11:07:33 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id 4so5887488pli.0;
-        Fri, 09 Dec 2022 11:07:33 -0800 (PST)
+        with ESMTP id S230106AbiLITHi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 14:07:38 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7582AEE;
+        Fri,  9 Dec 2022 11:07:35 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id u5so5718057pjy.5;
+        Fri, 09 Dec 2022 11:07:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mwTfL0kKYTF0adsT64MgLXJKXYchBqVGT1PKMwmP0aw=;
-        b=kezPGi3vgNhkaDI9UImYJllOrlZs9FuJL+9LAQwe30hkWzHpxkSgsaPLkkQyk+oFhf
-         QuU8TYVwGwh4mfVU2v+jNLqjDtt+LejKzGCNwfPrg9xd6pw10u8AjazFc9DHx7TDpG4F
-         sN13nhHzksVBEFhfc+6DxZJ9gC9+8+Gsa7nYTbDLz7DjcJFKoL/w/F0RpaOBYzq/l6YU
-         k1xFdqiJQgs/ee1xTGtsSk6eo+sTPF8gspY+cPhnGeJuGgFHyCLYOk3XVLnFj5r6ESAA
-         hIaS2RdSs9la2OueaYtEpaZk5EeC/uIDndl7VZX4pPIaTPSlbC1ZovUheoQF2/oRjxlF
-         Kz1w==
+        bh=PjY8H+PAiusizFOCgESEpT8nPlA0MeCSIYNjtpBPi54=;
+        b=BB9OCfif8nj6AThEtwutm8zAPoYPL/0mvBRijpK3N89uiL2xCiSZ7kLhaduq5YzDNs
+         i80l3bPChiY56yI5oueQXVwD/Lur+XgAyv1SO1dVcUmr9JZAyTZy9U3oCfFyltmU2lLL
+         7M44IAK48x5Efqjys61aSwyrq9ab2eBMFh5xf/7TSo+zfwX6jSD+U2sDO6c2z10OjLJc
+         9fOR+//+9VnEbaEzKBsTYCstYYcMCoU8YTs6lwe/c+0N9R5AFDkgzYE69FyNO26VzBrg
+         MduazddKc4xXWpe6QNpHBX/k5/OzIE+HkdnSzrxdCRvyqQFEi8Q7FmSgayPI5L/LhfhH
+         UVmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=mwTfL0kKYTF0adsT64MgLXJKXYchBqVGT1PKMwmP0aw=;
-        b=w7/Og49frtliqU/1sjAb7v3DgajNYsP0//1INMBy6wGeAHkGFhwrC/HUBiGLl5RZtD
-         ph6unoEWMc17uFB3+DMTANWxQWrbV3XWKODXoZsddfg6zUnO9+qKPWg7virxCzrlARuY
-         R9TAV3ZDpyXc4Mj8tZJtdB4vVOoreQzAeMaO4w0iOLgTbl7z21YD2GEWyOh+H3rcdF9Z
-         WfWPuX9rjjcTqQVnENGE3og4dklmT1zvAxOWPnLSQhSWVkGqrtRS4e0UkpQAKBh+RHTX
-         Ox8FF58kXOQWS9jLnZs4esW+P3J7sxjxVz7qbbYKU1YPCnbbHISgcce5Bc8OE4RaGmeD
-         Kn2w==
-X-Gm-Message-State: ANoB5pmSQ2I9nlilmtphK6No7dQjdEXt5dzsRtwVM1U6HsiOoCypiHY1
-        icNt+JE6dsPBKmBE9FleRHU=
-X-Google-Smtp-Source: AA0mqf4ROZfFScaahkNAlZSBVfn4hJIDZE+t4RCv6Nt4d9lSbPKnhrir9X9eK3+xOwMJyAsXmPLUbg==
-X-Received: by 2002:a17:90a:ac07:b0:219:aa58:77ba with SMTP id o7-20020a17090aac0700b00219aa5877bamr6769116pjq.25.1670612853422;
-        Fri, 09 Dec 2022 11:07:33 -0800 (PST)
+        bh=PjY8H+PAiusizFOCgESEpT8nPlA0MeCSIYNjtpBPi54=;
+        b=szaqpY461cPlPX0cA3jX48lUjxKCJMhCPlPCEGPlDCdNkuvolpxKe4/ROIxl4Zh0r3
+         VhqN1kQ8TBGQPvZPEOqK1Xj4oTHKUAs83q8+AhIGCw9DZLrVS0+l27pAVgCEUKzyPOwr
+         MUI6/eg1RV7K5joO+JdQADaJZbDMJBFLH2rQuSNlPazOK1A6K9lfR99kq6UaD9DnZiHH
+         nEcSI71VZQevhJKMq3g7ZU4li5VQA2W8OfiX9F9nqjVlku298p+3BQgM8liXHNGcny0A
+         sgClfYUQFWFksLbBn6Bg+6XNnKLxWCHUD8aGSNHNbu80AjF9BFgjwSEtIYjwpG/89e2s
+         ZipA==
+X-Gm-Message-State: ANoB5plSxeIjxJMwFfvwauTpXlD3vkXWyYpgRp3ujT0h+0qasdx1utR3
+        AbxbPWGsCwCTZ8W0fkJ2wfw=
+X-Google-Smtp-Source: AA0mqf6YRJAEXx+NGCn2wLRqoeyRNYlgFsYtH8rRjhN9KhbZQGLv28M35T6rxk+e1Bk488OaUIKGCg==
+X-Received: by 2002:a05:6a20:2a8c:b0:a6:6d23:a007 with SMTP id v12-20020a056a202a8c00b000a66d23a007mr12557006pzh.42.1670612854906;
+        Fri, 09 Dec 2022 11:07:34 -0800 (PST)
 Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:ff0:c952:d848:9e00:3cce])
-        by smtp.gmail.com with ESMTPSA id nd17-20020a17090b4cd100b002135de3013fsm1431432pjb.32.2022.12.09.11.07.32
+        by smtp.gmail.com with ESMTPSA id nd17-20020a17090b4cd100b002135de3013fsm1431432pjb.32.2022.12.09.11.07.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 11:07:33 -0800 (PST)
+        Fri, 09 Dec 2022 11:07:34 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
         Blake Jones <blakejones@google.com>, bpf@vger.kernel.org
-Subject: [PATCH 2/4] perf lock contention: Implement -t/--threads option for BPF
-Date:   Fri,  9 Dec 2022 11:07:25 -0800
-Message-Id: <20221209190727.759804-3-namhyung@kernel.org>
+Subject: [PATCH 3/4] perf lock contention: Add -l/--lock-addr option
+Date:   Fri,  9 Dec 2022 11:07:26 -0800
+Message-Id: <20221209190727.759804-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
 In-Reply-To: <20221209190727.759804-1-namhyung@kernel.org>
 References: <20221209190727.759804-1-namhyung@kernel.org>
@@ -78,268 +78,311 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The BPF didn't show the per-thread stat properly.  Use task's thread id (PID)
-as a key instead of stack_id and add a task_data map to save task comm names.
+The -l/--lock-addr option is to implement per-lock-instance contention
+stat using LOCK_AGGR_ADDR.  It displays lock address and optionally
+symbol name if exists.
 
-  $ sudo ./perf lock con -abt -E 5 sleep 1
-   contended   total wait     max wait     avg wait          pid   comm
+  $ sudo ./perf lock con -abl sleep 1
+   contended   total wait     max wait     avg wait            address   symbol
 
-           1    740.66 ms    740.66 ms    740.66 ms         1950   nv_queue
-           3    305.50 ms    298.19 ms    101.83 ms         1884   nvidia-modeset/
-           1     25.14 us     25.14 us     25.14 us      2725038   EventManager_De
-          12     23.09 us      9.30 us      1.92 us            0   swapper
-           1     20.18 us     20.18 us     20.18 us      2725033   EventManager_De
+           1     36.28 us     36.28 us     36.28 us   ffff92615d6448b8
+           9     10.91 us      1.84 us      1.21 us   ffffffffbaed50c0   rcu_state
+           1     10.49 us     10.49 us     10.49 us   ffff9262ac4f0c80
+           8      4.68 us      1.67 us       585 ns   ffffffffbae07a40   jiffies_lock
+           3      3.03 us      1.45 us      1.01 us   ffff9262277861e0
+           1       924 ns       924 ns       924 ns   ffff926095ba9d20
+           1       436 ns       436 ns       436 ns   ffff9260bfda4f60
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-lock.c                     | 13 ++----
- tools/perf/util/bpf_lock_contention.c         | 40 ++++++++++++++++--
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 41 +++++++++++++++++--
- tools/perf/util/lock-contention.h             |  1 +
- 4 files changed, 78 insertions(+), 17 deletions(-)
+ tools/perf/Documentation/perf-lock.txt        |  4 +
+ tools/perf/builtin-lock.c                     | 84 +++++++++++++++----
+ tools/perf/util/bpf_lock_contention.c         | 23 +++--
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 17 +++-
+ tools/perf/util/bpf_skel/lock_data.h          |  2 +-
+ 5 files changed, 102 insertions(+), 28 deletions(-)
 
+diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
+index 4958a1ffa1cc..38e79d45e426 100644
+--- a/tools/perf/Documentation/perf-lock.txt
++++ b/tools/perf/Documentation/perf-lock.txt
+@@ -168,6 +168,10 @@ CONTENTION OPTIONS
+ --entries=<value>::
+ 	Display this many entries.
+ 
++-l::
++--lock-addr::
++	Show lock contention stat by address
++
+ 
+ SEE ALSO
+ --------
 diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index 15ce6358f127..6fa3cdfec5cb 100644
+index 6fa3cdfec5cb..25c0a5e5051f 100644
 --- a/tools/perf/builtin-lock.c
 +++ b/tools/perf/builtin-lock.c
-@@ -12,6 +12,7 @@
- #include "util/target.h"
- #include "util/callchain.h"
- #include "util/lock-contention.h"
-+#include "util/bpf_skel/lock_data.h"
+@@ -56,6 +56,7 @@ static struct rb_root		thread_stats;
  
- #include <subcmd/pager.h>
- #include <subcmd/parse-options.h>
-@@ -61,11 +62,7 @@ static int max_stack_depth = CONTENTION_STACK_DEPTH;
- static int stack_skip = CONTENTION_STACK_SKIP;
- static int print_nr_entries = INT_MAX / 2;
+ static bool combine_locks;
+ static bool show_thread_stats;
++static bool show_lock_addrs;
+ static bool use_bpf;
+ static unsigned long bpf_map_entries = 10240;
+ static int max_stack_depth = CONTENTION_STACK_DEPTH;
+@@ -999,13 +1000,32 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
+ 	ls = lock_stat_find(key);
+ 	if (!ls) {
+ 		char buf[128];
+-		const char *caller = buf;
++		const char *name = "";
+ 		unsigned int flags = evsel__intval(evsel, sample, "flags");
++		struct machine *machine = &session->machines.host;
++		struct map *kmap;
++		struct symbol *sym;
++
++		switch (aggr_mode) {
++		case LOCK_AGGR_ADDR:
++			/* make sure it loads the kernel map to find lock symbols */
++			map__load(machine__kernel_map(machine));
++
++			sym = machine__find_kernel_symbol(machine, key, &kmap);
++			if (sym)
++				name = sym->name;
++			break;
++		case LOCK_AGGR_CALLER:
++			name = buf;
++			if (lock_contention_caller(evsel, sample, buf, sizeof(buf)) < 0)
++				name = "Unknown";
++			break;
++		case LOCK_AGGR_TASK:
++		default:
++			break;
++		}
  
--static enum {
--	LOCK_AGGR_ADDR,
--	LOCK_AGGR_TASK,
--	LOCK_AGGR_CALLER,
--} aggr_mode = LOCK_AGGR_ADDR;
-+static enum lock_aggr_mode aggr_mode = LOCK_AGGR_ADDR;
+-		if (lock_contention_caller(evsel, sample, buf, sizeof(buf)) < 0)
+-			caller = "Unknown";
+-
+-		ls = lock_stat_findnew(key, caller, flags);
++		ls = lock_stat_findnew(key, name, flags);
+ 		if (!ls)
+ 			return -ENOMEM;
  
- static struct thread_stat *thread_stat_find(u32 tid)
- {
-@@ -1619,6 +1616,7 @@ static int __cmd_contention(int argc, const char **argv)
+@@ -1460,10 +1480,19 @@ static void print_contention_result(struct lock_contention *con)
+ 		list_for_each_entry(key, &lock_keys, list)
+ 			pr_info("%*s ", key->len, key->header);
+ 
+-		if (show_thread_stats)
++		switch (aggr_mode) {
++		case LOCK_AGGR_TASK:
+ 			pr_info("  %10s   %s\n\n", "pid", "comm");
+-		else
++			break;
++		case LOCK_AGGR_CALLER:
+ 			pr_info("  %10s   %s\n\n", "type", "caller");
++			break;
++		case LOCK_AGGR_ADDR:
++			pr_info("  %16s   %s\n\n", "address", "symbol");
++			break;
++		default:
++			break;
++		}
+ 	}
+ 
+ 	bad = total = printed = 0;
+@@ -1471,6 +1500,9 @@ static void print_contention_result(struct lock_contention *con)
+ 		bad = bad_hist[BROKEN_CONTENDED];
+ 
+ 	while ((st = pop_from_result())) {
++		struct thread *t;
++		int pid;
++
+ 		total += use_bpf ? st->nr_contended : 1;
+ 		if (st->broken)
+ 			bad++;
+@@ -1480,18 +1512,24 @@ static void print_contention_result(struct lock_contention *con)
+ 			pr_info(" ");
+ 		}
+ 
+-		if (show_thread_stats) {
+-			struct thread *t;
+-			int pid = st->addr;
+-
+-			/* st->addr contains tid of thread */
++		switch (aggr_mode) {
++		case LOCK_AGGR_CALLER:
++			pr_info("  %10s   %s\n", get_type_str(st), st->name);
++			break;
++		case LOCK_AGGR_TASK:
++			pid = st->addr;
+ 			t = perf_session__findnew(session, pid);
+ 			pr_info("  %10d   %s\n", pid, thread__comm_str(t));
+-			goto next;
++			break;
++		case LOCK_AGGR_ADDR:
++			pr_info("  %016llx   %s\n", (unsigned long long)st->addr,
++				st->name ? : "");
++			break;
++		default:
++			break;
+ 		}
+ 
+-		pr_info("  %10s   %s\n", get_type_str(st), st->name);
+-		if (verbose) {
++		if (aggr_mode == LOCK_AGGR_CALLER && verbose) {
+ 			struct map *kmap;
+ 			struct symbol *sym;
+ 			char buf[128];
+@@ -1508,7 +1546,6 @@ static void print_contention_result(struct lock_contention *con)
+ 			}
+ 		}
+ 
+-next:
+ 		if (++printed >= print_nr_entries)
+ 			break;
+ 	}
+@@ -1616,7 +1653,6 @@ static int __cmd_contention(int argc, const char **argv)
  		.map_nr_entries = bpf_map_entries,
  		.max_stack = max_stack_depth,
  		.stack_skip = stack_skip,
-+		.aggr_mode = show_thread_stats ? LOCK_AGGR_TASK : LOCK_AGGR_CALLER,
+-		.aggr_mode = show_thread_stats ? LOCK_AGGR_TASK : LOCK_AGGR_CALLER,
  	};
  
  	session = perf_session__new(use_bpf ? NULL : &data, &eops);
-@@ -1691,11 +1689,6 @@ static int __cmd_contention(int argc, const char **argv)
- 	if (select_key(true))
- 		goto out_delete;
+@@ -1627,6 +1663,9 @@ static int __cmd_contention(int argc, const char **argv)
  
--	if (show_thread_stats)
--		aggr_mode = LOCK_AGGR_TASK;
--	else
--		aggr_mode = LOCK_AGGR_CALLER;
--
- 	if (use_bpf) {
- 		lock_contention_start();
- 		if (argc)
+ 	con.machine = &session->machines.host;
+ 
++	con.aggr_mode = aggr_mode = show_thread_stats ? LOCK_AGGR_TASK :
++		show_lock_addrs ? LOCK_AGGR_ADDR : LOCK_AGGR_CALLER;
++
+ 	/* for lock function check */
+ 	symbol_conf.sort_by_name = true;
+ 	symbol__init(&session->header.env);
+@@ -1907,6 +1946,7 @@ int cmd_lock(int argc, const char **argv)
+ 		    "Set the number of stack depth to skip when finding a lock caller, "
+ 		    "Default: " __stringify(CONTENTION_STACK_SKIP)),
+ 	OPT_INTEGER('E', "entries", &print_nr_entries, "display this many functions"),
++	OPT_BOOLEAN('l', "lock-addr", &show_lock_addrs, "show lock stats by address"),
+ 	OPT_PARENT(lock_options)
+ 	};
+ 
+@@ -1976,6 +2016,16 @@ int cmd_lock(int argc, const char **argv)
+ 			argc = parse_options(argc, argv, contention_options,
+ 					     contention_usage, 0);
+ 		}
++
++		if (show_thread_stats && show_lock_addrs) {
++			pr_err("Cannot use thread and addr mode together\n");
++			parse_options_usage(contention_usage, contention_options,
++					    "threads", 0);
++			parse_options_usage(NULL, contention_options,
++					    "lock-addr", 0);
++			return -1;
++		}
++
+ 		rc = __cmd_contention(argc, argv);
+ 	} else {
+ 		usage_with_options(lock_usage, lock_options);
 diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index b6a8eb7164b3..1590a9f05145 100644
+index 1590a9f05145..8e1b791dc58f 100644
 --- a/tools/perf/util/bpf_lock_contention.c
 +++ b/tools/perf/util/bpf_lock_contention.c
-@@ -5,6 +5,7 @@
- #include "util/map.h"
- #include "util/symbol.h"
- #include "util/target.h"
-+#include "util/thread.h"
- #include "util/thread_map.h"
- #include "util/lock-contention.h"
- #include <linux/zalloc.h>
-@@ -30,10 +31,17 @@ int lock_contention_prepare(struct lock_contention *con)
+@@ -137,11 +137,15 @@ int lock_contention_read(struct lock_contention *con)
+ 		thread__set_comm(idle, "swapper", /*timestamp=*/0);
  	}
  
- 	bpf_map__set_value_size(skel->maps.stacks, con->max_stack * sizeof(u64));
--	bpf_map__set_max_entries(skel->maps.stacks, con->map_nr_entries);
- 	bpf_map__set_max_entries(skel->maps.lock_stat, con->map_nr_entries);
- 	bpf_map__set_max_entries(skel->maps.tstamp, con->map_nr_entries);
- 
-+	if (con->aggr_mode == LOCK_AGGR_TASK) {
-+		bpf_map__set_max_entries(skel->maps.task_data, con->map_nr_entries);
-+		bpf_map__set_max_entries(skel->maps.stacks, 1);
-+	} else {
-+		bpf_map__set_max_entries(skel->maps.task_data, 1);
-+		bpf_map__set_max_entries(skel->maps.stacks, con->map_nr_entries);
-+	}
-+
- 	if (target__has_cpu(target))
- 		ncpus = perf_cpu_map__nr(evlist->core.user_requested_cpus);
- 	if (target__has_task(target))
-@@ -82,7 +90,9 @@ int lock_contention_prepare(struct lock_contention *con)
- 		bpf_map_update_elem(fd, &pid, &val, BPF_ANY);
- 	}
- 
-+	/* these don't work well if in the rodata section */
- 	skel->bss->stack_skip = con->stack_skip;
-+	skel->bss->aggr_mode = con->aggr_mode;
- 
- 	lock_contention_bpf__attach(skel);
- 	return 0;
-@@ -102,7 +112,7 @@ int lock_contention_stop(void)
- 
- int lock_contention_read(struct lock_contention *con)
- {
--	int fd, stack, err = 0;
-+	int fd, stack, task_fd, err = 0;
- 	struct contention_key *prev_key, key;
- 	struct contention_data data = {};
- 	struct lock_stat *st = NULL;
-@@ -112,6 +122,7 @@ int lock_contention_read(struct lock_contention *con)
- 
- 	fd = bpf_map__fd(skel->maps.lock_stat);
- 	stack = bpf_map__fd(skel->maps.stacks);
-+	task_fd = bpf_map__fd(skel->maps.task_data);
- 
- 	con->lost = skel->bss->lost;
- 
-@@ -119,6 +130,13 @@ int lock_contention_read(struct lock_contention *con)
- 	if (stack_trace == NULL)
- 		return -1;
- 
-+	if (con->aggr_mode == LOCK_AGGR_TASK) {
-+		struct thread *idle = __machine__findnew_thread(machine,
-+								/*pid=*/0,
-+								/*tid=*/0);
-+		thread__set_comm(idle, "swapper", /*timestamp=*/0);
-+	}
++	/* make sure it loads the kernel map */
++	map__load(maps__first(machine->kmaps));
 +
  	prev_key = NULL;
  	while (!bpf_map_get_next_key(fd, prev_key, &key)) {
  		struct map *kmap;
-@@ -143,6 +161,22 @@ int lock_contention_read(struct lock_contention *con)
+ 		struct symbol *sym;
+ 		int idx = 0;
++		s32 stack_id;
+ 
+ 		/* to handle errors in the loop body */
+ 		err = -1;
+@@ -160,24 +164,31 @@ int lock_contention_read(struct lock_contention *con)
+ 			st->avg_wait_time = data.total_time / data.count;
  
  		st->flags = data.flags;
++		st->addr = key.aggr_key;
  
-+		if (con->aggr_mode == LOCK_AGGR_TASK) {
-+			struct contention_task_data task;
-+			struct thread *t;
-+
-+			st->addr = key.stack_or_task_id;
-+
-+			/* do not update idle comm which contains CPU number */
-+			if (st->addr) {
-+				bpf_map_lookup_elem(task_fd, &key, &task);
-+				t = __machine__findnew_thread(machine, /*pid=*/-1,
-+							      key.stack_or_task_id);
-+				thread__set_comm(t, task.comm, /*timestamp=*/0);
-+			}
+ 		if (con->aggr_mode == LOCK_AGGR_TASK) {
+ 			struct contention_task_data task;
+ 			struct thread *t;
+-
+-			st->addr = key.stack_or_task_id;
++			int pid = key.aggr_key;
+ 
+ 			/* do not update idle comm which contains CPU number */
+ 			if (st->addr) {
+-				bpf_map_lookup_elem(task_fd, &key, &task);
+-				t = __machine__findnew_thread(machine, /*pid=*/-1,
+-							      key.stack_or_task_id);
++				bpf_map_lookup_elem(task_fd, &pid, &task);
++				t = __machine__findnew_thread(machine, /*pid=*/-1, pid);
+ 				thread__set_comm(t, task.comm, /*timestamp=*/0);
+ 			}
+ 			goto next;
+ 		}
+ 
+-		bpf_map_lookup_elem(stack, &key, stack_trace);
++		if (con->aggr_mode == LOCK_AGGR_ADDR) {
++			sym = machine__find_kernel_symbol(machine, st->addr, &kmap);
++			if (sym)
++				st->name = strdup(sym->name);
 +			goto next;
 +		}
 +
- 		bpf_map_lookup_elem(stack, &key, stack_trace);
++		stack_id = key.aggr_key;
++		bpf_map_lookup_elem(stack, &stack_id, stack_trace);
  
  		/* skip lock internal functions */
-@@ -175,7 +209,7 @@ int lock_contention_read(struct lock_contention *con)
- 			if (st->callstack == NULL)
- 				break;
- 		}
--
-+next:
- 		hlist_add_head(&st->hash_entry, con->result);
- 		prev_key = &key;
- 
+ 		while (machine__is_lock_function(machine, stack_trace[idx]) &&
 diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 0f63cc28ccba..cd405adcd252 100644
+index cd405adcd252..11b0fc7ee53b 100644
 --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
 +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -41,6 +41,13 @@ struct {
- 	__uint(max_entries, MAX_ENTRIES);
- } lock_stat SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct contention_task_data));
-+	__uint(max_entries, MAX_ENTRIES);
-+} task_data SEC(".maps");
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__uint(key_size, sizeof(__u32));
-@@ -61,6 +68,9 @@ int has_cpu;
- int has_task;
- int stack_skip;
- 
-+/* determine the key of lock stat */
-+int aggr_mode;
-+
- /* error stat */
- int lost;
- 
-@@ -87,6 +97,19 @@ static inline int can_record(void)
- 	return 1;
- }
- 
-+static inline void update_task_data(__u32 pid)
-+{
-+	struct contention_task_data *p;
-+
-+	p = bpf_map_lookup_elem(&task_data, &pid);
-+	if (p == NULL) {
-+		struct contention_task_data data;
-+
-+		bpf_get_current_comm(data.comm, sizeof(data.comm));
-+		bpf_map_update_elem(&task_data, &pid, &data, BPF_NOEXIST);
-+	}
-+}
-+
- SEC("tp_btf/contention_begin")
- int contention_begin(u64 *ctx)
- {
-@@ -115,10 +138,14 @@ int contention_begin(u64 *ctx)
- 	pelem->timestamp = bpf_ktime_get_ns();
- 	pelem->lock = (__u64)ctx[0];
- 	pelem->flags = (__u32)ctx[1];
--	pelem->stack_id = bpf_get_stackid(ctx, &stacks, BPF_F_FAST_STACK_CMP | stack_skip);
- 
--	if (pelem->stack_id < 0)
--		lost++;
-+	if (aggr_mode == LOCK_AGGR_CALLER) {
-+		pelem->stack_id = bpf_get_stackid(ctx, &stacks,
-+						  BPF_F_FAST_STACK_CMP | stack_skip);
-+		if (pelem->stack_id < 0)
-+			lost++;
-+	}
-+
- 	return 0;
- }
- 
-@@ -141,7 +168,13 @@ int contention_end(u64 *ctx)
+@@ -168,11 +168,20 @@ int contention_end(u64 *ctx)
  
  	duration = bpf_ktime_get_ns() - pelem->timestamp;
  
--	key.stack_id = pelem->stack_id;
-+	if (aggr_mode == LOCK_AGGR_CALLER) {
-+		key.stack_or_task_id = pelem->stack_id;
-+	} else {
-+		key.stack_or_task_id = pid;
-+		update_task_data(pid);
-+	}
-+
+-	if (aggr_mode == LOCK_AGGR_CALLER) {
+-		key.stack_or_task_id = pelem->stack_id;
+-	} else {
+-		key.stack_or_task_id = pid;
++	switch (aggr_mode) {
++	case LOCK_AGGR_CALLER:
++		key.aggr_key = pelem->stack_id;
++		break;
++	case LOCK_AGGR_TASK:
++		key.aggr_key = pid;
+ 		update_task_data(pid);
++		break;
++	case LOCK_AGGR_ADDR:
++		key.aggr_key = pelem->lock;
++		break;
++	default:
++		/* should not happen */
++		return 0;
+ 	}
+ 
  	data = bpf_map_lookup_elem(&lock_stat, &key);
- 	if (!data) {
- 		struct contention_data first = {
-diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-index a2346875098d..47fd47fb56c1 100644
---- a/tools/perf/util/lock-contention.h
-+++ b/tools/perf/util/lock-contention.h
-@@ -117,6 +117,7 @@ struct lock_contention {
- 	int lost;
- 	int max_stack;
- 	int stack_skip;
-+	int aggr_mode;
+diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
+index dbdf4caedc4a..ce71cf1a7e1e 100644
+--- a/tools/perf/util/bpf_skel/lock_data.h
++++ b/tools/perf/util/bpf_skel/lock_data.h
+@@ -4,7 +4,7 @@
+ #define UTIL_BPF_SKEL_LOCK_DATA_H
+ 
+ struct contention_key {
+-	s32 stack_or_task_id;
++	u64 aggr_key;  /* can be stack_id, pid or lock addr */
  };
  
- #ifdef HAVE_BPF_SKEL
+ #define TASK_COMM_LEN  16
 -- 
 2.39.0.rc1.256.g54fd8350bd-goog
 
