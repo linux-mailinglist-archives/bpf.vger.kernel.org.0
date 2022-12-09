@@ -2,183 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6146487EE
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 18:47:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82CD6487F7
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 18:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbiLIRr2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 12:47:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
+        id S229749AbiLIRuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 12:50:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbiLIRr1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 12:47:27 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52095BD7D
-        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 09:47:26 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id t11-20020a17090a024b00b0021932afece4so8870629pje.5
-        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 09:47:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhg6wBBIkUQ+69OvVEryImDiqjxDYG19JHFgfdHHGxo=;
-        b=gCXVuoMOuai7KTph2UPXEkaRCw3rmHtOp3nQFsMXzWAcuy8+pgVwEXKAQqfJwL40G5
-         tZm91jDnli4IdVGI6mT3VgYxDB2T7fQYEE9BP1o3WpidQmrW1jWvP9x6NjV5J9CSQAKT
-         txVGUPSv+iz2S1zvfKPGH/CR/v/C7zSbpsVvIz1DYpZwBIMf9gVJPp46rw0SlUfXHLgU
-         tuLKsPmiJ2xpp//nJr1RsIJ/slyYMU1k6fGSU9jGVGgCAQbb+yj0L/jDftHZ1VSwVTJ1
-         62NyhNzqy0+ejcbJTTr9DHLSJAGMQg+Y1HXWaWHoprYb4ZY67+jMKmCh5JdWvomjNXDo
-         4YoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zhg6wBBIkUQ+69OvVEryImDiqjxDYG19JHFgfdHHGxo=;
-        b=ofSAg6IkUSKu6NC0OoIgDXj5n4kM2YPhpv3lISqWP/XwOk0EHUb7bsC8YKfYd4aLjK
-         StbWbWr1qZiX3LPyl6HCyGMJLemsvwL99gYr5ZZpDrH7hJCBzbpmCKl5iVbPVGkMFIk/
-         vft3GfhHbEkilmt4vFKZmhsMqevy0AaHaxuICYvGCz6QrLw0OIOb1L+JH+Ruu/dPIroh
-         EwurJniV/18SJPM1LuBFy9uzdXcGg24NzYd+/LnpWAbwvEjEQThA0SRlZO3st78L231e
-         ySTAApbrSBHHzRQLLPaKnUaUFh6xP7ANTCLgO/hbxSX2jTZ1yRF62x2SGn0TnVtwEBxZ
-         i9tg==
-X-Gm-Message-State: ANoB5plR8dVVQJ5d4OBuBamKc69utmkBWxxBzE4fA0PF0aU6RsiYa8Wr
-        6+dhpEQAHA9w0JwTZJ8UDk6Q5JLEWMyJ29cG9o4Bnw==
-X-Google-Smtp-Source: AA0mqf5M9kt7HZbyb/j9FaVCke6Rb/YOpFiRFxNSASVPXCoKT5tF5b7Mz/x4Ifu7AAywotM2IBh3MMuMtcBrhpk3lvk=
-X-Received: by 2002:a17:902:d711:b0:188:c7b2:2dd with SMTP id
- w17-20020a170902d71100b00188c7b202ddmr79410245ply.88.1670608045940; Fri, 09
- Dec 2022 09:47:25 -0800 (PST)
+        with ESMTP id S229724AbiLIRuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 12:50:17 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983747A192;
+        Fri,  9 Dec 2022 09:50:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3646C622E8;
+        Fri,  9 Dec 2022 17:50:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9009BC433F0;
+        Fri,  9 Dec 2022 17:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670608215;
+        bh=9qzt9BQpb73mPkbaBSKVFKBm13JD2EkP8hbzXLiTBnQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=g74Ndkk9OkIuv+LVReNyJ1hp5bCJ9csAILmVly+jpeop8fB5IZmsSCR+gYDgbSIjb
+         YrqE6nuoy826mCBq6spHqmLGfKj8pzc8Cmvb40bgqEnkxYEi9ew8X5awipNVRWiQ9k
+         PFU0mPVHKfjpi443c6NZ8e4GSp0kde6QF6PT9nGTPypNTh5O5qt63YSTv43T7jQIxN
+         1qGaXzH7Cip2JCKvWA+b/8ug525XpdsPwTt8vDvi7vnwHegdeB7JB3r+VL8xmXJtR5
+         f+VpvkC6Ql5f5VmOZ+FzH/rhD7PFMMvhbIb4WBE0cg881h2xXzLU26DIlTyR8F0JVU
+         iQ1kq5hQSFBqg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 74EE3E1B4D9;
+        Fri,  9 Dec 2022 17:50:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-4-sdf@google.com>
- <f2c89c57-c377-2f8e-fb4d-b047e58d3d38@redhat.com>
-In-Reply-To: <f2c89c57-c377-2f8e-fb4d-b047e58d3d38@redhat.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 9 Dec 2022 09:47:14 -0800
-Message-ID: <CAKH8qBuhYUZEbs0UaUDaBOnmqjcSuim4vQhUzsLcOzPRY_eLrw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 03/12] bpf: XDP metadata RX kfuncs
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v4] docs/bpf: Add documentation for
+ BPF_MAP_TYPE_SK_STORAGE
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167060821547.31126.2706063406083427383.git-patchwork-notify@kernel.org>
+Date:   Fri, 09 Dec 2022 17:50:15 +0000
+References: <20221209112401.69319-1-donald.hunter@gmail.com>
+In-Reply-To: <20221209112401.69319-1-donald.hunter@gmail.com>
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, corbet@lwn.net,
+        yhs@meta.com, void@manifault.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 9, 2022 at 3:11 AM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
->
->
-> On 06/12/2022 03.45, Stanislav Fomichev wrote:
-> > There is an ndo handler per kfunc, the verifier replaces a call to the
-> > generic kfunc with a call to the per-device one.
-> >
-> > For XDP, we define a new kfunc set (xdp_metadata_kfunc_ids) which
-> > implements all possible metatada kfuncs. Not all devices have to
-> > implement them. If kfunc is not supported by the target device,
-> > the default implementation is called instead.
-> >
-> > Upon loading, if BPF_F_XDP_HAS_METADATA is passed via prog_flags,
-> > we treat prog_index as target device for kfunc resolution.
-> >
->
-> [...cut...]
-> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > index 5aa35c58c342..2eabb9157767 100644
-> > --- a/include/linux/netdevice.h
-> > +++ b/include/linux/netdevice.h
-> > @@ -74,6 +74,7 @@ struct udp_tunnel_nic_info;
-> >   struct udp_tunnel_nic;
-> >   struct bpf_prog;
-> >   struct xdp_buff;
-> > +struct xdp_md;
-> >
-> >   void synchronize_net(void);
-> >   void netdev_set_default_ethtool_ops(struct net_device *dev,
-> > @@ -1611,6 +1612,10 @@ struct net_device_ops {
-> >       ktime_t                 (*ndo_get_tstamp)(struct net_device *dev,
-> >                                                 const struct skb_shared_hwtstamps *hwtstamps,
-> >                                                 bool cycles);
-> > +     bool                    (*ndo_xdp_rx_timestamp_supported)(const struct xdp_md *ctx);
-> > +     u64                     (*ndo_xdp_rx_timestamp)(const struct xdp_md *ctx);
-> > +     bool                    (*ndo_xdp_rx_hash_supported)(const struct xdp_md *ctx);
-> > +     u32                     (*ndo_xdp_rx_hash)(const struct xdp_md *ctx);
-> >   };
-> >
->
-> Would it make sense to add a 'flags' parameter to ndo_xdp_rx_timestamp
-> and ndo_xdp_rx_hash ?
->
-> E.g. we could have a "STORE" flag that asks the kernel to store this
-> information for later. This will be helpful for both the SKB and
-> redirect use-cases.
-> For redirect e.g into a veth, then BPF-prog can use the same function
-> bpf_xdp_metadata_rx_hash() to receive the RX-hash, as it can obtain the
-> "stored" value (from the BPF-prog that did the redirect).
->
-> (p.s. Hopefully a const 'flags' variable can be optimized when unrolling
-> to eliminate store instructions when flags==0)
+Hello:
 
-Are we concerned that doing this without a flag and with another
-function call will be expensive?
-For xdp->skb path, I was hoping we would be to do something like:
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-timestamp = bpf_xdp_metadata_rx_hash(ctx);
-bpf_xdp_metadata_export_rx_hash_to_skb(ctx, timestamp);
+On Fri,  9 Dec 2022 11:24:01 +0000 you wrote:
+> Add documentation for the BPF_MAP_TYPE_SK_STORAGE including
+> kernel version introduced, usage and examples.
+> 
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> ---
+> v3 -> v4:
+> - Update intro paragraph with detail about storage locality.
+> - Remove confusing text from bpf_map_update_elem()
+>   as reported by David Vernet
+> - Updated BPF_EXIST and BPF_NOEXIST behaviour as suggested
+>   by David Vernet
+> - Fixed extra space in function signature as reported by
+>   David Vernet
+> - Added reference to selftests for complete examples as
+>   suggested by Yonghong Song
+> v2 -> v3:
+> - Fix void * return, reported by Yonghong Song
+> - Add tracing programs to API note, reported by Yonghong Song
+> v1 -> v2:
+> - Fix bpf_sk_storage_* function signatures, reported by Yonghong Song
+> - Fix NULL return on failure, reported by Yonghong Song
+> 
+> [...]
 
-This should also let the users adjust the metadata before storing it.
-Am I missing something here? Why would the flag be preferable?
+Here is the summary with links:
+  - [bpf-next,v4] docs/bpf: Add documentation for BPF_MAP_TYPE_SK_STORAGE
+    https://git.kernel.org/bpf/bpf-next/c/f3212ad5b7e9
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> >   /**
-> > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > index 55dbc68bfffc..c24aba5c363b 100644
-> > --- a/include/net/xdp.h
-> > +++ b/include/net/xdp.h
-> > @@ -409,4 +409,33 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
-> >
-> >   #define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE
-> >
-> > +#define XDP_METADATA_KFUNC_xxx       \
-> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED, \
-> > +                        bpf_xdp_metadata_rx_timestamp_supported) \
-> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP, \
-> > +                        bpf_xdp_metadata_rx_timestamp) \
-> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH_SUPPORTED, \
-> > +                        bpf_xdp_metadata_rx_hash_supported) \
-> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH, \
-> > +                        bpf_xdp_metadata_rx_hash) \
-> > +
-> > +enum {
-> > +#define XDP_METADATA_KFUNC(name, str) name,
-> > +XDP_METADATA_KFUNC_xxx
-> > +#undef XDP_METADATA_KFUNC
-> > +MAX_XDP_METADATA_KFUNC,
-> > +};
-> > +
-> > +#ifdef CONFIG_NET
-> > +u32 xdp_metadata_kfunc_id(int id);
-> > +#else
-> > +static inline u32 xdp_metadata_kfunc_id(int id) { return 0; }
-> > +#endif
-> > +
-> > +struct xdp_md;
-> > +bool bpf_xdp_metadata_rx_timestamp_supported(const struct xdp_md *ctx);
-> > +u64 bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx);
-> > +bool bpf_xdp_metadata_rx_hash_supported(const struct xdp_md *ctx);
-> > +u32 bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx);
-> > +
->
