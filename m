@@ -2,183 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC816484E3
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 16:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F53A64865E
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 17:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbiLIPUs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 10:20:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
+        id S229591AbiLIQPA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 11:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbiLIPUr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 10:20:47 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B286D86F69;
-        Fri,  9 Dec 2022 07:20:46 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id n21so12224466ejb.9;
-        Fri, 09 Dec 2022 07:20:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aKeZ4tYHRTY5Y692xNjYg1a08hzNMUIopr7AUdLi5M4=;
-        b=PNBXApaESWpfGef9izBo29+Y5AnTu56H5yKCAcWs6WDFoLy3/XYpV+ELlq+HI4oEP7
-         czoq8uAjUybzA9JXkXLm3a2UozAKaYC4Bg6hzErN/yJEPG/ptNyaDIHDNp4lsFId7lCq
-         QKfAQNaE2XdK5bhUK0AgLoqC39AFlC1v4qHjX+nxljxPb1Y8D1Q8GgSfZMsSfurFrS+j
-         30QhV30swD4ZvyBhGdsGcY6/DIFez54YwBx379kmn4vXTGntK/ztnfDh0cxVD35lhNAe
-         gh+KHrNmTqrkFuCZS/wnsPfYGW8XuMfrlsxZTdJLQYWQMHFWueC21UG5ZtCNZ+8hYfTW
-         S9ZQ==
+        with ESMTP id S229554AbiLIQOi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 11:14:38 -0500
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BE326AA2;
+        Fri,  9 Dec 2022 08:14:37 -0800 (PST)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-381662c78a9so58384907b3.7;
+        Fri, 09 Dec 2022 08:14:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aKeZ4tYHRTY5Y692xNjYg1a08hzNMUIopr7AUdLi5M4=;
-        b=iPiXBstnmFqcmHvuYfDiOl0XkzzOp+XRUlheC2Jb6dlzLPkZe+DYAGr4c/NCsi2PmC
-         zKe2gGS0BBm5GweCDcRBgXK8Xw2NtSmS5A23tGhvR2onDysAs36ELf2CT3gj/dN5lPky
-         oD5D7vGatzoZC3omI3HuIiTt8TW6h8WgYNzX3h5grLOKNormfBWHM0TSl3nCh2NkXG8C
-         KKvQP/fQMI+9ruKNQFOSqqcwHgivvIy/QTBL/fpql55WQ7OE7PbORtVTRLLsgdp1fyTL
-         0eNO7BzI84WvNuYFax96YFKmHHRkxTc5Dv8zmVQS3i67+WAhR9EXYd4CeMG9xdqr0vPQ
-         OSLw==
-X-Gm-Message-State: ANoB5pnrqeifzojA0MkkCib9dETmYm08aWM2BfaoprQGwOSk9JVcp0H0
-        OHAtQjFRWW7usyARdYZbjG0=
-X-Google-Smtp-Source: AA0mqf5pkWVFeQAqJ3SqwghDSS6FDSl+wzcpBiWvaMsTrudXR7RjxnRvElvwQmTw4QRXtDddlbdZ3Q==
-X-Received: by 2002:a17:906:6ad7:b0:78d:f455:3105 with SMTP id q23-20020a1709066ad700b0078df4553105mr4410582ejs.45.1670599245111;
-        Fri, 09 Dec 2022 07:20:45 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id k17-20020a170906055100b007806c1474e1sm16983eja.127.2022.12.09.07.20.43
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r2qId5xhvUo4Pl0t4FuJRG6nKhrNrqhzhcDasrr5b8g=;
+        b=Eh6kWAW3WPRiHSavpa5GV/wIM6Od+Owf4zJYR02MNkfY+D7bbP9BE5uCIClSvMDfQl
+         sBdg1uLRZhQmnqiMXv/oDitbjE56MnxgbGcwcAapa2seohnx+yuYSpuRRt4zQGOqsG8x
+         PSWtKX8Yxc6HEXPOid6E7qkgMXu/oKqLIuIQ1QnIjN6x9SuPMye5HN5CPBv7hT0TpOuy
+         EKY+KyOzLo8UKUu/YKdklcG2kzs0c12AHHFiHlD123SdjL/P2elvXL8xwIgovVqNAw6L
+         Rs9/qcV8UrFiInhw+tZ9LQBO5KCLv1f+oyYFx50vUaMFK8eeQxpOGSZs84pJkqaTgPWK
+         ecnw==
+X-Gm-Message-State: ANoB5pmd+bKPKcaCwlBUQxYyc5cf+tWa3OMCLu7JZsTdjTWZQkO1hGnz
+        QWF16EfBz3sp4qy0PA7+hRs=
+X-Google-Smtp-Source: AA0mqf7UAzjZVBdSASqXI/YgrB/DuQZC33wUbPvFiInD7u7DL/upFOtLPKSzipZEQTiqIp2qLHBKGg==
+X-Received: by 2002:a05:7500:1447:b0:eb:4b0:19ab with SMTP id q7-20020a057500144700b000eb04b019abmr580376gab.50.1670602476570;
+        Fri, 09 Dec 2022 08:14:36 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:c9a7])
+        by smtp.gmail.com with ESMTPSA id v25-20020a05620a0a9900b006f9f714cb6asm131617qkg.50.2022.12.09.08.14.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 07:20:44 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 9 Dec 2022 16:20:42 +0100
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <song@kernel.org>, Hao Sun <sunhao.th@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Fri, 09 Dec 2022 08:14:36 -0800 (PST)
+Date:   Fri, 9 Dec 2022 10:14:33 -0600
+From:   David Vernet <void@manifault.com>
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: BUG: unable to handle kernel paging request in bpf_dispatcher_xdp
-Message-ID: <Y5NSStSi7h9Vdo/j@krava>
-References: <CACkBjsbD4SWoAmhYFR2qkP1b6JHO3Og0Vyve0=FO-Jb2JGGRfw@mail.gmail.com>
- <Y49dMUsX2YgHK0J+@krava>
- <CAADnVQ+w-xtH=oWPYszG-TqxcHmbrKJK10C=P-o2Ouicx-9OUA@mail.gmail.com>
- <CAADnVQJ+9oiPEJaSgoXOmZwUEq9FnyLR3Kp38E_vuQo2PmDsbg@mail.gmail.com>
- <Y5Inw4HtkA2ql8GF@krava>
- <Y5JkomOZaCETLDaZ@krava>
- <Y5JtACA8ay5QNEi7@krava>
- <Y5LfMGbOHpaBfuw4@krava>
- <Y5MaffJOe1QtumSN@krava>
- <Y5M9P95l85oMHki9@krava>
+        Jonathan Corbet <corbet@lwn.net>, Yonghong Song <yhs@meta.com>
+Subject: Re: [PATCH bpf-next v4] docs/bpf: Add documentation for
+ BPF_MAP_TYPE_SK_STORAGE
+Message-ID: <Y5Ne6eMENWY+6br5@maniforge.lan>
+References: <20221209112401.69319-1-donald.hunter@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y5M9P95l85oMHki9@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221209112401.69319-1-donald.hunter@gmail.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 09, 2022 at 02:50:55PM +0100, Jiri Olsa wrote:
-> On Fri, Dec 09, 2022 at 12:22:37PM +0100, Jiri Olsa wrote:
+On Fri, Dec 09, 2022 at 11:24:01AM +0000, Donald Hunter wrote:
+> Add documentation for the BPF_MAP_TYPE_SK_STORAGE including
+> kernel version introduced, usage and examples.
 > 
-> SBIP
-> 
-> > > > > > > >
-> > > > > > > > I'm trying to understand the severity of the issues and
-> > > > > > > > whether we need to revert that commit asap since the merge window
-> > > > > > > > is about to start.
-> > > > > > > 
-> > > > > > > Jiri, Peter,
-> > > > > > > 
-> > > > > > > ping.
-> > > > > > > 
-> > > > > > > cc-ing Thorsten, since he's tracking it now.
-> > > > > > > 
-> > > > > > > The config has CONFIG_X86_KERNEL_IBT=y.
-> > > > > > > Is it related?
-> > > > > > 
-> > > > > > sorry for late reply.. I still did not find the reason,
-> > > > > > but I did not try with IBT yet, will test now
-> > > > > 
-> > > > > no difference with IBT enabled, can't reproduce the issue
-> > > > > 
-> > > > 
-> > > > ok, scratch that.. the reproducer got stuck on wifi init :-\
-> > > > 
-> > > > after I fix that I can now reproduce on my local config with
-> > > > IBT enabled or disabled.. it's something else
-> > > 
-> > > I'm getting the error also when reverting the static call change,
-> > > looking for good commit, bisecting
-> > > 
-> > > I'm getting fail with:
-> > >    f0c4d9fc9cc9 (tag: v6.1-rc4) Linux 6.1-rc4
-> > > 
-> > > v6.1-rc1 is ok
-> > 
-> > so far I narrowed it down between rc1 and rc3.. bisect got me nowhere so far
-> > 
-> > attaching some more logs
-> 
-> looking at the code.. how do we ensure that code running through
-> bpf_prog_run_xdp will not get dispatcher image changed while
-> it's being exetuted
-> 
-> we use 'the other half' of the image when we add/remove programs,
-> but could bpf_dispatcher_update race with bpf_prog_run_xdp like:
-> 
-> 
-> cpu 0:                                  cpu 1:
-> 
-> bpf_prog_run_xdp
->    ...
->    bpf_dispatcher_xdp_func
->       start exec image at offset 0x0
-> 
->                                         bpf_dispatcher_update
->                                                 update image at offset 0x800
->                                         bpf_dispatcher_update
->                                                 update image at offset 0x0
-> 
->       still in image at offset 0x0
-> 
-> 
-> that might explain why I wasn't able to trigger that on
-> bare metal just in qemu
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
 
-I tried patch below and it fixes the issue for me and seems
-to confirm the race above.. but not sure it's the best fix
+Looks great, thanks Donald!
 
-jirka
-
-
----
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index c19719f48ce0..6a2ced102fc7 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -124,6 +124,7 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- 	}
- 
- 	__BPF_DISPATCHER_UPDATE(d, new ?: (void *)&bpf_dispatcher_nop_func);
-+	synchronize_rcu_tasks();
- 
- 	if (new)
- 		d->image_off = noff;
+Acked-by: David Vernet <void@manifault.com>
