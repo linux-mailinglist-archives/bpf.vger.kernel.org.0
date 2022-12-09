@@ -2,235 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA40648A61
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 22:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB2C648A9E
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 23:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbiLIVxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 16:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
+        id S229628AbiLIWNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 17:13:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbiLIVxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 16:53:09 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7734E1D65D;
-        Fri,  9 Dec 2022 13:53:08 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id ja4-20020a05600c556400b003cf6e77f89cso6559679wmb.0;
-        Fri, 09 Dec 2022 13:53:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e04fWdrgLrCJ7xFCCYgZ998Z3D+QTmt0l/uRKckiRY0=;
-        b=KAm7RhPjXfPzcHcAK7ilA1CutcIi95JHKl4ciiUhFrim3Lw+wQZN1Itcuw6khB8PZi
-         PoOrCc+0fEqXI6a3P3vIhq3pNvStYW+b++lC3QPSzfKBhIN6xeNqHIf85FU3RuiTFzmo
-         pshJVQfsAmaRqZa9kLkuQLOTM+WgP7zM4E/W2m3gHFOK4a7DVi2QB9qvYIWb4Bpz/h2i
-         RY5rWBpAXSF3uM1PC2CRbZfYZ+7jAorTQ7Idv2EY+9rJsvFr2s+noV9PPSS8vga5pPJa
-         bWC/bbiUT+REQ2wf26Awzehetfy1Mj1xuteL5zXXxPcnGTpwR0YKJXKvoS7PxQy19HwP
-         Z/jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e04fWdrgLrCJ7xFCCYgZ998Z3D+QTmt0l/uRKckiRY0=;
-        b=FXZiEgCFHzmyMQqAeEVZF1nlR/u0Lz4YE6ytbwZd016be8O9xm4g7Dvk+T9Hfsjwlh
-         KgcGM2bBW4vDH9qa0kNhsR9cPvRWtiFL5bjwBdHBWQarZPiT516um6QcsS7Z13p8CIzw
-         N1ebjeUDKaGgooVB5R+75zTqUney2t7lpwhdgeQA08RVyxeEpmVqvY09gNuG6jsN0Vpo
-         +6MXop13yP5uILpvYPlC1PKhj4CvFRRtq022drxzev+yIbqhTBuYTrEnQ4gjzOD+CQe9
-         /EIwT/xcFKfwc5cW3COeRQZNSrYScDmMx7aeGS7Bxgn1eFn0unKMobhI3b1aqpPI+qtU
-         O+iw==
-X-Gm-Message-State: ANoB5pmJRHBZk5VR8hUb2Jp9ArGsRHlPQ/x0Ip+MCg3NQEkkpt4l16vJ
-        k+79Ik/xDTCEsUKDnpHPuZg=
-X-Google-Smtp-Source: AA0mqf7i9Wkuh/QW7GPUQeMM7VV0Wffu8wnytmIeaumPpoCJSGte+QMkhGRVyXjsEHmdWisdHfisZA==
-X-Received: by 2002:a1c:4b16:0:b0:3cf:7197:e68a with SMTP id y22-20020a1c4b16000000b003cf7197e68amr6142506wma.18.1670622786829;
-        Fri, 09 Dec 2022 13:53:06 -0800 (PST)
-Received: from krava ([83.240.62.58])
-        by smtp.gmail.com with ESMTPSA id f9-20020a05600c154900b003d2157627a8sm830998wmg.47.2022.12.09.13.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 13:53:06 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 9 Dec 2022 22:53:04 +0100
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        with ESMTP id S229554AbiLIWNI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 17:13:08 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81276DCE5;
+        Fri,  9 Dec 2022 14:13:07 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9FD54B8293C;
+        Fri,  9 Dec 2022 22:13:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EA98C433EF;
+        Fri,  9 Dec 2022 22:13:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670623985;
+        bh=sWo6QnyRrnLIciflYfJb5Tz38EgC8oSkiMy96ny7pcs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JSJHBySSzQ7T/hhs06GIPYb2UxXmBePu9fG+WH7kkKPcYdvMLY15ODdYIu4vPzzoo
+         KdXPUVyHw6aRk+nmjn49CmjEgiW5U0gRvYSucuKUwrYJkA8L7c9pOaviuMxMb/WcGt
+         eaofScKt4Szz8P0FNCckGKKynnckllfXZxvTNELVUYBrno/5n5mp+v1HEvdOXoAAje
+         7knzUf1UYQhNSWwo3adiMqtj/9xe0E+u5DdrKyPPTTjfpl9+PvM+h5bxrb4Gm+3vs2
+         admm1EqnheyETz9CsG9Y0gi+LAo5uZ8AMXC3qrgYiR6x6wyhy5OD3fM7Vm8j8yOFnE
+         jJsuimYq9nkXA==
+Date:   Fri, 9 Dec 2022 14:13:03 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <song@kernel.org>, Hao Sun <sunhao.th@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
         bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: BUG: unable to handle kernel paging request in bpf_dispatcher_xdp
-Message-ID: <Y5OuQNmkoIvcV6IL@krava>
-References: <CAADnVQ+w-xtH=oWPYszG-TqxcHmbrKJK10C=P-o2Ouicx-9OUA@mail.gmail.com>
- <CAADnVQJ+9oiPEJaSgoXOmZwUEq9FnyLR3Kp38E_vuQo2PmDsbg@mail.gmail.com>
- <Y5Inw4HtkA2ql8GF@krava>
- <Y5JkomOZaCETLDaZ@krava>
- <Y5JtACA8ay5QNEi7@krava>
- <Y5LfMGbOHpaBfuw4@krava>
- <Y5MaffJOe1QtumSN@krava>
- <Y5M9P95l85oMHki9@krava>
- <Y5NSStSi7h9Vdo/j@krava>
- <5c9d77bf-75f5-954a-c691-39869bb22127@meta.com>
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP
+ metadata
+Message-ID: <20221209141303.3c3bbb7b@kernel.org>
+In-Reply-To: <CAKH8qBsx4pPuvYenpM18NgdnGCG8QjqnsNY40Uc44EXTUVabMA@mail.gmail.com>
+References: <20221206024554.3826186-1-sdf@google.com>
+        <20221206024554.3826186-12-sdf@google.com>
+        <875yellcx6.fsf@toke.dk>
+        <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
+        <87359pl9zy.fsf@toke.dk>
+        <CAADnVQ+=71Y+ypQTOgFTJWY7w3YOUdY39is4vpo3aou11=eMmw@mail.gmail.com>
+        <87tu25ju77.fsf@toke.dk>
+        <CAADnVQ+MyE280Q-7iw2Y-P6qGs4xcDML-tUrXEv_EQTmeESVaQ@mail.gmail.com>
+        <87o7sdjt20.fsf@toke.dk>
+        <CAKH8qBswBu7QAWySWOYK4X41mwpdBj0z=6A9WBHjVYQFq9Pzjw@mail.gmail.com>
+        <87cz8sk59e.fsf@toke.dk>
+        <20221209084524.01c09d9c@kernel.org>
+        <CAKH8qBsx4pPuvYenpM18NgdnGCG8QjqnsNY40Uc44EXTUVabMA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5c9d77bf-75f5-954a-c691-39869bb22127@meta.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 09, 2022 at 12:31:06PM -0800, Yonghong Song wrote:
+On Fri, 9 Dec 2022 09:46:20 -0800 Stanislav Fomichev wrote:
+> > Is partial inlining hard? (inline just the check and generate a full
+> > call for the read, ending up with the same code as with _supported())  
 > 
-> 
-> On 12/9/22 7:20 AM, Jiri Olsa wrote:
-> > On Fri, Dec 09, 2022 at 02:50:55PM +0100, Jiri Olsa wrote:
-> > > On Fri, Dec 09, 2022 at 12:22:37PM +0100, Jiri Olsa wrote:
-> > > 
-> > > SBIP
-> > > 
-> > > > > > > > > > 
-> > > > > > > > > > I'm trying to understand the severity of the issues and
-> > > > > > > > > > whether we need to revert that commit asap since the merge window
-> > > > > > > > > > is about to start.
-> > > > > > > > > 
-> > > > > > > > > Jiri, Peter,
-> > > > > > > > > 
-> > > > > > > > > ping.
-> > > > > > > > > 
-> > > > > > > > > cc-ing Thorsten, since he's tracking it now.
-> > > > > > > > > 
-> > > > > > > > > The config has CONFIG_X86_KERNEL_IBT=y.
-> > > > > > > > > Is it related?
-> > > > > > > > 
-> > > > > > > > sorry for late reply.. I still did not find the reason,
-> > > > > > > > but I did not try with IBT yet, will test now
-> > > > > > > 
-> > > > > > > no difference with IBT enabled, can't reproduce the issue
-> > > > > > > 
-> > > > > > 
-> > > > > > ok, scratch that.. the reproducer got stuck on wifi init :-\
-> > > > > > 
-> > > > > > after I fix that I can now reproduce on my local config with
-> > > > > > IBT enabled or disabled.. it's something else
-> > > > > 
-> > > > > I'm getting the error also when reverting the static call change,
-> > > > > looking for good commit, bisecting
-> > > > > 
-> > > > > I'm getting fail with:
-> > > > >     f0c4d9fc9cc9 (tag: v6.1-rc4) Linux 6.1-rc4
-> > > > > 
-> > > > > v6.1-rc1 is ok
-> > > > 
-> > > > so far I narrowed it down between rc1 and rc3.. bisect got me nowhere so far
-> > > > 
-> > > > attaching some more logs
-> > > 
-> > > looking at the code.. how do we ensure that code running through
-> > > bpf_prog_run_xdp will not get dispatcher image changed while
-> > > it's being exetuted
-> > > 
-> > > we use 'the other half' of the image when we add/remove programs,
-> > > but could bpf_dispatcher_update race with bpf_prog_run_xdp like:
-> > > 
-> > > 
-> > > cpu 0:                                  cpu 1:
-> > > 
-> > > bpf_prog_run_xdp
-> > >     ...
-> > >     bpf_dispatcher_xdp_func
-> > >        start exec image at offset 0x0
-> > > 
-> > >                                          bpf_dispatcher_update
-> > >                                                  update image at offset 0x800
-> > >                                          bpf_dispatcher_update
-> > >                                                  update image at offset 0x0
-> > > 
-> > >        still in image at offset 0x0
-> > > 
-> > > 
-> > > that might explain why I wasn't able to trigger that on
-> > > bare metal just in qemu
-> > 
-> > I tried patch below and it fixes the issue for me and seems
-> > to confirm the race above.. but not sure it's the best fix
-> > 
-> > jirka
-> > 
-> > 
-> > ---
-> > diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-> > index c19719f48ce0..6a2ced102fc7 100644
-> > --- a/kernel/bpf/dispatcher.c
-> > +++ b/kernel/bpf/dispatcher.c
-> > @@ -124,6 +124,7 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
-> >   	}
-> >   	__BPF_DISPATCHER_UPDATE(d, new ?: (void *)&bpf_dispatcher_nop_func);
-> > +	synchronize_rcu_tasks();
-> >   	if (new)
-> >   		d->image_off = noff;
-> 
-> This might work. In arch/x86/kernel/alternative.c, we have following
-> code and comments. For text_poke, synchronize_rcu_tasks() might be able
-> to avoid concurrent execution and update.
+> I'm assuming you're suggesting to do this partial inlining manually
+> (as in, writing the code to output this bytecode)?
+> This probably also falls into the "manual bpf asm generation tech debt" bucket?
+> LMK if I missed your point.
 
-so my idea was that we need to ensure all the current callers of
-bpf_dispatcher_xdp_func (which should have rcu read lock, based
-on the comment in bpf_prog_run_xdp) are gone before and new ones
-execute the new image, so the next call to the bpf_dispatcher_update
-will be safe to overwrite the other half of the image
-
-jirka
-
-> 
-> /**
->  * text_poke_copy - Copy instructions into (an unused part of) RX memory
->  * @addr: address to modify
->  * @opcode: source of the copy
->  * @len: length to copy, could be more than 2x PAGE_SIZE
->  *
->  * Not safe against concurrent execution; useful for JITs to dump
->  * new code blocks into unused regions of RX memory. Can be used in
->  * conjunction with synchronize_rcu_tasks() to wait for existing
->  * execution to quiesce after having made sure no existing functions
->  * pointers are live.
->  */
-> void *text_poke_copy(void *addr, const void *opcode, size_t len)
-> {
->         unsigned long start = (unsigned long)addr;
->         size_t patched = 0;
-> 
->         if (WARN_ON_ONCE(core_kernel_text(start)))
->                 return NULL;
-> 
->         mutex_lock(&text_mutex);
->         while (patched < len) {
->                 unsigned long ptr = start + patched;
->                 size_t s;
-> 
->                 s = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(ptr), len -
-> patched);
-> 
->                 __text_poke(text_poke_memcpy, (void *)ptr, opcode + patched,
-> s);
->                 patched += s;
->         }
->         mutex_unlock(&text_mutex);
->         return addr;
-> }
+Maybe just ignore that, I'm not sure how the unrolling of 
+the _supported() calls was expected to work in the first place.
