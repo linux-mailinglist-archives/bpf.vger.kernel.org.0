@@ -2,67 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0ED6647AA3
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 01:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EFC647AC8
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 01:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbiLIAPy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 19:15:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
+        id S229724AbiLIAaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 19:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbiLIAPT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 19:15:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBC582F9A
-        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 16:14:20 -0800 (PST)
+        with ESMTP id S229702AbiLIAaO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 19:30:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95A5941A8
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 16:29:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670544859;
+        s=mimecast20190719; t=1670545761;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4T5sBCl/3CDxr25zUnGc9p87c5wEBV2/DlcV/PFZ2Ac=;
-        b=fUQIHnEcx3UZOSATLKBQ6LL17MMhV7wZ7TR9w5h4RheIjKYMkaInRSRdlXuLLwLNCsjkyx
-        ulLlHDAxwrMdal5rOhDSRVHv5Y49/voKbVVZz8EJ8NwLRuaIuk+eZLG15lBPboCzfH/efG
-        b4aLux+otqbqd5C2YKrlGhnK/EAYCH4=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=U8OBtv2yIS04AYX7W/1P+gUfW6hywQvsnowxXELDSU8=;
+        b=U/l0Qze8ZwM5/8rOVdZhmSDGC3dBd9VGIDay1IVn2dMMaAczU4HfHlVdWnL+42WEih655U
+        xCzlqlg/vqzQZ2A42lUvgo8UHABJyxc4y518/iiOvKOICAO7V9ykAuhGPGuEGl1SrkIdAT
+        50bKJn6mnB55NGE6ZJmta5wW9kipC2E=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-356-GFArlXYLOV2lYTwJm3eU4Q-1; Thu, 08 Dec 2022 19:14:18 -0500
-X-MC-Unique: GFArlXYLOV2lYTwJm3eU4Q-1
-Received: by mail-ed1-f70.google.com with SMTP id z16-20020a05640235d000b0046d0912ae25so414084edc.5
-        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 16:14:18 -0800 (PST)
+ us-mta-137-SQfVjN6BP_CR6YxzP3JiIA-1; Thu, 08 Dec 2022 19:29:19 -0500
+X-MC-Unique: SQfVjN6BP_CR6YxzP3JiIA-1
+Received: by mail-ed1-f72.google.com with SMTP id j11-20020aa7c40b000000b0046b45e2ff83so413522edq.12
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 16:29:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4T5sBCl/3CDxr25zUnGc9p87c5wEBV2/DlcV/PFZ2Ac=;
-        b=b/75bFAscNt1fdkULSUiBryxZmBlvdWpwsN+Fu6vjePn4P+K0RKFaBUJoIlljOWZ2V
-         DtaR0k0UeB+Z103GqJyoMBI5TB7Ryg9liHD0KOnsB8RbmxueUbF6StSiccYQ3IF/+mpN
-         PM6lWgg4VTl8WUb/W8IYkFuF+beR6p7GBmS05dX8CYJ+arQMv/ybcgpKuP5di+x3znYc
-         WcoHUwhvb1BI/SM9PCot5pvGZSMdnRGS/uziYFT7ZFDPgE2zPZvK55SVCpfxPfAk6vHG
-         1ZmPXQxMmpzDDEu2yJT5ZR28nRf90GApIozmFZuuH0EIqexqUmKrgn+rixUxYFpQs0Gv
-         sc8A==
-X-Gm-Message-State: ANoB5pnxDole0Ds0aNHFvRuQl5Qu8tBZuYkCXKV83MzdyiD2+cAfwpSs
-        +WBWuD/SVkrvOv1FOo2ja3BR9VvcjLIW9RkCftksq0BNQ2OJ9aAb6HSUAIwmEcd+oj0r5xkNJ6W
-        bWf8pvg0zspRT
-X-Received: by 2002:a05:6402:3985:b0:461:3ae6:8bfc with SMTP id fk5-20020a056402398500b004613ae68bfcmr3791861edb.34.1670544856450;
-        Thu, 08 Dec 2022 16:14:16 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf4pGscj4T39ekLdKdM3k2JNhFGEY2EQzfwP35Z/evcQY53JRadCWkl1oFCQPRUO4A24tOytvg==
-X-Received: by 2002:a05:6402:3985:b0:461:3ae6:8bfc with SMTP id fk5-20020a056402398500b004613ae68bfcmr3791804edb.34.1670544854791;
-        Thu, 08 Dec 2022 16:14:14 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id u26-20020a05640207da00b0046bc2f432dasm20515edy.22.2022.12.08.16.14.14
+        bh=U8OBtv2yIS04AYX7W/1P+gUfW6hywQvsnowxXELDSU8=;
+        b=oexLINxFb9bHWWQbMLqsRSIzgjxZPaPrIBlKy4yFdT+WBJRDU4fpimCtoaWaqJyMv+
+         IR3J+OzZ3M0yqsvj0JcEHearBz8P8uPTcVmyqpD2VnVHqZ+4S+ihc83qnG0tSOJD5+DA
+         o9j6e+mAtnqgksUmqJrQ6YqYvcWFmSEIHkpt3LCaQj1nN0KB+KZqOjgbyx25yvkltixO
+         vBA40KYPllLOSPotnXnJNgfzXH6bHw+HHNnMpLrYhHhwbZs9Y7P1yL75qeCVPgbg+qc2
+         43CWs0fl1Ie04hyXtufRysIYWozCoAY3hotLvAkkqSK+6ynlLEmNSSJAYXHD6F2HCYa3
+         8MEQ==
+X-Gm-Message-State: ANoB5pmYYlxdHdBI7DIr2J3H31cyA0kp+SzQfwXole7iBvOiZDqT/+Ks
+        V4d99qf3ZElvMGjbCEq0NHcNKA4FqZhEKKGgEjAldfUF5npMzAb8z1EtmgXktAw2evjifAEaMKv
+        pQBGYTfcXo8Ju
+X-Received: by 2002:a17:906:b1c6:b0:78d:f455:b5d4 with SMTP id bv6-20020a170906b1c600b0078df455b5d4mr3296205ejb.20.1670545758519;
+        Thu, 08 Dec 2022 16:29:18 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf4CiSJlchin364iECYsvkMB+OkYb0iDARFbXm2MDItjFmcJFlFLVTWkkyiVuplDVnQSKpjTAA==
+X-Received: by 2002:a17:906:b1c6:b0:78d:f455:b5d4 with SMTP id bv6-20020a170906b1c600b0078df455b5d4mr3296167ejb.20.1670545758084;
+        Thu, 08 Dec 2022 16:29:18 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id n11-20020a170906118b00b007be696512ecsm10123228eja.187.2022.12.08.16.29.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Dec 2022 16:14:14 -0800 (PST)
+        Thu, 08 Dec 2022 16:29:17 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9B62382E9C9; Fri,  9 Dec 2022 01:14:13 +0100 (CET)
+        id 4C35982E9CE; Fri,  9 Dec 2022 01:29:16 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         David Ahern <dsahern@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
@@ -71,21 +77,24 @@ Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         Alexander Lobakin <alexandr.lobakin@intel.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 00/12] xdp: hints via kfuncs
-In-Reply-To: <CAKH8qBuzpiXrL5SOxd1u0-zim+Kf166DRUDT0PuR081f-ad2-Q@mail.gmail.com>
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP
+ metadata
+In-Reply-To: <CAADnVQ+=71Y+ypQTOgFTJWY7w3YOUdY39is4vpo3aou11=eMmw@mail.gmail.com>
 References: <20221206024554.3826186-1-sdf@google.com>
- <87bkodleca.fsf@toke.dk>
- <CAKH8qBuzpiXrL5SOxd1u0-zim+Kf166DRUDT0PuR081f-ad2-Q@mail.gmail.com>
+ <20221206024554.3826186-12-sdf@google.com> <875yellcx6.fsf@toke.dk>
+ <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
+ <87359pl9zy.fsf@toke.dk>
+ <CAADnVQ+=71Y+ypQTOgFTJWY7w3YOUdY39is4vpo3aou11=eMmw@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 09 Dec 2022 01:14:13 +0100
-Message-ID: <87wn71juwa.fsf@toke.dk>
+Date:   Fri, 09 Dec 2022 01:29:16 +0100
+Message-ID: <87tu25ju77.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,74 +102,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev <sdf@google.com> writes:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> On Thu, Dec 8, 2022 at 2:29 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+> On Thu, Dec 8, 2022 at 4:02 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
 hat.com> wrote:
 >>
 >> Stanislav Fomichev <sdf@google.com> writes:
 >>
->> > Please see the first patch in the series for the overall
->> > design and use-cases.
+>> > On Thu, Dec 8, 2022 at 2:59 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+>> >>
+>> >> Stanislav Fomichev <sdf@google.com> writes:
+>> >>
+>> >> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >> >
+>> >> > Support RX hash and timestamp metadata kfuncs. We need to pass in t=
+he cqe
+>> >> > pointer to the mlx5e_skb_from* functions so it can be retrieved fro=
+m the
+>> >> > XDP ctx to do this.
+>> >>
+>> >> So I finally managed to get enough ducks in row to actually benchmark
+>> >> this. With the caveat that I suddenly can't get the timestamp support=
+ to
+>> >> work (it was working in an earlier version, but now
+>> >> timestamp_supported() just returns false). I'm not sure if this is an
+>> >> issue with the enablement patch, or if I just haven't gotten the
+>> >> hardware configured properly. I'll investigate some more, but figured
+>> >> I'd post these results now:
+>> >>
+>> >> Baseline XDP_DROP:         25,678,262 pps / 38.94 ns/pkt
+>> >> XDP_DROP + read metadata:  23,924,109 pps / 41.80 ns/pkt
+>> >> Overhead:                   1,754,153 pps /  2.86 ns/pkt
+>> >>
+>> >> As per the above, this is with calling three kfuncs/pkt
+>> >> (metadata_supported(), rx_hash_supported() and rx_hash()). So that's
+>> >> ~0.95 ns per function call, which is a bit less, but not far off from
+>> >> the ~1.2 ns that I'm used to. The tests where I accidentally called t=
+he
+>> >> default kfuncs cut off ~1.3 ns for one less kfunc call, so it's
+>> >> definitely in that ballpark.
+>> >>
+>> >> I'm not doing anything with the data, just reading it into an on-stack
+>> >> buffer, so this is the smallest possible delta from just getting the
+>> >> data out of the driver. I did confirm that the call instructions are
+>> >> still in the BPF program bytecode when it's dumped back out from the
+>> >> kernel.
+>> >>
+>> >> -Toke
+>> >>
 >> >
->> > Changes since v3:
->> >
->> > - Rework prog->bound_netdev refcounting (Jakub/Marin)
->> >
->> >   Now it's based on the offload.c framework. It mostly fits, except
->> >   I had to automatically insert a HT entry for the netdev. In the
->> >   offloaded case, the netdev is added via a call to
->> >   bpf_offload_dev_netdev_register from the driver init path; with
->> >   a dev-bound programs, we have to manually add (and remove) the entry.
->> >
->> >   As suggested by Toke, I'm also prohibiting putting dev-bound programs
->> >   into prog-array map; essentially prohibiting tail calling into it.
->> >   I'm also disabling freplace of the dev-bound programs. Both of those
->> >   restrictions can be loosened up eventually.
+>> > Oh, that's great, thanks for running the numbers! Will definitely
+>> > reference them in v4!
+>> > Presumably, we should be able to at least unroll most of the
+>> > _supported callbacks if we want, they should be relatively easy; but
+>> > the numbers look fine as is?
 >>
->> I thought it would be a shame that we don't support at least freplace
->> programs from the get-go (as that would exclude libxdp from taking
->> advantage of this). So see below for a patch implementing this :)
+>> Well, this is for one (and a half) piece of metadata. If we extrapolate
+>> it adds up quickly. Say we add csum and vlan tags, say, and maybe
+>> another callback to get the type of hash (l3/l4). Those would probably
+>> be relevant for most packets in a fairly common setup. Extrapolating
+>> from the ~1 ns/call figure, that's 8 ns/pkt, which is 20% of the
+>> baseline of 39 ns.
 >>
->> -Toke
+>> So in that sense I still think unrolling makes sense. At least for the
+>> _supported() calls, as eating a whole function call just for that is
+>> probably a bit much (which I think was also Jakub's point in a sibling
+>> thread somewhere).
 >
-> Damn, now I need to write a selftest :-)
-> But seriously, thank you for taking care of this, will try to include
-> preserving SoB!
+> imo the overhead is tiny enough that we can wait until
+> generic 'kfunc inlining' infra is ready.
+>
+> We're planning to dual-compile some_kernel_file.c
+> into native arch and into bpf arch.
+> Then the verifier will automatically inline bpf asm
+> of corresponding kfunc.
 
-Cool, thanks! I just realised I made on mistake in the attach check,
-though:
-
-[...]
-
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index b345a273f7d0..606e6de5f716 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -3021,6 +3021,14 @@ static int bpf_tracing_prog_attach(struct bpf_pro=
-g *prog,
->>                         goto out_put_prog;
->>                 }
->>
->> +               if (bpf_prog_is_dev_bound(tgt_prog->aux) &&
->> +                   (bpf_prog_is_offloaded(tgt_prog->aux) ||
->> +                    !bpf_prog_is_dev_bound(prog->aux) ||
->> +                    !bpf_offload_dev_match(prog, tgt_prog->aux->offload=
-->netdev))) {
-
-This should switch the order of the is_dev_bound() checks, like:
-
-+               if (bpf_prog_is_dev_bound(prog->aux) &&
-+                   (bpf_prog_is_offloaded(tgt_prog->aux) ||
-+                    !bpf_prog_is_dev_bound(tgt_prog->aux) ||
-+                    !bpf_offload_dev_match(prog, tgt_prog->aux->offload->n=
-etdev))) {
-
-I.e., first check bpf_prog_is_dev_bound(prog->aux) (the program being
-attached), and only perform the other checks if we're attaching
-something that has been verified as being dev-bound. It should be fine
-to attach a non-devbound function to a devbound parent program (since
-that non-devbound function can't call any of the kfuncs).
+Is that "planning" or "actively working on"? Just trying to get a sense
+of the time frames here, as this sounds neat, but also something that
+could potentially require quite a bit of fiddling with the build system
+to get to work? :)
 
 -Toke
 
