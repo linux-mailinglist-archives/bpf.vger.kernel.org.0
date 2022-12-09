@@ -2,73 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC08647A6F
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 01:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16894647A7F
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 01:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbiLIAEB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 19:04:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41544 "EHLO
+        id S229781AbiLIAIt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 19:08:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbiLIADw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 19:03:52 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A4B4D5C3;
-        Thu,  8 Dec 2022 16:03:51 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id l11so1049052edb.4;
-        Thu, 08 Dec 2022 16:03:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=u7tp5M5h/6cg9ED5H3uvPb7Hyu+fCPDdnOUf7K9pOXA=;
-        b=prhxCYh7BlRHobaWQBCq0SDdXmebnZwBykhilMcxpuNPPpSr8U8HKsWB1KWEW7uITp
-         WJEokyHIMxCeSjJDYOE98G/A7dnF+pGoV1qMA6CO+sgOJ6cEX1XCRITzLvD57nSkvbK8
-         KkBX+MeZGO0qsiJFu3JWqQPCmwidWvsNdsi/afkD4n+1JXD6hIVFiw7xWgUeb7RmC9NJ
-         QOuQT4OM4jAYKVb3idUmXen+jPW2I+yFrqJy0wtaFb+XFGcwY9ttvJibaMQmVxUvNRcY
-         siW5ZRHDnk+KEBUSF6yLLR1PEKEW8M97va3EvuPetvVl1IaiFYSTVGNfYQCJGYQ9hEb4
-         K6OQ==
+        with ESMTP id S229469AbiLIAIp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 19:08:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777C112775
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 16:07:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670544466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UnV9sHMygGeqceDB6oqgI6Lx3Hl0PuFE6k1V3XoJZrg=;
+        b=A5vMeksoSRg390qNtjeuv5kOk+uBTca7mxRXxQmxlna1hYbK+XgvWDQu7umXYHiVyj6VFe
+        9Ko4vvgPPranqSuldoe9Wi66NUIHV+VN7psemL486afJ5O9J7i/0mXJrovdlgGIg4Wrjrw
+        1TQbmGd5o1H7Jmw/TsQncBtwt7vfZaA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-292-K8hnRG16NpKIfJK_w0NkyA-1; Thu, 08 Dec 2022 19:07:45 -0500
+X-MC-Unique: K8hnRG16NpKIfJK_w0NkyA-1
+Received: by mail-ed1-f72.google.com with SMTP id z3-20020a056402274300b0046b14f99390so394267edd.9
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 16:07:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u7tp5M5h/6cg9ED5H3uvPb7Hyu+fCPDdnOUf7K9pOXA=;
-        b=brIj9tcqNUwwR8OeIWBFo8IJ0tIAKFhudng+8vqayvM0WkBRtfU3Kniv7J/DVFyZNC
-         XUzpY6TuNwV6WNRC2lbuUkxF5DWuykaLT5ZdsW80cPk8WktyHWg3MS11JCqsitaaqBkx
-         2bODgTBsEUwT6RoTRjEe+zAoPD8+hbQ8gOCzz8W1ivsmtwo122P21DyjgxEwM6slx/cO
-         Jo74b7KCHrdsDCeMfb0v97Rh5yFSR6YmWqpXrCYG2p6yoTGl+eGMgaUgCyDhiJvmYfCb
-         umKQriTCuK1402G2QfZUAYWrcLlHZaDF7iga02fy9GRfY1kNSCpRWirlPggK6yk71wHK
-         3voQ==
-X-Gm-Message-State: ANoB5pnRo3Wo3008JBRcWeDD9U409BzotLYVYO5Bv9VPyRnL9eNunzwH
-        ztQ9eFD9Yt+tLoB40n7wQAfy9hAx0FrBJ4tKS5o=
-X-Google-Smtp-Source: AA0mqf7Y5MxgWHgNRS6l8bF7NTDfIp2YQKiyMmyPnAiNIBTkMR+vA17F6K9RpJF4F+7w8VIhFCivJA+2b5P96X0WS+k=
-X-Received: by 2002:aa7:d80d:0:b0:46b:7645:86a9 with SMTP id
- v13-20020aa7d80d000000b0046b764586a9mr35638966edq.311.1670544229440; Thu, 08
- Dec 2022 16:03:49 -0800 (PST)
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UnV9sHMygGeqceDB6oqgI6Lx3Hl0PuFE6k1V3XoJZrg=;
+        b=0E2/Gk03i9wZxxATCu5N+WXmt78lEi1xXBSJ5GUYonAswEsvIlqxe9Fm3uqBHWKyjL
+         ESVcHlfg0X4MpICk0JAADPQZRgbieLJg2I22XOaDULqFRKouj0Ov8On9+wNrwwqgj/xI
+         1EE01oM0EuC7uVF8C9fg2WTwh8kgO7qf/27Oa/U3GFhj11jMo9H6O0giYaxgqgOnhU0M
+         TAkBPZ2tRaQpHT2IqM0f/pX3hGDAdCGKEOl/GZn6kH3B0SDAOTyRdFkvVB0rlI+9rwV7
+         hI8BanYtxciBr+SdibMXlVGVg8HHJDpWD51K2keEyHUTZ+XTG4BD4vI01ly0+IlRNATf
+         KcKw==
+X-Gm-Message-State: ANoB5pkqu2rxzN5oA9wEgyHpO5zaKvWwxNXH0UPW95ra4U8z3fXTxSls
+        0v1YM3eaVRMdSjZKFe4I56kETAWMMEcAybfzCF4OQUqNIK6ysg/otdtd1ek7CmNDHcgy9+5cSO0
+        d6Nqib2alNg8Y
+X-Received: by 2002:a17:907:8a22:b0:7af:16b5:9af8 with SMTP id sc34-20020a1709078a2200b007af16b59af8mr4472671ejc.33.1670544461802;
+        Thu, 08 Dec 2022 16:07:41 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf4jxNWVpUDFqe+Y4asR9M7ckORo70cpv13tgtmDSLBwLKzO+sRaQhDNDbBSqyQ9hON3IMdxMQ==
+X-Received: by 2002:a17:907:8a22:b0:7af:16b5:9af8 with SMTP id sc34-20020a1709078a2200b007af16b59af8mr4472566ejc.33.1670544459873;
+        Thu, 08 Dec 2022 16:07:39 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id k2-20020a170906680200b0077077c62cadsm10135739ejr.31.2022.12.08.16.07.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Dec 2022 16:07:38 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A80B782E9C7; Fri,  9 Dec 2022 01:07:37 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 03/12] bpf: XDP metadata RX
+ kfuncs
+In-Reply-To: <CAKH8qBvgkTXFEhd9hOa+SFtqKAXuD=WM_h1TZYdQA0d70_drEA@mail.gmail.com>
+References: <20221206024554.3826186-1-sdf@google.com>
+ <20221206024554.3826186-4-sdf@google.com> <878rjhldv0.fsf@toke.dk>
+ <CAKH8qBvgkTXFEhd9hOa+SFtqKAXuD=WM_h1TZYdQA0d70_drEA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 09 Dec 2022 01:07:37 +0100
+Message-ID: <87zgbxjv7a.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20221109024155.2810410-1-connoro@google.com> <5708a47d-5400-e75e-ccf6-96177366ea38@meta.com>
- <CALE1s+NfHYpE_=fNr47U2groVDwhdHJJDSo6-2gdN8mR5G700g@mail.gmail.com> <0b9023b6-9742-b317-7596-98026a0c5d03@meta.com>
-In-Reply-To: <0b9023b6-9742-b317-7596-98026a0c5d03@meta.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 8 Dec 2022 16:03:37 -0800
-Message-ID: <CAEf4BzbTeJWkFhF-bW3mp94THeYEMM7R-ZX3C_c1aazY0Togsw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: btf: don't log ignored BTF mismatches
-To:     Yonghong Song <yhs@meta.com>
-Cc:     "Connor O'Brien" <connoro@google.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,84 +91,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 8, 2022 at 10:01 AM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 12/7/22 6:19 PM, Connor O'Brien wrote:
-> > On Wed, Nov 9, 2022 at 8:45 AM Yonghong Song <yhs@meta.com> wrote:
-> >>
-> >>
-> >>
-> >> On 11/8/22 6:41 PM, Connor O'Brien wrote:
-> >>> Enabling CONFIG_MODULE_ALLOW_BTF_MISMATCH is an indication that BTF
-> >>> mismatches are expected and module loading should proceed
-> >>> anyway. Logging with pr_warn() on every one of these "benign"
-> >>> mismatches creates unnecessary noise when many such modules are
-> >>> loaded. Instead, limit logging to the case where a BTF mismatch
-> >>> actually prevents a module form loading.
-> >>>
-> >>> Signed-off-by: Connor O'Brien <connoro@google.com>
-> >>> ---
-> >>>    kernel/bpf/btf.c | 7 ++++---
-> >>>    1 file changed, 4 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> >>> index 5579ff3a5b54..406370487413 100644
-> >>> --- a/kernel/bpf/btf.c
-> >>> +++ b/kernel/bpf/btf.c
-> >>> @@ -7190,11 +7190,12 @@ static int btf_module_notify(struct notifier_block *nb, unsigned long op,
-> >>>                }
-> >>>                btf = btf_parse_module(mod->name, mod->btf_data, mod->btf_data_size);
-> >>>                if (IS_ERR(btf)) {
-> >>> -                     pr_warn("failed to validate module [%s] BTF: %ld\n",
-> >>> -                             mod->name, PTR_ERR(btf));
-> >>
-> >> I think such warning still useful even with
-> >> CONFIG_MODULE_ALLOW_BTF_MISMATCH.
-> >> Can we use pr_warn_ratelimited instead of pr_warn in the above to
-> >> avoid excessive warnings?
-> >
-> > I gave this a try on a Pixel 6 but I'm not sure it quite addresses the
-> > issue. The amount of logging doesn't seem to decrease much, I think
-> > because the interval between loading one mismatched module and the
-> > next can be greater than the default rate limit. To my mind, the issue
-> > is the total volume of these messages more so than their rate.
-> >
-> > For context, Android devices using the GKI may load hundreds of
-> > separately-built modules, and BTF mismatches are possible for any/all
-> > of these. It was pointed out to me that btf_verifier_log_type can also
-> > print several more lines per mismatched module. ~5 lines of logging
-> > for each mismatched module can start to add up, in terms of both
-> > overhead and the noise added to the kernel logs.
-> >
-> > This is more subjective but I think the warnings also read as though
-> > this is a more serious failure that might prevent affected modules
-> > from working correctly; anecdotally, I've gotten multiple questions
-> > about them asking if something is broken. This can be a red herring
-> > for anyone unfamiliar with BTF who is reading the logs to debug
-> > unrelated issues. In the CONFIG_MODULE_ALLOW_BTF_MISMATCH=y case the
-> > flood of warnings seems out of proportion to the actual result
-> > (modules still load successfully, just without debug info) especially
-> > since the user has explicitly enabled a config saying they expect
-> > mismatches.
-> >
-> > If there needs to be some logging in the "mismatch allowed" case,
-> > could an acceptable middle ground be to use pr_warn_once to send a
->
-> So it looks like pr_warn_ratelimited still produces a lot of warning.
-> In this case, I guess pr_warn_once should be okay.
+Stanislav Fomichev <sdf@google.com> writes:
 
-Maybe pr_warn_once generic "some kernel module BTF mismatched". And
-also warn per-module message with details if
-CONFIG_MODULE_ALLOW_BTF_MISMATCH is not set?
-
+>> Another UX thing I ran into is that libbpf will bail out if it can't
+>> find the kfunc in the kernel vmlinux, even if the code calling the
+>> function is behind an always-false if statement (which would be
+>> eliminated as dead code from the verifier). This makes it a bit hard to
+>> conditionally use them. Should libbpf just allow the load without
+>> performing the relocation (and let the verifier worry about it), or
+>> should we have a bpf_core_kfunc_exists() macro to use for checking?
+>> Maybe both?
 >
-> > single message reporting that mismatches were detected & module BTF
-> > debug info might be unavailable? Alternatively, if we could opt out of
-> > module BTF loading then that would also avoid this issue, but that's
-> > already been proposed before ([1], [2]) so I thought working with the
-> > existing config option might be preferred.
-> >
-> > [1] https://lore.kernel.org/bpf/20220209052141.140063-1-connoro@google.com/
-> > [2] https://lore.kernel.org/bpf/20221004222725.2813510-1-sdf@google.com/
+> I'm not sure how libbpf can allow the load without performing the
+> relocation; maybe I'm missing something.
+> IIUC, libbpf uses the kfunc name (from the relocation?) and replaces
+> it with the kfunc id, right?
+
+Yeah, so if it can't find the kfunc in vmlinux, just write an id of 0.
+This will trip the check at the top of fixup_kfunc_call() in the
+verifier, but if the code is hidden behind an always-false branch (an
+rodata variable set to zero, say) the instructions should get eliminated
+before they reach that point. That way you can at least turn it off at
+runtime (after having done some kind of feature detection) without
+having to compile it out of your program entirely.
+
+> Having bpf_core_kfunc_exists would help, but this probably needs
+> compiler work first to preserve some of the kfunc traces in vmlinux.h?
+
+I am not sure how the existing macros work, TBH. Hopefully someone else
+can chime in :)
+
+-Toke
+
