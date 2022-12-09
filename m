@@ -2,62 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C55647A4F
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 00:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69710647A6D
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 01:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229479AbiLHXrZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 18:47:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
+        id S229556AbiLIAEA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 19:04:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbiLHXrY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 18:47:24 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89431B9E8
-        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 15:47:22 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d7so3100492pll.9
-        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 15:47:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RHz/p94tRpWArc+NRaourv1FZGGAjavxHA+JkB/KZ8Y=;
-        b=mR5Tolp08iTQW/5C1NJTRAoMOhbIOQMK29UbGb6VzbZG9tld40iecQXZXPv6TJY8gm
-         Dv1TyaY6cquVsNxc67JHPaQXAF/lLZcDW3my6NuXlpQT60rPImh+9VGBt4hqRfY+UK16
-         a2zfNi1398y8EhxeuNMdS8oyo9ia8gYd22VWPPp+tt2XZEqXZBLW53ZyROzAMVPvM5CV
-         XMVX4gkUjrVFo1GuAfXPJAvMRE3XwREWUyTqMO12D0EOM6PlN642wZ30z1qScQ+VPiqJ
-         3809UqN2BqpK4YkCOF6Z72/j9vrqrQgY8StGynahd2N3aTntXCzVRqUiSOElBpuIQoTG
-         sopg==
+        with ESMTP id S229586AbiLIADl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 19:03:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3204BE2
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 16:02:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670544168;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eDjpZTzpQHuFcOQSGAT2WzTURtYSuufNt2pnLYu1YmI=;
+        b=SQRQA40DGTjmXjpUshj0QYBVOT6qzenJufmk2VJvqFIXwLNK4n3/mXRU7grXu24CpSG+w1
+        P5gzg2o5x/MbuacvpuxBl7GmI5gXoZt11bExyoU0+tBqw7zRlGGfsecSdQlMQk/Ad60UDp
+        PB1fnYFFrbbDdcl/+jNSRcnXkXBxEyo=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-29-n7kUyYBPMCa34gN8wF36_Q-1; Thu, 08 Dec 2022 19:02:46 -0500
+X-MC-Unique: n7kUyYBPMCa34gN8wF36_Q-1
+Received: by mail-ej1-f70.google.com with SMTP id gn36-20020a1709070d2400b007ba3374574dso1999441ejc.23
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 16:02:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RHz/p94tRpWArc+NRaourv1FZGGAjavxHA+JkB/KZ8Y=;
-        b=y6ZYNxmE8ax6rqH2qkuxR3Q/PVkGCgxsym7yX93qmCDeZb8Qy6WoBz+s2fgRQpI6ey
-         OUi5gT5MZgS3poIkuo5vYtvq9Z8fVAcGZL/cHOklNOZ0ZO44LlTklbWOUuuwVbmLqn6j
-         972dv14qmdo5V8a6VeD3BCqe92QnXji1NbeVO3kQwPSBM3K/cR5eGIyF2BDehukRvnlz
-         MOl2linOBsEmynBkCGxcU3YcbIGPsBV1OD4+nDGkttJQNl2Da/+jbYdKfsUm5Jb1dWtb
-         rs5VsBI4W3vkYda2fMu1GIFRpmc5qMYVq1/814iSDnegSh9YqBjEmznpybjPBhg0Gb9t
-         z7+A==
-X-Gm-Message-State: ANoB5pnY+nBu9ZdXgHrYEkHStb98y8SnhlORcIaPrVl8XwN1WjN9r1st
-        uNzAZ+15MVcRsOLinao7UQ+61yvBAGbLcKsIc9dA0Q==
-X-Google-Smtp-Source: AA0mqf6iua9P2o6lgLNxy1HeHz8JDEFVLDHLRkw8kkkuPZcogC3iUmCPsb/7HHOq2HxvjCL0qSpGdYUmj69C7V7PXxw=
-X-Received: by 2002:a17:902:d711:b0:188:c7b2:2dd with SMTP id
- w17-20020a170902d71100b00188c7b202ddmr79258168ply.88.1670543241942; Thu, 08
- Dec 2022 15:47:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20221206024554.3826186-1-sdf@google.com> <87bkodleca.fsf@toke.dk>
-In-Reply-To: <87bkodleca.fsf@toke.dk>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 8 Dec 2022 15:47:10 -0800
-Message-ID: <CAKH8qBuzpiXrL5SOxd1u0-zim+Kf166DRUDT0PuR081f-ad2-Q@mail.gmail.com>
-Subject: Re: [xdp-hints] [PATCH bpf-next v3 00/12] xdp: hints via kfuncs
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        bh=eDjpZTzpQHuFcOQSGAT2WzTURtYSuufNt2pnLYu1YmI=;
+        b=7zr+lYaF27Vu8Yi9FEBMEoJiIREddh5XyMPhqymkz/sDn/5CI+WCkK4Meazx+loMS0
+         c9s1dEIhnD7KcHIx7xdha1gTi/WKVEX5bLBVUOx6w5LML/0gJWeUN5WbMdLgEHFEOys7
+         IZ2qYxUX+n7vn4IyTDBLc+AGNxGQR27x5uSmgnlzo/VPmG0MmAv6TTPeDWVkqVNMLF4t
+         aXZ9kVd3N6o3aTKKri/zAvFlLnSkKqA2eqpfBbkDIS+DuN244e55ieZxL2G8itv8V/vi
+         M/4j9gK4/sHGfGPxpoSvS5H9gcIGJFhvUl3wgfoOp2I6D5f8qEm4aqYypa1SzKzp1cdq
+         sUOA==
+X-Gm-Message-State: ANoB5pl4NBU8JecmuEk3ImB37z+xIbkxVFfQedKW8UGzTcnTB+bh+k0Z
+        SbQLUoxcWSDmpEBcHMe1pR+QdimjqReUVh7dlJE62TuGYJoexBJPZsqrclwriWQoObY2KlSzx3/
+        8uuYmleB298PY
+X-Received: by 2002:a17:906:2a44:b0:78d:f457:1052 with SMTP id k4-20020a1709062a4400b0078df4571052mr3230370eje.15.1670544165615;
+        Thu, 08 Dec 2022 16:02:45 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf76wB+k5ajX4E3y8sgqWTu39b5SiGHxM11076HvMfkR+2aSdEsML81MxIdPiWvaJ0xdpilLsw==
+X-Received: by 2002:a17:906:2a44:b0:78d:f457:1052 with SMTP id k4-20020a1709062a4400b0078df4571052mr3230329eje.15.1670544165123;
+        Thu, 08 Dec 2022 16:02:45 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id u1-20020a1709061da100b007ae1e528390sm10136701ejh.163.2022.12.08.16.02.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Dec 2022 16:02:42 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id E751A82E9C2; Fri,  9 Dec 2022 01:02:41 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Stanislav Fomichev <sdf@google.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
         haoluo@google.com, jolsa@kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
         David Ahern <dsahern@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
@@ -67,12 +73,21 @@ Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
         netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP
+ metadata
+In-Reply-To: <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
+References: <20221206024554.3826186-1-sdf@google.com>
+ <20221206024554.3826186-12-sdf@google.com> <875yellcx6.fsf@toke.dk>
+ <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 09 Dec 2022 01:02:41 +0100
+Message-ID: <87359pl9zy.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,252 +95,66 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 8, 2022 at 2:29 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->
-> Stanislav Fomichev <sdf@google.com> writes:
->
-> > Please see the first patch in the series for the overall
-> > design and use-cases.
-> >
-> > Changes since v3:
-> >
-> > - Rework prog->bound_netdev refcounting (Jakub/Marin)
-> >
-> >   Now it's based on the offload.c framework. It mostly fits, except
-> >   I had to automatically insert a HT entry for the netdev. In the
-> >   offloaded case, the netdev is added via a call to
-> >   bpf_offload_dev_netdev_register from the driver init path; with
-> >   a dev-bound programs, we have to manually add (and remove) the entry.
-> >
-> >   As suggested by Toke, I'm also prohibiting putting dev-bound programs
-> >   into prog-array map; essentially prohibiting tail calling into it.
-> >   I'm also disabling freplace of the dev-bound programs. Both of those
-> >   restrictions can be loosened up eventually.
->
-> I thought it would be a shame that we don't support at least freplace
-> programs from the get-go (as that would exclude libxdp from taking
-> advantage of this). So see below for a patch implementing this :)
->
-> -Toke
+Stanislav Fomichev <sdf@google.com> writes:
 
-Damn, now I need to write a selftest :-)
-But seriously, thank you for taking care of this, will try to include
-preserving SoB!
+> On Thu, Dec 8, 2022 at 2:59 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>>
+>> Stanislav Fomichev <sdf@google.com> writes:
+>>
+>> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >
+>> > Support RX hash and timestamp metadata kfuncs. We need to pass in the =
+cqe
+>> > pointer to the mlx5e_skb_from* functions so it can be retrieved from t=
+he
+>> > XDP ctx to do this.
+>>
+>> So I finally managed to get enough ducks in row to actually benchmark
+>> this. With the caveat that I suddenly can't get the timestamp support to
+>> work (it was working in an earlier version, but now
+>> timestamp_supported() just returns false). I'm not sure if this is an
+>> issue with the enablement patch, or if I just haven't gotten the
+>> hardware configured properly. I'll investigate some more, but figured
+>> I'd post these results now:
+>>
+>> Baseline XDP_DROP:         25,678,262 pps / 38.94 ns/pkt
+>> XDP_DROP + read metadata:  23,924,109 pps / 41.80 ns/pkt
+>> Overhead:                   1,754,153 pps /  2.86 ns/pkt
+>>
+>> As per the above, this is with calling three kfuncs/pkt
+>> (metadata_supported(), rx_hash_supported() and rx_hash()). So that's
+>> ~0.95 ns per function call, which is a bit less, but not far off from
+>> the ~1.2 ns that I'm used to. The tests where I accidentally called the
+>> default kfuncs cut off ~1.3 ns for one less kfunc call, so it's
+>> definitely in that ballpark.
+>>
+>> I'm not doing anything with the data, just reading it into an on-stack
+>> buffer, so this is the smallest possible delta from just getting the
+>> data out of the driver. I did confirm that the call instructions are
+>> still in the BPF program bytecode when it's dumped back out from the
+>> kernel.
+>>
+>> -Toke
+>>
+>
+> Oh, that's great, thanks for running the numbers! Will definitely
+> reference them in v4!
+> Presumably, we should be able to at least unroll most of the
+> _supported callbacks if we want, they should be relatively easy; but
+> the numbers look fine as is?
 
+Well, this is for one (and a half) piece of metadata. If we extrapolate
+it adds up quickly. Say we add csum and vlan tags, say, and maybe
+another callback to get the type of hash (l3/l4). Those would probably
+be relevant for most packets in a fairly common setup. Extrapolating
+from the ~1 ns/call figure, that's 8 ns/pkt, which is 20% of the
+baseline of 39 ns.
 
-> commit 3abb333e5fd2e8a0920b77013499bdae0ee3db43
-> Author: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Date:   Thu Dec 8 23:10:54 2022 +0100
->
->     bpf: Support consuming XDP HW metadata from fext programs
->
->     Instead of rejecting the attaching of PROG_TYPE_EXT programs to XDP
->     programs that consume HW metadata, implement support for propagating =
-the
->     offload information. The extension program doesn't need to set a flag=
- or
->     ifindex, it these will just be propagated from the target by the veri=
-fier.
->     We need to create a separate offload object for the extension program=
-,
->     though, since it can be reattached to a different program later (whic=
-h
->     means we can't just inhering the offload information from the target)=
-.
->
->     An additional check is added on attach that the new target is compati=
-ble
->     with the offload information in the extension prog.
->
->     Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index b46b60f4eae1..cfa5c847cf2c 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2482,6 +2482,7 @@ void *bpf_offload_resolve_kfunc(struct bpf_prog *pr=
-og, u32 func_id);
->  void unpriv_ebpf_notify(int new_state);
->
->  #if defined(CONFIG_NET) && defined(CONFIG_BPF_SYSCALL)
-> +int __bpf_prog_offload_init(struct bpf_prog *prog, struct net_device *ne=
-tdev);
->  int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr);
->  void bpf_offload_bound_netdev_unregister(struct net_device *dev);
->
-> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> index bad8bab916eb..b059a7b53457 100644
-> --- a/kernel/bpf/offload.c
-> +++ b/kernel/bpf/offload.c
-> @@ -83,36 +83,25 @@ bpf_offload_find_netdev(struct net_device *netdev)
->         return rhashtable_lookup_fast(&offdevs, &netdev, offdevs_params);
->  }
->
-> -int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
-> +int __bpf_prog_offload_init(struct bpf_prog *prog, struct net_device *ne=
-tdev)
->  {
->         struct bpf_offload_netdev *ondev;
->         struct bpf_prog_offload *offload;
->         int err;
->
-> -       if (attr->prog_type !=3D BPF_PROG_TYPE_SCHED_CLS &&
-> -           attr->prog_type !=3D BPF_PROG_TYPE_XDP)
-> +       if (!netdev)
->                 return -EINVAL;
->
-> -       if (attr->prog_flags & ~BPF_F_XDP_HAS_METADATA)
-> -               return -EINVAL;
-> +       err =3D __bpf_offload_init();
-> +       if (err)
-> +               return err;
->
->         offload =3D kzalloc(sizeof(*offload), GFP_USER);
->         if (!offload)
->                 return -ENOMEM;
->
-> -       err =3D __bpf_offload_init();
-> -       if (err)
-> -               return err;
-> -
->         offload->prog =3D prog;
-> -
-> -       offload->netdev =3D dev_get_by_index(current->nsproxy->net_ns,
-> -                                          attr->prog_ifindex);
-> -       err =3D bpf_dev_offload_check(offload->netdev);
-> -       if (err)
-> -               goto err_maybe_put;
-> -
-> -       prog->aux->offload_requested =3D !(attr->prog_flags & BPF_F_XDP_H=
-AS_METADATA);
-> +       offload->netdev =3D netdev;
->
->         down_write(&bpf_devs_lock);
->         ondev =3D bpf_offload_find_netdev(offload->netdev);
-> @@ -135,19 +124,46 @@ int bpf_prog_offload_init(struct bpf_prog *prog, un=
-ion bpf_attr *attr)
->         offload->offdev =3D ondev->offdev;
->         prog->aux->offload =3D offload;
->         list_add_tail(&offload->offloads, &ondev->progs);
-> -       dev_put(offload->netdev);
->         up_write(&bpf_devs_lock);
->
->         return 0;
->  err_unlock:
->         up_write(&bpf_devs_lock);
-> -err_maybe_put:
-> -       if (offload->netdev)
-> -               dev_put(offload->netdev);
->         kfree(offload);
->         return err;
->  }
->
-> +int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
-> +{
-> +       struct net_device *netdev;
-> +       int err;
-> +
-> +       if (attr->prog_type !=3D BPF_PROG_TYPE_SCHED_CLS &&
-> +           attr->prog_type !=3D BPF_PROG_TYPE_XDP)
-> +               return -EINVAL;
-> +
-> +       if (attr->prog_flags & ~BPF_F_XDP_HAS_METADATA)
-> +               return -EINVAL;
-> +
-> +       netdev =3D dev_get_by_index(current->nsproxy->net_ns, attr->prog_=
-ifindex);
-> +       if (!netdev)
-> +               return -EINVAL;
-> +
-> +       err =3D bpf_dev_offload_check(netdev);
-> +       if (err)
-> +               goto out;
-> +
-> +       prog->aux->offload_requested =3D !(attr->prog_flags & BPF_F_XDP_H=
-AS_METADATA);
-> +
-> +       err =3D __bpf_prog_offload_init(prog, netdev);
-> +       if (err)
-> +               goto out;
-> +
-> +out:
-> +       dev_put(netdev);
-> +       return err;
-> +}
-> +
->  int bpf_prog_offload_verifier_prep(struct bpf_prog *prog)
->  {
->         struct bpf_prog_offload *offload;
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index b345a273f7d0..606e6de5f716 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3021,6 +3021,14 @@ static int bpf_tracing_prog_attach(struct bpf_prog=
- *prog,
->                         goto out_put_prog;
->                 }
->
-> +               if (bpf_prog_is_dev_bound(tgt_prog->aux) &&
-> +                   (bpf_prog_is_offloaded(tgt_prog->aux) ||
-> +                    !bpf_prog_is_dev_bound(prog->aux) ||
-> +                    !bpf_offload_dev_match(prog, tgt_prog->aux->offload-=
->netdev))) {
-> +                       err =3D -EINVAL;
-> +                       goto out_put_prog;
-> +               }
-> +
->                 key =3D bpf_trampoline_compute_key(tgt_prog, NULL, btf_id=
-);
->         }
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index bc8d9b8d4f47..d92e28dd220e 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -16379,11 +16379,6 @@ int bpf_check_attach_target(struct bpf_verifier_=
-log *log,
->         if (tgt_prog) {
->                 struct bpf_prog_aux *aux =3D tgt_prog->aux;
->
-> -               if (bpf_prog_is_dev_bound(tgt_prog->aux)) {
-> -                       bpf_log(log, "Replacing device-bound programs not=
- supported\n");
-> -                       return -EINVAL;
-> -               }
-> -
->                 for (i =3D 0; i < aux->func_info_cnt; i++)
->                         if (aux->func_info[i].type_id =3D=3D btf_id) {
->                                 subprog =3D i;
-> @@ -16644,10 +16639,22 @@ static int check_attach_btf_id(struct bpf_verif=
-ier_env *env)
->         if (tgt_prog && prog->type =3D=3D BPF_PROG_TYPE_EXT) {
->                 /* to make freplace equivalent to their targets, they nee=
-d to
->                  * inherit env->ops and expected_attach_type for the rest=
- of the
-> -                * verification
-> +                * verification; we also need to propagate the prog offlo=
-ad data
-> +                * for resolving kfuncs.
->                  */
->                 env->ops =3D bpf_verifier_ops[tgt_prog->type];
->                 prog->expected_attach_type =3D tgt_prog->expected_attach_=
-type;
-> +
-> +               if (bpf_prog_is_dev_bound(tgt_prog->aux)) {
-> +                       if (bpf_prog_is_offloaded(tgt_prog->aux))
-> +                               return -EINVAL;
-> +
-> +                       prog->aux->dev_bound =3D true;
-> +                       ret =3D __bpf_prog_offload_init(prog,
-> +                                                     tgt_prog->aux->offl=
-oad->netdev);
-> +                       if (ret)
-> +                               return ret;
-> +               }
->         }
->
->         /* store info about the attachment target that will be used later=
- */
->
+So in that sense I still think unrolling makes sense. At least for the
+_supported() calls, as eating a whole function call just for that is
+probably a bit much (which I think was also Jakub's point in a sibling
+thread somewhere).
+
+-Toke
+
