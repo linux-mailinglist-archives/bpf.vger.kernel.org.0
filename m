@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 246CF64831D
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 14:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F4D64831E
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 14:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbiLIN6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 08:58:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
+        id S229759AbiLIN6y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 08:58:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiLIN6u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 08:58:50 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBA575BCC
-        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 05:58:49 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id t17so11732070eju.1
-        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 05:58:49 -0800 (PST)
+        with ESMTP id S229470AbiLIN6w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 08:58:52 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E5754778
+        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 05:58:51 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id f20so5008809lja.4
+        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 05:58:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6yJ7ZyFEyQN7jPS3YYUIZ0tR6YmAAhUd4UH8MqxA4G0=;
-        b=AR9GjI0oKD8HRn0iDZs/AcO8tzXXwBHw/mgAXBxvblOm46X8q8zjn+BuOcTrSrAwYb
-         8Cy4d7dr/s8/WtCK52tTfRmlgCgFw+q9ireSCGskGr7T8PtrWrtxYSCQgqM8B7kR3+8E
-         WbRLKmPQ2Av2qzOvP4mfE7fAIM/FyV7HS2npvYbce9C39Uc1dY9qVxy6KhH/EFBJ+exH
-         NSZWkohPqEJNCYi5vxTEcdxnNELa5gxUjRcu/IaAyvliUGWrbVExYOmE1+5bSCi8PU5i
-         7H1Ttb4HbegWsHNTLMGSa2vKyzWzv71EKWEJisO1e1tId0GI9DwSgk6DT5WMyABvWf22
-         Zqwg==
+        bh=wkY/XWvbmBpF+aPRF1XnMxkztdOLE18mROLE5X78M7s=;
+        b=XDxUAvMl/KgQEqiojkdpFcefu/4S0dTZ0wKasRJw0hlx24MwCtBEA4S5ySkU8dFNrz
+         o7QKSwDOY1SqNqJ1E9nQzMQjJRiwmLP/8DBxdVXFynJqu/9Ao+klWECBgv9Qi89X20yu
+         vbuufYbsrrt5X2zBEDrrnSItW+HpbCCrpKNpVzzlD0xdMoyneypwxKP3n8dOgenc/sxR
+         blhvi8AOXKS2ezlMLsnThsMbcuiKtntcX6rrlpliFV34J6jWbKvMUDJ5DlvO/xMxIbhm
+         lk9ksTk+erR2gQLbS/n3++YN3faP3RXokjTlcBYZhmFFpCNLQbs53EpiDsBP64mkWJx5
+         sD7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6yJ7ZyFEyQN7jPS3YYUIZ0tR6YmAAhUd4UH8MqxA4G0=;
-        b=o2o5U08I+FxRaxoA+DFbNs+1+leZqPENZ2U5KMQ3ISmXJ9ni9Mia3NszMRXsVU8wsf
-         F+svPbjVeW9TC08L7lExUGRncekyRbPjKrPGMO2+AgsyTTbPo7acV4ltZZFFwcMW4XWw
-         B6BrIDaEDy9lcnfo0DxLnRPPDnq3+C0aIcD8veuGgBQp+p1hGRhCBu3U/TPxcmMNdstX
-         B5az+Or1PSjKE+bDhsXz5jWIjNZYP31VfqdHK73xuzIN6psSQVfPEN8HNMS89xdqzo/v
-         8Z0KKczxnqLbtiWAcyww4ggCS2aiB4hbaW0gEFvgtJqbrg/NDIgQcASovGJoq3K8nCOU
-         IoVQ==
-X-Gm-Message-State: ANoB5pleUeIK/bYpCShd/2y7FfN9y+8Ish7HjovHc3nB9/wHNMc7JGOq
-        Z6CdAJC6ySyNA0MQyn17xkTn7IEUJt2XqA==
-X-Google-Smtp-Source: AA0mqf5X2F8HBDwp7PJSOYwkF03hMXtw1U1Aat5ltlu1b32PUtu5ga+7sYG1CwfCb2VtN8LgQ9C/AA==
-X-Received: by 2002:a17:906:850d:b0:7c0:d886:b9ff with SMTP id i13-20020a170906850d00b007c0d886b9ffmr7756678ejx.16.1670594327348;
-        Fri, 09 Dec 2022 05:58:47 -0800 (PST)
+        bh=wkY/XWvbmBpF+aPRF1XnMxkztdOLE18mROLE5X78M7s=;
+        b=eJMJ13+olghiHLuixpw2NdyKKaEf/1Fsay89P3j5rH3XxFwnEa5ejlR/HTpwgfFkUg
+         OpT8XZWVwAabg5ZOD0co1Paei51r+ZnfqKU6b3ScBglpHtfo51VJ0f/irC0B384KmJc0
+         rsksLgk0oC2OdmUcJT7IY0Tg9UgbmNHz5EQryc0cUAvHxjeL13sTJebYLxOmLJ0dy1Yj
+         lJthxIFyKejP53ZEBYPX5hm2ID3uyotuoSJHQfMSL9qXXBoBleIMZhYtIukLWXJMhSR7
+         AEac50VSDrT7pACYEpcru64fFfMCMUuwWmvTMy/qUKMtR6FGPnQgsnyebggLKXmGbmHY
+         H4og==
+X-Gm-Message-State: ANoB5plj3V6dBi53ylgcvtR7ZCX79Scn+uU9BSOj+EtTiJLiwohvdAlI
+        q/RKz3NipTZ4R300vkDZf+2Jv6Pkbre2AA==
+X-Google-Smtp-Source: AA0mqf5HOE7ZtgjZdiX6Xx2mUHG3e/Lub7/IukXh/gQMPW2QHaqYmdfWJ1/63/ETB55Jpgm3eqOBcA==
+X-Received: by 2002:a2e:b74e:0:b0:27a:3a56:3e29 with SMTP id k14-20020a2eb74e000000b0027a3a563e29mr444475ljo.45.1670594328588;
+        Fri, 09 Dec 2022 05:58:48 -0800 (PST)
 Received: from pluto.. (178-133-28-80.mobile.vf-ua.net. [178.133.28.80])
-        by smtp.gmail.com with ESMTPSA id j6-20020a170906830600b007c10fe64c5dsm589028ejx.86.2022.12.09.05.58.46
+        by smtp.gmail.com with ESMTPSA id j6-20020a170906830600b007c10fe64c5dsm589028ejx.86.2022.12.09.05.58.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 05:58:47 -0800 (PST)
+        Fri, 09 Dec 2022 05:58:48 -0800 (PST)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
         yhs@fb.com, memxor@gmail.com, ecree.xilinx@gmail.com,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 1/7] bpf: regsafe() must not skip check_ids()
-Date:   Fri,  9 Dec 2022 15:57:27 +0200
-Message-Id: <20221209135733.28851-2-eddyz87@gmail.com>
+Subject: [PATCH bpf-next 2/7] selftests/bpf: test cases for regsafe() bug skipping check_id()
+Date:   Fri,  9 Dec 2022 15:57:28 +0200
+Message-Id: <20221209135733.28851-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221209135733.28851-1-eddyz87@gmail.com>
 References: <20221209135733.28851-1-eddyz87@gmail.com>
@@ -72,120 +72,135 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The verifier.c:regsafe() has the following shortcut:
-
-	equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
-	...
-	if (equal)
-		return true;
-
-Which is executed regardless old register type. This is incorrect for
-register types that might have an ID checked by check_ids(), namely:
- - PTR_TO_MAP_KEY
- - PTR_TO_MAP_VALUE
- - PTR_TO_PACKET_META
- - PTR_TO_PACKET
-
-The following pattern could be used to exploit this:
-
-  0: r9 = map_lookup_elem(...)  ; Returns PTR_TO_MAP_VALUE_OR_NULL id=1.
-  1: r8 = map_lookup_elem(...)  ; Returns PTR_TO_MAP_VALUE_OR_NULL id=2.
-  2: r7 = ktime_get_ns()        ; Unbound SCALAR_VALUE.
-  3: r6 = ktime_get_ns()        ; Unbound SCALAR_VALUE.
-  4: if r6 > r7 goto +1         ; No new information about the state
-                                ; is derived from this check, thus
-                                ; produced verifier states differ only
-                                ; in 'insn_idx'.
-  5: r9 = r8                    ; Optionally make r9.id == r8.id.
-  --- checkpoint ---            ; Assume is_state_visisted() creates a
-                                ; checkpoint here.
-  6: if r9 == 0 goto <exit>     ; Nullness info is propagated to all
-                                ; registers with matching ID.
-  7: r1 = *(u64 *) r8           ; Not always safe.
-
-Verifier first visits path 1-7 where r8 is verified to be not null
-at (6). Later the jump from 4 to 6 is examined. The checkpoint for (6)
-looks as follows:
-  R8_rD=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
-  R9_rwD=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
-  R10=fp0
-
-The current state is:
-  R0=... R6=... R7=... fp-8=...
-  R8=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
-  R9=map_value_or_null(id=1,off=0,ks=4,vs=8,imm=0)
-  R10=fp0
-
-Note that R8 states are byte-to-byte identical, so regsafe() would
-exit early and skip call to check_ids(), thus ID mapping 2->2 will not
-be added to 'idmap'. Next, states for R9 are compared: these are not
-identical and check_ids() is executed, but 'idmap' is empty, so
-check_ids() adds mapping 2->1 to 'idmap' and returns success.
-
-This commit pushes the 'equal' down to register types that don't need
-check_ids().
+Under certain conditions it was possible for verifier.c:regsafe() to
+skip check_id() call. This commit adds negative test cases previously
+errorneously accepted as safe.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 29 ++++++++---------------------
- 1 file changed, 8 insertions(+), 21 deletions(-)
+ .../bpf/verifier/direct_packet_access.c       | 54 +++++++++++++++++++
+ .../selftests/bpf/verifier/value_or_null.c    | 49 +++++++++++++++++
+ 2 files changed, 103 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3194e9d9e4e4..d05c5d0344c6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12926,15 +12926,6 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 
- 	equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
- 
--	if (rold->type == PTR_TO_STACK)
--		/* two stack pointers are equal only if they're pointing to
--		 * the same stack frame, since fp-8 in foo != fp-8 in bar
--		 */
--		return equal && rold->frameno == rcur->frameno;
--
--	if (equal)
--		return true;
--
- 	if (rold->type == NOT_INIT)
- 		/* explored state can't have used this */
- 		return true;
-@@ -12942,6 +12933,8 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		return false;
- 	switch (base_type(rold->type)) {
- 	case SCALAR_VALUE:
-+		if (equal)
-+			return true;
- 		if (env->explore_alu_limits)
- 			return false;
- 		if (rcur->type == SCALAR_VALUE) {
-@@ -13012,20 +13005,14 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		/* new val must satisfy old val knowledge */
- 		return range_within(rold, rcur) &&
- 		       tnum_in(rold->var_off, rcur->var_off);
--	case PTR_TO_CTX:
--	case CONST_PTR_TO_MAP:
--	case PTR_TO_PACKET_END:
--	case PTR_TO_FLOW_KEYS:
--	case PTR_TO_SOCKET:
--	case PTR_TO_SOCK_COMMON:
--	case PTR_TO_TCP_SOCK:
--	case PTR_TO_XDP_SOCK:
--		/* Only valid matches are exact, which memcmp() above
--		 * would have accepted
-+	case PTR_TO_STACK:
-+		/* two stack pointers are equal only if they're pointing to
-+		 * the same stack frame, since fp-8 in foo != fp-8 in bar
- 		 */
-+		return equal && rold->frameno == rcur->frameno;
- 	default:
--		/* Don't know what's going on, just say it's not safe */
--		return false;
-+		/* Only valid matches are exact, which memcmp() */
-+		return equal;
- 	}
- 
- 	/* Shouldn't get here; if we do, say it's not safe */
+diff --git a/tools/testing/selftests/bpf/verifier/direct_packet_access.c b/tools/testing/selftests/bpf/verifier/direct_packet_access.c
+index 11acd1855acf..dce2e28aeb43 100644
+--- a/tools/testing/selftests/bpf/verifier/direct_packet_access.c
++++ b/tools/testing/selftests/bpf/verifier/direct_packet_access.c
+@@ -654,3 +654,57 @@
+ 	.result = ACCEPT,
+ 	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ },
++{
++	"direct packet access: test30 (check_id() in regsafe(), bad access)",
++	.insns = {
++	/* r9 = ctx */
++	BPF_MOV64_REG(BPF_REG_9, BPF_REG_1),
++	/* r7 = ktime_get_ns() */
++	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	/* r6 = ktime_get_ns() */
++	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
++	/* r2 = ctx->data
++	 * r3 = ctx->data
++	 * r4 = ctx->data_end
++	 */
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_9, offsetof(struct __sk_buff, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_9, offsetof(struct __sk_buff, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_9, offsetof(struct __sk_buff, data_end)),
++	/* if r6 > 100 goto exit
++	 * if r7 > 100 goto exit
++	 */
++	BPF_JMP_IMM(BPF_JGT, BPF_REG_6, 100, 9),
++	BPF_JMP_IMM(BPF_JGT, BPF_REG_7, 100, 8),
++	/* r2 += r6              ; this forces assignment of ID to r2
++	 * r2 += 1               ; get some fixed off for r2
++	 * r3 += r7              ; this forces assignment of ID to r3
++	 * r3 += 1               ; get some fixed off for r3
++	 */
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_6),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, 1),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_3, BPF_REG_7),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 1),
++	/* if r6 > r7 goto +1    ; no new information about the state is derived from
++	 *                       ; this check, thus produced verifier states differ
++	 *                       ; only in 'insn_idx'
++	 * r2 = r3               ; optionally share ID between r2 and r3
++	 */
++	BPF_JMP_REG(BPF_JNE, BPF_REG_6, BPF_REG_7, 1),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_3),
++	/* if r3 > ctx->data_end goto exit */
++	BPF_JMP_REG(BPF_JGT, BPF_REG_3, BPF_REG_4, 1),
++	/* r5 = *(u8 *) (r2 - 1) ; access packet memory using r2,
++	 *                       ; this is not always safe
++	 */
++	BPF_LDX_MEM(BPF_B, BPF_REG_5, BPF_REG_2, -1),
++	/* exit(0) */
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.flags = BPF_F_TEST_STATE_FREQ,
++	.result = REJECT,
++	.errstr = "invalid access to packet, off=0 size=1, R2",
++	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
++},
+diff --git a/tools/testing/selftests/bpf/verifier/value_or_null.c b/tools/testing/selftests/bpf/verifier/value_or_null.c
+index 3ecb70a3d939..52a8bca14f03 100644
+--- a/tools/testing/selftests/bpf/verifier/value_or_null.c
++++ b/tools/testing/selftests/bpf/verifier/value_or_null.c
+@@ -169,3 +169,52 @@
+ 	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 	.result = ACCEPT,
+ },
++{
++	"MAP_VALUE_OR_NULL check_ids() in regsafe()",
++	.insns = {
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++	/* r9 = map_lookup_elem(...) */
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_LD_MAP_FD(BPF_REG_1,
++		      0),
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++	BPF_MOV64_REG(BPF_REG_9, BPF_REG_0),
++	/* r8 = map_lookup_elem(...) */
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_LD_MAP_FD(BPF_REG_1,
++		      0),
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++	BPF_MOV64_REG(BPF_REG_8, BPF_REG_0),
++	/* r7 = ktime_get_ns() */
++	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	/* r6 = ktime_get_ns() */
++	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
++	/* if r6 > r7 goto +1    ; no new information about the state is derived from
++	 *                       ; this check, thus produced verifier states differ
++	 *                       ; only in 'insn_idx'
++	 * r9 = r8               ; optionally share ID between r9 and r8
++	 */
++	BPF_JMP_REG(BPF_JGT, BPF_REG_6, BPF_REG_7, 1),
++	BPF_MOV64_REG(BPF_REG_9, BPF_REG_8),
++	/* if r9 == 0 goto <exit> */
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_9, 0, 1),
++	/* read map value via r8, this is not always
++	 * safe because r8 might be not equal to r9.
++	 */
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_8, 0),
++	/* exit 0 */
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.flags = BPF_F_TEST_STATE_FREQ,
++	.fixup_map_hash_8b = { 3, 9 },
++	.result = REJECT,
++	.errstr = "R8 invalid mem access 'map_value_or_null'",
++	.result_unpriv = REJECT,
++	.errstr_unpriv = "",
++	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
++},
 -- 
 2.34.1
 
