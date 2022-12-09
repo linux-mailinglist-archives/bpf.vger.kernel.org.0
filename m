@@ -2,84 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AF56487EC
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 18:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6146487EE
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 18:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbiLIRqf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 12:46:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
+        id S229665AbiLIRr2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 12:47:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbiLIRqe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 12:46:34 -0500
+        with ESMTP id S229604AbiLIRr1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 12:47:27 -0500
 Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB061D64A
-        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 09:46:33 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id t11-20020a17090a024b00b0021932afece4so8868296pje.5
-        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 09:46:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52095BD7D
+        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 09:47:26 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id t11-20020a17090a024b00b0021932afece4so8870629pje.5
+        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 09:47:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HQ9dSEXwYBxA4pKSv/9YF2c2JcAm8IxKG1zQ6cKX/dc=;
-        b=dYXP6fDzQN2V/qlc3SQr8N0jvIQ2duJ/fjb7ifX4vUlGuJLJ2+SspX1BrypjxiLwX9
-         3CJ8ivbUM/t5qTU7Jm8mepJlGzlcVOMEzoJI2fgIapmCEuqj74it1aGl4jKTaMj4zQKU
-         hXWqk1uuV+7fgfEeC4+7GWzoEF4MCI1sAJ/81KLLaFv5di9kdCBAYoZDdXkKwMyq7HB9
-         oawG4p9VDqLGaGRka74ejvh9F+J3E+rNL7Hdp8ZqBwXD6+uJEbFSLoRW8U9ZM6WYIwCF
-         4Y2JcN0wsDF5tCIHVO3mlnck3Kp4VlAvyQnQKn/VTDrU41nwROvzrhD0xnov5LTOUDzo
-         RcxA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zhg6wBBIkUQ+69OvVEryImDiqjxDYG19JHFgfdHHGxo=;
+        b=gCXVuoMOuai7KTph2UPXEkaRCw3rmHtOp3nQFsMXzWAcuy8+pgVwEXKAQqfJwL40G5
+         tZm91jDnli4IdVGI6mT3VgYxDB2T7fQYEE9BP1o3WpidQmrW1jWvP9x6NjV5J9CSQAKT
+         txVGUPSv+iz2S1zvfKPGH/CR/v/C7zSbpsVvIz1DYpZwBIMf9gVJPp46rw0SlUfXHLgU
+         tuLKsPmiJ2xpp//nJr1RsIJ/slyYMU1k6fGSU9jGVGgCAQbb+yj0L/jDftHZ1VSwVTJ1
+         62NyhNzqy0+ejcbJTTr9DHLSJAGMQg+Y1HXWaWHoprYb4ZY67+jMKmCh5JdWvomjNXDo
+         4YoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HQ9dSEXwYBxA4pKSv/9YF2c2JcAm8IxKG1zQ6cKX/dc=;
-        b=4EGlv26IcvzSIGaitsTmgqiLCLN7Sw1E47nFPpuA7gpd/qmZtRGmzSpP+qij79ytD9
-         HlDr+kRxuewvRdHVxpNTefEje/Hp0oDZ39tg3jz24liTH2CFi+EVIoockHhsVm0NtRQY
-         HHH+XRIHDek3anvKyDQIYkeL8SOU8q6HzNd5RaNuCOAAxw0/O1KEO4qemEOgBRRwwVIL
-         7fjTzwJLajm8UUITdrN0Lk60DhMaXwOJnjdXZQHfNWzS4SJACMqz4b4Hbzun961lA0i7
-         a/aY4xi9nqZf4AO0R16O7gh8Zx+NzLHVZLs2UFJgmLRX+VmEArGktBnlvGNf+PpyGMkc
-         tasQ==
-X-Gm-Message-State: ANoB5pmt+tcwN0nuo8L94/gfp7N7Nd1PSyycI0C59DqZvNtNXkw7/+S0
-        Halm1OWctHSxnZBnFvdoUlVRJsMgO2guUvmzZJaRAA==
-X-Google-Smtp-Source: AA0mqf6J7OlXOVrlXIrOK83k51H3KpK5FYzmh8bzgATvgK+PzcS10dPMUBOH9FWm1W7UuPK/JhLJi793PsvGKg1gLfo=
-X-Received: by 2002:a17:90a:6382:b0:219:fbc:a088 with SMTP id
- f2-20020a17090a638200b002190fbca088mr65443415pjj.162.1670607992729; Fri, 09
- Dec 2022 09:46:32 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zhg6wBBIkUQ+69OvVEryImDiqjxDYG19JHFgfdHHGxo=;
+        b=ofSAg6IkUSKu6NC0OoIgDXj5n4kM2YPhpv3lISqWP/XwOk0EHUb7bsC8YKfYd4aLjK
+         StbWbWr1qZiX3LPyl6HCyGMJLemsvwL99gYr5ZZpDrH7hJCBzbpmCKl5iVbPVGkMFIk/
+         vft3GfhHbEkilmt4vFKZmhsMqevy0AaHaxuICYvGCz6QrLw0OIOb1L+JH+Ruu/dPIroh
+         EwurJniV/18SJPM1LuBFy9uzdXcGg24NzYd+/LnpWAbwvEjEQThA0SRlZO3st78L231e
+         ySTAApbrSBHHzRQLLPaKnUaUFh6xP7ANTCLgO/hbxSX2jTZ1yRF62x2SGn0TnVtwEBxZ
+         i9tg==
+X-Gm-Message-State: ANoB5plR8dVVQJ5d4OBuBamKc69utmkBWxxBzE4fA0PF0aU6RsiYa8Wr
+        6+dhpEQAHA9w0JwTZJ8UDk6Q5JLEWMyJ29cG9o4Bnw==
+X-Google-Smtp-Source: AA0mqf5M9kt7HZbyb/j9FaVCke6Rb/YOpFiRFxNSASVPXCoKT5tF5b7Mz/x4Ifu7AAywotM2IBh3MMuMtcBrhpk3lvk=
+X-Received: by 2002:a17:902:d711:b0:188:c7b2:2dd with SMTP id
+ w17-20020a170902d71100b00188c7b202ddmr79410245ply.88.1670608045940; Fri, 09
+ Dec 2022 09:47:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-12-sdf@google.com>
- <875yellcx6.fsf@toke.dk> <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
- <87359pl9zy.fsf@toke.dk> <CAADnVQ+=71Y+ypQTOgFTJWY7w3YOUdY39is4vpo3aou11=eMmw@mail.gmail.com>
- <87tu25ju77.fsf@toke.dk> <CAADnVQ+MyE280Q-7iw2Y-P6qGs4xcDML-tUrXEv_EQTmeESVaQ@mail.gmail.com>
- <87o7sdjt20.fsf@toke.dk> <CAKH8qBswBu7QAWySWOYK4X41mwpdBj0z=6A9WBHjVYQFq9Pzjw@mail.gmail.com>
- <87cz8sk59e.fsf@toke.dk> <20221209084524.01c09d9c@kernel.org>
-In-Reply-To: <20221209084524.01c09d9c@kernel.org>
+References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-4-sdf@google.com>
+ <f2c89c57-c377-2f8e-fb4d-b047e58d3d38@redhat.com>
+In-Reply-To: <f2c89c57-c377-2f8e-fb4d-b047e58d3d38@redhat.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 9 Dec 2022 09:46:20 -0800
-Message-ID: <CAKH8qBsx4pPuvYenpM18NgdnGCG8QjqnsNY40Uc44EXTUVabMA@mail.gmail.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP metadata
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+Date:   Fri, 9 Dec 2022 09:47:14 -0800
+Message-ID: <CAKH8qBuhYUZEbs0UaUDaBOnmqjcSuim4vQhUzsLcOzPRY_eLrw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 03/12] bpf: XDP metadata RX kfuncs
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
         David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
         Anatoly Burakov <anatoly.burakov@intel.com>,
         Alexander Lobakin <alexandr.lobakin@intel.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        Network Development <netdev@vger.kernel.org>
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -91,75 +78,107 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 9, 2022 at 8:45 AM Jakub Kicinski <kuba@kernel.org> wrote:
+On Fri, Dec 9, 2022 at 3:11 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
-> On Fri, 09 Dec 2022 15:42:37 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote=
-:
-> > If we expect the program to do out of band probing, we could just get
-> > rid of the _supported() functions entirely?
-> >
-> > I mean, to me, the whole point of having the separate _supported()
-> > function for each item was to have a lower-overhead way of checking if
-> > the metadata item was supported. But if the overhead is not actually
-> > lower (because both incur a function call), why have them at all? Then
-> > we could just change the implementation from this:
-> >
-> > bool mlx5e_xdp_rx_hash_supported(const struct xdp_md *ctx)
-> > {
-> >       const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
-> >
-> >       return _ctx->xdp.rxq->dev->features & NETIF_F_RXHASH;
-> > }
-> >
-> > u32 mlx5e_xdp_rx_hash(const struct xdp_md *ctx)
-> > {
-> >       const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
-> >
-> >       return be32_to_cpu(_ctx->cqe->rss_hash_result);
-> > }
-> >
-> > to this:
-> >
-> > u32 mlx5e_xdp_rx_hash(const struct xdp_md *ctx)
-> > {
-> >       const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
-> >
-> >       if (!(_ctx->xdp.rxq->dev->features & NETIF_F_RXHASH))
-> >                 return 0;
-> >
-> >       return be32_to_cpu(_ctx->cqe->rss_hash_result);
-> > }
 >
-> Are there no corner cases? E.g. in case of an L2 frame you'd then
-> expect a hash of 0? Rather than no hash?
+> On 06/12/2022 03.45, Stanislav Fomichev wrote:
+> > There is an ndo handler per kfunc, the verifier replaces a call to the
+> > generic kfunc with a call to the per-device one.
+> >
+> > For XDP, we define a new kfunc set (xdp_metadata_kfunc_ids) which
+> > implements all possible metatada kfuncs. Not all devices have to
+> > implement them. If kfunc is not supported by the target device,
+> > the default implementation is called instead.
+> >
+> > Upon loading, if BPF_F_XDP_HAS_METADATA is passed via prog_flags,
+> > we treat prog_index as target device for kfunc resolution.
+> >
 >
-> If I understand we went for the _supported() thing to make inlining
-> the check easier than inlining the actual read of the field.
-> But we're told inlining is a bit of a wait.. so isn't the motivation
-> for the _supported() pretty much gone? And we should we go back to
-> returning an error from the actual read?
+> [...cut...]
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 5aa35c58c342..2eabb9157767 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -74,6 +74,7 @@ struct udp_tunnel_nic_info;
+> >   struct udp_tunnel_nic;
+> >   struct bpf_prog;
+> >   struct xdp_buff;
+> > +struct xdp_md;
+> >
+> >   void synchronize_net(void);
+> >   void netdev_set_default_ethtool_ops(struct net_device *dev,
+> > @@ -1611,6 +1612,10 @@ struct net_device_ops {
+> >       ktime_t                 (*ndo_get_tstamp)(struct net_device *dev,
+> >                                                 const struct skb_shared_hwtstamps *hwtstamps,
+> >                                                 bool cycles);
+> > +     bool                    (*ndo_xdp_rx_timestamp_supported)(const struct xdp_md *ctx);
+> > +     u64                     (*ndo_xdp_rx_timestamp)(const struct xdp_md *ctx);
+> > +     bool                    (*ndo_xdp_rx_hash_supported)(const struct xdp_md *ctx);
+> > +     u32                     (*ndo_xdp_rx_hash)(const struct xdp_md *ctx);
+> >   };
+> >
+>
+> Would it make sense to add a 'flags' parameter to ndo_xdp_rx_timestamp
+> and ndo_xdp_rx_hash ?
+>
+> E.g. we could have a "STORE" flag that asks the kernel to store this
+> information for later. This will be helpful for both the SKB and
+> redirect use-cases.
+> For redirect e.g into a veth, then BPF-prog can use the same function
+> bpf_xdp_metadata_rx_hash() to receive the RX-hash, as it can obtain the
+> "stored" value (from the BPF-prog that did the redirect).
+>
+> (p.s. Hopefully a const 'flags' variable can be optimized when unrolling
+> to eliminate store instructions when flags==0)
 
-Seems fair, we can always bring those _supported() calls back in the
-future when the inlining is available and having those separate calls
-shows clear benefit.
-Then let's go back to a more conventional form below?
+Are we concerned that doing this without a flag and with another
+function call will be expensive?
+For xdp->skb path, I was hoping we would be to do something like:
 
-int mlx5e_xdp_rx_hash(const struct xdp_md *ctx, u32 *timestamp)
-{
-      const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
+timestamp = bpf_xdp_metadata_rx_hash(ctx);
+bpf_xdp_metadata_export_rx_hash_to_skb(ctx, timestamp);
 
-       if (!(_ctx->xdp.rxq->dev->features & NETIF_F_RXHASH))
-                 return -EOPNOTSUPP;
+This should also let the users adjust the metadata before storing it.
+Am I missing something here? Why would the flag be preferable?
 
-       *timestamp =3D be32_to_cpu(_ctx->cqe->rss_hash_result);
-       return 0;
- }
 
-> Is partial inlining hard? (inline just the check and generate a full
-> call for the read, ending up with the same code as with _supported())
-
-I'm assuming you're suggesting to do this partial inlining manually
-(as in, writing the code to output this bytecode)?
-This probably also falls into the "manual bpf asm generation tech debt" buc=
-ket?
-LMK if I missed your point.
+> >   /**
+> > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > index 55dbc68bfffc..c24aba5c363b 100644
+> > --- a/include/net/xdp.h
+> > +++ b/include/net/xdp.h
+> > @@ -409,4 +409,33 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
+> >
+> >   #define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE
+> >
+> > +#define XDP_METADATA_KFUNC_xxx       \
+> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP_SUPPORTED, \
+> > +                        bpf_xdp_metadata_rx_timestamp_supported) \
+> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP, \
+> > +                        bpf_xdp_metadata_rx_timestamp) \
+> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH_SUPPORTED, \
+> > +                        bpf_xdp_metadata_rx_hash_supported) \
+> > +     XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH, \
+> > +                        bpf_xdp_metadata_rx_hash) \
+> > +
+> > +enum {
+> > +#define XDP_METADATA_KFUNC(name, str) name,
+> > +XDP_METADATA_KFUNC_xxx
+> > +#undef XDP_METADATA_KFUNC
+> > +MAX_XDP_METADATA_KFUNC,
+> > +};
+> > +
+> > +#ifdef CONFIG_NET
+> > +u32 xdp_metadata_kfunc_id(int id);
+> > +#else
+> > +static inline u32 xdp_metadata_kfunc_id(int id) { return 0; }
+> > +#endif
+> > +
+> > +struct xdp_md;
+> > +bool bpf_xdp_metadata_rx_timestamp_supported(const struct xdp_md *ctx);
+> > +u64 bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx);
+> > +bool bpf_xdp_metadata_rx_hash_supported(const struct xdp_md *ctx);
+> > +u32 bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx);
+> > +
+>
