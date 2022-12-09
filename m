@@ -2,101 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F358D647B08
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 01:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9596A647B0F
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 01:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbiLIAy7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 19:54:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
+        id S229752AbiLIA7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 19:59:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiLIAy5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 19:54:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA16FA19AB
-        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 16:54:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670547244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2wK8VlcaE7X4LbFxkIkLWkMtxEqPupWeXGXIS/zZUBk=;
-        b=Z11LLnXNvVipf6cKBIa3p7U9IVlHG4V9cufcwBjhqGkSg7O94RXZNrSxJDyqEoFrxVrKnD
-        Su3UzC+b1ojtjT93o8XYCR/EbU9Iv7Vg2dePYASF80tIxhGxp4sHf6ZjknEj2/xRQaEWk5
-        2UVXGGAFPY+xAL6gCN7Gbr/zpH2rtQg=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-75-s4nsszTJPdim3XDKTbLoRg-1; Thu, 08 Dec 2022 19:54:03 -0500
-X-MC-Unique: s4nsszTJPdim3XDKTbLoRg-1
-Received: by mail-ed1-f72.google.com with SMTP id y18-20020a056402359200b004635f8b1bfbso430454edc.17
-        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 16:54:03 -0800 (PST)
+        with ESMTP id S229517AbiLIA7J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 19:59:09 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF07612744
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 16:59:07 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id s10so3411108ljg.1
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 16:59:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JXnis/zc8U9zquz7LWANbIfYXreLG2esqriGNImoIRg=;
+        b=MrD4avYnohCJ914+Y56t0XD+3FDuUbBD+17dMlrv9hjX6h4eE9hBqXaos4VaJnkMcf
+         GGBXgL1PwAh5epA17v0JcgsGWhMd/HeiMh8trjmPnedLRIE3PK081U6u26iLXtru2t0G
+         /r2yNO/S5hTGkra9DUuxxyBxU96ugo1f2wWY1dkZs+9zwTQQM8BgmG1AeWJf1T2DMcwR
+         k8m+Gc3tWSbr2ykVLmiuBpAqUIvgx2vFWT0E3nol7bNp+s8XVqrOoUxXfpGJH2ns5pJ+
+         Vrwqwe8oyuOLymzT2cgmTt0386MSOgvYXO68MobM8yALIym8pz/NqajtGETtiXh1tLvg
+         pDKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2wK8VlcaE7X4LbFxkIkLWkMtxEqPupWeXGXIS/zZUBk=;
-        b=ClmWD9634wjHjbKv9m8IJYn43UFSbiezmJLXy1+MPk076oDLO/ye4wEaIWjNYCdzCj
-         Gi4QGd3qUrNd2BXn7tl0K2fEYUDH2xBhs58SeFAKy2mhZx60KGGbHIUGjBK2K/kr9x0z
-         82Gv0ZEvuK5cPKf5xha/DQf74opDJ4IbaDoXJEQ7o9jd0Al2+/yZhpNi+yrDj/juvFXn
-         p61AS8QpkDzSmC6f7/5Q38nqJxcaozOaoIwYmmszUp53lp77aXAd1XwpStLkX5er+CAj
-         9q1H9V4/nYlMySN83TL0Fck+o58vrg5GU5WLonE3g107Ms66+fTlBLL4/gaL5u2ahPD/
-         ZWQA==
-X-Gm-Message-State: ANoB5plX19/k0MJJ1LefTqZ9HKblcg0QODxvnqB+svSxUr/CRpGphlQM
-        U7+/iD30Z5HVulK64QHu7vOrgEcEmJSqChGjbanmkU+by/zXs+Rf3VPyo6sFlHopAjca5LNScwM
-        qKfIbJ6t6cSOB
-X-Received: by 2002:a17:906:a085:b0:7ad:a42f:72c2 with SMTP id q5-20020a170906a08500b007ada42f72c2mr3829968ejy.35.1670547242162;
-        Thu, 08 Dec 2022 16:54:02 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5Dq/3Saa/gSGiHAByXoJdf4OzG0rTx8PeaUoHG2r0e0OgPiQIdd2Z/nxR6yDH4wxgcvPt3rw==
-X-Received: by 2002:a17:906:a085:b0:7ad:a42f:72c2 with SMTP id q5-20020a170906a08500b007ada42f72c2mr3829940ejy.35.1670547241698;
-        Thu, 08 Dec 2022 16:54:01 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id bj15-20020a170906b04f00b007b5903e595bsm10223039ejb.84.2022.12.08.16.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Dec 2022 16:54:00 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id AEC0B82E9DB; Fri,  9 Dec 2022 01:53:59 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JXnis/zc8U9zquz7LWANbIfYXreLG2esqriGNImoIRg=;
+        b=byx53xVx+oozdytODWdt2Ewf4VIXH+X4SA9PucSSSUbBMDkHmQqJvX7aEROIGno/X8
+         69HESvCmhe2EqAp9ECq4cB1pPxmEMECQIk6YHO332VkPEe2bQkEjxVE3QPENNg3R2X+8
+         5DQPWHMh2qWAJXuoBGWmtvI6IGDzuTRFy6pKLkWwHt2vnr3LcjdSTkixgmnchwFyRIOm
+         RMKuSUZ4h/VR7kxY3aO47J1T7puAdTpVbFWYub2ucVtZPGrFcFdmLoUk2oTKmPhbBisq
+         k4UULDOS43SulESoK9qF+mWvUbvMXfpSKRMuo4YLgBFlpP92bV6Z2k396fxMfF2/jZaF
+         Ix0w==
+X-Gm-Message-State: ANoB5pm7hJ0LVW8VJo6/aQAz84mo7AzwrSQgGicrk3CR+lcLEWnauogJ
+        ZSoFdgEss3HLUqzSoAuBlI6DLHNz0scFifw4SUbQzA==
+X-Google-Smtp-Source: AA0mqf43uf2jMs9aR14rLNNAXRHZFteEbCs1HJm1ocrIIbmkDDyT05gYvzPAMCbYQcqok+26sR523uh1NinXsSQCTJQ=
+X-Received: by 2002:a2e:8845:0:b0:279:fe87:67fc with SMTP id
+ z5-20020a2e8845000000b00279fe8767fcmr5014125ljj.173.1670547545816; Thu, 08
+ Dec 2022 16:59:05 -0800 (PST)
+MIME-Version: 1.0
+References: <20221109024155.2810410-1-connoro@google.com> <5708a47d-5400-e75e-ccf6-96177366ea38@meta.com>
+ <CALE1s+NfHYpE_=fNr47U2groVDwhdHJJDSo6-2gdN8mR5G700g@mail.gmail.com>
+ <0b9023b6-9742-b317-7596-98026a0c5d03@meta.com> <CAEf4BzbTeJWkFhF-bW3mp94THeYEMM7R-ZX3C_c1aazY0Togsw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbTeJWkFhF-bW3mp94THeYEMM7R-ZX3C_c1aazY0Togsw@mail.gmail.com>
+From:   "Connor O'Brien" <connoro@google.com>
+Date:   Thu, 8 Dec 2022 16:58:53 -0800
+Message-ID: <CALE1s+OrB9wBGyi2zsyyOm=F36zcES7gtwyb2mVX3j_M8pvJuA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: btf: don't log ignored BTF mismatches
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@meta.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@linux.dev>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP
- metadata
-In-Reply-To: <CAADnVQ+MyE280Q-7iw2Y-P6qGs4xcDML-tUrXEv_EQTmeESVaQ@mail.gmail.com>
-References: <20221206024554.3826186-1-sdf@google.com>
- <20221206024554.3826186-12-sdf@google.com> <875yellcx6.fsf@toke.dk>
- <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
- <87359pl9zy.fsf@toke.dk>
- <CAADnVQ+=71Y+ypQTOgFTJWY7w3YOUdY39is4vpo3aou11=eMmw@mail.gmail.com>
- <87tu25ju77.fsf@toke.dk>
- <CAADnVQ+MyE280Q-7iw2Y-P6qGs4xcDML-tUrXEv_EQTmeESVaQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 09 Dec 2022 01:53:59 +0100
-Message-ID: <87o7sdjt20.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,126 +78,97 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-
-> On Thu, Dec 8, 2022 at 4:29 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>
->> > On Thu, Dec 8, 2022 at 4:02 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
->> >>
->> >> Stanislav Fomichev <sdf@google.com> writes:
->> >>
->> >> > On Thu, Dec 8, 2022 at 2:59 PM Toke H=C3=B8iland-J=C3=B8rgensen <to=
-ke@redhat.com> wrote:
->> >> >>
->> >> >> Stanislav Fomichev <sdf@google.com> writes:
->> >> >>
->> >> >> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >> >> >
->> >> >> > Support RX hash and timestamp metadata kfuncs. We need to pass i=
-n the cqe
->> >> >> > pointer to the mlx5e_skb_from* functions so it can be retrieved =
-from the
->> >> >> > XDP ctx to do this.
->> >> >>
->> >> >> So I finally managed to get enough ducks in row to actually benchm=
-ark
->> >> >> this. With the caveat that I suddenly can't get the timestamp supp=
-ort to
->> >> >> work (it was working in an earlier version, but now
->> >> >> timestamp_supported() just returns false). I'm not sure if this is=
- an
->> >> >> issue with the enablement patch, or if I just haven't gotten the
->> >> >> hardware configured properly. I'll investigate some more, but figu=
-red
->> >> >> I'd post these results now:
->> >> >>
->> >> >> Baseline XDP_DROP:         25,678,262 pps / 38.94 ns/pkt
->> >> >> XDP_DROP + read metadata:  23,924,109 pps / 41.80 ns/pkt
->> >> >> Overhead:                   1,754,153 pps /  2.86 ns/pkt
->> >> >>
->> >> >> As per the above, this is with calling three kfuncs/pkt
->> >> >> (metadata_supported(), rx_hash_supported() and rx_hash()). So that=
-'s
->> >> >> ~0.95 ns per function call, which is a bit less, but not far off f=
-rom
->> >> >> the ~1.2 ns that I'm used to. The tests where I accidentally calle=
-d the
->> >> >> default kfuncs cut off ~1.3 ns for one less kfunc call, so it's
->> >> >> definitely in that ballpark.
->> >> >>
->> >> >> I'm not doing anything with the data, just reading it into an on-s=
-tack
->> >> >> buffer, so this is the smallest possible delta from just getting t=
-he
->> >> >> data out of the driver. I did confirm that the call instructions a=
-re
->> >> >> still in the BPF program bytecode when it's dumped back out from t=
-he
->> >> >> kernel.
->> >> >>
->> >> >> -Toke
->> >> >>
->> >> >
->> >> > Oh, that's great, thanks for running the numbers! Will definitely
->> >> > reference them in v4!
->> >> > Presumably, we should be able to at least unroll most of the
->> >> > _supported callbacks if we want, they should be relatively easy; but
->> >> > the numbers look fine as is?
->> >>
->> >> Well, this is for one (and a half) piece of metadata. If we extrapola=
-te
->> >> it adds up quickly. Say we add csum and vlan tags, say, and maybe
->> >> another callback to get the type of hash (l3/l4). Those would probably
->> >> be relevant for most packets in a fairly common setup. Extrapolating
->> >> from the ~1 ns/call figure, that's 8 ns/pkt, which is 20% of the
->> >> baseline of 39 ns.
->> >>
->> >> So in that sense I still think unrolling makes sense. At least for the
->> >> _supported() calls, as eating a whole function call just for that is
->> >> probably a bit much (which I think was also Jakub's point in a sibling
->> >> thread somewhere).
->> >
->> > imo the overhead is tiny enough that we can wait until
->> > generic 'kfunc inlining' infra is ready.
->> >
->> > We're planning to dual-compile some_kernel_file.c
->> > into native arch and into bpf arch.
->> > Then the verifier will automatically inline bpf asm
->> > of corresponding kfunc.
->>
->> Is that "planning" or "actively working on"? Just trying to get a sense
->> of the time frames here, as this sounds neat, but also something that
->> could potentially require quite a bit of fiddling with the build system
->> to get to work? :)
+On Thu, Dec 8, 2022 at 4:03 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> "planning", but regardless how long it takes I'd rather not
-> add any more tech debt in the form of manual bpf asm generation.
-> We have too much of it already: gen_lookup, convert_ctx_access, etc.
+> On Thu, Dec 8, 2022 at 10:01 AM Yonghong Song <yhs@meta.com> wrote:
+> >
+> >
+> >
+> > On 12/7/22 6:19 PM, Connor O'Brien wrote:
+> > > On Wed, Nov 9, 2022 at 8:45 AM Yonghong Song <yhs@meta.com> wrote:
+> > >>
+> > >>
+> > >>
+> > >> On 11/8/22 6:41 PM, Connor O'Brien wrote:
+> > >>> Enabling CONFIG_MODULE_ALLOW_BTF_MISMATCH is an indication that BTF
+> > >>> mismatches are expected and module loading should proceed
+> > >>> anyway. Logging with pr_warn() on every one of these "benign"
+> > >>> mismatches creates unnecessary noise when many such modules are
+> > >>> loaded. Instead, limit logging to the case where a BTF mismatch
+> > >>> actually prevents a module form loading.
+> > >>>
+> > >>> Signed-off-by: Connor O'Brien <connoro@google.com>
+> > >>> ---
+> > >>>    kernel/bpf/btf.c | 7 ++++---
+> > >>>    1 file changed, 4 insertions(+), 3 deletions(-)
+> > >>>
+> > >>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > >>> index 5579ff3a5b54..406370487413 100644
+> > >>> --- a/kernel/bpf/btf.c
+> > >>> +++ b/kernel/bpf/btf.c
+> > >>> @@ -7190,11 +7190,12 @@ static int btf_module_notify(struct notifier_block *nb, unsigned long op,
+> > >>>                }
+> > >>>                btf = btf_parse_module(mod->name, mod->btf_data, mod->btf_data_size);
+> > >>>                if (IS_ERR(btf)) {
+> > >>> -                     pr_warn("failed to validate module [%s] BTF: %ld\n",
+> > >>> -                             mod->name, PTR_ERR(btf));
+> > >>
+> > >> I think such warning still useful even with
+> > >> CONFIG_MODULE_ALLOW_BTF_MISMATCH.
+> > >> Can we use pr_warn_ratelimited instead of pr_warn in the above to
+> > >> avoid excessive warnings?
+> > >
+> > > I gave this a try on a Pixel 6 but I'm not sure it quite addresses the
+> > > issue. The amount of logging doesn't seem to decrease much, I think
+> > > because the interval between loading one mismatched module and the
+> > > next can be greater than the default rate limit. To my mind, the issue
+> > > is the total volume of these messages more so than their rate.
+> > >
+> > > For context, Android devices using the GKI may load hundreds of
+> > > separately-built modules, and BTF mismatches are possible for any/all
+> > > of these. It was pointed out to me that btf_verifier_log_type can also
+> > > print several more lines per mismatched module. ~5 lines of logging
+> > > for each mismatched module can start to add up, in terms of both
+> > > overhead and the noise added to the kernel logs.
+> > >
+> > > This is more subjective but I think the warnings also read as though
+> > > this is a more serious failure that might prevent affected modules
+> > > from working correctly; anecdotally, I've gotten multiple questions
+> > > about them asking if something is broken. This can be a red herring
+> > > for anyone unfamiliar with BTF who is reading the logs to debug
+> > > unrelated issues. In the CONFIG_MODULE_ALLOW_BTF_MISMATCH=y case the
+> > > flood of warnings seems out of proportion to the actual result
+> > > (modules still load successfully, just without debug info) especially
+> > > since the user has explicitly enabled a config saying they expect
+> > > mismatches.
+> > >
+> > > If there needs to be some logging in the "mismatch allowed" case,
+> > > could an acceptable middle ground be to use pr_warn_once to send a
+> >
+> > So it looks like pr_warn_ratelimited still produces a lot of warning.
+> > In this case, I guess pr_warn_once should be okay.
+>
+> Maybe pr_warn_once generic "some kernel module BTF mismatched". And
+> also warn per-module message with details if
+> CONFIG_MODULE_ALLOW_BTF_MISMATCH is not set?
+>
 
-Right, I'm no fan of the manual ASM stuff either. However, if we're
-stuck with the function call overhead for the foreseeable future, maybe
-we should think about other ways of cutting down the number of function
-calls needed?
+Yeah, I figured the logging behavior should remain unchanged when
+CONFIG_MODULE_ALLOW_BTF_MISMATCH is unset, the existing verbose
+logging makes sense when every mismatch stops a module from loading.
 
-One thing I can think of is to get rid of the individual _supported()
-kfuncs and instead have a single one that lets you query multiple
-features at once, like:
-
-__u64 features_supported, features_wanted =3D XDP_META_RX_HASH | XDP_META_T=
-IMESTAMP;
-
-features_supported =3D bpf_xdp_metadata_query_features(ctx, features_wanted=
-);
-
-if (features_supported & XDP_META_RX_HASH)
-  hash =3D bpf_xdp_metadata_rx_hash(ctx);
-
-...etc
+Then for the pr_warn_once case something like "Kernel module BTF
+mismatch detected, BTF debug info may be unavailable for some modules"
 
 
--Toke
 
+> >
+> > > single message reporting that mismatches were detected & module BTF
+> > > debug info might be unavailable? Alternatively, if we could opt out of
+> > > module BTF loading then that would also avoid this issue, but that's
+> > > already been proposed before ([1], [2]) so I thought working with the
+> > > existing config option might be preferred.
+> > >
+> > > [1] https://lore.kernel.org/bpf/20220209052141.140063-1-connoro@google.com/
+> > > [2] https://lore.kernel.org/bpf/20221004222725.2813510-1-sdf@google.com/
