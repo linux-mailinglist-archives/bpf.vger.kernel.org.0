@@ -2,396 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5D1647C33
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 03:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC118647C60
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 03:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbiLICXs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Dec 2022 21:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        id S229677AbiLICrc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Dec 2022 21:47:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbiLICXn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Dec 2022 21:23:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A4124095;
-        Thu,  8 Dec 2022 18:23:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BCD1FB82707;
-        Fri,  9 Dec 2022 02:23:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BE8FC433D2;
-        Fri,  9 Dec 2022 02:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670552617;
-        bh=c2BOm561Dr5uslAERcH+AYxqVGbDtvY4eYUNbHGYwdE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZsYB+l44fkmWMWgzo+mY8tjqUBHyWCPFQ6qOSEN8vZ2ET6IoxLWNbr/iJ91+qam7Q
-         h2KRrARhNbHYL0uoj36Oy9WFaSIqW+MARC+zlo4DchPVA2LM62uT3fwtbds+647ooL
-         s3HcO2uPEKXhg77pt7ZoFX5dLZDDn7Lg8isq3Thdrf91GBCgFV64H4tN/l1l3YFIsm
-         5n4C+rxWFEHB7f4g/BQ8Pui/h1/soJf0wpiIfBYDmN0aWRHf2+agPK0bx5BzzUlIkt
-         Yq/G344ptK3K+7qNG/sZmjn+svN5UowqEOVEIU1smzxvYO1arWr723cDPdWi2HykHE
-         SJlkcJ+mr6gBA==
-Date:   Thu, 8 Dec 2022 18:23:35 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Gerhard Engleder <gerhard@engleder-embedded.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com
-Subject: Re: [PATCH net-next v2 2/6] tsnep: Add XDP TX support
-Message-ID: <Y5KcJ+VliAl0aR0l@x130>
-References: <20221208054045.3600-1-gerhard@engleder-embedded.com>
- <20221208054045.3600-3-gerhard@engleder-embedded.com>
+        with ESMTP id S229555AbiLICra (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Dec 2022 21:47:30 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BB386F4E
+        for <bpf@vger.kernel.org>; Thu,  8 Dec 2022 18:47:30 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id 21so2751217pfw.4
+        for <bpf@vger.kernel.org>; Thu, 08 Dec 2022 18:47:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zMpGivl/Cw43XFHijvF2uj1g/w63hF8HA17jV06PE0U=;
+        b=S6TzAyDVAbGG1ENwTtD5RFrEMochXfcUQ9onMrsvBMP5BA5XECUUIr+O9Oo3v7IFyv
+         4OgkkZN/s/LetFk8KjK36i9UPLfzQt1Ike3NJcrVFpI+FSwX70mVOWmq9T2PcOPgxF1w
+         9vO86aottB4rLG8JoCehLe/tMZI9LijqUcWdgYefFJXpayvalHokIGzqC4l8qv47yUSg
+         ESKdHGXDm6cUju/DD4xKPAkE68DlQCeeB1XKfFMv3MvMe8Jgz8CqK5BUcO2jh8qcDg4w
+         qlHiuFCoJeSUxEjMtcFRFkvWfmZewvV45jiQc2VDNp9UnqLV3OEeeq1cVBsrOA0Th4bg
+         fSww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zMpGivl/Cw43XFHijvF2uj1g/w63hF8HA17jV06PE0U=;
+        b=nZBtBdTjorki05N7/7LC/kXvMsxK0dlQ19lXF9OC9A/jzPjRBke0Tb0OGbtLMqG8PK
+         HbX5q7FGURUYhZ91J2LFFvupBwdjw6JN5PVAzpNB2URGQ5CxwJWhPgAoSsdglq8hNigX
+         M48R2qweuksVFrOdS0aFVar/VkM9fpoTW0Aj4OealT5qB4d45nP1vjcIme+3oQABErjp
+         9GXXlJcCm/ajfXyXEu1oA+AkyiLUJ3+sDp4CrMz2hO5YaWTOKx6iNfsgPKuXGcwBLXbf
+         nbuzgXqAxAdqFP3TxT6r9XJcznHR5w5cv3dqk8wriNEbKXQNT5tguem3mYEC2BZR9ibk
+         IQxA==
+X-Gm-Message-State: ANoB5pmmbu8DHB5MCtJVOc7D2qTz8wUHzMYtf7ceyRrrwf6eGckGmtvP
+        Y+YJNumaXSo2aDrlAj9T/5pgsNHPGrw=
+X-Google-Smtp-Source: AA0mqf4i8LZDKZQsVDGhVKnWQ/AWGObmqrH5h4ps6k6g0cj5h9oRFKmmXKQAJftOdvEwrJQDpCFs2g==
+X-Received: by 2002:a62:6204:0:b0:577:a0d:b091 with SMTP id w4-20020a626204000000b005770a0db091mr4628933pfb.14.1670554049459;
+        Thu, 08 Dec 2022 18:47:29 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:11da])
+        by smtp.gmail.com with ESMTPSA id v66-20020a622f45000000b005754106e364sm170403pfv.199.2022.12.08.18.47.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Dec 2022 18:47:28 -0800 (PST)
+Date:   Thu, 8 Dec 2022 18:47:25 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: Re: [PATCH bpf-next v2 4/7] bpf: Rework check_func_arg_reg_off
+Message-ID: <20221209024725.hjcywagxv2yrvzcp@macbook-pro-6.dhcp.thefacebook.com>
+References: <20221207204141.308952-1-memxor@gmail.com>
+ <20221207204141.308952-5-memxor@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221208054045.3600-3-gerhard@engleder-embedded.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221207204141.308952-5-memxor@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08 Dec 06:40, Gerhard Engleder wrote:
->Implement ndo_xdp_xmit() for XDP TX support. Support for fragmented XDP
->frames is included.
->
->Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
->---
-> drivers/net/ethernet/engleder/tsnep.h      |  12 +-
-> drivers/net/ethernet/engleder/tsnep_main.c | 204 ++++++++++++++++++++-
-> 2 files changed, 207 insertions(+), 9 deletions(-)
->
->diff --git a/drivers/net/ethernet/engleder/tsnep.h b/drivers/net/ethernet/engleder/tsnep.h
->index f72c0c4da1a9..29b04127f529 100644
->--- a/drivers/net/ethernet/engleder/tsnep.h
->+++ b/drivers/net/ethernet/engleder/tsnep.h
->@@ -57,6 +57,12 @@ struct tsnep_rxnfc_rule {
-> 	int location;
-> };
->
->+enum tsnep_tx_type {
->+	TSNEP_TX_TYPE_SKB,
->+	TSNEP_TX_TYPE_XDP_TX,
->+	TSNEP_TX_TYPE_XDP_NDO,
->+};
->+
-> struct tsnep_tx_entry {
-> 	struct tsnep_tx_desc *desc;
-> 	struct tsnep_tx_desc_wb *desc_wb;
->@@ -65,7 +71,11 @@ struct tsnep_tx_entry {
->
-> 	u32 properties;
->
->-	struct sk_buff *skb;
->+	enum tsnep_tx_type type;
->+	union {
->+		struct sk_buff *skb;
->+		struct xdp_frame *xdpf;
->+	};
-> 	size_t len;
-> 	DEFINE_DMA_UNMAP_ADDR(dma);
-> };
->diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
->index a28fde9fb060..b97cfd5fa1fa 100644
->--- a/drivers/net/ethernet/engleder/tsnep_main.c
->+++ b/drivers/net/ethernet/engleder/tsnep_main.c
->@@ -310,10 +310,11 @@ static void tsnep_tx_activate(struct tsnep_tx *tx, int index, int length,
-> 	struct tsnep_tx_entry *entry = &tx->entry[index];
->
-> 	entry->properties = 0;
->-	if (entry->skb) {
->+	if (entry->skb || entry->xdpf) {
-> 		entry->properties = length & TSNEP_DESC_LENGTH_MASK;
-> 		entry->properties |= TSNEP_DESC_INTERRUPT_FLAG;
->-		if (skb_shinfo(entry->skb)->tx_flags & SKBTX_IN_PROGRESS)
->+		if (entry->type == TSNEP_TX_TYPE_SKB &&
->+		    skb_shinfo(entry->skb)->tx_flags & SKBTX_IN_PROGRESS)
-> 			entry->properties |= TSNEP_DESC_EXTENDED_WRITEBACK_FLAG;
->
-> 		/* toggle user flag to prevent false acknowledge
->@@ -400,6 +401,8 @@ static int tsnep_tx_map(struct sk_buff *skb, struct tsnep_tx *tx, int count)
->
-> 		entry->desc->tx = __cpu_to_le64(dma);
->
->+		entry->type = TSNEP_TX_TYPE_SKB;
->+
-> 		map_len += len;
-> 	}
->
->@@ -417,12 +420,13 @@ static int tsnep_tx_unmap(struct tsnep_tx *tx, int index, int count)
-> 		entry = &tx->entry[(index + i) % TSNEP_RING_SIZE];
->
-> 		if (entry->len) {
->-			if (i == 0)
->+			if (i == 0 && entry->type == TSNEP_TX_TYPE_SKB)
-> 				dma_unmap_single(dmadev,
-> 						 dma_unmap_addr(entry, dma),
-> 						 dma_unmap_len(entry, len),
-> 						 DMA_TO_DEVICE);
->-			else
->+			else if (entry->type == TSNEP_TX_TYPE_SKB ||
->+				 entry->type == TSNEP_TX_TYPE_XDP_NDO)
-> 				dma_unmap_page(dmadev,
-> 					       dma_unmap_addr(entry, dma),
-> 					       dma_unmap_len(entry, len),
->@@ -505,6 +509,122 @@ static netdev_tx_t tsnep_xmit_frame_ring(struct sk_buff *skb,
-> 	return NETDEV_TX_OK;
-> }
->
->+static int tsnep_xdp_tx_map(struct xdp_frame *xdpf, struct tsnep_tx *tx,
->+			    struct skb_shared_info *shinfo, int count,
->+			    bool dma_map)
->+{
->+	struct device *dmadev = tx->adapter->dmadev;
->+	skb_frag_t *frag;
->+	unsigned int len;
->+	struct tsnep_tx_entry *entry;
->+	void *data;
->+	struct page *page;
->+	dma_addr_t dma;
->+	int map_len = 0;
->+	int i;
->+
->+	frag = NULL;
->+	len = xdpf->len;
->+	for (i = 0; i < count; i++) {
->+		entry = &tx->entry[(tx->write + i) % TSNEP_RING_SIZE];
->+		if (dma_map) {
+On Thu, Dec 08, 2022 at 02:11:38AM +0530, Kumar Kartikeya Dwivedi wrote:
+> While check_func_arg_reg_off is the place which performs generic checks
+> needed by various candidates of reg->type, there is some handling for
+> special cases, like ARG_PTR_TO_DYNPTR, OBJ_RELEASE, and
+> ARG_PTR_TO_ALLOC_MEM.
 
-wouldn't it have made more sense if you passed TSNEP_TX_TYPE instead of
-bool dma_map ?
-here and in tsnep_xdp_xmit_frame_ring as well.. 
+commit log is obsolete.
+I cleaned it up s/ARG_PTR_TO_ALLOC_MEM/ARG_PTR_TO_RINGBUF_MEM/
 
->+			data = unlikely(frag) ? skb_frag_address(frag) :
->+						xdpf->data;
->+			dma = dma_map_single(dmadev, data, len, DMA_TO_DEVICE);
->+			if (dma_mapping_error(dmadev, dma))
->+				return -ENOMEM;
->+
->+			entry->type = TSNEP_TX_TYPE_XDP_NDO;
->+		} else {
->+			page = unlikely(frag) ? skb_frag_page(frag) :
->+						virt_to_page(xdpf->data);
->+			dma = page_pool_get_dma_addr(page);
->+			if (unlikely(frag))
->+				dma += skb_frag_off(frag);
->+			else
->+				dma += sizeof(*xdpf) + xdpf->headroom;
->+			dma_sync_single_for_device(dmadev, dma, len,
->+						   DMA_BIDIRECTIONAL);
->+
->+			entry->type = TSNEP_TX_TYPE_XDP_TX;
->+		}
->+
->+		entry->len = len;
->+		dma_unmap_addr_set(entry, dma, dma);
->+
->+		entry->desc->tx = __cpu_to_le64(dma);
->+
->+		map_len += len;
->+
->+		if ((i + 1) < count) {
->+			frag = &shinfo->frags[i];
->+			len = skb_frag_size(frag);
->+		}
->+	}
->+
->+	return map_len;
->+}
->+
->+/* This function requires __netif_tx_lock is held by the caller. */
->+static int tsnep_xdp_xmit_frame_ring(struct xdp_frame *xdpf,
->+				     struct tsnep_tx *tx, bool dma_map)
->+{
->+	struct skb_shared_info *shinfo = xdp_get_shared_info_from_frame(xdpf);
->+	unsigned long flags;
->+	int count = 1;
->+	struct tsnep_tx_entry *entry;
->+	int length;
->+	int i;
->+	int retval;
+> This commit aims to streamline these special cases and instead leave
+> other things up to argument type specific code to handle. The function
+> will be restrictive by default, and cover all possible cases when
+> OBJ_RELEASE is set, without having to update the function again (and
+> missing to do that being a bug).
+> 
+> This is done primarily for two reasons: associating back reg->type to
+> its argument leaves room for the list getting out of sync when a new
+> reg->type is supported by an arg_type.
+> 
+> The other case is ARG_PTR_TO_ALLOC_MEM. The problem there is something
+> we already handle, whenever a release argument is expected, it should
+> be passed as the pointer that was received from the acquire function.
+> Hence zero fixed and variable offset.
+> 
+> There is nothing special about ARG_PTR_TO_ALLOC_MEM, where technically
+> its target register type PTR_TO_MEM | MEM_ALLOC can already be passed
 
-Maciiej already commented on this, and i agree with him, the whole series
-needs some work on rev xmas tree variable declaration, code will look much
-neater.
+and MEM_RINGBUF here.
 
->+
->+	if (unlikely(xdp_frame_has_frags(xdpf)))
->+		count += shinfo->nr_frags;
->+
->+	spin_lock_irqsave(&tx->lock, flags);
->+
->+	if (tsnep_tx_desc_available(tx) < (MAX_SKB_FRAGS + 1 + count)) {
->+		/* prevent full TX ring due to XDP */
->+		spin_unlock_irqrestore(&tx->lock, flags);
->+
->+		return -EBUSY;
+> with non-zero offset to other helper functions, which makes sense.
+> 
+> Hence, lift the arg_type_is_release check for reg->off and cover all
+> possible register types, instead of duplicating the same kind of check
+> twice for current OBJ_RELEASE arg_types (alloc_mem and ptr_to_btf_id).
+> 
+> For the release argument, arg_type_is_dynptr is the special case, where
+> we go to actual object being freed through the dynptr, so the offset of
+> the pointer still needs to allow fixed and variable offset and
+> process_dynptr_func will verify them later for the release argument case
+> as well.
+> 
+> This is not specific to ARG_PTR_TO_DYNPTR though, we will need to make
+> this exception for any future object on the stack that needs to be
+> released. In this sense, PTR_TO_STACK as a candidate for object on stack
+> argument is a special case for release offset checks, and they need to
+> be done by the helper releasing the object on stack.
+> 
+> Since the check has been lifted above all register type checks, remove
+> the duplicated check that is being done for PTR_TO_BTF_ID.
+> 
+> Acked-by: Joanne Koong <joannelkoong@gmail.com>
+> Acked-by: David Vernet <void@manifault.com>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  kernel/bpf/verifier.c                         | 64 +++++++++++--------
+>  tools/testing/selftests/bpf/verifier/calls.c  |  2 +-
+>  .../testing/selftests/bpf/verifier/ringbuf.c  |  2 +-
+>  3 files changed, 41 insertions(+), 27 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index fdbaf22cdaf2..cadcf0233326 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -6269,11 +6269,38 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>  			   const struct bpf_reg_state *reg, int regno,
+>  			   enum bpf_arg_type arg_type)
+>  {
+> -	enum bpf_reg_type type = reg->type;
+> -	bool fixed_off_ok = false;
+> +	u32 type = reg->type;
+>  
+> -	switch ((u32)type) {
+> -	/* Pointer types where reg offset is explicitly allowed: */
+> +	/* When referenced register is passed to release function, its fixed
+> +	 * offset must be 0.
+> +	 *
+> +	 * We will check arg_type_is_release reg has ref_obj_id when storing
+> +	 * meta->release_regno.
+> +	 */
+> +	if (arg_type_is_release(arg_type)) {
+> +		/* ARG_PTR_TO_DYNPTR with OBJ_RELEASE is a bit special, as it
+> +		 * may not directly point to the object being released, but to
+> +		 * dynptr pointing to such object, which might be at some offset
+> +		 * on the stack. In that case, we simply to fallback to the
+> +		 * default handling.
+> +		 */
+> +		if (!arg_type_is_dynptr(arg_type) || type != PTR_TO_STACK) {
 
-You don't really do anything with the retval, so just return a boolean.
+also removed one indent, inverted above and added direct 'return 0'
+I know that it's not exactly the same, but together with patch 5
+it makes it cleaner and this special case (that David didn't like)
+doesn't look as horrible anymore.
 
->+	}
->+
->+	entry = &tx->entry[tx->write];
->+	entry->xdpf = xdpf;
->+
->+	retval = tsnep_xdp_tx_map(xdpf, tx, shinfo, count, dma_map);
->+	if (retval < 0) {
->+		tsnep_tx_unmap(tx, tx->write, count);
->+		entry->xdpf = NULL;
->+
->+		tx->dropped++;
->+
->+		spin_unlock_irqrestore(&tx->lock, flags);
->+
->+		netdev_err(tx->adapter->netdev, "XDP TX DMA map failed\n");
+> +			/* Doing check_ptr_off_reg check for the offset will
+> +			 * catch this because fixed_off_ok is false, but
+> +			 * checking here allows us to give the user a better
+> +			 * error message.
+> +			 */
+> +			if (reg->off) {
+> +				verbose(env, "R%d must have zero offset when passed to release func or trusted arg to kfunc\n",
+> +					regno);
+> +				return -EINVAL;
+> +			}
+> +			return __check_ptr_off_reg(env, reg, regno, false);
+> +		}
+> +		/* Fallback to default handling */
 
-please avoid printing in data path, find other means to expose such info.
-stats
-tracepoints
-debug_message rate limited, etc .. 
+No 'fallback to default' either.
+It wasn't easy to follow this logic.
 
+And applied.
+See how it looks now.
 
->+
->+		return retval;
->+	}
->+	length = retval;
->+
->+	for (i = 0; i < count; i++)
->+		tsnep_tx_activate(tx, (tx->write + i) % TSNEP_RING_SIZE, length,
->+				  i == (count - 1));
->+	tx->write = (tx->write + count) % TSNEP_RING_SIZE;
->+
->+	/* descriptor properties shall be valid before hardware is notified */
->+	dma_wmb();
->+
->+	spin_unlock_irqrestore(&tx->lock, flags);
->+
->+	return 0;
->+}
->+
->+static void tsnep_xdp_xmit_flush(struct tsnep_tx *tx)
->+{
->+	iowrite32(TSNEP_CONTROL_TX_ENABLE, tx->addr + TSNEP_CONTROL);
->+}
->+
-> static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
-> {
-> 	unsigned long flags;
->@@ -512,6 +632,11 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
-> 	struct tsnep_tx_entry *entry;
-> 	int count;
-> 	int length;
->+	struct xdp_frame_bulk bq;
->+
->+	xdp_frame_bulk_init(&bq);
->+
->+	rcu_read_lock(); /* need for xdp_return_frame_bulk */
->
-> 	spin_lock_irqsave(&tx->lock, flags);
->
->@@ -531,12 +656,17 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
-> 		dma_rmb();
->
-> 		count = 1;
->-		if (skb_shinfo(entry->skb)->nr_frags > 0)
->+		if (entry->type == TSNEP_TX_TYPE_SKB &&
->+		    skb_shinfo(entry->skb)->nr_frags > 0)
-> 			count += skb_shinfo(entry->skb)->nr_frags;
->+		else if (entry->type != TSNEP_TX_TYPE_SKB &&
->+			 xdp_frame_has_frags(entry->xdpf))
->+			count += xdp_get_shared_info_from_frame(entry->xdpf)->nr_frags;
->
-> 		length = tsnep_tx_unmap(tx, tx->read, count);
->
->-		if ((skb_shinfo(entry->skb)->tx_flags & SKBTX_IN_PROGRESS) &&
->+		if (entry->type == TSNEP_TX_TYPE_SKB &&
->+		    (skb_shinfo(entry->skb)->tx_flags & SKBTX_IN_PROGRESS) &&
-> 		    (__le32_to_cpu(entry->desc_wb->properties) &
-> 		     TSNEP_DESC_EXTENDED_WRITEBACK_FLAG)) {
-> 			struct skb_shared_hwtstamps hwtstamps;
->@@ -556,8 +686,20 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
-> 			skb_tstamp_tx(entry->skb, &hwtstamps);
-> 		}
->
->-		napi_consume_skb(entry->skb, budget);
->-		entry->skb = NULL;
->+		switch (entry->type) {
->+		case TSNEP_TX_TYPE_SKB:
->+			napi_consume_skb(entry->skb, budget);
->+			entry->skb = NULL;
->+			break;
->+		case TSNEP_TX_TYPE_XDP_TX:
->+			xdp_return_frame_rx_napi(entry->xdpf);
->+			entry->xdpf = NULL;
->+			break;
->+		case TSNEP_TX_TYPE_XDP_NDO:
->+			xdp_return_frame_bulk(entry->xdpf, &bq);
->+			entry->xdpf = NULL;
->+			break;
->+		}
->
-> 		tx->read = (tx->read + count) % TSNEP_RING_SIZE;
->
->@@ -574,6 +716,10 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
->
-> 	spin_unlock_irqrestore(&tx->lock, flags);
->
->+	xdp_flush_frame_bulk(&bq);
->+
->+	rcu_read_unlock();
->+
-> 	return (budget != 0);
-> }
->
->@@ -1335,6 +1481,47 @@ static ktime_t tsnep_netdev_get_tstamp(struct net_device *netdev,
-> 	return ns_to_ktime(timestamp);
-> }
->
->+static int tsnep_netdev_xdp_xmit(struct net_device *dev, int n,
->+				 struct xdp_frame **xdp, u32 flags)
->+{
->+	struct tsnep_adapter *adapter = netdev_priv(dev);
->+	int cpu = smp_processor_id();
->+	int queue;
->+	struct netdev_queue *nq;
->+	int nxmit = 0;
->+	int i;
->+	int retval;
->+
->+	if (unlikely(test_bit(__TSNEP_DOWN, &adapter->state)))
->+		return -ENETDOWN;
->+
->+	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
->+		return -EINVAL;
->+
->+	queue = cpu % adapter->num_tx_queues;
->+	nq = netdev_get_tx_queue(adapter->netdev, queue);
->+
->+	__netif_tx_lock(nq, cpu);
->+
->+	/* Avoid transmit queue timeout since we share it with the slow path */
->+	txq_trans_cond_update(nq);
->+
->+	for (i = 0; i < n; i++) {
->+		retval = tsnep_xdp_xmit_frame_ring(xdp[i], &adapter->tx[queue], true);
->+		if (retval)
->+			break;
->+
->+		nxmit++; 
-
-you could just use the loop iterator and drop nxmit.
-
->+	}
->+
->+	if (flags & XDP_XMIT_FLUSH)
->+		tsnep_xdp_xmit_flush(&adapter->tx[queue]);
->+
->+	__netif_tx_unlock(nq);
->+
->+	return nxmit;
->
-[ ... ]
+Overall looks like great cleanup. Thanks!
