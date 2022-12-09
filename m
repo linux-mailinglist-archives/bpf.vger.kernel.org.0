@@ -2,77 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F5F6483BA
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 15:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C646483BB
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 15:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbiLIO1m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 09:27:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
+        id S229816AbiLIO1t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 09:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbiLIO1l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 09:27:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A9529CAC
-        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 06:26:45 -0800 (PST)
+        with ESMTP id S229538AbiLIO1r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 09:27:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608F318E3B
+        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 06:26:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670596004;
+        s=mimecast20190719; t=1670596006;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=NvT5twpyjg/6W4mHe3Hf2eoisCtYBKm26XzMySr7D1o=;
-        b=d0mdbv354a9YvBRbnVoYaU971fM62O2SbEIAOutKJ+Ap1MkGWnt1fKAljj+8bgSIkPknl+
-        atqp+DcDk4Ampg8sePwkFwuQFakRRQeq/WorIuFA9nWMw7H7ExKQTwhY7ppjM6ks8feiJC
-        uFSIfT9rF8ulLGxJqneTvbI3+1ioYE0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kOF+S3PHOW3IehcjpPDFE2HwwX4y4ZzChTg/OVZXIQ8=;
+        b=ihOhTCqbbuUSOrEuL4u/72kJG4otjQmRxXfMO+U5ihsawl6Qoajz7AFQwN1puvmaqEVvZ8
+        HwzlTMVskTuN4ae6tjrk0VC3L5iyXp+7Rcbdhkei3Vy+YbnAE2eqOWoSobvaGv58hGb1mN
+        UGADFz1chgTrqlCAy77AQvUyHUii8tU=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-147--KmwcqkPMEKNCZVfcwIhjw-1; Fri, 09 Dec 2022 09:26:42 -0500
-X-MC-Unique: -KmwcqkPMEKNCZVfcwIhjw-1
-Received: by mail-ed1-f69.google.com with SMTP id m18-20020a056402511200b0046db14dc1c9so1482188edd.10
-        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 06:26:42 -0800 (PST)
+ us-mta-168-2e-TpHdBOISYW4V1Fbe3ZQ-1; Fri, 09 Dec 2022 09:26:45 -0500
+X-MC-Unique: 2e-TpHdBOISYW4V1Fbe3ZQ-1
+Received: by mail-ej1-f72.google.com with SMTP id xc12-20020a170907074c00b007416699ea14so3173793ejb.19
+        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 06:26:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NvT5twpyjg/6W4mHe3Hf2eoisCtYBKm26XzMySr7D1o=;
-        b=f2EWqPhgn9gyk3O89mPL2F96xxXHweLQTdksKh0uwMaiZDUeNi74tmHz2y5bmraKzg
-         LBDnrIIvfCuLGE7FHcGr8kK/WMWQaPPz3mem8JsVNbm+4EG0IcnlUohZK/+z4EcKq9aK
-         fOjbZGX9ImO58ou3ay3/QCghvi/DXj7VsusosXuFj89LkRQ3gtrfOfJW5yCTWcgTmZdO
-         crNyOAl7YegsdYXuocdoK3OSEY7f6O5oMB51zbJsP64oxuZBo7Us0vzNJiKjBQpIalTA
-         AI6hjoTKqyGkWsQVAtnCdAwsfueqvplZeWpzZKMwon70dKVlRaOdgkpW53oJ1I5zbx5l
-         6/pA==
-X-Gm-Message-State: ANoB5pmY8ypx2/ONeG/ex8gAKyR8lMVGGBGC3Z8zfDxDVOCczY/Ig192
-        Iv7zANMqA0KLDpm6E9G3Kr2tTFq6nsiLOioXshiv9W2dfHXsH46vJorfT6ctGP/N8ncnSmoVFOO
-        DATVBM8MpBmXn
-X-Received: by 2002:a05:6402:2408:b0:461:f0a7:156 with SMTP id t8-20020a056402240800b00461f0a70156mr5442208eda.36.1670596001239;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kOF+S3PHOW3IehcjpPDFE2HwwX4y4ZzChTg/OVZXIQ8=;
+        b=lq2id+LvxuTZTcn33GM4YteXxWTkTTZjwrUBUJZJOttd73p1an5UQP7bb9qT6pioTO
+         5BZnCppYUh6gIj8APvK8krzmr6dgw2+2jq++mPtaB/gPAklX351GonqBCGm/4cdFAxZc
+         9/PJ5kDQ6Zc3539CLJS+KlpVH9Y7QHG4jv1sYn/e3gZo0fXRNYyE+bX+yDBDae5XWM7z
+         f208HU/D4fFbsJbTpLlDm0QRQqnT8XkHfxT7d2dSytvEOTI9NeIdoz0wfQvJ0g6bBrls
+         1AEC9j8kMbSoOsH+KOOkEqPEfn1j1Y8RjozKlvwSROYfXdsxx91fO5pr+jCxbysOYez1
+         8lAw==
+X-Gm-Message-State: ANoB5pnuENhy7AOoWdPXgJR/gw/oFeaC2Vzi13mgrBwM2QnqXtVJT/Of
+        is20SEBqPaO+hfSC8PDeZ8YLbUSef0umg7Bwd/DkrK9H8ocoUOzvO0rm54Mpkd4g/k0MbQOa0GH
+        ea4NybYuX44gV
+X-Received: by 2002:a17:907:2985:b0:7c0:f907:89a2 with SMTP id eu5-20020a170907298500b007c0f90789a2mr4852295ejc.61.1670596002705;
+        Fri, 09 Dec 2022 06:26:42 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf58kecm7GH89VsCVvR2KVQImLWpqMuMRJvCxyhdIn7HOLX36PJxFX0mpqP1eZGplH5iuFTCTg==
+X-Received: by 2002:a17:907:2985:b0:7c0:f907:89a2 with SMTP id eu5-20020a170907298500b007c0f90789a2mr4852228ejc.61.1670596001541;
         Fri, 09 Dec 2022 06:26:41 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf71TsMbyE6U37uWmMB146F32fSXyxUUM3n7wettK9Jje1b2+8NBf4P/skcPWKjNf64KRBRrjw==
-X-Received: by 2002:a05:6402:2408:b0:461:f0a7:156 with SMTP id t8-20020a056402240800b00461f0a70156mr5442173eda.36.1670596000804;
-        Fri, 09 Dec 2022 06:26:40 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id t4-20020aa7d704000000b00463bc1ddc76sm694300edq.28.2022.12.09.06.26.38
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 10-20020a170906218a00b007815ca7ae57sm603417eju.212.2022.12.09.06.26.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 06:26:39 -0800 (PST)
+        Fri, 09 Dec 2022 06:26:40 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 4E2CE82EB33; Fri,  9 Dec 2022 15:26:38 +0100 (CET)
+        id D0DCD82EB35; Fri,  9 Dec 2022 15:26:38 +0100 (CET)
 From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+To:     Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Toke Hoiland-Jorgensen <toke@redhat.com>
-Cc:     bpf@vger.kernel.org
-Subject: [PATCH bpf v2 1/2] bpf: Resolve fext program type when checking map compatibility
-Date:   Fri,  9 Dec 2022 15:26:21 +0100
-Message-Id: <20221209142622.154126-1-toke@redhat.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH bpf v2 2/2] selftests/bpf: Add a test for using a cpumap from an freplace-to-XDP program
+Date:   Fri,  9 Dec 2022 15:26:22 +0100
+Message-Id: <20221209142622.154126-2-toke@redhat.com>
 X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221209142622.154126-1-toke@redhat.com>
+References: <20221209142622.154126-1-toke@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -86,74 +93,175 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_prog_map_compatible() check makes sure that BPF program types are
-not mixed inside BPF map types that can contain programs (tail call maps,
-cpumaps and devmaps). It does this by setting the fields of the map->owner
-struct to the values of the first program being checked against, and
-rejecting any subsequent programs if the values don't match.
+This adds a simple test for inserting an XDP program into a cpumap that is
+"owned" by an XDP program that was loaded as PROG_TYPE_EXT (as libxdp
+does). Prior to the kernel fix this would fail because the map type
+ownership would be set to PROG_TYPE_EXT instead of being resolved to
+PROG_TYPE_XDP.
 
-One of the values being set in the map owner struct is the program type,
-and since the code did not resolve the prog type for fext programs, the map
-owner type would be set to PROG_TYPE_EXT and subsequent loading of programs
-of the target type into the map would fail.
-
-This bug is seen in particular for XDP programs that are loaded as
-PROG_TYPE_EXT using libxdp; these cannot insert programs into devmaps and
-cpumaps because the check fails as described above.
-
-Fix the bug by resolving the fext program type to its target program type
-as elsewhere in the verifier. This requires constifying the parameter of
-resolve_prog_type() to avoid a compiler warning from the new call site.
-
-Fixes: f45d5b6ce2e8 ("bpf: generalise tail call map compatibility check")
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
-No changes since v1, this just adds a selftest (in patch 2).
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 53 +++++++++++++++++++
+ .../selftests/bpf/progs/freplace_progmap.c    | 24 +++++++++
+ tools/testing/selftests/bpf/testing_helpers.c | 24 ++++++++-
+ tools/testing/selftests/bpf/testing_helpers.h |  2 +
+ 4 files changed, 101 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/freplace_progmap.c
 
- include/linux/bpf_verifier.h | 2 +-
- kernel/bpf/core.c            | 5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 9e1e6965f407..0eb8f035b3d9 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -642,7 +642,7 @@ static inline u32 type_flag(u32 type)
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+index d1e32e792536..dac088217f0f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+@@ -500,6 +500,57 @@ static void test_fentry_to_cgroup_bpf(void)
+ 	bind4_prog__destroy(skel);
  }
  
- /* only use after check_attach_btf_id() */
--static inline enum bpf_prog_type resolve_prog_type(struct bpf_prog *prog)
-+static inline enum bpf_prog_type resolve_prog_type(const struct bpf_prog *prog)
++static void test_func_replace_progmap(void)
++{
++	struct bpf_cpumap_val value = { .qsize = 1 };
++	struct bpf_object *obj, *tgt_obj = NULL;
++	struct bpf_program *drop, *redirect;
++	struct bpf_map *cpumap;
++	int err, tgt_fd;
++	__u32 key = 0;
++
++	err = bpf_prog_test_open("freplace_progmap.bpf.o", BPF_PROG_TYPE_UNSPEC, &obj);
++	if (!ASSERT_OK(err, "prog_open"))
++		return;
++
++	err = bpf_prog_test_load("xdp_dummy.bpf.o", BPF_PROG_TYPE_UNSPEC, &tgt_obj, &tgt_fd);
++	if (!ASSERT_OK(err, "tgt_prog_load"))
++		goto out;
++
++	drop = bpf_object__find_program_by_name(obj, "xdp_drop_prog");
++	redirect = bpf_object__find_program_by_name(obj, "xdp_cpumap_prog");
++	cpumap = bpf_object__find_map_by_name(obj, "cpu_map");
++
++	if (!ASSERT_OK_PTR(drop, "drop") || !ASSERT_OK_PTR(redirect, "redirect") ||
++	    !ASSERT_OK_PTR(cpumap, "cpumap"))
++		goto out;
++
++	/* Change the 'redirect' program type to be a PROG_TYPE_EXT
++	 * with an XDP target
++	 */
++	bpf_program__set_type(redirect, BPF_PROG_TYPE_EXT);
++	bpf_program__set_expected_attach_type(redirect, 0);
++	err = bpf_program__set_attach_target(redirect, tgt_fd, "xdp_dummy_prog");
++	if (!ASSERT_OK(err, "set_attach_target"))
++		goto out;
++
++	err = bpf_object__load(obj);
++	if (!ASSERT_OK(err, "obj_load"))
++		goto out;
++
++	/* This will fail if the map is "owned" by a PROG_TYPE_EXT program,
++	 * which, prior to fixing the kernel, it will be since the map is used
++	 * from the 'redirect' prog above
++	 */
++	value.bpf_prog.fd = bpf_program__fd(drop);
++	err = bpf_map_update_elem(bpf_map__fd(cpumap), &key, &value, 0);
++	ASSERT_OK(err, "map_update");
++
++out:
++	bpf_object__close(tgt_obj);
++	bpf_object__close(obj);
++}
++
+ /* NOTE: affect other tests, must run in serial mode */
+ void serial_test_fexit_bpf2bpf(void)
  {
- 	return prog->type == BPF_PROG_TYPE_EXT ?
- 		prog->aux->dst_prog->type : prog->type;
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 25a54e04560e..17ab3e15ac25 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2088,6 +2088,7 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
- bool bpf_prog_map_compatible(struct bpf_map *map,
- 			     const struct bpf_prog *fp)
- {
-+	enum bpf_prog_type prog_type = resolve_prog_type(fp);
- 	bool ret;
+@@ -525,4 +576,6 @@ void serial_test_fexit_bpf2bpf(void)
+ 		test_func_replace_global_func();
+ 	if (test__start_subtest("fentry_to_cgroup_bpf"))
+ 		test_fentry_to_cgroup_bpf();
++	if (test__start_subtest("func_replace_progmap"))
++		test_func_replace_progmap();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/freplace_progmap.c b/tools/testing/selftests/bpf/progs/freplace_progmap.c
+new file mode 100644
+index 000000000000..68174c3d7b37
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/freplace_progmap.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_CPUMAP);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(struct bpf_cpumap_val));
++	__uint(max_entries, 1);
++} cpu_map SEC(".maps");
++
++SEC("xdp/cpumap")
++int xdp_drop_prog(struct xdp_md *ctx)
++{
++	return XDP_DROP;
++}
++
++SEC("xdp")
++int xdp_cpumap_prog(struct xdp_md *ctx)
++{
++	return bpf_redirect_map(&cpu_map, 0, XDP_PASS);
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
+index 9695318e8132..2050244e6f24 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.c
++++ b/tools/testing/selftests/bpf/testing_helpers.c
+@@ -174,8 +174,8 @@ __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info)
  
- 	if (fp->kprobe_override)
-@@ -2098,12 +2099,12 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
- 		/* There's no owner yet where we could check for
- 		 * compatibility.
- 		 */
--		map->owner.type  = fp->type;
-+		map->owner.type  = prog_type;
- 		map->owner.jited = fp->jited;
- 		map->owner.xdp_has_frags = fp->aux->xdp_has_frags;
- 		ret = true;
- 	} else {
--		ret = map->owner.type  == fp->type &&
-+		ret = map->owner.type  == prog_type &&
- 		      map->owner.jited == fp->jited &&
- 		      map->owner.xdp_has_frags == fp->aux->xdp_has_frags;
- 	}
+ int extra_prog_load_log_flags = 0;
+ 
+-int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
+-		       struct bpf_object **pobj, int *prog_fd)
++int bpf_prog_test_open(const char *file, enum bpf_prog_type type,
++		       struct bpf_object **pobj)
+ {
+ 	LIBBPF_OPTS(bpf_object_open_opts, opts,
+ 		.kernel_log_level = extra_prog_load_log_flags,
+@@ -201,6 +201,26 @@ int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
+ 	flags = bpf_program__flags(prog) | BPF_F_TEST_RND_HI32;
+ 	bpf_program__set_flags(prog, flags);
+ 
++	*pobj = obj;
++	return 0;
++err_out:
++	bpf_object__close(obj);
++	return err;
++}
++
++int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
++		       struct bpf_object **pobj, int *prog_fd)
++{
++	struct bpf_program *prog;
++	struct bpf_object *obj;
++	int err;
++
++	err = bpf_prog_test_open(file, type, &obj);
++	if (err)
++		return err;
++
++	prog = bpf_object__next_program(obj, NULL);
++
+ 	err = bpf_object__load(obj);
+ 	if (err)
+ 		goto err_out;
+diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
+index 6ec00bf79cb5..977eb520d119 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.h
++++ b/tools/testing/selftests/bpf/testing_helpers.h
+@@ -6,6 +6,8 @@
+ 
+ int parse_num_list(const char *s, bool **set, int *set_len);
+ __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info);
++int bpf_prog_test_open(const char *file, enum bpf_prog_type type,
++		       struct bpf_object **pobj);
+ int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
+ 		       struct bpf_object **pobj, int *prog_fd);
+ int bpf_test_load_program(enum bpf_prog_type type, const struct bpf_insn *insns,
 -- 
 2.38.1
 
