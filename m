@@ -2,367 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEA56482B2
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 14:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B9A6482F3
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 14:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbiLINPs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 08:15:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38380 "EHLO
+        id S229545AbiLINvH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 08:51:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbiLINPr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 08:15:47 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BFEFA27CCC;
-        Fri,  9 Dec 2022 05:15:44 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1554323A;
-        Fri,  9 Dec 2022 05:15:51 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.39.232])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 70B243F73B;
-        Fri,  9 Dec 2022 05:15:42 -0800 (PST)
-Date:   Fri, 9 Dec 2022 13:15:39 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     syzbot <syzbot+09329bd987ebca21bced@syzkaller.appspotmail.com>
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [syzbot] kernel stack overflow in sock_close
-Message-ID: <Y5M0+1bJ/A/M3xKU@FVFF77S0Q05N>
-References: <000000000000b2d33705ef4e2d70@google.com>
+        with ESMTP id S229530AbiLINvB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 08:51:01 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9485A6ACD6;
+        Fri,  9 Dec 2022 05:51:00 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id n20so11727493ejh.0;
+        Fri, 09 Dec 2022 05:51:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MayxEdP8sGeFElsJFgC+MBaPXZ8b65rXJQ4R4+c3n94=;
+        b=BHzo/UAM/xPaoyrSdelfF9IeGCylMna9VH0X9Nb2DNA12VPORtYZEOPLiVFkrApY6X
+         SQ6bGl0FRKonaWucUZBOp6QFmoduHGYFEq8cMoa3PijlQK+LJ37SNEFQcXAGbPowrrzt
+         ube8tJ6T77ibEmMkBy62FAHDjnauLoEA5UaTULjp/ic3Gbr+xtTe2laJ19wwLj/zs24M
+         nFnd4BiGA1EZy2NmzZ7RcdyG6l3y63IQ/ofPaSZ/ADm9pYrNaZ42g8v9L6piMnFcRtFp
+         maYA1yTifjN1NYlnF0jVjffkTzRu9/RgQsheT26CAM03G92qHP2TL9E794vK1yjCLYkq
+         u1Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MayxEdP8sGeFElsJFgC+MBaPXZ8b65rXJQ4R4+c3n94=;
+        b=f9IyrU7VSfoQA1KzHkXYa7d25BOLEIR4HN3H31TmHxeCBxA4BCOQii4LtBKUhfD4XA
+         rqieiGFxl3x8CpIS/7JUYeOSbAPn8UHlXxgWBmJVxZvgD+ItZve5mRt4KHkc23yw3UJI
+         OyNAejxdTjvDYfoJ3TaAbCk1NQQEafdk3moEg30oA02dyDq4A+2Oty35h07AYFdSCjI6
+         NALbzgH+WNTuY+naC5pa40cwQPlzPS6mke/LDdYhRl60meV9kBdumSSIjXgTVbNfA+/a
+         ZwBEUIY3IJYFmNO61vERWFlPEQA19AbJ6X+qLEKZlqR7rujXruryxkJ6nhgmAjfkY9PB
+         cgag==
+X-Gm-Message-State: ANoB5plG0+IBqiXPyMPlVwowEm/D+PCsEdgWGs3Vl6QYUIldqrjZiTKM
+        U0nc9MgZJAcoREUAMLE4hKg=
+X-Google-Smtp-Source: AA0mqf4ownPWdu+gIVnMpkqZNcezxOQgc87din9xNy9rmaIl/nBQ46g4Vb42pH3kGhMkC3RhJEPRLA==
+X-Received: by 2002:a17:906:2a10:b0:7c0:cc6d:5df7 with SMTP id j16-20020a1709062a1000b007c0cc6d5df7mr5267934eje.68.1670593859029;
+        Fri, 09 Dec 2022 05:50:59 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id c10-20020a17090618aa00b007c07dfb0816sm561499ejf.215.2022.12.09.05.50.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Dec 2022 05:50:58 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 9 Dec 2022 14:50:55 +0100
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Song Liu <song@kernel.org>
+Cc:     Hao Sun <sunhao.th@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: BUG: unable to handle kernel paging request in bpf_dispatcher_xdp
+Message-ID: <Y5M9P95l85oMHki9@krava>
+References: <CACkBjsYioeJLhJAZ=Sq4CAL2O_W+5uqcJynFgLSizWLqEjNrjw@mail.gmail.com>
+ <CACkBjsbD4SWoAmhYFR2qkP1b6JHO3Og0Vyve0=FO-Jb2JGGRfw@mail.gmail.com>
+ <Y49dMUsX2YgHK0J+@krava>
+ <CAADnVQ+w-xtH=oWPYszG-TqxcHmbrKJK10C=P-o2Ouicx-9OUA@mail.gmail.com>
+ <CAADnVQJ+9oiPEJaSgoXOmZwUEq9FnyLR3Kp38E_vuQo2PmDsbg@mail.gmail.com>
+ <Y5Inw4HtkA2ql8GF@krava>
+ <Y5JkomOZaCETLDaZ@krava>
+ <Y5JtACA8ay5QNEi7@krava>
+ <Y5LfMGbOHpaBfuw4@krava>
+ <Y5MaffJOe1QtumSN@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000b2d33705ef4e2d70@google.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y5MaffJOe1QtumSN@krava>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Fri, Dec 09, 2022 at 12:22:37PM +0100, Jiri Olsa wrote:
 
-On Thu, Dec 08, 2022 at 02:05:36AM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e3cb714fb489 Merge branch 'for-next/core' into for-kernelci
+SBIP
 
-This commit has a known-broken parent where some uaccess copies appeared to
-result in stack corruption:
+> > > > > > >
+> > > > > > > I'm trying to understand the severity of the issues and
+> > > > > > > whether we need to revert that commit asap since the merge window
+> > > > > > > is about to start.
+> > > > > > 
+> > > > > > Jiri, Peter,
+> > > > > > 
+> > > > > > ping.
+> > > > > > 
+> > > > > > cc-ing Thorsten, since he's tracking it now.
+> > > > > > 
+> > > > > > The config has CONFIG_X86_KERNEL_IBT=y.
+> > > > > > Is it related?
+> > > > > 
+> > > > > sorry for late reply.. I still did not find the reason,
+> > > > > but I did not try with IBT yet, will test now
+> > > > 
+> > > > no difference with IBT enabled, can't reproduce the issue
+> > > > 
+> > > 
+> > > ok, scratch that.. the reproducer got stuck on wifi init :-\
+> > > 
+> > > after I fix that I can now reproduce on my local config with
+> > > IBT enabled or disabled.. it's something else
+> > 
+> > I'm getting the error also when reverting the static call change,
+> > looking for good commit, bisecting
+> > 
+> > I'm getting fail with:
+> >    f0c4d9fc9cc9 (tag: v6.1-rc4) Linux 6.1-rc4
+> > 
+> > v6.1-rc1 is ok
+> 
+> so far I narrowed it down between rc1 and rc3.. bisect got me nowhere so far
+> 
+> attaching some more logs
 
-  https://lore.kernel.org/linux-arm-kernel/Y44gVm7IEMXqilef@FVFF77S0Q05N.cambridge.arm.com/
+looking at the code.. how do we ensure that code running through
+bpf_prog_run_xdp will not get dispatcher image changed while
+it's being exetuted
 
-... which has now been dropped from the arm64 for-next/core branch, but
-anything found on commit e3cb714fb489 will be suspect due to that.
+we use 'the other half' of the image when we add/remove programs,
+but could bpf_dispatcher_update race with bpf_prog_run_xdp like:
 
-This *might* a manifestation of the same issue; I'll have a go at reproducing
-it locally.
 
-Thanks,
-Mark.
+cpu 0:                                  cpu 1:
 
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13d5c11d880000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ec7118319bfb771e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=09329bd987ebca21bced
-> compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-> userspace arch: arm64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145daef3880000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1313d497880000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/832eb1866f2c/disk-e3cb714f.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/5fd572b7d96d/vmlinux-e3cb714f.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/34c82908beda/Image-e3cb714f.gz.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+09329bd987ebca21bced@syzkaller.appspotmail.com
-> 
-> x8 : 0000000000040574 x7 : ffff80000b22f58c x6 : 0000000000000000
-> x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
-> x2 : 0000000000000002 x1 : ffff0000c60f3eb8 x0 : ffff0000c60f3480
-> Kernel panic - not syncing: kernel stack overflow
-> CPU: 1 PID: 3074 Comm: syz-executor169 Not tainted 6.1.0-rc7-syzkaller-33097-ge3cb714fb489 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/30/2022
-> Call trace:
->  dump_backtrace+0x1c4/0x1f0 arch/arm64/kernel/stacktrace.c:156
->  show_stack+0x2c/0x54 arch/arm64/kernel/stacktrace.c:163
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x104/0x16c lib/dump_stack.c:106
->  dump_stack+0x1c/0x58 lib/dump_stack.c:113
->  panic+0x218/0x508 kernel/panic.c:274
->  nmi_panic+0xbc/0xf0 kernel/panic.c:169
->  panic_bad_stack+0x134/0x154 arch/arm64/kernel/traps.c:886
->  handle_bad_stack+0x34/0x48 arch/arm64/kernel/entry-common.c:849
->  __bad_stack+0x78/0x7c arch/arm64/kernel/entry.S:552
->  mark_lock+0x4/0x1b4 kernel/locking/lockdep.c:4595
->  lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5668
->  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
->  _raw_spin_lock_bh+0x54/0x6c kernel/locking/spinlock.c:178
->  spin_lock_bh include/linux/spinlock.h:355 [inline]
->  lock_sock_nested+0x88/0xd8 net/core/sock.c:3450
->  lock_sock include/net/sock.h:1721 [inline]
->  sock_map_close+0x30/0x4bc net/core/sock_map.c:1610
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  sock_map_close+0x400/0x4bc
->  inet_release+0xc8/0xe4 net/ipv4/af_inet.c:428
->  inet6_release+0x3c/0x58 net/ipv6/af_inet6.c:488
->  __sock_release net/socket.c:650 [inline]
->  sock_close+0x50/0xf0 net/socket.c:1365
->  __fput+0x198/0x3e4 fs/file_table.c:320
->  ____fput+0x20/0x30 fs/file_table.c:348
->  task_work_run+0x100/0x148 kernel/task_work.c:179
->  exit_task_work include/linux/task_work.h:38 [inline]
->  do_exit+0x2dc/0xcac kernel/exit.c:820
->  do_group_exit+0x98/0xcc kernel/exit.c:950
->  get_signal+0xabc/0xb2c kernel/signal.c:2858
->  do_signal+0x128/0x438 arch/arm64/kernel/signal.c:1076
->  do_notify_resume+0xc0/0x1f0 arch/arm64/kernel/signal.c:1129
->  prepare_exit_to_user_mode arch/arm64/kernel/entry-common.c:137 [inline]
->  exit_to_user_mode arch/arm64/kernel/entry-common.c:142 [inline]
->  el0_svc+0x9c/0x150 arch/arm64/kernel/entry-common.c:638
->  el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
->  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
-> SMP: stopping secondary CPUs
-> Kernel Offset: disabled
-> CPU features: 0x00000,040e0108,4c017203
-> Memory Limit: none
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+bpf_prog_run_xdp
+   ...
+   bpf_dispatcher_xdp_func
+      start exec image at offset 0x0
+
+                                        bpf_dispatcher_update
+                                                update image at offset 0x800
+                                        bpf_dispatcher_update
+                                                update image at offset 0x0
+
+      still in image at offset 0x0
+
+
+that might explain why I wasn't able to trigger that on
+bare metal just in qemu
+
+jirka
