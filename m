@@ -2,92 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B9A6482F3
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 14:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B0A64831C
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 14:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbiLINvH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 08:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
+        id S229530AbiLIN6t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 08:58:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbiLINvB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 08:51:01 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9485A6ACD6;
-        Fri,  9 Dec 2022 05:51:00 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id n20so11727493ejh.0;
-        Fri, 09 Dec 2022 05:51:00 -0800 (PST)
+        with ESMTP id S229470AbiLIN6s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 08:58:48 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B003675BC5
+        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 05:58:47 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id fc4so11619105ejc.12
+        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 05:58:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MayxEdP8sGeFElsJFgC+MBaPXZ8b65rXJQ4R4+c3n94=;
-        b=BHzo/UAM/xPaoyrSdelfF9IeGCylMna9VH0X9Nb2DNA12VPORtYZEOPLiVFkrApY6X
-         SQ6bGl0FRKonaWucUZBOp6QFmoduHGYFEq8cMoa3PijlQK+LJ37SNEFQcXAGbPowrrzt
-         ube8tJ6T77ibEmMkBy62FAHDjnauLoEA5UaTULjp/ic3Gbr+xtTe2laJ19wwLj/zs24M
-         nFnd4BiGA1EZy2NmzZ7RcdyG6l3y63IQ/ofPaSZ/ADm9pYrNaZ42g8v9L6piMnFcRtFp
-         maYA1yTifjN1NYlnF0jVjffkTzRu9/RgQsheT26CAM03G92qHP2TL9E794vK1yjCLYkq
-         u1Aw==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BnAn+O0EQKCuwxsZgkkPRvuoLosMXCph/6+7EgI/Ejw=;
+        b=jctk4i3G6Qz4xAJufuthTnK9tty4y4KW++hd/xVG8yxQd0PY0yuXjjOOLJW6+eOuP7
+         8vYdhePL7aKrKiGkeGuXklNCKCo4EHqXldnY8f3Xel8xSuS+n6uzuG+9UYjiytvxOtiO
+         5tWfbBtPOGOOumgas2djT1fnlGkKP/w58GKH5/Lfspso04owKAnQjf3uhcmcy203SC8b
+         3nlwyq+CXregxpA7gCRmX+ylovqi3EiKAOufMwebi6QxbWTzZHtPkGs/t6q9sgRea4qM
+         OBBUB7jax1GnU48CKb6Yumwz1fSYcbHI16KKQ3XOS4ckvVukin3JOHHTBHljNz4Z9FAE
+         Ww3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MayxEdP8sGeFElsJFgC+MBaPXZ8b65rXJQ4R4+c3n94=;
-        b=f9IyrU7VSfoQA1KzHkXYa7d25BOLEIR4HN3H31TmHxeCBxA4BCOQii4LtBKUhfD4XA
-         rqieiGFxl3x8CpIS/7JUYeOSbAPn8UHlXxgWBmJVxZvgD+ItZve5mRt4KHkc23yw3UJI
-         OyNAejxdTjvDYfoJ3TaAbCk1NQQEafdk3moEg30oA02dyDq4A+2Oty35h07AYFdSCjI6
-         NALbzgH+WNTuY+naC5pa40cwQPlzPS6mke/LDdYhRl60meV9kBdumSSIjXgTVbNfA+/a
-         ZwBEUIY3IJYFmNO61vERWFlPEQA19AbJ6X+qLEKZlqR7rujXruryxkJ6nhgmAjfkY9PB
-         cgag==
-X-Gm-Message-State: ANoB5plG0+IBqiXPyMPlVwowEm/D+PCsEdgWGs3Vl6QYUIldqrjZiTKM
-        U0nc9MgZJAcoREUAMLE4hKg=
-X-Google-Smtp-Source: AA0mqf4ownPWdu+gIVnMpkqZNcezxOQgc87din9xNy9rmaIl/nBQ46g4Vb42pH3kGhMkC3RhJEPRLA==
-X-Received: by 2002:a17:906:2a10:b0:7c0:cc6d:5df7 with SMTP id j16-20020a1709062a1000b007c0cc6d5df7mr5267934eje.68.1670593859029;
-        Fri, 09 Dec 2022 05:50:59 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id c10-20020a17090618aa00b007c07dfb0816sm561499ejf.215.2022.12.09.05.50.57
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BnAn+O0EQKCuwxsZgkkPRvuoLosMXCph/6+7EgI/Ejw=;
+        b=c0DxHyNel3FEzC5L5vs0/wPofNvIrVluEVb38F8zWMX+1g+ijfvXY9qkeH8XLxm4Jm
+         Yda9R5ZJiG2+yDRqZ1vKb6FmG7KaRtWQ3cKALsEN6tmV/75BcHOUSGdKpnqCjODh+r4B
+         Vavppi/PBcsa0Ro1sno/Bgje2Qqrbdb1JmlbQpmXZIWOMFpVSeqhQBdTpRRh+dw38+hm
+         wxro2ZtRuejWR36Er2/t08plJCWftjSYN3g65B8E+As12WFTYsg6QjSdSWRqCuR+2r5L
+         EQOHhw/lwHCojO1B9oOOuweiCju6lGlGDU/RAbvUhcb1yTO+XTCxr/4Tg9aYSmAOjrbi
+         A5+Q==
+X-Gm-Message-State: ANoB5plwhjRC0yWXDNIZ06GjE/TgLggEO0Dw/0ZWV1F1petLQ9IthDeM
+        IPEXY0HArdB3E58CQHFULIyX8NdVq2Tn5w==
+X-Google-Smtp-Source: AA0mqf617SpKL22goTDayDP8AXwSLP2NVoXTWvUOO/qxMokkqQU04yT3hCEW5i3ku0p6Y99P52UQDg==
+X-Received: by 2002:a17:906:eda6:b0:7c0:d2b2:eb07 with SMTP id sa6-20020a170906eda600b007c0d2b2eb07mr4479807ejb.26.1670594325912;
+        Fri, 09 Dec 2022 05:58:45 -0800 (PST)
+Received: from pluto.. (178-133-28-80.mobile.vf-ua.net. [178.133.28.80])
+        by smtp.gmail.com with ESMTPSA id j6-20020a170906830600b007c10fe64c5dsm589028ejx.86.2022.12.09.05.58.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 05:50:58 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 9 Dec 2022 14:50:55 +0100
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <song@kernel.org>
-Cc:     Hao Sun <sunhao.th@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: BUG: unable to handle kernel paging request in bpf_dispatcher_xdp
-Message-ID: <Y5M9P95l85oMHki9@krava>
-References: <CACkBjsYioeJLhJAZ=Sq4CAL2O_W+5uqcJynFgLSizWLqEjNrjw@mail.gmail.com>
- <CACkBjsbD4SWoAmhYFR2qkP1b6JHO3Og0Vyve0=FO-Jb2JGGRfw@mail.gmail.com>
- <Y49dMUsX2YgHK0J+@krava>
- <CAADnVQ+w-xtH=oWPYszG-TqxcHmbrKJK10C=P-o2Ouicx-9OUA@mail.gmail.com>
- <CAADnVQJ+9oiPEJaSgoXOmZwUEq9FnyLR3Kp38E_vuQo2PmDsbg@mail.gmail.com>
- <Y5Inw4HtkA2ql8GF@krava>
- <Y5JkomOZaCETLDaZ@krava>
- <Y5JtACA8ay5QNEi7@krava>
- <Y5LfMGbOHpaBfuw4@krava>
- <Y5MaffJOe1QtumSN@krava>
+        Fri, 09 Dec 2022 05:58:45 -0800 (PST)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        yhs@fb.com, memxor@gmail.com, ecree.xilinx@gmail.com,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 0/7] stricter register ID checking in regsafe()
+Date:   Fri,  9 Dec 2022 15:57:26 +0200
+Message-Id: <20221209135733.28851-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y5MaffJOe1QtumSN@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,71 +69,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 09, 2022 at 12:22:37PM +0100, Jiri Olsa wrote:
+This patch-set consists of a series of bug fixes for register ID
+tracking in verifier.c:states_equal()/regsafe() functions:
+ - for registers of type PTR_TO_MAP_{KEY,VALUE}, PTR_TO_PACKET[_META]
+   the regsafe() should call check_ids() even if registers are
+   byte-to-byte equal;
+ - states_equal() must maintain idmap that covers all function frames
+   in the state because functions like mark_ptr_or_null_regs() operate
+   on all registers in the state;
+ - regsafe() must compare spin lock ids for PTR_TO_MAP_VALUE registers.
 
-SBIP
+The last point covers issue reported by Kumar Kartikeya Dwivedi in [1],
+I borrowed the test commit from there.
+Note, that there is also an issue with register id tracking for
+scalars described here [2], it would be addressed separately.
 
-> > > > > > >
-> > > > > > > I'm trying to understand the severity of the issues and
-> > > > > > > whether we need to revert that commit asap since the merge window
-> > > > > > > is about to start.
-> > > > > > 
-> > > > > > Jiri, Peter,
-> > > > > > 
-> > > > > > ping.
-> > > > > > 
-> > > > > > cc-ing Thorsten, since he's tracking it now.
-> > > > > > 
-> > > > > > The config has CONFIG_X86_KERNEL_IBT=y.
-> > > > > > Is it related?
-> > > > > 
-> > > > > sorry for late reply.. I still did not find the reason,
-> > > > > but I did not try with IBT yet, will test now
-> > > > 
-> > > > no difference with IBT enabled, can't reproduce the issue
-> > > > 
-> > > 
-> > > ok, scratch that.. the reproducer got stuck on wifi init :-\
-> > > 
-> > > after I fix that I can now reproduce on my local config with
-> > > IBT enabled or disabled.. it's something else
-> > 
-> > I'm getting the error also when reverting the static call change,
-> > looking for good commit, bisecting
-> > 
-> > I'm getting fail with:
-> >    f0c4d9fc9cc9 (tag: v6.1-rc4) Linux 6.1-rc4
-> > 
-> > v6.1-rc1 is ok
-> 
-> so far I narrowed it down between rc1 and rc3.. bisect got me nowhere so far
-> 
-> attaching some more logs
+[1] https://lore.kernel.org/bpf/20221111202719.982118-1-memxor@gmail.com/
+[2] https://lore.kernel.org/bpf/20221128163442.280187-2-eddyz87@gmail.com/
 
-looking at the code.. how do we ensure that code running through
-bpf_prog_run_xdp will not get dispatcher image changed while
-it's being exetuted
+Eduard Zingerman (6):
+  bpf: regsafe() must not skip check_ids()
+  selftests/bpf: test cases for regsafe() bug skipping check_id()
+  bpf: states_equal() must build idmap for all function frames
+  selftests/bpf: verify states_equal() maintains idmap across all frames
+  bpf: use check_ids() for active_lock comparison
+  selftests/bpf: test case for relaxed prunning of active_lock.id
 
-we use 'the other half' of the image when we add/remove programs,
-but could bpf_dispatcher_update race with bpf_prog_run_xdp like:
+Kumar Kartikeya Dwivedi (1):
+  selftests/bpf: Add pruning test case for bpf_spin_lock
 
+ include/linux/bpf_verifier.h                  |   4 +-
+ kernel/bpf/verifier.c                         |  48 ++++----
+ tools/testing/selftests/bpf/verifier/calls.c  |  82 +++++++++++++
+ .../bpf/verifier/direct_packet_access.c       |  54 +++++++++
+ .../selftests/bpf/verifier/spin_lock.c        | 114 ++++++++++++++++++
+ .../selftests/bpf/verifier/value_or_null.c    |  49 ++++++++
+ 6 files changed, 324 insertions(+), 27 deletions(-)
 
-cpu 0:                                  cpu 1:
+-- 
+2.34.1
 
-bpf_prog_run_xdp
-   ...
-   bpf_dispatcher_xdp_func
-      start exec image at offset 0x0
-
-                                        bpf_dispatcher_update
-                                                update image at offset 0x800
-                                        bpf_dispatcher_update
-                                                update image at offset 0x0
-
-      still in image at offset 0x0
-
-
-that might explain why I wasn't able to trigger that on
-bare metal just in qemu
-
-jirka
