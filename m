@@ -2,98 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A82CD6487F7
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 18:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294F16487FB
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 18:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbiLIRuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 12:50:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S229612AbiLIRw2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 12:52:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbiLIRuR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 12:50:17 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983747A192;
-        Fri,  9 Dec 2022 09:50:16 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3646C622E8;
-        Fri,  9 Dec 2022 17:50:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9009BC433F0;
-        Fri,  9 Dec 2022 17:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670608215;
-        bh=9qzt9BQpb73mPkbaBSKVFKBm13JD2EkP8hbzXLiTBnQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=g74Ndkk9OkIuv+LVReNyJ1hp5bCJ9csAILmVly+jpeop8fB5IZmsSCR+gYDgbSIjb
-         YrqE6nuoy826mCBq6spHqmLGfKj8pzc8Cmvb40bgqEnkxYEi9ew8X5awipNVRWiQ9k
-         PFU0mPVHKfjpi443c6NZ8e4GSp0kde6QF6PT9nGTPypNTh5O5qt63YSTv43T7jQIxN
-         1qGaXzH7Cip2JCKvWA+b/8ug525XpdsPwTt8vDvi7vnwHegdeB7JB3r+VL8xmXJtR5
-         f+VpvkC6Ql5f5VmOZ+FzH/rhD7PFMMvhbIb4WBE0cg881h2xXzLU26DIlTyR8F0JVU
-         iQ1kq5hQSFBqg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 74EE3E1B4D9;
-        Fri,  9 Dec 2022 17:50:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229591AbiLIRw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 12:52:26 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C827A192;
+        Fri,  9 Dec 2022 09:52:25 -0800 (PST)
+Message-ID: <516f48a6-cd8d-4e35-a4e5-69a2c462a7b1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1670608344;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3B5c2QhyLroQqEO0H48CgkYETxxD9Wcs7Wg5CBjWi3Y=;
+        b=IjwYWNoulhpso8JH1yAXCVO4HllZAn018+HGHGoS99W39d2S1Pp/PGlkHAwyeSRPeYftzZ
+        krz4eRQ7h7KztZn21kayPpAaaSKISo3F+LW/yPr6K77s4MchSfNt82hZ/gKImieAqMjr4J
+        C3d7nm4V7xTc6Qgdo9c2LpQqkOwybos=
+Date:   Fri, 9 Dec 2022 09:52:18 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH bpf-next v4] docs/bpf: Add documentation for
  BPF_MAP_TYPE_SK_STORAGE
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167060821547.31126.2706063406083427383.git-patchwork-notify@kernel.org>
-Date:   Fri, 09 Dec 2022 17:50:15 +0000
-References: <20221209112401.69319-1-donald.hunter@gmail.com>
-In-Reply-To: <20221209112401.69319-1-donald.hunter@gmail.com>
+Content-Language: en-US
 To:     Donald Hunter <donald.hunter@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, corbet@lwn.net,
-        yhs@meta.com, void@manifault.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Yonghong Song <yhs@meta.com>,
+        David Vernet <void@manifault.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20221209112401.69319-1-donald.hunter@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221209112401.69319-1-donald.hunter@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Fri,  9 Dec 2022 11:24:01 +0000 you wrote:
+On 12/9/22 3:24 AM, Donald Hunter wrote:
 > Add documentation for the BPF_MAP_TYPE_SK_STORAGE including
 > kernel version introduced, usage and examples.
-> 
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
-> ---
-> v3 -> v4:
-> - Update intro paragraph with detail about storage locality.
-> - Remove confusing text from bpf_map_update_elem()
->   as reported by David Vernet
-> - Updated BPF_EXIST and BPF_NOEXIST behaviour as suggested
->   by David Vernet
-> - Fixed extra space in function signature as reported by
->   David Vernet
-> - Added reference to selftests for complete examples as
->   suggested by Yonghong Song
-> v2 -> v3:
-> - Fix void * return, reported by Yonghong Song
-> - Add tracing programs to API note, reported by Yonghong Song
-> v1 -> v2:
-> - Fix bpf_sk_storage_* function signatures, reported by Yonghong Song
-> - Fix NULL return on failure, reported by Yonghong Song
-> 
-> [...]
 
-Here is the summary with links:
-  - [bpf-next,v4] docs/bpf: Add documentation for BPF_MAP_TYPE_SK_STORAGE
-    https://git.kernel.org/bpf/bpf-next/c/f3212ad5b7e9
+Thanks for writing the doc for sk_storage!
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +User space
+> +----------
+> +
+> +bpf_map_update_elem()
+> +~~~~~~~~~~~~~~~~~~~~~
+> +
+> +.. code-block:: c
+> +
+> +   int bpf_map_update_elem(int map_fd, const void *key, const void *value, __u64 flags)
+> +
+> +Socket-local storage for the socket identified by ``key`` belonging to
+> +``map_fd`` can be added or updated using the ``bpf_map_update_elem()`` libbpf > +function. ``key`` must be a pointer to a valid ``fd`` in the user space
+> +program. The ``flags`` parameter can be used to control the update behaviour:
 
+The "``key`` belonging to ``map_fd``" seems confusing.  Also, it is useful to 
+highlight the ``key`` is a _socket_ ``fd``.
+
+May be something like:
+
+A socket-local storage can be added/updated locally to a socket identified by a 
+_socket_ ``fd`` stored in the pointer ``key``.  The pointer ``value`` has the 
+data to be added/updated to the socket ``fd``.  The type and size of ``value`` 
+should be the same as the value type of the map definition.
+
+Feel free to rephrase the above in a better way.
+
+> +
+> +- ``BPF_ANY`` will create storage for ``fd`` or update existing storage.
+> +- ``BPF_NOEXIST`` will create storage for ``fd`` only if it did not already
+> +  exist, otherwise the call will fail with ``-EEXIST``.
+> +- ``BPF_EXIST`` will update existing storage for ``fd`` if it already exists,
+> +  otherwise the call will fail with ``-ENOENT``.
+> +
+> +Returns ``0`` on success, or negative error in case of failure.
+> +
+> +bpf_map_lookup_elem()
+> +~~~~~~~~~~~~~~~~~~~~~
+> +
+> +.. code-block:: c
+> +
+> +   int bpf_map_lookup_elem(int map_fd, const void *key, void *value)
+> +
+> +Socket-local storage for the socket identified by ``key`` belonging to
+> +``map_fd`` can be retrieved using the ``bpf_map_lookup_elem()`` libbpf
+> +function. ``key`` must be a pointer to a valid ``fd`` in the user space
+
+Same here.
+
+> +program. Returns ``0`` on success, or negative error in case of failure.
+> +
+> +bpf_map_delete_elem()
+> +~~~~~~~~~~~~~~~~~~~~~
+> +
+> +.. code-block:: c
+> +
+> +   int bpf_map_delete_elem(int map_fd, const void *key)
+> +
+> +Socket-local storage for the socket identified by ``key`` belonging to
+> +``map_fd`` can be deleted using the ``bpf_map_delete_elem()`` libbpf
+> +function. Returns ``0`` on success, or negative error in case of failure.
+
+Same here.
 
