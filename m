@@ -2,101 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38416487E5
-	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 18:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AF56487EC
+	for <lists+bpf@lfdr.de>; Fri,  9 Dec 2022 18:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbiLIRlv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 12:41:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
+        id S229675AbiLIRqf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 12:46:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbiLIRls (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 12:41:48 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D10F86F41
-        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 09:41:44 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id gt4so3860690pjb.1
-        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 09:41:44 -0800 (PST)
+        with ESMTP id S229628AbiLIRqe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 12:46:34 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB061D64A
+        for <bpf@vger.kernel.org>; Fri,  9 Dec 2022 09:46:33 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id t11-20020a17090a024b00b0021932afece4so8868296pje.5
+        for <bpf@vger.kernel.org>; Fri, 09 Dec 2022 09:46:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZFm1mHWqGIzhe+rb1eJUuw0XvgXopgBYaEtqlXPVfz0=;
-        b=hKQY4J/pRm6CWAMtVWIamF1UR1S5ytG4Q0dHLvMKrbYlyUycxPoWBv9Nvh4aE85080
-         MWzlNOjWwFO925vt2GUNcS/9BsF/orNKSvNrMiJHpxpXZP/fsRzj2P95wFaUt+bI8jC4
-         HKRo33TkZwcuRzKPFMZ/Et6g/CaKhLpD6XEakiYyIPyXFiTK9hpXRej8x43ZakzvAdnu
-         cc2uWLlT8LDekFoJ0DodzV9KIG5fEqwrWeJJE5FFSWTew4hhwEfHkkmQuMbzZJ1BkUaR
-         /AoTD8PntICNQW80RuAfzK6ZOG6OUwhJeXxnL+Z8dW9hRID7YD/0yMk+1SSU/RwDz4Iv
-         IAeg==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HQ9dSEXwYBxA4pKSv/9YF2c2JcAm8IxKG1zQ6cKX/dc=;
+        b=dYXP6fDzQN2V/qlc3SQr8N0jvIQ2duJ/fjb7ifX4vUlGuJLJ2+SspX1BrypjxiLwX9
+         3CJ8ivbUM/t5qTU7Jm8mepJlGzlcVOMEzoJI2fgIapmCEuqj74it1aGl4jKTaMj4zQKU
+         hXWqk1uuV+7fgfEeC4+7GWzoEF4MCI1sAJ/81KLLaFv5di9kdCBAYoZDdXkKwMyq7HB9
+         oawG4p9VDqLGaGRka74ejvh9F+J3E+rNL7Hdp8ZqBwXD6+uJEbFSLoRW8U9ZM6WYIwCF
+         4Y2JcN0wsDF5tCIHVO3mlnck3Kp4VlAvyQnQKn/VTDrU41nwROvzrhD0xnov5LTOUDzo
+         RcxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZFm1mHWqGIzhe+rb1eJUuw0XvgXopgBYaEtqlXPVfz0=;
-        b=QU+r8lkEn3XExzQHSV7zJIsaAcHPI4Yq8dwKZk38zkCoNN/6SO+lF28js8IAxdvCQI
-         KZ2J/rY1qy5lCGMpnK+2DIsrtGhHiOIOmRpKP6AopBnpFyDDhg+I8LHmPehb84MKKqPA
-         /L9nOiPvF6oRd1iowkTMnGZFOP3dPNmGyWObwOYwzzZjLd/3eZJY+iN5U1tsmKuM37ir
-         qn/xBAyKJTsQ3Q3E1zFXzexBFtzeBBnvpN49qvEOgD9gAGll1+Otc+qZvC/FPfSeCC1U
-         4EsyJmIIuGJRlCecynoNjQJ2+oENyHA6pOUWwD387fhYdFEoyzIxhvAgGuUt9lWs/2Wm
-         jCCA==
-X-Gm-Message-State: ANoB5pnznH4Yd3CE06US/A3GncRX4w9dRlLSnqySuikUBrjLIXyVCwe7
-        1j9q6N6LxQ8TJgdYvxek0LU2JriQekw9FdznsRDe
-X-Google-Smtp-Source: AA0mqf42Th/ALMFAQak9uQXYbmo+LSPCJ2qrOZQ93/pWBADQWGsh/kyFsqjnomlO+PB/OJ41SRslxU9sOKyJx0wF70I=
-X-Received: by 2002:a17:90b:2743:b0:20d:4173:faf9 with SMTP id
- qi3-20020a17090b274300b0020d4173faf9mr108635116pjb.147.1670607703640; Fri, 09
- Dec 2022 09:41:43 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HQ9dSEXwYBxA4pKSv/9YF2c2JcAm8IxKG1zQ6cKX/dc=;
+        b=4EGlv26IcvzSIGaitsTmgqiLCLN7Sw1E47nFPpuA7gpd/qmZtRGmzSpP+qij79ytD9
+         HlDr+kRxuewvRdHVxpNTefEje/Hp0oDZ39tg3jz24liTH2CFi+EVIoockHhsVm0NtRQY
+         HHH+XRIHDek3anvKyDQIYkeL8SOU8q6HzNd5RaNuCOAAxw0/O1KEO4qemEOgBRRwwVIL
+         7fjTzwJLajm8UUITdrN0Lk60DhMaXwOJnjdXZQHfNWzS4SJACMqz4b4Hbzun961lA0i7
+         a/aY4xi9nqZf4AO0R16O7gh8Zx+NzLHVZLs2UFJgmLRX+VmEArGktBnlvGNf+PpyGMkc
+         tasQ==
+X-Gm-Message-State: ANoB5pmt+tcwN0nuo8L94/gfp7N7Nd1PSyycI0C59DqZvNtNXkw7/+S0
+        Halm1OWctHSxnZBnFvdoUlVRJsMgO2guUvmzZJaRAA==
+X-Google-Smtp-Source: AA0mqf6J7OlXOVrlXIrOK83k51H3KpK5FYzmh8bzgATvgK+PzcS10dPMUBOH9FWm1W7UuPK/JhLJi793PsvGKg1gLfo=
+X-Received: by 2002:a17:90a:6382:b0:219:fbc:a088 with SMTP id
+ f2-20020a17090a638200b002190fbca088mr65443415pjj.162.1670607992729; Fri, 09
+ Dec 2022 09:46:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20221209082936.892416-1-roberto.sassu@huaweicloud.com> <20221209082936.892416-2-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20221209082936.892416-2-roberto.sassu@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 9 Dec 2022 12:41:32 -0500
-Message-ID: <CAHC9VhSz6b9AcpKzAn2Lz_9SW0yNqiQ0Ub8fXytFy7sSBmXipQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] doc: Fix fs_context_parse_param description in mount_api.rst
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     corbet@lwn.net, casey@schaufler-ca.com, omosnace@redhat.com,
-        john.johansen@canonical.com, kpsingh@kernel.org,
-        bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
+References: <20221206024554.3826186-1-sdf@google.com> <20221206024554.3826186-12-sdf@google.com>
+ <875yellcx6.fsf@toke.dk> <CAKH8qBv7nWdknuf3ap_ekpAhMgvtmoJhZ3-HRuL8Wv70SBWMSQ@mail.gmail.com>
+ <87359pl9zy.fsf@toke.dk> <CAADnVQ+=71Y+ypQTOgFTJWY7w3YOUdY39is4vpo3aou11=eMmw@mail.gmail.com>
+ <87tu25ju77.fsf@toke.dk> <CAADnVQ+MyE280Q-7iw2Y-P6qGs4xcDML-tUrXEv_EQTmeESVaQ@mail.gmail.com>
+ <87o7sdjt20.fsf@toke.dk> <CAKH8qBswBu7QAWySWOYK4X41mwpdBj0z=6A9WBHjVYQFq9Pzjw@mail.gmail.com>
+ <87cz8sk59e.fsf@toke.dk> <20221209084524.01c09d9c@kernel.org>
+In-Reply-To: <20221209084524.01c09d9c@kernel.org>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 9 Dec 2022 09:46:20 -0800
+Message-ID: <CAKH8qBsx4pPuvYenpM18NgdnGCG8QjqnsNY40Uc44EXTUVabMA@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 11/12] mlx5: Support RX XDP metadata
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 9, 2022 at 3:30 AM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
+On Fri, Dec 9, 2022 at 8:45 AM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> From: Roberto Sassu <roberto.sassu@huawei.com>
+> On Fri, 09 Dec 2022 15:42:37 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote=
+:
+> > If we expect the program to do out of band probing, we could just get
+> > rid of the _supported() functions entirely?
+> >
+> > I mean, to me, the whole point of having the separate _supported()
+> > function for each item was to have a lower-overhead way of checking if
+> > the metadata item was supported. But if the overhead is not actually
+> > lower (because both incur a function call), why have them at all? Then
+> > we could just change the implementation from this:
+> >
+> > bool mlx5e_xdp_rx_hash_supported(const struct xdp_md *ctx)
+> > {
+> >       const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
+> >
+> >       return _ctx->xdp.rxq->dev->features & NETIF_F_RXHASH;
+> > }
+> >
+> > u32 mlx5e_xdp_rx_hash(const struct xdp_md *ctx)
+> > {
+> >       const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
+> >
+> >       return be32_to_cpu(_ctx->cqe->rss_hash_result);
+> > }
+> >
+> > to this:
+> >
+> > u32 mlx5e_xdp_rx_hash(const struct xdp_md *ctx)
+> > {
+> >       const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
+> >
+> >       if (!(_ctx->xdp.rxq->dev->features & NETIF_F_RXHASH))
+> >                 return 0;
+> >
+> >       return be32_to_cpu(_ctx->cqe->rss_hash_result);
+> > }
 >
-> Align with the description of fs_context_parse_param in lsm_hooks.h, which
-> seems the right one according to the code.
+> Are there no corner cases? E.g. in case of an L2 frame you'd then
+> expect a hash of 0? Rather than no hash?
 >
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  Documentation/filesystems/mount_api.rst | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+> If I understand we went for the _supported() thing to make inlining
+> the check easier than inlining the actual read of the field.
+> But we're told inlining is a bit of a wait.. so isn't the motivation
+> for the _supported() pretty much gone? And we should we go back to
+> returning an error from the actual read?
 
-I'm going to leave this patch as a "hold" for right now.  The existing
-text is arguably not great, but I'm not really in love with the
-replacement text taken from the LSM hook comments; given the merge
-window opens in a couple of days, we don't have much time to fiddle
-with the wording so let's just hold this for a little bit.
+Seems fair, we can always bring those _supported() calls back in the
+future when the inlining is available and having those separate calls
+shows clear benefit.
+Then let's go back to a more conventional form below?
 
-These comment corrections (which are very welcome!) have also reminded
-me that we really should move the hook comment blocks out of the
-header file and into security.c like every other kernel function.
-This should help increase their discoverability while also making it
-easier to maintain the comments over time.  I'm going to post a first
-pass at this as soon as the merge window closes, and once that is done
-we can do further work to cleanup the descriptions and add more detail
-(including notes both for the other kernel subsystems that call the
-hooks and the LSM devs who provide implementations).
+int mlx5e_xdp_rx_hash(const struct xdp_md *ctx, u32 *timestamp)
+{
+      const struct mlx5_xdp_buff *_ctx =3D (void *)ctx;
 
--- 
-paul-moore.com
+       if (!(_ctx->xdp.rxq->dev->features & NETIF_F_RXHASH))
+                 return -EOPNOTSUPP;
+
+       *timestamp =3D be32_to_cpu(_ctx->cqe->rss_hash_result);
+       return 0;
+ }
+
+> Is partial inlining hard? (inline just the check and generate a full
+> call for the read, ending up with the same code as with _supported())
+
+I'm assuming you're suggesting to do this partial inlining manually
+(as in, writing the code to output this bytecode)?
+This probably also falls into the "manual bpf asm generation tech debt" buc=
+ket?
+LMK if I missed your point.
