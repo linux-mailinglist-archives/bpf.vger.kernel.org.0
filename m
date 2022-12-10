@@ -2,118 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3D9648C40
-	for <lists+bpf@lfdr.de>; Sat, 10 Dec 2022 02:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F54648D0A
+	for <lists+bpf@lfdr.de>; Sat, 10 Dec 2022 05:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbiLJBNA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 20:13:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
+        id S229568AbiLJEAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 23:00:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbiLJBM6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 20:12:58 -0500
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C95B24F09;
-        Fri,  9 Dec 2022 17:12:56 -0800 (PST)
-Message-ID: <de495e3a-cf06-ff85-1a4a-185621c9211a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1670634775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7d31vW134n03dH29MgNQ4O/dnbW9pESjGNcz1ij6T24=;
-        b=Ro3qiuNbrNKfSCyiywcfQR2IHy2qypA6orTcnzn/3DaVwU7ueIbGGJLUCptlC4mroE95pY
-        Mzb8iV5vl3sNfAhMq9So5MRcvmMhuuULhqMKpLHLQvMXQDHFRjnfO7c038S17/da8RVqQ1
-        U4aFHPL9QTDCVd5NMwvzt0+wD7J30uI=
-Date:   Fri, 9 Dec 2022 17:12:49 -0800
+        with ESMTP id S229723AbiLJEAV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 23:00:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293D057B53;
+        Fri,  9 Dec 2022 20:00:21 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D512FB82A4B;
+        Sat, 10 Dec 2022 04:00:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 78931C433EF;
+        Sat, 10 Dec 2022 04:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670644818;
+        bh=Rz+P4SaGHSIpmQsi3KIQXlPIq5hb6Gs+1inK2v4ojnI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=mVRc8GNEm3ThZgLn47sVD2FOsXz5OhPQcQagxoFEqhhaxT+/zxO723gzOqpLKhFvr
+         xwsHbsZW/+vf2aafWyVXqsIu5kx2Ts5cyw7S+hzfkiodTa+hTArFWIOG9SXqKR/gzW
+         8gj/j3HwVwLz98tOtFjF+mg7Fk5AQJvFNwz/TAAxKRlvUD2j1Nk8u5OWTRTC5ecMzP
+         onfyGfdpRywRkKy+jjd8QePbW4e9vxT/nzrMLLHUH2RwPTxghDSK1fmYDzN/hGpFS+
+         9wSi/0B8xHd4JadPgcWEskDaYcAKCoJjtHAoOJLIyApA4lor6kn8HIhiwkc6TcjUzG
+         OGBUIaIzb6wFw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 41E41C41606;
+        Sat, 10 Dec 2022 04:00:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 03/12] bpf: XDP metadata RX
- kfuncs
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-To:     Stanislav Fomichev <sdf@google.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-References: <20221206024554.3826186-1-sdf@google.com>
- <20221206024554.3826186-4-sdf@google.com> <878rjhldv0.fsf@toke.dk>
- <CAKH8qBvgkTXFEhd9hOa+SFtqKAXuD=WM_h1TZYdQA0d70_drEA@mail.gmail.com>
- <87zgbxjv7a.fsf@toke.dk>
- <CAKH8qBsK1J5HeSgPN_sYzQRY2jZOO=-E+zyKsn4xJ22zv5HRFg@mail.gmail.com>
- <8fdc5438-9ca1-6c12-9909-c6f472c22f19@linux.dev>
-In-Reply-To: <8fdc5438-9ca1-6c12-9909-c6f472c22f19@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net-next v3] skbuff: Introduce slab_build_skb()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167064481825.12189.4717731779203655380.git-patchwork-notify@kernel.org>
+Date:   Sat, 10 Dec 2022 04:00:18 +0000
+References: <20221208060256.give.994-kees@kernel.org>
+In-Reply-To: <20221208060256.give.994-kees@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     kuba@kernel.org,
+        syzbot+fda18eaa8c12534ccb3b@syzkaller.appspotmail.com,
+        edumazet@google.com, davem@davemloft.net, pabeni@redhat.com,
+        asml.silence@gmail.com, soopthegoop@gmail.com, vbabka@suse.cz,
+        kasan-dev@googlegroups.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, martin.lau@linux.dev, sdf@google.com,
+        song@kernel.org, yhs@fb.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rmody@marvell.com,
+        aelior@marvell.com, manishc@marvell.com, imagedong@tencent.com,
+        dsahern@kernel.org, richardbgobert@gmail.com, andreyknvl@gmail.com,
+        rientjes@google.com, GR-Linux-NIC-Dev@marvell.com,
+        linux-hardening@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/9/22 4:42 PM, Martin KaFai Lau wrote:
-> On 12/8/22 6:57 PM, Stanislav Fomichev wrote:
->> On Thu, Dec 8, 2022 at 4:07 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->>>
->>> Stanislav Fomichev <sdf@google.com> writes:
->>>
->>>>> Another UX thing I ran into is that libbpf will bail out if it can't
->>>>> find the kfunc in the kernel vmlinux, even if the code calling the
->>>>> function is behind an always-false if statement (which would be
->>>>> eliminated as dead code from the verifier). This makes it a bit hard to
->>>>> conditionally use them. Should libbpf just allow the load without
->>>>> performing the relocation (and let the verifier worry about it), or
->>>>> should we have a bpf_core_kfunc_exists() macro to use for checking?
->>>>> Maybe both?
->>>>
->>>> I'm not sure how libbpf can allow the load without performing the
->>>> relocation; maybe I'm missing something.
->>>> IIUC, libbpf uses the kfunc name (from the relocation?) and replaces
->>>> it with the kfunc id, right?
->>>
->>> Yeah, so if it can't find the kfunc in vmlinux, just write an id of 0.
->>> This will trip the check at the top of fixup_kfunc_call() in the
->>> verifier, but if the code is hidden behind an always-false branch (an
->>> rodata variable set to zero, say) the instructions should get eliminated
->>> before they reach that point. That way you can at least turn it off at
->>> runtime (after having done some kind of feature detection) without
->>> having to compile it out of your program entirely.
->>>
->>>> Having bpf_core_kfunc_exists would help, but this probably needs
->>>> compiler work first to preserve some of the kfunc traces in vmlinux.h?
-> 
-> hmm.... if I follow correctly, it wants the libbpf to accept a bpf prog using a 
-> kfunc that does not exist in the running kernel?
-> 
-> Have you tried "__weak":
-> 
-> extern void dummy_kfunc(void) __ksym __weak;
-> 
-> SEC("tc")
-> int load(struct __sk_buff *skb)
-> {
->      if (dummy_kfunc) {
+Hello:
 
-Sadly, won't work. only VAR is supported on ld.
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
->          dummy_kfunc();
->          return TC_ACT_SHOT;
->      }
->      return TC_ACT_UNSPEC;
-> }
+On Wed,  7 Dec 2022 22:02:59 -0800 you wrote:
+> syzkaller reported:
 > 
+>   BUG: KASAN: slab-out-of-bounds in __build_skb_around+0x235/0x340 net/core/skbuff.c:294
+>   Write of size 32 at addr ffff88802aa172c0 by task syz-executor413/5295
+> 
+> For bpf_prog_test_run_skb(), which uses a kmalloc()ed buffer passed to
+> build_skb().
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v3] skbuff: Introduce slab_build_skb()
+    https://git.kernel.org/netdev/net-next/c/ce098da1497c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
