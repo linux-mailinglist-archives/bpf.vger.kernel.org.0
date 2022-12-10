@@ -2,46 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07212648D93
-	for <lists+bpf@lfdr.de>; Sat, 10 Dec 2022 09:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B1E648DD2
+	for <lists+bpf@lfdr.de>; Sat, 10 Dec 2022 10:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbiLJIUx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Dec 2022 03:20:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
+        id S229545AbiLJJMd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Dec 2022 04:12:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbiLJIUw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Dec 2022 03:20:52 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489AC178AE;
-        Sat, 10 Dec 2022 00:20:51 -0800 (PST)
-Received: from dggpeml100010.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NTgmX2wHgz15NDB;
-        Sat, 10 Dec 2022 16:19:56 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpeml100010.china.huawei.com
- (7.185.36.14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Sat, 10 Dec
- 2022 16:20:48 +0800
-From:   Xin Liu <liuxin350@huawei.com>
-To:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>
-CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yanan@huawei.com>, <wuchangye@huawei.com>,
-        <xiesongyang@huawei.com>, <kongweibin2@huawei.com>,
-        <liuxin350@huawei.com>, <zhangmingyi5@huawei.com>
-Subject: [PATCH bpf-next v3] libbpf: Optimized return value in libbpf_strerror when errno is libbpf errno
-Date:   Sat, 10 Dec 2022 16:20:45 +0800
-Message-ID: <20221210082045.233697-1-liuxin350@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        with ESMTP id S230018AbiLJJLg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Dec 2022 04:11:36 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FD536C4C;
+        Sat, 10 Dec 2022 01:07:33 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 35CC56023A;
+        Sat, 10 Dec 2022 09:07:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6384EC433EF;
+        Sat, 10 Dec 2022 09:07:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670663252;
+        bh=NaFpxIBHcluX/faYQxP/qdXrH/73a3B6ENni/WCKJgM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=NVfD/EYy+R1kCJB7/QK2PNnA70zrogehL0NBbqhZ97QhRjJCr5dHIZe/t6yDCvSja
+         uJ553qfzFDaaPjuDO4ArWKXFSbtuDhKK08IKpr8+QW43lWeNABA9Zx3TlY9yEh/xMs
+         HoFrWq0ALv5QFBPw45xSgL5sLbNFcnoBqRkxYv7iZiZ/qDLZCnbm7rTF0Bn1MaK/FS
+         bh1Tsl1HmAGgq/EDWYjHtM+J8qgBfv1o9wZF59d9J7NO504xX+YVXadBQ90+/jTFpG
+         AQNaBuaVflWPtrsZQlB9dGgs1siTbtvNMFtSkKx2GKKGwazKWV4Z3mfs6ZtYwqILA/
+         3GK8KSTrTZamQ==
+Date:   Sat, 10 Dec 2022 10:07:31 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+cc:     Florent Revest <revest@chromium.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH HID for-next v3 0/5] HID: bpf: remove the need for
+ ALLOW_ERROR_INJECTION and Kconfig fixes
+In-Reply-To: <20221206145936.922196-1-benjamin.tissoires@redhat.com>
+Message-ID: <nycvar.YFH.7.76.2212101007030.9000@cbobk.fhfr.pm>
+References: <20221206145936.922196-1-benjamin.tissoires@redhat.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml100010.china.huawei.com (7.185.36.14)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,78 +58,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is a small improvement in libbpf_strerror. When libbpf_strerror
-is used to obtain the system error description, if the length of the
-buf is insufficient, libbpf_sterror returns ERANGE and sets errno to
-ERANGE.
+On Tue, 6 Dec 2022, Benjamin Tissoires wrote:
 
-However, this processing is not performed when the error code
-customized by libbpf is obtained. Make some minor improvements here,
-return -ERANGE and set errno to ERANGE when buf is not enough for
-custom description.
+> Compared to v2, I followed the review from Alexei which cleaned up the
+> code a little bit.
+> 
+> I also got a kbuild test bot complaining[3] so add a fix for that too.
+> 
+> For reference, here is the previous cover letter:
+> 
+> So this patch series aims at solving both [0] and [1].
+> 
+> The first one is bpf related and concerns the ALLOW_ERROR_INJECTION API.
+> It is considered as a hack to begin with, so introduce a proper kernel
+> API to declare when a BPF hook can have its return value changed.
+> 
+> The second one is related to the fact that
+> DYNAMIC_FTRACE_WITH_DIRECT_CALLS is currently not enabled on arm64, and
+> that means that the current HID-BPF implementation doesn't work there
+> for now.
+> 
+> The first patch actually touches the bpf core code, but it would be
+> easier if we could merge it through the hid tree in the for-6.2/hid-bpf
+> branch once we get the proper acks.
 
-Signed-off-by: Xin Liu <liuxin350@huawei.com>
----
+For the series:
 
-v3:
-Simplify the code and remove the processing that snprintf returns
-negative numbers.
+	Reviewed-by: Jiri Kosina <jkosina@suse.cz>
 
-v2:
-Check the return value of snprintf to determine whether the buffer is
-too small.
-https://lore.kernel.org/bpf/20221209110502.231677-1-liuxin350@huawei.com/T/#t
+Thanks,
 
-v1:
-https://lore.kernel.org/bpf/20221209084047.229525-1-liuxin350@huawei.com/T/#t
-
- tools/lib/bpf/libbpf_errno.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf_errno.c b/tools/lib/bpf/libbpf_errno.c
-index 96f67a772a1b..71da6e5e70da 100644
---- a/tools/lib/bpf/libbpf_errno.c
-+++ b/tools/lib/bpf/libbpf_errno.c
-@@ -39,14 +39,14 @@ static const char *libbpf_strerror_table[NR_ERRNO] = {
- 
- int libbpf_strerror(int err, char *buf, size_t size)
- {
-+	int ret;
-+
- 	if (!buf || !size)
- 		return libbpf_err(-EINVAL);
- 
- 	err = err > 0 ? err : -err;
- 
- 	if (err < __LIBBPF_ERRNO__START) {
--		int ret;
--
- 		ret = strerror_r(err, buf, size);
- 		buf[size - 1] = '\0';
- 		return libbpf_err_errno(ret);
-@@ -56,12 +56,20 @@ int libbpf_strerror(int err, char *buf, size_t size)
- 		const char *msg;
- 
- 		msg = libbpf_strerror_table[ERRNO_OFFSET(err)];
--		snprintf(buf, size, "%s", msg);
-+		ret = snprintf(buf, size, "%s", msg);
- 		buf[size - 1] = '\0';
-+		/* The length of the buf and msg is positive.
-+		 * A negative number may be returned only when the
-+		 * size exceeds INT_MAX. Not likely to appear.
-+		 */
-+		if (ret >= size)
-+			return libbpf_err(-ERANGE);
- 		return 0;
- 	}
- 
--	snprintf(buf, size, "Unknown libbpf error %d", err);
-+	ret = snprintf(buf, size, "Unknown libbpf error %d", err);
- 	buf[size - 1] = '\0';
-+	if (ret >= size)
-+		return libbpf_err(-ERANGE);
- 	return libbpf_err(-ENOENT);
- }
 -- 
-2.33.0
+Jiri Kosina
+SUSE Labs
 
