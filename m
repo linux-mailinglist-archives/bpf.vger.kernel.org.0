@@ -2,88 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C20DD6490DB
-	for <lists+bpf@lfdr.de>; Sat, 10 Dec 2022 22:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1643F6490E0
+	for <lists+bpf@lfdr.de>; Sat, 10 Dec 2022 22:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbiLJVp6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Dec 2022 16:45:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
+        id S229634AbiLJVuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Dec 2022 16:50:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbiLJVp5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Dec 2022 16:45:57 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FB313DDC
-        for <bpf@vger.kernel.org>; Sat, 10 Dec 2022 13:45:56 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id z8-20020a17090abd8800b00219ed30ce47so11756880pjr.3
-        for <bpf@vger.kernel.org>; Sat, 10 Dec 2022 13:45:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=n1sSE4TWkHyQu0fEETj0FzMZ10jj4qG+25G84v2cHcU=;
-        b=j8kq9O514NtOg7oxjWA2rM1yC/HSqwy/Z12wY4yLXdJ5XJB04jtjzio/6tU7f5MEUU
-         8peSdOk6VhFXB8EfFfAbtzo3rRjWLWWCHDyxXWJ7gCWFe1c1d1Xu5G44v7YalOdvu9Rb
-         HaiiBH+61FC6gV7iPJFAoBEPk2bVPIHIClY6kg1d2gI0iV3UxYTmVI4eRDymXtaE/vpp
-         9abSgeaU6TiKiNIfnZP1XbH7w6TYdjgGrizGhK598GmZoCskOBKaPRrIMN6IIT/rSjy3
-         K7nzBS3g8VXFFtt03Uv2KLM6IwC/uG9De7C0bWa1vjP4Um0eBeV//R7KjiXf0PbGRlnO
-         rDhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n1sSE4TWkHyQu0fEETj0FzMZ10jj4qG+25G84v2cHcU=;
-        b=fHS9eayHiUDhCKwBADFewkJa/vooRvDbKckQon6xGo+c/Xi/OnpXbKJfyDiXQrdZ2x
-         WGewkdJbh/yu24b7yVRLOxJoz6Ki2PkH/JP+T3n9XI9KuCV7gd8d9RFtTtIFEMVA+Q3w
-         XUjokzyZ6iXwWndgoETdDGz/s7STfx/n1xZbKAad33ymb5WO/QYXlX6dLJUSmXuE0HkM
-         r3L5lBJswGBIhZu8YNnrb77KuWP6WGFoFb5MJtj1/1H+/GyyHVnX3ngCbyEKdwZkgvHz
-         i9ajUhZb0O4zcmrjy0EHtsq6IZnrtl+3NU4qubb/bU7eVrTiErOIcmkgkXeFD78HGnWb
-         Dycg==
-X-Gm-Message-State: ANoB5pke6WTJUhuxOXOasZZdokXBArlKuwjyamNP1H+ngUFkwY2Is3Pu
-        WI8eQymEmjdC8suxsebV2xM=
-X-Google-Smtp-Source: AA0mqf4tW1oGBfiSGgKTvMPxvH8IGZy5KxzDfVXv1k/P6W8Gg8Eqv8vyw5RhA4y1C9lyRYhiGKYU8A==
-X-Received: by 2002:a17:902:b907:b0:186:60c0:9f9e with SMTP id bf7-20020a170902b90700b0018660c09f9emr9681713plb.39.1670708755736;
-        Sat, 10 Dec 2022 13:45:55 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:55c6])
-        by smtp.gmail.com with ESMTPSA id d1-20020a170902cec100b00188fcc4fc00sm3419619plg.79.2022.12.10.13.45.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Dec 2022 13:45:55 -0800 (PST)
-Date:   Sat, 10 Dec 2022 13:45:52 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        with ESMTP id S229475AbiLJVuT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Dec 2022 16:50:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1E91581F
+        for <bpf@vger.kernel.org>; Sat, 10 Dec 2022 13:50:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CE69A60C64
+        for <bpf@vger.kernel.org>; Sat, 10 Dec 2022 21:50:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 25243C433EF;
+        Sat, 10 Dec 2022 21:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670709017;
+        bh=cOY6DPskuUWDEIKHV4UqTbWBCNSHFmcMwVtEraDRipk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=m1TW6ntxXjohxOBD8KHC4NDkB8QmQ4QeBN+2zmQC5PGMFpN2bg4dmI3EfOjHcfBSX
+         UMWX5iCOMfseQWY+pbMgiQWLTzh6mgivPFM7PElR/R3Nc4wMu1X0X9bYCch7s/1d3t
+         gDs/fP5u+nNgmCPJcrMc8a9CzlqEKFsaN05mN6PHakSvaIxhIL6mQVHCO9Sc6z298v
+         wTFuojgTVuQWknIfzQEFhEImMvsu5ZPX4joKVaOTc70lSeOaZ7wACtruTDnzi2ZZqk
+         msSj7brMlmLycRarlx4MXyosf+Ds8+qKHM1MiSl6UP09tMnoRJcEd+QXEIQr+s1RY1
+         B5gsdCDTMSoFA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0E462C41606;
+        Sat, 10 Dec 2022 21:50:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/7] stricter register ID checking in regsafe()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167070901705.12059.17423131126807625637.git-patchwork-notify@kernel.org>
+Date:   Sat, 10 Dec 2022 21:50:17 +0000
+References: <20221209135733.28851-1-eddyz87@gmail.com>
+In-Reply-To: <20221209135733.28851-1-eddyz87@gmail.com>
 To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
         memxor@gmail.com, ecree.xilinx@gmail.com
-Subject: Re: [PATCH bpf-next 6/7] selftests/bpf: Add pruning test case for
- bpf_spin_lock
-Message-ID: <20221210214552.ewk4kd7hi6m276vr@macbook-pro-6.dhcp.thefacebook.com>
-References: <20221209135733.28851-1-eddyz87@gmail.com>
- <20221209135733.28851-7-eddyz87@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221209135733.28851-7-eddyz87@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 09, 2022 at 03:57:32PM +0200, Eduard Zingerman wrote:
-> From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> 
-> Test that when reg->id is not same for the same register of type
-> PTR_TO_MAP_VALUE between current and old explored state, we currently
-> return false from regsafe and continue exploring.
-> 
-> Without the fix in prior commit, the test case fails.
-> 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Hello:
 
-Nice set of fixes. Thanks.
-When you resend somebody else's patch please add your SOB.
-This time I did it while applying.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Fri,  9 Dec 2022 15:57:26 +0200 you wrote:
+> This patch-set consists of a series of bug fixes for register ID
+> tracking in verifier.c:states_equal()/regsafe() functions:
+>  - for registers of type PTR_TO_MAP_{KEY,VALUE}, PTR_TO_PACKET[_META]
+>    the regsafe() should call check_ids() even if registers are
+>    byte-to-byte equal;
+>  - states_equal() must maintain idmap that covers all function frames
+>    in the state because functions like mark_ptr_or_null_regs() operate
+>    on all registers in the state;
+>  - regsafe() must compare spin lock ids for PTR_TO_MAP_VALUE registers.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,1/7] bpf: regsafe() must not skip check_ids()
+    https://git.kernel.org/bpf/bpf-next/c/7c884339bbff
+  - [bpf-next,2/7] selftests/bpf: test cases for regsafe() bug skipping check_id()
+    https://git.kernel.org/bpf/bpf-next/c/cb578c1c9cf6
+  - [bpf-next,3/7] bpf: states_equal() must build idmap for all function frames
+    https://git.kernel.org/bpf/bpf-next/c/5dd9cdbc9dec
+  - [bpf-next,4/7] selftests/bpf: verify states_equal() maintains idmap across all frames
+    https://git.kernel.org/bpf/bpf-next/c/7d0579433087
+  - [bpf-next,5/7] bpf: use check_ids() for active_lock comparison
+    https://git.kernel.org/bpf/bpf-next/c/4ea2bb158bec
+  - [bpf-next,6/7] selftests/bpf: Add pruning test case for bpf_spin_lock
+    https://git.kernel.org/bpf/bpf-next/c/2026f2062df8
+  - [bpf-next,7/7] selftests/bpf: test case for relaxed prunning of active_lock.id
+    https://git.kernel.org/bpf/bpf-next/c/efd6286ff74a
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
