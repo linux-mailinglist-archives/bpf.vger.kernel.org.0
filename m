@@ -2,59 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0941D648B88
-	for <lists+bpf@lfdr.de>; Sat, 10 Dec 2022 01:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72125648BC1
+	for <lists+bpf@lfdr.de>; Sat, 10 Dec 2022 01:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbiLJAGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Dec 2022 19:06:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
+        id S229665AbiLJAio (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Dec 2022 19:38:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiLJAGV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Dec 2022 19:06:21 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11FF747DC;
-        Fri,  9 Dec 2022 16:06:20 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id w15so6750999wrl.9;
-        Fri, 09 Dec 2022 16:06:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sQFo2vKeSpU6+jocEYDSE/k2q10Q8cwZtsjU6/rnL/k=;
-        b=egABX+VZ+RnE6SoIwjEqFoFzUkET4fUCEySh/Pm1qNIKpH7XNztPUzKRnRML2df0K2
-         PlmQGnQi9y1i1T9nKv1kmUzQqtBOVTaABpPAF74ig8BJAEIVDkpIWsD4j/VpCuj2fEO+
-         ycUYp36Tr/K0K2kn/HPFcjYzZ7tMwHx9bYXXtBV2KSoH2Kqk2bF+EXcqJ8zjd2zBvuoC
-         XAacXHJ2uYBWEjSP+G+7cf8d8PptaJFmjGBfWC8buh8CCsc93pLYK5+BmY7U+fFPvQ94
-         aFQnn/22rfL8sXJVerlUw+fTRsU5/Ms1gjjlhVA4Kg1HkS3DiXu2+iJjJ8dmTHitcK2t
-         ygjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sQFo2vKeSpU6+jocEYDSE/k2q10Q8cwZtsjU6/rnL/k=;
-        b=LFKDhykzXpLTq5alsQOUvERoBxvNsv96YbT5BWKupQiSIkHwLBiW5g/ZHM6Wrr7WOq
-         Y8HsICMRUz4zNpuSfS9gR8Yxwo/p1sFsoHReNDVwEJju8hZf3Lb+aoAQD3opsQ3kxymZ
-         LXb7p2KwJK+QCa+9OHEGcfWzyNm+0MzvSsxBa/boZchsC9b6mLmxj3JIYDcFXhoJ/t5P
-         qZPYH6Tk84/AaquLP08aI2480FIFRTmQo1UnwBGA9c9TdA6dKmDVIWWdDDgvEu+6TwnL
-         SWreXbJkt/un6RHt+F3sUCJHqKUPlSgyb1NREc/vnb/rRoDZWdjzurtOP+8QRnt4QeUY
-         rLfQ==
-X-Gm-Message-State: ANoB5pmeHW/Q3CCOx8hagfCH6c9qX5mnTZcQfel3i3p94K+J85ENDMVe
-        n+Eimlgaejj9q/cGMH+EGyA=
-X-Google-Smtp-Source: AA0mqf7LEnm3JqCflD05e5cXhBQh5BI4XUP4N5ldaolsfK9dLZDDmeXoF4t3WM946HByMavZMlv91A==
-X-Received: by 2002:a5d:62cb:0:b0:241:fb10:9369 with SMTP id o11-20020a5d62cb000000b00241fb109369mr4321202wrv.21.1670630779035;
-        Fri, 09 Dec 2022 16:06:19 -0800 (PST)
-Received: from krava ([83.240.62.58])
-        by smtp.gmail.com with ESMTPSA id p7-20020adff207000000b002425dc49024sm2484012wro.43.2022.12.09.16.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Dec 2022 16:06:18 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sat, 10 Dec 2022 01:06:16 +0100
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <olsajiri@gmail.com>, Yonghong Song <yhs@meta.com>,
+        with ESMTP id S229468AbiLJAin (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Dec 2022 19:38:43 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA6390773;
+        Fri,  9 Dec 2022 16:38:41 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 43250B82A03;
+        Sat, 10 Dec 2022 00:38:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEBCBC433EF;
+        Sat, 10 Dec 2022 00:38:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670632719;
+        bh=yiuDxBIJEc9d0QL4Y3+pNdUKDJUasJXcdJHngwE9U4o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IF5K4Kc8tCf2YLKDa/QzTQvo3sMTns+7PBUFBZS+sFWpQXNpg5A8RR/K1zEEqplCd
+         HZ0uN6wLiC/zMVcgWYqduLE/1fDCdePwJhhcNQVTdgUSbWwiZ1UAifcbKkUW3dc4si
+         OpeAwchC3LRl4PeXNNQiCWMJCxKKQjUyxaYw2tB8XGFc5UFs9HiMC5+AV2T03d0vD0
+         iFYFuNPmxk3T8IGP1+1Vfkvz54mRQSI4Nj1aOMGCL74GkA7EIB+K6fueUSuyplUi0T
+         xGB8f0W2xarcEn2msbuYYuSycD8jJTfY1F2lNGGCn+r4xDdQUXOxbfBWhJG9nctmhQ
+         rtAq71/0fpjHw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 876B35C0A6B; Fri,  9 Dec 2022 16:38:38 -0800 (PST)
+Date:   Fri, 9 Dec 2022 16:38:38 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@meta.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Song Liu <song@kernel.org>, Hao Sun <sunhao.th@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -71,9 +55,9 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         netdev <netdev@vger.kernel.org>,
         Thorsten Leemhuis <regressions@leemhuis.info>
 Subject: Re: BUG: unable to handle kernel paging request in bpf_dispatcher_xdp
-Message-ID: <Y5PNeFYJrC6D4P9p@krava>
-References: <Y5LfMGbOHpaBfuw4@krava>
- <Y5MaffJOe1QtumSN@krava>
+Message-ID: <20221210003838.GZ4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <Y5MaffJOe1QtumSN@krava>
  <Y5M9P95l85oMHki9@krava>
  <Y5NSStSi7h9Vdo/j@krava>
  <5c9d77bf-75f5-954a-c691-39869bb22127@meta.com>
@@ -82,60 +66,91 @@ References: <Y5LfMGbOHpaBfuw4@krava>
  <Y5O/yxcjQLq5oDAv@krava>
  <96b0d9d8-02a7-ce70-de1e-b275a01f5ff3@iogearbox.net>
  <20221209153445.22182ca5@kernel.org>
+ <Y5PNeFYJrC6D4P9p@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221209153445.22182ca5@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Y5PNeFYJrC6D4P9p@krava>
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 09, 2022 at 03:34:45PM -0800, Jakub Kicinski wrote:
-> On Sat, 10 Dec 2022 00:32:07 +0100 Daniel Borkmann wrote:
-> > fwiw, these should not be necessary, Documentation/RCU/checklist.rst :
+On Sat, Dec 10, 2022 at 01:06:16AM +0100, Jiri Olsa wrote:
+> On Fri, Dec 09, 2022 at 03:34:45PM -0800, Jakub Kicinski wrote:
+> > On Sat, 10 Dec 2022 00:32:07 +0100 Daniel Borkmann wrote:
+> > > fwiw, these should not be necessary, Documentation/RCU/checklist.rst :
+> > > 
+> > >    [...] One example of non-obvious pairing is the XDP feature in networking,
+> > >    which calls BPF programs from network-driver NAPI (softirq) context. BPF
+> > >    relies heavily on RCU protection for its data structures, but because the
+> > >    BPF program invocation happens entirely within a single local_bh_disable()
+> > >    section in a NAPI poll cycle, this usage is safe. The reason that this usage
+> > >    is safe is that readers can use anything that disables BH when updaters use
+> > >    call_rcu() or synchronize_rcu(). [...]
 > > 
-> >    [...] One example of non-obvious pairing is the XDP feature in networking,
-> >    which calls BPF programs from network-driver NAPI (softirq) context. BPF
-> >    relies heavily on RCU protection for its data structures, but because the
-> >    BPF program invocation happens entirely within a single local_bh_disable()
-> >    section in a NAPI poll cycle, this usage is safe. The reason that this usage
-> >    is safe is that readers can use anything that disables BH when updaters use
-> >    call_rcu() or synchronize_rcu(). [...]
+> > FWIW I sent a link to the thread to Paul and he confirmed 
+> > the RCU will wait for just the BH.
 > 
-> FWIW I sent a link to the thread to Paul and he confirmed 
-> the RCU will wait for just the BH.
+> so IIUC we can omit the rcu_read_lock/unlock on bpf_prog_run_xdp side
+> 
+> Paul,
+> any thoughts on what we can use in here to synchronize bpf_dispatcher_change_prog
+> with bpf_prog_run_xdp callers?
+> 
+> with synchronize_rcu_tasks I'm getting splats like:
+>   https://lore.kernel.org/bpf/20221209153445.22182ca5@kernel.org/T/#m0a869f93404a2744884d922bc96d497ffe8f579f
+> 
+> synchronize_rcu_tasks_rude seems to work (patch below), but it also sounds special ;-)
 
-so IIUC we can omit the rcu_read_lock/unlock on bpf_prog_run_xdp side
+It sounds like we are all talking past each other, leaving me no
+choice but to supply a wall of text:
 
-Paul,
-any thoughts on what we can use in here to synchronize bpf_dispatcher_change_prog
-with bpf_prog_run_xdp callers?
+It is quite true that synchronize_rcu_tasks_rude() will wait
+for bh-disabled regions of code, just like synchronize_rcu()
+and synchronize_rcu_tasks() will.  However, please note that
+synchronize_rcu_tasks() never waits on any of the idle tasks.  So the
+usual approach in tracing is to do both a synchronize_rcu_tasks() and
+synchronize_rcu_tasks_rude().  One way of overlapping the resulting
+pair of grace periods is to use synchronize_rcu_mult().
 
-with synchronize_rcu_tasks I'm getting splats like:
-  https://lore.kernel.org/bpf/20221209153445.22182ca5@kernel.org/T/#m0a869f93404a2744884d922bc96d497ffe8f579f
+But none of these permit readers to sleep.  That is what
+synchronize_rcu_tasks_trace() is for, but unlike both
+synchronize_rcu_tasks() and synchronize_rcu_tasks_rude(),
+you must explicitly mark the readers with rcu_read_lock_trace()
+and rcu_read_unlock_trace().  This is used to protect sleepable
+BPF programs.
 
-synchronize_rcu_tasks_rude seems to work (patch below), but it also sounds special ;-)
+Now, synchronize_rcu() will also wait on bh-disabled lines of code, with
+the exception of such code in the exception path, way deep in the idle
+loop, early in the CPU-online process, or late in the CPU-offline process.
+You can recognize the first two categories of code by the noinstr tags
+on the functions.
 
-thanks,
-jirka
+And yes, synchronize_rcu_rude() is quite special.  ;-)
 
+Does this help, or am I simply adding to the confusion?
 
----
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index c19719f48ce0..e6126f07e85b 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -124,6 +124,7 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- 	}
- 
- 	__BPF_DISPATCHER_UPDATE(d, new ?: (void *)&bpf_dispatcher_nop_func);
-+	synchronize_rcu_tasks_rude();
- 
- 	if (new)
- 		d->image_off = noff;
+							Thanx, Paul
+
+> thanks,
+> jirka
+> 
+> 
+> ---
+> diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
+> index c19719f48ce0..e6126f07e85b 100644
+> --- a/kernel/bpf/dispatcher.c
+> +++ b/kernel/bpf/dispatcher.c
+> @@ -124,6 +124,7 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
+>  	}
+>  
+>  	__BPF_DISPATCHER_UPDATE(d, new ?: (void *)&bpf_dispatcher_nop_func);
+> +	synchronize_rcu_tasks_rude();
+>  
+>  	if (new)
+>  		d->image_off = noff;
