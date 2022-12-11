@@ -2,97 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1643F6490E0
-	for <lists+bpf@lfdr.de>; Sat, 10 Dec 2022 22:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBC56491E2
+	for <lists+bpf@lfdr.de>; Sun, 11 Dec 2022 03:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbiLJVuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Dec 2022 16:50:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
+        id S229655AbiLKC2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Dec 2022 21:28:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbiLJVuT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Dec 2022 16:50:19 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1E91581F
-        for <bpf@vger.kernel.org>; Sat, 10 Dec 2022 13:50:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CE69A60C64
-        for <bpf@vger.kernel.org>; Sat, 10 Dec 2022 21:50:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 25243C433EF;
-        Sat, 10 Dec 2022 21:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670709017;
-        bh=cOY6DPskuUWDEIKHV4UqTbWBCNSHFmcMwVtEraDRipk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=m1TW6ntxXjohxOBD8KHC4NDkB8QmQ4QeBN+2zmQC5PGMFpN2bg4dmI3EfOjHcfBSX
-         UMWX5iCOMfseQWY+pbMgiQWLTzh6mgivPFM7PElR/R3Nc4wMu1X0X9bYCch7s/1d3t
-         gDs/fP5u+nNgmCPJcrMc8a9CzlqEKFsaN05mN6PHakSvaIxhIL6mQVHCO9Sc6z298v
-         wTFuojgTVuQWknIfzQEFhEImMvsu5ZPX4joKVaOTc70lSeOaZ7wACtruTDnzi2ZZqk
-         msSj7brMlmLycRarlx4MXyosf+Ds8+qKHM1MiSl6UP09tMnoRJcEd+QXEIQr+s1RY1
-         B5gsdCDTMSoFA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0E462C41606;
-        Sat, 10 Dec 2022 21:50:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229560AbiLKC2c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Dec 2022 21:28:32 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DD010546;
+        Sat, 10 Dec 2022 18:28:31 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id m18so20049459eji.5;
+        Sat, 10 Dec 2022 18:28:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kz8UCTQ9WHAf5JhkPjYAXVzTT4HzgSv8RTOSjH8wUj4=;
+        b=K9G0WDjvIfRxiA8xrSmt44yBpBQVe0AdlIRTD1yh8vaEmcgFncS9IkxTNR3Rg1kLve
+         o3Walf+HtOmGONYALr1A1TDnL9VcsNLakuRdAqwnUPIMm7rdUxXJBYSe9+LPQ/1OIw/G
+         Tw1NWUs/8qnCRX6/wuE9OXTvHpJfLruu7uXaSZwtOBuCebyAbO9E4TgvHLH2RMOSo+qX
+         P/Ir6AZZO6T5RAn+uAHuoHkV934xUAX0oBXZr5xyZFuYAiQruvWoQcGX1BXLZl+AllN+
+         pfsDXS7nEF1stgJAhKktNlzJgmI/3E9CsMbBRywaMqsiN2qiz29Hy/6OwR+xUVw1KUrX
+         qWuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kz8UCTQ9WHAf5JhkPjYAXVzTT4HzgSv8RTOSjH8wUj4=;
+        b=tv126fXhMCNPl4ZZCIRbG79S4m+jHw8CZ5TSS62pI3gberKnkA+1CUOHQwmI0PtM9B
+         cFgjS28ZNvzZvdWKC8jJjKpjTZh3P2YLuGTzRMKcZ3EBSEIVzfp2ijGmKGiLIgSX8gc/
+         CvD/3zUesWfo9+J9U8TL03PAIRQuOCQwbTVc/ySSHwrSm8lRPlOMHYIBurhyCLIqZm2B
+         2Y23Owur+nhvnjzukSOArL+8pbluuU8WZmfw4jU5pei4w2FBEO8s2kvKcOmsZ9Jqgdof
+         BPr68duhxfphGw44GsNWDdMwnoXWItjvbgmIFHHIScPrDmDkJEomTxHPpHUG/hUfP4qt
+         a8ZQ==
+X-Gm-Message-State: ANoB5pk8RqNNn9L8PykGcI1a4lBf0TG4cSIYeqcW54epXXOIrIHt0PNq
+        bTjy0X4oCv3suMCxeDNqCfVqADbI6N5q9r2Iczc=
+X-Google-Smtp-Source: AA0mqf5prpvAqhvSogkAQlNu7wWUWpyU4sAQFN1xjbIalUKERm86mEBlmrSum2+sDjBmVH64S0nFkDoFm4KaRT2hoQA=
+X-Received: by 2002:a17:906:4351:b0:78d:513d:f447 with SMTP id
+ z17-20020a170906435100b0078d513df447mr70015362ejm.708.1670725709381; Sat, 10
+ Dec 2022 18:28:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/7] stricter register ID checking in regsafe()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167070901705.12059.17423131126807625637.git-patchwork-notify@kernel.org>
-Date:   Sat, 10 Dec 2022 21:50:17 +0000
-References: <20221209135733.28851-1-eddyz87@gmail.com>
-In-Reply-To: <20221209135733.28851-1-eddyz87@gmail.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        memxor@gmail.com, ecree.xilinx@gmail.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221207172434.435893-1-roberto.sassu@huaweicloud.com> <20221207172434.435893-3-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20221207172434.435893-3-roberto.sassu@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 10 Dec 2022 18:28:18 -0800
+Message-ID: <CAADnVQKhWEtqAkMnWR8Twpc6uPo_MWnAf68R-xeM=YVqxkLOyQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH v2 2/7] bpf: Mark ALU32 operations in bpf_reg_state structure
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Dec 7, 2022 at 9:25 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+>
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> BPF LSM needs a reliable source of information to determine if the return
+> value given by eBPF programs is acceptable or not. At the moment, choosing
+> either the 64 bit or the 32 bit one does not seem to be an option
+> (selftests fail).
+>
+> If we choose the 64 bit one, the following happens.
+>
+>       14:       61 10 00 00 00 00 00 00 r0 = *(u32 *)(r1 + 0)
+>       15:       74 00 00 00 15 00 00 00 w0 >>= 21
+>       16:       54 00 00 00 01 00 00 00 w0 &= 1
+>       17:       04 00 00 00 ff ff ff ff w0 += -1
+>
+> This is the last part of test_deny_namespace. After #16, the register
+> values are:
+>
+> smin_value = 0x0, smax_value = 0x1,
+> s32_min_value = 0x0, s32_max_value = 0x1,
+>
+> After #17, they become:
+>
+> smin_value = 0x0, smax_value = 0xffffffff,
+> s32_min_value = 0xffffffff, s32_max_value = 0x0
+>
+> where only the 32 bit values are correct.
+>
+> If we choose the 32 bit ones, the following happens.
+>
+> 0000000000000000 <check_access>:
+>        0:       79 12 00 00 00 00 00 00 r2 = *(u64 *)(r1 + 0)
+>        1:       79 10 08 00 00 00 00 00 r0 = *(u64 *)(r1 + 8)
+>        2:       67 00 00 00 3e 00 00 00 r0 <<= 62
+>        3:       c7 00 00 00 3f 00 00 00 r0 s>>= 63
+>
+> This is part of test_libbpf_get_fd_by_id_opts (no_alu32 version). In this
+> case, 64 bit register values should be used (for the 32 bit ones, there is
+> no precise information from the verifier).
+>
+> As the examples above suggest that which register values to use depends on
+> the specific case, mark ALU32 operations in bpf_reg_state structure, so
+> that BPF LSM can choose the proper ones.
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+I have a hard time understanding what is the problem you're
+trying to solve and what is the proposed fix.
 
-On Fri,  9 Dec 2022 15:57:26 +0200 you wrote:
-> This patch-set consists of a series of bug fixes for register ID
-> tracking in verifier.c:states_equal()/regsafe() functions:
->  - for registers of type PTR_TO_MAP_{KEY,VALUE}, PTR_TO_PACKET[_META]
->    the regsafe() should call check_ids() even if registers are
->    byte-to-byte equal;
->  - states_equal() must maintain idmap that covers all function frames
->    in the state because functions like mark_ptr_or_null_regs() operate
->    on all registers in the state;
->  - regsafe() must compare spin lock ids for PTR_TO_MAP_VALUE registers.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,1/7] bpf: regsafe() must not skip check_ids()
-    https://git.kernel.org/bpf/bpf-next/c/7c884339bbff
-  - [bpf-next,2/7] selftests/bpf: test cases for regsafe() bug skipping check_id()
-    https://git.kernel.org/bpf/bpf-next/c/cb578c1c9cf6
-  - [bpf-next,3/7] bpf: states_equal() must build idmap for all function frames
-    https://git.kernel.org/bpf/bpf-next/c/5dd9cdbc9dec
-  - [bpf-next,4/7] selftests/bpf: verify states_equal() maintains idmap across all frames
-    https://git.kernel.org/bpf/bpf-next/c/7d0579433087
-  - [bpf-next,5/7] bpf: use check_ids() for active_lock comparison
-    https://git.kernel.org/bpf/bpf-next/c/4ea2bb158bec
-  - [bpf-next,6/7] selftests/bpf: Add pruning test case for bpf_spin_lock
-    https://git.kernel.org/bpf/bpf-next/c/2026f2062df8
-  - [bpf-next,7/7] selftests/bpf: test case for relaxed prunning of active_lock.id
-    https://git.kernel.org/bpf/bpf-next/c/efd6286ff74a
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+The patch is trying to remember the bitness of the last
+operation, but what for?
+The registers are 64-bit. There are 32-bit operations,
+but they always update the upper 32-bits of the register.
+reg_bounds_sync() updates 32 and 64 bit bounds regardless
+whether the previous operation was on 32 or 64 bit.
+It seems you're trying to hack around something that breaks
+patch 3 which also looks fishy.
+Please explain the problem first with a concrete example.
