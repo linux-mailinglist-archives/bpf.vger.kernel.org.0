@@ -2,105 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB18649570
-	for <lists+bpf@lfdr.de>; Sun, 11 Dec 2022 18:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530D364967C
+	for <lists+bpf@lfdr.de>; Sun, 11 Dec 2022 22:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbiLKRiG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Dec 2022 12:38:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
+        id S230307AbiLKVbY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Dec 2022 16:31:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbiLKRiF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Dec 2022 12:38:05 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759F2B489
-        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 09:38:04 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id v8so9881873edi.3
-        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 09:38:04 -0800 (PST)
+        with ESMTP id S229471AbiLKVbW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Dec 2022 16:31:22 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC178BC99;
+        Sun, 11 Dec 2022 13:31:19 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id c65-20020a1c3544000000b003cfffd00fc0so3671253wma.1;
+        Sun, 11 Dec 2022 13:31:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:reply-to:mime-version:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=A5Os1rPoo1ChPlg5hPaCwrd/EmKpmzjimIuVlwuqaAE=;
-        b=JJeneg4/azi0QE7TdlTc+u+42beLa95wA2OJIGQe7OssZVepLuT3kVJvqgVBdZKzVB
-         OPfj34gtN71QWk80FHctwRFDHAoDFfFL25feUqM923x3LYOdcwNaIVDoSnI7YvPIUMO+
-         gSFPbqkCrM3uBKxZCbRl7EdA3DWF7+1A6sWlYeHBio8/omBfmdpmbR1JPSNtV2Ppzy6H
-         A8Tpn8gE3Pn9u+lgZruG+KI9Q0W6MACb3Km6jHinMlptoaQDg4H/rfYPe4tRdW50QTpf
-         nCciM8IIrXz1P4FVNewciK5SLb0uLpwRz4I03tkUkjB/lDki/lWn6Gmbqo/4GJfkyHLZ
-         G26A==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5FG9XFAhH1aAKNSCD7KXenAoQ7QCTJVpi7jZDxdnhI0=;
+        b=OC9FRQ5bdKmv3sGgoo1ZJg56K0vI4WY55htBKLsFGzk9o84vSEI5/l7nQi1LQ8Y9DI
+         h9uxsFWD7cqUr7Mq/8K4p+o4GN6cu7f5w2Uztm1feVVXrXD7ikwr/+KyoFvWfWaq+IPm
+         VVy4rkih1SoVMvYIwF/E/ID551LMhkPf2CutaMfzrefL+sGeuU24EB2sgCU2vLzAWCyQ
+         0rEHv+/E8UFMF1kbbRg976lsWYQ0fpLkADUr7jAbaZ5Nsg0Lbg4jgTnwomURdModQfpN
+         oJphnSwkiX7U3EqmpQX89N65d0HJmWfU+BnjS7+yDopegOF3zkclfr+jxbYLVni8NGk3
+         CFBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A5Os1rPoo1ChPlg5hPaCwrd/EmKpmzjimIuVlwuqaAE=;
-        b=205cXUeNmls0FrAwpKaI8gv/wg2dWeaNoFDTC5G1SFXMgMOpYJQKjyYZbQKroffXBr
-         KQmLik8NQxq25uy+iubVexSkYUgiQpk2lP789W5gL2BkKTwxTogijqdYOhFPcSjqI8UP
-         5dOa4myWRW0Zy7od0AXlD+KZQP52nBPHWgrDGIx5qvNnhQLZ+Rp9+ki0VPFdT5FG/s5Q
-         2cJWHsRv6+7KLvjteazl4sDpbPMUQiigqAPuuac1WsN166OTe2r3EBl2hbrlEWchVpAu
-         WumVcdN6AeFH0/SPCYuB+QtXU1wJuwK2DNKEzoIO+ttQz4+SMNAxM/tzVVIJ89ZgIArv
-         AHHQ==
-X-Gm-Message-State: ANoB5pmTZdBo1U7hwIA+ckV8JmR1ppPvMwZFJfDaq4dWyOz0d432YVir
-        Ia9cvfrGOCUR2RHmsuRWMfvf+1x6VQi9IzcaNy4=
-X-Google-Smtp-Source: AA0mqf4VvHJ87Lq43enx07M55tsiCtZ3n0oSHwYKTAeCzQvF0zUGKj51cLOQlaUw0vrdydJauTnVPvXXQM0tgs1nYcA=
-X-Received: by 2002:aa7:ce86:0:b0:46b:1872:4194 with SMTP id
- y6-20020aa7ce86000000b0046b18724194mr43554144edv.362.1670780282556; Sun, 11
- Dec 2022 09:38:02 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5FG9XFAhH1aAKNSCD7KXenAoQ7QCTJVpi7jZDxdnhI0=;
+        b=7oxMFvtpLa1hZ6PrQ0XnLzhwnBv0Cyg+z75XJH0+ZkXduSN1bzFzAiTePxr0ruP6m3
+         4MWSMZIYsQljpV90IfSi/sflzDTr8e96xJRJmuor74QMsO6EO4qEh8yqhCpbJWr8UHhq
+         cWhdqiwvSoVTE9ALeBljd1VhOKLbazGBl0+sJesVw3N57ABJJn2jFY+13tgn1O4W0Z+/
+         42CFKvX9TUak+rDjCbUU4QhrEKosCMgt9ZAquVH63nZJxOaKRqH1iWRATPkWuMuL7mOZ
+         5xCA/Ap/V1VG015bqMcYCqWGUHH8UJnI00pwAbXfuSEoRQzqC5DAJsmUw2dh1HZlzB9h
+         k6xw==
+X-Gm-Message-State: ANoB5pl/1eoRF98Fvkl7jiqJO2ulE7QNpI6/EhT1OTATV1V7VnFyady3
+        /FKTi7fg+jmARyp6vOomgIaFd9GkNR0=
+X-Google-Smtp-Source: AA0mqf7WUdx4Cm7Ae0JDat+14OBRjlMLKUwnBQpLWULqMx/qMiOpgVxSMm05AG8y3yz4qJxmL4/HbA==
+X-Received: by 2002:a05:600c:991:b0:3cf:aa48:23d4 with SMTP id w17-20020a05600c099100b003cfaa4823d4mr10965839wmp.25.1670794278133;
+        Sun, 11 Dec 2022 13:31:18 -0800 (PST)
+Received: from localhost.localdomain (host-95-247-100-134.retail.telecomitalia.it. [95.247.100.134])
+        by smtp.gmail.com with ESMTPSA id m127-20020a1c2685000000b003d1d5a83b2esm6866350wmm.35.2022.12.11.13.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Dec 2022 13:31:17 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Evgeniy Dushistov <dushistov@mail.ru>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        "Fabio M . De Francesco" <fmdrefrancesco@gmail.com>
+Subject: [PATCH 0/3] fs/ufs: replace kmap() with kmap_local_page()
+Date:   Sun, 11 Dec 2022 22:31:08 +0100
+Message-Id: <20221211213111.30085-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Reply-To: 0085lwh@naver.com
-Sender: engradams88@gmail.com
-Received: by 2002:a50:3781:0:b0:1ea:fe14:4001 with HTTP; Sun, 11 Dec 2022
- 09:38:01 -0800 (PST)
-From:   "Mrs. Lo Han" <0085lwh@gmail.com>
-Date:   Sun, 11 Dec 2022 17:38:01 +0000
-X-Google-Sender-Auth: YXbWoIvRzwWxhQTpVzEd67Haiqg
-Message-ID: <CACnDYXQ1Yp41vqMquCt0zmtW1ybjX9SBj5+syk==6OF+NLYieQ@mail.gmail.com>
-Subject: Hello Dear,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FROM_STARTS_WITH_NUMS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:533 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 FROM_STARTS_WITH_NUMS From: starts with several numbers
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [engradams88[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [engradams88[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Dear,
+kmap() is being deprecated in favor of kmap_local_page().
 
-I am still waiting to hear from you regarding my last email, I am Mrs.
-Lo Wai Han and I have a charity project to carry out, I would like you
-to handle this project for me.
+There are two main problems with kmap(): (1) It comes with an overhead as
+the mapping space is restricted and protected by a global lock for
+synchronization and (2) it also requires global TLB invalidation when the
+kmap’s pool wraps and it might block when the mapping space is fully
+utilized until a slot becomes available.
 
-Please reply to me for more information.
+With kmap_local_page() the mappings are per thread, CPU local, can take
+page faults, and can be called from any context (including interrupts).
+It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
+the tasks can be preempted and, when they are scheduled to run again, the
+kernel virtual addresses are restored and still valid.
 
-Yours Sincerely,
-Mrs. Lo Wai Han.
+Since its use in fs/ufs is safe everywhere, it should be preferred.
+
+Therefore, replace kmap() with kmap_local_page() in fs/ufs. kunmap_local()
+requires the mapping address, so return that address from ufs_get_page()
+to be used in ufs_put_page().
+
+This series could have not been ever made because nothing prevented the
+previous patch from working properly but Al Viro made a long series of
+very appreciated comments about how many unnecessary and redundant lines
+of code I could have removed. He could see things I was entirely unable
+to notice. Furthermore, he also provided solutions and details about how
+I could decompose a single patch into a small series of three
+independent units.[1][2][3]
+
+I want to thank him so much for the patience, kindness and the time he
+decided to spend to provide those analysis and write three messages full
+of interesting insights. I hope to have not misunderstood too many
+things, however I'm pretty sure that I made many mistakes due to my
+scarce knowledge of filesystem and, above all, lack of experience :-)
+
+I decided to get rid of the previous numbers and start from scratch
+(i.e., version 1) because this series has too little to share with the
+design of the previous patch.[4]
+
+[1] https://lore.kernel.org/lkml/Y4E++JERgUMoqfjG@ZenIV/
+[2] https://lore.kernel.org/lkml/Y4FG0O7VWTTng5yh@ZenIV/
+[3] https://lore.kernel.org/lkml/Y4ONIFJatIGsVNpf@ZenIV/
+[4] https://lore.kernel.org/lkml/20221016163855.8173-1-fmdefrancesco@gmail.com/
+
+Cc: Ira Weiny <ira.weiny@intel.com>
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Fabio M. De Francesco <fmdrefrancesco@gmail.com>
+
+Fabio M. De Francesco (3):
+  fs/ufs: Use the offset_in_page() helper
+  fs/ufs: Change the signature of ufs_get_page()
+  fs/ufs: Replace kmap() with kmap_local_page()
+
+ fs/ufs/dir.c | 140 +++++++++++++++++++++++++++------------------------
+ 1 file changed, 73 insertions(+), 67 deletions(-)
+
+-- 
+2.38.1
+
