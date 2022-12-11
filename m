@@ -2,82 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBC56491E2
-	for <lists+bpf@lfdr.de>; Sun, 11 Dec 2022 03:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB01E64920E
+	for <lists+bpf@lfdr.de>; Sun, 11 Dec 2022 03:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbiLKC2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Dec 2022 21:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
+        id S229637AbiLKCwZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Dec 2022 21:52:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbiLKC2c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Dec 2022 21:28:32 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DD010546;
-        Sat, 10 Dec 2022 18:28:31 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id m18so20049459eji.5;
-        Sat, 10 Dec 2022 18:28:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kz8UCTQ9WHAf5JhkPjYAXVzTT4HzgSv8RTOSjH8wUj4=;
-        b=K9G0WDjvIfRxiA8xrSmt44yBpBQVe0AdlIRTD1yh8vaEmcgFncS9IkxTNR3Rg1kLve
-         o3Walf+HtOmGONYALr1A1TDnL9VcsNLakuRdAqwnUPIMm7rdUxXJBYSe9+LPQ/1OIw/G
-         Tw1NWUs/8qnCRX6/wuE9OXTvHpJfLruu7uXaSZwtOBuCebyAbO9E4TgvHLH2RMOSo+qX
-         P/Ir6AZZO6T5RAn+uAHuoHkV934xUAX0oBXZr5xyZFuYAiQruvWoQcGX1BXLZl+AllN+
-         pfsDXS7nEF1stgJAhKktNlzJgmI/3E9CsMbBRywaMqsiN2qiz29Hy/6OwR+xUVw1KUrX
-         qWuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kz8UCTQ9WHAf5JhkPjYAXVzTT4HzgSv8RTOSjH8wUj4=;
-        b=tv126fXhMCNPl4ZZCIRbG79S4m+jHw8CZ5TSS62pI3gberKnkA+1CUOHQwmI0PtM9B
-         cFgjS28ZNvzZvdWKC8jJjKpjTZh3P2YLuGTzRMKcZ3EBSEIVzfp2ijGmKGiLIgSX8gc/
-         CvD/3zUesWfo9+J9U8TL03PAIRQuOCQwbTVc/ySSHwrSm8lRPlOMHYIBurhyCLIqZm2B
-         2Y23Owur+nhvnjzukSOArL+8pbluuU8WZmfw4jU5pei4w2FBEO8s2kvKcOmsZ9Jqgdof
-         BPr68duhxfphGw44GsNWDdMwnoXWItjvbgmIFHHIScPrDmDkJEomTxHPpHUG/hUfP4qt
-         a8ZQ==
-X-Gm-Message-State: ANoB5pk8RqNNn9L8PykGcI1a4lBf0TG4cSIYeqcW54epXXOIrIHt0PNq
-        bTjy0X4oCv3suMCxeDNqCfVqADbI6N5q9r2Iczc=
-X-Google-Smtp-Source: AA0mqf5prpvAqhvSogkAQlNu7wWUWpyU4sAQFN1xjbIalUKERm86mEBlmrSum2+sDjBmVH64S0nFkDoFm4KaRT2hoQA=
-X-Received: by 2002:a17:906:4351:b0:78d:513d:f447 with SMTP id
- z17-20020a170906435100b0078d513df447mr70015362ejm.708.1670725709381; Sat, 10
- Dec 2022 18:28:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20221207172434.435893-1-roberto.sassu@huaweicloud.com> <20221207172434.435893-3-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20221207172434.435893-3-roberto.sassu@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 10 Dec 2022 18:28:18 -0800
-Message-ID: <CAADnVQKhWEtqAkMnWR8Twpc6uPo_MWnAf68R-xeM=YVqxkLOyQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH v2 2/7] bpf: Mark ALU32 operations in bpf_reg_state structure
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        with ESMTP id S229830AbiLKCwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Dec 2022 21:52:25 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06F913F27;
+        Sat, 10 Dec 2022 18:52:23 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F72360D39;
+        Sun, 11 Dec 2022 02:52:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E86FC433EF;
+        Sun, 11 Dec 2022 02:52:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670727142;
+        bh=rlKZwK4Kj1fXsPuO+MKRZgsrKdoPPkaovawTnxF2v9A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gWPF8u48O67+JbK7s4pT1emnY6txtEG37xTU/4QNsWfmg9cg4oBF7HAtdSIdgzB/z
+         OLTF5u8hy2dNJw9Liopf/GjC2QXwOcqU8CE1Wl7RkzPVkTBe2p5f3LeZ+1Mdzdho4V
+         UVd7ZdWeJjtfBtZ5M2VgpbYdkjlSXy76u+IgV7d49H6H4cZVIPSrlE1qxvXgU8J/tX
+         yqIjREuC08ueh+Qt6RXe/YrotxMSg3oXR1X7ca4TBNolskrXluYcanrauT52Go/ttW
+         NTeQpVSJuWylX9d78paDwog5YF2nD7k3eQnsbcT6UsWmFcm54icPXWMfcRqV8zgvQJ
+         8y23ArxGsuptg==
+Date:   Sun, 11 Dec 2022 11:52:18 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chris Mason <clm@meta.com>
+Subject: Re: [PATCH v2] panic: Taint kernel if fault injection has been used
+Message-Id: <20221211115218.2e6e289bb85f8cf53c11aa97@kernel.org>
+In-Reply-To: <20221208043628.el5yykpjr4j45zqx@macbook-pro-6.dhcp.thefacebook.com>
+References: <167019256481.3792653.4369637751468386073.stgit@devnote3>
+        <20221204223001.6wea7cgkofjsiy2z@macbook-pro-6.dhcp.thefacebook.com>
+        <20221205075921.02edfe6b54abc5c2f9831875@kernel.org>
+        <20221206021700.oryt26otos7vpxjh@macbook-pro-6.dhcp.thefacebook.com>
+        <20221206162035.97ae19674d6d17108bed1910@kernel.org>
+        <20221207040146.zhm3kyduqp7kosqa@macbook-pro-6.dhcp.thefacebook.com>
+        <20221206233947.4c27cc9d@gandalf.local.home>
+        <CAADnVQKDZfP51WeVOeY-6RNH=MHT2BhtW6F8PaJV5-RoJOtMkQ@mail.gmail.com>
+        <20221207074806.6f869be2@gandalf.local.home>
+        <20221208043628.el5yykpjr4j45zqx@macbook-pro-6.dhcp.thefacebook.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,61 +76,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 7, 2022 at 9:25 AM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> BPF LSM needs a reliable source of information to determine if the return
-> value given by eBPF programs is acceptable or not. At the moment, choosing
-> either the 64 bit or the 32 bit one does not seem to be an option
-> (selftests fail).
->
-> If we choose the 64 bit one, the following happens.
->
->       14:       61 10 00 00 00 00 00 00 r0 = *(u32 *)(r1 + 0)
->       15:       74 00 00 00 15 00 00 00 w0 >>= 21
->       16:       54 00 00 00 01 00 00 00 w0 &= 1
->       17:       04 00 00 00 ff ff ff ff w0 += -1
->
-> This is the last part of test_deny_namespace. After #16, the register
-> values are:
->
-> smin_value = 0x0, smax_value = 0x1,
-> s32_min_value = 0x0, s32_max_value = 0x1,
->
-> After #17, they become:
->
-> smin_value = 0x0, smax_value = 0xffffffff,
-> s32_min_value = 0xffffffff, s32_max_value = 0x0
->
-> where only the 32 bit values are correct.
->
-> If we choose the 32 bit ones, the following happens.
->
-> 0000000000000000 <check_access>:
->        0:       79 12 00 00 00 00 00 00 r2 = *(u64 *)(r1 + 0)
->        1:       79 10 08 00 00 00 00 00 r0 = *(u64 *)(r1 + 8)
->        2:       67 00 00 00 3e 00 00 00 r0 <<= 62
->        3:       c7 00 00 00 3f 00 00 00 r0 s>>= 63
->
-> This is part of test_libbpf_get_fd_by_id_opts (no_alu32 version). In this
-> case, 64 bit register values should be used (for the 32 bit ones, there is
-> no precise information from the verifier).
->
-> As the examples above suggest that which register values to use depends on
-> the specific case, mark ALU32 operations in bpf_reg_state structure, so
-> that BPF LSM can choose the proper ones.
+Hi Alexei,
 
-I have a hard time understanding what is the problem you're
-trying to solve and what is the proposed fix.
+On Wed, 7 Dec 2022 20:36:28 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-The patch is trying to remember the bitness of the last
-operation, but what for?
-The registers are 64-bit. There are 32-bit operations,
-but they always update the upper 32-bits of the register.
-reg_bounds_sync() updates 32 and 64 bit bounds regardless
-whether the previous operation was on 32 or 64 bit.
-It seems you're trying to hack around something that breaks
-patch 3 which also looks fishy.
-Please explain the problem first with a concrete example.
+> Yet for 2 days this 'taint' arguing is preventing people from looking at the bug.
+> And that happens all the time on lkml. Somebody reports a bug and kernel devs
+> jump on the poor person:
+> "Can you repro without taint?",
+> "Can you repro with upstream kernel?"
+> This is discouraging.
+> The 'taint' concept makes it easier for kernel devs to ignore bug reports
+> and push back on the reporter.
+> Do it few times and people stop reporting bugs.
+
+That seems off topic for me. You seems complained against the taint flag
+itself.
+
+> Say, this particular bug in rethook was found by one of our BPF CI developers.
+> They're not very familiar with the kernel, but they can see plenty of 'rethook'
+> references in the stack trace, lookup MAINTAINER file and ping Massami,
+> but to the question "can you repro without taint?" they can only say NO,
+> because this is how our CI works. So they will keep silence and the bug will be lost.
+
+BTW, this sounds like the BPF CI system design issue. If user is NOT easily
+identifying what test caused the issue (e.g. what tests ran on the system
+until the bug was found), the CI system is totally useless, because after
+finding a problem, it must be investigated to solve the problem.
+
+Without investigation, how would you usually fix the bug??
+
+> That's not the only reason why I'm against generalizing 'taint'.
+> Tainting because HW is misbehaving makes sense, but tainting because
+> of OoO module or because of live-patching does not.
+> It becomes an excuse that people abuse.
+
+yeah, it is possible to be abused. but that is the problem who
+abuse it.
+
+> Right now syzbot is finding all sorts of bugs. Most of the time syzbot
+> turns error injection on to find those allocation issues.
+> If syzbot reports will start coming as tainted there will be even less
+> attention to them. That will not be good.
+
+Hmm, what kind of error injection does syzbot do? I would like to know
+how it is used. For example, does that use only a specify set of
+injection points, or use all existing points?
+
+If the latter, I feel safer because syzbot ensures the current all
+ALLOW_ERROR_INJECTION() functions will work with error injection. If not,
+we need to consider removing the ALLOW_ERROR_INJECTION() from the
+function which is not tested well (or add this taint flag.)
+
+Documentation/fault-injection/fault-injection.rst has no explanation
+about ALLOW_ERROR_INJECTION(), but obviously the ALLOW_ERROR_INJECTION()
+marked functions and its caller MUST be designed safely against the
+error injection. e.g.
+
+- It must return an error code. (so EI_ETYPE_NONE must be removed)
+- Caller must check the return value always.
+  (but I thought this was the reason why we need this test framework...)
+- It should not run any 'effective' code before checking an error.
+  For example, increment counter, call other functions etc.
+  (this means it can return without any side-effect)
+
+Anything else?
+
+[...]
+> All these years we've been working on improving bpf introspection and
+> debuggability. Today crash dumps look like this:
+>   bpf_trace_printk+0xd3/0x170 kernel/trace/bpf_trace.c:377
+>   bpf_prog_cf2ac6d483d8499b_trace_bpf_trace_printk+0x2b/0x37
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1082 [inline]
+>   __bpf_prog_run include/linux/filter.h:600 [inline]
+>   bpf_prog_run include/linux/filter.h:607 [inline]
+> 
+> The 2nd from the top is a bpf prog. The rest are kernel functions.
+> bpf_prog_cf2ac6d483d8499b_trace_bpf_trace_printk
+>          ^^ is a prog tag   ^^ name of bpf prog
+> 
+> If you do 'bpftool prog show' you can see both tag and name. 
+> 'bpftool prog dump jited'
+> dumps x86 code mixed with source line text.
+> Often enough +0x2b offset will have some C code right next to it.
+
+This is good, but this only works when the vmcore is dumped and
+on the stack. My concern about the function error injection is
+that makes some side effects, which can cause a problem afterwards
+(this means after unloading the bpf prog)
+
+> 
+> One can monitor all prog load/unload via perf or via audit.
+
+Ah, audit is helpful :), because we can dig the log what was loaded
+before crash.
+
+
+Thank you,
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
