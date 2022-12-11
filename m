@@ -2,96 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9522649525
-	for <lists+bpf@lfdr.de>; Sun, 11 Dec 2022 18:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB18649570
+	for <lists+bpf@lfdr.de>; Sun, 11 Dec 2022 18:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbiLKRCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Dec 2022 12:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33358 "EHLO
+        id S230009AbiLKRiG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Dec 2022 12:38:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbiLKRCf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Dec 2022 12:02:35 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E0AB2E;
-        Sun, 11 Dec 2022 09:02:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C504FB80A2B;
-        Sun, 11 Dec 2022 17:02:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7FA3C433EF;
-        Sun, 11 Dec 2022 17:02:28 +0000 (UTC)
-Date:   Sun, 11 Dec 2022 12:02:26 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chris Mason <clm@meta.com>
-Subject: Re: [PATCH v2] panic: Taint kernel if fault injection has been used
-Message-ID: <20221211120226.11c97578@rorschach.local.home>
-In-Reply-To: <CACYkzJ72-hJweZoFN_YN8u3NOmp5x82M2xA-ZKBi5ubt6yrzZA@mail.gmail.com>
-References: <167019256481.3792653.4369637751468386073.stgit@devnote3>
-        <20221204223001.6wea7cgkofjsiy2z@macbook-pro-6.dhcp.thefacebook.com>
-        <20221205075921.02edfe6b54abc5c2f9831875@kernel.org>
-        <20221206021700.oryt26otos7vpxjh@macbook-pro-6.dhcp.thefacebook.com>
-        <20221206162035.97ae19674d6d17108bed1910@kernel.org>
-        <20221207040146.zhm3kyduqp7kosqa@macbook-pro-6.dhcp.thefacebook.com>
-        <20221206233947.4c27cc9d@gandalf.local.home>
-        <CAADnVQKDZfP51WeVOeY-6RNH=MHT2BhtW6F8PaJV5-RoJOtMkQ@mail.gmail.com>
-        <20221207074806.6f869be2@gandalf.local.home>
-        <20221208043628.el5yykpjr4j45zqx@macbook-pro-6.dhcp.thefacebook.com>
-        <20221211115218.2e6e289bb85f8cf53c11aa97@kernel.org>
-        <CACYkzJ72-hJweZoFN_YN8u3NOmp5x82M2xA-ZKBi5ubt6yrzZA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229918AbiLKRiF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Dec 2022 12:38:05 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759F2B489
+        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 09:38:04 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id v8so9881873edi.3
+        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 09:38:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:sender:reply-to:mime-version:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=A5Os1rPoo1ChPlg5hPaCwrd/EmKpmzjimIuVlwuqaAE=;
+        b=JJeneg4/azi0QE7TdlTc+u+42beLa95wA2OJIGQe7OssZVepLuT3kVJvqgVBdZKzVB
+         OPfj34gtN71QWk80FHctwRFDHAoDFfFL25feUqM923x3LYOdcwNaIVDoSnI7YvPIUMO+
+         gSFPbqkCrM3uBKxZCbRl7EdA3DWF7+1A6sWlYeHBio8/omBfmdpmbR1JPSNtV2Ppzy6H
+         A8Tpn8gE3Pn9u+lgZruG+KI9Q0W6MACb3Km6jHinMlptoaQDg4H/rfYPe4tRdW50QTpf
+         nCciM8IIrXz1P4FVNewciK5SLb0uLpwRz4I03tkUkjB/lDki/lWn6Gmbqo/4GJfkyHLZ
+         G26A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:sender:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A5Os1rPoo1ChPlg5hPaCwrd/EmKpmzjimIuVlwuqaAE=;
+        b=205cXUeNmls0FrAwpKaI8gv/wg2dWeaNoFDTC5G1SFXMgMOpYJQKjyYZbQKroffXBr
+         KQmLik8NQxq25uy+iubVexSkYUgiQpk2lP789W5gL2BkKTwxTogijqdYOhFPcSjqI8UP
+         5dOa4myWRW0Zy7od0AXlD+KZQP52nBPHWgrDGIx5qvNnhQLZ+Rp9+ki0VPFdT5FG/s5Q
+         2cJWHsRv6+7KLvjteazl4sDpbPMUQiigqAPuuac1WsN166OTe2r3EBl2hbrlEWchVpAu
+         WumVcdN6AeFH0/SPCYuB+QtXU1wJuwK2DNKEzoIO+ttQz4+SMNAxM/tzVVIJ89ZgIArv
+         AHHQ==
+X-Gm-Message-State: ANoB5pmTZdBo1U7hwIA+ckV8JmR1ppPvMwZFJfDaq4dWyOz0d432YVir
+        Ia9cvfrGOCUR2RHmsuRWMfvf+1x6VQi9IzcaNy4=
+X-Google-Smtp-Source: AA0mqf4VvHJ87Lq43enx07M55tsiCtZ3n0oSHwYKTAeCzQvF0zUGKj51cLOQlaUw0vrdydJauTnVPvXXQM0tgs1nYcA=
+X-Received: by 2002:aa7:ce86:0:b0:46b:1872:4194 with SMTP id
+ y6-20020aa7ce86000000b0046b18724194mr43554144edv.362.1670780282556; Sun, 11
+ Dec 2022 09:38:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Reply-To: 0085lwh@naver.com
+Sender: engradams88@gmail.com
+Received: by 2002:a50:3781:0:b0:1ea:fe14:4001 with HTTP; Sun, 11 Dec 2022
+ 09:38:01 -0800 (PST)
+From:   "Mrs. Lo Han" <0085lwh@gmail.com>
+Date:   Sun, 11 Dec 2022 17:38:01 +0000
+X-Google-Sender-Auth: YXbWoIvRzwWxhQTpVzEd67Haiqg
+Message-ID: <CACnDYXQ1Yp41vqMquCt0zmtW1ybjX9SBj5+syk==6OF+NLYieQ@mail.gmail.com>
+Subject: Hello Dear,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FROM_STARTS_WITH_NUMS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:533 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 FROM_STARTS_WITH_NUMS From: starts with several numbers
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [engradams88[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [engradams88[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 11 Dec 2022 08:49:01 +0100
-KP Singh <kpsingh@kernel.org> wrote:
+Hello Dear,
 
-> Let's take a step back and focus on solving debuggability and
-> introspection as we clearly have some perception issues about taints
-> in the community. (distro maintainers, users) before we go and add
-> more taints.
+I am still waiting to hear from you regarding my last email, I am Mrs.
+Lo Wai Han and I have a charity project to carry out, I would like you
+to handle this project for me.
 
-Note, you will likely get the same push back if the dump includes bpf
-programs known to change the return of a function that may be involved
-with the bug report. That is, if a crash is reported to code I
-maintain, and I see that the bug report includes a list of BPF programs
-that can modify the return of a function, and one of those functions
-could affect the place that crashed, I'd push back and ask if the crash
-could be done without that BPF program loaded, regardless of taints.
+Please reply to me for more information.
 
-I agree that a taint is just a hint and it can include something that
-caused the bug or it may not. I would like to see more details in how
-the crashed kernel was configured. That includes loaded BPF programs
-(just like we include loaded modules). And if any BPF program modifies
-a core function (outside of syscall returns) I'd be a bit suspect of
-what happened.
-
-I also agree that if a function that checks error paths fails, it
-should be fixed, but knowing that the error path was caused by fault
-injection will prevent the wasted effort that most developers will go
-through to find out why the error path was hit in the first place.
-
--- Steve
+Yours Sincerely,
+Mrs. Lo Wai Han.
