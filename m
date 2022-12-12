@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B56864976A
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 01:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA43564976B
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 01:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbiLLAh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Dec 2022 19:37:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
+        id S230483AbiLLAiE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Dec 2022 19:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbiLLAh6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Dec 2022 19:37:58 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315C12628
-        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:37:57 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id u5so10270966pjy.5
-        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:37:57 -0800 (PST)
+        with ESMTP id S230370AbiLLAiD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Dec 2022 19:38:03 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491092657
+        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:38:02 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id q17-20020a17090aa01100b002194cba32e9so13888145pjp.1
+        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:38:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QHvieJOPfKU228A/FcGpl6NQ2QtETLo/uwnKW3/KnGM=;
-        b=R1Dq44NIQGVO0+qq21tEHH6CncuZ3dTgE2cbw8HLO8saI8/5z0r/X0CECMdjYOgRv5
-         SMjSPHWZ8K2mAGRes/5tIu7FBuiyDmZfqOd6zZtvSmpU2LipHlsLhWkPY4mEV5JoKNRi
-         BpaWYokf6VLHMRv8IXvOqTUQ1BqQZlb6F1ZsovRUuujPt0efJ9O2cbw3ryYciICij6gR
-         W2NclCv2pqtr7MdFxnuVO1kO83DIlfndrqXivZo6F/9XzBbyauW/h1+LcLsNpSphAhP/
-         WgRcDWX/f/2LzKBVFNKMEqblIw2fLaqSAgkzDYeF1+tSuC9j2136W3PmA2kqcTyA5rAL
-         3iEg==
+        bh=lNKI7Uo9ceKwdJtylngktQ/nCvprH/we2VJP8jXRS4g=;
+        b=P7L3A8LSQ6EuBchoo9o72G0HR9beI6ptksZv7pGabGWc21e5bYToqayU6KK7gpv+KW
+         LNO60GB0maoylCFzxuy7ZqsXKuIBcgvGt+apx8Tmq/mfpL7XtcE8QC5AuyQB0bUSs4CV
+         t+qTZt3ykBrEDsJ1dX7EGsQMucv4KFNDm9W2KRsa9nhIYqiyhZdcTkwfdZP9jue72YQF
+         xGaOwfN8haEgmbtswwr6QpNh82Qg3XEOAMM94W24qrBtb/wUM72Uhhj+8XRzzxb1Zvkn
+         tyjFOn5ZuO/uYxaYuu58vwbl3foO3tgwR9ZUZGqgmrQiON9ADCHjs8LsgoZ4WmuB+Zj+
+         YhpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QHvieJOPfKU228A/FcGpl6NQ2QtETLo/uwnKW3/KnGM=;
-        b=ERF/xgCwTidx+4Ptn28+HX0h8ImwdJfUHlpehCXr3NlxJ225N/8G7Tiu8Zr+bT2o2g
-         NSr7g6j1SaKsr96uU921meUu5VkUlOXY1zrMH3j8T4s7+wOtkYnqYfsv1LzYvrPj/hjq
-         QL9CLTQlE10/t1VbeUEIEQshp7tgs4ywWgURf28Y+ytNlwpBx1rmJf5TpTnNQ/r2kB/c
-         VYC5XmlnmBAfi0e9Dk7TlaK/5MEoGR6PA+3J7jTNxPygY7pPw+i7K27S/41Kt3FV5Fgo
-         GCPawbrpmKF3mJOBbZtaAMFyGqOY+YhTTGj5NpfN7s+GFHuty+n8knzQWblOYqZATTjr
-         jfpg==
-X-Gm-Message-State: ANoB5pkoMG8VV0axlU4kl3NrsSowqdU6OuU1KRnOmcKIGEWrX/5XBA7G
-        JODPVZwE9w5DzU2uMSifPtwxbIeM01ULjGHK2Xs=
-X-Google-Smtp-Source: AA0mqf6GDUpbXr/OdqXwQUyMcN2xVFgzoCfs01LkdidF7uxzxZaISdRKNaWHUuHKNdtKC3oYE3Ycsg==
-X-Received: by 2002:a17:902:c14c:b0:189:9733:59d3 with SMTP id 12-20020a170902c14c00b00189973359d3mr14030488plj.29.1670805476623;
-        Sun, 11 Dec 2022 16:37:56 -0800 (PST)
+        bh=lNKI7Uo9ceKwdJtylngktQ/nCvprH/we2VJP8jXRS4g=;
+        b=N5nrPCjKiXC5oy+cR6cgYhw5mdtUpWhGhKWwWEM+c8BRxVyn69wkBJEIxoXyvF1M0Z
+         FCGEDlLqHvn5iL8TKXisuRXNhBBRUsMfVpvX9JrheupSMOpTXoJ91Iq3OIzcNVGrqHba
+         RbAGPoZuKtqpVuPZdueWdZVvpMAP9tqYJ9NmM3ZVxEIDJxpy7AMxjInX01KckN/WsCS3
+         sChJshCaPDKqPUCMiwGsc4LYrkihVkSkdRj38bTavRLiH9Sseyb1O0UhOTOOLSoSN6Ar
+         iiXCqDnYPfQwYElqEdBDEFviKpZZO5x+UiIEpT1jUXtlR9ZNyTaF/C3uQD9eHxMQL40b
+         zAwA==
+X-Gm-Message-State: ANoB5pksRh35+5Epj2WbJE0CcoUr6EoGyMlM3XcN4f5Gb3/VXkgT0moU
+        Q+nV4Onh64+KuXPIMTEVBGM=
+X-Google-Smtp-Source: AA0mqf6gVkVR/BLhx3chzrF6SJRugCJ3u+HzeGV/gLvVMYMtlhxlpXYv9UYQhE7PhTOyWjPolnJ7Mw==
+X-Received: by 2002:a17:902:7c8c:b0:185:4421:72ed with SMTP id y12-20020a1709027c8c00b00185442172edmr14327503pll.50.1670805481847;
+        Sun, 11 Dec 2022 16:38:01 -0800 (PST)
 Received: from vultr.guest ([2001:19f0:7002:8c7:5400:4ff:fe3d:656a])
-        by smtp.gmail.com with ESMTPSA id w9-20020a170902e88900b00177fb862a87sm4895960plg.20.2022.12.11.16.37.51
+        by smtp.gmail.com with ESMTPSA id w9-20020a170902e88900b00177fb862a87sm4895960plg.20.2022.12.11.16.37.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Dec 2022 16:37:55 -0800 (PST)
+        Sun, 11 Dec 2022 16:38:01 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -59,9 +59,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         vbabka@suse.cz, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com
 Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 4/9] mm: slab: Account active vm for slab
-Date:   Mon, 12 Dec 2022 00:37:06 +0000
-Message-Id: <20221212003711.24977-5-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 5/9] mm: Account active vm for page
+Date:   Mon, 12 Dec 2022 00:37:07 +0000
+Message-Id: <20221212003711.24977-6-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221212003711.24977-1-laoar.shao@gmail.com>
 References: <20221212003711.24977-1-laoar.shao@gmail.com>
@@ -77,241 +77,165 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a slab object is allocated, we will mark this object in this
-slab and check it at slab object freeing. That said we need extra memory
-to store the information of each object in a slab. The information of
-each object in a slab can be stored in the new introduced page extension
-active_vm, so a new member is added into struct active_vm.
+Account active vm for page allocation and unaccount then page is freed.
+We can reuse the slab_data in struct active_vm to store the information
+of page allocation.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- mm/active_vm.c | 111 +++++++++++++++++++++++++++++++++++++++++++++++++
- mm/active_vm.h |  16 +++++++
- mm/slab.h      |   7 ++++
- mm/slub.c      |   2 +
- 4 files changed, 136 insertions(+)
+ include/linux/page_ext.h |  1 +
+ mm/active_vm.c           | 38 +++++++++++++++++++++++++++++++++++++-
+ mm/active_vm.h           | 12 ++++++++++++
+ mm/page_alloc.c          | 14 ++++++++++++++
+ 4 files changed, 64 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
+index 22be4582faae..5d02f939d5df 100644
+--- a/include/linux/page_ext.h
++++ b/include/linux/page_ext.h
+@@ -5,6 +5,7 @@
+ #include <linux/types.h>
+ #include <linux/stacktrace.h>
+ #include <linux/stackdepot.h>
++#include <linux/active_vm.h>
+ 
+ struct pglist_data;
+ struct page_ext_operations {
 diff --git a/mm/active_vm.c b/mm/active_vm.c
-index 541b2ba22da9..ee38047a4adc 100644
+index ee38047a4adc..a06987639e00 100644
 --- a/mm/active_vm.c
 +++ b/mm/active_vm.c
-@@ -1,6 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <linux/mm.h>
- #include <linux/page_ext.h>
- #include <linux/active_vm.h>
-+#include <linux/slab.h>
-+
-+#include "active_vm.h"
-+#include "slab.h"
- 
- static bool __active_vm_enabled __initdata =
- 				IS_ENABLED(CONFIG_ACTIVE_VM);
-@@ -28,7 +33,12 @@ static void __init init_active_vm(void)
- 	static_branch_disable(&active_vm_disabled);
+@@ -34,7 +34,10 @@ static void __init init_active_vm(void)
  }
  
-+struct active_vm {
-+	int *slab_data;     /* for slab */
-+};
-+
- struct page_ext_operations active_vm_ops = {
-+	.size = sizeof(struct active_vm),
- 	.need = need_active_vm,
- 	.init = init_active_vm,
+ struct active_vm {
+-	int *slab_data;     /* for slab */
++	union {
++		int *slab_data;     /* for slab */
++		unsigned long page_data;	/* for page */
++	}
  };
-@@ -54,3 +64,104 @@ long active_vm_item_sum(int item)
  
- 	return sum;
+ struct page_ext_operations active_vm_ops = {
+@@ -165,3 +168,36 @@ void active_vm_slab_sub(struct kmem_cache *s, struct slab *slab, void **p, int c
+ 	}
+ 	page_ext_put(page_ext);
  }
 +
-+static int *active_vm_from_slab(struct page_ext *page_ext)
++void page_set_active_vm(struct page *page, unsigned int item, unsigned int order)
 +{
-+	struct active_vm *av;
-+
-+	if (static_branch_likely(&active_vm_disabled))
-+		return NULL;
-+
-+	av = (void *)(page_ext) + active_vm_ops.offset;
-+	return READ_ONCE(av->slab_data);
-+}
-+
-+void active_vm_slab_free(struct slab *slab)
-+{
-+	struct page_ext *page_ext;
-+	struct active_vm *av;
-+	struct page *page;
-+
-+	page = slab_page(slab);
-+	page_ext = page_ext_get(page);
-+	if (!page_ext)
-+		return;
-+
-+	av = (void *)(page_ext) + active_vm_ops.offset;
-+	kfree(av->slab_data);
-+	av->slab_data = NULL;
-+	page_ext_put(page_ext);
-+}
-+
-+static bool active_vm_slab_cmpxchg(struct page_ext *page_ext, int *new)
-+{
-+	struct active_vm *av;
-+
-+	av = (void *)(page_ext) + active_vm_ops.offset;
-+	return cmpxchg(&av->slab_data, NULL, new) == NULL;
-+}
-+
-+void active_vm_slab_add(struct kmem_cache *s, gfp_t flags, size_t size, void **p)
-+{
-+	struct page_ext *page_ext;
-+	struct slab *slab;
-+	struct page *page;
-+	int *vec;
-+	int item;
-+	int off;
-+	int i;
-+
-+	item = active_vm_item();
-+	for (i = 0; i < size; i++) {
-+		slab = virt_to_slab(p[i]);
-+		page = slab_page(slab);
-+		page_ext = page_ext_get(page);
-+
-+		if (!page_ext)
-+			continue;
-+
-+		off = obj_to_index(s, slab, p[i]);
-+		vec = active_vm_from_slab(page_ext);
-+		if (!vec) {
-+			vec = kcalloc_node(objs_per_slab(s, slab), sizeof(int),
-+						flags & ~__GFP_ACCOUNT, slab_nid(slab));
-+			if (!vec) {
-+				page_ext_put(page_ext);
-+				continue;
-+			}
-+
-+			if (!active_vm_slab_cmpxchg(page_ext, vec)) {
-+				kfree(vec);
-+				vec = active_vm_from_slab(page_ext);
-+			}
-+		}
-+
-+		vec[off] = item;
-+		active_vm_item_add(item, obj_full_size(s));
-+		page_ext_put(page_ext);
-+	}
-+}
-+
-+void active_vm_slab_sub(struct kmem_cache *s, struct slab *slab, void **p, int cnt)
-+{
-+	struct page *page = slab_page(slab);
 +	struct page_ext *page_ext = page_ext_get(page);
-+	int *vec;
-+	int off;
-+	int i;
++	struct active_vm *av;
 +
-+	if (!page_ext)
++	if (unlikely(!page_ext))
 +		return;
 +
-+	for (i = 0; i < cnt; i++) {
-+		vec = active_vm_from_slab(page_ext);
-+		if (vec) {
-+			off = obj_to_index(s, slab, p[i]);
-+			if (vec[off] > 0) {
-+				active_vm_item_sub(vec[off], obj_full_size(s));
-+				vec[off] = 0;
-+			}
-+		}
-+	}
++	av = (void *)(page_ext) + active_vm_ops.offset;
++	WARN_ON_ONCE(av->page_data != 0);
++	av->page_data = item;
++	page_ext_put(page_ext);
++	active_vm_item_add(item, PAGE_SIZE << order);
++}
++
++void page_test_clear_active_vm(struct page *page, unsigned int order)
++{
++	struct page_ext *page_ext = page_ext_get(page);
++	struct active_vm *av;
++
++	if (unlikely(!page_ext))
++		return;
++
++	av = (void *)(page_ext) + active_vm_ops.offset;
++	if (av->page_data <= 0)
++		goto out;
++
++	active_vm_item_sub(av->page_data, PAGE_SIZE << order);
++	av->page_data = 0;
++out:
 +	page_ext_put(page_ext);
 +}
 diff --git a/mm/active_vm.h b/mm/active_vm.h
-index 1df088d768ef..cf80b35412c5 100644
+index cf80b35412c5..1ff27b0b5dbe 100644
 --- a/mm/active_vm.h
 +++ b/mm/active_vm.h
-@@ -4,8 +4,12 @@
- 
- #ifdef CONFIG_ACTIVE_VM
- #include <linux/active_vm.h>
-+#include <linux/page_ext.h>
- 
- extern struct page_ext_operations active_vm_ops;
-+void active_vm_slab_add(struct kmem_cache *s, gfp_t flags, size_t size, void **p);
-+void active_vm_slab_sub(struct kmem_cache *s, struct slab *slab, void **p, int cnt);
-+void active_vm_slab_free(struct slab *slab);
+@@ -10,6 +10,8 @@ extern struct page_ext_operations active_vm_ops;
+ void active_vm_slab_add(struct kmem_cache *s, gfp_t flags, size_t size, void **p);
+ void active_vm_slab_sub(struct kmem_cache *s, struct slab *slab, void **p, int cnt);
+ void active_vm_slab_free(struct slab *slab);
++void page_set_active_vm(struct page *page, unsigned int item, unsigned int order);
++void page_test_clear_active_vm(struct page *page, unsigned int order);
  
  static inline int active_vm_item(void)
  {
-@@ -42,5 +46,17 @@ static inline void active_vm_item_add(int item, long delta)
- static inline void active_vm_item_sub(int item, long delta)
+@@ -33,6 +35,7 @@ static inline void active_vm_item_sub(int item, long delta)
+ 	WARN_ON_ONCE(item <= 0);
+ 	this_cpu_sub(active_vm_stats.stat[item - 1], delta);
+ }
++
+ #else /* CONFIG_ACTIVE_VM */
+ static inline int active_vm_item(void)
+ {
+@@ -58,5 +61,14 @@ static inline void active_vm_slab_sub(struct kmem_cache *s, struct slab *slab, v
+ static inline void active_vm_slab_free(struct slab *slab)
  {
  }
 +
-+static inline void active_vm_slab_add(struct kmem_cache *s, gfp_t flags, size_t size, void **p)
++static inline void page_set_active_vm(struct page *page, int item,
++									  unsigned int order)
 +{
 +}
 +
-+static inline void active_vm_slab_sub(struct kmem_cache *s, struct slab *slab, void **p, int cnt)
-+{
-+}
-+
-+static inline void active_vm_slab_free(struct slab *slab)
++static inline void page_test_clear_active_vm(struct page *page, unsigned int order)
 +{
 +}
  #endif /* CONFIG_ACTIVE_VM */
  #endif /* __MM_ACTIVE_VM_H */
-diff --git a/mm/slab.h b/mm/slab.h
-index 0202a8c2f0d2..e8a4c16c29cb 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -232,6 +232,8 @@ struct kmem_cache {
- #include <linux/random.h>
- #include <linux/sched/mm.h>
- #include <linux/list_lru.h>
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 6e60657875d3..deac544e9050 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -76,6 +76,8 @@
+ #include <linux/khugepaged.h>
+ #include <linux/buffer_head.h>
+ #include <linux/delayacct.h>
++#include <linux/page_ext.h>
 +#include <linux/active_vm.h>
+ #include <asm/sections.h>
+ #include <asm/tlbflush.h>
+ #include <asm/div64.h>
+@@ -83,6 +85,7 @@
+ #include "shuffle.h"
+ #include "page_reporting.h"
+ #include "swap.h"
 +#include "active_vm.h"
  
- /*
-  * State of the slab allocator.
-@@ -644,6 +646,9 @@ static __always_inline void unaccount_slab(struct slab *slab, int order,
- 	if (memcg_kmem_enabled())
- 		memcg_free_slab_cgroups(slab);
- 
-+	if (active_vm_enabled())
-+		active_vm_slab_free(slab);
+ /* Free Page Internal flags: for internal, non-pcp variants of free_pages(). */
+ typedef int __bitwise fpi_t;
+@@ -1449,6 +1452,10 @@ static __always_inline bool free_pages_prepare(struct page *page,
+ 		page->mapping = NULL;
+ 	if (memcg_kmem_enabled() && PageMemcgKmem(page))
+ 		__memcg_kmem_uncharge_page(page, order);
 +
- 	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
- 			    -(PAGE_SIZE << order));
- }
-@@ -742,6 +747,8 @@ static inline void slab_post_alloc_hook(struct kmem_cache *s,
- 		kmsan_slab_alloc(s, p[i], flags);
++	if (active_vm_enabled())
++		page_test_clear_active_vm(page, order);
++
+ 	if (check_free && free_page_is_bad(page))
+ 		bad++;
+ 	if (bad)
+@@ -5577,6 +5584,13 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
+ 		page = NULL;
  	}
  
-+	if (active_vm_enabled() && (flags & __GFP_ACCOUNT) && active_vm_item() > 0)
-+		active_vm_slab_add(s, flags, size, p);
- 	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
- }
++	if (active_vm_enabled() && (gfp & __GFP_ACCOUNT) && page) {
++		int active_vm = active_vm_item();
++
++		if (active_vm > 0)
++			page_set_active_vm(page, active_vm, order);
++	}
++
+ 	trace_mm_page_alloc(page, order, alloc_gfp, ac.migratetype);
+ 	kmsan_alloc_page(page, order, alloc_gfp);
  
-diff --git a/mm/slub.c b/mm/slub.c
-index 157527d7101b..21bd714c1182 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -45,6 +45,7 @@
- #include <trace/events/kmem.h>
- 
- #include "internal.h"
-+#include "active_vm.h"
- 
- /*
-  * Lock order:
-@@ -3654,6 +3655,7 @@ static __always_inline void slab_free(struct kmem_cache *s, struct slab *slab,
- 				      unsigned long addr)
- {
- 	memcg_slab_free_hook(s, slab, p, cnt);
-+	active_vm_slab_sub(s, slab, p, cnt);
- 	/*
- 	 * With KASAN enabled slab_free_freelist_hook modifies the freelist
- 	 * to remove objects, whose reuse must be delayed.
 -- 
 2.30.1 (Apple Git-130)
 
