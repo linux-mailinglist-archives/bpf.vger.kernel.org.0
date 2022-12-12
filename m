@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D84B64976C
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 01:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C0364976D
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 01:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbiLLAiJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Dec 2022 19:38:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
+        id S230443AbiLLAiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Dec 2022 19:38:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbiLLAiI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Dec 2022 19:38:08 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76836B490
-        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:38:07 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id s7so10424961plk.5
-        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:38:07 -0800 (PST)
+        with ESMTP id S230487AbiLLAiN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Dec 2022 19:38:13 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A01DB87D
+        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:38:12 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id jn7so10401257plb.13
+        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:38:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=b7mLIzH9QGa/Vp7L1frOgw2MpIN2USRO4iU649EtnEc=;
-        b=QwHnrYU5dlXPi4mKazfawl3O2vLOVNWdtMU7R0MIhOaiv6hPJkTBBHO24XgIPdO/Gf
-         9na56WI++Cb+a/hnv0W5d43A4c9pZsDP0T6C2ZZl5O2bTxtqze9EQPUi7+XEuVneB6jT
-         kticj3IJQ4XUgA+Z1YDssULNPsBFCtJzYxLaHCITVnk6zPI61pwxHeuvswRzdZilRwc0
-         G8WrVsH3guWmfGM4IyiM+dMvuNvxlqlKIxYxIRRqC/yJpCDsrbeCXRRYbki05brj76EA
-         queFVstoRXm+39NEjEKp+U/sBWNt4j/jCl8AAQzPQO6p0E07EggCIzSsaOAdHCHnNxpH
-         bSiQ==
+        bh=+Gn9WpBDEDaKUZZ8QU8b0wRBxnaqWXKyRBa/KIthXAc=;
+        b=TWn91mBr7aKw/ejdDKR8YL7ViEiJcmwoPO13rsfGRzSRZE90vZVGrc6m64SxoME0rZ
+         E9fh4oE0UPZADwjceaLGA4JaZzdz/IgvhYVJ9gkZbU1JRYUvBeN0VVWTtH9Aj110I2Tr
+         4fM0+PLVoB0u4oFlIsTnJqhY6GjykrCYTJW1LQaZ754Nr8tOqlv2pMi6C+kKF2+EIKno
+         kHiEl3JnREg8e5EjK8s+1wLeoI9rT4QwKporT6WDsvXLGG3UZoLK8SJnszfUYecDX4VX
+         kEpaWZ1S1SrCVl8ShKGHFUKaEAiSFq6nWM/byd0bd7dRnm2NTps4eMiA3pf3enuIC8qT
+         4edQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=b7mLIzH9QGa/Vp7L1frOgw2MpIN2USRO4iU649EtnEc=;
-        b=rQLqAN3ItPKvU545rIaugrjc6qlOlkeSUBajU8gWfQqBV0+qdp/ZDWaxA7+Afxv4bH
-         JiMtFuCr1O+icW3jlzwYgcxqIXXbkiuM9W6nFxqXbyzfWxgwOYZsnnK6zQ1vgCOBYXLe
-         m8RIdHpSTwQEc987yyYRglyZ+BR5OehWCsgGn0iz25sW0Rr3i4q1A626T0dJK8A7yKQY
-         +fChXy6QkEtBYriJtYbWWrQEpJHdfRvs9cfmZV2xeYjMy+5Ae9JtetrmWxMFN5ZvMG8i
-         Ujd2GRO8BMt0uIYRYAuh+nHMtPh947ORnU+QoSfC+kBiO8NjfVKC/qT0cTJtPVDwfH4n
-         4mWQ==
-X-Gm-Message-State: ANoB5pnhZ/32yEN3Ji0FjH48vw5ellQ66fU5px0nEQgTUJVINMmFV5Cs
-        FRxu7EVm0sZw2q+Rnur6lgw=
-X-Google-Smtp-Source: AA0mqf5z6xRPI9ZAMyGtUx6mm4rODaDI03F7bbR1btk/8oT+AjpT7zlHoWOWr51yN5JyyqN1xQqw+g==
-X-Received: by 2002:a17:902:ab54:b0:189:6bda:e98f with SMTP id ij20-20020a170902ab5400b001896bdae98fmr13586506plb.58.1670805486992;
-        Sun, 11 Dec 2022 16:38:06 -0800 (PST)
+        bh=+Gn9WpBDEDaKUZZ8QU8b0wRBxnaqWXKyRBa/KIthXAc=;
+        b=xV13hXc6Pa25nzuGV8UzU1lZKt5/WChMjuypjE6zawIvE4+svHVZhSpIrX2hEGqciv
+         K7YuwlFW1RUHdjCDqMmTqijkuyHDmdf+jFmvINXecE78ZZG1pClrtoGXZ3PlkdrgOJel
+         BiTsKjS6veXv99PjmOFj0BHjTyj7EKwNeJ4u26WCZgRpOgcS9jVQ2l9aOya0hzPR9NLg
+         56VphSdHZmJLyqTrNE0u92j25EvtteV38mrGG0ROKkuNX+zsmqORc5Ezam1roqLhoVjs
+         xZtk1ZKzZcXDZTHMioaZV33liAEyyHv7HHlqjPZ5Ff2qKr/bkN9sOiCwl9XJdCYjiF1B
+         i3gA==
+X-Gm-Message-State: ANoB5pneptHGwFJLUl5bi7iak2eLw1q3Fc/gJRSOYyVSJYlhWvEPfnjz
+        Qrkjapjb1aDnQ2wMvXFOjeM=
+X-Google-Smtp-Source: AA0mqf4aXVqdAlSTQEp8cHa2whCkSMepIO+xNKgkOlasHFVjqEnA9uC4JbLlGFLM9jtxp3TZIyO5fg==
+X-Received: by 2002:a17:902:ed85:b0:185:441e:2d9f with SMTP id e5-20020a170902ed8500b00185441e2d9fmr12716619plj.54.1670805492169;
+        Sun, 11 Dec 2022 16:38:12 -0800 (PST)
 Received: from vultr.guest ([2001:19f0:7002:8c7:5400:4ff:fe3d:656a])
-        by smtp.gmail.com with ESMTPSA id w9-20020a170902e88900b00177fb862a87sm4895960plg.20.2022.12.11.16.38.02
+        by smtp.gmail.com with ESMTPSA id w9-20020a170902e88900b00177fb862a87sm4895960plg.20.2022.12.11.16.38.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Dec 2022 16:38:06 -0800 (PST)
+        Sun, 11 Dec 2022 16:38:11 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -59,9 +59,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         vbabka@suse.cz, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com
 Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 6/9] bpf: Introduce new helpers bpf_ringbuf_pages_{alloc,free}
-Date:   Mon, 12 Dec 2022 00:37:08 +0000
-Message-Id: <20221212003711.24977-7-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 7/9] bpf: Use bpf_map_kzalloc in arraymap
+Date:   Mon, 12 Dec 2022 00:37:09 +0000
+Message-Id: <20221212003711.24977-8-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221212003711.24977-1-laoar.shao@gmail.com>
 References: <20221212003711.24977-1-laoar.shao@gmail.com>
@@ -77,132 +77,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allocate pages related memory into the new helper
-bpf_ringbuf_pages_alloc(), then it can be handled as a single unit.
+Allocates memory after map creation, then we can use the generic helper
+bpf_map_kzalloc() instead of the open-coded kzalloc().
 
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/ringbuf.c | 71 +++++++++++++++++++++++++++++---------------
- 1 file changed, 47 insertions(+), 24 deletions(-)
+ kernel/bpf/arraymap.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index 80f4b4d88aaf..3264bf509c68 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -92,6 +92,48 @@ struct bpf_ringbuf_hdr {
- 	u32 pg_off;
- };
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 484706959556..e64a4178d92d 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -1102,20 +1102,20 @@ static struct bpf_map *prog_array_map_alloc(union bpf_attr *attr)
+ 	struct bpf_array_aux *aux;
+ 	struct bpf_map *map;
  
-+static void bpf_ringbuf_pages_free(struct page **pages, int nr_pages)
-+{
-+	int i;
-+
-+	for (i = 0; i < nr_pages; i++)
-+		__free_page(pages[i]);
-+	bpf_map_area_free(pages);
-+}
-+
-+static struct page **bpf_ringbuf_pages_alloc(int nr_meta_pages,
-+						int nr_data_pages, int numa_node,
-+						const gfp_t flags)
-+{
-+	int nr_pages = nr_meta_pages + nr_data_pages;
-+	struct page **pages, *page;
-+	int array_size;
-+	int i;
-+
-+	array_size = (nr_meta_pages + 2 * nr_data_pages) * sizeof(*pages);
-+	pages = bpf_map_area_alloc(array_size, numa_node);
-+	if (!pages)
-+		goto err;
-+
-+	for (i = 0; i < nr_pages; i++) {
-+		page = alloc_pages_node(numa_node, flags, 0);
-+		if (!page) {
-+			nr_pages = i;
-+			goto err_free_pages;
-+		}
-+		pages[i] = page;
-+		if (i >= nr_meta_pages)
-+			pages[nr_data_pages + i] = page;
+-	aux = kzalloc(sizeof(*aux), GFP_KERNEL_ACCOUNT);
+-	if (!aux)
++	map = array_map_alloc(attr);
++	if (IS_ERR(map))
+ 		return ERR_PTR(-ENOMEM);
+ 
++	aux = bpf_map_kzalloc(map, sizeof(*aux), GFP_KERNEL);
++	if (!aux) {
++		array_map_free(map);
++		return ERR_PTR(-ENOMEM);
 +	}
 +
-+	return pages;
-+
-+err_free_pages:
-+	bpf_ringbuf_pages_free(pages, nr_pages);
-+err:
-+	return NULL;
-+}
-+
- static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
- {
- 	const gfp_t flags = GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL |
-@@ -99,10 +141,8 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
- 	int nr_meta_pages = RINGBUF_PGOFF + RINGBUF_POS_PAGES;
- 	int nr_data_pages = data_sz >> PAGE_SHIFT;
- 	int nr_pages = nr_meta_pages + nr_data_pages;
--	struct page **pages, *page;
- 	struct bpf_ringbuf *rb;
--	size_t array_size;
--	int i;
-+	struct page **pages;
+ 	INIT_WORK(&aux->work, prog_array_map_clear_deferred);
+ 	INIT_LIST_HEAD(&aux->poke_progs);
+ 	mutex_init(&aux->poke_mutex);
  
- 	/* Each data page is mapped twice to allow "virtual"
- 	 * continuous read of samples wrapping around the end of ring
-@@ -121,22 +161,11 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
- 	 * when mmap()'ed in user-space, simplifying both kernel and
- 	 * user-space implementations significantly.
- 	 */
--	array_size = (nr_meta_pages + 2 * nr_data_pages) * sizeof(*pages);
--	pages = bpf_map_area_alloc(array_size, numa_node);
-+	pages = bpf_ringbuf_pages_alloc(nr_meta_pages, nr_data_pages,
-+									numa_node, flags);
- 	if (!pages)
- 		return NULL;
- 
--	for (i = 0; i < nr_pages; i++) {
--		page = alloc_pages_node(numa_node, flags, 0);
--		if (!page) {
--			nr_pages = i;
--			goto err_free_pages;
--		}
--		pages[i] = page;
--		if (i >= nr_meta_pages)
--			pages[nr_data_pages + i] = page;
+-	map = array_map_alloc(attr);
+-	if (IS_ERR(map)) {
+-		kfree(aux);
+-		return map;
 -	}
 -
- 	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
- 		  VM_MAP | VM_USERMAP, PAGE_KERNEL);
- 	if (rb) {
-@@ -146,10 +175,6 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
- 		return rb;
- 	}
+ 	container_of(map, struct bpf_array, map)->aux = aux;
+ 	aux->map = map;
  
--err_free_pages:
--	for (i = 0; i < nr_pages; i++)
--		__free_page(pages[i]);
--	bpf_map_area_free(pages);
- 	return NULL;
- }
- 
-@@ -219,12 +244,10 @@ static void bpf_ringbuf_free(struct bpf_ringbuf *rb)
- 	 * to unmap rb itself with vunmap() below
- 	 */
- 	struct page **pages = rb->pages;
--	int i, nr_pages = rb->nr_pages;
-+	int nr_pages = rb->nr_pages;
- 
- 	vunmap(rb);
--	for (i = 0; i < nr_pages; i++)
--		__free_page(pages[i]);
--	bpf_map_area_free(pages);
-+	bpf_ringbuf_pages_free(pages, nr_pages);
- }
- 
- static void ringbuf_map_free(struct bpf_map *map)
 -- 
 2.30.1 (Apple Git-130)
 
