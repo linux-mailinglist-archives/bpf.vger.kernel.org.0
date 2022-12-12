@@ -2,100 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 922F9649A19
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 09:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C48649A1C
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 09:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbiLLIgJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 03:36:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
+        id S231497AbiLLIgK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 03:36:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbiLLIfw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 03:35:52 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AED1E017;
-        Mon, 12 Dec 2022 00:35:51 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4NVvt35MqQz9xFmB;
-        Mon, 12 Dec 2022 16:28:59 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwAnsQzO55ZjW_YHAA--.12110S2;
-        Mon, 12 Dec 2022 09:35:33 +0100 (CET)
-Message-ID: <9514eb143542d67036a508db2e6acee7b959dccb.camel@huaweicloud.com>
-Subject: Re: [PATCH 2/2] doc: Fix fs_context_parse_param description in
- mount_api.rst
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     corbet@lwn.net, casey@schaufler-ca.com, omosnace@redhat.com,
-        john.johansen@canonical.com, kpsingh@kernel.org,
-        bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Mon, 12 Dec 2022 09:35:20 +0100
-In-Reply-To: <CAHC9VhSz6b9AcpKzAn2Lz_9SW0yNqiQ0Ub8fXytFy7sSBmXipQ@mail.gmail.com>
-References: <20221209082936.892416-1-roberto.sassu@huaweicloud.com>
-         <20221209082936.892416-2-roberto.sassu@huaweicloud.com>
-         <CAHC9VhSz6b9AcpKzAn2Lz_9SW0yNqiQ0Ub8fXytFy7sSBmXipQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S231343AbiLLIgC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 03:36:02 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAFCDFAA;
+        Mon, 12 Dec 2022 00:36:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670834161; x=1702370161;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bFYTa27LxNC965Nl6ptrEOem3ftkvwtR2lcZjjhuh7w=;
+  b=Ctpcli0Qu5gkHgOCOhBib4kAIwQyDbs9RvQiX3xGNTUYi3eEQQ7U3Nuh
+   0dNICWlhMfnaQYPoU6fK7JzSMFJDDJmY7r/cQed6pd5h25++CSYhvj4/I
+   tyiGi6964uzL1ir573stEVlhaVjcIh9rKbD1oLqgsOG9ZxlnyASN5wcm+
+   iBMv4ly/I6ElKrv0u23X4YzRGAckMGAUnRWiXK+E2CSXwQ03CEUQCI2P8
+   vBQNkmWz8CxDxJBaJfeVp/XUnYPcnsQXXPi/I3k+A76sheagMOzPYamGM
+   Xg519DOI/27uQeUYXxixZD14ABPLZRnRsO7Yy89Iwn9bnfMlD0/aPSUZ9
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10558"; a="380011023"
+X-IronPort-AV: E=Sophos;i="5.96,237,1665471600"; 
+   d="scan'208";a="380011023"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2022 00:36:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10558"; a="822407894"
+X-IronPort-AV: E=Sophos;i="5.96,237,1665471600"; 
+   d="scan'208";a="822407894"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 12 Dec 2022 00:35:56 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1p4eHx-008Nh5-28;
+        Mon, 12 Dec 2022 10:35:53 +0200
+Date:   Mon, 12 Dec 2022 10:35:53 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     david.keisarschm@mail.huji.ac.il
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+        linux-scsi@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/5] Renaming weak prng invocations -
+ prandom_bytes_state, prandom_u32_state
+Message-ID: <Y5bn6XcozgjbcSkf@smile.fi.intel.com>
+References: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
+ <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwAnsQzO55ZjW_YHAA--.12110S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4DJFWDKr1xGFyfAFy5Arb_yoW8Xry5pa
-        yFq3W5Ar1vqw4xur1vkay7W3yrCrZ3JF45X3WDX345Zr1aqr1rtFWIgr4Y9ryDurZ2vryF
-        vFWagryY9FnxA37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-        1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU189N3UUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAEBF1jj4aENQABsG
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2022-12-09 at 12:41 -0500, Paul Moore wrote:
-> On Fri, Dec 9, 2022 at 3:30 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > Align with the description of fs_context_parse_param in lsm_hooks.h, which
-> > seems the right one according to the code.
-> > 
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > ---
-> >  Documentation/filesystems/mount_api.rst | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
+On Mon, Dec 12, 2022 at 12:16:04AM +0200, david.keisarschm@mail.huji.ac.il wrote:
+> From: David <david.keisarschm@mail.huji.ac.il>
 > 
-> I'm going to leave this patch as a "hold" for right now.  The existing
-> text is arguably not great, but I'm not really in love with the
-> replacement text taken from the LSM hook comments; given the merge
-> window opens in a couple of days, we don't have much time to fiddle
-> with the wording so let's just hold this for a little bit.
-> 
-> These comment corrections (which are very welcome!) have also reminded
-> me that we really should move the hook comment blocks out of the
-> header file and into security.c like every other kernel function.
-> This should help increase their discoverability while also making it
-> easier to maintain the comments over time.  I'm going to post a first
-> pass at this as soon as the merge window closes, and once that is done
-> we can do further work to cleanup the descriptions and add more detail
-> (including notes both for the other kernel subsystems that call the
-> hooks and the LSM devs who provide implementations).
+> Since the two functions
+>  prandom_byte_state and prandom_u32_state
+>  use the weak prng prandom_u32,
+>  we added the prefix predictable_rng,
+>  to their signatures so it is clear they are weak.
 
-Ok, great!
+It's fancy indentation.
 
-Roberto
+...
+
+>  		/* Fisher-Yates shuffle */
+>  		for (i = count - 1; i > 0; i--) {
+> -			rand = prandom_u32_state(&state.rnd_state);
+> +			rand = predictable_rng_prandom_u32_state(&state.rnd_state);
+
+Isn't it too many "random":s encoded in the name?
+
+I would leave either "rng" or "[p]random".
+
+>  			rand %= (i + 1);
+>  			swap_free_obj(slab, i, rand);
+>  		}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
