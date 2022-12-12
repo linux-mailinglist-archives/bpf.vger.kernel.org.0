@@ -2,74 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A119C64AA1B
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 23:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC24364AA5D
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 23:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233032AbiLLWTa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 17:19:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58498 "EHLO
+        id S233787AbiLLWfg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 17:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbiLLWTO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 17:19:14 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2014DED2
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 14:19:12 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id o1-20020a17090a678100b00219cf69e5f0so1459253pjj.2
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 14:19:12 -0800 (PST)
+        with ESMTP id S233825AbiLLWff (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 17:35:35 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AE93886;
+        Mon, 12 Dec 2022 14:35:35 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id s7so13616303plk.5;
+        Mon, 12 Dec 2022 14:35:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zisc8FQAJzDFm4trJFIzgD9QQfRGpDr3HkVwJ+oTsJM=;
-        b=j6fkBaTj8AwshXaywWh1a9KWsPOjHp8CRFCVBQ6q3Zz32esLihQfmQhrCt2cTWA43y
-         teSFLYYg644Fq35Bjb8RgBsV8SXZOx81jacbSLLbmoJVYcXx5SL974sk/HmkhaYnPGXQ
-         fG5Qm5yLPWwjqj3QWYg59p5uuDeubfTeBwvALcy2i1l2Ba9Gr0zgtDH3T7UksXDTZ6ds
-         8VS25Kgcnn4KU0Ztb3ck/srxcTPvK6/oHYTPk4LaG7yGvkxOgzMhrlmAoMJ/vQ0KnYwR
-         BmTzs1zoHJMh7bAl+ji7JxV/VHTH2CkADFdUxr725pXZQcZMrETt9IFJdMixp8829TWf
-         1NXQ==
+        bh=mzGWl9NbNab0/cvXriuWvS+/VwjtyPgYG+89ik87v1k=;
+        b=qlgEfpnoW8gJaCNB4KKrm5dS038kcOmt4a+SMi7A5RD91MfAizfibgXKh/Df/62W49
+         Z0tAegm03FedMwxkEMBzD/W1FA5iMe+BGxxQcvUkpizGjQzGNrABVNWfuFNS2lgardw1
+         zzaQdZhF2yXPiq3ELIOeDrskuRA48MyhiFrHhm2pXW73Y1l7i44QIKYUiVQ9XM4cCOCm
+         SszlmtTP6ETnaymJwbROhI1Pz2KmrIXY+9vOBrlP0zWk2c14+1S5k5Hn1f5OT85z8uME
+         r/2Axv3QJCr11+eFFNvSXEAXkMEas9cxUIuYKM15iblMeUKL+9SKtsTOvE49ecu5Jc1s
+         XjQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zisc8FQAJzDFm4trJFIzgD9QQfRGpDr3HkVwJ+oTsJM=;
-        b=FPl5tfL7lR79qOuq8ouQIzTQkqMz+6N5tyGfstDkLEonxYFppaHWZsx3Dv166dMnTh
-         4y6WLDwFgb3CEyjEUOMajKvPn4wESs4rL4oc+u35vTvUJCQM9IK+uK09qcBy6sn6nf2a
-         oXznia0RI4UdR0SAERHcX/gyrfplUiq9bmEbAyI8xIhLycHICcIdA7XWPCv6DJ+ZJ+jO
-         N9op4qX8MkSCL3+zZ8hHHC4sA+TilBouRLqA7WqU1IJdxhlpWmlo9OzaPmPfRdOalKmQ
-         6P5UgcrhietB/jLO9zpryj4rWHSomUHyO6I9aahz0D8WyPz0sy7eqVGbVKDfpgD/ydhD
-         2Twg==
-X-Gm-Message-State: ANoB5pmm2YINkpDBnx4puYutkPBlxwrlOdclQwppmsk8zRHbNQeBW/aD
-        41/ELWrxq8vvcO5v5FXz65iQMjgRK8AgMsN9Z5cAfg==
-X-Google-Smtp-Source: AA0mqf7xU30UgM7K9HH3CgKT5DUoABhrQKkZDM5aW633/AexSv9WURbogF6S7bzIJAeyMsFUa8dQayscJW9nPAPGJzQ=
-X-Received: by 2002:a17:90a:4ecf:b0:219:c638:b718 with SMTP id
- v15-20020a17090a4ecf00b00219c638b718mr51539pjl.143.1670883551932; Mon, 12 Dec
- 2022 14:19:11 -0800 (PST)
+        bh=mzGWl9NbNab0/cvXriuWvS+/VwjtyPgYG+89ik87v1k=;
+        b=ns+eRXy6on2sBP+zlxHdEIBLyE1c8F6Un8Zd6oWSs/bhxroCFEX/COTORQNg4aKIw8
+         HJ8KkEYsPHAqy67+icP+4YMmUbUpV81HbQZUPK84F579F1J/iJC74ytP0RZk9EYK3GjD
+         gamKkmZoLa5xioCC4VwmNEU4SnfHIwMmSaen/uKM10dkRINsBx5S74GOubymYc0v9xYv
+         5KIxasyu4BvO7FgHod/jw+UX4Y7soOe4WFzIe7Lrl6fCzt+KgTN0VK/fqx0PpYufJtOo
+         6ooNfq9tCTBpBdz7PQPO5m56IXI18COx+z5YCBgB0VQxqy0OwsK5kfcowW6ogBvNuwlc
+         rAIg==
+X-Gm-Message-State: ANoB5pmyf5+A3aBbj0oKdIMDF8P19jQKiLrlFlfL1zVFrImNKjzCv7zx
+        MH4nUSDvnAqKwlGAQMmexOaeBAit4UZWTV/4dQE=
+X-Google-Smtp-Source: AA0mqf5AQvhfFF0eknZ3EkeuoiFDWyTCzTrWUL7QtzqX7Wu/L0Laykp9ma9U3vKOsByuEUeIs+p8jBIL5D/LnsePgHk=
+X-Received: by 2002:a17:90b:3d89:b0:219:ef00:9ffe with SMTP id
+ pq9-20020a17090b3d8900b00219ef009ffemr67918pjb.106.1670884534849; Mon, 12 Dec
+ 2022 14:35:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20221130082313.3241517-1-tj@kernel.org> <20221130082313.3241517-32-tj@kernel.org>
- <Y5c0qEuyn8cAvLGQ@hirez.programming.kicks-ass.net>
-In-Reply-To: <Y5c0qEuyn8cAvLGQ@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Mon, 12 Dec 2022 14:18:59 -0800
-Message-ID: <CABk29Nu5WiCmhNN2jZrTShELbCDOYUziUeW5xojkwB83R+VzEQ@mail.gmail.com>
-Subject: Re: [PATCH 31/31] sched_ext: Add a rust userspace hybrid example scheduler
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        brho@google.com, pjt@google.com, derkling@google.com,
-        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
-        dskarlat@cs.cmu.edu, riel@surriel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com, Peter Oskolkov <posk@google.com>
+References: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
+ <7c16cafe96c47ff5234fbb980df9d3e3d48a0296.1670778652.git.david.keisarschm@mail.huji.ac.il>
+ <01ade45b-8ca6-d584-199b-a06778038356@meta.com>
+In-Reply-To: <01ade45b-8ca6-d584-199b-a06778038356@meta.com>
+From:   Amit Klein <aksecurity@gmail.com>
+Date:   Tue, 13 Dec 2022 00:35:24 +0200
+Message-ID: <CANEQ_+KDR+kC=hYhTtNeQuSTp+-Dg0tRx-9MzJKQ2zH++fBGyQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] Replace invocation of weak PRNG in kernel/bpf/core.c
+To:     Yonghong Song <yhs@meta.com>
+Cc:     david.keisarschm@mail.huji.ac.il,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, ilay.bahat1@gmail.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,34 +82,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey Peter,
-
-On Mon, Dec 12, 2022 at 6:03 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Mon, Dec 12, 2022 at 8:03 PM Yonghong Song <yhs@meta.com> wrote:
 >
-> On Tue, Nov 29, 2022 at 10:23:13PM -1000, Tejun Heo wrote:
-> > From: Dan Schatzberg <dschatzberg@meta.com>
+>
+>
+> On 12/11/22 2:16 PM, david.keisarschm@mail.huji.ac.il wrote:
+> > From: David <david.keisarschm@mail.huji.ac.il>
 > >
-> > Atropos is a multi-domain BPF / userspace hybrid scheduler where the BPF
-> > part does simple round robin in each domain and the userspace part
-> > calculates the load factor of each domain and tells the BPF part how to load
-> > balance the domains.
+> > We changed the invocation of
+> >   prandom_u32_state to get_random_u32.
+> >   We deleted the maintained state,
+> >   which was a CPU-variable,
+> >   since get_random_u32 maintains its own CPU-variable.
+> >   We also deleted the state initializer,
+> >   since it is not needed anymore.
 > >
-> > This scheduler demonstrates dividing scheduling logic between BPF and
-> > userspace and using rust to build the userspace part.
+> > Signed-off-by: David <david.keisarschm@mail.huji.ac.il>
+> > ---
+> >   include/linux/bpf.h   |  1 -
+> >   kernel/bpf/core.c     | 13 +------------
+> >   kernel/bpf/verifier.c |  2 --
+> >   net/core/filter.c     |  1 -
+> >   4 files changed, 1 insertion(+), 16 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+[...]
+> Please see the discussion here.
+> https://lore.kernel.org/bpf/87edtctz8t.fsf@toke.dk/
+> There is a performance concern with the above change.
 >
-> And here I am, speaking neither Rust nor BPF.
->
-> But really, having seen some of this I long for the UMCG patches -- that
-> at least was somewhat sane and trivially composes, unlike all this
-> madness.
 
-I wasn't sure if you were focusing specifically on how the BPF portion
-is implemented, or on UMCG vs sched_ext. For the latter, and ignoring
-the specifics of this example, the UMCG and sched_ext work are
-complementary, but not mutually exclusive. UMCG is about driving
-cooperative scheduling within a particular application. UMCG does not
-have control over or react to external preemption, nor does it make
-thread placement decisions. sched_ext is considering things more at
-the system level: arbitrating fairness and preemption between
-processes, deciding when and where threads run, etc., and also being
-able to take application-specific hints if desired.
+I see. How about using (in this instance only!) the SipHash-based
+solution which was the basis for prandom_u32() starting with commit
+c51f8f88d705 (v5.10-rc1) up until commit d4150779e60f (v5.19-rc1)?
+Copying the relevant snippets (minus comments, for brevity) from
+/lib/random32.c and /include/linux/prandom.h from that era (the 32
+random bits are generated by prandom_u32() at the bottom; I didn't
+bother with initialization, and I don't know if the per_cpu logic is
+needed here, or perhaps some other kind of locking, if any):
+
+
+#define PRND_SIPROUND(v0, v1, v2, v3) ( \
+v0 += v1, v1 = rol32(v1, 5), v2 += v3, v3 = rol32(v3, 8), \
+v1 ^= v0, v0 = rol32(v0, 16), v3 ^= v2, \
+v0 += v3, v3 = rol32(v3, 7), v2 += v1, v1 = rol32(v1, 13), \
+v3 ^= v0, v1 ^= v2, v2 = rol32(v2, 16) \
+
+)
+
+struct siprand_state {
+    unsigned long v0;
+    unsigned long v1;
+    unsigned long v2;
+    unsigned long v3;
+};
+
+static DEFINE_PER_CPU(struct siprand_state, net_rand_state)
+__latent_entropy;   // do we actually need this? -AK
+
+static inline u32 siprand_u32(struct siprand_state *s)
+{
+    unsigned long v0 = s->v0, v1 = s->v1, v2 = s->v2, v3 = s->v3;
+
+    PRND_SIPROUND(v0, v1, v2, v3);
+    PRND_SIPROUND(v0, v1, v2, v3);
+    s->v0 = v0;  s->v1 = v1;  s->v2 = v2;  s->v3 = v3;
+    return v1 + v3;
+}
+
+
+u32 prandom_u32(void)
+{
+    struct siprand_state *state = get_cpu_ptr(&net_rand_state);
+    u32 res = siprand_u32(state);
+
+    trace_prandom_u32(res);
+    put_cpu_ptr(&net_rand_state);
+    return res;
+}
+EXPORT_SYMBOL(prandom_u32);
