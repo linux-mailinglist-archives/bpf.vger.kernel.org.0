@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E9B64A835
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 20:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797DF64A84F
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 20:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbiLLTpk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 14:45:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
+        id S233049AbiLLT6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 14:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232450AbiLLTpk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 14:45:40 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030AC11461;
-        Mon, 12 Dec 2022 11:45:39 -0800 (PST)
+        with ESMTP id S232930AbiLLT6W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 14:58:22 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF14917431;
+        Mon, 12 Dec 2022 11:58:20 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BC50BB80E05;
-        Mon, 12 Dec 2022 19:45:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49ED6C433F0;
-        Mon, 12 Dec 2022 19:45:36 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 51F01B80DE1;
+        Mon, 12 Dec 2022 19:58:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE0F4C433D2;
+        Mon, 12 Dec 2022 19:58:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670874336;
-        bh=OsDBLlHaZh13anyxhYD8NWH+ASlzd43Kdbc8VEY6kgk=;
+        s=k20201202; t=1670875098;
+        bh=W06ornDnIgqPamggnn9sksOrET7i2brFvmdhKlkOwXw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PPNgg+ZpfBQhDSGzOEF/xH907Odul1VKVZcbcGZio+XiCH7k1F2wKUjPpHrhyoEgH
-         Nwy01EYCZqKppsWdKRSn++8Lhi10gDRv+4wQxaatkpD+FQFWUNCgLe/tVCNovjnH+p
-         jiH82WCfCVgl79QCOFcMDMGApTtia5EjQ9VQJ9mLLvhei8v7w5z7/APVZRKNE4kl06
-         kEo5IpGsErdcKNNnzPv+oCZBW/x0VYcgdBsv7IzEl5/5tgTO7EXWpbPGgWGSsLxYQX
-         tPdnmkvHJqlnHreRyh7yiUZBmh+6Bl6h6q1f3IaJJY1whDZPaIuNf/7gKevlZ7yj6r
-         p/oGLUDhqQAhw==
+        b=jdVihdn6NUPo8d5PmHzGHv3RaQ5Z5WZbZ6GwcsRHxY1FjMXjLqETx/eiP3KDqOPHD
+         qU705Pzncmk13DkW/jeJQc1YaGciwNkXz3fnsoVhli9crX1gEd5EYcOCmf8hH4BcFX
+         Tuz21QhIxiORfBL9rL5a/sel8QznwA3PCSoxuiZgZh7x0MmHNMrZqhgQmq3xwWoGgQ
+         TGqcaKhdtLr1b2PXy3Ibe0cqUOc/gaatFy85LI+ymT+3D6vh28XxIP28JKmsXHEqK5
+         aR8LgvAqADKu4cIq/VRnDxjnyyn7oJFgImvnIjx2JtoIwN0cJWJBb3ncTPgdgxof07
+         Z7ddzqmJZIcYA==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C3E5140483; Mon, 12 Dec 2022 16:45:33 -0300 (-03)
-Date:   Mon, 12 Dec 2022 16:45:33 -0300
+        id DA32C40483; Mon, 12 Dec 2022 16:58:14 -0300 (-03)
+Date:   Mon, 12 Dec 2022 16:58:14 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Namhyung Kim <namhyung@kernel.org>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
@@ -43,17 +43,14 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
         Blake Jones <blakejones@google.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/4] perf lock contention: Add lock_data.h for common data
-Message-ID: <Y5eE3Udv03uM4zhQ@kernel.org>
+Subject: Re: [PATCH 0/4] perf lock contention: Support task/addr aggregation
+ mode (v1)
+Message-ID: <Y5eH1o/NXz4oxTpQ@kernel.org>
 References: <20221209190727.759804-1-namhyung@kernel.org>
- <20221209190727.759804-2-namhyung@kernel.org>
- <Y5eEJd/AhSzUfILO@kernel.org>
- <Y5eEbxVOHaUPw9UI@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Y5eEbxVOHaUPw9UI@kernel.org>
+In-Reply-To: <20221209190727.759804-1-namhyung@kernel.org>
 X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -64,84 +61,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Dec 12, 2022 at 04:43:43PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, Dec 12, 2022 at 04:42:30PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Fri, Dec 09, 2022 at 11:07:24AM -0800, Namhyung Kim escreveu:
-> > > Accessing BPF maps should use the same data types.  Add bpf_skel/lock_data.h
-> > > to define the common data structures.  No functional changes.
-> > 
-> > You forgot to update one of the stack_id users, that field got renamed:
-> > 
-> > util/bpf_skel/lock_contention.bpf.c:144:6: error: no member named 'stack_id' in 'struct contention_key'
-> >         key.stack_id = pelem->stack_id;
-> >         ~~~ ^
-> > 1 error generated.
-> > make[2]: *** [Makefile.perf:1075: /tmp/build/perf/util/bpf_skel/.tmp/lock_contention.bpf.o] Error 1
-> > make[1]: *** [Makefile.perf:236: sub-make] Error 2
-> > make: *** [Makefile:113: install-bin] Error 2
-> > make: Leaving directory '/var/home/acme/git/perf/tools/perf'
-> > 
-> >  Performance counter stats for 'make -k NO_LIBTRACEEVENT=1 BUILD_BPF_SKEL=1 CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin':
-> > 
-> >      7,005,216,342      cycles:u
-> >     11,851,225,594      instructions:u                   #    1.69  insn per cycle
-> > 
-> >        3.168945139 seconds time elapsed
-> > 
-> >        1.730964000 seconds user
-> >        1.578932000 seconds sys
-> > 
-> > 
-> > ⬢[acme@toolbox perf]$ git log --oneline -4
-> > f6e7a5f1db49dc8e (HEAD) perf lock contention: Add lock_data.h for common data
-> > 5d9b55713c5c037f perf python: Account for multiple words in CC
-> > d9078bf3f3320457 perf off_cpu: Fix a typo in BTF tracepoint name, it should be 'btf_trace_sched_switch'
-> > 3b7ea76f0f7844f5 perf test: Update event group check for support of uncore event
-> > ⬢[acme@toolbox perf]$
-> > 
-> > After some point it builds.
-> > 
-> > I'm fixing this to keep it bisectable.
+Em Fri, Dec 09, 2022 at 11:07:23AM -0800, Namhyung Kim escreveu:
+> Hello,
 > 
-> I folded this:
+> This patchset adds two more aggregation modes for perf lock contention.
+
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> The first one is the per-task mode with -t/--threads option.  The option
+> was there already but it remained broken with BPF for a while.  Now it
+> supports the output with and without BPF.
 > 
-> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> index 0f63cc28ccbabd21..64fd1e040ac86e58 100644
-> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> @@ -141,7 +141,7 @@ int contention_end(u64 *ctx)
->  
->  	duration = bpf_ktime_get_ns() - pelem->timestamp;
->  
-> -	key.stack_id = pelem->stack_id;
-> +	key.stack_or_task_id = pelem->stack_id;
->  	data = bpf_map_lookup_elem(&lock_stat, &key);
->  	if (!data) {
->  		struct contention_data first = {
+>   # perf lock contention -a -b -t -- sleep 1
+>    contended   total wait     max wait     avg wait          pid   comm
+> 
+>           11     11.85 us      2.23 us      1.08 us            0   swapper
+>            2     11.13 us     10.22 us      5.56 us       749053   ThreadPoolForeg
+>            1      8.15 us      8.15 us      8.15 us       321353   Chrome_ChildIOT
+>            2      2.73 us      1.77 us      1.37 us       320761   Chrome_ChildIOT
+>            1      1.40 us      1.40 us      1.40 us       320502   chrome
+>            1       379 ns       379 ns       379 ns       321227   chrome
+> 
+> The other one is the per-lock-instance mode with -l/--lock-addr option.
+> If the lock has a symbol, it will be displayed as well.
+> 
+>   # perf lock contention -a -b -l -- sleep 1
+>    contended   total wait     max wait     avg wait            address   symbol
+> 
+>            3      4.79 us      2.33 us      1.60 us   ffffffffbaed50c0   rcu_state
+>            4      4.19 us      1.62 us      1.05 us   ffffffffbae07a40   jiffies_lock
+>            1      1.94 us      1.94 us      1.94 us   ffff9262277861e0
+>            1       387 ns       387 ns       387 ns   ffff9260bfda4f60
+> 
+> It's based on the current acme/tmp.perf/core branch.
+> You can find the code in the 'perf/lock-con-aggr-v1' branch in
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+> Namhyung Kim (4):
+>   perf lock contention: Add lock_data.h for common data
+>   perf lock contention: Implement -t/--threads option for BPF
+>   perf lock contention: Add -l/--lock-addr option
+>   perf test: Update perf lock contention test
+> 
+>  tools/perf/Documentation/perf-lock.txt        |  4 +
+>  tools/perf/builtin-lock.c                     | 95 ++++++++++++++-----
+>  tools/perf/tests/shell/lock_contention.sh     | 48 ++++++++++
+>  tools/perf/util/bpf_lock_contention.c         | 72 ++++++++++----
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  | 67 +++++++++----
+>  tools/perf/util/bpf_skel/lock_data.h          | 30 ++++++
+>  tools/perf/util/lock-contention.h             |  1 +
+>  7 files changed, 255 insertions(+), 62 deletions(-)
+>  create mode 100644 tools/perf/util/bpf_skel/lock_data.h
+> 
+> 
+> base-commit: b22802e295a80ec16e355d7208d2fbbd7bbc1b7a
+> -- 
+> 2.39.0.rc1.256.g54fd8350bd-goog
 
+-- 
 
-And then fixed up this:
-
-Could not apply 3d4947c7bd10beba... perf lock contention: Implement -t/--threads option for BPF
-⬢[acme@toolbox perf]$
-⬢[acme@toolbox perf]$
-⬢[acme@toolbox perf]$ git diff
-diff --cc tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 64fd1e040ac86e58,cd405adcd252b82d..0000000000000000
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@@ -141,7 -168,13 +168,17 @@@ int contention_end(u64 *ctx
-
-        duration = bpf_ktime_get_ns() - pelem->timestamp;
-
-++<<<<<<< HEAD
- +      key.stack_or_task_id = pelem->stack_id;
-++=======
-+       if (aggr_mode == LOCK_AGGR_CALLER) {
-+               key.stack_or_task_id = pelem->stack_id;
-+       } else {
-+               key.stack_or_task_id = pid;
-+               update_task_data(pid);
-+       }
-+
-++>>>>>>> 3d4947c7bd10beba (perf lock contention: Implement -t/--threads option for BPF)
+- Arnaldo
