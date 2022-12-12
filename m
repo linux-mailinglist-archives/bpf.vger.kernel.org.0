@@ -2,194 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B5464A3A5
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 15:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A564C64A2C7
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 15:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbiLLOpQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 09:45:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
+        id S232088AbiLLOD7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 09:03:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbiLLOpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 09:45:16 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4666424;
-        Mon, 12 Dec 2022 06:45:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A05C16106F;
-        Mon, 12 Dec 2022 14:45:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F50EC433EF;
-        Mon, 12 Dec 2022 14:45:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670856314;
-        bh=EvEZt8wVyoka0T/oimTSBNVo3axkDhbQxVc0X3rYsJ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W/Q2oUGaROnOpni/I0RkyJAOhFyqcVUG+jQrSD0pua65VfaYxN1cxW13gI/ZE2Df0
-         hqJ+FTsrX4nTLPIraWjI8+ciLB3AnnDvRb9iki+Nl0DfdbndrnoEx2eIVTyHX4cMav
-         CtbI6e3teGULTdJMi6ohbudqgmmP8QXvEfQs/3UdGwygzi/YE0bIRJ+EqQBTSfL4CK
-         /u/8NXmV1dLNnCvZbHdIVXLPD/dl8UXX+6xRJtGuIjCa5gSq7mV+fpqapvi0NOAFVM
-         /kD37Xp8kFvJJL/BStqs79U5RA0Yl4WaQqlcTCIgl5d9rBEDPtIunCNXpunke8ugNu
-         Ew6QZqBO4xFIQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 31EF140483; Mon, 12 Dec 2022 10:51:06 -0300 (-03)
-Date:   Mon, 12 Dec 2022 10:51:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 2/3] perf build: Use libtraceevent from the system
-Message-ID: <Y5cxyk3OdgFXlyhS@kernel.org>
-References: <Y491d1wEW4TfUi5f@kernel.org>
- <Y4921D+36UGdhK92@kernel.org>
- <Y494TNa0ZyPH9YSD@kernel.org>
- <Y498YP2N3gvFSr/X@kernel.org>
- <C9F248C8-AF8D-40A1-A1AD-BCC39FBA01C7@linux.vnet.ibm.com>
- <Y5DNBZNC5rBBqlJW@kernel.org>
- <36CD1041-0CAE-41C1-8086-C17854531B3E@linux.vnet.ibm.com>
- <Y5JfgyN59dSeKbUP@kernel.org>
- <Y5Jl8MeW90DXy1wT@kernel.org>
- <8F6F0C27-53F3-4837-A19C-845768253249@linux.vnet.ibm.com>
+        with ESMTP id S231779AbiLLOD7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 09:03:59 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D963210A5;
+        Mon, 12 Dec 2022 06:03:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zo/qFnAsqAdA6EwHKj640zNf/rPC7C+O0LLjxizZbPo=; b=DShHQBeT/EtTb+uCAKmtYRUIZb
+        zisvhtLlckkieQb8GDwzzSOEo0a1WLzx32KL7N2wVM/qhdpWOG9BU2Sqlaixg77WO+E9jaDJ9+sbj
+        mBFzoxtXlpO2mFyZSDyjzIEjNM3rOfg7rgTP5pmkWa62F6MYlktm96GeKtADv/loadzHsRnjOwNdV
+        5uu5nqQxJ52LatHiXUKqIzTTOprO4sx327wlZ+gCzsEtr2K3MVUK4g5rHmglXn0ajdDklUDR5fsTC
+        gZgl2VDa0v+pBAvOuxEb5JDt45LwENVOtU7JdGTYtFuQ/cDCv+K3yBdwioDb3yP7G9El7WO/Y0EPB
+        7eMifSgw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1p4jOv-009n2o-7X; Mon, 12 Dec 2022 14:03:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EDBAA300299;
+        Mon, 12 Dec 2022 15:03:20 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D4C2C2024870B; Mon, 12 Dec 2022 15:03:20 +0100 (CET)
+Date:   Mon, 12 Dec 2022 15:03:20 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+        pjt@google.com, derkling@google.com, haoluo@google.com,
+        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+        riel@surriel.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 31/31] sched_ext: Add a rust userspace hybrid example
+ scheduler
+Message-ID: <Y5c0qEuyn8cAvLGQ@hirez.programming.kicks-ass.net>
+References: <20221130082313.3241517-1-tj@kernel.org>
+ <20221130082313.3241517-32-tj@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8F6F0C27-53F3-4837-A19C-845768253249@linux.vnet.ibm.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221130082313.3241517-32-tj@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Dec 09, 2022 at 12:04:18PM +0530, Athira Rajeev escreveu:
+On Tue, Nov 29, 2022 at 10:23:13PM -1000, Tejun Heo wrote:
+> From: Dan Schatzberg <dschatzberg@meta.com>
 > 
+> Atropos is a multi-domain BPF / userspace hybrid scheduler where the BPF
+> part does simple round robin in each domain and the userspace part
+> calculates the load factor of each domain and tells the BPF part how to load
+> balance the domains.
 > 
-> > On 09-Dec-2022, at 4:02 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > 
-> > Em Thu, Dec 08, 2022 at 07:04:52PM -0300, Arnaldo Carvalho de Melo escreveu:
-> >> Em Thu, Dec 08, 2022 at 12:21:20PM +0530, Athira Rajeev escreveu:
-> >>>> On 07-Dec-2022, at 10:57 PM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >>>> Can you try again? tmp.perf/core? That "tmp." part means its a force
-> >>>> pushed branch, so I just force pushed with some arch specific fixes, now
-> >>>> I'm down to (removing the successful builds and unrelated failures, now
-> >>>> related to libbpf's F_DUPFD_CLOEXEC kaboom):
-> >> 
-> >>> Ok Arnaldo, Sure, I will check with updated branch
-> >> 
-> >>>>  5     7.38 fedora:34                     : FAIL gcc version 11.3.1 20220421 (Red Hat 11.3.1-2) (GCC)
-> >>>>   /git/perf-6.1.0-rc6/tools/perf/util/evsel.c: In function ‘evsel__rawptr’:
-> >>>>   /git/perf-6.1.0-rc6/tools/perf/util/evsel.c:2787:36: error: ‘TEP_FIELD_IS_RELATIVE’ undeclared (first use in this function); did you mean ‘TEP_FIELD_IS_FLAG’?
-> >>>>    2787 |                 if (field->flags & TEP_FIELD_IS_RELATIVE)
-> >>>>         |                                    ^~~~~~~~~~~~~~~~~~~~~
-> >>>>         |                                    TEP_FIELD_IS_FLAG
-> >> 
-> >>> I observed same issue as updated here: 
-> >>> https://lore.kernel.org/lkml/10476A85-3F75-4C91-AB5B-E5B136F31297@linux.vnet.ibm.com/
-> >> 
-> >>> Looks like TEP_FIELD_IS_RELATIVE is not defined in header file of the system installed version.
-> >>> whereas it is there in header file in tools/lib/traceevent
-> >> 
-> >>> # grep TEP_FIELD_IS_RELATIVE /usr/include/traceevent/event-parse.h
-> >>> # grep TEP_FIELD_IS_RELATIVE ../lib/traceevent/event-parse.h
-> >>> 	TEP_FIELD_IS_RELATIVE	= 256,
-> >> 
-> >> Right, I had noticed that as well, so as a prep patch I'm adding the
-> >> patch below, before Ian's. Please check and provide an
-> >> Acked-by/Tested-by/Reviewed-by if possible.
-> > 
-> > I ended up with the one below, _after_ Ian's patch as I had some trouble grafting
-> > it before and had already tested it this way multiple times, I'm pushing
-> > this to tmp/perf.core.
-> > 
-> > - Arnaldo
-> 
-> 
-> Hi Arnaldo, Ian
-> 
-> Thanks for the fixes.
-> 
-> Since we changed “CONFIG_TRACEEVENT” to “CONFIG_LIBTRACEEVENT”, 
-> below change is also needed in “arch/powerpc/util/Build”
-> 
-> diff --git a/tools/perf/arch/powerpc/util/Build b/tools/perf/arch/powerpc/util/Build
-> index 71e57f28abda..9889245c555c 100644
-> --- a/tools/perf/arch/powerpc/util/Build
-> +++ b/tools/perf/arch/powerpc/util/Build
-> @@ -1,5 +1,5 @@
->  perf-y += header.o
-> -perf-$(CONFIG_TRACEEVENT) += kvm-stat.o
-> +perf-$(CONFIG_LIBTRACEEVENT) += kvm-stat.o
->  perf-y += perf_regs.o
->  perf-y += mem-events.o
->  perf-y += sym-handling.o
-> 
-> With this change, I could successfully compile in these environment:
-> - Without libtraceevent-devel installed
-> - With libtraceevent-devel installed
-> - With “make NO_LIBTRACEEVENT=1”
-> 
-> With above change,
-> Acked-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+> This scheduler demonstrates dividing scheduling logic between BPF and
+> userspace and using rust to build the userspace part.
 
-I did that and the same thing for other architectures, thanks for
-testing!
+And here I am, speaking neither Rust nor BPF.
 
-I'll now give a try at implementing it without
-tools/build/feature/test-libtraceevent-tep_field_is_relative.c, using
-just the version of libtraceevent, as Ian suggested.
+But really, having seen some of this I long for the UMCG patches -- that
+at least was somewhat sane and trivially composes, unlike all this
+madness.
 
-It would be great if you could test it again then,
-
-Thanks,
-
-- Arnaldo
-
-
-diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
-index 88553c578ed7a1c4..78ef7115be3d91a7 100644
---- a/tools/perf/arch/arm64/util/Build
-+++ b/tools/perf/arch/arm64/util/Build
-@@ -3,7 +3,7 @@ perf-y += machine.o
- perf-y += perf_regs.o
- perf-y += tsc.o
- perf-y += pmu.o
--perf-$(CONFIG_TRACEEVENT) += kvm-stat.o
-+perf-$(CONFIG_LIBTRACEEVENT) += kvm-stat.o
- perf-$(CONFIG_DWARF)     += dwarf-regs.o
- perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
- perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
-diff --git a/tools/perf/arch/powerpc/util/Build b/tools/perf/arch/powerpc/util/Build
-index 71e57f28abdac7e9..9889245c555c4cfb 100644
---- a/tools/perf/arch/powerpc/util/Build
-+++ b/tools/perf/arch/powerpc/util/Build
-@@ -1,5 +1,5 @@
- perf-y += header.o
--perf-$(CONFIG_TRACEEVENT) += kvm-stat.o
-+perf-$(CONFIG_LIBTRACEEVENT) += kvm-stat.o
- perf-y += perf_regs.o
- perf-y += mem-events.o
- perf-y += sym-handling.o
-diff --git a/tools/perf/arch/s390/util/Build b/tools/perf/arch/s390/util/Build
-index aa8a5f05c9cb4706..db68840869979f2c 100644
---- a/tools/perf/arch/s390/util/Build
-+++ b/tools/perf/arch/s390/util/Build
-@@ -1,5 +1,5 @@
- perf-y += header.o
--perf-$(CONFIG_TRACEEVENT) += kvm-stat.o
-+perf-$(CONFIG_LIBTRACEEVENT) += kvm-stat.o
- perf-y += perf_regs.o
- 
- perf-$(CONFIG_DWARF) += dwarf-regs.o
