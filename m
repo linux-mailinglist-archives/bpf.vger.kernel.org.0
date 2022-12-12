@@ -2,220 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F9D64A759
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 19:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9E764A760
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 19:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbiLLSnu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 13:43:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
+        id S233431AbiLLSqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 13:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbiLLSnO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 13:43:14 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4058E193E3;
-        Mon, 12 Dec 2022 10:39:51 -0800 (PST)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BCHZ8Tm016782;
-        Mon, 12 Dec 2022 10:39:32 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=Fh53JQEotwtK+of5rYpbc6JbinAczzB1mmufMEect6A=;
- b=ahkNBpMICisU0Z1gVgDGNVhtSNrIpHXlNWraEJaOmsvNEPjcgf6t8isvezB/G401pUxG
- eCmp7CumikEkifF0P4ll9HL3ViSqMPLb+bpgyrDkIFg5JuAlNVeauZuFcIGfcjdbH2pR
- RIvwRo8HOx8yXtArxTEkYVw4kKWPrwTf2SGlHLmPPXWF3fG4Iop757bNbuWbRUXB6sAF
- VzN5P2vsSWhOMh7JaenKBpDaCp1i6S68a3uZvI5L8EYLTXxgMfGpkRX+6cmG4bOH9STi
- +OyVJBBi2otThs5baEHMwa//VjFRVY7gi63Ekp8RhPOXzIsX1Y3+rXzwMqhl+Fkism/g ug== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3me5fqtcp2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Dec 2022 10:39:32 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HgxtRh06C2Ua3E0wuu8Ny6hMQGSuWIElZ04HlGK9X0kGUNgR3sbsl4Mh5/I6MKKxXWraNEVcZAMrZJGJzt+dTSIaOnX+WKPPTuXImBwpSn0m2SdfZwkiTUgwQFAV2wtQ453sMXzlI1vJteWhvEyBsXYMJ2pZAYAt05j/e0rA30H7rMc9ZeA2cqjr22kkok4aHeweB99yGpZ1ldleVnZIT7ry6839EWXdb6tA6hKXBHZ0Yk9sS4ND/jtUD4EefeEBD+qX0aP55Et7iMl4SBvPfaOcLXl6Wijt7B1cO57NIU8I7hBSkwbqlSfJGNmZaoiccg0/wSuIq4Ke457q1Qk9lA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Fh53JQEotwtK+of5rYpbc6JbinAczzB1mmufMEect6A=;
- b=h4j7QYGosPU8POUFdANGebnWqnfwizp6LBk7ZdCKaqeH54x+p0wiwMiRu7ZfNPajyxkpWHor/3qcb9ccCgAhw23GL187br9w3hzQbYJwVCwfmP42tadhyz/JCyqgSZk72t/sADVouW+Ld0uiS5Sv/O60GGf9rMbyFAvpnNs+XvoaKtl3VJlxgMfYe/Qwrna4PPOu2HUF1gFINf1QXYM+Hr85BY/tbK7iziXc7y3rLEy9lYLB3WN2LA0YHJmPalLi+xW5EOxdizBCh3/pjLiW2Uyzu8QrMjDF5rAe+ns08SKJPLbMHtCV2TXl9WBznFQtmANOPdw4MMsMF//8cdPklg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
- by BN8PR15MB3345.namprd15.prod.outlook.com (2603:10b6:408:73::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.19; Mon, 12 Dec
- 2022 18:39:30 +0000
-Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
- ([fe80::f462:bf61:5f19:e2e9]) by DM5PR1501MB2055.namprd15.prod.outlook.com
- ([fe80::f462:bf61:5f19:e2e9%4]) with mapi id 15.20.5880.019; Mon, 12 Dec 2022
- 18:39:30 +0000
-Message-ID: <43e6e9ec-3a0c-7238-30b2-daa7e71b169b@meta.com>
-Date:   Mon, 12 Dec 2022 10:39:26 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.5.1
-Subject: Re: [PATCH hid v12 05/15] HID: bpf jmp table: simplify the logic of
- cleaning up programs
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20221103155756.687789-1-benjamin.tissoires@redhat.com>
- <20221103155756.687789-6-benjamin.tissoires@redhat.com>
- <CAO-hwJ+fYvpD5zbDNq-f-gUEVpxsrdJ7K-ceNd37nLxzBxYL+g@mail.gmail.com>
- <53f21d98-4ee6-c0e9-1c0a-5fae23c1b9a8@meta.com> <Y5dxAz3QTQnaB71Q@kroah.com>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <Y5dxAz3QTQnaB71Q@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR06CA0042.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::19) To DM5PR1501MB2055.namprd15.prod.outlook.com
- (2603:10b6:4:a1::13)
+        with ESMTP id S233219AbiLLSpu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 13:45:50 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595F9C18
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 10:45:10 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id r26so14241912edc.10
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 10:45:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IiZmN4ZjJSXFzf25rnM53KhSNg/9LOlJ5n6URUAfv/c=;
+        b=ptz90eBbnCaTYqsujhS5PzGy3XuxuW+hjWG/VP0TXGprzZ0Julhgl3FgPYtKQnIMfz
+         UPlzVXfSCs+EPZeKdPksRqpseP5lAF+u7YRPZvY5Ilqn0hdOxd9OYzUwY7Hi3/fi41h6
+         F2SQWG8+JlhEdsFxcWXQCOMR+0nRIq7JmOmwtbLmoyIXbp0gZo4FLZQonVamacww8ljQ
+         9ujTjsJTwjxQ4qoCFbNiS+3vcHmtCqIfWz4TgzgVugwlEqv+tRa8H10/OHHwP01TfT77
+         UmrHdzIr2c+B/GUAYVxC31vl/mIDtTQldG9BmhiJC1bJ91u+g96FAqC07VYTy/mneVZ7
+         moJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IiZmN4ZjJSXFzf25rnM53KhSNg/9LOlJ5n6URUAfv/c=;
+        b=k+lV1ZYonj+65HIcrr2lSmqO3g12yb2hnwWrYk1lRI6TAQm/EixDT+dg7hDi96D1eL
+         TOte9L+FZ0qoXdiX+0UJlxi+dW1178ld2Q3K6Y1OqwJHKzE6ppCzdzMlmpYNpE/rJd+j
+         3zoMzD1WexfZmV3GSiMqJk4SebV+RTZHEwmtz5nhjUsQhCjpaq9XFPjumVYLjOEOTHFT
+         tsKNYBqsNX77IY9gQucEJACDo1aZSoNmfKgI2WmR9o77S7iGS5hwdLzMzntwslWH6yke
+         04QYEayU2pfzbWFhbb3D2k1OWFdNRqQyhjM4PvR2gdj2a2Y/1SR5YzmA5IUg6hUEAZ80
+         mKNw==
+X-Gm-Message-State: ANoB5pnis5cHxs8SXhk7jmRDKJlB1GEtAOVrpyBr8PYVrm9H2TxvF6u0
+        Of5WFnz91AokjaXLNQdedKMlMyatpLhLg/FySmo=
+X-Google-Smtp-Source: AA0mqf4YTdlJoC+EpAE/4L9H7dBoksEj9zmxvsDvnUdmu/IrOOgUS72YByoujjxksMGYg6jOPkiDlc7SWbVgXgnsq6E=
+X-Received: by 2002:aa7:cd05:0:b0:46c:e558:ce90 with SMTP id
+ b5-20020aa7cd05000000b0046ce558ce90mr13219901edw.81.1670870708802; Mon, 12
+ Dec 2022 10:45:08 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR1501MB2055:EE_|BN8PR15MB3345:EE_
-X-MS-Office365-Filtering-Correlation-Id: e3af75dc-6d63-418a-11e6-08dadc703483
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DdrgmiKkDj+hA3j6agua0d358FOxzuxSJ86vQEffJFzoQdMrlbIDkHQ5zD28efr002DrHCDL0Vmp/tCAfd5LQt4fT3jR36+Oh9KZ2gE7ohPqCCZCeB0jCc48MZiWDQeCLytYMWnUZ9YfMKwqcm2hytaD4vkls+pTb1rFVRGumPL/hgDp93wBLIxf0dr8lsU0bAqRwJnu4wvDrlQxDWGgP9oJK0fbzZuBCJDsXxR/oap6zpy/xQbyCVvyLJyFKfcCn+vJ2gpphYm8gHvZbY7tpU4zI8aiC4ENzSftxQNqsZwaIrKaKw0qo9RGqhN8BYURn5O+X49225nSuNhU+iF0vkYDBTxCL21/wH8mBh/VLp9ntW0yaGX2v0jgOC+YdkZfa5gc5qugSn7CMEpF1z6e0B3Z1FLwiC7bxFCe64xeE+JyBzWhy15h8VcLUPmXbesPsPy4XQelfarfWcsjY51QUZbLl8F0OtMBTG0s4NfOdpv5C6LjZKphuc+Jn0ZXTnLjTrr2GGyCBTt+g/jRDxkdIgbkF4lGU+KkFF9/gyGt4u7kH8LpbUfZ3Dp07iJYhN978FEpueGABBF+LzrD9orDorglXbO8ZHcY1NrE5FluuWfbzxB53TTfqjevbUmsZRaMc4PxNrtGLcZc54+GmqPKphEGtOEDaNTlk+CajsEewD/nSTFoZdoqoeWYT9SebjoA+kzAT60Napb5kW1CVVHdyaUW+fGwryId7RW73afMjOc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(396003)(376002)(39860400002)(346002)(136003)(451199015)(31696002)(36756003)(41300700001)(8936002)(86362001)(5660300002)(7416002)(6512007)(6916009)(6486002)(478600001)(66946007)(66556008)(4326008)(6506007)(8676002)(66476007)(53546011)(6666004)(316002)(54906003)(31686004)(83380400001)(38100700002)(186003)(2906002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bTd4RjlRQkdZUS9RaEYyOWYzZmtERmljdHFsOXNLdkFaY3J3Q3hJcHpPWURM?=
- =?utf-8?B?NGs2d3ZsZUNscmUySDB1MEFVUFBoWWR2NnpGTmh6RFAxdlYzdkFvckEzYUlH?=
- =?utf-8?B?MlI2TllVVVRhc3BCNVhkdExieVMzcEswaFpES1h3OThVRDVOamlSZ1RqbjFY?=
- =?utf-8?B?VjZHajY4U2tsVFR3VlE5RFhTTTRtMXNiZXA1YUZFRi9tVmg4QkVJN0R5TEZB?=
- =?utf-8?B?TVpVQlpycFRlSW9tN1AwUnFTQmZ0WmN5aEFSOFB1U1BtTnp6d0ZhZTR6U282?=
- =?utf-8?B?dXYvUWJzRlI1aU11VkdFWUNJTzFZaXB3KzYvekRXVTJ5ZmVXRTNHdEtkOXow?=
- =?utf-8?B?WGdNWER3U0I0czZtblIwMkkzWjFlT1VPTGw3UVNZZXlDN0VZOWVkQ1A1dll6?=
- =?utf-8?B?cDFTV2NpR0Z4YU8xd1h4Y2dzQW1iQTh1MXRHMGhrbm1rR0Z6Nk5vbm56YW41?=
- =?utf-8?B?WU1reFJoK08rMWR0UklFRHhnZ3F0QzA5L1hTYS9yR2lwL3ZDVlYrdFBCaTV6?=
- =?utf-8?B?ckdJMm1kWHIxRjBoZ2xLd0oxYTNpbUNCTVdlbGdhSktBUnpOa1NCM0FCMFJn?=
- =?utf-8?B?amNmekgyWUJReVd1OGFIa2ZDSm1RVUF2dlR1Mng0aTFlYzVMeDdhcGtEcG9a?=
- =?utf-8?B?KzZXOXZQeXlBcm56MVYrQnAxNTVtSFJyL0MzT0s2eGZ1bm5lUmFCdjFtMGlq?=
- =?utf-8?B?a3IvMnNjQXgwTTFlNWYwVkVON3ZEMGRkQjdWSUFIeWtJWndCTlRvbW84SnZx?=
- =?utf-8?B?MHlkSTQ1RDF2WXVDaUtlQ09NaE9sblYzcXZqeHc1R0FpWHcwbDZjaGd4bjB4?=
- =?utf-8?B?QVZwYUxFdHcxajlZSXZSOXdBSWJacFd1SFVvNG9TbjdyVGl4SHBJb0dmdEFL?=
- =?utf-8?B?WXNEalJFaU5EaDl6ZlFRTXhScG5xZjhUSjdFVHlkVUNxeFg1QndaYVoyM0w3?=
- =?utf-8?B?aGhRVm0zaUg5VkxudWJobHEwdk9JSHRlRldiRklIMmZORkFiVDVtSnVUaXQw?=
- =?utf-8?B?L3k1TmsvZTFHK2lpMHRJNE5jVmI4MGp0ZkJkMmxaOWxrbjU3Z3FPZ1VaY2t3?=
- =?utf-8?B?dTROcDB4S3VZOE10ODZ3VlBkMDZZelhtdFBMa1U1Tk5YMTJpVDBDNitnVzVO?=
- =?utf-8?B?OGZpaDErS0RQK0dseVJudTFhRHBGcXFORlNlS2lTb1NnekVqZlpHQWdxTWNJ?=
- =?utf-8?B?WnF5Mzg3WWswWFRJK1JoaWQreGZDR1FMK2NCdm9CcTFFL0lVRGtrUERBanNQ?=
- =?utf-8?B?TElpOVpuWEEwV3hzdG4zbmxabU40dTFlNXRaZERvZFluQTBuZGsrT2ZCdXFl?=
- =?utf-8?B?eTZ6SnhDNTg0NTJQb2duaExLbTVETlJnNnU0ZkQ2Q3VsM2xGVGNFQUlabGF6?=
- =?utf-8?B?TENtNlFqcTdUZlgyZG1USXczSW5wdU1BWnhSMURwTG1TWDFuS3c3UlZHTDdS?=
- =?utf-8?B?VU1nMkNodTVkUGtCYTBsN3RyQUxIT2RKZ2V3c0s1UWpmYzg0YUtNaUpVQVVx?=
- =?utf-8?B?NzlSaDAxNnlqSHRNMXRpMEVraFRrTzNFZU45QUJxSGFnOWJXdXFZdXhMdXZi?=
- =?utf-8?B?NGF6UUNqck1rSHdsMEcxSXJQNlkwZmg2aHU4Y2VyK0Rlc0IvWVdxbTB1ZENI?=
- =?utf-8?B?NXpweTZWd0lTY2JoazJEWFNCK0JWYmgyb0Iza2JlZ0w5Y3dDZ3dRVW5wbWIy?=
- =?utf-8?B?d3IyMng4d3ZyYi9zdTJPK25mSUkrY3lub2dQUGRlRFViS2JXSE4wdFlMelVQ?=
- =?utf-8?B?cDVxa0lES1doZ0xjTzl1d3NBNVVrWVZpNmYvMGJUQWRwOGdRWGQ5LzN4SXk1?=
- =?utf-8?B?cEpIMzZkY1NxR1QrcE5LY245ekNKcFhPRVlkeEp5eDlIQ05renMvMVBmcW95?=
- =?utf-8?B?SHpxdWxjWWRWWDBMYlpLRGdXay83Y1VMOW1VTm9DYm5NYUJUVENKb0V4bE5C?=
- =?utf-8?B?MmpPdnJHbkFwL0dSZzJyaHExVS8vZU9aMUo2ZFNMNEpBRzJKUkdLcUgweFYw?=
- =?utf-8?B?VjFvbEJVVVM5NEpHWG1nVWZSdVAyTllkODF4ZjdVbFpENVVnbGpWUlpwLzNR?=
- =?utf-8?B?eUNpRDlsMmlaY0J0N2FLV3h4ZVNrSWFpRjBnQUc2MWgwSjVTZmtKb3Q3VXQ3?=
- =?utf-8?B?OHVQWS9yRjJZdXdudC9LYVpxR1cvZjFwQXhlN0ZSRTFGUEREK1hpWFU5OTN1?=
- =?utf-8?B?Qnc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3af75dc-6d63-418a-11e6-08dadc703483
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2022 18:39:30.2893
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 75yJb1k1o4Uype4ef81XUcuSHBzMwSyefCogzm8x9WGIXUQUhqBKZkX4o8+qRU4E
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB3345
-X-Proofpoint-ORIG-GUID: MptS_YHdlk6IkaA2r_eN2wa36u1fkoMX
-X-Proofpoint-GUID: MptS_YHdlk6IkaA2r_eN2wa36u1fkoMX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-12_02,2022-12-12_02,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20221208185703.2681797-1-andrii@kernel.org> <20221208185703.2681797-6-andrii@kernel.org>
+ <d22b1c3b25e1739a1318df1f619705a66d8f8584.camel@gmail.com>
+In-Reply-To: <d22b1c3b25e1739a1318df1f619705a66d8f8584.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 12 Dec 2022 10:44:55 -0800
+Message-ID: <CAEf4BzbG7ToGkam79zJWHQSVGz-L-f8wgmTEBqFBNGf53aGxFw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/6] libbpf: fix BTF-to-C converter's padding logic
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        =?UTF-8?Q?Per_Sundstr=C3=B6m_XP?= <per.xp.sundstrom@ericsson.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Dec 9, 2022 at 9:21 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> On Thu, 2022-12-08 at 10:57 -0800, Andrii Nakryiko wrote:
+> > Turns out that btf_dump API doesn't handle a bunch of tricky corner
+> > cases, as reported by Per, and further discovered using his testing
+> > Python script ([0]).
+> >
+> > This patch revamps btf_dump's padding logic significantly, making it
+> > more correct and also avoiding unnecessary explicit padding, where
+> > compiler would pad naturally. This overall topic turned out to be very
+> > tricky and subtle, there are lots of subtle corner cases. The comments
+> > in the code tries to give some clues, but comments themselves are
+> > supposed to be paired with good understanding of C alignment and paddin=
+g
+> > rules. Plus some experimentation to figure out subtle things like
+> > whether `long :0;` means that struct is now forced to be long-aligned
+> > (no, it's not, turns out).
+> >
+> > Anyways, Per's script, while not completely correct in some known
+> > situations, doesn't show any obvious cases where this logic breaks, so
+> > this is a nice improvement over the previous state of this logic.
+> >
+> > Some selftests had to be adjusted to accommodate better use of natural
+> > alignment rules, eliminating some unnecessary padding, or changing it t=
+o
+> > `type: 0;` alignment markers.
+> >
+> > Note also that for when we are in between bitfields, we emit explicit
+> > bit size, while otherwise we use `: 0`, this feels much more natural in
+> > practice.
+> >
+> > Next patch will add few more test cases, found through randomized Per's
+> > script.
+> >
+> >   [0] https://lore.kernel.org/bpf/85f83c333f5355c8ac026f835b18d15060725=
+fcb.camel@ericsson.com/
+> >
+> > Reported-by: Per Sundstr=C3=B6m XP <per.xp.sundstrom@ericsson.com>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  tools/lib/bpf/btf_dump.c                      | 169 +++++++++++++-----
+> >  .../bpf/progs/btf_dump_test_case_bitfields.c  |   2 +-
+> >  .../bpf/progs/btf_dump_test_case_padding.c    |  58 ++++--
+> >  3 files changed, 164 insertions(+), 65 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> > index 234e82334d56..d708452c9952 100644
+> > --- a/tools/lib/bpf/btf_dump.c
+> > +++ b/tools/lib/bpf/btf_dump.c
+> > @@ -830,6 +830,25 @@ static void btf_dump_emit_type(struct btf_dump *d,=
+ __u32 id, __u32 cont_id)
+> >       }
+> >  }
+> >
+> > +static int btf_natural_align_of(const struct btf *btf, __u32 id)
+> > +{
+> > +     const struct btf_type *t =3D btf__type_by_id(btf, id);
+> > +     int i, align, vlen;
+> > +     const struct btf_member *m;
+> > +
+> > +     if (!btf_is_composite(t))
+> > +             return btf__align_of(btf, id);
+> > +
+> > +     align =3D 1;
+> > +     m =3D btf_members(t);
+> > +     vlen =3D btf_vlen(t);
+> > +     for (i =3D 0; i < vlen; i++, m++) {
+> > +             align =3D max(align, btf_natural_align_of(btf, m->type));
+> > +     }
+> > +
+> > +     return align;
+> > +}
+> > +
+>
+> The btf_natural_align_of() recursively visits nested structures.
+> However, the "packed" relation is non-recursive (see entry for
+> "packed" in [1]). Such mismatch leads to the following example being
+> printed incorrectly:
+>
+>         struct a {
+>                 int x;
+>         };
+>
+>         struct b {
+>                 struct a a;
+>                 char c;
+>         } __attribute__((packed));
+>
+>         struct c {
+>                 struct b b1;
+>                 short a1;
+>                 struct b b2;
+>         };
+>
+> The bpftool output looks as follows:
+>
+>         struct a {
+>                 int x;
+>         };
+>
+>         struct b {
+>                 struct a a;
+>                 char c;
+>         } __attribute__((packed));
+>
+>         struct c {
+>                 struct b b1;
+>                 short: 0;
+>                 short a1;
+>                 struct b b2;
+>         } __attribute__((packed));
 
+Nice find, thank you! The fix is very simple:
 
-On 12/12/22 10:20 AM, Greg KH wrote:
-> On Mon, Dec 12, 2022 at 09:52:03AM -0800, Yonghong Song wrote:
->>
->>
->> On 12/12/22 9:02 AM, Benjamin Tissoires wrote:
->>> On Thu, Nov 3, 2022 at 4:58 PM Benjamin Tissoires
->>> <benjamin.tissoires@redhat.com> wrote:
->>>>
->>>> Kind of a hack, but works for now:
->>>>
->>>> Instead of listening for any close of eBPF program, we now
->>>> decrement the refcount when we insert it in our internal
->>>> map of fd progs.
->>>>
->>>> This is safe to do because:
->>>> - we listen to any call of destructor of programs
->>>> - when a program is being destroyed, we disable it by removing
->>>>     it from any RCU list used by any HID device (so it will never
->>>>     be called)
->>>> - we then trigger a job to cleanup the prog fd map, but we overwrite
->>>>     the removal of the elements to not do anything on the programs, just
->>>>     remove the allocated space
->>>>
->>>> This is better than previously because we can remove the map of known
->>>> programs and their usage count. We now rely on the refcount of
->>>> bpf, which has greater chances of being accurate.
->>>>
->>>> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
->>>>
->>>> ---
->>>
->>> So... I am a little bit embarrassed, but it turns out that this hack
->>> is not safe enough.
->>>
->>> If I compile the kernel with LLVM=1, the function
->>> bpf_prog_put_deferred() is optimized in a weird way: if we are not in
->>> irq, the function is inlined into __bpf_prog_put(), but if we are, the
->>> function is still kept around as it is called in a scheduled work
->>> item.
->>>
->>> This is something I completely overlooked: I assume that if the
->>> function would be inlined, the HID entrypoint BPF preloaded object
->>> would not be able to bind, thus deactivating HID-BPF safely. But if a
->>> function can be both inlined and not inlined, then I have no
->>> guarantees that my cleanup call will be called. Meaning that a HID
->>> device might believe there is still a bpf function to call. And things
->>> will get messy, with kernel crashes and others.
->>
->> You should not rely fentry to a static function. This is unstable
->> as compiler could inline it if that static function is called
->> directly. You could attach to a global function if it is not
->> compiled with lto.
-> 
-> But now that the kernel does support LTO, how can you be sure this will
-> always work properly?  The code author does not know if LTO will kick in
-> and optimize this away or not, that's the linker's job.
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index d708452c9952..d6fd93a57f11 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -843,7 +843,7 @@ static int btf_natural_align_of(const struct btf
+*btf, __u32 id)
+        m =3D btf_members(t);
+        vlen =3D btf_vlen(t);
+        for (i =3D 0; i < vlen; i++, m++) {
+-               align =3D max(align, btf_natural_align_of(btf, m->type));
++               align =3D max(align, btf__align_of(btf, m->type));
+        }
 
-Ya, that is right. So for in-kernel bpf programs, attaching to global
-functions are not safe either. For other not-in-kernel bpf programs, it
-may not work but that is user's responsibility to adjust properly
-(to different functions based on a particular build, etc.).
+I'll also add your example to selftests to make sure.
 
-> 
-> thanks,
-> 
-> greg k-h
+[...]
+
+>
+> Also the following comment in [2] is interesting:
+>
+> >  If the member is a structure, then the structure has an alignment
+> >  of 1-byte, but the members of that structure continue to have their
+> >  natural alignment.
+>
+
+If I read it correctly, it just means that within that nested struct
+all the members are aligned naturally (unless nested struct itself is
+packed), which makes sense and is already handled correctly. Or did I
+miss some subtle point you are making?
+
+> Which leads to unaligned access in the following case:
+>
+>         int foo(struct a *p) { return p->x; }
+>
+>         int main() {
+>           struct b b[2] =3D {{ {1}, 2 }, { {3}, 4 }};
+>           printf("%i, %i\n", foo(&b[0].a), foo(&b[1].a));
+>         }
+>
+>         $ gcc -Wall test.c
+>         test.c: In function =E2=80=98main=E2=80=99:
+>         test.c:38:26: warning: taking address of packed member of =E2=80=
+=98struct b=E2=80=99 may result
+>                       in an unaligned pointer value [-Waddress-of-packed-=
+member]
+>            38 |   printf("%i, %i\n", foo(&b[0].a), foo(&b[1].a));
+>
+> (This works fine on my x86 machine, but would be an issue on arm as
+>  far as I understand).
+>
+> [1] https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/Common-Type-Attributes.=
+html#Common-Type-Attributes
+> [2] https://developer.arm.com/documentation/100748/0607/writing-optimized=
+-code/packing-data-structures
+>
+
+[...]
