@@ -2,192 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BDE649F27
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 13:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DE6649F4C
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 14:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbiLLMyV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 07:54:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
+        id S231676AbiLLNBL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 08:01:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232032AbiLLMyU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 07:54:20 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5848411C3A;
-        Mon, 12 Dec 2022 04:54:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NrJN3HB6BI8k1eR97eek+yZFQ38Fc65bnwKa0BSmECU=; b=BU9W4je0TLGA/InMMAsdjDiNgj
-        bJO+HpizPTenwbqPE/qPWiD4tpv/QKQNsfhd8LoE+MmoiHktSB3kX+uEPMZz/im5hJMRenvtTMRDp
-        K3QckLi4Ztzug4rYwdQjVB1cu0nEfEjyZxW2HDrDkTlVzFt57D+JqrZm7Xqq+pIg2SFQVUzKjTXq6
-        qv4g5w80TxZnZSdlNnJnWgNqKPcBW2Jfp5VVhOJFtgAJFU/gn7psO1QsQwMlU2xs8PxgdJb5zOIGy
-        ny8030yitpq5PT6T5222lOanVkQPT5O+C4oxQtyPRt+rHcUVry2a08fMinCPh0mFTWFV4ZrLlOCaI
-        YYugyY2g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1p4iJp-00B3ES-QC; Mon, 12 Dec 2022 12:54:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 235AD300299;
-        Mon, 12 Dec 2022 13:53:56 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 024FA200FB979; Mon, 12 Dec 2022 13:53:55 +0100 (CET)
-Date:   Mon, 12 Dec 2022 13:53:55 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
-        pjt@google.com, derkling@google.com, haoluo@google.com,
-        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
-        riel@surriel.com, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 14/31] sched_ext: Implement BPF extensible scheduler class
-Message-ID: <Y5ckYyz14bxCvv40@hirez.programming.kicks-ass.net>
-References: <20221130082313.3241517-1-tj@kernel.org>
- <20221130082313.3241517-15-tj@kernel.org>
+        with ESMTP id S232544AbiLLNAe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 08:00:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FFCFDCF
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 04:59:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670849968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=OS5HvLCtm+4ptAbGDYWFgbUKjClVtcCJqUAVXrv8ZJQ=;
+        b=UNwRy3lWei892hlkldas6HGHHNNQAzcOQ4cGedVXCM5fuXLEXr4NcQ+64RNybsn0CjyxfP
+        d+7xkiLz+xcx3ASEz3KevRkr4eeLs/eLk0puXdGr7NoSyx8sfn2ppUuPK3y2Ud3Gfa3RHL
+        ZwAGgiMISKdSpThNj+iGpHaUtLZoFBk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-118-cKTx7KtGM26xjrOQj5-DLQ-1; Mon, 12 Dec 2022 07:59:25 -0500
+X-MC-Unique: cKTx7KtGM26xjrOQj5-DLQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5A78780252C;
+        Mon, 12 Dec 2022 12:59:24 +0000 (UTC)
+Received: from ovpn-195-46.brq.redhat.com (ovpn-195-46.brq.redhat.com [10.40.195.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F33B2026D4B;
+        Mon, 12 Dec 2022 12:59:20 +0000 (UTC)
+From:   Viktor Malik <vmalik@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: [PATCH bpf-next v4 0/2] Fix attaching fentry/fexit/fmod_ret/lsm to modules
+Date:   Mon, 12 Dec 2022 13:59:14 +0100
+Message-Id: <cover.1670847888.git.vmalik@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221130082313.3241517-15-tj@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 29, 2022 at 10:22:56PM -1000, Tejun Heo wrote:
+While working on bpftrace support for BTF in modules [1], I noticed that
+the verifier behaves incorrectly when attaching to fentry of multiple
+functions of the same name located in different modules (or in vmlinux).
 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index d06ada2341cb..cfbfc47692eb 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -131,6 +131,7 @@
->  	*(__dl_sched_class)			\
->  	*(__rt_sched_class)			\
->  	*(__fair_sched_class)			\
-> +	*(__ext_sched_class)			\
->  	*(__idle_sched_class)			\
->  	__sched_class_lowest = .;
->  
+The reason for this is that if the target program is not specified, the
+verifier will search kallsyms for the trampoline address to attach to.
+The entire kallsyms is always searched, not respecting the module in
+which the function to attach to is located.
 
-> @@ -9654,8 +9675,13 @@ void __init sched_init(void)
->  	int i;
->  
->  	/* Make sure the linker didn't screw up */
-> -	BUG_ON(&idle_sched_class != &fair_sched_class + 1 ||
-> -	       &fair_sched_class != &rt_sched_class + 1 ||
-> +#ifdef CONFIG_SCHED_CLASS_EXT
-> +	BUG_ON(&idle_sched_class != &ext_sched_class + 1 ||
-> +	       &ext_sched_class != &fair_sched_class + 1);
-> +#else
-> +	BUG_ON(&idle_sched_class != &fair_sched_class + 1);
-> +#endif
-> +	BUG_ON(&fair_sched_class != &rt_sched_class + 1 ||
->  	       &rt_sched_class   != &dl_sched_class + 1);
->  #ifdef CONFIG_SMP
->  	BUG_ON(&dl_sched_class != &stop_sched_class + 1);
+This patch fixes the above issue by extracting the module name from the
+BTF of the attachment target (which must be specified) and by doing the
+search in kallsyms of the correct module.
 
-Perhaps the saner way to write this is:
+This also adds a new test in test_progs which tries to attach a program
+to fentry of two functions of the same name, one located in vmlinux and
+the other in bpf_testmod. Prior to the fix, the verifier would always
+use the vmlinux function address for the target trampoline, attempting
+to create two trampolines for the same address (which is prohibited).
 
-#ifdef CONFIG_SMP
-	BUG_ON(!sched_class_above(&stop_sched_class, &dl_sched_class));
-#endif
-	BUG_ON(!sched_class_above(&dl_sched_class, &rt_sched_class));
-	BUG_ON(!sched_class_above(&rt_sched_class, &fair_sched_class));
-	BUG_ON(!sched_class_above(&fair_sched_class, &idle_sched_class));
-#ifdef CONFIG_...
-	BUG_ON(!sched_class_above(&fair_sched_class, &ext_sched_class));
-	BUG_ON(!sched_class_above(&ext_sched_class, &idle_sched_class));
-#endif
+[1] https://github.com/iovisor/bpftrace/pull/2315
 
-> +static inline const struct sched_class *next_active_class(const struct sched_class *class)
-> +{
-> +	class++;
-> +	if (!scx_enabled() && class == &ext_sched_class)
-> +		class++;
-> +	return class;
-> +}
-> +
-> +#define for_active_class_range(class, _from, _to)				\
-> +	for (class = (_from); class != (_to); class = next_active_class(class))
-> +
-> +#define for_each_active_class(class)						\
-> +	for_active_class_range(class, __sched_class_highest, __sched_class_lowest)
-> +
-> +/*
-> + * SCX requires a balance() call before every pick_next_task() call including
-> + * when waking up from idle.
-> + */
-> +#define for_balance_class_range(class, prev_class, end_class)			\
-> +	for_active_class_range(class, (prev_class) > &ext_sched_class ?		\
-> +			       &ext_sched_class : (prev_class), (end_class))
-> +
+---
+Changes in v4:
+- reworked module kallsyms lookup approach using existing functions,
+  verifier now calls btf_try_get_module to retrieve the module and
+  find_kallsyms_symbol_value to get the symbol address (suggested by
+  Alexei)
+- included Jiri Olsa's comments
+- improved description of the new test and added it as a comment into
+  the test source
 
-This seems quite insane; why not simply make the ext methods effective
-no-ops? Both balance and pick explicitly support that already, no?
+Changes in v3:
+- added trivial implementation for kallsyms_lookup_name_in_module() for
+  !CONFIG_MODULES (noticed by test robot, fix suggested by Hao Luo)
 
-> @@ -5800,10 +5812,13 @@ static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
->  	 * We can terminate the balance pass as soon as we know there is
->  	 * a runnable task of @class priority or higher.
->  	 */
-> -	for_class_range(class, prev->sched_class, &idle_sched_class) {
-> +	for_balance_class_range(class, prev->sched_class, &idle_sched_class) {
->  		if (class->balance(rq, prev, rf))
->  			break;
->  	}
-> +#else
-> +	/* SCX needs the balance call even in UP, call it explicitly */
-
-This, *WHY* !?!
-
-> +	balance_scx_on_up(rq, prev, rf);
->  #endif
->  
->  	put_prev_task(rq, prev);
-> @@ -5818,6 +5833,9 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  	const struct sched_class *class;
->  	struct task_struct *p;
->  
-> +	if (scx_enabled())
-> +		goto restart;
-> +
->  	/*
->  	 * Optimization: we know that if all tasks are in the fair class we can
->  	 * call that function directly, but only if the @prev task wasn't of a
-> @@ -5843,7 +5861,7 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  restart:
->  	put_prev_task_balance(rq, prev, rf);
->  
-> -	for_each_class(class) {
-> +	for_each_active_class(class) {
->  		p = class->pick_next_task(rq);
->  		if (p)
->  			return p;
-> @@ -5876,7 +5894,7 @@ static inline struct task_struct *pick_task(struct rq *rq)
->  	const struct sched_class *class;
->  	struct task_struct *p;
->  
-> -	for_each_class(class) {
-> +	for_each_active_class(class) {
->  		p = class->pick_task(rq);
->  		if (p)
->  			return p;
+Changes in v2:
+- introduced and used more space-efficient kallsyms lookup function,
+  suggested by Jiri Olsa
+- included Hao Luo's comments
 
 
-But this.. afaict that means that:
+Viktor Malik (2):
+  bpf: Fix attaching fentry/fexit/fmod_ret/lsm to modules
+  bpf/selftests: Test fentry attachment to shadowed functions
 
- - the whole EXT thing is incompatible with SCHED_CORE
- - the whole EXT thing can be trivially starved by the presence of a
-   single CFS/BATCH/IDLE task.
+ kernel/bpf/verifier.c                         |  16 ++-
+ net/bpf/test_run.c                            |   5 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   6 +
+ .../bpf/prog_tests/module_attach_shadow.c     | 131 ++++++++++++++++++
+ 4 files changed, 157 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach_shadow.c
 
-Both seems like deal breakers.
+-- 
+2.38.1
+
