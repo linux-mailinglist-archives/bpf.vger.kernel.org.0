@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3DF64980C
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 03:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E4C64980F
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 03:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbiLLCrC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Dec 2022 21:47:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
+        id S229616AbiLLCrV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Dec 2022 21:47:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbiLLCqy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Dec 2022 21:46:54 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F6CDEFC;
-        Sun, 11 Dec 2022 18:46:49 -0800 (PST)
+        with ESMTP id S231178AbiLLCrE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Dec 2022 21:47:04 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0769DDECF;
+        Sun, 11 Dec 2022 18:47:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 87D9260ECB;
-        Mon, 12 Dec 2022 02:46:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38587C433F1;
-        Mon, 12 Dec 2022 02:46:46 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 745FCB80B08;
+        Mon, 12 Dec 2022 02:47:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C3CDC433EF;
+        Mon, 12 Dec 2022 02:46:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670813209;
-        bh=p9sKnd8jvAp0+7aHcpBSpZt7PeyVZOq2wnu/bgXhOAo=;
+        s=k20201202; t=1670813219;
+        bh=Nyp9/17nJoeIVRs1IwJjhY9sDOm3rRLOwsEBQ9/ixsc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aqZzqCO4IO/LXXuJBlq967d9RhgLMTOvSEALksDzf0H52/LxJt4PS6rv+5kWH7DJA
-         FWJ71pKwdnueowZoYw1/0pTPoeWi/AA78nrNqBPoTq4uSzjWWpY6CwARbNbeHrT1Id
-         PELHVCjhkLm/6TxLICjLubRMsAfOP0KLLRE4/ZyeBUNFgvz+9MDhva7JIyAGYS6xxY
-         6kk6Sgk7asE565Zbo/Q6dMCOxkgHS0yEFq9Jo5afVf3mHAeShf72iasWG7da/0IB0X
-         a2ZY6QOxPaISJ1ybQF6vfDEOTX+mPfrSFifX3XqpLw8TQt2GLZOPtZmTLeFA+QQIBu
-         yPV2ruy5aeW2A==
+        b=Y8gc2wxVZ3E0Iz00qGjm+3CygLhe0W8P9+qVDA2/+R1PRyIeCtAwqJi9waNW+Hlw7
+         lpKgM41Ksk9vhCwguNwBPizVUBS2jg4p/dzgR7qLUbdN4kA7oIVodgu3sfFVvCRzAn
+         JYxbpUGly2jdw5G/PLYUlUuZz7IChj404/GXgeRrRLETh3FDdxbyVJ5lOb1ah1KNC+
+         NwH5znNKz/+cvKGQYgnSY0+NUsxFmBTZCcc6+iL2bA8U0M3UFVuw6rDjJQjC3j4Ij/
+         0bvo5HwS0ZZcH8G/PFTqKnYg+fRYW0I1A3jb3Ovk+7LAkY5dkEx+HBJ25/ElihNqGA
+         ZlWuwoGeLlbCQ==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     bpf@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
@@ -49,9 +49,9 @@ Cc:     bpf@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
         Christoph Hellwig <hch@infradead.org>,
         Chris Mason <clm@meta.com>, Jonathan Corbet <corbet@lwn.net>,
         linux-doc@vger.kernel.org
-Subject: [PATCH 1/2] error-injection: Remove EI_ETYPE_NONE
-Date:   Mon, 12 Dec 2022 11:46:44 +0900
-Message-Id: <167081320421.387937.4259807348852421112.stgit@devnote3>
+Subject: [PATCH 2/2] docs: fault-injection: Add requirements of error injectable functions
+Date:   Mon, 12 Dec 2022 11:46:54 +0900
+Message-Id: <167081321427.387937.15475445689482551048.stgit@devnote3>
 X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
 In-Reply-To: <167081319306.387937.10079195394503045678.stgit@devnote3>
 References: <167081319306.387937.10079195394503045678.stgit@devnote3>
@@ -70,55 +70,109 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Since the EI_ETYPE_NONE is confusing type, replace it with appropriate
-errno. The EI_ETYPE_NONE has been introduced for a dummy (error) value,
-but it can mislead people that they can use ALLOW_ERROR_INJECTION(func,
-NONE). So remove it from the EI_ETYPE and use appropriate errno instead.
+Add a section about the requirements of the error injectable functions
+and the type of errors.
+Since this section must be read before using ALLOW_ERROR_INJECTION()
+macro, that section is referred from the comment of the macro too.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Fixes: 663faf9f7bee ("error-injection: Add injectable error types")
+Link: https://lore.kernel.org/all/20221211115218.2e6e289bb85f8cf53c11aa97@kernel.org/T/#u
 ---
- include/asm-generic/error-injection.h |    1 -
- include/linux/error-injection.h       |    2 +-
- lib/error-inject.c                    |    2 +-
- 3 files changed, 2 insertions(+), 3 deletions(-)
+ Documentation/fault-injection/fault-injection.rst |   65 +++++++++++++++++++++
+ include/asm-generic/error-injection.h             |    6 +-
+ 2 files changed, 69 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/fault-injection/fault-injection.rst b/Documentation/fault-injection/fault-injection.rst
+index 17779a2772e5..da6c5796b1f8 100644
+--- a/Documentation/fault-injection/fault-injection.rst
++++ b/Documentation/fault-injection/fault-injection.rst
+@@ -233,6 +233,71 @@ proc entries
+ 	This feature is intended for systematic testing of faults in a single
+ 	system call. See an example below.
+ 
++
++Error Injectable Functions
++--------------------------
++
++This part is for the kenrel developers considering to add a function to
++ALLOW_ERROR_INJECTION() macro.
++
++Requirements for the Error Injectable Functions
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++Since the function-level error injection forcibly changes the code path
++and returns an error even if the input and conditions are proper, this can
++cause unexpected kernel crash if you allow error injection on the function
++which is NOT error injectable. Thus, you (and reviewers) must ensure;
++
++- The function returns an error code if it fails, and the callers must check
++  it correctly (need to recover from it).
++
++- The function does not execute any code which can change any state before
++  the first error return. The state includes global or local, or input
++  variable. For example, clear output address storage (e.g. `*ret = NULL`),
++  increments/decrements counter, set a flag, preempt/irq disable or get
++  a lock (if those are recovered before returning error, that will be OK.)
++
++The first requirement is important, and it will result in that the release
++(free objects) functions are usually harder to inject errors than allocate
++functions. If errors of such release functions are not correctly handled
++it will cause a memory leak easily (the caller will confuse that the object
++has been released or corrupted.)
++
++The second one is for the caller which expects the function should always
++does something. Thus if the function error injection skips whole of the
++function, the expectation is betrayed and causes an unexpected error.
++
++Type of the Error Injectable Functions
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++Each error injectable functions will have the error type specified by the
++ALLOW_ERROR_INJECTION() macro. You have to choose it carefully if you add
++a new error injectable function. If the wrong error type is chosen, the
++kernel may crash because it may not be able to handle the error.
++There are 4 types of errors defined in include/asm-generic/error-injection.h
++
++EI_ETYPE_NULL
++  This function will return `NULL` if it fails. e.g. return an allocateed
++  object address.
++
++EI_ETYPE_ERRNO
++  This function will return an `-errno` error code if it fails. e.g. return
++  -EINVAL if the input is wrong. This will include the functions which will
++  return an address which encodes `-errno` by ERR_PTR() macro.
++
++EI_ETYPE_ERRNO_NULL
++  This function will return an `-errno` or `NULL` if it fails. If the caller
++  of this function checks the return value with IS_ERR_OR_NULL() macro, this
++  type will be appropriate.
++
++EI_ETYPE_TRUE
++  This function will return `true` (non-zero positive value) if it fails.
++
++If you specifies a wrong type, for example, EI_TYPE_ERRNO for the function
++which returns an allocated object, it may cause a problem because the returned
++value is not an object address and the caller can not access to the address.
++
++
+ How to add new fault injection capability
+ -----------------------------------------
+ 
 diff --git a/include/asm-generic/error-injection.h b/include/asm-generic/error-injection.h
-index fbca56bd9cbc..c0b9d3217ed9 100644
+index c0b9d3217ed9..b05253f68eaa 100644
 --- a/include/asm-generic/error-injection.h
 +++ b/include/asm-generic/error-injection.h
-@@ -4,7 +4,6 @@
+@@ -19,8 +19,10 @@ struct pt_regs;
  
- #if defined(__KERNEL__) && !defined(__ASSEMBLY__)
- enum {
--	EI_ETYPE_NONE,		/* Dummy value for undefined case */
- 	EI_ETYPE_NULL,		/* Return NULL if failure */
- 	EI_ETYPE_ERRNO,		/* Return -ERRNO if failure */
- 	EI_ETYPE_ERRNO_NULL,	/* Return -ERRNO or NULL if failure */
-diff --git a/include/linux/error-injection.h b/include/linux/error-injection.h
-index 635a95caf29f..268fecfc1e82 100644
---- a/include/linux/error-injection.h
-+++ b/include/linux/error-injection.h
-@@ -19,7 +19,7 @@ static inline bool within_error_injection_list(unsigned long addr)
- 
- static inline int get_injectable_error_type(unsigned long addr)
- {
--	return EI_ETYPE_NONE;
-+	return -EOPNOTSUPP;
- }
- 
- #endif
-diff --git a/lib/error-inject.c b/lib/error-inject.c
-index 1afca1b1cdea..32c14770508e 100644
---- a/lib/error-inject.c
-+++ b/lib/error-inject.c
-@@ -40,7 +40,7 @@ bool within_error_injection_list(unsigned long addr)
- int get_injectable_error_type(unsigned long addr)
- {
- 	struct ei_entry *ent;
--	int ei_type = EI_ETYPE_NONE;
-+	int ei_type = -EINVAL;
- 
- 	mutex_lock(&ei_mutex);
- 	list_for_each_entry(ent, &error_injection_list, list) {
+ #ifdef CONFIG_FUNCTION_ERROR_INJECTION
+ /*
+- * Whitelist generating macro. Specify functions which can be
+- * error-injectable using this macro.
++ * Whitelist generating macro. Specify functions which can be error-injectable
++ * using this macro. If you unsure what is required for the error-injectable
++ * functions, please read Documentation/fault-injection/fault-injection.rst
++ * 'Error Injectable Functions' section.
+  */
+ #define ALLOW_ERROR_INJECTION(fname, _etype)				\
+ static struct error_injection_entry __used				\
 
