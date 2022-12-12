@@ -2,154 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DA064A86C
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 21:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A637464A886
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 21:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbiLLUJB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 15:09:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
+        id S232821AbiLLUMn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 15:12:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233105AbiLLUI6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 15:08:58 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223F1175AE;
-        Mon, 12 Dec 2022 12:08:53 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id co23so13382111wrb.4;
-        Mon, 12 Dec 2022 12:08:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SBYX0Bgct53uW6OYZnLeYHLy/9+c4kuah33Xo7h5GMc=;
-        b=MVl5ZiJTcKmUY1/MYMx9OVoFugiZCKG6Ah+BAinij8e0fX5ra7K78mqtzyLq94FWsA
-         In14DzMhzoiX2ZkEKYnOxCKVmOXg4w0HqKCmjztjwAXkGd7LmaZ55iJ2aokxhHoCZWBs
-         MeKLtTggXzJFLK22L3FQR+T9FLg4tndpSIXd/fVlQWzk/iXC7RPoKU5RYSJLxOXact+L
-         z0q/lyEpw3noibsLuXSBpOdQm79ep0K2S8ApF8Zfxy7m2PXKx+Y8pvOW/WM/2r5VR8K7
-         Y+KQZEYAriGwBWIQTq9/Js9p6bLMXRvOLa1kOVtMXFzcINS+sYqqxr6ksMfFiqsRey7w
-         Ei2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SBYX0Bgct53uW6OYZnLeYHLy/9+c4kuah33Xo7h5GMc=;
-        b=OGmMZdeWZIkpIa2w/8P8MpcIyGSsKJ4hFitXgDMrvWLbE/vSSlPcGSXhoS8poTqlsq
-         hXGGxo1rhg4/ktYN/EHJAGH6bgtd/04Ng4vwK1sI70JvnCzEIfXARu3rdJfFzYJduwEt
-         z799Q2NUZigXVNTeTUV5A83Z85zS1erHBRZVbxLq5FbBk0+GSogFOsjtpdV5Sw6/yz25
-         1viuV7tro8gQWLQqkM/lSWTcKqkpIStJN9RCh/fv2p9XlO+iCYvD1TFzmOfpdRJM65aj
-         DwPDZx6EfgTpm41TWQJ/t6dG5GbUwUgOH1MmgJWxlGkeU5jBAsOPQ4nnkWtZQY5Nc8wh
-         bsZQ==
-X-Gm-Message-State: ANoB5pnUqLJhJwLUU46WZzjxKSiBzJ0PoD95ghLRXb/V7O3V68cBAOnv
-        uYoxdG/r4NWNPVCkJmP0PhU=
-X-Google-Smtp-Source: AA0mqf7mkN6VaKEXNOipzgBKrRs07XriztMXV512rHubp1p0SIIhGRx3Jlc3O4VZszf/5HOLKLHdIQ==
-X-Received: by 2002:a05:6000:38e:b0:242:2390:15a with SMTP id u14-20020a056000038e00b002422390015amr16877183wrf.71.1670875731570;
-        Mon, 12 Dec 2022 12:08:51 -0800 (PST)
-Received: from suse.localnet (host-79-41-27-125.retail.telecomitalia.it. [79.41.27.125])
-        by smtp.gmail.com with ESMTPSA id h17-20020a5d4fd1000000b0024246991121sm9527080wrw.116.2022.12.12.12.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Dec 2022 12:08:50 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Evgeniy Dushistov <dushistov@mail.ru>,
-        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Evgeniy Dushistov <dushistov@mail.ru>,
-        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/3] fs/ufs: Change the signature of ufs_get_page()
-Date:   Mon, 12 Dec 2022 21:08:49 +0100
-Message-ID: <8194794.NyiUUSuA9g@suse>
-In-Reply-To: <Y5Zc0qZ3+zsI74OZ@ZenIV>
-References: <20221211213111.30085-1-fmdefrancesco@gmail.com>
- <20221211213111.30085-3-fmdefrancesco@gmail.com> <Y5Zc0qZ3+zsI74OZ@ZenIV>
+        with ESMTP id S233491AbiLLUMQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 15:12:16 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16EB17E0D;
+        Mon, 12 Dec 2022 12:12:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6mk69IYRuvnV5AJxQok3ai+88SShAxIoeDfYcokMLfI=; b=KQJRK//lvnsHX+IpBLq9HpY4GW
+        0qjeI48lnXMdJswvzn5CSEh72thdtII+Y6IgnteG19uslCLq/Co4vPOEPlhT+2VEkun1X6WC2vVHm
+        wUCOh9nNrr9GiWgGnv7TQ5QlXhZ19dOK/dya7STvLfC6VL0yC+TFaBzazhbOMrc0dKeuQ5BYcvblh
+        nY+LIpJH6R+OsI4+GAE3ae/K3s4S+9lSkysQYTugosItuG4WpmKjqhAay0ey5h2AeMN5j8V49+LlI
+        dbcL0wwyXsPYouSigC1s4VOv/yPEKyAuiuT3WN7uyNbL6CfCa+X+DJjmYNdQWVmU1Xi1qEdbLn04p
+        KjPOWKnQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1p4p9E-009s4M-Rp; Mon, 12 Dec 2022 20:11:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5EA24300129;
+        Mon, 12 Dec 2022 21:11:36 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4754820B600FF; Mon, 12 Dec 2022 21:11:36 +0100 (CET)
+Date:   Mon, 12 Dec 2022 21:11:36 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+        pjt@google.com, derkling@google.com, haoluo@google.com,
+        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+        riel@surriel.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 05/31] sched: Add sched_class->reweight_task()
+Message-ID: <Y5eK+DwksKRYmhMJ@hirez.programming.kicks-ass.net>
+References: <20221130082313.3241517-1-tj@kernel.org>
+ <20221130082313.3241517-6-tj@kernel.org>
+ <Y5cPA2L/G2GiRP9X@hirez.programming.kicks-ass.net>
+ <Y5dmI3uAl/kYR5nQ@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y5dmI3uAl/kYR5nQ@slm.duckdns.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On domenica 11 dicembre 2022 23:42:26 CET Al Viro wrote:
-> On Sun, Dec 11, 2022 at 10:31:10PM +0100, Fabio M. De Francesco wrote:
-> >  out_put:
-> >  	ufs_put_page(page);
+On Mon, Dec 12, 2022 at 07:34:27AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Mon, Dec 12, 2022 at 12:22:43PM +0100, Peter Zijlstra wrote:
+> > On Tue, Nov 29, 2022 at 10:22:47PM -1000, Tejun Heo wrote:
+> > > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> > > index a4a20046e586..08799b2a566e 100644
+> > > --- a/kernel/sched/sched.h
+> > > +++ b/kernel/sched/sched.h
+> > > @@ -2193,6 +2193,8 @@ struct sched_class {
+> > >  	 */
+> > >  	void (*switched_from)(struct rq *this_rq, struct task_struct *task);
+> > >  	void (*switched_to)  (struct rq *this_rq, struct task_struct *task);
+> > > +	void (*reweight_task)(struct rq *this_rq, struct task_struct *task,
+> > > +			      int newprio);
+> > >  	void (*prio_changed) (struct rq *this_rq, struct task_struct *task,
+> > >  			      int oldprio);
 > > 
-> > -out:
-> > -	return err;
-> > 
-> >  out_unlock:
-> >  	unlock_page(page);
-> >  	goto out_put;
+> > Hurmph.. this further propagate the existing problem of thinking that
+> > 'prio' is a useful concept in general (it isn't).
 > 
-> Something strange has happened, all right - look at the situation
-> after that patch.  You've got
-> 
-> out_put:
-> 	ufs_put_page(page);
-> out_unlock:
-> 	unlock_page(page);
-> 	goto out_put;
-> 
-> Which is obviously bogus.
+> I'm not quite following. Can you please expand on why prio isn't a generally
+> useful concept?
 
-I finally could go back to this small series and while working to fix the 
-errors that yesterday you had found out I think I saw what happened...
-
-Are you talking about ufs_add_link, right?
-
-If so, you wrote what follows at point 14 of one of your emails:
-
------
-
-14) ufs_add_link() - similar adjustment to new calling conventions
-for ufs_get_page().  Uses of page_addr: fed to ufs_put_page() (same as
-in ufs_find_entry() kaddr is guaranteed to point into the same page and
-thus can be used instead) and calculation of position in directory, same
-as we'd seen in ufs_set_link().  The latter becomes page_offset(page) +
-offset_in_page(de), killing page_addr off.  BTW, we get
-                kaddr = ufs_get_page(dir, n, &page);
-                err = PTR_ERR(kaddr);
-                if (IS_ERR(kaddr))
-                        goto out;
-with out: being just 'return err;', which suggests
-                kaddr = ufs_get_page(dir, n, &page);
-                if (IS_ERR(kaddr))
-                        return ERR_PTR(kaddr);
-instead (and that was the only goto out; so the label can be removed).
-The value stored in err in case !IS_ERR(kaddr) is (thankfully) never
-used - would've been a bug otherwise.  So this is an equivalent 
-transformation.
-
------
-
-Did you notice "so the label can be removed"?
-I must have misinterpreted what you wrote there. Did I?
-
-I removed the "out" label, according to what it seemed to me the correct way 
-to interpret your words.
-
-However at that moment I didn't see the endless loop at the end of the 
-function. Then I "fixed" (sigh!) it in 3/3 by terminating that endless loop
-with a "return 0". 
-
-However that was another mistake because after "got_it:" label we have "err = 
-ufs_commit_chunk(page, pos, rec_len);". 
-
-To summarize: I can delete _only_ the label and leave the "return err;" in the 
-block after the "out_put:" label. 
-
-Am I looking at it correctly now?
-
-Thanks,
-
-Fabio
-
-
+The whole fixed vs dynamic priority scheduling thing. Specifically
+SCHED_DEADLINE implements a dynamic priority scheme using the sporadic
+task model which just doesn't map well to this single prio value
+(notably every SCHED_DEADLINE task has prio -1, making it impossible to
+order SCHED_DEADLINE tasks based on this).
