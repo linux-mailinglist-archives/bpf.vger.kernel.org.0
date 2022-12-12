@@ -2,119 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A02264A38E
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 15:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7FB64A37B
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 15:35:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbiLLOkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 09:40:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
+        id S231960AbiLLOfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 09:35:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbiLLOkR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 09:40:17 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA26D6477;
-        Mon, 12 Dec 2022 06:40:16 -0800 (PST)
+        with ESMTP id S230015AbiLLOfd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 09:35:33 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C694B11453;
+        Mon, 12 Dec 2022 06:35:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 74402B80D8B;
-        Mon, 12 Dec 2022 14:40:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFDC1C433EF;
-        Mon, 12 Dec 2022 14:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670856014;
-        bh=YbnT6Yq83aqglOQM9XhLCXL9nplEN1NrykFoYmTXrZs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Px4SvP0n/u+UVqevgVZw6zjZsqclOrP42PpZL3odSfQBfoSwm0hpgKckyqK3ahv/s
-         5wHS6KpzvWGa4XCjXKD22ubkP80ANoeL8yIC/kSqL38LEYXvCYBFaaMbEg5YzImBAL
-         xY9K7fnvbfmIdEiVKQER+P/cMWBOmMzJ6ca0q26H2XEmfl9o8owUb2co62nwuqZsXn
-         AnrpIske3AX25oPefiB5JGdo7e1AQ4IAbAdzbTiqJskTLJSfU3EJKcr1dEukPUy9bP
-         DIiySFMTMXqDdj+xb3TttFJbhOsPppanYe9dnId265bwKho37ZIKyzggUQQWot3VtD
-         fYrMFNvNTykiA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 86B3D4067B; Mon, 12 Dec 2022 11:28:54 -0300 (-03)
-Date:   Mon, 12 Dec 2022 11:28:54 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        by ams.source.kernel.org (Postfix) with ESMTPS id 835B0B80D53;
+        Mon, 12 Dec 2022 14:35:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B7EEC433EF;
+        Mon, 12 Dec 2022 14:35:23 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Wl6pADoH"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1670855721;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1KyY32z5nf0Lu8vM4J/2IpAlTcstrOO9+asdsS0mdQs=;
+        b=Wl6pADoHCtIIbQYtGWyzoK0/ft/6K3+8UZfyGZQbHCn0OgumkLD978IERouS9rLh91V7py
+        ofol1dOocMk4p1DFNAhuJ2rC6+TlFlqFiUo0IADIb6l2vBWdPsmninRN5yWI9N/OpXZpdd
+        5BCaUAKkpp98C6Hq6gwjcSOdDz781ww=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id db04abc2 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Mon, 12 Dec 2022 14:35:21 +0000 (UTC)
+Date:   Mon, 12 Dec 2022 15:35:20 +0100
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     david.keisarschm@mail.huji.ac.il
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 2/3] perf build: Use libtraceevent from the system
-Message-ID: <Y5c6pl4LaZVo42op@kernel.org>
-References: <Y4921D+36UGdhK92@kernel.org>
- <Y494TNa0ZyPH9YSD@kernel.org>
- <Y498YP2N3gvFSr/X@kernel.org>
- <C9F248C8-AF8D-40A1-A1AD-BCC39FBA01C7@linux.vnet.ibm.com>
- <Y5DNBZNC5rBBqlJW@kernel.org>
- <36CD1041-0CAE-41C1-8086-C17854531B3E@linux.vnet.ibm.com>
- <Y5JfgyN59dSeKbUP@kernel.org>
- <Y5Jl8MeW90DXy1wT@kernel.org>
- <CAP-5=fWyb+w2EP4cGBJU3RD6E_OkBZ+3w5+YyhwX7fOA-H0aWQ@mail.gmail.com>
- <CAP-5=fXJpxq-A7VJkZv+Y0fiCuNj9bhTXJx9+FGBQtePJ92z_A@mail.gmail.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, aksecurity@gmail.com,
+        ilay.bahat1@gmail.com, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/5] Renaming weak prng invocations -
+ prandom_bytes_state, prandom_u32_state
+Message-ID: <Y5c8KLzJFz/XZMiM@zx2c4.com>
+References: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
+ <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXJpxq-A7VJkZv+Y0fiCuNj9bhTXJx9+FGBQtePJ92z_A@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Please CC me on future revisions.
 
-	Just added this to the mix to fix a the python binding:
+As of 6.2, the prandom namespace is *only* for predictable randomness.
+There's no need to rename anything. So nack on this patch 1/5.
 
-diff --git a/tools/perf/util/setup.py b/tools/perf/util/setup.py
-index 34fceda3af3a9b26..e80ffbbfacfb8cc0 100644
---- a/tools/perf/util/setup.py
-+++ b/tools/perf/util/setup.py
-@@ -63,15 +63,18 @@ libperf = getenv('LIBPERF')
- ext_sources = [f.strip() for f in open('util/python-ext-sources')
-                                if len(f.strip()) > 0 and f[0] != '#']
- 
--if not '-DHAVE_LIBTRACEEVENT' in cflags:
-+extra_libraries = []
-+
-+if '-DHAVE_LIBTRACEEVENT' in cflags:
-+    extra_libraries += [ 'traceevent' ]
-+else:
-     ext_sources.remove('util/trace-event.c')
- 
- # use full paths with source files
- ext_sources = list(map(lambda x: '%s/%s' % (src_perf, x) , ext_sources))
- 
--extra_libraries = []
- if '-DHAVE_LIBNUMA_SUPPORT' in cflags:
--    extra_libraries = [ 'numa' ]
-+    extra_libraries += [ 'numa' ]
- if '-DHAVE_LIBCAP_SUPPORT' in cflags:
-     extra_libraries += [ 'cap' ]
- 
-⬢[acme@toolbox perf]$ ldd /tmp/build/perf/python/perf.cpython-310-x86_64-linux-gnu.so
-	linux-vdso.so.1 (0x00007fffa59f8000)
-	libunwind-x86_64.so.8 => /lib64/libunwind-x86_64.so.8 (0x00007fb4fde98000)
-	libunwind.so.8 => /lib64/libunwind.so.8 (0x00007fb4fde7f000)
-	liblzma.so.5 => /lib64/liblzma.so.5 (0x00007fb4fde54000)
-	libtraceevent.so.1 => /lib64/libtraceevent.so.1 (0x00007fb4fde2e000)
-	libnuma.so.1 => /lib64/libnuma.so.1 (0x00007fb4fde20000)
-	libcap.so.2 => /lib64/libcap.so.2 (0x00007fb4fde16000)
-	libc.so.6 => /lib64/libc.so.6 (0x00007fb4fdc00000)
-	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fb4fdbe0000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007fb4fdf13000)
-⬢[acme@toolbox perf]$ perf test python
- 19: 'import perf' in python                                         : Ok
-⬢[acme@toolbox perf]$
+With regards to the remaining patches in this series, if you want to
+move prandom_u32_state callers over to get_random_bytes() and
+get_random_u32(), that's fine from my perspective, but last I looked,
+there was much usage in places where being repeatable was actually the
+goal - test suites and such, where you want to be able to redo your
+tests with the same seed. So you'll have to look at each instance case
+by case and convince whoever maintains that code that they don't need
+predictability. However, if you do that, the right functions to use are
+get_random_bytes() and get_random_u32().
+
+Jason
