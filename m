@@ -2,266 +2,245 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C227364A7CD
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 20:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739C264A831
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 20:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbiLLTCW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 14:02:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49400 "EHLO
+        id S233135AbiLLTmj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 14:42:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbiLLTBM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 14:01:12 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D970E18341
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 10:59:07 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id c1so1011350lfi.7
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 10:59:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sDGVWum7LXfX8K+/GVP7KU76dOM+ln8UhvSC5F746bY=;
-        b=VUsEsIeDtlAvdFOzINdtjJm7SE4cIcaTkRrrpFdNqXR69qWEY4pQ4uYGmShQlwbWSQ
-         IIlXlOZ9NQRj6mAhuEXcvxpThL/5CFQ/FnlLJ5LbeoWV55rC7wamfsV0HCsOyDsZlBdo
-         qvq8dw6SOu9I8Svnx+yKsTWUmwH4QHFaxB8AegrmH30bGb2Fud7gpk3Ts0m97mzhAiVF
-         BwiM8YnDpzSn4TleBfsnzsR00qFaZtJ7ujsWZsc71rD7mICyGCWj5EhQnEKFgpmq62PD
-         AxII81kabHFOCjygr4IA5NHPKhFXKL1ZSTFYrO7ISYBtdyB4VxazGujHe7cUMyjGj249
-         j5Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sDGVWum7LXfX8K+/GVP7KU76dOM+ln8UhvSC5F746bY=;
-        b=FtIGKYNe8R5SozGnQ5OC0hJkKpah/2mNcUBNHO6d6DWNCgqPQuAb9Y6hqxSHmQm13E
-         pYsnCFTwgpVTiormNeQBiieAwcxK0qUkUDhakkE617PHft4eLpHSZHvLGsUlhw1n3khH
-         B48HPgjB7QQJ71qhcQGZY0KGotHuuC2lBDP11iXYclMDHpsCCvY5lhE1p3uUe3V3+lGJ
-         3JAtUj9dq8qie5UXPhwSxIsPLN5f3dZMUNWVQOoBrxsUe7lw0qGn8ITpibbx0TySrZUY
-         Oi2FA5LfRl50TnXs30XAKiCYNr4BKDiqP8/vOIYkoF2w+iMQZDdGlNRbsSeAHcAozST0
-         E8TA==
-X-Gm-Message-State: ANoB5pmYAv11Xm+SP6FwyriG8zSuSaqIR6ifvuhp4zzOrp9BZm2hpWPE
-        cxvLOD1mFVw3Goghp4+Fjl8=
-X-Google-Smtp-Source: AA0mqf5tXl3Uy7eqoasS0XPmL9pVOJm1tQBQHLR1vtncUx9p4qARpZ1NkWsThvM+cLgMowV1/yiHaw==
-X-Received: by 2002:a05:6512:3414:b0:4b4:b5d3:6603 with SMTP id i20-20020a056512341400b004b4b5d36603mr7094555lfr.32.1670871546071;
-        Mon, 12 Dec 2022 10:59:06 -0800 (PST)
-Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id g26-20020a19e05a000000b004b094730074sm61528lfj.267.2022.12.12.10.59.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Dec 2022 10:59:05 -0800 (PST)
-Message-ID: <90ad59d8c4552284062ca756016ba0c1a70b4eb1.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] libbpf: fix BTF-to-C converter's padding
- logic
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
-        Per =?ISO-8859-1?Q?Sundstr=F6m?= XP 
-        <per.xp.sundstrom@ericsson.com>
-Date:   Mon, 12 Dec 2022 20:59:04 +0200
-In-Reply-To: <CAEf4BzbG7ToGkam79zJWHQSVGz-L-f8wgmTEBqFBNGf53aGxFw@mail.gmail.com>
-References: <20221208185703.2681797-1-andrii@kernel.org>
-         <20221208185703.2681797-6-andrii@kernel.org>
-         <d22b1c3b25e1739a1318df1f619705a66d8f8584.camel@gmail.com>
-         <CAEf4BzbG7ToGkam79zJWHQSVGz-L-f8wgmTEBqFBNGf53aGxFw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S233242AbiLLTmh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 14:42:37 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0551E642A;
+        Mon, 12 Dec 2022 11:42:35 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6C26CB80E05;
+        Mon, 12 Dec 2022 19:42:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2130C433D2;
+        Mon, 12 Dec 2022 19:42:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670874153;
+        bh=gC0AlNgWrsGUzaTEGZ1ThjNNUzPpMmizYKJ4FeJLZOg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pUxpf1HCqX/EKSCN/LLV50xo24dazeRITUHdKUeJIun2N7CUXo4T1o8F7f5rkq8E2
+         TL4kykHk44ggLk1CFEqH++BuGhIUtOagpo2JUKzKuCJxsSLXabfe10y4wKBpok0cZf
+         K9V0iaMLHSaTCMCkYQDF3vzY78WwFJe8mR19e8Sen02PxDHnzY4Ik0Xfu/7OF1jiR4
+         iBh6244tXdPuXTcp3trcLS6OxkDZdBpyz4T8Dnwdtf31KO9f4qe5cXAR7bR4Qsu/aS
+         8I6NMyIUEUDWTliULnAiyt+AtOTAI5nQHGdH2W2mGELOuKUHB7dzhYjmqI/6xsEnQ0
+         pV1cxdadqUKpg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 02AB340483; Mon, 12 Dec 2022 16:42:29 -0300 (-03)
+Date:   Mon, 12 Dec 2022 16:42:29 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Blake Jones <blakejones@google.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/4] perf lock contention: Add lock_data.h for common data
+Message-ID: <Y5eEJd/AhSzUfILO@kernel.org>
+References: <20221209190727.759804-1-namhyung@kernel.org>
+ <20221209190727.759804-2-namhyung@kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221209190727.759804-2-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2022-12-12 at 10:44 -0800, Andrii Nakryiko wrote:
-> On Fri, Dec 9, 2022 at 9:21 AM Eduard Zingerman <eddyz87@gmail.com> wrote=
-:
-> >=20
-> > On Thu, 2022-12-08 at 10:57 -0800, Andrii Nakryiko wrote:
-> > > Turns out that btf_dump API doesn't handle a bunch of tricky corner
-> > > cases, as reported by Per, and further discovered using his testing
-> > > Python script ([0]).
-> > >=20
-> > > This patch revamps btf_dump's padding logic significantly, making it
-> > > more correct and also avoiding unnecessary explicit padding, where
-> > > compiler would pad naturally. This overall topic turned out to be ver=
-y
-> > > tricky and subtle, there are lots of subtle corner cases. The comment=
-s
-> > > in the code tries to give some clues, but comments themselves are
-> > > supposed to be paired with good understanding of C alignment and padd=
-ing
-> > > rules. Plus some experimentation to figure out subtle things like
-> > > whether `long :0;` means that struct is now forced to be long-aligned
-> > > (no, it's not, turns out).
-> > >=20
-> > > Anyways, Per's script, while not completely correct in some known
-> > > situations, doesn't show any obvious cases where this logic breaks, s=
-o
-> > > this is a nice improvement over the previous state of this logic.
-> > >=20
-> > > Some selftests had to be adjusted to accommodate better use of natura=
-l
-> > > alignment rules, eliminating some unnecessary padding, or changing it=
- to
-> > > `type: 0;` alignment markers.
-> > >=20
-> > > Note also that for when we are in between bitfields, we emit explicit
-> > > bit size, while otherwise we use `: 0`, this feels much more natural =
-in
-> > > practice.
-> > >=20
-> > > Next patch will add few more test cases, found through randomized Per=
-'s
-> > > script.
-> > >=20
-> > >   [0] https://lore.kernel.org/bpf/85f83c333f5355c8ac026f835b18d150607=
-25fcb.camel@ericsson.com/
-> > >=20
-> > > Reported-by: Per Sundstr=C3=B6m XP <per.xp.sundstrom@ericsson.com>
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  tools/lib/bpf/btf_dump.c                      | 169 +++++++++++++---=
---
-> > >  .../bpf/progs/btf_dump_test_case_bitfields.c  |   2 +-
-> > >  .../bpf/progs/btf_dump_test_case_padding.c    |  58 ++++--
-> > >  3 files changed, 164 insertions(+), 65 deletions(-)
-> > >=20
-> > > diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> > > index 234e82334d56..d708452c9952 100644
-> > > --- a/tools/lib/bpf/btf_dump.c
-> > > +++ b/tools/lib/bpf/btf_dump.c
-> > > @@ -830,6 +830,25 @@ static void btf_dump_emit_type(struct btf_dump *=
-d, __u32 id, __u32 cont_id)
-> > >       }
-> > >  }
-> > >=20
-> > > +static int btf_natural_align_of(const struct btf *btf, __u32 id)
-> > > +{
-> > > +     const struct btf_type *t =3D btf__type_by_id(btf, id);
-> > > +     int i, align, vlen;
-> > > +     const struct btf_member *m;
-> > > +
-> > > +     if (!btf_is_composite(t))
-> > > +             return btf__align_of(btf, id);
-> > > +
-> > > +     align =3D 1;
-> > > +     m =3D btf_members(t);
-> > > +     vlen =3D btf_vlen(t);
-> > > +     for (i =3D 0; i < vlen; i++, m++) {
-> > > +             align =3D max(align, btf_natural_align_of(btf, m->type)=
-);
-> > > +     }
-> > > +
-> > > +     return align;
-> > > +}
-> > > +
-> >=20
-> > The btf_natural_align_of() recursively visits nested structures.
-> > However, the "packed" relation is non-recursive (see entry for
-> > "packed" in [1]). Such mismatch leads to the following example being
-> > printed incorrectly:
-> >=20
-> >         struct a {
-> >                 int x;
-> >         };
-> >=20
-> >         struct b {
-> >                 struct a a;
-> >                 char c;
-> >         } __attribute__((packed));
-> >=20
-> >         struct c {
-> >                 struct b b1;
-> >                 short a1;
-> >                 struct b b2;
-> >         };
-> >=20
-> > The bpftool output looks as follows:
-> >=20
-> >         struct a {
-> >                 int x;
-> >         };
-> >=20
-> >         struct b {
-> >                 struct a a;
-> >                 char c;
-> >         } __attribute__((packed));
-> >=20
-> >         struct c {
-> >                 struct b b1;
-> >                 short: 0;
-> >                 short a1;
-> >                 struct b b2;
-> >         } __attribute__((packed));
->=20
-> Nice find, thank you! The fix is very simple:
->=20
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index d708452c9952..d6fd93a57f11 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -843,7 +843,7 @@ static int btf_natural_align_of(const struct btf
-> *btf, __u32 id)
->         m =3D btf_members(t);
->         vlen =3D btf_vlen(t);
->         for (i =3D 0; i < vlen; i++, m++) {
-> -               align =3D max(align, btf_natural_align_of(btf, m->type));
-> +               align =3D max(align, btf__align_of(btf, m->type));
->         }
->=20
-> I'll also add your example to selftests to make sure.
->=20
-> [...]
->=20
-> >=20
-> > Also the following comment in [2] is interesting:
-> >=20
-> > >  If the member is a structure, then the structure has an alignment
-> > >  of 1-byte, but the members of that structure continue to have their
-> > >  natural alignment.
-> >=20
->=20
-> If I read it correctly, it just means that within that nested struct
-> all the members are aligned naturally (unless nested struct itself is
-> packed), which makes sense and is already handled correctly. Or did I
-> miss some subtle point you are making?
+Em Fri, Dec 09, 2022 at 11:07:24AM -0800, Namhyung Kim escreveu:
+> Accessing BPF maps should use the same data types.  Add bpf_skel/lock_data.h
+> to define the common data structures.  No functional changes.
 
-No additional subtle points.
-It's a consequence of the non-recursiveness of "packed" and I wanted to
-find a direct confirmation of such behaviour in the doc as it seemed odd.
+You forgot to update one of the stack_id users, that field got renamed:
 
->=20
-> > Which leads to unaligned access in the following case:
-> >=20
-> >         int foo(struct a *p) { return p->x; }
-> >=20
-> >         int main() {
-> >           struct b b[2] =3D {{ {1}, 2 }, { {3}, 4 }};
-> >           printf("%i, %i\n", foo(&b[0].a), foo(&b[1].a));
-> >         }
-> >=20
-> >         $ gcc -Wall test.c
-> >         test.c: In function =E2=80=98main=E2=80=99:
-> >         test.c:38:26: warning: taking address of packed member of =E2=
-=80=98struct b=E2=80=99 may result
-> >                       in an unaligned pointer value [-Waddress-of-packe=
-d-member]
-> >            38 |   printf("%i, %i\n", foo(&b[0].a), foo(&b[1].a));
-> >=20
-> > (This works fine on my x86 machine, but would be an issue on arm as
-> >  far as I understand).
-> >=20
-> > [1] https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/Common-Type-Attribute=
-s.html#Common-Type-Attributes
-> > [2] https://developer.arm.com/documentation/100748/0607/writing-optimiz=
-ed-code/packing-data-structures
-> >=20
->=20
-> [...]
+util/bpf_skel/lock_contention.bpf.c:144:6: error: no member named 'stack_id' in 'struct contention_key'
+        key.stack_id = pelem->stack_id;
+        ~~~ ^
+1 error generated.
+make[2]: *** [Makefile.perf:1075: /tmp/build/perf/util/bpf_skel/.tmp/lock_contention.bpf.o] Error 1
+make[1]: *** [Makefile.perf:236: sub-make] Error 2
+make: *** [Makefile:113: install-bin] Error 2
+make: Leaving directory '/var/home/acme/git/perf/tools/perf'
 
+ Performance counter stats for 'make -k NO_LIBTRACEEVENT=1 BUILD_BPF_SKEL=1 CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin':
+
+     7,005,216,342      cycles:u
+    11,851,225,594      instructions:u                   #    1.69  insn per cycle
+
+       3.168945139 seconds time elapsed
+
+       1.730964000 seconds user
+       1.578932000 seconds sys
+
+
+⬢[acme@toolbox perf]$ git log --oneline -4
+f6e7a5f1db49dc8e (HEAD) perf lock contention: Add lock_data.h for common data
+5d9b55713c5c037f perf python: Account for multiple words in CC
+d9078bf3f3320457 perf off_cpu: Fix a typo in BTF tracepoint name, it should be 'btf_trace_sched_switch'
+3b7ea76f0f7844f5 perf test: Update event group check for support of uncore event
+⬢[acme@toolbox perf]$
+
+After some point it builds.
+
+I'm fixing this to keep it bisectable.
+
+- Arnaldo
+ 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/bpf_lock_contention.c         | 19 ++++--------
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  | 17 ++---------
+>  tools/perf/util/bpf_skel/lock_data.h          | 30 +++++++++++++++++++
+>  3 files changed, 38 insertions(+), 28 deletions(-)
+>  create mode 100644 tools/perf/util/bpf_skel/lock_data.h
+> 
+> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+> index f4ebb9a2e380..b6a8eb7164b3 100644
+> --- a/tools/perf/util/bpf_lock_contention.c
+> +++ b/tools/perf/util/bpf_lock_contention.c
+> @@ -12,17 +12,10 @@
+>  #include <bpf/bpf.h>
+>  
+>  #include "bpf_skel/lock_contention.skel.h"
+> +#include "bpf_skel/lock_data.h"
+>  
+>  static struct lock_contention_bpf *skel;
+>  
+> -struct lock_contention_data {
+> -	u64 total_time;
+> -	u64 min_time;
+> -	u64 max_time;
+> -	u32 count;
+> -	u32 flags;
+> -};
+> -
+>  int lock_contention_prepare(struct lock_contention *con)
+>  {
+>  	int i, fd;
+> @@ -110,8 +103,8 @@ int lock_contention_stop(void)
+>  int lock_contention_read(struct lock_contention *con)
+>  {
+>  	int fd, stack, err = 0;
+> -	s32 prev_key, key;
+> -	struct lock_contention_data data = {};
+> +	struct contention_key *prev_key, key;
+> +	struct contention_data data = {};
+>  	struct lock_stat *st = NULL;
+>  	struct machine *machine = con->machine;
+>  	u64 *stack_trace;
+> @@ -126,8 +119,8 @@ int lock_contention_read(struct lock_contention *con)
+>  	if (stack_trace == NULL)
+>  		return -1;
+>  
+> -	prev_key = 0;
+> -	while (!bpf_map_get_next_key(fd, &prev_key, &key)) {
+> +	prev_key = NULL;
+> +	while (!bpf_map_get_next_key(fd, prev_key, &key)) {
+>  		struct map *kmap;
+>  		struct symbol *sym;
+>  		int idx = 0;
+> @@ -184,7 +177,7 @@ int lock_contention_read(struct lock_contention *con)
+>  		}
+>  
+>  		hlist_add_head(&st->hash_entry, con->result);
+> -		prev_key = key;
+> +		prev_key = &key;
+>  
+>  		/* we're fine now, reset the values */
+>  		st = NULL;
+> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> index 9681cb59b0df..0f63cc28ccba 100644
+> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> @@ -5,24 +5,11 @@
+>  #include <bpf/bpf_tracing.h>
+>  #include <bpf/bpf_core_read.h>
+>  
+> -/* maximum stack trace depth */
+> -#define MAX_STACKS   8
+> +#include "lock_data.h"
+>  
+>  /* default buffer size */
+>  #define MAX_ENTRIES  10240
+>  
+> -struct contention_key {
+> -	__s32 stack_id;
+> -};
+> -
+> -struct contention_data {
+> -	__u64 total_time;
+> -	__u64 min_time;
+> -	__u64 max_time;
+> -	__u32 count;
+> -	__u32 flags;
+> -};
+> -
+>  struct tstamp_data {
+>  	__u64 timestamp;
+>  	__u64 lock;
+> @@ -34,7 +21,7 @@ struct tstamp_data {
+>  struct {
+>  	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
+>  	__uint(key_size, sizeof(__u32));
+> -	__uint(value_size, MAX_STACKS * sizeof(__u64));
+> +	__uint(value_size, sizeof(__u64));
+>  	__uint(max_entries, MAX_ENTRIES);
+>  } stacks SEC(".maps");
+>  
+> diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
+> new file mode 100644
+> index 000000000000..dbdf4caedc4a
+> --- /dev/null
+> +++ b/tools/perf/util/bpf_skel/lock_data.h
+> @@ -0,0 +1,30 @@
+> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +/* Data structures shared between BPF and tools. */
+> +#ifndef UTIL_BPF_SKEL_LOCK_DATA_H
+> +#define UTIL_BPF_SKEL_LOCK_DATA_H
+> +
+> +struct contention_key {
+> +	s32 stack_or_task_id;
+> +};
+> +
+> +#define TASK_COMM_LEN  16
+> +
+> +struct contention_task_data {
+> +	char comm[TASK_COMM_LEN];
+> +};
+> +
+> +struct contention_data {
+> +	u64 total_time;
+> +	u64 min_time;
+> +	u64 max_time;
+> +	u32 count;
+> +	u32 flags;
+> +};
+> +
+> +enum lock_aggr_mode {
+> +	LOCK_AGGR_ADDR = 0,
+> +	LOCK_AGGR_TASK,
+> +	LOCK_AGGR_CALLER,
+> +};
+> +
+> +#endif /* UTIL_BPF_SKEL_LOCK_DATA_H */
+> -- 
+> 2.39.0.rc1.256.g54fd8350bd-goog
+
+-- 
+
+- Arnaldo
