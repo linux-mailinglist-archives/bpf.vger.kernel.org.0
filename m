@@ -2,191 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59681649F0A
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 13:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BDE649F27
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 13:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbiLLMpT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 07:45:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
+        id S232378AbiLLMyV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 07:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231453AbiLLMpS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 07:45:18 -0500
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39ECB11A2D;
-        Mon, 12 Dec 2022 04:45:16 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4NW1PQ2Vgcz9xrp3;
-        Mon, 12 Dec 2022 20:38:02 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwC3jGM3IpdjQccIAA--.724S2;
-        Mon, 12 Dec 2022 13:44:52 +0100 (CET)
-Message-ID: <17749b60bcffdc05ce0343199c14ef3cf2d54010.camel@huaweicloud.com>
-Subject: Re: [RFC][PATCH v2 2/7] bpf: Mark ALU32 operations in bpf_reg_state
- structure
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Mon, 12 Dec 2022 13:44:35 +0100
-In-Reply-To: <CAADnVQKhWEtqAkMnWR8Twpc6uPo_MWnAf68R-xeM=YVqxkLOyQ@mail.gmail.com>
-References: <20221207172434.435893-1-roberto.sassu@huaweicloud.com>
-         <20221207172434.435893-3-roberto.sassu@huaweicloud.com>
-         <CAADnVQKhWEtqAkMnWR8Twpc6uPo_MWnAf68R-xeM=YVqxkLOyQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S232032AbiLLMyU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 07:54:20 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5848411C3A;
+        Mon, 12 Dec 2022 04:54:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NrJN3HB6BI8k1eR97eek+yZFQ38Fc65bnwKa0BSmECU=; b=BU9W4je0TLGA/InMMAsdjDiNgj
+        bJO+HpizPTenwbqPE/qPWiD4tpv/QKQNsfhd8LoE+MmoiHktSB3kX+uEPMZz/im5hJMRenvtTMRDp
+        K3QckLi4Ztzug4rYwdQjVB1cu0nEfEjyZxW2HDrDkTlVzFt57D+JqrZm7Xqq+pIg2SFQVUzKjTXq6
+        qv4g5w80TxZnZSdlNnJnWgNqKPcBW2Jfp5VVhOJFtgAJFU/gn7psO1QsQwMlU2xs8PxgdJb5zOIGy
+        ny8030yitpq5PT6T5222lOanVkQPT5O+C4oxQtyPRt+rHcUVry2a08fMinCPh0mFTWFV4ZrLlOCaI
+        YYugyY2g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1p4iJp-00B3ES-QC; Mon, 12 Dec 2022 12:54:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 235AD300299;
+        Mon, 12 Dec 2022 13:53:56 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 024FA200FB979; Mon, 12 Dec 2022 13:53:55 +0100 (CET)
+Date:   Mon, 12 Dec 2022 13:53:55 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+        pjt@google.com, derkling@google.com, haoluo@google.com,
+        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+        riel@surriel.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 14/31] sched_ext: Implement BPF extensible scheduler class
+Message-ID: <Y5ckYyz14bxCvv40@hirez.programming.kicks-ass.net>
+References: <20221130082313.3241517-1-tj@kernel.org>
+ <20221130082313.3241517-15-tj@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwC3jGM3IpdjQccIAA--.724S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrW7GFWUZF18XF4xWr43Awb_yoW5Kw48pr
-        W5W3WUKr4kWr1xuasrtw45JF9YkF1jy3WUXFWDJry2vw15Wryjyr48GFWj9asrAr10yr1f
-        tr9FqrsFyw4DZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAEBF1jj4KK1gAAst
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221130082313.3241517-15-tj@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2022-12-10 at 18:28 -0800, Alexei Starovoitov wrote:
-> On Wed, Dec 7, 2022 at 9:25 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > BPF LSM needs a reliable source of information to determine if the return
-> > value given by eBPF programs is acceptable or not. At the moment, choosing
-> > either the 64 bit or the 32 bit one does not seem to be an option
-> > (selftests fail).
-> > 
-> > If we choose the 64 bit one, the following happens.
-> > 
-> >       14:       61 10 00 00 00 00 00 00 r0 = *(u32 *)(r1 + 0)
-> >       15:       74 00 00 00 15 00 00 00 w0 >>= 21
-> >       16:       54 00 00 00 01 00 00 00 w0 &= 1
-> >       17:       04 00 00 00 ff ff ff ff w0 += -1
-> > 
-> > This is the last part of test_deny_namespace. After #16, the register
-> > values are:
-> > 
-> > smin_value = 0x0, smax_value = 0x1,
-> > s32_min_value = 0x0, s32_max_value = 0x1,
-> > 
-> > After #17, they become:
-> > 
-> > smin_value = 0x0, smax_value = 0xffffffff,
-> > s32_min_value = 0xffffffff, s32_max_value = 0x0
-> > 
-> > where only the 32 bit values are correct.
-> > 
-> > If we choose the 32 bit ones, the following happens.
-> > 
-> > 0000000000000000 <check_access>:
-> >        0:       79 12 00 00 00 00 00 00 r2 = *(u64 *)(r1 + 0)
-> >        1:       79 10 08 00 00 00 00 00 r0 = *(u64 *)(r1 + 8)
-> >        2:       67 00 00 00 3e 00 00 00 r0 <<= 62
-> >        3:       c7 00 00 00 3f 00 00 00 r0 s>>= 63
-> > 
-> > This is part of test_libbpf_get_fd_by_id_opts (no_alu32 version). In this
-> > case, 64 bit register values should be used (for the 32 bit ones, there is
-> > no precise information from the verifier).
-> > 
-> > As the examples above suggest that which register values to use depends on
-> > the specific case, mark ALU32 operations in bpf_reg_state structure, so
-> > that BPF LSM can choose the proper ones.
-> 
-> I have a hard time understanding what is the problem you're
-> trying to solve and what is the proposed fix.
+On Tue, Nov 29, 2022 at 10:22:56PM -1000, Tejun Heo wrote:
 
-The problem is allowing BPF LSM programs to return positive values when
-LSM hooks expect zero or negative values. Those values could be
-converted to a pointer, and escape the IS_ERR() check.
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index d06ada2341cb..cfbfc47692eb 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -131,6 +131,7 @@
+>  	*(__dl_sched_class)			\
+>  	*(__rt_sched_class)			\
+>  	*(__fair_sched_class)			\
+> +	*(__ext_sched_class)			\
+>  	*(__idle_sched_class)			\
+>  	__sched_class_lowest = .;
+>  
 
-The challenge is to ensure that the verifier prediction of R0 is
-accurate, so that the eBPF program is not unnecessarily rejected.
+> @@ -9654,8 +9675,13 @@ void __init sched_init(void)
+>  	int i;
+>  
+>  	/* Make sure the linker didn't screw up */
+> -	BUG_ON(&idle_sched_class != &fair_sched_class + 1 ||
+> -	       &fair_sched_class != &rt_sched_class + 1 ||
+> +#ifdef CONFIG_SCHED_CLASS_EXT
+> +	BUG_ON(&idle_sched_class != &ext_sched_class + 1 ||
+> +	       &ext_sched_class != &fair_sched_class + 1);
+> +#else
+> +	BUG_ON(&idle_sched_class != &fair_sched_class + 1);
+> +#endif
+> +	BUG_ON(&fair_sched_class != &rt_sched_class + 1 ||
+>  	       &rt_sched_class   != &dl_sched_class + 1);
+>  #ifdef CONFIG_SMP
+>  	BUG_ON(&dl_sched_class != &stop_sched_class + 1);
 
-> The patch is trying to remember the bitness of the last
-> operation, but what for?
-> The registers are 64-bit. There are 32-bit operations,
-> but they always update the upper 32-bits of the register.
-> reg_bounds_sync() updates 32 and 64 bit bounds regardless
-> whether the previous operation was on 32 or 64 bit.
+Perhaps the saner way to write this is:
 
-Ok, yes. I also thought that using the 64 bit register should be ok,
-but selftests fail.
+#ifdef CONFIG_SMP
+	BUG_ON(!sched_class_above(&stop_sched_class, &dl_sched_class));
+#endif
+	BUG_ON(!sched_class_above(&dl_sched_class, &rt_sched_class));
+	BUG_ON(!sched_class_above(&rt_sched_class, &fair_sched_class));
+	BUG_ON(!sched_class_above(&fair_sched_class, &idle_sched_class));
+#ifdef CONFIG_...
+	BUG_ON(!sched_class_above(&fair_sched_class, &ext_sched_class));
+	BUG_ON(!sched_class_above(&ext_sched_class, &idle_sched_class));
+#endif
 
-Regarding your comment, I have not seen reg_bounds_sync() for the case
-R = imm.
+> +static inline const struct sched_class *next_active_class(const struct sched_class *class)
+> +{
+> +	class++;
+> +	if (!scx_enabled() && class == &ext_sched_class)
+> +		class++;
+> +	return class;
+> +}
+> +
+> +#define for_active_class_range(class, _from, _to)				\
+> +	for (class = (_from); class != (_to); class = next_active_class(class))
+> +
+> +#define for_each_active_class(class)						\
+> +	for_active_class_range(class, __sched_class_highest, __sched_class_lowest)
+> +
+> +/*
+> + * SCX requires a balance() call before every pick_next_task() call including
+> + * when waking up from idle.
+> + */
+> +#define for_balance_class_range(class, prev_class, end_class)			\
+> +	for_active_class_range(class, (prev_class) > &ext_sched_class ?		\
+> +			       &ext_sched_class : (prev_class), (end_class))
+> +
 
-> It seems you're trying to hack around something that breaks
-> patch 3 which also looks fishy.
+This seems quite insane; why not simply make the ext methods effective
+no-ops? Both balance and pick explicitly support that already, no?
 
-I thought it was a good idea that changes in the LSM infrastructure are
-automatically reflected in the boundaries that BPF LSM should enforce.
+> @@ -5800,10 +5812,13 @@ static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
+>  	 * We can terminate the balance pass as soon as we know there is
+>  	 * a runnable task of @class priority or higher.
+>  	 */
+> -	for_class_range(class, prev->sched_class, &idle_sched_class) {
+> +	for_balance_class_range(class, prev->sched_class, &idle_sched_class) {
+>  		if (class->balance(rq, prev, rf))
+>  			break;
+>  	}
+> +#else
+> +	/* SCX needs the balance call even in UP, call it explicitly */
 
-If not, I'm open to new ideas. If we should use BTF ID sets, I'm fine
-with it.
+This, *WHY* !?!
 
-> Please explain the problem first with a concrete example.
+> +	balance_scx_on_up(rq, prev, rf);
+>  #endif
+>  
+>  	put_prev_task(rq, prev);
+> @@ -5818,6 +5833,9 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  	const struct sched_class *class;
+>  	struct task_struct *p;
+>  
+> +	if (scx_enabled())
+> +		goto restart;
+> +
+>  	/*
+>  	 * Optimization: we know that if all tasks are in the fair class we can
+>  	 * call that function directly, but only if the @prev task wasn't of a
+> @@ -5843,7 +5861,7 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  restart:
+>  	put_prev_task_balance(rq, prev, rf);
+>  
+> -	for_each_class(class) {
+> +	for_each_active_class(class) {
+>  		p = class->pick_next_task(rq);
+>  		if (p)
+>  			return p;
+> @@ -5876,7 +5894,7 @@ static inline struct task_struct *pick_task(struct rq *rq)
+>  	const struct sched_class *class;
+>  	struct task_struct *p;
+>  
+> -	for_each_class(class) {
+> +	for_each_active_class(class) {
+>  		p = class->pick_task(rq);
+>  		if (p)
+>  			return p;
 
-Ok, I have a simple one:
 
-$ llvm-objdump -d test_bpf_cookie.bpf.o
+But this.. afaict that means that:
 
-0000000000000000 <test_int_hook>:
+ - the whole EXT thing is incompatible with SCHED_CORE
+ - the whole EXT thing can be trivially starved by the presence of a
+   single CFS/BATCH/IDLE task.
 
-[...]
-
-       8:	85 00 00 00 0e 00 00 00	call 14
-       9:	b4 06 00 00 ff ff ff ff	w6 = -1
-      10:	5e 08 07 00 00 00 00 00	if w8 != w0 goto +7 <LBB11_3>
-      11:	bf 71 00 00 00 00 00 00	r1 = r7
-      12:	85 00 00 00 ae 00 00 00	call 174
-      13:	18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00	r1 = 0 ll
-      15:	79 12 00 00 00 00 00 00	r2 = *(u64 *)(r1 + 0)
-      16:	4f 02 00 00 00 00 00 00	r2 |= r0
-      17:	7b 21 00 00 00 00 00 00	*(u64 *)(r1 + 0) = r2
-
-smin_value = 0xffffffff, smax_value = 0xffffffff,
-s32_min_value = 0xffffffff, s32_max_value = 0xffffffff,
-
-This is what I see at the time the BPF LSM check should be done.
-
-How this should be properly handled?
-
-Thanks
-
-Roberto
-
+Both seems like deal breakers.
