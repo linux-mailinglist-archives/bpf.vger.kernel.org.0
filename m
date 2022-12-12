@@ -2,105 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C48649A1C
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 09:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5267E649AC8
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 10:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbiLLIgK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 03:36:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
+        id S231254AbiLLJME (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 04:12:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbiLLIgC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 03:36:02 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAFCDFAA;
-        Mon, 12 Dec 2022 00:36:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1670834161; x=1702370161;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bFYTa27LxNC965Nl6ptrEOem3ftkvwtR2lcZjjhuh7w=;
-  b=Ctpcli0Qu5gkHgOCOhBib4kAIwQyDbs9RvQiX3xGNTUYi3eEQQ7U3Nuh
-   0dNICWlhMfnaQYPoU6fK7JzSMFJDDJmY7r/cQed6pd5h25++CSYhvj4/I
-   tyiGi6964uzL1ir573stEVlhaVjcIh9rKbD1oLqgsOG9ZxlnyASN5wcm+
-   iBMv4ly/I6ElKrv0u23X4YzRGAckMGAUnRWiXK+E2CSXwQ03CEUQCI2P8
-   vBQNkmWz8CxDxJBaJfeVp/XUnYPcnsQXXPi/I3k+A76sheagMOzPYamGM
-   Xg519DOI/27uQeUYXxixZD14ABPLZRnRsO7Yy89Iwn9bnfMlD0/aPSUZ9
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10558"; a="380011023"
-X-IronPort-AV: E=Sophos;i="5.96,237,1665471600"; 
-   d="scan'208";a="380011023"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2022 00:36:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10558"; a="822407894"
-X-IronPort-AV: E=Sophos;i="5.96,237,1665471600"; 
-   d="scan'208";a="822407894"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP; 12 Dec 2022 00:35:56 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1p4eHx-008Nh5-28;
-        Mon, 12 Dec 2022 10:35:53 +0200
-Date:   Mon, 12 Dec 2022 10:35:53 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     david.keisarschm@mail.huji.ac.il
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
-        linux-scsi@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/5] Renaming weak prng invocations -
- prandom_bytes_state, prandom_u32_state
-Message-ID: <Y5bn6XcozgjbcSkf@smile.fi.intel.com>
-References: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
- <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
+        with ESMTP id S231777AbiLLJLm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 04:11:42 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A0F95B8
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 01:11:41 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d7so11403003pll.9
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 01:11:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ZbjWg99T0mF9ybfX9oHUGyVFLlYExb0Y4gq5Et7mlk=;
+        b=PC7vTUvil9hArj9YSMnK+tbcmI2PGAbYo//3TFRvBVnBeGH0WNx7NkdBLeeviwedo0
+         XHNJCA48wPviCCdcSVfDQujh8oL7InTsMqlTmd5tAYQgnZORBh8BhljTFBBpn2PymFS8
+         SnVU6QEy7mTmPie9PoB1O50SfwNRIepG1TK962Xl65a4+LrSvugjcVwEEFFs+IsydDl2
+         8Ym8Im3N5PXn48tviaulhaGfusjhitOHlY6CLN789uMxElc3RuypMgVbj1wZTVsi3ODe
+         Es6YCn+eVqKSkXFIzD25ToGa7235E96YIh437+8imd2TVDRZKhOPYZn4epQ5QIRaJ6J+
+         sehw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+ZbjWg99T0mF9ybfX9oHUGyVFLlYExb0Y4gq5Et7mlk=;
+        b=LFMXB5Mdv8lrsnaTDBocxWYLexVxQNcaMpXDPUQZZUyD88Pfk+iv4q/bL/RqT2J8kI
+         HGqY2D+AdURwhsTL2lnGXcmbhF9CtGVanoWSjviW8NBnF2aNuFKQN+T90YqeHopfhLYv
+         HjVBSIddPP2/p/CAICXr/gO6TGY1NzBBEQYINjX6Y1VB/NO3FSzHznXnXlt5+sxW7v2s
+         BLXnMVe1A9cfUgTIoKlqqrNi+u8YsQEz6P1s8PnbXPFIOxKh63IL+xpswiNkhd7s0aYX
+         Cma1tZ3JJ6Ciu7JWEKq7jhavVE0BHmwoaC3QRhX4du0XzKepsypuy1vd240OvbNvA0p4
+         s9IQ==
+X-Gm-Message-State: ANoB5pm/0svd0BPLMdA61c5FGwRXSUCZg97IXtpla8ow1o08raEVTRBL
+        O9JIJyfTuE+DAExIH+JmXy6wFvlgUvY=
+X-Google-Smtp-Source: AA0mqf5mZpOOAiU+pO87py1cP3gurBPMJB4B3nNcbMWHQwxNMAKJwqkS2KWon3KS154Y+oNLt/7dtg==
+X-Received: by 2002:a17:902:eccc:b0:189:cb73:75f0 with SMTP id a12-20020a170902eccc00b00189cb7375f0mr20991385plh.8.1670836301112;
+        Mon, 12 Dec 2022 01:11:41 -0800 (PST)
+Received: from localhost.localdomain ([43.132.141.4])
+        by smtp.gmail.com with ESMTPSA id j9-20020a170903024900b00189422a6b8bsm5829371plh.91.2022.12.12.01.11.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Dec 2022 01:11:40 -0800 (PST)
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+To:     bpf@vger.kernel.org, andrii@kernel.org
+Cc:     hengqi.chen@gmail.com, yangtiezhu@loongson.cn
+Subject: [PATCH bpf-next] libbpf: Add LoongArch support to bpf_tracing.h
+Date:   Mon, 12 Dec 2022 17:11:36 +0800
+Message-Id: <20221212091136.969960-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 12, 2022 at 12:16:04AM +0200, david.keisarschm@mail.huji.ac.il wrote:
-> From: David <david.keisarschm@mail.huji.ac.il>
-> 
-> Since the two functions
->  prandom_byte_state and prandom_u32_state
->  use the weak prng prandom_u32,
->  we added the prefix predictable_rng,
->  to their signatures so it is clear they are weak.
+Add PT_REGS macros for LoongArch64.
 
-It's fancy indentation.
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ tools/lib/bpf/bpf_tracing.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-...
+diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+index 2972dc25ff72..2d7da1caa961 100644
+--- a/tools/lib/bpf/bpf_tracing.h
++++ b/tools/lib/bpf/bpf_tracing.h
+@@ -32,6 +32,9 @@
+ #elif defined(__TARGET_ARCH_arc)
+ 	#define bpf_target_arc
+ 	#define bpf_target_defined
++#elif defined(__TARGET_ARCH_loongarch)
++	#define bpf_target_loongarch
++	#define bpf_target_defined
+ #else
 
->  		/* Fisher-Yates shuffle */
->  		for (i = count - 1; i > 0; i--) {
-> -			rand = prandom_u32_state(&state.rnd_state);
-> +			rand = predictable_rng_prandom_u32_state(&state.rnd_state);
+ /* Fall back to what the compiler says */
+@@ -62,6 +65,9 @@
+ #elif defined(__arc__)
+ 	#define bpf_target_arc
+ 	#define bpf_target_defined
++#elif defined(__loongarch__) && __loongarch_grlen == 64
++	#define bpf_target_loongarch
++	#define bpf_target_defined
+ #endif /* no compiler target */
 
-Isn't it too many "random":s encoded in the name?
+ #endif
+@@ -258,6 +264,21 @@ struct pt_regs___arm64 {
+ /* arc does not select ARCH_HAS_SYSCALL_WRAPPER. */
+ #define PT_REGS_SYSCALL_REGS(ctx) ctx
 
-I would leave either "rng" or "[p]random".
++#elif defined(bpf_target_loongarch)
++
++#define __PT_PARM1_REG regs[5]
++#define __PT_PARM2_REG regs[6]
++#define __PT_PARM3_REG regs[7]
++#define __PT_PARM4_REG regs[8]
++#define __PT_PARM5_REG regs[9]
++#define __PT_RET_REG regs[1]
++#define __PT_FP_REG regs[22]
++#define __PT_RC_REG regs[4]
++#define __PT_SP_REG regs[3]
++#define __PT_IP_REG csr_era
++/* loongarch does not select ARCH_HAS_SYSCALL_WRAPPER. */
++#define PT_REGS_SYSCALL_REGS(ctx) ctx
++
+ #endif
 
->  			rand %= (i + 1);
->  			swap_free_obj(slab, i, rand);
->  		}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+ #if defined(bpf_target_defined)
+--
+2.31.1
