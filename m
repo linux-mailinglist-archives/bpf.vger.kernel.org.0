@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4698D649B54
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 10:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBB1649BCE
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 11:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbiLLJid (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 04:38:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
+        id S230441AbiLLKO5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 05:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbiLLJi1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 04:38:27 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D187A293;
-        Mon, 12 Dec 2022 01:38:25 -0800 (PST)
+        with ESMTP id S229730AbiLLKO4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 05:14:56 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949C41FE;
+        Mon, 12 Dec 2022 02:14:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MZjvdGsr7OQyc+WN8WWS9d9aoiScOd7BDAvol982NI4=; b=SkUFdD4cXgZJin1CbKwdnZF3+v
-        PBy4SMek1/mx0YdhUrmZOuxhrW66sJsha6VNlvlYR6lP750n4SDvcUpjma6D/jzV6ml00fLJpAkqE
-        +d6vWonMKNYt8wY8LEqU0CjedKmWBgep0wJlQzoMJSpgAjXWWOYk9PxJjccEDr1kmnYzxSdXxeIpq
-        w+WKKemqKSewFB7/mRMKSquRCK5cxfif/0+sFEI7hPZXxAme5xNciZY1/iPoCNF3dZhL7w3LuD3Ok
-        cMXuqgNsh6nNXzdnoTKfDWf/04vlzQVTy4fRKcMk7dxtwB6Bow3/ZQIR6mU3lcCgjiXH2F60XL/by
-        oBkUUzXQ==;
+        bh=2hHKL+D8xenvvKDhRsDXsAlyRtvLxbR4M+slc846P9k=; b=fxrjLtvF1k3a6iHnHITMHwxWsR
+        x1jooI+/+iWKirFdNHvEeitxokOhOtqUZQY3uYXkFg2x4yWDvC5LQeci8fLyZb8cKvjgTIxNk1ap9
+        7orogizmyjHnYPCL71cR3LNAmx9ysrYJ+dTKAaLfArxEvYaZ7vl+L/gvH82VnsEJjcRJd40ll8TYx
+        qValtaNRNzp5tLiWArhcHABbeBbH00WqjVAUMAs7/BFSY5dHGCr9W9JAHJaErDLzOTkGOc/JaZXJE
+        2lCkLgdfHVwm+8WIDY8LFS9FQyzIUXFFOYzepc/P5LyOEw38f4zN3f8ZxZBkVWlvx+6J2+2N7HOM8
+        rkL+PerA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1p4fG7-00Atcl-P7; Mon, 12 Dec 2022 09:38:03 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1p4fpB-009kA5-3D; Mon, 12 Dec 2022 10:14:18 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4D762300137;
-        Mon, 12 Dec 2022 10:37:51 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4BE39300293;
+        Mon, 12 Dec 2022 11:14:16 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0D6C620AF3509; Mon, 12 Dec 2022 10:37:51 +0100 (CET)
-Date:   Mon, 12 Dec 2022 10:37:50 +0100
+        id 2FF2A2024870B; Mon, 12 Dec 2022 11:14:16 +0100 (CET)
+Date:   Mon, 12 Dec 2022 11:14:16 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -49,7 +49,7 @@ Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
         riel@surriel.com, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org, kernel-team@meta.com
 Subject: Re: [PATCHSET RFC] sched: Implement BPF extensible scheduler class
-Message-ID: <Y5b2btWFJeEfTyJg@hirez.programming.kicks-ass.net>
+Message-ID: <Y5b++AttvjzyTTJV@hirez.programming.kicks-ass.net>
 References: <20221130082313.3241517-1-tj@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -66,36 +66,16 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Nov 29, 2022 at 10:22:42PM -1000, Tejun Heo wrote:
 
-> Core scheduling is an example of a feature that took a significant amount of
-> time and effort to integrate into the kernel.
+> Rolling out kernel upgrades is a slow and iterative process. At a large scale
+> it can take months to roll a new kernel out to a fleet of servers. While this
+> latency is expected and inevitable for normal kernel upgrades, it can become
+> highly problematic when kernel changes are required to fix bugs. Livepatch [9]
+> is available to quickly roll out critical security fixes to large fleets, but
+> the scope of changes that can be applied with livepatching is fairly limited,
+> and would likely not be usable for patching scheduling policies. With
+> sched_ext, new scheduling policies can be rapidly rolled out to production
+> environments.
 
-Mostly because I dropped it on the floor once I heard about MDS. That
-made me lose interest entirely. The only reason it eventually happened
-was ChromeOS (Joel) pushing for it again.
+I don't think we can or should use this argument to push BPF into ever
+more places.
 
-> Part of the difficulty with core
-> scheduling was the inherent mismatch in abstraction between the desire to
-> perform core-wide scheduling, and the per-cpu design of the kernel scheduler.
-
-Not really; the main difficultly was due to me wanting to do it outside
-of the scheduling classes so that it fundamentally covers all of them.
-
-Doing it inside a class (say CFS) would've made it significantly simpler.
-
-> This caused issues, for example ensuring proper fairness between the
-> independent runqueues of SMT siblings.
-
-Inter-runqueue fairness is a known issue of CFS and quite independent of
-core scheduling.
-
-
-Anyway, I hate all of this. Linus NAK'ed loadable schedulers a number of
-times in the past and this is just that again -- with the extra downside
-of the whole BPF thing on top  :/
-
-You look to be exposing a ton of stuff I've so far even refused
-tracepoints for :-(
-
-Anyway, I'm just back from a heavy dose of Covid and still taking it
-easy, but I'll go read through the whole thing, hopefully I'll finish
-before vanishing again for the x-mas break.
