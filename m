@@ -2,129 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B593064ABB8
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 00:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D3564ABCE
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 00:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232938AbiLLXrS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 18:47:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
+        id S233410AbiLLXwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 18:52:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234069AbiLLXqx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 18:46:53 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA051D0CB
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 15:46:22 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BCMc4CO029036
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 15:46:22 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=boUxM9EsDtDBAnvZ0mZEMN7T3FEyvB18oLMpxSitfew=;
- b=cdV0K0LkAE+cLg4jessg0N63ynTHzULiqgwkbrZ8UkYZAzbgD56eg4Q2iGmHgcG3Nt1N
- csbyAacZ1BnU7K4krNTcW9dFfH91+rFe60hng/QSXXuCPfNLhW43C5nJVst5sQv4joJ2
- Uv4A2PZO9RaBLuwpUX+EysseL2k9slhWpio= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3me4bke284-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 15:46:22 -0800
-Received: from twshared0705.02.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Mon, 12 Dec 2022 15:46:20 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 6A51E139BAD1C; Mon, 12 Dec 2022 15:46:17 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH bpf] selftests/bpf: Fix a selftest compilation error with CONFIG_SMP=n
-Date:   Mon, 12 Dec 2022 15:46:17 -0800
-Message-ID: <20221212234617.4058942-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S231481AbiLLXwO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 18:52:14 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC773AF
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 15:52:13 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id a16so10495385qtw.10
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 15:52:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qipOPsspidMxqoo4oBDYgeBgzcLXxHtxJQXaWmeGNjg=;
+        b=4oCqnjivDfsr+3g1K3qnHBmJNaLG+FpNHIvoKBop5DjzY/wcxXrgbmmj138x0o3Pqc
+         cWSdPtTp0pIigo+zGSqhdesl9caMWlMsf5BCYakyrB5ABq6TWEWQ/O+1DzU7KPmJ4qw+
+         GLRBO00YCX6EdZtHDG5FdVHj+GcnpRvlDpJNdkQBRxPYugP1py+3vzwAcyTBQAIUET7l
+         HUKsUgfgcnRuBQqihDAd/gfK6PDgU+Uu9MXHnM88rpOWcGOmg4rb6+ZnG1X/k3XwpsWX
+         LxeHecG20gF6JFxfw0kBhM5REgbzgKfeSeM4Y7ZGwEuVRARARQt3OiyMlNv0shp3ukC5
+         Vfig==
+X-Gm-Message-State: ANoB5pn3GTIJu4Jkw8gRkZKsD8rVUQshJgDU3vHnHl4htE1+0tv93YhV
+        QHtJvUYZFesn/jznVwwBtZk=
+X-Google-Smtp-Source: AA0mqf4Wp4XQTmHb2uDmp+hxS/HsJMf+1tLsS6USDt/JjjnwBP/kexha3QbPXHM2Dm8Jgi9OPtjblQ==
+X-Received: by 2002:ac8:6b4f:0:b0:3a8:270:c0b8 with SMTP id x15-20020ac86b4f000000b003a80270c0b8mr1577393qts.15.1670889132157;
+        Mon, 12 Dec 2022 15:52:12 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:6a51])
+        by smtp.gmail.com with ESMTPSA id r18-20020a05620a299200b006fed2788751sm6895425qkp.76.2022.12.12.15.52.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Dec 2022 15:52:11 -0800 (PST)
+Date:   Mon, 12 Dec 2022 17:52:10 -0600
+From:   David Vernet <void@manifault.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [linux-next:master 7935/14039] progs/task_kfunc_failure.c:76:36:
+ error: no member named 'last_wakee' in 'struct task_struct'
+Message-ID: <Y5e+qj8M3LZafhGK@maniforge.lan>
+References: <202212130502.iuVFgkdf-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: HPq2PoYEn33t209Lp2GjwcycGpxBL1WW
-X-Proofpoint-GUID: HPq2PoYEn33t209Lp2GjwcycGpxBL1WW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-12_02,2022-12-12_02,2022-06-22_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202212130502.iuVFgkdf-lkp@intel.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kernel test robot reported bpf selftest build failure when CONFIG_SMP
-is not set. The error message looks below:
+On Tue, Dec 13, 2022 at 05:35:01AM +0800, kernel test robot wrote:
+> Hi David,
+> 
+> First bad commit (maybe != root cause):
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> head:   f925116b24c0c42dc6d5ab5111c55fd7f74e8dc7
+> commit: fe147956fca4604b920e6be652abc9bea8ce8952 [7935/14039] bpf/selftests: Add selftests for new task kfuncs
+> compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+> reproduce:
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=fe147956fca4604b920e6be652abc9bea8ce8952
+>         git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>         git fetch --no-tags linux-next master
+>         git checkout fe147956fca4604b920e6be652abc9bea8ce8952
+>         make O=/tmp/kselftest headers
+>         make O=/tmp/kselftest -C tools/testing/selftests
+> 
+> If you fix the issue, kindly add following tag where applicable
+> | Reported-by: kernel test robot <lkp@intel.com>
 
-  >> progs/rcu_read_lock.c:256:34: error: no member named 'last_wakee' in=
- 'struct task_struct'
-             last_wakee =3D task->real_parent->last_wakee;
-                          ~~~~~~~~~~~~~~~~~  ^
-     1 error generated.
+Ah, task->last_wakee isn't defined on UP builds, my mistake. This patch
+fixes the issue. I'll send the patch to the bpf list in a separate
+email.
 
-When CONFIG_SMP is not set, the field 'last_wakee' is not available in st=
-ruct
-'task_struct'. Hence the above compilation failure. To fix the issue, let=
- us
-choose another field 'group_leader' which is available regardless of
-CONDFIG_SMP set or not.
+From 80ec7fa20b0beb1b047bfc66b49b0910c578da83 Mon Sep 17 00:00:00 2001
+From: David Vernet <void@manifault.com>
+Date: Mon, 12 Dec 2022 17:34:40 -0600
+Subject: [PATCH bpf-next] bpf/selftests: Use parent instead of last_wakee in
+ task kfunc test
+
+Commit fe147956fca4 ("bpf/selftests: Add selftests for new task kfuncs")
+added a negative selftest called task_kfunc_acquire_trusted_walked which
+ensures that a BPF program that gets a struct task_struct * pointer from
+walking a struct is properly rejected by the verifier if it tries to
+pass that pointer to a task kfunc. In order to do this, it uses
+task->last_wakee, but unfortunately that's not defined on UP builds.
+Just use task->parent instead.
 
 Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
+Fixes: fe147956fca4 ("bpf/selftests: Add selftests for new task kfuncs")
+Signed-off-by: David Vernet <void@manifault.com>
 ---
- tools/testing/selftests/bpf/progs/rcu_read_lock.c      | 8 ++++----
  tools/testing/selftests/bpf/progs/task_kfunc_failure.c | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/te=
-sting/selftests/bpf/progs/rcu_read_lock.c
-index 125f908024d3..5cecbdbbb16e 100644
---- a/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-+++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-@@ -288,13 +288,13 @@ int nested_rcu_region(void *ctx)
- SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
- int task_untrusted_non_rcuptr(void *ctx)
- {
--	struct task_struct *task, *last_wakee;
-+	struct task_struct *task, *group_leader;
-=20
- 	task =3D bpf_get_current_task_btf();
- 	bpf_rcu_read_lock();
--	/* the pointer last_wakee marked as untrusted */
--	last_wakee =3D task->real_parent->last_wakee;
--	(void)bpf_task_storage_get(&map_a, last_wakee, 0, 0);
-+	/* the pointer group_leader marked as untrusted */
-+	group_leader =3D task->real_parent->group_leader;
-+	(void)bpf_task_storage_get(&map_a, group_leader, 0, 0);
- 	bpf_rcu_read_unlock();
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_failure.c b/too=
-ls/testing/selftests/bpf/progs/task_kfunc_failure.c
-index 87fa1db9d9b5..1b47b94dbca0 100644
+diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_failure.c b/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
+index 87fa1db9d9b5..60508c20041f 100644
 --- a/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
 +++ b/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
-@@ -73,7 +73,7 @@ int BPF_PROG(task_kfunc_acquire_trusted_walked, struct =
-task_struct *task, u64 cl
- 	struct task_struct *acquired;
-=20
- 	/* Can't invoke bpf_task_acquire() on a trusted pointer obtained from w=
-alking a struct. */
--	acquired =3D bpf_task_acquire(task->last_wakee);
-+	acquired =3D bpf_task_acquire(task->group_leader);
- 	bpf_task_release(acquired);
-=20
- 	return 0;
---=20
-2.30.2
+@@ -73,7 +73,7 @@ int BPF_PROG(task_kfunc_acquire_trusted_walked, struct task_struct *task, u64 cl
+        struct task_struct *acquired;
 
+        /* Can't invoke bpf_task_acquire() on a trusted pointer obtained from walking a struct. */
+-       acquired = bpf_task_acquire(task->last_wakee);
++       acquired = bpf_task_acquire(task->parent);
+        bpf_task_release(acquired);
+
+        return 0;
+--
+2.38.1
