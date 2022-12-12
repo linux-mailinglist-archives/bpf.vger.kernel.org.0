@@ -2,123 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5267E649AC8
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 10:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4698D649B54
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 10:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbiLLJME (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 04:12:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
+        id S231906AbiLLJid (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 04:38:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231777AbiLLJLm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 04:11:42 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A0F95B8
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 01:11:41 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d7so11403003pll.9
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 01:11:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ZbjWg99T0mF9ybfX9oHUGyVFLlYExb0Y4gq5Et7mlk=;
-        b=PC7vTUvil9hArj9YSMnK+tbcmI2PGAbYo//3TFRvBVnBeGH0WNx7NkdBLeeviwedo0
-         XHNJCA48wPviCCdcSVfDQujh8oL7InTsMqlTmd5tAYQgnZORBh8BhljTFBBpn2PymFS8
-         SnVU6QEy7mTmPie9PoB1O50SfwNRIepG1TK962Xl65a4+LrSvugjcVwEEFFs+IsydDl2
-         8Ym8Im3N5PXn48tviaulhaGfusjhitOHlY6CLN789uMxElc3RuypMgVbj1wZTVsi3ODe
-         Es6YCn+eVqKSkXFIzD25ToGa7235E96YIh437+8imd2TVDRZKhOPYZn4epQ5QIRaJ6J+
-         sehw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+ZbjWg99T0mF9ybfX9oHUGyVFLlYExb0Y4gq5Et7mlk=;
-        b=LFMXB5Mdv8lrsnaTDBocxWYLexVxQNcaMpXDPUQZZUyD88Pfk+iv4q/bL/RqT2J8kI
-         HGqY2D+AdURwhsTL2lnGXcmbhF9CtGVanoWSjviW8NBnF2aNuFKQN+T90YqeHopfhLYv
-         HjVBSIddPP2/p/CAICXr/gO6TGY1NzBBEQYINjX6Y1VB/NO3FSzHznXnXlt5+sxW7v2s
-         BLXnMVe1A9cfUgTIoKlqqrNi+u8YsQEz6P1s8PnbXPFIOxKh63IL+xpswiNkhd7s0aYX
-         Cma1tZ3JJ6Ciu7JWEKq7jhavVE0BHmwoaC3QRhX4du0XzKepsypuy1vd240OvbNvA0p4
-         s9IQ==
-X-Gm-Message-State: ANoB5pm/0svd0BPLMdA61c5FGwRXSUCZg97IXtpla8ow1o08raEVTRBL
-        O9JIJyfTuE+DAExIH+JmXy6wFvlgUvY=
-X-Google-Smtp-Source: AA0mqf5mZpOOAiU+pO87py1cP3gurBPMJB4B3nNcbMWHQwxNMAKJwqkS2KWon3KS154Y+oNLt/7dtg==
-X-Received: by 2002:a17:902:eccc:b0:189:cb73:75f0 with SMTP id a12-20020a170902eccc00b00189cb7375f0mr20991385plh.8.1670836301112;
-        Mon, 12 Dec 2022 01:11:41 -0800 (PST)
-Received: from localhost.localdomain ([43.132.141.4])
-        by smtp.gmail.com with ESMTPSA id j9-20020a170903024900b00189422a6b8bsm5829371plh.91.2022.12.12.01.11.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Dec 2022 01:11:40 -0800 (PST)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org, andrii@kernel.org
-Cc:     hengqi.chen@gmail.com, yangtiezhu@loongson.cn
-Subject: [PATCH bpf-next] libbpf: Add LoongArch support to bpf_tracing.h
-Date:   Mon, 12 Dec 2022 17:11:36 +0800
-Message-Id: <20221212091136.969960-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S231565AbiLLJi1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 04:38:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D187A293;
+        Mon, 12 Dec 2022 01:38:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MZjvdGsr7OQyc+WN8WWS9d9aoiScOd7BDAvol982NI4=; b=SkUFdD4cXgZJin1CbKwdnZF3+v
+        PBy4SMek1/mx0YdhUrmZOuxhrW66sJsha6VNlvlYR6lP750n4SDvcUpjma6D/jzV6ml00fLJpAkqE
+        +d6vWonMKNYt8wY8LEqU0CjedKmWBgep0wJlQzoMJSpgAjXWWOYk9PxJjccEDr1kmnYzxSdXxeIpq
+        w+WKKemqKSewFB7/mRMKSquRCK5cxfif/0+sFEI7hPZXxAme5xNciZY1/iPoCNF3dZhL7w3LuD3Ok
+        cMXuqgNsh6nNXzdnoTKfDWf/04vlzQVTy4fRKcMk7dxtwB6Bow3/ZQIR6mU3lcCgjiXH2F60XL/by
+        oBkUUzXQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1p4fG7-00Atcl-P7; Mon, 12 Dec 2022 09:38:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4D762300137;
+        Mon, 12 Dec 2022 10:37:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0D6C620AF3509; Mon, 12 Dec 2022 10:37:51 +0100 (CET)
+Date:   Mon, 12 Dec 2022 10:37:50 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+        pjt@google.com, derkling@google.com, haoluo@google.com,
+        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+        riel@surriel.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCHSET RFC] sched: Implement BPF extensible scheduler class
+Message-ID: <Y5b2btWFJeEfTyJg@hirez.programming.kicks-ass.net>
+References: <20221130082313.3241517-1-tj@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221130082313.3241517-1-tj@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add PT_REGS macros for LoongArch64.
+On Tue, Nov 29, 2022 at 10:22:42PM -1000, Tejun Heo wrote:
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- tools/lib/bpf/bpf_tracing.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+> Core scheduling is an example of a feature that took a significant amount of
+> time and effort to integrate into the kernel.
 
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index 2972dc25ff72..2d7da1caa961 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -32,6 +32,9 @@
- #elif defined(__TARGET_ARCH_arc)
- 	#define bpf_target_arc
- 	#define bpf_target_defined
-+#elif defined(__TARGET_ARCH_loongarch)
-+	#define bpf_target_loongarch
-+	#define bpf_target_defined
- #else
+Mostly because I dropped it on the floor once I heard about MDS. That
+made me lose interest entirely. The only reason it eventually happened
+was ChromeOS (Joel) pushing for it again.
 
- /* Fall back to what the compiler says */
-@@ -62,6 +65,9 @@
- #elif defined(__arc__)
- 	#define bpf_target_arc
- 	#define bpf_target_defined
-+#elif defined(__loongarch__) && __loongarch_grlen == 64
-+	#define bpf_target_loongarch
-+	#define bpf_target_defined
- #endif /* no compiler target */
+> Part of the difficulty with core
+> scheduling was the inherent mismatch in abstraction between the desire to
+> perform core-wide scheduling, and the per-cpu design of the kernel scheduler.
 
- #endif
-@@ -258,6 +264,21 @@ struct pt_regs___arm64 {
- /* arc does not select ARCH_HAS_SYSCALL_WRAPPER. */
- #define PT_REGS_SYSCALL_REGS(ctx) ctx
+Not really; the main difficultly was due to me wanting to do it outside
+of the scheduling classes so that it fundamentally covers all of them.
 
-+#elif defined(bpf_target_loongarch)
-+
-+#define __PT_PARM1_REG regs[5]
-+#define __PT_PARM2_REG regs[6]
-+#define __PT_PARM3_REG regs[7]
-+#define __PT_PARM4_REG regs[8]
-+#define __PT_PARM5_REG regs[9]
-+#define __PT_RET_REG regs[1]
-+#define __PT_FP_REG regs[22]
-+#define __PT_RC_REG regs[4]
-+#define __PT_SP_REG regs[3]
-+#define __PT_IP_REG csr_era
-+/* loongarch does not select ARCH_HAS_SYSCALL_WRAPPER. */
-+#define PT_REGS_SYSCALL_REGS(ctx) ctx
-+
- #endif
+Doing it inside a class (say CFS) would've made it significantly simpler.
 
- #if defined(bpf_target_defined)
---
-2.31.1
+> This caused issues, for example ensuring proper fairness between the
+> independent runqueues of SMT siblings.
+
+Inter-runqueue fairness is a known issue of CFS and quite independent of
+core scheduling.
+
+
+Anyway, I hate all of this. Linus NAK'ed loadable schedulers a number of
+times in the past and this is just that again -- with the extra downside
+of the whole BPF thing on top  :/
+
+You look to be exposing a ton of stuff I've so far even refused
+tracepoints for :-(
+
+Anyway, I'm just back from a heavy dose of Covid and still taking it
+easy, but I'll go read through the whole thing, hopefully I'll finish
+before vanishing again for the x-mas break.
