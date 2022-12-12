@@ -2,64 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9E764A760
+	by mail.lfdr.de (Postfix) with ESMTP id 82AA164A75F
 	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 19:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbiLLSqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 13:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36704 "EHLO
+        id S233195AbiLLSqM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 13:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233219AbiLLSpu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 13:45:50 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595F9C18
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 10:45:10 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id r26so14241912edc.10
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 10:45:10 -0800 (PST)
+        with ESMTP id S233212AbiLLSpv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 13:45:51 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1C1C7A
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 10:45:18 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id gh17so30473835ejb.6
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 10:45:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IiZmN4ZjJSXFzf25rnM53KhSNg/9LOlJ5n6URUAfv/c=;
-        b=ptz90eBbnCaTYqsujhS5PzGy3XuxuW+hjWG/VP0TXGprzZ0Julhgl3FgPYtKQnIMfz
-         UPlzVXfSCs+EPZeKdPksRqpseP5lAF+u7YRPZvY5Ilqn0hdOxd9OYzUwY7Hi3/fi41h6
-         F2SQWG8+JlhEdsFxcWXQCOMR+0nRIq7JmOmwtbLmoyIXbp0gZo4FLZQonVamacww8ljQ
-         9ujTjsJTwjxQ4qoCFbNiS+3vcHmtCqIfWz4TgzgVugwlEqv+tRa8H10/OHHwP01TfT77
-         UmrHdzIr2c+B/GUAYVxC31vl/mIDtTQldG9BmhiJC1bJ91u+g96FAqC07VYTy/mneVZ7
-         moJA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uiA2ipXd0o85kZZdHRiQZxCrDLXIrF5IHCTYNirDN/o=;
+        b=l7O4NUEI+5E4KnRbCMi3fnVN7R6e/FzXBcIL3kOd2eHpJ+sUO23k0NFhRsV7tEB0dO
+         jPx9VPPpCe0GVqwcsJlxRwvVk8bfqFOVhdgKPWz91ksZVhoRlcYdu6puzAKvThvTwY8+
+         P/6kKXkFC3B+/B5z1dE7SL8V5wCrbSvatNWua2QbiMYidwixcGqGnOXCA4yB1NThHTZa
+         ZuAqSN78eLGFrynXBskasOLYz/NFyst0S8E3hQycs91Iul2COP54Pl8czXi3CWa3t01S
+         QH31tTTldYv7LEYBBbRVlLao7AVqeElfyOC6ZQHkA8LFo2WDejgXkuyOb+a9viOjGO1h
+         JMCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IiZmN4ZjJSXFzf25rnM53KhSNg/9LOlJ5n6URUAfv/c=;
-        b=k+lV1ZYonj+65HIcrr2lSmqO3g12yb2hnwWrYk1lRI6TAQm/EixDT+dg7hDi96D1eL
-         TOte9L+FZ0qoXdiX+0UJlxi+dW1178ld2Q3K6Y1OqwJHKzE6ppCzdzMlmpYNpE/rJd+j
-         3zoMzD1WexfZmV3GSiMqJk4SebV+RTZHEwmtz5nhjUsQhCjpaq9XFPjumVYLjOEOTHFT
-         tsKNYBqsNX77IY9gQucEJACDo1aZSoNmfKgI2WmR9o77S7iGS5hwdLzMzntwslWH6yke
-         04QYEayU2pfzbWFhbb3D2k1OWFdNRqQyhjM4PvR2gdj2a2Y/1SR5YzmA5IUg6hUEAZ80
-         mKNw==
-X-Gm-Message-State: ANoB5pnis5cHxs8SXhk7jmRDKJlB1GEtAOVrpyBr8PYVrm9H2TxvF6u0
-        Of5WFnz91AokjaXLNQdedKMlMyatpLhLg/FySmo=
-X-Google-Smtp-Source: AA0mqf4YTdlJoC+EpAE/4L9H7dBoksEj9zmxvsDvnUdmu/IrOOgUS72YByoujjxksMGYg6jOPkiDlc7SWbVgXgnsq6E=
-X-Received: by 2002:aa7:cd05:0:b0:46c:e558:ce90 with SMTP id
- b5-20020aa7cd05000000b0046ce558ce90mr13219901edw.81.1670870708802; Mon, 12
- Dec 2022 10:45:08 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uiA2ipXd0o85kZZdHRiQZxCrDLXIrF5IHCTYNirDN/o=;
+        b=AEyRaGtPQ4Wimyqs9uFvUWdgtDhu7n69UPodtb58vvh4I22dwWiEFaHs2JdGLVTLER
+         aSz4HVJ/DK3DSrJps8Bl5BwBuMgXzxOoU3BKokSzyQGMEppe/APmuyZ1PNl8N+J/aWq+
+         SwZTOEE306mtoQvzQ0qDC+Vhiwx4TJmVMnbrf2L5A8D9AqlT4fEuKaBfXNXvPD9WCIxs
+         cLfSRhSChIU4bJkELR/V9sJOl68+gMh+FRhoh0MHXAolw150gP+LnuYWje+8BszYzh5g
+         fDjI98eQAuZNd2nRgjr81bzldsKBK9M4hh9IUyrTgFVxv1h48W3spckqox6LiT+dH4MN
+         uu/g==
+X-Gm-Message-State: ANoB5pkUHk+PH1K5w04m+cqTnRYMUxD4heRfJWc+vAzr4m6oHLIyzutB
+        mudDwA8/kWJbXm9ByTBiPJNUNQmYsG3S4XXuXAc=
+X-Google-Smtp-Source: AA0mqf418MRCP6/+fZgk7+8ALpCInDaTsDvVs2U2M0zvvQN50apPqZOWBTSjwAwe6BgU98k4sgOAzMKJH1zv/Z5AJUg=
+X-Received: by 2002:a17:906:180e:b0:7a2:6d38:1085 with SMTP id
+ v14-20020a170906180e00b007a26d381085mr64243377eje.114.1670870717266; Mon, 12
+ Dec 2022 10:45:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20221208185703.2681797-1-andrii@kernel.org> <20221208185703.2681797-6-andrii@kernel.org>
- <d22b1c3b25e1739a1318df1f619705a66d8f8584.camel@gmail.com>
-In-Reply-To: <d22b1c3b25e1739a1318df1f619705a66d8f8584.camel@gmail.com>
+References: <20221208185703.2681797-1-andrii@kernel.org> <20221208185703.2681797-4-andrii@kernel.org>
+ <5452514a9cf33315d5c179b8494ddd3e7eac2228.camel@gmail.com>
+In-Reply-To: <5452514a9cf33315d5c179b8494ddd3e7eac2228.camel@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 12 Dec 2022 10:44:55 -0800
-Message-ID: <CAEf4BzbG7ToGkam79zJWHQSVGz-L-f8wgmTEBqFBNGf53aGxFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] libbpf: fix BTF-to-C converter's padding logic
+Date:   Mon, 12 Dec 2022 10:45:04 -0800
+Message-ID: <CAEf4BzaDXg=iz8+zLiPxd=6qAWGDndpCyMt94QSWjAFu_bXY0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] selftests/bpf: add non-standardly sized enum
+ tests for btf_dump
 To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
         =?UTF-8?Q?Per_Sundstr=C3=B6m_XP?= <per.xp.sundstrom@ericsson.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,174 +69,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 9, 2022 at 9:21 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Fri, Dec 9, 2022 at 9:32 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
 > On Thu, 2022-12-08 at 10:57 -0800, Andrii Nakryiko wrote:
-> > Turns out that btf_dump API doesn't handle a bunch of tricky corner
-> > cases, as reported by Per, and further discovered using his testing
-> > Python script ([0]).
+> > Add few custom enum definitions testing mode(byte) and mode(word)
+> > attributes.
 > >
-> > This patch revamps btf_dump's padding logic significantly, making it
-> > more correct and also avoiding unnecessary explicit padding, where
-> > compiler would pad naturally. This overall topic turned out to be very
-> > tricky and subtle, there are lots of subtle corner cases. The comments
-> > in the code tries to give some clues, but comments themselves are
-> > supposed to be paired with good understanding of C alignment and paddin=
-g
-> > rules. Plus some experimentation to figure out subtle things like
-> > whether `long :0;` means that struct is now forced to be long-aligned
-> > (no, it's not, turns out).
-> >
-> > Anyways, Per's script, while not completely correct in some known
-> > situations, doesn't show any obvious cases where this logic breaks, so
-> > this is a nice improvement over the previous state of this logic.
-> >
-> > Some selftests had to be adjusted to accommodate better use of natural
-> > alignment rules, eliminating some unnecessary padding, or changing it t=
-o
-> > `type: 0;` alignment markers.
-> >
-> > Note also that for when we are in between bitfields, we emit explicit
-> > bit size, while otherwise we use `: 0`, this feels much more natural in
-> > practice.
-> >
-> > Next patch will add few more test cases, found through randomized Per's
-> > script.
-> >
-> >   [0] https://lore.kernel.org/bpf/85f83c333f5355c8ac026f835b18d15060725=
-fcb.camel@ericsson.com/
-> >
-> > Reported-by: Per Sundstr=C3=B6m XP <per.xp.sundstrom@ericsson.com>
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > > ---
-> >  tools/lib/bpf/btf_dump.c                      | 169 +++++++++++++-----
-> >  .../bpf/progs/btf_dump_test_case_bitfields.c  |   2 +-
-> >  .../bpf/progs/btf_dump_test_case_padding.c    |  58 ++++--
-> >  3 files changed, 164 insertions(+), 65 deletions(-)
+> >  .../bpf/progs/btf_dump_test_case_syntax.c     | 36 +++++++++++++++++++
+> >  1 file changed, 36 insertions(+)
 > >
-> > diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> > index 234e82334d56..d708452c9952 100644
-> > --- a/tools/lib/bpf/btf_dump.c
-> > +++ b/tools/lib/bpf/btf_dump.c
-> > @@ -830,6 +830,25 @@ static void btf_dump_emit_type(struct btf_dump *d,=
- __u32 id, __u32 cont_id)
-> >       }
-> >  }
+> > diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+> > index 4ee4748133fe..26fffb02ed10 100644
+> > --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+> > +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+> > @@ -25,6 +25,39 @@ typedef enum {
+> >       H = 2,
+> >  } e3_t;
 > >
-> > +static int btf_natural_align_of(const struct btf *btf, __u32 id)
-> > +{
-> > +     const struct btf_type *t =3D btf__type_by_id(btf, id);
-> > +     int i, align, vlen;
-> > +     const struct btf_member *m;
+> > +/* ----- START-EXPECTED-OUTPUT ----- */
+> > +/*
+> > + *enum e_byte {
+> > + *   EBYTE_1 = 0,
+> > + *   EBYTE_2 = 1,
+> > + *} __attribute__((mode(byte)));
+> > + *
+> > + */
+> > +/* ----- END-EXPECTED-OUTPUT ----- */
+> > +enum e_byte {
+> > +     EBYTE_1,
+> > +     EBYTE_2,
+> > +} __attribute__((mode(byte)));
 > > +
-> > +     if (!btf_is_composite(t))
-> > +             return btf__align_of(btf, id);
+> > +/* ----- START-EXPECTED-OUTPUT ----- */
+> > +/*
+> > + *enum e_word {
+> > + *   EWORD_1 = 0LL,
+> > + *   EWORD_2 = 1LL,
+> > + *} __attribute__((mode(word)));
+> > + *
+> > + */
+> > +/* ----- END-EXPECTED-OUTPUT ----- */
+> > +enum e_word {
+> > +     EWORD_1,
+> > +     EWORD_2,
+> > +} __attribute__((mode(word))); /* force to use 8-byte backing for this enum */
 > > +
-> > +     align =3D 1;
-> > +     m =3D btf_members(t);
-> > +     vlen =3D btf_vlen(t);
-> > +     for (i =3D 0; i < vlen; i++, m++) {
-> > +             align =3D max(align, btf_natural_align_of(btf, m->type));
-> > +     }
+> > +/* ----- START-EXPECTED-OUTPUT ----- */
+> > +enum e_big {
+> > +     EBIG_1 = 1000000000000ULL,
+> > +};
 > > +
-> > +     return align;
-> > +}
-> > +
+> >  typedef int int_t;
+> >
 >
-> The btf_natural_align_of() recursively visits nested structures.
-> However, the "packed" relation is non-recursive (see entry for
-> "packed" in [1]). Such mismatch leads to the following example being
-> printed incorrectly:
+> Something is off with this test, when executed on my little-endian
+> machine the output looks as follows:
 >
->         struct a {
->                 int x;
->         };
+> # ./test_progs -n 23/1
+> --- -   2022-12-09 17:22:03.412602033 +0000
+> +++ /tmp/btf_dump_test_case_syntax.output.Z28uhX        2022-12-09 17:22:03.403945082 +0000
+> @@ -23,13 +23,13 @@
+>  } __attribute__((mode(byte)));
 >
->         struct b {
->                 struct a a;
->                 char c;
->         } __attribute__((packed));
+>  enum e_word {
+> -       EWORD_1 = 0LL,
+> -       EWORD_2 = 1LL,
+> +       EWORD_1 = 0,
+> +       EWORD_2 = 1,
+>  } __attribute__((mode(word)));
 >
->         struct c {
->                 struct b b1;
->                 short a1;
->                 struct b b2;
->         };
->
-> The bpftool output looks as follows:
->
->         struct a {
->                 int x;
->         };
->
->         struct b {
->                 struct a a;
->                 char c;
->         } __attribute__((packed));
->
->         struct c {
->                 struct b b1;
->                 short: 0;
->                 short a1;
->                 struct b b2;
->         } __attribute__((packed));
-
-Nice find, thank you! The fix is very simple:
-
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index d708452c9952..d6fd93a57f11 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -843,7 +843,7 @@ static int btf_natural_align_of(const struct btf
-*btf, __u32 id)
-        m =3D btf_members(t);
-        vlen =3D btf_vlen(t);
-        for (i =3D 0; i < vlen; i++, m++) {
--               align =3D max(align, btf_natural_align_of(btf, m->type));
-+               align =3D max(align, btf__align_of(btf, m->type));
-        }
-
-I'll also add your example to selftests to make sure.
-
-[...]
-
->
-> Also the following comment in [2] is interesting:
->
-> >  If the member is a structure, then the structure has an alignment
-> >  of 1-byte, but the members of that structure continue to have their
-> >  natural alignment.
+>  enum e_big {
+> -       EBIG_1 = 1000000000000ULL,
+> -};
+> +       EBIG_1 = 3567587328,
+> +} __attribute__((mode(word)));
 >
 
-If I read it correctly, it just means that within that nested struct
-all the members are aligned naturally (unless nested struct itself is
-packed), which makes sense and is already handled correctly. Or did I
-miss some subtle point you are making?
+You seem to have too old Clang which doesn't emit ENUM64 types, try upgrading?
 
-> Which leads to unaligned access in the following case:
->
->         int foo(struct a *p) { return p->x; }
->
->         int main() {
->           struct b b[2] =3D {{ {1}, 2 }, { {3}, 4 }};
->           printf("%i, %i\n", foo(&b[0].a), foo(&b[1].a));
->         }
->
->         $ gcc -Wall test.c
->         test.c: In function =E2=80=98main=E2=80=99:
->         test.c:38:26: warning: taking address of packed member of =E2=80=
-=98struct b=E2=80=99 may result
->                       in an unaligned pointer value [-Waddress-of-packed-=
-member]
->            38 |   printf("%i, %i\n", foo(&b[0].a), foo(&b[1].a));
->
-> (This works fine on my x86 machine, but would be an issue on arm as
->  far as I understand).
->
-> [1] https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/Common-Type-Attributes.=
-html#Common-Type-Attributes
-> [2] https://developer.arm.com/documentation/100748/0607/writing-optimized=
--code/packing-data-structures
->
 
-[...]
+> But this is not related to your changes, here is a raw dump:
+>
+> $ bpftool btf dump file ./btf_dump_test_case_syntax.bpf.o
+>
+> [10] ENUM 'e_big' encoding=UNSIGNED size=8 vlen=1
+>         'EBIG_1' val=3567587328
+>
+> >  typedef volatile const int * volatile const crazy_ptr_t;
+> > @@ -224,6 +257,9 @@ struct root_struct {
+> >       enum e2 _2;
+> >       e2_t _2_1;
+> >       e3_t _2_2;
+> > +     enum e_byte _100;
+> > +     enum e_word _101;
+> > +     enum e_big _102;
+> >       struct struct_w_typedefs _3;
+> >       anon_struct_t _7;
+> >       struct struct_fwd *_8;
+>
