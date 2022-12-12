@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA7F649768
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 01:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B063649769
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 01:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbiLLAhs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Dec 2022 19:37:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
+        id S230247AbiLLAhx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Dec 2022 19:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbiLLAhs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Dec 2022 19:37:48 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0192657
-        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:37:46 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id u15-20020a17090a3fcf00b002191825cf02so10475421pjm.2
-        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:37:46 -0800 (PST)
+        with ESMTP id S230370AbiLLAhw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Dec 2022 19:37:52 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C61F49
+        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:37:51 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id p24so10438345plw.1
+        for <bpf@vger.kernel.org>; Sun, 11 Dec 2022 16:37:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rGtC3SN6Ifn7NlhGu9Dw24wgt0iqbWERqtVVRikZ7FU=;
-        b=aylXhwHRB/AnaqV0nbRReAnU29I+73XtbQYit2HtT6Nf4V02lXAmWcUcXfAMaKKMyW
-         ongHgiHPo/1Yo/hBjs1Yonph+tyD/hp39THh63O0jAOOrpoVfVW/gFXkc1QVjqQ1sYiL
-         Q5Pobduy9ttgieGJeoJ3ggbEV9QYNbSZ2mX4u1ANqmQlGpY9GKRtcV7baGzZ6FgIVx+r
-         +kOxzFrlGcZCgssVQNCEtuJh9I0VFURrNHQW8x1ib2kSYXZO8Wpiu8uGtc2/lvGfclsb
-         8VSviT9bHd5lIOEooS7oy7agNzaiKd6m4bpfeDCtz+Mex01Uu0FR1DKPDPgjyDTOXIqa
-         XzEA==
+        bh=/FpiiW8tlCQuBLdcxwgK57oWmDCwhuuS+u14RJYhlmk=;
+        b=blDmjwOG5yBpOKGDu4OqOJfK6YDC2tIgsaA++wSa0spxRtLKgIr7tNI1/nRT1GOLtp
+         kmICcOuS0tuAzHuhsh3L4tSLzOkTgZDXK8KlHTw1Zulv2p2rFKaK5DBXCtOzTWLLXLXM
+         nFdtzntL+7qlYziM7IZ6Z9Eu20pf9537iCQMLsJ0nKLZ5Z4nBKTo3jKnKyTXIkZWEMWK
+         uToyEoyYinHFpycXiVUdruUq96vWChVYpvMHF5dpYLdnhpth42d/gxX097KBpmpTJCFt
+         EHawh4kk5/jSb54tQVSkfcXVjAF6va6Pb8fF0SIuMb5dMRpI7dzXrhcTgE9Jtr+vFpZy
+         8VbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rGtC3SN6Ifn7NlhGu9Dw24wgt0iqbWERqtVVRikZ7FU=;
-        b=38o1gYlCp298BHeehKI7h8BRGy9uShH8pU0t8k923ZUQP2R4XtPV0hyUa0Yr6aZccX
-         2wZ1UH0FHhsVNUbLTzoLnyVoz5Llb5YSZoQVa2ybiSm1PEDw7nkyezMnc/638jmNIo7M
-         6PtfsK1VdJwcx3UBPQ+o2Z3RQWG8MzZQcLW3BerXOqMMcA7FXFVZKGNAu/5Xxz5LLFN1
-         RVKOakd2oJfu0CAIVlhA4cobd0tYvwxMr4BuVEjZY3K/pdEqwtO8hF5XilVcP9KQw8no
-         5SyxaVhdzpWy0y3mQGPma6pv1rS7fI7PCKsXhXEdBH7hQYqNd4dYOmhNWDhA/+XIT5rv
-         WoLg==
-X-Gm-Message-State: ANoB5pkeemllOvdd3ywkl+5nvuLlcADejf8pNUGUpMNQysYamwhOYMi4
-        S7/W/VCgqsLPlicqoE0oOE5EIqm/dpnUyIXhDu0=
-X-Google-Smtp-Source: AA0mqf5OlxYfuHjLp+MFFLeSNr64rxHfH89FJoaBzG1fbT222yfAv8sK9MnrXVllA3XEBIYOCtCxTg==
-X-Received: by 2002:a05:6a20:a681:b0:ac:1266:bda with SMTP id ba1-20020a056a20a68100b000ac12660bdamr19043512pzb.7.1670805466209;
-        Sun, 11 Dec 2022 16:37:46 -0800 (PST)
+        bh=/FpiiW8tlCQuBLdcxwgK57oWmDCwhuuS+u14RJYhlmk=;
+        b=YQLx5qrX4tfjtQy1nb3FzFNQuyBEzbQql4Qg5AOex1rSoCW9NKtF+wOpNMLILlhWYb
+         SdyxYTwIq41A6FDfMBd3ClHGIWvM+A11DxWQ23RB0pj3+Um/5WxDBiSAA+fBARfMWDH1
+         lDsipYAMThfTLS34lq91pCKq8iFEghq9JCG7re6UkChZauSX4rU7fWzRmopfrmIuDB5B
+         V14FgvnPiBZCm0NOcmBgpl4JzpowgT6toIBAIzkQv1Lmk6+9CBdNI4+IjPps3rWy+EJ3
+         DzCUVfZrTCfB9NgL9v9PFUNAfXhCY/ZakjoIjS1Hr5O+Gqhs9MXsFXot2zALT3s/tHqe
+         8xIQ==
+X-Gm-Message-State: ANoB5plaPeIc+VKVD0MoRpWI/9MHahuRNhLiPDhaGQP1k3MJ1O/a/FFS
+        A2xnd+SWV8w9B1sEmUoRx2w=
+X-Google-Smtp-Source: AA0mqf6sGfx5c19Rrfw5tyzmw9AMZXV+iZ/hNtnw3UdNnuW5oRiZL8CBPsG6dFQMVoMUC2lhjL16RA==
+X-Received: by 2002:a17:902:b58c:b0:189:184d:f0ff with SMTP id a12-20020a170902b58c00b00189184df0ffmr13651625pls.11.1670805471482;
+        Sun, 11 Dec 2022 16:37:51 -0800 (PST)
 Received: from vultr.guest ([2001:19f0:7002:8c7:5400:4ff:fe3d:656a])
-        by smtp.gmail.com with ESMTPSA id w9-20020a170902e88900b00177fb862a87sm4895960plg.20.2022.12.11.16.37.41
+        by smtp.gmail.com with ESMTPSA id w9-20020a170902e88900b00177fb862a87sm4895960plg.20.2022.12.11.16.37.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Dec 2022 16:37:45 -0800 (PST)
+        Sun, 11 Dec 2022 16:37:50 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -59,9 +59,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         vbabka@suse.cz, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com
 Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 2/9] mm: Allow using active vm in all contexts
-Date:   Mon, 12 Dec 2022 00:37:04 +0000
-Message-Id: <20221212003711.24977-3-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 3/9] mm: percpu: Account active vm for percpu
+Date:   Mon, 12 Dec 2022 00:37:05 +0000
+Message-Id: <20221212003711.24977-4-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221212003711.24977-1-laoar.shao@gmail.com>
 References: <20221212003711.24977-1-laoar.shao@gmail.com>
@@ -77,210 +77,129 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We can use active vm in task, softirq and irq to account specific memory
-usage. Two new helpers active_vm_{add,sub} are introduced.
-
-A dummy item is introduced here, which will be removed when we introduce
-real item.
+Account percpu allocation when active vm item is set. The percpu memory
+is accounted at percpu alloc and unaccount at percpu free. To record
+which part of percpu chunk is enabled with active vm, we have to
+allocate extra memory for this percpu chunk to record the active vm
+information. This extra memory will be freed when this percpu chunk
+is freed.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/active_vm.h | 50 +++++++++++++++++++++++++++++++++++++++
- include/linux/sched.h     |  5 ++++
- kernel/fork.c             |  4 ++++
- mm/active_vm.c            | 23 ++++++++++++++++++
- mm/active_vm.h            | 38 +++++++++++++++++++++++++++++
- 5 files changed, 120 insertions(+)
+ mm/percpu-internal.h |  3 +++
+ mm/percpu.c          | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 46 insertions(+)
 
-diff --git a/include/linux/active_vm.h b/include/linux/active_vm.h
-index 899e578e94fa..21f9aaca12c4 100644
---- a/include/linux/active_vm.h
-+++ b/include/linux/active_vm.h
-@@ -4,6 +4,9 @@
- 
- #ifdef CONFIG_ACTIVE_VM
- #include <linux/jump_label.h>
-+#include <linux/preempt.h>
-+#include <linux/percpu-defs.h>
-+#include <linux/sched.h>
- 
- extern struct static_key_true active_vm_disabled;
- 
-@@ -14,10 +17,57 @@ static inline bool active_vm_enabled(void)
- 
- 	return true;
- }
-+
-+enum active_vm_item {
-+	DUMMY_ITEM = 1,
-+	NR_ACTIVE_VM_ITEM = DUMMY_ITEM,
-+};
-+
-+struct active_vm_stat {
-+	long stat[NR_ACTIVE_VM_ITEM];
-+};
-+
-+DECLARE_PER_CPU(struct active_vm_stat, active_vm_stats);
-+DECLARE_PER_CPU(int, irq_active_vm_item);
-+DECLARE_PER_CPU(int, soft_active_vm_item);
-+
-+static inline int
-+active_vm_item_set(int item)
-+{
-+	int old_item;
-+
-+	if (in_irq()) {
-+		old_item = this_cpu_read(irq_active_vm_item);
-+		this_cpu_write(irq_active_vm_item, item);
-+	} else if (in_softirq()) {
-+		old_item = this_cpu_read(soft_active_vm_item);
-+		this_cpu_write(soft_active_vm_item, item);
-+	} else {
-+		old_item = current->active_vm_item;
-+		current->active_vm_item = item;
-+	}
-+
-+	return old_item;
-+}
-+
-+long active_vm_item_sum(int item);
-+
- #else
- static inline bool active_vm_enabled(void)
- {
- 	return false;
- }
-+
-+static inline int
-+active_vm_item_set(int item)
-+{
-+	return 0;
-+}
-+
-+static inline long active_vm_item_sum(int item)
-+{
-+	return 0;
-+}
-+
- #endif /* CONFIG_ACTIVE_VM */
- #endif /* __INCLUDE_ACTIVE_VM_H */
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index ffb6eb55cd13..05acefd383d4 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1441,6 +1441,11 @@ struct task_struct {
- 	struct mem_cgroup		*active_memcg;
- #endif
- 
+diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
+index 70b1ea23f4d2..f56e236a2cf3 100644
+--- a/mm/percpu-internal.h
++++ b/mm/percpu-internal.h
+@@ -63,6 +63,9 @@ struct pcpu_chunk {
+ 	int			nr_pages;	/* # of pages served by this chunk */
+ 	int			nr_populated;	/* # of populated pages */
+ 	int                     nr_empty_pop_pages; /* # of empty populated pages */
 +#ifdef CONFIG_ACTIVE_VM
-+	/* Used for scope-based memory accounting */
-+	int				active_vm_item;
++	int			*active_vm;	/* vector of activem vm items */
 +#endif
-+
- #ifdef CONFIG_BLK_CGROUP
- 	struct request_queue		*throttle_queue;
- #endif
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 08969f5aa38d..590d949ff131 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1043,6 +1043,10 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
- 	tsk->active_memcg = NULL;
- #endif
- 
-+#ifdef CONFIG_ACTIVE_VM
-+	tsk->active_vm_item = 0;
-+#endif
-+
- #ifdef CONFIG_CPU_SUP_INTEL
- 	tsk->reported_split_lock = 0;
- #endif
-diff --git a/mm/active_vm.c b/mm/active_vm.c
-index 60849930a7d3..541b2ba22da9 100644
---- a/mm/active_vm.c
-+++ b/mm/active_vm.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/page_ext.h>
-+#include <linux/active_vm.h>
- 
- static bool __active_vm_enabled __initdata =
- 				IS_ENABLED(CONFIG_ACTIVE_VM);
-@@ -31,3 +32,25 @@ struct page_ext_operations active_vm_ops = {
- 	.need = need_active_vm,
- 	.init = init_active_vm,
+ 	unsigned long		populated[];	/* populated bitmap */
  };
-+
-+DEFINE_PER_CPU(int, irq_active_vm_item);
-+DEFINE_PER_CPU(int, soft_active_vm_item);
-+EXPORT_PER_CPU_SYMBOL(irq_active_vm_item);
-+EXPORT_PER_CPU_SYMBOL(soft_active_vm_item);
-+DEFINE_PER_CPU(struct active_vm_stat, active_vm_stats);
-+EXPORT_PER_CPU_SYMBOL(active_vm_stats);
-+
-+long active_vm_item_sum(int item)
-+{
-+	struct active_vm_stat *this;
-+	long sum = 0;
-+	int cpu;
-+
-+	WARN_ON_ONCE(item <= 0);
-+	for_each_online_cpu(cpu) {
-+		this = &per_cpu(active_vm_stats, cpu);
-+		sum += this->stat[item - 1];
-+	}
-+
-+	return sum;
-+}
-diff --git a/mm/active_vm.h b/mm/active_vm.h
-index 72978955833e..1df088d768ef 100644
---- a/mm/active_vm.h
-+++ b/mm/active_vm.h
-@@ -3,6 +3,44 @@
- #define __MM_ACTIVE_VM_H
  
- #ifdef CONFIG_ACTIVE_VM
-+#include <linux/active_vm.h>
+diff --git a/mm/percpu.c b/mm/percpu.c
+index 27697b2429c2..05858981ed4a 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -98,6 +98,7 @@
+ #include <trace/events/percpu.h>
+ 
+ #include "percpu-internal.h"
++#include "active_vm.h"
+ 
+ /*
+  * The slots are sorted by the size of the biggest continuous free area.
+@@ -1398,6 +1399,9 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
+ #ifdef CONFIG_MEMCG_KMEM
+ 	/* first chunk is free to use */
+ 	chunk->obj_cgroups = NULL;
++#endif
++#ifdef CONFIG_ACTIVE_VM
++	chunk->active_vm = NULL;
+ #endif
+ 	pcpu_init_md_blocks(chunk);
+ 
+@@ -1476,6 +1480,14 @@ static struct pcpu_chunk *pcpu_alloc_chunk(gfp_t gfp)
+ 	}
+ #endif
+ 
++#ifdef CONFIG_ACTIVE_VM
++	if (active_vm_enabled()) {
++		chunk->active_vm = pcpu_mem_zalloc(pcpu_chunk_map_bits(chunk) *
++								sizeof(int), gfp);
++		if (!chunk->active_vm)
++			goto active_vm_fail;
++	}
++#endif
+ 	pcpu_init_md_blocks(chunk);
+ 
+ 	/* init metadata */
+@@ -1483,6 +1495,12 @@ static struct pcpu_chunk *pcpu_alloc_chunk(gfp_t gfp)
+ 
+ 	return chunk;
+ 
++#ifdef CONFIG_ACTIVE_VM
++active_vm_fail:
++#ifdef CONFIG_MEMCG_KMEM
++	pcpu_mem_free(chunk->obj_cgroups);
++#endif
++#endif
+ #ifdef CONFIG_MEMCG_KMEM
+ objcg_fail:
+ 	pcpu_mem_free(chunk->md_blocks);
+@@ -1501,6 +1519,9 @@ static void pcpu_free_chunk(struct pcpu_chunk *chunk)
+ {
+ 	if (!chunk)
+ 		return;
++#ifdef CONFIG_ACTIVE_VM
++	pcpu_mem_free(chunk->active_vm);
++#endif
+ #ifdef CONFIG_MEMCG_KMEM
+ 	pcpu_mem_free(chunk->obj_cgroups);
+ #endif
+@@ -1890,6 +1911,17 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
+ 
+ 	pcpu_memcg_post_alloc_hook(objcg, chunk, off, size);
+ 
++#ifdef CONFIG_ACTIVE_VM
++	if (active_vm_enabled() && chunk->active_vm && (gfp & __GFP_ACCOUNT)) {
++		int item = active_vm_item();
 +
- extern struct page_ext_operations active_vm_ops;
++		if (item > 0) {
++			chunk->active_vm[off >> PCPU_MIN_ALLOC_SHIFT] = item;
++			active_vm_item_add(item, size);
++		}
++	}
++#endif
 +
-+static inline int active_vm_item(void)
-+{
-+	if (in_irq())
-+		return this_cpu_read(irq_active_vm_item);
+ 	return ptr;
+ 
+ fail_unlock:
+@@ -2283,6 +2315,17 @@ void free_percpu(void __percpu *ptr)
+ 
+ 	pcpu_memcg_free_hook(chunk, off, size);
+ 
++#ifdef CONFIG_ACTIVE_VM
++	if (active_vm_enabled() && chunk->active_vm) {
++		int item = chunk->active_vm[off >> PCPU_MIN_ALLOC_SHIFT];
 +
-+	if (in_softirq())
-+		return this_cpu_read(soft_active_vm_item);
++		if (item > 0) {
++			active_vm_item_sub(item, size);
++			chunk->active_vm[off >> PCPU_MIN_ALLOC_SHIFT] = 0;
++		}
++	}
++#endif
 +
-+	return current->active_vm_item;
-+}
-+
-+static inline void active_vm_item_add(int item, long delta)
-+{
-+	WARN_ON_ONCE(item <= 0);
-+	this_cpu_add(active_vm_stats.stat[item - 1], delta);
-+}
-+
-+static inline void active_vm_item_sub(int item, long delta)
-+{
-+	WARN_ON_ONCE(item <= 0);
-+	this_cpu_sub(active_vm_stats.stat[item - 1], delta);
-+}
-+#else /* CONFIG_ACTIVE_VM */
-+static inline int active_vm_item(void)
-+{
-+	return 0;
-+}
-+
-+static inline void active_vm_item_add(int item, long delta)
-+{
-+}
-+
-+static inline void active_vm_item_sub(int item, long delta)
-+{
-+}
- #endif /* CONFIG_ACTIVE_VM */
- #endif /* __MM_ACTIVE_VM_H */
+ 	/*
+ 	 * If there are more than one fully free chunks, wake up grim reaper.
+ 	 * If the chunk is isolated, it may be in the process of being
 -- 
 2.30.1 (Apple Git-130)
 
