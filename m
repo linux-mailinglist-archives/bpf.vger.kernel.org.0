@@ -2,110 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5052B64A8A2
-	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 21:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1A864A8A5
+	for <lists+bpf@lfdr.de>; Mon, 12 Dec 2022 21:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbiLLUUF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 15:20:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
+        id S233362AbiLLUU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 15:20:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbiLLUUE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 15:20:04 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE24FBE36
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 12:20:02 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id 65so704502pfx.9
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 12:20:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rWGQ0ewoSOgdHyHpQZxxplSgMhk3BA5Qgh487mnlNvg=;
-        b=3UQZGZq0WnojaJgHwxez521zVZCLZ5ZLKORv5N/bw8mjjxIpkALxswmLOlA82ZbbeF
-         RQ22O1+zzXjggc08nX0sYen9Rip9BrQVLIw0cbvjPiknPS/djiqNLUELc64QotvXs5W7
-         u8JuLbNneJTOU+FOHf4uBcNJfGF5Eb83QGdXK0fcvLDFnbUZegMLGo/WYInP0SIRjuH3
-         iqDMFV3GqkIqxFqyHGYoGCxVfIC021XclKmFvwN4JhQKfzOaVOVtjUFBmUYtRE97LbXJ
-         Q5FuKkNtRLtuUb0T55jd+XHDNaB7m+KqMk1lIr5XLOLlb9qsFA24Y7SC6UDovcm8VJxc
-         /Lcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rWGQ0ewoSOgdHyHpQZxxplSgMhk3BA5Qgh487mnlNvg=;
-        b=6a3x2CWIrvySf5O6/R1zkrsRTbi3G419OqNtKuApttNrEKrVE4n41AL6BUV5FOwJwk
-         yL7MeBtFIyqKnhhuRxtZrGpFd+y/gJjitaedv9VrBXbe4OyDcVNCI2WbHnO0Vd/3/Y76
-         u+zCGrjf3uKFBi7dcA01GszEs21vq4gyUV0PCeMDIpbSXrUUBbz53jkk6RwizPVfHm0/
-         9NH5BQWF8LK4KBj5ANnNJwZe1jqeuuRnqfmZlM2v0Xh8ZKhuMkOvzh2xjKjWJdGcy8Zo
-         CQU1C9KsONTQrO8xYjaMYqnjoXvbvBLyxjorWyfAVuXKOJ7O1fxLwVuyBIZ6Dy5m5NEk
-         vYFQ==
-X-Gm-Message-State: ANoB5pnWzcRu16YTJJt650e+Nr2HilwblC9RTRNuWYvJxDWKOPvt4OCK
-        srpdu1J0O/flSN62aslnkybBcHASduvQ9ozZtCm0
-X-Google-Smtp-Source: AA0mqf488YlMEQSBbTYcDXP/fTBDwzZdjxp01Lxhjnf8ORmg16WBirt5KHghuxiWWkew+f2xB0LOJACqx8K+pb/5FYc=
-X-Received: by 2002:a63:64c5:0:b0:479:2109:506 with SMTP id
- y188-20020a6364c5000000b0047921090506mr633770pgb.92.1670876402114; Mon, 12
- Dec 2022 12:20:02 -0800 (PST)
+        with ESMTP id S232817AbiLLUU0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 15:20:26 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EF82670;
+        Mon, 12 Dec 2022 12:20:25 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BD8B61211;
+        Mon, 12 Dec 2022 20:20:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BA7D7C433F2;
+        Mon, 12 Dec 2022 20:20:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670876424;
+        bh=h/jRYsCXYY7+/lZzMDWtrQnCsIy0owko6XeDBt8jCcA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=noVBljFgtwg5DQfT2G7FKSZ0tOi7K6RJBFkuaBadrHMgHpCs9uTqae50hP5IEPT8L
+         JkOxttbxoZDy/Kdgc/EdeXfx+8MsbaKyGnoic6jChkJ0y8h4RRHA3WJiA4OLYfEUae
+         IDJ74tuN7vh/Z0wYa0xLma/mE91qrFJNd81cWGJinOxN3pljnBOrMqrZELoo3JGtqk
+         fvk1cHEkrgNcupwhIITkvSnOqKogj0P7RCYtM/Qt5zZ/4LJrZRCxL1d/6SJOvNWEuX
+         GSsMkK+XGXb8wm3oihEODQqpbTQrUxhspmi9M0LWBbHMW5tDlSLWtNSIVy4Zncbro5
+         Fm9z2G7uLq7iA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A1673C197B4;
+        Mon, 12 Dec 2022 20:20:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221209082936.892416-1-roberto.sassu@huaweicloud.com>
- <CAHC9VhSKeTqR+m5g2Nacp9ZJbvD3=OADGMEfDRX4rsH8HmGO9g@mail.gmail.com> <8b202f4e2e234e6786b1c078129e2c3e6853c404.camel@huaweicloud.com>
-In-Reply-To: <8b202f4e2e234e6786b1c078129e2c3e6853c404.camel@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 12 Dec 2022 15:19:50 -0500
-Message-ID: <CAHC9VhTvzFdVGCFjFkyCjdXgqZrfvDCVJ3TJ8-0xq8RfFU1Rjw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] lsm: Fix description of fs_context_parse_param
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     corbet@lwn.net, casey@schaufler-ca.com, omosnace@redhat.com,
-        john.johansen@canonical.com, kpsingh@kernel.org,
-        bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf-next 2022-12-11
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167087642465.1714.13161592634488078251.git-patchwork-notify@kernel.org>
+Date:   Mon, 12 Dec 2022 20:20:24 +0000
+References: <20221212024701.73809-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20221212024701.73809-1-alexei.starovoitov@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, kuba@kernel.org,
+        andrii@kernel.org, martin.lau@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 12, 2022 at 3:34 AM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
-> On Fri, 2022-12-09 at 12:28 -0500, Paul Moore wrote:
-> > On Fri, Dec 9, 2022 at 3:30 AM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > >
-> > > The fs_context_parse_param hook already has a description, which seems the
-> > > right one according to the code.
-> > >
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > ---
-> > >  include/linux/lsm_hooks.h | 3 ---
-> > >  1 file changed, 3 deletions(-)
-> >
-> > I just merged this into lsm/next with a 'Fixes' tag pointing at the
-> > previous comment block commit, thanks Roberto.
->
-> Thanks Paul. Didn't include it, as I thought it is part of the stable
-> kernel process. I guess it is always fine to include it, and to not CC
-> the stable kernel mailing list, when the patch does not meet the
-> criteria.
+Hello:
 
-To be clear, the 'Fixes' tag here was for the previous comment fix
-patch which only exists in the lsm/next branch and not any released
-kernel, adding a stable/CC to this patch wouldn't have done anything
-except throw up a number of automatically generated merge conflicts as
-the stable folks tried to merge just this patch.  The 'Fixes' tag is
-simply a bit of administrative housekeeping to connect this patch back
-to the original, problematic patch; it will largely go unnoticed
-unless someone decides to cherry pick patches.
+This pull request was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-When in doubt it's okay to add a Fixes tag, but leave off the
-stable/CC.  In fact I prefer if people leave off the stable/CC as I've
-found it to often be misused IMO; I'd rather add it when merging the
-patch into one of the stable branches.
+On Sun, 11 Dec 2022 18:47:01 -0800 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+> 
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 74 non-merge commits during the last 11 day(s) which contain
+> a total of 88 files changed, 3362 insertions(+), 789 deletions(-).
+> 
+> [...]
 
+Here is the summary with links:
+  - pull-request: bpf-next 2022-12-11
+    https://git.kernel.org/netdev/net-next/c/26f708a28454
+
+You are awesome, thank you!
 -- 
-paul-moore.com
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
