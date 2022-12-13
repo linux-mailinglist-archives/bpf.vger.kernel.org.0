@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E8764B3B7
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 12:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC5664B3DA
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 12:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235244AbiLMLEn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 06:04:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
+        id S235262AbiLMLLV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 06:11:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235247AbiLMLET (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 06:04:19 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A67F1928F;
-        Tue, 13 Dec 2022 03:04:18 -0800 (PST)
+        with ESMTP id S235297AbiLMLKa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 06:10:30 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55142AE45;
+        Tue, 13 Dec 2022 03:10:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fYOzy/gUcxxXzkKA87qx2IW3m1L2Q171uzRWvTbvKRU=; b=PiyD44bm27wPMzLX9FrSsGiflk
-        gZ76ezkF0kLRfI+NreMZZPbcydxTWCC5GNewm3/LVzcDrO7jnUPFedVEBo8X9lmDPklsGtzY3Ohc8
-        It8ZJBqmcfWbI0dr3ACQFJoAzEGxS18RXWfqiEm8rq2axizRiHeBeI3Ee/VEOyTCWXLRIbGQ5n9Wk
-        ZSXz5PmAOqL1rYAZQ4XDRJ+Ku7GRsYdMDt/sZluW1Kilre5K0r7zTH5hrfDWPeHACX0RKZq/Htp3a
-        Btdj1Fbg0lWhz8221Z4U64wqC7Ws4SrK8xyJvUcwjxOdM8JXvadFtw++LkB4i9O05bWEfeNd3fWA9
-        CnFxTTRQ==;
+        bh=+nRf/6V6wXsRw4fo3uuanPnY17TIgFQIAFrRDe+Tsy0=; b=UCFo+1waL8A3D+bUWjAD0OTxvs
+        kKvdiOplI6Qsuga3/0/V9jlGiqqk062VFJJ9jzstVBML5kh7q63Ngvb4aEfkABooxLviTdSoml0S9
+        9KdCu69mDfHMpRyjoMiuXv4yiiXYdCdRAHd43e6YcnfMu0KNQbOjO3Z0nDU1hdMGEzvzLCK1AXDGc
+        u71v5UHhxUAqSNQRjDJpB5997o0e8SxsTYpON+84bNjpqieH5/NMcrE9xgYpz9lLYW6ViYuGK7ZR6
+        6HgZV9NsxyhBziXdLBKmRROiYyMXDmB7T4YxM+s7ztwOELSslilLpmU4wxdil3UTcoq6qBtS0Xue3
+        V+qGpHcA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1p534s-00A3Ue-FF; Tue, 13 Dec 2022 11:04:02 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1p53Aq-00C9Ic-SI; Tue, 13 Dec 2022 11:10:13 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A49C3300465;
-        Tue, 13 Dec 2022 11:57:12 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2D8E330015E;
+        Tue, 13 Dec 2022 12:02:44 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B1BA820BC8BEB; Tue, 13 Dec 2022 11:57:12 +0100 (CET)
-Date:   Tue, 13 Dec 2022 11:57:12 +0100
+        id 1247E201FEA66; Tue, 13 Dec 2022 12:02:44 +0100 (CET)
+Date:   Tue, 13 Dec 2022 12:02:43 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
-        pjt@google.com, derkling@google.com, haoluo@google.com,
-        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
-        riel@surriel.com, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 14/31] sched_ext: Implement BPF extensible scheduler class
-Message-ID: <Y5haiM8qx1eOLjIr@hirez.programming.kicks-ass.net>
-References: <20221130082313.3241517-1-tj@kernel.org>
- <20221130082313.3241517-15-tj@kernel.org>
- <Y5ckYyz14bxCvv40@hirez.programming.kicks-ass.net>
- <Y5eeGMpr/SuyGBQO@slm.duckdns.org>
+To:     Peter Oskolkov <posk@google.com>
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        brho@google.com, bristot@redhat.com, bsegall@google.com,
+        daniel@iogearbox.net, derkling@google.com,
+        dietmar.eggemann@arm.com, dschatzberg@meta.com,
+        dskarlat@cs.cmu.edu, dvernet@meta.com, haoluo@google.com,
+        joshdon@google.com, juri.lelli@redhat.com, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
+        mgorman@suse.de, mingo@redhat.com, pjt@google.com,
+        riel@surriel.com, rostedt@goodmis.org, tj@kernel.org,
+        torvalds@linux-foundation.org, vincent.guittot@linaro.org,
+        vschneid@redhat.com, posk@posk.io
+Subject: Re: [PATCH 31/31] sched_ext: Add a rust userspace hybrid example
+ scheduler
+Message-ID: <Y5hb05fll8jXc0Ck@hirez.programming.kicks-ass.net>
+References: <Y5c0qEuyn8cAvLGQ@hirez.programming.kicks-ass.net>
+ <20221212210547.1105894-1-posk@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y5eeGMpr/SuyGBQO@slm.duckdns.org>
+In-Reply-To: <20221212210547.1105894-1-posk@google.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -67,37 +67,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 12, 2022 at 11:33:12AM -1000, Tejun Heo wrote:
-
-> > > @@ -5800,10 +5812,13 @@ static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
-> > >  	 * We can terminate the balance pass as soon as we know there is
-> > >  	 * a runnable task of @class priority or higher.
-> > >  	 */
-> > > -	for_class_range(class, prev->sched_class, &idle_sched_class) {
-> > > +	for_balance_class_range(class, prev->sched_class, &idle_sched_class) {
-> > >  		if (class->balance(rq, prev, rf))
-> > >  			break;
-> > >  	}
-> > > +#else
-> > > +	/* SCX needs the balance call even in UP, call it explicitly */
-> > 
-> > This, *WHY* !?!
+On Mon, Dec 12, 2022 at 01:05:47PM -0800, Peter Oskolkov wrote:
+> Peter Zijlstra wrote:
 > 
-> This comes from the fact that there are no strict rq boundaries and the BPF
-> scheduler can share scheduling queues across any subset of CPUs however they
-> see fit. So, task <-> rq association is flexible until the very last moment
-> the task gets picked for execution. For the dispatch path to support this,
-> it needs to be able to migrate tasks across rq's which requires unlocking
-> the current rq which can only be done in ->balance(). So, sched_ext uses
-> ->balance() to run the dispatch path and thus needs it called even on UP.
+> > I long for the UMCG patches -- that
+> > at least was somewhat sane and trivially composes, unlike all this
+> > madness.
+> 
+> A surprise, to be sure, but a welcome one!
 
-Fundamentally none of that makes sense, on UP there is no placement,
-there is only the one CPU, very little choice to be had.
+Well, I did somewhat like it as I put significant effort into it. In
+fact I was >.< near to merging the lot when you changed your mind and
+went the syscall route.
 
-> Given that UP doesn't need to transfer tasks across, it might be possible to
-> move the whole dispatch operation into ->pick_next_task() but the current
-> state would be different, so it's more complicated and will likely be more
-> brittle.
+At that point something happened (I fell ill or a holiday or something)
+but it basically got snowed under as I had already been ignoring the
+inbox while doing the UMCG thing and I just never managed to get back to
+it (like a 1000 other things :/ -- this maintainer thing really is like
+drinking from a firehose).
 
-That sounds like something is amiss, you fundamentally hold all the
-right locks, there is only one.
