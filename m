@@ -2,37 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B455564BBE6
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 19:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8C464BBE7
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 19:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236515AbiLMS1o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 13:27:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        id S236399AbiLMS1q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 13:27:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236399AbiLMS1l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 13:27:41 -0500
+        with ESMTP id S236518AbiLMS1o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 13:27:44 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651CEF71
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:27:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4401A183
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:27:42 -0800 (PST)
 Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BDHl9SN005771
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:27:39 -0800
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BDHl7nC005634
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:27:42 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=IUCU0bJ6MLzSLKuSsIDaobodJuLQD1oSjSQbhZWFbOc=;
- b=SwFDPyGMonJh9j2B7htJnDoxpRLRWtcrSmwPV6Tc7k4JbZj0yU3a1WiaTVpWNMOBIQ6s
- zsOx2hYL2/91zYyyHEaJHLvSfzXhT9KVxelhCpNZm+o1abCOqlwWSgV/pm4DOsZYWBu6
- 6ckktArSV1hziaWjnV73Q0PAf+7LeknNzgs= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=uWvS5QX113x3YR1UlP8modRgSVJISEauQkwb/PRWDHk=;
+ b=DCyK+BI9M8dgYbO7Zu231CtNOcpG/ALV/6yvzJgQw1st51voS561U9tzGY5YDz8SKduV
+ BSmbWG2nulgDPDeqHO+ZaX/Pev8c9ISkO6GH53FSMwcp9EH0l0vkUSuQTkdr7cUPF14y
+ RAtyTTjfBl6e+8V93ZvfvPuoVmFbTIb8/hI= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3me4bkp5c1-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3me4bkp548-18
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:27:38 -0800
-Received: from twshared10308.07.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:27:42 -0800
+Received: from twshared8047.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Tue, 13 Dec 2022 10:27:37 -0800
+ 15.1.2375.34; Tue, 13 Dec 2022 10:27:38 -0800
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id 31D821270D090; Tue, 13 Dec 2022 10:27:27 -0800 (PST)
+        id 1596E1270D0A0; Tue, 13 Dec 2022 10:27:27 -0800 (PST)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -40,17 +41,18 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Kernel Team <kernel-team@fb.com>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next 1/2] bpf, x86: Improve PROBE_MEM runtime load check
-Date:   Tue, 13 Dec 2022 10:27:25 -0800
-Message-ID: <20221213182726.325137-1-davemarchevsky@fb.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Add verifier test exercising jit PROBE_MEM logic
+Date:   Tue, 13 Dec 2022 10:27:26 -0800
+Message-ID: <20221213182726.325137-2-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221213182726.325137-1-davemarchevsky@fb.com>
+References: <20221213182726.325137-1-davemarchevsky@fb.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: -OWD0FGKLIVqA9ZXkuA_LQlrrJ1pqs5O
-X-Proofpoint-GUID: -OWD0FGKLIVqA9ZXkuA_LQlrrJ1pqs5O
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: _zqH6W5pjpRLV-VXe5j8YGbHykakZxb5
+X-Proofpoint-GUID: _zqH6W5pjpRLV-VXe5j8YGbHykakZxb5
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-13_03,2022-12-13_01,2022-06-22_01
@@ -64,323 +66,299 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch rewrites the runtime PROBE_MEM check insns emitted by the BPF
-JIT in order to ensure load safety. The changes in the patch fix two
-issues with the previous logic and more generally improve size of
-emitted code. Paragraphs between this one and "FIX 1" below explain the
-purpose of the runtime check and examine the current implementation.
+This patch adds a test exercising logic that was fixed / improved in
+the previous patch in the series, as well as general sanity checking for
+jit's PROBE_MEM logic which should've been unaffected by the previous
+patch.
 
-When a load is marked PROBE_MEM - e.g. due to PTR_UNTRUSTED access - the
-address being loaded from is not necessarily valid. The BPF jit sets up
-exception handlers for each such load which catch page faults and 0 out
-the destination register.
+The added verifier test does the following:
+  * Acquire a referenced kptr to struct prog_test_ref_kfunc using
+    existing net/bpf/test_run.c kfunc
+    * Helper returns ptr to a specific prog_test_ref_kfunc whose first
+      two fields - both ints - have been prepopulated w/ vals 42 and
+      108, respectively
+  * kptr_xchg the acquired ptr into an arraymap
+  * Do a direct map_value load of the just-added ptr
+    * Goal of all this setup is to get an unreferenced kptr pointing to
+      struct with ints of known value, which is the result of this step
+  * Using unreferenced kptr obtained in previous step, do loads of
+    prog_test_ref_kfunc.a (offset 0) and .b (offset 4)
+  * Then incr the kptr by 8 and load prog_test_ref_kfunc.a again (this
+    time at offset -8)
+  * Add all the loaded ints together and return
 
-Arbitrary register-relative loads can escape this exception handling
-mechanism. Specifically, a load like dst_reg =3D *(src_reg + off) will not
-trigger BPF exception handling if (src_reg + off) is outside of kernel
-address space, resulting in an uncaught page fault. A concrete example
-of such behavior is a program like:
+Before the PROBE_MEM fixes in previous patch, the loads at offset 0 and
+4 would succeed, while the load at offset -8 would incorrectly fail
+runtime check emitted by the JIT and 0 out dst reg as a result. This
+confirmed by retval of 150 for this test before previous patch - since
+second .a read is 0'd out - and a retval of 192 with the fixed logic.
 
-  struct result {
-    char space[40];
-    long a;
-  };
-
-  /* if err, returns ERR_PTR(-EINVAL) */
-  struct result *ptr =3D get_ptr_maybe_err();
-  long x =3D ptr->a;
-
-If get_ptr_maybe_err returns ERR_PTR(-EINVAL) and the result isn't
-checked for err, 'result' will be (u64)-EINVAL, a number close to
-U64_MAX. The ptr->a load will be > U64_MAX and will wrap over to a small
-positive u64, which will be in userspace and thus not covered by BPF
-exception handling mechanism.
-
-In order to prevent such loads from occurring, the BPF jit emits some
-instructions which do runtime checking of (src_reg + off) and skip the
-actual load if it's out of range. As an example, here are instructions
-emitted for a %rdi =3D *(%rdi + 0x10) PROBE_MEM load:
-
-  72:   movabs $0x800000000010,%r11 --|
-  7c:   cmp    %r11,%rdi              |- 72 - 7f: Check 1
-  7f:    jb    0x000000000000008d   --|
-  81:   mov    %rdi,%r11             -----|
-  84:   add    $0x0000000000000010,%r11   |- 81-8b: Check 2
-  8b:   jnc    0x0000000000000091    -----|
-  8d:   xor    %edi,%edi             ---- 0 out dest
-  8f:   jmp    0x0000000000000095
-  91:   mov    0x10(%rdi),%rdi       ---- Actual load
-  95:
-
-The JIT considers kernel address space to start at MAX_TASK_SIZE +
-PAGE_SIZE. Determining whether a load will be outside of kernel address
-space should be a simple check:
-
-  (src_reg + off) >=3D MAX_TASK_SIZE + PAGE_SIZE
-
-But because there is only one spare register when the checking logic is
-emitted, this logic is split into two checks:
-
-  Check 1: src_reg >=3D (MAX_TASK_SIZE + PAGE_SIZE - off)
-  Check 2: src_reg + off doesn't wrap over U64_MAX and result in small pos =
-u64
-
-Emitted insns implementing Checks 1 and 2 are annotated in the above
-example. Check 1 can be done with a single spare register since the
-source reg by definition is the left-hand-side of the inequality.
-Since adding 'off' to both sides of Check 1's inequality results in the
-original inequality we want, it's equivalent to testing that inequality.
-Except in the case where src_reg + off wraps past U64_MAX, which is why
-Check 2 needs to actually add src_reg + off if Check 1 passes - again
-using the single spare reg.
-
-FIX 1: The Check 1 inequality listed above is not what current code is
-doing. Current code is a bit more pessimistic, instead checking:
-
-  src_reg >=3D (MAX_TASK_SIZE + PAGE_SIZE + abs(off))
-
-The 0x800000000010 in above example is from this current check. If Check
-1 was corrected to use the correct right-hand-side, the value would be
-0x7ffffffffff0. This patch changes the checking logic more broadly (FIX
-2 below will elaborate), fixing this issue as a side-effect of the
-rewrite. Regardless, it's important to understand why Check 1 should've
-been doing MAX_TASK_SIZE + PAGE_SIZE - off before proceeding.
-
-FIX 2: Current code relies on a 'jnc' to determine whether src_reg + off
-addition wrapped over. For negative offsets this logic is incorrect.
-Consider Check 2 insns emitted when off =3D -0x10:
-
-  81:   mov    %rdi,%r11
-  84:   add    0xfffffffffffffff0,%r11
-  8b:   jnc    0x0000000000000091
-
-2's complement representation of -0x10 is a large positive u64. Any
-value of src_reg that passes Check 1 will result in carry flag being set
-after (src_reg + off) addition. So a load with any negative offset will
-always fail Check 2 at runtime and never do the actual load. This patch
-fixes the negative offset issue by rewriting both checks in order to not
-rely on carry flag.
-
-The rewrite takes advantage of the fact that, while we only have one
-scratch reg to hold arbitrary values, we know the offset at JIT time.
-This we can use src_reg as a temporary scratch reg to hold src_reg +
-offset since we can return it to its original value by later subtracting
-offset. As a result we can directly check the original inequality we
-care about:
-
-  (src_reg + off) >=3D MAX_TASK_SIZE + PAGE_SIZE
-
-For a load like %rdi =3D *(%rsi + -0x10), this results in emitted code:
-
-  43:   movabs $0x800000000000,%r11
-  4d:   add    $0xfffffffffffffff0,%rsi --- src_reg +=3D off
-  54:   cmp    %r11,%rsi                --- Check original inequality
-  57:   jae    0x000000000000005d
-  59:   xor    %edi,%edi
-  5b:   jmp    0x0000000000000061
-  5d:   mov    0x0(%rdi),%rsi           --- Actual Load
-  61:   sub    $0xfffffffffffffff0,%rsi --- src_reg -=3D off
-
-Note that the actual load is always done with offset 0, since previous
-insns have already done src_reg +=3D off. Regardless of whether the new
-check succeeds or fails, insn 61 is always executed, returning src_reg
-to its original value.
-
-Because the goal of these checks is to ensure that loaded-from address
-will be protected by BPF exception handler, the new check can safely
-ignore any wrapover from insn 4d. If such wrapped-over address passes
-insn 54 + 57's cmp-and-jmp it will have such protection so the load can
-proceed.
-
-As an aside, since offset in above calculations comes from
-bpf_insn, it's a s16 and thus won't wrap under unless src_reg is
-an anomalously low address in user address space. But again, if such a
-wrapunder results in an address in kernelspace, it's fine for the
-purpose of this check.
-
-IMPROVEMENTS: The above improved logic is 8 insns vs original logic's 9,
-and has 1 fewer jmp. The number of checking insns can be further
-improved in common scenarios:
-
-If src_reg =3D=3D dst_reg, the actual load insn will clobber src_reg, so
-there's no original src_reg state for the sub insn immediately following
-the load to restore, so it can be omitted. In fact, it must be omitted
-since it would incorrectly subtract from the result of the load if it
-wasn't. So for src_reg =3D=3D dst_reg, JIT emits these insns:
-
-  3c:   movabs $0x800000000000,%r11
-  46:   add    $0xfffffffffffffff0,%rdi
-  4d:   cmp    %r11,%rdi
-  50:   jae    0x0000000000000056
-  52:   xor    %edi,%edi
-  54:   jmp    0x000000000000005a
-  56:   mov    0x0(%rdi),%rdi
-  5a:
-
-The only difference from larger example being the omitted sub, which
-would've been insn 5a in this example.
-
-If offset =3D=3D 0, we can similarly omit the sub as in previous case, since
-there's nothing added to subtract. For the same reason we can omit the
-addition as well, resulting in JIT emitting these insns:
-
-  46:   movabs $0x800000000000,%r11
-  4d:   cmp    %r11,%rdi
-  50:   jae    0x0000000000000056
-  52:   xor    %edi,%edi
-  54:   jmp    0x000000000000005a
-  56:   mov    0x0(%rdi),%rdi
-  5a:
-
-Although the above example also has src_reg =3D=3D dst_reg, the same
-offset =3D=3D 0 optimization is valid to apply if src_reg !=3D dst_reg.
-
-To summarize the improvements in emitted insn count for the
-check-and-load:
-
-BEFORE:                8 check insns, 3 jmps
-AFTER (general case):  7 check insns, 2 jmps (12.5% fewer insn, 33% jmp)
-AFTER (src =3D=3D dst):    6 check insns, 2 jmps (25% fewer insn)
-AFTER (offset =3D=3D 0):   5 check insns, 2 jmps (37.5% fewer insn)
-
-(Above counts don't include the 1 load insn, just checking around it)
-
-Based on BPF bytecode + JITted x86 insn I saw while experimenting with
-these improvements, I expect the src_reg =3D=3D dst_reg case to occur most
-often, followed by offset =3D=3D 0, then the general case.
+The test exercises the two optimizations to fixed logic added in last
+patch as well:
+  * BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0) exercises "insn->off is
+    0, no need to add / sub from src_reg" optimization
+  * BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, -8) exercises "src_reg =3D=3D
+    dst_reg, no need to restore src_reg after load" optimization
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
-I originally noticed this issue while working on rbtree and submitted a
-fix as part of that series: https://lore.kernel.org/bpf/20221206231000.3180=
-914-11-davemarchevsky@fb.com/
+ tools/testing/selftests/bpf/test_verifier.c | 75 ++++++++++++++----
+ tools/testing/selftests/bpf/verifier/jit.c  | 84 +++++++++++++++++++++
+ 2 files changed, 146 insertions(+), 13 deletions(-)
 
-This patch is more of an independent reimplementation than a follow-up,
-it's not necessary to have read that patch or the discussion around it
-to understand.
-
-Submitting independently as I won't actually need this for rbtree and it
-fixes issues which existed independently of rbtree implementation.
-
- arch/x86/net/bpf_jit_comp.c | 70 +++++++++++++++++++++----------------
- 1 file changed, 39 insertions(+), 31 deletions(-)
-
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 36ffe67ad6e5..e3e2b57e4e13 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -992,6 +992,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs=
-, u8 *image, u8 *rw_image
- 		u8 b2 =3D 0, b3 =3D 0;
- 		u8 *start_of_ldx;
- 		s64 jmp_offset;
-+		s16 insn_off;
- 		u8 jmp_cond;
- 		u8 *func;
- 		int nops;
-@@ -1358,57 +1359,52 @@ st:			if (is_imm8(insn->off))
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_W:
- 		case BPF_LDX | BPF_MEM | BPF_DW:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
-+			insn_off =3D insn->off;
-+
- 			if (BPF_MODE(insn->code) =3D=3D BPF_PROBE_MEM) {
--				/* Though the verifier prevents negative insn->off in BPF_PROBE_MEM
--				 * add abs(insn->off) to the limit to make sure that negative
--				 * offset won't be an issue.
--				 * insn->off is s16, so it won't affect valid pointers.
-+				/* Conservatively check that src_reg + insn->off is a kernel address:
-+				 *   src_reg + insn->off >=3D TASK_SIZE_MAX + PAGE_SIZE
-+				 * src_reg is used as scratch for src_reg +=3D insn->off and restored
-+				 * after emit_ldx if necessary
- 				 */
--				u64 limit =3D TASK_SIZE_MAX + PAGE_SIZE + abs(insn->off);
--				u8 *end_of_jmp1, *end_of_jmp2;
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/=
+selftests/bpf/test_verifier.c
+index 8c808551dfd7..14f8d0231e3c 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -55,7 +55,7 @@
+ #define MAX_UNEXPECTED_INSNS	32
+ #define MAX_TEST_INSNS	1000000
+ #define MAX_FIXUPS	8
+-#define MAX_NR_MAPS	23
++#define MAX_NR_MAPS	24
+ #define MAX_TEST_RUNS	8
+ #define POINTER_VALUE	0xcafe4all
+ #define TEST_DATA_LEN	64
+@@ -131,6 +131,7 @@ struct bpf_test {
+ 	int fixup_map_ringbuf[MAX_FIXUPS];
+ 	int fixup_map_timer[MAX_FIXUPS];
+ 	int fixup_map_kptr[MAX_FIXUPS];
++	int fixup_map_probe_mem_read[MAX_FIXUPS];
+ 	struct kfunc_btf_id_pair fixup_kfunc_btf_id[MAX_FIXUPS];
+ 	/* Expected verifier log output for result REJECT or VERBOSE_ACCEPT.
+ 	 * Can be a tab-separated sequence of expected strings. An empty string
+@@ -698,15 +699,26 @@ static int create_cgroup_storage(bool percpu)
+  * struct timer {
+  *   struct bpf_timer t;
+  * };
++ * struct prog_test_member1 {
++ *   int a;
++ * };
++ * struct prog_test_member {
++ *   struct prog_test_member1 m;
++ *   int c;
++ * };
+  * struct btf_ptr {
+  *   struct prog_test_ref_kfunc __kptr *ptr;
+  *   struct prog_test_ref_kfunc __kptr_ref *ptr;
+  *   struct prog_test_member __kptr_ref *ptr;
+- * }
++ * };
++ * struct probe_mem_holder {
++ *   struct prog_test_member kptr_ref *ptr;
++ * };
+  */
+ static const char btf_str_sec[] =3D "\0bpf_spin_lock\0val\0cnt\0l\0bpf_t=
+imer\0timer\0t"
+ 				  "\0btf_ptr\0prog_test_ref_kfunc\0ptr\0kptr\0kptr_ref"
+-				  "\0prog_test_member";
++				  "\0prog_test_member\0prog_test_member1\0a\0c\0m"
++				  "\0probe_mem_holder";
+ static __u32 btf_raw_types[] =3D {
+ 	/* int */
+ 	BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
+@@ -724,20 +736,29 @@ static __u32 btf_raw_types[] =3D {
+ 	BTF_MEMBER_ENC(41, 4, 0), /* struct bpf_timer t; */
+ 	/* struct prog_test_ref_kfunc */		/* [6] */
+ 	BTF_STRUCT_ENC(51, 0, 0),
+-	BTF_STRUCT_ENC(89, 0, 0),			/* [7] */
++	/* struct prog_test_member1 */			/* [7] */
++	BTF_STRUCT_ENC(106, 1, 4),
++	BTF_MEMBER_ENC(124, 1, 0), /* int a; */
++	/* struct prog_test_member */			/* [8] */
++	BTF_STRUCT_ENC(89, 2, 8),
++	BTF_MEMBER_ENC(128, 7, 0), /* struct prog_test_member1 m; */
++	BTF_MEMBER_ENC(126, 1, 32), /* int c; */
+ 	/* type tag "kptr" */
+-	BTF_TYPE_TAG_ENC(75, 6),			/* [8] */
++	BTF_TYPE_TAG_ENC(75, 6),			/* [9] */
+ 	/* type tag "kptr_ref" */
+-	BTF_TYPE_TAG_ENC(80, 6),			/* [9] */
+-	BTF_TYPE_TAG_ENC(80, 7),			/* [10] */
+-	BTF_PTR_ENC(8),					/* [11] */
++	BTF_TYPE_TAG_ENC(80, 6),			/* [10] */
++	BTF_TYPE_TAG_ENC(80, 8),			/* [11] */
+ 	BTF_PTR_ENC(9),					/* [12] */
+ 	BTF_PTR_ENC(10),				/* [13] */
+-	/* struct btf_ptr */				/* [14] */
++	BTF_PTR_ENC(11),				/* [14] */
++	/* struct btf_ptr */				/* [15] */
+ 	BTF_STRUCT_ENC(43, 3, 24),
+-	BTF_MEMBER_ENC(71, 11, 0), /* struct prog_test_ref_kfunc __kptr *ptr; *=
+/
+-	BTF_MEMBER_ENC(71, 12, 64), /* struct prog_test_ref_kfunc __kptr_ref *p=
+tr; */
+-	BTF_MEMBER_ENC(71, 13, 128), /* struct prog_test_member __kptr_ref *ptr=
+; */
++	BTF_MEMBER_ENC(71, 12, 0), /* struct prog_test_ref_kfunc __kptr *ptr; *=
+/
++	BTF_MEMBER_ENC(71, 13, 64), /* struct prog_test_ref_kfunc __kptr_ref *p=
+tr; */
++	BTF_MEMBER_ENC(71, 14, 128), /* struct prog_test_member __kptr_ref *ptr=
+; */
++	/* struct probe_mem_holder */			/* [16] */
++	BTF_STRUCT_ENC(130, 1, 8),
++	BTF_MEMBER_ENC(71, 13, 0), /* struct prog_test_ref_kfunc kptr_ref *ptr;=
+ */
+ };
 =20
--				/* Conservatively check that src_reg + insn->off is a kernel address:
--				 * 1. src_reg + insn->off >=3D limit
--				 * 2. src_reg + insn->off doesn't become small positive.
--				 * Cannot do src_reg + insn->off >=3D limit in one branch,
--				 * since it needs two spare registers, but JIT has only one.
-+				u64 limit =3D TASK_SIZE_MAX + PAGE_SIZE;
-+				u8 *end_of_jmp;
-+
-+				/* At end of these emitted checks, insn->off will have been added
-+				 * to src_reg, so no need to do relative load with insn->off offset
- 				 */
-+				insn_off =3D 0;
+ static char bpf_vlog[UINT_MAX >> 8];
+@@ -863,7 +884,7 @@ static int create_map_kptr(void)
+ {
+ 	LIBBPF_OPTS(bpf_map_create_opts, opts,
+ 		.btf_key_type_id =3D 1,
+-		.btf_value_type_id =3D 14,
++		.btf_value_type_id =3D 15,
+ 	);
+ 	int fd, btf_fd;
 =20
- 				/* movabsq r11, limit */
- 				EMIT2(add_1mod(0x48, AUX_REG), add_1reg(0xB8, AUX_REG));
- 				EMIT((u32)limit, 4);
- 				EMIT(limit >> 32, 4);
-+
-+				if (insn->off) {
-+					/* add src_reg, insn->off */
-+					maybe_emit_1mod(&prog, src_reg, true);
-+					EMIT2_off32(0x81, add_1reg(0xC0, src_reg), insn->off);
-+				}
-+
- 				/* cmp src_reg, r11 */
- 				maybe_emit_mod(&prog, src_reg, AUX_REG, true);
- 				EMIT2(0x39, add_2reg(0xC0, src_reg, AUX_REG));
--				/* if unsigned '<' goto end_of_jmp2 */
--				EMIT2(X86_JB, 0);
--				end_of_jmp1 =3D prog;
--
--				/* mov r11, src_reg */
--				emit_mov_reg(&prog, true, AUX_REG, src_reg);
--				/* add r11, insn->off */
--				maybe_emit_1mod(&prog, AUX_REG, true);
--				EMIT2_off32(0x81, add_1reg(0xC0, AUX_REG), insn->off);
--				/* jmp if not carry to start_of_ldx
--				 * Otherwise ERR_PTR(-EINVAL) + 128 will be the user addr
--				 * that has to be rejected.
--				 */
--				EMIT2(0x73 /* JNC */, 0);
--				end_of_jmp2 =3D prog;
-+
-+				/* if unsigned '>=3D', goto load */
-+				EMIT2(X86_JAE, 0);
-+				end_of_jmp =3D prog;
+@@ -878,6 +899,26 @@ static int create_map_kptr(void)
+ 	return fd;
+ }
 =20
- 				/* xor dst_reg, dst_reg */
- 				emit_mov_imm32(&prog, false, dst_reg, 0);
- 				/* jmp byte_after_ldx */
- 				EMIT2(0xEB, 0);
-=20
--				/* populate jmp_offset for JB above to jump to xor dst_reg */
--				end_of_jmp1[-1] =3D end_of_jmp2 - end_of_jmp1;
--				/* populate jmp_offset for JNC above to jump to start_of_ldx */
-+				/* populate jmp_offset for JAE above to jump to start_of_ldx */
- 				start_of_ldx =3D prog;
--				end_of_jmp2[-1] =3D start_of_ldx - end_of_jmp2;
-+				end_of_jmp[-1] =3D start_of_ldx - end_of_jmp;
- 			}
--			emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
-+			emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn_off);
- 			if (BPF_MODE(insn->code) =3D=3D BPF_PROBE_MEM) {
- 				struct exception_table_entry *ex;
- 				u8 *_insn =3D image + proglen + (start_of_ldx - temp);
-@@ -1417,6 +1413,18 @@ st:			if (is_imm8(insn->off))
- 				/* populate jmp_offset for JMP above */
- 				start_of_ldx[-1] =3D prog - start_of_ldx;
-=20
-+				if (insn->off && src_reg !=3D dst_reg) {
-+					/* sub src_reg, insn->off
-+					 * Restore src_reg after "add src_reg, insn->off" in prev
-+					 * if statement. But if src_reg =3D=3D dst_reg, emit_ldx
-+					 * above already clobbered src_reg, so no need to restore.
-+					 * If add src_reg, insn->off was unnecessary, no need to
-+					 * restore either.
-+					 */
-+					maybe_emit_1mod(&prog, src_reg, true);
-+					EMIT2_off32(0x81, add_1reg(0xE8, src_reg), insn->off);
-+				}
++static int create_map_probe_mem_read(void)
++{
++	LIBBPF_OPTS(bpf_map_create_opts, opts,
++		.btf_key_type_id =3D 1,
++		.btf_value_type_id =3D 16,
++	);
++	int fd, btf_fd;
 +
- 				if (!bpf_prog->aux->extable)
- 					break;
++	btf_fd =3D load_btf();
++	if (btf_fd < 0)
++		return -1;
++
++	opts.btf_fd =3D btf_fd;
++	fd =3D bpf_map_create(BPF_MAP_TYPE_ARRAY, "test_map", 4, 8, 1, &opts);
++	if (fd < 0)
++		printf("Failed to create map for probe_mem reads\n");
++
++	return fd;
++}
++
+ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog=
+_type,
+ 			  struct bpf_insn *prog, int *map_fds)
+ {
+@@ -904,6 +945,7 @@ static void do_test_fixup(struct bpf_test *test, enum=
+ bpf_prog_type prog_type,
+ 	int *fixup_map_ringbuf =3D test->fixup_map_ringbuf;
+ 	int *fixup_map_timer =3D test->fixup_map_timer;
+ 	int *fixup_map_kptr =3D test->fixup_map_kptr;
++	int *fixup_map_probe_mem_read =3D test->fixup_map_probe_mem_read;
+ 	struct kfunc_btf_id_pair *fixup_kfunc_btf_id =3D test->fixup_kfunc_btf_=
+id;
 =20
+ 	if (test->fill_helper) {
+@@ -1104,6 +1146,13 @@ static void do_test_fixup(struct bpf_test *test, e=
+num bpf_prog_type prog_type,
+ 			fixup_map_kptr++;
+ 		} while (*fixup_map_kptr);
+ 	}
++	if (*fixup_map_probe_mem_read) {
++		map_fds[23] =3D create_map_probe_mem_read();
++		do {
++			prog[*fixup_map_probe_mem_read].imm =3D map_fds[23];
++			fixup_map_probe_mem_read++;
++		} while (*fixup_map_probe_mem_read);
++	}
+=20
+ 	/* Patch in kfunc BTF IDs */
+ 	if (fixup_kfunc_btf_id->kfunc) {
+diff --git a/tools/testing/selftests/bpf/verifier/jit.c b/tools/testing/s=
+elftests/bpf/verifier/jit.c
+index 8bf37e5207f1..92f19bcaf3ad 100644
+--- a/tools/testing/selftests/bpf/verifier/jit.c
++++ b/tools/testing/selftests/bpf/verifier/jit.c
+@@ -216,3 +216,87 @@
+ 	.result =3D ACCEPT,
+ 	.retval =3D 3,
+ },
++{
++	"jit: PROBE_MEM_READ ldx success cases",
++	.insns =3D {
++	/* int *reg_9 =3D fp - 12;
++	 * *reg_9 =3D 0
++	 */
++	BPF_MOV64_REG(BPF_REG_9, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_9, -12),
++	BPF_ST_MEM(BPF_W, BPF_REG_9, 0, 0),
++	BPF_LD_MAP_FD(BPF_REG_6, 0),
++
++	/* long *dummy_arg =3D fp - 8
++	 * ret =3D bpf_kfunc_call_test_acquire(dummy_arg)
++	 * if (!ret) exit
++	 */
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
++	BPF_ST_MEM(BPF_DW, BPF_REG_1, 0, 0),
++	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
++	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 5),
++	BPF_EXIT_INSN(),
++
++	/* label err_exit
++	 * err_exit:
++	 *  bpf_kfunc_call_test_release(reg_7);
++	 *  return 1;
++	 */
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_7),
++	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++
++	/* reg_7 =3D acquired prog_test_ref_kfunc */
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_9),
++
++	/* ret =3D bpf_map_lookup_elem(&data, &zero);
++	 * if (!ret) goto err_exit;
++	 * else reg_0 =3D ptr_map_val containing struct prog_test_ref_kfunc
++	 */
++	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, -10),
++
++	/* ret =3D bpf_kptr_xchg(ptr_map_val, acquired prog_test_ref_kfunc)
++	 * if(ret) goto err_exit;
++	 */
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_7),
++	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_kptr_xchg),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, -15),
++
++	/* Do a direct LD of the struct prog_test_ref_kfunc we just xchg'd into
++	 * map
++	 */
++	BPF_LD_MAP_VALUE(BPF_REG_0, 0, 0),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
++	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
++	BPF_EXIT_INSN(),
++
++	/* Try accessing its fields - this should trigger PROBE_MEM jit
++	 * behavior
++	 *
++	 * r0 =3D prog_test_ref_kfunc.a * 2 + prog_test_ref_kfunc.b
++	 */
++	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_0, 4),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 8),
++	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, -8),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_1),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_2),
++	BPF_EXIT_INSN(),
++	},
++	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
++	.fixup_map_probe_mem_read =3D { 3, 26 },
++	.fixup_kfunc_btf_id =3D {
++		{ "bpf_kfunc_call_test_acquire", 8 },
++		{ "bpf_kfunc_call_test_release", 12},
++	},
++	.result =3D ACCEPT,
++	.retval =3D 192,
++},
 --=20
 2.30.2
 
