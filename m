@@ -2,63 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 300B664B7DC
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 15:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3B264B7EB
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 15:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235889AbiLMOyM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 09:54:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
+        id S235944AbiLMO5G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 09:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236050AbiLMOxz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 09:53:55 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3591E1260B;
-        Tue, 13 Dec 2022 06:53:53 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id a16so18054013edb.9;
-        Tue, 13 Dec 2022 06:53:53 -0800 (PST)
+        with ESMTP id S236063AbiLMO47 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 09:56:59 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A2E6379;
+        Tue, 13 Dec 2022 06:56:58 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id l10so2291474plb.8;
+        Tue, 13 Dec 2022 06:56:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QJPUCdsTiJ63FDYInN9GX2ZTI4d35s7lni79WzV7P08=;
-        b=Ri7fAyn9oKYgobcwH4LhAMeoBpsXeYh7fhHDLB5i8Q25WskjnYVCNjbfTUI3a2wIDj
-         pVcLErX8WZCa1zKjwSd5NU0vpISF9zvPa9f5JcGd3armz267F7a1kHGoZ/S/7utZVw7N
-         P7pW5fUJe726gaZklEbhWm8CtsNup1T4GRRpPkLcVFP6eeqZ42FUvtwsec8gJejl+h4i
-         nTon7OJqQvYoMBgscxa2d/KQnU/J/E3aEjnbQDneCyFjp3E6YklGz4GquwNYHrmL5xFH
-         NerAnXr8WDO3PRzQShOulIOxj3hkBQgQD2mUqXCymEMTY2GZE83sFtio0zEmYf4ZvZRu
-         NrFQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kuc4nUgO/XR9/IXR1IzCd2vTu1wAL/qMjW/mLLbmkGc=;
+        b=RrmKZVM4DTmK68kBoKwpnqT5fT6a+1ei0i+9pcHm4Y+cQ6tFbr7At3lqFX/Icu5syp
+         lhopjPWl3gtV41Bncc6CU2dib/KKWyZLsgr33J60ZqRyneDLpa51o/m7tE4E9l2U40NS
+         81yTNjRrQNCy+sRgOgRmVV6ouQeWzBcewWzim0DW638skjvf+aLKvymdDtUsDkKJ5GsD
+         2atnpsiKPqTLe835f6RIL+DU6yyp9qLo+5duuOLRTiEZOnvuXHY7SdJEunwNQJo/ITYl
+         qxTRLzce2YVzByweQlvhiRiw1IgBfHpkN7XjVitsmcowndoiqdv6nxFt1S6Wo+7PGVF4
+         5hbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QJPUCdsTiJ63FDYInN9GX2ZTI4d35s7lni79WzV7P08=;
-        b=Z4MwT+MGfy+uLPrFce7LG869uJGypEAeqOgvjHpx+DvUNxaxl70hZmk9n6LHI2TIfa
-         qkEToZSAt7ioSx32OpRBB49H3c6+4j5GshpKJJV6kGmxcsWnw5OG+dmIPLG1qXI6zePK
-         0O3C25/x+dMCCiP8KGBzNU3t/LB64jd0GChJSz7G10uysGLsRrCymlbpIqafq9WVEDRu
-         eQzphWhuGlAaN81kdqj18FAG/lDMCGgxKTb6Fl2EeKJEV+Cn98J83caa6C8d9YW4NPId
-         HvQOGETP3fmlHe6bqVYfcp3xVTmKJh8UB34dC1gMoVWtSoCxqZuEmZWGQC2X9RcPnqL6
-         ZeiQ==
-X-Gm-Message-State: ANoB5pm+9MRaetsr4wfCYS5S174SBcfJGo4Tes/0VrJ1B81sm05jsadZ
-        JktoRf102nT/KdMW+w3XRKu/60esaKOOeMKo7C/MrgLGLdOEj8s2
-X-Google-Smtp-Source: AA0mqf6C6tly2+O3ZAB2Mwxh1s7fOkA5jR+jYwc1MtgPqqJy3FMdWVhOVkuVD0v+a7zt73QcL+f/aQXch8zQoCv5+aU=
-X-Received: by 2002:aa7:cd4d:0:b0:46a:832a:b851 with SMTP id
- v13-20020aa7cd4d000000b0046a832ab851mr59050462edw.127.1670943231359; Tue, 13
- Dec 2022 06:53:51 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kuc4nUgO/XR9/IXR1IzCd2vTu1wAL/qMjW/mLLbmkGc=;
+        b=5LSpS4zFbEPqfnVHtfAULLGvFfrVDnvxsdDZeQqDlphJZz9PUl03pETY5kKjSZyCPS
+         tPRBd7efrPklWN8wAd3qA8R2oZb38ztS0G3ZHKp2IKCiBO9eTwgA4bLtmsiZ9d9VxnKK
+         NKDLMocVfJp5K17nUvzLx2I9wT4HTxsa8nwV1X2DLxhTwXM15Vej4UgoMnQPUWSErkIu
+         ++prPA1TPuq+f4RSdTPDpWgdywHaHAUZFx+dxnrBGS0dDt6fdXtO/qEZh0c24zosJ3vN
+         vxOjujaJS/LhPX7xWClY0wRq2nBGw/BRi8FqIOmrWkQOOeiNuj6syWAKlk7sZPBzQ1Qe
+         0nlg==
+X-Gm-Message-State: ANoB5pkJ3mdVy6TabQeMGnRHGbXgHrr0nQyoDYQMBsA/jaM8KOEt+Dlh
+        bIH5ye0pDorHVjKxFDGgYUo=
+X-Google-Smtp-Source: AA0mqf6g2cjc5+IZgzWap0jf6DlXtUAS3dfGI+3GOaE7ypcRhl+1saQte0QPwcFhrvzxoJynzD6vLA==
+X-Received: by 2002:a17:902:f54b:b0:188:5e99:d84f with SMTP id h11-20020a170902f54b00b001885e99d84fmr29273515plf.42.1670943418265;
+        Tue, 13 Dec 2022 06:56:58 -0800 (PST)
+Received: from hyeyoo ([114.29.91.56])
+        by smtp.gmail.com with ESMTPSA id s12-20020a170902ea0c00b00189ac5a2340sm8570908plg.124.2022.12.13.06.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Dec 2022 06:56:57 -0800 (PST)
+Date:   Tue, 13 Dec 2022 23:56:49 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, tj@kernel.org, dennis@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev,
+        linux-mm@kvack.org, bpf@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/9] mm, bpf: Add BPF into /proc/meminfo
+Message-ID: <Y5iSsdDmXhC5nxuM@hyeyoo>
+References: <20221212003711.24977-1-laoar.shao@gmail.com>
+ <c43d8d42-ecb1-a044-eb9a-b68d5808562a@suse.cz>
+ <CALOAHbC7xWFAYz0qc1XpREbw8=nAquFNTi5k4TA02UQ_7w5k0A@mail.gmail.com>
 MIME-Version: 1.0
-From:   Wei Chen <harperchen1110@gmail.com>
-Date:   Tue, 13 Dec 2022 22:53:15 +0800
-Message-ID: <CAO4mrffr3H7UmOtgeJZ1dW4-7m2UL3CyHJRbPk3D_Fz5WnTAkw@mail.gmail.com>
-Subject: KCSAN: data-race in __perf_event_overflow / perf_pending_irq
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbC7xWFAYz0qc1XpREbw8=nAquFNTi5k4TA02UQ_7w5k0A@mail.gmail.com>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,211 +78,168 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Linux Developers,
+On Tue, Dec 13, 2022 at 07:52:42PM +0800, Yafang Shao wrote:
+> On Tue, Dec 13, 2022 at 1:54 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> >
+> > On 12/12/22 01:37, Yafang Shao wrote:
+> > > Currently there's no way to get BPF memory usage, while we can only
+> > > estimate the usage by bpftool or memcg, both of which are not reliable.
+> > >
+> > > - bpftool
+> > >   `bpftool {map,prog} show` can show us the memlock of each map and
+> > >   prog, but the memlock is vary from the real memory size. The memlock
+> > >   of a bpf object is approximately
+> > >   `round_up(key_size + value_size, 8) * max_entries`,
+> > >   so 1) it can't apply to the non-preallocated bpf map which may
+> > >   increase or decrease the real memory size dynamically. 2) the element
+> > >   size of some bpf map is not `key_size + value_size`, for example the
+> > >   element size of htab is
+> > >   `sizeof(struct htab_elem) + round_up(key_size, 8) + round_up(value_size, 8)`
+> > >   That said the differece between these two values may be very great if
+> > >   the key_size and value_size is small. For example in my verifaction,
+> > >   the size of memlock and real memory of a preallocated hash map are,
+> > >
+> > >   $ grep BPF /proc/meminfo
+> > >   BPF:             1026048 B <<< the size of preallocated memalloc pool
+> > >
+> > >   (create hash map)
+> > >
+> > >   $ bpftool map show
+> > >   3: hash  name count_map  flags 0x0
+> > >           key 4B  value 4B  max_entries 1048576  memlock 8388608B
+> > >
+> > >   $ grep BPF /proc/meminfo
+> > >   BPF:            84919344 B
+> > >
+> > >   So the real memory size is $((84919344 - 1026048)) which is 83893296
+> > >   bytes while the memlock is only 8388608 bytes.
+> > >
+> > > - memcg
+> > >   With memcg we only know that the BPF memory usage is less than
+> > >   memory.usage_in_bytes (or memory.current in v2). Furthermore, we only
+> > >   know that the BPF memory usage is less than $MemTotal if the BPF
+> > >   object is charged into root memcg :)
+> > >
+> > > So we need a way to get the BPF memory usage especially there will be
+> > > more and more bpf programs running on the production environment. The
+> > > memory usage of BPF memory is not trivial, which deserves a new item in
+> > > /proc/meminfo.
+> > >
+> > > This patchset introduce a solution to calculate the BPF memory usage.
+> > > This solution is similar to how memory is charged into memcg, so it is
+> > > easy to understand. It counts three types of memory usage -
+> > >  - page
+> > >    via kmalloc, vmalloc, kmem_cache_alloc or alloc pages directly and
+> > >    their families.
+> > >    When a page is allocated, we will count its size and mark the head
+> > >    page, and then check the head page at page freeing.
+> > >  - slab
+> > >    via kmalloc, kmem_cache_alloc and their families.
+> > >    When a slab object is allocated, we will mark this object in this
+> > >    slab and check it at slab object freeing. That said we need extra memory
+> > >    to store the information of each object in a slab.
+> > >  - percpu
+> > >    via alloc_percpu and its family.
+> > >    When a percpu area is allocated, we will mark this area in this
+> > >    percpu chunk and check it at percpu area freeing. That said we need
+> > >    extra memory to store the information of each area in a percpu chunk.
+> > >
+> > > So we only need to annotate the allcation to add the BPF memory size,
+> > > and the sub of the BPF memory size will be handled automatically at
+> > > freeing. We can annotate it in irq, softirq or process context. To avoid
+> > > counting the nested allcations, for example the percpu backing allocator,
+> > > we reuse the __GFP_ACCOUNT to filter them out. __GFP_ACCOUNT also make
+> > > the count consistent with memcg accounting.
+> >
+> > So you can't easily annotate the freeing places as well, to avoid the whole
+> > tracking infrastructure?
+> 
+> The trouble is kfree_rcu().  for example,
+>     old_item = active_vm_item_set(ACTIVE_VM_BPF);
+>     kfree_rcu();
+>     active_vm_item_set(old_item);
+> If we want to pass the ACTIVE_VM_BPF into the deferred rcu context, we
+> will change lots of code in the RCU subsystem. I'm not sure if it is
+> worth it.
 
-Recently, when using our tool to fuzz kernel, the following crash was
-triggered. This crash is similar to the following two crashes:
+(+Cc rcu folks)
 
-KCSAN: data-race in perf_event_update_userpage /
-perf_event_update_userpage
-https://syzkaller.appspot.com/bug?extid=df838a721c117d596976.
+IMO adding new kfree_rcu() varient for BPF that accounts BPF memory
+usage would be much less churn :)
+ 
+> 
+> >  I thought there was a patchset for a whole
+> > bfp-specific memory allocator, where accounting would be implemented
+> > naturally, I would imagine.
+> >
+> 
+> I posted a patchset[1] which annotates both allocating and freeing
+> several months ago.
+> But unfortunately after more investigation and verification I found
+> the deferred freeing context is a problem, which can't be resolved
+> easily.
+> That's why I finally decided to annotate allocating only.
+> 
+> [1]. https://lore.kernel.org/linux-mm/20220921170002.29557-1-laoar.shao@gmail.com/
+> 
+> > > To store the information of a slab or a page, we need to create a new
+> > > member in struct page, but we can do it in page extension which can
+> > > avoid changing the size of struct page. So a new page extension
+> > > active_vm is introduced. Each page and each slab which is allocated as
+> > > BPF memory will have a struct active_vm. The reason it is named as
+> > > active_vm is that we can extend it to other areas easily, for example in
+> > > the future we may use it to count other memory usage.
+> > >
+> > > The new page extension active_vm can be disabled via CONFIG_ACTIVE_VM at
+> > > compile time or kernel parameter `active_vm=` at runtime.
+> >
+> > The issue with page_ext is the extra memory usage, so it was rather intended
+> > for debugging features that can be always compiled in, but only enabled at
+> > runtime when debugging is needed. The overhead is only paid when enabled.
+> > That's at least the case of page_owner and page_table_check. The 32bit
+> > page_idle is rather an oddity that could have instead stayed 64-bit only.
+> >
+> 
+> Right, it seems currently page_ext is for debugging purposes only.
+> 
+> > But this is proposing a page_ext functionality supposed to be enabled at all
+> > times in production, with the goal of improved accounting. Not an on-demand
+> > debugging. I'm afraid the costs will outweight the benefits.
+> >
+> 
+> The memory overhead of this new page extension is (8/4096), which is
+> 0.2% of total memory. Not too big to be acceptable.
 
-KCSAN: data-race in arch_perf_update_userpage /
-arch_perf_update_userpage
-https://www.syzkaller.appspot.com/bug?id=36fce67cc4d62492fcd304c249d18178ac64bcf1
+It's generally unacceptable to increase sizeof(struct page)
+(nor enabling page_ext by default, and that's the why page_ext is for
+debugging purposes only)
 
-HEAD commit: 76dcd734eca
-git tree: linux-next
-compiler: clang 12.0.0
-console output:
-https://drive.google.com/file/d/1Co5Pm4RrmekuREcxFtb-d5n6pOWe8zyh/view?usp=share_link
-kernel config: https://drive.google.com/file/d/1jH4qV5XblPADvMDUlvS7DwtW0FroMoVB/view?usp=share_link
-reproduce log: https://drive.google.com/file/d/1e08n4G8sI8IjeWJo4N8Beqze2K6UblSX/view?usp=share_link
+> If the user really
+> thinks this overhead is not accepted, he can set "active_vm=off" to
+> disable it.
 
-Unfortunately, I do not have a stable reproducer for this crash. A
-possible syz reproducer for this crash is listed below.
+I'd say many people won't welcome adding 0.2% of total memory by default
+to get BPF memory usage. 
 
-r0 = perf_event_open(&(0x7f0000000100)={0x0, 0x80, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x4000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, @perf_config_ext, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, 0x2}, 0x0, 0x0, 0xffffffffffffffff, 0x0)
-r1 = dup(r0)
-mmap$IORING_OFF_SQ_RING(&(0x7f0000ffc000/0x3000)=nil, 0x3000, 0x0,
-0x2011, r1, 0x0)
-perf_event_open(&(0x7f0000001400)={0x2, 0x80, 0xfd, 0x0, 0x0, 0x0,
-0x0, 0x6, 0x2053b, 0xa, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, @perf_bp={0x0}}, 0x0, 0x0, r1, 0xa)
-clone3(&(0x7f0000000300)={0x44020000, 0x0, 0x0, 0x0, {}, 0x0, 0x0,
-0x0, 0x0}, 0x58)
+> To reduce the memory overhead further, I have a bold idea.
+> Actually we don't need to allocate such a page extension for every
+> page,  while we only need to allocate it if the user needs to access
+> it. That said it seems that we can allocate some kind of page
+> extensions dynamically rather than preallocate at booting, but I
+> haven't investigated it deeply to check if it can work. What do you
+> think?
+> 
+> > Just a quick thought, in case the bpf accounting really can't be handled
+> > without marking pages and slab objects - since memcg already has hooks there
+> > without need of page_ext, couldn't it be done by extending the memcg infra
+> > instead?
+> >
+> 
+> We need to make sure the accounting of BPF memory usage is still
+> workable even without memcg, see also the previous discussion[2].
+> 
+> [2]. https://lore.kernel.org/linux-mm/Yy53cgcwx+hTll4R@slm.duckdns.org/
 
-The crash can be reproduced with the following configuration:
-{Threaded:true Collide:true Repeat:true RepeatTimes:0 Procs:1
-Slowdown:1 Sandbox:none Fault:false FaultCall:-1 FaultNth:0 Leak:false
-NetInjection:true NetDevices:true NetReset:true Cgroups:true
-BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:true USB:true
-VhciInjection:true Wifi:true IEEE802154:true Sysctl:true
-UseTmpDir:true HandleSegv:true Repro:true Trace:false}
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: Wei Chen <harperchen1110@gmail.com>
-
-==================================================================
-BUG: KCSAN: data-race in __perf_event_overflow / perf_pending_irq
-
-write to 0xffff88805daa1a04 of 4 bytes by interrupt on cpu 0:
- __perf_event_overflow+0x7f/0x3d0 kernel/events/core.c:9323
- perf_event_overflow+0x26/0x30 kernel/events/core.c:9381
- handle_pmi_common+0x454/0x5d0 arch/x86/events/intel/core.c:3034
- intel_pmu_handle_irq+0x1d3/0x410 arch/x86/events/intel/core.c:3095
- perf_event_nmi_handler+0x42/0x70 arch/x86/events/core.c:1745
- nmi_handle+0x64/0x150 arch/x86/kernel/nmi.c:140
- default_do_nmi+0x66/0x2c0 arch/x86/kernel/nmi.c:337
- exc_nmi+0xbc/0x130 arch/x86/kernel/nmi.c:513
- end_repeat_nmi+0x16/0x31
- rep_nop arch/x86/include/asm/vdso/processor.h:13 [inline]
- delay_tsc+0x67/0xe0 arch/x86/lib/delay.c:78
- delay_access kernel/kcsan/core.c:329 [inline]
- kcsan_setup_watchpoint+0x292/0x460 kernel/kcsan/core.c:604
- perf_event_wakeup kernel/events/core.c:6460 [inline]
- perf_pending_irq+0x1a5/0x3f0 kernel/events/core.c:6557
- irq_work_single kernel/irq_work.c:211 [inline]
- irq_work_run_list kernel/irq_work.c:242 [inline]
- irq_work_run+0xf1/0x2f0 kernel/irq_work.c:251
- __sysvec_irq_work+0x1e/0xb0 arch/x86/kernel/irq_work.c:22
- sysvec_irq_work+0x39/0xb0 arch/x86/kernel/irq_work.c:17
- asm_sysvec_irq_work+0x16/0x20 arch/x86/include/asm/idtentry.h:675
- __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
- _raw_spin_unlock_irqrestore+0x37/0x60 kernel/locking/spinlock.c:194
- spin_unlock_irqrestore include/linux/spinlock.h:405 [inline]
- dsp_cmx_send+0xdbc/0xdd0 drivers/isdn/mISDN/dsp_cmx.c:1853
- call_timer_fn+0x2e/0x240 kernel/time/timer.c:1474
- expire_timers+0x116/0x240 kernel/time/timer.c:1519
- __run_timers+0x368/0x410 kernel/time/timer.c:1790
- run_timer_softirq+0x2e/0x60 kernel/time/timer.c:1803
- __do_softirq+0xf2/0x2c9 kernel/softirq.c:571
- __irq_exit_rcu kernel/softirq.c:650 [inline]
- irq_exit_rcu+0x41/0x70 kernel/softirq.c:662
- sysvec_apic_timer_interrupt+0x8d/0xb0 arch/x86/kernel/apic/apic.c:1107
- asm_sysvec_apic_timer_interrupt+0x16/0x20 arch/x86/include/asm/idtentry.h:649
- perf_prepare_sample+0x2fe/0xfc0 kernel/events/core.c:7422
- __perf_event_output kernel/events/core.c:7599 [inline]
- perf_event_output_forward+0x66/0xe0 kernel/events/core.c:7619
- __perf_event_overflow+0x320/0x3d0 kernel/events/core.c:9367
- perf_swevent_overflow kernel/events/core.c:9443 [inline]
- perf_swevent_event+0x118/0x3c0 kernel/events/core.c:9471
- perf_tp_event+0x1b2/0x540 kernel/events/core.c:9900
- perf_trace_run_bpf_submit+0xb3/0x120 kernel/events/core.c:9873
- perf_trace_kmalloc+0xe9/0x110 include/trace/events/kmem.h:54
- trace_kmalloc include/trace/events/kmem.h:54 [inline]
- __do_kmalloc_node mm/slab_common.c:956 [inline]
- __kmalloc+0x1b9/0x1e0 mm/slab_common.c:968
- kmalloc include/linux/slab.h:558 [inline]
- kzalloc include/linux/slab.h:689 [inline]
- __register_sysctl_table+0x91/0xca0 fs/proc/proc_sysctl.c:1337
- register_net_sysctl+0x1b1/0x1c0 net/sysctl_net.c:169
- neigh_sysctl_register+0x36c/0x3e0 net/core/neighbour.c:3854
- addrconf_sysctl_register+0x7a/0x110 net/ipv6/addrconf.c:7126
- ipv6_add_dev+0x85f/0xa60 net/ipv6/addrconf.c:450
- addrconf_notify+0x516/0x1bb0 net/ipv6/addrconf.c:3528
- notifier_call_chain kernel/notifier.c:87 [inline]
- raw_notifier_call_chain+0x53/0xb0 kernel/notifier.c:455
- call_netdevice_notifiers_info net/core/dev.c:1945 [inline]
- call_netdevice_notifiers_extack net/core/dev.c:1983 [inline]
- call_netdevice_notifiers net/core/dev.c:1997 [inline]
- register_netdevice+0xd93/0x1040 net/core/dev.c:10090
- __ip_tunnel_create+0x1c5/0x260 net/ipv4/ip_tunnel.c:267
- ip_tunnel_init_net+0x18e/0x3d0 net/ipv4/ip_tunnel.c:1073
- ipgre_tap_init_net+0x31/0x40 net/ipv4/ip_gre.c:1682
- ops_init+0x215/0x2d0 net/core/net_namespace.c:135
- setup_net+0x2cb/0x810 net/core/net_namespace.c:332
- copy_net_ns+0x2ae/0x450 net/core/net_namespace.c:478
- create_new_namespaces+0x231/0x560 kernel/nsproxy.c:110
- copy_namespaces+0x116/0x160 kernel/nsproxy.c:178
- copy_process+0x16ca/0x30f0 kernel/fork.c:2256
- kernel_clone+0x15c/0x600 kernel/fork.c:2671
- __do_sys_clone3 kernel/fork.c:2970 [inline]
- __se_sys_clone3+0x1b5/0x1f0 kernel/fork.c:2954
- __x64_sys_clone3+0x2d/0x40 kernel/fork.c:2954
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-read to 0xffff88805daa1a04 of 4 bytes by interrupt on cpu 0:
- perf_event_wakeup kernel/events/core.c:6460 [inline]
- perf_pending_irq+0x1a5/0x3f0 kernel/events/core.c:6557
- irq_work_single kernel/irq_work.c:211 [inline]
- irq_work_run_list kernel/irq_work.c:242 [inline]
- irq_work_run+0xf1/0x2f0 kernel/irq_work.c:251
- __sysvec_irq_work+0x1e/0xb0 arch/x86/kernel/irq_work.c:22
- sysvec_irq_work+0x39/0xb0 arch/x86/kernel/irq_work.c:17
- asm_sysvec_irq_work+0x16/0x20 arch/x86/include/asm/idtentry.h:675
- __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
- _raw_spin_unlock_irqrestore+0x37/0x60 kernel/locking/spinlock.c:194
- spin_unlock_irqrestore include/linux/spinlock.h:405 [inline]
- dsp_cmx_send+0xdbc/0xdd0 drivers/isdn/mISDN/dsp_cmx.c:1853
- call_timer_fn+0x2e/0x240 kernel/time/timer.c:1474
- expire_timers+0x116/0x240 kernel/time/timer.c:1519
- __run_timers+0x368/0x410 kernel/time/timer.c:1790
- run_timer_softirq+0x2e/0x60 kernel/time/timer.c:1803
- __do_softirq+0xf2/0x2c9 kernel/softirq.c:571
- __irq_exit_rcu kernel/softirq.c:650 [inline]
- irq_exit_rcu+0x41/0x70 kernel/softirq.c:662
- sysvec_apic_timer_interrupt+0x8d/0xb0 arch/x86/kernel/apic/apic.c:1107
- asm_sysvec_apic_timer_interrupt+0x16/0x20 arch/x86/include/asm/idtentry.h:649
- perf_prepare_sample+0x2fe/0xfc0 kernel/events/core.c:7422
- __perf_event_output kernel/events/core.c:7599 [inline]
- perf_event_output_forward+0x66/0xe0 kernel/events/core.c:7619
- __perf_event_overflow+0x320/0x3d0 kernel/events/core.c:9367
- perf_swevent_overflow kernel/events/core.c:9443 [inline]
- perf_swevent_event+0x118/0x3c0 kernel/events/core.c:9471
- perf_tp_event+0x1b2/0x540 kernel/events/core.c:9900
- perf_trace_run_bpf_submit+0xb3/0x120 kernel/events/core.c:9873
- perf_trace_kmalloc+0xe9/0x110 include/trace/events/kmem.h:54
- trace_kmalloc include/trace/events/kmem.h:54 [inline]
- __do_kmalloc_node mm/slab_common.c:956 [inline]
- __kmalloc+0x1b9/0x1e0 mm/slab_common.c:968
- kmalloc include/linux/slab.h:558 [inline]
- kzalloc include/linux/slab.h:689 [inline]
- __register_sysctl_table+0x91/0xca0 fs/proc/proc_sysctl.c:1337
- register_net_sysctl+0x1b1/0x1c0 net/sysctl_net.c:169
- neigh_sysctl_register+0x36c/0x3e0 net/core/neighbour.c:3854
- addrconf_sysctl_register+0x7a/0x110 net/ipv6/addrconf.c:7126
- ipv6_add_dev+0x85f/0xa60 net/ipv6/addrconf.c:450
- addrconf_notify+0x516/0x1bb0 net/ipv6/addrconf.c:3528
- notifier_call_chain kernel/notifier.c:87 [inline]
- raw_notifier_call_chain+0x53/0xb0 kernel/notifier.c:455
- call_netdevice_notifiers_info net/core/dev.c:1945 [inline]
- call_netdevice_notifiers_extack net/core/dev.c:1983 [inline]
- call_netdevice_notifiers net/core/dev.c:1997 [inline]
- register_netdevice+0xd93/0x1040 net/core/dev.c:10090
- __ip_tunnel_create+0x1c5/0x260 net/ipv4/ip_tunnel.c:267
- ip_tunnel_init_net+0x18e/0x3d0 net/ipv4/ip_tunnel.c:1073
- ipgre_tap_init_net+0x31/0x40 net/ipv4/ip_gre.c:1682
- ops_init+0x215/0x2d0 net/core/net_namespace.c:135
- setup_net+0x2cb/0x810 net/core/net_namespace.c:332
- copy_net_ns+0x2ae/0x450 net/core/net_namespace.c:478
- create_new_namespaces+0x231/0x560 kernel/nsproxy.c:110
- copy_namespaces+0x116/0x160 kernel/nsproxy.c:178
- copy_process+0x16ca/0x30f0 kernel/fork.c:2256
- kernel_clone+0x15c/0x600 kernel/fork.c:2671
- __do_sys_clone3 kernel/fork.c:2970 [inline]
- __se_sys_clone3+0x1b5/0x1f0 kernel/fork.c:2954
- __x64_sys_clone3+0x2d/0x40 kernel/fork.c:2954
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-value changed: 0x00000000 -> 0x00000001
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 23079 Comm: syz-executor.0 Not tainted 6.1.0-rc8 #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
-==================================================================
-
-Best,
-Wei
+-- 
+Thanks,
+Hyeonggon
