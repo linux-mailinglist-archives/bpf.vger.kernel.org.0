@@ -2,206 +2,299 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9946F64B010
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 07:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6601D64B035
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 08:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbiLMGyV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 01:54:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
+        id S234523AbiLMHKI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 02:10:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbiLMGyR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 01:54:17 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BC02DD6;
-        Mon, 12 Dec 2022 22:54:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=tJc0C+VnMuXijCnhz8V7XfDaJJMUgV2yyf/tTbhpF2A=; b=KWpayS/2cVmMcuSb9pzBn/FcaH
-        YUE2cEb+w/fgUiZy60lHgq7ZEeor19l78LbtE320I/gpLZA1c/eqf7cNDd98NRSHh852K08tHtbZ9
-        YrT0R9QQwL6kAm6/bRjWfmkhzqWa4NI2fZ/fNgocQMXlCYBbKqd7RignCr0NC7ybfos/GllkdzUvE
-        jFN8yrHW5TxV9zm0oQkLdTpV0MYYp/fS376moiCk3TtCx46o0NwtShslYsyLRWO9Npq208x0UqViT
-        LC+oQkI4Vd4Y58+4ml0FobBdWhngsp5epooyx6eyOPN4IYTAFcBYnm2TtlJmjUO59tLLhrcjz5gP8
-        YKRLncjg==;
-Received: from [2601:1c2:d80:3110::a2e7]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1p4zB3-00Buir-TP; Tue, 13 Dec 2022 06:54:10 +0000
-Message-ID: <35654230-fdd3-0a94-5de2-ab5b03efa0ae@infradead.org>
-Date:   Mon, 12 Dec 2022 22:54:08 -0800
+        with ESMTP id S233843AbiLMHKB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 02:10:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A76BE4
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 23:09:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670915340;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=baSvTJ/dt1dfXrXEGH7AD5AcoL7LDCy+sWq48EykxiE=;
+        b=Dyzz6+mv7U3XC4GTKMEJh/8OqdWsr7z56QdshU1UTejaM+sT50HtaWouOJ6IJCts9WBRQM
+        HSGh/864xpL05SjR7Baulc5P2mQVn0OfdqmtOYVNTzj+VkWONlcBCM8wNYupON4R0mTxyb
+        5Nf1uWoIQDJWJLSIksMuRiS4NTQWmQw=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-185-kYQck7B6N4iLOlK5nfbySw-1; Tue, 13 Dec 2022 02:08:59 -0500
+X-MC-Unique: kYQck7B6N4iLOlK5nfbySw-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-143c7a3da8aso3449193fac.23
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 23:08:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=baSvTJ/dt1dfXrXEGH7AD5AcoL7LDCy+sWq48EykxiE=;
+        b=Vnx3aIbbQ0LfsyAQiEaQKfIuZYv1O6l8JFkoiplBxB1Iv8zOUanO7GfCR0QOQ8TDfi
+         tlfzruxWf0t753jlPvhJRO54DvO1EtcfYr+WG+At/o+OgC8Auf5YGrG+s+wdtM2tgevb
+         9hwpxsLj3EDODqbDJ8HOsgn0jrePAGDgganLbxRMGrR7KZcXloix5pFDIikixPWZOFco
+         koaNIR+RL9WiskkQC7ozB795W0dNRgOaQP6lVThfRiLaS8hM4KmF4zRZKKkiw8vJoySX
+         1yPdo3R+oVBgfxo20RqNBp6iIvnDDvVBscHMWbycMx3K9QGEtRSV0FTUuq6sy4F6IjlO
+         i2oQ==
+X-Gm-Message-State: ANoB5plufUhD0uvRnRAJxUSp6LOKnsHYp13pLab8oIQnYIE6MGHUY7Pj
+        8J5mF1doXw/BA08b4nak+jlWGeNR1UN1GoKJRA9nQWkjjreRWJRYc59WOfCJLjjHJw8la0xNGWq
+        pMepZnc0HAgrV/XumZaNiLyPf7Xd1
+X-Received: by 2002:a05:6870:170e:b0:144:a97b:1ae2 with SMTP id h14-20020a056870170e00b00144a97b1ae2mr125809oae.35.1670915338175;
+        Mon, 12 Dec 2022 23:08:58 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf7bENDWmfDZYeIweNiEBrolCH9eeGe1c2BkAEMp4MeNJeA/fKB5xNDuCi9TQvoRkwJfWFGdPbZzSWZ9+fSs5eI=
+X-Received: by 2002:a05:6870:170e:b0:144:a97b:1ae2 with SMTP id
+ h14-20020a056870170e00b00144a97b1ae2mr125803oae.35.1670915337843; Mon, 12 Dec
+ 2022 23:08:57 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH 2/2] docs: fault-injection: Add requirements of error
- injectable functions
-Content-Language: en-US
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     bpf@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chris Mason <clm@meta.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org
-References: <167081319306.387937.10079195394503045678.stgit@devnote3>
- <167081321427.387937.15475445689482551048.stgit@devnote3>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <167081321427.387937.15475445689482551048.stgit@devnote3>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20221122074348.88601-1-hengqi@linux.alibaba.com>
+ <20221122074348.88601-7-hengqi@linux.alibaba.com> <CACGkMEsbX8w1wuU+954zVwNT5JvCHX7a9baKRytVb641UmNsuw@mail.gmail.com>
+ <8b143235-2e74-eddf-4c22-a36d679d093e@linux.alibaba.com>
+In-Reply-To: <8b143235-2e74-eddf-4c22-a36d679d093e@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 13 Dec 2022 15:08:46 +0800
+Message-ID: <CACGkMEsX=p4VM0yW0E3oaO=hBJx6y2x8fDkChh=ju13Y_tmjVA@mail.gmail.com>
+Subject: Re: [RFC PATCH 6/9] virtio_net: construct multi-buffer xdp in mergeable
+To:     Heng Qi <hengqi@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi--
+On Thu, Dec 8, 2022 at 4:30 PM Heng Qi <hengqi@linux.alibaba.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2022/12/6 =E4=B8=8B=E5=8D=882:33, Jason Wang =E5=86=99=E9=81=93=
+:
+> > On Tue, Nov 22, 2022 at 3:44 PM Heng Qi <hengqi@linux.alibaba.com> wrot=
+e:
+> >> Build multi-buffer xdp using virtnet_build_xdp_buff() in mergeable.
+> >>
+> >> For the prefilled buffer before xdp is set, vq reset can be
+> >> used to clear it, but most devices do not support it at present.
+> >> In order not to bother users who are using xdp normally, we do
+> >> not use vq reset for the time being.
+> > I guess to tweak the part to say we will probably use vq reset in the f=
+uture.
+>
+> OK, it works.
+>
+> >
+> >> At the same time, virtio
+> >> net currently uses comp pages, and bpf_xdp_frags_increase_tail()
+> >> needs to calculate the tailroom of the last frag, which will
+> >> involve the offset of the corresponding page and cause a negative
+> >> value, so we disable tail increase by not setting xdp_rxq->frag_size.
+> >>
+> >> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> >> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> >> ---
+> >>   drivers/net/virtio_net.c | 67 +++++++++++++++++++++++---------------=
+--
+> >>   1 file changed, 38 insertions(+), 29 deletions(-)
+> >>
+> >> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> >> index 20784b1d8236..83e6933ae62b 100644
+> >> --- a/drivers/net/virtio_net.c
+> >> +++ b/drivers/net/virtio_net.c
+> >> @@ -994,6 +994,7 @@ static struct sk_buff *receive_mergeable(struct ne=
+t_device *dev,
+> >>                                           unsigned int *xdp_xmit,
+> >>                                           struct virtnet_rq_stats *sta=
+ts)
+> >>   {
+> >> +       unsigned int tailroom =3D SKB_DATA_ALIGN(sizeof(struct skb_sha=
+red_info));
+> >>          struct virtio_net_hdr_mrg_rxbuf *hdr =3D buf;
+> >>          u16 num_buf =3D virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+> >>          struct page *page =3D virt_to_head_page(buf);
+> >> @@ -1024,53 +1025,50 @@ static struct sk_buff *receive_mergeable(struc=
+t net_device *dev,
+> >>          rcu_read_lock();
+> >>          xdp_prog =3D rcu_dereference(rq->xdp_prog);
+> >>          if (xdp_prog) {
+> >> +               unsigned int xdp_frags_truesz =3D 0;
+> >> +               struct skb_shared_info *shinfo;
+> >>                  struct xdp_frame *xdpf;
+> >>                  struct page *xdp_page;
+> >>                  struct xdp_buff xdp;
+> >>                  void *data;
+> >>                  u32 act;
+> >> +               int i;
+> >>
+> >> -               /* Transient failure which in theory could occur if
+> >> -                * in-flight packets from before XDP was enabled reach
+> >> -                * the receive path after XDP is loaded.
+> >> -                */
+> >> -               if (unlikely(hdr->hdr.gso_type))
+> >> -                       goto err_xdp;
+> > Two questions:
+> >
+> > 1) should we keep this check for the XDP program that can't deal with X=
+DP frags?
+>
+> Yes, the problem is the same as the xdp program without xdp.frags when
+> GRO_HW, I will correct it.
+>
+> > 2) how could we guarantee that the vnet header (gso_type/csum_start
+> > etc) is still valid after XDP (where XDP program can choose to
+> > override the header)?
+>
+> We can save the vnet headr before the driver receives the packet and
+> build xdp_buff, and then use
+> the pre-saved value in the subsequent process.
 
-On 12/11/22 18:46, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Add a section about the requirements of the error injectable functions
-> and the type of errors.
-> Since this section must be read before using ALLOW_ERROR_INJECTION()
-> macro, that section is referred from the comment of the macro too.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Link: https://lore.kernel.org/all/20221211115218.2e6e289bb85f8cf53c11aa97@kernel.org/T/#u
-> ---
->  Documentation/fault-injection/fault-injection.rst |   65 +++++++++++++++++++++
->  include/asm-generic/error-injection.h             |    6 +-
->  2 files changed, 69 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/fault-injection/fault-injection.rst b/Documentation/fault-injection/fault-injection.rst
-> index 17779a2772e5..da6c5796b1f8 100644
-> --- a/Documentation/fault-injection/fault-injection.rst
-> +++ b/Documentation/fault-injection/fault-injection.rst
-> @@ -233,6 +233,71 @@ proc entries
->  	This feature is intended for systematic testing of faults in a single
->  	system call. See an example below.
->  
-> +
-> +Error Injectable Functions
-> +--------------------------
-> +
-> +This part is for the kenrel developers considering to add a function to
+The problem is that XDP may modify the packet (header) so some fields
+are not valid any more (e.g csum_start/offset ?).
 
-                        kernel developers considering adding a function
+If I was not wrong, there's no way for the XDP program to access those
+fields or does it support it right now?
 
-> +ALLOW_ERROR_INJECTION() macro.
+>
+> >> -
+> >> -               /* Buffers with headroom use PAGE_SIZE as alloc size,
+> >> -                * see add_recvbuf_mergeable() + get_mergeable_buf_len=
+()
+> >> +               /* Now XDP core assumes frag size is PAGE_SIZE, but bu=
+ffers
+> >> +                * with headroom may add hole in truesize, which
+> >> +                * make their length exceed PAGE_SIZE. So we disabled =
+the
+> >> +                * hole mechanism for xdp. See add_recvbuf_mergeable()=
+.
+> >>                   */
+> >>                  frame_sz =3D headroom ? PAGE_SIZE : truesize;
+> >>
+> >> -               /* This happens when rx buffer size is underestimated
+> >> -                * or headroom is not enough because of the buffer
+> >> -                * was refilled before XDP is set. This should only
+> >> -                * happen for the first several packets, so we don't
+> >> -                * care much about its performance.
+> >> +               /* This happens when headroom is not enough because
+> >> +                * of the buffer was prefilled before XDP is set.
+> >> +                * This should only happen for the first several packe=
+ts.
+> >> +                * In fact, vq reset can be used here to help us clean=
+ up
+> >> +                * the prefilled buffers, but many existing devices do=
+ not
+> >> +                * support it, and we don't want to bother users who a=
+re
+> >> +                * using xdp normally.
+> >>                   */
+> >> -               if (unlikely(num_buf > 1 ||
+> >> -                            headroom < virtnet_get_headroom(vi))) {
+> >> -                       /* linearize data for XDP */
+> >> -                       xdp_page =3D xdp_linearize_page(rq, &num_buf,
+> >> -                                                     page, offset,
+> >> -                                                     VIRTIO_XDP_HEADR=
+OOM,
+> >> -                                                     &len);
+> >> -                       frame_sz =3D PAGE_SIZE;
+> >> +               if (unlikely(headroom < virtnet_get_headroom(vi))) {
+> >> +                       if ((VIRTIO_XDP_HEADROOM + len + tailroom) > P=
+AGE_SIZE)
+> >> +                               goto err_xdp;
+> >>
+> >> +                       xdp_page =3D alloc_page(GFP_ATOMIC);
+> >>                          if (!xdp_page)
+> >>                                  goto err_xdp;
+> >> +
+> >> +                       memcpy(page_address(xdp_page) + VIRTIO_XDP_HEA=
+DROOM,
+> >> +                              page_address(page) + offset, len);
+> >> +                       frame_sz =3D PAGE_SIZE;
+> > How can we know a single page is sufficient here? (before XDP is set,
+> > we reserve neither headroom nor tailroom).
+>
+> This is only for the first buffer, refer to add_recvbuf_mergeable() and
+> get_mergeable_buf_len() A buffer is always no larger than a page.
 
-   using the ALLOW_ERROR_INJECTION() macro.
+Ok.
 
-> +
-> +Requirements for the Error Injectable Functions
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +Since the function-level error injection forcibly changes the code path
-> +and returns an error even if the input and conditions are proper, this can
-> +cause unexpected kernel crash if you allow error injection on the function
-> +which is NOT error injectable. Thus, you (and reviewers) must ensure;
-> +
-> +- The function returns an error code if it fails, and the callers must check
-> +  it correctly (need to recover from it).
-> +
-> +- The function does not execute any code which can change any state before
-> +  the first error return. The state includes global or local, or input
-> +  variable. For example, clear output address storage (e.g. `*ret = NULL`),
-> +  increments/decrements counter, set a flag, preempt/irq disable or get
+Thanks
 
-     increment/decrement a counter,
+>
+> >
+> >>                          offset =3D VIRTIO_XDP_HEADROOM;
+> > I think we should still try to do linearization for the XDP program
+> > that doesn't support XDP frags.
+>
+> Yes, you are right.
+>
+> Thanks.
+>
+> >
+> > Thanks
+> >
+> >>                  } else {
+> >>                          xdp_page =3D page;
+> >>                  }
+> >> -
+> >> -               /* Allow consuming headroom but reserve enough space t=
+o push
+> >> -                * the descriptor on if we get an XDP_TX return code.
+> >> -                */
+> >>                  data =3D page_address(xdp_page) + offset;
+> >> -               xdp_init_buff(&xdp, frame_sz - vi->hdr_len, &rq->xdp_r=
+xq);
+> >> -               xdp_prepare_buff(&xdp, data - VIRTIO_XDP_HEADROOM + vi=
+->hdr_len,
+> >> -                                VIRTIO_XDP_HEADROOM, len - vi->hdr_le=
+n, true);
+> >> +               err =3D virtnet_build_xdp_buff(dev, vi, rq, &xdp, data=
+, len, frame_sz,
+> >> +                                            &num_buf, &xdp_frags_true=
+sz, stats);
+> >> +               if (unlikely(err))
+> >> +                       goto err_xdp_frags;
+> >>
+> >>                  act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
+> >>                  stats->xdp_packets++;
+> >> @@ -1164,6 +1162,17 @@ static struct sk_buff *receive_mergeable(struct=
+ net_device *dev,
+> >>                                  __free_pages(xdp_page, 0);
+> >>                          goto err_xdp;
+> >>                  }
+> >> +err_xdp_frags:
+> >> +               shinfo =3D xdp_get_shared_info_from_buff(&xdp);
+> >> +
+> >> +               if (unlikely(xdp_page !=3D page))
+> >> +                       __free_pages(xdp_page, 0);
+> >> +
+> >> +               for (i =3D 0; i < shinfo->nr_frags; i++) {
+> >> +                       xdp_page =3D skb_frag_page(&shinfo->frags[i]);
+> >> +                       put_page(xdp_page);
+> >> +               }
+> >> +               goto err_xdp;
+> >>          }
+> >>          rcu_read_unlock();
+> >>
+> >> --
+> >> 2.19.1.6.gb485710b
+> >>
+>
 
-> +  a lock (if those are recovered before returning error, that will be OK.)
-> +
-> +The first requirement is important, and it will result in that the release
-> +(free objects) functions are usually harder to inject errors than allocate
-> +functions. If errors of such release functions are not correctly handled
-> +it will cause a memory leak easily (the caller will confuse that the object
-> +has been released or corrupted.)
-> +
-> +The second one is for the caller which expects the function should always
-> +does something. Thus if the function error injection skips whole of the
-
-   do something.                                        skips all of the
-
-> +function, the expectation is betrayed and causes an unexpected error.
-> +
-> +Type of the Error Injectable Functions
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +Each error injectable functions will have the error type specified by the
-
-                         function
-
-> +ALLOW_ERROR_INJECTION() macro. You have to choose it carefully if you add
-> +a new error injectable function. If the wrong error type is chosen, the
-> +kernel may crash because it may not be able to handle the error.
-> +There are 4 types of errors defined in include/asm-generic/error-injection.h
-> +
-> +EI_ETYPE_NULL
-> +  This function will return `NULL` if it fails. e.g. return an allocateed
-
-                                                                  allocated
-
-> +  object address.
-> +
-> +EI_ETYPE_ERRNO
-> +  This function will return an `-errno` error code if it fails. e.g. return
-> +  -EINVAL if the input is wrong. This will include the functions which will
-> +  return an address which encodes `-errno` by ERR_PTR() macro.
-> +
-> +EI_ETYPE_ERRNO_NULL
-> +  This function will return an `-errno` or `NULL` if it fails. If the caller
-> +  of this function checks the return value with IS_ERR_OR_NULL() macro, this
-> +  type will be appropriate.
-> +
-> +EI_ETYPE_TRUE
-> +  This function will return `true` (non-zero positive value) if it fails.
-> +
-> +If you specifies a wrong type, for example, EI_TYPE_ERRNO for the function
-
-          specify
-
-> +which returns an allocated object, it may cause a problem because the returned
-> +value is not an object address and the caller can not access to the address.
-> +
-> +
->  How to add new fault injection capability
->  -----------------------------------------
->  
-> diff --git a/include/asm-generic/error-injection.h b/include/asm-generic/error-injection.h
-> index c0b9d3217ed9..b05253f68eaa 100644
-> --- a/include/asm-generic/error-injection.h
-> +++ b/include/asm-generic/error-injection.h
-> @@ -19,8 +19,10 @@ struct pt_regs;
->  
->  #ifdef CONFIG_FUNCTION_ERROR_INJECTION
->  /*
-> - * Whitelist generating macro. Specify functions which can be
-> - * error-injectable using this macro.
-> + * Whitelist generating macro. Specify functions which can be error-injectable
-> + * using this macro. If you unsure what is required for the error-injectable
-
-                        If you are unsure ...
-
-> + * functions, please read Documentation/fault-injection/fault-injection.rst
-> + * 'Error Injectable Functions' section.
->   */
->  #define ALLOW_ERROR_INJECTION(fname, _etype)				\
->  static struct error_injection_entry __used				\
-> 
-
--- 
-~Randy
