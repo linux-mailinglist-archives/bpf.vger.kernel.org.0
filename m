@@ -2,66 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8B864BE0F
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 21:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FBB64BE12
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 21:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237145AbiLMUmt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 15:42:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
+        id S236690AbiLMUnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 15:43:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237141AbiLMUms (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 15:42:48 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A385B1CB
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 12:42:47 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id z8-20020a17090abd8800b00219ed30ce47so4832266pjr.3
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 12:42:47 -0800 (PST)
+        with ESMTP id S237149AbiLMUmw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 15:42:52 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2226B1CB
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 12:42:51 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id a9so1090857pld.7
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 12:42:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=z7E57QgbIGLbt35zoNvm7umahgzws3R7SXrVu/3PejA=;
-        b=CSXvmZwclIlrUnD1uIa7XaRodthjGBEKmZ0UBAL7aZixsWhbmarYiPV1gocmAAjUCD
-         B7TAoJ8u4Gy7bdiKzs3x8vORrhQeMcu1NvKetGBu9vT+ceA+Z7Xl9lvHWUaAoIH7ydOX
-         yJ8Aq3BumtJR663oUT63qxdNSlOIy/EVKnRr54t8/tbZyMQ78/8iJVMi7bFRimy9GytN
-         W/kWnJhqr7w0E6dBi1wAxgg6QQ1fzMfgyhiqC/yVXNgcV0Og2VmwwXQC1oQrXoMwSUtO
-         vqcQDAG2rO1uTH1oovvdL/4EYiurNUMGXcvpPt/L6MIxdvAOJS202sj4qs4YPissMDzq
-         ylwA==
+        bh=mw6o97BKfXktyyVGSYdZ6GG05jkfRnabZbvxc9SPzNo=;
+        b=NREQaBQ8vd+Ik0nteikGkPcAliQveseVFD2CJihuTvy+lzMdb1PxCCa5UUgYrzijxb
+         Bi/cnVnRiPPe7brAvH4nAxNurWz5e0RkgrxW0P14RyiR9X/b0bUeCZyhU9Yd2fpMhr2+
+         6nzEd9u2v+4SKt6nj1tCjJ4Ziw5bMCGcAsPC7O2v7o3xrxFnvZMt5MqC+FhY/5pQkbxk
+         MJcv7kVkWplKdQnsrydqDbz/6idQFKopxTT2KpiJY5XgGNVacRozi8ZwUqMDR9hhEw4M
+         EqJCC8mdgWVkCZG9bg/oBLODGvyXtGV8eLg8dY0/vlf2Ebbpr2Q3M6JOOQJpcU7e9wNT
+         aBLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=z7E57QgbIGLbt35zoNvm7umahgzws3R7SXrVu/3PejA=;
-        b=NEbeNnjdmdAa1hoV7ScTU+kMTc+7u+0dG6FbCHy0RzZeQOFDLPgKchGZmXsQ97ivVl
-         esAeYepjN6+0TN9UIuNprh8h+V1PX8F8vdVyPQrHs6YNexzP5eJI1vPbkU7K6YX4/cJS
-         K38JExlPyrPwXHbcDEofXaXJBWiA8qSLhcnoKl38mJzLlaKnLGq6WT8NbGruJ6IEGm1r
-         W8PzK8WQKX42TPXAkkEVJddu61DwV9U0mllZmXn9x3FpxohqC/8r2m6w2azWaSyE0cf6
-         69uMC2VFwvV5HgjZe1Iz7kE7fEOn2vH/aPqkds0rWzBMa+I6RP8tzRHAm76EtaPg7ZCX
-         ZCMg==
-X-Gm-Message-State: AFqh2kogqoU9f8SI79sRLK5g+qyAFEMErXYA1Vo+sDPeL/WhD2p69YlS
-        D0v+lHB5Hhvzu5MYougmdvAN3igCUH7R4EgQ+SL2dQ==
-X-Google-Smtp-Source: AMrXdXv6W9AELkRn6+d2X1cIOlM4Q3Glk4S4BYHHcL+EsfYHvc6/gg5V8QATrt6FqK4F0FzN9BIE8VhMlqyvnhXh1FI=
-X-Received: by 2002:a17:90a:1f82:b0:21e:df53:9183 with SMTP id
- x2-20020a17090a1f8200b0021edf539183mr8214pja.66.1670964166532; Tue, 13 Dec
- 2022 12:42:46 -0800 (PST)
+        bh=mw6o97BKfXktyyVGSYdZ6GG05jkfRnabZbvxc9SPzNo=;
+        b=cXQ564WoMJMw6j3QhLRruaYqb6RA9b2+ChkjMDxDVbGCx9trs3aalM8Y0tqSKgDtzU
+         ASU5sgNlvwj9BMNfhFWb4Waag9lADsriEBREGGc7AE4dfuGMGQ1ApBHuxhik2SGEJChA
+         2lUl8wIYf/Wopn9a8LJ/WPupxMg9+bXTj1TGVo8XIy26XFGaAhvXW9NhoBddVEQ508yU
+         7VOnD8SDZiRgKn++RESqlXdLTO7YhJmWssShK1OrhQI0iLyiT3WR4FGiNuGgq+ANJ+zc
+         XyvM8kPHlBI/yeUnvr81vkvTUzjDEiI8lAX0SoCSqaeODKLinIGt2rXYeE452LeBiOg/
+         eymw==
+X-Gm-Message-State: ANoB5pl06rSu4bOB46gchleIZqme8gaj+qrkKHoKN7akZyG0pfFcBLRT
+        tQ4ZLM44YWz79oFxBlV5e5k9n9IIQPKz+YN/tMy+Mg==
+X-Google-Smtp-Source: AA0mqf7PdrGhtnuitcAaimxm2QKamEUQRI2MG8nDZ6vjPXAtRyL2DZBW5mag1YBOrsWTFMaqr9Ow9a+Q2gBP9mLG1B8=
+X-Received: by 2002:a17:902:ab5c:b0:189:97e2:ab8b with SMTP id
+ ij28-20020a170902ab5c00b0018997e2ab8bmr49293561plb.131.1670964171088; Tue, 13
+ Dec 2022 12:42:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20221213023605.737383-1-sdf@google.com> <20221213023605.737383-2-sdf@google.com>
- <Y5iqTKnhtX2yaSAq@maniforge.lan>
-In-Reply-To: <Y5iqTKnhtX2yaSAq@maniforge.lan>
+References: <20221213023605.737383-1-sdf@google.com> <20221213023605.737383-9-sdf@google.com>
+ <7ca8ac2c-7c07-a52f-ec17-d1ba86fa45ab@redhat.com>
+In-Reply-To: <7ca8ac2c-7c07-a52f-ec17-d1ba86fa45ab@redhat.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 13 Dec 2022 12:42:35 -0800
-Message-ID: <CAKH8qBvjwMXvTg3ij=6wk2yu+=oWcRizmKf_YtW_yp5+W2F_=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 01/15] bpf: Document XDP RX metadata
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
+Date:   Tue, 13 Dec 2022 12:42:39 -0800
+Message-ID: <CAKH8qBvCxnJ2-5gd9j1HYxMA8CNi6cQM-5WOUBghiZjHUHya3A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 08/15] veth: Support RX XDP metadata
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
         David Ahern <dsahern@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
         Anatoly Burakov <anatoly.burakov@intel.com>,
         Alexander Lobakin <alexandr.lobakin@intel.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
@@ -71,7 +70,7 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,10 +78,12 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 13, 2022 at 8:37 AM David Vernet <void@manifault.com> wrote:
+On Tue, Dec 13, 2022 at 7:55 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
-> On Mon, Dec 12, 2022 at 06:35:51PM -0800, Stanislav Fomichev wrote:
-> > Document all current use-cases and assumptions.
+>
+> On 13/12/2022 03.35, Stanislav Fomichev wrote:
+> > The goal is to enable end-to-end testing of the metadata for AF_XDP.
 > >
 > > Cc: John Fastabend <john.fastabend@gmail.com>
 > > Cc: David Ahern <dsahern@gmail.com>
@@ -98,218 +99,98 @@ On Tue, Dec 13, 2022 at 8:37 AM David Vernet <void@manifault.com> wrote:
 > > Cc: netdev@vger.kernel.org
 > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > > ---
-> >  Documentation/bpf/xdp-rx-metadata.rst | 90 +++++++++++++++++++++++++++
-> >  1 file changed, 90 insertions(+)
-> >  create mode 100644 Documentation/bpf/xdp-rx-metadata.rst
+> >   drivers/net/veth.c | 24 ++++++++++++++++++++++++
+> >   1 file changed, 24 insertions(+)
 > >
-> > diff --git a/Documentation/bpf/xdp-rx-metadata.rst b/Documentation/bpf/xdp-rx-metadata.rst
-> > new file mode 100644
-> > index 000000000000..498eae718275
-> > --- /dev/null
-> > +++ b/Documentation/bpf/xdp-rx-metadata.rst
->
-> I think you need to add this to Documentation/bpf/index.rst. Or even
-> better, maybe it's time to add an xdp/ subdirectory and put all docs
-> there? Don't want to block your patchset from bikeshedding on this
-> point, so for now it's fine to just put it in
-> Documentation/bpf/index.rst until we figure that out.
-
-Maybe let's put it under Documentation/networking/xdp-rx-metadata.rst
-and reference form Documentation/networking/index.rst? Since it's more
-relevant to networking than the core bpf?
-
-> > @@ -0,0 +1,90 @@
-> > +===============
-> > +XDP RX Metadata
-> > +===============
-> > +
-> > +XDP programs support creating and passing custom metadata via
-> > +``bpf_xdp_adjust_meta``. This metadata can be consumed by the following
-> > +entities:
->
-> Can you add a couple of sentences to this intro section that explains
-> what metadata is at a high level?
-
-I'm gonna copy-paste here what I'm adding, feel free to reply back if
-still unclear. (so we don't have to wait another week to discuss the
-changes)
-
-XDP programs support creating and passing custom metadata via
-``bpf_xdp_adjust_meta``. The metadata can contain some extra information
-about the packet: timestamps, hash, vlan and tunneling information, etc.
-This metadata can be consumed by the following entities:
-
-> > +
-> > +1. ``AF_XDP`` consumer.
-> > +2. Kernel core stack via ``XDP_PASS``.
-> > +3. Another device via ``bpf_redirect_map``.
-> > +4. Other BPF programs via ``bpf_tail_call``.
-> > +
-> > +General Design
-> > +==============
-> > +
-> > +XDP has access to a set of kfuncs to manipulate the metadata. Every
->
-> "...to manipulate the metadata in an XDP frame." ?
-
-SG!
-
-> > +device driver implements these kfuncs. The set of kfuncs is
->
-> "Every device driver implements these kfuncs" can you be a bit more
-> specific about which types of device drivers will implement these?
-
-How about the following?
-Every device driver that wishes to expose additional packet metadata
-can implement these kfuncs.
-
-> > +declared in ``include/net/xdp.h`` via ``XDP_METADATA_KFUNC_xxx``.
->
-> Why is it suffixed with _xxx?
-
-I'm following the precedent of BTF_SOCK_TYPE_xxx and
-BTF_TRACING_TYPE_xxx. LMK if you prefer a better name here.
-
-> > +
-> > +Currently, the following kfuncs are supported. In the future, as more
-> > +metadata is supported, this set will grow:
-> > +
-> > +- ``bpf_xdp_metadata_rx_timestamp_supported`` returns true/false to
-> > +  indicate whether the device supports RX timestamps
-> > +- ``bpf_xdp_metadata_rx_timestamp`` returns packet RX timestamp
->
-> s/returns packet/returns a packet's
-
-ty!
-
-> > +- ``bpf_xdp_metadata_rx_hash_supported`` returns true/false to
-> > +  indicate whether the device supports RX hash
->
-> I don't see bpf_xdp_metadata_rx_timestamp_supported() or
-> bpf_xdp_metadata_rx_hash_supported() being added in your patch set. Can
-> you remove these entries until they're actually implemented?
-
-Ooh, good catch, I've removed them for this round. Will remove from
-the doc as well.
-
-> > +- ``bpf_xdp_metadata_rx_hash`` returns packet RX hash
->
-> We should probably also add a note that these kfuncs currently just
-> return -EOPNOTSUPP.
-
-The default ones return EOPNOTSUPP. Maybe I can clarify with the following?
-
-Not all kfuncs have to be implemented by the device driver; when not
-implemented, the default ones that return ``-EOPNOTSUPP`` will be
-used.
-
-> Finally, should we add either some example code showing how to use these
-> kfuncs, or at the very least some links to their selftests so readers
-> have example code they can refer to?
-
-Good idea, will reference
-tools/testing/selftests/bpf/progs/xdp_metadata.c and
-tools/testing/selftests/bpf/prog_tests/xdp_metadata.c.
-
-Example
-=======
-See ``tools/testing/selftests/bpf/progs/xdp_metadata.c`` and
-``tools/testing/selftests/bpf/prog_tests/xdp_metadata.c`` for an example of
-BPF program that handles XDP metadata.
-
-> > +
-> > +Within the XDP frame, the metadata layout is as follows::
-> > +
-> > +  +----------+-----------------+------+
-> > +  | headroom | custom metadata | data |
-> > +  +----------+-----------------+------+
-> > +             ^                 ^
-> > +             |                 |
-> > +   xdp_buff->data_meta   xdp_buff->data
-> > +
-> > +AF_XDP
-> > +======
-> > +
-> > +``AF_XDP`` use-case implies that there is a contract between the BPF program
-> > +that redirects XDP frames into the ``XSK`` and the final consumer.
->
-> Can you fully spell out what XSK stands for the first time it's used?
-> Something like "...that redirects XDP frames into the ``AF_XDP`` socket
-> (``XSK``) and the final consumer." Applies anywhere else you think
-> appropriate as well.
-
-SG!
-
-> > +Thus the BPF program manually allocates a fixed number of
-> > +bytes out of metadata via ``bpf_xdp_adjust_meta`` and calls a subset
-> > +of kfuncs to populate it. User-space ``XSK`` consumer, looks
->
-> s/User-space/The user-space
->
-> Also, it feels like it might read better without the comma, and by
-> doing something like s/looks at/computes. Wdyt?
-
-Ageed.
-
-> > +at ``xsk_umem__get_data() - METADATA_SIZE`` to locate its metadata.
-> > +
-> > +Here is the ``AF_XDP`` consumer layout (note missing ``data_meta`` pointer)::
-> > +
-> > +  +----------+-----------------+------+
-> > +  | headroom | custom metadata | data |
-> > +  +----------+-----------------+------+
-> > +                               ^
-> > +                               |
-> > +                        rx_desc->address
-> > +
-> > +XDP_PASS
-> > +========
-> > +
-> > +This is the path where the packets processed by the XDP program are passed
-> > +into the kernel. The kernel creates ``skb`` out of the ``xdp_buff`` contents.
->
-> s/creates ``skb``/creates the ``skb``
-
-Ack.
-
-> > +Currently, every driver has a custom kernel code to parse the descriptors and
-> > +populate ``skb`` metadata when doing this ``xdp_buff->skb`` conversion.
-> > +In the future, we'd like to support a case where XDP program can override
->
-> s/where XDP program/where an XDP program
-
-Same here, will fix, thanks!
-
-> > +some of that metadata.
-> > +
-> > +The plan of record is to make this path similar to ``bpf_redirect_map``
-> > +so the program can control which metadata is passed to the skb layer.
-> > +
-> > +bpf_redirect_map
-> > +================
-> > +
-> > +``bpf_redirect_map`` can redirect the frame to a different device.
-> > +In this case we don't know ahead of time whether that final consumer
-> > +will further redirect to an ``XSK`` or pass it to the kernel via ``XDP_PASS``.
-> > +Additionally, the final consumer doesn't have access to the original
-> > +hardware descriptor and can't access any of the original metadata.
-> > +
-> > +For this use-case, only custom metadata is currently supported. If
-> > +the frame is eventually passed to the kernel, the skb created from such
-> > +a frame won't have any skb metadata. The ``XSK`` consumer will only
-> > +have access to the custom metadata.
-> > +
-> > +bpf_tail_call
-> > +=============
-> > +
-> > +No special handling here. Tail-called program operates on the same context
->
-> s/Tail-called program/A tail-called program
-
-Ty!
-
-
-> > +as the original one.
-> > --
-> > 2.39.0.rc1.256.g54fd8350bd-goog
+> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> > index 04ffd8cb2945..d5491e7a2798 100644
+> > --- a/drivers/net/veth.c
+> > +++ b/drivers/net/veth.c
+> > @@ -118,6 +118,7 @@ static struct {
 > >
+> >   struct veth_xdp_buff {
+> >       struct xdp_buff xdp;
+> > +     struct sk_buff *skb;
+> >   };
+> >
+> >   static int veth_get_link_ksettings(struct net_device *dev,
+> > @@ -602,6 +603,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
+> >
+> >               xdp_convert_frame_to_buff(frame, xdp);
+> >               xdp->rxq = &rq->xdp_rxq;
+> > +             vxbuf.skb = NULL;
+> >
+> >               act = bpf_prog_run_xdp(xdp_prog, xdp);
+> >
+> > @@ -823,6 +825,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+> >       __skb_push(skb, skb->data - skb_mac_header(skb));
+> >       if (veth_convert_skb_to_xdp_buff(rq, xdp, &skb))
+> >               goto drop;
+> > +     vxbuf.skb = skb;
+> >
+> >       orig_data = xdp->data;
+> >       orig_data_end = xdp->data_end;
+> > @@ -1601,6 +1604,21 @@ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+> >       }
+> >   }
+> >
+> > +static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+> > +{
+> > +     *timestamp = ktime_get_mono_fast_ns();
+>
+> This should be reading the hardware timestamp in the SKB.
+>
+> Details: This hardware timestamp in the SKB is located in
+> skb_shared_info area, which is also available for xdp_frame (currently
+> used for multi-buffer purposes).  Thus, when adding xdp-hints "store"
+> functionality, it would be natural to store the HW TS in the same place.
+> Making the veth skb/xdp_frame code paths able to share code.
+
+Does something like the following look acceptable as well?
+
+*timestamp = skb_hwtstamps(_ctx->skb)->hwtstamp;
+if (!*timestamp)
+        *timestamp = ktime_get_mono_fast_ns(); /* sw fallback */
+
+Because I'd like to be able to test this path in the selftests. As
+long as I get some number from veth_xdp_rx_timestamp, I can test it.
+No amount of SOF_TIMESTAMPING_{SOFTWARE,RX_SOFTWARE,RAW_HARDWARE}
+triggers non-zero hwtstamp for xsk receive path. Any suggestions?
+
+
+> > +     return 0;
+> > +}
+> > +
+> > +static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
+> > +{
+> > +     struct veth_xdp_buff *_ctx = (void *)ctx;
+> > +
+> > +     if (_ctx->skb)
+> > +             *hash = skb_get_hash(_ctx->skb);
+> > +     return 0;
+> > +}
+> > +
+> >   static const struct net_device_ops veth_netdev_ops = {
+> >       .ndo_init            = veth_dev_init,
+> >       .ndo_open            = veth_open,
+> > @@ -1622,6 +1640,11 @@ static const struct net_device_ops veth_netdev_ops = {
+> >       .ndo_get_peer_dev       = veth_peer_dev,
+> >   };
+> >
+> > +static const struct xdp_metadata_ops veth_xdp_metadata_ops = {
+> > +     .xmo_rx_timestamp               = veth_xdp_rx_timestamp,
+> > +     .xmo_rx_hash                    = veth_xdp_rx_hash,
+> > +};
+> > +
+> >   #define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HW_CSUM | \
+> >                      NETIF_F_RXCSUM | NETIF_F_SCTP_CRC | NETIF_F_HIGHDMA | \
+> >                      NETIF_F_GSO_SOFTWARE | NETIF_F_GSO_ENCAP_ALL | \
+> > @@ -1638,6 +1661,7 @@ static void veth_setup(struct net_device *dev)
+> >       dev->priv_flags |= IFF_PHONY_HEADROOM;
+> >
+> >       dev->netdev_ops = &veth_netdev_ops;
+> > +     dev->xdp_metadata_ops = &veth_xdp_metadata_ops;
+> >       dev->ethtool_ops = &veth_ethtool_ops;
+> >       dev->features |= NETIF_F_LLTX;
+> >       dev->features |= VETH_FEATURES;
+>
