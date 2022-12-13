@@ -2,116 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE1B64BC3B
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 19:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3633E64BC56
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 19:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236099AbiLMSns (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 13:43:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
+        id S236286AbiLMStA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 13:49:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbiLMSnr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 13:43:47 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8980B23E91
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:43:46 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id t18so2803253pfq.13
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:43:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uRGW0A+WTGjFo/YgO5+knFwqY+lAetwgiQNnuZJK0ps=;
-        b=JIKmFS0ek7EajdqLddDexCX/fRyN6IBC6pmw5HLl/UxsJPPx3Vz1AkQgQZWkhP48V8
-         2gR2Qt+eLzojj3gcKbcGK8ScWFsZzSzCRsusU6Eq6u9YjxprWCrgmdUC/7tjsbg2tdnS
-         V1wYEKQp9WvVfrl/7L7zT8+fmS4EHwmHH0ejf7iaka+X1PjPBw5EEJRVhxi3gSGVyGt3
-         GXXNSpMXpTzpL+cENTbJsX16sfxazev75oeWwFVevwzn5/h3oL/DnE8kGvE7j5RcmDok
-         0+3QJ5SAj3oBuBH00fM3bksJ9ftJd6hjERRIWCA9haYpfqhfX8A+hUOaL5xQ6fpFpB0N
-         7aGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uRGW0A+WTGjFo/YgO5+knFwqY+lAetwgiQNnuZJK0ps=;
-        b=POnD3mQGux8lA3PnE6TaBMFYPzODVy+P6O8BrCNEKpknfVV99WdUoTkV+0piTE+BOq
-         sxDSqgd8+SiTnheJ7tBAyyfv3WJmrl1JFA/rGgQN90DH+6pL/QPqiEZ3ecHqhCwwjnMF
-         coI2XKKjWJbr7s9TviF7mUkHWBfXNYJMcWaLo45iHiyzkka9G+g3GNY30AUU2FSDyBki
-         XQFyB5KvPAmEz8i+Yla8swfuBcouMENJisp3fgaPNnr2DF/P0jUOdRbsUnZMcy35SMib
-         Us+YKkqA7W+CT3lx11HMBsLIBHZMdjEYF3MZYpvpq4NLLiBJIh8tswp64LX+zP+S8nl3
-         VnGw==
-X-Gm-Message-State: ANoB5pk6E0RzAMflpjtJ6NTYTcQfFwO5j3c2fmgWUz8SbTC20iDiEpHm
-        Eq9aMxb8gPdlnn+Ky2vl+gzp+Mjrgu3Kts+lyHv8+25XgM0zAMXq
-X-Google-Smtp-Source: AA0mqf7HIg+ZL6u6Vm7VqqRU5sJQKj0S5J3zqbG7iBJWLAfsTsDvYbKfhNZvnBOz8boiRoThjX/RqqSzbBtXSzBBiAU=
-X-Received: by 2002:aa7:9006:0:b0:578:8d57:12ce with SMTP id
- m6-20020aa79006000000b005788d5712cemr513366pfo.42.1670957025838; Tue, 13 Dec
- 2022 10:43:45 -0800 (PST)
+        with ESMTP id S235875AbiLMStA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 13:49:00 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EE2F5F
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:48:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 09781B81227
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:48:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB44DC433F0
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:48:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670957336;
+        bh=nXcMLwWVry7qGVvIoxwBK7/8pvJ1JyQOQ3Kg8qEEmDY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ym+Ktq4039dg59E1XNFy/VEGTmi2OTqH1PQQp9QlB35XoADEsEzQb2K+918Ntf5Oh
+         5sRMNaedfOCdYcVynYS7ByuUc6z+RuzBVQtjVQSn7Z88l1lIy1oTIuxfYhKcn2Wj59
+         QkLlvxyh1EhBMVl0BIutwyjZItaeDx0I9LtCJxC11u5/f5rc/Mk+2esSy7B3frXarx
+         7zN/WK8nZb72eCQcIFpj2IN65VG/2A+nSZZRZ7oPKWbqo502PyfLSMOPO1+kPiGvhr
+         +CK1+zdeyXfcgtDTQxjJvENW0gaJoMFfi51Ge0i8Ihgl8Pweis/hIu5LZytOdeKe6i
+         wvdxgdfvfE/xA==
+Received: by mail-lf1-f46.google.com with SMTP id z26so6433702lfu.8
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 10:48:56 -0800 (PST)
+X-Gm-Message-State: ANoB5pk0PZeK2NECdnciMJnMfY64b2+k3TWNRYg0i7XIOyXUT7s7RjGw
+        lRwmGTJuz9O3yhuja+SzO24w6o/sslCq/etJStk=
+X-Google-Smtp-Source: AA0mqf54rV41lQh/TW03VNTxK7H8uPMjc0/t9+DZt0Gb4SEF1EaGhWw77fYtiwMB9takmg7CtXrDgH6OKES/XJwAqHk=
+X-Received: by 2002:ac2:4c93:0:b0:4b5:b46b:17c7 with SMTP id
+ d19-20020ac24c93000000b004b5b46b17c7mr1609186lfl.215.1670957334748; Tue, 13
+ Dec 2022 10:48:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20221213175714.31963-1-milan@mdaverde.com>
-In-Reply-To: <20221213175714.31963-1-milan@mdaverde.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 13 Dec 2022 10:43:34 -0800
-Message-ID: <CAKH8qBvRnDFhWEkZr9UNdznKNoCcjsZNBXeSVpXWooFhm5+C3g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: prevent leak of lsm program after failed attach
-To:     Milan Landaverde <milan@mdaverde.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+References: <20221213140843.803293-1-jolsa@kernel.org>
+In-Reply-To: <20221213140843.803293-1-jolsa@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 13 Dec 2022 10:48:43 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5sQaspOhurLWm0igDUJk+V9ihmt0WnjaKsq1gJ66F6Gw@mail.gmail.com>
+Message-ID: <CAPhsuW5sQaspOhurLWm0igDUJk+V9ihmt0WnjaKsq1gJ66F6Gw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Remove trace_printk_lock lock
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org
+        Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 13, 2022 at 9:58 AM Milan Landaverde <milan@mdaverde.com> wrote:
+On Tue, Dec 13, 2022 at 6:09 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> In [0], we added the ability to bpf_prog_attach LSM programs to cgroups,
-> but in our validation to make sure the prog is meant to be attached to
-> BPF_LSM_CGROUP, we return too early if the check fails. This results in
-> lack of decrementing prog's refcnt (through bpf_prog_put)
-> leaving the LSM program alive past the point of the expected lifecycle.
-> This fix allows for the decrement to take place.
+> Both bpf_trace_printk and bpf_trace_vprintk helpers use static buffer
+> guarded with trace_printk_lock spin lock.
 >
-> [0] https://lore.kernel.org/all/20220628174314.1216643-4-sdf@google.com/
+> The spin lock contention causes issues with bpf programs attached to
+> contention_begin tracepoint [1] [2].
 >
-> Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-> Signed-off-by: Milan Landaverde <milan@mdaverde.com>
-
-Makes sense, thank you!
-
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-
+> Andrii suggested we could get rid of the contention by using trylock,
+> but we could actually get rid of the spinlock completely by using
+> percpu buffers the same way as for bin_args in bpf_bprintf_prepare
+> function.
+>
+> Adding 4 per cpu buffers (1k each) which should be enough for all
+> possible nesting contexts (normal, softirq, irq, nmi) or possible
+> (yet unlikely) probe within the printk helpers.
+>
+> In very unlikely case we'd run out of the nesting levels the printk
+> will be omitted.
+>
+> [1] https://lore.kernel.org/bpf/CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com/
+> [2] https://lore.kernel.org/bpf/CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com/
+>
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  kernel/bpf/syscall.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  kernel/trace/bpf_trace.c | 61 +++++++++++++++++++++++++++++++---------
+>  1 file changed, 47 insertions(+), 14 deletions(-)
 >
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 35972afb6850..64131f88c553 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3518,9 +3518,9 @@ static int bpf_prog_attach(const union bpf_attr *attr)
->         case BPF_PROG_TYPE_LSM:
->                 if (ptype == BPF_PROG_TYPE_LSM &&
->                     prog->expected_attach_type != BPF_LSM_CGROUP)
-> -                       return -EINVAL;
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 3bbd3f0c810c..b9287b3a5540 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -369,33 +369,62 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+>         return &bpf_probe_write_user_proto;
+>  }
+>
+> -static DEFINE_RAW_SPINLOCK(trace_printk_lock);
 > -
-> -               ret = cgroup_bpf_prog_attach(attr, ptype, prog);
-> +                       ret = -EINVAL;
-> +               else
-> +                       ret = cgroup_bpf_prog_attach(attr, ptype, prog);
->                 break;
->         default:
->                 ret = -EINVAL;
-> --
-> 2.34.1
->
+>  #define MAX_TRACE_PRINTK_VARARGS       3
+>  #define BPF_TRACE_PRINTK_SIZE          1024
+> +#define BPF_TRACE_PRINTK_LEVELS                4
+> +
+> +struct trace_printk_buf {
+> +       char data[BPF_TRACE_PRINTK_LEVELS][BPF_TRACE_PRINTK_SIZE];
+> +       int level;
+> +};
+> +static DEFINE_PER_CPU(struct trace_printk_buf, printk_buf);
+> +
+> +static void put_printk_buf(struct trace_printk_buf __percpu *buf)
+> +{
+> +       if (WARN_ON_ONCE(this_cpu_read(buf->level) == 0))
+> +               return;
+> +       this_cpu_dec(buf->level);
+> +       preempt_enable();
+> +}
+> +
+> +static bool get_printk_buf(struct trace_printk_buf __percpu *buf, char **data)
+> +{
+> +       int level;
+> +
+> +       preempt_disable();
+
+Can we use migrate_disable() instead?
+
+> +       level = this_cpu_inc_return(buf->level);
+> +       if (level > BPF_TRACE_PRINTK_LEVELS) {
+
+Maybe add WARN_ON_ONCE() here?
+
+Thanks,
+Song
+
+[...]
