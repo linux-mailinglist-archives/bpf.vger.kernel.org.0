@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C926C64B476
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 12:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A5864B479
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 12:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbiLMLug (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 06:50:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45068 "EHLO
+        id S235160AbiLMLu6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 06:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235355AbiLMLua (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 06:50:30 -0500
+        with ESMTP id S235361AbiLMLud (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 06:50:33 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6BEDE11820;
-        Tue, 13 Dec 2022 03:50:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B922813E37;
+        Tue, 13 Dec 2022 03:50:31 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AFDF0168F;
-        Tue, 13 Dec 2022 03:51:09 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CFBE2F4;
+        Tue, 13 Dec 2022 03:51:12 -0800 (PST)
 Received: from e126815.warwick.arm.com (e126815.arm.com [10.32.32.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8B9243F5A1;
-        Tue, 13 Dec 2022 03:50:27 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EE4863F5A1;
+        Tue, 13 Dec 2022 03:50:29 -0800 (PST)
 From:   James Clark <james.clark@arm.com>
 To:     linux-perf-users@vger.kernel.org
 Cc:     James Clark <james.clark@arm.com>,
@@ -31,9 +31,9 @@ Cc:     James Clark <james.clark@arm.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH v2 3/4] perf test: Add mechanism for skipping attr tests on kernel versions
-Date:   Tue, 13 Dec 2022 11:47:38 +0000
-Message-Id: <20221213114739.2312862-4-james.clark@arm.com>
+Subject: [PATCH v2 4/4] perf test arm64: Add attr tests for new VG register
+Date:   Tue, 13 Dec 2022 11:47:39 +0000
+Message-Id: <20221213114739.2312862-5-james.clark@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221213114739.2312862-1-james.clark@arm.com>
 References: <20221213114739.2312862-1-james.clark@arm.com>
@@ -47,96 +47,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The first two version numbers are used since that is where the ABI
-changes happen, so seems to be the most useful for now.
-
-'Until' is exclusive and 'since' is inclusive so that the same version
-number can be used to mark a point where the change comes into effect.
-
-This allows keeping the tests in a state where new tests will also pass
-on older kernels if the existence of a new feature isn't explicitly
-broadcast by the kernel. For example extended user regs are currently
-discovered by trial and error calls to perf_event_open.
+Ensure that the availability of the VG register behaves as expected
+depending on the kernel version and SVE support.
 
 Signed-off-by: James Clark <james.clark@arm.com>
 ---
- tools/perf/tests/attr.py | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ .../attr/test-record-user-regs-no-sve-aarch64      |  9 +++++++++
+ .../attr/test-record-user-regs-old-sve-aarch64     | 10 ++++++++++
+ .../tests/attr/test-record-user-regs-sve-aarch64   | 14 ++++++++++++++
+ 3 files changed, 33 insertions(+)
+ create mode 100644 tools/perf/tests/attr/test-record-user-regs-no-sve-aarch64
+ create mode 100644 tools/perf/tests/attr/test-record-user-regs-old-sve-aarch64
+ create mode 100644 tools/perf/tests/attr/test-record-user-regs-sve-aarch64
 
-diff --git a/tools/perf/tests/attr.py b/tools/perf/tests/attr.py
-index eceb6d022141..ccfef861e931 100644
---- a/tools/perf/tests/attr.py
-+++ b/tools/perf/tests/attr.py
-@@ -6,6 +6,7 @@ import os
- import sys
- import glob
- import optparse
-+import platform
- import tempfile
- import logging
- import re
-@@ -125,6 +126,11 @@ class Event(dict):
-             if not data_equal(self[t], other[t]):
-                 log.warning("expected %s=%s, got %s" % (t, self[t], other[t]))
- 
-+def parse_version(version):
-+    if not version:
-+        return None
-+    return [int(v) for v in version.split(".")[0:2]]
+diff --git a/tools/perf/tests/attr/test-record-user-regs-no-sve-aarch64 b/tools/perf/tests/attr/test-record-user-regs-no-sve-aarch64
+new file mode 100644
+index 000000000000..fbb065842880
+--- /dev/null
++++ b/tools/perf/tests/attr/test-record-user-regs-no-sve-aarch64
+@@ -0,0 +1,9 @@
++# Test that asking for VG fails if the system doesn't support SVE. This
++# applies both before and after the feature was added in 6.1
++[config]
++command = record
++args    = --no-bpf-event --user-regs=vg kill >/dev/null 2>&1
++ret     = 129
++test_ret = true
++arch    = aarch64
++auxv    = auxv["AT_HWCAP"] & 0x200000 == 0
+diff --git a/tools/perf/tests/attr/test-record-user-regs-old-sve-aarch64 b/tools/perf/tests/attr/test-record-user-regs-old-sve-aarch64
+new file mode 100644
+index 000000000000..15ebfc3418e3
+--- /dev/null
++++ b/tools/perf/tests/attr/test-record-user-regs-old-sve-aarch64
+@@ -0,0 +1,10 @@
++# Test that asking for VG always fails on old kernels because it was
++# added in 6.1. This applies to systems that either support or don't
++# support SVE.
++[config]
++command = record
++args    = --no-bpf-event --user-regs=vg kill >/dev/null 2>&1
++ret     = 129
++test_ret = true
++arch    = aarch64
++kernel_until = 6.1
+diff --git a/tools/perf/tests/attr/test-record-user-regs-sve-aarch64 b/tools/perf/tests/attr/test-record-user-regs-sve-aarch64
+new file mode 100644
+index 000000000000..c598c803221d
+--- /dev/null
++++ b/tools/perf/tests/attr/test-record-user-regs-sve-aarch64
+@@ -0,0 +1,14 @@
++# Test that asking for VG works if the system has SVE and after the
++# feature was added in 6.1
++[config]
++command = record
++args    = --no-bpf-event --user-regs=vg kill >/dev/null 2>&1
++ret     = 1
++test_ret = true
++arch    = aarch64
++auxv    = auxv["AT_HWCAP"] & 0x200000 == 0x200000
++kernel_since = 6.1
 +
- # Test file description needs to have following sections:
- # [config]
- #   - just single instance in file
-@@ -138,7 +144,9 @@ class Event(dict):
- #                 negates it.
- #     'auxv'    - Truthy statement that is evaled in the scope of the auxv map. When false,
- #                 the test is skipped. For example 'auxv["AT_HWCAP"] == 10'. (optional)
--#
-+#     'kernel_since' - Inclusive kernel version from which the test will start running. Only the
-+#                      first two values are supported, for example "6.1" (optional)
-+#     'kernel_until' - Exclusive kernel version from which the test will stop running. (optional)
- # [eventX:base]
- #   - one or multiple instances in file
- #   - expected values assignments
-@@ -169,6 +177,8 @@ class Test(object):
-             self.arch  = ''
- 
-         self.auxv = parser.get('config', 'auxv', fallback=None)
-+        self.kernel_since = parse_version(parser.get('config', 'kernel_since', fallback=None))
-+        self.kernel_until = parse_version(parser.get('config', 'kernel_until', fallback=None))
-         self.expect   = {}
-         self.result   = {}
-         log.debug("  loading expected events");
-@@ -180,6 +190,16 @@ class Test(object):
-         else:
-             return True
- 
-+    def skip_test_kernel_since(self):
-+        if not self.kernel_since:
-+            return False
-+        return not self.kernel_since <= parse_version(platform.release())
-+
-+    def skip_test_kernel_until(self):
-+        if not self.kernel_until:
-+            return False
-+        return not parse_version(platform.release()) < self.kernel_until
-+
-     def skip_test_auxv(self):
-         def new_auxv(a, pattern):
-             items = list(filter(None, pattern.split(a)))
-@@ -257,6 +277,12 @@ class Test(object):
-         if self.skip_test_auxv():
-             raise Notest(self, "auxv skip")
- 
-+        if self.skip_test_kernel_since():
-+            raise Notest(self, "old kernel skip")
-+
-+        if self.skip_test_kernel_until():
-+            raise Notest(self, "new kernel skip")
-+
-         cmd = "PERF_TEST_ATTR=%s %s %s -o %s/perf.data %s" % (tempdir,
-               self.perf, self.command, tempdir, self.args)
-         ret = os.WEXITSTATUS(os.system(cmd))
++[event:base-record]
++sample_type=4359
++sample_regs_user=70368744177664
 -- 
 2.25.1
 
