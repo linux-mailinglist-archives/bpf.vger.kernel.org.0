@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A8F64AFB7
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 07:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C91A64AFC5
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 07:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234503AbiLMGQR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 01:16:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
+        id S234511AbiLMGV2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 01:21:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234530AbiLMGQL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 01:16:11 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E2A1B9F4
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 22:16:06 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BD3KFoK005576;
-        Mon, 12 Dec 2022 22:16:04 -0800
+        with ESMTP id S234587AbiLMGVC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 01:21:02 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79CA1EAF8
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 22:20:45 -0800 (PST)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BD049I3025464;
+        Mon, 12 Dec 2022 22:20:42 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=k8vL+QN46YdyhK3z34yCg23K3jF3XHOAxm1wUB5edMU=;
- b=OUzTn8CQkCNCloQrK8a7v3662HIVCjkYIUF7EEVT8gM009q42tQ+GpNWG8RcF2RqInvg
- 7VmXHJt05J8nf1YVD+FkPNXL4pKIg2ksrm/pkNy4Pa1zJVkS5XMmojCkeOW1XuoKZ+Ma
- ntO8OTsjDwkNrFnZIQR0zmluwh1oberfghlVYSTAJZtsC5N+B+bcdGyfaPCQpdPGCkon
- RsYrTcCFa/qzr4jiVIpHoc7fV9klNFLzrAxCZGO7wJvB62NJsfmepBNZ8Sd+/C0u79x1
- ndaWgNBIu9gnoZZDusJu4o3ALlp63WNDpjv6SCxrrs6NLQZcSGE8gcIZkjiP2O/ITn37 /Q== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3me4xsfjkn-1
+ bh=qdZDsL1v2LicGLUbPKkz8LgyMrve5hz1uiXQ2PfMdRY=;
+ b=WeELxuvgehIYZSaMuMs5DI5fYqccZvhlUuuGZu4dsyldH0zyZ4+mxfkkCieRkvrc/9bu
+ tYgTPgC8hBb9T73kcGGTlHVXZ4T9esbOd6uDvk527woU9ZM1ZxvRFFzyvkw8795xKoTf
+ 8rvA8/QyQpge2IhHe1w5GY/cNhzhtLQ5KPCac8/h7zMP3y+ZEu6W23D07fIetU8DlLdq
+ 1LY13aVQWDh7L5lwuaEDIeAzC+J2PLv49bwI8QBOfx4/Z8eoU6lAjHTDkQKpS4l41zSk
+ xIxNyi+TIzZPkXD2hbO1XoKAQU/oN8A4c44RrzIpLuTJpcm+9cCpH6i1TZE1fTWE8+GS sQ== 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3me5fqybke-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Dec 2022 22:16:03 -0800
+        Mon, 12 Dec 2022 22:20:42 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=joBK9/5H8fjBlBQo+T2drvWb9Gfu4k/r587aTWtY9GE+k1VYpqhDPU1EYywRso+A3EZtn0EncAyXnFi3zp5YDKRLGbsFOl+MDVvDelidWQyeou2tYOaLvyI9u80Ury3lGbrahWNcby38sOyJpvhfq8JRH24LsHwlhnciNx2IwaV2ieh36UImplCOq0UPWmkdjiEGuDZDWi+phbt15M6SwJ1gPuKVD3ipqrMVB4BoiTFtWowO8rrTn4JhKJOBevenCDcfm/VRwZ3lW2aPjSq8BYdXuC8up7bQ5eDRXgouHNAAQWiQpvI0OysnftrgG5xMviiMkcXA9TY3zBkf79VrTg==
+ b=XPqz1gcO8iFqlNno/UUFKuRfzZFUvgDt47PNs544PY4iCaCWMUaWzWhz+c2Ms62t+Hy6QRNbDyay42CiicvEQny/G9q/ar7sIpqbMdAc7QLBdsTJ5KZntWmOT3Hg7qBS7tC4/L+8UKbtmZmBeaYW2slK3+nhkRfJYVSxsgAmXedEpHCbSm2nXgWgdepe6RzfNiQhSPQ31TgtkEBRhVrw9lADzziCRCeDFTiQKNUWAHVfILLR8jy0CxWU4mSesA4T+wFO8deM+T2B3qnbZzuR5mPe/h0jYXjcGt5o0MPdk8tx01mH0Wza4Ysm71WpQrlljtZhgpzkA6A9vkYMZQo7LQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k8vL+QN46YdyhK3z34yCg23K3jF3XHOAxm1wUB5edMU=;
- b=VwBm9eXu05riUOludZnXSuw3sSh5XHkC+7NTKgryXL4mbkmu578f28zJIdS+PVJQ1IVqqmm/YzF+WydqqLE5eDOO/LRitKzhplSYe3WZur8AHpROvL6+xkb3Dx2HXtXK1ky+4gXtiZDXXa2EscpiyQlSxhCh/WmXeyImswuP3nWzOKH19KjujNrtMIp7OMonxRwzuY2RloOvvVxgCix6G3/DbTfzyM9CeGL4k+mYQGr4MBCgOCtu2jq1lCewb2Ud5Zm4yHLdH4J5ll5LoBfqynDHLR7KUfsznGKjGdR7v7aPqRw7NnHTzHV20f+fvIeIhaVcwSOxZ7yLfPFsypnOag==
+ bh=qdZDsL1v2LicGLUbPKkz8LgyMrve5hz1uiXQ2PfMdRY=;
+ b=mOX/5cLcXLcPMhl7bqafzKzPauINN+IclNPMKL5oxEReINzTsOO1WbUTGHZsHkFR9uS5WWY3IDFAPPrsRugPca4j48JD4cAvL+baMmi0RnNENmqD9mpB3TabsXN3ndRqOlTt/UUcq5z7XMMAp1yeJNjEFb1f4gMNKBKjmE8ljMUT7ViUoUHF1qxV87LKwEUSLOabx81X0stX/QDkc01ahlVnHLUrmrX8mnqbx0gPzaSeZ8QLMpA4tQ4rv1jQvK256aXQJ2GLRYnNi8oxmnUpIHZf5A/T9yvoxBOAen2fy6uEizgfOCbCQ/h0xPnYeh12DVBfCE2aJDT9vXw7E4dSKQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
@@ -44,90 +44,90 @@ Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
  by MN2PR15MB2575.namprd15.prod.outlook.com (2603:10b6:208:129::28) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.14; Tue, 13 Dec
- 2022 06:16:01 +0000
+ 2022 06:20:40 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d665:7e05:61d1:aebf]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d665:7e05:61d1:aebf%7]) with mapi id 15.20.5880.019; Tue, 13 Dec 2022
- 06:16:01 +0000
-Message-ID: <e547311f-713b-0685-3fb5-80975c85d641@meta.com>
-Date:   Mon, 12 Dec 2022 22:15:59 -0800
+ 06:20:40 +0000
+Message-ID: <70ea5f8b-be37-267e-56d6-381938cb6e5b@meta.com>
+Date:   Mon, 12 Dec 2022 22:20:37 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.5.1
-Subject: Re: [PATCH bpf-next v2 3/9] bpf: Support access to sun_path from
- cgroup sockaddr programs
+Subject: Re: [PATCH bpf-next v2 5/9] bpf: Implement cgroup sockaddr hooks for
+ unix sockets
 Content-Language: en-US
 To:     Daan De Meyer <daan.j.demeyer@gmail.com>, bpf@vger.kernel.org
 Cc:     martin.lau@linux.dev, kernel-team@meta.com
 References: <20221210193559.371515-1-daan.j.demeyer@gmail.com>
- <20221210193559.371515-4-daan.j.demeyer@gmail.com>
+ <20221210193559.371515-6-daan.j.demeyer@gmail.com>
 From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221210193559.371515-4-daan.j.demeyer@gmail.com>
+In-Reply-To: <20221210193559.371515-6-daan.j.demeyer@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR05CA0058.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::33) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR03CA0059.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::34) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MN2PR15MB2575:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1de6954e-0359-41c4-51b6-08dadcd1820b
+X-MS-Office365-Filtering-Correlation-Id: e1312c9d-3462-462d-b7cc-08dadcd227f7
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bseETuPTV8mgDKL4gW8CXiL5Nz72BzTS2Z344G24d5xHPqvWJvPVDS8r7nUqZ7RXcl8te53KaE1unC1Mqz147wLOs1RP9AxKq2MwLBUxjeth1rZjSHGMa9T2yrQcWs9qzOCnHhrc99RztyT7d9HT9Epgq89LEjsHExDKvVJuKmAkiBFpLjazKvudElEQbNaKdy2jF6kkQsyj+EHfhnLRMPO+fo0iB3N3Bbbo393+GaerUz99RsOKUFyLnppdl4fNI5+v8H9V8VOvu+OmKrxvjbavoz9DfIU6sAXlIImMqHwdmLnpL9H2IMMq0c2v2rj+wjSBqJ7Qhg4W/ba9zuqKBYXKMpMWBcB6L1xiHEyPBTJsd9Ryp1gRFYmBPNBGd7xebeSq4hL04iMh8tvQrMuAW7Rm49uX/pDmz2d7S9ctPAPHvzH7ZkJUg8QJmuV1LL9VcB1236lFhaa1Ib/VBTmKeIBtsnajrBVwk7NoSQt69q60M9kNTIUdplax3Y8/HXe+iJgMWBtPKkU27wsWyvY9MF0+1da2fSnWnQUgAc3YPpBosUYabEjKuhuPyzrHefPhdP3bEGwRdWm7mS7PshSJlSofRnWWIB+tbf/2rd4gg15lq2H4NhteSRTP7nEmjjr8Rtj0OoGgExj03TG6qiFGwYG81UwWo1tfBpFJ9vu+rv8+xTAfd3qZP6U2+UJJdfbmovO4d7ibupJeqS/rPSzc2jkTYw5AdmeKxMiosgroghU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(39860400002)(376002)(136003)(396003)(366004)(451199015)(31686004)(4326008)(8676002)(8936002)(5660300002)(66946007)(66476007)(66556008)(2906002)(316002)(66899015)(41300700001)(6486002)(107886003)(36756003)(6512007)(6506007)(53546011)(478600001)(186003)(83380400001)(2616005)(31696002)(86362001)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: QA2tZFyZTgj3Iun8OfNQzXZ9MTI9nsm+TRd1aTZOm2agbtKwyjaCgr5fQK2y4YqjrqwhzzaxfyQ+U34nfWIBSZJYst7BpVkux3urEPyZKg0RXKmV+MPdMIvHCvh26TVs5cMdmccwp7L2oph8W4IyEQnyvUbEPmwftNardDuPj9etPR6gWBN0H4UWf1x239K925/WsmJ8rc9EwIAyOIPfX9h8Mf0NLxriV+bLLVPx+ApPeuEoUpock5dpei13nd82qANN4pI6FHgBxuEnKs56OtxpjjAF4S/JOmC8Pj3+quSvEdwnTbtCN9CTkqnap5x3gAnNuvCG1GPTLdBQ8o0U99sAiyZLgCdP+WUkE1VtpKcdhifgaYXMzarolRoMEJOh6rOkXjUeCiCVfXxywo9ru+U79/gyco8fP8HgD/sZCOdNjhKPOhDbFqRjQHNHulC0mQcSgHNDEeL2wpxa0fKYBa3DhqtlwvUAYxTGt7ESsov+wjPHRJobKjjZNwZkNzABGI18TsdoUpHF2DZyUbzTZuLcHCp3ZDnfsD/C+OLJX36HYGuw+OLRyKFQIe+bb4n72yyB+nWS2Y8/pOkf/Iql2sMjsbCkZp8BLmJbVLdwUKWEYRUt5oXmZihwnm1bRKaV3TeoQc61QzitYd9kj3MiZ3BM2yieRhiM+xiZYHtPiQN67MrZO+fxxxrfqTzzVgCZQl7hjTW34wc2iq332jE+3PsHv8PlUjzX2/yokAMpLNg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(396003)(136003)(39860400002)(346002)(376002)(451199015)(6512007)(6506007)(53546011)(36756003)(186003)(478600001)(6486002)(107886003)(6666004)(31696002)(86362001)(38100700002)(83380400001)(2616005)(66476007)(5660300002)(66946007)(66556008)(30864003)(31686004)(4326008)(8676002)(8936002)(41300700001)(66899015)(2906002)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d2dzSmRYRUt5YXBlVEcyZXpyaVZ4dUoxTW8xZ2ZHcTBxYldjNkJnL2FZV3Vo?=
- =?utf-8?B?SHNGcFYyWjRibnRJdGZ3M25TWFMzSkxxNm5vUDIxeXpiSkdOK2Vla2VHNGEw?=
- =?utf-8?B?OXlrbWVyekhCdUdlamU1Mi91M2EzL0w0UWNweTh6TmdxRU9hVGtmbkZJa2t2?=
- =?utf-8?B?MURpbnEwOWpuRWx2QjN5Y1RCbDhWZ0JWSUdxczRZYzNsK3dRQmtMc1ZYMDFY?=
- =?utf-8?B?Q1pxK3F3YjRwTEtJeW14UUtOaFJ4WlpzL2RVVzZINGNtWXBseDU0ZDJsWEJv?=
- =?utf-8?B?aFhHcHE3Rkg2bGFPbW8vZEl6Y2h5azlzbXpSd0tWTjk5N201R01vV0ttcTRT?=
- =?utf-8?B?WmRsbHJ2NEpHV254aW53NGZVTHMzS2NYRG9mOWYxSHJPRUNUZng5dHFpZ3h4?=
- =?utf-8?B?eWZWRTVqRXVPRlUxOGhQUDZjL0hrbGRPeTFjK05wRlAzd3NReTdnZG85c0F1?=
- =?utf-8?B?NCtKbWk4bkt4SjhLeEVPMFU2YkhKZlE2UVNoNzJtTHRnUUFCQlZOQjF5R2VU?=
- =?utf-8?B?eS96L1NlQUVBMTR3MTBaMGkwM3didENZZUkxeEJrZTBaRnNDOXF2MUNFSzVH?=
- =?utf-8?B?R3pSL2cyNktLK2Z5bnBQZmc5bWJ3SkxGMEdRaksydHVTQWdpYTFUdmdVd1NL?=
- =?utf-8?B?K3J0RUxZcEV6R0Y2eUtMczF6a1IxTGtXeklvL3NHcmVaWHVjNzdTZnY5SnhW?=
- =?utf-8?B?OU0ySmRUbEhRL2ZPUmRxb2F1ckNKRU11NjdPMm4xclVLL0NvTXI1OUtBZjhB?=
- =?utf-8?B?WlYxR1ViRERibEFlOEZrbEtheWlUbTdZNzhURUczMytXUWo5NmttWXo3Vk9r?=
- =?utf-8?B?UEIxNGZLbysvclJjSFF4b3VIQ0dlT25YUVdpK3ZKZ2pCQXA2RVhMUnpLaktN?=
- =?utf-8?B?L2kwZ055emhrRWhQRGs0YWF4bW9tK01oeDBQcWVnVkw2SEtDM3RsRm5Qdzcy?=
- =?utf-8?B?TlVPWVRMemg0bWh0MUk3WlJocFRTT1dXTzR5NVZYblNjRCtsU2R1YU9NRHh4?=
- =?utf-8?B?WjBpYWdoU21VOWRjdS9IYVNUQjJtY3ZyQWZhNjllMFNLa3Vaa2xlbWlrWS91?=
- =?utf-8?B?NGJESlI3Y0JCbE9oTGZXR3dQVzhrNmxtQ1pLcW1PZjRGT2RJN3lsWThRelhW?=
- =?utf-8?B?MWcwYXpOdUhUWk9TTm12czgySXRvK05kbjk0azYvUHJoYlJ0VFFHNlBnTmtY?=
- =?utf-8?B?VmZVT3hlVDYvckZyZHJXd29UUi9RSHMrdGZhOWdsbS8zOGZJbWVPb0hoL1Jk?=
- =?utf-8?B?VHdIeGswZWt4VEYrV1o1UFRMVnNvTnd2QjZTSlBXQThjdjk0S2FDUWhoZGVY?=
- =?utf-8?B?Uys5NTE2NEhDYlFtdXQ0elhRNy9VTVROMHJ6RHF6MENua0JqNmFwcU9BKzBH?=
- =?utf-8?B?cnExNi9ubThBanpBUWNNd2hIa2NDUGZ5ZFpOTTFYVkZWcXNLYSsxc0hkc1hF?=
- =?utf-8?B?M29wd215U3FWcEI3S203TEhSUmJ6RjVQVFFwM2NobjFFZnRNbVJHRUEwcjN0?=
- =?utf-8?B?M0sxbzVmaVJyUTRrN0hGVHgxbWYycE90Wi9JZ1VjMUxPOHB0NGE5VU1XSDhy?=
- =?utf-8?B?ekFSNEd3c2EyMFMwWEUrTmUwVVRreWxtbmF1cEpNZjZVT0p0dnRvVXZKak05?=
- =?utf-8?B?bnlhTjFBdGdUcVFDWS80eXBIVVZEUU1yNFhybTVmMUx0MmdRWXNXZFo0c0VP?=
- =?utf-8?B?OWR2TSs3T1drVnFRKzJuMGdVOW43TnhDNUNrK1RQeHQwVmNkZm1ZUTd4UXZh?=
- =?utf-8?B?VXRQZFY2TFhzbGxnK1JmMmFJZXFEaXNBR051Vlk3NVBnVFFvZ3dubUs3ZStP?=
- =?utf-8?B?MGlBbUkvZjliTEZRNkZERGhRL1JtYTIwUUc5QzZyRlRsV2ZKbWVpc3d6R1Fp?=
- =?utf-8?B?a2szUkdkUk9BenBiSDI1ZUpIeUJCbE1pU3dRUlo1ZE1Ud1pBRDZUc0VtQzlC?=
- =?utf-8?B?TDg5UEl0SnlZd0gzWG5SMmlUS3ViWUVZZ2pldkFSTUt0ckZNTGszUk1aQk44?=
- =?utf-8?B?SzN3QTJSM3V0elFRSWw2U3hOMk5LeDRTRldnWFNUeWhScnVQVEI4b0M0V1FN?=
- =?utf-8?B?Mi9LWnJ1YXM0SElmemJoOFFQK1prRThDd1h3bkREdEx4cFNSbEdMdlRRTmdK?=
- =?utf-8?B?S1ZsaGJiWkJ0bFA0L2ZXWjg3Tzc2U0lpOG5LaFN0YnlDSjFKTkx2OGRlTFlt?=
- =?utf-8?B?c3c9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WEtEc2pZVVBhdWhIUWxLdEhuNS8zOFNDV0FKYjZyS3BPRm01VUNZc3ZjdUxV?=
+ =?utf-8?B?M3M5c0RQS1R6RWlvK05lRVNEMDNveDA4OVMxZmFsTTkvSnVZOHFxN3hqSGgr?=
+ =?utf-8?B?NXlTOHdIUVFaTEY5WnQrd21rQ1lKNXRLa2FiVEhiZkNaYnExU0ZaRFZwSmdP?=
+ =?utf-8?B?M0Y3a04xUXRxUW56UFRDOUxCRnZ0Rkg2RVJoM2t4N1ZwMW9FOW1ZSmNHcllI?=
+ =?utf-8?B?MDJzQzdYMkRKR1F0Vk1RaWZBOWtlMGQ4Y1FZdEpTeVhtTmlZdUJMSm43UnR3?=
+ =?utf-8?B?VldJQ1ZkTHpCUW9KLzRyQ0dUUi8vVXh0Z2V3NHU0ZlNUQlJYbzBJbnpxTGJu?=
+ =?utf-8?B?U2VaYm0wMHZaZi92YnUrbGRsckVNMHBVN2tWUEVDNUZFeGJ3VzBzd0hoZUpJ?=
+ =?utf-8?B?RUhacDJOOFhhYzVHckV5VDF3NUV2SmhxUHFkUit2SjRzblFkcStGUUNKcHFN?=
+ =?utf-8?B?aGErcnBEYnhHcHBQeFJkT1JKVi9OZnNuTGl1YnNxVFRuUU56cEdhaUh3elV0?=
+ =?utf-8?B?QTV3cFBGUmNDUmd3YjhIeFY4V3BFYkU5UG4wVy9JKzhOcE5UR3l3N1BHMzgw?=
+ =?utf-8?B?cTJTbFZlcHFCOENIMmR4WXZtVVlXRFhxNzR5Lys1NzlsOEhUcnpXa3h1cmNG?=
+ =?utf-8?B?UXVjOHR1QllTMXQ2UzRuVldPK3B4RGx5cjZvVFI3V2pkaTkrV0NxYU8wT0Zo?=
+ =?utf-8?B?ZGxpNU1wKzg4NlcwbFZIUmtCWXJ4YThweEthSUF6Nmo5UExnaU92ZXdLUFVm?=
+ =?utf-8?B?STZhTUk4SmZ4S2FwZmxncGsvbmFVZmdyalNqa2M4c043ZStNVzdwdm54Vysr?=
+ =?utf-8?B?MmRqdVVqVFZWN1dXYlAwQmErSWxKVHZGZXhpMUZYdCtQMFZHcjFwNHZQcWJV?=
+ =?utf-8?B?a0tDTnQrQmZUcVphVjNFL2Uya3BhY1VpM3EwckltYjZpMldWNkNOcnV1QWpT?=
+ =?utf-8?B?SUZ3UjFCRzNDUmxDZlhjN2podGpDdWFzYUtkQkxmaENzbnU4UzNqUXhNaXZV?=
+ =?utf-8?B?bzBOSVcvL1RGZTJ4cGNmajRIYWxLbW5kNlYwSElzaHdwczduWC9uVEpXQzBK?=
+ =?utf-8?B?L01KdjFnL0NDMFRwRXRxSVlveUkzdzAwcmwrb0xEUUJQWE1GalBVTkJCdE5D?=
+ =?utf-8?B?MVN0QlNJOVNEWUo0WXFwSzl0c1RQYVVJMjhrSDl0dWdrWTdSbWpUeDNSNXVJ?=
+ =?utf-8?B?SHdZWUVXcUlrSWxkcVozTTUzc1l3THVYN3MvZENHeGRvWGpNNHNTZDZlbGsz?=
+ =?utf-8?B?RmR2cDZ2djIzRnIxL2l4WEFtSXI3cDlJb2FkMEZOdlMrdFo1N1plNDhKYm52?=
+ =?utf-8?B?Q1AxWG15UHNid2Zkc1lzQzIzbUliOCs5SWJkcTl2KzNJcE9pbks2Z2daVm9j?=
+ =?utf-8?B?cVRJcE1SMlZzTUphQkpZUWJRSk5VOG9MUEJyU2diUCtadndwSk9IeVdjREZU?=
+ =?utf-8?B?bVM1Nk9qNWl4TzVML0NMMXgzT2lZdm5DcWVZdE1rOHF5Zno0VXJxd3NwWTht?=
+ =?utf-8?B?bmRsTm9zdTFsekt2bFByOGJ4RUZjZ09HTVljOXByQzgvbUhiUE5WMTNNc2p0?=
+ =?utf-8?B?VXBLUDh0aDUrdHJ0TEM5TkI3ckJaRkthOE4rOHg2SE44bEViOWZ6ckxwaWgx?=
+ =?utf-8?B?TTFBL09lY01lYlVJL2RrT1VDK253MldBaWVVTVEwNFp6MC9tajhMM04xckJp?=
+ =?utf-8?B?NDBwRzFCSmJyMmZ4anUxa0grNFpTMUdxVFVQdkV2Y3ZyNWQ4NXpRZ3JkZ3Ir?=
+ =?utf-8?B?K3Rkd3BKQzRuMHBhTmc2NVB6WmExNEJjVXlaQXhuS3pmN2xrY1JxZXpQSDB3?=
+ =?utf-8?B?K08wa1FSTnJ3dVoxWm1FSVhkaTVYUVdkTlhlMFRXazNoT3M5YkY0Uml5bmVa?=
+ =?utf-8?B?L2FLK1ZwelZTVElnbDdXMjlncGFUZGpkVTQxUmhSN2ROU1BvdDBDRXJwQjhM?=
+ =?utf-8?B?dkRrcEYyODFDR0szQlNEU3JrWFRzdzlKUzdjSjRiUjlOT0ZyVWJTUms3R0hT?=
+ =?utf-8?B?SExJZGV2dzJkYktjMGczL1pBZmsyeTVibm1SSENXNjNWV3NCNkk1OEhiZlJL?=
+ =?utf-8?B?aTRRWjRhVHVub1pLMFpLY1EzVHJ2U2JkUnMvb2FQZHUyVXZ6dk1OR2JRT2M1?=
+ =?utf-8?B?Umk2N1RxMW1MNjZtczdyaXU5cGdrQnJXVm81VlNGdW5FRmRFbkh4dXJRYmhL?=
+ =?utf-8?B?WHc9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1de6954e-0359-41c4-51b6-08dadcd1820b
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1312c9d-3462-462d-b7cc-08dadcd227f7
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2022 06:16:01.5964
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2022 06:20:39.9385
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lC09wjhqvI56kULkY4uEoxgsT+GVhUg+tFXXtDLXkleLDDkRYu2sFUMiqPhpXqJL
+X-MS-Exchange-CrossTenant-UserPrincipalName: XX8OaTmDRoVEyrWU8N3o3CIh5g1kJgu9c+oDmyJjUGpMbf5WOJJPRSGOTRIUcAPh
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2575
-X-Proofpoint-GUID: 7QLDT97_3hj2QfJ3RihM6gQ2CqYZO882
-X-Proofpoint-ORIG-GUID: 7QLDT97_3hj2QfJ3RihM6gQ2CqYZO882
+X-Proofpoint-ORIG-GUID: 5LDmvdcxhGL94s3jfAiZd1jTcfDKCdYD
+X-Proofpoint-GUID: 5LDmvdcxhGL94s3jfAiZd1jTcfDKCdYD
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-13_02,2022-12-12_02,2022-06-22_01
@@ -144,42 +144,260 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 12/10/22 11:35 AM, Daan De Meyer wrote:
-> Preparation for adding unix support to cgroup sockaddr bpf programs.
-> In this commit, no programs are allowed to access user_path. We'll
-> open this up to the new unix program types in a later commit.
-> ---
->   include/uapi/linux/bpf.h       |  1 +
->   net/core/filter.c              | 19 +++++++++++++++++++
->   tools/include/uapi/linux/bpf.h |  1 +
->   3 files changed, 21 insertions(+)
+> These hooks allows intercepting bind(), connect(), getsockname(),
+> getpeername(), sendmsg() and recvmsg() for unix sockets. The unix
+> socket hooks get write access to the address length because the
+> address length is not fixed when dealing with unix sockets and
+> needs to be modified when a unix socket address is modified by
+> the hook. Because abstract socket unix addresses start with a
+> NUL byte, we cannot recalculate the socket address in kernelspace
+> after running the hook by calculating the length of the unix socket
+> path using strlen().
+
+Yes, although we cannot calculate the socket path length with
+strlen(). But we still have a method to find the path. In
+unix_seq_show(), the unix socket path is calculated as below,
+
+                 if (u->addr) {  // under a hash table lock here
+                         int i, len;
+                         seq_putc(seq, ' ');
+
+                         i = 0;
+                         len = u->addr->len -
+                                 offsetof(struct sockaddr_un, sun_path);
+                         if (u->addr->name->sun_path[0]) {
+                                 len--;
+                         } else {
+                                 seq_putc(seq, '@');
+                                 i++;
+                         }
+                         for ( ; i < len; i++)
+                                 seq_putc(seq, u->addr->name->sun_path[i] ?:
+                                          '@');
+                 }
+
+Is it possible that we can use the above method to find the
+address length so we won't need to pass uaddr_len to bpf program?
+
+Since all other hooks do not need to uaddr_len, you could add some
+new hooks for unix socket which can specially calculate uaddr_len
+after the bpf program run.
+
 > 
+> This hook can be used when users want to multiplex syscall to a
+> single unix socket to multiple different processes behind the scenes
+> by redirecting the connect() and other syscalls to process specific
+> sockets.
+> ---
+>   include/linux/bpf-cgroup-defs.h |  6 +++
+>   include/linux/bpf-cgroup.h      | 29 ++++++++++-
+>   include/uapi/linux/bpf.h        | 14 ++++--
+>   kernel/bpf/cgroup.c             | 11 ++++-
+>   kernel/bpf/syscall.c            | 18 +++++++
+>   kernel/bpf/verifier.c           |  7 ++-
+>   net/core/filter.c               | 45 +++++++++++++++--
+>   net/unix/af_unix.c              | 85 +++++++++++++++++++++++++++++----
+>   tools/include/uapi/linux/bpf.h  | 14 ++++--
+>   9 files changed, 204 insertions(+), 25 deletions(-)
+> 
+> diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
+> index 7b121bd780eb..8196ccb81915 100644
+> --- a/include/linux/bpf-cgroup-defs.h
+> +++ b/include/linux/bpf-cgroup-defs.h
+> @@ -26,21 +26,27 @@ enum cgroup_bpf_attach_type {
+>   	CGROUP_DEVICE,
+>   	CGROUP_INET4_BIND,
+>   	CGROUP_INET6_BIND,
+> +	CGROUP_UNIX_BIND,
+>   	CGROUP_INET4_CONNECT,
+>   	CGROUP_INET6_CONNECT,
+> +	CGROUP_UNIX_CONNECT,
+>   	CGROUP_INET4_POST_BIND,
+>   	CGROUP_INET6_POST_BIND,
+>   	CGROUP_UDP4_SENDMSG,
+>   	CGROUP_UDP6_SENDMSG,
+> +	CGROUP_UNIX_SENDMSG,
+>   	CGROUP_SYSCTL,
+>   	CGROUP_UDP4_RECVMSG,
+>   	CGROUP_UDP6_RECVMSG,
+> +	CGROUP_UNIX_RECVMSG,
+>   	CGROUP_GETSOCKOPT,
+>   	CGROUP_SETSOCKOPT,
+>   	CGROUP_INET4_GETPEERNAME,
+>   	CGROUP_INET6_GETPEERNAME,
+> +	CGROUP_UNIX_GETPEERNAME,
+>   	CGROUP_INET4_GETSOCKNAME,
+>   	CGROUP_INET6_GETSOCKNAME,
+> +	CGROUP_UNIX_GETSOCKNAME,
+>   	CGROUP_INET_SOCK_RELEASE,
+>   	CGROUP_LSM_START,
+>   	CGROUP_LSM_END = CGROUP_LSM_START + CGROUP_LSM_NUM - 1,
+> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+> index 3ab2f06ddc8a..4de3016f01e4 100644
+> --- a/include/linux/bpf-cgroup.h
+> +++ b/include/linux/bpf-cgroup.h
+> @@ -46,21 +46,27 @@ to_cgroup_bpf_attach_type(enum bpf_attach_type attach_type)
+>   	CGROUP_ATYPE(CGROUP_DEVICE);
+>   	CGROUP_ATYPE(CGROUP_INET4_BIND);
+>   	CGROUP_ATYPE(CGROUP_INET6_BIND);
+> +	CGROUP_ATYPE(CGROUP_UNIX_BIND);
+>   	CGROUP_ATYPE(CGROUP_INET4_CONNECT);
+>   	CGROUP_ATYPE(CGROUP_INET6_CONNECT);
+> +	CGROUP_ATYPE(CGROUP_UNIX_CONNECT);
+>   	CGROUP_ATYPE(CGROUP_INET4_POST_BIND);
+>   	CGROUP_ATYPE(CGROUP_INET6_POST_BIND);
+>   	CGROUP_ATYPE(CGROUP_UDP4_SENDMSG);
+>   	CGROUP_ATYPE(CGROUP_UDP6_SENDMSG);
+> +	CGROUP_ATYPE(CGROUP_UNIX_SENDMSG);
+>   	CGROUP_ATYPE(CGROUP_SYSCTL);
+>   	CGROUP_ATYPE(CGROUP_UDP4_RECVMSG);
+>   	CGROUP_ATYPE(CGROUP_UDP6_RECVMSG);
+> +	CGROUP_ATYPE(CGROUP_UNIX_RECVMSG);
+>   	CGROUP_ATYPE(CGROUP_GETSOCKOPT);
+>   	CGROUP_ATYPE(CGROUP_SETSOCKOPT);
+>   	CGROUP_ATYPE(CGROUP_INET4_GETPEERNAME);
+>   	CGROUP_ATYPE(CGROUP_INET6_GETPEERNAME);
+> +	CGROUP_ATYPE(CGROUP_UNIX_GETPEERNAME);
+>   	CGROUP_ATYPE(CGROUP_INET4_GETSOCKNAME);
+>   	CGROUP_ATYPE(CGROUP_INET6_GETSOCKNAME);
+> +	CGROUP_ATYPE(CGROUP_UNIX_GETSOCKNAME);
+>   	CGROUP_ATYPE(CGROUP_INET_SOCK_RELEASE);
+>   	default:
+>   		return CGROUP_BPF_ATTACH_TYPE_INVALID;
+> @@ -273,9 +279,13 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+>   		__ret;                                                       \
+>   	})
+>   
+> +#define BPF_CGROUP_RUN_PROG_UNIX_BIND_LOCK(sk, uaddr, uaddrlen)			\
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UNIX_BIND, NULL)
+> +
+>   #define BPF_CGROUP_PRE_CONNECT_ENABLED(sk)				       \
+>   	((cgroup_bpf_enabled(CGROUP_INET4_CONNECT) ||		       \
+> -	  cgroup_bpf_enabled(CGROUP_INET6_CONNECT)) &&		       \
+> +	  cgroup_bpf_enabled(CGROUP_INET6_CONNECT) ||		       \
+> +	  cgroup_bpf_enabled(CGROUP_UNIX_CONNECT)) &&		       \
+>   	 (sk)->sk_prot->pre_connect)
+>   
+>   #define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr, uaddrlen)		       \
+> @@ -284,24 +294,36 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+>   #define BPF_CGROUP_RUN_PROG_INET6_CONNECT(sk, uaddr, uaddrlen)		       \
+>   	BPF_CGROUP_RUN_SA_PROG(sk, uaddr, uaddrlen, CGROUP_INET6_CONNECT)
+>   
+> +#define BPF_CGROUP_RUN_PROG_UNIX_CONNECT(sk, uaddr, uaddrlen)	               \
+> +	BPF_CGROUP_RUN_SA_PROG(sk, uaddr, uaddrlen, CGROUP_UNIX_CONNECT)
+> +
+>   #define BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr, uaddrlen)	       \
+>   	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_INET4_CONNECT, NULL)
+>   
+>   #define BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr, uaddrlen)	       \
+>   	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_INET6_CONNECT, NULL)
+>   
+> +#define BPF_CGROUP_RUN_PROG_UNIX_CONNECT_LOCK(sk, uaddr, uaddrlen)	       \
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UNIX_CONNECT, NULL)
+> +
+>   #define BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx)       \
+>   	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UDP4_SENDMSG, t_ctx)
+>   
+>   #define BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx)       \
+>   	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UDP6_SENDMSG, t_ctx)
+>   
+> +#define BPF_CGROUP_RUN_PROG_UNIX_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx)	\
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UNIX_SENDMSG, t_ctx)
+> +
+>   #define BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk, uaddr, uaddrlen)		\
+>   	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UDP4_RECVMSG, NULL)
+>   
+>   #define BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk, uaddr, uaddrlen)		\
+>   	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UDP6_RECVMSG, NULL)
+>   
+> +#define BPF_CGROUP_RUN_PROG_UNIX_RECVMSG_LOCK(sk, uaddr, uaddrlen)		\
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UNIX_RECVMSG, NULL)
+> +
+>   /* The SOCK_OPS"_SK" macro should be used when sock_ops->sk is not a
+>    * fullsock and its parent fullsock cannot be traced by
+>    * sk_to_full_sk().
+> @@ -487,16 +509,21 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
+>   #define BPF_CGROUP_RUN_PROG_INET_SOCK(sk) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_INET_SOCK_RELEASE(sk) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, uaddrlen, atype, flags) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_UNIX_BIND_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr, uaddrlen) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_INET6_CONNECT(sk, uaddr, uaddrlen) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_UNIX_CONNECT(sk, uaddr, uaddrlen) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_UNIX_CONNECT_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_UNIX_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_UNIX_RECVMSG_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_SOCK_OPS(sock_ops) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(atype, major, minor, access) ({ 0; })
+>   #define BPF_CGROUP_RUN_PROG_SYSCTL(head,table,write,buf,count,pos) ({ 0; })
 > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 7cafcfdbb9b2..9e3c33f83bba 100644
+> index 9e3c33f83bba..b73e4da458fd 100644
 > --- a/include/uapi/linux/bpf.h
 > +++ b/include/uapi/linux/bpf.h
-> @@ -6366,6 +6366,7 @@ struct bpf_sock_addr {
->   				 * Stored in network byte order.
->   				 */
->   	__bpf_md_ptr(struct bpf_sock *, sk);
-> +	char user_path[108];    /* Allows 1 byte read and write. */
->   	__u32 user_addrlen;	/* Allows 4 byte read and write. */
->   };
+> @@ -999,17 +999,21 @@ enum bpf_attach_type {
+>   	BPF_SK_MSG_VERDICT,
+>   	BPF_CGROUP_INET4_BIND,
+>   	BPF_CGROUP_INET6_BIND,
+> +	BPF_CGROUP_UNIX_BIND,
+>   	BPF_CGROUP_INET4_CONNECT,
+>   	BPF_CGROUP_INET6_CONNECT,
+> +	BPF_CGROUP_UNIX_CONNECT,
+>   	BPF_CGROUP_INET4_POST_BIND,
+>   	BPF_CGROUP_INET6_POST_BIND,
+>   	BPF_CGROUP_UDP4_SENDMSG,
+>   	BPF_CGROUP_UDP6_SENDMSG,
+> +	BPF_CGROUP_UNIX_SENDMSG,
+>   	BPF_LIRC_MODE2,
+>   	BPF_FLOW_DISSECTOR,
+>   	BPF_CGROUP_SYSCTL,
+>   	BPF_CGROUP_UDP4_RECVMSG,
+>   	BPF_CGROUP_UDP6_RECVMSG,
+> +	BPF_CGROUP_UNIX_RECVMSG,
+>   	BPF_CGROUP_GETSOCKOPT,
+>   	BPF_CGROUP_SETSOCKOPT,
+>   	BPF_TRACE_RAW_TP,
+> @@ -1020,8 +1024,10 @@ enum bpf_attach_type {
+>   	BPF_TRACE_ITER,
+>   	BPF_CGROUP_INET4_GETPEERNAME,
+>   	BPF_CGROUP_INET6_GETPEERNAME,
+> +	BPF_CGROUP_UNIX_GETPEERNAME,
+>   	BPF_CGROUP_INET4_GETSOCKNAME,
+>   	BPF_CGROUP_INET6_GETSOCKNAME,
+> +	BPF_CGROUP_UNIX_GETSOCKNAME,
+>   	BPF_XDP_DEVMAP,
+>   	BPF_CGROUP_INET_SOCK_RELEASE,
+>   	BPF_XDP_CPUMAP,
 
-Ideally, for bisecting reason, it would be great to add user_path
-first and then user_addrlen second. Otherwise, some tests utilizing
-user_addrlen might not run correctly with Patch 2/9.
+This is uapi. Please add new attach type to the end of enum type.
 
->   
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index d0620927dbca..cc86b38fc764 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -26,6 +26,7 @@
->   #include <linux/socket.h>
->   #include <linux/sock_diag.h>
->   #include <linux/in.h>
-> +#include <linux/un.h>
->   #include <linux/inet.h>
->   #include <linux/netdevice.h>
->   #include <linux/if_packet.h>
+> @@ -2575,8 +2581,8 @@ union bpf_attr {
+>    * 		*bpf_socket* should be one of the following:
+>    *
+>    * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_SOCK_OPS**.
+> - * 		* **struct bpf_sock_addr** for **BPF_CGROUP_INET4_CONNECT**
+> - * 		  and **BPF_CGROUP_INET6_CONNECT**.
+> + * 		* **struct bpf_sock_addr** for **BPF_CGROUP_INET4_CONNECT**,
+> + * 		  **BPF_CGROUP_INET6_CONNECT** and **BPF_CGROUP_UNIX_CONNECT**.
+>    *
+>    * 		This helper actually implements a subset of **setsockopt()**.
+>    * 		It supports the following *level*\ s:
+> @@ -2809,8 +2815,8 @@ union bpf_attr {
+>    * 		*bpf_socket* should be one of the following:
+>    *
+>    * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_SOCK_OPS**.
+> - * 		* **struct bpf_sock_addr** for **BPF_CGROUP_INET4_CONNECT**
+> - * 		  and **BPF_CGROUP_INET6_CONNECT**.
+> + * 		* **struct bpf_sock_addr** for **BPF_CGROUP_INET4_CONNECT**,
+> + * 		  **BPF_CGROUP_INET6_CONNECT** and **BPF_CGROUP_UNIX_CONNECT**.
+>    *
+>    * 		This helper actually implements a subset of **getsockopt()**.
+>    * 		It supports the same set of *optname*\ s that is supported by
 [...]
