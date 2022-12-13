@@ -2,51 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E1564B6E6
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 15:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC92C64B706
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 15:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235857AbiLMOJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 09:09:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        id S235904AbiLMOM7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 09:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235896AbiLMOJA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 09:09:00 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C77C639A
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 06:08:50 -0800 (PST)
+        with ESMTP id S235901AbiLMOM2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 09:12:28 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D26A63B0;
+        Tue, 13 Dec 2022 06:11:17 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B43EC6154C
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 14:08:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1FE6C433D2;
-        Tue, 13 Dec 2022 14:08:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A77FD61536;
+        Tue, 13 Dec 2022 14:11:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4399C433D2;
+        Tue, 13 Dec 2022 14:11:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670940529;
-        bh=+KAyifsdNsFUdcOitS6tkBdqEqiit/PqqTCsG5drDeo=;
+        s=k20201202; t=1670940675;
+        bh=hJEn/SyT7u4Ea+9kLZem5aYnwJxDKn16rRrjp1PMzuQ=;
         h=From:To:Cc:Subject:Date:From;
-        b=ruTtT1smoFSxj2PeK8gls3GGwev1uknK+nXB4oWju5JzXOuXzjSZXlEOV07GkEAOR
-         U2c7kql+l7rm4HUzTjEM4gW+mWeUnS2/0Y4JTlKQfjK8jgHYo1+ORz0OPk4r1hG7vD
-         yLfIDJ31IUxk6CUWPYrmap7qu5eYhpgM3aKpfakss7GdLw2AgyGJSvRcsoRCpxqS2D
-         zhbAd0FOMtDSB0LBog63KFiNssQhDBBlIT4q9WmgyIyme3xqW5eg3hTPX2Cs0OJ0vD
-         VUx0wkwP/zHD6yWOxqkQSNok1IcWVWLaISB8AhVhiKn8eg9uip/Ek7sieBrdNXZKoD
-         yE+HnK0o2JuQg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf-next] bpf: Remove trace_printk_lock lock
-Date:   Tue, 13 Dec 2022 15:08:43 +0100
-Message-Id: <20221213140843.803293-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.38.1
+        b=lVhRbsKzj5sq7nUjIwdRL7l1GtF0DsBMd5E3EehvoiPEe4PzNWg6G1PazM95pIzff
+         aLOqjzzsf87ZZ6ukB08hp1Umy209D5LEfNmCT6zT9j4HGSqIKatpYRSNamhrRFpfmM
+         dsR3CqI90eNoq2rLwsJMa8WaQS2U+WmzorKrw9JxzGlBjl5a/DtsalsZC1x8LGC708
+         qFQ3iocJdOzrI5/ozOub7d5IYYpkAkm64ueDvg+lpRVNDLXnJ6/CNfqn+R5Zi0BxrW
+         Q74Jg0d3GInuq6ibPAeYn41iLVO3O1M8Hj0MwhmSe2W3NoA09lKrVxG2OCWxRTu8ma
+         wI5Lbqh/M4pgw==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     bpf@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chris Mason <clm@meta.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, Akinobu Mita <akinobu.mita@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v2 0/2] error-injection: Clarify the requirements of error injectable functions
+Date:   Tue, 13 Dec 2022 23:11:10 +0900
+Message-Id: <167094067084.608798.11303550366840600235.stgit@devnote3>
+X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -57,151 +67,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Both bpf_trace_printk and bpf_trace_vprintk helpers use static buffer
-guarded with trace_printk_lock spin lock.
+Hi,
 
-The spin lock contention causes issues with bpf programs attached to
-contention_begin tracepoint [1] [2].
+Here is the 2nd version of the series to clarify the requirement of error
+injectable functions and remove confusing EI_ETYPE_NONE.
 
-Andrii suggested we could get rid of the contention by using trylock,
-but we could actually get rid of the spinlock completely by using
-percpu buffers the same way as for bin_args in bpf_bprintf_prepare
-function.
+Here is the thread of discussions which leads this series.
 
-Adding 4 per cpu buffers (1k each) which should be enough for all
-possible nesting contexts (normal, softirq, irq, nmi) or possible
-(yet unlikely) probe within the printk helpers.
+https://lore.kernel.org/all/167019256481.3792653.4369637751468386073.stgit@devnote3/T/#u
 
-In very unlikely case we'd run out of the nesting levels the printk
-will be omitted.
+I agreed that NACK the taint flag itself, and I thought I need to update
+the function error injection so that the developers understand the
+requirements and carefully use the ALLOW_ERROR_INJECTION() macro.
+So I removed the confusing EI_ETYPE_NONE (this should not be there,
+use errno instead), and update the document about error injectable
+functions.
 
-[1] https://lore.kernel.org/bpf/CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com/
-[2] https://lore.kernel.org/bpf/CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com/
+Thank you,
 
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 61 +++++++++++++++++++++++++++++++---------
- 1 file changed, 47 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 3bbd3f0c810c..b9287b3a5540 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -369,33 +369,62 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
- 	return &bpf_probe_write_user_proto;
- }
- 
--static DEFINE_RAW_SPINLOCK(trace_printk_lock);
--
- #define MAX_TRACE_PRINTK_VARARGS	3
- #define BPF_TRACE_PRINTK_SIZE		1024
-+#define BPF_TRACE_PRINTK_LEVELS		4
-+
-+struct trace_printk_buf {
-+	char data[BPF_TRACE_PRINTK_LEVELS][BPF_TRACE_PRINTK_SIZE];
-+	int level;
-+};
-+static DEFINE_PER_CPU(struct trace_printk_buf, printk_buf);
-+
-+static void put_printk_buf(struct trace_printk_buf __percpu *buf)
-+{
-+	if (WARN_ON_ONCE(this_cpu_read(buf->level) == 0))
-+		return;
-+	this_cpu_dec(buf->level);
-+	preempt_enable();
-+}
-+
-+static bool get_printk_buf(struct trace_printk_buf __percpu *buf, char **data)
-+{
-+	int level;
-+
-+	preempt_disable();
-+	level = this_cpu_inc_return(buf->level);
-+	if (level > BPF_TRACE_PRINTK_LEVELS) {
-+		put_printk_buf(buf);
-+		return false;
-+	}
-+	*data = (char *) this_cpu_ptr(&buf->data[level - 1]);
-+	return true;
-+}
- 
- BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
- 	   u64, arg2, u64, arg3)
- {
- 	u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
- 	u32 *bin_args;
--	static char buf[BPF_TRACE_PRINTK_SIZE];
--	unsigned long flags;
-+	char *buf;
- 	int ret;
- 
-+	if (!get_printk_buf(&printk_buf, &buf))
-+		return -EBUSY;
-+
- 	ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
- 				  MAX_TRACE_PRINTK_VARARGS);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
--	raw_spin_lock_irqsave(&trace_printk_lock, flags);
--	ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
-+	ret = bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
- 
- 	trace_bpf_trace_printk(buf);
--	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
- 
- 	bpf_bprintf_cleanup();
- 
-+out:
-+	put_printk_buf(&printk_buf);
- 	return ret;
- }
- 
-@@ -427,31 +456,35 @@ const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
- 	return &bpf_trace_printk_proto;
- }
- 
-+static DEFINE_PER_CPU(struct trace_printk_buf, vprintk_buf);
-+
- BPF_CALL_4(bpf_trace_vprintk, char *, fmt, u32, fmt_size, const void *, data,
- 	   u32, data_len)
- {
--	static char buf[BPF_TRACE_PRINTK_SIZE];
--	unsigned long flags;
- 	int ret, num_args;
- 	u32 *bin_args;
-+	char *buf;
- 
- 	if (data_len & 7 || data_len > MAX_BPRINTF_VARARGS * 8 ||
- 	    (data_len && !data))
- 		return -EINVAL;
- 	num_args = data_len / 8;
- 
-+	if (!get_printk_buf(&vprintk_buf, &buf))
-+		return -EBUSY;
-+
- 	ret = bpf_bprintf_prepare(fmt, fmt_size, data, &bin_args, num_args);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
--	raw_spin_lock_irqsave(&trace_printk_lock, flags);
--	ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
-+	ret = bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
- 
- 	trace_bpf_trace_printk(buf);
--	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
- 
- 	bpf_bprintf_cleanup();
- 
-+out:
-+	put_printk_buf(&vprintk_buf);
- 	return ret;
- }
- 
--- 
-2.38.1
+Masami Hiramatsu (Google) (2):
+      error-injection: Remove EI_ETYPE_NONE
+      docs: fault-injection: Add requirements of error injectable functions
 
+
+ Documentation/fault-injection/fault-injection.rst |   65 +++++++++++++++++++++
+ include/asm-generic/error-injection.h             |    7 +-
+ include/linux/error-injection.h                   |    3 +
+ lib/error-inject.c                                |    2 -
+ 4 files changed, 72 insertions(+), 5 deletions(-)
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
