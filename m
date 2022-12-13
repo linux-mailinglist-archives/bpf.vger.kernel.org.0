@@ -2,231 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F75164AE53
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 04:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A89A564AEB0
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 05:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbiLMDkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 22:40:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
+        id S234342AbiLMElC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 23:41:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233011AbiLMDkL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 22:40:11 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2151165B0;
-        Mon, 12 Dec 2022 19:40:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F73B60010;
-        Tue, 13 Dec 2022 03:40:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12435C433EF;
-        Tue, 13 Dec 2022 03:40:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670902809;
-        bh=PuaMtd9Ko9oKGDiXgVRIj/a4xvUODdQ/B4oxxqDZ7c8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XYP8Megaky1qyd/xQdpdFApyCOwndCcbK+hx81uMA4QDknyfTelScxtjKXwLbMUmr
-         tK0LYU7XlzPu2R6mtVIufEJKn+62gE5LlLhsA4M8RZDv7qwmV+Bh07a0cQAzF509/j
-         XJHMKgxNPJ2RieeVdfjW1YdIm4F9GbRM6fcIlcbT621i0NzCto/hXekI6EDu7Gk/Z5
-         iba2clS4rMJdF2wSxvU69Cokeh9dhn5PFNuz9MQjfXi22lWKtmxFlNVQo8oAej93J/
-         6fK+EYD42JyikLEI71tYyaJmH58spZtnWFpO0FLrSDWXi4qBd1iqGsY4qi9ayjbOkG
-         oMQq+GUoeUfvQ==
-Date:   Tue, 13 Dec 2022 12:40:03 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev,
-        oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 1/2] error-injection: Remove EI_ETYPE_NONE
-Message-Id: <20221213124003.0326455ee28b9cdae474bbae@kernel.org>
-In-Reply-To: <202212121204.d4rb2G55-lkp@intel.com>
-References: <167081320421.387937.4259807348852421112.stgit@devnote3>
-        <202212121204.d4rb2G55-lkp@intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S234273AbiLMEkv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 23:40:51 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58A06409;
+        Mon, 12 Dec 2022 20:40:49 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BCLkaQL019045;
+        Tue, 13 Dec 2022 04:40:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=nZGoVEKG4u8FtO8Swj8gB5zwdm9SSqkraSoJQV18Uq8=;
+ b=JVvJgiqbw8OuN9h8VtJAWSkKbDW9WcdvtziA+ScljtOVC4rLRtfkr0KI3ZtqwuLgEzrM
+ thI1J8VOwDziiwyc7kGKTolXvF2oN5gMPby48HLmM5YJvKUzgDY7Og9VwCQ8VuJqzmVh
+ UirM7JZJzVSXJLdfrlT3+mFFh5iTtRicQR5dqlAPIdGy6nluYpLt7qmlQ6L4OC/KiMVd
+ 4d+zRc9pHkeYr3p7XZq9OhlxosX8ZaMgWy0uVsnzgTuGtNyuJBcR2GmKIjd24bEClTZx
+ oUNwk3jeJGRxs1XvVLjL10hp4dIDuvTzRtazMxja/eqoeLVlpHWTaI255PZZktOWEt+K 0Q== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3me09gayqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Dec 2022 04:40:17 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BD4eGbC014861
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Dec 2022 04:40:16 GMT
+Received: from subashab-lnx.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.36; Mon, 12 Dec 2022 20:40:15 -0800
+From:   Subash Abhinov Kasiviswanathan <quic_subashab@quicinc.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <john.fastabend@gmail.com>,
+        <song@kernel.org>, <yhs@fb.com>, <kpsingh@kernel.org>,
+        <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     Subash Abhinov Kasiviswanathan <quic_subashab@quicinc.com>,
+        "Sean Tranchetti" <quic_stranche@quicinc.com>
+Subject: [PATCH net] filter: Account for tail adjustment during pull operations
+Date:   Mon, 12 Dec 2022 21:39:41 -0700
+Message-ID: <1670906381-25161-1-git-send-email-quic_subashab@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FM2D7NeEkw9PsWZPL8jrwW39iWh5U0Am
+X-Proofpoint-GUID: FM2D7NeEkw9PsWZPL8jrwW39iWh5U0Am
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-12_08,2022-12-12_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=999
+ bulkscore=0 phishscore=0 adultscore=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2212130042
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 12 Dec 2022 12:55:24 +0800
-kernel test robot <lkp@intel.com> wrote:
+Extending the tail can have some unexpected side effects if a program is
+reading the content beyond the head skb headlen and all the skbs in the
+gso frag_list are linear with no head_frag -
 
-> Hi Masami,
-> 
-> Thank you for the patch! Yet something to improve:
-> 
-> [auto build test ERROR on arnd-asm-generic/master]
-> [also build test ERROR on linus/master v6.1 next-20221208]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Masami-Hiramatsu-Google/error-injection-Clarify-the-requirements-of-error-injectable-functions/20221212-104859
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git master
-> patch link:    https://lore.kernel.org/r/167081320421.387937.4259807348852421112.stgit%40devnote3
-> patch subject: [PATCH 1/2] error-injection: Remove EI_ETYPE_NONE
-> config: hexagon-randconfig-r045-20221211
-> compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project 6e4cea55f0d1104408b26ac574566a0e4de48036)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/intel-lab-lkp/linux/commit/ffd600c8d5c881bc0e58401c24c7457a566f6207
->         git remote add linux-review https://github.com/intel-lab-lkp/linux
->         git fetch --no-tags linux-review Masami-Hiramatsu-Google/error-injection-Clarify-the-requirements-of-error-injectable-functions/20221212-104859
->         git checkout ffd600c8d5c881bc0e58401c24c7457a566f6207
->         # save the config file
->         mkdir build_dir && cp config build_dir/.config
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash fs/btrfs/
-> 
-> If you fix the issue, kindly add following tag where applicable
-> | Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from fs/btrfs/tree-checker.c:20:
-> >> include/linux/error-injection.h:22:10: error: use of undeclared identifier 'EOPNOTSUPP'
->            return -EOPNOTSUPP;
+  kernel BUG at net/core/skbuff.c:4219!
+  pc : skb_segment+0xcf4/0xd2c
+  lr : skb_segment+0x63c/0xd2c
+  Call trace:
+   skb_segment+0xcf4/0xd2c
+   __udp_gso_segment+0xa4/0x544
+   udp4_ufo_fragment+0x184/0x1c0
+   inet_gso_segment+0x16c/0x3a4
+   skb_mac_gso_segment+0xd4/0x1b0
+   __skb_gso_segment+0xcc/0x12c
+   udp_rcv_segment+0x54/0x16c
+   udp_queue_rcv_skb+0x78/0x144
+   udp_unicast_rcv_skb+0x8c/0xa4
+   __udp4_lib_rcv+0x490/0x68c
+   udp_rcv+0x20/0x30
+   ip_protocol_deliver_rcu+0x1b0/0x33c
+   ip_local_deliver+0xd8/0x1f0
+   ip_rcv+0x98/0x1a4
+   deliver_ptype_list_skb+0x98/0x1ec
+   __netif_receive_skb_core+0x978/0xc60
 
-Oops, I need to include linux/errno.h. Let me update it.
+Fix this by marking these skbs as GSO_DODGY so segmentation can handle
+the tail updates accordingly.
 
-Thanks!
+Fixes: 5293efe62df8 ("bpf: add bpf_skb_change_tail helper")
+Signed-off-by: Sean Tranchetti <quic_stranche@quicinc.com>
+Signed-off-by: Subash Abhinov Kasiviswanathan <quic_subashab@quicinc.com>
+---
+ net/core/filter.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
->                    ^
->    In file included from fs/btrfs/tree-checker.c:21:
->    In file included from fs/btrfs/ctree.h:9:
->    In file included from include/linux/mm.h:737:
->    In file included from include/linux/huge_mm.h:8:
->    In file included from include/linux/fs.h:33:
->    In file included from include/linux/percpu-rwsem.h:7:
->    In file included from include/linux/rcuwait.h:6:
->    In file included from include/linux/sched/signal.h:6:
->    include/linux/signal.h:97:11: warning: array index 3 is past the end of the array (that has type 'unsigned long[2]') [-Warray-bounds]
->                    return (set->sig[3] | set->sig[2] |
->                            ^        ~
->    include/uapi/asm-generic/signal.h:62:2: note: array 'sig' declared here
->            unsigned long sig[_NSIG_WORDS];
->            ^
->    In file included from fs/btrfs/tree-checker.c:21:
->    In file included from fs/btrfs/ctree.h:9:
->    In file included from include/linux/mm.h:737:
->    In file included from include/linux/huge_mm.h:8:
->    In file included from include/linux/fs.h:33:
->    In file included from include/linux/percpu-rwsem.h:7:
->    In file included from include/linux/rcuwait.h:6:
->    In file included from include/linux/sched/signal.h:6:
->    include/linux/signal.h:97:25: warning: array index 2 is past the end of the array (that has type 'unsigned long[2]') [-Warray-bounds]
->                    return (set->sig[3] | set->sig[2] |
->                                          ^        ~
->    include/uapi/asm-generic/signal.h:62:2: note: array 'sig' declared here
->            unsigned long sig[_NSIG_WORDS];
->            ^
->    In file included from fs/btrfs/tree-checker.c:21:
->    In file included from fs/btrfs/ctree.h:9:
->    In file included from include/linux/mm.h:737:
->    In file included from include/linux/huge_mm.h:8:
->    In file included from include/linux/fs.h:33:
->    In file included from include/linux/percpu-rwsem.h:7:
->    In file included from include/linux/rcuwait.h:6:
->    In file included from include/linux/sched/signal.h:6:
->    include/linux/signal.h:113:11: warning: array index 3 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
->                    return  (set1->sig[3] == set2->sig[3]) &&
->                             ^         ~
->    include/uapi/asm-generic/signal.h:62:2: note: array 'sig' declared here
->            unsigned long sig[_NSIG_WORDS];
->            ^
->    In file included from fs/btrfs/tree-checker.c:21:
->    In file included from fs/btrfs/ctree.h:9:
->    In file included from include/linux/mm.h:737:
->    In file included from include/linux/huge_mm.h:8:
->    In file included from include/linux/fs.h:33:
->    In file included from include/linux/percpu-rwsem.h:7:
->    In file included from include/linux/rcuwait.h:6:
->    In file included from include/linux/sched/signal.h:6:
->    include/linux/signal.h:113:27: warning: array index 3 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
->                    return  (set1->sig[3] == set2->sig[3]) &&
->                                             ^         ~
->    include/uapi/asm-generic/signal.h:62:2: note: array 'sig' declared here
->            unsigned long sig[_NSIG_WORDS];
->            ^
->    In file included from fs/btrfs/tree-checker.c:21:
->    In file included from fs/btrfs/ctree.h:9:
->    In file included from include/linux/mm.h:737:
->    In file included from include/linux/huge_mm.h:8:
->    In file included from include/linux/fs.h:33:
->    In file included from include/linux/percpu-rwsem.h:7:
->    In file included from include/linux/rcuwait.h:6:
->    In file included from include/linux/sched/signal.h:6:
->    include/linux/signal.h:114:5: warning: array index 2 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
->                            (set1->sig[2] == set2->sig[2]) &&
->                             ^         ~
->    include/uapi/asm-generic/signal.h:62:2: note: array 'sig' declared here
->            unsigned long sig[_NSIG_WORDS];
->            ^
->    In file included from fs/btrfs/tree-checker.c:21:
->    In file included from fs/btrfs/ctree.h:9:
->    In file included from include/linux/mm.h:737:
->    In file included from include/linux/huge_mm.h:8:
->    In file included from include/linux/fs.h:33:
->    In file included from include/linux/percpu-rwsem.h:7:
->    In file included from include/linux/rcuwait.h:6:
->    In file included from include/linux/sched/signal.h:6:
->    include/linux/signal.h:114:21: warning: array index 2 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
->                            (set1->sig[2] == set2->sig[2]) &&
->                                             ^         ~
->    include/uapi/asm-generic/signal.h:62:2: note: array 'sig' declared here
->            unsigned long sig[_NSIG_WORDS];
->            ^
->    In file included from fs/btrfs/tree-checker.c:21:
->    In file included from fs/btrfs/ctree.h:9:
->    In file included from include/linux/mm.h:737:
->    In file included from include/linux/huge_mm.h:8:
->    In file included from include/linux/fs.h:33:
->    In file included from include/linux/percpu-rwsem.h:7:
->    In file included from include/linux/rcuwait.h:6:
->    In file included from include/linux/sched/signal.h:6:
->    include/linux/signal.h:156:1: warning: array index 3 is past the end of the array (that has type 'const unsigned long[2]') [-Warray-bounds]
->    _SIG_SET_BINOP(sigorsets, _sig_or)
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/signal.h:137:8: note: expanded from macro '_SIG_SET_BINOP'
->                    a3 = a->sig[3]; a2 = a->sig[2];                         \
->                         ^      ~
-> 
-> 
-> vim +/EOPNOTSUPP +22 include/linux/error-injection.h
-> 
->     19	
->     20	static inline int get_injectable_error_type(unsigned long addr)
->     21	{
->   > 22		return -EOPNOTSUPP;
->     23	}
->     24	
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://01.org/lkp
-
-
+diff --git a/net/core/filter.c b/net/core/filter.c
+index bb0136e..d5f7f79 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -1654,6 +1654,20 @@ static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp);
+ static inline int __bpf_try_make_writable(struct sk_buff *skb,
+ 					  unsigned int write_len)
+ {
++	struct sk_buff *list_skb = skb_shinfo(skb)->frag_list;
++
++	if (skb_is_gso(skb) && list_skb && !list_skb->head_frag &&
++	    skb_headlen(list_skb)) {
++		int headlen = skb_headlen(skb);
++		int err = skb_ensure_writable(skb, write_len);
++
++		/* pskb_pull_tail() has occurred */
++		if (!err && headlen != skb_headlen(skb))
++			skb_shinfo(skb)->gso_type |= SKB_GSO_DODGY;
++
++		return err;
++	}
++
+ 	return skb_ensure_writable(skb, write_len);
+ }
+ 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.7.4
+
