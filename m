@@ -2,90 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D0064BEFF
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 23:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5142764BF0D
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 23:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbiLMWCS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 17:02:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S236686AbiLMWGN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 13 Dec 2022 17:06:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237100AbiLMWBh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 17:01:37 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD385F71;
-        Tue, 13 Dec 2022 14:00:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CC85A61745;
-        Tue, 13 Dec 2022 22:00:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 22635C433F2;
-        Tue, 13 Dec 2022 22:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670968817;
-        bh=c7NQwUHD8mv5j/vpuyEPTKkX2njMoVjr9Iw3J+9RtzU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mIuTUnRc2wSatw0i/1uXf7E7+jOCKVEsPp7WeM10ihiQtqc3HznsW+Bc7ydUhLMRJ
-         5J88uQ55zzuBZvRaBC0P7xfqZQL8qR4Z97XYb93G2Ljr7I43yBMLJCMgWLuZttAJok
-         6iTfxwmGzsWFIaDvqsggIMyC7YGuhK5MQq32UTZWCBRWChuVcvbj4ZbXnDN05JcZOu
-         7D2ED68vEOR2EQBWpzbMRP5H25CmCcsGqFQXf6CuT3RjI9QXScCegyvt3yGh+duJv6
-         nqTDx0FOQg43893cQ7/k0jp/PXskAMn68YB93WU3Q/2vUtF8RC5EZpKsFWBO9qNtxv
-         YG5XCDKoe9aRQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 03A9DC41612;
-        Tue, 13 Dec 2022 22:00:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S236558AbiLMWGI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 17:06:08 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35DC11C27
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 14:06:02 -0800 (PST)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BDKPt83024695
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 14:06:02 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3meyf59ax7-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 14:06:02 -0800
+Received: from twshared19053.17.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Tue, 13 Dec 2022 14:06:00 -0800
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id 5048B11711901; Tue, 13 Dec 2022 14:05:50 -0800 (PST)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <kernel-team@meta.com>,
+        Song Liu <song@kernel.org>,
+        =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
+Subject: [PATCH bpf-next] selftests/bpf: select CONFIG_FUNCTION_ERROR_INJECTION
+Date:   Tue, 13 Dec 2022 14:05:00 -0800
+Message-ID: <20221213220500.3427947-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3] libbpf: Optimized return value in libbpf_strerror
- when errno is libbpf errno
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167096881701.16694.14250332414378810386.git-patchwork-notify@kernel.org>
-Date:   Tue, 13 Dec 2022 22:00:17 +0000
-References: <20221210082045.233697-1-liuxin350@huawei.com>
-In-Reply-To: <20221210082045.233697-1-liuxin350@huawei.com>
-To:     Xin Liu <liuxin350@huawei.com>
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yanan@huawei.com,
-        wuchangye@huawei.com, xiesongyang@huawei.com,
-        kongweibin2@huawei.com, zhangmingyi5@huawei.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+X-Proofpoint-ORIG-GUID: QRF76UMHXl6IqWBx8seDOA424Sjo12bZ
+X-Proofpoint-GUID: QRF76UMHXl6IqWBx8seDOA424Sjo12bZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-13_03,2022-12-13_01,2022-06-22_01
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+BPF selftests require CONFIG_FUNCTION_ERROR_INJECTION to work. However,
+CONFIG_FUNCTION_ERROR_INJECTION is no longer 'y' by default after [1].
+As a result, we are seeing errors like the following from BPF CI:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+   bpf_testmod_test_read() is not modifiable
+   __x64_sys_setdomainname is not sleepable
+   __x64_sys_getpgid is not sleepable
 
-On Sat, 10 Dec 2022 16:20:45 +0800 you wrote:
-> This is a small improvement in libbpf_strerror. When libbpf_strerror
-> is used to obtain the system error description, if the length of the
-> buf is insufficient, libbpf_sterror returns ERANGE and sets errno to
-> ERANGE.
-> 
-> However, this processing is not performed when the error code
-> customized by libbpf is obtained. Make some minor improvements here,
-> return -ERANGE and set errno to ERANGE when buf is not enough for
-> custom description.
-> 
-> [...]
+Fix this by explicitly selecting CONFIG_FUNCTION_ERROR_INJECTION in the
+selftest config.
 
-Here is the summary with links:
-  - [bpf-next,v3] libbpf: Optimized return value in libbpf_strerror when errno is libbpf errno
-    https://git.kernel.org/bpf/bpf-next/c/c2614f627941
+[1] commit a4412fdd49dc ("error-injection: Add prompt for function error injection")
+Reported-by: Daniel Müller <deso@posteo.net>
+Signed-off-by: Song Liu <song@kernel.org>
+---
+ tools/testing/selftests/bpf/config | 1 +
+ 1 file changed, 1 insertion(+)
 
-You are awesome, thank you!
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 612f699dc4f7..5cbc975fd5c8 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -76,3 +76,4 @@ CONFIG_USERFAULTFD=y
+ CONFIG_VXLAN=y
+ CONFIG_XDP_SOCKETS=y
+ CONFIG_XFRM_INTERFACE=y
++CONFIG_FUNCTION_ERROR_INJECTION=y
+\ No newline at end of file
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.30.2
 
