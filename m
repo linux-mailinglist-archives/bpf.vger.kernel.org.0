@@ -2,141 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A89A564AEB0
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 05:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2813864AEB5
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 05:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234342AbiLMElC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 23:41:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
+        id S232073AbiLMEnN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 23:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234273AbiLMEkv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 23:40:51 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58A06409;
-        Mon, 12 Dec 2022 20:40:49 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BCLkaQL019045;
-        Tue, 13 Dec 2022 04:40:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=nZGoVEKG4u8FtO8Swj8gB5zwdm9SSqkraSoJQV18Uq8=;
- b=JVvJgiqbw8OuN9h8VtJAWSkKbDW9WcdvtziA+ScljtOVC4rLRtfkr0KI3ZtqwuLgEzrM
- thI1J8VOwDziiwyc7kGKTolXvF2oN5gMPby48HLmM5YJvKUzgDY7Og9VwCQ8VuJqzmVh
- UirM7JZJzVSXJLdfrlT3+mFFh5iTtRicQR5dqlAPIdGy6nluYpLt7qmlQ6L4OC/KiMVd
- 4d+zRc9pHkeYr3p7XZq9OhlxosX8ZaMgWy0uVsnzgTuGtNyuJBcR2GmKIjd24bEClTZx
- oUNwk3jeJGRxs1XvVLjL10hp4dIDuvTzRtazMxja/eqoeLVlpHWTaI255PZZktOWEt+K 0Q== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3me09gayqg-1
+        with ESMTP id S233753AbiLMEnL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 23:43:11 -0500
+Received: from mx07-001d1705.pphosted.com (mx07-001d1705.pphosted.com [185.132.183.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9035CA1A8
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 20:43:09 -0800 (PST)
+Received: from pps.filterd (m0209324.ppops.net [127.0.0.1])
+        by mx08-001d1705.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BD4PEqX032313;
+        Tue, 13 Dec 2022 04:43:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=S1; bh=lvofQ6sbersYegSRRygu5ajOWlifKXARhaSS3B1Onck=;
+ b=CtXllQSBuIFk3vphTgWoXLEyZcj8+w+BbnqB3yvBnxKfkj51Wt7dDme0zNzVPJsXamJr
+ etVDXsecxHF6U+eRjpo10Y/xlGipbwL38eN6SjdLLnugXIF59SHbLOqsB4jFkkyDOZsk
+ t3ZAa7jpWJAwWmwdCBhPB6m9KcM1Cc4YTDdF5CyqG16ZisPn1IJIkwAWQyMkLXvurOYU
+ lSWOldK6ZO84DAnvdiXlX8pa91HimGpF5w0LlJ8IW2+szfdpMQDAWZcjxxZcx3Ssgvzo
+ LlpPyQLiaSLB+KhdmYkPYmym74zgNO0EZFbtckBur78z1YE3rx2nQ/n/3qxouBQez2Xa Tg== 
+Received: from usculxsnt01v.am.sony.com ([160.33.194.232])
+        by mx08-001d1705.pphosted.com (PPS) with ESMTPS id 3mcf962qr8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 13 Dec 2022 04:43:05 +0000
+Received: from pps.filterd (USCULXSNT01v.am.sony.com [127.0.0.1])
+        by USCULXSNT01v.am.sony.com (8.17.1.5/8.17.1.5) with ESMTP id 2BD4c6pB030453;
+        Tue, 13 Dec 2022 04:43:03 GMT
+Received: from usculxsnt11v.am.sony.com ([146.215.230.185])
+        by USCULXSNT01v.am.sony.com (PPS) with ESMTPS id 3mchcg013r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Dec 2022 04:40:17 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BD4eGbC014861
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Dec 2022 04:40:16 GMT
-Received: from subashab-lnx.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Mon, 12 Dec 2022 20:40:15 -0800
-From:   Subash Abhinov Kasiviswanathan <quic_subashab@quicinc.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <john.fastabend@gmail.com>,
-        <song@kernel.org>, <yhs@fb.com>, <kpsingh@kernel.org>,
-        <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     Subash Abhinov Kasiviswanathan <quic_subashab@quicinc.com>,
-        "Sean Tranchetti" <quic_stranche@quicinc.com>
-Subject: [PATCH net] filter: Account for tail adjustment during pull operations
-Date:   Mon, 12 Dec 2022 21:39:41 -0700
-Message-ID: <1670906381-25161-1-git-send-email-quic_subashab@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 13 Dec 2022 04:43:03 +0000
+Received: from pps.filterd (USCULXSNT11v.am.sony.com [127.0.0.1])
+        by USCULXSNT11v.am.sony.com (8.17.1.5/8.17.1.5) with ESMTP id 2BD4gs6a010879;
+        Tue, 13 Dec 2022 04:43:03 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by USCULXSNT11v.am.sony.com (PPS) with ESMTPS id 3mchcgbt1w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 13 Dec 2022 04:43:03 +0000
+Received: from USCULXSNT11v.am.sony.com (USCULXSNT11v.am.sony.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BD4h3l2010988;
+        Tue, 13 Dec 2022 04:43:03 GMT
+Received: from prime ([10.10.10.214])
+        by USCULXSNT11v.am.sony.com (PPS) with ESMTP id 3mchcgbt1t-1;
+        Tue, 13 Dec 2022 04:43:02 +0000
+Date:   Tue, 13 Dec 2022 10:12:53 +0530
+From:   Chethan Suresh <chethan.suresh@sony.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     quentin@isovalent.com, bpf@vger.kernel.org, Kenta.Tada@sony.com
+Subject: Re: [PATCH bpf-next] bpftool: fix output for skipping kernel config
+ check
+Message-ID: <20221213044252.GA32424@43.88.80.127>
+References: <20221206043501.5249-1-chethan.suresh@sony.com>
+ <CAEf4BzbuRywbSsTn1gjvJ-c5JtTn+xTTA8ApS0B-aLyLXFJZrw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: FM2D7NeEkw9PsWZPL8jrwW39iWh5U0Am
-X-Proofpoint-GUID: FM2D7NeEkw9PsWZPL8jrwW39iWh5U0Am
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbuRywbSsTn1gjvJ-c5JtTn+xTTA8ApS0B-aLyLXFJZrw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Sony-BusinessRelay-GUID: DiwwUecwX-zoKdSeGo_AmMpAKfYKxISf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-13_01,2022-12-12_02,2022-06-22_01
+X-Sony-EdgeRelay-GUID: XWmWoUHeC_ieZIFJxEvN6SnzDL_wpxki
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-12_08,2022-12-12_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=999
- bulkscore=0 phishscore=0 adultscore=0 impostorscore=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2212130042
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-ORIG-GUID: z6cjk9KWc8km-BoSHElyp6R6n7qC14J5
+X-Proofpoint-GUID: z6cjk9KWc8km-BoSHElyp6R6n7qC14J5
+X-Sony-Outbound-GUID: z6cjk9KWc8km-BoSHElyp6R6n7qC14J5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-13_01,2022-12-12_02,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extending the tail can have some unexpected side effects if a program is
-reading the content beyond the head skb headlen and all the skbs in the
-gso frag_list are linear with no head_frag -
-
-  kernel BUG at net/core/skbuff.c:4219!
-  pc : skb_segment+0xcf4/0xd2c
-  lr : skb_segment+0x63c/0xd2c
-  Call trace:
-   skb_segment+0xcf4/0xd2c
-   __udp_gso_segment+0xa4/0x544
-   udp4_ufo_fragment+0x184/0x1c0
-   inet_gso_segment+0x16c/0x3a4
-   skb_mac_gso_segment+0xd4/0x1b0
-   __skb_gso_segment+0xcc/0x12c
-   udp_rcv_segment+0x54/0x16c
-   udp_queue_rcv_skb+0x78/0x144
-   udp_unicast_rcv_skb+0x8c/0xa4
-   __udp4_lib_rcv+0x490/0x68c
-   udp_rcv+0x20/0x30
-   ip_protocol_deliver_rcu+0x1b0/0x33c
-   ip_local_deliver+0xd8/0x1f0
-   ip_rcv+0x98/0x1a4
-   deliver_ptype_list_skb+0x98/0x1ec
-   __netif_receive_skb_core+0x978/0xc60
-
-Fix this by marking these skbs as GSO_DODGY so segmentation can handle
-the tail updates accordingly.
-
-Fixes: 5293efe62df8 ("bpf: add bpf_skb_change_tail helper")
-Signed-off-by: Sean Tranchetti <quic_stranche@quicinc.com>
-Signed-off-by: Subash Abhinov Kasiviswanathan <quic_subashab@quicinc.com>
----
- net/core/filter.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index bb0136e..d5f7f79 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -1654,6 +1654,20 @@ static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp);
- static inline int __bpf_try_make_writable(struct sk_buff *skb,
- 					  unsigned int write_len)
- {
-+	struct sk_buff *list_skb = skb_shinfo(skb)->frag_list;
-+
-+	if (skb_is_gso(skb) && list_skb && !list_skb->head_frag &&
-+	    skb_headlen(list_skb)) {
-+		int headlen = skb_headlen(skb);
-+		int err = skb_ensure_writable(skb, write_len);
-+
-+		/* pskb_pull_tail() has occurred */
-+		if (!err && headlen != skb_headlen(skb))
-+			skb_shinfo(skb)->gso_type |= SKB_GSO_DODGY;
-+
-+		return err;
-+	}
-+
- 	return skb_ensure_writable(skb, write_len);
- }
- 
--- 
-2.7.4
+On Thu, Dec 08, 2022 at 03:32:33PM -0800, Andrii Nakryiko wrote:
+> On Mon, Dec 5, 2022 at 8:41 PM Chethan Suresh <chethan.suresh@sony.com> wrote:
+> >
+> > When bpftool feature does not find kernel config files
+> > under default path, do not output CONFIG_XYZ is not set.
+> > Skip kernel config check and continue.
+> >
+> > Signed-off-by: Chethan Suresh <chethan.suresh@sony.com>
+> > Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
+> > ---
+> >  tools/bpf/bpftool/feature.c | 14 +++++++-------
+> >  1 file changed, 7 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+> > index 36cf0f1517c9..316c4a01bdb7 100644
+> > --- a/tools/bpf/bpftool/feature.c
+> > +++ b/tools/bpf/bpftool/feature.c
+> > @@ -487,14 +487,14 @@ static void probe_kernel_image_config(const char *define_prefix)
+> >         }
+> >
+> >  end_parse:
+> > -       if (file)
+> > +       if (file) {
+> 
+> There are two error conditions when file != NULL but we actually don't
+> read kconfig contents. Please handle those properly, otherwise all the
+> same confusion will keep happening.
+As I understand, the check should skip when file != NULL itself rather
+than handling it in end_parse.
+I'll send the updated patch based on review.
+> 
+> >                 gzclose(file);
+> > -
+> > -       for (i = 0; i < ARRAY_SIZE(options); i++) {
+> > -               if (define_prefix && !options[i].macro_dump)
+> > -                       continue;
+> > -               print_kernel_option(options[i].name, values[i], define_prefix);
+> > -               free(values[i]);
+> > +               for (i = 0; i < ARRAY_SIZE(options); i++) {
+> > +                       if (define_prefix && !options[i].macro_dump)
+> > +                               continue;
+> > +                       print_kernel_option(options[i].name, values[i], define_prefix);
+> > +                       free(values[i]);
+> > +               }
+> >         }
+> >  }
+> >
+> > --
+> > 2.17.1
+> >
 
