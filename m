@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE8764B3B0
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 12:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E8764B3B7
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 12:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235227AbiLMLDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 06:03:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
+        id S235244AbiLMLEn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 06:04:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235247AbiLMLC6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 06:02:58 -0500
+        with ESMTP id S235247AbiLMLET (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 06:04:19 -0500
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6986F11C05;
-        Tue, 13 Dec 2022 03:02:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A67F1928F;
+        Tue, 13 Dec 2022 03:04:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nVeAC07Szykku1yuUAuCP4jwMN/7vl8k2vkxnnVo4AE=; b=cO7zzKzKp/ruXYRkCGrznk3k0W
-        syUETTAVyHKjkjP6YDdnFHd3fjUitq3WJKJ8qexU31R/9fYJH/Dj5hJ+2R8k848C/ySdz00LjL4Hc
-        tpWgUM50ycNpRpGDfSd0k4jZ7ixH0cTw6Q4KLejPAGrqdmbHlwsdGUxidmWtQKP9aMKBmJggBAPSq
-        FoGvFodLZYvWXy5oyH8xvheK10ru0AXZJqCTfOdzhqz40T/WYM3OCGOXroxJpiRpCbHfcWe2jllhY
-        ymAAyfKC+ttQ18MtXl65Qj/46AHjiuYDhisgCCziQrJ4vTuuefnAD2jpWmr/4KBfl29jp+3d4AFU5
-        +H4iadFw==;
+        bh=fYOzy/gUcxxXzkKA87qx2IW3m1L2Q171uzRWvTbvKRU=; b=PiyD44bm27wPMzLX9FrSsGiflk
+        gZ76ezkF0kLRfI+NreMZZPbcydxTWCC5GNewm3/LVzcDrO7jnUPFedVEBo8X9lmDPklsGtzY3Ohc8
+        It8ZJBqmcfWbI0dr3ACQFJoAzEGxS18RXWfqiEm8rq2axizRiHeBeI3Ee/VEOyTCWXLRIbGQ5n9Wk
+        ZSXz5PmAOqL1rYAZQ4XDRJ+Ku7GRsYdMDt/sZluW1Kilre5K0r7zTH5hrfDWPeHACX0RKZq/Htp3a
+        Btdj1Fbg0lWhz8221Z4U64wqC7Ws4SrK8xyJvUcwjxOdM8JXvadFtw++LkB4i9O05bWEfeNd3fWA9
+        CnFxTTRQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1p5337-00A3T8-0D; Tue, 13 Dec 2022 11:02:13 +0000
+        id 1p534s-00A3Ue-FF; Tue, 13 Dec 2022 11:04:02 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ED0CF30036B;
-        Tue, 13 Dec 2022 11:55:10 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A49C3300465;
+        Tue, 13 Dec 2022 11:57:12 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AED67201FEA66; Tue, 13 Dec 2022 11:55:10 +0100 (CET)
-Date:   Tue, 13 Dec 2022 11:55:10 +0100
+        id B1BA820BC8BEB; Tue, 13 Dec 2022 11:57:12 +0100 (CET)
+Date:   Tue, 13 Dec 2022 11:57:12 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -49,7 +49,7 @@ Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
         riel@surriel.com, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org, kernel-team@meta.com
 Subject: Re: [PATCH 14/31] sched_ext: Implement BPF extensible scheduler class
-Message-ID: <Y5haDh3sYUFcXkBx@hirez.programming.kicks-ass.net>
+Message-ID: <Y5haiM8qx1eOLjIr@hirez.programming.kicks-ass.net>
 References: <20221130082313.3241517-1-tj@kernel.org>
  <20221130082313.3241517-15-tj@kernel.org>
  <Y5ckYyz14bxCvv40@hirez.programming.kicks-ass.net>
@@ -69,48 +69,35 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Dec 12, 2022 at 11:33:12AM -1000, Tejun Heo wrote:
 
-> > But this.. afaict that means that:
+> > > @@ -5800,10 +5812,13 @@ static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
+> > >  	 * We can terminate the balance pass as soon as we know there is
+> > >  	 * a runnable task of @class priority or higher.
+> > >  	 */
+> > > -	for_class_range(class, prev->sched_class, &idle_sched_class) {
+> > > +	for_balance_class_range(class, prev->sched_class, &idle_sched_class) {
+> > >  		if (class->balance(rq, prev, rf))
+> > >  			break;
+> > >  	}
+> > > +#else
+> > > +	/* SCX needs the balance call even in UP, call it explicitly */
 > > 
-> >  - the whole EXT thing is incompatible with SCHED_CORE
+> > This, *WHY* !?!
 > 
-> Can you expand on why this would be? I didn't test against SCHED_CORE, so am
-> sure things might be broken but can't think of a reason why it'd be
-> fundamentally incompatible.
+> This comes from the fact that there are no strict rq boundaries and the BPF
+> scheduler can share scheduling queues across any subset of CPUs however they
+> see fit. So, task <-> rq association is flexible until the very last moment
+> the task gets picked for execution. For the dispatch path to support this,
+> it needs to be able to migrate tasks across rq's which requires unlocking
+> the current rq which can only be done in ->balance(). So, sched_ext uses
+> ->balance() to run the dispatch path and thus needs it called even on UP.
 
-For starters, SCHED_CORE doesn't use __pick_next_task() (much). But I
-think you're going to have more trouble with prio_less() (which is the
-3rd implementation of the scheduling function :/)
+Fundamentally none of that makes sense, on UP there is no placement,
+there is only the one CPU, very little choice to be had.
 
-> >  - the whole EXT thing can be trivially starved by the presence of a
-> >    single CFS/BATCH/IDLE task.
-> 
-> It's a simliar situation w/ RT vs. CFS, which is resolved via RT having
-> starvation avoidance.
+> Given that UP doesn't need to transfer tasks across, it might be possible to
+> move the whole dispatch operation into ->pick_next_task() but the current
+> state would be different, so it's more complicated and will likely be more
+> brittle.
 
-That is a horrible situation as is, FIFO/RR are very crap scheduling
-policies for a number of reasons but we're stuck with them due to
-history and POSIX :-(, that is not something you should justify anything
-with.
-
-In fact, it should be an example of what to avoid.
-
-Specifically, FIFO/RR fail at the fundamentals of OS
-abstractions -- they provide neither resource distribution nor
-isolation.
-
-> Here, the way it's handled is a bit different, SCX has
-> a watchdog mechanism implemented in "[PATCH 18/31] sched_ext: Implement
-> runnable task stall watchdog", so if SCX tasks hang for whatever reason
-> including being starved by CFS, it will get aborted and all tasks will be
-> handed back to CFS. IOW, it's treated like any other BPF scheduler errors
-> that can lead to stalls and recovered the same way.
-
-That all sounds quite terrible.. :/
-
-When the scheduler isn't available it should be an error to switch a
-task to the policy, when there are tasks in the policy, it must not go
-away.
-
-The policy itself should never cause policy changes.
-
-
+That sounds like something is amiss, you fundamentally hold all the
+right locks, there is only one.
