@@ -2,76 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 635F764C066
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 00:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3327D64C08F
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 00:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236985AbiLMXVM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 18:21:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        id S236836AbiLMXZl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 18:25:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236039AbiLMXVK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 18:21:10 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DD4AE5A
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 15:21:09 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id q17-20020a17090aa01100b002194cba32e9so5273743pjp.1
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 15:21:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=K2MRfppyK0Vjy0SQr+LLnmvXYBM84uS+b5lx4JIkd8g=;
-        b=bw8bgkvy4Ahs4b1YsvA9xPAebM3f20MVqewjGj0vJiUAwFVHxXTRbQGHfsSxZh7nKz
-         bVXIKp5zcK1wTpLXKQQnsL0c+WKKDKFY6ndP21nV8EbtIOc/dydfbKN90sNezFI3qrAi
-         zWBqtXduRXOYlG0bhovZoDNWuUNfEPSTXbvknEWegRAkySZDexuChNlrh+oAv0n6RJ7z
-         rR66ALBLzbMIjWYmA8r5YH1Pi2blyqBe3oOD1Hs05pjG33KNDITO2V6nwlzhT9sHMseF
-         EooMnVP0xTsr93zsQNd8okxf/8EDhxD1gaBHG+lOXYe+Xs2ssSUiiYJvFAOYw6L5dXYN
-         EbjQ==
+        with ESMTP id S236942AbiLMXZi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 18:25:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B9B26AD1
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 15:24:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670973891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6MH72Wfu4odDI7DR27EaCIxLzF+Z90J2GkF6LgI966g=;
+        b=JK0srtsxMz4Zk+tipTxbOBosPZA2ic9wJYSkMYhRIeCgC7vWJnrnJsepleptJeNI+sBS57
+        aOtIocjZ32oAfHcaE4DIq+W7FmrBoIJM8qMODQDBGYxJ/d62PqGdbiWOkCd3HJLZcxigp0
+        b8U3TO5uyHdoMcU30W8OtlSaxog85eE=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-448-3xT5REwDMqawt-lSychaxw-1; Tue, 13 Dec 2022 18:24:50 -0500
+X-MC-Unique: 3xT5REwDMqawt-lSychaxw-1
+Received: by mail-ed1-f71.google.com with SMTP id y20-20020a056402271400b0046c9a6ec30fso8200012edd.14
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 15:24:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=K2MRfppyK0Vjy0SQr+LLnmvXYBM84uS+b5lx4JIkd8g=;
-        b=u8RR7aNb7yOexw4vyag5IjZqM3qSH8x/41Q39BPJbJmf9q905RazatgiuWsKc6256z
-         av1hpK4tBs4DdcEKRAY48elRBNvcbQ0A6QbbXo6qbKICFlnJB6g0kGNx/MdR/JpZqssC
-         784EddKCf4l5IfNXyxXW+kJINiDUuOC2/9KLjfemKPa8amMqHjHoyTOJpFHCHjQdyUDd
-         DI2WJILnl+MTk7Zb9FpJu0OQjdG7aaZvV8yYWLq/cnjSf6tHDKx/HLthgAPPcb/pFTaG
-         TH77kYer+GmbIS3nyPTZ+TS6Osf6vHG+0q5PJwJtB7vKmjKhXraA6K5Rbb/qkWBIGOCG
-         ay8w==
-X-Gm-Message-State: ANoB5pljFG2u8+/KOWrOSREwYb9SempIB2si7O/z6UrgidFpaLKdwCyk
-        EdWcS5R5RTmY9+UPWssOKfkPU+t0YAiDnYVPhLCwWg==
-X-Google-Smtp-Source: AMrXdXt41EFmrI7Nfo9QvtuNC+CqQZCCdPo+VfWS8FAWz+3wppOM/qMwogyFaUdvE7M/P4veLMOoFd+E4xt7eaNgTP0=
-X-Received: by 2002:a17:90a:1b86:b0:219:e176:7079 with SMTP id
- w6-20020a17090a1b8600b00219e1767079mr46073pjc.196.1670973669128; Tue, 13 Dec
- 2022 15:21:09 -0800 (PST)
+        bh=6MH72Wfu4odDI7DR27EaCIxLzF+Z90J2GkF6LgI966g=;
+        b=3YTffuIyxXpv0YRFnDmLedPLSFoF301x2POzLZktx+nnPCrBiXWwQUqaFguPA4eNcy
+         Eh5bcZdRU2Fkoo2SeHaSONtje14FxpP0wQQLu8StjdGHsDKk1jLnfZnNEHdIWgaiv3fW
+         04lzp1a4P3RWmowZNf/Do9Csk2g81hYVb2EVTF5j/SmOBsTK3Tqdp/BqqqCbTQD00oP1
+         ez7zxvW7ELL+0lceum1pOD/oLEwbu4Bqn9GnjGmv8bkd0BSFhXjPw2A8yNe8ST9XN1ee
+         MhZ0ZCkVYRDtSTMEBPtX3EhCkax0pC3KrVPL/IlP2mMO7ro248wQtoSft7i6s+WFdgsg
+         SVHQ==
+X-Gm-Message-State: ANoB5pmm5CWkyKj7vhCAv+tKIg36pH9oqKpdIj/W8w/MMAF8Cof52pye
+        WQctFWcXJ+GrMGhr5gPg9dwFkYk94lEADmU7YW0q/SScsZu4CkauRohPeQGDGhHdND/kJ2E8EVO
+        7XTwfne64Arf/
+X-Received: by 2002:a17:906:2bd7:b0:7c1:4c46:30a0 with SMTP id n23-20020a1709062bd700b007c14c4630a0mr14389801ejg.65.1670973888531;
+        Tue, 13 Dec 2022 15:24:48 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf4w8RWo8/QGSUQWUf/XKBf3HpQOIdTl9c8cI09hMSNYYMpXjN1W8uLnCkeePADoRfFVXbzFtQ==
+X-Received: by 2002:a17:906:2bd7:b0:7c1:4c46:30a0 with SMTP id n23-20020a1709062bd700b007c14c4630a0mr14389709ejg.65.1670973885576;
+        Tue, 13 Dec 2022 15:24:45 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id w6-20020a170906480600b007c0baedc9d0sm5168999ejq.95.2022.12.13.15.24.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Dec 2022 15:24:45 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 6F08982F3F8; Wed, 14 Dec 2022 00:24:44 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Toke Hoiland-Jorgensen <toke@redhat.com>
+Cc:     bpf@vger.kernel.org
+Subject: [PATCH bpf v3 1/2] bpf: Resolve fext program type when checking map compatibility
+Date:   Wed, 14 Dec 2022 00:24:39 +0100
+Message-Id: <20221213232441.652313-1-toke@redhat.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-References: <20221130082313.3241517-1-tj@kernel.org> <20221130082313.3241517-15-tj@kernel.org>
- <Y5ckYyz14bxCvv40@hirez.programming.kicks-ass.net> <Y5eeGMpr/SuyGBQO@slm.duckdns.org>
- <Y5haDh3sYUFcXkBx@hirez.programming.kicks-ass.net> <Y5jAc/Gs4gVRzkDe@slm.duckdns.org>
- <52c9d084d9852cc7c769dbb76f03a13df014c37f.camel@surriel.com>
-In-Reply-To: <52c9d084d9852cc7c769dbb76f03a13df014c37f.camel@surriel.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 13 Dec 2022 15:20:57 -0800
-Message-ID: <CABk29Nuyz4oT_pE9tFh8+q+ygPhnYBH3MMx7xgYOUcFUQ0qk3w@mail.gmail.com>
-Subject: Re: [PATCH 14/31] sched_ext: Implement BPF extensible scheduler class
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Tejun Heo <tj@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        torvalds@linux-foundation.org, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, brho@google.com, pjt@google.com,
-        derkling@google.com, haoluo@google.com, dvernet@meta.com,
-        dschatzberg@meta.com, dskarlat@cs.cmu.edu,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,50 +86,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 13, 2022 at 10:40 AM Rik van Riel <riel@surriel.com> wrote:
->
-> On Tue, 2022-12-13 at 08:12 -1000, Tejun Heo wrote:
-> > Hello,
-> >
-> > On Tue, Dec 13, 2022 at 11:55:10AM +0100, Peter Zijlstra wrote:
-> > > On Mon, Dec 12, 2022 at 11:33:12AM -1000, Tejun Heo wrote:
-> > >
-> > > > Here, the way it's handled is a bit different, SCX has
-> > > > a watchdog mechanism implemented in "[PATCH 18/31] sched_ext:
-> > > > Implement
-> > > > runnable task stall watchdog", so if SCX tasks hang for whatever
-> > > > reason
-> > > > including being starved by CFS, it will get aborted and all tasks
-> > > > will be
-> > > > handed back to CFS. IOW, it's treated like any other BPF
-> > > > scheduler errors
-> > > > that can lead to stalls and recovered the same way.
-> > >
-> > > That all sounds quite terrible.. :/
-> >
-> > The main source of difference is that we can't implicitly trust the
-> > BPF
-> > scheduler and if it malfunctions or on user request, the system
-> > should
-> > always be recoverable, so there are some extra things which are
-> > inherently
-> > necessary to support that.
-> >
-> That makes me wonder whether loading an SCX policy
-> should just have that policy take over all of the
-> SCHED_OTHER tasks by default, and have a failure of
-> the policy just return those tasks to CFS?
->
-> Having the two be operative at the same time seems
-> to be a cause of hard to resolve issues, while simply
-> running all non-RT tasks under the loadable policy
-> could simplify both internal kernel interfaces, as
-> well as externally visible effects?
+The bpf_prog_map_compatible() check makes sure that BPF program types are
+not mixed inside BPF map types that can contain programs (tail call maps,
+cpumaps and devmaps). It does this by setting the fields of the map->owner
+struct to the values of the first program being checked against, and
+rejecting any subsequent programs if the values don't match.
 
-There are reasons to want to still have CFS available even when SCX is
-loaded. For example, on a partitioned shared tenant machine, moving
-one application to an SCX policy without needing to move everyone. Or,
-wanting to avoid scheduling things like kthreads under an SCX policy,
-since for example that makes an SCX policy writer need not only
-consider the needs of application threads, but also those of kernel
-threads.
+One of the values being set in the map owner struct is the program type,
+and since the code did not resolve the prog type for fext programs, the map
+owner type would be set to PROG_TYPE_EXT and subsequent loading of programs
+of the target type into the map would fail.
+
+This bug is seen in particular for XDP programs that are loaded as
+PROG_TYPE_EXT using libxdp; these cannot insert programs into devmaps and
+cpumaps because the check fails as described above.
+
+Fix the bug by resolving the fext program type to its target program type
+as elsewhere in the verifier. This requires constifying the parameter of
+resolve_prog_type() to avoid a compiler warning from the new call site.
+
+v3:
+- Add Yonghong's ACk
+
+Fixes: f45d5b6ce2e8 ("bpf: generalise tail call map compatibility check")
+Acked-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ include/linux/bpf_verifier.h | 2 +-
+ kernel/bpf/core.c            | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 9e1e6965f407..0eb8f035b3d9 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -642,7 +642,7 @@ static inline u32 type_flag(u32 type)
+ }
+ 
+ /* only use after check_attach_btf_id() */
+-static inline enum bpf_prog_type resolve_prog_type(struct bpf_prog *prog)
++static inline enum bpf_prog_type resolve_prog_type(const struct bpf_prog *prog)
+ {
+ 	return prog->type == BPF_PROG_TYPE_EXT ?
+ 		prog->aux->dst_prog->type : prog->type;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 25a54e04560e..17ab3e15ac25 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2088,6 +2088,7 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+ bool bpf_prog_map_compatible(struct bpf_map *map,
+ 			     const struct bpf_prog *fp)
+ {
++	enum bpf_prog_type prog_type = resolve_prog_type(fp);
+ 	bool ret;
+ 
+ 	if (fp->kprobe_override)
+@@ -2098,12 +2099,12 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
+ 		/* There's no owner yet where we could check for
+ 		 * compatibility.
+ 		 */
+-		map->owner.type  = fp->type;
++		map->owner.type  = prog_type;
+ 		map->owner.jited = fp->jited;
+ 		map->owner.xdp_has_frags = fp->aux->xdp_has_frags;
+ 		ret = true;
+ 	} else {
+-		ret = map->owner.type  == fp->type &&
++		ret = map->owner.type  == prog_type &&
+ 		      map->owner.jited == fp->jited &&
+ 		      map->owner.xdp_has_frags == fp->aux->xdp_has_frags;
+ 	}
+-- 
+2.38.1
+
