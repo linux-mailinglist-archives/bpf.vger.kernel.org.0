@@ -2,165 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2BB64B684
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 14:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCDE64B5CA
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 14:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234969AbiLMNpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 08:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S235258AbiLMNMG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 08:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbiLMNpf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 08:45:35 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53162B23;
-        Tue, 13 Dec 2022 05:45:34 -0800 (PST)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BDD2QXT010257;
-        Tue, 13 Dec 2022 13:45:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=eUgPrthoCID6QwmABsTsBu6qOsnjoUKBNQdpMF81+W4=;
- b=DOTv2MvLjSpqYEV438WPXJiOF4v3r4AoVwb1uUsd5r0e6lA18xhhWnG9bMNEkfmV9wIZ
- fFGHaVU/S2fft1VGalvyFSyHfdNhqoEyO5sMBULsooW3/OpAF7AD7I8fohteDEjEvVrT
- h/Rqo3pd9Ark/i08dPipDXsTYEQkPMZhl1XdO8n1EyJYcVKoF4U55qxEA5IuSaDlBB3V
- DjW08B6oItIGOhHccxEexQCQd48n6XEceJU0wGHkyYgs73kQoXE8pnE4EVyE4av8h856
- E568UdMl2kBazEjen3i7ycjnJPamSiSjtyc5mU8enec4Tm6xfVs6bz9D07KgPqkoD7uz 6Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mejre449n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Dec 2022 13:45:06 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BDD6KLS019710;
-        Tue, 13 Dec 2022 13:45:06 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mejre448u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Dec 2022 13:45:05 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BD5UCPh028384;
-        Tue, 13 Dec 2022 13:45:04 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3mchr648eq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Dec 2022 13:45:03 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2BDDj1Bv46793140
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Dec 2022 13:45:01 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AB79D2004B;
-        Tue, 13 Dec 2022 13:45:01 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4711C20043;
-        Tue, 13 Dec 2022 13:45:01 +0000 (GMT)
-Received: from localhost (unknown [9.43.37.38])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Dec 2022 13:45:01 +0000 (GMT)
-Date:   Tue, 13 Dec 2022 15:53:48 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH v1 06/10] powerpc/bpf: Perform complete extra passes to
- update addresses
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>
-References: <fa025537f584599c0271fc129c5cf4f57fbe7505.1669881248.git.christophe.leroy@csgroup.eu>
-        <c13ebeb4d5d169bda6d1d60ccaa6cc956308308d.1669881248.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <c13ebeb4d5d169bda6d1d60ccaa6cc956308308d.1669881248.git.christophe.leroy@csgroup.eu>
+        with ESMTP id S235523AbiLMNL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 08:11:56 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461F02657;
+        Tue, 13 Dec 2022 05:11:52 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id kw15so36330650ejc.10;
+        Tue, 13 Dec 2022 05:11:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OCA9EB9LKetY79m77VlC6M0hSYOaeN1AdMgT0kQGhBw=;
+        b=NocRLvvbdUDm8VP8WWAbrIKzt9Ttkh86KrkRUEvDXfOzDQrlO6S0vzZrT4rSdwl6Zr
+         N28JSQykgjRG5VfferltdhL2kKckxJ3izRwjg0TQ785MAxIoMgNE6Kuc50l2n6AU//7B
+         xe7jgmLI3msRWFalxO0dwOyCdcM61k82t02MSTTPQg1FqZ2vKnaMZN84H4Pk9mob7ovu
+         p2KcIqko4eoK1wxo15ZN/7PjNMxV1czwLuomaaWZRnuOgjg3VFe2caB2h6YSRQgcIzgb
+         e9bnB2ldzN+RBT3WvwrBxmjCJZ3G1qH7CPia561dlztbbil/Fn6/QM1llVdUhL6Jo6G1
+         KZ8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OCA9EB9LKetY79m77VlC6M0hSYOaeN1AdMgT0kQGhBw=;
+        b=LcmdsKwef2mY7KkGxBHL9iKf/WUK+Zt8RRCjUbCByNiGbGg+s9Rvq4eEqb8mx4crWO
+         zRNPJNu9pcp7DSaCz1iRGrjD5t5a7nCexi04vAjsxqZX0hq5E4CkesqpzMwZPwxc1WOj
+         aw9oqW2k8L5HF6OfGaQesQx99Pzs4arZznXwOH7QhdMfxrkr799hnKMEdPPUrW9F7m4W
+         7eR6d8XEQx57g4l89ZcVL7q0VCYYaHKJz8tKsDL+ncChOYbOIDDXSHzLzVUrOpRMTCvx
+         L91vPjw/07C7tWNJZEj80MLK++CkPKnExr6QDcj34k5IZw0AiavIrWBQJxMXDgcatJUB
+         6fqQ==
+X-Gm-Message-State: ANoB5pnN2WgB8KBEtLVNFNrwWxQUmA+uiYXeNzzcvD6hEYha4a2NKMMQ
+        ZDNt1i4EmcrqAxQP4ebeTSBKJNtIQR9jTUUTn6JrlEca5cNWsA==
+X-Google-Smtp-Source: AA0mqf7zwtPyaBWk8dtksho1p5lOuaxcfg1Dfk+alO3fwAnrdFkEUODM9qdE2N2Ib5BUn8ermKofd++RsgFwzRxNNFs=
+X-Received: by 2002:a17:906:c358:b0:7c1:15ff:ce80 with SMTP id
+ ci24-20020a170906c35800b007c115ffce80mr8762394ejb.172.1670937110471; Tue, 13
+ Dec 2022 05:11:50 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
-Message-Id: <1670926819.9nqhz2fj7v.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7UTJ-JytMBoZWiQz5BZHWlwz3MrF3EJl
-X-Proofpoint-ORIG-GUID: 3yIsWCYYIwCAqrzqIKaNf220JG_gsuBE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-13_03,2022-12-13_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 mlxlogscore=999 clxscore=1011 mlxscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 impostorscore=0
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2212130120
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+From:   Wei Chen <harperchen1110@gmail.com>
+Date:   Tue, 13 Dec 2022 21:11:14 +0800
+Message-ID: <CAO4mrffvqv1TrMO2A9rmysq4QrGcn8PdrzNWpLDjP_u_3U-7Cw@mail.gmail.com>
+Subject: BUG: unable to handle kernel paging request in tcp_write_wakeup
+To:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        bpf@vger.kernel.org, syzbot <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Christophe Leroy wrote:
-> BPF core calls the jit compiler again for an extra pass in order
-> to properly set subprog addresses.
->=20
-> Unlike other architectures, powerpc only updates the addresses
-> during that extra pass. It means that holes must have been left
-> in the code in order to enable the maximum possible instruction
-> size.
->=20
-> In order avoid waste of space, and waste of CPU time on powerpc
-> processors on which the NOP instruction is not 0-cycle, perform
-> two real additional passes.
->=20
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/net/bpf_jit_comp.c | 85 ---------------------------------
->  1 file changed, 85 deletions(-)
->=20
-> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_c=
-omp.c
-> index 43e634126514..8833bf23f5aa 100644
-> --- a/arch/powerpc/net/bpf_jit_comp.c
-> +++ b/arch/powerpc/net/bpf_jit_comp.c
-> @@ -23,74 +23,6 @@ static void bpf_jit_fill_ill_insns(void *area, unsigne=
-d int size)
->  	memset32(area, BREAKPOINT_INSTRUCTION, size / 4);
->  }
-> =20
-> -/* Fix updated addresses (for subprog calls, ldimm64, et al) during extr=
-a pass */
-> -static int bpf_jit_fixup_addresses(struct bpf_prog *fp, u32 *image,
-> -				   struct codegen_context *ctx, u32 *addrs)
-> -{
-> -	const struct bpf_insn *insn =3D fp->insnsi;
-> -	bool func_addr_fixed;
-> -	u64 func_addr;
-> -	u32 tmp_idx;
-> -	int i, j, ret;
-> -
-> -	for (i =3D 0; i < fp->len; i++) {
-> -		/*
-> -		 * During the extra pass, only the branch target addresses for
-> -		 * the subprog calls need to be fixed. All other instructions
-> -		 * can left untouched.
-> -		 *
-> -		 * The JITed image length does not change because we already
-> -		 * ensure that the JITed instruction sequence for these calls
-> -		 * are of fixed length by padding them with NOPs.
-> -		 */
-> -		if (insn[i].code =3D=3D (BPF_JMP | BPF_CALL) &&
-> -		    insn[i].src_reg =3D=3D BPF_PSEUDO_CALL) {
-> -			ret =3D bpf_jit_get_func_addr(fp, &insn[i], true,
-> -						    &func_addr,
-> -						    &func_addr_fixed);
+Dear Linux Developers,
 
-I don't see you updating calls to bpf_jit_get_func_addr() in=20
-bpf_jit_build_body() to set extra_pass to true. Afaics, that's required=20
-to get the correct address to be branched to for subprogs.
+Recently, when using our tool to fuzz kernel, the following crash was triggered.
 
+HEAD commit: 76dcd734eca
+git tree: linux-next
+compiler: clang 12.0.0
+console output:
+https://drive.google.com/file/d/1mHUUrG4QFkrmP3xw7QgiytT7xWE6lbPy/view?usp=share_link
+kernel config: https://drive.google.com/file/d/1jH4qV5XblPADvMDUlvS7DwtW0FroMoVB/view?usp=share_link
 
-- Naveen
+Unfortunately, I do not have a reproducer for this crash. My manual
+investigation found that the value of %rax may be invalid. When adding
+statistics to net_statistics of the current network namespace, the
+value of net->mib (which is %rax) is invalid. I'm wondering if sk or
+net is freed, which causes an invalid address of mib.
 
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: Wei Chen <harperchen1110@gmail.com>
+
+BUG: unable to handle page fault for address: ffff88800167981d
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0003) - permissions violation
+PGD 7201067 P4D 7201067 PUD 7202067 PMD 80000000016001e1
+Oops: 0003 [#1] PREEMPT SMP
+CPU: 0 PID: 1425 Comm: systemd-udevd Not tainted 6.1.0-rc8 #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
+RIP: 0010:tcp_xmit_probe_skb net/ipv4/tcp_output.c:4024 [inline]
+RIP: 0010:tcp_write_wakeup+0x450/0x710 net/ipv4/tcp_output.c:4078
+Code: fd 44 89 6d 2c 49 8d 7c 24 30 e8 9b 93 49 fd 49 8b 5c 24 30 48
+8d bb c8 01 00 00 e8 8a 93 49 fd 48 8b 83 c8 01 00 00 49 63 cf <65> 48
+ff 04 c8 49 8d bc 24 90 05 00 00 e8 ee 8e 49 fd 45 8b 84 24
+RSP: 0018:ffffc90000003cb8 EFLAGS: 00010246
+RAX: ffffffff83a794b5 RBX: ffff88800bbe8040 RCX: 000000000000006d
+RDX: 0000000000000855 RSI: 0000000000000000 RDI: ffff88800bbe8208
+RBP: ffff88800bb1a000 R08: 000188800bbe820f R09: 0000000000000000
+R10: 0001ffffffffffff R11: 000188800bb1a02c R12: ffff8880368d00c0
+R13: 00000000ffffffff R14: ffff88800bb1a028 R15: 000000000000006d
+FS:  00007fa45b07c8c0(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88800167981d CR3: 000000000ac20000 CR4: 00000000003506f0
+Call Trace:
+ <IRQ>
+ tcp_send_probe0+0x2c/0x2b0 net/ipv4/tcp_output.c:4093
+ tcp_probe_timer net/ipv4/tcp_timer.c:393 [inline]
+ tcp_write_timer_handler+0x322/0x4c0 net/ipv4/tcp_timer.c:624
+ tcp_write_timer+0xb9/0x160 net/ipv4/tcp_timer.c:637
+ call_timer_fn+0x2e/0x240 kernel/time/timer.c:1474
+ expire_timers+0x116/0x240 kernel/time/timer.c:1519
+ __run_timers+0x368/0x410 kernel/time/timer.c:1790
+ run_timer_softirq+0x2e/0x60 kernel/time/timer.c:1803
+ __do_softirq+0xf2/0x2c9 kernel/softirq.c:571
+ __irq_exit_rcu kernel/softirq.c:650 [inline]
+ irq_exit_rcu+0x41/0x70 kernel/softirq.c:662
+ sysvec_apic_timer_interrupt+0x8d/0xb0 arch/x86/kernel/apic/apic.c:1107
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x16/0x20 arch/x86/include/asm/idtentry.h:649
+RIP: 0010:check_kcov_mode kernel/kcov.c:173 [inline]
+RIP: 0010:write_comp_data kernel/kcov.c:236 [inline]
+RIP: 0010:__sanitizer_cov_trace_const_cmp4+0x14/0xa0 kernel/kcov.c:304
+Code: 12 4d 89 44 fa 18 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00
+00 4c 8b 04 24 65 48 8b 14 25 80 ac 01 00 65 8b 05 04 22 da 7e <a9> 00
+01 ff 00 74 10 a9 00 01 00 00 74 6e 83 ba c4 0a 00 00 00 74
+RSP: 0018:ffffc9000059ba10 EFLAGS: 00000246
+RAX: 0000000080000000 RBX: ffff8880090653c0 RCX: 0000000000000000
+RDX: ffff888009b60e80 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff818fa64f R09: ffffc9000059ba30
+R10: 0001ffffffffffff R11: 00018880095f63f0 R12: 0000000000000001
+R13: ffff8880095f63a8 R14: 0000000000000000 R15: ffff8880095f63a8
+ selinux_inode_permission+0x6f/0x400 security/selinux/hooks.c:3073
+ security_inode_permission+0x72/0xc0 security/security.c:1326
+ inode_permission+0xc5/0x460 fs/namei.c:533
+ may_lookup fs/namei.c:1715 [inline]
+ link_path_walk+0x1b2/0x7e0 fs/namei.c:2262
+ path_lookupat+0x8b/0x3c0 fs/namei.c:2473
+ filename_lookup+0x133/0x310 fs/namei.c:2503
+ vfs_statx+0xa3/0x460 fs/stat.c:229
+ vfs_fstatat fs/stat.c:267 [inline]
+ vfs_lstat include/linux/fs.h:3304 [inline]
+ __do_sys_newlstat fs/stat.c:423 [inline]
+ __se_sys_newlstat+0x6c/0x270 fs/stat.c:417
+ __x64_sys_newlstat+0x2d/0x40 fs/stat.c:417
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fa459eef335
+Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00
+83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d
+00 f0 ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
+RSP: 002b:00007ffeff53e148 EFLAGS: 00000246 ORIG_RAX: 0000000000000006
+RAX: ffffffffffffffda RBX: 000055cd6b8d7780 RCX: 00007fa459eef335
+RDX: 00007ffeff53e180 RSI: 00007ffeff53e180 RDI: 000055cd6b8d6780
+RBP: 00007ffeff53e240 R08: 00007fa45a1ae248 R09: 0000000000001010
+R10: 0000000000000020 R11: 0000000000000246 R12: 000055cd6b8d6780
+R13: 000055cd6b8d67a0 R14: 000055cd6b8cabbb R15: 000055cd6b8cabc0
+ </TASK>
+Modules linked in:
+CR2: ffff88800167981d
+---[ end trace 0000000000000000 ]---
+RIP: 0010:tcp_xmit_probe_skb net/ipv4/tcp_output.c:4024 [inline]
+RIP: 0010:tcp_write_wakeup+0x450/0x710 net/ipv4/tcp_output.c:4078
+Code: fd 44 89 6d 2c 49 8d 7c 24 30 e8 9b 93 49 fd 49 8b 5c 24 30 48
+8d bb c8 01 00 00 e8 8a 93 49 fd 48 8b 83 c8 01 00 00 49 63 cf <65> 48
+ff 04 c8 49 8d bc 24 90 05 00 00 e8 ee 8e 49 fd 45 8b 84 24
+RSP: 0018:ffffc90000003cb8 EFLAGS: 00010246
+RAX: ffffffff83a794b5 RBX: ffff88800bbe8040 RCX: 000000000000006d
+RDX: 0000000000000855 RSI: 0000000000000000 RDI: ffff88800bbe8208
+RBP: ffff88800bb1a000 R08: 000188800bbe820f R09: 0000000000000000
+R10: 0001ffffffffffff R11: 000188800bb1a02c R12: ffff8880368d00c0
+R13: 00000000ffffffff R14: ffff88800bb1a028 R15: 000000000000006d
+FS:  00007fa45b07c8c0(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88800167981d CR3: 000000000ac20000 CR4: 00000000003506f0
+----------------
+Code disassembly (best guess):
+   0: fd                   std
+   1: 44 89 6d 2c           mov    %r13d,0x2c(%rbp)
+   5: 49 8d 7c 24 30       lea    0x30(%r12),%rdi
+   a: e8 9b 93 49 fd       callq  0xfd4993aa
+   f: 49 8b 5c 24 30       mov    0x30(%r12),%rbx
+  14: 48 8d bb c8 01 00 00 lea    0x1c8(%rbx),%rdi
+  1b: e8 8a 93 49 fd       callq  0xfd4993aa
+  20: 48 8b 83 c8 01 00 00 mov    0x1c8(%rbx),%rax
+  27: 49 63 cf             movslq %r15d,%rcx
+* 2a: 65 48 ff 04 c8       incq   %gs:(%rax,%rcx,8) <-- trapping instruction
+  2f: 49 8d bc 24 90 05 00 lea    0x590(%r12),%rdi
+  36: 00
+  37: e8 ee 8e 49 fd       callq  0xfd498f2a
+  3c: 45                   rex.RB
+  3d: 8b                   .byte 0x8b
+  3e: 84                   .byte 0x84
+  3f: 24                   .byte 0x24
+
+Best,
+Wei
