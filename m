@@ -2,272 +2,296 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FCE64BE36
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 22:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABE164BE50
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 22:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbiLMVHR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 16:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57068 "EHLO
+        id S236460AbiLMVYE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 16:24:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236638AbiLMVHG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 16:07:06 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3891721E3F
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 13:07:05 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BDKMFsG018070;
-        Tue, 13 Dec 2022 13:06:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=bt8dmfIkT+jcILl8PKOsUNTjrsJikl4KwjvMTJKwxP4=;
- b=jiEfL7GcNQxK0XnBV+KuEqmjpMe30giZVaSmiGBmAZxpSEZ2bK2I51D42GDc13AcT8lE
- QRaOaF8P13k5z+NE2dLrEcr/wS9aocfRnopGLDot5Rmtgy7fBgQyZ8B+TwVUpr7Hvb+G
- mtmalOxYVo0HmQt0Zq4TAqIjyBm7msE4tcLWwAwl2a3/7GImbMzFPVixXC8qRSZrjdUt
- fMScdtYlOvlDy1db0qg0OH6ezw5UJ3q3rlySlpwH0Td7q2K21bfHSGMqiJ3s+FOSk3kz
- JZ6I9n3gv5qSWptAhNuqqzQKgXh49DLsLiyRKR25cFWjjeC3BY6p2wNmJOlsjscqy4nJ 9w== 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3meyf58n1g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Dec 2022 13:06:41 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V6aU9qtpBlHTP9K3c0m90GMzU6cberfMvHRGA76aJz8cjcYojukLpHmI9jPc9yv/EWiI+eAxQVapkHODluos2uNixEFgq2VCcE/PGgdp8jLLDx1OPzdvBVNvlMXnZPOwJvILRldiq7FsW5RCV0XYQEYEUf+lNFY2ulgC0FlJmBxSrqKyEz5/Qr/0Q2f3k2EaAw3Uw2Y/lpEXDhD8IttXI7D2ctcbZkC5eDpvuu2NzNq/TodxeNrkJniVbSJDoWHfCMCd2kMseY4IIiJFFsFEBu3j13Zbyc6sNcVs4sQIgAGm8M6XDBU1JYSKUmRmOYjHdRPUz/PfqGJDCQkp3JDBIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bt8dmfIkT+jcILl8PKOsUNTjrsJikl4KwjvMTJKwxP4=;
- b=DOLCIA5EOK+puWNuh0rOXd/GNrMExcJlk+WTvoTx1YKnYv2nY9UlK6LONfbMUE2Gn93WG0ULM7aFVx2Hf6KZCWtyrwcXKbWC7XtbBwWsh4WVzlHkrOZQQu5uIL/QC/dB2fgzwBf+/FaruRm0/3wCBuSbq/d1GenlTzpezbAFme77cqUciHr+WZZMyLq1yvvkELPk77SWwUNM5fXgNl4aE3vNBWjct+hNnVb9V6aptpASvL4RZNqiYCz5XI1onnwNDODCrbD2jxe4gwNX4RWxbyryWw1pcw63WDgK732ergUd14hwVNDxo7bVQKU81NZVnRsZQaOs0oQWRWCajtofuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BYAPR15MB2520.namprd15.prod.outlook.com (2603:10b6:a03:14c::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.13; Tue, 13 Dec
- 2022 21:06:38 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d665:7e05:61d1:aebf]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d665:7e05:61d1:aebf%7]) with mapi id 15.20.5880.019; Tue, 13 Dec 2022
- 21:06:38 +0000
-Message-ID: <9238ea62-7c5f-005f-a693-cc09105f5632@meta.com>
-Date:   Tue, 13 Dec 2022 13:06:35 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.5.1
-Subject: Re: [PATCH bpf-next v4 1/2] bpf: Fix attaching
- fentry/fexit/fmod_ret/lsm to modules
-Content-Language: en-US
-To:     Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        with ESMTP id S229532AbiLMVYC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 16:24:02 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8BD218AF;
+        Tue, 13 Dec 2022 13:24:00 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id fz10so1000332qtb.3;
+        Tue, 13 Dec 2022 13:24:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wVbuTlw5StqCpUnT2Z3N8qBlMp/3yxGOfym0r6um0Eo=;
+        b=Eo16T/j40jJgSBILOV2+Ev1y9PzX1x8XZeETL2WQk90vNXWb/nqB5/w1wLwGqce2lZ
+         wSlkY3a4RMfk+jTNwt+sPGK7fJQZXrfvG4PfacbaIuMtrBcn5LDE+cWYof5LpOZJFUK+
+         8nKXHxRFRQyx91pKgMTVc4mQ0ngjlRUAgLuONWBCl7agzMLX+TdOO7WfXbcb9sILclNi
+         7iM9MXGES5JAtAexg7tJ/lzPTiZ1inb38wO+cVnzDVzAj33ZZcw8G9lBTb7+LxB5XQlL
+         ibP1nCSj7keui84VfcTfxrM9ENWLHO9dBygj04VN5af4srZVGe0IFjPeYKAQmegN661w
+         Julg==
+X-Gm-Message-State: ANoB5pl7wGj2R2xK5Dx6+i9QUjvFdwjf28h7d9etA8Dwh/DZQXZy/i1n
+        t1K4QE7SACnSWJFAIlP82Go=
+X-Google-Smtp-Source: AA0mqf7r+QLWexqUutWYZ8ep9dyvSW9rbCjW2XVm2ChH8tW1CD4Qa+Ida5fK+XEb1bmXPdTgun3PEQ==
+X-Received: by 2002:a05:622a:6108:b0:3a7:e838:11c8 with SMTP id hg8-20020a05622a610800b003a7e83811c8mr24898099qtb.45.1670966639395;
+        Tue, 13 Dec 2022 13:23:59 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:8faa])
+        by smtp.gmail.com with ESMTPSA id k10-20020ac8074a000000b00397b1c60780sm511190qth.61.2022.12.13.13.23.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Dec 2022 13:23:58 -0800 (PST)
+Date:   Tue, 13 Dec 2022 15:23:57 -0600
+From:   David Vernet <void@manifault.com>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <cover.1670847888.git.vmalik@redhat.com>
- <d4a7235586e3ca1b667f220de7b4835a1382397c.1670847888.git.vmalik@redhat.com>
- <b1698393-2bec-edb9-5adc-d076bfc2b188@meta.com>
- <d8464b4e-b514-7587-50eb-4b1391e87713@redhat.com>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <d8464b4e-b514-7587-50eb-4b1391e87713@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BY3PR03CA0009.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::14) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chris Mason <clm@meta.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, Akinobu Mita <akinobu.mita@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 2/2] docs: fault-injection: Add requirements of error
+ injectable functions
+Message-ID: <Y5jtbcmXrkPCvrjj@maniforge.lan>
+References: <167094067084.608798.11303550366840600235.stgit@devnote3>
+ <167094069168.608798.9644454927302716989.stgit@devnote3>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BYAPR15MB2520:EE_
-X-MS-Office365-Filtering-Correlation-Id: b21fad50-8771-4f97-c6c3-08dadd4ded14
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dMIf5Of4DKv+PsFjfQI9VrPJasPu6jo4q1WX7S+Cg37sZaQrrA7ICfeQ/MdGvEX74QWsuaf3RHK+t/e8lzjtaxd9ipFEwebDdh5e0WI/hSsqFZbRSMhoiws2RIZjYlSkE5T/lguKBHDrF8czWwkXVTZu1HU/rf7bzH3C2/7KKP3nZBjN2O1LBDLI7ydV9gPx5jwT45R35uVbk2GPnJYEfc5NTVymsJh0L9mT4r5K0+RvkhW/Bs/YovMcW5hYg+Ttph7AQ1oUmnf65l+OeG26IhSWuogOB7MztBtfKyDJMFgTWE9lUggUB5EGhqmqW2rYQQToayCmr+TUGTx3m127gMS0LxUaCnCCRlasN6I1yGWLcJo/k9YAzIIP9fnpnP0YnDpCDpnSHDaBdf/ZyExueedz0S8VlQ+K9jUqhV3iKisXEm64jfzdsTLn37L3y0jGUts93hdn7IWs3M7B6+lSh3ezXzi0P8DolndZPtIwogHfPGVnZVM2q83NiLrZcYbV7p5qCvvl21n2f2dK1a4rPXdj94NFnZk2nKNAYISERnxpG4uidlAnhJPv0GT10yqsPkEeMEz6I6aq07p1bCL1FH7V3cYAytXMZf/OnfuE6+VsMCEWfuGnN8njBTUiEwClWZsOmwJXdendyT028TAIhCav3yCDagm0QpKN1fUDGphOV+ag66+s0A2uGqgEzd5bZ3GmgcAeHBFuGg9P4DpNSNxAJUU0J8nwjlr6cEpAJm0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(39860400002)(376002)(136003)(346002)(366004)(451199015)(31686004)(5660300002)(2906002)(2616005)(186003)(41300700001)(31696002)(7416002)(8936002)(66946007)(54906003)(86362001)(4326008)(66476007)(8676002)(66556008)(83380400001)(316002)(38100700002)(6512007)(6506007)(6666004)(36756003)(478600001)(53546011)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RXNDRFFSNUpKMDlzOEhyZnFZVzBWR3gxa1hMY3BIT0ZQN0tNazJ3amtCOWw4?=
- =?utf-8?B?U0dwUy9EZGVLd0FqeVR2SnRHQkdTbTErdmdtZlVweGg3b0ZsUTRta1Eyd1A1?=
- =?utf-8?B?Y25jeDY3ckRNbjBFK25CV1hJOVRldFUxTUtNaGxFT0xmdmRoNDVNRnZJaldR?=
- =?utf-8?B?Q25FVjVtQXBzM1VMcktDSU5CZXg3c1B5QUVDUmxLVndoZzFyUlhFdDFYajhx?=
- =?utf-8?B?dENlOTdKYTNVRUR1b29JSmJWMzM5QkxrclVTMm80M1NUcWpDbkU3YmFYUUdP?=
- =?utf-8?B?NUdKSVZNeUl5ai8xWEg2dnhlL0xjc2ZDdWdLbmpnS0xsbmlHbDU2NTBCcFEy?=
- =?utf-8?B?NFlPNVVEQlE1dHJKOE9jREtQUnVRQ09PejlxOGdTUWdsTGNidGJ3dUE4ZXVV?=
- =?utf-8?B?WEd2MFRHOWRPWmJrbjhHSUdxNE04UGN2OGlGbEdvY3paT0hrTlFZLzVGTzVY?=
- =?utf-8?B?TDN6YThZZjhvdmlhR1g4VllkS1cwZXhyVjF5VXhPcUFGRDgyU1JkWVJoL0tH?=
- =?utf-8?B?MG9qbWVNd0ovRjVGbThoOENMSDc0cGp2YWpQdm05ajVWSDhqaXVnQncxSEVU?=
- =?utf-8?B?TXJYK21sMnFwMzA4bXNXbDhFQWVzRTZkcFl1MFE5SThieFE2R3J0TkhvMnll?=
- =?utf-8?B?QStGQWZzZVRrZGc0VTh5L3N5WGsyd2FXTEMzMUtqMG5BYUtiWWJGTzdZRVNX?=
- =?utf-8?B?QyszaDlDRVBZcHRJa2VsdUNMTEVaOVRsM3ZuM3pmZXA5VHJCdTd1bnZQV2lt?=
- =?utf-8?B?RWd2YVo4WGUrWE0yN0duYVgzTU1JTE1WdjkzNGZaVU03K3BRQ0ZrUGRYMS9S?=
- =?utf-8?B?bld6WHU0Nlp0MndMa0Y0U0RDUCtVU01lVkl0cEQ4eUQ4TW1TYU1GcUxlRm9T?=
- =?utf-8?B?V3QvZDJlRmxsZ2Q0SHlqTWd2SFExcFMxY29rMTV4OFpPT0IxaEQ1dlUreGZD?=
- =?utf-8?B?SHZONXVmTCsyOXQ4bVlobWZNVzdKRjhwdGZpbVBxRjZPTWdzd0FYU29RMk9q?=
- =?utf-8?B?TklWNi80WTZCeDN5Rm9oTHJnaE9vN0dEa1hJYUNaeXBndWVqdjRNYytTRmtD?=
- =?utf-8?B?czVDd0l4QmRnZ1R2cjBLbVdXNGl6bVkxQjk3eDB4dWVzN0V4a2xJRnNhY2pE?=
- =?utf-8?B?MlRFSFV2Rkg2TEhjWnpPYTIxZm1hWnE1WUk2NUxOdEhIU3pVMEN2anNTU2Iw?=
- =?utf-8?B?Rk9icjNXY1NIcmhheC9JS1VRMnowd0haWUpvRUxlM2dKekZHNDdQL3NzekdI?=
- =?utf-8?B?b0U1dFpiQXZYbHBmNS83SkIzeU1qM3RlOTQyU0FyOTJwVmlvTG1rM0dCYjRm?=
- =?utf-8?B?UzYzM1pVRFVjOEZzUmE2bHJxRng2aUZJeWxZUk1nWSt4ZnVxWXBIZUZWQjBO?=
- =?utf-8?B?MzF6bzNXWkttVlhxRDJpT0pZMHZtWkY0ZzJVVUVUQll4cm1HeSsrN3ZaWDJL?=
- =?utf-8?B?MlpXbi8wdTZrck1NazBRYlhmbEZ3MmhjOGFBRG1XN0FIeXh4SnlmOGNvRCtB?=
- =?utf-8?B?TkNuQTZCK1k2UDJOQlZzNzRuRnZqS2NNYytNd0paYjFxYWtTUDNMckgvcVpw?=
- =?utf-8?B?WlR5U2xxWm9vUzZrV0dwbDFiWU5XSVVRR2Q3YmNiTlB1N0srRFExcFhtaHJz?=
- =?utf-8?B?N1B2VXVSSHYzVEVxWlZ5VFBHOXdkUkNxSnVpL0tUL0t6ck9NL0kyRUtwTE5j?=
- =?utf-8?B?UjBNdUk0U09STWhRK3RrRUplTzB0cG5yNUZYS2VTSzM4MCtkajk4NFE0Zk02?=
- =?utf-8?B?bVFvUFA3ZDdlT2RpS29rYm43MVY5MWY2YXpGSFBSUTZOQWhXMmliYTh4NHpi?=
- =?utf-8?B?ZXdpczlvekxTeXd1OUZ2elp2MW9nZVV5UStUMitkYi9Bc2R0UmVjVnVGaHVw?=
- =?utf-8?B?VlRVRGttVThMeUZ3ZXRGVjIxVEJXbVh4YzBiQTBsMVVzZ1gzblJjU1VodkF2?=
- =?utf-8?B?alYyYUdLUElpbjB4d28ycE1mcGxRdEljR0ZTMmJWWVh6bHJRVW9uZSt3d1RV?=
- =?utf-8?B?YW5DZVY3RmlqNzNQTnZpTk11ZEFrWGMrUThoMU1JcGJSY1pxNnlKRFNFMDdQ?=
- =?utf-8?B?R2ZEL0FrVzdZY1ozQ0sxekYxU2ZrUzNoQ3VmeVd3LzBDbDhIcmNQRkRoU0lD?=
- =?utf-8?B?Ym9qRXdRcTRDdGpUbFdQSUZPVmZFM0J1WWFXVTB6RFBlQUs5ZEl0WjFlVUk1?=
- =?utf-8?B?R1E9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b21fad50-8771-4f97-c6c3-08dadd4ded14
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2022 21:06:38.7378
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yJFHBJFRwxSR4/PW6GEwJNZIeHEY1IaYz/HHINCveaBOgMAlzZX4HUy7oADrBCsT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2520
-X-Proofpoint-ORIG-GUID: zYJsLCNm3LmyyHm3eRMQSAt231EWiRBq
-X-Proofpoint-GUID: zYJsLCNm3LmyyHm3eRMQSAt231EWiRBq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-13_03,2022-12-13_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <167094069168.608798.9644454927302716989.stgit@devnote3>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 12/13/22 2:59 AM, Viktor Malik wrote:
-> On 12/12/22 18:08, Yonghong Song wrote:
->>
->>
->> On 12/12/22 4:59 AM, Viktor Malik wrote:
->>> When attaching fentry/fexit/fmod_ret/lsm to a function located in a
->>> module without specifying the target program, the verifier tries to find
->>> the address to attach to in kallsyms. This is always done by searching
->>> the entire kallsyms, not respecting the module in which the function is
->>> located.
->>>
->>> This approach causes an incorrect attachment address to be computed if
->>> the function to attach to is shadowed by a function of the same name
->>> located earlier in kallsyms.
->>>
->>> Since the attachment must contain the BTF of the program to attach to,
->>> we may extract the module from it and search for the function address in
->>> the module.
->>>
->>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
->>> ---
->>>   kernel/bpf/verifier.c | 16 +++++++++++++++-
->>>   1 file changed, 15 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index a5255a0dcbb6..d646c5263bc5 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -24,6 +24,7 @@
->>>   #include <linux/bpf_lsm.h>
->>>   #include <linux/btf_ids.h>
->>>   #include <linux/poison.h>
->>> +#include "../module/internal.h"
->>>   #include "disasm.h"
->>> @@ -16478,6 +16479,7 @@ int bpf_check_attach_target(struct 
->>> bpf_verifier_log *log,
->>>       const char *tname;
->>>       struct btf *btf;
->>>       long addr = 0;
->>> +    struct module *mod;
->>>       if (!btf_id) {
->>>           bpf_log(log, "Tracing programs must provide btf_id\n");
->>> @@ -16645,7 +16647,19 @@ int bpf_check_attach_target(struct 
->>> bpf_verifier_log *log,
->>>               else
->>>                   addr = (long) tgt_prog->aux->func[subprog]->bpf_func;
->>>           } else {
->>> -            addr = kallsyms_lookup_name(tname);
->>> +            if (btf_is_module(btf)) {
->>> +                preempt_disable();
->>> +                mod = btf_try_get_module(btf);
->>> +                if (mod) {
->>> +                    addr = find_kallsyms_symbol_value(mod, tname);
->>> +                    module_put(mod);
->>> +                } else {
->>> +                    addr = 0;
->>> +                }
->>> +                preempt_enable();
->>
->> What if module is unloaded right after preempt_enabled so 'addr' 
->> becomes invalid? Is this a corner case we should consider?
+On Tue, Dec 13, 2022 at 11:11:31PM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> IIUC, if 'addr' becomes invalid, the attachment will eventually fail.
+> Add a section about the requirements of the error injectable functions
+> and the type of errors.
+> Since this section must be read before using ALLOW_ERROR_INJECTION()
+> macro, that section is referred from the comment of the macro too.
 > 
-> So I'd say that there's no need to consider that case here, it's not
-> considered for kallsyms_lookup_name below (which may call
-> module_kallsyms_lookup_name) either.
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-The below kallsyms_lookup_name(tname) works for vmlinux and vmlinux
-function won't go away.
+Hi Masami,
 
-The following is what I understand for module address:
+Thanks for writing this up. I have a few suggestions and some small
+grammar nits, please see below.
 
-    bpf_tracing_prog_attach:
-        ...
-        bpf_check_attach_target (get addr etc. into tgt_info.
-        ...
-        bpf_trampoline_link_prog
-            __bpf_trampoline_link_prog
-                bpf_trampoline_update
-                    register_fentry
-                        bpf_trampoline_module_get
+> Link: https://lore.kernel.org/all/20221211115218.2e6e289bb85f8cf53c11aa97@kernel.org/T/#u
+> ---
+>  Changes in v2:
+>   - Fix typos and misses according to Randy's comment.
+> ---
+>  Documentation/fault-injection/fault-injection.rst |   65 +++++++++++++++++++++
+>  include/asm-generic/error-injection.h             |    6 +-
+>  2 files changed, 69 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/fault-injection/fault-injection.rst b/Documentation/fault-injection/fault-injection.rst
+> index 17779a2772e5..76bc9c857761 100644
+> --- a/Documentation/fault-injection/fault-injection.rst
+> +++ b/Documentation/fault-injection/fault-injection.rst
+> @@ -233,6 +233,71 @@ proc entries
+>  	This feature is intended for systematic testing of faults in a single
+>  	system call. See an example below.
+>  
+> +
+> +Error Injectable Functions
+> +--------------------------
+> +
+> +This part is for the kenrel developers considering adding a function
 
+s/kenrel/kernel
 
-static int bpf_trampoline_module_get(struct bpf_trampoline *tr)
-{
-         struct module *mod;
-         int err = 0;
+> +using the ALLOW_ERROR_INJECTION() macro.
+> +
+> +Requirements for the Error Injectable Functions
+> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-         preempt_disable();
-         mod = __module_text_address((unsigned long) tr->func.addr);
-         if (mod && !try_module_get(mod))
-                 err = -ENOENT;
-         preempt_enable();
-         tr->mod = mod;
-         return err;
-}
+s/for the Error/for Error
 
-We try to grab a module reference here based on the func addr.
-But there is a risk that module (m1) might be unloaded and a different
-module (m2) might be loaded which occupies the address space of
-m1. In such cases, we might have issues.
+> +
+> +Since the function-level error injection forcibly changes the code path
+> +and returns an error even if the input and conditions are proper, this can
+> +cause unexpected kernel crash if you allow error injection on the function
 
-To resolve this issue, we might want to grab the reference
-earlier for find_kallsyms_symbol_value and won't release it
-until the program is detached. try_module_get() then will
-be unnecessary in this particular case. But care must be
-taken for other code paths.
-                       >
->>
->>> +            } else {
->>> +                addr = kallsyms_lookup_name(tname);
->>> +            }
->>>               if (!addr) {
->>>                   bpf_log(log,
->>>                       "The address of function %s cannot be found\n",
->>
+s/cause unexpected/cause an unexpected
+
+Starting off this paragraph with a few sentences describing the
+high-level purpose of the macro may be useful here as well.
+
+> +which is NOT error injectable. Thus, you (and reviewers) must ensure;
+
+IMO the wording in the "...this can cause unexpected kernel crash if you
+allow error injection on the function which is NOT error injectable"
+part of the sentence could be improved. The function is error
+injectable, so saying the kernel could crash if you allow error
+injection on a function that's not error injectable is a bit confusing.
+What about something like this for the whole sentence?
+
+Because function-level error injection may forcibly change a function's
+return value, a function that enables it may return an error _any_ time
+it returns a value, including if it is invoked with expected parameters
+and under proper conditions. This means that you must _always_ ensure
+the following requirements are met in orer to avoid a kernel crash:
+
+> +
+> +- The function returns an error code if it fails, and the callers must check
+
+I'm a bit confused by the first part of this sentence. The point is that
+we're overriding the returned error code, right? What about something
+like this:
+
+Callers must always check for errors on every invocation of an
+error-injectable function, and must safely recover if any error is
+observed.
+
+> +  it correctly (need to recover from it).
+> +
+> +- The function does not execute any code which can change any state before
+> +  the first error return. The state includes global or local, or input
+> +  variable. For example, clear output address storage (e.g. `*ret = NULL`),
+
+s/global or local, or input variable/global, local, and input variables
+
+> +  increment/decrement counter, set a flag, preempt/irq disable or get
+> +  a lock (if those are recovered before returning error, that will be OK.)
+
+small nit: s/get a lock/acquire a lock
+
+Also, the presence of this caveat suggests to me that this second bullet
+should possibly be rephrased in general:
+>(if those are recovered before returning error, that will be OK.)
+
+If I understand correctly, the larger point is that the caller should
+never observe any side effects when calling an error-injectable function
+if that function returns an error, correct? The caller expecting that
+the function will always change some state before its first return
+statement is definitely a violation of that, but I think it could apply
+to other parts of the function as well.
+
+What do you think about this:
+
+An error-injectable function should never leak any observable state to
+the caller if an error is returned, and the caller should never rely on
+some state always being changed when the function is called. For
+example, it would be a bug if a function ever returned -EBUSY with a
+lock held, or if the caller assumed that a global counter would always
+be incremented. Other examples of improper state change visibility
+include writing to a pointer argument without restoring the original
+value on any error path, enabling or disabling preemption or IRQs,
+flushing a buffer, etc.
+
+> +
+> +The first requirement is important, and it will result in that the release
+> +(free objects) functions are usually harder to inject errors than allocate
+> +functions. If errors of such release functions are not correctly handled
+> +it will cause a memory leak easily (the caller will confuse that the object
+> +has been released or corrupted.)
+
+I don't quite understand why release functions would be different than
+calling any other error-injectable kernel function that needs to clean
+up state, but I readily admit that I may be missing some context. Also,
+such functions are typically void anyways, no? So wouldn't they usually
+be less of a pain? Again, apologies if I'm missing context here.
+
+> +
+> +The second one is for the caller which expects the function should always
+> +do something. Thus if the function error injection skips all of the
+> +function, the expectation is betrayed and causes an unexpected error.
+
+I would personally scrap this part, but it's up to you. I think it's all
+well captured in the second bullet-point already.
+
+> +
+> +Type of the Error Injectable Functions
+> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> +
+> +Each error injectable function will have the error type specified by the
+> +ALLOW_ERROR_INJECTION() macro. You have to choose it carefully if you add
+> +a new error injectable function. If the wrong error type is chosen, the
+
+I would consider removing the second two sentences in this paragraph.
+We're working in the kernel, so being careful should be the baseline no
+matter what you're doing. Also, it seems fairly clear that choosing the
+wrong error-return type could cause a crash, unspecified behavior, etc.
+
+> +kernel may crash because it may not be able to handle the error.
+> +There are 4 types of errors defined in include/asm-generic/error-injection.h
+
+s/4 types of errors/4 return types
+
+I realize that we've been using 'error types' up to now for error
+injection, but IMO it's really return types that we're concerned with.
+Feel free to ignore if you disagree.
+
+> +
+> +EI_ETYPE_NULL
+> +  This function will return `NULL` if it fails. e.g. return an allocated
+> +  object address.
+> +
+> +EI_ETYPE_ERRNO
+> +  This function will return an `-errno` error code if it fails. e.g. return
+> +  -EINVAL if the input is wrong. This will include the functions which will
+> +  return an address which encodes `-errno` by ERR_PTR() macro.
+> +
+> +EI_ETYPE_ERRNO_NULL
+> +  This function will return an `-errno` or `NULL` if it fails. If the caller
+> +  of this function checks the return value with IS_ERR_OR_NULL() macro, this
+> +  type will be appropriate.
+> +
+> +EI_ETYPE_TRUE
+> +  This function will return `true` (non-zero positive value) if it fails.
+> +
+> +If you specify a wrong type, for example, EI_TYPE_ERRNO for the function
+
+s/a wrong type/the wrong type
+
+also, s/for the function/for a function
+
+> +which returns an allocated object, it may cause a problem because the returned
+> +value is not an object address and the caller can not access to the address.
+
+s/can not access to the address/cannot dereference it
+
+or just drop everything after "is not an object address". If it's not an
+address, you probably shouldn't be accessing it :-) (modulo masking out
+flags, etc).
+
+> +
+> +
+>  How to add new fault injection capability
+>  -----------------------------------------
+>  
+> diff --git a/include/asm-generic/error-injection.h b/include/asm-generic/error-injection.h
+> index c0b9d3217ed9..18324d7aa56d 100644
+> --- a/include/asm-generic/error-injection.h
+> +++ b/include/asm-generic/error-injection.h
+> @@ -19,8 +19,10 @@ struct pt_regs;
+>  
+>  #ifdef CONFIG_FUNCTION_ERROR_INJECTION
+>  /*
+> - * Whitelist generating macro. Specify functions which can be
+> - * error-injectable using this macro.
+> + * Whitelist generating macro. Specify functions which can be error-injectable
+> + * using this macro. If you are unsure what is required for the error-injectable
+> + * functions, please read Documentation/fault-injection/fault-injection.rst
+> + * 'Error Injectable Functions' section.
+>   */
+>  #define ALLOW_ERROR_INJECTION(fname, _etype)				\
+>  static struct error_injection_entry __used				\
 > 
