@@ -2,90 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDE464ABE1
-	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 00:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0328264AC3D
+	for <lists+bpf@lfdr.de>; Tue, 13 Dec 2022 01:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbiLLX65 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Dec 2022 18:58:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
+        id S232244AbiLMASq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Dec 2022 19:18:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233753AbiLLX6z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Dec 2022 18:58:55 -0500
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AF21B9F3
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 15:58:54 -0800 (PST)
-Received: by mail-qt1-f181.google.com with SMTP id jr11so9903333qtb.7
-        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 15:58:54 -0800 (PST)
+        with ESMTP id S234146AbiLMASI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Dec 2022 19:18:08 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEADAE4A
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 16:17:53 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id t17so32635372eju.1
+        for <bpf@vger.kernel.org>; Mon, 12 Dec 2022 16:17:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yatmxdOGZpuiuEupWBUTOisiH+cXWWGTwCwezTkAaTY=;
+        b=nGfx567+4/sn5AYkkKmVnbrLmM2yzE0hjCWO84k1FAbQlE2U/tJ41uviJyJuZs4NG3
+         lauEdjZq6KIMjbmBGPmpSmNJRSanWLa66n9QHWozLEjPvErx0KdLHpdnakNsIo8L4w2Q
+         fNq39/W9WvzjLmLrsiM47Y+UniW+J7TuCRoO6KtRX9IFRyh2kPSMm3woags9krBcOH0P
+         SK0fLTDPTp4buAWexPypykRDpTzGNOBxULcCOpYtMC/xI+IBb4hltoxtmoQS03r5YORb
+         3mS8EjNWohsED8lIkypufEvBEg3HXclFyUsaf+OVg5XdihGKrRoAYHbhWO50vV60dHML
+         VpqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gypMXGCHGgNY+NqjyDDaQenYXt431V2UQAY79/tZRvA=;
-        b=ZB+W4C1urvGtbMDnS2UPa4qB7owGs7XIXuU8v13BLvF6iMdD7/ur7vZsFOt2b8M+hN
-         wxEbBkDjzKC+4AwwvmykT2mOl20EkFmrOE3kxjUSGVk1xtSQw2d8BioE3JRKAunKEqiE
-         xIKkmuVU3XUXz7JKuorztdBDQiudgdQsY5colkmq0mjTmhFU5l1DFae8TfmCnDBsdwpz
-         MwiQq6KR69yvOitlOGsxLE3KVkph7BXUT25e2L5XNNt7eXbzYmbgZ9TQlUnoVRdeKgWJ
-         s0nUU4Hy8gmtpHvvNVxMoJhmvTNe+iMJ6tqkUS6rlkMYcvEOlT1Rh0I65zXWUFDB4TKL
-         PomA==
-X-Gm-Message-State: ANoB5pnX8AD6PQZCStyN/lj+GdCBxnxS/ml2igsaog7wjyiYpki3xgnf
-        SWoRrj5LV+7lalLNRsi+8ak=
-X-Google-Smtp-Source: AA0mqf7PT64DW75amj/rcs60lnBc5sSuYvUWPXbP5U3sMjNfrbMqC0X907wiknGEVsRWHncv6xCQ2Q==
-X-Received: by 2002:ac8:4688:0:b0:3a7:d465:e with SMTP id g8-20020ac84688000000b003a7d465000emr26225321qto.13.1670889533748;
-        Mon, 12 Dec 2022 15:58:53 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:6a51])
-        by smtp.gmail.com with ESMTPSA id c17-20020ac86611000000b0035d432f5ba3sm6653177qtp.17.2022.12.12.15.58.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Dec 2022 15:58:53 -0800 (PST)
-Date:   Mon, 12 Dec 2022 17:58:52 -0600
-From:   David Vernet <void@manifault.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Fix a selftest compilation error with
- CONFIG_SMP=n
-Message-ID: <Y5fAPGtmyL7glLGq@maniforge.lan>
-References: <20221212234617.4058942-1-yhs@fb.com>
- <Y5fAHJTI742+jte7@maniforge.lan>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yatmxdOGZpuiuEupWBUTOisiH+cXWWGTwCwezTkAaTY=;
+        b=kvxIyQFO17z25aZl5/oTsCYjc1FwiasfusOJjclmoRi9elR13IWz1N+yEONPsIlboc
+         E0fdYbxbE9rrgOWTX9NQ93O0DgBOEv0ytF8QSZfP7kZBwEKUMm2VNN3EBAEpNGcYDJ3B
+         N4jKHnsN2bGSZXA9+TWM0H32i8eLY7HRllyI9SClsvFrNAq+UOGZRk1GS3A+J1YAl6It
+         cL5CTWAkIoecf1pfHm3GQPq8hN8OOKGewV92acGmfSH0M2OsCPs0gM/DxhXBxcJvgh1p
+         WoV5GIzAITlcX7OLkbKXfBWljmEnLGd8KjlGhVEWD81pcx90VBDk9DceXo0xWeqk8buK
+         K+jA==
+X-Gm-Message-State: ANoB5pm+m0nO3SxliFHpsntkw9jSIjwjzOLk1RH6ocxa7oTq+16shzOl
+        pHYeUryaKr3/5Gn93CDtxmcHrqF20XD4rmZ8r5mk5sByhDk=
+X-Google-Smtp-Source: AA0mqf6Rg5ZE/R+WcL2e2J3RpF5FS6tbC6zgb+/5uz3PjSbjB/2hwR5TeRRs+PmdBAbN1cJrFKvJ48UQKpjvTuc6uSQ=
+X-Received: by 2002:a17:906:6403:b0:7b2:9667:241e with SMTP id
+ d3-20020a170906640300b007b29667241emr81633480ejm.115.1670890671902; Mon, 12
+ Dec 2022 16:17:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y5fAHJTI742+jte7@maniforge.lan>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20221212091136.969960-1-hengqi.chen@gmail.com>
+In-Reply-To: <20221212091136.969960-1-hengqi.chen@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 12 Dec 2022 16:17:39 -0800
+Message-ID: <CAEf4BzaxYmBxYx=rfAyOn0kBHf3qOt6mPCPsyfrM+3rYcQ8MMQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Add LoongArch support to bpf_tracing.h
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, yangtiezhu@loongson.cn
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 12, 2022 at 05:58:20PM -0600, David Vernet wrote:
-> On Mon, Dec 12, 2022 at 03:46:17PM -0800, Yonghong Song wrote:
-> > Kernel test robot reported bpf selftest build failure when CONFIG_SMP
-> > is not set. The error message looks below:
-> > 
-> >   >> progs/rcu_read_lock.c:256:34: error: no member named 'last_wakee' in 'struct task_struct'
-> >              last_wakee = task->real_parent->last_wakee;
-> >                           ~~~~~~~~~~~~~~~~~  ^
-> >      1 error generated.
-> > 
-> > When CONFIG_SMP is not set, the field 'last_wakee' is not available in struct
-> > 'task_struct'. Hence the above compilation failure. To fix the issue, let us
-> > choose another field 'group_leader' which is available regardless of
-> > CONDFIG_SMP set or not.
-> 
-> s/CONDFIG_SMP/CONFIG_SMP
-> 
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
+On Mon, Dec 12, 2022 at 1:11 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>
+> Add PT_REGS macros for LoongArch64.
+>
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  tools/lib/bpf/bpf_tracing.h | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index 2972dc25ff72..2d7da1caa961 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -32,6 +32,9 @@
+>  #elif defined(__TARGET_ARCH_arc)
+>         #define bpf_target_arc
+>         #define bpf_target_defined
+> +#elif defined(__TARGET_ARCH_loongarch)
+> +       #define bpf_target_loongarch
+> +       #define bpf_target_defined
+>  #else
+>
+>  /* Fall back to what the compiler says */
+> @@ -62,6 +65,9 @@
+>  #elif defined(__arc__)
+>         #define bpf_target_arc
+>         #define bpf_target_defined
+> +#elif defined(__loongarch__) && __loongarch_grlen == 64
+> +       #define bpf_target_loongarch
+> +       #define bpf_target_defined
+>  #endif /* no compiler target */
+>
+>  #endif
+> @@ -258,6 +264,21 @@ struct pt_regs___arm64 {
+>  /* arc does not select ARCH_HAS_SYSCALL_WRAPPER. */
+>  #define PT_REGS_SYSCALL_REGS(ctx) ctx
+>
+> +#elif defined(bpf_target_loongarch)
+> +
+> +#define __PT_PARM1_REG regs[5]
+> +#define __PT_PARM2_REG regs[6]
+> +#define __PT_PARM3_REG regs[7]
+> +#define __PT_PARM4_REG regs[8]
+> +#define __PT_PARM5_REG regs[9]
+> +#define __PT_RET_REG regs[1]
+> +#define __PT_FP_REG regs[22]
+> +#define __PT_RC_REG regs[4]
+> +#define __PT_SP_REG regs[3]
+> +#define __PT_IP_REG csr_era
+> +/* loongarch does not select ARCH_HAS_SYSCALL_WRAPPER. */
+> +#define PT_REGS_SYSCALL_REGS(ctx) ctx
 
-Also:
+Is there some online documentation explaining this architecture's
+calling conventions? It would be useful to include that as a comment
+to be able to refer back to it. On a related note, are there any
+syscall specific calling convention differences, similar to
+PT_REGS_PARM1_SYSCALL for arm64 or PT_REGS_PARM4_SYSCALL for x86-64?
 
-Acked-by: David Vernet <void@manifault.com>
+> +
+>  #endif
+>
+>  #if defined(bpf_target_defined)
+> --
+> 2.31.1
