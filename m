@@ -2,89 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0CA64C73B
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 11:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BF464C744
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 11:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237929AbiLNKf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 05:35:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
+        id S237870AbiLNKjI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 05:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237965AbiLNKfQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 05:35:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4884720BF3
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 02:34:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1671014069;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Fg00XXF2yM6wh3TO2WZ8TwfHdQYz2juPaqJ6letSgY=;
-        b=GYwC9OrlMiBcKWGYiW/nRGyqfZhBSyc+g87krEGrtFTDfIbK54v067VP1n1GLJgENvczM0
-        wCnY2NgX/CGHpS0DX+gCtbs/eqJl1fBbnG2EHVmaMOO/G8n65CF0MdNG8e5nj3rU4MWTDN
-        jy9xRyQqPk2SPb6L30YJoJQjT64pZ8w=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-490-NmPkO2FbM1eTzjLtcx5LyA-1; Wed, 14 Dec 2022 05:34:28 -0500
-X-MC-Unique: NmPkO2FbM1eTzjLtcx5LyA-1
-Received: by mail-ej1-f72.google.com with SMTP id ne1-20020a1709077b8100b007c198bb8c0eso2205388ejc.8
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 02:34:28 -0800 (PST)
+        with ESMTP id S229463AbiLNKjG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 05:39:06 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D4D23167
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 02:39:05 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 142so1701447pga.1
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 02:39:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VZm9GhQRwrMyYINPX/F65U/umc4ZnamMlTLDNv2w3qg=;
+        b=JiqB7A5XNlWO5fEiRohQSc6WbJYHJZ6bkL5wZ8XWq6wrjh0oerY0zyZzdRX3KPN5ov
+         spIw2KtAvIqz1K9HqcQp6FeuVNv27pnjjXPYvlRyTFky41n64K0iGU81Y9xZyO6JYAoI
+         t02UeNdCOs3zguw8htVsOKfL90yl1EhqbiJzq7Yqsi3rK5n7LJ4zxPn4AI/HQTTL6z/3
+         BzZxz64e6T3IgC/JtdpzUO12EOrO/6BkRmHkH6NZD3kjin/bClPxvodnlVbK1+KX7LqB
+         XdjbkmH78KrMjC/7LqRdMbyGoqY2IY/26Dy91mA1jlEviEJaNnC/QioHISwVi784gfUu
+         yryg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Fg00XXF2yM6wh3TO2WZ8TwfHdQYz2juPaqJ6letSgY=;
-        b=Q3ld0qPPMbCiv00tdOCxdMMU7ULBWQsqspr0VkXysQ2Gf06X5i+g9ZQWS4H1D4wCKX
-         p07Z96vxTQnkp/pZFNZs9XSrvvA9dn6zcQkGscreBVgvKvkEfQcjQwSi+CYdWBkdeC4G
-         sA67UF3/866VWFiaP0ykeR3ZCrhdYpy/k3r4xvX6KUEICd+d68DBiZUWZyw76gYHyl/e
-         r9ZE1rfcOofFgZlnGQGqwWfOZNnERc/oaB1NBgcTuPi6ZcDyxQh/9P3vdmhznkp4i6sx
-         MMrcayxGSk7WIe7fXcd7hydzZzT6382kLJ65Dcf0ik0X+7HvXPjv/CGnive8MJLBOQUB
-         B6gQ==
-X-Gm-Message-State: ANoB5pnR/O49FZBkxF9t9WNn3URbbgCBxyztgrcAuotdLOIn9RyGXukh
-        LzTXeFVXCkp2SEUWnlQ9v9syo+ZP/b26DK8Xw8uUV4EggxugO0qcXhWFw7XCAUlPqF6e9HWo4Mi
-        nVp0fGHPWuOyF
-X-Received: by 2002:a17:907:8a22:b0:7af:16b5:9af8 with SMTP id sc34-20020a1709078a2200b007af16b59af8mr27839821ejc.33.1671014066315;
-        Wed, 14 Dec 2022 02:34:26 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5CVYouzmF4fVkxVmkciAuxXMAnbXeAYX6tQ5aBH2lvugDNhvxTXrHafnkjusNLMP7PybGnyQ==
-X-Received: by 2002:a17:907:8a22:b0:7af:16b5:9af8 with SMTP id sc34-20020a1709078a2200b007af16b59af8mr27839782ejc.33.1671014065395;
-        Wed, 14 Dec 2022 02:34:25 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id r10-20020a17090609ca00b00780b1979adesm5622969eje.218.2022.12.14.02.34.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Dec 2022 02:34:24 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7D96782F53A; Wed, 14 Dec 2022 11:34:23 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>,
-        David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v4 01/15] bpf: Document XDP RX
- metadata
-In-Reply-To: <CAKH8qBvjwMXvTg3ij=6wk2yu+=oWcRizmKf_YtW_yp5+W2F_=g@mail.gmail.com>
-References: <20221213023605.737383-1-sdf@google.com>
- <20221213023605.737383-2-sdf@google.com> <Y5iqTKnhtX2yaSAq@maniforge.lan>
- <CAKH8qBvjwMXvTg3ij=6wk2yu+=oWcRizmKf_YtW_yp5+W2F_=g@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 14 Dec 2022 11:34:23 +0100
-Message-ID: <87fsdigtow.fsf@toke.dk>
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VZm9GhQRwrMyYINPX/F65U/umc4ZnamMlTLDNv2w3qg=;
+        b=xsa2saiVRIPkKpcxIdes6e/tfRVbEnN5ba8HVppxdM+5DmwMaj3x8vpOd46VVChtK8
+         T4lLYBPLL43cc0tYpYvt46JOVeMbP3dyXU9HjbaZ0cXCILcukpoptVC/HgqpP1fFy4pA
+         Uxk0YtqfjwLTTAmgaJtWyXl3whjcWwTA20b/YUSnUgo+VwGmVj6wBsVOKUS6QNwgHkxI
+         WjhgwMfqC0qNFUA6S1naGVLmgsltUtrU5taT8LKx//pZyLT2w6SNyTmZdCg723QCfXIk
+         tHZSNpqyjBIRFDGnnJodGPPHAr2Ec2+CF04WjVWYjVK893kmVELGaIAHZ+WfTEsjO29h
+         55bQ==
+X-Gm-Message-State: ANoB5pkagp74gOAsjs52Hnsiz/M3kBVaAYQpOOhvxVz7aohEl5EHNipG
+        XwYfwTSpx+3KzZ4Ily87pUeyvc5kEH/cJRwf
+X-Google-Smtp-Source: AA0mqf5iFqs/6uMtcl5iUKMFy4oYMzmHEZQBb6RShHr7nHm7x9EKh5mw6ytTdI30R48V7FrL0NRq+g==
+X-Received: by 2002:aa7:8b42:0:b0:56b:abd4:83b1 with SMTP id i2-20020aa78b42000000b0056babd483b1mr23459588pfd.2.1671014344440;
+        Wed, 14 Dec 2022 02:39:04 -0800 (PST)
+Received: from localhost.localdomain ([111.201.145.40])
+        by smtp.gmail.com with ESMTPSA id o76-20020a62cd4f000000b005751f455e0esm9177272pfg.120.2022.12.14.02.39.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Dec 2022 02:39:03 -0800 (PST)
+From:   xiangxia.m.yue@gmail.com
+To:     bpf@vger.kernel.org
+Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hou Tao <houtao1@huawei.com>
+Subject: [bpf-next 1/2] bpf: hash map, avoid deadlock with suitable hash mask
+Date:   Wed, 14 Dec 2022 18:38:56 +0800
+Message-Id: <20221214103857.69082-1-xiangxia.m.yue@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,82 +77,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev <sdf@google.com> writes:
+From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-> On Tue, Dec 13, 2022 at 8:37 AM David Vernet <void@manifault.com> wrote:
->>
->> On Mon, Dec 12, 2022 at 06:35:51PM -0800, Stanislav Fomichev wrote:
->> > Document all current use-cases and assumptions.
->> >
->> > Cc: John Fastabend <john.fastabend@gmail.com>
->> > Cc: David Ahern <dsahern@gmail.com>
->> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
->> > Cc: Jakub Kicinski <kuba@kernel.org>
->> > Cc: Willem de Bruijn <willemb@google.com>
->> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
->> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
->> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
->> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
->> > Cc: Maryam Tahhan <mtahhan@redhat.com>
->> > Cc: xdp-hints@xdp-project.net
->> > Cc: netdev@vger.kernel.org
->> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
->> > ---
->> >  Documentation/bpf/xdp-rx-metadata.rst | 90 +++++++++++++++++++++++++++
->> >  1 file changed, 90 insertions(+)
->> >  create mode 100644 Documentation/bpf/xdp-rx-metadata.rst
->> >
->> > diff --git a/Documentation/bpf/xdp-rx-metadata.rst b/Documentation/bpf/xdp-rx-metadata.rst
->> > new file mode 100644
->> > index 000000000000..498eae718275
->> > --- /dev/null
->> > +++ b/Documentation/bpf/xdp-rx-metadata.rst
->>
->> I think you need to add this to Documentation/bpf/index.rst. Or even
->> better, maybe it's time to add an xdp/ subdirectory and put all docs
->> there? Don't want to block your patchset from bikeshedding on this
->> point, so for now it's fine to just put it in
->> Documentation/bpf/index.rst until we figure that out.
->
-> Maybe let's put it under Documentation/networking/xdp-rx-metadata.rst
-> and reference form Documentation/networking/index.rst? Since it's more
-> relevant to networking than the core bpf?
->
->> > @@ -0,0 +1,90 @@
->> > +===============
->> > +XDP RX Metadata
->> > +===============
->> > +
->> > +XDP programs support creating and passing custom metadata via
->> > +``bpf_xdp_adjust_meta``. This metadata can be consumed by the following
->> > +entities:
->>
->> Can you add a couple of sentences to this intro section that explains
->> what metadata is at a high level?
->
-> I'm gonna copy-paste here what I'm adding, feel free to reply back if
-> still unclear. (so we don't have to wait another week to discuss the
-> changes)
->
-> XDP programs support creating and passing custom metadata via
-> ``bpf_xdp_adjust_meta``. The metadata can contain some extra information
-> about the packet: timestamps, hash, vlan and tunneling information, etc.
-> This metadata can be consumed by the following entities:
+The deadlock still may occur while accessed in NMI and non-NMI
+context. Because in NMI, we still may access the same bucket but with
+different map_locked index.
 
-This is not really accurate, though? The metadata area itself can
-contain whatever the XDP program wants it to, and I think you're
-conflating the "old" usage for arbitrary storage with the driver-kfunc
-metadata support.
+For example, on the same CPU, .max_entries = 2, we update the hash map,
+with key = 4, while running bpf prog in NMI nmi_handle(), to update
+hash map with key = 20, so it will have the same bucket index but have
+different map_locked index.
 
-I think we should clear separate the two: the metadata area is just a
-place to store data (and is not consumed by the stack, except that
-TC-BPF programs can access it), and the driver kfuncs are just a general
-way to get data out of the drivers (and has nothing to do with the
-metadata area, you can just get the data into stack variables).
+To fix this issue, using min mask to hash again.
 
-While it would be good to have a documentation of the general metadata
-area stuff somewhere, I don't think it necessarily have to be part of
-this series, so maybe just stick to documenting the kfuncs?
+Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Hou Tao <houtao1@huawei.com>
+---
+ kernel/bpf/hashtab.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
--Toke
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 5aa2b5525f79..8b25036a8690 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -152,7 +152,7 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
+ {
+ 	unsigned long flags;
+ 
+-	hash = hash & HASHTAB_MAP_LOCK_MASK;
++	hash = hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
+ 
+ 	preempt_disable();
+ 	if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
+@@ -171,7 +171,7 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+ 				      struct bucket *b, u32 hash,
+ 				      unsigned long flags)
+ {
+-	hash = hash & HASHTAB_MAP_LOCK_MASK;
++	hash = hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
+ 	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+ 	__this_cpu_dec(*(htab->map_locked[hash]));
+ 	preempt_enable();
+-- 
+2.27.0
 
