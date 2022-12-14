@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE5D64C168
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 01:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 268C564C169
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 01:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237996AbiLNAic (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 19:38:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53486 "EHLO
+        id S237955AbiLNAif (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 19:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237953AbiLNAiJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 19:38:09 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A1326ABB
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 16:35:19 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id u19so22410388ejm.8
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 16:35:19 -0800 (PST)
+        with ESMTP id S238006AbiLNAiN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 19:38:13 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8922E26ADE
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 16:35:24 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id kw15so40865887ejc.10
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 16:35:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=s4LH1FZFjsPe3OfvesgUR8LU3jzydAntnRyS1B3vMug=;
-        b=YeLxT8dW6OSND3rW+oFDrXcJmcPekzXIaJRPLGTEJs2QXnYrSahud8YogG+ovMdh4k
-         XwDbwLG4B0dDlOLCMZv3xyEV5Ft6IHkT2aS2Vmqr+BCl92NkCwawYB3bOxb5zUpDXH0H
-         lMwclmp1un0b9070cAVSmUHvZfARr98gHCAn4YUPQKc9hoN6IFMHVxCID+LUdiaJHKbH
-         3cyZLgKQnxchloD0WCH/5UEsezmbe/geFQJtrVjtM7iZEE8U1utqCqBX05XKwOjyRkYH
-         N6fcstxjl3MxGn69CiKOdQcJ0KXPgNzVd5nti9N6eVNYeiEjWyQiC5SW++FrZxy+SwNI
-         +g/Q==
+        bh=CZEtV6xyvzKglDHqCG2fgpPcFC6xyU67NyIV30Im0V4=;
+        b=YhJZ+t1tDHMHauPECxSJEPrcCyAii4VMhUag/AaE8Yzw9izA1vYTjmXhf+fo9cbzZc
+         EwmgSaXtErvEHvVRujGSSTdpUPsf7/8gCQRYGKcaHpJA1R3LEPyzGcwp12eAdDVFw7H/
+         oKHzMSqUIgIhgdF76TeLGFZnMKfsYqzanVWTqufLD/QuWlZvCo48Oq4p/YTinMYGbgqB
+         0sVW8ksEs+liz5gcbStgyQA8NKFmTCsn4tWVxzV6sRlelmZElnhTGmjWcwKv7NBGj3y8
+         j9SAg0/8m+DyejtNI645b1LQPco95xPNRmSgbVJc0VvuvdtbfSPLq5Qz8CvIrVB97qR+
+         Uumw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=s4LH1FZFjsPe3OfvesgUR8LU3jzydAntnRyS1B3vMug=;
-        b=5U/sRXA82YZL9bBiqre9I0dJzYfKetVUzyhuoqJFJsZV2UnTMnTAe0cM46282Jbqjp
-         xsVqu5LiBUHUcUR3TmjpWsxT1JLL8rwsFRcXHa2LwmQLJOw4m/9V/tROdbbyOP/Ru8yt
-         YM8CyU9bKPRzW8k2BXOYDbBJ1qnvgn5VsVGrzMx1BSGeNIduLAS/UnZpCi8+4Xyp0li7
-         XEKBGS+Cbk+sc/co/y5iwKzZkejZCfLx07LhFJ+c80+ltgX+VmlIfrVioAjFEs3vsmu/
-         Bpf8qCZLycFXUdk7i0q68qQzbh/kDflmh1gGxodREtQAzQQ3+WWRy5/jxhXdn8Qd+pXk
-         NW3A==
-X-Gm-Message-State: ANoB5pnSd+Nb6ecZJ1HO9D1JeaStuM+m13YTWBjLEfTUetJ+BvL/scLw
-        KxXyBksdVrva/HNzA4Y610dQZXWghZQtMo5wxH3JVm9K
-X-Google-Smtp-Source: AA0mqf5358K0qDORDG0ahXnYoYvOQubZ9z3Cvi6OKvr0LbVhUQ4Uh4qsLfCBdxomxfKR6WPFOlY+IXo3rwc1yTqykxo=
-X-Received: by 2002:a17:906:7116:b0:7c1:8450:f964 with SMTP id
- x22-20020a170906711600b007c18450f964mr681849ejj.176.1670978116923; Tue, 13
- Dec 2022 16:35:16 -0800 (PST)
+        bh=CZEtV6xyvzKglDHqCG2fgpPcFC6xyU67NyIV30Im0V4=;
+        b=I8QIE/XAKf9Hkf/BWj/7KVd7BEIFKITrprEAoSwxzOTluNexjt9VNDlYgS9KJzMXbo
+         feFFTOL7aMDIauXOXw7asRNIjf8ESxKGGfVcf4fGo8yRQTtPzfoHtMagawH8qij9MlLQ
+         KvngJSMa4B8DI9CrBwqlVS5V6F0ur+s4J422nYqPGITSyRIt7QyhJABIqZuIclJi7J+Y
+         EhfW1CyyqKUhszh9/m4OvPMQyol9vHi26gFm6wJnr3wygj35Iuu46FmEBrSxCV6NjJvL
+         FOp3ivvBSgtxRiMB0oBtpIhuEawFddr/GcJcw/IEIQgLgNM19P4eE2sIdZRPNXL0hS31
+         ViUw==
+X-Gm-Message-State: ANoB5pk0cwKfIDiS4qXNqY4V4ZK6RL0qs0NWNrvLGbDuZ1vRY57JIopz
+        cUVbc++bC5RLwmKyIGdiIuuHMGejqYQ4NpcA+Zc=
+X-Google-Smtp-Source: AA0mqf4BfQGJmbiEhMuPvTkXITKpck3/WUEwITZ4DJfYbAiiknADdgfsPA5jV8bbH9svDpZV0NbQhxyI7gOWftubKt4=
+X-Received: by 2002:a17:906:6403:b0:7b2:9667:241e with SMTP id
+ d3-20020a170906640300b007b29667241emr81990731ejm.115.1670978119441; Tue, 13
+ Dec 2022 16:35:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20221209135733.28851-1-eddyz87@gmail.com> <20221209135733.28851-2-eddyz87@gmail.com>
-In-Reply-To: <20221209135733.28851-2-eddyz87@gmail.com>
+References: <20221209135733.28851-1-eddyz87@gmail.com> <20221209135733.28851-4-eddyz87@gmail.com>
+In-Reply-To: <20221209135733.28851-4-eddyz87@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 13 Dec 2022 16:35:04 -0800
-Message-ID: <CAEf4BzbPBeAUzueQ7mxcmSovY2Nqr37RFZnb5B1pwSDqNhyZ6w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/7] bpf: regsafe() must not skip check_ids()
+Date:   Tue, 13 Dec 2022 16:35:07 -0800
+Message-ID: <CAEf4BzZRx8XaD4fvSA04U2iRDnmWiYzbAGTiB_MDS1RqWXztBQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/7] bpf: states_equal() must build idmap for all
+ function frames
 To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
@@ -69,129 +70,123 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Dec 9, 2022 at 5:58 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> The verifier.c:regsafe() has the following shortcut:
+> verifier.c:states_equal() must maintain register ID mapping across all
+> function frames. Otherwise the following example might be erroneously
+> marked as safe:
 >
->         equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
->         ...
->         if (equal)
->                 return true;
+> main:
+>     fp[-24] = map_lookup_elem(...)  ; frame[0].fp[-24].id == 1
+>     fp[-32] = map_lookup_elem(...)  ; frame[0].fp[-32].id == 2
+>     r1 = &fp[-24]
+>     r2 = &fp[-32]
+>     call foo()
+>     r0 = 0
+>     exit
 >
-> Which is executed regardless old register type. This is incorrect for
-> register types that might have an ID checked by check_ids(), namely:
->  - PTR_TO_MAP_KEY
->  - PTR_TO_MAP_VALUE
->  - PTR_TO_PACKET_META
->  - PTR_TO_PACKET
+> foo:
+>   0: r9 = r1
+>   1: r8 = r2
+>   2: r7 = ktime_get_ns()
+>   3: r6 = ktime_get_ns()
+>   4: if (r6 > r7) goto skip_assign
+>   5: r9 = r8
 >
-> The following pattern could be used to exploit this:
+> skip_assign:                ; <--- checkpoint
+>   6: r9 = *r9               ; (a) frame[1].r9.id == 2
+>                             ; (b) frame[1].r9.id == 1
 >
->   0: r9 = map_lookup_elem(...)  ; Returns PTR_TO_MAP_VALUE_OR_NULL id=1.
->   1: r8 = map_lookup_elem(...)  ; Returns PTR_TO_MAP_VALUE_OR_NULL id=2.
->   2: r7 = ktime_get_ns()        ; Unbound SCALAR_VALUE.
->   3: r6 = ktime_get_ns()        ; Unbound SCALAR_VALUE.
->   4: if r6 > r7 goto +1         ; No new information about the state
->                                 ; is derived from this check, thus
->                                 ; produced verifier states differ only
->                                 ; in 'insn_idx'.
->   5: r9 = r8                    ; Optionally make r9.id == r8.id.
->   --- checkpoint ---            ; Assume is_state_visisted() creates a
->                                 ; checkpoint here.
->   6: if r9 == 0 goto <exit>     ; Nullness info is propagated to all
->                                 ; registers with matching ID.
->   7: r1 = *(u64 *) r8           ; Not always safe.
+>   7: if r9 == 0 goto exit:  ; mark_ptr_or_null_regs() transfers != 0 info
+>                             ; for all regs sharing ID:
+>                             ;   (a) r9 != 0 => &frame[0].fp[-32] != 0
+>                             ;   (b) r9 != 0 => &frame[0].fp[-24] != 0
 >
-> Verifier first visits path 1-7 where r8 is verified to be not null
-> at (6). Later the jump from 4 to 6 is examined. The checkpoint for (6)
-> looks as follows:
->   R8_rD=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
->   R9_rwD=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
->   R10=fp0
+>   8: r8 = *r8               ; (a) r8 == &frame[0].fp[-32]
+>                             ; (b) r8 == &frame[0].fp[-32]
+>   9: r0 = *r8               ; (a) safe
+>                             ; (b) unsafe
 >
-> The current state is:
->   R0=... R6=... R7=... fp-8=...
->   R8=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
->   R9=map_value_or_null(id=1,off=0,ks=4,vs=8,imm=0)
->   R10=fp0
+> exit:
+>  10: exit
 >
-> Note that R8 states are byte-to-byte identical, so regsafe() would
-> exit early and skip call to check_ids(), thus ID mapping 2->2 will not
-> be added to 'idmap'. Next, states for R9 are compared: these are not
-> identical and check_ids() is executed, but 'idmap' is empty, so
-> check_ids() adds mapping 2->1 to 'idmap' and returns success.
+> While processing call to foo() verifier considers the following
+> execution paths:
 >
-> This commit pushes the 'equal' down to register types that don't need
-> check_ids().
+> (a) 0-10
+> (b) 0-4,6-10
+> (There is also path 0-7,10 but it is not interesting for the issue at
+>  hand. (a) is verified first.)
 >
+> Suppose that checkpoint is created at (6) when path (a) is verified,
+> next path (b) is verified and (6) is reached.
+>
+> If states_equal() maintains separate 'idmap' for each frame the
+> mapping at (6) for frame[1] would be empty and
+> regsafe(r9)::check_ids() would add a pair 2->1 and return true,
+> which is an error.
+>
+> If states_equal() maintains single 'idmap' for all frames the mapping
+> at (6) would be { 1->1, 2->2 } and regsafe(r9)::check_ids() would
+> return false when trying to add a pair 2->1.
+>
+> This issue was suggested in the following discussion:
+> https://lore.kernel.org/bpf/CAEf4BzbFB5g4oUfyxk9rHy-PJSLQ3h8q9mV=rVoXfr_JVm8+1Q@mail.gmail.com/
+>
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  kernel/bpf/verifier.c | 29 ++++++++---------------------
->  1 file changed, 8 insertions(+), 21 deletions(-)
+>  include/linux/bpf_verifier.h | 4 ++--
+>  kernel/bpf/verifier.c        | 3 ++-
+>  2 files changed, 4 insertions(+), 3 deletions(-)
 >
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 70d06a99f0b8..c1f769515beb 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -273,9 +273,9 @@ struct bpf_id_pair {
+>         u32 cur;
+>  };
+>
+> -/* Maximum number of register states that can exist at once */
+> -#define BPF_ID_MAP_SIZE (MAX_BPF_REG + MAX_BPF_STACK / BPF_REG_SIZE)
+>  #define MAX_CALL_FRAMES 8
+> +/* Maximum number of register states that can exist at once */
+> +#define BPF_ID_MAP_SIZE ((MAX_BPF_REG + MAX_BPF_STACK / BPF_REG_SIZE) * MAX_CALL_FRAMES)
+
+this is overly pessimistic, the total number of stack slots doesn't
+change no matter how many call frames we have, it would be better to
+define this as:
+
+#define BPF_ID_MAP_SIZE (MAX_BPF_REG * MAX_CALL_FRAMES + MAX_BPF_STACK
+/ BPF_REG_SIZE)
+
+Unless I missed something.
+
+
+
+>  struct bpf_verifier_state {
+>         /* call stack tracking */
+>         struct bpf_func_state *frame[MAX_CALL_FRAMES];
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 3194e9d9e4e4..d05c5d0344c6 100644
+> index d05c5d0344c6..9188370a7ebe 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -12926,15 +12926,6 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+> @@ -13122,7 +13122,6 @@ static bool func_states_equal(struct bpf_verifier_env *env, struct bpf_func_stat
+>  {
+>         int i;
 >
->         equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
->
-> -       if (rold->type == PTR_TO_STACK)
-> -               /* two stack pointers are equal only if they're pointing to
-> -                * the same stack frame, since fp-8 in foo != fp-8 in bar
-> -                */
-> -               return equal && rold->frameno == rcur->frameno;
-> -
-> -       if (equal)
-> -               return true;
-> -
->         if (rold->type == NOT_INIT)
->                 /* explored state can't have used this */
->                 return true;
-> @@ -12942,6 +12933,8 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+> -       memset(env->idmap_scratch, 0, sizeof(env->idmap_scratch));
+>         for (i = 0; i < MAX_BPF_REG; i++)
+>                 if (!regsafe(env, &old->regs[i], &cur->regs[i],
+>                              env->idmap_scratch))
+> @@ -13146,6 +13145,8 @@ static bool states_equal(struct bpf_verifier_env *env,
+>         if (old->curframe != cur->curframe)
 >                 return false;
->         switch (base_type(rold->type)) {
->         case SCALAR_VALUE:
-> +               if (equal)
-> +                       return true;
->                 if (env->explore_alu_limits)
->                         return false;
->                 if (rcur->type == SCALAR_VALUE) {
-> @@ -13012,20 +13005,14 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
->                 /* new val must satisfy old val knowledge */
->                 return range_within(rold, rcur) &&
->                        tnum_in(rold->var_off, rcur->var_off);
-> -       case PTR_TO_CTX:
-> -       case CONST_PTR_TO_MAP:
-> -       case PTR_TO_PACKET_END:
-> -       case PTR_TO_FLOW_KEYS:
-> -       case PTR_TO_SOCKET:
-> -       case PTR_TO_SOCK_COMMON:
-> -       case PTR_TO_TCP_SOCK:
-> -       case PTR_TO_XDP_SOCK:
-> -               /* Only valid matches are exact, which memcmp() above
-> -                * would have accepted
-> +       case PTR_TO_STACK:
-> +               /* two stack pointers are equal only if they're pointing to
-> +                * the same stack frame, since fp-8 in foo != fp-8 in bar
->                  */
-> +               return equal && rold->frameno == rcur->frameno;
->         default:
-> -               /* Don't know what's going on, just say it's not safe */
-> -               return false;
-> +               /* Only valid matches are exact, which memcmp() */
-> +               return equal;
-
-Is it safe to assume this for any possible register type? Wouldn't
-register types that use id and/or ref_obj_id need extra checks here? I
-think preexisting default was a safer approach, in which if we forgot
-to explicitly add support for some new or updated register type, the
-worst thing is that for that *new* register we'd have suboptimal
-verification performance, but not safety concerns.
-
-
->         }
 >
->         /* Shouldn't get here; if we do, say it's not safe */
+> +       memset(env->idmap_scratch, 0, sizeof(env->idmap_scratch));
+> +
+>         /* Verification state from speculative execution simulation
+>          * must never prune a non-speculative execution one.
+>          */
 > --
 > 2.34.1
 >
