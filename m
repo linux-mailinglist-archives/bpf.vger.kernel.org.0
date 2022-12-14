@@ -2,51 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F50F64CBDC
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 15:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC49B64CBDB
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 15:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238437AbiLNOMH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S230124AbiLNOMH (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 14 Dec 2022 09:12:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38480 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238540AbiLNOL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S238539AbiLNOL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 14 Dec 2022 09:11:56 -0500
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A359F2099A;
-        Wed, 14 Dec 2022 06:11:53 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BEE1GTT009986;
-        Wed, 14 Dec 2022 14:11:50 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9439022535;
+        Wed, 14 Dec 2022 06:11:54 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BEDux0j026964;
+        Wed, 14 Dec 2022 14:11:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=BmerlqSR20iXY1AW90rudtU+sgKlczfAG9hYaah/+mE=;
- b=c93MiR9dxS+hSy5Jx+PYnQqCdTWsbLOqvqJO/AGSVtjpd/JLapUKkA/vJoUGYqLJlesq
- Aw/Psf11xnEeqpqJdNaScez/7BA03CvIGs67ITrHkXytMP6EoMoE494F+hOQMJSs9zoA
- ETuKXcNnG8hQ+9J6q6fPTpdU09N3gXAoQDaixMfjxL3oKiofgAwOGldMiB1QgXks0J6E
- ifkMiI/88fumcTETP93grlVD/eSnrva54zDUKQ9qD6ntplA+I4Ff+aFIFWVMqIXeRFNf
- oVCGzaMLn97dvEi1JaiHuikUFoKAv8e8THVhBIYRm15utGf9fMXnsuSXU5NGmg08nMnv vQ== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=qcppdkim1;
+ bh=rgqFgMAkXTSjXWTUQJsx9snCAvVEafA20v2NTLpN08Y=;
+ b=FMbw/LrgcwRieAs3ubUQIyBDJuCUO7g+bpAJdVWgb6cf8AYcKQDOk1Fiad84EP90dIWa
+ U29f5IMc0omDTrFdast5GsNdhIjSerspzczhqIXMfiAIoZTMDlxvJBDRWzrn6z953ofo
+ rVWbs6QkjRgnYeT6Zdrqfi1nL+smweJrNLCoNSn2r/tgziS4CyCjtnerOMPxpsYss/1i
+ 8ciDayF/6oRL7hacuLzIO7oafby3AiT5bEOIAOTFQLEdWUmmvx7qDqtw1CzLEXLUHGND
+ crFth2BikrqRcjWUMmfZdjP5s9TMYm0QgejSUvV6HwfHN17TxAGQDho7hAw0RHkaNT0X Ew== 
 Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mf6rehc5u-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mf6re9bvq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Dec 2022 14:11:50 +0000
+        Wed, 14 Dec 2022 14:11:51 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BEEBnIn023322
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BEEBodK023340
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Dec 2022 14:11:49 GMT
+        Wed, 14 Dec 2022 14:11:50 GMT
 Received: from linyyuan-gv.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 14 Dec 2022 06:11:47 -0800
+ 15.2.986.36; Wed, 14 Dec 2022 06:11:49 -0800
 From:   Linyu Yuan <quic_linyyuan@quicinc.com>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
         Linyu Yuan <quic_linyyuan@quicinc.com>
-Subject: [RFC PATCH 1/2] trace: add new file under include/trace/stages/ for perf/bpf
-Date:   Wed, 14 Dec 2022 22:11:41 +0800
-Message-ID: <1671027102-21403-1-git-send-email-quic_linyyuan@quicinc.com>
+Subject: [RFC PATCH 2/2] trace: allocate temparary buffer for trace output usage
+Date:   Wed, 14 Dec 2022 22:11:42 +0800
+Message-ID: <1671027102-21403-2-git-send-email-quic_linyyuan@quicinc.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1671027102-21403-1-git-send-email-quic_linyyuan@quicinc.com>
+References: <1671027102-21403-1-git-send-email-quic_linyyuan@quicinc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain
@@ -55,16 +57,16 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: eSvRr9Ec5rJini9S1MY9AvJvtTLB0ynG
-X-Proofpoint-GUID: eSvRr9Ec5rJini9S1MY9AvJvtTLB0ynG
+X-Proofpoint-GUID: 5PV4P6qmnsJ_FTIjFA9X53Ggrjyh8Iav
+X-Proofpoint-ORIG-GUID: 5PV4P6qmnsJ_FTIjFA9X53Ggrjyh8Iav
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-14_06,2022-12-14_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- malwarescore=0 spamscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 clxscore=1011 bulkscore=0 impostorscore=0
- mlxlogscore=889 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2212070000 definitions=main-2212140112
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1015 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 spamscore=0 phishscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2212140112
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -74,266 +76,216 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-when experiment change for trace operation, the files under
-include/trace/stages/ will be changed, perf/bpf trace may compile fail.
+there is one dwc3 trace event declare as below,
+DECLARE_EVENT_CLASS(dwc3_log_event,
+	TP_PROTO(u32 event, struct dwc3 *dwc),
+	TP_ARGS(event, dwc),
+	TP_STRUCT__entry(
+		__field(u32, event)
+		__field(u32, ep0state)
+		__dynamic_array(char, str, DWC3_MSG_MAX)
+	),
+	TP_fast_assign(
+		__entry->event = event;
+		__entry->ep0state = dwc->ep0state;
+	),
+	TP_printk("event (%08x): %s", __entry->event,
+			dwc3_decode_event(__get_str(str), DWC3_MSG_MAX,
+				__entry->event, __entry->ep0state))
+);
+the problem is when trace function called, it will allocate up to
+DWC3_MSG_MAX bytes from trace event buffer, but never fill the buffer
+during fast assignment, it only fill the buffer when output function are
+called, so this means if output function are not called, the buffer will
+never used.
 
-add new file stage_perf_call.h and stage_bpf_call.h under
-include/trace/stages, it will make sure no missing change when expriment.
+add __alloc_buf() and __get_buf() which will not allocate event buffer
+when trace function called, but when trace output function called, it will
+kmalloc buffer with size DWC3_MSG_MAX for temprary usage and free it
+before trace output function return.
 
 Signed-off-by: Linyu Yuan <quic_linyyuan@quicinc.com>
 ---
- include/trace/bpf_probe.h              | 51 +-------------------------------
- include/trace/perf.h                   | 52 +-------------------------------
- include/trace/stages/stage_bpf_call.h  | 53 +++++++++++++++++++++++++++++++++
- include/trace/stages/stage_perf_call.h | 54 ++++++++++++++++++++++++++++++++++
- 4 files changed, 109 insertions(+), 101 deletions(-)
- create mode 100644 include/trace/stages/stage_bpf_call.h
- create mode 100644 include/trace/stages/stage_perf_call.h
+ include/trace/stages/stage1_struct_define.h |  5 +++
+ include/trace/stages/stage3_trace_output.h  | 60 +++++++++++++++++++++++++++++
+ include/trace/stages/stage4_event_fields.h  |  6 +++
+ include/trace/stages/stage7_class_define.h  |  1 +
+ include/trace/trace_events.h                | 29 +++++++++++++-
+ 5 files changed, 100 insertions(+), 1 deletion(-)
 
-diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
-index 155c495..a6eeb9e 100644
---- a/include/trace/bpf_probe.h
-+++ b/include/trace/bpf_probe.h
-@@ -4,56 +4,7 @@
+diff --git a/include/trace/stages/stage1_struct_define.h b/include/trace/stages/stage1_struct_define.h
+index 69e0dae..7eba055 100644
+--- a/include/trace/stages/stage1_struct_define.h
++++ b/include/trace/stages/stage1_struct_define.h
+@@ -56,5 +56,10 @@
+ #undef __rel_sockaddr
+ #define __rel_sockaddr(field, len) __rel_dynamic_array(u8, field, len)
  
- #ifdef CONFIG_BPF_EVENTS
++#undef __alloc_buf
++#define __alloc_buf(len)
++
++/* __get_buf is not allow present inside TP_STRUCT__entry */
++
+ #undef TP_STRUCT__entry
+ #define TP_STRUCT__entry(args...) args
+diff --git a/include/trace/stages/stage3_trace_output.h b/include/trace/stages/stage3_trace_output.h
+index 66374df..824061f 100644
+--- a/include/trace/stages/stage3_trace_output.h
++++ b/include/trace/stages/stage3_trace_output.h
+@@ -139,3 +139,63 @@
+ 		u64 ____val = (u64)(value);		\
+ 		(u32) do_div(____val, NSEC_PER_SEC);	\
+ 	})
++
++#undef __field
++#define __field(type, item)
++
++#undef __field_ext
++#define __field_ext(type, item, filter_type)
++
++#undef __field_struct
++#define __field_struct(type, item)
++
++#undef __field_struct_ext
++#define __field_struct_ext(type, item, filter_type)
++
++#undef __array
++#define __array(type, item, len)
++
++#undef __dynamic_array
++#define __dynamic_array(type, item, len)
++
++#undef __string
++#define __string(item, src)
++
++#undef __string_len
++#define __string_len(item, src, len)
++
++#undef __vstring
++#define __vstring(item, fmt, ap)
++
++#undef __bitmask
++#define __bitmask(item, nr_bits)
++
++#undef __cpumask
++#define __cpumask(item)
++
++#undef __sockaddr
++#define __sockaddr(field, len)
++
++#undef __rel_dynamic_array
++#define __rel_dynamic_array(type, item, len)
++
++#undef __rel_string
++#define __rel_string(item, src)
++
++#undef __rel_string_len
++#define __rel_string_len(item, src, len)
++
++#undef __rel_bitmask
++#define __rel_bitmask(item, nr_bits)
++
++#undef __rel_cpumask
++#define __rel_cpumask(item)
++
++#undef __rel_sockaddr
++#define __rel_sockaddr(field, len)
++
++#undef __alloc_buf
++#define __alloc_buf(len)	__buf_len = (len);
++
++#undef __get_buf
++#define __get_buf(offset)	(__buf + (offset))
+diff --git a/include/trace/stages/stage4_event_fields.h b/include/trace/stages/stage4_event_fields.h
+index f2990d2..e78399d74 100644
+--- a/include/trace/stages/stage4_event_fields.h
++++ b/include/trace/stages/stage4_event_fields.h
+@@ -72,3 +72,9 @@
  
--#undef __entry
--#define __entry entry
--
--#undef __get_dynamic_array
--#define __get_dynamic_array(field)	\
--		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
--
--#undef __get_dynamic_array_len
--#define __get_dynamic_array_len(field)	\
--		((__entry->__data_loc_##field >> 16) & 0xffff)
--
--#undef __get_str
--#define __get_str(field) ((char *)__get_dynamic_array(field))
--
--#undef __get_bitmask
--#define __get_bitmask(field) (char *)__get_dynamic_array(field)
--
--#undef __get_cpumask
--#define __get_cpumask(field) (char *)__get_dynamic_array(field)
--
--#undef __get_sockaddr
--#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
--
--#undef __get_rel_dynamic_array
--#define __get_rel_dynamic_array(field)	\
--		((void *)(&__entry->__rel_loc_##field) +	\
--		 sizeof(__entry->__rel_loc_##field) +		\
--		 (__entry->__rel_loc_##field & 0xffff))
--
--#undef __get_rel_dynamic_array_len
--#define __get_rel_dynamic_array_len(field)	\
--		((__entry->__rel_loc_##field >> 16) & 0xffff)
--
--#undef __get_rel_str
--#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
--
--#undef __get_rel_bitmask
--#define __get_rel_bitmask(field) (char *)__get_rel_dynamic_array(field)
--
--#undef __get_rel_cpumask
--#define __get_rel_cpumask(field) (char *)__get_rel_dynamic_array(field)
--
--#undef __get_rel_sockaddr
--#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
--
--#undef __perf_count
--#define __perf_count(c)	(c)
--
--#undef __perf_task
--#define __perf_task(t)	(t)
-+#include "stages/stage_bpf_call.h"
+ #undef __rel_sockaddr
+ #define __rel_sockaddr(field, len) __rel_dynamic_array(u8, field, len)
++
++#undef __alloc_buf
++#define __alloc_buf(len)
++
++#undef __get_buf
++#define __get_buf(offset)
+diff --git a/include/trace/stages/stage7_class_define.h b/include/trace/stages/stage7_class_define.h
+index 8795429..bcb960d 100644
+--- a/include/trace/stages/stage7_class_define.h
++++ b/include/trace/stages/stage7_class_define.h
+@@ -23,6 +23,7 @@
+ #undef __get_rel_sockaddr
+ #undef __print_array
+ #undef __print_hex_dump
++#undef __get_buf
  
- /* cast any integer, pointer, or small struct to u64 */
- #define UINTTYPE(size) \
-diff --git a/include/trace/perf.h b/include/trace/perf.h
-index 8f3bf1e..e899bf7 100644
---- a/include/trace/perf.h
-+++ b/include/trace/perf.h
-@@ -4,57 +4,7 @@
- 
- #ifdef CONFIG_PERF_EVENTS
- 
--#undef __entry
--#define __entry entry
--
--#undef __get_dynamic_array
--#define __get_dynamic_array(field)	\
--		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
--
--#undef __get_dynamic_array_len
--#define __get_dynamic_array_len(field)	\
--		((__entry->__data_loc_##field >> 16) & 0xffff)
--
--#undef __get_str
--#define __get_str(field) ((char *)__get_dynamic_array(field))
--
--#undef __get_bitmask
--#define __get_bitmask(field) (char *)__get_dynamic_array(field)
--
--#undef __get_cpumask
--#define __get_cpumask(field) (char *)__get_dynamic_array(field)
--
--#undef __get_sockaddr
--#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
--
--#undef __get_rel_dynamic_array
--#define __get_rel_dynamic_array(field)	\
--		((void *)__entry +					\
--		 offsetof(typeof(*__entry), __rel_loc_##field) +	\
--		 sizeof(__entry->__rel_loc_##field) +			\
--		 (__entry->__rel_loc_##field & 0xffff))
--
--#undef __get_rel_dynamic_array_len
--#define __get_rel_dynamic_array_len(field)	\
--		((__entry->__rel_loc_##field >> 16) & 0xffff)
--
--#undef __get_rel_str
--#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
--
--#undef __get_rel_bitmask
--#define __get_rel_bitmask(field) (char *)__get_rel_dynamic_array(field)
--
--#undef __get_rel_cpumask
--#define __get_rel_cpumask(field) (char *)__get_rel_dynamic_array(field)
--
--#undef __get_rel_sockaddr
--#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
--
--#undef __perf_count
--#define __perf_count(c)	(__count = (c))
--
--#undef __perf_task
--#define __perf_task(t)	(__task = (t))
-+#include "stages/stage_perf_call.h"
- 
- #undef DECLARE_EVENT_CLASS
- #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
-diff --git a/include/trace/stages/stage_bpf_call.h b/include/trace/stages/stage_bpf_call.h
-new file mode 100644
-index 0000000..b5e2fd5
---- /dev/null
-+++ b/include/trace/stages/stage_bpf_call.h
-@@ -0,0 +1,53 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#undef __entry
-+#define __entry entry
-+
-+#undef __get_dynamic_array
-+#define __get_dynamic_array(field)	\
-+		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
-+
-+#undef __get_dynamic_array_len
-+#define __get_dynamic_array_len(field)	\
-+		((__entry->__data_loc_##field >> 16) & 0xffff)
-+
-+#undef __get_str
-+#define __get_str(field) ((char *)__get_dynamic_array(field))
-+
-+#undef __get_bitmask
-+#define __get_bitmask(field) (char *)__get_dynamic_array(field)
-+
-+#undef __get_cpumask
-+#define __get_cpumask(field) (char *)__get_dynamic_array(field)
-+
-+#undef __get_sockaddr
-+#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
-+
-+#undef __get_rel_dynamic_array
-+#define __get_rel_dynamic_array(field)	\
-+		((void *)(&__entry->__rel_loc_##field) +	\
-+		 sizeof(__entry->__rel_loc_##field) +		\
-+		 (__entry->__rel_loc_##field & 0xffff))
-+
-+#undef __get_rel_dynamic_array_len
-+#define __get_rel_dynamic_array_len(field)	\
-+		((__entry->__rel_loc_##field >> 16) & 0xffff)
-+
-+#undef __get_rel_str
-+#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
-+
-+#undef __get_rel_bitmask
-+#define __get_rel_bitmask(field) (char *)__get_rel_dynamic_array(field)
-+
-+#undef __get_rel_cpumask
-+#define __get_rel_cpumask(field) (char *)__get_rel_dynamic_array(field)
-+
-+#undef __get_rel_sockaddr
-+#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
-+
-+#undef __perf_count
-+#define __perf_count(c)	(c)
-+
-+#undef __perf_task
-+#define __perf_task(t)	(t)
-+
-diff --git a/include/trace/stages/stage_perf_call.h b/include/trace/stages/stage_perf_call.h
-new file mode 100644
-index 0000000..c67478c
---- /dev/null
-+++ b/include/trace/stages/stage_perf_call.h
-@@ -0,0 +1,54 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#undef __entry
-+#define __entry entry
-+
-+#undef __get_dynamic_array
-+#define __get_dynamic_array(field)	\
-+		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
-+
-+#undef __get_dynamic_array_len
-+#define __get_dynamic_array_len(field)	\
-+		((__entry->__data_loc_##field >> 16) & 0xffff)
-+
-+#undef __get_str
-+#define __get_str(field) ((char *)__get_dynamic_array(field))
-+
-+#undef __get_bitmask
-+#define __get_bitmask(field) (char *)__get_dynamic_array(field)
-+
-+#undef __get_cpumask
-+#define __get_cpumask(field) (char *)__get_dynamic_array(field)
-+
-+#undef __get_sockaddr
-+#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
-+
-+#undef __get_rel_dynamic_array
-+#define __get_rel_dynamic_array(field)	\
-+		((void *)__entry +					\
-+		 offsetof(typeof(*__entry), __rel_loc_##field) +	\
-+		 sizeof(__entry->__rel_loc_##field) +			\
-+		 (__entry->__rel_loc_##field & 0xffff))
-+
-+#undef __get_rel_dynamic_array_len
-+#define __get_rel_dynamic_array_len(field)	\
-+		((__entry->__rel_loc_##field >> 16) & 0xffff)
-+
-+#undef __get_rel_str
-+#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
-+
-+#undef __get_rel_bitmask
-+#define __get_rel_bitmask(field) (char *)__get_rel_dynamic_array(field)
-+
-+#undef __get_rel_cpumask
-+#define __get_rel_cpumask(field) (char *)__get_rel_dynamic_array(field)
-+
-+#undef __get_rel_sockaddr
-+#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
-+
-+#undef __perf_count
-+#define __perf_count(c)	(__count = (c))
-+
-+#undef __perf_task
-+#define __perf_task(t)	(__task = (t))
-+
+ /*
+  * The below is not executed in the kernel. It is only what is
+diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+index c2f9cab..cca6b38 100644
+--- a/include/trace/trace_events.h
++++ b/include/trace/trace_events.h
+@@ -192,6 +192,8 @@ trace_raw_output_##call(struct trace_iterator *iter, int flags,		\
+ 	struct trace_seq *s = &iter->seq;				\
+ 	struct trace_seq __maybe_unused *p = &iter->tmp_seq;		\
+ 	struct trace_event_raw_##call *field;				\
++	void *__buf = NULL;						\
++	size_t __buf_len = 0;						\
+ 	int ret;							\
+ 									\
+ 	field = (typeof(field))iter->ent;				\
+@@ -200,8 +202,18 @@ trace_raw_output_##call(struct trace_iterator *iter, int flags,		\
+ 	if (ret != TRACE_TYPE_HANDLED)					\
+ 		return ret;						\
+ 									\
++	tstruct;							\
++									\
++	if (__buf_len) {						\
++		__buf = kmalloc(__buf_len, GFP_KERNEL);			\
++		if (!__buf)						\
++			return -ENOMEM;					\
++	}								\
++									\
+ 	trace_event_printf(iter, print);				\
+ 									\
++	kfree(__buf);							\
++									\
+ 	return trace_handle_return(s);					\
+ }									\
+ static struct trace_event_functions trace_event_type_funcs_##call = {	\
+@@ -217,6 +229,9 @@ trace_raw_output_##call(struct trace_iterator *iter, int flags,		\
+ 	struct trace_event_raw_##template *field;			\
+ 	struct trace_entry *entry;					\
+ 	struct trace_seq *p = &iter->tmp_seq;				\
++	void *__buf = NULL;						\
++	size_t __buf_len = 0;						\
++	int ret;							\
+ 									\
+ 	entry = iter->ent;						\
+ 									\
+@@ -227,8 +242,20 @@ trace_raw_output_##call(struct trace_iterator *iter, int flags,		\
+ 									\
+ 	field = (typeof(field))entry;					\
+ 									\
++	tstruct;							\
++									\
++	if (__buf_len) {						\
++		__buf = kmalloc(__buf_len, GFP_KERNEL);			\
++		if (!__buf)						\
++			return -ENOMEM;					\
++	}								\
++									\
+ 	trace_seq_init(p);						\
+-	return trace_output_call(iter, #call, print);			\
++	ret = trace_output_call(iter, #call, print);			\
++									\
++	kfree(__buf);							\
++									\
++	return ret;							\
+ }									\
+ static struct trace_event_functions trace_event_type_funcs_##call = {	\
+ 	.trace			= trace_raw_output_##call,		\
 -- 
 2.7.4
 
