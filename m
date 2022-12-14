@@ -2,187 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F346864C208
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 02:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB80764C20F
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 03:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237001AbiLNByI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 20:54:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
+        id S229532AbiLNCAg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 21:00:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbiLNByH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 20:54:07 -0500
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7282F1929B;
-        Tue, 13 Dec 2022 17:54:05 -0800 (PST)
-Message-ID: <74e48fc9-8f5d-4183-9f39-c4587c74a74e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1670982843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GNg4/FrMFF9sXTLeG093TYFyexXEX026wSRyByZmxZg=;
-        b=LnsGOz/aHRiS0h47bpq4i8GzveVplZ2215QzabqvW9i7hEucZQK4C0LdzxA9PBTrGjl2Jv
-        bTZYQZO1UgC/xu9W485A2mtau4vTxm3OMYFv2lNdnKRAjYMRDIssJUF8F4KSe5Gz+cjS1+
-        7Hy/40pP7FYC03nDfxoiG7qvtWz8vII=
-Date:   Tue, 13 Dec 2022 17:53:58 -0800
+        with ESMTP id S235762AbiLNCAd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 21:00:33 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA07913D41
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:00:32 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id e126so1071391pgc.6
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:00:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tJ4CSVZZ+NoydkcJKVQO6YNOhus6JhiYOMFjQ8jjtjU=;
+        b=m/SKUa27vVBjK1uJ2X221o05KhZ9jtihYba01Ju4Ef9NiQruOgsHzM/Kf1zncuPTTX
+         5WeMUgP2qqB8oX/4aP0MqYeAjg3qs/eM20mosQEYuuuFZnP4JWFMeKxBkG3TuR5NK4vu
+         qFImpcXkZ2530uslsCBedMtoQkMTCMSn577sVPwZQ4PtS7Ixp2wQrQhf3JPXBZeWg99f
+         xhPEhRvSnr9JK20Gn1Xy65nImGw11v7zxUokfH2gN5b0GSEXW//gCO0MyExz+vTrRPRC
+         Muj85AAhNQdYKoc9aj4gGiO9y1whE7GOJaJob8+6UkimVCJbodt1gz6mB2zEZSbiY6zc
+         Q58g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tJ4CSVZZ+NoydkcJKVQO6YNOhus6JhiYOMFjQ8jjtjU=;
+        b=SYo7ic4OPfS1Jykcc93fNKW86aEfKnjVXIILKJdzcXTjWqI5rWG35HeGF3Qv5HS+bO
+         IxDrWSThuIPkX91VOqgEz5+vxwmo/Hd20+qQVChtfC8Kmj3d+pWgVYdZD15W4CYk7tAR
+         UA+Ds4LheVB/KfoxSme10R8bm1ZAfZ8JNOQAlYUa7Bwo8Ti/74vfyfhidccdZCQz/cGF
+         JeSdpn8j6sd3bF0iPUPPI44wgcoqF5qbThYW6XI7SHfSasCmgL8pfbJtmY/761QDuihJ
+         3xl9LgQuN1kbow/d/ybIhC+qiZDdZx/EABysbvO4j/YP3mPS0A1Pb6wqlnwEmuAVi4MO
+         IIqQ==
+X-Gm-Message-State: ANoB5pkabxfT+/kovE42k2BNL8JJ7XJLctR/SdW5LKmIqCvDRwa8GG33
+        wyaxXclbyvGchazpiPXv3gZBE+++QAhk2a+0MAHzgw==
+X-Google-Smtp-Source: AA0mqf67HjB2QuUnPoIyEET5gO5fYZFekKta2m+eJepPSJ0NzH0Lf7dZNLdzf8CBGYYlGHlbu/mQbGXA6ehU1ULXrlQ=
+X-Received: by 2002:a63:1247:0:b0:476:ed2a:6216 with SMTP id
+ 7-20020a631247000000b00476ed2a6216mr77727663pgs.556.1670983231384; Tue, 13
+ Dec 2022 18:00:31 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 05/15] bpf: XDP metadata RX kfuncs
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20221213023605.737383-1-sdf@google.com>
- <20221213023605.737383-6-sdf@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20221213023605.737383-6-sdf@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221130082313.3241517-1-tj@kernel.org> <20221130082313.3241517-32-tj@kernel.org>
+ <Y5c0qEuyn8cAvLGQ@hirez.programming.kicks-ass.net> <CABk29Nu5WiCmhNN2jZrTShELbCDOYUziUeW5xojkwB83R+VzEQ@mail.gmail.com>
+ <Y5hiPqaT6UqaUcGK@hirez.programming.kicks-ass.net>
+In-Reply-To: <Y5hiPqaT6UqaUcGK@hirez.programming.kicks-ass.net>
+From:   Josh Don <joshdon@google.com>
+Date:   Tue, 13 Dec 2022 18:00:19 -0800
+Message-ID: <CABk29Nu0JJ6xY_2SL0Y=iWstmoiRnRRnQ+Xvm3t_oU4sp72vpg@mail.gmail.com>
+Subject: Re: [PATCH 31/31] sched_ext: Add a rust userspace hybrid example scheduler
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        brho@google.com, pjt@google.com, derkling@google.com,
+        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
+        dskarlat@cs.cmu.edu, riel@surriel.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com, Peter Oskolkov <posk@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/12/22 6:35 PM, Stanislav Fomichev wrote:
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index ca22e8b8bd82..de6279725f41 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2477,6 +2477,8 @@ void bpf_offload_dev_netdev_unregister(struct bpf_offload_dev *offdev,
->   				       struct net_device *netdev);
->   bool bpf_offload_dev_match(struct bpf_prog *prog, struct net_device *netdev);
->   
-> +void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id);
-> +
+> > and ignoring
+> > the specifics of this example, the UMCG and sched_ext work are
+> > complementary, but not mutually exclusive. UMCG is about driving
+> > cooperative scheduling within a particular application. UMCG does not
+> > have control over or react to external preemption,
+>
+> It can control preemption inside the process, and if you have the degree
+> of control you need to make the whole BPF thing work, you also have the
+> degree of control to ensure you only run the one server task on a CPU
+> and all that no longer matters because there's only the process and you
+> control preemption inside that.
 
-This probably requires an inline version for !CONFIG_NET.
+To an extent yes, but this doesn't extend to the case where cpu is
+overcommitted. Even if not by other applications, then responding to
+preemption by, for example, kthreads (necessary for microsecond scale
+workloads). But in general the common case is interference from other
+applications, something which is handled by a system level scheduler
+like sched_ext. The application vs system level control is an
+important distinction here.
 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index d434a994ee04..c3e501e3e39c 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2097,6 +2097,13 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
->   	if (fp->kprobe_override)
->   		return false;
->   
-> +	/* When tail-calling from a non-dev-bound program to a dev-bound one,
-> +	 * XDP metadata helpers should be disabled. Until it's implemented,
-> +	 * prohibit adding dev-bound programs to tail-call maps.
-> +	 */
-> +	if (bpf_prog_is_dev_bound(fp->aux))
-> +		return false;
-> +
->   	spin_lock(&map->owner.lock);
->   	if (!map->owner.type) {
->   		/* There's no owner yet where we could check for
-> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> index f714c941f8ea..3b6c9023f24d 100644
-> --- a/kernel/bpf/offload.c
-> +++ b/kernel/bpf/offload.c
-> @@ -757,6 +757,29 @@ void bpf_dev_bound_netdev_unregister(struct net_device *dev)
->   	up_write(&bpf_devs_lock);
->   }
->   
-> +void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
-> +{
-> +	const struct xdp_metadata_ops *ops;
-> +	void *p = NULL;
-> +
-> +	down_read(&bpf_devs_lock);
-> +	if (!prog->aux->offload || !prog->aux->offload->netdev)
+> > nor does it make thread placement decisions.
+>
+> It can do that just fine -- inside the process. UMCG has full control
+> over which server task a worker task is associated with, then run a
+> single server task per CPU and have them pinned and you get full
+> placement control.
 
-This happens when netdev is unregistered in the middle of bpf_prog_load and the 
-bpf_offload_dev_match() will eventually fail during dev_xdp_attach()? A comment 
-will be useful.
+Again, this doesn't really scale past single server per cpu. It is not
+feasible to partition systems in this way due to the loss of
+efficiency.
 
-> +		goto out;
-> +
-> +	ops = prog->aux->offload->netdev->xdp_metadata_ops;
-> +	if (!ops)
-> +		goto out;
-> +
-> +	if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP))
-> +		p = ops->xmo_rx_timestamp;
-> +	else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH))
-> +		p = ops->xmo_rx_hash;
-> +out:
-> +	up_read(&bpf_devs_lock);
-> +
-> +	return p;
-> +}
-> +
->   static int __init bpf_offload_init(void)
->   {
->   	int err;
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 203d8cfeda70..e61fe0472b9b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -15479,12 +15479,35 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->   			    struct bpf_insn *insn_buf, int insn_idx, int *cnt)
->   {
->   	const struct bpf_kfunc_desc *desc;
-> +	void *xdp_kfunc;
->   
->   	if (!insn->imm) {
->   		verbose(env, "invalid kernel function call not eliminated in verifier pass\n");
->   		return -EINVAL;
->   	}
->   
-> +	*cnt = 0;
-> +
-> +	if (xdp_is_metadata_kfunc_id(insn->imm)) {
-> +		if (!bpf_prog_is_dev_bound(env->prog->aux)) {
+> > sched_ext is considering things more at
+> > the system level: arbitrating fairness and preemption between
+> > processes, deciding when and where threads run, etc., and also being
+> > able to take application-specific hints if desired.
+>
+> sched_ext does fundamentally not compose, you cannot run two different
+> schedulers for two different application stacks that happen to co-reside
+> on the same machine.
 
-The "xdp_is_metadata_kfunc_id() && (!bpf_prog_is_dev_bound() || 
-bpf_prog_is_offloaded())" test should have been done much earlier in 
-add_kfunc_call(). Then the later stage of the verifier does not have to keep 
-worrying about it like here.
+We're actually already developing a framework (and plan to share) to
+support composing an arbitrary combination of schedulers. Essentially,
+a "scheduler of schedulers". This supports the case, for example, of a
+system that runs most tasks under some default SCX scheduler, but
+allows a particular application or group of applications to utilize a
+bespoke SCX scheduler of their own.
 
-nit. may be rename xdp_is_metadata_kfunc_id() to bpf_dev_bound_kfunc_id() and 
-hide the "!bpf_prog_is_dev_bound() || bpf_prog_is_offloaded()" test into 
-bpf_dev_bound_kfunc_check(&env->log, env->prog).
+> sched_ext also sits at the very bottom of the class stack (it more or
+> less has to) the result is that in order to use it at all, you have to
+> have control over all runnable tasks in the system (a stray CFS task
+> would interfere quite disastrously) but that is exactly the same
+> constraint you need to make UMCG work.
 
-The change in fixup_kfunc_call could then become:
+UMCG still works when mixed with other tasks. You're specifying which
+threads of your application you want running, but no guarantees are
+made that they'll run right now if the system has other work to do.
 
-	if (bpf_dev_bound_kfunc_id(insn->imm)) {
-		xdp_kfunc = bpf_dev_bound_resolve_kfunc(env->prog, insn->imm);
-		/* ... */
-	}
+SCX vs CFS is a more interesting story. Yes it is true that a single
+CFS task could hog a cpu, but since SCX is managing things at a system
+level, we feel that this is something that should be handled by system
+administration. You shouldn't expect to mix cpu bound CFS tasks in the
+same partition as threads running under SCX with good results.
 
-> +			verbose(env, "metadata kfuncs require device-bound program\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (bpf_prog_is_offloaded(env->prog->aux)) {
-> +			verbose(env, "metadata kfuncs can't be offloaded\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		xdp_kfunc = bpf_dev_bound_resolve_kfunc(env->prog, insn->imm);
-> +		if (xdp_kfunc) {
-> +			insn->imm = BPF_CALL_IMM(xdp_kfunc);
-> +			return 0;
-> +		}
-> +
-> +		/* fallback to default kfunc when not supported by netdev */
-> +	}
-> +
+> Conversely, it is very hard to use the BPF thing to do what UMCG can do.
+> Using UMCG I can have a SCHED_DEADLINE server implement a task based
+> pipeline schedule (something that's fairly common and really hard to
+> pull off with just SCHED_DEADLINE itself).
 
+UMCG and SCX are solving different problems though. An application can
+decide execution order or control internal preemption via UMCG, while
+SXC arbitrates allocation of system resources over time.
 
+And, conversely, SCX can do things very difficult or impossible with
+UMCG. For example, implementing core scheduling. Guaranteeing
+microsecond scale tail latency. Applying a new scheduling algorithm
+across multiple independent applications.
+
+> Additionally, UMCG naturally works with things like Proxy Execution,
+> seeing how the server task *is* a proxy for the current active worker
+> task.
+
+Proxy execution should also work with SCX; the enqueue/dequeue
+abstraction can still be used to allow the SCX scheduler to select the
+proxy.
