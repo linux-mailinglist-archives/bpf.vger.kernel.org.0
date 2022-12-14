@@ -2,64 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FB164CDF9
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 17:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F1964CE2F
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 17:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238979AbiLNQ2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 11:28:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
+        id S239034AbiLNQiY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 11:38:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238978AbiLNQ2O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 11:28:14 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154B963CD
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:28:13 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id a19so7174419ljk.0
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:28:12 -0800 (PST)
+        with ESMTP id S239017AbiLNQiX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 11:38:23 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABBA5FDD
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:38:20 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id f20so7158256lja.4
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:38:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=t5N4IGKMjJxlWZiZZvOkjVIAJnSXFecRTmvlK4ztbDY=;
-        b=Ml0u3hvHObfAEL9dFZClRxq/4RdqQeEY+aCDo0/ijWyCNMW+Vgi2LZCeNDue2KHscx
-         VQLHsxUAcG5CZWY0zSShoCu7KI93BqjFkW3K5alePluNStjw2MgA3zGwNwcjd+8d236K
-         bqrFiHCWZG+FvcRUmrmyf7VC1+suwvqpR8PrbsgF/KCS4y4pRwa5szOXKYt/wsCBy7mE
-         hiWEn4Z/fsg1IT23ykR7PR+h/4H8LfUv/HZFt/qQAYkzXE7k6FTX6T2VxBlaqLc4G20s
-         JDlKW6H4bcb6W0izRY6+k2x2bQoMCO8E2Y0FCb90BygMebHJI9R8ZEx82lhFrxSzz7Zn
-         1Zgg==
+        bh=GdKdJaogu3SfMUkqu+uOGkLX7woyixTspG7p/fxImRA=;
+        b=f7Andn54JuZj2yo//dd9TRMjkMSyNPPpZ1YZLm70+2elsclVSc3MAw98/tZaFXN4uv
+         hTT0/mByN6EoE27qE/LnwKQyXy54P2lvAvxPgth9tGNqOL6M3Vwze7KKM6LEuPQNMUDI
+         tElS6zgA6ubz59hNpl6No/ZNzsl68L3bFtzzS2RLdHSUTLLxuRK70Hn93HK7bfTuPMav
+         Y9ASNIT7l4uV3EPsRrsDPN37Fjij5FBJJNF9wMV2zzlssK+hzCbS4S+dx9UtaXJzRcfP
+         4UFVBCZbsul3EVCaPAoCOGPHtM6cYxlK9fHMXpC/h5TXvJijHKbkpa+CkB03Vs6NRi1g
+         LlOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=t5N4IGKMjJxlWZiZZvOkjVIAJnSXFecRTmvlK4ztbDY=;
-        b=tyrOdOjVSQmis30qEZqDcupdL1uEhFystz3TojqnqpxLNi25Ad+wRqdVo0JCt8N5Ht
-         k5jrU47ljB8LNWiddo5WXdBFhrBGILo0ahvit2KnnHaKRZigrhRqCq69oYekIgO2q9Tn
-         ot0D0D1AOwHRi/A0sZre/r4eIr+7YdC9T5ZXm0pN0RsRcD7H6AXWtY34DEL9MF6bwcwv
-         j7ZfDbjebT8/20xeWDW1ZEolOPUG4f0JcZHI8E5Dayshk/t3RCY0vXiT1j3XFao347Qg
-         ncdP0IW3d154P93lRsBVhhd9D/A3BDJlmo5QkThaTAyHbfzdkBLsmhmqWCL+E0q2pJmW
-         neAg==
-X-Gm-Message-State: ANoB5pk7XQjP8NC786oTKSR+/axvUKB9vl5F7NDGrt7V16C4tKMl7n5u
-        YpFn6ZZru6xtr7PcrYf2T1A=
-X-Google-Smtp-Source: AA0mqf5XByl6Hylr96+mo2QL7pIqxvFRcsNEJmk6cJW1eQxV3oytOW/zOfKaWEssd1VgdXtdIUVL1Q==
-X-Received: by 2002:a05:651c:1078:b0:27b:57da:b39b with SMTP id y24-20020a05651c107800b0027b57dab39bmr3214721ljm.23.1671035291503;
-        Wed, 14 Dec 2022 08:28:11 -0800 (PST)
+        bh=GdKdJaogu3SfMUkqu+uOGkLX7woyixTspG7p/fxImRA=;
+        b=BehidGo4mYpm1ch6EDsQL+V+8cLR5bHwUoYsTR4tBXPUil7yqt/ra6/oGOjh75hBUB
+         H1V2+8qfWrZE+NOLgwDRpbB/xDadz/pcVlgy3eK6dpqkk7eB2q6ZtAvWMwQJhmrs3wq2
+         OsOMhv8YCtulGZ+BmehcdirSmA5vEwqSazok8v0SfE2sAtmuiKMQlhh4kUROjsoSRQaw
+         wXXPnesq3O/nDaRUCc1fqTe/s6+ZmAkAX6RtoPowkDWAoZ9S1AJmVzcxerWHe1rUU4qN
+         3Oz0EF/fkGkd9PBN70dH4G/SL0valOEDiJdFDP9lYkAJ3JaVaVpQ2MxIfvXxT2hOhN5j
+         w6lA==
+X-Gm-Message-State: ANoB5pmCKfLW3SLrfI0llGz6g2bRTqBEzfxiDNDqEfafZNMYFwPNxEdn
+        uJbJy+XtUCnzabkytyCB/SY=
+X-Google-Smtp-Source: AA0mqf6P0ZkygvI3EQsvZ+sqJG/Qid72qC4pKwlXEkkmrWzK7wrVBBFX3LYthvofnm4TwyYXZsjEwg==
+X-Received: by 2002:a2e:300a:0:b0:27a:3d9d:81f5 with SMTP id w10-20020a2e300a000000b0027a3d9d81f5mr4911554ljw.5.1671035898813;
+        Wed, 14 Dec 2022 08:38:18 -0800 (PST)
 Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id z15-20020a05651c11cf00b0027cf0ecab3fsm233567ljo.138.2022.12.14.08.28.10
+        by smtp.gmail.com with ESMTPSA id t14-20020a2e8e6e000000b0026dcb07122csm646956ljk.117.2022.12.14.08.38.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Dec 2022 08:28:11 -0800 (PST)
-Message-ID: <c5f8a5d0b87a48715aa66a3e27f4f17b8544f87a.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 0/7] stricter register ID checking in regsafe()
+        Wed, 14 Dec 2022 08:38:18 -0800 (PST)
+Message-ID: <943ce05e135fae9450d2b6e0c59f50f11bf022b2.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 4/7] selftests/bpf: verify states_equal()
+ maintains idmap across all frames
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
         memxor@gmail.com, ecree.xilinx@gmail.com
-Date:   Wed, 14 Dec 2022 18:28:09 +0200
-In-Reply-To: <CAEf4BzbUxdxJMZ2Ln+7jD8+kq0hiea-XJU4VY5W06dJ_KWJC3Q@mail.gmail.com>
+Date:   Wed, 14 Dec 2022 18:38:15 +0200
+In-Reply-To: <CAEf4BzZ7VEdYb+qSFLnY2jkvUHEfNHtzK7WYWMKezyRcjkV=Zg@mail.gmail.com>
 References: <20221209135733.28851-1-eddyz87@gmail.com>
-         <CAEf4BzbUxdxJMZ2Ln+7jD8+kq0hiea-XJU4VY5W06dJ_KWJC3Q@mail.gmail.com>
+         <20221209135733.28851-5-eddyz87@gmail.com>
+         <CAEf4BzZ7VEdYb+qSFLnY2jkvUHEfNHtzK7WYWMKezyRcjkV=Zg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4-0ubuntu1 
@@ -74,78 +76,158 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2022-12-13 at 16:34 -0800, Andrii Nakryiko wrote:
+On Tue, 2022-12-13 at 16:35 -0800, Andrii Nakryiko wrote:
 > On Fri, Dec 9, 2022 at 5:58 AM Eduard Zingerman <eddyz87@gmail.com> wrote=
 :
 > >=20
-> > This patch-set consists of a series of bug fixes for register ID
-> > tracking in verifier.c:states_equal()/regsafe() functions:
-> >  - for registers of type PTR_TO_MAP_{KEY,VALUE}, PTR_TO_PACKET[_META]
-> >    the regsafe() should call check_ids() even if registers are
-> >    byte-to-byte equal;
-> >  - states_equal() must maintain idmap that covers all function frames
-> >    in the state because functions like mark_ptr_or_null_regs() operate
-> >    on all registers in the state;
-> >  - regsafe() must compare spin lock ids for PTR_TO_MAP_VALUE registers.
+> > A test case that would erroneously pass verification if
+> > verifier.c:states_equal() maintains separate register ID mappings for
+> > call frames.
 > >=20
-> > The last point covers issue reported by Kumar Kartikeya Dwivedi in [1],
-> > I borrowed the test commit from there.
-> > Note, that there is also an issue with register id tracking for
-> > scalars described here [2], it would be addressed separately.
-> >=20
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > ---
 >=20
-> Awesome set of patches, thanks for working on this! I left a few
-> comments and suggestions, please take a look, and if they do make
-> sense, consider sending follow up patches.
+> It's so hard to read these tests. Moving forward, let's try adding new
+> verifier tests like this using __naked functions and embedded
+> assembly. With recent test loader changes ([0]), there isn't much
+> that's needed, except for a few simple examples to get us started and
+> perhaps __flags(BPF_F_TEST_STATE_FREQ) support. The upside is that
+> using maps or global variables from assembly is now possible and easy,
+> and doesn't require any custom loader support at all.
 >=20
-> Let's really try to use asm() next time for selftests, though.
 >=20
-> It would be awesome to somehow automatically move test_verifier's
-> tests to this test_progs-based embedded assembly way, but that
-> probably takes some Python hackery (awesome project for some curious
-> soul, for sure).
+>   [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D70271=
+3&state=3D*
 >=20
-> Anyways, back to the point I wanted to make. Given you've clearly
-> thought about all the ID checks a lot, consider checking refsafe()
-> (not regsafe()!) as well. I think we should do check_ids() there as
-> well. And you did all the preliminary work with making idmap
-> persistent across all frames. Just something to improve (and looks
-> straightforward, unlike many other things you've dealt with recently
-> ;).
+>=20
 
-Makes sense, I'll work on it.
+This is very nice, I'll try to use it for the next patch-set.
+How do you think it should look like for test_verifier kind of tests?
+The easiest way would be to just add new BPF sources under progs/
+and have some prog_tests/verifier.c like this:
 
->=20
-> Anyways, great work, thanks!
+int test_verifier()
+  ...
+  RUN_TESTS(array_access),
+  RUN_TESTS(scalar_ids)
+  ...
 
-Thank you.
+Thus reusing the build mechanics for skeletons etc.
+However, it seems to break current logical separation
+between "unit" tests in test_verifier and "functional"
+tests in test_progs. But this may be ok.
 
->=20
-> > [1] https://lore.kernel.org/bpf/20221111202719.982118-1-memxor@gmail.co=
-m/
-> > [2] https://lore.kernel.org/bpf/20221128163442.280187-2-eddyz87@gmail.c=
-om/
+
+> >  tools/testing/selftests/bpf/verifier/calls.c | 82 ++++++++++++++++++++
+> >  1 file changed, 82 insertions(+)
 > >=20
-> > Eduard Zingerman (6):
-> >   bpf: regsafe() must not skip check_ids()
-> >   selftests/bpf: test cases for regsafe() bug skipping check_id()
-> >   bpf: states_equal() must build idmap for all function frames
-> >   selftests/bpf: verify states_equal() maintains idmap across all frame=
-s
-> >   bpf: use check_ids() for active_lock comparison
-> >   selftests/bpf: test case for relaxed prunning of active_lock.id
-> >=20
-> > Kumar Kartikeya Dwivedi (1):
-> >   selftests/bpf: Add pruning test case for bpf_spin_lock
-> >=20
-> >  include/linux/bpf_verifier.h                  |   4 +-
-> >  kernel/bpf/verifier.c                         |  48 ++++----
-> >  tools/testing/selftests/bpf/verifier/calls.c  |  82 +++++++++++++
-> >  .../bpf/verifier/direct_packet_access.c       |  54 +++++++++
-> >  .../selftests/bpf/verifier/spin_lock.c        | 114 ++++++++++++++++++
-> >  .../selftests/bpf/verifier/value_or_null.c    |  49 ++++++++
-> >  6 files changed, 324 insertions(+), 27 deletions(-)
-> >=20
+> > diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testi=
+ng/selftests/bpf/verifier/calls.c
+> > index 3193915c5ee6..bcd15b26dcee 100644
+> > --- a/tools/testing/selftests/bpf/verifier/calls.c
+> > +++ b/tools/testing/selftests/bpf/verifier/calls.c
+> > @@ -2305,3 +2305,85 @@
+> >         .errstr =3D "!read_ok",
+> >         .result =3D REJECT,
+> >  },
+> > +/* Make sure that verifier.c:states_equal() considers IDs from all
+> > + * frames when building 'idmap' for check_ids().
+> > + */
+> > +{
+> > +       "calls: check_ids() across call boundary",
+> > +       .insns =3D {
+> > +       /* Function main() */
+> > +       BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+> > +       /* fp[-24] =3D map_lookup_elem(...) ; get a MAP_VALUE_PTR_OR_NU=
+LL with some ID */
+> > +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+> > +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+> > +       BPF_LD_MAP_FD(BPF_REG_1,
+> > +                     0),
+> > +       BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
+> > +       BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_0, -24),
+> > +       /* fp[-32] =3D map_lookup_elem(...) ; get a MAP_VALUE_PTR_OR_NU=
+LL with some ID */
+> > +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+> > +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+> > +       BPF_LD_MAP_FD(BPF_REG_1,
+> > +                     0),
+> > +       BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
+> > +       BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_0, -32),
+> > +       /* call foo(&fp[-24], &fp[-32])   ; both arguments have IDs in =
+the current
+> > +        *                                ; stack frame
+> > +        */
+> > +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_FP),
+> > +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -24),
+> > +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_FP),
+> > +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -32),
+> > +       BPF_CALL_REL(2),
+> > +       /* exit 0 */
+> > +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> > +       BPF_EXIT_INSN(),
+> > +       /* Function foo()
+> > +        *
+> > +        * r9 =3D &frame[0].fp[-24]  ; save arguments in the callee sav=
+ed registers,
+> > +        * r8 =3D &frame[0].fp[-32]  ; arguments are pointers to pointe=
+rs to map value
+> > +        */
+> > +       BPF_MOV64_REG(BPF_REG_9, BPF_REG_1),
+> > +       BPF_MOV64_REG(BPF_REG_8, BPF_REG_2),
+> > +       /* r7 =3D ktime_get_ns() */
+> > +       BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
+> > +       BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
+> > +       /* r6 =3D ktime_get_ns() */
+> > +       BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
+> > +       BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
+> > +       /* if r6 > r7 goto +1      ; no new information about the state=
+ is derived from
+> > +        *                         ; this check, thus produced verifier=
+ states differ
+> > +        *                         ; only in 'insn_idx'
+> > +        * r9 =3D r8
+> > +        */
+> > +       BPF_JMP_REG(BPF_JGT, BPF_REG_6, BPF_REG_7, 1),
+> > +       BPF_MOV64_REG(BPF_REG_9, BPF_REG_8),
+> > +       /* r9 =3D *r9                ; verifier get's to this point via=
+ two paths:
+> > +        *                         ; (I) one including r9 =3D r8, verif=
+ied first;
+> > +        *                         ; (II) one excluding r9 =3D r8, veri=
+fied next.
+> > +        *                         ; After load of *r9 to r9 the frame[=
+0].fp[-24].id =3D=3D r9.id.
+> > +        *                         ; Suppose that checkpoint is created=
+ here via path (I).
+> > +        *                         ; When verifying via (II) the r9.id =
+must be compared against
+> > +        *                         ; frame[0].fp[-24].id, otherwise (I)=
+ and (II) would be
+> > +        *                         ; incorrectly deemed equivalent.
+> > +        * if r9 =3D=3D 0 goto <exit>
+> > +        */
+> > +       BPF_LDX_MEM(BPF_DW, BPF_REG_9, BPF_REG_9, 0),
+> > +       BPF_JMP_IMM(BPF_JEQ, BPF_REG_9, 0, 1),
+> > +       /* r8 =3D *r8                ; read map value via r8, this is n=
+ot safe
+> > +        * r0 =3D *r8                ; because r8 might be not equal to=
+ r9.
+> > +        */
+> > +       BPF_LDX_MEM(BPF_DW, BPF_REG_8, BPF_REG_8, 0),
+> > +       BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_8, 0),
+> > +       /* exit 0 */
+> > +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> > +       BPF_EXIT_INSN(),
+> > +       },
+> > +       .flags =3D BPF_F_TEST_STATE_FREQ,
+> > +       .fixup_map_hash_8b =3D { 3, 9 },
+> > +       .result =3D REJECT,
+> > +       .errstr =3D "R8 invalid mem access 'map_value_or_null'",
+> > +       .result_unpriv =3D REJECT,
+> > +       .errstr_unpriv =3D "",
+> > +       .prog_type =3D BPF_PROG_TYPE_CGROUP_SKB,
+> > +},
 > > --
 > > 2.34.1
 > >=20
