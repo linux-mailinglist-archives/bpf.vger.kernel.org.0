@@ -2,147 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B80A64C3CE
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 07:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE3C64C525
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 09:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236805AbiLNGck (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 01:32:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
+        id S229797AbiLNIh5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 03:37:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbiLNGcj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 01:32:39 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86279EBC;
-        Tue, 13 Dec 2022 22:32:38 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BE3eUrY031676;
-        Wed, 14 Dec 2022 06:32:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=xFzbEW9xvkMWsfH8wcAT93l1VQQCAJXFPP6KB/pYVog=;
- b=FZCh52CpdENzfCeR4DFS5FpymrycLpNEmbFAgiEnkx/2QEa4vQGwkTAjxOYfbzfi1vl5
- +oyHTA5puOTnQ8vKp1894caf9Sn1GMEfp2sPy/kWQG4HIlxCRo5JYvRwNFJN4SoMmxE+
- 3yWvqCYL82f44PbxHIZUs0e4kEOwBnX7sZALgrhpIJdFsQeg74XbVeHulLbiNB9JbsaH
- sFCLEEKLFbjjLsKfHqgvdb168UPC1Y12nmMJ9uyAVc2b5zzpASeBkPFECgiba6nNCgky
- RxbZNTI7sfFVbybzMjReZNwZPcEMazpIo9GgJZkFmYqf7I+g+c9YfpZHV4/jGmrbtS46 vw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mf6rkg9d6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Dec 2022 06:32:13 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BE6WC2a017709
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Dec 2022 06:32:12 GMT
-Received: from [10.110.87.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Tue, 13 Dec
- 2022 22:32:10 -0800
-Message-ID: <38c438ca-2a3f-18d0-03eb-1fa846e2075e@quicinc.com>
-Date:   Tue, 13 Dec 2022 23:32:09 -0700
+        with ESMTP id S229739AbiLNIh4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 03:37:56 -0500
+Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABE164DB;
+        Wed, 14 Dec 2022 00:37:53 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VXHyVy-_1671007070;
+Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VXHyVy-_1671007070)
+          by smtp.aliyun-inc.com;
+          Wed, 14 Dec 2022 16:37:51 +0800
+Date:   Wed, 14 Dec 2022 16:37:50 +0800
+From:   Heng Qi <hengqi@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [RFC PATCH 6/9] virtio_net: construct multi-buffer xdp in
+ mergeable
+Message-ID: <20221214083750.GB56694@h68b04307.sqa.eu95>
+References: <20221122074348.88601-1-hengqi@linux.alibaba.com>
+ <20221122074348.88601-7-hengqi@linux.alibaba.com>
+ <CACGkMEsbX8w1wuU+954zVwNT5JvCHX7a9baKRytVb641UmNsuw@mail.gmail.com>
+ <8b143235-2e74-eddf-4c22-a36d679d093e@linux.alibaba.com>
+ <CACGkMEsX=p4VM0yW0E3oaO=hBJx6y2x8fDkChh=ju13Y_tmjVA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH net] filter: Account for tail adjustment during pull
- operations
-To:     Daniel Borkmann <daniel@iogearbox.net>, <ast@kernel.org>,
-        <andrii@kernel.org>, <martin.lau@linux.dev>,
-        <john.fastabend@gmail.com>, <song@kernel.org>, <yhs@fb.com>,
-        <kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-        <jolsa@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     Sean Tranchetti <quic_stranche@quicinc.com>
-References: <1670906381-25161-1-git-send-email-quic_subashab@quicinc.com>
- <4d598e55-0366-5a27-2dd5-d7b59758b5fc@iogearbox.net>
-Content-Language: en-US
-From:   "Subash Abhinov Kasiviswanathan (KS)" <quic_subashab@quicinc.com>
-In-Reply-To: <4d598e55-0366-5a27-2dd5-d7b59758b5fc@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 9M2BKu4AN3y8IgCamPHLcQd9tW1tKleR
-X-Proofpoint-ORIG-GUID: 9M2BKu4AN3y8IgCamPHLcQd9tW1tKleR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-14_02,2022-12-13_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 bulkscore=0
- adultscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2212140049
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CACGkMEsX=p4VM0yW0E3oaO=hBJx6y2x8fDkChh=ju13Y_tmjVA@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/13/2022 3:42 PM, Daniel Borkmann wrote:
-> On 12/13/22 5:39 AM, Subash Abhinov Kasiviswanathan wrote:
->> Extending the tail can have some unexpected side effects if a program is
->> reading the content beyond the head skb headlen and all the skbs in the
->> gso frag_list are linear with no head_frag -
->>
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index bb0136e..d5f7f79 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -1654,6 +1654,20 @@ static DEFINE_PER_CPU(struct bpf_scratchpad, 
->> bpf_sp);
->>   static inline int __bpf_try_make_writable(struct sk_buff *skb,
->>                         unsigned int write_len)
->>   {
->> +    struct sk_buff *list_skb = skb_shinfo(skb)->frag_list;
->> +
->> +    if (skb_is_gso(skb) && list_skb && !list_skb->head_frag &&
->> +        skb_headlen(list_skb)) {
->> +        int headlen = skb_headlen(skb);
->> +        int err = skb_ensure_writable(skb, write_len);
->> +
->> +        /* pskb_pull_tail() has occurred */
->> +        if (!err && headlen != skb_headlen(skb))
->> +            skb_shinfo(skb)->gso_type |= SKB_GSO_DODGY;
->> +
->> +        return err;
->> +    }
+On Tue, Dec 13, 2022 at 03:08:46PM +0800, Jason Wang wrote:
+> On Thu, Dec 8, 2022 at 4:30 PM Heng Qi <hengqi@linux.alibaba.com> wrote:
+> >
+> >
+> >
+> > 在 2022/12/6 下午2:33, Jason Wang 写道:
+> > > On Tue, Nov 22, 2022 at 3:44 PM Heng Qi <hengqi@linux.alibaba.com> wrote:
+> > >> Build multi-buffer xdp using virtnet_build_xdp_buff() in mergeable.
+> > >>
+> > >> For the prefilled buffer before xdp is set, vq reset can be
+> > >> used to clear it, but most devices do not support it at present.
+> > >> In order not to bother users who are using xdp normally, we do
+> > >> not use vq reset for the time being.
+> > > I guess to tweak the part to say we will probably use vq reset in the future.
+> >
+> > OK, it works.
+> >
+> > >
+> > >> At the same time, virtio
+> > >> net currently uses comp pages, and bpf_xdp_frags_increase_tail()
+> > >> needs to calculate the tailroom of the last frag, which will
+> > >> involve the offset of the corresponding page and cause a negative
+> > >> value, so we disable tail increase by not setting xdp_rxq->frag_size.
+> > >>
+> > >> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> > >> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > >> ---
+> > >>   drivers/net/virtio_net.c | 67 +++++++++++++++++++++++-----------------
+> > >>   1 file changed, 38 insertions(+), 29 deletions(-)
+> > >>
+> > >> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > >> index 20784b1d8236..83e6933ae62b 100644
+> > >> --- a/drivers/net/virtio_net.c
+> > >> +++ b/drivers/net/virtio_net.c
+> > >> @@ -994,6 +994,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+> > >>                                           unsigned int *xdp_xmit,
+> > >>                                           struct virtnet_rq_stats *stats)
+> > >>   {
+> > >> +       unsigned int tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+> > >>          struct virtio_net_hdr_mrg_rxbuf *hdr = buf;
+> > >>          u16 num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+> > >>          struct page *page = virt_to_head_page(buf);
+> > >> @@ -1024,53 +1025,50 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+> > >>          rcu_read_lock();
+> > >>          xdp_prog = rcu_dereference(rq->xdp_prog);
+> > >>          if (xdp_prog) {
+> > >> +               unsigned int xdp_frags_truesz = 0;
+> > >> +               struct skb_shared_info *shinfo;
+> > >>                  struct xdp_frame *xdpf;
+> > >>                  struct page *xdp_page;
+> > >>                  struct xdp_buff xdp;
+> > >>                  void *data;
+> > >>                  u32 act;
+> > >> +               int i;
+> > >>
+> > >> -               /* Transient failure which in theory could occur if
+> > >> -                * in-flight packets from before XDP was enabled reach
+> > >> -                * the receive path after XDP is loaded.
+> > >> -                */
+> > >> -               if (unlikely(hdr->hdr.gso_type))
+> > >> -                       goto err_xdp;
+> > > Two questions:
+> > >
+> > > 1) should we keep this check for the XDP program that can't deal with XDP frags?
+> >
+> > Yes, the problem is the same as the xdp program without xdp.frags when
+> > GRO_HW, I will correct it.
+> >
+> > > 2) how could we guarantee that the vnet header (gso_type/csum_start
+> > > etc) is still valid after XDP (where XDP program can choose to
+> > > override the header)?
+> >
+> > We can save the vnet headr before the driver receives the packet and
+> > build xdp_buff, and then use
+> > the pre-saved value in the subsequent process.
 > 
-> __bpf_try_make_writable() does not look like the right location to me
-> given this is called also from various other places. bpf_skb_change_tail
-> has skb_gso_reset in there, potentially that or pskb_pull_tail itself
-> should mark it?
-
-Actually the program we used had BPF_FUNC_skb_pull_data and we put this 
-check in __bpf_try_make_writable so that it would help out 
-BPF_FUNC_skb_pull_data & other users of __bpf_try_make_writable. Having 
-the check in __pskb_pull_tail seems preferable though. Could you tell if 
-the following is acceptable as this works for us -
-
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index dfc14a7..0f60abb 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -2263,6 +2263,9 @@ void *__pskb_pull_tail(struct sk_buff *skb, int delta)
-                                 insp = list;
-                         } else {
-                                 /* Eaten partially. */
-+                               if (skb_is_gso(skb) && !list->head_frag &&
-+                                   skb_headlen(list))
-+                                       skb_shinfo(skb)->gso_type |= 
-SKB_GSO_DODGY;
-
-                                 if (skb_shared(list)) {
-                                         /* Sucks! We need to fork list. 
-:-( */
-
+> The problem is that XDP may modify the packet (header) so some fields
+> are not valid any more (e.g csum_start/offset ?).
 > 
->>       return skb_ensure_writable(skb, write_len);
->>   }
->>
+> If I was not wrong, there's no way for the XDP program to access those
+> fields or does it support it right now?
 > 
+
+When guest_csum feature is negotiated, xdp cannot be set, because the metadata
+of xdp_{buff, frame} may be adjusted by the bpf program, therefore,
+csum_{start, offset} itself is invalid. And at the same time,
+multi-buffer xdp programs should only Receive packets over larger MTU, so
+we don't need gso related information anymore and need to disable GRO_HW.
+
+Thanks.
+
+> >
+> > >> -
+> > >> -               /* Buffers with headroom use PAGE_SIZE as alloc size,
+> > >> -                * see add_recvbuf_mergeable() + get_mergeable_buf_len()
+> > >> +               /* Now XDP core assumes frag size is PAGE_SIZE, but buffers
+> > >> +                * with headroom may add hole in truesize, which
+> > >> +                * make their length exceed PAGE_SIZE. So we disabled the
+> > >> +                * hole mechanism for xdp. See add_recvbuf_mergeable().
+> > >>                   */
+> > >>                  frame_sz = headroom ? PAGE_SIZE : truesize;
+> > >>
+> > >> -               /* This happens when rx buffer size is underestimated
+> > >> -                * or headroom is not enough because of the buffer
+> > >> -                * was refilled before XDP is set. This should only
+> > >> -                * happen for the first several packets, so we don't
+> > >> -                * care much about its performance.
+> > >> +               /* This happens when headroom is not enough because
+> > >> +                * of the buffer was prefilled before XDP is set.
+> > >> +                * This should only happen for the first several packets.
+> > >> +                * In fact, vq reset can be used here to help us clean up
+> > >> +                * the prefilled buffers, but many existing devices do not
+> > >> +                * support it, and we don't want to bother users who are
+> > >> +                * using xdp normally.
+> > >>                   */
+> > >> -               if (unlikely(num_buf > 1 ||
+> > >> -                            headroom < virtnet_get_headroom(vi))) {
+> > >> -                       /* linearize data for XDP */
+> > >> -                       xdp_page = xdp_linearize_page(rq, &num_buf,
+> > >> -                                                     page, offset,
+> > >> -                                                     VIRTIO_XDP_HEADROOM,
+> > >> -                                                     &len);
+> > >> -                       frame_sz = PAGE_SIZE;
+> > >> +               if (unlikely(headroom < virtnet_get_headroom(vi))) {
+> > >> +                       if ((VIRTIO_XDP_HEADROOM + len + tailroom) > PAGE_SIZE)
+> > >> +                               goto err_xdp;
+> > >>
+> > >> +                       xdp_page = alloc_page(GFP_ATOMIC);
+> > >>                          if (!xdp_page)
+> > >>                                  goto err_xdp;
+> > >> +
+> > >> +                       memcpy(page_address(xdp_page) + VIRTIO_XDP_HEADROOM,
+> > >> +                              page_address(page) + offset, len);
+> > >> +                       frame_sz = PAGE_SIZE;
+> > > How can we know a single page is sufficient here? (before XDP is set,
+> > > we reserve neither headroom nor tailroom).
+> >
+> > This is only for the first buffer, refer to add_recvbuf_mergeable() and
+> > get_mergeable_buf_len() A buffer is always no larger than a page.
+> 
+> Ok.
+> 
+> Thanks
+> 
+> >
+> > >
+> > >>                          offset = VIRTIO_XDP_HEADROOM;
+> > > I think we should still try to do linearization for the XDP program
+> > > that doesn't support XDP frags.
+> >
+> > Yes, you are right.
+> >
+> > Thanks.
+> >
+> > >
+> > > Thanks
+> > >
+> > >>                  } else {
+> > >>                          xdp_page = page;
+> > >>                  }
+> > >> -
+> > >> -               /* Allow consuming headroom but reserve enough space to push
+> > >> -                * the descriptor on if we get an XDP_TX return code.
+> > >> -                */
+> > >>                  data = page_address(xdp_page) + offset;
+> > >> -               xdp_init_buff(&xdp, frame_sz - vi->hdr_len, &rq->xdp_rxq);
+> > >> -               xdp_prepare_buff(&xdp, data - VIRTIO_XDP_HEADROOM + vi->hdr_len,
+> > >> -                                VIRTIO_XDP_HEADROOM, len - vi->hdr_len, true);
+> > >> +               err = virtnet_build_xdp_buff(dev, vi, rq, &xdp, data, len, frame_sz,
+> > >> +                                            &num_buf, &xdp_frags_truesz, stats);
+> > >> +               if (unlikely(err))
+> > >> +                       goto err_xdp_frags;
+> > >>
+> > >>                  act = bpf_prog_run_xdp(xdp_prog, &xdp);
+> > >>                  stats->xdp_packets++;
+> > >> @@ -1164,6 +1162,17 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+> > >>                                  __free_pages(xdp_page, 0);
+> > >>                          goto err_xdp;
+> > >>                  }
+> > >> +err_xdp_frags:
+> > >> +               shinfo = xdp_get_shared_info_from_buff(&xdp);
+> > >> +
+> > >> +               if (unlikely(xdp_page != page))
+> > >> +                       __free_pages(xdp_page, 0);
+> > >> +
+> > >> +               for (i = 0; i < shinfo->nr_frags; i++) {
+> > >> +                       xdp_page = skb_frag_page(&shinfo->frags[i]);
+> > >> +                       put_page(xdp_page);
+> > >> +               }
+> > >> +               goto err_xdp;
+> > >>          }
+> > >>          rcu_read_unlock();
+> > >>
+> > >> --
+> > >> 2.19.1.6.gb485710b
+> > >>
+> >
