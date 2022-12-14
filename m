@@ -2,62 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD33564CF99
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 19:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B637464CF9E
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 19:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238876AbiLNSmZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 13:42:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        id S238883AbiLNSnL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 13:43:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238879AbiLNSmX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 13:42:23 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10DE28E3D
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:42:22 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d3so4251443plr.10
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:42:22 -0800 (PST)
+        with ESMTP id S238671AbiLNSnK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 13:43:10 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA45F2A25A
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:43:08 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id b13-20020a17090a5a0d00b0021906102d05so100466pjd.5
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:43:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2RgklV7DxsIHlYiTKFAg3aR9zq9eoKwT/Q1P3Gt7rlw=;
-        b=PivzMciD4mAgu+BosCMS/+LBRaMi3edU1w32cK8j4hju29UxoMmyGp1NL+O1HPVqT3
-         7b4h8odj4/qSFI/Q56UcCImNEryFh4Ra6OpddKsHq/pZ20sMaUKJ7bNp9uHvk4S+ltu/
-         g0a66Gl5Ma8telZrbCBneaxcfKCG5wBcpNJonClm42ftiR5Y423OGIHCyK2+fKD4s45O
-         7sxpNiNbQeohJ3o7hEiPaKZLs8G+N4EVcWTof05RnKxXvvMgAD3achNj7GUKAkldMffZ
-         oJY0VUQoQ0pNI/Wa+ELx5h4/l5PqgrmC2QXQdRCTlooXaUyUek0grNxvKW2wiAU7aRMo
-         MQpg==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=11gnFBq5/B+6biAVW8qF16RNrVbsfKYnaU/ZjQVxwSg=;
+        b=gUPlgfZnJpd00o4gzd7LSKqLT48FfcnBbc/M6xdwTdHKeeGLYveYNUvJCR22pieC83
+         3vq7BS6ZZmkGT7DoTucMHo4jst548PqaCTvKBes56fqboWoU+ydn15qfpl1M0w7E5Pbh
+         NfJFhxaMCm0WUNsZvrU/rcesWVahdyiwNedMvl09dY42Uarhs9hqSptDFaxlwYOpneEq
+         YCQ2tCdl2ysTA0wSj1gN3is0HR27fS+l+PovZWo70RK8NFe0QjECNSYtPH7jHgPyD4SQ
+         QpVS6uekED33vl18nVJ03Jimm+iWbvOYYWnOoCgu6WPotn9MdXj60SSD3Vu8yxVf6+us
+         IDIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2RgklV7DxsIHlYiTKFAg3aR9zq9eoKwT/Q1P3Gt7rlw=;
-        b=IVOrme+rP5S8xhcI5/Aer9J6zXoHNth8Lq0DIhIYwEikypCkMsTN9+iVnKmujIiG7Y
-         EpxuII2lmUaoZEPgE49cxSTcblHAhooAMUSCX1XtpiJTdMyxqmigrVY5NEc8pVIDMExc
-         fWehAuVm7FhtumAE2879n8E+TcwJgFG/y3nq4I+nfh9masJIJnMg2OftSwW3vceXtsvo
-         cHyDBbpcq4lDpEwYKtoIV2fjozUGYszgJ2ofLMspPV/9pnmRxojHESEFrRMvEwfpi8yZ
-         8eKD90bte8HPM/Hhd3Z3MDsJYKB6zSeNFZuxtLVZYetNP1CXixl5Dkx6UFXFAfEW0e55
-         AgHg==
-X-Gm-Message-State: AFqh2kqRagheB6VyZNcsSa9b1ng6Xv5GZt8R9VBS96X/GZWdxM3bfvHf
-        QnAPZNDCY9f2ZqvVmaUkjZxQYdHBobEl5hGvvZVj0g==
-X-Google-Smtp-Source: AMrXdXv3ScMa6EtlqyYs8vmOb6CyWiDwlUUkPfmrdfEeAQYoVGaXCXJSNw48WjRfxLY/mg9oc+WMJDla6ljlptMWFe4=
-X-Received: by 2002:a17:90a:c389:b0:218:9107:381b with SMTP id
- h9-20020a17090ac38900b002189107381bmr390411pjt.75.1671043342165; Wed, 14 Dec
- 2022 10:42:22 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=11gnFBq5/B+6biAVW8qF16RNrVbsfKYnaU/ZjQVxwSg=;
+        b=n3WIJFNwyClfRf5pcwcKeA9XaZ/ronEvx5oJLJQa05XBfMuXCjE4KHX6PIWepNWazg
+         O1gnwhIoy7Ayxu1k92WYi6nIwDPIBt7F4iozmrVDi2ilLjTphgAY5ZsxWiygksoy8Ikr
+         ZZU/Z+qhAAiZfhbf2yZU49SFaA8SDKuzeBDCjrYjmlIyS0qD2F8WlCkYt00HpKrW1dM7
+         M1FtFwULfs4oP9ZAqCSuJyWepWntPZLSBzXV2PoAmhWR+klAfk6f6p6H4JFGB3A7vLFL
+         U1AmZOfCcgLq43rMKC4+taRuqFoEmhwjjA8afdJNoS4SfdqdOR6GOn6Pgb305QnuMZap
+         m6/w==
+X-Gm-Message-State: AFqh2krP1lrmXUPEE7m2CIR6+H4obl48rg+3HMwzz3yaAFDWZMOqK3SL
+        SmJr98XLc2N/EjpcBmXLwZFE0RbaBF0QynQXBiihxg==
+X-Google-Smtp-Source: AMrXdXuJdZAKGvf4ZH96xVGYPU6uFwCC+7t6sVlZeIeSR0k+n4pnYJV3tA4TG8LYfPQawp8d6x7R0rhg7mkCT8xQv7c=
+X-Received: by 2002:a17:90a:1f82:b0:21e:df53:9183 with SMTP id
+ x2-20020a17090a1f8200b0021edf539183mr385673pja.66.1671043388240; Wed, 14 Dec
+ 2022 10:43:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20221213023605.737383-1-sdf@google.com> <20221213023605.737383-4-sdf@google.com>
- <94d8cd3a-fc07-88aa-94f8-6b08940a2087@linux.dev>
-In-Reply-To: <94d8cd3a-fc07-88aa-94f8-6b08940a2087@linux.dev>
+References: <20221213023605.737383-1-sdf@google.com> <20221213023605.737383-2-sdf@google.com>
+ <Y5iqTKnhtX2yaSAq@maniforge.lan> <CAKH8qBvjwMXvTg3ij=6wk2yu+=oWcRizmKf_YtW_yp5+W2F_=g@mail.gmail.com>
+ <87fsdigtow.fsf@toke.dk>
+In-Reply-To: <87fsdigtow.fsf@toke.dk>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 14 Dec 2022 10:42:10 -0800
-Message-ID: <CAKH8qBsg1hYnkmurnSGCCzTFOzQrV4DKCw1gefgXNb6UN57+Vg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 03/15] bpf: Introduce device-bound XDP programs
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
+Date:   Wed, 14 Dec 2022 10:42:56 -0800
+Message-ID: <CAKH8qBuv0pZUT-w3LVKoss6XixdNP9cbZpxe9UWghdpbWDXtgA@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v4 01/15] bpf: Document XDP RX metadata
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     David Vernet <void@manifault.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, David Ahern <dsahern@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
@@ -65,12 +68,13 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         Alexander Lobakin <alexandr.lobakin@intel.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,238 +82,99 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 13, 2022 at 3:25 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+On Wed, Dec 14, 2022 at 2:34 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On 12/12/22 6:35 PM, Stanislav Fomichev wrote:
-> > New flag BPF_F_XDP_DEV_BOUND_ONLY plus all the infra to have a way
-> > to associate a netdev with a BPF program at load time.
+> Stanislav Fomichev <sdf@google.com> writes:
+>
+> > On Tue, Dec 13, 2022 at 8:37 AM David Vernet <void@manifault.com> wrote=
+:
+> >>
+> >> On Mon, Dec 12, 2022 at 06:35:51PM -0800, Stanislav Fomichev wrote:
+> >> > Document all current use-cases and assumptions.
+> >> >
+> >> > Cc: John Fastabend <john.fastabend@gmail.com>
+> >> > Cc: David Ahern <dsahern@gmail.com>
+> >> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> >> > Cc: Jakub Kicinski <kuba@kernel.org>
+> >> > Cc: Willem de Bruijn <willemb@google.com>
+> >> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> >> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> >> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> >> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> >> > Cc: Maryam Tahhan <mtahhan@redhat.com>
+> >> > Cc: xdp-hints@xdp-project.net
+> >> > Cc: netdev@vger.kernel.org
+> >> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >> > ---
+> >> >  Documentation/bpf/xdp-rx-metadata.rst | 90 ++++++++++++++++++++++++=
++++
+> >> >  1 file changed, 90 insertions(+)
+> >> >  create mode 100644 Documentation/bpf/xdp-rx-metadata.rst
+> >> >
+> >> > diff --git a/Documentation/bpf/xdp-rx-metadata.rst b/Documentation/b=
+pf/xdp-rx-metadata.rst
+> >> > new file mode 100644
+> >> > index 000000000000..498eae718275
+> >> > --- /dev/null
+> >> > +++ b/Documentation/bpf/xdp-rx-metadata.rst
+> >>
+> >> I think you need to add this to Documentation/bpf/index.rst. Or even
+> >> better, maybe it's time to add an xdp/ subdirectory and put all docs
+> >> there? Don't want to block your patchset from bikeshedding on this
+> >> point, so for now it's fine to just put it in
+> >> Documentation/bpf/index.rst until we figure that out.
 > >
-> > Some existing 'offloaded' routines are renamed to 'dev_bound' for
-> > consistency with the rest.
+> > Maybe let's put it under Documentation/networking/xdp-rx-metadata.rst
+> > and reference form Documentation/networking/index.rst? Since it's more
+> > relevant to networking than the core bpf?
 > >
-> > Also moved a bunch of code around to avoid forward declarations.
->
-> There are too many things in one patch.  It becomes quite hard to follow, eg. I
-> have to go back-and-forth a few times within this patch to confirm what change
-> is just a move.  Please put the "moved a bunch of code around to avoid forward
-> declarations" in one individual patch and also the
-> "late_initcall(bpf_offload_init)" change in another individual patch.
-
-Ugh, sorry, good point will definitely split more :-(
-
-> [ ... ]
->
-> > -int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
-> > +static int __bpf_offload_dev_netdev_register(struct bpf_offload_dev *offdev,
-> > +                                          struct net_device *netdev)
-> > +{
-> > +     struct bpf_offload_netdev *ondev;
-> > +     int err;
-> > +
-> > +     ondev = kzalloc(sizeof(*ondev), GFP_KERNEL);
-> > +     if (!ondev)
-> > +             return -ENOMEM;
-> > +
-> > +     ondev->netdev = netdev;
-> > +     ondev->offdev = offdev;
-> > +     INIT_LIST_HEAD(&ondev->progs);
-> > +     INIT_LIST_HEAD(&ondev->maps);
-> > +
-> > +     err = rhashtable_insert_fast(&offdevs, &ondev->l, offdevs_params);
-> > +     if (err) {
-> > +             netdev_warn(netdev, "failed to register for BPF offload\n");
-> > +             goto err_unlock_free;
-> > +     }
-> > +
-> > +     if (offdev)
-> > +             list_add(&ondev->offdev_netdevs, &offdev->netdevs);
-> > +     return 0;
-> > +
-> > +err_unlock_free:
-> > +     up_write(&bpf_devs_lock);
->
-> No need to handle bpf_devs_lock in the "__" version of the register() helper?
-> The goto label probably also needs another name, eg. "err_free".
-
-Ah, not sure how I missed that, thanks!
-
-> > +     kfree(ondev);
-> > +     return err;
-> > +}
-> > +
->
-> [ ... ]
->
-> > +int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
-> >   {
-> >       struct bpf_offload_netdev *ondev;
-> >       struct bpf_prog_offload *offload;
-> > @@ -87,7 +198,7 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
-> >           attr->prog_type != BPF_PROG_TYPE_XDP)
-> >               return -EINVAL;
+> >> > @@ -0,0 +1,90 @@
+> >> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >> > +XDP RX Metadata
+> >> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >> > +
+> >> > +XDP programs support creating and passing custom metadata via
+> >> > +``bpf_xdp_adjust_meta``. This metadata can be consumed by the follo=
+wing
+> >> > +entities:
+> >>
+> >> Can you add a couple of sentences to this intro section that explains
+> >> what metadata is at a high level?
 > >
-> > -     if (attr->prog_flags)
-> > +     if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-> >               return -EINVAL;
+> > I'm gonna copy-paste here what I'm adding, feel free to reply back if
+> > still unclear. (so we don't have to wait another week to discuss the
+> > changes)
 > >
-> >       offload = kzalloc(sizeof(*offload), GFP_USER);
-> > @@ -102,11 +213,25 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
-> >       if (err)
-> >               goto err_maybe_put;
-> >
-> > +     prog->aux->offload_requested = !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY);
-> > +
-> >       down_write(&bpf_devs_lock);
-> >       ondev = bpf_offload_find_netdev(offload->netdev);
-> >       if (!ondev) {
-> > -             err = -EINVAL;
-> > -             goto err_unlock;
-> > +             if (!bpf_prog_is_offloaded(prog->aux)) {
-> > +                     /* When only binding to the device, explicitly
-> > +                      * create an entry in the hashtable. See related
-> > +                      * bpf_dev_bound_try_remove_netdev.
-> > +                      */
-> > +                     err = __bpf_offload_dev_netdev_register(NULL, offload->netdev);
-> > +                     if (err)
-> > +                             goto err_unlock;
-> > +                     ondev = bpf_offload_find_netdev(offload->netdev);
-> > +             }
-> > +             if (!ondev) {
+> > XDP programs support creating and passing custom metadata via
+> > ``bpf_xdp_adjust_meta``. The metadata can contain some extra informatio=
+n
+> > about the packet: timestamps, hash, vlan and tunneling information, etc=
+.
+> > This metadata can be consumed by the following entities:
 >
-> nit.  A bit confusing because the "ondev = bpf_offload_find_netdev(...)" above
-> should not fail but "!ondev" is tested again here.  I think the intention is to
-> fail on the 'bpf_prog_is_offloaded() == true' case. May be:
+> This is not really accurate, though? The metadata area itself can
+> contain whatever the XDP program wants it to, and I think you're
+> conflating the "old" usage for arbitrary storage with the driver-kfunc
+> metadata support.
 >
->                 if (bpf_prog_is_offloaded(prog->aux)) {
->                         err = -EINVAL;
->                         goto err_unlock;
->                 }
->                 /* When only binding to the device, explicitly
->                  * ...
->                  */
->                 err = __bpf_offload_dev_netdev_register(NULL, offload->netdev);
->                 if (err)
->                         goto err_unlock;
->                 ondev = bpf_offload_find_netdev(offload->netdev);
+> I think we should clear separate the two: the metadata area is just a
+> place to store data (and is not consumed by the stack, except that
+> TC-BPF programs can access it), and the driver kfuncs are just a general
+> way to get data out of the drivers (and has nothing to do with the
+> metadata area, you can just get the data into stack variables).
 >
+> While it would be good to have a documentation of the general metadata
+> area stuff somewhere, I don't think it necessarily have to be part of
+> this series, so maybe just stick to documenting the kfuncs?
 
-Yeah, that looks better, thx!
+Maybe I can reword to something like below?
 
-> > +                     err = -EINVAL;
-> > +                     goto err_unlock;
-> > +             }
-> >       }
-> >       offload->offdev = ondev->offdev;
-> >       prog->aux->offload = offload;
-> > @@ -209,27 +334,28 @@ bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt)
-> >       up_read(&bpf_devs_lock);
-> >   }
-> >
-> > -static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
-> > +static void bpf_dev_bound_try_remove_netdev(struct net_device *dev)
-> >   {
-> > -     struct bpf_prog_offload *offload = prog->aux->offload;
-> > -
-> > -     if (offload->dev_state)
-> > -             offload->offdev->ops->destroy(prog);
-> > +     struct bpf_offload_netdev *ondev;
-> >
-> > -     /* Make sure BPF_PROG_GET_NEXT_ID can't find this dead program */
-> > -     bpf_prog_free_id(prog, true);
-> > +     if (!dev)
-> > +             return;
-> >
-> > -     list_del_init(&offload->offloads);
-> > -     kfree(offload);
-> > -     prog->aux->offload = NULL;
-> > +     ondev = bpf_offload_find_netdev(dev);
-> > +     if (ondev && !ondev->offdev && list_empty(&ondev->progs))
->
-> hmm....list_empty(&ondev->progs) is tested here but will it be empty? ...
+The metadata can be used to store some extra information about the
+packet timestamps, hash, vlan and tunneling information, etc.
 
-Ugh, yeah, need to move that list_del_init(&offload->offloads) to
-somewhere before bpf_dev_bound_try_remove_netdev.
+This way we are not actually defining what it is, but hinting about
+how it's commonly used?
 
-> > +             __bpf_offload_dev_netdev_unregister(NULL, dev);
-> >   }
-> >
-> > -void bpf_prog_offload_destroy(struct bpf_prog *prog)
-> > +void bpf_prog_dev_bound_destroy(struct bpf_prog *prog)
-> >   {
-> > +     rtnl_lock();
-> >       down_write(&bpf_devs_lock);
-> > -     if (prog->aux->offload)
-> > -             __bpf_prog_offload_destroy(prog);
-> > +     if (prog->aux->offload) {
-> > +             bpf_dev_bound_try_remove_netdev(prog->aux->offload->netdev);
->
-> ... the "prog" here is still linked to ondev->progs, right?
-> because __bpf_prog_dev_bound_destroy() is called later below.
-
-Agreed, right.
-
-> nit. May be the bpf_dev_bound_try_remove_netdev() should be folded/merged back
-> into bpf_prog_dev_bound_destroy() to make things more clear.
-
-Makes sense.
-
-> > +             __bpf_prog_dev_bound_destroy(prog); > + }
-> >       up_write(&bpf_devs_lock);
-> > +     rtnl_unlock();
-> >   }
->
-> [ ... ]
->
-> > +static int __init bpf_offload_init(void)
-> > +{
-> > +     int err;
-> > +
-> > +     down_write(&bpf_devs_lock);
->
-> lock is probably not needed.
-
-Sure, will drop.
-
-> > +     err = rhashtable_init(&offdevs, &offdevs_params);
-> > +     up_write(&bpf_devs_lock);
-> > +
-> > +     return err;
-> > +}
-> > +
-> > +late_initcall(bpf_offload_init);
->
-> [ ... ]
->
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index 5d51999cba30..194f8116aad4 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -9228,6 +9228,10 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
-> >                       NL_SET_ERR_MSG(extack, "Using offloaded program without HW_MODE flag is not supported");
-> >                       return -EINVAL;
-> >               }
-> > +             if (bpf_prog_is_dev_bound(new_prog->aux) && !bpf_offload_dev_match(new_prog, dev)) {
-> > +                     NL_SET_ERR_MSG(extack, "Program bound to different device");
-> > +                     return -EINVAL;
-> > +             }
-> >               if (new_prog->expected_attach_type == BPF_XDP_DEVMAP) {
-> >                       NL_SET_ERR_MSG(extack, "BPF_XDP_DEVMAP programs can not be attached to a device");
-> >                       return -EINVAL;
-> > @@ -10813,6 +10817,7 @@ void unregister_netdevice_many_notify(struct list_head *head,
-> >               /* Shutdown queueing discipline. */
-> >               dev_shutdown(dev);
-> >
-> > +             bpf_dev_bound_netdev_unregister(dev);
->
-> Does it matter if bpf_dev_bound_netdev_unregister(dev) is called before
-> dev_xdp_uninstall(dev)?  Asking because it seems more logic to unregister dev
-> after detaching xdp progs.
-
-By running it first I was hoping to catch any possible issues. Agreed
-that doing it after makes more sense, will move.
-
-> >               dev_xdp_uninstall(dev);
-> >
-> >               netdev_offload_xstats_disable_all(dev);
->
+> -Toke
 >
