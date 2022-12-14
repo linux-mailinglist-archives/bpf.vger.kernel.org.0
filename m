@@ -2,75 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD9A64C196
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 02:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5015764C1A2
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 02:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237011AbiLNBBu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 20:01:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
+        id S237614AbiLNBGM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 20:06:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236732AbiLNBBp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 20:01:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A492026494
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 17:01:01 -0800 (PST)
+        with ESMTP id S237331AbiLNBGL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 20:06:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BF9FCFB
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 17:05:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670979660;
+        s=mimecast20190719; t=1670979926;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=YoVO1S/lRb6mfezKacXvsssJ94nzJ1wrr5seAJE0P+U=;
-        b=P6/smwef8IEoKhpmKRYYUhmHKr+97O8KoQO9qnDFPZvkP/E6aetDxY2+RxsQeI8V521108
-        oN5NSfNuXu7b64kqGCf/H7XqeuEajNtouZ2LuOb8EuUj+F+2oktuU1SGQq8Qc44YouEiO/
-        BnKtTf7stJ5lWQgqnKychoA3OQciPX4=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=6MH72Wfu4odDI7DR27EaCIxLzF+Z90J2GkF6LgI966g=;
+        b=Z2aLGWANgLh1ChEQPO9td7G3rfkQTPBiff2cjOx9tLhuH5QcDgw1b7QkbDV95o/ua8cyMp
+        7aXNyNgKdUI0NCGFE7N16j60RSM/dNy3y2+OY3JMlcouTnn65fEpgMnGyBT45Bp3OWTZFQ
+        J2tuql3uHatiSsFAwWmoFX33McmWIWw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-516-TwCUIBbmPQ67DE6GdRJqaQ-1; Tue, 13 Dec 2022 20:00:59 -0500
-X-MC-Unique: TwCUIBbmPQ67DE6GdRJqaQ-1
-Received: by mail-ej1-f70.google.com with SMTP id sd23-20020a1709076e1700b007c16f834c4aso5138705ejc.22
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 17:00:59 -0800 (PST)
+ us-mta-623-hghWeZ4YOvKfcpJk040-vg-1; Tue, 13 Dec 2022 20:05:25 -0500
+X-MC-Unique: hghWeZ4YOvKfcpJk040-vg-1
+Received: by mail-ed1-f69.google.com with SMTP id w15-20020a05640234cf00b0046d32d7b153so8239756edc.0
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 17:05:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YoVO1S/lRb6mfezKacXvsssJ94nzJ1wrr5seAJE0P+U=;
-        b=E4Zby+WeJF7M2d8HtwpTh4WmPznnhoG6t3Yp3yTRdDgQWp37IL4HZvAdxt/oHO57Sc
-         SUBkLQZsFD5Y+6n9PH1j+yZovE+f13OoNpnRnPipdnFBaAX3FmF7z0cOudzgjpv1Clmy
-         JcjiwG+4jAM9W5xibw1RyffrDUEaWyVEnWabobnz2n4Nml0iVXGgGHxB9/knJRD1KDKN
-         1DFio8M1QhmA1+iELtVIhmZm8sfPn2RLS1/Em8Bk6gHxkfZB7Kas8NOFB/YpNY7I6ZIC
-         7FfjILkqP3fX21u0ZviDgksw01IDcM1dQLaY/jvfCLCBahqx/62J8YH0Kjw4Dn+7SZvZ
-         E3lg==
-X-Gm-Message-State: ANoB5pnd3LF+6tz1bW0dt2Vr+7j5OR51GnvWH+YETlYZaJptczd/B0Zu
-        SZzAoA/hXfG7KiKMunuyrhQloQIc58QWgTV85Zco3jzxHPEZvwCWCadIa1wTkXFS8VrRk70nUx2
-        58Z5thwxwPG0R
-X-Received: by 2002:a17:907:397:b0:7c1:58cb:86b9 with SMTP id ss23-20020a170907039700b007c158cb86b9mr12604185ejb.28.1670979657183;
-        Tue, 13 Dec 2022 17:00:57 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6elrpFzMbKUHsLnh4mzXZM7JMCmNRUUpMFj7YN3MHbPNOQZB019yZyPZ0lzz/kJlGQmW1S/g==
-X-Received: by 2002:a17:907:397:b0:7c1:58cb:86b9 with SMTP id ss23-20020a170907039700b007c158cb86b9mr12604126ejb.28.1670979656077;
-        Tue, 13 Dec 2022 17:00:56 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id i21-20020a170906251500b007b29eb8a4dbsm5232109ejb.13.2022.12.13.17.00.54
+        bh=6MH72Wfu4odDI7DR27EaCIxLzF+Z90J2GkF6LgI966g=;
+        b=2bQmXRCay1tsE5vEPDmhXpKbXdjfod6BhN6Vzqvi+2g/aSOuooyuEpegSrjs15HIDY
+         7xfSu8oqC8gaFiU6PYWHLqOF4CDuMfcx34WepHgWrXGBcTqRGne65CQJtnYnlw9zt2S4
+         QtRRipHUFYDQ14jdJBFknoys5mByN7jGPF2dFkIdhKgfS3C/EqLC09fTeBeC8HW7vRO2
+         S03fRTrxR6Vdscu1VIpexNwq6rGTkAm1DmUITutsohMwSZ0q02qCP8bykqPikMdwjAly
+         ZpXb7KULgr3xrcDxkZNR5ksd2eJOEZ1q11QdUPcIOfOaALZBdlqrdX9R+6xIUSCC1gwA
+         QSPw==
+X-Gm-Message-State: ANoB5pmt3jLYZHzCkC+6zVmq/CgeiNkSygxCqP1/Gi5bFuR+jpL/h6fF
+        TXPGw0RFpMZfoiuaSJuKk5qIUS/Flexy1KMnP6HKTNynHSs12VejFPEuGRtYXwAQroY0GR/IN3P
+        ZV0eydAUKlp2j
+X-Received: by 2002:a17:906:a3c1:b0:7ad:a2ee:f8e6 with SMTP id ca1-20020a170906a3c100b007ada2eef8e6mr18591592ejb.15.1670979924408;
+        Tue, 13 Dec 2022 17:05:24 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf75HGrz5Q7BZbdnfOulAwNHZ09tLEfL9LeBp5NmWt+u7btEjY4ENj7PRs9zCzl0uPM43e8yIw==
+X-Received: by 2002:a17:906:a3c1:b0:7ad:a2ee:f8e6 with SMTP id ca1-20020a170906a3c100b007ada2eef8e6mr18591570ejb.15.1670979924084;
+        Tue, 13 Dec 2022 17:05:24 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id gg9-20020a170906e28900b0078db5bddd9csm5146198ejb.22.2022.12.13.17.05.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Dec 2022 17:00:54 -0800 (PST)
+        Tue, 13 Dec 2022 17:05:21 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1809B82F420; Wed, 14 Dec 2022 02:00:53 +0100 (CET)
+        id C7EF882F422; Wed, 14 Dec 2022 02:05:20 +0100 (CET)
 From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf] libbpf: Fix signedness confusion when using libbpf_is_mem_zeroed()
-Date:   Wed, 14 Dec 2022 02:00:46 +0100
-Message-Id: <20221214010046.668024-1-toke@redhat.com>
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Toke Hoiland-Jorgensen <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org
+Subject: [PATCH bpf v4 1/2] bpf: Resolve fext program type when checking map compatibility
+Date:   Wed, 14 Dec 2022 02:05:15 +0100
+Message-Id: <20221214010517.668943-1-toke@redhat.com>
 X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -85,79 +86,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit in the Fixes tag refactored the check for zeroed memory in
-libbpf_validate_opts() into a separate libbpf_is_mem_zeroed() function.
-This function has a 'len' argument of the signed 'ssize_t' type, which in
-both callers is computed by subtracting two unsigned size_t values from
-each other. In both subtractions, one of the values being subtracted is
-converted to 'ssize_t', while the other stays 'size_t'.
+The bpf_prog_map_compatible() check makes sure that BPF program types are
+not mixed inside BPF map types that can contain programs (tail call maps,
+cpumaps and devmaps). It does this by setting the fields of the map->owner
+struct to the values of the first program being checked against, and
+rejecting any subsequent programs if the values don't match.
 
-The problem with this is that, because both sizes are the same
-rank ('ssize_t' is defined as 'long' and 'size_t' is 'unsigned long'), the
-type of the mixed-sign arithmetic operation ends up being converted back to
-unsigned. This means it can underflow if the user-specified size in
-opts->sz is smaller than the size of the type as defined by libbpf. If that
-happens, it will cause out-of-bounds reads in libbpf_is_mem_zeroed().
+One of the values being set in the map owner struct is the program type,
+and since the code did not resolve the prog type for fext programs, the map
+owner type would be set to PROG_TYPE_EXT and subsequent loading of programs
+of the target type into the map would fail.
 
-To fix this, change libbpf_is_mem_zeroed() to take unsigned start and end
-offsets instead of a signed length. This avoids all casts between signed
-and unsigned types and should hopefully prevent a similar error from
-reappearing in the future.
+This bug is seen in particular for XDP programs that are loaded as
+PROG_TYPE_EXT using libxdp; these cannot insert programs into devmaps and
+cpumaps because the check fails as described above.
 
-Fixes: 3ec84f4b1638 ("libbpf: Add bpf_cookie support to bpf_link_create() API")
+Fix the bug by resolving the fext program type to its target program type
+as elsewhere in the verifier. This requires constifying the parameter of
+resolve_prog_type() to avoid a compiler warning from the new call site.
+
+v3:
+- Add Yonghong's ACk
+
+Fixes: f45d5b6ce2e8 ("bpf: generalise tail call map compatibility check")
+Acked-by: Yonghong Song <yhs@fb.com>
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- tools/lib/bpf/libbpf_internal.h | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ include/linux/bpf_verifier.h | 2 +-
+ kernel/bpf/core.c            | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 377642ff51fc..92375a86b15c 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -267,13 +267,14 @@ void *libbpf_add_mem(void **data, size_t *cap_cnt, size_t elem_sz,
- 		     size_t cur_cnt, size_t max_cnt, size_t add_cnt);
- int libbpf_ensure_mem(void **data, size_t *cap_cnt, size_t elem_sz, size_t need_cnt);
- 
--static inline bool libbpf_is_mem_zeroed(const char *p, ssize_t len)
-+static inline bool libbpf_is_mem_zeroed(const char *obj,
-+					size_t off_start, size_t off_end)
- {
--	while (len > 0) {
-+	const char *p;
-+
-+	for (p = obj + off_start; p < obj + off_end; p++) {
- 		if (*p)
- 			return false;
--		p++;
--		len--;
- 	}
- 	return true;
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 9e1e6965f407..0eb8f035b3d9 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -642,7 +642,7 @@ static inline u32 type_flag(u32 type)
  }
-@@ -286,7 +287,7 @@ static inline bool libbpf_validate_opts(const char *opts,
- 		pr_warn("%s size (%zu) is too small\n", type_name, user_sz);
- 		return false;
- 	}
--	if (!libbpf_is_mem_zeroed(opts + opts_sz, (ssize_t)user_sz - opts_sz)) {
-+	if (!libbpf_is_mem_zeroed(opts, opts_sz, user_sz)) {
- 		pr_warn("%s has non-zero extra bytes\n", type_name);
- 		return false;
- 	}
-@@ -309,11 +310,10 @@ static inline bool libbpf_validate_opts(const char *opts,
- 	} while (0)
  
- #define OPTS_ZEROED(opts, last_nonzero_field)				      \
--({									      \
--	ssize_t __off = offsetofend(typeof(*(opts)), last_nonzero_field);     \
--	!(opts) || libbpf_is_mem_zeroed((const void *)opts + __off,	      \
--					(opts)->sz - __off);		      \
--})
-+	(!(opts) || libbpf_is_mem_zeroed((const void *)opts,		      \
-+					 offsetofend(typeof(*(opts)),	      \
-+						     last_nonzero_field),     \
-+					 (opts)->sz))
+ /* only use after check_attach_btf_id() */
+-static inline enum bpf_prog_type resolve_prog_type(struct bpf_prog *prog)
++static inline enum bpf_prog_type resolve_prog_type(const struct bpf_prog *prog)
+ {
+ 	return prog->type == BPF_PROG_TYPE_EXT ?
+ 		prog->aux->dst_prog->type : prog->type;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 25a54e04560e..17ab3e15ac25 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2088,6 +2088,7 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+ bool bpf_prog_map_compatible(struct bpf_map *map,
+ 			     const struct bpf_prog *fp)
+ {
++	enum bpf_prog_type prog_type = resolve_prog_type(fp);
+ 	bool ret;
  
- enum kern_feature_id {
- 	/* v4.14: kernel support for program & map names. */
+ 	if (fp->kprobe_override)
+@@ -2098,12 +2099,12 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
+ 		/* There's no owner yet where we could check for
+ 		 * compatibility.
+ 		 */
+-		map->owner.type  = fp->type;
++		map->owner.type  = prog_type;
+ 		map->owner.jited = fp->jited;
+ 		map->owner.xdp_has_frags = fp->aux->xdp_has_frags;
+ 		ret = true;
+ 	} else {
+-		ret = map->owner.type  == fp->type &&
++		ret = map->owner.type  == prog_type &&
+ 		      map->owner.jited == fp->jited &&
+ 		      map->owner.xdp_has_frags == fp->aux->xdp_has_frags;
+ 	}
 -- 
 2.38.1
 
