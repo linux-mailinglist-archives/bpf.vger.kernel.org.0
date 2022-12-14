@@ -2,80 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F49164CFB0
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 19:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B804864D016
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 20:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238884AbiLNSoZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 13:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        id S238629AbiLNTa5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 14:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238892AbiLNSoU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 13:44:20 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15FA2A945
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:44:15 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d15so4280923pls.6
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:44:15 -0800 (PST)
+        with ESMTP id S238816AbiLNTaz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 14:30:55 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE05240A5
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 11:30:54 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id v8so24058484edi.3
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 11:30:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Cw3B/81u2H2+N7G7TRZJRJnoU5pzkMNrTipR+QI1Vp8=;
-        b=Q0cwVZkQj/5qxPW5Mr42GmlV37bQqcySReLDNfHGO4dIbWXhxVQS//C3n4pBa/7SYh
-         rMHfjkk2sSlHm+F/HlgDML3TXO8QNZa76xfPB9VV7bRRcAq1yTvCbCfQqtt508LRhdqF
-         mBJttilrVkUacrwHuFUNdCoyINVUYwjXuDSqTHY3wuIj65hSUIAerqZufcc2NvBSw4kh
-         /Cr1BUSvKv5JIUIiq+/FhusoNFOwGFD8F9oqTG3fgFJ74dtgtruvgziXiur9f2slv0rG
-         VjO4fLw7UQrknzq81f3bAIIEIIcb/VT+FRUt+3O510VfnU/FP3IFifsie1KLHLRw7Wmx
-         bp2A==
+        bh=SAj/AUS9uDQOFWtQNLTyFQP3TjGhdZziIo7t6N/rw5M=;
+        b=bZTgr1NwTkG4P5Gqu/VKJM1PPjy+syeeqrtkB39d2u7KBJjNM43V0C6smrDrr9HjWb
+         THkcn8oskYoffzvRz5JpOJd90daQVr5Q3fJo1BSZWr/f3aF1QNhPoJV/0l7E11tidPoH
+         8UyjTfEWegva6cSjCWCgNTEyiGX4zX8H7hdztRjf8UYyhdNVTiGz12kOWXi7CuuPshEm
+         oY1HGwVUPxWmvmQlfcpbTqxrb7DDvWddf94XVxP+ktUF8/CqPlsD1R7FfLCIhSg0wlTF
+         6qCWIej81EyII8NePrda1U/RO7AUP9PXDdFsJ9Z1pDHzEeO3mq7lLc+YGvdkTQepETpJ
+         Rofg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Cw3B/81u2H2+N7G7TRZJRJnoU5pzkMNrTipR+QI1Vp8=;
-        b=ms8UXCiTfEqKpTqmj3QcUhTxx0LKNinaUUjhOWq7kXFEqOwTeUBeTXQDyUrB+CFCF4
-         cy30bgQTLrNd/6WViOIQtiIQWu9/Zfi/wUAmPafAQZ8BJwDB6Pudyx3I+vLhhjRfsZfj
-         25rxpWCaoYXlPEPXNL8gZOZGT04FeaCIuNsdNu3M9ApWniEHbXHkNk3N2K3BtFtFnB8K
-         yOYAO/uzw7DrcFgBezNBtVFkE25PlGX9UNjEhrDokW2IerGegPqPOw7aqHlZ0D0/fqop
-         Vudvza5EneGncQ/qoMchQYtPEGm14iNKw3QuqexoLViOLHt3tn8ut1dLFXZZa4BiTomR
-         BU3Q==
-X-Gm-Message-State: AFqh2kpkUhnML43qGXUzahI1E8QCOas9tr2wMOHhUcEp6GQJfNez0a1o
-        u+cvJR1HIC1r2HCbqCAIRcMKbsroU1Q4LEVJXATS1A==
-X-Google-Smtp-Source: AMrXdXsE/DTSMUCTV3gxuVwfJz087oOaEvx9mV4YqNsqVW2nzRFnf5s3qjXuJnAzjA3MV5MGBwmxJlqxGonZh6GxORU=
-X-Received: by 2002:a17:90a:c389:b0:218:9107:381b with SMTP id
- h9-20020a17090ac38900b002189107381bmr390975pjt.75.1671043454940; Wed, 14 Dec
- 2022 10:44:14 -0800 (PST)
+        bh=SAj/AUS9uDQOFWtQNLTyFQP3TjGhdZziIo7t6N/rw5M=;
+        b=8SHIuL26sKhVbWeg42NWu4jXFd8QhSXjmSeKBIFrupkEgyBajd44ZVfmTR+YGKAhje
+         BNouIO2++IYkpV7OARVfEmgxeURDUqtDf0p5GzctpEQM93kohUH2Ru3jD0AgH7LQvBcY
+         vSOa0yTW5syHj98dN+HX4G7Q242tN7z5KOR11gHvy2mItDTSl9rF+OShtZF8P7jtcN0/
+         P9HD2t4BrPpgCTCkMGNeD5CujirfRFfzEnAgqULRqz90dJ5lmDdvHSY0AGW1Gjf2oxFO
+         9yf8Z3QX9yq33BY1qdqbbRc6JnfjgtU8ye4RTHKli0/DdWrXvp/zH9kcpCDQ2fq3SKDJ
+         obfA==
+X-Gm-Message-State: ANoB5pknF2g3Cf8Y3Ka0rVMyi0jsoJmKxxWLbkdXI98U/eGlyVrRLDdE
+        A9/3dR4IXx5/UUdy0MUJR2UofRhc/ucyflhcRhU=
+X-Google-Smtp-Source: AA0mqf7MhRGnNalO7mgYq2FBCJ7VUJY6pQgDYVKhVJlqyh5JB/JvrjDNh6TBctqlc2yzwid2fbPpXVDPeSoGzXW/0+Q=
+X-Received: by 2002:a05:6402:2421:b0:461:524f:a8f4 with SMTP id
+ t33-20020a056402242100b00461524fa8f4mr87121606eda.260.1671046252834; Wed, 14
+ Dec 2022 11:30:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20221213023605.737383-1-sdf@google.com> <20221213023605.737383-9-sdf@google.com>
- <7ca8ac2c-7c07-a52f-ec17-d1ba86fa45ab@redhat.com> <CAKH8qBvCxnJ2-5gd9j1HYxMA8CNi6cQM-5WOUBghiZjHUHya3A@mail.gmail.com>
- <4bac619d-8767-1364-1924-78c05b1ecf88@redhat.com> <87a63qgt30.fsf@toke.dk> <de85f811-8b2f-3ded-53b4-5f6d5e165e04@linux.dev>
-In-Reply-To: <de85f811-8b2f-3ded-53b4-5f6d5e165e04@linux.dev>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 14 Dec 2022 10:44:02 -0800
-Message-ID: <CAKH8qBviEiSFb8J5RiEE-xeGFrbLhbco4S=LSkwtqBnG5_udvQ@mail.gmail.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v4 08/15] veth: Support RX XDP metadata
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <20221214010046.668024-1-toke@redhat.com>
+In-Reply-To: <20221214010046.668024-1-toke@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 14 Dec 2022 11:30:40 -0800
+Message-ID: <CAEf4BzZOYD7YEgzWz08Q7sZ8wMVf+kiP7Aw1tm4_wN0_mNDrhA@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: Fix signedness confusion when using libbpf_is_mem_zeroed()
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,114 +76,134 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 14, 2022 at 10:09 AM Martin KaFai Lau <martin.lau@linux.dev> wr=
-ote:
+On Tue, Dec 13, 2022 at 5:01 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On 12/14/22 2:47 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > Jesper Dangaard Brouer <jbrouer@redhat.com> writes:
-> >
-> >> On 13/12/2022 21.42, Stanislav Fomichev wrote:
-> >>> On Tue, Dec 13, 2022 at 7:55 AM Jesper Dangaard Brouer
-> >>> <jbrouer@redhat.com> wrote:
-> >>>>
-> >>>>
-> >>>> On 13/12/2022 03.35, Stanislav Fomichev wrote:
-> >>>>> The goal is to enable end-to-end testing of the metadata for AF_XDP=
-.
-> >>>>>
-> >>>>> Cc: John Fastabend <john.fastabend@gmail.com>
-> >>>>> Cc: David Ahern <dsahern@gmail.com>
-> >>>>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> >>>>> Cc: Jakub Kicinski <kuba@kernel.org>
-> >>>>> Cc: Willem de Bruijn <willemb@google.com>
-> >>>>> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> >>>>> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-> >>>>> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> >>>>> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-> >>>>> Cc: Maryam Tahhan <mtahhan@redhat.com>
-> >>>>> Cc: xdp-hints@xdp-project.net
-> >>>>> Cc: netdev@vger.kernel.org
-> >>>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> >>>>> ---
-> >>>>>     drivers/net/veth.c | 24 ++++++++++++++++++++++++
-> >>>>>     1 file changed, 24 insertions(+)
-> >>>>>
-> >>>>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> >>>>> index 04ffd8cb2945..d5491e7a2798 100644
-> >>>>> --- a/drivers/net/veth.c
-> >>>>> +++ b/drivers/net/veth.c
-> >>>>> @@ -118,6 +118,7 @@ static struct {
-> >>>>>
-> >>>>>     struct veth_xdp_buff {
-> >>>>>         struct xdp_buff xdp;
-> >>>>> +     struct sk_buff *skb;
-> >>>>>     };
-> >>>>>
-> >>>>>     static int veth_get_link_ksettings(struct net_device *dev,
-> >>>>> @@ -602,6 +603,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struc=
-t veth_rq *rq,
-> >>>>>
-> >>>>>                 xdp_convert_frame_to_buff(frame, xdp);
-> >>>>>                 xdp->rxq =3D &rq->xdp_rxq;
-> >>>>> +             vxbuf.skb =3D NULL;
-> >>>>>
-> >>>>>                 act =3D bpf_prog_run_xdp(xdp_prog, xdp);
-> >>>>>
-> >>>>> @@ -823,6 +825,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct =
-veth_rq *rq,
-> >>>>>         __skb_push(skb, skb->data - skb_mac_header(skb));
-> >>>>>         if (veth_convert_skb_to_xdp_buff(rq, xdp, &skb))
-> >>>>>                 goto drop;
-> >>>>> +     vxbuf.skb =3D skb;
-> >>>>>
-> >>>>>         orig_data =3D xdp->data;
-> >>>>>         orig_data_end =3D xdp->data_end;
-> >>>>> @@ -1601,6 +1604,21 @@ static int veth_xdp(struct net_device *dev, =
-struct netdev_bpf *xdp)
-> >>>>>         }
-> >>>>>     }
-> >>>>>
-> >>>>> +static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *ti=
-mestamp)
-> >>>>> +{
-> >>>>> +     *timestamp =3D ktime_get_mono_fast_ns();
-> >>>>
-> >>>> This should be reading the hardware timestamp in the SKB.
-> >>>>
-> >>>> Details: This hardware timestamp in the SKB is located in
-> >>>> skb_shared_info area, which is also available for xdp_frame (current=
-ly
-> >>>> used for multi-buffer purposes).  Thus, when adding xdp-hints "store=
-"
-> >>>> functionality, it would be natural to store the HW TS in the same pl=
-ace.
-> >>>> Making the veth skb/xdp_frame code paths able to share code.
-> >>>
-> >>> Does something like the following look acceptable as well?
-> >>>
-> >>> *timestamp =3D skb_hwtstamps(_ctx->skb)->hwtstamp;
+> The commit in the Fixes tag refactored the check for zeroed memory in
+> libbpf_validate_opts() into a separate libbpf_is_mem_zeroed() function.
+> This function has a 'len' argument of the signed 'ssize_t' type, which in
+> both callers is computed by subtracting two unsigned size_t values from
+> each other. In both subtractions, one of the values being subtracted is
+> converted to 'ssize_t', while the other stays 'size_t'.
 >
-> If it is to test the kfunc and ensure veth_xdp_rx_timestamp is called, th=
-is
-> alone should be enough. skb_hwtstamps(_ctx->skb)->hwtstamp should be 0 if
-> hwtstamp is unavailable?  The test can initialize the 'u64 *timestamp' ar=
-g to
-> non-zero first.  If it is not good enough, an fentry tracing can be done =
+> The problem with this is that, because both sizes are the same
+> rank ('ssize_t' is defined as 'long' and 'size_t' is 'unsigned long'), th=
+e
+> type of the mixed-sign arithmetic operation ends up being converted back =
 to
-> veth_xdp_rx_timestamp to ensure it is called also.  There is also fmod_re=
-t that
-> could change the return value but the timestamp is not the return value t=
-hough.
->
-> If the above is not enough, another direction of thought could be doing i=
-t
-> through bpf_prog_test_run_xdp() but it will need a way to initialize the
-> veth_xdp_buff.
->
-> That said, overall, I don't think it is a good idea to bend the
-> veth_xdp_rx_timestamp kfunc too much only for testing purpose unless ther=
-e is no
-> other way out.
+> unsigned. This means it can underflow if the user-specified size in
+> opts->sz is smaller than the size of the type as defined by libbpf. If th=
+at
+> happens, it will cause out-of-bounds reads in libbpf_is_mem_zeroed().
 
-Oh, good point about just making sure veth_xdp_rx_timestamp returns
-timestamp=3D0. That should be enough, thanks!
+hmm... but libbpf_is_mem_zeroed expects signed ssize_t, so that
+"underflow" will turn into a proper negative ssize_t value. What am I
+missing? Seems to be working fine:
+
+$ cat test.c
+#include <stdio.h>
+
+void testit(ssize_t sz)
+{
+        printf("%zd\n", sz);
+}
+
+int main()
+{
+        ssize_t slarge =3D 100;
+        size_t ularge =3D 100;
+        ssize_t ssmall =3D 50;
+        size_t usmall =3D 50;
+
+        testit(ssmall - slarge);
+        testit(ssmall - ularge);
+        testit(usmall - slarge);
+        testit(usmall - ularge);
+}
+
+$ cc test.c && ./a.out
+-50
+-50
+-50
+-50
+
+
+>
+> To fix this, change libbpf_is_mem_zeroed() to take unsigned start and end
+> offsets instead of a signed length. This avoids all casts between signed
+> and unsigned types and should hopefully prevent a similar error from
+> reappearing in the future.
+>
+> Fixes: 3ec84f4b1638 ("libbpf: Add bpf_cookie support to bpf_link_create()=
+ API")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/lib/bpf/libbpf_internal.h | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
+nal.h
+> index 377642ff51fc..92375a86b15c 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -267,13 +267,14 @@ void *libbpf_add_mem(void **data, size_t *cap_cnt, =
+size_t elem_sz,
+>                      size_t cur_cnt, size_t max_cnt, size_t add_cnt);
+>  int libbpf_ensure_mem(void **data, size_t *cap_cnt, size_t elem_sz, size=
+_t need_cnt);
+>
+> -static inline bool libbpf_is_mem_zeroed(const char *p, ssize_t len)
+> +static inline bool libbpf_is_mem_zeroed(const char *obj,
+> +                                       size_t off_start, size_t off_end)
+>  {
+> -       while (len > 0) {
+> +       const char *p;
+> +
+> +       for (p =3D obj + off_start; p < obj + off_end; p++) {
+>                 if (*p)
+>                         return false;
+> -               p++;
+> -               len--;
+>         }
+>         return true;
+>  }
+> @@ -286,7 +287,7 @@ static inline bool libbpf_validate_opts(const char *o=
+pts,
+>                 pr_warn("%s size (%zu) is too small\n", type_name, user_s=
+z);
+>                 return false;
+>         }
+> -       if (!libbpf_is_mem_zeroed(opts + opts_sz, (ssize_t)user_sz - opts=
+_sz)) {
+> +       if (!libbpf_is_mem_zeroed(opts, opts_sz, user_sz)) {
+>                 pr_warn("%s has non-zero extra bytes\n", type_name);
+>                 return false;
+>         }
+> @@ -309,11 +310,10 @@ static inline bool libbpf_validate_opts(const char =
+*opts,
+>         } while (0)
+>
+>  #define OPTS_ZEROED(opts, last_nonzero_field)                           =
+     \
+> -({                                                                      =
+     \
+> -       ssize_t __off =3D offsetofend(typeof(*(opts)), last_nonzero_field=
+);     \
+> -       !(opts) || libbpf_is_mem_zeroed((const void *)opts + __off,      =
+     \
+> -                                       (opts)->sz - __off);             =
+     \
+> -})
+> +       (!(opts) || libbpf_is_mem_zeroed((const void *)opts,             =
+     \
+> +                                        offsetofend(typeof(*(opts)),    =
+     \
+> +                                                    last_nonzero_field),=
+     \
+> +                                        (opts)->sz))
+>
+>  enum kern_feature_id {
+>         /* v4.14: kernel support for program & map names. */
+> --
+> 2.38.1
+>
