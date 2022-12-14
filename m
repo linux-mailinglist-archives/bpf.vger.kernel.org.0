@@ -2,134 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A07AB64CDDF
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 17:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FB164CDF9
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 17:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238779AbiLNQVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 11:21:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
+        id S238979AbiLNQ2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 11:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238711AbiLNQVf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 11:21:35 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92282C9;
-        Wed, 14 Dec 2022 08:21:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1671034893; x=1702570893;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sugwmwrUIAbwUVd9kUUcbnqMzWklglljdUgzpTG789o=;
-  b=HGnDWEVEEFs82G5oXn1K7JNd1hyZhblpDhYzT/48TneA7w9Hi1QUek5s
-   YS1RcYq9PW4xVQ2RYbAIoxgh04wfoffBtejEO4tX35Umv0JE8C0xWldEJ
-   rGfIBd/AOoT6ASYeZRe5CNLe9qgz7F9DT0kK6/VIuHIOjAusqHnKc0W8e
-   YK61SXjAen1i72ek46pYydcKTNrDiGtXQHhnvwU+J/b6ESj1WDrclo5wY
-   gtZCyC3iBLeI0Fmr6sgsHOK4+5d732V+YgABIVdgL/1EjNtHR2PmCwwNW
-   nqC32EZ8EllECpFl+mXn5bReoihuL89Ukv3eY6wdOclvdHaa5Qk4kCqiH
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="404716272"
-X-IronPort-AV: E=Sophos;i="5.96,244,1665471600"; 
-   d="scan'208";a="404716272"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2022 08:21:32 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="642559944"
-X-IronPort-AV: E=Sophos;i="5.96,244,1665471600"; 
-   d="scan'208";a="642559944"
-Received: from joe-255.igk.intel.com (HELO localhost) ([172.22.229.67])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2022 08:21:20 -0800
-Date:   Wed, 14 Dec 2022 17:21:17 +0100
-From:   Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        dri-devel@lists.freedesktop.org, Song Liu <song@kernel.org>,
-        linux-mtd@lists.infradead.org, Stanislav Fomichev <sdf@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Richard Weinberger <richard@nod.at>, x86@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, ilay.bahat1@gmail.com,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Yonghong Song <yhs@fb.com>, Paolo Abeni <pabeni@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Petr Mladek <pmladek@suse.com>,
-        david.keisarschm@mail.huji.ac.il,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        intel-gfx@lists.freedesktop.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Borislav Petkov <bp@alien8.de>, Hannes Reinecke <hare@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        bpf@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        Hao Luo <haoluo@google.com>, linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        aksecurity@gmail.com, Jiri Olsa <jolsa@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 1/5] Renaming weak prng invocations -
- prandom_bytes_state, prandom_u32_state
-Message-ID: <20221214162117.GC1062210@linux.intel.com>
-References: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
- <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
- <Y5c8KLzJFz/XZMiM@zx2c4.com>
- <20221214123358.GA1062210@linux.intel.com>
- <CANn89iJtK4m1cWvCwp=L_rEOEBa+B1kLZJAw0D9_cYPQcAj+Mw@mail.gmail.com>
+        with ESMTP id S238978AbiLNQ2O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 11:28:14 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154B963CD
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:28:13 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id a19so7174419ljk.0
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:28:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=t5N4IGKMjJxlWZiZZvOkjVIAJnSXFecRTmvlK4ztbDY=;
+        b=Ml0u3hvHObfAEL9dFZClRxq/4RdqQeEY+aCDo0/ijWyCNMW+Vgi2LZCeNDue2KHscx
+         VQLHsxUAcG5CZWY0zSShoCu7KI93BqjFkW3K5alePluNStjw2MgA3zGwNwcjd+8d236K
+         bqrFiHCWZG+FvcRUmrmyf7VC1+suwvqpR8PrbsgF/KCS4y4pRwa5szOXKYt/wsCBy7mE
+         hiWEn4Z/fsg1IT23ykR7PR+h/4H8LfUv/HZFt/qQAYkzXE7k6FTX6T2VxBlaqLc4G20s
+         JDlKW6H4bcb6W0izRY6+k2x2bQoMCO8E2Y0FCb90BygMebHJI9R8ZEx82lhFrxSzz7Zn
+         1Zgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t5N4IGKMjJxlWZiZZvOkjVIAJnSXFecRTmvlK4ztbDY=;
+        b=tyrOdOjVSQmis30qEZqDcupdL1uEhFystz3TojqnqpxLNi25Ad+wRqdVo0JCt8N5Ht
+         k5jrU47ljB8LNWiddo5WXdBFhrBGILo0ahvit2KnnHaKRZigrhRqCq69oYekIgO2q9Tn
+         ot0D0D1AOwHRi/A0sZre/r4eIr+7YdC9T5ZXm0pN0RsRcD7H6AXWtY34DEL9MF6bwcwv
+         j7ZfDbjebT8/20xeWDW1ZEolOPUG4f0JcZHI8E5Dayshk/t3RCY0vXiT1j3XFao347Qg
+         ncdP0IW3d154P93lRsBVhhd9D/A3BDJlmo5QkThaTAyHbfzdkBLsmhmqWCL+E0q2pJmW
+         neAg==
+X-Gm-Message-State: ANoB5pk7XQjP8NC786oTKSR+/axvUKB9vl5F7NDGrt7V16C4tKMl7n5u
+        YpFn6ZZru6xtr7PcrYf2T1A=
+X-Google-Smtp-Source: AA0mqf5XByl6Hylr96+mo2QL7pIqxvFRcsNEJmk6cJW1eQxV3oytOW/zOfKaWEssd1VgdXtdIUVL1Q==
+X-Received: by 2002:a05:651c:1078:b0:27b:57da:b39b with SMTP id y24-20020a05651c107800b0027b57dab39bmr3214721ljm.23.1671035291503;
+        Wed, 14 Dec 2022 08:28:11 -0800 (PST)
+Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id z15-20020a05651c11cf00b0027cf0ecab3fsm233567ljo.138.2022.12.14.08.28.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Dec 2022 08:28:11 -0800 (PST)
+Message-ID: <c5f8a5d0b87a48715aa66a3e27f4f17b8544f87a.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 0/7] stricter register ID checking in regsafe()
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
+        memxor@gmail.com, ecree.xilinx@gmail.com
+Date:   Wed, 14 Dec 2022 18:28:09 +0200
+In-Reply-To: <CAEf4BzbUxdxJMZ2Ln+7jD8+kq0hiea-XJU4VY5W06dJ_KWJC3Q@mail.gmail.com>
+References: <20221209135733.28851-1-eddyz87@gmail.com>
+         <CAEf4BzbUxdxJMZ2Ln+7jD8+kq0hiea-XJU4VY5W06dJ_KWJC3Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89iJtK4m1cWvCwp=L_rEOEBa+B1kLZJAw0D9_cYPQcAj+Mw@mail.gmail.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 14, 2022 at 04:15:49PM +0100, Eric Dumazet wrote:
-> On Wed, Dec 14, 2022 at 1:34 PM Stanislaw Gruszka
-> <stanislaw.gruszka@linux.intel.com> wrote:
-> >
-> > On Mon, Dec 12, 2022 at 03:35:20PM +0100, Jason A. Donenfeld wrote:
-> > > Please CC me on future revisions.
-> > >
-> > > As of 6.2, the prandom namespace is *only* for predictable randomness.
-> > > There's no need to rename anything. So nack on this patch 1/5.
-> >
-> > It is not obvious (for casual developers like me) that p in prandom
-> > stands for predictable. Some renaming would be useful IMHO.
-> 
-> Renaming makes backports more complicated, because stable teams will
-> have to 'undo' name changes.
-> Stable teams are already overwhelmed by the amount of backports, and
-> silly merge conflicts.
+On Tue, 2022-12-13 at 16:34 -0800, Andrii Nakryiko wrote:
+> On Fri, Dec 9, 2022 at 5:58 AM Eduard Zingerman <eddyz87@gmail.com> wrote=
+:
+> >=20
+> > This patch-set consists of a series of bug fixes for register ID
+> > tracking in verifier.c:states_equal()/regsafe() functions:
+> >  - for registers of type PTR_TO_MAP_{KEY,VALUE}, PTR_TO_PACKET[_META]
+> >    the regsafe() should call check_ids() even if registers are
+> >    byte-to-byte equal;
+> >  - states_equal() must maintain idmap that covers all function frames
+> >    in the state because functions like mark_ptr_or_null_regs() operate
+> >    on all registers in the state;
+> >  - regsafe() must compare spin lock ids for PTR_TO_MAP_VALUE registers.
+> >=20
+> > The last point covers issue reported by Kumar Kartikeya Dwivedi in [1],
+> > I borrowed the test commit from there.
+> > Note, that there is also an issue with register id tracking for
+> > scalars described here [2], it would be addressed separately.
+> >=20
+>=20
+> Awesome set of patches, thanks for working on this! I left a few
+> comments and suggestions, please take a look, and if they do make
+> sense, consider sending follow up patches.
+>=20
+> Let's really try to use asm() next time for selftests, though.
+>=20
+> It would be awesome to somehow automatically move test_verifier's
+> tests to this test_progs-based embedded assembly way, but that
+> probably takes some Python hackery (awesome project for some curious
+> soul, for sure).
+>=20
+> Anyways, back to the point I wanted to make. Given you've clearly
+> thought about all the ID checks a lot, consider checking refsafe()
+> (not regsafe()!) as well. I think we should do check_ids() there as
+> well. And you did all the preliminary work with making idmap
+> persistent across all frames. Just something to improve (and looks
+> straightforward, unlike many other things you've dealt with recently
+> ;).
 
-Since when backporting problems is valid argument for stop making
-changes? That's new for me.
+Makes sense, I'll work on it.
 
-> linux kernel is not for casual readers.
+>=20
+> Anyways, great work, thanks!
 
-Sure.
+Thank you.
 
-Regards
-Stanislaw
+>=20
+> > [1] https://lore.kernel.org/bpf/20221111202719.982118-1-memxor@gmail.co=
+m/
+> > [2] https://lore.kernel.org/bpf/20221128163442.280187-2-eddyz87@gmail.c=
+om/
+> >=20
+> > Eduard Zingerman (6):
+> >   bpf: regsafe() must not skip check_ids()
+> >   selftests/bpf: test cases for regsafe() bug skipping check_id()
+> >   bpf: states_equal() must build idmap for all function frames
+> >   selftests/bpf: verify states_equal() maintains idmap across all frame=
+s
+> >   bpf: use check_ids() for active_lock comparison
+> >   selftests/bpf: test case for relaxed prunning of active_lock.id
+> >=20
+> > Kumar Kartikeya Dwivedi (1):
+> >   selftests/bpf: Add pruning test case for bpf_spin_lock
+> >=20
+> >  include/linux/bpf_verifier.h                  |   4 +-
+> >  kernel/bpf/verifier.c                         |  48 ++++----
+> >  tools/testing/selftests/bpf/verifier/calls.c  |  82 +++++++++++++
+> >  .../bpf/verifier/direct_packet_access.c       |  54 +++++++++
+> >  .../selftests/bpf/verifier/spin_lock.c        | 114 ++++++++++++++++++
+> >  .../selftests/bpf/verifier/value_or_null.c    |  49 ++++++++
+> >  6 files changed, 324 insertions(+), 27 deletions(-)
+> >=20
+> > --
+> > 2.34.1
+> >=20
+
