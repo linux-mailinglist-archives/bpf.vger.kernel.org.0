@@ -2,51 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F366864C1ED
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 02:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F346864C208
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 02:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236660AbiLNBpy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 20:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        id S237001AbiLNByI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 20:54:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbiLNBpx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 20:45:53 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDE8CD4
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 17:45:52 -0800 (PST)
-Message-ID: <1a0436c5-2198-0c69-1306-872454d2fb13@linux.dev>
+        with ESMTP id S229532AbiLNByH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 20:54:07 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7282F1929B;
+        Tue, 13 Dec 2022 17:54:05 -0800 (PST)
+Message-ID: <74e48fc9-8f5d-4183-9f39-c4587c74a74e@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1670982350;
+        t=1670982843;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OHnbssF5kx+I5sG8VM+6P0tSAKVMpIa/fmv+Q6GDaC4=;
-        b=uz4jfsjNYp3jtf7QOLaTewU5JgJaMV5LI1EwzkiJFXMS4ZhUx4ZW/ElsvESG2c96hhMy2L
-        LCP3HnDaE9tDBWB5TJEaCwQUp/dgWbbOhE5CVewmUfU019v9iaJvBe4sh+CVmtC03FuTZo
-        3Pse2/OhTSJZpqdpNuPcO4hjy/Wp3HU=
-Date:   Tue, 13 Dec 2022 17:45:44 -0800
+        bh=GNg4/FrMFF9sXTLeG093TYFyexXEX026wSRyByZmxZg=;
+        b=LnsGOz/aHRiS0h47bpq4i8GzveVplZ2215QzabqvW9i7hEucZQK4C0LdzxA9PBTrGjl2Jv
+        bTZYQZO1UgC/xu9W485A2mtau4vTxm3OMYFv2lNdnKRAjYMRDIssJUF8F4KSe5Gz+cjS1+
+        7Hy/40pP7FYC03nDfxoiG7qvtWz8vII=
+Date:   Tue, 13 Dec 2022 17:53:58 -0800
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 06/15] bpf: Support consuming XDP HW metadata
- from fext programs
+Subject: Re: [PATCH bpf-next v4 05/15] bpf: XDP metadata RX kfuncs
 Content-Language: en-US
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
         kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
 References: <20221213023605.737383-1-sdf@google.com>
- <20221213023605.737383-7-sdf@google.com>
+ <20221213023605.737383-6-sdf@google.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20221213023605.737383-7-sdf@google.com>
+In-Reply-To: <20221213023605.737383-6-sdf@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -54,91 +60,129 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 12/12/22 6:35 PM, Stanislav Fomichev wrote:
-> From: Toke Høiland-Jørgensen <toke@redhat.com>
-> 
-> Instead of rejecting the attaching of PROG_TYPE_EXT programs to XDP
-> programs that consume HW metadata, implement support for propagating the
-> offload information. The extension program doesn't need to set a flag or
-> ifindex, it these will just be propagated from the target by the verifier.
-
-s/it/because/ ... these will just be propagated....
-
-> We need to create a separate offload object for the extension program,
-> though, since it can be reattached to a different program later (which
-> means we can't just inhering the offload information from the target).
-
-hmm.... inheriting?
-
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 11c558be4992..8686475f0dbe 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3021,6 +3021,14 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
->   			goto out_put_prog;
->   		}
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index ca22e8b8bd82..de6279725f41 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2477,6 +2477,8 @@ void bpf_offload_dev_netdev_unregister(struct bpf_offload_dev *offdev,
+>   				       struct net_device *netdev);
+>   bool bpf_offload_dev_match(struct bpf_prog *prog, struct net_device *netdev);
 >   
-> +		if (bpf_prog_is_dev_bound(prog->aux) &&
-
-
-> +		    (bpf_prog_is_offloaded(tgt_prog->aux) ||
-> +		     !bpf_prog_is_dev_bound(tgt_prog->aux) ||
-> +		     !bpf_offload_dev_match(prog, tgt_prog->aux->offload->netdev))) {
-
-hmm... tgt_prog->aux->offload does not look safe without taking bpf_devs_lock. 
-offload could be NULL, no?
-
-It probably needs a bpf_prog_dev_bound_match(prog, tgt_prog) which takes the lock.
-
-> +			err = -EINVAL;
-> +			goto out_put_prog;
-> +		}
+> +void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id);
 > +
->   		key = bpf_trampoline_compute_key(tgt_prog, NULL, btf_id);
->   	}
+
+This probably requires an inline version for !CONFIG_NET.
+
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index d434a994ee04..c3e501e3e39c 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2097,6 +2097,13 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
+>   	if (fp->kprobe_override)
+>   		return false;
 >   
+> +	/* When tail-calling from a non-dev-bound program to a dev-bound one,
+> +	 * XDP metadata helpers should be disabled. Until it's implemented,
+> +	 * prohibit adding dev-bound programs to tail-call maps.
+> +	 */
+> +	if (bpf_prog_is_dev_bound(fp->aux))
+> +		return false;
+> +
+>   	spin_lock(&map->owner.lock);
+>   	if (!map->owner.type) {
+>   		/* There's no owner yet where we could check for
+> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+> index f714c941f8ea..3b6c9023f24d 100644
+> --- a/kernel/bpf/offload.c
+> +++ b/kernel/bpf/offload.c
+> @@ -757,6 +757,29 @@ void bpf_dev_bound_netdev_unregister(struct net_device *dev)
+>   	up_write(&bpf_devs_lock);
+>   }
+>   
+> +void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
+> +{
+> +	const struct xdp_metadata_ops *ops;
+> +	void *p = NULL;
+> +
+> +	down_read(&bpf_devs_lock);
+> +	if (!prog->aux->offload || !prog->aux->offload->netdev)
+
+This happens when netdev is unregistered in the middle of bpf_prog_load and the 
+bpf_offload_dev_match() will eventually fail during dev_xdp_attach()? A comment 
+will be useful.
+
+> +		goto out;
+> +
+> +	ops = prog->aux->offload->netdev->xdp_metadata_ops;
+> +	if (!ops)
+> +		goto out;
+> +
+> +	if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP))
+> +		p = ops->xmo_rx_timestamp;
+> +	else if (func_id == xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH))
+> +		p = ops->xmo_rx_hash;
+> +out:
+> +	up_read(&bpf_devs_lock);
+> +
+> +	return p;
+> +}
+> +
+>   static int __init bpf_offload_init(void)
+>   {
+>   	int err;
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index e61fe0472b9b..5c6d6d61e57a 100644
+> index 203d8cfeda70..e61fe0472b9b 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -16524,11 +16524,6 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
->   	if (tgt_prog) {
->   		struct bpf_prog_aux *aux = tgt_prog->aux;
+> @@ -15479,12 +15479,35 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>   			    struct bpf_insn *insn_buf, int insn_idx, int *cnt)
+>   {
+>   	const struct bpf_kfunc_desc *desc;
+> +	void *xdp_kfunc;
 >   
-> -		if (bpf_prog_is_dev_bound(tgt_prog->aux)) {
-> -			bpf_log(log, "Replacing device-bound programs not supported\n");
-> -			return -EINVAL;
-> -		}
-> -
->   		for (i = 0; i < aux->func_info_cnt; i++)
->   			if (aux->func_info[i].type_id == btf_id) {
->   				subprog = i;
-> @@ -16789,10 +16784,22 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
->   	if (tgt_prog && prog->type == BPF_PROG_TYPE_EXT) {
->   		/* to make freplace equivalent to their targets, they need to
->   		 * inherit env->ops and expected_attach_type for the rest of the
-> -		 * verification
-> +		 * verification; we also need to propagate the prog offload data
-> +		 * for resolving kfuncs.
->   		 */
->   		env->ops = bpf_verifier_ops[tgt_prog->type];
->   		prog->expected_attach_type = tgt_prog->expected_attach_type;
-> +
-> +		if (bpf_prog_is_dev_bound(tgt_prog->aux)) {
-> +			if (bpf_prog_is_offloaded(tgt_prog->aux))
-> +				return -EINVAL;
-> +
-> +			prog->aux->dev_bound = true;
-> +			ret = __bpf_prog_dev_bound_init(prog,
-> +							tgt_prog->aux->offload->netdev);
-
-Same here for tgt_prog->aux->offload.  bpf_prog_dev_bound_init() will need to 
-take an extra dst_prog arg, like bpf_prog_dev_bound_init(prog, attr, dst_prog). 
-It should be called earlier in syscall.c.
-
-> +			if (ret)
-> +				return ret;
-> +		}
+>   	if (!insn->imm) {
+>   		verbose(env, "invalid kernel function call not eliminated in verifier pass\n");
+>   		return -EINVAL;
 >   	}
 >   
->   	/* store info about the attachment target that will be used later */
+> +	*cnt = 0;
+> +
+> +	if (xdp_is_metadata_kfunc_id(insn->imm)) {
+> +		if (!bpf_prog_is_dev_bound(env->prog->aux)) {
+
+The "xdp_is_metadata_kfunc_id() && (!bpf_prog_is_dev_bound() || 
+bpf_prog_is_offloaded())" test should have been done much earlier in 
+add_kfunc_call(). Then the later stage of the verifier does not have to keep 
+worrying about it like here.
+
+nit. may be rename xdp_is_metadata_kfunc_id() to bpf_dev_bound_kfunc_id() and 
+hide the "!bpf_prog_is_dev_bound() || bpf_prog_is_offloaded()" test into 
+bpf_dev_bound_kfunc_check(&env->log, env->prog).
+
+The change in fixup_kfunc_call could then become:
+
+	if (bpf_dev_bound_kfunc_id(insn->imm)) {
+		xdp_kfunc = bpf_dev_bound_resolve_kfunc(env->prog, insn->imm);
+		/* ... */
+	}
+
+> +			verbose(env, "metadata kfuncs require device-bound program\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (bpf_prog_is_offloaded(env->prog->aux)) {
+> +			verbose(env, "metadata kfuncs can't be offloaded\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		xdp_kfunc = bpf_dev_bound_resolve_kfunc(env->prog, insn->imm);
+> +		if (xdp_kfunc) {
+> +			insn->imm = BPF_CALL_IMM(xdp_kfunc);
+> +			return 0;
+> +		}
+> +
+> +		/* fallback to default kfunc when not supported by netdev */
+> +	}
+> +
+
 
