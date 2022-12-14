@@ -2,90 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2608C64CF30
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 19:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC4B64CF6B
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 19:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238971AbiLNSLA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 13:11:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
+        id S238693AbiLNS3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 13:29:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238629AbiLNSKr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 13:10:47 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BEB1170
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:10:44 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id y16so640518wrm.2
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:10:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nybxgdJczlK9xtFGjAbTfjb9qk52fvIL/a1+enwIgmM=;
-        b=rKhaXbQUggPZdCWaRsZFYOcBD7elT7dcVVUaN1vfyPFjGb2fI3BPdNaYhTmV3dAkeH
-         AbEME5Avhe7kOhXTGK0ULD4flL+51h2MXC8EGR0Uji1O7f85qriSdy+nwGZwWg/rx/hf
-         Sxx8UykaTQ//ct5rT9CwTZGcw2fZpUFPHOmLID8Uw2tnXibscF9WyVNCY25C9tR0WbS6
-         1vAueqKVhath4j5KpnK6822TBPKbPl9+49A0fwRswb9aOhefnnAEsYs5lsSfJhIuzg1T
-         bDLo57p31MqrmE2E08mIBBDAp9HLn3E8IqKpMnvZuW3qWauo2pAT9HUhGurOvYZJh4f4
-         m1uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nybxgdJczlK9xtFGjAbTfjb9qk52fvIL/a1+enwIgmM=;
-        b=SCN6cG0TdhveFCloDAYmuXS3SOrLzTBGyFE5TredeVxYXBqubkZIibI1XcbZkRZ2xJ
-         T4ghh/jZzRwgQWe8zHl48M9dJ/jNQb+WJHoWgY5NkVofKrVddczuTd//9lHyFPBjRCvq
-         q1rdJsOOOEzgUChQzHbsxNpDCFBICJacWPPuLKH4eemHSKZ8Og98s0im8HETpQt44itY
-         O6wxaMWBHopFHskS0Hkyk9DF7KMXEApoANaNbU1c2lWNRlvdIWYiXfkx/RE7rdcvsj40
-         9AH2YzxVHmuGQjbO3h7Paat+1Ioy5rDnQz/YMLnCsOaC7CiExLTtRz8iMBkGfmqOnaO7
-         QLbw==
-X-Gm-Message-State: ANoB5pmPpxrZrXmJnec3curWHSGcDgjI9tScHa+PYmzaqCajgwqFkSOl
-        2g/lqVKHYxw1U96PALJYwk/5XeRZyqWtxOB7e62qig==
-X-Google-Smtp-Source: AA0mqf6MNK/WLTJN3L8riDu3wQ0pF0PYVfu3IsI/9xxVW9bP9ieIXPzqBSmaRP+e8JOEzQlpXXS6Wj8B3/KM2j5KcZE=
-X-Received: by 2002:a5d:4a8c:0:b0:242:165e:7a79 with SMTP id
- o12-20020a5d4a8c000000b00242165e7a79mr28790047wrq.343.1671041443254; Wed, 14
- Dec 2022 10:10:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20221213232651.1269909-1-irogers@google.com> <Y5ncNQfPzq8qBP/f@kernel.org>
- <Y5oPQ0Cf/9JGME3n@kernel.org>
-In-Reply-To: <Y5oPQ0Cf/9JGME3n@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 14 Dec 2022 10:10:31 -0800
-Message-ID: <CAP-5=fW8n-8ayzjLj0q588d0ZVpTPOGNGLB0Oj2GkF7f7CA=cg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] build/libtraceevent resends
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S238586AbiLNS27 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 13:28:59 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A34F58D
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:28:57 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BEISlEt001171
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Dec 2022 13:28:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1671042531; bh=yBGs7uN391IpXsrDxRmFEUWTGiaryut5x17IYCOizWk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=iTvQW2ZcZl/RaloFVFvof3Xa5t0qJOPMbf9tEe1ZxUY/ml5As1AyeT37tSuPOcGw+
+         17vCGhEEjx9LOnZs3GLmkDSXWr8W/CTALV2Vj0BYRVQmlX/+14VYvEZc9cLvJWdXVL
+         9oIQx2LCrwfMWPFmSCPXfT4Hv2/oosDrkhOpQHhPv+0hz9gFTJV7qyI/FWZGTrENN7
+         84ztbhtlutCuVHyOA0sewiP3fT74UfRtl1dIyLBRPrb4K2WVewrJxycNUFMnma8otO
+         XQPs5XLQapq5t8UKt6SRlcg5Vr1Ov6Ww0fAJCCZS9NV3kc3QPwS8c73yxGFZtDnfx+
+         ysY4rmQix2LxQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 615B615C40A2; Wed, 14 Dec 2022 13:28:47 -0500 (EST)
+Date:   Wed, 14 Dec 2022 13:28:47 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        dri-devel@lists.freedesktop.org, Song Liu <song@kernel.org>,
+        linux-mtd@lists.infradead.org, Stanislav Fomichev <sdf@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Richard Weinberger <richard@nod.at>, x86@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, ilay.bahat1@gmail.com,
         Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Timothy Hayes <timothy.hayes@arm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        shaomin Deng <dengshaomin@cdjrlc.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Athira Jajeev <atrajeev@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        David Rientjes <rientjes@google.com>,
+        Yonghong Song <yhs@fb.com>, Paolo Abeni <pabeni@redhat.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Petr Mladek <pmladek@suse.com>,
+        david.keisarschm@mail.huji.ac.il,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        intel-gfx@lists.freedesktop.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Borislav Petkov <bp@alien8.de>, Hannes Reinecke <hare@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        bpf@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        Hao Luo <haoluo@google.com>, linux-scsi@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        aksecurity@gmail.com, Jiri Olsa <jolsa@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 1/5] Renaming weak prng invocations -
+ prandom_bytes_state, prandom_u32_state
+Message-ID: <Y5oV3zVhc2C2sUaF@mit.edu>
+References: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
+ <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
+ <Y5c8KLzJFz/XZMiM@zx2c4.com>
+ <20221214123358.GA1062210@linux.intel.com>
+ <CANn89iJtK4m1cWvCwp=L_rEOEBa+B1kLZJAw0D9_cYPQcAj+Mw@mail.gmail.com>
+ <20221214162117.GC1062210@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221214162117.GC1062210@linux.intel.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,106 +102,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 14, 2022 at 10:00 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Wed, Dec 14, 2022 at 11:22:45AM -0300, Arnaldo Carvalho de Melo escrev=
-eu:
-> > Em Tue, Dec 13, 2022 at 03:26:46PM -0800, Ian Rogers escreveu:
-> > > All patches on the acme perf/core branch.
+On Wed, Dec 14, 2022 at 05:21:17PM +0100, Stanislaw Gruszka wrote:
+> On Wed, Dec 14, 2022 at 04:15:49PM +0100, Eric Dumazet wrote:
+> > On Wed, Dec 14, 2022 at 1:34 PM Stanislaw Gruszka
+> > <stanislaw.gruszka@linux.intel.com> wrote:
 > > >
-> > > Resend incremental build fix python plugin:
-> > > https://lore.kernel.org/lkml/20221205225940.3079667-4-irogers@google.=
-com/
+> > > On Mon, Dec 12, 2022 at 03:35:20PM +0100, Jason A. Donenfeld wrote:
+> > > > Please CC me on future revisions.
+> > > >
+> > > > As of 6.2, the prandom namespace is *only* for predictable randomness.
+> > > > There's no need to rename anything. So nack on this patch 1/5.
 > > >
-> > > Break apart and resend libtraceevent debug logging support:
-> > > https://lore.kernel.org/linux-perf-users/20210923001024.550263-4-irog=
-ers@google.com/
-> > >
-> > > Switch "#if HAVE_LIBTRACEEVENT_TEP_FIELD_IS_RELATIVE" to "#if
-> > > MAKE_LIBTRACEEVENT_VERSION(1, 5, 0) <=3D LIBTRACEEVENT_VERSION",
-> > > ensuring trace-event.h is included as discussed on the mailing list.
-> > >
-> > > Resend removal of --group option:
-> > > https://lore.kernel.org/lkml/20220707195610.303254-1-irogers@google.c=
-om/
-> >
-> > Thanks, applied.
->
-> Building on arm64:
->
-> /home/acme/git/perf/tools/perf/util/evsel.c: In function =E2=80=98evsel__=
-rawptr=E2=80=99:
-> /home/acme/git/perf/tools/perf/util/evsel.c:2787:65: error: operator '<=
-=3D' has no right operand
->  2787 | #if MAKE_LIBTRACEEVENT_VERSION(1, 5, 0) <=3D LIBTRACEEVENT_VERSIO=
-N
->       |                                                                 ^
-> error: command '/usr/bin/gcc' failed with exit code 1
-> cp: cannot stat '/tmp/build/perf/python_ext_build/lib/perf*.so': No such =
-file or directory
->
-> make[2]: *** [Makefile.perf:651: /tmp/build/perf/python/perf.cpython-310-=
-aarch64-linux-gnu.so] Error 1
-> make[2]: *** Waiting for unfinished jobs....
->   LD      /tmp/build/perf/libbpf/staticobjs/libbpf-in.o
->
-> Trying to fix...
+> > > It is not obvious (for casual developers like me) that p in prandom
+> > > stands for predictable. Some renaming would be useful IMHO.
 
-Thanks, I suspect the CFLAGS aren't passed through maybe, given this
-is the python code. Perhaps an include of util/trace-event.h is also
-necessary, but I thought that was already present:
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/p=
-erf/util/evsel.c?h=3Dperf/core#n43
+I disagree.  pseudo-random has *always* menat "predictable".  And the
+'p' in prandom was originally "pseudo-random".  In userspace,
+random(3) is also pseudo-random, and is ***utterly*** predictable.  So
+the original use of prandom() was a bit more of an explicit nod to the
+fact that prandom is something which is inherently predictable.
 
-Thanks for digging into it,
-Ian
+So I don't think it's needed to rename it, whether it's to
+"predictable_rng_prandom_u32", or "no_you_idiot_dont_you_dare_use_it_for_cryptographi_purposes_prandom_u32".
 
-> > - Arnaldo
-> >
-> >
-> > > Ian Rogers (5):
-> > >   perf build: Fix python/perf.so library's name
-> > >   perf trace-event: Add libtraceevent version tools to header
-> > >   libtraceevent: Increase libtraceevent logging when verbose
-> > >   perf trace-event: Use version check to avoid 1 define
-> > >   perf evlist: Remove group option.
-> > >
-> > >  tools/perf/Documentation/perf-record.txt      |  4 ----
-> > >  tools/perf/Documentation/perf-top.txt         |  7 ++----
-> > >  tools/perf/Makefile.config                    |  8 +++----
-> > >  tools/perf/Makefile.perf                      |  2 +-
-> > >  tools/perf/builtin-record.c                   |  2 --
-> > >  tools/perf/builtin-stat.c                     |  6 -----
-> > >  tools/perf/builtin-top.c                      |  2 --
-> > >  tools/perf/builtin-trace.c                    |  2 +-
-> > >  tools/perf/tests/attr/README                  |  2 --
-> > >  tools/perf/tests/attr/test-record-group       | 22 -----------------=
---
-> > >  tools/perf/tests/attr/test-stat-group         | 17 --------------
-> > >  tools/perf/util/data-convert-bt.c             |  3 ++-
-> > >  tools/perf/util/debug.c                       | 10 +++++++++
-> > >  tools/perf/util/evlist.c                      |  2 +-
-> > >  tools/perf/util/evlist.h                      |  2 --
-> > >  tools/perf/util/evsel.c                       |  2 +-
-> > >  tools/perf/util/python.c                      | 10 +--------
-> > >  tools/perf/util/record.c                      |  7 ------
-> > >  tools/perf/util/record.h                      |  1 -
-> > >  .../util/scripting-engines/trace-event-perl.c |  2 +-
-> > >  .../scripting-engines/trace-event-python.c    |  2 +-
-> > >  tools/perf/util/sort.c                        |  3 ++-
-> > >  tools/perf/util/trace-event.h                 | 13 +++++++++++
-> > >  23 files changed, 39 insertions(+), 92 deletions(-)
-> > >  delete mode 100644 tools/perf/tests/attr/test-record-group
-> > >  delete mode 100644 tools/perf/tests/attr/test-stat-group
-> > >
-> > > --
-> > > 2.39.0.314.g84b9a713c41-goog
-> >
-> > --
-> >
-> > - Arnaldo
->
-> --
->
-> - Arnaldo
+I think we need to assume a certain base level of competence,
+especially for someone who is messing with security psensitive kernel
+code.  If a developer doesn't know that a prng is predictable, that's
+probably the *least* of the sort of mistakes that they might make.
+
+					- Ted
