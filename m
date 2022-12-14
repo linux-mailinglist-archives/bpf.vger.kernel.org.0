@@ -2,93 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 479F264D305
-	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 00:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A46864D32E
+	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 00:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbiLNXKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 18:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
+        id S229768AbiLNXT2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 18:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiLNXKT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 18:10:19 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF0C29832
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 15:10:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 657BC61C5B
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 23:10:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B3868C433F0;
-        Wed, 14 Dec 2022 23:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671059417;
-        bh=kPEvysOt03Ksj5GRNm9yxtICdYBt2AorVohilxq3cYM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ToE0NrWd6bRDnOUxvOWYgRklzgexREB2Ty+2MntqqZcOCggh8selfreohm1DUiVvw
-         MVcimEYXp9p28zodc3puYTw7++7PxJ2Rtunz5KjFP6rGEusDBQKpBg0c32ZNmDWs0i
-         vhbi52NaEpgCQzZZ/9XBiHBixEDktyIqVWMOGyoKgxXYfLdJQNnD5G+DchF7d77yXH
-         /HLSG7Gf0DQA5kaYumClVgdITRED9WgsrJ7kUIvKcZwN6nJ5J69zE6zxeum1/RZHZ5
-         zWiG0qXoFJFKfm+ET0bMpg2/D7JFk0zjtHwODCKEHW9vMM17qGk/WAeD2HjjxVv+P6
-         4dAngJFzXlTpw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 94386C41612;
-        Wed, 14 Dec 2022 23:10:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229752AbiLNXT0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 18:19:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EB54A5AF
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 15:18:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1671059922;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V3Niud/FDBKZ0PLlm6oSbfgMtWVA78sLZvuotPdg9K8=;
+        b=DdGCUi8Dh+j09Oz+c18XVgddbkXXbFhhmxbq5xVN1aca+weLrMj2BWP3/QxUVLRa9Ert2Y
+        igLE0RsRfoVcEKMIC3XpAk1WVthjM+A2dCm4r1yvNfPmR7A/zBUZpsf+kv170Fj/7DW+sp
+        AR73+kSTL2zPE1m8qYAozDfe7FRhNzk=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-106-IZF4Lv7LNNKaLUL1g4JNBg-1; Wed, 14 Dec 2022 18:18:39 -0500
+X-MC-Unique: IZF4Lv7LNNKaLUL1g4JNBg-1
+Received: by mail-ed1-f72.google.com with SMTP id v4-20020a056402348400b0046cbbc786bdso10493263edc.7
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 15:18:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V3Niud/FDBKZ0PLlm6oSbfgMtWVA78sLZvuotPdg9K8=;
+        b=GO6qi2chJTXJGjzDSgpBkipV8dc9xCqD4EyfYfwTVDYfSrzsSsxerKJLPGAKQQqbZH
+         Z5jQe/K2vjXCaJgFgpX9gEH4cEDCubY7xAm9zthLUkzULWXYnxPav7oTlc1iRlHU9RX+
+         aQujY4NWEBWg22Sy7oyX3NUhEJgvKXJBtAabEEmaxl0lo4BfnuUeoLqbk2l3O9yF5Hue
+         DmDfs30ciebLDWDe79Fxstifz+UhRZ6QexhIgO6J4IWRZbccseXQzP5NlVywrCI+0HNx
+         eJVg9FT6kUL5+yMTuTxyJu0l6IO87HTBlCwVbyeqO8xXW8G32PmoMs/sTnvEvwUuP2w1
+         4MfQ==
+X-Gm-Message-State: ANoB5pmOOhPAOZRrz6NzS0sGN2vY2TzF5KcMiMMvJdOY5Mo3ic85TJk5
+        /Etl2lWsmuL4+iE/s1r31AmPcrNm5Rf52ciQhlk7+CMndmQOvnvYMeL0zPPXc7+Xu+Z1TFLjNF9
+        cAlnOo3hGXjjw
+X-Received: by 2002:aa7:c917:0:b0:46d:8aeb:bc03 with SMTP id b23-20020aa7c917000000b0046d8aebbc03mr24264335edt.22.1671059916731;
+        Wed, 14 Dec 2022 15:18:36 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5rOn0PuoH3Gafe+Vm7g0LYq3zaZ70GXRaw4Bn9629i81BWP10FSH3Cvtf+lIWyqLkBSc/GUg==
+X-Received: by 2002:aa7:c917:0:b0:46d:8aeb:bc03 with SMTP id b23-20020aa7c917000000b0046d8aebbc03mr24264253edt.22.1671059914420;
+        Wed, 14 Dec 2022 15:18:34 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id dy1-20020a05640231e100b00459f4974128sm6873508edb.50.2022.12.14.15.18.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Dec 2022 15:18:33 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 47CD782F667; Thu, 15 Dec 2022 00:18:33 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf] libbpf: Fix signedness confusion when using
+ libbpf_is_mem_zeroed()
+In-Reply-To: <CAEf4BzZOYD7YEgzWz08Q7sZ8wMVf+kiP7Aw1tm4_wN0_mNDrhA@mail.gmail.com>
+References: <20221214010046.668024-1-toke@redhat.com>
+ <CAEf4BzZOYD7YEgzWz08Q7sZ8wMVf+kiP7Aw1tm4_wN0_mNDrhA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 15 Dec 2022 00:18:33 +0100
+Message-ID: <87zgbpefqu.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/6] BTF-to-C dumper fixes and improvements
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167105941758.13017.10011652519415863225.git-patchwork-notify@kernel.org>
-Date:   Wed, 14 Dec 2022 23:10:17 +0000
-References: <20221212211505.558851-1-andrii@kernel.org>
-In-Reply-To: <20221212211505.558851-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, eddyz87@gmail.com,
-        per.xp.sundstrom@ericsson.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+> On Tue, Dec 13, 2022 at 5:01 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> The commit in the Fixes tag refactored the check for zeroed memory in
+>> libbpf_validate_opts() into a separate libbpf_is_mem_zeroed() function.
+>> This function has a 'len' argument of the signed 'ssize_t' type, which in
+>> both callers is computed by subtracting two unsigned size_t values from
+>> each other. In both subtractions, one of the values being subtracted is
+>> converted to 'ssize_t', while the other stays 'size_t'.
+>>
+>> The problem with this is that, because both sizes are the same
+>> rank ('ssize_t' is defined as 'long' and 'size_t' is 'unsigned long'), t=
+he
+>> type of the mixed-sign arithmetic operation ends up being converted back=
+ to
+>> unsigned. This means it can underflow if the user-specified size in
+>> opts->sz is smaller than the size of the type as defined by libbpf. If t=
+hat
+>> happens, it will cause out-of-bounds reads in libbpf_is_mem_zeroed().
+>
+> hmm... but libbpf_is_mem_zeroed expects signed ssize_t, so that
+> "underflow" will turn into a proper negative ssize_t value. What am I
+> missing? Seems to be working fine:
+>
+> $ cat test.c
+> #include <stdio.h>
+>
+> void testit(ssize_t sz)
+> {
+>         printf("%zd\n", sz);
+> }
+>
+> int main()
+> {
+>         ssize_t slarge =3D 100;
+>         size_t ularge =3D 100;
+>         ssize_t ssmall =3D 50;
+>         size_t usmall =3D 50;
+>
+>         testit(ssmall - slarge);
+>         testit(ssmall - ularge);
+>         testit(usmall - slarge);
+>         testit(usmall - ularge);
+> }
+>
+> $ cc test.c && ./a.out
+> -50
+> -50
+> -50
+> -50
 
-On Mon, 12 Dec 2022 13:14:59 -0800 you wrote:
-> Fix few tricky issues in libbpf's BTF-to-C converter, discovered thanks to
-> Per's reports and his randomized testing script.
-> 
-> Most notably there is a much improved and correct padding handling.  But also
-> it turned out that some corner cases with enums weren't handled correctly
-> (mode(byte) attribute was a new discovery for me). See respective patches for
-> more details.
-> 
-> [...]
+Hmnm, yeah, you're right. Not sure how I managed to convince myself
+there was an actual bug there :(
 
-Here is the summary with links:
-  - [v2,bpf-next,1/6] libbpf: fix single-line struct definition output in btf_dump
-    https://git.kernel.org/bpf/bpf-next/c/872aec4b5f63
-  - [v2,bpf-next,2/6] libbpf: handle non-standardly sized enums better in BTF-to-C dumper
-    https://git.kernel.org/bpf/bpf-next/c/21a9a1bcccaa
-  - [v2,bpf-next,3/6] selftests/bpf: add non-standardly sized enum tests for btf_dump
-    https://git.kernel.org/bpf/bpf-next/c/9d2349740e43
-  - [v2,bpf-next,4/6] libbpf: fix btf__align_of() by taking into account field offsets
-    https://git.kernel.org/bpf/bpf-next/c/25a4481b4136
-  - [v2,bpf-next,5/6] libbpf: fix BTF-to-C converter's padding logic
-    https://git.kernel.org/bpf/bpf-next/c/ea2ce1ba99aa
-  - [v2,bpf-next,6/6] selftests/bpf: add few corner cases to test padding handling of btf_dump
-    https://git.kernel.org/bpf/bpf-next/c/b148c8b9b926
+Sorry for the noise!
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+-Toke
 
