@@ -2,61 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3865664D021
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 20:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F097164D041
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 20:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238278AbiLNTiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 14:38:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        id S239082AbiLNTs4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 14:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237451AbiLNTh7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 14:37:59 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1433429376
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 11:37:58 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id s5so24048023edc.12
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 11:37:58 -0800 (PST)
+        with ESMTP id S239083AbiLNTsV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 14:48:21 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB80186DE
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 11:48:20 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id x22so47103668ejs.11
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 11:48:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+mxv/CvPAWr5PHYDZat3buBrEYFluzzk6fbnWCsK7WU=;
-        b=au8V2vdNQkH0WvYef1kAOOv8g3D/J8JImk60XJtwGuMwDkcGS0Y0RvzXHc+hoTss2j
-         NwFZLRnCplU4LME9TcPb/jhscihunTg5uGAp3PlrDs7/X/7KWjPrRKpVGbD5/xkNUCo6
-         YevHWaUEnvMs8+nbLLGlA15/EQKG23qgYTSZiqjoRvPmr0454kgU6lTFRHt1Bg/0ncv0
-         z4ELKmvU9+YI9mOu9KkzCBnnHnoq+pZ/zy3NjfKT05bGN5IrhesgtwZQ8SiAa47w+0An
-         dj+hFRpw+iVu2Cket0WXe6OwN0Qh8rZSUHIAGLMeINmRWBPf+t6WIZhZarB8SCBkPjNe
-         pwcQ==
+        bh=XWYXAqU7h7z75BTRtLt86qVcm94lkO36hS0zV0uLE18=;
+        b=hl622PJfeCnNkc55RzDAbAcgsOHJdvgo7kQ7h0vXGYMiznEZX24ccFIcGPvjpLoC0A
+         JZl6egb257Htd/6VqindjCKBePZUuYz4DnRzGqSrgn0BSG7aII+fbQRRqFCfgT+KVuN7
+         nHIw+N+pD8h9ETIwU9j5AhykYDhHHCXyezKHTpa4E65dQnv3Nt5xcUAh003uLXL+68fO
+         Sm7nZM8qTo33amuglfsjQDeni/i9X/RmDsbUQpCLZJxrYys40xxNYoh/Flg4Ob9m6j/W
+         tTI7fo+yBuRwIK53moMBIgdNGiJg/gRTLJ1ZLTSD9Y1KV2TnetwN4EXO4bzyCQpX4f3j
+         KKqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+mxv/CvPAWr5PHYDZat3buBrEYFluzzk6fbnWCsK7WU=;
-        b=bhGLtyzyTgh9zJDbaohjvCsfqgYQ9DB+Ma305tuvll/+ksNtPO4M0I5z1l6aiNdTjG
-         YqlNNpWcriU3P+wmHYt3v/Aq5ysFJ/gSaXf0+SAheFGK525PUNVwDU1TEnNxG474Tt5M
-         eX8NzgDxWWZFE+zpboVhIJxY00r2eKAiMRjEdzH2SJh3N7mT9fc/4aXYZLBAv4tJAvxN
-         Uolgdl/u1uGzTVN/jL378G9Jub5+ffjEK17KTcVHjWh+fj4kB2bpdN5FNnPHcq5bd/ti
-         fgNefsmdPf2NliV3fNkeABRFlKlU/vZdVaF2RwwyjJIq8PIX5NaW8GGWxQjugkKH0jCH
-         G7FA==
-X-Gm-Message-State: ANoB5pmIOZlYO+vLXdsqW19LUt9Gd3LWqOsCmrk/1/JYImG58glnNHW0
-        0pKW/HnPB8+ZaKeTgVo3RxDSW9Fulu34lzGOWMQ=
-X-Google-Smtp-Source: AA0mqf6KWVb/c2xR7sXPzvTkZo86YlUcnA++L3lYxjd5lciGPaDcy9roMV+8tjf3CG4HWPBWJQxnZWEVqN33/EloJCs=
-X-Received: by 2002:aa7:cd05:0:b0:46c:e558:ce90 with SMTP id
- b5-20020aa7cd05000000b0046ce558ce90mr13970572edw.81.1671046676615; Wed, 14
- Dec 2022 11:37:56 -0800 (PST)
+        bh=XWYXAqU7h7z75BTRtLt86qVcm94lkO36hS0zV0uLE18=;
+        b=RMcZiU2JgFODoB5yeXj2LEFcatmzJo1CRYecPdHHTBAVUziMJF2P9Pbxvb2PxPYw9m
+         oIttWspKtGDPqeD6H5d6Vn8Y1/tMz1BGiRsMWu+EzIVXMCLys5Fa+LvWHgj4ONI69Zgd
+         X3xUXM0X7c9rx43I1tFeXh8b+PdaIAsJ9DP3T4StEt00KDdk1ou8vFxy3bZXIJZb44mw
+         U/Rjox9YQRBlNaCjs0FgP1ol7vLtyoP7+h8h9A96QfxUxceI4I6x1kT2z/YJlFVckBuc
+         5Sk2divhNkF+r36lFEKvFKjlUIffXWTD+6zftTrgT3bQgNB9nWGsiqJFOu1kTXHCwze3
+         unAw==
+X-Gm-Message-State: ANoB5plOh29ntHDajd7EXa0ZKM/3dpjQzNtBx7RRP2qyJrpxcq8e3eGy
+        jI7M3grbS/9Acm7nrEXAFPXhkQqJtw+YMFrxwvQ=
+X-Google-Smtp-Source: AA0mqf7ppCMhccpi52S7wiiKB+feV5QckMvqSnqAn21Wc6reTjo6Zark+/Zh/biLsQ30hxwo62+P6OYMXpca0aV8gWc=
+X-Received: by 2002:a17:906:7116:b0:7c1:8450:f964 with SMTP id
+ x22-20020a170906711600b007c18450f964mr1039274ejj.176.1671047298782; Wed, 14
+ Dec 2022 11:48:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20221209135733.28851-1-eddyz87@gmail.com> <20221209135733.28851-2-eddyz87@gmail.com>
- <CAEf4BzbPBeAUzueQ7mxcmSovY2Nqr37RFZnb5B1pwSDqNhyZ6w@mail.gmail.com> <6ff2854e4c1f2a5c3754a8ffaadf5d47fa1c2285.camel@gmail.com>
-In-Reply-To: <6ff2854e4c1f2a5c3754a8ffaadf5d47fa1c2285.camel@gmail.com>
+References: <20221214100424.1209771-1-jolsa@kernel.org>
+In-Reply-To: <20221214100424.1209771-1-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 14 Dec 2022 11:37:44 -0800
-Message-ID: <CAEf4BzYh9T37BB0BO6ZNDS+VYHPYZ8xGuTO7tpyLMgksYd2B8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/7] bpf: regsafe() must not skip check_ids()
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        memxor@gmail.com, ecree.xilinx@gmail.com
+Date:   Wed, 14 Dec 2022 11:48:06 -0800
+Message-ID: <CAEf4BzYmt+7k-eovdj2MWMKOj5FCwhExHa7jSFUX+9Q2NfHHLg@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next] bpf: Remove trace_printk_lock
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,194 +74,164 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 14, 2022 at 5:26 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Wed, Dec 14, 2022 at 2:04 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Tue, 2022-12-13 at 16:35 -0800, Andrii Nakryiko wrote:
-> > On Fri, Dec 9, 2022 at 5:58 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > >
-> > > The verifier.c:regsafe() has the following shortcut:
-> > >
-> > >         equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
-> > >         ...
-> > >         if (equal)
-> > >                 return true;
-> > >
-> > > Which is executed regardless old register type. This is incorrect for
-> > > register types that might have an ID checked by check_ids(), namely:
-> > >  - PTR_TO_MAP_KEY
-> > >  - PTR_TO_MAP_VALUE
-> > >  - PTR_TO_PACKET_META
-> > >  - PTR_TO_PACKET
-> > >
-> > > The following pattern could be used to exploit this:
-> > >
-> > >   0: r9 = map_lookup_elem(...)  ; Returns PTR_TO_MAP_VALUE_OR_NULL id=1.
-> > >   1: r8 = map_lookup_elem(...)  ; Returns PTR_TO_MAP_VALUE_OR_NULL id=2.
-> > >   2: r7 = ktime_get_ns()        ; Unbound SCALAR_VALUE.
-> > >   3: r6 = ktime_get_ns()        ; Unbound SCALAR_VALUE.
-> > >   4: if r6 > r7 goto +1         ; No new information about the state
-> > >                                 ; is derived from this check, thus
-> > >                                 ; produced verifier states differ only
-> > >                                 ; in 'insn_idx'.
-> > >   5: r9 = r8                    ; Optionally make r9.id == r8.id.
-> > >   --- checkpoint ---            ; Assume is_state_visisted() creates a
-> > >                                 ; checkpoint here.
-> > >   6: if r9 == 0 goto <exit>     ; Nullness info is propagated to all
-> > >                                 ; registers with matching ID.
-> > >   7: r1 = *(u64 *) r8           ; Not always safe.
-> > >
-> > > Verifier first visits path 1-7 where r8 is verified to be not null
-> > > at (6). Later the jump from 4 to 6 is examined. The checkpoint for (6)
-> > > looks as follows:
-> > >   R8_rD=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
-> > >   R9_rwD=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
-> > >   R10=fp0
-> > >
-> > > The current state is:
-> > >   R0=... R6=... R7=... fp-8=...
-> > >   R8=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
-> > >   R9=map_value_or_null(id=1,off=0,ks=4,vs=8,imm=0)
-> > >   R10=fp0
-> > >
-> > > Note that R8 states are byte-to-byte identical, so regsafe() would
-> > > exit early and skip call to check_ids(), thus ID mapping 2->2 will not
-> > > be added to 'idmap'. Next, states for R9 are compared: these are not
-> > > identical and check_ids() is executed, but 'idmap' is empty, so
-> > > check_ids() adds mapping 2->1 to 'idmap' and returns success.
-> > >
-> > > This commit pushes the 'equal' down to register types that don't need
-> > > check_ids().
-> > >
-> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > ---
-> > >  kernel/bpf/verifier.c | 29 ++++++++---------------------
-> > >  1 file changed, 8 insertions(+), 21 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 3194e9d9e4e4..d05c5d0344c6 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -12926,15 +12926,6 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
-> > >
-> > >         equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
-> > >
-> > > -       if (rold->type == PTR_TO_STACK)
-> > > -               /* two stack pointers are equal only if they're pointing to
-> > > -                * the same stack frame, since fp-8 in foo != fp-8 in bar
-> > > -                */
-> > > -               return equal && rold->frameno == rcur->frameno;
-> > > -
-> > > -       if (equal)
-> > > -               return true;
-> > > -
-> > >         if (rold->type == NOT_INIT)
-> > >                 /* explored state can't have used this */
-> > >                 return true;
-> > > @@ -12942,6 +12933,8 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
-> > >                 return false;
-> > >         switch (base_type(rold->type)) {
-> > >         case SCALAR_VALUE:
-> > > +               if (equal)
-> > > +                       return true;
-> > >                 if (env->explore_alu_limits)
-> > >                         return false;
-> > >                 if (rcur->type == SCALAR_VALUE) {
-> > > @@ -13012,20 +13005,14 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
-> > >                 /* new val must satisfy old val knowledge */
-> > >                 return range_within(rold, rcur) &&
-> > >                        tnum_in(rold->var_off, rcur->var_off);
-> > > -       case PTR_TO_CTX:
-> > > -       case CONST_PTR_TO_MAP:
-> > > -       case PTR_TO_PACKET_END:
-> > > -       case PTR_TO_FLOW_KEYS:
-> > > -       case PTR_TO_SOCKET:
-> > > -       case PTR_TO_SOCK_COMMON:
-> > > -       case PTR_TO_TCP_SOCK:
-> > > -       case PTR_TO_XDP_SOCK:
-> > > -               /* Only valid matches are exact, which memcmp() above
-> > > -                * would have accepted
-> > > +       case PTR_TO_STACK:
-> > > +               /* two stack pointers are equal only if they're pointing to
-> > > +                * the same stack frame, since fp-8 in foo != fp-8 in bar
-> > >                  */
-> > > +               return equal && rold->frameno == rcur->frameno;
-> > >         default:
-> > > -               /* Don't know what's going on, just say it's not safe */
-> > > -               return false;
-> > > +               /* Only valid matches are exact, which memcmp() */
-> > > +               return equal;
-> >
-> > Is it safe to assume this for any possible register type? Wouldn't
-> > register types that use id and/or ref_obj_id need extra checks here? I
-> > think preexisting default was a safer approach, in which if we forgot
-> > to explicitly add support for some new or updated register type, the
-> > worst thing is that for that *new* register we'd have suboptimal
-> > verification performance, but not safety concerns.
+> Both bpf_trace_printk and bpf_trace_vprintk helpers use static buffer
+> guarded with trace_printk_lock spin lock.
 >
-> Well, I don't think that this commit changes regsafe() behavior in
-> this regard. Here is how the code was structured before this commit:
+> The spin lock contention causes issues with bpf programs attached to
+> contention_begin tracepoint [1] [2].
 >
-> static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
->                     struct bpf_reg_state *rcur, struct bpf_id_pair *idmap)
-> {
->         bool equal;
+> Andrii suggested we could get rid of the contention by using trylock,
+> but we could actually get rid of the spinlock completely by using
+> percpu buffers the same way as for bin_args in bpf_bprintf_prepare
+> function.
 >
->         if (!(rold->live & REG_LIVE_READ))
->                 return true;
->         equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
->         if (rold->type == PTR_TO_STACK)
->                 return equal && rold->frameno == rcur->frameno;
-> --->    if (equal)
->                 return true;
->         if (rold->type == NOT_INIT)
->                 return true;
->         if (rcur->type == NOT_INIT)
->                 return false;
->         switch (base_type(rold->type)) {
->         case SCALAR_VALUE:
->                 ... it's own logic, always returns ...
->         case PTR_TO_MAP_KEY:
->         case PTR_TO_MAP_VALUE:
->                 ... it's own logic, always returns ...
->         case PTR_TO_PACKET_META:
->         case PTR_TO_PACKET:
->                 ... it's own logic, always returns ...
->         case PTR_TO_CTX:
->         case CONST_PTR_TO_MAP:
->         case PTR_TO_PACKET_END:
->         case PTR_TO_FLOW_KEYS:
->         case PTR_TO_SOCKET:
->         case PTR_TO_SOCK_COMMON:
->         case PTR_TO_TCP_SOCK:
->         case PTR_TO_XDP_SOCK:
->         default:
->                 return false;
->         }
+> Adding 4 per cpu buffers (1k each) which should be enough for all
+> possible nesting contexts (normal, softirq, irq, nmi) or possible
+> (yet unlikely) probe within the printk helpers.
 >
->         /* Shouldn't get here; if we do, say it's not safe */
->         WARN_ON_ONCE(1);
->         return false;
-> }
+> In very unlikely case we'd run out of the nesting levels the printk
+> will be omitted.
 >
-> So the "safe if byte-to-byte equal" behavior was present already.
-> I can add an explicit list of types to the "return equal;" branch
-> and add a default "return false;" branch if you think that it is
-> more fool-proof.
+> [1] https://lore.kernel.org/bpf/CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com/
+> [2] https://lore.kernel.org/bpf/CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com/
+>
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+> v2 changes:
+>   - changed subject [Yonghong]
+>   - added WARN_ON_ONCE to get_printk_buf [Song]
+>
+>  kernel/trace/bpf_trace.c | 61 +++++++++++++++++++++++++++++++---------
+>  1 file changed, 47 insertions(+), 14 deletions(-)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 3bbd3f0c810c..a992b5a47fd6 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -369,33 +369,62 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+>         return &bpf_probe_write_user_proto;
+>  }
+>
+> -static DEFINE_RAW_SPINLOCK(trace_printk_lock);
+> -
+>  #define MAX_TRACE_PRINTK_VARARGS       3
+>  #define BPF_TRACE_PRINTK_SIZE          1024
+> +#define BPF_TRACE_PRINTK_LEVELS                4
+> +
+> +struct trace_printk_buf {
+> +       char data[BPF_TRACE_PRINTK_LEVELS][BPF_TRACE_PRINTK_SIZE];
+> +       int level;
+> +};
+> +static DEFINE_PER_CPU(struct trace_printk_buf, printk_buf);
+> +
+> +static void put_printk_buf(struct trace_printk_buf __percpu *buf)
+> +{
+> +       if (WARN_ON_ONCE(this_cpu_read(buf->level) == 0))
+> +               return;
+> +       this_cpu_dec(buf->level);
+> +       preempt_enable();
+> +}
+> +
+> +static bool get_printk_buf(struct trace_printk_buf __percpu *buf, char **data)
+> +{
+> +       int level;
+> +
+> +       preempt_disable();
+> +       level = this_cpu_inc_return(buf->level);
+> +       if (WARN_ON_ONCE(level > BPF_TRACE_PRINTK_LEVELS)) {
+> +               put_printk_buf(buf);
+> +               return false;
+> +       }
+> +       *data = (char *) this_cpu_ptr(&buf->data[level - 1]);
+> +       return true;
+> +}
+>
+>  BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+>            u64, arg2, u64, arg3)
+>  {
+>         u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
+>         u32 *bin_args;
+> -       static char buf[BPF_TRACE_PRINTK_SIZE];
+> -       unsigned long flags;
+> +       char *buf;
+>         int ret;
+>
+> +       if (!get_printk_buf(&printk_buf, &buf))
+> +               return -EBUSY;
+> +
+>         ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
+>                                   MAX_TRACE_PRINTK_VARARGS);
+>         if (ret < 0)
+> -               return ret;
+> +               goto out;
+>
+> -       raw_spin_lock_irqsave(&trace_printk_lock, flags);
+> -       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
+> +       ret = bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
+>
+>         trace_bpf_trace_printk(buf);
+> -       raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+>
+>         bpf_bprintf_cleanup();
+>
+> +out:
+> +       put_printk_buf(&printk_buf);
+>         return ret;
+>  }
+>
+> @@ -427,31 +456,35 @@ const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+>         return &bpf_trace_printk_proto;
+>  }
+>
+> +static DEFINE_PER_CPU(struct trace_printk_buf, vprintk_buf);
+> +
+>  BPF_CALL_4(bpf_trace_vprintk, char *, fmt, u32, fmt_size, const void *, data,
+>            u32, data_len)
+>  {
+> -       static char buf[BPF_TRACE_PRINTK_SIZE];
+> -       unsigned long flags;
+>         int ret, num_args;
+>         u32 *bin_args;
+> +       char *buf;
+>
+>         if (data_len & 7 || data_len > MAX_BPRINTF_VARARGS * 8 ||
+>             (data_len && !data))
+>                 return -EINVAL;
+>         num_args = data_len / 8;
+>
+> +       if (!get_printk_buf(&vprintk_buf, &buf))
+> +               return -EBUSY;
+> +
+>         ret = bpf_bprintf_prepare(fmt, fmt_size, data, &bin_args, num_args);
+>         if (ret < 0)
+> -               return ret;
+> +               goto out;
+>
+> -       raw_spin_lock_irqsave(&trace_printk_lock, flags);
+> -       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
+> +       ret = bstr_printf(buf, BPF_TRACE_PRINTK_SIZE, fmt, bin_args);
+>
+>         trace_bpf_trace_printk(buf);
+> -       raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+>
+>         bpf_bprintf_cleanup();
 
-Sorry, I didn't claim you made it worse. But given we are refactoring
-this piece of code, let's make it more "safe-by-default".
-
-So yeah, I think an explicit list of all the recognized register types
-would be better, IMO.
-
+I checked what this is doing. And it seems like we have a very similar
+thing there already, with preempt_disable(), 3-level buffers, etc.
+Would it make sense to roll this new change into bpf_bprintf_prepare()
+and make it return the buffer for bpf_trace_printk(), even if it is
+not used for bpf_snprintf() ?
 
 >
-> >
-> >
-> > >         }
-> > >
-> > >         /* Shouldn't get here; if we do, say it's not safe */
-> > > --
-> > > 2.34.1
-> > >
+> +out:
+> +       put_printk_buf(&vprintk_buf);
+>         return ret;
+>  }
+>
+> --
+> 2.38.1
 >
