@@ -2,99 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC4B64CF6B
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 19:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD33564CF99
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 19:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238693AbiLNS3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 13:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
+        id S238876AbiLNSmZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 13:42:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238586AbiLNS27 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 13:28:59 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A34F58D
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:28:57 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BEISlEt001171
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Dec 2022 13:28:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1671042531; bh=yBGs7uN391IpXsrDxRmFEUWTGiaryut5x17IYCOizWk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=iTvQW2ZcZl/RaloFVFvof3Xa5t0qJOPMbf9tEe1ZxUY/ml5As1AyeT37tSuPOcGw+
-         17vCGhEEjx9LOnZs3GLmkDSXWr8W/CTALV2Vj0BYRVQmlX/+14VYvEZc9cLvJWdXVL
-         9oIQx2LCrwfMWPFmSCPXfT4Hv2/oosDrkhOpQHhPv+0hz9gFTJV7qyI/FWZGTrENN7
-         84ztbhtlutCuVHyOA0sewiP3fT74UfRtl1dIyLBRPrb4K2WVewrJxycNUFMnma8otO
-         XQPs5XLQapq5t8UKt6SRlcg5Vr1Ov6Ww0fAJCCZS9NV3kc3QPwS8c73yxGFZtDnfx+
-         ysY4rmQix2LxQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 615B615C40A2; Wed, 14 Dec 2022 13:28:47 -0500 (EST)
-Date:   Wed, 14 Dec 2022 13:28:47 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        dri-devel@lists.freedesktop.org, Song Liu <song@kernel.org>,
-        linux-mtd@lists.infradead.org, Stanislav Fomichev <sdf@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Richard Weinberger <richard@nod.at>, x86@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, ilay.bahat1@gmail.com,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Yonghong Song <yhs@fb.com>, Paolo Abeni <pabeni@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Petr Mladek <pmladek@suse.com>,
-        david.keisarschm@mail.huji.ac.il,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        intel-gfx@lists.freedesktop.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Borislav Petkov <bp@alien8.de>, Hannes Reinecke <hare@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        bpf@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        Hao Luo <haoluo@google.com>, linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        aksecurity@gmail.com, Jiri Olsa <jolsa@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 1/5] Renaming weak prng invocations -
- prandom_bytes_state, prandom_u32_state
-Message-ID: <Y5oV3zVhc2C2sUaF@mit.edu>
-References: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
- <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
- <Y5c8KLzJFz/XZMiM@zx2c4.com>
- <20221214123358.GA1062210@linux.intel.com>
- <CANn89iJtK4m1cWvCwp=L_rEOEBa+B1kLZJAw0D9_cYPQcAj+Mw@mail.gmail.com>
- <20221214162117.GC1062210@linux.intel.com>
+        with ESMTP id S238879AbiLNSmX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 13:42:23 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10DE28E3D
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:42:22 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d3so4251443plr.10
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 10:42:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2RgklV7DxsIHlYiTKFAg3aR9zq9eoKwT/Q1P3Gt7rlw=;
+        b=PivzMciD4mAgu+BosCMS/+LBRaMi3edU1w32cK8j4hju29UxoMmyGp1NL+O1HPVqT3
+         7b4h8odj4/qSFI/Q56UcCImNEryFh4Ra6OpddKsHq/pZ20sMaUKJ7bNp9uHvk4S+ltu/
+         g0a66Gl5Ma8telZrbCBneaxcfKCG5wBcpNJonClm42ftiR5Y423OGIHCyK2+fKD4s45O
+         7sxpNiNbQeohJ3o7hEiPaKZLs8G+N4EVcWTof05RnKxXvvMgAD3achNj7GUKAkldMffZ
+         oJY0VUQoQ0pNI/Wa+ELx5h4/l5PqgrmC2QXQdRCTlooXaUyUek0grNxvKW2wiAU7aRMo
+         MQpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2RgklV7DxsIHlYiTKFAg3aR9zq9eoKwT/Q1P3Gt7rlw=;
+        b=IVOrme+rP5S8xhcI5/Aer9J6zXoHNth8Lq0DIhIYwEikypCkMsTN9+iVnKmujIiG7Y
+         EpxuII2lmUaoZEPgE49cxSTcblHAhooAMUSCX1XtpiJTdMyxqmigrVY5NEc8pVIDMExc
+         fWehAuVm7FhtumAE2879n8E+TcwJgFG/y3nq4I+nfh9masJIJnMg2OftSwW3vceXtsvo
+         cHyDBbpcq4lDpEwYKtoIV2fjozUGYszgJ2ofLMspPV/9pnmRxojHESEFrRMvEwfpi8yZ
+         8eKD90bte8HPM/Hhd3Z3MDsJYKB6zSeNFZuxtLVZYetNP1CXixl5Dkx6UFXFAfEW0e55
+         AgHg==
+X-Gm-Message-State: AFqh2kqRagheB6VyZNcsSa9b1ng6Xv5GZt8R9VBS96X/GZWdxM3bfvHf
+        QnAPZNDCY9f2ZqvVmaUkjZxQYdHBobEl5hGvvZVj0g==
+X-Google-Smtp-Source: AMrXdXv3ScMa6EtlqyYs8vmOb6CyWiDwlUUkPfmrdfEeAQYoVGaXCXJSNw48WjRfxLY/mg9oc+WMJDla6ljlptMWFe4=
+X-Received: by 2002:a17:90a:c389:b0:218:9107:381b with SMTP id
+ h9-20020a17090ac38900b002189107381bmr390411pjt.75.1671043342165; Wed, 14 Dec
+ 2022 10:42:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221214162117.GC1062210@linux.intel.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20221213023605.737383-1-sdf@google.com> <20221213023605.737383-4-sdf@google.com>
+ <94d8cd3a-fc07-88aa-94f8-6b08940a2087@linux.dev>
+In-Reply-To: <94d8cd3a-fc07-88aa-94f8-6b08940a2087@linux.dev>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 14 Dec 2022 10:42:10 -0800
+Message-ID: <CAKH8qBsg1hYnkmurnSGCCzTFOzQrV4DKCw1gefgXNb6UN57+Vg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 03/15] bpf: Introduce device-bound XDP programs
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,32 +78,238 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 14, 2022 at 05:21:17PM +0100, Stanislaw Gruszka wrote:
-> On Wed, Dec 14, 2022 at 04:15:49PM +0100, Eric Dumazet wrote:
-> > On Wed, Dec 14, 2022 at 1:34 PM Stanislaw Gruszka
-> > <stanislaw.gruszka@linux.intel.com> wrote:
-> > >
-> > > On Mon, Dec 12, 2022 at 03:35:20PM +0100, Jason A. Donenfeld wrote:
-> > > > Please CC me on future revisions.
-> > > >
-> > > > As of 6.2, the prandom namespace is *only* for predictable randomness.
-> > > > There's no need to rename anything. So nack on this patch 1/5.
-> > >
-> > > It is not obvious (for casual developers like me) that p in prandom
-> > > stands for predictable. Some renaming would be useful IMHO.
+On Tue, Dec 13, 2022 at 3:25 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>
+> On 12/12/22 6:35 PM, Stanislav Fomichev wrote:
+> > New flag BPF_F_XDP_DEV_BOUND_ONLY plus all the infra to have a way
+> > to associate a netdev with a BPF program at load time.
+> >
+> > Some existing 'offloaded' routines are renamed to 'dev_bound' for
+> > consistency with the rest.
+> >
+> > Also moved a bunch of code around to avoid forward declarations.
+>
+> There are too many things in one patch.  It becomes quite hard to follow, eg. I
+> have to go back-and-forth a few times within this patch to confirm what change
+> is just a move.  Please put the "moved a bunch of code around to avoid forward
+> declarations" in one individual patch and also the
+> "late_initcall(bpf_offload_init)" change in another individual patch.
 
-I disagree.  pseudo-random has *always* menat "predictable".  And the
-'p' in prandom was originally "pseudo-random".  In userspace,
-random(3) is also pseudo-random, and is ***utterly*** predictable.  So
-the original use of prandom() was a bit more of an explicit nod to the
-fact that prandom is something which is inherently predictable.
+Ugh, sorry, good point will definitely split more :-(
 
-So I don't think it's needed to rename it, whether it's to
-"predictable_rng_prandom_u32", or "no_you_idiot_dont_you_dare_use_it_for_cryptographi_purposes_prandom_u32".
+> [ ... ]
+>
+> > -int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
+> > +static int __bpf_offload_dev_netdev_register(struct bpf_offload_dev *offdev,
+> > +                                          struct net_device *netdev)
+> > +{
+> > +     struct bpf_offload_netdev *ondev;
+> > +     int err;
+> > +
+> > +     ondev = kzalloc(sizeof(*ondev), GFP_KERNEL);
+> > +     if (!ondev)
+> > +             return -ENOMEM;
+> > +
+> > +     ondev->netdev = netdev;
+> > +     ondev->offdev = offdev;
+> > +     INIT_LIST_HEAD(&ondev->progs);
+> > +     INIT_LIST_HEAD(&ondev->maps);
+> > +
+> > +     err = rhashtable_insert_fast(&offdevs, &ondev->l, offdevs_params);
+> > +     if (err) {
+> > +             netdev_warn(netdev, "failed to register for BPF offload\n");
+> > +             goto err_unlock_free;
+> > +     }
+> > +
+> > +     if (offdev)
+> > +             list_add(&ondev->offdev_netdevs, &offdev->netdevs);
+> > +     return 0;
+> > +
+> > +err_unlock_free:
+> > +     up_write(&bpf_devs_lock);
+>
+> No need to handle bpf_devs_lock in the "__" version of the register() helper?
+> The goto label probably also needs another name, eg. "err_free".
 
-I think we need to assume a certain base level of competence,
-especially for someone who is messing with security psensitive kernel
-code.  If a developer doesn't know that a prng is predictable, that's
-probably the *least* of the sort of mistakes that they might make.
+Ah, not sure how I missed that, thanks!
 
-					- Ted
+> > +     kfree(ondev);
+> > +     return err;
+> > +}
+> > +
+>
+> [ ... ]
+>
+> > +int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
+> >   {
+> >       struct bpf_offload_netdev *ondev;
+> >       struct bpf_prog_offload *offload;
+> > @@ -87,7 +198,7 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
+> >           attr->prog_type != BPF_PROG_TYPE_XDP)
+> >               return -EINVAL;
+> >
+> > -     if (attr->prog_flags)
+> > +     if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
+> >               return -EINVAL;
+> >
+> >       offload = kzalloc(sizeof(*offload), GFP_USER);
+> > @@ -102,11 +213,25 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
+> >       if (err)
+> >               goto err_maybe_put;
+> >
+> > +     prog->aux->offload_requested = !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY);
+> > +
+> >       down_write(&bpf_devs_lock);
+> >       ondev = bpf_offload_find_netdev(offload->netdev);
+> >       if (!ondev) {
+> > -             err = -EINVAL;
+> > -             goto err_unlock;
+> > +             if (!bpf_prog_is_offloaded(prog->aux)) {
+> > +                     /* When only binding to the device, explicitly
+> > +                      * create an entry in the hashtable. See related
+> > +                      * bpf_dev_bound_try_remove_netdev.
+> > +                      */
+> > +                     err = __bpf_offload_dev_netdev_register(NULL, offload->netdev);
+> > +                     if (err)
+> > +                             goto err_unlock;
+> > +                     ondev = bpf_offload_find_netdev(offload->netdev);
+> > +             }
+> > +             if (!ondev) {
+>
+> nit.  A bit confusing because the "ondev = bpf_offload_find_netdev(...)" above
+> should not fail but "!ondev" is tested again here.  I think the intention is to
+> fail on the 'bpf_prog_is_offloaded() == true' case. May be:
+>
+>                 if (bpf_prog_is_offloaded(prog->aux)) {
+>                         err = -EINVAL;
+>                         goto err_unlock;
+>                 }
+>                 /* When only binding to the device, explicitly
+>                  * ...
+>                  */
+>                 err = __bpf_offload_dev_netdev_register(NULL, offload->netdev);
+>                 if (err)
+>                         goto err_unlock;
+>                 ondev = bpf_offload_find_netdev(offload->netdev);
+>
+
+Yeah, that looks better, thx!
+
+> > +                     err = -EINVAL;
+> > +                     goto err_unlock;
+> > +             }
+> >       }
+> >       offload->offdev = ondev->offdev;
+> >       prog->aux->offload = offload;
+> > @@ -209,27 +334,28 @@ bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt)
+> >       up_read(&bpf_devs_lock);
+> >   }
+> >
+> > -static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
+> > +static void bpf_dev_bound_try_remove_netdev(struct net_device *dev)
+> >   {
+> > -     struct bpf_prog_offload *offload = prog->aux->offload;
+> > -
+> > -     if (offload->dev_state)
+> > -             offload->offdev->ops->destroy(prog);
+> > +     struct bpf_offload_netdev *ondev;
+> >
+> > -     /* Make sure BPF_PROG_GET_NEXT_ID can't find this dead program */
+> > -     bpf_prog_free_id(prog, true);
+> > +     if (!dev)
+> > +             return;
+> >
+> > -     list_del_init(&offload->offloads);
+> > -     kfree(offload);
+> > -     prog->aux->offload = NULL;
+> > +     ondev = bpf_offload_find_netdev(dev);
+> > +     if (ondev && !ondev->offdev && list_empty(&ondev->progs))
+>
+> hmm....list_empty(&ondev->progs) is tested here but will it be empty? ...
+
+Ugh, yeah, need to move that list_del_init(&offload->offloads) to
+somewhere before bpf_dev_bound_try_remove_netdev.
+
+> > +             __bpf_offload_dev_netdev_unregister(NULL, dev);
+> >   }
+> >
+> > -void bpf_prog_offload_destroy(struct bpf_prog *prog)
+> > +void bpf_prog_dev_bound_destroy(struct bpf_prog *prog)
+> >   {
+> > +     rtnl_lock();
+> >       down_write(&bpf_devs_lock);
+> > -     if (prog->aux->offload)
+> > -             __bpf_prog_offload_destroy(prog);
+> > +     if (prog->aux->offload) {
+> > +             bpf_dev_bound_try_remove_netdev(prog->aux->offload->netdev);
+>
+> ... the "prog" here is still linked to ondev->progs, right?
+> because __bpf_prog_dev_bound_destroy() is called later below.
+
+Agreed, right.
+
+> nit. May be the bpf_dev_bound_try_remove_netdev() should be folded/merged back
+> into bpf_prog_dev_bound_destroy() to make things more clear.
+
+Makes sense.
+
+> > +             __bpf_prog_dev_bound_destroy(prog); > + }
+> >       up_write(&bpf_devs_lock);
+> > +     rtnl_unlock();
+> >   }
+>
+> [ ... ]
+>
+> > +static int __init bpf_offload_init(void)
+> > +{
+> > +     int err;
+> > +
+> > +     down_write(&bpf_devs_lock);
+>
+> lock is probably not needed.
+
+Sure, will drop.
+
+> > +     err = rhashtable_init(&offdevs, &offdevs_params);
+> > +     up_write(&bpf_devs_lock);
+> > +
+> > +     return err;
+> > +}
+> > +
+> > +late_initcall(bpf_offload_init);
+>
+> [ ... ]
+>
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 5d51999cba30..194f8116aad4 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -9228,6 +9228,10 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
+> >                       NL_SET_ERR_MSG(extack, "Using offloaded program without HW_MODE flag is not supported");
+> >                       return -EINVAL;
+> >               }
+> > +             if (bpf_prog_is_dev_bound(new_prog->aux) && !bpf_offload_dev_match(new_prog, dev)) {
+> > +                     NL_SET_ERR_MSG(extack, "Program bound to different device");
+> > +                     return -EINVAL;
+> > +             }
+> >               if (new_prog->expected_attach_type == BPF_XDP_DEVMAP) {
+> >                       NL_SET_ERR_MSG(extack, "BPF_XDP_DEVMAP programs can not be attached to a device");
+> >                       return -EINVAL;
+> > @@ -10813,6 +10817,7 @@ void unregister_netdevice_many_notify(struct list_head *head,
+> >               /* Shutdown queueing discipline. */
+> >               dev_shutdown(dev);
+> >
+> > +             bpf_dev_bound_netdev_unregister(dev);
+>
+> Does it matter if bpf_dev_bound_netdev_unregister(dev) is called before
+> dev_xdp_uninstall(dev)?  Asking because it seems more logic to unregister dev
+> after detaching xdp progs.
+
+By running it first I was hoping to catch any possible issues. Agreed
+that doing it after makes more sense, will move.
+
+> >               dev_xdp_uninstall(dev);
+> >
+> >               netdev_offload_xstats_disable_all(dev);
+>
+>
