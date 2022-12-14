@@ -2,233 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F1964CE2F
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 17:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BD464CE75
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 17:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239034AbiLNQiY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 11:38:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
+        id S239142AbiLNQ4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 11:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239017AbiLNQiX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 11:38:23 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABBA5FDD
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:38:20 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id f20so7158256lja.4
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:38:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GdKdJaogu3SfMUkqu+uOGkLX7woyixTspG7p/fxImRA=;
-        b=f7Andn54JuZj2yo//dd9TRMjkMSyNPPpZ1YZLm70+2elsclVSc3MAw98/tZaFXN4uv
-         hTT0/mByN6EoE27qE/LnwKQyXy54P2lvAvxPgth9tGNqOL6M3Vwze7KKM6LEuPQNMUDI
-         tElS6zgA6ubz59hNpl6No/ZNzsl68L3bFtzzS2RLdHSUTLLxuRK70Hn93HK7bfTuPMav
-         Y9ASNIT7l4uV3EPsRrsDPN37Fjij5FBJJNF9wMV2zzlssK+hzCbS4S+dx9UtaXJzRcfP
-         4UFVBCZbsul3EVCaPAoCOGPHtM6cYxlK9fHMXpC/h5TXvJijHKbkpa+CkB03Vs6NRi1g
-         LlOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GdKdJaogu3SfMUkqu+uOGkLX7woyixTspG7p/fxImRA=;
-        b=BehidGo4mYpm1ch6EDsQL+V+8cLR5bHwUoYsTR4tBXPUil7yqt/ra6/oGOjh75hBUB
-         H1V2+8qfWrZE+NOLgwDRpbB/xDadz/pcVlgy3eK6dpqkk7eB2q6ZtAvWMwQJhmrs3wq2
-         OsOMhv8YCtulGZ+BmehcdirSmA5vEwqSazok8v0SfE2sAtmuiKMQlhh4kUROjsoSRQaw
-         wXXPnesq3O/nDaRUCc1fqTe/s6+ZmAkAX6RtoPowkDWAoZ9S1AJmVzcxerWHe1rUU4qN
-         3Oz0EF/fkGkd9PBN70dH4G/SL0valOEDiJdFDP9lYkAJ3JaVaVpQ2MxIfvXxT2hOhN5j
-         w6lA==
-X-Gm-Message-State: ANoB5pmCKfLW3SLrfI0llGz6g2bRTqBEzfxiDNDqEfafZNMYFwPNxEdn
-        uJbJy+XtUCnzabkytyCB/SY=
-X-Google-Smtp-Source: AA0mqf6P0ZkygvI3EQsvZ+sqJG/Qid72qC4pKwlXEkkmrWzK7wrVBBFX3LYthvofnm4TwyYXZsjEwg==
-X-Received: by 2002:a2e:300a:0:b0:27a:3d9d:81f5 with SMTP id w10-20020a2e300a000000b0027a3d9d81f5mr4911554ljw.5.1671035898813;
-        Wed, 14 Dec 2022 08:38:18 -0800 (PST)
-Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id t14-20020a2e8e6e000000b0026dcb07122csm646956ljk.117.2022.12.14.08.38.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Dec 2022 08:38:18 -0800 (PST)
-Message-ID: <943ce05e135fae9450d2b6e0c59f50f11bf022b2.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 4/7] selftests/bpf: verify states_equal()
- maintains idmap across all frames
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        memxor@gmail.com, ecree.xilinx@gmail.com
-Date:   Wed, 14 Dec 2022 18:38:15 +0200
-In-Reply-To: <CAEf4BzZ7VEdYb+qSFLnY2jkvUHEfNHtzK7WYWMKezyRcjkV=Zg@mail.gmail.com>
-References: <20221209135733.28851-1-eddyz87@gmail.com>
-         <20221209135733.28851-5-eddyz87@gmail.com>
-         <CAEf4BzZ7VEdYb+qSFLnY2jkvUHEfNHtzK7WYWMKezyRcjkV=Zg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S238846AbiLNQ4N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 11:56:13 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE9729828
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:56:12 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BEGLJpt006382;
+        Wed, 14 Dec 2022 08:55:53 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=rk5O8L6FQBy6oW601MnUIXz1qeL+FQ+Vj7N+qq/80XU=;
+ b=kQCgLDWcWiVFjG2+N3B7Cp2l3FLEHZJM+YuIb4FLsoUN5RMktjRvwsNVDZJtKMHRtBOu
+ 6ZmHPjZpk8pf6vY+0XTQwtFX5jbjAMG26gM/WQ0CqtQ5JUuEYqqT/XaxCVWzXvaQj7fe
+ 40N85OJasYaTsISYzdQ+SyiV1xNb/6xpEpL2hTr+xBLkcj7Oqz68qg5A/uAGdVNO1OhM
+ dmqyV5ZwinDnnYW8IGdjGve+x11iT7RxDfn87UtQ+V0qmVeEmI680f54cNlCcdV/eUyU
+ 6vkiolsQW2Nh+qiTO+4IRlg0ocV805J6q7e4/Ow60Bj4h/qEBNP858dLKqaetGzOsSHO lw== 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3meyg3qpcp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Dec 2022 08:55:53 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kvfpLgQxDy/E2pXBS0R2yBuZLHz9X5Xp14ERAnMoawUHi8vsMEJwMlDDKUT7FJzIH6cF4iIB5dYpRbwDg9I5orwPPc/vPb6WPFhDh2M9KyzRcyyAQXejSAbKh+tUeW+6zrlKJm2GwCn5lAoFtBJdy9ARHdY0ik+eSzjd8/Vpykkk57ugQ1/3tJoW7qWzL27LEnxhdDWPID75ty7BLFgntff3M/uP1jfadou16/1wdhmR61nMRcz/bn3qTw4YsX9SsXji6YpX2aHUsPZGWiQGf91LxNTUka2JyCMWpshoqP2/0KWLMxeRd5lP7bIO+zrsUhVgwh5Un+m8u01x9BqIew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rk5O8L6FQBy6oW601MnUIXz1qeL+FQ+Vj7N+qq/80XU=;
+ b=KuJEJdVThxMLn4TaeP1HWxYWFza2JXFDoC3013hJfJdB+Y+HMlCWgAzZ/HStKJyHDpleewausX78tEvyK45VUvIVOBBk5EA4sgldwU3wOZqstR899KVCag/XInR/I02fYbCslQ3LczJmjX/kyH/Onm6H1mBZtaCNTOuMH8HHCKZ8hnPlFDzD4FzULXQ/7E4IyGrvre6tz/ex3CeDJrqKQOuHHsl3CwELft5Jpjh6XFoj7SJQIc/oEDY05fHrdZ+WDOgiGL2C4fd5gfJcCpr5QrYygm75lhUHC5Kx7QiEFn6sqFIdpjTsbySBbq+5di9NNUwf30Xlec+9HZ25wEDqnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by PH0PR15MB5637.namprd15.prod.outlook.com (2603:10b6:510:28f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.13; Wed, 14 Dec
+ 2022 16:55:51 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5924.011; Wed, 14 Dec 2022
+ 16:55:51 +0000
+Message-ID: <00f0c6eb-46fd-6dfa-8757-90dc296aaf7b@meta.com>
+Date:   Wed, 14 Dec 2022 08:55:48 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.0
+Subject: Re: [PATCHv2 bpf-next] bpf: Remove trace_printk_lock
+Content-Language: en-US
+To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+References: <20221214100424.1209771-1-jolsa@kernel.org>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <20221214100424.1209771-1-jolsa@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: BY3PR04CA0001.namprd04.prod.outlook.com
+ (2603:10b6:a03:217::6) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|PH0PR15MB5637:EE_
+X-MS-Office365-Filtering-Correlation-Id: e41969c4-65b7-409f-a684-08daddf40e57
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KC9z7UpV/+68nyz3+2PPzYmkdpHQgdL0B5JVMHiHXtYNeYRE2yHWUiy/Gr6JWEYaDOt4LQ85kMkm21gjwJG01/8nzJtQKGjDpZWk8d4vUBkLx/Ji//6BlniJPYTm2xtcfdUfoPDpXa+XWyIsxaj4aEbs1tESIdxXV4m8vW55aYcs6IG/dYTJPelztJWeSmN6JfUn+Z4BDkXM5XBqBunCM4F+baydFh8i7MxeNJJKo0X2QutO3MfSJIHz1SWufkT7NcK2D7DPNPCAHzSFp27L0CIQD3YsrhdRVfthWBJf04OaWcdKmI8d1S9e8QHHlAAOwkrS6wr/DS3MtX5VlSnAXdyCCG/v7gI9P9Ppcbu62LV/0qGffWpISFNpjyRPbxoIpWDfibp8lgsUn3VVZCSCQXHN92Jw0RSYvnJ3bIrtzBM8+FFuyQIvW6vgV/9s2gfthTT0NydFUfYYf7I0XzxdLlyXbIE/OP01L8SSu9aGq4AUON54hLvtE8ZqFqsSfxxNMiq8PM0E4jYQK+bLTx3WaKXhIrTzcYdV0xOPKnemEoGXC5M93pL2CP0B8aPUnRM4YMjcEQC/4XiECuYzphja8mLRHBld2opAemsaf26WNlGfod2UIbsIIjRK6gnz0uNHi+ZmYgn+DH5Y0j+Cag0Jt6WlsodIlqdGOS/ql0ssuYfCYeL4IBy4JUXVACtdjZgJJ6g69P1TqvjpBJgI8u6ROURlZUecgpuYrUhs2fQZFmvoDemairpuFNokwCWniLHFwrabxDT1VEY5eCbZw9ppkL4yI4HFWrNmnWUs1MI9rdY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(376002)(366004)(136003)(346002)(39860400002)(451199015)(31686004)(7416002)(2906002)(316002)(110136005)(54906003)(8936002)(8676002)(4326008)(66946007)(66556008)(36756003)(66476007)(41300700001)(5660300002)(966005)(6486002)(6666004)(478600001)(86362001)(31696002)(2616005)(186003)(6506007)(6512007)(53546011)(38100700002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eGlRWnUzcnlUQnFIZlpJb3prdDU3Z0ZsdTVKNjROc3dRU28vSTBoRWRDUzg5?=
+ =?utf-8?B?Z0RGeUgrQXpQazU3bU5QZ0swUnU3anVSWTB4aDFMWTh3UkJIZEpDNlM3MTdG?=
+ =?utf-8?B?NTFNbDN0dWFsT2pDbTRPUWZ2MHJ2aFVxS0plM0p3Kyt0bDFPaUc5bFJsanFI?=
+ =?utf-8?B?MXlOUGE2TGxSTE5TRC9DNXhmRUcvQnVyQlVoaFpjYzkra2JuVzlvRHF6Z3BB?=
+ =?utf-8?B?Ty9ZenhUTTdMQlUxNnovb3ViSWZFUTBHa24xdGliTU1ZU2p2RUUzTkVseGdt?=
+ =?utf-8?B?dmhNaDdHcnNWZ2FEUnlLRDNBUmVDLzV3RWRDM0N0elcyMzE3MjJkcmxvZ0lY?=
+ =?utf-8?B?eFpjTldrekVtV05jUjErUnJZUENtRTE5NWUyK2hKNm9Jam1FVkJyYThMcDBw?=
+ =?utf-8?B?YkpXamMra1lvSkFMUEd6Q2lwN0doWG1MNGppMlVUMkF0enJBOXFtTTEwU3J4?=
+ =?utf-8?B?ZWRaU1VDZkpaSm12N2d4cTB4RG9sZUxleTZSNGEzWElFOVE5Mm9xT0JTblJZ?=
+ =?utf-8?B?ZkM5d0JoV3FQelBaN1hwdE5QSFRhZG1NQk92WFA3VUQxdExLVzluQmYrSWt1?=
+ =?utf-8?B?UUZwL0FPTVo4QUlrSGJqR3lLOU9VNUFVeVZKNFFvbWIvU29QaWVGZHRIWExl?=
+ =?utf-8?B?R2NDVWNwa1FaWWc2M21iMVpPVFdpQ3VlRG1QRlV2VzFiaXUzTEFIVFBoZW5l?=
+ =?utf-8?B?S0lDVlRwM1pLYk1ySjhYcngwODZab1NDb0R3NHYrRjVpMk1sM09GTzIvanlV?=
+ =?utf-8?B?b1I3WG5IRUROV1lZSDg2QTZ1Qnh3L1lwOUpNa3hHZnN2dlZKa1FzcFRjQXNq?=
+ =?utf-8?B?a2kvOFlJR3Y0TGVDR3djYmdJaWZaZWVJOE9GWTlQMXBLUno5VUQ1T3NNalky?=
+ =?utf-8?B?eG5PNzhpSWk1cG8wVE9uamNEL2U3RmZUbEROaFVEckJxK2M5eEtqMVBoQnlR?=
+ =?utf-8?B?SklaQ1JxZldwZ2VVMFFGRE1lYVlhTjZkUWRqbDlkQ3h1NkJyWE5uYnpYR2pM?=
+ =?utf-8?B?T1dIYy9jQkQrWEo1UjFoR1dKaUxxMk41YzhVS3NIWkZwVGdPNnN6bVl1Rnlz?=
+ =?utf-8?B?dEtFS0xrMXBjZGRMS1hyM25IdUs1MTlXVnMzUUxGaEloSld0dFNyeVVnKzdm?=
+ =?utf-8?B?Q0FGbGNmd0lvcWZjMmpYb3ladUJJb0ZMbHhmb29manlrcmFSWS9WYTEraDFD?=
+ =?utf-8?B?MDUyWUV1TDRQeGhTZERJUzF4YmFQeVNFemVmV0FZUytkYnJ5MlZkTE9YK1hh?=
+ =?utf-8?B?YW1USWJjQzZmd3ozZkJwOG9iWFVoTDRQWGNTYnFCcWRGS0liV1pNTWpVNjdi?=
+ =?utf-8?B?ckpZajhSUTh3bkhXblk2RjBtWUZHT3pIdzRmNmo1bjlSSjBxVDkvWVdFWUZK?=
+ =?utf-8?B?TGE3Q3RnVXVBTjJCZDlYdkxyVGVISEZYSmxFak5CS2hsdmNwSzAycWVucGt1?=
+ =?utf-8?B?TnY3ZjBsYXRXeiswbWpxWDUraVZ0ZmpmWEN1amdxQWs0NzJMYlJaeklhZmhl?=
+ =?utf-8?B?QVU3R1ZwOHg5cHJDbWhIM0xBeHZGclR0QWhMVkNDT2FSY3VvUGoyckd2QW43?=
+ =?utf-8?B?QkhQblBMVmp0SjFpOXJRRm02TVJDRTBrVXMxWVVObkJGbHFOQmdON3RIalBG?=
+ =?utf-8?B?dWQybHF5YVZnbDE5OGM3ZE9QcjJETnArV3R2eEk1WEltd0VTTmMwWG84TXYz?=
+ =?utf-8?B?ZHIzakhhZ1FCcEFRMGhqRnVtdmMwb0QrMzQvWWdZTEtlY3Y0ZzdzblhwRHdB?=
+ =?utf-8?B?QU84dVVRdm00L0x3Q0RSb3JMU3ViRjF1NXMyTGx2UnU1RGRIT2JGK0cySmZp?=
+ =?utf-8?B?VDRnaFBUNEM2aTlYL3JLeno4UThGTnhNcVY3Sk11VHFkc1VjRGUzNnJXZDVQ?=
+ =?utf-8?B?NkY4VGtaNzQ1SEViZFRiVVZwcnVnbkh4QmRhZEF0U0F3ZStuUUs4OTJEOEtK?=
+ =?utf-8?B?VTJ4WlY1aEk0OXJKV1pRVzZHS3puaDgyc2E1ZHFydUxla3V4MkR0ZjhoWVFK?=
+ =?utf-8?B?Q053WjJJbXVXRk9tYXlnK3c1MTRQMDhYUE9ZVjZ3M0Q5RU45RkU4QUt3YlFw?=
+ =?utf-8?B?blZucUFIcEtocmtVbVVkclVteHRocUtCZE1vWkhWdkJYa1ZGYXdRM1N4dVFH?=
+ =?utf-8?B?dm53eExSRWU1NHNuNUtNdzJza3R3c0V2MVhOWkdJa0FZanlFd2dCUjh3Ung5?=
+ =?utf-8?B?bkE9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e41969c4-65b7-409f-a684-08daddf40e57
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2022 16:55:51.0292
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fMSLdjX99uqZtWF3dXdetRJpH7OZx6hHzmMP1nEfo9rkJ241jIT6fAWAe3Pt08M3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB5637
+X-Proofpoint-ORIG-GUID: 03LxFzyc_hMm24ZtwL9Xxuwr-OObJouJ
+X-Proofpoint-GUID: 03LxFzyc_hMm24ZtwL9Xxuwr-OObJouJ
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-14_07,2022-12-14_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2022-12-13 at 16:35 -0800, Andrii Nakryiko wrote:
-> On Fri, Dec 9, 2022 at 5:58 AM Eduard Zingerman <eddyz87@gmail.com> wrote=
-:
-> >=20
-> > A test case that would erroneously pass verification if
-> > verifier.c:states_equal() maintains separate register ID mappings for
-> > call frames.
-> >=20
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
->=20
-> It's so hard to read these tests. Moving forward, let's try adding new
-> verifier tests like this using __naked functions and embedded
-> assembly. With recent test loader changes ([0]), there isn't much
-> that's needed, except for a few simple examples to get us started and
-> perhaps __flags(BPF_F_TEST_STATE_FREQ) support. The upside is that
-> using maps or global variables from assembly is now possible and easy,
-> and doesn't require any custom loader support at all.
->=20
->=20
->   [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D70271=
-3&state=3D*
->=20
->=20
-
-This is very nice, I'll try to use it for the next patch-set.
-How do you think it should look like for test_verifier kind of tests?
-The easiest way would be to just add new BPF sources under progs/
-and have some prog_tests/verifier.c like this:
-
-int test_verifier()
-  ...
-  RUN_TESTS(array_access),
-  RUN_TESTS(scalar_ids)
-  ...
-
-Thus reusing the build mechanics for skeletons etc.
-However, it seems to break current logical separation
-between "unit" tests in test_verifier and "functional"
-tests in test_progs. But this may be ok.
 
 
-> >  tools/testing/selftests/bpf/verifier/calls.c | 82 ++++++++++++++++++++
-> >  1 file changed, 82 insertions(+)
-> >=20
-> > diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testi=
-ng/selftests/bpf/verifier/calls.c
-> > index 3193915c5ee6..bcd15b26dcee 100644
-> > --- a/tools/testing/selftests/bpf/verifier/calls.c
-> > +++ b/tools/testing/selftests/bpf/verifier/calls.c
-> > @@ -2305,3 +2305,85 @@
-> >         .errstr =3D "!read_ok",
-> >         .result =3D REJECT,
-> >  },
-> > +/* Make sure that verifier.c:states_equal() considers IDs from all
-> > + * frames when building 'idmap' for check_ids().
-> > + */
-> > +{
-> > +       "calls: check_ids() across call boundary",
-> > +       .insns =3D {
-> > +       /* Function main() */
-> > +       BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-> > +       /* fp[-24] =3D map_lookup_elem(...) ; get a MAP_VALUE_PTR_OR_NU=
-LL with some ID */
-> > +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-> > +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-> > +       BPF_LD_MAP_FD(BPF_REG_1,
-> > +                     0),
-> > +       BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-> > +       BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_0, -24),
-> > +       /* fp[-32] =3D map_lookup_elem(...) ; get a MAP_VALUE_PTR_OR_NU=
-LL with some ID */
-> > +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-> > +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-> > +       BPF_LD_MAP_FD(BPF_REG_1,
-> > +                     0),
-> > +       BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-> > +       BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_0, -32),
-> > +       /* call foo(&fp[-24], &fp[-32])   ; both arguments have IDs in =
-the current
-> > +        *                                ; stack frame
-> > +        */
-> > +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_FP),
-> > +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -24),
-> > +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_FP),
-> > +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -32),
-> > +       BPF_CALL_REL(2),
-> > +       /* exit 0 */
-> > +       BPF_MOV64_IMM(BPF_REG_0, 0),
-> > +       BPF_EXIT_INSN(),
-> > +       /* Function foo()
-> > +        *
-> > +        * r9 =3D &frame[0].fp[-24]  ; save arguments in the callee sav=
-ed registers,
-> > +        * r8 =3D &frame[0].fp[-32]  ; arguments are pointers to pointe=
-rs to map value
-> > +        */
-> > +       BPF_MOV64_REG(BPF_REG_9, BPF_REG_1),
-> > +       BPF_MOV64_REG(BPF_REG_8, BPF_REG_2),
-> > +       /* r7 =3D ktime_get_ns() */
-> > +       BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
-> > +       BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
-> > +       /* r6 =3D ktime_get_ns() */
-> > +       BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
-> > +       BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
-> > +       /* if r6 > r7 goto +1      ; no new information about the state=
- is derived from
-> > +        *                         ; this check, thus produced verifier=
- states differ
-> > +        *                         ; only in 'insn_idx'
-> > +        * r9 =3D r8
-> > +        */
-> > +       BPF_JMP_REG(BPF_JGT, BPF_REG_6, BPF_REG_7, 1),
-> > +       BPF_MOV64_REG(BPF_REG_9, BPF_REG_8),
-> > +       /* r9 =3D *r9                ; verifier get's to this point via=
- two paths:
-> > +        *                         ; (I) one including r9 =3D r8, verif=
-ied first;
-> > +        *                         ; (II) one excluding r9 =3D r8, veri=
-fied next.
-> > +        *                         ; After load of *r9 to r9 the frame[=
-0].fp[-24].id =3D=3D r9.id.
-> > +        *                         ; Suppose that checkpoint is created=
- here via path (I).
-> > +        *                         ; When verifying via (II) the r9.id =
-must be compared against
-> > +        *                         ; frame[0].fp[-24].id, otherwise (I)=
- and (II) would be
-> > +        *                         ; incorrectly deemed equivalent.
-> > +        * if r9 =3D=3D 0 goto <exit>
-> > +        */
-> > +       BPF_LDX_MEM(BPF_DW, BPF_REG_9, BPF_REG_9, 0),
-> > +       BPF_JMP_IMM(BPF_JEQ, BPF_REG_9, 0, 1),
-> > +       /* r8 =3D *r8                ; read map value via r8, this is n=
-ot safe
-> > +        * r0 =3D *r8                ; because r8 might be not equal to=
- r9.
-> > +        */
-> > +       BPF_LDX_MEM(BPF_DW, BPF_REG_8, BPF_REG_8, 0),
-> > +       BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_8, 0),
-> > +       /* exit 0 */
-> > +       BPF_MOV64_IMM(BPF_REG_0, 0),
-> > +       BPF_EXIT_INSN(),
-> > +       },
-> > +       .flags =3D BPF_F_TEST_STATE_FREQ,
-> > +       .fixup_map_hash_8b =3D { 3, 9 },
-> > +       .result =3D REJECT,
-> > +       .errstr =3D "R8 invalid mem access 'map_value_or_null'",
-> > +       .result_unpriv =3D REJECT,
-> > +       .errstr_unpriv =3D "",
-> > +       .prog_type =3D BPF_PROG_TYPE_CGROUP_SKB,
-> > +},
-> > --
-> > 2.34.1
-> >=20
+On 12/14/22 2:04 AM, Jiri Olsa wrote:
+> Both bpf_trace_printk and bpf_trace_vprintk helpers use static buffer
+> guarded with trace_printk_lock spin lock.
+> 
+> The spin lock contention causes issues with bpf programs attached to
+> contention_begin tracepoint [1] [2].
+> 
+> Andrii suggested we could get rid of the contention by using trylock,
+> but we could actually get rid of the spinlock completely by using
+> percpu buffers the same way as for bin_args in bpf_bprintf_prepare
+> function.
+> 
+> Adding 4 per cpu buffers (1k each) which should be enough for all
+> possible nesting contexts (normal, softirq, irq, nmi) or possible
+> (yet unlikely) probe within the printk helpers.
+> 
+> In very unlikely case we'd run out of the nesting levels the printk
+> will be omitted.
+> 
+> [1] https://lore.kernel.org/bpf/CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com/
+> [2] https://lore.kernel.org/bpf/CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com/
+> 
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+> v2 changes:
+>    - changed subject [Yonghong]
+>    - added WARN_ON_ONCE to get_printk_buf [Song]
+> 
+>   kernel/trace/bpf_trace.c | 61 +++++++++++++++++++++++++++++++---------
+>   1 file changed, 47 insertions(+), 14 deletions(-)
 
+Ack with a nit below.
+
+Acked-by: Yonghong Song <yhs@fb.com>
+
+> 
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 3bbd3f0c810c..a992b5a47fd6 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -369,33 +369,62 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+>   	return &bpf_probe_write_user_proto;
+>   }
+>   
+> -static DEFINE_RAW_SPINLOCK(trace_printk_lock);
+> -
+>   #define MAX_TRACE_PRINTK_VARARGS	3
+>   #define BPF_TRACE_PRINTK_SIZE		1024
+> +#define BPF_TRACE_PRINTK_LEVELS		4
+> +
+> +struct trace_printk_buf {
+> +	char data[BPF_TRACE_PRINTK_LEVELS][BPF_TRACE_PRINTK_SIZE];
+> +	int level;
+> +};
+> +static DEFINE_PER_CPU(struct trace_printk_buf, printk_buf);
+> +
+> +static void put_printk_buf(struct trace_printk_buf __percpu *buf)
+> +{
+> +	if (WARN_ON_ONCE(this_cpu_read(buf->level) == 0))
+> +		return;
+
+The above WARN_ON_ONCE is not needed as it never happens based on
+implementation. There are a few other similar cases in bpf_trace.c and 
+none of them has WARN_ON_ONCE.
+
+> +	this_cpu_dec(buf->level);
+> +	preempt_enable();
+> +}
+> +
+> +static bool get_printk_buf(struct trace_printk_buf __percpu *buf, char **data)
+> +{
+> +	int level;
+> +
+> +	preempt_disable();
+> +	level = this_cpu_inc_return(buf->level);
+> +	if (WARN_ON_ONCE(level > BPF_TRACE_PRINTK_LEVELS)) {
+> +		put_printk_buf(buf);
+> +		return false;
+> +	}
+> +	*data = (char *) this_cpu_ptr(&buf->data[level - 1]);
+> +	return true;
+> +}
+>   
+[...]
