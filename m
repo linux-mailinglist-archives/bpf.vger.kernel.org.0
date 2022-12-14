@@ -2,75 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB80764C20F
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 03:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CFB64C220
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 03:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbiLNCAg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 21:00:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
+        id S236039AbiLNCHZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 21:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235762AbiLNCAd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 21:00:33 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA07913D41
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:00:32 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id e126so1071391pgc.6
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:00:32 -0800 (PST)
+        with ESMTP id S236871AbiLNCHW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 21:07:22 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67613233A6
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:07:20 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id x2so550079plb.13
+        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:07:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tJ4CSVZZ+NoydkcJKVQO6YNOhus6JhiYOMFjQ8jjtjU=;
-        b=m/SKUa27vVBjK1uJ2X221o05KhZ9jtihYba01Ju4Ef9NiQruOgsHzM/Kf1zncuPTTX
-         5WeMUgP2qqB8oX/4aP0MqYeAjg3qs/eM20mosQEYuuuFZnP4JWFMeKxBkG3TuR5NK4vu
-         qFImpcXkZ2530uslsCBedMtoQkMTCMSn577sVPwZQ4PtS7Ixp2wQrQhf3JPXBZeWg99f
-         xhPEhRvSnr9JK20Gn1Xy65nImGw11v7zxUokfH2gN5b0GSEXW//gCO0MyExz+vTrRPRC
-         Muj85AAhNQdYKoc9aj4gGiO9y1whE7GOJaJob8+6UkimVCJbodt1gz6mB2zEZSbiY6zc
-         Q58g==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9tFGD6ohuupNWyTi4yRpR9rQncYAz/CLsSQD15g3DQw=;
+        b=NliDi9V1wIp5C7LB/ObD6Uv7lbJ7y+4PjzSth8LUPOV8973LldRUaTGu4bpgeY9Awx
+         x7kiYJmpHtPYsO7tK1YCODusXfIPvnRS+o6AC8TQeNUpSvfuSEcjv8krWbIHCpuDMCfh
+         AGknCk2PJOLqeIKZZF4FccpcD5OgS6beuGjtrR17w8KYK0JqBxugBcGAi/G++QBN1JGd
+         0Q9FTqT1pZIJJuW3yLH3TIV35p6vK7D4e0RHNvmLSsxyuSZmIU1hmsKiQNRbBqHzsJEO
+         1hnIdK1hs6KLZT1llTC0GtVDH2VaWmoV5c2SNEhFClAoAbIGXZJ8obzHI6hm3E35uHSi
+         lrUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tJ4CSVZZ+NoydkcJKVQO6YNOhus6JhiYOMFjQ8jjtjU=;
-        b=SYo7ic4OPfS1Jykcc93fNKW86aEfKnjVXIILKJdzcXTjWqI5rWG35HeGF3Qv5HS+bO
-         IxDrWSThuIPkX91VOqgEz5+vxwmo/Hd20+qQVChtfC8Kmj3d+pWgVYdZD15W4CYk7tAR
-         UA+Ds4LheVB/KfoxSme10R8bm1ZAfZ8JNOQAlYUa7Bwo8Ti/74vfyfhidccdZCQz/cGF
-         JeSdpn8j6sd3bF0iPUPPI44wgcoqF5qbThYW6XI7SHfSasCmgL8pfbJtmY/761QDuihJ
-         3xl9LgQuN1kbow/d/ybIhC+qiZDdZx/EABysbvO4j/YP3mPS0A1Pb6wqlnwEmuAVi4MO
-         IIqQ==
-X-Gm-Message-State: ANoB5pkabxfT+/kovE42k2BNL8JJ7XJLctR/SdW5LKmIqCvDRwa8GG33
-        wyaxXclbyvGchazpiPXv3gZBE+++QAhk2a+0MAHzgw==
-X-Google-Smtp-Source: AA0mqf67HjB2QuUnPoIyEET5gO5fYZFekKta2m+eJepPSJ0NzH0Lf7dZNLdzf8CBGYYlGHlbu/mQbGXA6ehU1ULXrlQ=
-X-Received: by 2002:a63:1247:0:b0:476:ed2a:6216 with SMTP id
- 7-20020a631247000000b00476ed2a6216mr77727663pgs.556.1670983231384; Tue, 13
- Dec 2022 18:00:31 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9tFGD6ohuupNWyTi4yRpR9rQncYAz/CLsSQD15g3DQw=;
+        b=0c4eT6jzoS17lmP6SNYM+4vUVD6ctV2V8nQke6WWdzhhjquxSsLWVm1TZaDhsHuUOK
+         t4bawqw/3hWO2HSJoFTP95itQwO/xMdS67hcUtA0ibnF+k+cgUYe71Tg7l1BNEj29q0t
+         mlJOPA4Rlo9fObFvjYlsb9wwx0i49SRnqXVK+DkO+3ENy1rl6uA+wHeK0Pn5tHcX+RGN
+         SppJQTk1GD0vwojYEcEozEaKcIPqsHaZWpiea4e4ca61POzKkWUfmFoSDUB+PFuGyAAL
+         e2nXl++QKDQLw+P8jV5MAgeNJh2/j7RrMRs8blx1VNrTv63XllWGwG3h2zaB49eWhH+Z
+         0Gfw==
+X-Gm-Message-State: ANoB5pmvcfAoxLh6O2eiO5IL8No+Q9zr0MxQvOlJP7HGgjRgYHT96chC
+        L2ndSqMTaiLdI2BZXz5ZQcs=
+X-Google-Smtp-Source: AA0mqf7OehWlVEvh/i8SYO7cBSbXM+r8reMgG4kvmCyMjtdSxcCNCAkU3CILsMdPQqL5JaTsyNPgpw==
+X-Received: by 2002:a17:90a:6ac9:b0:219:53fd:2cb9 with SMTP id b9-20020a17090a6ac900b0021953fd2cb9mr22838385pjm.7.1670983639869;
+        Tue, 13 Dec 2022 18:07:19 -0800 (PST)
+Received: from [192.168.255.10] ([43.132.98.40])
+        by smtp.gmail.com with ESMTPSA id d5-20020a17090abf8500b0020b2082e0acsm198254pjs.0.2022.12.13.18.07.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Dec 2022 18:07:19 -0800 (PST)
+Message-ID: <d610919b-816d-a9af-d8f4-ce524ae9540b@gmail.com>
+Date:   Wed, 14 Dec 2022 10:07:16 +0800
 MIME-Version: 1.0
-References: <20221130082313.3241517-1-tj@kernel.org> <20221130082313.3241517-32-tj@kernel.org>
- <Y5c0qEuyn8cAvLGQ@hirez.programming.kicks-ass.net> <CABk29Nu5WiCmhNN2jZrTShELbCDOYUziUeW5xojkwB83R+VzEQ@mail.gmail.com>
- <Y5hiPqaT6UqaUcGK@hirez.programming.kicks-ass.net>
-In-Reply-To: <Y5hiPqaT6UqaUcGK@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 13 Dec 2022 18:00:19 -0800
-Message-ID: <CABk29Nu0JJ6xY_2SL0Y=iWstmoiRnRRnQ+Xvm3t_oU4sp72vpg@mail.gmail.com>
-Subject: Re: [PATCH 31/31] sched_ext: Add a rust userspace hybrid example scheduler
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        brho@google.com, pjt@google.com, derkling@google.com,
-        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
-        dskarlat@cs.cmu.edu, riel@surriel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com, Peter Oskolkov <posk@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.5.1
+Subject: Re: [PATCH bpf-next] libbpf: Add LoongArch support to bpf_tracing.h
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, yangtiezhu@loongson.cn
+References: <20221212091136.969960-1-hengqi.chen@gmail.com>
+ <CAEf4BzaxYmBxYx=rfAyOn0kBHf3qOt6mPCPsyfrM+3rYcQ8MMQ@mail.gmail.com>
+ <CAEf4BzbX-DCvjvJsHgZC+TbLnru5R-0Oy3GfVkw7rjdtSR8e8g@mail.gmail.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+In-Reply-To: <CAEf4BzbX-DCvjvJsHgZC+TbLnru5R-0Oy3GfVkw7rjdtSR8e8g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,87 +75,97 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > and ignoring
-> > the specifics of this example, the UMCG and sched_ext work are
-> > complementary, but not mutually exclusive. UMCG is about driving
-> > cooperative scheduling within a particular application. UMCG does not
-> > have control over or react to external preemption,
->
-> It can control preemption inside the process, and if you have the degree
-> of control you need to make the whole BPF thing work, you also have the
-> degree of control to ensure you only run the one server task on a CPU
-> and all that no longer matters because there's only the process and you
-> control preemption inside that.
 
-To an extent yes, but this doesn't extend to the case where cpu is
-overcommitted. Even if not by other applications, then responding to
-preemption by, for example, kthreads (necessary for microsecond scale
-workloads). But in general the common case is interference from other
-applications, something which is handled by a system level scheduler
-like sched_ext. The application vs system level control is an
-important distinction here.
 
-> > nor does it make thread placement decisions.
->
-> It can do that just fine -- inside the process. UMCG has full control
-> over which server task a worker task is associated with, then run a
-> single server task per CPU and have them pinned and you get full
-> placement control.
+On 2022/12/14 06:09, Andrii Nakryiko wrote:
+> On Mon, Dec 12, 2022 at 4:17 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>>
+>> On Mon, Dec 12, 2022 at 1:11 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>>>
+>>> Add PT_REGS macros for LoongArch64.
+>>>
+>>> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+>>> ---
+>>>  tools/lib/bpf/bpf_tracing.h | 21 +++++++++++++++++++++
+>>>  1 file changed, 21 insertions(+)
+>>>
+>>> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+>>> index 2972dc25ff72..2d7da1caa961 100644
+>>> --- a/tools/lib/bpf/bpf_tracing.h
+>>> +++ b/tools/lib/bpf/bpf_tracing.h
+>>> @@ -32,6 +32,9 @@
+>>>  #elif defined(__TARGET_ARCH_arc)
+>>>         #define bpf_target_arc
+>>>         #define bpf_target_defined
+>>> +#elif defined(__TARGET_ARCH_loongarch)
+>>> +       #define bpf_target_loongarch
+>>> +       #define bpf_target_defined
+>>>  #else
+>>>
+>>>  /* Fall back to what the compiler says */
+>>> @@ -62,6 +65,9 @@
+>>>  #elif defined(__arc__)
+>>>         #define bpf_target_arc
+>>>         #define bpf_target_defined
+>>> +#elif defined(__loongarch__) && __loongarch_grlen == 64
+>>> +       #define bpf_target_loongarch
+>>> +       #define bpf_target_defined
+>>>  #endif /* no compiler target */
+>>>
+>>>  #endif
+>>> @@ -258,6 +264,21 @@ struct pt_regs___arm64 {
+>>>  /* arc does not select ARCH_HAS_SYSCALL_WRAPPER. */
+>>>  #define PT_REGS_SYSCALL_REGS(ctx) ctx
+>>>
+>>> +#elif defined(bpf_target_loongarch)
+>>> +
+>>> +#define __PT_PARM1_REG regs[5]
+>>> +#define __PT_PARM2_REG regs[6]
+>>> +#define __PT_PARM3_REG regs[7]
+>>> +#define __PT_PARM4_REG regs[8]
+>>> +#define __PT_PARM5_REG regs[9]
+>>> +#define __PT_RET_REG regs[1]
+>>> +#define __PT_FP_REG regs[22]
+>>> +#define __PT_RC_REG regs[4]
+>>> +#define __PT_SP_REG regs[3]
+>>> +#define __PT_IP_REG csr_era
+>>> +/* loongarch does not select ARCH_HAS_SYSCALL_WRAPPER. */
+>>> +#define PT_REGS_SYSCALL_REGS(ctx) ctx
+>>
+>> Is there some online documentation explaining this architecture's
+>> calling conventions? It would be useful to include that as a comment
+>> to be able to refer back to it. On a related note, are there any
+>> syscall specific calling convention differences, similar to
+>> PT_REGS_PARM1_SYSCALL for arm64 or PT_REGS_PARM4_SYSCALL for x86-64?
+>>
+> 
+> Ok, I think [0] would be a good resource, please add a link to it in
+> the comment. But also it seems like PARM1-5 should map to regs[6]
+> through regs[10] (not regs[5] - regs[9] that you have here). And BTW,
+> seems like architecture supports passing more than five, PARM6 would
+> be regs[11]. I've been wanting to add 6th+ argument to libbpf macros'
+> for a while (it came up in x86-64 world for uprobes as well), so if
+> you have cycles, please consider helping with that as well.
+> 
 
-Again, this doesn't really scale past single server per cpu. It is not
-feasible to partition systems in this way due to the loss of
-efficiency.
+I've seen this on GitHub. Let me have a try.
 
-> > sched_ext is considering things more at
-> > the system level: arbitrating fairness and preemption between
-> > processes, deciding when and where threads run, etc., and also being
-> > able to take application-specific hints if desired.
->
-> sched_ext does fundamentally not compose, you cannot run two different
-> schedulers for two different application stacks that happen to co-reside
-> on the same machine.
+> Also I see orig_a0 in struct pt_regs, which seems suspiciously similar
+> to arm64's PT_REGS_PARM1_SYSCALL's use of orig_x0, please check about
+> that as well. As I said, syscalls usually have some additional quirks.
+> 
+> 
+>   [0] https://loongson.github.io/LoongArch-Documentation/LoongArch-ELF-ABI-EN.html
+> 
+> 
+>>> +
+>>>  #endif
+>>>
+>>>  #if defined(bpf_target_defined)
+>>> --
+>>> 2.31.1
 
-We're actually already developing a framework (and plan to share) to
-support composing an arbitrary combination of schedulers. Essentially,
-a "scheduler of schedulers". This supports the case, for example, of a
-system that runs most tasks under some default SCX scheduler, but
-allows a particular application or group of applications to utilize a
-bespoke SCX scheduler of their own.
+Thanks, Andrii.
 
-> sched_ext also sits at the very bottom of the class stack (it more or
-> less has to) the result is that in order to use it at all, you have to
-> have control over all runnable tasks in the system (a stray CFS task
-> would interfere quite disastrously) but that is exactly the same
-> constraint you need to make UMCG work.
-
-UMCG still works when mixed with other tasks. You're specifying which
-threads of your application you want running, but no guarantees are
-made that they'll run right now if the system has other work to do.
-
-SCX vs CFS is a more interesting story. Yes it is true that a single
-CFS task could hog a cpu, but since SCX is managing things at a system
-level, we feel that this is something that should be handled by system
-administration. You shouldn't expect to mix cpu bound CFS tasks in the
-same partition as threads running under SCX with good results.
-
-> Conversely, it is very hard to use the BPF thing to do what UMCG can do.
-> Using UMCG I can have a SCHED_DEADLINE server implement a task based
-> pipeline schedule (something that's fairly common and really hard to
-> pull off with just SCHED_DEADLINE itself).
-
-UMCG and SCX are solving different problems though. An application can
-decide execution order or control internal preemption via UMCG, while
-SXC arbitrates allocation of system resources over time.
-
-And, conversely, SCX can do things very difficult or impossible with
-UMCG. For example, implementing core scheduling. Guaranteeing
-microsecond scale tail latency. Applying a new scheduling algorithm
-across multiple independent applications.
-
-> Additionally, UMCG naturally works with things like Proxy Execution,
-> seeing how the server task *is* a proxy for the current active worker
-> task.
-
-Proxy execution should also work with SCX; the enqueue/dequeue
-abstraction can still be used to allow the SCX scheduler to select the
-proxy.
+After some investigation, I do find some quirks on syscalls. Will update this patch.
