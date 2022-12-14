@@ -2,102 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD28564C22A
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 03:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A1464C232
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 03:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237065AbiLNCLz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Dec 2022 21:11:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        id S236997AbiLNCUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Dec 2022 21:20:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237055AbiLNCLx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Dec 2022 21:11:53 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37080220FE
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:11:53 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id 124so3536718pfy.0
-        for <bpf@vger.kernel.org>; Tue, 13 Dec 2022 18:11:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WTwRd3Vfb9mMXt87QjpBobPhpTfI8kJpvB+zz9Ggrdc=;
-        b=COu9NWhJ67WsyFRU2hjs5TqHYciSwbilz5g7t1Z+ZLdU2tlsLG8/wjdXSjlL+xh4fL
-         TMm52Td++Ur6X1U2aN7usUppUTFmj3gzAQIpRFzSLODmnigY1ZPgzor5QmG5FrWUfI54
-         F3DAd5oL4fsfSNODiB25I3LjQg/mw2oEPzUhCAfAozrLNRmQafMQhx385Oay4gv0pf4B
-         Gr1g3okj9Y/xtJVmjj8iRQbdOSolvN5H+gTJnSNZdK5+NKV1TEY2WtkmB1rt0dUdiK2b
-         4BwHfVRf2ndDKZkJYOuKeh6AcvgF0PRADrcIpTuCbpwSeyYvi8eLB0JcP8Y+ZCG2Vw63
-         28Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WTwRd3Vfb9mMXt87QjpBobPhpTfI8kJpvB+zz9Ggrdc=;
-        b=BxAivjYKYztOZIhluJxCtOvZR+Wg93uxZ2STWmc9okIdXcQzc7Qy2ajhzi1gVyOqsp
-         WOA9lWwb5aGOXk5PjzFwuuaGcDHWm3AuAjObS4/QrYdL3ggyKDanLM3fgRMzxFDUawZ9
-         NC6Ksjm+TZVPm6eDUer1InbsOjw8nWO2UlqQ/c1tWMn1sOxQ7MRiBrL2rMwUb6QBrgR0
-         Icpl/fVvGvwPbGl1D96fJbIcGR96vjQh9dqdaYqCq6ywyzbRihGR7pJqVSJZ4DuhwzAq
-         4PAaA0Kp20EiEvqpYCZX483Hw8AU2szXUrJmGNl48JL6+MExTVZfIoUcqHxYOh+nrPhk
-         2ULw==
-X-Gm-Message-State: ANoB5pkwFpcp3GH8Fx6spNcjWRxums5O3Ph8dF68QtuEAnoIEyY5hEg8
-        pHYoccgtl9pLm2hp3Nz6LNcnd5dVAb0sjSNKaLbRrA==
-X-Google-Smtp-Source: AA0mqf5/xweGeEjmBl4DOm2Y/blYrG1UU2cHlX0uIDmT/udC/44xAdbkJ28KzqoV1xcoXbVUpAT8ISGiwe7fi55T27g=
-X-Received: by 2002:a63:1247:0:b0:476:ed2a:6216 with SMTP id
- 7-20020a631247000000b00476ed2a6216mr77729739pgs.556.1670983911856; Tue, 13
- Dec 2022 18:11:51 -0800 (PST)
+        with ESMTP id S236726AbiLNCUT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Dec 2022 21:20:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C266022514;
+        Tue, 13 Dec 2022 18:20:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CF2A617A4;
+        Wed, 14 Dec 2022 02:20:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9D2C1C433F0;
+        Wed, 14 Dec 2022 02:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670984416;
+        bh=e34cddoHsQG2CptMJkGyXAL9/ccpbDs2SG/xGx1evik=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pLQv8sqOy+mc9hIQDVLgsTNkCSHgVXYCQzlIMUc9K2hKlmpa47sqpCtrUQNc1zSg+
+         VkHm5RO/T9VkNrJ1HvNYGSyWcODzuTvJlIJsevrCBT5GlDzwQecM5aem2r35p/+UN9
+         WR2HG232KaxGPUN6VICsKG3hmlysRgzF1UtAxsTKcD6gFQVyPD5oESt4z8GIoALPoB
+         5kOPRF2mt3cBgvYNZ9vOGmC2tYp0yzY3D9y+iPW2i+90yVzz8ZMFc3iNlICN4FettM
+         LC3xUjMDePI/eVjd7ro2LXHAvtbJM8DyW132GbnloHiz51SpU0vzQJoIpQTLJIh6Nj
+         tVSXCOruOEwaw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 80955E4D02A;
+        Wed, 14 Dec 2022 02:20:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20221130082313.3241517-1-tj@kernel.org> <Y5b++AttvjzyTTJV@hirez.programming.kicks-ass.net>
-In-Reply-To: <Y5b++AttvjzyTTJV@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 13 Dec 2022 18:11:38 -0800
-Message-ID: <CABk29Ntf1ZMAmvkVTzj6=HjanHgn6Qu3-J8gHHyMM30yiHM3_w@mail.gmail.com>
-Subject: Re: [PATCHSET RFC] sched: Implement BPF extensible scheduler class
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        brho@google.com, pjt@google.com, derkling@google.com,
-        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
-        dskarlat@cs.cmu.edu, riel@surriel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: prevent leak of lsm program after failed attach
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167098441652.18507.17827174898852419883.git-patchwork-notify@kernel.org>
+Date:   Wed, 14 Dec 2022 02:20:16 +0000
+References: <20221213175714.31963-1-milan@mdaverde.com>
+In-Reply-To: <20221213175714.31963-1-milan@mdaverde.com>
+To:     Milan Landaverde <milan@mdaverde.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 12, 2022 at 2:14 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Nov 29, 2022 at 10:22:42PM -1000, Tejun Heo wrote:
->
-> > Rolling out kernel upgrades is a slow and iterative process. At a large scale
-> > it can take months to roll a new kernel out to a fleet of servers. While this
-> > latency is expected and inevitable for normal kernel upgrades, it can become
-> > highly problematic when kernel changes are required to fix bugs. Livepatch [9]
-> > is available to quickly roll out critical security fixes to large fleets, but
-> > the scope of changes that can be applied with livepatching is fairly limited,
-> > and would likely not be usable for patching scheduling policies. With
-> > sched_ext, new scheduling policies can be rapidly rolled out to production
-> > environments.
->
-> I don't think we can or should use this argument to push BPF into ever
-> more places.
+Hello:
 
-Improving scheduling performance requires rapid iteration to explore
-new policies and tune parameters, especially as hardware becomes more
-heterogeneous, and applications become more complex. Waiting months
-between evaluating scheduler policy changes is simply not scalable,
-but this is the reality with large fleets that require time for
-testing, qualification, and progressive rollout. The security angle
-should be clear from how involved it was to integrate core scheduling,
-for example.
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Tue, 13 Dec 2022 12:57:14 -0500 you wrote:
+> In [0], we added the ability to bpf_prog_attach LSM programs to cgroups,
+> but in our validation to make sure the prog is meant to be attached to
+> BPF_LSM_CGROUP, we return too early if the check fails. This results in
+> lack of decrementing prog's refcnt (through bpf_prog_put)
+> leaving the LSM program alive past the point of the expected lifecycle.
+> This fix allows for the decrement to take place.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] bpf: prevent leak of lsm program after failed attach
+    https://git.kernel.org/bpf/bpf-next/c/2958c237fd1e
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
