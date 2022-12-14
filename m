@@ -2,76 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D04FC64D01D
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 20:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3865664D021
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 20:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237169AbiLNTf3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 14:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S238278AbiLNTiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 14:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbiLNTf2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 14:35:28 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D088F124;
-        Wed, 14 Dec 2022 11:35:26 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id kw15so47026384ejc.10;
-        Wed, 14 Dec 2022 11:35:26 -0800 (PST)
+        with ESMTP id S237451AbiLNTh7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 14:37:59 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1433429376
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 11:37:58 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id s5so24048023edc.12
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 11:37:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GXfw3emYMkZf6BSorUXvbBQuPX16o2thlPz71megX9E=;
-        b=MRNsQ/twOilW3jYA4nkpN79LB6I6yaMe4RFzZfwf1koZOyoz7wNJtftKStdDBcWcvN
-         379f6Gl5+TZsd4+qIJ/yUU9MJ3+rYE/jxejIjejZNtCh93hahEkO+XO2U5NKtTIHMoKo
-         9bAFTIrwWBzEN4+5bX0uGzJNjV8E4KaYsmMNMFWAdIuS2+JTEBHFgOsble7xyVuWqaTI
-         g3XPdhWrQI/e3zhh32L3vUFF2gLoRTDbb8g6LSbjK5p6lqMiD/q8HbaIpw/C98fkFDG5
-         3JY5h8hnuIc5qSksnETTd5pVKVF/kue0A+Jm1M/NKWF+rW+hA1zCaWS5HN+OZGuC35tg
-         NQCw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+mxv/CvPAWr5PHYDZat3buBrEYFluzzk6fbnWCsK7WU=;
+        b=au8V2vdNQkH0WvYef1kAOOv8g3D/J8JImk60XJtwGuMwDkcGS0Y0RvzXHc+hoTss2j
+         NwFZLRnCplU4LME9TcPb/jhscihunTg5uGAp3PlrDs7/X/7KWjPrRKpVGbD5/xkNUCo6
+         YevHWaUEnvMs8+nbLLGlA15/EQKG23qgYTSZiqjoRvPmr0454kgU6lTFRHt1Bg/0ncv0
+         z4ELKmvU9+YI9mOu9KkzCBnnHnoq+pZ/zy3NjfKT05bGN5IrhesgtwZQ8SiAa47w+0An
+         dj+hFRpw+iVu2Cket0WXe6OwN0Qh8rZSUHIAGLMeINmRWBPf+t6WIZhZarB8SCBkPjNe
+         pwcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GXfw3emYMkZf6BSorUXvbBQuPX16o2thlPz71megX9E=;
-        b=v6kKKL/mm2i6C2i5VZRjk/qZ/BiRT0XFxpUBUAMe5vi3fj53S77n3d24U9Kunuu5EQ
-         nmt5WxhtCKmsYHDYDxxuDiKdWT2JLyoj7AZj4WOy9MRR6jUs6t70/NaC2cQjtXPwePbk
-         8fKOXIn4p+bG4D6RketnPrE7GeZz9V49/o5UodKtKx6MjPOxwmVmOY/zkfoonELSHg0u
-         73x/45hcvaW4KUx6eYG7xo3fOIOwns7n9n4n2Yx5Xgb6XCsssbYSdUaIwyuo+J+8Ia/S
-         3JmtiAFsvdj0/1SZVrNykVaJtGxQ6dRigep800ERnBDLWH18Lhy3bn38D/YD1LABB8Ij
-         91xQ==
-X-Gm-Message-State: ANoB5pnJSTpddMNSO8+YSJH2RU37d1dgMUInMVfw2hM6XQy+mlw479Ze
-        4CJfq7IOm4i/akgT+0IO4yb4UTC0COJXBn/iJp8=
-X-Google-Smtp-Source: AA0mqf7ZRJF6xBj++V4WSuTsncIpxb1GQQFJ+ucgg1kFoi8DVSYFTem69Okmr0CyD/gLmy3y2XIOgpOPZu4ht3T0qkg=
-X-Received: by 2002:a17:906:94e:b0:7ba:4617:3f17 with SMTP id
- j14-20020a170906094e00b007ba46173f17mr59534592ejd.226.1671046525315; Wed, 14
- Dec 2022 11:35:25 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+mxv/CvPAWr5PHYDZat3buBrEYFluzzk6fbnWCsK7WU=;
+        b=bhGLtyzyTgh9zJDbaohjvCsfqgYQ9DB+Ma305tuvll/+ksNtPO4M0I5z1l6aiNdTjG
+         YqlNNpWcriU3P+wmHYt3v/Aq5ysFJ/gSaXf0+SAheFGK525PUNVwDU1TEnNxG474Tt5M
+         eX8NzgDxWWZFE+zpboVhIJxY00r2eKAiMRjEdzH2SJh3N7mT9fc/4aXYZLBAv4tJAvxN
+         Uolgdl/u1uGzTVN/jL378G9Jub5+ffjEK17KTcVHjWh+fj4kB2bpdN5FNnPHcq5bd/ti
+         fgNefsmdPf2NliV3fNkeABRFlKlU/vZdVaF2RwwyjJIq8PIX5NaW8GGWxQjugkKH0jCH
+         G7FA==
+X-Gm-Message-State: ANoB5pmIOZlYO+vLXdsqW19LUt9Gd3LWqOsCmrk/1/JYImG58glnNHW0
+        0pKW/HnPB8+ZaKeTgVo3RxDSW9Fulu34lzGOWMQ=
+X-Google-Smtp-Source: AA0mqf6KWVb/c2xR7sXPzvTkZo86YlUcnA++L3lYxjd5lciGPaDcy9roMV+8tjf3CG4HWPBWJQxnZWEVqN33/EloJCs=
+X-Received: by 2002:aa7:cd05:0:b0:46c:e558:ce90 with SMTP id
+ b5-20020aa7cd05000000b0046ce558ce90mr13970572edw.81.1671046676615; Wed, 14
+ Dec 2022 11:37:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20221214010517.668943-1-toke@redhat.com> <20221214010517.668943-2-toke@redhat.com>
-In-Reply-To: <20221214010517.668943-2-toke@redhat.com>
+References: <20221209135733.28851-1-eddyz87@gmail.com> <20221209135733.28851-2-eddyz87@gmail.com>
+ <CAEf4BzbPBeAUzueQ7mxcmSovY2Nqr37RFZnb5B1pwSDqNhyZ6w@mail.gmail.com> <6ff2854e4c1f2a5c3754a8ffaadf5d47fa1c2285.camel@gmail.com>
+In-Reply-To: <6ff2854e4c1f2a5c3754a8ffaadf5d47fa1c2285.camel@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 14 Dec 2022 11:35:13 -0800
-Message-ID: <CAEf4BzYMNgfmnKzAo==Rs8E-S6cTsVv4mj_17yfKmQ5S_KzXuQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v4 2/2] selftests/bpf: Add a test for using a cpumap
- from an freplace-to-XDP program
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
+Date:   Wed, 14 Dec 2022 11:37:44 -0800
+Message-ID: <CAEf4BzYh9T37BB0BO6ZNDS+VYHPYZ8xGuTO7tpyLMgksYd2B8A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/7] bpf: regsafe() must not skip check_ids()
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
+        memxor@gmail.com, ecree.xilinx@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -82,168 +68,194 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 13, 2022 at 5:05 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Wed, Dec 14, 2022 at 5:26 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> This adds a simple test for inserting an XDP program into a cpumap that i=
-s
-> "owned" by an XDP program that was loaded as PROG_TYPE_EXT (as libxdp
-> does). Prior to the kernel fix this would fail because the map type
-> ownership would be set to PROG_TYPE_EXT instead of being resolved to
-> PROG_TYPE_XDP.
+> On Tue, 2022-12-13 at 16:35 -0800, Andrii Nakryiko wrote:
+> > On Fri, Dec 9, 2022 at 5:58 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+> > >
+> > > The verifier.c:regsafe() has the following shortcut:
+> > >
+> > >         equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
+> > >         ...
+> > >         if (equal)
+> > >                 return true;
+> > >
+> > > Which is executed regardless old register type. This is incorrect for
+> > > register types that might have an ID checked by check_ids(), namely:
+> > >  - PTR_TO_MAP_KEY
+> > >  - PTR_TO_MAP_VALUE
+> > >  - PTR_TO_PACKET_META
+> > >  - PTR_TO_PACKET
+> > >
+> > > The following pattern could be used to exploit this:
+> > >
+> > >   0: r9 = map_lookup_elem(...)  ; Returns PTR_TO_MAP_VALUE_OR_NULL id=1.
+> > >   1: r8 = map_lookup_elem(...)  ; Returns PTR_TO_MAP_VALUE_OR_NULL id=2.
+> > >   2: r7 = ktime_get_ns()        ; Unbound SCALAR_VALUE.
+> > >   3: r6 = ktime_get_ns()        ; Unbound SCALAR_VALUE.
+> > >   4: if r6 > r7 goto +1         ; No new information about the state
+> > >                                 ; is derived from this check, thus
+> > >                                 ; produced verifier states differ only
+> > >                                 ; in 'insn_idx'.
+> > >   5: r9 = r8                    ; Optionally make r9.id == r8.id.
+> > >   --- checkpoint ---            ; Assume is_state_visisted() creates a
+> > >                                 ; checkpoint here.
+> > >   6: if r9 == 0 goto <exit>     ; Nullness info is propagated to all
+> > >                                 ; registers with matching ID.
+> > >   7: r1 = *(u64 *) r8           ; Not always safe.
+> > >
+> > > Verifier first visits path 1-7 where r8 is verified to be not null
+> > > at (6). Later the jump from 4 to 6 is examined. The checkpoint for (6)
+> > > looks as follows:
+> > >   R8_rD=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
+> > >   R9_rwD=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
+> > >   R10=fp0
+> > >
+> > > The current state is:
+> > >   R0=... R6=... R7=... fp-8=...
+> > >   R8=map_value_or_null(id=2,off=0,ks=4,vs=8,imm=0)
+> > >   R9=map_value_or_null(id=1,off=0,ks=4,vs=8,imm=0)
+> > >   R10=fp0
+> > >
+> > > Note that R8 states are byte-to-byte identical, so regsafe() would
+> > > exit early and skip call to check_ids(), thus ID mapping 2->2 will not
+> > > be added to 'idmap'. Next, states for R9 are compared: these are not
+> > > identical and check_ids() is executed, but 'idmap' is empty, so
+> > > check_ids() adds mapping 2->1 to 'idmap' and returns success.
+> > >
+> > > This commit pushes the 'equal' down to register types that don't need
+> > > check_ids().
+> > >
+> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > > ---
+> > >  kernel/bpf/verifier.c | 29 ++++++++---------------------
+> > >  1 file changed, 8 insertions(+), 21 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 3194e9d9e4e4..d05c5d0344c6 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -12926,15 +12926,6 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+> > >
+> > >         equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
+> > >
+> > > -       if (rold->type == PTR_TO_STACK)
+> > > -               /* two stack pointers are equal only if they're pointing to
+> > > -                * the same stack frame, since fp-8 in foo != fp-8 in bar
+> > > -                */
+> > > -               return equal && rold->frameno == rcur->frameno;
+> > > -
+> > > -       if (equal)
+> > > -               return true;
+> > > -
+> > >         if (rold->type == NOT_INIT)
+> > >                 /* explored state can't have used this */
+> > >                 return true;
+> > > @@ -12942,6 +12933,8 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+> > >                 return false;
+> > >         switch (base_type(rold->type)) {
+> > >         case SCALAR_VALUE:
+> > > +               if (equal)
+> > > +                       return true;
+> > >                 if (env->explore_alu_limits)
+> > >                         return false;
+> > >                 if (rcur->type == SCALAR_VALUE) {
+> > > @@ -13012,20 +13005,14 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+> > >                 /* new val must satisfy old val knowledge */
+> > >                 return range_within(rold, rcur) &&
+> > >                        tnum_in(rold->var_off, rcur->var_off);
+> > > -       case PTR_TO_CTX:
+> > > -       case CONST_PTR_TO_MAP:
+> > > -       case PTR_TO_PACKET_END:
+> > > -       case PTR_TO_FLOW_KEYS:
+> > > -       case PTR_TO_SOCKET:
+> > > -       case PTR_TO_SOCK_COMMON:
+> > > -       case PTR_TO_TCP_SOCK:
+> > > -       case PTR_TO_XDP_SOCK:
+> > > -               /* Only valid matches are exact, which memcmp() above
+> > > -                * would have accepted
+> > > +       case PTR_TO_STACK:
+> > > +               /* two stack pointers are equal only if they're pointing to
+> > > +                * the same stack frame, since fp-8 in foo != fp-8 in bar
+> > >                  */
+> > > +               return equal && rold->frameno == rcur->frameno;
+> > >         default:
+> > > -               /* Don't know what's going on, just say it's not safe */
+> > > -               return false;
+> > > +               /* Only valid matches are exact, which memcmp() */
+> > > +               return equal;
+> >
+> > Is it safe to assume this for any possible register type? Wouldn't
+> > register types that use id and/or ref_obj_id need extra checks here? I
+> > think preexisting default was a safer approach, in which if we forgot
+> > to explicitly add support for some new or updated register type, the
+> > worst thing is that for that *new* register we'd have suboptimal
+> > verification performance, but not safety concerns.
 >
-> v4:
-> - Use skeletons for selftest
-> v3:
-> - Update comment to better explain the cause
-> - Add Yonghong's ACK
+> Well, I don't think that this commit changes regsafe() behavior in
+> this regard. Here is how the code was structured before this commit:
 >
-> Acked-by: Yonghong Song <yhs@fb.com>
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 54 +++++++++++++++++++
->  .../selftests/bpf/progs/freplace_progmap.c    | 24 +++++++++
->  2 files changed, 78 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/freplace_progmap.c
+> static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+>                     struct bpf_reg_state *rcur, struct bpf_id_pair *idmap)
+> {
+>         bool equal;
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/too=
-ls/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-> index d1e32e792536..efa1fc65840d 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-> @@ -4,6 +4,8 @@
->  #include <network_helpers.h>
->  #include <bpf/btf.h>
->  #include "bind4_prog.skel.h"
-> +#include "freplace_progmap.skel.h"
-> +#include "xdp_dummy.skel.h"
+>         if (!(rold->live & REG_LIVE_READ))
+>                 return true;
+>         equal = memcmp(rold, rcur, offsetof(struct bpf_reg_state, parent)) == 0;
+>         if (rold->type == PTR_TO_STACK)
+>                 return equal && rold->frameno == rcur->frameno;
+> --->    if (equal)
+>                 return true;
+>         if (rold->type == NOT_INIT)
+>                 return true;
+>         if (rcur->type == NOT_INIT)
+>                 return false;
+>         switch (base_type(rold->type)) {
+>         case SCALAR_VALUE:
+>                 ... it's own logic, always returns ...
+>         case PTR_TO_MAP_KEY:
+>         case PTR_TO_MAP_VALUE:
+>                 ... it's own logic, always returns ...
+>         case PTR_TO_PACKET_META:
+>         case PTR_TO_PACKET:
+>                 ... it's own logic, always returns ...
+>         case PTR_TO_CTX:
+>         case CONST_PTR_TO_MAP:
+>         case PTR_TO_PACKET_END:
+>         case PTR_TO_FLOW_KEYS:
+>         case PTR_TO_SOCKET:
+>         case PTR_TO_SOCK_COMMON:
+>         case PTR_TO_TCP_SOCK:
+>         case PTR_TO_XDP_SOCK:
+>         default:
+>                 return false;
+>         }
 >
->  typedef int (*test_cb)(struct bpf_object *obj);
+>         /* Shouldn't get here; if we do, say it's not safe */
+>         WARN_ON_ONCE(1);
+>         return false;
+> }
 >
-> @@ -500,6 +502,56 @@ static void test_fentry_to_cgroup_bpf(void)
->         bind4_prog__destroy(skel);
->  }
+> So the "safe if byte-to-byte equal" behavior was present already.
+> I can add an explicit list of types to the "return equal;" branch
+> and add a default "return false;" branch if you think that it is
+> more fool-proof.
+
+Sorry, I didn't claim you made it worse. But given we are refactoring
+this piece of code, let's make it more "safe-by-default".
+
+So yeah, I think an explicit list of all the recognized register types
+would be better, IMO.
+
+
 >
-> +static void test_func_replace_progmap(void)
-> +{
-> +       struct bpf_cpumap_val value =3D { .qsize =3D 1 };
-> +       struct freplace_progmap *skel =3D NULL;
-> +       struct xdp_dummy *tgt_skel =3D NULL;
-> +       int err, tgt_fd;
-> +       __u32 key =3D 0;
-> +
-> +       skel =3D freplace_progmap__open();
-> +       if (!ASSERT_OK_PTR(skel, "prog_open"))
-> +               return;
-> +
-> +       tgt_skel =3D xdp_dummy__open_and_load();
-> +       if (!ASSERT_OK_PTR(tgt_skel, "tgt_prog_load"))
-> +               goto out;
-> +
-> +       tgt_fd =3D bpf_program__fd(tgt_skel->progs.xdp_dummy_prog);
-> +
-> +       /* Change the 'redirect' program type to be a PROG_TYPE_EXT
-> +        * with an XDP target
-> +        */
-> +       bpf_program__set_type(skel->progs.xdp_cpumap_prog, BPF_PROG_TYPE_=
-EXT);
-> +       bpf_program__set_expected_attach_type(skel->progs.xdp_cpumap_prog=
-, 0);
-
-you shouldn't need this manual override if you mark xdp_cpumap_prog as
-SEC("freplace"), or am I missing something?
-
-but other than this minor thing looks good to me, thanks
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-
-
-> +       err =3D bpf_program__set_attach_target(skel->progs.xdp_cpumap_pro=
-g,
-> +                                            tgt_fd, "xdp_dummy_prog");
-> +       if (!ASSERT_OK(err, "set_attach_target"))
-> +               goto out;
-> +
-> +       err =3D freplace_progmap__load(skel);
-> +       if (!ASSERT_OK(err, "obj_load"))
-> +               goto out;
-> +
-> +       /* Prior to fixing the kernel, loading the PROG_TYPE_EXT 'redirec=
-t'
-> +        * program above will cause the map owner type of 'cpumap' to be =
-set to
-> +        * PROG_TYPE_EXT. This in turn will cause the bpf_map_update_elem=
-()
-> +        * below to fail, because the program we are inserting into the m=
-ap is
-> +        * of PROG_TYPE_XDP. After fixing the kernel, the initial ownersh=
-ip will
-> +        * be correctly resolved to the *target* of the PROG_TYPE_EXT pro=
-gram
-> +        * (i.e., PROG_TYPE_XDP) and the map update will succeed.
-> +        */
-> +       value.bpf_prog.fd =3D bpf_program__fd(skel->progs.xdp_drop_prog);
-> +       err =3D bpf_map_update_elem(bpf_map__fd(skel->maps.cpu_map),
-> +                                 &key, &value, 0);
-> +       ASSERT_OK(err, "map_update");
-> +
-> +out:
-> +       xdp_dummy__destroy(tgt_skel);
-> +       freplace_progmap__destroy(skel);
-> +}
-> +
->  /* NOTE: affect other tests, must run in serial mode */
->  void serial_test_fexit_bpf2bpf(void)
->  {
-> @@ -525,4 +577,6 @@ void serial_test_fexit_bpf2bpf(void)
->                 test_func_replace_global_func();
->         if (test__start_subtest("fentry_to_cgroup_bpf"))
->                 test_fentry_to_cgroup_bpf();
-> +       if (test__start_subtest("func_replace_progmap"))
-> +               test_func_replace_progmap();
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/freplace_progmap.c b/tools=
-/testing/selftests/bpf/progs/freplace_progmap.c
-> new file mode 100644
-> index 000000000000..68174c3d7b37
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/freplace_progmap.c
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_CPUMAP);
-> +       __uint(key_size, sizeof(__u32));
-> +       __uint(value_size, sizeof(struct bpf_cpumap_val));
-
-ok, another minor nit which you ignored, libbpf should be smart enough to a=
-ccept
-
-__type(key, __u32);
-__type(value, struct bpf_cpumap_val);
-
-And if it's not it would be good to know that it's not (and trivially fix i=
-t).
-
-> +       __uint(max_entries, 1);
-> +} cpu_map SEC(".maps");
-> +
-> +SEC("xdp/cpumap")
-> +int xdp_drop_prog(struct xdp_md *ctx)
-> +{
-> +       return XDP_DROP;
-> +}
-> +
-> +SEC("xdp")
-> +int xdp_cpumap_prog(struct xdp_md *ctx)
-> +{
-> +       return bpf_redirect_map(&cpu_map, 0, XDP_PASS);
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> --
-> 2.38.1
+> >
+> >
+> > >         }
+> > >
+> > >         /* Shouldn't get here; if we do, say it's not safe */
+> > > --
+> > > 2.34.1
+> > >
 >
