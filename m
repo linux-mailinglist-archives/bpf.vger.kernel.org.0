@@ -2,87 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A46864D32E
-	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 00:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AF264D32F
+	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 00:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbiLNXT2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 18:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
+        id S229752AbiLNXUR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 18:20:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbiLNXT0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 18:19:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EB54A5AF
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 15:18:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1671059922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V3Niud/FDBKZ0PLlm6oSbfgMtWVA78sLZvuotPdg9K8=;
-        b=DdGCUi8Dh+j09Oz+c18XVgddbkXXbFhhmxbq5xVN1aca+weLrMj2BWP3/QxUVLRa9Ert2Y
-        igLE0RsRfoVcEKMIC3XpAk1WVthjM+A2dCm4r1yvNfPmR7A/zBUZpsf+kv170Fj/7DW+sp
-        AR73+kSTL2zPE1m8qYAozDfe7FRhNzk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-106-IZF4Lv7LNNKaLUL1g4JNBg-1; Wed, 14 Dec 2022 18:18:39 -0500
-X-MC-Unique: IZF4Lv7LNNKaLUL1g4JNBg-1
-Received: by mail-ed1-f72.google.com with SMTP id v4-20020a056402348400b0046cbbc786bdso10493263edc.7
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 15:18:39 -0800 (PST)
+        with ESMTP id S229734AbiLNXUQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 18:20:16 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D3449B76
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 15:20:15 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id a16so3817428qtw.10
+        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 15:20:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YkM/Iff/QbQ/InXq7hZ2Efj08BplZeo5uzvhcT7KPiI=;
+        b=G32bFLIB4BgNoP3Ez7x37bgZSilfMXRIulPy5+BBcYVOk74wKiG4U4wzU0mXbPRJQ0
+         kty/1/8oWm8FryQ7uCkIJV5fo9SENf4EiAXZbxMyFwGf0QkoRElnjf0w981LsSYQQc8T
+         oi4PkSDFk8jW5vur26Hle0xrzaiG2pxDTVTKz9jDtYcWZ4IJRtpLXW3jNJMl0Bq6L5l5
+         XW74qw5BCqFvqL8OgAvvQtjUA//dBHIWMIBbJTOaO4SXc/M37srrbbpfhQhEuGTvHA12
+         37y1wu1Z7AfOdx2gpQ4xO2X9v/kJFbpORI7bDkCWQFEoVV9N1osP/9Bbu903De89EUU7
+         zhNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V3Niud/FDBKZ0PLlm6oSbfgMtWVA78sLZvuotPdg9K8=;
-        b=GO6qi2chJTXJGjzDSgpBkipV8dc9xCqD4EyfYfwTVDYfSrzsSsxerKJLPGAKQQqbZH
-         Z5jQe/K2vjXCaJgFgpX9gEH4cEDCubY7xAm9zthLUkzULWXYnxPav7oTlc1iRlHU9RX+
-         aQujY4NWEBWg22Sy7oyX3NUhEJgvKXJBtAabEEmaxl0lo4BfnuUeoLqbk2l3O9yF5Hue
-         DmDfs30ciebLDWDe79Fxstifz+UhRZ6QexhIgO6J4IWRZbccseXQzP5NlVywrCI+0HNx
-         eJVg9FT6kUL5+yMTuTxyJu0l6IO87HTBlCwVbyeqO8xXW8G32PmoMs/sTnvEvwUuP2w1
-         4MfQ==
-X-Gm-Message-State: ANoB5pmOOhPAOZRrz6NzS0sGN2vY2TzF5KcMiMMvJdOY5Mo3ic85TJk5
-        /Etl2lWsmuL4+iE/s1r31AmPcrNm5Rf52ciQhlk7+CMndmQOvnvYMeL0zPPXc7+Xu+Z1TFLjNF9
-        cAlnOo3hGXjjw
-X-Received: by 2002:aa7:c917:0:b0:46d:8aeb:bc03 with SMTP id b23-20020aa7c917000000b0046d8aebbc03mr24264335edt.22.1671059916731;
-        Wed, 14 Dec 2022 15:18:36 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5rOn0PuoH3Gafe+Vm7g0LYq3zaZ70GXRaw4Bn9629i81BWP10FSH3Cvtf+lIWyqLkBSc/GUg==
-X-Received: by 2002:aa7:c917:0:b0:46d:8aeb:bc03 with SMTP id b23-20020aa7c917000000b0046d8aebbc03mr24264253edt.22.1671059914420;
-        Wed, 14 Dec 2022 15:18:34 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id dy1-20020a05640231e100b00459f4974128sm6873508edb.50.2022.12.14.15.18.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Dec 2022 15:18:33 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 47CD782F667; Thu, 15 Dec 2022 00:18:33 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf] libbpf: Fix signedness confusion when using
- libbpf_is_mem_zeroed()
-In-Reply-To: <CAEf4BzZOYD7YEgzWz08Q7sZ8wMVf+kiP7Aw1tm4_wN0_mNDrhA@mail.gmail.com>
-References: <20221214010046.668024-1-toke@redhat.com>
- <CAEf4BzZOYD7YEgzWz08Q7sZ8wMVf+kiP7Aw1tm4_wN0_mNDrhA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 15 Dec 2022 00:18:33 +0100
-Message-ID: <87zgbpefqu.fsf@toke.dk>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YkM/Iff/QbQ/InXq7hZ2Efj08BplZeo5uzvhcT7KPiI=;
+        b=m0ZMMwcolmURhZxRymJ1PsnSM85/uIciG4+z/tulyeFCeK8z9snSijeEcwmkKy55Yg
+         c6GwL0KlmHNKdsLbJBUgAbVpay1Ku9Hw4FZdqATqjCqW9K86/3qQ5nc3TxqKgbD8KbQ3
+         B6einmskJrhUDez2IEKX/sQu2k0BWJqtW9xHu95FFE4v6yxLJuC9hfYcPHyPMdyuQMQF
+         F5S9jV4gD8u/HKodV930+TxzZYRbFC7DlCffkzeI29okAldH6vOqywB2RZ0HkHhy18yf
+         FiGCSLF6+sbEBOrjvKROohK7YqnbZjryFozb+EGCTIrLjfMTQUStzqd8WL3BTKcEJeXI
+         3Z5w==
+X-Gm-Message-State: ANoB5plKXqSjSFhR5zV3o6cKM5E4v1VVeyBOMrAvaZVN+P659bHbQtpP
+        /H4KL9EelZ/sASSwO+0IKRuMjQ==
+X-Google-Smtp-Source: AA0mqf7csRfyj6YQsK617BhRyMQfIlB5T5cldKuKLzhcjEgHl3rlVHSyZlcDwlHjSjyEf8129VgaVQ==
+X-Received: by 2002:a05:622a:1e8e:b0:39c:da21:6b7c with SMTP id bz14-20020a05622a1e8e00b0039cda216b7cmr40047063qtb.1.1671060014498;
+        Wed, 14 Dec 2022 15:20:14 -0800 (PST)
+Received: from [192.168.1.31] (d-216-10-177-134.nh.cpe.atlanticbb.net. [216.10.177.134])
+        by smtp.gmail.com with ESMTPSA id b15-20020ac8678f000000b003a50b9f099esm2448961qtp.12.2022.12.14.15.20.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Dec 2022 15:20:13 -0800 (PST)
+Message-ID: <4984b4f5-7bc5-6109-2523-77265141b3d2@google.com>
+Date:   Wed, 14 Dec 2022 18:20:11 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.0
+Subject: Re: [PATCHSET RFC] sched: Implement BPF extensible scheduler class
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Josh Don <joshdon@google.com>, torvalds@linux-foundation.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        pjt@google.com, derkling@google.com, haoluo@google.com,
+        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+        riel@surriel.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@meta.com
+References: <20221130082313.3241517-1-tj@kernel.org>
+ <Y5b++AttvjzyTTJV@hirez.programming.kicks-ass.net>
+ <CABk29Ntf1ZMAmvkVTzj6=HjanHgn6Qu3-J8gHHyMM30yiHM3_w@mail.gmail.com>
+ <Y5mPigH1bPatXNeB@hirez.programming.kicks-ass.net>
+ <Y5pM0ralEr6coT25@slm.duckdns.org>
+From:   Barret Rhoden <brho@google.com>
+In-Reply-To: <Y5pM0ralEr6coT25@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,63 +88,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On 12/14/22 17:23, Tejun Heo wrote:
+> Google guys probably have a lot to say here too and there may be many
+> commonalties, but here's how things are on our end.
 
-> On Tue, Dec 13, 2022 at 5:01 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> The commit in the Fixes tag refactored the check for zeroed memory in
->> libbpf_validate_opts() into a separate libbpf_is_mem_zeroed() function.
->> This function has a 'len' argument of the signed 'ssize_t' type, which in
->> both callers is computed by subtracting two unsigned size_t values from
->> each other. In both subtractions, one of the values being subtracted is
->> converted to 'ssize_t', while the other stays 'size_t'.
->>
->> The problem with this is that, because both sizes are the same
->> rank ('ssize_t' is defined as 'long' and 'size_t' is 'unsigned long'), t=
-he
->> type of the mixed-sign arithmetic operation ends up being converted back=
- to
->> unsigned. This means it can underflow if the user-specified size in
->> opts->sz is smaller than the size of the type as defined by libbpf. If t=
-hat
->> happens, it will cause out-of-bounds reads in libbpf_is_mem_zeroed().
->
-> hmm... but libbpf_is_mem_zeroed expects signed ssize_t, so that
-> "underflow" will turn into a proper negative ssize_t value. What am I
-> missing? Seems to be working fine:
->
-> $ cat test.c
-> #include <stdio.h>
->
-> void testit(ssize_t sz)
-> {
->         printf("%zd\n", sz);
-> }
->
-> int main()
-> {
->         ssize_t slarge =3D 100;
->         size_t ularge =3D 100;
->         ssize_t ssmall =3D 50;
->         size_t usmall =3D 50;
->
->         testit(ssmall - slarge);
->         testit(ssmall - ularge);
->         testit(usmall - slarge);
->         testit(usmall - ularge);
-> }
->
-> $ cc test.c && ./a.out
-> -50
-> -50
-> -50
-> -50
+your email pretty much captures my experiences from the google side.  in 
+fact, i think i'll save it for the next time someone asks me to 
+summarize the challenges with both kernel rollouts and testing changes 
+on workloads.  =)
 
-Hmnm, yeah, you're right. Not sure how I managed to convince myself
-there was an actual bug there :(
+>> I was given to believe this was a fairly rapid process.
+> 
+> Going back to the first phase where we're experimenting in a more controlled
+> environment. Yes, that is a faster process but only in comparison to the
+> second phase. Some controlled experiments, the faster ones, usually take
+> several hours to obtain a meaningful result. It just takes a while for
+> production workloads to start, jit-compile all the hot code paths, warm up
+> caches and so on. Others, unfortunately, take a lot longer to ramp up to the
+> degree whether it can be compared against production numbers. Some of the
+> benchmarks stretch multiple days.
+> 
+> With SCX, we can keep just keep hotswapping and tuning the scheduler
+> behavior getting results in tens of minutes instead of multiple hours and
+> without worrying about crashing the test machines
 
-Sorry for the noise!
+for testing sched policies on one of our bigger apps, the O(hours) 
+kernel reboot vs O(minutes) reload of a BPF scheduler is a pain.  but 
+that's only for a single machine; it can be much worse on a full cluster.
 
--Toke
+full-cluster tests are a different beast.  we are one of many groups 
+that want to do testing, and we have to reserve a time on their cluster. 
+  but to change the kernel, it actually took us weeks to coordinate an 
+kernel change on the app's large testing cluster - essentially since we 
+were using an unqualified kernel, we 'blocked' all of the other testing.
+
+> it's way easier and faster to have a running test environment setup and
+> iterate through scheduling behavior changes without worrying about crashing
+> the machine than having to cycle and re-setup test setup for each iteration.
+
+i'm a newcomer to BPF, but for me the "interaction with live machine" is 
+a major BPF feature, both in SCX and also more broadly with the various 
+tracing tools and other BPF uses.  (not to mention the per-workload or 
+per-machine customization that BPF enables, but that's a separate 
+discussion).
+
+thanks,
+
+barret
+
 
