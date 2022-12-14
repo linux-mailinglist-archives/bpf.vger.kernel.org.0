@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559CA64D363
-	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 00:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB59564D366
+	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 00:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbiLNX2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 18:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
+        id S229730AbiLNX2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 18:28:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbiLNX2G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 18:28:06 -0500
+        with ESMTP id S229697AbiLNX2H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 18:28:07 -0500
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B412249B6B;
-        Wed, 14 Dec 2022 15:26:14 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id D8F5A32008C0;
-        Wed, 14 Dec 2022 18:26:12 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53CB4B98A;
+        Wed, 14 Dec 2022 15:26:17 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 18413320046E;
+        Wed, 14 Dec 2022 18:26:16 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 14 Dec 2022 18:26:13 -0500
+  by compute3.internal (MEProxy); Wed, 14 Dec 2022 18:26:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
         :cc:content-transfer-encoding:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1671060372; x=1671146772; bh=KB
-        GCcVFV9pdga3P7P36DjTI4Zsnw96kBATcVDh8ugd0=; b=KeHjTp6oF8Buv9l5WR
-        Q50uzwI+/AEohr4Z19sGhlRkJyONAzTBQ+a4nDMkms78SDfSk/4yDw2CvQAUUXvx
-        gbOuWuwxYwXD7Ueof3vbPUfowBPoMTXrt6iNM3sPe9dFpZ0lg35Cc7LS7vkTtqDe
-        eOZhe1D2q3GCPGDeKLctuiiJB+xtnj5zIqd6PJpBM2g624DiNGQj1Q4mdvz++8OD
-        YpGp+p+Dyuajt0ZmgWrGGfXRu4hEg7aGneshXiAvbG1MqOmQhVIlNbOKKEDc3Q0T
-        2OEZ04WZ3n8amJDxqQvPlAE40nr46mRIqU2XWvs2RKVCYmikbuw+RfSoLLxzErUA
-        Dm+Q==
+        :subject:subject:to:to; s=fm1; t=1671060375; x=1671146775; bh=pd
+        7hPqCj1rehq8dhbnt6R5oY2ttXZHs4/Flb91zMciw=; b=L1GSh0Y2wzAAZIidc3
+        ymLqrA6lW80edFw11+ahwc+Qmtd8xkDNi0OS5rUjwEKP3zuEZ4C8+m1Id92jq4zE
+        0dLVz4+CDU3oZW8qozAIxJefisJ2nSnjDjLWLqm5VtLdf+1b4+OXIT8Iz1YzJyGe
+        xNjChP35Gq9rEmfyL6lR0qFIobM22nrpmV78sCa9LpXH5bpuPv2bvBoO6rZhwqvL
+        prRFGS8n6/6nhc94zskG+7kR55Q4fiBuFQyPGoPpm9L1sm7oeMnGcxMFOs5OAaES
+        9BSLVaCIKk8DnxNGMOZwDRob7LxwpePNH5WerLNsAPvQMh+0eu7edGP9du1kJYka
+        jWZg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1671060372; x=1671146772; bh=KBGCcVFV9pdga
-        3P7P36DjTI4Zsnw96kBATcVDh8ugd0=; b=ZbY8sZhJ/ZesGsBcEXE9DgB1vzmZI
-        cpA59ckz9VBBGhlAmxEIqdoK7VV04RSWc+ZY7UvlifczSiarh7wEyh5K21UqGrDq
-        fzBIb9FJqlkdHkIz7RQ6PjArWg/clyIAn/UIevHj5y2H0VOFh0AKfKUf8ibNRTva
-        OtkISjca6mBBV9xvkMuq8oxQo+qBgeIsLcnBz4qvf1SsFHPLhyZ6AhPbT5hF88bO
-        nWWZvLSZjmuabsggwAauGpHSuC4heLXPBkhJip0em3OyEZyaIMI4mej5qk0DAbru
-        f7ZAeTBmNmwWUp+L26t4+p8Szh91tt0azKYJRVzDT7kaFdXfEVKAvzU5w==
-X-ME-Sender: <xms:lFuaY1iy23eDuMvThIlVt2MApXC6h9YSBKyFXXcHI_-o8GqaWLU5QA>
-    <xme:lFuaY6Ab3GuOULx_XawC1amAUJvUGvFaGFQ9fypfxUQYyGeIHnJ_q3ieAzUik9HPp
-    X-XlsqTyeiKmSPSLA>
-X-ME-Received: <xmr:lFuaY1HbadwSUsUAhF-BWvkLYHI4g0mBW8Ulvp1RA97z7Unt-CIVNqhN0AnVvwIyYQAhymSZCs80sKUZh3gLBqMUHf2yoatwnfiP_s3EKOk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeggddtiecutefuodetggdotefrodftvf
+        :x-sasl-enc; s=fm2; t=1671060375; x=1671146775; bh=pd7hPqCj1rehq
+        8dhbnt6R5oY2ttXZHs4/Flb91zMciw=; b=DsPoClf0RQVxj54YXJw/qv0CQrrrn
+        LmN3WpfoJIgkwv81pLN+QHifyZLE+QdVOpI4t2PrKYEnxJfqp4bEqyQ8QHaBILyc
+        HJ+oRsMeYO/GkxEKNsFf4eT9dICKQIPOew+YG6Bw5AoXZaSczquzhGqCYnLyAU/C
+        w3nMIIae3zjNnxBp82GQEc0p/jD6+cSWTYSn4Go4KIgZu+RkP61SU4xt01PSp8fW
+        1HGQbqMjeL5Hpmoebjwwkmn2w9j2Y43JzUTpoPg9Ltc12AlABCZGxQQn/iR408jo
+        25E9V3MX5ah/AX03iQ+kWPfX54f/dGrSlxZtNl5IDENVip5uITuzOQumg==
+X-ME-Sender: <xms:l1uaYzOuuxHr5L3DTAuW2n7BHUkyR6V_LuelF0EQAYnthdrxflf_kw>
+    <xme:l1uaY98ZZUSOXoc_cxJaZJRvtSf71NNd-OQ2sbzv52oSEVmfHQvMFvsnePZVeljq5
+    rXGGLhFkIs-WSpjTw>
+X-ME-Received: <xmr:l1uaYyS2PifTTu_BhsQ_pGNtZHMYMdi_ZEexW1EfBPrgY2zSJD1jX8ANGgwO-QOtkwsXH4fGZfuBK2ZZeRa2d8IiuYVabnYCfs9AYmjIPS0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeggddtjecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
     hrlhcuvffnffculdejtddmnecujfgurhephffvvefufffkofgjfhgggfestdekredtredt
@@ -54,26 +54,29 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeggddtiecutefuodetggdote
     ggtffrrghtthgvrhhnpefgfefggeejhfduieekvdeuteffleeifeeuvdfhheejleejjeek
     gfffgefhtddtteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
     hrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:lFuaY6STrKUlkBU7WvkjneOx4JkJeHg8DRuaBT_FCdOMqozEp6jXIw>
-    <xmx:lFuaYyz5kyZlkU7ri_VVsWR20xdmhxLfhkdXB54rscc9kmwy08hk9Q>
-    <xmx:lFuaYw48Vbxy-vs3pmUCm4ftSNNhte1omatUiwXnXyuQ1yDNUf-FnQ>
-    <xmx:lFuaY2flXe2e8w6f2P8ABZVxDJBrfrsHTAnh-LQufYgOc5TlnZw9PA>
+X-ME-Proxy: <xmx:l1uaY3tRa3P-O_zJfAxl7kqFGOp7udvfCNZXRJe86GvNRhxj3BXSBA>
+    <xmx:l1uaY7f3jZO-v6X1pTKQmqbI9RTkEWWYKzgsBnvqtFNSwQtqQAqMaQ>
+    <xmx:l1uaYz1_m-9vd_6UNk0vZRjNrDpUA122y2sDbBXfoO_ZFW7bn_Lh9A>
+    <xmx:l1uaY2ujI-drrgDgpQVnnOuDVd_VrjKADwUndj7ddCX6ok-YkcUKig>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 14 Dec 2022 18:26:11 -0500 (EST)
+ 14 Dec 2022 18:26:14 -0500 (EST)
 From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     ppenkov@aviatrix.com, dbird@aviatrix.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next 3/6] bpf, net, frags: Add bpf_ip_check_defrag() kfunc
-Date:   Wed, 14 Dec 2022 16:25:30 -0700
-Message-Id: <1f48a340a898c4d22d65e0e445dbf15f72081b9a.1671049840.git.dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc:     ppenkov@aviatrix.com, dbird@aviatrix.com, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 4/6] bpf: selftests: Support not connecting client socket
+Date:   Wed, 14 Dec 2022 16:25:31 -0700
+Message-Id: <3623f9fbdfe7e1be46ca6745312eb020329d23c9.1671049840.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <cover.1671049840.git.dxu@dxuuu.xyz>
 References: <cover.1671049840.git.dxu@dxuuu.xyz>
@@ -89,188 +92,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This kfunc is used to defragment IPv4 packets. The idea is that if you
-see a fragmented packet, you call this kfunc. If the kfunc returns 0,
-then the skb has been updated to contain the entire reassembled packet.
-
-If the kfunc returns an error (most likely -EINPROGRESS), then it means
-the skb is part of a yet-incomplete original packet. A reasonable
-response to -EINPROGRESS is to drop the packet, as the ip defrag
-infrastructure is already hanging onto the frag for future reassembly.
-
-Care has been taken to ensure the prog skb remains valid no matter what
-the underlying ip_check_defrag() call does. This is in contrast to
-ip_defrag(), which may consume the skb if the skb is part of a
-yet-incomplete original packet.
-
-So far this kfunc is only callable from TC clsact progs.
+For connectionless protocols or raw sockets we do not want to actually
+connect() to the server.
 
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- include/net/ip.h           | 11 +++++
- net/ipv4/Makefile          |  1 +
- net/ipv4/ip_fragment.c     |  2 +
- net/ipv4/ip_fragment_bpf.c | 98 ++++++++++++++++++++++++++++++++++++++
- 4 files changed, 112 insertions(+)
- create mode 100644 net/ipv4/ip_fragment_bpf.c
+ tools/testing/selftests/bpf/network_helpers.c | 5 +++--
+ tools/testing/selftests/bpf/network_helpers.h | 1 +
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/ip.h b/include/net/ip.h
-index 144bdfbb25af..14f1e69a6523 100644
---- a/include/net/ip.h
-+++ b/include/net/ip.h
-@@ -679,6 +679,7 @@ enum ip_defrag_users {
- 	IP_DEFRAG_VS_FWD,
- 	IP_DEFRAG_AF_PACKET,
- 	IP_DEFRAG_MACVLAN,
-+	IP_DEFRAG_BPF,
+diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+index 01de33191226..24f5efebc7dd 100644
+--- a/tools/testing/selftests/bpf/network_helpers.c
++++ b/tools/testing/selftests/bpf/network_helpers.c
+@@ -301,8 +301,9 @@ int connect_to_fd_opts(int server_fd, const struct network_helper_opts *opts)
+ 		       strlen(opts->cc) + 1))
+ 		goto error_close;
+ 
+-	if (connect_fd_to_addr(fd, &addr, addrlen, opts->must_fail))
+-		goto error_close;
++	if (!opts->noconnect)
++		if (connect_fd_to_addr(fd, &addr, addrlen, opts->must_fail))
++			goto error_close;
+ 
+ 	return fd;
+ 
+diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
+index f882c691b790..8be04cd76d8b 100644
+--- a/tools/testing/selftests/bpf/network_helpers.h
++++ b/tools/testing/selftests/bpf/network_helpers.h
+@@ -21,6 +21,7 @@ struct network_helper_opts {
+ 	const char *cc;
+ 	int timeout_ms;
+ 	bool must_fail;
++	bool noconnect;
  };
  
- /* Return true if the value of 'user' is between 'lower_bond'
-@@ -692,6 +693,16 @@ static inline bool ip_defrag_user_in_between(u32 user,
- }
- 
- int ip_defrag(struct net *net, struct sk_buff *skb, u32 user);
-+
-+#ifdef CONFIG_DEBUG_INFO_BTF
-+int register_ip_frag_bpf(void);
-+#else
-+static inline int register_ip_frag_bpf(void)
-+{
-+	return 0;
-+}
-+#endif
-+
- #ifdef CONFIG_INET
- struct sk_buff *ip_check_defrag(struct net *net, struct sk_buff *skb, u32 user);
- #else
-diff --git a/net/ipv4/Makefile b/net/ipv4/Makefile
-index af7d2cf490fb..749da1599933 100644
---- a/net/ipv4/Makefile
-+++ b/net/ipv4/Makefile
-@@ -64,6 +64,7 @@ obj-$(CONFIG_TCP_CONG_ILLINOIS) += tcp_illinois.o
- obj-$(CONFIG_NET_SOCK_MSG) += tcp_bpf.o
- obj-$(CONFIG_BPF_SYSCALL) += udp_bpf.o
- obj-$(CONFIG_NETLABEL) += cipso_ipv4.o
-+obj-$(CONFIG_DEBUG_INFO_BTF) += ip_fragment_bpf.o
- 
- obj-$(CONFIG_XFRM) += xfrm4_policy.o xfrm4_state.o xfrm4_input.o \
- 		      xfrm4_output.o xfrm4_protocol.o
-diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
-index 7406c6b6376d..467aa8ace9fb 100644
---- a/net/ipv4/ip_fragment.c
-+++ b/net/ipv4/ip_fragment.c
-@@ -757,5 +757,7 @@ void __init ipfrag_init(void)
- 	if (inet_frags_init(&ip4_frags))
- 		panic("IP: failed to allocate ip4_frags cache\n");
- 	ip4_frags_ctl_register();
-+	if (register_ip_frag_bpf())
-+		panic("IP: bpf: failed to register ip_frag_bpf\n");
- 	register_pernet_subsys(&ip4_frags_ops);
- }
-diff --git a/net/ipv4/ip_fragment_bpf.c b/net/ipv4/ip_fragment_bpf.c
-new file mode 100644
-index 000000000000..a9e5908ed216
---- /dev/null
-+++ b/net/ipv4/ip_fragment_bpf.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Unstable ipv4 fragmentation helpers for TC-BPF hook
-+ *
-+ * These are called from SCHED_CLS BPF programs. Note that it is allowed to
-+ * break compatibility for these functions since the interface they are exposed
-+ * through to BPF programs is explicitly unstable.
-+ */
-+
-+#include <linux/bpf.h>
-+#include <linux/btf_ids.h>
-+#include <linux/ip.h>
-+#include <linux/filter.h>
-+#include <linux/netdevice.h>
-+#include <net/ip.h>
-+#include <net/sock.h>
-+
-+__diag_push();
-+__diag_ignore_all("-Wmissing-prototypes",
-+		  "Global functions as their definitions will be in ip_fragment BTF");
-+
-+/* bpf_ip_check_defrag - Defragment an ipv4 packet
-+ *
-+ * This helper takes an skb as input. If this skb successfully reassembles
-+ * the original packet, the skb is updated to contain the original, reassembled
-+ * packet.
-+ *
-+ * Otherwise (on error or incomplete reassembly), the input skb remains
-+ * unmodified.
-+ *
-+ * Parameters:
-+ * @ctx		- Pointer to program context (skb)
-+ * @netns	- Child network namespace id. If value is a negative signed
-+ *		  32-bit integer, the netns of the device in the skb is used.
-+ *
-+ * Return:
-+ * 0 on successfully reassembly or non-fragmented packet. Negative value on
-+ * error or incomplete reassembly.
-+ */
-+int bpf_ip_check_defrag(struct __sk_buff *ctx, u64 netns)
-+{
-+	struct sk_buff *skb = (struct sk_buff *)ctx;
-+	struct sk_buff *skb_cpy, *skb_out;
-+	struct net *caller_net;
-+	struct net *net;
-+	int mac_len;
-+	void *mac;
-+
-+	if (unlikely(!((s32)netns < 0 || netns <= S32_MAX)))
-+		return -EINVAL;
-+
-+	caller_net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
-+	if ((s32)netns < 0) {
-+		net = caller_net;
-+	} else {
-+		net = get_net_ns_by_id(caller_net, netns);
-+		if (unlikely(!net))
-+			return -EINVAL;
-+	}
-+
-+	mac_len = skb->mac_len;
-+	skb_cpy = skb_copy(skb, GFP_ATOMIC);
-+	if (!skb_cpy)
-+		return -ENOMEM;
-+
-+	skb_out = ip_check_defrag(net, skb_cpy, IP_DEFRAG_BPF);
-+	if (IS_ERR(skb_out))
-+		return PTR_ERR(skb_out);
-+
-+	skb_morph(skb, skb_out);
-+	kfree_skb(skb_out);
-+
-+	/* ip_check_defrag() does not maintain mac header, so push empty header
-+	 * in so prog sees the correct layout. The empty mac header will be
-+	 * later pulled from cls_bpf.
-+	 */
-+	mac = skb_push(skb, mac_len);
-+	memset(mac, 0, mac_len);
-+	bpf_compute_data_pointers(skb);
-+
-+	return 0;
-+}
-+
-+__diag_pop()
-+
-+BTF_SET8_START(ip_frag_kfunc_set)
-+BTF_ID_FLAGS(func, bpf_ip_check_defrag, KF_CHANGES_PKT)
-+BTF_SET8_END(ip_frag_kfunc_set)
-+
-+static const struct btf_kfunc_id_set ip_frag_bpf_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.set   = &ip_frag_kfunc_set,
-+};
-+
-+int register_ip_frag_bpf(void)
-+{
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
-+					 &ip_frag_bpf_kfunc_set);
-+}
+ /* ipv4 test vector */
 -- 
 2.39.0
 
