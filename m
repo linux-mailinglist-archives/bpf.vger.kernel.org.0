@@ -2,91 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CC364C545
-	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 09:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB23564C558
+	for <lists+bpf@lfdr.de>; Wed, 14 Dec 2022 09:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237484AbiLNItB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 03:49:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        id S237829AbiLNI4M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 03:56:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237835AbiLNIsx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 03:48:53 -0500
-Received: from mail.ettrick.pl (mail.ettrick.pl [141.94.21.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C97E1CFE0
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 00:48:20 -0800 (PST)
-Received: by mail.ettrick.pl (Postfix, from userid 1002)
-        id 2C124A7D3E; Wed, 14 Dec 2022 08:48:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ettrick.pl; s=mail;
-        t=1671007698; bh=ChRcLNpIfKnVgp03/tSyWuRw1tWSTk/OEiEnuZMWs58=;
-        h=Date:From:To:Subject:From;
-        b=tVUNrBdolpL1EBDzjBP4vF7GhCiBQei6Ki8j35a9fLWiQ1+ZJMa2vHsv7W86LKlzR
-         icSz3Wapat2DBlTiu9gegV/cX/Y9DWVglciA0D44VkfukeRUWRF9iH7DMnsbDqvIrz
-         lQvNmLNkSOV3unJj5GPQIzCmDklcc5SlM4IWohsDP7eI7qn9MChpQ3GMbjAk/8mME4
-         Jr2SZplYJ8QxRuyzcGPPWiKFHxz/njL31gjpKJ5svkvemTBdSldZ0O3VYcwICTK1Iv
-         IER/hSJYtsGayg7NnuKyaTTaubOKuwIk7ZvOqkKONHMLWU/+UyMj3DNegkueXNfiAX
-         KNoZFyO5pOqUQ==
-Received: by mail.ettrick.pl for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 08:47:59 GMT
-Message-ID: <20221214073000-0.1.7k.25k88.0.206hn6lm9a@ettrick.pl>
-Date:   Wed, 14 Dec 2022 08:47:59 GMT
-From:   "Norbert Karecki" <norbert.karecki@ettrick.pl>
-To:     <bpf@vger.kernel.org>
-Subject: Wycena paneli fotowoltaicznych
-X-Mailer: mail.ettrick.pl
+        with ESMTP id S237818AbiLNI4L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 03:56:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD53193E5;
+        Wed, 14 Dec 2022 00:56:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4qLs78eGQyGNi4vbKjmNfC+O4t106kpYiQycgssyLgg=; b=AlMdipXWKjoZvGLLYhBVQtp7cU
+        ++3Di3oxtUj/+FTTQjM/dMkIw7Kr6garFQt0pvSM/zVv0rb8RggX1BiJgX/lQw8HpxczpcUvDDLEB
+        gjTa7HJrbWQh69l2hIQ25pJ2G9Tm9dvKs+/qv7U/RGoxnNW2loI/6P7z3ydQ8FWq433dfEMxQ1glm
+        D0Atos5fdgQ/nV85bKV0BODWhpaUvb7lLK/3iHtjxjkP6zbgTSRODjsC0UGIXVDWOHD/BfbySyNO7
+        60EbEj87UfnkCy8T+pQaQi1O7u2acmmGT0rYV3Ur29WnWo2OytMKZ4ASxaV3yTL//v+DKgouR9X+Z
+        Eqrd+4Qw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1p5NYL-00D3P5-5R; Wed, 14 Dec 2022 08:55:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8003830030B;
+        Wed, 14 Dec 2022 09:55:38 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 51696202344B3; Wed, 14 Dec 2022 09:55:38 +0100 (CET)
+Date:   Wed, 14 Dec 2022 09:55:38 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        brho@google.com, pjt@google.com, derkling@google.com,
+        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
+        dskarlat@cs.cmu.edu, riel@surriel.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCHSET RFC] sched: Implement BPF extensible scheduler class
+Message-ID: <Y5mPigH1bPatXNeB@hirez.programming.kicks-ass.net>
+References: <20221130082313.3241517-1-tj@kernel.org>
+ <Y5b++AttvjzyTTJV@hirez.programming.kicks-ass.net>
+ <CABk29Ntf1ZMAmvkVTzj6=HjanHgn6Qu3-J8gHHyMM30yiHM3_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL,RCVD_IN_SBL_CSS,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,URIBL_ABUSE_SURBL,
-        URIBL_CSS_A,URIBL_DBL_SPAM,URIBL_SBL_A autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: ettrick.pl]
-        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
-        *      [141.94.21.111 listed in zen.spamhaus.org]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  1.2 URIBL_ABUSE_SURBL Contains an URL listed in the ABUSE SURBL
-        *      blocklist
-        *      [URIs: ettrick.pl]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [141.94.21.111 listed in bl.score.senderscore.com]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: ettrick.pl]
-        *  0.1 URIBL_SBL_A Contains URL's A record listed in the Spamhaus SBL
-        *      blocklist
-        *      [URIs: ettrick.pl]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-X-Spam-Level: ******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABk29Ntf1ZMAmvkVTzj6=HjanHgn6Qu3-J8gHHyMM30yiHM3_w@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Tue, Dec 13, 2022 at 06:11:38PM -0800, Josh Don wrote:
 
-dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
-irm=C4=85.
+> Improving scheduling performance requires rapid iteration to explore
+> new policies and tune parameters, especially as hardware becomes more
+> heterogeneous, and applications become more complex. Waiting months
+> between evaluating scheduler policy changes is simply not scalable,
+> but this is the reality with large fleets that require time for
+> testing, qualification, and progressive rollout. The security angle
+> should be clear from how involved it was to integrate core scheduling,
+> for example.
 
-=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
-ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej nawet o 90%.
+Surely you can evaluate stuff on a small subset of machines -- I'm
+fairly sure I've had google and facebook people tell me they do just
+that, roll out the test kernel on tens to hundreds of thousand of
+machines instead of the stupid number and see how it behaves there.
 
-Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
-ropozycji?
+Statistics has something here I think, you can get a reliable
+representation of stuff without having to sample *everyone*.
 
+I was given to believe this was a fairly rapid process.
 
-Pozdrawiam,
-Norbert Karecki
+Just because you guys have more machines than is reasonable, doesn't
+mean we have to put BPF everywhere.
+
+Additionally, we don't merge and ship everybodies random debug patch
+either -- you're free to do whatever you need to iterate on your own and
+then send the patches that result from this experiment upstream. This is
+how development works, no?
+
