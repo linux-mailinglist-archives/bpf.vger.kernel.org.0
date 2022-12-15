@@ -2,156 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C34C264D4D4
-	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 01:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E42E264D505
+	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 02:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbiLOAxs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Dec 2022 19:53:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
+        id S229543AbiLOBXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Dec 2022 20:23:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbiLOAxo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Dec 2022 19:53:44 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8F431EE0
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 16:53:43 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id oj5-20020a17090b4d8500b00219e1abad17so644179pjb.1
-        for <bpf@vger.kernel.org>; Wed, 14 Dec 2022 16:53:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rBQYa4W8A+AJiUwNOuc8Q7CyuPP2yMOoaSr+CBtkpMs=;
-        b=GdN50OAHp+Whl7EboNBqIJn7oMiw0wMD07/V3yhXDi6aM7BuLjNewzP+7YDBpsBJ+t
-         tJUZGFjcK+BXqCOAE5KeHD+NIjcRVsaGFUAxZJcZjE0kPoWv8u59DtRW6I8kOtHpzhKI
-         +HhVWr7TCZM6RyQbe9z3q6nIWW96S2SgUnyv9GkLnPtSFh5MypWdIpt4l4MHD59sm8FZ
-         QMDrkivQiAhZ7MHgT89D20umdttHAvZUFQnvyhXjR4PPagWsOwQTtnNLKHUibA4PzFgJ
-         qqP9K1gIEbt5z5ffT3bfajfodA37Rs56abzXE28EyLy3FX/hlHtL5BQcqPHbupdC2HdE
-         9PuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rBQYa4W8A+AJiUwNOuc8Q7CyuPP2yMOoaSr+CBtkpMs=;
-        b=vGh6OU2WcwLpvCvAPoUClUTvRr7vW+cnJ9EadPW8EkKZsw3mkK1a5J0E8r0M7gYYkq
-         Iklj0hFraik/rpTXkGlqnlxeXEkZ1nnd5RVL/sn7JbRw5T19/6g/VSBlAU0Qxjh8K5VD
-         4mVZeGn5RC2VbbY1vJ2RByR3yWIkko5ZalIPgzmzFyzFh6LCAJbX+vZxHkDsV/OOT9gy
-         jPeYsf1P0mV97eDolLWOtK4qgBQwXnneGoLKrRbmpK7zmvdI80Sj8KIQ3REOC9eicaWb
-         xFjZbCdS3fA5o2nv431kueSo02PJbhfZ7DBARyxjgnI5eF7AZYmOH7Uwwzevhz/NITLt
-         sZNQ==
-X-Gm-Message-State: ANoB5plzZJdHyk1HlcJBGuq2pW9UCC0N9/AG0zhDj0wWS9pIATwAUtlL
-        h1B5T6SBs+p9zS8XMsdZnlWEOOlm4V8V50LMPUe9vKlD4WIRaVJzrUl6l12Da5wtr1AGtePDfjS
-        q2tRstPE82Y8VdMgzv6URQIPZX8sYgs3Zpz1E6JxJEtuWPcN83nbX2qmJ3NVU
-X-Google-Smtp-Source: AA0mqf7OAlNT6gA4JXc8GJ23UMKYjJ0gPupRWtT35R7PXd2xP7OzGAUljthjq0ETxT5v0v7oNQM8JmyAjrnD
-X-Received: from connoro.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:a99])
- (user=connoro job=sendgmr) by 2002:a05:6a00:e17:b0:576:1d9e:caa0 with SMTP id
- bq23-20020a056a000e1700b005761d9ecaa0mr35297738pfb.81.1671065622919; Wed, 14
- Dec 2022 16:53:42 -0800 (PST)
-Date:   Thu, 15 Dec 2022 00:53:15 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
-Message-ID: <20221215005315.186787-1-connoro@google.com>
-Subject: [PATCH bpf-next v2] bpf: btf: limit logging of ignored BTF mismatches
-From:   "Connor O'Brien" <connoro@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org, "Connor O'Brien" <connoro@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229460AbiLOBXK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Dec 2022 20:23:10 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123D752898;
+        Wed, 14 Dec 2022 17:23:08 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BF0mvF7009193;
+        Thu, 15 Dec 2022 01:23:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=6hyFUkmkt2U9XorR62rswYRGysVs7Iq3O/vcxja6py8=;
+ b=MEajlhSijvjtXyVJqZYuquRvWHRYoe5IhK6etwTkHWV4PiK/ZzeEKSEF9swAkcuRc53A
+ F71lPA7lX/MFs/k+OoNd9pKHUrTdfUcU9NfVcc0dH8MT6hKGKy5BIdMS13ehczdHDEuq
+ Ov6ZGzu0z2OMaGfiHPURjec0KJBIvrMzS7OacVhB7k/UL3j0b0HU79VE3aAZ1ABN0XPM
+ M1o0bl5vuVEPBpgjmwds2hi/ZpWI3zdiRiWcZwv/mwRl78Wtzdc93rIR+93zy2NvKE+Z
+ nBWhgQGwMLD29/b8cKDmffncodl06SZHnonX4uGtCYG9V5U79rivekuFx4CfC61jH7v9 Vg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mf6rrjvyd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Dec 2022 01:23:04 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BF1N3gt010044
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Dec 2022 01:23:03 GMT
+Received: from [10.253.79.142] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Wed, 14 Dec
+ 2022 17:23:02 -0800
+Message-ID: <f929751c-d299-b1d4-7163-74a3ffb18bfe@quicinc.com>
+Date:   Thu, 15 Dec 2022 09:22:59 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [RFC PATCH 2/2] trace: allocate temparary buffer for trace output
+ usage
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     Masami Hiramatsu <mhiramat@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <1671027102-21403-1-git-send-email-quic_linyyuan@quicinc.com>
+ <1671027102-21403-2-git-send-email-quic_linyyuan@quicinc.com>
+ <20221214092550.1691829e@gandalf.local.home>
+Content-Language: en-US
+From:   Linyu Yuan <quic_linyyuan@quicinc.com>
+In-Reply-To: <20221214092550.1691829e@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: iod0qzvjlrTjmEowKHK6sGkfEopiw5Hv
+X-Proofpoint-ORIG-GUID: iod0qzvjlrTjmEowKHK6sGkfEopiw5Hv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-14_12,2022-12-14_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=856
+ suspectscore=0 phishscore=0 malwarescore=0 impostorscore=0 adultscore=0
+ clxscore=1015 priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2212150008
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Enabling CONFIG_MODULE_ALLOW_BTF_MISMATCH is an indication that BTF
-mismatches are expected and module loading should proceed
-anyway. Logging with pr_warn() on every one of these "benign"
-mismatches creates unnecessary noise when many such modules are
-loaded. Instead, handle this case with a single log warning that BTF
-info may be unavailable.
+thanks for remind, will check and use it.
 
-Mismatches also result in calls to __btf_verifier_log() via
-__btf_verifier_log_type() or btf_verifier_log_member(), adding several
-additional lines of logging per mismatched module. Add checks to these
-paths to skip logging for module BTF mismatches in the "allow
-mismatch" case.
 
-All existing logging behavior is preserved in the default
-CONFIG_MODULE_ALLOW_BTF_MISMATCH=n case.
+thanks
 
-Signed-off-by: Connor O'Brien <connoro@google.com>
----
-v2:
-- Use pr_warn_once instead of skipping logging entirely
-- Also skip btf verifier logs for ignored mismatches
-
-v1: https://lore.kernel.org/bpf/20221109024155.2810410-1-connoro@google.com/
----
- kernel/bpf/btf.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index f7dd8af06413..16b959b49595 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -1404,6 +1404,13 @@ __printf(4, 5) static void __btf_verifier_log_type(struct btf_verifier_env *env,
- 	if (log->level == BPF_LOG_KERNEL && !fmt)
- 		return;
- 
-+	/*
-+	 * Skip logging when loading module BTF with mismatches permitted
-+	 */
-+	if (env->btf->base_btf && env->btf->kernel_btf &&
-+	    IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-+		return;
-+
- 	__btf_verifier_log(log, "[%u] %s %s%s",
- 			   env->log_type_id,
- 			   btf_type_str(t),
-@@ -1443,6 +1450,14 @@ static void btf_verifier_log_member(struct btf_verifier_env *env,
- 
- 	if (log->level == BPF_LOG_KERNEL && !fmt)
- 		return;
-+
-+	/*
-+	 * Skip logging when loading module BTF with mismatches permitted
-+	 */
-+	if (env->btf->base_btf && env->btf->kernel_btf &&
-+	    IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-+		return;
-+
- 	/* The CHECK_META phase already did a btf dump.
- 	 *
- 	 * If member is logged again, it must hit an error in
-@@ -7260,11 +7275,14 @@ static int btf_module_notify(struct notifier_block *nb, unsigned long op,
- 		}
- 		btf = btf_parse_module(mod->name, mod->btf_data, mod->btf_data_size);
- 		if (IS_ERR(btf)) {
--			pr_warn("failed to validate module [%s] BTF: %ld\n",
--				mod->name, PTR_ERR(btf));
- 			kfree(btf_mod);
--			if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-+			if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH)) {
-+				pr_warn("failed to validate module [%s] BTF: %ld\n",
-+					mod->name, PTR_ERR(btf));
- 				err = PTR_ERR(btf);
-+			} else {
-+				pr_warn_once("Kernel module BTF mismatch detected, BTF debug info may be unavailable for some modules\n");
-+			}
- 			goto out;
- 		}
- 		err = btf_alloc_id(btf);
--- 
-2.39.0.rc1.256.g54fd8350bd-goog
-
+On 12/14/2022 10:25 PM, Steven Rostedt wrote:
+> On Wed, 14 Dec 2022 22:11:42 +0800
+> Linyu Yuan <quic_linyyuan@quicinc.com> wrote:
+>
+>> there is one dwc3 trace event declare as below,
+>> DECLARE_EVENT_CLASS(dwc3_log_event,
+>> 	TP_PROTO(u32 event, struct dwc3 *dwc),
+>> 	TP_ARGS(event, dwc),
+>> 	TP_STRUCT__entry(
+>> 		__field(u32, event)
+>> 		__field(u32, ep0state)
+>> 		__dynamic_array(char, str, DWC3_MSG_MAX)
+>> 	),
+>> 	TP_fast_assign(
+>> 		__entry->event = event;
+>> 		__entry->ep0state = dwc->ep0state;
+>> 	),
+>> 	TP_printk("event (%08x): %s", __entry->event,
+>> 			dwc3_decode_event(__get_str(str), DWC3_MSG_MAX,
+>> 				__entry->event, __entry->ep0state))
+>> );
+>> the problem is when trace function called, it will allocate up to
+>> DWC3_MSG_MAX bytes from trace event buffer, but never fill the buffer
+>> during fast assignment, it only fill the buffer when output function are
+>> called, so this means if output function are not called, the buffer will
+>> never used.
+>>
+>> add __alloc_buf() and __get_buf() which will not allocate event buffer
+>> when trace function called, but when trace output function called, it will
+>> kmalloc buffer with size DWC3_MSG_MAX for temprary usage and free it
+>> before trace output function return.
+> This looks exactly like what the trace_seq *p is to be used for.
+>
+> static notrace enum print_line_t					\
+> trace_raw_output_##call(struct trace_iterator *iter, int flags,		\
+> 			struct trace_event *trace_event)		\
+> {									\
+> 	struct trace_seq *s = &iter->seq;				\
+> 	struct trace_seq __maybe_unused *p = &iter->tmp_seq;		\
+>                                          ^^^^^^^^^^^^^^^^^^^^
+>
+> 	struct trace_event_raw_##call *field;				\
+> 	int ret;							\
+> 									\
+> 	field = (typeof(field))iter->ent;				\
+> 									\
+> 	ret = trace_raw_output_prep(iter, trace_event);			\
+> 	if (ret != TRACE_TYPE_HANDLED)					\
+> 		return ret;						\
+> 									\
+> 	trace_event_printf(iter, print);				\
+> 									\
+> 	return trace_handle_return(s);					\
+> }									\
+>
+> That is a trace_seq buffer that is for temporary usage during the output.
+>
+> See:
+>    include/trace/events/libata.h
+>    include/trace/events/scsi.h
+>
+> As well as the macros trace_print_bitmask_seq(), trace_print_flags_seq(),
+> trace_print_symbols_seq(), etc.
+>
+> -- Steve
+>
