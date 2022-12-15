@@ -2,88 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2780064DCE0
-	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 15:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A2464DCEC
+	for <lists+bpf@lfdr.de>; Thu, 15 Dec 2022 15:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbiLOOaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Dec 2022 09:30:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
+        id S229927AbiLOOeh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Dec 2022 09:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbiLOOaR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Dec 2022 09:30:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F233F2D1DD
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 06:29:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1671114570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F9zk1ydpzyPtO+/nncYucgHPeAfHU3SdhVuHl+hsa5c=;
-        b=GQvZbclfDKY/dCb2fa5f9tNQOwLdxPVy2S20kD1Zajq9sovAO5LVCrpT26FRvtxvubsPGC
-        Hi173pOW45Z95oTEv8+vgpwPEbw/Y4IbLHGl8ZvbLUcwk80yhXt8GdEII0WWJTvcA6ivwT
-        JAzOVAwATaE7wwiTBBpglMxR9tMKXOk=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-241-_OAASZX3NruTaJuFxQi_mQ-1; Thu, 15 Dec 2022 09:29:29 -0500
-X-MC-Unique: _OAASZX3NruTaJuFxQi_mQ-1
-Received: by mail-ej1-f72.google.com with SMTP id xc12-20020a170907074c00b007416699ea14so13738342ejb.19
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 06:29:29 -0800 (PST)
+        with ESMTP id S229917AbiLOOeg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Dec 2022 09:34:36 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CFD23EB3
+        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 06:34:35 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d3so7036916plr.10
+        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 06:34:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EvKOVyzZE6m+dy4ICll/p6OYV/c+ytiVcHQqdMWtYuw=;
+        b=RKjzSrjoXDwnj3R4QKsYp3MX9j32b22s8S4dJ5b4Pq/6uWVxj7Ir9XiqOvkmfT6sa5
+         RKftFQDm3QISdzPm7fWkxwGL3zpL44EasIHn3OdjSnokTTWPq7vCDLhoXT87vSdVy8Ag
+         pNa9exS7onfbc9g8DxTuzgGiHeQNTEqUotTt4EFsY0L8iUVvPGm9kgKg5q+PiUiERXMo
+         +ZrE95SuAYw5q6rQtIFlnpwGR4oYSt2LI2MjooRAjD570FxyqDvDrrl08NRS4wi3xMBQ
+         SdVNSfMeJZ74mEWm6Ki2d+D/0+smGBq42mLZbKX58DHhdu1w6kXjJwlnmpiw7i+YW8cL
+         lmGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F9zk1ydpzyPtO+/nncYucgHPeAfHU3SdhVuHl+hsa5c=;
-        b=vY9eedgRRopp5P/XkUfpcFLBOSg75fepyXoMBJ2D15yzqSBv3D5RzFBbU5lvhoBBqj
-         fDzwgbDI/oEbFy3mLjAQp1XinWd+GmnVfyLX+57NGbubCjdx1RKw1/82vNGJMGhf7Pd7
-         m9iVYYwUgPeGm38upeToJJKDEr8NCc/XsCx1zdjIXhhGM05oME3Gsb1jRRVA2BfoK/4K
-         40M0VFNtUNIinyOr4Zi02EYSRk1nqYL9a6IW2UtMjlQXG7Y5P8Tpe5QPE75JJxwzRGgx
-         svB2EGxLs5NpL5QCR07VjVchnan2XzCbgMc0yfGkfdwdbMtzg1hwv3VK96Rf4izbL4HP
-         Nfog==
-X-Gm-Message-State: ANoB5pkRkyVF2nTVk9eVqk1Fs9wj3wAcpEndbywuXuBTociFc0QKN5ZU
-        E0TRsMbFlwGS5MEURUFKoOkxHBFEBZZ+0OPASLFuYFPfWQnyKTxmaTRpvBnJhTE+HEo1GifRmgl
-        kApLWTj/3dacf
-X-Received: by 2002:a05:6402:1152:b0:467:9046:e2ef with SMTP id g18-20020a056402115200b004679046e2efmr24476805edw.17.1671114567074;
-        Thu, 15 Dec 2022 06:29:27 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf59tSBcDngjM41CYfl+TarYqzZRUi/+mvPyr9Wha9rbixivAZTpjgcQ5WUIx76Xe4MQLXPDCQ==
-X-Received: by 2002:a05:6402:1152:b0:467:9046:e2ef with SMTP id g18-20020a056402115200b004679046e2efmr24476765edw.17.1671114566271;
-        Thu, 15 Dec 2022 06:29:26 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id ee48-20020a056402293000b004615f7495e0sm7423125edb.8.2022.12.15.06.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Dec 2022 06:29:25 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2F3C982F7EB; Thu, 15 Dec 2022 15:29:25 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Larysa Zaremba <larysa.zaremba@intel.com>,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 10/14] ice: Support rx
- timestamp metadata for xdp
-In-Reply-To: <Y5sIUI1jeN3c7iQA@lincoln>
-References: <20221104032532.1615099-1-sdf@google.com>
- <20221104032532.1615099-11-sdf@google.com> <Y5sIUI1jeN3c7iQA@lincoln>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 15 Dec 2022 15:29:25 +0100
-Message-ID: <874jtweo56.fsf@toke.dk>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EvKOVyzZE6m+dy4ICll/p6OYV/c+ytiVcHQqdMWtYuw=;
+        b=rnaiL1a6QxmT0+cXIgqxQky2uT0H6thdGjcpGqu35b7E/cOg2+xjcrR1sZwzwnoqSN
+         uYM6C2hYks7zaYN29E9zDjlED8PB2OiQesj6BAVDam7E0D4FoSfVzXqwnW6eE/6dWJgs
+         3EFaG0VJVGIkB+nTb4+aR0qYMS9a9Da8AT2a5IfqZ6fyVRHhSKDPuZjhlRM5p/3RxO8q
+         79rMVMX42B+VO3ZJK2x5xm98cf8cQoA7cXbA1PNQpHKHMR6vLPtlqArryqZzQxa86V6x
+         +zLg9w+tPtE6JJx4696VTH4Wi0RlRcUgWcIQbshFNn4MHBO5aon3q1q50V1k6Dj3Zo47
+         TtLg==
+X-Gm-Message-State: ANoB5pmPOevXt28SN+H/BrNBaoqcEY6SsIhEA+2+hdP/9IlN5T/zH/dx
+        5MiVrZmKFhEJ8y6EQNDgZS9gXNLAUL8lsq+F/lQ=
+X-Google-Smtp-Source: AA0mqf6J+9mxCWSJvDhz/VI5Ur+OyCJjdCCiP+VMD/+9ZkkJRlSE61WDDMCcZwnz+2tvfaWWFsgVdlvfXRNi4ur67mk=
+X-Received: by 2002:a17:903:110c:b0:189:8351:8bd9 with SMTP id
+ n12-20020a170903110c00b0018983518bd9mr55701913plh.94.1671114874950; Thu, 15
+ Dec 2022 06:34:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+References: <20221210193559.371515-1-daan.j.demeyer@gmail.com>
+ <20221210193559.371515-6-daan.j.demeyer@gmail.com> <70ea5f8b-be37-267e-56d6-381938cb6e5b@meta.com>
+ <CAO8sHcmNKN6kagFeCoWzjf1K0sOqTQxfdDG-U8iqBGN=TaHefg@mail.gmail.com> <76c8be5a-685d-539c-7323-ab1dc9b06464@meta.com>
+In-Reply-To: <76c8be5a-685d-539c-7323-ab1dc9b06464@meta.com>
+From:   Daan De Meyer <daan.j.demeyer@gmail.com>
+Date:   Thu, 15 Dec 2022 14:34:23 +0000
+Message-ID: <CAO8sHc=aWEaDiAaPSyquMdH3q-2=szb9WLFAUmQm+jdk5Sp+zA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 5/9] bpf: Implement cgroup sockaddr hooks for
+ unix sockets
+To:     Yonghong Song <yhs@meta.com>
+Cc:     bpf@vger.kernel.org, martin.lau@linux.dev, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,53 +70,265 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Larysa Zaremba <larysa.zaremba@intel.com> writes:
+> >> On 12/10/22 11:35 AM, Daan De Meyer wrote:
+> >>> These hooks allows intercepting bind(), connect(), getsockname(),
+> >>> getpeername(), sendmsg() and recvmsg() for unix sockets. The unix
+> >>> socket hooks get write access to the address length because the
+> >>> address length is not fixed when dealing with unix sockets and
+> >>> needs to be modified when a unix socket address is modified by
+> >>> the hook. Because abstract socket unix addresses start with a
+> >>> NUL byte, we cannot recalculate the socket address in kernelspace
+> >>> after running the hook by calculating the length of the unix socket
+> >>> path using strlen().
+> >>
+> >> Yes, although we cannot calculate the socket path length with
+> >> strlen(). But we still have a method to find the path. In
+> >> unix_seq_show(), the unix socket path is calculated as below,
+> >>
+> >>                   if (u->addr) {  // under a hash table lock here
+> >>                           int i, len;
+> >>                           seq_putc(seq, ' ');
+> >>
+> >>                           i =3D 0;
+> >>                           len =3D u->addr->len -
+> >>                                   offsetof(struct sockaddr_un, sun_pat=
+h);
+> >>                           if (u->addr->name->sun_path[0]) {
+> >>                                   len--;
+> >>                           } else {
+> >>                                   seq_putc(seq, '@');
+> >>                                   i++;
+> >>                           }
+> >>                           for ( ; i < len; i++)
+> >>                                   seq_putc(seq, u->addr->name->sun_pat=
+h[i] ?:
+> >>                                            '@');
+> >>                   }
+> >>
+> >> Is it possible that we can use the above method to find the
+> >> address length so we won't need to pass uaddr_len to bpf program?
+> >>
+> >> Since all other hooks do not need to uaddr_len, you could add some
+> >> new hooks for unix socket which can specially calculate uaddr_len
+> >> after the bpf program run.
+> >
+> > I don't think we can. If we look at the definition of abstract unix
+> > socket in the official man page:
+> >
+> >> abstract: an abstract socket address is distinguished (from a pathname=
+ socket) by the fact that sun_path[0] is a null byte ('\0').  The socket's =
+address in this namespace is given by the additional bytes in sun_path that=
+ are covered by the specified length of the address structure.  (Null bytes=
+ in
+> >> the  name  have  no  special  significance.)   The name has no connect=
+ion with filesystem pathnames.  When the address of an abstract socket is r=
+eturned, the returned addrlen is greater than sizeof(sa_family_t) (i.e., gr=
+eater than 2), and the name of the socket is contained in the first (addrle=
+n -
+> >> sizeof(sa_family_t)) bytes of sun_path.
+> >
+> > This specifically says that the address in the abstract namespace is
+> > given by the additional bytes in sun_path that are covered by the
+> > length of the address structure. If I understand correctly, that means
+> > there's no way to derive the length from just the contents of the
+> > sockaddr structure. We need
+> > the actual length as specified by the caller to know which bytes
+> > belong to the address. Note that it's valid for the abstract name to
+> > contain Null bytes, so we cannot use those in any way or form to
+> > detect whether further bytes belong to the address or not. It seems
+> > valid to have an abstract name
+> > consisting of 107 Null bytes in sun_path.
+>
+> Okay, it looks like bpf program is able to set abstract name as well.
+> It would be good we have an example for this in selftest.
+>
+> With abstract address setable by bpf program, I guess you are right,
+> we have to let user to explicitly tell us the address length.
+>
+> I assume it is possible for user to write an address like below:
+> "a\0b\0"
+> addr_len =3D offsetof(struct sockaddr_un, sun_path) + 4
+> but actually it is illegal, right? We have to validate the
+> legality of sun_path/addr_len beyond unix_validate_addr(), right?
 
-> On Thu, Nov 03, 2022 at 08:25:28PM -0700, Stanislav Fomichev wrote:
->> +			/* if (r5 == NULL) return; */
->> +			BPF_JMP_IMM(BPF_JNE, BPF_REG_5, 0, S16_MAX),
->
-> S16_MAX jump crashes my system and I do not see such jumps used very often
-> in bpf code found in-tree, setting a fixed jump length worked for me.
-> Also, I think BPF_JEQ is a correct condition in this case, not BPF_JNE.
->
-> But the main reason for my reply is that I have implemented RX hash hint
-> for ice both as unrolled bpf code and with BPF_EMIT_CALL [0].
-> Both bpf_xdp_metadata_rx_hash() and bpf_xdp_metadata_rx_hash_supported() 
-> are implemented in those 2 ways.
->
-> RX hash is the easiest hint to read, so performance difference
-> should be more visible than when reading timestapm.
->
-> Counting packets in an rxdrop XDP program on a single queue
-> gave me the following numbers:
->
-> - unrolled:		41264360 pps
-> - BPF_EMIT_CALL:	40370651 pps
->
-> So, reading a single hint in an unrolled way instead of calling 2 driver
-> functions in a row, gives us a 2.2% performance boost.
-> Surely, the difference will increase, if we read more than a single hint.
-> Therefore, it would be great to implement at least some simple hints
-> functions as unrolled.
->
-> [0] https://github.com/walking-machine/linux/tree/ice-kfunc-hints-clean
+This is not actually illegal according to the man page I think, let's
+look at the following quote from the man page:
 
-Right, so this corresponds to ~0.5ns function call overhead, which is a
-bit less than what I was seeing[0], but you're also getting 41 Mpps
-where I was getting 25, so I assume your hardware is newer :)
+>  Pathname sockets
+>      When binding a socket to a pathname, a few rules should be observed =
+for maximum portability and ease of coding:
+>
+>      *  The pathname in sun_path should be null-terminated.
+>
+>      *  The length of the pathname, including the terminating null byte, =
+should not exceed the size of sun_path.
+>
+>      *  The addrlen argument that describes the enclosing sockaddr_un str=
+ucture should have a value of at least:
+>
+>             offsetof(struct sockaddr_un, sun_path)+strlen(addr.sun_path)+=
+1
+>
+>         or, more simply, addrlen can be specified as sizeof(struct sockad=
+dr_un).
 
-And yeah, I agree that ideally we really should inline these functions.
-However, seeing as that may be a ways off[1], I suppose we'll have to
-live with the function call overhead for now. As long as we're
-reasonably confident that inlining can be added later without disruptive
-API breaks I am OK with proceeding without inlining for now, though.
-That way, inlining will just be a nice performance optimisation once it
-does land, and who knows, maybe this will provide the impetus for
-someone to land it sooner rather than later...
+So when doing a pathname based path, the address length is allowed to
+be bigger than the actual path. So I don't think
+we need to do any more validation than what is done by
+unix_validate_addr(). The selftests are already using abstract
+unix sockets because they don't need any cleanup.
 
--Toke
 
-[0] https://lore.kernel.org/r/875yellcx6.fsf@toke.dk
-[1] https://lore.kernel.org/r/CAADnVQ+MyE280Q-7iw2Y-P6qGs4xcDML-tUrXEv_EQTmeESVaQ@mail.gmail.com
-
+On Tue, 13 Dec 2022 at 21:54, Yonghong Song <yhs@meta.com> wrote:
+>
+>
+>
+> On 12/13/22 3:36 AM, Daan De Meyer wrote:
+> >> On 12/10/22 11:35 AM, Daan De Meyer wrote:
+> >>> These hooks allows intercepting bind(), connect(), getsockname(),
+> >>> getpeername(), sendmsg() and recvmsg() for unix sockets. The unix
+> >>> socket hooks get write access to the address length because the
+> >>> address length is not fixed when dealing with unix sockets and
+> >>> needs to be modified when a unix socket address is modified by
+> >>> the hook. Because abstract socket unix addresses start with a
+> >>> NUL byte, we cannot recalculate the socket address in kernelspace
+> >>> after running the hook by calculating the length of the unix socket
+> >>> path using strlen().
+> >>
+> >> Yes, although we cannot calculate the socket path length with
+> >> strlen(). But we still have a method to find the path. In
+> >> unix_seq_show(), the unix socket path is calculated as below,
+> >>
+> >>                   if (u->addr) {  // under a hash table lock here
+> >>                           int i, len;
+> >>                           seq_putc(seq, ' ');
+> >>
+> >>                           i =3D 0;
+> >>                           len =3D u->addr->len -
+> >>                                   offsetof(struct sockaddr_un, sun_pat=
+h);
+> >>                           if (u->addr->name->sun_path[0]) {
+> >>                                   len--;
+> >>                           } else {
+> >>                                   seq_putc(seq, '@');
+> >>                                   i++;
+> >>                           }
+> >>                           for ( ; i < len; i++)
+> >>                                   seq_putc(seq, u->addr->name->sun_pat=
+h[i] ?:
+> >>                                            '@');
+> >>                   }
+> >>
+> >> Is it possible that we can use the above method to find the
+> >> address length so we won't need to pass uaddr_len to bpf program?
+> >>
+> >> Since all other hooks do not need to uaddr_len, you could add some
+> >> new hooks for unix socket which can specially calculate uaddr_len
+> >> after the bpf program run.
+> >
+> > I don't think we can. If we look at the definition of abstract unix
+> > socket in the official man page:
+> >
+> >> abstract: an abstract socket address is distinguished (from a pathname=
+ socket) by the fact that sun_path[0] is a null byte ('\0').  The socket's =
+address in this namespace is given by the additional bytes in sun_path that=
+ are covered by the specified length of the address structure.  (Null bytes=
+ in
+> >> the  name  have  no  special  significance.)   The name has no connect=
+ion with filesystem pathnames.  When the address of an abstract socket is r=
+eturned, the returned addrlen is greater than sizeof(sa_family_t) (i.e., gr=
+eater than 2), and the name of the socket is contained in the first (addrle=
+n -
+> >> sizeof(sa_family_t)) bytes of sun_path.
+> >
+> > This specifically says that the address in the abstract namespace is
+> > given by the additional bytes in sun_path that are covered by the
+> > length of the address structure. If I understand correctly, that means
+> > there's no way to derive the length from just the contents of the
+> > sockaddr structure. We need
+> > the actual length as specified by the caller to know which bytes
+> > belong to the address. Note that it's valid for the abstract name to
+> > contain Null bytes, so we cannot use those in any way or form to
+> > detect whether further bytes belong to the address or not. It seems
+> > valid to have an abstract name
+> > consisting of 107 Null bytes in sun_path.
+>
+> Okay, it looks like bpf program is able to set abstract name as well.
+> It would be good we have an example for this in selftest.
+>
+> With abstract address setable by bpf program, I guess you are right,
+> we have to let user to explicitly tell us the address length.
+>
+> I assume it is possible for user to write an address like below:
+> "a\0b\0"
+> addr_len =3D offsetof(struct sockaddr_un, sun_path) + 4
+> but actually it is illegal, right? We have to validate the
+> legality of sun_path/addr_len beyond unix_validate_addr(), right?
+>
+> >
+> >
+> > On Tue, 13 Dec 2022 at 06:20, Yonghong Song <yhs@meta.com> wrote:
+> >>
+> >>
+> >>
+> >> On 12/10/22 11:35 AM, Daan De Meyer wrote:
+> >>> These hooks allows intercepting bind(), connect(), getsockname(),
+> >>> getpeername(), sendmsg() and recvmsg() for unix sockets. The unix
+> >>> socket hooks get write access to the address length because the
+> >>> address length is not fixed when dealing with unix sockets and
+> >>> needs to be modified when a unix socket address is modified by
+> >>> the hook. Because abstract socket unix addresses start with a
+> >>> NUL byte, we cannot recalculate the socket address in kernelspace
+> >>> after running the hook by calculating the length of the unix socket
+> >>> path using strlen().
+> >>
+> >> Yes, although we cannot calculate the socket path length with
+> >> strlen(). But we still have a method to find the path. In
+> >> unix_seq_show(), the unix socket path is calculated as below,
+> >>
+> >>                   if (u->addr) {  // under a hash table lock here
+> >>                           int i, len;
+> >>                           seq_putc(seq, ' ');
+> >>
+> >>                           i =3D 0;
+> >>                           len =3D u->addr->len -
+> >>                                   offsetof(struct sockaddr_un, sun_pat=
+h);
+> >>                           if (u->addr->name->sun_path[0]) {
+> >>                                   len--;
+> >>                           } else {
+> >>                                   seq_putc(seq, '@');
+> >>                                   i++;
+> >>                           }
+> >>                           for ( ; i < len; i++)
+> >>                                   seq_putc(seq, u->addr->name->sun_pat=
+h[i] ?:
+> >>                                            '@');
+> >>                   }
+> >>
+> >> Is it possible that we can use the above method to find the
+> >> address length so we won't need to pass uaddr_len to bpf program?
+> >>
+> >> Since all other hooks do not need to uaddr_len, you could add some
+> >> new hooks for unix socket which can specially calculate uaddr_len
+> >> after the bpf program run.
+> >>
+> >>>
+> >>> This hook can be used when users want to multiplex syscall to a
+> >>> single unix socket to multiple different processes behind the scenes
+> >>> by redirecting the connect() and other syscalls to process specific
+> >>> sockets.
+> >>> ---
+> >>>    include/linux/bpf-cgroup-defs.h |  6 +++
+> >>>    include/linux/bpf-cgroup.h      | 29 ++++++++++-
+> >>>    include/uapi/linux/bpf.h        | 14 ++++--
+> >>>    kernel/bpf/cgroup.c             | 11 ++++-
+> >>>    kernel/bpf/syscall.c            | 18 +++++++
+> >>>    kernel/bpf/verifier.c           |  7 ++-
+> >>>    net/core/filter.c               | 45 +++++++++++++++--
+> >>>    net/unix/af_unix.c              | 85 +++++++++++++++++++++++++++++=
+----
+> >>>    tools/include/uapi/linux/bpf.h  | 14 ++++--
+> >>>    9 files changed, 204 insertions(+), 25 deletions(-)
+> >>>
+> [...]
