@@ -2,325 +2,341 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D915664E464
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 00:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F53664E4BE
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 00:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbiLOXAy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Dec 2022 18:00:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
+        id S229544AbiLOXio (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Dec 2022 18:38:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbiLOXAt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Dec 2022 18:00:49 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4905CA1BB
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 15:00:43 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id vv4so2206740ejc.2
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 15:00:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JtlIsi8wvjVJqnvimpIP01PDWbh+Qn2vtaldjR2Q47E=;
-        b=c00cm7lHqrvW5/0QFMkvVaUBPEXTw3NeBFAjiY3ymQ6pccvPwyM7ZcZtO8BjbfE1GT
-         EN3tvRyI0Uq+m3Ttc6Ub3Eo4kcvvjQVd6eiFeCZc8qVjD9oT4DVANBgce9K4Jmat3a+2
-         m8DLeWsuZpDcCvZxmQsNpqwkQfXfR2b/TL9tFfbDKKAxBkp2M828bAz3rZW7oKkmEIUL
-         FHG7AZt5A7SICtzA3q+/pC0v/+wmg0mST1ir3kBZTH7cUrgAZzzn5rulOZ3uTfYawU3Q
-         Xhyjn2LRAwV9OA/2sl9ZeJ8sxw7ntieF/rl1DhNd5cmvA3qbw50fWk9yk6R/UnjYXzbT
-         ofgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JtlIsi8wvjVJqnvimpIP01PDWbh+Qn2vtaldjR2Q47E=;
-        b=PuShFKW99BbTWVDZVSuP0uO4KNb2/yK2e9z65jXiG3a+yqE8j5RU4dYd5J3jGDQv3p
-         UEaMljAnqFFCZ2GXAeBa06UBNmMyo3nW3Cjzk5jnKg4fPGDWZIHZPg2LzRa9e1zxkWqM
-         cyY8r/D4QWA08ijNlkwJCKikt3rM/ZjaCVGomOREsoVLrqgZmYCX1e7Q6mrXiNQ6wjTW
-         QWJO1sCZL3TI6K4dXmVjwF141WJoRPAJ5q1WxMRVMNeBxccMebWc+vbVtX1qQkiqIJsj
-         zZSvi+D1eiUSpX8iwheZebWk8AJ9Usv9GkQT7ayGvERQWMYU42pDgWdiMcW0lnQAmeZd
-         5jzA==
-X-Gm-Message-State: ANoB5pkmLW/CJVFEKft0U7EMDBV35+vIHRkN7VRN6Cj9v1Wa5F6wwvFh
-        Uba8OOup3byOuxPLQnNUMRE58yrewQeoS8u8CKTo
-X-Google-Smtp-Source: AA0mqf6lH7n6djtP6gJMxv0ytcCZaCMNHFW5HIy2ydyyhyoHLepCtlB8fpMFUN082MJJbtefpSkb/Kcb3hfmmuNxt3E=
-X-Received: by 2002:a17:906:2604:b0:78a:d0a4:176 with SMTP id
- h4-20020a170906260400b0078ad0a40176mr83289136ejc.720.1671145242194; Thu, 15
- Dec 2022 15:00:42 -0800 (PST)
+        with ESMTP id S229496AbiLOXil (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Dec 2022 18:38:41 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF9E4B982
+        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 15:38:40 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BFJ0PLC025503;
+        Thu, 15 Dec 2022 15:38:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=6/ZO417rnnIFlIWW95uMnP4pKR2fe/CK5KmDzc9vEP4=;
+ b=UVrG08169rU2oMUdlwM/Bu0IDEULxi9RIrESjxotVnpdXrfwAvAuEgR145Pc8eUhKUVu
+ DaKW9ooNTDiPWpTpp6/J7PWhUw5ECLSkAEJiK8wmU4j5txFWvCCJp3MEenpJ44TmH8uz
+ 9f0iocL2+vjFKPNap6PoKFDmGl5SVS/d3F7gtHBPh3+BxR5Mpa5/UzWNLPoVg9vuv32/
+ EqRZfj8FO0YV8gNYpOJPenAHjZFmpeDdMlPrhhDWiho9kxFQyDqcxxz6/P0Oh1SIuzn1
+ RgCJghBzq6OybIjT/bdP+UVrMJ6W5Rs8Aj5VfTz3hnBZvkGPER+/VF+8p5kgbYPv4Bfc +Q== 
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2048.outbound.protection.outlook.com [104.47.51.48])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mfux90064-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Dec 2022 15:38:24 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fr/YS04+7kyQ7xtsWP1ltjGhmrwzhD/oIHEoqMoNThEhQ4Abm7o/db8l3g7V/svWsBdAMF6oTko4a9kTqiZitpHtzcOt8ep0op7HofoM+cHz+81c8YJczDc7OsK3ScMJ+74VUeHXTUrXm30iGV23lEUNiSO6pi6SA3UKS0+eqJk06pNnBVZLeWdDQ2aCY2q4aqQNtcGQeK9K+NhgKEFJIHjd4Vfb3/5LceXD8Tk4CFQr3n+3b29FlTZWHRIg+Thc7WPWQOY1mh6KMfbtSxbABmxwVijkAsNKKy8zhu7IjtRUIwaBxbS8qYCEvSP69gohcYYFza89sim227xxPcou2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6/ZO417rnnIFlIWW95uMnP4pKR2fe/CK5KmDzc9vEP4=;
+ b=YULabk+achyELzG3THD9m14hCS/kJTDUoxIgnboP25lbWu8+pP2SHEhv69CLQ7/1InigbdsHuZ6l+dgT9yycCEpFC17uo19AOSatEpf8uWgUwuMk4I5CgWTT8194sJUq3x66Tm8edOuZVLlJrFiCOz2VS/R8Y1BSLecsFbNH8lBfZNtLVoF/76HIT38196mBzmewkUWl8R8xE6Lv7ElgB19XyaMcktVaeEq2WkgEpL3xXdcJoTYTei44eBVPdzmffQDpY95YIJ5g4Wn0yVT3HvggPnsHyhKhJaws0tRmn1JA9oYHH0XpsQve9bqvhB1ZpW+mgvYZCIX/rhO2mOZL0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by CY4PR15MB1160.namprd15.prod.outlook.com (2603:10b6:903:108::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.12; Thu, 15 Dec
+ 2022 23:38:21 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5924.011; Thu, 15 Dec 2022
+ 23:38:21 +0000
+Message-ID: <2a558ee1-e86a-6cc8-1d03-26dc81980ec8@meta.com>
+Date:   Thu, 15 Dec 2022 15:38:18 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.0
+Subject: Re: [PATCH bpf-next 1/2] bpf, x86: Improve PROBE_MEM runtime load
+ check
+Content-Language: en-US
+To:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <20221213182726.325137-1-davemarchevsky@fb.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <20221213182726.325137-1-davemarchevsky@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR01CA0031.prod.exchangelabs.com (2603:10b6:a02:80::44)
+ To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
 MIME-Version: 1.0
-References: <20221122000011.241697-1-morbo@google.com> <20221122000011.241697-2-morbo@google.com>
- <CAEf4BzYiHx0gAgJsam4usy23UTGwN-a-nyJa2+jzG+RzUFiWEQ@mail.gmail.com>
- <CAGG=3QWGAepDQmSxarrMENOX79srigF48xYOsOjOPO-YuvFr1g@mail.gmail.com>
- <CAEf4Bzb38BXEL_mKuqRdUrvQVTXLH9TmOdwZbrVa_10YmdhoTw@mail.gmail.com>
- <CAGG=3QVC_qOFWRi4sf88Ct3Tz5_N6j_GUwj+Dk11Oi9AJYNm-A@mail.gmail.com>
- <CAEf4BzYs4h0ya7MbQ9P96293XkyW4ab3f+nYeJU6D=LFsrm6-w@mail.gmail.com>
- <CAGG=3QXVC-9tPT1KL0ze+5oWz=hpXsy+w=BJgSjokufmSP4eZQ@mail.gmail.com>
- <CAEf4BzazUVOnPD_wBdhVaLjB5jE5CDd1t1zop6zwA4Lr2qF+rA@mail.gmail.com>
- <CAGG=3QV0rWv22b5vM9Ht8Htf7k5SvppXyDWwX1nkKPFiC4e+bQ@mail.gmail.com> <CAEf4Bzbb3XZ4BUBCvpvZ4a1tac+7gwO0GL8dm_2rKK+OBKCEkA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbb3XZ4BUBCvpvZ4a1tac+7gwO0GL8dm_2rKK+OBKCEkA@mail.gmail.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Thu, 15 Dec 2022 15:00:25 -0800
-Message-ID: <CAGG=3QVEu+7CXtGx4vO0wp+Z5haFEH52-=gCfNAO9TcMpKsxUg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] btf_encoder: Generate a new .BTF section even if one exists
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|CY4PR15MB1160:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98537361-0336-47e3-065d-08dadef57303
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JrT34E00gWczZ8nESGGspzKyNg2cwjVwrKwwEePVEk28lWeoJYH908iM801M1stkMr0SeWLtx1dnpXr4Xzs5ZC27xO+ba3ab+s4TDJfLxPDjxGvGVD2EjUnWTrEn2Gq5q8CXg95fxgNnZJk+NVhivvIK9OggW/r6PENVQfvF84f2Nc0xAAG6xuKyXFH4Lc5UeleK8N9T/KEEuMeDub/PZPSqKjO8NTPjDblMFkAZ1uGOYiiCEFVU61OcRuxH89kuBfRHNbkGLMZew7OhfTUWSoEXXybiTfCJoLRaJSJ+oRsMd3sIN3A53COfxQ9lW8RLtxTp7He5HM+u3DesX7UY1KLzpYtQskf/2f/e9cN/wI9c4V6/UjToC6w4G0cVH1cDW/4uI4whHKYD9HQ8lufwmDocP+JraiTG47kdiAlFYX+JK6m43L3MlWaYmHOD7hJrZb2RSvg9i1cpjrRCukYxrVEzcbhu1mZNraIUDmlji+QkwW+t8G+pNvH34cwOzc0ib2cZHtRPqQzm1UrTRHkStaVIA0LmLhIMpSm7UthqwHHm+93jZTR1VZHMxjlEopiUZzTNzunF8gHCGg5TAkV0450e+TyeKMUG3NDbFoAEkNTSGmXosClHroEuo2A/RBJCUEVbXqJ8gmR5t1MxAY2SOy1TANrXvna0ewSHqUeNH9iqReeyWV7mdDW1jV3MIZ+NPzIP5ToX0OXf8Rif+gjy/Kw3p3KiQtuwdD02LNlyyGg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(366004)(396003)(39860400002)(376002)(136003)(451199015)(41300700001)(478600001)(8936002)(2616005)(6666004)(8676002)(36756003)(53546011)(6512007)(6506007)(4326008)(6486002)(54906003)(31696002)(316002)(86362001)(38100700002)(66556008)(66476007)(66946007)(186003)(2906002)(5660300002)(31686004)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NjlFak1lbk8wbzVTb2loc2lyNE91bnV6TGhYQWtEOXgvU2piY3E5M3lNZUM5?=
+ =?utf-8?B?NEY1WTNaUXJnZ2hSeHk5MjltZ0dzdzZLWTE1Wkx2MU9FWW1nRjl4aHdydDVE?=
+ =?utf-8?B?dmtUUmRNOUFaWmJZOUpvanRKeWQvazNrOE1ZLzFpbW9XbHYvcElrMVB1UURL?=
+ =?utf-8?B?SG10Wk5aTExGcmNtbmg5cnZpRWNydnlaOWh3MTlpOTdZaXFRUDczcGJ2TDJQ?=
+ =?utf-8?B?Z3lhamJ5RTErVVZuVE9MZjFTcDdaVU1xRUVLR3o1MWM2cHo3N1BuclV4dHVT?=
+ =?utf-8?B?SUozREd3RG1OcXd0S2REU1Zwdnc1d0ZtcDBXLy9jbGpwWXBFbWdQcmY0VTBt?=
+ =?utf-8?B?NlNLeVAybmlCZG9WMFoxeVVNektxaTBPRFVpK0dIeGt6NDE3VTJsSngyUFBH?=
+ =?utf-8?B?SndNS3AzVGpEUGp6UkY4YVRLQTQ2d2FVWHRycWxEam5zQm1jV2dmNHlQVlRt?=
+ =?utf-8?B?bFdIaVQ4VVg4RUNHbGs3NXQ3NnYwRE9JY2lhNFFQbUJlNzA1MHdmUEt3RVRl?=
+ =?utf-8?B?c21QOFVmQnB3MVFDcU5sc1BzS2FPT0dUYjVKNGpxTE50Z3VqS2dqcmdReHJi?=
+ =?utf-8?B?ZENBdlJGMkVXTTBmajQ1Y3JIT01hK2pSb1MxVEsrNFNneUtISFI4bS8rdEh3?=
+ =?utf-8?B?MldZYkJ0ZGtGYm5tOUdaRHVJc01MalYrVndQQzZ0Yjd1a0Voc2xicng3NFR6?=
+ =?utf-8?B?dk5EeEh6YVhSVDRYUmdjUnNvNWN3QmcxOGFiUVg3NlJSK0NabzhZU0N5eGln?=
+ =?utf-8?B?MmhsZXVLYU9rYlp4WUJiRGw3Y3dqOVVtSHlsN2lPYmNQdGtoZTY5ZWRxbmo2?=
+ =?utf-8?B?alFxekY5RE9VUzFyaEdvMmNlWXZ1c2dGRkdpbVVJK1lIZlc3Y2toZnZYaE9X?=
+ =?utf-8?B?QS8zY0kzcmZyU2xxNjBnL0JJWjkwZ3ZGVU9OU0M2VmlWaFRScTQ3dGRVQXdh?=
+ =?utf-8?B?WmVYRkNWVFF3NkxVYXNPWUxVMTUvczgvNkRlcExuMG8xRVowaENlOWZ4NVZJ?=
+ =?utf-8?B?UVg5OW5iQ2l0WXBwMllsZW1Fc3dXTlRhc09uT0lLR2lWaHRPRVhBbEovQmoy?=
+ =?utf-8?B?dHBHRGd3UlRKU0pFYjhPVm85M3dzTnlSaFpiVjFDZ1R0ZXFxUENmMFo1NndB?=
+ =?utf-8?B?QmNvVTFURFEwZldSM2RUUzIveG9hWVU2MjVTcTBiZXdIWUEwUVVlWTQzWVhL?=
+ =?utf-8?B?MFdyZFgvMks3U3p2VFFZSmR1TUpHcUx4SFFaTXdGMmJjRzJaVzZxUUR5U2JD?=
+ =?utf-8?B?RjVKc3F5Q1FCNUcwSHhJN0xxMHIySitVRHR1QTFSMEVvL3JRb2ZQaVB5OHdN?=
+ =?utf-8?B?TlA5V2hVVi9Wa3NnR3ZFOERDVzVZaGFwaHcwRHJtUDFTZ1B6VWJKTUdhdldm?=
+ =?utf-8?B?UlRhdVhHWS9pR0lIOG5CMFFJa1JMNlVBc2hyenY2aXBRSXdaMFp4N2tvNTFU?=
+ =?utf-8?B?MzVuVVJGOUlxS2xzek1kU2wrWXJpNE1VWUZtY21Qdkp4ZTdMQnpxaGRQNmI3?=
+ =?utf-8?B?Nk9idzl5SzlNZGNGV2E4WGYzWk1MZ3FRMHhtbWxVOStJb2RwMEtwNzh0a0M0?=
+ =?utf-8?B?NHFPby9NNXk2d2tNK1lvaCtCd0lyd1RiTU1odHRmRWFEVE1IaUhFblRWenJP?=
+ =?utf-8?B?NzdUdXpSQVdMeTRUa1hCTnhPWmpibHdLN0JFVTVsUlZzbll0Yy9zSnpveW8z?=
+ =?utf-8?B?UDI0ODBqMDJIU0Q1Mll0NWh3ZElGUDhRN28zSHdETEtSSm5WWXJmSW5rZ05y?=
+ =?utf-8?B?TXpteHMwOHVsWFY2YmdyeU1yZ3hpVmZHMnJ3cnpsOXg4QmJ4cFJLb0ZpSXly?=
+ =?utf-8?B?RzVVdFFPM1lleGg2d0Y5K3ZBYWZ6VGEvWkdwTzQyTnBzM2lYMUppSCtYWmpP?=
+ =?utf-8?B?MXJhUWNObVJpVFhHM2U4WWFzUzBhRDNmY3hrOVpONkUzZFoxbWllOGsxd2dF?=
+ =?utf-8?B?cXRRckVjNXI2VXBxcGIwSjN3OE5iQnFpemJ0UHRSb2htbVN2MEEvVjViem0w?=
+ =?utf-8?B?M2ltQVBMRklFb0Q5S1k0WXVmQ0RONHVWZ0p5TkhrNGt1Y3dFcHhFSHg0NDJP?=
+ =?utf-8?B?cFE1MjZrRWRqYVJwQ1Z1NjN0S3dJWWdKRDd2K3dOWjVndGxUR3R0MU8xN0pU?=
+ =?utf-8?B?VkVrRTBBY2QyVklWK3BhZlB6RVBBdVdRMnhZb24weWRmNHJNUjdoWTdhek9o?=
+ =?utf-8?B?Z2c9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98537361-0336-47e3-065d-08dadef57303
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2022 23:38:20.9902
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /d4n2fcby7WIB3FeCUU/xwrDDkqjnh+o8HjmXs+5q1p3/RMa6ykM9go+yPmPiUvt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1160
+X-Proofpoint-ORIG-GUID: fpjvL0F7KgGaLuMcGPJV1ODKUeeItlLV
+X-Proofpoint-GUID: fpjvL0F7KgGaLuMcGPJV1ODKUeeItlLV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-15_11,2022-12-15_02,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
- On Wed, Dec 7, 2022 at 12:33 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Dec 7, 2022 at 12:16 PM Bill Wendling <morbo@google.com> wrote:
-> >
-> > On Tue, Dec 6, 2022 at 2:53 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > adding bpf@vger back
-> > >
-> > > On Tue, Dec 6, 2022 at 12:15 PM Bill Wendling <morbo@google.com> wrote:
-> > > >
-> > > > On Tue, Dec 6, 2022 at 10:38 AM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Dec 1, 2022 at 12:20 PM Bill Wendling <morbo@google.com> wrote:
-> > > > > >
-> > > > > > On Thu, Dec 1, 2022 at 11:56 AM Andrii Nakryiko
-> > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Wed, Nov 30, 2022 at 4:21 PM Bill Wendling <morbo@google.com> wrote:
-> > > > > > > >
-> > > > > > > > On Wed, Nov 30, 2022 at 2:59 PM Andrii Nakryiko
-> > > > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > > > >
-> > > > > > > > > On Mon, Nov 21, 2022 at 4:00 PM Bill Wendling <morbo@google.com> wrote:
-> > > > > > > > > >
-> > > > > > > > > > LLD generates a zero-length .BTF section (BFD doesn't generate this
-> > > > > > > > > > section). It shares the same address as .BTF_ids (or any section below
-> > > > > > > > > > it). E.g.:
-> > > > > > > > > >
-> > > > > > > > > >   [24] .BTF              PROGBITS        ffffffff825a1900 17a1900 000000
-> > > > > > > > > >   [25] .BTF_ids          PROGBITS        ffffffff825a1900 17a1900 000634
-> > > > > > > > > >
-> > > > > > > > > > Writing new data to that section doesn't adjust the addresses of
-> > > > > > > > > > following sections. As a result, the "-J" flag produces a corrupted
-> > > > > > > > > > file, causing further commands to fail.
-> > > > > > > > > >
-> > > > > > > > > > Instead of trying to adjust everything, just add a new section with the
-> > > > > > > > > > .BTF data and adjust the name of the original .BTF section. (We can't
-> > > > > > > > > > remove the old .BTF section because it has variables that are referenced
-> > > > > > > > > > elsewhere.)
-> > > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > Have you tried llvm-objcopy --update-section instead? Doesn't it work?
-> > > > > > > > >
-> > > > > > > > I gave it a quick try and it fails for me with this:
-> > > > > > > >
-> > > > > > > > llvm-objcopy: error: '.tmp_vmlinux.btf': cannot fit data of size
-> > > > > > > > 4470718 into section '.BTF' with size 0 that is part of a segment
-> > > > > > >
-> > > > > > > .BTF shouldn't be allocatable section, when added by pahole. I think
-> > > > > > > this is the problem. Can you confirm that that zero-sized .BTF is
-> > > > > > > marked as allocated and is put into one of ELF segments? Can we fix
-> > > > > > > that instead?
-> > > > > > >
-> > > > > > I think it does:
-> > > > > >
-> > > > > > [24] .BTF              PROGBITS        ffffffff825a1900 17a1900 000000
-> > > > > > 00  WA  0   0  1
-> > > > > >
-> > > > >
-> > > > > So this allocatable .BTF section, could it be because of linker script
-> > > > > in include/asm-generic/vmlinux.lds.h? Should we add some conditions
-> > > > > there to not emit .BTF if __startt_BTF == __stop_BTF (i.e., no BTF
-> > > > > data is present) to avoid this issue in the first place?
-> > > > >
-> > > > It looks like keeping the .BTF section around is intentional:
-> > > >
-> > > >   commit 65c204398928 ("bpf: Prevent .BTF section elimination")
-> > > >
-> > > > I assume that patch isn't meant if the section is zero sized...
-> > >
-> > > yep, we need to keep it only if it's non-empty
-> > >
-> > > >
-> > > > I was able to get a working system with two patches: one to Linux and
-> > > > one to pahole. The Linux patch specifies that the .BTF section
-> > > > shouldn't be allocatable.
-> > >
-> > > That's not right, we do want this .BTF section to be allocatable,
-> > > kernel expects this content to be accessible at runtime. So Linux-side
-> > > change is wrong. Is it possible to add some conditional statement to
-> > > linker script to keep .BTF only if .BTF is non-empty?
-> > >
-> > I thought you said the .BTF section shouldn't be allocatable. Is that
-> > only when it's added by pahole? The issue isn't really the section
-> > that's added by pahole, but the section as it's generated by LLD.
->
-> Yeah, it's confusing. Pahole is not a linker and can't properly embed
-> .BTF into a data segment inside ELF. So the only choice is to add it
-> as nono-allocatable ELF section.
->
-> But .BTF as part of vmlinux image *has* to be loadable, as kernel from
-> inside expect to have access to BTF contents. So that's why we use
-> linker script to embed .BTF into data segment as allocatable.
->
-> Generally, the process is that during vmlinux building we add .BTF
-> contents to a temporary vmlinux file using pahole. Then during final
-> linking (at the same time as we add kallsyms) we rely on linker to
-> make .BTF allocatable and add those __start_BTF/__stop_BTF markers.
->
-> Hope that clarifies this a bit.
->
-I think I understand now. Thanks! :-)
 
-> >
-> > I don't know of a way to add conditional code to a linker script. I
-> > suspect we'd need the equivalent of this:
-> >
-> >   .BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {
-> >     __start_BTF = .;
-> >     KEEP(*(.BTF))
-> >     __stop_BTF = .;
-> >   }
-> >   SIZEOF(.BTF) == 0 && /DISCARD/ { *(.BTF) }   # This doesn't work.
->
-> Honestly, no idea, I barely ever used linker scripts. Was hoping
-> someone else will be able to figure this out and I won't have to learn
-> this :)
->
-> >
-> > > > The pahole patch uses --update-section if
-> > > > the section exists rather than writing out a new ELF file. Thoughts?
-> > >
-> > > That might be ok, because we already have dependency on llvm-objcopy.
-> > > But also it's unnecessary change if the section in not allocated,
-> > > right? Or why do we need to switch to llvm-objcopy in this case?
-> > >
-> > Not using llvm-objcopy was still messing up the ELF file. When you
-> > used `readelf -lW .tmp_vmlinux.btf` the "Section to Segment mapping"
-> > is trashed.
->
-> If .BTF is not allocatable, there is no section to segment mapping, is there?
->
-> >
-> > I'm a bit worried still that even if we modify the Linux linker
-> > scripts to remove a zero-sized .BTF section non-Linux projects using
-> > pahole will hit this issue. (Or is Linux meant to be the sole user of
-> > pahole?)
->
-> That's the single most important case that we care about (note that
-> the same thing happens for kernel modules). Nothing prevents others
-> from using pahole for similar reasons with their custom apps.
->
-> >
-> > The purpose of the `-J` option is to add BTF data and the next command
-> > in scripts/link-linux.sh extracts that data into its own file. The
-> > .tmp_vmlinux.btf that pahole modified is then no longer used. Why not
-> > cut out the middleman and have `-J` write the BTF data directly to a
-> > file? Does it need to be in a special format?
-> >
->
-> That's exactly what I'm proposing:
->
-> > > > > > > Also, more generally, newer paholes (not that new anymore, it's been a
-> > > > > > > supported feature for a while) support emitting BTF as raw binary
-> > > > > > > files, instead of embedding them into ELF. I think this is a nicer and
-> > > > > > > simpler option and we should switch link-vmlinux.sh to use that
-> > > > > > > instead, if pahole is new enough.
->
-> We dump .BTF contents as raw bytes. Then embed with objcopy. That's the goal.
->
-I knew I had a good idea! :-D
 
-I tried emitting the BTF data with the --btf_encode_detached flag.
-However, it's emitted as a binary file, which the linker isn't able to
-handle. We could process it afterwards with "objcopy", but I'm not
-sure how to grab the correct output BFD name. So something like this:
+On 12/13/22 10:27 AM, Dave Marchevsky wrote:
+> This patch rewrites the runtime PROBE_MEM check insns emitted by the BPF
+> JIT in order to ensure load safety. The changes in the patch fix two
+> issues with the previous logic and more generally improve size of
+> emitted code. Paragraphs between this one and "FIX 1" below explain the
+> purpose of the runtime check and examine the current implementation.
+> 
+> When a load is marked PROBE_MEM - e.g. due to PTR_UNTRUSTED access - the
+> address being loaded from is not necessarily valid. The BPF jit sets up
+> exception handlers for each such load which catch page faults and 0 out
+> the destination register.
+> 
+> Arbitrary register-relative loads can escape this exception handling
+> mechanism. Specifically, a load like dst_reg = *(src_reg + off) will not
+> trigger BPF exception handling if (src_reg + off) is outside of kernel
+> address space, resulting in an uncaught page fault. A concrete example
+> of such behavior is a program like:
+> 
+>    struct result {
+>      char space[40];
+>      long a;
+>    };
+> 
+>    /* if err, returns ERR_PTR(-EINVAL) */
+>    struct result *ptr = get_ptr_maybe_err();
+>    long x = ptr->a;
+> 
+> If get_ptr_maybe_err returns ERR_PTR(-EINVAL) and the result isn't
+> checked for err, 'result' will be (u64)-EINVAL, a number close to
+> U64_MAX. The ptr->a load will be > U64_MAX and will wrap over to a small
+> positive u64, which will be in userspace and thus not covered by BPF
+> exception handling mechanism.
+> 
+> In order to prevent such loads from occurring, the BPF jit emits some
+> instructions which do runtime checking of (src_reg + off) and skip the
+> actual load if it's out of range. As an example, here are instructions
+> emitted for a %rdi = *(%rdi + 0x10) PROBE_MEM load:
+> 
+>    72:   movabs $0x800000000010,%r11 --|
+>    7c:   cmp    %r11,%rdi              |- 72 - 7f: Check 1
+>    7f:    jb    0x000000000000008d   --|
+>    81:   mov    %rdi,%r11             -----|
+>    84:   add    $0x0000000000000010,%r11   |- 81-8b: Check 2
+>    8b:   jnc    0x0000000000000091    -----|
+>    8d:   xor    %edi,%edi             ---- 0 out dest
+>    8f:   jmp    0x0000000000000095
+>    91:   mov    0x10(%rdi),%rdi       ---- Actual load
+>    95:
+> 
+> The JIT considers kernel address space to start at MAX_TASK_SIZE +
+> PAGE_SIZE. Determining whether a load will be outside of kernel address
+> space should be a simple check:
+> 
+>    (src_reg + off) >= MAX_TASK_SIZE + PAGE_SIZE
+> 
+> But because there is only one spare register when the checking logic is
+> emitted, this logic is split into two checks:
+> 
+>    Check 1: src_reg >= (MAX_TASK_SIZE + PAGE_SIZE - off)
+>    Check 2: src_reg + off doesn't wrap over U64_MAX and result in small pos u64
+> 
+> Emitted insns implementing Checks 1 and 2 are annotated in the above
+> example. Check 1 can be done with a single spare register since the
+> source reg by definition is the left-hand-side of the inequality.
+> Since adding 'off' to both sides of Check 1's inequality results in the
+> original inequality we want, it's equivalent to testing that inequality.
+> Except in the case where src_reg + off wraps past U64_MAX, which is why
+> Check 2 needs to actually add src_reg + off if Check 1 passes - again
+> using the single spare reg.
+> 
+> FIX 1: The Check 1 inequality listed above is not what current code is
+> doing. Current code is a bit more pessimistic, instead checking:
+> 
+>    src_reg >= (MAX_TASK_SIZE + PAGE_SIZE + abs(off))
+> 
+> The 0x800000000010 in above example is from this current check. If Check
+> 1 was corrected to use the correct right-hand-side, the value would be
+> 0x7ffffffffff0. This patch changes the checking logic more broadly (FIX
+> 2 below will elaborate), fixing this issue as a side-effect of the
+> rewrite. Regardless, it's important to understand why Check 1 should've
+> been doing MAX_TASK_SIZE + PAGE_SIZE - off before proceeding.
+> 
+> FIX 2: Current code relies on a 'jnc' to determine whether src_reg + off
+> addition wrapped over. For negative offsets this logic is incorrect.
+> Consider Check 2 insns emitted when off = -0x10:
+> 
+>    81:   mov    %rdi,%r11
+>    84:   add    0xfffffffffffffff0,%r11
+>    8b:   jnc    0x0000000000000091
+> 
+> 2's complement representation of -0x10 is a large positive u64. Any
+> value of src_reg that passes Check 1 will result in carry flag being set
+> after (src_reg + off) addition. So a load with any negative offset will
+> always fail Check 2 at runtime and never do the actual load. This patch
+> fixes the negative offset issue by rewriting both checks in order to not
+> rely on carry flag.
+> 
+> The rewrite takes advantage of the fact that, while we only have one
+> scratch reg to hold arbitrary values, we know the offset at JIT time.
+> This we can use src_reg as a temporary scratch reg to hold src_reg +
+> offset since we can return it to its original value by later subtracting
+> offset. As a result we can directly check the original inequality we
+> care about:
+> 
+>    (src_reg + off) >= MAX_TASK_SIZE + PAGE_SIZE
+> 
+> For a load like %rdi = *(%rsi + -0x10), this results in emitted code:
+> 
+>    43:   movabs $0x800000000000,%r11
+>    4d:   add    $0xfffffffffffffff0,%rsi --- src_reg += off
+>    54:   cmp    %r11,%rsi                --- Check original inequality
+>    57:   jae    0x000000000000005d
+>    59:   xor    %edi,%edi
+>    5b:   jmp    0x0000000000000061
+>    5d:   mov    0x0(%rdi),%rsi           --- Actual Load
+>    61:   sub    $0xfffffffffffffff0,%rsi --- src_reg -= off
+> 
+> Note that the actual load is always done with offset 0, since previous
+> insns have already done src_reg += off. Regardless of whether the new
+> check succeeds or fails, insn 61 is always executed, returning src_reg
+> to its original value.
+> 
+> Because the goal of these checks is to ensure that loaded-from address
+> will be protected by BPF exception handler, the new check can safely
+> ignore any wrapover from insn 4d. If such wrapped-over address passes
+> insn 54 + 57's cmp-and-jmp it will have such protection so the load can
+> proceed.
+> 
+> As an aside, since offset in above calculations comes from
+> bpf_insn, it's a s16 and thus won't wrap under unless src_reg is
+> an anomalously low address in user address space. But again, if such a
+> wrapunder results in an address in kernelspace, it's fine for the
+> purpose of this check.
 
-$ objcopy --input-target=binary --output-target=???
-.btf.vmlinux.bin.o.raw .btf.vmlinux.bin.o
+Not sure how useful the above paragraph is. Are we talking about
+'offset' wraparound here? If src_reg is indeed a very low address in
+user space, the following compare
+    (src_reg + off) >= MAX_TASK_SIZE + PAGE_SIZE
+should be force and everything is fine. What exactly this paragraph
+will convey?
 
-What should I put in place of "???"? I can't seem to find a tool that
-will give me a BFD name so that I could use the same type as the
-".tmp_vmlinux.btf.o" file.
+> 
+> IMPROVEMENTS: The above improved logic is 8 insns vs original logic's 9,
+> and has 1 fewer jmp. The number of checking insns can be further
+> improved in common scenarios:
+> 
+> If src_reg == dst_reg, the actual load insn will clobber src_reg, so
+> there's no original src_reg state for the sub insn immediately following
+> the load to restore, so it can be omitted. In fact, it must be omitted
+> since it would incorrectly subtract from the result of the load if it
+> wasn't. So for src_reg == dst_reg, JIT emits these insns:
+> 
+>    3c:   movabs $0x800000000000,%r11
+>    46:   add    $0xfffffffffffffff0,%rdi
+>    4d:   cmp    %r11,%rdi
+>    50:   jae    0x0000000000000056
+>    52:   xor    %edi,%edi
+>    54:   jmp    0x000000000000005a
+>    56:   mov    0x0(%rdi),%rdi
+>    5a:
+> 
+> The only difference from larger example being the omitted sub, which
+> would've been insn 5a in this example.
+> 
+> If offset == 0, we can similarly omit the sub as in previous case, since
+> there's nothing added to subtract. For the same reason we can omit the
+> addition as well, resulting in JIT emitting these insns:
+> 
+>    46:   movabs $0x800000000000,%r11
+>    4d:   cmp    %r11,%rdi
+>    50:   jae    0x0000000000000056
+>    52:   xor    %edi,%edi
+>    54:   jmp    0x000000000000005a
+>    56:   mov    0x0(%rdi),%rdi
+>    5a:
+> 
+> Although the above example also has src_reg == dst_reg, the same
+> offset == 0 optimization is valid to apply if src_reg != dst_reg.
+> 
+> To summarize the improvements in emitted insn count for the
+> check-and-load:
+> 
+> BEFORE:                8 check insns, 3 jmps
+> AFTER (general case):  7 check insns, 2 jmps (12.5% fewer insn, 33% jmp)
+> AFTER (src == dst):    6 check insns, 2 jmps (25% fewer insn)
+> AFTER (offset == 0):   5 check insns, 2 jmps (37.5% fewer insn)
+> 
+> (Above counts don't include the 1 load insn, just checking around it)
+> 
+> Based on BPF bytecode + JITted x86 insn I saw while experimenting with
+> these improvements, I expect the src_reg == dst_reg case to occur most
+> often, followed by offset == 0, then the general case.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 
--bw
-
-> > -bw
-> >
-> > > >
-> > > > Linux patch:
-> > > >
-> > > > diff --git a/include/asm-generic/vmlinux.lds.h
-> > > > b/include/asm-generic/vmlinux.lds.h
-> > > > index 3dc5824141cd..5bea090b736e 100644
-> > > > --- a/include/asm-generic/vmlinux.lds.h
-> > > > +++ b/include/asm-generic/vmlinux.lds.h
-> > > > @@ -680,7 +680,7 @@
-> > > >   */
-> > > >  #ifdef CONFIG_DEBUG_INFO_BTF
-> > > >  #define BTF                                                            \
-> > > > -       .BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {                           \
-> > > > +       .BTF (INFO) : AT(ADDR(.BTF) - LOAD_OFFSET) {                    \
-> > > >                 __start_BTF = .;                                        \
-> > > >                 KEEP(*(.BTF))                                           \
-> > > >                 __stop_BTF = .;                                         \
-> > > >
-> > > > pahole patch:
-> > > >
->
-> [...]
->
-> > > >
-> > > >
-> > > > > > Fangrui mentioned something similar to this in a previous message:
-> > > > > >
-> > > > > >   https://lore.kernel.org/dwarves/20210317232657.mdnsuoqx6nbddjgt@google.com/T/#u
-> > > > > >
-> > > > > > > Also, more generally, newer paholes (not that new anymore, it's been a
-> > > > > > > supported feature for a while) support emitting BTF as raw binary
-> > > > > > > files, instead of embedding them into ELF. I think this is a nicer and
-> > > > > > > simpler option and we should switch link-vmlinux.sh to use that
-> > > > > > > instead, if pahole is new enough.
-> > > > > > >
-> > > > > > > Hopefully eventually we can get rid of all the old pahole version
-> > > > > > > cruft, but for now it's inevitable to support both modes, of course.
-> > > > > > >
-> > > > > >
-> > > > > > Ah technical debt! :-)
-> > > > >
-> > > > > Yep, it would be good to get contributions to address it ;) It's
-> > > > > better than hacks with renaming of sections, *wink wink* :)
-> > > > >
-> > > > ;-)
-> > > >
-> > > > -bw
-> > > >
-> > > > > >
-> > > > > > -bw
-> > > > > >
-> > > > > > > > btf_encoder__write_elf: failed to add .BTF section to '.tmp_vmlinux.btf': 2!
-> > > > > > > > Failed to encode BTF
-> > > > > > > >
-> > > > > > > > -bw
-> > > > > > > >
-> > > > > > > > > > Link: https://lore.kernel.org/dwarves/20210317232657.mdnsuoqx6nbddjgt@google.com/
-> > > > > > > > > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > > > > > > > > Cc: Fangrui Song <maskray@google.com>
-> > > > > > > > > > Cc: dwarves@vger.kernel.org
-> > > > > > > > > > Signed-off-by: Bill Wendling <morbo@google.com>
-> > > > > > > > > > ---
-> > > > > > > > > >  btf_encoder.c | 88 +++++++++++++++++++++++++++++++--------------------
-> > > > > > > > > >  1 file changed, 54 insertions(+), 34 deletions(-)
-> > > > > > > > > >
->
-> [...]
+Acked-by: Yonghong Song <yhs@fb.com>
