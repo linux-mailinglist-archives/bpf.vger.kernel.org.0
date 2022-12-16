@@ -2,158 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1718864EF47
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 17:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8034A64EFB0
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 17:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbiLPQhS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 11:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
+        id S230118AbiLPQsW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 11:48:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbiLPQhR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 11:37:17 -0500
-Received: from MW2PR02CU001-vft-obe.outbound.protection.outlook.com (mail-westus2azon11022019.outbound.protection.outlook.com [52.101.48.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548E4B871;
-        Fri, 16 Dec 2022 08:37:16 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UJpLfFqE5NUBgonBytHSgloCtzTve7jUYh/1xQRwspYEMlZT+SCLaB45jkAV0r1ZF472cz4JJuscipGW6UPH4frMJ61bk1SQ39+gv0ymJxfXTKJu59Fcs/NSC61HnyFHkQ04kRwqDrUooHo6kK7yNJa/+P2GGpBQdI6OenbTTqrJzYrmcuv9fHRqTioYtAXjsyC3IEE9ZGXwiPOSEwnD89Hl+ezp46PL0J88Bmyspx29VB7S94nklb14Yu/naHJiTD3ghgjHiMT1643DhuNte1xBlPyeKVySyJWBIv3zoMB5mGrlGjaxTuLVl++Y4HwWc0nq1vZGe8+AlPEgiYh3rQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z0Aglx9Tu8WD5oOEbfqi8w038JsqKgO7eE+9UxlZ6BU=;
- b=ejEpxV0Io37HWRC3DUzGk+IAjd+ZNjUt4OBCcrGLdcmebKWmEy35nMlNv6iPbcEXLTFZnhuus4Slstq6v2On/5anYmye1Ua1FaExV00fOFjxgF3+r6taTZwt0fspgiMoELzb8efZCDxSIk2IIX/H032kGQhYEGdbdSXl3aetChMU95zYR9y6p9Sf+6xVuN4Mmnx4yLHvii0/zeoiDYBCMXddN50dYMkBrxdriHdGff/ZReqlDpk3kLCLOnyRwqrn3DVPx3slMpEclznikLF+V06D1KQVm0AsV7oxCWdeGdhufX10ke4qUgLuMI6Zx9Kuha01YJ90twzI1bBpG9n0cA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z0Aglx9Tu8WD5oOEbfqi8w038JsqKgO7eE+9UxlZ6BU=;
- b=H7Bt0aXu0XNGygzlneMkx7GSWEWkzwwIPkPYb7sih1gcR+U7f2+z7vkIFQrYi368hYuc8Mg6ZsNHEDXUoW7Oedlunha1vlma2qsohycqJoIs22mfQUmXjrNh29iZy6hpzg9Pxbx3EsdxEbE2K1bII7FZNEzBwvY/Lp9EC/17Fl0=
-Received: from BN6PR21MB0788.namprd21.prod.outlook.com (2603:10b6:404:11c::17)
- by DS7PR21MB3174.namprd21.prod.outlook.com (2603:10b6:8:7a::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.2; Fri, 16 Dec
- 2022 16:37:14 +0000
-Received: from BN6PR21MB0788.namprd21.prod.outlook.com
- ([fe80::82e8:8caf:81d7:5d46]) by BN6PR21MB0788.namprd21.prod.outlook.com
- ([fe80::82e8:8caf:81d7:5d46%8]) with mapi id 15.20.5944.006; Fri, 16 Dec 2022
- 16:37:14 +0000
-From:   Dave Thaler <dthaler@microsoft.com>
-To:     Maryam Tahhan <mtahhan@redhat.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-CC:     "jbrouer@redhat.com" <jbrouer@redhat.com>,
-        "thoiland@redhat.com" <thoiland@redhat.com>,
-        "donhunte@redhat.com" <donhunte@redhat.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "void@manifault.com" <void@manifault.com>
-Subject: RE: [PATCH bpf-next v5 1/1] docs: BPF_MAP_TYPE_SOCK[MAP|HASH]
-Thread-Topic: [PATCH bpf-next v5 1/1] docs: BPF_MAP_TYPE_SOCK[MAP|HASH]
-Thread-Index: AQHZETWa7pxi9i9VV0SS3Z6YJXXor65wmwBQgAAU9ACAAAXfsA==
-Date:   Fri, 16 Dec 2022 16:37:13 +0000
-Message-ID: <BN6PR21MB0788A33A8AEC16607B2889B8A3E69@BN6PR21MB0788.namprd21.prod.outlook.com>
-References: <20221216100135.13125-1-mtahhan@redhat.com>
- <BN6PR21MB0788FD10541056AF887B2B80A3E69@BN6PR21MB0788.namprd21.prod.outlook.com>
- <6b9b32fe-9f83-69f4-61e5-aabe3618af97@redhat.com>
-In-Reply-To: <6b9b32fe-9f83-69f4-61e5-aabe3618af97@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=4c837f1d-7994-479e-ab50-5eaf99140989;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2022-12-16T16:33:26Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN6PR21MB0788:EE_|DS7PR21MB3174:EE_
-x-ms-office365-filtering-correlation-id: 3de8beea-5aef-479f-7b3d-08dadf83c947
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ra9FONJbemr46yaNjdvbXm6++SvsQ2pp2kM8nvBzf4fqsaYHhtVfykUY9Z0cD9YZgwgHBBpd5zPoecUMQry4Uqjp90LKLyQyxkpLYzig44v4UvgCadsuxT+eSaQ0c0Y8BWTSau2umctywU1D/2sD2y0XdunAgldXDM6IBi6SHt4DfpGeBj7UQsHXp7jx7vf1TN8AsiJdIynebWacSNn7olDrqmkxk2PlvDW7wZMS/5DthuOAnXUVkJcE0paXHYRtc+iWVfgevEuqn6YrAj088ve7Yw1TmBpRTOMCFRQ+LsKDhsMF2M7kdGN+q5Me0i4Djjtx+PVhabSFc94BBvTsY0KZndZfbWjSSR4XhpkqnxtpbNTPlmJSafcpNf3SHJGxT2xcbx3Gg75+A2DoaqzoM1+hsLGP4zi6YsiOKAEllZApnUgPjSqEzjBXPBlJFvNKlpdiFx3I2rM4f0+qc3wQQ/onlbarW2ZQiATx6iojYu4Gn++oxNFJLKo7KiH3ggt9OjzUpitg4UDzjeV5D/pobApP72xudQZBGIS0TQ24p2LMsj9HEZDF86ike/JcnEJR/wDY2W/sIuS2YK0+4uiD5noA49FMK+G461ZyD+csJbdjxkquD7eFhXJHkeL5Ye3iHXjTjJQ+8K0+j7nkCThsCN2SCtAHfMeeL48bOmyTFQWLSQSc5QtpqjUY5bbYJTKWMMkvamOEpk68LGNql3dn8o1RyabnBZqG7Yab+r5mOtdOOZHLQhb0InQbYsYi/OvhEOi740UOdC3zrztOAm8xAQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR21MB0788.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(451199015)(76116006)(86362001)(66946007)(66446008)(64756008)(8936002)(38070700005)(66476007)(66556008)(316002)(5660300002)(82950400001)(55016003)(52536014)(122000001)(33656002)(82960400001)(38100700002)(71200400001)(186003)(10290500003)(54906003)(110136005)(478600001)(6506007)(8990500004)(8676002)(9686003)(41300700001)(26005)(4326008)(7696005)(2906002)(83133001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OGxFNUJpVmR6TzRHNzZJYS9jSTNjcGpIMlhNUzFLMTFzRWFlV1VQWkFyVE1x?=
- =?utf-8?B?WHJoZ0tQYVJPWDNWZGdVZ0w2am4rM28vQVV2Z3k1eUR6RXREYWlSZFVXNGhN?=
- =?utf-8?B?RWxpSG9YTHRHazZmTWI3Vk5vY2tMNXpkN3FuWVNlcnR6dXpLTEpEWitqUUlF?=
- =?utf-8?B?MFB5L0RmejdFaWlUTCsrTlhFQUdURWlndGR5VGVMZVBZQmN2RVN0WFVSai9S?=
- =?utf-8?B?RmQzRHMxL2ZyRmt6NTVKRDFjSWVpczNHYWJUcEI2clVjaXpsYkorVzRqMDBC?=
- =?utf-8?B?US9RVzhFNGRRWTQzbFBzUTVsMU8zOGpmNkFuNFJCckttMVlTTWNocmdBaEVZ?=
- =?utf-8?B?NHREQU9FekFNd0Q3dWdDb3l6MDluaVZkN2MrYjdmQUVRbTkvUDdGbDViZzdw?=
- =?utf-8?B?YlU1Y3p1MkNZWGRIVTk4V0JvWS9QcFREVHIreXRwSWJ6NDA1akcyWVFEWUo1?=
- =?utf-8?B?V2dodFRaWThUcEpjV081a2JCS3VWYVVSbEpJQnUrc1JlcGNqSEc2M0lleXhU?=
- =?utf-8?B?c3VQYWhjbEdZbmEzWVhzUFVtcnUxQk4xdVR0eHQ3cXYyTzlDUHhvb2Q2Wnhq?=
- =?utf-8?B?dFM2Tmx0YldGcmRTZkpQVHFLcmNydnRxaGpPTS9LMHF5TjRBZHQ4Y2lMY242?=
- =?utf-8?B?OFhmZnVSSHNMUXNwYlk4dE81ZFVmdjVaZHhCbTl3cFp0eEovY3NsTE9BT2J6?=
- =?utf-8?B?RW1HT0UwVE1UOE0rZFV4TU1IWW1JVGhaU0FSOUZDS2MwQ084UmFZZW5qWTk1?=
- =?utf-8?B?N2ViS1RsbU5hNWk1Z2RKMWNJYXEvTkNpNkgvQ0xKOGN4d3BpY3BDSDNTVHlV?=
- =?utf-8?B?VVRPYUhlQ0xOU1JZMkNzWmJhNkpuM1EwSWh5cHJ4WHFsaUZPdzNYVktyaFJj?=
- =?utf-8?B?ekZ0UzVFVkFjd1lFbGYwNm5vbERyM3pLMnhTZHhwbW5xZm5WYlo4aUt6aDVY?=
- =?utf-8?B?WWNpbGlqelNBZ2U2OGd5K2N0aVFCNS9TUUFMN2w4UkhaZUhQdHZnZFFHQ1Y2?=
- =?utf-8?B?Q25LQkNGV3Uzd2huaXJDRFgxMW1wY3lldER4anA5L20yMXo3WkM0a2x4K3cv?=
- =?utf-8?B?NUZ2SFZSdno1Zkk4Qm80T0l3OCtwSWFhS0NqdVNwbTY4bjAreHJycFVQVDNj?=
- =?utf-8?B?NGR2N3NFUkFXdWtpZ1RjOWIwdUc0ZHkrZ1dPMnVLMGxybVVuWHpQODhOT252?=
- =?utf-8?B?YVVKQW1mTGIwVFlEQzlRYm1KOVIwNFVYSk5XemlGd2xlRDZvSTZwMnNvQ2ta?=
- =?utf-8?B?UHJERFBJTTRYL3VuMmRwb1ZZTHVGdFFhbmprb01NTWdDeFZReGp5VVpKU25D?=
- =?utf-8?B?L2t6T0tWY3V5SHF0WlB1cGk1dThlQmtFcEJvQ0RYQjZVV0pXbGNYN01uaHhP?=
- =?utf-8?B?TFkreUhaWjFKMnRZL1FIRjRVOUgvQ2lubjJSQjJVZlE4QzhiT1VtWmZBd3FE?=
- =?utf-8?B?MGxQMmZicHI3RlZEMVBaK1pkbHVKNFhVSFlrUDVxeWU5Z25TYURtQVNHaVcz?=
- =?utf-8?B?RmpyVzR0akFXSVRPOUYxVEVkTm9ZT0hMMUFCUW83NDU1WXJvS3l1NFB2RDZq?=
- =?utf-8?B?RENhNnJXRDJCMHc2clpsa0pxdE5lOE1vaXJGdkFlMzAwRURFVytuMWV0OGwz?=
- =?utf-8?B?ZFUxRHB5UlZnSk9lQ21EQ3lKYXBBdDFxRUpWZlBrckRVNDNQREpJVkNhNFJh?=
- =?utf-8?B?L09TOW1WMmZKTWQ5TVlJQ3JiVit2dSt0OEQyMWJMcDlaNGRHMXFUS1J0dC9s?=
- =?utf-8?B?MmpVQVhsSXJLR0l0N0tRTGQ1OHdOTE1IV2U1a3JTcXI4UzRlTTR3ZENtajN6?=
- =?utf-8?B?MXVBK0F6d0thaTY4QXBZRnlOeTV5VUdIM1Yvc0R5UmxlOURjUVJzUk9sM1cy?=
- =?utf-8?B?R3FscmtndWdpWnU3cmczb1FVQmVjVzAzV1p6dVZlaGxEMFVzNmVTREhsUWVr?=
- =?utf-8?B?Q3JLL1FSQlJ3OVlySUdOd0VYVmFCSC9jeGZpWXFMNjdsQjQyUHV6OGgrZHY0?=
- =?utf-8?B?QWx1bDV1ZFZwOTB3VGZOTlFIVERxcFNDL2lVNEE1Y1J3RGRGMmhvMzlqSTg5?=
- =?utf-8?B?Y05HUmg1ejU1R2NOQzV2blEwUW0ySmwzVlNEd0RuTU42Uy9QbWpkZHh0ZXF1?=
- =?utf-8?B?L0E0OEtHSjdLRlZ4N1hCRWdHV1I3Sk55TTFLZDNPRkxmMlJ3Y25yMXJjNFIv?=
- =?utf-8?B?YkE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S229453AbiLPQsV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 11:48:21 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41D217410
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 08:48:20 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id s187so2392130oie.10
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 08:48:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tbekVvrYBD+/xI3UFUQuTz2ymo0bISsKhf+l37m0J+0=;
+        b=iT9SkCPeQGfzWVOJFg9ltan1Se0x4+78t/HnlVENEumIuemVHT2y5oGKgOQyHLEP4n
+         yvikBAke9SvRZESM8ivP76ngI8eDscT+I5kquRSwFUhv/NygZxy1il9ATmZuQGs+ePUQ
+         kXUyXO/iiBrTHFLiHuvYWn1FGqMSPHtSZk2cs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tbekVvrYBD+/xI3UFUQuTz2ymo0bISsKhf+l37m0J+0=;
+        b=PaRgSuMUitjuuaq+HUxBHGjk/nUEKtdp1GEpKWS9NAmhtSWmyp8nEYE7QLPx2Q4SVU
+         cxE3P/9KscNTpCOgXoKLUADka2GyD4O0LdHKUyNHP4H9ja24ctd/NScPDiBdUdiQQrDj
+         yh0YlrK9HREvnymmaKFC7ZCpC40a8uM9VT8G2pHZZ84Erw1Miv8wAA1DHGwvlWQxGSi9
+         UiNhF7u7F9l3e7iJjj8qB4hoFspRTWrP6fH+mHvP04lP9T2OvWjmimnddwlOp/qF5QMp
+         GmhPfM7dEHAVMiN4xOTt2QXjG67oqsHEkna9OcdzIw/HETlpOzN0T+ybCHO8pl6o3BgU
+         9rIQ==
+X-Gm-Message-State: ANoB5pmJslWm+nUceoUpNIEJhsrANmIzeacJ3enJU17tH8zUF9wM6l2N
+        y+d5Scg6WlUwNVHn+mD/TdV7bQ==
+X-Google-Smtp-Source: AA0mqf5Goosfi2/KS2mfUyhzk6c/Hg2t5j/932ShZLrCtoGZiG6aPN9JkTUsQBFyj2E5EW+GnnfiYw==
+X-Received: by 2002:aca:210a:0:b0:35c:4baa:c3e5 with SMTP id 10-20020aca210a000000b0035c4baac3e5mr12412855oiz.28.1671209300088;
+        Fri, 16 Dec 2022 08:48:20 -0800 (PST)
+Received: from sbohrer-cf-dell ([24.28.97.120])
+        by smtp.gmail.com with ESMTPSA id j9-20020a056808056900b0035a921f2093sm901122oig.20.2022.12.16.08.48.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Dec 2022 08:48:19 -0800 (PST)
+Date:   Fri, 16 Dec 2022 10:48:07 -0600
+From:   Shawn Bohrer <sbohrer@cloudflare.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
+        magnus.karlsson@intel.com, kernel-team@cloudflare.com
+Subject: Re: Possible race with xsk_flush
+Message-ID: <Y5yhR4x3GiuZi7P8@sbohrer-cf-dell>
+References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
+ <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
+ <Y5u4dA01y9RjjdAW@sbohrer-cf-dell>
+ <CAJ8uoz1GKvoaM0DCo1Ki8q=LHR1cjrNC=1BK7chTKKW9Po5F5A@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR21MB0788.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3de8beea-5aef-479f-7b3d-08dadf83c947
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2022 16:37:13.6805
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kZKY4j5utUlTZch8LGQA/0yWLI/b97I8s2PkNPC9HszCSKfVBlh2pa8gLm/06knvWq4WHx3IqltheY6Z2dpGeldDSSTK9MkOFbX2xtJKjSE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR21MB3174
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ8uoz1GKvoaM0DCo1Ki8q=LHR1cjrNC=1BK7chTKKW9Po5F5A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-TWFyeWFtIFRhaGhhbiA8bXRhaGhhbkByZWRoYXQuY29tPiAgd3JpdGVzOg0KPj4gKy4uIG5vdGU6
-Og0KPj4gKyAgICBGb3IgbW9yZSBkZXRhaWxzIG9mIHRoZSBzb2NrZXQgY2FsbGJhY2tzIHRoYXQg
-Z2V0IHJlcGxhY2VkIHBsZWFzZSBzZWUNCj4+ICsgICAgYGBuZXQvaXB2NC90Y3BfYnBmLmNgYCBh
-bmQgYGBuZXQvaXB2NC91ZHBfYnBmLmNgYCBmb3IgVENQIGFuZCBVRFANCj4+ICsgICAgZnVuY3Rp
-b25zLCByZXNwZWN0aXZlbHkuDQo+Pg0KPj4gV2h5IHRoaXMgbm90ZT8gIFRoZSByZXN0IG9mIHRo
-ZSB0ZXh0IGxvb2tzIHRvIGJlIHVzYWJsZSBjcm9zcy1wbGF0Zm9ybQ0KPj4gYnV0IHRoZSBub3Rl
-IGFib3ZlIGltcGxpZXMgdGhhdCB0aGlzIGRvY3VtZW50YXRpb24gaXMgbGFja2luZyBhbmQgdGhl
-IHJlYWRlcg0KPj4gaGFzIHRvIGNvbnN1bHQgdGhlIExpbnV4IHNvdXJjZSBjb2RlLiAgQ2FuIG1v
-cmUgYmUgZG9jdW1lbnRlZA0KPj4gaW4gdGhlIGRvYyBpbnN0ZWFkIG9mIGp1c3QgaW4gdGhlIGNv
-ZGU/DQo+IA0KPiBUaGUgbm90ZSBpcyBqdXN0IGEgcG9pbnRlciB0byB3aGVyZSBmb2xrcyBjYW4g
-ZmluZCB0aGVzZSBmdW5jdGlvbnMgZWFzaWx5LiBJIHNlZQ0KPiBsb3RzIG9mIHBsYWNlcyBpbiBk
-b2N1bWVudGF0aW9uIHdoZXJlIHdlIG1ha2Ugbm90ZXMgbGlrZSB0aGVzZS4gVGhvc2UgZmlsZXMg
-YXJlIA0KPiBlc3NlbnRpYWxseSB0aGUgY2FsbGJhY2sgaW1wbGVtZW50YXRpb25zLCB1bmxlc3Mg
-d2UgdGhpbmsgd2UgbmVlZCB0byBkb2N1bWVudA0KPiBlYWNoIA0KPiBjYWxsYmFjayBoZXJlICh3
-aGljaCBmb3IgbWUgc2VlbXMgbGlrZSBvdmVya2lsbCBmb3IgdGhlIG1hcCBkb2N1bWVudGF0aW9u
-KSwgSSBjYW4NCj4gZWl0aGVyIHJlbW92ZSB0aGUgbm90ZSBvciBtYWtlIGl0IHNlZW0gbW9yZSBs
-aWtlIGEgcG9pbnRlcj8NCg0KSSBoYXZlIG5vIHByZWZlcmVuY2UsIGJ1dCBteSBpbnRlbnQgaXMg
-dGhhdCBldmVudHVhbGx5IGNyb3NzLXBsYXRmb3JtIG1hcCB0eXBlcw0Kd2lsbCBiZSBhZGRlZCB0
-byBzdGFuZGFyZCBkb2N1bWVudGF0aW9uIGFuZCB0aGF0IGRvY3VtZW50YXRpb24gd29uJ3QgaGF2
-ZQ0Kc3VjaCBhIG5vdGUgYnV0IHdvdWxkIG5lZWQgdG8gaW5jb3Jwb3JhdGUgYW55dGhpbmcgdGhh
-dCdzIHJlYWxseSBjcm9zcy1wbGF0Zm9ybSBpbnRvIHRoZSBkb2N1bWVudGF0aW9uIGl0c2VsZi4g
-ICBTaW5jZSBtb3N0IHNvY2tldCBjYWxscyBhcmUgUE9TSVggc3RhbmRhcmQgQVBJcywNCmFueSBj
-YWxsYmFja3MgdGhhdCBjYW4gYmUgZGVzY3JpYmVkIGJ5IHJlZmVyZW5jaW5nIHN1Y2ggc3RhbmRh
-cmQgQVBJcyBjb3VsZCBiZQ0KbGlzdGVkIGluIGNyb3NzLXBsYXRmb3JtIGRvY3MuDQoNCkRhdmUg
-DQoNCg==
+On Fri, Dec 16, 2022 at 11:05:19AM +0100, Magnus Karlsson wrote:
+> To summarize, we are expecting this ordering:
+> 
+> CPU 0 __xsk_rcv_zc()
+> CPU 0 __xsk_map_flush()
+> CPU 2 __xsk_rcv_zc()
+> CPU 2 __xsk_map_flush()
+> 
+> But we are seeing this order:
+> 
+> CPU 0 __xsk_rcv_zc()
+> CPU 2 __xsk_rcv_zc()
+> CPU 0 __xsk_map_flush()
+> CPU 2 __xsk_map_flush()
+ 
+Yes exactly, and I think I've proved that this really is the order,
+and the race is occurring.  See my cookie/poisoning below.
+
+> Here is the veth NAPI poll loop:
+> 
+> static int veth_poll(struct napi_struct *napi, int budget)
+> {
+>     struct veth_rq *rq =
+>     container_of(napi, struct veth_rq, xdp_napi);
+>     struct veth_stats stats = {};
+>     struct veth_xdp_tx_bq bq;
+>     int done;
+> 
+>     bq.count = 0;
+> 
+>     xdp_set_return_frame_no_direct();
+>     done = veth_xdp_rcv(rq, budget, &bq, &stats);
+> 
+>     if (done < budget && napi_complete_done(napi, done)) {
+>         /* Write rx_notify_masked before reading ptr_ring */
+>        smp_store_mb(rq->rx_notify_masked, false);
+>        if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
+>            if (napi_schedule_prep(&rq->xdp_napi)) {
+>                WRITE_ONCE(rq->rx_notify_masked, true);
+>                __napi_schedule(&rq->xdp_napi);
+>             }
+>         }
+>     }
+> 
+>     if (stats.xdp_tx > 0)
+>         veth_xdp_flush(rq, &bq);
+>     if (stats.xdp_redirect > 0)
+>         xdp_do_flush();
+>     xdp_clear_return_frame_no_direct();
+> 
+>     return done;
+> }
+> 
+> Something I have never seen before is that there is
+> napi_complete_done() and a __napi_schedule() before xdp_do_flush().
+> Let us check if this has something to do with it. So two suggestions
+> to be executed separately:
+> 
+> * Put a probe at the __napi_schedule() above and check if it gets
+> triggered before this problem
+> * Move the "if (stats.xdp_redirect > 0) xdp_do_flush();" to just
+> before "if (done < budget && napi_complete_done(napi, done)) {"
+> 
+> This might provide us some hints on what is going on.
+
+Excellent observation, I haven't really looked at what
+napi_complete_done() does yet.  I did notice it could call
+__napi_schedule() and that seemed like it might be fine.  I'll also
+note that veth_xdp_flush() can also ultimately call __napi_schedule().
+I'll see what I can do to explore these ideas.
+ 
+> > I've additionally updated my application to put a bad "cookie"
+> > descriptor address back in the RX ring before updating the consumer
+> > pointer.  My hope is that if we then ever receive that cookie it
+> > proves the kernel raced and failed to update the correct address.
+
+I guess this is more like poisoning the old descriptors rather than a
+cookie.  This ran last night and one of my machines read back my
+0xdeadbeefdeadbeef poisoned cookie value:
+
+          iperf2-125483  [003] d.Z1. 792878.867088: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0xa7/0x250) addr=0x8d4900 len=0x42 xs=0xffff8bbc542a5000 fq=0xffff8bbc1c464e40
+          iperf2-125483  [003] d.Z1. 792878.867093: xsk_flush: (__xsk_map_flush+0x4e/0x180) xs=0xffff8bbc542a5000
+          iperf2-125491  [001] d.Z1. 792878.867219: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0xa7/0x250) addr=0xc79900 len=0x42 xs=0xffff8bbc542a5000 fq=0xffff8bbc1c464e40
+          iperf2-125491  [001] d.Z1. 792878.867229: xsk_flush: (__xsk_map_flush+0x4e/0x180) xs=0xffff8bbc542a5000
+          iperf2-125491  [001] d.Z1. 792878.867291: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0xa7/0x250) addr=0x18e1900 len=0x42 xs=0xffff8bbc542a5000 fq=0xffff8bbc1c464e40
+          iperf2-125483  [003] d.Z1. 792878.867441: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0xa7/0x250) addr=0xc0a900 len=0x42 xs=0xffff8bbc542a5000 fq=0xffff8bbc1c464e40
+          iperf2-125491  [001] d.Z1. 792878.867457: xsk_flush: (__xsk_map_flush+0x4e/0x180) xs=0xffff8bbc542a5000
+ flowtrackd-zjTA-201813  [001] ..... 792878.867496: tracing_mark_write: ingress q:2 0x8d4900 FILL -> RX
+ flowtrackd-zjTA-201813  [001] ..... 792878.867503: tracing_mark_write: ingress q:2 0xc79900 FILL -> RX
+ flowtrackd-zjTA-201813  [001] ..... 792878.867506: tracing_mark_write: ingress q:2 0x18e1900 FILL -> RX
+ flowtrackd-zjTA-201813  [001] ..... 792878.867524: tracing_mark_write: read invalid descriptor cookie: 0xdeadbeefdeadbeef
+
+This shows what I've seen before where the xsk_flush() of CPU 1 runs
+after (during?) __xsk_rcv_zc() of CPU 3.  In this trace we never see
+the xsk_flush() from CPU 3 but I stop tracing when the bug occurs so
+it probably just hasn't happened yet.
+
+So at least to me this does confirm there is definitely a race here
+where we can flush an updated producer pointer before the descriptor
+address has been filled in.
+
+--
+Shawn
