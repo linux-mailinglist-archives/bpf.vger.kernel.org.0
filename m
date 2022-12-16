@@ -2,137 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBC864F16D
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 20:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E23E64F21B
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 21:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbiLPTJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 14:09:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56508 "EHLO
+        id S230025AbiLPUFw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 15:05:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbiLPTJr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 14:09:47 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76DD6E9C2
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 11:09:46 -0800 (PST)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BGJ95Xl021611;
-        Fri, 16 Dec 2022 11:09:44 -0800
+        with ESMTP id S231405AbiLPUFu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 15:05:50 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA5CA452
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 12:05:49 -0800 (PST)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BGJxCkr024532;
+        Fri, 16 Dec 2022 12:05:47 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
+ subject : to : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=ez03DLSA/KR8C3ZUB9krXa4VgilzkjmzFxQDmaEvT24=;
- b=C7W3PniUb6rjXjMV4nvi6ZVS/ZCQiZ73dDlm8IjIAcBKV+p63wt/e7UGvUx6Tj44PENn
- p4SGC/VOxSvQn0V36Rc0j6azebLUOy4SM2Awda6JB/fxCRSJZ+y7NN+l/ECL6U+3URge
- bbiFovqlovo3TASZUL5BO3XimgWHCtItatrkpafoIi2uJe6cmzi/gGzedfUTiHycMBL5
- fa77JPaSeMtCV+A8vIZN3Ld+G4qPp7pPGjwH6syit24EC6ju/qReHGlTIv16kZMBwf+G
- xJoCc9dl4GUGFTQsLD9WbbR9otnKUJZqeGuwf7la7rX0FjbiykSqwHNwa+A4HJ5TKClQ gA== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3mg3hn227c-1
+ bh=WW+yz+xK7ZK++KW7GLEnQv3zPkDcFmoQ7XlygHPboQE=;
+ b=T/kHcqUb7/u+Ou8A4Z4QJcQKOpI3fe+6abQPJ+uKPD3gMlxnKY1lxCN6vkVO5LDaAQlE
+ 2rktSRZANGvHSSFOvKnJN6DK8e3atM95rGTIXVV6WuCpEO9Xy/s0+oBciAJ3SkCwNvXR
+ 6T8yr8c54Qn8ijN/4qa1n0ZxdirrTFUVMjtbWhzj/DmGzrietJD0R5zglBVrBZnbusIi
+ 9v/9hkT6BCssisZ53hk7CpcegkPUeFfEEVS7SsFqqzklVLyMpe4M6XjOxBiU2DlAPOmB
+ Z+mmPau934FK2ahjciZF4t//KUN4AECGGWuurqOWDD2L+SHvE+JscPzlDVvMdtkcmU/t tw== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mgwvu0sjv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Dec 2022 11:09:43 -0800
+        Fri, 16 Dec 2022 12:05:47 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KEnYEkFQHAAH5BMn/Q51WTVjinm6Z4znitnktnCiab3RCm6csvsG0WdrNT97zc84ByuxJPUUpmHUelsqp+pUAhUlSjZbb8Z7viutGtSYdH8mxfHCHJigIuxkyL7I9ugwdJrtH6/j3RQa9rbVeMNt7pavu03SVypRy7ZSHR84cjku2JFl+Ard+Q73jbp8ikMaxIWIzmZVItcG9nXmjlOveGxsR3VfUcaEVgDV1IfW34CJFVKTNCHxx0KK7lekpKiQ/74nPk5UPV6H7Qjsy3u9aW9hHGUrX1Ez4posonEf+PqpyO45iAeOt8oEyFaci/nJfhC9sN6qL33BCHKBZdSfwg==
+ b=LESx0f3ydfdFjhfNC8BiTrZCdewSG15argLSng85jHc5ukeJ5d25g7TcSlAnVGUGInPKLAkPRTzsiEj0J7iGoExwmFb0wbLduNsmPXcXQKLtngpGKpODL/B/ktzGTnH2TgwQQOp33r3BgZBiVD/FgnX4T6cnMLJ2C/7iYaV+0WZkhvpEhLkcmVfE5tVu4j0jKc1KWOjdvcfG0cASHkgs7a0ZyQ0Cye2t69d6c0sG/SKxoRKGQBpPUnR1Kphcrlv6fVczhtQVkPWCf/BTTBQf9QZ19uRR+M6c4CKzHxz7v5F5YMKUBj9BrDXfIvijuvXYSHrUq/e33sXRR9CwQ1glCA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ez03DLSA/KR8C3ZUB9krXa4VgilzkjmzFxQDmaEvT24=;
- b=O1Xt1Xs1EgCtIjsOhJ/Z9vusX0ue7SjE3dK9pgw92Z6VRABYL00SVwjrz98T2I5M5Wyhpd2IRcVafG4VHOHdNls3K2WMMHSi+O80YpvhIJH1DMhtpm91zxCS5lJqMFOCY7I56Ew9H6jVu4/3XBLouSnQDDKNMKUAHzHjrDkN0VPQS6eLx8OIIQ6zjgL3O6BSRvsfMfd0v+hPfDu5nDilaS5kr2F/HTIZJaPqRu9Hnkta7DLp6VLBpf20DM2H9Q00lm0xU0VtcldSm/genroO6vhHOXZ94mxBWHbdfnjXP47vWKLDcHaYO7YlRljXhpBTPf/1yjXzAiVibBnMNFulVg==
+ bh=WW+yz+xK7ZK++KW7GLEnQv3zPkDcFmoQ7XlygHPboQE=;
+ b=AHADoO0yhEQrb1rTs8Gckr5EDhs8Uz+lhJHchPsa/QE8yJ93pWG9nwxwjhW9pnLDJAOpbTD6BvUFCg+AsLGDgvBnmBmYuwxWPHcx/stYtCMW58G83R+cZ7sSKzcYyIyGmwCxzDgo6hviOapdHMAtGKWvxgLugHqFZdLsGgZVwHgjokKmapMhKrbTD499kbd78AQPhGcEsnT4EnNMRdKOo2g4BgZsUHcQAb1G0z0ehhPdg6qpLLK7yeanfcv+b8uH1LnUptlJrZveLckZjmrldGC6F55jpZQgozhXabcfqErgaOjI7GJK/di55/YJiYsO4LifpnxuoNnmcUjFh4muBw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BN6PR15MB1537.namprd15.prod.outlook.com (2603:10b6:404:c8::21) with
+ by SJ0PR15MB5824.namprd15.prod.outlook.com (2603:10b6:a03:4e7::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.12; Fri, 16 Dec
- 2022 19:09:40 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.11; Fri, 16 Dec
+ 2022 20:05:39 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5924.015; Fri, 16 Dec 2022
- 19:09:40 +0000
-Message-ID: <c29f26ac-3b99-4603-295f-ffd80d9223d1@meta.com>
-Date:   Fri, 16 Dec 2022 11:09:38 -0800
+ 20:05:39 +0000
+Message-ID: <aea7a3fa-3335-fc32-e87c-52972251579b@meta.com>
+Date:   Fri, 16 Dec 2022 12:05:36 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.6.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: keep a reference to the mm, in case the
- task is dead.
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: create new processes
+ repeatedly in the background.
 Content-Language: en-US
 To:     Kui-Feng Lee <kuifeng@meta.com>, bpf@vger.kernel.org,
         ast@kernel.org, andrii@kernel.org, kernel-team@meta.com,
         song@kernel.org
-Cc:     Nathan Slingerland <slinger@meta.com>
 References: <20221216015912.991616-1-kuifeng@meta.com>
- <20221216015912.991616-2-kuifeng@meta.com>
+ <20221216015912.991616-3-kuifeng@meta.com>
 From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221216015912.991616-2-kuifeng@meta.com>
+In-Reply-To: <20221216015912.991616-3-kuifeng@meta.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0185.namprd05.prod.outlook.com
- (2603:10b6:a03:330::10) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR03CA0012.namprd03.prod.outlook.com
+ (2603:10b6:a03:33a::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BN6PR15MB1537:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9b4ff4be-0cc3-4fff-67ab-08dadf991535
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SJ0PR15MB5824:EE_
+X-MS-Office365-Filtering-Correlation-Id: 28cd1755-bd2a-4ff5-e8b0-08dadfa0e6fb
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P6SCzpXkJNwywqkt//T+pcQkqh3DXvxHjafPslwhgHvSiXjtAov6BYtuuAHml+yYmU1zp5cw61zioSJzgBa7+pwFqNC3Un3oEymlPu4kkEFjWdPX9L9ebooQInApaFwd5hyrrAi3PklVM3DvlNymB3veEKDXWaBipTHA1LQJ6GwKnAOcbU8f7oC3Imr85qw5sCMYVB9/g+x+LRMRXaPZLWE/uxCU4dADWzdMgMGT8pO23CUBDV6y4qssCxUGkclTQVaRfSYqfmNdB2/bZHrk6dk64B5HUbhxX4FU+3titQmOGxJRqg9B+E3qi7vy4F+Dwj1PPdI32OQObAjFAKVU2/8zv+hr2olS/Ftan0pANL6WIZc+aMIy5rKNJKJbD3VDBtLzj7qwK11db0ic83CTRkpkKIJ/KAxlCiWuojgjVghDYS/lwtQgvO2C83qAoK/sJRAdp3wYMiU/axDkw0DKIBYriHxqjbuYm4PAYiyxrU02Z4CKfAguKQp+aHJxKxv7wjDv5tZzJEWTL7M5/NJAmkKQI42rzd0a+aXpA9DOegywW8qn78gAWaI31J3AerMMIo7viCSylMNGRCttTsVWA8qYuFN1ymfb79rK17VEqcJvAnUrhCqvs3z7WHQ2CfX9nF4OrTy6NnPcTCtHJAfB07/A19bsNzoO7MGUrLwfm+YcDQh4g0QalN2+sMm6MIXAVpO+7eEZUntm6NZI8RMh8I/V12JKtL5/4Xn52V6bM/s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(396003)(376002)(346002)(366004)(39860400002)(451199015)(31686004)(2906002)(5660300002)(4744005)(8936002)(316002)(8676002)(41300700001)(66556008)(31696002)(66476007)(66946007)(36756003)(6486002)(4326008)(107886003)(6512007)(478600001)(53546011)(6506007)(186003)(2616005)(86362001)(38100700002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: P1UWP9k47VS9joMQmFyhQKAqFQm9bapW2piG1YSIWZulOpLzOIx2832dfaqZqRGMYlVrl8HSVcfj+tWcDd5QgMrMECWhgvK5GunTRy4ffiN++5vH6OK2QRXQwHyvFfCZrURnrlGwg9LamNMUBnYNGFfcGQchhSELn+qdJyPib+HK5b2BFVBaxe/iY269XMPbZayGHEVAtXGVLfUmfyqk6xpy8CqgN1P39tvz4WLnPItA3o0dI2Fiqc7yRRJnbhLZw4GksKYtiCtyyHyqC22daiIwtu7jI3Sby0fh/8onuDr7Rr9QhBCkXl88ZHFl2vpmZDHLXpMdX+wiY0CkG3TCl/T7TjZLvDizqgdy+sVnDvSNlYJrKhdWhAy5AFRT+m7i6cjJkQlqBZko+SDZDNH2iuPMioyXK+ODEqovObe4lxjeoTlqTddwMafroKScETsQxLtq/ByXGMP1ktmKdknn5Zgcqt/s41JPR1eewEDX4+lYPcnDxSN2ygypjIX6I+vOZRO9uHtiD7IUEm47WyxwsT53h3j4k1xZPcJ7tZDAXKgUAJafo4Wb4H2FwZXnudCVHT5iGKA29gxiMsSsXbAekeG6KDsyWZyeTKQdHmVw8vz8dGcjCz7/RiMZ3PbfgTaJPja5w3ifMEw/H7+KHNRYxozLkkRSsvihi8pkwPLtoi9VLzPcYaegiWXqComWVX1CkfuTkXcWl3AGqamwfrcCyfsddEh8tC59WTMyZncALuw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(39860400002)(346002)(376002)(136003)(396003)(451199015)(86362001)(83380400001)(31696002)(2616005)(38100700002)(41300700001)(5660300002)(6506007)(6486002)(6666004)(478600001)(66946007)(53546011)(6512007)(186003)(66476007)(8676002)(66556008)(316002)(8936002)(2906002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TzUzdUt1ZmxHeHVnemw1d0VPeHByQ3QwV3R1amcrNlVDSFFybGtnR21KbzZY?=
- =?utf-8?B?YjEwTkY1bjRZdy9GYjU3NGFuTlZDVFR6N2t4WEM0SEVNbFBSY1VzWndKRVE4?=
- =?utf-8?B?VGVLZkFMS0lWWGNSNGM5MTNNY3RvT004OHViTUhxWGdSMnVUYWV5ZmhnMEcx?=
- =?utf-8?B?VnZGRWsrN2VnaU9tbkUzU0EzMEg4U25LMXBuRk1BOXlCSUZPQWVpTzhnMEJG?=
- =?utf-8?B?Smg2bmlXb2IyQVpkalhXN2hDbUxxemtsNTBVWWF4ZnJwWUMyelprZE5jWlQr?=
- =?utf-8?B?c3ovSC96eUtkS1lXL2lncERDRTI2VjlmVGVaTlVIUi9DQk9yVUs5UTNvZkxk?=
- =?utf-8?B?VFM4UTBPSFVjWHpaUytIdzZ6K2VqT2lySGIzdWlqUnRYZmdkYjY4MkIwV0kv?=
- =?utf-8?B?Z09uaUxGMWp0MjM5anFrNmViR0FYaG00UnlBNXNmVmN3UTdPbVJEeEhXNXMz?=
- =?utf-8?B?a21JMk5kNURWajRocEdGZXNlNm1tNVFTMkMzVExsTFhWa3FwRDAycldXR1pK?=
- =?utf-8?B?TXJIMWhpQWRncndFWEEwcDlPZFNmQm94SHVoZFlMZFQxaHh4NXRqYWFLVTBo?=
- =?utf-8?B?eTJ6Ky9jcHFJSmZucVduVHZmaHJvNzhtTHVhWTkvYk9RT09jT1l4N2pjQXlS?=
- =?utf-8?B?eGFJVUdlUXlzQ1UyRXJMOStoWXd0eERWVlBMbWY5UEtaNldJT1RPTUZ1T2hY?=
- =?utf-8?B?YmVTdEY4N3NSVldyRlFOSlF5aUh4NHJZVlpVWTNZK0pKYXMrUzh1aHFVbjZM?=
- =?utf-8?B?ZkhHN3FKMVFxbmxNRlluS2NWcVVuQWVxTm5DZUNQekZ2YUE0NnFaemRrcVBK?=
- =?utf-8?B?NkwrYUlFSVRsVFRjK05EY3RpQkJCc2RGbWpkcCt2UEQ1Qnp3WnVYdjlyQ3Vj?=
- =?utf-8?B?NmNwY3Nla0k0cTBNdE9BemR4RUVaT0craWJIWTZlOVFKV2FhZ0N4WmlPNTdu?=
- =?utf-8?B?d2F2Nnhkb1JCNVRqaUxxbXh4MG50bnR1Si9UNU93amRBUEM3L3l4RHgrbkdQ?=
- =?utf-8?B?QkdNclJhSDBud2pIaWhYVkdyMDFlQjRaTlI0WG9vYkFTNWlhSjVlV3Z2dWZF?=
- =?utf-8?B?RmJBLzlwTHdKY1FtZlh5S1p5ZGRaM1pqQ1JNNTRiZUN3Ly9aUEYxZjhqN2p4?=
- =?utf-8?B?Z2JrNjFYRVROVzJZUSt4NWFkQkxhOHJUUXp6cDV2UzNvc2wvWE95NmgxYUE3?=
- =?utf-8?B?djVzazZoTE1idGlrRzVPeHB0UkRBSmkra3dHQnJaQjBMdEdrUUZNUk4xenNQ?=
- =?utf-8?B?RmVWZHg2NUc1VjlObjJSek1iWVNrblZrSUVWczRuc3RnRysvWTROU2krRFRs?=
- =?utf-8?B?K1JTRzdtVHRNaUl1czJYSXZEem9PVTFnTmlDdjdMOGZzNGtZcGNwdUdwckcx?=
- =?utf-8?B?MWEyU1QyeFl3ak4zZFh6SWYwTEtEUTNXY0JTRjRLMXBKUEhSOVI0ZEY3OXQ2?=
- =?utf-8?B?M3M0em83aGp2UFozOVZZcTBvSSttaUhjTW5jYXVsRHJiTGl5NlJma1RBSzBa?=
- =?utf-8?B?QkRSdU1CUzM2VThIVTRiVXRlZmdCTmZ1UFBIS1FvU2xIcnI4ZTNneHRTOE05?=
- =?utf-8?B?ZFJyVlM1bER6eEFweWhSdGpneG9kdFMrdEczQy8wZ1pGUzVzVWhtSncwSVFl?=
- =?utf-8?B?ekpnNkgxWUtYVVBEQmphT2hZQTFqcGM5UlZHN1ZZYzc2N1NrRHhDd2tEblIx?=
- =?utf-8?B?YXFlMjhyTjFhcWluVTR5ajhkNzU2bVFNbDRINmVBQUpTNGFPWURZNnR3aThn?=
- =?utf-8?B?VitYeGg1ZldDZVAvTXFoNFFBTWU1cEl2Qks0bTcvQmM0bmxBUGdwRDErRk0z?=
- =?utf-8?B?ZkhOQXBVTG4zNEJrOG8vK2FYaFc1MnVRTmE1aENzc0E5WWxSYnBueDIrTlVP?=
- =?utf-8?B?N2VqbU5PZ1pEa2dtUVR6c3F3eXdoR05WY1BUMHpXRnFvYWwwcHR2Q25TMmhz?=
- =?utf-8?B?RWpaT0JaMENQNldJejRPcEkrRmV1clhuN012eDRkQWxiSUhjYTJIUDUrWXVs?=
- =?utf-8?B?bHpMaFFaNU0rOVlMSFIwOHVrdWVyNUk4WUdZVWRkTHJoVEU5cjZ2SVdwN3RO?=
- =?utf-8?B?ek52UzVLZFh6a3FYWFAwbk1aY2ZvdDBnOUJZYXd1NFBoajRnYkNleU4ySllX?=
- =?utf-8?B?enEwQVVIRE8zTFkyOVo0QjROcmRBamtOcmdVMUhadUxqczdOTDZ3eDZma2FR?=
- =?utf-8?B?bFE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y0hhaUV3N0djcGNqUkRjSFJEWFhhWW5HRGkyZ0VvM1ZKdUF0enFvOG0vWjdl?=
+ =?utf-8?B?dnRldk8vZEJoNFRnNGpPWHRhNVN6aHlRaU1zSjIrOGlrSUprTmxJMCs2S1RU?=
+ =?utf-8?B?Qy9mR2FoOEpLSzI5dnNpby9KYit1b1NrQ0NBa25TaElJUmZXbnNaOGE0REF0?=
+ =?utf-8?B?ZHFoOWVmUFR2TkZxT25LOTBtdy9JbmhENm5ycnVnUWNHSXU3cExkZE9YWG1Z?=
+ =?utf-8?B?TGVyYVZKVW1odXpLU29JcnVObUJzZG1DTkQ5NDB5bWZ4aVdCVXpwRU9LNXd1?=
+ =?utf-8?B?ZGZCbVZMcFp4ZzJJbFk4clh2d2RLMzJiaUo1VTBHa3FvUFIyVnVmbVhRcDhH?=
+ =?utf-8?B?MnJpWHJoZjdMT0ZNT2xWNE83YzFCYXpZMEpNZExydkNBSnpZSTJNSlo5MlFP?=
+ =?utf-8?B?V0VoVlBoTmxrWUdEUFYydTIyamtlU1dFVFB3Y0wzM1JGd2M5ZFcxZHk5WW5N?=
+ =?utf-8?B?Lzk2dzQ4WG9RN2Q5MEpsQkxaM0VJRDdjQm15RWwxV1cvOUpQMGNoWFNsK1A0?=
+ =?utf-8?B?aWIrWFBYSlkyU1BlTmFtK2hwTGlvYi9TUmRTeEUxdi9GRGc5aGw2M2MxMmZE?=
+ =?utf-8?B?YkdJcENLdWM0bzRYUmZkcFRHMmo5TGpjYXIwZzZVZUZEUVhsNUsvTkZBN2NS?=
+ =?utf-8?B?MDQwZGhLWWlkMG83SVk2U2ZJdlIxVGZCVC8wUkVocU1XbTBPOHNoU29YZTUw?=
+ =?utf-8?B?U2F0SFNjUElUOGp4U3VqZUxqb3BraFkvTitUR0RRcC9KcHNyRGNPeFdOa0NJ?=
+ =?utf-8?B?dzFQTUx4UGFQbGswZkF5NXk3WTVsUXo2eE9CdnVEdlg4dkhZb00zejQwL0RT?=
+ =?utf-8?B?bjIvSFlBZHAveXV4TG9YbnlLMmhjcGQ5RTV2WVZ5bzhvNkErRXBCWUVhODE4?=
+ =?utf-8?B?Ymd6dHQ0Ni9VVkgxamYyak52S3EzU0FXUzZueDNtL2NIbGVJOTdoZU92VE1m?=
+ =?utf-8?B?U1dXWkZ0c3c4cmZmT3BwTE5EaXhKRVFwaDd0NjlOSDhWYUFSR0dCM2w5aGlx?=
+ =?utf-8?B?RUZEQVIyckhxSXpKQkVlQ29XaDhYdk5ZWUNXSVhHVkMxbU1QL2ZFZDUrKzZ2?=
+ =?utf-8?B?SUVwMzBoWktTVW1TdFYyaWROMWRuc0kvZU9IZG41Q1puT1kwSGFZWXUzOE1C?=
+ =?utf-8?B?YkYwWmdxcDNFc2pwZlJjdnViNW9MN2tEUWpxdDRZR254VnQ0TkhsdnpCeWhz?=
+ =?utf-8?B?SGxjNDVramVwc2NCUk5KRmFUdWluU0UxZWFiYWNkelZ2eUg1cTlZV1M5TUY2?=
+ =?utf-8?B?eWxQSHZRajJ6UVczTzkxVXpHb3ZwaStBcVdQOFBhZmx6WVovczZMbURaU2xi?=
+ =?utf-8?B?Z1RyRjMxTGVBRENIZG9mTHZJald5Y0MrbUo2TXNFQ0Jab1NCQnZqa3dNME9y?=
+ =?utf-8?B?VjFNL0JCRjhrYUZNY2xlMk1JVC9zbUc3bTJNd3NFZEFlOFZXckpJSWpHS0Ix?=
+ =?utf-8?B?MW1JMVBIcy9tMG5wMENpdWpCbzMrYWM1ellhcmRiZmtTa2VDWk56eit5amlZ?=
+ =?utf-8?B?SHVZOENSdkp1Z0pKSk90bUk5VGcxSnlQNzJOWkZOM3BuZnhuTzd5L3ByZjNy?=
+ =?utf-8?B?RzQ1bHh2eWRHTHNIc3g1amVUMzZWSXZkSUxtQVlyLzZNN1UyQUppbVR0SElI?=
+ =?utf-8?B?aURpNG1LQUx6MFdYTk4vOXJHdXVJN29mYmJtUDJEdGVtdFN4U2FjWGc5ZkNI?=
+ =?utf-8?B?UE9naHFGaXJybHVFMSt6NWVsVjFtQndvWDZqUzlPYW9WV3UxNXphNkplQzVw?=
+ =?utf-8?B?ZkFsYmZPY0MvcE8wNzl5b0FKYjdidXAvS1pGNlVKRXJvd0dSYmtIZWEyL2NE?=
+ =?utf-8?B?c0tXUi9wVDdtWDhwSDZNNkkzNm1yYU9odzdJU2hmcHgraTFJNTlzdFNZUGt6?=
+ =?utf-8?B?OS9DSzJtSmFqa0NQVG50ZmMwOGN6N1pyZUJkN0haU01QQ21TZXdvUkVFaTVu?=
+ =?utf-8?B?NWFUUTYrdVdJcXBEWU1FZXJyWGJYNGJxWHQycG5LY0x4bzV0YTk3OWpaY2tw?=
+ =?utf-8?B?TlJVWXhlUXJiVlo4bHBpSmhyNE4zeVdsaGxmVTREb1pLVWZiQnA1YnROWVBX?=
+ =?utf-8?B?UzBYUHZCZk9ETUI4NVJTcGJEM0labkl2S2hhM01ZRW1EK3cxSFJrTEtxdkpv?=
+ =?utf-8?B?cG5hQ0VCeDBwb3cwZU5GTWNJSkN2VUR4ZHRuWEE1OWxPdEhNL0pJMno5UHZs?=
+ =?utf-8?B?ZXc9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b4ff4be-0cc3-4fff-67ab-08dadf991535
+X-MS-Exchange-CrossTenant-Network-Message-Id: 28cd1755-bd2a-4ff5-e8b0-08dadfa0e6fb
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2022 19:09:40.6564
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2022 20:05:39.1251
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Dt2i5kHZq4o6590hR7pVSYUaKpe9TocrNF9Boz+ZF6E/MfvrxmxiGBcJbzrAQ/FC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1537
-X-Proofpoint-GUID: OCGcWuctFPDCt6u8r8rK8_5y2FBUUftu
-X-Proofpoint-ORIG-GUID: OCGcWuctFPDCt6u8r8rK8_5y2FBUUftu
+X-MS-Exchange-CrossTenant-UserPrincipalName: CGhEP6dNRlL7Z4r7vKR+OYZ9nmPbTNuqhS556qTZuz84IEvnT4TTANjdUjfFjjgM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB5824
+X-Proofpoint-GUID: oBdS-hTkPgkhB4ytlzF_pLTM-H7SzakW
+X-Proofpoint-ORIG-GUID: oBdS-hTkPgkhB4ytlzF_pLTM-H7SzakW
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-16_12,2022-12-15_02,2022-06-22_01
+ definitions=2022-12-16_14,2022-12-15_02,2022-06-22_01
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -146,19 +145,138 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 12/15/22 5:59 PM, Kui-Feng Lee wrote:
-> Fix the system crash that happens when a task iterator travel through
-> vma of tasks.
+> According to a report, the system may crash when a task iterator
+
+There is no context about this 'a report'. You can just remove it
+and say:
+   When a task iterator traverses vma(s), it is possible task->mm
+   might become invalid in the middle of traversal and this may
+   cause kernel misbehave (e.g., crash).
+
+> travels vma(s).  The investigation shows it takes place if the
+> visiting task dies during the visit. >
+> This test case creates iterators repeatedly and forks short-lived
+> processes in the background to detect this bug.  The test will last
+> for 3 seconds to get the chance to trigger the issue.
+
+The subject is not precise. The test is not about
+"create new processes repeatedly in the background."
+It is about
+"Add a test for iter/task_vma with shortlived processes"
+
 > 
-> In task iterators, we used to access mm by following the pointer on
-> the task_struct; however, the death of a task will clear the pointer,
-> even though we still hold the task_struct.  That can cause an
-> unexpected crash for a null pointer when an iterator is visiting a
-> task that dies during the visit.  Keeping a reference of mm on the
-> iterator ensures we always have a valid pointer to mm.
-> 
-> Co-developed-by: Song Liu <song@kernel.org>
-> Signed-off-by: Song Liu <song@kernel.org>
 > Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
-> Reported-by: Nathan Slingerland <slinger@meta.com>
+
+Ack with a few nits.
 
 Acked-by: Yonghong Song <yhs@fb.com>
+
+> ---
+>   .../selftests/bpf/prog_tests/bpf_iter.c       | 79 +++++++++++++++++++
+>   1 file changed, 79 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> index 6f8ed61fc4b4..df13350d615a 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> @@ -1465,6 +1465,83 @@ static void test_task_vma_common(struct bpf_iter_attach_opts *opts)
+>   	bpf_iter_task_vma__destroy(skel);
+>   }
+>   
+> +static void test_task_vma_dead_task(void)
+> +{
+> +	int err, iter_fd = -1;
+> +	struct bpf_iter_task_vma *skel;
+> +	int wstatus, child_pid = -1;
+> +	time_t start_tm, cur_tm;
+> +	int wait_sec = 3;
+
+Since it is new code, maybe reverse Christmas tree coding style.
+
+> +
+> +	skel = bpf_iter_task_vma__open();
+> +	if (!ASSERT_OK_PTR(skel, "bpf_iter_task_vma__open"))
+> +		return;
+> +
+> +	skel->bss->pid = getpid();
+> +
+> +	err = bpf_iter_task_vma__load(skel);
+> +	if (!ASSERT_OK(err, "bpf_iter_task_vma__load"))
+> +		goto out;
+> +
+> +	skel->links.proc_maps = bpf_program__attach_iter(
+> +		skel->progs.proc_maps, NULL);
+> +
+> +	if (!ASSERT_OK_PTR(skel->links.proc_maps, "bpf_program__attach_iter")) {
+> +		skel->links.proc_maps = NULL;
+> +		goto out;
+> +	}
+> +
+> +	start_tm = time(NULL);
+> +	if (start_tm < 0)
+> +		goto out;
+
+ From the man page, start_tm should not fail. Note that you didn't put
+an ASSERT* either. So I think you can remove it. The same for a few 
+instances below.
+
+> +	cur_tm = start_tm;
+> +
+> +	child_pid = fork();
+> +	if (child_pid == 0) {
+> +		/* Fork short-lived processes in the background. */
+> +		while (cur_tm < start_tm + wait_sec) {
+> +			system("echo > /dev/null");
+> +			cur_tm = time(NULL);
+> +			if (cur_tm < 0)
+> +				exit(1);
+> +		}
+> +		exit(0);
+> +	}
+> +
+> +	if (!ASSERT_GE(child_pid, 0, "fork_child"))
+> +		goto out;
+> +
+> +	while (cur_tm < start_tm + wait_sec) {
+> +		iter_fd = bpf_iter_create(bpf_link__fd(skel->links.proc_maps));
+> +		if (!ASSERT_GE(iter_fd, 0, "create_iter"))
+> +			goto out;
+> +
+> +		/* Drain all data from iter_fd. */
+> +		while (cur_tm < start_tm + wait_sec) {
+> +			err = read_fd_into_buffer(iter_fd, task_vma_output, CMP_BUFFER_SIZE);
+> +			if (!ASSERT_GE(err, 0, "read_iter_fd"))
+> +				goto out;
+> +
+> +			cur_tm = time(NULL);
+> +			if (cur_tm < 0)
+> +				goto out;
+> +
+> +			if (err == 0)
+> +				break;
+> +		}
+> +
+> +		close(iter_fd);
+> +		iter_fd = -1;
+> +	}
+> +
+> +	check_bpf_link_info(skel->progs.proc_maps);
+> +
+> +out:
+> +	waitpid(child_pid, &wstatus, 0);
+> +	close(iter_fd);
+> +	bpf_iter_task_vma__destroy(skel);
+> +}
+> +
+>   void test_bpf_sockmap_map_iter_fd(void)
+>   {
+>   	struct bpf_iter_sockmap *skel;
+> @@ -1586,6 +1663,8 @@ void test_bpf_iter(void)
+>   		test_task_file();
+>   	if (test__start_subtest("task_vma"))
+>   		test_task_vma();
+> +	if (test__start_subtest("task_vma_dead_task"))
+> +		test_task_vma_dead_task();
+>   	if (test__start_subtest("task_btf"))
+>   		test_task_btf();
+>   	if (test__start_subtest("tcp4"))
