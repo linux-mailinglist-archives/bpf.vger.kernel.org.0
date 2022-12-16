@@ -2,144 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D85964E69E
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 05:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BADF164E6BE
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 05:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbiLPEL0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Dec 2022 23:11:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
+        id S229620AbiLPEkO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Dec 2022 23:40:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbiLPELY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Dec 2022 23:11:24 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A16B56D41
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 20:11:23 -0800 (PST)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BG2ShvU025623;
-        Thu, 15 Dec 2022 20:10:58 -0800
+        with ESMTP id S229488AbiLPEkM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Dec 2022 23:40:12 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E915830F51
+        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 20:40:10 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BG4Zpvq012052;
+        Thu, 15 Dec 2022 20:39:55 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=AQdTi1f1W4b2zpeI8HtqFwKnboCfAhhaG2Yp7ZbD4KQ=;
- b=MmP3uPKbp+ezI6nleM3scwpvM1UGS6W3PB7sXOStx1Q0vsHSwVYq/V1X6dqRYrxS3sTT
- hfRiufLjHOglIO5Pund7m/jsVLjZ7hSUZf7kd+HWYHNzjENnM75QhE5nhhLjMuMojY/D
- Nin7enWjETGeUDTERWJUO9icsPT5oxuOlgccAsod7h8Xn4LN6jHy5FJeQZySmCkQRF8X
- eksEXNzlIBonk/TaJhIdTBe9ZL71QQvOIBel7AzYG1w9syUtvTCgYx7KndPfJz4vfH9y
- LFtGpEi77JKQ7/HZkql3iWnPBbwUX0ACexqpdrEXIS3vOOwjJmrda5pNzgNpdOz3YWcI GQ== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3mg3hmwum8-1
+ bh=N1WrU9IEawp7Lbep0gqZ85oq6RTOfZ8n/1Sr9QROrOI=;
+ b=gHgLRyi2VcmTj4QVliPP32PTT9eQOv7d0JXr9IMfEWLa5YQafEs9dCtuGIr/x4pRXpON
+ 3779f7LTruKPvx9L/QFFgmBAuBma7caRsBfUnAdEs3eTIl1dCtmawD2eijLIWnx7ul4M
+ Bss96fWzWSMo2sYRdfWuaEb4XLgke51k6XBiU5L+1gxal+6iU7zw7jSC7TYn3PObIuSs
+ WQVjTabKGkY/+kMOoSkraeEvX/jDmCkGI+q305iyaX7MUOZYuCJ46w5Lt9i9nqJGK156
+ OfxbW2pQxZP2xYeWxy1TBoTXPRC1LqChz5qyymYl0/vUibnsI6axulO2RTGJQ6D2tw5Z uA== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mfrs91aeu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Dec 2022 20:10:58 -0800
+        Thu, 15 Dec 2022 20:39:55 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WJbAO63owgAFXLqMmJ562WorQcjHnOjde5he9d4liA6xJpVBBBy9pm1qQduHbaaQ2tnU61dAsA1DCFdghDJhaBoz1QIQJgaxVI8mlcgpQ+aL8VT+zxkZJgBe2Jhmsnlj3cFC3SSwjyiJ8SYNRkcN1bd/KbC6i9ATIUV2yS0F1bkzxg9HkRmu8ItxBg9TcJJYKLTrUXAZBhizK324iYPEbSvVUj/eGtoc9c682DfM6ezd236gEiEDncbw06QinPRMhY6oYvaGlEGc1Tv7ijGE2a6uA87GD0wtomI54I2rYVo+g+WMHgPKJc2zEHSogliTR6ICpSMBw5XLmNQkfSwo1w==
+ b=mOVV2mXr0KGxueONpDa1JEm0BrZXFzA7nrAkaD6R9tG7S6IRUmJYLFWj3ujs/asejJcaxCIlOA1P/PJrOTA6J9Cv0P12UKeJJmnBudyQMBtOCrSMsGpAWI1Hge1LipKRX4H2Ne6XnMxM4t9QuRsBVA1c9Z9yZXAweaAIHJDBwjK04rmt+f3QqtCnitlmoElSfQcs6tZiALBF0oLvxc8s6CWVZc6ftY4meG5jB7hR6fH7xI65c81wuMYdGqN8W/Cy6gqhJzGuKyRntIGfQ0/TkPZbfAj9Oa0gmlulZpnxxteVsu5n589afiQsX0rsoeoxvLAc1kbaumDHMUHerUjrqw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AQdTi1f1W4b2zpeI8HtqFwKnboCfAhhaG2Yp7ZbD4KQ=;
- b=IgzQRvfgSGPp9fN8+0fQPtsKN9ll/8yLKK2fW/3o2q0J/vf97iETbOuNeznhroTt14JoeHWLGZO+A9I0B/OcwEb9AND9RgcEhM3Z40BlGtOH1LhNBPBsX1bQYk6W32aymktv2sZp2UMMR+PtRNF5DumbVVFEQZjY1qkbWmEgcKhG2LBOOYcKKcil454YUfA5xDZzGkJZ+I2oVXcCRWIYMMa7L/tGqwcuJHgqWD+5O8i6GA2drzzwhwL2CgXlM4ZVna3dLnVGE4IGnY4wvLzuglpFKQXDKW1merOKNBB3DQWbpUW6L8hE62KTWwi1GP3Kf+343HPGtCdfGPl0JNel0A==
+ bh=N1WrU9IEawp7Lbep0gqZ85oq6RTOfZ8n/1Sr9QROrOI=;
+ b=BMeAwZ8o2DgEZqDJ0EI2RAHc6XN1wu3sr6MEUJMSdQPBZ++meC0CeE3l0sL3nkKSeSSVLoKrsoLMVrUpQHpKDkNIGdYGGv2sdSes0t5f4zjJlYWdjx1bmnxJjJagZ8Z7pGBmRlNSxKVaIOau7+s0lDl9vIJpBEgN+H7BLBBVylv43UOt/Bur+Xbg5Ds7j+/OCPojfWKZklCzdE7jq1V5734U+mY0QzQcZ+Umnz/Sj6rJ/VNx3Qod5s28ESEj1hnSrsOcUyZDD0nYrB5CgwKWJVF8Rc25P4cE9I1U5hv8NBG3kDNUMR3VRZ6fCUKW2Q8uyO+lGW4UJUsIGK5z03oH+g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MWHPR15MB1949.namprd15.prod.outlook.com (2603:10b6:320:2e::15) with
+Received: from SA1PR15MB4433.namprd15.prod.outlook.com (2603:10b6:806:194::20)
+ by MN2PR15MB3181.namprd15.prod.outlook.com (2603:10b6:208:fe::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.11; Fri, 16 Dec
- 2022 04:10:55 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5924.011; Fri, 16 Dec 2022
- 04:10:55 +0000
-Message-ID: <73b9ef21-de67-e421-378a-1814ffbc263f@meta.com>
-Date:   Thu, 15 Dec 2022 20:10:52 -0800
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.18; Fri, 16 Dec
+ 2022 04:39:52 +0000
+Received: from SA1PR15MB4433.namprd15.prod.outlook.com
+ ([fe80::7124:3442:50ed:e480]) by SA1PR15MB4433.namprd15.prod.outlook.com
+ ([fe80::7124:3442:50ed:e480%7]) with mapi id 15.20.5924.012; Fri, 16 Dec 2022
+ 04:39:52 +0000
+Message-ID: <6bf3ee92-55a1-57f9-6df5-4f8fa64f884b@meta.com>
+Date:   Thu, 15 Dec 2022 23:39:38 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.0
-Subject: Re: [bpf-next 2/2] selftests/bpf: add test cases for htab map
-Content-Language: en-US
-To:     xiangxia.m.yue@gmail.com, bpf@vger.kernel.org
+ Gecko/20100101 Thunderbird/102.5.1
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add verifier test exercising
+ jit PROBE_MEM logic
+To:     Yonghong Song <yhs@meta.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-References: <20221214103857.69082-1-xiangxia.m.yue@gmail.com>
- <20221214103857.69082-2-xiangxia.m.yue@gmail.com>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221214103857.69082-2-xiangxia.m.yue@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: BYAPR06CA0049.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::26) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        Kernel Team <kernel-team@fb.com>
+References: <20221213182726.325137-1-davemarchevsky@fb.com>
+ <20221213182726.325137-2-davemarchevsky@fb.com>
+ <e2daa940-ec64-6b72-c8e9-b3157162af5b@meta.com>
+Content-Language: en-US
+From:   Dave Marchevsky <davemarchevsky@meta.com>
+In-Reply-To: <e2daa940-ec64-6b72-c8e9-b3157162af5b@meta.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BLAPR03CA0152.namprd03.prod.outlook.com
+ (2603:10b6:208:32f::16) To SA1PR15MB4433.namprd15.prod.outlook.com
+ (2603:10b6:806:194::20)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MWHPR15MB1949:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0fe4cd01-9484-47e1-5990-08dadf1b86fe
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4433:EE_|MN2PR15MB3181:EE_
+X-MS-Office365-Filtering-Correlation-Id: 309ce42e-9339-4b59-3025-08dadf1f9258
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iFNn8RbrsE37EdJmRzlZ1X6QdpeV24ucPopLVXXIqcBxri3NzA2r/VTeFB8tspg8C9c/Dkg4ba67qrT14HClTDHjrB8ASWqLvM89EDV0Xr/rAfyvuBG1dZ4PJvmW/guw5gHHfzDnkYlmNp6EJJiKk0xBOkNuYcBPWvQt34i3kiAW0M1thzle8y1dGlrh9Tx9IF/qJTzE2KriYUHyHMyrgE9RV8PsBErIVY+Y1PMhLNi3Zc1cSiPSjE7NMkhzuGgj0n6mX0tXt3uhi9ahvduHXHV9rWJxjXI9Zuj9kM5yNTJal9kg5Go3N6DvpjVhHQpYBk9UtgwogA0+CWGDFrl8wtw2hsCOnIwnW7eQdVLoUHc/Z7wdv4yVu5QxIkp4gf8Pi3yAuW89jm8F7686ajWzjOq48qFmAceI1NMex8t37/3YazddTP2HO0wqkvik0MSgpX6qGCfFBxjIXDRvpUCNbDtK2WJFc6ikUjzyAOgePsg8GsvX/IQDL+3xHVABB3YD/eJRa6csFSHgvXo4R+kPxSTHqYB7NAIoXbTznv7r4esrs5sQ3eWXP0AyEYZCj8LeKGNVL3ROMRy073NUKUej3cJU+gP3KJd6GW/5lONX2gmk+EbTYq96KIWFvUZSkyodhiHKVHhosRjNcT7M3KyX+kMegm8ZlfkRrRFVXdoEzaG5giLA8ab8zWIZGUo/kz4gDSbGQBD7imOZZjBxyMiHnWZ5FunvKNtHJc05MBDDLnGCrU8S8QR5PwTcp0kSsWFzg/Qi3Tx0CX99C53FtIgixQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(396003)(346002)(136003)(39860400002)(366004)(451199015)(31686004)(2906002)(7416002)(186003)(54906003)(316002)(36756003)(5660300002)(4326008)(8676002)(8936002)(66476007)(41300700001)(66946007)(66556008)(6666004)(478600001)(2616005)(31696002)(966005)(6512007)(86362001)(6506007)(6486002)(53546011)(38100700002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: Aih9RfnuczE3mwuuxMKkaxAKgZmVzOWhxn/48ZEnIKevVfRFddHTNHp59PrQy2tRo+lhwvzY8WeKzSf+jOFZ547UsqTVIWsEvSipR6MPUfIFVsYu3Rwe3W8c06JWcJBv/3Mak8mPkqPUmi9AnQrQw5ggwQTyxyVNzJ8YmrLo8PIw0NCU+OpEKLoYLzVrbObk410x8BRY41qK4oijEJzB1nChQJafu3GhQTc/0FS101rNm60FAb/D7J65WCqCvbPfTJnrLBZtDfUPbB0B3wLcCoCJ1pxAPKbrqOaoAUPpmxVdDb3mWbglLmEESWZ7M9VeHyE7fQI7TGh4ldZSg/jY95/RmJ0jxKpkVcQPXS4xV0VqoQT6ryjMKZF7Ox7XMFU/beTsPVufL1U3w1HUEiOx5C866nMusO8S//UsaqPmyEtpKcF2EbLMu6ZQ7mXVDsyAZgWLbvsqP1Js24O971GYyh8tJk+NGgRa7AxjI1vaxrXWi9GDj2gGItGdD3mitxiEnFy2GGQDhj/Ng+E25fwrlyrujvAb3PROPxXVufSYGj6CgLNgWWs21k9cofI9sJVSVmAD7uIBeQnJ97nYuoJIBooeLYZpeGsF9QqQqE7yFdzfRz1RDt1Mtsh4vmmjdt7Kj8ltm54aTF0Tm8LJ0JXaD5sRm3GIm8ZjEDE7S3w2LXhinUHURbSrDcpD9rn3QqAHQwCJ0uM1SzyL3+zerVy6bqyhCgYe2Au9M3ypitGbYCk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB4433.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(396003)(346002)(39860400002)(136003)(366004)(451199015)(5660300002)(83380400001)(8936002)(2906002)(186003)(86362001)(31696002)(41300700001)(38100700002)(36756003)(53546011)(6486002)(31686004)(478600001)(6512007)(6506007)(4326008)(2616005)(66476007)(66556008)(6666004)(110136005)(316002)(54906003)(8676002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TWJBTGtPVktSNFFFM29vNEZCNHYxNGNGS01CVWVLU004cktNWmd2RjNUalVa?=
- =?utf-8?B?MjY0cFVJS0h3ekpIRE1iVnB1N1M2alpQbWlpTWV2WDVqc0tmOHZHQk81YW4w?=
- =?utf-8?B?S2g0cEsrUWlQNXFSWFVoNnNqUVRETSsyNjd5WkVQdDJIYVh2Y2VBRUpZcUIr?=
- =?utf-8?B?ZEVpbEkzeWxGZVlMUzA1WVpwVHlmdzVtQkQ1S2M1NTB6Q052aGJ0NWNlWEF0?=
- =?utf-8?B?U1ZXUG51MnFCR2ZoTlp5T0FpcTAyb0FzNWwvbUhkVzRHZEN0cExLU21pdlBC?=
- =?utf-8?B?d0V4Y1o4US9yU3crK200RmVWQzhMQ3gwUm9QQW02RW9TckZMaTFtVEsrSEkr?=
- =?utf-8?B?WklzaWJnSFJDZy9sdC9EOFUvL3FoSE5YcjJockpacHVJUGF1MHBHajNZRWFj?=
- =?utf-8?B?MUZoT0RtaUVGS2huLzg2ckNsMG1wVG9yNTBSaHY3WnpSa1QzSFR2OGhwU3Jr?=
- =?utf-8?B?NXNuUWRaQVg2Y3NZMVZ6WkRxQy9sdzdmYlFFVVFwMW8rbjZSZHY1WXMyUHZr?=
- =?utf-8?B?bnY5YmV5aUxqWGpPekJBSHFDNWgzc21vZGRBSVlNZGoxbCtxZTZWZUJhUk5k?=
- =?utf-8?B?Y3U4WEpIQlE3MTFQTWtpcFUwbUtKSUZMOXJNNjVjS2ZwQzZPQktpbFMyMWZ1?=
- =?utf-8?B?WDZZcTM3OUJ5T3FYTmlhRm9yUmdqSVArelRLeGd4UFBBUVhQTzFYaHlCSDlh?=
- =?utf-8?B?anRMMnp4bU9VbnVGUXNzbzM0aVduakczMXY2eW9NSUxZcG9TWFF6VEdkT0Y3?=
- =?utf-8?B?MWpuSU5NT21WSEdibEFsa0FDRXZiWURGT1E4N2dycCt1dGNCblBKRkJqT3JI?=
- =?utf-8?B?NlJuVzIrYjNFdDFWdnltaWY2ZGpUNkwxdkd0M0RrZmlId2Z0MjVlTmJMMzdX?=
- =?utf-8?B?M29UZ3pNbXlieHpQdXhCWUh3RVo0dGVLSzU3UyszYmRzZU4wSkdRZFowZkhm?=
- =?utf-8?B?Yy9aMW1jMXkzODZyUzNUWC9oZTlGcE85ekNndSs5NUhZNFRKUlFyWmtXMVpJ?=
- =?utf-8?B?ZEs1bjJTMDBXR1ZuTmp4NEhlQWZicC9uUWRtT2U2d01hTWU0cHJYSEsvQ2F5?=
- =?utf-8?B?eDl5MVgxaEFQUTFUYmJ5REZBdFRvUHZGb1NlZm83STVBVStCTGRmTHF1MHdP?=
- =?utf-8?B?VDB1eGkxSmVwK0MzTm8rb2JJalRLU3RXQ2k1TTN4RzBrSE4vSU9tYkhIOFRn?=
- =?utf-8?B?SlE2WjU3U3VVMCsreG4vUFpMWFNFK0Y0d0gvdTdCMGxLbXNjVkpacDBEM0tn?=
- =?utf-8?B?eE44cS9HcWZOOVcydklSR3FQbVhXT2Q1cmw0c2pZbUcvYlFUZ1dvbHlKSVlM?=
- =?utf-8?B?MW1tQzFOSHRiclRsTzBEbXVtaEd6V0p3Vytub2VVNGtzcW5KMThYVmo1K3ly?=
- =?utf-8?B?c1hUMWIzNllQcldLNUk0WHRpZDZXSjJxYjdYcUJ6eDVWM1ZzK3Z3TzVKeHdC?=
- =?utf-8?B?aFhRMFZtcG1nVzlPMGtGbjJ6WnB0eTNHOWI5ZnQ3ejlSQURPUUFtc0tVK1pq?=
- =?utf-8?B?b1ptdXlobklvTXlxdE5TY0JvWVBDRjhpdWEvcU1vWlN3ai81QVhFR1liQVFW?=
- =?utf-8?B?VEE2Y0puQ3pPMGpSR3c4bjlyc241cFh4WUZDWHhuMUZ3VU9JVmhHeXhCTXRz?=
- =?utf-8?B?QmlGWThPMGRrOVhPMVlMNnNSTTRuV3BaUnp2M2RwY09UY0YvNENMZnJlWmlD?=
- =?utf-8?B?MVBuY1ZMbHFZVEFKSXRHaW9rQ3dyUGw4Y1BibU9yN3pSL3hxOFM4ODVhZWJM?=
- =?utf-8?B?SmVCaEFyU0pIeHgvbXhNTGduQ3VwVmtMY3R2Q3p3b3cvMUk3bEtueGpQdGRx?=
- =?utf-8?B?cFhQdnRCOE5VRG5rbDZFRHcvTWRTVHpYMmt3MFdyMitJdm5QeXFNa20xRndu?=
- =?utf-8?B?M09EblJzZTZJcFgzQXI3QjNyOHVrZ0hRdC9sanRwblJVekpqTlVVd1lqZ2Zw?=
- =?utf-8?B?TlEyUjZrNkhpdE5UVEZsM1J0M3lvbmx0RlZrQ3ZxOXFmUGJORS8wOU5lcEc0?=
- =?utf-8?B?YlVqaEx4QTNRdkxtaU5KamsvVDExcGo4eE0xN2w0dTA1MHhJTEthbzRHay9X?=
- =?utf-8?B?TUhrQ2xSL1B6Y2w5UFJjbnl3eEVWajFrK1MyazVGR1R6RjArdWIyVTlJaExI?=
- =?utf-8?B?cithODRpSjA1bER6NEhkcW1sSUlJRVZIclI1ZXh3aWF5cW55L3k2akJQRzRV?=
- =?utf-8?B?b0E9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V1liVWt3bHlWRTh1YVpZY09IN3hteEtBQisvK0VSUDVIR1N2byswelJITkUv?=
+ =?utf-8?B?WjIvUW9PaFdQZFdsUEVsVGJibVlRd3NLczF4Y2NncGlRU2RwMS9oZDEzNVkr?=
+ =?utf-8?B?TkQrZTk0NjFOd1NHSWtaQWNFTEx5R2Q4V09QREJ5WlZsMlBnTHVYMzg4aGRK?=
+ =?utf-8?B?WXNiOFBEZDcrdGxQWnprQk90aFN4WWg4Lzhyd1pLODdQVE9KUHQxTXRNMzNQ?=
+ =?utf-8?B?Ti8xTmhHYVRwZk5zVHlucFBKUHI2K3liRHg3VndoaCszdnpsZmpjYms2M3Fi?=
+ =?utf-8?B?ZStrNGQ1dElzLzhzNkVaZFVRSjlhSkdNUHhYRUk2QXJIcVUwUHBxSmVwRk4w?=
+ =?utf-8?B?MHdJdnU1d0ZoeitIU1UwbWlBWXU0QWtxNGtEZVluWGNmYTVTM3hLSVVReFNy?=
+ =?utf-8?B?ZkdjdExaYjlPcnZicGJyU3hsSldkMS9VQ2N2TjBkVjZkQ1F6cUxrMGlUWERH?=
+ =?utf-8?B?SHE0OGZRMnpRb0lhejI1QkZDTzdiNk1kK2Jyc0hrK1k5dDZVRWt2ZFI2TS9o?=
+ =?utf-8?B?MTJycjIyUmdvSWM1RWV5amV6UGRObHlRdGxUUUVIZERNLzBQcG0rWERBaGZS?=
+ =?utf-8?B?Q21GZDBWcjdSR2srVVRoVVdLdE5acGdXVWdhNVo0V0VFa1I4NmRjaUhvN0pz?=
+ =?utf-8?B?Sm1laDJsK0VWMThyTlZSdWJuMnJxWnZQZHN1Rm8vcXZqRnpLbzVPbWhuVlYz?=
+ =?utf-8?B?UEppbVJrZFFHNXpaVDJGTTE4VUR1NUJxWndBWlZSWXhOKzdTZ1FsdndTeWg1?=
+ =?utf-8?B?SW9rbTZLNGpUcmtlUkRrWVJLenpRYzRnZG43RWdBajNibjhteTZzTTYrY0tv?=
+ =?utf-8?B?NU5OZGZRV0d4V0tMTlJtUlROT3IzTHB3bndxejhmd1JTdkxucW1BWFZ4Y1Av?=
+ =?utf-8?B?RzYzOXBIRWp4dW40N0RSYnhscS9raGVxT01idGF4MVRpS3JwOW1PbGd6ZkNN?=
+ =?utf-8?B?T2ZWcXhKQUg1WDB3ZndIVFZzazlRUlVqbURCeDhjT1Z0QldpbXdmNDNKdDVB?=
+ =?utf-8?B?U0JNYklTbVkrQlJuaEpqS3g3MkdaelE1WFg1WERQektrMzd6Zm53bGFIZDls?=
+ =?utf-8?B?SW5nRHdYSlJET2NEeFlWaHRzaXB5bmdXU2FiSWFYOTVpMVR1SlgyTGhSU24z?=
+ =?utf-8?B?RW1KSUNqcTNHdUpLYittSFJVaGQ3aGk5WXZtMjZwRjR5MXdkYnRsenlTeFR2?=
+ =?utf-8?B?UDVBamNndlBzeWlyOXFYV2pSWXN1Y1JJYnRFNlAxV0dKR2kxczZENmNDYWN0?=
+ =?utf-8?B?Ym1TNkNPelJPU0x2QkEvaGtLa1Rrbks5YkhML2FaTWlwRTh5WG91M3ZhN0ti?=
+ =?utf-8?B?QXFvYW9SUWFnSmg5VmQ3aDJLT3ltb00xeCs3dzlueHdIbjZONzVKK0pkbHFC?=
+ =?utf-8?B?eFNhM2k3WmRvVXAvZWZQVUlXTEV6VVoxQllHaTdKUE1NMWh6V2hQQWQ4em0v?=
+ =?utf-8?B?SzN3dUxNU3ViOFQwSTRTd3BoS0Nqd01ZTXFsMUpSV2ZsUGY4cUNXMmQ5by96?=
+ =?utf-8?B?QUxvWHdkTHdjakwxZFMrTGxkeisyQUxPelBFOGxGcVJkU2dHYTFBVEFYcjlG?=
+ =?utf-8?B?aEZhM3FicmM4Q2grUzdJYUFFV1RRSDNrZmE3UHFRNzVvTTNuMHpPV2pBalZJ?=
+ =?utf-8?B?dGdIWEFBZUlZeHBOZ1dBRXdMbThFOGpXa2hZZElPOHZSVTVGYi85TlJiS1hu?=
+ =?utf-8?B?QThJelZRU29KT3hZYTN0cWN0SDdRY216NmZDTCtjZXYrb1dOWVlCcW1sN1RD?=
+ =?utf-8?B?cFpGUGlNb2VJaUthci9TOUl6NXVQMnVwVzhHN1IzQjZ0TDRRYlFmWTZqK1BP?=
+ =?utf-8?B?MjZTQkFVRVFUSm9QbURhdGlBeUhlTzdDWjNYaHZsbUVXMHk1b1N6Z20yYmlC?=
+ =?utf-8?B?ajI4QWR3TVNvRUdUdDU2Zzg2TEJsVG9EbTF4VEg1ZjRTWUc5dTRScTljc3Mv?=
+ =?utf-8?B?OEtZdnlSaEV3aDNzM0lISG1udVJ5SUdWdHNYN3pQY1JyUWs1Tm1GcVhPUm1S?=
+ =?utf-8?B?Y3k0Sy9XQ1BrMXQ4dnpJSWtwdVJ6eDVXOHFVaElYcGxVN2NWQjh4VVNKSkNS?=
+ =?utf-8?B?UGMyUmdYMk4rODBUVDk4dVFVM0JNWUpacDBUbll5UmNEQWIwTG1lNXhmVmlY?=
+ =?utf-8?B?RDVlcXlKbjN6NnRrUzRhc0ZvQzc0WWZzM09yU2dWaFVYVmd6SmNQbC9yR24w?=
+ =?utf-8?Q?6s0hem82HYqAQibHNmxFX1M=3D?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fe4cd01-9484-47e1-5990-08dadf1b86fe
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 309ce42e-9339-4b59-3025-08dadf1f9258
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB4433.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2022 04:10:54.9679
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2022 04:39:52.0141
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nMzAM+mlKX60onzVv1XOGfICMkxlOQI3sswI7ZTNFuQzUAdW3j9t1wSv9NrWtPem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1949
-X-Proofpoint-GUID: WUvbyZS1lWyMUlAVyTBCrbcmBwvaosoY
-X-Proofpoint-ORIG-GUID: WUvbyZS1lWyMUlAVyTBCrbcmBwvaosoY
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-UserPrincipalName: SYFGvmiZwuyPXtpJ3sT372if8lzDQLZMB1gDYoyW7DB94ExxbfLiamgkkJhfnwHG/rF+iIyd3roBWk06QnKMnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3181
+X-Proofpoint-ORIG-GUID: z9yogPxBN_sUxK1XlGSZTR3gxrFUwELA
+X-Proofpoint-GUID: z9yogPxBN_sUxK1XlGSZTR3gxrFUwELA
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-16_01,2022-12-15_02,2022-06-22_01
+ definitions=2022-12-16_02,2022-12-15_02,2022-06-22_01
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -152,168 +148,81 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 12/14/22 2:38 AM, xiangxia.m.yue@gmail.com wrote:
-> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+On 12/15/22 10:34 PM, Yonghong Song wrote:
 > 
-> This testing show how to reproduce deadlock in special case.
 > 
-> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Hou Tao <houtao1@huawei.com>
-> ---
->   .../selftests/bpf/prog_tests/htab_deadlock.c  | 74 +++++++++++++++++++
->   .../selftests/bpf/progs/htab_deadlock.c       | 30 ++++++++
->   2 files changed, 104 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
->   create mode 100644 tools/testing/selftests/bpf/progs/htab_deadlock.c
+> On 12/13/22 10:27 AM, Dave Marchevsky wrote:
+>> This patch adds a test exercising logic that was fixed / improved in
+>> the previous patch in the series, as well as general sanity checking for
+>> jit's PROBE_MEM logic which should've been unaffected by the previous
+>> patch.
+>>
+>> The added verifier test does the following:
+>>    * Acquire a referenced kptr to struct prog_test_ref_kfunc using
+>>      existing net/bpf/test_run.c kfunc
+>>      * Helper returns ptr to a specific prog_test_ref_kfunc whose first
+>>        two fields - both ints - have been prepopulated w/ vals 42 and
+>>        108, respectively
+>>    * kptr_xchg the acquired ptr into an arraymap
+>>    * Do a direct map_value load of the just-added ptr
+>>      * Goal of all this setup is to get an unreferenced kptr pointing to
+>>        struct with ints of known value, which is the result of this step
+>>    * Using unreferenced kptr obtained in previous step, do loads of
+>>      prog_test_ref_kfunc.a (offset 0) and .b (offset 4)
+>>    * Then incr the kptr by 8 and load prog_test_ref_kfunc.a again (this
+>>      time at offset -8)
+>>    * Add all the loaded ints together and return
+>>
+>> Before the PROBE_MEM fixes in previous patch, the loads at offset 0 and
+>> 4 would succeed, while the load at offset -8 would incorrectly fail
+>> runtime check emitted by the JIT and 0 out dst reg as a result. This
+>> confirmed by retval of 150 for this test before previous patch - since
+>> second .a read is 0'd out - and a retval of 192 with the fixed logic.
+>>
+>> The test exercises the two optimizations to fixed logic added in last
+>> patch as well:
+>>    * BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0) exercises "insn->off is
+>>      0, no need to add / sub from src_reg" optimization
+>>    * BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, -8) exercises "src_reg ==
+>>      dst_reg, no need to restore src_reg after load" optimization
+>>
+>> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-> new file mode 100644
-> index 000000000000..7dce4c2fe4f5
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-> @@ -0,0 +1,74 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 DiDi Global Inc. */
-> +#define _GNU_SOURCE
-> +#include <pthread.h>
-> +#include <sched.h>
-> +#include <test_progs.h>
-> +
-> +#include "htab_deadlock.skel.h"
-> +
-> +static int perf_event_open(void)
-> +{
-> +	struct perf_event_attr attr = {0};
-> +	int pfd;
-> +
-> +	/* create perf event */
-> +	attr.size = sizeof(attr);
-> +	attr.type = PERF_TYPE_HARDWARE;
-> +	attr.config = PERF_COUNT_HW_CPU_CYCLES;
-> +	attr.freq = 1;
-> +	attr.sample_freq = 1000;
-> +	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-> +
-> +	return pfd >= 0 ? pfd : -errno;
-> +}
-> +
-> +void test_htab_deadlock(void)
-> +{
-> +	unsigned int val = 0, key = 20;
-> +	struct bpf_link *link = NULL;
-> +	struct htab_deadlock *skel;
-> +	cpu_set_t cpus;
-> +	int err;
-> +	int pfd;
-> +	int i;
+> The test is quite complicated. Is it possible we could write a C code
+> with every small portion of asm to test jit functionality. For
+> b = p->a, the asm will simulate like below
+>     p += offsetof(p_type, a)
+>     b = *(u32 *)(p - offsetof(p_type, a))
+> Could the above be a little bit simpler and easy to understand?
+> I think you might be able to piggy back with some existing selftests.
+> 
 
-No need to have three lines for type 'int' variables. One line
-is enough to hold all three variables.
+Good point. Will give it a try.
 
-> +
-> +	skel = htab_deadlock__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-> +		return;
-> +
-> +	err = htab_deadlock__attach(skel);
-> +	if (!ASSERT_OK(err, "skel_attach"))
-> +		goto clean_skel;
-> +
-> +	/* NMI events. */
-> +	pfd = perf_event_open();
-> +	if (pfd < 0) {
-> +		if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
-> +			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
-> +			test__skip();
-> +			goto clean_skel;
-> +		}
-> +		if (!ASSERT_GE(pfd, 0, "perf_event_open"))
-> +			goto clean_skel;
-> +	}
-> +
-> +	link = bpf_program__attach_perf_event(skel->progs.bpf_perf_event, pfd);
-> +	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
-> +		goto clean_pfd;
-> +
-> +	/* Pinned on CPU 0 */
-> +	CPU_ZERO(&cpus);
-> +	CPU_SET(0, &cpus);
-> +	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
-> +
-> +	for (i = 0; i < 100000; i++)
-
-Please add some comments in the above loop to mention the test
-expects (hopefully) duriing one of bpf_map_update_elem(), one
-perf event might kick to trigger prog bpf_nmi_handle run.
-
-> +		bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
-> +				    &key, &val, BPF_ANY);
-> +
-> +	bpf_link__destroy(link);
-> +clean_pfd:
-> +	close(pfd);
-> +clean_skel:
-> +	htab_deadlock__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> new file mode 100644
-> index 000000000000..c4bd1567f882
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> @@ -0,0 +1,30 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 DiDi Global Inc. */
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(max_entries, 2);
-> +	__uint(map_flags, BPF_F_ZERO_SEED);
-> +	__uint(key_size, sizeof(unsigned int));
-> +	__uint(value_size, sizeof(unsigned int));
-> +} htab SEC(".maps");
-
-You can use
-	__type(key, unsigned int);
-	__type(value, unsigned int);
-This is more expressive.
-
-> +
-> +SEC("fentry/nmi_handle")
-> +int bpf_nmi_handle(struct pt_regs *regs)
-
-Do we need this fentry function? Can be just put
-bpf_map_update_elem() into bpf_perf_event program?
-
-Also s390x and aarch64 failed the test due to none/incomplete trampoline
-support. See bpf ci https://github.com/kernel-patches/bpf/pull/4211.
-You need to add them in their corresponding deny list if this fentry
-bpf program is used.
-
-> +{
-> +	unsigned int val = 0, key = 4;
-> +
-> +	bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
-> +	return 0;
-> +}
-> +
-> +SEC("perf_event")
-> +int bpf_perf_event(struct pt_regs *regs)
-> +{
-> +	return 0;
-> +}
+>> ---
+>>   tools/testing/selftests/bpf/test_verifier.c | 75 ++++++++++++++----
+>>   tools/testing/selftests/bpf/verifier/jit.c  | 84 +++++++++++++++++++++
+>>   2 files changed, 146 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+>> index 8c808551dfd7..14f8d0231e3c 100644
+>> --- a/tools/testing/selftests/bpf/test_verifier.c
+>> +++ b/tools/testing/selftests/bpf/test_verifier.c
+>> @@ -55,7 +55,7 @@
+>>   #define MAX_UNEXPECTED_INSNS    32
+>>   #define MAX_TEST_INSNS    1000000
+>>   #define MAX_FIXUPS    8
+>> -#define MAX_NR_MAPS    23
+>> +#define MAX_NR_MAPS    24
+>>   #define MAX_TEST_RUNS    8
+>>   #define POINTER_VALUE    0xcafe4all
+>>   #define TEST_DATA_LEN    64
+>> @@ -131,6 +131,7 @@ struct bpf_test {
+>>       int fixup_map_ringbuf[MAX_FIXUPS];
+>>       int fixup_map_timer[MAX_FIXUPS];
+>>       int fixup_map_kptr[MAX_FIXUPS];
+>> +    int fixup_map_probe_mem_read[MAX_FIXUPS];
+>>       struct kfunc_btf_id_pair fixup_kfunc_btf_id[MAX_FIXUPS];
+>>       /* Expected verifier log output for result REJECT or VERBOSE_ACCEPT.
+>>        * Can be a tab-separated sequence of expected strings. An empty string
+> [...]
