@@ -2,49 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D096564F3FA
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 23:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C62964F3FC
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 23:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbiLPWVU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 17:21:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        id S229548AbiLPWVY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 17:21:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbiLPWUv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 17:20:51 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A00D6F4AE
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 14:19:14 -0800 (PST)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BGJx5Ss022979
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 14:19:13 -0800
+        with ESMTP id S229953AbiLPWUy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 17:20:54 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCF137FBD
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 14:19:17 -0800 (PST)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BGJxDUG024679
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 14:19:14 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=K9wIvgsRo5AmGIp5dv6SlEQg9VQWBSihXhW6Unxx8Rs=;
- b=S+T3chTKRvOH2pGV/yR7JgKqvj/9GpKKpQKgAovJkm2zU54/Pvcs+WLKOzFqZcak9Tvv
- Y57klR2iDS+KtREFkAi1M6zh4IqSR0SQFP1wGhr7eWha7e7DEnnFN+w2OG1TXHOODn3u
- 9WTf0LNaduUYL7DUDAwWgFPCjtGpUb8+y7S5FUuVN/iRunzbel/wRPGtUdT6anP3xjno
- 9puPz317Dbcy8Wink29ecoBTRlXQHOpSXT6sNahTvPc1VQQ/rTus+uDtKu0lNdGws2Un
- g3RhGnLKfC37cWv/LPnN5bMCi4ML+dFvjnE1o/zBuv8NZ5fbUmgSWcikGbq4OHsAdhnW Gw== 
+ bh=aagDdlMYu/q1w3gVsYfBvmK2+jWphuMM+tI8cMyDH8s=;
+ b=dqedKwUc5xon6WCm+pzQrpZRkWyXxyYxDtMzEz0mcYjWi0qwzGI4NxJdJ0X+HlMIUhpi
+ 1XVCRsbdBfwmiDKEe+RDYd1vFH5Qlzh5c50bEwy7I4EGF6k5+K+IsqJukMQFvgjj5pCN
+ MemU19TRM2e/08ZRCsFyOqFiavWXyqj4qOchQCzSYcko6dlzvwbMuuYWgCWk+txL7qZh
+ 1YtqKkzed7FcY3cuNy46oVfmDoXcDFCfAfFWgO3FSfMuBFB+ehhjXAgxjgQg2nCMKFga
+ kJNTT4NmgV8J4WzPzKWzYQG7HS1ztu3odpeGSRBYAJG5M6nBV3vMv7MQg68A8zvBOwxX 3g== 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3mgsfdb4yf-4
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mgwvu1h1k-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 14:19:13 -0800
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 14:19:14 -0800
+Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
+ snc-exhub101.TheFacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Fri, 16 Dec 2022 14:19:11 -0800
 Received: from twshared25383.14.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.34; Fri, 16 Dec 2022 14:19:11 -0800
 Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 5A26EB2A517; Fri, 16 Dec 2022 14:19:02 -0800 (PST)
+        id 623B9B2A519; Fri, 16 Dec 2022 14:19:02 -0800 (PST)
 From:   Kui-Feng Lee <kuifeng@meta.com>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
         <kernel-team@meta.com>, <song@kernel.org>, <yhs@meta.com>
-CC:     Kui-Feng Lee <kuifeng@meta.com>,
-        Nathan Slingerland <slinger@meta.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf-next v2 1/2] bpf: keep a reference to the mm, in case the task is dead.
-Date:   Fri, 16 Dec 2022 14:18:54 -0800
-Message-ID: <20221216221855.4122288-2-kuifeng@meta.com>
+CC:     Kui-Feng Lee <kuifeng@meta.com>, Yonghong Song <yhs@fb.com>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: add a test for iter/task_vma for short-lived processes
+Date:   Fri, 16 Dec 2022 14:18:55 -0800
+Message-ID: <20221216221855.4122288-3-kuifeng@meta.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221216221855.4122288-1-kuifeng@meta.com>
 References: <20221216221855.4122288-1-kuifeng@meta.com>
@@ -52,8 +54,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 6DJrDHjLvRtCpDFcEBdJI7T2oMeE5jrh
-X-Proofpoint-ORIG-GUID: 6DJrDHjLvRtCpDFcEBdJI7T2oMeE5jrh
+X-Proofpoint-GUID: FyEkxiK-kLn1fk5FNX9aNKTadB-s4I-v
+X-Proofpoint-ORIG-GUID: FyEkxiK-kLn1fk5FNX9aNKTadB-s4I-v
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-16_14,2022-12-15_02,2022-06-22_01
@@ -67,165 +69,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the system crash that happens when a task iterator travel through
-vma of tasks.
+When a task iterator traverses vma(s), it is possible task->mm might
+become invalid in the middle of traversal and this may cause kernel
+misbehave (e.g., crash)
 
-In task iterators, we used to access mm by following the pointer on
-the task_struct; however, the death of a task will clear the pointer,
-even though we still hold the task_struct.  That can cause an
-unexpected crash for a null pointer when an iterator is visiting a
-task that dies during the visit.  Keeping a reference of mm on the
-iterator ensures we always have a valid pointer to mm.
+This test case creates iterators repeatedly and forks short-lived
+processes in the background to detect this bug.  The test will last
+for 3 seconds to get the chance to trigger the issue.
 
-Co-developed-by: Song Liu <song@kernel.org>
-Signed-off-by: Song Liu <song@kernel.org>
 Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
-Reported-by: Nathan Slingerland <slinger@meta.com>
 Acked-by: Yonghong Song <yhs@fb.com>
 ---
- kernel/bpf/task_iter.c | 39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 73 +++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index c2a2182ce570..c4ab9d6cdbe9 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -438,6 +438,7 @@ struct bpf_iter_seq_task_vma_info {
- 	 */
- 	struct bpf_iter_seq_task_common common;
- 	struct task_struct *task;
-+	struct mm_struct *mm;
- 	struct vm_area_struct *vma;
- 	u32 tid;
- 	unsigned long prev_vm_start;
-@@ -456,16 +457,19 @@ task_vma_seq_get_next(struct bpf_iter_seq_task_vma_=
-info *info)
- 	enum bpf_task_vma_iter_find_op op;
- 	struct vm_area_struct *curr_vma;
- 	struct task_struct *curr_task;
-+	struct mm_struct *curr_mm;
- 	u32 saved_tid =3D info->tid;
-=20
- 	/* If this function returns a non-NULL vma, it holds a reference to
--	 * the task_struct, and holds read lock on vma->mm->mmap_lock.
-+	 * the task_struct, holds a refcount on mm->mm_users, and holds
-+	 * read lock on vma->mm->mmap_lock.
- 	 * If this function returns NULL, it does not hold any reference or
- 	 * lock.
- 	 */
- 	if (info->task) {
- 		curr_task =3D info->task;
- 		curr_vma =3D info->vma;
-+		curr_mm =3D info->mm;
- 		/* In case of lock contention, drop mmap_lock to unblock
- 		 * the writer.
- 		 *
-@@ -504,13 +508,15 @@ task_vma_seq_get_next(struct bpf_iter_seq_task_vma_=
-info *info)
- 		 *    4.2) VMA2 and VMA2' covers different ranges, process
- 		 *         VMA2'.
- 		 */
--		if (mmap_lock_is_contended(curr_task->mm)) {
-+		if (mmap_lock_is_contended(curr_mm)) {
- 			info->prev_vm_start =3D curr_vma->vm_start;
- 			info->prev_vm_end =3D curr_vma->vm_end;
- 			op =3D task_vma_iter_find_vma;
--			mmap_read_unlock(curr_task->mm);
--			if (mmap_read_lock_killable(curr_task->mm))
-+			mmap_read_unlock(curr_mm);
-+			if (mmap_read_lock_killable(curr_mm)) {
-+				mmput(curr_mm);
- 				goto finish;
-+			}
- 		} else {
- 			op =3D task_vma_iter_next_vma;
- 		}
-@@ -535,42 +541,47 @@ task_vma_seq_get_next(struct bpf_iter_seq_task_vma_=
-info *info)
- 			op =3D task_vma_iter_find_vma;
- 		}
-=20
--		if (!curr_task->mm)
-+		curr_mm =3D get_task_mm(curr_task);
-+		if (!curr_mm)
- 			goto next_task;
-=20
--		if (mmap_read_lock_killable(curr_task->mm))
-+		if (mmap_read_lock_killable(curr_mm)) {
-+			mmput(curr_mm);
- 			goto finish;
-+		}
- 	}
-=20
- 	switch (op) {
- 	case task_vma_iter_first_vma:
--		curr_vma =3D find_vma(curr_task->mm, 0);
-+		curr_vma =3D find_vma(curr_mm, 0);
- 		break;
- 	case task_vma_iter_next_vma:
--		curr_vma =3D find_vma(curr_task->mm, curr_vma->vm_end);
-+		curr_vma =3D find_vma(curr_mm, curr_vma->vm_end);
- 		break;
- 	case task_vma_iter_find_vma:
- 		/* We dropped mmap_lock so it is necessary to use find_vma
- 		 * to find the next vma. This is similar to the  mechanism
- 		 * in show_smaps_rollup().
- 		 */
--		curr_vma =3D find_vma(curr_task->mm, info->prev_vm_end - 1);
-+		curr_vma =3D find_vma(curr_mm, info->prev_vm_end - 1);
- 		/* case 1) and 4.2) above just use curr_vma */
-=20
- 		/* check for case 2) or case 4.1) above */
- 		if (curr_vma &&
- 		    curr_vma->vm_start =3D=3D info->prev_vm_start &&
- 		    curr_vma->vm_end =3D=3D info->prev_vm_end)
--			curr_vma =3D find_vma(curr_task->mm, curr_vma->vm_end);
-+			curr_vma =3D find_vma(curr_mm, curr_vma->vm_end);
- 		break;
- 	}
- 	if (!curr_vma) {
- 		/* case 3) above, or case 2) 4.1) with vma->next =3D=3D NULL */
--		mmap_read_unlock(curr_task->mm);
-+		mmap_read_unlock(curr_mm);
-+		mmput(curr_mm);
- 		goto next_task;
- 	}
- 	info->task =3D curr_task;
- 	info->vma =3D curr_vma;
-+	info->mm =3D curr_mm;
- 	return curr_vma;
-=20
- next_task:
-@@ -579,6 +590,7 @@ task_vma_seq_get_next(struct bpf_iter_seq_task_vma_in=
-fo *info)
-=20
- 	put_task_struct(curr_task);
- 	info->task =3D NULL;
-+	info->mm =3D NULL;
- 	info->tid++;
- 	goto again;
-=20
-@@ -587,6 +599,7 @@ task_vma_seq_get_next(struct bpf_iter_seq_task_vma_in=
-fo *info)
- 		put_task_struct(curr_task);
- 	info->task =3D NULL;
- 	info->vma =3D NULL;
-+	info->mm =3D NULL;
- 	return NULL;
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
+sting/selftests/bpf/prog_tests/bpf_iter.c
+index 6f8ed61fc4b4..3af6450763e9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -1465,6 +1465,77 @@ static void test_task_vma_common(struct bpf_iter_a=
+ttach_opts *opts)
+ 	bpf_iter_task_vma__destroy(skel);
  }
 =20
-@@ -658,7 +671,9 @@ static void task_vma_seq_stop(struct seq_file *seq, v=
-oid *v)
- 		 */
- 		info->prev_vm_start =3D ~0UL;
- 		info->prev_vm_end =3D info->vma->vm_end;
--		mmap_read_unlock(info->task->mm);
-+		mmap_read_unlock(info->mm);
-+		mmput(info->mm);
-+		info->mm =3D NULL;
- 		put_task_struct(info->task);
- 		info->task =3D NULL;
- 	}
++static void test_task_vma_dead_task(void)
++{
++	struct bpf_iter_task_vma *skel;
++	int wstatus, child_pid =3D -1;
++	time_t start_tm, cur_tm;
++	int err, iter_fd =3D -1;
++	int wait_sec =3D 3;
++
++	skel =3D bpf_iter_task_vma__open();
++	if (!ASSERT_OK_PTR(skel, "bpf_iter_task_vma__open"))
++		return;
++
++	skel->bss->pid =3D getpid();
++
++	err =3D bpf_iter_task_vma__load(skel);
++	if (!ASSERT_OK(err, "bpf_iter_task_vma__load"))
++		goto out;
++
++	skel->links.proc_maps =3D bpf_program__attach_iter(
++		skel->progs.proc_maps, NULL);
++
++	if (!ASSERT_OK_PTR(skel->links.proc_maps, "bpf_program__attach_iter")) =
+{
++		skel->links.proc_maps =3D NULL;
++		goto out;
++	}
++
++	start_tm =3D time(NULL);
++	cur_tm =3D start_tm;
++
++	child_pid =3D fork();
++	if (child_pid =3D=3D 0) {
++		/* Fork short-lived processes in the background. */
++		while (cur_tm < start_tm + wait_sec) {
++			system("echo > /dev/null");
++			cur_tm =3D time(NULL);
++		}
++		exit(0);
++	}
++
++	if (!ASSERT_GE(child_pid, 0, "fork_child"))
++		goto out;
++
++	while (cur_tm < start_tm + wait_sec) {
++		iter_fd =3D bpf_iter_create(bpf_link__fd(skel->links.proc_maps));
++		if (!ASSERT_GE(iter_fd, 0, "create_iter"))
++			goto out;
++
++		/* Drain all data from iter_fd. */
++		while (cur_tm < start_tm + wait_sec) {
++			err =3D read_fd_into_buffer(iter_fd, task_vma_output, CMP_BUFFER_SIZE=
+);
++			if (!ASSERT_GE(err, 0, "read_iter_fd"))
++				goto out;
++
++			cur_tm =3D time(NULL);
++
++			if (err =3D=3D 0)
++				break;
++		}
++
++		close(iter_fd);
++		iter_fd =3D -1;
++	}
++
++	check_bpf_link_info(skel->progs.proc_maps);
++
++out:
++	waitpid(child_pid, &wstatus, 0);
++	close(iter_fd);
++	bpf_iter_task_vma__destroy(skel);
++}
++
+ void test_bpf_sockmap_map_iter_fd(void)
+ {
+ 	struct bpf_iter_sockmap *skel;
+@@ -1586,6 +1657,8 @@ void test_bpf_iter(void)
+ 		test_task_file();
+ 	if (test__start_subtest("task_vma"))
+ 		test_task_vma();
++	if (test__start_subtest("task_vma_dead_task"))
++		test_task_vma_dead_task();
+ 	if (test__start_subtest("task_btf"))
+ 		test_task_btf();
+ 	if (test__start_subtest("tcp4"))
 --=20
 2.30.2
 
