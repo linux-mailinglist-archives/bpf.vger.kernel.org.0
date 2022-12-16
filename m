@@ -2,304 +2,380 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC3C64F2CE
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 21:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C4B64F34C
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 22:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbiLPU4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 15:56:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
+        id S229537AbiLPVng (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 16:43:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbiLPU4R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 15:56:17 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A987B8FC6
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 12:56:15 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BGJxOvo003557;
-        Fri, 16 Dec 2022 12:55:59 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=ZZi5LzEjT93UoijX+j45u3ccfAORfDOyerEEvehRMP0=;
- b=TRrW4+GxZbJNK1esbmZMOpoT2EyrccvydzsI8i7MjE7T5x9Ojl9VCPYzzFWMyO5uVxeV
- JfkQLqmUbr0PZrFbbx1Ho31yLz5TC2bPMasNdR/8TEIpZpLEkjO4jIOIstzYkG6M9QsX
- +WdzyBkcersl6+3bYrIv4TYN1j7vrZ7rzzW02c3reOs5mAHVycUrogAkpbGslH/esFH4
- TEJhlGJPsWu8vUZ1mwgTzkN00/K/cn7vgdRGSRa5xjN/TbuHMUBnzDCNm0Cvz0KPQEpr
- JWG0vP4rXPD17Rz8jzte5ep5luZsPSb+WURTUkVox5eWW298YUZVsz6ZsmZgGGgYjk3X +g== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mgdt16mq0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Dec 2022 12:55:59 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LQVQO1imJiiWOlEUPinHMqz767UHe0ivnKFssojihquscf5jLmoTm7sufipqs+FnRn6ndQxARgtYqPtvsCBQw5AI/Wlfa3qnMNAoPafZEUP1yB27Y0VdvepSQATi14ZtakL0yzuVHljUdjxijDUnQAxlX6SoK14a2mwJIanbgXB6XaY7FLzaE9KzOCfyJUyQ4+8N8ydgB7jl69+UmeMWbv9D5DeEHlrluSlMpL8rcnJIzAeNm+JNXofqjxT+aCzdB29mg/tpJvo0eS3Slzgc59TJ67rk/I3bo82w/8jUHkidX5+dZktqnPkhEnAEGdfsvqNAikOVR4OyFtlIL5qmRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZZi5LzEjT93UoijX+j45u3ccfAORfDOyerEEvehRMP0=;
- b=g4Ge/3jZjiGRmX99YCn0/q0d74bKj5K8p3m4BPchXeof/KX0ySZ/3MdzoFqnQDLTh8n+6x412zlE5toZD3kLhGHxbtLgAU3JWEU3g6D/YG5htIGekAd9J5oREWSsnu8xktAey+lEwtgBEgG5ADOEoTnf9mCkNI8M/9Ti+hWyWXK1zAmogey0gk8h1GZG5dfuR7PkefUbgXul8uKVthRZ3xRgjGpy8j+ZwQ2JiVcn1rNG8bbCqXRejzQtlC6tSQhHfd7nASHWEIVsa+CN80LrQgSGUOryzoTmX/kPi1craTtsf0FyyXyBRYva6Q0bxSDc7ziOaWC4i8eOOVf2aHIrKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH7PR15MB5498.namprd15.prod.outlook.com (2603:10b6:510:1f5::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.11; Fri, 16 Dec
- 2022 20:55:56 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5924.015; Fri, 16 Dec 2022
- 20:55:56 +0000
-Message-ID: <517c48e2-6183-b5d9-e167-bdbb52a042f8@meta.com>
-Date:   Fri, 16 Dec 2022 12:55:53 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.0
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add verifier test
- exercising jit PROBE_MEM logic
-Content-Language: en-US
-To:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229471AbiLPVnf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 16:43:35 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E23F33C26
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 13:43:34 -0800 (PST)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BGJx5cb023005
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 13:43:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=A7JiwiOqjLRQau/wCT0ef1cLezkiMDJE6GDX2Kzrszk=;
+ b=ZUc/9TFp3GYAVdC8eDvBGIAC0NnpLulxZ8Ri5y0aRHju6Awi0g4vaS8ozOinETfsPwNg
+ tYx02fECkIx+Fgt1jhsKi+VLSQ+pg0Pl700/lNt3bxxzNC/S5hTpiGGakM6oie8+bvvO
+ z4zYjfYMOjT9NNAWyKSE80hVa3lvGEmYkKE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3mgsfdawdq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 13:43:33 -0800
+Received: from twshared24004.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Fri, 16 Dec 2022 13:43:30 -0800
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id E04F912A1EDA7; Fri, 16 Dec 2022 13:43:21 -0800 (PST)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-References: <20221216183122.2040142-1-davemarchevsky@fb.com>
- <20221216183122.2040142-2-davemarchevsky@fb.com>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221216183122.2040142-2-davemarchevsky@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0263.namprd03.prod.outlook.com
- (2603:10b6:a03:3a0::28) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@meta.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH v3 bpf-next 1/2] bpf, x86: Improve PROBE_MEM runtime load check
+Date:   Fri, 16 Dec 2022 13:43:18 -0800
+Message-ID: <20221216214319.3408356-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|PH7PR15MB5498:EE_
-X-MS-Office365-Filtering-Correlation-Id: 32a3fffb-4a70-4e88-d2a1-08dadfa7ed5e
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y0eAWm1A98C+p0H1E+128OKttLDj1376XwGjxu39y3rytjbeEWB+hKlHOHULamLsNcPcOU1N9EuGF+LLH5TY+ipV4hasqIyiRzYelJJNdD8lBymxpnOP7knEcBc5uOLpVT4K5Nt3oGaKtomk+oPOZdrHVn82geJylS6k27E2dNWNhbFEsxf920K9l3xd37RBjQ3bqqgWznwQ4IFY7TQCdD7vuxPoEU8NUZnw+LoxE3fDTkq2fR49HvMK0H33etKjQdtj+wL5ZU2Os1ibQzfUyMi6NsF0zNR5GLUL/fmpR5loQwS/+Cfrl5vtmYHWe+0YuyjE2L5oe3U7Sm2vPro2Y/aD8A+hzHflVlOr/VpkT6vjrlsiVysdGv/N9LyPD3twa9q+txZaDxcx0EyyeutvyFij2RngIhV1DXBRnvpTkQA7zVW6riCde8D00kCAutLdTJ+IxvHJXdeTuhSJF1T6NI7KcsDUij9HQE5OSsItWmCAHDsd/BmJv/fQjt0zBILH6sUWoTioOGrS1RopMdvLsmXYBZKP9G78x9xtu4GiO9HAgwsomm5vupZ2uZ5RJjDULkTNEQmaAgKoxmEqLqELUZxYv3d7P66bF755a9XlO078nTbNF1r/ttYoSwgMPhbKN9rTX1gbO+xSxbYLv2IDu6YCcJ5/6G7S4iJdIJR9N+D5KLFQwsPK1aB70O/kphgBIL88qJj8zp1mrl74EA1iAR5ts4FVglu/oYD7bDrpbD0RFL4AWVu/CoxeFAUWK4WmR4XW1YAN9SQbPpezw++tDg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(396003)(136003)(346002)(366004)(376002)(451199015)(83380400001)(2616005)(86362001)(31696002)(478600001)(4326008)(41300700001)(66556008)(6512007)(66476007)(53546011)(54906003)(186003)(6486002)(6506007)(8676002)(6666004)(38100700002)(5660300002)(2906002)(66946007)(316002)(8936002)(84970400001)(31686004)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VXZUc0RxTWRnODdGeVhYb3RJM1dRcGVrSmlHc1F6RVFSNlljc3Q2aWt4cW1m?=
- =?utf-8?B?VFc5dE1QMFQ2TnhXRTVSRFQ4MW1qZjlxTW5YYysrbmo5ODlabUhPZ1BjRUVW?=
- =?utf-8?B?dnR6R0p5NHJleFcyY2lCMTVwTXZlb09TUmd2RHRrdnp2VGpVUFZrb290T2ZC?=
- =?utf-8?B?L3JuZ3pURFRUZnJkSElGTUFwdFhZU2d5cjVpUWhNcWlQMGVpeTFaMXBaTUt2?=
- =?utf-8?B?MjJGQ09OdVFTTzAvN0E2ZEhkNFJBNnRqVXhoTFlGYkNvTStOUnBDOFp6K0hI?=
- =?utf-8?B?QUphUG5wd3UzVkkvOWNpS0x2NFB2d1g2bzBMS0xTVEtjdTdjSUpqZWV1aEZB?=
- =?utf-8?B?MTB6NWlHMU5hS0NBSWc1K3BJUlFWcTlmY1VtQ0dZSE5sWVhtWno1bFgxSkx0?=
- =?utf-8?B?YXQ0YW9Zdm9SdlNuSjNKbmhKTjZKMy9aeTR5YkEwaEM2bG5ydUMwTFc1dWF3?=
- =?utf-8?B?dEpLWTNLWFBtZ0NQVklVSmdIQWJFTkFBbkVaalBPN09ObVJBb0tkVUtsVXpD?=
- =?utf-8?B?WGZtSlBPZFdxVCtkSWR3TjFDTm9yTVJuM2srYytpcWVIQy9Sb2J5TTJyaGU5?=
- =?utf-8?B?cVdpQWhkdUNKR05JZUtJRnNtMzFYV2VIRlhoS0FqM1ZwQUQwMHd1a25yK3Mx?=
- =?utf-8?B?WEVGS1htc2dqUEFCWHBVUDc4UlljbEowQmE3cGZoSnVuVGNWUWF5Rm1EeHkv?=
- =?utf-8?B?a2d5NEg3VFZUWHRBbnRUbDJKdFYrTDQ3Y3FXcDUxQUtlNXY5c1haQnR6cmFG?=
- =?utf-8?B?SGowaTVHTFNxMlBFZ2cySHBoekpFZlhRM2I3SjQwNlo1b3o5TnpsQjF4cjRy?=
- =?utf-8?B?d29PTXM3Z3gwdkZFUDdmS2owL1VHN0JJcW9KMW56UmRsdmNhVVpQcmpFZnBP?=
- =?utf-8?B?YkxPQ2VTRHNNMEhFRnpNenpCOFpxclJHN1o1Ny8zSkM2L09OL0N6alRoTk0w?=
- =?utf-8?B?UEJMY1pCaHlFdWNuclpZQWFmUXpGckZGWnkyMkY5MGtuWkdjZm9qS2JHYmJZ?=
- =?utf-8?B?VDdzTmtUZEdFSkUrYXIyc0pjUENnMWtGSS9SNFVnT0dVcERxY1Y2QW9pcXhG?=
- =?utf-8?B?MldCK25JRVBDTzUwZXlXRzF5WFRPeWovZkpYU3lPQnR0K1RuOElKbkh2SUw1?=
- =?utf-8?B?a1BGbVpvL21HMUtqalI2OEU5UDNwNU9LeksvMFhqWFIrZEhZWE8vRitXbE1q?=
- =?utf-8?B?Mm5uUlUwQW44R2l5R1BhRmdNbmNid0FxdzBHQ3BOQ0xnYmdJdWFlcDg5R1V4?=
- =?utf-8?B?akx6bU4yaTVvRkdiSzB2TmxmTG42Z3QwQ05WbkVsRVVqWmRRL1ZxeDZROWN6?=
- =?utf-8?B?NkpZbndjVjA1c1ZZL05PKzBYazhMYWZtY1VnWG5saVZkbkVTK2dNQVVmZjZO?=
- =?utf-8?B?c1FVb3dPdklNUGs3SGhDRlVmNmtMTDNBUHNBY2VyTHZOUVgxK2toTGFsNHhi?=
- =?utf-8?B?SXgzSjdxZlJSRmdJNEpwVVhEWGhVSThMcmh3cmUxWVU2MDdXeS9DY3lqcGxS?=
- =?utf-8?B?NHVLY2pJTkEvdTdMQXVKTmJwYzBrWmNjdTFaVkRReFB2TnFQV2dPUHBXN0hY?=
- =?utf-8?B?UVhWbElaK2xzWllBVFlLakVlcXFmQlFDKzZUTi9lQlRRckxwbG5kNUZKbnFQ?=
- =?utf-8?B?NlpQQTlEVkZqcHJZMG5xSW83MlFGbEloVzhwNnI3SE1TRTdqWWdEQThHU2U3?=
- =?utf-8?B?TFMwUU8zeDJoNFQ2YjY4ajhRWDcwVzlpZGJ2MVhjVXdVdlNGOFBnbk5aRSsx?=
- =?utf-8?B?dGErMnFJeXdNTkxvVUI2KzhKK281M0oxc2tqZ3FFRnpwdXBhYk9tWmo0MWtQ?=
- =?utf-8?B?MXBXYm9DZzFvd1RTNGVPbFVHa2lDdWE0bWkwS2U5ZDg4cjFTd1JCcnRSTWpD?=
- =?utf-8?B?SGRxQUdGN0lYcHVHZm9vb3BycEJ3ajM5RkFhSk1ET29CZFhWSkJTVHRHTUhQ?=
- =?utf-8?B?R3MvcTFBcWxnQWhtQm5maHFDclkwL2ttdkthODQyVE8xRzB0MjZTaFl3OTho?=
- =?utf-8?B?RUR0SlFLTzQ5ejA3RlNOWXcxMGFCdjcybDFZdFVvU1I0SW5OZVVQbmh2TXFU?=
- =?utf-8?B?dGtYMWtaTmR3SFZ5TG0vcERVekxxd04yS21zNnpxa2F4cW41S2JEaDRYdHhJ?=
- =?utf-8?B?eVp0U2FRSUxCU1RMU0d2am00cUZKS2hqNnVlTXZRTnBVVDcrWDJLZGFSRWkv?=
- =?utf-8?B?Smc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32a3fffb-4a70-4e88-d2a1-08dadfa7ed5e
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2022 20:55:56.2699
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Jhk4CiUecczVQT4jKG0QInchPgYVg1CWMWYsB3HZh01uzFNTZovxZBCQcw/8fPUK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR15MB5498
-X-Proofpoint-GUID: t3_dFVsIu-dUurLWVpUAkg_7IEw3URc6
-X-Proofpoint-ORIG-GUID: t3_dFVsIu-dUurLWVpUAkg_7IEw3URc6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: sEFBiZYK1KKsSixqACG-E3unL1Jq1OvU
+X-Proofpoint-ORIG-GUID: sEFBiZYK1KKsSixqACG-E3unL1Jq1OvU
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-16_14,2022-12-15_02,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patch rewrites the runtime PROBE_MEM check insns emitted by the BPF
+JIT in order to ensure load safety. The changes in the patch fix two
+issues with the previous logic and more generally improve size of
+emitted code. Paragraphs between this one and "FIX 1" below explain the
+purpose of the runtime check and examine the current implementation.
 
+When a load is marked PROBE_MEM - e.g. due to PTR_UNTRUSTED access - the
+address being loaded from is not necessarily valid. The BPF jit sets up
+exception handlers for each such load which catch page faults and 0 out
+the destination register.
 
-On 12/16/22 10:31 AM, Dave Marchevsky wrote:
-> This patch adds a test exercising logic that was fixed / improved in
-> the previous patch in the series, as well as general sanity checking for
-> jit's PROBE_MEM logic which should've been unaffected by the previous
-> patch.
-> 
-> The added verifier test does the following:
->    * Acquire a referenced kptr to struct prog_test_ref_kfunc using
->      existing net/bpf/test_run.c kfunc
->      * Helper returns ptr to a specific prog_test_ref_kfunc whose first
->        two fields - both ints - have been prepopulated w/ vals 42 and
->        108, respectively
->    * kptr_xchg the acquired ptr into an arraymap
->    * Do a direct map_value load of the just-added ptr
->      * Goal of all this setup is to get an unreferenced kptr pointing to
->        struct with ints of known value, which is the result of this step
->    * Using unreferenced kptr obtained in previous step, do loads of
->      prog_test_ref_kfunc.a (offset 0) and .b (offset 4)
->    * Then incr the kptr by 8 and load prog_test_ref_kfunc.a again (this
->      time at offset -8)
->    * Add all the loaded ints together and return
-> 
-> Before the PROBE_MEM fixes in previous patch, the loads at offset 0 and
-> 4 would succeed, while the load at offset -8 would incorrectly fail
-> runtime check emitted by the JIT and 0 out dst reg as a result. This
-> confirmed by retval of 150 for this test before previous patch - since
-> second .a read is 0'd out - and a retval of 192 with the fixed logic.
-> 
-> The test exercises the two optimizations to fixed logic added in last
-> patch as well:
->    * First load, with insn "r8 = *(u32 *)(r9 + 0)" exercises "insn->off
->      is 0, no need to add / sub from src_reg" optimization
->    * Third load, with insn "r9 = *(u32 *)(r9 - 8)" exercises "src_reg ==
->      dst_reg, no need to restore src_reg after load" optimization
-> 
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+Arbitrary register-relative loads can escape this exception handling
+mechanism. Specifically, a load like dst_reg =3D *(src_reg + off) will no=
+t
+trigger BPF exception handling if (src_reg + off) is outside of kernel
+address space, resulting in an uncaught page fault. A concrete example
+of such behavior is a program like:
 
-Ack with one nit below.
+  struct result {
+    char space[40];
+    long a;
+  };
 
+  /* if err, returns ERR_PTR(-EINVAL) */
+  struct result *ptr =3D get_ptr_maybe_err();
+  long x =3D ptr->a;
+
+If get_ptr_maybe_err returns ERR_PTR(-EINVAL) and the result isn't
+checked for err, 'result' will be (u64)-EINVAL, a number close to
+U64_MAX. The ptr->a load will be > U64_MAX and will wrap over to a small
+positive u64, which will be in userspace and thus not covered by BPF
+exception handling mechanism.
+
+In order to prevent such loads from occurring, the BPF jit emits some
+instructions which do runtime checking of (src_reg + off) and skip the
+actual load if it's out of range. As an example, here are instructions
+emitted for a %rdi =3D *(%rdi + 0x10) PROBE_MEM load:
+
+  72:   movabs $0x800000000010,%r11 --|
+  7c:   cmp    %r11,%rdi              |- 72 - 7f: Check 1
+  7f:    jb    0x000000000000008d   --|
+  81:   mov    %rdi,%r11             -----|
+  84:   add    $0x0000000000000010,%r11   |- 81-8b: Check 2
+  8b:   jnc    0x0000000000000091    -----|
+  8d:   xor    %edi,%edi             ---- 0 out dest
+  8f:   jmp    0x0000000000000095
+  91:   mov    0x10(%rdi),%rdi       ---- Actual load
+  95:
+
+The JIT considers kernel address space to start at MAX_TASK_SIZE +
+PAGE_SIZE. Determining whether a load will be outside of kernel address
+space should be a simple check:
+
+  (src_reg + off) >=3D MAX_TASK_SIZE + PAGE_SIZE
+
+But because there is only one spare register when the checking logic is
+emitted, this logic is split into two checks:
+
+  Check 1: src_reg >=3D (MAX_TASK_SIZE + PAGE_SIZE - off)
+  Check 2: src_reg + off doesn't wrap over U64_MAX and result in small po=
+s u64
+
+Emitted insns implementing Checks 1 and 2 are annotated in the above
+example. Check 1 can be done with a single spare register since the
+source reg by definition is the left-hand-side of the inequality.
+Since adding 'off' to both sides of Check 1's inequality results in the
+original inequality we want, it's equivalent to testing that inequality.
+Except in the case where src_reg + off wraps past U64_MAX, which is why
+Check 2 needs to actually add src_reg + off if Check 1 passes - again
+using the single spare reg.
+
+FIX 1: The Check 1 inequality listed above is not what current code is
+doing. Current code is a bit more pessimistic, instead checking:
+
+  src_reg >=3D (MAX_TASK_SIZE + PAGE_SIZE + abs(off))
+
+The 0x800000000010 in above example is from this current check. If Check
+1 was corrected to use the correct right-hand-side, the value would be
+0x7ffffffffff0. This patch changes the checking logic more broadly (FIX
+2 below will elaborate), fixing this issue as a side-effect of the
+rewrite. Regardless, it's important to understand why Check 1 should've
+been doing MAX_TASK_SIZE + PAGE_SIZE - off before proceeding.
+
+FIX 2: Current code relies on a 'jnc' to determine whether src_reg + off
+addition wrapped over. For negative offsets this logic is incorrect.
+Consider Check 2 insns emitted when off =3D -0x10:
+
+  81:   mov    %rdi,%r11
+  84:   add    0xfffffffffffffff0,%r11
+  8b:   jnc    0x0000000000000091
+
+2's complement representation of -0x10 is a large positive u64. Any
+value of src_reg that passes Check 1 will result in carry flag being set
+after (src_reg + off) addition. So a load with any negative offset will
+always fail Check 2 at runtime and never do the actual load. This patch
+fixes the negative offset issue by rewriting both checks in order to not
+rely on carry flag.
+
+The rewrite takes advantage of the fact that, while we only have one
+scratch reg to hold arbitrary values, we know the offset at JIT time.
+This we can use src_reg as a temporary scratch reg to hold src_reg +
+offset since we can return it to its original value by later subtracting
+offset. As a result we can directly check the original inequality we
+care about:
+
+  (src_reg + off) >=3D MAX_TASK_SIZE + PAGE_SIZE
+
+For a load like %rdi =3D *(%rsi + -0x10), this results in emitted code:
+
+  43:   movabs $0x800000000000,%r11
+  4d:   add    $0xfffffffffffffff0,%rsi --- src_reg +=3D off
+  54:   cmp    %r11,%rsi                --- Check original inequality
+  57:   jae    0x000000000000005d
+  59:   xor    %edi,%edi
+  5b:   jmp    0x0000000000000061
+  5d:   mov    0x0(%rdi),%rsi           --- Actual Load
+  61:   sub    $0xfffffffffffffff0,%rsi --- src_reg -=3D off
+
+Note that the actual load is always done with offset 0, since previous
+insns have already done src_reg +=3D off. Regardless of whether the new
+check succeeds or fails, insn 61 is always executed, returning src_reg
+to its original value.
+
+Because the goal of these checks is to ensure that loaded-from address
+will be protected by BPF exception handler, the new check can safely
+ignore any wrapover from insn 4d. If such wrapped-over address passes
+insn 54 + 57's cmp-and-jmp it will have such protection so the load can
+proceed.
+
+IMPROVEMENTS: The above improved logic is 8 insns vs original logic's 9,
+and has 1 fewer jmp. The number of checking insns can be further
+improved in common scenarios:
+
+If src_reg =3D=3D dst_reg, the actual load insn will clobber src_reg, so
+there's no original src_reg state for the sub insn immediately following
+the load to restore, so it can be omitted. In fact, it must be omitted
+since it would incorrectly subtract from the result of the load if it
+wasn't. So for src_reg =3D=3D dst_reg, JIT emits these insns:
+
+  3c:   movabs $0x800000000000,%r11
+  46:   add    $0xfffffffffffffff0,%rdi
+  4d:   cmp    %r11,%rdi
+  50:   jae    0x0000000000000056
+  52:   xor    %edi,%edi
+  54:   jmp    0x000000000000005a
+  56:   mov    0x0(%rdi),%rdi
+  5a:
+
+The only difference from larger example being the omitted sub, which
+would've been insn 5a in this example.
+
+If offset =3D=3D 0, we can similarly omit the sub as in previous case, si=
+nce
+there's nothing added to subtract. For the same reason we can omit the
+addition as well, resulting in JIT emitting these insns:
+
+  46:   movabs $0x800000000000,%r11
+  4d:   cmp    %r11,%rdi
+  50:   jae    0x0000000000000056
+  52:   xor    %edi,%edi
+  54:   jmp    0x000000000000005a
+  56:   mov    0x0(%rdi),%rdi
+  5a:
+
+Although the above example also has src_reg =3D=3D dst_reg, the same
+offset =3D=3D 0 optimization is valid to apply if src_reg !=3D dst_reg.
+
+To summarize the improvements in emitted insn count for the
+check-and-load:
+
+BEFORE:                8 check insns, 3 jmps
+AFTER (general case):  7 check insns, 2 jmps (12.5% fewer insn, 33% jmp)
+AFTER (src =3D=3D dst):    6 check insns, 2 jmps (25% fewer insn)
+AFTER (offset =3D=3D 0):   5 check insns, 2 jmps (37.5% fewer insn)
+
+(Above counts don't include the 1 load insn, just checking around it)
+
+Based on BPF bytecode + JITted x86 insn I saw while experimenting with
+these improvements, I expect the src_reg =3D=3D dst_reg case to occur mos=
+t
+often, followed by offset =3D=3D 0, then the general case.
+
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 Acked-by: Yonghong Song <yhs@fb.com>
+---
+v1 -> v2: lore.kernel.org/bpf/20221213182726.325137-1-davemarchevsky@fb.c=
+om
+  * Remove extraneous paragraph from patch summary (Yonghong)
+  * Add Yonghong ack
 
-> ---
-> v1 -> v2: lore.kernel.org/bpf/20221213182726.325137-2-davemarchevsky@fb.com
->    * Rewrite the test to be a "normal" C prog in selftests/bpf/progs. Result
->      is a much easier-to-understand test with assembly used only for the 3
->      loads. (Yonghong)
-> 
->   .../selftests/bpf/prog_tests/jit_probe_mem.c  | 28 +++++++++
->   .../selftests/bpf/progs/jit_probe_mem.c       | 61 +++++++++++++++++++
->   2 files changed, 89 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/jit_probe_mem.c
->   create mode 100644 tools/testing/selftests/bpf/progs/jit_probe_mem.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/jit_probe_mem.c b/tools/testing/selftests/bpf/prog_tests/jit_probe_mem.c
-> new file mode 100644
-> index 000000000000..5639428607e6
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/jit_probe_mem.c
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-> +#include <test_progs.h>
-> +#include <network_helpers.h>
-> +
-> +#include "jit_probe_mem.skel.h"
-> +
-> +void test_jit_probe_mem(void)
-> +{
-> +	LIBBPF_OPTS(bpf_test_run_opts, opts,
-> +		.data_in = &pkt_v4,
-> +		.data_size_in = sizeof(pkt_v4),
-> +		.repeat = 1,
-> +	);
-> +	struct jit_probe_mem *skel;
-> +	int ret;
-> +
-> +	skel = jit_probe_mem__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "jit_probe_mem__open_and_load"))
-> +		return;
-> +
-> +	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_jit_probe_mem), &opts);
-> +	ASSERT_OK(ret, "jit_probe_mem ret");
-> +	ASSERT_OK(opts.retval, "jit_probe_mem opts.retval");
-> +	ASSERT_EQ(skel->data->total_sum, 192, "jit_probe_mem total_sum");
-> +
-> +	jit_probe_mem__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/jit_probe_mem.c b/tools/testing/selftests/bpf/progs/jit_probe_mem.c
-> new file mode 100644
-> index 000000000000..3bb8af4df837
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/jit_probe_mem.c
-> @@ -0,0 +1,61 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +static struct prog_test_ref_kfunc __kptr_ref *v;
-> +long total_sum = -1;
-> +
-> +extern struct prog_test_ref_kfunc *bpf_kfunc_call_test_acquire(unsigned long *sp) __ksym;
-> +extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
-> +
-> +SEC("tc")
-> +int test_jit_probe_mem(struct __sk_buff *ctx)
-> +{
-> +	struct prog_test_ref_kfunc *p;
-> +	unsigned long zero = 0, sum;
-> +
-> +	p = bpf_kfunc_call_test_acquire(&zero);
-> +	if (!p)
-> +		return 1;
-> +
-> +	p = bpf_kptr_xchg(&v, p);
-> +	if (p)
-> +		goto release_out;
-> +
-> +	/* Direct map value access of kptr, should be PTR_UNTRUSTED */
-> +	p = v;
-> +	if (!p)
-> +		return 1;
-> +
-> +	asm volatile (
-> +		"r9 = %[p];\n"
-> +		"%[sum] = 0;\n"
-> +
-> +		/* r8 = p->a */
-> +		"r8 = *(u32 *)(r9 + 0);\n"
-> +		"%[sum] += r8;\n"
-> +
-> +		/* r8 = p->b */
-> +		"r8 = *(u32 *)(r9 + 4);\n"
-> +		"%[sum] += r8;\n"
-> +
-> +		"r9 += 8;\n"
-> +		/* r9 = p->a */
-> +		"r9 = *(u32 *)(r9 - 8);\n"
-> +		"%[sum] += r9;\n"
+ arch/x86/net/bpf_jit_comp.c | 70 +++++++++++++++++++++----------------
+ 1 file changed, 39 insertions(+), 31 deletions(-)
 
-All these '\n' are not necessary.
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 36ffe67ad6e5..e3e2b57e4e13 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -992,6 +992,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *add=
+rs, u8 *image, u8 *rw_image
+ 		u8 b2 =3D 0, b3 =3D 0;
+ 		u8 *start_of_ldx;
+ 		s64 jmp_offset;
++		s16 insn_off;
+ 		u8 jmp_cond;
+ 		u8 *func;
+ 		int nops;
+@@ -1358,57 +1359,52 @@ st:			if (is_imm8(insn->off))
+ 		case BPF_LDX | BPF_PROBE_MEM | BPF_W:
+ 		case BPF_LDX | BPF_MEM | BPF_DW:
+ 		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
++			insn_off =3D insn->off;
++
+ 			if (BPF_MODE(insn->code) =3D=3D BPF_PROBE_MEM) {
+-				/* Though the verifier prevents negative insn->off in BPF_PROBE_MEM
+-				 * add abs(insn->off) to the limit to make sure that negative
+-				 * offset won't be an issue.
+-				 * insn->off is s16, so it won't affect valid pointers.
++				/* Conservatively check that src_reg + insn->off is a kernel address=
+:
++				 *   src_reg + insn->off >=3D TASK_SIZE_MAX + PAGE_SIZE
++				 * src_reg is used as scratch for src_reg +=3D insn->off and restore=
+d
++				 * after emit_ldx if necessary
+ 				 */
+-				u64 limit =3D TASK_SIZE_MAX + PAGE_SIZE + abs(insn->off);
+-				u8 *end_of_jmp1, *end_of_jmp2;
+=20
+-				/* Conservatively check that src_reg + insn->off is a kernel address=
+:
+-				 * 1. src_reg + insn->off >=3D limit
+-				 * 2. src_reg + insn->off doesn't become small positive.
+-				 * Cannot do src_reg + insn->off >=3D limit in one branch,
+-				 * since it needs two spare registers, but JIT has only one.
++				u64 limit =3D TASK_SIZE_MAX + PAGE_SIZE;
++				u8 *end_of_jmp;
++
++				/* At end of these emitted checks, insn->off will have been added
++				 * to src_reg, so no need to do relative load with insn->off offset
+ 				 */
++				insn_off =3D 0;
+=20
+ 				/* movabsq r11, limit */
+ 				EMIT2(add_1mod(0x48, AUX_REG), add_1reg(0xB8, AUX_REG));
+ 				EMIT((u32)limit, 4);
+ 				EMIT(limit >> 32, 4);
++
++				if (insn->off) {
++					/* add src_reg, insn->off */
++					maybe_emit_1mod(&prog, src_reg, true);
++					EMIT2_off32(0x81, add_1reg(0xC0, src_reg), insn->off);
++				}
++
+ 				/* cmp src_reg, r11 */
+ 				maybe_emit_mod(&prog, src_reg, AUX_REG, true);
+ 				EMIT2(0x39, add_2reg(0xC0, src_reg, AUX_REG));
+-				/* if unsigned '<' goto end_of_jmp2 */
+-				EMIT2(X86_JB, 0);
+-				end_of_jmp1 =3D prog;
+-
+-				/* mov r11, src_reg */
+-				emit_mov_reg(&prog, true, AUX_REG, src_reg);
+-				/* add r11, insn->off */
+-				maybe_emit_1mod(&prog, AUX_REG, true);
+-				EMIT2_off32(0x81, add_1reg(0xC0, AUX_REG), insn->off);
+-				/* jmp if not carry to start_of_ldx
+-				 * Otherwise ERR_PTR(-EINVAL) + 128 will be the user addr
+-				 * that has to be rejected.
+-				 */
+-				EMIT2(0x73 /* JNC */, 0);
+-				end_of_jmp2 =3D prog;
++
++				/* if unsigned '>=3D', goto load */
++				EMIT2(X86_JAE, 0);
++				end_of_jmp =3D prog;
+=20
+ 				/* xor dst_reg, dst_reg */
+ 				emit_mov_imm32(&prog, false, dst_reg, 0);
+ 				/* jmp byte_after_ldx */
+ 				EMIT2(0xEB, 0);
+=20
+-				/* populate jmp_offset for JB above to jump to xor dst_reg */
+-				end_of_jmp1[-1] =3D end_of_jmp2 - end_of_jmp1;
+-				/* populate jmp_offset for JNC above to jump to start_of_ldx */
++				/* populate jmp_offset for JAE above to jump to start_of_ldx */
+ 				start_of_ldx =3D prog;
+-				end_of_jmp2[-1] =3D start_of_ldx - end_of_jmp2;
++				end_of_jmp[-1] =3D start_of_ldx - end_of_jmp;
+ 			}
+-			emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
++			emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn_off);
+ 			if (BPF_MODE(insn->code) =3D=3D BPF_PROBE_MEM) {
+ 				struct exception_table_entry *ex;
+ 				u8 *_insn =3D image + proglen + (start_of_ldx - temp);
+@@ -1417,6 +1413,18 @@ st:			if (is_imm8(insn->off))
+ 				/* populate jmp_offset for JMP above */
+ 				start_of_ldx[-1] =3D prog - start_of_ldx;
+=20
++				if (insn->off && src_reg !=3D dst_reg) {
++					/* sub src_reg, insn->off
++					 * Restore src_reg after "add src_reg, insn->off" in prev
++					 * if statement. But if src_reg =3D=3D dst_reg, emit_ldx
++					 * above already clobbered src_reg, so no need to restore.
++					 * If add src_reg, insn->off was unnecessary, no need to
++					 * restore either.
++					 */
++					maybe_emit_1mod(&prog, src_reg, true);
++					EMIT2_off32(0x81, add_1reg(0xE8, src_reg), insn->off);
++				}
++
+ 				if (!bpf_prog->aux->extable)
+ 					break;
+=20
+--=20
+2.30.2
 
-> +
-> +		: [sum] "=r"(sum)
-> +		: [p] "r"(p)
-> +		: "r8", "r9"
-> +	);
-> +
-> +	total_sum = sum;
-> +	return 0;
-> +release_out:
-> +	bpf_kfunc_call_test_release(p);
-> +	return 1;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
