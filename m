@@ -2,267 +2,340 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD7064E839
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 09:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7983164E86B
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 10:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbiLPIlX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 03:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
+        id S230023AbiLPJDV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 04:03:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbiLPIlV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 03:41:21 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A142D8;
-        Fri, 16 Dec 2022 00:41:19 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id z8-20020a17090abd8800b00219ed30ce47so5350784pjr.3;
-        Fri, 16 Dec 2022 00:41:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2uYbHB0sSZ3tOjfiE8uB+ws0Uk0wZ5B+rhVD9Zm2u6Y=;
-        b=CvRT8bKmoqn2U384N7HuAFXdUUMm+20BS2q/67mAMoKy1k7rIkASzs7iyy3pl0iNS4
-         fnkz4lj4zC85g3E1NdDo/a8ix0hOGqbsgjfy/bb5GDsbJNqi6GVxBbz9LaK6x7GrmY0B
-         VKXZHeNp1uL02L8uvEPyeEwjKgrKgAcFP0A34A43bQZQII57ZNrXhE/G+A4hWNICU6EZ
-         WJMrfov0+fejf5P/z790/21g2XFW0szzypZLaOmAZ1bHR9b+3mL7UvZi28v7oVXIMrsq
-         Vq9Y5Et3Wo7Tjosd/LMhl0r9yR0utQnGLsV3xPhKa+nyXNYMVlW0+HcoX+uUkhQptWed
-         yqKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2uYbHB0sSZ3tOjfiE8uB+ws0Uk0wZ5B+rhVD9Zm2u6Y=;
-        b=nML88qEKsoZT3v+oL1s+AA9q7PhlBdsPvchFjlP/k0wfKe5hiu+uQRW6H6DQXCfzeo
-         7DqEp3MV2ly7zubqCpSOgjOFJhYPPEKtZjXRk4vfhdDMG0nvnKxVju9ihEPntcV1C0nn
-         RLNCfh8K8oO+Kpu5BVTelH/xAkLFcGe7saFib6rSr93G6i9fHHJNLnvqm9onLuSReOHl
-         I9ciHiWCM8ScmsxSXXZDiHztOcpxiPG4HlXvXOnE8k7mCEU/MSdTMRUTDpDMA+IO3lWn
-         5ruRnNat3yvlfN2xpicTWkOr3gPBHfqbFEMRqFuHCbi21rsV5VnfxuVA3pn+6omDT3C9
-         6bWg==
-X-Gm-Message-State: ANoB5pmW7vEYhPMXQHCOq5go9nO6ICbJX1BiOEcflD1ITlNMt/VPN/Lr
-        MyaRCTIr/Aodo0ZbyyhT4Rq5vQpcaski0Q==
-X-Google-Smtp-Source: AA0mqf5CIIMj93MQ93WNk2fMv2+EDKMZNHUqmnMrnAR/3vyQoaWizqpi/rvs9LT0iroZEMzn0OMvzw==
-X-Received: by 2002:a05:6a21:9989:b0:9d:efbe:e608 with SMTP id ve9-20020a056a21998900b0009defbee608mr43735716pzb.36.1671180078780;
-        Fri, 16 Dec 2022 00:41:18 -0800 (PST)
-Received: from Laptop-X1.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y7-20020a17090322c700b00188a7bce192sm1006626plg.264.2022.12.16.00.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Dec 2022 00:41:17 -0800 (PST)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Lina Wang <lina.wang@mediatek.com>,
-        Coleman Dietsch <dietschc@csp.edu>, bpf@vger.kernel.org,
-        Maciej enczykowski <maze@google.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv2 net-next] selftests/net: mv bpf/nat6to4.c to net folder
-Date:   Fri, 16 Dec 2022 16:41:09 +0800
-Message-Id: <20221216084109.1565213-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S229625AbiLPJDQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 04:03:16 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E237B1EC5C;
+        Fri, 16 Dec 2022 01:03:15 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BG4oHH9025767;
+        Fri, 16 Dec 2022 09:03:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=uN90QK0p8l/NyeG5HqD5ZfOY7c8FWepxnORbFTP1+AA=;
+ b=IkCEUZM7jHzbjhU6P4h1TyrUrHs4QWddgW6axhNyqk0iRlkVZr8R2bqeHLOT0a/7oYZr
+ kwW98nuYu8BNH53VBTkUQ1s5rFJLcGtv4K2Mcx6VzkfO3vJg4j2w1tujjcjImW495L9E
+ CnjX0bVDXcUBzx+Bvfdb6YgwdlGIpZuOWmkzCCkA5Jkcom31jTB3gf2ftA04G2nDZBle
+ FjxdqbYnWeFQRko9P3ilGci8weXShL6zO7Ya0z7D1XkiLwIOX3xTm0vrTHN9y8qQ2rTP
+ bY5yCTBJBZxRgq9TSVdNmQMGvY+XNVz7YCJmrRxM0hLPp5gmA7PbYr3cr25beCX4om/z dw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mg6y7tabm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Dec 2022 09:03:12 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BG93B2O012045
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Dec 2022 09:03:11 GMT
+Received: from linyyuan-gv.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.36; Fri, 16 Dec 2022 01:03:09 -0800
+From:   Linyu Yuan <quic_linyyuan@quicinc.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Linyu Yuan <quic_linyyuan@quicinc.com>
+Subject: [PATCH v4 1/2] trace: add new file under include/trace/stages/ for perf/bpf
+Date:   Fri, 16 Dec 2022 17:03:04 +0800
+Message-ID: <1671181385-5719-1-git-send-email-quic_linyyuan@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: qlb_WoX0sHOLF1IEIB58ecnySwxuF31L
+X-Proofpoint-GUID: qlb_WoX0sHOLF1IEIB58ecnySwxuF31L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-16_04,2022-12-15_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ impostorscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 phishscore=0
+ suspectscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2212160078
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are some issues with the bpf/nat6to4.c building.
+when experiment change for trace operation, the files under
+include/trace/stages/ will be changed, perf/bpf trace may compile fail.
 
-1. It use TEST_CUSTOM_PROGS, which will add the nat6to4.o to
-   kselftest-list file and run by common run_tests.
-2. When building the test via `make -C tools/testing/selftests/
-   TARGETS="net"`, the nat6to4.o will be build in selftests/net/bpf/
-   folder. But in test udpgro_frglist.sh it refers to ../bpf/nat6to4.o.
-   The correct path should be ./bpf/nat6to4.o.
-3. If building the test via `make -C tools/testing/selftests/ TARGETS="net"
-   install`. The nat6to4.o will be installed to kselftest_install/net/
-   folder. Then the udpgro_frglist.sh should refer to ./nat6to4.o.
+add new file stage8_perf_call.h and stage9_bpf_call.h under
+include/trace/stages/, it will make sure no missing change when expriment.
 
-To fix the confusing test path, let's just move the nat6to4.c to net folder
-and build it as TEST_GEN_FILES.
-
-v2: Update the Makefile rules rely on commit 837a3d66d698 ("selftests:
-net: Add cross-compilation support for BPF programs").
-
-Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-tests")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Linyu Yuan <quic_linyyuan@quicinc.com>
 ---
+v4: fix build isse due to file rename
+v3: consider perf as stage 8, bpf as stage 9, file name purpose only.
+v2: not exist
 
-I don't know if there is a way to just install a single TEST_GEN_FILES
-to a separate folder. If there is, then we don't need to move the files.
+ include/trace/bpf_probe.h               | 51 +------------------------------
+ include/trace/perf.h                    | 52 +-------------------------------
+ include/trace/stages/stage8_perf_call.h | 53 +++++++++++++++++++++++++++++++++
+ include/trace/stages/stage9_bpf_call.h  | 52 ++++++++++++++++++++++++++++++++
+ 4 files changed, 107 insertions(+), 101 deletions(-)
+ create mode 100644 include/trace/stages/stage8_perf_call.h
+ create mode 100644 include/trace/stages/stage9_bpf_call.h
 
----
- tools/testing/selftests/net/Makefile          | 50 +++++++++++++++++-
- tools/testing/selftests/net/bpf/Makefile      | 51 -------------------
- .../testing/selftests/net/{bpf => }/nat6to4.c |  0
- tools/testing/selftests/net/udpgro_frglist.sh |  8 +--
- 4 files changed, 52 insertions(+), 57 deletions(-)
- delete mode 100644 tools/testing/selftests/net/bpf/Makefile
- rename tools/testing/selftests/net/{bpf => }/nat6to4.c (100%)
-
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 3007e98a6d64..ed9a315187c1 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -75,14 +75,60 @@ TEST_GEN_PROGS += so_incoming_cpu
- TEST_PROGS += sctp_vrf.sh
- TEST_GEN_FILES += sctp_hello
- TEST_GEN_FILES += csum
-+TEST_GEN_FILES += nat6to4.o
+diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+index 155c495..dfa39f5 100644
+--- a/include/trace/bpf_probe.h
++++ b/include/trace/bpf_probe.h
+@@ -4,56 +4,7 @@
  
- TEST_FILES := settings
+ #ifdef CONFIG_BPF_EVENTS
  
- include ../lib.mk
+-#undef __entry
+-#define __entry entry
+-
+-#undef __get_dynamic_array
+-#define __get_dynamic_array(field)	\
+-		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
+-
+-#undef __get_dynamic_array_len
+-#define __get_dynamic_array_len(field)	\
+-		((__entry->__data_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_str
+-#define __get_str(field) ((char *)__get_dynamic_array(field))
+-
+-#undef __get_bitmask
+-#define __get_bitmask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_cpumask
+-#define __get_cpumask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_sockaddr
+-#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
+-
+-#undef __get_rel_dynamic_array
+-#define __get_rel_dynamic_array(field)	\
+-		((void *)(&__entry->__rel_loc_##field) +	\
+-		 sizeof(__entry->__rel_loc_##field) +		\
+-		 (__entry->__rel_loc_##field & 0xffff))
+-
+-#undef __get_rel_dynamic_array_len
+-#define __get_rel_dynamic_array_len(field)	\
+-		((__entry->__rel_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_rel_str
+-#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
+-
+-#undef __get_rel_bitmask
+-#define __get_rel_bitmask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_cpumask
+-#define __get_rel_cpumask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_sockaddr
+-#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
+-
+-#undef __perf_count
+-#define __perf_count(c)	(c)
+-
+-#undef __perf_task
+-#define __perf_task(t)	(t)
++#include "stages/stage9_bpf_call.h"
  
--include bpf/Makefile
--
- $(OUTPUT)/reuseport_bpf_numa: LDLIBS += -lnuma
- $(OUTPUT)/tcp_mmap: LDLIBS += -lpthread
- $(OUTPUT)/tcp_inq: LDLIBS += -lpthread
- $(OUTPUT)/bind_bhash: LDLIBS += -lpthread
-+
-+# Rules to generate bpf obj nat6to4.o
-+CLANG ?= clang
-+SCRATCH_DIR := $(OUTPUT)/tools
-+BUILD_DIR := $(SCRATCH_DIR)/build
-+BPFDIR := $(abspath ../../../lib/bpf)
-+APIDIR := $(abspath ../../../include/uapi)
-+
-+CCINCLUDE += -I../bpf
-+CCINCLUDE += -I../../../../usr/include/
-+CCINCLUDE += -I$(SCRATCH_DIR)/include
-+
-+BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
-+
-+MAKE_DIRS := $(BUILD_DIR)/libbpf $(OUTPUT)/bpf
-+$(MAKE_DIRS):
-+	mkdir -p $@
-+
-+# Get Clang's default includes on this system, as opposed to those seen by
-+# '-target bpf'. This fixes "missing" files on some architectures/distros,
-+# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
-+#
-+# Use '-idirafter': Don't interfere with include mechanics except where the
-+# build would have failed anyways.
-+define get_sys_includes
-+$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
-+	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
-+$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
-+endef
-+
-+ifneq ($(CROSS_COMPILE),)
-+CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
-+endif
-+
-+CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
-+
-+$(OUTPUT)/nat6to4.o: nat6to4.c $(BPFOBJ) | $(MAKE_DIRS)
-+	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) $(CLANG_SYS_INCLUDES) -o $@
-+
-+$(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
-+	   $(APIDIR)/linux/bpf.h					       \
-+	   | $(BUILD_DIR)/libbpf
-+	$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/     \
-+		    EXTRA_CFLAGS='-g -O0'				       \
-+		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
-+
-+EXTRA_CLEAN := $(SCRATCH_DIR)
-diff --git a/tools/testing/selftests/net/bpf/Makefile b/tools/testing/selftests/net/bpf/Makefile
-deleted file mode 100644
-index 4abaf16d2077..000000000000
---- a/tools/testing/selftests/net/bpf/Makefile
-+++ /dev/null
-@@ -1,51 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--
--CLANG ?= clang
--SCRATCH_DIR := $(OUTPUT)/tools
--BUILD_DIR := $(SCRATCH_DIR)/build
--BPFDIR := $(abspath ../../../lib/bpf)
--APIDIR := $(abspath ../../../include/uapi)
--
--CCINCLUDE += -I../../bpf
--CCINCLUDE += -I../../../../../usr/include/
--CCINCLUDE += -I$(SCRATCH_DIR)/include
--
--BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
--
--MAKE_DIRS := $(BUILD_DIR)/libbpf $(OUTPUT)/bpf
--$(MAKE_DIRS):
--	mkdir -p $@
--
--TEST_CUSTOM_PROGS = $(OUTPUT)/bpf/nat6to4.o
--all: $(TEST_CUSTOM_PROGS)
--
--# Get Clang's default includes on this system, as opposed to those seen by
--# '-target bpf'. This fixes "missing" files on some architectures/distros,
--# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
--#
--# Use '-idirafter': Don't interfere with include mechanics except where the
--# build would have failed anyways.
--define get_sys_includes
--$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
--	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
--$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
--endef
--
--ifneq ($(CROSS_COMPILE),)
--CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
--endif
--
--CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
--
--$(TEST_CUSTOM_PROGS): $(OUTPUT)/%.o: %.c $(BPFOBJ) | $(MAKE_DIRS)
--	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) $(CLANG_SYS_INCLUDES) -o $@
--
--$(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
--	   $(APIDIR)/linux/bpf.h					       \
--	   | $(BUILD_DIR)/libbpf
--	$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/     \
--		    EXTRA_CFLAGS='-g -O0'				       \
--		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
--
--EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR)
--
-diff --git a/tools/testing/selftests/net/bpf/nat6to4.c b/tools/testing/selftests/net/nat6to4.c
-similarity index 100%
-rename from tools/testing/selftests/net/bpf/nat6to4.c
-rename to tools/testing/selftests/net/nat6to4.c
-diff --git a/tools/testing/selftests/net/udpgro_frglist.sh b/tools/testing/selftests/net/udpgro_frglist.sh
-index c9c4b9d65839..0a6359bed0b9 100755
---- a/tools/testing/selftests/net/udpgro_frglist.sh
-+++ b/tools/testing/selftests/net/udpgro_frglist.sh
-@@ -40,8 +40,8 @@ run_one() {
+ /* cast any integer, pointer, or small struct to u64 */
+ #define UINTTYPE(size) \
+diff --git a/include/trace/perf.h b/include/trace/perf.h
+index 8f3bf1e..57e1661 100644
+--- a/include/trace/perf.h
++++ b/include/trace/perf.h
+@@ -4,57 +4,7 @@
  
- 	ip -n "${PEER_NS}" link set veth1 xdp object ${BPF_FILE} section xdp
- 	tc -n "${PEER_NS}" qdisc add dev veth1 clsact
--	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file ../bpf/nat6to4.o section schedcls/ingress6/nat_6  direct-action
--	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file ../bpf/nat6to4.o section schedcls/egress4/snat4 direct-action
-+	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file nat6to4.o section schedcls/ingress6/nat_6  direct-action
-+	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file nat6to4.o section schedcls/egress4/snat4 direct-action
-         echo ${rx_args}
- 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx ${rx_args} -r &
+ #ifdef CONFIG_PERF_EVENTS
  
-@@ -88,8 +88,8 @@ if [ ! -f ${BPF_FILE} ]; then
- 	exit -1
- fi
+-#undef __entry
+-#define __entry entry
+-
+-#undef __get_dynamic_array
+-#define __get_dynamic_array(field)	\
+-		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
+-
+-#undef __get_dynamic_array_len
+-#define __get_dynamic_array_len(field)	\
+-		((__entry->__data_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_str
+-#define __get_str(field) ((char *)__get_dynamic_array(field))
+-
+-#undef __get_bitmask
+-#define __get_bitmask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_cpumask
+-#define __get_cpumask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_sockaddr
+-#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
+-
+-#undef __get_rel_dynamic_array
+-#define __get_rel_dynamic_array(field)	\
+-		((void *)__entry +					\
+-		 offsetof(typeof(*__entry), __rel_loc_##field) +	\
+-		 sizeof(__entry->__rel_loc_##field) +			\
+-		 (__entry->__rel_loc_##field & 0xffff))
+-
+-#undef __get_rel_dynamic_array_len
+-#define __get_rel_dynamic_array_len(field)	\
+-		((__entry->__rel_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_rel_str
+-#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
+-
+-#undef __get_rel_bitmask
+-#define __get_rel_bitmask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_cpumask
+-#define __get_rel_cpumask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_sockaddr
+-#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
+-
+-#undef __perf_count
+-#define __perf_count(c)	(__count = (c))
+-
+-#undef __perf_task
+-#define __perf_task(t)	(__task = (t))
++#include "stages/stage8_perf_call.h"
  
--if [ ! -f bpf/nat6to4.o ]; then
--	echo "Missing nat6to4 helper. Build bpfnat6to4.o selftest first"
-+if [ ! -f nat6to4.o ]; then
-+	echo "Missing nat6to4 helper. Build bpf nat6to4.o selftest first"
- 	exit -1
- fi
- 
+ #undef DECLARE_EVENT_CLASS
+ #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
+diff --git a/include/trace/stages/stage8_perf_call.h b/include/trace/stages/stage8_perf_call.h
+new file mode 100644
+index 0000000..54c8045
+--- /dev/null
++++ b/include/trace/stages/stage8_perf_call.h
+@@ -0,0 +1,53 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#undef __entry
++#define __entry entry
++
++#undef __get_dynamic_array
++#define __get_dynamic_array(field)	\
++		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
++
++#undef __get_dynamic_array_len
++#define __get_dynamic_array_len(field)	\
++		((__entry->__data_loc_##field >> 16) & 0xffff)
++
++#undef __get_str
++#define __get_str(field) ((char *)__get_dynamic_array(field))
++
++#undef __get_bitmask
++#define __get_bitmask(field) ((char *)__get_dynamic_array(field))
++
++#undef __get_cpumask
++#define __get_cpumask(field) ((char *)__get_dynamic_array(field))
++
++#undef __get_sockaddr
++#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
++
++#undef __get_rel_dynamic_array
++#define __get_rel_dynamic_array(field)	\
++		((void *)__entry +					\
++		 offsetof(typeof(*__entry), __rel_loc_##field) +	\
++		 sizeof(__entry->__rel_loc_##field) +			\
++		 (__entry->__rel_loc_##field & 0xffff))
++
++#undef __get_rel_dynamic_array_len
++#define __get_rel_dynamic_array_len(field)	\
++		((__entry->__rel_loc_##field >> 16) & 0xffff)
++
++#undef __get_rel_str
++#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
++
++#undef __get_rel_bitmask
++#define __get_rel_bitmask(field) ((char *)__get_rel_dynamic_array(field))
++
++#undef __get_rel_cpumask
++#define __get_rel_cpumask(field) ((char *)__get_rel_dynamic_array(field))
++
++#undef __get_rel_sockaddr
++#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
++
++#undef __perf_count
++#define __perf_count(c)	(__count = (c))
++
++#undef __perf_task
++#define __perf_task(t)	(__task = (t))
+diff --git a/include/trace/stages/stage9_bpf_call.h b/include/trace/stages/stage9_bpf_call.h
+new file mode 100644
+index 0000000..6dbcbdf
+--- /dev/null
++++ b/include/trace/stages/stage9_bpf_call.h
+@@ -0,0 +1,52 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#undef __entry
++#define __entry entry
++
++#undef __get_dynamic_array
++#define __get_dynamic_array(field)	\
++		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
++
++#undef __get_dynamic_array_len
++#define __get_dynamic_array_len(field)	\
++		((__entry->__data_loc_##field >> 16) & 0xffff)
++
++#undef __get_str
++#define __get_str(field) ((char *)__get_dynamic_array(field))
++
++#undef __get_bitmask
++#define __get_bitmask(field) ((char *)__get_dynamic_array(field))
++
++#undef __get_cpumask
++#define __get_cpumask(field) ((char *)__get_dynamic_array(field))
++
++#undef __get_sockaddr
++#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
++
++#undef __get_rel_dynamic_array
++#define __get_rel_dynamic_array(field)	\
++		((void *)(&__entry->__rel_loc_##field) +	\
++		 sizeof(__entry->__rel_loc_##field) +		\
++		 (__entry->__rel_loc_##field & 0xffff))
++
++#undef __get_rel_dynamic_array_len
++#define __get_rel_dynamic_array_len(field)	\
++		((__entry->__rel_loc_##field >> 16) & 0xffff)
++
++#undef __get_rel_str
++#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
++
++#undef __get_rel_bitmask
++#define __get_rel_bitmask(field) ((char *)__get_rel_dynamic_array(field))
++
++#undef __get_rel_cpumask
++#define __get_rel_cpumask(field) ((char *)__get_rel_dynamic_array(field))
++
++#undef __get_rel_sockaddr
++#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
++
++#undef __perf_count
++#define __perf_count(c)	(c)
++
++#undef __perf_task
++#define __perf_task(t)	(t)
 -- 
-2.38.1
+2.7.4
 
