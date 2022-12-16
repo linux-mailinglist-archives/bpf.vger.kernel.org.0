@@ -2,374 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B674D64E509
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 01:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF4864E511
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 01:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbiLPAKj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Dec 2022 19:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
+        id S229816AbiLPAPW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Dec 2022 19:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbiLPAKU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Dec 2022 19:10:20 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F21462EB5
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 16:10:01 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id c66so1524988edf.5
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 16:10:01 -0800 (PST)
+        with ESMTP id S229740AbiLPAPV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Dec 2022 19:15:21 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0A7396EE
+        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 16:15:19 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id r130so664299oih.2
+        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 16:15:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DIwpC3yIDPTbbzRZf3UjBlE369otimD+YkejGmpwnTg=;
-        b=PZUq2AQNOX3yIsCAUdvgS9mbVZfgI69HaDpbqBod1ym4wtbBMa6IJUvEFiB/xsjlFZ
-         JC28nltuAIQPSpqQHHE/59oSkctStzCfcno2kgCOJUgQKRiDaA22CAEXRRHtj6KNC0ff
-         m/T5NeQS+1XdrXjS4mt7z20xDT5sMfe60Ix97VQkSDJracKicFdDa2ePzJBuLiMHM0I+
-         ZjlsxCM9xiaj7CF1twGldnDp7iX4rCVcZVz3nLnmWbzQ8HfQSTCrhkosAbg3+DGWuwJI
-         Xu1z/poA5ZSj3aIHURcBpz3E0DFNsH8hc0LPDTtwKwm1NiV7fThY0RR70HaDQheeMlFz
-         s6xg==
+        d=cloudflare.com; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xjntjJNW8XDkRXK7YLXd7UDq0rE4A19WJe72lqEhvfY=;
+        b=ROzZW/rksvddHyRkkl+uvMmqFb65687wSurey1W4WLEusmDqhn9oUW+/6ycg0i+M3D
+         bUaBSoMDjeVmvOdAhAG6C+bgTY9FBgxUcI4Q/EFCtQ0yP0P+KkQOZqL3VQBGT6zMMcSb
+         GIxwmTuDeBEWvezLX6ztmul1/qV1His5eXkvE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DIwpC3yIDPTbbzRZf3UjBlE369otimD+YkejGmpwnTg=;
-        b=3oE5Rmg8mNx1MZuu5neoM3oHSEHf2j5hvuMB+SbjG+XNmcWQsvQcxH99n5svmlkI1M
-         tMIlYB1Baobz9ZrcTAqrmkIt9sKF4WYvs9XgeDv4ZOxxk09cqJZ6psJ+2jUsLLRjBjI/
-         ufT70SpVbfQx7zeIWmvDIzxi+64D1o2vCXD14p1MDON5/nATckT+oc5IxTaP1g+XNPIE
-         DOYHFA3IppwBaKI4a4v1QMASK0kJTM4J9FL9ZErccmiIVJ6guAIp+rWEcPIKgQ3v1Gbm
-         tAZjpB/BJear2AZPouHqAqjs6grVvbt0BiJJ4TAbu9xISfsUGegcsMhq5ayKzk1ZOOy1
-         zLdw==
-X-Gm-Message-State: ANoB5plYLejhJIfIUIDfWKeGYbvp70+EAT5QMJYZbKRVrsIfT0/0bjgk
-        eW3dhxzE0luLfnV5vOK4lDE+5oWGR4KfsL640Mq/
-X-Google-Smtp-Source: AA0mqf7x24mP6gbkBm1D799Wr4QuGsbUSCD7v8AX+LcD0DT7AJaCRrsxWPIn5AK7SzzXkyIfM5KO8NAFptlVpfxiatk=
-X-Received: by 2002:a05:6402:f27:b0:46b:d117:e5 with SMTP id
- i39-20020a0564020f2700b0046bd11700e5mr33374057eda.411.1671149399447; Thu, 15
- Dec 2022 16:09:59 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xjntjJNW8XDkRXK7YLXd7UDq0rE4A19WJe72lqEhvfY=;
+        b=7MxrVDghUg4OEFN1cSpGSIVbszPKeMMfvqtAem4YYsoTjoDke4hziByC/2gB+P/ybK
+         SJEV8tJrkV1yoBc0YBFhvbCSqSX7NdHyxcXmLBVzG7nSWHApIwTmNKfl7s7dTAsjSx02
+         JHktgdFUstPXrp3Jv0sZUlznyDOq7I3joNE2icIFysWanYr6m3GqYpUOd+tQq01436eK
+         tXN7dHN+PMR5/Df9aqBgz/IeJveDurlH80NsgFXcoRIiRVfC2cw0lXc/CyAB7A1DYwWD
+         MGCpejk9Jhjp9uAcNNggl5wo9TEvivUWE3kKD8HwUjFCVfGnCy6xlzQM7lMYtvKV1VO4
+         H2wg==
+X-Gm-Message-State: ANoB5pl6l2PtoutjBoqG9y0NQBZZO9Nr0KXldgI/EiwUL5ne5fDDoT7n
+        +Vxivd0oK7jiqzPEAGdDeAWlNQ==
+X-Google-Smtp-Source: AA0mqf5pjkNlYkiP448njcCpGoXWKWujnAcqliQbo734/BpNv4ht4UiaoL3RZ302T//+I65GZCUe9w==
+X-Received: by 2002:a05:6808:16a8:b0:35a:56f5:860d with SMTP id bb40-20020a05680816a800b0035a56f5860dmr16647244oib.38.1671149718981;
+        Thu, 15 Dec 2022 16:15:18 -0800 (PST)
+Received: from sbohrer-cf-dell ([24.28.97.120])
+        by smtp.gmail.com with ESMTPSA id q19-20020a056808201300b00342eade43d4sm149924oiw.13.2022.12.15.16.15.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Dec 2022 16:15:18 -0800 (PST)
+Date:   Thu, 15 Dec 2022 18:14:44 -0600
+From:   Shawn Bohrer <sbohrer@cloudflare.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
+        magnus.karlsson@intel.com, kernel-team@cloudflare.com
+Subject: Re: Possible race with xsk_flush
+Message-ID: <Y5u4dA01y9RjjdAW@sbohrer-cf-dell>
+References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
+ <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20221122000011.241697-1-morbo@google.com> <20221122000011.241697-2-morbo@google.com>
- <CAEf4BzYiHx0gAgJsam4usy23UTGwN-a-nyJa2+jzG+RzUFiWEQ@mail.gmail.com>
- <CAGG=3QWGAepDQmSxarrMENOX79srigF48xYOsOjOPO-YuvFr1g@mail.gmail.com>
- <CAEf4Bzb38BXEL_mKuqRdUrvQVTXLH9TmOdwZbrVa_10YmdhoTw@mail.gmail.com>
- <CAGG=3QVC_qOFWRi4sf88Ct3Tz5_N6j_GUwj+Dk11Oi9AJYNm-A@mail.gmail.com>
- <CAEf4BzYs4h0ya7MbQ9P96293XkyW4ab3f+nYeJU6D=LFsrm6-w@mail.gmail.com>
- <CAGG=3QXVC-9tPT1KL0ze+5oWz=hpXsy+w=BJgSjokufmSP4eZQ@mail.gmail.com>
- <CAEf4BzazUVOnPD_wBdhVaLjB5jE5CDd1t1zop6zwA4Lr2qF+rA@mail.gmail.com>
- <CAGG=3QV0rWv22b5vM9Ht8Htf7k5SvppXyDWwX1nkKPFiC4e+bQ@mail.gmail.com>
- <CAEf4Bzbb3XZ4BUBCvpvZ4a1tac+7gwO0GL8dm_2rKK+OBKCEkA@mail.gmail.com> <CAGG=3QVEu+7CXtGx4vO0wp+Z5haFEH52-=gCfNAO9TcMpKsxUg@mail.gmail.com>
-In-Reply-To: <CAGG=3QVEu+7CXtGx4vO0wp+Z5haFEH52-=gCfNAO9TcMpKsxUg@mail.gmail.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Thu, 15 Dec 2022 16:09:42 -0800
-Message-ID: <CAGG=3QXqFs6BaBDZFrHmUgnFR17x+V-VREUmHJJgOvM8m-nRcg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] btf_encoder: Generate a new .BTF section even if one exists
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 15, 2022 at 3:00 PM Bill Wendling <morbo@google.com> wrote:
->
->  On Wed, Dec 7, 2022 at 12:33 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Dec 7, 2022 at 12:16 PM Bill Wendling <morbo@google.com> wrote:
-> > >
-> > > On Tue, Dec 6, 2022 at 2:53 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > adding bpf@vger back
-> > > >
-> > > > On Tue, Dec 6, 2022 at 12:15 PM Bill Wendling <morbo@google.com> wrote:
-> > > > >
-> > > > > On Tue, Dec 6, 2022 at 10:38 AM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Thu, Dec 1, 2022 at 12:20 PM Bill Wendling <morbo@google.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, Dec 1, 2022 at 11:56 AM Andrii Nakryiko
-> > > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > On Wed, Nov 30, 2022 at 4:21 PM Bill Wendling <morbo@google.com> wrote:
-> > > > > > > > >
-> > > > > > > > > On Wed, Nov 30, 2022 at 2:59 PM Andrii Nakryiko
-> > > > > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > > > > >
-> > > > > > > > > > On Mon, Nov 21, 2022 at 4:00 PM Bill Wendling <morbo@google.com> wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > LLD generates a zero-length .BTF section (BFD doesn't generate this
-> > > > > > > > > > > section). It shares the same address as .BTF_ids (or any section below
-> > > > > > > > > > > it). E.g.:
-> > > > > > > > > > >
-> > > > > > > > > > >   [24] .BTF              PROGBITS        ffffffff825a1900 17a1900 000000
-> > > > > > > > > > >   [25] .BTF_ids          PROGBITS        ffffffff825a1900 17a1900 000634
-> > > > > > > > > > >
-> > > > > > > > > > > Writing new data to that section doesn't adjust the addresses of
-> > > > > > > > > > > following sections. As a result, the "-J" flag produces a corrupted
-> > > > > > > > > > > file, causing further commands to fail.
-> > > > > > > > > > >
-> > > > > > > > > > > Instead of trying to adjust everything, just add a new section with the
-> > > > > > > > > > > .BTF data and adjust the name of the original .BTF section. (We can't
-> > > > > > > > > > > remove the old .BTF section because it has variables that are referenced
-> > > > > > > > > > > elsewhere.)
-> > > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > Have you tried llvm-objcopy --update-section instead? Doesn't it work?
-> > > > > > > > > >
-> > > > > > > > > I gave it a quick try and it fails for me with this:
-> > > > > > > > >
-> > > > > > > > > llvm-objcopy: error: '.tmp_vmlinux.btf': cannot fit data of size
-> > > > > > > > > 4470718 into section '.BTF' with size 0 that is part of a segment
-> > > > > > > >
-> > > > > > > > .BTF shouldn't be allocatable section, when added by pahole. I think
-> > > > > > > > this is the problem. Can you confirm that that zero-sized .BTF is
-> > > > > > > > marked as allocated and is put into one of ELF segments? Can we fix
-> > > > > > > > that instead?
-> > > > > > > >
-> > > > > > > I think it does:
-> > > > > > >
-> > > > > > > [24] .BTF              PROGBITS        ffffffff825a1900 17a1900 000000
-> > > > > > > 00  WA  0   0  1
-> > > > > > >
-> > > > > >
-> > > > > > So this allocatable .BTF section, could it be because of linker script
-> > > > > > in include/asm-generic/vmlinux.lds.h? Should we add some conditions
-> > > > > > there to not emit .BTF if __startt_BTF == __stop_BTF (i.e., no BTF
-> > > > > > data is present) to avoid this issue in the first place?
-> > > > > >
-> > > > > It looks like keeping the .BTF section around is intentional:
-> > > > >
-> > > > >   commit 65c204398928 ("bpf: Prevent .BTF section elimination")
-> > > > >
-> > > > > I assume that patch isn't meant if the section is zero sized...
-> > > >
-> > > > yep, we need to keep it only if it's non-empty
-> > > >
-> > > > >
-> > > > > I was able to get a working system with two patches: one to Linux and
-> > > > > one to pahole. The Linux patch specifies that the .BTF section
-> > > > > shouldn't be allocatable.
-> > > >
-> > > > That's not right, we do want this .BTF section to be allocatable,
-> > > > kernel expects this content to be accessible at runtime. So Linux-side
-> > > > change is wrong. Is it possible to add some conditional statement to
-> > > > linker script to keep .BTF only if .BTF is non-empty?
-> > > >
-> > > I thought you said the .BTF section shouldn't be allocatable. Is that
-> > > only when it's added by pahole? The issue isn't really the section
-> > > that's added by pahole, but the section as it's generated by LLD.
-> >
-> > Yeah, it's confusing. Pahole is not a linker and can't properly embed
-> > .BTF into a data segment inside ELF. So the only choice is to add it
-> > as nono-allocatable ELF section.
-> >
-> > But .BTF as part of vmlinux image *has* to be loadable, as kernel from
-> > inside expect to have access to BTF contents. So that's why we use
-> > linker script to embed .BTF into data segment as allocatable.
-> >
-> > Generally, the process is that during vmlinux building we add .BTF
-> > contents to a temporary vmlinux file using pahole. Then during final
-> > linking (at the same time as we add kallsyms) we rely on linker to
-> > make .BTF allocatable and add those __start_BTF/__stop_BTF markers.
-> >
-> > Hope that clarifies this a bit.
-> >
-> I think I understand now. Thanks! :-)
->
-> > >
-> > > I don't know of a way to add conditional code to a linker script. I
-> > > suspect we'd need the equivalent of this:
-> > >
-> > >   .BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {
-> > >     __start_BTF = .;
-> > >     KEEP(*(.BTF))
-> > >     __stop_BTF = .;
-> > >   }
-> > >   SIZEOF(.BTF) == 0 && /DISCARD/ { *(.BTF) }   # This doesn't work.
-> >
-> > Honestly, no idea, I barely ever used linker scripts. Was hoping
-> > someone else will be able to figure this out and I won't have to learn
-> > this :)
-> >
-> > >
-> > > > > The pahole patch uses --update-section if
-> > > > > the section exists rather than writing out a new ELF file. Thoughts?
-> > > >
-> > > > That might be ok, because we already have dependency on llvm-objcopy.
-> > > > But also it's unnecessary change if the section in not allocated,
-> > > > right? Or why do we need to switch to llvm-objcopy in this case?
-> > > >
-> > > Not using llvm-objcopy was still messing up the ELF file. When you
-> > > used `readelf -lW .tmp_vmlinux.btf` the "Section to Segment mapping"
-> > > is trashed.
-> >
-> > If .BTF is not allocatable, there is no section to segment mapping, is there?
-> >
-> > >
-> > > I'm a bit worried still that even if we modify the Linux linker
-> > > scripts to remove a zero-sized .BTF section non-Linux projects using
-> > > pahole will hit this issue. (Or is Linux meant to be the sole user of
-> > > pahole?)
-> >
-> > That's the single most important case that we care about (note that
-> > the same thing happens for kernel modules). Nothing prevents others
-> > from using pahole for similar reasons with their custom apps.
-> >
-> > >
-> > > The purpose of the `-J` option is to add BTF data and the next command
-> > > in scripts/link-linux.sh extracts that data into its own file. The
-> > > .tmp_vmlinux.btf that pahole modified is then no longer used. Why not
-> > > cut out the middleman and have `-J` write the BTF data directly to a
-> > > file? Does it need to be in a special format?
-> > >
-> >
-> > That's exactly what I'm proposing:
-> >
-> > > > > > > > Also, more generally, newer paholes (not that new anymore, it's been a
-> > > > > > > > supported feature for a while) support emitting BTF as raw binary
-> > > > > > > > files, instead of embedding them into ELF. I think this is a nicer and
-> > > > > > > > simpler option and we should switch link-vmlinux.sh to use that
-> > > > > > > > instead, if pahole is new enough.
-> >
-> > We dump .BTF contents as raw bytes. Then embed with objcopy. That's the goal.
-> >
-> I knew I had a good idea! :-D
->
-> I tried emitting the BTF data with the --btf_encode_detached flag.
-> However, it's emitted as a binary file, which the linker isn't able to
-> handle. We could process it afterwards with "objcopy", but I'm not
-> sure how to grab the correct output BFD name. So something like this:
->
-> $ objcopy --input-target=binary --output-target=???
-> .btf.vmlinux.bin.o.raw .btf.vmlinux.bin.o
->
-> What should I put in place of "???"? I can't seem to find a tool that
-> will give me a BFD name so that I could use the same type as the
-> ".tmp_vmlinux.btf.o" file.
->
-Okay, what are your thoughts on this:
+On Thu, Dec 15, 2022 at 11:22:05AM +0100, Magnus Karlsson wrote:
+> Thanks Shawn for your detailed bug report. The rings between user
+> space and kernel space are single-producer/single-consumer, so in your
+> case when both CPU0 and CPU2 are working on the fill ring and the Rx
+> ring at the same time, this will indeed produce races. The intended
+> design principle to protect against this is that only one NAPI context
+> can access any given ring at any point in time and that the NAPI logic
+> should prevent two instances of the same NAPI instance from running at
+> the same time. So if that is not true for some reason, we would get a
+> race like this. Another option is that one of the CPUs should really
+> process another fill ring instead of the same.
+> 
+> Do you see the second socket being worked on when this happens?
+> 
+> Could you please share how you set up the two AF_XDP sockets?
 
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 918470d768e9..9355893acb12 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -125,15 +125,27 @@ gen_btf()
-        vmlinux_link ${1}
+Alex Forster sent more details on the configuration but just to
+reiterate there are actually 8 AF_XDP sockets in this test setup.
+There are two veth interfaces and each interface has four receive
+queues.  We create one socket per interface/queue pair.  Our XDP
+program redirects each packet to the correct AF_XDP socket based on
+the queue number.
 
-        info "BTF" ${2}
--       LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
+Yes there is often activity on other sockets near the time when the
+bug occurs.  This is why I'm printing xs/fq, the socket address and
+fill queue address, and printing the ingress/egress device name and
+queue number in my prints.  This allows to match up the user space and
+kernel space prints.  Additionally we are using a shared UMEM so
+descriptors could move around between sockets though I've tried to
+minimize this and in every case I've seen so far the mystery
+descriptor was last used on the same socket and has also been in the
+fill queue just not next in line.
 
--       # Create ${2} which contains just .BTF section but no symbols. Add
--       # SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
--       # deletes all symbols including __start_BTF and __stop_BTF, which will
--       # be redefined in the linker script. Add 2>/dev/null to suppress GNU
--       # objcopy warnings: "empty loadable segment detected at ..."
--       ${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
--               --strip-all ${1} ${2} 2>/dev/null
-+       # Write the raw BTF data instead of inserting it into the temp vmlinux
-+       # file. This avoids an issue where an existing .BTF section doesn't have
-+       # the appropriate size to handle the BTF data pahole wants to add. It
-+       # turns out that objcopy doesn't adjust the addresses of following
-+       # sections, resulting in the .BTF section overwriting data in other
-+       # sections. If the data is large, it could corrupt the file enough so
-+       # that it's no longer usable.
-+       LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J
---btf_encode_detached=${2}.raw ${1}
-+
-+       # Create an empty ${2} ELF file then add the .BTF section from the raw
-+       # data.
-+       #     * Add SHF_ALLOC because .BTF will be part of the vmlinux image.
-+       #     * --strip-all deletes all symbols including __start_BTF and
-+        #       __stop_BTF, which are redefined in the linker script.
-+       #     * Add 2>/dev/null to suppress GNU objcopy warnings:
-+       #           "empty loadable segment detected at ..."
-+       ${CC} -o ${2} -c -x c - < /dev/null
-+       ${OBJCOPY} --add-section .BTF=${2}.raw --set-section-flags
-.BTF=alloc,readonly \
-+               --strip-all ${2} 2>/dev/null
-+
-        # Change e_type to ET_REL so that it can be used to link final vmlinux.
-        # Unlike GNU ld, lld does not allow an ET_EXEC input.
-        printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
+> Are you using XDP_DRV mode in your tests?
+> 
+> > A couple more notes:
+> > * The ftrace print order and timestamps seem to indicate that the CPU
+> >   2 napi_poll is running before the CPU 0 xsk_flush().  I don't know
+> >   if these timestamps can be trusted but it does imply that maybe this
+> >   can race as I described.  I've triggered this twice with xsk_flush
+> >   probes and both show the order above.
+> > * In the 3 times I've triggered this it has occurred right when the
+> >   softirq processing switches CPUs
+> 
+> This is interesting. Could you check, in some way, if you only have
+> one core working on the fill ring before the softirq switching and
+> then after that you have two? And if you have two, is that period
+> transient?
 
+I think what you are asking is why does the softirq processing switch
+CPUs?  There is still a lot I don't fully understand here but I've
+tried to understand this, if only to try to make it happen more
+frequently and make this easier to reproduce.
 
-> -bw
->
-> > > -bw
-> > >
-> > > > >
-> > > > > Linux patch:
-> > > > >
-> > > > > diff --git a/include/asm-generic/vmlinux.lds.h
-> > > > > b/include/asm-generic/vmlinux.lds.h
-> > > > > index 3dc5824141cd..5bea090b736e 100644
-> > > > > --- a/include/asm-generic/vmlinux.lds.h
-> > > > > +++ b/include/asm-generic/vmlinux.lds.h
-> > > > > @@ -680,7 +680,7 @@
-> > > > >   */
-> > > > >  #ifdef CONFIG_DEBUG_INFO_BTF
-> > > > >  #define BTF                                                            \
-> > > > > -       .BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {                           \
-> > > > > +       .BTF (INFO) : AT(ADDR(.BTF) - LOAD_OFFSET) {                    \
-> > > > >                 __start_BTF = .;                                        \
-> > > > >                 KEEP(*(.BTF))                                           \
-> > > > >                 __stop_BTF = .;                                         \
-> > > > >
-> > > > > pahole patch:
-> > > > >
+In this test setup there is no hardware IRQ.  iperf2 sends the packet
+and the CPU where iperf is running runs the veth softirq.  I'm not
+sure how it picks which veth receive queue receives the packets, but
+they end up distributed across the veth qeueus.  Additionally
+__veth_xdp_flush() calls __napi_schedule().  This is called from
+veth_xdp_xmit() which I think means that transmitting packets from
+AF_XDP also schedules the softirq on the current CPU for that veth
+queue.  What I definitely see is that if I pin both iperf and my
+application to a single CPU all softirqs of all queues run on that
+single CPU.  If I pin iperf2 to one core and my application to another
+core I get softirqs for all veth queues on both cores.
+
+In our test setup we aren't applying any cpu affinity.  iperf2 is
+multi-threaded and can run on all 4 cores, and our application is
+multithreaded and can run on all 4 cores.  The napi scheduling seems
+to be per veth queue and yes I see those softirqs move and switch
+between CPUs.  I don't however have anything that clearly shows it
+running concurrently on two CPUs (The stretches of __xsk_rcv_zc are
+all on one core before it switches).  The closest I have is the
+several microseconds where it appears xsk_flush() overlaps at the end
+of my traces.  I would think that if the napi locking didn't work at
+all you'd see clear overlap.
+
+From my experiments with CPU affinity I've updated my test setup to
+frequently change the CPU affinity of iperf and our application on one
+of my test boxes with hopes that it helps to reproduce but I have no
+results so far.
+
+> > * I've also triggered this before I added the xsk_flush() probe and
+> >   in that case saw the kernel side additionally fill in the next
+> >   expected descriptor, which in the example above would be 0xfe4100.
+> >   This seems to indicate that my tracking is all still sane.
+> > * This is fairly reproducible, but I've got 10 test boxes running and
+> >   I only get maybe bug a day.
 > >
-> > [...]
-> >
-> > > > >
-> > > > >
-> > > > > > > Fangrui mentioned something similar to this in a previous message:
-> > > > > > >
-> > > > > > >   https://lore.kernel.org/dwarves/20210317232657.mdnsuoqx6nbddjgt@google.com/T/#u
-> > > > > > >
-> > > > > > > > Also, more generally, newer paholes (not that new anymore, it's been a
-> > > > > > > > supported feature for a while) support emitting BTF as raw binary
-> > > > > > > > files, instead of embedding them into ELF. I think this is a nicer and
-> > > > > > > > simpler option and we should switch link-vmlinux.sh to use that
-> > > > > > > > instead, if pahole is new enough.
-> > > > > > > >
-> > > > > > > > Hopefully eventually we can get rid of all the old pahole version
-> > > > > > > > cruft, but for now it's inevitable to support both modes, of course.
-> > > > > > > >
-> > > > > > >
-> > > > > > > Ah technical debt! :-)
-> > > > > >
-> > > > > > Yep, it would be good to get contributions to address it ;) It's
-> > > > > > better than hacks with renaming of sections, *wink wink* :)
-> > > > > >
-> > > > > ;-)
-> > > > >
-> > > > > -bw
-> > > > >
-> > > > > > >
-> > > > > > > -bw
-> > > > > > >
-> > > > > > > > > btf_encoder__write_elf: failed to add .BTF section to '.tmp_vmlinux.btf': 2!
-> > > > > > > > > Failed to encode BTF
-> > > > > > > > >
-> > > > > > > > > -bw
-> > > > > > > > >
-> > > > > > > > > > > Link: https://lore.kernel.org/dwarves/20210317232657.mdnsuoqx6nbddjgt@google.com/
-> > > > > > > > > > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > > > > > > > > > Cc: Fangrui Song <maskray@google.com>
-> > > > > > > > > > > Cc: dwarves@vger.kernel.org
-> > > > > > > > > > > Signed-off-by: Bill Wendling <morbo@google.com>
-> > > > > > > > > > > ---
-> > > > > > > > > > >  btf_encoder.c | 88 +++++++++++++++++++++++++++++++--------------------
-> > > > > > > > > > >  1 file changed, 54 insertions(+), 34 deletions(-)
-> > > > > > > > > > >
-> >
-> > [...]
+> > Any thoughts on if the bug I described is actually possible,
+> > alternative theories, or other things to test/try would be welcome.
+> 
+> I thought this would be impossible, but apparently not :-). We are
+> apparently doing something wrong in the AF_XDP code or have the wrong
+> assumptions in some situation, but I just do not know what at this
+> point in time. Maybe it is veth that breaks some of our assumptions,
+> who knows. But let us dig into it. I need your help here, because I
+> think it will be hard for me to reproduce the issue.
+
+Yeah if you have ideas on what to test I'll do my best to try them.
+
+I've additionally updated my application to put a bad "cookie"
+descriptor address back in the RX ring before updating the consumer
+pointer.  My hope is that if we then ever receive that cookie it
+proves the kernel raced and failed to update the correct address.
+
+Thanks,
+Shawn Bohrer
