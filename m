@@ -2,198 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E3E64E70B
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 06:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 197BD64E722
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 06:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbiLPFkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 00:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35610 "EHLO
+        id S229453AbiLPFyq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 00:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbiLPFkl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 00:40:41 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647E8F09
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 21:40:39 -0800 (PST)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BG4UpSU023766;
-        Thu, 15 Dec 2022 21:40:05 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=X0mxpxIXVDTODxeIflU3B614km36wSRpjNZbGS8mK68=;
- b=ahpgllsQuFQ7+dJPe1sAMl40jOsDaZaq2ZgCPn6HDl4BuCl3Uosha19Cb+T3SrvbnlnG
- dnYCupLqqz+9tATboelSUbA9xFIrBzuBMedYTIMYsPJWrB3tTsqc28qbkG0FlhOq8bh1
- 5HdLhXMLx6ew6xZmrGGw/l1ZRR9ELDoFJ7c/91TkMWniCpimBm10shtx1Ouo2lLsE54L
- e9GZplk8y8vrmtuKrSBjumukFdy1w2czDCr8uSsz2XsUIB3rmogjn4aGWwbLf0edWO0I
- MCEfm9jVqPQpcFo/f9BLUyRvxA8DkM5LruGnWmtRPKOVaXSOLwvj/OzUSErj+EpeYvQK VQ== 
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2174.outbound.protection.outlook.com [104.47.73.174])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3mg3hmx4n1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Dec 2022 21:40:04 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mVbxvbf0PlIW0UetWFBgTN0BKlhGcBqIvfdpFgTXgwK5aRrw5TxOcQN/DGDdUz+GmCrQ8myFupk6XkeF2HsosTYAkOMkL4xxvL29q5Br1nrXfPAPb9tObe8ucz5SJTlK2lC98mp7GC508RL7tOiZDKX6uTofc3l/1W4RM1OUe7nWdRlnY+MivUNAvt44sPaPjhzEtWLgns2X1kvnUDPWltfEVt7k46g/I2eqmdMYhuXz01GKB2Q6C0vRaUvF4Y5+05GWx/DFhU/9+Fv1WyB76pVoDSDKLpEaEY3SEGJFfC+ESHbKVrZZXTwT4q+RwbzgJHkQzclOEQuqJpbhSI8rJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X0mxpxIXVDTODxeIflU3B614km36wSRpjNZbGS8mK68=;
- b=l/Ims/74NKto2wD9UorqDnqLf0MNFfrtQ2sHIBPfxjKt7XznOk1RVW7sh56Nv9Y0kkTlYQXvQdso8/AV6hc0NcaaNRU8uSVQVCTsrOU0ERE80Ha0E6Ita6hQa1kstKKTwV8KTpiGf0X4y7CXno4d5ZgkHQvjU5ugsdTYpBizg+pcuOUVl4Sd9X9ZEUHY3uq0m4hj+CTqBCPguIVZBNzVDD5P4xQraqpVcuybdQqJ7Ht4HPoPwRxgh66L03I9Ap+iEBRrtmB9FHvKWBqtsETz6Q6OTQ2vGALxAatWmbWfYEO8rRph4sBQgwlGHkdpo9HCys90NyN3AnlOAWuaDT6e+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MW4PR15MB4762.namprd15.prod.outlook.com (2603:10b6:303:10b::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.13; Fri, 16 Dec
- 2022 05:40:02 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5924.011; Fri, 16 Dec 2022
- 05:40:02 +0000
-Message-ID: <553c4d32-aac1-f5d2-8f39-86cdca1af0d6@meta.com>
-Date:   Thu, 15 Dec 2022 21:39:58 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.0
-Subject: Re: [bpf-next v2 1/2] bpf: add runtime stats, max cost
-Content-Language: en-US
-To:     xiangxia.m.yue@gmail.com, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-References: <20221215043217.81368-1-xiangxia.m.yue@gmail.com>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221215043217.81368-1-xiangxia.m.yue@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0049.namprd03.prod.outlook.com
- (2603:10b6:a03:33e::24) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S229480AbiLPFyp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 00:54:45 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DBE36D64;
+        Thu, 15 Dec 2022 21:54:43 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id s196so1105497pgs.3;
+        Thu, 15 Dec 2022 21:54:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9nHmBQYF3nBNqyNj2PFzrUNwBMnuzgTKWyjZljTDo88=;
+        b=QzFwd1MmmPpBd2ezWngjf7PUFaMaB52m8IiN67Yqc8i91g+Tdth/SezAJD12ThbR/2
+         9Ub0A414NsZr4WUwBcNy9zE/3cxR2w3aGJgdpIpW5WbBa/qLCV8JUsrEVzqQ0Uw0GVrx
+         JKBmdQGNgn1SZhPLZt3chZrVrc0VQAJCwHpP9zoIYeJ8evCSbQEE80OMuAz0WUYALvJL
+         yao3BPSdY77o4M6fbi34ZJsJTb2MaBAVi/O8xIj+79XOZ3dpNIG6S8xR4p3uH2b/qU5K
+         VbbYUtBI/A1Ofpa586Yi57dNxnPtuc/vnAnlC5eFRwc+X3eng66MA+z5zgxVCezaQPPG
+         qTig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9nHmBQYF3nBNqyNj2PFzrUNwBMnuzgTKWyjZljTDo88=;
+        b=gfaGuEh9n04XpvV6THBxVGxave1GiHl7D8NJaeikBx+14XJaI2d/bKdIJ8IxdDZtb3
+         poEs3Y9k8qqmbwKS1Z325wCs1PfWn8XHxdJIpuUVPRCawuP15CcCrhmw8dgrWCdYDdUt
+         v5buzuZ9HhVmzLgSAUJrRX2q6998WqofRSIpy6mQAQLljnSnkx5uUzpmLlSctOwTDqb0
+         fooaK3ouHq7gL/7uA04ebDGPlNIKmR1QD6oXzOJ61GVr21uEsmuB19hZR34vqw6yUXbY
+         BqiXwj9/4qOaXMo21DEnm82CCFheid0S983/kbaahMyTNhVjBjQgls21OJ8pAK+8bdxA
+         GW9g==
+X-Gm-Message-State: ANoB5pmulxP6WTlk7eyoOXqMNjM6HODjJkbttMLcKgN6IT9SILMudbR2
+        br7ChmTBga18A+XDGgfq3FcQ26CmhA==
+X-Google-Smtp-Source: AA0mqf4PSVQIxjakaMhGlrWMkqj/LWjNW94XGL+5lPErpFVoJ77ZONGaLRQYV88tY0n0LWCsJ6F0JQ==
+X-Received: by 2002:a62:870d:0:b0:576:f02e:d0ef with SMTP id i13-20020a62870d000000b00576f02ed0efmr31320268pfe.4.1671170082306;
+        Thu, 15 Dec 2022 21:54:42 -0800 (PST)
+Received: from localhost.localdomain ([144.214.0.6])
+        by smtp.gmail.com with ESMTPSA id g15-20020aa79f0f000000b0056b2e70c2f5sm593246pfr.25.2022.12.15.21.54.39
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 15 Dec 2022 21:54:41 -0800 (PST)
+From:   Hao Sun <sunhao.th@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, Hao Sun <sunhao.th@gmail.com>
+Subject: [PATCH bpf-next] bpf: dup xlated insns with kvmalloc+memcpy
+Date:   Fri, 16 Dec 2022 13:54:35 +0800
+Message-Id: <20221216055436.4698-1-sunhao.th@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MW4PR15MB4762:EE_
-X-MS-Office365-Filtering-Correlation-Id: a1bbad7e-1ca1-4bc0-dc78-08dadf27fa11
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wNJuZ37YtasTIyoruFPko4DZtTOZ2jwB1zB2sOJQ601klSWV/7YD8wSnU/8teLzuzEEIn2SPuhhx9noMUMFzlq8GDsKBmwwnUW9K+3Q6v8fde5iQMkD9oLz3iNnmD5MpO08FE0z3F/SwKzCPey5NK2y/vYPq2gcXOCcr/XdEbXDswUmMPduwQg5LoySc5NntmDUhMMosVRcHkk7xUlKZdGPcwjRkdaeFa59qfZopqYLiWXuDnxyv4YhvUmxJu8Zo6clJCOYO2kn9HZXdYYch4s/eaWlmXXebJmdcEiAGIwz3JbMWVEvD0foP8j1cCUX81Jxl1s5PaVJUuiW2rp2nPurOU29QmXowp2zyu8jBmSjo5QoPlWnYxrXjpycWyA1LaNQeQ3Ntfn54qQkYb2uQpsbqkesiCPe+S3Q2BxLtIkc9wS7oi6/INLmZXvjjYK3eCK7hkejfzhUfIBTm12dIr2cfZFWLMsI9NcC+X5aRZdDK/awbYST61df9waixNmtc8JNkjeDK9Ty8ij6aDW99VJ1dPUYcJI5iH0msY6kdXMs40W1m13lql6AHHiqO8FmMvhIlA25FGNfrYZKzf152dyTg9u93vLwUFFI4PQZhO680vqJB5C4QwqJtekaXOScmzWg4BDe5DI/PFoHuxlAZU+TKf1FrEpvakqrbLyfSD/qMuBtW1s8dgv0q9gVM9iJ8468fjWNIbWgtjg1MnSS/td0oHdS8eS9PModie82Sy04=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(346002)(39860400002)(366004)(396003)(136003)(451199015)(38100700002)(2616005)(186003)(86362001)(31696002)(6512007)(31686004)(478600001)(6486002)(6666004)(8676002)(316002)(54906003)(66946007)(4326008)(2906002)(66476007)(66556008)(8936002)(83380400001)(41300700001)(5660300002)(6506007)(53546011)(36756003)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NGxRaThpYkptRHBET0ZlM3VjNE9rd2xUSFVtNldFZWhCU05kTWRYdE9Ebkcy?=
- =?utf-8?B?VlRrdStWaEsrclNkOEpCTzZIbnpycW9OYlc3ci9oWEVpanJyb3I3aDMxUVJ1?=
- =?utf-8?B?b05KT0VWY25ITVhmSWVZUHBCeTh4cnNCdFA1TUNDK3NOWGJmdXRDQ0JqbG5j?=
- =?utf-8?B?bWlxU3FKRnd5bGMrTGRkRm02dlJPL0NTakFaN3l1WmltRzNPM1MxTW16UUZ0?=
- =?utf-8?B?cVJaY09hanZNREVLMDFGRFM5bVdYSDBiaFE1MW5pd0xzSVEwbDR5Zmo4aGFO?=
- =?utf-8?B?TlhQdnhWWUtnYzJLQ1ZLYm0xdEs3SzNGT2pxSkYzdnhQT2s0M2djMFpHVTgr?=
- =?utf-8?B?ZlphVWZBYnZMYXc2NUZUcGN6WkRMeGdjcU0weS9ZaE4zTTNVZE05TE1McGNO?=
- =?utf-8?B?Tk9Ob2R6SGkvMUQ1VWRWdnJ2NGl5RDVJUmNVVjEzaCtyaE9aZzAzUDl4WnZY?=
- =?utf-8?B?dEFBUFA5elNjVVQvaHVKeStyblpBcnpIZ2JJZm9TOUFoMUtPTlNxRDhvaGZN?=
- =?utf-8?B?a2pzdTB0akpmNTVPbVhGcW9FZk0wa1N3WXc3empkbzN5RjVncGpDVkdCUGpE?=
- =?utf-8?B?bWdKRjlpVnAzT2VEQUZnNXNUdjN3YitpVk9QV2pkRWljU3g0aUVoQkU2bVg3?=
- =?utf-8?B?TWRpSjJ6Tno2V3JPSmNOUE9XQVoxL0F3UDc1Tk5PakxPdzBLU1hpYUl1UWpj?=
- =?utf-8?B?SDdmdTNVeTJHQmYxcWpvQjMxd3RkeWNuYjc3dVVtWHVZcE5pRVdGT0dnaHNI?=
- =?utf-8?B?Y0pLQSszYkYzQ1I2YW5HbzcyNHhZbnJKbVhZY3JBOHRidUR3WE9LbDRqbkZz?=
- =?utf-8?B?NUxUV0ZmSnppYUZUWTlCbDc3RkMrcnpRa0NpeDhYR2tNRE91UTMrUXFDbm1h?=
- =?utf-8?B?MkliMDlUUC9GMjJ2ems1dElhVWhnb0N2ZDlzSzhoRzdsQzFWOU52cVZONVJ5?=
- =?utf-8?B?OHpkalhGNmt6RE01eXEwVktqcmJIUzJQVFJsb0g5Q1Z6ZXJNbEgxNk93VGJI?=
- =?utf-8?B?Qnk1MVVmeUNXOVRwdlNiY1ZxRTVYRUE2QlVLeGxBMGttSFJKUTlTeWU0VURw?=
- =?utf-8?B?UW9iYVI0Uk51aFlJWEszaTZMTFBxeXcvSkZ2b1Q2bTZRejVmQ284K1dGbk5o?=
- =?utf-8?B?TS9FcEQwV053WTBnY0w0bmhpSzJBWlhYckNtM0Q4N25mNVp3NW4wQjJSamw4?=
- =?utf-8?B?KzJXaDZKOTM5WXh3SitqT0VVZkt2YTdRbE9VQlpkdDlrVCtnUGV0TEVhalRy?=
- =?utf-8?B?T2lTNFZIdTQrQzdGQ3JGSyt1MkRDSDhtRGllT3c5Yys0NlIzUjFORkhtcTBG?=
- =?utf-8?B?YzZlV3E1dUlPa25OUm9hWmtLcHFBMUdyVG5kNjRlK0xmS3p1STlEWWtBOS96?=
- =?utf-8?B?bi9jUmRmSGlZQ0NReGpwaTY0eDlSSEcrd0xMTWZUVlpLWEw5bmRKeDFPdlpt?=
- =?utf-8?B?Z1RmQ2lpZ1JzL3dZY0VKS2hjQUI0VVdmVHZ0djVWSkV5bUdqcTdaYzd1RjI3?=
- =?utf-8?B?U0w1NFJIYkZLSUVLdENkbFJaa1g3MUxwMUZqZFRLZ2FaQ1Nqd082UnhuSDhp?=
- =?utf-8?B?Y0lHMEsvbEc1cFBsZGQxU3E5TWVFMzJJd2lmSzNkRHZqYmdvaU9xalc0QTEx?=
- =?utf-8?B?Sm03eHRBd3JiVmlVWXEvaVUxNVFMVENOTUllR0hELzdFRU1STnkwSytYbzMr?=
- =?utf-8?B?d1FuclZiVmFFQUhEblc5alZYZXhLSmZVcHhTUUZQemxQL2QrWHlyMTk3allz?=
- =?utf-8?B?ZUJ0WVVyNSsrRVVtc3M2UDBEdHFyejVMb2doRmdjb0RmRXM0RUkrZUV5dHNO?=
- =?utf-8?B?d1hjQTdnSldhVEVCUTNmYmNRRWVxTFZqVWNwWjhyLzZaUjlSMnBMNHlNOEhH?=
- =?utf-8?B?dS9tMk9WaTkrUERiMXR5TkJNYU1kVlQrN0VuaDhRODQwMlBvdWgwcEpzMjRW?=
- =?utf-8?B?TTJXZUlPUHVROTdZYVVNeUZHK2c0QjhNeXFMd1B2bVI4WGpMUW9tWlYzK2tp?=
- =?utf-8?B?anMzdEZJZUFqdkZkTTVqRS9GbC9VdVQ0SEE0N3YvZVR6RlZyaVk1d1paWHJw?=
- =?utf-8?B?WnJ1T1lhVkJwTHRFUHM2cFJwcVRValJkV0FweWFQTm9uQ09SWjVVYmZ0OU1l?=
- =?utf-8?B?amljZmlRNERnMEtwKzA2cHdhRldQNmxGdHlPcVlXU2w2ZmQvSXVJY0wvU2hF?=
- =?utf-8?B?ZUE9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1bbad7e-1ca1-4bc0-dc78-08dadf27fa11
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2022 05:40:01.9945
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rGcYYYbmugo0nM8D5uOpOiT+CGwvIL9hzlt1ww6jW+4KGS8/EQleKa2ogLFvHrGK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4762
-X-Proofpoint-GUID: oUQ8GBNtWy5Sl7E4Wbp15-c_1f1ftT26
-X-Proofpoint-ORIG-GUID: oUQ8GBNtWy5Sl7E4Wbp15-c_1f1ftT26
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-16_02,2022-12-15_02,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Currently, kmemdup() is used for allocating and copying xlated insns
+in bpf_insn_prepare_dump(). The following warning can be triggered
+when dup large amount of insns (roughly BPF_COMPLEXITY_LIMIT_INSNS/2)
+because kmemdup() uses kmalloc() which would fail when allocing size
+is too big, leading to failure in dump xlated insns:
 
+WARNING: CPU: 2 PID: 7060 at mm/page_alloc.c:5534
+Call Trace:
+ <TASK>
+ __alloc_pages_node include/linux/gfp.h:237 [inline]
+ alloc_pages_node include/linux/gfp.h:260 [inline]
+ __kmalloc_large_node+0x81/0x160 mm/slab_common.c:1096
+ __do_kmalloc_node mm/slab_common.c:943 [inline]
+ __kmalloc_node_track_caller.cold+0x5/0x5d mm/slab_common.c:975
+ kmemdup+0x29/0x60 mm/util.c:129
+ kmemdup include/linux/fortify-string.h:585 [inline]
+ bpf_insn_prepare_dump kernel/bpf/syscall.c:3820 [inline]
+ bpf_prog_get_info_by_fd+0x9a3/0x2cb0 kernel/bpf/syscall.c:3975
+ bpf_obj_get_info_by_fd kernel/bpf/syscall.c:4297 [inline]
+ __sys_bpf+0x3928/0x56f0 kernel/bpf/syscall.c:5004
+ __do_sys_bpf kernel/bpf/syscall.c:5069 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5067 [inline]
+ ...
 
-On 12/14/22 8:32 PM, xiangxia.m.yue@gmail.com wrote:
-> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> 
-> Now user can enable sysctl kernel.bpf_stats_enabled to fetch
-> run_time_ns and run_cnt. It's easy to calculate the average value.
-> 
-> In some case, the max cost for bpf prog invoked, are more useful:
-> is there a burst sysload or high cpu usage. This patch introduce
-> a update stats helper.
+So use kvmalloc()+memcpy() to fix this, for small size of insns,
+this is same as kmemdup(), but this also support dup large amount
+of xlated insns.
 
-I am not 100% sure about how this single max value will be useful
-in general. A particular max_run_time_ns, if much bigger than average,
-could be an outlier due to preemption/softirq etc.
-What you really need might be a trend over time of the run_time
-to capture the burst. You could do this by taking snapshot of
-run_time_ns/run_cnt periodically and plot the trend of average
-run_time_ns which might correlate with other system activity.
-Maybe I missed some use cases for max_run_time_ns...
+Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+---
+ kernel/bpf/syscall.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> 
-> $ bpftool --json --pretty p s
->     ...
->     "run_max_cost_ns": 313367
-> 
-> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Hou Tao <houtao1@huawei.com>
-> ---
-> v2: fix build warning
-> ---
->   include/linux/filter.h   | 29 ++++++++++++++++++++++-------
->   include/uapi/linux/bpf.h |  1 +
->   kernel/bpf/syscall.c     | 10 +++++++++-
->   kernel/bpf/trampoline.c  | 10 +---------
->   4 files changed, 33 insertions(+), 17 deletions(-)
-> 
-[...]
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 35972afb6850..06229fddac0d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3831,10 +3831,10 @@ static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog,
+ 	u8 code;
+ 	int i;
+ 
+-	insns = kmemdup(prog->insnsi, bpf_prog_insn_size(prog),
+-			GFP_USER);
+-	if (!insns)
++	insns = kvmalloc(bpf_prog_insn_size(prog), GFP_USER | __GFP_NOWARN);
++	if (unlikely(!insns))
+ 		return insns;
++	memcpy(insns, prog->insnsi, bpf_prog_insn_size(prog));
+ 
+ 	for (i = 0; i < prog->len; i++) {
+ 		code = insns[i].code;
+@@ -3992,7 +3992,7 @@ static int bpf_prog_get_info_by_fd(struct file *file,
+ 		uinsns = u64_to_user_ptr(info.xlated_prog_insns);
+ 		ulen = min_t(u32, info.xlated_prog_len, ulen);
+ 		fault = copy_to_user(uinsns, insns_sanitized, ulen);
+-		kfree(insns_sanitized);
++		kvfree(insns_sanitized);
+ 		if (fault)
+ 			return -EFAULT;
+ 	}
+
+base-commit: 0e43662e61f2569500ab83b8188c065603530785
+-- 
+2.39.0
+
