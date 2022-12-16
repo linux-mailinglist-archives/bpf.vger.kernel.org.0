@@ -2,47 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A9164EBB7
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 13:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226FB64EBC8
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 14:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbiLPM5r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 07:57:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
+        id S229691AbiLPNC5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 08:02:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbiLPM5q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 07:57:46 -0500
+        with ESMTP id S229614AbiLPNCz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 08:02:55 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE8C52177;
-        Fri, 16 Dec 2022 04:57:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB85AB48D;
+        Fri, 16 Dec 2022 05:02:54 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2DF5620C5;
-        Fri, 16 Dec 2022 12:57:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA08BC433D2;
-        Fri, 16 Dec 2022 12:57:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 88237620B5;
+        Fri, 16 Dec 2022 13:02:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5715C433EF;
+        Fri, 16 Dec 2022 13:02:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671195465;
-        bh=ijwUHvpy5RrCdU0dKTmrlASfuor6WwTJdMJSP/u/0Zw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GRgd4LbD7mIuk/TeJ88rfiAQIjshElaNucZv4gz7iUwA34+m+F5qd9b/m6i4OK1rX
-         A5SNzN9nvyQN64ti9VoJn0xQjonFxdGk4fMQ/bXpg/ULAhTiWlt6NoIG9sHfDHuCj/
-         Ldib/oiWxDyCqrqubrKhqWVa0ofsE5w4dDftAN2q2G5aSO1z2SFiIjqIk4Xta9/qu9
-         MGyoXimveph2pOWERj/6Wp+0yiCIaVzlMFjQmX+5Vm2kX+UcNHUbZfCuX5uvXMlGRm
-         /UQxNBdYXBKLQMuR4sujpRaNSlG238A6ybo1NzU/cRjp0wq0WDBTTANBRGrtX18356
-         QM0EybSOO4wng==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     stable@vger.kernel.org
-Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-        Martynas Pumputis <m@lambda.lt>
-Subject: [PATCH stable 6.0 8/8] selftests/bpf: Add kprobe_multi kmod attach api tests
-Date:   Fri, 16 Dec 2022 13:56:28 +0100
-Message-Id: <20221216125628.1622505-9-jolsa@kernel.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221216125628.1622505-1-jolsa@kernel.org>
-References: <20221216125628.1622505-1-jolsa@kernel.org>
+        s=k20201202; t=1671195774;
+        bh=Zqx8PemfNkIgR0VSjlq+cSSIc1mNqP5HstKuh5k7PvE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BpC4XSYaVer0QbtlOxiYn/qwe6V2XeUXMVzBAjZy3fz9wIQ4vZYOtx/SlhpFw4UrJ
+         Ar/jbSb+JqW+ms4efYSI1yfMdoil2BxaIZee6Pb4+KzxjVWx4uPTF8e7KhsE+ssFiG
+         AcgFIx6TewgsncKns95P8wb80rqcuj9dC3syZ0Bt49yf6snpzRa/tGnwfJOaxyD8By
+         iJhkjX6NZ2J7qIj2hIFrWtRpES3bffNevn4+AyqNSyuuTmnSskzWkmWeiX4ZaMWif/
+         nzhVvtxo/EE9CrXa5bY3woCBUCzQy17ORc6aoTjRybvUuTB1ImWDpSaVjO4iLWP/Hb
+         BqTiY/n9at7Hw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 46F1540367; Fri, 16 Dec 2022 10:02:51 -0300 (-03)
+Date:   Fri, 16 Dec 2022 10:02:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] tools lib perf: fix install_pkgconfig target
+Message-ID: <Y5xse0o0gbyFjeV7@kernel.org>
+References: <20221202045743.2639466-1-irogers@google.com>
+ <20221202045743.2639466-3-irogers@google.com>
+ <Y5w+F+aqN5L1CuuG@tuxmaker.boeblingen.de.ibm.com>
+ <Y5w/cWKyb8vpNMfA@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y5w/cWKyb8vpNMfA@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,177 +72,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-commit be884a22c1c835a146e97c6ab282a2b31b002e1f upstream.
+Em Fri, Dec 16, 2022 at 10:50:41AM +0100, Alexander Gordeev escreveu:
+> Commit 47e02b94a4c9 ("tools lib perf: Add dependency test
+> to install_headers") misses the notion of $(DESTDIR_SQ)
+> for install_pkgconfig target, which leads to error:
+> 
+> install: cannot create regular file '/usr/lib64/pkgconfig/libperf.pc': Permission denied
+> make: *** [Makefile:210: install_pkgconfig] Error 1
 
-Adding kprobe_multi kmod attach api tests that attach bpf_testmod
-functions via bpf_program__attach_kprobe_multi_opts.
+Thanks, applied.
 
-Running it as serial test, because we don't want other tests to
-reload bpf_testmod while it's running.
+- Arnaldo
 
-Acked-by: Song Liu <song@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/r/20221025134148.3300700-9-jolsa@kernel.org
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- .../prog_tests/kprobe_multi_testmod_test.c    | 89 +++++++++++++++++++
- .../selftests/bpf/progs/kprobe_multi.c        | 50 +++++++++++
- 2 files changed, 139 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+ 
+> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> ---
+>  tools/lib/perf/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/perf/Makefile b/tools/lib/perf/Makefile
+> index 30b7f91e7147..d8cad124e4c5 100644
+> --- a/tools/lib/perf/Makefile
+> +++ b/tools/lib/perf/Makefile
+> @@ -208,7 +208,7 @@ install_headers: $(INSTALL_HDRS) $(INSTALL_INTERNAL_HDRS)
+>  
+>  install_pkgconfig: $(LIBPERF_PC)
+>  	$(call QUIET_INSTALL, $(LIBPERF_PC)) \
+> -		$(call do_install,$(LIBPERF_PC),$(libdir_SQ)/pkgconfig,644)
+> +		$(call do_install,$(LIBPERF_PC),$(DESTDIR_SQ)$(libdir_SQ)/pkgconfig,644)
+>  
+>  install_doc:
+>  	$(Q)$(MAKE) -C Documentation install-man install-html install-examples
+> -- 
+> 2.34.1
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-new file mode 100644
-index 000000000000..1fbe7e4ac00a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-@@ -0,0 +1,89 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "kprobe_multi.skel.h"
-+#include "trace_helpers.h"
-+#include "bpf/libbpf_internal.h"
-+
-+static void kprobe_multi_testmod_check(struct kprobe_multi *skel)
-+{
-+	ASSERT_EQ(skel->bss->kprobe_testmod_test1_result, 1, "kprobe_test1_result");
-+	ASSERT_EQ(skel->bss->kprobe_testmod_test2_result, 1, "kprobe_test2_result");
-+	ASSERT_EQ(skel->bss->kprobe_testmod_test3_result, 1, "kprobe_test3_result");
-+
-+	ASSERT_EQ(skel->bss->kretprobe_testmod_test1_result, 1, "kretprobe_test1_result");
-+	ASSERT_EQ(skel->bss->kretprobe_testmod_test2_result, 1, "kretprobe_test2_result");
-+	ASSERT_EQ(skel->bss->kretprobe_testmod_test3_result, 1, "kretprobe_test3_result");
-+}
-+
-+static void test_testmod_attach_api(struct bpf_kprobe_multi_opts *opts)
-+{
-+	struct kprobe_multi *skel = NULL;
-+
-+	skel = kprobe_multi__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "fentry_raw_skel_load"))
-+		return;
-+
-+	skel->bss->pid = getpid();
-+
-+	skel->links.test_kprobe_testmod = bpf_program__attach_kprobe_multi_opts(
-+						skel->progs.test_kprobe_testmod,
-+						NULL, opts);
-+	if (!skel->links.test_kprobe_testmod)
-+		goto cleanup;
-+
-+	opts->retprobe = true;
-+	skel->links.test_kretprobe_testmod = bpf_program__attach_kprobe_multi_opts(
-+						skel->progs.test_kretprobe_testmod,
-+						NULL, opts);
-+	if (!skel->links.test_kretprobe_testmod)
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
-+	kprobe_multi_testmod_check(skel);
-+
-+cleanup:
-+	kprobe_multi__destroy(skel);
-+}
-+
-+static void test_testmod_attach_api_addrs(void)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	unsigned long long addrs[3];
-+
-+	addrs[0] = ksym_get_addr("bpf_testmod_fentry_test1");
-+	ASSERT_NEQ(addrs[0], 0, "ksym_get_addr");
-+	addrs[1] = ksym_get_addr("bpf_testmod_fentry_test2");
-+	ASSERT_NEQ(addrs[1], 0, "ksym_get_addr");
-+	addrs[2] = ksym_get_addr("bpf_testmod_fentry_test3");
-+	ASSERT_NEQ(addrs[2], 0, "ksym_get_addr");
-+
-+	opts.addrs = (const unsigned long *) addrs;
-+	opts.cnt = ARRAY_SIZE(addrs);
-+
-+	test_testmod_attach_api(&opts);
-+}
-+
-+static void test_testmod_attach_api_syms(void)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	const char *syms[3] = {
-+		"bpf_testmod_fentry_test1",
-+		"bpf_testmod_fentry_test2",
-+		"bpf_testmod_fentry_test3",
-+	};
-+
-+	opts.syms = syms;
-+	opts.cnt = ARRAY_SIZE(syms);
-+	test_testmod_attach_api(&opts);
-+}
-+
-+void serial_test_kprobe_multi_testmod_test(void)
-+{
-+	if (!ASSERT_OK(load_kallsyms_refresh(), "load_kallsyms_refresh"))
-+		return;
-+
-+	if (test__start_subtest("testmod_attach_api_syms"))
-+		test_testmod_attach_api_syms();
-+	if (test__start_subtest("testmod_attach_api_addrs"))
-+		test_testmod_attach_api_addrs();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/testing/selftests/bpf/progs/kprobe_multi.c
-index 98c3399e15c0..9e1ca8e34913 100644
---- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
-+++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
-@@ -110,3 +110,53 @@ int test_kretprobe_manual(struct pt_regs *ctx)
- 	kprobe_multi_check(ctx, true);
- 	return 0;
- }
-+
-+extern const void bpf_testmod_fentry_test1 __ksym;
-+extern const void bpf_testmod_fentry_test2 __ksym;
-+extern const void bpf_testmod_fentry_test3 __ksym;
-+
-+__u64 kprobe_testmod_test1_result = 0;
-+__u64 kprobe_testmod_test2_result = 0;
-+__u64 kprobe_testmod_test3_result = 0;
-+
-+__u64 kretprobe_testmod_test1_result = 0;
-+__u64 kretprobe_testmod_test2_result = 0;
-+__u64 kretprobe_testmod_test3_result = 0;
-+
-+static void kprobe_multi_testmod_check(void *ctx, bool is_return)
-+{
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return;
-+
-+	__u64 addr = bpf_get_func_ip(ctx);
-+
-+	if (is_return) {
-+		if ((const void *) addr == &bpf_testmod_fentry_test1)
-+			kretprobe_testmod_test1_result = 1;
-+		if ((const void *) addr == &bpf_testmod_fentry_test2)
-+			kretprobe_testmod_test2_result = 1;
-+		if ((const void *) addr == &bpf_testmod_fentry_test3)
-+			kretprobe_testmod_test3_result = 1;
-+	} else {
-+		if ((const void *) addr == &bpf_testmod_fentry_test1)
-+			kprobe_testmod_test1_result = 1;
-+		if ((const void *) addr == &bpf_testmod_fentry_test2)
-+			kprobe_testmod_test2_result = 1;
-+		if ((const void *) addr == &bpf_testmod_fentry_test3)
-+			kprobe_testmod_test3_result = 1;
-+	}
-+}
-+
-+SEC("kprobe.multi")
-+int test_kprobe_testmod(struct pt_regs *ctx)
-+{
-+	kprobe_multi_testmod_check(ctx, false);
-+	return 0;
-+}
-+
-+SEC("kretprobe.multi")
-+int test_kretprobe_testmod(struct pt_regs *ctx)
-+{
-+	kprobe_multi_testmod_check(ctx, true);
-+	return 0;
-+}
 -- 
-2.38.1
 
+- Arnaldo
