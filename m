@@ -2,139 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D2464E875
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 10:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8553564E8AC
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 10:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbiLPJGd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 04:06:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52226 "EHLO
+        id S229811AbiLPJeX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 04:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbiLPJGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 04:06:33 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122FB2619
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 01:06:32 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id y16so1847534wrm.2
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 01:06:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=olHn5MCxfBfzgmAFZn2et4YhVN00CNsU34GxGc8yCFA=;
-        b=iEw48oA6mxDmBBUhVKjQT+YvHZ81k1hXDzHIwxkuJIMXQ5fadAESZLop34zsOgxl7M
-         Vw/eO6xJfI+IHXSrU3Miz7A3p0gKDGtqfwxYin/rKef3cf+C0XD8QCmdEYvRDCUZomSo
-         Iuv9VsQ09pzuSUKxQSZFK/32t9aES1Wd23yOO8R7u+yHbTQyIasqSPuVonnCLPLAifpP
-         Wgq1Y+abhuqfO33nUJcMKAtvWgWOKy10ssOkwXTqyGnkHykfqm7TO8GlNd06THAgq8yY
-         2bpl2VYPu6lEZGFzqBZCHlvAH2qrJtf/k2D1/xXle4W6ZyYyb0mYqyyxdviA1Eqs/HD/
-         V2ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=olHn5MCxfBfzgmAFZn2et4YhVN00CNsU34GxGc8yCFA=;
-        b=ijo119iF4UuHjI7pbK/a+PULW16VwvTQp0hnHG18lWJEIZes/REOgcRKBcxJaRLGpZ
-         RdWZevihnj2JbuzPvyYmcOu5mDLQ2bftZU7CfC3TxjHgCsJal4Y2XNBdsVZK5/vhlBQh
-         scFWYNwkErldjFHavVz3ugqynyhBtucZSsqYKM/4fBMWPO7pn0Br7dcA6YQNJK8s9ppy
-         S3MA+x1HfW2ZAes4RoY9PB1JercGcG6iUtnGcRqZAkB1dUFzuGyQAmFFMjCcXfyV2y1V
-         jyM/Sz6LniF7dO1Zqx40XdSU28EMORIlzJHMHXY7QLh8sMCIP35flibYr0hhQYbll65L
-         /6xg==
-X-Gm-Message-State: ANoB5pnbj4gxSuxnJcLxsu7fQMWxqd8qnhBTZspmkazHlOzXU/SnAMFn
-        IWPG1Gxt07OhlJvpR1+q4ZCtOnM1LfOd0sM4TEA=
-X-Google-Smtp-Source: AA0mqf5DZDZ4aOQn6uUZwA/OdDRoYgXxgRs4DT2w+x9EUzvIv5P7MKtxEJPzFkXedwRwW1WqrgzEe3ycQFf6cNJofVA=
-X-Received: by 2002:adf:e68a:0:b0:242:1926:7838 with SMTP id
- r10-20020adfe68a000000b0024219267838mr29560408wrm.200.1671181590451; Fri, 16
- Dec 2022 01:06:30 -0800 (PST)
+        with ESMTP id S230144AbiLPJeK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 04:34:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6D61FFAA;
+        Fri, 16 Dec 2022 01:34:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E8953B81D40;
+        Fri, 16 Dec 2022 09:34:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61B22C433EF;
+        Fri, 16 Dec 2022 09:34:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671183246;
+        bh=+99HYBSarN+ns6L+rlqjITdaIBrRoBh318L0BdlqU1k=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XR0sjBDBF1cJ6R+766Xf8nag2VCVN6ulZ+BLer3MxW83Dv7a9c4BdYYVO9M9OLWjQ
+         YBbpj80Re1oa5aFfumL/ibv1PzEwDe2oQJol3Mof8qRkgwZYheXF7KRc/P8/UpZ+sJ
+         vxWZODvsvN/aCF9vqgJ9+aJ7lJnquQcjLChPctJUxmD4Ka5FniQo94c568nuchReBr
+         bcfITfS7BEYWklgrRCvQ0/rVpJTOWWwopeq4CyT/ld9CvxU8jSRXY9xZYkMaF07mu1
+         pmhgmYdAC6oMYnUBZurC2Lr7cljcHBIHINbUZVVn/whMF7JZVZUGB3Rxj1hpOmluEK
+         R1MUeiAsWpZUA==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Lina Wang <lina.wang@mediatek.com>,
+        Coleman Dietsch <dietschc@csp.edu>, bpf@vger.kernel.org,
+        Maciej enczykowski <maze@google.com>,
+        =?utf-8?B?Qmo=?= =?utf-8?B?w7ZybiBUw7ZwZWw=?= 
+        <bjorn@rivosinc.com>, Hangbin Liu <liuhangbin@gmail.com>
+Subject: Re: [PATCHv2 net-next] selftests/net: mv bpf/nat6to4.c to net folder
+In-Reply-To: <20221216084109.1565213-1-liuhangbin@gmail.com>
+References: <20221216084109.1565213-1-liuhangbin@gmail.com>
+Date:   Fri, 16 Dec 2022 10:34:04 +0100
+Message-ID: <871qozn14j.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-References: <20221215043217.81368-1-xiangxia.m.yue@gmail.com> <553c4d32-aac1-f5d2-8f39-86cdca1af0d6@meta.com>
-In-Reply-To: <553c4d32-aac1-f5d2-8f39-86cdca1af0d6@meta.com>
-From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Date:   Fri, 16 Dec 2022 17:05:54 +0800
-Message-ID: <CAMDZJNW+c0JkgZ0XOtq674cjXeof+U0D54yd8JBzizuQioDt3A@mail.gmail.com>
-Subject: Re: [bpf-next v2 1/2] bpf: add runtime stats, max cost
-To:     Yonghong Song <yhs@meta.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 16, 2022 at 1:40 PM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 12/14/22 8:32 PM, xiangxia.m.yue@gmail.com wrote:
-> > From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> >
-> > Now user can enable sysctl kernel.bpf_stats_enabled to fetch
-> > run_time_ns and run_cnt. It's easy to calculate the average value.
-> >
-> > In some case, the max cost for bpf prog invoked, are more useful:
-> > is there a burst sysload or high cpu usage. This patch introduce
-> > a update stats helper.
->
-> I am not 100% sure about how this single max value will be useful
-> in general. A particular max_run_time_ns, if much bigger than average,
-> could be an outlier due to preemption/softirq etc.
-> What you really need might be a trend over time of the run_time
-> to capture the burst. You could do this by taking snapshot of
-Hi
-If the bpf prog is invoked frequently,  the run_time_ns/run_cnt may
-not be increased too much while
-there is a maxcost in bpf prog. The max cost value means there is at
-least one high cost in bpf prog.
-we should take care of the most cost of bpf prog. especially, much
-more than run_time_ns/run_cnt.
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-> run_time_ns/run_cnt periodically and plot the trend of average
-> run_time_ns which might correlate with other system activity.
-> Maybe I missed some use cases for max_run_time_ns...
+> There are some issues with the bpf/nat6to4.c building.
 >
-> >
-> > $ bpftool --json --pretty p s
-> >     ...
-> >     "run_max_cost_ns": 313367
-> >
-> > Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > Cc: Song Liu <song@kernel.org>
-> > Cc: Yonghong Song <yhs@fb.com>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: KP Singh <kpsingh@kernel.org>
-> > Cc: Stanislav Fomichev <sdf@google.com>
-> > Cc: Hao Luo <haoluo@google.com>
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > Cc: Hou Tao <houtao1@huawei.com>
-> > ---
-> > v2: fix build warning
-> > ---
-> >   include/linux/filter.h   | 29 ++++++++++++++++++++++-------
-> >   include/uapi/linux/bpf.h |  1 +
-> >   kernel/bpf/syscall.c     | 10 +++++++++-
-> >   kernel/bpf/trampoline.c  | 10 +---------
-> >   4 files changed, 33 insertions(+), 17 deletions(-)
-> >
-> [...]
+> 1. It use TEST_CUSTOM_PROGS, which will add the nat6to4.o to
+>    kselftest-list file and run by common run_tests.
+> 2. When building the test via `make -C tools/testing/selftests/
+>    TARGETS=3D"net"`, the nat6to4.o will be build in selftests/net/bpf/
+>    folder. But in test udpgro_frglist.sh it refers to ../bpf/nat6to4.o.
+>    The correct path should be ./bpf/nat6to4.o.
+> 3. If building the test via `make -C tools/testing/selftests/ TARGETS=3D"=
+net"
+>    install`. The nat6to4.o will be installed to kselftest_install/net/
+>    folder. Then the udpgro_frglist.sh should refer to ./nat6to4.o.
+>
+> To fix the confusing test path, let's just move the nat6to4.c to net fold=
+er
+> and build it as TEST_GEN_FILES.
+>
+> v2: Update the Makefile rules rely on commit 837a3d66d698 ("selftests:
+> net: Add cross-compilation support for BPF programs").
+>
+> Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-test=
+s")
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 
+FWIW, tested cross-compilation on riscv (and minor nit below):
 
+Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
--- 
-Best regards, Tonghao
+> diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftes=
+ts/net/Makefile
+> index 3007e98a6d64..ed9a315187c1 100644
+> --- a/tools/testing/selftests/net/Makefile
+> +++ b/tools/testing/selftests/net/Makefile
+> @@ -75,14 +75,60 @@ TEST_GEN_PROGS +=3D so_incoming_cpu
+>  TEST_PROGS +=3D sctp_vrf.sh
+>  TEST_GEN_FILES +=3D sctp_hello
+>  TEST_GEN_FILES +=3D csum
+> +TEST_GEN_FILES +=3D nat6to4.o
+>=20=20
+>  TEST_FILES :=3D settings
+>=20=20
+>  include ../lib.mk
+>=20=20
+> -include bpf/Makefile
+> -
+>  $(OUTPUT)/reuseport_bpf_numa: LDLIBS +=3D -lnuma
+>  $(OUTPUT)/tcp_mmap: LDLIBS +=3D -lpthread
+>  $(OUTPUT)/tcp_inq: LDLIBS +=3D -lpthread
+>  $(OUTPUT)/bind_bhash: LDLIBS +=3D -lpthread
+> +
+> +# Rules to generate bpf obj nat6to4.o
+> +CLANG ?=3D clang
+> +SCRATCH_DIR :=3D $(OUTPUT)/tools
+> +BUILD_DIR :=3D $(SCRATCH_DIR)/build
+> +BPFDIR :=3D $(abspath ../../../lib/bpf)
+> +APIDIR :=3D $(abspath ../../../include/uapi)
+> +
+> +CCINCLUDE +=3D -I../bpf
+> +CCINCLUDE +=3D -I../../../../usr/include/
+> +CCINCLUDE +=3D -I$(SCRATCH_DIR)/include
+> +
+> +BPFOBJ :=3D $(BUILD_DIR)/libbpf/libbpf.a
+> +
+> +MAKE_DIRS :=3D $(BUILD_DIR)/libbpf $(OUTPUT)/bpf
+                                    ^^^^^^^^^^^^^
+                                    Can be removed after the BPF-prog
+                                    moved out from /bpf
+
+Bj=C3=B6rn
