@@ -2,173 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8034A64EFB0
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 17:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6582564F06D
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 18:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbiLPQsW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 11:48:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
+        id S231638AbiLPRfb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 12:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiLPQsV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 11:48:21 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41D217410
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 08:48:20 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id s187so2392130oie.10
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 08:48:20 -0800 (PST)
+        with ESMTP id S231140AbiLPRfa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 12:35:30 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CCB1C932
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 09:35:28 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id bw27so1115744qtb.3
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 09:35:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tbekVvrYBD+/xI3UFUQuTz2ymo0bISsKhf+l37m0J+0=;
-        b=iT9SkCPeQGfzWVOJFg9ltan1Se0x4+78t/HnlVENEumIuemVHT2y5oGKgOQyHLEP4n
-         yvikBAke9SvRZESM8ivP76ngI8eDscT+I5kquRSwFUhv/NygZxy1il9ATmZuQGs+ePUQ
-         kXUyXO/iiBrTHFLiHuvYWn1FGqMSPHtSZk2cs=
+        bh=yry1pSsyAUQ9D9QM+/qrFawxY99AxWgvbHDsHZU3h+g=;
+        b=CKYokNDjRvu8ma9mLbsmZJ3LECdYuUh5gykJ+lNCJpMhh1C45JOO+y7l+ZCGa7+aLZ
+         5T4uROcQ19NEn2L6xbFCZrMm72FakNw0pYpXI92QMAhHgPjj8IFCYi7E5QtdWSWPTLZl
+         DiWFiqL1kNiGqFjX/jsJXWpnFclJ+ReJ39S30WnSbsjyFh+P2Gc3+9Nvn6M7l67Bq1tk
+         LmyEqPsQDJQpby1l1mVRtHF6OpxQjZ8QQ5/HfuuR/So+BAk27QdWJ5V9mZM++58cKH5N
+         O7lhaznKvF3WTC1XgXr0z4vUtpNhNY/v0l848eZo766JpPHhUlWGF4bVqefYx2+5drGd
+         krug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tbekVvrYBD+/xI3UFUQuTz2ymo0bISsKhf+l37m0J+0=;
-        b=PaRgSuMUitjuuaq+HUxBHGjk/nUEKtdp1GEpKWS9NAmhtSWmyp8nEYE7QLPx2Q4SVU
-         cxE3P/9KscNTpCOgXoKLUADka2GyD4O0LdHKUyNHP4H9ja24ctd/NScPDiBdUdiQQrDj
-         yh0YlrK9HREvnymmaKFC7ZCpC40a8uM9VT8G2pHZZ84Erw1Miv8wAA1DHGwvlWQxGSi9
-         UiNhF7u7F9l3e7iJjj8qB4hoFspRTWrP6fH+mHvP04lP9T2OvWjmimnddwlOp/qF5QMp
-         GmhPfM7dEHAVMiN4xOTt2QXjG67oqsHEkna9OcdzIw/HETlpOzN0T+ybCHO8pl6o3BgU
-         9rIQ==
-X-Gm-Message-State: ANoB5pmJslWm+nUceoUpNIEJhsrANmIzeacJ3enJU17tH8zUF9wM6l2N
-        y+d5Scg6WlUwNVHn+mD/TdV7bQ==
-X-Google-Smtp-Source: AA0mqf5Goosfi2/KS2mfUyhzk6c/Hg2t5j/932ShZLrCtoGZiG6aPN9JkTUsQBFyj2E5EW+GnnfiYw==
-X-Received: by 2002:aca:210a:0:b0:35c:4baa:c3e5 with SMTP id 10-20020aca210a000000b0035c4baac3e5mr12412855oiz.28.1671209300088;
-        Fri, 16 Dec 2022 08:48:20 -0800 (PST)
-Received: from sbohrer-cf-dell ([24.28.97.120])
-        by smtp.gmail.com with ESMTPSA id j9-20020a056808056900b0035a921f2093sm901122oig.20.2022.12.16.08.48.18
+        bh=yry1pSsyAUQ9D9QM+/qrFawxY99AxWgvbHDsHZU3h+g=;
+        b=qccS6eHJcsqLadJxIXJMHk1GlPqry7lJ04YkRtJoBSZt3+2DSN2YlbfgvnvM0BWsxz
+         YXwqSNoZtKQqVC56YF+PhpUxHJP+HzROKSu/TV/4FrBSZwajiFjDK3NtU5KxwaUftqSE
+         8szNmcG+Y9k997H5OPBsNd9WgKTho8Scov4bN2nDt+xxo2iF8uJb9lLUL29Q5IVJ0APC
+         LPxYkInVcRrTjUnqQwIwSFzeaOBZTT4xRzqnJbi/Zdsvw82/mKFb5ilJI0VPcK9TAK7/
+         xDPBf40w0UjZ2uBj1KZ42CPIeJh8Pa22Ep/AllAzqQc4moLNZXUgkGrBAqMVC5cwDCTc
+         vIuQ==
+X-Gm-Message-State: ANoB5pm3/USkICFSr/zXhQNUv1nLjVsMosnKDTuwFHaWfWbLG3Stykn7
+        pDxKp+gyn0Hq5LqpLQWwF/M=
+X-Google-Smtp-Source: AA0mqf6Ahsz1gGEN5kq3QI+CRZx/P9Q6pdhU2uviAmgRLTYfpyUnLo7ua6KKXiEmKLc0TuGlB2a13A==
+X-Received: by 2002:ac8:4e19:0:b0:3a7:efe3:47c8 with SMTP id c25-20020ac84e19000000b003a7efe347c8mr39121390qtw.6.1671212127956;
+        Fri, 16 Dec 2022 09:35:27 -0800 (PST)
+Received: from MacBook-Pro-6.local ([2601:700:4100:1740:99:c9bc:492c:46e4])
+        by smtp.gmail.com with ESMTPSA id d19-20020ac800d3000000b003a527d29a41sm1670910qtg.75.2022.12.16.09.35.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Dec 2022 08:48:19 -0800 (PST)
-Date:   Fri, 16 Dec 2022 10:48:07 -0600
-From:   Shawn Bohrer <sbohrer@cloudflare.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
-        magnus.karlsson@intel.com, kernel-team@cloudflare.com
-Subject: Re: Possible race with xsk_flush
-Message-ID: <Y5yhR4x3GiuZi7P8@sbohrer-cf-dell>
-References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
- <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
- <Y5u4dA01y9RjjdAW@sbohrer-cf-dell>
- <CAJ8uoz1GKvoaM0DCo1Ki8q=LHR1cjrNC=1BK7chTKKW9Po5F5A@mail.gmail.com>
+        Fri, 16 Dec 2022 09:35:27 -0800 (PST)
+Date:   Fri, 16 Dec 2022 09:35:26 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, kernel-team@meta.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 0/6] Dynptr convenience helpers
+Message-ID: <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local>
+References: <20221207205537.860248-1-joannelkoong@gmail.com>
+ <20221208015434.ervz6q5j7bb4jt4a@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzYGUf=yMry5Ezen2PZqvkfS+o1jSF2e1Fpa+pgAmx+OcA@mail.gmail.com>
+ <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
+ <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJ8uoz1GKvoaM0DCo1Ki8q=LHR1cjrNC=1BK7chTKKW9Po5F5A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 16, 2022 at 11:05:19AM +0100, Magnus Karlsson wrote:
-> To summarize, we are expecting this ordering:
+On Mon, Dec 12, 2022 at 12:12:09PM -0800, Andrii Nakryiko wrote:
 > 
-> CPU 0 __xsk_rcv_zc()
-> CPU 0 __xsk_map_flush()
-> CPU 2 __xsk_rcv_zc()
-> CPU 2 __xsk_map_flush()
-> 
-> But we are seeing this order:
-> 
-> CPU 0 __xsk_rcv_zc()
-> CPU 2 __xsk_rcv_zc()
-> CPU 0 __xsk_map_flush()
-> CPU 2 __xsk_map_flush()
- 
-Yes exactly, and I think I've proved that this really is the order,
-and the race is occurring.  See my cookie/poisoning below.
+> There is no clean way to ever move from unstable kfunc to a stable helper.
 
-> Here is the veth NAPI poll loop:
-> 
-> static int veth_poll(struct napi_struct *napi, int budget)
-> {
->     struct veth_rq *rq =
->     container_of(napi, struct veth_rq, xdp_napi);
->     struct veth_stats stats = {};
->     struct veth_xdp_tx_bq bq;
->     int done;
-> 
->     bq.count = 0;
-> 
->     xdp_set_return_frame_no_direct();
->     done = veth_xdp_rcv(rq, budget, &bq, &stats);
-> 
->     if (done < budget && napi_complete_done(napi, done)) {
->         /* Write rx_notify_masked before reading ptr_ring */
->        smp_store_mb(rq->rx_notify_masked, false);
->        if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
->            if (napi_schedule_prep(&rq->xdp_napi)) {
->                WRITE_ONCE(rq->rx_notify_masked, true);
->                __napi_schedule(&rq->xdp_napi);
->             }
->         }
->     }
-> 
->     if (stats.xdp_tx > 0)
->         veth_xdp_flush(rq, &bq);
->     if (stats.xdp_redirect > 0)
->         xdp_do_flush();
->     xdp_clear_return_frame_no_direct();
-> 
->     return done;
-> }
-> 
-> Something I have never seen before is that there is
-> napi_complete_done() and a __napi_schedule() before xdp_do_flush().
-> Let us check if this has something to do with it. So two suggestions
-> to be executed separately:
-> 
-> * Put a probe at the __napi_schedule() above and check if it gets
-> triggered before this problem
-> * Move the "if (stats.xdp_redirect > 0) xdp_do_flush();" to just
-> before "if (done < budget && napi_complete_done(napi, done)) {"
-> 
-> This might provide us some hints on what is going on.
+No clean way? Yet in the other email you proposed a way.
+Not pretty, but workable.
+I'm sure if ever there will be a need to stabilize the kfunc we will
+find a clean way to do it.
+Strongly arguing right now that this is an issue without doing the home work
+is not productive.
 
-Excellent observation, I haven't really looked at what
-napi_complete_done() does yet.  I did notice it could call
-__napi_schedule() and that seemed like it might be fine.  I'll also
-note that veth_xdp_flush() can also ultimately call __napi_schedule().
-I'll see what I can do to explore these ideas.
- 
-> > I've additionally updated my application to put a bad "cookie"
-> > descriptor address back in the RX ring before updating the consumer
-> > pointer.  My hope is that if we then ever receive that cookie it
-> > proves the kernel raced and failed to update the correct address.
+> BPF helpers also have the advantage of working on all architectures,
+> whether that architecture supports kfuncs or not, whether it supports
+> JIT or not.
 
-I guess this is more like poisoning the old descriptors rather than a
-cookie.  This ran last night and one of my machines read back my
-0xdeadbeefdeadbeef poisoned cookie value:
+Correct, but applying the same argument we should argue that
+all features must work in the interpreter as well, because
+not all architectures support JIT.
+This way struct-ops and bpf based TCP-CC would never be possible.
+Some JITs don't support tail calls with subprogs.
+freplace (bpf prog replacement) works when JITed only.
+bpf trampoline works on x86-64 only.
+while kfuncs work on more than one arch.
 
-          iperf2-125483  [003] d.Z1. 792878.867088: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0xa7/0x250) addr=0x8d4900 len=0x42 xs=0xffff8bbc542a5000 fq=0xffff8bbc1c464e40
-          iperf2-125483  [003] d.Z1. 792878.867093: xsk_flush: (__xsk_map_flush+0x4e/0x180) xs=0xffff8bbc542a5000
-          iperf2-125491  [001] d.Z1. 792878.867219: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0xa7/0x250) addr=0xc79900 len=0x42 xs=0xffff8bbc542a5000 fq=0xffff8bbc1c464e40
-          iperf2-125491  [001] d.Z1. 792878.867229: xsk_flush: (__xsk_map_flush+0x4e/0x180) xs=0xffff8bbc542a5000
-          iperf2-125491  [001] d.Z1. 792878.867291: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0xa7/0x250) addr=0x18e1900 len=0x42 xs=0xffff8bbc542a5000 fq=0xffff8bbc1c464e40
-          iperf2-125483  [003] d.Z1. 792878.867441: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0xa7/0x250) addr=0xc0a900 len=0x42 xs=0xffff8bbc542a5000 fq=0xffff8bbc1c464e40
-          iperf2-125491  [001] d.Z1. 792878.867457: xsk_flush: (__xsk_map_flush+0x4e/0x180) xs=0xffff8bbc542a5000
- flowtrackd-zjTA-201813  [001] ..... 792878.867496: tracing_mark_write: ingress q:2 0x8d4900 FILL -> RX
- flowtrackd-zjTA-201813  [001] ..... 792878.867503: tracing_mark_write: ingress q:2 0xc79900 FILL -> RX
- flowtrackd-zjTA-201813  [001] ..... 792878.867506: tracing_mark_write: ingress q:2 0x18e1900 FILL -> RX
- flowtrackd-zjTA-201813  [001] ..... 792878.867524: tracing_mark_write: read invalid descriptor cookie: 0xdeadbeefdeadbeef
+Now comapre the amount of .text that kernel has to contain
+to support hundreds of helpers vs same amount of kfuncs.
+In the former it's a whole bunch of code that is there in the kernel
+in case bpf prog will call that helper. With 200+ helpers and half
+of them already deprecated we have quite a bit of dead code in the kernel
+that we cannot delete.
+While with kfunc approach there is no extra code that deals with
+conversion of the registers from bpf psABI to arch psABI.
+With kfuncs we generate this code on demand.
 
-This shows what I've seen before where the xsk_flush() of CPU 1 runs
-after (during?) __xsk_rcv_zc() of CPU 3.  In this trace we never see
-the xsk_flush() from CPU 3 but I stop tracing when the bug occurs so
-it probably just hasn't happened yet.
+> BPF helpers are also nicely self-discoverable and documented in
+> include/uapi/linux/bpf.h, in one place where other BPF helpers are.
+> This is a big deal, especially for non-expert BPF users (a vast
+> majority of BPF users).
 
-So at least to me this does confirm there is definitely a race here
-where we can flush an updated producer pointer before the descriptor
-address has been filled in.
+Good point. In general the kfuncs are not up to the level of
+documentation of helpers and we should work on improving that,
+but some of kfuncs are better documented than helpers.
+So it's not black and white.
 
---
-Shawn
+Discoverability we discussed in the past.
+The task to automatically emit kfuncs into vmlinux.h is still not complete.
+Time to prioritize it higher.
+
+> 
+> > non-gpl and consistency don't even come close.
+> > We've been doing everything new as kfuncs and dynptr is not special.
+> 
+> I think dynptr is quite special. It's a very generic and fundamental
+> concept, part of core BPF experience. It's a more dynamic counterpart
+> to an inflexible statically sized `void * + size` pair of arguments
+> sent to helpers for input or output memory regions. Dynptr has no
+> inherent dependencies on BTF, kfuncs, trampolines, JIT, nothing.
+
+imo dynptr and kptr are more or less equivalent in terms of being core
+building blocks.
+kptrs are done via kfuncs, so dynptr can do just as well.
+
+> By requiring kfunc-based helpers we are significantly raising the
+> obstacles towards adopting dynptr across a wide range of BPF
+> applications.
+
+Sorry, but I have to disagree. kptr and dynptr are left and right hand.
+Both will work just fine as kfuncs.
+
+> And the only advantage in return is that we get a hypothetical chance
+> to change something in the future. But let's see if that will ever be
+> necessary for the helpers Joanne is adding:
+> 
+> 1. Generic accessors to check validity of *any* dynptr, and it's
+> inherent properties like offset, available size, read-only property
+> (just as useful somethings as bpf_ringbuf_query() is for ringbufs,
+> both for debugging and for various heuristics in production).
+> 
+> bpf_dynptr_is_null(struct bpf_dynptr *ptr)
+> long bpf_dynptr_get_size(struct bpf_dynptr *ptr)
+> long bpf_dynptr_get_offset(struct bpf_dynptr *ptr)
+> bpf_dynptr_is_rdonly(struct bpf_dynptr *ptr)
+> 
+> There is nothing to add or remove here. No flags, no change in semantics.
+
+Disagree, since there is an obvious counter example.
+See all of bpf_get_current_task*().
+Some of them are still used, but
+bpf_get_current_task vs bpf_get_current_task_btf is our acknowledgement
+of the fact that we suck in inventing uapi.
+It's the lesson that we've learned the hard way.
+Not going to repeat that mistake again.
+
+To be completely honest I expect that dynptr may get obsolete
+as the whole concept several years from now.
+We still don't have a single actual user of it.
+Just like kptr. Could be deprecated eventually just as well.
+
+> 3. This one is the only one I feel less strongly about, but mostly
+> because I can implement the same (even though less ergonomically, of
+> course) with bpf_loop() and bpf_dynptr_{clone,advance}.
+> 
+> long bpf_dynptr_iterator(struct bpf_dynptr *ptr, void *callback_fn,
+> void *callback_ctx, u64 flags)
+
+Speaking of your upcoming inline iterators.
+Please make sure that you're adding them as kfuncs.
+We've made a mistake with bpf_loop. It's a stable helper,
+but inline iterators will immediately deprecate most uses of bpf_loop.
+If bpf_loop was a kfunc we would have deleted it.
+
+> Let's also note that verifier knows specific flavor of dynptr and thus
+> can enforce additional restrictions based on specifically SKB/XDP
+> flavor vs LOCAL/RINGBUF. So just because there is no perfect way to
+> handle all the SKB/XDP physical non-contiguity, doesn't mean that the
+> dynptr concept itself is flawed or not well thought out. It's just
+
+I think that's exactly what it means. dynptr concept is flawed.
+It's ok to add this flawed feature to the kernel right now,
+because we don't see a better way today, but that might change
+in the future and we gotta be able to fix our mistakes.
