@@ -2,215 +2,267 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD5964E80D
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 09:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD7064E839
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 09:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbiLPISJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 03:18:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
+        id S229732AbiLPIlX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 03:41:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbiLPISI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 03:18:08 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C173C2EF5F;
-        Fri, 16 Dec 2022 00:18:07 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BG3uldR007481;
-        Fri, 16 Dec 2022 08:18:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=Zu8GVg8xbH/TKayTGCeBJ4FNIr0zdDfGM02S/ROHzvg=;
- b=Hdswwj7YY/fPbtSJome9rHpKvk3z4AfJ33ieISOuAUTnrhmdSkXTdvKKy4GaxrWiiKI+
- r7n4xzzvbzY1JXeGvflHJOfhzCxAXPZe4HmZjRfPlrfeSmaHkpphzClAWzh1PCdfPU/G
- D6S846ZIUQ3Iv1TXLqfXA90NTPNBYbqjJZvOqcuKToh2qjY8tqnYkPipT0vUld7SlIqq
- YKQ8a8bp+hwpMMq60IbLbQJoVbJwoHKJvcD6V3IG82hbw+EXsZZdmoFKpKOLpyg4Atr6
- ewPYhHSBOAuIkowSFLFpkdE/nTq/AU1gGq4QJCpFkOJ/nzAQH4s4Tk+8tMLMNzyWdSc7 QQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mg6tetfj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Dec 2022 08:18:04 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BG8I2wo003887
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Dec 2022 08:18:02 GMT
-Received: from linyyuan-gv.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Fri, 16 Dec 2022 00:18:01 -0800
-From:   Linyu Yuan <quic_linyyuan@quicinc.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Linyu Yuan <quic_linyyuan@quicinc.com>
-Subject: [PATCH v3 2/2] trace: acquire buffer from temparary trace sequence
-Date:   Fri, 16 Dec 2022 16:17:55 +0800
-Message-ID: <1671178675-28720-2-git-send-email-quic_linyyuan@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1671178675-28720-1-git-send-email-quic_linyyuan@quicinc.com>
-References: <1671178675-28720-1-git-send-email-quic_linyyuan@quicinc.com>
+        with ESMTP id S229825AbiLPIlV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 03:41:21 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A142D8;
+        Fri, 16 Dec 2022 00:41:19 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id z8-20020a17090abd8800b00219ed30ce47so5350784pjr.3;
+        Fri, 16 Dec 2022 00:41:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2uYbHB0sSZ3tOjfiE8uB+ws0Uk0wZ5B+rhVD9Zm2u6Y=;
+        b=CvRT8bKmoqn2U384N7HuAFXdUUMm+20BS2q/67mAMoKy1k7rIkASzs7iyy3pl0iNS4
+         fnkz4lj4zC85g3E1NdDo/a8ix0hOGqbsgjfy/bb5GDsbJNqi6GVxBbz9LaK6x7GrmY0B
+         VKXZHeNp1uL02L8uvEPyeEwjKgrKgAcFP0A34A43bQZQII57ZNrXhE/G+A4hWNICU6EZ
+         WJMrfov0+fejf5P/z790/21g2XFW0szzypZLaOmAZ1bHR9b+3mL7UvZi28v7oVXIMrsq
+         Vq9Y5Et3Wo7Tjosd/LMhl0r9yR0utQnGLsV3xPhKa+nyXNYMVlW0+HcoX+uUkhQptWed
+         yqKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2uYbHB0sSZ3tOjfiE8uB+ws0Uk0wZ5B+rhVD9Zm2u6Y=;
+        b=nML88qEKsoZT3v+oL1s+AA9q7PhlBdsPvchFjlP/k0wfKe5hiu+uQRW6H6DQXCfzeo
+         7DqEp3MV2ly7zubqCpSOgjOFJhYPPEKtZjXRk4vfhdDMG0nvnKxVju9ihEPntcV1C0nn
+         RLNCfh8K8oO+Kpu5BVTelH/xAkLFcGe7saFib6rSr93G6i9fHHJNLnvqm9onLuSReOHl
+         I9ciHiWCM8ScmsxSXXZDiHztOcpxiPG4HlXvXOnE8k7mCEU/MSdTMRUTDpDMA+IO3lWn
+         5ruRnNat3yvlfN2xpicTWkOr3gPBHfqbFEMRqFuHCbi21rsV5VnfxuVA3pn+6omDT3C9
+         6bWg==
+X-Gm-Message-State: ANoB5pmW7vEYhPMXQHCOq5go9nO6ICbJX1BiOEcflD1ITlNMt/VPN/Lr
+        MyaRCTIr/Aodo0ZbyyhT4Rq5vQpcaski0Q==
+X-Google-Smtp-Source: AA0mqf5CIIMj93MQ93WNk2fMv2+EDKMZNHUqmnMrnAR/3vyQoaWizqpi/rvs9LT0iroZEMzn0OMvzw==
+X-Received: by 2002:a05:6a21:9989:b0:9d:efbe:e608 with SMTP id ve9-20020a056a21998900b0009defbee608mr43735716pzb.36.1671180078780;
+        Fri, 16 Dec 2022 00:41:18 -0800 (PST)
+Received: from Laptop-X1.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id y7-20020a17090322c700b00188a7bce192sm1006626plg.264.2022.12.16.00.41.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Dec 2022 00:41:17 -0800 (PST)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Lina Wang <lina.wang@mediatek.com>,
+        Coleman Dietsch <dietschc@csp.edu>, bpf@vger.kernel.org,
+        Maciej enczykowski <maze@google.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv2 net-next] selftests/net: mv bpf/nat6to4.c to net folder
+Date:   Fri, 16 Dec 2022 16:41:09 +0800
+Message-Id: <20221216084109.1565213-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: EHx9u3JSEuaasd35o1N1vgb-Hb7Bv9Z2
-X-Proofpoint-GUID: EHx9u3JSEuaasd35o1N1vgb-Hb7Bv9Z2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-16_04,2022-12-15_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 clxscore=1015 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2212160071
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-there is one dwc3 trace event declare as below,
-DECLARE_EVENT_CLASS(dwc3_log_event,
-	TP_PROTO(u32 event, struct dwc3 *dwc),
-	TP_ARGS(event, dwc),
-	TP_STRUCT__entry(
-		__field(u32, event)
-		__field(u32, ep0state)
-		__dynamic_array(char, str, DWC3_MSG_MAX)
-	),
-	TP_fast_assign(
-		__entry->event = event;
-		__entry->ep0state = dwc->ep0state;
-	),
-	TP_printk("event (%08x): %s", __entry->event,
-			dwc3_decode_event(__get_str(str), DWC3_MSG_MAX,
-				__entry->event, __entry->ep0state))
-);
-the problem is when trace function called, it will allocate up to
-DWC3_MSG_MAX bytes from trace event buffer, but never fill the buffer
-during fast assignment, it only fill the buffer when output function are
-called, so this means if output function are not called, the buffer will
-never used.
+There are some issues with the bpf/nat6to4.c building.
 
-add __get_buf(len) which acquiree buffer from iter->tmp_seq when trace
-output function called, it allow user write string to acquired buffer.
+1. It use TEST_CUSTOM_PROGS, which will add the nat6to4.o to
+   kselftest-list file and run by common run_tests.
+2. When building the test via `make -C tools/testing/selftests/
+   TARGETS="net"`, the nat6to4.o will be build in selftests/net/bpf/
+   folder. But in test udpgro_frglist.sh it refers to ../bpf/nat6to4.o.
+   The correct path should be ./bpf/nat6to4.o.
+3. If building the test via `make -C tools/testing/selftests/ TARGETS="net"
+   install`. The nat6to4.o will be installed to kselftest_install/net/
+   folder. Then the udpgro_frglist.sh should refer to ./nat6to4.o.
 
-the mentioned dwc3 trace event will changed as below,
-DECLARE_EVENT_CLASS(dwc3_log_event,
-	TP_PROTO(u32 event, struct dwc3 *dwc),
-	TP_ARGS(event, dwc),
-	TP_STRUCT__entry(
-		__field(u32, event)
-		__field(u32, ep0state)
-	),
-	TP_fast_assign(
-		__entry->event = event;
-		__entry->ep0state = dwc->ep0state;
-	),
-	TP_printk("event (%08x): %s", __entry->event,
-		dwc3_decode_event(__get_buf(DWC3_MSG_MAX), DWC3_MSG_MAX,
-				__entry->event, __entry->ep0state))
-);.
+To fix the confusing test path, let's just move the nat6to4.c to net folder
+and build it as TEST_GEN_FILES.
 
-Signed-off-by: Linyu Yuan <quic_linyyuan@quicinc.com>
+v2: Update the Makefile rules rely on commit 837a3d66d698 ("selftests:
+net: Add cross-compilation support for BPF programs").
+
+Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-tests")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
-v3: fix comment from maintainer in v2
 
- include/linux/trace_seq.h                  |  6 ++++++
- include/trace/stages/stage3_trace_output.h |  8 ++++++++
- include/trace/stages/stage7_class_define.h |  1 +
- kernel/trace/trace_seq.c                   | 22 ++++++++++++++++++++++
- 4 files changed, 37 insertions(+)
+I don't know if there is a way to just install a single TEST_GEN_FILES
+to a separate folder. If there is, then we don't need to move the files.
 
-diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
-index 5a2c650..4a3bbab 100644
---- a/include/linux/trace_seq.h
-+++ b/include/linux/trace_seq.h
-@@ -95,6 +95,7 @@ extern void trace_seq_bitmask(struct trace_seq *s, const unsigned long *maskp,
- extern int trace_seq_hex_dump(struct trace_seq *s, const char *prefix_str,
- 			      int prefix_type, int rowsize, int groupsize,
- 			      const void *buf, size_t len, bool ascii);
-+char *trace_seq_acquire(struct trace_seq *s, size_t len);
+---
+ tools/testing/selftests/net/Makefile          | 50 +++++++++++++++++-
+ tools/testing/selftests/net/bpf/Makefile      | 51 -------------------
+ .../testing/selftests/net/{bpf => }/nat6to4.c |  0
+ tools/testing/selftests/net/udpgro_frglist.sh |  8 +--
+ 4 files changed, 52 insertions(+), 57 deletions(-)
+ delete mode 100644 tools/testing/selftests/net/bpf/Makefile
+ rename tools/testing/selftests/net/{bpf => }/nat6to4.c (100%)
+
+diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
+index 3007e98a6d64..ed9a315187c1 100644
+--- a/tools/testing/selftests/net/Makefile
++++ b/tools/testing/selftests/net/Makefile
+@@ -75,14 +75,60 @@ TEST_GEN_PROGS += so_incoming_cpu
+ TEST_PROGS += sctp_vrf.sh
+ TEST_GEN_FILES += sctp_hello
+ TEST_GEN_FILES += csum
++TEST_GEN_FILES += nat6to4.o
  
- #else /* CONFIG_TRACING */
- static inline void trace_seq_printf(struct trace_seq *s, const char *fmt, ...)
-@@ -138,6 +139,11 @@ static inline int trace_seq_path(struct trace_seq *s, const struct path *path)
- {
- 	return 0;
- }
-+
-+static inline char *trace_seq_acquire(struct trace_seq *s, size_t len)
-+{
-+	return NULL;
-+}
- #endif /* CONFIG_TRACING */
+ TEST_FILES := settings
  
- #endif /* _LINUX_TRACE_SEQ_H */
-diff --git a/include/trace/stages/stage3_trace_output.h b/include/trace/stages/stage3_trace_output.h
-index 66374df..f60c453 100644
---- a/include/trace/stages/stage3_trace_output.h
-+++ b/include/trace/stages/stage3_trace_output.h
-@@ -139,3 +139,11 @@
- 		u64 ____val = (u64)(value);		\
- 		(u32) do_div(____val, NSEC_PER_SEC);	\
- 	})
-+
-+/* Macros with flow control statements should be avoided */
-+#undef __get_buf
-+#define __get_buf(len)							\
-+	({								\
-+		WARN_ON_ONCE(seq_buf_buffer_left(&p->seq) < (len));	\
-+		trace_seq_acquire(p, (len));				\
-+	})
-diff --git a/include/trace/stages/stage7_class_define.h b/include/trace/stages/stage7_class_define.h
-index 8795429..bcb960d 100644
---- a/include/trace/stages/stage7_class_define.h
-+++ b/include/trace/stages/stage7_class_define.h
-@@ -23,6 +23,7 @@
- #undef __get_rel_sockaddr
- #undef __print_array
- #undef __print_hex_dump
-+#undef __get_buf
+ include ../lib.mk
  
- /*
-  * The below is not executed in the kernel. It is only what is
-diff --git a/kernel/trace/trace_seq.c b/kernel/trace/trace_seq.c
-index 9c90b3a..c900b7c 100644
---- a/kernel/trace/trace_seq.c
-+++ b/kernel/trace/trace_seq.c
-@@ -403,3 +403,25 @@ int trace_seq_hex_dump(struct trace_seq *s, const char *prefix_str,
- 	return 1;
- }
- EXPORT_SYMBOL(trace_seq_hex_dump);
+-include bpf/Makefile
+-
+ $(OUTPUT)/reuseport_bpf_numa: LDLIBS += -lnuma
+ $(OUTPUT)/tcp_mmap: LDLIBS += -lpthread
+ $(OUTPUT)/tcp_inq: LDLIBS += -lpthread
+ $(OUTPUT)/bind_bhash: LDLIBS += -lpthread
 +
-+/**
-+ * trace_seq_acquire - acquire seq buffer with size len
-+ * @s: trace sequence descriptor
-+ * @len: size of buffer to be acquired
-+ *
-+ * acquire buffer with size of @len from trace_seq for output usage,
-+ * user can fill string into that buffer.
-+ *
-+ * Returns start address of acquired buffer.
-+ *
-+ * it allow multiple usage in one trace output function call.
-+ */
-+char *trace_seq_acquire(struct trace_seq *s, size_t len)
-+{
-+	char *ret = trace_seq_buffer_ptr(s);
++# Rules to generate bpf obj nat6to4.o
++CLANG ?= clang
++SCRATCH_DIR := $(OUTPUT)/tools
++BUILD_DIR := $(SCRATCH_DIR)/build
++BPFDIR := $(abspath ../../../lib/bpf)
++APIDIR := $(abspath ../../../include/uapi)
 +
-+	seq_buf_commit(&s->seq, len);
++CCINCLUDE += -I../bpf
++CCINCLUDE += -I../../../../usr/include/
++CCINCLUDE += -I$(SCRATCH_DIR)/include
 +
-+	return ret;
-+}
-+EXPORT_SYMBOL(trace_seq_acquire);
++BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
++
++MAKE_DIRS := $(BUILD_DIR)/libbpf $(OUTPUT)/bpf
++$(MAKE_DIRS):
++	mkdir -p $@
++
++# Get Clang's default includes on this system, as opposed to those seen by
++# '-target bpf'. This fixes "missing" files on some architectures/distros,
++# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
++#
++# Use '-idirafter': Don't interfere with include mechanics except where the
++# build would have failed anyways.
++define get_sys_includes
++$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
++	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
++$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
++endef
++
++ifneq ($(CROSS_COMPILE),)
++CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
++endif
++
++CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
++
++$(OUTPUT)/nat6to4.o: nat6to4.c $(BPFOBJ) | $(MAKE_DIRS)
++	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) $(CLANG_SYS_INCLUDES) -o $@
++
++$(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
++	   $(APIDIR)/linux/bpf.h					       \
++	   | $(BUILD_DIR)/libbpf
++	$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/     \
++		    EXTRA_CFLAGS='-g -O0'				       \
++		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
++
++EXTRA_CLEAN := $(SCRATCH_DIR)
+diff --git a/tools/testing/selftests/net/bpf/Makefile b/tools/testing/selftests/net/bpf/Makefile
+deleted file mode 100644
+index 4abaf16d2077..000000000000
+--- a/tools/testing/selftests/net/bpf/Makefile
++++ /dev/null
+@@ -1,51 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-
+-CLANG ?= clang
+-SCRATCH_DIR := $(OUTPUT)/tools
+-BUILD_DIR := $(SCRATCH_DIR)/build
+-BPFDIR := $(abspath ../../../lib/bpf)
+-APIDIR := $(abspath ../../../include/uapi)
+-
+-CCINCLUDE += -I../../bpf
+-CCINCLUDE += -I../../../../../usr/include/
+-CCINCLUDE += -I$(SCRATCH_DIR)/include
+-
+-BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
+-
+-MAKE_DIRS := $(BUILD_DIR)/libbpf $(OUTPUT)/bpf
+-$(MAKE_DIRS):
+-	mkdir -p $@
+-
+-TEST_CUSTOM_PROGS = $(OUTPUT)/bpf/nat6to4.o
+-all: $(TEST_CUSTOM_PROGS)
+-
+-# Get Clang's default includes on this system, as opposed to those seen by
+-# '-target bpf'. This fixes "missing" files on some architectures/distros,
+-# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
+-#
+-# Use '-idirafter': Don't interfere with include mechanics except where the
+-# build would have failed anyways.
+-define get_sys_includes
+-$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
+-	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
+-$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
+-endef
+-
+-ifneq ($(CROSS_COMPILE),)
+-CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
+-endif
+-
+-CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
+-
+-$(TEST_CUSTOM_PROGS): $(OUTPUT)/%.o: %.c $(BPFOBJ) | $(MAKE_DIRS)
+-	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) $(CLANG_SYS_INCLUDES) -o $@
+-
+-$(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
+-	   $(APIDIR)/linux/bpf.h					       \
+-	   | $(BUILD_DIR)/libbpf
+-	$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/     \
+-		    EXTRA_CFLAGS='-g -O0'				       \
+-		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
+-
+-EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR)
+-
+diff --git a/tools/testing/selftests/net/bpf/nat6to4.c b/tools/testing/selftests/net/nat6to4.c
+similarity index 100%
+rename from tools/testing/selftests/net/bpf/nat6to4.c
+rename to tools/testing/selftests/net/nat6to4.c
+diff --git a/tools/testing/selftests/net/udpgro_frglist.sh b/tools/testing/selftests/net/udpgro_frglist.sh
+index c9c4b9d65839..0a6359bed0b9 100755
+--- a/tools/testing/selftests/net/udpgro_frglist.sh
++++ b/tools/testing/selftests/net/udpgro_frglist.sh
+@@ -40,8 +40,8 @@ run_one() {
+ 
+ 	ip -n "${PEER_NS}" link set veth1 xdp object ${BPF_FILE} section xdp
+ 	tc -n "${PEER_NS}" qdisc add dev veth1 clsact
+-	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file ../bpf/nat6to4.o section schedcls/ingress6/nat_6  direct-action
+-	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file ../bpf/nat6to4.o section schedcls/egress4/snat4 direct-action
++	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file nat6to4.o section schedcls/ingress6/nat_6  direct-action
++	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file nat6to4.o section schedcls/egress4/snat4 direct-action
+         echo ${rx_args}
+ 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx ${rx_args} -r &
+ 
+@@ -88,8 +88,8 @@ if [ ! -f ${BPF_FILE} ]; then
+ 	exit -1
+ fi
+ 
+-if [ ! -f bpf/nat6to4.o ]; then
+-	echo "Missing nat6to4 helper. Build bpfnat6to4.o selftest first"
++if [ ! -f nat6to4.o ]; then
++	echo "Missing nat6to4 helper. Build bpf nat6to4.o selftest first"
+ 	exit -1
+ fi
+ 
 -- 
-2.7.4
+2.38.1
 
