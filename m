@@ -2,64 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BA064E91E
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 11:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C5264E93D
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 11:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbiLPKFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 05:05:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
+        id S229743AbiLPKPX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 05:15:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbiLPKFe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 05:05:34 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F8E49B79;
-        Fri, 16 Dec 2022 02:05:33 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id ud5so4991631ejc.4;
-        Fri, 16 Dec 2022 02:05:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IXhzGmnlQELt4azv8KqPYzbySAS1vW2YM0qHKEAcOLo=;
-        b=XyzAnJPTZPHLYP3qkvhOoud5DEsfYZ6Ph7qAugG2yt8iMyet9agy4Yk5kc4oTK7Xlr
-         meNMPa2cI2a+yAa6Nok0FCj/cc12LstlZweHKjkUs+/jbhTkOvR55DNdulYp4/D7JBTj
-         6r9KjsiHNJRWjA6QRyz9dC+65ogXgCi/Fv4i31RI6MRwa24X5DZDYDyCFSQ2s0IiOUyI
-         i2OuC50Wr+jEYYsyYywrSj8bme+hnfL4zy7dKjw7am8L+HWNkKji96gLItDR+UPcL252
-         Y2Bz6FDRW7Keb0y1ZWFymJEPPfyjJI5ln3kCQVr8WzCGh3XrvqLTjJe7dN1/p0x2Mf5w
-         vs0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IXhzGmnlQELt4azv8KqPYzbySAS1vW2YM0qHKEAcOLo=;
-        b=66gAADE2Ba9AVi15brRJYOCmlrqgqbzaUZiqa4QcWwgECFVn7i6N4cHvezXBqWkznQ
-         l2InhoM098n78QXdmEPTNo33/cYgOSGU7N/0h93k74zGWjT3kTEfUrJPWy/p+/Ib0M4I
-         Lt871+KyAaV/dKUj2y3H/J+WHQg5BOIC+1C7bkyDtalSWdzWPpAUXVSxjNH/hCm2RkEr
-         rLbVcFQAl9r9xFRpumrJsO/afqSgm388+uDEVZ5feYCY27kyo3Wy7H2WCwQZnqM8jKWh
-         iQjRpASONJbGdDvWDECtT0LspJYyDCHvOtf0HWRJa5NTzNFd+wbPQtOHgCiuZ323K936
-         qhaQ==
-X-Gm-Message-State: ANoB5pl+XEXutUefC0GBSXuQ4JGGmTxG1nyPGTHFREBy7J7w4p8Fq1L1
-        YoRdgvSrFuRDZAz3vUYs6guESEsAowbV+zuiBWB3Kl/3cfZqERc1
-X-Google-Smtp-Source: AA0mqf6q/pClbSK8lHlHtqucyXa4LcD5yAVTp+1KvpkYow5d30J20yYBwz8/b/pBjDikNvFG7uvGxdHyMhcmoGdWgmw=
-X-Received: by 2002:a17:906:6b97:b0:7c0:fe68:35e9 with SMTP id
- l23-20020a1709066b9700b007c0fe6835e9mr14029559ejr.49.1671185131649; Fri, 16
- Dec 2022 02:05:31 -0800 (PST)
+        with ESMTP id S229581AbiLPKPW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 05:15:22 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB8512631
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 02:15:21 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NYQ1k49swz16LfQ;
+        Fri, 16 Dec 2022 18:14:18 +0800 (CST)
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Fri, 16 Dec 2022 18:15:18 +0800
+Subject: Re: [bpf-next 1/2] bpf: hash map, avoid deadlock with suitable hash
+ mask
+To:     <xiangxia.m.yue@gmail.com>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <20221214103857.69082-1-xiangxia.m.yue@gmail.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <2e2dc326-69ad-1228-c425-357dcdb6bfcd@huawei.com>
+Date:   Fri, 16 Dec 2022 18:15:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell> <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
- <Y5u4dA01y9RjjdAW@sbohrer-cf-dell>
-In-Reply-To: <Y5u4dA01y9RjjdAW@sbohrer-cf-dell>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 16 Dec 2022 11:05:19 +0100
-Message-ID: <CAJ8uoz1GKvoaM0DCo1Ki8q=LHR1cjrNC=1BK7chTKKW9Po5F5A@mail.gmail.com>
-Subject: Re: Possible race with xsk_flush
-To:     Shawn Bohrer <sbohrer@cloudflare.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
-        magnus.karlsson@intel.com, kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20221214103857.69082-1-xiangxia.m.yue@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,176 +57,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 16, 2022 at 1:15 AM Shawn Bohrer <sbohrer@cloudflare.com> wrote:
+Hi,
+
+On 12/14/2022 6:38 PM, xiangxia.m.yue@gmail.com wrote:
+> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 >
-> On Thu, Dec 15, 2022 at 11:22:05AM +0100, Magnus Karlsson wrote:
-> > Thanks Shawn for your detailed bug report. The rings between user
-> > space and kernel space are single-producer/single-consumer, so in your
-> > case when both CPU0 and CPU2 are working on the fill ring and the Rx
-> > ring at the same time, this will indeed produce races. The intended
-> > design principle to protect against this is that only one NAPI context
-> > can access any given ring at any point in time and that the NAPI logic
-> > should prevent two instances of the same NAPI instance from running at
-> > the same time. So if that is not true for some reason, we would get a
-> > race like this. Another option is that one of the CPUs should really
-> > process another fill ring instead of the same.
-> >
-> > Do you see the second socket being worked on when this happens?
-> >
-> > Could you please share how you set up the two AF_XDP sockets?
+> The deadlock still may occur while accessed in NMI and non-NMI
+> context. Because in NMI, we still may access the same bucket but with
+> different map_locked index.
 >
-> Alex Forster sent more details on the configuration but just to
-> reiterate there are actually 8 AF_XDP sockets in this test setup.
-> There are two veth interfaces and each interface has four receive
-> queues.  We create one socket per interface/queue pair.  Our XDP
-> program redirects each packet to the correct AF_XDP socket based on
-> the queue number.
+> For example, on the same CPU, .max_entries = 2, we update the hash map,
+> with key = 4, while running bpf prog in NMI nmi_handle(), to update
+> hash map with key = 20, so it will have the same bucket index but have
+> different map_locked index.
 >
-> Yes there is often activity on other sockets near the time when the
-> bug occurs.  This is why I'm printing xs/fq, the socket address and
-> fill queue address, and printing the ingress/egress device name and
-> queue number in my prints.  This allows to match up the user space and
-> kernel space prints.  Additionally we are using a shared UMEM so
-> descriptors could move around between sockets though I've tried to
-> minimize this and in every case I've seen so far the mystery
-> descriptor was last used on the same socket and has also been in the
-> fill queue just not next in line.
+> To fix this issue, using min mask to hash again.
 >
-> > Are you using XDP_DRV mode in your tests?
-> >
-> > > A couple more notes:
-> > > * The ftrace print order and timestamps seem to indicate that the CPU
-> > >   2 napi_poll is running before the CPU 0 xsk_flush().  I don't know
-> > >   if these timestamps can be trusted but it does imply that maybe this
-> > >   can race as I described.  I've triggered this twice with xsk_flush
-> > >   probes and both show the order above.
-> > > * In the 3 times I've triggered this it has occurred right when the
-> > >   softirq processing switches CPUs
-> >
-> > This is interesting. Could you check, in some way, if you only have
-> > one core working on the fill ring before the softirq switching and
-> > then after that you have two? And if you have two, is that period
-> > transient?
+> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Song Liu <song@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: Hao Luo <haoluo@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Hou Tao <houtao1@huawei.com>
+> ---
+>  kernel/bpf/hashtab.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> I think what you are asking is why does the softirq processing switch
-> CPUs?  There is still a lot I don't fully understand here but I've
-> tried to understand this, if only to try to make it happen more
-> frequently and make this easier to reproduce.
->
-> In this test setup there is no hardware IRQ.  iperf2 sends the packet
-> and the CPU where iperf is running runs the veth softirq.  I'm not
-> sure how it picks which veth receive queue receives the packets, but
-> they end up distributed across the veth qeueus.  Additionally
-> __veth_xdp_flush() calls __napi_schedule().  This is called from
-> veth_xdp_xmit() which I think means that transmitting packets from
-> AF_XDP also schedules the softirq on the current CPU for that veth
-> queue.  What I definitely see is that if I pin both iperf and my
-> application to a single CPU all softirqs of all queues run on that
-> single CPU.  If I pin iperf2 to one core and my application to another
-> core I get softirqs for all veth queues on both cores.
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 5aa2b5525f79..8b25036a8690 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -152,7 +152,7 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
+>  {
+>  	unsigned long flags;
+>  
+> -	hash = hash & HASHTAB_MAP_LOCK_MASK;
+> +	hash = hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
+There is warning for kernel test robot and it seems that min_t(...) is required
+here.
 
-To summarize, we are expecting this ordering:
+Otherwise, this patch looks good to me, so:
 
-CPU 0 __xsk_rcv_zc()
-CPU 0 __xsk_map_flush()
-CPU 2 __xsk_rcv_zc()
-CPU 2 __xsk_map_flush()
+Acked-by: Hou Tao <houtao1@huawei.com>
+>  
+>  	preempt_disable();
+>  	if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
+> @@ -171,7 +171,7 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+>  				      struct bucket *b, u32 hash,
+>  				      unsigned long flags)
+>  {
+> -	hash = hash & HASHTAB_MAP_LOCK_MASK;
+> +	hash = hash & min(HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
+>  	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+>  	__this_cpu_dec(*(htab->map_locked[hash]));
+>  	preempt_enable();
 
-But we are seeing this order:
-
-CPU 0 __xsk_rcv_zc()
-CPU 2 __xsk_rcv_zc()
-CPU 0 __xsk_map_flush()
-CPU 2 __xsk_map_flush()
-
-Here is the veth NAPI poll loop:
-
-static int veth_poll(struct napi_struct *napi, int budget)
-{
-    struct veth_rq *rq =
-    container_of(napi, struct veth_rq, xdp_napi);
-    struct veth_stats stats = {};
-    struct veth_xdp_tx_bq bq;
-    int done;
-
-    bq.count = 0;
-
-    xdp_set_return_frame_no_direct();
-    done = veth_xdp_rcv(rq, budget, &bq, &stats);
-
-    if (done < budget && napi_complete_done(napi, done)) {
-        /* Write rx_notify_masked before reading ptr_ring */
-       smp_store_mb(rq->rx_notify_masked, false);
-       if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
-           if (napi_schedule_prep(&rq->xdp_napi)) {
-               WRITE_ONCE(rq->rx_notify_masked, true);
-               __napi_schedule(&rq->xdp_napi);
-            }
-        }
-    }
-
-    if (stats.xdp_tx > 0)
-        veth_xdp_flush(rq, &bq);
-    if (stats.xdp_redirect > 0)
-        xdp_do_flush();
-    xdp_clear_return_frame_no_direct();
-
-    return done;
-}
-
-Something I have never seen before is that there is
-napi_complete_done() and a __napi_schedule() before xdp_do_flush().
-Let us check if this has something to do with it. So two suggestions
-to be executed separately:
-
-* Put a probe at the __napi_schedule() above and check if it gets
-triggered before this problem
-* Move the "if (stats.xdp_redirect > 0) xdp_do_flush();" to just
-before "if (done < budget && napi_complete_done(napi, done)) {"
-
-This might provide us some hints on what is going on.
-
-Thanks: Magnus
-
-> In our test setup we aren't applying any cpu affinity.  iperf2 is
-> multi-threaded and can run on all 4 cores, and our application is
-> multithreaded and can run on all 4 cores.  The napi scheduling seems
-> to be per veth queue and yes I see those softirqs move and switch
-> between CPUs.  I don't however have anything that clearly shows it
-> running concurrently on two CPUs (The stretches of __xsk_rcv_zc are
-> all on one core before it switches).  The closest I have is the
-> several microseconds where it appears xsk_flush() overlaps at the end
-> of my traces.  I would think that if the napi locking didn't work at
-> all you'd see clear overlap.
->
-> From my experiments with CPU affinity I've updated my test setup to
-> frequently change the CPU affinity of iperf and our application on one
-> of my test boxes with hopes that it helps to reproduce but I have no
-> results so far.
->
-> > > * I've also triggered this before I added the xsk_flush() probe and
-> > >   in that case saw the kernel side additionally fill in the next
-> > >   expected descriptor, which in the example above would be 0xfe4100.
-> > >   This seems to indicate that my tracking is all still sane.
-> > > * This is fairly reproducible, but I've got 10 test boxes running and
-> > >   I only get maybe bug a day.
-> > >
-> > > Any thoughts on if the bug I described is actually possible,
-> > > alternative theories, or other things to test/try would be welcome.
-> >
-> > I thought this would be impossible, but apparently not :-). We are
-> > apparently doing something wrong in the AF_XDP code or have the wrong
-> > assumptions in some situation, but I just do not know what at this
-> > point in time. Maybe it is veth that breaks some of our assumptions,
-> > who knows. But let us dig into it. I need your help here, because I
-> > think it will be hard for me to reproduce the issue.
->
-> Yeah if you have ideas on what to test I'll do my best to try them.
->
-> I've additionally updated my application to put a bad "cookie"
-> descriptor address back in the RX ring before updating the consumer
-> pointer.  My hope is that if we then ever receive that cookie it
-> proves the kernel raced and failed to update the correct address.
->
-> Thanks,
-> Shawn Bohrer
