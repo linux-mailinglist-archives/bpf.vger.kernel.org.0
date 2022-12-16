@@ -2,100 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 964A764E9E2
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 12:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB9864EBA6
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 13:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbiLPLBt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 06:01:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        id S229948AbiLPM4g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 07:56:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbiLPLBs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 06:01:48 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DDD656F
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 03:01:45 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id o5-20020a05600c510500b003d21f02fbaaso3829125wms.4
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 03:01:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5VoLFcXygeu1rPdOxD3yUrpijJadRRU610TmdVkHxJs=;
-        b=plMskY3rZ0i8fJQ9wXlm2Q3Pg7cF1CORbPNRLZ5vPOfdvEaEwLUtEGUFpM7XR1uB2o
-         WrTv8jiqE5icGf+W8w4REw3FGAgyPfDaAL4ktJudasX0eSBMpRWm3ntpdrPJftb0+pIB
-         ShXb2i2Wq59SWRw4ngLqsGaHHvPIBR965vWEYGS+7JOep9Z5OUE0qPl/9kGpTTEcJ34V
-         oU8vi76DJ99TMfrqqLshnuWczKVYbeFD8WbV1ByLjezHbDVTDgmzSqGinQEqFfAeAmAt
-         8NjOonlG0PWMgeH53l3LoJ9t9Qso4yly1zu/xPBjTS0P3UEAcZTuv6A5XlBaVWVRO/q4
-         3sSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5VoLFcXygeu1rPdOxD3yUrpijJadRRU610TmdVkHxJs=;
-        b=LrB7rB5CpWQ+bsiXx8Bwl0dT0MJAPjgRdep4q1Tf0JtG70PTQmMveNqLJ+oH1L1uq1
-         GD6zt2De/ZVNwHQUkuOGwHomqTEUIHiqR7UgNta3F/ZLmNFprOO7zmI+1aL+trVVv80l
-         FndLRGFJYoT5drYgttaeAHJipIrAszjgt95PZRaDD3Qn4IxLpcw+6CJa8qP6enQzc2J2
-         6iCreOg8z6Lm3++Qg87cR7pfgoxI8vIx6lE2TUrhgoOeJZ35Sxfmd30RySLvimHdz3KH
-         4OzrK5QZLutP5PRTG/386oPyfCeZCU2WolLZQYR8ezbYDAOv8sbf/xQjEmK0jLy0p5zT
-         oVwA==
-X-Gm-Message-State: ANoB5pmwxc1zSQnm4t3nKjNbVzvs9/f882xPQ4cLwkXcbUbt1i7Nq5nJ
-        ET5P7CbORJqTAecucVXILliqLYBpI25KEUIUYDU=
-X-Google-Smtp-Source: AA0mqf4iUEIPpUM4P6rfvaZIz09yoaz68LhR/wHGcHHYQSof98DoPBmD3tGEZ5hLFifTiCLs6PQl9+K8qdXua9wNEYI=
-X-Received: by 2002:a7b:ca59:0:b0:3cf:cf89:90f with SMTP id
- m25-20020a7bca59000000b003cfcf89090fmr568331wml.186.1671188504466; Fri, 16
- Dec 2022 03:01:44 -0800 (PST)
+        with ESMTP id S229730AbiLPM4f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 07:56:35 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBDC55214F;
+        Fri, 16 Dec 2022 04:56:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 747CDB81D68;
+        Fri, 16 Dec 2022 12:56:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0A75C433D2;
+        Fri, 16 Dec 2022 12:56:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671195392;
+        bh=Kfk+UEFE+ijLIP41HA1GWCB8AUCuf4+FnPJwzOyV3To=;
+        h=From:To:Cc:Subject:Date:From;
+        b=S2ZGmRq9qGE+iQT51n0AAdkLJUatim4QW8zE5B2Y5OcFY5f1KnUivL0GWZrBc8tjC
+         64/dd+Klb960/xCMP6tIx+wzfqBip2fH7C5gBCeGc6bCbl/urRCIK/H3W7McgT8Yc4
+         WMmG0+w96raTZ5xy0YEdMjKrt7sxdyl8EgeSGqfNkcDxRa8Qntp2VJN+6Pwy0Ojen/
+         DD6RYoCcSXWx7mFHaNXP0LWVyMJAYFA3K8a+zqwdj1a/717hZIVORk858otbnWyEAB
+         w+P0NeXuKVlOcN87HsDTs97nCrplV6DbSuSKx/45mUWNiV7yGwS/Yvdu/fwlI0AcBQ
+         /b2DMQydGoW/g==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Martynas Pumputis <m@lambda.lt>
+Subject: [PATCH stable 6.0 0/8] bpf: Fix kprobe_multi link attachment to kernel modules
+Date:   Fri, 16 Dec 2022 13:56:20 +0100
+Message-Id: <20221216125628.1622505-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-References: <20221214103857.69082-1-xiangxia.m.yue@gmail.com>
- <20221214103857.69082-2-xiangxia.m.yue@gmail.com> <73b9ef21-de67-e421-378a-1814ffbc263f@meta.com>
- <a0c44452-70b0-8b05-151f-932c3b9e2fb0@huawei.com> <406710d0-bd65-a6b0-a7b4-9fa8c72ccaa6@huawei.com>
-In-Reply-To: <406710d0-bd65-a6b0-a7b4-9fa8c72ccaa6@huawei.com>
-From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Date:   Fri, 16 Dec 2022 19:01:08 +0800
-Message-ID: <CAMDZJNXiA1dbzkq9MRTyqEj33TNJm5KNqk_H8jP+Ud9J+q-C_A@mail.gmail.com>
-Subject: Re: [bpf-next 2/2] selftests/bpf: add test cases for htab map
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Yonghong Song <yhs@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 16, 2022 at 6:45 PM Hou Tao <houtao1@huawei.com> wrote:
->
-> Hi,
->
-> On 12/16/2022 6:41 PM, Hou Tao wrote:
-> > Hi,
-> >
-> > On 12/16/2022 12:10 PM, Yonghong Song wrote:
-> >>
-> >> On 12/14/22 2:38 AM, xiangxia.m.yue@gmail.com wrote:
-> >>> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> >>>
-> >>> This testing show how to reproduce deadlock in special case.
-> > Could you elaborate the commit message to show
-> Sorry about that. Just hit the send button too soon. It would be better if you
-> can describe the steps to reproduce the deadlock problem in commit message.
-Ok, I will update commit message v2.
-> .
->
+hi,
+sending fixes for attaching bpf kprobe_multi link to kernel
+modules for stable 6.0. It all applies cleanly. 
+
+thanks,
+jirka
 
 
--- 
-Best regards, Tonghao
+---
+Jiri Olsa (8):
+      kallsyms: Make module_kallsyms_on_each_symbol generally available
+      ftrace: Add support to resolve module symbols in ftrace_lookup_symbols
+      bpf: Rename __bpf_kprobe_multi_cookie_cmp to bpf_kprobe_multi_addrs_cmp
+      bpf: Take module reference on kprobe_multi link
+      selftests/bpf: Add load_kallsyms_refresh function
+      selftests/bpf: Add bpf_testmod_fentry_* functions
+      selftests/bpf: Add kprobe_multi check to module attach test
+      selftests/bpf: Add kprobe_multi kmod attach api tests
+
+ include/linux/module.h                                             |  9 ++++++++
+ kernel/module/kallsyms.c                                           |  2 --
+ kernel/trace/bpf_trace.c                                           | 98 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ kernel/trace/ftrace.c                                              | 16 +++++++++-----
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c              | 24 +++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c | 89 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/module_attach.c             |  7 +++++++
+ tools/testing/selftests/bpf/progs/kprobe_multi.c                   | 50 +++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_module_attach.c             |  6 ++++++
+ tools/testing/selftests/bpf/trace_helpers.c                        | 20 +++++++++++-------
+ tools/testing/selftests/bpf/trace_helpers.h                        |  2 ++
+ 11 files changed, 306 insertions(+), 17 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
