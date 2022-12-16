@@ -2,176 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF4864E511
-	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 01:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8378664E5C7
+	for <lists+bpf@lfdr.de>; Fri, 16 Dec 2022 03:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbiLPAPW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Dec 2022 19:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S229620AbiLPB7b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Dec 2022 20:59:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbiLPAPV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Dec 2022 19:15:21 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0A7396EE
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 16:15:19 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id r130so664299oih.2
-        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 16:15:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xjntjJNW8XDkRXK7YLXd7UDq0rE4A19WJe72lqEhvfY=;
-        b=ROzZW/rksvddHyRkkl+uvMmqFb65687wSurey1W4WLEusmDqhn9oUW+/6ycg0i+M3D
-         bUaBSoMDjeVmvOdAhAG6C+bgTY9FBgxUcI4Q/EFCtQ0yP0P+KkQOZqL3VQBGT6zMMcSb
-         GIxwmTuDeBEWvezLX6ztmul1/qV1His5eXkvE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xjntjJNW8XDkRXK7YLXd7UDq0rE4A19WJe72lqEhvfY=;
-        b=7MxrVDghUg4OEFN1cSpGSIVbszPKeMMfvqtAem4YYsoTjoDke4hziByC/2gB+P/ybK
-         SJEV8tJrkV1yoBc0YBFhvbCSqSX7NdHyxcXmLBVzG7nSWHApIwTmNKfl7s7dTAsjSx02
-         JHktgdFUstPXrp3Jv0sZUlznyDOq7I3joNE2icIFysWanYr6m3GqYpUOd+tQq01436eK
-         tXN7dHN+PMR5/Df9aqBgz/IeJveDurlH80NsgFXcoRIiRVfC2cw0lXc/CyAB7A1DYwWD
-         MGCpejk9Jhjp9uAcNNggl5wo9TEvivUWE3kKD8HwUjFCVfGnCy6xlzQM7lMYtvKV1VO4
-         H2wg==
-X-Gm-Message-State: ANoB5pl6l2PtoutjBoqG9y0NQBZZO9Nr0KXldgI/EiwUL5ne5fDDoT7n
-        +Vxivd0oK7jiqzPEAGdDeAWlNQ==
-X-Google-Smtp-Source: AA0mqf5pjkNlYkiP448njcCpGoXWKWujnAcqliQbo734/BpNv4ht4UiaoL3RZ302T//+I65GZCUe9w==
-X-Received: by 2002:a05:6808:16a8:b0:35a:56f5:860d with SMTP id bb40-20020a05680816a800b0035a56f5860dmr16647244oib.38.1671149718981;
-        Thu, 15 Dec 2022 16:15:18 -0800 (PST)
-Received: from sbohrer-cf-dell ([24.28.97.120])
-        by smtp.gmail.com with ESMTPSA id q19-20020a056808201300b00342eade43d4sm149924oiw.13.2022.12.15.16.15.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Dec 2022 16:15:18 -0800 (PST)
-Date:   Thu, 15 Dec 2022 18:14:44 -0600
-From:   Shawn Bohrer <sbohrer@cloudflare.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
-        magnus.karlsson@intel.com, kernel-team@cloudflare.com
-Subject: Re: Possible race with xsk_flush
-Message-ID: <Y5u4dA01y9RjjdAW@sbohrer-cf-dell>
-References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
- <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
+        with ESMTP id S229603AbiLPB7b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Dec 2022 20:59:31 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46652A27A
+        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 17:59:29 -0800 (PST)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BG0ii98008080
+        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 17:59:29 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=s2048-2021-q4;
+ bh=cgLT18edKnGvU8GnYh4/ci359mEtQDADC6xKls2SgRk=;
+ b=INflmaKBgFcmkGLqvZHYVVMZoCLIBX1QNlw62s/4BAj4AbVcOd9ycR/G+2b4m+ZIUSdn
+ dCQscIwFjKt4IiyS9awA/i4VbRVT38FOxnit2Hz3R6fquFlvGFFKzftIwHGhqjJmW/D6
+ 7lg2XelhWHkKWxE0JTWAe24pMdgSq7Q4ZGIdnY/2vsSIaxX0YRRE/1hHZ2GaUbtHGJyI
+ 6aHqrNXmcinpjqHTiKysYsMI5uF8ehPxmrbWva6iyl/3XclCtMlKI4AcFp0ZPGMzIDtc
+ +VthSk6KX+vlZoisD26vah3Tlx/NBtBzhbKft6zpHHvBLhWH5oFP/6+r/FLjt0+NrIdW hw== 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mfy5sykmf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 15 Dec 2022 17:59:29 -0800
+Received: from twshared15216.17.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Thu, 15 Dec 2022 17:59:28 -0800
+Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
+        id 272F0A5F23F; Thu, 15 Dec 2022 17:59:26 -0800 (PST)
+From:   Kui-Feng Lee <kuifeng@meta.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <kernel-team@meta.com>, <song@kernel.org>
+CC:     Kui-Feng Lee <kuifeng@meta.com>
+Subject: [PATCH bpf-next 0/2] bpf: fix the crash caused by task iterators over vma
+Date:   Thu, 15 Dec 2022 17:59:10 -0800
+Message-ID: <20221216015912.991616-1-kuifeng@meta.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: jJ-6kApdgk_HDi2RGmoFoaouvCgkBrzO
+X-Proofpoint-ORIG-GUID: jJ-6kApdgk_HDi2RGmoFoaouvCgkBrzO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-15_12,2022-12-15_02,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 15, 2022 at 11:22:05AM +0100, Magnus Karlsson wrote:
-> Thanks Shawn for your detailed bug report. The rings between user
-> space and kernel space are single-producer/single-consumer, so in your
-> case when both CPU0 and CPU2 are working on the fill ring and the Rx
-> ring at the same time, this will indeed produce races. The intended
-> design principle to protect against this is that only one NAPI context
-> can access any given ring at any point in time and that the NAPI logic
-> should prevent two instances of the same NAPI instance from running at
-> the same time. So if that is not true for some reason, we would get a
-> race like this. Another option is that one of the CPUs should really
-> process another fill ring instead of the same.
-> 
-> Do you see the second socket being worked on when this happens?
-> 
-> Could you please share how you set up the two AF_XDP sockets?
+This issue is related to task iterators over vma. A system crash can
+occur when a task iterator travels through vma of tasks as the death
+of a task will clear the pointer to its mm, even though the
+task_struct is still held. As a result, an unexpected crash happens
+due to a null pointer. To address this problem, a reference to mm is
+kept on the iterator to make sure that the pointer is always
+valid. This patch set provides a solution for this crash by properly
+referencing mm on task iterators over vma.
 
-Alex Forster sent more details on the configuration but just to
-reiterate there are actually 8 AF_XDP sockets in this test setup.
-There are two veth interfaces and each interface has four receive
-queues.  We create one socket per interface/queue pair.  Our XDP
-program redirects each packet to the correct AF_XDP socket based on
-the queue number.
+Kui-Feng Lee (2):
+  bpf: keep a reference to the mm, in case the task is dead.
+  selftests/bpf: create new processes repeatedly in the background.
 
-Yes there is often activity on other sockets near the time when the
-bug occurs.  This is why I'm printing xs/fq, the socket address and
-fill queue address, and printing the ingress/egress device name and
-queue number in my prints.  This allows to match up the user space and
-kernel space prints.  Additionally we are using a shared UMEM so
-descriptors could move around between sockets though I've tried to
-minimize this and in every case I've seen so far the mystery
-descriptor was last used on the same socket and has also been in the
-fill queue just not next in line.
+ kernel/bpf/task_iter.c                        | 39 ++++++---
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 79 +++++++++++++++++++
+ 2 files changed, 106 insertions(+), 12 deletions(-)
 
-> Are you using XDP_DRV mode in your tests?
-> 
-> > A couple more notes:
-> > * The ftrace print order and timestamps seem to indicate that the CPU
-> >   2 napi_poll is running before the CPU 0 xsk_flush().  I don't know
-> >   if these timestamps can be trusted but it does imply that maybe this
-> >   can race as I described.  I've triggered this twice with xsk_flush
-> >   probes and both show the order above.
-> > * In the 3 times I've triggered this it has occurred right when the
-> >   softirq processing switches CPUs
-> 
-> This is interesting. Could you check, in some way, if you only have
-> one core working on the fill ring before the softirq switching and
-> then after that you have two? And if you have two, is that period
-> transient?
+--=20
+2.30.2
 
-I think what you are asking is why does the softirq processing switch
-CPUs?  There is still a lot I don't fully understand here but I've
-tried to understand this, if only to try to make it happen more
-frequently and make this easier to reproduce.
-
-In this test setup there is no hardware IRQ.  iperf2 sends the packet
-and the CPU where iperf is running runs the veth softirq.  I'm not
-sure how it picks which veth receive queue receives the packets, but
-they end up distributed across the veth qeueus.  Additionally
-__veth_xdp_flush() calls __napi_schedule().  This is called from
-veth_xdp_xmit() which I think means that transmitting packets from
-AF_XDP also schedules the softirq on the current CPU for that veth
-queue.  What I definitely see is that if I pin both iperf and my
-application to a single CPU all softirqs of all queues run on that
-single CPU.  If I pin iperf2 to one core and my application to another
-core I get softirqs for all veth queues on both cores.
-
-In our test setup we aren't applying any cpu affinity.  iperf2 is
-multi-threaded and can run on all 4 cores, and our application is
-multithreaded and can run on all 4 cores.  The napi scheduling seems
-to be per veth queue and yes I see those softirqs move and switch
-between CPUs.  I don't however have anything that clearly shows it
-running concurrently on two CPUs (The stretches of __xsk_rcv_zc are
-all on one core before it switches).  The closest I have is the
-several microseconds where it appears xsk_flush() overlaps at the end
-of my traces.  I would think that if the napi locking didn't work at
-all you'd see clear overlap.
-
-From my experiments with CPU affinity I've updated my test setup to
-frequently change the CPU affinity of iperf and our application on one
-of my test boxes with hopes that it helps to reproduce but I have no
-results so far.
-
-> > * I've also triggered this before I added the xsk_flush() probe and
-> >   in that case saw the kernel side additionally fill in the next
-> >   expected descriptor, which in the example above would be 0xfe4100.
-> >   This seems to indicate that my tracking is all still sane.
-> > * This is fairly reproducible, but I've got 10 test boxes running and
-> >   I only get maybe bug a day.
-> >
-> > Any thoughts on if the bug I described is actually possible,
-> > alternative theories, or other things to test/try would be welcome.
-> 
-> I thought this would be impossible, but apparently not :-). We are
-> apparently doing something wrong in the AF_XDP code or have the wrong
-> assumptions in some situation, but I just do not know what at this
-> point in time. Maybe it is veth that breaks some of our assumptions,
-> who knows. But let us dig into it. I need your help here, because I
-> think it will be hard for me to reproduce the issue.
-
-Yeah if you have ideas on what to test I'll do my best to try them.
-
-I've additionally updated my application to put a bad "cookie"
-descriptor address back in the RX ring before updating the consumer
-pointer.  My hope is that if we then ever receive that cookie it
-proves the kernel raced and failed to update the correct address.
-
-Thanks,
-Shawn Bohrer
