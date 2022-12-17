@@ -2,333 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5772E64FBA3
-	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 19:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8860E64FBFB
+	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 20:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbiLQSsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Dec 2022 13:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        id S229951AbiLQTFB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Dec 2022 14:05:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbiLQSsK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Dec 2022 13:48:10 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF3FDFB4;
-        Sat, 17 Dec 2022 10:48:08 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id m5-20020a7bca45000000b003d2fbab35c6so3852103wml.4;
-        Sat, 17 Dec 2022 10:48:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ff3j5au/gpQ72wWKY1ty9HHyftxGy5cfKV/c2Zaa72A=;
-        b=aNQD1P1SKnaojV1E7zxWra/NYDEgudyiYLzSJ13k5WcuAofqwSqfDptWC+6GqrUcEE
-         xbh8fynZ1FC7xERi5zaqOsvsyH7P6cfg7vkce48AyJdnNqin30ZYmgOd++jGrZQ7bDlp
-         84ygIxTrczGwVGIMIO5R2d0rKiI9nUofGv7r9wjRgIbai4qpdxqdJ2OL+jitNwNFFKkq
-         HF68J+ttwfvPUoltI/ssLCrrNfzh0Vc3KkNglmRVDXMq0FIxfKTFQPIF7/IRiuPr4yN0
-         pvApyhXJ7x0ZYJ7q58dgcUuiQ94qs6KsZvGUZghtEw1bXY4MDBAipszt7Ww+TEEm8s3V
-         f+aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ff3j5au/gpQ72wWKY1ty9HHyftxGy5cfKV/c2Zaa72A=;
-        b=Uty1ZZfTtR7E2dPiAm+aRDYgGvLR38PnB8nVTTfQS/fXhxGCayb23YMCpHae2jIS4l
-         XD3FR312P3XVfpCyPLYEQyMKtYfuLdeyicYQcJDcDLltHERGwEgXnr9UDnJVkKSwLiUm
-         EcqQGAHm5Qgp3q8KiK5Q2J+Cz/TTrrHIfKdfW7oLO7joqrv5QOqV3ITmlifVbetprBLd
-         RETmlqZC3WPNn+RGevxy+8WUTJ22mbEkpQfLrVjDc7ZPS2QiHpIe7nmQ0oXBAlZBosdT
-         rQZrDsLsuskvxf8PT3Tv2Eg627tg/y9YiVoP+n8luqsKzwfYXOoWPGIazGuyRX8BSlNZ
-         3tPQ==
-X-Gm-Message-State: ANoB5pmQtW3SEibmKku71fkQHV3H/BjC+QleIRpphx/XWQGiviVNHWTh
-        hSJYxRH/AH1+jrJ+UZCAb3o=
-X-Google-Smtp-Source: AA0mqf5R/n26a5fNZrkb/RFkgoBwc0LMauwOHeSmhcxcwhUOxPRfnXuAkX1lHPwZ47P2FQ6H95wTWA==
-X-Received: by 2002:a05:600c:384e:b0:3cf:ae53:b1e0 with SMTP id s14-20020a05600c384e00b003cfae53b1e0mr28393402wmr.9.1671302887211;
-        Sat, 17 Dec 2022 10:48:07 -0800 (PST)
-Received: from localhost.localdomain (host-79-17-30-229.retail.telecomitalia.it. [79.17.30.229])
-        by smtp.gmail.com with ESMTPSA id 8-20020a05600c020800b003b4935f04a4sm7726062wmi.5.2022.12.17.10.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Dec 2022 10:48:06 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Evgeniy Dushistov <dushistov@mail.ru>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v3 3/3] fs/ufs: Replace kmap() with kmap_local_page()
-Date:   Sat, 17 Dec 2022 19:47:49 +0100
-Message-Id: <20221217184749.968-4-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221217184749.968-1-fmdefrancesco@gmail.com>
-References: <20221217184749.968-1-fmdefrancesco@gmail.com>
+        with ESMTP id S230113AbiLQTEi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Dec 2022 14:04:38 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B48628E28
+        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 10:59:26 -0800 (PST)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BHGImiw019192;
+        Sat, 17 Dec 2022 10:58:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=Hbx5G5EYSLNORltwCiF5+Z53R9R73V63mzXoxLi2yUE=;
+ b=jKusBMLCQt5Swgor5ire7Sw4GQ62LmQJYdS543GhJ1Zmh0ttV5h1FMgA4NP6qBzU0cXs
+ 0U3d7e5LgO5HjI5HJoypRAYFRFD+X4bF/dLzEZMiAVCTm3Bv69U2dl7KPXwz7jA3EC5r
+ l/QQt6ubnKotBu/hd7zbYgPwWeE0DR4ES0FOSoklDYSLl0IJdUTG/mAVakwI/AfKrORU
+ c8Z2s3o9N7Iyfoil70K02/Sk6HF0jlCn37PpsaAn8AZ2fwQX2xCHVwXtb6NoR6NplAGv
+ 3nNAQULy7h0D/GGUBghhmvPBMdoiU2QlNsfGXnt9zNLoKIIx7eUbN87r9qMsOqcIgSJs HA== 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3mha5bsnct-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 17 Dec 2022 10:58:36 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P3TWZkqTSzybeE+LHdq9BGABBus+Pw8rtPXM4Zs8njw639EQmYVBFMf5gKDx5yk+UEj5MekU0e7/0MWXB4dA4cHBl1nbEvhLCFqRkF6pXhPIWq9N9p98K3jL7bsLpNPtJnULKvkphhVPE/Z6DdWBPwXpfKIv4KY4bWTHc9XH+5RfMYW7JS855wJMlpVCwD6KZUdyH4gF58TtA9unY3XTfC94q3XeDthUEC1SzMImlUnIcQd+CqDfiaWh53GiZceWHDkkEZfz0PBykyut//r9tPQkSB9SNRFPO+5BDSWvlGroFbGpKLWQiBUCkynPnXb02ouqzgLKhC8V1eZ+4mGA1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Hbx5G5EYSLNORltwCiF5+Z53R9R73V63mzXoxLi2yUE=;
+ b=i0BWufpBOY2LLfRtyNjOxrQM9uZ4Kw4yH24B3kx6amMkEA3N8iDr97R/3/IaPvYGrwuREviibgW5GfEzhedFCYRe3xYhrDAYtJQ4r3lPYPIbSTU/nNhrHlsXoalvdvl01KMj7rSJlhwZmobqHkodQWEQTr7NFBYowkoaG1eYTzpdqyPY2rpyTf+dHIyfcOZFSVrNbW+R4U7wooYnZfryngnGO3sy8xQ39ZKzHvAwQNgwkSoifZHB2uJGj0BRPUDIn0LtSQvl6so0uMla4vLmh0Qo+5NXio4Z5ClMBlPX5YHb/FpqaD4V51KW6fmhSjL0Kb3OcZM4kxMyx9C19hp1Ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by MN2PR15MB3118.namprd15.prod.outlook.com (2603:10b6:208:f9::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.16; Sat, 17 Dec
+ 2022 18:58:33 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5924.015; Sat, 17 Dec 2022
+ 18:58:33 +0000
+Message-ID: <e8812ff5-f188-34db-50e0-9a79fa5752c0@meta.com>
+Date:   Sat, 17 Dec 2022 10:58:31 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.0
+Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: convenience macro for use
+ with 'asm volatile' blocks
+Content-Language: en-US
+To:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+        yhs@fb.com
+References: <20221217021711.172247-1-eddyz87@gmail.com>
+ <20221217021711.172247-3-eddyz87@gmail.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <20221217021711.172247-3-eddyz87@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0257.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MN2PR15MB3118:EE_
+X-MS-Office365-Filtering-Correlation-Id: bb8a3f86-233d-4ff9-8c49-08dae060b1f3
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TCpfbIdkHpRDwqnRpSY+rf5NFvjZkIpvFiO9T3y3tS6gO/OU3+xNoNZbsUI8nCMGNmv54ZzVxo9DxxGVJ/Po2lOWI35f7DpUQtfEK3DrJmYr+g62E9ZJxU7f2qTTHE01AbKatRc604lqySlteOOH1Qnk3veiEs0ZhwboUcSuaSSHNJ2q0lfeobidKY1Y/WFNHRNLYJIdXQ7Jc1C8gaJHamwBrjcf1Mi12/iIKK7oN4QeIm8mIN+gkEdihuBKituNdvQJMMZ6EUUDWbjSznSo9F00eQlyuZUDwI7+yueUfuUWuPPmwKLlZmbDgij7GN1sSYN+adcxbMtrLFYGYN/HWLg0/sO+wIdf0VwAJShKVVr0nsG0jr2Yb/INoLULpoNwj6nRywJjnDJ3ySntWtP59XUQYaPhvkezzArgSVWn9tPEeH5Kdt0/9e1//FkKIXEGW1QohtC+toKcvyc1DFZvMiKPbgOZwuayqIZ+v3B9fsISr+VUHnS1wtnZFHiB/d4g+HvBs2Ytn2Md+zKzy2z6vgrpqq/Hp/aWp/amuWKX1bgxFRGxO96PCclCv82MRuW9OaFiIKZ/VqzDtP9faSIyA1WLZgV9RjUGh5vLaT2YnAEnvIzh6V1ZKsRVhVvk+yqPHCPXhjDMX+sPRCh+BvD1Emzfb/8kU1bMzLvqvTugDQ5uFEQo4N6wHlH0LJox1D7K1hp59G399Idqg9NWvKsqhyxHoDSwP6o07god03FhjUA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(376002)(366004)(396003)(136003)(39860400002)(451199015)(478600001)(41300700001)(31686004)(6486002)(8936002)(36756003)(6506007)(53546011)(38100700002)(8676002)(66556008)(66476007)(66946007)(186003)(6512007)(5660300002)(4326008)(2906002)(2616005)(4744005)(316002)(86362001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dUpaeEo2UTVhL2t6QUFxQWxiWWM3YVlCUVByZndoL1M4NXdqQWFnVVQwZFVl?=
+ =?utf-8?B?RWVlb3hnallRU0x1RDkrKzhqNWlJdDBVdVRkWUxqRnVBNkRaM21pb3NKVTRi?=
+ =?utf-8?B?NTBUNzRrTGw1M1VGWUJJTG9uQ0FVL0NMbmhGb2RTQ01PdysweVJaR2Z2TmdB?=
+ =?utf-8?B?cXRlU3lTUDFCbkdIWFhwRzcvbjV5RThFSnpwaDJpUGV6UldIVXg1UkM3Mkh3?=
+ =?utf-8?B?OXZRV2t6WHBxMzVVd1dBTHg5VXlvQWx3czRzMjNqZFN5VHhQdzB6ZkpHQ0ZH?=
+ =?utf-8?B?Q0FIdkdlY2l2Y294b2gveFFHVzNldSs4ZmpVb25NT01vZFVibmE2NWZSSkQ1?=
+ =?utf-8?B?Uy83Y3JYMG40N0JXSms0SG9BdG5VNVQ2ckUyVkFPZENjR1RIVzM5Qnd3T1My?=
+ =?utf-8?B?eTI0TTR2bXZobmdyTnpMbjJRUjRaYndYcXlFVENmVDUxNmwxRDMvSVd4cVJl?=
+ =?utf-8?B?bTdwNjRxWGF6bTV5UnFXaEFYRDYzeUFzK3gweFpobjViZkNobUsxbE1rbVZx?=
+ =?utf-8?B?dEc3YXFUWkVXbGZ3MXZKVm1nU09rbCtDa2ZRSXBvWlpHdEdVU0RzYjN5dDlx?=
+ =?utf-8?B?NUpReGtFRThNelgvZENNbVFRdVArRHo1Q0VhMEtRekRtWUZpK21WdVdPWDc2?=
+ =?utf-8?B?alVYVlUvQStaMnJwcWlTTVJEejdmRzVITjBVOVVxdlNmcTRGL3l0OXZYb0N0?=
+ =?utf-8?B?Nis0Tk5uTk5YdXhjSHg3VHRUYmRjNGhWRjE3MFdGYk1qWGVyR0ZKdTlFeHpY?=
+ =?utf-8?B?TDZqUUk4aEQ5Y1dFMmpMc2dmQ1RsNVhHYWNVYlMzbmhJbmhFN251djI3LzAy?=
+ =?utf-8?B?ZDhIMmRiMmJmMll3MWJydVZKVVhCWlFId0ZVSjllYmFHc0JyaGRUWFUrbjZv?=
+ =?utf-8?B?K21FUnZKVURlYk03cVZBRVVnUFllc0tzV2RpODk2d3hSbmxTcVhjRmloQ1dj?=
+ =?utf-8?B?R0hQTEhoRmM2NTNhWnRIU21CUTFROUpPN3JMS242LzJxQllIRSs5L0wycllR?=
+ =?utf-8?B?Q3JveEwrZERqNnQxOW0zS2VBSlhvSjFmYzRwYUkvR1MrQjB2OHpzRGljL1NW?=
+ =?utf-8?B?aFpteTNJdnpvZzMzeHgxTW1GSkQ4aFZRREpRSGExNGE1cFBnbk1rQnFiTEhF?=
+ =?utf-8?B?MjlneStETlozTjNleDJaOFRDS0E4QmZkb2wweTY1MGRmUWZJSmZhQ1cvemgv?=
+ =?utf-8?B?UTVxTEwxTTUyNXhybUYvN28zRk9yckhteWdETmk2ekRMUnc5TTVHOFQxaFhv?=
+ =?utf-8?B?TytDZzhWUWdvVS9TZ3MrenE0YkVFRENMOG5lRi9WUXVSTCtXMGNva2plYVV2?=
+ =?utf-8?B?R2NOckRkcGlqN04rZGdIaVVhN3gyMEQ1MVJIaGd1VXBLZTQ1VnNpUDJpOFBH?=
+ =?utf-8?B?V2hSek5IS3RscDlZN2Qzcy9ldGZNd0RRVnJxbFJlZjdVTW1wS29OOWhTeUVM?=
+ =?utf-8?B?eVF5ZCtJSXRnTTZCRGFkZHppc25OOXJBZ003UEtpakhlam03WFRMWXZ3Y3px?=
+ =?utf-8?B?YjgxNnhrTG9pZ3dVbUswazBoRXEray94N3U3L3pZYmU3Z2NpRFVwc0FMQ3Vh?=
+ =?utf-8?B?ek1wVktmRll4UTdGT01zQVp0K3I1VDdrU2djWXNTZkhwbXhRcTNIc0M0RHlW?=
+ =?utf-8?B?MmVVaXV0ODBpdW5xVWIzNVNjWnhaUFJidFNPSGs0SmNKRDJJY05BUGdhREpZ?=
+ =?utf-8?B?bWFnSTZkdTdtdG83SWd6a0hsSG9FRCtrV3FIQ0NEZTRkMWFXOUlhVm1GTmwy?=
+ =?utf-8?B?N3JseVNPaUdJTCtUamtTdVdKakdUanlPYWJQQTRjNFVvMlJyQVFVTmlIZGRW?=
+ =?utf-8?B?Njh0cmU4VG5jdk5mY0czcnpnRW5kbFZreWlVcmJUVDdCZWhiKzNlelNJbTFl?=
+ =?utf-8?B?NTl3bEtwRTFEY201NE1DUSs2eTV4SnRSZkF0SllqTFZGVDE0THBKLzNlTnlO?=
+ =?utf-8?B?VnNvSER2WGhnQWNlNlhhQ1lqa1U0bVlPbjg5WUxIWDY5Z29aMmdwUWYwbWIz?=
+ =?utf-8?B?ZGtrYkgrMnp6U2dUQjdnNjNKcnUyTVo1S3BWRXI1T0pEVEgyK3g0R2ZSRmk1?=
+ =?utf-8?B?L3QvcTdhRkxScEdxWmdoSjdQTW10SEFEMnNxNEFCbk1Ld1ZxV2JpYyttNlRw?=
+ =?utf-8?B?ZVQycE1ZYnJtZjBFZUVDQ1hYbkZqZWlBSXBpbUhxcFVKYTRWZGROeU5HVFdx?=
+ =?utf-8?B?dWc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb8a3f86-233d-4ff9-8c49-08dae060b1f3
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2022 18:58:33.4919
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UdlnZoi4Rl8HcRDXhc4A7iGUE5wJWXK5u+clCZ+KwN5oorHhojQ1mx1J8SAdA/NQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3118
+X-Proofpoint-GUID: sr-yrKSE2oIupUIM9LlpLc6yUkUMhhNA
+X-Proofpoint-ORIG-GUID: sr-yrKSE2oIupUIM9LlpLc6yUkUMhhNA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-17_09,2022-12-15_02,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-kmap() is being deprecated in favor of kmap_local_page().
 
-There are two main problems with kmap(): (1) It comes with an overhead as
-the mapping space is restricted and protected by a global lock for
-synchronization and (2) it also requires global TLB invalidation when the
-kmap’s pool wraps and it might block when the mapping space is fully
-utilized until a slot becomes available.
 
-With kmap_local_page() the mappings are per thread, CPU local, can take
-page faults, and can be called from any context (including interrupts).
-It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
-the tasks can be preempted and, when they are scheduled to run again, the
-kernel virtual addresses are restored and still valid.
+On 12/16/22 6:17 PM, Eduard Zingerman wrote:
+> A set of macros useful for writing naked BPF functions using inline
+> assembly. E.g. as follows:
+> 
+> struct map_struct {
+> 	...
+> } map SEC(".maps");
+> 
+> SEC(...)
+> __naked int foo_test(void)
+> {
+> 	asm volatile(
+> 		"r0 = 0;"
+> 		"*(u64*)(r10 - 8) = r0;"
+> 		"r1 = %[map] ll;"
+> 		"r2 = r10;"
+> 		"r2 += -8;"
+> 		"call %[bpf_map_lookup_elem];"
+> 		"r0 = 0;"
+> 		"exit;"
+> 		:
+> 		: __imm(bpf_map_lookup_elem),
+> 		  __imm_addr(map)
+> 		: __clobber_all);
+> }
+> 
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 
-Since its use in fs/ufs is safe everywhere, it should be preferred.
-
-Therefore, replace kmap() with kmap_local_page() in fs/ufs. kunmap_local()
-requires the mapping address, so return that address from ufs_get_page()
-to be used in ufs_put_page().
-
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- fs/ufs/dir.c | 75 ++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 46 insertions(+), 29 deletions(-)
-
-diff --git a/fs/ufs/dir.c b/fs/ufs/dir.c
-index 9fa86614d2d1..a9dd5023b604 100644
---- a/fs/ufs/dir.c
-+++ b/fs/ufs/dir.c
-@@ -61,9 +61,9 @@ static int ufs_commit_chunk(struct page *page, loff_t pos, unsigned len)
- 	return err;
- }
- 
--static inline void ufs_put_page(struct page *page)
-+static inline void ufs_put_page(struct page *page, void *page_addr)
- {
--	kunmap(page);
-+	kunmap((void *)((unsigned long)page_addr & PAGE_MASK));
- 	put_page(page);
- }
- 
-@@ -76,7 +76,7 @@ ino_t ufs_inode_by_name(struct inode *dir, const struct qstr *qstr)
- 	de = ufs_find_entry(dir, qstr, &page);
- 	if (de) {
- 		res = fs32_to_cpu(dir->i_sb, de->d_ino);
--		ufs_put_page(page);
-+		ufs_put_page(page, de);
- 	}
- 	return res;
- }
-@@ -99,18 +99,17 @@ void ufs_set_link(struct inode *dir, struct ufs_dir_entry *de,
- 	ufs_set_de_type(dir->i_sb, de, inode->i_mode);
- 
- 	err = ufs_commit_chunk(page, pos, len);
--	ufs_put_page(page);
-+	ufs_put_page(page, de);
- 	if (update_times)
- 		dir->i_mtime = dir->i_ctime = current_time(dir);
- 	mark_inode_dirty(dir);
- }
- 
- 
--static bool ufs_check_page(struct page *page)
-+static bool ufs_check_page(struct page *page, char *kaddr)
- {
- 	struct inode *dir = page->mapping->host;
- 	struct super_block *sb = dir->i_sb;
--	char *kaddr = page_address(page);
- 	unsigned offs, rec_len;
- 	unsigned limit = PAGE_SIZE;
- 	const unsigned chunk_mask = UFS_SB(sb)->s_uspi->s_dirblksize - 1;
-@@ -185,23 +184,32 @@ static bool ufs_check_page(struct page *page)
- 	return false;
- }
- 
-+/*
-+ * Calls to ufs_get_page()/ufs_put_page() must be nested according to the
-+ * rules documented in kmap_local_page()/kunmap_local().
-+ *
-+ * NOTE: ufs_find_entry() and ufs_dotdot() act as calls to ufs_get_page()
-+ * and must be treated accordingly for nesting purposes.
-+ */
- static void *ufs_get_page(struct inode *dir, unsigned long n, struct page **p)
- {
-+	char *kaddr;
-+
- 	struct address_space *mapping = dir->i_mapping;
- 	struct page *page = read_mapping_page(mapping, n, NULL);
- 	if (!IS_ERR(page)) {
--		kmap(page);
-+		kaddr = kmap_local_page(page);
- 		if (unlikely(!PageChecked(page))) {
--			if (!ufs_check_page(page))
-+			if (!ufs_check_page(page, kaddr))
- 				goto fail;
- 		}
- 		*p = page;
--		return page_address(page);
-+		return kaddr;
- 	}
- 	return ERR_CAST(page);
- 
- fail:
--	ufs_put_page(page);
-+	ufs_put_page(page, kaddr);
- 	return ERR_PTR(-EIO);
- }
- 
-@@ -227,6 +235,13 @@ ufs_next_entry(struct super_block *sb, struct ufs_dir_entry *p)
- 					fs16_to_cpu(sb, p->d_reclen));
- }
- 
-+/*
-+ * Calls to ufs_get_page()/ufs_put_page() must be nested according to the
-+ * rules documented in kmap_local_page()/kunmap_local().
-+ *
-+ * ufs_dotdot() acts as a call to ufs_get_page() and must be treated
-+ * accordingly for nesting purposes.
-+ */
- struct ufs_dir_entry *ufs_dotdot(struct inode *dir, struct page **p)
- {
- 	struct ufs_dir_entry *de = ufs_get_page(dir, 0, p);
-@@ -238,12 +253,15 @@ struct ufs_dir_entry *ufs_dotdot(struct inode *dir, struct page **p)
- }
- 
- /*
-- *	ufs_find_entry()
-+ * Finds an entry in the specified directory with the wanted name. It returns a
-+ * pointer to the directory's entry. The page in which the entry was found is
-+ * in the res_page out parameter. The page is returned mapped and unlocked.
-+ * The entry is guaranteed to be valid.
-  *
-- * finds an entry in the specified directory with the wanted name. It
-- * returns the page in which the entry was found, and the entry itself
-- * (as a parameter - res_dir). Page is returned mapped and unlocked.
-- * Entry is guaranteed to be valid.
-+ * On Success ufs_put_page() should be called on *res_page.
-+ *
-+ * ufs_find_entry() acts as a call to ufs_get_page() and must be treated
-+ * accordingly for nesting purposes.
-  */
- struct ufs_dir_entry *ufs_find_entry(struct inode *dir, const struct qstr *qstr,
- 				     struct page **res_page)
-@@ -282,7 +300,7 @@ struct ufs_dir_entry *ufs_find_entry(struct inode *dir, const struct qstr *qstr,
- 					goto found;
- 				de = ufs_next_entry(sb, de);
- 			}
--			ufs_put_page(page);
-+			ufs_put_page(page, kaddr);
- 		}
- 		if (++n >= npages)
- 			n = 0;
-@@ -360,7 +378,7 @@ int ufs_add_link(struct dentry *dentry, struct inode *inode)
- 			de = (struct ufs_dir_entry *) ((char *) de + rec_len);
- 		}
- 		unlock_page(page);
--		ufs_put_page(page);
-+		ufs_put_page(page, kaddr);
- 	}
- 	BUG();
- 	return -EINVAL;
-@@ -390,7 +408,7 @@ int ufs_add_link(struct dentry *dentry, struct inode *inode)
- 	mark_inode_dirty(dir);
- 	/* OFFSET_CACHE */
- out_put:
--	ufs_put_page(page);
-+	ufs_put_page(page, kaddr);
- 	return err;
- out_unlock:
- 	unlock_page(page);
-@@ -468,13 +486,13 @@ ufs_readdir(struct file *file, struct dir_context *ctx)
- 					       ufs_get_de_namlen(sb, de),
- 					       fs32_to_cpu(sb, de->d_ino),
- 					       d_type)) {
--					ufs_put_page(page);
-+					ufs_put_page(page, kaddr);
- 					return 0;
- 				}
- 			}
- 			ctx->pos += fs16_to_cpu(sb, de->d_reclen);
- 		}
--		ufs_put_page(page);
-+		ufs_put_page(page, kaddr);
- 	}
- 	return 0;
- }
-@@ -485,10 +503,10 @@ ufs_readdir(struct file *file, struct dir_context *ctx)
-  * previous entry.
-  */
- int ufs_delete_entry(struct inode *inode, struct ufs_dir_entry *dir,
--		     struct page * page)
-+		     struct page *page)
- {
- 	struct super_block *sb = inode->i_sb;
--	char *kaddr = page_address(page);
-+	char *kaddr = (char *)((unsigned long)dir & PAGE_MASK);
- 	unsigned int from = offset_in_page(dir) & ~(UFS_SB(sb)->s_uspi->s_dirblksize - 1);
- 	unsigned int to = offset_in_page(dir) + fs16_to_cpu(sb, dir->d_reclen);
- 	loff_t pos;
-@@ -527,7 +545,7 @@ int ufs_delete_entry(struct inode *inode, struct ufs_dir_entry *dir,
- 	inode->i_ctime = inode->i_mtime = current_time(inode);
- 	mark_inode_dirty(inode);
- out:
--	ufs_put_page(page);
-+	ufs_put_page(page, kaddr);
- 	UFSD("EXIT\n");
- 	return err;
- }
-@@ -551,8 +569,7 @@ int ufs_make_empty(struct inode * inode, struct inode *dir)
- 		goto fail;
- 	}
- 
--	kmap(page);
--	base = (char*)page_address(page);
-+	base = kmap_local_page(page);
- 	memset(base, 0, PAGE_SIZE);
- 
- 	de = (struct ufs_dir_entry *) base;
-@@ -569,7 +586,7 @@ int ufs_make_empty(struct inode * inode, struct inode *dir)
- 	de->d_reclen = cpu_to_fs16(sb, chunk_size - UFS_DIR_REC_LEN(1));
- 	ufs_set_de_namlen(sb, de, 2);
- 	strcpy (de->d_name, "..");
--	kunmap(page);
-+	kunmap_local(base);
- 
- 	err = ufs_commit_chunk(page, 0, chunk_size);
- fail:
-@@ -585,9 +602,9 @@ int ufs_empty_dir(struct inode * inode)
- 	struct super_block *sb = inode->i_sb;
- 	struct page *page = NULL;
- 	unsigned long i, npages = dir_pages(inode);
-+	char *kaddr;
- 
- 	for (i = 0; i < npages; i++) {
--		char *kaddr;
- 		struct ufs_dir_entry *de;
- 
- 		kaddr = ufs_get_page(inode, i, &page);
-@@ -620,12 +637,12 @@ int ufs_empty_dir(struct inode * inode)
- 			}
- 			de = ufs_next_entry(sb, de);
- 		}
--		ufs_put_page(page);
-+		ufs_put_page(page, kaddr);
- 	}
- 	return 1;
- 
- not_empty:
--	ufs_put_page(page);
-+	ufs_put_page(page, kaddr);
- 	return 0;
- }
- 
--- 
-2.39.0
-
+Acked-by: Yonghong Song <yhs@fb.com>
