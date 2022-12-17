@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A05764F6FC
+	by mail.lfdr.de (Postfix) with ESMTP id AA79664F6FE
 	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 03:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbiLQCRn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 21:17:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
+        id S229968AbiLQCRo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 21:17:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbiLQCRm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 21:17:42 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D087286F8
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 18:17:40 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id y25so6140080lfa.9
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 18:17:40 -0800 (PST)
+        with ESMTP id S229907AbiLQCRn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 21:17:43 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1DD1D30E
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 18:17:42 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id z26so6141123lfu.8
+        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 18:17:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xMx7mzBdU25HS+HEGhH8TvxGaEt099WYH8w/+oYIf/c=;
-        b=mmLdKSVU9PB4Dtw1nPRJizrssreKPefdeVWFEY7ykAlbXBHKbSmPaNEFjwZlnKUEPX
-         Gncoa0I4vTU21Bs/n49lgRqpywjLwpjTWLVGDucBctQUwfy130wGP64c4Ns8V6l39Sbn
-         2cccA9MZXeSAC2AbGPbkJEFv+N03321mIX/mhJ8uoMPYOGtjVwiWD+QyctOwComQllY6
-         wJY+uQm9ERbsZ3/FvUkyava7JdvfL+d/s0Ydl84U96mlsLVe/x2WGW1BLJciIQK4XDzc
-         gYevodyPCU1x4IUzkoXPZ5P76+8YbdVFXp3PhE67ypM6WosK8WTvzNhMZYD87nP6qNoJ
-         08HQ==
+        bh=u5yiYxctgJ/8XywwUq+Qp9WWoytLhycOEtr4Q3oaz/c=;
+        b=TJ1dfOhQ5P23E7I7THB6RLFEMa0ODJokkbmi1wOshi09BAta3ne9ufDeO+ARg+8RW8
+         LjjQ1LO0sASNg+7RBMw/3MTHM89Jef5NpT/hEHdXGTD1EG2+fc/fmFjviRxVakP2VeLu
+         p6OvFt3KxPwwQj8GWUDNnQCNHu5BkGH+xP5VFVfraW3Xl1B67j0gUBkXk264fBPVg6F9
+         Hn3lP6ia+dy/QDG9TOboviraT7iFWZEJxZGLAJHLrbuyQRXKEcpb3f4QL1xVmJLJhhud
+         s1OXEcKZYaqGKOHzdk9Gx18SogcloruUdQb+gtqOCb6xfg0Uu1s/eoOpqOhuE5lrFv9Q
+         +9ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xMx7mzBdU25HS+HEGhH8TvxGaEt099WYH8w/+oYIf/c=;
-        b=JNisTOLMnld4nurFO27lok8h9yEmE2LslWRfQO31mlPl1e29tRQ/PglvOszFObdENL
-         RqZ8EjvcSLYy8+JAF0gjkgQ+z2EMR/fLwK/xmv3An+hWHMB2eH3LIazyAHFhVUriJwsV
-         m0PH3nFlqsB7yrkoICTevJ0uOQMSi8tL7EiUsLKhTuPZjLYtLo7eKNSv43Vsd085nOtF
-         wQ2Cb3N9xe3U9dfRv/xzxcA56GrE6q7Ul8CXxAVzzP5b35IctiGYeeKGK88B10kwuidh
-         CF5Z2KYfZbnAjmmdTq2laDJBaqcoLfv8/DAAbMSZQcNfiDbWmvJSFI7GUVTmorIkmsHz
-         G/CA==
-X-Gm-Message-State: ANoB5pnjPuifKswC1tQ0DI6D4fN0dB/i3HAYGeBZtRnGBVbKua6GePyT
-        74KkqXbt922i374PTLnfi4dTQr3FVyQ=
-X-Google-Smtp-Source: AA0mqf6OVc387NxOw/ailo+P7N3vZnPf+1hcIORZ4jjaYBy5JwVIedZe+0gIv2pI+vqlHDoTqwvJIQ==
-X-Received: by 2002:a05:6512:2613:b0:4a4:68b7:e717 with SMTP id bt19-20020a056512261300b004a468b7e717mr12695031lfb.1.1671243458818;
-        Fri, 16 Dec 2022 18:17:38 -0800 (PST)
+        bh=u5yiYxctgJ/8XywwUq+Qp9WWoytLhycOEtr4Q3oaz/c=;
+        b=k4fQhkaKjwaXh6RBXl7Z+pXZUJ7d/Ys6+cwdrFFLDHrsAT8rbs3F4BheSrWsPeNdyD
+         z0qIEwtaujeU6pRJE6YvkMAGFWo3lhGkg2xM3A1F9tZAYlgpW31NleUBV7bTiNqIQisS
+         2TcjMBoxmlUW3uc/D0IlBG2jBy371vXYz7dochdHib3FDhVF9C7WzZrW/+tn0sBrte1j
+         AdUY3LzYoEx+GA9mV2VzegOPntraxg4PDPgy1dkSNm2/wx/WcRtJZeLQ//O1C6VSdc/u
+         rXe8610pNNg0RV0Iqj4g3eGKLMNUTxoRQ/XpaZDGvP/cp54+0lYhwC8Z75jTMpQZL4Jm
+         wtiQ==
+X-Gm-Message-State: ANoB5pm2diNsoaXhvkxRj8ub5FxeJ1maTWRF/EEJ2cslKysS1jjSMmGL
+        Y0o5ONHuuZv0YzkaOY/74jaYZX90BGY=
+X-Google-Smtp-Source: AA0mqf5b3+VNoo+n37EONtxrhf52vYwg73Nk0kO4jFDH5XMcgk4AWLPei2Dlg4h6b40hisIlinGbRg==
+X-Received: by 2002:ac2:5189:0:b0:4b5:b705:9bf7 with SMTP id u9-20020ac25189000000b004b5b7059bf7mr7906382lfi.11.1671243460203;
+        Fri, 16 Dec 2022 18:17:40 -0800 (PST)
 Received: from pluto.. (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id x17-20020ac259d1000000b0049e9122bd0esm370850lfn.114.2022.12.16.18.17.37
+        by smtp.gmail.com with ESMTPSA id x17-20020ac259d1000000b0049e9122bd0esm370850lfn.114.2022.12.16.18.17.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Dec 2022 18:17:38 -0800 (PST)
+        Fri, 16 Dec 2022 18:17:39 -0800 (PST)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
         yhs@fb.com, Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 3/4] bpf: reduce BPF_ID_MAP_SIZE to fit only valid programs
-Date:   Sat, 17 Dec 2022 04:17:10 +0200
-Message-Id: <20221217021711.172247-4-eddyz87@gmail.com>
+Subject: [PATCH bpf-next 4/4] selftests/bpf: check if verifier.c:check_ids() handles 64+5 ids
+Date:   Sat, 17 Dec 2022 04:17:11 +0200
+Message-Id: <20221217021711.172247-5-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.38.2
 In-Reply-To: <20221217021711.172247-1-eddyz87@gmail.com>
 References: <20221217021711.172247-1-eddyz87@gmail.com>
@@ -71,61 +71,119 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF limits stack usage by MAX_BPF_STACK bytes across all call frames,
-however this is enforced by function check_max_stack_depth() which is
-executed after do_check_{subprogs,main}().
-
-This means that when check_ids() is executed the maximal stack depth is not
-yet verified, thus in theory the number of stack spills might be
-MAX_CALL_FRAMES * MAX_BPF_STACK / BPF_REG_SIZE.
-
-However, any program with stack usage deeper than
-MAX_BPF_STACK / BPF_REG_SIZE would be rejected by verifier.
-
-Hence save some memory by reducing the BPF_ID_MAP_SIZE.
-
-This is a follow up for
-https://lore.kernel.org/bpf/CAEf4BzYN1JmY9t03pnCHc4actob80wkBz2vk90ihJCBzi8CT9w@mail.gmail.com/
+A simple program that allocates a bunch of unique register ids than
+branches. The goal is to confirm that idmap used in verifier.c:check_ids()
+has sufficient capacity to verify that branches converge to a same state.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/bpf_verifier.h | 4 ++--
- kernel/bpf/verifier.c        | 6 ++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ .../selftests/bpf/prog_tests/verifier.c       | 12 +++
+ .../selftests/bpf/progs/check_ids_limits.c    | 77 +++++++++++++++++++
+ 2 files changed, 89 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier.c
+ create mode 100644 tools/testing/selftests/bpf/progs/check_ids_limits.c
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 53d175cbaa02..da72e16f1dee 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -274,8 +274,8 @@ struct bpf_id_pair {
- };
- 
- #define MAX_CALL_FRAMES 8
--/* Maximum number of register states that can exist at once */
--#define BPF_ID_MAP_SIZE ((MAX_BPF_REG + MAX_BPF_STACK / BPF_REG_SIZE) * MAX_CALL_FRAMES)
-+/* Maximum number of register states that can exist at once in a valid program */
-+#define BPF_ID_MAP_SIZE (MAX_BPF_REG * MAX_CALL_FRAMES + MAX_BPF_STACK / BPF_REG_SIZE)
- struct bpf_verifier_state {
- 	/* call stack tracking */
- 	struct bpf_func_state *frame[MAX_CALL_FRAMES];
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a5255a0dcbb6..fb040516a946 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12951,8 +12951,10 @@ static bool check_ids(u32 old_id, u32 cur_id, struct bpf_id_pair *idmap)
- 		if (idmap[i].old == old_id)
- 			return idmap[i].cur == cur_id;
- 	}
--	/* We ran out of idmap slots, which should be impossible */
--	WARN_ON_ONCE(1);
-+	/* Run out of slots in idmap, conservatively return false, cached
-+	 * state will not be reused. The BPF_ID_MAP_SIZE is sufficiently
-+	 * large to fit all valid programs.
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+new file mode 100644
+index 000000000000..3933141928a7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <test_progs.h>
++
++#include "check_ids_limits.skel.h"
++
++#define TEST_SET(skel)			\
++	void test_##skel(void)		\
++	{				\
++		RUN_TESTS(skel);	\
++	}
++
++TEST_SET(check_ids_limits)
+diff --git a/tools/testing/selftests/bpf/progs/check_ids_limits.c b/tools/testing/selftests/bpf/progs/check_ids_limits.c
+new file mode 100644
+index 000000000000..36c4a8bbe8ca
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/check_ids_limits.c
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++struct map_struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, int);
++} map SEC(".maps");
++
++/* Make sure that verifier.c:check_ids() can handle (almost) maximal
++ * number of ids.
++ */
++SEC("?raw_tp")
++__naked __test_state_freq __log_level(2) __msg("43 to 45: safe")
++int allocate_many_ids(void)
++{
++	/* Use bpf_map_lookup_elem() as a way to get a bunch of values
++	 * with unique ids.
 +	 */
- 	return false;
- }
- 
++#define __lookup(dst)				\
++		"r1 = %[map] ll;"		\
++		"r2 = r10;"			\
++		"r2 += -8;"			\
++		"call %[bpf_map_lookup_elem];"	\
++		dst " = r0;"
++	asm volatile(
++		"r0 = 0;"
++		"*(u64*)(r10 - 8) = r0;"
++		"r7 = r10;"
++		"r8 = 0;"
++		/* Spill 64 bpf_map_lookup_elem() results to stack,
++		 * each lookup gets its own unique id.
++		 */
++	"write_loop:"
++		"r7 += -8;"
++		"r8 += -8;"
++		__lookup("*(u64*)(r7 + 0)")
++		"if r8 != -512 goto write_loop;"
++		/* No way to source unique ids for r1-r5 as these
++		 * would be clobbered by bpf_map_lookup_elem call,
++		 * so make do with 64+5 unique ids.
++		 */
++		__lookup("r6")
++		__lookup("r7")
++		__lookup("r8")
++		__lookup("r9")
++		__lookup("r0")
++		/* Create a branching point for states comparison. */
++/* 43: */	"if r0 != 0 goto skip_one;"
++		/* Read all registers and stack spills to make these
++		 * persist in the checkpoint state.
++		 */
++		"r0 = r0;"
++	"skip_one:"
++/* 45: */	"r0 = r6;"
++		"r0 = r7;"
++		"r0 = r8;"
++		"r0 = r9;"
++		"r0 = r10;"
++		"r1 = 0;"
++	"read_loop:"
++		"r0 += -8;"
++		"r1 += -8;"
++		"r2 = *(u64*)(r0 + 0);"
++		"if r1 != -512 goto read_loop;"
++		"r0 = 0;"
++		"exit;"
++		:
++		: __imm(bpf_map_lookup_elem),
++		  __imm_addr(map)
++		: __clobber_all);
++#undef __lookup
++}
 -- 
 2.38.2
 
