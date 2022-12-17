@@ -2,135 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDA564F823
-	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 09:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A0464F825
+	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 09:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbiLQIFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Dec 2022 03:05:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
+        id S229979AbiLQILT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Dec 2022 03:11:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiLQIFd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Dec 2022 03:05:33 -0500
-X-Greylist: delayed 186 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 17 Dec 2022 00:05:31 PST
-Received: from condef-07.nifty.com (condef-07.nifty.com [202.248.20.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F379921E09
-        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 00:05:31 -0800 (PST)
-Received: from conssluserg-02.nifty.com ([10.126.8.81])by condef-07.nifty.com with ESMTP id 2BH80YKm011674
-        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 17:00:34 +0900
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 2BH80IA4012632;
-        Sat, 17 Dec 2022 17:00:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 2BH80IA4012632
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1671264019;
-        bh=ZYycTl7T8nH4SIgrrOiw66f272R2d0kq/iv5kqpNuaA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ITgCGqH4ENtV2LTVdBPOio2glFcENszaYlHdkhPnQe+pjg/+VvydvdifhBzp5e6XZ
-         SWm7jy8LxIrnkVzYobfgYJJlkttUMDdp2U0QvwmFBVLOzgW+WAVkt/HziTIzi3QRXA
-         LGJtNMA1nYINWoaVY25VsgC5bp2r+058StL9YSsJ/zeuZ6mbUrLn/P2k5s7eQUtDuP
-         /Vf/N9G/5zMiUL0C6qdk+D7uuYrgbe7v7fn7Lceny7AWo9OWEyLqTQ9OtRVnVkFE0K
-         EOKqyWNDcmJSmyiyBvR1+2xsx3x5FBrlrvkxRUh53culY/GZJu/gx3C0IC0J/P7Jps
-         mEgc1+h+vgtyQ==
-X-Nifty-SrcIP: [209.85.161.52]
-Received: by mail-oo1-f52.google.com with SMTP id q2-20020a4a8e02000000b004a0236114ecso708667ook.11;
-        Sat, 17 Dec 2022 00:00:19 -0800 (PST)
-X-Gm-Message-State: ANoB5pnyK03PRW10NVmJVuGmGyN3tn/CEBzUkvDYsJnHnWCx4gAxZZLd
-        UhntAGu5jB0ucJRw6FH01clj6p4QzQ+D3JoUPH0=
-X-Google-Smtp-Source: AA0mqf4VXD08DBaDeWXjG343pcdciVvCPWfwyE7r6SSrDDFo46BhrKC5u062VHChFuUJzHVI8UiZE4MbOz6mspfCSpk=
-X-Received: by 2002:a4a:ac0e:0:b0:4a0:31ba:82bb with SMTP id
- p14-20020a4aac0e000000b004a031ba82bbmr26006944oon.96.1671264018138; Sat, 17
- Dec 2022 00:00:18 -0800 (PST)
+        with ESMTP id S229453AbiLQILR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Dec 2022 03:11:17 -0500
+X-Greylist: delayed 3858 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 17 Dec 2022 00:11:13 PST
+Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com [162.62.57.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F25DBDF7C;
+        Sat, 17 Dec 2022 00:11:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1671264670;
+        bh=naNiKvNXpCoUO0USiB5TwbTaY+PW0EgRbU7/KgXZOL8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=tWfBsS8d7/SIco0ZD1OZye+lBmPRzJ0iXmXSWdnGndH9uA14l4fTAnZ92MJKc/qle
+         7yiiuIN0w3BgQMNOEZdWaAkItqXzGQ0h4Fn0/q1z7D5dSmdV7nEp+UUwKJ8Ddly0nq
+         A+AAFuNn9MQW/ZhILosDJ1CkPtMlCR++Cf4gGvX8=
+Received: from rtoax.. ([111.199.188.149])
+        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+        id 2C787682; Sat, 17 Dec 2022 16:11:07 +0800
+X-QQ-mid: xmsmtpt1671264667t3vo99l5d
+Message-ID: <tencent_6B46BD116F0C168438B3982F0F546C5F6709@qq.com>
+X-QQ-XMAILINFO: NT9b64/RmY6Na/fKunJfLosD5cNmePXp6k7JoG9Fpb0v+c07YtObCru/Yoehrp
+         XNUBHK2Gdgeng8s4lGAfHJsIVJZugrm8apK/2rpmO4/qrUw8iAX06bcLhEw0G0Q+/oakRHk7htiZ
+         Gn5p3lZjBfAds33fWh4F4BC+aMKkBu/FLPmwH2q50AJeAC+zH/MCyh/l5/U7aJGIQkgUIgevtYmh
+         yMcUkV8W7VJgOgExV662F2Btl6x+KMQ/Y0oUda8z+Rl0zL6RCvwEpZE4D7Fz7jGy7etNFtxj6dU0
+         M2mykjNYmq3yA4uQ6wZSLqya9el6fM1aKgnr0nBsSk8/n9tFfkZl0HyL1vB7J7I0ABJqOm6Jeos9
+         gil6IkH2/DlTOzie/sxZo0XWcSYtI5/YX1ensgazJoNQmgxqkKQuWhv0XJ/fdjVojmmvOzUAyo6p
+         TC2/ikw7PS87Mm2PlfI/YkhxagYfYIewBCY/rZHGuWg6bSt7YAQ3BQaWTTjpmGD8QjqHtmQEUHvY
+         UQpeXrvp68bL4Ll4Vj/FMo/fgXbKnM4nRa8Oe4TJX+z/NlOf+3EtL0+q9RjS+1NsguVwbhXMgdaq
+         kKay5teT+gj+NLY1L3w96E7hb5MmJ6dB+Q8qIte+0evD1yvMBhVK31RZwEy1NCbkHxvG6GSxG4Cq
+         EcrQ+T77PuQbWPZkJwefeIboftHt/IrVJY9OSvmNGHN/bTDsmN/8L5RlBUkk6mD0CP+6xZjUU6+7
+         pGrTn6DUj9nqyPVdTas1hhVTFSK5onOCp0iJx2vm2CjNn3TD/FhEEeuGnukUwypgXKurSisxyIxf
+         RhnpOwTzZVlwa1NkiKAP30QtxZl9moG+upJ5lm0C2Af+gk9POLA9AdXLNGeImLXxvqoWyFZu9aLq
+         n3jXRhO7f7CoK5/jKEtLMBbA+NsnQNUQoCkrlJnzo1E8npU487HLoEpE3KVCcvJSAN5kar1e2uVD
+         KrpZx9oKwPVyqH9LyY0+3OinHUnpmlBqk7VH0x9qczVEJEo9WBXrI5hlWgu9HwaMogila7bkZau/
+         UZMuikiw==
+From:   Rong Tao <rtoax@foxmail.com>
+To:     masahiroy@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, nicolas@fjasle.eu, rongtao@cestc.cn,
+        rtoax@foxmail.com
+Subject: Re: Re: [PATCH] kbuild: Fix compilation error
+Date:   Sat, 17 Dec 2022 16:11:07 +0800
+X-OQ-MSGID: <20221217081107.27031-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <CAK7LNASM6KsrXHXLykaQ=rJ3YZ5OA+7im4=g=3Ob3EPt97n_HQ@mail.gmail.com>
+References: <CAK7LNASM6KsrXHXLykaQ=rJ3YZ5OA+7im4=g=3Ob3EPt97n_HQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <tencent_3D7B0D368482B2602EC7559A5E1546171009@qq.com>
-In-Reply-To: <tencent_3D7B0D368482B2602EC7559A5E1546171009@qq.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 17 Dec 2022 16:59:41 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASM6KsrXHXLykaQ=rJ3YZ5OA+7im4=g=3Ob3EPt97n_HQ@mail.gmail.com>
-Message-ID: <CAK7LNASM6KsrXHXLykaQ=rJ3YZ5OA+7im4=g=3Ob3EPt97n_HQ@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Fix compilation error
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     linux-kbuild@vger.kernel.org, Rong Tao <rongtao@cestc.cn>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BPF [MISC]" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 17, 2022 at 4:07 PM Rong Tao <rtoax@foxmail.com> wrote:
->
-> From: Rong Tao <rongtao@cestc.cn>
->
-> In the absence of a CONFIG_FUNCTION_ALIGNMENT defined,
+Yes, It's happen in the mainline kernel.
 
-Does it happen in the mainline kernel?
+I pulled the latest code and habitually compiled samples/bpf, 
 
+$ git remote get-url origin 
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+$ make -C samples/bpf
 
-CONFIG_FUNCTION_ALIGNMENT is always defined
-as far as I understood arch/Kconfig.
-
-
-
-
-
-
-
-
-
-
-
-
-> -falign-functions=3D
-> will be given a null value, which results in a compilation error, as
-> follows:
->
->     $ make -C samples/bpf/
->     ...
->     CC      /home/sdb/Git/linux/samples/bpf/syscall_nrs.s
->     gcc: error: missing argument to =E2=80=98-falign-functions=3D=E2=80=
-=99
->     make[2]: *** [scripts/Makefile.build:118: /home/sdb/Git/linux/samples
->         /bpf/syscall_nrs.s] Error 1
->     make[1]: *** [Makefile:1996: /home/sdb/Git/linux/samples/bpf] Error 2
->     make[1]: Leaving directory '/home/sdb/Git/linux'
->     make: *** [Makefile:269: all] Error 2
->
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
->  Makefile | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/Makefile b/Makefile
-> index 6aa709df6bde..57cce4c8f8a2 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1006,9 +1006,11 @@ KBUILD_CFLAGS    +=3D $(CC_FLAGS_CFI)
->  export CC_FLAGS_CFI
->  endif
->
-> +ifdef CONFIG_FUNCTION_ALIGNMENT
->  ifneq ($(CONFIG_FUNCTION_ALIGNMENT),0)
->  KBUILD_CFLAGS +=3D -falign-functions=3D$(CONFIG_FUNCTION_ALIGNMENT)
->  endif
-> +endif
->
->  # arch Makefile may override CC so keep this after arch Makefile is incl=
-uded
->  NOSTDINC_FLAGS +=3D -nostdinc
-> --
-> 2.38.1
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+and the compilation error occurred. I applied this patch and can
+fix this compilation error.
