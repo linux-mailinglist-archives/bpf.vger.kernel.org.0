@@ -2,139 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3E764F648
-	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 01:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6292264F695
+	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 01:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbiLQA3E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Dec 2022 19:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
+        id S230300AbiLQAxF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Dec 2022 19:53:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbiLQA3D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Dec 2022 19:29:03 -0500
+        with ESMTP id S230280AbiLQAwm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Dec 2022 19:52:42 -0500
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94F6140B9
-        for <bpf@vger.kernel.org>; Fri, 16 Dec 2022 16:29:01 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BGNKkMJ006743;
-        Fri, 16 Dec 2022 16:28:45 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13486E9FC;
+        Fri, 16 Dec 2022 16:52:09 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BGNH4Yg022177;
+        Fri, 16 Dec 2022 16:51:55 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=UyasfO7oLCSabGMRWul4aKGv+XSU0ElDgENFRffEVh8=;
- b=KBjVxARbp4tVKKb15aN1RhO4mFBERmEYYY0ilknzmtDsLcdcz7D2PQQc5Pd9BjXH2Y7E
- AJXuQfrsPRS5r6uju0tmxvDAeOfmiIxphAvyzMLh03uPpZs5MQ+1Xd9wrVHsCPWMXAKC
- N5E9BdVeB47Qrdffu0MTYK3ZCI6Tm308zb9fI/cDro9Mo1qPY1k1o8XOmRxeu2ZA46e1
- +iIQn9hQ82KGAK2r9/iWkJrMSVc4Ue8nQ++qxc3I27Xz3WXe/lAVhQ+E3NnbTkz/3NDn
- 4ybeMDOrvIC2Cpybwg4TEJjMldFZfVGMRThi6O84G8b5sb+rbDqg1jyNfVkytoGr3lPg aA== 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mgm45wcvy-1
+ bh=kIeJNwjN0y3bCm4FZkrKcgn/uPh2d0LROT9ML1JHNRM=;
+ b=h2ju2jDVeF2FeDr+8hbqV4mx0dO+sMXx2EZBURF2PrijQSl6LYeUuDAf67zth9VPBFwg
+ NJcvAwNDIVGqCBv+ZKtyCfoqiOMNHA2Q12LSqHCGI83TRzZ22sZMg/3ukECY9IFpYJB1
+ 533AFE8wyk6d5Mf/XlikYdw/xCla8cM1f278958Fxgr0LIurzw3tFVjCJURy9i2sper6
+ saVZbciT8jUDuX0egkprByZ4zc8Y4sza+Lx+kVB2SAID7recdWdke/Fc/zu6BCU8/9yh
+ ARUQQH0b/LtaI1Am/3gZqx1AYRQPZtMz0qIthdgc96qMKix3n8YP5NHUHnTkqeYgNnqs 4w== 
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2177.outbound.protection.outlook.com [104.47.73.177])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mg3hj3xed-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Dec 2022 16:28:45 -0800
+        Fri, 16 Dec 2022 16:51:54 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zm01G7tErz2DacMOm2vcgGRw069iwa8dITYeS+HE7AweWtYltEshCF1Wh/P9sgYlmlYgwyagRdYTXmo4v6ljrhI70fwb/VLCPs8RlxqJZYSwjElu3dzGFrhmKgjGKNSnHNtEmCde9FLqO5Rw+baGCu4EJcd8KNDSCAZsmVRUAN6CFSJZ/vRNWhCCS7xkp3RLULk3+MoSRajzYbMGYV54GwwtfoSz+KFFcAua/so5eMOiqoaC4fF9xQBI4yMXhcKk+W4K4pdv7jUlErPnYbYq2GrocKpwEzJzk7gPJdNPTSAKnnDI4lnhQDtHSEXDgvaZv1Hl60F87RD5/Uqy7wxLNw==
+ b=amGZxNYBezURPccLYPMXPpjIrbevzDEkquvuCm8V2EEMTYzwwnVEoPXEEVIhqsREnFDGj4afBRLXJZwnXsL6fg4DqKd54kuGQjEon1Ywe+x0pWkwCsSXDFePaV49RKtyZUsjx7KyvP3w80Y2zGYjw9t6pDIDsq76sxh49CJoL2ryWmgXvgtAoxNgMBcRmat0PYNUDezDFZP3fwGxW6hMAN0ncKH4vms20bD99ZmT6dTn/9FbgHdhaIEFbax+WWR8pdxOebvhb1yZLHDxUIt7c7LVOS7dtYPGHR3mIpxnJek8w9kXaOtgRxYzpIXO6CdkwVk0mPSUH/9BnBxyHyv/RQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UyasfO7oLCSabGMRWul4aKGv+XSU0ElDgENFRffEVh8=;
- b=PxvlWuzactU6zdTCBxHXLPbKyLSXxqsg+cWj+JZmRkqrlNa+SNn2Vp+EfJXHJ0h5Fj4d2cdjxv0gTET0MlMfW5lBJHWvCRo+C6E/KnrEPImMBkSDGqp1rAo5IMUKF/WZs49lWkNB3vttS/IxaselCVAlGW4FUpNxwJxlF3EtHg4CY7fBeC4zs5E3cm1lMCCJEHulomJiq7XRtHym5yivhEUe5rvVnKFswqT5817VyEknkxWj+IpPuC/rq818+qFr/EdqXzRKraZhYdF3jgTAJ7eO4ECWh+QAZ9nCu8hfFXhSFWC4ubQzJRcAz4QF+D7n+ayd51uZonXDB1lK4Iihmw==
+ bh=kIeJNwjN0y3bCm4FZkrKcgn/uPh2d0LROT9ML1JHNRM=;
+ b=ET+fj8lAGhCqOuwgsuhsvL7WAvRagrQaVezjfn1dFvLBE44qCbG/yv5Vn2d7MVEZ1QuJC+fFdZhtyjLn5rMjYSeNqfJvZ7/Plu+YJ2thS4AM1QIPIDXNu3+Pih1h3erHGDPwpgic3K/akjKd8NbrsI+jk6sdubVaSRd25pqVoxFK/29Y8BmFphYT9EBMitpEXyHo3GcruIpow3Xk1ZUc/8rRFvz5s8tq+aFE4KwxbBdTsPExiJNst5RDDbKCIWLCE0Fd6hCNUd8sDL9Mf3/3VGNS/niLolqii7TaVDCAHaDVz8q/+2/X0OdxEfaxo06YSpO6cLQFAJ1pQtqJQ4QI7Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SJ2PR15MB5720.namprd15.prod.outlook.com (2603:10b6:a03:4ca::7) with
+ by CY4PR15MB1367.namprd15.prod.outlook.com (2603:10b6:903:fa::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.11; Sat, 17 Dec
- 2022 00:28:42 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.12; Sat, 17 Dec
+ 2022 00:51:51 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5924.015; Sat, 17 Dec 2022
- 00:28:42 +0000
-Message-ID: <76031eb7-9b68-1d53-e50d-6d328a54542d@meta.com>
-Date:   Fri, 16 Dec 2022 16:28:39 -0800
+ 00:51:51 +0000
+Message-ID: <b4506cd4-41b0-9358-0b96-dda84c72cd17@meta.com>
+Date:   Fri, 16 Dec 2022 16:51:48 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.6.0
-Subject: Re: [PATCHv3 bpf-next 3/3] bpf: Remove trace_printk_lock
+Subject: Re: [bpf-next 0/5] samples: bpf: enhance syscall tracing program
 Content-Language: en-US
-To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Florent Revest <revest@chromium.org>
-References: <20221215214430.1336195-1-jolsa@kernel.org>
- <20221215214430.1336195-4-jolsa@kernel.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20221215113937.113936-1-danieltimlee@gmail.com>
 From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221215214430.1336195-4-jolsa@kernel.org>
+In-Reply-To: <20221215113937.113936-1-danieltimlee@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: BYAPR05CA0018.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::31) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: BYAPR07CA0096.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::37) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SJ2PR15MB5720:EE_
-X-MS-Office365-Filtering-Correlation-Id: a2334265-fc7f-4294-9159-08dadfc5a651
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|CY4PR15MB1367:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9993b860-de79-4ffe-f8b5-08dadfc8e27a
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0iPjr2gGlyHDVRAWpD3kNUphdoKigQi/JHGY8rirx06/XPH5aoTi6OvFr1JFePvWRP16viYMm0xaPuQ3QAFdLD5GtdorRANe/HeO4G4yspLWLzss5J+oM5prxVDe2BwEWcgXQYWgsbvLeYZTg8ehvB8gXAWaPTx9Mn08czWzxHzm4NX1xe15NWzaFZSzmb27gkBoZpdYTZcP6Xly6aEC92RU6oLMjzmo32lNvLfDrLTd3Q2/hCf5zx6/1ccmzxQpNstAjOnSN02slU6ByNnvfu59q+2zx391EBE/zuGsP4E871b1DAAK5B0MSXAqc+JnD2Zs631la5QB1Bk9uWvnvPPn/rJPKcZlBrSgdpKt5Nh9dHFEUpAcft+WOlzeWiwYZP6GhLpCt+q/CjLgYUS3u44I5kZbsCJIncghoPO3CZq82YAji2i1lB5jgfRxexkHX4IumB7UYzb0cr/zLfG5UmWzRx4QChPIwIgxhNndJ8h4Y6Kv6wLc9aB4Ts7xqEYbK43/sW+1JEIpdoXyNjwj+DmCuvt1hboQtF1P6QhRyFPIMyWQNlcp52+Fh2owR4L/ex7wlzj/NtHHm4iYCxTDDZEzLaCS0MlmKtEAm/w5NqvBsw3QGXEGm3qE6iqkkiHx+1FuW2eQtuL202t4fug53iQVuNZt5O0vUN5d71+sjXZ5N4jD7I/eRclopEOsaBD4T8YngoodkUNp9c2uELjQlRj+JRqBzKxCr47j53WGj7uNBQnkKm4grDtA8xvwrufWZAozuMH7RMue//hxRIjxr2y0Cy2elwBHQXgHiqShQGc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(136003)(396003)(366004)(376002)(451199015)(2616005)(31696002)(83380400001)(86362001)(5660300002)(2906002)(7416002)(8936002)(66556008)(41300700001)(6666004)(6486002)(6512007)(4326008)(966005)(66946007)(478600001)(66476007)(8676002)(53546011)(6506007)(38100700002)(110136005)(186003)(54906003)(316002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: IJPWcIEPgaemB5MA3WvCt6ipylIdLxfoMeQS4ibWSKpQWiqdmwTMWQOu0EEOv5DpxZviYrtK9KqwQKasB90IL14ta91VACwE4BZHIf847/NeONJJYxkg8zOOfTxjxyOjpH7/JNNVuxTkqPiKwofne53KXs5Z5Zp72BCeng0NlMYzX1aqBriU+W8fYgFtzcKzPEbEAdAFeYJxZobI9rSg1ahlCSTmPCMTS034xuoMx3/6zpHh98AS0e+W/jFnDKZfpnacT55Ukp+Lm9wcR6L8enu7arlFat8b80OQD25yfQ4p2ifDEuA47W6y0M5eOr7k1HFHo6byK6IsjzwAX8oVbGkzqe+SgWmx+GibkznIgsMwcxteLlMw4XVUpvSuELEn/rq9k6/H4z1Ini4RawF+MprOmIxbWeNR/YYKVbzNuRW73MBS3gCTTMJHcNGhkX8q/YgGFrPjNE+vRd48Idl6kRCmJJZ8tBosM11wKbaZh5159prwQ/OnfkpM9dM0Lz6scVcAZokNEQgl36OoCNcGemeU3srmPhH1iXEcvvNijglK6E76Awm+0cHTYIwUDAbwcyqCHoG5vitmG5HUM4RJZhsyVtA14nYGADLDF54E2/E7tPVclsrcdZ1q+A1dH1WSz7yoVVj1s75N8U3AShwcO/wrVo/7nCdMKDcgcve9XJdYcqh0ElTToeqPImYrPCogf0rRMQtG1LEjG60vudS/0mcR7tMMjaIQ1UtceelFx4sFLdNKnFK05zyPG/H5U8eah6q6Q5XfPhcRhR68NO3sLKALA4EzmC2eYDaNIT9Un9r2klz1wER15QNO3klxw/C6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(39860400002)(346002)(376002)(366004)(136003)(451199015)(53546011)(6506007)(66476007)(66556008)(186003)(5660300002)(6512007)(36756003)(8676002)(83380400001)(2616005)(4326008)(8936002)(31686004)(66946007)(6486002)(316002)(966005)(478600001)(2906002)(6666004)(38100700002)(86362001)(31696002)(41300700001)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TXR1QzgxUWJjQVc2MXJxWWdrMS90R2x5M2lWVWtrTThFUzB2anBJM2RZaHlL?=
- =?utf-8?B?T3lNc0ZML3pDT1pydGNDSmo2eVdSdTc4ZXN1ODJCdEs1UGY2akQ5d2RhOVhP?=
- =?utf-8?B?QTZIRDNLdlVkT0dzaFdhRlg0WE8vNUNZaVhYSmVGbHJuT1dqSU84d0JnbmZl?=
- =?utf-8?B?MmI3RDVlQmM0cGFCUzZQaEJzRHRUQjJqTEJRZEtoYjR1dFhic1NBUnhyRVBp?=
- =?utf-8?B?UXNVV2w4OUx3Z21YK3hRMUlENXBkTFdwaHVIR2U4eXFnZXNEWTRLSU96bVdV?=
- =?utf-8?B?UG4zaDBBS082bXlzQ1RvSjdHNGRCN3Q2TW0vUm4vdk1wWThyMmM0WCtUSVFv?=
- =?utf-8?B?Q25mZGRNUUluaTNWU3JRRGxhZDRhbWJ1NHBCMnM5NTM4cWFSMnhVNnEwRFBs?=
- =?utf-8?B?N0o5SlJ2cGlkR2ZTbTN0eWl5U0J5cDVOWjdkS1VOQmcxdHM1Y2tKeUpjaUYx?=
- =?utf-8?B?UHhqVnFvcXRtbkJ3QXhLbnJ0YVJ2amkzaVdEc2pIbnNMN3pKQ2NJNDBBcHlu?=
- =?utf-8?B?MmxUQ0tYRlMrbDBPWURPNFhySEJLd2tmdWd6STczaERMdlpLZEUvUkkzMGVU?=
- =?utf-8?B?YlZraGYreGVrSHg5OFh0VGJ6dG1mWVprU0l1RTFDQjNFeDl0OFdhM0E5MVlt?=
- =?utf-8?B?NU5EMU5jTy9CcVpleVB3Lyt4WGgwVDIzZEdYM2tEQlVIekRZZW9ZbnIwcS9X?=
- =?utf-8?B?RFZEcTNMZDcyck5ibDJDbFZXK0s2SHMrRmpVVVVTLytoUlJZaXFLTTQ1UGtJ?=
- =?utf-8?B?QnVVa05Jc3VscS9ZVWJXTFh6dnV3S3NRdXJiZUVnQk93UjNzeDZXanZLOU1Y?=
- =?utf-8?B?KysxckJvdkUyRC9yVUsyaFhDSDZKQ0VrWUQ2U1JrMUZNNHFWRVptSTFaVmd3?=
- =?utf-8?B?S3BNWG5GcnVXRHY0Q3JIRVJRUGZaOFhjYUJhaHp2Z0gvNGRrNG5UUjB5a2xv?=
- =?utf-8?B?aHpodEVlTExlZTViVnV4dFVCYXJjV2FVVGhzdER5TkJEb09TdmQxK2hjaVRL?=
- =?utf-8?B?ekU0RGwvd3VXU0FIVFFBOEhTU0FxQzh3S2xWU0VDbWlqbGRaL3RkR05FYVhB?=
- =?utf-8?B?Ums3MmxtSy9xV0RFbUVKRXIraTZYVlprM1NXOWFHcUpvYk53YnJPODV2eG5X?=
- =?utf-8?B?a1dQUlpCOUh0YlNHVFlHQklud2s4U1RXcE5DZmRHdXdPVE9nWUpHNWN2cWxD?=
- =?utf-8?B?YnhMb28vdE1BNGcra2w3VGx6aDg5c05tZ2pqcXNvRkRGcnA5UU1Ya3EyazEv?=
- =?utf-8?B?NkNxbzlHUDZXRS8xK3RrY0dWNGFzWVhEY0ZrSkd4UUgvTzBONEpRYzZiaTc2?=
- =?utf-8?B?NVBkamZxS0RzSEh5Wk41OS85ekIrc21DcURtMGF0di85WFFPdjRaVnlCdE5j?=
- =?utf-8?B?YWRBbFBRRVoyTlJ4LzZNejYzZ29ZYkRIZFJvckpNc0twaHBuNElnTXVjckc2?=
- =?utf-8?B?VkRscE9BOEMydUg4ZnNQeHl6YzVuMm9MaWp4MHVXaS9HTmlvelpmNkh3bVNH?=
- =?utf-8?B?RGI5NnU3Vk1GaVJEMnFjQlpYeVRDbnl0dnhyelhWY0pPOTFJQ3hBbDIrbVJ2?=
- =?utf-8?B?dUFnMXJHS21VVDU3clFzdzR3VWVGRThVL3p1ZGhCcEJocStCaEtFRzJZekRD?=
- =?utf-8?B?K0MzVDBiOU5pVmQzQVRmQkdpT212dFk4RnduOGMvWXIzb2Y0aE9NZEJaMUh2?=
- =?utf-8?B?TVJ6bHJ2Ty9GYVYydHRIOUZSREMrK1lHOHErT3crejFpYXRaVmc3Skt2MUtU?=
- =?utf-8?B?blZYUFFBVWwxMFVzR0t3QVBWTUhhV1FTaTBNZnFEcDZGS3RUbDBLM0tsL2c2?=
- =?utf-8?B?Q1FMN2FObVE4akFmRytDbFJwYnpTL0RVQjRzWEZTcDM0M1dLc1BnS3pITUJT?=
- =?utf-8?B?S29HRVNTZENycnJkeHg5YnBlYWRsQittRzBRenVEZGIrQ1IvUnU0Y24vVE40?=
- =?utf-8?B?Vkp1M2RnVXFnWmlpYUZvU0w0QlhoQmdnUGdMVzN3VHd1emVPOVFmTVhtWkQ2?=
- =?utf-8?B?RUM2YmlzdW5SOCtyNm5RNWlKYkwwL0ZlYlk0eE5USWpCZHJnQWVNZEVxL3JH?=
- =?utf-8?B?bnUybEh1SWdRSzBXVzhQNEI5V2xVQllxTXhNUng2dzdwdlRTT2hjT1VXZ3gw?=
- =?utf-8?B?ckN2bTViN0V4RXpCNFFqNEtWcnVzQzZWOUdTNmVFNzg5cytXbTQyaUk0ZVlp?=
- =?utf-8?B?ckE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?djhXVTkrVSszTVdJNkFscGNVa3FtSkM3N05hVHlvUnFKbnJjVXkxQ09Kc3cv?=
+ =?utf-8?B?MkxxZytiTURVcVNVc010ZkdRSWZGVkpWUys0b3ZhOUdoZzBnTy9UM0JJUFdF?=
+ =?utf-8?B?Ky9SYXQzWWVxa09CMkYyb0pHbHIvQTNQVTNtZFlqV01td1RZeFlCMmhYWE80?=
+ =?utf-8?B?Mmd3MWtBZExXY0dYMEV6bXEwdE9yTWoyb0JhWjQ0UkVyYnVNQWYvWWxsUC83?=
+ =?utf-8?B?ZzB6NTNlbVAwQTBFUE1LQlUvNTN6YjlkTmNpdW1BV3JUaWMyaGFMKzhxRzM0?=
+ =?utf-8?B?amovUmRYbVJoQ0hOQzNTTXNRczdtdkNsK3laS1JiTkJyNUM5T1ZJUGx1OVNG?=
+ =?utf-8?B?bzRzS1ZvZDBHMHNUMEY2UFFESk8rdGZNV0pTdzBjZEdaSEFNdURCeG44dGNN?=
+ =?utf-8?B?WHF2aHhtYndyeDVicXZldks2R0d6KzF6REtST3BkR3JEdmwrdFMvNDVYQll1?=
+ =?utf-8?B?RW9ScTc2Z21PUnIvbTgwTXRMQnBlcWhiMnRrTlFDcEI0SWhJT2p3bDVhaW5J?=
+ =?utf-8?B?QjdJTkFrQXhhekMrK1pCSWF4ZXNqbnZ3emJkN1l1QmZ6dFVJRFFkQWRkQWd1?=
+ =?utf-8?B?dDAwK2RLNXdXYXk3bGs3UDY5bEpERnlUejFqWTJBQzViMFRocFhNdzRGR2Z3?=
+ =?utf-8?B?ZCtjY2g3eWQxUXQ5dWRFKzRZeDl1a0lFbFNGT2VKenFVVFV3Nmk2alhhSHd5?=
+ =?utf-8?B?ZVovYm9oMERNS0h3QlRveUhQbTZhbC9nMVlYekNEMmxkeUtYV1V5TnBQZzNQ?=
+ =?utf-8?B?TlA5STZ1cW5aWWhkbDhVU2pQdkVNTGFKazZ3UWNDQTdLY1RnMVJDcU5tUWZp?=
+ =?utf-8?B?Uys5b04yT3IzT3RDY2FwSHhQY0FIRnlaZFpOM2JEdFVBOENuK3h5NllMQ0R0?=
+ =?utf-8?B?OFZVa2ZPRHNsT0w2d2IzWEdtbnBBUEE1L2hlYXZBaHl2aGRaZTh4d1Z3UXgz?=
+ =?utf-8?B?OHZBN1UycDQ0TkQ5bkh6SmdwcVNoZ3NCZVJDSzUva3dHQ3cxYlREb3gyYWtl?=
+ =?utf-8?B?RFBkbXFFd0wyOHJIcFJEb1NERExTdFArelJYM2IxTjVNVUpiSVM4VGtuWkcz?=
+ =?utf-8?B?TGxPbko2cnBNbklqZGxVcGhrazJmRmhHOURLOHBWd1M2b0VmQndKSUVDK21x?=
+ =?utf-8?B?YkVDQUU3R3JOMDZpWWFwY2o1ODFvRE5maUZObnEwSmRzMXJCNjEwK29NTWxH?=
+ =?utf-8?B?REZPNUZENURzS1cweStKcmtrMmhkVWgyQk8yaHc2b0dCaW05OTZiNzQrcGM2?=
+ =?utf-8?B?V0VidlZsUzRiRy9tRDFDN0l6aEpUTmVZVmRNc21GbFpDLzBFY2J0N3dhcjlW?=
+ =?utf-8?B?ZEM3ZmRzbVlDam9GeHVadmxaSWNnSVZacG1HNlJIbHRuL2Q1bjVZNWpZRXNq?=
+ =?utf-8?B?V2duVE43YnkzZ1dsb2RBR0E2bWxwVXlHK0JDSzdUWURMTldDTktCaTlkVzhI?=
+ =?utf-8?B?SzNzdFR2Wm5jK1dYRDNRQmtiMFg2S2hOcmJuOFlBcm9qdE1JZCt2YTJZUjIy?=
+ =?utf-8?B?ek5IMmVHNndOL1ZFbmNPTmszL2tGMk5QdjhyV2R2SzZTT0ZYa3IvSE5nSW9w?=
+ =?utf-8?B?d1pycmsvRGZ5WUVNcEVVL0ZRNG9sSVlTUG5NdDM0L0FLTmJQc1p5L0MzYTFS?=
+ =?utf-8?B?MlBDMXg4ZFcvMmJSOU56elRJWkJZY3hxclBYUzA3OHpVS3RjVlNSZmQ1SmV0?=
+ =?utf-8?B?NXZoSGZuZW1rMXVmSjB6RjFZcG5VN0dVWVpJUkNvSlRQbXZNTHEySnBXcks2?=
+ =?utf-8?B?ZkFZV0w2dW9SRlhsRHNnNWRZNlc4YjdjTUsvUFRTNk1pcVljUVM3bldXdFV6?=
+ =?utf-8?B?RXhsZUVxcndDRnVKUjAyM0FMdGxGRHlmQ1FTUGRlaFozZkp4Uy8rN1YxKzdo?=
+ =?utf-8?B?R2hBaGxJWE5mazl3TEFrUStoVW1OYWpzRmE2Z1hTbHhKcGMzZWpycmp3YVJX?=
+ =?utf-8?B?R0FNUXludVpRWGJ5MEFmMDNDOFR5eVRoenVLckQxYzdKVzhva3RSbmdJck13?=
+ =?utf-8?B?cmo0TUI1YUNoRTRCT2wxNXFiNHp3TXU1SHVSc2NERVNjcjdDN3QvV3Fkd2tM?=
+ =?utf-8?B?MnFyRlc1b3F0bGR1WmY3SGJKd0t5SWRFcUZzUExhdFRIL2lJanpPanJqTjRK?=
+ =?utf-8?B?YXlvTlhDdEdTenJONEsvd0xXYkt2aTY0MFlLa29JeEltYVF2cDRiaVVOWkRG?=
+ =?utf-8?B?QlE9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2334265-fc7f-4294-9159-08dadfc5a651
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9993b860-de79-4ffe-f8b5-08dadfc8e27a
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2022 00:28:41.9823
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2022 00:51:51.3915
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jsnYIrT3KBvVTq3azhdM4h+80/f/Cg59iUrVKR5C7HmRbU8ISK+tECzLLYUiswLh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR15MB5720
-X-Proofpoint-ORIG-GUID: iDeBbBetEaMrAWE-ZfAR-sgj0jk5sWo5
-X-Proofpoint-GUID: iDeBbBetEaMrAWE-ZfAR-sgj0jk5sWo5
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-UserPrincipalName: kilgaYVNFAqeW5razsuON+qDztrg/xTsWoVFJlrOKXhM1GtgTnXd1ATcNNPCofbM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1367
+X-Proofpoint-GUID: 6dt-VEfAQDrbhNhEl5cEgNaD1QFhb7wI
+X-Proofpoint-ORIG-GUID: 6dt-VEfAQDrbhNhEl5cEgNaD1QFhb7wI
+Content-Transfer-Encoding: 8bit
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
@@ -152,117 +146,129 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 12/15/22 1:44 PM, Jiri Olsa wrote:
-> Both bpf_trace_printk and bpf_trace_vprintk helpers use static buffer
-> guarded with trace_printk_lock spin lock.
+On 12/15/22 3:39 AM, Daniel T. Lee wrote:
+> Syscall tracing using kprobe is quite unstable. Since it uses the exact
+> name of the kernel function, the program might broke due to the rename
+> of a function. The problem can also be caused by a changes in the
+> arguments of the function to which the kprobe connects. This commit
+> enhances syscall tracing program with the following instruments.
 > 
-> The spin lock contention causes issues with bpf programs attached to
-> contention_begin tracepoint [1] [2].
+> In this patchset, ksyscall is used instead of kprobe. By using
+> ksyscall, libbpf will detect the appropriate kernel function name.
+> (e.g. sys_write -> __s390_sys_write). This eliminates the need to worry
+> about which wrapper function to attach in order to parse arguments.
+> Also ksyscall provides more fine method with attaching system call, the
+> coarse SYSCALL helper at trace_common.h can be removed.
 > 
-> Andrii suggested we could get rid of the contention by using trylock,
-> but we could actually get rid of the spinlock completely by using
-> percpu buffers the same way as for bin_args in bpf_bprintf_prepare
-> function.
+> Next, BPF_SYSCALL is used to reduce the inconvenience of parsing
+> arguments. Since the nature of SYSCALL_WRAPPER function wraps the
+> argument once, additional process of argument extraction is required
+> to properly parse the argument. The BPF_SYSCALL macro will reduces the
+> hassle of parsing arguments from pt_regs.
 > 
-> Adding new return 'buf' argument to struct bpf_bprintf_data and making
-> bpf_bprintf_prepare to return also the buffer for printk helpers.
+> Lastly, vmlinux.h is applied to syscall tracing program. This change
+> allows the bpf program to refer to the internal structure as a single
+> "vmlinux.h" instead of including each header referenced by the bpf
+> program.
 > 
-> [1] https://lore.kernel.org/bpf/CACkBjsakT_yWxnSWr4r-0TpPvbKm9-OBmVUhJb7hV3hY8fdCkw@mail.gmail.com/
-> [2] https://lore.kernel.org/bpf/CACkBjsaCsTovQHFfkqJKto6S4Z8d02ud1D7MPESrHa1cVNNTrw@mail.gmail.com/
+> Additionally, this patchset changes the suffix of _kern to .bpf to make
+> use of the new compile rule (CLANG-BPF) which is more simple and neat.
+> By just changing the _kern suffix to .bpf will inherit the benefit of
+> the new CLANG-BPF compile target.
 > 
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Daniel T. Lee (5):
+>    samples: bpf: use kyscall instead of kprobe in syscall tracing program
+>    samples: bpf: use vmlinux.h instead of implicit headers in syscall
+>      tracing program
+>    samples: bpf: change _kern suffix to .bpf with syscall tracing program
+>    samples: bpf: fix tracex2 by using BPF_KSYSCALL macro
+>    samples: bpf: use BPF_KSYSCALL macro in syscall tracing programs
 
-Ack with a small nit below.
+Please change 'samples: bpf" to "samples/bpf".
+Also, bpf CI reported some new warnings and failures:
 
-Acked-by: Yonghong Song <yhs@fb.com>
+https://github.com/kernel-patches/bpf/actions/runs/3708274678/jobs/6285674300
 
-> ---
->   include/linux/bpf.h      |  3 +++
->   kernel/bpf/helpers.c     | 31 +++++++++++++++++++------------
->   kernel/trace/bpf_trace.c | 20 ++++++--------------
->   3 files changed, 28 insertions(+), 26 deletions(-)
+     CLANG-bpf  /tmp/work/bpf/bpf/samples/bpf/tracex4_kern.o
+   /tmp/work/bpf/bpf/samples/bpf/xdp_fwd_user.c: In function ‘main’:
+   /tmp/work/bpf/bpf/samples/bpf/xdp_fwd_user.c:85:44: warning: ‘_prog’ 
+directive output may be truncated writing 5 bytes into a region of size 
+between 2 and 9 [-Wformat-truncation=]
+      85 |  snprintf(prog_name, sizeof(prog_name), "%s_prog", app_name);
+         |                                            ^~~~~
+   In file included from /usr/include/stdio.h:867,
+                    from /tmp/work/bpf/bpf/samples/bpf/xdp_fwd_user.c:19:
+   /usr/include/x86_64-linux-gnu/bits/stdio2.h:67:10: note: 
+‘__builtin___snprintf_chk’ output between 13 and 20 bytes into a 
+destination of size 16
+      67 |   return __builtin___snprintf_chk (__s, __n, 
+__USE_FORTIFY_LEVEL - 1,
+         | 
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      68 |        __bos (__s), __fmt, __va_arg_pack ());
+         |        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     CC      /tmp/work/bpf/bpf/samples/bpf/syscall_nrs.s
+
+...
+
+     CLANG-BPF 
+/tmp/work/bpf/bpf/samples/bpf/test_current_task_under_cgroup.bpf.o
+   In file included from 
+/tmp/work/bpf/bpf/samples/bpf/test_probe_write_user.bpf.c:8:
+   In file included from /usr/include/string.h:26:
+   In file included from 
+/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:33:
+   In file included from /usr/include/features.h:485:
+   /usr/include/x86_64-linux-gnu/gnu/stubs.h:7:11: fatal error: 
+'gnu/stubs-32.h' file not found
+   # include <gnu/stubs-32.h>
+             ^~~~~~~~~~~~~~~~
+   1 error generated.
+   make[3]: *** [/tmp/work/bpf/bpf/samples/bpf/Makefile:394: 
+/tmp/work/bpf/bpf/samples/bpf/test_probe_write_user.bpf.o] Error 1
+   make[3]: *** Waiting for unfinished jobs....
+   In file included from 
+/tmp/work/bpf/bpf/samples/bpf/map_perf_test.bpf.c:8:
+   In file included from /usr/include/errno.h:25:
+   In file included from /usr/include/features.h:485:
+   /usr/include/x86_64-linux-gnu/gnu/stubs.h:7:11: fatal error: 
+'gnu/stubs-32.h' file not found
+   # include <gnu/stubs-32.h>
+             ^~~~~~~~~~~~~~~~
+   1 error generated.
+   make[3]: *** [/tmp/work/bpf/bpf/samples/bpf/Makefile:394: 
+/tmp/work/bpf/bpf/samples/bpf/map_perf_test.bpf.o] Error 1
+   make[2]: *** [/tmp/work/bpf/bpf/Makefile:1994: 
+/tmp/work/bpf/bpf/samples/bpf] Error 2
+   make[2]: Leaving directory '/tmp/work/bpf/bpf/kbuild-output'
+   make[1]: *** [Makefile:231: __sub-make] Error 2
+   make[1]: Leaving directory '/tmp/work/bpf/bpf'
+   make: *** [Makefile:269: all] Error 2
+   make: Leaving directory '/tmp/work/bpf/bpf/samples/bpf'
+   Error: Process completed with exit code 2.
+
+Please check bpf ci https://github.com/kernel-patches/bpf
+and fix the above issues properly.
+
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 656879385fbf..5fec2d1be6d7 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2795,10 +2795,13 @@ struct btf_id_set;
->   bool btf_id_set_contains(const struct btf_id_set *set, u32 id);
->   
->   #define MAX_BPRINTF_VARARGS		12
-> +#define MAX_BPRINTF_BUF			1024
->   
->   struct bpf_bprintf_data {
->   	u32 *bin_args;
-> +	char *buf;
->   	bool get_bin_args;
-> +	bool get_buf;
->   };
->   
->   int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 9cca02e13f2e..23aa8cf8fd1a 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -756,19 +756,20 @@ static int bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
->   /* Per-cpu temp buffers used by printf-like helpers to store the bprintf binary
->    * arguments representation.
->    */
-> -#define MAX_BPRINTF_BUF_LEN	512
-> +#define MAX_BPRINTF_BIN_ARGS	512
->   
->   /* Support executing three nested bprintf helper calls on a given CPU */
->   #define MAX_BPRINTF_NEST_LEVEL	3
->   struct bpf_bprintf_buffers {
-> -	char tmp_bufs[MAX_BPRINTF_NEST_LEVEL][MAX_BPRINTF_BUF_LEN];
-> +	char bin_args[MAX_BPRINTF_BIN_ARGS];
-> +	char buf[MAX_BPRINTF_BUF];
->   };
-> -static DEFINE_PER_CPU(struct bpf_bprintf_buffers, bpf_bprintf_bufs);
-> +
-> +static DEFINE_PER_CPU(struct bpf_bprintf_buffers[MAX_BPRINTF_NEST_LEVEL], bpf_bprintf_bufs);
->   static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
->   
-> -static int try_get_fmt_tmp_buf(char **tmp_buf)
-> +static int try_get_buffers(struct bpf_bprintf_buffers **bufs)
->   {
-> -	struct bpf_bprintf_buffers *bufs;
->   	int nest_level;
->   
->   	preempt_disable();
-> @@ -778,15 +779,14 @@ static int try_get_fmt_tmp_buf(char **tmp_buf)
->   		preempt_enable();
->   		return -EBUSY;
->   	}
-> -	bufs = this_cpu_ptr(&bpf_bprintf_bufs);
-> -	*tmp_buf = bufs->tmp_bufs[nest_level - 1];
-> +	*bufs = this_cpu_ptr(&bpf_bprintf_bufs[nest_level - 1]);
->   
->   	return 0;
->   }
->   
->   void bpf_bprintf_cleanup(struct bpf_bprintf_data *data)
->   {
-> -	if (!data->bin_args)
-> +	if (!data->bin_args && !data->buf)
->   		return;
->   	if (WARN_ON_ONCE(this_cpu_read(bpf_bprintf_nest_level) == 0))
->   		return;
-> @@ -811,7 +811,9 @@ void bpf_bprintf_cleanup(struct bpf_bprintf_data *data)
->   int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
->   			u32 num_args, struct bpf_bprintf_data *data)
->   {
-> +	bool get_buffers = (data->get_bin_args && num_args) || data->get_buf;
-
-We might waste some memory if num_args is 0 here. This is unlikely case
-and it is not worthwhile to optimize for that, so current
-implementation sounds good to me.
-
->   	char *unsafe_ptr = NULL, *tmp_buf = NULL, *tmp_buf_end, *fmt_end;
-> +	struct bpf_bprintf_buffers *buffers = NULL;
->   	size_t sizeof_cur_arg, sizeof_cur_ip;
->   	int err, i, num_spec = 0;
->   	u64 cur_arg;
-[...]
+>   samples/bpf/Makefile                          | 10 ++--
+>   ...p_perf_test_kern.c => map_perf_test.bpf.c} | 48 ++++++++-----------
+>   samples/bpf/map_perf_test_user.c              |  2 +-
+>   ...c => test_current_task_under_cgroup.bpf.c} | 11 ++---
+>   .../bpf/test_current_task_under_cgroup_user.c |  2 +-
+>   samples/bpf/test_map_in_map_kern.c            |  1 -
+>   ...ser_kern.c => test_probe_write_user.bpf.c} | 20 ++++----
+>   samples/bpf/test_probe_write_user_user.c      |  2 +-
+>   samples/bpf/trace_common.h                    | 13 -----
+>   ...trace_output_kern.c => trace_output.bpf.c} |  6 +--
+>   samples/bpf/trace_output_user.c               |  2 +-
+>   samples/bpf/{tracex2_kern.c => tracex2.bpf.c} | 13 ++---
+>   samples/bpf/tracex2_user.c                    |  2 +-
+>   13 files changed, 51 insertions(+), 81 deletions(-)
+>   rename samples/bpf/{map_perf_test_kern.c => map_perf_test.bpf.c} (85%)
+>   rename samples/bpf/{test_current_task_under_cgroup_kern.c => test_current_task_under_cgroup.bpf.c} (84%)
+>   rename samples/bpf/{test_probe_write_user_kern.c => test_probe_write_user.bpf.c} (71%)
+>   delete mode 100644 samples/bpf/trace_common.h
+>   rename samples/bpf/{trace_output_kern.c => trace_output.bpf.c} (82%)
+>   rename samples/bpf/{tracex2_kern.c => tracex2.bpf.c} (89%)
+> 
