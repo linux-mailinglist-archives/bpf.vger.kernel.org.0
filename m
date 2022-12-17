@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5383264F98F
-	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 16:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CCA64F990
+	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 16:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbiLQPCW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Dec 2022 10:02:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
+        id S229650AbiLQPC1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Dec 2022 10:02:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbiLQPCS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Dec 2022 10:02:18 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABD2E0D3
-        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 07:02:16 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id a14so3596701pfa.1
-        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 07:02:16 -0800 (PST)
+        with ESMTP id S229667AbiLQPCX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Dec 2022 10:02:23 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEFA11A25
+        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 07:02:20 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id f3so3580820pgc.2
+        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 07:02:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ac34a4260OiGhUdPdxmE/Jcjul2AuDI7xA9NMT5T/gM=;
-        b=fRZfDLwU5m1extAUTZYVjRN5Wg6tDFda1KGXRuXXKy0Oy+uav0+UCa4CZgjQ0QLatC
-         0GnvnOC3hOdgnT7GND/TqjHlmUduM6mFYw9NDOUigLLuuJUZzYcjwEsdxcnVz6dKBC+S
-         yjZjR7S2fUV0qwABvawSCeSmqs4VpISn3m+WbqDdDxZLZAYKeNkhCiDm3TmNVbtyFNE4
-         vQOiEoQ51rVsEFiV/8cze/J2N601PxZSZzcAUbXjYvs6Ms33Mr9MBa7WySZX2/TOqWvK
-         3AdZPh+KzZ5j5lAvteF6PsVVMo35ay7xPeduscv5iecA/GcDIv5jz2nGgyCbJrQAJHUV
-         kCEg==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VuAeqhQi4v6F7LXOogurHzEvkECGKY71NtAu7L/PKn4=;
+        b=BMFCmah0DQgAxlcoAAJl5dw39YsuCXypieCHNu0TS4qOVMqB7oq8pPZPuGJJ0lEx9N
+         hZCAb60IA7K1gaqgoA8xz5tRUXryhAAOFrPynHqgkyv2ZE1puLndlc+toC3M46nZQttI
+         r9f57FNC++q7lAtPz8uFJFT60WTvvgEKi+tYP3XKZ/Vgd1pso6CZjVomQJbar1RdzVgs
+         8nhBJmVHYYb17V46rjT5MqRwXEwbf1I+ok9o/HLW/6bI49JAx9RHqCfOJ+wtMAqKzKQz
+         OotilmAXo1H9vSZSYw0jXKpM22XI/N8CVcl0oONGL9orlVlPtwtD1pvzqx4CJaJfSjm8
+         +2Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ac34a4260OiGhUdPdxmE/Jcjul2AuDI7xA9NMT5T/gM=;
-        b=7raica8ntcyh33ZhSChaiTpNV6Ej3V3OrdwEIzoBZFIfqe7mSjOH6B6S8cCdw4Qdi0
-         8q8rvanacht3SA6HZTQVtpW04b1ZgzdNrn6X2PxDESrl5oZyM9cP+3hBEfZunWFxBnx4
-         zFibv37zCmTKo1lRIgkxiguZxT8avQwU1cvFUUT2XvXfmENrM8yP2XGMipcgybA7YKT/
-         i8VDUX5fu2aMPa6Vd0Nre7+nhYi68XBT7hcIG1z83lDuEDjbmZIuRZw34VN6Q4VaO7uL
-         c2FT3MDECKGvwsriTADaE6oufX2JG6Q2rjAn+NXdRI0mD0Nes2pq/9LV0Wacoe74wTTs
-         UkyA==
-X-Gm-Message-State: ANoB5plTIFUu+5cQFur2bh0pSSnsDoCEzHn29G8Ih8vBDs9txBC8/f3r
-        V4SA+O98uprxSskjrM3NCU//MaankJZ+uw==
-X-Google-Smtp-Source: AA0mqf5OjFZgW8PFyPqqNsaW3ehvPlSdTpgv/QNUtmtEPlQ0fbcC1Z4o9KEB7aVB5hwO9Zd1H39vdg==
-X-Received: by 2002:aa7:91c5:0:b0:566:900d:a1cd with SMTP id z5-20020aa791c5000000b00566900da1cdmr33181903pfa.9.1671289335803;
-        Sat, 17 Dec 2022 07:02:15 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VuAeqhQi4v6F7LXOogurHzEvkECGKY71NtAu7L/PKn4=;
+        b=mCnW1MAhHzsGzCszZrDunxaxeEWc3OjRXc1kwI+udwjNbP9JOL4lqadlhOCHGoK15N
+         u/t08r0v1yxi8T/pLH8xWtyz8GnwYicJJYHhRsMoWyR8sc2iaISF6FBdnFexYHSrF3iR
+         IZ+8Znf94NZXHYAYP8964py0riYuAfHjC4nGysu5uOCfkkbuZBod/Hrvd3t8UsGFkKWK
+         8GpNXXJaRok2XNh1M8bxb+/65Pl6E66EpgbcaJXXdiH/tP1GCHw0w4mO+r+hwR/lok1G
+         6lcEP9/tyIsAvruo/x30JaE7Z7/ASJy5VdgHBZKBeHCevIMGeu+VujOHsQP3fPhFMc5W
+         HU+A==
+X-Gm-Message-State: AFqh2koGUVNUTFNg9at8wukOkJ1uwLUwblrYp2Yztr0bJXb41iqr4XLb
+        /d288/Sw54km7dqWJPH1lVpLhAOih4UAgw==
+X-Google-Smtp-Source: AMrXdXv8i2D2PgD+8QnE9tgdH4GOTvourZCja8fe0c0imAfSigsJvo0rTBZWK+xFQ52HbTh0SFKrCQ==
+X-Received: by 2002:a62:524d:0:b0:57e:bac9:6e52 with SMTP id g74-20020a62524d000000b0057ebac96e52mr7607068pfb.14.1671289339896;
+        Sat, 17 Dec 2022 07:02:19 -0800 (PST)
 Received: from bogon.xiaojukeji.com ([111.201.145.40])
-        by smtp.gmail.com with ESMTPSA id s17-20020aa78bd1000000b00576ebde78ffsm3250880pfd.192.2022.12.17.07.02.11
+        by smtp.gmail.com with ESMTPSA id s17-20020aa78bd1000000b00576ebde78ffsm3250880pfd.192.2022.12.17.07.02.16
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 17 Dec 2022 07:02:14 -0800 (PST)
+        Sat, 17 Dec 2022 07:02:19 -0800 (PST)
 From:   xiangxia.m.yue@gmail.com
 To:     bpf@vger.kernel.org
 Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
@@ -61,10 +62,12 @@ Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Hou Tao <houtao1@huawei.com>
-Subject: [bpf-next v2 1/2] bpf: hash map, avoid deadlock with suitable hash mask
-Date:   Sat, 17 Dec 2022 23:02:06 +0800
-Message-Id: <20221217150207.58577-1-xiangxia.m.yue@gmail.com>
+Subject: [bpf-next v2 2/2] selftests/bpf: add test case for htab map
+Date:   Sat, 17 Dec 2022 23:02:07 +0800
+Message-Id: <20221217150207.58577-2-xiangxia.m.yue@gmail.com>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20221217150207.58577-1-xiangxia.m.yue@gmail.com>
+References: <20221217150207.58577-1-xiangxia.m.yue@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,16 +82,18 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-The deadlock still may occur while accessed in NMI and non-NMI
-context. Because in NMI, we still may access the same bucket but with
-different map_locked index.
+This testing show how to reproduce deadlock in special case.
+We update htab map in Task and NMI context. Task can be interrupted by
+NMI, if the same map bucket was locked, there will be a deadlock.
 
-For example, on the same CPU, .max_entries = 2, we update the hash map,
-with key = 4, while running bpf prog in NMI nmi_handle(), to update
-hash map with key = 20, so it will have the same bucket index but have
-different map_locked index.
+* map max_entries is 2.
+* NMI using key 4 and Task context using key 20.
+* so same bucket index but map_locked index is different.
 
-To fix this issue, using min mask to hash again.
+The selftest use perf to produce the NMI and fentry nmi_handle.
+Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
+map syscall increase this counter in bpf_disable_instrumentation.
+Then fentry nmi_handle and update hash map will reproduce the issue.
 
 Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -103,34 +108,156 @@ Cc: Stanislav Fomichev <sdf@google.com>
 Cc: Hao Luo <haoluo@google.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Hou Tao <houtao1@huawei.com>
-Acked-by: Yonghong Song <yhs@fb.com>
-Acked-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/hashtab.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
+ tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
+ .../selftests/bpf/prog_tests/htab_deadlock.c  | 75 +++++++++++++++++++
+ .../selftests/bpf/progs/htab_deadlock.c       | 30 ++++++++
+ 4 files changed, 107 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_deadlock.c
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 5aa2b5525f79..974f104f47a0 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -152,7 +152,7 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
- {
- 	unsigned long flags;
- 
--	hash = hash & HASHTAB_MAP_LOCK_MASK;
-+	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
- 
- 	preempt_disable();
- 	if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
-@@ -171,7 +171,7 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
- 				      struct bucket *b, u32 hash,
- 				      unsigned long flags)
- {
--	hash = hash & HASHTAB_MAP_LOCK_MASK;
-+	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
- 	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
- 	__this_cpu_dec(*(htab->map_locked[hash]));
- 	preempt_enable();
+diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+index 99cc33c51eaa..87e8fc9c9df2 100644
+--- a/tools/testing/selftests/bpf/DENYLIST.aarch64
++++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+@@ -24,6 +24,7 @@ fexit_test                                       # fexit_attach unexpected error
+ get_func_args_test                               # get_func_args_test__attach unexpected error: -524 (errno 524) (trampoline)
+ get_func_ip_test                                 # get_func_ip_test__attach unexpected error: -524 (errno 524) (trampoline)
+ htab_update/reenter_update
++htab_deadlock                                    # failed to find kernel BTF type ID of 'nmi_handle': -3 (trampoline)
+ kfree_skb                                        # attach fentry unexpected error: -524 (trampoline)
+ kfunc_call/subprog                               # extern (var ksym) 'bpf_prog_active': not found in kernel BTF
+ kfunc_call/subprog_lskel                         # skel unexpected error: -2
+diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
+index 585fcf73c731..735239b31050 100644
+--- a/tools/testing/selftests/bpf/DENYLIST.s390x
++++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+@@ -26,6 +26,7 @@ get_func_args_test	                 # trampoline
+ get_func_ip_test                         # get_func_ip_test__attach unexpected error: -524                             (trampoline)
+ get_stack_raw_tp                         # user_stack corrupted user stack                                             (no backchain userspace)
+ htab_update                              # failed to attach: ERROR: strerror_r(-524)=22                                (trampoline)
++htab_deadlock                            # failed to find kernel BTF type ID of 'nmi_handle': -3                       (trampoline)
+ kfree_skb                                # attach fentry unexpected error: -524                                        (trampoline)
+ kfunc_call                               # 'bpf_prog_active': not found in kernel BTF                                  (?)
+ kfunc_dynptr_param                       # JIT does not support calling kernel function                                (kfunc)
+diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+new file mode 100644
+index 000000000000..137dce8f1346
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+@@ -0,0 +1,75 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 DiDi Global Inc. */
++#define _GNU_SOURCE
++#include <pthread.h>
++#include <sched.h>
++#include <test_progs.h>
++
++#include "htab_deadlock.skel.h"
++
++static int perf_event_open(void)
++{
++	struct perf_event_attr attr = {0};
++	int pfd;
++
++	/* create perf event on CPU 0 */
++	attr.size = sizeof(attr);
++	attr.type = PERF_TYPE_HARDWARE;
++	attr.config = PERF_COUNT_HW_CPU_CYCLES;
++	attr.freq = 1;
++	attr.sample_freq = 1000;
++	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
++
++	return pfd >= 0 ? pfd : -errno;
++}
++
++void test_htab_deadlock(void)
++{
++	unsigned int val = 0, key = 20;
++	struct bpf_link *link = NULL;
++	struct htab_deadlock *skel;
++	int err, i, pfd;
++	cpu_set_t cpus;
++
++	skel = htab_deadlock__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
++		return;
++
++	err = htab_deadlock__attach(skel);
++	if (!ASSERT_OK(err, "skel_attach"))
++		goto clean_skel;
++
++	/* NMI events. */
++	pfd = perf_event_open();
++	if (pfd < 0) {
++		if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
++			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
++			test__skip();
++			goto clean_skel;
++		}
++		if (!ASSERT_GE(pfd, 0, "perf_event_open"))
++			goto clean_skel;
++	}
++
++	link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
++	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
++		goto clean_pfd;
++
++	/* Pinned on CPU 0 */
++	CPU_ZERO(&cpus);
++	CPU_SET(0, &cpus);
++	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
++
++	/* update bpf map concurrently on CPU0 in NMI and Task context.
++	 * there should be no kernel deadlock.
++	 */
++	for (i = 0; i < 100000; i++)
++		bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
++				    &key, &val, BPF_ANY);
++
++	bpf_link__destroy(link);
++clean_pfd:
++	close(pfd);
++clean_skel:
++	htab_deadlock__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
+new file mode 100644
+index 000000000000..72178f073667
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 DiDi Global Inc. */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 2);
++	__uint(map_flags, BPF_F_ZERO_SEED);
++	__type(key, unsigned int);
++	__type(value, unsigned int);
++} htab SEC(".maps");
++
++SEC("fentry/nmi_handle")
++int bpf_nmi_handle(struct pt_regs *regs)
++{
++	unsigned int val = 0, key = 4;
++
++	bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
++	return 0;
++}
++
++SEC("perf_event")
++int bpf_empty(struct pt_regs *regs)
++{
++	return 0;
++}
 -- 
 2.27.0
 
