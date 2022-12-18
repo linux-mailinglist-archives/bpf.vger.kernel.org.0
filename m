@@ -2,46 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE10650178
-	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 17:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F167650191
+	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 17:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbiLRQax (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Dec 2022 11:30:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44704 "EHLO
+        id S231876AbiLRQd5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Dec 2022 11:33:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbiLRQ3w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Dec 2022 11:29:52 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C752B6592;
-        Sun, 18 Dec 2022 08:10:52 -0800 (PST)
+        with ESMTP id S231878AbiLRQdN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Dec 2022 11:33:13 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCB217046;
+        Sun, 18 Dec 2022 08:12:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B2DD60DD5;
-        Sun, 18 Dec 2022 16:10:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68385C433D2;
-        Sun, 18 Dec 2022 16:10:38 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3DF32B80BA4;
+        Sun, 18 Dec 2022 16:12:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24079C433D2;
+        Sun, 18 Dec 2022 16:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671379839;
-        bh=0JPGoPWFnmeg/u2vBOcTl46VzkGqJqsQ7D5HZdn8OK8=;
+        s=k20201202; t=1671379922;
+        bh=kIPkRcL7vg8/igWD/iLUOEIINTGgR0Al5u+fgeEOQ8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PMdQJ8YlOiTHmhM/kLXMfAnhgqhYvkUfEO8Rp2U6APjqIRr4+UfQ+w3xuVmaIAuCK
-         mz7JZgWEfsLJqaGZttLpCJ8uJwoLT77jjy+EBePnnmbZfU1PsBh75bC6Omnt0QLI3m
-         +dw9dyZhR0Kgks6VVHlk+3bF2xwXmnnl3KChkO8MWJcQSQNpFuoQOB5iBBzWKymchv
-         9WMqbtT8miGBs+n1aqY7T0JRQRSqffcadsPLQyO1v0bS4rTuZYiRZs2K2zBHnUh6Z2
-         sWIJt8YLh1jT22EYa51Gh0vIiSVLBPQVO9a/fEbVVA4/Rk4Q4xXmnGbEmUOuVHXR28
-         WOfwvXWROUi+A==
+        b=IiUpNZMotJW2jDlGh+IDyhUH+kSPje1VzvgNfHCesB/h7pUbc8miUqUrDqqNj1ahz
+         b5dmfB2oWd/UBaePmELllJ3QU2Um7yvNMtKXqtVqEWRaxPS9bI1ZM4TgGakrJXCwLY
+         c++IBc4FQmYDnJV7uk2lJnTdQ7BJOhAf+daO2VZFCXXfUTteiSYhFJzts8GtLpjweg
+         JjOTVHNUUbv+eH/OGH5xVhogwMUzUQxBYidEupkcW0pMtEj3kNlOOyBP4Whk17l8nK
+         NDPktyBpfMt5noeNypHrpQfdJhu3eKx0lBGB1rUNDH95ABPrr8R2+73tNiVeWlBPvM
+         woIvkHWGQZqhQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        syzbot+8dd0551dda6020944c5d@syzkaller.appspotmail.com,
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
-        martin.lau@linux.dev, ast@kernel.org, andrii@kernel.org,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 48/73] bpf: Prevent decl_tag from being referenced in func_proto arg
-Date:   Sun, 18 Dec 2022 11:07:16 -0500
-Message-Id: <20221218160741.927862-48-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.0 58/73] libbpf: Avoid enum forward-declarations in public API in C++ mode
+Date:   Sun, 18 Dec 2022 11:07:26 -0500
+Message-Id: <20221218160741.927862-58-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221218160741.927862-1-sashal@kernel.org>
 References: <20221218160741.927862-1-sashal@kernel.org>
@@ -58,53 +56,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Stanislav Fomichev <sdf@google.com>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit f17472d4599697d701aa239b4c475a506bccfd19 ]
+[ Upstream commit b42693415b86f608049cf1b4870adc1dc65e58b0 ]
 
-Syzkaller managed to hit another decl_tag issue:
+C++ enum forward declarations are fundamentally not compatible with pure
+C enum definitions, and so libbpf's use of `enum bpf_stats_type;`
+forward declaration in libbpf/bpf.h public API header is causing C++
+compilation issues.
 
-  btf_func_proto_check kernel/bpf/btf.c:4506 [inline]
-  btf_check_all_types kernel/bpf/btf.c:4734 [inline]
-  btf_parse_type_sec+0x1175/0x1980 kernel/bpf/btf.c:4763
-  btf_parse kernel/bpf/btf.c:5042 [inline]
-  btf_new_fd+0x65a/0xb00 kernel/bpf/btf.c:6709
-  bpf_btf_load+0x6f/0x90 kernel/bpf/syscall.c:4342
-  __sys_bpf+0x50a/0x6c0 kernel/bpf/syscall.c:5034
-  __do_sys_bpf kernel/bpf/syscall.c:5093 [inline]
-  __se_sys_bpf kernel/bpf/syscall.c:5091 [inline]
-  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5091
-  do_syscall_64+0x54/0x70 arch/x86/entry/common.c:48
+More details can be found in [0], but it comes down to C++ supporting
+enum forward declaration only with explicitly specified backing type:
 
-This seems similar to commit ea68376c8bed ("bpf: prevent decl_tag from being
-referenced in func_proto") but for the argument.
+  enum bpf_stats_type: int;
 
-Reported-by: syzbot+8dd0551dda6020944c5d@syzkaller.appspotmail.com
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
+In C (and I believe it's a GCC extension also), such forward declaration
+is simply:
+
+  enum bpf_stats_type;
+
+Further, in Linux UAPI this enum is defined in pure C way:
+
+enum bpf_stats_type { BPF_STATS_RUN_TIME = 0; }
+
+And even though in both cases backing type is int, which can be
+confirmed by looking at DWARF information, for C++ compiler actual enum
+definition and forward declaration are incompatible.
+
+To eliminate this problem, for C++ mode define input argument as int,
+which makes enum unnecessary in libbpf public header. This solves the
+issue and as demonstrated by next patch doesn't cause any unwanted
+compiler warnings, at least with default warnings setting.
+
+  [0] https://stackoverflow.com/questions/42766839/c11-enum-forward-causes-underlying-type-mismatch
+  [1] Closes: https://github.com/libbpf/libbpf/issues/249
+
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20221123035422.872531-2-sdf@google.com
+Link: https://lore.kernel.org/bpf/20221130200013.2997831-1-andrii@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/btf.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ tools/lib/bpf/bpf.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 0d23d4bcd81c..44e93c3abebd 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4481,6 +4481,11 @@ static int btf_func_proto_check(struct btf_verifier_env *env,
- 			break;
- 		}
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 9c50beabdd14..fddc05c667b5 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -393,8 +393,15 @@ LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf,
+ 				 __u32 *buf_len, __u32 *prog_id, __u32 *fd_type,
+ 				 __u64 *probe_offset, __u64 *probe_addr);
  
-+		if (btf_type_is_resolve_source_only(arg_type)) {
-+			btf_verifier_log_type(env, t, "Invalid arg#%u", i + 1);
-+			return -EINVAL;
-+		}
-+
- 		if (args[i].name_off &&
- 		    (!btf_name_offset_valid(btf, args[i].name_off) ||
- 		     !btf_name_valid_identifier(btf, args[i].name_off))) {
++#ifdef __cplusplus
++/* forward-declaring enums in C++ isn't compatible with pure C enums, so
++ * instead define bpf_enable_stats() as accepting int as an input
++ */
++LIBBPF_API int bpf_enable_stats(int type);
++#else
+ enum bpf_stats_type; /* defined in up-to-date linux/bpf.h */
+ LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
++#endif
+ 
+ struct bpf_prog_bind_opts {
+ 	size_t sz; /* size of this struct for forward/backward compatibility */
 -- 
 2.35.1
 
