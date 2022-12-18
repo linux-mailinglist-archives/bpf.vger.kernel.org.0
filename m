@@ -2,134 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9682564FD4D
-	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 01:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA6664FDC1
+	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 06:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbiLRAnV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Dec 2022 19:43:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47474 "EHLO
+        id S230147AbiLRFSM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Dec 2022 00:18:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbiLRAnU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Dec 2022 19:43:20 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB31BC99;
-        Sat, 17 Dec 2022 16:43:20 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id n4so5821909plp.1;
-        Sat, 17 Dec 2022 16:43:20 -0800 (PST)
+        with ESMTP id S230202AbiLRFSH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Dec 2022 00:18:07 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241F564C3
+        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 21:18:06 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id f13-20020a1cc90d000000b003d08c4cf679so4322888wmb.5
+        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 21:18:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FF+eD2XRIoYlmEr/X2g308YQEbkC1R5Phje24seUWA4=;
-        b=KcAn0d7idQOqi6LHRK6UIf0FLN/bRAgSckzYdGogxkVjyTElzaUYSalimwM8D45eI/
-         1xSJo0eC7sf8WHdz4zg8lhYVqP6IqFmDD2LeIOROYX9zAi02KpZyfcntGUcKhQ/lwcHR
-         DKIcBIfWGBs4XBoVrnsEEgHdf81vxvpRhYqA/RBaLf9aDj2SdHN0aLOVdK75tbMromFQ
-         QzytLmpMIxc7zJaCcs/BFcAa4Fss1jO50me243Of5RSBWi0fjKMNZpMDP1HuWTPhSwps
-         zGchAMxQF6me7Pu93/UZNGDbD/oEEeO8u5NAECpaHJeAXlpT57qqfodpC8DhPc2YLDAB
-         DFbA==
+        d=cloudflare.com; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OKPkOEQY7zOz0QOKMu3IK2pVB1gYNrcFW/XQicj/J2I=;
+        b=mvVqW+ef0eI3J0Fc0iAQp6DV5ao5lZTHuLxRbfI/nYL2Ek2LSimLVU4j6WUtvyiXBg
+         52YBBn7nP2yQ7NYmrgip+ETLepVEH2qyurmU3lG201ImN6bSwkDiBJi0HtAvSM9iTvYu
+         uIdJchWd1q3WKTdJnHADVME5bw/1tcbrLNKcY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FF+eD2XRIoYlmEr/X2g308YQEbkC1R5Phje24seUWA4=;
-        b=WqmmiLJZL7M9tAzYhhu/MmrZM39Z+9Nu32f8K6SP2lMufYFUOPwE5soqUZzyn/qrt8
-         8hgPvydIw48Hl2dH+P4WGeegSZRcv1QrU4QOY3Dfe6kS+HD6BkNYWlrHu2WQ57/yQb5p
-         uQiur3CXDfqCb/l5B8RqxNQCdFTGJmQuoB9GEXe0+AaJTUDkNZ6CfGqORhXe+m3pDPIS
-         kuGVnRiCL8MKBfRfCWIR6I2ZClKcZB0w0RduoWZkvOnQzUoSbBR3w6q3VhCEzRUHDkjN
-         YNtuDrwT+EVY0i8jglyPbvBfR1AosnLLnAcxBlhJadLTFEipnVf2+NBjVbL2jOKZ5Zn4
-         S3LQ==
-X-Gm-Message-State: AFqh2kqO0nih23ZOhIHb71zpR9pagBJ4g8UVuXZrNCbyRLH4JaDOTZ7t
-        9exoIaFDls7ADLJIprNeZA==
-X-Google-Smtp-Source: AMrXdXsX7/+2ElWg7Q/+7NITnKYX5cKiDXbTcTVPD5mtdxjZf4iohSKtwKd0RcS16VdVyFBKEYIF5w==
-X-Received: by 2002:a17:90b:3744:b0:219:89c2:b70b with SMTP id ne4-20020a17090b374400b0021989c2b70bmr4267106pjb.16.1671324199828;
-        Sat, 17 Dec 2022 16:43:19 -0800 (PST)
-Received: from WDIR.. ([182.209.58.25])
-        by smtp.gmail.com with ESMTPSA id k10-20020a63ff0a000000b0047048c201e3sm3639458pgi.33.2022.12.17.16.43.17
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OKPkOEQY7zOz0QOKMu3IK2pVB1gYNrcFW/XQicj/J2I=;
+        b=uMlj9aKoiRREOd9WVE8ru5lx/7Yvnl5903tLQN3X6F+EifPY4UJFCATLn1SmBeGR0Y
+         7W3aDQdiC6eiqXWil5dAjxCqvdU1CWv8j/vDlcSyGn1N+SHMNCzXKW/PS3JgGA3BHda5
+         DEDupAq26sigmm2R0IQkysTTAtm1mcSf9J0BfZfeFKXsgiYisFeOPc5Q2+XiBzIPDY5+
+         sTDK4bazVRZn2gbbe0P08jDNS/hbGCPvdogx+gB4CowHd7arLdj6CX4anYjg/7pi00s3
+         dzvYnRxbcnoBAmweZoxXOChp3xHS8192WP8G0fDJ1QaLJRoQ7YNoXNtgmb6ttxjyzYc+
+         ETXA==
+X-Gm-Message-State: ANoB5pk2ghz15RJpiMFZil42QvMHlv7yp4fCzA1OiF2VR3YR4U8Pc/dr
+        HzseiffovCM9wl3NN3lJTUdnlOA7RnfbjUTGuigsHA==
+X-Google-Smtp-Source: AA0mqf6v18bTlqQgutS30SKz+1JZlO8lpiCkG+dsM9VHGr2wmKEtuqtpPnzb9O1dHWne/Z/ETVxScg==
+X-Received: by 2002:a05:600c:4fc8:b0:3cf:614e:b587 with SMTP id o8-20020a05600c4fc800b003cf614eb587mr29465855wmq.26.1671340684350;
+        Sat, 17 Dec 2022 21:18:04 -0800 (PST)
+Received: from workstation.ehrig.io (tmo-122-74.customers.d1-online.com. [80.187.122.74])
+        by smtp.gmail.com with ESMTPSA id k62-20020a1ca141000000b003cf894dbc4fsm7805231wme.25.2022.12.17.21.18.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Dec 2022 16:43:19 -0800 (PST)
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [bpf-next v3 3/3] samples/bpf: fix uninitialized warning with test_current_task_under_cgroup
-Date:   Sun, 18 Dec 2022 09:43:07 +0900
-Message-Id: <20221218004307.4872-4-danieltimlee@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221218004307.4872-1-danieltimlee@gmail.com>
-References: <20221218004307.4872-1-danieltimlee@gmail.com>
+        Sat, 17 Dec 2022 21:18:03 -0800 (PST)
+From:   Christian Ehrig <cehrig@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     cehrig@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Kui-Feng Lee <kuifeng@fb.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Kaixi Fan <fankaixi.li@bytedance.com>,
+        Shmulik Ladkani <shmulik@metanetworks.com>,
+        Paul Chaignon <paul@isovalent.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next 1/2] bpf: Add flag BPF_F_NO_TUNNEL_KEY to bpf_skb_set_tunnel_key()
+Date:   Sun, 18 Dec 2022 06:17:31 +0100
+Message-Id: <20221218051734.31411-1-cehrig@cloudflare.com>
+X-Mailer: git-send-email 2.37.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, compiling samples/bpf with LLVM warns about the uninitialized
-use of variable with test_current_task_under_cgroup.
+This patch allows to remove TUNNEL_KEY from the tunnel flags bitmap
+when using bpf_skb_set_tunnel_key by providing a BPF_F_NO_TUNNEL_KEY
+flag. On egress, the resulting tunnel header will not contain a tunnel
+key if the protocol and implementation supports it.
 
-    ./samples/bpf/test_current_task_under_cgroup_user.c:57:6:
-    warning: variable 'cg2' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-	    if (setup_cgroup_environment())
-		^~~~~~~~~~~~~~~~~~~~~~~~~~
-    ./samples/bpf/test_current_task_under_cgroup_user.c:106:8:
-    note: uninitialized use occurs here
-	    close(cg2);
-		  ^~~
-    ./samples/bpf/test_current_task_under_cgroup_user.c:57:2:
-    note: remove the 'if' if its condition is always false
-	    if (setup_cgroup_environment())
-	    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ./samples/bpf/test_current_task_under_cgroup_user.c:19:9:
-    note: initialize the variable 'cg2' to silence this warning
-	    int cg2, idx = 0, rc = 1;
-		   ^
-		    = 0
-    1 warning generated.
+At the moment bpf_tunnel_key wants a user to specify a numeric tunnel
+key. This will wrap the inner packet into a tunnel header with the key
+bit and value set accordingly. This is problematic when using a tunnel
+protocol that supports optional tunnel keys and a receiving tunnel
+device that is not expecting packets with the key bit set. The receiver
+won't decapsulate and drop the packet.
 
-This commit resolve this compiler warning by pre-initialize the variable
-with error for safeguard.
+RFC 2890 and RFC 2784 GRE tunnels are examples where this flag is
+useful. It allows for generating packets, that can be decapsulated by
+a GRE tunnel device not operating in collect metadata mode or not
+expecting the key bit set.
 
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-Acked-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Christian Ehrig <cehrig@cloudflare.com>
 ---
- samples/bpf/test_current_task_under_cgroup_user.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ include/uapi/linux/bpf.h       | 4 ++++
+ net/core/filter.c              | 5 ++++-
+ tools/include/uapi/linux/bpf.h | 4 ++++
+ 3 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/samples/bpf/test_current_task_under_cgroup_user.c b/samples/bpf/test_current_task_under_cgroup_user.c
-index ac251a417f45..6fb25906835e 100644
---- a/samples/bpf/test_current_task_under_cgroup_user.c
-+++ b/samples/bpf/test_current_task_under_cgroup_user.c
-@@ -14,9 +14,9 @@
- int main(int argc, char **argv)
- {
- 	pid_t remote_pid, local_pid = getpid();
-+	int cg2 = -1, idx = 0, rc = 1;
- 	struct bpf_link *link = NULL;
- 	struct bpf_program *prog;
--	int cg2, idx = 0, rc = 1;
- 	struct bpf_object *obj;
- 	char filename[256];
- 	int map_fd[2];
-@@ -103,7 +103,9 @@ int main(int argc, char **argv)
- 	rc = 0;
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 464ca3f01fe7..bc1a3d232ae4 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2001,6 +2001,9 @@ union bpf_attr {
+  * 			sending the packet. This flag was added for GRE
+  * 			encapsulation, but might be used with other protocols
+  * 			as well in the future.
++ * 		**BPF_F_NO_TUNNEL_KEY**
++ * 			Add a flag to tunnel metadata indicating that no tunnel
++ * 			key should be set in the resulting tunnel header.
+  *
+  * 		Here is a typical usage on the transmit path:
+  *
+@@ -5764,6 +5767,7 @@ enum {
+ 	BPF_F_ZERO_CSUM_TX		= (1ULL << 1),
+ 	BPF_F_DONT_FRAGMENT		= (1ULL << 2),
+ 	BPF_F_SEQ_NUMBER		= (1ULL << 3),
++	BPF_F_NO_TUNNEL_KEY		= (1ULL << 4),
+ };
  
- err:
--	close(cg2);
-+	if (cg2 != -1)
-+		close(cg2);
-+
- 	cleanup_cgroup_environment();
+ /* BPF_FUNC_skb_get_tunnel_key flags. */
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 929358677183..c746e4d77214 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4615,7 +4615,8 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
+ 	struct ip_tunnel_info *info;
  
- cleanup:
+ 	if (unlikely(flags & ~(BPF_F_TUNINFO_IPV6 | BPF_F_ZERO_CSUM_TX |
+-			       BPF_F_DONT_FRAGMENT | BPF_F_SEQ_NUMBER)))
++			       BPF_F_DONT_FRAGMENT | BPF_F_SEQ_NUMBER |
++			       BPF_F_NO_TUNNEL_KEY)))
+ 		return -EINVAL;
+ 	if (unlikely(size != sizeof(struct bpf_tunnel_key))) {
+ 		switch (size) {
+@@ -4653,6 +4654,8 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
+ 		info->key.tun_flags &= ~TUNNEL_CSUM;
+ 	if (flags & BPF_F_SEQ_NUMBER)
+ 		info->key.tun_flags |= TUNNEL_SEQ;
++	if (flags & BPF_F_NO_TUNNEL_KEY)
++		info->key.tun_flags &= ~TUNNEL_KEY;
+ 
+ 	info->key.tun_id = cpu_to_be64(from->tunnel_id);
+ 	info->key.tos = from->tunnel_tos;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 464ca3f01fe7..bc1a3d232ae4 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -2001,6 +2001,9 @@ union bpf_attr {
+  * 			sending the packet. This flag was added for GRE
+  * 			encapsulation, but might be used with other protocols
+  * 			as well in the future.
++ * 		**BPF_F_NO_TUNNEL_KEY**
++ * 			Add a flag to tunnel metadata indicating that no tunnel
++ * 			key should be set in the resulting tunnel header.
+  *
+  * 		Here is a typical usage on the transmit path:
+  *
+@@ -5764,6 +5767,7 @@ enum {
+ 	BPF_F_ZERO_CSUM_TX		= (1ULL << 1),
+ 	BPF_F_DONT_FRAGMENT		= (1ULL << 2),
+ 	BPF_F_SEQ_NUMBER		= (1ULL << 3),
++	BPF_F_NO_TUNNEL_KEY		= (1ULL << 4),
+ };
+ 
+ /* BPF_FUNC_skb_get_tunnel_key flags. */
 -- 
-2.34.1
+2.37.4
 
