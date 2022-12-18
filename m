@@ -2,49 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0676501A2
-	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 17:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B896501E6
+	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 17:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbiLRQee (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Dec 2022 11:34:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
+        id S232471AbiLRQi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Dec 2022 11:38:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbiLRQd1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Dec 2022 11:33:27 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38ED8DF79;
-        Sun, 18 Dec 2022 08:12:23 -0800 (PST)
+        with ESMTP id S232561AbiLRQhb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Dec 2022 11:37:31 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33D017E15;
+        Sun, 18 Dec 2022 08:13:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 5ADB2CE0B9A;
-        Sun, 18 Dec 2022 16:12:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B5FAC433EF;
-        Sun, 18 Dec 2022 16:12:18 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 89F7BB80BD9;
+        Sun, 18 Dec 2022 16:13:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4820C433D2;
+        Sun, 18 Dec 2022 16:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671379939;
-        bh=X9QyHZW0/Q7y1ozPfSbuoElW40mP7FohwywJd74HR88=;
+        s=k20201202; t=1671380009;
+        bh=UgKZGYaJ9pVdstIwTRvpLJHcpaogbLc+Uo9at4fFaJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p+4qOYfMbDtOvi2ba95q9UrEMmZOmMaGYYUGIJfk5MV92hkMW0GkLC/1vf/7UPPO+
-         ip3v3UMfP7hygksHHh9K9UYhMdzxqapDkKrql31MRZr0VayStUWalsG/4L+LG/jm6j
-         M8SjQ4ZVQ9c8Oh6isy/QrWUyOPW7L2L3vEBp78yZm+vV3V3P1ogGTTyeIXysgG2cP5
-         l8Xon0G4T5RNI49ENcdMaiYQcFn42Xq2Z9fUJ0/Hsuvzmo4UJcL7DaDSLPvjVP1/xh
-         qL+vYXw8xiJIYtroMYnt56WdK69YFLjJ7XO1OXx9GEpUDDBSjGlip5Eed1eKEa94VV
-         XzALuNdU31lOA==
+        b=jgCp1TJQ1GhF2ihp30k6e7IbppCFYksmdHsEqRb+fDZqUT/dYdoLBrTqcaphBxUcz
+         lRSr1lzIHysfQf6HkrX4Br0SD+vMEHMxVdJ/ElgpXCpsdc0U+pLPQqtOT8i4HSaqL1
+         cHNX5YuRygFjLmtxKeD24QCfdqDMza9o+wy6sTDW7jdX6SxZcW82kBXs6CuELs26h6
+         mBuaJJBz49lzVOjtkG+M4Oa7srylwamm7BILeJyKR6ZyvWNqra8cxVmNbB954Hx8iF
+         EmW8/+03obxhYOXZEk6pWEataI1TEQLGyBtaMyLeilIHDR8Kln5mWEbB6dXzktFFAk
+         /DlnJi9gzzNFg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com,
+        Martin KaFai Lau <martin.lau@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        shuah@kernel.org, yhs@fb.com, alan.maguire@oracle.com,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 63/73] selftests/bpf: Fix conflicts with built-in functions in bpf_iter_ksym
-Date:   Sun, 18 Dec 2022 11:07:31 -0500
-Message-Id: <20221218160741.927862-63-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, martin.lau@linux.dev,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 11/46] bpf: make sure skb->len != 0 when redirecting to a tunneling device
+Date:   Sun, 18 Dec 2022 11:12:09 -0500
+Message-Id: <20221218161244.930785-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221218160741.927862-1-sashal@kernel.org>
-References: <20221218160741.927862-1-sashal@kernel.org>
+In-Reply-To: <20221218161244.930785-1-sashal@kernel.org>
+References: <20221218161244.930785-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -58,76 +61,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: James Hilliard <james.hilliard1@gmail.com>
+From: Stanislav Fomichev <sdf@google.com>
 
-[ Upstream commit ab0350c743d5c93fd88742f02b3dff12168ab435 ]
+[ Upstream commit 07ec7b502800ba9f7b8b15cb01dd6556bb41aaca ]
 
-Both tolower and toupper are built in c functions, we should not
-redefine them as this can result in a build error.
+syzkaller managed to trigger another case where skb->len == 0
+when we enter __dev_queue_xmit:
 
-Fixes the following errors:
-progs/bpf_iter_ksym.c:10:20: error: conflicting types for built-in function 'tolower'; expected 'int(int)' [-Werror=builtin-declaration-mismatch]
-   10 | static inline char tolower(char c)
-      |                    ^~~~~~~
-progs/bpf_iter_ksym.c:5:1: note: 'tolower' is declared in header '<ctype.h>'
-    4 | #include <bpf/bpf_helpers.h>
-  +++ |+#include <ctype.h>
-    5 |
-progs/bpf_iter_ksym.c:17:20: error: conflicting types for built-in function 'toupper'; expected 'int(int)' [-Werror=builtin-declaration-mismatch]
-   17 | static inline char toupper(char c)
-      |                    ^~~~~~~
-progs/bpf_iter_ksym.c:17:20: note: 'toupper' is declared in header '<ctype.h>'
+WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 skb_assert_len include/linux/skbuff.h:2576 [inline]
+WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 __dev_queue_xmit+0x2069/0x35e0 net/core/dev.c:4295
 
-See background on this sort of issue:
-https://stackoverflow.com/a/20582607
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=12213
+Call Trace:
+ dev_queue_xmit+0x17/0x20 net/core/dev.c:4406
+ __bpf_tx_skb net/core/filter.c:2115 [inline]
+ __bpf_redirect_no_mac net/core/filter.c:2140 [inline]
+ __bpf_redirect+0x5fb/0xda0 net/core/filter.c:2163
+ ____bpf_clone_redirect net/core/filter.c:2447 [inline]
+ bpf_clone_redirect+0x247/0x390 net/core/filter.c:2419
+ bpf_prog_48159a89cb4a9a16+0x59/0x5e
+ bpf_dispatcher_nop_func include/linux/bpf.h:897 [inline]
+ __bpf_prog_run include/linux/filter.h:596 [inline]
+ bpf_prog_run include/linux/filter.h:603 [inline]
+ bpf_test_run+0x46c/0x890 net/bpf/test_run.c:402
+ bpf_prog_test_run_skb+0xbdc/0x14c0 net/bpf/test_run.c:1170
+ bpf_prog_test_run+0x345/0x3c0 kernel/bpf/syscall.c:3648
+ __sys_bpf+0x43a/0x6c0 kernel/bpf/syscall.c:5005
+ __do_sys_bpf kernel/bpf/syscall.c:5091 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5089 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5089
+ do_syscall_64+0x54/0x70 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x61/0xc6
 
-(C99, 7.1.3p1) "All identifiers with external linkage in any of the
-following subclauses (including the future library directions) are
-always reserved for use as identifiers with external linkage."
+The reproducer doesn't really reproduce outside of syzkaller
+environment, so I'm taking a guess here. It looks like we
+do generate correct ETH_HLEN-sized packet, but we redirect
+the packet to the tunneling device. Before we do so, we
+__skb_pull l2 header and arrive again at skb->len == 0.
+Doesn't seem like we can do anything better than having
+an explicit check after __skb_pull?
 
-This is documented behavior in GCC:
-https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#index-std-2
-
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/r/20221203010847.2191265-1-james.hilliard1@gmail.com
+Cc: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Link: https://lore.kernel.org/r/20221027225537.353077-1-sdf@google.com
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/bpf_iter_ksym.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/core/filter.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-index 285c008cbf9c..9ba14c37bbcc 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-@@ -7,14 +7,14 @@ char _license[] SEC("license") = "GPL";
+diff --git a/net/core/filter.c b/net/core/filter.c
+index fb5b9dbf3bc0..1a7903812a22 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2125,6 +2125,10 @@ static int __bpf_redirect_no_mac(struct sk_buff *skb, struct net_device *dev,
  
- unsigned long last_sym_value = 0;
+ 	if (mlen) {
+ 		__skb_pull(skb, mlen);
++		if (unlikely(!skb->len)) {
++			kfree_skb(skb);
++			return -ERANGE;
++		}
  
--static inline char tolower(char c)
-+static inline char to_lower(char c)
- {
- 	if (c >= 'A' && c <= 'Z')
- 		c += ('a' - 'A');
- 	return c;
- }
- 
--static inline char toupper(char c)
-+static inline char to_upper(char c)
- {
- 	if (c >= 'a' && c <= 'z')
- 		c -= ('a' - 'A');
-@@ -54,7 +54,7 @@ int dump_ksym(struct bpf_iter__ksym *ctx)
- 	type = iter->type;
- 
- 	if (iter->module_name[0]) {
--		type = iter->exported ? toupper(type) : tolower(type);
-+		type = iter->exported ? to_upper(type) : to_lower(type);
- 		BPF_SEQ_PRINTF(seq, "0x%llx %c %s [ %s ] ",
- 			       value, type, iter->name, iter->module_name);
- 	} else {
+ 		/* At ingress, the mac header has already been pulled once.
+ 		 * At egress, skb_pospull_rcsum has to be done in case that
 -- 
 2.35.1
 
