@@ -2,49 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559A6650340
-	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 18:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7161165036F
+	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 18:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233178AbiLRRAY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Dec 2022 12:00:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
+        id S233328AbiLRRE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Dec 2022 12:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233092AbiLRQ6t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Dec 2022 11:58:49 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B461CFEC;
-        Sun, 18 Dec 2022 08:20:28 -0800 (PST)
+        with ESMTP id S233089AbiLRRCy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Dec 2022 12:02:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE171276C;
+        Sun, 18 Dec 2022 08:21:13 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F10D660C40;
-        Sun, 18 Dec 2022 16:20:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D402EC433D2;
-        Sun, 18 Dec 2022 16:20:25 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CFCD260DCC;
+        Sun, 18 Dec 2022 16:21:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBFA3C433F0;
+        Sun, 18 Dec 2022 16:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671380427;
-        bh=v3rsYLW/Hkn9ggyyLGYMgSr/niGDYjo7G5oPRDwWYgo=;
+        s=k20201202; t=1671380472;
+        bh=k4yTj0C2jGK8AyiWoJPffHwj2JpKzjvrK1itF90RIZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oav+81wPqnGmpubx8S9EBUiMeV6sFPDLvTglM7Fqt+fMnF3p6yFsghXj+jJEwsqX4
-         hlSBPXnt/GYLNR/rYzIaog1D0ZHEca4MGA2It0Xx0/N+d6vdgRx+yXDZNd1hBFa/kA
-         L+XyHrlYDJuj38qiNJ3hDqxWhSjh7qSDyW/EYfkMNfq21+MvqcVkErcBqxLV76eneq
-         Yu04vB0ps6G+kIv6y7dQ/Lx3Q4CvNqFmjGSjGgjRD8QM/wAc44kfBNNgy33gcGtL3H
-         TBtNHG457F3TleB1g1ntC4Yj2tHTTpgF0onw9mZYVAA4E09444/CejT7b4Vf8t6/TQ
-         oeTimpP8OtN6A==
+        b=YMAbXNvC8mLfwp1dpId3Kixv3GfWFl9wK3zolIJc48puH+ykTpgL7gQDHDJLFOdC8
+         L9jl5o0zvzzFym1W26ZiBGZ8qgN9Lo4x/HdF1AFBmqjxBXHVXE6Lprou4R9HnZZ3qv
+         1xlbyl+VkWsS9OQsWevtCOxxM6bjTTzd7Lu36nSN6/pwX0t+dHca6WEpoDub1j112r
+         TMDBG24aJmZGalpAQFirXCH1XCCiyN5vssbZA0Bf8s2JrWgb88uERyZ3JxUIx2MELQ
+         FUls1MD5JDH0HF16Db/EYqXjo0UQoci2penn/qGHUOo83yD9GcAB6en7c3Dx1bpHhg
+         nrqU5SmkIftEQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Stanislav Fomichev <sdf@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, martin.lau@linux.dev,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 05/26] bpf: make sure skb->len != 0 when redirecting to a tunneling device
-Date:   Sun, 18 Dec 2022 11:19:55 -0500
-Message-Id: <20221218162016.934280-5-sashal@kernel.org>
+        Paul Mackerras <paulus@samba.org>, linux-ppp@vger.kernel.org,
+        syzbot+41cab52ab62ee99ed24a@syzkaller.appspotmail.com,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 18/26] ppp: associate skb with a device at tx
+Date:   Sun, 18 Dec 2022 11:20:08 -0500
+Message-Id: <20221218162016.934280-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221218162016.934280-1-sashal@kernel.org>
 References: <20221218162016.934280-1-sashal@kernel.org>
@@ -63,69 +61,58 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Stanislav Fomichev <sdf@google.com>
 
-[ Upstream commit 07ec7b502800ba9f7b8b15cb01dd6556bb41aaca ]
+[ Upstream commit 9f225444467b98579cf28d94f4ad053460dfdb84 ]
 
-syzkaller managed to trigger another case where skb->len == 0
-when we enter __dev_queue_xmit:
+Syzkaller triggered flow dissector warning with the following:
 
-WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 skb_assert_len include/linux/skbuff.h:2576 [inline]
-WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 __dev_queue_xmit+0x2069/0x35e0 net/core/dev.c:4295
+r0 = openat$ppp(0xffffffffffffff9c, &(0x7f0000000000), 0xc0802, 0x0)
+ioctl$PPPIOCNEWUNIT(r0, 0xc004743e, &(0x7f00000000c0))
+ioctl$PPPIOCSACTIVE(r0, 0x40107446, &(0x7f0000000240)={0x2, &(0x7f0000000180)=[{0x20, 0x0, 0x0, 0xfffff034}, {0x6}]})
+pwritev(r0, &(0x7f0000000040)=[{&(0x7f0000000140)='\x00!', 0x2}], 0x1, 0x0, 0x0)
 
-Call Trace:
- dev_queue_xmit+0x17/0x20 net/core/dev.c:4406
- __bpf_tx_skb net/core/filter.c:2115 [inline]
- __bpf_redirect_no_mac net/core/filter.c:2140 [inline]
- __bpf_redirect+0x5fb/0xda0 net/core/filter.c:2163
- ____bpf_clone_redirect net/core/filter.c:2447 [inline]
- bpf_clone_redirect+0x247/0x390 net/core/filter.c:2419
- bpf_prog_48159a89cb4a9a16+0x59/0x5e
- bpf_dispatcher_nop_func include/linux/bpf.h:897 [inline]
- __bpf_prog_run include/linux/filter.h:596 [inline]
- bpf_prog_run include/linux/filter.h:603 [inline]
- bpf_test_run+0x46c/0x890 net/bpf/test_run.c:402
- bpf_prog_test_run_skb+0xbdc/0x14c0 net/bpf/test_run.c:1170
- bpf_prog_test_run+0x345/0x3c0 kernel/bpf/syscall.c:3648
- __sys_bpf+0x43a/0x6c0 kernel/bpf/syscall.c:5005
- __do_sys_bpf kernel/bpf/syscall.c:5091 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5089 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5089
- do_syscall_64+0x54/0x70 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x61/0xc6
+[    9.485814] WARNING: CPU: 3 PID: 329 at net/core/flow_dissector.c:1016 __skb_flow_dissect+0x1ee0/0x1fa0
+[    9.485929]  skb_get_poff+0x53/0xa0
+[    9.485937]  bpf_skb_get_pay_offset+0xe/0x20
+[    9.485944]  ? ppp_send_frame+0xc2/0x5b0
+[    9.485949]  ? _raw_spin_unlock_irqrestore+0x40/0x60
+[    9.485958]  ? __ppp_xmit_process+0x7a/0xe0
+[    9.485968]  ? ppp_xmit_process+0x5b/0xb0
+[    9.485974]  ? ppp_write+0x12a/0x190
+[    9.485981]  ? do_iter_write+0x18e/0x2d0
+[    9.485987]  ? __import_iovec+0x30/0x130
+[    9.485997]  ? do_pwritev+0x1b6/0x240
+[    9.486016]  ? trace_hardirqs_on+0x47/0x50
+[    9.486023]  ? __x64_sys_pwritev+0x24/0x30
+[    9.486026]  ? do_syscall_64+0x3d/0x80
+[    9.486031]  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-The reproducer doesn't really reproduce outside of syzkaller
-environment, so I'm taking a guess here. It looks like we
-do generate correct ETH_HLEN-sized packet, but we redirect
-the packet to the tunneling device. Before we do so, we
-__skb_pull l2 header and arrive again at skb->len == 0.
-Doesn't seem like we can do anything better than having
-an explicit check after __skb_pull?
+Flow dissector tries to find skb net namespace either via device
+or via socket. Neigher is set in ppp_send_frame, so let's manually
+use ppp->dev.
 
-Cc: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: linux-ppp@vger.kernel.org
+Reported-by: syzbot+41cab52ab62ee99ed24a@syzkaller.appspotmail.com
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/r/20221027225537.353077-1-sdf@google.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/filter.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ppp/ppp_generic.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 5129e89f52bb..aa2e7baa13c4 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2025,6 +2025,10 @@ static int __bpf_redirect_no_mac(struct sk_buff *skb, struct net_device *dev,
+diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
+index 3f335b57d5cd..220b28711f98 100644
+--- a/drivers/net/ppp/ppp_generic.c
++++ b/drivers/net/ppp/ppp_generic.c
+@@ -1528,6 +1528,8 @@ ppp_send_frame(struct ppp *ppp, struct sk_buff *skb)
+ 	int len;
+ 	unsigned char *cp;
  
- 	if (mlen) {
- 		__skb_pull(skb, mlen);
-+		if (unlikely(!skb->len)) {
-+			kfree_skb(skb);
-+			return -ERANGE;
-+		}
- 
- 		/* At ingress, the mac header has already been pulled once.
- 		 * At egress, skb_pospull_rcsum has to be done in case that
++	skb->dev = ppp->dev;
++
+ 	if (proto < 0x8000) {
+ #ifdef CONFIG_PPP_FILTER
+ 		/* check if we should pass this packet */
 -- 
 2.35.1
 
