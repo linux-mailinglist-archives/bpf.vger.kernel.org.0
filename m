@@ -2,129 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BE964FC9F
-	for <lists+bpf@lfdr.de>; Sat, 17 Dec 2022 23:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD7D64FD27
+	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 01:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbiLQWg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Dec 2022 17:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
+        id S229885AbiLRAIA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Dec 2022 19:08:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbiLQWgV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Dec 2022 17:36:21 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3AA7DF9B;
-        Sat, 17 Dec 2022 14:36:18 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id z8-20020a17090abd8800b00219ed30ce47so9512089pjr.3;
-        Sat, 17 Dec 2022 14:36:18 -0800 (PST)
+        with ESMTP id S229480AbiLRAH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Dec 2022 19:07:59 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0553AE53;
+        Sat, 17 Dec 2022 16:07:58 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id w4-20020a17090ac98400b002186f5d7a4cso9679607pjt.0;
+        Sat, 17 Dec 2022 16:07:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j/x+afgh1ISBbPnqbY131/KLKQLBCqSdbqqjGYkdUb0=;
-        b=IW1S7JyfXFSmWvxk6gMhZug6pfeHdNdgY37zEjjD/JmrXVaXgi/KXE1+TN3SKiHx1F
-         O4TszTlAt5kynelThdmi2Wjec9cipMeCcKI4Gii8kJbsIAtzaOpZ+N06xoKZ3UKoE1+n
-         APXw7UtHDHpyYqdvfSGFKzaRadZ0MxG2+9FoMrdzETpVf8sd+i+HAjT36llOcvvBgP0f
-         mVK3dLD9POmL8TXVpe+wlLLIWYEYMajUXK4rZ9Gtbd8tL5umXAgCpaBmcFx8mOTNG4Oa
-         hwTjQANXReCYaMC3qfaw/T15+PouA1L/aZMhiptHxkxHN1QZFKvJjyl5zYtQkR/pgrJG
-         rPQQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8F6Uzn3qPKjW7Pu2TCTFXqCvGwILHe72RxqksnsVPog=;
+        b=foC9eFpeLiQU0CZM+xYWE4qgkadktQxQC2tDTw0fVu4oO0Zkr6hNg3schdixANV9Ld
+         jFL5Cyh5+BIX5gMceD6BlIaaWS0KnXNNmxISv7IbhpA6auKsvFJ9FT8hUj2w1IdXF3V8
+         NcH/n88sq4RtiA34ilsfBxG6fhNFWHuNjVc5tnbQKK1qTmEeR3tjpH2sXsjCLjiKuwyd
+         mZKIsRx+Y+pdBEiXXgHfzpT9FSynIVksxj4l7jzTP8V4NnuRXHZS2/IB3sUgFJD1qJ68
+         W+4rJQrxIY+ryEnRFc/VAMZovPdPg5txAvGGTYVvUkS8/C3g4Oaz12knI6HSyXIIbwlu
+         wQGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j/x+afgh1ISBbPnqbY131/KLKQLBCqSdbqqjGYkdUb0=;
-        b=vP7jPszf8qtGZl7t5dVtbDrYXyXi8VIGcF27EcmsLInanb+xerOj4JXmgX96NqKydI
-         je9BWFW+00pwAH7BkxK79mm9S3XldcLWVVIzbXrL5brkIqJsVrlT4jYHJgogW9cbkaPu
-         yrUQAGVoPr/ZU2kMn1EigJYgVFVcbGhxVts+nlOzYQpu/zswVlbWmXEOSZJSS+SzVhZG
-         JpHAlQq3aOKAA1vRbtmmRhkZpnPv9eOwHEwahjBOeg0IBMgvmmpePQhreF1+AB5qJAUm
-         qPquBF/+TAI1HCMEt6u1DxQBQVSGPoArhF8oaUVl/C803ZdE2wA9qPpbvliDedp7rDRv
-         B3sg==
-X-Gm-Message-State: AFqh2kpBxk9/Dcpc9CCeUqy+4xgHvAsFD1YHmNKL+vmSAZZkVfRDgWuc
-        2axeyVHcDpZb7trWSM3yBqY=
-X-Google-Smtp-Source: AMrXdXvyldrQM+icuuDpeqSxgOlxhnJZ7fov1jplJPtL8crIBtJ4q/X95pvJfq/n7f7FSa3ZuchL4g==
-X-Received: by 2002:a17:902:e212:b0:189:30cd:8fa2 with SMTP id u18-20020a170902e21200b0018930cd8fa2mr3027852plb.50.1671316578407;
-        Sat, 17 Dec 2022 14:36:18 -0800 (PST)
-Received: from WRT-WX9.. ([103.135.102.144])
-        by smtp.gmail.com with ESMTPSA id u9-20020a17090341c900b001801aec1f6bsm4031660ple.141.2022.12.17.14.36.11
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8F6Uzn3qPKjW7Pu2TCTFXqCvGwILHe72RxqksnsVPog=;
+        b=ywUtyniCHZRohp6/g1e2LjIXE+xk4VFVTtnalVi/B2y7+IvF9a+u/T+zfo3QsxPQsQ
+         pwL7KCLu+RWIcfvUHJ78Z3ssrY9HkUstQlbcrzw6n7d1qG8JSweMxdZZ77I7i9oSv7EO
+         Y1eCldrCbJBOEHYsA/4xHl1+IBqkRx6nOY7qzch+iH+RkrtQPGFzasT/LVZ8nG7TijB7
+         LTdCC7CCgYDXFBAsID3z2W2A3HxcEPqjvWPZvoBRcJ0nkDCml5zjuO8BVGWzrU0W6LxR
+         uRAqxdvHCPciyuObvBJeff7rgHieuFGvzh4Z1K1zOpJHjQuQRtLNYd6KgcnuhbyUlmQj
+         PBfw==
+X-Gm-Message-State: AFqh2kpwhhxHwC9nlAugaYmNz+XPnYWULaFABgs4wcJGEBMdBCPz9PvS
+        WSBGvunHWiC1tk6qIGI3kQ==
+X-Google-Smtp-Source: AMrXdXuwS9fBXDVNhvZYhzLqlKL1DAN09f55FDStkvg4NxqIVUSHP3/BmYi3UpaQ7aOuWztzB+reQg==
+X-Received: by 2002:a05:6a20:5488:b0:af:b771:1d01 with SMTP id i8-20020a056a20548800b000afb7711d01mr15073627pzk.49.1671322077967;
+        Sat, 17 Dec 2022 16:07:57 -0800 (PST)
+Received: from WDIR.. ([182.209.58.25])
+        by smtp.gmail.com with ESMTPSA id r7-20020a63b107000000b00478bd458bdfsm3554330pgf.88.2022.12.17.16.07.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Dec 2022 14:36:17 -0800 (PST)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v3 2/2] bpf: makefiles: do not generate empty vmlinux.h
-Date:   Sun, 18 Dec 2022 06:35:09 +0800
-Message-Id: <20221217223509.88254-3-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20221217223509.88254-1-changbin.du@gmail.com>
-References: <20221217223509.88254-1-changbin.du@gmail.com>
+        Sat, 17 Dec 2022 16:07:57 -0800 (PST)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: [bpf-next v2 0/3] samples/bpf: fix LLVM compilation warning with samples
+Date:   Sun, 18 Dec 2022 09:07:50 +0900
+Message-Id: <20221218000753.4519-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove the empty vmlinux.h if bpftool failed to dump btf info.
-The empty vmlinux.h can hide real error when reading output
-of make.
+Currently, compiling samples/bpf with LLVM emits several warning. They
+are only small details, but they do not appear when compiled with GCC.
+Detailed compilation command and warning logs can be found from bpf CI.
 
-This is done by adding .DELETE_ON_ERROR special target in related
-makefiles.
+Daniel T. Lee (3):
+  samples/bpf: remove unused function with test_lru_dist
+  samples/bpf: replace meaningless counter with tracex4
+  samples/bpf: fix uninitialized warning with
+    test_current_task_under_cgroup
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- tools/bpf/bpftool/Makefile           | 3 +++
- tools/testing/selftests/bpf/Makefile | 3 +++
- 2 files changed, 6 insertions(+)
+ samples/bpf/test_current_task_under_cgroup_user.c | 6 ++++--
+ samples/bpf/test_lru_dist.c                       | 5 -----
+ samples/bpf/tracex4_user.c                        | 4 ++--
+ 3 files changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 787b857d3fb5..313fd1b09189 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -289,3 +289,6 @@ FORCE:
- .PHONY: all FORCE bootstrap clean install-bin install uninstall
- .PHONY: doc doc-clean doc-install doc-uninstall
- .DEFAULT_GOAL := all
-+
-+# Delete partially updated (corrupted) files on error
-+.DELETE_ON_ERROR:
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index c22c43bbee19..205e8c3c346a 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -626,3 +626,6 @@ EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
- 			       liburandom_read.so)
- 
- .PHONY: docs docs-clean
-+
-+# Delete partially updated (corrupted) files on error
-+.DELETE_ON_ERROR:
 -- 
-2.37.2
+2.34.1
+
+Changes in V2: 
+- Change the cover letter subject
 
