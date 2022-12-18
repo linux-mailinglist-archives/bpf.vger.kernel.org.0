@@ -2,49 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA6664FDC1
-	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 06:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB7D64FDC5
+	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 06:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbiLRFSM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Dec 2022 00:18:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S230282AbiLRFSa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Dec 2022 00:18:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbiLRFSH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Dec 2022 00:18:07 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241F564C3
-        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 21:18:06 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id f13-20020a1cc90d000000b003d08c4cf679so4322888wmb.5
-        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 21:18:06 -0800 (PST)
+        with ESMTP id S230280AbiLRFSP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Dec 2022 00:18:15 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A37264C3
+        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 21:18:13 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id z8-20020a05600c220800b003d33b0bda11so4111553wml.0
+        for <bpf@vger.kernel.org>; Sat, 17 Dec 2022 21:18:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OKPkOEQY7zOz0QOKMu3IK2pVB1gYNrcFW/XQicj/J2I=;
-        b=mvVqW+ef0eI3J0Fc0iAQp6DV5ao5lZTHuLxRbfI/nYL2Ek2LSimLVU4j6WUtvyiXBg
-         52YBBn7nP2yQ7NYmrgip+ETLepVEH2qyurmU3lG201ImN6bSwkDiBJi0HtAvSM9iTvYu
-         uIdJchWd1q3WKTdJnHADVME5bw/1tcbrLNKcY=
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VZjrql4GzJFHQJkJaKmcf2NkEXsxLrfG96nTce813zM=;
+        b=q9j+E6sC/Mv5x8/TehXbtRXdQiQqqENXX7LLpqFkYiBa55+8Ym66+zW4pq4VTXeHWl
+         XZr7HRd5XthTvqPx42b23iS0OD7LaAtKz2N0BA+hLNO8iCmYfCxo2bGU3/dePc/hYCAo
+         zv5jSj5r3eaI8nCWSLh179yoY1FpO9pdnwRNU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OKPkOEQY7zOz0QOKMu3IK2pVB1gYNrcFW/XQicj/J2I=;
-        b=uMlj9aKoiRREOd9WVE8ru5lx/7Yvnl5903tLQN3X6F+EifPY4UJFCATLn1SmBeGR0Y
-         7W3aDQdiC6eiqXWil5dAjxCqvdU1CWv8j/vDlcSyGn1N+SHMNCzXKW/PS3JgGA3BHda5
-         DEDupAq26sigmm2R0IQkysTTAtm1mcSf9J0BfZfeFKXsgiYisFeOPc5Q2+XiBzIPDY5+
-         sTDK4bazVRZn2gbbe0P08jDNS/hbGCPvdogx+gB4CowHd7arLdj6CX4anYjg/7pi00s3
-         dzvYnRxbcnoBAmweZoxXOChp3xHS8192WP8G0fDJ1QaLJRoQ7YNoXNtgmb6ttxjyzYc+
-         ETXA==
-X-Gm-Message-State: ANoB5pk2ghz15RJpiMFZil42QvMHlv7yp4fCzA1OiF2VR3YR4U8Pc/dr
-        HzseiffovCM9wl3NN3lJTUdnlOA7RnfbjUTGuigsHA==
-X-Google-Smtp-Source: AA0mqf6v18bTlqQgutS30SKz+1JZlO8lpiCkG+dsM9VHGr2wmKEtuqtpPnzb9O1dHWne/Z/ETVxScg==
-X-Received: by 2002:a05:600c:4fc8:b0:3cf:614e:b587 with SMTP id o8-20020a05600c4fc800b003cf614eb587mr29465855wmq.26.1671340684350;
-        Sat, 17 Dec 2022 21:18:04 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VZjrql4GzJFHQJkJaKmcf2NkEXsxLrfG96nTce813zM=;
+        b=UKj7kWvvSIegZ85fxy7ddDJK0Cut53sLBE1FLjDvYWgDzkHkmrAzzVjkbl4DZKFkXX
+         doNJ2Jf2/mIg7/yf1bjtjHUGkfqmLZEPbLahQdrXw55iCewTJ3lDRP0oxnxd/Z9/4CDP
+         MCStg3aYLlV04y6HMAehY6HsjSwHGaJWuvi6ute+ufcvPLNsvD3H9rBtQcDnHTlTTuNv
+         5ivujmXSKgpb2PnAQ54zMEQ0ZIo3M6bcob6wGbaewaCUeFDvMVgqnpAy+RrjD0Koe7zJ
+         UtNheaoWvCgk7FA9EAW6s5FRjVeq2PRkBfGhDZsf2/dqo71oK+z1l2Icqjr+Bnj0c6Ew
+         DXVg==
+X-Gm-Message-State: ANoB5pnF5XahovuPbSC2ovtzqr3ulMxWIFC/duaIesx+2AAwFbAPc1DU
+        MF6iKN02HLH3gHJ/liNKy1pXDeCfm5zS87FCxuXuaQ==
+X-Google-Smtp-Source: AA0mqf6f3ef5BuwOP85Gx7YZu5EIiEpnxNCOl1r7V0jE6yQouke8p5FYLVXungY9c4+QkgtMwi2lfg==
+X-Received: by 2002:a7b:cbd1:0:b0:3d1:ed41:57c0 with SMTP id n17-20020a7bcbd1000000b003d1ed4157c0mr28766562wmi.30.1671340691305;
+        Sat, 17 Dec 2022 21:18:11 -0800 (PST)
 Received: from workstation.ehrig.io (tmo-122-74.customers.d1-online.com. [80.187.122.74])
-        by smtp.gmail.com with ESMTPSA id k62-20020a1ca141000000b003cf894dbc4fsm7805231wme.25.2022.12.17.21.18.02
+        by smtp.gmail.com with ESMTPSA id k62-20020a1ca141000000b003cf894dbc4fsm7805231wme.25.2022.12.17.21.18.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Dec 2022 21:18:03 -0800 (PST)
+        Sat, 17 Dec 2022 21:18:10 -0800 (PST)
 From:   Christian Ehrig <cehrig@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     cehrig@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
@@ -63,16 +64,19 @@ Cc:     cehrig@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
         Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
         Kui-Feng Lee <kuifeng@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Maxim Mikityanskiy <maximmi@nvidia.com>,
         Kaixi Fan <fankaixi.li@bytedance.com>,
-        Shmulik Ladkani <shmulik@metanetworks.com>,
         Paul Chaignon <paul@isovalent.com>,
+        Shmulik Ladkani <shmulik@metanetworks.com>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next 1/2] bpf: Add flag BPF_F_NO_TUNNEL_KEY to bpf_skb_set_tunnel_key()
-Date:   Sun, 18 Dec 2022 06:17:31 +0100
-Message-Id: <20221218051734.31411-1-cehrig@cloudflare.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Add BPF_F_NO_TUNNEL_KEY test
+Date:   Sun, 18 Dec 2022 06:17:32 +0100
+Message-Id: <20221218051734.31411-2-cehrig@cloudflare.com>
 X-Mailer: git-send-email 2.37.4
+In-Reply-To: <20221218051734.31411-1-cehrig@cloudflare.com>
+References: <20221218051734.31411-1-cehrig@cloudflare.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -85,97 +89,135 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch allows to remove TUNNEL_KEY from the tunnel flags bitmap
-when using bpf_skb_set_tunnel_key by providing a BPF_F_NO_TUNNEL_KEY
-flag. On egress, the resulting tunnel header will not contain a tunnel
-key if the protocol and implementation supports it.
-
-At the moment bpf_tunnel_key wants a user to specify a numeric tunnel
-key. This will wrap the inner packet into a tunnel header with the key
-bit and value set accordingly. This is problematic when using a tunnel
-protocol that supports optional tunnel keys and a receiving tunnel
-device that is not expecting packets with the key bit set. The receiver
-won't decapsulate and drop the packet.
-
-RFC 2890 and RFC 2784 GRE tunnels are examples where this flag is
-useful. It allows for generating packets, that can be decapsulated by
-a GRE tunnel device not operating in collect metadata mode or not
-expecting the key bit set.
+This patch adds a selftest simulating a GRE sender and receiver using
+tunnel headers without tunnel keys. It validates if packets encapsulated
+using BPF_F_NO_TUNNEL_KEY are decapsulated by a GRE receiver not
+configured with tunnel keys.
 
 Signed-off-by: Christian Ehrig <cehrig@cloudflare.com>
 ---
- include/uapi/linux/bpf.h       | 4 ++++
- net/core/filter.c              | 5 ++++-
- tools/include/uapi/linux/bpf.h | 4 ++++
- 3 files changed, 12 insertions(+), 1 deletion(-)
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 21 ++++++++++
+ tools/testing/selftests/bpf/test_tunnel.sh    | 40 +++++++++++++++++--
+ 2 files changed, 58 insertions(+), 3 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 464ca3f01fe7..bc1a3d232ae4 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -2001,6 +2001,9 @@ union bpf_attr {
-  * 			sending the packet. This flag was added for GRE
-  * 			encapsulation, but might be used with other protocols
-  * 			as well in the future.
-+ * 		**BPF_F_NO_TUNNEL_KEY**
-+ * 			Add a flag to tunnel metadata indicating that no tunnel
-+ * 			key should be set in the resulting tunnel header.
-  *
-  * 		Here is a typical usage on the transmit path:
-  *
-@@ -5764,6 +5767,7 @@ enum {
- 	BPF_F_ZERO_CSUM_TX		= (1ULL << 1),
- 	BPF_F_DONT_FRAGMENT		= (1ULL << 2),
- 	BPF_F_SEQ_NUMBER		= (1ULL << 3),
-+	BPF_F_NO_TUNNEL_KEY		= (1ULL << 4),
- };
+diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+index 98af55f0bcd3..508da4a23c4f 100644
+--- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+@@ -81,6 +81,27 @@ int gre_set_tunnel(struct __sk_buff *skb)
+ 	return TC_ACT_OK;
+ }
  
- /* BPF_FUNC_skb_get_tunnel_key flags. */
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 929358677183..c746e4d77214 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4615,7 +4615,8 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
- 	struct ip_tunnel_info *info;
++SEC("tc")
++int gre_set_tunnel_no_key(struct __sk_buff *skb)
++{
++	int ret;
++	struct bpf_tunnel_key key;
++
++	__builtin_memset(&key, 0x0, sizeof(key));
++	key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
++	key.tunnel_ttl = 64;
++
++	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key),
++				     BPF_F_ZERO_CSUM_TX | BPF_F_SEQ_NUMBER |
++				     BPF_F_NO_TUNNEL_KEY);
++	if (ret < 0) {
++		log_err(ret);
++		return TC_ACT_SHOT;
++	}
++
++	return TC_ACT_OK;
++}
++
+ SEC("tc")
+ int gre_get_tunnel(struct __sk_buff *skb)
+ {
+diff --git a/tools/testing/selftests/bpf/test_tunnel.sh b/tools/testing/selftests/bpf/test_tunnel.sh
+index 2eaedc1d9ed3..06857b689c11 100755
+--- a/tools/testing/selftests/bpf/test_tunnel.sh
++++ b/tools/testing/selftests/bpf/test_tunnel.sh
+@@ -66,15 +66,20 @@ config_device()
  
- 	if (unlikely(flags & ~(BPF_F_TUNINFO_IPV6 | BPF_F_ZERO_CSUM_TX |
--			       BPF_F_DONT_FRAGMENT | BPF_F_SEQ_NUMBER)))
-+			       BPF_F_DONT_FRAGMENT | BPF_F_SEQ_NUMBER |
-+			       BPF_F_NO_TUNNEL_KEY)))
- 		return -EINVAL;
- 	if (unlikely(size != sizeof(struct bpf_tunnel_key))) {
- 		switch (size) {
-@@ -4653,6 +4654,8 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
- 		info->key.tun_flags &= ~TUNNEL_CSUM;
- 	if (flags & BPF_F_SEQ_NUMBER)
- 		info->key.tun_flags |= TUNNEL_SEQ;
-+	if (flags & BPF_F_NO_TUNNEL_KEY)
-+		info->key.tun_flags &= ~TUNNEL_KEY;
+ add_gre_tunnel()
+ {
++	tun_key=
++	if [ -n "$1" ]; then
++		tun_key="key $1"
++	fi
++
+ 	# at_ns0 namespace
+ 	ip netns exec at_ns0 \
+-        ip link add dev $DEV_NS type $TYPE seq key 2 \
++        ip link add dev $DEV_NS type $TYPE seq $tun_key \
+ 		local 172.16.1.100 remote 172.16.1.200
+ 	ip netns exec at_ns0 ip link set dev $DEV_NS up
+ 	ip netns exec at_ns0 ip addr add dev $DEV_NS 10.1.1.100/24
  
- 	info->key.tun_id = cpu_to_be64(from->tunnel_id);
- 	info->key.tos = from->tunnel_tos;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 464ca3f01fe7..bc1a3d232ae4 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -2001,6 +2001,9 @@ union bpf_attr {
-  * 			sending the packet. This flag was added for GRE
-  * 			encapsulation, but might be used with other protocols
-  * 			as well in the future.
-+ * 		**BPF_F_NO_TUNNEL_KEY**
-+ * 			Add a flag to tunnel metadata indicating that no tunnel
-+ * 			key should be set in the resulting tunnel header.
-  *
-  * 		Here is a typical usage on the transmit path:
-  *
-@@ -5764,6 +5767,7 @@ enum {
- 	BPF_F_ZERO_CSUM_TX		= (1ULL << 1),
- 	BPF_F_DONT_FRAGMENT		= (1ULL << 2),
- 	BPF_F_SEQ_NUMBER		= (1ULL << 3),
-+	BPF_F_NO_TUNNEL_KEY		= (1ULL << 4),
- };
+ 	# root namespace
+-	ip link add dev $DEV type $TYPE key 2 external
++	ip link add dev $DEV type $TYPE $tun_key external
+ 	ip link set dev $DEV up
+ 	ip addr add dev $DEV 10.1.1.200/24
+ }
+@@ -238,7 +243,7 @@ test_gre()
  
- /* BPF_FUNC_skb_get_tunnel_key flags. */
+ 	check $TYPE
+ 	config_device
+-	add_gre_tunnel
++	add_gre_tunnel 2
+ 	attach_bpf $DEV gre_set_tunnel gre_get_tunnel
+ 	ping $PING_ARG 10.1.1.100
+ 	check_err $?
+@@ -253,6 +258,30 @@ test_gre()
+         echo -e ${GREEN}"PASS: $TYPE"${NC}
+ }
+ 
++test_gre_no_tunnel_key()
++{
++	TYPE=gre
++	DEV_NS=gre00
++	DEV=gre11
++	ret=0
++
++	check $TYPE
++	config_device
++	add_gre_tunnel
++	attach_bpf $DEV gre_set_tunnel_no_key gre_get_tunnel
++	ping $PING_ARG 10.1.1.100
++	check_err $?
++	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
++	check_err $?
++	cleanup
++
++        if [ $ret -ne 0 ]; then
++                echo -e ${RED}"FAIL: $TYPE"${NC}
++                return 1
++        fi
++        echo -e ${GREEN}"PASS: $TYPE"${NC}
++}
++
+ test_ip6gre()
+ {
+ 	TYPE=ip6gre
+@@ -589,6 +618,7 @@ cleanup()
+ 	ip link del ipip6tnl11 2> /dev/null
+ 	ip link del ip6ip6tnl11 2> /dev/null
+ 	ip link del gretap11 2> /dev/null
++	ip link del gre11 2> /dev/null
+ 	ip link del ip6gre11 2> /dev/null
+ 	ip link del ip6gretap11 2> /dev/null
+ 	ip link del geneve11 2> /dev/null
+@@ -641,6 +671,10 @@ bpf_tunnel_test()
+ 	test_gre
+ 	errors=$(( $errors + $? ))
+ 
++	echo "Testing GRE tunnel (without tunnel keys)..."
++	test_gre_no_tunnel_key
++	errors=$(( $errors + $? ))
++
+ 	echo "Testing IP6GRE tunnel..."
+ 	test_ip6gre
+ 	errors=$(( $errors + $? ))
 -- 
 2.37.4
 
