@@ -2,49 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A847664FFBC
-	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 17:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA81665003B
+	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 17:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbiLRQFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Dec 2022 11:05:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34948 "EHLO
+        id S231315AbiLRQLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Dec 2022 11:11:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbiLRQEp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Dec 2022 11:04:45 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9A5B7FC;
-        Sun, 18 Dec 2022 08:03:13 -0800 (PST)
+        with ESMTP id S231201AbiLRQKa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Dec 2022 11:10:30 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFADB4B9;
+        Sun, 18 Dec 2022 08:05:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2ACF8B80BA2;
-        Sun, 18 Dec 2022 16:03:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520C1C433D2;
-        Sun, 18 Dec 2022 16:03:09 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D1CD60DD4;
+        Sun, 18 Dec 2022 16:05:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B279BC433D2;
+        Sun, 18 Dec 2022 16:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671379390;
-        bh=KMhrUUpmIqudRraCh/csHaZvu0BwU6XU1uIyFMa8VuA=;
+        s=k20201202; t=1671379504;
+        bh=5dESTzjoxtj+PGCgWeYDASVV5uQCGgMhjAxb4tifOzc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cso/tWTmtp/RECFwuMeUValmWoiWTf8RerjqzBA5klH2q/DAM9wN93z2L+kb2gJcD
-         Fzj1iu1xgSgMPax5w0eGDDkjgSaetA2tzvZHoensfEtn4l9NgrmJuf415DQtkaG6Qc
-         PUAxLXVeLzGnaiJmuLyO9uDMpWzVJSDQhth7MyfHJeCln9ltNmHpu4HmnMH1bhuWPP
-         22nfSP1nfC+296fXgHOPyieCyOQPzaAFU4YCcIQttDzLzgMHsCoQwAS2PKRKyEDeqK
-         EkrUR6+DJ1ABLn8DwiptwX5PDRCYumM12N84+DN0MtljtmbOhG0C2C8agqfarprP5m
-         WTQ3knFKXdrPw==
+        b=Ab0W5JEmsFfdmDSBkShnM7mY2u/5kX6X8hbxheb8HVqetwwq0MiZMC3YJZ8zMru9a
+         DF7m99BhbteFX4kCGwdysN++SxzbJYAGlK1jw+CJrHvT3hLc6ZRdLM3EO2XohCW5XT
+         cuMfIjxJsN1ZiEEQ7oBgt7gVLCu5MF9/NETNUVbNpElcAHpdo/gKbxBqucFfNTppKH
+         Igwni481lSqrONEf1eCsylG9hew8jHlxbmSXg+fTweCQmXvReqobu8Se5rvRHzNwhI
+         shK0XOB5NLc1U7gQytwkTwvNIkrGOAd1rfCP5uiq9q8ZLkoMczMfWabfA0hNrFcTWN
+         96Chhx0OtJC3g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 23/85] bpf: make sure skb->len != 0 when redirecting to a tunneling device
-Date:   Sun, 18 Dec 2022 11:00:40 -0500
-Message-Id: <20221218160142.925394-23-sashal@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        andrii@kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 52/85] bpf/verifier: Use kmalloc_size_roundup() to match ksize() usage
+Date:   Sun, 18 Dec 2022 11:01:09 -0500
+Message-Id: <20221218160142.925394-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221218160142.925394-1-sashal@kernel.org>
 References: <20221218160142.925394-1-sashal@kernel.org>
@@ -61,71 +57,106 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Stanislav Fomichev <sdf@google.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 07ec7b502800ba9f7b8b15cb01dd6556bb41aaca ]
+[ Upstream commit ceb35b666d42c2e91b1f94aeca95bb5eb0943268 ]
 
-syzkaller managed to trigger another case where skb->len == 0
-when we enter __dev_queue_xmit:
+Most allocation sites in the kernel want an explicitly sized allocation
+(and not "more"), and that dynamic runtime analysis tools (e.g. KASAN,
+UBSAN_BOUNDS, FORTIFY_SOURCE, etc) are looking for precise bounds checking
+(i.e. not something that is rounded up). A tiny handful of allocations
+were doing an implicit alloc/realloc loop that actually depended on
+ksize(), and didn't actually always call realloc. This has created a
+long series of bugs and problems over many years related to the runtime
+bounds checking, so these callers are finally being adjusted to _not_
+depend on the ksize() side-effect, by doing one of several things:
 
-WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 skb_assert_len include/linux/skbuff.h:2576 [inline]
-WARNING: CPU: 0 PID: 2470 at include/linux/skbuff.h:2576 __dev_queue_xmit+0x2069/0x35e0 net/core/dev.c:4295
+- tracking the allocation size precisely and just never calling ksize()
+  at all [1].
 
-Call Trace:
- dev_queue_xmit+0x17/0x20 net/core/dev.c:4406
- __bpf_tx_skb net/core/filter.c:2115 [inline]
- __bpf_redirect_no_mac net/core/filter.c:2140 [inline]
- __bpf_redirect+0x5fb/0xda0 net/core/filter.c:2163
- ____bpf_clone_redirect net/core/filter.c:2447 [inline]
- bpf_clone_redirect+0x247/0x390 net/core/filter.c:2419
- bpf_prog_48159a89cb4a9a16+0x59/0x5e
- bpf_dispatcher_nop_func include/linux/bpf.h:897 [inline]
- __bpf_prog_run include/linux/filter.h:596 [inline]
- bpf_prog_run include/linux/filter.h:603 [inline]
- bpf_test_run+0x46c/0x890 net/bpf/test_run.c:402
- bpf_prog_test_run_skb+0xbdc/0x14c0 net/bpf/test_run.c:1170
- bpf_prog_test_run+0x345/0x3c0 kernel/bpf/syscall.c:3648
- __sys_bpf+0x43a/0x6c0 kernel/bpf/syscall.c:5005
- __do_sys_bpf kernel/bpf/syscall.c:5091 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5089 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5089
- do_syscall_64+0x54/0x70 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x61/0xc6
+- always calling realloc and not using ksize() at all. (This solution
+  ends up actually be a subset of the next solution.)
 
-The reproducer doesn't really reproduce outside of syzkaller
-environment, so I'm taking a guess here. It looks like we
-do generate correct ETH_HLEN-sized packet, but we redirect
-the packet to the tunneling device. Before we do so, we
-__skb_pull l2 header and arrive again at skb->len == 0.
-Doesn't seem like we can do anything better than having
-an explicit check after __skb_pull?
+- using kmalloc_size_roundup() to explicitly round up the desired
+  allocation size immediately [2].
 
-Cc: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot+f635e86ec3fa0a37e019@syzkaller.appspotmail.com
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/r/20221027225537.353077-1-sdf@google.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+The bpf/verifier case is this another of this latter case, and is the
+last outstanding case to be fixed in the kernel.
+
+Because some of the dynamic bounds checking depends on the size being an
+_argument_ to an allocator function (i.e. see the __alloc_size attribute),
+the ksize() users are rare, and it could waste local variables, it
+was been deemed better to explicitly separate the rounding up from the
+allocation itself [3].
+
+Round up allocations with kmalloc_size_roundup() so that the verifier's
+use of ksize() is always accurate.
+
+[1] e.g.:
+    https://git.kernel.org/linus/712f210a457d
+    https://git.kernel.org/linus/72c08d9f4c72
+
+[2] e.g.:
+    https://git.kernel.org/netdev/net-next/c/12d6c1d3a2ad
+    https://git.kernel.org/netdev/net-next/c/ab3f7828c979
+    https://git.kernel.org/netdev/net-next/c/d6dd508080a3
+
+[3] https://lore.kernel.org/lkml/0ea1fc165a6c6117f982f4f135093e69cb884930.camel@redhat.com/
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Stanislav Fomichev <sdf@google.com>
+Link: https://lore.kernel.org/bpf/20221118183409.give.387-kees@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/filter.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/bpf/verifier.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index bb0136e7a8e4..cb3b635e35be 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2126,6 +2126,10 @@ static int __bpf_redirect_no_mac(struct sk_buff *skb, struct net_device *dev,
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 264b3dc714cc..22b2f1f74cdc 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1008,9 +1008,9 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
+ 	if (unlikely(check_mul_overflow(n, size, &bytes)))
+ 		return NULL;
  
- 	if (mlen) {
- 		__skb_pull(skb, mlen);
-+		if (unlikely(!skb->len)) {
-+			kfree_skb(skb);
-+			return -ERANGE;
-+		}
+-	if (ksize(dst) < bytes) {
++	if (ksize(dst) < ksize(src)) {
+ 		kfree(dst);
+-		dst = kmalloc_track_caller(bytes, flags);
++		dst = kmalloc_track_caller(kmalloc_size_roundup(bytes), flags);
+ 		if (!dst)
+ 			return NULL;
+ 	}
+@@ -1027,12 +1027,14 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
+  */
+ static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
+ {
++	size_t alloc_size;
+ 	void *new_arr;
  
- 		/* At ingress, the mac header has already been pulled once.
- 		 * At egress, skb_pospull_rcsum has to be done in case that
+ 	if (!new_n || old_n == new_n)
+ 		goto out;
+ 
+-	new_arr = krealloc_array(arr, new_n, size, GFP_KERNEL);
++	alloc_size = kmalloc_size_roundup(size_mul(new_n, size));
++	new_arr = krealloc(arr, alloc_size, GFP_KERNEL);
+ 	if (!new_arr) {
+ 		kfree(arr);
+ 		return NULL;
+@@ -2504,9 +2506,11 @@ static int push_jmp_history(struct bpf_verifier_env *env,
+ {
+ 	u32 cnt = cur->jmp_history_cnt;
+ 	struct bpf_idx_pair *p;
++	size_t alloc_size;
+ 
+ 	cnt++;
+-	p = krealloc(cur->jmp_history, cnt * sizeof(*p), GFP_USER);
++	alloc_size = kmalloc_size_roundup(size_mul(cnt, sizeof(*p)));
++	p = krealloc(cur->jmp_history, alloc_size, GFP_USER);
+ 	if (!p)
+ 		return -ENOMEM;
+ 	p[cnt - 1].idx = env->insn_idx;
 -- 
 2.35.1
 
