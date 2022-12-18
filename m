@@ -2,47 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CC6650046
-	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 17:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB27650049
+	for <lists+bpf@lfdr.de>; Sun, 18 Dec 2022 17:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbiLRQMx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Dec 2022 11:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
+        id S231352AbiLRQMy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Dec 2022 11:12:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231585AbiLRQKr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Dec 2022 11:10:47 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82ABCE1C;
-        Sun, 18 Dec 2022 08:05:09 -0800 (PST)
+        with ESMTP id S231686AbiLRQMB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Dec 2022 11:12:01 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE40FDFA8;
+        Sun, 18 Dec 2022 08:05:21 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D74EEB80B4D;
-        Sun, 18 Dec 2022 16:05:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30386C433F0;
-        Sun, 18 Dec 2022 16:05:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F7DE60DCF;
+        Sun, 18 Dec 2022 16:05:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99D63C433EF;
+        Sun, 18 Dec 2022 16:05:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671379506;
-        bh=JQkNrYxNccafkooCq8unRqC3PodZ5psPvaDCz7dH4FA=;
+        s=k20201202; t=1671379520;
+        bh=RcIYVwf70pmzs7nidFY13OIN+AVbosDXuvB0Aa50h+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i0m+u5hRpWA09wfGL6BoUzTavYiC/7rhqPMgJs93CArBtYxGCDPToWuGu7kqzTfNm
-         yTZbMExQlGzFYghALcbPAXWy5QZbkl446u9hWwEsxhV3qWDbCIDsZsGXQmIsRr155d
-         2eeynw2JS0oIsWTN2uXcJi3JHpRoZ6zpx6tyI4W5AtQE0o9McyNbRVlvcPGa/DD+EO
-         oXYiTDKpTGfcKpOohJtHiZnAtIPs70sCDis/GZg1rsLNTZ3/r/bHvaJRhaU/dRJSj9
-         THEdSXhF7RaduQIW08v4oQBnFe6htJy7aDAY5buplB+M3yQhMVXMX6pHSQcnmItQWI
-         Zci0bkf2m11UQ==
+        b=HyyU1G3CvoD6wGvpl7nTE9LRrZa0oUrkKrcnn7WgeqVhOwzNIABQ/X0WGvGYUL5IT
+         D4EAm7/fhSrol+qYi97kCz9yUglsrfxy/LGQ5iICWz7ZpgSL/XSkpE/Kb5NbxRCkq5
+         2PvDsmMlud2TZzlii2RA68jku1Jy7hPu1C6Ck2LrTV9GEfXp8JIY14f6SUVDi171yH
+         qYuzCQMZ5W6RqyZDRRJNiOLSOZUCG4NKud5m/7BVhQcFhfNqjZ1smw56chmxIchzf6
+         UPx1G/WVk9tN4423RVTg2z505iKgAUM7f2TTUBWtRz1ogmAoJYNTb0zXm284F5uz9C
+         UNRekYJ8Afa/g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Paul Mackerras <paulus@samba.org>, linux-ppp@vger.kernel.org,
-        syzbot+41cab52ab62ee99ed24a@syzkaller.appspotmail.com,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 53/85] ppp: associate skb with a device at tx
-Date:   Sun, 18 Dec 2022 11:01:10 -0500
-Message-Id: <20221218160142.925394-53-sashal@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 55/85] bpf: Fix a BTF_ID_LIST bug with CONFIG_DEBUG_INFO_BTF not set
+Date:   Sun, 18 Dec 2022 11:01:12 -0500
+Message-Id: <20221218160142.925394-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221218160142.925394-1-sashal@kernel.org>
 References: <20221218160142.925394-1-sashal@kernel.org>
@@ -59,60 +58,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Stanislav Fomichev <sdf@google.com>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit 9f225444467b98579cf28d94f4ad053460dfdb84 ]
+[ Upstream commit beb3d47d1d3d7185bb401af628ad32ee204a9526 ]
 
-Syzkaller triggered flow dissector warning with the following:
+With CONFIG_DEBUG_INFO_BTF not set, we hit the following compilation error,
+  /.../kernel/bpf/verifier.c:8196:23: error: array index 6 is past the end of the array
+  (that has type 'u32[5]' (aka 'unsigned int[5]')) [-Werror,-Warray-bounds]
+        if (meta->func_id == special_kfunc_list[KF_bpf_cast_to_kern_ctx])
+                             ^                  ~~~~~~~~~~~~~~~~~~~~~~~
+  /.../kernel/bpf/verifier.c:8174:1: note: array 'special_kfunc_list' declared here
+  BTF_ID_LIST(special_kfunc_list)
+  ^
+  /.../include/linux/btf_ids.h:207:27: note: expanded from macro 'BTF_ID_LIST'
+  #define BTF_ID_LIST(name) static u32 __maybe_unused name[5];
+                            ^
+  /.../kernel/bpf/verifier.c:8443:19: error: array index 5 is past the end of the array
+  (that has type 'u32[5]' (aka 'unsigned int[5]')) [-Werror,-Warray-bounds]
+                 btf_id == special_kfunc_list[KF_bpf_list_pop_back];
+                           ^                  ~~~~~~~~~~~~~~~~~~~~
+  /.../kernel/bpf/verifier.c:8174:1: note: array 'special_kfunc_list' declared here
+  BTF_ID_LIST(special_kfunc_list)
+  ^
+  /.../include/linux/btf_ids.h:207:27: note: expanded from macro 'BTF_ID_LIST'
+  #define BTF_ID_LIST(name) static u32 __maybe_unused name[5];
+  ...
 
-r0 = openat$ppp(0xffffffffffffff9c, &(0x7f0000000000), 0xc0802, 0x0)
-ioctl$PPPIOCNEWUNIT(r0, 0xc004743e, &(0x7f00000000c0))
-ioctl$PPPIOCSACTIVE(r0, 0x40107446, &(0x7f0000000240)={0x2, &(0x7f0000000180)=[{0x20, 0x0, 0x0, 0xfffff034}, {0x6}]})
-pwritev(r0, &(0x7f0000000040)=[{&(0x7f0000000140)='\x00!', 0x2}], 0x1, 0x0, 0x0)
+Fix the problem by increase the size of BTF_ID_LIST to 16 to avoid compilation error
+and also prevent potentially unintended issue due to out-of-bound access.
 
-[    9.485814] WARNING: CPU: 3 PID: 329 at net/core/flow_dissector.c:1016 __skb_flow_dissect+0x1ee0/0x1fa0
-[    9.485929]  skb_get_poff+0x53/0xa0
-[    9.485937]  bpf_skb_get_pay_offset+0xe/0x20
-[    9.485944]  ? ppp_send_frame+0xc2/0x5b0
-[    9.485949]  ? _raw_spin_unlock_irqrestore+0x40/0x60
-[    9.485958]  ? __ppp_xmit_process+0x7a/0xe0
-[    9.485968]  ? ppp_xmit_process+0x5b/0xb0
-[    9.485974]  ? ppp_write+0x12a/0x190
-[    9.485981]  ? do_iter_write+0x18e/0x2d0
-[    9.485987]  ? __import_iovec+0x30/0x130
-[    9.485997]  ? do_pwritev+0x1b6/0x240
-[    9.486016]  ? trace_hardirqs_on+0x47/0x50
-[    9.486023]  ? __x64_sys_pwritev+0x24/0x30
-[    9.486026]  ? do_syscall_64+0x3d/0x80
-[    9.486031]  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Flow dissector tries to find skb net namespace either via device
-or via socket. Neigher is set in ppp_send_frame, so let's manually
-use ppp->dev.
-
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linux-ppp@vger.kernel.org
-Reported-by: syzbot+41cab52ab62ee99ed24a@syzkaller.appspotmail.com
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/r/20221123155759.2669749-1-yhs@fb.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ppp/ppp_generic.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/btf_ids.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
-index 9206c660a72e..d4c821c8cf57 100644
---- a/drivers/net/ppp/ppp_generic.c
-+++ b/drivers/net/ppp/ppp_generic.c
-@@ -1743,6 +1743,8 @@ ppp_send_frame(struct ppp *ppp, struct sk_buff *skb)
- 	int len;
- 	unsigned char *cp;
+diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+index 2aea877d644f..2b9872008428 100644
+--- a/include/linux/btf_ids.h
++++ b/include/linux/btf_ids.h
+@@ -204,7 +204,7 @@ extern struct btf_id_set8 name;
  
-+	skb->dev = ppp->dev;
-+
- 	if (proto < 0x8000) {
- #ifdef CONFIG_PPP_FILTER
- 		/* check if we should pass this packet */
+ #else
+ 
+-#define BTF_ID_LIST(name) static u32 __maybe_unused name[5];
++#define BTF_ID_LIST(name) static u32 __maybe_unused name[16];
+ #define BTF_ID(prefix, name)
+ #define BTF_ID_FLAGS(prefix, name, ...)
+ #define BTF_ID_UNUSED
 -- 
 2.35.1
 
