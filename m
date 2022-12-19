@@ -2,147 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A6365085F
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 09:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BE2650861
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 09:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbiLSIEo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 03:04:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
+        id S231381AbiLSIEr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 03:04:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbiLSIEn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 03:04:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFC02710
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 00:04:42 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 52A4DB80BAA
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 08:04:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0AC3C433F2
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 08:04:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671437080;
-        bh=KZZWDzAOBiMfRRR5VIK4F0cUJBgYlGleq9acKaug/+I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mAs6dA2biPrgQXxkSJ5es6E+EsAP4vvuxaQ5MkDG/DaoX22Fp04Jq4NCb02487BlK
-         6kzGTt1EyXqGbklH6y/tGZOgm8NG/4+YZNVLlzJGvksoD63CFEKM/e6RO4uSoJ67bX
-         8FfhSAwm7e0U0w6L+N7bET+80ML14ubiU/Alw0aBfHoTKKPQCfiq3dRG2Z6xzdE7cC
-         ext706CCJEB0f9ukiZf5svQ6KM2Z/7oXl69MP8xn/qfaaY9qhklf9d8HwFeCVinmdd
-         avQ0/VyEaeQZ54eVwyFia0VsN0g+/umvQq15il5K4Tauz32xv42Sud+c7E9c8EV4rt
-         zFMkw7obirnJQ==
-Received: by mail-lj1-f169.google.com with SMTP id n1so8262646ljg.3
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 00:04:39 -0800 (PST)
-X-Gm-Message-State: ANoB5pmUl0KZrkYQJaETrhdrWIrKmLTNW3+6bX8TQxItDHkwUMt5eXVy
-        4ct8EssBRK4nmQExQvq/mDmGPB0sfB4g6C6oEB8=
-X-Google-Smtp-Source: AA0mqf7LmNVtj4TE8stGcUE3kntx5HWSdP6sg7gD1g7u3p54rj7fdkoGw4bUemGXoe3rN3VcgKmLJAkjk8voeWAVhBM=
-X-Received: by 2002:a2e:be8c:0:b0:26e:95bb:d7cc with SMTP id
- a12-20020a2ebe8c000000b0026e95bbd7ccmr29849869ljr.203.1671437077966; Mon, 19
- Dec 2022 00:04:37 -0800 (PST)
+        with ESMTP id S230126AbiLSIEq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 03:04:46 -0500
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB8B5FB6
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 00:04:44 -0800 (PST)
+Received: by mail-io1-f70.google.com with SMTP id h21-20020a05660224d500b006debd7dedccso3744898ioe.9
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 00:04:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R0whHs85VeMIptQ5Z3SuFgI5wPfZDxbSvQ/o8nvL+QE=;
+        b=A3EEF5vw2vudDQh9kCD0dlXAJ8kcGBIFJKhjr18hW5cNLLDOkxe+hgPkSaITyqpPL+
+         QcyCjlgKEi5pWwcPH0gHm3+6MFjxGbweQJW9XwAwIF1FHG1itBsyjQ2YlUt4+kgU6peV
+         UJr7SYTsBHoLEf2Gd8ByyuSZLpcDvvpK5WRx3XTjFsoYP9g1A6yeuezDg+EYjFeT1Jtp
+         FMuw8LpcC6x6B94cfQe9JzgfwPfg7QSanC64LITbZJYQoFlifqy10+rPwPzoJDQEWpep
+         ++f+L762ZtFv3wI5cJc/0xcZ4MU+QotAcV/NK3DycsJPh7ukSxy4wsTdpwbBIpEvtXOW
+         hTfg==
+X-Gm-Message-State: ANoB5pnl/0oCVo3kemkwctGHGJT6cNA1N+bvfTv6mSBXcIHov60iUiOV
+        lrPIPo1i2DOWBNcHCqF1LQhdgX6vtNebwGGCvGvZ/2Zuk5VV
+X-Google-Smtp-Source: AA0mqf7DlY9nTflHJhdGX0QGu4CIMOuLrYbMGh5wPo9h+7ThqkkHsA9DFM5/uwaR/Mv/G6KlHcU8C9yYJ3kjAP60LSSoNW4kmK20
 MIME-Version: 1.0
-References: <20221215043217.81368-1-xiangxia.m.yue@gmail.com>
- <553c4d32-aac1-f5d2-8f39-86cdca1af0d6@meta.com> <CAMDZJNW+c0JkgZ0XOtq674cjXeof+U0D54yd8JBzizuQioDt3A@mail.gmail.com>
- <425c20bd-9e7e-4fc7-9050-7d9e9bfce972@iogearbox.net> <CAMDZJNWwiScnqhvhBqDf_neiRimLGmZw-xN0UNLJE_q01K3vkQ@mail.gmail.com>
-In-Reply-To: <CAMDZJNWwiScnqhvhBqDf_neiRimLGmZw-xN0UNLJE_q01K3vkQ@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 19 Dec 2022 00:04:24 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4ai+ojXTfgfUa+ZXyEfv8siW8Ya9+_oa+Urw=ga+rHKw@mail.gmail.com>
-Message-ID: <CAPhsuW4ai+ojXTfgfUa+ZXyEfv8siW8Ya9+_oa+Urw=ga+rHKw@mail.gmail.com>
-Subject: Re: [bpf-next v2 1/2] bpf: add runtime stats, max cost
-To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@meta.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
+X-Received: by 2002:a92:2808:0:b0:302:f182:1b89 with SMTP id
+ l8-20020a922808000000b00302f1821b89mr34560632ilf.249.1671437083607; Mon, 19
+ Dec 2022 00:04:43 -0800 (PST)
+Date:   Mon, 19 Dec 2022 00:04:43 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a20a2e05f029c577@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in put_pmu_ctx
+From:   syzbot <syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        bpf@vger.kernel.org, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 17, 2022 at 7:38 AM Tonghao Zhang <xiangxia.m.yue@gmail.com> wrote:
->
-> On Sat, Dec 17, 2022 at 12:07 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >
-> > On 12/16/22 10:05 AM, Tonghao Zhang wrote:
-> > > On Fri, Dec 16, 2022 at 1:40 PM Yonghong Song <yhs@meta.com> wrote:
-> > >> On 12/14/22 8:32 PM, xiangxia.m.yue@gmail.com wrote:
-> > >>> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> > >>>
-> > >>> Now user can enable sysctl kernel.bpf_stats_enabled to fetch
-> > >>> run_time_ns and run_cnt. It's easy to calculate the average value.
-> > >>>
-> > >>> In some case, the max cost for bpf prog invoked, are more useful:
-> > >>> is there a burst sysload or high cpu usage. This patch introduce
-> > >>> a update stats helper.
-> > >>
-> > >> I am not 100% sure about how this single max value will be useful
-> > >> in general. A particular max_run_time_ns, if much bigger than average,
-> > >> could be an outlier due to preemption/softirq etc.
-> > >> What you really need might be a trend over time of the run_time
-> > >> to capture the burst. You could do this by taking snapshot of
-> > > Hi
-> > > If the bpf prog is invoked frequently,  the run_time_ns/run_cnt may
-> > > not be increased too much while
-> > > there is a maxcost in bpf prog. The max cost value means there is at
-> > > least one high cost in bpf prog.
-> > > we should take care of the most cost of bpf prog. especially, much
-> > > more than run_time_ns/run_cnt.
-> >
-> > But then again, see Yonghong's comment with regards to outliers. I
-> > think what you're probably rather asking for is something like tracking
-> > p50/p90/p99 run_time_ns numbers over time to get a better picture. Not
-> > sure how single max cost would help, really..
-> What I am asking for is that is there a high cpu cost in bpf prog ? If
-> the bpf prog run frequently,
-> the run_time_ns/cnt is not what we want. because if we get bpf runtime
-> stats frequently, there will
-> be a high syscall cpu load. so we can't use syscall frequently. so why
-> I need this max cost value, as
-> yonghong say "if much bigger than average, could be an outlier due to
-> preemption/softirq etc.". It is right.
-> but I think there is another reason, the bpf prog may be too bad to
-> cause the issue or bpf prog invoke a bpf helper which
-> take a lot cpu. Anyway this can help us debug the bpf prog. and help
-> us to know what max cost the prog take. If possible
-> we can update the commit message and send v3.
+Hello,
 
-kernel.bpf_stats_enabled is a relatively light weight monitoring interface.
-One of the use cases is to enable it for a few seconds periodically, so
-we can get an overview of all BPF programs in the system.
+syzbot found the following issue on:
 
-While max time cost might be useful in some debugging, I don't think
-we should add it with kernel.bpf_stats_enabled. Otherwise, we can
-argue p50/p90/p99 are also useful in some cases, and some other
-metrics are useful in some other cases.  These metrics together will
-make kernel.bpf_stats_enabled too expensive for the use case above.
+HEAD commit:    13e3c7793e2f Merge tag 'for-netdev' of https://git.kernel...
+git tree:       bpf
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=177df7e0480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b0e91ad4b5f69c47
+dashboard link: https://syzkaller.appspot.com/bug?extid=b8e8c01c8ade4fe6e48f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e87100480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ceeb13880000
 
-Since the use case is for debugging, have you considered using
-some other BPF programs to profile the target BPF program?
-Please refer to "bpftool prog profile" or "perf stat -b " for
-examples of similar solutions. We may need to revise the following
-check in bpf_check_attach_target() to make this work for some
-scenarios:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/373a99daa295/disk-13e3c779.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7fa71ed0fe17/vmlinux-13e3c779.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2842ad5c698b/bzImage-13e3c779.xz
 
-                if (tgt_prog->type == prog->type) {
-                        /* Cannot fentry/fexit another fentry/fexit program.
-                         * Cannot attach program extension to another extension.
-                         * It's ok to attach fentry/fexit to extension program.
-                         */
-                        bpf_log(log, "Cannot recursively attach\n");
-                        return -EINVAL;
-                }
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com
 
-Thanks,
-Song
+==================================================================
+BUG: KASAN: use-after-free in __lock_acquire+0x3ee7/0x56d0 kernel/locking/lockdep.c:4925
+Read of size 8 at addr ffff8880237d6018 by task syz-executor287/8300
+
+CPU: 0 PID: 8300 Comm: syz-executor287 Not tainted 6.1.0-syzkaller-09661-g13e3c7793e2f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:284 [inline]
+ print_report+0x15e/0x45d mm/kasan/report.c:395
+ kasan_report+0xbf/0x1f0 mm/kasan/report.c:495
+ __lock_acquire+0x3ee7/0x56d0 kernel/locking/lockdep.c:4925
+ lock_acquire kernel/locking/lockdep.c:5668 [inline]
+ lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
+ put_pmu_ctx kernel/events/core.c:4913 [inline]
+ put_pmu_ctx+0xad/0x390 kernel/events/core.c:4893
+ _free_event+0x3c5/0x13d0 kernel/events/core.c:5196
+ free_event+0x58/0xc0 kernel/events/core.c:5224
+ __do_sys_perf_event_open+0x66d/0x2980 kernel/events/core.c:12701
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f3a2b1b3f29
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff4215df68 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+RAX: ffffffffffffffda RBX: 00000000000f4240 RCX: 00007f3a2b1b3f29
+RDX: 0000000000000000 RSI: 0000000000002070 RDI: 0000000020000480
+RBP: 0000000000000000 R08: 0000000000000008 R09: 0000000000000001
+R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000012a59
+R13: 00007fff4215df7c R14: 00007fff4215df90 R15: 00007fff4215df80
+ </TASK>
+
+Allocated by task 8300:
+ kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:371 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:330 [inline]
+ __kasan_kmalloc+0xa5/0xb0 mm/kasan/common.c:380
+ kmalloc include/linux/slab.h:580 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ alloc_perf_context kernel/events/core.c:4693 [inline]
+ find_get_context+0xcc/0x810 kernel/events/core.c:4763
+ __do_sys_perf_event_open+0x963/0x2980 kernel/events/core.c:12476
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 5310:
+ kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2e/0x40 mm/kasan/generic.c:518
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x160/0x1c0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:177 [inline]
+ slab_free_hook mm/slub.c:1781 [inline]
+ slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1807
+ slab_free mm/slub.c:3787 [inline]
+ __kmem_cache_free+0xaf/0x3b0 mm/slub.c:3800
+ rcu_do_batch kernel/rcu/tree.c:2244 [inline]
+ rcu_core+0x81f/0x1980 kernel/rcu/tree.c:2504
+ __do_softirq+0x1fb/0xadc kernel/softirq.c:571
+
+Last potentially related work creation:
+ kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:488
+ __call_rcu_common.constprop.0+0x99/0x820 kernel/rcu/tree.c:2753
+ put_ctx kernel/events/core.c:1180 [inline]
+ put_ctx+0x116/0x1e0 kernel/events/core.c:1173
+ perf_event_exit_task_context kernel/events/core.c:13046 [inline]
+ perf_event_exit_task+0x556/0x760 kernel/events/core.c:13073
+ do_exit+0xb4d/0x2a30 kernel/exit.c:829
+ __do_sys_exit kernel/exit.c:917 [inline]
+ __se_sys_exit kernel/exit.c:915 [inline]
+ __x64_sys_exit+0x42/0x50 kernel/exit.c:915
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff8880237d6000
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 24 bytes inside of
+ 512-byte region [ffff8880237d6000, ffff8880237d6200)
+
+The buggy address belongs to the physical page:
+page:ffffea00008df500 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x237d4
+head:ffffea00008df500 order:2 compound_mapcount:0 compound_pincount:0
+anon flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 ffff888012441c80 0000000000000000 dead000000000001
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2173, tgid 2173 (kworker/u4:3), ts 10211275854, free_ts 0
+ prep_new_page mm/page_alloc.c:2539 [inline]
+ get_page_from_freelist+0x10b5/0x2d50 mm/page_alloc.c:4291
+ __alloc_pages+0x1cb/0x5b0 mm/page_alloc.c:5558
+ alloc_pages+0x1aa/0x270 mm/mempolicy.c:2285
+ alloc_slab_page mm/slub.c:1851 [inline]
+ allocate_slab+0x25f/0x350 mm/slub.c:1998
+ new_slab mm/slub.c:2051 [inline]
+ ___slab_alloc+0xa91/0x1400 mm/slub.c:3193
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3292
+ __slab_alloc_node mm/slub.c:3345 [inline]
+ slab_alloc_node mm/slub.c:3442 [inline]
+ __kmem_cache_alloc_node+0x1a4/0x430 mm/slub.c:3491
+ kmalloc_trace+0x26/0x60 mm/slab_common.c:1062
+ kmalloc include/linux/slab.h:580 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ alloc_bprm+0x51/0x900 fs/exec.c:1510
+ kernel_execve+0xaf/0x500 fs/exec.c:1981
+ call_usermodehelper_exec_async+0x2e7/0x580 kernel/umh.c:113
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff8880237d5f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880237d5f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff8880237d6000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff8880237d6080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880237d6100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
