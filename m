@@ -2,70 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B7165115A
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 18:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2A16511B3
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 19:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbiLSRuh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 12:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        id S232240AbiLSSWc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 13:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbiLSRug (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 12:50:36 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EA2FAD3;
-        Mon, 19 Dec 2022 09:50:34 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id k22-20020a05600c1c9600b003d1ee3a6289so7060392wms.2;
-        Mon, 19 Dec 2022 09:50:34 -0800 (PST)
+        with ESMTP id S232249AbiLSSW2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 13:22:28 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EFD614D
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:22:27 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id k18-20020a170902c41200b001896d523dc8so7428075plk.19
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:22:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/B7gkzEOEryB52AsLQOlC7U/7aoouPr03YHCUavnNQ8=;
-        b=bfoHtIDEPOwPnUZVEPgM54bB1sAk3v/faLtzbE8oyODpKn3RpCL93vFhrqZjDUlo+I
-         bOIu1Pw4k4BhTBGo7VyXwaRNawg80KeX18WWRC9pdg3sLhces22GTCOnoM8x5zFr5x+z
-         MuoqmpBpXPTRKe998wgwsv36Kw1dfgQ90vHFwc3/PTbJQFwlsUE6WbHFiIBbqhHIGm5s
-         50p6Yt6RVF+CQh7LoBev2cnGmhUhBD72fhnYu9yDSrE2i+aRRZwLZl0yI44wTntLJLwE
-         9uAmxG3FF29/qtGKVDbedZVCMs6xMIuMWhZ5H8LNovjEBzwsi4rWWkj1gCxbJ125acoo
-         FWmw==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=x2x0wSnYsewH4iAEwOQjvU/hpNGhiU8GmT5H0SSWTXo=;
+        b=snxFxnVxuowKEhwiUl/7+qTDSdd1kz+8QpWlqWdv7SLmHD+rwb+71YUt7cW/hk5c1e
+         JiBtcmCVNtYquQZlEpf+AGAM4H1z0GC8jAezsZRp6/fhZCyqARgLsE4nBg43i8Xu5+1V
+         TsTa0kFzOESMB/eY+Leatljf1ouHV8BNMA0F4gYTuhg6kOqxF0z+qcQggprJQoSeEF2W
+         qgkEIKcd8/NKo99GvxR2vCAmHzcd4BO2E6vfNftGjYsf9zvqUAU8L8a3Mbup3bAI6Cmd
+         +THFcASVG1uzcF7QSgjzeHBjNvUUcFUHR/Mxky6D1TbhBlvlQ11OTAa5gb3MYWI6PiHH
+         eCIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/B7gkzEOEryB52AsLQOlC7U/7aoouPr03YHCUavnNQ8=;
-        b=QGw4uX3yGg7OThtI0vwXIcL9aOpPmrwMEqyQcCIfZ5A0edxv4dPSHyMciSdf+PkxfJ
-         cbq2ZuYiBN0zlkG1nN3Al7S1+16xXSRQZ49OoQNBFJIZm50n8j1MY3+jo5JpW6h6NHVn
-         F2z/2d5Em0zhyijP6m8XOezx3Fkp1trpbiH3WeKUL3lka5R2jEBUnxVKjlGjeoQQteyH
-         cmxc3Ln9ZmJcDJcDCleieceJ3xyCk7x4NsfQzD3cv7xcBHIN7Q4ofqLW5MGMyuxiLu6X
-         DVLyfVU/V9JDThrMxv8ABNgVo7jthYhIdf5zBdvtxywfB6re21KaZWy6EgGnYVktSMNH
-         /8Xg==
-X-Gm-Message-State: ANoB5pn8UQOF5PJGrsfhEhU0ijKBu8LiUsTJD/TMHWJseKekTQdYsB9g
-        LtbebB4LC9oxvHE4Kjgtg+U=
-X-Google-Smtp-Source: AA0mqf6TzAcVwbpOnYPqXAcd6O9vko8QeVZ7rfmF+msO+tHvYRmLfN/IzqChwOz3nDsz47BgST2/Ng==
-X-Received: by 2002:a05:600c:1da7:b0:3d2:2b70:f2fd with SMTP id p39-20020a05600c1da700b003d22b70f2fdmr21247827wms.21.1671472232216;
-        Mon, 19 Dec 2022 09:50:32 -0800 (PST)
-Received: from suse.localnet (host-95-251-45-63.retail.telecomitalia.it. [95.251.45.63])
-        by smtp.gmail.com with ESMTPSA id a1-20020a05600c348100b003c7087f6c9asm20150565wmq.32.2022.12.19.09.50.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Dec 2022 09:50:31 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Evgeniy Dushistov <dushistov@mail.ru>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] fs/ufs: Replace kmap() with kmap_local_page()
-Date:   Mon, 19 Dec 2022 18:50:30 +0100
-Message-ID: <1788562.8hzESeGDPO@suse>
-In-Reply-To: <20221217184749.968-4-fmdefrancesco@gmail.com>
-References: <20221217184749.968-1-fmdefrancesco@gmail.com>
- <20221217184749.968-4-fmdefrancesco@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x2x0wSnYsewH4iAEwOQjvU/hpNGhiU8GmT5H0SSWTXo=;
+        b=RlM93fvQZyMOSb8c5JeYDd+YjRIrp42E8t3VqEFF4ilCkXCtfryyIUzWmh3+PZtLRp
+         Zre78phvs7k2Ig3DNUaqSiy6i+uq6EASizHUZOlIiyn6dYD+ggkAR4YdsW6nSHm5NKlL
+         saIXIIsOffTvFCM1pJsV4/95Gw74lMmPJMJzBbxLrM/AxsUzsRBYR7h7j84L093Ucv1D
+         l8K8nrM/FeRvlkmzwDIwN6o+gQWaMgtWhEmWL+0wEKrdFpG9lAs8Ln2EWpy5vkf6wd0G
+         MJmalOozN4oeXCgzptryrUlpjNSs/7lTkiBHbzh+K2NsBoKt9RPDeS7Hee/SjckS0Pdz
+         +CQA==
+X-Gm-Message-State: ANoB5pnVKSpXufLWpGodihXmKk5KuabVMXOd47NhHpnPoRF3JtnOQmzr
+        23gE6jVeRPNwTZynlWWZFNAy7wE=
+X-Google-Smtp-Source: AA0mqf7ShZ5ShlpngrVJ8rq61klbutwITgFJwBL/M8UJsHxwRCVENMl+57UPV1ee9y8J0/vqrubx27Q=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:903:3052:b0:189:63ef:ef3b with SMTP id
+ u18-20020a170903305200b0018963efef3bmr66454027pla.112.1671474147090; Mon, 19
+ Dec 2022 10:22:27 -0800 (PST)
+Date:   Mon, 19 Dec 2022 10:22:25 -0800
+In-Reply-To: <c3b935a5a72b1371f9262348616a7fa84061b85f.1671242108.git.aditi.ghag@isovalent.com>
+Mime-Version: 1.0
+References: <cover.1671242108.git.aditi.ghag@isovalent.com> <c3b935a5a72b1371f9262348616a7fa84061b85f.1671242108.git.aditi.ghag@isovalent.com>
+Message-ID: <Y6Cr4X4h0buvET8U@google.com>
+Subject: Re: [PATCH 1/2] bpf: Add socket destroy capability
+From:   sdf@google.com
+To:     Aditi Ghag <aditi.ghag@isovalent.com>
+Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,291 +65,290 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On sabato 17 dicembre 2022 19:47:49 CET Fabio M. De Francesco wrote:
-> kmap() is being deprecated in favor of kmap_local_page().
->=20
-> There are two main problems with kmap(): (1) It comes with an overhead as
-> the mapping space is restricted and protected by a global lock for
-> synchronization and (2) it also requires global TLB invalidation when the
-> kmap=E2=80=99s pool wraps and it might block when the mapping space is fu=
-lly
-> utilized until a slot becomes available.
->=20
-> With kmap_local_page() the mappings are per thread, CPU local, can take
-> page faults, and can be called from any context (including interrupts).
-> It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
-> the tasks can be preempted and, when they are scheduled to run again, the
-> kernel virtual addresses are restored and still valid.
->=20
-> Since its use in fs/ufs is safe everywhere, it should be preferred.
->=20
-> Therefore, replace kmap() with kmap_local_page() in fs/ufs. kunmap_local()
-> requires the mapping address, so return that address from ufs_get_page()
-> to be used in ufs_put_page().
->=20
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Suggested-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+On 12/17, Aditi Ghag wrote:
+> The socket destroy helper is used to
+> forcefully terminate sockets from certain
+> BPF contexts. We plan to use the capability
+> in Cilium to force client sockets to reconnect
+> when their remote load-balancing backends are
+> deleted. The other use case is on-the-fly
+> policy enforcement where existing socket
+> connections prevented by policies need to
+> be terminated.
+
+> The helper is currently exposed to iterator
+> type BPF programs where users can filter,
+> and terminate a set of sockets.
+
+> Sockets are destroyed asynchronously using
+> the work queue infrastructure. This allows
+> for current the locking semantics within
+
+s/current the/the current/ ?
+
+> socket destroy handlers, as BPF iterators
+> invoking the helper acquire *sock* locks.
+> This also allows the helper to be invoked
+> from non-sleepable contexts.
+> The other approach to skip acquiring locks
+> by passing an argument to the `diag_destroy`
+> handler didn't work out well for UDP, as
+> the UDP abort function internally invokes
+> another function that ends up acquiring
+> *sock* lock.
+> While there are sleepable BPF iterators,
+> these are limited to only certain map types.
+> Furthermore, it's limiting in the sense that
+> it wouldn't allow us to extend the helper
+> to other non-sleepable BPF programs.
+
+> The work queue infrastructure processes work
+> items from per-cpu structures. As the sock
+> destroy work items are executed asynchronously,
+> we need to ref count sockets before they are
+> added to the work queue. The 'work_pending'
+> check prevents duplicate ref counting of sockets
+> in case users invoke the destroy helper for a
+> socket multiple times. The `{READ,WRITE}_ONCE`
+> macros ensure that the socket pointer stored
+> in a work queue item isn't clobbered while
+> the item is being processed. As BPF programs
+> are non-preemptible, we can expect that once
+> a socket is ref counted, no other socket can
+> sneak in before the ref counted socket is
+> added to the work queue for asynchronous destroy.
+> Finally, users are expected to retry when the
+> helper fails to queue a work item for a socket
+> to be destroyed in case there is another destroy
+> operation is in progress.
+
+nit: maybe reformat to fit into 80 characters per line? A bit hard to
+read with this narrow formatting..
+
+
+> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
 > ---
->  fs/ufs/dir.c | 75 ++++++++++++++++++++++++++++++++--------------------
->  1 file changed, 46 insertions(+), 29 deletions(-)
->=20
-> diff --git a/fs/ufs/dir.c b/fs/ufs/dir.c
-> index 9fa86614d2d1..a9dd5023b604 100644
-> --- a/fs/ufs/dir.c
-> +++ b/fs/ufs/dir.c
-> @@ -61,9 +61,9 @@ static int ufs_commit_chunk(struct page *page, loff_t p=
-os,
-> unsigned len) return err;
->  }
->=20
-> -static inline void ufs_put_page(struct page *page)
-> +static inline void ufs_put_page(struct page *page, void *page_addr)
->  {
-> -	kunmap(page);
-> +	kunmap((void *)((unsigned long)page_addr & PAGE_MASK));
+>   include/linux/bpf.h            |  1 +
+>   include/uapi/linux/bpf.h       | 17 +++++++++
+>   kernel/bpf/core.c              |  1 +
+>   kernel/trace/bpf_trace.c       |  2 +
+>   net/core/filter.c              | 70 ++++++++++++++++++++++++++++++++++
+>   tools/include/uapi/linux/bpf.h | 17 +++++++++
+>   6 files changed, 108 insertions(+)
 
-While working on patch 3/3 of a similar series for fs/sysv a few minutes ag=
-o,=20
-I noticed this call to kunmap() instead of kunmap_local().
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 3de24cfb7a3d..60eaa05dfab3 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2676,6 +2676,7 @@ extern const struct bpf_func_proto  
+> bpf_get_retval_proto;
+>   extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
+>   extern const struct bpf_func_proto bpf_cgrp_storage_get_proto;
+>   extern const struct bpf_func_proto bpf_cgrp_storage_delete_proto;
+> +extern const struct bpf_func_proto bpf_sock_destroy_proto;
 
-I will wait a day or two before sending the next version, to leave addition=
-al=20
-time for those who want to comment / review.
-
-=46abio
-
->  	put_page(page);
->  }
->=20
-> @@ -76,7 +76,7 @@ ino_t ufs_inode_by_name(struct inode *dir, const struct=
-=20
-qstr
-> *qstr) de =3D ufs_find_entry(dir, qstr, &page);
->  	if (de) {
->  		res =3D fs32_to_cpu(dir->i_sb, de->d_ino);
-> -		ufs_put_page(page);
-> +		ufs_put_page(page, de);
->  	}
->  	return res;
->  }
-> @@ -99,18 +99,17 @@ void ufs_set_link(struct inode *dir, struct=20
-ufs_dir_entry
-> *de, ufs_set_de_type(dir->i_sb, de, inode->i_mode);
->=20
->  	err =3D ufs_commit_chunk(page, pos, len);
-> -	ufs_put_page(page);
-> +	ufs_put_page(page, de);
->  	if (update_times)
->  		dir->i_mtime =3D dir->i_ctime =3D current_time(dir);
->  	mark_inode_dirty(dir);
->  }
->=20
->=20
-> -static bool ufs_check_page(struct page *page)
-> +static bool ufs_check_page(struct page *page, char *kaddr)
->  {
->  	struct inode *dir =3D page->mapping->host;
->  	struct super_block *sb =3D dir->i_sb;
-> -	char *kaddr =3D page_address(page);
->  	unsigned offs, rec_len;
->  	unsigned limit =3D PAGE_SIZE;
->  	const unsigned chunk_mask =3D UFS_SB(sb)->s_uspi->s_dirblksize - 1;
-> @@ -185,23 +184,32 @@ static bool ufs_check_page(struct page *page)
->  	return false;
->  }
->=20
-> +/*
-> + * Calls to ufs_get_page()/ufs_put_page() must be nested according to the
-> + * rules documented in kmap_local_page()/kunmap_local().
+>   const struct bpf_func_proto *tracing_prog_func_proto(
+>     enum bpf_func_id func_id, const struct bpf_prog *prog);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 464ca3f01fe7..789ac7c59fdf 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5484,6 +5484,22 @@ union bpf_attr {
+>    *		0 on success.
+>    *
+>    *		**-ENOENT** if the bpf_local_storage cannot be found.
 > + *
-> + * NOTE: ufs_find_entry() and ufs_dotdot() act as calls to ufs_get_page()
-> + * and must be treated accordingly for nesting purposes.
-> + */
->  static void *ufs_get_page(struct inode *dir, unsigned long n, struct page
-> **p) {
-> +	char *kaddr;
+> + * int bpf_sock_destroy(struct sock *sk)
+> + *	Description
+> + *		Destroy the given socket with **ECONNABORTED** error code.
+> + *
+> + *		*sk* must be a non-**NULL** pointer to a socket.
+> + *
+> + *	Return
+> + *		The socket is destroyed asynchronosuly, so 0 return value may
+> + *		not suggest indicate that the socket was successfully destroyed.
+
+s/suggest indicate/ with either suggest or indicate?
+
+> + *
+> + *		On error, may return **EPROTONOSUPPORT**, **EBUSY**, **EINVAL**.
+> + *
+> + *		**-EPROTONOSUPPORT** if protocol specific destroy handler is not  
+> implemented.
+> + *
+> + *		**-EBUSY** if another socket destroy operation is in progress.
+>    */
+>   #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
+>   	FN(unspec, 0, ##ctx)				\
+> @@ -5698,6 +5714,7 @@ union bpf_attr {
+>   	FN(user_ringbuf_drain, 209, ##ctx)		\
+>   	FN(cgrp_storage_get, 210, ##ctx)		\
+>   	FN(cgrp_storage_delete, 211, ##ctx)		\
+> +	FN(sock_destroy, 212, ##ctx)			\
+>   	/* */
+
+>   /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that  
+> don't
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 7f98dec6e90f..c59bef9805e5 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2651,6 +2651,7 @@ const struct bpf_func_proto bpf_snprintf_btf_proto  
+> __weak;
+>   const struct bpf_func_proto bpf_seq_printf_btf_proto __weak;
+>   const struct bpf_func_proto bpf_set_retval_proto __weak;
+>   const struct bpf_func_proto bpf_get_retval_proto __weak;
+> +const struct bpf_func_proto bpf_sock_destroy_proto __weak;
+
+>   const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
+>   {
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 3bbd3f0c810c..016dbee6b5e4 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1930,6 +1930,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id,  
+> const struct bpf_prog *prog)
+>   		return &bpf_get_socket_ptr_cookie_proto;
+>   	case BPF_FUNC_xdp_get_buff_len:
+>   		return &bpf_xdp_get_buff_len_trace_proto;
+> +	case BPF_FUNC_sock_destroy:
+> +		return &bpf_sock_destroy_proto;
+>   #endif
+>   	case BPF_FUNC_seq_printf:
+>   		return prog->expected_attach_type == BPF_TRACE_ITER ?
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 929358677183..9753606ecc26 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -11569,6 +11569,8 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
+>   		break;
+>   	case BPF_FUNC_ktime_get_coarse_ns:
+>   		return &bpf_ktime_get_coarse_ns_proto;
+> +	case BPF_FUNC_sock_destroy:
+> +		return &bpf_sock_destroy_proto;
+>   	default:
+>   		return bpf_base_func_proto(func_id);
+>   	}
+> @@ -11578,3 +11580,71 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
+
+>   	return func;
+>   }
 > +
->  	struct address_space *mapping =3D dir->i_mapping;
->  	struct page *page =3D read_mapping_page(mapping, n, NULL);
->  	if (!IS_ERR(page)) {
-> -		kmap(page);
-> +		kaddr =3D kmap_local_page(page);
->  		if (unlikely(!PageChecked(page))) {
-> -			if (!ufs_check_page(page))
-> +			if (!ufs_check_page(page, kaddr))
->  				goto fail;
->  		}
->  		*p =3D page;
-> -		return page_address(page);
-> +		return kaddr;
->  	}
->  	return ERR_CAST(page);
->=20
->  fail:
-> -	ufs_put_page(page);
-> +	ufs_put_page(page, kaddr);
->  	return ERR_PTR(-EIO);
->  }
->=20
-> @@ -227,6 +235,13 @@ ufs_next_entry(struct super_block *sb, struct
-> ufs_dir_entry *p) fs16_to_cpu(sb, p->d_reclen));
->  }
->=20
-> +/*
-> + * Calls to ufs_get_page()/ufs_put_page() must be nested according to the
-> + * rules documented in kmap_local_page()/kunmap_local().
+> +struct sock_destroy_work {
+> +	struct sock *sk;
+> +	struct work_struct destroy;
+> +};
+> +
+> +static DEFINE_PER_CPU(struct sock_destroy_work, sock_destroy_workqueue);
+> +
+> +static void bpf_sock_destroy_fn(struct work_struct *work)
+> +{
+> +	struct sock_destroy_work *sd_work = container_of(work,
+> +			struct sock_destroy_work, destroy);
+> +	struct sock *sk = READ_ONCE(sd_work->sk);
+> +
+> +	sk->sk_prot->diag_destroy(sk, ECONNABORTED);
+> +	sock_put(sk);
+> +}
+> +
+> +static int __init bpf_sock_destroy_workqueue_init(void)
+> +{
+> +	int cpu;
+> +	struct sock_destroy_work *work;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		work = per_cpu_ptr(&sock_destroy_workqueue, cpu);
+> +		INIT_WORK(&work->destroy, bpf_sock_destroy_fn);
+> +	}
+> +
+> +	return 0;
+> +}
+> +subsys_initcall(bpf_sock_destroy_workqueue_init);
+> +
+> +BPF_CALL_1(bpf_sock_destroy, struct sock *, sk)
+> +{
+> +	struct sock_destroy_work *sd_work;
+> +
+> +	if (!sk->sk_prot->diag_destroy)
+> +		return -EOPNOTSUPP;
+> +
+> +	sd_work = this_cpu_ptr(&sock_destroy_workqueue);
+
+[..]
+
+> +	/* This check prevents duplicate ref counting
+> +	 * of sockets, in case the handler is invoked
+> +	 * multiple times for the same socket.
+> +	 */
+
+This means this helper can also be called for a single socket during
+invocation; is it an ok compromise?
+
+I'm also assuming it's still possible that this helper gets called for
+the same socket on different cpus?
+
+> +	if (work_pending(&sd_work->destroy))
+> +		return -EBUSY;
+> +
+> +	/* Ref counting ensures that the socket
+> +	 * isn't deleted from underneath us before
+> +	 * the work queue item is processed.
+> +	 */
+> +	if (!refcount_inc_not_zero(&sk->sk_refcnt))
+> +		return -EINVAL;
+> +
+> +	WRITE_ONCE(sd_work->sk, sk);
+> +	if (!queue_work(system_wq, &sd_work->destroy)) {
+> +		sock_put(sk);
+> +		return -EBUSY;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +const struct bpf_func_proto bpf_sock_destroy_proto = {
+> +	.func		= bpf_sock_destroy,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+> +};
+> diff --git a/tools/include/uapi/linux/bpf.h  
+> b/tools/include/uapi/linux/bpf.h
+> index 464ca3f01fe7..07154a4d92f9 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -5484,6 +5484,22 @@ union bpf_attr {
+>    *		0 on success.
+>    *
+>    *		**-ENOENT** if the bpf_local_storage cannot be found.
 > + *
-> + * ufs_dotdot() acts as a call to ufs_get_page() and must be treated
-> + * accordingly for nesting purposes.
-> + */
->  struct ufs_dir_entry *ufs_dotdot(struct inode *dir, struct page **p)
->  {
->  	struct ufs_dir_entry *de =3D ufs_get_page(dir, 0, p);
-> @@ -238,12 +253,15 @@ struct ufs_dir_entry *ufs_dotdot(struct inode *dir,
-> struct page **p) }
->=20
->  /*
-> - *	ufs_find_entry()
-> + * Finds an entry in the specified directory with the wanted name. It=20
-returns
-> a + * pointer to the directory's entry. The page in which the entry was=20
-found
-> is + * in the res_page out parameter. The page is returned mapped and
-> unlocked. + * The entry is guaranteed to be valid.
->   *
-> - * finds an entry in the specified directory with the wanted name. It
-> - * returns the page in which the entry was found, and the entry itself
-> - * (as a parameter - res_dir). Page is returned mapped and unlocked.
-> - * Entry is guaranteed to be valid.
-> + * On Success ufs_put_page() should be called on *res_page.
+> + * int bpf_sock_destroy(void *sk)
+> + *	Description
+> + *		Destroy the given socket with **ECONNABORTED** error code.
 > + *
-> + * ufs_find_entry() acts as a call to ufs_get_page() and must be treated
-> + * accordingly for nesting purposes.
->   */
->  struct ufs_dir_entry *ufs_find_entry(struct inode *dir, const struct qstr
-> *qstr, struct page **res_page)
-> @@ -282,7 +300,7 @@ struct ufs_dir_entry *ufs_find_entry(struct inode *di=
-r,
-> const struct qstr *qstr, goto found;
->  				de =3D ufs_next_entry(sb, de);
->  			}
-> -			ufs_put_page(page);
-> +			ufs_put_page(page, kaddr);
->  		}
->  		if (++n >=3D npages)
->  			n =3D 0;
-> @@ -360,7 +378,7 @@ int ufs_add_link(struct dentry *dentry, struct inode
-> *inode) de =3D (struct ufs_dir_entry *) ((char *) de + rec_len);
->  		}
->  		unlock_page(page);
-> -		ufs_put_page(page);
-> +		ufs_put_page(page, kaddr);
->  	}
->  	BUG();
->  	return -EINVAL;
-> @@ -390,7 +408,7 @@ int ufs_add_link(struct dentry *dentry, struct inode
-> *inode) mark_inode_dirty(dir);
->  	/* OFFSET_CACHE */
->  out_put:
-> -	ufs_put_page(page);
-> +	ufs_put_page(page, kaddr);
->  	return err;
->  out_unlock:
->  	unlock_page(page);
-> @@ -468,13 +486,13 @@ ufs_readdir(struct file *file, struct dir_context=20
-*ctx)
->  					       ufs_get_de_namlen(sb,=20
-de),
->  					       fs32_to_cpu(sb, de-
->d_ino),
->  					       d_type)) {
-> -					ufs_put_page(page);
-> +					ufs_put_page(page, kaddr);
->  					return 0;
->  				}
->  			}
->  			ctx->pos +=3D fs16_to_cpu(sb, de->d_reclen);
->  		}
-> -		ufs_put_page(page);
-> +		ufs_put_page(page, kaddr);
->  	}
->  	return 0;
->  }
-> @@ -485,10 +503,10 @@ ufs_readdir(struct file *file, struct dir_context=20
-*ctx)
->   * previous entry.
->   */
->  int ufs_delete_entry(struct inode *inode, struct ufs_dir_entry *dir,
-> -		     struct page * page)
-> +		     struct page *page)
->  {
->  	struct super_block *sb =3D inode->i_sb;
-> -	char *kaddr =3D page_address(page);
-> +	char *kaddr =3D (char *)((unsigned long)dir & PAGE_MASK);
->  	unsigned int from =3D offset_in_page(dir) & ~(UFS_SB(sb)->s_uspi-
->s_dirblksize
-> - 1); unsigned int to =3D offset_in_page(dir) + fs16_to_cpu(sb, dir-
->d_reclen);
-> loff_t pos;
-> @@ -527,7 +545,7 @@ int ufs_delete_entry(struct inode *inode, struct
-> ufs_dir_entry *dir, inode->i_ctime =3D inode->i_mtime =3D current_time(in=
-ode);
->  	mark_inode_dirty(inode);
->  out:
-> -	ufs_put_page(page);
-> +	ufs_put_page(page, kaddr);
->  	UFSD("EXIT\n");
->  	return err;
->  }
-> @@ -551,8 +569,7 @@ int ufs_make_empty(struct inode * inode, struct inode
-> *dir) goto fail;
->  	}
->=20
-> -	kmap(page);
-> -	base =3D (char*)page_address(page);
-> +	base =3D kmap_local_page(page);
->  	memset(base, 0, PAGE_SIZE);
->=20
->  	de =3D (struct ufs_dir_entry *) base;
-> @@ -569,7 +586,7 @@ int ufs_make_empty(struct inode * inode, struct inode
-> *dir) de->d_reclen =3D cpu_to_fs16(sb, chunk_size - UFS_DIR_REC_LEN(1));
->  	ufs_set_de_namlen(sb, de, 2);
->  	strcpy (de->d_name, "..");
-> -	kunmap(page);
-> +	kunmap_local(base);
->=20
->  	err =3D ufs_commit_chunk(page, 0, chunk_size);
->  fail:
-> @@ -585,9 +602,9 @@ int ufs_empty_dir(struct inode * inode)
->  	struct super_block *sb =3D inode->i_sb;
->  	struct page *page =3D NULL;
->  	unsigned long i, npages =3D dir_pages(inode);
-> +	char *kaddr;
->=20
->  	for (i =3D 0; i < npages; i++) {
-> -		char *kaddr;
->  		struct ufs_dir_entry *de;
->=20
->  		kaddr =3D ufs_get_page(inode, i, &page);
-> @@ -620,12 +637,12 @@ int ufs_empty_dir(struct inode * inode)
->  			}
->  			de =3D ufs_next_entry(sb, de);
->  		}
-> -		ufs_put_page(page);
-> +		ufs_put_page(page, kaddr);
->  	}
->  	return 1;
->=20
->  not_empty:
-> -	ufs_put_page(page);
-> +	ufs_put_page(page, kaddr);
->  	return 0;
->  }
->=20
+> + *		*sk* must be a non-**NULL** pointer to a socket.
+> + *
+> + *	Return
+> + *		The socket is destroyed asynchronosuly, so 0 return value may
+> + *		not indicate that the socket was successfully destroyed.
+> + *
+> + *		On error, may return **EPROTONOSUPPORT**, **EBUSY**, **EINVAL**.
+> + *
+> + *		**-EPROTONOSUPPORT** if protocol specific destroy handler is not  
+> implemented.
+> + *
+> + *		**-EBUSY** if another socket destroy operation is in progress.
+>    */
+>   #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
+>   	FN(unspec, 0, ##ctx)				\
+> @@ -5698,6 +5714,7 @@ union bpf_attr {
+>   	FN(user_ringbuf_drain, 209, ##ctx)		\
+>   	FN(cgrp_storage_get, 210, ##ctx)		\
+>   	FN(cgrp_storage_delete, 211, ##ctx)		\
+> +	FN(sock_destroy, 212, ##ctx)			\
+>   	/* */
+
+>   /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that  
+> don't
 > --
-> 2.39.0
-
-
-
+> 2.34.1
 
