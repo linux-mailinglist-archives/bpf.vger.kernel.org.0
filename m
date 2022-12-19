@@ -2,166 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E963650831
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 08:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A6365085F
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 09:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbiLSHuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 02:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
+        id S229622AbiLSIEo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 03:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbiLSHuX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 02:50:23 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A00AE41;
-        Sun, 18 Dec 2022 23:50:22 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id js9so8237697pjb.2;
-        Sun, 18 Dec 2022 23:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mt1vg5pdrs14PfvXGYOnr9zM4H3I7al2uApPMpQNZJg=;
-        b=XRRkncXJ+AbudTaYJpPObE7f4yMt8TH2Syh2Km3/ZBEjDvAtwptbqr63+dAYkwYQOY
-         v92HeRrxrqRwLh2fn410ZWTiZ9yt5mKMDutApepgQFGP75Q0mGtY1oRhF23w55GoWS7I
-         DfzQVcUAdxGW4e4KUvPe00SeDL3orQuMp2hUZRjyEQpyeKbZ5nuA8GNKl42lvF+Viyk9
-         aPq3hsOQ1twNJpgEdQK5pPW1mxWbeUqUFb21k6DflzFHX8ZXNWscd0fsKV3mUI6lX0On
-         x7tJAU9LHLp9HP8xtDSUfH5oiJ0Gz/0u+XCAFMqWjhEpGdQ/iGo4j9TbciMNbPsT6G1J
-         DsNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mt1vg5pdrs14PfvXGYOnr9zM4H3I7al2uApPMpQNZJg=;
-        b=WIdYxSRPcX/PYCRWJ563r9e2N7XYi+87KYTMTApyuqNYhBpKgT9rhunumhDxCl+Wua
-         Bg7BVS56npC1bEhNEqgvX4PeF9Eiikj3myfN5F5H7NIr+fytZuSDAnNhwOzt/1h1cbdr
-         pO/zuIM68u0nLywQadIIzPPsZxhAw2N2jFf85Qv43bTppP2nAmj5pqPiEApO5Qweq/ah
-         420LUUn9d21wRjg0usoqhJSlhuSNU99ailTyePXxUUtCSs/qvuomivG1bicv9lc2WjV+
-         yvqaP8IEQjRCXdWReuUn+Za/kA37PJNNCWZQNbDr9dICxbtjDqGs04Yyzs/5Gf+JFE3J
-         /R9Q==
-X-Gm-Message-State: ANoB5pmNQL8kAV+qz0fwKvUdrnnDPtk0LFo2WDtC1fDvvDJpo/YSZUYj
-        MKhuJXLV4os5Y0EsjI/GtRnHPx9tqLseMc/XcECI01O5xg==
-X-Google-Smtp-Source: AA0mqf59d1ZanEvjs9CtTlpUm8+CazBoZlLdMslwdXsAcUDnDjp6/MtwtAsDuocV+jv+jD+jxFQbJIT94wpAKCSi5bg=
-X-Received: by 2002:a17:902:bb10:b0:189:6292:827e with SMTP id
- im16-20020a170902bb1000b001896292827emr68357621plb.97.1671436221461; Sun, 18
- Dec 2022 23:50:21 -0800 (PST)
+        with ESMTP id S229615AbiLSIEn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 03:04:43 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFC02710
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 00:04:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 52A4DB80BAA
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 08:04:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0AC3C433F2
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 08:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671437080;
+        bh=KZZWDzAOBiMfRRR5VIK4F0cUJBgYlGleq9acKaug/+I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mAs6dA2biPrgQXxkSJ5es6E+EsAP4vvuxaQ5MkDG/DaoX22Fp04Jq4NCb02487BlK
+         6kzGTt1EyXqGbklH6y/tGZOgm8NG/4+YZNVLlzJGvksoD63CFEKM/e6RO4uSoJ67bX
+         8FfhSAwm7e0U0w6L+N7bET+80ML14ubiU/Alw0aBfHoTKKPQCfiq3dRG2Z6xzdE7cC
+         ext706CCJEB0f9ukiZf5svQ6KM2Z/7oXl69MP8xn/qfaaY9qhklf9d8HwFeCVinmdd
+         avQ0/VyEaeQZ54eVwyFia0VsN0g+/umvQq15il5K4Tauz32xv42Sud+c7E9c8EV4rt
+         zFMkw7obirnJQ==
+Received: by mail-lj1-f169.google.com with SMTP id n1so8262646ljg.3
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 00:04:39 -0800 (PST)
+X-Gm-Message-State: ANoB5pmUl0KZrkYQJaETrhdrWIrKmLTNW3+6bX8TQxItDHkwUMt5eXVy
+        4ct8EssBRK4nmQExQvq/mDmGPB0sfB4g6C6oEB8=
+X-Google-Smtp-Source: AA0mqf7LmNVtj4TE8stGcUE3kntx5HWSdP6sg7gD1g7u3p54rj7fdkoGw4bUemGXoe3rN3VcgKmLJAkjk8voeWAVhBM=
+X-Received: by 2002:a2e:be8c:0:b0:26e:95bb:d7cc with SMTP id
+ a12-20020a2ebe8c000000b0026e95bbd7ccmr29849869ljr.203.1671437077966; Mon, 19
+ Dec 2022 00:04:37 -0800 (PST)
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Mon, 19 Dec 2022 15:50:10 +0800
-Message-ID: <CACkBjsaXNceR8ZjkLG=dT3P=4A8SBsg0Z5h5PWLryF5=ghKq=g@mail.gmail.com>
-Subject: WARNING in __mark_chain_precision
-To:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
+References: <20221215043217.81368-1-xiangxia.m.yue@gmail.com>
+ <553c4d32-aac1-f5d2-8f39-86cdca1af0d6@meta.com> <CAMDZJNW+c0JkgZ0XOtq674cjXeof+U0D54yd8JBzizuQioDt3A@mail.gmail.com>
+ <425c20bd-9e7e-4fc7-9050-7d9e9bfce972@iogearbox.net> <CAMDZJNWwiScnqhvhBqDf_neiRimLGmZw-xN0UNLJE_q01K3vkQ@mail.gmail.com>
+In-Reply-To: <CAMDZJNWwiScnqhvhBqDf_neiRimLGmZw-xN0UNLJE_q01K3vkQ@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 19 Dec 2022 00:04:24 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4ai+ojXTfgfUa+ZXyEfv8siW8Ya9+_oa+Urw=ga+rHKw@mail.gmail.com>
+Message-ID: <CAPhsuW4ai+ojXTfgfUa+ZXyEfv8siW8Ya9+_oa+Urw=ga+rHKw@mail.gmail.com>
+Subject: Re: [bpf-next v2 1/2] bpf: add runtime stats, max cost
+To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@meta.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Sat, Dec 17, 2022 at 7:38 AM Tonghao Zhang <xiangxia.m.yue@gmail.com> wrote:
+>
+> On Sat, Dec 17, 2022 at 12:07 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >
+> > On 12/16/22 10:05 AM, Tonghao Zhang wrote:
+> > > On Fri, Dec 16, 2022 at 1:40 PM Yonghong Song <yhs@meta.com> wrote:
+> > >> On 12/14/22 8:32 PM, xiangxia.m.yue@gmail.com wrote:
+> > >>> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> > >>>
+> > >>> Now user can enable sysctl kernel.bpf_stats_enabled to fetch
+> > >>> run_time_ns and run_cnt. It's easy to calculate the average value.
+> > >>>
+> > >>> In some case, the max cost for bpf prog invoked, are more useful:
+> > >>> is there a burst sysload or high cpu usage. This patch introduce
+> > >>> a update stats helper.
+> > >>
+> > >> I am not 100% sure about how this single max value will be useful
+> > >> in general. A particular max_run_time_ns, if much bigger than average,
+> > >> could be an outlier due to preemption/softirq etc.
+> > >> What you really need might be a trend over time of the run_time
+> > >> to capture the burst. You could do this by taking snapshot of
+> > > Hi
+> > > If the bpf prog is invoked frequently,  the run_time_ns/run_cnt may
+> > > not be increased too much while
+> > > there is a maxcost in bpf prog. The max cost value means there is at
+> > > least one high cost in bpf prog.
+> > > we should take care of the most cost of bpf prog. especially, much
+> > > more than run_time_ns/run_cnt.
+> >
+> > But then again, see Yonghong's comment with regards to outliers. I
+> > think what you're probably rather asking for is something like tracking
+> > p50/p90/p99 run_time_ns numbers over time to get a better picture. Not
+> > sure how single max cost would help, really..
+> What I am asking for is that is there a high cpu cost in bpf prog ? If
+> the bpf prog run frequently,
+> the run_time_ns/cnt is not what we want. because if we get bpf runtime
+> stats frequently, there will
+> be a high syscall cpu load. so we can't use syscall frequently. so why
+> I need this max cost value, as
+> yonghong say "if much bigger than average, could be an outlier due to
+> preemption/softirq etc.". It is right.
+> but I think there is another reason, the bpf prog may be too bad to
+> cause the issue or bpf prog invoke a bpf helper which
+> take a lot cpu. Anyway this can help us debug the bpf prog. and help
+> us to know what max cost the prog take. If possible
+> we can update the commit message and send v3.
 
-The following backtracking bug can be triggered on the latest bpf-next and
-Linux 6.1 with the C prog provided. I don't have enough knowledge about
-this part in the verifier, don't know how to fix this.
+kernel.bpf_stats_enabled is a relatively light weight monitoring interface.
+One of the use cases is to enable it for a few seconds periodically, so
+we can get an overview of all BPF programs in the system.
 
-This can be reproduced on:
+While max time cost might be useful in some debugging, I don't think
+we should add it with kernel.bpf_stats_enabled. Otherwise, we can
+argue p50/p90/p99 are also useful in some cases, and some other
+metrics are useful in some other cases.  These metrics together will
+make kernel.bpf_stats_enabled too expensive for the use case above.
 
-HEAD commit: 0e43662e61f2 tools/resolve_btfids: Use pkg-config to locate libelf
-git tree: bpf-next
-console log: https://pastebin.com/raw/45hZ7iqm
-kernel config: https://pastebin.com/raw/0pu1CHRm
-C reproducer: https://pastebin.com/raw/tqsiezvT
+Since the use case is for debugging, have you considered using
+some other BPF programs to profile the target BPF program?
+Please refer to "bpftool prog profile" or "perf stat -b " for
+examples of similar solutions. We may need to revise the following
+check in bpf_check_attach_target() to make this work for some
+scenarios:
 
-func#0 @0
-0: R1=ctx(off=0,imm=0) R10=fp0
-0: (18) r2 = 0x8000000000000          ; R2_w=2251799813685248
-2: (18) r6 = 0xffff888027358000       ;
-R6_w=map_ptr(off=0,ks=3032,vs=3664,imm=0)
-4: (18) r7 = 0xffff88802735a000       ; R7_w=map_ptr(off=0,ks=156,vs=2624,imm=0)
-6: (18) r8 = 0xffff88802735e000       ; R8_w=map_ptr(off=0,ks=2396,vs=76,imm=0)
-8: (18) r9 = 0x8e9700000000           ; R9_w=156779191205888
-10: (36) if w9 >= 0xffffffe3 goto pc+1
-last_idx 10 first_idx 0
-regs=200 stack=0 before 8: (18) r9 = 0x8e9700000000
-11: R9_w=156779191205888
-11: (85) call #0
-12: (cc) w2 s>>= w7
-last_idx 12 first_idx 12
-parent didn't have regs=4 stack=0 marks: R1=ctx(off=0,imm=0)
-R2_rw=P2251799813685248 R6_w=map_ptr(off=0,ks=3032,vs=3664,imm=0)
-R7_rw=map_ptr(off=0,ks=156,vs=2624,imm=0)
-R8_w=map_ptr(off=0,ks=2396,vs=76,imm=0) R9_w=156779191205888 R10=fp0
-last_idx 11 first_idx 0
-regs=4 stack=0 before 11: (85) call #0
-BUG regs 4
-processed 8 insns (limit 1000000) max_states_per_insn 0 total_states 1
-peak_states 1 mark_read 1
+                if (tgt_prog->type == prog->type) {
+                        /* Cannot fentry/fexit another fentry/fexit program.
+                         * Cannot attach program extension to another extension.
+                         * It's ok to attach fentry/fexit to extension program.
+                         */
+                        bpf_log(log, "Cannot recursively attach\n");
+                        return -EINVAL;
+                }
 
-------------[ cut here ]------------
-verifier backtracking bug
-WARNING: CPU: 6 PID: 8646 at kernel/bpf/verifier.c:2756 backtrack_insn
-kernel/bpf/verifier.c:2756 [inline]
-WARNING: CPU: 6 PID: 8646 at kernel/bpf/verifier.c:2756
-__mark_chain_precision+0x1baf/0x1d70 kernel/bpf/verifier.c:3065
-Modules linked in:
-CPU: 6 PID: 8646 Comm: a.out Not tainted 6.1.0-09634-g0e43662e61f2 #146
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux
-1.16.1-1-1 04/01/2014
-RIP: 0010:backtrack_insn kernel/bpf/verifier.c:2756 [inline]
-RIP: 0010:__mark_chain_precision+0x1baf/0x1d70 kernel/bpf/verifier.c:3065
-Code: 0d 31 ff 89 de e8 91 ec ed ff 84 db 0f 85 ef fe ff ff e8 b4 f0
-ed ff 48 c7 c7 e0 8f 53 8a c6 05 28 71 ab 0d 01 e8 83 b3 1e 08 <0f> 0b
-e9 50 f8 ff ff 48 8b 74 24 38 48 c7 c7 80 d0 63 8d e8 49 46
-RSP: 0018:ffffc9001463f1a0 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888020470000 RSI: ffffffff816662c0 RDI: fffff520028c7e26
-RBP: 0000000000000004 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000000 R12: 0000000000000020
-R13: dffffc0000000000 R14: 000000000000000b R15: ffff88802be74000
-FS: 00007fd3daeb8440(0000) GS:ffff888063980000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000240 CR3: 0000000017394000 CR4: 0000000000750ee0
-PKRU: 55555554
-Call Trace:
-<TASK>
-mark_chain_precision kernel/bpf/verifier.c:3165 [inline]
-adjust_reg_min_max_vals+0x981/0x58d0 kernel/bpf/verifier.c:10715
-check_alu_op+0x380/0x1820 kernel/bpf/verifier.c:10928
-do_check kernel/bpf/verifier.c:13821 [inline]
-do_check_common+0x1c3b/0xe520 kernel/bpf/verifier.c:16289
-do_check_main kernel/bpf/verifier.c:16352 [inline]
-bpf_check+0x83b4/0xb310 kernel/bpf/verifier.c:16936
-bpf_prog_load+0xf7a/0x21a0 kernel/bpf/syscall.c:2619
-__sys_bpf+0xf03/0x5840 kernel/bpf/syscall.c:4979
-__do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
-__se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
-__x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5081
-do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fd3da8e4469
-Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 8b 0d ff 49 2b 00 f7 d8 64 89 01 48
-RSP: 002b:00007fff090c1a78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd3da8e4469
-RDX: 0000000000000080 RSI: 0000000020000840 RDI: 0000000000000005
-RBP: 00007fff090c2a90 R08: 00007fd3da92e160 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000561aefc006c0
-R13: 00007fff090c2b70 R14: 0000000000000000 R15: 0000000000000000
-</TASK>
+Thanks,
+Song
