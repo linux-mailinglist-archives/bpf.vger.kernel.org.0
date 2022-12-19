@@ -2,83 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86527651221
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 19:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A94865122D
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 19:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbiLSSmM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 13:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        id S232420AbiLSSuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 13:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232607AbiLSSmA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 13:42:00 -0500
+        with ESMTP id S232394AbiLSSuX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 13:50:23 -0500
 Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635B512AA1
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:41:53 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id md9-20020a17090b23c900b00218fa3308a9so3905670pjb.8
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:41:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270302DFE
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:50:21 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id k2-20020a17090a514200b002198214abdcso3871225pjm.8
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:50:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lUe/HAilA5uQeCY16YFaRupilsMtPutRzDO3+Pp/Z1I=;
-        b=VTq+9e6lK/+M/Nv1j25mTFqCS9fuVM/WZbUbgu9tZwrcHrGxG6PntyfRkU+FvADdee
-         L0xvjCh8ckvZGB6cpfeUe4IQ+bLunDiizoaASo0ZdeouOvfyC8sCV83I4xOMAH3E6WU7
-         Aj+J1oFcyo4meAB3Bb46FiIEDj9uk0KT6FDP1rRDVb3xXMWE9BG6l8Ns3MWoI+MpdxXQ
-         TskENOsmgZE4LMzu47cNdQOiUNZGML+2W/luhO9bnIQhrLYcSJ8J0GBJIcCLgpGqEWsn
-         95p/WYoGDRcovc4hNTHXLYcyx5cyylfxnAxPf3ukjrC4zFee3ni1ji4qK1wkaqsU+T+U
-         SREA==
+        bh=APQb2D+bAgLt3P1W8vamMruA1GBV8bS5d60aXK1jM1k=;
+        b=MuzB/ZFnLBfCn/Z+PnVgb5VvkijYMe+/3aBexVfEiFr1uNw83rHeLNNZwqN724W6Oj
+         inE8cwZg4SPWBKD6/F8FE+axpuG0qd5c5QyUIm5U1fnHq+dYPKmXnyFSV2uRT/44Fyml
+         cwXJE9lgO/ti5M42E60/xC5MJ1vLHqt4yv1eIy85TY/LTnUSj/K5ASkohyrhtTCsvUCK
+         RdHN95zJXkHa6yYeRKPhIjU9Z9MMy28SXsNzH0nZQvc7hvePK/52WGcQOnngPVEFvg+3
+         C0wX4hyqjxFUfxZ7HLzUAlh9amqwKkWwM2/CTu55h7W6YJkUfkk+x7fhrEi36DMfvg+8
+         crIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lUe/HAilA5uQeCY16YFaRupilsMtPutRzDO3+Pp/Z1I=;
-        b=f8T+3iz+qGGEotOf3+hh0/dm+RJ6UKQXveoBNy+Gv2fFxaTWvdeQ/94CBVnQgVPKaV
-         3ESyE6H61683pwOoSfzS/Q8n0aBgh0Y++WNmCMcR8EEEl0hsVhaU1GebbzXA8CjsGHL1
-         wLWkN8G3gCyUKeLsRbzJDUEONk0lGYydHBl82kLbKDJu8sqs49JGkdY+/s1nevOUGeO6
-         4UjYRKF0JbudpTtlb9F4KE9E4odBQ5tD+VKV03v1q5b4AfWcUW24GqcBtJa3oiyRlxSP
-         KBRHVKM9JjgdOsFSYaUty3c/zMS0TZBQ6C8uNLZfvQBED7VWMp5ety3KaKC+zDuMJ39/
-         KoUw==
-X-Gm-Message-State: AFqh2krxaRoz4NGfmQyJaL6dC8DlWcbSNjvsJhrqMrW1bNnX+mrwTo4q
-        7yATKd7KkcqQchmdJzNctZl3mYk=
-X-Google-Smtp-Source: AMrXdXu0/MeW/tiiga+F2SHL+s2785/arVi+FMGPK3PZ0NYpYry9ow01VET95wyHYkhhD3EfIoUOJNk=
+        bh=APQb2D+bAgLt3P1W8vamMruA1GBV8bS5d60aXK1jM1k=;
+        b=F2aoUuzhrCVBS70imuYezfRhIhAw2bNiR3BV7ZzizIDvMqeMAvNU3H6jX5hPKfA+8b
+         AwWCM/UQ4ljXEjnN31zPW1DPHdGror15C6H3usojo5J/hm2ZtOS1HiGurJhkjp+XYdi8
+         R7f8VZ+wMhTNHOBMuDG4rhsWNTGH5IJOEJBmXvuKz+h1kJVbf9ryvnz+dsMYDkFUWfG4
+         HLENCvY8E656S3jr7kJGzOVGFqc0HG/el9l2AAilQy6/0IQlUhl/3v8wAeh8Dq/ROfoN
+         E3vKpMHFtG3QI5O+A695wvfKKPdXY8g4eZNP1cO/vCkd6U8P91I5waqLmxEhXqo5M3sV
+         Afug==
+X-Gm-Message-State: AFqh2kpZ/nyYNAvgartmBpJacoFR6YfXHs3Mk+7rLdJbTwVB7d3t0Ate
+        N2B6A7uew4RC6Q7M/madIQs+CLI=
+X-Google-Smtp-Source: AMrXdXvL0VkqrCC5PX4ou+P9vbHOFBr3/svMkEu8P5mUwS43/myKO/GwGI5q0H4FD+lKKxK16Y7zgq8=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:fe08:b0:218:770c:9a40 with SMTP id
- ck8-20020a17090afe0800b00218770c9a40mr2448017pjb.158.1671475312904; Mon, 19
- Dec 2022 10:41:52 -0800 (PST)
-Date:   Mon, 19 Dec 2022 10:41:51 -0800
-In-Reply-To: <20221218051734.31411-2-cehrig@cloudflare.com>
+ (user=sdf job=sendgmr) by 2002:a17:90b:958:b0:219:5b3b:2b9f with SMTP id
+ dw24-20020a17090b095800b002195b3b2b9fmr287553pjb.2.1671475820326; Mon, 19 Dec
+ 2022 10:50:20 -0800 (PST)
+Date:   Mon, 19 Dec 2022 10:50:18 -0800
+In-Reply-To: <20221219064613.2932-1-liuxin350@huawei.com>
 Mime-Version: 1.0
-References: <20221218051734.31411-1-cehrig@cloudflare.com> <20221218051734.31411-2-cehrig@cloudflare.com>
-Message-ID: <Y6Cwb875k9sJyBfx@google.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add BPF_F_NO_TUNNEL_KEY test
+References: <20221219064613.2932-1-liuxin350@huawei.com>
+Message-ID: <Y6CyatoFytXToO/g@google.com>
+Subject: Re: [PATCH] libbpf: fix crash when input null program point in USDT API
 From:   sdf@google.com
-To:     Christian Ehrig <cehrig@cloudflare.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kui-Feng Lee <kuifeng@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Kaixi Fan <fankaixi.li@bytedance.com>,
-        Paul Chaignon <paul@isovalent.com>,
-        Shmulik Ladkani <shmulik@metanetworks.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
+To:     Xin Liu <liuxin350@huawei.com>
+Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yanan@huawei.com,
+        wuchangye@huawei.com, xiesongyang@huawei.com,
+        kongweibin2@huawei.com, zhangmingyi5@huawei.com
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,141 +71,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/18, Christian Ehrig wrote:
-> This patch adds a selftest simulating a GRE sender and receiver using
-> tunnel headers without tunnel keys. It validates if packets encapsulated
-> using BPF_F_NO_TUNNEL_KEY are decapsulated by a GRE receiver not
-> configured with tunnel keys.
+On 12/19, Xin Liu wrote:
+> The API functions bpf_program__attach_perf_event_opts and
+> bpf_program_attach_usdt can be invoked by users. However, when the
+> input prog parameter is null, the API uses name and obj without
+> check. This will cause program to crash directly.
 
-> Signed-off-by: Christian Ehrig <cehrig@cloudflare.com>
+Why do we care about these only? We have a lot of functions invoked
+by the users which don't check the arguments. Can the caller ensure
+the prog is valid/consistent before calling these?
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
-
+> Signed-off-by: Xin Liu <liuxin350@huawei.com>
 > ---
->   .../selftests/bpf/progs/test_tunnel_kern.c    | 21 ++++++++++
->   tools/testing/selftests/bpf/test_tunnel.sh    | 40 +++++++++++++++++--
->   2 files changed, 58 insertions(+), 3 deletions(-)
+>   tools/lib/bpf/libbpf.c | 13 ++++++++++++-
+>   1 file changed, 12 insertions(+), 1 deletion(-)
 
-> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c  
-> b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> index 98af55f0bcd3..508da4a23c4f 100644
-> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> @@ -81,6 +81,27 @@ int gre_set_tunnel(struct __sk_buff *skb)
->   	return TC_ACT_OK;
->   }
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 2a82f49ce16f..0d21de4f7d5c 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -9764,6 +9764,11 @@ struct bpf_link  
+> *bpf_program__attach_perf_event_opts(const struct bpf_program *p
+>   	if (!OPTS_VALID(opts, bpf_perf_event_opts))
+>   		return libbpf_err_ptr(-EINVAL);
 
-> +SEC("tc")
-> +int gre_set_tunnel_no_key(struct __sk_buff *skb)
-> +{
-> +	int ret;
-> +	struct bpf_tunnel_key key;
-> +
-> +	__builtin_memset(&key, 0x0, sizeof(key));
-> +	key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
-> +	key.tunnel_ttl = 64;
-> +
-> +	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key),
-> +				     BPF_F_ZERO_CSUM_TX | BPF_F_SEQ_NUMBER |
-> +				     BPF_F_NO_TUNNEL_KEY);
-> +	if (ret < 0) {
-> +		log_err(ret);
-> +		return TC_ACT_SHOT;
+> +	if (!prog || !prog->name) {
+> +		pr_warn("prog: invalid prog\n");
+> +		return libbpf_err_ptr(-EINVAL);
 > +	}
 > +
-> +	return TC_ACT_OK;
-> +}
-> +
->   SEC("tc")
->   int gre_get_tunnel(struct __sk_buff *skb)
+>   	if (pfd < 0) {
+>   		pr_warn("prog '%s': invalid perf event FD %d\n",
+>   			prog->name, pfd);
+> @@ -10967,7 +10972,7 @@ struct bpf_link *bpf_program__attach_usdt(const  
+> struct bpf_program *prog,
+>   					  const struct bpf_usdt_opts *opts)
 >   {
-> diff --git a/tools/testing/selftests/bpf/test_tunnel.sh  
-> b/tools/testing/selftests/bpf/test_tunnel.sh
-> index 2eaedc1d9ed3..06857b689c11 100755
-> --- a/tools/testing/selftests/bpf/test_tunnel.sh
-> +++ b/tools/testing/selftests/bpf/test_tunnel.sh
-> @@ -66,15 +66,20 @@ config_device()
+>   	char resolved_path[512];
+> -	struct bpf_object *obj = prog->obj;
+> +	struct bpf_object *obj;
+>   	struct bpf_link *link;
+>   	__u64 usdt_cookie;
+>   	int err;
+> @@ -10975,6 +10980,11 @@ struct bpf_link *bpf_program__attach_usdt(const  
+> struct bpf_program *prog,
+>   	if (!OPTS_VALID(opts, bpf_uprobe_opts))
+>   		return libbpf_err_ptr(-EINVAL);
 
->   add_gre_tunnel()
->   {
-> +	tun_key=
-> +	if [ -n "$1" ]; then
-> +		tun_key="key $1"
-> +	fi
+> +	if (!prog || !prog->name || !prog->obj) {
+> +		pr_warn("prog: invalid prog\n");
+> +		return libbpf_err_ptr(-EINVAL);
+> +	}
 > +
->   	# at_ns0 namespace
->   	ip netns exec at_ns0 \
-> -        ip link add dev $DEV_NS type $TYPE seq key 2 \
-> +        ip link add dev $DEV_NS type $TYPE seq $tun_key \
->   		local 172.16.1.100 remote 172.16.1.200
->   	ip netns exec at_ns0 ip link set dev $DEV_NS up
->   	ip netns exec at_ns0 ip addr add dev $DEV_NS 10.1.1.100/24
-
->   	# root namespace
-> -	ip link add dev $DEV type $TYPE key 2 external
-> +	ip link add dev $DEV type $TYPE $tun_key external
->   	ip link set dev $DEV up
->   	ip addr add dev $DEV 10.1.1.200/24
->   }
-> @@ -238,7 +243,7 @@ test_gre()
-
->   	check $TYPE
->   	config_device
-> -	add_gre_tunnel
-> +	add_gre_tunnel 2
->   	attach_bpf $DEV gre_set_tunnel gre_get_tunnel
->   	ping $PING_ARG 10.1.1.100
->   	check_err $?
-> @@ -253,6 +258,30 @@ test_gre()
->           echo -e ${GREEN}"PASS: $TYPE"${NC}
->   }
-
-> +test_gre_no_tunnel_key()
-> +{
-> +	TYPE=gre
-> +	DEV_NS=gre00
-> +	DEV=gre11
-> +	ret=0
-> +
-> +	check $TYPE
-> +	config_device
-> +	add_gre_tunnel
-> +	attach_bpf $DEV gre_set_tunnel_no_key gre_get_tunnel
-> +	ping $PING_ARG 10.1.1.100
-> +	check_err $?
-> +	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
-> +	check_err $?
-> +	cleanup
-> +
-> +        if [ $ret -ne 0 ]; then
-> +                echo -e ${RED}"FAIL: $TYPE"${NC}
-> +                return 1
-> +        fi
-> +        echo -e ${GREEN}"PASS: $TYPE"${NC}
-> +}
-> +
->   test_ip6gre()
->   {
->   	TYPE=ip6gre
-> @@ -589,6 +618,7 @@ cleanup()
->   	ip link del ipip6tnl11 2> /dev/null
->   	ip link del ip6ip6tnl11 2> /dev/null
->   	ip link del gretap11 2> /dev/null
-> +	ip link del gre11 2> /dev/null
->   	ip link del ip6gre11 2> /dev/null
->   	ip link del ip6gretap11 2> /dev/null
->   	ip link del geneve11 2> /dev/null
-> @@ -641,6 +671,10 @@ bpf_tunnel_test()
->   	test_gre
->   	errors=$(( $errors + $? ))
-
-> +	echo "Testing GRE tunnel (without tunnel keys)..."
-> +	test_gre_no_tunnel_key
-> +	errors=$(( $errors + $? ))
-> +
->   	echo "Testing IP6GRE tunnel..."
->   	test_ip6gre
->   	errors=$(( $errors + $? ))
+>   	if (bpf_program__fd(prog) < 0) {
+>   		pr_warn("prog '%s': can't attach BPF program w/o FD (did you load  
+> it?)\n",
+>   			prog->name);
+> @@ -10997,6 +11007,7 @@ struct bpf_link *bpf_program__attach_usdt(const  
+> struct bpf_program *prog,
+>   	/* USDT manager is instantiated lazily on first USDT attach. It will
+>   	 * be destroyed together with BPF object in bpf_object__close().
+>   	 */
+> +	obj = prog->obj;
+>   	if (IS_ERR(obj->usdt_man))
+>   		return libbpf_ptr(obj->usdt_man);
+>   	if (!obj->usdt_man) {
 > --
-> 2.37.4
+> 2.33.0
 
