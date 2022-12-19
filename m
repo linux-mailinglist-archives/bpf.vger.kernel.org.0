@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCC36513B6
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 21:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42586513B2
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 21:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbiLSURv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 15:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
+        id S232615AbiLSUR7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 15:17:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232524AbiLSURn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 15:17:43 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD32464FD;
-        Mon, 19 Dec 2022 12:17:42 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id 17so10201264pll.0;
-        Mon, 19 Dec 2022 12:17:42 -0800 (PST)
+        with ESMTP id S232473AbiLSURp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 15:17:45 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593FB2BEB;
+        Mon, 19 Dec 2022 12:17:44 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id u7so1953502plq.11;
+        Mon, 19 Dec 2022 12:17:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RjRD6WezQur7RnAVSzg16H/TNhNuOpZXrFzdEgyZjWY=;
-        b=K/iKHmimDZqirm0C7DqsQepDan/duix8fBLJ8QxlpMoI9Q/F+HJT8NS6kSDLd5FvI8
-         qHPfSE5jSlN0T/qSRbfhrt3vHNREdAWYIT8/6MRy/r4lKwV6ModsbZfTRjyVYv5egBnt
-         rUUOw0Fm9+pt5kUgixtixgUCOUK7f1/Bk/Y4omdYwDKHAVaa1/ezTfDEYNutI+DEWJhm
-         QcSAlVXIcUecVuO03SWTH2YonmxNyKIixBH0XCypanctfeQA0sNPLPwasaZcMfCF9Zyc
-         OB/Mac6lGYTBl/WvGzy+O4F7FSkUxmDI1YSBn+o2XOBomWfUl8RVh2cS/2XOhBrtZt1g
-         0xNA==
+        bh=rPDKYa8rD0VGPJQCF4t4qysKE20di3XOvK38s4BKO3o=;
+        b=eu74UH9wGz7WdMFh5I8pM9WdmBiR0Gv/5jH4BeNEPO5Oh7kKrO5Zw9QorVrRLl3E7l
+         oFgfj9hH2ZqKdQENWy9Bjknh7HEN4CvLiXJ+CQBl8JxTiah8rgaUafJJTsy6PWInyYmH
+         QeMM6U7TxlcqfoJ0ZTbZ8fS2H1bHWyCNVkWt0J8myV2L/g5GzZyuidb8eKNmTaop6wN7
+         IprPWJ9430EJgQoBc5Vk1Dhqv//azBjgF1hF/yd1krmYuVyHGhKIiyUcEJBT6DcXRAv9
+         U1s/G1kalt1Xr0/8BUi8JBlYTXVJ+6rjpmFLnH1N25LvKC7MeD9rlswVqWYKVuW7eosn
+         WKVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=RjRD6WezQur7RnAVSzg16H/TNhNuOpZXrFzdEgyZjWY=;
-        b=zhk+/W+dC5XFG9wNKG+tSP8bl0viQRKBoacLZUaUNaxeoNXsMaqH8y6D7JZBPQWTKr
-         HSx3mxG9DcJ9HAi8xJhRSj0d1n3uQ50UHcBVwBVZLKilgIE5Sy67y3AWB1tFFOleqGTG
-         C5FFT51SB1dhPgOTjIGNhrgCiEBjvPmZjZnVU2KSD6UFabZMQydQKBfNpAHxx6Xu4rUs
-         5rqFvJeNxZODH/oMTFAuFnL4jYYQMQKP4Gv1GcAv5fVEBkNNf0bWu9PKz5XhAda4oD20
-         OV4B2zsOeIzNRRM0PcT10iRUqgrEXCSlD1Uh/0AKhsDgmWYFvpDhVWBY5tzElHMF1kWm
-         PaoQ==
-X-Gm-Message-State: ANoB5plcZS4kubLNPMo5lBLG30W0ivkjRl2mv9l1w1Cqo0AdYn2zl/Tp
-        lRl3LsnxtRv/25dRsMXCGtQ=
-X-Google-Smtp-Source: AA0mqf6od1Sl2FQ2RQ0VOzeajp7ymIBLRUWtAdXUHXhWOr03W5wAoNhJktICdLgTO3MR/2F5ecy3sA==
-X-Received: by 2002:a17:90a:7525:b0:221:77b4:46e1 with SMTP id q34-20020a17090a752500b0022177b446e1mr27427217pjk.48.1671481062108;
-        Mon, 19 Dec 2022 12:17:42 -0800 (PST)
+        bh=rPDKYa8rD0VGPJQCF4t4qysKE20di3XOvK38s4BKO3o=;
+        b=JLW8YZsPbHBYxKbI37XrGvpDDwsTOAuIFiKMPwP/n9UjFKNVuHKWF0zNymHlZcdIrW
+         hBjF+KCtK0FL8GdDoJKwTRfLZ1tkUKNwed31/dK4tih+NIvFOiuhN659fp6JpzFZvSnv
+         JFCdE0G8wI2mg5yXSKZ1n8geRbQYYa9DbdzF3s1P+TGMfQGyVbVuNJkLlweV7mme7YmM
+         M+wcQoRrrg86Jg2JTAU8MWpfHHdC7YVIpgT/9NFc83U3NsBEPdtWq2MtzXej20bHR49F
+         XC5/Ay3EwRwXmjsiYFQEa/n0JiwBaBcq1bqOaS03YiQLBmRJ1bBsJxPq6BuVGOBtDOiF
+         BCBA==
+X-Gm-Message-State: ANoB5pkocWtEtaA3/WnUY70PtuyUxykZIrPy8hHGsLnov/upoMYSDdpE
+        li4+pZHlfVYTwAKmaqvGk2MOtJut6oA=
+X-Google-Smtp-Source: AA0mqf5diJCT17BnJvoYPnuCPXbLNOWfhI+btTr1+tmXTumar6BFC9seq0Cix3EVbaz6BKBHk04sxA==
+X-Received: by 2002:a17:90a:6be6:b0:219:34cb:476c with SMTP id w93-20020a17090a6be600b0021934cb476cmr46122823pjj.9.1671481063752;
+        Mon, 19 Dec 2022 12:17:43 -0800 (PST)
 Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:ff0:735a:2805:e706:5164])
-        by smtp.gmail.com with ESMTPSA id f10-20020a17090ace0a00b00219220edf0dsm6324260pju.48.2022.12.19.12.17.40
+        by smtp.gmail.com with ESMTPSA id f10-20020a17090ace0a00b00219220edf0dsm6324260pju.48.2022.12.19.12.17.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Dec 2022 12:17:41 -0800 (PST)
+        Mon, 19 Dec 2022 12:17:43 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
         Blake Jones <blakejones@google.com>, bpf@vger.kernel.org
-Subject: [PATCH 4/6] perf lock contention: Add -L/--lock-filter option
-Date:   Mon, 19 Dec 2022 12:17:30 -0800
-Message-Id: <20221219201732.460111-5-namhyung@kernel.org>
+Subject: [PATCH 5/6] perf lock contention: Support lock addr/name filtering for BPF
+Date:   Mon, 19 Dec 2022 12:17:31 -0800
+Message-Id: <20221219201732.460111-6-namhyung@kernel.org>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
 In-Reply-To: <20221219201732.460111-1-namhyung@kernel.org>
 References: <20221219201732.460111-1-namhyung@kernel.org>
@@ -78,268 +78,137 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The -L/--lock-filter option is to filter only given locks.  The locks
-can be specified by address or name (if exists).
+Likewise, add addr_filter BPF hash map and check it with the lock
+address.
 
-  $ sudo ./perf lock record -a  sleep 1
+  $ sudo ./perf lock con -ab -L tasklist_lock -- ./perf bench sched messaging
+  # Running 'sched/messaging' benchmark:
+  # 20 sender and receiver processes per group
+  # 10 groups == 400 processes run
 
-  $ sudo ./perf lock con -l
-   contended   total wait     max wait     avg wait            address   symbol
-
-          57      1.11 ms     42.83 us     19.54 us   ffff9f4140059000
-          15    280.88 us     23.51 us     18.73 us   ffffffff9d007a40   jiffies_lock
-           1     20.49 us     20.49 us     20.49 us   ffffffff9d0d50c0   rcu_state
-           1      9.02 us      9.02 us      9.02 us   ffff9f41759e9ba0
-
-  $ sudo ./perf lock con -L jiffies_lock,rcu_state
+       Total time: 0.169 [sec]
    contended   total wait     max wait     avg wait         type   caller
 
-          15    280.88 us     23.51 us     18.73 us     spinlock   tick_sched_do_timer+0x93
-           1     20.49 us     20.49 us     20.49 us     spinlock   __softirqentry_text_start+0xeb
-
-  $ sudo ./perf lock con -L ffff9f4140059000
-   contended   total wait     max wait     avg wait         type   caller
-
-          38    779.40 us     42.83 us     20.51 us     spinlock   worker_thread+0x50
-          11    216.30 us     39.87 us     19.66 us     spinlock   queue_work_on+0x39
-           8    118.13 us     20.51 us     14.77 us     spinlock   kthread+0xe5
+          18    174.09 us     25.31 us      9.67 us     rwlock:W   do_exit+0x36d
+           5     32.34 us     10.87 us      6.47 us     rwlock:R   do_wait+0x8b
+           4     15.41 us      4.73 us      3.85 us     rwlock:W   release_task+0x6e
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/Documentation/perf-lock.txt |   4 +
- tools/perf/builtin-lock.c              | 140 +++++++++++++++++++++++--
- tools/perf/util/lock-contention.h      |   4 +
- 3 files changed, 142 insertions(+), 6 deletions(-)
+ tools/perf/util/bpf_lock_contention.c         | 42 ++++++++++++++++++-
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 17 ++++++++
+ 2 files changed, 58 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
-index dea04ad5c28e..0f9f720e599d 100644
---- a/tools/perf/Documentation/perf-lock.txt
-+++ b/tools/perf/Documentation/perf-lock.txt
-@@ -183,6 +183,10 @@ CONTENTION OPTIONS
- 	Note that RW-variant of locks have :R and :W suffix.  Names without the
- 	suffix are shortcuts for the both variants.  Ex) rwsem = rwsem:R + rwsem:W.
+diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+index b8590b82ad3d..4a95c0ebcb3c 100644
+--- a/tools/perf/util/bpf_lock_contention.c
++++ b/tools/perf/util/bpf_lock_contention.c
+@@ -20,7 +20,7 @@ static struct lock_contention_bpf *skel;
+ int lock_contention_prepare(struct lock_contention *con)
+ {
+ 	int i, fd;
+-	int ncpus = 1, ntasks = 1, ntypes = 1;
++	int ncpus = 1, ntasks = 1, ntypes = 1, naddrs = 1;
+ 	struct evlist *evlist = con->evlist;
+ 	struct target *target = con->target;
  
-+-L::
-+--lock-filter=<value>::
-+	Show lock contention only for given lock addresses or names (comma separated list).
-+
+@@ -49,9 +49,39 @@ int lock_contention_prepare(struct lock_contention *con)
+ 	if (con->filters->nr_types)
+ 		ntypes = con->filters->nr_types;
  
- SEE ALSO
- --------
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index e4e785d3b4ec..6b8ea2f0b90a 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -32,6 +32,7 @@
- #include <semaphore.h>
- #include <math.h>
- #include <limits.h>
-+#include <ctype.h>
- 
- #include <linux/list.h>
- #include <linux/hash.h>
-@@ -995,24 +996,52 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
- 	unsigned int flags = evsel__intval(evsel, sample, "flags");
- 	u64 key;
- 	int i, ret;
-+	static bool kmap_loaded;
-+	struct machine *machine = &session->machines.host;
-+	struct map *kmap;
-+	struct symbol *sym;
- 
- 	ret = get_key_by_aggr_mode(&key, addr, evsel, sample);
- 	if (ret < 0)
- 		return ret;
- 
-+	if (!kmap_loaded) {
++	/* resolve lock name filters to addr */
++	if (con->filters->nr_syms) {
++		struct symbol *sym;
++		struct map *kmap;
 +		unsigned long *addrs;
 +
-+		/* make sure it loads the kernel map to find lock symbols */
-+		map__load(machine__kernel_map(machine));
-+		kmap_loaded = true;
-+
-+		/* convert (kernel) symbols to addresses */
-+		for (i = 0; i < filters.nr_syms; i++) {
-+			sym = machine__find_kernel_symbol_by_name(machine,
-+								  filters.syms[i],
++		for (i = 0; i < con->filters->nr_syms; i++) {
++			sym = machine__find_kernel_symbol_by_name(con->machine,
++								  con->filters->syms[i],
 +								  &kmap);
 +			if (sym == NULL) {
 +				pr_warning("ignore unknown symbol: %s\n",
-+					   filters.syms[i]);
++					   con->filters->syms[i]);
 +				continue;
 +			}
 +
-+			addrs = realloc(filters.addrs,
-+					(filters.nr_addrs + 1) * sizeof(*addrs));
++			addrs = realloc(con->filters->addrs,
++					(con->filters->nr_addrs + 1) * sizeof(*addrs));
 +			if (addrs == NULL) {
 +				pr_warning("memory allocation failure\n");
-+				return -ENOMEM;
++				continue;
 +			}
 +
-+			addrs[filters.nr_addrs++] = kmap->unmap_ip(kmap, sym->start);
-+			filters.addrs = addrs;
++			addrs[con->filters->nr_addrs++] = kmap->unmap_ip(kmap, sym->start);
++			con->filters->addrs = addrs;
 +		}
++		naddrs = con->filters->nr_addrs;
 +	}
 +
- 	ls = lock_stat_find(key);
- 	if (!ls) {
- 		char buf[128];
- 		const char *name = "";
--		struct machine *machine = &session->machines.host;
--		struct map *kmap;
--		struct symbol *sym;
+ 	bpf_map__set_max_entries(skel->maps.cpu_filter, ncpus);
+ 	bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
+ 	bpf_map__set_max_entries(skel->maps.type_filter, ntypes);
++	bpf_map__set_max_entries(skel->maps.addr_filter, naddrs);
  
- 		switch (aggr_mode) {
- 		case LOCK_AGGR_ADDR:
--			/* make sure it loads the kernel map to find lock symbols */
--			map__load(machine__kernel_map(machine));
--
- 			sym = machine__find_kernel_symbol(machine, key, &kmap);
- 			if (sym)
- 				name = sym->name;
-@@ -1052,6 +1081,20 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
+ 	if (lock_contention_bpf__load(skel) < 0) {
+ 		pr_err("Failed to load lock-contention BPF skeleton\n");
+@@ -103,6 +133,16 @@ int lock_contention_prepare(struct lock_contention *con)
+ 			bpf_map_update_elem(fd, &con->filters->types[i], &val, BPF_ANY);
+ 	}
+ 
++	if (con->filters->nr_addrs) {
++		u8 val = 1;
++
++		skel->bss->has_addr = 1;
++		fd = bpf_map__fd(skel->maps.addr_filter);
++
++		for (i = 0; i < con->filters->nr_addrs; i++)
++			bpf_map_update_elem(fd, &con->filters->addrs[i], &val, BPF_ANY);
++	}
++
+ 	/* these don't work well if in the rodata section */
+ 	skel->bss->stack_skip = con->stack_skip;
+ 	skel->bss->aggr_mode = con->aggr_mode;
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index fb0128de7c00..ad0ca5d50557 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -69,11 +69,19 @@ struct {
+ 	__uint(max_entries, 1);
+ } type_filter SEC(".maps");
+ 
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(key_size, sizeof(__u64));
++	__uint(value_size, sizeof(__u8));
++	__uint(max_entries, 1);
++} addr_filter SEC(".maps");
++
+ /* control flags */
+ int enabled;
+ int has_cpu;
+ int has_task;
+ int has_type;
++int has_addr;
+ int stack_skip;
+ 
+ /* determine the key of lock stat */
+@@ -111,6 +119,15 @@ static inline int can_record(u64 *ctx)
  			return 0;
  	}
  
-+	if (filters.nr_addrs) {
-+		bool found = false;
++	if (has_addr) {
++		__u8 *ok;
++		__u64 addr = ctx[0];
 +
-+		for (i = 0; i < filters.nr_addrs; i++) {
-+			if (addr == filters.addrs[i]) {
-+				found = true;
-+				break;
-+			}
-+		}
-+
-+		if (!found)
++		ok = bpf_map_lookup_elem(&addr_filter, &addr);
++		if (!ok)
 +			return 0;
 +	}
 +
- 	ts = thread_stat_findnew(sample->tid);
- 	if (!ts)
- 		return -ENOMEM;
-@@ -1496,6 +1539,15 @@ static void lock_filter_finish(void)
- {
- 	zfree(&filters.types);
- 	filters.nr_types = 0;
-+
-+	zfree(&filters.addrs);
-+	filters.nr_addrs = 0;
-+
-+	for (int i = 0; i < filters.nr_syms; i++)
-+		free(filters.syms[i]);
-+
-+	zfree(&filters.syms);
-+	filters.nr_syms = 0;
+ 	return 1;
  }
  
- static void sort_contention_result(void)
-@@ -1995,6 +2047,80 @@ static int parse_lock_type(const struct option *opt __maybe_unused, const char *
- 	return ret;
- }
- 
-+static bool add_lock_addr(unsigned long addr)
-+{
-+	unsigned long *tmp;
-+
-+	tmp = realloc(filters.addrs, (filters.nr_addrs + 1) * sizeof(*filters.addrs));
-+	if (tmp == NULL) {
-+		pr_err("Memory allocation failure\n");
-+		return false;
-+	}
-+
-+	tmp[filters.nr_addrs++] = addr;
-+	filters.addrs = tmp;
-+	return true;
-+}
-+
-+static bool add_lock_sym(char *name)
-+{
-+	char **tmp;
-+	char *sym = strdup(name);
-+
-+	if (sym == NULL) {
-+		pr_err("Memory allocation failure\n");
-+		return false;
-+	}
-+
-+	tmp = realloc(filters.syms, (filters.nr_syms + 1) * sizeof(*filters.syms));
-+	if (tmp == NULL) {
-+		pr_err("Memory allocation failure\n");
-+		free(sym);
-+		return false;
-+	}
-+
-+	tmp[filters.nr_syms++] = sym;
-+	filters.syms = tmp;
-+	return true;
-+}
-+
-+static int parse_lock_addr(const struct option *opt __maybe_unused, const char *str,
-+			   int unset __maybe_unused)
-+{
-+	char *s, *tmp, *tok;
-+	int ret = 0;
-+	u64 addr;
-+
-+	s = strdup(str);
-+	if (s == NULL)
-+		return -1;
-+
-+	for (tok = strtok_r(s, ", ", &tmp); tok; tok = strtok_r(NULL, ", ", &tmp)) {
-+		char *end;
-+
-+		addr = strtoul(tok, &end, 16);
-+		if (*end == '\0') {
-+			if (!add_lock_addr(addr)) {
-+				ret = -1;
-+				break;
-+			}
-+			continue;
-+		}
-+
-+		/*
-+		 * At this moment, we don't have kernel symbols.  Save the symbols
-+		 * in a separate list and resolve them to addresses later.
-+		 */
-+		if (!add_lock_sym(tok)) {
-+			ret = -1;
-+			break;
-+		}
-+	}
-+
-+	free(s);
-+	return ret;
-+}
-+
- int cmd_lock(int argc, const char **argv)
- {
- 	const struct option lock_options[] = {
-@@ -2060,6 +2186,8 @@ int cmd_lock(int argc, const char **argv)
- 	OPT_BOOLEAN('l', "lock-addr", &show_lock_addrs, "show lock stats by address"),
- 	OPT_CALLBACK('Y', "type-filter", NULL, "FLAGS",
- 		     "Filter specific type of locks", parse_lock_type),
-+	OPT_CALLBACK('L', "lock-filter", NULL, "ADDRS/NAMES",
-+		     "Filter specific address/symbol of locks", parse_lock_addr),
- 	OPT_PARENT(lock_options)
- 	};
- 
-diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-index dc621386a16b..b99e83fccf5c 100644
---- a/tools/perf/util/lock-contention.h
-+++ b/tools/perf/util/lock-contention.h
-@@ -7,7 +7,11 @@
- 
- struct lock_filter {
- 	int			nr_types;
-+	int			nr_addrs;
-+	int			nr_syms;
- 	unsigned int		*types;
-+	unsigned long		*addrs;
-+	char			**syms;
- };
- 
- struct lock_stat {
 -- 
 2.39.0.314.g84b9a713c41-goog
 
