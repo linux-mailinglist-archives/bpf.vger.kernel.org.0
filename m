@@ -2,100 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E90036514D8
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 22:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE9C6514F6
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 22:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbiLSV0Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 16:26:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
+        id S231860AbiLSVdl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 16:33:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbiLSV0X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 16:26:23 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393AF643F
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 13:26:22 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id r26so14778326edc.10
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 13:26:22 -0800 (PST)
+        with ESMTP id S231702AbiLSVdk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 16:33:40 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37B1F029
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 13:33:38 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id k21-20020aa78215000000b00575ab46ca2cso5670702pfi.20
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 13:33:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=GCXGJJNKGTWuXb6V003J6pOwCnEMsetkiLzAhdYVzW0=;
-        b=LtAF2xSDlToVTnXEy9LEzSpz+GkrYgPLsAQGgze39udobM+kGKBCX3CEY+1EgLEUTC
-         Uc/EiqqgUe5lUCzrKnoJ5S0ecwbhlLTI5MCUwc07oww71PWzfmlqFSiVc99ZwROvEqcb
-         qrngqVlRC93l9usMvokx/fLao5HYoVBNnE9Jw=
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bpSyaw7IzzUwQ80GRIZq630SjWs043p2tlSn9Ge42Ig=;
+        b=DhKrhwDhNxRtLQ4hD30ALjUurCc9f4RCZdls/fWZbnDkFGV2oPx4TdKcSwMlQzk3ie
+         A7I9+3NMTLXU8+212DBa1vNyer4MFCX0jZTcRyy4J+tyFISFRojS0FyvlGug4OkYuC9A
+         1+UZjithsMA150YT1fPGa9QahyU5h+XnRdZeLNEbw87WRYSBko7IVmUVxr/Oy2p5gWjh
+         qovD/lWHY8atDnwTtnZ7FzcssbP2IOIZ9n0RpJ/lJOC6nLG80TULDg5f6WO7KUsw2fBT
+         oGRQ7fxsCGKxCHrH13F1IIhB1x/ijKqOPM+WUJYfD7kTXGImxHm0vEQzdJYHUI0WPaqH
+         j8+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GCXGJJNKGTWuXb6V003J6pOwCnEMsetkiLzAhdYVzW0=;
-        b=O03EW9bYdJMhEJk2LAaGYZhyIpdjqOWezSBXZtBeE1+pntuIhO4WQ4JC7EFjmDbx+F
-         +e84cAL3gtI4Pg/W4gz26Dvckf/qmKVrcKU7ZltTnp0LA9kY90KW/hiSPwea7WAYd4mV
-         04dmGSZ2mJOVqquKdIQd/0mDLNz/lehlLrOx6xcLtm/bSyX55GJVR7dytxNOKN20y21R
-         jUghmdIBvyD/sK3T5BvnhBTHOdpfg+6VADgQYUsJQqawjyA710nJcG/3NrMIN0YT/rTX
-         D3Il3Kb5jJrKNkHJxJ/O95Rr2EQUQaz9bO4zDUCCJs00Q61S49ChmzxkZ9LJKcV93MHh
-         LNPg==
-X-Gm-Message-State: AFqh2kofkjvK28o5kL+UQNg/gVdYVC0EyUvVLehs4conjKL1D3+qI+0Y
-        QoOf1yln3fn6I3K4Gn7azvMefA==
-X-Google-Smtp-Source: AMrXdXsVsa+mINTX9SXwUHvirH1jBMYbU+7Ik/+LmiyZ7seBhwCX7NH3K7CK/dkVCf6frMzTTiFYOQ==
-X-Received: by 2002:a05:6402:25c7:b0:461:c5b4:a7d0 with SMTP id x7-20020a05640225c700b00461c5b4a7d0mr5967924edb.24.1671485180824;
-        Mon, 19 Dec 2022 13:26:20 -0800 (PST)
-Received: from cloudflare.com (79.184.201.14.ipv4.supernova.orange.pl. [79.184.201.14])
-        by smtp.gmail.com with ESMTPSA id v8-20020a056402184800b0047021294426sm4801729edy.90.2022.12.19.13.26.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Dec 2022 13:26:20 -0800 (PST)
-References: <20221218051734.31411-1-cehrig@cloudflare.com>
- <20221218051734.31411-2-cehrig@cloudflare.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Christian Ehrig <cehrig@cloudflare.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kui-Feng Lee <kuifeng@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Kaixi Fan <fankaixi.li@bytedance.com>,
-        Paul Chaignon <paul@isovalent.com>,
-        Shmulik Ladkani <shmulik@metanetworks.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add BPF_F_NO_TUNNEL_KEY test
-Date:   Mon, 19 Dec 2022 22:26:02 +0100
-In-reply-to: <20221218051734.31411-2-cehrig@cloudflare.com>
-Message-ID: <87a63jjdac.fsf@cloudflare.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bpSyaw7IzzUwQ80GRIZq630SjWs043p2tlSn9Ge42Ig=;
+        b=maiyPcG34oHteFl6z47NaIoTpszmPkY9tGT/TYbiI2N4YivLrKG7fK5Tdadaa1Pdn0
+         6mdaUXY5qlA5He3X2/AnSKD3NKY1F0WVqqLePxY/lQaNhoosDWVqvoWkykYw+02qgIyI
+         iFBlh9xLI/zMRIj23SveplHMxMQRn8Y8ui+N6ctnCK6G/g4qwo4FkZFoFy0y1QMjNMN4
+         7le/laiRSabIANvuLiMxuR/OmB845PQDsBmD0QKQIkoVty0jD7Prok6W0hU15NkVZbiY
+         u7XDyjgMQZg2TTp2aIPo6DQrfXM4Hwm8z4SuRYYXFhS831WbJaot2tJAM/W275aCypiE
+         YocQ==
+X-Gm-Message-State: ANoB5pnFLYlXPSRlJwrrqKQx50S62fBjOCm98v/nsLJINnaxcbBvgvri
+        tglYMrp1v1wlDoMkcg8X/ix0s8k=
+X-Google-Smtp-Source: AA0mqf6b+8RXnM1FmTTmyMFRRumZB4F9hR7A5n1+1yLtRhrbiaNTaN+QV0AdHzB523/1wMCm59zoDpc=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:aa7:85cb:0:b0:575:871f:2e7a with SMTP id
+ z11-20020aa785cb000000b00575871f2e7amr5047278pfn.35.1671485618298; Mon, 19
+ Dec 2022 13:33:38 -0800 (PST)
+Date:   Mon, 19 Dec 2022 13:33:36 -0800
+In-Reply-To: <00000000000051b79a05f033b6e5@google.com>
+Mime-Version: 1.0
+References: <Y6C8iQGENUk/XY/A@google.com> <00000000000051b79a05f033b6e5@google.com>
+Message-ID: <Y6DYsN+G3mdKP/Bb@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in put_pmu_ctx
+From:   sdf@google.com
+To:     syzbot <syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com>
+Cc:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        bpf@vger.kernel.org, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Dec 18, 2022 at 06:17 AM +01, Christian Ehrig wrote:
-> This patch adds a selftest simulating a GRE sender and receiver using
-> tunnel headers without tunnel keys. It validates if packets encapsulated
-> using BPF_F_NO_TUNNEL_KEY are decapsulated by a GRE receiver not
-> configured with tunnel keys.
->
-> Signed-off-by: Christian Ehrig <cehrig@cloudflare.com>
-> ---
+On 12/19, syzbot wrote:
+> Hello,
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+> syzbot tried to test the proposed patch but the build/boot failed:
+
+> failed to apply patch:
+> checking file kernel/events/core.c
+> patch: **** unexpected end of file in patch
+
+
+
+> Tested on:
+
+> commit:         13e3c779 Merge tag 'for-netdev' of https://git.kernel...
+> git tree:        
+> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
+> dashboard link:  
+> https://syzkaller.appspot.com/bug?extid=b8e8c01c8ade4fe6e48f
+> compiler:
+> patch:           
+> https://syzkaller.appspot.com/x/patch.diff?x=15861a9f880000
+
+
+Let's try again with hopefully a better formatted patch..
+
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git  
+13e3c7793e2f
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index e47914ac8732..bbff551783e1 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -12689,7 +12689,8 @@ SYSCALL_DEFINE5(perf_event_open,
+  	return event_fd;
+
+  err_context:
+-	/* event->pmu_ctx freed by free_event() */
++	put_pmu_ctx(event->pmu_ctx);
++	event->pmu_ctx = NULL; /* _free_event() */
+  err_locked:
+  	mutex_unlock(&ctx->mutex);
+  	perf_unpin_context(ctx);
