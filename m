@@ -2,144 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BD865112D
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 18:23:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B7165115A
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 18:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbiLSRXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 12:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
+        id S230091AbiLSRuh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 12:50:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbiLSRXl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 12:23:41 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1525C1B
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 09:23:39 -0800 (PST)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BJH3xOp024515;
-        Mon, 19 Dec 2022 17:23:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : references : date : in-reply-to : message-id : content-type :
- mime-version; s=corp-2022-7-12;
- bh=lA3Kr5kSI0Abd5guCMpaAkg+T/mBc0yu0qegDvKaZk8=;
- b=uhJTgqGZgUp9zD+LEgWwF8SIYPpy4m7pzFbl0HqMvq7hGjZ1JjytCKtdcCpTHLrz+3c4
- gJChjrp+4R8jmrGNEdPphDe7djwHQkgHJe47c4cNoqB9vLKljNg6s/Lmkkd+nhVxnmk1
- Z500FyPiw7xFuCF1UKp+e+nN8GdIr45OXTadmqg9KYrxULZCfQO8xkf1qXy2MN9y8uHD
- uk7zBVNuOZOdYtUUTvr98wU8q3F/ayCxly3wJLBwTRVLUxyxINNZAN3S3/YgPguJsKSi
- /JdWWy09cXdqP6s1bB10gTutuoMgRl8hfM+V3V64Xt08I7m4Zduec61eand3qoimGDDG Sw== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3mh6tsufd0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Dec 2022 17:23:32 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2BJG16FZ010924;
-        Mon, 19 Dec 2022 17:23:32 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3mh47a3pns-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Dec 2022 17:23:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bq0NrczDdXUxotCPqzgxc4KVhBk6n9B8wBBbbRnFk0AvO8si2xt1P7z9iz6O0o26tS9lw/p5nYmeNFtsb6jFqrQKH5AfLJQtmGx6nyfVHAIbGgXj+xCwuFRmVyZiiIooLCpQSqeDlF2lgVfxuvRVITO9ICH4yNgxohVJrZIiBza87RE05VZqDk5+5HJ6M7mlMx98CATDgcc4Ip4qQ6zzyre0OEveWT3PHsOqgCXqpUih0bAXuIjmn74R3PPbg5NeqhrD9hqiUs1vRRgWMU0Ja3gdvBBx7FWqr3kfw/Jc2TGM/E0L0/moAx4z3ExTaVHrgEvLOCBn8u9b0nsGe91RTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lA3Kr5kSI0Abd5guCMpaAkg+T/mBc0yu0qegDvKaZk8=;
- b=ESLNIMXj7jy30jqR+W/NZ0ZZtMSiM6v6tYZ3PaZvGl9UHI3B2BTxXlFuwAqyEiJu3oFq2zns7nkYnOjomi6n1kuPcr8qoLgfXFMBC1p6YuqzptAhW/fotSAf109i3xPphlUbV40c78DQS/CUtTDynClS3R/ioYHuTNSffo1oIqJ05+bUmyPD+cf+4wrpgRj9fmHGfs2JM8tTxsGmg2/zAO5kZF6wFdynSR7+WfXY4qJsDXjBZmwqngdaO5rv5tMOCO30Uw9q006MARXFXgtRfbvMp4XRtg1vkuHndY6pf+wkIbi+rWOla7o5OiKidyCSMTfXMBO/WF0qDHlyzovCDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S229564AbiLSRug (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 12:50:36 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EA2FAD3;
+        Mon, 19 Dec 2022 09:50:34 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id k22-20020a05600c1c9600b003d1ee3a6289so7060392wms.2;
+        Mon, 19 Dec 2022 09:50:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lA3Kr5kSI0Abd5guCMpaAkg+T/mBc0yu0qegDvKaZk8=;
- b=ZNLY1QWKm1IFQ1j7Oxwc7ZPA/CHt3HCTBU8IqHDLOoXO5kxuMYSlurOBnosvpJ9EI2EgHwJZdFVbdEjYQt1QREYDjFT7Eob32p4khxNHs9ufe0qbzxMoiuZVoD9EsotaIV0tr9D9p4juLhpqiigSZgTWZUz7jDwyvlrsd0o0HEg=
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
- by PH0PR10MB4501.namprd10.prod.outlook.com (2603:10b6:510:43::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.16; Mon, 19 Dec
- 2022 17:23:30 +0000
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::ebe9:b7c9:82ae:d256]) by BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::ebe9:b7c9:82ae:d256%7]) with mapi id 15.20.5924.016; Mon, 19 Dec 2022
- 17:23:30 +0000
-From:   "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To:     Yonghong Song <yhs@meta.com>
-Cc:     bpf@vger.kernel.org, david.faust@oracle.com,
-        elena.zannoni@oracle.com, David Malcolm <dmalcolm@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: Follow up from the btf_type_tag discussion in the BPF office hours
-References: <87o7s4ece1.fsf@oracle.com>
-        <757e5dde-75ed-80e2-9a34-ff7c2259de78@meta.com>
-Date:   Mon, 19 Dec 2022 18:27:32 +0100
-In-Reply-To: <757e5dde-75ed-80e2-9a34-ff7c2259de78@meta.com> (Yonghong Song's
-        message of "Fri, 16 Dec 2022 17:38:50 -0800")
-Message-ID: <87h6xrfgmz.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0561.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:33b::10) To BYAPR10MB2888.namprd10.prod.outlook.com
- (2603:10b6:a03:88::32)
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/B7gkzEOEryB52AsLQOlC7U/7aoouPr03YHCUavnNQ8=;
+        b=bfoHtIDEPOwPnUZVEPgM54bB1sAk3v/faLtzbE8oyODpKn3RpCL93vFhrqZjDUlo+I
+         bOIu1Pw4k4BhTBGo7VyXwaRNawg80KeX18WWRC9pdg3sLhces22GTCOnoM8x5zFr5x+z
+         MuoqmpBpXPTRKe998wgwsv36Kw1dfgQ90vHFwc3/PTbJQFwlsUE6WbHFiIBbqhHIGm5s
+         50p6Yt6RVF+CQh7LoBev2cnGmhUhBD72fhnYu9yDSrE2i+aRRZwLZl0yI44wTntLJLwE
+         9uAmxG3FF29/qtGKVDbedZVCMs6xMIuMWhZ5H8LNovjEBzwsi4rWWkj1gCxbJ125acoo
+         FWmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/B7gkzEOEryB52AsLQOlC7U/7aoouPr03YHCUavnNQ8=;
+        b=QGw4uX3yGg7OThtI0vwXIcL9aOpPmrwMEqyQcCIfZ5A0edxv4dPSHyMciSdf+PkxfJ
+         cbq2ZuYiBN0zlkG1nN3Al7S1+16xXSRQZ49OoQNBFJIZm50n8j1MY3+jo5JpW6h6NHVn
+         F2z/2d5Em0zhyijP6m8XOezx3Fkp1trpbiH3WeKUL3lka5R2jEBUnxVKjlGjeoQQteyH
+         cmxc3Ln9ZmJcDJcDCleieceJ3xyCk7x4NsfQzD3cv7xcBHIN7Q4ofqLW5MGMyuxiLu6X
+         DVLyfVU/V9JDThrMxv8ABNgVo7jthYhIdf5zBdvtxywfB6re21KaZWy6EgGnYVktSMNH
+         /8Xg==
+X-Gm-Message-State: ANoB5pn8UQOF5PJGrsfhEhU0ijKBu8LiUsTJD/TMHWJseKekTQdYsB9g
+        LtbebB4LC9oxvHE4Kjgtg+U=
+X-Google-Smtp-Source: AA0mqf6TzAcVwbpOnYPqXAcd6O9vko8QeVZ7rfmF+msO+tHvYRmLfN/IzqChwOz3nDsz47BgST2/Ng==
+X-Received: by 2002:a05:600c:1da7:b0:3d2:2b70:f2fd with SMTP id p39-20020a05600c1da700b003d22b70f2fdmr21247827wms.21.1671472232216;
+        Mon, 19 Dec 2022 09:50:32 -0800 (PST)
+Received: from suse.localnet (host-95-251-45-63.retail.telecomitalia.it. [95.251.45.63])
+        by smtp.gmail.com with ESMTPSA id a1-20020a05600c348100b003c7087f6c9asm20150565wmq.32.2022.12.19.09.50.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Dec 2022 09:50:31 -0800 (PST)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Evgeniy Dushistov <dushistov@mail.ru>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] fs/ufs: Replace kmap() with kmap_local_page()
+Date:   Mon, 19 Dec 2022 18:50:30 +0100
+Message-ID: <1788562.8hzESeGDPO@suse>
+In-Reply-To: <20221217184749.968-4-fmdefrancesco@gmail.com>
+References: <20221217184749.968-1-fmdefrancesco@gmail.com>
+ <20221217184749.968-4-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2888:EE_|PH0PR10MB4501:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8f836d5-b42c-45be-91fd-08dae1e5bf23
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vHYsDJuV+zFbZJqLlRsel5tloFkGVmski79hFrkPIBgZolDSpLRBPsUHNCzBwRO0OWABvfucjuVbaBSClP4nm2R2shuirbmna56Oy0VROKK5AfTOXvQcmnfUJGGAH3PwxLagApbh1cpUeAiUVsrvhpXjCiLYCIbjvvZFcpYrsveYlUZgWV4fYo7JXofivWsxyZZue5n7ualh67nJAf/mYO4+3rg3wtnkofAZRb9BGmvQZ8CR+OUOsIwdHHbJ8AT195CPYNjsAk/OAdnWe7/v9a4oWUBaT9+/dNNMBORWti3CQXFRowfP2mhvTFE6r/CzMpW2ke1uYV8Fvf1MBt1slD1r4NgeNZ9VqUD840B1lONck8k0Hi0C97UMxmkV+ekKidVt7jNRUya6vTiv6dDOjhi45/S5Sh97+1k6CK3KetBTNRo8gYLRBKbCCdYohO0nR9razcDdNqxZe4uyiXufsR95EIE3qMhj68LL1muUHs+3gFOc8q8UAyvLxJ7A/hzveoItrzSNEziJc7G7PJuhmccwCckYLyqNG1oxpsz+YJQq7bZmJOoGGSnAhv3lF9sL5Zy7lEuTF6Ru3qjH3kvGmkff5L/r3X1L64zFd93yTUarzo5rEi3yVur+GASp0ZqaREfsRpj/BuXmmp9MgiE31A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2888.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(39860400002)(376002)(366004)(136003)(396003)(451199015)(2616005)(83380400001)(38100700002)(86362001)(66899015)(66556008)(66476007)(66946007)(4326008)(5660300002)(41300700001)(6506007)(8936002)(26005)(53546011)(6512007)(8676002)(2906002)(316002)(36756003)(54906003)(6916009)(186003)(478600001)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lqigAcLyuBjZ5tV171xEz409hLnbZ24eqQobEkCCjK0pqcwAJY7aO/7Oz6Ms?=
- =?us-ascii?Q?YhzR0k9oLB1AA7iaLm3e9kLfijMDnnrk0MOvdPEdTz89ZwJjwHXyPL/V9rU1?=
- =?us-ascii?Q?PbqGO01ecDR89EbOgtWGS1hiouFOOT514CmWzOwRPJ3LiKqBZiwLv3/NTOBH?=
- =?us-ascii?Q?ucjl0UvBw/oP+tVHozZOWD006SnKPThuIK/306B1l99hDNPbg9yFQCxQ1VBQ?=
- =?us-ascii?Q?OT9WoNHkKdrxPRhXoEf8v8v60TnaseFBitmkOJnjKuqrSGHQAnFKXHis4jUE?=
- =?us-ascii?Q?CjRVTgdlhJpHX6cG97+pzTlIRmJz1PD+g6SHaGd5vii4xCU3pSNZaJHmWLdl?=
- =?us-ascii?Q?E0rOgoYsL97kpJThnS8xWE7h0llV8oFRWNPCzuBbStdOXV0yXKgJ0i1YKpH1?=
- =?us-ascii?Q?b80Svn9J7sMn8VWju7llzuAQDB3+jAOzUpoJTYhY3G3HcYrylyZT+2w5eE9/?=
- =?us-ascii?Q?6vRLsCom8XWG7HG9QZhs9vUCVFfNhLfuaZUN1DTlRkvME7zEDZhsIiF5yZ3F?=
- =?us-ascii?Q?25wp6EfR1S1gB9EGdNHs27C1U2ycI49pBGkE8pfAtuPbFLpzo2J676bp1Drr?=
- =?us-ascii?Q?vno1K1GApCo70YdnnyUjaTvg0x+c4fAXzwRgP4/uW2gdK+9DJcmvplwvcI6i?=
- =?us-ascii?Q?IzcVKes7VCsc4Iqej8un3FTGyRD5At283B6nwoZ75UJgTlP9zcfoutdwzHP7?=
- =?us-ascii?Q?lcMqFcDPqAFjlxtStLgVcZqz2rN1Ca4vhscwA6euPafxZQ9a0zkhkig197Bj?=
- =?us-ascii?Q?vPMbeiz11hbHrz3YEDLP33zfYmo5bpidmkppsH8AkdonYJ4Ge9RoEYaR4Xt6?=
- =?us-ascii?Q?6zmopwSscmWUG5NqzMO/X+BLyfVj7cJFNMmQxpFnw+ja1iTbSkEHKjGj86x6?=
- =?us-ascii?Q?RTCShRMLN2G2VvnibKJ/THdcLq90ryWqI4XLq/QP8zsNhjy48pWrsqdkMcEF?=
- =?us-ascii?Q?V8nRXjOgvnSrKrL00f6QtILAYp5a79CZ9n0bFZMHmkuesK1BdJugIAIFfM2P?=
- =?us-ascii?Q?gd+caUh6pPNwg0b+sI5inf/uJbcEDfOKtLNGqvnYFuYoKs+wLPHmO6hFXnUe?=
- =?us-ascii?Q?+odHMted+vUibCBqxoVysLgZG1Ir5icOw1gQBLNCVlxXtzuC/FRKNWjA5Hxh?=
- =?us-ascii?Q?91eVhoTS9aEWJLgyNyJYF9U9E6Ug/8Uv3HjIAUZ+uPheEnnFRUfQ+Hje7vIY?=
- =?us-ascii?Q?205UTt98206GLXc54GL4Qe3ZrSCcAlpesNSna7QjDWjD5J8odQ7IufuxQJDH?=
- =?us-ascii?Q?fXXMwup6Xw9yPGpc193pfsZwjhlh+UAEdkoAPyFjq0zHg1Db6WZk58J/UgYN?=
- =?us-ascii?Q?lTl4nWNLPopCJKBblluFs3G8MSzkClNqdSca3PDv2HcR7hIUgDAeqPD/R94H?=
- =?us-ascii?Q?6X23hDAayt8FBulli74HaFXRg4YEyYPNVM1QY+EbbAAeGS72vXIqHkQsd/Ga?=
- =?us-ascii?Q?LuE2KhWRVnlDujhni6fm6Vfx/K5HQIKY5lX1nQLN0XiOpwwf+5lcb3EhrlLZ?=
- =?us-ascii?Q?5pED2bE5YJgFRIDP9+kNVduRyKPcxUVcghb+wBiYaAAdRGTS5eBaiq39YFy0?=
- =?us-ascii?Q?4ziPNY75ySb1DhfurCIG0xpg0kIMBDH08g5KeemYUAp1SPk4Y7xVXW5iT456?=
- =?us-ascii?Q?uQ=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8f836d5-b42c-45be-91fd-08dae1e5bf23
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2022 17:23:30.0323
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6Ot4srQfpcywoDhLdh0+Jm7QedWkEHY8b/afRu8sPm4DukAJ6Oli8D1YpxzFI/TtLjg3g+B8/90hwSkw7DVUbyDqLT/q5NV9NVExlqgBwG0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4501
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-19_01,2022-12-15_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 malwarescore=0 spamscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2212190154
-X-Proofpoint-ORIG-GUID: z3Hoe5GxgXlD4Rq8aQg00hTjL1FOrura
-X-Proofpoint-GUID: z3Hoe5GxgXlD4Rq8aQg00hTjL1FOrura
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -147,41 +73,291 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On sabato 17 dicembre 2022 19:47:49 CET Fabio M. De Francesco wrote:
+> kmap() is being deprecated in favor of kmap_local_page().
+>=20
+> There are two main problems with kmap(): (1) It comes with an overhead as
+> the mapping space is restricted and protected by a global lock for
+> synchronization and (2) it also requires global TLB invalidation when the
+> kmap=E2=80=99s pool wraps and it might block when the mapping space is fu=
+lly
+> utilized until a slot becomes available.
+>=20
+> With kmap_local_page() the mappings are per thread, CPU local, can take
+> page faults, and can be called from any context (including interrupts).
+> It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
+> the tasks can be preempted and, when they are scheduled to run again, the
+> kernel virtual addresses are restored and still valid.
+>=20
+> Since its use in fs/ufs is safe everywhere, it should be preferred.
+>=20
+> Therefore, replace kmap() with kmap_local_page() in fs/ufs. kunmap_local()
+> requires the mapping address, so return that address from ufs_get_page()
+> to be used in ufs_put_page().
+>=20
+> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> Suggested-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>  fs/ufs/dir.c | 75 ++++++++++++++++++++++++++++++++--------------------
+>  1 file changed, 46 insertions(+), 29 deletions(-)
+>=20
+> diff --git a/fs/ufs/dir.c b/fs/ufs/dir.c
+> index 9fa86614d2d1..a9dd5023b604 100644
+> --- a/fs/ufs/dir.c
+> +++ b/fs/ufs/dir.c
+> @@ -61,9 +61,9 @@ static int ufs_commit_chunk(struct page *page, loff_t p=
+os,
+> unsigned len) return err;
+>  }
+>=20
+> -static inline void ufs_put_page(struct page *page)
+> +static inline void ufs_put_page(struct page *page, void *page_addr)
+>  {
+> -	kunmap(page);
+> +	kunmap((void *)((unsigned long)page_addr & PAGE_MASK));
 
-Hi Yonghong.
+While working on patch 3/3 of a similar series for fs/sysv a few minutes ag=
+o,=20
+I noticed this call to kunmap() instead of kunmap_local().
 
-> On 12/15/22 10:43 AM, Jose E. Marchesi wrote:
->> Of the two problems discussed:
->> 1. DW_TAG_LLVM_annotation not being able to denote annotations to
->>     non-pointed based types.  clang currently ignores these instances.
->>     We discussed two possible options to deal with this:
->>     1.1 To continue ignoring these cases in the front-end, keep the dwarf
->>         expressiveness limitation, and document it.
->>     1.2 To change DW_TAG_LLVM_annotation so it behaves like a qualifier
->>         DIE (like const, volatile, etc.) so it can apply to any type.
->
-> Thanks for the detailed update. Yes, we do want to __tag behaving like
-> a qualifier.
->
-> Today clang only support 'base_type <type_tag> *' style of code.
-> But we are open to support non-pointer style of tagging like
-> 'base_type <type_tag> global_var'. Because of this, the following
-> dwarf output should be adopted:
->    C: int __tag1 * __tag2 * p;
->    dwarf: ptr -> __tag2 --> ptr -> __tag1 -> int
-> or
->    C: int __tag1 g;
->    dwarf: var_g -> __tag1 --> int
->
-> The above format *might* require particular dwarf tools to add support
-> for __tag attribute. But I think it is a good thing in the long run
-> esp. if we might add support to non-pointer types. In current
-> implementation, dwarf tools can simply ignore the children of ptr
-> which they may already do it.
+I will wait a day or two before sending the next version, to leave addition=
+al=20
+time for those who want to comment / review.
 
-I wonder, since these annotations are atomic, is there a reason for not
-using an attribute instead of a DIE tag?  Something like DW_AT_annotation.
+=46abio
 
-The attribute could then be used by any DIE (declaration, type, ...) and
-existing DWARF consumers that don't support the new attribute would
-happily just ignore it.
+>  	put_page(page);
+>  }
+>=20
+> @@ -76,7 +76,7 @@ ino_t ufs_inode_by_name(struct inode *dir, const struct=
+=20
+qstr
+> *qstr) de =3D ufs_find_entry(dir, qstr, &page);
+>  	if (de) {
+>  		res =3D fs32_to_cpu(dir->i_sb, de->d_ino);
+> -		ufs_put_page(page);
+> +		ufs_put_page(page, de);
+>  	}
+>  	return res;
+>  }
+> @@ -99,18 +99,17 @@ void ufs_set_link(struct inode *dir, struct=20
+ufs_dir_entry
+> *de, ufs_set_de_type(dir->i_sb, de, inode->i_mode);
+>=20
+>  	err =3D ufs_commit_chunk(page, pos, len);
+> -	ufs_put_page(page);
+> +	ufs_put_page(page, de);
+>  	if (update_times)
+>  		dir->i_mtime =3D dir->i_ctime =3D current_time(dir);
+>  	mark_inode_dirty(dir);
+>  }
+>=20
+>=20
+> -static bool ufs_check_page(struct page *page)
+> +static bool ufs_check_page(struct page *page, char *kaddr)
+>  {
+>  	struct inode *dir =3D page->mapping->host;
+>  	struct super_block *sb =3D dir->i_sb;
+> -	char *kaddr =3D page_address(page);
+>  	unsigned offs, rec_len;
+>  	unsigned limit =3D PAGE_SIZE;
+>  	const unsigned chunk_mask =3D UFS_SB(sb)->s_uspi->s_dirblksize - 1;
+> @@ -185,23 +184,32 @@ static bool ufs_check_page(struct page *page)
+>  	return false;
+>  }
+>=20
+> +/*
+> + * Calls to ufs_get_page()/ufs_put_page() must be nested according to the
+> + * rules documented in kmap_local_page()/kunmap_local().
+> + *
+> + * NOTE: ufs_find_entry() and ufs_dotdot() act as calls to ufs_get_page()
+> + * and must be treated accordingly for nesting purposes.
+> + */
+>  static void *ufs_get_page(struct inode *dir, unsigned long n, struct page
+> **p) {
+> +	char *kaddr;
+> +
+>  	struct address_space *mapping =3D dir->i_mapping;
+>  	struct page *page =3D read_mapping_page(mapping, n, NULL);
+>  	if (!IS_ERR(page)) {
+> -		kmap(page);
+> +		kaddr =3D kmap_local_page(page);
+>  		if (unlikely(!PageChecked(page))) {
+> -			if (!ufs_check_page(page))
+> +			if (!ufs_check_page(page, kaddr))
+>  				goto fail;
+>  		}
+>  		*p =3D page;
+> -		return page_address(page);
+> +		return kaddr;
+>  	}
+>  	return ERR_CAST(page);
+>=20
+>  fail:
+> -	ufs_put_page(page);
+> +	ufs_put_page(page, kaddr);
+>  	return ERR_PTR(-EIO);
+>  }
+>=20
+> @@ -227,6 +235,13 @@ ufs_next_entry(struct super_block *sb, struct
+> ufs_dir_entry *p) fs16_to_cpu(sb, p->d_reclen));
+>  }
+>=20
+> +/*
+> + * Calls to ufs_get_page()/ufs_put_page() must be nested according to the
+> + * rules documented in kmap_local_page()/kunmap_local().
+> + *
+> + * ufs_dotdot() acts as a call to ufs_get_page() and must be treated
+> + * accordingly for nesting purposes.
+> + */
+>  struct ufs_dir_entry *ufs_dotdot(struct inode *dir, struct page **p)
+>  {
+>  	struct ufs_dir_entry *de =3D ufs_get_page(dir, 0, p);
+> @@ -238,12 +253,15 @@ struct ufs_dir_entry *ufs_dotdot(struct inode *dir,
+> struct page **p) }
+>=20
+>  /*
+> - *	ufs_find_entry()
+> + * Finds an entry in the specified directory with the wanted name. It=20
+returns
+> a + * pointer to the directory's entry. The page in which the entry was=20
+found
+> is + * in the res_page out parameter. The page is returned mapped and
+> unlocked. + * The entry is guaranteed to be valid.
+>   *
+> - * finds an entry in the specified directory with the wanted name. It
+> - * returns the page in which the entry was found, and the entry itself
+> - * (as a parameter - res_dir). Page is returned mapped and unlocked.
+> - * Entry is guaranteed to be valid.
+> + * On Success ufs_put_page() should be called on *res_page.
+> + *
+> + * ufs_find_entry() acts as a call to ufs_get_page() and must be treated
+> + * accordingly for nesting purposes.
+>   */
+>  struct ufs_dir_entry *ufs_find_entry(struct inode *dir, const struct qstr
+> *qstr, struct page **res_page)
+> @@ -282,7 +300,7 @@ struct ufs_dir_entry *ufs_find_entry(struct inode *di=
+r,
+> const struct qstr *qstr, goto found;
+>  				de =3D ufs_next_entry(sb, de);
+>  			}
+> -			ufs_put_page(page);
+> +			ufs_put_page(page, kaddr);
+>  		}
+>  		if (++n >=3D npages)
+>  			n =3D 0;
+> @@ -360,7 +378,7 @@ int ufs_add_link(struct dentry *dentry, struct inode
+> *inode) de =3D (struct ufs_dir_entry *) ((char *) de + rec_len);
+>  		}
+>  		unlock_page(page);
+> -		ufs_put_page(page);
+> +		ufs_put_page(page, kaddr);
+>  	}
+>  	BUG();
+>  	return -EINVAL;
+> @@ -390,7 +408,7 @@ int ufs_add_link(struct dentry *dentry, struct inode
+> *inode) mark_inode_dirty(dir);
+>  	/* OFFSET_CACHE */
+>  out_put:
+> -	ufs_put_page(page);
+> +	ufs_put_page(page, kaddr);
+>  	return err;
+>  out_unlock:
+>  	unlock_page(page);
+> @@ -468,13 +486,13 @@ ufs_readdir(struct file *file, struct dir_context=20
+*ctx)
+>  					       ufs_get_de_namlen(sb,=20
+de),
+>  					       fs32_to_cpu(sb, de-
+>d_ino),
+>  					       d_type)) {
+> -					ufs_put_page(page);
+> +					ufs_put_page(page, kaddr);
+>  					return 0;
+>  				}
+>  			}
+>  			ctx->pos +=3D fs16_to_cpu(sb, de->d_reclen);
+>  		}
+> -		ufs_put_page(page);
+> +		ufs_put_page(page, kaddr);
+>  	}
+>  	return 0;
+>  }
+> @@ -485,10 +503,10 @@ ufs_readdir(struct file *file, struct dir_context=20
+*ctx)
+>   * previous entry.
+>   */
+>  int ufs_delete_entry(struct inode *inode, struct ufs_dir_entry *dir,
+> -		     struct page * page)
+> +		     struct page *page)
+>  {
+>  	struct super_block *sb =3D inode->i_sb;
+> -	char *kaddr =3D page_address(page);
+> +	char *kaddr =3D (char *)((unsigned long)dir & PAGE_MASK);
+>  	unsigned int from =3D offset_in_page(dir) & ~(UFS_SB(sb)->s_uspi-
+>s_dirblksize
+> - 1); unsigned int to =3D offset_in_page(dir) + fs16_to_cpu(sb, dir-
+>d_reclen);
+> loff_t pos;
+> @@ -527,7 +545,7 @@ int ufs_delete_entry(struct inode *inode, struct
+> ufs_dir_entry *dir, inode->i_ctime =3D inode->i_mtime =3D current_time(in=
+ode);
+>  	mark_inode_dirty(inode);
+>  out:
+> -	ufs_put_page(page);
+> +	ufs_put_page(page, kaddr);
+>  	UFSD("EXIT\n");
+>  	return err;
+>  }
+> @@ -551,8 +569,7 @@ int ufs_make_empty(struct inode * inode, struct inode
+> *dir) goto fail;
+>  	}
+>=20
+> -	kmap(page);
+> -	base =3D (char*)page_address(page);
+> +	base =3D kmap_local_page(page);
+>  	memset(base, 0, PAGE_SIZE);
+>=20
+>  	de =3D (struct ufs_dir_entry *) base;
+> @@ -569,7 +586,7 @@ int ufs_make_empty(struct inode * inode, struct inode
+> *dir) de->d_reclen =3D cpu_to_fs16(sb, chunk_size - UFS_DIR_REC_LEN(1));
+>  	ufs_set_de_namlen(sb, de, 2);
+>  	strcpy (de->d_name, "..");
+> -	kunmap(page);
+> +	kunmap_local(base);
+>=20
+>  	err =3D ufs_commit_chunk(page, 0, chunk_size);
+>  fail:
+> @@ -585,9 +602,9 @@ int ufs_empty_dir(struct inode * inode)
+>  	struct super_block *sb =3D inode->i_sb;
+>  	struct page *page =3D NULL;
+>  	unsigned long i, npages =3D dir_pages(inode);
+> +	char *kaddr;
+>=20
+>  	for (i =3D 0; i < npages; i++) {
+> -		char *kaddr;
+>  		struct ufs_dir_entry *de;
+>=20
+>  		kaddr =3D ufs_get_page(inode, i, &page);
+> @@ -620,12 +637,12 @@ int ufs_empty_dir(struct inode * inode)
+>  			}
+>  			de =3D ufs_next_entry(sb, de);
+>  		}
+> -		ufs_put_page(page);
+> +		ufs_put_page(page, kaddr);
+>  	}
+>  	return 1;
+>=20
+>  not_empty:
+> -	ufs_put_page(page);
+> +	ufs_put_page(page, kaddr);
+>  	return 0;
+>  }
+>=20
+> --
+> 2.39.0
+
+
+
+
