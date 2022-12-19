@@ -2,154 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDE8651353
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 20:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE39C651385
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 20:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbiLSTde (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 14:33:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
+        id S232394AbiLST40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 14:56:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbiLSTdd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 14:33:33 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307AB12ABC
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 11:33:32 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id a4-20020a5b0004000000b006fdc6aaec4fso11922769ybp.20
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 11:33:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1BXl9vy0f2f/11VKxHLckXglqOMtK0anh34YjL4SpoA=;
-        b=gglIK/h4ez0+aqt1O+U+ScB+Bh/FoHfv+OJW2X6p/mpdxgf9sq0WpIXhUJ5u7bEa4H
-         10mjJki54ttBlnuEVGRrt4nfvk3DPFYhdmDXX9JB4EHkXVknVwm2r+YbixMYY8N6UZas
-         5vXteQ+W/jinCVg1i3jH3Sq6GdLGbtJiJEgL0VHwTnjBd1sEoZok1EKLr4pFYMROU+p0
-         YYRYQlwDq4TmyqJr6mbWUEz8O0t2eI0OU1/lIEPwriuBAiJG2+lZYudkRgiaKxtj40mh
-         nzufqCnqhxprw5h6I+7GHHOA9d0zJQesZdwXXEQXREzaIOdk4g+/4kVnus4E4cmOz0rr
-         e0cQ==
+        with ESMTP id S232517AbiLST4R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 14:56:17 -0500
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AF613F4C
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 11:56:17 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id b77-20020a6bb250000000b006e4ec8b2364so4567278iof.20
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 11:56:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1BXl9vy0f2f/11VKxHLckXglqOMtK0anh34YjL4SpoA=;
-        b=uy3Tsg455J3mOCdOYlGssh/8pg1uemiBrYtJ6oIf32ZJBh5m85WcnNC6q6UazswGHk
-         jEizgKyHMD5T442ujIgXwRg99Hxj10DZUwzD39XOtwAazynaHSmzwyyHaWZ65yzBHI+Q
-         uL0w5XNYkvl94AtuX0UZ7xS31jku8kzavT47Pn0caszWOlAGY+4SAXSLHPMZrS2tCuyh
-         hw6L5R5JoduOw+uLxjHvUAi7qcsgr3J5LAUXfmOau+K+OOG/PEq2Dm5cjXr3Ss/PHJyk
-         cbMlSH6iqQK1M/wl6IIRz12y+D6f5hg0iSQQe/Iz1mhYcRGs0+7IhNaB3PKB+BptXbPa
-         7kWA==
-X-Gm-Message-State: ANoB5pmNBnRyX8BOnTR3chvm63efhgrC6buqA2QRuPxwEoJLbeYe0YFe
-        XUPjbv6ywfWFXk0zcuCDC+8pDXQ=
-X-Google-Smtp-Source: AA0mqf7Icw3UnigDaLBzU7ImBfrwnGJPUr76c1EwJr94knLZ93lfIm35xMaxZVPdh0LFftWlP4RFSck=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:b885:0:b0:701:49ca:8ae8 with SMTP id
- w5-20020a25b885000000b0070149ca8ae8mr21490186ybj.553.1671478411506; Mon, 19
- Dec 2022 11:33:31 -0800 (PST)
-Date:   Mon, 19 Dec 2022 11:33:29 -0800
-In-Reply-To: <Y6B3xEgkbmFUCeni@hirez.programming.kicks-ass.net>
-Mime-Version: 1.0
-References: <000000000000a20a2e05f029c577@google.com> <Y6B3xEgkbmFUCeni@hirez.programming.kicks-ass.net>
-Message-ID: <Y6C8iQGENUk/XY/A@google.com>
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cj5G7w7wrnXTjWG4Lf9C2ODteMMiP5v7wAraEGH3U0k=;
+        b=yRJ4EHVpLWg8F8l/kt9rhpv6JpZJsW08HxZc8P2dWDz4Z64q3mnq4W5XYsiUbehXB2
+         p76Q+uuwusT0+yDiOM4N2jUbnVXzUgg+4I94oO/+SZ4OpR4HiO0PQbvvpaXHzYwbdDIF
+         TerTk2iWB8OsNthYV9bEEZdlzgXoR3zj2EgGR99AhXZhIQ4tyIY/rj+7yataNH6JdhLa
+         sJBiw/lmprrSll1eAKsenQxxuFCXIiBnG96H5T/o4eHDDR/YzDUjywJo3IJg1r8PDBjN
+         qVNQXgNNkhwyw+uMG6/fiaQvhn7sTMHhK6tLZxAyRanm1pb9UwvtAyZ0wif+m47ADT2E
+         vQSw==
+X-Gm-Message-State: ANoB5pk4bNFLsXV6+d3jL9ow3RhHVfeIMCFUCyMJtmHXuuy+ma4GOhex
+        GyFjgKXLDvMHRTxT3P5TdCNkl63S3pAfTsN52jB73n3GBtoa
+X-Google-Smtp-Source: AA0mqf7eE0GC/Cb+W5QzJIxt46Tbcb3KvugY9SCOhpmm/M5g7dQmZkOk8OKjjh9bxyYHJeuaULjQLcDPviCk4OX2G41hWkxQ25I2
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:13c1:b0:303:7f25:72c with SMTP id
+ v1-20020a056e0213c100b003037f25072cmr7289815ilj.221.1671479776357; Mon, 19
+ Dec 2022 11:56:16 -0800 (PST)
+Date:   Mon, 19 Dec 2022 11:56:16 -0800
+In-Reply-To: <Y6C8iQGENUk/XY/A@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000051b79a05f033b6e5@google.com>
 Subject: Re: [syzbot] KASAN: use-after-free Read in put_pmu_ctx
-From:   sdf@google.com
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     syzbot <syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com>,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
+From:   syzbot <syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
         bpf@vger.kernel.org, jolsa@kernel.org,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        netdev@vger.kernel.org, peterz@infradead.org, sdf@google.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/19, Peter Zijlstra wrote:
-> On Mon, Dec 19, 2022 at 12:04:43AM -0800, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    13e3c7793e2f Merge tag 'for-netdev' of  
-> https://git.kernel...
-> > git tree:       bpf
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=177df7e0480000
-> > kernel config:   
-> https://syzkaller.appspot.com/x/.config?x=b0e91ad4b5f69c47
-> > dashboard link:  
-> https://syzkaller.appspot.com/bug?extid=b8e8c01c8ade4fe6e48f
-> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU  
-> Binutils for Debian) 2.35.2
-> > syz repro:       
-> https://syzkaller.appspot.com/x/repro.syz?x=15e87100480000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ceeb13880000
-> >
-> > Downloadable assets:
-> > disk image:  
-> https://storage.googleapis.com/syzbot-assets/373a99daa295/disk-13e3c779.raw.xz
-> > vmlinux:  
-> https://storage.googleapis.com/syzbot-assets/7fa71ed0fe17/vmlinux-13e3c779.xz
-> > kernel image:  
-> https://storage.googleapis.com/syzbot-assets/2842ad5c698b/bzImage-13e3c779.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the  
-> commit:
-> > Reported-by: syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KASAN: use-after-free in __lock_acquire+0x3ee7/0x56d0  
-> kernel/locking/lockdep.c:4925
-> > Read of size 8 at addr ffff8880237d6018 by task syz-executor287/8300
-> >
-> > CPU: 0 PID: 8300 Comm: syz-executor287 Not tainted  
-> 6.1.0-syzkaller-09661-g13e3c7793e2f #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-> Google 10/26/2022
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
-> >  print_address_description mm/kasan/report.c:284 [inline]
-> >  print_report+0x15e/0x45d mm/kasan/report.c:395
-> >  kasan_report+0xbf/0x1f0 mm/kasan/report.c:495
-> >  __lock_acquire+0x3ee7/0x56d0 kernel/locking/lockdep.c:4925
-> >  lock_acquire kernel/locking/lockdep.c:5668 [inline]
-> >  lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
-> >  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-> >  _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
-> >  put_pmu_ctx kernel/events/core.c:4913 [inline]
-> >  put_pmu_ctx+0xad/0x390 kernel/events/core.c:4893
-> >  _free_event+0x3c5/0x13d0 kernel/events/core.c:5196
-> >  free_event+0x58/0xc0 kernel/events/core.c:5224
-> >  __do_sys_perf_event_open+0x66d/0x2980 kernel/events/core.c:12701
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Hello,
 
-> Does this help?
+syzbot tried to test the proposed patch but the build/boot failed:
 
-Let's maybe try it this way:
+failed to apply patch:
+checking file kernel/events/core.c
+patch: **** unexpected end of file in patch
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git  
-13e3c7793e2f
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index e47914ac8732..bbff551783e1 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -12689,7 +12689,8 @@ SYSCALL_DEFINE5(perf_event_open,
-  	return event_fd;
 
-  err_context:
--	/* event->pmu_ctx freed by free_event() */
-+	put_pmu_ctx(event->pmu_ctx);
-+	event->pmu_ctx = NULL; /* _free_event() */
-  err_locked:
-  	mutex_unlock(&ctx->mutex);
-  	perf_unpin_context(ctx);
+Tested on:
+
+commit:         13e3c779 Merge tag 'for-netdev' of https://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
+dashboard link: https://syzkaller.appspot.com/bug?extid=b8e8c01c8ade4fe6e48f
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=15861a9f880000
+
