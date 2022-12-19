@@ -2,126 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2293B650D82
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 15:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91375650E21
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 15:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbiLSOkV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 09:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
+        id S232459AbiLSO6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 09:58:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231840AbiLSOkU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 09:40:20 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7782E198;
-        Mon, 19 Dec 2022 06:40:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1unCginLesSkuj4hqRvXqnZG2iVnHjxMfFxmdxmFUXo=; b=nk08+RKg9qmIKScG/E8PNoDGD8
-        hdiV25CTyDmHQ5wqh92AaVFwnBpSaGTtp/E0ZrMcnU7JJg3+1wjhCzEVAeHfpeg3XKGfjhBvadv65
-        NVupC/8rK/55pvVyr4cSJw/aXhAQChsdODiZsTci9qEhAgh8eo8DHL9zTDseazd36UuENEDDzsaFI
-        xMKrEFRngTnYxOUVbQp5hMLcB3py6A80rqmWQ0wDnzLOF6QqAZjLr1oS6Xyqp2D/s0J7vlZ55EBFZ
-        B611/nI1s87XhWAkjDhtLwdFfmfoeEXpc+NVC2TeBUHLCEUY30V4NSi8+nNpYKR/nwcs6C0PEmH8p
-        DKx8N1aQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1p7HJF-00Cd4B-0L;
-        Mon, 19 Dec 2022 14:40:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        with ESMTP id S232456AbiLSO6Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 09:58:16 -0500
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA66103E;
+        Mon, 19 Dec 2022 06:55:12 -0800 (PST)
+Received: from leknes.fjasle.eu ([46.142.96.64]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MsaeR-1oslfq133D-00tyIB; Mon, 19 Dec 2022 15:44:53 +0100
+Received: from localhost.fjasle.eu (bergen.fjasle.eu [IPv6:fdda:8718:be81:0:6f0:21ff:fe91:394])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AA9D33001D6;
-        Mon, 19 Dec 2022 15:40:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6A36020A1AB9C; Mon, 19 Dec 2022 15:40:04 +0100 (CET)
-Date:   Mon, 19 Dec 2022 15:40:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     syzbot <syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com>
-Cc:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        bpf@vger.kernel.org, jolsa@kernel.org,
+        by leknes.fjasle.eu (Postfix) with ESMTPS id A7FAB3C1B9;
+        Mon, 19 Dec 2022 15:44:49 +0100 (CET)
+Authentication-Results: leknes.fjasle.eu; dkim=none; dkim-atps=neutral
+Received: by localhost.fjasle.eu (Postfix, from userid 1000)
+        id 711B377B; Mon, 19 Dec 2022 15:44:38 +0100 (CET)
+Date:   Mon, 19 Dec 2022 15:44:38 +0100
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] KASAN: use-after-free Read in put_pmu_ctx
-Message-ID: <Y6B3xEgkbmFUCeni@hirez.programming.kicks-ass.net>
-References: <000000000000a20a2e05f029c577@google.com>
+        bpf@vger.kernel.org, llvm@lists.linux.dev,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 3/5] tools lib subcmd: Add dependency test to
+ install_headers
+Message-ID: <Y6B41hsv1KHDQMYh@bergen.fjasle.eu>
+References: <20221202045743.2639466-1-irogers@google.com>
+ <20221202045743.2639466-4-irogers@google.com>
+ <Y5eVwlId2A2/pN40@fjasle.eu>
+ <CAP-5=fXeYsOs-YJH+hx=haGwJ_eqDNXYQQ30AiyDDfc5P2o84Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="keRu1ywOaLNQdaoA"
 Content-Disposition: inline
-In-Reply-To: <000000000000a20a2e05f029c577@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAP-5=fXeYsOs-YJH+hx=haGwJ_eqDNXYQQ30AiyDDfc5P2o84Q@mail.gmail.com>
+Jabber-ID: nicolas@fjasle.eu
+X-Operating-System: Debian GNU/Linux bookworm/sid
+X-Provags-ID: V03:K1:yl11gYBxldkrWBmMWqPPZ7dMxGlIZugrpEYUIRHh38u8ZimLr8b
+ 1zTL5CA03GKrLX5KddnhDPuoCpPPCg+XKi/89LoG0aHPG00VlmGn/jQV3VjU1FEc4f6/ABR
+ jsQKfhRcYUBTk0oCwwjJI68WUTsXD6fXYAmi610sEyBVz3cb9ONljYGLMYEhu2tGphMNhD7
+ bstfVrPwf9h8u+5BFyLGQ==
+UI-OutboundReport: notjunk:1;M01:P0:GHm+LHFQNqM=;mbXxJ8TCl6plJc3uEROHGtH5QWS
+ ohcK7K8aIm9/1DEoWLoqekUocP4s9FK9CGV4HA77xIclj+OJXXiXRjA6ABAY9IPeU59ZZL7lw
+ 45+9Y+kwa8v7RXP9Qr0bjykHxKXmHUPFYKpGfugcCylUBfRxMKjYdB01RVeA1bongbHK35cOO
+ lh61W1x8L66izMQSP+DhE/KAjcac/4RDTPryPN7sxORT/gCGJVrSWF8hSaxjB1OAoO1dUWPfo
+ bw8Vl9ZnIudAkhqRH99kN5wL/81yB56IjG6eNwc/eASdZov95NkMWArTEY647JbsnV7aUnPMI
+ G2TMcqMoNSu8teietwr5yJGeWYAYz/eRG7An37WNzdAC6GzTTMaDF05bY29hGxipWtYGR0Nnh
+ 8jZ6h3Zh0nWhdgCbog1GBMLTb1HfpCmxB/myZVhB/6UbUZm6LFn8cA98+18aJvccmtkJNjWHF
+ 0fZ6nMhmzdH/LS/lyy+Dg4svw2ESUSHJSPGNhRWZzx3f3zEHfCl/LbM6th/BKIdfdoaIo4Gmj
+ cC08goRSqAvozbO4clExazOPUgAOGfKYRZiS5G9EBgJMt8QqTlHb5tJDnLct9dbvXtOa6ScpH
+ MkxjNDHKo1hexGbyn+ar9rK7Pgk159Zv4Ij4uAu4Xxq3BlVdX6oLNy1iq7CVO4GxXj00ciucA
+ cw2LTJiz6kGQPdxaslNpEWG7i4kCB5494Khzbc2RQg==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 19, 2022 at 12:04:43AM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    13e3c7793e2f Merge tag 'for-netdev' of https://git.kernel...
-> git tree:       bpf
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=177df7e0480000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b0e91ad4b5f69c47
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b8e8c01c8ade4fe6e48f
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e87100480000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ceeb13880000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/373a99daa295/disk-13e3c779.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/7fa71ed0fe17/vmlinux-13e3c779.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/2842ad5c698b/bzImage-13e3c779.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: use-after-free in __lock_acquire+0x3ee7/0x56d0 kernel/locking/lockdep.c:4925
-> Read of size 8 at addr ffff8880237d6018 by task syz-executor287/8300
-> 
-> CPU: 0 PID: 8300 Comm: syz-executor287 Not tainted 6.1.0-syzkaller-09661-g13e3c7793e2f #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:284 [inline]
->  print_report+0x15e/0x45d mm/kasan/report.c:395
->  kasan_report+0xbf/0x1f0 mm/kasan/report.c:495
->  __lock_acquire+0x3ee7/0x56d0 kernel/locking/lockdep.c:4925
->  lock_acquire kernel/locking/lockdep.c:5668 [inline]
->  lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
->  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
->  _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
->  put_pmu_ctx kernel/events/core.c:4913 [inline]
->  put_pmu_ctx+0xad/0x390 kernel/events/core.c:4893
->  _free_event+0x3c5/0x13d0 kernel/events/core.c:5196
->  free_event+0x58/0xc0 kernel/events/core.c:5224
->  __do_sys_perf_event_open+0x66d/0x2980 kernel/events/core.c:12701
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Does this help?
+--keRu1ywOaLNQdaoA
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index e47914ac8732..bbff551783e1 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -12689,7 +12689,8 @@ SYSCALL_DEFINE5(perf_event_open,
- 	return event_fd;
- 
- err_context:
--	/* event->pmu_ctx freed by free_event() */
-+	put_pmu_ctx(event->pmu_ctx);
-+	event->pmu_ctx = NULL; /* _free_event() */
- err_locked:
- 	mutex_unlock(&ctx->mutex);
- 	perf_unpin_context(ctx);
+On Tue 13 Dec 2022 13:28:21 GMT, Ian Rogers wrote:
+> On Mon, Dec 12, 2022 at 12:57 PM Nicolas Schier <nicolas@fjasle.eu> wrote:
+> >
+> > On Thu, Dec 01, 2022 at 08:57:41PM -0800 Ian Rogers wrote:
+> > > Compute the headers to be installed from their source headers and make
+> > > each have its own build target to install it. Using dependencies
+> > > avoids headers being reinstalled and getting a new timestamp which
+> > > then causes files that depend on the header to be rebuilt.
+> > >
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > ---
+> > >  tools/lib/subcmd/Makefile | 23 +++++++++++++----------
+> > >  1 file changed, 13 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/tools/lib/subcmd/Makefile b/tools/lib/subcmd/Makefile
+> > > index 9a316d8b89df..b87213263a5e 100644
+> > > --- a/tools/lib/subcmd/Makefile
+> > > +++ b/tools/lib/subcmd/Makefile
+> > > @@ -89,10 +89,10 @@ define do_install_mkdir
+> > >  endef
+> > >
+> > >  define do_install
+> > > -     if [ ! -d '$(DESTDIR_SQ)$2' ]; then             \
+> > > -             $(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2'; \
+> > > +     if [ ! -d '$2' ]; then             \
+> > > +             $(INSTALL) -d -m 755 '$2'; \
+> > >       fi;                                             \
+> > > -     $(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
+> > > +     $(INSTALL) $1 $(if $3,-m $3,) '$2'
+> >
+> > What about using '$(INSTALL) -D ...' instead of the if-mkdir-block abov=
+e?
+> > (E.g. as in tools/debugging/Makefile.)
+> >
+> > Kind regards,
+> > Nicolas
+>=20
+> Thanks Nicolas, the reason was to keep the code consistent. That's not
+> to say this is the best approach. For example, here is the same thing
+> for tools/lib/api:
+> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools=
+/lib/api/Makefile?h=3Dperf/core&id=3Df43368371888694a2eceaaad8f5e9775c09200=
+9a#n84
+>=20
+> If you'd like to improve this in all the versions and send patches I'd
+> be happy to take a look.
+>=20
+> Thanks,
+> Ian
+
+Ian, while watching at tools/lib/*/Makefile I stumple across the=20
+special single-quote handling (e.g. 'DESTDIR_SQ') several times. =20
+
+Top-level Makefile and kbuild are not designed to work with file or=20
+directory names containing spaces.  Do you know whether this is needed=20
+for the installation rules in tools/lib/?  I'd like to remove support=20
+for path names with spaces for a increasing simplicity and consistency.
+
+Kind regards,
+Nicolas
+
+--keRu1ywOaLNQdaoA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmOgeNUACgkQB1IKcBYm
+EmmqvBAAvc+hpUNMRLt4cfWfIA2KsbSBDQLjh+dWIF4bhH9lSOuSlfmwlYSaCjpG
+r656tEHGAS2oYr12RNBwDa7Rpl8M0XycHyCO39PmsUrjFDNlIrsIclhYo++9X+9G
+iJJIzy8fsBAW3apLVOv3sPnzMcv6jPj8QD4nQXtgAqBy1Nj798t416TC9gkd6ZXC
+ZBYbV2d6I4EtIbD24IK5eptBObyjSU1WlsZRlLq60JCMNjXTszsBTmN+qi91bZs0
+cctgVxhXxkB0d75w3KWHXKSbbAHurLtmIjzZMJEI3f+o+ptEwOWiP/+Sk3NXu7JX
+udi4vKNCX4TXXf3cOUmhKqGigaYpbCn4drPCa4r0kmdE7zkCeGtEuNLs8ocItiOS
+fRsxU9bTXcC/7Ox0DqX1/qBYQgHBmbF5eXqAg4UerAn4/8l4fxdXemeO/LwNVpGC
+Pkmioif0PU4wZFU27qzOqKnjgKfioLh8qLgXmTPMo8Hq7c62ytA/A35Hcn9ZEE/X
+e9F8Kg734p1LUHPTrpCfOg3Q3X0t9c2ra+4wBa8d7zhOWhFFfQDjsaIuoe8ZiSqv
+ZITXn7XySp/0sjot8HyO0a9bIZvR5RK9OfEayShgLuLIkd5yoByEjz551oh5I753
+KyeIgi+OMvO56V0n0kd2rh4O5E4IggpGJbjvG+KO4uY9L1DYYcU=
+=DYaH
+-----END PGP SIGNATURE-----
+
+--keRu1ywOaLNQdaoA--
