@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5838650D63
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 15:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDE1650D67
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 15:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbiLSOfO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 09:35:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
+        id S232317AbiLSOf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 09:35:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232249AbiLSOfI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 09:35:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E08AB07;
-        Mon, 19 Dec 2022 06:35:07 -0800 (PST)
+        with ESMTP id S232292AbiLSOfR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 09:35:17 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F6FBAA;
+        Mon, 19 Dec 2022 06:35:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3356EB80D19;
-        Mon, 19 Dec 2022 14:35:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D60DC433EF;
-        Mon, 19 Dec 2022 14:35:03 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4E61BB80D1F;
+        Mon, 19 Dec 2022 14:35:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56F3AC433D2;
+        Mon, 19 Dec 2022 14:35:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671460505;
-        bh=ovmSOyXpdhZkVdvPTmi4MkzRm45TRy0WVB+TsJRSG+Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=q/YxNgFT996DZFPVp7bZFUV5THnnXuKC5RHDr7TDWh0gWkXV1UjCeq1a21/ejNk/a
-         od/bJMmgWTabez6waaqfyOxkw+FjP15IhIYVKTuLzOxn9A8dynR77ilFq7FnCIZcuF
-         QbzcU6+ylxTDNHHHJvMZOaHMPPN6Pgz8EgdDnR4yISA7wtULAH4ONxqSA88yQudSAd
-         9DRpULDwxQmI5E7HsSYps/OI2LQcOO738gLx0R/2ousxikLRaefswpQEuLqrngzCuA
-         3IYbNRxq3udkq2i4JkSkBOdQplOm03lnNREkP779jWIEm45euCocFDdwnpB/rZCey/
-         bwM6rNPC2iPAA==
+        s=k20201202; t=1671460514;
+        bh=CX+kGVYhEAgwOekYRSqXxT9FLRH2V059fUkrpfVmAU0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mzUZIqGk0Qpyqy6ed2SvJAwBxMg5R0na6yBpRjjha/hhZFe54tf6YG6deFhSdfs/j
+         k8jkOxEM9ai2AmBoNXNFy3SRs887HOK9WwPjpDp+euHmyoqGkNkIPy3KtiyJMFF+Fu
+         TpMOiwkBsqyKZsvez6JPl4nAyRFN9OnW7lIwMWifNRUgTWHH0daRDZK39rGTp8S99P
+         5JDh2dNR/bucDggHUJcE905yDr/CGK58hPy5UwggzZgWRVY/3KTreX4rST+kKZfDZs
+         EY1H2E22G/O4jqjG+25ydmwb1qUdj5BhkDuKNrNkqPWqDzQCx8BOptn+7++ZNAtaCl
+         jceaziZCHtQug==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     x86@kernel.org
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
@@ -42,10 +42,12 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Josh Poimboeuf <jpoimboe@kernel.org>,
         Nadav Amit <namit@vmware.com>
-Subject: [PATCH -tip v4 0/2] x86/kprobes: Fix to check not-kprobe's int3 correctly
-Date:   Mon, 19 Dec 2022 23:35:00 +0900
-Message-Id: <167146050052.1374301.10407562178447545337.stgit@devnote3>
+Subject: [PATCH -tip v4 1/2] x86/kprobes: Fix kprobes instruction boudary check with CONFIG_RETHUNK
+Date:   Mon, 19 Dec 2022 23:35:10 +0900
+Message-Id: <167146051026.1374301.392728975473572291.stgit@devnote3>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
+In-Reply-To: <167146050052.1374301.10407562178447545337.stgit@devnote3>
+References: <167146050052.1374301.10407562178447545337.stgit@devnote3>
 User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -59,51 +61,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Here is 4th version of the patches to fix kprobes and optprobe with
-CONFIG_RETHUNK and CONFIG_SLS.
-Previous version is here;
+Since the CONFIG_RETHUNK and CONFIG_SLS will use INT3 for stopping
+speculative execution after RET instruction, kprobes always failes to
+check the probed instruction boundary by decoding the function body if
+the probed address is after such sequence. (Note that some conditional
+code blocks will be placed after function return, if compiler decides
+it is not on the hot path.)
 
-https://lore.kernel.org/all/166264927154.775585.16570756675363838701.stgit@devnote2/
+This is because kprobes expects kgdb puts the INT3 as a software
+breakpoint and it will replace the original instruction.
+But these INT3 are not such purpose, it doesn't need to recover the
+original instruction.
 
-I just ported the v3 on the latest -tip tree.
+To avoid this issue, kprobes checks whether the INT3 is owned by
+kgdb or not, and if so, stop decoding and make it fail. The other
+INT3 will come from CONFIG_RETHUNK/CONFIG_SLS and those can be
+treated as a one-byte instruction.
 
-With CONFIG_RETHUNK/CONFIG_SLS and after many efforts, the kernel
-functions may includes INT3 for stopping speculative execution in the
-function code block (body) in addition to the gaps between functions.
-
-Since kprobes on x86 has to ensure the probe address is an instruction
-bondary, it decodes the instructions in the function until the address.
-If it finds an INT3 which is not embedded by kprobe, it stops decoding
-because usually the INT3 is used for debugging as a software breakpoint
-and such INT3 will replace the first byte of an original instruction.
-Thus the kprobes returns -EILSEQ as below.
-
- # echo 'p:probe/resched_curr_L21 resched_curr+98' >> dynamic_events 
- sh: write error: Invalid or incomplete multibyte or wide character
-
-Actually, such INT3 can be ignored except the INT3 installed dynamically
-by kgdb.
-To avoid this issue, just check whether the INT3 is owned by kgdb
-or not and if so, it just stopped and return failure.
-
-With thses fixes, kprobe and optprobe can probe the kernel again with
-CONFIG_RETHUNK=y.
-
-Thank you,
-
-
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Fixes: e463a09af2f0 ("x86: Add straight-line-speculation mitigation")
+Cc: stable@vger.kernel.org
 ---
-
-Masami Hiramatsu (Google) (2):
-      x86/kprobes: Fix kprobes instruction boudary check with CONFIG_RETHUNK
-      x86/kprobes: Fix optprobe optimization check with CONFIG_RETHUNK
-
-
  arch/x86/kernel/kprobes/core.c |   10 +++++++---
- arch/x86/kernel/kprobes/opt.c  |   28 ++++++++--------------------
- 2 files changed, 15 insertions(+), 23 deletions(-)
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 66299682b6b7..b36f3c367cb2 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -37,6 +37,7 @@
+ #include <linux/extable.h>
+ #include <linux/kdebug.h>
+ #include <linux/kallsyms.h>
++#include <linux/kgdb.h>
+ #include <linux/ftrace.h>
+ #include <linux/kasan.h>
+ #include <linux/moduleloader.h>
+@@ -281,12 +282,15 @@ static int can_probe(unsigned long paddr)
+ 		if (ret < 0)
+ 			return 0;
+ 
++#ifdef CONFIG_KGDB
+ 		/*
+-		 * Another debugging subsystem might insert this breakpoint.
+-		 * In that case, we can't recover it.
++		 * If there is a dynamically installed kgdb sw breakpoint,
++		 * this function should not be probed.
+ 		 */
+-		if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
++		if (insn.opcode.bytes[0] == INT3_INSN_OPCODE &&
++		    kgdb_has_hit_break(addr))
+ 			return 0;
++#endif
+ 		addr += insn.length;
+ 	}
+ 
+
