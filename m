@@ -2,53 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91256650701
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 05:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058E66507DD
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 07:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbiLSEQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Dec 2022 23:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
+        id S231597AbiLSGrJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 01:47:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbiLSEQF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Dec 2022 23:16:05 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0854321A7
-        for <bpf@vger.kernel.org>; Sun, 18 Dec 2022 20:16:04 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id b12so5366705pgj.6
-        for <bpf@vger.kernel.org>; Sun, 18 Dec 2022 20:16:04 -0800 (PST)
+        with ESMTP id S231624AbiLSGqu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 01:46:50 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D74EDEF7
+        for <bpf@vger.kernel.org>; Sun, 18 Dec 2022 22:44:52 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id m4so8109710pls.4
+        for <bpf@vger.kernel.org>; Sun, 18 Dec 2022 22:44:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ncnXB0rwjtIsbkYq9pbKmmm21LDgoO0imeQIOZaU0xE=;
-        b=WHOzHKYl9II/3JyBAZhjEZYkE7EFTTVbXb2bbYIPrtQowusqhYCX6wpDSrmxMaO3sv
-         KbqT5HE0PH6BQIQ7TL8631ATNJzaeudknYgzh6towPRf79J96DeiqXvDFmdrZK0gDy/W
-         SHadOQZzdcA2uIT4Ws66jv2yBKeF+XjfoOqoZZxbxW8dykHZzCv9gtRZvLVSSGnvUfph
-         3Xnu2q2EhyuIyPG7d1bM6aWScE9yWnMPwC6rMXib+JcuVmaL/mXuV8T84txw2Bu2J1wb
-         D/Xj2T1BBR4uBiZfH/CCaL2ga1Ddev1WznNQP/e/GNWoaVfQ51Ws57zEvYUpZTSr8kaJ
-         rXKQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=74r6/OFw2o+y3LmvB17ImA1vks0iJdTpJFuHNLqCbh4=;
+        b=J/aLItQgYDm0UhSe9+LoR6MHpHGo6TtrCt6eYccdndcpzqRnZFwz1lihHgGKskmIBf
+         QG7UHh03l2j1/sOg32u+5xZkhL1Qvhm/gYx3SlvEwXah84fH627CsPM2Vvc8y+aZZgPW
+         8Po1jdUwkhHBmcGd8qvtkL8ZzW6WhaeLQZWakF3lfTqxQ/M6pjaJ0EwcyUd8IhyKMwMS
+         AU93dLZiPa7QHbKNWa3UdclQn6szOtTdC/FPDBx44W/YWbQs/nxinl957SY01vq3rk1J
+         pSCwFtDL6mixi9gXwgLBLkg7j4qzsTcxwXrqR43NpiCYj5fpzovRvhI4bZCxLo26wEUQ
+         qBJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ncnXB0rwjtIsbkYq9pbKmmm21LDgoO0imeQIOZaU0xE=;
-        b=Vyf2fXN67H4os02AeB6eXqQ2whlymTG1RlD92JGvtHp51suGK8i73oBGAdLyslS6x5
-         DcadGv4vUJ2soOIwQCNj0zMD2uS43uLuT3mPHOTpKKkv8slqeTpMpYAppkEezwW9Sv9b
-         IJ+4pCmDRSpCB+ihZOOZ22Ba8LC1hlVeGrqTun7Lalm4v28PTvH1g3O1NOGThJOmzd6m
-         fKJAWfDGYd/DH5EE9mg7pAfiryZlgK4sdL5KT9hrIGwj89CYEmw/7sf5QmmJgMIV5pP6
-         QREdvbTEKiPwm6Xg8Kp6XIMwSXZgmXznByNI/fl9Ec2QdSg7G9NQoFR8Jvh/tbRyA4SU
-         63Pg==
-X-Gm-Message-State: ANoB5pnx288jD81zkGTdsbH4lfj7qQ9x3nX0PVeOlOkOV9dDvNhmmt41
-        UVzz/HxE6nOXt4C/6tlNplBysHO/qpd861vqyuQ=
-X-Google-Smtp-Source: AA0mqf7CcAyDKExr5XhYHut5cnqx0xBn9HsKywsRhD0RLyVj6bXj8rK+zzpKY4vc7cnBMhXdQKuj6g==
-X-Received: by 2002:aa7:90c5:0:b0:572:6e9b:9f9e with SMTP id k5-20020aa790c5000000b005726e9b9f9emr38300655pfk.19.1671423363163;
-        Sun, 18 Dec 2022 20:16:03 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=74r6/OFw2o+y3LmvB17ImA1vks0iJdTpJFuHNLqCbh4=;
+        b=GvLbGjTe9s0dZJnzu8s4Y7ugm7VNMp2cGDp8e3nL8VTffD6ml6XpoPMmTW7Er4nW+f
+         m3fHYLND9uB7iIquMtXJBXaGGf08OFPcl0ybTSVr48oXesy3xPYL8FHlFEjRGqdWqbaI
+         639dmpmrKlAOn5VPvp5FG+Z9/zoZ72xgfKocyEdqw9WXPjpva7X24OQMpGIkAdPpXxoa
+         oyQ2ylktnkrO96EAgqh5u6tI7Jq/PtUC1R1Aj0WQP/JOTt+a1+FC0yEDNNgmvrfoBVTC
+         gcs2QLXMgB9PA4N72vRlJZqx9V59kwc1omCzfnwxsSd8+/oviPT6CtUAF8iQgNRx588o
+         RrVQ==
+X-Gm-Message-State: ANoB5plvQMo0+uYE9cPkS5Kx6I9HQfiJgDwFfVhrZjqHlXbabZoKvkMD
+        Ig1B/EZP3yiZ9aXKvEWXFornYSDooieveaoV
+X-Google-Smtp-Source: AA0mqf4vmHvzGdbj+T92o6e+xzCwpd/4CzoqhvKi9Odt+HLlBW2VabmR2XTkB4pCkDQvBA4gEbFOIQ==
+X-Received: by 2002:a17:903:22c5:b0:189:f708:9b67 with SMTP id y5-20020a17090322c500b00189f7089b67mr57978250plg.46.1671432291402;
+        Sun, 18 Dec 2022 22:44:51 -0800 (PST)
 Received: from localhost.localdomain ([1.202.165.115])
-        by smtp.gmail.com with ESMTPSA id x28-20020aa78f1c000000b00575caf8478dsm5363055pfr.41.2022.12.18.20.15.59
+        by smtp.gmail.com with ESMTPSA id jf14-20020a170903268e00b00189a50d2a3esm6146641plb.241.2022.12.18.22.44.47
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 18 Dec 2022 20:16:02 -0800 (PST)
+        Sun, 18 Dec 2022 22:44:50 -0800 (PST)
 From:   xiangxia.m.yue@gmail.com
 To:     bpf@vger.kernel.org
 Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
@@ -62,12 +61,10 @@ Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Hou Tao <houtao1@huawei.com>
-Subject: [bpf-next v3 2/2] selftests/bpf: add test case for htab map
-Date:   Mon, 19 Dec 2022 12:15:51 +0800
-Message-Id: <20221219041551.69344-2-xiangxia.m.yue@gmail.com>
+Subject: [bpf-next v3 1/2] bpf: add runtime stats, max cost
+Date:   Mon, 19 Dec 2022 14:44:27 +0800
+Message-Id: <20221219064428.71784-1-xiangxia.m.yue@gmail.com>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20221219041551.69344-1-xiangxia.m.yue@gmail.com>
-References: <20221219041551.69344-1-xiangxia.m.yue@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -82,18 +79,23 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-This testing show how to reproduce deadlock in special case.
-We update htab map in Task and NMI context. Task can be interrupted by
-NMI, if the same map bucket was locked, there will be a deadlock.
+Now user can enable sysctl kernel.bpf_stats_enabled to fetch
+run_time_ns and run_cnt. It's easy to calculate the average value.
 
-* map max_entries is 2.
-* NMI using key 4 and Task context using key 20.
-* so same bucket index but map_locked index is different.
+In some case, the max cost for bpf prog invoked, are more useful:
+is there a burst sysload or high cpu usage:
 
-The selftest use perf to produce the NMI and fentry nmi_handle.
-Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
-map syscall increase this counter in bpf_disable_instrumentation.
-Then fentry nmi_handle and update hash map will reproduce the issue.
+* If prog invoked frequently(run_cnt may be too large), run_time_ns/run_cnt
+  is not ideal to indicate a bpf prog cpu burst. And syscall frequently
+  may consume a lot of CPU cycles.
+* This also help us to debug bpf prog, the cost is what we want?
+  if not, there may be an issue in bpf prog.
+
+This patch introduce a update stats helper.
+
+$ bpftool --json --pretty p s
+   ...
+   "run_max_cost_ns": 313367
 
 Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -108,159 +110,179 @@ Cc: Stanislav Fomichev <sdf@google.com>
 Cc: Hao Luo <haoluo@google.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Hou Tao <houtao1@huawei.com>
-Acked-by: Yonghong Song <yhs@fb.com>
 ---
- tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
- tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
- .../selftests/bpf/prog_tests/htab_deadlock.c  | 75 +++++++++++++++++++
- .../selftests/bpf/progs/htab_deadlock.c       | 32 ++++++++
- 4 files changed, 109 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
- create mode 100644 tools/testing/selftests/bpf/progs/htab_deadlock.c
+ include/linux/filter.h   | 29 ++++++++++++++++++++++-------
+ include/uapi/linux/bpf.h |  1 +
+ kernel/bpf/syscall.c     | 10 +++++++++-
+ kernel/bpf/trampoline.c  | 10 +---------
+ 4 files changed, 33 insertions(+), 17 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-index 99cc33c51eaa..87e8fc9c9df2 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -24,6 +24,7 @@ fexit_test                                       # fexit_attach unexpected error
- get_func_args_test                               # get_func_args_test__attach unexpected error: -524 (errno 524) (trampoline)
- get_func_ip_test                                 # get_func_ip_test__attach unexpected error: -524 (errno 524) (trampoline)
- htab_update/reenter_update
-+htab_deadlock                                    # failed to find kernel BTF type ID of 'nmi_handle': -3 (trampoline)
- kfree_skb                                        # attach fentry unexpected error: -524 (trampoline)
- kfunc_call/subprog                               # extern (var ksym) 'bpf_prog_active': not found in kernel BTF
- kfunc_call/subprog_lskel                         # skel unexpected error: -2
-diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
-index 585fcf73c731..735239b31050 100644
---- a/tools/testing/selftests/bpf/DENYLIST.s390x
-+++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-@@ -26,6 +26,7 @@ get_func_args_test	                 # trampoline
- get_func_ip_test                         # get_func_ip_test__attach unexpected error: -524                             (trampoline)
- get_stack_raw_tp                         # user_stack corrupted user stack                                             (no backchain userspace)
- htab_update                              # failed to attach: ERROR: strerror_r(-524)=22                                (trampoline)
-+htab_deadlock                            # failed to find kernel BTF type ID of 'nmi_handle': -3                       (trampoline)
- kfree_skb                                # attach fentry unexpected error: -524                                        (trampoline)
- kfunc_call                               # 'bpf_prog_active': not found in kernel BTF                                  (?)
- kfunc_dynptr_param                       # JIT does not support calling kernel function                                (kfunc)
-diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-new file mode 100644
-index 000000000000..137dce8f1346
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 DiDi Global Inc. */
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <test_progs.h>
-+
-+#include "htab_deadlock.skel.h"
-+
-+static int perf_event_open(void)
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index bf701976056e..886b65fcd4ac 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -556,6 +556,7 @@ struct bpf_prog_stats {
+ 	u64_stats_t cnt;
+ 	u64_stats_t nsecs;
+ 	u64_stats_t misses;
++	u64_stats_t max_cost;
+ 	struct u64_stats_sync syncp;
+ } __aligned(2 * sizeof(u64));
+ 
+@@ -578,6 +579,26 @@ typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
+ 					  unsigned int (*bpf_func)(const void *,
+ 								   const struct bpf_insn *));
+ 
++static inline void bpf_prog_update_stats(const struct bpf_prog *prog, u64 start)
 +{
-+	struct perf_event_attr attr = {0};
-+	int pfd;
++	struct bpf_prog_stats *stats;
++	unsigned long flags;
++	u64 run_time, max_cost;
 +
-+	/* create perf event on CPU 0 */
-+	attr.size = sizeof(attr);
-+	attr.type = PERF_TYPE_HARDWARE;
-+	attr.config = PERF_COUNT_HW_CPU_CYCLES;
-+	attr.freq = 1;
-+	attr.sample_freq = 1000;
-+	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
++	stats = this_cpu_ptr(prog->stats);
++	flags = u64_stats_update_begin_irqsave(&stats->syncp);
 +
-+	return pfd >= 0 ? pfd : -errno;
++	run_time =  sched_clock() - start;
++	u64_stats_inc(&stats->cnt);
++	u64_stats_add(&stats->nsecs, run_time);
++
++	max_cost = u64_stats_read(&stats->max_cost);
++	if (max_cost < run_time)
++		u64_stats_set(&stats->max_cost, run_time);
++
++	u64_stats_update_end_irqrestore(&stats->syncp, flags);
 +}
 +
-+void test_htab_deadlock(void)
-+{
-+	unsigned int val = 0, key = 20;
-+	struct bpf_link *link = NULL;
-+	struct htab_deadlock *skel;
-+	int err, i, pfd;
-+	cpu_set_t cpus;
-+
-+	skel = htab_deadlock__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	err = htab_deadlock__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto clean_skel;
-+
-+	/* NMI events. */
-+	pfd = perf_event_open();
-+	if (pfd < 0) {
-+		if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
-+			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
-+			test__skip();
-+			goto clean_skel;
-+		}
-+		if (!ASSERT_GE(pfd, 0, "perf_event_open"))
-+			goto clean_skel;
-+	}
-+
-+	link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
-+	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
-+		goto clean_pfd;
-+
-+	/* Pinned on CPU 0 */
-+	CPU_ZERO(&cpus);
-+	CPU_SET(0, &cpus);
-+	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
-+
-+	/* update bpf map concurrently on CPU0 in NMI and Task context.
-+	 * there should be no kernel deadlock.
-+	 */
-+	for (i = 0; i < 100000; i++)
-+		bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
-+				    &key, &val, BPF_ANY);
-+
-+	bpf_link__destroy(link);
-+clean_pfd:
-+	close(pfd);
-+clean_skel:
-+	htab_deadlock__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-new file mode 100644
-index 000000000000..d394f95e97c3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 DiDi Global Inc. */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 2);
-+	__uint(map_flags, BPF_F_ZERO_SEED);
-+	__type(key, unsigned int);
-+	__type(value, unsigned int);
-+} htab SEC(".maps");
-+
-+/* nmi_handle on x86 platform. If changing keyword
-+ * "static" to "inline", this prog load failed. */
-+SEC("fentry/nmi_handle")
-+int bpf_nmi_handle(struct pt_regs *regs)
-+{
-+	unsigned int val = 0, key = 4;
-+
-+	bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
-+	return 0;
-+}
-+
-+SEC("perf_event")
-+int bpf_empty(struct pt_regs *regs)
-+{
-+	return 0;
-+}
+ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+ 					  const void *ctx,
+ 					  bpf_dispatcher_fn dfunc)
+@@ -586,16 +607,10 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+ 
+ 	cant_migrate();
+ 	if (static_branch_unlikely(&bpf_stats_enabled_key)) {
+-		struct bpf_prog_stats *stats;
+ 		u64 start = sched_clock();
+-		unsigned long flags;
+ 
+ 		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+-		stats = this_cpu_ptr(prog->stats);
+-		flags = u64_stats_update_begin_irqsave(&stats->syncp);
+-		u64_stats_inc(&stats->cnt);
+-		u64_stats_add(&stats->nsecs, sched_clock() - start);
+-		u64_stats_update_end_irqrestore(&stats->syncp, flags);
++		bpf_prog_update_stats(prog, start);
+ 	} else {
+ 		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+ 	}
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 464ca3f01fe7..da4d1f2d7bc2 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6259,6 +6259,7 @@ struct bpf_prog_info {
+ 	__u32 verified_insns;
+ 	__u32 attach_btf_obj_id;
+ 	__u32 attach_btf_id;
++	__u64 run_max_cost_ns;
+ } __attribute__((aligned(8)));
+ 
+ struct bpf_map_info {
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 64131f88c553..06439b09863d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2105,6 +2105,7 @@ struct bpf_prog_kstats {
+ 	u64 nsecs;
+ 	u64 cnt;
+ 	u64 misses;
++	u64 max_cost;
+ };
+ 
+ void notrace bpf_prog_inc_misses_counter(struct bpf_prog *prog)
+@@ -2122,12 +2123,13 @@ static void bpf_prog_get_stats(const struct bpf_prog *prog,
+ 			       struct bpf_prog_kstats *stats)
+ {
+ 	u64 nsecs = 0, cnt = 0, misses = 0;
++	u64 max_cost = 0;
+ 	int cpu;
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		const struct bpf_prog_stats *st;
+ 		unsigned int start;
+-		u64 tnsecs, tcnt, tmisses;
++		u64 tnsecs, tcnt, tmisses, tmax_cost;
+ 
+ 		st = per_cpu_ptr(prog->stats, cpu);
+ 		do {
+@@ -2135,14 +2137,17 @@ static void bpf_prog_get_stats(const struct bpf_prog *prog,
+ 			tnsecs = u64_stats_read(&st->nsecs);
+ 			tcnt = u64_stats_read(&st->cnt);
+ 			tmisses = u64_stats_read(&st->misses);
++			tmax_cost = u64_stats_read(&st->max_cost);
+ 		} while (u64_stats_fetch_retry(&st->syncp, start));
+ 		nsecs += tnsecs;
+ 		cnt += tcnt;
+ 		misses += tmisses;
++		max_cost = max(max_cost, tmax_cost);
+ 	}
+ 	stats->nsecs = nsecs;
+ 	stats->cnt = cnt;
+ 	stats->misses = misses;
++	stats->max_cost = max_cost;
+ }
+ 
+ #ifdef CONFIG_PROC_FS
+@@ -2162,6 +2167,7 @@ static void bpf_prog_show_fdinfo(struct seq_file *m, struct file *filp)
+ 		   "prog_id:\t%u\n"
+ 		   "run_time_ns:\t%llu\n"
+ 		   "run_cnt:\t%llu\n"
++		   "run_max_cost_ns:\t%llu\n"
+ 		   "recursion_misses:\t%llu\n"
+ 		   "verified_insns:\t%u\n",
+ 		   prog->type,
+@@ -2171,6 +2177,7 @@ static void bpf_prog_show_fdinfo(struct seq_file *m, struct file *filp)
+ 		   prog->aux->id,
+ 		   stats.nsecs,
+ 		   stats.cnt,
++		   stats.max_cost,
+ 		   stats.misses,
+ 		   prog->aux->verified_insns);
+ }
+@@ -3962,6 +3969,7 @@ static int bpf_prog_get_info_by_fd(struct file *file,
+ 	info.run_time_ns = stats.nsecs;
+ 	info.run_cnt = stats.cnt;
+ 	info.recursion_misses = stats.misses;
++	info.run_max_cost_ns = stats.max_cost;
+ 
+ 	info.verified_insns = prog->aux->verified_insns;
+ 
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index d6395215b849..4ddad462562e 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -882,8 +882,6 @@ static u64 notrace __bpf_prog_enter_recur(struct bpf_prog *prog, struct bpf_tram
+ static void notrace update_prog_stats(struct bpf_prog *prog,
+ 				      u64 start)
+ {
+-	struct bpf_prog_stats *stats;
+-
+ 	if (static_branch_unlikely(&bpf_stats_enabled_key) &&
+ 	    /* static_key could be enabled in __bpf_prog_enter*
+ 	     * and disabled in __bpf_prog_exit*.
+@@ -891,13 +889,7 @@ static void notrace update_prog_stats(struct bpf_prog *prog,
+ 	     * Hence check that 'start' is valid.
+ 	     */
+ 	    start > NO_START_TIME) {
+-		unsigned long flags;
+-
+-		stats = this_cpu_ptr(prog->stats);
+-		flags = u64_stats_update_begin_irqsave(&stats->syncp);
+-		u64_stats_inc(&stats->cnt);
+-		u64_stats_add(&stats->nsecs, sched_clock() - start);
+-		u64_stats_update_end_irqrestore(&stats->syncp, flags);
++		bpf_prog_update_stats(prog, start);
+ 	}
+ }
+ 
 -- 
 2.27.0
 
