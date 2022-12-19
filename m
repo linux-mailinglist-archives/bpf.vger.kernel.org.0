@@ -2,58 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2186511C1
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 19:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A609165121C
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 19:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbiLSSZw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 13:25:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
+        id S231531AbiLSSll (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 13:41:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232037AbiLSSZv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 13:25:51 -0500
+        with ESMTP id S229712AbiLSSlj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 13:41:39 -0500
 Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F591C2
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:25:48 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id h185-20020a636cc2000000b004820a10a57bso5943787pgc.22
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:25:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9749EF76
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:41:38 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 69-20020a630148000000b00478118684c4so5988083pgb.20
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 10:41:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=x3tzCB48gF4DUiR72PsSUHhR/otUmgL5n1p4CFlOR1Q=;
-        b=pGjaeZiRyDxq/83lXKFYfHcVeAsO6stm+MpcgZ269qBTqmX9/z50lYg9Iaas/UKX+D
-         WvevZr+BqkcQtURHum5E34m7tfWhac1tvGUG0AzJWqcazaqxnNmBDn8IR1KokmVJH77+
-         7W4D6DD/M/O1HvTZcgkTXhuzhe4R5LIjWP7HB/pHy3E52EZph14M41/X59UnS+Jr/B8B
-         NSK5HP17ooQmYYyjAG9p1YNdMuUbrNZiUdYY2w16har7iEne7WGMtAYkgqeTt3BH9iAq
-         R4uQsmPG5ZihQw+G3TIrH4pI2iJBz4Ia5L6XytZXzQb7+Rlf17vOiUeNDDdGEvT0WkwV
-         6ZaA==
+        bh=SNYwUfFTuoAl5hIOKZfjRFYuwooe+ZnU5TXmMtVw1Vw=;
+        b=PCE1gF+1xjOltBu41UU9JPCPlViAY0cp05OJvxQyQmPrpc7dNlHqmkq7q85iScUgvx
+         59kbvpZ4IjfRtmma8ODffuMTsAdjF6mc9FKVnFuKmw3rIELY0aR224rULoZiXejfOyPf
+         FqKdlLrrnzQ6/TCerumh1X/uvJfXZqds67yZn+AFQJl4989wHnRjAT2AzwxFsBTJNKfx
+         cL6dAu+m1G6g1ck0y4oLro0/8KGrxIl8w+FuqOar5e0t0qvTFZly6zsHf3kBOU8TZs8R
+         LLRlKdcxr8DoXqpBUn8ZIP3Srjfi+Eo3QZ34EJGob+nKn5A2MI7/q1aI8OxYh9LPoYPL
+         oMfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x3tzCB48gF4DUiR72PsSUHhR/otUmgL5n1p4CFlOR1Q=;
-        b=33b67sXzdlwaoS38ZIKfK1KSWKXVnMVBrni8VXDx9eKlpOE+5JJd2FDBq8msZuODEJ
-         gskHbaDkd0HW/LfGluJAuEjkF509CQYixRfE/RVudgsK7VJuV78OaVLO/PiFj1PuIfxS
-         YYv5jk4VP9FWeh2LkPhVvB78/P3v9ZBsofeU2wp2u/8YgNKaOl4VCfkGMWaDQHa+Oh34
-         VwJdPelGM01I6PEkgfB3NYmyVPZwL2XC2UUuh9hPfon/TilCsnFwshGHYapX49rexWJg
-         PLkxxsTdgRFVB91uPLiSh7yHC9oZ2BwEzVsgiRN4HFECSjlXuOzTkqvtfewRacVn5s9j
-         strw==
-X-Gm-Message-State: ANoB5pnQDAUTifwifjRsdoii5cJnD28XBizEcswCzQb3VtVFZlsIq+m5
-        KzjofLzZNFF7kxWTEEM6Qq3Yhwg=
-X-Google-Smtp-Source: AA0mqf6puTqQ2ucwDFK4jw3oPGRDxktjSNq/eYitXuJnjIq3osQF8HDX/WMho/CTUDgXiKHsEV8hfXw=
+        bh=SNYwUfFTuoAl5hIOKZfjRFYuwooe+ZnU5TXmMtVw1Vw=;
+        b=CDmO1JVRsmC7reyM0aaZu1EGGPDP7G8k9g6enPZNN+6kJqZVL+UxFqZIFW4NnyRbRo
+         kBoUiUpEJW6NsoMZcGfSUU7a9kO/efqHSzmBFHSndXeP8roJEIvF7mBH3vQK2NbmBtBx
+         rW+Ow+CNKC6Y/s2bw80yok7V5ICKvppmVj0jT+CSt+0QKUyXYjhUxz9lmrRiH748WL04
+         4KrPDX6jzgWQ2on4XZpyop49G+iWETLVJw9kptqsi21j92sT1m/LhG0VAxg4J4ZXx0uA
+         0xLlyH+L8PoHJtudYZ49lHVefVf07RXvjR+9ibuNBj38tm85kdUqRSbWsuIDoWZ12GOw
+         okiQ==
+X-Gm-Message-State: ANoB5plnTSPxdziRDf9qKG5wadGZ87krX6R6+pOLOT6BbpJNdcKSU2hc
+        VghcEUcSebex1Z1omlxJwjRE+4Q=
+X-Google-Smtp-Source: AA0mqf5TTar+nQv3C/Qqpl/Q/pwSxFitrhZd1MdtZyr+Jmy7ViVHZitW9mXzJszzBU8Xm9p1hKZoeEI=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:aa7:9192:0:b0:563:1ae2:6daf with SMTP id
- x18-20020aa79192000000b005631ae26dafmr11948705pfa.71.1671474348237; Mon, 19
- Dec 2022 10:25:48 -0800 (PST)
-Date:   Mon, 19 Dec 2022 10:25:46 -0800
-In-Reply-To: <16c81434c64f1c2a5d10e06c7199cc4715e467a0.1671242108.git.aditi.ghag@isovalent.com>
+ (user=sdf job=sendgmr) by 2002:a17:902:74c3:b0:189:71ff:cfb5 with SMTP id
+ f3-20020a17090274c300b0018971ffcfb5mr60929233plt.7.1671475298158; Mon, 19 Dec
+ 2022 10:41:38 -0800 (PST)
+Date:   Mon, 19 Dec 2022 10:41:36 -0800
+In-Reply-To: <20221218051734.31411-1-cehrig@cloudflare.com>
 Mime-Version: 1.0
-References: <cover.1671242108.git.aditi.ghag@isovalent.com> <16c81434c64f1c2a5d10e06c7199cc4715e467a0.1671242108.git.aditi.ghag@isovalent.com>
-Message-ID: <Y6CsqsH1JQmVWgNx@google.com>
-Subject: Re: [PATCH 2/2] selftests/bpf: Add tests for bpf_sock_destroy
+References: <20221218051734.31411-1-cehrig@cloudflare.com>
+Message-ID: <Y6CwYK4xMTJv/R7u@google.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add flag BPF_F_NO_TUNNEL_KEY to bpf_skb_set_tunnel_key()
 From:   sdf@google.com
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com
+To:     Christian Ehrig <cehrig@cloudflare.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Kui-Feng Lee <kuifeng@fb.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Kaixi Fan <fankaixi.li@bytedance.com>,
+        Shmulik Ladkani <shmulik@metanetworks.com>,
+        Paul Chaignon <paul@isovalent.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -65,289 +85,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/17, Aditi Ghag wrote:
-> The test cases for TCP and UDP mirror the
-> intended usages of the helper.
+On 12/18, Christian Ehrig wrote:
+> This patch allows to remove TUNNEL_KEY from the tunnel flags bitmap
+> when using bpf_skb_set_tunnel_key by providing a BPF_F_NO_TUNNEL_KEY
+> flag. On egress, the resulting tunnel header will not contain a tunnel
+> key if the protocol and implementation supports it.
 
-> As the helper destroys sockets asynchronously,
-> the tests have sleep invocation before validating
-> if the sockets were destroyed by sending data.
+> At the moment bpf_tunnel_key wants a user to specify a numeric tunnel
+> key. This will wrap the inner packet into a tunnel header with the key
+> bit and value set accordingly. This is problematic when using a tunnel
+> protocol that supports optional tunnel keys and a receiving tunnel
+> device that is not expecting packets with the key bit set. The receiver
+> won't decapsulate and drop the packet.
 
-> Also, while all the protocol specific helpers
-> set `ECONNABORTED` error code on the destroyed sockets,
-> only the TCP test case has the validation check. UDP
-> sockets have an overriding error code from the disconnect
-> call during abort.
+> RFC 2890 and RFC 2784 GRE tunnels are examples where this flag is
+> useful. It allows for generating packets, that can be decapsulated by
+> a GRE tunnel device not operating in collect metadata mode or not
+> expecting the key bit set.
 
-> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+> Signed-off-by: Christian Ehrig <cehrig@cloudflare.com>
+
+Acked-by: Stanislav Fomichev <sdf@google.com>
+
 > ---
->   .../selftests/bpf/prog_tests/sock_destroy.c   | 131 ++++++++++++++++++
->   .../selftests/bpf/progs/sock_destroy_prog.c   |  96 +++++++++++++
->   2 files changed, 227 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_destroy.c
->   create mode 100644 tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+>   include/uapi/linux/bpf.h       | 4 ++++
+>   net/core/filter.c              | 5 ++++-
+>   tools/include/uapi/linux/bpf.h | 4 ++++
+>   3 files changed, 12 insertions(+), 1 deletion(-)
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sock_destroy.c  
-> b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
-> new file mode 100644
-> index 000000000000..b920f4501809
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
-> @@ -0,0 +1,131 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +
-> +#include "sock_destroy_prog.skel.h"
-> +#include "network_helpers.h"
-> +
-> +#define ECONNABORTED 103
-> +
-> +static int duration;
-> +
-> +static void start_iter_sockets(struct bpf_program *prog)
-> +{
-> +	struct bpf_link *link;
-> +	char buf[16] = {};
-> +	int iter_fd, len;
-> +
-> +	link = bpf_program__attach_iter(prog, NULL);
-> +	if (!ASSERT_OK_PTR(link, "attach_iter"))
-> +		return;
-> +
-> +	iter_fd = bpf_iter_create(bpf_link__fd(link));
-> +	if (!ASSERT_GE(iter_fd, 0, "create_iter"))
-> +		goto free_link;
-> +
-> +	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
-> +		;
-> +	CHECK(len < 0, "read", "read failed: %s\n", strerror(errno));
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 464ca3f01fe7..bc1a3d232ae4 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -2001,6 +2001,9 @@ union bpf_attr {
+>    * 			sending the packet. This flag was added for GRE
+>    * 			encapsulation, but might be used with other protocols
+>    * 			as well in the future.
+> + * 		**BPF_F_NO_TUNNEL_KEY**
+> + * 			Add a flag to tunnel metadata indicating that no tunnel
+> + * 			key should be set in the resulting tunnel header.
+>    *
+>    * 		Here is a typical usage on the transmit path:
+>    *
+> @@ -5764,6 +5767,7 @@ enum {
+>   	BPF_F_ZERO_CSUM_TX		= (1ULL << 1),
+>   	BPF_F_DONT_FRAGMENT		= (1ULL << 2),
+>   	BPF_F_SEQ_NUMBER		= (1ULL << 3),
+> +	BPF_F_NO_TUNNEL_KEY		= (1ULL << 4),
+>   };
 
-CHECK(s) are not super appealing in the new code, can you replace them
-all with ASSERT(s) ? This should also let you drop 'duration' variable.
+>   /* BPF_FUNC_skb_get_tunnel_key flags. */
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 929358677183..c746e4d77214 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4615,7 +4615,8 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff  
+> *, skb,
+>   	struct ip_tunnel_info *info;
 
-> +
-> +	close(iter_fd);
-> +
-> +free_link:
-> +	bpf_link__destroy(link);
-> +}
-> +
-> +void test_tcp(struct sock_destroy_prog *skel)
-> +{
-> +	int serv = -1, clien = -1, n = 0;
-> +
-> +	serv = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-> +	if (CHECK(serv < 0, "start_server", "failed to start server\n"))
-> +		goto cleanup_serv;
-> +
-> +	clien = connect_to_fd(serv, 0);
-> +	if (CHECK(clien < 0, "connect_to_fd", "errno %d\n", errno))
-> +		goto cleanup_serv;
-> +
-> +	serv = accept(serv, NULL, NULL);
-> +	if (CHECK(serv < 0, "accept", "errno %d\n", errno))
-> +		goto cleanup;
-> +
-> +	n = send(clien, "t", 1, 0);
-> +	if (CHECK(n < 0, "client_send", "client failed to send on socket\n"))
-> +		goto cleanup;
-> +
-> +	start_iter_sockets(skel->progs.iter_tcp6);
-> +
-> +	// Sockets are destroyed asynchronously.
-> +	usleep(1000);
-> +	n = send(clien, "t", 1, 0);
+>   	if (unlikely(flags & ~(BPF_F_TUNINFO_IPV6 | BPF_F_ZERO_CSUM_TX |
+> -			       BPF_F_DONT_FRAGMENT | BPF_F_SEQ_NUMBER)))
+> +			       BPF_F_DONT_FRAGMENT | BPF_F_SEQ_NUMBER |
+> +			       BPF_F_NO_TUNNEL_KEY)))
+>   		return -EINVAL;
+>   	if (unlikely(size != sizeof(struct bpf_tunnel_key))) {
+>   		switch (size) {
+> @@ -4653,6 +4654,8 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff  
+> *, skb,
+>   		info->key.tun_flags &= ~TUNNEL_CSUM;
+>   	if (flags & BPF_F_SEQ_NUMBER)
+>   		info->key.tun_flags |= TUNNEL_SEQ;
+> +	if (flags & BPF_F_NO_TUNNEL_KEY)
+> +		info->key.tun_flags &= ~TUNNEL_KEY;
 
-That's racy. Do some kind of:
-	while (retries--) {
-		usleep(100);
-		n = send (...)
-		if (n < 0)
-			break;
-	}
-	ASSERT_LT(n, 0);
-	ASSERT_EQ(errno, ECONNABORTED);
+>   	info->key.tun_id = cpu_to_be64(from->tunnel_id);
+>   	info->key.tos = from->tunnel_tos;
+> diff --git a/tools/include/uapi/linux/bpf.h  
+> b/tools/include/uapi/linux/bpf.h
+> index 464ca3f01fe7..bc1a3d232ae4 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -2001,6 +2001,9 @@ union bpf_attr {
+>    * 			sending the packet. This flag was added for GRE
+>    * 			encapsulation, but might be used with other protocols
+>    * 			as well in the future.
+> + * 		**BPF_F_NO_TUNNEL_KEY**
+> + * 			Add a flag to tunnel metadata indicating that no tunnel
+> + * 			key should be set in the resulting tunnel header.
+>    *
+>    * 		Here is a typical usage on the transmit path:
+>    *
+> @@ -5764,6 +5767,7 @@ enum {
+>   	BPF_F_ZERO_CSUM_TX		= (1ULL << 1),
+>   	BPF_F_DONT_FRAGMENT		= (1ULL << 2),
+>   	BPF_F_SEQ_NUMBER		= (1ULL << 3),
+> +	BPF_F_NO_TUNNEL_KEY		= (1ULL << 4),
+>   };
 
-> +
-> +	if (CHECK(n > 0, "client_send", "succeeded on destroyed socket\n"))
-> +		goto cleanup;
-> +	CHECK(errno != ECONNABORTED, "client_send", "unexpected error code on  
-> destroyed socket\n");
-> +
-> +
-> +cleanup:
-> +	close(clien);
-> +cleanup_serv:
-> +	close(serv);
-> +}
-> +
-> +
-> +void test_udp(struct sock_destroy_prog *skel)
-> +{
-> +	int serv = -1, clien = -1, n = 0;
-> +
-> +	serv = start_server(AF_INET6, SOCK_DGRAM, NULL, 0, 0);
-> +	if (CHECK(serv < 0, "start_server", "failed to start server\n"))
-> +		goto cleanup_serv;
-> +
-> +	clien = connect_to_fd(serv, 0);
-> +	if (CHECK(clien < 0, "connect_to_fd", "errno %d\n", errno))
-> +		goto cleanup_serv;
-> +
-> +	n = send(clien, "t", 1, 0);
-> +	if (CHECK(n < 0, "client_send", "client failed to send on socket\n"))
-> +		goto cleanup;
-> +
-> +	start_iter_sockets(skel->progs.iter_udp6);
-> +
-> +	// Sockets are destroyed asynchronously.
-> +	usleep(1000);
-
-Same here.
-
-> +
-> +	n = send(clien, "t", 1, 0);
-> +	if (CHECK(n > 0, "client_send", "succeeded on destroyed socket\n"))
-> +		goto cleanup;
-> +	// UDP sockets have an overriding error code after they are  
-> disconnected.
-> +
-> +
-> +cleanup:
-> +	close(clien);
-> +cleanup_serv:
-> +	close(serv);
-> +}
-> +
-> +void test_sock_destroy(void)
-> +{
-> +	int cgroup_fd = 0;
-> +	struct sock_destroy_prog *skel;
-> +
-> +	skel = sock_destroy_prog__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
-> +		return;
-> +
-> +	cgroup_fd = test__join_cgroup("/sock_destroy");
-> +	if (CHECK(cgroup_fd < 0, "join_cgroup", "cgroup creation failed\n"))
-> +		goto close_cgroup_fd;
-> +
-> +	skel->links.sock_connect = bpf_program__attach_cgroup(
-> +		skel->progs.sock_connect, cgroup_fd);
-> +	if (!ASSERT_OK_PTR(skel->links.sock_connect, "prog_attach"))
-> +		goto close_cgroup_fd;
-> +
-> +	test_tcp(skel);
-> +	test_udp(skel);
-> +
-> +
-> +close_cgroup_fd:
-> +	close(cgroup_fd);
-> +	sock_destroy_prog__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/sock_destroy_prog.c  
-> b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
-> new file mode 100644
-> index 000000000000..ec566033f41f
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
-> @@ -0,0 +1,96 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +
-> +#include <bpf/bpf_helpers.h>
-> +
-> +#define AF_INET6 10
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__type(key, __u32);
-> +	__type(value, __u64);
-> +} tcp_conn_sockets SEC(".maps");
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__type(key, __u32);
-> +	__type(value, __u64);
-> +} udp_conn_sockets SEC(".maps");
-> +
-> +SEC("cgroup/connect6")
-> +int sock_connect(struct bpf_sock_addr *ctx)
-> +{
-> +	int key = 0;
-> +	__u64 sock_cookie = 0;
-> +	__u32 keyc = 0;
-> +
-> +	if (ctx->family != AF_INET6 || ctx->user_family != AF_INET6)
-> +		return 1;
-> +
-> +	sock_cookie = bpf_get_socket_cookie(ctx);
-> +	if (ctx->protocol == IPPROTO_TCP)
-> +		bpf_map_update_elem(&tcp_conn_sockets, &key, &sock_cookie, 0);
-> +	else if (ctx->protocol == IPPROTO_UDP)
-> +		bpf_map_update_elem(&udp_conn_sockets, &keyc, &sock_cookie, 0);
-> +	else
-> +		return 1;
-> +
-> +	return 1;
-> +}
-> +
-> +SEC("iter/tcp")
-> +int iter_tcp6(struct bpf_iter__tcp *ctx)
-> +{
-> +	struct sock_common *sk_common = ctx->sk_common;
-> +	struct seq_file *seq = ctx->meta->seq;
-> +	__u64 sock_cookie = 0;
-> +	__u64 *val;
-> +	int key = 0;
-> +
-> +	if (!sk_common)
-> +		return 0;
-> +
-> +	if (sk_common->skc_family != AF_INET6)
-> +		return 0;
-> +
-> +	sock_cookie  = bpf_get_socket_cookie(sk_common);
-> +	val = bpf_map_lookup_elem(&tcp_conn_sockets, &key);
-> +
-> +	if (!val)
-> +		return 0;
-> +
-> +	if (sock_cookie == *val)
-> +		bpf_sock_destroy(sk_common);
-> +
-> +	return 0;
-> +}
-> +
-> +SEC("iter/udp")
-> +int iter_udp6(struct bpf_iter__udp *ctx)
-> +{
-> +	struct seq_file *seq = ctx->meta->seq;
-> +	struct udp_sock *udp_sk = ctx->udp_sk;
-> +	struct sock *sk = (struct sock *) udp_sk;
-> +	__u64 sock_cookie = 0;
-> +	int key = 0;
-> +	__u64 *val;
-> +
-> +	if (!sk)
-> +		return 0;
-> +
-> +	sock_cookie  = bpf_get_socket_cookie(sk);
-> +	val = bpf_map_lookup_elem(&udp_conn_sockets, &key);
-> +
-> +	if (!val)
-> +		return 0;
-> +
-> +	if (sock_cookie == *val)
-> +		bpf_sock_destroy(sk);
-> +
-> +	return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
+>   /* BPF_FUNC_skb_get_tunnel_key flags. */
 > --
-> 2.34.1
+> 2.37.4
 
