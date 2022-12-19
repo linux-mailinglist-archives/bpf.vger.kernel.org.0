@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E196513AE
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 21:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCC36513B6
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 21:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbiLSURo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 15:17:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43714 "EHLO
+        id S232277AbiLSURv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 15:17:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbiLSURl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 15:17:41 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CD9D4B;
-        Mon, 19 Dec 2022 12:17:41 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id gt4so10265742pjb.1;
-        Mon, 19 Dec 2022 12:17:41 -0800 (PST)
+        with ESMTP id S232524AbiLSURn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 15:17:43 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD32464FD;
+        Mon, 19 Dec 2022 12:17:42 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id 17so10201264pll.0;
+        Mon, 19 Dec 2022 12:17:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cSBoXkTO9My+aXQVa73V9O3XAdMbkV24JOkMxSiJcY8=;
-        b=ldw1Ubfb3TjOoV8lyocAD3ad70POYsiMVbiHAwjBkuOH+en9Ff+QJWE9C0z0rHdUtS
-         rxj8pXSIgt810LRp8agyqRdfOrRmISRLFKkn8Gdwss1F+wxjhx8MCFOqEhJnO/SMriPE
-         faKs7reTjqSH1TDRPmP45MfiCdvX8IeDDjWVKlsDu5B+g9Andgeu2gK04A0zTufBniTa
-         HKXG26BYX0FbhxbWC82Y8UqFj8E+jyuFVktFK9CuMNC4T31fKCBtaH3F2ODEJYAYj7s9
-         M6wgVUHUOPG9T4gwgtFEPC3bW7JsMAiR5j9e5wJqOGb8gQX/LCGbMRUmTWB+E793StJn
-         Z/UA==
+        bh=RjRD6WezQur7RnAVSzg16H/TNhNuOpZXrFzdEgyZjWY=;
+        b=K/iKHmimDZqirm0C7DqsQepDan/duix8fBLJ8QxlpMoI9Q/F+HJT8NS6kSDLd5FvI8
+         qHPfSE5jSlN0T/qSRbfhrt3vHNREdAWYIT8/6MRy/r4lKwV6ModsbZfTRjyVYv5egBnt
+         rUUOw0Fm9+pt5kUgixtixgUCOUK7f1/Bk/Y4omdYwDKHAVaa1/ezTfDEYNutI+DEWJhm
+         QcSAlVXIcUecVuO03SWTH2YonmxNyKIixBH0XCypanctfeQA0sNPLPwasaZcMfCF9Zyc
+         OB/Mac6lGYTBl/WvGzy+O4F7FSkUxmDI1YSBn+o2XOBomWfUl8RVh2cS/2XOhBrtZt1g
+         0xNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=cSBoXkTO9My+aXQVa73V9O3XAdMbkV24JOkMxSiJcY8=;
-        b=48w/RqQNrJKwu5L/QdIJvt5afRxLZkWfY8MQmc1UTtrJ/9IjVxjJyGwch++giKGoHL
-         w+V1QV4DA/ZEW+QTyOht648bjQvcK+bKB1IH7ULlwC9lGt9xxAD/v8QEZGFpHFbanddd
-         flereDlVa9I9rabr6EgMy41XXI7JbejUpmERNbSsoM3ii2CAABvOk1SiNA/B0oi6iekI
-         nLhXnhVmHLza22fk0HLp/l2iD1iCap/9M/YctxzSV4SKNMUejgoPZarBT1mVRuM+MnqN
-         ONWV+foqainSOgXNABVx839ixG9TW8YroGUdURWmcI1cp69gT6+sut9Twe+Qg1CRITAk
-         VXMQ==
-X-Gm-Message-State: AFqh2kphrbNHq26qQnVmIcFXmRg9hmDyXS5CE0e/8ZCq2yfq89NzCOkX
-        lUrWLqZ7oRcSl21TJLMgandOsFPkkpM=
-X-Google-Smtp-Source: AMrXdXssdnN3A8dp+4at4lNkqCo6ZBKkRRyB4eNIrVaWlnhtXU8nQXWQOpDTF+3bg0oHij03Ht8v4w==
-X-Received: by 2002:a17:90a:c7d3:b0:219:ba3d:7ee2 with SMTP id gf19-20020a17090ac7d300b00219ba3d7ee2mr11600054pjb.30.1671481060401;
-        Mon, 19 Dec 2022 12:17:40 -0800 (PST)
+        bh=RjRD6WezQur7RnAVSzg16H/TNhNuOpZXrFzdEgyZjWY=;
+        b=zhk+/W+dC5XFG9wNKG+tSP8bl0viQRKBoacLZUaUNaxeoNXsMaqH8y6D7JZBPQWTKr
+         HSx3mxG9DcJ9HAi8xJhRSj0d1n3uQ50UHcBVwBVZLKilgIE5Sy67y3AWB1tFFOleqGTG
+         C5FFT51SB1dhPgOTjIGNhrgCiEBjvPmZjZnVU2KSD6UFabZMQydQKBfNpAHxx6Xu4rUs
+         5rqFvJeNxZODH/oMTFAuFnL4jYYQMQKP4Gv1GcAv5fVEBkNNf0bWu9PKz5XhAda4oD20
+         OV4B2zsOeIzNRRM0PcT10iRUqgrEXCSlD1Uh/0AKhsDgmWYFvpDhVWBY5tzElHMF1kWm
+         PaoQ==
+X-Gm-Message-State: ANoB5plcZS4kubLNPMo5lBLG30W0ivkjRl2mv9l1w1Cqo0AdYn2zl/Tp
+        lRl3LsnxtRv/25dRsMXCGtQ=
+X-Google-Smtp-Source: AA0mqf6od1Sl2FQ2RQ0VOzeajp7ymIBLRUWtAdXUHXhWOr03W5wAoNhJktICdLgTO3MR/2F5ecy3sA==
+X-Received: by 2002:a17:90a:7525:b0:221:77b4:46e1 with SMTP id q34-20020a17090a752500b0022177b446e1mr27427217pjk.48.1671481062108;
+        Mon, 19 Dec 2022 12:17:42 -0800 (PST)
 Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:ff0:735a:2805:e706:5164])
-        by smtp.gmail.com with ESMTPSA id f10-20020a17090ace0a00b00219220edf0dsm6324260pju.48.2022.12.19.12.17.39
+        by smtp.gmail.com with ESMTPSA id f10-20020a17090ace0a00b00219220edf0dsm6324260pju.48.2022.12.19.12.17.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Dec 2022 12:17:39 -0800 (PST)
+        Mon, 19 Dec 2022 12:17:41 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
         Blake Jones <blakejones@google.com>, bpf@vger.kernel.org
-Subject: [PATCH 3/6] perf lock contention: Support lock type filtering for BPF
-Date:   Mon, 19 Dec 2022 12:17:29 -0800
-Message-Id: <20221219201732.460111-4-namhyung@kernel.org>
+Subject: [PATCH 4/6] perf lock contention: Add -L/--lock-filter option
+Date:   Mon, 19 Dec 2022 12:17:30 -0800
+Message-Id: <20221219201732.460111-5-namhyung@kernel.org>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
 In-Reply-To: <20221219201732.460111-1-namhyung@kernel.org>
 References: <20221219201732.460111-1-namhyung@kernel.org>
@@ -78,153 +78,268 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Likewise, add type_filter BPF hash map and check it when user gave a
-lock type filter.
+The -L/--lock-filter option is to filter only given locks.  The locks
+can be specified by address or name (if exists).
 
-  $ sudo ./perf lock con -ab -Y rwlock -- ./perf bench sched messaging
-  # Running 'sched/messaging' benchmark:
-  # 20 sender and receiver processes per group
-  # 10 groups == 400 processes run
+  $ sudo ./perf lock record -a  sleep 1
 
-       Total time: 0.203 [sec]
+  $ sudo ./perf lock con -l
+   contended   total wait     max wait     avg wait            address   symbol
+
+          57      1.11 ms     42.83 us     19.54 us   ffff9f4140059000
+          15    280.88 us     23.51 us     18.73 us   ffffffff9d007a40   jiffies_lock
+           1     20.49 us     20.49 us     20.49 us   ffffffff9d0d50c0   rcu_state
+           1      9.02 us      9.02 us      9.02 us   ffff9f41759e9ba0
+
+  $ sudo ./perf lock con -L jiffies_lock,rcu_state
    contended   total wait     max wait     avg wait         type   caller
 
-          15    156.19 us     19.45 us     10.41 us     rwlock:W   do_exit+0x36d
-           1     11.12 us     11.12 us     11.12 us     rwlock:R   do_wait+0x8b
-           1      5.09 us      5.09 us      5.09 us     rwlock:W   release_task+0x6e
+          15    280.88 us     23.51 us     18.73 us     spinlock   tick_sched_do_timer+0x93
+           1     20.49 us     20.49 us     20.49 us     spinlock   __softirqentry_text_start+0xeb
+
+  $ sudo ./perf lock con -L ffff9f4140059000
+   contended   total wait     max wait     avg wait         type   caller
+
+          38    779.40 us     42.83 us     20.51 us     spinlock   worker_thread+0x50
+          11    216.30 us     39.87 us     19.66 us     spinlock   queue_work_on+0x39
+           8    118.13 us     20.51 us     14.77 us     spinlock   kthread+0xe5
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-lock.c                     |  1 +
- tools/perf/util/bpf_lock_contention.c         | 15 ++++++++++++-
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 21 +++++++++++++++++--
- tools/perf/util/lock-contention.h             |  1 +
- 4 files changed, 35 insertions(+), 3 deletions(-)
+ tools/perf/Documentation/perf-lock.txt |   4 +
+ tools/perf/builtin-lock.c              | 140 +++++++++++++++++++++++--
+ tools/perf/util/lock-contention.h      |   4 +
+ 3 files changed, 142 insertions(+), 6 deletions(-)
 
+diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
+index dea04ad5c28e..0f9f720e599d 100644
+--- a/tools/perf/Documentation/perf-lock.txt
++++ b/tools/perf/Documentation/perf-lock.txt
+@@ -183,6 +183,10 @@ CONTENTION OPTIONS
+ 	Note that RW-variant of locks have :R and :W suffix.  Names without the
+ 	suffix are shortcuts for the both variants.  Ex) rwsem = rwsem:R + rwsem:W.
+ 
++-L::
++--lock-filter=<value>::
++	Show lock contention only for given lock addresses or names (comma separated list).
++
+ 
+ SEE ALSO
+ --------
 diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index 49b4add53204..e4e785d3b4ec 100644
+index e4e785d3b4ec..6b8ea2f0b90a 100644
 --- a/tools/perf/builtin-lock.c
 +++ b/tools/perf/builtin-lock.c
-@@ -1689,6 +1689,7 @@ static int __cmd_contention(int argc, const char **argv)
- 		.map_nr_entries = bpf_map_entries,
- 		.max_stack = max_stack_depth,
- 		.stack_skip = stack_skip,
-+		.filters = &filters,
- 	};
+@@ -32,6 +32,7 @@
+ #include <semaphore.h>
+ #include <math.h>
+ #include <limits.h>
++#include <ctype.h>
  
- 	session = perf_session__new(use_bpf ? NULL : &data, &eops);
-diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index 8e1b791dc58f..b8590b82ad3d 100644
---- a/tools/perf/util/bpf_lock_contention.c
-+++ b/tools/perf/util/bpf_lock_contention.c
-@@ -20,7 +20,7 @@ static struct lock_contention_bpf *skel;
- int lock_contention_prepare(struct lock_contention *con)
- {
- 	int i, fd;
--	int ncpus = 1, ntasks = 1;
-+	int ncpus = 1, ntasks = 1, ntypes = 1;
- 	struct evlist *evlist = con->evlist;
- 	struct target *target = con->target;
+ #include <linux/list.h>
+ #include <linux/hash.h>
+@@ -995,24 +996,52 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
+ 	unsigned int flags = evsel__intval(evsel, sample, "flags");
+ 	u64 key;
+ 	int i, ret;
++	static bool kmap_loaded;
++	struct machine *machine = &session->machines.host;
++	struct map *kmap;
++	struct symbol *sym;
  
-@@ -46,9 +46,12 @@ int lock_contention_prepare(struct lock_contention *con)
- 		ncpus = perf_cpu_map__nr(evlist->core.user_requested_cpus);
- 	if (target__has_task(target))
- 		ntasks = perf_thread_map__nr(evlist->core.threads);
-+	if (con->filters->nr_types)
-+		ntypes = con->filters->nr_types;
+ 	ret = get_key_by_aggr_mode(&key, addr, evsel, sample);
+ 	if (ret < 0)
+ 		return ret;
  
- 	bpf_map__set_max_entries(skel->maps.cpu_filter, ncpus);
- 	bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
-+	bpf_map__set_max_entries(skel->maps.type_filter, ntypes);
- 
- 	if (lock_contention_bpf__load(skel) < 0) {
- 		pr_err("Failed to load lock-contention BPF skeleton\n");
-@@ -90,6 +93,16 @@ int lock_contention_prepare(struct lock_contention *con)
- 		bpf_map_update_elem(fd, &pid, &val, BPF_ANY);
- 	}
- 
-+	if (con->filters->nr_types) {
-+		u8 val = 1;
++	if (!kmap_loaded) {
++		unsigned long *addrs;
 +
-+		skel->bss->has_type = 1;
-+		fd = bpf_map__fd(skel->maps.type_filter);
++		/* make sure it loads the kernel map to find lock symbols */
++		map__load(machine__kernel_map(machine));
++		kmap_loaded = true;
 +
-+		for (i = 0; i < con->filters->nr_types; i++)
-+			bpf_map_update_elem(fd, &con->filters->types[i], &val, BPF_ANY);
++		/* convert (kernel) symbols to addresses */
++		for (i = 0; i < filters.nr_syms; i++) {
++			sym = machine__find_kernel_symbol_by_name(machine,
++								  filters.syms[i],
++								  &kmap);
++			if (sym == NULL) {
++				pr_warning("ignore unknown symbol: %s\n",
++					   filters.syms[i]);
++				continue;
++			}
++
++			addrs = realloc(filters.addrs,
++					(filters.nr_addrs + 1) * sizeof(*addrs));
++			if (addrs == NULL) {
++				pr_warning("memory allocation failure\n");
++				return -ENOMEM;
++			}
++
++			addrs[filters.nr_addrs++] = kmap->unmap_ip(kmap, sym->start);
++			filters.addrs = addrs;
++		}
 +	}
 +
- 	/* these don't work well if in the rodata section */
- 	skel->bss->stack_skip = con->stack_skip;
- 	skel->bss->aggr_mode = con->aggr_mode;
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 11b0fc7ee53b..fb0128de7c00 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -62,10 +62,18 @@ struct {
- 	__uint(max_entries, 1);
- } task_filter SEC(".maps");
+ 	ls = lock_stat_find(key);
+ 	if (!ls) {
+ 		char buf[128];
+ 		const char *name = "";
+-		struct machine *machine = &session->machines.host;
+-		struct map *kmap;
+-		struct symbol *sym;
  
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u8));
-+	__uint(max_entries, 1);
-+} type_filter SEC(".maps");
-+
- /* control flags */
- int enabled;
- int has_cpu;
- int has_task;
-+int has_type;
- int stack_skip;
- 
- /* determine the key of lock stat */
-@@ -74,7 +82,7 @@ int aggr_mode;
- /* error stat */
- int lost;
- 
--static inline int can_record(void)
-+static inline int can_record(u64 *ctx)
- {
- 	if (has_cpu) {
- 		__u32 cpu = bpf_get_smp_processor_id();
-@@ -94,6 +102,15 @@ static inline int can_record(void)
+ 		switch (aggr_mode) {
+ 		case LOCK_AGGR_ADDR:
+-			/* make sure it loads the kernel map to find lock symbols */
+-			map__load(machine__kernel_map(machine));
+-
+ 			sym = machine__find_kernel_symbol(machine, key, &kmap);
+ 			if (sym)
+ 				name = sym->name;
+@@ -1052,6 +1081,20 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
  			return 0;
  	}
  
-+	if (has_type) {
-+		__u8 *ok;
-+		__u32 flags = (__u32)ctx[1];
++	if (filters.nr_addrs) {
++		bool found = false;
 +
-+		ok = bpf_map_lookup_elem(&type_filter, &flags);
-+		if (!ok)
++		for (i = 0; i < filters.nr_addrs; i++) {
++			if (addr == filters.addrs[i]) {
++				found = true;
++				break;
++			}
++		}
++
++		if (!found)
 +			return 0;
 +	}
 +
- 	return 1;
+ 	ts = thread_stat_findnew(sample->tid);
+ 	if (!ts)
+ 		return -ENOMEM;
+@@ -1496,6 +1539,15 @@ static void lock_filter_finish(void)
+ {
+ 	zfree(&filters.types);
+ 	filters.nr_types = 0;
++
++	zfree(&filters.addrs);
++	filters.nr_addrs = 0;
++
++	for (int i = 0; i < filters.nr_syms; i++)
++		free(filters.syms[i]);
++
++	zfree(&filters.syms);
++	filters.nr_syms = 0;
  }
  
-@@ -116,7 +133,7 @@ int contention_begin(u64 *ctx)
- 	__u32 pid;
- 	struct tstamp_data *pelem;
+ static void sort_contention_result(void)
+@@ -1995,6 +2047,80 @@ static int parse_lock_type(const struct option *opt __maybe_unused, const char *
+ 	return ret;
+ }
  
--	if (!enabled || !can_record())
-+	if (!enabled || !can_record(ctx))
- 		return 0;
++static bool add_lock_addr(unsigned long addr)
++{
++	unsigned long *tmp;
++
++	tmp = realloc(filters.addrs, (filters.nr_addrs + 1) * sizeof(*filters.addrs));
++	if (tmp == NULL) {
++		pr_err("Memory allocation failure\n");
++		return false;
++	}
++
++	tmp[filters.nr_addrs++] = addr;
++	filters.addrs = tmp;
++	return true;
++}
++
++static bool add_lock_sym(char *name)
++{
++	char **tmp;
++	char *sym = strdup(name);
++
++	if (sym == NULL) {
++		pr_err("Memory allocation failure\n");
++		return false;
++	}
++
++	tmp = realloc(filters.syms, (filters.nr_syms + 1) * sizeof(*filters.syms));
++	if (tmp == NULL) {
++		pr_err("Memory allocation failure\n");
++		free(sym);
++		return false;
++	}
++
++	tmp[filters.nr_syms++] = sym;
++	filters.syms = tmp;
++	return true;
++}
++
++static int parse_lock_addr(const struct option *opt __maybe_unused, const char *str,
++			   int unset __maybe_unused)
++{
++	char *s, *tmp, *tok;
++	int ret = 0;
++	u64 addr;
++
++	s = strdup(str);
++	if (s == NULL)
++		return -1;
++
++	for (tok = strtok_r(s, ", ", &tmp); tok; tok = strtok_r(NULL, ", ", &tmp)) {
++		char *end;
++
++		addr = strtoul(tok, &end, 16);
++		if (*end == '\0') {
++			if (!add_lock_addr(addr)) {
++				ret = -1;
++				break;
++			}
++			continue;
++		}
++
++		/*
++		 * At this moment, we don't have kernel symbols.  Save the symbols
++		 * in a separate list and resolve them to addresses later.
++		 */
++		if (!add_lock_sym(tok)) {
++			ret = -1;
++			break;
++		}
++	}
++
++	free(s);
++	return ret;
++}
++
+ int cmd_lock(int argc, const char **argv)
+ {
+ 	const struct option lock_options[] = {
+@@ -2060,6 +2186,8 @@ int cmd_lock(int argc, const char **argv)
+ 	OPT_BOOLEAN('l', "lock-addr", &show_lock_addrs, "show lock stats by address"),
+ 	OPT_CALLBACK('Y', "type-filter", NULL, "FLAGS",
+ 		     "Filter specific type of locks", parse_lock_type),
++	OPT_CALLBACK('L', "lock-filter", NULL, "ADDRS/NAMES",
++		     "Filter specific address/symbol of locks", parse_lock_addr),
+ 	OPT_PARENT(lock_options)
+ 	};
  
- 	pid = bpf_get_current_pid_tgid();
 diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-index d5b75b222d8e..dc621386a16b 100644
+index dc621386a16b..b99e83fccf5c 100644
 --- a/tools/perf/util/lock-contention.h
 +++ b/tools/perf/util/lock-contention.h
-@@ -118,6 +118,7 @@ struct lock_contention {
- 	struct target *target;
- 	struct machine *machine;
- 	struct hlist_head *result;
-+	struct lock_filter *filters;
- 	unsigned long map_nr_entries;
- 	int lost;
- 	int max_stack;
+@@ -7,7 +7,11 @@
+ 
+ struct lock_filter {
+ 	int			nr_types;
++	int			nr_addrs;
++	int			nr_syms;
+ 	unsigned int		*types;
++	unsigned long		*addrs;
++	char			**syms;
+ };
+ 
+ struct lock_stat {
 -- 
 2.39.0.314.g84b9a713c41-goog
 
