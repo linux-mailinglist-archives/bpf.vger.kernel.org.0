@@ -2,173 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEDD650678
-	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 03:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D553C6506E3
+	for <lists+bpf@lfdr.de>; Mon, 19 Dec 2022 04:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbiLSChK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Dec 2022 21:37:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
+        id S231319AbiLSDp0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Dec 2022 22:45:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbiLSChI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Dec 2022 21:37:08 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E47AB1F5
-        for <bpf@vger.kernel.org>; Sun, 18 Dec 2022 18:37:07 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id h12so7309535wrv.10
-        for <bpf@vger.kernel.org>; Sun, 18 Dec 2022 18:37:07 -0800 (PST)
+        with ESMTP id S231179AbiLSDpZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Dec 2022 22:45:25 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E68BAE50
+        for <bpf@vger.kernel.org>; Sun, 18 Dec 2022 19:45:24 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id gt4so7798682pjb.1
+        for <bpf@vger.kernel.org>; Sun, 18 Dec 2022 19:45:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=a/j43+sQ5NlHh5GUPOhTpYGO+HVX9EP+QEs6b6RY9KQ=;
-        b=heMreDTWrUVEzDqISOlPQrOAqLAVfatTCcBwJ4pJQY4Qzh8crhXK53qSYPgNPDFayu
-         unj/eeJ9oOWXcf6NdmcWQjVEx6jF2Gai0VuJsMw+TW221AmnCc6DhiuA2Syp1oN0TMvl
-         xOXQtBw/wwDLXmybNkWYdkD7GdK1AKScL0HofxVi4RYxK0CVXej6G5oGWkA2lMyES+Oe
-         Axp9dkP+WTTivmv4Q2cOhND++5oWc38aga2S5IejKfXcBNJWn1D93rINoy671pILQ6cn
-         wFXvvpoNS4Yo0leD+LV7PYk2xGyDdQx97SJaSQ99W3oE/NyhaWIQB3e5Xdr9+uP8bV1t
-         bTDQ==
+        d=linaro.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ufkpDtqwrwaASbEeUOXsA7V1EpiSQ5Rn4rC/a+dn8wY=;
+        b=kREEY0cPLyCDghlpTDJ8V2o21sNnI1qpq49TZewEDl/Dy9Ne8Ooj9q26jiMTKqFAIb
+         jBm2PZTjWpl34gp/877YXeDvIXjtCJWXKIaECssweFHZ5k1h5DDv9U5eGtl44jBz4hzu
+         7KXJLAe/wVbUrVRtPcZe9ZC0NbeMdZEI9d7zvYAUZvVTZrSb3NRCvih54mACbYLptfDn
+         74DCdpslCI0Cwo5zyeylqRxVGM87agTMsIotS/ZrP7kwNkSWGrXauryCBHRi+LstpufE
+         2J3jR7tMjbU114xqDI/y7p4jqBSd9YSHLVng8uf5gUhJFr28NryNS12H9ZXh3iKVfOB7
+         3MeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=a/j43+sQ5NlHh5GUPOhTpYGO+HVX9EP+QEs6b6RY9KQ=;
-        b=2qlRY1ZwAV9mGGhKACbXOMb/JAF/0m3dxaOYIzVMZ6dghYmU0Mpd5qnZPuew5jjZWu
-         /O93IaUfnN5a+LD7SD1j79M6zMtnpIu0oQc1v2+lQybcxWGB3WMd8PxfEmnXBQWmwt1B
-         Hc8OCVY1uQk7xKYxKKpYn9EaeDIsG+1NK316g3HvGrGSgIt/qj8TgETs3wiRVThrIuLn
-         Qlv7ociaxZdDB0FcL70YZCNFw7tHzf5Ar/fD4am4oVU3rk8AUxnIyR0hI5RN45uhvlcw
-         Q/l7JLSp1MlXxbCPpjAPZIuiTTNPRoKX0rD0Qi5ffnbxVjDE3AbPEi0r/UX8mcY2YLpS
-         rJOg==
-X-Gm-Message-State: ANoB5pmNsf6WmfLG68pdmwdQbyAQTZrmpZqvUdp9svVf2dxeH4uzcAGa
-        j4HAssVXrRWpMJsPazJIWLG9vmy6TCvTp0b9c4c=
-X-Google-Smtp-Source: AA0mqf43NChoL+OmqhMrzoZHaPhnL620uJ5VTGUw4tXfO8ETbX+Pco9jCei0Fok+iDnbFquP6Jh245B3y/rNTiYCHCs=
-X-Received: by 2002:a5d:4532:0:b0:242:72d6:7708 with SMTP id
- j18-20020a5d4532000000b0024272d67708mr9271710wra.157.1671417425797; Sun, 18
- Dec 2022 18:37:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20221217150207.58577-1-xiangxia.m.yue@gmail.com>
- <20221217150207.58577-2-xiangxia.m.yue@gmail.com> <ad206ab9-27f6-d08e-b215-2ceda94fd2bd@meta.com>
-In-Reply-To: <ad206ab9-27f6-d08e-b215-2ceda94fd2bd@meta.com>
-From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Date:   Mon, 19 Dec 2022 10:36:29 +0800
-Message-ID: <CAMDZJNWaDhrWTzFi_yc=eE8qvEOr-OCvjHOozA6Uq1FuAZmF=w@mail.gmail.com>
-Subject: Re: [bpf-next v2 2/2] selftests/bpf: add test case for htab map
-To:     Yonghong Song <yhs@meta.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ufkpDtqwrwaASbEeUOXsA7V1EpiSQ5Rn4rC/a+dn8wY=;
+        b=mnDdV7v0Q3qBh27LqTiHGExstKXpwtO/QqUPBQJknXkrGJ1jngBD2832EchVtEGAGM
+         /MHFt4SF1T3B3WoWEURF2XF1YJa01SI/KzqQZYHM1BbQ8AMptaBexVNEmrh+m1cDnbai
+         SgvA00RypdlqjdAd5mBH9WhvtkV5mFcoLIp/svTM/1d+OtMl8VJLUt4nG5WHWeHBDBS+
+         PRHiOMZK3d+LPbxg7dBLYzlt4l3g3lVTyMcz/vapJ98ciWJqeF9qKAeR00I4M7Mi9R0C
+         GwU+X0/uL9RxDCkTKZUJcsJubEeoqVNIi0491kPOZPfJTOJfkTskM7ROXBPD00ggW1UU
+         cI0Q==
+X-Gm-Message-State: ANoB5pngGiVsQ5rDQuVUo5L4cv37j4gLa0+vDm1lbgNTWIakXZZuNGgp
+        oCQFuV8yf+J/fq7ZMg9r7DGQeg==
+X-Google-Smtp-Source: AA0mqf7PKPQzRVWRGzVuTYxLiD4/XBylyvC0Ia68WHidlagaoY58bNmKTs8hhuLKkg2UsWRYpxtzQw==
+X-Received: by 2002:a17:90a:4f49:b0:219:b04d:a1 with SMTP id w9-20020a17090a4f4900b00219b04d00a1mr41521474pjl.41.1671421523739;
+        Sun, 18 Dec 2022 19:45:23 -0800 (PST)
+Received: from leoy-yangtze.lan ([152.70.116.104])
+        by smtp.gmail.com with ESMTPSA id 21-20020a631955000000b004772abe41f6sm5194521pgz.83.2022.12.18.19.45.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Dec 2022 19:45:23 -0800 (PST)
+Date:   Mon, 19 Dec 2022 11:45:08 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] libbpf: show error info about missing ".BTF"
+ section
+Message-ID: <Y5/eE+ds+e+k3VJO@leoy-yangtze.lan>
+References: <20221217223509.88254-1-changbin.du@gmail.com>
+ <20221217223509.88254-2-changbin.du@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221217223509.88254-2-changbin.du@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Dec 18, 2022 at 1:38 AM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 12/17/22 7:02 AM, xiangxia.m.yue@gmail.com wrote:
-> > From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> >
-> > This testing show how to reproduce deadlock in special case.
-> > We update htab map in Task and NMI context. Task can be interrupted by
-> > NMI, if the same map bucket was locked, there will be a deadlock.
-> >
-> > * map max_entries is 2.
-> > * NMI using key 4 and Task context using key 20.
-> > * so same bucket index but map_locked index is different.
-> >
-> > The selftest use perf to produce the NMI and fentry nmi_handle.
-> > Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
-> > map syscall increase this counter in bpf_disable_instrumentation.
-> > Then fentry nmi_handle and update hash map will reproduce the issue.
-> >
-> > Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > Cc: Song Liu <song@kernel.org>
-> > Cc: Yonghong Song <yhs@fb.com>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: KP Singh <kpsingh@kernel.org>
-> > Cc: Stanislav Fomichev <sdf@google.com>
-> > Cc: Hao Luo <haoluo@google.com>
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > Cc: Hou Tao <houtao1@huawei.com>
->
-> Ack with a small nit below.
->
-> Acked-by: Yonghong Song <yhs@fb.com>
->
-> > ---
-> >   tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
-> >   tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
-> >   .../selftests/bpf/prog_tests/htab_deadlock.c  | 75 +++++++++++++++++++
-> >   .../selftests/bpf/progs/htab_deadlock.c       | 30 ++++++++
-> >   4 files changed, 107 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/htab_deadlock.c
-> >
-> [...]
-> > diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> > new file mode 100644
-> > index 000000000000..72178f073667
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> > @@ -0,0 +1,30 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2022 DiDi Global Inc. */
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_HASH);
-> > +     __uint(max_entries, 2);
-> > +     __uint(map_flags, BPF_F_ZERO_SEED);
-> > +     __type(key, unsigned int);
-> > +     __type(value, unsigned int);
-> > +} htab SEC(".maps");
-> > +
-> > +SEC("fentry/nmi_handle")
->
-> nmi_handle() is a static function. In my setup, it is not inlined.
-> But if it is inlined, the test will succeed regardless of the
-> previous fix. But currently we don't have mechanisms to
-> discover such situations, so I am okay with the test.
-> But it would be good if you can add a small comment
-> to explain this caveat.
-Ok, Thanks
-> > +int bpf_nmi_handle(struct pt_regs *regs)
-> > +{
-> > +     unsigned int val = 0, key = 4;
-> > +
-> > +     bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
-> > +     return 0;
-> > +}
-> > +
-> > +SEC("perf_event")
-> > +int bpf_empty(struct pt_regs *regs)
-> > +{
-> > +     return 0;
-> > +}
+Hi Changbin,
 
+On Sun, Dec 18, 2022 at 06:35:08AM +0800, Changbin Du wrote:
+> Show the real problem instead of just saying "No such file or directory".
+> 
+> Now will print below info:
+> libbpf: failed to find '.BTF' ELF section in /home/changbin/work/linux/vmlinux
 
+Recently I encountered the same issue, it could be caused by:
+either missing to install tool pahole or missing to enable kernel
+configuration CONFIG_DEBUG_INFO_BTF.
 
--- 
-Best regards, Tonghao
+Could we give explict info for reasoning failure?  Like:
+
+"libbpf: failed to find '.BTF' ELF section in /home/changbin/work/linux/vmlinux,
+please install pahole and enable CONFIG_DEBUG_INFO_BTF=y for kernel building".
+
+> Error: failed to load BTF from /home/changbin/work/linux/vmlinux: No such file or directory
+
+This log is confusing when we can find vmlinux file but without BTF
+section.  Consider to use a separate patch to detect vmlinux not
+found case and print out "No such file or directory"?
+
+Thanks,
+Leo
+
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> ---
+>  tools/lib/bpf/btf.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 71e165b09ed5..dd2badf1a54e 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -990,6 +990,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+>  	err = 0;
+>  
+>  	if (!btf_data) {
+> +		pr_warn("failed to find '%s' ELF section in %s\n", BTF_ELF_SEC, path);
+>  		err = -ENOENT;
+>  		goto done;
+>  	}
+> -- 
+> 2.37.2
+> 
