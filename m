@@ -2,150 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDE765186E
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 02:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBA9651876
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 02:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbiLTBpQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Dec 2022 20:45:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46214 "EHLO
+        id S233029AbiLTBpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Dec 2022 20:45:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233089AbiLTBot (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Dec 2022 20:44:49 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB1918E04;
-        Mon, 19 Dec 2022 17:31:20 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id 65so7511285pfx.9;
-        Mon, 19 Dec 2022 17:31:20 -0800 (PST)
+        with ESMTP id S233048AbiLTBpN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Dec 2022 20:45:13 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AB0E0C8
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 17:32:10 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id v15-20020a9d69cf000000b006709b5a534aso6377362oto.11
+        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 17:32:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=cloudflare.com; s=google;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BigzFLPlvZFjuTMGj6sWmRm6jCkWTOK0szBmhDmhITw=;
-        b=IDgps55Sh65Q7oz/Rf8hAbSLyRP+XSxK4k/WU8rBu8k+SlatD20ZIomDLuGq7l6yvQ
-         FWmNGrmKEsboHbwFI4PWI9GYA7bmP3qTJzHnqJpObLhBklg0XWsXJUi23NIyszudeD4Q
-         hduohbUdlAeS+SKdp0M8n5y0aK/Y8qEYj6OVwhJ0CUy5LmuAbLjA9PHp+hEYSXRQrPuP
-         56gOwe8V09cd87aa9m7qzJkCT9M40CiFGCvREDKXL+EJf0C8yRvYoTw/XJFBwsRL385y
-         rdOLd6sWBWS6iXPNg0z/H8GJ/sQcFy0zyD4GH7JREdtswQ0Z5f2xNDcD9aEeRErRjI7M
-         qZ9Q==
+        bh=jCdd0TCRxW5GJGrV1CmxgR8yL9iVMOmFsARvqXkwjCU=;
+        b=KzF4ir59Az0okIapNS4jZkfGJ6OTglRnIYVMOFp28Uax2U8nrTt92HSJ3/BeSfD/O7
+         +9xaWME26gtChMR6DScNlm/0MYQWRl0E2iNSpZWMN2UFhU4EahlTzhNqmjLNMQqjsyGJ
+         1eBqpHxdeOgxRgimgSkB42bkS+AL7cc1WnM00=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BigzFLPlvZFjuTMGj6sWmRm6jCkWTOK0szBmhDmhITw=;
-        b=KHr5KoFz5oHwvHgq0SdeDq/Ois1duKkPvHpy0EAYkjOr5tVjtNfOuRZKjkz1uvRdDX
-         nZOZbB5YtvrIeAb2h+gTVXU4CH2UKNaCZQAGoFC3p3J76u9gny0BsMvm4Amenkr05eK+
-         hqIIDtrbj6l7M0TcKAmedWRFZRhB20rPFRHxjHuav6gw2s71kNRiaqaajrcxKqg0FmQ8
-         6GccFT/VW4m/LT8Zw7vejZerAIWYBDbETgaDTwOnZesykvjpZDUwPtq1pWYFO/k1Zy/T
-         qxIeA4R+/bSSmv9K7nf0IkiQuyiE41puBN5wIz4He3DNPWPmpdymcgPClcW7FIMGXAdw
-         ED1Q==
-X-Gm-Message-State: ANoB5pl/6j5TPhLKpCIZlEJF3IVMA6W7A+JK0/xdE7VdZEXtX+HtkyMY
-        wn5XQxUqzpBaR+L5khhh72k=
-X-Google-Smtp-Source: AA0mqf7OTy+bo/zeNJSAjDuAXyyFqND6wqeSCFRpp+bzccQ35QyHoEAwo9QkslCzipf7yZK8Mkblxg==
-X-Received: by 2002:a05:6a00:d6b:b0:578:1e81:6776 with SMTP id n43-20020a056a000d6b00b005781e816776mr39981626pfv.22.1671499880114;
-        Mon, 19 Dec 2022 17:31:20 -0800 (PST)
-Received: from mail.google.com ([103.135.102.144])
-        by smtp.gmail.com with ESMTPSA id 85-20020a621458000000b0056bbeaa82b9sm7322667pfu.113.2022.12.19.17.31.13
+        bh=jCdd0TCRxW5GJGrV1CmxgR8yL9iVMOmFsARvqXkwjCU=;
+        b=6/sdg37IQzg4eix2VVK2JqNkG87LWmkH0s7+7BY3dAFk5HlFO/89Ig6Ojo28I1EoUJ
+         hGtuhHdBcsGrisLbT/8WbH2WKWNjk6ZJncG0EZ32uWv1d9WWUqpsqaUN3EGa2DX/2RIu
+         vdyb2fDzztzuGPmdzzd7XBalVdR38vLy4erR6fAeAkhcrqruoybZT58Vehsff90Mua5W
+         R1cJ3Bl8jBRSuw6iZFRkaDpAXIpvuOQ7ByxYx0+eJXPsFWrrJLLDFdUh8FnqVAJ6pb2K
+         xuu98dVvLvr49dDL+KuvKfK8J/AnPYKs7zRwfHipgNGd6qNroL7wUIWQyGR4VUKKl2cE
+         qUCA==
+X-Gm-Message-State: AFqh2kqeMuojDtW+V/+hy/G5A2od4kcArauRufOSI7FtMg8AMVxlxLk8
+        1YCjCsuX2ojSzCaZoyxMy6UiAA==
+X-Google-Smtp-Source: AMrXdXsN3tS7b6c8uKzWzS9TmvA3H/GYHmeeoZeSJcS1kvyBtAQlRxDV8d3UzAYndjYrhUep7uFSDA==
+X-Received: by 2002:a05:6830:104f:b0:678:221e:1fef with SMTP id b15-20020a056830104f00b00678221e1fefmr3184117otp.32.1671499929558;
+        Mon, 19 Dec 2022 17:32:09 -0800 (PST)
+Received: from sbohrer-cf-dell ([24.28.97.120])
+        by smtp.gmail.com with ESMTPSA id l12-20020a9d550c000000b0066c49ce8b77sm5012956oth.77.2022.12.19.17.32.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Dec 2022 17:31:19 -0800 (PST)
-Date:   Tue, 20 Dec 2022 09:31:14 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] libbpf: show error info about missing ".BTF"
- section
-Message-ID: <20221220013114.zkkxkqh7orahxbzh@mail.google.com>
-References: <20221217223509.88254-1-changbin.du@gmail.com>
- <20221217223509.88254-2-changbin.du@gmail.com>
- <Y5/eE+ds+e+k3VJO@leoy-yangtze.lan>
+        Mon, 19 Dec 2022 17:32:08 -0800 (PST)
+Date:   Mon, 19 Dec 2022 19:31:57 -0600
+From:   Shawn Bohrer <sbohrer@cloudflare.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
+        magnus.karlsson@intel.com, kernel-team@cloudflare.com
+Subject: Re: Possible race with xsk_flush
+Message-ID: <Y6EQjd5w9Dfmy8ko@sbohrer-cf-dell>
+References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
+ <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
+ <Y5u4dA01y9RjjdAW@sbohrer-cf-dell>
+ <CAJ8uoz1GKvoaM0DCo1Ki8q=LHR1cjrNC=1BK7chTKKW9Po5F5A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y5/eE+ds+e+k3VJO@leoy-yangtze.lan>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <CAJ8uoz1GKvoaM0DCo1Ki8q=LHR1cjrNC=1BK7chTKKW9Po5F5A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 19, 2022 at 11:45:08AM +0800, Leo Yan wrote:
-> Hi Changbin,
+On Fri, Dec 16, 2022 at 11:05:19AM +0100, Magnus Karlsson wrote:
+> To summarize, we are expecting this ordering:
 > 
-> On Sun, Dec 18, 2022 at 06:35:08AM +0800, Changbin Du wrote:
-> > Show the real problem instead of just saying "No such file or directory".
-> > 
-> > Now will print below info:
-> > libbpf: failed to find '.BTF' ELF section in /home/changbin/work/linux/vmlinux
+> CPU 0 __xsk_rcv_zc()
+> CPU 0 __xsk_map_flush()
+> CPU 2 __xsk_rcv_zc()
+> CPU 2 __xsk_map_flush()
 > 
-> Recently I encountered the same issue, it could be caused by:
-> either missing to install tool pahole or missing to enable kernel
-> configuration CONFIG_DEBUG_INFO_BTF.
+> But we are seeing this order:
 > 
-> Could we give explict info for reasoning failure?  Like:
+> CPU 0 __xsk_rcv_zc()
+> CPU 2 __xsk_rcv_zc()
+> CPU 0 __xsk_map_flush()
+> CPU 2 __xsk_map_flush()
 > 
-> "libbpf: failed to find '.BTF' ELF section in /home/changbin/work/linux/vmlinux,
-> please install pahole and enable CONFIG_DEBUG_INFO_BTF=y for kernel building".
->
-This is vmlinux special information and similar tips are removed from
-patch V2. libbpf is common for all ELFs.
+> Here is the veth NAPI poll loop:
+> 
+> static int veth_poll(struct napi_struct *napi, int budget)
+> {
+>     struct veth_rq *rq =
+>     container_of(napi, struct veth_rq, xdp_napi);
+>     struct veth_stats stats = {};
+>     struct veth_xdp_tx_bq bq;
+>     int done;
+> 
+>     bq.count = 0;
+> 
+>     xdp_set_return_frame_no_direct();
+>     done = veth_xdp_rcv(rq, budget, &bq, &stats);
+> 
+>     if (done < budget && napi_complete_done(napi, done)) {
+>         /* Write rx_notify_masked before reading ptr_ring */
+>        smp_store_mb(rq->rx_notify_masked, false);
+>        if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
+>            if (napi_schedule_prep(&rq->xdp_napi)) {
+>                WRITE_ONCE(rq->rx_notify_masked, true);
+>                __napi_schedule(&rq->xdp_napi);
+>             }
+>         }
+>     }
+> 
+>     if (stats.xdp_tx > 0)
+>         veth_xdp_flush(rq, &bq);
+>     if (stats.xdp_redirect > 0)
+>         xdp_do_flush();
+>     xdp_clear_return_frame_no_direct();
+> 
+>     return done;
+> }
+> 
+> Something I have never seen before is that there is
+> napi_complete_done() and a __napi_schedule() before xdp_do_flush().
+> Let us check if this has something to do with it. So two suggestions
+> to be executed separately:
+> 
+> * Put a probe at the __napi_schedule() above and check if it gets
+> triggered before this problem
+> * Move the "if (stats.xdp_redirect > 0) xdp_do_flush();" to just
+> before "if (done < budget && napi_complete_done(napi, done)) {"
+> 
+> This might provide us some hints on what is going on.
 
-> > Error: failed to load BTF from /home/changbin/work/linux/vmlinux: No such file or directory
-> 
-> This log is confusing when we can find vmlinux file but without BTF
-> section.  Consider to use a separate patch to detect vmlinux not
-> found case and print out "No such file or directory"?
->
-I think it's already there. If the file doesn't exist, open will fail.
+After staring at this code for way too long I finally made a
+breakthrough!  I could not understand how this race could occur when
+napi_poll() calls netpoll_poll_lock().  Here is netpoll_poll_lock():
 
-> Thanks,
-> Leo
-> 
-> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> > ---
-> >  tools/lib/bpf/btf.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index 71e165b09ed5..dd2badf1a54e 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -990,6 +990,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
-> >  	err = 0;
-> >  
-> >  	if (!btf_data) {
-> > +		pr_warn("failed to find '%s' ELF section in %s\n", BTF_ELF_SEC, path);
-> >  		err = -ENOENT;
-> >  		goto done;
-> >  	}
-> > -- 
-> > 2.37.2
-> > 
+```
+  static inline void *netpoll_poll_lock(struct napi_struct *napi)
+  {
+    struct net_device *dev = napi->dev;
 
--- 
-Cheers,
-Changbin Du
+    if (dev && dev->npinfo) {
+      int owner = smp_processor_id();
+
+      while (cmpxchg(&napi->poll_owner, -1, owner) != -1)
+        cpu_relax();
+
+      return napi;
+    }
+    return NULL;
+  }
+```
+If dev or dev->npinfo are NULL then it doesn't acquire a lock at all!
+Adding some more trace points I see:
+
+```
+  iperf2-1325    [002] ..s1. 264246.626880: __napi_poll: (__napi_poll+0x0/0x150) n=0xffff91c885bff000 poll_owner=-1 dev=0xffff91c881d4e000 npinfo=0x0
+  iperf2-1325    [002] d.Z1. 264246.626882: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0x3b/0xc0) addr=0x1503100 len=0x42 xs=0xffff91c8bfe77000 fq=0xffff91c8c1a43f80 dev=0xffff91c881d4e000
+  iperf2-1325    [002] d.Z1. 264246.626883: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0x42/0xc0) addr=0x1503100 len=0x42 xs=0xffff91c8bfe77000 fq=0xffff91c8c1a43f80 dev=0xffff91c881d4e000
+  iperf2-1325    [002] d.Z1. 264246.626884: xsk_flush: (__xsk_map_flush+0x32/0xb0) xs=0xffff91c8bfe77000 
+```
+
+Here you can see that poll_owner=-1 meaning the lock was never
+acquired because npinfo is NULL.  This means that the same veth rx
+queue can be napi_polled from multiple CPU and nothing stops it from
+running concurrently.  They all look like this, just most of the time
+there aren't concurrent napi_polls running for the same queue.  They
+do however move around CPUs as I explained earlier.
+
+I'll note that I've ran with your suggested change of moving
+xdp_do_flush() before napi_complete_done() all weekend and I have not
+reproduced the issue.  I don't know if that truly means the issue is
+fixed by that change or not.  I suspect it does fix the issue because
+it prevents the napi_struct from being scheduled again before the
+first poll has completed, and nap_schedule_prep() ensures that only
+one instance is ever running.
+
+If we think this is the correct fix I'll let it run for another day or
+two and prepare a patch.
+
+Thanks,
+Shawn Bohrer
