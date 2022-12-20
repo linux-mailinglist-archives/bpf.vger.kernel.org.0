@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8606527F4
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 21:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 334466527FC
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 21:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234150AbiLTUjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 15:39:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        id S234266AbiLTUj1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 15:39:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234004AbiLTUjL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 15:39:11 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B485BF76;
-        Tue, 20 Dec 2022 12:39:10 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id r11so11582348oie.13;
-        Tue, 20 Dec 2022 12:39:10 -0800 (PST)
+        with ESMTP id S234273AbiLTUjX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 15:39:23 -0500
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FB818695;
+        Tue, 20 Dec 2022 12:39:21 -0800 (PST)
+Received: by mail-oo1-xc30.google.com with SMTP id e12-20020a4ab98c000000b004a081e811beso2095181oop.2;
+        Tue, 20 Dec 2022 12:39:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
         bh=azNFe5jU1dMrsdXR71DYBx3y6Kfnd/1t+DGsjCCu4wc=;
-        b=hAhGjIgzRay1apHu4prCOFQ3c6NxKdAB0LtX/NnTYrPZRnur2CUXDOuuZvoMTpeFLg
-         D0HFFF3sQIm1TFHIEdgppK/hU3Y7xzwZHiBGTQDqCoMqnR+qWUVjqTa1s2EOPz7IQASH
-         EXqI5TaulBTU89PARaJXMutfi5D1wqyQMK2WaDyU5ECTQjORHviv9PfKOd9+9riC6KgZ
-         xO6BW9l+lMloV4zQDK6y3zkFj1/uKvAh6x2LBHpDJ78K0y/EZNdKaC2bsSvXrmXXkp97
-         v0CyYT530McOocz5TxdxOLwlyehTPhAF4nnuws+KaVp/FuQlv5gpuZC8qOr2PhUKTiz1
-         Nrzg==
+        b=hXY+HEF7dvemF+QWV9hnbVBwIDLBUPRBQz1HfIFoFKSJTD4TOIX9uMAEz44PV00fLJ
+         qQFXcsQadCp6vJb55Td7Wnp0gEgqmXDWT9hVCjCl6xUUQkbrlH8h7P/zdSlOwJegWgqy
+         XuVnETZDavc4yF/kn9ccDYwE4PpEkttD6CSD3iwdgx63sibf0CDrEJ0JiuxR41njHuIY
+         ASEBYgejlWZuQfwLakLhIJ2gfJyl9u0fZlT6A/lEG0iiNtotPTmUDE2GPDFsS7VDQY3S
+         9NQb9LcnzBgkQ3H8xI08Uz3kAjrWvLwQSqXAfy6nDtUwgZzghP5rVhevC0umBrooVDB9
+         XK6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=azNFe5jU1dMrsdXR71DYBx3y6Kfnd/1t+DGsjCCu4wc=;
-        b=YeF3ST0C43vV0euyroKURWwchZvfsfo35FGHHIB0Al7bKHdmUxg/GAWDKCbq1Nnc6l
-         rMC+i7df3dl5QvD+TUGWI0sW9N6k8QM7HqHcNktuGYIMrGLyRZyLvijc2jQUh+O3tYc3
-         SJs1tjyFpOQrR1hGrYVAEsNw16fXcdSWuuoyknfQQ7h7TtvRFi0u9OtuPGaRqg0yXqvc
-         MDuoaxbrYYn5VYhzMpZqmkeXQF/OhrDKFaZZKbFc2NS1rVVm90O1a1bwu6Pvn5m4BQVR
-         ashqV7xsHxqopsDwbzStXQy8d/MUSedIaG8hzoiN1gpLfKm37irXUXu/aJGiph6d+j+/
-         CxmA==
-X-Gm-Message-State: AFqh2krTvFY79CzkcR/WFqkogvrKdHw2+gwnyuhzNxElBVf/I814GkfI
-        k1Yw3STRBrf7YUpFxU6Cgx28cxPJmzc=
-X-Google-Smtp-Source: AMrXdXvpgbo6jqWEEADkdNP4FXkTZgkcRr6MOkU69VfIfJr6/O3zUBnaUCKwwim6Ffzr7bEMEHgIfw==
-X-Received: by 2002:a05:6808:3d9:b0:35b:ae91:db53 with SMTP id o25-20020a05680803d900b0035bae91db53mr6198909oie.42.1671568749518;
-        Tue, 20 Dec 2022 12:39:09 -0800 (PST)
+        b=xKicvnXNQ1X6n10/lNYU6aXgz/5etC+AD51xYOCyoooMAEzkwlDC3SPhVQaNvrVf/t
+         njAQJ1GlL5K33yMYxYWqFDNL1Hy+2r7YAkhmzYTeyOdOOAUdrE7yYJ+yFHrEYVp0M/dh
+         C1V/LHAlTWnf3s1LuU137RIBesfL0GpW8jpzEmvxArZa6seDOaTo25OgIto8kmjRseZX
+         uOIEH8pigZV7NBxSYLD9V46Ovv/ymmNz6mJLgjSbddCF65cJqq1ho7Fe3caPDwAyGbEw
+         /d9AlpsVJ1gz2mc6Hv1BZM3N0a8Z6tvN9GbJaAQWwCdzwmH+oCodB7SmR82fpLyJ5Mcb
+         PY7A==
+X-Gm-Message-State: ANoB5pnoBcOJaWYJQL7a0OK6Mp5yUCyfU+9IrtLEuOequIQP3lMqlXOH
+        QwL5yapCD60HsQtjIXr8RjOVhf3LPTWrSA==
+X-Google-Smtp-Source: AA0mqf5Z5q9oJWUtYllftjv0rAybh6GQEuV1X7jfUWoSrt7AJ3lOk4GXWUQ/Dwh28ObQWBEguL5nAw==
+X-Received: by 2002:a4a:2c97:0:b0:4a3:6dd1:3f34 with SMTP id o145-20020a4a2c97000000b004a36dd13f34mr21644921ooo.5.1671568760393;
+        Tue, 20 Dec 2022 12:39:20 -0800 (PST)
 Received: from tx3000mach.io (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id bl14-20020a056808308e00b0035e7d07bf9dsm5965183oib.16.2022.12.20.12.39.06
+        by smtp.gmail.com with ESMTPSA id a11-20020a4ab10b000000b0049fb39100a5sm5380714ooo.37.2022.12.20.12.39.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Dec 2022 12:39:09 -0800 (PST)
+        Tue, 20 Dec 2022 12:39:19 -0800 (PST)
 From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     bpf@vger.kernel.org, rust-for-linux@vger.kernel.org,
@@ -58,8 +58,8 @@ Cc:     bpf@vger.kernel.org, rust-for-linux@vger.kernel.org,
         Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
         Eric Curtin <ecurtin@redhat.com>, Neal Gompa <neal@gompa.dev>
 Subject: [PATCH bpf] scripts: Exclude Rust CUs with pahole
-Date:   Tue, 20 Dec 2022 17:39:01 -0300
-Message-Id: <20221220203901.1333304-1-yakoyoku@gmail.com>
+Date:   Tue, 20 Dec 2022 17:39:15 -0300
+Message-Id: <20221220203915.1333444-1-yakoyoku@gmail.com>
 X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
