@@ -2,146 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D52626526B8
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 20:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E8B6526C8
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 20:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233903AbiLTTAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 14:00:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
+        id S233860AbiLTTIT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 14:08:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234114AbiLTTAU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 14:00:20 -0500
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF1A1DF3A
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 11:00:11 -0800 (PST)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-12c8312131fso16527710fac.4
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 11:00:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JXYLTDkptpPzYOrGeGF4jhqPDZLV+o0bhBUVOjDZSsg=;
-        b=pxW2qrad7LK/jLVrTk4AYMqzTPaxs5aGJAEdNvhoIOE1AgjiRdGsHgh8cedV8aW7de
-         dnXAAyaPgKaQgSG0lS9SKAGrwS4h2jo/bxG1a4RWijZ4EqkeqUFEWsBN0Q/CmQuudGUi
-         lA4et4hM1rIHh50Oznu5fMHelWe/drgH3SvPQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JXYLTDkptpPzYOrGeGF4jhqPDZLV+o0bhBUVOjDZSsg=;
-        b=HtVr5LdlJJ75bSDevyrphQcc5DErKCHHJgie5+7rbxI+UWZTdvFgnsOfzcEcoc5tvP
-         nnD7Z2xbD9P0HQg1W8N948R2Tmp9ZaSgJNPX7UW35jdnY5YM7/syAWJB+D2iFrDfLQH8
-         TiKBmFKn5WpKbWMlOUOIX+jM3h5K58jTTpnJoStRF1cLLpiGwdsCFi/PPKFTBZaDlPBC
-         p3fRjbAexosDbz4oFN117hwiNxbghmmjwZiUallQf2m080zpvdqCKI8fGjaYpKdtAehi
-         uoBlUfnoc/T1fBLcr33bfMObmcEdUyjAgU9idraDN41vldYZJm6F7liwPaWlS9tk+68k
-         xBXw==
-X-Gm-Message-State: ANoB5plNxK6khBOetDN6ocYQPUnPI3qO3VV8aa6Ag/Y2I5EaYCeaqnLY
-        A7qLOUhgKgGFI+0nTxnVAc+nig==
-X-Google-Smtp-Source: AA0mqf7wIvQPmpVJgp1NF721D7EsiJnRJvoP98EoiFJU+6lKd376dW5acXZRl7qHG4BwDonwQEmLQQ==
-X-Received: by 2002:a05:6870:f59d:b0:141:f39c:bd2a with SMTP id eh29-20020a056870f59d00b00141f39cbd2amr24434823oab.21.1671562810567;
-        Tue, 20 Dec 2022 11:00:10 -0800 (PST)
-Received: from sbohrer-cf-dell.. ([24.28.97.120])
-        by smtp.gmail.com with ESMTPSA id s8-20020a4adb88000000b0049f3f5afcbasm5331103oou.13.2022.12.20.11.00.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Dec 2022 11:00:09 -0800 (PST)
-From:   Shawn Bohrer <sbohrer@cloudflare.com>
-To:     magnus.karlsson@gmail.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
-        kernel-team@cloudflare.com, davem@davemloft.net,
-        Shawn Bohrer <sbohrer@cloudflare.com>
-Subject: [PATCH] veth: Fix race with AF_XDP exposing old or uninitialized descriptors
-Date:   Tue, 20 Dec 2022 12:59:03 -0600
-Message-Id: <20221220185903.1105011-1-sbohrer@cloudflare.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
-References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
+        with ESMTP id S233234AbiLTTIR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 14:08:17 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A01FD0E
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 11:08:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B2FF961570
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 19:08:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC4A8C433EF;
+        Tue, 20 Dec 2022 19:08:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671563296;
+        bh=S9IbuXpKKc0ntRt4viCIXkeWet3lWOWvVWrl2COH8Tg=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=lEgIHceCDqILioLItjXs3TQJPZWetuV0ZPFkELqKlFPCrNH2W3aHX+sVsZtyVQd1F
+         VUZBu9Vu6ujbJa+lxxrKPiP8nvm9hzhx7pyae2SNCnqYTZZG8vRsIFSAkAyUfiAcqp
+         F2gDXpzk1PewCEmzhQREysxhGVWRfKKidCU7svaVKSqo5VbmVVF4UiPiBbNogROYfV
+         IzW51EcaakiYyWygKvtJ3oWs/7ruUK9twmTkGomiAZ7gZbL4DXmf0SFsniBhoxh5M1
+         LCvLBS1eNoKvX/0mtySVSUPnPCuWyOebsQuz6p41/3YZlrkbAS/eBGbaTvT+JXRUTp
+         Rm6XPTXI4LN1Q==
+Date:   Tue, 20 Dec 2022 11:08:11 -0800
+From:   Kees Cook <kees@kernel.org>
+To:     Stanislav Fomichev <sdf@google.com>, Hyunwoo Kim <v4bel@theori.io>
+CC:     keescook@chromium.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+        syzbot+b1e1f7feb407b56d0355@syzkaller.appspotmail.com,
+        bpf@vger.kernel.org
+Subject: Re: [report] OOB in bpf_load_prog() flow
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAKH8qBuerUeU7M2x5cfjJUuSjNTZj84Hd5s+rLZ+h-XHG_a4GA@mail.gmail.com>
+References: <20221219135939.GA296131@ubuntu> <Y6C1SFEj9MOOnAnb@google.com> <20221220113718.GA1109523@ubuntu> <CAKH8qBuerUeU7M2x5cfjJUuSjNTZj84Hd5s+rLZ+h-XHG_a4GA@mail.gmail.com>
+Message-ID: <AA40C8DF-45F6-4BFB-8A2D-F4714B754479@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When AF_XDP is used on on a veth interface the RX ring is updated in two
-steps.  veth_xdp_rcv() removes packet descriptors from the FILL ring
-fills them and places them in the RX ring updating the cached_prod
-pointer.  Later xdp_do_flush() syncs the RX ring prod pointer with the
-cached_prod pointer allowing user-space to see the recently filled in
-descriptors.  The rings are intended to be SPSC, however the existing
-order in veth_poll allows the xdp_do_flush() to run concurrently with
-another CPU creating a race condition that allows user-space to see old
-or uninitialized descriptors in the RX ring.  This bug has been observed
-in production systems.
+On December 20, 2022 9:32:51 AM PST, Stanislav Fomichev <sdf@google=2Ecom> =
+wrote:
+>On Tue, Dec 20, 2022 at 3:37 AM Hyunwoo Kim <v4bel@theori=2Eio> wrote:
+>>
+>> On Mon, Dec 19, 2022 at 11:02:32AM -0800, sdf@google=2Ecom wrote:
+>> > On 12/19, Hyunwoo Kim wrote:
+>> > > Dear,
+>> >
+>> > > This slab-out-of-bounds occurs in the bpf_prog_load() flow:
+>> > > https://syzkaller=2Eappspot=2Ecom/text?tag=3DCrashLog&x=3D172e25104=
+80000
+>> >
+>> > > I was able to trigger KASAN using this syz reproduce code:
+[=2E=2E=2E]
+>> >
+>> > > IMHO, the root cause of this seems to be commit
+>> > > ceb35b666d42c2e91b1f94aeca95bb5eb0943268=2E
+>> >
+>> > > Also, a user with permission to load a BPF program can use this OOB=
+ to
+>> > > execute the desired code with kernel privileges=2E
+>> >
+>> > Let's CC Kees if you suspect the commit above=2E Maybe we can run
+>> > with/without it to confirm?
+>>
+>> I built and tested each commit of 'kernel/bpf/verifier=2Ec' that caused
+>> OOB, but I couldn't find the commit that caused OOB=2E
+>>
+>> So, starting from upstream, I reversed commits one by one and
+>> found the commit that triggers KASAN=2E
+>>
+>> As a result of testing, OOB is triggered from commit
+>> 8fa590bf344816c925810331eea8387627bbeb40=2E
+>>
+>> However, this commit seems to be a kvm related patch,
+>> not directly related to the bpf subsystem=2E
+>>
+>> IMHO, the cause of this seems to be one of these:
+>> 1=2E I ran this KASAN test on a nested guest in L2=2E That is,
+>> there is a problem with the kvm patch 8fa590bf34481=2E
+>>
+>> 2=2E Previously, the BPF subsystem had a patch that triggers KASAN,
+>> and KASAN is induced when kvm is patched=2E
+>>
+>> 3=2E There was confusion in the =2Econfig I tested, so the wrong
+>> patch was derived as a test result=2E
+>>
+>> I haven't been able to pinpoint what the root cause is yet=2E
+>> So I didn't add a CC for 8fa590bf34481 commit=2E
+>
+>Thanks for the details! Even if this particular one is unrelated,
+>there are a couple of reports which still somewhat look like they are
+>related to commit ceb35b666d42 ("bpf/verifier: Use
+>kmalloc_size_roundup() to match ksize() usage") ?
+>
+>https://lore=2Ekernel=2Eorg/bpf/000000000000ab724705ee87e321@google=2Ecom=
+/
+>https://lore=2Ekernel=2Eorg/bpf/000000000000269f9a05f02be9d8@google=2Ecom=
+/
 
-To summarize, we are expecting this ordering:
+I suspect something is hitting array_resize() that wasn't maximal-bucket-s=
+ize allocated=2E Does reverting 38931d8989b5760b0bd17c9ec99e81986258e4cb ma=
+ke it go away?
 
-CPU 0 __xsk_rcv_zc()
-CPU 0 __xsk_map_flush()
-CPU 2 __xsk_rcv_zc()
-CPU 2 __xsk_map_flush()
 
-But we are seeing this order:
-
-CPU 0 __xsk_rcv_zc()
-CPU 2 __xsk_rcv_zc()
-CPU 0 __xsk_map_flush()
-CPU 2 __xsk_map_flush()
-
-This occurs because we rely on NAPI to ensure that only one napi_poll
-handler is running at a time for the given veth receive queue.
-napi_schedule_prep() will prevent multiple instances from getting
-scheduled. However calling napi_complete_done() signals that this
-napi_poll is complete and allows subsequent calls to
-napi_schedule_prep() and __napi_schedule() to succeed in scheduling a
-concurrent napi_poll before the xdp_do_flush() has been called.  For the
-veth driver a concurrent call to napi_schedule_prep() and
-__napi_schedule() can occur on a different CPU because the veth xmit
-path can additionally schedule a napi_poll creating the race.
-
-The fix as suggested by Magnus Karlsson, is to simply move the
-xdp_do_flush() call before napi_complete_done().  This syncs the
-producer ring pointers before another instance of napi_poll can be
-scheduled on another CPU.  It will also slightly improve performance by
-moving the flush closer to when the descriptors were placed in the
-RX ring.
-
-Fixes: d1396004dd86 ("veth: Add XDP TX and REDIRECT")
-Suggested-by: Magnus Karlsson <magnus.karlsson@gmail.com>
-Signed-off-by: Shawn Bohrer <sbohrer@cloudflare.com>
----
- drivers/net/veth.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index ac7c0653695f..dfc7d87fad59 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -974,6 +974,9 @@ static int veth_poll(struct napi_struct *napi, int budget)
- 	xdp_set_return_frame_no_direct();
- 	done = veth_xdp_rcv(rq, budget, &bq, &stats);
- 
-+	if (stats.xdp_redirect > 0)
-+		xdp_do_flush();
-+
- 	if (done < budget && napi_complete_done(napi, done)) {
- 		/* Write rx_notify_masked before reading ptr_ring */
- 		smp_store_mb(rq->rx_notify_masked, false);
-@@ -987,8 +990,6 @@ static int veth_poll(struct napi_struct *napi, int budget)
- 
- 	if (stats.xdp_tx > 0)
- 		veth_xdp_flush(rq, &bq);
--	if (stats.xdp_redirect > 0)
--		xdp_do_flush();
- 	xdp_clear_return_frame_no_direct();
- 
- 	return done;
--- 
-2.38.1
-
+--=20
+Kees Cook
