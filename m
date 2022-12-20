@@ -2,164 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5DD65263B
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 19:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D52626526B8
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 20:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbiLTS24 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 13:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
+        id S233903AbiLTTAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 14:00:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234039AbiLTS2r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 13:28:47 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883941DDE3;
-        Tue, 20 Dec 2022 10:28:45 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CFCF7B818B1;
-        Tue, 20 Dec 2022 18:28:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 562FEC433D2;
-        Tue, 20 Dec 2022 18:28:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671560922;
-        bh=26BJsZF4v8uYU+L0SWB1rBznQrtMVFzrBO3rH/jfIS8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D2sAAWG/LXFS34fdSRfw357w1UrXDJZSLS4z+ZYrJo6SksVGs4VPcrDjh41Mvutum
-         DzVEnhqLHx6jcY9S5xr86JnmdAFvpU0YGtyLRjdGRUMpwSqmN9mSLH+2Quns37R99o
-         4VFSXUs1SBVDZtWZaXc1RTuS1RwidB2SaffXiC9qY7PUozDejgvW49e1/QqTjRxHK9
-         oooxQL/c29B0k1lV/WBjOEhuamumGIRN9ih5AJkNRP1SDHixz/mTLnRiQA8FziSrwG
-         xk97wG0I6IjAdn0uJtU5Y6gPrD5H93v6QvfOUh7XoIVi3E0WZ8yPR4xSp9nu5J2eC2
-         ogjV1vlgh1R8g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7ECDA40367; Tue, 20 Dec 2022 15:28:39 -0300 (-03)
-Date:   Tue, 20 Dec 2022 15:28:39 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Blake Jones <blakejones@google.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH 0/6] perf lock contention: Add more filter options (v1)
-Message-ID: <Y6H+11oOgpSpHuh/@kernel.org>
-References: <20221219201732.460111-1-namhyung@kernel.org>
+        with ESMTP id S234114AbiLTTAU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 14:00:20 -0500
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF1A1DF3A
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 11:00:11 -0800 (PST)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-12c8312131fso16527710fac.4
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 11:00:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JXYLTDkptpPzYOrGeGF4jhqPDZLV+o0bhBUVOjDZSsg=;
+        b=pxW2qrad7LK/jLVrTk4AYMqzTPaxs5aGJAEdNvhoIOE1AgjiRdGsHgh8cedV8aW7de
+         dnXAAyaPgKaQgSG0lS9SKAGrwS4h2jo/bxG1a4RWijZ4EqkeqUFEWsBN0Q/CmQuudGUi
+         lA4et4hM1rIHh50Oznu5fMHelWe/drgH3SvPQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JXYLTDkptpPzYOrGeGF4jhqPDZLV+o0bhBUVOjDZSsg=;
+        b=HtVr5LdlJJ75bSDevyrphQcc5DErKCHHJgie5+7rbxI+UWZTdvFgnsOfzcEcoc5tvP
+         nnD7Z2xbD9P0HQg1W8N948R2Tmp9ZaSgJNPX7UW35jdnY5YM7/syAWJB+D2iFrDfLQH8
+         TiKBmFKn5WpKbWMlOUOIX+jM3h5K58jTTpnJoStRF1cLLpiGwdsCFi/PPKFTBZaDlPBC
+         p3fRjbAexosDbz4oFN117hwiNxbghmmjwZiUallQf2m080zpvdqCKI8fGjaYpKdtAehi
+         uoBlUfnoc/T1fBLcr33bfMObmcEdUyjAgU9idraDN41vldYZJm6F7liwPaWlS9tk+68k
+         xBXw==
+X-Gm-Message-State: ANoB5plNxK6khBOetDN6ocYQPUnPI3qO3VV8aa6Ag/Y2I5EaYCeaqnLY
+        A7qLOUhgKgGFI+0nTxnVAc+nig==
+X-Google-Smtp-Source: AA0mqf7wIvQPmpVJgp1NF721D7EsiJnRJvoP98EoiFJU+6lKd376dW5acXZRl7qHG4BwDonwQEmLQQ==
+X-Received: by 2002:a05:6870:f59d:b0:141:f39c:bd2a with SMTP id eh29-20020a056870f59d00b00141f39cbd2amr24434823oab.21.1671562810567;
+        Tue, 20 Dec 2022 11:00:10 -0800 (PST)
+Received: from sbohrer-cf-dell.. ([24.28.97.120])
+        by smtp.gmail.com with ESMTPSA id s8-20020a4adb88000000b0049f3f5afcbasm5331103oou.13.2022.12.20.11.00.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Dec 2022 11:00:09 -0800 (PST)
+From:   Shawn Bohrer <sbohrer@cloudflare.com>
+To:     magnus.karlsson@gmail.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
+        kernel-team@cloudflare.com, davem@davemloft.net,
+        Shawn Bohrer <sbohrer@cloudflare.com>
+Subject: [PATCH] veth: Fix race with AF_XDP exposing old or uninitialized descriptors
+Date:   Tue, 20 Dec 2022 12:59:03 -0600
+Message-Id: <20221220185903.1105011-1-sbohrer@cloudflare.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
+References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221219201732.460111-1-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Dec 19, 2022 at 12:17:26PM -0800, Namhyung Kim escreveu:
-> Hello,
-> 
-> This patchset adds a couple of filters to perf lock contention command.
+When AF_XDP is used on on a veth interface the RX ring is updated in two
+steps.  veth_xdp_rcv() removes packet descriptors from the FILL ring
+fills them and places them in the RX ring updating the cached_prod
+pointer.  Later xdp_do_flush() syncs the RX ring prod pointer with the
+cached_prod pointer allowing user-space to see the recently filled in
+descriptors.  The rings are intended to be SPSC, however the existing
+order in veth_poll allows the xdp_do_flush() to run concurrently with
+another CPU creating a race condition that allows user-space to see old
+or uninitialized descriptors in the RX ring.  This bug has been observed
+in production systems.
 
-Thanks, applied.
+To summarize, we are expecting this ordering:
 
-- Arnaldo
+CPU 0 __xsk_rcv_zc()
+CPU 0 __xsk_map_flush()
+CPU 2 __xsk_rcv_zc()
+CPU 2 __xsk_map_flush()
 
+But we are seeing this order:
+
+CPU 0 __xsk_rcv_zc()
+CPU 2 __xsk_rcv_zc()
+CPU 0 __xsk_map_flush()
+CPU 2 __xsk_map_flush()
+
+This occurs because we rely on NAPI to ensure that only one napi_poll
+handler is running at a time for the given veth receive queue.
+napi_schedule_prep() will prevent multiple instances from getting
+scheduled. However calling napi_complete_done() signals that this
+napi_poll is complete and allows subsequent calls to
+napi_schedule_prep() and __napi_schedule() to succeed in scheduling a
+concurrent napi_poll before the xdp_do_flush() has been called.  For the
+veth driver a concurrent call to napi_schedule_prep() and
+__napi_schedule() can occur on a different CPU because the veth xmit
+path can additionally schedule a napi_poll creating the race.
+
+The fix as suggested by Magnus Karlsson, is to simply move the
+xdp_do_flush() call before napi_complete_done().  This syncs the
+producer ring pointers before another instance of napi_poll can be
+scheduled on another CPU.  It will also slightly improve performance by
+moving the flush closer to when the descriptors were placed in the
+RX ring.
+
+Fixes: d1396004dd86 ("veth: Add XDP TX and REDIRECT")
+Suggested-by: Magnus Karlsson <magnus.karlsson@gmail.com>
+Signed-off-by: Shawn Bohrer <sbohrer@cloudflare.com>
+---
+ drivers/net/veth.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index ac7c0653695f..dfc7d87fad59 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -974,6 +974,9 @@ static int veth_poll(struct napi_struct *napi, int budget)
+ 	xdp_set_return_frame_no_direct();
+ 	done = veth_xdp_rcv(rq, budget, &bq, &stats);
  
-> The -Y/--type-filter is to filter by lock types like spinlock or mutex.
-> 
->   $ sudo ./perf lock con -ab -Y spinlock -E 3 -- ./perf bench sched messaging
->   # Running 'sched/messaging' benchmark:
->   # 20 sender and receiver processes per group
->   # 10 groups == 400 processes run
-> 
->        Total time: 0.167 [sec]
->    contended   total wait     max wait     avg wait         type   caller
-> 
->           11    669.31 us    107.17 us     60.85 us     spinlock   remove_wait_queue+0x14
->           10    586.85 us     87.62 us     58.68 us     spinlock   prepare_to_wait+0x27
->          186    497.36 us     12.94 us      2.67 us     spinlock   try_to_wake_up+0x1f5
-> 
-> For the same workload, you can see the rwlock results only like below.
-> 
->   $ sudo ./perf lock con -ab -Y rwlock -E 3 -- ./perf bench sched messaging
->   # Running 'sched/messaging' benchmark:
->   # 20 sender and receiver processes per group
->   # 10 groups == 400 processes run
-> 
->        Total time: 0.171 [sec]
->    contended   total wait     max wait     avg wait         type   caller
-> 
->           20    142.11 us     17.10 us      7.11 us     rwlock:W   do_exit+0x36d
->            3     26.49 us     12.04 us      8.83 us     rwlock:W   release_task+0x6e
->            5     12.46 us      5.12 us      2.49 us     rwlock:R   do_wait+0x8b
-> 
-> The -L/--lock-filter is to filter by lock address or name.  You can use
-> the existing -l/--lock-addr option to get the info.
-> 
->   $ sudo ./perf lock con -abl -- ./perf bench sched messaging 2>&1 | grep tasklist_lock
->           25     39.78 us     16.51 us      1.59 us   ffffffff9d006080   tasklist_lock
-> 
-> And use it with -L option like below.
-> 
->   $ sudo ./perf lock con -ab -L tasklist_lock -- ./perf bench sched messaging 2>&1
->   # Running 'sched/messaging' benchmark:
->   # 20 sender and receiver processes per group
->   # 10 groups == 400 processes run
-> 
->        Total time: 0.174 [sec]
->    contended   total wait     max wait     avg wait         type   caller
-> 
->           22    227.18 us     24.16 us     10.33 us     rwlock:W   do_exit+0x36d
->            3     26.12 us     18.03 us      8.71 us     rwlock:W   release_task+0x6e
-> 
-> Passing the address is supported too.
-> 
->   $ sudo ./perf lock con -ab -L ffffffff9d006080 -- ./perf bench sched messaging 2>&1
->   # Running 'sched/messaging' benchmark:
->   # 20 sender and receiver processes per group
->   # 10 groups == 400 processes run
-> 
->        Total time: 0.190 [sec]
->    contended   total wait     max wait     avg wait         type   caller
-> 
->           28    276.62 us     16.90 us      9.88 us     rwlock:W   do_exit+0x36d
->            4     22.36 us      7.04 us      5.59 us     rwlock:R   do_wait+0x8b
->            2     10.51 us      5.38 us      5.25 us     rwlock:W   release_task+0x6e
-> 
-> You can get it from 'perf/lock-filter-v1' branch in
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-> 
-> Thanks,
-> Namhyung
-> 
-> 
-> Namhyung Kim (6):
->   perf lock contention: Factor out lock_type_table
->   perf lock contention: Add -Y/--type-filter option
->   perf lock contention: Support lock type filtering for BPF
->   perf lock contention: Add -L/--lock-filter option
->   perf lock contention: Support lock addr/name filtering for BPF
->   perf test: Update perf lock contention test
-> 
->  tools/perf/Documentation/perf-lock.txt        |  27 +-
->  tools/perf/builtin-lock.c                     | 305 ++++++++++++++++--
->  tools/perf/tests/shell/lock_contention.sh     |  58 +++-
->  tools/perf/util/bpf_lock_contention.c         |  55 +++-
->  .../perf/util/bpf_skel/lock_contention.bpf.c  |  38 ++-
->  tools/perf/util/lock-contention.h             |  10 +
->  6 files changed, 451 insertions(+), 42 deletions(-)
-> 
-> 
-> base-commit: 51c4f2bf5397b34b79a6712221606e0ab2e6f7ed
-> -- 
-> 2.39.0.314.g84b9a713c41-goog
-
++	if (stats.xdp_redirect > 0)
++		xdp_do_flush();
++
+ 	if (done < budget && napi_complete_done(napi, done)) {
+ 		/* Write rx_notify_masked before reading ptr_ring */
+ 		smp_store_mb(rq->rx_notify_masked, false);
+@@ -987,8 +990,6 @@ static int veth_poll(struct napi_struct *napi, int budget)
+ 
+ 	if (stats.xdp_tx > 0)
+ 		veth_xdp_flush(rq, &bq);
+-	if (stats.xdp_redirect > 0)
+-		xdp_do_flush();
+ 	xdp_clear_return_frame_no_direct();
+ 
+ 	return done;
 -- 
+2.38.1
 
-- Arnaldo
