@@ -2,72 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06886528C5
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 23:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFE26528D4
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 23:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbiLTWLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 17:11:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
+        id S229626AbiLTWU6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 17:20:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbiLTWLn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 17:11:43 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AC3B1EC;
-        Tue, 20 Dec 2022 14:11:42 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id m19so19517993edj.8;
-        Tue, 20 Dec 2022 14:11:42 -0800 (PST)
+        with ESMTP id S233854AbiLTWUt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 17:20:49 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEA2E4D
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 14:20:46 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id 191-20020a6214c8000000b00577ab8701b0so7377688pfu.0
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 14:20:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T/2atre4fqcaQWMoy90Y5c5y8r7zl/7TlfkEDDKjaPc=;
-        b=XcL2vSQOhOS8sMQoxX+9NInFqIHnIBx83y5aUKny/mrm9vhhZ5p6KDDT5A9GB40o8c
-         HAJ+O+ZfQFNLfb3tGHVEK4ROaUvSsgjvThmFyE6aQtROVkiSrmR1CCEdsEltJ+hRp66x
-         M/b2OA1JggnbVJQKzlrdSUdrsJmXHHHqj3CLvKJQR4ZY3xu6rBSSvdB+Ij5izOkZebgd
-         QW8knvlVtKsh/lDsGO4l1Y2gGoQHbAefTmEOdGa7eJOtYdPMpLX1JvCCJy7wpZ7C/UFK
-         zCgZXtZg4+0aLv15j1aW5OoLOrysGeGPqj1PEgccDuAEmCEEDY5cWN99+GUL7iXkgVEQ
-         1fNw==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Iam3/ShjZhlGxX9KAXlycUxmHYC4Ccabtm9A5kBwKM=;
+        b=TmB9r1Diw77SvqT15bMhahipKJIwrm1P1T25Ds99iMm63BSagQDuM3GcjCrbS3VCVG
+         mMmsCjt/OZpATVS3iKpzJgzPKcnExNGNaFcJfqYzbg6onytKEOhKzsfi7A8BzJEgKhlj
+         zWJqMnpFzzgPIj5b4s8+cyPwFTZhTedN1h8resfOyjnETZnK5f0co5gTFVywKmZxxshg
+         +NkAYGTjNmVf7bXhXJHv2hqg1tqgU2BOK1+z+bM22sSYxyBvfZg2vPEczIJdI642vCAs
+         ExPyo0WALt7SR/VnhqmDCAHCM7VrGpejtOAsLme5OLxN1obeoxoBeahpkJmM9URbX1mx
+         4jmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T/2atre4fqcaQWMoy90Y5c5y8r7zl/7TlfkEDDKjaPc=;
-        b=Dw/9E6P19/VPCrFo3QdRtWyh/CUL2txldFEiNSP3fLlKEa3fxWuVqv1nPZMg+iBzhj
-         ebqcbxo65wnoMndTR5OzS6S/Glo/zV38GW1k9s1E52un2mUiyhZqjP8vDAav94qahtam
-         ApuH/NLItxyGKydl27mPKlfUQBjqQCPRv0QCZ9zvgdMOfPXV3+f6Wi+pqWG7hEspznql
-         IgxVIQA0FZN0iJUixAJGvXozcpSFVZLZSJaGh2sOn7BJMDj6fILxA1aj9Q5zi/jj2ZhQ
-         SY5YZL1duWGZUkIhpFPJtGLWL4uyc5mai8qSEs5Yaa3lcqL+mdGVSH3nDjdudP10Rq1Y
-         l1yA==
-X-Gm-Message-State: ANoB5pn9mak/Vc8Iodqxp6QGFHOnyynd0fzbl5KkL+SXgZUmOTeMwiV8
-        MUd1NZlI0vs7hyUEQysC8KRzPVNU/PGOJ8gZ1MQ=
-X-Google-Smtp-Source: AA0mqf7UVFbJnkjONnKYPvSbXdCh3YuMhG3ja1r1HUzIWRe7Q0T22Q2cY9hfkKfMZdhkNp/68jILn9lPlVsXh+Egu8U=
-X-Received: by 2002:a05:6402:2421:b0:461:524f:a8f4 with SMTP id
- t33-20020a056402242100b00461524fa8f4mr89321779eda.260.1671574301228; Tue, 20
- Dec 2022 14:11:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20221215005315.186787-1-connoro@google.com> <0fc1e9bd-e70b-28a2-bc09-629414a619b0@meta.com>
-In-Reply-To: <0fc1e9bd-e70b-28a2-bc09-629414a619b0@meta.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 20 Dec 2022 14:11:28 -0800
-Message-ID: <CAEf4Bzbw4acHiWie=jgqHY63JEZosN4t_KBcQfzS=012GgGBTA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: btf: limit logging of ignored BTF mismatches
-To:     Yonghong Song <yhs@meta.com>
-Cc:     "Connor O'Brien" <connoro@google.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Iam3/ShjZhlGxX9KAXlycUxmHYC4Ccabtm9A5kBwKM=;
+        b=sD4pnrkLVii9Iye++87nhnMALvswpBwOHTY6S2UYokUO+QhybSvz19nS6JY+fTp8RQ
+         DBYRRpv+bhBsMeUJpef2lZ2AIjVhiQlatjQI7+V9JZfd27PzqJEhStuC2ctLs9LgvTwo
+         SqpryOhZ5/WEEO39Wa/FhxESXiQkQHIJU7tL5T4vHl+tP9XNRlvtqkHjK3sRfSB68dPx
+         gGxGC06LVIoyFTzXZzjTm0Z/It/egrsazjgisuFChEkvX6hGiSb5YEkMuA00h2eCDlOi
+         DumWLGdV2Kl1nmBY1wQzT1UduMWrXPw5wI70fGnqPapZI16Fz7jkvYEMo9hx3v4mOvEr
+         DXgA==
+X-Gm-Message-State: AFqh2kqoJBdqWi1qQzEr+6DDDXJQS6HXFykwEq755FC1Lg+zqaJMOf+L
+        c0p2ut6SFdFUKcsdwRr5d2wCYz4wN/omt84WPW3o/+RhpxSE6wuq9iwSDp/xlmFXhrBd+CWYzzq
+        noXi/KJnGfFFHsX2VBzOjW311gqQMmvwyM2K3YGissM8dKYKIaw==
+X-Google-Smtp-Source: AMrXdXuFKtzodN+Fpx9EzYjrTS2SdKtaJ6gV0lEIqeGddUQ07NBScPaaRqoK92U6p3ZeEFV3f+6swiM=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90b:4d83:b0:220:1f03:129b with SMTP id
+ oj3-20020a17090b4d8300b002201f03129bmr60042pjb.0.1671574844959; Tue, 20 Dec
+ 2022 14:20:44 -0800 (PST)
+Date:   Tue, 20 Dec 2022 14:20:26 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
+Message-ID: <20221220222043.3348718-1-sdf@google.com>
+Subject: [PATCH bpf-next v5 00/17] xdp: hints via kfuncs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,108 +79,153 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 15, 2022 at 9:06 PM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 12/14/22 4:53 PM, Connor O'Brien wrote:
-> > Enabling CONFIG_MODULE_ALLOW_BTF_MISMATCH is an indication that BTF
-> > mismatches are expected and module loading should proceed
-> > anyway. Logging with pr_warn() on every one of these "benign"
-> > mismatches creates unnecessary noise when many such modules are
-> > loaded. Instead, handle this case with a single log warning that BTF
-> > info may be unavailable.
-> >
-> > Mismatches also result in calls to __btf_verifier_log() via
-> > __btf_verifier_log_type() or btf_verifier_log_member(), adding several
-> > additional lines of logging per mismatched module. Add checks to these
-> > paths to skip logging for module BTF mismatches in the "allow
-> > mismatch" case.
-> >
-> > All existing logging behavior is preserved in the default
-> > CONFIG_MODULE_ALLOW_BTF_MISMATCH=n case.
-> >
-> > Signed-off-by: Connor O'Brien <connoro@google.com>
->
-> Ack with a few nits below.
->
-> Acked-by: Yonghong Song <yhs@fb.com>
->
-> > ---
-> > v2:
-> > - Use pr_warn_once instead of skipping logging entirely
-> > - Also skip btf verifier logs for ignored mismatches
-> >
-> > v1: https://lore.kernel.org/bpf/20221109024155.2810410-1-connoro@google.com/
-> > ---
-> >   kernel/bpf/btf.c | 24 +++++++++++++++++++++---
-> >   1 file changed, 21 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index f7dd8af06413..16b959b49595 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -1404,6 +1404,13 @@ __printf(4, 5) static void __btf_verifier_log_type(struct btf_verifier_env *env,
-> >       if (log->level == BPF_LOG_KERNEL && !fmt)
-> >               return;
-> >
-> > +     /*
-> > +      * Skip logging when loading module BTF with mismatches permitted
-> > +      */
->
-> Just use one line for the above comment.
->
-> > +     if (env->btf->base_btf && env->btf->kernel_btf &&
-> > +         IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-> > +             return;
->
-> I believe env->btf->base_btf alone is enough to test it should be a
-> module btf. If env->btf->base_btf is true, env->btf->kernel_btf should
-> also be true. The other way is not true, env->btf->kernel_btf is true,
-> the btf could be vmlinux (env->btf->base_btf == NULL) or be a module.
->
+Please see the first patch in the series for the overall
+design and use-cases.
 
-Seems like we are also using log->level == BPF_LOG_KERNEL check for
-when working with kernel BTFs, so let's stick to the same pattern?
+See the following email from Toke for the per-packet metadata overhead:
+https://lore.kernel.org/bpf/20221206024554.3826186-1-sdf@google.com/T/#m49d=
+48ea08d525ec88360c7d14c4d34fb0e45e798
 
+Recent changes:
 
-> > +
-> >       __btf_verifier_log(log, "[%u] %s %s%s",
-> >                          env->log_type_id,
-> >                          btf_type_str(t),
-> > @@ -1443,6 +1450,14 @@ static void btf_verifier_log_member(struct btf_verifier_env *env,
-> >
-> >       if (log->level == BPF_LOG_KERNEL && !fmt)
-> >               return;
-> > +
-> > +     /*
-> > +      * Skip logging when loading module BTF with mismatches permitted
-> > +      */
->
-> Same, just use one line for the above comments.
->
-> > +     if (env->btf->base_btf && env->btf->kernel_btf &&
-> > +         IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-> > +             return;
-> > +
-> >       /* The CHECK_META phase already did a btf dump.
-> >        *
-> >        * If member is logged again, it must hit an error in
-> > @@ -7260,11 +7275,14 @@ static int btf_module_notify(struct notifier_block *nb, unsigned long op,
-> >               }
-> >               btf = btf_parse_module(mod->name, mod->btf_data, mod->btf_data_size);
-> >               if (IS_ERR(btf)) {
-> > -                     pr_warn("failed to validate module [%s] BTF: %ld\n",
-> > -                             mod->name, PTR_ERR(btf));
-> >                       kfree(btf_mod);
-> > -                     if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-> > +                     if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH)) {
-> > +                             pr_warn("failed to validate module [%s] BTF: %ld\n",
-> > +                                     mod->name, PTR_ERR(btf));
-> >                               err = PTR_ERR(btf);
-> > +                     } else {
-> > +                             pr_warn_once("Kernel module BTF mismatch detected, BTF debug info may be unavailable for some modules\n");
-> > +                     }
-> >                       goto out;
-> >               }
-> >               err = btf_alloc_id(btf);
+- Various updates to the documentation (Toke)
+
+- !CONFIG_NET for bpf_dev_bound_resolve_kfunc (Martin)
+
+- Comment about race when resolving multiple kfuncs vs attach (Martin)
+
+- Move kfuncs check part under add_kfunc_call (Martin)
+
+- Add missing freplace locks (via bpf_prog_dev_bound_inherit and
+  bpf_prog_dev_bound_match) (Martin)
+
+- Rework selftest to expect 0 HW timestamp instead of adding test-specific
+  code to veth (Martin)
+
+- Separate patches for offload.c refactoring (Martin)
+
+- Remove sem unlock in __bpf_offload_dev_netdev_register (Martin)
+
+- Rework error handling in bpf_prog_offload_init (Martin)
+
+- Fix wrongly placed list_del_init and unroll
+  bpf_dev_bound_try_remove_netdev (Martin)
+
+- Drop locks from bpf_offload_init (Martin)
+
+- Swap the order of bpf_dev_bound_netdev_unregister and
+  dev_xdp_uninstall (Martin)
+
+- Return HW timestamp in veth kfunc (Jesper)
+
+- Various fixes around documentation (David)
+
+- Don't define kfunc prototypes (David)
+
+- More clear XDP_METADATA_KFUNC argument names (David)
+
+Prior art (to record pros/cons for different approaches):
+
+- Stable UAPI approach:
+  https://lore.kernel.org/bpf/20220628194812.1453059-1-alexandr.lobakin@int=
+el.com/
+- Metadata+BTF_ID appoach:
+  https://lore.kernel.org/bpf/166256538687.1434226.15760041133601409770.stg=
+it@firesoul/
+- v4:
+  https://lore.kernel.org/bpf/20221213023605.737383-1-sdf@google.com/
+- v3:
+  https://lore.kernel.org/bpf/20221206024554.3826186-1-sdf@google.com/
+- v2:
+  https://lore.kernel.org/bpf/20221121182552.2152891-1-sdf@google.com/
+- v1:
+  https://lore.kernel.org/bpf/20221115030210.3159213-1-sdf@google.com/
+- kfuncs v2 RFC:
+  https://lore.kernel.org/bpf/20221027200019.4106375-1-sdf@google.com/
+- kfuncs v1 RFC:
+  https://lore.kernel.org/bpf/20221104032532.1615099-1-sdf@google.com/
+
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: David Ahern <dsahern@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: Maryam Tahhan <mtahhan@redhat.com>
+Cc: xdp-hints@xdp-project.net
+Cc: netdev@vger.kernel.org
+
+Stanislav Fomichev (13):
+  bpf: Document XDP RX metadata
+  bpf: Rename bpf_{prog,map}_is_dev_bound to is_offloaded
+  bpf: Move offload initialization into late_initcall
+  bpf: Reshuffle some parts of bpf/offload.c
+  bpf: Introduce device-bound XDP programs
+  selftests/bpf: Update expected test_offload.py messages
+  bpf: XDP metadata RX kfuncs
+  veth: Introduce veth_xdp_buff wrapper for xdp_buff
+  veth: Support RX XDP metadata
+  selftests/bpf: Verify xdp_metadata xdp->af_xdp path
+  net/mlx4_en: Introduce wrapper for xdp_buff
+  net/mlx4_en: Support RX XDP metadata
+  selftests/bpf: Simple program to dump XDP RX metadata
+
+Toke H=C3=B8iland-J=C3=B8rgensen (4):
+  bpf: Support consuming XDP HW metadata from fext programs
+  xsk: Add cb area to struct xdp_buff_xsk
+  net/mlx5e: Introduce wrapper for xdp_buff
+  net/mlx5e: Support RX XDP metadata
+
+ Documentation/networking/index.rst            |   1 +
+ Documentation/networking/xdp-rx-metadata.rst  | 107 +++++
+ drivers/net/ethernet/mellanox/mlx4/en_clock.c |  13 +-
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |   6 +
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  63 ++-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |   5 +
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |  11 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  26 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  11 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |  35 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.h   |   2 +
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   6 +
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  99 +++--
+ drivers/net/netdevsim/bpf.c                   |   4 -
+ drivers/net/veth.c                            |  87 ++--
+ include/linux/bpf.h                           |  53 ++-
+ include/linux/netdevice.h                     |   7 +
+ include/net/xdp.h                             |  21 +
+ include/net/xsk_buff_pool.h                   |   5 +
+ include/uapi/linux/bpf.h                      |   5 +
+ kernel/bpf/core.c                             |  12 +-
+ kernel/bpf/offload.c                          | 404 +++++++++++------
+ kernel/bpf/syscall.c                          |  39 +-
+ kernel/bpf/verifier.c                         |  54 ++-
+ net/bpf/test_run.c                            |   3 +
+ net/core/dev.c                                |   9 +-
+ net/core/filter.c                             |   2 +-
+ net/core/xdp.c                                |  50 +++
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   8 +-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   | 412 ++++++++++++++++++
+ .../selftests/bpf/progs/xdp_hw_metadata.c     |  81 ++++
+ .../selftests/bpf/progs/xdp_metadata.c        |  64 +++
+ .../selftests/bpf/progs/xdp_metadata2.c       |  23 +
+ tools/testing/selftests/bpf/test_offload.py   |  10 +-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 405 +++++++++++++++++
+ tools/testing/selftests/bpf/xdp_metadata.h    |  15 +
+ 38 files changed, 1883 insertions(+), 281 deletions(-)
+ create mode 100644 Documentation/networking/xdp-rx-metadata.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_metadata2.c
+ create mode 100644 tools/testing/selftests/bpf/xdp_hw_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/xdp_metadata.h
+
+--=20
+2.39.0.314.g84b9a713c41-goog
+
