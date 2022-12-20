@@ -2,70 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 334466527FC
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 21:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC99665280C
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 21:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234266AbiLTUj1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 15:39:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
+        id S229906AbiLTUo6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 15:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234273AbiLTUjX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 15:39:23 -0500
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FB818695;
-        Tue, 20 Dec 2022 12:39:21 -0800 (PST)
-Received: by mail-oo1-xc30.google.com with SMTP id e12-20020a4ab98c000000b004a081e811beso2095181oop.2;
-        Tue, 20 Dec 2022 12:39:21 -0800 (PST)
+        with ESMTP id S234100AbiLTUoy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 15:44:54 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCE2186DF
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 12:44:52 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id v23so8391375pju.3
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 12:44:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=azNFe5jU1dMrsdXR71DYBx3y6Kfnd/1t+DGsjCCu4wc=;
-        b=hXY+HEF7dvemF+QWV9hnbVBwIDLBUPRBQz1HfIFoFKSJTD4TOIX9uMAEz44PV00fLJ
-         qQFXcsQadCp6vJb55Td7Wnp0gEgqmXDWT9hVCjCl6xUUQkbrlH8h7P/zdSlOwJegWgqy
-         XuVnETZDavc4yF/kn9ccDYwE4PpEkttD6CSD3iwdgx63sibf0CDrEJ0JiuxR41njHuIY
-         ASEBYgejlWZuQfwLakLhIJ2gfJyl9u0fZlT6A/lEG0iiNtotPTmUDE2GPDFsS7VDQY3S
-         9NQb9LcnzBgkQ3H8xI08Uz3kAjrWvLwQSqXAfy6nDtUwgZzghP5rVhevC0umBrooVDB9
-         XK6A==
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wLE14m1hJaq0AjyblPUtFUz3szk8q598hBuV+O2/Q7Y=;
+        b=czSeDDKjShp1MHbpu5nCLJOheuAcVZXD7IWN7SpODKWI5qBzknvgmwbLnDI1vevw7F
+         9QC70aKRF2AR7IBr6XpE7rWRROW2Tpi5qWtYovvZU5GykLTiA6tlKNj+0qiJRFv8JF1d
+         ScJoJtPJivhH3S1rxGyWFToIzheZGBz3LZOEzaF3Nr9xTNYczheve7IV7X/qQra4uX15
+         jW4O/bO5lGzsrG41KS5oBlZGKKtkwUZU7SaznF8CTM+S33bWKkpz9WiS+8lOT4rMsgKp
+         gpWn4SlmzLDTJwXvvK2E3OAOwIjztysYKYVeFfPPeOZ8x25O9NI5onzNsve5qfqlOTmP
+         OM1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=azNFe5jU1dMrsdXR71DYBx3y6Kfnd/1t+DGsjCCu4wc=;
-        b=xKicvnXNQ1X6n10/lNYU6aXgz/5etC+AD51xYOCyoooMAEzkwlDC3SPhVQaNvrVf/t
-         njAQJ1GlL5K33yMYxYWqFDNL1Hy+2r7YAkhmzYTeyOdOOAUdrE7yYJ+yFHrEYVp0M/dh
-         C1V/LHAlTWnf3s1LuU137RIBesfL0GpW8jpzEmvxArZa6seDOaTo25OgIto8kmjRseZX
-         uOIEH8pigZV7NBxSYLD9V46Ovv/ymmNz6mJLgjSbddCF65cJqq1ho7Fe3caPDwAyGbEw
-         /d9AlpsVJ1gz2mc6Hv1BZM3N0a8Z6tvN9GbJaAQWwCdzwmH+oCodB7SmR82fpLyJ5Mcb
-         PY7A==
-X-Gm-Message-State: ANoB5pnoBcOJaWYJQL7a0OK6Mp5yUCyfU+9IrtLEuOequIQP3lMqlXOH
-        QwL5yapCD60HsQtjIXr8RjOVhf3LPTWrSA==
-X-Google-Smtp-Source: AA0mqf5Z5q9oJWUtYllftjv0rAybh6GQEuV1X7jfUWoSrt7AJ3lOk4GXWUQ/Dwh28ObQWBEguL5nAw==
-X-Received: by 2002:a4a:2c97:0:b0:4a3:6dd1:3f34 with SMTP id o145-20020a4a2c97000000b004a36dd13f34mr21644921ooo.5.1671568760393;
-        Tue, 20 Dec 2022 12:39:20 -0800 (PST)
-Received: from tx3000mach.io (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id a11-20020a4ab10b000000b0049fb39100a5sm5380714ooo.37.2022.12.20.12.39.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Dec 2022 12:39:19 -0800 (PST)
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     bpf@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        bh=wLE14m1hJaq0AjyblPUtFUz3szk8q598hBuV+O2/Q7Y=;
+        b=7N8pz7UF3lWFaQh/ORtbCmTkZ1fGph2ngCqNuZ2mHWchNtM3+597gXt3vUALhlXo5b
+         hwxBJYBirBGXu7ON+FSv3z/Y/yIH/F495haegj1j8bIJBSwe6ViuACRTowM1csDsCwG7
+         0Pme0cYP+F8VMj5nYkkHXqaJVwAY6GkDgmoqXoMtjF4Rm8BQ1A2mKi1U3DzJwlZV5C/y
+         6PpUuD+jqxIocBy52RSt8JojEvIuuXTvTVdEduT9Kk7EILzNutkGH3PJkbkFZh1lKLi0
+         tGQcbVOhqqEQP+6ZuyHjO1hd4ZiiYvgWeSY3au9M6R1Nx26FM6jJbtFWmOrWasJ1PhPz
+         j2Rw==
+X-Gm-Message-State: AFqh2kpGv7j5I2tlZaiVxngEKxW9Fpr/lCX9HyUsPdwEQsfToDZI/EDC
+        2zzS1ch1mwPE5Hh/n6m4YVq0+pPrlPXByowp5qjV
+X-Google-Smtp-Source: AMrXdXtKjmAWXlpuJdfPaH7BVF2Dw+p/vVrhbDvAiUoMMgs0ozRvxWYSDeIq3wQOaANeFSQk6p1cOSh1DL2CnB0yuS0=
+X-Received: by 2002:a17:902:aa04:b0:191:2f59:904c with SMTP id
+ be4-20020a170902aa0400b001912f59904cmr401738plb.56.1671569091462; Tue, 20 Dec
+ 2022 12:44:51 -0800 (PST)
+MIME-Version: 1.0
+References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+ <21be7356-8710-408a-94e3-1a0d3f5f842e@www.fastmail.com> <CAEf4BzawXPiXY3mNabi0ggyTS9wtg6mh8x97=fYGhuGj4=2hnw@mail.gmail.com>
+ <a9367491-5ac3-385b-d0d6-820772ebd395@huaweicloud.com> <CAEf4BzZJDRNyafMEjy-1RX9cUmpcvZzYd9YBf9Q3uv_vVsiLCw@mail.gmail.com>
+ <5abb0b0090fd0bce77dca0a6b9036de121b65cf5.camel@huaweicloud.com>
+ <20f55084c341093d18d2bc462e49123c7f03cc8e.camel@huaweicloud.com>
+ <CAADnVQLU+c+gsZ=V6myG0-GhU3EzZgqjzTPvqvYmCDBjqMoF+Q@mail.gmail.com>
+ <3fa1fdafc4335c43f84259261dcd1f7d588985a6.camel@huaweicloud.com> <c0f7120e433c80b7c4e0af788eda58de8d1ecdad.camel@huaweicloud.com>
+In-Reply-To: <c0f7120e433c80b7c4e0af788eda58de8d1ecdad.camel@huaweicloud.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 20 Dec 2022 15:44:40 -0500
+Message-ID: <CAHC9VhQKa36C4xh1OiCdC1baNSeNL7OMLY9zg4O0UWahX-mzow@mail.gmail.com>
+Subject: Re: Closing the BPF map permission loophole
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Eric Curtin <ecurtin@redhat.com>, Neal Gompa <neal@gompa.dev>
-Subject: [PATCH bpf] scripts: Exclude Rust CUs with pahole
-Date:   Tue, 20 Dec 2022 17:39:15 -0300
-Message-Id: <20221220203915.1333444-1-yakoyoku@gmail.com>
-X-Mailer: git-send-email 2.39.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,82 +79,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Version 1.24 of pahole has the capability to exclude compilation units
-(CUs) of specific languages. Rust, as of writing, is not currently
-supported by pahole and if it's used with a build that has BTF debugging
-enabled it results in malformed kernel and module binaries (see
-Rust-for-Linux/linux#735). So it's better for pahole to exclude Rust
-CUs until support for it arrives.
+On Fri, Dec 16, 2022 at 5:24 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> Ok, let me try to complete the solution for the issues Lorenz pointed
+> out. Here I discuss only the system call side of access.
+>
+> I was thinking on the meaning of the permissions on the inode of a
+> pinned eBPF object. Given that the object exists without pinning, this
+> double check of permissions first on the inode and then on the object
+> to me looks very confusing.
+>
+> So, here is a proposal: what if read and write in the context of
+> pinning don't refer to accessing the eBPF object itself but to the
+> ability to read the association between inode and eBPF object or to
+> write/replace the association with a different eBPF object (I guess not
+> supported now).
+>
+> We continue to do access control only at the time a requestor asks for
+> a fd. Currently there is only MAC, but we can add DAC and POSIX ACL too
+> (Andrii wanted to give read permission to a specific group). The owner
+> is who created the eBPF object and who can decide (for DAC and ACL) who
+> can access that object.
+>
+> The requestor obtains a fd with modes depending on what was granted. Fd
+> modes (current behavior) give the requestor the ability to do certain
+> operations. It is responsibility of the function performing the
+> operation on an eBPF object to check the fd modes first.
+>
+> It does not matter if the eBPF object is accessed through ID or inode,
+> access control is solely based on who is accessing the object, who
+> created it and the object permissions. *_GET_FD_BY_ID and OBJ_GET
+> operations will have the same access control.
+>
+> With my new proposal, once an eBPF object is pinned the owner or
+> whoever can access the inode could do chown/chmod. But this does not
+> have effect on the permissions of the object. It changes only who can
+> retrieve the association with the eBPF object itself.
 
-Reviewed-by: Eric Curtin <ecurtin@redhat.com>
-Tested-by: Eric Curtin <ecurtin@redhat.com>
-Reviewed-by: Neal Gompa <neal@gompa.dev>
-Tested-by: Neal Gompa <neal@gompa.dev>
-Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
----
- init/Kconfig            | 2 +-
- lib/Kconfig.debug       | 9 +++++++++
- scripts/pahole-flags.sh | 8 ++++++++
- 3 files changed, 18 insertions(+), 1 deletion(-)
+Just to make sure I understand you correctly, you're suggesting that
+the access modes assigned to a pinned map's fd are simply what is
+requested by the caller, and don't necessarily represent the access
+control modes of the underlying map, is that correct?  That seems a
+little odd to me, but I'll once again admit that I'm not familiar with
+all of the subtle nuances around eBPF maps.  I could understand
+allowing a process to grab a map fd where the access modes are bounded
+by the map's access modes, e.g. a read-only fd for a read-write map;
+however, that only makes sense if all of the map operations for *that
+process* are gated by the access control policy of the fd and not
+necessarily the map itself.  If the two access policies were disjoint
+(fd/map), one could/should do permission checks between the calling
+process and both the fd and the map ... although I'm having a hard
+time trying to think of a valid use case where a map's fd would have a
+*more* permissive access control policy than the map itself, I'm not
+sure that makes sense.
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 694f7c160c9c..360aef8d7292 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1913,7 +1913,7 @@ config RUST
- 	depends on !MODVERSIONS
- 	depends on !GCC_PLUGINS
- 	depends on !RANDSTRUCT
--	depends on !DEBUG_INFO_BTF
-+	depends on !DEBUG_INFO_BTF || PAHOLE_HAS_LANG_EXCLUDE
- 	select CONSTRUCTORS
- 	help
- 	  Enables Rust support in the kernel.
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index ea4c903c9868..d473d491e709 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -364,6 +364,15 @@ config PAHOLE_HAS_BTF_TAG
- 	  btf_decl_tag) or not. Currently only clang compiler implements
- 	  these attributes, so make the config depend on CC_IS_CLANG.
- 
-+config PAHOLE_HAS_LANG_EXCLUDE
-+	def_bool PAHOLE_VERSION >= 124
-+	help
-+	  Support for the --lang_exclude flag which makes pahole exclude
-+	  compilation units from the supplied language. Used in Kbuild to
-+	  omit Rust CUs which are not supported in version 1.24 of pahole,
-+	  otherwise it would emit malformed kernel and module binaries when
-+	  using DEBUG_INFO_BTF_MODULES.
-+
- config DEBUG_INFO_BTF_MODULES
- 	def_bool y
- 	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-index 0d99ef17e4a5..1071d2cd9b28 100755
---- a/scripts/pahole-flags.sh
-+++ b/scripts/pahole-flags.sh
-@@ -9,6 +9,10 @@ fi
- 
- pahole_ver=$($(dirname $0)/pahole-version.sh ${PAHOLE})
- 
-+is_enabled() {
-+	grep -q "^$1=y" include/config/auto.conf
-+}
-+
- if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
- 	# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
- 	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_vars"
-@@ -19,5 +23,9 @@ fi
- if [ "${pahole_ver}" -ge "122" ]; then
- 	extra_paholeopt="${extra_paholeopt} -j"
- fi
-+if is_enabled CONFIG_RUST; then
-+	# see PAHOLE_HAS_LANG_EXCLUDE
-+	extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
-+fi
- 
- echo ${extra_paholeopt}
+> Permissions on the eBPF object could be changed with the bpf() syscall
+> and with new operations (such as OBJ_CHOWN, OBJ_CHMOD). These
+> operations are of course subject to access control too.
+>
+> The last part is who can do pinning. Again, an eBPF object can be
+> pinned several times by different users. It won't affect who can access
+> the object, but only who can access the association between inode and
+> eBPF object.
+>
+> We can make things very simple: whoever is able to read the association
+> is granted with the privilege to pin the eBPF object again.
+>
+> One could ask what happens if a user has only read permission on an
+> inode created by someone else, but has also write permission on a new
+> inode the user creates by pinning the eBPF object again (I assume that
+> changing the association makes sense). Well, that user is the owner of
+> the inode. If the user wants other users accessing it to see a
+> different eBPF object, it is the user's decision.
+
 -- 
-2.39.0
-
+paul-moore.com
