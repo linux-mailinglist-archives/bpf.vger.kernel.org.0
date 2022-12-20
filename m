@@ -2,69 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6A665253C
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 18:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389D465258C
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 18:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbiLTRKw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 12:10:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S233609AbiLTR1Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 12:27:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbiLTRKn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 12:10:43 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC53BBA
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 09:10:43 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id 65so8921441pfx.9
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 09:10:43 -0800 (PST)
+        with ESMTP id S233392AbiLTR1P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 12:27:15 -0500
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAB16269
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 09:27:14 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id k7-20020a17090a39c700b002192c16f19aso5428616pjf.1
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 09:27:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=o6/NwTvG1ts0rBmQ9K+XNWZapy07EBTMQ36kpdSkC/M=;
-        b=SuEARZa3uOm8eCuCEdXiIA4dUUCYwaj39AXx4CUb7Emp5srU0IfqLWX6UpLoFkhSXZ
-         4Mpvt6m02Lqbp9omusDqgAq5VhcKkgz7khoAAomedfqx1V48/bPStI1ncUcCylbg3I2B
-         QvcwA7StM6sYXK6TQSvsS6bPctruF9XULezH8Lijef5n63XHHBDfj+IyhhnuHi8c11pG
-         COmMgXNoS1H6eAQYcE3YfG8lCkOqNNS5AHqbwi37wmrPl82aRzed5fYoPwcrKAG/N8oy
-         rfIY2P6TciwstqsQc+Ngkgjr0l5NSK64VOq0/LdvgV/kIm8z/2sbGCgsjdmP8Xyo6EqH
-         nA7Q==
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CSLVZBAHtbd6SWKuGlApjel+VcT8nQLTJZTtZffl9ek=;
+        b=j2DgosoDwqOFtjwoQUL7AQPiAHx25itWnUwHYAYe8eAZ8sPiGF1BtruTSfo1ksNbKS
+         Y1AF1kGuWneOLrOTVYVvQmnbbNyXKpz3eIDx/pe1IS2apYkhn9TTgAjTMdHxAVgOitnT
+         bqTfcdm59+qL/qBx07ZcGqCfw7CWRMcFiZ/hm7BrBMANJ0wUl0d5ypf63c6fTi0/YfuG
+         /8SWBc1+g8Fk+GOiKednPdW/RMUBxawhGWKBgJaXVFFtgQ6mPpXMSElYjXWcI09BCBF6
+         Kp2y3Dlfbyk6IeL7WPrs4qNcUUqS7Hi9jWbunfXLqwodhby4A0HEhglpoP6HnMZZrjm7
+         i93A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o6/NwTvG1ts0rBmQ9K+XNWZapy07EBTMQ36kpdSkC/M=;
-        b=OdeBrFvxM1z4XrJm285J/Sj3l2D9tbP2V0GeKlQnb5pwU3VxJLkFMw4eM9EfLhAHA+
-         dTdtuj+36neEFKjSKF9x/xHIEcg2kHNG8+8DDVC1Ju0sb4VZ1PC9jRyTSdGqFDVWYx9m
-         qGJjS8iyATqpbFKqMFl+1/vGA9e1vwF90AOa3g/k9YGE0yZP+Z4jox6zbYgSVob14nsq
-         MvtrGezzW5LqO5YindiE2LZU43rnmccpeCFZSmke8tzWXUJMCr8+bV0MYaHeGtOlzsuh
-         Z0IgtJ1x0LTYQgNlnsk8JgoMAQzLz8lzj1PpFc6L9wqSg/OCrcr3rFvwUubcSbIvXz79
-         P32Q==
-X-Gm-Message-State: ANoB5pmsuyZt/wB1WzOO83GypQumQTl6scVuqyHD16XDInyU1dtxC3RS
-        FmZNOO4ZcQVQSSzx7xILfTcD32c/DgDYbFj7Z0PDLg==
-X-Google-Smtp-Source: AA0mqf4ZwwT4lP5lED/bdOCSru0RBf/NPcsWF81/I6R8hZ5dZvndnY8Ixug9Xf50fLBW1lod+238c4F2sWPMYEy34po=
-X-Received: by 2002:a63:2160:0:b0:46f:f26e:e8ba with SMTP id
- s32-20020a632160000000b0046ff26ee8bamr74067527pgm.250.1671556242235; Tue, 20
- Dec 2022 09:10:42 -0800 (PST)
-MIME-Version: 1.0
-References: <000000000000a20a2e05f029c577@google.com> <Y6B3xEgkbmFUCeni@hirez.programming.kicks-ass.net>
- <Y6C8iQGENUk/XY/A@google.com> <Y6Fw1ymTcFrMR3Hl@hirez.programming.kicks-ass.net>
-In-Reply-To: <Y6Fw1ymTcFrMR3Hl@hirez.programming.kicks-ass.net>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 20 Dec 2022 09:10:30 -0800
-Message-ID: <CAKH8qBs1UiikX=_CBzRC_2rg3sp8CU5hhB7sOkNkNBqm8OqFEw@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in put_pmu_ctx
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     syzbot <syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com>,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        bpf@vger.kernel.org, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: multipart/mixed; boundary="0000000000000ba28505f0458408"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CSLVZBAHtbd6SWKuGlApjel+VcT8nQLTJZTtZffl9ek=;
+        b=nmypIJu23R3WO/+sk25W0ZgdJisLmGA60c/AEs7B5gWGQu7dyCblC2xNJWOyJe4Kv+
+         OMOViUcaP3dhajyUIg/CZpLbi0mlEGvH62UubfR3pBED0LRDYJhNzHj4SIjkuRpBADBT
+         P/uc6dN/9xtuGTvP64fP6H1ecx4aJ6n/DCcbKCJczTH7irdSStlZqUtqqGCyTQUnFwSf
+         k4xfNYc6gf0MZvdHLfiwhoDROsXMXT3ceCcirReo5O1ZPwCODGcB7fQzHWu845FktIDc
+         QUOZYZSfKf4Ao03y2e6uoSVx3w1o54OsSKBK/8q+AxEBXowhbNd8ZQazpRLgGFxXJhEo
+         VSBg==
+X-Gm-Message-State: AFqh2krNkDMrBVj835S2mVfbs/G+C11Ei723AkgMwAwGb6O88JUQd+Gu
+        +9DqHgOKgbNKBpNX8rldczq1c9Q=
+X-Google-Smtp-Source: AMrXdXs8R+rjhECppMaMVXNducZBq3Iyox5oqSpwdQIkXfqUnOtqzIm0XpnZaNLLXD9xpnLcoM/UgPs=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:e152:0:b0:491:8233:399 with SMTP id
+ h18-20020a63e152000000b0049182330399mr40287pgk.149.1671557233753; Tue, 20 Dec
+ 2022 09:27:13 -0800 (PST)
+Date:   Tue, 20 Dec 2022 09:27:12 -0800
+In-Reply-To: <CAEc2n-vmWk6+hG-fcqvMdeG-hSyuFoHv9R79U5MjnOU7nXQSpw@mail.gmail.com>
+Mime-Version: 1.0
+References: <CAEc2n-vmWk6+hG-fcqvMdeG-hSyuFoHv9R79U5MjnOU7nXQSpw@mail.gmail.com>
+Message-ID: <Y6HwQSCdxkRS00q9@google.com>
+Subject: Re: Support for gcc
+From:   sdf@google.com
+To:     SuHsueyu <anolasc13@gmail.com>
+Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,58 +65,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---0000000000000ba28505f0458408
-Content-Type: text/plain; charset="UTF-8"
+On 12/20, SuHsueyu wrote:
+> Hello, I use gcc 12.1.0 to compile a source file:
+> t.c
+> struct t {
+>    int a:2;
+>    int b:3;
+>    int c:2;
+> } g;
+> with gcc -c -gbtf t.c
+> and try to use libbpf API btf__parse_split, bpf_object__open, and
+> bpf_object__open to parse and load into the kernel, but it failed with
+> "libbpf: elf: /path/to/t.o is not a valid eBPF object file".
 
-On Tue, Dec 20, 2022 at 12:22 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Dec 19, 2022 at 11:33:29AM -0800, sdf@google.com wrote:
-> > On 12/19, Peter Zijlstra wrote:
-> > > On Mon, Dec 19, 2022 at 12:04:43AM -0800, syzbot wrote:
->
-> > > > HEAD commit:    13e3c7793e2f Merge tag 'for-netdev' of
-> > > https://git.kernel...
-> > > > git tree:       bpf
-> > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=177df7e0480000
-> > > > kernel config:
-> > > https://syzkaller.appspot.com/x/.config?x=b0e91ad4b5f69c47
-> > > > dashboard link:
-> > > https://syzkaller.appspot.com/bug?extid=b8e8c01c8ade4fe6e48f
->
-> ^ so syzbot knows what tree and config were used to trigger the report,
-> then why:
+> Is it wrong for me to do so? Due to some constraint, I cannot use
+> clang but gcc. How to parse and load gcc compiled object file with
+> libbpf?
 
-I haven't used it before and wasn't sure whether it would take the
-last commit from the branch of the one where it failed. Adding them
-shouldn't hurt, right?
+I haven't used gcc myself, so can't really help. All I can do is to
+point you to these two places:
 
-> > Let's maybe try it this way:
-> >
-> > #syz test: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
-> > 13e3c7793e2f
->
-> do you have to repeat that again in order for it to test something?
+* https://gcc.gnu.org/wiki/BPFBackEnd
+* tools/testing/selftests/bpf/Makefile
 
-Yeah, I was trying to understand why it doesn't like my patch. It
-seems I can retry with the patch attached which hopefully should fix
-the possible formatting issue; let's see.
-
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
-13e3c7793e2f
-
---0000000000000ba28505f0458408
-Content-Type: text/x-patch; charset="US-ASCII"; name="pmu.patch"
-Content-Disposition: attachment; filename="pmu.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lbwhemfp0>
-X-Attachment-Id: f_lbwhemfp0
-
-ZGlmZiAtLWdpdCBhL2tlcm5lbC9ldmVudHMvY29yZS5jIGIva2VybmVsL2V2ZW50cy9jb3JlLmMK
-aW5kZXggZTQ3OTE0YWM4NzMyLi5iYmZmNTUxNzgzZTEgMTAwNjQ0Ci0tLSBhL2tlcm5lbC9ldmVu
-dHMvY29yZS5jCisrKyBiL2tlcm5lbC9ldmVudHMvY29yZS5jCkBAIC0xMjY4OSw3ICsxMjY4OSw4
-IEBAIFNZU0NBTExfREVGSU5FNShwZXJmX2V2ZW50X29wZW4sCiAJcmV0dXJuIGV2ZW50X2ZkOwog
-CiBlcnJfY29udGV4dDoKLQkvKiBldmVudC0+cG11X2N0eCBmcmVlZCBieSBmcmVlX2V2ZW50KCkg
-Ki8KKwlwdXRfcG11X2N0eChldmVudC0+cG11X2N0eCk7CisJZXZlbnQtPnBtdV9jdHggPSBOVUxM
-OyAvKiBfZnJlZV9ldmVudCgpICovCiBlcnJfbG9ja2VkOgogCW11dGV4X3VubG9jaygmY3R4LT5t
-dXRleCk7CiAJcGVyZl91bnBpbl9jb250ZXh0KGN0eCk7Cg==
---0000000000000ba28505f0458408--
+Maybe try to follow the instructions on that BPFBackEnd page and try
+to compile kernel's selftests to see what's missing?
