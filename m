@@ -2,171 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD9D652239
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 15:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A138E6523A4
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 16:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbiLTOPQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 09:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
+        id S233397AbiLTP0G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 10:26:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233857AbiLTOPE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 09:15:04 -0500
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC997E4F;
-        Tue, 20 Dec 2022 06:15:02 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VXlgNFe_1671545699;
-Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VXlgNFe_1671545699)
-          by smtp.aliyun-inc.com;
-          Tue, 20 Dec 2022 22:15:00 +0800
-From:   Heng Qi <hengqi@linux.alibaba.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v2 9/9] virtio_net: support multi-buffer xdp
-Date:   Tue, 20 Dec 2022 22:14:49 +0800
-Message-Id: <20221220141449.115918-10-hengqi@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20221220141449.115918-1-hengqi@linux.alibaba.com>
-References: <20221220141449.115918-1-hengqi@linux.alibaba.com>
+        with ESMTP id S232021AbiLTP0F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 10:26:05 -0500
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEA6B7
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 07:26:02 -0800 (PST)
+Received: by mail-oo1-xc2c.google.com with SMTP id j6-20020a4ab1c6000000b004809a59818cso1951346ooo.0
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 07:26:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2je3sUJheJxY1iG1CJzpC/yr0yMSjeCgBQ96wsakaog=;
+        b=vsk0FKxYgX+IweRqWqFGKdlAgfMi4z+SWeM0nWjWcLgW6GyH9NineAfYBT5wrGcoqS
+         KLhoy/dpbt8XBs5fm28vN4HSuNFUF76rWUkrSnUQSNP3q4xy4C1yJ2IiZCm5BuB9Z+2B
+         4EXel67uoVh7cZbTWxsriHKdkKpAr4GKNaiyM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2je3sUJheJxY1iG1CJzpC/yr0yMSjeCgBQ96wsakaog=;
+        b=iE+7RKYoSf+8P9u+uocWueTB22LE41fB+fwVJnVy5jXWoyvXnHCzZgKZfEsqQaG0cx
+         pthuzo1tP78rdFiwVA9Xm673ZSsNhPbuQmcCRb3DAJK9oGj+ouTZokh2xh2nBZF575WJ
+         8tMSGDkA0TswdoBP/zQiee7/jCF9aUgJCKRXVXJOxl3dAdOvb4Iek/YmQCheNk/t4T+6
+         hcIk4FMXK2o9fw/CUMB3i3shpoTG9O1PsHabskKsllRg5j3BQYKvPMxzBB3Jn1hINFR0
+         Id8vpvfSDyfFQJtq5loA+yDVYcRpP3aYL9t4AB6W6kWChgECj8rAFAZnyLitYAH0oFGZ
+         V3FA==
+X-Gm-Message-State: AFqh2kqXurruee6LNXfiv+HPeYFxbD5iDPd1G93WuqeRVI4UOZ0HIy2J
+        Gr1U2nUZyxFzmC9A7Bm8Of5bqA==
+X-Google-Smtp-Source: AMrXdXtiJUuATMZBTcKrSljlyRkuYCcQbCFt+8KfxxGiO3X7kLso0O8nfwxjjntTCsK4A4unC14liA==
+X-Received: by 2002:a4a:5787:0:b0:4a0:c99c:acbc with SMTP id u129-20020a4a5787000000b004a0c99cacbcmr5736079ooa.5.1671549962175;
+        Tue, 20 Dec 2022 07:26:02 -0800 (PST)
+Received: from sbohrer-cf-dell ([24.28.97.120])
+        by smtp.gmail.com with ESMTPSA id r2-20020a4aa8c2000000b0049f098f4fb4sm5140712oom.24.2022.12.20.07.26.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Dec 2022 07:26:01 -0800 (PST)
+Date:   Tue, 20 Dec 2022 09:25:57 -0600
+From:   Shawn Bohrer <sbohrer@cloudflare.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
+        magnus.karlsson@intel.com, kernel-team@cloudflare.com
+Subject: Re: Possible race with xsk_flush
+Message-ID: <Y6HUBWCytyebNnOx@sbohrer-cf-dell>
+References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
+ <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
+ <Y5u4dA01y9RjjdAW@sbohrer-cf-dell>
+ <CAJ8uoz1GKvoaM0DCo1Ki8q=LHR1cjrNC=1BK7chTKKW9Po5F5A@mail.gmail.com>
+ <Y6EQjd5w9Dfmy8ko@sbohrer-cf-dell>
+ <CAJ8uoz1D3WY=joXqMo80a5Vqx+3N=5YX6Lh=KC1=coM5zDb-dA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ8uoz1D3WY=joXqMo80a5Vqx+3N=5YX6Lh=KC1=coM5zDb-dA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Driver can pass the skb to stack by build_skb_from_xdp_buff().
+On Tue, Dec 20, 2022 at 10:06:48AM +0100, Magnus Karlsson wrote:
+> On Tue, Dec 20, 2022 at 2:32 AM Shawn Bohrer <sbohrer@cloudflare.com> wrote:
+> >
+> > On Fri, Dec 16, 2022 at 11:05:19AM +0100, Magnus Karlsson wrote:
+> > > To summarize, we are expecting this ordering:
+> > >
+> > > CPU 0 __xsk_rcv_zc()
+> > > CPU 0 __xsk_map_flush()
+> > > CPU 2 __xsk_rcv_zc()
+> > > CPU 2 __xsk_map_flush()
+> > >
+> > > But we are seeing this order:
+> > >
+> > > CPU 0 __xsk_rcv_zc()
+> > > CPU 2 __xsk_rcv_zc()
+> > > CPU 0 __xsk_map_flush()
+> > > CPU 2 __xsk_map_flush()
+> > >
+> > > Here is the veth NAPI poll loop:
+> > >
+> > > static int veth_poll(struct napi_struct *napi, int budget)
+> > > {
+> > >     struct veth_rq *rq =
+> > >     container_of(napi, struct veth_rq, xdp_napi);
+> > >     struct veth_stats stats = {};
+> > >     struct veth_xdp_tx_bq bq;
+> > >     int done;
+> > >
+> > >     bq.count = 0;
+> > >
+> > >     xdp_set_return_frame_no_direct();
+> > >     done = veth_xdp_rcv(rq, budget, &bq, &stats);
+> > >
+> > >     if (done < budget && napi_complete_done(napi, done)) {
+> > >         /* Write rx_notify_masked before reading ptr_ring */
+> > >        smp_store_mb(rq->rx_notify_masked, false);
+> > >        if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
+> > >            if (napi_schedule_prep(&rq->xdp_napi)) {
+> > >                WRITE_ONCE(rq->rx_notify_masked, true);
+> > >                __napi_schedule(&rq->xdp_napi);
+> > >             }
+> > >         }
+> > >     }
+> > >
+> > >     if (stats.xdp_tx > 0)
+> > >         veth_xdp_flush(rq, &bq);
+> > >     if (stats.xdp_redirect > 0)
+> > >         xdp_do_flush();
+> > >     xdp_clear_return_frame_no_direct();
+> > >
+> > >     return done;
+> > > }
+> > >
+> > > Something I have never seen before is that there is
+> > > napi_complete_done() and a __napi_schedule() before xdp_do_flush().
+> > > Let us check if this has something to do with it. So two suggestions
+> > > to be executed separately:
+> > >
+> > > * Put a probe at the __napi_schedule() above and check if it gets
+> > > triggered before this problem
+> > > * Move the "if (stats.xdp_redirect > 0) xdp_do_flush();" to just
+> > > before "if (done < budget && napi_complete_done(napi, done)) {"
+> > >
+> > > This might provide us some hints on what is going on.
+> >
+> > After staring at this code for way too long I finally made a
+> > breakthrough!  I could not understand how this race could occur when
+> > napi_poll() calls netpoll_poll_lock().  Here is netpoll_poll_lock():
+> >
+> > ```
+> >   static inline void *netpoll_poll_lock(struct napi_struct *napi)
+> >   {
+> >     struct net_device *dev = napi->dev;
+> >
+> >     if (dev && dev->npinfo) {
+> >       int owner = smp_processor_id();
+> >
+> >       while (cmpxchg(&napi->poll_owner, -1, owner) != -1)
+> >         cpu_relax();
+> >
+> >       return napi;
+> >     }
+> >     return NULL;
+> >   }
+> > ```
+> > If dev or dev->npinfo are NULL then it doesn't acquire a lock at all!
+> > Adding some more trace points I see:
+> >
+> > ```
+> >   iperf2-1325    [002] ..s1. 264246.626880: __napi_poll: (__napi_poll+0x0/0x150) n=0xffff91c885bff000 poll_owner=-1 dev=0xffff91c881d4e000 npinfo=0x0
+> >   iperf2-1325    [002] d.Z1. 264246.626882: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0x3b/0xc0) addr=0x1503100 len=0x42 xs=0xffff91c8bfe77000 fq=0xffff91c8c1a43f80 dev=0xffff91c881d4e000
+> >   iperf2-1325    [002] d.Z1. 264246.626883: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0x42/0xc0) addr=0x1503100 len=0x42 xs=0xffff91c8bfe77000 fq=0xffff91c8c1a43f80 dev=0xffff91c881d4e000
+> >   iperf2-1325    [002] d.Z1. 264246.626884: xsk_flush: (__xsk_map_flush+0x32/0xb0) xs=0xffff91c8bfe77000
+> > ```
+> >
+> > Here you can see that poll_owner=-1 meaning the lock was never
+> > acquired because npinfo is NULL.  This means that the same veth rx
+> > queue can be napi_polled from multiple CPU and nothing stops it from
+> > running concurrently.  They all look like this, just most of the time
+> > there aren't concurrent napi_polls running for the same queue.  They
+> > do however move around CPUs as I explained earlier.
+> >
+> > I'll note that I've ran with your suggested change of moving
+> > xdp_do_flush() before napi_complete_done() all weekend and I have not
+> > reproduced the issue.  I don't know if that truly means the issue is
+> > fixed by that change or not.  I suspect it does fix the issue because
+> > it prevents the napi_struct from being scheduled again before the
+> > first poll has completed, and nap_schedule_prep() ensures that only
+> > one instance is ever running.
+> 
+> Thanks Shawn! Good news that the patch seems to fix the problem. To
+> me, napi_schedule_prep() makes sure that only one NAPI instance is
+> running. Netpoll is an optional feature and I do not even have it
+> compiled into my kernel. At least I do not have it defined in my
+> .config and I cannot find any netpoll symbols with a readelf command.
+> If netpoll is not used, I would suspect that npinfo == NULL. So to me,
+> it is still a mystery why this is happening.
 
-Driver forwards multi-buffer packets using the send queue
-when XDP_TX and XDP_REDIRECT, and clears the reference of multi
-pages when XDP_DROP.
+Oh I don't think it is a mystery anymore.  The napi_complete_done()
+signals that this instance of of the napi_poll is complete.  As you
+said nap_schedule_prep() checks to ensure that only one instance of
+napi_poll is running at a time, but we just indicated it was done with
+napi_complete_done().  This allows this CPU or more importantly any
+other CPU to reschedule napi polling for this receive queue, but we
+haven't called xdp_do_flush() yet so the flush can race.  I'll note
+that the napi_schedule_prep()/__napi_schedule() in veth_poll really
+isn't the problem since it will schedule itself back on the same CPU.
+The problem is simply that another CPU is free to call
+napi_scheulde_prep()/__napi_schedule() in that window after
+napi_complete_done() and before xdp_do_flush().  The veth driver can
+schedule a napi_poll from the transmit path which is what starts the
+poll on a second CPU.
 
-Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
-Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 65 ++++++----------------------------------
- 1 file changed, 9 insertions(+), 56 deletions(-)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 398ffe2a5084..daa380b9d1cc 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1074,7 +1074,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 	struct bpf_prog *xdp_prog;
- 	unsigned int truesize = mergeable_ctx_to_truesize(ctx);
- 	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
--	unsigned int metasize = 0;
- 	unsigned int frame_sz;
- 	int err;
+I was simply blinded by that stupid netpoll_poll_lock() but it is
+completely unnecessary.
  
-@@ -1165,63 +1164,22 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 
- 		switch (act) {
- 		case XDP_PASS:
--			metasize = xdp.data - xdp.data_meta;
--
--			/* recalculate offset to account for any header
--			 * adjustments and minus the metasize to copy the
--			 * metadata in page_to_skb(). Note other cases do not
--			 * build an skb and avoid using offset
--			 */
--			offset = xdp.data - page_address(xdp_page) -
--				 vi->hdr_len - metasize;
--
--			/* recalculate len if xdp.data, xdp.data_end or
--			 * xdp.data_meta were adjusted
--			 */
--			len = xdp.data_end - xdp.data + vi->hdr_len + metasize;
--
--			/* recalculate headroom if xdp.data or xdp_data_meta
--			 * were adjusted, note that offset should always point
--			 * to the start of the reserved bytes for virtio_net
--			 * header which are followed by xdp.data, that means
--			 * that offset is equal to the headroom (when buf is
--			 * starting at the beginning of the page, otherwise
--			 * there is a base offset inside the page) but it's used
--			 * with a different starting point (buf start) than
--			 * xdp.data (buf start + vnet hdr size). If xdp.data or
--			 * data_meta were adjusted by the xdp prog then the
--			 * headroom size has changed and so has the offset, we
--			 * can use data_hard_start, which points at buf start +
--			 * vnet hdr size, to calculate the new headroom and use
--			 * it later to compute buf start in page_to_skb()
--			 */
--			headroom = xdp.data - xdp.data_hard_start - metasize;
--
--			/* We can only create skb based on xdp_page. */
--			if (unlikely(xdp_page != page)) {
--				rcu_read_unlock();
--				put_page(page);
--				head_skb = page_to_skb(vi, rq, xdp_page, offset,
--						       len, PAGE_SIZE);
--				return head_skb;
--			}
--			break;
-+			head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
-+			rcu_read_unlock();
-+			return head_skb;
- 		case XDP_TX:
- 			stats->xdp_tx++;
- 			xdpf = xdp_convert_buff_to_frame(&xdp);
- 			if (unlikely(!xdpf)) {
--				if (unlikely(xdp_page != page))
--					put_page(xdp_page);
--				goto err_xdp;
-+				netdev_dbg(dev, "convert buff to frame failed for xdp\n");
-+				goto err_xdp_frags;
- 			}
- 			err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
- 			if (unlikely(!err)) {
- 				xdp_return_frame_rx_napi(xdpf);
- 			} else if (unlikely(err < 0)) {
- 				trace_xdp_exception(vi->dev, xdp_prog, act);
--				if (unlikely(xdp_page != page))
--					put_page(xdp_page);
--				goto err_xdp;
-+				goto err_xdp_frags;
- 			}
- 			*xdp_xmit |= VIRTIO_XDP_TX;
- 			if (unlikely(xdp_page != page))
-@@ -1231,11 +1189,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 		case XDP_REDIRECT:
- 			stats->xdp_redirects++;
- 			err = xdp_do_redirect(dev, &xdp, xdp_prog);
--			if (err) {
--				if (unlikely(xdp_page != page))
--					put_page(xdp_page);
--				goto err_xdp;
--			}
-+			if (err)
-+				goto err_xdp_frags;
- 			*xdp_xmit |= VIRTIO_XDP_REDIR;
- 			if (unlikely(xdp_page != page))
- 				put_page(page);
-@@ -1248,9 +1203,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 			trace_xdp_exception(vi->dev, xdp_prog, act);
- 			fallthrough;
- 		case XDP_DROP:
--			if (unlikely(xdp_page != page))
--				__free_pages(xdp_page, 0);
--			goto err_xdp;
-+			goto err_xdp_frags;
- 		}
- err_xdp_frags:
- 		shinfo = xdp_get_shared_info_from_buff(&xdp);
--- 
-2.19.1.6.gb485710b
+> To validate or disprove that there are two instances of the same napi
+> running, could you please put a probe in veth_poll() right after
+> veth_xdp_rcv() and one at xdp_do_flush() and dump the napi id in both
+> cases? And run the original code with the bug :-). It would be good to
+> know what exactly happens in the code between these points when this
+> bug occurs. Maybe we could do this by enabling the trace buffer and
+> dumping it when the bug occurs.
 
+The two instances that race are definitely different napi_polls, the
+second one is scheduled from the veth transmit path.
+
+> > If we think this is the correct fix I'll let it run for another day or
+> > two and prepare a patch.
+> 
+> There is one more advantage to this bug fix and that is performance.
+> By calling __xdp_map_flush() immediately after the receive function,
+> user space can start to work on the packets quicker so performance
+> will improve.
+
+Yes definitely.
+
+Thanks,
+Shawn Bohrer
