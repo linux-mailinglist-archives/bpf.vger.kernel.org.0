@@ -2,68 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9A265282D
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 22:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B23EC652831
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 22:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234352AbiLTVBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 16:01:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
+        id S234282AbiLTVDR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 16:03:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234333AbiLTVB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 16:01:29 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F061903B
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 13:01:27 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id h2-20020a170902f54200b0018e56572a4eso9727619plf.9
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 13:01:27 -0800 (PST)
+        with ESMTP id S229652AbiLTVDQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 16:03:16 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181D912C
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 13:03:14 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id m21so8838941edc.3
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 13:03:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=itk7nw0c+OuKQnm6jna9zr/WZJlRpFbxS6KR0m68jCM=;
-        b=EGQmhFPZpH7KKSwVEVKq91F113Yloib87gbgjMLd3xbPUQykXsgSRbjlo8pGV2Legq
-         +C4jMsTEtG5766VxXjbhywZ4aa5BgU2HkwtBuCuBysIluc2FixHb8Qee7ZrZ1YpQ0EuC
-         24JeNFDaOKRSGBhWmI4cNngTLvKq5193BkwL9XBHQSZjf5Kt2885nVNWmD1XOgPD6Yxs
-         j09spNJ2DdDHf1z+JQI+wenAimLBLWFbZZA78WiJA4ccKw2gSst6jX8DlDhU6QL/zh6K
-         287cdi32GiSrZgYJiPCFDerah4zTPbGzy0wfW/Z/JndSkOhw4yRk/LcmXOII476drHDa
-         SxLg==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YYydSB6+iey2Nsx/7DVG35p90Yhmq2HJv6KE/4bsPmg=;
+        b=TpmVAxbCWDonnhzuTffgMXHgT++1+3oocWcxi8mygGGYllpy/FRT/1Rk81PGIoNQ+x
+         jgWcdQcUPQgE6Xo2Xw1SXqX8Tm17eQDXbthhGViQjKp6lfNJq3q7ZuzaUIz9mVv7Yhnw
+         5qS4DWg9f4MJALmVYAFANQypcG62/nzT3+GRfJhutJf/rrhiSdRQtt6+ExXp0InDa4Rb
+         zLR2e3Zc15CfIZYsHNf/UIVdL+lkwXrIkSotCLLG4IBRVIcGZv6kl+OtqVtWVjNNeqMB
+         odmf3Tv5sqWH6YvsDhy2bt3K1LZndpeMvYYM+Njvn/NX95lVwMBn1g3CU7d58DVXrRIE
+         Q88w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=itk7nw0c+OuKQnm6jna9zr/WZJlRpFbxS6KR0m68jCM=;
-        b=XHPatmUXgYAQ4XSQkioxS/PE/qLPNpWVTB6v6SUocBH4WKv44AR9wi9mdzsMWOXDpv
-         aognr3wxM/CyfHfKOlwthi8p0FwYP9VzTQ4WXOHHkwjSWr69sU939bbSAGsDOpMIUqxo
-         m6zenVnm4NjLDBn2Z+uduHG77ighTUGTVYFLMc5GkjdXdnCBojDWYMOKGWGXRAhaGX/M
-         nRso3EpKa895bNZ7SCgw1GZmFVqRkYY9oHsJ/w/Qjo8C4GVkIDRwOvlzEFuDUKhOUAvV
-         GIJe54eg3lpvv9zffzECIPaVI6XztiD35k/m5yAvPgBinQ0GpetkOz38Wd3gY7RDC5re
-         VVAQ==
-X-Gm-Message-State: ANoB5plXFGIWn1GE9AJMYtEjv+fmgm0eKCnQa6og8IUaGI0T16ku6aAm
-        t3lUY0fj1I9v3jrbjGOFS3optLc=
-X-Google-Smtp-Source: AA0mqf4WMpNZvUx0NnxNJzfUMKqDRaa3h5EX/CR7OVCNa4Dr0CiYAraCpCKuMOnep0FQH5R/z/dvpGI=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:aa7:9aee:0:b0:577:dd64:5d4f with SMTP id
- y14-20020aa79aee000000b00577dd645d4fmr3299711pfp.8.1671570087342; Tue, 20 Dec
- 2022 13:01:27 -0800 (PST)
-Date:   Tue, 20 Dec 2022 13:01:25 -0800
-In-Reply-To: <000000000000ab724705ee87e321@google.com>
-Mime-Version: 1.0
-References: <000000000000ab724705ee87e321@google.com>
-Message-ID: <Y6Iipad5vz55tl2A@google.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in copy_array
-From:   sdf@google.com
-To:     syzbot <syzbot+b1e1f7feb407b56d0355@syzkaller.appspotmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, martin.lau@linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, netdev@vger.kernel.org, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, yhs@fb.com
-Content-Type: multipart/mixed; charset="UTF-8"; boundary="Ijr6ssyB62nlum1R"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YYydSB6+iey2Nsx/7DVG35p90Yhmq2HJv6KE/4bsPmg=;
+        b=dedL4aMn7WvIbW39B8D7LA2XUSobQwRepoB3RY1aggs78+Z89378ApP8Q532RulsLP
+         Rr7su5R1BHFDPCoTxtNlPqvjb7whDHgyX/9LpSqKtnisUoVyAjeJLTZn2ejCtfmJobYQ
+         /qxpE1vAUq0QDxPhpDNnwr45IX5GReVMmxXu5Vi2JBeHeAtpltHbb8+hgZFgMmwKmZyn
+         xt7Z82Oi1SoPe6MNOsuKVEqr9xgBuBASqMBuRLYDzygPv6MycxE3WvgXchAWkzEOfOki
+         8yucBNqfftiaFgW8/hVlGuF3DQjeLwr+2X8kXJuoIHFiNpbr8KDRaZOZI6lUe6QkT3oV
+         B+QA==
+X-Gm-Message-State: ANoB5plDVnBhWOcuSqfXrSrCExk579gONzQYB7HmnfUrwnL41b+LjtwO
+        syEXN4xInIuGIVNVZMEWdrINLLILU6ixl8alrRs=
+X-Google-Smtp-Source: AA0mqf5o5Yt1jZhI/mT0Np/s7uxWNrhp3LVgl1M1zr/t8E+Q2NH6chfMidv5QQqMkiI7VBiOQtsswrD5M+3xA5RKJCE=
+X-Received: by 2002:a50:ed90:0:b0:46a:e6e3:b3cf with SMTP id
+ h16-20020a50ed90000000b0046ae6e3b3cfmr52074169edr.333.1671570192418; Tue, 20
+ Dec 2022 13:03:12 -0800 (PST)
+MIME-Version: 1.0
+References: <20221217021711.172247-1-eddyz87@gmail.com> <20221217021711.172247-2-eddyz87@gmail.com>
+In-Reply-To: <20221217021711.172247-2-eddyz87@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 20 Dec 2022 13:03:00 -0800
+Message-ID: <CAEf4BzZH0ZxorCi7nPDbRqSK9f+410RooNwNJGwfw8=0a5i1nw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/4] selftests/bpf: support for
+ BPF_F_TEST_STATE_FREQ in test_loader
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,274 +67,256 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Dec 16, 2022 at 6:17 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> Adds a macro __test_state_freq, the macro expands as a btf_decl_tag of a
+> special form that instructs test_loader that the flag BPF_F_TEST_STATE_FREQ
+> has to be passed to BPF verifier when program is loaded.
+>
 
---Ijr6ssyB62nlum1R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I needed similar capabilities locally, but I went a slightly different
+direction. Instead of defining custom macros and logic, I define just
+__flags(X) macro and then parse flags either by their symbolic name
+(or just integer value, which might be useful sometimes for
+development purposes). I've also added support for matching multiple
+messages sequentially which locally is in the same commit. Feel free
+to ignore that part, but I think it's useful as well. So WDYT about
+the below?
 
-On 11/28, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    c35bd4e42885 Add linux-next specific files for 20221124
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=13369dc5880000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=11e19c740a0b2926
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b1e1f7feb407b56d0355
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1345a205880000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124c644b880000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/968fee464d14/disk-c35bd4e4.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/4f46fe801b5b/vmlinux-c35bd4e4.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/c2cdf8fb264e/bzImage-c35bd4e4.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b1e1f7feb407b56d0355@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: slab-out-of-bounds in copy_array+0x96/0x100 kernel/bpf/verifier.c:1032
-> Write of size 232 at addr ffff88801ed62600 by task syz-executor990/5290
-> 
-> CPU: 0 PID: 5290 Comm: syz-executor990 Not tainted 6.1.0-rc6-next-20221124-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:253 [inline]
->  print_report+0x15e/0x45d mm/kasan/report.c:364
->  kasan_report+0xbf/0x1f0 mm/kasan/report.c:464
->  check_region_inline mm/kasan/generic.c:183 [inline]
->  kasan_check_range+0x141/0x190 mm/kasan/generic.c:189
->  memcpy+0x3d/0x60 mm/kasan/shadow.c:66
->  copy_array+0x96/0x100 kernel/bpf/verifier.c:1032
->  copy_verifier_state+0xa9/0xbe0 kernel/bpf/verifier.c:1210
->  pop_stack+0x8c/0x2f0 kernel/bpf/verifier.c:1273
->  do_check kernel/bpf/verifier.c:13733 [inline]
->  do_check_common+0x372b/0xc5e0 kernel/bpf/verifier.c:15991
->  do_check_main kernel/bpf/verifier.c:16054 [inline]
->  bpf_check+0x7371/0xad00 kernel/bpf/verifier.c:16624
->  bpf_prog_load+0x1543/0x2230 kernel/bpf/syscall.c:2619
->  __sys_bpf+0x1436/0x4ff0 kernel/bpf/syscall.c:4979
->  __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
->  __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5081
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7fc18e7bbc29
-> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffd8f27a968 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fc18e7bbc29
-> RDX: 0000000000000048 RSI: 0000000020000200 RDI: 0000000000000005
-> RBP: 00007fc18e77fdd0 R08: 0000000000000000 R09: 0000000000000000
-> R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fc18e77fe60
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->  </TASK>
-> 
-> Allocated by task 5290:
->  kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
->  kasan_set_track+0x25/0x30 mm/kasan/common.c:52
->  ____kasan_kmalloc mm/kasan/common.c:376 [inline]
->  ____kasan_kmalloc mm/kasan/common.c:335 [inline]
->  __kasan_krealloc+0x145/0x180 mm/kasan/common.c:444
->  kasan_krealloc include/linux/kasan.h:232 [inline]
->  __do_krealloc mm/slab_common.c:1348 [inline]
->  krealloc+0xa8/0x100 mm/slab_common.c:1385
->  push_jmp_history+0x89/0x260 kernel/bpf/verifier.c:2528
->  is_state_visited kernel/bpf/verifier.c:13269 [inline]
->  do_check kernel/bpf/verifier.c:13466 [inline]
->  do_check_common+0x4b47/0xc5e0 kernel/bpf/verifier.c:15991
->  do_check_main kernel/bpf/verifier.c:16054 [inline]
->  bpf_check+0x7371/0xad00 kernel/bpf/verifier.c:16624
->  bpf_prog_load+0x1543/0x2230 kernel/bpf/syscall.c:2619
->  __sys_bpf+0x1436/0x4ff0 kernel/bpf/syscall.c:4979
->  __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
->  __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5081
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> The buggy address belongs to the object at ffff88801ed62600
->  which belongs to the cache kmalloc-256 of size 256
-> The buggy address is located 0 bytes inside of
->  256-byte region [ffff88801ed62600, ffff88801ed62700)
-> 
-> The buggy address belongs to the physical page:
-> page:ffffea00007b5880 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1ed62
-> head:ffffea00007b5880 order:1 compound_mapcount:0 subpages_mapcount:0 compound_pincount:0
-> flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000010200 ffff888012441b40 ffffea0000809f80 dead000000000002
-> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 56, tgid 56 (kworker/u4:4), ts 7761288109, free_ts 0
->  prep_new_page mm/page_alloc.c:2541 [inline]
->  get_page_from_freelist+0x119c/0x2cd0 mm/page_alloc.c:4293
->  __alloc_pages+0x1cb/0x5b0 mm/page_alloc.c:5551
->  alloc_pages+0x1aa/0x270 mm/mempolicy.c:2285
->  alloc_slab_page mm/slub.c:1833 [inline]
->  allocate_slab+0x25e/0x350 mm/slub.c:1980
->  new_slab mm/slub.c:2033 [inline]
->  ___slab_alloc+0xa91/0x1400 mm/slub.c:3211
->  __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3310
->  slab_alloc_node mm/slub.c:3395 [inline]
->  __kmem_cache_alloc_node+0x1a9/0x430 mm/slub.c:3472
->  kmalloc_trace+0x26/0x60 mm/slab_common.c:1049
->  kmalloc include/linux/slab.h:571 [inline]
->  scsi_probe_and_add_lun+0x3ae/0x34d0 drivers/scsi/scsi_scan.c:1186
->  __scsi_scan_target+0x21f/0xda0 drivers/scsi/scsi_scan.c:1664
->  scsi_scan_channel drivers/scsi/scsi_scan.c:1752 [inline]
->  scsi_scan_channel+0x148/0x1e0 drivers/scsi/scsi_scan.c:1728
->  scsi_scan_host_selected+0x2e3/0x3b0 drivers/scsi/scsi_scan.c:1781
->  do_scsi_scan_host+0x1e8/0x260 drivers/scsi/scsi_scan.c:1920
->  do_scan_async+0x42/0x500 drivers/scsi/scsi_scan.c:1930
->  async_run_entry_fn+0x9c/0x530 kernel/async.c:127
->  process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
-> page_owner free stack trace missing
-> 
-> Memory state around the buggy address:
->  ffff88801ed62500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff88801ed62580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> >ffff88801ed62600: 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc
->                                ^
->  ffff88801ed62680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff88801ed62700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> ==================================================================
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git e45fb347b630
+commit 936bb5d21d717d54c85e74047e082ca3216a7a40
+Author: Andrii Nakryiko <andrii@kernel.org>
+Date:   Mon Dec 19 15:57:26 2022 -0800
 
---Ijr6ssyB62nlum1R
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="syz.patch"
+    selftests/bpf: support custom per-test flags and multiple expected messages
 
-commit d8e76e85481b7885ee86bb57a11274ae9b68454e
-Author:     Stanislav Fomichev <sdf@google.com>
-AuthorDate: Tue Dec 20 13:00:17 2022 -0800
-Commit:     Stanislav Fomichev <sdf@google.com>
-CommitDate: Tue Dec 20 13:00:17 2022 -0800
+    Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-    Revert "mm: Make ksize() a reporting-only function"
-    
-    This reverts commit 38931d8989b5760b0bd17c9ec99e81986258e4cb.
+diff --git a/tools/testing/selftests/bpf/test_loader.c
+b/tools/testing/selftests/bpf/test_loader.c
+index 679efb3aa785..b0dab5dee38c 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -13,12 +13,15 @@
+ #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
+ #define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg="
+ #define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level="
++#define TEST_TAG_PROG_FLAGS_PFX "comment:test_prog_flags="
 
-diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
-index 74cd80c12b25..d1439669d6bc 100644
---- a/mm/kasan/kasan_test.c
-+++ b/mm/kasan/kasan_test.c
-@@ -825,30 +825,23 @@ static void kasan_global_oob_left(struct kunit *test)
- 	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
- }
- 
--/* Check that ksize() does NOT unpoison whole object. */
-+/* Check that ksize() makes the whole object accessible. */
- static void ksize_unpoisons_memory(struct kunit *test)
- {
- 	char *ptr;
--	size_t size = 128 - KASAN_GRANULE_SIZE - 5;
--	size_t real_size;
-+	size_t size = 123, real_size;
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
--
- 	real_size = ksize(ptr);
--	KUNIT_EXPECT_GT(test, real_size, size);
- 
- 	OPTIMIZER_HIDE_VAR(ptr);
- 
--	/* These accesses shouldn't trigger a KASAN report. */
--	ptr[0] = 'x';
--	ptr[size - 1] = 'x';
-+	/* This access shouldn't trigger a KASAN report. */
-+	ptr[size] = 'x';
- 
--	/* These must trigger a KASAN report. */
--	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
--		KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[size]);
--	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[size + 5]);
--	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[real_size - 1]);
-+	/* This one must. */
-+	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[real_size]);
- 
- 	kfree(ptr);
- }
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 1cba98acc486..3e49bb830060 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1348,11 +1348,11 @@ __do_krealloc(const void *p, size_t new_size, gfp_t flags)
- 	void *ret;
- 	size_t ks;
- 
--	/* Check for double-free before calling ksize. */
-+	/* Don't use instrumented ksize to allow precise KASAN poisoning. */
- 	if (likely(!ZERO_OR_NULL_PTR(p))) {
- 		if (!kasan_check_byte(p))
- 			return NULL;
--		ks = ksize(p);
-+		ks = kfence_ksize(p) ?: __ksize(p);
- 	} else
- 		ks = 0;
- 
-@@ -1420,21 +1420,21 @@ void kfree_sensitive(const void *p)
- 	void *mem = (void *)p;
- 
- 	ks = ksize(mem);
--	if (ks) {
--		kasan_unpoison_range(mem, ks);
-+	if (ks)
- 		memzero_explicit(mem, ks);
--	}
- 	kfree(mem);
- }
- EXPORT_SYMBOL(kfree_sensitive);
- 
- size_t ksize(const void *objp)
- {
-+	size_t size;
+ struct test_spec {
+     const char *name;
+     bool expect_failure;
+-    const char *expect_msg;
++    const char **expect_msgs;
++    size_t expect_msg_cnt;
+     int log_level;
++    int prog_flags;
+ };
+
+ static int tester_init(struct test_loader *tester)
+@@ -67,7 +70,8 @@ static int parse_test_spec(struct test_loader *tester,
+
+     for (i = 1; i < btf__type_cnt(btf); i++) {
+         const struct btf_type *t;
+-        const char *s;
++        const char *s, *val;
++        char *e;
+
+         t = btf__type_by_id(btf, i);
+         if (!btf_is_decl_tag(t))
+@@ -82,14 +86,47 @@ static int parse_test_spec(struct test_loader *tester,
+         } else if (strcmp(s, TEST_TAG_EXPECT_SUCCESS) == 0) {
+             spec->expect_failure = false;
+         } else if (str_has_pfx(s, TEST_TAG_EXPECT_MSG_PFX)) {
+-            spec->expect_msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX) - 1;
++            void *tmp;
++            const char **msg;
 +
- 	/*
--	 * We need to first check that the pointer to the object is valid.
--	 * The KASAN report printed from ksize() is more useful, then when
--	 * it's printed later when the behaviour could be undefined due to
--	 * a potential use-after-free or double-free.
-+	 * We need to first check that the pointer to the object is valid, and
-+	 * only then unpoison the memory. The report printed from ksize() is
-+	 * more useful, then when it's printed later when the behaviour could
-+	 * be undefined due to a potential use-after-free or double-free.
- 	 *
- 	 * We use kasan_check_byte(), which is supported for the hardware
- 	 * tag-based KASAN mode, unlike kasan_check_read/write().
-@@ -1448,7 +1448,13 @@ size_t ksize(const void *objp)
- 	if (unlikely(ZERO_OR_NULL_PTR(objp)) || !kasan_check_byte(objp))
- 		return 0;
- 
--	return kfence_ksize(objp) ?: __ksize(objp);
-+	size = kfence_ksize(objp) ?: __ksize(objp);
-+	/*
-+	 * We assume that ksize callers could use whole allocated area,
-+	 * so we need to unpoison this area.
-+	 */
-+	kasan_unpoison_range(objp, size);
-+	return size;
- }
- EXPORT_SYMBOL(ksize);
- 
++            tmp = realloc(spec->expect_msgs, (1 +
+spec->expect_msg_cnt) * sizeof(void *));
++            if (!tmp) {
++                ASSERT_FAIL("failed to realloc memory for messages\n");
++                return -ENOMEM;
++            }
++            spec->expect_msgs = tmp;
++            msg = &spec->expect_msgs[spec->expect_msg_cnt++];
++            *msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX) - 1;
+         } else if (str_has_pfx(s, TEST_TAG_LOG_LEVEL_PFX)) {
++            val = s + sizeof(TEST_TAG_LOG_LEVEL_PFX) - 1;
+             errno = 0;
+-            spec->log_level = strtol(s +
+sizeof(TEST_TAG_LOG_LEVEL_PFX) - 1, NULL, 0);
+-            if (errno) {
++            spec->log_level = strtol(val, &e, 0);
++            if (errno || e[0] != '\0') {
+                 ASSERT_FAIL("failed to parse test log level from '%s'", s);
+                 return -EINVAL;
+             }
++        } else if (str_has_pfx(s, TEST_TAG_PROG_FLAGS_PFX)) {
++            val = s + sizeof(TEST_TAG_PROG_FLAGS_PFX) - 1;
++            if (strcmp(val, "BPF_F_STRICT_ALIGNMENT") == 0) {
++                spec->prog_flags |= BPF_F_STRICT_ALIGNMENT;
++            } else if (strcmp(val, "BPF_F_ANY_ALIGNMENT") == 0) {
++                spec->prog_flags |= BPF_F_ANY_ALIGNMENT;
++            } else if (strcmp(val, "BPF_F_TEST_RND_HI32") == 0) {
++                spec->prog_flags |= BPF_F_TEST_RND_HI32;
++            } else if (strcmp(val, "BPF_F_TEST_STATE_FREQ") == 0) {
++                spec->prog_flags |= BPF_F_TEST_STATE_FREQ;
++            } else if (strcmp(val, "BPF_F_SLEEPABLE") == 0) {
++                spec->prog_flags |= BPF_F_SLEEPABLE;
++            } else if (strcmp(val, "BPF_F_XDP_HAS_FRAGS") == 0) {
++                spec->prog_flags |= BPF_F_XDP_HAS_FRAGS;
++            } else /* assume numeric value */ {
++                errno = 0;
++                spec->prog_flags |= strtol(val, &e, 0);
++                if (errno || e[0] != '\0') {
++                    ASSERT_FAIL("failed to parse test prog flags from
+'%s'", s);
++                    return -EINVAL;
++                }
++            }
+         }
+     }
 
---Ijr6ssyB62nlum1R--
+@@ -101,7 +138,7 @@ static void prepare_case(struct test_loader *tester,
+              struct bpf_object *obj,
+              struct bpf_program *prog)
+ {
+-    int min_log_level = 0;
++    int min_log_level = 0, prog_flags;
+
+     if (env.verbosity > VERBOSE_NONE)
+         min_log_level = 1;
+@@ -119,7 +156,11 @@ static void prepare_case(struct test_loader *tester,
+     else
+         bpf_program__set_log_level(prog, spec->log_level);
+
++    prog_flags = bpf_program__flags(prog);
++    bpf_program__set_flags(prog, prog_flags | spec->prog_flags);
++
+     tester->log_buf[0] = '\0';
++    tester->next_match_pos = 0;
+ }
+
+ static void emit_verifier_log(const char *log_buf, bool force)
+@@ -135,17 +176,26 @@ static void validate_case(struct test_loader *tester,
+               struct bpf_program *prog,
+               int load_err)
+ {
+-    if (spec->expect_msg) {
++    int i, j;
++
++    for (i = 0; i < spec->expect_msg_cnt; i++) {
+         char *match;
++        const char *expect_msg;
++
++        expect_msg = spec->expect_msgs[i];
+
+-        match = strstr(tester->log_buf, spec->expect_msg);
++        match = strstr(tester->log_buf + tester->next_match_pos, expect_msg);
+         if (!ASSERT_OK_PTR(match, "expect_msg")) {
+             /* if we are in verbose mode, we've already emitted log */
+             if (env.verbosity == VERBOSE_NONE)
+                 emit_verifier_log(tester->log_buf, true /*force*/);
+-            fprintf(stderr, "EXPECTED MSG: '%s'\n", spec->expect_msg);
++            for (j = 0; j < i; j++)
++                fprintf(stderr, "MATCHED  MSG: '%s'\n", spec->expect_msgs[j]);
++            fprintf(stderr, "EXPECTED MSG: '%s'\n", expect_msg);
+             return;
+         }
++
++        tester->next_match_pos = match - tester->log_buf + strlen(expect_msg);
+     }
+ }
+
+diff --git a/tools/testing/selftests/bpf/test_progs.h
+b/tools/testing/selftests/bpf/test_progs.h
+index 3f058dfadbaf..9af80704f20a 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -410,6 +410,7 @@ int write_sysctl(const char *sysctl, const char *value);
+ struct test_loader {
+     char *log_buf;
+     size_t log_buf_sz;
++    size_t next_match_pos;
+
+     struct bpf_object *obj;
+ };
+
+
+
+
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/progs/bpf_misc.h |  1 +
+>  tools/testing/selftests/bpf/test_loader.c    | 10 ++++++++++
+>  2 files changed, 11 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+> index 4a01ea9113bf..a42363a3fef1 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
+> +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+> @@ -6,6 +6,7 @@
+>  #define __failure              __attribute__((btf_decl_tag("comment:test_expect_failure")))
+>  #define __success              __attribute__((btf_decl_tag("comment:test_expect_success")))
+>  #define __log_level(lvl)       __attribute__((btf_decl_tag("comment:test_log_level="#lvl)))
+> +#define __test_state_freq      __attribute__((btf_decl_tag("comment:test_state_freq")))
+>
+>  #if defined(__TARGET_ARCH_x86)
+>  #define SYSCALL_WRAPPER 1
+> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+> index 679efb3aa785..ac8517a77161 100644
+> --- a/tools/testing/selftests/bpf/test_loader.c
+> +++ b/tools/testing/selftests/bpf/test_loader.c
+> @@ -11,6 +11,7 @@
+>
+>  #define TEST_TAG_EXPECT_FAILURE "comment:test_expect_failure"
+>  #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
+> +#define TEST_TAG_TEST_STATE_FREQ "comment:test_state_freq"
+>  #define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg="
+>  #define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level="
+>
+> @@ -19,6 +20,7 @@ struct test_spec {
+>         bool expect_failure;
+>         const char *expect_msg;
+>         int log_level;
+> +       bool test_state_freq;
+>  };
+>
+>  static int tester_init(struct test_loader *tester)
+> @@ -81,6 +83,8 @@ static int parse_test_spec(struct test_loader *tester,
+>                         spec->expect_failure = true;
+>                 } else if (strcmp(s, TEST_TAG_EXPECT_SUCCESS) == 0) {
+>                         spec->expect_failure = false;
+> +               } else if (strcmp(s, TEST_TAG_TEST_STATE_FREQ) == 0) {
+> +                       spec->test_state_freq = true;
+>                 } else if (str_has_pfx(s, TEST_TAG_EXPECT_MSG_PFX)) {
+>                         spec->expect_msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX) - 1;
+>                 } else if (str_has_pfx(s, TEST_TAG_LOG_LEVEL_PFX)) {
+> @@ -102,6 +106,7 @@ static void prepare_case(struct test_loader *tester,
+>                          struct bpf_program *prog)
+>  {
+>         int min_log_level = 0;
+> +       __u32 flags = 0;
+>
+>         if (env.verbosity > VERBOSE_NONE)
+>                 min_log_level = 1;
+> @@ -120,6 +125,11 @@ static void prepare_case(struct test_loader *tester,
+>                 bpf_program__set_log_level(prog, spec->log_level);
+>
+>         tester->log_buf[0] = '\0';
+> +
+> +       if (spec->test_state_freq)
+> +               flags |= BPF_F_TEST_STATE_FREQ;
+> +
+> +       bpf_program__set_flags(prog, flags);
+
+see my example above, it's safer to fetch current prog flags to not
+override stuff like BPF_F_SLEEPABLE
+
+>  }
+>
+>  static void emit_verifier_log(const char *log_buf, bool force)
+> --
+> 2.38.2
+>
