@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CC7652835
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 22:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E587065284A
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 22:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbiLTVGu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 16:06:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S233993AbiLTVSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 16:18:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbiLTVGs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 16:06:48 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386241E3F3
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 13:06:47 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id t17so32291127eju.1
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 13:06:47 -0800 (PST)
+        with ESMTP id S233757AbiLTVS3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 16:18:29 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A849FC5
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 13:18:28 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id r26so19338028edc.10
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 13:18:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fgd+XVLOiWp/PrwbFuLnLeERrwCx96by+t/nRr7B7Pg=;
-        b=CCxdSELaTwcK1hDHyEjlFROnff89pthwX+yLXXYAmz1OWhaie1zksnlL6ysCG92f6U
-         jduRORyaXNSSOFZ8Tv2luXRj4yMQmG6wRz5nvStA5BWQAYwqjq7cgWJ6OXoBTyulHssP
-         UUnaEidK1gRha6Kkk8PyVYYlAESeTUDhFv/vEEm68dpEGegGK6/jvWcsITzGF3z5OXqs
-         jn/odD+OrAq1Az+4WASwHcLzts1L5LhvotnBlbIqB6Atcp0qHWy2OQvzYiyX2idwzg0P
-         elvKlyF+zFKcXqYHh0GHA0fjEayuxK6V/9ReeruqNOtUax1spBXVxe2t8rOcdREHJzMz
-         Ft3A==
+        bh=/yilwtSqSPRXIZKCKToWyaJfXV3ttakbrq3g2ApD4Zk=;
+        b=dMDOrbehxhqqhgwq7rhqq8DBhSLFPnv8y1GzUbMNsuSP8iVzHkqX67HoBWqCviBxrU
+         P9upmnRKLRzdZ47XUSaTpXYXrZJIsto36Eq04UKbb6HDI4EP4g1DL1WwMsuPUr/P4B9z
+         mXZUGFQa/zchOG/8BLdE8Fe2C83zrWkShueDn67sr9+HkJFoDYPD0Rlwe1hl5chNs7hI
+         jY0jwSP9gNB4DeOktfpLR1kQ2BTREdUstv2ktgkPHxG/D8gr9gtsYl5T4onVCeQu7fE/
+         jU6cl8TCUA9Haa7Rlgqp26ev+jJz/Rke/DjXjy/7I9evKasrgEM6ps/XbkcsyjaFrViG
+         7sHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fgd+XVLOiWp/PrwbFuLnLeERrwCx96by+t/nRr7B7Pg=;
-        b=wUf4gHO6aZJ5bZ3q18UqdgvOj/q7SXSxfYEm1PBfCJmwVz6MismQ2JTV8VnsQw7fDi
-         i4l5UinEnJsl3Wfj4Zw+KAP0dKjuixhVUYafTmibkQtg1Ngz1rgV5e418wk/96Ja7exd
-         dRxxOqVdeevSgUPLXU9fYjkb5k134JP9PzEPqeXt76C+vO9VDS2M8lt9dAGv8D96OFci
-         Kff36MlLjLD6sX2JA5K77FRkj8ZYLjtAqZd4f5l+8P0vGJD5kFY75fDgo/ciDm+N8sm0
-         H++HMaxplIzW3Rk2cnx6YOXbCBA0dQzw5WIBB3HVhGGo9xgWKJpLWEhycKkL7AxDGLxo
-         tcsg==
-X-Gm-Message-State: AFqh2koEpWHk6F0Bq3Joe+xPW3ZSQjEANB8Tsr/Q+BXClBMZ5qp2WsDm
-        EkmLt7YbyJBI64K2WtaXjHJ6W8neK4afTGt7kYQ=
-X-Google-Smtp-Source: AMrXdXszkBbqCV3GLtKcS0ov9k7+LjiIs2Djf2sR/OHvgk5lzZcrY+5YEe2mWFxLW5Kncm5RYVmARa51aE9GfSvozLo=
-X-Received: by 2002:a17:906:360d:b0:7fd:f0b1:c8ec with SMTP id
- q13-20020a170906360d00b007fdf0b1c8ecmr886904ejb.114.1671570405746; Tue, 20
- Dec 2022 13:06:45 -0800 (PST)
+        bh=/yilwtSqSPRXIZKCKToWyaJfXV3ttakbrq3g2ApD4Zk=;
+        b=WsqOR6wX3hMay9jAZlPPfdmRprQxhePR67Q0z1noBeOgIaFOyTgIYjCeE3CWVuceCT
+         Sb/HGIES14v4BhS4bh0kQmfI8IPw/2IrBSHOXRa0Az9JZV/F6/G3rGCuRytHp6nEpnIA
+         MObgVcoSIfrAmBTV4YRgcsgTAI1d9R0T7GNPBkMOZEP4msqSNfgECfh+sYFr6TohyJca
+         6SEeEpDNhOjvwy3V6uvahMT/7RjDcatB9hJ4p5KnjB4IseP7ENrM52WcU/XyRKpOAx/J
+         FnBIRhZHU3C1ghjOyPMIov6GMG/lblscaA/CHlv/m2cwjy1LmrN7/e94a3a03gTI+BT3
+         2zjQ==
+X-Gm-Message-State: AFqh2krI/VWT1hM+Gg6DFdi+cQQ5pKaWcLIvq9Ix+2Y/waGroZFM3uAo
+        crjIKhUPb9OT5l7CxKYnsrN9NOc79NN158cNWEU=
+X-Google-Smtp-Source: AMrXdXson3/eusD0SFjzRItM+rNqaxxiHcRXF6+ygrX0iKOrraW4QtzlYhzPQMVOH3OIsC3ytrQ3bXBCO51Ba/RbrbU=
+X-Received: by 2002:a50:d603:0:b0:47d:71a6:da61 with SMTP id
+ x3-20020a50d603000000b0047d71a6da61mr118164edi.81.1671571107334; Tue, 20 Dec
+ 2022 13:18:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20221217021711.172247-1-eddyz87@gmail.com> <20221217021711.172247-4-eddyz87@gmail.com>
-In-Reply-To: <20221217021711.172247-4-eddyz87@gmail.com>
+References: <20221217021711.172247-1-eddyz87@gmail.com> <20221217021711.172247-5-eddyz87@gmail.com>
+In-Reply-To: <20221217021711.172247-5-eddyz87@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 20 Dec 2022 13:06:33 -0800
-Message-ID: <CAEf4BzYF7yheGNagx7Tx8r=Ma4mvx34VtQ8asEzEaxjAkh7urg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] bpf: reduce BPF_ID_MAP_SIZE to fit only
- valid programs
+Date:   Tue, 20 Dec 2022 13:18:14 -0800
+Message-ID: <CAEf4Bzb0foB6PQsSZsXrGEJo7eQK8UDRh+Pkr5wg259-QeXwaA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: check if verifier.c:check_ids()
+ handles 64+5 ids
 To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
@@ -69,66 +69,143 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Dec 16, 2022 at 6:17 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> BPF limits stack usage by MAX_BPF_STACK bytes across all call frames,
-> however this is enforced by function check_max_stack_depth() which is
-> executed after do_check_{subprogs,main}().
->
-> This means that when check_ids() is executed the maximal stack depth is not
-> yet verified, thus in theory the number of stack spills might be
-> MAX_CALL_FRAMES * MAX_BPF_STACK / BPF_REG_SIZE.
->
-> However, any program with stack usage deeper than
-> MAX_BPF_STACK / BPF_REG_SIZE would be rejected by verifier.
->
-> Hence save some memory by reducing the BPF_ID_MAP_SIZE.
->
-> This is a follow up for
-> https://lore.kernel.org/bpf/CAEf4BzYN1JmY9t03pnCHc4actob80wkBz2vk90ihJCBzi8CT9w@mail.gmail.com/
+> A simple program that allocates a bunch of unique register ids than
+> branches. The goal is to confirm that idmap used in verifier.c:check_ids()
+> has sufficient capacity to verify that branches converge to a same state.
 >
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
-
-LGTM, thanks.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  include/linux/bpf_verifier.h | 4 ++--
->  kernel/bpf/verifier.c        | 6 ++++--
->  2 files changed, 6 insertions(+), 4 deletions(-)
+>  .../selftests/bpf/prog_tests/verifier.c       | 12 +++
+>  .../selftests/bpf/progs/check_ids_limits.c    | 77 +++++++++++++++++++
+>  2 files changed, 89 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/check_ids_limits.c
 >
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 53d175cbaa02..da72e16f1dee 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -274,8 +274,8 @@ struct bpf_id_pair {
->  };
->
->  #define MAX_CALL_FRAMES 8
-> -/* Maximum number of register states that can exist at once */
-> -#define BPF_ID_MAP_SIZE ((MAX_BPF_REG + MAX_BPF_STACK / BPF_REG_SIZE) * MAX_CALL_FRAMES)
-> +/* Maximum number of register states that can exist at once in a valid program */
-> +#define BPF_ID_MAP_SIZE (MAX_BPF_REG * MAX_CALL_FRAMES + MAX_BPF_STACK / BPF_REG_SIZE)
->  struct bpf_verifier_state {
->         /* call stack tracking */
->         struct bpf_func_state *frame[MAX_CALL_FRAMES];
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a5255a0dcbb6..fb040516a946 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -12951,8 +12951,10 @@ static bool check_ids(u32 old_id, u32 cur_id, struct bpf_id_pair *idmap)
->                 if (idmap[i].old == old_id)
->                         return idmap[i].cur == cur_id;
->         }
-> -       /* We ran out of idmap slots, which should be impossible */
-> -       WARN_ON_ONCE(1);
-> +       /* Run out of slots in idmap, conservatively return false, cached
-> +        * state will not be reused. The BPF_ID_MAP_SIZE is sufficiently
-> +        * large to fit all valid programs.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> new file mode 100644
+> index 000000000000..3933141928a7
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> @@ -0,0 +1,12 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include <test_progs.h>
+> +
+> +#include "check_ids_limits.skel.h"
+> +
+> +#define TEST_SET(skel)                 \
+> +       void test_##skel(void)          \
+> +       {                               \
+> +               RUN_TESTS(skel);        \
+> +       }
+
+Let's not use such trivial macros, please. It makes grepping for tests
+much harder and saves 1 line of code only. Let's define funcs
+explicitly?
+
+I'm also surprised it works at all (it does, right?), because Makefile
+is grepping explicitly for `void (serial_)test_xxx` pattern when
+generating a list of tests. So this shouldn't have worked, unless I'm
+missing something.
+
+> +
+> +TEST_SET(check_ids_limits)
+> diff --git a/tools/testing/selftests/bpf/progs/check_ids_limits.c b/tools/testing/selftests/bpf/progs/check_ids_limits.c
+> new file mode 100644
+> index 000000000000..36c4a8bbe8ca
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/check_ids_limits.c
+> @@ -0,0 +1,77 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +
+> +struct map_struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(max_entries, 1);
+> +       __type(key, int);
+> +       __type(value, int);
+> +} map SEC(".maps");
+> +
+> +/* Make sure that verifier.c:check_ids() can handle (almost) maximal
+> + * number of ids.
+> + */
+> +SEC("?raw_tp")
+> +__naked __test_state_freq __log_level(2) __msg("43 to 45: safe")
+
+it's not clear what's special about 43 -> 45 jump?
+
+can we also validate that id=69 was somewhere in verifier output?
+which would require multiple __msg support, of course.
+
+> +int allocate_many_ids(void)
+> +{
+> +       /* Use bpf_map_lookup_elem() as a way to get a bunch of values
+> +        * with unique ids.
 > +        */
->         return false;
->  }
->
+> +#define __lookup(dst)                          \
+> +               "r1 = %[map] ll;"               \
+> +               "r2 = r10;"                     \
+> +               "r2 += -8;"                     \
+> +               "call %[bpf_map_lookup_elem];"  \
+> +               dst " = r0;"
+> +       asm volatile(
+> +               "r0 = 0;"
+> +               "*(u64*)(r10 - 8) = r0;"
+> +               "r7 = r10;"
+> +               "r8 = 0;"
+> +               /* Spill 64 bpf_map_lookup_elem() results to stack,
+> +                * each lookup gets its own unique id.
+> +                */
+> +       "write_loop:"
+> +               "r7 += -8;"
+> +               "r8 += -8;"
+> +               __lookup("*(u64*)(r7 + 0)")
+> +               "if r8 != -512 goto write_loop;"
+> +               /* No way to source unique ids for r1-r5 as these
+> +                * would be clobbered by bpf_map_lookup_elem call,
+> +                * so make do with 64+5 unique ids.
+> +                */
+> +               __lookup("r6")
+> +               __lookup("r7")
+> +               __lookup("r8")
+> +               __lookup("r9")
+> +               __lookup("r0")
+> +               /* Create a branching point for states comparison. */
+> +/* 43: */      "if r0 != 0 goto skip_one;"
+> +               /* Read all registers and stack spills to make these
+> +                * persist in the checkpoint state.
+> +                */
+> +               "r0 = r0;"
+> +       "skip_one:"
+
+where you trying to just create a checkpoint here? given
+__test_state_freq the simplest way would be just
+
+goto +0;
+
+no?
+
+> +/* 45: */      "r0 = r6;"
+> +               "r0 = r7;"
+> +               "r0 = r8;"
+> +               "r0 = r9;"
+> +               "r0 = r10;"
+> +               "r1 = 0;"
+> +       "read_loop:"
+> +               "r0 += -8;"
+> +               "r1 += -8;"
+> +               "r2 = *(u64*)(r0 + 0);"
+> +               "if r1 != -512 goto read_loop;"
+> +               "r0 = 0;"
+> +               "exit;"
+> +               :
+> +               : __imm(bpf_map_lookup_elem),
+> +                 __imm_addr(map)
+> +               : __clobber_all);
+> +#undef __lookup
+> +}
 > --
 > 2.38.2
 >
