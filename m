@@ -2,123 +2,249 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC15651AAD
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 07:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DDF651BCC
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 08:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbiLTG3i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 01:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
+        id S233308AbiLTHlA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 02:41:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbiLTG3h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 01:29:37 -0500
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C355313E31
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 22:29:35 -0800 (PST)
-Received: by mail-il1-f198.google.com with SMTP id l13-20020a056e0212ed00b00304c6338d79so7915245iln.21
-        for <bpf@vger.kernel.org>; Mon, 19 Dec 2022 22:29:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o3D3DVXMHPRZMw4JnqlJzmNdsdslprlXsngCLe/eDrQ=;
-        b=Z09Sdy8WBo4qa67AEZBzBxhBLbips2YGhjPpprN61txZTDIgfMWJnB/HlydX9FqCb/
-         U6JPDdsmj3vuLfE14tMutU7ghrmGBDsz870WlgUmI61UdxsSz5U+zGjC3Pd1x5SFHJFo
-         nZDlI7VkZ9UpUdMgY9vu/a15lHNJBrTZEC9mh8cj+iFiKcUW9SZezv56E3XcLUmT+EDv
-         mmi5c//3SE9xKIMWSeYE0VphMd2L3lnz1C1rC2LCB7U/BIHH7hnvrXBYpKouVQ+maX8u
-         0P1Y1Pm0JyPe15CfTZDtJI0AZ4NiMuKVIoNKx+vNq//iHBrfPslqUI4GQeuYFvvKoKf2
-         ZT2w==
-X-Gm-Message-State: ANoB5pno+QENjvLPWyIxjWUeSX+ws79rU2aQMkUpVpZ78oczo6NpbU2M
-        knHIq1jP5N4YweNiYw/8B/8vg2ZVntGzya8TGnXIJnaKxFEw
-X-Google-Smtp-Source: AA0mqf4gJfZqTzq0sMbhF2tqDJwhr9gZUhXc/ZFtLREFC1hmReBYf7sJnzIGqOIpg2hD8p/iT2X6qpElt2N8kkUBnJxgEmo8VR/Y
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d84:b0:302:ce48:40ee with SMTP id
- h4-20020a056e021d8400b00302ce4840eemr35190973ila.157.1671517775125; Mon, 19
- Dec 2022 22:29:35 -0800 (PST)
-Date:   Mon, 19 Dec 2022 22:29:35 -0800
-In-Reply-To: <0000000000009cd81e05f0317886@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000038e58605f03c8fad@google.com>
-Subject: Re: [syzbot] WARNING in put_pmu_ctx
-From:   syzbot <syzbot+697196bc0265049822bd@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        bpf@vger.kernel.org, jolsa@kernel.org,
+        with ESMTP id S232678AbiLTHk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 02:40:58 -0500
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29ED0F72;
+        Mon, 19 Dec 2022 23:40:49 -0800 (PST)
+Received: from leknes.fjasle.eu ([46.142.99.43]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MXop2-1pNwzJ3lO8-00YAcI; Tue, 20 Dec 2022 08:33:58 +0100
+Received: from localhost.fjasle.eu (bergen.fjasle.eu [IPv6:fdda:8718:be81:0:6f0:21ff:fe91:394])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by leknes.fjasle.eu (Postfix) with ESMTPS id 0FC3A3C0EE;
+        Tue, 20 Dec 2022 08:33:52 +0100 (CET)
+Authentication-Results: leknes.fjasle.eu; dkim=none; dkim-atps=neutral
+Received: by localhost.fjasle.eu (Postfix, from userid 1000)
+        id A79D423F; Tue, 20 Dec 2022 08:33:50 +0100 (CET)
+Date:   Tue, 20 Dec 2022 08:33:50 +0100
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+        bpf@vger.kernel.org, llvm@lists.linux.dev,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 3/5] tools lib subcmd: Add dependency test to
+ install_headers
+Message-ID: <Y6FlXj2IT/5ruI/j@bergen.fjasle.eu>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iTsQL20z2LG4ZgZl"
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fXX5RsCFvGy2_CBYJczauWVemSRB=Bz3nDQ9iufuAXyHg@mail.gmail.com>
+ <20221202045743.2639466-4-irogers@google.com>
+Jabber-ID: nicolas@fjasle.eu
+X-Operating-System: Debian GNU/Linux bookworm/sid
+X-Provags-ID: V03:K1:olVMs0MvHTcPOd+l3DsTa5pBjm+dogUdGH44zkKe9/7m2zeuAiX
+ Tb4h6bKxmRzUqf9MEUYwvde7kUrQjhoHgyotiak1j66PXYPzYY5lO43ZaXtx0WXJ5Y1/J17
+ 5DWQZqI/kzo9Wv86erKvk27BndkmA1VjA3mwBfBD0G1oZQUoIYwKiELsog5ldjTNahmbLqa
+ v7Z43zcCPCh64Puv9GUaQ==
+UI-OutboundReport: notjunk:1;M01:P0:sMiFDohd1Wo=;SbjFRhEBbe8SUFWXQv+3apLh4HM
+ PgkXMwlVw85ZSgTWUTzxD5qRW9l832uGEpmoGFo88bfWYAGYyhww/2W23pg4I2aJEphInDVON
+ n9DUpTkWLesuzw4q7gbO6qaTcntUSkkTNxWf59LEuActoF3EIS9DfWWPR5wzaL19yz5XeeLju
+ xOdna8Co55800qnui7iAexTCvf+347f4YzrxDnb0S4P8yRImKyBcux1LPNt//H1GIMUxaAdKi
+ 3wwC6bJBplW5+tSHLtQbzFNBLT8WET6xgb0678bh33Zvz+avtukApSmwjxV61ErCADSHw3VUr
+ e1wjCyFXeOoS3BxhElN6yzDkG3shq6vJAAX3OMPhyafu4yX0o3BsFXVuBY1sPvnqQy/jXN4U0
+ w+1Uk7oB6OV+Syv7S36ZTYgCkGMRW0gT1hudac15dqHnpwzTunLN046odYABGDlkIi+njmBxv
+ EW1evOCjaTOBMoRpqceeEl7GLI9rIv2E0r2tVhzOTEoV6ZKdxBw8lSWNErozmJhAA1aF5OM1S
+ sQ387/XoFrHBNTWLprZO96GO6AzPG0JqoRkVnJw3fUxWdS0jvtM+VsgxtpncmYSmcIpuzBPbn
+ sVqwWjXdqQd3UWwpU3WgNiDJc7+eOS0rb6KcwScD6YMvcLr1tYe3TZZsxHTmpGTeCmpHMqwpI
+ W0aqWzvmMV9JHPif3SNmpkanM7250nehlwimwiEBYA==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    e2bb9e01d589 bpf: Remove trace_printk_lock
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=124cf480480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b0e91ad4b5f69c47
-dashboard link: https://syzkaller.appspot.com/bug?extid=697196bc0265049822bd
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163fde6f880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17319890480000
+--iTsQL20z2LG4ZgZl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cee993a7fed1/disk-e2bb9e01.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/109057856bce/vmlinux-e2bb9e01.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7da529d16ff7/bzImage-e2bb9e01.xz
+On Mon 19 Dec 2022 14:48:59 GMT, Ian Rogers wrote:
+> On Mon, Dec 19, 2022 at 6:44 AM Nicolas Schier <nicolas@fjasle.eu> wrote:
+>=20
+> > On Tue 13 Dec 2022 13:28:21 GMT, Ian Rogers wrote:
+> > > On Mon, Dec 12, 2022 at 12:57 PM Nicolas Schier <nicolas@fjasle.eu>
+> > wrote:
+> > > >
+> > > > On Thu, Dec 01, 2022 at 08:57:41PM -0800 Ian Rogers wrote:
+> > > > > Compute the headers to be installed from their source headers and
+> > make
+> > > > > each have its own build target to install it. Using dependencies
+> > > > > avoids headers being reinstalled and getting a new timestamp which
+> > > > > then causes files that depend on the header to be rebuilt.
+> > > > >
+> > > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > > ---
+> > > > >  tools/lib/subcmd/Makefile | 23 +++++++++++++----------
+> > > > >  1 file changed, 13 insertions(+), 10 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/lib/subcmd/Makefile b/tools/lib/subcmd/Makefile
+> > > > > index 9a316d8b89df..b87213263a5e 100644
+> > > > > --- a/tools/lib/subcmd/Makefile
+> > > > > +++ b/tools/lib/subcmd/Makefile
+> > > > > @@ -89,10 +89,10 @@ define do_install_mkdir
+> > > > >  endef
+> > > > >
+> > > > >  define do_install
+> > > > > -     if [ ! -d '$(DESTDIR_SQ)$2' ]; then             \
+> > > > > -             $(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2'; \
+> > > > > +     if [ ! -d '$2' ]; then             \
+> > > > > +             $(INSTALL) -d -m 755 '$2'; \
+> > > > >       fi;                                             \
+> > > > > -     $(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
+> > > > > +     $(INSTALL) $1 $(if $3,-m $3,) '$2'
+> > > >
+> > > > What about using '$(INSTALL) -D ...' instead of the if-mkdir-block
+> > above?
+> > > > (E.g. as in tools/debugging/Makefile.)
+> > > >
+> > > > Kind regards,
+> > > > Nicolas
+> > >
+> > > Thanks Nicolas, the reason was to keep the code consistent. That's not
+> > > to say this is the best approach. For example, here is the same thing
+> > > for tools/lib/api:
+> > >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/too=
+ls/lib/api/Makefile?h=3Dperf/core&id=3Df43368371888694a2eceaaad8f5e9775c092=
+009a#n84
+> > >
+> > > If you'd like to improve this in all the versions and send patches I'd
+> > > be happy to take a look.
+> > >
+> > > Thanks,
+> > > Ian
+> >
+> > Ian, while watching at tools/lib/*/Makefile I stumple across the
+> > special single-quote handling (e.g. 'DESTDIR_SQ') several times.
+> >
+> > Top-level Makefile and kbuild are not designed to work with file or
+> > directory names containing spaces.  Do you know whether this is needed
+> > for the installation rules in tools/lib/?  I'd like to remove support
+> > for path names with spaces for a increasing simplicity and consistency.
+> >
+> > Kind regards,
+> > Nicolas
+> >
+>=20
+> Hi Nicolas,
+>=20
+> Simplicity in the files SGTM, my own shell script norms are to be
+> cautious/defensive around the interpretation of spaces. The SQ code was
+> cargo culted and so may or may not be necessary. The installation rules a=
+re
+> dealing with user paths which may contain spaces, so I'd encourage some
+> caution. We should be able to come up with some command lines that test a=
+ll
+> cases to determine if anything suffers from the changes and whether to ca=
+re.
+>=20
+> Thanks,
+> Ian
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+697196bc0265049822bd@syzkaller.appspotmail.com
+Hi Ian,
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5367 at kernel/events/core.c:4920 put_pmu_ctx kernel/events/core.c:4920 [inline]
-WARNING: CPU: 0 PID: 5367 at kernel/events/core.c:4920 put_pmu_ctx+0x2a5/0x390 kernel/events/core.c:4893
-Modules linked in:
-CPU: 0 PID: 5367 Comm: syz-executor374 Not tainted 6.1.0-syzkaller-09637-ge2bb9e01d589 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-RIP: 0010:put_pmu_ctx kernel/events/core.c:4920 [inline]
-RIP: 0010:put_pmu_ctx+0x2a5/0x390 kernel/events/core.c:4893
-Code: dd ff e8 2e 0d dd ff 48 8d 7b 50 48 c7 c6 a0 fa a2 81 e8 3e c6 c7 ff eb d6 e8 17 0d dd ff 0f 0b e9 64 ff ff ff e8 0b 0d dd ff <0f> 0b eb 88 e8 c2 bc 2a 00 eb a5 e8 fb 0c dd ff 0f 0b e9 e4 fd ff
-RSP: 0018:ffffc90003e2fc68 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8880b9842328 RCX: 0000000000000000
-RDX: ffff88802ad5ba80 RSI: ffffffff81a3a605 RDI: 0000000000000001
-RBP: ffff8880b9842358 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffed1017306cf8 R11: 0000000000000000 R12: ffff8880b9836890
-R13: ffff8880b98367c0 R14: 0000000000000293 R15: ffff8880b9842330
-FS:  0000555557481300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f31c999e758 CR3: 0000000020f5e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- _free_event+0x3c5/0x13d0 kernel/events/core.c:5196
- put_event kernel/events/core.c:5283 [inline]
- perf_event_release_kernel+0x6ad/0x8f0 kernel/events/core.c:5395
- perf_release+0x37/0x50 kernel/events/core.c:5405
- __fput+0x27c/0xa90 fs/file_table.c:320
- task_work_run+0x16f/0x270 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x23c/0x250 kernel/entry/common.c:203
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
- do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f31c9963019
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff1d0f25c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 00000000000f4240 RCX: 00007f31c9963019
-RDX: 00007f31c9963019 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000140 R09: 0000000000000140
-R10: 0000000000000008 R11: 0000000000000246 R12: 00007fff1d0f25e0
-R13: 00007fff1d0f2600 R14: 0000000000025861 R15: 00007fff1d0f25dc
- </TASK>
+looking at some of the tools/lib/*/Makefiles and your patch above, the=20
+use of DESTDIR vs. DESTDIR_SQ seems to be quite inconsistent already:
 
+>  define do_install
+> -	if [ ! -d '$(DESTDIR_SQ)$2' ]; then             \
+> -		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2'; \
+> +	if [ ! -d '$2' ]; then             \
+> +		$(INSTALL) -d -m 755 '$2'; \
+>  	fi;                                             \
+> -	$(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
+> +	$(INSTALL) $1 $(if $3,-m $3,) '$2'
+
+Here, the single-quoted DESTDIR_SQ is removed from do_install (which I=20
+think is a good thing)...
+
+>  endef
+> =20
+>  install_lib: $(LIBFILE)
+> @@ -100,13 +100,16 @@ install_lib: $(LIBFILE)
+>  		$(call do_install_mkdir,$(libdir_SQ)); \
+>  		cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
+> =20
+> -install_headers:
+> -	$(call QUIET_INSTALL, libsubcmd_headers) \
+> -		$(call do_install,exec-cmd.h,$(prefix)/include/subcmd,644); \
+> -		$(call do_install,help.h,$(prefix)/include/subcmd,644); \
+> -		$(call do_install,pager.h,$(prefix)/include/subcmd,644); \
+> -		$(call do_install,parse-options.h,$(prefix)/include/subcmd,644); \
+> -		$(call do_install,run-command.h,$(prefix)/include/subcmd,644);
+> +HDRS :=3D exec-cmd.h help.h pager.h parse-options.h run-command.h
+> +INSTALL_HDRS_PFX :=3D $(DESTDIR)$(prefix)/include/subcmd
+> +INSTALL_HDRS :=3D $(addprefix $(INSTALL_HDRS_PFX)/, $(HDRS))
+> +
+> +$(INSTALL_HDRS): $(INSTALL_HDRS_PFX)/%.h: %.h
+> +	$(call QUIET_INSTALL, $@) \
+> +		$(call do_install,$<,$(INSTALL_HDRS_PFX)/,644)
+
+=2E.. and a plain $(DESTDIR) (via $(INSTALL_HDRS_PFX)) is forwarded to=20
+do_install.  Doesn't that mean, that we end up with
+
+  $(INSTALL) $< -m 644 '$(DESTDIR)$(prefix)/include/subcmd'
+
+where neither $(DESTDIR) nor $(prefix) has the special single-quote=20
+handling?  If we would remove the single-quoting and _SQ redefinitions,=20
+it _should_ be possible (again) to have destination paths with spaces=20
+(and single quotes), iff users escape properly e.g.
+DESTDIR=3D"'/name with space'".  Perhaps a hint about that in the=20
+Documentation might then be helpful.
+
+Or do I get something completely wrong?
+
+If nobody complains, I am going to prepare a patch for removing the=20
+single-quote special handling.
+
+Kind regards,
+Nicolas
+
+--iTsQL20z2LG4ZgZl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmOhZVgACgkQB1IKcBYm
+EmmSmhAA57YOl1MinlSplaZWdWN5NpBPPPEvGI6x+GQEqSP3EDguUqjDXF2HRT2c
+JyhabSzz1QnI3Dv/D+Hfu0H4x6vezixXYp2krWcjg5GBW+MAfIhr+L0pIgQXOj+1
++pswC12cksIOhfIn1HavWHHgidFvrxjQFo/649prLznaHdWxK1UKGL9bXWIcdFcq
+ntM8RlO0ixEnAmAhYPy0+61cg7n3X3Gq1C/WIyXu9d66ORkNSKWrnztP5qWVKOe2
+eWBh/kZnj+TW67wLBOm6i7gsUYy7EXHrKad39XpTsSGmzlxXkmfGBJhTSGbMSYtA
+SI4bVPp664FkMEz9diR2iSGObWyqvStnMOeFGitkBQBJRL7Y/8wMja8zdp9AGyvj
+BB6ygJr+0wzIsgfJmcHtyEAImlANfACoyTq1LyKJIaRqZMi/OsE5yOU8HLC4iQgU
+dtHuxtV+IrE+byZa6aWIUI5itvTyMuyEUG0E5A9AofP+vg+rglsnrmGOYvIBfwvq
+SNSQoxc3vf4gKNMj6jmLlGltFUNEeKW5jzSR1Wefm9jt2rRjCOzaBtn4fM1ssqGg
+LX1KM9JLQUx7MlQrEs5R32KL5hzAq0+LDL+5oEGHuRaiyeG2tPB2cNLzV2RTHiv8
+HMv7tAK+7qX1bPaP6xmk7ahwGZe4jrYzjh1i+2+wP+LT5DC9UmI=
+=ACeV
+-----END PGP SIGNATURE-----
+
+--iTsQL20z2LG4ZgZl--
