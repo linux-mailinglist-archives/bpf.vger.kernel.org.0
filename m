@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8E2652793
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 21:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FBA6527E4
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 21:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233909AbiLTULX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 15:11:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49062 "EHLO
+        id S234280AbiLTUaj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 15:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbiLTULV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 15:11:21 -0500
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E631ADA1
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 12:11:20 -0800 (PST)
-Received: by mail-il1-f197.google.com with SMTP id h9-20020a92c269000000b00303494c4f3eso8908637ild.15
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 12:11:20 -0800 (PST)
+        with ESMTP id S234208AbiLTUa1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 15:30:27 -0500
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB201CFC9
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 12:30:26 -0800 (PST)
+Received: by mail-io1-f70.google.com with SMTP id z200-20020a6bc9d1000000b006e003aecf04so6038802iof.16
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 12:30:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gTGxOoFEAUghGzFyM7fPV9A+UgVOuiHkhe1LVr5m9JQ=;
-        b=SlhvScx5cY2Rn6ICgt9Dxz7Q+dD+jHeX2wY+amK+MaIl66MlAljGiElVDBYJ0iVj+5
-         yQspsjO+QWl4R8OalHcM9PMTdPmLh+y2t5msT7uzBfChLLOBheJqcszXeHnYe5biPpZ2
-         5yoCSuWFDzBiDPKCLjeO9ADfTKtQo+NoXfOu32r6r4gPmZy02qTJE0fT+f4v6XZMAqCE
-         M/6uoxI4FoqnYbscrLhWRVh/QMqDOzoj6lYWdDOiRecg7denjQiXNKVzxdhtxag2y8AQ
-         KApfFuRoxZJ4V8MfNPKOMmnd5R1Ld4d3g6akc6OcHtcOvUDJweEBEd8b4NC7nFt/AkMb
-         bunQ==
-X-Gm-Message-State: ANoB5pkGVDrcHO6mCceI9o9pWkE46Q8vd9XyBinQtRyrCjvYZMZ69xQq
-        0kn609QqKut69/lr1qyqC4Ud/FJBF3U4LO3ywqLL17j1WDt2
-X-Google-Smtp-Source: AA0mqf4i0Ckoew9uRuzELYUyCfvzuZI01Rm6xGBgj3U1BT1umfj764r5idt8+EJldNILxx7aK3iV5V6C6nNs2kJxxd1hLESgZGKn
+        bh=9lO+onbVv6bZVIEl7Kh8E9HbEaMf0DW2YgnQtYSE8Pw=;
+        b=FnguJRQ0vAAc4gvJUIQ4ZwZ2M6JHQixve5uJNSkmx4EyfjtTT9RHZeUVBejxmteSog
+         Vp0Om33teiNiwBazjaLYO+F29aEjZP+EPVJT1AwrKzUPR9xt4bt6d5M8iYEv9ybd2b+o
+         jO673A4rw1KOKbrbD2ObUDRRRNGcftOmClpTAjaO/lUNWlaAQ3sUiY1bCQmcliv3BSLZ
+         FHteQuYKT4+OpbUTaTcKELiIzZ2bN8i/4Kp/ZX+6MjhvMA6O5KnH6ZZkAZvhD152w+oF
+         Vf6XIOpBiKluFMmf2L3nh4XQ7+lZWwDZPAsAnPTd9ZU8Ze8d4KYidaAXKwJzMBpEGkX0
+         Onng==
+X-Gm-Message-State: ANoB5pk++V3Ui3xN2QieTXqSP1q9bayAVtGTtZnaytMWHM6U2fmVNKpT
+        /7W0dDMcCwvT2lHixMe8qFzGv1NhltSTcifyD+x1yWL+sFQF
+X-Google-Smtp-Source: AA0mqf6oL6u1g0efHMd1fRNYolfsD82ctmu3LGNm613o4B0KDZY2tz7ouwZSsZtmP4f8F01iKWsLk1o6RVRsGcZKn06LeI7DITCC
 MIME-Version: 1.0
-X-Received: by 2002:a5e:870c:0:b0:6e2:cf0a:4f02 with SMTP id
- y12-20020a5e870c000000b006e2cf0a4f02mr4185685ioj.167.1671567080024; Tue, 20
- Dec 2022 12:11:20 -0800 (PST)
-Date:   Tue, 20 Dec 2022 12:11:20 -0800
-In-Reply-To: <Y6ITdVe2DPTioPvc@google.com>
+X-Received: by 2002:a05:6e02:4d2:b0:304:d061:6cb9 with SMTP id
+ f18-20020a056e0204d200b00304d0616cb9mr2099951ils.168.1671568225461; Tue, 20
+ Dec 2022 12:30:25 -0800 (PST)
+Date:   Tue, 20 Dec 2022 12:30:25 -0800
+In-Reply-To: <Y6ITpE770+kZ63vp@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005f23a05f0480a43@google.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in copy_array
-From:   syzbot <syzbot+b1e1f7feb407b56d0355@syzkaller.appspotmail.com>
+Message-ID: <0000000000004bee2205f0484e1d@google.com>
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in copy_verifier_state
+From:   syzbot <syzbot+59af7bf76d795311da8c@syzkaller.appspotmail.com>
 To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
         daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
         hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
@@ -62,25 +62,18 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello,
 
-syzbot tried to test the proposed patch but the build/boot failed:
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-failed to apply patch:
-checking file mm/kasan/kasan_test.c
-Hunk #1 FAILED at 783.
-1 out of 1 hunk FAILED
-checking file mm/slab_common.c
-Hunk #1 succeeded at 1335 (offset 2 lines).
-Hunk #2 succeeded at 1407 (offset 2 lines).
-Hunk #3 succeeded at 1415 with fuzz 1 (offset -12 lines).
-Hunk #4 succeeded at 1435 (offset -12 lines).
-
-
+Reported-and-tested-by: syzbot+59af7bf76d795311da8c@syzkaller.appspotmail.com
 
 Tested on:
 
-commit:         c35bd4e4 Add linux-next specific files for 20221124
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-dashboard link: https://syzkaller.appspot.com/bug?extid=b1e1f7feb407b56d0355
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17af7bf0480000
+commit:         041fae9c Merge tag 'f2fs-for-6.2-rc1' of git://git.ker..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=15fc914f880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e2f3d9d232a3cac5
+dashboard link: https://syzkaller.appspot.com/bug?extid=59af7bf76d795311da8c
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10cacf77880000
 
+Note: testing is done by a robot and is best-effort only.
