@@ -2,231 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A138E6523A4
-	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 16:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26AC6523C4
+	for <lists+bpf@lfdr.de>; Tue, 20 Dec 2022 16:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbiLTP0G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 10:26:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
+        id S231579AbiLTPil (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 10:38:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbiLTP0F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 10:26:05 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEA6B7
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 07:26:02 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id j6-20020a4ab1c6000000b004809a59818cso1951346ooo.0
-        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 07:26:02 -0800 (PST)
+        with ESMTP id S229810AbiLTPij (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 10:38:39 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60160101EE
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 07:38:37 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id o15so9038061wmr.4
+        for <bpf@vger.kernel.org>; Tue, 20 Dec 2022 07:38:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2je3sUJheJxY1iG1CJzpC/yr0yMSjeCgBQ96wsakaog=;
-        b=vsk0FKxYgX+IweRqWqFGKdlAgfMi4z+SWeM0nWjWcLgW6GyH9NineAfYBT5wrGcoqS
-         KLhoy/dpbt8XBs5fm28vN4HSuNFUF76rWUkrSnUQSNP3q4xy4C1yJ2IiZCm5BuB9Z+2B
-         4EXel67uoVh7cZbTWxsriHKdkKpAr4GKNaiyM=
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/34tJIyjAP7baqWGpngAiiqvT8UHp3bz8kKbMzeEnfA=;
+        b=14PCLWLvyaoEwZR603D8HJggj8rZdeGLGfIE/VDYssMSht2WCH/1E7Kt5QWRr9n9EY
+         TcF6F7/j6gsa/ZDHUWgrEuGVeurxWoywI5LwqgeHyXSNeB+aM1PomKtmFiVrJY9iFCax
+         0ChwJRiihnKqrwx9JLYyjh0jMK8zvF1LjM/bgN9KuDDWDdhHaA3V6QlIsC+3/X2MTeCS
+         YvmbF0MN8Zrd5CZaZDQiMB5R60hbYtoIn3jsJM4Vwq9Dk3R0uItZc7qOCtvqwuEVQ4mv
+         OfCq3VUlOMrFqCKovJ8HiF0YE/8hgNWYgoFFJ2tp0d8NK65qxBT9cSF5pVj981pywgSc
+         fpaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2je3sUJheJxY1iG1CJzpC/yr0yMSjeCgBQ96wsakaog=;
-        b=iE+7RKYoSf+8P9u+uocWueTB22LE41fB+fwVJnVy5jXWoyvXnHCzZgKZfEsqQaG0cx
-         pthuzo1tP78rdFiwVA9Xm673ZSsNhPbuQmcCRb3DAJK9oGj+ouTZokh2xh2nBZF575WJ
-         8tMSGDkA0TswdoBP/zQiee7/jCF9aUgJCKRXVXJOxl3dAdOvb4Iek/YmQCheNk/t4T+6
-         hcIk4FMXK2o9fw/CUMB3i3shpoTG9O1PsHabskKsllRg5j3BQYKvPMxzBB3Jn1hINFR0
-         Id8vpvfSDyfFQJtq5loA+yDVYcRpP3aYL9t4AB6W6kWChgECj8rAFAZnyLitYAH0oFGZ
-         V3FA==
-X-Gm-Message-State: AFqh2kqXurruee6LNXfiv+HPeYFxbD5iDPd1G93WuqeRVI4UOZ0HIy2J
-        Gr1U2nUZyxFzmC9A7Bm8Of5bqA==
-X-Google-Smtp-Source: AMrXdXtiJUuATMZBTcKrSljlyRkuYCcQbCFt+8KfxxGiO3X7kLso0O8nfwxjjntTCsK4A4unC14liA==
-X-Received: by 2002:a4a:5787:0:b0:4a0:c99c:acbc with SMTP id u129-20020a4a5787000000b004a0c99cacbcmr5736079ooa.5.1671549962175;
-        Tue, 20 Dec 2022 07:26:02 -0800 (PST)
-Received: from sbohrer-cf-dell ([24.28.97.120])
-        by smtp.gmail.com with ESMTPSA id r2-20020a4aa8c2000000b0049f098f4fb4sm5140712oom.24.2022.12.20.07.26.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Dec 2022 07:26:01 -0800 (PST)
-Date:   Tue, 20 Dec 2022 09:25:57 -0600
-From:   Shawn Bohrer <sbohrer@cloudflare.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
-        magnus.karlsson@intel.com, kernel-team@cloudflare.com
-Subject: Re: Possible race with xsk_flush
-Message-ID: <Y6HUBWCytyebNnOx@sbohrer-cf-dell>
-References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell>
- <CAJ8uoz2Q6rtSyVk-7jmRAhy_Zx7fN=OOepUX0kwUThDBf-eXfw@mail.gmail.com>
- <Y5u4dA01y9RjjdAW@sbohrer-cf-dell>
- <CAJ8uoz1GKvoaM0DCo1Ki8q=LHR1cjrNC=1BK7chTKKW9Po5F5A@mail.gmail.com>
- <Y6EQjd5w9Dfmy8ko@sbohrer-cf-dell>
- <CAJ8uoz1D3WY=joXqMo80a5Vqx+3N=5YX6Lh=KC1=coM5zDb-dA@mail.gmail.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/34tJIyjAP7baqWGpngAiiqvT8UHp3bz8kKbMzeEnfA=;
+        b=HiWLt3amV26VHJQrA5d0hyEmdDIRqnnudFffzbJDm+4zo65W+cOKQU7xlYgbAO1nuF
+         XljrBLYURG7O7oXHK8zp0ietNRKisG/65WOKJwXBB80+QnlLDkSjNYrMwCza1MpqcEUC
+         1nx2FZafhM1+j72zz6hP5fIXfnseW45ViVc8cfrfKKV9KfW42RLsvdqAMOPGsm8ClQt/
+         NmAeZlyT2xl+VUV/cPWzqxGlFrWW7c6m5soP6kXylGhesPAYN4voqzo2iLYX6h/CIytl
+         KC3Ey1utP5x/rfaTX3SqS7ugNOWXGQ64FJsx9TfJaMSLwuOOhhaeV4N+GH491NPn9ZcE
+         8sXQ==
+X-Gm-Message-State: AFqh2kofAIxJ9Xpr15ABWxdgW8caBN89P2n+/ZSAmG+lSopLOGcQfq8h
+        uMwgLtwKfdYXMvIjQg8mtbyzyw==
+X-Google-Smtp-Source: AMrXdXuGOqlBaXnhHjBX3CP3CTvS32W4Oo+9iEk8VgNIUYzXfPokTe3bS7Lxl4mRzN6alWA3vKArHA==
+X-Received: by 2002:a05:600c:54ed:b0:3d3:3c74:dbd0 with SMTP id jb13-20020a05600c54ed00b003d33c74dbd0mr14531267wmb.13.1671550715837;
+        Tue, 20 Dec 2022 07:38:35 -0800 (PST)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05600c1d8d00b003d01b84e9b2sm16544121wms.27.2022.12.20.07.38.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Dec 2022 07:38:35 -0800 (PST)
+Message-ID: <b5fcbefa-75d5-b716-10f7-bd7ab1f6ff9b@isovalent.com>
+Date:   Tue, 20 Dec 2022 15:38:34 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ8uoz1D3WY=joXqMo80a5Vqx+3N=5YX6Lh=KC1=coM5zDb-dA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v3 2/2] bpf: makefiles: do not generate empty vmlinux.h
+Content-Language: en-GB
+To:     Changbin Du <changbin.du@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20221217223509.88254-1-changbin.du@gmail.com>
+ <20221217223509.88254-3-changbin.du@gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20221217223509.88254-3-changbin.du@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 10:06:48AM +0100, Magnus Karlsson wrote:
-> On Tue, Dec 20, 2022 at 2:32 AM Shawn Bohrer <sbohrer@cloudflare.com> wrote:
-> >
-> > On Fri, Dec 16, 2022 at 11:05:19AM +0100, Magnus Karlsson wrote:
-> > > To summarize, we are expecting this ordering:
-> > >
-> > > CPU 0 __xsk_rcv_zc()
-> > > CPU 0 __xsk_map_flush()
-> > > CPU 2 __xsk_rcv_zc()
-> > > CPU 2 __xsk_map_flush()
-> > >
-> > > But we are seeing this order:
-> > >
-> > > CPU 0 __xsk_rcv_zc()
-> > > CPU 2 __xsk_rcv_zc()
-> > > CPU 0 __xsk_map_flush()
-> > > CPU 2 __xsk_map_flush()
-> > >
-> > > Here is the veth NAPI poll loop:
-> > >
-> > > static int veth_poll(struct napi_struct *napi, int budget)
-> > > {
-> > >     struct veth_rq *rq =
-> > >     container_of(napi, struct veth_rq, xdp_napi);
-> > >     struct veth_stats stats = {};
-> > >     struct veth_xdp_tx_bq bq;
-> > >     int done;
-> > >
-> > >     bq.count = 0;
-> > >
-> > >     xdp_set_return_frame_no_direct();
-> > >     done = veth_xdp_rcv(rq, budget, &bq, &stats);
-> > >
-> > >     if (done < budget && napi_complete_done(napi, done)) {
-> > >         /* Write rx_notify_masked before reading ptr_ring */
-> > >        smp_store_mb(rq->rx_notify_masked, false);
-> > >        if (unlikely(!__ptr_ring_empty(&rq->xdp_ring))) {
-> > >            if (napi_schedule_prep(&rq->xdp_napi)) {
-> > >                WRITE_ONCE(rq->rx_notify_masked, true);
-> > >                __napi_schedule(&rq->xdp_napi);
-> > >             }
-> > >         }
-> > >     }
-> > >
-> > >     if (stats.xdp_tx > 0)
-> > >         veth_xdp_flush(rq, &bq);
-> > >     if (stats.xdp_redirect > 0)
-> > >         xdp_do_flush();
-> > >     xdp_clear_return_frame_no_direct();
-> > >
-> > >     return done;
-> > > }
-> > >
-> > > Something I have never seen before is that there is
-> > > napi_complete_done() and a __napi_schedule() before xdp_do_flush().
-> > > Let us check if this has something to do with it. So two suggestions
-> > > to be executed separately:
-> > >
-> > > * Put a probe at the __napi_schedule() above and check if it gets
-> > > triggered before this problem
-> > > * Move the "if (stats.xdp_redirect > 0) xdp_do_flush();" to just
-> > > before "if (done < budget && napi_complete_done(napi, done)) {"
-> > >
-> > > This might provide us some hints on what is going on.
-> >
-> > After staring at this code for way too long I finally made a
-> > breakthrough!  I could not understand how this race could occur when
-> > napi_poll() calls netpoll_poll_lock().  Here is netpoll_poll_lock():
-> >
-> > ```
-> >   static inline void *netpoll_poll_lock(struct napi_struct *napi)
-> >   {
-> >     struct net_device *dev = napi->dev;
-> >
-> >     if (dev && dev->npinfo) {
-> >       int owner = smp_processor_id();
-> >
-> >       while (cmpxchg(&napi->poll_owner, -1, owner) != -1)
-> >         cpu_relax();
-> >
-> >       return napi;
-> >     }
-> >     return NULL;
-> >   }
-> > ```
-> > If dev or dev->npinfo are NULL then it doesn't acquire a lock at all!
-> > Adding some more trace points I see:
-> >
-> > ```
-> >   iperf2-1325    [002] ..s1. 264246.626880: __napi_poll: (__napi_poll+0x0/0x150) n=0xffff91c885bff000 poll_owner=-1 dev=0xffff91c881d4e000 npinfo=0x0
-> >   iperf2-1325    [002] d.Z1. 264246.626882: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0x3b/0xc0) addr=0x1503100 len=0x42 xs=0xffff91c8bfe77000 fq=0xffff91c8c1a43f80 dev=0xffff91c881d4e000
-> >   iperf2-1325    [002] d.Z1. 264246.626883: __xsk_rcv_zc_L7: (__xsk_rcv_zc+0x42/0xc0) addr=0x1503100 len=0x42 xs=0xffff91c8bfe77000 fq=0xffff91c8c1a43f80 dev=0xffff91c881d4e000
-> >   iperf2-1325    [002] d.Z1. 264246.626884: xsk_flush: (__xsk_map_flush+0x32/0xb0) xs=0xffff91c8bfe77000
-> > ```
-> >
-> > Here you can see that poll_owner=-1 meaning the lock was never
-> > acquired because npinfo is NULL.  This means that the same veth rx
-> > queue can be napi_polled from multiple CPU and nothing stops it from
-> > running concurrently.  They all look like this, just most of the time
-> > there aren't concurrent napi_polls running for the same queue.  They
-> > do however move around CPUs as I explained earlier.
-> >
-> > I'll note that I've ran with your suggested change of moving
-> > xdp_do_flush() before napi_complete_done() all weekend and I have not
-> > reproduced the issue.  I don't know if that truly means the issue is
-> > fixed by that change or not.  I suspect it does fix the issue because
-> > it prevents the napi_struct from being scheduled again before the
-> > first poll has completed, and nap_schedule_prep() ensures that only
-> > one instance is ever running.
+2022-12-18 06:35 UTC+0800 ~ Changbin Du <changbin.du@gmail.com>
+> Remove the empty vmlinux.h if bpftool failed to dump btf info.
+> The empty vmlinux.h can hide real error when reading output
+> of make.
 > 
-> Thanks Shawn! Good news that the patch seems to fix the problem. To
-> me, napi_schedule_prep() makes sure that only one NAPI instance is
-> running. Netpoll is an optional feature and I do not even have it
-> compiled into my kernel. At least I do not have it defined in my
-> .config and I cannot find any netpoll symbols with a readelf command.
-> If netpoll is not used, I would suspect that npinfo == NULL. So to me,
-> it is still a mystery why this is happening.
-
-Oh I don't think it is a mystery anymore.  The napi_complete_done()
-signals that this instance of of the napi_poll is complete.  As you
-said nap_schedule_prep() checks to ensure that only one instance of
-napi_poll is running at a time, but we just indicated it was done with
-napi_complete_done().  This allows this CPU or more importantly any
-other CPU to reschedule napi polling for this receive queue, but we
-haven't called xdp_do_flush() yet so the flush can race.  I'll note
-that the napi_schedule_prep()/__napi_schedule() in veth_poll really
-isn't the problem since it will schedule itself back on the same CPU.
-The problem is simply that another CPU is free to call
-napi_scheulde_prep()/__napi_schedule() in that window after
-napi_complete_done() and before xdp_do_flush().  The veth driver can
-schedule a napi_poll from the transmit path which is what starts the
-poll on a second CPU.
-
-I was simply blinded by that stupid netpoll_poll_lock() but it is
-completely unnecessary.
- 
-> To validate or disprove that there are two instances of the same napi
-> running, could you please put a probe in veth_poll() right after
-> veth_xdp_rcv() and one at xdp_do_flush() and dump the napi id in both
-> cases? And run the original code with the bug :-). It would be good to
-> know what exactly happens in the code between these points when this
-> bug occurs. Maybe we could do this by enabling the trace buffer and
-> dumping it when the bug occurs.
-
-The two instances that race are definitely different napi_polls, the
-second one is scheduled from the veth transmit path.
-
-> > If we think this is the correct fix I'll let it run for another day or
-> > two and prepare a patch.
+> This is done by adding .DELETE_ON_ERROR special target in related
+> makefiles.
 > 
-> There is one more advantage to this bug fix and that is performance.
-> By calling __xdp_map_flush() immediately after the receive function,
-> user space can start to work on the packets quicker so performance
-> will improve.
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> ---
+>  tools/bpf/bpftool/Makefile           | 3 +++
+>  tools/testing/selftests/bpf/Makefile | 3 +++
+>  2 files changed, 6 insertions(+)
+> 
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 787b857d3fb5..313fd1b09189 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -289,3 +289,6 @@ FORCE:
+>  .PHONY: all FORCE bootstrap clean install-bin install uninstall
+>  .PHONY: doc doc-clean doc-install doc-uninstall
+>  .DEFAULT_GOAL := all
+> +
+> +# Delete partially updated (corrupted) files on error
+> +.DELETE_ON_ERROR:
 
-Yes definitely.
+Acked-by: Quentin Monnet <quentin@isovalent.com>
 
-Thanks,
-Shawn Bohrer
+Thanks!
+
