@@ -2,69 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6099965358E
-	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 18:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8E4653597
+	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 18:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbiLURq2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 12:46:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
+        id S230286AbiLURuD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 12:50:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234652AbiLURqM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 12:46:12 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A36248CC;
-        Wed, 21 Dec 2022 09:46:11 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id ay40so11710689wmb.2;
-        Wed, 21 Dec 2022 09:46:11 -0800 (PST)
+        with ESMTP id S229844AbiLURuC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 12:50:02 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705D3A3
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 09:50:01 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id t11-20020a17090a024b00b0021932afece4so3068083pje.5
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 09:50:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LHIXXwq9GJR7IiFG9cjxzmXoHq5/NyIi/MmowMoFcIc=;
-        b=Q3il+E9JxPydcRRSIEYGlKCJFFDsiK3zzFnsbAdvhYNR/KpCtELuzqdA7jVccs6C9I
-         otUMu3sAxuG8E6MtMJ1/iMWQvgkUHEvWxYZEWvFgWf7USbCI8DY6iPXdIeWlwpwEwTQ6
-         WV31VMHA41pxlq8D7cwArZYmsHITj2Z0IrrRP/5l0va08eFiqGO5iWtOpepJHw3cPc93
-         QSZc4qLngM0EaT0lfhpDUwM4tzxj2C6iG4NeDwFlkXY2PicAPAjxlNpkUNSUEdDm6bh1
-         rw90SQ/uzwr3l2tiLDtjbjVlZ8rPKD0Md33ocncx5KGVOGafHIHvIr1ndJ9H+PXlRyB6
-         UEUA==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0okM7NEH56GTLxrsjv/YOjxBUK47FbcHwJd4q/7wuwc=;
+        b=r4lH5LeYghxEzkjEKOKSPOpc0vK/et2vfbW3dmlbnk1REJkKOzQCA7hZrEHp6jCUqQ
+         uMJHyNonZmLJWeOsaPh8IiXXI6tLhq7z8kSNqDJ+oQZRQGJX0cyNX0IaHBCW+DYp3t93
+         Gxlk5v/1xidZpNvOumnvx+saJ+5LfMkfrLGqhgvMymffdrOpbTxOE3Ecf6f7b0F8h4RZ
+         GXlB0T0uHmd6e9ako0won5PJYZ1goLhR0GXU2L5bRMcAN8f1sMRFGX7KdYYaqqrxesQX
+         GJutFsZ6/FN9ThNzO/TwSunRd983i4FVpU2pOmyyeq/OWFNJxHtp2TA0OzDLy1zRB+f4
+         J/jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LHIXXwq9GJR7IiFG9cjxzmXoHq5/NyIi/MmowMoFcIc=;
-        b=TliDfTsHBg9KwQQYU3mDnbZO1nCggLJyX/YncaaxEh8yq5i9rtYI4VcSA+W4r4HXei
-         S5LuQ2n4Hd+7Ne50a+hwGPOqxhKajBs1gud7SMMoQ5r2UxzXCZzAzNX9Qxj+gMKkklLD
-         bRp7j94yr5IVvHkNrDm5hY+hLyT/QdP9dmG/cs1j74IxY6xJlJcKjVvOw8umW20xZrSS
-         ltv78ZdAMaRa2RJpJHiBX1DowB1ij2yxEOGEaGypOZjsuk8jFxZWyTJytZmFRJZloGu/
-         oJuq9xUG3WW+AEE2Rfjd5+fA+wn+P5638/r3GF/V/532fUuT79Tl7mK2fjW5b73niZPP
-         T+JQ==
-X-Gm-Message-State: AFqh2kr+oGFWUUL+nlkGRn7kT6mkAnixGOMuvyGlf5vitblD7c2OJLl6
-        e+koqm4iUaWF59S+sdW1w9FdijuOUus=
-X-Google-Smtp-Source: AMrXdXu6KDdHibCmU5lDSLlWDNrxrQL2aMBrcIzCBvN0PY4oDdHKxhQd0k156KwfMY5n3txxFN/Wug==
-X-Received: by 2002:a05:600c:3b02:b0:3c7:18:b339 with SMTP id m2-20020a05600c3b0200b003c70018b339mr2624237wms.37.1671644770167;
-        Wed, 21 Dec 2022 09:46:10 -0800 (PST)
-Received: from suse.localnet (host-95-251-45-63.retail.telecomitalia.it. [95.251.45.63])
-        by smtp.gmail.com with ESMTPSA id k39-20020a05600c1ca700b003a84375d0d1sm3333452wms.44.2022.12.21.09.46.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Dec 2022 09:46:09 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Evgeniy Dushistov <dushistov@mail.ru>, bpf@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Ira Weiny <ira.weiny@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] fs/ufs: replace kmap() with kmap_local_page
-Date:   Wed, 21 Dec 2022 18:46:08 +0100
-Message-ID: <8213044.NyiUUSuA9g@suse>
-In-Reply-To: <20221217184749.968-1-fmdefrancesco@gmail.com>
-References: <20221217184749.968-1-fmdefrancesco@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0okM7NEH56GTLxrsjv/YOjxBUK47FbcHwJd4q/7wuwc=;
+        b=yiCpGq3QxChgzsnHIbuwFsDIsQP0BPLv427+wUXQ+j9uD9oe3uCNKFTba1kSY2bqoM
+         1GTgCZp6yHHbrWPqY/0TiMxmv/mfyBuoGbWO6XF10kLoHLqgpYhAUhbZwIsBxuOHxYWr
+         stPpSyKmyd+ZCtdoSPkth9PyqrhFiANfZWY7qtO7tiIU9erMqK9p02XkgytdqRi2BF6N
+         F5jhj8Rg9mR8XewMIJdO8SoyXIj8T2VcWaJwMDbJqBGw2MrNtmxCKijMHevmBQwExmHr
+         wrnE8/hicIi/LkRkoPMs410u7NWsAkh9LvUkVzTsrCzXgnlFSe02lf3zFvYVZZ8X2W8V
+         BshQ==
+X-Gm-Message-State: AFqh2krMU0etUfVCrIkS7cUNYDdriHjyLFAzf6ebitTiisW5hoUzE1QT
+        5Gj2DUP0B5OvI5QV79z/N+TkKktCRyh3Mhl5bSefoQ==
+X-Google-Smtp-Source: AMrXdXt4va1LWYg05e9TZvMFRB9O6tjGCTg8ZU2ZeuInrCz0REtR64vqnk18LhwpYQQR7Wx7cI12zyqbtLeerbbvgIo=
+X-Received: by 2002:a17:903:2696:b0:189:e426:463e with SMTP id
+ jf22-20020a170903269600b00189e426463emr121651plb.134.1671645000756; Wed, 21
+ Dec 2022 09:50:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20221220222043.3348718-8-sdf@google.com> <202212211311.e2ZWQLue-lkp@intel.com>
+In-Reply-To: <202212211311.e2ZWQLue-lkp@intel.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 21 Dec 2022 09:49:49 -0800
+Message-ID: <CAKH8qBtJgxqUvbf9DVr-eXF_rRF58fpfQsvFFt5bdQ+UZC+D5A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 07/17] bpf: XDP metadata RX kfuncs
+To:     kernel test robot <lkp@intel.com>
+Cc:     bpf@vger.kernel.org, oe-kbuild-all@lists.linux.dev, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,99 +78,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On sabato 17 dicembre 2022 19:47:46 CET Fabio M. De Francesco wrote:
-> kmap() is being deprecated in favor of kmap_local_page().
->=20
-> There are two main problems with kmap(): (1) It comes with an overhead as
-> the mapping space is restricted and protected by a global lock for
-> synchronization and (2) it also requires global TLB invalidation when the
-> kmap=E2=80=99s pool wraps and it might block when the mapping space is fu=
-lly
-> utilized until a slot becomes available.
->=20
-> With kmap_local_page() the mappings are per thread, CPU local, can take
-> page faults, and can be called from any context (including interrupts).
-> It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
-> the tasks can be preempted and, when they are scheduled to run again, the
-> kernel virtual addresses are restored and still valid.
->=20
-> Since its use in fs/ufs is safe everywhere, it should be preferred.
->=20
-> Therefore, replace kmap() with kmap_local_page() in fs/ufs. kunmap_local()
-> requires the mapping address, so return that address from ufs_get_page()
-> to be used in ufs_put_page().
->=20
-> This series could have not been ever made because nothing prevented the
-> previous patch from working properly but Al Viro made a long series of
-> very appreciated comments about how many unnecessary and redundant lines
-> of code I could have removed. He could see things I was entirely unable
-> to notice. Furthermore, he also provided solutions and details about how
-> I could decompose a single patch into a small series of three
-> independent units.[1][2][3]
->=20
-> I want to thank him so much for the patience, kindness and the time he
-> decided to spend to provide those analysis and write three messages full
-> of interesting insights.[1][2][3]
->=20
-> Changes from v1:
-> 	1/3: No changes.
-> 	2/3: Restore the return of "err" that was mistakenly deleted
-> 	     together with the removal of the "out" label in
-> 	     ufs_add_link(). Thanks to Al Viro.[4]
-> 	     Return the address of the kmap()'ed page instead of a
-> 	     pointer to a pointer to the mapped page; a page_address()
-> 	     had been overlooked in ufs_get_page(). Thanks to Al
-> 	     Viro.[5]
-> 	3/3: Return the kernel virtual address got from the call to
-> 	     kmap_local_page() after conversion from kmap(). Again
-> 	     thanks to Al Viro.[6]
->=20
-> Changes from v2:
-> 	1/3: No changes.
-> 	2/3: Rework ufs_get_page() because the previous version had two
-> 	     errors: (1) It could return an invalid pages with the out
-> 	     argument "page" and (2) it could return "page_address(page)"
-> 	     also in cases where read_mapping_page() returned an error
-> 	     and the page is never kmap()'ed. Thanks to Al Viro.[7]
-> 	3/3: Rework ufs_get_page() after conversion to
-> 	     kmap_local_page(), in accordance to the last changes in 2/3.
->=20
-> [1] https://lore.kernel.org/lkml/Y4E++JERgUMoqfjG@ZenIV/
-> [2] https://lore.kernel.org/lkml/Y4FG0O7VWTTng5yh@ZenIV/
-> [3] https://lore.kernel.org/lkml/Y4ONIFJatIGsVNpf@ZenIV/
-> [4] https://lore.kernel.org/lkml/Y5Zc0qZ3+zsI74OZ@ZenIV/
-> [5] https://lore.kernel.org/lkml/Y5ZZy23FFAnQDR3C@ZenIV/
-> [6] https://lore.kernel.org/lkml/Y5ZcMPzPG9h6C9eh@ZenIV/
-> [7] https://lore.kernel.org/lkml/Y5glgpD7fFifC4Fi@ZenIV/#t
->=20
-> The cover letter of the v1 series is at
-> https://lore.kernel.org/lkml/20221211213111.30085-1-fmdefrancesco@gmail.c=
-om/
-> The cover letter of the v2 series is at
-> https://lore.kernel.org/lkml/20221212231906.19424-1-fmdefrancesco@gmail.c=
-om/
->=20
-> Fabio M. De Francesco (3):
->   fs/ufs: Use the offset_in_page() helper
->   fs/ufs: Change the signature of ufs_get_page()
->   fs/ufs: Replace kmap() with kmap_local_page()
->=20
->  fs/ufs/dir.c | 134 +++++++++++++++++++++++++++------------------------
->  1 file changed, 71 insertions(+), 63 deletions(-)
->=20
+On Tue, Dec 20, 2022 at 9:44 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Stanislav,
+>
+> I love your patch! Perhaps something to improve:
+>
+> [auto build test WARNING on bpf-next/master]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Fomichev/xdp-hints-via-kfuncs/20221221-110542
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> patch link:    https://lore.kernel.org/r/20221220222043.3348718-8-sdf%40google.com
+> patch subject: [PATCH bpf-next v5 07/17] bpf: XDP metadata RX kfuncs
+> config: ia64-allyesconfig
+> compiler: ia64-linux-gcc (GCC) 12.1.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/intel-lab-lkp/linux/commit/f0946bf20669262734baef03ae12ef189c9c9292
+>         git remote add linux-review https://github.com/intel-lab-lkp/linux
+>         git fetch --no-tags linux-review Stanislav-Fomichev/xdp-hints-via-kfuncs/20221221-110542
+>         git checkout f0946bf20669262734baef03ae12ef189c9c9292
+>         # save the config file
+>         mkdir build_dir && cp config build_dir/.config
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 olddefconfig
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash kernel/bpf/
+>
+> If you fix the issue, kindly add following tag where applicable
+> | Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+> >> kernel/bpf/verifier.c:2084:5: warning: no previous prototype for 'bpf_dev_bound_kfunc_check' [-Wmissing-prototypes]
+>     2084 | int bpf_dev_bound_kfunc_check(struct bpf_verifier_env *env,
+>          |     ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+Oops, this should be "static int bpf_dev_bound_kfunc_check" :-(
+
+
+
+> vim +/bpf_dev_bound_kfunc_check +2084 kernel/bpf/verifier.c
+>
+>   2083
+> > 2084  int bpf_dev_bound_kfunc_check(struct bpf_verifier_env *env,
+>   2085                                struct bpf_prog_aux *prog_aux)
+>   2086  {
+>   2087          if (!bpf_prog_is_dev_bound(prog_aux)) {
+>   2088                  verbose(env, "metadata kfuncs require device-bound program\n");
+>   2089                  return -EINVAL;
+>   2090          }
+>   2091
+>   2092          if (bpf_prog_is_offloaded(prog_aux)) {
+>   2093                  verbose(env, "metadata kfuncs can't be offloaded\n");
+>   2094                  return -EINVAL;
+>   2095          }
+>   2096
+>   2097          return 0;
+>   2098  }
+>   2099
+>
 > --
-> 2.39.0
-
-Please drop this v3 because of a mistake in patch 3/3.
-The updated v4 series is at=20
-https://lore.kernel.org/lkml/20221221172802.18743-1-fmdefrancesco@gmail.com=
-/T/
-
-Thanks,
-
-=46abio
-
-
-
-
-
+> 0-DAY CI Kernel Test Service
+> https://01.org/lkp
