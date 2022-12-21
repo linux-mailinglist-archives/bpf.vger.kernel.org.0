@@ -2,586 +2,416 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0E6653599
-	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 18:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 759E165359B
+	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 18:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbiLURvB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 12:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
+        id S229926AbiLURvC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 12:51:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbiLURvA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 12:51:00 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CF623176
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 09:50:58 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d3so16222840plr.10
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 09:50:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y1TjQ3DnvGblKxcV4mpqMt5wNmihV26Sfy0OZO/hyGA=;
-        b=oYy1yjhKEiclC8hhW2oXbz1XG0CaV4R/FE33BUQ5LeK9l2wjHAce8c+g2j8BUnMI0r
-         8jzZELlK14fsBZu6NOLzo0Cy2QbshbT1al2bmC1s4qfvkdr3AExQvW9VzrNiLtPbXZQ2
-         1Jr74wu8RsNrl9u6hyV1lAx1BuKNs58JEkGzX120M4y+Hmhe/y5prT/uFXvYzxJJRivg
-         mLgUDJJ1cC+Cyf4pZedUwkzTuG44UglLaUGNrip6fUFewlpxtgNgPsznYzoSZaSCzj25
-         A56Nfy1O3S4zY8B0x2x2lTAFSTJvhzMYKusPCHgjb7irdiZ7VI4OtR9k8xQbjHC780kR
-         tJwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y1TjQ3DnvGblKxcV4mpqMt5wNmihV26Sfy0OZO/hyGA=;
-        b=JC1sAGFAy1as3yXkjzGe4KcDSQ7TYBNvlkL4UZ3YywR+AOymZlhLV4Z8TR263RqeKc
-         7knxExJROBFBViy34TO6QBmxFkYrPOFqO42lpUwUE6WbAJFERD0QeT/kqC14LerFi0yo
-         cwNqvofoj4UO34YceA5bwcEZCQZVr695/+/NTYlOufeAg0K4oZm7Pov5VlIJNEsWFM/U
-         28Ur3UftBqBZsZM+shuyh1cH7Z9BlI3j1I+TCikhMV2Pd8J8+5FM0ZOBIxrRsAU+EkY+
-         geJIl+3QV+unHLUpgGHQ8Kgv4jzT/0DvDtTTLiTdYBHzGj7O4FyykRhoRLiAfLFRfap5
-         uKBw==
-X-Gm-Message-State: AFqh2koU9DiuQ/T4dKBw6DSBinkygUmb6FuGkY8W/igKfRVf+RJEIyhe
-        dPEvqL+qHg11V6cvf4+tudVjvSz49ndManPfDcJIFA==
-X-Google-Smtp-Source: AMrXdXuwWuD5OiXNakvYJAfg6u0D7ABf686R8MJjms3J2cZ/9B/Cbr4fWTvpDyWNAiEYFWkC4mOEbGfbsC4ScNIVHk8=
-X-Received: by 2002:a17:90a:a02:b0:21e:df53:9183 with SMTP id
- o2-20020a17090a0a0200b0021edf539183mr249582pjo.66.1671645057567; Wed, 21 Dec
- 2022 09:50:57 -0800 (PST)
+        with ESMTP id S232468AbiLURvB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 12:51:01 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDDE21275;
+        Wed, 21 Dec 2022 09:50:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 193C9618A9;
+        Wed, 21 Dec 2022 17:50:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10DFEC433D2;
+        Wed, 21 Dec 2022 17:50:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671645058;
+        bh=oXMcXsVlPlcGXpz4n9urSXePmE7p0mZGuuSgRKv/LuY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S6TR7t0TCcFWCX4MFlTJUrNoa8vywYhDG1f8+BvAZUY7JBy8ZM3xiPWIi/1Qfcdf/
+         ALSFgAzjy0DE5StAArjBcS0X9Wuxk7TKZpdQ3BpVTPnj+S8HsC2Pt1ZXwSSWmuCaUe
+         z7oR64q3CcqBm5cblpcbDMAKe0T44smQTq7i9wKKlBinSb/H3s86J5WwREalZ21fIy
+         m3TYIwHMd5Z5RoPORMocU6/7CST75W0rbYPQSutUdOT6LmVsX2c2808JX0yzX1sRg1
+         eUl5tSmYDB3dPHKxVmq7kw02hsA/4TegAsDIJZdShRQbRyIADNL5E8LVsrEGD2D4N3
+         XJ916YCTILcFQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 24E7D40367; Wed, 21 Dec 2022 14:50:55 -0300 (-03)
+Date:   Wed, 21 Dec 2022 14:50:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Blake Jones <blakejones@google.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 2/6] perf lock contention: Add -Y/--type-filter option
+Message-ID: <Y6NHf1h2BKOw9J3Q@kernel.org>
+References: <20221219201732.460111-1-namhyung@kernel.org>
+ <20221219201732.460111-3-namhyung@kernel.org>
 MIME-Version: 1.0
-References: <cover.1671462950.git.lorenzo@kernel.org> <43c340d440d8a87396198b301c5ffbf5ab56f304.1671462950.git.lorenzo@kernel.org>
- <Y6DDfVhOWRybVNUt@google.com> <CAAOQfrFGArAYPyBX_kw4ZvFrTjKXf-jG-2F2y69nOs-oQ8Onwg@mail.gmail.com>
- <CAKH8qBuktjBcY_CuqqkWs74oBB8Mnkm638Cb=sF38H4kPAx3NQ@mail.gmail.com>
- <Y6GKN/1iOC9eTsEE@lore-desk> <CAKH8qBts19wxSDAKk0SBk76ftvdK+sW6d3ufcBWoV5cMa2ENpA@mail.gmail.com>
- <Y6I2VyBCz7YRxxTR@localhost.localdomain> <CAKH8qBv1AhXEfeymiTBE_MLniAXQc6shpuiHeYyidH-Y0Fc2ew@mail.gmail.com>
- <Y6Liehq9ZsXQMD2B@lore-desk>
-In-Reply-To: <Y6Liehq9ZsXQMD2B@lore-desk>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 21 Dec 2022 09:50:45 -0800
-Message-ID: <CAKH8qBsZo4H6beK5uhZWZaWfTgnCHvdC1zzh+VKFr_Od-R9G4g@mail.gmail.com>
-Subject: Re: [RFC bpf-next 2/8] net: introduce XDP features flag
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Marek Majtyka <alardam@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        toke@redhat.com, memxor@gmail.com, saeedm@nvidia.com,
-        anthony.l.nguyen@intel.com, gospo@broadcom.com,
-        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
-        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
-        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
-        grygorii.strashko@ti.com, mst@redhat.com, bjorn@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        intel-wired-lan@lists.osuosl.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221219201732.460111-3-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 21, 2022 at 2:39 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->
-> [...]
-> >
-> > All of the above makes sense, thanks for the details. In this case,
-> > agreed that it's probably not possible to probe these easily without
-> > explicit flags :-(
-> >
-> > Let me bikeshed the names a bit as well, feel free to ignore...
-> >
-> > 1. Maybe group XDP_{ABORTED,DROP,PASS,TX,REDIRECT} with some common
-> > prefix? XDP_ACT_xxx (ACT for action)? Or XDP_RET_xxx?
-> >
->
-> ack, I am fine to add ACT prefix, something like:
->
-> - XDP_ACT_ABORTED
-> - XDP_ACT_DROP
-> ...
->
-> - XDP_ACT_REDIRECT
->
-> > 2. Maybe: XDP_SOCK_ZEROCOPY -> XSK_ZEROCOPY ?
->
-> ack, agree
->
-> >
-> > 3. XDP_HW_OFFLOAD we don't seem to set anywhere? nfp/netdevsim changes
-> > are missing or out of scope?
->
-> actually we set XDP_F_HW_OFFLOAD for netdevsim and nfp driver
->
-> >
-> > 4. Agree with Jakub, not sure XDP_TX_LOCK doesn't seem relevant?
->
-> ack, I agree we can drop it
->
-> >
-> > 5. XDP_REDIRECT_TARGET -> XDP_RCV_REDIRECT (can 'receive' and handle
-> > redirects? in this case XDP_ACT_REDIRECT means can 'generate'
->
-> naming is always hard :) what about XDP_NDO_XMIT instead of
-> XDP_REDIRECT_TARGET? (and rely on XDP_ACT_REDIRECT for XDP_F_REDIRECT)
+Em Mon, Dec 19, 2022 at 12:17:28PM -0800, Namhyung Kim escreveu:
+> The -Y/--type-filter option is to filter the result for specific lock
+> types only.  It can accept comma-separated values.  Note that it would
+> accept type names like one in the output.  spinlock, mutex, rwsem:R and
+> so on.
+> 
+> For RW-variant lock types, it converts the name to the both variants.
+> In other words, "rwsem" is same as "rwsem:R,rwsem:W".  Also note that
+> "mutex" has two different encoding - one for sleeping wait, another for
+> optimistic spinning.  Add "mutex-spin" entry for the lock_type_table so
+> that we can add it for "mutex" under the table.
+> 
+>   $ sudo ./perf lock record -a -- ./perf bench sched messaging
+> 
+>   $ sudo ./perf lock con -E 5 -Y spinlock
+>    contended   total wait     max wait     avg wait         type   caller
+> 
+>          802      1.26 ms     11.73 us      1.58 us     spinlock   __wake_up_common_lock+0x62
+>           13    787.16 us    105.44 us     60.55 us     spinlock   remove_wait_queue+0x14
+>           12    612.96 us     78.70 us     51.08 us     spinlock   prepare_to_wait+0x27
+>          114    340.68 us     12.61 us      2.99 us     spinlock   try_to_wake_up+0x1f5
+>           83    226.38 us      9.15 us      2.73 us     spinlock   folio_lruvec_lock_irqsave+0x5e
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/Documentation/perf-lock.txt |  23 +++--
+>  tools/perf/builtin-lock.c              | 116 ++++++++++++++++++++++++-
+>  tools/perf/util/lock-contention.h      |   5 ++
+>  3 files changed, 136 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
+> index 38e79d45e426..dea04ad5c28e 100644
+> --- a/tools/perf/Documentation/perf-lock.txt
+> +++ b/tools/perf/Documentation/perf-lock.txt
+> @@ -143,25 +143,25 @@ CONTENTION OPTIONS
+>          System-wide collection from all CPUs.
+>  
+>  -C::
+> ---cpu::
+> +--cpu=<value>::
+>  	Collect samples only on the list of CPUs provided. Multiple CPUs can be
+>  	provided as a comma-separated list with no space: 0,1. Ranges of CPUs
+>  	are specified with -: 0-2.  Default is to monitor all CPUs.
+>  
+>  -p::
+> ---pid=::
+> +--pid=<value>::
+>  	Record events on existing process ID (comma separated list).
+>  
+> ---tid=::
+> +--tid=<value>::
+>          Record events on existing thread ID (comma separated list).
+>  
+> ---map-nr-entries::
+> +--map-nr-entries=<value>::
+>  	Maximum number of BPF map entries (default: 10240).
+>  
+> ---max-stack::
+> +--max-stack=<value>::
+>  	Maximum stack depth when collecting lock contention (default: 8).
+>  
+> ---stack-skip
+> +--stack-skip=<value>::
+>  	Number of stack depth to skip when finding a lock caller (default: 3).
+>  
+>  -E::
+> @@ -172,6 +172,17 @@ CONTENTION OPTIONS
+>  --lock-addr::
+>  	Show lock contention stat by address
+>  
+> +-Y::
+> +--type-filter=<value>::
+> +	Show lock contention only for given lock types (comma separated list).
+> +	Available values are:
+> +	  semaphore, spinlock, rwlock, rwlock:R, rwlock:W, rwsem, rwsem:R, rwsem:W,
+> +	  rtmutex, rwlock-rt, rwlock-rt:R, rwlock-rt:W, pcpu-sem, pcpu-sem:R, pcpu-sem:W,
+> +	  mutex
+> +
+> +	Note that RW-variant of locks have :R and :W suffix.  Names without the
+> +	suffix are shortcuts for the both variants.  Ex) rwsem = rwsem:R + rwsem:W.
+> +
+>  
+>  SEE ALSO
+>  --------
+> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> index 548d81eb0b18..49b4add53204 100644
+> --- a/tools/perf/builtin-lock.c
+> +++ b/tools/perf/builtin-lock.c
+> @@ -63,6 +63,8 @@ static int max_stack_depth = CONTENTION_STACK_DEPTH;
+>  static int stack_skip = CONTENTION_STACK_SKIP;
+>  static int print_nr_entries = INT_MAX / 2;
+>  
+> +static struct lock_filter filters;
+> +
+>  static enum lock_aggr_mode aggr_mode = LOCK_AGGR_ADDR;
+>  
+>  static struct thread_stat *thread_stat_find(u32 tid)
+> @@ -990,8 +992,9 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
+>  	struct thread_stat *ts;
+>  	struct lock_seq_stat *seq;
+>  	u64 addr = evsel__intval(evsel, sample, "lock_addr");
+> +	unsigned int flags = evsel__intval(evsel, sample, "flags");
+>  	u64 key;
+> -	int ret;
+> +	int i, ret;
+>  
+>  	ret = get_key_by_aggr_mode(&key, addr, evsel, sample);
+>  	if (ret < 0)
+> @@ -1001,7 +1004,6 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
+>  	if (!ls) {
+>  		char buf[128];
+>  		const char *name = "";
+> -		unsigned int flags = evsel__intval(evsel, sample, "flags");
+>  		struct machine *machine = &session->machines.host;
+>  		struct map *kmap;
+>  		struct symbol *sym;
+> @@ -1036,6 +1038,20 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
+>  		}
+>  	}
+>  
+> +	if (filters.nr_types) {
+> +		bool found = false;
+> +
+> +		for (i = 0; i < filters.nr_types; i++) {
+> +			if (flags == filters.types[i]) {
+> +				found = true;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (!found)
+> +			return 0;
+> +	}
+> +
+>  	ts = thread_stat_findnew(sample->tid);
+>  	if (!ts)
+>  		return -ENOMEM;
+> @@ -1454,6 +1470,8 @@ static const struct {
+>  	{ LCB_F_PERCPU | LCB_F_WRITE,	"pcpu-sem:W" },
+>  	{ LCB_F_MUTEX,			"mutex" },
+>  	{ LCB_F_MUTEX | LCB_F_SPIN,	"mutex" },
+> +	/* alias for get_type_flag() */
+> +	{ LCB_F_MUTEX | LCB_F_SPIN,	"mutex-spin" },
+>  };
+>  
+>  static const char *get_type_str(unsigned int flags)
+> @@ -1465,6 +1483,21 @@ static const char *get_type_str(unsigned int flags)
+>  	return "unknown";
+>  }
+>  
+> +static unsigned int get_type_flag(const char *str)
+> +{
+> +	for (unsigned int i = 0; i < ARRAY_SIZE(lock_type_table); i++) {
+> +		if (!strcmp(lock_type_table[i].name, str))
+> +			return lock_type_table[i].flags;
+> +	}
+> +	return -1U;
+> +}
+> +
+> +static void lock_filter_finish(void)
+> +{
+> +	zfree(&filters.types);
+> +	filters.nr_types = 0;
+> +}
+> +
+>  static void sort_contention_result(void)
+>  {
+>  	sort_result();
+> @@ -1507,6 +1540,9 @@ static void print_contention_result(struct lock_contention *con)
+>  		if (st->broken)
+>  			bad++;
+>  
+> +		if (!st->wait_time_total)
+> +			continue;
+> +
+>  		list_for_each_entry(key, &lock_keys, list) {
+>  			key->print(key, st);
+>  			pr_info(" ");
+> @@ -1753,6 +1789,7 @@ static int __cmd_contention(int argc, const char **argv)
+>  	print_contention_result(&con);
+>  
+>  out_delete:
+> +	lock_filter_finish();
+>  	evlist__delete(con.evlist);
+>  	lock_contention_finish();
+>  	perf_session__delete(session);
+> @@ -1884,6 +1921,79 @@ static int parse_max_stack(const struct option *opt, const char *str,
+>  	return 0;
+>  }
+>  
+> +static bool add_lock_type(unsigned int flags)
+> +{
+> +	unsigned int *tmp;
+> +
+> +	tmp = realloc(filters.types, (filters.nr_types + 1) * sizeof(*filters.types));
+> +	if (tmp == NULL)
+> +		return false;
+> +
+> +	tmp[filters.nr_types++] = flags;
+> +	filters.types = tmp;
+> +	return true;
+> +}
+> +
+> +static int parse_lock_type(const struct option *opt __maybe_unused, const char *str,
+> +			   int unset __maybe_unused)
+> +{
+> +	char *s, *tmp, *tok;
+> +	int ret = 0;
+> +
+> +	s = strdup(str);
+> +	if (s == NULL)
+> +		return -1;
+> +
+> +	for (tok = strtok_r(s, ", ", &tmp); tok; tok = strtok_r(NULL, ", ", &tmp)) {
+> +		unsigned int flags = get_type_flag(tok);
+> +
+> +		if (flags == -1U) {
+> +			char buf[32];
+> +
+> +			if (strchr(tok, ':'))
+> +			    continue;
+> +
+> +			/* try :R and :W suffixes for rwlock, rwsem, ... */
+> +			scnprintf(buf, sizeof(buf), "%s:R", tok);
+> +			flags = get_type_flag(buf);
+> +			if (flags != -1UL) {
+> +				if (!add_lock_type(flags)) {
+> +					ret = -1;
+> +					break;
+> +				}
+> +			}
 
-Sounds good!
 
-> > redirects)
-> >
-> > 6. For frags, maybe:
-> >
-> > XDP_FRAG_RX     -> XDP_SG_RX
->
-> fine
->
-> > XDP_FRAG_TARGET -> XDP_SG_RCV_REDIRECT (so this is that same as
-> > XDP_RCV_REDIRECT but can handle frags)
->
-> what about of XDP_NDO_XMIT_SG?
+clang doesn't like this:
 
-Same here. I'm now getting quiet in order to not make it more complicated :-)
+  34    97.97 fedora:36                     : FAIL clang version 14.0.5 (Fedora 14.0.5-2.fc36)
+    builtin-lock.c:2012:14: error: result of comparison of constant 18446744073709551615 with expression of type 'unsigned int' is always true [-Werror,-Wtautological-constant-out-of-range-compare]
+                            if (flags != -1UL) {
+                                ~~~~~ ^  ~~~~
+    builtin-lock.c:2021:14: error: result of comparison of constant 18446744073709551615 with expression of type 'unsigned int' is always true [-Werror,-Wtautological-constant-out-of-range-compare]
+                            if (flags != -1UL) {
+                                ~~~~~ ^  ~~~~
+    builtin-lock.c:2037:14: error: result of comparison of constant 18446744073709551615 with expression of type 'unsigned int' is always true [-Werror,-Wtautological-constant-out-of-range-compare]
+                            if (flags != -1UL) {
+                                ~~~~~ ^  ~~~~
+    3 errors generated.
 
+I applied this on top, Ack?
 
-> Regards,
-> Lorenzo
->
-> >
-> > But also probably fine to keep FRAG instead of SG to match BPF_F_XDP_HAS_FRAGS?
-> >
-> > > Regards,
-> > > Lorenzo
-> > >
-> > > >
-> > > > > Regards,
-> > > > > Lorenzo
-> > > > >
-> > > > > >
-> > > > > > > On Mon, Dec 19, 2022 at 9:03 PM <sdf@google.com> wrote:
-> > > > > > >>
-> > > > > > >> On 12/19, Lorenzo Bianconi wrote:
-> > > > > > >> > From: Marek Majtyka <alardam@gmail.com>
-> > > > > > >>
-> > > > > > >> > Implement support for checking what kind of XDP features a netdev
-> > > > > > >> > supports. Previously, there was no way to do this other than to try to
-> > > > > > >> > create an AF_XDP socket on the interface or load an XDP program and see
-> > > > > > >> > if it worked. This commit changes this by adding a new variable which
-> > > > > > >> > describes all xdp supported functions on pretty detailed level:
-> > > > > > >>
-> > > > > > >> >   - aborted
-> > > > > > >> >   - drop
-> > > > > > >> >   - pass
-> > > > > > >> >   - tx
-> > > > > > >> >   - redirect
-> > > > > > >> >   - sock_zerocopy
-> > > > > > >> >   - hw_offload
-> > > > > > >> >   - redirect_target
-> > > > > > >> >   - tx_lock
-> > > > > > >> >   - frag_rx
-> > > > > > >> >   - frag_target
-> > > > > > >>
-> > > > > > >> > Zerocopy mode requires that redirect XDP operation is implemented in a
-> > > > > > >> > driver and the driver supports also zero copy mode. Full mode requires
-> > > > > > >> > that all XDP operation are implemented in the driver. Basic mode is just
-> > > > > > >> > full mode without redirect operation. Frag target requires
-> > > > > > >> > redirect_target one is supported by the driver.
-> > > > > > >>
-> > > > > > >> Can you share more about _why_ is it needed? If we can already obtain
-> > > > > > >> most of these signals via probing, why export the flags?
-> > > > > > >>
-> > > > > > >> > Initially, these new flags are disabled for all drivers by default.
-> > > > > > >>
-> > > > > > >> > Co-developed-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > > > >> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > > > >> > Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > > > > >> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > > > > >> > Signed-off-by: Marek Majtyka <alardam@gmail.com>
-> > > > > > >> > ---
-> > > > > > >> >   .../networking/netdev-xdp-features.rst        | 60 +++++++++++++++++
-> > > > > > >> >   include/linux/netdevice.h                     |  2 +
-> > > > > > >> >   include/linux/xdp_features.h                  | 64 +++++++++++++++++++
-> > > > > > >> >   include/uapi/linux/if_link.h                  |  7 ++
-> > > > > > >> >   include/uapi/linux/xdp_features.h             | 34 ++++++++++
-> > > > > > >> >   net/core/rtnetlink.c                          | 34 ++++++++++
-> > > > > > >> >   tools/include/uapi/linux/if_link.h            |  7 ++
-> > > > > > >> >   tools/include/uapi/linux/xdp_features.h       | 34 ++++++++++
-> > > > > > >> >   8 files changed, 242 insertions(+)
-> > > > > > >> >   create mode 100644 Documentation/networking/netdev-xdp-features.rst
-> > > > > > >> >   create mode 100644 include/linux/xdp_features.h
-> > > > > > >> >   create mode 100644 include/uapi/linux/xdp_features.h
-> > > > > > >> >   create mode 100644 tools/include/uapi/linux/xdp_features.h
-> > > > > > >>
-> > > > > > >> > diff --git a/Documentation/networking/netdev-xdp-features.rst
-> > > > > > >> > b/Documentation/networking/netdev-xdp-features.rst
-> > > > > > >> > new file mode 100644
-> > > > > > >> > index 000000000000..1dc803fe72dd
-> > > > > > >> > --- /dev/null
-> > > > > > >> > +++ b/Documentation/networking/netdev-xdp-features.rst
-> > > > > > >> > @@ -0,0 +1,60 @@
-> > > > > > >> > +.. SPDX-License-Identifier: GPL-2.0
-> > > > > > >> > +
-> > > > > > >> > +=====================
-> > > > > > >> > +Netdev XDP features
-> > > > > > >> > +=====================
-> > > > > > >> > +
-> > > > > > >> > + * XDP FEATURES FLAGS
-> > > > > > >> > +
-> > > > > > >> > +Following netdev xdp features flags can be retrieved over route netlink
-> > > > > > >> > +interface (compact form) - the same way as netdev feature flags.
-> > > > > > >> > +These features flags are read only and cannot be change at runtime.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_ABORTED
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev supports xdp aborted action.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_DROP
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev supports xdp drop action.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_PASS
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev supports xdp pass action.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_TX
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev supports xdp tx action.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_REDIRECT
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev supports xdp redirect action.
-> > > > > > >> > +It assumes the all beforehand mentioned flags are enabled.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_SOCK_ZEROCOPY
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev driver supports xdp zero copy.
-> > > > > > >> > +It assumes the all beforehand mentioned flags are enabled.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_HW_OFFLOAD
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev driver supports xdp hw oflloading.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_TX_LOCK
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev ndo_xdp_xmit function requires locking.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_REDIRECT_TARGET
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev implements ndo_xdp_xmit callback.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_FRAG_RX
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev implements non-linear xdp buff support in
-> > > > > > >> > +the driver napi callback.
-> > > > > > >> > +
-> > > > > > >> > +*  XDP_FRAG_TARGET
-> > > > > > >> > +
-> > > > > > >> > +This feature informs if netdev implements non-linear xdp buff support in
-> > > > > > >> > +ndo_xdp_xmit callback. XDP_FRAG_TARGET requires XDP_REDIRECT_TARGET is
-> > > > > > >> > properly
-> > > > > > >> > +supported.
-> > > > > > >> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > > > > > >> > index aad12a179e54..ae5a8564383b 100644
-> > > > > > >> > --- a/include/linux/netdevice.h
-> > > > > > >> > +++ b/include/linux/netdevice.h
-> > > > > > >> > @@ -43,6 +43,7 @@
-> > > > > > >> >   #include <net/xdp.h>
-> > > > > > >>
-> > > > > > >> >   #include <linux/netdev_features.h>
-> > > > > > >> > +#include <linux/xdp_features.h>
-> > > > > > >> >   #include <linux/neighbour.h>
-> > > > > > >> >   #include <uapi/linux/netdevice.h>
-> > > > > > >> >   #include <uapi/linux/if_bonding.h>
-> > > > > > >> > @@ -2362,6 +2363,7 @@ struct net_device {
-> > > > > > >> >       struct rtnl_hw_stats64  *offload_xstats_l3;
-> > > > > > >>
-> > > > > > >> >       struct devlink_port     *devlink_port;
-> > > > > > >> > +     xdp_features_t          xdp_features;
-> > > > > > >> >   };
-> > > > > > >> >   #define to_net_dev(d) container_of(d, struct net_device, dev)
-> > > > > > >>
-> > > > > > >> > diff --git a/include/linux/xdp_features.h b/include/linux/xdp_features.h
-> > > > > > >> > new file mode 100644
-> > > > > > >> > index 000000000000..4e72a86ef329
-> > > > > > >> > --- /dev/null
-> > > > > > >> > +++ b/include/linux/xdp_features.h
-> > > > > > >> > @@ -0,0 +1,64 @@
-> > > > > > >> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > > > > > >> > +/*
-> > > > > > >> > + * Network device xdp features.
-> > > > > > >> > + */
-> > > > > > >> > +#ifndef _LINUX_XDP_FEATURES_H
-> > > > > > >> > +#define _LINUX_XDP_FEATURES_H
-> > > > > > >> > +
-> > > > > > >> > +#include <linux/types.h>
-> > > > > > >> > +#include <linux/bitops.h>
-> > > > > > >> > +#include <asm/byteorder.h>
-> > > > > > >> > +#include <uapi/linux/xdp_features.h>
-> > > > > > >> > +
-> > > > > > >> > +typedef u32 xdp_features_t;
-> > > > > > >> > +
-> > > > > > >> > +#define __XDP_F_BIT(bit)     ((xdp_features_t)1 << (bit))
-> > > > > > >> > +#define __XDP_F(name)                __XDP_F_BIT(XDP_F_##name##_BIT)
-> > > > > > >> > +
-> > > > > > >> > +#define XDP_F_ABORTED                __XDP_F(ABORTED)
-> > > > > > >> > +#define XDP_F_DROP           __XDP_F(DROP)
-> > > > > > >> > +#define XDP_F_PASS           __XDP_F(PASS)
-> > > > > > >> > +#define XDP_F_TX             __XDP_F(TX)
-> > > > > > >> > +#define XDP_F_REDIRECT               __XDP_F(REDIRECT)
-> > > > > > >> > +#define XDP_F_REDIRECT_TARGET        __XDP_F(REDIRECT_TARGET)
-> > > > > > >> > +#define XDP_F_SOCK_ZEROCOPY  __XDP_F(SOCK_ZEROCOPY)
-> > > > > > >> > +#define XDP_F_HW_OFFLOAD     __XDP_F(HW_OFFLOAD)
-> > > > > > >> > +#define XDP_F_TX_LOCK                __XDP_F(TX_LOCK)
-> > > > > > >> > +#define XDP_F_FRAG_RX                __XDP_F(FRAG_RX)
-> > > > > > >> > +#define XDP_F_FRAG_TARGET    __XDP_F(FRAG_TARGET)
-> > > > > > >> > +
-> > > > > > >> > +#define XDP_F_BASIC          (XDP_F_ABORTED | XDP_F_DROP |   \
-> > > > > > >> > +                              XDP_F_PASS | XDP_F_TX)
-> > > > > > >> > +
-> > > > > > >> > +#define XDP_F_FULL           (XDP_F_BASIC | XDP_F_REDIRECT)
-> > > > > > >> > +
-> > > > > > >> > +#define XDP_F_FULL_ZC                (XDP_F_FULL | XDP_F_SOCK_ZEROCOPY)
-> > > > > > >> > +
-> > > > > > >> > +#define XDP_FEATURES_ABORTED_STR             "xdp-aborted"
-> > > > > > >> > +#define XDP_FEATURES_DROP_STR                        "xdp-drop"
-> > > > > > >> > +#define XDP_FEATURES_PASS_STR                        "xdp-pass"
-> > > > > > >> > +#define XDP_FEATURES_TX_STR                  "xdp-tx"
-> > > > > > >> > +#define XDP_FEATURES_REDIRECT_STR            "xdp-redirect"
-> > > > > > >> > +#define XDP_FEATURES_REDIRECT_TARGET_STR     "xdp-redirect-target"
-> > > > > > >> > +#define XDP_FEATURES_SOCK_ZEROCOPY_STR               "xdp-sock-zerocopy"
-> > > > > > >> > +#define XDP_FEATURES_HW_OFFLOAD_STR          "xdp-hw-offload"
-> > > > > > >> > +#define XDP_FEATURES_TX_LOCK_STR             "xdp-tx-lock"
-> > > > > > >> > +#define XDP_FEATURES_FRAG_RX_STR             "xdp-frag-rx"
-> > > > > > >> > +#define XDP_FEATURES_FRAG_TARGET_STR         "xdp-frag-target"
-> > > > > > >> > +
-> > > > > > >> > +#define DECLARE_XDP_FEATURES_TABLE(name, length)                             \
-> > > > > > >> > +     const char name[][length] = {                                           \
-> > > > > > >> > +             [XDP_F_ABORTED_BIT] = XDP_FEATURES_ABORTED_STR,                 \
-> > > > > > >> > +             [XDP_F_DROP_BIT] = XDP_FEATURES_DROP_STR,                       \
-> > > > > > >> > +             [XDP_F_PASS_BIT] = XDP_FEATURES_PASS_STR,                       \
-> > > > > > >> > +             [XDP_F_TX_BIT] = XDP_FEATURES_TX_STR,                           \
-> > > > > > >> > +             [XDP_F_REDIRECT_BIT] = XDP_FEATURES_REDIRECT_STR,               \
-> > > > > > >> > +             [XDP_F_REDIRECT_TARGET_BIT] = XDP_FEATURES_REDIRECT_TARGET_STR, \
-> > > > > > >> > +             [XDP_F_SOCK_ZEROCOPY_BIT] = XDP_FEATURES_SOCK_ZEROCOPY_STR,     \
-> > > > > > >> > +             [XDP_F_HW_OFFLOAD_BIT] = XDP_FEATURES_HW_OFFLOAD_STR,           \
-> > > > > > >> > +             [XDP_F_TX_LOCK_BIT] = XDP_FEATURES_TX_LOCK_STR,                 \
-> > > > > > >> > +             [XDP_F_FRAG_RX_BIT] = XDP_FEATURES_FRAG_RX_STR,                 \
-> > > > > > >> > +             [XDP_F_FRAG_TARGET_BIT] = XDP_FEATURES_FRAG_TARGET_STR,         \
-> > > > > > >> > +     }
-> > > > > > >> > +
-> > > > > > >> > +#endif /* _LINUX_XDP_FEATURES_H */
-> > > > > > >> > diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-> > > > > > >> > index 1021a7e47a86..971c658ceaea 100644
-> > > > > > >> > --- a/include/uapi/linux/if_link.h
-> > > > > > >> > +++ b/include/uapi/linux/if_link.h
-> > > > > > >> > @@ -374,6 +374,8 @@ enum {
-> > > > > > >>
-> > > > > > >> >       IFLA_DEVLINK_PORT,
-> > > > > > >>
-> > > > > > >> > +     IFLA_XDP_FEATURES,
-> > > > > > >> > +
-> > > > > > >> >       __IFLA_MAX
-> > > > > > >> >   };
-> > > > > > >>
-> > > > > > >> > @@ -1318,6 +1320,11 @@ enum {
-> > > > > > >>
-> > > > > > >> >   #define IFLA_XDP_MAX (__IFLA_XDP_MAX - 1)
-> > > > > > >>
-> > > > > > >> > +enum {
-> > > > > > >> > +     IFLA_XDP_FEATURES_WORD_UNSPEC = 0,
-> > > > > > >> > +     IFLA_XDP_FEATURES_BITS_WORD,
-> > > > > > >> > +};
-> > > > > > >> > +
-> > > > > > >> >   enum {
-> > > > > > >> >       IFLA_EVENT_NONE,
-> > > > > > >> >       IFLA_EVENT_REBOOT,              /* internal reset / reboot */
-> > > > > > >> > diff --git a/include/uapi/linux/xdp_features.h
-> > > > > > >> > b/include/uapi/linux/xdp_features.h
-> > > > > > >> > new file mode 100644
-> > > > > > >> > index 000000000000..48eb42069bcd
-> > > > > > >> > --- /dev/null
-> > > > > > >> > +++ b/include/uapi/linux/xdp_features.h
-> > > > > > >> > @@ -0,0 +1,34 @@
-> > > > > > >> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > > > > >> > +/*
-> > > > > > >> > + * Copyright (c) 2020 Intel
-> > > > > > >> > + */
-> > > > > > >> > +
-> > > > > > >> > +#ifndef __UAPI_LINUX_XDP_FEATURES__
-> > > > > > >> > +#define __UAPI_LINUX_XDP_FEATURES__
-> > > > > > >> > +
-> > > > > > >> > +enum {
-> > > > > > >> > +     XDP_F_ABORTED_BIT,
-> > > > > > >> > +     XDP_F_DROP_BIT,
-> > > > > > >> > +     XDP_F_PASS_BIT,
-> > > > > > >> > +     XDP_F_TX_BIT,
-> > > > > > >> > +     XDP_F_REDIRECT_BIT,
-> > > > > > >> > +     XDP_F_REDIRECT_TARGET_BIT,
-> > > > > > >> > +     XDP_F_SOCK_ZEROCOPY_BIT,
-> > > > > > >> > +     XDP_F_HW_OFFLOAD_BIT,
-> > > > > > >> > +     XDP_F_TX_LOCK_BIT,
-> > > > > > >> > +     XDP_F_FRAG_RX_BIT,
-> > > > > > >> > +     XDP_F_FRAG_TARGET_BIT,
-> > > > > > >> > +     /*
-> > > > > > >> > +      * Add your fresh new property above and remember to update
-> > > > > > >> > +      * documentation.
-> > > > > > >> > +      */
-> > > > > > >> > +     XDP_FEATURES_COUNT,
-> > > > > > >> > +};
-> > > > > > >> > +
-> > > > > > >> > +#define XDP_FEATURES_WORDS                   ((XDP_FEATURES_COUNT + 32 - 1) / 32)
-> > > > > > >> > +#define XDP_FEATURES_WORD(blocks, index)     ((blocks)[(index) / 32U])
-> > > > > > >> > +#define XDP_FEATURES_FIELD_FLAG(index)               (1U << (index) % 32U)
-> > > > > > >> > +#define XDP_FEATURES_BIT_IS_SET(blocks, index)        \
-> > > > > > >> > +     (XDP_FEATURES_WORD(blocks, index) & XDP_FEATURES_FIELD_FLAG(index))
-> > > > > > >> > +
-> > > > > > >> > +#endif  /* __UAPI_LINUX_XDP_FEATURES__ */
-> > > > > > >> > diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> > > > > > >> > index 64289bc98887..1c299746b614 100644
-> > > > > > >> > --- a/net/core/rtnetlink.c
-> > > > > > >> > +++ b/net/core/rtnetlink.c
-> > > > > > >> > @@ -1016,6 +1016,14 @@ static size_t rtnl_xdp_size(void)
-> > > > > > >> >       return xdp_size;
-> > > > > > >> >   }
-> > > > > > >>
-> > > > > > >> > +static size_t rtnl_xdp_features_size(void)
-> > > > > > >> > +{
-> > > > > > >> > +     size_t xdp_size = nla_total_size(0) +   /* nest IFLA_XDP_FEATURES */
-> > > > > > >> > +                       XDP_FEATURES_WORDS * nla_total_size(4);
-> > > > > > >> > +
-> > > > > > >> > +     return xdp_size;
-> > > > > > >> > +}
-> > > > > > >> > +
-> > > > > > >> >   static size_t rtnl_prop_list_size(const struct net_device *dev)
-> > > > > > >> >   {
-> > > > > > >> >       struct netdev_name_node *name_node;
-> > > > > > >> > @@ -1103,6 +1111,7 @@ static noinline size_t if_nlmsg_size(const struct
-> > > > > > >> > net_device *dev,
-> > > > > > >> >              + rtnl_prop_list_size(dev)
-> > > > > > >> >              + nla_total_size(MAX_ADDR_LEN) /* IFLA_PERM_ADDRESS */
-> > > > > > >> >              + rtnl_devlink_port_size(dev)
-> > > > > > >> > +            + rtnl_xdp_features_size() /* IFLA_XDP_FEATURES */
-> > > > > > >> >              + 0;
-> > > > > > >> >   }
-> > > > > > >>
-> > > > > > >> > @@ -1546,6 +1555,27 @@ static int rtnl_xdp_fill(struct sk_buff *skb,
-> > > > > > >> > struct net_device *dev)
-> > > > > > >> >       return err;
-> > > > > > >> >   }
-> > > > > > >>
-> > > > > > >> > +static int rtnl_xdp_features_fill(struct sk_buff *skb, struct net_device
-> > > > > > >> > *dev)
-> > > > > > >> > +{
-> > > > > > >> > +     struct nlattr *attr;
-> > > > > > >> > +
-> > > > > > >> > +     attr = nla_nest_start_noflag(skb, IFLA_XDP_FEATURES);
-> > > > > > >> > +     if (!attr)
-> > > > > > >> > +             return -EMSGSIZE;
-> > > > > > >> > +
-> > > > > > >> > +     BUILD_BUG_ON(XDP_FEATURES_WORDS != 1);
-> > > > > > >> > +     if (nla_put_u32(skb, IFLA_XDP_FEATURES_BITS_WORD, dev->xdp_features))
-> > > > > > >> > +             goto err_cancel;
-> > > > > > >> > +
-> > > > > > >> > +     nla_nest_end(skb, attr);
-> > > > > > >> > +
-> > > > > > >> > +     return 0;
-> > > > > > >> > +
-> > > > > > >> > +err_cancel:
-> > > > > > >> > +     nla_nest_cancel(skb, attr);
-> > > > > > >> > +     return -EMSGSIZE;
-> > > > > > >> > +}
-> > > > > > >> > +
-> > > > > > >> >   static u32 rtnl_get_event(unsigned long event)
-> > > > > > >> >   {
-> > > > > > >> >       u32 rtnl_event_type = IFLA_EVENT_NONE;
-> > > > > > >> > @@ -1904,6 +1934,9 @@ static int rtnl_fill_ifinfo(struct sk_buff *skb,
-> > > > > > >> >       if (rtnl_fill_devlink_port(skb, dev))
-> > > > > > >> >               goto nla_put_failure;
-> > > > > > >>
-> > > > > > >> > +     if (rtnl_xdp_features_fill(skb, dev))
-> > > > > > >> > +             goto nla_put_failure;
-> > > > > > >> > +
-> > > > > > >> >       nlmsg_end(skb, nlh);
-> > > > > > >> >       return 0;
-> > > > > > >>
-> > > > > > >> > @@ -1968,6 +2001,7 @@ static const struct nla_policy
-> > > > > > >> > ifla_policy[IFLA_MAX+1] = {
-> > > > > > >> >       [IFLA_TSO_MAX_SIZE]     = { .type = NLA_REJECT },
-> > > > > > >> >       [IFLA_TSO_MAX_SEGS]     = { .type = NLA_REJECT },
-> > > > > > >> >       [IFLA_ALLMULTI]         = { .type = NLA_REJECT },
-> > > > > > >> > +     [IFLA_XDP_FEATURES]     = { .type = NLA_NESTED },
-> > > > > > >> >   };
-> > > > > > >>
-> > > > > > >> >   static const struct nla_policy ifla_info_policy[IFLA_INFO_MAX+1] = {
-> > > > > > >> > diff --git a/tools/include/uapi/linux/if_link.h
-> > > > > > >> > b/tools/include/uapi/linux/if_link.h
-> > > > > > >> > index 82fe18f26db5..994228e9909a 100644
-> > > > > > >> > --- a/tools/include/uapi/linux/if_link.h
-> > > > > > >> > +++ b/tools/include/uapi/linux/if_link.h
-> > > > > > >> > @@ -354,6 +354,8 @@ enum {
-> > > > > > >>
-> > > > > > >> >       IFLA_DEVLINK_PORT,
-> > > > > > >>
-> > > > > > >> > +     IFLA_XDP_FEATURES,
-> > > > > > >> > +
-> > > > > > >> >       __IFLA_MAX
-> > > > > > >> >   };
-> > > > > > >>
-> > > > > > >> > @@ -1222,6 +1224,11 @@ enum {
-> > > > > > >>
-> > > > > > >> >   #define IFLA_XDP_MAX (__IFLA_XDP_MAX - 1)
-> > > > > > >>
-> > > > > > >> > +enum {
-> > > > > > >> > +     IFLA_XDP_FEATURES_WORD_UNSPEC = 0,
-> > > > > > >> > +     IFLA_XDP_FEATURES_BITS_WORD,
-> > > > > > >> > +};
-> > > > > > >> > +
-> > > > > > >> >   enum {
-> > > > > > >> >       IFLA_EVENT_NONE,
-> > > > > > >> >       IFLA_EVENT_REBOOT,              /* internal reset / reboot */
-> > > > > > >> > diff --git a/tools/include/uapi/linux/xdp_features.h
-> > > > > > >> > b/tools/include/uapi/linux/xdp_features.h
-> > > > > > >> > new file mode 100644
-> > > > > > >> > index 000000000000..48eb42069bcd
-> > > > > > >> > --- /dev/null
-> > > > > > >> > +++ b/tools/include/uapi/linux/xdp_features.h
-> > > > > > >> > @@ -0,0 +1,34 @@
-> > > > > > >> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > > > > >> > +/*
-> > > > > > >> > + * Copyright (c) 2020 Intel
-> > > > > > >> > + */
-> > > > > > >> > +
-> > > > > > >> > +#ifndef __UAPI_LINUX_XDP_FEATURES__
-> > > > > > >> > +#define __UAPI_LINUX_XDP_FEATURES__
-> > > > > > >> > +
-> > > > > > >> > +enum {
-> > > > > > >> > +     XDP_F_ABORTED_BIT,
-> > > > > > >> > +     XDP_F_DROP_BIT,
-> > > > > > >> > +     XDP_F_PASS_BIT,
-> > > > > > >> > +     XDP_F_TX_BIT,
-> > > > > > >> > +     XDP_F_REDIRECT_BIT,
-> > > > > > >> > +     XDP_F_REDIRECT_TARGET_BIT,
-> > > > > > >> > +     XDP_F_SOCK_ZEROCOPY_BIT,
-> > > > > > >> > +     XDP_F_HW_OFFLOAD_BIT,
-> > > > > > >> > +     XDP_F_TX_LOCK_BIT,
-> > > > > > >> > +     XDP_F_FRAG_RX_BIT,
-> > > > > > >> > +     XDP_F_FRAG_TARGET_BIT,
-> > > > > > >> > +     /*
-> > > > > > >> > +      * Add your fresh new property above and remember to update
-> > > > > > >> > +      * documentation.
-> > > > > > >> > +      */
-> > > > > > >> > +     XDP_FEATURES_COUNT,
-> > > > > > >> > +};
-> > > > > > >> > +
-> > > > > > >> > +#define XDP_FEATURES_WORDS                   ((XDP_FEATURES_COUNT + 32 - 1) / 32)
-> > > > > > >> > +#define XDP_FEATURES_WORD(blocks, index)     ((blocks)[(index) / 32U])
-> > > > > > >> > +#define XDP_FEATURES_FIELD_FLAG(index)               (1U << (index) % 32U)
-> > > > > > >> > +#define XDP_FEATURES_BIT_IS_SET(blocks, index)        \
-> > > > > > >> > +     (XDP_FEATURES_WORD(blocks, index) & XDP_FEATURES_FIELD_FLAG(index))
-> > > > > > >> > +
-> > > > > > >> > +#endif  /* __UAPI_LINUX_XDP_FEATURES__ */
-> > > > > > >> > --
-> > > > > > >> > 2.38.1
-> > > > > > >>
-> > > > > >
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index daef37fe0ccda249..c73d02082cdf4b3a 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -1489,7 +1489,7 @@ static unsigned int get_type_flag(const char *str)
+ 		if (!strcmp(lock_type_table[i].name, str))
+ 			return lock_type_table[i].flags;
+ 	}
+-	return -1U;
++	return UINT_MAX;
+ }
+ 
+ static void lock_filter_finish(void)
+@@ -1956,7 +1956,7 @@ static int parse_lock_type(const struct option *opt __maybe_unused, const char *
+ 			/* try :R and :W suffixes for rwlock, rwsem, ... */
+ 			scnprintf(buf, sizeof(buf), "%s:R", tok);
+ 			flags = get_type_flag(buf);
+-			if (flags != -1UL) {
++			if (flags != UINT_MAX) {
+ 				if (!add_lock_type(flags)) {
+ 					ret = -1;
+ 					break;
+@@ -1965,7 +1965,7 @@ static int parse_lock_type(const struct option *opt __maybe_unused, const char *
+ 
+ 			scnprintf(buf, sizeof(buf), "%s:W", tok);
+ 			flags = get_type_flag(buf);
+-			if (flags != -1UL) {
++			if (flags != UINT_MAX) {
+ 				if (!add_lock_type(flags)) {
+ 					ret = -1;
+ 					break;
+@@ -1981,7 +1981,7 @@ static int parse_lock_type(const struct option *opt __maybe_unused, const char *
+ 
+ 		if (!strcmp(tok, "mutex")) {
+ 			flags = get_type_flag("mutex-spin");
+-			if (flags != -1UL) {
++			if (flags != UINT_MAX) {
+ 				if (!add_lock_type(flags)) {
+ 					ret = -1;
+ 					break;
+
+> +			flags = get_type_flag(buf);
+> +			if (flags != -1UL) {
+> +				if (!add_lock_type(flags)) {
+> +					ret = -1;
+> +					break;
+> +				}
+> +			}
+> +			continue;
+> +		}
+> +
+> +		if (!add_lock_type(flags)) {
+> +			ret = -1;
+> +			break;
+> +		}
+> +
+> +		if (!strcmp(tok, "mutex")) {
+> +			flags = get_type_flag("mutex-spin");
+> +			if (flags != -1UL) {
+> +				if (!add_lock_type(flags)) {
+> +					ret = -1;
+> +					break;
+> +				}
+> +			}
+> +		}
+> +	}
+> +
+> +	free(s);
+> +	return ret;
+> +}
+> +
+>  int cmd_lock(int argc, const char **argv)
+>  {
+>  	const struct option lock_options[] = {
+> @@ -1947,6 +2057,8 @@ int cmd_lock(int argc, const char **argv)
+>  		    "Default: " __stringify(CONTENTION_STACK_SKIP)),
+>  	OPT_INTEGER('E', "entries", &print_nr_entries, "display this many functions"),
+>  	OPT_BOOLEAN('l', "lock-addr", &show_lock_addrs, "show lock stats by address"),
+> +	OPT_CALLBACK('Y', "type-filter", NULL, "FLAGS",
+> +		     "Filter specific type of locks", parse_lock_type),
+>  	OPT_PARENT(lock_options)
+>  	};
+>  
+> diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
+> index 47fd47fb56c1..d5b75b222d8e 100644
+> --- a/tools/perf/util/lock-contention.h
+> +++ b/tools/perf/util/lock-contention.h
+> @@ -5,6 +5,11 @@
+>  #include <linux/list.h>
+>  #include <linux/rbtree.h>
+>  
+> +struct lock_filter {
+> +	int			nr_types;
+> +	unsigned int		*types;
+> +};
+> +
+>  struct lock_stat {
+>  	struct hlist_node	hash_entry;
+>  	struct rb_node		rb;		/* used for sorting */
+> -- 
+> 2.39.0.314.g84b9a713c41-goog
+
+-- 
+
+- Arnaldo
