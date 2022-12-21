@@ -2,80 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F033652A5B
-	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 01:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6FB652A64
+	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 01:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbiLUAOf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Dec 2022 19:14:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        id S229893AbiLUASZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Dec 2022 19:18:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234442AbiLUAOC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Dec 2022 19:14:02 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7C9205FB;
-        Tue, 20 Dec 2022 16:13:27 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id qk9so33128844ejc.3;
-        Tue, 20 Dec 2022 16:13:27 -0800 (PST)
+        with ESMTP id S229482AbiLUASY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Dec 2022 19:18:24 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D318AD85;
+        Tue, 20 Dec 2022 16:18:23 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id a1so4866352edf.5;
+        Tue, 20 Dec 2022 16:18:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/CkWUTtnXtFdBonK+Hr2bihTCTKwFRgaMGiP5ubhFJM=;
-        b=RxemTcOkAAOCSnKpzXAa20/l/IF8AGKsxrBEYMJMESw7nLG1JJUiYFpw3WNmBHKMYx
-         2xUQwe56HvDbpg1oH5xV4EknU3X1jTx6gzFtarI2XYu9ogv3iYILKxxZxq4Xgseu0yBE
-         Ak/AW9eWEVzU+slDXruur04265h479VtK5C8T+2mby54siRIrgg5QIytIiG/1RnWs4t4
-         UyOIVDxizA9POLZ0ggM7+REZyWcgEHfMqGLws4nTrBIg9fTRIT1VoPYiB9cZ7UQn7J/h
-         s/XFzOmTRv9JQk6ec2sqdR3DPa2ZQHXJBJ3qpIhymk5AwWJ2XaqWqqGIz50dYFUBI9l7
-         cvXQ==
+        bh=naZ0oUxMFWyFMkbBQHoBeUSSPqcubeS5ksQDUm2Hg1k=;
+        b=ma/Y3lM2RaFmYK4F9I1TdBDSWj3qNGAs4tTdugWoBBWgCb6LjcypbiZHYttKSbP6WQ
+         HLENwnvznUQ4czFvDaPNGGc892LvpM+uLpAz/sM1Y3FVaI9N33h+Pmww4jrltpwmsoJq
+         gBWpwiaVuXE7E4/NEusH+iY0IDvY/yIcpQ2/dXoNILIzjK0KhpL6mZ7F9czl6zQ4Xeps
+         lj26+pTaq7MajKF1/UZctJxqhmMMroOsh1XAhLxwAAc/NQckaq3uoS0deWZHmwrwCfYN
+         Bja3hTS/lr3cpQ1xOuezQuZkTgyRH1P7uMNxLBO1I90OKMzWjx+glzFq2bBe//SVBZ5y
+         BM3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/CkWUTtnXtFdBonK+Hr2bihTCTKwFRgaMGiP5ubhFJM=;
-        b=Sp1i1vbKEyC2ht1SB5lSz0mH76NHuFlI+8e+x79YmcpvUKrylTbNUMnnYHJ7UCQiHZ
-         WAqWNo+VAoUg8LX9H6b738r4CF3mLHv6e829D5IByoRUDnhjMyj+JyC9no8kg4sXqLX6
-         gYWfDqSmNq2LfK3ce5hxcmOoDjD19Oait6OXMGVN8Xqie6EAllC8xuZ32X/x1H1Lt9kT
-         A2+e0YoFSZJ9sGIB+mPzt6BrQMiF4fmvaV7E4NSV+Isv/aPlSc/ob/I1HKvg4HaAREYB
-         NTvInaoY4cw8vtKtsqx5KN+9cCpq07hxA/vn+dPDzzK8UQ9+oYqpPCKE2HK+IjCRxdks
-         6TOQ==
-X-Gm-Message-State: ANoB5plBEXc9ofK0FjlrTGdZId/UQnEaYTXPYPwuVhJq89AnThxaeIjz
-        HzkJ1YyZ9aS2B9gcnfG+OyIs/OpQ+6841K0tl5g=
-X-Google-Smtp-Source: AA0mqf7oW7LbTNUBSaYQWZxQTaza7/YMvZf/jqph3Skp5ZguAZC6ORw10jyzshIECGsB5Rc0GjO574CzEKp94mja9m8=
-X-Received: by 2002:a17:906:3e53:b0:7c1:1f2b:945f with SMTP id
- t19-20020a1709063e5300b007c11f2b945fmr7436538eji.302.1671581605781; Tue, 20
- Dec 2022 16:13:25 -0800 (PST)
+        bh=naZ0oUxMFWyFMkbBQHoBeUSSPqcubeS5ksQDUm2Hg1k=;
+        b=1q1HG1pjaMY8QcuPNSgiGdQYikjjmDdgMCw9/+BMlvH3j2jtsJUm1qzqbJvKPWjCwS
+         HMPoYfeeLH5HX42CcGzKqN6Dc2YyIs5qIGQDtqMmB2dZVVJAyT9wq9QYMHuITbInbenZ
+         0anSGdpgyIhkU80wakOjvSw+TFywQZi06ygrXvV3yD0Hs8Q5owQ3+/M2eM+xegbVKn20
+         lJbtSDDQHYmdZwcF96xIji5ezDdbUa3O4Khme+IM9kOaPuI9buPmKWeyl7WLpjSLTB0F
+         futO2j8ex2yiV0I93/q/U+7D0+54NlGPM3XdAUrG+gpFlSJ1OxObbUUDY7a3VazzyDZk
+         UvIg==
+X-Gm-Message-State: ANoB5pm9ZlqAfFpKPkEtzftBPOuAU2NdVLcHEVYKdehVzvCb7u7nRc6Z
+        IZjGGEmtJNh8XUDtDqTR5jq5nilOsy5Cm1wQGyg=
+X-Google-Smtp-Source: AA0mqf4hyD7lU1M1NTC1FjEOfFlrHznslaVNRoCVa93P50LoSG8hnoYNDpxM7q6fHr5s63GkykAy7hWMehIMT/kBrVM=
+X-Received: by 2002:a50:ed90:0:b0:46a:e6e3:b3cf with SMTP id
+ h16-20020a50ed90000000b0046ae6e3b3cfmr52119503edr.333.1671581902316; Tue, 20
+ Dec 2022 16:18:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20221217223509.88254-1-changbin.du@gmail.com> <20221217223509.88254-2-changbin.du@gmail.com>
- <Y5/eE+ds+e+k3VJO@leoy-yangtze.lan> <20221220013114.zkkxkqh7orahxbzh@mail.google.com>
- <Y6GdofET0gHQzRX6@leoy-yangtze.lan>
-In-Reply-To: <Y6GdofET0gHQzRX6@leoy-yangtze.lan>
+References: <cover.1671462950.git.lorenzo@kernel.org> <6cce9b15a57345402bb94366434a5ac5609583b8.1671462951.git.lorenzo@kernel.org>
+In-Reply-To: <6cce9b15a57345402bb94366434a5ac5609583b8.1671462951.git.lorenzo@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 20 Dec 2022 16:13:13 -0800
-Message-ID: <CAEf4Bzb_XOEoG9anNdzQVJRqd3G4yKJTSa9Dgc9xkMXqn-xdFg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] libbpf: show error info about missing ".BTF" section
-To:     Leo Yan <leo.yan@linaro.org>,
-        Quentin Monnet <quentin@isovalent.com>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org
+Date:   Tue, 20 Dec 2022 16:18:10 -0800
+Message-ID: <CAEf4BzbOF-S3kjbNVXCZR-K=TGarfi06ZwG1cbNF=HSSodwEfg@mail.gmail.com>
+Subject: Re: [RFC bpf-next 6/8] libbpf: add API to get XDP/XSK supported features
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
+        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
+        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
+        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
+        ecree.xilinx@gmail.com, grygorii.strashko@ti.com, mst@redhat.com,
+        bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
+        lorenzo.bianconi@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -87,73 +76,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 3:34 AM Leo Yan <leo.yan@linaro.org> wrote:
+On Mon, Dec 19, 2022 at 7:42 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 >
-> On Tue, Dec 20, 2022 at 09:31:14AM +0800, Changbin Du wrote:
+> From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 >
-> [...]
+> Add functions to get XDP/XSK supported function of netdev over route
+> netlink interface. These functions provide functionalities that are
+> going to be used in upcoming change.
 >
-> > > > Now will print below info:
-> > > > libbpf: failed to find '.BTF' ELF section in /home/changbin/work/linux/vmlinux
-> > >
-> > > Recently I encountered the same issue, it could be caused by:
-> > > either missing to install tool pahole or missing to enable kernel
-> > > configuration CONFIG_DEBUG_INFO_BTF.
-> > >
-> > > Could we give explict info for reasoning failure?  Like:
-> > >
-> > > "libbpf: failed to find '.BTF' ELF section in /home/changbin/work/linux/vmlinux,
-> > > please install pahole and enable CONFIG_DEBUG_INFO_BTF=y for kernel building".
-> > >
-> > This is vmlinux special information and similar tips are removed from
-> > patch V2. libbpf is common for all ELFs.
+> The newly added bpf_xdp_query_features takes a fflags_cnt parameter,
+> which denotes the number of elements in the output fflags array. This
+> must be at least 1 and maybe greater than XDP_FEATURES_WORDS. The
+> function only writes to words which is min of fflags_cnt and
+> XDP_FEATURES_WORDS.
 >
-> Okay, I see.  Sorry for noise.
+> Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Co-developed-by: Marek Majtyka <alardam@gmail.com>
+> Signed-off-by: Marek Majtyka <alardam@gmail.com>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.h   |  1 +
+>  tools/lib/bpf/libbpf.map |  1 +
+>  tools/lib/bpf/netlink.c  | 62 ++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 64 insertions(+)
 >
-> > > > Error: failed to load BTF from /home/changbin/work/linux/vmlinux: No such file or directory
-> > >
-> > > This log is confusing when we can find vmlinux file but without BTF
-> > > section.  Consider to use a separate patch to detect vmlinux not
-> > > found case and print out "No such file or directory"?
-> > >
-> > I think it's already there. If the file doesn't exist, open will fail.
->
-> [...]
->
-> > > > @@ -990,6 +990,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
-> > > >   err = 0;
-> > > >
-> > > >   if (!btf_data) {
-> > > > +         pr_warn("failed to find '%s' ELF section in %s\n", BTF_ELF_SEC, path);
-> > > >           err = -ENOENT;
->
-> btf_parse_elf() returns -ENOENT when ELF file doesn't contain BTF
-> section, therefore, bpftool dumps error string "No such file or
-> directory".  It's confused that actually vmlinux is existed.
->
-> I am wondering if we can use error -LIBBPF_ERRNO__FORMAT (or any
-> better choice?) to replace -ENOENT at here, this can avoid bpftool to
-> outputs "No such file or directory" in this case.
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index eee883f007f9..9d102eb5007e 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -967,6 +967,7 @@ LIBBPF_API int bpf_xdp_detach(int ifindex, __u32 flags,
+>                               const struct bpf_xdp_attach_opts *opts);
+>  LIBBPF_API int bpf_xdp_query(int ifindex, int flags, struct bpf_xdp_query_opts *opts);
+>  LIBBPF_API int bpf_xdp_query_id(int ifindex, int flags, __u32 *prog_id);
+> +LIBBPF_API int bpf_xdp_query_features(int ifindex, __u32 *fflags, __u32 *fflags_cnt);
 
-The only really meaningful error code would be -ESRCH, which
-strerror() will translate to "No such process", which is also
-completely confusing.
-
-In general, I always found these strerror() messages extremely
-unhelpful and confusing. I wonder if we should make an effort to
-actually emit symbolic names of errors instead (literally, "-ENOENT"
-in this case). This is all tooling for engineers, I find -ENOENT or
--ESRCH much more meaningful as an error message, compared to "No such
-file" seemingly human-readable interpretation.
-
-Quenting, what do you think about the above proposal for bpftool? We
-can have some libbpf helper internally and do it in libbpf error
-messages as well and just reuse the logic in bpftool, perhaps?
-
-
-Anyways, I've applied this patch set to bpf-next. Thanks.
-
+no need to add new API, just extend bpf_xdp_query()?
 
 >
-> Thanks,
-> Leo
+>  /* TC related API */
+>  enum bpf_tc_attach_point {
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 71bf5691a689..9c2abb58fa4b 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -362,6 +362,7 @@ LIBBPF_1.0.0 {
+>                 bpf_program__set_autoattach;
+>                 btf__add_enum64;
+>                 btf__add_enum64_value;
+> +               bpf_xdp_query_features;
+>                 libbpf_bpf_attach_type_str;
+>                 libbpf_bpf_link_type_str;
+>                 libbpf_bpf_map_type_str;
+
+[...]
