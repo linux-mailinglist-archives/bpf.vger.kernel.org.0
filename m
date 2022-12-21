@@ -2,91 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DF5653779
-	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 21:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DE2653829
+	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 22:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbiLUUTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 15:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
+        id S234829AbiLUVVd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 16:21:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbiLUUTc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 15:19:32 -0500
-Received: from mx09lb.world4you.com (mx09lb.world4you.com [81.19.149.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD0C1EAE0;
-        Wed, 21 Dec 2022 12:19:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SnAjacwlJ7rU2cyc9J2bver9+0r8jRlMXZNrnmN8D/c=; b=KuRUIL/hT+ly+9HFJjREwYO8aU
-        PV+9rCxp8Q1E9DMVV4BCPERgMK8fFFT9uSHIy8Q3h6ONoLeEtbSmPaQtpvjdQedgH8a08ZizPgsXi
-        9XJWT3ikYI1OZx+c9+rFvnVpeKMUHJvm73vHYj+j7EguzTUzZt1FCrHTJCrMRiD3qRX8=;
-Received: from [88.117.53.17] (helo=[10.0.0.160])
-        by mx09lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1p85Ym-00076j-5r; Wed, 21 Dec 2022 21:19:28 +0100
-Message-ID: <7bd4c51e-304d-575f-84df-2ec5b52a885b@engleder-embedded.com>
-Date:   Wed, 21 Dec 2022 21:19:27 +0100
+        with ESMTP id S230395AbiLUVVc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 16:21:32 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5168322B35;
+        Wed, 21 Dec 2022 13:21:31 -0800 (PST)
+Message-ID: <18e1219a-d2b2-0373-1f30-fcf83acd328f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1671657689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ZUs0Oi+KQ6ND7Xr4JK7sAaYTromssvZdryVCNE4E8E=;
+        b=kUsg/pqNcucRnMDDXoSqn/4qnyug7Z9+bB4VEfwvYpk5pgRkOQyOFhaikO0PD5jeCaTf89
+        YRVKicwgMLH+BdcT4eoKA7c8RiVyockir7mDP3EIHJckUUJ8UnjlWbejxyw/OkPxIbCY0e
+        uPfaQlLu7qOWPbeVPlCb3Ab1OlwSY0E=
+Date:   Wed, 21 Dec 2022 13:21:25 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH net-next v2 3/6] tsnep: Support XDP BPF program setup
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: check null propagation
+ only neither reg is PTR_TO_BTF_ID
 Content-Language: en-US
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com
-References: <20221208054045.3600-1-gerhard@engleder-embedded.com>
- <20221208054045.3600-4-gerhard@engleder-embedded.com> <Y5KErK9c3Nafn45V@x130>
- <caf29726-c470-7fbb-bbae-56b3a412aa4f@engleder-embedded.com>
-In-Reply-To: <caf29726-c470-7fbb-bbae-56b3a412aa4f@engleder-embedded.com>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+References: <20221213030436.17907-1-sunhao.th@gmail.com>
+ <20221213030436.17907-2-sunhao.th@gmail.com>
+ <7cfaaafa-0eda-a314-5b22-7e22c029f4ad@linux.dev>
+ <7EAED688-C971-410E-BA56-9629CF9B3C91@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <7EAED688-C971-410E-BA56-9629CF9B3C91@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09.12.22 09:06, Gerhard Engleder wrote:
-> On 09.12.22 01:43, Saeed Mahameed wrote:
->>> +int tsnep_xdp_setup_prog(struct tsnep_adapter *adapter, struct 
->>> bpf_prog *prog,
->>> +             struct netlink_ext_ack *extack)
->>> +{
->>> +    struct net_device *dev = adapter->netdev;
->>> +    bool if_running = netif_running(dev);
->>> +    struct bpf_prog *old_prog;
->>> +
->>> +    if (if_running)
->>> +        tsnep_netdev_close(dev);
->>> +
->>> +    old_prog = xchg(&adapter->xdp_prog, prog);
->>> +    if (old_prog)
->>> +        bpf_prog_put(old_prog);
->>> +
->>> +    if (if_running)
->>> +        tsnep_netdev_open(dev);
->>
->> this could fail silently, and then cause double free, when close ndo 
->> will be called, the stack won't be aware of the closed state..
+On 12/21/22 5:46 AM, Hao Sun wrote:
+> Hi,
 > 
-> I will ensure that no double free will happen when ndo_close is called.
+> I’ve tried something like the bellow, but soon realized that this
+> won’t work because once compiler figures out `inner_map` equals
+> to `val`, it can choose either reg to write into in the following
+> path, meaning that this program can be rejected due to writing
+> into read-only PTR_TO_BTF_ID reg, and this makes the test useless.
 
-Other drivers like igc/igb/netsec/stmmac also fail silently and
-I don't see any measures against double free in this drivers.
-mvneta forwards the return value of open. How are these drivers
-solving this issue? I cannot find this detail, but I also do not
-believe that all this drivers are buggy.
+hmm... I read the above a few times but I still don't quite get it.  In 
+particular, '...can be rejected due to writing into read-only PTR_TO_BTF_ID 
+reg...'.  Where is it writing into a read-only PTR_TO_BTF_ID reg in the 
+following bpf prog?  Did I overlook something?
 
-gerhard
+> 
+> Essentially, we want two regs, one points to PTR_TO_BTD_ID, one
+> points to MAP_VALUR_OR_NULL, then compare them and deref map val.
+
+If I read this request correctly, I guess the compiler has changed 'ret = *val' 
+to 'ret = *inner_map'?  Thus, the verifier did not reject because it deref a 
+PTR_TO_BTF_ID?
+
+> It’s hard to implement this in C level because compilers decide
+> which reg to use but not us, maybe we can just drop this test.
+
+Have you tried inline assembly.  Something like this (untested):
+
+         asm volatile (
+                 "r8 = %[val];\n"
+                 "r9 = %[inner_map];\n"
+		"if r8 != r9 goto +1;\n"
+                 "%[ret] = *(u64 *)(r8 +0);\n"
+                 :[ret] "+r"(ret)
+                 : [inner_map] "r"(inner_map), [val] "r"(val)
+                 :"r8", "r9");
+
+Please attach the verifier output in the future.  It will be easier to understand.
+
+> 
+> thoughts?
+>    
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_HASH);
+> +	__uint(max_entries, 1);
+> +	__type(key, u64);
+> +	__type(value, u64);
+> +} m_hash SEC(".maps");
+> +
+> +SEC("?raw_tp")
+> +__failure __msg("invalid mem access 'map_value_or_null")
+> +int jeq_infer_not_null_ptr_to_btfid(void *ctx)
+> +{
+> +	struct bpf_map *map = (struct bpf_map *)&m_hash;
+> +	struct bpf_map *inner_map = map->inner_map_meta;
+> +	u64 key = 0, ret = 0, *val;
+> +
+> +	val = bpf_map_lookup_elem(map, &key);
+> +	/* Do not mark ptr as non-null if one of them is
+> +	 * PTR_TO_BTF_ID, reject because of invalid access
+> +	 * to map value.
+> +	 */
+> +	if (val == inner_map)
+> +		ret = *val;
+> +
+> +	return ret;
+> +}
+
