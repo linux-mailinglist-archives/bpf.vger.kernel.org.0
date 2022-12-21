@@ -2,73 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6486536CF
-	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 20:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 910C06536D6
+	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 20:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbiLUTHm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 14:07:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        id S234691AbiLUTMO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 14:12:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbiLUTHl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 14:07:41 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593DC205C3
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 11:07:39 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id u15-20020a170902e5cf00b001899d29276eso11874516plf.10
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 11:07:39 -0800 (PST)
+        with ESMTP id S234690AbiLUTMN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 14:12:13 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B7324F35
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 11:12:12 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id k18-20020a170902c41200b001896d523dc8so11847359plk.19
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 11:12:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FuHaksFWfmzvX/0UcFQCgtayWDVlA975ayg4IySh6xU=;
-        b=BkDw4UUzBfCiXj8kHMlNPB7j8MqI8B8JKZhzddUdlC9YhXFpxhXgIOHWgwN79k8qoP
-         NXJ55BhukivabsqHxkEz3n4AGQ1/QLSIQzsLnnNoKXPRT/KjwkpxoqJ8xRGUdJmspZX7
-         RyHqPDo7GJzthBPB05auY+JiRJzJRtvZtTTxwbpvGw5ahokR03xAj6teBIrUZBZnVmSM
-         3XAKXZBU0f8kLtMIWY15oKGeoKY7kyWJcKQhaJSpPfwokABNqYL+qSfHkt+AF4qpevQk
-         02hOXbQatSoRrYlu6+fVui5CzAPSsAEP4lSPyG9v/RF3ANO/HtAscNmF6BCz5R2U1W68
-         nRLg==
+        bh=IdWNyhuQ7xmni9ae5mp7X5i0jkYWEYVODzjI4c27ZeA=;
+        b=hW9BLIdcC3cxo/UPvXN1p8TUshtgsaWZ3P38lWMjyiLfvJkQ08dkV1kVzNkXCYdjYU
+         9FJ4akDulEuh+5c77+QdgaZMLVWitMXHb/4i+GYL6EDERpNklZ1ReGHZn8e2Ty/tSsAQ
+         bnvQPyQnWGKvMJuVMNe8OWw6cBI60B1yJ34o1A9+zlCBDwzWLSyM9peiCWmaXVoo23Ll
+         bcZwmcpg6YcmoEhKPZ8N5GHHO+TpHRql5LskCG+lZfEZMLF39+HdXt/0vBUe0EhMBFMN
+         PEyn58fSjN+6oDbW54ipF4SWh0cC+650695jXXiZIhOvp9BqL2Gb3FZunN2HI6QDEPED
+         p6NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FuHaksFWfmzvX/0UcFQCgtayWDVlA975ayg4IySh6xU=;
-        b=T1a2fi6JxpalB0nc5kN4Jr1JoLDyUNWuzVtQb6oi38Dzv3PjK+c2j2l8bxp53G5Tj5
-         BteSOjTHq0aN0bZ/ZlHeuU21GV+Isc9uuT9XTZUAiMyRymjrVY1/Eaj5ym8l9nJsXt3N
-         ua434fojnXJlgISecVWeFRCU2cuXzKzjNNlIeGV+hdq89M74z40XnShEl9eLdSwDY5Eu
-         Z3Y4bFVnAzhwJ5CXDd9pi3u4ivnrVHCWA5WFFaQZPwRlQVVrnQzEn0ch4iWTlFzIk7vh
-         Nfr2JQ0unJPYR7gkT7lb8wbNPIi2wK61AuF1vRBtmSILas7Dl58lrmwHvg90U2VmAzi1
-         D0Hg==
-X-Gm-Message-State: AFqh2krALYGfbFx5ddDj76a+UvKGyAhMuD9qh/7hO1chf3/Va2x1LJOB
-        XSk3LNB5d6BkycKFdC5k2arlero=
-X-Google-Smtp-Source: AMrXdXt+ySJHbpwBcBFTpnKo3KORcNuqsBqsVtsZm5wl+3GzpFxTxgKl8VYETHw9dOg5iKk2exNzbNQ=
+        bh=IdWNyhuQ7xmni9ae5mp7X5i0jkYWEYVODzjI4c27ZeA=;
+        b=qOi71Hgm+4jdOFai3Pmlf7n9n67OvCD1S9t4yoDLFbvkMVgSJgaMMguigIz4w28PtH
+         vW0S4YRguCZJbwZT0jiCwc9d3LiLOZ+3pM7dLDxrC0fzrKb/Cwx2niRbv2+p79jncZVT
+         w+F9nNYkiQNR3GrwlVjY5bz/+LHfhyoT9tUIyzNteLqt+Xsof9wQoD/UQVHdC012g6Cc
+         uEOYaTvwvs08PPe/ZGDpUkRGMT0RGLZ7G2zSdjzRoBmwOfjX+H9kedu707IYBjNEpGqE
+         J+Dlofw1lZxtGDa9qSP/3wjhmukcSHRMKKaxcVA314kk8kCFPVKAEBbpwtASOnpdXdOW
+         7kEA==
+X-Gm-Message-State: AFqh2koTxsgkgnW6O3twdOEjKm8wP7fZOy7rmj5bv1l1oD2+/iH7yGXm
+        8qtqT/K5NgbdsX0u3bcrIEq3z+o=
+X-Google-Smtp-Source: AMrXdXvoT5/KB3MHppckfPipUSeejIIjiAJvoLXNGSTnHH5Lj7JlCejql7IioAR7yzGjlmqcZpHUFQA=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90b:4fc3:b0:218:9893:9aa7 with SMTP id
- qa3-20020a17090b4fc300b0021898939aa7mr216143pjb.223.1671649658846; Wed, 21
- Dec 2022 11:07:38 -0800 (PST)
-Date:   Wed, 21 Dec 2022 11:07:37 -0800
-In-Reply-To: <20221221055856.2786043-1-james.hilliard1@gmail.com>
+ (user=sdf job=sendgmr) by 2002:a17:90b:1111:b0:219:cc70:4722 with SMTP id
+ gi17-20020a17090b111100b00219cc704722mr276147pjb.206.1671649932106; Wed, 21
+ Dec 2022 11:12:12 -0800 (PST)
+Date:   Wed, 21 Dec 2022 11:12:10 -0800
+In-Reply-To: <20221221180049.853365-1-andrii@kernel.org>
 Mime-Version: 1.0
-References: <20221221055856.2786043-1-james.hilliard1@gmail.com>
-Message-ID: <Y6NZeY/YpbR3pdFM@google.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: move struct definitions out of
- function params
+References: <20221221180049.853365-1-andrii@kernel.org>
+Message-ID: <Y6NaisLF0WoSbTgo@google.com>
+Subject: Re: [PATCH bpf-next] libbpf: start v1.2 development cycle
 From:   sdf@google.com
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -80,210 +66,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/20, James Hilliard wrote:
-> Anonymous structs can't be declared inside function parameter
-> definitions in current c standards, however clang doesn't detect this
-> condition currently while GCC does.
+On 12/21, Andrii Nakryiko wrote:
+> Bump current version for new development cycle to v1.2.
 
-> Details: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108189
-
-> Fixes errors like:
-> progs/btf_dump_test_case_bitfields.c:85:7: error: anonymous struct  
-> declared inside parameter list will not be visible outside of this  
-> definition or declaration [-Werror]
->     85 | int f(struct {
->        |       ^~~~~~
-
-> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
 Acked-by: Stanislav Fomichev <sdf@google.com>
 
-Looking at the referenced thread, seems like it requires at lest C23
-and I doubt default clang is using that; so seems fine to be pedantic
-here and move the definitions out.
-
 > ---
->   .../bpf/progs/btf_dump_test_case_bitfields.c  |  9 ++++--
->   .../progs/btf_dump_test_case_namespacing.c    | 10 ++++---
->   .../bpf/progs/btf_dump_test_case_packing.c    | 10 ++++---
->   .../bpf/progs/btf_dump_test_case_padding.c    | 10 ++++---
->   .../bpf/progs/btf_dump_test_case_syntax.c     | 30 +++++++++++++------
->   5 files changed, 46 insertions(+), 23 deletions(-)
+>   tools/lib/bpf/libbpf.map       | 3 +++
+>   tools/lib/bpf/libbpf_version.h | 2 +-
+>   2 files changed, 4 insertions(+), 1 deletion(-)
 
-> diff --git  
-> a/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c  
-> b/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
-> index e01690618e1e..c75f6bd06a49 100644
-> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
-> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
-> @@ -82,11 +82,16 @@ struct bitfield_flushed {
->   	long b: 16;
->   };
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 71bf5691a689..11c36a3c1a9f 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -382,3 +382,6 @@ LIBBPF_1.1.0 {
+>   		user_ring_buffer__reserve_blocking;
+>   		user_ring_buffer__submit;
+>   } LIBBPF_1.0.0;
+> +
+> +LIBBPF_1.2.0 {
+> +} LIBBPF_1.1.0;
+> diff --git a/tools/lib/bpf/libbpf_version.h  
+> b/tools/lib/bpf/libbpf_version.h
+> index e944f5bce728..1fd2eeac5cfc 100644
+> --- a/tools/lib/bpf/libbpf_version.h
+> +++ b/tools/lib/bpf/libbpf_version.h
+> @@ -4,6 +4,6 @@
+>   #define __LIBBPF_VERSION_H
 
-> -int f(struct {
-> +/* ----- START-EXPECTED-OUTPUT ----- */
-> +struct root_struct {
->   	struct bitfields_only_mixed_types _1;
->   	struct bitfield_mixed_with_others _2;
->   	struct bitfield_flushed _3;
-> -} *_)
-> +};
-> +
-> +/* ------ END-EXPECTED-OUTPUT ------ */
-> +
-> +int f(struct root_struct *_)
->   {
->   	return 0;
->   }
-> diff --git  
-> a/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c  
-> b/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
-> index 92a4ad428710..d7cf2a8487c9 100644
-> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
-> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
-> @@ -49,9 +49,7 @@ typedef int Y;
+>   #define LIBBPF_MAJOR_VERSION 1
+> -#define LIBBPF_MINOR_VERSION 1
+> +#define LIBBPF_MINOR_VERSION 2
 
->   typedef int Z;
-
-> -/*------ END-EXPECTED-OUTPUT ------ */
-> -
-> -int f(struct {
-> +struct root_struct {
->   	struct S _1;
->   	S _2;
->   	union U _3;
-> @@ -67,7 +65,11 @@ int f(struct {
->   	X xx;
->   	Y yy;
->   	Z zz;
-> -} *_)
-> +};
-> +
-> +/*------ END-EXPECTED-OUTPUT ------ */
-> +
-> +int f(struct root_struct *_)
->   {
->   	return 0;
->   }
-> diff --git  
-> a/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c  
-> b/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
-> index 7998f27df7dd..e039ceb50c43 100644
-> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
-> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
-> @@ -132,9 +132,7 @@ struct outer_packed_struct {
->   	struct nested_packed_struct b;
->   } __attribute__((packed));
-
-> -/* ------ END-EXPECTED-OUTPUT ------ */
-> -
-> -int f(struct {
-> +struct root_struct {
->   	struct packed_trailing_space _1;
->   	struct non_packed_trailing_space _2;
->   	struct packed_fields _3;
-> @@ -147,7 +145,11 @@ int f(struct {
->   	struct usb_host_endpoint _10;
->   	struct outer_nonpacked_struct _11;
->   	struct outer_packed_struct _12;
-> -} *_)
-> +};
-> +
-> +/* ------ END-EXPECTED-OUTPUT ------ */
-> +
-> +int f(struct root_struct *_)
->   {
->   	return 0;
->   }
-> diff --git  
-> a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c  
-> b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
-> index 79276fbe454a..2ca46ad8d66a 100644
-> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
-> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
-> @@ -220,9 +220,7 @@ struct outer_mixed_but_unpacked {
->   	struct nested_packed b2;
->   };
-
-> -/* ------ END-EXPECTED-OUTPUT ------ */
-> -
-> -int f(struct {
-> +struct root_struct {
->   	struct padded_implicitly _1;
->   	struct padded_explicitly _2;
->   	struct padded_a_lot _3;
-> @@ -243,7 +241,11 @@ int f(struct {
->   	struct ib_wc _201;
->   	struct acpi_object_method _202;
->   	struct outer_mixed_but_unpacked _203;
-> -} *_)
-> +} __attribute__((packed));
-> +
-> +/* ------ END-EXPECTED-OUTPUT ------ */
-> +
-> +int f(struct root_struct *_)
->   {
->   	return 0;
->   }
-> diff --git  
-> a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c  
-> b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-> index 26fffb02ed10..3e31df7cecc6 100644
-> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-> @@ -104,24 +104,24 @@ typedef void (*printf_fn_t)(const char *, ...);
->    *   typedef const fn_output_inner_t fn_ptr_arr2_t[5];
->    */
->   /* ----- START-EXPECTED-OUTPUT ----- */
-> -typedef char * const * (*fn_ptr2_t)(struct {
-> -	int a;
-> -}, int (*)(int));
-> +struct struct_a;
-> +
-> +typedef char * const * (*fn_ptr2_t)(struct struct_a, int (*)(int));
-> +
-> +struct struct_c;
-> +
-> +struct struct_h;
-
->   typedef struct {
->   	int a;
-> -	void (*b)(int, struct {
-> -		int c;
-> -	}, union {
-> +	void (*b)(int, struct struct_c, union {
->   		char d;
->   		int e[5];
->   	});
->   } (*fn_complex_t)(union {
->   	void *f;
->   	char g[16];
-> -}, struct {
-> -	int h;
-> -});
-> +}, struct struct_h);
-
->   typedef void (* (*signal_t)(int, void (*)(int)))(int);
-
-> @@ -272,6 +272,18 @@ struct root_struct {
->   	struct float_struct _15;
->   };
-
-> +struct struct_a {
-> +	int a;
-> +};
-> +
-> +struct struct_h {
-> +	int h;
-> +};
-> +
-> +struct struct_c {
-> +	int c;
-> +};
-> +
->   /* ------ END-EXPECTED-OUTPUT ------ */
-
->   int f(struct root_struct *s)
+>   #endif /* __LIBBPF_VERSION_H */
 > --
-> 2.34.1
+> 2.30.2
 
