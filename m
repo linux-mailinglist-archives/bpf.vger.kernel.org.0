@@ -2,64 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2700653764
-	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 21:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB3F653774
+	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 21:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbiLUUN1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 15:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
+        id S234754AbiLUUSR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 15:18:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbiLUUN0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 15:13:26 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F115331
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 12:13:25 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d7so16616881pll.9
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 12:13:25 -0800 (PST)
+        with ESMTP id S232553AbiLUUSP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 15:18:15 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045681EC45
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 12:18:15 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id u7so8457690plq.11
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 12:18:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zLXJYoqrA8qjYj9G2HQZKjo0c3Ld+Ma9nTGSOm1fY/s=;
-        b=lDjSKwbp4bofJhEAqRo/WnqiarwYW0DG6LpPc3cfdsyZB0jGuYoqb8cutonM3jZ3uI
-         zcmaJMlCgyeqGvUKzXavLKYDm/sW6Qyl/zCiaX32ela93wCMV1a7JKBS3UkxVkTU72Z6
-         FXAK7UUh24Fc4fg3dXP/Ua5Cj3Cx0smUVJG4I=
+        bh=cYnyNgioHqW+YyalrsuLbViTa7ofHL8P3cbVInZ4vMw=;
+        b=H4AtwDoHmrDbQI3uVNotQSSH3qGcsSLKdHm3f4MxYefK8SWgbFz13cnTykEabP79dj
+         52I+/gyeqDHx6UHqrMH9NgncBDx55Q1/+WdLnFaV7zwznuLdUlhIMam/8pBjx4L1vP4/
+         B1QFl7yXCJwGGMisgkLN9hGNUSLIkXxoX+f2vF0xXbSgpj6XHvnYKjoT2slOTE+Bhwje
+         GzM9UXcT85VTGUrUG1nK+hyenOKKINb6sQ/giYix7g7nR3yPsCJRm/jwcQqIGA2RvKHB
+         I/PyjqNCHzADjo+TpEjzFarZLPz804w4gFRDWhScH+/xrKwHOm8JH6ggBt8KtWw9CJ7+
+         CeGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zLXJYoqrA8qjYj9G2HQZKjo0c3Ld+Ma9nTGSOm1fY/s=;
-        b=WVgOEc/qjV2jMEiiUe6+0WVHoHl5TFcYfYL7XJoSjLqvX4CjbdZwoJNWaZLpk1BjyC
-         Xjyy4eZxYTghdkQQVtmSCrMGu+3pet00ZRWS0Ynvs/0YLiGH8TBSiB1GgFDZzUZS8EjW
-         l9HaiYkO5j+5x+XqkzRJkXdC5votP/kn4GWYAO7JQQreE7Qkcy6Aqr04H3EVf8IlSTHn
-         yvPa0ge3gkRJ7CfKweBowtHgWQUoUO/FPtlSImLcDYM0SgIIWym7yNt/+b03RKWXjnIH
-         /bf2HTXq2tK0wInwwuCfgzZezaqIpezMs44PRAxqLVDA6WGoJ7/CX8B2BqC2U9c8yY6X
-         fEUQ==
-X-Gm-Message-State: AFqh2kp1NYlZ6gRtjF26PSrOS2WiVMP2yYiCEKX8Zukm0AGS5II6TyAK
-        ezuxOS3CJxUwhOwmqFBByNHfgVA5uvNRcE+Dtxg=
-X-Google-Smtp-Source: AMrXdXuObTLvyTgx0ldnlZ2lP+rn/X1kOnH32A92dEdVZG2k6gAU+PvRo4o04FGwTE3YZUW2fpOHyA==
-X-Received: by 2002:a05:6a20:3d84:b0:b0:1abd:8604 with SMTP id s4-20020a056a203d8400b000b01abd8604mr5316142pzi.41.1671653604939;
-        Wed, 21 Dec 2022 12:13:24 -0800 (PST)
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com. [209.85.216.54])
-        by smtp.gmail.com with ESMTPSA id e8-20020a170902784800b00186abb95bfdsm11834496pln.25.2022.12.21.12.13.23
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Dec 2022 12:13:24 -0800 (PST)
-Received: by mail-pj1-f54.google.com with SMTP id n65-20020a17090a2cc700b0021bc5ef7a14so3221297pjd.0
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 12:13:23 -0800 (PST)
-X-Received: by 2002:a17:902:a984:b0:189:d081:1ebb with SMTP id
- bh4-20020a170902a98400b00189d0811ebbmr142129plb.130.1671653603257; Wed, 21
- Dec 2022 12:13:23 -0800 (PST)
+        bh=cYnyNgioHqW+YyalrsuLbViTa7ofHL8P3cbVInZ4vMw=;
+        b=qBMrR0GLqNoDYlVTo/X4QI1cmIeWGPsu42xhRnXK56aFj6dM/a/CAYmT5VEFmaxTdz
+         Xr2AYPw42qa42AGv9/+2dWyg2U6ScDUhPwGv852Fqaiujjxn5FMy4yj52e8B5thrVxKc
+         EzIxd7qx1haF6454xsthFuCNd4N0bCpm6IYXWBryAxr4KZzlSnWKAx8/n49gFnWAm2rs
+         GdApk6TMatwiq4fnq7vkpkdIagW/8+YxL+Q0DqysjnfLHpWqHi8qlSBw26WfSSzR/+tJ
+         yhMYgzhNsShbEj1zJd8pMQoEgFTjDjvIskdmHXoHHR6KwjHzpGHdu6C3lfNpLB3SV4UJ
+         rCOA==
+X-Gm-Message-State: AFqh2kpxZvCAYQT7mSRg/lHGgwsXbAzpJagQaCxpheBzwLIkOlBDUrJs
+        3Fpa1/WmduIUBbwIpTqCBAUIg5LGMEjYe+/VRyT3aQ==
+X-Google-Smtp-Source: AMrXdXv718hVhESIvi0jTJ7/DSgHb5rhUOx/aVT4c5nLV5EqfUjMQ+GHFrKhJQZ60vAuH0Z0kK1oR1aozeM3JzV6fEQ=
+X-Received: by 2002:a17:902:b20d:b0:191:283d:612e with SMTP id
+ t13-20020a170902b20d00b00191283d612emr152231plr.88.1671653894254; Wed, 21 Dec
+ 2022 12:18:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20221221-bpf-syscall-v1-0-9550f5f2c3fc@chromium.org> <CAKH8qBuLhZ+T9fvP=DXeYevdrNofTPpEiQqq2RenBUKVghPmtA@mail.gmail.com>
-In-Reply-To: <CAKH8qBuLhZ+T9fvP=DXeYevdrNofTPpEiQqq2RenBUKVghPmtA@mail.gmail.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Wed, 21 Dec 2022 21:13:12 +0100
-X-Gmail-Original-Message-ID: <CANiDSCv0EObZHCL1D1CHBRaNf68Df4Ur9kFgaoGSGH=KYwgOPw@mail.gmail.com>
-Message-ID: <CANiDSCv0EObZHCL1D1CHBRaNf68Df4Ur9kFgaoGSGH=KYwgOPw@mail.gmail.com>
+References: <20221221-bpf-syscall-v1-0-9550f5f2c3fc@chromium.org>
+ <CAKH8qBuLhZ+T9fvP=DXeYevdrNofTPpEiQqq2RenBUKVghPmtA@mail.gmail.com> <CANiDSCv0EObZHCL1D1CHBRaNf68Df4Ur9kFgaoGSGH=KYwgOPw@mail.gmail.com>
+In-Reply-To: <CANiDSCv0EObZHCL1D1CHBRaNf68Df4Ur9kFgaoGSGH=KYwgOPw@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 21 Dec 2022 12:18:02 -0800
+Message-ID: <CAKH8qBu6B9VHGiqg152dGhybryKVv8OTavTy3PUpHXvM1_i1mQ@mail.gmail.com>
 Subject: Re: [PATCH] bpf: Remove unused field initialization
-To:     Stanislav Fomichev <sdf@google.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
 Cc:     John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -70,92 +64,99 @@ Cc:     John Fastabend <john.fastabend@gmail.com>,
         Song Liu <song@kernel.org>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Stanislav
-
-On Wed, 21 Dec 2022 at 21:10, Stanislav Fomichev <sdf@google.com> wrote:
+On Wed, Dec 21, 2022 at 12:13 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
 >
-> On Wed, Dec 21, 2022 at 11:55 AM Ricardo Ribalda <ribalda@chromium.org> wrote:
+> Hi Stanislav
+>
+> On Wed, 21 Dec 2022 at 21:10, Stanislav Fomichev <sdf@google.com> wrote:
 > >
-> > Maxlen is used by standard proc_handlers such as proc_dointvec(), but in this
-> > case we have our own proc_handler. Remove the initialization.
->
-> Are you sure?
->
-> bpf_stats_handler
->   proc_dointvec_minmax
->     do_proc_dointvec
->       __do_proc_dointvec
->         vleft = table->maxlen / sizeof(*i);
-
-I believe do_proc_dointvec is using the value from:
-
-struct ctl_table tmp = {
-  .maxlen=sixeof(val);
-}
-
->
-> Maybe we should really do the following instead?
->
-> .maxlen: sizeof(int)
->
-> ?
->
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> > bpf: Trivial remove of unitialised field.
+> > On Wed, Dec 21, 2022 at 11:55 AM Ricardo Ribalda <ribalda@chromium.org> wrote:
+> > >
+> > > Maxlen is used by standard proc_handlers such as proc_dointvec(), but in this
+> > > case we have our own proc_handler. Remove the initialization.
 > >
-> > I have inspired myself in your code and heritaded this bug :). Fixing this
-> > here so none else makes the same mistake.
+> > Are you sure?
 > >
-> > To: Alexei Starovoitov <ast@kernel.org>
-> > To: Daniel Borkmann <daniel@iogearbox.net>
-> > To: John Fastabend <john.fastabend@gmail.com>
-> > To: Andrii Nakryiko <andrii@kernel.org>
-> > To: Martin KaFai Lau <martin.lau@linux.dev>
-> > To: Song Liu <song@kernel.org>
-> > To: Yonghong Song <yhs@fb.com>
-> > To: KP Singh <kpsingh@kernel.org>
-> > To: Stanislav Fomichev <sdf@google.com>
-> > To: Hao Luo <haoluo@google.com>
-> > To: Jiri Olsa <jolsa@kernel.org>
-> > Cc: bpf@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > ---
-> >  kernel/bpf/syscall.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 35972afb6850..8e55456bd648 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -5319,7 +5319,6 @@ static struct ctl_table bpf_syscall_table[] = {
-> >         {
-> >                 .procname       = "bpf_stats_enabled",
-> >                 .data           = &bpf_stats_enabled_key.key,
-> > -               .maxlen         = sizeof(bpf_stats_enabled_key),
-> >                 .mode           = 0644,
-> >                 .proc_handler   = bpf_stats_handler,
-> >         },
-> >
-> > ---
-> > base-commit: b6bb9676f2165d518b35ba3bea5f1fcfc0d969bf
-> > change-id: 20221221-bpf-syscall-58d1ac3f817a
-> >
-> > Best regards,
-> > --
-> > Ricardo Ribalda <ribalda@chromium.org>
+> > bpf_stats_handler
+> >   proc_dointvec_minmax
+> >     do_proc_dointvec
+> >       __do_proc_dointvec
+> >         vleft = table->maxlen / sizeof(*i);
+>
+> I believe do_proc_dointvec is using the value from:
+>
+> struct ctl_table tmp = {
+>   .maxlen=sixeof(val);
+> }
 
+Oh, you're right, I've missed that!
 
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
--- 
-Ricardo Ribalda
+> >
+> > Maybe we should really do the following instead?
+> >
+> > .maxlen: sizeof(int)
+> >
+> > ?
+> >
+> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > ---
+> > > bpf: Trivial remove of unitialised field.
+> > >
+> > > I have inspired myself in your code and heritaded this bug :). Fixing this
+> > > here so none else makes the same mistake.
+> > >
+> > > To: Alexei Starovoitov <ast@kernel.org>
+> > > To: Daniel Borkmann <daniel@iogearbox.net>
+> > > To: John Fastabend <john.fastabend@gmail.com>
+> > > To: Andrii Nakryiko <andrii@kernel.org>
+> > > To: Martin KaFai Lau <martin.lau@linux.dev>
+> > > To: Song Liu <song@kernel.org>
+> > > To: Yonghong Song <yhs@fb.com>
+> > > To: KP Singh <kpsingh@kernel.org>
+> > > To: Stanislav Fomichev <sdf@google.com>
+> > > To: Hao Luo <haoluo@google.com>
+> > > To: Jiri Olsa <jolsa@kernel.org>
+> > > Cc: bpf@vger.kernel.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > > ---
+> > >  kernel/bpf/syscall.c | 1 -
+> > >  1 file changed, 1 deletion(-)
+> > >
+> > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > > index 35972afb6850..8e55456bd648 100644
+> > > --- a/kernel/bpf/syscall.c
+> > > +++ b/kernel/bpf/syscall.c
+> > > @@ -5319,7 +5319,6 @@ static struct ctl_table bpf_syscall_table[] = {
+> > >         {
+> > >                 .procname       = "bpf_stats_enabled",
+> > >                 .data           = &bpf_stats_enabled_key.key,
+> > > -               .maxlen         = sizeof(bpf_stats_enabled_key),
+> > >                 .mode           = 0644,
+> > >                 .proc_handler   = bpf_stats_handler,
+> > >         },
+> > >
+> > > ---
+> > > base-commit: b6bb9676f2165d518b35ba3bea5f1fcfc0d969bf
+> > > change-id: 20221221-bpf-syscall-58d1ac3f817a
+> > >
+> > > Best regards,
+> > > --
+> > > Ricardo Ribalda <ribalda@chromium.org>
+>
+>
+>
+> --
+> Ricardo Ribalda
