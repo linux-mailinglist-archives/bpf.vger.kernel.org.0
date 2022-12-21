@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE8F65366A
-	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 19:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1C76536B6
+	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 19:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234772AbiLUSiI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 13:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        id S232468AbiLUS5X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 13:57:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbiLUSiH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 13:38:07 -0500
-Received: from out-122.mta0.migadu.com (out-122.mta0.migadu.com [IPv6:2001:41d0:1004:224b::7a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD0526553
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 10:38:05 -0800 (PST)
+        with ESMTP id S234662AbiLUS5T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 13:57:19 -0500
+Received: from out-121.mta0.migadu.com (out-121.mta0.migadu.com [91.218.175.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54E723BE8
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 10:57:17 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1671647884;
+        t=1671649036;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=UMACxTyzVoM2P9KX4+Qjzr02pwFD59T7YhG/VNphXBA=;
-        b=T+0CsJfixcWc6VN3tev9vKnvh1ewJkZ0uCcqUzDr1L4K5UEr9BdBsg7BTWLmG3l0m7AlCK
-        fvuJJAdFArYL/HED21J8DhttUYX59nGUvMCkVw+fy/JljyeypPPlZKcA3Hb2TR2baBruWl
-        FmyDV44yHktw5HR5dhcsMV5eo9zEBNY=
+        bh=BjBbmO/JICfM9Xol8mnerUdyV8ChW1j2PDrNP9vvOeo=;
+        b=LEj68xgF1wwoRSdhkZyFsm+DWhDUmMnihp27iVIVZHlgNYo1kD60RwenMMdjXLS+0Ajh+Z
+        /IYuRI/9IzWbYZQ/bIT1W45QnQ9wdPfJWt+0uJPaL+mAGXaRHjW5/avHBx8tAAdC91FoRZ
+        3OjvSTwmhaZqYrbV3GhJ9pgRvea/jVY=
 From:   Martin KaFai Lau <martin.lau@linux.dev>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH v3 bpf] selftests/bpf: Test bpf_skb_adjust_room on CHECKSUM_PARTIAL
-Date:   Wed, 21 Dec 2022 10:37:57 -0800
-Message-Id: <20221221183757.1470196-1-martin.lau@linux.dev>
+Subject: [PATCH v4 bpf] selftests/bpf: Test bpf_skb_adjust_room on CHECKSUM_PARTIAL
+Date:   Wed, 21 Dec 2022 10:56:53 -0800
+Message-Id: <20221221185653.1589961-1-martin.lau@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -60,12 +60,15 @@ from CHECKSUM_PARTIAL to CHECKSUM_NONE after bpf_skb_adjust_room().
 Cc: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
+v4: Remove one 'inline' from progs/decap_sanity.c
+
 v3:
   * Use ASSERT_TRUE and ASSERT_FALSE
   * On top of 'ip netns del', also call bpf_tc_hook_destroy()
     in case bpf_tc_hook_create() may allocate memory in
     the future.
-
+  * Keep alphabet order in DENYLIST.s390x
+  
 v2: Add test to DENYLIST.s390x due to kfunc usage
 
  tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
@@ -198,7 +201,7 @@ index b394817126cf..cfed4df490f3 100644
  #define RTF_GATEWAY		0x0002
 diff --git a/tools/testing/selftests/bpf/progs/decap_sanity.c b/tools/testing/selftests/bpf/progs/decap_sanity.c
 new file mode 100644
-index 000000000000..b85113554cbf
+index 000000000000..bd3c657c58a7
 --- /dev/null
 +++ b/tools/testing/selftests/bpf/progs/decap_sanity.c
 @@ -0,0 +1,68 @@
@@ -217,7 +220,7 @@ index 000000000000..b85113554cbf
 +bool final_csum_none = false;
 +bool broken_csum_start = false;
 +
-+static inline unsigned int skb_headlen(const struct sk_buff *skb)
++static unsigned int skb_headlen(const struct sk_buff *skb)
 +{
 +	return skb->len - skb->data_len;
 +}
