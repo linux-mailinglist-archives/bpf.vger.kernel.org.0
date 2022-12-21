@@ -2,179 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DB56535A4
-	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 18:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CCD6535B3
+	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 18:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbiLURzG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 12:55:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54440 "EHLO
+        id S234412AbiLUR6b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 12:58:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbiLURzF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 12:55:05 -0500
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B7422BDA;
-        Wed, 21 Dec 2022 09:55:04 -0800 (PST)
-Received: by mail-vs1-f51.google.com with SMTP id m2so15446474vsv.9;
-        Wed, 21 Dec 2022 09:55:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1+EHTg950OODgm5W0yafui8aHdMJusC0dH+4uJ44Jio=;
-        b=PiHbb0brrZGhKpSMiZU9LB9N5Y1sDCugXgD8KA5r+NYclSeowpfCcwHOymIUuB3AkA
-         srjF9oWxk0Jh6tmo0FIwqNTRX46h+KWPXs9Dt0GqEbF1BsI+IJ8I26VMHQ3Sz8ReoMrd
-         VgGpmlxJjVRwQgc8pQpdCG8OJotMhEOQY4tJjNUIt+HQAWPJ/5AGy2CFuaSVjoP0/LG/
-         W7L+Al+ofKYUkf1lajwqCBARCIIm9FJt7cyHPuuvTkPyMq0dygCo7QqlD//n7NKNBQzR
-         Vna4dnYx7grnk7UuR5ZYn5H+zK0KTzVCSXq2RpsG573pbcJiq6YFfIl3D3blNQxCz9zH
-         wH0w==
-X-Gm-Message-State: AFqh2kp+rWm7G2ASsA9z+IMBzEFDM3wmnJ2jAopiN5c9fFZGtce9+Q/x
-        Hg8VD2Rdln5vBo0d4GLX9tyquog9idfkenI/2YM=
-X-Google-Smtp-Source: AMrXdXvcjo0kdtXNWnF54g6kqUsDb5GUgL1NC6uyXp7BWEmYvCktUq9ySLvg1y8r5oY9vEpuDaN2+x++rcuIPJnq7jw=
-X-Received: by 2002:a05:6102:126c:b0:3b3:4691:f37e with SMTP id
- q12-20020a056102126c00b003b34691f37emr312369vsg.70.1671645303271; Wed, 21 Dec
- 2022 09:55:03 -0800 (PST)
+        with ESMTP id S229728AbiLUR61 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 12:58:27 -0500
+Received: from out-204.mta0.migadu.com (out-204.mta0.migadu.com [IPv6:2001:41d0:1004:224b::cc])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C9724BD3
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 09:58:26 -0800 (PST)
+Message-ID: <88ee2720-3a3d-589b-3866-deaaf19fa895@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1671645504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1S+iRdXxfwemRDy4yrq7A37ufCLMsuGmDi9JRO0Q+a8=;
+        b=LDIOSEd561LKsE1CYiWiSyrDJya0Ql011RX0rYOxKkbaTuaasM8D2D4TfXsF3WW2gNEW5k
+        WuUdf2az3goxsnXsU/Zy2DsW6BNHqAXl0VFGm7dFGH6XUMnq/rB2hg5ZfKcfXiDQOwBcpE
+        32aawAW9sZqFllFGbMu+561YKOC05zY=
+Date:   Wed, 21 Dec 2022 09:58:19 -0800
 MIME-Version: 1.0
-References: <20221219201732.460111-1-namhyung@kernel.org> <20221219201732.460111-3-namhyung@kernel.org>
- <Y6NHf1h2BKOw9J3Q@kernel.org>
-In-Reply-To: <Y6NHf1h2BKOw9J3Q@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 21 Dec 2022 09:54:51 -0800
-Message-ID: <CAM9d7chFP6LAJS0_PkThRBNk9KN6HRCyWJK=PoXMTyY92Di7YA@mail.gmail.com>
-Subject: Re: [PATCH 2/6] perf lock contention: Add -Y/--type-filter option
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Blake Jones <blakejones@google.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 bpf] selftests/bpf: Test bpf_skb_adjust_room on
+ CHECKSUM_PARTIAL
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20221221014914.3543155-1-martin.lau@linux.dev>
+ <CAEf4BzazRSYxkVBvfFMLEXvvL92xa8GN1We1+P6A0dKKxz+bWw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAEf4BzazRSYxkVBvfFMLEXvvL92xa8GN1We1+P6A0dKKxz+bWw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Arnaldo,
+On 12/20/22 9:05 PM, Andrii Nakryiko wrote:
+> On Tue, Dec 20, 2022 at 5:49 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> From: Martin KaFai Lau <martin.lau@kernel.org>
+>>
+>> When the bpf_skb_adjust_room() shrinks the skb such that
+>> its csum_start is invalid, the skb->ip_summed should
+>> be reset from CHECKSUM_PARTIAL to CHECKSUM_NONE.
+>>
+>> The commit 54c3f1a81421 ("bpf: pull before calling skb_postpull_rcsum()")
+>> fixed it.
+>>
+>> This patch adds a test to ensure the skb->ip_summed changed
+>> from CHECKSUM_PARTIAL to CHECKSUM_NONE after bpf_skb_adjust_room().
+>>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+>> ---
+>> v2: Add test to DENYLIST.s390x due to kfunc usage
+>>
+>>   tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
+>>   .../selftests/bpf/prog_tests/decap_sanity.c   | 83 +++++++++++++++++++
+>>   .../selftests/bpf/progs/bpf_tracing_net.h     |  6 ++
+>>   .../selftests/bpf/progs/decap_sanity.c        | 68 +++++++++++++++
+>>   4 files changed, 158 insertions(+)
+>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/decap_sanity.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/decap_sanity.c
+>>
+>> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
+>> index 585fcf73c731..dba6c027920d 100644
+>> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
+>> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+>> @@ -86,3 +86,4 @@ xdp_bpf2bpf                              # failed to auto-attach program 'trace_
+>>   xdp_do_redirect                          # prog_run_max_size unexpected error: -22 (errno 22)
+>>   xdp_synproxy                             # JIT does not support calling kernel function                                (kfunc)
+>>   xfrm_info                                # JIT does not support calling kernel function                                (kfunc)
+>> +decap_sanity                             # JIT does not support calling kernel function                                (kfunc)
+> 
+> let's keep this list sorted?
 
-On Wed, Dec 21, 2022 at 9:50 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Mon, Dec 19, 2022 at 12:17:28PM -0800, Namhyung Kim escreveu:
+Ack.
 
-[SNIP]
-> > @@ -1465,6 +1483,21 @@ static const char *get_type_str(unsigned int flags)
-> >       return "unknown";
-> >  }
-> >
-> > +static unsigned int get_type_flag(const char *str)
-> > +{
-> > +     for (unsigned int i = 0; i < ARRAY_SIZE(lock_type_table); i++) {
-> > +             if (!strcmp(lock_type_table[i].name, str))
-> > +                     return lock_type_table[i].flags;
-> > +     }
-> > +     return -1U;
-> > +}
-> > +
-> > +static void lock_filter_finish(void)
-> > +{
-> > +     zfree(&filters.types);
-> > +     filters.nr_types = 0;
-> > +}
-> > +
-> >  static void sort_contention_result(void)
-> >  {
-> >       sort_result();
-> > @@ -1507,6 +1540,9 @@ static void print_contention_result(struct lock_contention *con)
-> >               if (st->broken)
-> >                       bad++;
-> >
-> > +             if (!st->wait_time_total)
-> > +                     continue;
-> > +
-> >               list_for_each_entry(key, &lock_keys, list) {
-> >                       key->print(key, st);
-> >                       pr_info(" ");
-> > @@ -1753,6 +1789,7 @@ static int __cmd_contention(int argc, const char **argv)
-> >       print_contention_result(&con);
-> >
-> >  out_delete:
-> > +     lock_filter_finish();
-> >       evlist__delete(con.evlist);
-> >       lock_contention_finish();
-> >       perf_session__delete(session);
-> > @@ -1884,6 +1921,79 @@ static int parse_max_stack(const struct option *opt, const char *str,
-> >       return 0;
-> >  }
-> >
-> > +static bool add_lock_type(unsigned int flags)
-> > +{
-> > +     unsigned int *tmp;
-> > +
-> > +     tmp = realloc(filters.types, (filters.nr_types + 1) * sizeof(*filters.types));
-> > +     if (tmp == NULL)
-> > +             return false;
-> > +
-> > +     tmp[filters.nr_types++] = flags;
-> > +     filters.types = tmp;
-> > +     return true;
-> > +}
-> > +
-> > +static int parse_lock_type(const struct option *opt __maybe_unused, const char *str,
-> > +                        int unset __maybe_unused)
-> > +{
-> > +     char *s, *tmp, *tok;
-> > +     int ret = 0;
-> > +
-> > +     s = strdup(str);
-> > +     if (s == NULL)
-> > +             return -1;
-> > +
-> > +     for (tok = strtok_r(s, ", ", &tmp); tok; tok = strtok_r(NULL, ", ", &tmp)) {
-> > +             unsigned int flags = get_type_flag(tok);
-> > +
-> > +             if (flags == -1U) {
-> > +                     char buf[32];
-> > +
-> > +                     if (strchr(tok, ':'))
-> > +                         continue;
-> > +
-> > +                     /* try :R and :W suffixes for rwlock, rwsem, ... */
-> > +                     scnprintf(buf, sizeof(buf), "%s:R", tok);
-> > +                     flags = get_type_flag(buf);
-> > +                     if (flags != -1UL) {
-> > +                             if (!add_lock_type(flags)) {
-> > +                                     ret = -1;
-> > +                                     break;
-> > +                             }
-> > +                     }
->
->
-> clang doesn't like this:
->
->   34    97.97 fedora:36                     : FAIL clang version 14.0.5 (Fedora 14.0.5-2.fc36)
->     builtin-lock.c:2012:14: error: result of comparison of constant 18446744073709551615 with expression of type 'unsigned int' is always true [-Werror,-Wtautological-constant-out-of-range-compare]
->                             if (flags != -1UL) {
->                                 ~~~~~ ^  ~~~~
->     builtin-lock.c:2021:14: error: result of comparison of constant 18446744073709551615 with expression of type 'unsigned int' is always true [-Werror,-Wtautological-constant-out-of-range-compare]
->                             if (flags != -1UL) {
->                                 ~~~~~ ^  ~~~~
->     builtin-lock.c:2037:14: error: result of comparison of constant 18446744073709551615 with expression of type 'unsigned int' is always true [-Werror,-Wtautological-constant-out-of-range-compare]
->                             if (flags != -1UL) {
->                                 ~~~~~ ^  ~~~~
->     3 errors generated.
->
-> I applied this on top, Ack?
+> 
+>> \ No newline at end of file
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/decap_sanity.c b/tools/testing/selftests/bpf/prog_tests/decap_sanity.c
+>> new file mode 100644
+>> index 000000000000..2fbb3017b740
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/decap_sanity.c
+>> @@ -0,0 +1,83 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+>> +
+>> +#include <sys/types.h>
+>> +#include <sys/socket.h>
+>> +#include <net/if.h>
+>> +#include <linux/in6.h>
+>> +
+>> +#include "test_progs.h"
+>> +#include "network_helpers.h"
+>> +#include "decap_sanity.skel.h"
+>> +
+>> +#define SYS(fmt, ...)                                          \
+>> +       ({                                                      \
+>> +               char cmd[1024];                                 \
+>> +               snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__); \
+>> +               if (!ASSERT_OK(system(cmd), cmd))               \
+>> +                       goto fail;                              \
+>> +       })
+>> +
+>> +#define NS_TEST "decap_sanity_ns"
+>> +#define IPV6_IFACE_ADDR "face::1"
+>> +#define UDP_TEST_PORT 7777
+>> +
+>> +void test_decap_sanity(void)
+>> +{
+>> +       LIBBPF_OPTS(bpf_tc_hook, qdisc_hook, .attach_point = BPF_TC_EGRESS);
+>> +       LIBBPF_OPTS(bpf_tc_opts, tc_attach);
+>> +       struct nstoken *nstoken = NULL;
+>> +       struct decap_sanity *skel;
+>> +       struct sockaddr_in6 addr;
+>> +       socklen_t addrlen;
+>> +       char buf[128] = {};
+>> +       int sockfd, err;
+>> +
+>> +       skel = decap_sanity__open_and_load();
+>> +       if (!ASSERT_OK_PTR(skel, "skel open_and_load"))
+>> +               return;
+>> +
+>> +       SYS("ip netns add %s", NS_TEST);
+>> +       SYS("ip -net %s -6 addr add %s/128 dev lo nodad", NS_TEST, IPV6_IFACE_ADDR);
+>> +       SYS("ip -net %s link set dev lo up", NS_TEST);
+>> +
+>> +       nstoken = open_netns(NS_TEST);
+>> +       if (!ASSERT_OK_PTR(nstoken, "open_netns"))
+>> +               goto fail;
+>> +
+>> +       qdisc_hook.ifindex = if_nametoindex("lo");
+>> +       if (!ASSERT_GT(qdisc_hook.ifindex, 0, "if_nametoindex lo"))
+>> +               goto fail;
+>> +
+>> +       err = bpf_tc_hook_create(&qdisc_hook);
+>> +       if (!ASSERT_OK(err, "create qdisc hook"))
+>> +               goto fail;
+> 
+> you seem to be missing bpf_tc_hook_destroy() for clean up
 
-Oh.. sorry for that.  It could be just -1U.  But I'm ok with UINT_MAX too.
+It will go away with the 'ip netns del' at the end of the test, so not needed.
+I will add a comment at the end of this function to make it clear.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+> 
+>> +
+>> +       tc_attach.prog_fd = bpf_program__fd(skel->progs.decap_sanity);
+>> +       err = bpf_tc_attach(&qdisc_hook, &tc_attach);
+>> +       if (!ASSERT_OK(err, "attach filter"))
+>> +               goto fail;
+>> +
+>> +       addrlen = sizeof(addr);
+>> +       err = make_sockaddr(AF_INET6, IPV6_IFACE_ADDR, UDP_TEST_PORT,
+>> +                           (void *)&addr, &addrlen);
+>> +       if (!ASSERT_OK(err, "make_sockaddr"))
+>> +               goto fail;
+>> +       sockfd = socket(AF_INET6, SOCK_DGRAM, 0);
+>> +       if (!ASSERT_NEQ(sockfd, -1, "socket"))
+>> +               goto fail;
+>> +       err = sendto(sockfd, buf, sizeof(buf), 0, (void *)&addr, addrlen);
+>> +       close(sockfd);
+>> +       if (!ASSERT_EQ(err, sizeof(buf), "send"))
+>> +               goto fail;
+>> +
+>> +       ASSERT_EQ(skel->bss->init_csum_partial, true, "init_csum_partial");
+>> +       ASSERT_EQ(skel->bss->final_csum_none, true, "final_csum_none");
+>> +       ASSERT_EQ(skel->bss->broken_csum_start, false, "broken_csum_start");
+> 
+> ASSERT_TRUE and ASSERT_FALSE ?
 
-Thanks,
-Namhyung
+Ack.
+
+Thanks for the review.
+
+> 
+>> +
+>> +fail:
+>> +       if (nstoken)
+>> +               close_netns(nstoken);
+>> +       system("ip netns del " NS_TEST " >& /dev/null");
+>> +       decap_sanity__destroy(skel);
+>> +}
+> 
+> [...]
+
