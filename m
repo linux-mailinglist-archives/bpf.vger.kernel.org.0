@@ -2,134 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1962265370E
-	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 20:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CAA653742
+	for <lists+bpf@lfdr.de>; Wed, 21 Dec 2022 20:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234750AbiLUTeC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 14:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
+        id S230134AbiLUTzk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 14:55:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbiLUTeC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 14:34:02 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A99240B4
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 11:33:59 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id v195-20020a252fcc000000b007125383fe0dso18874117ybv.23
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 11:33:59 -0800 (PST)
+        with ESMTP id S229814AbiLUTzj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 14:55:39 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A08326AA4
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 11:55:37 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id d14so23450437edj.11
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 11:55:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zBUkWAxyk2/y7UUHggB/nDL8+b+dKQlVLMxsOSz+sjI=;
-        b=hAs85z66ba8HRHIiOitUJ7AkF+UsdYTFUNb5mqWXMiKtSzOut8L87gCOnaxCdwQvkL
-         5UhRiJ5MiTje+RmazJWDQvOIg0j/MaEuo91OgFm5WgM/5EMScqbd/jFzHAVrvMGqhJZO
-         58KjRRsWbc6j6/l+DiEy9w6je3y3sciBaYhWLRdj9w16qr7mNta3G4J54IciSCAKwhQS
-         6Anod8xYrMsqwepWNjpSDHYCYJyIwySC5f0C4XUH3h8yXXv5pag6PFt55CTyPuP3B9/1
-         EiDqwHBJmo2Ag0huqZiHGgF7AK3Vi1+HI+dZjoQRsHF7ArD1/N+7LlB5tODePbx/EWHW
-         Cj9A==
+        d=chromium.org; s=google;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EDpY8eXQnR31vDv/hAEogmXTX86hvb4cFMl7BLiqYmU=;
+        b=CdojP4kOwKnkm/3tJ0fwwgiSGm2ckaeouWf4meonSAZrsGDHoQIDukZhPd4hibbAeo
+         DX8YE2PInUDbz8/HiRNou464YkTmN/upcjWmK0cwnnxP983cv4wBxY8LfEHOM7j91rC6
+         in8oT77Q8VmARZ5yd+wCCP9ZQvJhlyqr0Msdw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zBUkWAxyk2/y7UUHggB/nDL8+b+dKQlVLMxsOSz+sjI=;
-        b=i8KP4tx8RgBNI4gcjW8K2pSJbwDs6m6C/WLQnuuetWewsncL4ulhw/SGz9tuv0uGit
-         iRKdb2OK5XjYNuCExppTuu7fqJJmg0ufRLLd/Y78Ky5D6euOcY2DMHBCuUnifyg/dihQ
-         zzKTlvGMUBiBOuc7rocrTDdYII82R736wchezfHwaz27DG8+W19FDi6o/gSrM9Qj2KKK
-         z0pizkfKM+J2H5vucS6l4HH42dlAEcM4ygWiT49uW0ntf1TAQ1GeRSw+oiCD2klWmUcq
-         xGz/G1E3YrILyXf0I+nTrfPs3j3UzvmAE1pu6EMrfTWcSWEgL16bFxfElSeKOV8XpqUF
-         l0tg==
-X-Gm-Message-State: AFqh2kpLohcBV+vBDoh5BgyuD7gY4CMCqbSyBfRX5sMFWhmil+K0VKqq
-        3oYGJ6zvjzvIuuWRG64zzfgFT0w=
-X-Google-Smtp-Source: AMrXdXsbD5ESoOdEWUoqSPIAJVsMe3fQ09rB43Os2QYH49SlTYRaGOFHjuDMSrstYlG7jRpL3vz1hKQ=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:8b03:0:b0:6df:1529:6ba with SMTP id
- i3-20020a258b03000000b006df152906bamr168904ybl.145.1671651238962; Wed, 21 Dec
- 2022 11:33:58 -0800 (PST)
-Date:   Wed, 21 Dec 2022 11:33:57 -0800
-In-Reply-To: <20221221103007.1311799-1-aspsk@isovalent.com>
-Mime-Version: 1.0
-References: <20221221103007.1311799-1-aspsk@isovalent.com>
-Message-ID: <Y6NfpU8zo6t3dEhC@google.com>
-Subject: Re: [PATCH bpf-next] bpftool: fix linkage with statically built libllvm
-From:   sdf@google.com
-To:     Anton Protopopov <aspsk@isovalent.com>
-Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EDpY8eXQnR31vDv/hAEogmXTX86hvb4cFMl7BLiqYmU=;
+        b=31nCWIMNo/HJ6PQQSqdASKC3S4xmC/UHWIUpElJdwkBpGAZXYaMpcpUvC//D46Sz+M
+         cACtJmLXUVSQPADKIpENLu6LkeA92e8I6bPuMtaURqCUQp8DvL9gDi1wy1P6NStYTfJL
+         hVfcBaD3l7c4K20eQb9yjp5Fc6Um3tuY7TDszJQGNpQuF4zziVh7ekA6q+899ZyNCpR7
+         EF4aB4VYAu4rus12rkeI2r6SSULUcNC9sLpHaVxItCt9/4AkO0qK5hPI8ZqP6FrzVTag
+         QcGVCqdO0bAtRKY6YvjI0Gefj7FqlV0gYVVp72MN3GRHbmlknco3ojxCU70TOq9TrCcC
+         ddGQ==
+X-Gm-Message-State: AFqh2krRh/JuJNgzfQaQ7IBbgMdq38MmkkYn9G5JVXlgMO6zrsFx5gxY
+        /c/D70JmDHkbag85YkF1eo4+8A==
+X-Google-Smtp-Source: AMrXdXtbeSysvrQnX4J/n0BRL+ui9qtOJwAQQ8vqXyIVf/1zOytK3Pvkff/VAPOVp20LJDth2bpnZA==
+X-Received: by 2002:a05:6402:558:b0:47e:5b70:de7b with SMTP id i24-20020a056402055800b0047e5b70de7bmr1961383edx.19.1671652535931;
+        Wed, 21 Dec 2022 11:55:35 -0800 (PST)
+Received: from alco.roam.corp.google.com (80.71.134.83.ipv4.parknet.dk. [80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id q22-20020a17090676d600b0080c433a9eeesm5586005ejn.182.2022.12.21.11.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Dec 2022 11:55:35 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Wed, 21 Dec 2022 20:55:29 +0100
+Subject: [PATCH] bpf: Remove unused field initialization
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20221221-bpf-syscall-v1-0-9550f5f2c3fc@chromium.org>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.11.0-dev-696ae
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1511; i=ribalda@chromium.org;
+ h=from:subject:message-id; bh=oJ2oob+OSIF7kWeCn8kKWNN2TjOq3zxbD7ZuB1oIGg8=;
+ b=owEBbQKS/ZANAwAKAdE30T7POsSIAcsmYgBjo2Sz0BzcDBqxuAFxDAOjbqq++6jm3aPwxe7NWrxe
+ 4+2PVLiJAjMEAAEKAB0WIQREDzjr+/4oCDLSsx7RN9E+zzrEiAUCY6NkswAKCRDRN9E+zzrEiOI2D/
+ 9AzaS8R53TwYp+QQybEExGc3dyoRGwGB4fBDXlti82+f7dTgL4K8OKqpu27Hmp6YEamzToSvtLUKt+
+ Xf5DGm0ejHzPRyee3gq7KX4ZSKSZUacHBuBidhpuxYBwA/k1/SSYt0AVIzyKBD3l7eHN6rR1561yMr
+ 6Jfbo+WuFww2tksLHN6CnI1thn2xGGUYdo6XzdjTuG7F1BDP9sGDdsVdZQwTGZZpYWgoO9lOpwgq3d
+ FWFYmZf9hNMuuTLk9CbpUUsf+1zaS4qzaCUwL9/0ak5YhZPyquE2xIqLUIWk99vzCcDmLyed5BKSd2
+ xFMXjsjPyk1SDZgYIvkeznWa1SKGkAPPy9i8IyFSKVj4A2tO2wKLPdqfEHg5yhf8xuuTcSh3VIknnV
+ PLGCB1oCQMPUJH8SzxRxhJ8OS+F+ZXc2zEmdRj+BIofYQs0kk/WccH59zj3JA2wmlaFPg+H8a+tImX
+ 1tvBc4I+WPb74PAbUJj/5CQjltv+iJk9GzHXIE7UH/vzoj7loGEHIdsY2cmuoPaAh9fBHyN24fCo+a
+ LnjWut+09mykw2hRk02dDj/hXChQImXxZbTVhtoprhdNOy4DpgREOJDGvlVfWfo8kmf54qSe4e3uON
+ lwQouHwYJjhYuCeycqW11pXWW9gleXMNUNVTiFmtoO/EtU00Nvb8tpyZHzTA==
+X-Developer-Key: i=ribalda@chromium.org; a=openpgp;
+ fpr=9EC3BB66E2FC129A6F90B39556A0D81F9F782DA9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/21, Anton Protopopov wrote:
-> Since the eb9d1acf634b commit ("bpftool: Add LLVM as default library for
-> disassembling JIT-ed programs") we might link the bpftool program with the
-> libllvm library.  This works fine when a dynamically built libllvm  
-> available,
-> but fails if we want to link bpftool with a statically built llvm:
+Maxlen is used by standard proc_handlers such as proc_dointvec(), but in this
+case we have our own proc_handler. Remove the initialization.
 
->      /usr/bin/ld:  
-> /usr/local/lib/libLLVMSupport.a(CrashRecoveryContext.cpp.o): in function  
-> `llvm::CrashRecoveryContextCleanup::~CrashRecoveryContextCleanup()':
->       
-> CrashRecoveryContext.cpp:(.text._ZN4llvm27CrashRecoveryContextCleanupD0Ev+0x17):  
-> undefined reference to `operator delete(void*, unsigned long)'
->      /usr/bin/ld:  
-> /usr/local/lib/libLLVMSupport.a(CrashRecoveryContext.cpp.o): in function  
-> `llvm::CrashRecoveryContext::~CrashRecoveryContext()':
->       
-> CrashRecoveryContext.cpp:(.text._ZN4llvm20CrashRecoveryContextD2Ev+0xc8):  
-> undefined reference to `operator delete(void*, unsigned long)'
->      ...
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+bpf: Trivial remove of unitialised field.
 
-> To fix this we need to explicitly link bpftool with required libraries,  
-> namely,
-> libstdc++ and those provided by `llvm-config --system-libs`.  This patch
-> doesn't change the build with a dynamically built libllvm, as the  
-> `llvm-config
-> --system-libs` list is empty in this case, and the bpftool is linked with  
-> the
-> libstdc++ in any case as this is a dynamic dependency of libLLVM.so.
+I have inspired myself in your code and heritaded this bug :). Fixing this
+here so none else makes the same mistake.
 
-> eb9d1acf634b commit ("bpftool: Add LLVM as default library for  
-> disassembling JIT-ed programs")
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> ---
->   tools/bpf/bpftool/Makefile | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+To: Alexei Starovoitov <ast@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+To: John Fastabend <john.fastabend@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+To: Song Liu <song@kernel.org>
+To: Yonghong Song <yhs@fb.com>
+To: KP Singh <kpsingh@kernel.org>
+To: Stanislav Fomichev <sdf@google.com>
+To: Hao Luo <haoluo@google.com>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ kernel/bpf/syscall.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index 787b857d3fb5..e4c15095eac7 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -144,7 +144,7 @@ ifeq ($(feature-llvm),1)
->     CFLAGS  += -DHAVE_LLVM_SUPPORT
->     LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
->     CFLAGS  += $(shell $(LLVM_CONFIG) --cflags --libs  
-> $(LLVM_CONFIG_LIB_COMPONENTS))
-> -  LIBS    += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-> +  LIBS    += $(shell $(LLVM_CONFIG) --libs --system-libs  
-> $(LLVM_CONFIG_LIB_COMPONENTS)) -lstdc++
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 35972afb6850..8e55456bd648 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -5319,7 +5319,6 @@ static struct ctl_table bpf_syscall_table[] = {
+ 	{
+ 		.procname	= "bpf_stats_enabled",
+ 		.data		= &bpf_stats_enabled_key.key,
+-		.maxlen		= sizeof(bpf_stats_enabled_key),
+ 		.mode		= 0644,
+ 		.proc_handler	= bpf_stats_handler,
+ 	},
 
+---
+base-commit: b6bb9676f2165d518b35ba3bea5f1fcfc0d969bf
+change-id: 20221221-bpf-syscall-58d1ac3f817a
 
-Why not do separate lines? We can then maybe do a bit safer approach?
-
-LIBS += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-ifeq ($(USE_STATIC_COMPONENTS), static)
-LIBS += $(shell $(LLVM_CONFIG) --system-libs))
-LIBS += -lstdc++
-endif
-
-Can we use `llvm-config --shared-mode` to get USE_STATIC_COMPONENTS?
-
->     LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
->   else
->     # Fall back on libbfd
-> --
-> 2.34.1
-
+Best regards,
+-- 
+Ricardo Ribalda <ribalda@chromium.org>
