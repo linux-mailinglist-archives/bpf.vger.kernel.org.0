@@ -2,112 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFD1653E3F
-	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 11:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773BD654163
+	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 13:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235311AbiLVK1U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Dec 2022 05:27:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
+        id S235095AbiLVM4E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Dec 2022 07:56:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbiLVK1S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Dec 2022 05:27:18 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F4F18365
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 02:27:16 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id fc4so3791537ejc.12
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 02:27:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ljmchwGOSv1mKwTABEDrD+Xj5luqUOTbeklyb9AdXpo=;
-        b=B8cEVoIWuyuB5h1fGwRytdS2nDjFi5cTCKUGdCkeTo09TsvL/5gFP6jVdeqCb//z2U
-         7gKUxjyN9Q41pIWG0Yym79zgeqQ4ETPwNNgyVitkFJArnsHj2ypcx2sYIi7bdhC75+Aw
-         t9un2V/Y7mdyviE09GooDx5qj7Rfnnfw7WAMZ+4Q5HDfrsXuc3N1n/0NOYb8NUNwuCIj
-         FvzHqw5OMm0TEPeanPOkJ13O0MRpYz0HkuKL0MW7l5Bxa7oCnhVygE5bHQ7FW6fm7S3g
-         22xzZoQ8Ldn1e3mWAu3L/ub0t08qoVsjgwfGbZugtnvCwabPgUdW+KcGEat/1vKwC+xA
-         5opQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ljmchwGOSv1mKwTABEDrD+Xj5luqUOTbeklyb9AdXpo=;
-        b=vpRFYrJFm7sTizek3u0kcvYfpo56bT3KX3M+WJ+lBFdgHO1pp7wN4AI/Mzpt6aZj03
-         RKDN6kxWYOIxAvrRUPLAFWF4Ops8fNwumSdJuOkXlFAJ8Nw3EPyYY6viRiFq4V2BR6Be
-         IrgXmeGRbWjgEa6dUkMlsvJJfPOHlEMOka61k/CDE1GYWG++jmjaVQIbvXzEM546PDPJ
-         S9IIoMBV7Q875ZY+xiu4GFYnKvI0ElgGyd8qmWppeMEjwohXVTmYxjIjUG/RsIVXM3pX
-         VqDU/KTcmASQzuWnzqtcDJo3i5hvEJFGbE43LnUpqSbEU9asVPFzbPthAorGElTgt9Xq
-         YA1A==
-X-Gm-Message-State: AFqh2krJO5DOUWSf0Il8jfL1uwp+OzRKbkm8n4c3hiYscaw9JkqlqTr4
-        HyfYioumfYbA+7/Q/pRVuaKnR4zCJj43Hko//WM=
-X-Google-Smtp-Source: AMrXdXv18rYZ8WtxA0sQToLQ4vamGjDxkX6o4eyp/cRqRexgqodIxzpJRT3gw761+KawVyFDaq0yQA==
-X-Received: by 2002:a17:906:3513:b0:7ff:7205:414e with SMTP id r19-20020a170906351300b007ff7205414emr3896056eja.69.1671704835103;
-        Thu, 22 Dec 2022 02:27:15 -0800 (PST)
-Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id k7-20020a170906680700b007c0aefd9339sm81418ejr.175.2022.12.22.02.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Dec 2022 02:27:14 -0800 (PST)
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH bpf-next v2] bpftool: fix linkage with statically built libllvm
-Date:   Thu, 22 Dec 2022 10:26:27 +0000
-Message-Id: <20221222102627.1643709-1-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S235191AbiLVM4B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Dec 2022 07:56:01 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2717EB5E;
+        Thu, 22 Dec 2022 04:55:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1vFrv+zarbZYHT3+ptNBvFlR54/j8sRf1M3avE9pjzs=; b=QGxfGbHTpUd1Ebcww5ZEEaTE6/
+        ya/BmPob1YD5pkd7HSuEiNal6es+3RMTQR3x/Hpo8wCXJ74DZ+MHSl58jDGdeB2PIzROPkDQF0Zm8
+        4VNF72RFdadMgaSLgmdZFKETvgTKqUuVFyfC+BDOiDWFeMLYBV53PXc+VkMJNQNTko0XlyZA4aeib
+        qJfURT8D2Xfe08DoBDUtdTCPayp0cf2uw0GOT1+NQumczRUE+xGxBfeDMDYTUFpmjvmBbBP1m/GI+
+        0niJhlZbYwjyNUujI3Uk/rjD4JCdO2HnMHBrg71h/Wx5PzryIpqryc92oLdokDA4tFQZVtm0ejHKn
+        MxE8OPLw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1p8L6s-00Dpbg-0L;
+        Thu, 22 Dec 2022 12:55:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F8D230006D;
+        Thu, 22 Dec 2022 13:55:40 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DE88920C8AA31; Thu, 22 Dec 2022 13:55:39 +0100 (CET)
+Date:   Thu, 22 Dec 2022 13:55:39 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH bpf-next 1/2] bpf/perf: Call perf_prepare_sample() before
+ bpf_prog_run()
+Message-ID: <Y6RTy29ULXp8WJ/Q@hirez.programming.kicks-ass.net>
+References: <20221220220144.4016213-1-namhyung@kernel.org>
+ <20221220220144.4016213-2-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221220220144.4016213-2-namhyung@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since the eb9d1acf634b commit ("bpftool: Add LLVM as default library for
-disassembling JIT-ed programs") we might link the bpftool program with the
-libllvm library.  This works fine when a shared libllvm library is available,
-but fails if we want to link bpftool with a statically built LLVM:
+On Tue, Dec 20, 2022 at 02:01:43PM -0800, Namhyung Kim wrote:
+> When the BPF program calls bpf_cast_to_kern_ctx(), it assumes the program will
+> access perf sample data directly and call perf_prepare_sample() to make sure
+> the sample data is populated.
 
-    /usr/bin/ld: /usr/local/lib/libLLVMSupport.a(CrashRecoveryContext.cpp.o): in function `llvm::CrashRecoveryContextCleanup::~CrashRecoveryContextCleanup()':
-    CrashRecoveryContext.cpp:(.text._ZN4llvm27CrashRecoveryContextCleanupD0Ev+0x17): undefined reference to `operator delete(void*, unsigned long)'
-    /usr/bin/ld: /usr/local/lib/libLLVMSupport.a(CrashRecoveryContext.cpp.o): in function `llvm::CrashRecoveryContext::~CrashRecoveryContext()':
-    CrashRecoveryContext.cpp:(.text._ZN4llvm20CrashRecoveryContextD2Ev+0xc8): undefined reference to `operator delete(void*, unsigned long)'
-    ...
+I don't understand a word of this :/ What are you doing and why?
 
-So in the case of static libllvm we need to explicitly link bpftool with
-required libraries, namely, libstdc++ and those provided by the `llvm-config
---system-libs` command.  We can distinguish between the shared and static cases
-by using the `llvm-config --shared-mode` command.
-
-eb9d1acf634b commit ("bpftool: Add LLVM as default library for disassembling JIT-ed programs")
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
----
-v2:
-  Use llvm-config to distinguish between shared and static modes (Stanislav)
-
- tools/bpf/bpftool/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 313fd1b09189..ab20ecc5acce 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -145,6 +145,10 @@ ifeq ($(feature-llvm),1)
-   LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
-   CFLAGS  += $(shell $(LLVM_CONFIG) --cflags --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-   LIBS    += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-+  ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
-+    LIBS += $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
-+    LIBS += -lstdc++
-+  endif
-   LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
- else
-   # Fall back on libbfd
--- 
-2.34.1
-
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  include/linux/bpf.h   | 1 +
+>  kernel/bpf/verifier.c | 1 +
+>  kernel/events/core.c  | 3 +++
+>  3 files changed, 5 insertions(+)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 5fec2d1be6d7..6bd4c21a6dd4 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1341,6 +1341,7 @@ struct bpf_prog {
+>  				enforce_expected_attach_type:1, /* Enforce expected_attach_type checking at attach time */
+>  				call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid() */
+>  				call_get_func_ip:1, /* Do we call get_func_ip() */
+> +				call_cast_kctx:1, /* Do we call bpf_cast_to_kern_ctx() */
+>  				tstamp_type_access:1; /* Accessed __sk_buff->tstamp_type */
+>  	enum bpf_prog_type	type;		/* Type of BPF program */
+>  	enum bpf_attach_type	expected_attach_type; /* For some prog types */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index faa358b3d5d7..23a9dc187292 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9236,6 +9236,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  				regs[BPF_REG_0].type = PTR_TO_BTF_ID | PTR_TRUSTED;
+>  				regs[BPF_REG_0].btf = desc_btf;
+>  				regs[BPF_REG_0].btf_id = meta.ret_btf_id;
+> +				env->prog->call_cast_kctx = 1;
+>  			} else if (meta.func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
+>  				ret_t = btf_type_by_id(desc_btf, meta.arg_constant.value);
+>  				if (!ret_t || !btf_type_is_struct(ret_t)) {
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index e47914ac8732..a654a0cb6842 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -10332,6 +10332,7 @@ static void bpf_overflow_handler(struct perf_event *event,
+>  		.event = event,
+>  	};
+>  	struct bpf_prog *prog;
+> +	struct perf_event_header dummy;
+>  	int ret = 0;
+>  
+>  	ctx.regs = perf_arch_bpf_user_pt_regs(regs);
+> @@ -10346,6 +10347,8 @@ static void bpf_overflow_handler(struct perf_event *event,
+>  			data->callchain = perf_callchain(event, regs);
+>  			data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
+>  		}
+> +		if (prog->call_cast_kctx)
+> +			perf_prepare_sample(&dummy, data, event, regs);
+>  
+>  		ret = bpf_prog_run(prog, &ctx);
+>  	}
+> -- 
+> 2.39.0.314.g84b9a713c41-goog
+> 
