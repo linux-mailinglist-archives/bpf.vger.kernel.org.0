@@ -2,63 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E565A654653
-	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 20:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99846654655
+	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 20:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbiLVTD7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Dec 2022 14:03:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        id S230256AbiLVTEJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Dec 2022 14:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbiLVTDy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Dec 2022 14:03:54 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A57E009
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 11:03:53 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id jn22so2832774plb.13
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 11:03:53 -0800 (PST)
+        with ESMTP id S230213AbiLVTEG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Dec 2022 14:04:06 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3FF1022;
+        Thu, 22 Dec 2022 11:04:04 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id m18so7070136eji.5;
+        Thu, 22 Dec 2022 11:04:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZuh56pq7ahWITyeAc8QVn3pfU1sykqjnr90paIdT6g=;
-        b=bJuq36kQ0UymZ1bH2Zq/vrJeQrmuBPuIy/L2cgEkq+YwesDWdv1tEtWP2xshTWqEGy
-         5f/lmDOq9t52OSstd0lQ9JylT7zbqXOu+hcvyXOjGlggOBChA3llnRS/SQc86kXsql1h
-         YiedMrthsZOTH6JHJOJhEjhxX6eRqzPErSXL01K5sT778jCGIqACNcaAbeXqOj8Jk4M6
-         g1Th7bYZoaOsvLmWHfoGj3/3FnQk/HgnLekNZGlPW8CTEyVtYLdh0XIiSfWVMbnvNX2O
-         i26wODcba54YOFfS0BcAqusI4EIbNSYohtpPca22Eu1ZPcC8oa8evZosguYx+Wm3m07L
-         sUnw==
+        bh=+DrfFn2RCziZK2VBabCo7DnuATErMo5Nl8zH4r6F8BU=;
+        b=APj25jEK7cnEX5AQLNiGwZDyJxgLMMVHM4NuUxr9fsj5FGtrZzm3X8zcT71cMxC2Q9
+         Ds/QhIOh//K02vS7DiDAMYZJuvRtNrGHUiNa+yA/kX/rup/7ZiuKI5q8P0H/VlYCaqCa
+         5tMLEESs9fxGiWaSzUsbwaj7YWJEJw8xpMxpfVXGhEQW/1L5DRP6xJ4fuP5UJak+qo/4
+         otJv0Bu+CgFn4mBF4bMgzo3qim+tLNdWVJ4rCsL2/1MRHR2JQ/QWmpvz7JH3hBMdK6RC
+         vrag392h1oYBfnW0ef47hj5A/G2UCr2uYg0Mi2CTaATaib5gP0Pn52IBYMh0Hds27Jlx
+         oG+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wZuh56pq7ahWITyeAc8QVn3pfU1sykqjnr90paIdT6g=;
-        b=aq7jEkrEBYHEUFxxZmevAXtqasp4skxrAPYXDtoH3E7A+18JdP50dGIoaR3jfXKitY
-         kSJ7upwZHkY8fuXLNmDg1BxUIK5tAhgLF5y9gFmIRvx6ro/jba4EPfroNo9+L/UNRn1U
-         uKr9DbGtJ6ATHuRcKiDtReRH9k2v+e0LnLku7AA4jIHMh6hFyHhZRGOPasmYFvIOSOE7
-         RcziSgjYAz0q8fyQ9LpPLL/8cp8bcmY52MsSeZGXNnAAtmKX/rRunxIjC71EBk18O9ZJ
-         gLl3xLP214V8WLvvp849skBas5KRjTE7omAMv1IRX8xZQ5Qv/LfRQoBbj/QfeQVorLMt
-         7Nqw==
-X-Gm-Message-State: AFqh2kqzU0eNF9fjKVY7W9/PwyoLhYLd0SEEU2aOvHWMKbX3UkTjtpOq
-        AlhmaZNXqrPCDj6lp+CZS4mqzNN7Tdg7+AoECkLP
-X-Google-Smtp-Source: AMrXdXuLBW62rtr8n+WHMO5P8CrzkBC2Dj2uFe95m0QcMCsPRz+Cu811+8CpYEaLqMWhKXj5QH42vDYDpxMe1o0zLRc=
-X-Received: by 2002:a17:902:e48a:b0:186:c3b2:56d1 with SMTP id
- i10-20020a170902e48a00b00186c3b256d1mr392070ple.15.1671735832520; Thu, 22 Dec
- 2022 11:03:52 -0800 (PST)
+        bh=+DrfFn2RCziZK2VBabCo7DnuATErMo5Nl8zH4r6F8BU=;
+        b=1a7oUTFrKan86XIyeBzkJRUglFMQz+fNQD4MAoBWY7UDySv8Rs012gkOykRE1rwi4C
+         3SySwM9pfNehCgqlKWyzUXSpszQGkIQF/qYfjDyZSQMb9jxKZlYQBRknEbfOTuQgoKfO
+         bc+5zEplNq6up7Bnn+zA7HnZPWiQfUs2vjz0N+WcSkzc9Lwh+e/0q+aTL67VCUfZn9cH
+         X/mj60ggEM7Hwj3PP50KOEsdrdtnlD42BzK+h+WUuSywcEb8ufqdKl2CPKmnennMTpIR
+         S05Ha/EMXRWVPuJCQTYJqO+BqhOdN5kRXZ6ziasiQMYmbV1vqXRKRcLtrxhUWiB19hM3
+         aW0Q==
+X-Gm-Message-State: AFqh2koCOETeBbNci9r2hVMsr7UQPM5QEe8EvyvpaEvnGFJC3/GrVkaU
+        WC0AU22EOEznyxw/lcAyIRcHIotCF6Zkl8rCvbA=
+X-Google-Smtp-Source: AMrXdXuDiICObnTIm/Kf6pFzxQIOYEj5FBRbk0Mud3IPuqSNdMEg8i2elxYjDLhSVZ/3KUBTIkJMbKrZg1KUCfUKPXg=
+X-Received: by 2002:a17:907:d489:b0:7c0:dd4e:3499 with SMTP id
+ vj9-20020a170907d48900b007c0dd4e3499mr761666ejc.545.1671735843040; Thu, 22
+ Dec 2022 11:04:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20221222001343.489117-1-paul@paul-moore.com> <Y6SRiv+FloijdETe@google.com>
-In-Reply-To: <Y6SRiv+FloijdETe@google.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 22 Dec 2022 14:03:41 -0500
-Message-ID: <CAHC9VhRFmrgXMYKxXqd1KpMzDGhT6gPX-=8Z072utZO_WefYWQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: restore the ebpf audit UNLOAD id field
-To:     sdf@google.com
-Cc:     linux-audit@redhat.com, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Burn Alting <burn.alting@iinet.net.au>
+References: <20221221055856.2786043-1-james.hilliard1@gmail.com>
+In-Reply-To: <20221221055856.2786043-1-james.hilliard1@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 22 Dec 2022 11:03:51 -0800
+Message-ID: <CAEf4BzZFgOksVucYDq1ZzPWTBZV0zHtK0H4U0LVEtz19nzbpVg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: move struct definitions out of
+ function params
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,59 +81,209 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 12:19 PM <sdf@google.com> wrote:
-> On 12/21, Paul Moore wrote:
-> > When changing the ebpf program put() routines to support being called
-> > from within IRQ context the program ID was reset to zero prior to
-> > generating the audit UNLOAD record, which obviously rendered the ID
-> > field bogus (always zero).  This patch resolves this by adding a new
-> > field, bpf_prog_aux::id_audit, which is set when the ebpf program is
-> > allocated an ID and never reset, ensuring a valid ID field,
-> > regardless of the state of the original ID field, bpf_prox_aud::id.
+On Tue, Dec 20, 2022 at 9:59 PM James Hilliard
+<james.hilliard1@gmail.com> wrote:
 >
-> > I also modified the bpf_audit_prog() logic used to associate the
-> > AUDIT_BPF record with other associated records, e.g. @ctx != NULL.
-> > Instead of keying off the operation, it now keys off the execution
-> > context, e.g. '!in_irg && !irqs_disabled()', which is much more
-> > appropriate and should help better connect the UNLOAD operations with
-> > the associated audit state (other audit records).
+> Anonymous structs can't be declared inside function parameter
+> definitions in current c standards, however clang doesn't detect this
+> condition currently while GCC does.
 >
-> [..]
+> Details: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108189
 >
-> > As an note to future bug hunters, I did briefly consider removing the
-> > ID reset in bpf_prog_free_id(), as it would seem that once the
-> > program is removed from the idr pool it can no longer be found by its
-> > ID value, but commit ad8ad79f4f60 ("bpf: offload: free program id
-> > when device disappears") seems to imply that it is beneficial to
-> > reset the ID value.  Perhaps as a secondary indicator that the ebpf
-> > program is unbound/orphaned.
+> Fixes errors like:
+> progs/btf_dump_test_case_bitfields.c:85:7: error: anonymous struct declared inside parameter list will not be visible outside of this definition or declaration [-Werror]
+>    85 | int f(struct {
+>       |       ^~~~~~
 >
-> That seems like the way to go imho. Can we have some extra 'invalid_id'
-> bitfield in the bpf_prog so we can set it in bpf_prog_free_id and
-> check in bpf_prog_free_id (for this offloaded use-case)? Because
-> having two ids and then keeping track about which one to use, depending
-> on the context, seems more fragile?
+> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> ---
+>  .../bpf/progs/btf_dump_test_case_bitfields.c  |  9 ++++--
+>  .../progs/btf_dump_test_case_namespacing.c    | 10 ++++---
+>  .../bpf/progs/btf_dump_test_case_packing.c    | 10 ++++---
+>  .../bpf/progs/btf_dump_test_case_padding.c    | 10 ++++---
+>  .../bpf/progs/btf_dump_test_case_syntax.c     | 30 +++++++++++++------
+>  5 files changed, 46 insertions(+), 23 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
+> index e01690618e1e..c75f6bd06a49 100644
+> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
+> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
+> @@ -82,11 +82,16 @@ struct bitfield_flushed {
+>         long b: 16;
+>  };
+>
+> -int f(struct {
+> +/* ----- START-EXPECTED-OUTPUT ----- */
+> +struct root_struct {
 
-I would definitely prefer to keep just a single ID value, and that was
-the first approach I took when drafting this patch, but when looking
-through the git log it looked like there was some desire to reset the
-ID to zero on free.  Not being an expert on the ebpf kernel code I
-figured I would just write the patch up this way and make a comment
-about not zero'ing out the ID in the commit description so we could
-have a discussion about it.
+there is no need to make this struct part of expected output, just
+keep it next to f?
 
-I'm not seeing any other comments, so I'll go ahead with putting
-together a v2 that sets an invalid flag/bit and I'll post that for
-further discussion/review.
 
-> > Fixes: d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq
-> > context.")
-> > Reported-by: Burn Alting <burn.alting@iinet.net.au>
-> > Signed-off-by: Paul Moore <paul@paul-moore.com>
-> > ---
-> >   include/linux/bpf.h  | 1 +
-> >   kernel/bpf/syscall.c | 8 +++++---
-> >   2 files changed, 6 insertions(+), 3 deletions(-)
+>         struct bitfields_only_mixed_types _1;
+>         struct bitfield_mixed_with_others _2;
+>         struct bitfield_flushed _3;
+> -} *_)
+> +};
+> +
+> +/* ------ END-EXPECTED-OUTPUT ------ */
+> +
+> +int f(struct root_struct *_)
+>  {
+>         return 0;
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
+> index 92a4ad428710..d7cf2a8487c9 100644
+> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
+> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
+> @@ -49,9 +49,7 @@ typedef int Y;
+>
+>  typedef int Z;
+>
+> -/*------ END-EXPECTED-OUTPUT ------ */
+> -
+> -int f(struct {
+> +struct root_struct {
+>         struct S _1;
+>         S _2;
+>         union U _3;
+> @@ -67,7 +65,11 @@ int f(struct {
+>         X xx;
+>         Y yy;
+>         Z zz;
+> -} *_)
+> +};
 
--- 
-paul-moore.com
+same, that struct is only to preserve all the referenced types, so
+keep it hidden from the output
+
+> +
+> +/*------ END-EXPECTED-OUTPUT ------ */
+> +
+> +int f(struct root_struct *_)
+>  {
+>         return 0;
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
+> index 7998f27df7dd..e039ceb50c43 100644
+> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
+> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
+> @@ -132,9 +132,7 @@ struct outer_packed_struct {
+>         struct nested_packed_struct b;
+>  } __attribute__((packed));
+>
+> -/* ------ END-EXPECTED-OUTPUT ------ */
+> -
+> -int f(struct {
+> +struct root_struct {
+>         struct packed_trailing_space _1;
+>         struct non_packed_trailing_space _2;
+>         struct packed_fields _3;
+> @@ -147,7 +145,11 @@ int f(struct {
+>         struct usb_host_endpoint _10;
+>         struct outer_nonpacked_struct _11;
+>         struct outer_packed_struct _12;
+> -} *_)
+> +};
+> +
+> +/* ------ END-EXPECTED-OUTPUT ------ */
+> +
+> +int f(struct root_struct *_)
+>  {
+>         return 0;
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+> index 79276fbe454a..2ca46ad8d66a 100644
+> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+> @@ -220,9 +220,7 @@ struct outer_mixed_but_unpacked {
+>         struct nested_packed b2;
+>  };
+>
+> -/* ------ END-EXPECTED-OUTPUT ------ */
+> -
+> -int f(struct {
+> +struct root_struct {
+>         struct padded_implicitly _1;
+>         struct padded_explicitly _2;
+>         struct padded_a_lot _3;
+> @@ -243,7 +241,11 @@ int f(struct {
+>         struct ib_wc _201;
+>         struct acpi_object_method _202;
+>         struct outer_mixed_but_unpacked _203;
+> -} *_)
+> +} __attribute__((packed));
+> +
+> +/* ------ END-EXPECTED-OUTPUT ------ */
+> +
+> +int f(struct root_struct *_)
+>  {
+>         return 0;
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+> index 26fffb02ed10..3e31df7cecc6 100644
+> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+> @@ -104,24 +104,24 @@ typedef void (*printf_fn_t)(const char *, ...);
+>   *   typedef const fn_output_inner_t fn_ptr_arr2_t[5];
+>   */
+>  /* ----- START-EXPECTED-OUTPUT ----- */
+> -typedef char * const * (*fn_ptr2_t)(struct {
+> -       int a;
+> -}, int (*)(int));
+> +struct struct_a;
+> +
+> +typedef char * const * (*fn_ptr2_t)(struct struct_a, int (*)(int));
+> +
+> +struct struct_c;
+> +
+> +struct struct_h;
+>
+>  typedef struct {
+>         int a;
+> -       void (*b)(int, struct {
+> -               int c;
+> -       }, union {
+> +       void (*b)(int, struct struct_c, union {
+>                 char d;
+>                 int e[5];
+>         });
+>  } (*fn_complex_t)(union {
+>         void *f;
+>         char g[16];
+> -}, struct {
+> -       int h;
+> -});
+> +}, struct struct_h);
+
+these do test some pieces of libbpf's btf_dump logic, so I'm way more
+reluctant to remove these. If I understand correctly, this syntax will
+be eventually supported by GCC, so is there any way to keep these
+examples as is by requiring C23 mode or something? Or just skipping
+compiling this one if GCC is used?
+
+>
+>  typedef void (* (*signal_t)(int, void (*)(int)))(int);
+>
+> @@ -272,6 +272,18 @@ struct root_struct {
+>         struct float_struct _15;
+>  };
+>
+> +struct struct_a {
+> +       int a;
+> +};
+> +
+> +struct struct_h {
+> +       int h;
+> +};
+> +
+> +struct struct_c {
+> +       int c;
+> +};
+> +
+>  /* ------ END-EXPECTED-OUTPUT ------ */
+>
+>  int f(struct root_struct *s)
+> --
+> 2.34.1
+>
