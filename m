@@ -2,86 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B237653A5E
-	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 02:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E0B653A75
+	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 03:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbiLVBuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 20:50:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35260 "EHLO
+        id S230099AbiLVCEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 21:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbiLVBuS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 20:50:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F97183AC;
-        Wed, 21 Dec 2022 17:50:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DF2F0619AC;
-        Thu, 22 Dec 2022 01:50:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 29A59C433F0;
-        Thu, 22 Dec 2022 01:50:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671673816;
-        bh=YSS8KTvGdWiJJFpKiJ442pKE5JQko5C12kkFhls4jlY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RB+mxzMpVpazq4DMTVyN7IVO3RYS9OXiX+tvOZOEOdFil+YQTZgQOoqfyyAfQ6Ah5
-         D7J3P2HEhYhomKvLQYB83+D8rrNyNuTx74mSF0KV0POyOjaPO0mR92bRj0Rsr1qn6l
-         d5JsTwS8OIcAGXDDPkz1A+UfWrh77nSFBc6sbLmyWw1L8qkKxQVKX7IyxweeJKhKON
-         N1YD6A/wfrESCUuE6bwEsUU+mSkBuWbYcR1W/R2UDlXL3389vF5wB1zc7XvL2rW0GB
-         KKvXi7c+IlIzIUumAlQlmuEYfUJNvfpLcxBJGXaZoqCOCdPfo5VOB8UexUzGsodhCd
-         Wz4TbvjDDMAEw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0FDDDC5C7C4;
-        Thu, 22 Dec 2022 01:50:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229620AbiLVCEe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 21:04:34 -0500
+Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01E720F64;
+        Wed, 21 Dec 2022 18:04:31 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VXrFu9A_1671674668;
+Received: from 30.236.23.70(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VXrFu9A_1671674668)
+          by smtp.aliyun-inc.com;
+          Thu, 22 Dec 2022 10:04:29 +0800
+Message-ID: <2206a016-743b-6316-9546-d1f827f12dd2@linux.alibaba.com>
+Date:   Thu, 22 Dec 2022 10:04:25 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0)
+ Gecko/20100101 Thunderbird/108.0
+Subject: Re: [PATCH v2 0/9] virtio_net: support multi buffer xdp
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20221220141449.115918-1-hengqi@linux.alibaba.com>
+ <20221221173022.2056b45b@kernel.org>
+From:   Heng Qi <hengqi@linux.alibaba.com>
+In-Reply-To: <20221221173022.2056b45b@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/1] ice: xsk: do not use xdp_return_frame() on
- tx_buf->raw_buf
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167167381606.8581.8438557501998235094.git-patchwork-notify@kernel.org>
-Date:   Thu, 22 Dec 2022 01:50:16 +0000
-References: <20221220175448.693999-1-anthony.l.nguyen@intel.com>
-In-Reply-To: <20221220175448.693999-1-anthony.l.nguyen@intel.com>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, maciej.fijalkowski@intel.com,
-        netdev@vger.kernel.org, magnus.karlsson@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        bpf@vger.kernel.org, robin.cowley@thehutgroup.com,
-        chandanx.rout@intel.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue, 20 Dec 2022 09:54:48 -0800 you wrote:
-> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> 
-> Previously ice XDP xmit routine was changed in a way that it avoids
-> xdp_buff->xdp_frame conversion as it is simply not needed for handling
-> XDP_TX action and what is more it saves us CPU cycles. This routine is
-> re-used on ZC driver to handle XDP_TX action.
-> 
-> [...]
+在 2022/12/22 上午9:30, Jakub Kicinski 写道:
+> On Tue, 20 Dec 2022 22:14:40 +0800 Heng Qi wrote:
+>> Changes since RFC:
+>> - Using headroom instead of vi->xdp_enabled to avoid re-reading
+>>    in add_recvbuf_mergeable();
+>> - Disable GRO_HW and keep linearization for single buffer xdp;
+>> - Renamed to virtnet_build_xdp_buff_mrg();
+>> - pr_debug() to netdev_dbg();
+>> - Adjusted the order of the patch series.
+> # Form letter - net-next is closed
+>
+> We have already submitted the networking pull request to Linus
+> for v6.2 and therefore net-next is closed for new drivers, features,
+> code refactoring and optimizations. We are currently accepting
+> bug fixes only.
+>
+> Please repost when net-next reopens after Jan 2nd.
+>
+> RFC patches sent for review only are obviously welcome at any time.
 
-Here is the summary with links:
-  - [net,1/1] ice: xsk: do not use xdp_return_frame() on tx_buf->raw_buf
-    https://git.kernel.org/netdev/net/c/53fc61be273a
+Yes, I understand, we can also review this patch series first.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks.
+
+
 
 
