@@ -2,64 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AFE653A03
-	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 01:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89554653A1C
+	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 01:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbiLVANt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Dec 2022 19:13:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44520 "EHLO
+        id S229814AbiLVAdd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Dec 2022 19:33:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbiLVANs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Dec 2022 19:13:48 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B57E01F
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 16:13:45 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id j16so284464qtv.4
-        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 16:13:45 -0800 (PST)
+        with ESMTP id S229742AbiLVAdb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Dec 2022 19:33:31 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2007364E7
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 16:33:30 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id x11so476094lfn.0
+        for <bpf@vger.kernel.org>; Wed, 21 Dec 2022 16:33:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oPzh2dbi9FRQxXaS+QFT/IvLSNioUpOLK0ga4/GiNMM=;
-        b=Xu/SLYOMU7MF3QWuwd+MtAim+OUAEh91ceKVKnX6WHubwdQe9ciea27Gk3f4B0I+Uq
-         NmBc1I67JmsdaV5tLShxYGi6j546GTh5TLt0VakXnxw7V5rIzLrhquO2InL3r4gzeiwZ
-         wJqm7fq45+IOmhY9ZmRaAPS4OTuSJ9pQ5dTPBYbsLiVaVEl4z/s4poZ38rcLO9WPfD0v
-         t/kcmZsfCmzPHrpt1fop/R2l6JQGaK48r0TKOibtDOkBf6NU0RZods9yVZ0Fq7iyFLQ+
-         Dgvp/rEwmN6Ffd3ewwa7bLRceN4Ec4R37azK3fLr/sp2U5uAC31pNqZ6pRG5E+B3TPy4
-         UIGA==
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QhkZyyFye5fYkhxtK1oxGBu/k6+lHkA3sF+m8Q0EEV0=;
+        b=qxpjyy0XrPAfQ0gpYJ4c1G13WPwDYVkusZOChh9oifLqqFKAritKuOeMAUqKNed/Wo
+         JossQQXsapp56zAGNTaneNAthHSNz1os6U24KRHxLzV0gBbAxoOQi0x/pci+ZWxLv9Lg
+         J2QK0ZhyzIif4yRBPaaIe337h94HjHp579aX0G2fk1TKOSJpxYYDt72a03eq2uNIUY1N
+         C7/KpmSETiBLPGUxvmK69BitrfVK9WmCk/I5Mx/kmReuAoZZmDTse3vMB9rzWNvQAdu9
+         CWc9cq4GTGcBsZnxeJur3Yj9UYrCSJq9A+QiQbwAyIauReC78V9AJ4685ENopDTdlRYJ
+         qQPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oPzh2dbi9FRQxXaS+QFT/IvLSNioUpOLK0ga4/GiNMM=;
-        b=Q2OwOzYB+pg5G/WFoSJ/YWzzmaPhJt971CIK7G8Uc8pmhEmCpHNZAF8UvnWHc/g0Gt
-         VHQ/oO6gA2HVawh9ljofqj8MxTyIjkdG2wEZtgtwB9lZZ+XsB59DjqRQSqNlM0zWdNFi
-         FsCU+k0uL3RKGE2cuwktqO5DjmhCu8rfNZW4rpgSzqHjd26QNJuhU+PVa+NfXd6xI5mC
-         posm77IWX2kV2wDjQaHXLBraL1ZgJul3aMuy5PCqHQgTt6BOQ3WX3WRSX8F9kSIgGa+9
-         UUMLfgAMa8DAcUqG7D6xfJZZk6gQNqjaWrbK6IqIp8QBDsZp1WsRP5rG6bWiEfgIlAas
-         Q5jA==
-X-Gm-Message-State: AFqh2kqJGfCjlIvMVautGFFrqER6SlBWrHjzhEJLJc/CgIWcBNqVB8cr
-        1inimVO8frGMqNLDxyjilfsmaYqflRUqwHM=
-X-Google-Smtp-Source: AMrXdXtusb1TB1KZjoCKCo/VF/OzLXSSem8vfyVqgYxAlWc4hMDJeejvKL/XVKnVip6GovUHBocaNw==
-X-Received: by 2002:ac8:749a:0:b0:3a8:2a89:d57d with SMTP id v26-20020ac8749a000000b003a82a89d57dmr4732033qtq.67.1671668024957;
-        Wed, 21 Dec 2022 16:13:44 -0800 (PST)
-Received: from localhost (pool-108-26-161-203.bstnma.fios.verizon.net. [108.26.161.203])
-        by smtp.gmail.com with ESMTPSA id c3-20020ac80543000000b003a6a7a20575sm9962621qth.73.2022.12.21.16.13.44
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QhkZyyFye5fYkhxtK1oxGBu/k6+lHkA3sF+m8Q0EEV0=;
+        b=DrFqgecC8/GkLLrjHuZdkN4p6N6Ijl3RaxD1OBczozw7Dclmr2UVJjh7SD0jIyzl5W
+         RVchUwG/IiQ1NaikzZwfzqLz9tfi4VPkULD0vaC4d0YIVFljdq0ZqJE+YlIAMHVTqy+P
+         P7tKkHP48NzJ10xBFWskjdh2wiNZ8oQ+euPhrzB28O8SMeD+V84HgUTqRaHkA5UpGmWs
+         35Z0BxXXoKdQL4kl87kgmrcGnprQtpj6sBNJWRUwo6F8p7PQzuHVcwM8FIiiGSp7U8j3
+         OLBBxNSLbYVcRvSW78GeJIwOffgnQPsqAeneUvdTzOskk2ZVBD9L7XoWyoMzkvnH9K7N
+         4lOA==
+X-Gm-Message-State: AFqh2koAcH2eQPj8bWlxsF1zCjA51BCUbR0y1HKHAljofmHkIc778y1w
+        A1ylsIkjMFJOu2nQFcbyVhA=
+X-Google-Smtp-Source: AMrXdXtZmC2jgPOCnTrIiropa8twqPhGGXBkuzfJZXBaap+aH9jsQTN5EwQwg+L8ZF4BSHHfghr+ZA==
+X-Received: by 2002:a05:6512:3b87:b0:4a4:68b7:d623 with SMTP id g7-20020a0565123b8700b004a468b7d623mr1448943lfv.10.1671669208384;
+        Wed, 21 Dec 2022 16:33:28 -0800 (PST)
+Received: from [192.168.1.113] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id i12-20020a056512006c00b004b4fefacd89sm1988556lfo.139.2022.12.21.16.33.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Dec 2022 16:13:44 -0800 (PST)
-From:   Paul Moore <paul@paul-moore.com>
-To:     linux-audit@redhat.com, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Burn Alting <burn.alting@iinet.net.au>
-Subject: [PATCH] bpf: restore the ebpf audit UNLOAD id field
-Date:   Wed, 21 Dec 2022 19:13:43 -0500
-Message-Id: <20221222001343.489117-1-paul@paul-moore.com>
-X-Mailer: git-send-email 2.39.0
+        Wed, 21 Dec 2022 16:33:27 -0800 (PST)
+Message-ID: <3765d248674583da9aa4c61b0eae1f195886d22f.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: check if
+ verifier.c:check_ids() handles 64+5 ids
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+Date:   Thu, 22 Dec 2022 02:33:26 +0200
+In-Reply-To: <CAEf4Bzb0foB6PQsSZsXrGEJo7eQK8UDRh+Pkr5wg259-QeXwaA@mail.gmail.com>
+References: <20221217021711.172247-1-eddyz87@gmail.com>
+         <20221217021711.172247-5-eddyz87@gmail.com>
+         <CAEf4Bzb0foB6PQsSZsXrGEJo7eQK8UDRh+Pkr5wg259-QeXwaA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,81 +75,158 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When changing the ebpf program put() routines to support being called
-from within IRQ context the program ID was reset to zero prior to
-generating the audit UNLOAD record, which obviously rendered the ID
-field bogus (always zero).  This patch resolves this by adding a new
-field, bpf_prog_aux::id_audit, which is set when the ebpf program is
-allocated an ID and never reset, ensuring a valid ID field,
-regardless of the state of the original ID field, bpf_prox_aud::id.
+On Tue, 2022-12-20 at 13:18 -0800, Andrii Nakryiko wrote:
+> On Fri, Dec 16, 2022 at 6:17 PM Eduard Zingerman <eddyz87@gmail.com> wrot=
+e:
+> >=20
+> > A simple program that allocates a bunch of unique register ids than
+> > branches. The goal is to confirm that idmap used in verifier.c:check_id=
+s()
+> > has sufficient capacity to verify that branches converge to a same stat=
+e.
+> >=20
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/verifier.c       | 12 +++
+> >  .../selftests/bpf/progs/check_ids_limits.c    | 77 +++++++++++++++++++
+> >  2 files changed, 89 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/check_ids_limits.=
+c
+> >=20
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/=
+testing/selftests/bpf/prog_tests/verifier.c
+> > new file mode 100644
+> > index 000000000000..3933141928a7
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> > @@ -0,0 +1,12 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +#include <test_progs.h>
+> > +
+> > +#include "check_ids_limits.skel.h"
+> > +
+> > +#define TEST_SET(skel)                 \
+> > +       void test_##skel(void)          \
+> > +       {                               \
+> > +               RUN_TESTS(skel);        \
+> > +       }
+>=20
+> Let's not use such trivial macros, please. It makes grepping for tests
+> much harder and saves 1 line of code only. Let's define funcs
+> explicitly?
+>=20
+> I'm also surprised it works at all (it does, right?), because Makefile
 
-I also modified the bpf_audit_prog() logic used to associate the
-AUDIT_BPF record with other associated records, e.g. @ctx != NULL.
-Instead of keying off the operation, it now keys off the execution
-context, e.g. '!in_irg && !irqs_disabled()', which is much more
-appropriate and should help better connect the UNLOAD operations with
-the associated audit state (other audit records).
+Nope, it doesn't work and it is embarrassing. I've tested w/o this
+macro and only added it before final tests run. And didn't check the log.
+Thank you for catching it. Will remove this macro.
 
-As an note to future bug hunters, I did briefly consider removing the
-ID reset in bpf_prog_free_id(), as it would seem that once the
-program is removed from the idr pool it can no longer be found by its
-ID value, but commit ad8ad79f4f60 ("bpf: offload: free program id
-when device disappears") seems to imply that it is beneficial to
-reset the ID value.  Perhaps as a secondary indicator that the ebpf
-program is unbound/orphaned.
-
-Fixes: d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq context.")
-Reported-by: Burn Alting <burn.alting@iinet.net.au>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
----
- include/linux/bpf.h  | 1 +
- kernel/bpf/syscall.c | 8 +++++---
- 2 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 9e7d46d16032..a22001ceb2c3 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1103,6 +1103,7 @@ struct bpf_prog_aux {
- 	u32 max_tp_access;
- 	u32 stack_depth;
- 	u32 id;
-+	u32 id_audit; /* preserves the id for use by audit */
- 	u32 func_cnt; /* used by non-func prog as the number of func progs */
- 	u32 func_idx; /* 0 for non-func prog, the index in func array for func prog */
- 	u32 attach_btf_id; /* in-kernel BTF type id to attach to */
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 7b373a5e861f..3ec09f4dba18 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1958,13 +1958,13 @@ static void bpf_audit_prog(const struct bpf_prog *prog, unsigned int op)
- 		return;
- 	if (audit_enabled == AUDIT_OFF)
- 		return;
--	if (op == BPF_AUDIT_LOAD)
-+	if (!in_irq() && !irqs_disabled())
- 		ctx = audit_context();
- 	ab = audit_log_start(ctx, GFP_ATOMIC, AUDIT_BPF);
- 	if (unlikely(!ab))
- 		return;
- 	audit_log_format(ab, "prog-id=%u op=%s",
--			 prog->aux->id, bpf_audit_str[op]);
-+			 prog->aux->id_audit, bpf_audit_str[op]);
- 	audit_log_end(ab);
- }
- 
-@@ -1975,8 +1975,10 @@ static int bpf_prog_alloc_id(struct bpf_prog *prog)
- 	idr_preload(GFP_KERNEL);
- 	spin_lock_bh(&prog_idr_lock);
- 	id = idr_alloc_cyclic(&prog_idr, prog, 1, INT_MAX, GFP_ATOMIC);
--	if (id > 0)
-+	if (id > 0) {
- 		prog->aux->id = id;
-+		prog->aux->id_audit = id;
-+	}
- 	spin_unlock_bh(&prog_idr_lock);
- 	idr_preload_end();
- 
--- 
-2.39.0
+> is grepping explicitly for `void (serial_)test_xxx` pattern when
+> generating a list of tests. So this shouldn't have worked, unless I'm
+> missing something.
+>=20
+> > +
+> > +TEST_SET(check_ids_limits)
+> > diff --git a/tools/testing/selftests/bpf/progs/check_ids_limits.c b/too=
+ls/testing/selftests/bpf/progs/check_ids_limits.c
+> > new file mode 100644
+> > index 000000000000..36c4a8bbe8ca
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/check_ids_limits.c
+> > @@ -0,0 +1,77 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include "bpf_misc.h"
+> > +
+> > +struct map_struct {
+> > +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> > +       __uint(max_entries, 1);
+> > +       __type(key, int);
+> > +       __type(value, int);
+> > +} map SEC(".maps");
+> > +
+> > +/* Make sure that verifier.c:check_ids() can handle (almost) maximal
+> > + * number of ids.
+> > + */
+> > +SEC("?raw_tp")
+> > +__naked __test_state_freq __log_level(2) __msg("43 to 45: safe")
+>=20
+> it's not clear what's special about 43 -> 45 jump?
+>=20
+> can we also validate that id=3D69 was somewhere in verifier output?
+> which would require multiple __msg support, of course.
+>=20
+> > +int allocate_many_ids(void)
+> > +{
+> > +       /* Use bpf_map_lookup_elem() as a way to get a bunch of values
+> > +        * with unique ids.
+> > +        */
+> > +#define __lookup(dst)                          \
+> > +               "r1 =3D %[map] ll;"               \
+> > +               "r2 =3D r10;"                     \
+> > +               "r2 +=3D -8;"                     \
+> > +               "call %[bpf_map_lookup_elem];"  \
+> > +               dst " =3D r0;"
+> > +       asm volatile(
+> > +               "r0 =3D 0;"
+> > +               "*(u64*)(r10 - 8) =3D r0;"
+> > +               "r7 =3D r10;"
+> > +               "r8 =3D 0;"
+> > +               /* Spill 64 bpf_map_lookup_elem() results to stack,
+> > +                * each lookup gets its own unique id.
+> > +                */
+> > +       "write_loop:"
+> > +               "r7 +=3D -8;"
+> > +               "r8 +=3D -8;"
+> > +               __lookup("*(u64*)(r7 + 0)")
+> > +               "if r8 !=3D -512 goto write_loop;"
+> > +               /* No way to source unique ids for r1-r5 as these
+> > +                * would be clobbered by bpf_map_lookup_elem call,
+> > +                * so make do with 64+5 unique ids.
+> > +                */
+> > +               __lookup("r6")
+> > +               __lookup("r7")
+> > +               __lookup("r8")
+> > +               __lookup("r9")
+> > +               __lookup("r0")
+> > +               /* Create a branching point for states comparison. */
+> > +/* 43: */      "if r0 !=3D 0 goto skip_one;"
+> > +               /* Read all registers and stack spills to make these
+> > +                * persist in the checkpoint state.
+> > +                */
+> > +               "r0 =3D r0;"
+> > +       "skip_one:"
+>=20
+> where you trying to just create a checkpoint here? given
+> __test_state_freq the simplest way would be just
+>=20
+> goto +0;
+>=20
+> no?
+>=20
+> > +/* 45: */      "r0 =3D r6;"
+> > +               "r0 =3D r7;"
+> > +               "r0 =3D r8;"
+> > +               "r0 =3D r9;"
+> > +               "r0 =3D r10;"
+> > +               "r1 =3D 0;"
+> > +       "read_loop:"
+> > +               "r0 +=3D -8;"
+> > +               "r1 +=3D -8;"
+> > +               "r2 =3D *(u64*)(r0 + 0);"
+> > +               "if r1 !=3D -512 goto read_loop;"
+> > +               "r0 =3D 0;"
+> > +               "exit;"
+> > +               :
+> > +               : __imm(bpf_map_lookup_elem),
+> > +                 __imm_addr(map)
+> > +               : __clobber_all);
+> > +#undef __lookup
+> > +}
+> > --
+> > 2.38.2
+> >=20
 
