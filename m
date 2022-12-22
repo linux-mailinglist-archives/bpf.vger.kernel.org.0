@@ -2,64 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C7665461E
-	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 19:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5513465462A
+	for <lists+bpf@lfdr.de>; Thu, 22 Dec 2022 19:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbiLVSuq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Dec 2022 13:50:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
+        id S235573AbiLVSwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Dec 2022 13:52:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbiLVSup (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Dec 2022 13:50:45 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E50E0
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 10:50:43 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id m18so6989420eji.5
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 10:50:43 -0800 (PST)
+        with ESMTP id S229984AbiLVSv7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Dec 2022 13:51:59 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4A029363;
+        Thu, 22 Dec 2022 10:51:41 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id x22so6955092ejs.11;
+        Thu, 22 Dec 2022 10:51:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=V+tKCSDb5pfxVZVXLKp110gxDsDEMRBUz6Lea/tHxlQ=;
-        b=V7QoJuhAD7EDjmmo9c0F3zoCl5HNg7MjdVnuenKMnHhpii2d4XGXgEiWbxdhQisrBm
-         +mDaWpRx+dCm99T6HqOepEmDCNcWIAwz4BtyxOuNYLDUrhJly0aN6Cosigmgzl/RdoZZ
-         q/9h6YiXeaV8FTCI/H0Znr0s3zHF4hycRJuk6u7vZ7JkYZdj7KEEBTe84m8WhIdIkBVa
-         qyJjzWYw+3K5CfIY6LyF/BfGc2XxsuZS0y9ykzswI/5vr4U9dj+lMh9fWpLifHOnWZ3C
-         G5GYwdsIMNdXTN/8TcET6ZmPhvwCYBso3sWr+uduDyeFOSWvgiVppIJgMp5d4VFiFYD/
-         A/CQ==
+        bh=+wjlf9HtdBwtd5BfrKK3NoAIyLd+UFeDv/NhLgMN1as=;
+        b=A4i6MI57PBStveX53sUUEvZ+x7r1V47+5xIVi+hPAAfEWErZ06/pJUlK4Hst9pX/b8
+         XlJsuixCjjzgxhcnCMGoxM5AEfOvrtXGsbYxsdOnJg3yL04oHA3B4hzJ63iRKf4XCCcy
+         +4ezcGTXJvXs/CsX9i+BqbEmLHYworqDNE7nCKjxq7RHtsGCXdeSufvd8EQwmkpIZRmc
+         7CMhvEKfe26E8krl41lM7uYmiegPQzavuvjHeheWfjx2y3/74PG8dDEFo/mfClmMm+fM
+         iVkHNcOuHpAWzrA1430NggdBSgVRlkVZw79JIUMGN3drPnGPOodEjpMsNufwvlmYqKY5
+         c3+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=V+tKCSDb5pfxVZVXLKp110gxDsDEMRBUz6Lea/tHxlQ=;
-        b=Ww3Pb04UeSdsV4KPj00R5q0VrWBl8ChW/joSK0HAZYuPL/In+sy6d1LCbh5pPYkyxO
-         lT4NDilPCs1esmo/wQQ9ZcyEeTFcatsV1XBqHkphPrKmAQoMfXCrcTdRRxlY0OxzOcds
-         wKxI6XgVnQsa1wsvAhEJmb9/Kkbwz1AA2Ctla90hgf2lNwfmO6alTyvDmkVzYhyAz7qA
-         myGSG67v4r/QeuMH1jh8NnEbbq668EdgMyxwTJGJ8lhIt6m7UqRx1gOUiRwmI5Fj7eMZ
-         0QKWZa3Egloq5yF0akB7Shv/t8Fj43vc61g0iwlZDoGyjW56Ef/ckUbcMt/F1+4kT6GH
-         Q5BA==
-X-Gm-Message-State: AFqh2kq/cPdqpLoA2qziOBcW+XWYz8zOeHzniTryb4QuvOggjWsUGUyV
-        +o68JKuci+bDuxRofEwxMOqXkBJKBl37mQ64FAw=
-X-Google-Smtp-Source: AMrXdXupiOLcRvyIdhHqIcA6HLTWzX8Yse7kbpO3uQb2MtoPXbzxisc+KlXuR/Mu1jV0Hjc9Cg+RpkvRlui1xK6VOR4=
-X-Received: by 2002:a17:906:a014:b0:7c1:8450:f964 with SMTP id
- p20-20020a170906a01400b007c18450f964mr607470ejy.176.1671735041633; Thu, 22
- Dec 2022 10:50:41 -0800 (PST)
+        bh=+wjlf9HtdBwtd5BfrKK3NoAIyLd+UFeDv/NhLgMN1as=;
+        b=sMVEBBEi07v4TAMXgZRWCpzbOI5iR8X+oUAl+WHypYpUcSFjqDS5A5IqBsdZ9y74Du
+         WKzDTMJzXNPR/O5T68klx8PhXey02s7/8F7MlhU6TmNj3AL/QuDHtzkrYTBpe7Segwb5
+         ugeDvg9j1UFoarbgcNCr/VPnp3F8RblqYu5kmW1EkW+qF3NITFaJOhv0rpyycE+lbeL9
+         HPl3n7FQzChXN+bMrMArhCxbYPsIRHi7Z6swibmE+SbPYWkn4P9bYOQ2n6R0l2sSvcbs
+         9515Nu6InFegoga2k21UuO47WWaU2oglf+a7WyKq4Yp/X6tcmMTy1I9qDig7JQU1akMO
+         ITTA==
+X-Gm-Message-State: AFqh2koWSQNYZmnWX2+fJcnCR3XtcpdUaO9p06RlzoEtP6ItoMUZtbdt
+        3madA/gprR9mbfzXbeImnhDURSPwoakw9PXXE4/hCS2p
+X-Google-Smtp-Source: AMrXdXtN2rRR20R19i6vscCm4IWwKN/GFSFnTNL5An/JnKDjI+AGAskvFSxXaCgJEImPDZBjcbQAJSLtaww1FHflMl0=
+X-Received: by 2002:a17:906:f209:b0:7fd:f0b1:c8ec with SMTP id
+ gt9-20020a170906f20900b007fdf0b1c8ecmr453038ejb.114.1671735100056; Thu, 22
+ Dec 2022 10:51:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20221217082506.1570898-1-davemarchevsky@fb.com> <20221217082506.1570898-12-davemarchevsky@fb.com>
-In-Reply-To: <20221217082506.1570898-12-davemarchevsky@fb.com>
+References: <20221217223509.88254-1-changbin.du@gmail.com> <20221217223509.88254-2-changbin.du@gmail.com>
+ <Y5/eE+ds+e+k3VJO@leoy-yangtze.lan> <20221220013114.zkkxkqh7orahxbzh@mail.google.com>
+ <Y6GdofET0gHQzRX6@leoy-yangtze.lan> <CAEf4Bzb_XOEoG9anNdzQVJRqd3G4yKJTSa9Dgc9xkMXqn-xdFg@mail.gmail.com>
+ <Y6KDrELoIfPbh3VN@leoy-yangtze.lan>
+In-Reply-To: <Y6KDrELoIfPbh3VN@leoy-yangtze.lan>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 22 Dec 2022 10:50:29 -0800
-Message-ID: <CAEf4BzYYqwmAbu28exBLWONryJnSYufktXh5zgNjtnfC+fGD-A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 11/13] libbpf: Make BTF mandatory if program
- BTF has spin_lock or alloc_obj type
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 22 Dec 2022 10:51:28 -0800
+Message-ID: <CAEf4BzaiNOo_qqo16qLACfBe6esg2w+GafqU0TtwZMprpuDBEQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] libbpf: show error info about missing ".BTF" section
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Quentin Monnet <quentin@isovalent.com>,
+        Changbin Du <changbin.du@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Tejun Heo <tj@kernel.org>
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -71,141 +88,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 17, 2022 at 12:25 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Tue, Dec 20, 2022 at 7:55 PM Leo Yan <leo.yan@linaro.org> wrote:
 >
-> If a BPF program defines a struct or union type which has a field type
-> that the verifier considers special - spin_lock, graph datastructure
-> heads and nodes - the verifier needs to be able to find fields of that
-> type using BTF.
+> On Tue, Dec 20, 2022 at 04:13:13PM -0800, Andrii Nakryiko wrote:
 >
-> For such a program, BTF is required, so modify kernel_needs_btf helper
-> to ensure that correct "BTF is mandatory" error message is emitted.
+> [...]
 >
-> The newly-added btf_has_alloc_obj_type looks for BTF_KIND_STRUCTs with a
-> name corresponding to a special type. If any such struct is found it is
-> assumed that some variable is using it, and therefore that successful
-> BTF load is necessary.
+> > > > > > @@ -990,6 +990,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+> > > > > >   err = 0;
+> > > > > >
+> > > > > >   if (!btf_data) {
+> > > > > > +         pr_warn("failed to find '%s' ELF section in %s\n", BTF_ELF_SEC, path);
+> > > > > >           err = -ENOENT;
+> > >
+> > > btf_parse_elf() returns -ENOENT when ELF file doesn't contain BTF
+> > > section, therefore, bpftool dumps error string "No such file or
+> > > directory".  It's confused that actually vmlinux is existed.
+> > >
+> > > I am wondering if we can use error -LIBBPF_ERRNO__FORMAT (or any
+> > > better choice?) to replace -ENOENT at here, this can avoid bpftool to
+> > > outputs "No such file or directory" in this case.
+> >
+> > The only really meaningful error code would be -ESRCH, which
+> > strerror() will translate to "No such process", which is also
+> > completely confusing.
 >
-> Also add a kernel_needs_btf check to bpf_object__create_map where it was
-> previously missing. When this function calls bpf_map_create, kernel may
-> reject map creation due to mismatched graph owner and ownee
-> types (e.g. a struct bpf_list_head with __contains tag pointing to
-> bpf_rbtree_node field). In such a scenario - or any other where BTF is
-> necessary for verification - bpf_map_create should not be retried
-> without BTF.
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  tools/lib/bpf/libbpf.c | 50 ++++++++++++++++++++++++++++++++----------
->  1 file changed, 39 insertions(+), 11 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 2a82f49ce16f..56a905b502c9 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -998,6 +998,31 @@ find_struct_ops_kern_types(const struct btf *btf, const char *tname,
->         return 0;
->  }
->
-> +/* Should match alloc_obj_fields in kernel/bpf/btf.c
-> + */
+> Or maybe -ENODATA (No data available) is a better choice?
 
-nit: keep comment on a single line?
+-ENODATA sounds good to me, yep.
 
-> +static const char *alloc_obj_fields[] = {
-> +       "bpf_spin_lock",
-> +       "bpf_list_head",
-> +       "bpf_list_node",
-> +       "bpf_rb_root",
-> +       "bpf_rb_node",
-> +};
-> +
-> +static bool
-> +btf_has_alloc_obj_type(const struct btf *btf)
-
-I find "alloc_obj_type" naming completely unhelpful, tbh. Let's use
-something more generic and unassuming as "special_btf_type" or
-something along those lines?
-
-> +{
-> +       const char *tname;
-> +       int i;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(alloc_obj_fields); i++) {
-> +               tname = alloc_obj_fields[i];
-> +               if (btf__find_by_name_kind(btf, tname, BTF_KIND_STRUCT) > 0)
-
-this will do linear search over entire program's BTF for each
-alloc_obj_fields element. Given alloc_obj_fields is supposed to be a
-small array, I think it's better to do single linear pass over prog
-BTF and for each found STRUCT check if its name matches
-alloc_obj_fields.
-
-Having said that, it feels like the better logic would be to check
-that any map value's BTF (including global var ARRAYs) have a field of
-one of those special types. Just searching for any STRUCT type with
-one of those names feels off.
-
-> +                       return true;
-> +       }
-> +
-> +       return false;
-> +}
-> +
->  static bool bpf_map__is_struct_ops(const struct bpf_map *map)
->  {
->         return map->def.type == BPF_MAP_TYPE_STRUCT_OPS;
-> @@ -2794,7 +2819,8 @@ static bool libbpf_needs_btf(const struct bpf_object *obj)
 >
->  static bool kernel_needs_btf(const struct bpf_object *obj)
->  {
-> -       return obj->efile.st_ops_shndx >= 0;
-> +       return obj->efile.st_ops_shndx >= 0 ||
-> +               (obj->btf && btf_has_alloc_obj_type(obj->btf));
->  }
+> Thanks,
+> Leo
 >
->  static int bpf_object__init_btf(struct bpf_object *obj,
-> @@ -5103,16 +5129,18 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->
->                 err = -errno;
->                 cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
-> -               pr_warn("Error in bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n",
-> -                       map->name, cp, err);
-> -               create_attr.btf_fd = 0;
-> -               create_attr.btf_key_type_id = 0;
-> -               create_attr.btf_value_type_id = 0;
-> -               map->btf_key_type_id = 0;
-> -               map->btf_value_type_id = 0;
-> -               map->fd = bpf_map_create(def->type, map_name,
-> -                                        def->key_size, def->value_size,
-> -                                        def->max_entries, &create_attr);
-> +               pr_warn("Error in bpf_create_map_xattr(%s):%s(%d).\n", map->name, cp, err);
-> +               if (!kernel_needs_btf(obj)) {
-
-see above about check whether a map's value BTF itself is using any of
-the special type. I think this decision should be made based on
-particular map's need for BTF, not based on kernel_needs_btf().
-
-I think it would be better to have an if/else with different
-pr_warn()s. Both should report that initial bpf_map_create() (btw,
-gotta update the message now, missed that) failed with error, but then
-in one case say that we are retrying without BTF, and in another
-explain that we are not because map requires kernel to see its BTF.
-WDYT?
-
-> +                       pr_warn("Retrying bpf_map_create_xattr(%s) without BTF.\n", map->name);
-> +                       create_attr.btf_fd = 0;
-> +                       create_attr.btf_key_type_id = 0;
-> +                       create_attr.btf_value_type_id = 0;
-> +                       map->btf_key_type_id = 0;
-> +                       map->btf_value_type_id = 0;
-> +                       map->fd = bpf_map_create(def->type, map_name,
-> +                                                def->key_size, def->value_size,
-> +                                                def->max_entries, &create_attr);
-> +               }
->         }
->
->         err = map->fd < 0 ? -errno : 0;
-> --
-> 2.30.2
->
+> > In general, I always found these strerror() messages extremely
+> > unhelpful and confusing. I wonder if we should make an effort to
+> > actually emit symbolic names of errors instead (literally, "-ENOENT"
+> > in this case). This is all tooling for engineers, I find -ENOENT or
+> > -ESRCH much more meaningful as an error message, compared to "No such
+> > file" seemingly human-readable interpretation.
+> >
+> > Quenting, what do you think about the above proposal for bpftool? We
+> > can have some libbpf helper internally and do it in libbpf error
+> > messages as well and just reuse the logic in bpftool, perhaps?
+> >
+> > Anyways, I've applied this patch set to bpf-next. Thanks.
