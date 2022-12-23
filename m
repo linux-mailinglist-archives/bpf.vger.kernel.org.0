@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B459654C43
-	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 06:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94549654C46
+	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 06:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229483AbiLWFtd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 23 Dec 2022 00:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
+        id S229625AbiLWFth convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 23 Dec 2022 00:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbiLWFtc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Dec 2022 00:49:32 -0500
+        with ESMTP id S229923AbiLWFth (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Dec 2022 00:49:37 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B093F2A270
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:31 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BN12sDP021667
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:31 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F2D2657E
+        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:36 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BN144se005437
+        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:36 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mmgpbf11a-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mmc5jrap4-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:31 -0800
-Received: from twshared24004.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:35 -0800
+Received: from twshared18509.43.prn1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Thu, 22 Dec 2022 21:49:30 -0800
+ 15.1.2375.34; Thu, 22 Dec 2022 21:49:34 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id D285823EA75AC; Thu, 22 Dec 2022 21:49:27 -0800 (PST)
+        id EB1F823EA75B6; Thu, 22 Dec 2022 21:49:29 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/7] bpf: reorganize struct bpf_reg_state fields
-Date:   Thu, 22 Dec 2022 21:49:16 -0800
-Message-ID: <20221223054921.958283-3-andrii@kernel.org>
+Subject: [PATCH bpf-next 3/7] bpf: generalize MAYBE_NULL vs non-MAYBE_NULL rule
+Date:   Thu, 22 Dec 2022 21:49:17 -0800
+Message-ID: <20221223054921.958283-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221223054921.958283-1-andrii@kernel.org>
 References: <20221223054921.958283-1-andrii@kernel.org>
@@ -40,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: V5Vq5sdW7lFiIS9xYmJH9GLHtRsMDK0e
-X-Proofpoint-ORIG-GUID: V5Vq5sdW7lFiIS9xYmJH9GLHtRsMDK0e
+X-Proofpoint-GUID: isQUbYDqhwOvw182uQFwXNi5ODW5q7iz
+X-Proofpoint-ORIG-GUID: isQUbYDqhwOvw182uQFwXNi5ODW5q7iz
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-23_02,2022-12-22_03,2022-06-22_01
@@ -55,140 +55,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Move id and ref_obj_id fields after scalar data section (var_off and
-ranges). This is necessary to simplify next patch which will change
-regsafe()'s logic to be safer, as it makes the contents that has to be
-an exact match (type-specific parts, off, type, and var_off+ranges)
-a single sequential block of memory, while id and ref_obj_id should
-always be remapped and thus can't be memcp()'ed.
+Make generic check to prevent XXX_OR_NULL and XXX register types to be
+intermixed. While technically in some situations it could be safe, it's
+impossible to enforce due to the loss of an ID when converting
+XXX_OR_NULL to its non-NULL variant. So prevent this in general, not
+just for PTR_TO_MAP_KEY and PTR_TO_MAP_VALUE.
 
-There are few places that assume that var_off is after id/ref_obj_id to
-clear out id/ref_obj_id with the single memset(0). These are changed to
-explicitly zero-out id/ref_obj_id fields. Other places are adjusted to
-preserve exact byte-by-byte comparison behavior.
-
-No functional changes.
+PTR_TO_MAP_KEY_OR_NULL and PTR_TO_MAP_VALUE_OR_NULL checks, which were
+previously special-cased, are simplified to generic check that takes
+into account range_within() and tnum_in(). This is correct as BPF
+verifier doesn't allow arithmetic on XXX_OR_NULL register types, so
+var_off and ranges should stay zero. But even if in the future this
+restriction is lifted, it's even more important to enforce that var_off
+and ranges are compatible, otherwise it's possible to construct case
+where this can be exploited to bypass verifier's memory range safety
+checks.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/bpf_verifier.h | 40 ++++++++++++++++++------------------
- kernel/bpf/verifier.c        | 17 ++++++++-------
- 2 files changed, 28 insertions(+), 29 deletions(-)
+ kernel/bpf/verifier.c | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 53d175cbaa02..127058cfec47 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -92,6 +92,26 @@ struct bpf_reg_state {
- 
- 		u32 subprogno; /* for PTR_TO_FUNC */
- 	};
-+	/* For scalar types (SCALAR_VALUE), this represents our knowledge of
-+	 * the actual value.
-+	 * For pointer types, this represents the variable part of the offset
-+	 * from the pointed-to object, and is shared with all bpf_reg_states
-+	 * with the same id as us.
-+	 */
-+	struct tnum var_off;
-+	/* Used to determine if any memory access using this register will
-+	 * result in a bad access.
-+	 * These refer to the same value as var_off, not necessarily the actual
-+	 * contents of the register.
-+	 */
-+	s64 smin_value; /* minimum possible (s64)value */
-+	s64 smax_value; /* maximum possible (s64)value */
-+	u64 umin_value; /* minimum possible (u64)value */
-+	u64 umax_value; /* maximum possible (u64)value */
-+	s32 s32_min_value; /* minimum possible (s32)value */
-+	s32 s32_max_value; /* maximum possible (s32)value */
-+	u32 u32_min_value; /* minimum possible (u32)value */
-+	u32 u32_max_value; /* maximum possible (u32)value */
- 	/* For PTR_TO_PACKET, used to find other pointers with the same variable
- 	 * offset, so they can share range knowledge.
- 	 * For PTR_TO_MAP_VALUE_OR_NULL this is used to share which map value we
-@@ -144,26 +164,6 @@ struct bpf_reg_state {
- 	 * allowed and has the same effect as bpf_sk_release(sk).
- 	 */
- 	u32 ref_obj_id;
--	/* For scalar types (SCALAR_VALUE), this represents our knowledge of
--	 * the actual value.
--	 * For pointer types, this represents the variable part of the offset
--	 * from the pointed-to object, and is shared with all bpf_reg_states
--	 * with the same id as us.
--	 */
--	struct tnum var_off;
--	/* Used to determine if any memory access using this register will
--	 * result in a bad access.
--	 * These refer to the same value as var_off, not necessarily the actual
--	 * contents of the register.
--	 */
--	s64 smin_value; /* minimum possible (s64)value */
--	s64 smax_value; /* maximum possible (s64)value */
--	u64 umin_value; /* minimum possible (u64)value */
--	u64 umax_value; /* maximum possible (u64)value */
--	s32 s32_min_value; /* minimum possible (s32)value */
--	s32 s32_max_value; /* maximum possible (s32)value */
--	u32 u32_min_value; /* minimum possible (u32)value */
--	u32 u32_max_value; /* maximum possible (u32)value */
- 	/* parentage chain for liveness checking */
- 	struct bpf_reg_state *parent;
- 	/* Inside the callee two registers can be both PTR_TO_STACK like
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ab8337f6a576..e419e6024251 100644
+index e419e6024251..218a7ace4210 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -1402,9 +1402,11 @@ static void ___mark_reg_known(struct bpf_reg_state *reg, u64 imm)
-  */
- static void __mark_reg_known(struct bpf_reg_state *reg, u64 imm)
- {
--	/* Clear id, off, and union(map_ptr, range) */
-+	/* Clear off and union(map_ptr, range) */
- 	memset(((u8 *)reg) + sizeof(reg->type), 0,
- 	       offsetof(struct bpf_reg_state, var_off) - sizeof(reg->type));
-+	reg->id = 0;
-+	reg->ref_obj_id = 0;
- 	___mark_reg_known(reg, imm);
- }
- 
-@@ -1750,11 +1752,13 @@ static void __mark_reg_unknown(const struct bpf_verifier_env *env,
- 			       struct bpf_reg_state *reg)
- {
- 	/*
--	 * Clear type, id, off, and union(map_ptr, range) and
-+	 * Clear type, off, and union(map_ptr, range) and
- 	 * padding between 'type' and union
- 	 */
- 	memset(reg, 0, offsetof(struct bpf_reg_state, var_off));
- 	reg->type = SCALAR_VALUE;
-+	reg->id = 0;
-+	reg->ref_obj_id = 0;
- 	reg->var_off = tnum_unknown;
- 	reg->frameno = 0;
- 	reg->precise = !env->bpf_capable;
-@@ -13104,7 +13108,7 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		if (type_may_be_null(rold->type)) {
- 			if (!type_may_be_null(rcur->type))
- 				return false;
--			if (memcmp(rold, rcur, offsetof(struct bpf_reg_state, id)))
-+			if (memcmp(rold, rcur, offsetof(struct bpf_reg_state, var_off)))
- 				return false;
- 			/* Check our ids match any regs they're supposed to */
- 			return check_ids(rold->id, rcur->id, idmap);
-@@ -13112,13 +13116,8 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 
+@@ -13074,6 +13074,21 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+ 		return true;
+ 	if (rcur->type == NOT_INIT)
+ 		return false;
++
++	/* Register types that are *not* MAYBE_NULL could technically be safe
++	 * to use as their MAYBE_NULL variants (e.g., PTR_TO_MAP_VALUE  is
++	 * safe to be used as PTR_TO_MAP_VALUE_OR_NULL, provided both point to
++	 * the same map).
++	 * However, if the old MAYBE_NULL register then got NULL checked,
++	 * doing so could have affected others with the same id, and we can't
++	 * check for that because we lost the id when we converted to
++	 * a non-MAYBE_NULL variant.
++	 * So, as a general rule we don't allow mixing MAYBE_NULL and
++	 * non-MAYBE_NULL registers.
++	 */
++	if (type_may_be_null(rold->type) != type_may_be_null(rcur->type))
++		return false;
++
+ 	switch (base_type(rold->type)) {
+ 	case SCALAR_VALUE:
+ 		if (equal)
+@@ -13098,22 +13113,6 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+ 		}
+ 	case PTR_TO_MAP_KEY:
+ 	case PTR_TO_MAP_VALUE:
+-		/* a PTR_TO_MAP_VALUE could be safe to use as a
+-		 * PTR_TO_MAP_VALUE_OR_NULL into the same map.
+-		 * However, if the old PTR_TO_MAP_VALUE_OR_NULL then got NULL-
+-		 * checked, doing so could have affected others with the same
+-		 * id, and we can't check for that because we lost the id when
+-		 * we converted to a PTR_TO_MAP_VALUE.
+-		 */
+-		if (type_may_be_null(rold->type)) {
+-			if (!type_may_be_null(rcur->type))
+-				return false;
+-			if (memcmp(rold, rcur, offsetof(struct bpf_reg_state, var_off)))
+-				return false;
+-			/* Check our ids match any regs they're supposed to */
+-			return check_ids(rold->id, rcur->id, idmap);
+-		}
+-
  		/* If the new min/max/var_off satisfy the old ones and
  		 * everything else matches, we are OK.
--		 * 'id' is not compared, since it's only used for maps with
--		 * bpf_spin_lock inside map element and in such cases if
--		 * the rest of the prog is valid for one map element then
--		 * it's valid for all map elements regardless of the key
--		 * used in bpf_map_lookup()
  		 */
--		return memcmp(rold, rcur, offsetof(struct bpf_reg_state, id)) == 0 &&
-+		return memcmp(rold, rcur, offsetof(struct bpf_reg_state, var_off)) == 0 &&
- 		       range_within(rold, rcur) &&
- 		       tnum_in(rold->var_off, rcur->var_off) &&
- 		       check_ids(rold->id, rcur->id, idmap);
 -- 
 2.30.2
 
