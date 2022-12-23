@@ -2,128 +2,291 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580B06554FF
-	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 23:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC1B65580B
+	for <lists+bpf@lfdr.de>; Sat, 24 Dec 2022 03:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbiLWWTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Dec 2022 17:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
+        id S230294AbiLXCMc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Dec 2022 21:12:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbiLWWTM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Dec 2022 17:19:12 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA53A10B49;
-        Fri, 23 Dec 2022 14:19:10 -0800 (PST)
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1p8qNg-0007sF-49; Fri, 23 Dec 2022 23:19:08 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2022-12-23
-Date:   Fri, 23 Dec 2022 23:19:07 +0100
-Message-Id: <20221223221907.10465-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        with ESMTP id S230231AbiLXCMb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Dec 2022 21:12:31 -0500
+X-Greylist: delayed 4200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 23 Dec 2022 18:12:28 PST
+Received: from 4.mo546.mail-out.ovh.net (4.mo546.mail-out.ovh.net [46.105.32.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52CCDF53
+        for <bpf@vger.kernel.org>; Fri, 23 Dec 2022 18:12:28 -0800 (PST)
+Received: from ex4.mail.ovh.net (unknown [10.111.208.63])
+        by mo546.mail-out.ovh.net (Postfix) with ESMTPS id 920EF24CA9;
+        Fri, 23 Dec 2022 23:42:40 +0000 (UTC)
+Received: from dev-fedora-x86-64.naccy.de (37.65.8.229) by
+ DAG10EX1.indiv4.local (172.16.2.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Sat, 24 Dec 2022 00:42:38 +0100
+From:   Quentin Deslandes <qde@naccy.de>
+To:     <qde@naccy.de>
+CC:     <kernel-team@meta.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Dmitrii Banshchikov <me@ubique.spb.ru>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
+Subject: [PATCH bpf-next v3 00/16] bpfilter
+Date:   Sat, 24 Dec 2022 00:40:08 +0100
+Message-ID: <20221223234127.474463-1-qde@naccy.de>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26759/Fri Dec 23 10:30:57 2022)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [37.65.8.229]
+X-ClientProxiedBy: CAS6.indiv4.local (172.16.1.6) To DAG10EX1.indiv4.local
+ (172.16.2.91)
+X-Ovh-Tracer-Id: 4391572586693783159
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -85
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvhedrheefgddufecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenogetfedtuddqtdduucdludehmdenucfjughrpefhvfevufffkffoggfgtghisehtkeertdertddtnecuhfhrohhmpefsuhgvnhhtihhnucffvghslhgrnhguvghsuceoqhguvgesnhgrtggthidruggvqeenucggtffrrghtthgvrhhnpeejgeehueefjeeihfeugefftdehtdeikeduvdettefgieekffekuefgveekgedvheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhusghunhhtuhdrtghomhenucfkphepuddvjedrtddrtddruddpfeejrdeihedrkedrvddvleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehquggvsehnrggttgihrdguvgeqpdhnsggprhgtphhtthhopedupdhrtghpthhtohephhgrohhluhhosehgohhoghhlvgdrtghomhdpsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrghdplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhmvgesuhgsihhquhgvrdhsphgsrdhruhdpshhhuhgrhheskhgvrhhnvghlrdhorhhgpdhmhihkohhlrghlsehfsgdrtghomhdpphgrsggvnhhisehrvgguhhgrthdrtghomhdpkhhusggrsehkvg
+ hrnhgvlhdrohhrghdpvgguuhhmrgiivghtsehgohhoghhlvgdrtghomhdpuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdpjhholhhsrgeskhgvrhhnvghlrdhorhhgpdhlihhnuhigqdhkshgvlhhfthgvshhtsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhsughfsehgohhoghhlvgdrtghomhdpkhhpshhinhhghheskhgvrhhnvghlrdhorhhgpdhjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdphihhshesfhgsrdgtohhmpdhsohhngheskhgvrhhnvghlrdhorhhgpdhmrghrthhinhdrlhgruheslhhinhhugidruggvvhdprghnughrihhisehkvghrnhgvlhdrohhrghdpuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdgrshhtsehkvghrnhgvlhdrohhrghdpkhgvrhhnvghlqdhtvggrmhesmhgvthgrrdgtohhmpdhnvghtuggvvhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheegiedpmhhouggvpehsmhhtphhouhht
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+The patchset is based on the patches from David S. Miller [1],
+Daniel Borkmann [2], and Dmitrii Banshchikov [3].
 
-The following pull-request contains BPF updates for your *net* tree.
+The main goal of the patchset is to prepare bpfilter for
+iptables' configuration blob parsing and code generation.
 
-We've added 7 non-merge commits during the last 5 day(s) which contain
-a total of 11 files changed, 231 insertions(+), 3 deletions(-).
+The patchset introduces data structures and code for matches,
+targets, rules and tables. Beside that the code generation
+is introduced.
 
-The main changes are:
+The first version of the code generation supports only "inline"
+mode - all chains and their rules emit instructions in linear
+approach.
 
-1) Fix a splat in bpf_skb_generic_pop() under CHECKSUM_PARTIAL due to
-   misuse of skb_postpull_rcsum(), from Jakub Kicinski with test case
-   from Martin Lau.
+Things that are not implemented yet:
+  1) The process of switching from the previous BPF programs to the
+     new set isn't atomic.
+  2) No support of device ifindex - it's hardcoded
+  3) No helper subprog for counters update
 
-2) Fix BPF verifier's nullness propagation when registers are of
-   type PTR_TO_BTF_ID, from Hao Sun.
+Another problem is using iptables' blobs for tests and filter
+table initialization. While it saves lines something more
+maintainable should be done here.
 
-3) Fix bpftool build for JIT disassembler under statically built
-   libllvm, from Anton Protopopov.
+The plan for the next iteration:
+  1) Add a helper program for counters update
+  2) Handle ifindex
 
-4) Fix warnings reported by resolve_btfids when building vmlinux
-   with CONFIG_SECURITY_NETWORK disabled, from Hou Tao.
+Patches 1/2 adds definitions of the used types.
+Patch 3 adds logging to bpfilter.
+Patch 4 adds an associative map.
+Patch 5 add runtime context structure.
+Patches 6/7 add code generation infrastructure and TC code generator.
+Patches 8/9/10/11/12 add code for matches, targets, rules and table.
+Patch 13 adds code generation for table.
+Patch 14 handles hooked setsockopt(2) calls.
+Patch 15 adds filter table
+Patch 16 uses prepared code in main().
 
-5) Minor fix up for BPF selftest gitignore, from Stanislav Fomichev.
+Due to poor hardware availability on my side, I've not been able to
+benchmark those changes. I plan to get some numbers for the next iteration.
 
-Please consider pulling these changes from:
+FORWARD filter chain is now supported, however, it's attached to
+TC INGRESS along with INPUT filter chain. This is due to XDP not supporting
+multiple programs to be attached. I could generate a single program
+out of both INPUT and FORWARD chains, but that would prevent another
+BPF program to be attached to the interface anyway. If a solution
+exists to attach both those programs to XDP while allowing for other
+programs to be attached, it requires more investigation. In the meantime,
+INPUT and FORWARD filtering is supported using TC.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+Most of the code in this series was written by Dmitrii Banshchikov,
+my changes are limited to v3. I've tried to reflect this fact in the
+commits by adding 'Co-developed-by:' and 'Signed-off-by:' for Dmitrii,
+please tell me this was done the wrong way.
 
-Thanks a lot and merry Xmas everyone!
+v2 -> v3
+Chains:
+  * Add support for FORWARD filter chain.
+  * Add generation of BPF bytecode to assess whether a packet should be
+    forwarded or not, using bpf_fib_lookup().
+  * Allow for multiple programs to be attached to TC.
+  * Allow for multiple TC hooks to be used.
+Code generation:
+  * Remove duplicated BPF bytecode generation.
+  * Fix a bug regarding jump offset during generation.
+  * Remove support for XDP from the series, as it's not currently
+    used.
+Table:
+  * Add new filter_table_update_counters() virtual call. It updates
+    the table's counter stored in the ipt_entry structure. This way,
+    when iptables tries to fetch the values of the counters, bpfilter only
+    has to copy the ipt_entry cached in the table structure.
+Logging:
+  * Refactor logging primitives.
+Sockopts:
+  * Add support for userspace counters querying.
+Rule:
+  * Store the rule's index inside struct rule, to each counters'
+    map usage.
 
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
+v1 -> v2
+Maps:
+  * Use map_upsert instead of separate map_insert and map_update
+Matches:
+  * Add a new virtual call - gen_inline. The call is used for
+  * inline generating of a rule's match.
+Targets:
+  * Add a new virtual call - gen_inline. The call is used for inline
+    generating of a rule's target.
+Rules:
+  * Add code generation for rules
+Table:
+  * Add struct table_ops
+  * Add map for table_ops
+  * Add filter table
+  * Reorganize the way filter table is initialized
+Sockopts:
+  * Install/uninstall BPF programs while handling
+    IPT_SO_SET_REPLACE
+Code generation:
+  * Add first version of the code generation
+Dependencies:
+  * Add libbpf
 
-Anand Parthasarathy, John Sperbeck, Stanislav Fomichev, Yonghong Song
+v0 -> v1
+IO:
+  * Use ssize_t in pvm_read, pvm_write for total_bytes
+  * Move IO functions into sockopt.c and main.c
+Logging:
+  * Use LOGLEVEL_EMERG, LOGLEVEL_NOTICE, LOGLEVE_DEBUG
+    while logging to /dev/kmsg
+  * Prepend log message with <n> where n is log level
+  * Conditionally enable BFLOG_DEBUG messages
+  * Merge bflog.{h,c} into context.h
+Matches:
+  * Reorder fields in struct match_ops for tight packing
+  * Get rid of struct match_ops_map
+  * Rename udp_match_ops to xt_udp
+  * Use XT_ALIGN macro
+  * Store payload size in match size
+  * Move udp match routines into a separate file
+Targets:
+  * Reorder fields in struct target_ops for tight packing
+  * Get rid of struct target_ops_map
+  * Add comments for convert_verdict function
+Rules:
+  * Add validation
+Tables:
+  * Combine table_map and table_list into table_index
+  * Add validation
+Sockopts:
+  * Handle IPT_SO_GET_REVISION_TARGET
 
-----------------------------------------------------------------
+1. https://lore.kernel.org/patchwork/patch/902785/
+2. https://lore.kernel.org/patchwork/patch/902783/
+3. https://kernel.ubuntu.com/~cking/stress-ng/stress-ng.pdf
 
-The following changes since commit 2856a62762c8409e360d4fd452194c8e57ba1058:
+Quentin Deslandes (16):
+  bpfilter: add types for usermode helper
+  tools: add bpfilter usermode helper header
+  bpfilter: add logging facility
+  bpfilter: add map container
+  bpfilter: add runtime context
+  bpfilter: add BPF bytecode generation infrastructure
+  bpfilter: add support for TC bytecode generation
+  bpfilter: add match structure
+  bpfilter: add support for src/dst addr and ports
+  bpfilter: add target structure
+  bpfilter: add rule structure
+  bpfilter: add table structure
+  bpfilter: add table code generation
+  bpfilter: add setsockopt() support
+  bpfilter: add filter table
+  bpfilter: handle setsockopt() calls
 
-  mctp: serial: Fix starting value for frame check sequence (2022-12-19 12:38:45 +0000)
+ include/uapi/linux/bpfilter.h                 |  154 +++
+ net/bpfilter/Makefile                         |   16 +-
+ net/bpfilter/codegen.c                        | 1040 +++++++++++++++++
+ net/bpfilter/codegen.h                        |  183 +++
+ net/bpfilter/context.c                        |  168 +++
+ net/bpfilter/context.h                        |   24 +
+ net/bpfilter/filter-table.c                   |  344 ++++++
+ net/bpfilter/filter-table.h                   |   18 +
+ net/bpfilter/logger.c                         |   52 +
+ net/bpfilter/logger.h                         |   80 ++
+ net/bpfilter/main.c                           |  132 ++-
+ net/bpfilter/map-common.c                     |   51 +
+ net/bpfilter/map-common.h                     |   19 +
+ net/bpfilter/match.c                          |   55 +
+ net/bpfilter/match.h                          |   37 +
+ net/bpfilter/rule.c                           |  286 +++++
+ net/bpfilter/rule.h                           |   37 +
+ net/bpfilter/sockopt.c                        |  533 +++++++++
+ net/bpfilter/sockopt.h                        |   15 +
+ net/bpfilter/table.c                          |  391 +++++++
+ net/bpfilter/table.h                          |   59 +
+ net/bpfilter/target.c                         |  203 ++++
+ net/bpfilter/target.h                         |   57 +
+ net/bpfilter/xt_udp.c                         |  111 ++
+ tools/include/uapi/linux/bpfilter.h           |  175 +++
+ .../testing/selftests/bpf/bpfilter/.gitignore |    8 +
+ tools/testing/selftests/bpf/bpfilter/Makefile |   57 +
+ .../selftests/bpf/bpfilter/bpfilter_util.h    |   80 ++
+ .../selftests/bpf/bpfilter/test_codegen.c     |  338 ++++++
+ .../testing/selftests/bpf/bpfilter/test_map.c |   63 +
+ .../selftests/bpf/bpfilter/test_match.c       |   69 ++
+ .../selftests/bpf/bpfilter/test_rule.c        |   56 +
+ .../selftests/bpf/bpfilter/test_target.c      |   83 ++
+ .../selftests/bpf/bpfilter/test_xt_udp.c      |   48 +
+ 34 files changed, 4999 insertions(+), 43 deletions(-)
+ create mode 100644 net/bpfilter/codegen.c
+ create mode 100644 net/bpfilter/codegen.h
+ create mode 100644 net/bpfilter/context.c
+ create mode 100644 net/bpfilter/context.h
+ create mode 100644 net/bpfilter/filter-table.c
+ create mode 100644 net/bpfilter/filter-table.h
+ create mode 100644 net/bpfilter/logger.c
+ create mode 100644 net/bpfilter/logger.h
+ create mode 100644 net/bpfilter/map-common.c
+ create mode 100644 net/bpfilter/map-common.h
+ create mode 100644 net/bpfilter/match.c
+ create mode 100644 net/bpfilter/match.h
+ create mode 100644 net/bpfilter/rule.c
+ create mode 100644 net/bpfilter/rule.h
+ create mode 100644 net/bpfilter/sockopt.c
+ create mode 100644 net/bpfilter/sockopt.h
+ create mode 100644 net/bpfilter/table.c
+ create mode 100644 net/bpfilter/table.h
+ create mode 100644 net/bpfilter/target.c
+ create mode 100644 net/bpfilter/target.h
+ create mode 100644 net/bpfilter/xt_udp.c
+ create mode 100644 tools/include/uapi/linux/bpfilter.h
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/.gitignore
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/Makefile
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_codegen.c
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_map.c
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_match.c
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_rule.c
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_target.c
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_xt_udp.c
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-for you to fetch changes up to fcbb408a1aaf426f88d8fb3b4c14e3625745b02f:
-
-  selftests/bpf: Add host-tools to gitignore (2022-12-23 22:49:19 +0100)
-
-----------------------------------------------------------------
-bpf-for-netdev
-
-----------------------------------------------------------------
-Anton Protopopov (1):
-      bpftool: Fix linkage with statically built libllvm
-
-Hao Sun (2):
-      bpf: fix nullness propagation for reg to reg comparisons
-      selftests/bpf: check null propagation only neither reg is PTR_TO_BTF_ID
-
-Hou Tao (1):
-      bpf: Define sock security related BTF IDs under CONFIG_SECURITY_NETWORK
-
-Jakub Kicinski (1):
-      bpf: pull before calling skb_postpull_rcsum()
-
-Martin KaFai Lau (1):
-      selftests/bpf: Test bpf_skb_adjust_room on CHECKSUM_PARTIAL
-
-Stanislav Fomichev (1):
-      selftests/bpf: Add host-tools to gitignore
-
- kernel/bpf/bpf_lsm.c                               |  2 +
- kernel/bpf/verifier.c                              |  9 ++-
- net/core/filter.c                                  |  7 +-
- tools/bpf/bpftool/Makefile                         |  4 +
- tools/testing/selftests/bpf/.gitignore             |  1 +
- tools/testing/selftests/bpf/DENYLIST.s390x         |  1 +
- .../selftests/bpf/prog_tests/decap_sanity.c        | 85 ++++++++++++++++++++++
- .../selftests/bpf/prog_tests/jeq_infer_not_null.c  |  9 +++
- .../testing/selftests/bpf/progs/bpf_tracing_net.h  |  6 ++
- tools/testing/selftests/bpf/progs/decap_sanity.c   | 68 +++++++++++++++++
- .../selftests/bpf/progs/jeq_infer_not_null_fail.c  | 42 +++++++++++
- 11 files changed, 231 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/decap_sanity.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/jeq_infer_not_null.c
- create mode 100644 tools/testing/selftests/bpf/progs/decap_sanity.c
- create mode 100644 tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c
+--
+2.38.1
