@@ -2,159 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F38F654ED1
-	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 10:51:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA780654EF8
+	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 11:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235480AbiLWJva (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Dec 2022 04:51:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        id S230106AbiLWKIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Dec 2022 05:08:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235811AbiLWJuy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Dec 2022 04:50:54 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6A0532C6
-        for <bpf@vger.kernel.org>; Fri, 23 Dec 2022 01:46:34 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id f9so3003912pgf.7
-        for <bpf@vger.kernel.org>; Fri, 23 Dec 2022 01:46:34 -0800 (PST)
+        with ESMTP id S230109AbiLWKIk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Dec 2022 05:08:40 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9AD18E17
+        for <bpf@vger.kernel.org>; Fri, 23 Dec 2022 02:08:12 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id g1so3036221pfk.2
+        for <bpf@vger.kernel.org>; Fri, 23 Dec 2022 02:08:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=theori.io; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+WKoLIABwo+u1Fq4H0zGMt0eyWpWpm9fvY8EwGWoFJ8=;
-        b=hznX9A2Q4O7umlkcuwP22V2+yaWYzaVhXHCGVoJDcbTdnPhaXfufB+WsF5SKNB1Gvf
-         SElthpxh2m024cwwq/LihYtLNZzWhJ7lpAMdvF7jPS3B9hQ+brf9uQw8DEqI8e+XStEL
-         6bxNGOV6S/RDeNPEx0DU2jxzi77Oh/OT4uasI=
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vsiiQtY7KUhLsu7tHulvoDHQIbC/xIC+4feb9aIDeEg=;
+        b=lkNSnYBRTlrsKbyNti3fXQiuHh+aWeW+aWea7bV3Ik4J/xm1DLM7xcepU8VlchQ5Ew
+         adqdf2uLZGrlPzxfRPBGW64naKH2/yioLbtMcWygZtO5XLQmlkfzhYC9pY+drP0OxNt2
+         4sQWVUrw3YDUB4KOJF3256YrnCw2NMIZdye0BTGk46paswGGdeZg2rA71DLPlAgjNxOq
+         R9VuNuZ3pil/x+BkvYn6wlW4J6mRuKq5EFe13ZeGlskdeNC6Jb3lNcASjFWNn5Jzf3BC
+         T8yon+XUQ99si4h8L/yk1BdXTe/X3lodEKRusTjdWLABUp8EKJNZOtMhEkCvQq6xDyex
+         45Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+WKoLIABwo+u1Fq4H0zGMt0eyWpWpm9fvY8EwGWoFJ8=;
-        b=NsofqQZv2auDuHxAR9nSJ/qYchv6XUxTxAWPTdzTD4IE4AGkTpGJ7kp17RldJNvae/
-         OJIIb1iewyBXGQzRiVoUmIY81HjCc/ZZbNTZTOuxlYnCOsmHUR2p+EYwhP/kRcIuGJRi
-         ALeevXPDcqWwvlWems57zZCjmt234OH1C/FhtT50cu2u0hzEDOvvgviNGSVYLK2L4wks
-         tviH/WLdnXZbkqy08+jaaGtLnapGBDQ91aOx57Cvvycb3bL4GiWvvgAsIKiXwqS4IGDX
-         rLzb8x5Uk3rIx2S21nY6Q1MtujWCrm9KlFVab3nQ/mnCTemfQboGMhsSsimBn9zc1nBM
-         Symw==
-X-Gm-Message-State: AFqh2kpgNt9JHRDp0bSZR/RRXaqQlIaJjVi32JD9wDxzPWMFYTdLWicM
-        He1cafHGdl60qM/X7BShzUw34Q==
-X-Google-Smtp-Source: AMrXdXurnA6li5fBYOAoBCQZkq+oGa/9RAYZqfEs4ZHYxs++R0+I2qRWCOry1qeNOL2QYQ86+odRIg==
-X-Received: by 2002:a05:6a00:3254:b0:579:6402:64ce with SMTP id bn20-20020a056a00325400b00579640264cemr24245725pfb.8.1671788757507;
-        Fri, 23 Dec 2022 01:45:57 -0800 (PST)
-Received: from ubuntu ([121.133.63.188])
-        by smtp.gmail.com with ESMTPSA id v65-20020a622f44000000b00575d06e53edsm2163497pfv.149.2022.12.23.01.45.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Dec 2022 01:45:57 -0800 (PST)
-Date:   Fri, 23 Dec 2022 01:45:51 -0800
-From:   Hyunwoo Kim <v4bel@theori.io>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Kees Cook <kees@kernel.org>, keescook@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-        martin.lau@linux.dev,
-        syzbot+b1e1f7feb407b56d0355@syzkaller.appspotmail.com,
-        bpf@vger.kernel.org, v4bel@theori.io
-Subject: Re: [report] OOB in bpf_load_prog() flow
-Message-ID: <20221223094551.GA1439509@ubuntu>
-References: <20221219135939.GA296131@ubuntu>
- <Y6C1SFEj9MOOnAnb@google.com>
- <20221220113718.GA1109523@ubuntu>
- <CAKH8qBuerUeU7M2x5cfjJUuSjNTZj84Hd5s+rLZ+h-XHG_a4GA@mail.gmail.com>
- <AA40C8DF-45F6-4BFB-8A2D-F4714B754479@kernel.org>
- <CAKH8qBukDoBYZh+qvGw_Q4iXd2D9YJoWV5+gzyaU01j5b0tFPA@mail.gmail.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vsiiQtY7KUhLsu7tHulvoDHQIbC/xIC+4feb9aIDeEg=;
+        b=C7aC18G6PJ+GK3/kReyK5SojuJbyMInDIYqsZ4kjDlwq3utZWbFYjiiWV4mln5bfPd
+         9vGKfPgRM8kVSLhN4mRzAxbMNZoJgLzwSd+d1l6XKIBMSY5BgGLec5s9atpoHomxGrOR
+         Ilgf2aN5CrpD3r9RJDWMGJ/5LkZAvD4/kMSA6xVWCOq0kvOS97r5utWUi1YCVy1Sloe6
+         s4c+zVRCG+Ut7gDycripHA7fHGSNE33daShOClKuhwMqvabKL0bQNbO78gDq6//uYsOg
+         6WYOPjSIs9QashRVFE8Q+RjbojDM+ZyK4KHmWLHqd90OUZi+xfhFaFaW6MCKdFTo3Ccm
+         k2/g==
+X-Gm-Message-State: AFqh2krnOGYMUT3dEttk1aLhi1MSJc94A/c1FeluxiPB3kc//t3JAYxL
+        +fX4lx3hbTpNDErIwSM4dj06DA==
+X-Google-Smtp-Source: AMrXdXulf22YtlRSSFRXVHWoW+nmU+DzjCs4ejoTVtDRtZuWxHWxxV6sQmSO69BCOrWov5kX7LqXwQ==
+X-Received: by 2002:a62:648b:0:b0:57a:a199:93e7 with SMTP id y133-20020a62648b000000b0057aa19993e7mr10327722pfb.28.1671790092144;
+        Fri, 23 Dec 2022 02:08:12 -0800 (PST)
+Received: from [10.5.203.163] ([139.177.225.249])
+        by smtp.gmail.com with ESMTPSA id d7-20020aa797a7000000b0056b9df2a15esm2184332pfq.62.2022.12.23.02.08.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Dec 2022 02:08:11 -0800 (PST)
+Message-ID: <b4a3fc9d-bd15-0682-2c56-4e63e0fb30cd@bytedance.com>
+Date:   Fri, 23 Dec 2022 18:08:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKH8qBukDoBYZh+qvGw_Q4iXd2D9YJoWV5+gzyaU01j5b0tFPA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.0
+Subject: Re: [syzbot] KASAN: use-after-free Read in put_pmu_ctx
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     syzbot <syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com>,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        bpf@vger.kernel.org, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000a20a2e05f029c577@google.com>
+ <Y6B3xEgkbmFUCeni@hirez.programming.kicks-ass.net>
+ <3a5a4738-2868-8f2f-f8b2-a28c10fbe25b@linux.dev>
+ <Y6TFKdVJ9BY56fkI@hirez.programming.kicks-ass.net>
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <Y6TFKdVJ9BY56fkI@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 01:03:47PM -0800, Stanislav Fomichev wrote:
-> On Tue, Dec 20, 2022 at 11:08 AM Kees Cook <kees@kernel.org> wrote:
-> >
-> > On December 20, 2022 9:32:51 AM PST, Stanislav Fomichev <sdf@google.com> wrote:
-> > >On Tue, Dec 20, 2022 at 3:37 AM Hyunwoo Kim <v4bel@theori.io> wrote:
-> > >>
-> > >> On Mon, Dec 19, 2022 at 11:02:32AM -0800, sdf@google.com wrote:
-> > >> > On 12/19, Hyunwoo Kim wrote:
-> > >> > > Dear,
-> > >> >
-> > >> > > This slab-out-of-bounds occurs in the bpf_prog_load() flow:
-> > >> > > https://syzkaller.appspot.com/text?tag=CrashLog&x=172e2510480000
-> > >> >
-> > >> > > I was able to trigger KASAN using this syz reproduce code:
-> > [...]
-> > >> >
-> > >> > > IMHO, the root cause of this seems to be commit
-> > >> > > ceb35b666d42c2e91b1f94aeca95bb5eb0943268.
-> > >> >
-> > >> > > Also, a user with permission to load a BPF program can use this OOB to
-> > >> > > execute the desired code with kernel privileges.
-> > >> >
-> > >> > Let's CC Kees if you suspect the commit above. Maybe we can run
-> > >> > with/without it to confirm?
-> > >>
-> > >> I built and tested each commit of 'kernel/bpf/verifier.c' that caused
-> > >> OOB, but I couldn't find the commit that caused OOB.
-> > >>
-> > >> So, starting from upstream, I reversed commits one by one and
-> > >> found the commit that triggers KASAN.
-> > >>
-> > >> As a result of testing, OOB is triggered from commit
-> > >> 8fa590bf344816c925810331eea8387627bbeb40.
-> > >>
-> > >> However, this commit seems to be a kvm related patch,
-> > >> not directly related to the bpf subsystem.
-> > >>
-> > >> IMHO, the cause of this seems to be one of these:
-> > >> 1. I ran this KASAN test on a nested guest in L2. That is,
-> > >> there is a problem with the kvm patch 8fa590bf34481.
-> > >>
-> > >> 2. Previously, the BPF subsystem had a patch that triggers KASAN,
-> > >> and KASAN is induced when kvm is patched.
-> > >>
-> > >> 3. There was confusion in the .config I tested, so the wrong
-> > >> patch was derived as a test result.
-> > >>
-> > >> I haven't been able to pinpoint what the root cause is yet.
-> > >> So I didn't add a CC for 8fa590bf34481 commit.
-> > >
-> > >Thanks for the details! Even if this particular one is unrelated,
-> > >there are a couple of reports which still somewhat look like they are
-> > >related to commit ceb35b666d42 ("bpf/verifier: Use
-> > >kmalloc_size_roundup() to match ksize() usage") ?
-> > >
-> > >https://lore.kernel.org/bpf/000000000000ab724705ee87e321@google.com/
-> > >https://lore.kernel.org/bpf/000000000000269f9a05f02be9d8@google.com/
-> >
-> > I suspect something is hitting array_resize() that wasn't maximal-bucket-size allocated. Does reverting 38931d8989b5760b0bd17c9ec99e81986258e4cb make it go away?
+On 2022/12/23 04:59, Peter Zijlstra wrote:
+> On Wed, Dec 21, 2022 at 10:42:39AM +0800, Chengming Zhou wrote:
 > 
-> Reverting makes it go away for at least one of them:
-> https://lore.kernel.org/bpf/0000000000004bee2205f0484e1d@google.com/T/#m60dba18e94e01094a899ab7fe8d19aa1a3cf26fe
+>>> Does this help?
+>>>
+>>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>>> index e47914ac8732..bbff551783e1 100644
+>>> --- a/kernel/events/core.c
+>>> +++ b/kernel/events/core.c
+>>> @@ -12689,7 +12689,8 @@ SYSCALL_DEFINE5(perf_event_open,
+>>>  	return event_fd;
+>>>  
+>>>  err_context:
+>>> -	/* event->pmu_ctx freed by free_event() */
+>>> +	put_pmu_ctx(event->pmu_ctx);
+>>> +	event->pmu_ctx = NULL; /* _free_event() */
+>>>  err_locked:
+>>>  	mutex_unlock(&ctx->mutex);
+>>>  	perf_unpin_context(ctx);
+>>
+>> Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
+>>
+>> While reviewing the code, I found perf_event_create_kernel_counter()
+>> has the similar problem in the "err_pmu_ctx" error handling path:
 > 
-> The second one didn't like my patch, I'm trying again now:
-> https://lore.kernel.org/bpf/Y6Iipad5vz55tl2A@google.com/T/#m032bed8c3d47f33a9fccd660446beabce98ff5fe
+> Right you are, updated the patch, thanks!
+> 
+>> CPU0					CPU1
+>> perf_event_create_kernel_counter()
+>>   // inc ctx refcnt
+>>   find_get_context(task, event) (1)
+>>
+>>   // inc pmu_ctx refcnt
+>>   pmu_ctx = find_get_pmu_context()
+>>
+>>   event->pmu_ctx = pmu_ctx
+>>   ...
+>>   goto err_pmu_ctx:
+>>     // dec pmu_ctx refcnt
+>>     put_pmu_ctx(pmu_ctx) (2)
+>>
+>>     mutex_unlock(&ctx->mutex)
+>>     // dec ctx refcnt
+>>     put_ctx(ctx)
+>> 					perf_event_exit_task_context()
+>> 					  mutex_lock()
+>> 					  mutex_unlock()
+>> 					  // last refcnt put
+>> 					  put_ctx()
+>>     free_event(event)
+>>       if (event->pmu_ctx) // True
+>>         put_pmu_ctx() (3)
+>>           // will access freed pmu_ctx or ctx
+>>
+>>       if (event->ctx) // False
+>>         put_ctx()
+> 
+> This doesn't look right; iirc you can hit this without concurrency,
+> something like so:
 
-I have found the root cause of this issue.
+Right, pmu_ctx UaF can hit without concurrency.
 
-This happens when krealloc() in push_jmp_history() receives an allocation 
-request with a size smaller than the existing slab object.
-Based on the poc code I first reported, it occurs when cur->jmp_history 
-of 64 bytes is krealloc()ed to 32 bytes.
+But ctx has been created with refcnt == 1, which referenced by the task,
+so the last refcnt put must be in perf_event_exit_task_context().
 
-When krealloc() is called with a smaller size than the previous one as an argument, 
-krealloc() does not 'kfree&reallocate', but only resets the slab redzone based on the newly received size (if KASAN is activated).
-That's why `ksize(dst)` in copy_array() afterward returns the actual allocation size of 64 bytes. 
-However, KASAN recognizes memcpy(dst, src, 64) as OOB because the redzone is set after 32 bytes by krealloc().
+Maybe we can improve this, don't let ctx referenced by the task? Then ctx
+can be freed when all perf_events are removed, instead of having to wait
+for the task to exit. Maybe I missed something...
 
-In any case, since the actually allocated size of dst is 64 bytes, exploiting this is close to impossible.
-However, it seems that copy_array() needs to be patched in the direction of not using ksize().
+> 
+> 
+> 	// note that when getting here, we've not passed
+> 	// perf_install_in_context() and event->ctx == NULL.
+> err_pmu_ctx:
+> 	put_pmu_ctx();
+> 	put_ctx(); // last, actually frees ctx
 
+This put_ctx() dec refcnt from 2 to 1, perf_event_exit_task_context()
+will put the last refcnt and free it.
 
-Regards,
-Hyunwoo Kim
+> 	..
+> err_alloc:
+> 	free_event()
+> 	  _free_event()
+> 	    if (event->pmu_ctx) // true, because we forgot to clear
+> 	      put_pmu_ctx() // hits 0 because double put
+> 	        // goes and touch epc->ctx and UaF
+> 
+> 
