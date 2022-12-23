@@ -2,69 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 804E3654BDF
-	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 05:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 543A6654BE0
+	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 05:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235872AbiLWEHG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Dec 2022 23:07:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
+        id S235120AbiLWEHO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Dec 2022 23:07:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235667AbiLWEHC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Dec 2022 23:07:02 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27F222B26
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 20:06:49 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id o8-20020a17090a9f8800b00223de0364beso7691578pjp.4
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 20:06:49 -0800 (PST)
+        with ESMTP id S235773AbiLWEHH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Dec 2022 23:07:07 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5619032B82
+        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 20:07:00 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id n65-20020a17090a2cc700b0021bc5ef7a14so3918323pjd.0
+        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 20:07:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DNn1oup5QeHRrkRW1TU6zdgHsqi0mFj9gfebNbDtMN4=;
-        b=LQV61lmbMtNhgOh6x0iX611A/aFfABuSDvnJjlb5m27LZX9MUjifKJdLQIAtdgYISo
-         AjXBaSJlDuMPrnA8X3NSAb7sFJ+9ScvYhWB/JzdEGBY6/KvEFpI9ZVBtxyFSH9itiJwh
-         YWupT4g1C2rEZde88NYjGZM9Fb9avAR5egjOAKorPrLUftEGKghNSluxpdts+js7RQyG
-         KXBYJkslzHJRZkMFYPLhm4LiW77n76uYLAuIRnsouDXEvCOu2VrQ7uzhKE0uwmbl6VPT
-         b7Of9I0zpid8vzHI7MhgYmfIV+dyorFpa60HCMIZbFmfelzIgMOngHH3vJcsGHaVQPm2
-         Be3Q==
+        bh=PxfXAv5q27nTofLigTAGSH2PVF7qlWOGss0Ti+Z1Ub0=;
+        b=oDHOkGGEgMww7kayXKCPrPzJSTRPb3lPu7x+uOH54f7OUELE1HzG2a0dxFwQvzP8ia
+         4Ycwd8R2ScrjL23rjjw8oDXkEFY5bj1GRy7rcIVCnNQUkFWI1UdBFiAWQSh25+GRCerq
+         wWXd5BAPAgStJ1/sFSMoWDUOlKjUj1Kd8LC1HmLGzy/aJ9Jbrf3M0STdoQy3plvcjQJp
+         0L7RNigF3fjtZJ0VmtVVM++RxHf1+NHF5TL3Zm7zHPjyKwWenpqipKrVJx6Qdl1UpIRk
+         JxPwxakV1rstWOtoWSQEFK+BVd7Uox4/VVLuDf69CsCYEYnY2VjOLhkmCfOso0IIMjNg
+         W2sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DNn1oup5QeHRrkRW1TU6zdgHsqi0mFj9gfebNbDtMN4=;
-        b=sPCAfPK6qjXD3SF/5kREOy/xVbUJjyeoW/lTQMeRKdb/42VYz4dJK8sJicVq/4Ghu0
-         ZoqH6gq243UYTafOIAdeWnlbkSBUXr0M5qwddL8YYeuCveiGu7euhAXebYcVywAxyrOD
-         uV0MrJdnSrR6yfCmYbtqr+HnicVPtEcUI/vm3Mvj7NQHJ53+DQCv7nJglm9NCeAiierp
-         +z3rhX+3GVpb0b1D8lRlgATVmu9Qxm/VwpElDOkgFckLqEm/+XG3qFPDwoqJ3RurRfVx
-         Ioz5aBKmwBUt/TZAW6gxi046BQPTwXCHGzrKnaCQenpu/kn3pSgzVv1FYRc+iidhcdT3
-         yCvw==
-X-Gm-Message-State: AFqh2kqT0yDODpxGoW1RglryxABSnaf4as4msTPVrfRdxFDJIQR0/djU
-        gVHugVZDVAu2DnwF9Tslc6I5pIMUK+/9P16RvnvV3w==
-X-Google-Smtp-Source: AMrXdXt+h45RVd3i8TtC86EoE0v+nBwvgtK61mE1B55sppFDH1E6uOxbmLFuM5FLOqhEv5IU91b/VUeOzudNOoDBvJo=
-X-Received: by 2002:a17:90a:5296:b0:219:fbc:a088 with SMTP id
- w22-20020a17090a529600b002190fbca088mr933955pjh.162.1671768408887; Thu, 22
- Dec 2022 20:06:48 -0800 (PST)
+        bh=PxfXAv5q27nTofLigTAGSH2PVF7qlWOGss0Ti+Z1Ub0=;
+        b=yJ+qAgpryssGdg7ponRn6YMMJXsCdPcMAuYOiakdH8B9zS1lBKkTaHAwC53myAZJaf
+         t5352/zws15WyDS9wizg3INZgSeWdkOZqexqZyHgrd+TKA5T1kZg/tfi2GNk5aCcx19i
+         HyC1/D/iaPLVgS7vfrdk1hW7MuAvCQ34OCEkZQ6ICxVVhMpbF7+UemFalIUvkU8Ogj+b
+         6LGNZMLW+9TmwwR+ux4Z4PV/nF3upTr313qkbo9Oj7W9Tlyja3mD+pCWDVE9qpZReeJH
+         V5O3zLewn66TByLaocWPjZsu9G6G/sfLyrfrWPH0BG8Dvbjqp75sxrTS/FNuB+uLPoCP
+         FAxg==
+X-Gm-Message-State: AFqh2koIyt4t713XRGojXzSrrHMc5QyPU7b0ohW+h14fikL2nsDe8f70
+        tQ1PvliIcRvm5DcnYsWvTAeZexHMqydwhS2RkAZvWA==
+X-Google-Smtp-Source: AMrXdXvSjYReEzPVUPhyF/4VEVIBVTDrSyexDDsnlIlpIIrmhSoqVwLCujxOI9FOA37IbD2phTDW13z4gRFMrv2Ml8s=
+X-Received: by 2002:a17:902:a506:b0:189:97e2:ab8b with SMTP id
+ s6-20020a170902a50600b0018997e2ab8bmr763264plq.131.1671768419637; Thu, 22 Dec
+ 2022 20:06:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20221220222043.3348718-1-sdf@google.com> <20221220222043.3348718-9-sdf@google.com>
- <5983e0f0-e1ee-5843-33ea-64d139e2e849@linux.dev>
-In-Reply-To: <5983e0f0-e1ee-5843-33ea-64d139e2e849@linux.dev>
+References: <20221220222043.3348718-1-sdf@google.com> <20221220222043.3348718-12-sdf@google.com>
+ <18bed458-0128-d434-8b7a-bf676a0ea863@linux.dev>
+In-Reply-To: <18bed458-0128-d434-8b7a-bf676a0ea863@linux.dev>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 22 Dec 2022 20:06:36 -0800
-Message-ID: <CAKH8qBtCrAqxTzSECyG2VjO7rx27mdSEKMwXadrvVOvDaf5rBg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 08/17] bpf: Support consuming XDP HW metadata
- from fext programs
+Date:   Thu, 22 Dec 2022 20:06:48 -0800
+Message-ID: <CAKH8qBst6==Rw1mQohjNimf5QZrPJ05d+XLjqyyT1W8fENNz4w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 11/17] selftests/bpf: Verify xdp_metadata
+ xdp->af_xdp path
 To:     Martin KaFai Lau <martin.lau@linux.dev>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
         kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        bpf@vger.kernel.org
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,260 +79,230 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 4:37 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+On Thu, Dec 22, 2022 at 4:40 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
 >
 > On 12/20/22 2:20 PM, Stanislav Fomichev wrote:
-> > diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> > index 0e3fc743e0a8..60978a1f9baa 100644
-> > --- a/kernel/bpf/offload.c
-> > +++ b/kernel/bpf/offload.c
-> > @@ -187,17 +187,13 @@ static void __bpf_offload_dev_netdev_unregister(struct bpf_offload_dev *offdev,
-> >       kfree(ondev);
-> >   }
-> >
-> > -int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
-> > +static int __bpf_prog_dev_bound_init(struct bpf_prog *prog, struct net_device *netdev)
-> >   {
-> >       struct bpf_offload_netdev *ondev;
-> >       struct bpf_prog_offload *offload;
-> >       int err;
-> >
-> > -     if (attr->prog_type != BPF_PROG_TYPE_SCHED_CLS &&
-> > -         attr->prog_type != BPF_PROG_TYPE_XDP)
-> > -             return -EINVAL;
-> > -
-> > -     if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-> > +     if (!netdev)
->
-> Is this !netdev test needed?
-
-Seems safe to drop. _inherit has a 'old_prog->aux->offload' check and
-_init has a check after dev_get_by_index.
-
-> >               return -EINVAL;
-> >
-> >       offload = kzalloc(sizeof(*offload), GFP_USER);
-> > @@ -205,21 +201,13 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
-> >               return -ENOMEM;
-> >
-> >       offload->prog = prog;
-> > +     offload->netdev = netdev;
-> >
-> > -     offload->netdev = dev_get_by_index(current->nsproxy->net_ns,
-> > -                                        attr->prog_ifindex);
-> > -     err = bpf_dev_offload_check(offload->netdev);
-> > -     if (err)
-> > -             goto err_maybe_put;
-> > -
-> > -     prog->aux->offload_requested = !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY);
-> > -
-> > -     down_write(&bpf_devs_lock);
-> >       ondev = bpf_offload_find_netdev(offload->netdev);
-> >       if (!ondev) {
-> >               if (bpf_prog_is_offloaded(prog->aux)) {
-> >                       err = -EINVAL;
-> > -                     goto err_unlock;
-> > +                     goto err_free;
-> >               }
-> >
-> >               /* When only binding to the device, explicitly
-> > @@ -227,25 +215,80 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
-> >                */
-> >               err = __bpf_offload_dev_netdev_register(NULL, offload->netdev);
-> >               if (err)
-> > -                     goto err_unlock;
-> > +                     goto err_free;
-> >               ondev = bpf_offload_find_netdev(offload->netdev);
-> >       }
-> >       offload->offdev = ondev->offdev;
-> >       prog->aux->offload = offload;
-> >       list_add_tail(&offload->offloads, &ondev->progs);
-> > -     dev_put(offload->netdev);
-> > -     up_write(&bpf_devs_lock);
-> >
-> >       return 0;
-> > -err_unlock:
-> > -     up_write(&bpf_devs_lock);
-> > -err_maybe_put:
-> > -     if (offload->netdev)
-> > -             dev_put(offload->netdev);
-> > +err_free:
-> >       kfree(offload);
-> >       return err;
-> >   }
-> >
-> > +int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
+> > +static int open_xsk(const char *ifname, struct xsk *xsk)
 > > +{
-> > +     struct net_device *netdev;
-> > +     int err;
+> > +     int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
+> > +     const struct xsk_socket_config socket_config = {
+> > +             .rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > +             .tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > +             .libbpf_flags = XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD,
+> > +             .xdp_flags = XDP_FLAGS,
+> > +             .bind_flags = XDP_COPY,
+> > +     };
+> > +     const struct xsk_umem_config umem_config = {
+> > +             .fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > +             .comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
+> > +             .frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
+> > +             .flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG,
+> > +     };
+> > +     __u32 idx;
+> > +     u64 addr;
+> > +     int ret;
+> > +     int i;
 > > +
-> > +     if (attr->prog_type != BPF_PROG_TYPE_SCHED_CLS &&
-> > +         attr->prog_type != BPF_PROG_TYPE_XDP)
-> > +             return -EINVAL;
+> > +     xsk->umem_area = mmap(NULL, UMEM_SIZE, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
+> > +     if (!ASSERT_NEQ(xsk->umem_area, MAP_FAILED, "mmap"))
+> > +             return -1;
 > > +
-> > +     if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-> > +             return -EINVAL;
+> > +     ret = xsk_umem__create(&xsk->umem,
+> > +                            xsk->umem_area, UMEM_SIZE,
+> > +                            &xsk->fill,
+> > +                            &xsk->comp,
+> > +                            &umem_config);
+> > +     if (!ASSERT_OK(ret, "xsk_umem__create"))
+> > +             return ret;
 > > +
-> > +     netdev = dev_get_by_index(current->nsproxy->net_ns, attr->prog_ifindex);
-> > +     if (!netdev)
-> > +             return -EINVAL;
+> > +     ret = xsk_socket__create(&xsk->socket, ifname, QUEUE_ID,
+> > +                              xsk->umem,
+> > +                              &xsk->rx,
+> > +                              &xsk->tx,
+> > +                              &socket_config);
+> > +     if (!ASSERT_OK(ret, "xsk_socket__create"))
+> > +             return ret;
 > > +
-> > +     down_write(&bpf_devs_lock);
-> > +     err = bpf_dev_offload_check(netdev);
-> > +     if (err)
-> > +             goto out;
+> > +     /* First half of umem is for TX. This way address matches 1-to-1
+> > +      * to the completion queue index.
+> > +      */
 > > +
-> > +     prog->aux->offload_requested = !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY);
+> > +     for (i = 0; i < UMEM_NUM / 2; i++) {
+> > +             addr = i * UMEM_FRAME_SIZE;
+> > +             printf("%p: tx_desc[%d] -> %lx\n", xsk, i, addr);
 >
-> nit. move the bpf_dev_offload_check() and offload_requested assignment out.  I
-> don't think they need lock protection so that it is clear what the lock is
-> protecting in the future reading.  It seems the original code have them outside
-> also.
+> Do you still need this verbose printf which is in a loop?  Also, how about other
+> printf in this test?
 
-Sure.
+In case we'd ever need to debug this test, those printfs shouldn't
+hurt, right? Or are you concerned about this test polluting the output
+with something like 'test_progs -v -v' ?
 
-> > +
-> > +     err = __bpf_prog_dev_bound_init(prog, netdev);
-> > +     if (err)
-> > +             goto out;
->
-> nit. goto can be saved.
-
-Ack, will drop here; although, will still keep the goto above for
-dev_put(netdev).
-
-> > +
-> > +out:
-> > +     dev_put(netdev);
-> > +     up_write(&bpf_devs_lock);
-> > +     return err;
-> > +}
-> > +
-> > +int bpf_prog_dev_bound_inherit(struct bpf_prog *new_prog, struct bpf_prog *old_prog)
-> > +{
-> > +     int err;
-> > +
-> > +     if (!bpf_prog_is_dev_bound(old_prog->aux))
-> > +             return 0;
-> > +
-> > +     if (bpf_prog_is_offloaded(old_prog->aux))
-> > +             return -EINVAL;
-> > +
-> > +     down_write(&bpf_devs_lock);
-> > +     if (!old_prog->aux->offload) {
-> > +             err = -EINVAL;
-> > +             goto out;
 > > +     }
 > > +
-> > +     new_prog->aux->dev_bound = old_prog->aux->dev_bound;
-> > +     new_prog->aux->offload_requested = old_prog->aux->offload_requested;
->
-> nit. Same here, I think the initialization can be moved outside of the lock.
-
-Agreed. Seems like this will cause bpf_prog_dev_bound_destroy to be
-called when we return with an error below; but seems safe since we're
-also doing an 'aux->offload' check in there.
-
+> > +     /* Second half of umem is for RX. */
 > > +
-> > +     err = __bpf_prog_dev_bound_init(new_prog, old_prog->aux->offload->netdev);
-> > +     if (err)
-> > +             goto out;
+> > +     ret = xsk_ring_prod__reserve(&xsk->fill, UMEM_NUM / 2, &idx);
+> > +     if (!ASSERT_EQ(UMEM_NUM / 2, ret, "xsk_ring_prod__reserve"))
+> > +             return ret;
+> > +     if (!ASSERT_EQ(idx, 0, "fill idx != 0"))
+> > +             return -1;
+> > +
+> > +     for (i = 0; i < UMEM_NUM / 2; i++) {
+> > +             addr = (UMEM_NUM / 2 + i) * UMEM_FRAME_SIZE;
+> > +             printf("%p: rx_desc[%d] -> %lx\n", xsk, i, addr);
+> > +             *xsk_ring_prod__fill_addr(&xsk->fill, i) = addr;
+> > +     }
+> > +     xsk_ring_prod__submit(&xsk->fill, ret);
+> > +
+> > +     return 0;
+> > +}
+> > +
 >
-> goto can be saved.
-
-Thx.
-
+> [ ... ]
+>
+> > +void test_xdp_metadata(void)
+> > +{
+> > +     struct xdp_metadata2 *bpf_obj2 = NULL;
+> > +     struct xdp_metadata *bpf_obj = NULL;
+> > +     struct bpf_program *new_prog, *prog;
+> > +     struct nstoken *tok = NULL;
+> > +     __u32 queue_id = QUEUE_ID;
+> > +     struct bpf_map *prog_arr;
+> > +     struct xsk tx_xsk = {};
+> > +     struct xsk rx_xsk = {};
+> > +     __u32 val, key = 0;
+> > +     int retries = 10;
+> > +     int rx_ifindex;
+> > +     int sock_fd;
+> > +     int ret;
+> > +
+> > +     /* Setup new networking namespace, with a veth pair. */
+> > +
+> > +     SYS("ip netns add xdp_metadata");
+> > +     tok = open_netns("xdp_metadata");
+> > +     SYS("ip link add numtxqueues 1 numrxqueues 1 " TX_NAME
+> > +         " type veth peer " RX_NAME " numtxqueues 1 numrxqueues 1");
+> > +     SYS("ip link set dev " TX_NAME " address 00:00:00:00:00:01");
+> > +     SYS("ip link set dev " RX_NAME " address 00:00:00:00:00:02");
+> > +     SYS("ip link set dev " TX_NAME " up");
+> > +     SYS("ip link set dev " RX_NAME " up");
+> > +     SYS("ip addr add " TX_ADDR "/" PREFIX_LEN " dev " TX_NAME);
+> > +     SYS("ip addr add " RX_ADDR "/" PREFIX_LEN " dev " RX_NAME);
+> > +
+> > +     rx_ifindex = if_nametoindex(RX_NAME);
+> > +
+> > +     /* Setup separate AF_XDP for TX and RX interfaces. */
+> > +
+> > +     ret = open_xsk(TX_NAME, &tx_xsk);
+> > +     if (!ASSERT_OK(ret, "open_xsk(TX_NAME)"))
+> > +             goto out;
+> > +
+> > +     ret = open_xsk(RX_NAME, &rx_xsk);
+> > +     if (!ASSERT_OK(ret, "open_xsk(RX_NAME)"))
+> > +             goto out;
+> > +
+> > +     bpf_obj = xdp_metadata__open();
+> > +     if (!ASSERT_OK_PTR(bpf_obj, "open skeleton"))
+> > +             goto out;
+> > +
+> > +     prog = bpf_object__find_program_by_name(bpf_obj->obj, "rx");
+> > +     bpf_program__set_ifindex(prog, rx_ifindex);
+> > +     bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
+> > +
+> > +     if (!ASSERT_OK(xdp_metadata__load(bpf_obj), "load skeleton"))
+> > +             goto out;
+> > +
+> > +     /* Make sure we can't add dev-bound programs to prog maps. */
+> > +     prog_arr = bpf_object__find_map_by_name(bpf_obj->obj, "prog_arr");
+> > +     if (!ASSERT_OK_PTR(prog_arr, "no prog_arr map"))
+> > +             goto out;
+> > +
+> > +     val = bpf_program__fd(prog);
+> > +     if (!ASSERT_ERR(bpf_map__update_elem(prog_arr, &key, sizeof(key),
+> > +                                          &val, sizeof(val), BPF_ANY),
+> > +                     "update prog_arr"))
+> > +             goto out;
+> > +
+> > +     /* Attach BPF program to RX interface. */
+> > +
+> > +     ret = bpf_xdp_attach(rx_ifindex,
+> > +                          bpf_program__fd(bpf_obj->progs.rx),
+> > +                          XDP_FLAGS, NULL);
+> > +     if (!ASSERT_GE(ret, 0, "bpf_xdp_attach"))
+> > +             goto out;
+> > +
+> > +     sock_fd = xsk_socket__fd(rx_xsk.socket);
+> > +     ret = bpf_map_update_elem(bpf_map__fd(bpf_obj->maps.xsk), &queue_id, &sock_fd, 0);
+> > +     if (!ASSERT_GE(ret, 0, "bpf_map_update_elem"))
+> > +             goto out;
+> > +
+> > +     /* Send packet destined to RX AF_XDP socket. */
+> > +     if (!ASSERT_GE(generate_packet(&tx_xsk, AF_XDP_CONSUMER_PORT), 0,
+> > +                    "generate AF_XDP_CONSUMER_PORT"))
+> > +             goto out;
+> > +
+> > +     /* Verify AF_XDP RX packet has proper metadata. */
+> > +     if (!ASSERT_GE(verify_xsk_metadata(&rx_xsk), 0,
+> > +                    "verify_xsk_metadata"))
+> > +             goto out;
+> > +
+> > +     complete_tx(&tx_xsk);
+> > +
+> > +     /* Make sure freplace correctly picks up original bound device
+> > +      * and doesn't crash.
+> > +      */
+> > +
+> > +     bpf_obj2 = xdp_metadata2__open();
+> > +     if (!ASSERT_OK_PTR(bpf_obj2, "open skeleton"))
+> > +             goto out;
+> > +
+> > +     new_prog = bpf_object__find_program_by_name(bpf_obj2->obj, "freplace_rx");
+> > +     bpf_program__set_attach_target(new_prog, bpf_program__fd(prog), "rx");
+> > +
+> > +     if (!ASSERT_OK(xdp_metadata2__load(bpf_obj2), "load freplace skeleton"))
+> > +             goto out;
+> > +
+> > +     if (!ASSERT_OK(xdp_metadata2__attach(bpf_obj2), "attach freplace"))
+> > +             goto out;
+> > +
+> > +     /* Send packet to trigger . */
+> > +     if (!ASSERT_GE(generate_packet(&tx_xsk, AF_XDP_CONSUMER_PORT), 0,
+> > +                    "generate freplace packet"))
+> > +             goto out;
+> > +
+> > +     while (!retries--) {
+> > +             if (bpf_obj2->bss->called)
+> > +                     break;
+> > +             usleep(10);
+> > +     }
+> > +     ASSERT_GT(bpf_obj2->bss->called, 0, "not called");
 > > +
 > > +out:
-> > +     up_write(&bpf_devs_lock);
-> > +     return err;
+> > +     close_xsk(&rx_xsk);
+> > +     close_xsk(&tx_xsk);
+> > +     if (bpf_obj2)
+>
+> nit. no need to test NULL.  xdp_metadata2__destroy() can handle it.
+
+SG, thanks!
+
+> > +             xdp_metadata2__destroy(bpf_obj2);
+> > +     if (bpf_obj)
+>
+> Same here.
+>
+> > +             xdp_metadata__destroy(bpf_obj);
+> > +     system("ip netns del xdp_metadata");
+>
+> didn't know netns can be deleted before close_netns(tok).  Can you double check?
+
+Should probably work because 'ip netns del' just unlinks the netns fd?
+But let's properly reoder.
+
+
+> > +     if (tok)
+> > +             close_netns(tok);
 > > +}
-> > +
-> >   int bpf_prog_offload_verifier_prep(struct bpf_prog *prog)
-> >   {
-> >       struct bpf_prog_offload *offload;
-> > @@ -687,6 +730,22 @@ bool bpf_offload_dev_match(struct bpf_prog *prog, struct net_device *netdev)
-> >   }
-> >   EXPORT_SYMBOL_GPL(bpf_offload_dev_match);
-> >
-> > +bool bpf_prog_dev_bound_match(struct bpf_prog *lhs, struct bpf_prog *rhs)
-> > +{
-> > +     bool ret;
-> > +
-> > +     if (bpf_prog_is_offloaded(lhs->aux) != bpf_prog_is_offloaded(rhs->aux))
-> > +             return false;
-> > +
-> > +     down_read(&bpf_devs_lock);
-> > +     ret = lhs->aux->offload && rhs->aux->offload &&
-> > +           lhs->aux->offload->netdev &&
-> > +           lhs->aux->offload->netdev == rhs->aux->offload->netdev;
-> > +     up_read(&bpf_devs_lock);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> >   bool bpf_offload_prog_map_match(struct bpf_prog *prog, struct bpf_map *map)
-> >   {
-> >       struct bpf_offloaded_map *offmap;
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 11c558be4992..64a68e8fb072 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -2605,6 +2605,12 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
-> >                       goto free_prog_sec;
-> >       }
-> >
-> > +     if (type == BPF_PROG_TYPE_EXT && dst_prog) {
 >
-> Does it also need to test the bpf_prog_is_dev_bound(dst_prog->aux)?  Otherwise,
-> the bpf_prog_dev_bound_inherit() below will fail on everything for !CONFIG_NET.
-
-We do the following in bpf_prog_dev_bound_inherit which should be enough?
-
-if (!bpf_prog_is_dev_bound(old_prog->aux))
-     return 0;
-
-Or am I missing something?
-
-
-> > +             err = bpf_prog_dev_bound_inherit(prog, dst_prog);
-> > +             if (err)
-> > +                     goto free_prog_sec;
-> > +     }
-> > +
-> >       /* find program type: socket_filter vs tracing_filter */
-> >       err = find_prog_type(type, prog);
-> >       if (err < 0)
-> > @@ -3021,6 +3027,12 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
-> >                       goto out_put_prog;
-> >               }
-> >
-> > +             if (bpf_prog_is_dev_bound(prog->aux) &&
->
-> Like here.
->
-> > +                 !bpf_prog_dev_bound_match(prog, tgt_prog)) {
-> > +                     err = -EINVAL;
-> > +                     goto out_put_prog;
-> > +             }
-> > +
-> >               key = bpf_trampoline_compute_key(tgt_prog, NULL, btf_id);
-> >       }
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 320451a0be3e..64f4d2b5824f 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -16537,11 +16537,6 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
-> >       if (tgt_prog) {
-> >               struct bpf_prog_aux *aux = tgt_prog->aux;
-> >
-> > -             if (bpf_prog_is_dev_bound(tgt_prog->aux)) {
-> > -                     bpf_log(log, "Replacing device-bound programs not supported\n");
-> > -                     return -EINVAL;
-> > -             }
-> > -
-> >               for (i = 0; i < aux->func_info_cnt; i++)
-> >                       if (aux->func_info[i].type_id == btf_id) {
-> >                               subprog = i;
 >
