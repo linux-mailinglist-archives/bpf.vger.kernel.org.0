@@ -2,170 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA780654EF8
-	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 11:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E45654F57
+	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 11:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbiLWKIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Dec 2022 05:08:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
+        id S235927AbiLWKvb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Dec 2022 05:51:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbiLWKIk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Dec 2022 05:08:40 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9AD18E17
-        for <bpf@vger.kernel.org>; Fri, 23 Dec 2022 02:08:12 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id g1so3036221pfk.2
-        for <bpf@vger.kernel.org>; Fri, 23 Dec 2022 02:08:12 -0800 (PST)
+        with ESMTP id S230248AbiLWKvb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Dec 2022 05:51:31 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204AEBB7
+        for <bpf@vger.kernel.org>; Fri, 23 Dec 2022 02:51:30 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id o5so4249804wrm.1
+        for <bpf@vger.kernel.org>; Fri, 23 Dec 2022 02:51:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vsiiQtY7KUhLsu7tHulvoDHQIbC/xIC+4feb9aIDeEg=;
-        b=lkNSnYBRTlrsKbyNti3fXQiuHh+aWeW+aWea7bV3Ik4J/xm1DLM7xcepU8VlchQ5Ew
-         adqdf2uLZGrlPzxfRPBGW64naKH2/yioLbtMcWygZtO5XLQmlkfzhYC9pY+drP0OxNt2
-         4sQWVUrw3YDUB4KOJF3256YrnCw2NMIZdye0BTGk46paswGGdeZg2rA71DLPlAgjNxOq
-         R9VuNuZ3pil/x+BkvYn6wlW4J6mRuKq5EFe13ZeGlskdeNC6Jb3lNcASjFWNn5Jzf3BC
-         T8yon+XUQ99si4h8L/yk1BdXTe/X3lodEKRusTjdWLABUp8EKJNZOtMhEkCvQq6xDyex
-         45Eg==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KUWOtdUH/FK6dlyyQTRzoX4Sh0nW9DKrQ5zYKQvxpFU=;
+        b=elDT9SSTCYJwpX1IJbgt/hKt2N+JNOnJpDRWNMTjq1U8+baoAy730MHcB5CbB9xic+
+         Iz2DOM3t9JF4HzVv9A9zOY6WX/BmOUNGaTaSvM6SoXHgxC2qcHlpzdLM4Xmj/xKPAWSi
+         JF9jFZNRAlAYGQ4NpUuj8WdJIzsyZM6ZdvrvRDzybqajyY/14AFsytT2WZZMWK4xO5Sn
+         AWXZCiniLxYWuUQJqVZjiuboBFOA7qN3+i+s13Q0aopecvHJH9xVOlUHFwr4uE/Bz0d4
+         5VpDIflUG54W5MXZjHDD4KkEenR7SOz2sioQl8xh6UxnpsFZJ9/IVcJ2nJneiA/pT0Qn
+         EvfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vsiiQtY7KUhLsu7tHulvoDHQIbC/xIC+4feb9aIDeEg=;
-        b=C7aC18G6PJ+GK3/kReyK5SojuJbyMInDIYqsZ4kjDlwq3utZWbFYjiiWV4mln5bfPd
-         9vGKfPgRM8kVSLhN4mRzAxbMNZoJgLzwSd+d1l6XKIBMSY5BgGLec5s9atpoHomxGrOR
-         Ilgf2aN5CrpD3r9RJDWMGJ/5LkZAvD4/kMSA6xVWCOq0kvOS97r5utWUi1YCVy1Sloe6
-         s4c+zVRCG+Ut7gDycripHA7fHGSNE33daShOClKuhwMqvabKL0bQNbO78gDq6//uYsOg
-         6WYOPjSIs9QashRVFE8Q+RjbojDM+ZyK4KHmWLHqd90OUZi+xfhFaFaW6MCKdFTo3Ccm
-         k2/g==
-X-Gm-Message-State: AFqh2krnOGYMUT3dEttk1aLhi1MSJc94A/c1FeluxiPB3kc//t3JAYxL
-        +fX4lx3hbTpNDErIwSM4dj06DA==
-X-Google-Smtp-Source: AMrXdXulf22YtlRSSFRXVHWoW+nmU+DzjCs4ejoTVtDRtZuWxHWxxV6sQmSO69BCOrWov5kX7LqXwQ==
-X-Received: by 2002:a62:648b:0:b0:57a:a199:93e7 with SMTP id y133-20020a62648b000000b0057aa19993e7mr10327722pfb.28.1671790092144;
-        Fri, 23 Dec 2022 02:08:12 -0800 (PST)
-Received: from [10.5.203.163] ([139.177.225.249])
-        by smtp.gmail.com with ESMTPSA id d7-20020aa797a7000000b0056b9df2a15esm2184332pfq.62.2022.12.23.02.08.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Dec 2022 02:08:11 -0800 (PST)
-Message-ID: <b4a3fc9d-bd15-0682-2c56-4e63e0fb30cd@bytedance.com>
-Date:   Fri, 23 Dec 2022 18:08:03 +0800
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KUWOtdUH/FK6dlyyQTRzoX4Sh0nW9DKrQ5zYKQvxpFU=;
+        b=0XsIDCYjieeBcRcgs0P0tvOO8BZgzgLYWBJHY9med9l0YE2Ky25BCXMX3/9TniApC3
+         rMA+D0onoLYwKBE/N27ETh86Chbg1tD9Y2rLQ2KkaoxXidc+ecngKdLH7UtYsBfZY2hS
+         syT0nY/LnXbccgb8MdNUoYoWZj/RTco5YURVgOuiJ/MUDFy4lJiSe6luFwwJ6ed2XLEw
+         G5aKkaJqoSxnJ7BSnwyhxXbeTn9l6l9BxbTiTDwFZfrhFwEHiSJmLH/m0sB+ski3Phwi
+         Fc8tflo/+KmbqGMQMmxrKlNfCaxzjQRJbQDbbc1QJRriu/NWzoSHlIjNaGyL5mnQKHq5
+         AZ+g==
+X-Gm-Message-State: AFqh2kovC3gh5v0EcWVKdxZ/gL11+lbE9hqUWqyZIY1B4qxJS3XJqv/e
+        WX7P8R0z0MHqRcwpaVNGCuw=
+X-Google-Smtp-Source: AMrXdXvKT4FLelieQBXnujk8dewb7kPihUuwPzrNoDmQ3unvPeeIhL6nvRz8OCPTP10D9os/xGrVgQ==
+X-Received: by 2002:a5d:6a4c:0:b0:242:5878:291e with SMTP id t12-20020a5d6a4c000000b002425878291emr6192106wrw.51.1671792688652;
+        Fri, 23 Dec 2022 02:51:28 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id b10-20020adfe64a000000b00242271fd2besm2873217wrn.89.2022.12.23.02.51.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Dec 2022 02:51:28 -0800 (PST)
+Date:   Fri, 23 Dec 2022 13:51:25 +0300
+From:   Dan Carpenter <error27@gmail.com>
+To:     oe-kbuild@lists.linux.dev, Dave Marchevsky <davemarchevsky@fb.com>,
+        bpf@vger.kernel.org
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: Re: [PATCH v2 bpf-next 02/13] bpf: Migrate release_on_unlock logic
+ to non-owning ref semantics
+Message-ID: <202212171800.H94NtsOB-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.0
-Subject: Re: [syzbot] KASAN: use-after-free Read in put_pmu_ctx
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     syzbot <syzbot+b8e8c01c8ade4fe6e48f@syzkaller.appspotmail.com>,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        bpf@vger.kernel.org, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000a20a2e05f029c577@google.com>
- <Y6B3xEgkbmFUCeni@hirez.programming.kicks-ass.net>
- <3a5a4738-2868-8f2f-f8b2-a28c10fbe25b@linux.dev>
- <Y6TFKdVJ9BY56fkI@hirez.programming.kicks-ass.net>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <Y6TFKdVJ9BY56fkI@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221217082506.1570898-3-davemarchevsky@fb.com>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022/12/23 04:59, Peter Zijlstra wrote:
-> On Wed, Dec 21, 2022 at 10:42:39AM +0800, Chengming Zhou wrote:
-> 
->>> Does this help?
->>>
->>> diff --git a/kernel/events/core.c b/kernel/events/core.c
->>> index e47914ac8732..bbff551783e1 100644
->>> --- a/kernel/events/core.c
->>> +++ b/kernel/events/core.c
->>> @@ -12689,7 +12689,8 @@ SYSCALL_DEFINE5(perf_event_open,
->>>  	return event_fd;
->>>  
->>>  err_context:
->>> -	/* event->pmu_ctx freed by free_event() */
->>> +	put_pmu_ctx(event->pmu_ctx);
->>> +	event->pmu_ctx = NULL; /* _free_event() */
->>>  err_locked:
->>>  	mutex_unlock(&ctx->mutex);
->>>  	perf_unpin_context(ctx);
->>
->> Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
->>
->> While reviewing the code, I found perf_event_create_kernel_counter()
->> has the similar problem in the "err_pmu_ctx" error handling path:
-> 
-> Right you are, updated the patch, thanks!
-> 
->> CPU0					CPU1
->> perf_event_create_kernel_counter()
->>   // inc ctx refcnt
->>   find_get_context(task, event) (1)
->>
->>   // inc pmu_ctx refcnt
->>   pmu_ctx = find_get_pmu_context()
->>
->>   event->pmu_ctx = pmu_ctx
->>   ...
->>   goto err_pmu_ctx:
->>     // dec pmu_ctx refcnt
->>     put_pmu_ctx(pmu_ctx) (2)
->>
->>     mutex_unlock(&ctx->mutex)
->>     // dec ctx refcnt
->>     put_ctx(ctx)
->> 					perf_event_exit_task_context()
->> 					  mutex_lock()
->> 					  mutex_unlock()
->> 					  // last refcnt put
->> 					  put_ctx()
->>     free_event(event)
->>       if (event->pmu_ctx) // True
->>         put_pmu_ctx() (3)
->>           // will access freed pmu_ctx or ctx
->>
->>       if (event->ctx) // False
->>         put_ctx()
-> 
-> This doesn't look right; iirc you can hit this without concurrency,
-> something like so:
+Hi Dave,
 
-Right, pmu_ctx UaF can hit without concurrency.
+url:    https://github.com/intel-lab-lkp/linux/commits/Dave-Marchevsky/BPF-rbtree-next-gen-datastructure/20221217-162646
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20221217082506.1570898-3-davemarchevsky%40fb.com
+patch subject: [PATCH v2 bpf-next 02/13] bpf: Migrate release_on_unlock logic to non-owning ref semantics
+config: x86_64-randconfig-m001
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
 
-But ctx has been created with refcnt == 1, which referenced by the task,
-so the last refcnt put must be in perf_event_exit_task_context().
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <error27@gmail.com>
 
-Maybe we can improve this, don't let ctx referenced by the task? Then ctx
-can be freed when all perf_events are removed, instead of having to wait
-for the task to exit. Maybe I missed something...
+smatch warnings:
+kernel/bpf/verifier.c:6275 reg_find_field_offset() warn: variable dereferenced before check 'reg' (see line 6274)
 
-> 
-> 
-> 	// note that when getting here, we've not passed
-> 	// perf_install_in_context() and event->ctx == NULL.
-> err_pmu_ctx:
-> 	put_pmu_ctx();
-> 	put_ctx(); // last, actually frees ctx
+vim +/reg +6275 kernel/bpf/verifier.c
 
-This put_ctx() dec refcnt from 2 to 1, perf_event_exit_task_context()
-will put the last refcnt and free it.
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6268  static struct btf_field *
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6269  reg_find_field_offset(const struct bpf_reg_state *reg, s32 off, u32 fields)
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6270  {
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6271  	struct btf_field *field;
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6272  	struct btf_record *rec;
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6273  
+4ed17b8d6842ba Dave Marchevsky 2022-12-17 @6274  	rec = reg_btf_record(reg);
+4ed17b8d6842ba Dave Marchevsky 2022-12-17 @6275  	if (!reg)
 
-> 	..
-> err_alloc:
-> 	free_event()
-> 	  _free_event()
-> 	    if (event->pmu_ctx) // true, because we forgot to clear
-> 	      put_pmu_ctx() // hits 0 because double put
-> 	        // goes and touch epc->ctx and UaF
-> 
-> 
+Is this supposed to test rec instead of reg?
+
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6276  		return NULL;
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6277  
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6278  	field = btf_record_find(rec, off, fields);
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6279  	if (!field)
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6280  		return NULL;
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6281  
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6282  	return field;
+4ed17b8d6842ba Dave Marchevsky 2022-12-17  6283  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+
