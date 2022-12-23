@@ -2,52 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C254654C48
-	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 06:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC0D654D08
+	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 08:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbiLWFtt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 23 Dec 2022 00:49:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35822 "EHLO
+        id S235946AbiLWHxj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Dec 2022 02:53:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbiLWFtp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Dec 2022 00:49:45 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B792A52D
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:44 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BN3uSN5001003
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:44 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mmc5jraq2-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:44 -0800
-Received: from twshared22340.15.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Thu, 22 Dec 2022 21:49:41 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 2868823EA760D; Thu, 22 Dec 2022 21:49:38 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 7/7] bpf: unify PTR_TO_MAP_{KEY,VALUE} with default case in regsafe()
-Date:   Thu, 22 Dec 2022 21:49:21 -0800
-Message-ID: <20221223054921.958283-8-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221223054921.958283-1-andrii@kernel.org>
-References: <20221223054921.958283-1-andrii@kernel.org>
+        with ESMTP id S229637AbiLWHxi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Dec 2022 02:53:38 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D59D31EDF;
+        Thu, 22 Dec 2022 23:53:37 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id u28so1249292edd.10;
+        Thu, 22 Dec 2022 23:53:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8WKoOMPsmNwyEfgMM+9XAivDWwN5pCyQ5XhkIU1BGH4=;
+        b=kcHZylwZirfcKWkwvdrtVgDTcsDUqU50o7awL9XBQ7nfteDUXq3p9DO3n8HKhglVK6
+         tnVG/rwgBR0tO4fGtRV8WPvOYZX0jMmU5bjtmQ2kwdB3DMYVl9tWeff4Qp5RxHjJePL8
+         awO8a/upMKNKWaQqekOje2rQVXreaPTDlHLAe3ZfYiXCKOhffyH4An7NUTMvN3Lt7LZS
+         28tqOvOjWiPTd26N47r8EiIvUg8mgSyRxQ2Ncn4y5EB+DOwVVdM+HFY97aoKzZPXAbyd
+         KU84P/BpOt4RFURxBnkvP5Qznozqkcjqehk0HvqwqbRxGpBMvcuzgeM4IspYENCGjjwh
+         hSlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8WKoOMPsmNwyEfgMM+9XAivDWwN5pCyQ5XhkIU1BGH4=;
+        b=U08FG6fTdBwayQX+8mQo2RAUkhedK/JNqeYk3lQ36mpBe4ags9vcjW0ruJpF32148R
+         gEvxwOtbOh64vSJyEXDN3gKwHMhzXq2aoWA7k03if7LWmQrESuaa+7VGo5bTeoH2i3Y7
+         DYQwSV/6Jr53jKIAJBq8Fd/S/Vs6YtIXM/hMYFpqfkR7HGbTkh+bgj9cgZsuIfHVchcV
+         dKsKEsL3IE/Zc2JL7DoClNx0LXmePgHH8RGYO5+NFV6UpJ7hl70BB90T3VAjHQwvnoAt
+         BptqWiXz4IScZVlz4fSzuewL4U1RlLc7A0skEqOf2ko2qTRP4hi4IhlGJX6MrFE1i+Zb
+         VxFw==
+X-Gm-Message-State: AFqh2kqoiIm//7ek3+7rSfVy1nGqE3qlZORKZtaCM0/oMe1+rkHjyq+F
+        Wo3wDjnbTg43oITM0O5Lkrs=
+X-Google-Smtp-Source: AMrXdXsCi64Chzl267PLU056ZrjMyCU/JJgj17w+RqHuxyhtFz74b19GEI8h62OB6dQUtTFJV8UFSw==
+X-Received: by 2002:aa7:d513:0:b0:462:9baa:7507 with SMTP id y19-20020aa7d513000000b004629baa7507mr7488843edq.8.1671782015874;
+        Thu, 22 Dec 2022 23:53:35 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id h26-20020a0564020e9a00b004822681a671sm303648eda.37.2022.12.22.23.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Dec 2022 23:53:35 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 23 Dec 2022 08:53:33 +0100
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH bpf-next 1/2] bpf/perf: Call perf_prepare_sample() before
+ bpf_prog_run()
+Message-ID: <Y6VefZAWVzwmkfjd@krava>
+References: <20221220220144.4016213-1-namhyung@kernel.org>
+ <20221220220144.4016213-2-namhyung@kernel.org>
+ <Y6RTy29ULXp8WJ/Q@hirez.programming.kicks-ass.net>
+ <2d164a5f-2885-2a6e-581a-2673ca0b1b81@iogearbox.net>
+ <CAM9d7cj=iuxhLndNMBMeff6Ayp2hLfdz+6CHsZL7g213aWbUYQ@mail.gmail.com>
+ <Y6S7BcblAHO4nQTf@hirez.programming.kicks-ass.net>
+ <CAM9d7chi6ijPEwkTbmLJGz+_fQFvnFxwc44M-g93ym2-ZPN9tw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 9QXaeyhpkRxU8lnbpiae7djTDlTLxtuJ
-X-Proofpoint-ORIG-GUID: 9QXaeyhpkRxU8lnbpiae7djTDlTLxtuJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-23_02,2022-12-22_03,2022-06-22_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7chi6ijPEwkTbmLJGz+_fQFvnFxwc44M-g93ym2-ZPN9tw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,86 +88,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make default case in regsafe() safer. Instead of doing byte-by-byte
-comparison, take into account ID remapping and also range and var_off
-checks. For most of registers range and var_off will be zero (not set),
-which doesn't matter. For some, like PTR_TO_MAP_{KEY,VALUE}, this
-generalized logic is exactly matching what regsafe() was doing as
-a special case. But in any case, if register has id and/or ref_obj_id
-set, check it using check_ids() logic, taking into account idmap.
+On Thu, Dec 22, 2022 at 02:25:49PM -0800, Namhyung Kim wrote:
+> On Thu, Dec 22, 2022 at 12:16 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Thu, Dec 22, 2022 at 09:34:42AM -0800, Namhyung Kim wrote:
+> >
+> > > Sorry about that.  Let me rephrase it like below:
+> > >
+> > > With bpf_cast_to_kern_ctx(), BPF programs attached to a perf event
+> > > can access perf sample data directly from the ctx.
+> >
+> > This is the bpf_prog_run() in bpf_overflow_handler(), right?
+> 
+> Yes.
+> 
+> >
+> > > But the perf sample
+> > > data is not fully prepared at this point, and some fields can have invalid
+> > > uninitialized values.  So it needs to call perf_prepare_sample() before
+> > > calling the BPF overflow handler.
+> >
+> > It never was, why is it a problem now?
+> 
+> BPF used to allow selected fields only like period and addr, and they
+> are initialized always by perf_sample_data_init().  This is relaxed
+> by the bpf_cast_to_kern_ctx() and it can easily access arbitrary
+> fields of perf_sample_data now.
+> 
+> The background of this change is to use BPF as a filter for perf
+> event samples.  The code is there already and returning 0 from
+> BPF can drop perf samples.  With access to more sample data,
+> it'd make more educated decisions.
+> 
+> For example, I got some requests to limit perf samples in a
+> selected region of address (code or data).  Or it can collect
+> samples only if some hardware specific information is set in
+> the raw data like in AMD IBS.  We can easily extend it to other
+> sample info based on users' needs.
+> 
+> >
+> > > But just calling perf_prepare_sample() can be costly when the BPF
+> >
+> > So you potentially call it twice now, how's that useful?
+> 
+> Right.  I think we can check data->sample_flags in
+> perf_prepare_sample() to minimize the duplicate work.
+> It already does it for some fields, but misses others.
 
-With these changes, default case should be handling most registers more
-correctly, and even for future register would be a good default. For some
-special cases, like PTR_TO_PACKET, one would still need to implement extra
-checks (like special handling of reg->range) to get better state
-equivalence, but default logic shouldn't be wrong.
+we used to have __PERF_SAMPLE_CALLCHAIN_EARLY to avoid extra perf_callchain,
+could we add some flag like __PERF_SAMPLE_INIT_EARLY to avoid double call to
+perf_prepare_sample?
 
-With these changes veristat shows no difference in verifier stats across
-selftests and Cilium BPF programs (which is a good thing).
+jirka 
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/bpf/verifier.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b23812d2bb49..7e0fa3924f01 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12919,8 +12919,8 @@ static int check_btf_info(struct bpf_verifier_env *env,
- }
- 
- /* check %cur's range satisfies %old's */
--static bool range_within(struct bpf_reg_state *old,
--			 struct bpf_reg_state *cur)
-+static bool range_within(const struct bpf_reg_state *old,
-+			 const struct bpf_reg_state *cur)
- {
- 	return old->umin_value <= cur->umin_value &&
- 	       old->umax_value >= cur->umax_value &&
-@@ -13073,6 +13073,17 @@ static bool regs_exact(const struct bpf_reg_state *rold,
- 	       check_ids(rold->ref_obj_id, rcur->ref_obj_id, idmap);
- }
- 
-+static bool regs_equal(const struct bpf_reg_state *rold,
-+		       const struct bpf_reg_state *rcur,
-+		       struct bpf_id_pair *idmap)
-+{
-+	return memcmp(rold, rcur, offsetof(struct bpf_reg_state, var_off)) == 0 &&
-+	       range_within(rold, rcur) &&
-+	       tnum_in(rold->var_off, rcur->var_off) &&
-+	       check_ids(rold->id, rcur->id, idmap) &&
-+	       check_ids(rold->ref_obj_id, rcur->ref_obj_id, idmap);
-+}
-+
- /* Returns true if (rold safe implies rcur safe) */
- static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		    struct bpf_reg_state *rcur, struct bpf_id_pair *idmap)
-@@ -13121,15 +13132,6 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		/* new val must satisfy old val knowledge */
- 		return range_within(rold, rcur) &&
- 		       tnum_in(rold->var_off, rcur->var_off);
--	case PTR_TO_MAP_KEY:
--	case PTR_TO_MAP_VALUE:
--		/* If the new min/max/var_off satisfy the old ones and
--		 * everything else matches, we are OK.
--		 */
--		return memcmp(rold, rcur, offsetof(struct bpf_reg_state, var_off)) == 0 &&
--		       range_within(rold, rcur) &&
--		       tnum_in(rold->var_off, rcur->var_off) &&
--		       check_ids(rold->id, rcur->id, idmap);
- 	case PTR_TO_PACKET_META:
- 	case PTR_TO_PACKET:
- 		/* We must have at least as much range as the old ptr
-@@ -13157,7 +13159,7 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		 */
- 		return regs_exact(rold, rcur, idmap) && rold->frameno == rcur->frameno;
- 	default:
--		return regs_exact(rold, rcur, idmap);
-+		return regs_equal(rold, rcur, idmap);
- 	}
- }
- 
--- 
-2.30.2
-
+> 
+> Thanks,
+> Namhyung
