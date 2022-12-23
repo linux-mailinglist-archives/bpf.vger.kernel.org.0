@@ -2,76 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C108654BE3
-	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 05:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB91654C44
+	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 06:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235659AbiLWEHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Dec 2022 23:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        id S229783AbiLWFtd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 23 Dec 2022 00:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235884AbiLWEHW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Dec 2022 23:07:22 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6385F2252B
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 20:07:21 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id r18so2582673pgr.12
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 20:07:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uuRoS5f+F8qdvavLV7QeHdX9SfeSfZjDpTq44MsniBI=;
-        b=aiUbit8nI0Qh4akK1B2FcpZRewpESB9clKE6W9Ij7/1o+mfp2SHvkXg77KT1mSyuyR
-         C3d0IUJBgzATy99SRRcCEA4+DjOx7b3yzdg29oMjrzXrp+d0akP9AX3JaGw64u60ACzf
-         Ps1PT5MW7U0LG3VlHVEn/6ivGo144GHPab2/g5qLFTBN8HHn+W65o4WkIWqSWZoCKQFA
-         VzN9jWczmvBIZjaPBNFRzHytLmNrG5qKIZvcYSPhFHt89r0QNRmFAiQHlewyeUlwp+zg
-         I8NvByhaiA1xUwxmFUs1oY7seKIMEGfGiccVn/Oh8HhBbT1MH8j1Miqu2Mu//5Zq48YM
-         foQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uuRoS5f+F8qdvavLV7QeHdX9SfeSfZjDpTq44MsniBI=;
-        b=rS+FbpKcm5/K1pb/IcvXf/erFZz70aCmUt1WrIwVNqfDcwGQWvqTLhNC2OSPF2S5lq
-         Wwqe5K0BVZn4saEcytGKPaXQQ2V8rV0IGMuMZ3vlVHA6dqDLncM5xwEo8wFpmX3PagtP
-         VAyHUgUzOngdyYJiugJTqM2l26bn6yxzVcMevdVAvyx/2FO0nTin1eodDj8NkQe7rLW3
-         9Cqlsgr8wUnVrZdCMwAdUXzKal5H7Dc3IqzATkbK++w4OZyJMhlmpeBJ1lS833PKzWiN
-         WyAbngPTW45vuREDZ279qppLX9dA1DmKW6CPV6HwLLr6Cs0c50lrceRWsZy9tTivT/3Z
-         aXiQ==
-X-Gm-Message-State: AFqh2kqzjwBHVVFa/zOV5BDbbtM63RTpAplbu7Hv09T76cRnIecE0y45
-        xkn2FxbH2D9BPsfg1eUm2JhGhTMb3LkRZLdjiSARLw==
-X-Google-Smtp-Source: AMrXdXtHF3+xazC2Hrx5AjudWDyWXqDOqdnnxfEKkohBiAQlDSqR35HrJ5Gn7v/a+YtZ6xbiMno6mXfQshK/aEWCwjw=
-X-Received: by 2002:a63:1e11:0:b0:490:afd1:55b2 with SMTP id
- e17-20020a631e11000000b00490afd155b2mr411193pge.112.1671768440589; Thu, 22
- Dec 2022 20:07:20 -0800 (PST)
+        with ESMTP id S229483AbiLWFtc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Dec 2022 00:49:32 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919192657E
+        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:31 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BN13eOq013381
+        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:31 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mm4p9a6qc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 21:49:31 -0800
+Received: from twshared24004.14.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Thu, 22 Dec 2022 21:49:30 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id A732023EA7537; Thu, 22 Dec 2022 21:49:23 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/7] BPF verifier state equivalence checks improvements
+Date:   Thu, 22 Dec 2022 21:49:14 -0800
+Message-ID: <20221223054921.958283-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20221220222043.3348718-1-sdf@google.com> <20221220222043.3348718-18-sdf@google.com>
- <95e79329-b7c9-550b-290e-e5e4ea6e7a01@linux.dev>
-In-Reply-To: <95e79329-b7c9-550b-290e-e5e4ea6e7a01@linux.dev>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 22 Dec 2022 20:07:08 -0800
-Message-ID: <CAKH8qBscxiYcZY1u-xyTzypU-GfFQe4mW519RzYi6bXx19x4rw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 17/17] selftests/bpf: Simple program to dump
- XDP RX metadata
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: ssUyTwqH7SLwH6H92cnIN3etlJUMkejK
+X-Proofpoint-ORIG-GUID: ssUyTwqH7SLwH6H92cnIN3etlJUMkejK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-23_02,2022-12-22_03,2022-06-22_01
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,114 +53,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 4:53 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 12/20/22 2:20 PM, Stanislav Fomichev wrote:
-> > To be used for verification of driver implementations. Note that
-> > the skb path is gone from the series, but I'm still keeping the
-> > implementation for any possible future work.
-> >
-> > $ xdp_hw_metadata <ifname>
-> >
-> > On the other machine:
-> >
-> > $ echo -n xdp | nc -u -q1 <target> 9091 # for AF_XDP
-> > $ echo -n skb | nc -u -q1 <target> 9092 # for skb
-> >
-> > Sample output:
-> >
-> >    # xdp
-> >    xsk_ring_cons__peek: 1
-> >    0x19f9090: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
-> >    rx_timestamp_supported: 1
-> >    rx_timestamp: 1667850075063948829
-> >    0x19f9090: complete idx=8 addr=8000
-> >
-> >    # skb
-> >    found skb hwtstamp = 1668314052.854274681
-> >
-> > Decoding:
-> >    # xdp
-> >    rx_timestamp=1667850075.063948829
-> >
-> >    $ date -d @1667850075
-> >    Mon Nov  7 11:41:15 AM PST 2022
-> >    $ date
-> >    Mon Nov  7 11:42:05 AM PST 2022
-> >
-> >    # skb
-> >    $ date -d @1668314052
-> >    Sat Nov 12 08:34:12 PM PST 2022
-> >    $ date
-> >    Sat Nov 12 08:37:06 PM PST 2022
-> >
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: David Ahern <dsahern@gmail.com>
-> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: Willem de Bruijn <willemb@google.com>
-> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-> > Cc: Maryam Tahhan <mtahhan@redhat.com>
-> > Cc: xdp-hints@xdp-project.net
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >   tools/testing/selftests/bpf/.gitignore        |   1 +
-> >   tools/testing/selftests/bpf/Makefile          |   6 +-
-> >   .../selftests/bpf/progs/xdp_hw_metadata.c     |  81 ++++
-> >   tools/testing/selftests/bpf/xdp_hw_metadata.c | 405 ++++++++++++++++++
-> >   4 files changed, 492 insertions(+), 1 deletion(-)
-> >   create mode 100644 tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> >   create mode 100644 tools/testing/selftests/bpf/xdp_hw_metadata.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-> > index 07d2d0a8c5cb..01e3baeefd4f 100644
-> > --- a/tools/testing/selftests/bpf/.gitignore
-> > +++ b/tools/testing/selftests/bpf/.gitignore
-> > @@ -46,3 +46,4 @@ test_cpp
-> >   xskxceiver
-> >   xdp_redirect_multi
-> >   xdp_synproxy
-> > +xdp_hw_metadata
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index e6cbc04a7920..b7d5d3aa554e 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -83,7 +83,7 @@ TEST_PROGS_EXTENDED := with_addr.sh \
-> >   TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
-> >       flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
-> >       test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
-> > -     xskxceiver xdp_redirect_multi xdp_synproxy veristat
-> > +     xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata
-> >
-> >   TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read $(OUTPUT)/sign-file
-> >   TEST_GEN_FILES += liburandom_read.so
-> > @@ -241,6 +241,9 @@ $(OUTPUT)/test_maps: $(TESTING_HELPERS)
-> >   $(OUTPUT)/test_verifier: $(TESTING_HELPERS) $(CAP_HELPERS)
-> >   $(OUTPUT)/xsk.o: $(BPFOBJ)
-> >   $(OUTPUT)/xskxceiver: $(OUTPUT)/xsk.o
-> > +$(OUTPUT)/xdp_hw_metadata: $(OUTPUT)/xsk.o $(OUTPUT)/xdp_hw_metadata.skel.h
-> > +$(OUTPUT)/xdp_hw_metadata: $(OUTPUT)/network_helpers.o
-> > +$(OUTPUT)/xdp_hw_metadata: LDFLAGS += -static
->
->
-> This test binary fails to build for llvm.  gcc looks fine though.  The CI tests
-> cannot be run on this set because of this.  Please take a look:
->
-> https://github.com/kernel-patches/bpf/actions/runs/3745257032/jobs/6359527599#step:11:2202
+This patch set fixes, improves, and refactors parts of BPF verifier's state
+equivalence checks.
 
-Ugh, again, I was hoping I fixed it :-(
+Patch #1 fixes refsafe(), making it take into account ID map when comparing
+reference IDs. See patch for details.
 
-clang: error: cannot specify -o when generating multiple output files
+Patches #2-#7 refactor regsafe() function which compares two register states
+across old and current states. regsafe() is critical piece of logic, so to
+make it easier to review and validate refactorings and logic fixes and
+improvements, each patch makes a small change, explaining why the change is
+correct and makes sense. Please see individual patches for details.
 
-Will give it another try; for some reason can't reproduce locally
-(LLVM version 16.0.0git)
+This patch set is one of the preliminaries required for upcoming BPF
+open-coded iterators, as with open-coded iterators verifier's loop safety and
+completion proof is critically dependent on correct state equivalence logic.
 
-> I only have minor comments on the set.  Looking forward to v6.
+Andrii Nakryiko (7):
+  bpf: teach refsafe() to take into account ID remapping
+  bpf: reorganize struct bpf_reg_state fields
+  bpf: generalize MAYBE_NULL vs non-MAYBE_NULL rule
+  bpf: reject non-exact register type matches in regsafe()
+  bpf: perform byte-by-byte comparison only when necessary in regsafe()
+  bpf: fix regs_exact() logic in regsafe() to remap IDs correctly
+  bpf: unify PTR_TO_MAP_{KEY,VALUE} with default case in regsafe()
 
-Thank you for another round of reviews! I'll probably keep quiet next
-week to give us some family time during holidays and will publish v6
-early January. Happy holidays!
+ include/linux/bpf_verifier.h |  40 +++++-----
+ kernel/bpf/verifier.c        | 151 +++++++++++++++++++----------------
+ 2 files changed, 101 insertions(+), 90 deletions(-)
+
+-- 
+2.30.2
+
