@@ -2,142 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEC7654933
-	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 00:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB3E6549BA
+	for <lists+bpf@lfdr.de>; Fri, 23 Dec 2022 01:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbiLVXUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Dec 2022 18:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
+        id S229989AbiLWAT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Dec 2022 19:19:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbiLVXUV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Dec 2022 18:20:21 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BA921E3F
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 15:20:19 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id d20so5044227edn.0
-        for <bpf@vger.kernel.org>; Thu, 22 Dec 2022 15:20:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iJgMFVOrb9Ce/17yeODdS1CKT2hqIh/Wcl38sjrwoW0=;
-        b=BEfpWSBtRhdTQl3I6MpGZqVYpUdqzyWJ1oUZ1sXP6WNSAqcnRONz4mNaqYQQdmj2xY
-         lgFxzrsir9zv5ynFuIasZ4H0mZHaJhMR90nGy9Sy8le+wipidXaFzkcbkzDeNaB0LQ6J
-         qUosmbcKcqkrYnRNQyS7MF9XhMSj92CwkAoZfTyEKnvLDEtZj2XEpzZMZzqGPLnQLbW5
-         fUFXFlELhmXTAeaqLTRuri585LmO73sYeLZNGLt87GHWAfT4rj6lHc6r0CKBkiwb2eCI
-         EzpWSzXgN15dw9su7VKLD1zVCJ2Zhs2rcl02Ms8OlKssyXbcqCwP/jBq6VLcIsL92w+u
-         aDJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iJgMFVOrb9Ce/17yeODdS1CKT2hqIh/Wcl38sjrwoW0=;
-        b=RnQMVxE3Zvqe0xzs5GYfoUvuWokkq1MP+xNXtb+83o6dnC6kf48aehzzf0GCd5O1Wt
-         cT0zX9TxnQ8Ksk1Gf0QLTtlnLagBa4gcn0uTPFGNvtDhTr9/xJO/EgA6cnf9j1VMMoTy
-         Ay8PR+/YeuyvSXmqhIy52AnmEWBK3rGhITn0mVxpQDqfJiVdjIaIUidCqbs84fLZQjGt
-         MYIvBVCvDVRTOTujf79vJYoAwVBbmcx5+VV/jJAVi9ajyglZ4TATMl1muklgn1kJG2tV
-         a9rPBXzHis793IqxsOxbqTLns9QWEalA8YE7BpZIqezbY/ZHpcOvVOxPvjyO7mh/qGRb
-         Ex5Q==
-X-Gm-Message-State: AFqh2krkNlam6Gu7mm1x3yZr3eK0fOo2PSBB9AWZweZlW/NwvoETnb/J
-        7ZuCmurBu8tiaGuIIbk6TZQ=
-X-Google-Smtp-Source: AMrXdXsFC+hmKq79PeW+KUm2ca/pltb9zbhnABL2aMPJOE1HMdCr+a/qBrze/JnBXo5BFJiptXRh3w==
-X-Received: by 2002:a05:6402:3706:b0:472:9af1:163f with SMTP id ek6-20020a056402370600b004729af1163fmr6129935edb.37.1671751218317;
-        Thu, 22 Dec 2022 15:20:18 -0800 (PST)
-Received: from krava ([83.240.60.17])
-        by smtp.gmail.com with ESMTPSA id s8-20020a170906354800b007ad2da5668csm705785eja.112.2022.12.22.15.20.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Dec 2022 15:20:17 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 23 Dec 2022 00:20:15 +0100
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     sdf@google.com, linux-audit@redhat.com, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Burn Alting <burn.alting@iinet.net.au>
-Subject: Re: [PATCH] bpf: restore the ebpf audit UNLOAD id field
-Message-ID: <Y6TmLyDTY/a20Zq4@krava>
-References: <20221222001343.489117-1-paul@paul-moore.com>
- <Y6SRiv+FloijdETe@google.com>
- <CAHC9VhRFmrgXMYKxXqd1KpMzDGhT6gPX-=8Z072utZO_WefYWQ@mail.gmail.com>
+        with ESMTP id S229910AbiLWATZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Dec 2022 19:19:25 -0500
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792CD215;
+        Thu, 22 Dec 2022 16:19:24 -0800 (PST)
+Message-ID: <04e1406b-0a31-0109-9a1b-f016e8f23603@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1671754762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+seCcOL2buujU8wktHij9cCoNPW204q8XCrXgclzy5A=;
+        b=OyLpgXLg2cn3vyZrqJWhtgEq/FypDFl65L4LEOw6+1lAoikKIYaQHtzLZw08tG4Cag79B6
+        LsxnV9k08oSDr3Fl77QukK2o6GzYefdPSBipACnxhmGD5JLU3Q++E6g/Z2VQ1mVSwMEz7+
+        mIdCv9yXsYwmUPQbkib3WeTlTN4jQsk=
+Date:   Thu, 22 Dec 2022 16:19:15 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhRFmrgXMYKxXqd1KpMzDGhT6gPX-=8Z072utZO_WefYWQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 05/17] bpf: Introduce device-bound XDP
+ programs
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20221220222043.3348718-1-sdf@google.com>
+ <20221220222043.3348718-6-sdf@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221220222043.3348718-6-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 02:03:41PM -0500, Paul Moore wrote:
-> On Thu, Dec 22, 2022 at 12:19 PM <sdf@google.com> wrote:
-> > On 12/21, Paul Moore wrote:
-> > > When changing the ebpf program put() routines to support being called
-> > > from within IRQ context the program ID was reset to zero prior to
-> > > generating the audit UNLOAD record, which obviously rendered the ID
-> > > field bogus (always zero).  This patch resolves this by adding a new
-> > > field, bpf_prog_aux::id_audit, which is set when the ebpf program is
-> > > allocated an ID and never reset, ensuring a valid ID field,
-> > > regardless of the state of the original ID field, bpf_prox_aud::id.
-> >
-> > > I also modified the bpf_audit_prog() logic used to associate the
-> > > AUDIT_BPF record with other associated records, e.g. @ctx != NULL.
-> > > Instead of keying off the operation, it now keys off the execution
-> > > context, e.g. '!in_irg && !irqs_disabled()', which is much more
-> > > appropriate and should help better connect the UNLOAD operations with
-> > > the associated audit state (other audit records).
-> >
-> > [..]
-> >
-> > > As an note to future bug hunters, I did briefly consider removing the
-> > > ID reset in bpf_prog_free_id(), as it would seem that once the
-> > > program is removed from the idr pool it can no longer be found by its
-> > > ID value, but commit ad8ad79f4f60 ("bpf: offload: free program id
-> > > when device disappears") seems to imply that it is beneficial to
-> > > reset the ID value.  Perhaps as a secondary indicator that the ebpf
-> > > program is unbound/orphaned.
-> >
-> > That seems like the way to go imho. Can we have some extra 'invalid_id'
-> > bitfield in the bpf_prog so we can set it in bpf_prog_free_id and
-> > check in bpf_prog_free_id (for this offloaded use-case)? Because
-> > having two ids and then keeping track about which one to use, depending
-> > on the context, seems more fragile?
-> 
-> I would definitely prefer to keep just a single ID value, and that was
-> the first approach I took when drafting this patch, but when looking
-> through the git log it looked like there was some desire to reset the
-> ID to zero on free.  Not being an expert on the ebpf kernel code I
-> figured I would just write the patch up this way and make a comment
-> about not zero'ing out the ID in the commit description so we could
-> have a discussion about it.
-> 
-> I'm not seeing any other comments, so I'll go ahead with putting
-> together a v2 that sets an invalid flag/bit and I'll post that for
-> further discussion/review.
+On 12/20/22 2:20 PM, Stanislav Fomichev wrote:
+> -int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
+> +int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
+>   {
+>   	struct bpf_offload_netdev *ondev;
+>   	struct bpf_prog_offload *offload;
+> @@ -199,7 +197,7 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
+>   	    attr->prog_type != BPF_PROG_TYPE_XDP)
+>   		return -EINVAL;
+>   
+> -	if (attr->prog_flags)
+> +	if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
+>   		return -EINVAL;
+>   
+>   	offload = kzalloc(sizeof(*offload), GFP_USER);
+> @@ -214,11 +212,23 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
+>   	if (err)
+>   		goto err_maybe_put;
+>   
+> +	prog->aux->offload_requested = !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY);
 
-great, perf suffers the same issue:
-  https://lore.kernel.org/bpf/Y3SRWVoycV290S16@krava/
+Just noticed bpf_prog_dev_bound_init() takes BPF_PROG_TYPE_SCHED_CLS.  Not sure 
+if there is device match check when attaching BPF_PROG_TYPE_SCHED_CLS.  If not, 
+does it make sense to reject dev bound only BPF_PROG_TYPE_SCHED_CLS?
 
-any chance you could include it as well? I can send a patch
-later if needed
+> +
+>   	down_write(&bpf_devs_lock);
+>   	ondev = bpf_offload_find_netdev(offload->netdev);
+>   	if (!ondev) {
+> -		err = -EINVAL;
+> -		goto err_unlock;
+> +		if (bpf_prog_is_offloaded(prog->aux)) {
+> +			err = -EINVAL;
+> +			goto err_unlock;
+> +		}
+> +
+> +		/* When only binding to the device, explicitly
+> +		 * create an entry in the hashtable.
+> +		 */
+> +		err = __bpf_offload_dev_netdev_register(NULL, offload->netdev);
+> +		if (err)
+> +			goto err_unlock;
+> +		ondev = bpf_offload_find_netdev(offload->netdev);
+>   	}
+>   	offload->offdev = ondev->offdev;
+>   	prog->aux->offload = offload;
+> @@ -321,12 +331,41 @@ bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt)
+>   	up_read(&bpf_devs_lock);
+>   }
+>   
+> -void bpf_prog_offload_destroy(struct bpf_prog *prog)
+> +static void __bpf_prog_dev_bound_destroy(struct bpf_prog *prog)
+> +{
+> +	struct bpf_prog_offload *offload = prog->aux->offload;
+> +
+> +	if (offload->dev_state)
+> +		offload->offdev->ops->destroy(prog);
+> +
+> +	/* Make sure BPF_PROG_GET_NEXT_ID can't find this dead program */
+> +	bpf_prog_free_id(prog, true);
+> +
+> +	kfree(offload);
+> +	prog->aux->offload = NULL;
+> +}
+> +
+> +void bpf_prog_dev_bound_destroy(struct bpf_prog *prog)
+>   {
+> +	struct bpf_offload_netdev *ondev;
+> +	struct net_device *netdev;
+> +
+> +	rtnl_lock();
+>   	down_write(&bpf_devs_lock);
+> -	if (prog->aux->offload)
+> -		__bpf_prog_offload_destroy(prog);
+> +	if (prog->aux->offload) {
+> +		list_del_init(&prog->aux->offload->offloads);
+> +
+> +		netdev = prog->aux->offload->netdev;
 
-thanks,
-jirka
+After saving the netdev, would it work to call __bpf_prog_offload_destroy() here 
+instead of creating an almost identical __bpf_prog_dev_bound_destroy().  The 
+idea is to call list_del_init() first but does not need the "offload" around to 
+do the __bpf_offload_dev_netdev_unregister()?
 
-> 
-> > > Fixes: d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq
-> > > context.")
-> > > Reported-by: Burn Alting <burn.alting@iinet.net.au>
-> > > Signed-off-by: Paul Moore <paul@paul-moore.com>
-> > > ---
-> > >   include/linux/bpf.h  | 1 +
-> > >   kernel/bpf/syscall.c | 8 +++++---
-> > >   2 files changed, 6 insertions(+), 3 deletions(-)
-> 
-> -- 
-> paul-moore.com
+> +		if (netdev) {
+
+I am thinking offload->netdev cannot be NULL.  Did I overlook places that reset 
+offload->netdev back to NULL?  eg. In bpf_prog_offload_info_fill_ns(), it is not 
+checking offload->netdev.
+
+> +			ondev = bpf_offload_find_netdev(netdev);
+
+and ondev should not be NULL too?
+
+I am trying to ensure my understanding that all offload->netdev and ondev should 
+be protected by bpf_devs_lock.
+
+> +			if (ondev && !ondev->offdev && list_empty(&ondev->progs))
+> +				__bpf_offload_dev_netdev_unregister(NULL, netdev);
+> +		}
+> +
+> +		__bpf_prog_dev_bound_destroy(prog);
+> +	}
+>   	up_write(&bpf_devs_lock);
+> +	rtnl_unlock();
+>   }
+
