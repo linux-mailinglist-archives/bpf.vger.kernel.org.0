@@ -2,148 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D29655A3F
-	for <lists+bpf@lfdr.de>; Sat, 24 Dec 2022 14:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91427655A7D
+	for <lists+bpf@lfdr.de>; Sat, 24 Dec 2022 16:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbiLXNcJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Dec 2022 08:32:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
+        id S230343AbiLXPcK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Dec 2022 10:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbiLXNcH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 24 Dec 2022 08:32:07 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C147CB874;
-        Sat, 24 Dec 2022 05:32:05 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id gv5-20020a17090b11c500b00223f01c73c3so9384340pjb.0;
-        Sat, 24 Dec 2022 05:32:05 -0800 (PST)
+        with ESMTP id S231273AbiLXPcJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Dec 2022 10:32:09 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7CFC75B
+        for <bpf@vger.kernel.org>; Sat, 24 Dec 2022 07:32:07 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id o1-20020a17090a678100b00219cf69e5f0so11280205pjj.2
+        for <bpf@vger.kernel.org>; Sat, 24 Dec 2022 07:32:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ezbgi7pFZDSI5daM/rTTeMIyWE+f6CFg+hkqxOhS5a8=;
-        b=IyPBkh5/wfZylagV2DGKZke+JEXbgYVmRWlpgW8zvnOKQp2RSHyA7e27SxdTtOBWX9
-         /oBwuHUOHGRHuIcYkrCX/3j0ptHg8zM0rOMfBuua0xfCTvJXMw5YU177KfTPV3S5nhXc
-         JH4jSbGdkdnBo0WOa4EhIQdieIGontdarhWUMuu0T62nsyVTGcW4FDQRfdGP4kq0vJBg
-         XY5bg8sajJj/liKHKQ5vs758KTw3ig2FKatZSA2uhgB5IzpERzpXBkjAvHV2ee5/8gbQ
-         LooEHm/8LtNSeTGQLVpmk61H0HoPi8NbIOZnib8Mpe3gFqPsWASP8PZWgBqP6qMuFnYs
-         Uw0w==
+        d=paul-moore.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uhx70Wc2VTFokQfpnR8f2VD8Nm2dmZ9bHhkHgTA0qJk=;
+        b=CW5q0MaYA9m8Tysw5UUGVTIVFwbVvkxPoiIQgUDNxD/0GcMoHuvSpPUi88PjQ4vzX8
+         U0qiXrvXKf+TiyW0Fs+DiaQ5iTNmgTwqoUEJXSvhLi0042q2N1clGTKM9BPGuaT6QamY
+         5sNpNTJf0BKfNKg5lcq4bQHinEUX9CqiERsYWzEfAy7dBCpv+EoNVubBLiexHPcQgGfv
+         Q1xj2CAXOgQkzDWd8TxDn0Wa4qZGClfxegOyHe/dWg42C3uFtIVqv3f9OUu/S5UWnvmS
+         Tj5YFCq59hXCEnV/mHDkhKvmWZrastkBSJweouyhRLXf+22c5LoUqbksmhZhMyb14PHp
+         1VFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Ezbgi7pFZDSI5daM/rTTeMIyWE+f6CFg+hkqxOhS5a8=;
-        b=m2zsJDrWElZP6MrQozjbznRNGoFB8Rw6l7wqHj6pnvx1TBH3zBMwfZifKaTd94/mkv
-         UHL0ASLatw+BRJhpYF96x4JDAhvXxeJtFWGhAHWv3Vn+ntPhPrgJhaaTwb12ZtD5UZUQ
-         pjuvCuHtK5eX4bZ+YdI+ar9fE/y/LYFKXNqjHMyQBknipLa1/OeGHkpoCrWV9r5rMjfH
-         sTAAgodgYlCPP5+p2N/Ei/SSU6nx8kqbOUpani7OteBzDIplrRAX7+UbyTShkHV/ZLMG
-         bCs0qShr4vARfBWhZyAhppP7i6cRY2IFLM9EAEYDkV6gokpnYDsDkqQkj195wy4wbx89
-         Zf+A==
-X-Gm-Message-State: AFqh2kol+h5ceZZeydUZSlvo3m1wcm9PwLuK8TqLROgXQ/t3lIGu9DRf
-        5R/LxXFLeVomongLAJ3ajtQ=
-X-Google-Smtp-Source: AMrXdXt2hDH2u5l4yIySVrZgomRZt8gsNdAeHJBMgH/eQy2sFsOU7TsXEF/cAdwORulNuohnOz3IDw==
-X-Received: by 2002:a05:6a20:8e0b:b0:ad:a0c2:53ee with SMTP id y11-20020a056a208e0b00b000ada0c253eemr21432585pzj.12.1671888725153;
-        Sat, 24 Dec 2022 05:32:05 -0800 (PST)
-Received: from localhost.localdomain ([47.242.114.172])
-        by smtp.gmail.com with ESMTPSA id k24-20020a63f018000000b00478fbfd5276sm3716301pgh.15.2022.12.24.05.32.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Dec 2022 05:32:04 -0800 (PST)
-From:   Chuang Wang <nashuiliang@gmail.com>
-Cc:     Chuang Wang <nashuiliang@gmail.com>, stable@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: Fix panic due to wrong pageattr of im->image
-Date:   Sat, 24 Dec 2022 21:31:46 +0800
-Message-Id: <20221224133146.780578-1-nashuiliang@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=uhx70Wc2VTFokQfpnR8f2VD8Nm2dmZ9bHhkHgTA0qJk=;
+        b=bAN9PiTy/MW2+HdhcHecKftNDeCP8yZQROlo705eB1VmNafAkXajdsvoWG3J3U6Jqr
+         nnIbz/6EEAv/qOV6X/V3NH67fUNHEDZm6SkfjSz8f1tFBpncR8q2TELo6YTY2MmTyFab
+         iKrvlvClQ1aVGEPgWIA38gfMRV+dMCn/dC9m6ITUz959OF0dcZmvEfSAKPkIdUHG2gVH
+         VWn6qzuKo+3DefbHYDdFMBiMILgdCtSPH45IsMpdUTfFeeSZAnC2680k7eNivd4PWuS3
+         YVmR8TdTB8BlVX0qh82TwxioRHOy/LX9z2C5AnQNT95SO6PgxhLvzbD5P3hr2XEV9KUx
+         rS+A==
+X-Gm-Message-State: AFqh2ko1Cu3R9gvg1Hw1ebCxhI4nA9bkcYZ18yKREHNg9xCr/1PwOrFu
+        P4bidUkxn8JlGszTLdFAdZ9z0dpqpqNxUPUUDpIv
+X-Google-Smtp-Source: AMrXdXseNgExZNcaLwsrKOqDhqnUHGhQKQPn3LCFiJjUKJUm4SbPfCpkf/sYSsuZeLwe1Ksk6gbX6tQkmPaHu5AyjR8=
+X-Received: by 2002:a17:90a:8a82:b0:219:b79d:c308 with SMTP id
+ x2-20020a17090a8a8200b00219b79dc308mr1429281pjn.69.1671895926482; Sat, 24 Dec
+ 2022 07:32:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20221223185531.222689-1-paul@paul-moore.com> <CAKH8qBu30bdiMWmUzZsYaVRTpSXfKjeBHD9deSPQmk_v_seDuA@mail.gmail.com>
+In-Reply-To: <CAKH8qBu30bdiMWmUzZsYaVRTpSXfKjeBHD9deSPQmk_v_seDuA@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sat, 24 Dec 2022 10:31:55 -0500
+Message-ID: <CAHC9VhQx2AVJ05CHVSU0VnjWb85cPE2-Y6KmY7tPLSS_y5=qvw@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
+ and PERF_BPF_EVENT_PROG_UNLOAD
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     linux-audit@redhat.com, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Burn Alting <burn.alting@iinet.net.au>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In the scenario where livepatch and kretfunc coexist, the pageattr of
-im->image is rox after arch_prepare_bpf_trampoline in
-bpf_trampoline_update, and then modify_fentry or register_fentry returns
--EAGAIN from bpf_tramp_ftrace_ops_func, the BPF_TRAMP_F_ORIG_STACK flag
-will be configured, and arch_prepare_bpf_trampoline will be re-executed.
+On Fri, Dec 23, 2022 at 8:49 PM Stanislav Fomichev <sdf@google.com> wrote:
+> On Fri, Dec 23, 2022 at 10:55 AM Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > When changing the ebpf program put() routines to support being called
+> > from within IRQ context the program ID was reset to zero prior to
+> > calling the perf event and audit UNLOAD record generators, which
+> > resulted in problems as the ebpf program ID was bogus (always zero).
+> > This patch resolves this by adding a new flag, bpf_prog::valid_id, to
+> > indicate when the bpf_prog_aux ID field is valid; it is set to true/1
+> > in bpf_prog_alloc_id() and set to false/0 in bpf_prog_free_id().  In
+> > order to help ensure that access to the bpf_prog_aux ID field takes
+> > into account the new valid_id flag, the bpf_prog_aux ID field is
+> > renamed to bpf_prog_aux::__id and a getter function,
+> > bpf_prog_get_id(), was created and all users of bpf_prog_aux::id were
+> > converted to the new caller.  Exceptions to this include some of the
+> > internal ebpf functions and the xdp trace points, although the latter
+> > still take into account the valid_id flag.
+> >
+> > I also modified the bpf_audit_prog() logic used to associate the
+> > AUDIT_BPF record with other associated records, e.g. @ctx != NULL.
+> > Instead of keying off the operation, it now keys off the execution
+> > context, e.g. '!in_irg && !irqs_disabled()', which is much more
+> > appropriate and should help better connect the UNLOAD operations with
+> > the associated audit state (other audit records).
+> >
+> > Fixes: d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq context.")
+> > Reported-by: Burn Alting <burn.alting@iinet.net.au>
+> > Reported-by: Jiri Olsa <olsajiri@gmail.com>
+> > Signed-off-by: Paul Moore <paul@paul-moore.com>
+> >
+> > --
+> > * v2
+> >   - change subj
+> >   - add mention of the perf regression
+> >   - drop the dedicated program audit ID
+> >   - add the bpf_prog::valid_id flag, bpf_prog_get_id() getter
+> >   - convert prog ID users to new ID getter
+> > * v1
+> >   - subj was: "bpf: restore the ebpf audit UNLOAD id field"
+> >   - initial draft
+> > ---
+> >  drivers/net/netdevsim/bpf.c  |  6 ++++--
+> >  include/linux/bpf.h          | 11 +++++++++--
+> >  include/linux/bpf_verifier.h |  2 +-
+> >  include/trace/events/xdp.h   |  4 ++--
+> >  kernel/bpf/arraymap.c        |  2 +-
+> >  kernel/bpf/bpf_struct_ops.c  |  2 +-
+> >  kernel/bpf/cgroup.c          |  2 +-
+> >  kernel/bpf/core.c            |  2 +-
+> >  kernel/bpf/cpumap.c          |  2 +-
+> >  kernel/bpf/devmap.c          |  2 +-
+> >  kernel/bpf/syscall.c         | 27 +++++++++++++++------------
+> >  kernel/events/core.c         |  6 +++++-
+> >  kernel/trace/bpf_trace.c     |  2 +-
+> >  net/core/dev.c               |  2 +-
+> >  net/core/filter.c            |  3 ++-
+> >  net/core/rtnetlink.c         |  2 +-
+> >  net/core/sock_map.c          |  2 +-
+> >  net/ipv6/seg6_local.c        |  3 ++-
+> >  net/sched/act_bpf.c          |  2 +-
+> >  net/sched/cls_bpf.c          |  2 +-
+> >  20 files changed, 52 insertions(+), 34 deletions(-)
 
-At this time, because the pageattr of im->image is rox,
-arch_prepare_bpf_trampoline will read and write im->image, which causes
-a fault. as follows:
+...
 
-  insmod livepatch-sample.ko    # samples/livepatch/livepatch-sample.c
-  bpftrace -e 'kretfunc:cmdline_proc_show {}'
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 9e7d46d16032..18e965bd7db9 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1688,6 +1689,12 @@ void bpf_prog_inc(struct bpf_prog *prog);
+> >  struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
+> >  void bpf_prog_put(struct bpf_prog *prog);
+> >
+> > +static inline u32 bpf_prog_get_id(const struct bpf_prog *prog)
+> > +{
+> > +       if (WARN(!prog->valid_id, "Attempting to use an invalid eBPF program"))
+> > +               return 0;
+> > +       return prog->aux->__id;
+> > +}
+>
+> I'm still missing why we need to have this WARN and have a check at all.
 
-BUG: unable to handle page fault for address: ffffffffa0206000
-PGD 322d067 P4D 322d067 PUD 322e063 PMD 1297e067 PTE d428061
-Oops: 0003 [#1] PREEMPT SMP PTI
-CPU: 2 PID: 270 Comm: bpftrace Tainted: G            E K    6.1.0 #5
-RIP: 0010:arch_prepare_bpf_trampoline+0xed/0x8c0
-RSP: 0018:ffffc90001083ad8 EFLAGS: 00010202
-RAX: ffffffffa0206000 RBX: 0000000000000020 RCX: 0000000000000000
-RDX: ffffffffa0206001 RSI: ffffffffa0206000 RDI: 0000000000000030
-RBP: ffffc90001083b70 R08: 0000000000000066 R09: ffff88800f51b400
-R10: 000000002e72c6e5 R11: 00000000d0a15080 R12: ffff8880110a68c8
-R13: 0000000000000000 R14: ffff88800f51b400 R15: ffffffff814fec10
-FS:  00007f87bc0dc780(0000) GS:ffff88803e600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffa0206000 CR3: 0000000010b70000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-<TASK>
- bpf_trampoline_update+0x25a/0x6b0
- __bpf_trampoline_link_prog+0x101/0x240
- bpf_trampoline_link_prog+0x2d/0x50
- bpf_tracing_prog_attach+0x24c/0x530
- bpf_raw_tp_link_attach+0x73/0x1d0
- __sys_bpf+0x100e/0x2570
- __x64_sys_bpf+0x1c/0x30
- do_syscall_64+0x5b/0x80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+I believe I explained my reasoning in the other posting, but as I also
+mentioned, it's your subsystem so I don't really care about the
+details as long as we fix the bug/regression in the ebpf code.
 
-With this patch, when modify_fentry or register_fentry returns -EAGAIN
-from bpf_tramp_ftrace_ops_func, the pageattr of im->image will be reset
-to nx+rw.
+> IIUC, we're actually too eager in resetting the id to 0, and need to
+> keep that stale id around at least for perf/audit.
 
-Cc: stable@vger.kernel.org
-Fixes: 00963a2e75a8 ("bpf: Support bpf_trampoline on functions with IPMODIFY (e.g. livepatch)")
-Signed-off-by: Chuang Wang <nashuiliang@gmail.com>
----
- kernel/bpf/trampoline.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Agreed.
 
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 11f5ec0b8016..d0ed7d6f5eec 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -488,6 +488,10 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 		/* reset fops->func and fops->trampoline for re-register */
- 		tr->fops->func = NULL;
- 		tr->fops->trampoline = 0;
-+
-+		/* reset im->image memory attr for arch_prepare_bpf_trampoline */
-+		set_memory_nx((long)im->image, 1);
-+		set_memory_rw((long)im->image, 1);
- 		goto again;
- 	}
- #endif
+> Why not have a flag only to protect against double-idr_remove
+> bpf_prog_free_id and keep the rest as is?
+
+I'll send an updated patch next week with the only protection being a
+check in bpf_prog_free_id().
+
 -- 
-2.37.2
-
+paul-moore.com
