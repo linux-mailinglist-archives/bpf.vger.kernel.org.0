@@ -2,110 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663296558DB
-	for <lists+bpf@lfdr.de>; Sat, 24 Dec 2022 08:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA936559EA
+	for <lists+bpf@lfdr.de>; Sat, 24 Dec 2022 12:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbiLXHQM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Dec 2022 02:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S230503AbiLXLVM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Dec 2022 06:21:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbiLXHQB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 24 Dec 2022 02:16:01 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6CF10B79;
-        Fri, 23 Dec 2022 23:15:54 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id jn22so6702105plb.13;
-        Fri, 23 Dec 2022 23:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c6zLmWbFfcHm01hPAqRxC8QUpd9w9h8sf5XqbJ9uy68=;
-        b=cVHpdTWAZNWgkc+4HJiZYB3du+jVU4uQf9PuYC5huIzuuvFKcIjvPhi8pOv6M6Y+QT
-         +PzibG7KCj9xwaS6kIsqizNWUSAvX2wfv0xogQ5OigNAuklydZFwtOgiw+IUzQwVFd6Q
-         RlJrfkiSOnxKkup+FE3BeTdIShXxy9nQTl1dOMmeeW3vayzaRvvIPxuhWOwll3WbQ22/
-         dP4rW07Cs8yT5Z4NZiu8qNWbu36kohey4qcDejWzYKmwhKfnRGW6YjKakzHOsdOSk40B
-         FE/X5Ah8UajP0Sj66lyFR6Ov5sLnt1lh4SyyjYdX6QlGp0sa+KBu3lwW6uh2s/JuTK3e
-         N2nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c6zLmWbFfcHm01hPAqRxC8QUpd9w9h8sf5XqbJ9uy68=;
-        b=n/AXhNndUwj9170RsR5pfqfgtT1XfaqCC/bzBMhLhx3h6vY5yjZzx4pyaQbXLTuMjm
-         O3P23TnzgvYYAF1TaK2pKppfYMnsa+o12MjXudA+KhyxmY1V7mtuE4UQ0chmIthRvr1n
-         RD5ldfxmrG9XlJCqGWWyWgrkQAy/nEhgMSwvPXJ4G+Ydhzcvxn4c8sRWeHS14TwXWp73
-         4tzFg2dNaJejGcBZofqQNcg2+OptkCT9xJbYeArp5yFIl2A/oGDImqVLM50lIkctuzIX
-         fzShUls8lKpKRZlOWFAZmiqbxxuK8ypZVyvj/Hl8+hAv2RSp0Qzcaq0Asp2IphU6JqtR
-         l97w==
-X-Gm-Message-State: AFqh2kohpHWFy0GLx7Jmh4dxkHmntU35y4pdopxKP7GT2RmUudZ14rJo
-        NCMYE2+Gxjd0QXIrjtqD8g==
-X-Google-Smtp-Source: AMrXdXvYJf+z/GCGsV83lx/DXHjvlzPzNIkqiGIuUFvGxOWsVkR8TZE/uSew4HVg6edu2fGLetoXfg==
-X-Received: by 2002:a17:902:930b:b0:185:441e:2240 with SMTP id bc11-20020a170902930b00b00185441e2240mr12320112plb.59.1671866154104;
-        Fri, 23 Dec 2022 23:15:54 -0800 (PST)
-Received: from WDIR.. ([182.209.58.25])
-        by smtp.gmail.com with ESMTPSA id bf4-20020a170902b90400b00186b7443082sm3433222plb.195.2022.12.23.23.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Dec 2022 23:15:53 -0800 (PST)
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [bpf-next v3 6/6] libbpf: fix invalid return address register in s390
-Date:   Sat, 24 Dec 2022 16:15:27 +0900
-Message-Id: <20221224071527.2292-7-danieltimlee@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221224071527.2292-1-danieltimlee@gmail.com>
-References: <20221224071527.2292-1-danieltimlee@gmail.com>
+        with ESMTP id S229570AbiLXLVL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Dec 2022 06:21:11 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69490208;
+        Sat, 24 Dec 2022 03:21:10 -0800 (PST)
+Received: from dggpeml500010.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NfM2l6RV7zJpMx;
+        Sat, 24 Dec 2022 19:17:19 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Sat, 24 Dec
+ 2022 19:21:07 +0800
+From:   Xin Liu <liuxin350@huawei.com>
+To:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yanan@huawei.com>, <wuchangye@huawei.com>,
+        <xiesongyang@huawei.com>, <kongweibin2@huawei.com>,
+        <liuxin350@huawei.com>, <zhangmingyi5@huawei.com>
+Subject: [PATCH] libbpf: Added the description of some API functions
+Date:   Sat, 24 Dec 2022 19:20:58 +0800
+Message-ID: <20221224112058.12038-1-liuxin350@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There is currently an invalid register mapping in the s390 return
-address register. As the manual[1] states, the return address can be
-found at r14. In bpf_tracing.h, the s390 registers were named
-gprs(general purpose registers). This commit fixes the problem by
-correcting the mistyped mapping.
+Currently, many API functions are not described in the document.
+I have tried to add the API description of the following four API
+functions:
+ libbpf_set_print
+ bpf_object__open
+ bpf_object__load
+ bpf_object__close
 
-[1]: https://uclibc.org/docs/psABI-s390x.pdf#page=14
-
-Fixes: 3cc31d794097 ("libbpf: Normalize PT_REGS_xxx() macro definitions")
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+Signed-off-by: Xin Liu <liuxin350@huawei.com>
 ---
- tools/lib/bpf/bpf_tracing.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.h | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index 2972dc25ff72..9c1b1689068d 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -137,7 +137,7 @@ struct pt_regs___s390 {
- #define __PT_PARM3_REG gprs[4]
- #define __PT_PARM4_REG gprs[5]
- #define __PT_PARM5_REG gprs[6]
--#define __PT_RET_REG grps[14]
-+#define __PT_RET_REG gprs[14]
- #define __PT_FP_REG gprs[11]	/* Works only with CONFIG_FRAME_POINTER */
- #define __PT_RC_REG gprs[2]
- #define __PT_SP_REG gprs[15]
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index eee883f007f9..bf3af52d42be 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -96,6 +96,12 @@ enum libbpf_print_level {
+ typedef int (*libbpf_print_fn_t)(enum libbpf_print_level level,
+ 				 const char *, va_list ap);
+ 
++/**
++ * @brief **libbpf_set_print()** use the user-provided log print function.
++ * @param fn the log print function. Disable all print if the parameter
++ * is NULL.
++ * @return Pointer to old print function.
++ */
+ LIBBPF_API libbpf_print_fn_t libbpf_set_print(libbpf_print_fn_t fn);
+ 
+ /* Hide internal to user */
+@@ -174,6 +180,14 @@ struct bpf_object_open_opts {
+ };
+ #define bpf_object_open_opts__last_field kernel_log_level
+ 
++/**
++ * @brief **bpf_object__open()** creates a bpf_object by opening
++ * the BPF ELF object file pointed to by the passed path and loading it
++ * into memory.
++ * @param path BPF object file path.
++ * @return pointer to the new bpf_object; or NULL is returned on error,
++ * error code is stored in errno
++ */
+ LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
+ 
+ /**
+@@ -204,9 +218,20 @@ bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
+ 		     const struct bpf_object_open_opts *opts);
+ 
+ /* Load/unload object into/from kernel */
++/**
++ * @brief **bpf_object__load()** load bpf_object into kernel
++ * @param obj pointer to a valid bpf_object
++ * @return 0, on success; negative error code, otherwise, error code is
++ * stored in errno
++ */
+ LIBBPF_API int bpf_object__load(struct bpf_object *obj);
+ 
+-LIBBPF_API void bpf_object__close(struct bpf_object *object);
++/**
++ * @brief **bpf_object__close()** close a bpf_object and release all
++ * resources.
++ * @param obj pointer to a valid bpf_object
++ */
++LIBBPF_API void bpf_object__close(struct bpf_object *obj);
+ 
+ /* pin_maps and unpin_maps can both be called with a NULL path, in which case
+  * they will use the pin_path attribute of each map (and ignore all maps that
 -- 
-2.34.1
+2.33.0
 
