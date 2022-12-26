@@ -2,110 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D80655E72
-	for <lists+bpf@lfdr.de>; Sun, 25 Dec 2022 23:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4CD655F2C
+	for <lists+bpf@lfdr.de>; Mon, 26 Dec 2022 03:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbiLYWRF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Dec 2022 17:17:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
+        id S229572AbiLZCdC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Dec 2022 21:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbiLYWRE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Dec 2022 17:17:04 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521DA1002
-        for <bpf@vger.kernel.org>; Sun, 25 Dec 2022 14:17:03 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id u9so23287387ejo.0
-        for <bpf@vger.kernel.org>; Sun, 25 Dec 2022 14:17:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=k9VYayWhEojXdedhpz0T3pFz3Qk5NlIUSQcAxKCeies=;
-        b=my66nJcwzmG+P+xBFoH294AVlsUhkpk1U1yPW8gD22A9tApa3nf/Y798u5QqJ2KFdD
-         C2ECvBpIRIUVyJ4ZEZVukE8Bb43+wh7eP9pEJbPlN/2hCNA+ltxznwjgs4B7eHL4riiB
-         5XigeR7py9R2YXqottUeXzbt4q+kkL6UCpZg+pZc53ktEcI3ZnD5zbEl1fBjT3tl4mjo
-         MeThLKkFBx4nM2rOc4Wad7S/EdzKAqOeeuS25uiOCOlq7DZD5uQV8OliI8GyVNbOlFZb
-         DVeYlsygJymK4VnaZZptxYk+zf1gJFzZmtPIt+opzkAwX9iaCf2vEjaa/pVPIMsYwDaW
-         3OWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k9VYayWhEojXdedhpz0T3pFz3Qk5NlIUSQcAxKCeies=;
-        b=uGnJTBVacdk4Klxegha59v/6yuw6xYDbEQUwsp1ioFNv6atswAE/wVpxz5ruWy7rwg
-         HQeYjvqb0DbJCZYzTw3d4/zyj5kFUUBtaiWet1QNGicci+RczkWelxMuFMnCOkqcbA/V
-         OE574fM1+cMd+cd0Vs8nDxQs/usFuYtMLyTxTUhXyCgVqB0aej/djzzcgn/71iJ6wYck
-         4Da5O0qBJ+CyInJXqmyUbAHKIye8sdhDOhs+1plftLoAM/B390YWsRayya3cPWfJxpTT
-         L40TvHnZHFqoLNFZ7VrnYk9bs/Mmnz2PWjmdWT3cj1FijSa0fQ2cGmJWZ7EfPAmWvPvG
-         mrGQ==
-X-Gm-Message-State: AFqh2kp6AGSekoLVCI5z2xmtD41ol2MP8+vQxjAn1MrmIoPkXvvt3MHB
-        OnCaGVLyfBE2lNxz2f0V6boStRHtOxZWmPHX4aTQigz2mCw=
-X-Google-Smtp-Source: AMrXdXvj4TjWhrl6oaLRvnCr8CX/yG0bSRHD9hJLWz1fj14bqPQXTUxwsRS32yD+C1byaROl9bcMArcBcwc32oDuHz8=
-X-Received: by 2002:a17:906:a18c:b0:7c0:f2cf:3515 with SMTP id
- s12-20020a170906a18c00b007c0f2cf3515mr1075480ejy.327.1672006621737; Sun, 25
- Dec 2022 14:17:01 -0800 (PST)
+        with ESMTP id S229560AbiLZCdB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Dec 2022 21:33:01 -0500
+Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E272674;
+        Sun, 25 Dec 2022 18:32:59 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VY1b5S1_1672021975;
+Received: from 30.39.209.91(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VY1b5S1_1672021975)
+          by smtp.aliyun-inc.com;
+          Mon, 26 Dec 2022 10:32:56 +0800
+Message-ID: <daf585da-ea19-c06f-efba-ec706e9478ff@linux.alibaba.com>
+Date:   Mon, 26 Dec 2022 10:32:53 +0800
 MIME-Version: 1.0
-References: <20221223185531.222689-1-paul@paul-moore.com> <CAKH8qBu30bdiMWmUzZsYaVRTpSXfKjeBHD9deSPQmk_v_seDuA@mail.gmail.com>
-In-Reply-To: <CAKH8qBu30bdiMWmUzZsYaVRTpSXfKjeBHD9deSPQmk_v_seDuA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 25 Dec 2022 14:16:50 -0800
-Message-ID: <CAADnVQ+pgN8m3ApZtk9Vr=iv+OcXcv5hhASCwP6ZJGt9Z2JvMw@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
- and PERF_BPF_EVENT_PROG_UNLOAD
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Paul Moore <paul@paul-moore.com>, linux-audit@redhat.com,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Burn Alting <burn.alting@iinet.net.au>,
-        Jiri Olsa <jolsa@kernel.org>,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0)
+ Gecko/20100101 Thunderbird/108.0
+Subject: Re: [PATCH v2 0/9] virtio_net: support multi buffer xdp
+From:   Heng Qi <hengqi@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20221220141449.115918-1-hengqi@linux.alibaba.com>
+In-Reply-To: <20221220141449.115918-1-hengqi@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 23, 2022 at 5:49 PM Stanislav Fomichev <sdf@google.com> wrote:
-get_func_ip() */
-> > -                               tstamp_type_access:1; /* Accessed __sk_buff->tstamp_type */
-> > +                               tstamp_type_access:1, /* Accessed __sk_buff->tstamp_type */
-> > +                               valid_id:1; /* Is bpf_prog::aux::__id valid? */
-> >         enum bpf_prog_type      type;           /* Type of BPF program */
-> >         enum bpf_attach_type    expected_attach_type; /* For some prog types */
-> >         u32                     len;            /* Number of filter blocks */
-> > @@ -1688,6 +1689,12 @@ void bpf_prog_inc(struct bpf_prog *prog);
-> >  struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
-> >  void bpf_prog_put(struct bpf_prog *prog);
-> >
-> > +static inline u32 bpf_prog_get_id(const struct bpf_prog *prog)
-> > +{
-> > +       if (WARN(!prog->valid_id, "Attempting to use an invalid eBPF program"))
-> > +               return 0;
-> > +       return prog->aux->__id;
-> > +}
+
+Hi Jason, do you have any comments on this?
+
+Thanks.
+
+在 2022/12/20 下午10:14, Heng Qi 写道:
+> Changes since RFC:
+> - Using headroom instead of vi->xdp_enabled to avoid re-reading
+>    in add_recvbuf_mergeable();
+> - Disable GRO_HW and keep linearization for single buffer xdp;
+> - Renamed to virtnet_build_xdp_buff_mrg();
+> - pr_debug() to netdev_dbg();
+> - Adjusted the order of the patch series.
 >
-> I'm still missing why we need to have this WARN and have a check at all.
-> IIUC, we're actually too eager in resetting the id to 0, and need to
-> keep that stale id around at least for perf/audit.
-> Why not have a flag only to protect against double-idr_remove
-> bpf_prog_free_id and keep the rest as is?
-> Which places are we concerned about that used to report id=0 but now
-> would report stale id?
+> Currently, virtio net only supports xdp for single-buffer packets
+> or linearized multi-buffer packets. This patchset supports xdp for
+> multi-buffer packets, then larger MTU can be used if xdp sets the
+> xdp.frags. This does not affect single buffer handling.
+>
+> In order to build multi-buffer xdp neatly, we integrated the code
+> into virtnet_build_xdp_buff_mrg() for xdp. The first buffer is used
+> for prepared xdp buff, and the rest of the buffers are added to
+> its skb_shared_info structure. This structure can also be
+> conveniently converted during XDP_PASS to get the corresponding skb.
+>
+> Since virtio net uses comp pages, and bpf_xdp_frags_increase_tail()
+> is based on the assumption of the page pool,
+> (rxq->frag_size - skb_frag_size(frag) - skb_frag_off(frag))
+> is negative in most cases. So we didn't set xdp_rxq->frag_size in
+> virtnet_open() to disable the tail increase.
+>
+> Heng Qi (9):
+>    virtio_net: disable the hole mechanism for xdp
+>    virtio_net: set up xdp for multi buffer packets
+>    virtio_net: update bytes calculation for xdp_frame
+>    virtio_net: build xdp_buff with multi buffers
+>    virtio_net: construct multi-buffer xdp in mergeable
+>    virtio_net: transmit the multi-buffer xdp
+>    virtio_net: build skb from multi-buffer xdp
+>    virtio_net: remove xdp related info from page_to_skb()
+>    virtio_net: support multi-buffer xdp
+>
+>   drivers/net/virtio_net.c | 332 ++++++++++++++++++++++++++-------------
+>   1 file changed, 219 insertions(+), 113 deletions(-)
+>
 
-What double-idr_remove are you concerned about?
-bpf_prog_by_id() is doing bpf_prog_inc_not_zero
-while __bpf_prog_put just dropped it to zero.
-
-Maybe just move bpf_prog_free_id() into bpf_prog_put_deferred()
-after perf_event_bpf_event and bpf_audit_prog ?
-Probably can remove the obsolete do_idr_lock bool flag as
-separate patch?
-
-Much simpler fix and no code churn.
-Both valid_id and saved_id approaches have flaws.
