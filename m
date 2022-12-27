@@ -2,156 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A9C656549
-	for <lists+bpf@lfdr.de>; Mon, 26 Dec 2022 23:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B347A656635
+	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 01:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbiLZWZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Dec 2022 17:25:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
+        id S229886AbiL0ANt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Dec 2022 19:13:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbiLZWZ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Dec 2022 17:25:29 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9E1E2F;
-        Mon, 26 Dec 2022 14:25:27 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id vm8so21448443ejc.2;
-        Mon, 26 Dec 2022 14:25:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xRfFb+jDncZJITtB1Bb9o85UZmJn4oE/UuBZZvsjKV4=;
-        b=hi3hPF3S7s96s6ST6EVu//NokVS89sHKDSHNin27/znN2G9WBnNKv9FyarprLZRmb4
-         7EHw0VeJ6f1OuBZApL/DDinjsZukwPetLJtQa8Y0VuaH2wSic9s3YzxC2wnvlOiw6S6z
-         V7g7wuFOH8YDvOe7rg81a/5O/5jObfsvxlMzOlNLimW8dPLyL2T0f9X9zai+mPW0YJR6
-         N32Yqt4zzmaTx2B0JqkzEOzlU35v4U8+YKTsez+sVfTKUDV7LRsqIotvbJVI4OkQKJbC
-         jbYnapjRY+vng/W8M2CERGBfzgazhQzfV5spWeoT3eTNhtPHoMkIGZBcKw0v30iLYcby
-         GIIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xRfFb+jDncZJITtB1Bb9o85UZmJn4oE/UuBZZvsjKV4=;
-        b=obH9S+dT0xlGqjmPt4m95OThzb2KJ+Fdt0rrRP/+4ZaVQhvX9DXot4MnG/W4TpM34z
-         h/BuYrmqsbJonmLkAP+2nf5hJKApDTnc6zjpovzAkP/XJRiw+08RzpucJLyRjaeTFDLo
-         jVslgiNPPsEAZ8ODSxhn/4uH8okVkJCuXdkEBc1eCC+HBk4NhmNFsqC6tZEC3PcxSQiH
-         etblnPaKbQm4Z058za1axlCfOTdjD07OB7gj6Xru9f480QXTt/LAIQN6jVOPKOnF0Dw0
-         UuRXyeYKnnTgm3PJ8jpFWjPjXE2H/DSFbnfoCsWWrwU15T/bRTPOd87eAD1e8f6PEywB
-         98Yg==
-X-Gm-Message-State: AFqh2kr4poNK+LpXLk0zTsD7upu8QcR+X9lPwFKrIijzjrgz/yCWooHz
-        T2xBaO9OC/dj/iO7BrGHScM=
-X-Google-Smtp-Source: AMrXdXvosqkLxKRrJA7QTYeB6J66x/p5JsehQ4MORzG7VTFWag1xwe3xMox5JNrEswCLBce5Zc9Ztg==
-X-Received: by 2002:a17:907:7676:b0:7c1:5b5e:4d86 with SMTP id kk22-20020a170907767600b007c15b5e4d86mr16895282ejc.36.1672093526260;
-        Mon, 26 Dec 2022 14:25:26 -0800 (PST)
-Received: from krava ([83.240.62.89])
-        by smtp.gmail.com with ESMTPSA id o21-20020a170906769500b007b935641971sm5253904ejm.5.2022.12.26.14.25.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Dec 2022 14:25:25 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 26 Dec 2022 23:25:23 +0100
-To:     Chuang Wang <nashuiliang@gmail.com>
-Cc:     stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: Fix panic due to wrong pageattr of im->image
-Message-ID: <Y6ofUzLHZKraIDre@krava>
-References: <20221224133146.780578-1-nashuiliang@gmail.com>
+        with ESMTP id S229791AbiL0ANs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Dec 2022 19:13:48 -0500
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033C525E6
+        for <bpf@vger.kernel.org>; Mon, 26 Dec 2022 16:13:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1672100020; bh=ORItN6HMFDhSfD5AXRtkrNg+ZN77mDIU+g1ZnrIzloI=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=Qc/d73mA+Ctu9mXfY+hpOnKyMLzZydaW7/ky1g2FXhj7UvhaFO2raCsQCiKzE/dwY
+         fXR6ZavQqWaalLV1tFjW7/xlDStf4nfW81dBZC4cOqRFR2Ff9QtT02DqkGqHjEvGpq
+         KRX+pEjWw2PWvom6cMJOdEsKlm+eMboMRmdWFurI=
+Received: from [192.168.9.172] (unknown [101.88.134.93])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 538D2600DA;
+        Tue, 27 Dec 2022 08:13:40 +0800 (CST)
+Message-ID: <45308e1d-4cbb-5f77-f66d-94917b7e26a4@xen0n.name>
+Date:   Tue, 27 Dec 2022 08:13:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221224133146.780578-1-nashuiliang@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101
+ Firefox/110.0 Thunderbird/110.0a1
+Subject: Re: [PATCH bpf-next] libbpf: Add LoongArch support to bpf_tracing.h
+To:     Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org,
+        loongarch@lists.linux.dev, andrii@kernel.org
+References: <20221225120138.1236072-1-hengqi.chen@gmail.com>
+Content-Language: en-US
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <20221225120138.1236072-1-hengqi.chen@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 24, 2022 at 09:31:46PM +0800, Chuang Wang wrote:
-> In the scenario where livepatch and kretfunc coexist, the pageattr of
-> im->image is rox after arch_prepare_bpf_trampoline in
-> bpf_trampoline_update, and then modify_fentry or register_fentry returns
-> -EAGAIN from bpf_tramp_ftrace_ops_func, the BPF_TRAMP_F_ORIG_STACK flag
-> will be configured, and arch_prepare_bpf_trampoline will be re-executed.
-> 
-> At this time, because the pageattr of im->image is rox,
-> arch_prepare_bpf_trampoline will read and write im->image, which causes
-> a fault. as follows:
-> 
->   insmod livepatch-sample.ko    # samples/livepatch/livepatch-sample.c
->   bpftrace -e 'kretfunc:cmdline_proc_show {}'
-> 
-> BUG: unable to handle page fault for address: ffffffffa0206000
-> PGD 322d067 P4D 322d067 PUD 322e063 PMD 1297e067 PTE d428061
-> Oops: 0003 [#1] PREEMPT SMP PTI
-> CPU: 2 PID: 270 Comm: bpftrace Tainted: G            E K    6.1.0 #5
-> RIP: 0010:arch_prepare_bpf_trampoline+0xed/0x8c0
-> RSP: 0018:ffffc90001083ad8 EFLAGS: 00010202
-> RAX: ffffffffa0206000 RBX: 0000000000000020 RCX: 0000000000000000
-> RDX: ffffffffa0206001 RSI: ffffffffa0206000 RDI: 0000000000000030
-> RBP: ffffc90001083b70 R08: 0000000000000066 R09: ffff88800f51b400
-> R10: 000000002e72c6e5 R11: 00000000d0a15080 R12: ffff8880110a68c8
-> R13: 0000000000000000 R14: ffff88800f51b400 R15: ffffffff814fec10
-> FS:  00007f87bc0dc780(0000) GS:ffff88803e600000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffa0206000 CR3: 0000000010b70000 CR4: 00000000000006e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
-> <TASK>
->  bpf_trampoline_update+0x25a/0x6b0
->  __bpf_trampoline_link_prog+0x101/0x240
->  bpf_trampoline_link_prog+0x2d/0x50
->  bpf_tracing_prog_attach+0x24c/0x530
->  bpf_raw_tp_link_attach+0x73/0x1d0
->  __sys_bpf+0x100e/0x2570
->  __x64_sys_bpf+0x1c/0x30
->  do_syscall_64+0x5b/0x80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> With this patch, when modify_fentry or register_fentry returns -EAGAIN
-> from bpf_tramp_ftrace_ops_func, the pageattr of im->image will be reset
-> to nx+rw.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 00963a2e75a8 ("bpf: Support bpf_trampoline on functions with IPMODIFY (e.g. livepatch)")
-> Signed-off-by: Chuang Wang <nashuiliang@gmail.com>
+Hi,
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
+On 12/25/22 20:01, Hengqi Chen wrote:
+> Add PT_REGS macros for LoongArch64 ([0]).
+>
+>    [0]: https://loongson.github.io/LoongArch-Documentation/LoongArch-ELF-ABI-EN.html
+>
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 > ---
->  kernel/bpf/trampoline.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 11f5ec0b8016..d0ed7d6f5eec 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -488,6 +488,10 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
->  		/* reset fops->func and fops->trampoline for re-register */
->  		tr->fops->func = NULL;
->  		tr->fops->trampoline = 0;
+>   tools/lib/bpf/bpf_tracing.h | 21 +++++++++++++++++++++
+>   1 file changed, 21 insertions(+)
+>
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index 2972dc25ff72..5a8a0830d133 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -32,6 +32,9 @@
+>   #elif defined(__TARGET_ARCH_arc)
+>   	#define bpf_target_arc
+>   	#define bpf_target_defined
+> +#elif defined(__TARGET_ARCH_loongarch)
+> +	#define bpf_target_loongarch
+> +	#define bpf_target_defined
+>   #else
+>
+>   /* Fall back to what the compiler says */
+> @@ -62,6 +65,9 @@
+>   #elif defined(__arc__)
+>   	#define bpf_target_arc
+>   	#define bpf_target_defined
+> +#elif defined(__loongarch__) && __loongarch_grlen == 64
+
+Isn't the whole patch independent of bitness? I'd suggest just removing 
+this GRLen check so we don't need another change when we want 
+LoongArch32 too.
+
+Please adjust the commit message wording accordingly too.
+
+> +	#define bpf_target_loongarch
+> +	#define bpf_target_defined
+>   #endif /* no compiler target */
+>
+>   #endif
+> @@ -258,6 +264,21 @@ struct pt_regs___arm64 {
+>   /* arc does not select ARCH_HAS_SYSCALL_WRAPPER. */
+>   #define PT_REGS_SYSCALL_REGS(ctx) ctx
+>
+> +#elif defined(bpf_target_loongarch)
 > +
-> +		/* reset im->image memory attr for arch_prepare_bpf_trampoline */
-> +		set_memory_nx((long)im->image, 1);
-> +		set_memory_rw((long)im->image, 1);
->  		goto again;
->  	}
->  #endif
-> -- 
-> 2.37.2
-> 
+> +#define __PT_PARM1_REG regs[4]
+> +#define __PT_PARM2_REG regs[5]
+> +#define __PT_PARM3_REG regs[6]
+> +#define __PT_PARM4_REG regs[7]
+> +#define __PT_PARM5_REG regs[8]
+> +#define __PT_RET_REG regs[1]
+> +#define __PT_FP_REG regs[22]
+> +#define __PT_RC_REG regs[4]
+> +#define __PT_SP_REG regs[3]
+> +#define __PT_IP_REG csr_era
+> +/* loongarch does not select ARCH_HAS_SYSCALL_WRAPPER. */
+> +#define PT_REGS_SYSCALL_REGS(ctx) ctx
+> +
+>   #endif
+>
+>   #if defined(bpf_target_defined)
+> --
+> 2.31.1
+>
+-- 
+WANG "xen0n" Xuerui
+
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+
