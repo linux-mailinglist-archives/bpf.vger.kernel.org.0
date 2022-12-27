@@ -2,225 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEBE656F2E
-	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 21:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842CF6570F5
+	for <lists+bpf@lfdr.de>; Wed, 28 Dec 2022 00:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbiL0Ujj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Dec 2022 15:39:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
+        id S229863AbiL0XTh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Dec 2022 18:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbiL0Uir (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Dec 2022 15:38:47 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD53DEAF;
-        Tue, 27 Dec 2022 12:34:48 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DD29CB81203;
-        Tue, 27 Dec 2022 20:34:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB528C433F2;
-        Tue, 27 Dec 2022 20:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672173285;
-        bh=OsWpM7VMqAeoAF4eCneiyqb1FOaCm6d8gpiZhGJ7kpI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=neJDhL3GVgHZlQTYR81+M1dZ/pZ15oi68xwcZrJKQut76dG7VyPGVW5mfMLn3MxGq
-         T6wCrv+sfbM9hkjS4mQStvsUCuWjKkzGX6sckW9yQYv8DqOSnP+M6oMuHmMysloUCy
-         3Nyym0Vb9uEvl/VihHhB0V49OGs8HRn0Z4g522+UzeE+xp122m3E07W5xuwjLdV+Ql
-         QuWFeEG2Qu+/yPBuoOwm68Zy7ZUdQyT8AJ8EQaB0I+ooWC4UStVjJpnn8JXUJUBmx8
-         jIH1h1khpPidd9rZ/TpLkDlJyf5HX/CO5fdIzTRIsMlZbxDq0BY/ITkZptMChZ52qM
-         T7hV3jq4XhEbg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Edward Lo <edward.lo@ambergroup.io>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Sasha Levin <sashal@kernel.org>, ntfs3@lists.linux.dev,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 09/22] fs/ntfs3: Validate resident attribute name
-Date:   Tue, 27 Dec 2022 15:34:19 -0500
-Message-Id: <20221227203433.1214255-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221227203433.1214255-1-sashal@kernel.org>
-References: <20221227203433.1214255-1-sashal@kernel.org>
+        with ESMTP id S229801AbiL0XTh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Dec 2022 18:19:37 -0500
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA87108E;
+        Tue, 27 Dec 2022 15:19:36 -0800 (PST)
+Received: by mail-io1-f52.google.com with SMTP id d123so7594809iof.6;
+        Tue, 27 Dec 2022 15:19:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9sbupdtVdTz+LltMLzxd/HsPKuNxO8PX5O/NtDk5n+o=;
+        b=RZqJxuACpKfyDtKx4S+Ww+OmEkrULVsrzlzQ3eg1j+aqpAA9fU+ElEeTjTy+oG9tvP
+         9SR7EWBHpO09xh2yli31uSTPJ/tEawbcCBJGXyxriWhofkAVnovgvRL6RiayPmt2FRHb
+         MPn85+AB44UebtMEy/IBtUMfUuNdjBTaNq9b4IG2JLU0mG9GovNY7Hr5XXvPLLFMk1Fo
+         P11N9aZ/0aW2FiSOMn6YdZluN/hiMsV/5+2Fevy5nKzKC/WjeI8bUGd2bNVQvkmLiZl6
+         e+V7BOPfVxqBUAVj9DDvopi7eKV5maSQ+0553xSteCep62sVQi107ozJaeg2lrrl14im
+         MS9w==
+X-Gm-Message-State: AFqh2krGaNCUgme9EncJvXPfI6JQiTeLrdehoD4lOf1Md8drwkvYaQZt
+        ldkrOhuDlbMFxc1W/Cy+Vn4fNnL+xmuFkmDu+bQ=
+X-Google-Smtp-Source: AMrXdXvWu2qaNnbe1MztuuHk+vRJrQb4vB+01ouuKEVjGgXmD1LD6R5ddMwKYsfrse8TCDt08znSD+UoQ/5vBFuRcQU=
+X-Received: by 2002:a5e:890a:0:b0:6ec:b1cc:d237 with SMTP id
+ k10-20020a5e890a000000b006ecb1ccd237mr1446959ioj.35.1672183175665; Tue, 27
+ Dec 2022 15:19:35 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221220220144.4016213-1-namhyung@kernel.org> <20221220220144.4016213-2-namhyung@kernel.org>
+ <Y6RTy29ULXp8WJ/Q@hirez.programming.kicks-ass.net> <2d164a5f-2885-2a6e-581a-2673ca0b1b81@iogearbox.net>
+ <CAM9d7cj=iuxhLndNMBMeff6Ayp2hLfdz+6CHsZL7g213aWbUYQ@mail.gmail.com>
+ <Y6S7BcblAHO4nQTf@hirez.programming.kicks-ass.net> <CAM9d7chi6ijPEwkTbmLJGz+_fQFvnFxwc44M-g93ym2-ZPN9tw@mail.gmail.com>
+ <Y6VefZAWVzwmkfjd@krava>
+In-Reply-To: <Y6VefZAWVzwmkfjd@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 27 Dec 2022 15:19:24 -0800
+Message-ID: <CAM9d7ci9MbW_HbGbYge2iqiiEr8VPk32-5cBMViwCFsV+EmfgQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf/perf: Call perf_prepare_sample() before bpf_prog_run()
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Edward Lo <edward.lo@ambergroup.io>
+On Thu, Dec 22, 2022 at 11:53 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+>
+> On Thu, Dec 22, 2022 at 02:25:49PM -0800, Namhyung Kim wrote:
+> > On Thu, Dec 22, 2022 at 12:16 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Thu, Dec 22, 2022 at 09:34:42AM -0800, Namhyung Kim wrote:
+> > >
+> > > > Sorry about that.  Let me rephrase it like below:
+> > > >
+> > > > With bpf_cast_to_kern_ctx(), BPF programs attached to a perf event
+> > > > can access perf sample data directly from the ctx.
+> > >
+> > > This is the bpf_prog_run() in bpf_overflow_handler(), right?
+> >
+> > Yes.
+> >
+> > >
+> > > > But the perf sample
+> > > > data is not fully prepared at this point, and some fields can have invalid
+> > > > uninitialized values.  So it needs to call perf_prepare_sample() before
+> > > > calling the BPF overflow handler.
+> > >
+> > > It never was, why is it a problem now?
+> >
+> > BPF used to allow selected fields only like period and addr, and they
+> > are initialized always by perf_sample_data_init().  This is relaxed
+> > by the bpf_cast_to_kern_ctx() and it can easily access arbitrary
+> > fields of perf_sample_data now.
+> >
+> > The background of this change is to use BPF as a filter for perf
+> > event samples.  The code is there already and returning 0 from
+> > BPF can drop perf samples.  With access to more sample data,
+> > it'd make more educated decisions.
+> >
+> > For example, I got some requests to limit perf samples in a
+> > selected region of address (code or data).  Or it can collect
+> > samples only if some hardware specific information is set in
+> > the raw data like in AMD IBS.  We can easily extend it to other
+> > sample info based on users' needs.
+> >
+> > >
+> > > > But just calling perf_prepare_sample() can be costly when the BPF
+> > >
+> > > So you potentially call it twice now, how's that useful?
+> >
+> > Right.  I think we can check data->sample_flags in
+> > perf_prepare_sample() to minimize the duplicate work.
+> > It already does it for some fields, but misses others.
+>
+> we used to have __PERF_SAMPLE_CALLCHAIN_EARLY to avoid extra perf_callchain,
+> could we add some flag like __PERF_SAMPLE_INIT_EARLY to avoid double call to
+> perf_prepare_sample?
 
-[ Upstream commit 54e45702b648b7c0000e90b3e9b890e367e16ea8 ]
+I think we can check if the filtered_sample_type is 0.
+But it still needs to update the perf_event_header.
+I think we need to save the calculated size separately.
 
-Though we already have some sanity checks while enumerating attributes,
-resident attribute names aren't included. This patch checks the resident
-attribute names are in the valid ranges.
-
-[  259.209031] BUG: KASAN: slab-out-of-bounds in ni_create_attr_list+0x1e1/0x850
-[  259.210770] Write of size 426 at addr ffff88800632f2b2 by task exp/255
-[  259.211551]
-[  259.212035] CPU: 0 PID: 255 Comm: exp Not tainted 6.0.0-rc6 #37
-[  259.212955] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[  259.214387] Call Trace:
-[  259.214640]  <TASK>
-[  259.214895]  dump_stack_lvl+0x49/0x63
-[  259.215284]  print_report.cold+0xf5/0x689
-[  259.215565]  ? kasan_poison+0x3c/0x50
-[  259.215778]  ? kasan_unpoison+0x28/0x60
-[  259.215991]  ? ni_create_attr_list+0x1e1/0x850
-[  259.216270]  kasan_report+0xa7/0x130
-[  259.216481]  ? ni_create_attr_list+0x1e1/0x850
-[  259.216719]  kasan_check_range+0x15a/0x1d0
-[  259.216939]  memcpy+0x3c/0x70
-[  259.217136]  ni_create_attr_list+0x1e1/0x850
-[  259.217945]  ? __rcu_read_unlock+0x5b/0x280
-[  259.218384]  ? ni_remove_attr+0x2e0/0x2e0
-[  259.218712]  ? kernel_text_address+0xcf/0xe0
-[  259.219064]  ? __kernel_text_address+0x12/0x40
-[  259.219434]  ? arch_stack_walk+0x9e/0xf0
-[  259.219668]  ? __this_cpu_preempt_check+0x13/0x20
-[  259.219904]  ? sysvec_apic_timer_interrupt+0x57/0xc0
-[  259.220140]  ? asm_sysvec_apic_timer_interrupt+0x1b/0x20
-[  259.220561]  ni_ins_attr_ext+0x52c/0x5c0
-[  259.220984]  ? ni_create_attr_list+0x850/0x850
-[  259.221532]  ? run_deallocate+0x120/0x120
-[  259.221972]  ? vfs_setxattr+0x128/0x300
-[  259.222688]  ? setxattr+0x126/0x140
-[  259.222921]  ? path_setxattr+0x164/0x180
-[  259.223431]  ? __x64_sys_setxattr+0x6d/0x80
-[  259.223828]  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  259.224417]  ? mi_find_attr+0x3c/0xf0
-[  259.224772]  ni_insert_attr+0x1ba/0x420
-[  259.225216]  ? ni_ins_attr_ext+0x5c0/0x5c0
-[  259.225504]  ? ntfs_read_ea+0x119/0x450
-[  259.225775]  ni_insert_resident+0xc0/0x1c0
-[  259.226316]  ? ni_insert_nonresident+0x400/0x400
-[  259.227001]  ? __kasan_kmalloc+0x88/0xb0
-[  259.227468]  ? __kmalloc+0x192/0x320
-[  259.227773]  ntfs_set_ea+0x6bf/0xb30
-[  259.228216]  ? ftrace_graph_ret_addr+0x2a/0xb0
-[  259.228494]  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  259.228838]  ? ntfs_read_ea+0x450/0x450
-[  259.229098]  ? is_bpf_text_address+0x24/0x40
-[  259.229418]  ? kernel_text_address+0xcf/0xe0
-[  259.229681]  ? __kernel_text_address+0x12/0x40
-[  259.229948]  ? unwind_get_return_address+0x3a/0x60
-[  259.230271]  ? write_profile+0x270/0x270
-[  259.230537]  ? arch_stack_walk+0x9e/0xf0
-[  259.230836]  ntfs_setxattr+0x114/0x5c0
-[  259.231099]  ? ntfs_set_acl_ex+0x2e0/0x2e0
-[  259.231529]  ? evm_protected_xattr_common+0x6d/0x100
-[  259.231817]  ? posix_xattr_acl+0x13/0x80
-[  259.232073]  ? evm_protect_xattr+0x1f7/0x440
-[  259.232351]  __vfs_setxattr+0xda/0x120
-[  259.232635]  ? xattr_resolve_name+0x180/0x180
-[  259.232912]  __vfs_setxattr_noperm+0x93/0x300
-[  259.233219]  __vfs_setxattr_locked+0x141/0x160
-[  259.233492]  ? kasan_poison+0x3c/0x50
-[  259.233744]  vfs_setxattr+0x128/0x300
-[  259.234002]  ? __vfs_setxattr_locked+0x160/0x160
-[  259.234837]  do_setxattr+0xb8/0x170
-[  259.235567]  ? vmemdup_user+0x53/0x90
-[  259.236212]  setxattr+0x126/0x140
-[  259.236491]  ? do_setxattr+0x170/0x170
-[  259.236791]  ? debug_smp_processor_id+0x17/0x20
-[  259.237232]  ? kasan_quarantine_put+0x57/0x180
-[  259.237605]  ? putname+0x80/0xa0
-[  259.237870]  ? __kasan_slab_free+0x11c/0x1b0
-[  259.238234]  ? putname+0x80/0xa0
-[  259.238500]  ? preempt_count_sub+0x18/0xc0
-[  259.238775]  ? __mnt_want_write+0xaa/0x100
-[  259.238990]  ? mnt_want_write+0x8b/0x150
-[  259.239290]  path_setxattr+0x164/0x180
-[  259.239605]  ? setxattr+0x140/0x140
-[  259.239849]  ? debug_smp_processor_id+0x17/0x20
-[  259.240174]  ? fpregs_assert_state_consistent+0x67/0x80
-[  259.240411]  __x64_sys_setxattr+0x6d/0x80
-[  259.240715]  do_syscall_64+0x3b/0x90
-[  259.240934]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  259.241697] RIP: 0033:0x7fc6b26e4469
-[  259.242647] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 088
-[  259.244512] RSP: 002b:00007ffc3c7841f8 EFLAGS: 00000217 ORIG_RAX: 00000000000000bc
-[  259.245086] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fc6b26e4469
-[  259.246025] RDX: 00007ffc3c784380 RSI: 00007ffc3c7842e0 RDI: 00007ffc3c784238
-[  259.246961] RBP: 00007ffc3c788410 R08: 0000000000000001 R09: 00007ffc3c7884f8
-[  259.247775] R10: 000000000000007f R11: 0000000000000217 R12: 00000000004004e0
-[  259.248534] R13: 00007ffc3c7884f0 R14: 0000000000000000 R15: 0000000000000000
-[  259.249368]  </TASK>
-[  259.249644]
-[  259.249888] Allocated by task 255:
-[  259.250283]  kasan_save_stack+0x26/0x50
-[  259.250957]  __kasan_kmalloc+0x88/0xb0
-[  259.251826]  __kmalloc+0x192/0x320
-[  259.252745]  ni_create_attr_list+0x11e/0x850
-[  259.253298]  ni_ins_attr_ext+0x52c/0x5c0
-[  259.253685]  ni_insert_attr+0x1ba/0x420
-[  259.253974]  ni_insert_resident+0xc0/0x1c0
-[  259.254311]  ntfs_set_ea+0x6bf/0xb30
-[  259.254629]  ntfs_setxattr+0x114/0x5c0
-[  259.254859]  __vfs_setxattr+0xda/0x120
-[  259.255155]  __vfs_setxattr_noperm+0x93/0x300
-[  259.255445]  __vfs_setxattr_locked+0x141/0x160
-[  259.255862]  vfs_setxattr+0x128/0x300
-[  259.256251]  do_setxattr+0xb8/0x170
-[  259.256522]  setxattr+0x126/0x140
-[  259.256911]  path_setxattr+0x164/0x180
-[  259.257308]  __x64_sys_setxattr+0x6d/0x80
-[  259.257637]  do_syscall_64+0x3b/0x90
-[  259.257970]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  259.258550]
-[  259.258772] The buggy address belongs to the object at ffff88800632f000
-[  259.258772]  which belongs to the cache kmalloc-1k of size 1024
-[  259.260190] The buggy address is located 690 bytes inside of
-[  259.260190]  1024-byte region [ffff88800632f000, ffff88800632f400)
-[  259.261412]
-[  259.261743] The buggy address belongs to the physical page:
-[  259.262354] page:0000000081e8cac9 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x632c
-[  259.263722] head:0000000081e8cac9 order:2 compound_mapcount:0 compound_pincount:0
-[  259.264284] flags: 0xfffffc0010200(slab|head|node=0|zone=1|lastcpupid=0x1fffff)
-[  259.265312] raw: 000fffffc0010200 ffffea0000060d00 dead000000000004 ffff888001041dc0
-[  259.265772] raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
-[  259.266305] page dumped because: kasan: bad access detected
-[  259.266588]
-[  259.266728] Memory state around the buggy address:
-[  259.267225]  ffff88800632f300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  259.267841]  ffff88800632f380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  259.269111] >ffff88800632f400: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  259.269626]                    ^
-[  259.270162]  ffff88800632f480: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  259.270810]  ffff88800632f500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-
-Signed-off-by: Edward Lo <edward.lo@ambergroup.io>
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ntfs3/record.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index 30751fd618df..fd342da398be 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -265,6 +265,11 @@ struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
- 		if (t16 + t32 > asize)
- 			return NULL;
- 
-+		if (attr->name_len &&
-+		    le16_to_cpu(attr->name_off) + sizeof(short) * attr->name_len > t16) {
-+			return NULL;
-+		}
-+
- 		return attr;
- 	}
- 
--- 
-2.35.1
-
+Thanks,
+Namhyung
