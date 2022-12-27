@@ -2,184 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40283656CB7
-	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 17:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C47656D0C
+	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 17:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbiL0QAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Dec 2022 11:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
+        id S229588AbiL0Qkt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Dec 2022 11:40:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbiL0QAs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Dec 2022 11:00:48 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA28293
-        for <bpf@vger.kernel.org>; Tue, 27 Dec 2022 08:00:46 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id t17so32832888eju.1
-        for <bpf@vger.kernel.org>; Tue, 27 Dec 2022 08:00:46 -0800 (PST)
+        with ESMTP id S229736AbiL0QkR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Dec 2022 11:40:17 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61C9BE21
+        for <bpf@vger.kernel.org>; Tue, 27 Dec 2022 08:40:15 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id m15so6971618ilq.2
+        for <bpf@vger.kernel.org>; Tue, 27 Dec 2022 08:40:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rEqkMqh+UVbfYHZNXKZVpDPM0M5bCn3Dv02suB8xhbw=;
-        b=P19QUH6sDeuLc1ynMYfj+1M8ALFpfr3ni/zBSObhZozfmm3C/AZv2C1eFb6+NuLH8R
-         fPyzyGxXk97gLIRP6WTYQfQA+HwlvVv5GK2Z2RC36L9NLra3tzCfipn6Ph2L/m1sIsOq
-         I3B4j0/TqDfGa01rPgOcV87EPEKKWpQOQPW/JJyYGyDmGETyijv8Yx8MgfFA+hJ6aD5u
-         R7jct8Tx9zuSJSkPKrLiwdE9+4KZFZjRB1ZB7nBYB8S9QNahORxMpWFaWWorObEksLg7
-         nuEP83VVIrBe6VkoCIaGEZvoOYGYOB8SXGWmC0B7I6rZ46jeCM07dHWP4EfosPx7ueJX
-         NsDQ==
+        d=paul-moore.com; s=google;
+        h=content-transfer-encoding:mime-version:subject:user-agent
+         :references:in-reply-to:message-id:date:cc:to:from:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UIce7nRh9xGN4UvjxO/SDv0vJFrrYRvHppVuS+QFVhE=;
+        b=FcfQX0eCcRBZLlS57jjTpr+LOq0sKeVw7DK2g+Q4Acgwz00bMf6CvGTnhSH9rL3bAG
+         HNOIBQR4nMp6zCISvMtm50GVOkLfSRHZk7+RQY4NimQk19p5c2ph8SUZLbEFLgOuQw6/
+         P5E3L6absRQqw9qvGkH/usYqPr4JGgnGdl1p4UMhokXzNlWypfNTTnO3Dix6MxGyN4M8
+         G1a7EHfzydAdWpc65Hk0LKfk7DM2+SVWOPCMfEPLhRWRkbhXDO43cHuYyytexuqGEw4F
+         qMFurHI+1F965tvCHgRs/da724gEEZFTFWm/KEsOMazyyRs8bClETyr88Ezr2vbIRlmL
+         g/ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
+        h=content-transfer-encoding:mime-version:subject:user-agent
+         :references:in-reply-to:message-id:date:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rEqkMqh+UVbfYHZNXKZVpDPM0M5bCn3Dv02suB8xhbw=;
-        b=k7jz//VvCMTjxOiv4HlygXUF3X1PWw+EsHNFoPVKyXNt7ExLaziAYMrv3BvoHQCq7z
-         HSPO0H8NeppfcGatRvxs3pqS1lIO3G49iUPdYuCb6u717qJGRlmLEAx+2z7g9fSHRN2/
-         KLYQFb8bYvfO9gGg7BqR8TeFHjorDeulNNxV7n2h5VsuGUBBrrf4OMx7Uf3zzAtSzys9
-         vbcKDWF9hj4IO3wKxkVdLRMzEGyYe4pBLNCzYx5NOFrlXjia3ZxWE3CtTj3AJvJvMxow
-         sTZqm2Ler4JzKcP3nE0OY4g0/op7bELjvBG0TQhaP1LHL5BKxLpPLZIf+cA9XXcxDKSc
-         cezQ==
-X-Gm-Message-State: AFqh2kqxkQkHXLOqyRtMmS9zJUKWYGK57X4fdpnjNjPJWZFT7HVfhx5c
-        3sYMDPXFBI0DEBF6xFf0KvwBmaC93UI=
-X-Google-Smtp-Source: AMrXdXu+tT1D6yETJK/Hd0nHg7Ort5ujbALKwFK/Qov6R4XiKEzwb2xRF+3uBI8ywhM9Z8AdsgbQrQ==
-X-Received: by 2002:a17:906:704a:b0:83f:cbc0:1b30 with SMTP id r10-20020a170906704a00b0083fcbc01b30mr16555217ejj.10.1672156845386;
-        Tue, 27 Dec 2022 08:00:45 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id v14-20020a1709067d8e00b007c127e1511dsm6256575ejo.220.2022.12.27.08.00.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Dec 2022 08:00:44 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 27 Dec 2022 17:00:42 +0100
-To:     Victor Laforet <victor.laforet@ip-paris.fr>
-Cc:     bpf@vger.kernel.org
-Subject: Re: bpf_probe_read_user EFAULT
-Message-ID: <Y6sWqgncfvtRHp+b@krava>
-References: <346230382.476954.1672152966557.JavaMail.zimbra@ip-paris.fr>
+        bh=UIce7nRh9xGN4UvjxO/SDv0vJFrrYRvHppVuS+QFVhE=;
+        b=62rUq6Ily2CGQC7OvTNXzKHDfQjKw2SId48uyUwH2EEIi2hRLzaiUSwALoaLZYaqot
+         ClCW/hfgCNWQYVb9iOkx+HInw/QqdTdqP/t7Njd8tYZsXISLBFl4kyXp1Qbf+o25Ivlo
+         a0o7nyahNdaIgft+9aNzjJyZmvGTAuQc8XeLmgIpYSnEjQ3tPA0WEoh9FMiipri0SuIf
+         Se/9B2NR3ILPe65c1ePnGf2Y250nkp9CCgZo3SJ/W03qOMeSb79PmGwxOqey67qw44Su
+         z6kHvXK7dugWRPKWJIgoaF0Jx2RvcBHY4omzeev9+9F05H18LD039bB78rPtimN1/aUT
+         Ajow==
+X-Gm-Message-State: AFqh2koIPmG/g/aQyQh64b6+yHDYKh5Yhr77FNAwHkp9yKtE/qYvbqeb
+        M98peSlMXFIdGqrGHGXGSS04
+X-Google-Smtp-Source: AMrXdXvjs5MwFIzPRSKK0dJ0FJtURJU3NLvTA/UX1momTrK7JHfI4cMrdLQUVSDRERLGZnlgFHIvlw==
+X-Received: by 2002:a92:7409:0:b0:307:7cf3:ca79 with SMTP id p9-20020a927409000000b003077cf3ca79mr15117006ilc.22.1672159215019;
+        Tue, 27 Dec 2022 08:40:15 -0800 (PST)
+Received: from [10.187.149.138] (mobile-166-170-20-165.mycingular.net. [166.170.20.165])
+        by smtp.gmail.com with ESMTPSA id y23-20020a027317000000b00349c45fd3a8sm4375283jab.29.2022.12.27.08.40.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 27 Dec 2022 08:40:14 -0800 (PST)
+From:   Paul Moore <paul@paul-moore.com>
+To:     Stanislav Fomichev <stfomichev@yandex.ru>,
+        <alexei.starovoitov@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <burn.alting@iinet.net.au>, <daniel@iogearbox.net>,
+        <jolsa@kernel.org>, <linux-audit@redhat.com>, <sdf@google.com>
+Date:   Tue, 27 Dec 2022 11:40:11 -0500
+Message-ID: <1855474adf8.28e3.85c95baa4474aabc7814e68940a78392@paul-moore.com>
+In-Reply-To: <20221227033528.1032724-1-stfomichev@yandex.ru>
+References: <CAADnVQ+pgN8m3ApZtk9Vr=iv+OcXcv5hhASCwP6ZJGt9Z2JvMw@mail.gmail.com>
+ <20221227033528.1032724-1-stfomichev@yandex.ru>
+User-Agent: AquaMail/1.41.0 (build: 104100234)
+Subject: Re: [PATCH v2] bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <346230382.476954.1672152966557.JavaMail.zimbra@ip-paris.fr>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 27, 2022 at 03:56:06PM +0100, Victor Laforet wrote:
-> Hi all,
-> 
-> I am trying to use bpf_probe_read_user to read a user space value from BPF. The issue is that I am getting -14 (-EFAULT) result from bpf_probe_read_user. I haven’t been able to make this function work reliably. Sometimes I get no error code then it goes back to EFAULT.
-> 
-> I am seeking your help to try and make this code work.
-> Thank you!
-> 
-> My goal is to read the variable pid on every bpf event.
-> Here is a full example:
-> (cat /sys/kernel/debug/tracing/trace_pipe to read the output).
-> 
-> sched_switch.bpf.c
-> ```
-> #include "vmlinux.h"
-> #include <bpf/bpf_helpers.h>
-> 
-> int *input_pid;
-> 
-> char _license[4] SEC("license") = "GPL";
-> 
-> SEC("tp_btf/sched_switch")
-> int handle_sched_switch(u64 *ctx)
+On December 26, 2022 10:35:49 PM Stanislav Fomichev <stfomichev@yandex.ru> 
+wrote:
+>> On Fri, Dec 23, 2022 at 5:49 PM Stanislav Fomichev <sdf@google.com> wrote:
+>> get_func_ip() */
+>>>> -                               tstamp_type_access:1; /* Accessed 
+>>>> __sk_buff->tstamp_type */
+>>>> +                               tstamp_type_access:1, /* Accessed 
+>>>> __sk_buff->tstamp_type */
+>>>> +                               valid_id:1; /* Is bpf_prog::aux::__id valid? */
+>>>>    enum bpf_prog_type      type;           /* Type of BPF program */
+>>>>    enum bpf_attach_type    expected_attach_type; /* For some prog types */
+>>>>    u32                     len;            /* Number of filter blocks */
+>>>> @@ -1688,6 +1689,12 @@ void bpf_prog_inc(struct bpf_prog *prog);
+>>>> struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
+>>>> void bpf_prog_put(struct bpf_prog *prog);
+>>>>
+>>>> +static inline u32 bpf_prog_get_id(const struct bpf_prog *prog)
+>>>> +{
+>>>> +       if (WARN(!prog->valid_id, "Attempting to use an invalid eBPF program"))
+>>>> +               return 0;
+>>>> +       return prog->aux->__id;
+>>>> +}
+>>>
+>>> I'm still missing why we need to have this WARN and have a check at all.
+>>> IIUC, we're actually too eager in resetting the id to 0, and need to
+>>> keep that stale id around at least for perf/audit.
+>>> Why not have a flag only to protect against double-idr_remove
+>>> bpf_prog_free_id and keep the rest as is?
+>>> Which places are we concerned about that used to report id=0 but now
+>>> would report stale id?
+>>
+>> What double-idr_remove are you concerned about?
+>> bpf_prog_by_id() is doing bpf_prog_inc_not_zero
+>> while __bpf_prog_put just dropped it to zero.
+>
+> (traveling, sending from an untested setup, hope it reaches everyone)
+>
+> There is a call to bpf_prog_free_id from __bpf_prog_offload_destroy which
+> tries to make offloaded program disappear from the idr when the netdev
+> goes offline. So I'm assuming that '!prog->aux->id' check in bpf_prog_free_id
+> is to handle that case where we do bpf_prog_free_id much earlier than the
+> rest of the __bpf_prog_put stuff.
+>
+>> Maybe just move bpf_prog_free_id() into bpf_prog_put_deferred()
+>> after perf_event_bpf_event and bpf_audit_prog ?
+>> Probably can remove the obsolete do_idr_lock bool flag as
+>> separate patch?
+>
+> +1 on removing do_idr_lock separately.
+>
+>> Much simpler fix and no code churn.
+>> Both valid_id and saved_id approaches have flaws.
+>
+> Given the __bpf_prog_offload_destroy path above, we still probably need
+> some flag to indicate that the id has been already removed from the idr?
 
-you might want to filter for your task, because sched_switch
-tracepoint is called for any task scheduler switch
+So what do you guys want in a patch?  Is there a consensus on what you 
+would merge to fix this bug/regression?
 
-check BPF_PROG macro in bpf selftests on how to access tp_btf
-arguments from context, for sched_switch it's:
+--
+paul-moore.com
 
-        TP_PROTO(bool preempt,
-                 struct task_struct *prev,
-                 struct task_struct *next,
-                 unsigned int prev_state),
 
-and call the read helper only for prev->pid == 'your app pid',
 
-there's bpf_copy_from_user_task helper you could use to read
-another task's user memory reliably, but it needs to be called
-from sleepable probe and you need to have the task pointer
-
-jirka
-
-> {
->   int pid;
->   int err;
-> 
->   err = bpf_probe_read_user(&pid, sizeof(int), (void *)input_pid);
->   if (err != 0)
->   {
->     bpf_printk("Error on bpf_probe_read_user(pid) -> %d.\n", err);
->     return 0;
->   }
-> 
->   bpf_printk("pid %d.\n", pid);
->   return 0;
-> }
-> ```
-> 
-> sched_switch.c
-> ```
-> #include <stdio.h>
-> #include <unistd.h>
-> #include <sys/resource.h>
-> #include <bpf/libbpf.h>
-> #include "sched_switch.skel.h"
-> #include <time.h>
-> 
-> static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
-> {
->   return vfprintf(stderr, format, args);
-> }
-> 
-> int main(int argc, char **argv)
-> {
->   struct sched_switch_bpf *skel;
->   int err;
->   int pid = getpid();
-> 
->   libbpf_set_print(libbpf_print_fn);
-> 
->   skel = sched_switch_bpf__open();
->   if (!skel)
->   {
->     fprintf(stderr, "Failed to open BPF skeleton\n");
->     return 1;
->   }
-> 
->   skel->bss->input_pid = &pid;
-> 
->   err = sched_switch_bpf__load(skel);
->   if (err)
->   {
->     fprintf(stderr, "Failed to load and verify BPF skeleton\n");
->     goto cleanup;
->   }
-> 
->   err = sched_switch_bpf__attach(skel);
->   if (err)
->   {
->     fprintf(stderr, "Failed to attach BPF skeleton\n");
->     goto cleanup;
->   }
-> 
->   while (1);
-> 
-> cleanup:
->   sched_switch_bpf__destroy(skel);
->   return -err;
-> }
-> ```
