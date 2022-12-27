@@ -2,29 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBFA6568E1
-	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 10:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37831656AE7
+	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 13:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbiL0Jbh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Dec 2022 04:31:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
+        id S229825AbiL0MYh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Dec 2022 07:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbiL0Jbf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Dec 2022 04:31:35 -0500
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF8BD6E;
-        Tue, 27 Dec 2022 01:31:33 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VYDKIMw_1672133490;
-Received: from 30.120.189.46(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VYDKIMw_1672133490)
+        with ESMTP id S231972AbiL0MYE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Dec 2022 07:24:04 -0500
+Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB19CDE8B;
+        Tue, 27 Dec 2022 04:20:06 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VYDiVIz_1672143603;
+Received: from 30.120.189.46(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VYDiVIz_1672143603)
           by smtp.aliyun-inc.com;
-          Tue, 27 Dec 2022 17:31:31 +0800
-Message-ID: <83dc59b1-99f6-58fe-56b5-de5158bcc3cd@linux.alibaba.com>
-Date:   Tue, 27 Dec 2022 17:31:28 +0800
+          Tue, 27 Dec 2022 20:20:04 +0800
+Message-ID: <2704f3ad-9477-c9d2-8eca-01a9fa92732a@linux.alibaba.com>
+Date:   Tue, 27 Dec 2022 20:20:01 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0)
  Gecko/20100101 Thunderbird/108.0
-Subject: Re: [PATCH v2 5/9] virtio_net: construct multi-buffer xdp in
- mergeable
+Subject: Re: [PATCH v2 2/9] virtio_net: set up xdp for multi buffer packets
 To:     Jason Wang <jasowang@redhat.com>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
@@ -37,16 +36,16 @@ Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
         Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 References: <20221220141449.115918-1-hengqi@linux.alibaba.com>
- <20221220141449.115918-6-hengqi@linux.alibaba.com>
- <5a03364e-c09e-63ff-7e73-1efec1ed8ca8@redhat.com>
+ <20221220141449.115918-3-hengqi@linux.alibaba.com>
+ <82eb2ffc-ce97-0c76-f7bc-8a163968cde7@redhat.com>
 From:   Heng Qi <hengqi@linux.alibaba.com>
-In-Reply-To: <5a03364e-c09e-63ff-7e73-1efec1ed8ca8@redhat.com>
+In-Reply-To: <82eb2ffc-ce97-0c76-f7bc-8a163968cde7@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,173 +54,55 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-在 2022/12/27 下午3:01, Jason Wang 写道:
+在 2022/12/27 下午2:32, Jason Wang 写道:
 >
 > 在 2022/12/20 22:14, Heng Qi 写道:
->> Build multi-buffer xdp using virtnet_build_xdp_buff_mrg().
->>
->> For the prefilled buffer before xdp is set, we will probably use
->> vq reset in the future. At the same time, virtio net currently
->> uses comp pages, and bpf_xdp_frags_increase_tail() needs to calculate
->> the tailroom of the last frag, which will involve the offset of the
->> corresponding page and cause a negative value, so we disable tail
->> increase by not setting xdp_rxq->frag_size.
+>> When the xdp program sets xdp.frags, which means it can process
+>> multi-buffer packets over larger MTU, so we continue to support xdp.
+>> But for single-buffer xdp, we should keep checking for MTU.
 >>
 >> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
 >> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 >> ---
->>   drivers/net/virtio_net.c | 60 +++++++++++++++++++++++++++++-----------
->>   1 file changed, 44 insertions(+), 16 deletions(-)
+>>   drivers/net/virtio_net.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
 >>
 >> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index 8fc3b1841d92..40bc58fa57f5 100644
+>> index 443aa7b8f0ad..c5c4e9db4ed3 100644
 >> --- a/drivers/net/virtio_net.c
 >> +++ b/drivers/net/virtio_net.c
->> @@ -1018,6 +1018,7 @@ static struct sk_buff *receive_mergeable(struct 
->> net_device *dev,
->>                        unsigned int *xdp_xmit,
->>                        struct virtnet_rq_stats *stats)
->>   {
->> +    unsigned int tailroom = SKB_DATA_ALIGN(sizeof(struct 
->> skb_shared_info));
->>       struct virtio_net_hdr_mrg_rxbuf *hdr = buf;
->>       u16 num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
->>       struct page *page = virt_to_head_page(buf);
->> @@ -1048,11 +1049,14 @@ static struct sk_buff 
->> *receive_mergeable(struct net_device *dev,
->>       rcu_read_lock();
->>       xdp_prog = rcu_dereference(rq->xdp_prog);
->>       if (xdp_prog) {
->> +        unsigned int xdp_frags_truesz = 0;
->> +        struct skb_shared_info *shinfo;
->>           struct xdp_frame *xdpf;
->>           struct page *xdp_page;
->>           struct xdp_buff xdp;
->>           void *data;
->>           u32 act;
->> +        int i;
->>             /* Transient failure which in theory could occur if
->>            * in-flight packets from before XDP was enabled reach
->> @@ -1061,19 +1065,23 @@ static struct sk_buff 
->> *receive_mergeable(struct net_device *dev,
->>           if (unlikely(hdr->hdr.gso_type))
->>               goto err_xdp;
->>   -        /* Buffers with headroom use PAGE_SIZE as alloc size,
->> -         * see add_recvbuf_mergeable() + get_mergeable_buf_len()
->> +        /* Now XDP core assumes frag size is PAGE_SIZE, but buffers
->> +         * with headroom may add hole in truesize, which
->> +         * make their length exceed PAGE_SIZE. So we disabled the
->> +         * hole mechanism for xdp. See add_recvbuf_mergeable().
->>            */
->>           frame_sz = headroom ? PAGE_SIZE : truesize;
->>   -        /* This happens when rx buffer size is underestimated
->> -         * or headroom is not enough because of the buffer
->> -         * was refilled before XDP is set. This should only
->> -         * happen for the first several packets, so we don't
->> -         * care much about its performance.
->> +        /* This happens when headroom is not enough because
->> +         * of the buffer was prefilled before XDP is set.
->> +         * This should only happen for the first several packets.
->> +         * In fact, vq reset can be used here to help us clean up
->> +         * the prefilled buffers, but many existing devices do not
->> +         * support it, and we don't want to bother users who are
->> +         * using xdp normally.
->>            */
->> -        if (unlikely(num_buf > 1 ||
->> -                 headroom < virtnet_get_headroom(vi))) {
->> +        if (!xdp_prog->aux->xdp_has_frags &&
->> +            (num_buf > 1 || headroom < virtnet_get_headroom(vi))) {
->>               /* linearize data for XDP */
->>               xdp_page = xdp_linearize_page(rq, &num_buf,
->>                                 page, offset,
->> @@ -1084,17 +1092,26 @@ static struct sk_buff 
->> *receive_mergeable(struct net_device *dev,
->>               if (!xdp_page)
->>                   goto err_xdp;
->>               offset = VIRTIO_XDP_HEADROOM;
->> +        } else if (unlikely(headroom < virtnet_get_headroom(vi))) {
+>> @@ -3095,8 +3095,8 @@ static int virtnet_xdp_set(struct net_device 
+>> *dev, struct bpf_prog *prog,
+>>           return -EINVAL;
+>>       }
+>>   -    if (dev->mtu > max_sz) {
+>> -        NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP");
+>> +    if (prog && !prog->aux->xdp_has_frags && dev->mtu > max_sz) {
 >
 >
-> I believe we need to check xdp_prog->aux->xdp_has_frags at least since 
-> this may not work if it needs more than one frags?
-
-Sorry Jason, I didn't understand you, I'll try to answer. For 
-multi-buffer xdp programs, if the first buffer is a pre-filled buffer 
-(no headroom),
-we need to copy it out and use the subsequent buffers of this packet as 
-its frags (this is done in virtnet_build_xdp_buff_mrg()), therefore,
-it seems that there is no need to check 'xdp_prog->aux->xdp_has_frags' 
-to mark multi-buffer xdp (of course I can add it),
-
-+ } else if (unlikely(headroom < virtnet_get_headroom(vi))) {
-
-Because the linearization of single-buffer xdp has all been done before, 
-the subsequent situation can only be applied to multi-buffer xdp:
-+ if (!xdp_prog->aux->xdp_has_frags &&
-+ (num_buf > 1 || headroom < virtnet_get_headroom(vi))) {
-
+> Not related to this patch, but I see:
 >
-> Btw, I don't see a reason why we can't reuse xdp_linearize_page(), (we 
-> probably don't need error is the buffer exceeds PAGE_SIZE).
+>         unsigned long int max_sz = PAGE_SIZE - sizeof(struct 
+> padded_vnet_hdr);
+>
+> Which is suspicious, do we need to count reserved headroom/tailroom as 
+> well?
 
-For multi-buffer xdp, we only need to copy out the pre-filled first 
-buffer, and use the remaining buffers of this packet as frags in 
-virtnet_build_xdp_buff_mrg().
+This seems to be suspicious. After loading xdp, the size of the filled 
+avail buffer
+is (PAGE_SIZE - headroom - tailroom), so the size of the received used 
+buffer, ie MTU,
+should also be (PAGE_SIZE - headroom - tailroom).
 
 Thanks.
 
 >
-> Other looks good.
->
 > Thanks
 >
 >
->> +            if ((VIRTIO_XDP_HEADROOM + len + tailroom) > PAGE_SIZE)
->> +                goto err_xdp;
->> +
->> +            xdp_page = alloc_page(GFP_ATOMIC);
->> +            if (!xdp_page)
->> +                goto err_xdp;
->> +
->> +            memcpy(page_address(xdp_page) + VIRTIO_XDP_HEADROOM,
->> +                   page_address(page) + offset, len);
->> +            frame_sz = PAGE_SIZE;
->> +            offset = VIRTIO_XDP_HEADROOM;
->>           } else {
->>               xdp_page = page;
->>           }
->> -
->> -        /* Allow consuming headroom but reserve enough space to push
->> -         * the descriptor on if we get an XDP_TX return code.
->> -         */
->>           data = page_address(xdp_page) + offset;
->> -        xdp_init_buff(&xdp, frame_sz - vi->hdr_len, &rq->xdp_rxq);
->> -        xdp_prepare_buff(&xdp, data - VIRTIO_XDP_HEADROOM + 
->> vi->hdr_len,
->> -                 VIRTIO_XDP_HEADROOM, len - vi->hdr_len, true);
->> +        err = virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, 
->> len, frame_sz,
->> +                         &num_buf, &xdp_frags_truesz, stats);
->> +        if (unlikely(err))
->> +            goto err_xdp_frags;
->>             act = bpf_prog_run_xdp(xdp_prog, &xdp);
->>           stats->xdp_packets++;
->> @@ -1190,6 +1207,17 @@ static struct sk_buff 
->> *receive_mergeable(struct net_device *dev,
->>                   __free_pages(xdp_page, 0);
->>               goto err_xdp;
->>           }
->> +err_xdp_frags:
->> +        shinfo = xdp_get_shared_info_from_buff(&xdp);
->> +
->> +        if (unlikely(xdp_page != page))
->> +            __free_pages(xdp_page, 0);
->> +
->> +        for (i = 0; i < shinfo->nr_frags; i++) {
->> +            xdp_page = skb_frag_page(&shinfo->frags[i]);
->> +            put_page(xdp_page);
->> +        }
->> +        goto err_xdp;
+>> +        NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP 
+>> without frags");
+>>           netdev_warn(dev, "XDP requires MTU less than %lu\n", max_sz);
+>>           return -EINVAL;
 >>       }
->>       rcu_read_unlock();
 
