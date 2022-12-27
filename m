@@ -2,225 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F95656EEF
-	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 21:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDE9656EEA
+	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 21:36:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbiL0UgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Dec 2022 15:36:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
+        id S232528AbiL0UgH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Dec 2022 15:36:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbiL0Uee (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Dec 2022 15:34:34 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB66A65CA;
-        Tue, 27 Dec 2022 12:33:56 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 79D94B8109A;
-        Tue, 27 Dec 2022 20:33:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ACECC433F0;
-        Tue, 27 Dec 2022 20:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672173234;
-        bh=ie148qpRt6z9C2iaLSshGaAAoSR2OLbFzSIO1HD1v1s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EiBp9nVrGgenP4cJRP+L/H0O12PhWQI7rPhUBurYJO3OPLaK9sxF23zctTqpUdn/Q
-         ev/AfRj+Bwe4j/rbXGw7MyMymsrFK+mW9Y8w/mrCLVkZK2NTGuYqfWXm1ajmipTpIj
-         2cEpOhgks2ywU33CPRvEwumEL3QV4Yapt0HvyvVcAZS6he11rKg/lLZVX1B85oScOG
-         Y7GEHqaX/hOQCgq+uGT/i0MAp/E7mozEPR65grOq5pAm5yl5v2rIS4wi0McJ7hm5bT
-         QVA8UXt8eoPaP7YhISuMV2wATStHfx92/DWX36SKRzaBPjySsTzeJtQ5X/uNKs8I2n
-         Jy6cJiVOrdbJQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Edward Lo <edward.lo@ambergroup.io>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Sasha Levin <sashal@kernel.org>, ntfs3@lists.linux.dev,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 09/27] fs/ntfs3: Validate resident attribute name
-Date:   Tue, 27 Dec 2022 15:33:24 -0500
-Message-Id: <20221227203342.1213918-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221227203342.1213918-1-sashal@kernel.org>
-References: <20221227203342.1213918-1-sashal@kernel.org>
+        with ESMTP id S231608AbiL0UeD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Dec 2022 15:34:03 -0500
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AA465DB;
+        Tue, 27 Dec 2022 12:33:48 -0800 (PST)
+Received: by mail-vs1-f46.google.com with SMTP id k4so9572932vsc.4;
+        Tue, 27 Dec 2022 12:33:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jPzbbgu9k+12axNhvSl4/wTiUsXQwmOMXV5hrHa+tmc=;
+        b=vhjZ9ZffOV8YqoKwWuHeBgGEBJABvlZSvNg+12Y2uFUEARAtjIWRQh9WtXofGM+wWa
+         4SaJsil0sEoiVSxMU6kx01KmAXimWwM3/S2ZEQbA7yE4bvS/cArh+d3WzoU+uy5qm1wX
+         sWVAHICjFc2UIO3RQndLuY5T1ujGlbHvqHKGZ3YqdCTg6tdlbbvgSNOnAuT0bjhcXk2l
+         nEUjnc81NwfNEZVyJGoamOKA41B/FpCzC4ZhpkUG54KdXmxgRpRDApBGkdt42fcwphOR
+         2HU90O6EIc7/omfsL17gqZeqP5j7cQSTbFgSWtZ7P5MvxLcKGi1GEnfDPr40GNEry4kj
+         EI0A==
+X-Gm-Message-State: AFqh2krFRAeZGLx7QlCbg84tdmdArM3OVtjDb8lfx5qaNhvojYBZTzNx
+        v5NgrYGRj2ynE9X0tXU/7QA=
+X-Google-Smtp-Source: AMrXdXtSdeUM8rPjnrF/YFyecb7nI6FgtSLrjMGJ0+kBLUb4ndndRYgWqw1HDIynYZTSX1aSOXzihQ==
+X-Received: by 2002:a05:6102:830:b0:3c8:2851:c2df with SMTP id k16-20020a056102083000b003c82851c2dfmr2364703vsb.16.1672173226955;
+        Tue, 27 Dec 2022 12:33:46 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:13c8])
+        by smtp.gmail.com with ESMTPSA id o5-20020a05620a2a0500b006fc2f74ad12sm10111442qkp.92.2022.12.27.12.33.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Dec 2022 12:33:46 -0800 (PST)
+Date:   Tue, 27 Dec 2022 14:33:50 -0600
+From:   David Vernet <void@manifault.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 07/17] bpf: XDP metadata RX kfuncs
+Message-ID: <Y6tWrtltKfAlo0rT@maniforge.lan>
+References: <20221220222043.3348718-1-sdf@google.com>
+ <20221220222043.3348718-8-sdf@google.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221220222043.3348718-8-sdf@google.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Edward Lo <edward.lo@ambergroup.io>
+On Tue, Dec 20, 2022 at 02:20:33PM -0800, Stanislav Fomichev wrote:
 
-[ Upstream commit 54e45702b648b7c0000e90b3e9b890e367e16ea8 ]
+Hey Stanislav,
 
-Though we already have some sanity checks while enumerating attributes,
-resident attribute names aren't included. This patch checks the resident
-attribute names are in the valid ranges.
+[...]
 
-[  259.209031] BUG: KASAN: slab-out-of-bounds in ni_create_attr_list+0x1e1/0x850
-[  259.210770] Write of size 426 at addr ffff88800632f2b2 by task exp/255
-[  259.211551]
-[  259.212035] CPU: 0 PID: 255 Comm: exp Not tainted 6.0.0-rc6 #37
-[  259.212955] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[  259.214387] Call Trace:
-[  259.214640]  <TASK>
-[  259.214895]  dump_stack_lvl+0x49/0x63
-[  259.215284]  print_report.cold+0xf5/0x689
-[  259.215565]  ? kasan_poison+0x3c/0x50
-[  259.215778]  ? kasan_unpoison+0x28/0x60
-[  259.215991]  ? ni_create_attr_list+0x1e1/0x850
-[  259.216270]  kasan_report+0xa7/0x130
-[  259.216481]  ? ni_create_attr_list+0x1e1/0x850
-[  259.216719]  kasan_check_range+0x15a/0x1d0
-[  259.216939]  memcpy+0x3c/0x70
-[  259.217136]  ni_create_attr_list+0x1e1/0x850
-[  259.217945]  ? __rcu_read_unlock+0x5b/0x280
-[  259.218384]  ? ni_remove_attr+0x2e0/0x2e0
-[  259.218712]  ? kernel_text_address+0xcf/0xe0
-[  259.219064]  ? __kernel_text_address+0x12/0x40
-[  259.219434]  ? arch_stack_walk+0x9e/0xf0
-[  259.219668]  ? __this_cpu_preempt_check+0x13/0x20
-[  259.219904]  ? sysvec_apic_timer_interrupt+0x57/0xc0
-[  259.220140]  ? asm_sysvec_apic_timer_interrupt+0x1b/0x20
-[  259.220561]  ni_ins_attr_ext+0x52c/0x5c0
-[  259.220984]  ? ni_create_attr_list+0x850/0x850
-[  259.221532]  ? run_deallocate+0x120/0x120
-[  259.221972]  ? vfs_setxattr+0x128/0x300
-[  259.222688]  ? setxattr+0x126/0x140
-[  259.222921]  ? path_setxattr+0x164/0x180
-[  259.223431]  ? __x64_sys_setxattr+0x6d/0x80
-[  259.223828]  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  259.224417]  ? mi_find_attr+0x3c/0xf0
-[  259.224772]  ni_insert_attr+0x1ba/0x420
-[  259.225216]  ? ni_ins_attr_ext+0x5c0/0x5c0
-[  259.225504]  ? ntfs_read_ea+0x119/0x450
-[  259.225775]  ni_insert_resident+0xc0/0x1c0
-[  259.226316]  ? ni_insert_nonresident+0x400/0x400
-[  259.227001]  ? __kasan_kmalloc+0x88/0xb0
-[  259.227468]  ? __kmalloc+0x192/0x320
-[  259.227773]  ntfs_set_ea+0x6bf/0xb30
-[  259.228216]  ? ftrace_graph_ret_addr+0x2a/0xb0
-[  259.228494]  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  259.228838]  ? ntfs_read_ea+0x450/0x450
-[  259.229098]  ? is_bpf_text_address+0x24/0x40
-[  259.229418]  ? kernel_text_address+0xcf/0xe0
-[  259.229681]  ? __kernel_text_address+0x12/0x40
-[  259.229948]  ? unwind_get_return_address+0x3a/0x60
-[  259.230271]  ? write_profile+0x270/0x270
-[  259.230537]  ? arch_stack_walk+0x9e/0xf0
-[  259.230836]  ntfs_setxattr+0x114/0x5c0
-[  259.231099]  ? ntfs_set_acl_ex+0x2e0/0x2e0
-[  259.231529]  ? evm_protected_xattr_common+0x6d/0x100
-[  259.231817]  ? posix_xattr_acl+0x13/0x80
-[  259.232073]  ? evm_protect_xattr+0x1f7/0x440
-[  259.232351]  __vfs_setxattr+0xda/0x120
-[  259.232635]  ? xattr_resolve_name+0x180/0x180
-[  259.232912]  __vfs_setxattr_noperm+0x93/0x300
-[  259.233219]  __vfs_setxattr_locked+0x141/0x160
-[  259.233492]  ? kasan_poison+0x3c/0x50
-[  259.233744]  vfs_setxattr+0x128/0x300
-[  259.234002]  ? __vfs_setxattr_locked+0x160/0x160
-[  259.234837]  do_setxattr+0xb8/0x170
-[  259.235567]  ? vmemdup_user+0x53/0x90
-[  259.236212]  setxattr+0x126/0x140
-[  259.236491]  ? do_setxattr+0x170/0x170
-[  259.236791]  ? debug_smp_processor_id+0x17/0x20
-[  259.237232]  ? kasan_quarantine_put+0x57/0x180
-[  259.237605]  ? putname+0x80/0xa0
-[  259.237870]  ? __kasan_slab_free+0x11c/0x1b0
-[  259.238234]  ? putname+0x80/0xa0
-[  259.238500]  ? preempt_count_sub+0x18/0xc0
-[  259.238775]  ? __mnt_want_write+0xaa/0x100
-[  259.238990]  ? mnt_want_write+0x8b/0x150
-[  259.239290]  path_setxattr+0x164/0x180
-[  259.239605]  ? setxattr+0x140/0x140
-[  259.239849]  ? debug_smp_processor_id+0x17/0x20
-[  259.240174]  ? fpregs_assert_state_consistent+0x67/0x80
-[  259.240411]  __x64_sys_setxattr+0x6d/0x80
-[  259.240715]  do_syscall_64+0x3b/0x90
-[  259.240934]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  259.241697] RIP: 0033:0x7fc6b26e4469
-[  259.242647] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 088
-[  259.244512] RSP: 002b:00007ffc3c7841f8 EFLAGS: 00000217 ORIG_RAX: 00000000000000bc
-[  259.245086] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fc6b26e4469
-[  259.246025] RDX: 00007ffc3c784380 RSI: 00007ffc3c7842e0 RDI: 00007ffc3c784238
-[  259.246961] RBP: 00007ffc3c788410 R08: 0000000000000001 R09: 00007ffc3c7884f8
-[  259.247775] R10: 000000000000007f R11: 0000000000000217 R12: 00000000004004e0
-[  259.248534] R13: 00007ffc3c7884f0 R14: 0000000000000000 R15: 0000000000000000
-[  259.249368]  </TASK>
-[  259.249644]
-[  259.249888] Allocated by task 255:
-[  259.250283]  kasan_save_stack+0x26/0x50
-[  259.250957]  __kasan_kmalloc+0x88/0xb0
-[  259.251826]  __kmalloc+0x192/0x320
-[  259.252745]  ni_create_attr_list+0x11e/0x850
-[  259.253298]  ni_ins_attr_ext+0x52c/0x5c0
-[  259.253685]  ni_insert_attr+0x1ba/0x420
-[  259.253974]  ni_insert_resident+0xc0/0x1c0
-[  259.254311]  ntfs_set_ea+0x6bf/0xb30
-[  259.254629]  ntfs_setxattr+0x114/0x5c0
-[  259.254859]  __vfs_setxattr+0xda/0x120
-[  259.255155]  __vfs_setxattr_noperm+0x93/0x300
-[  259.255445]  __vfs_setxattr_locked+0x141/0x160
-[  259.255862]  vfs_setxattr+0x128/0x300
-[  259.256251]  do_setxattr+0xb8/0x170
-[  259.256522]  setxattr+0x126/0x140
-[  259.256911]  path_setxattr+0x164/0x180
-[  259.257308]  __x64_sys_setxattr+0x6d/0x80
-[  259.257637]  do_syscall_64+0x3b/0x90
-[  259.257970]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  259.258550]
-[  259.258772] The buggy address belongs to the object at ffff88800632f000
-[  259.258772]  which belongs to the cache kmalloc-1k of size 1024
-[  259.260190] The buggy address is located 690 bytes inside of
-[  259.260190]  1024-byte region [ffff88800632f000, ffff88800632f400)
-[  259.261412]
-[  259.261743] The buggy address belongs to the physical page:
-[  259.262354] page:0000000081e8cac9 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x632c
-[  259.263722] head:0000000081e8cac9 order:2 compound_mapcount:0 compound_pincount:0
-[  259.264284] flags: 0xfffffc0010200(slab|head|node=0|zone=1|lastcpupid=0x1fffff)
-[  259.265312] raw: 000fffffc0010200 ffffea0000060d00 dead000000000004 ffff888001041dc0
-[  259.265772] raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
-[  259.266305] page dumped because: kasan: bad access detected
-[  259.266588]
-[  259.266728] Memory state around the buggy address:
-[  259.267225]  ffff88800632f300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  259.267841]  ffff88800632f380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  259.269111] >ffff88800632f400: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  259.269626]                    ^
-[  259.270162]  ffff88800632f480: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  259.270810]  ffff88800632f500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index aad12a179e54..b41d18490595 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -74,6 +74,7 @@ struct udp_tunnel_nic_info;
+>  struct udp_tunnel_nic;
+>  struct bpf_prog;
+>  struct xdp_buff;
+> +struct xdp_md;
+>  
+>  void synchronize_net(void);
+>  void netdev_set_default_ethtool_ops(struct net_device *dev,
+> @@ -1618,6 +1619,11 @@ struct net_device_ops {
+>  						  bool cycles);
+>  };
+>  
+> +struct xdp_metadata_ops {
+> +	int	(*xmo_rx_timestamp)(const struct xdp_md *ctx, u64 *timestamp);
+> +	int	(*xmo_rx_hash)(const struct xdp_md *ctx, u32 *hash);
+> +};
+> +
+>  /**
+>   * enum netdev_priv_flags - &struct net_device priv_flags
+>   *
+> @@ -2050,6 +2056,7 @@ struct net_device {
+>  	unsigned int		flags;
+>  	unsigned long long	priv_flags;
+>  	const struct net_device_ops *netdev_ops;
+> +	const struct xdp_metadata_ops *xdp_metadata_ops;
 
-Signed-off-by: Edward Lo <edward.lo@ambergroup.io>
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ntfs3/record.c | 5 +++++
- 1 file changed, 5 insertions(+)
+You need to document this field above the struct, or the docs build will
+complain:
 
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index 9f81944441ae..af1e4b364ea8 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -265,6 +265,11 @@ struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
- 		if (t16 + t32 > asize)
- 			return NULL;
- 
-+		if (attr->name_len &&
-+		    le16_to_cpu(attr->name_off) + sizeof(short) * attr->name_len > t16) {
-+			return NULL;
-+		}
-+
- 		return attr;
- 	}
- 
--- 
-2.35.1
+  SPHINX  htmldocs -->
+  <redacted>
+  make[2]: Nothing to be done for 'html'.
+  Using sphinx_rtd_theme theme
+  source directory: networking
+  ./include/linux/netdevice.h:2371: warning: Function parameter or
+  member 'xdp_metadata_ops' not described in 'net_device'
 
+>  	int			ifindex;
+>  	unsigned short		gflags;
+>  	unsigned short		hard_header_len;
+
+Thanks,
+David
