@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C3A656785
-	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 07:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45159656796
+	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 07:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbiL0GdY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Dec 2022 01:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
+        id S229553AbiL0GrV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Dec 2022 01:47:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbiL0GdT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Dec 2022 01:33:19 -0500
+        with ESMTP id S229478AbiL0GrU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Dec 2022 01:47:20 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB542C4
-        for <bpf@vger.kernel.org>; Mon, 26 Dec 2022 22:32:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C71BF44
+        for <bpf@vger.kernel.org>; Mon, 26 Dec 2022 22:46:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1672122751;
+        s=mimecast20190719; t=1672123592;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aPmuqzn4nncHHPF0mSfrt/O6uFSxH0gzkjB0fGhp5og=;
-        b=H2uDYm+A5C10JzdelrravglRV3i2o4TIfmYm/Sp7XhNJx1Y0Y3kM4za7mE5P7RHkB42GLQ
-        36txHiCeCDYOrRzEZhMsZPpdYbtG6HrFPCykIUBm1R+yZHZ3bQIeGSYLB8Sk/N/NUoEs5E
-        SB3byo9UwdYwOMEzR/tQ72Rmx0UmqXw=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=m4knyHj+l+dqV7A2xi7Y3KkvtsMiwfyqUyq8r+c4Ks0=;
+        b=SXxH4U1LeqXyZiEYgI3UavjNrgPVini2aUatYgeQNG3XlNhfD+Kt+ZDgrD/uOBNUsLk/dO
+        WfUMZbUu3o/sItR6MVhj2mV8s0h7IyyugkXXAm8eZasfkiJLCG11QO4f+eMRSTyKbEu4+7
+        YeKdnlN+rXKMRPu5jK57MljNfSZHsJs=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-371-E6DxoiOZPQCofwgcU_1iBw-1; Tue, 27 Dec 2022 01:32:28 -0500
-X-MC-Unique: E6DxoiOZPQCofwgcU_1iBw-1
-Received: by mail-pl1-f200.google.com with SMTP id m16-20020a170902db1000b0018fa0de6aa6so9594163plx.18
-        for <bpf@vger.kernel.org>; Mon, 26 Dec 2022 22:32:28 -0800 (PST)
+ us-mta-167-XrPhGljRPsqLL-MesX7Y5g-1; Tue, 27 Dec 2022 01:46:30 -0500
+X-MC-Unique: XrPhGljRPsqLL-MesX7Y5g-1
+Received: by mail-pj1-f71.google.com with SMTP id v17-20020a17090abb9100b002239a73bc6eso10545453pjr.1
+        for <bpf@vger.kernel.org>; Mon, 26 Dec 2022 22:46:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aPmuqzn4nncHHPF0mSfrt/O6uFSxH0gzkjB0fGhp5og=;
-        b=sYPmIJSusfJ5JbfFtnw18XJXw3PA3+ZtLAV6st00MpUnF4mVJ+zF8s/zaphym9lR/5
-         162NFzqBOx20CWdPyX984qd5VoT7SFq9DVsvQzL5JZNv/ryld3znJQo6tJXfCfpetc4Z
-         gScyNR/M2ZQlZNkNPXfrxNOuBz/X/MQGaaOh+7FDmJozMoWNDaMI/ESBilfM5ujpQg1m
-         ejmIPBE69Ih+KW+pXHRuiLAH+ntFjAYnCgqMtgEOWy5u/wMmd7qEShXM/tDfktWbNGvQ
-         aUtyoia8uguSS5cttF1ncEgIRdgRNPdM/M32HBqfSDoIsKBYhAM0eQBneWeyXLcKb+Av
-         X1rw==
-X-Gm-Message-State: AFqh2kqMu2zVJEl+zv+e5mZuIexjuRo/VX2CWaOBoDG+CoGLJUUTIABL
-        9u7IF4oITqkrfLYOuUSajoSYB9zKsyHc3hW4QMTwJiJMZl6X/qIIzpR3wVvbO2qaRgEfhYEq/kC
-        Yx4dLeMjFDLhI
-X-Received: by 2002:a17:902:6b4c:b0:18f:9cfb:42aa with SMTP id g12-20020a1709026b4c00b0018f9cfb42aamr22045679plt.10.1672122747705;
-        Mon, 26 Dec 2022 22:32:27 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXsrAnVNmNt22zl34xlV/FnvjFVshRXkKyTIIxTV5+bWVoE6t8kn2NguNc4g3QX4X8EQwBapUA==
-X-Received: by 2002:a17:902:6b4c:b0:18f:9cfb:42aa with SMTP id g12-20020a1709026b4c00b0018f9cfb42aamr22045664plt.10.1672122747491;
-        Mon, 26 Dec 2022 22:32:27 -0800 (PST)
-Received: from [10.72.13.143] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id x2-20020a170902ec8200b0017f72a430adsm8245068plg.71.2022.12.26.22.32.23
+        bh=m4knyHj+l+dqV7A2xi7Y3KkvtsMiwfyqUyq8r+c4Ks0=;
+        b=IuzriZec0wkDl7VlkSdcmHxvyjuuWSCQi8f5NoV1dVSZL60/ZwM4K0Xk8D8zMTdszT
+         CGURr8aajil6iwcIk8TX30Fcdyn1dqLW6P0/enghRi6ZkQpI9+gtxGFwnn11Ql9TFlDe
+         4PBaL+yszl2+pXTUqv7KD6SpXgYuJEf2N6oLxmQoqGAY2N7TwSQtanFS4G4KI5vcAsaL
+         GpZQw0xeJzwpPB5+wqfaMcp0Q0dgP9PbklBVyaXJ/D85CAT5m0I1tGTP5fWKVGSwcWIn
+         XAp5NEAB15mksZnb+HdEXqip0WSHIB4Lf9tJ4XUOqgao2WWY+2ACVH2d+PYXrdIKWzVE
+         ZyJQ==
+X-Gm-Message-State: AFqh2koGR53IMxAXhnlY6ho1CmUGuIQJb93rQ6KFi0dTEYwfJGHWciy5
+        aaDgWIJKKP33H3gNyKNOpUZDpR/0bEcQocA+Jl6Q7KM1fgRbPaxoiEV1MFiF44kmEU1cBdZu8pi
+        5gDFk0mUq1FN3
+X-Received: by 2002:a05:6a20:4ca1:b0:af:f80a:140f with SMTP id fq33-20020a056a204ca100b000aff80a140fmr21768101pzb.8.1672123589815;
+        Mon, 26 Dec 2022 22:46:29 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXtcS8CB5Dz0rhzMhYmFskNnRWqL9BFLJ8Dy/ZIPT03QJHTATSOlBrbaVdEhccLpDLgc/ejmvA==
+X-Received: by 2002:a05:6a20:4ca1:b0:af:f80a:140f with SMTP id fq33-20020a056a204ca100b000aff80a140fmr21768088pzb.8.1672123589540;
+        Mon, 26 Dec 2022 22:46:29 -0800 (PST)
+Received: from [10.72.13.143] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id x7-20020aa79a47000000b005800cb7cbcasm7867244pfj.120.2022.12.26.22.46.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Dec 2022 22:32:27 -0800 (PST)
-Message-ID: <82eb2ffc-ce97-0c76-f7bc-8a163968cde7@redhat.com>
-Date:   Tue, 27 Dec 2022 14:32:22 +0800
+        Mon, 26 Dec 2022 22:46:29 -0800 (PST)
+Message-ID: <e0cf3f23-a173-778b-fc68-27de811f1aab@redhat.com>
+Date:   Tue, 27 Dec 2022 14:46:23 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [PATCH v2 2/9] virtio_net: set up xdp for multi buffer packets
+Subject: Re: [PATCH v2 4/9] virtio_net: build xdp_buff with multi buffers
 Content-Language: en-US
 To:     Heng Qi <hengqi@linux.alibaba.com>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
@@ -74,9 +74,9 @@ Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
         Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 References: <20221220141449.115918-1-hengqi@linux.alibaba.com>
- <20221220141449.115918-3-hengqi@linux.alibaba.com>
+ <20221220141449.115918-5-hengqi@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20221220141449.115918-3-hengqi@linux.alibaba.com>
+In-Reply-To: <20221220141449.115918-5-hengqi@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -91,41 +91,144 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 在 2022/12/20 22:14, Heng Qi 写道:
-> When the xdp program sets xdp.frags, which means it can process
-> multi-buffer packets over larger MTU, so we continue to support xdp.
-> But for single-buffer xdp, we should keep checking for MTU.
+> Support xdp for multi buffer packets in mergeable mode.
+>
+> Putting the first buffer as the linear part for xdp_buff,
+> and the rest of the buffers as non-linear fragments to struct
+> skb_shared_info in the tailroom belonging to xdp_buff.
 >
 > Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
 > Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 > ---
->   drivers/net/virtio_net.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   drivers/net/virtio_net.c | 78 ++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 78 insertions(+)
 >
 > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 443aa7b8f0ad..c5c4e9db4ed3 100644
+> index 08f209d7b0bf..8fc3b1841d92 100644
 > --- a/drivers/net/virtio_net.c
 > +++ b/drivers/net/virtio_net.c
-> @@ -3095,8 +3095,8 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->   		return -EINVAL;
->   	}
+> @@ -931,6 +931,84 @@ static struct sk_buff *receive_big(struct net_device *dev,
+>   	return NULL;
+>   }
 >   
-> -	if (dev->mtu > max_sz) {
-> -		NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP");
-> +	if (prog && !prog->aux->xdp_has_frags && dev->mtu > max_sz) {
+> +/* TODO: build xdp in big mode */
+> +static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+> +				      struct virtnet_info *vi,
+> +				      struct receive_queue *rq,
+> +				      struct xdp_buff *xdp,
+> +				      void *buf,
+> +				      unsigned int len,
+> +				      unsigned int frame_sz,
+> +				      u16 *num_buf,
+> +				      unsigned int *xdp_frags_truesize,
+> +				      struct virtnet_rq_stats *stats)
+> +{
+> +	unsigned int tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+> +	struct virtio_net_hdr_mrg_rxbuf *hdr = buf;
+> +	unsigned int truesize, headroom;
+> +	struct skb_shared_info *shinfo;
+> +	unsigned int xdp_frags_truesz = 0;
+> +	unsigned int cur_frag_size;
+> +	struct page *page;
+> +	skb_frag_t *frag;
+> +	int offset;
+> +	void *ctx;
+> +
+> +	xdp_init_buff(xdp, frame_sz, &rq->xdp_rxq);
+> +	xdp_prepare_buff(xdp, buf - VIRTIO_XDP_HEADROOM,
+> +			 VIRTIO_XDP_HEADROOM + vi->hdr_len, len - vi->hdr_len, true);
+> +
+> +	if (*num_buf > 1) {
+> +		shinfo = xdp_get_shared_info_from_buff(xdp);
+> +		shinfo->nr_frags = 0;
+> +		shinfo->xdp_frags_size = 0;
+> +	}
+> +
+> +	if ((*num_buf - 1) > MAX_SKB_FRAGS)
+> +		return -EINVAL;
+> +
+> +	while ((--*num_buf) >= 1) {
+> +		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
+> +		if (unlikely(!buf)) {
+> +			pr_debug("%s: rx error: %d buffers out of %d missing\n",
+> +				 dev->name, *num_buf,
+> +				 virtio16_to_cpu(vi->vdev, hdr->num_buffers));
+> +			dev->stats.rx_length_errors++;
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (!xdp_buff_has_frags(xdp))
+> +			xdp_buff_set_frags_flag(xdp);
 
 
-Not related to this patch, but I see:
+Any reason to put this inside the loop?
 
-         unsigned long int max_sz = PAGE_SIZE - sizeof(struct 
-padded_vnet_hdr);
 
-Which is suspicious, do we need to count reserved headroom/tailroom as well?
+> +
+> +		stats->bytes += len;
+> +		page = virt_to_head_page(buf);
+> +		offset = buf - page_address(page);
+> +		truesize = mergeable_ctx_to_truesize(ctx);
+> +		headroom = mergeable_ctx_to_headroom(ctx);
+> +
+> +		cur_frag_size = truesize + (headroom ? (headroom + tailroom) : 0);
+> +		xdp_frags_truesz += cur_frag_size;
+
+
+Not related to this patch, but it would easily confuse the future 
+readers that the we need another math for truesize. I think at least we 
+need some comments for this or
+
+I guess the root cause is in get_mergeable_buf_len:
+
+static unsigned int get_mergeable_buf_len(struct receive_queue *rq,
+                                       struct ewma_pkt_len *avg_pkt_len,
+                                           unsigned int room)
+{
+         struct virtnet_info *vi = rq->vq->vdev->priv;
+         const size_t hdr_len = vi->hdr_len;
+         unsigned int len;
+
+         if (room)
+         return PAGE_SIZE - room;
+
+And we do
+
+     len = get_mergeable_buf_len(rq, &rq->mrg_avg_pkt_len, room);
+
+     ...
+
+     ctx = mergeable_len_to_ctx(len, headroom);
+
+
+I wonder if it's better to pack the real truesize (PAGE_SIZE) here. This 
+may ease a lot of things.
 
 Thanks
 
 
-> +		NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP without frags");
->   		netdev_warn(dev, "XDP requires MTU less than %lu\n", max_sz);
->   		return -EINVAL;
->   	}
+> +		if (unlikely(len > truesize || cur_frag_size > PAGE_SIZE)) {
+> +			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+> +				 dev->name, len, (unsigned long)ctx);
+> +			dev->stats.rx_length_errors++;
+> +			return -EINVAL;
+> +		}
+> +
+> +		frag = &shinfo->frags[shinfo->nr_frags++];
+> +		__skb_frag_set_page(frag, page);
+> +		skb_frag_off_set(frag, offset);
+> +		skb_frag_size_set(frag, len);
+> +		if (page_is_pfmemalloc(page))
+> +			xdp_buff_set_frag_pfmemalloc(xdp);
+> +
+> +		shinfo->xdp_frags_size += len;
+> +	}
+> +
+> +	*xdp_frags_truesize = xdp_frags_truesz;
+> +	return 0;
+> +}
+> +
+>   static struct sk_buff *receive_mergeable(struct net_device *dev,
+>   					 struct virtnet_info *vi,
+>   					 struct receive_queue *rq,
 
