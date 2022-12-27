@@ -2,62 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FAA656712
-	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 04:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D3F656714
+	for <lists+bpf@lfdr.de>; Tue, 27 Dec 2022 04:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbiL0DU3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Dec 2022 22:20:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        id S231131AbiL0DUa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Dec 2022 22:20:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbiL0DUX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Dec 2022 22:20:23 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15254EB6
-        for <bpf@vger.kernel.org>; Mon, 26 Dec 2022 19:20:23 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id jr11so9669005qtb.7
-        for <bpf@vger.kernel.org>; Mon, 26 Dec 2022 19:20:23 -0800 (PST)
+        with ESMTP id S230292AbiL0DUZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Dec 2022 22:20:25 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B08AF07
+        for <bpf@vger.kernel.org>; Mon, 26 Dec 2022 19:20:24 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id v14so6903836qtq.3
+        for <bpf@vger.kernel.org>; Mon, 26 Dec 2022 19:20:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=PiCRXzshYRtSeq56rf+fzrfPB7DTNiVd+bi0EYm1uNs=;
-        b=eEoDXRLQ0unqo4VaOtvn0/4soTCCIDsTSn1ZNZiyBok9pPwcEaOnjrwS+GHjdL/JtY
-         lDkKw2Akmu2BpxdjwuhnL9UHgXQkMgVkjFxE3ZBa8u0Rl/tfoFYoYtd1q45i8tlRs0rd
-         X2sxi7ddqdWWrYBNOoZ06gvjvMTppCxDz+LT8=
+        bh=LMWkE0kFWHBUd3r5pzPt/HrsHnxxXKii/FS8rLC1iqE=;
+        b=Qc96XbtE3STVFgaZgnBbv0swvgWqE7qcSFUziVS5K8qNJDrigKjuZkQNcRU6/XnWdp
+         ONljueIId8OHmou5kfpZzIxpM+bxpjwvsIBV8n3fbo0XE5YQNqrQMYmZUxipSSTPCe1v
+         ycuY4eJw0/QmPwxI5Ujj0gI9VSZ5GZxWcQZBk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PiCRXzshYRtSeq56rf+fzrfPB7DTNiVd+bi0EYm1uNs=;
-        b=7gMBW6tCV5pBOcnIdrCcQxkYZmI4mwQYzXZnOZCAmR9kXpxB0CvMZTdih6O/LsRb5f
-         UlUfvxDea7eKf6htlD2EdnQ9oDamdzTWzMHeb2AfOUcNOcZhLypesMIiAjcbR0DU88kF
-         Y9fEm3pCvQpmi9keMcvCTiTC7jlnnjsphS1W7PrbPcmksDahzVjzaUc4uwGlXJyJbtme
-         r4dcJSSUtbxhfV/nLpcr/w7NJ82mpQLcZPf2rj4PJcvSg6X7rlu6w6ajrK8yf8VUCht/
-         tAfAE2oPCNTFufkeQongcEeThbwBccMkgZ44gmkfy7wz5d9XfxpXznYYU9zPytpoNXyg
-         qxZw==
-X-Gm-Message-State: AFqh2krpWBJjDoTWnN949JLrBoBPCEpS27iD1qC+7BpO8us7SxEL7vjy
-        AiQQxUA94RXMsJTff3vr+yWxpw==
-X-Google-Smtp-Source: AMrXdXsgSrMI45aMuhPW/0ggSrnsNoDq1enJ25pQz65IDtvux5K9nw/fsPsg49xMiXEma5kOGiDfrQ==
-X-Received: by 2002:ac8:544c:0:b0:3a9:8561:429a with SMTP id d12-20020ac8544c000000b003a98561429amr22004402qtq.26.1672111221592;
-        Mon, 26 Dec 2022 19:20:21 -0800 (PST)
+        bh=LMWkE0kFWHBUd3r5pzPt/HrsHnxxXKii/FS8rLC1iqE=;
+        b=QHBkXwPTwj+Z5l3930GUsLVOIP7XZ0+T5veSIvBwaZMNzSyb1S5dZnle/BYVIpHMEj
+         E+uzAZ+gLlpFtt+lNWNyLssDDE73nVSck3JTbIGZlyqwjlvitajQccJp36OjvtH3PN1h
+         pcoH52AWxMMs5yLyLjWuBCjyFGNCwZg7c/h/deDCnaLB9BPp0Mb1rgmOZ9liYj0cSQDB
+         rtSsuqvv+mdTLYNJvge3jzONiwK6r5rsxa3hOCOjKxVB2kNJ3OKfw2K+CffNln4lF3Kl
+         Wq8Tf/1vXDlZ0UmT8yzrXKrNPlhj5vY/A5KuieVN8j1AMtkkN9+UGJPRCINywUmjWbmM
+         YqkA==
+X-Gm-Message-State: AFqh2kpHapFMv19qzLE3Li3u4IYxrlTfyybrhrtMTN71es9gHI2ouHcb
+        J4JwkN0lF21cH6qFz4CUmclpJg==
+X-Google-Smtp-Source: AMrXdXsSC6QuunXir+6UrHV1B2txB2TbkIVmZcJIr+3bB9NNFxtLPVf7etiAI3sfO93kfQe5xhb3BQ==
+X-Received: by 2002:ac8:450e:0:b0:3a9:6b73:fb91 with SMTP id q14-20020ac8450e000000b003a96b73fb91mr23137596qtn.64.1672111223157;
+        Mon, 26 Dec 2022 19:20:23 -0800 (PST)
 Received: from localhost.swdvt.lab.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id fa11-20020a05622a4ccb00b003a68fe872a5sm7751262qtb.96.2022.12.26.19.20.19
+        by smtp.gmail.com with ESMTPSA id fa11-20020a05622a4ccb00b003a68fe872a5sm7751262qtb.96.2022.12.26.19.20.21
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Dec 2022 19:20:20 -0800 (PST)
+        Mon, 26 Dec 2022 19:20:22 -0800 (PST)
 From:   Michael Chan <michael.chan@broadcom.com>
 To:     davem@davemloft.net
 Cc:     netdev@vger.kernel.org, kuba@kernel.org, edumazet@google.com,
-        pabeni@redhat.com, bpf@vger.kernel.org, gospo@broadcom.com,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net 1/5] bnxt_en: fix devlink port registration to netdev
-Date:   Mon, 26 Dec 2022 22:19:36 -0500
-Message-Id: <1672111180-19463-2-git-send-email-michael.chan@broadcom.com>
+        pabeni@redhat.com, bpf@vger.kernel.org, gospo@broadcom.com
+Subject: [PATCH net 2/5] bnxt_en: Simplify bnxt_xdp_buff_init()
+Date:   Mon, 26 Dec 2022 22:19:37 -0500
+Message-Id: <1672111180-19463-3-git-send-email-michael.chan@broadcom.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1672111180-19463-1-git-send-email-michael.chan@broadcom.com>
 References: <1672111180-19463-1-git-send-email-michael.chan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000704e6a05f0c6bb62"
+        boundary="000000000000819cce05f0c6bb96"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,94 +66,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---000000000000704e6a05f0c6bb62
+--000000000000819cce05f0c6bb96
 
-From: Vikas Gupta <vikas.gupta@broadcom.com>
+bnxt_xdp_buff_init() does not modify the data_ptr or the len parameters,
+so no need to pass in the addresses of these parameters.
 
-We don't register a devlink port in case of a VF so
-avoid setting the devlink pointer to netdev.
-Also, SET_NETDEV_DEVLINK_PORT has to be moved
-so that we determine whether the device is PF/VF first.
-
-This fixes the NULL pointer dereference of devlink_port->devlink
-when creating VFs:
-
-BUG: kernel NULL pointer dereference, address: 0000000000000160
-PGD 0
-Oops: 0000 [#1] PREEMPT SMP NOPTI
-CPU: 14 PID: 388 Comm: kworker/14:1 Kdump: loaded Not tainted 6.1.0-rc8 #5
-Hardware name: Dell Inc. PowerEdge R750/06V45N, BIOS 1.3.8 08/31/2021
-Workqueue: events work_for_cpu_fn
-RIP: 0010:devlink_nl_port_handle_size+0xb/0x50
-Code: 83 c4 10 5b 5d c3 cc cc cc cc b8 a6 ff ff ff eb de e8 c9 59 21 00 66 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 55 53 48 8b 47 20 <48> 8b a8 60 01 00 00 48 8b 45 60 48 8b 38 e8 92 90 1a 00 48 8b 7d
-RSP: 0018:ff4fe5394846fcd8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000794 RCX: 0000000000000000
-RDX: ff1f129683a30a40 RSI: 0000000000000008 RDI: ff1f1296bb496188
-RBP: 0000000000000334 R08: 0000000000000cc0 R09: 0000000000000000
-R10: ff1f1296bb494298 R11: ffffffffffffffc0 R12: 0000000000000000
-R13: 0000000000000000 R14: ff1f1296bb494000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ff1f129e5fa00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000160 CR3: 000000131f610006 CR4: 0000000000771ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- <TASK>
- if_nlmsg_size+0x14a/0x220
- rtmsg_ifinfo_build_skb+0x3c/0x100
- rtmsg_ifinfo+0x9c/0xc0
- register_netdevice+0x59d/0x670
- register_netdev+0x1c/0x40
- bnxt_init_one+0x674/0xa60 [bnxt_en]
- local_pci_probe+0x42/0x80
- work_for_cpu_fn+0x13/0x20
- process_one_work+0x1e2/0x3b0
- ? rescuer_thread+0x390/0x390
- worker_thread+0x1c4/0x3a0
- ? rescuer_thread+0x390/0x390
- kthread+0xd6/0x100
- ? kthread_complete_and_exit+0x20/0x20
-
-Fixes: ac73d4bf2cda ("net: make drivers to use SET_NETDEV_DEVLINK_PORT to set devlink_port")
-Cc: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
+Fixes: b231c3f3414c ("bnxt: refactor bnxt_rx_xdp to separate xdp_init_buff/xdp_prepare_buff")
 Reviewed-by: Andy Gospodarek <andrew.gospodarek@broadcom.com>
-Reviewed-by: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Reviewed-by: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
+Reviewed-by: Somnath Kotur <somnath.kotur@broadcom.com>
+Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
 Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 6 +++---
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 4c7d07c684c4..93d32b333007 100644
+index 93d32b333007..b8639b7e6b2b 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -13591,7 +13591,6 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		return -ENOMEM;
+@@ -1925,7 +1925,7 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+ 	dma_addr = rx_buf->mapping;
  
- 	bp = netdev_priv(dev);
--	SET_NETDEV_DEVLINK_PORT(dev, &bp->dl_port);
- 	bp->board_idx = ent->driver_data;
- 	bp->msg_enable = BNXT_DEF_MSG_ENABLE;
- 	bnxt_set_max_func_irqs(bp, max_irqs);
-@@ -13599,6 +13598,10 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (bnxt_vf_pciid(bp->board_idx))
- 		bp->flags |= BNXT_FLAG_VF;
+ 	if (bnxt_xdp_attached(bp, rxr)) {
+-		bnxt_xdp_buff_init(bp, rxr, cons, &data_ptr, &len, &xdp);
++		bnxt_xdp_buff_init(bp, rxr, cons, data_ptr, len, &xdp);
+ 		if (agg_bufs) {
+ 			u32 frag_len = bnxt_rx_agg_pages_xdp(bp, cpr, &xdp,
+ 							     cp_cons, agg_bufs,
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+index c3065ec0a479..1847f191577d 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+@@ -177,7 +177,7 @@ bool bnxt_xdp_attached(struct bnxt *bp, struct bnxt_rx_ring_info *rxr)
+ }
  
-+	/* No devlink port registration in case of a VF */
-+	if (BNXT_PF(bp))
-+		SET_NETDEV_DEVLINK_PORT(dev, &bp->dl_port);
-+
- 	if (pdev->msix_cap)
- 		bp->flags |= BNXT_FLAG_MSIX_CAP;
+ void bnxt_xdp_buff_init(struct bnxt *bp, struct bnxt_rx_ring_info *rxr,
+-			u16 cons, u8 **data_ptr, unsigned int *len,
++			u16 cons, u8 *data_ptr, unsigned int len,
+ 			struct xdp_buff *xdp)
+ {
+ 	struct bnxt_sw_rx_bd *rx_buf;
+@@ -191,13 +191,13 @@ void bnxt_xdp_buff_init(struct bnxt *bp, struct bnxt_rx_ring_info *rxr,
+ 	offset = bp->rx_offset;
  
+ 	mapping = rx_buf->mapping - bp->rx_dma_offset;
+-	dma_sync_single_for_cpu(&pdev->dev, mapping + offset, *len, bp->rx_dir);
++	dma_sync_single_for_cpu(&pdev->dev, mapping + offset, len, bp->rx_dir);
+ 
+ 	if (bp->xdp_has_frags)
+ 		buflen = BNXT_PAGE_MODE_BUF_SIZE + offset;
+ 
+ 	xdp_init_buff(xdp, buflen, &rxr->xdp_rxq);
+-	xdp_prepare_buff(xdp, *data_ptr - offset, offset, *len, false);
++	xdp_prepare_buff(xdp, data_ptr - offset, offset, len, false);
+ }
+ 
+ void bnxt_xdp_buff_frags_free(struct bnxt_rx_ring_info *rxr,
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h
+index 505911ae095d..2bbdb8e7c506 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h
+@@ -27,7 +27,7 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
+ bool bnxt_xdp_attached(struct bnxt *bp, struct bnxt_rx_ring_info *rxr);
+ 
+ void bnxt_xdp_buff_init(struct bnxt *bp, struct bnxt_rx_ring_info *rxr,
+-			u16 cons, u8 **data_ptr, unsigned int *len,
++			u16 cons, u8 *data_ptr, unsigned int len,
+ 			struct xdp_buff *xdp);
+ void bnxt_xdp_buff_frags_free(struct bnxt_rx_ring_info *rxr,
+ 			      struct xdp_buff *xdp);
 -- 
 2.18.1
 
 
---000000000000704e6a05f0c6bb62
+--000000000000819cce05f0c6bb96
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -226,13 +212,13 @@ hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
 E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
 aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
 EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPaVeBpQ/jxQwZnY/Lk+kdT94nWYjW6m
-0G6+J5hgzTF1MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMTIy
-NzAzMjAyMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIO78yEOoJQHkkmsM29g9jxGfY8SdYJu5
+K8sefC2rydOIMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMTIy
+NzAzMjAyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
 SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQCXJmIWZf3nh+PmTqP6L5BKmO0VXTgKH9XzRse6rIrKOpm9GJHK
-jJsf5OMMTyYiA5dDYQhKsQKYvCyYvUrx4XAHrNpj+NYGJh6T0nyYya8UIkLEpa31m2Rcnki3KeNh
-/BdwheZFqg1QYgfYqG+O9L30MtEAWfV32j+H9Q2qLRtfuQumX9L0Yo5lq/5V+juxi5wz48iCkNjJ
-SKZlIAPiVB/K/jcsMMD1isiTWXzxz63FYFThMQgs8dQyCWPpnjkR3BfjAbZBU2HgM9HTlymKqlC3
-fyiqQvShBOdOkzlaJ3pHblQaIQgLevM/cgbCm1jkMLGi3BKortbSwLqjhtutUloF
---000000000000704e6a05f0c6bb62--
+ATANBgkqhkiG9w0BAQEFAASCAQBkMbZvm6ARSyoD1QmhHBqrboQwOfmmb9gWBQ0bNZdUqMr1dHYM
+sX2QwOJFWuKaqX80SfXU8O138UTcAxHda8/EHurSuuVUB/3Qn58wJf1h4JXO4wRl2hk9GIUFoc4W
+weaiAxusWCe6V7Oyl9xmrgCUafQj24rC6XoxW9bsNnIL8l+UgpFPcnFuJkurT6WPod9pQ9WeMJWi
+kgmpxhYXI6HVC3TYHqrOL9Y05XE3sbvK68+IFo+VmWBrrIed0HntqIf18IaFE6RmG3fuFYLfJOGy
+yABw/035a4037XvBiofC1y0A2oGQy6/XCUDfFHTzjh/ukka/nFa7j9KL87spwF7F
+--000000000000819cce05f0c6bb96--
