@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C246572DC
-	for <lists+bpf@lfdr.de>; Wed, 28 Dec 2022 05:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78FF6572DF
+	for <lists+bpf@lfdr.de>; Wed, 28 Dec 2022 05:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbiL1Eve (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Dec 2022 23:51:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
+        id S232572AbiL1EwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Dec 2022 23:52:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbiL1Euz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Dec 2022 23:50:55 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95530FAFE
-        for <bpf@vger.kernel.org>; Tue, 27 Dec 2022 20:43:26 -0800 (PST)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BS1x2WT027568;
-        Tue, 27 Dec 2022 20:43:02 -0800
+        with ESMTP id S232597AbiL1EvM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Dec 2022 23:51:12 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBC5E081
+        for <bpf@vger.kernel.org>; Tue, 27 Dec 2022 20:49:52 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BS1WAEF009368;
+        Tue, 27 Dec 2022 20:49:36 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=G8w4AkMDQfF31QNic6SKI0JLLnEoseBh4sglS+TLgIc=;
- b=XkMcodruEYbIhBJOZejRURUB/K3oXU1lbURNvI7cAO3bGShisgQ78ZaAZPCjkzz5KIRR
- M2+MVm4r4jODt79+OJDAgmQJOLuN6O2DGnMjryWSTEloVIOAyEm+5aPsKrtvZBEo3VPY
- k4raxjOihN20wFXBD9JLRdhEnFZIrhKDqGi4Q6Wz1jbV4HwbJw+igHaWi9tftneVetlK
- vhVUcjQ8MijlQ77jT5bDFfWItPEEUbBxib4bFV5LcUS0+quRB1K4jMh6fCySjgBlKXbu
- FJYLgqXFBCQrsPzciAvVcaCNE5y8gmKiKO4j6vxClib3EF8muScG4zoYwPDFpDvnkZz7 3Q== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3mnx041gmp-1
+ bh=uQu6aNJ4pwZdrIyw1nbY8YAVRPtRbHbCFPyYSA6pBiE=;
+ b=ljgD16jp45LzoHRLsnY5s0mckRPZMV9YMMaTE7kGFiMw1zQfI0aFVi0PS5FayPO1jrQw
+ wxnDRU+9tz4uZtNyGA04m/NXL3vsx0odiI3srhBjyQJByD8p2uTDaLvDT7ticefJf9qL
+ 8KMcrjMw9+3E33psR/3wi0K/7T9pgH2FTrtUZvryi9iDKoUWEg7gKK1fahydG43JOMd7
+ PJu56ctjd8iMvj9ALZ3yAfwcfzHWEa52NtvysbMvAxphaNgr33WcTC/uL09UMa59lmRt
+ +YK4wchyQQxAbI8DJDA3hoXZX/XY04ng14xEVamT5tEbvzvlDTKHnYSL5mcS1kXNHIjG 6Q== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mp1ma0y5e-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Dec 2022 20:43:02 -0800
+        Tue, 27 Dec 2022 20:49:35 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=njs97przbg9utdboTBSCQdw8bimGQV5JL4T/YXEkS6eSRqEFcQmwnJuV93342m9L6ly6vnK7XciBoOd5GszFd80rIGhJujWku4qWOoI+JK3zRKdmOEoVAEaDR9t8YFDUUELv3+N+jUYJAIk20RpFjTIOE8LqWPlp8Cg0qGasLCtK3bo3p3xg//lasj+OM1T5hQjX+/9eDDmRzTgRbBl8UmsqRPeeS+TbKcN0Q/O45IKOxSJq2IkLFck8p2NN1qzPV+la2uPyYjln+ZLRS2tHlsc9DtMVeMIVI0EWt3x/tjsrjr3bRvHqCfPWFCjRRmnAb0ZB0ddxSB5/27qbL5rUiQ==
+ b=g13peuKpPpBsugkJp2YGmR9WI9+izr8T7Q7yNfA3Z2tEWJ6MUAF7TuWuYKjBgH8yPgJB/9y5SB5I5L0cEdWDxqJWL5+E0ggqy3n7hFlPa0fvvG2+/Q+VTUhdUIqQ9JbUzieAdbaphgdCvoi3vCgTo5Gi7v07XvQ/f14MXho5Sl347VHhBICLNA+vgEqBlj9hWc9WZcj3ZNugkFC0fARHG+LCHSkdjxTIyM8wgtcVQ/gQwaAlMng0w4KZeErybP38qoMZL3FJQprnxCKcoXaltHMxw+BW9q4aXLQ8yoLbbLe/tu6yJWUWU1OB+8owN51MqAStuYsGPW7KaF9bpTOhDw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G8w4AkMDQfF31QNic6SKI0JLLnEoseBh4sglS+TLgIc=;
- b=jIl1KnVJLaEMtg12dvNCK9b/rN0MRcYzfZes/8PJ1t4FXQRkEBes2aM1Zdtzc5MIB4yp2sX5iebxGSD34h3XFNyUkIUm7WwkpG54tml4GOkh3GhTkV6IJKRibUVyX7ey9VMv3hZQVecqH0XQh26pCAJYds8jPutzFmwxrXfRpzLSMlpiA6Rft+55pWVhk8BIAkuZxuuXpip/3r9yyuWLVZ6YZVaf4eKGve5Iw73IHT55UcYSQb5k5Ug1bylfS8Hamtw0ASmqihB3HN5fwpz81bz0/p2vciKHsousPn1f0sSBSY10P4/6a9U/LoLK3ve6L6xkTUIHMNLwk4S8VRVoIQ==
+ bh=uQu6aNJ4pwZdrIyw1nbY8YAVRPtRbHbCFPyYSA6pBiE=;
+ b=NaVsFKamar56mhOORauQy7tPtZ4dj9jLkDjX/BP0ngakCVkB2pKRUUzaKzZuku0/lsk9EaLirodM+4m6AApiml4NWB/4wOmPZZnp0TdU2BrX31bFOpqy+GUTllzJvYN9iwyJ2KXwdsmYdmJZik9xYGZAJvwn6X+CxIH2Cz69J58VX47wwjxZrzCy2iTvdzS0atvvwceL9xShUPDBxlXl7m2vN13vZRvKRRFobN+Fpd+FjWmezas33KyCKc9+6uGCMhOOnJLeYCxJyCjRE/TNUyHY8DJtTN5wzfBKD8VvD2if38j6KRB8aMVZ7y+yU71aUpjbkbBmQrca/nN+JZluDg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
@@ -44,98 +44,93 @@ Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
  by SJ0PR15MB5129.namprd15.prod.outlook.com (2603:10b6:a03:421::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.16; Wed, 28 Dec
- 2022 04:42:59 +0000
+ 2022 04:49:34 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5944.016; Wed, 28 Dec 2022
- 04:42:58 +0000
-Message-ID: <c41daf29-43b4-8924-b5af-49f287ba8cdc@meta.com>
-Date:   Tue, 27 Dec 2022 20:42:55 -0800
+ 04:49:34 +0000
+Message-ID: <c56183d3-7d75-af03-321e-8ccffafdd1ab@meta.com>
+Date:   Tue, 27 Dec 2022 20:49:30 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [bpf-next v3 2/2] selftests/bpf: add test case for htab map
+Subject: Re: Follow up from the btf_type_tag discussion in the BPF office
+ hours
 Content-Language: en-US
-To:     xiangxia.m.yue@gmail.com, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-References: <20221219041551.69344-1-xiangxia.m.yue@gmail.com>
- <20221219041551.69344-2-xiangxia.m.yue@gmail.com>
+To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc:     bpf@vger.kernel.org, david.faust@oracle.com,
+        elena.zannoni@oracle.com, David Malcolm <dmalcolm@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+References: <87o7s4ece1.fsf@oracle.com>
+ <757e5dde-75ed-80e2-9a34-ff7c2259de78@meta.com> <87h6xrfgmz.fsf@oracle.com>
 From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20221219041551.69344-2-xiangxia.m.yue@gmail.com>
+In-Reply-To: <87h6xrfgmz.fsf@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR04CA0006.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::16) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR03CA0120.namprd03.prod.outlook.com
+ (2603:10b6:a03:333::35) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SJ0PR15MB5129:EE_
-X-MS-Office365-Filtering-Correlation-Id: 827124e9-73a5-45c7-19e0-08dae88dfe62
+X-MS-Office365-Filtering-Correlation-Id: ae870693-e80e-4bd0-207a-08dae88eea30
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K+ZfASflW+hcMRk3gdwrpUw9uVg7LNg4l2WPFPNj5lN815PQVwXKwfK6KlJfwQGvUqyqbpcZefU1Z0/0N/cQ5Eg8ceob1XUZeiO2F9ObeqsFoiRDL9FpikHyA2IAqRQ+5Dchjb30CEX4ksxWObiHQ2m8/omQE3pbM46U03cYsNxOztWTRkB4hr5ohYvZsSJ9cRix2roeUKDpXKDPVMpXr3A1lYZSh33zPV7de+ENtMZFxbACapa2m+i/hvoJb8onu9i2u2H5WfK/L8CjuO7I8YM+zG3c6KWrYdvUUzKsiT9RLrtmErauuR2BkGHjOZ40u13LIlBdYoB5lfCeLFbhTT5SLNCfHfhfcnb0EhCuoXbiFW2B/FGh13uDdcwxwrabUDuBONC2FC47ZRBSSUnPkmWU85pQg5OU009sSJGzaNNjnYllDPN5/hVDKCoRE8weQYZYJHd14kwVDWwAUPdTAUqo7sLzHzk7q4Pk4Wjl+tevHc4ihY3fW0DFWYRrrfqrI6YNX3KgKzmCragiQX0mULUdADcANOD+BfENlgFvtRnFxxFcE/EADyxqeNWeCSQONODPt2thg80cAlWpIlrFzjcv1wXqn+qq9G8moyYook7s1LGBg5kcNDWqL6V/MGcgurymlc2b4inQfvVl8eoAUSatoafI+RrpwTvpc8w8CqoCkQhPyN5pCC5eyj39DMUjy8hdxaqgDdT2hRzBMdRc/saFpW5neNgV7YyOGhSBbq8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(366004)(136003)(396003)(376002)(346002)(451199015)(31686004)(2616005)(5660300002)(6512007)(38100700002)(186003)(36756003)(66476007)(6506007)(53546011)(41300700001)(66946007)(66556008)(8936002)(478600001)(8676002)(6486002)(4326008)(316002)(6666004)(54906003)(2906002)(83380400001)(31696002)(86362001)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: ofg/sjudLkfRC04SYqwP5/5Xu1BzFVSC5Pf9RLi+/cG3ICMTcLG2pZMfjwDe2Yye+3/fyOAalGBVVHx+I0wymicq49lB82P4xq/qZD9P5+U0jDihEIivekMFEr9TvsjFLWd3po6lcoVorLLEGcScSr6g02PvY+kjPiF7AfKD12KJUTEE63kGRurAYawRL9Tak+86ISvGw5iwpOAMQav9ymT2KZJ0rIZqZkqiOPMDywRy7Xi5eh6Kyqdfvq5RASrncBb+ojCohWKYt97haBazbgmlgacJSLqYbvAMk8nmVeUdjx/Fy8+pAjL49+1FKBCdYtRCovbkIajLGk0gIG9/5WknmYbTk3ajJkBUs9GUubMN6pfZprDwHXFUG+KXjKlQ7HybWnhA89lW9isKfBRjhr5LzUR3XE1TG+8JujHbfSIu8pSTLUGbnlufS07XUoB/UosbnmuXuw6FGfmqKL5h4kbJFf8kRsqP1pYzFO792u/WnnYkKBpJJeH0MzIubV09PSaL98AwYN8KpZtZ5F6BV1Hie8D1AuxveeFt6bPtJR5gmP+guFIuCOnJpowVQewyxz5iyRKmWBwr5eAYqPIWG8RK5+ryJcI+hTr7//8KPaHFHfhkqz4y2dRCxtNBpHoCtz0Gb8sr7WT910pcFDESH51jpESgfZD+geSddFha9TmOLFhyiVQF2tOn08OR1JrlHL89vU5ADj1NwX7ZLbKTW6Hez9OxDdr64pkAaJrAZhM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(366004)(136003)(396003)(376002)(346002)(451199015)(31686004)(2616005)(5660300002)(6512007)(38100700002)(186003)(36756003)(66476007)(6506007)(53546011)(41300700001)(66946007)(66556008)(8936002)(478600001)(8676002)(6486002)(4326008)(316002)(66899015)(6666004)(6916009)(54906003)(2906002)(83380400001)(31696002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SVZWOC9iZkkwbU1FWGs4K0xKRlJHT1dsdUEzaDUzaDdjaWo1WHBKeUxoK09Q?=
- =?utf-8?B?d0JOaHJmZEsrMGFBdVlZOS90akdoSGVlbU5STGJkbUl2WHZUMnlVVjVzMDJC?=
- =?utf-8?B?RzhCMkpCM21oeE9mMWJwbWxhRmFvdURqcnJGdmVsQ2tyUmhRUDcxeFZoY3la?=
- =?utf-8?B?a3gwOGgza0FEVVIwSTVyd3ZnUXJYeG10eWF1Z2Jyajl1cFFIUlBlTkREUGdt?=
- =?utf-8?B?OXhXSU50VzRFUlBTVnlvb21zWjNXd09uNXB1V0pIMjZlRFl0WkdJZ3dYdi9x?=
- =?utf-8?B?WWt1ZU9QY1RQNi9vb1k0aG0vZFBPT2ZrWFBTditIMGRqenFKQ0hmejhwSEVR?=
- =?utf-8?B?ZmhXYjJMZTVBNzhqcGYxWlhLalVaai9mSFNJZUNoWkRNbHBVbzVoWkNXbmdP?=
- =?utf-8?B?NE43NzdYVjMwSGQrMWpkaGJPdTdwM2owbkU0Ryt5amRrOW1iVlh3T25oeW01?=
- =?utf-8?B?dWhXQWNUUEVMTURqMEtuT2VKWk1CcHRDeko1dW8ySVdwTUNnNWRQVXNNQjEy?=
- =?utf-8?B?dWRxMy8zRmJuWnZ1R2t2KzVIbkNpbDVCUHZqdHBWWWVKa0lTUDNUVVU3REJV?=
- =?utf-8?B?YnF1c1BEdUNuc0kzdUlNWEhNSzZBNHJ2WXdPWTZaVXBuMkM2ZUJUSTU3WFpz?=
- =?utf-8?B?UkxtTnFpb3AwSmZ5T1ZWVVd5emR1aHBybGtKN2hMN0lLQ2x6aFhWNDJJZUhl?=
- =?utf-8?B?Z09HWnNoR0ZqazBrVVBSYzMyeHF1em9oV2Q0MDJtblFLaDNGYUwwNldjZDkv?=
- =?utf-8?B?TktwK3lmc2h1SDFvTWRtbDVyckJzWmlKZy9iWUJGbXNYTVhyU1hEdEZKNGYr?=
- =?utf-8?B?dWRWMUxwcnZJVitpZGZUTlZtc3JnbG1XWlVxMHV3eGpVZktWTldJN01xTkdY?=
- =?utf-8?B?eTNKYmxwNUJxeTJ4RHM5eGZNRXNFc3duYXJyTk11SFRmYzdwdjZ4MjIyd3ZV?=
- =?utf-8?B?dXYwc0RJdDVpeVh1aFZ4ZUt5Rk1HZzhEOEJFY0VvYllacmxGZUhaRG9rMDF6?=
- =?utf-8?B?S0F1azYrTFYrN1JvRDNzR29XSFVuVHF0YzF5cG96eHV0Z3VGWExHaEtRekNs?=
- =?utf-8?B?UDkzN3hXdHVPMWdYVjRabU9YZ3cyaTZ0MUpIQ1ZaOVMrUENHTEtoejc2OFV3?=
- =?utf-8?B?YUlUYTF6RnNHeVMrUXRBT2FwNXBNeHFUZnN1SXR5OXliSmVaWnZ3b1ZFMGtx?=
- =?utf-8?B?eDZ6MjhQRHl6K1F3UEt5dzJIRUlmam1JVmJJSzh2Q0tMT2NsNGJwdzREZER1?=
- =?utf-8?B?Q1VCZW12MkY1b0pQL0VjNWJ0SGVnRUFKRjRRQmZFZDRKLzd4b0E3NnFlT2Jx?=
- =?utf-8?B?TlBKM2JIRWpZSGhodXlySW9QVVc2YS9MY2hFYXlhNmFBd2JsaUZ0czloRFhi?=
- =?utf-8?B?djFTUDJ1Q3REaFhYdVpESkszNmpybWloQ2xZS1BodEhmNVg0NnNKckZpN0xt?=
- =?utf-8?B?Y2xMcXhZSW5sT2lNREp1YjhzUU1JU3ZlZVZuRnd6NHJ3Qm5XaUZGTGF1S2Zk?=
- =?utf-8?B?c3NTT1RyenZVZklpMTN5ellJNVNDKzdJTWEyYk9iZjFvVEdWcFl5dS83cE9o?=
- =?utf-8?B?YkZ2NjdDZTNTTzJlWG1jOVA1ZVZYU01ZR2pMeTd1eTZMV2w5MmltVTZHYzVN?=
- =?utf-8?B?Rk5Vc2ZXcjlZUE9ibklHMFNSalByRkNZaDN4RzZXZnV0bDRlZXFaK21iakxt?=
- =?utf-8?B?YWxKRXlNcEJPM0JLQjdSZGdkSktGdHl2ejA0SUVEczgrMFZydW54V1NETE1H?=
- =?utf-8?B?RmNUY2hyL2p4cDl2L3lEbi81K3BBYzYzdDN1TXI0RkpQeDRpRFVhMEViQklN?=
- =?utf-8?B?bXNsN0JiQk9KL1dQMm5oTkVGb0N4d1lKY2thbGxXWi94T2ZMdFVHdHl2Wk95?=
- =?utf-8?B?NDMxWnBLcGsvdDNPbnZ4ZTZPTmFLK3dUcFk3N3c1L3dKVk5XckRGejh6SkJz?=
- =?utf-8?B?SDBWMjZnT3RaTkIrZTRGang0QnRPVFAyZVc4OUtvZEVCTW13dlBCTGl4empE?=
- =?utf-8?B?cWp5YW01VHZmVUlmUCs2V0wwZzFBdEcxNDFreGZBQWdBanZOWXhQd01uVzVB?=
- =?utf-8?B?emJKRlNOTzZzV0s5M1lWKzVOQXhiZE5Ic0pxdzJZcDZWSFJJVVZka1l4OUZv?=
- =?utf-8?B?elRVeElrLytFZk83SmJqbHgrMk5LUU4rYU9vOEtLR216TThJQkRVRlJNZlpI?=
- =?utf-8?B?dEE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WCtXd0EvejN1TmtZTENPbHVlT0dpVUtIOVZ4SlJGVURmdW9IV1hwYzhIbVNU?=
+ =?utf-8?B?UGlGamQ2d2hzWU82WmJaUEhkZnBkOXhQbGYza1VRVXV0MDBBdVExWW5BQzdt?=
+ =?utf-8?B?dzlaYW9wVyt4YmlhalRBV0JrcVQ3ZmxPclZ0T0EzQmhzaTJMTlE5b2Z2emxk?=
+ =?utf-8?B?YzlYaldScm1YWjk3WWIyMk5wYVl1clNMT2dPbzFIZ2swYW5mc1ZiVGJMeU9k?=
+ =?utf-8?B?R0JPRUlLTEJMQ3JtZjlXVGVvTlFoL0MzRmNZckdZSUdwK0dVRkxVQzYxSlVV?=
+ =?utf-8?B?UldUMDZWOGtaaG9INFVBMlBsOEdtU1BtZm55OG1wRnNBZ0NqL3k0UTZNblhT?=
+ =?utf-8?B?TXI0ZnRtNWwxU1FVSys1NUVPZnQwVFpES1Bzc1poSVdXUnFCTnBDS003cjZk?=
+ =?utf-8?B?S0locnUwZDdSYm9lU0Q5dUJwbU51MlVzcHV5aHFVTk13VWxmZ2xnaVZWMnR0?=
+ =?utf-8?B?N3FLMGV5dUJOY2NydmljS1RSZWRDTVlpRU9TbTJ1bWpQWjFRdHFLVDMxaGtq?=
+ =?utf-8?B?RWZhUFJwbVV4UGZUVjlZQUdoTTgxNFI3akNvSVp1SGxYTWNPZ2o4amMySGp6?=
+ =?utf-8?B?c3d4WSthQWZ5b2xKT0toM2ovR2RCZUJiaG9wSitHeDZGUEtFcTVydnBOVE9h?=
+ =?utf-8?B?YitiaDV6SlpXV0FtdGNkZ3ZZdXZETk5BdjNTd1N2aHVCN05qaW5jZ1BBVGNM?=
+ =?utf-8?B?NmgzTGVZVHdNNGdOOHJqMFBzK2hkV0M0VnJFWVpVNXh2UHFTcm9uTG14c2da?=
+ =?utf-8?B?WTVPQTZXZ3BNK3BkdGU3aW5zdFg2L21yT3ppYmtGVHVuRXB6Z3VBVXVWVDRr?=
+ =?utf-8?B?TDdBTHFZQ2c3MkNIbGhHV1owWGFoNmJ4akdqdE50Q1NLUDkxMG9oREpVOG1a?=
+ =?utf-8?B?VzdCOU80VlNuQTk0M0lXbUhBQVJJY3RLUW9JQS9zZkdHT2crV2tlY3g4V2JP?=
+ =?utf-8?B?YkJtcXUrTlZWTzBuSGlaVXRMMFFBVVBNdnhiSU10Rkk1UW9LTTgyY2JmN3Nv?=
+ =?utf-8?B?aEh5eEJSZHIveGRDRGoyZk4xeHRyVjlCR0NNNmdZdHFKaVQxSGUzNE9BdFVv?=
+ =?utf-8?B?eTF0TzdUSzZGc3VhVHRPaDBQdlFHVXI5SE8wbXF1VGo2NUVZY1k2VGZXS0dh?=
+ =?utf-8?B?MkhwTFh2SG5MVmNVUjJ2bWRvMkhTbU9LMTNCKytkcURRb0F2TFBlcmdhZVlM?=
+ =?utf-8?B?Z3NSdzdqK01zM0l6MEcwTmR0TnVIV1dSR1U4Yk9Ia2V5OHpDbGYzVERBUW83?=
+ =?utf-8?B?Qk9VbWRPYU1OS3pPRFpSc0RHVlVlZ0pvOEZtelNpSDc1eVlaRytSNDYwRFVF?=
+ =?utf-8?B?N3lpN3NVY3NBRHBiMCtJajQyS3F4VXVyZEdQQWZCbS9mcGRzbHhnNjg1T1RS?=
+ =?utf-8?B?aE91YTRpRGlETVRZZHg2NEhNdm1VRGVNQVcyL0g0WDl4d0pFNjNLbXhNcjJY?=
+ =?utf-8?B?TU9WakpXN3p4dkZ2dmZxTjV1QW4vQnk4bk41TzFiVWJIREgxVTRjQjY4aHB3?=
+ =?utf-8?B?UHQrQzEvcEdjWUxvVGV4ZFJpZmV6OUdkZnUzUDJiMXdjd1RPK0ZtU0NxTWZW?=
+ =?utf-8?B?a0gwUFlCbGkzVW82VUp4NGE0ZU4rZ2R3SUdoRkQwZE5rbmo5aEtEY211Sk9k?=
+ =?utf-8?B?U2FxM1VIeHBsb2FFSlordk5EeG83U3JWeXFvcy9LRFNLQzc5QVlYbmFuT3Av?=
+ =?utf-8?B?SkdyOE5yQTlPQm9Ld2VxelgxTDJOc0lqNDNIdjZBV1FYNXd2bFY2eldjQWgv?=
+ =?utf-8?B?UGZOTVlsSG5EZnhZU3V5bDgwRWJvRndFdjNnTFhCMWpKZ25sSVg3YzlnNk1G?=
+ =?utf-8?B?ck9zakRwbXNtQzZCMXZ2UDdmTmJXaENoOXZXLys0MDZUR0ZmR1kvVEVCYXd2?=
+ =?utf-8?B?K2hmcWlRclpCWE40UzVaN0pFUDlLUUpYcm1RcDl6Q1FWNGRDMTRwZ2J6U2tJ?=
+ =?utf-8?B?Y3pCZlQ4eGRpRzVEUEU3dVdGRXEzRWNTU29Oajg4bDBHdmYrOFZBalJRQks2?=
+ =?utf-8?B?aHZLU2JkRkR4cnU4N2FEeWJpeHFtbUdPSHJKNzMvMmJuZnlXYmRqYkNRbGpm?=
+ =?utf-8?B?RVMzZGVaR2dDMlpOcmpNL1JwdXhISjE0dmhuejdwdGlRTHV5NkxGeU9JdjBj?=
+ =?utf-8?B?a1p6UXBBbWJvQlMzMXNQbzNXWm04VXBIR2YyYkRNUEpGS2tKVmVnTVJzUHRi?=
+ =?utf-8?B?V0E9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 827124e9-73a5-45c7-19e0-08dae88dfe62
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae870693-e80e-4bd0-207a-08dae88eea30
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Dec 2022 04:42:58.3939
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Dec 2022 04:49:33.9931
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xbajRW3IUKeVOB5MJnECaVt6oXbifVe/ewDfZQNZYwWTaXKqCzRQsU9X/Hp7mh1I
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7VQ5+Rcs1c+jPZ4VXgUxRnGS9NkDwtCCMJFOhqtVy3iWVSI1DBJ7obmjbtb8Yw2q
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB5129
-X-Proofpoint-GUID: ojY6P1rIL33MZgoUeaEnqXPmBm_UwKyR
-X-Proofpoint-ORIG-GUID: ojY6P1rIL33MZgoUeaEnqXPmBm_UwKyR
+X-Proofpoint-GUID: mAkZpmx56LRx1lX3Rem0_TMW8RPpqWIG
+X-Proofpoint-ORIG-GUID: mAkZpmx56LRx1lX3Rem0_TMW8RPpqWIG
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-28_02,2022-12-27_01,2022-06-22_01
@@ -151,210 +146,51 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 12/18/22 8:15 PM, xiangxia.m.yue@gmail.com wrote:
-> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+On 12/19/22 9:27 AM, Jose E. Marchesi wrote:
 > 
-> This testing show how to reproduce deadlock in special case.
-> We update htab map in Task and NMI context. Task can be interrupted by
-> NMI, if the same map bucket was locked, there will be a deadlock.
+> Hi Yonghong.
 > 
-> * map max_entries is 2.
-> * NMI using key 4 and Task context using key 20.
-> * so same bucket index but map_locked index is different.
+>> On 12/15/22 10:43 AM, Jose E. Marchesi wrote:
+>>> Of the two problems discussed:
+>>> 1. DW_TAG_LLVM_annotation not being able to denote annotations to
+>>>      non-pointed based types.  clang currently ignores these instances.
+>>>      We discussed two possible options to deal with this:
+>>>      1.1 To continue ignoring these cases in the front-end, keep the dwarf
+>>>          expressiveness limitation, and document it.
+>>>      1.2 To change DW_TAG_LLVM_annotation so it behaves like a qualifier
+>>>          DIE (like const, volatile, etc.) so it can apply to any type.
+>>
+>> Thanks for the detailed update. Yes, we do want to __tag behaving like
+>> a qualifier.
+>>
+>> Today clang only support 'base_type <type_tag> *' style of code.
+>> But we are open to support non-pointer style of tagging like
+>> 'base_type <type_tag> global_var'. Because of this, the following
+>> dwarf output should be adopted:
+>>     C: int __tag1 * __tag2 * p;
+>>     dwarf: ptr -> __tag2 --> ptr -> __tag1 -> int
+>> or
+>>     C: int __tag1 g;
+>>     dwarf: var_g -> __tag1 --> int
+>>
+>> The above format *might* require particular dwarf tools to add support
+>> for __tag attribute. But I think it is a good thing in the long run
+>> esp. if we might add support to non-pointer types. In current
+>> implementation, dwarf tools can simply ignore the children of ptr
+>> which they may already do it.
 > 
-> The selftest use perf to produce the NMI and fentry nmi_handle.
-> Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
-> map syscall increase this counter in bpf_disable_instrumentation.
-> Then fentry nmi_handle and update hash map will reproduce the issue.
-> 
-> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Hou Tao <houtao1@huawei.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
->   tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
->   tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
->   .../selftests/bpf/prog_tests/htab_deadlock.c  | 75 +++++++++++++++++++
->   .../selftests/bpf/progs/htab_deadlock.c       | 32 ++++++++
->   4 files changed, 109 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
->   create mode 100644 tools/testing/selftests/bpf/progs/htab_deadlock.c
-> 
-> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> index 99cc33c51eaa..87e8fc9c9df2 100644
-> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> @@ -24,6 +24,7 @@ fexit_test                                       # fexit_attach unexpected error
->   get_func_args_test                               # get_func_args_test__attach unexpected error: -524 (errno 524) (trampoline)
->   get_func_ip_test                                 # get_func_ip_test__attach unexpected error: -524 (errno 524) (trampoline)
->   htab_update/reenter_update
-> +htab_deadlock                                    # failed to find kernel BTF type ID of 'nmi_handle': -3 (trampoline)
->   kfree_skb                                        # attach fentry unexpected error: -524 (trampoline)
->   kfunc_call/subprog                               # extern (var ksym) 'bpf_prog_active': not found in kernel BTF
->   kfunc_call/subprog_lskel                         # skel unexpected error: -2
-> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
-> index 585fcf73c731..735239b31050 100644
-> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
-> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-> @@ -26,6 +26,7 @@ get_func_args_test	                 # trampoline
->   get_func_ip_test                         # get_func_ip_test__attach unexpected error: -524                             (trampoline)
->   get_stack_raw_tp                         # user_stack corrupted user stack                                             (no backchain userspace)
->   htab_update                              # failed to attach: ERROR: strerror_r(-524)=22                                (trampoline)
-> +htab_deadlock                            # failed to find kernel BTF type ID of 'nmi_handle': -3                       (trampoline)
->   kfree_skb                                # attach fentry unexpected error: -524                                        (trampoline)
->   kfunc_call                               # 'bpf_prog_active': not found in kernel BTF                                  (?)
->   kfunc_dynptr_param                       # JIT does not support calling kernel function                                (kfunc)
-> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-> new file mode 100644
-> index 000000000000..137dce8f1346
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 DiDi Global Inc. */
-> +#define _GNU_SOURCE
-> +#include <pthread.h>
-> +#include <sched.h>
-> +#include <test_progs.h>
-> +
-> +#include "htab_deadlock.skel.h"
-> +
-> +static int perf_event_open(void)
-> +{
-> +	struct perf_event_attr attr = {0};
-> +	int pfd;
-> +
-> +	/* create perf event on CPU 0 */
-> +	attr.size = sizeof(attr);
-> +	attr.type = PERF_TYPE_HARDWARE;
-> +	attr.config = PERF_COUNT_HW_CPU_CYCLES;
-> +	attr.freq = 1;
-> +	attr.sample_freq = 1000;
-> +	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-> +
-> +	return pfd >= 0 ? pfd : -errno;
-> +}
-> +
-> +void test_htab_deadlock(void)
-> +{
-> +	unsigned int val = 0, key = 20;
-> +	struct bpf_link *link = NULL;
-> +	struct htab_deadlock *skel;
-> +	int err, i, pfd;
-> +	cpu_set_t cpus;
-> +
-> +	skel = htab_deadlock__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-> +		return;
-> +
-> +	err = htab_deadlock__attach(skel);
-> +	if (!ASSERT_OK(err, "skel_attach"))
-> +		goto clean_skel;
-> +
-> +	/* NMI events. */
-> +	pfd = perf_event_open();
-> +	if (pfd < 0) {
-> +		if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
-> +			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
-> +			test__skip();
-> +			goto clean_skel;
-> +		}
-> +		if (!ASSERT_GE(pfd, 0, "perf_event_open"))
-> +			goto clean_skel;
-> +	}
-> +
-> +	link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
-> +	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
-> +		goto clean_pfd;
-> +
-> +	/* Pinned on CPU 0 */
-> +	CPU_ZERO(&cpus);
-> +	CPU_SET(0, &cpus);
-> +	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
-> +
-> +	/* update bpf map concurrently on CPU0 in NMI and Task context.
-> +	 * there should be no kernel deadlock.
-> +	 */
-> +	for (i = 0; i < 100000; i++)
-> +		bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
-> +				    &key, &val, BPF_ANY);
-> +
-> +	bpf_link__destroy(link);
-> +clean_pfd:
-> +	close(pfd);
-> +clean_skel:
-> +	htab_deadlock__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> new file mode 100644
-> index 000000000000..d394f95e97c3
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> @@ -0,0 +1,32 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 DiDi Global Inc. */
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(max_entries, 2);
-> +	__uint(map_flags, BPF_F_ZERO_SEED);
-> +	__type(key, unsigned int);
-> +	__type(value, unsigned int);
-> +} htab SEC(".maps");
-> +
-> +/* nmi_handle on x86 platform. If changing keyword
-> + * "static" to "inline", this prog load failed. */
-> +SEC("fentry/nmi_handle")
+> I wonder, since these annotations are atomic, is there a reason for not
+> using an attribute instead of a DIE tag?  Something like DW_AT_annotation.
 
-The above comment is not what I mean. In arch/x86/kernel/nmi.c,
-we have
-   static int nmi_handle(unsigned int type, struct pt_regs *regs)
-   {
-        ...
-   }
-   ...
-   static noinstr void default_do_nmi(struct pt_regs *regs)
-   {
-        ...
-        handled = nmi_handle(NMI_LOCAL, regs);
-        ...
-   }
+Yes, we can. My suggestion is to facilitate gcc implementation. 
+Currently clang uses an attribute instead of a DIE tag. I am totally 
+fine if gcc uses the same dwarf representation mechanism as clang.
 
-Since nmi_handle is a static function, it is possible that
-the function might be inlined in default_do_nmi by the
-compiler. If this happens, fentry/nmi_handle will not
-be triggered and the test will pass.
+> 
+> The attribute could then be used by any DIE (declaration, type, ...) and
+> existing DWARF consumers that don't support the new attribute would
+> happily just ignore it.
 
-So I suggest to change the comment to
-   nmi_handle() is a static function and might be
-   inlined into its caller. If this happens, the
-   test can still pass without previous kernel fix.
-
-> +int bpf_nmi_handle(struct pt_regs *regs)
-> +{
-> +	unsigned int val = 0, key = 4;
-> +
-> +	bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
-> +	return 0;
-> +}
-> +
-> +SEC("perf_event")
-> +int bpf_empty(struct pt_regs *regs)
-> +{
-> +	return 0;
-> +}
+clang already use attributes to represent btf_type_tag and btf_decl_tag.
+One of early considerations to use attribute in clang indeed is to avoid 
+existing tool changes as much as possible.
