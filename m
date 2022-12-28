@@ -2,49 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A955965817F
-	for <lists+bpf@lfdr.de>; Wed, 28 Dec 2022 17:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2240E657CB4
+	for <lists+bpf@lfdr.de>; Wed, 28 Dec 2022 16:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbiL1Q27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Dec 2022 11:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
+        id S233865AbiL1PfQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Dec 2022 10:35:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbiL1Q2c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Dec 2022 11:28:32 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDA6165B4;
-        Wed, 28 Dec 2022 08:24:46 -0800 (PST)
+        with ESMTP id S233866AbiL1PfP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Dec 2022 10:35:15 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29EA164AE;
+        Wed, 28 Dec 2022 07:35:13 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7C079B8171E;
-        Wed, 28 Dec 2022 16:24:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEEC3C433EF;
-        Wed, 28 Dec 2022 16:24:43 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 85165B816D9;
+        Wed, 28 Dec 2022 15:35:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3F97C433F0;
+        Wed, 28 Dec 2022 15:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1672244684;
-        bh=/a+SXPPtV/sZYt6jUgZnWoKDg+jEjL4j84pPZqvDavE=;
+        s=korg; t=1672241711;
+        bh=dubQICoRUaMZoxPUUNZWHpXkhoid96dHvEkNtoni8vA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XTR7VBaMt9ufJ+yVwQPDZ4zjZcBsLTi/AfuxuQ3HqG7Kb3cQ+c+Eo4kSbVuMEC6H5
-         QI2AGiN/QVSUJiwTkBr4Xrr/emGHxTQ+1/0rJ0IhbW7ZDcLaC763wN4lhrk4zGoPCm
-         L90fJs6+9SrY7pxQUmWFzXY24qX0ut90Rk6tqU8w=
+        b=uR/zRPmfzKmIF8IwlhrC+1PYbeufJz11WMtJjfJMQP+x+19nv7Ppj0/yNIR3hFHpv
+         X0GuqfSnBt2/QG50wG1Qo1jtFbPp9e0t7tZWOG3COt4yo8x7e+1ax3DFSX6l6cf8pR
+         Soo8yXjj6W0zM4wxG8uzE1r2NKR0B7MCd7otki88=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>, bpf@vger.kernel.org,
+        patches@lists.linux.dev, Leo Yan <leo.yan@linaro.org>,
         Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        bpf@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <song@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.0 0756/1073] perf off_cpu: Fix a typo in BTF tracepoint name, it should be btf_trace_sched_switch
-Date:   Wed, 28 Dec 2022 15:39:04 +0100
-Message-Id: <20221228144348.551905899@linuxfoundation.org>
+Subject: [PATCH 5.15 514/731] perf trace: Return error if a system call doesnt exist
+Date:   Wed, 28 Dec 2022 15:40:21 +0100
+Message-Id: <20221228144311.443765467@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221228144328.162723588@linuxfoundation.org>
-References: <20221228144328.162723588@linuxfoundation.org>
+In-Reply-To: <20221228144256.536395940@linuxfoundation.org>
+References: <20221228144256.536395940@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,45 +60,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+From: Leo Yan <leo.yan@linaro.org>
 
-[ Upstream commit 167b266bf66c5b93171011ef9d1f09b070c2c537 ]
+[ Upstream commit d4223e1776c30b2ce8d0e6eaadcbf696e60fca3c ]
 
-In BTF, tracepoint definitions have the "btf_trace_" prefix.  The
-off-cpu profiler needs to check the signature of the sched_switch event
-using that definition.  But there's a typo (s/bpf/btf/) so it failed
-always.
+When a system call is not detected, the reason is either because the
+system call ID is out of scope or failure to find the corresponding path
+in the sysfs, trace__read_syscall_info() returns zero.  Finally, without
+returning an error value it introduces confusion for the caller.
 
-Fixes: b36888f71c8542cd ("perf record: Handle argument change in sched_switch")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
+This patch lets the function trace__read_syscall_info() to return
+-EEXIST when a system call doesn't exist.
+
+Fixes: b8b1033fcaa091d8 ("perf trace: Mark syscall ids that are not allocated to avoid unnecessary error messages")
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Acked-by: Ian Rogers <irogers@google.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 Cc: bpf@vger.kernel.org
-Cc: Ian Rogers <irogers@google.com>
-Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20221208182636.524139-1-namhyung@kernel.org
+Link: https://lore.kernel.org/r/20221121075237.127706-3-leo.yan@linaro.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/bpf_off_cpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/builtin-trace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
-index c257813e674e..01f70b8e705a 100644
---- a/tools/perf/util/bpf_off_cpu.c
-+++ b/tools/perf/util/bpf_off_cpu.c
-@@ -102,7 +102,7 @@ static void check_sched_switch_args(void)
- 	const struct btf_type *t1, *t2, *t3;
- 	u32 type_id;
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 2bf21194c7b3..aaa465d7f011 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -1782,11 +1782,11 @@ static int trace__read_syscall_info(struct trace *trace, int id)
+ #endif
+ 	sc = trace->syscalls.table + id;
+ 	if (sc->nonexistent)
+-		return 0;
++		return -EEXIST;
  
--	type_id = btf__find_by_name_kind(btf, "bpf_trace_sched_switch",
-+	type_id = btf__find_by_name_kind(btf, "btf_trace_sched_switch",
- 					 BTF_KIND_TYPEDEF);
- 	if ((s32)type_id < 0)
- 		return;
+ 	if (name == NULL) {
+ 		sc->nonexistent = true;
+-		return 0;
++		return -EEXIST;
+ 	}
+ 
+ 	sc->name = name;
 -- 
 2.35.1
 
