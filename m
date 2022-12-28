@@ -2,282 +2,523 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E74658672
-	for <lists+bpf@lfdr.de>; Wed, 28 Dec 2022 20:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6036A658701
+	for <lists+bpf@lfdr.de>; Wed, 28 Dec 2022 22:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbiL1Tlo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Dec 2022 14:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
+        id S230255AbiL1V0q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Dec 2022 16:26:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbiL1Tlm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Dec 2022 14:41:42 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3A71165
-        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 11:41:41 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BSJae3D000938;
-        Wed, 28 Dec 2022 11:41:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=xz4neEgfjtP+9OYqcFA3U7jTproAcGeQANLQMcmzz2I=;
- b=MeCfgJOx5fCu1Sxm2zCKr/qhS8Cr8pxhiNHEz/wlz/wI//LJu+rwAJGk0N+YdJUbLlt6
- IVUDd7ZC4kRvVVy8zvWbLxXOEXDmsOMMqpXGFOlgu3vTuOHoP2s0QDyGAs9CNiC/uG+c
- 9zA+EjdZ5Y+XG4ad+ivXFdZs280X/4uLdLoQf2YVnc2Et9z6i5MH55FYX1S1g0LjKd9f
- dfeXu1sVuseEiKibuHHaX8iGNj/yZ6JchT2c5ZD9ZVDKUGSIDSEmp05RzoOWIdB7YXwi
- wYKz4Qp5f//U9hoXAmFxtwGXK+tMvQ7sWlRtYCvImwPgRepD70B0zb5biDSfRJ0B3EQA IA== 
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2045.outbound.protection.outlook.com [104.47.57.45])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mp051cmx9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Dec 2022 11:41:38 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TieNMAHfyI5i2Ex8CgRe+DEWLjTqcO2qxLe6KdN7jPgGWgF9SCw3BxL+cbqvhqbEhFJEkgnyuyDcS+08lYVEad/Kg+Ig4IjFDTe5LH8dRbLRYbAsyMtbAne/VdgfrEyhLqTnYupQMYxvjc4s3QCJ1B5BgaI/IdfxLlHFr5GwbAPn+VEiVUwnGoHFp0ZG9SM8rc3/vmWvAw2qdJV2RiJBk1m4JBxTuXvRwlN57nGos4dUdimm9GnJRH0tL0dUHiwClfXalJHqHADSCGEs/tIdyt0g1YiDgC36Azd8ElTykP7aJEAVyFNGrAqNS/zNtlaxP0YsUyNqkfWD6tkxJwDt3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xz4neEgfjtP+9OYqcFA3U7jTproAcGeQANLQMcmzz2I=;
- b=iosGupX2tRzZcgJtse6Ja4UQL0kq9JjvftrHcrx1apj/hxGSgejfwMvgIngGxShRchZnewC80IpeY4866RzyZDQNf7iJOQB3KxFg50eKqf+DTPBgWTLfyFTxlEIIKBx6a5Y37UyyRnPJHk9BGhErcoIcV9j9l5tQWlHBYsLOOGQccdIO4yxLi+RDjE9YyqKdNeNUZJD9QPF0LKkllMhrUVE7mFEvrCkFwpHR2Goi8vH9QLcekQG3S6zdr9wZSvR8nzrtQj7Hljmc0YejfJ/y4UCIRY0GklkofDC3aHlJyQrNNW+jL53bjVyWQJtyhyWjMYb1Jpav8IXjfYpUH3Iugg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM5PR1501MB2103.namprd15.prod.outlook.com (2603:10b6:4:a0::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.16; Wed, 28 Dec
- 2022 19:41:36 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5944.016; Wed, 28 Dec 2022
- 19:41:36 +0000
-Message-ID: <42d3f4d8-fa8b-5774-0f6b-b12162c24736@meta.com>
-Date:   Wed, 28 Dec 2022 11:41:33 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: bpf_probe_read_user EFAULT
-Content-Language: en-US
-To:     Victor Laforet <victor.laforet@ip-paris.fr>,
-        Jiri Olsa <olsajiri@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-References: <346230382.476954.1672152966557.JavaMail.zimbra@ip-paris.fr>
- <Y6sWqgncfvtRHp+b@krava>
- <505155146.488099.1672236042622.JavaMail.zimbra@ip-paris.fr>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <505155146.488099.1672236042622.JavaMail.zimbra@ip-paris.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR05CA0061.namprd05.prod.outlook.com
- (2603:10b6:a03:74::38) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S229716AbiL1V0p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Dec 2022 16:26:45 -0500
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9FC140AF
+        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 13:26:44 -0800 (PST)
+Received: by mail-qt1-f169.google.com with SMTP id bp44so11030373qtb.0
+        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 13:26:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ftXqqSQxy262GqVoylr/hsEk+JfNTyusbweYCs7Cyb0=;
+        b=wOzYle1JL/1mDNbEcc+AaE2QbLzRdo/3/Asgo9zhaecGJLAYXHYGxP09vZgjm8MCJY
+         hBM8U6nimWhMuTG/hv252fI5+mmzPrAl9qUHr9zP5aqt94XdppICzNQgmqhyNXhhgnls
+         hJ6OqlxiBowLdpe9slglRLjzqHZ6SUaDORg0kIdYlzGWVqfKde56NNGx5wTvMcyvbRCD
+         fw7eIYT1LCyyPwrYSuAytsqNvrD6YzbcqlATmtKV9S9EumNlM3NLZG40QhoGe8DTPzAU
+         AILyDbACZrJ+1w77vLoVYTocY0xCkAPJPHhakj9eftDU82icYPUeUbSp/UP8cgtDmEvN
+         9LCw==
+X-Gm-Message-State: AFqh2kpTpYQs/nJu8IY30fkmMrV8YlJCWNoyZ8ku/bt71E8B6CYm963Q
+        WMD+fvwiWFZ8JghRdqopeY9+4Bq8mkMq+Dld
+X-Google-Smtp-Source: AMrXdXuTLwx6usGzJnsUIW1DzAPQApmNKRuBUC6zpUnm0/4fjADKIs+WHJH/5Qry1Fc+hJI6kDd9aA==
+X-Received: by 2002:a05:622a:17cf:b0:39c:da20:d4a5 with SMTP id u15-20020a05622a17cf00b0039cda20d4a5mr36327045qtk.58.1672262802884;
+        Wed, 28 Dec 2022 13:26:42 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:8b37])
+        by smtp.gmail.com with ESMTPSA id j18-20020ac86652000000b003a50248b89esm10469343qtp.26.2022.12.28.13.26.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Dec 2022 13:26:42 -0800 (PST)
+Date:   Wed, 28 Dec 2022 15:26:47 -0600
+From:   David Vernet <void@manifault.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 13/13] bpf, documentation: Add graph
+ documentation for non-owning refs
+Message-ID: <Y6y0l30bFTK7KalE@maniforge.lan>
+References: <20221217082506.1570898-1-davemarchevsky@fb.com>
+ <20221217082506.1570898-14-davemarchevsky@fb.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM5PR1501MB2103:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1189a43b-176c-4014-6712-08dae90b87c5
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Xg53g7GvQdNzzTHuOeDzPnJU5R5OBLeamM9RUaKFLM7vs8E+USVdpe8PUwuOMGjcSkkMs1bApQ8HZMom/QxataIlWLDd9l/+MVZiWyFmU9wenKcOPutNeW2dK0D7m4yOpHMBhqKpSm74Vcehlcwz86lsaQb0vfg06Cb/I+orEMUHLZBcYJTPuR1tGSVLSda9zS+H6SllK0l3efwV5l8Nks15+KhrsY9GYtftVFPVTfoItqg1SuMS0K/yCC/+tcUbJE+8ePHJ/MGA9yz0wGgMXs6pms4PujXotd8qoYjD0x7gRviKT8rn1P6lWf5fVDt0BwoikAtpcjCRXHIlNmaT9pmW41EbwDY7OxQ9vXkxitICxb0l0yDrLWB6UVrtWmLrHdqH2UH+G8IwzHHePIUSXXfrGUBG1r4JKR/9dDo4iWLy3hO28G87c0KKJNo8L0rFc+qJV5T4t3Y6ozhIcoLT+5+3hhgu/DMapp6hICzdPkeHoidcvHBeZFZuvkanuADRsL3uJ/2iAPfmoKhl6CQKwbJn9coTvIG9M7aH4gfKVwYUlS+/95clIL5wQ5a2zyI9AbBWTSaseJE8irVbSsSj+Iazm9l4an73MykfOTnssj3puuDRS0ETNo4V0DNWpzdkUmB7Au+98R2+fmIJ50k0q+mMRIx9qmKNbyw8hLZIJHTAt7qDQcS1ou6a5OPz6Pyc4pNrePjqlM9L7szyuhMphoICDt/NRb3j4Wmz7siJkS0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(366004)(376002)(39860400002)(396003)(136003)(451199015)(110136005)(2906002)(36756003)(316002)(2616005)(66574015)(83380400001)(6666004)(6486002)(86362001)(478600001)(31696002)(186003)(38100700002)(53546011)(6512007)(66556008)(66946007)(8936002)(8676002)(4326008)(31686004)(66476007)(41300700001)(6506007)(7116003)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Nlp0ZEVQcnJDYmZCNitnVkRzYVZmckdIWDRvQVQzRFRBV2NMZ2pHR0k5S2lh?=
- =?utf-8?B?MXNpVWl6L3YyaUZDR3JUaFVQVUN5dy9GZUp0SFRxVGZQajYxclVpQW5vdVlY?=
- =?utf-8?B?MFlhY0xLUzBqZmtrY2huRDFLZEU3bWNLNkZ6Yi9haUlBb1N2ZGdnU3BZQWVQ?=
- =?utf-8?B?QVdzdWljQTJUSHNSR2Y5ZmpXWkhjR25CVHVidzFSRE5yeUl2Rk1HRHJjOXpk?=
- =?utf-8?B?VzB3UEhlQ0QzZlBRYld6SWNrUi9SLys4c1ZPK3NJQ3B5emtOak94b21mcDdI?=
- =?utf-8?B?bG91MkpTWGRFRk5oQ2xoeUhJc0IwMVhjbGszSVhlRGQ0clhDR0p3cnVzNjlK?=
- =?utf-8?B?a05rTWRmT1plZDZZL2dIZnVuTmdFcU1qcWlod2U0cTNMTkhiU0dIbGRwSHZI?=
- =?utf-8?B?LzB1Q2xqNVpqUHM2OG42YzdWYS9acXNHUFpmOUJuWnBRRHpVS2xhOFBDVkhG?=
- =?utf-8?B?S0p5b1Rick1LYWxKdGo0emxkdlFUdTA1ZGNuaEdsUW9LclZkWHpsODFNQURH?=
- =?utf-8?B?SkwvYWI1dStYTGE0bU5heXp4Q0lmamhidkxjcHEyOU9KUWkrZGlLbHNPQUFU?=
- =?utf-8?B?NXprNnFkYkJKOU1tOVRrS1UydVJteUJpUHltc21PYVI3RndQVW1GWmRQQndS?=
- =?utf-8?B?b3ZuWnNKd1psbW5ySTVaK0dxcDNDZ0U2RHViUXh6UExQblVjdHJqTnE0TEVC?=
- =?utf-8?B?K0xNRGJiVXcycDQrWFU5dDl0cFdFYTNCUklDaW9EaWxFY1RCaURKRFVXSndN?=
- =?utf-8?B?NWF0VU1ZTUIwLy9JU3c0VXZBMjFOeVBoUm1EN2xKaCsyREg5Z2JyWlVRT1dF?=
- =?utf-8?B?MThwWXpiRjliN2I4M3o3WTA2dkpFWm5SenhiSTJDcGd2MC9BOFFpdVBxVGxS?=
- =?utf-8?B?ak1zNXVmV3RGdnV6RnViaGlnamdSaldNdGJSMm1GTzBoeTJNeXF2NnBwRUY4?=
- =?utf-8?B?NnI4b0JHdlB1MkhUczdkQUQ3dW55MVpMU2xMYlFhZWFmN3gySVVyRXVaNXVZ?=
- =?utf-8?B?aUl1QUUwSTdLUnQvbXQxSWZDTDQxR1J0SjQwVG9MeldiUE1id3VES3FSYWhu?=
- =?utf-8?B?TW9uclN5Q0pvTU9uK0V3K0Q2RnZuWC91aWZtMkw2WEhrQnJoUVRpZFowdnpT?=
- =?utf-8?B?ODMyZWdOUG9QekxjOFc5emdVdHFPU1ZHc0NvOGZ6OHlYNU5RclJxeUdaYXBR?=
- =?utf-8?B?WHVCWGRtN2ZyZlp3V1JoenZkV0VIWUp5THVacnJRdUpsUVVUSW5BTXJnMGVR?=
- =?utf-8?B?OXBCNUZQT2lRMEFzdkxMM2Y1RTJSVm1rY3I2Y28yMEZBZE05eUpxNDNReXFZ?=
- =?utf-8?B?a2J6cmZUT2RjRk4xYmNmL3gxQVI1UjJQaVUwYm9nbzVOSTRrdHJOUmFjZHVz?=
- =?utf-8?B?RXJqUzFVeFROdWJqNmVobW8zV04rWkhUclBzNXR0MU1teE1SMG5sRlFDK1J0?=
- =?utf-8?B?ank5bTB1Y1NQOWRQZXdJbkNHREdJZG5MUUowMEtma3lwQXBoRUplek9QSWh2?=
- =?utf-8?B?eW54WlN2M0YzaXFwbUJSUXN4SjJQTGZCTmpXZis2cGlEY3NzNU1iOFhVdXNa?=
- =?utf-8?B?MldzYkNLTzBFeFJ4UmhQWHdCQTRnbWhtSEJzK095MzNWU0dtMVU1eFdBbkpo?=
- =?utf-8?B?K3BSUGR4VVMyWFpERHJ6TzhHa2REUlFjdCtWWWsyTUNyMFQ4UEM2UUxxK2dw?=
- =?utf-8?B?cExLNXk4TklEMWJtZ1dsUE5CNzBwRUxBTXVBQndrNXVVS3JCbkFJa1JJYkQ1?=
- =?utf-8?B?M2VqZlZDRDBaNjE0Rk8yZWRxdEcrU1dYMG55WE04OCtVa0xYSlRBSmJDWDB3?=
- =?utf-8?B?eDlyVHFENTdZMmVQMy9yRmVnV3hBZnJvRmI1MkZ6QTZyLzZBWVN5YVByTnpl?=
- =?utf-8?B?dldRWDdPRkJzbWRCMVd1ZGx2ZXJPbDZFY1prcDZvaUk4aEx4elJXY21PbWRk?=
- =?utf-8?B?Y0NWdG9ibEE1ZmtadjlKQzFlSytKd0I4Z3ZwR2NlYkJIT3JsemRzNlZ5OXFC?=
- =?utf-8?B?VGVUSThXNkp2MXR2bEs0aEp6RFRVTzJNRUp2Z0N3SXhBL0svbWdWNlBmalM4?=
- =?utf-8?B?U3kxdXVUbzJOSEdPa2QzZThZTDZYL0Z1d0RZV2JUVURLQy9UQXN6ek56SDRi?=
- =?utf-8?B?MG5yT3Z0Z1FHTlZPUGxaUWhGOFZOVHpHVG5OREhqQzJNMzVhOHZScFZrK1ZF?=
- =?utf-8?B?Tnc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1189a43b-176c-4014-6712-08dae90b87c5
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Dec 2022 19:41:35.9682
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BVL4TWSigNq/yqyCkMJFfpoeSVcPVvl30yyNYKlO6nN5cHayXaLodIORxarwjqh1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1501MB2103
-X-Proofpoint-GUID: 1qyYRTq2ZyGcbbvQ93kLQryXmbX3-sn2
-X-Proofpoint-ORIG-GUID: 1qyYRTq2ZyGcbbvQ93kLQryXmbX3-sn2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-28_13,2022-12-28_02,2022-06-22_01
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221217082506.1570898-14-davemarchevsky@fb.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, Dec 17, 2022 at 12:25:06AM -0800, Dave Marchevsky wrote:
+> It is difficult to intuit the semantics of owning and non-owning
+> references from verifier code. In order to keep the high-level details
+> from being lost in the mailing list, this patch adds documentation
+> explaining semantics and details.
+> 
+> The target audience of doc added in this patch is folks working on BPF
+> internals, as there's focus on "what should the verifier do here". Via
+> reorganization or copy-and-paste, much of the content can probably be
+> repurposed for BPF program writer audience as well.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+
+Hey Dave,
+
+Thanks for writing this up. I left a few comments and suggestions as a
+first pass. Feel free to push back on any of them.
+
+> ---
+>  Documentation/bpf/graph_ds_impl.rst | 208 ++++++++++++++++++++++++++++
+>  Documentation/bpf/other.rst         |   3 +-
+>  2 files changed, 210 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/bpf/graph_ds_impl.rst
+> 
+> diff --git a/Documentation/bpf/graph_ds_impl.rst b/Documentation/bpf/graph_ds_impl.rst
+> new file mode 100644
+> index 000000000000..f92cbd223dc3
+> --- /dev/null
+> +++ b/Documentation/bpf/graph_ds_impl.rst
+> @@ -0,0 +1,208 @@
+> +=========================
+> +BPF Graph Data Structures
+> +=========================
+> +
+> +This document describes implementation details of new-style "graph" data
+> +structures (linked_list, rbtree), with particular focus on verifier
+
+s/with particular/with a particular
+
+> +implementation of semantics particular to those data structures.
+
+s/particular/specific
+
+Just because we already use the word "particular" in the sentence?
+
+In general this sentence feels a bit difficult to parse. Wdyt about
+this?
+
+...with a particular focus on how the verifier ensures that they are
+properly and safely used by BPF programs.
+
+> +
+> +Note that the intent of this document is to describe the current state of
+> +these graph data structures, **no guarantees** of stability for either
+
+I think we can end the sentence in the middle here.
+
+...these graph data structures. **No guarantees**...
+
+Should we also add a sentence or two here about the intended audience
+(people working on the verifier or readers who are interested in
+learning more about BPF internals)?
+
+> +semantics or APIs are made or implied here.
+> +
+> +.. contents::
+> +    :local:
+> +    :depth: 2
+> +
+> +Introduction
+> +------------
+> +
+> +The BPF map API has historically been the main way to expose data structures
+> +of various types for use within BPF programs. Some data structures fit naturally
+> +with the map API (HASH, ARRAY), others less so. Consequentially, programs
+
+Would you mind please adding some details on why some data structures
+don't fit naturally into the existing map APIs? I feel like that's kind
+of the main focus of the article, so it would probably help to give some
+high-level context up front.
+
+> +interacting with the latter group of data structures can be hard to parse
+> +for kernel programmers without previous BPF experience.
+
+I'm not sure I quite follow how this latter point about data structures
+being hard to parse is derived from the point about how some data
+structures don't fit naturally with the map APIs. Maybe we should say
+something like:
+
+..., others less so. Given that the API surface and behavioral semantics
+are fundmentally different between these two classes of BPF data
+structures, kernel programmers who are used to interacting with map-type
+data structures may find these graph-type data structures to be
+confusing or unfamiliar.
+
+Wdyt?
+
+> +
+> +Luckily, some restrictions which necessitated the use of BPF map semantics are
+> +no longer relevant. With the introduction of kfuncs, kptrs, and the any-context
+> +BPF allocator, it is now possible to implement BPF data structures whose API
+> +and semantics more closely match those exposed to the rest of the kernel.
+
+Suggestion, I'd consider explicitly contrasting the map-type
+implementation here with the graph-type implementation. What do you
+think of something like this instead of the above paragraph:
+
+BPF map-type data structures are defined as part of the UAPI in ``enum
+bpf_map_type``, and are accessed and manipulated using BPF
+:doc:`helpers`. The behaviors, backing memory, and implementations of
+these map-type data structures are entirely encapsulated from BPF
+programs, and mostly encapsulated from the verifier, by the helper
+functions. The logic in the verifier for ensuring that map-type data
+structures are correctly used therefore essentially amounts to
+statically verifying that the helper functions that manipulate and
+access the data structure are called correctly by the program, as
+defined in the helper prototypes. The verifier then relies on the helper
+to properly manipulate the backing data structure with its validated
+arguments.
+
+BPF graph-type data structures, on the other hand, leverage more modern
+features such as :doc:`kfuncs`, kptrs, and the any-context BPF
+allocator. They allow BPF programs to manipulate the data structures
+directly using APIs and semantics which more closely match those exposed
+to code in the main kernel, with the verifier's job now being to ensure
+that the programs are properly manipulating the data structures, rather
+than relying on helper functions to properly manipulate the data
+structures in the main kernel.
+
+> +
+> +Two such data structures - linked_list and rbtree - have many verification
+> +details in common. Because both have "root"s ("head" for linked_list) and
+> +"node"s, the verifier code and this document refer to common functionality
+> +as "graph_api", "graph_root", "graph_node", etc.
 
 
-On 12/28/22 6:00 AM, Victor Laforet wrote:
-> Yes I am sorry I did not mention that the example I sent was a minimal working example. I am filtering the events to select only preempted and events with the right pid as prev.
-> 
-> Would bpf_copy_from_user_task work better in this setting than bpf_probe_read_user ?
-> I don’t really understand why bpf_probe_read_user would not work for this use case.
 
-Right, bpf_copy_from_user_task() is better than bpf_probe_read_user(). 
-You could also use bpf_copy_from_user() if you have target_pid checking.
+> +
+> +Unless otherwise stated, examples and semantics below apply to both graph data
+> +structures.
+> +
+> +Non-owning references
+> +---------------------
+> +
+> +**Motivation**
+> +
+> +Consider the following BPF code:
+> +
+> +.. code-block:: c
 
-It is possible that the user variable you intended to access is not in 
-memory. In such cases, bpf_probe_read_user() will return EFAULT. But
-bpf_copy_from_user() and bpf_copy_from_user_task() will go through
-page fault process to bring the variable to the memory.
-Also because of this extra work, bpf_copy_from_user() and
-bpf_copy_from_user_task() only work for sleepable programs.
+You need an extra newline here or the docs build will complain:
 
+bpf-next/Documentation/bpf/graph_ds_impl.rst:46: ERROR: Error in "code-block" directive:
+maximum 1 argument(s) allowed, 9 supplied.
+
+.. code-block:: c
+        struct node_data *n = bpf_obj_new(typeof(*n)); /* BEFORE */
+
+        bpf_spin_lock(&lock);
+
+        bpf_rbtree_add(&tree, n); /* AFTER */
+
+        bpf_spin_unlock(&lock);
+
+> +        struct node_data *n = bpf_obj_new(typeof(*n)); /* BEFORE */
+> +
+> +        bpf_spin_lock(&lock);
+> +
+> +        bpf_rbtree_add(&tree, n); /* AFTER */
+> +
+> +        bpf_spin_unlock(&lock);
+
+Also need a newline here or sphinx will get confused and think the
+vertical line is part of the code block.
+
+> +----
+> +
+> +From the verifier's perspective, after bpf_obj_new ``n`` has type
+> +``PTR_TO_BTF_ID | MEM_ALLOC`` with btf_id of ``struct node_data`` and a
+> +nonzero ``ref_obj_id``. Because it holds ``n``, the program has ownership
+
+I had to read this first sentence a few times to parse it, maybe due to
+a missing comma between "after bpf_obj_new" and "``n`` has type...".
+What do you think about this wording?
+
+From the verifier's perspective, the pointer ``n`` returned from
+``bpf_obj_new`` has type ``PTR_TO_BTF_ID | MEM_ALLOC``, with a `btf_id`
+of ``struct node_data``, and a nonzero ``ref_obj_id``.
+
+> +of the pointee's lifetime (object pointed to by ``n``). The BPF program must
+
+Should we move (object pointed to by ``n``) to be directly after
+"pointee's" / before "lifetime"? Otherwise it reads kind of odd given
+that "lifetime" is really the indirect object in the sentence.
+
+> +pass off ownership before exiting - either via ``bpf_obj_drop``, which free's
+
+s/free's/frees
+
+> +the object, or by adding it to ``tree`` with ``bpf_rbtree_add``.
+> +
+> +(``BEFORE`` and ``AFTER`` comments in the example denote beginning of "before
+> +ownership is passed" and "after ownership is passed")
+
+Should we use something like ACQUIRED / PASSED / RELEASED instead of
+BEFORE / AFTER?
+
+> +
+> +What should the verifier do with ``n`` after ownership is passed off? If the
+> +object was free'd with ``bpf_obj_drop`` the answer is obvious: the verifier
+
+s/free'd/freed
+
+> +should reject programs which attempt to access ``n`` after ``bpf_obj_drop`` as
+> +the object is no longer valid. The underlying memory may have been reused for
+> +some other allocation, unmapped, etc.
+> +
+> +When ownership is passed to ``tree`` via ``bpf_rbtree_add`` the answer is less
+> +obvious. The verifier could enforce the same semantics as for ``bpf_obj_drop``,
+> +but that would result in programs with useful, common coding patterns being
+> +rejected, e.g.:
+> +
+> +.. code-block:: c
+
+Same here (newline)
+
+> +        int x;
+> +        struct node_data *n = bpf_obj_new(typeof(*n)); /* BEFORE */
+> +
+> +        bpf_spin_lock(&lock);
+> +
+> +        bpf_rbtree_add(&tree, n); /* AFTER */
+> +        x = n->data;
+> +        n->data = 42;
+> +
+> +        bpf_spin_unlock(&lock);
+
+Same here (newline)
+
+> +----
+> +
+> +Both the read from and write to ``n->data`` would be rejected. The verifier
+> +can do better, though, by taking advantage of two details:
+> +
+> +  * Graph data structure APIs can only be used when the ``bpf_spin_lock``
+> +    associated with the graph root is held
+
+I'd consider giving a bit more background information on this somewhere
+above. This is the first time we've mentioned anything about a lock, so
+it might be worth it to give some context on how these graph-type maps
+are defined and initialized.
+
+I realize we could be approaching "useful even to people who aren't
+working on the verifier" territory if we go into too much detail, but I
+also think it's important to give backround context on this stuff
+regardless of the intended audience in order for the documentation to
+really be useful.
+
+> +  * Both graph data structures have pointer stability
+
+You also need a newline between nested list entries or sphinx will get
+confused. My suggestion would be to just always have a newline between
+list entries (applies elsewhere in the file as well).
+
+> +    * Because graph nodes are allocated with ``bpf_obj_new`` and
+> +      adding / removing from the root involves fiddling with the
+> +      ``bpf_{list,rb}_node`` field of the node struct, a graph node will
+> +      remain at the same address after either operation.
+> +
+> +Because the associated ``bpf_spin_lock`` must be held by any program adding
+> +or removing, if we're in the critical section bounded by that lock, we know
+> +that no other program can add or remove until the end of the critical section.
+> +This combined with pointer stability means that, until the critical section
+> +ends, we can safely access the graph node through ``n`` even after it was used
+> +to pass ownership.
+> +
+> +The verifier considers such a reference a *non-owning reference*. The ref
+> +returned by ``bpf_obj_new`` is accordingly considered an *owning reference*.
+> +Both terms currently only have meaning in the context of graph nodes and API.
+> +
+> +**Details**
+> +
+> +Let's enumerate the properties of both types of references.
+> +
+> +*owning reference*
+> +
+> +  * This reference controls the lifetime of the pointee
+> +  * Ownership of pointee must be 'released' by passing it to some graph API
+> +    kfunc, or via ``bpf_obj_drop``, which free's the pointee
+
+s/free's/frees. "Frees" is a verb, "free's" is a possessive.
+
+> +    * If not released before program ends, verifier considers program invalid
+> +  * Access to the pointee's memory will not page fault
+> +
+> +*non-owning reference*
+> +
+> +  * This reference does not own the pointee
+> +    * It cannot be used to add the graph node to a graph root, nor free via
+> +      ``bpf_obj_drop``
+> +  * No explicit control of lifetime, but can infer valid lifetime based on
+> +    non-owning ref existence (see explanation below)
+> +  * Access to the pointee's memory will not page fault
+
+I'd consider defining references, or at least giving some high-level
+description of how they work, somewhere a bit earlier in the page. The
+"Non-owning references" section kind of just jumps right into examples
+of what the verifier allows without describing the concept at a higher
+level, so readers will have a difficult time applying what they're
+reading to the examples being provided.
+
+> +
+> +From verifier's perspective non-owning references can only exist
+> +between spin_lock and spin_unlock. Why? After spin_unlock another program
+> +can do arbitrary operations on the data structure like removing and free-ing
+
+s/free-ing/freeing
+
+> +via bpf_obj_drop. A non-owning ref to some chunk of memory that was remove'd,
+
+s/remove'd/removed
+
+I'll stop pointing these out for now, they apply throughout the page.
+
+> +free'd, and reused via bpf_obj_new would point to an entirely different thing.
+> +Or the memory could go away.
+> +
+> +To prevent this logic violation all non-owning references are invalidated by
+> +verifier after critical section ends. This is necessary to ensure "will
+
+- s/by verifier/by the verifier
+- s/after critical section/after a critical section
+- s/to ensure "will not"/to ensure a "will not"
+
+
+> +not page fault" property of non-owning reference. So if verifier hasn't
+
+- s/of non-owning/of the non-owning
+- s/So if verifier/So if the verifier
+
+> +invalidated a non-owning ref, accessing it will not page fault.
+> +
+> +Currently ``bpf_obj_drop`` is not allowed in the critical section, so
+> +if there's a valid non-owning ref, we must be in critical section, and can
+
+s/in critical section/in a critical section
+
+> +conclude that the ref's memory hasn't been dropped-and-free'd or dropped-
+> +and-reused.
+
+If you split the line like this, it will render as "dropped-and- reused".
+
+> +
+> +Any reference to a node that is in a rbtree _must_ be non-owning, since
+
+s/a rbtree/an rbtree
+
+> +the tree has control of pointee lifetime. Similarly, any ref to a node
+
+s/of pointee lifetime/of the pointee's lifetime
+
+> +that isn't in rbtree _must_ be owning. This results in a nice property:
+
+s/in rbtree/in an rbtree
+
+> +graph API add / remove implementations don't need to check if a node
+> +has already been added (or already removed), as the verifier type system
+> +prevents such a state from being valid.
+
+I feel like "verifier type system" isn't quite accurate here, though I
+may be wrong. When I think of something like "verifier type system" I'm
+more envisioning how the verifier ensures that the correct BTF IDs are
+passed. In this case, it's really the BPF graph-object ownership model
+that's ensuring that the state is valid, right?
+
+> +
+> +However, pointer aliasing poses an issue for the above "nice property".
+> +Consider the following example:
+> +
+> +.. code-block:: c
+
+Same here (newline)
+
+> +        struct node_data *n, *m, *o, *p;
+> +        n = bpf_obj_new(typeof(*n));     /* 1 */
+> +
+> +        bpf_spin_lock(&lock);
+> +
+> +        bpf_rbtree_add(&tree, n);        /* 2 */
+> +        m = bpf_rbtree_first(&tree);     /* 3 */
+> +
+> +        o = bpf_rbtree_remove(&tree, n); /* 4 */
+> +        p = bpf_rbtree_remove(&tree, m); /* 5 */
+> +
+> +        bpf_spin_unlock(&lock);
+> +
+> +        bpf_obj_drop(o);
+> +        bpf_obj_drop(p); /* 6 */
+
+Same here (newline)
+
+> +----
+> +
+> +Assume tree is empty before this program runs. If we track verifier state
+
+s/Assume tree,/Assume the tree
+
+> +changes here using numbers in above comments:
+> +
+> +  1) n is an owning reference
+> +  2) n is a non-owning reference, it's been added to the tree
+> +  3) n and m are non-owning references, they both point to the same node
+> +  4) o is an owning reference, n and m non-owning, all point to same node
+> +  5) o and p are owning, n and m non-owning, all point to the same node
+> +  6) a double-free has occurred, since o and p point to same node and o was
+> +     free'd in previous statement
+> +
+> +States 4 and 5 violate our "nice property", as there are non-owning refs to
+> +a node which is not in a rbtree. Statement 5 will try to remove a node which
+> +has already been removed as a result of this violation. State 6 is a dangerous
+> +double-free.
+> +
+> +At a minimum we should prevent state 6 from being possible. If we can't also
+> +prevent state 5 then we must abandon our "nice property" and check whether a
+> +node has already been removed at runtime.
+> +
+> +We prevent both by generalizing the "invalidate non-owning references" behavior
+> +of ``bpf_spin_unlock`` and doing similar invalidation after
+> +``bpf_rbtree_remove``. The logic here being that any graph API kfunc which:
+> +
+> +  * takes an arbitrary node argument
+> +  * removes it from the datastructure
+> +  * returns an owning reference to the removed node
+> +
+> +May result in a state where some other non-owning reference points to the same
+> +node. So ``remove``-type kfuncs must be considered a non-owning reference
+> +invalidation point as well.
+
+Could you please also add the new kfunc flags that signal this to
+Documentation/bpf/kfuncs.rst?
+
+> diff --git a/Documentation/bpf/other.rst b/Documentation/bpf/other.rst
+> index 3d61963403b4..7e6b12018802 100644
+> --- a/Documentation/bpf/other.rst
+> +++ b/Documentation/bpf/other.rst
+> @@ -6,4 +6,5 @@ Other
+>     :maxdepth: 1
+>  
+>     ringbuf
+> -   llvm_reloc
+> \ No newline at end of file
+> +   llvm_reloc
+> +   graph_ds_impl
+> -- 
+> 2.30.2
 > 
-> Victor
-> 
-> ----- Mail original -----
-> De: "Jiri Olsa" <olsajiri@gmail.com>
-> À: "Victor Laforet" <victor.laforet@ip-paris.fr>
-> Cc: "bpf" <bpf@vger.kernel.org>
-> Envoyé: Mardi 27 Décembre 2022 17:00:42
-> Objet: Re: bpf_probe_read_user EFAULT
-> 
-> On Tue, Dec 27, 2022 at 03:56:06PM +0100, Victor Laforet wrote:
->> Hi all,
->>
->> I am trying to use bpf_probe_read_user to read a user space value from BPF. The issue is that I am getting -14 (-EFAULT) result from bpf_probe_read_user. I haven’t been able to make this function work reliably. Sometimes I get no error code then it goes back to EFAULT.
->>
->> I am seeking your help to try and make this code work.
->> Thank you!
->>
->> My goal is to read the variable pid on every bpf event.
->> Here is a full example:
->> (cat /sys/kernel/debug/tracing/trace_pipe to read the output).
->>
->> sched_switch.bpf.c
->> ```
->> #include "vmlinux.h"
->> #include <bpf/bpf_helpers.h>
->>
->> int *input_pid;
->>
->> char _license[4] SEC("license") = "GPL";
->>
->> SEC("tp_btf/sched_switch")
->> int handle_sched_switch(u64 *ctx)
-> 
-> you might want to filter for your task, because sched_switch
-> tracepoint is called for any task scheduler switch
-> 
-> check BPF_PROG macro in bpf selftests on how to access tp_btf
-> arguments from context, for sched_switch it's:
-> 
->          TP_PROTO(bool preempt,
->                   struct task_struct *prev,
->                   struct task_struct *next,
->                   unsigned int prev_state),
-> 
-> and call the read helper only for prev->pid == 'your app pid',
-> 
-> there's bpf_copy_from_user_task helper you could use to read
-> another task's user memory reliably, but it needs to be called
-> from sleepable probe and you need to have the task pointer
-> 
-> jirka
-> 
->> {
->>    int pid;
->>    int err;
->>
->>    err = bpf_probe_read_user(&pid, sizeof(int), (void *)input_pid);
->>    if (err != 0)
->>    {
->>      bpf_printk("Error on bpf_probe_read_user(pid) -> %d.\n", err);
->>      return 0;
->>    }
->>
->>    bpf_printk("pid %d.\n", pid);
->>    return 0;
->> }
->> ```
->>
->> sched_switch.c
->> ```
->> #include <stdio.h>
->> #include <unistd.h>
->> #include <sys/resource.h>
->> #include <bpf/libbpf.h>
->> #include "sched_switch.skel.h"
->> #include <time.h>
->>
->> static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
->> {
->>    return vfprintf(stderr, format, args);
->> }
->>
->> int main(int argc, char **argv)
->> {
->>    struct sched_switch_bpf *skel;
->>    int err;
->>    int pid = getpid();
->>
->>    libbpf_set_print(libbpf_print_fn);
->>
->>    skel = sched_switch_bpf__open();
->>    if (!skel)
->>    {
->>      fprintf(stderr, "Failed to open BPF skeleton\n");
->>      return 1;
->>    }
->>
->>    skel->bss->input_pid = &pid;
->>
->>    err = sched_switch_bpf__load(skel);
->>    if (err)
->>    {
->>      fprintf(stderr, "Failed to load and verify BPF skeleton\n");
->>      goto cleanup;
->>    }
->>
->>    err = sched_switch_bpf__attach(skel);
->>    if (err)
->>    {
->>      fprintf(stderr, "Failed to attach BPF skeleton\n");
->>      goto cleanup;
->>    }
->>
->>    while (1);
->>
->> cleanup:
->>    sched_switch_bpf__destroy(skel);
->>    return -err;
->> }
->> ```
