@@ -2,68 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C36E56592B1
-	for <lists+bpf@lfdr.de>; Thu, 29 Dec 2022 23:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBFF65930F
+	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 00:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234297AbiL2Wvp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Dec 2022 17:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
+        id S229693AbiL2XKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Dec 2022 18:10:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234000AbiL2WvN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Dec 2022 17:51:13 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0085020A;
-        Thu, 29 Dec 2022 14:51:11 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id y16so18483573wrm.2;
-        Thu, 29 Dec 2022 14:51:11 -0800 (PST)
+        with ESMTP id S229499AbiL2XKg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Dec 2022 18:10:36 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB0816487
+        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 15:10:35 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id c17so28426562edj.13
+        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 15:10:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FuYI44yqA+jJ0GJlY6M75U/WDifI/BGOeeh04zYv+gQ=;
-        b=czGgzlq6ErQML0uDaeprZiSrlegHLztZxTOy78NAQvOfI1DQ5VyFkBW1D4o4kw/1fb
-         Mh3/on4hHMPwuzw7YYhn+fkTyIhljeTmnhFKxNFhgEOWyjXxrISGffE/8vOg3gxnnc4I
-         I9PfJKrcvMljesnCPljN+q227WfcK5BrniNYZCSVqF4WdoQ6GniJ8v3koHkhipFU3Rha
-         sY9tf5BFvj5zN1HNEl6DZprmPVZKCjrlH25ZqwkbEyRfRjO/RlLyU07Q+fiDbCnemE8E
-         OC2dZ/TR466lGBxuWsxALeOHmlFuGDqjD/NPJLTsph3jWwO4Ka1OB0kL0RhyONC2c0Ly
-         wlGw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=W2MAiN+MFIid9ikl5Hr4fTjAH8BaEFhIswV+GcMuWrw=;
+        b=lAxyCSq42iws1VCTcfvSWUFGAOo8h8d9MoUBAr/v2MQe+SQ+rp4It3KXfh/JYOL5A1
+         jiusR1uCljlXI3NV5MqF88UwF/Sa0SbsdYYx0KXbh0twiZDvpEk2EUUbe3WzmSXmZUfq
+         Sol2APvgAcsIsMioQxlMYXdX0xI3ex6MPuJnyRzVlWPqatzdDtLJwhVtYHJqeVtLSRs+
+         FuNZ7nmQNzx0srkXCndRC4vHqV84nIwBeyij/Yw8VeNwfm0eKhbd9lt9hd+py3jCRjfW
+         7HhrgU51KUwH8g/O+zUUmNCWNWtiYiO/FlGSZD4GTNrn1q+8NkGRXNZKpG4h+kSxQsJ1
+         vVOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FuYI44yqA+jJ0GJlY6M75U/WDifI/BGOeeh04zYv+gQ=;
-        b=WGtaH1U4QctSlt38wvXknIkCdx6zdsrw9oRgzDglKtbhQLwmWlCen9jSoY/dJMIzG1
-         iLhHcJcFMMj2PnLyZlUPzNH5l9zI31/iZNlIpLhL5wo4RRY2Z8ejWhnrJG4pSZ/Ol4IB
-         FazDVIsVCKzijz4rsX0YeQJZAfgPcCvwLpzvIe5dHYPRPyJa/2caIlU7hSJyW746yaRa
-         zNnz5CDvkqpFhRRViMksvLXrkvPdfUwuw4tkIfsbzJcP7kX+C2LYcEgNGlYwmYEehe7b
-         4T8/rfsQ3f9YmcCP+uuXiKbBuKCwfOL83ObmZTdayEZqXDCRumRDW35q0DqhGAFOyhGa
-         7AQQ==
-X-Gm-Message-State: AFqh2ko4ZKo6ev12mjE0/wdW6z76+l8OnpKwpRRwwghCsa7AZMpMg1kc
-        8ZFe5X0l68L7uwJBYRXQK68o/EPTO6E=
-X-Google-Smtp-Source: AMrXdXuc7EYWnXzmJl85FArH4jBSWHgiBakOpbe+kr0eElPXzFuj7/GxT44QVHAM9Uus3eN5e0PCFA==
-X-Received: by 2002:adf:fd89:0:b0:24f:5890:6168 with SMTP id d9-20020adffd89000000b0024f58906168mr18975982wrr.10.1672354270380;
-        Thu, 29 Dec 2022 14:51:10 -0800 (PST)
-Received: from localhost.localdomain (host-79-56-217-20.retail.telecomitalia.it. [79.56.217.20])
-        by smtp.gmail.com with ESMTPSA id p3-20020adfcc83000000b0027a57c1a6fbsm13493312wrj.22.2022.12.29.14.51.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Dec 2022 14:51:09 -0800 (PST)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Evgeniy Dushistov <dushistov@mail.ru>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v5 4/4] fs/ufs: Replace kmap() with kmap_local_page()
-Date:   Thu, 29 Dec 2022 23:51:00 +0100
-Message-Id: <20221229225100.22141-5-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221229225100.22141-1-fmdefrancesco@gmail.com>
-References: <20221229225100.22141-1-fmdefrancesco@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=W2MAiN+MFIid9ikl5Hr4fTjAH8BaEFhIswV+GcMuWrw=;
+        b=ex4c12rSHH7hIJp5t2hmzUeiBaHYLp0M+l/5pcox9sbmVuYjdfE3PoI6gMzr2EnVel
+         jvw0toqJ+yCXSiLIpKZP75A/PQErN6N8cNJtUxpS23kDrG3zQsSLbhRihyxTysYrsBGE
+         nKeQSsDtI3R/bhtWJErH2G3iBV8SYMjwNTJvvWP8Z+3zoWI9Mh1Mldo00Afamjnw314x
+         zT1MdGBf/okea5fLEdv2VG5MhxufYcIkwyfS0TrgHdB+DYe4qY1FtxqTDDWjZoHNOlTv
+         Ch3+I6utoKfkZC1hWyAxE5E1SGXEE0vyriONwZCwclzQZyRHFE8zavUdjqczxas9g7sf
+         +5zw==
+X-Gm-Message-State: AFqh2krrDdHn/hGuMbQhJLENw+bed2HJmaT4AX3tY2kzdSIwOgV7gI6U
+        HTKGAhGLLPzQb/ROHCA+gsuiJGhrJWattD+Xa9Y=
+X-Google-Smtp-Source: AMrXdXsZcmStaw2i9mJsNyfkwVfkAo1CDr5gY8hxNdQWd3Rrc+LnVLwIcyDBrspWgKfJoT591KHp5//t0FsQxC8DSOY=
+X-Received: by 2002:a05:6402:2208:b0:48a:7ada:b260 with SMTP id
+ cq8-20020a056402220800b0048a7adab260mr157116edb.311.1672355433999; Thu, 29
+ Dec 2022 15:10:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20221207205537.860248-1-joannelkoong@gmail.com>
+ <20221208015434.ervz6q5j7bb4jt4a@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzYGUf=yMry5Ezen2PZqvkfS+o1jSF2e1Fpa+pgAmx+OcA@mail.gmail.com>
+ <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
+ <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
+ <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local> <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
+ <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
+In-Reply-To: <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 29 Dec 2022 15:10:22 -0800
+Message-ID: <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
+Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
+ convenience helpers
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, kernel-team@meta.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,310 +77,155 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-kmap() is being deprecated in favor of kmap_local_page().
+On Sun, Dec 25, 2022 at 1:52 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Dec 20, 2022 at 11:31:25AM -0800, Andrii Nakryiko wrote:
+> > On Fri, Dec 16, 2022 at 9:35 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Dec 12, 2022 at 12:12:09PM -0800, Andrii Nakryiko wrote:
+> > > >
+> > > > There is no clean way to ever move from unstable kfunc to a stable helper.
+> > >
+> > > No clean way? Yet in the other email you proposed a way.
+> > > Not pretty, but workable.
+> > > I'm sure if ever there will be a need to stabilize the kfunc we will
+> > > find a clean way to do it.
+> >
+> > You can't have stable and unstable helper definition in the same .c
+> > file,
+>
+> of course we can.
+> uapi helpers vs kfuncs argument is not a black and white comparison.
+> It's not just stable vs unstable.
+> uapi has strict rules and helpers in uapi/bpf.h have to follow those rules.
+> While kfuncs in terms of stability are equivalent to EXPORT_SYMBOL_GPL.
+> Meaning they are largely unstable.
+> The upsteam kernel keeps changing those EXPORT_SYMBOL* functions,
+> but distros can apply their own "stability rules".
+> See Redhat's kABI, for example. A distro can guarantee a stability
+> of certain EXPORT_SYMBOL* for their customers, but that doesn't bind
+> upstream development.
+>
+> With uapi bpf helpers we have to guarantee their stability,
+> while with kfuncs we can do whatever we want. Right now all kfuncs are
+> unstable and to prove the point we changed them couple times already (nf_conn*).
+> We also have bpf_obj_new_impl() kfunc which is equivalent to EXPORT_SYMBOL(__kmalloc).
+> Hard to imagine more stable and more fundamental function.
+> Of course we want bpf programs to use bpf_obj_new() and assume
+> that it's going to be available in all future kernel releases.
+> But at the same time we're not bound by uapi rules.
+> bpf_obj_new() will likely be stable, but not uapi stable.
+> If we screw up (or find better way to allocate memory in the future)
+> we can change it.
+> We can invent our own deprecation rules for stable-ish kfuncs and
+> invent our more-unstable-than-current-unstable rules for kfuncs that
+> are too much kernel release dependent.
 
-There are two main problems with kmap(): (1) It comes with an overhead as
-the mapping space is restricted and protected by a global lock for
-synchronization and (2) it also requires global TLB invalidation when the
-kmap’s pool wraps and it might block when the mapping space is fully
-utilized until a slot becomes available.
+I'm talking about *mechanics* of having two incompatible definitions
+of functions with the same name, not the *concept* of stable vs
+unstable API. See [0] where I explained this as a reply to Joanne.
 
-With kmap_local_page() the mappings are per thread, CPU local, can take
-page faults, and can be called from any context (including interrupts).
-It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
-the tasks can be preempted and, when they are scheduled to run again, the
-kernel virtual addresses are restored and still valid.
+  [0] https://lore.kernel.org/bpf/CAEf4BzbRQLEjAFUkzzStv0c0=O+r9iZ8hq33sJB2RtSuGrGAEA@mail.gmail.com/
 
-The use of kmap_local_page() in fs/ufs is "safe" because (1) the kernel
-virtual addresses are exclusively re-used by the thread which
-established the mappings (i.e., thread locality is never violated) and (2)
-the nestings of mappings and un-mappings are always stack based (LIFO).
+>
+> > But regardless, dynptr is modeled as black box with hidden state, and
+> > its API surface area is bigger (offset, size, is null or not,
+> > manipulations over those aspects; then there is skb/xdp abstraction to
+> > be taken care of for generic read/write). It has a wider *generic* API
+> > surface to be useful and effectively used.
+>
+> tbh dynptr as an abstraction of skb/xdp is not convincing.
+> cilium created their own abstraction on top of skb and xdp and it's zero cost.
+> While dynptr is not free, so xdp users unlikely to use dynptr(xdp) for perf reasons.
+> So I suspect it won't be a success story in the long run, but we
+> can certainly try it out since they will be kfuncs and can be deprecated
+> if maintenance outweighs the number of users.
+>
+> > All *two* of them, bpf_get_current_task() and
+> > bpf_get_current_task_btf(), right? They are 2 years apart.
+> > bpf_get_current_task() was added before BTF era. It is still actively
+> > used today and there is nothing wrong with it. It works on older
+> > kernels just fine, even with BPF CO-RE (as backporting a few simple
+> > patches to generate BTF is simple and easy; not so much with BPF
+> > verifier changes to add native BTF support). I don't see much problem
+> > having both, they are not maintenance burden.
+>
+> bpf_get_current_pid_tgid
+> bpf_get_current_uid_gid
+> bpf_get_current_comm
+> bpf_get_current_task
+> bpf_get_current_task_btf
+> bpf_get_current_cgroup_id
+> bpf_get_current_ancestor_cgroup_id
+> bpf_skb_ancestor_cgroup_id
+> bpf_sk_cgroup_id
+> bpf_sk_ancestor_cgroup_id
+>
+> _are_ a maintenance burden.
 
-Therefore, replace kmap() with kmap_local_page() in fs/ufs. kunmap_local()
-requires the mapping address, so return that address from ufs_get_page()
-and use it as parameter for the second argument of ufs_put_page().
+bpf_get_current_pid_tgid() was added in 2015, slightly and
+uncritically touched by Daniel in 2016 and we never had any problems
+with it ever since. No updates, no maintenance. I don't remember much
+problem with other helpers in this list, but I didn't check each one.
 
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- fs/ufs/dir.c   | 72 +++++++++++++++++++++++++++++++++-----------------
- fs/ufs/namei.c |  8 +++---
- fs/ufs/ufs.h   |  2 +-
- 3 files changed, 53 insertions(+), 29 deletions(-)
+But we certainly have a different understanding of what "maintenance
+burden" is. If some code doesn't require constant change and doesn't
+prevent changes in some other parts of the system, it's not a
+maintenance burden.
 
-diff --git a/fs/ufs/dir.c b/fs/ufs/dir.c
-index 0bfd563ab0c2..8676a144e589 100644
---- a/fs/ufs/dir.c
-+++ b/fs/ufs/dir.c
-@@ -61,9 +61,9 @@ static int ufs_commit_chunk(struct page *page, loff_t pos, unsigned len)
- 	return err;
- }
- 
--inline void ufs_put_page(struct page *page)
-+inline void ufs_put_page(struct page *page, void *page_addr)
- {
--	kunmap(page);
-+	kunmap_local(page_addr);
- 	put_page(page);
- }
- 
-@@ -76,7 +76,7 @@ ino_t ufs_inode_by_name(struct inode *dir, const struct qstr *qstr)
- 	de = ufs_find_entry(dir, qstr, &page);
- 	if (de) {
- 		res = fs32_to_cpu(dir->i_sb, de->d_ino);
--		ufs_put_page(page);
-+		ufs_put_page(page, de);
- 	}
- 	return res;
- }
-@@ -99,18 +99,17 @@ void ufs_set_link(struct inode *dir, struct ufs_dir_entry *de,
- 	ufs_set_de_type(dir->i_sb, de, inode->i_mode);
- 
- 	err = ufs_commit_chunk(page, pos, len);
--	ufs_put_page(page);
-+	ufs_put_page(page, de);
- 	if (update_times)
- 		dir->i_mtime = dir->i_ctime = current_time(dir);
- 	mark_inode_dirty(dir);
- }
- 
- 
--static bool ufs_check_page(struct page *page)
-+static bool ufs_check_page(struct page *page, char *kaddr)
- {
- 	struct inode *dir = page->mapping->host;
- 	struct super_block *sb = dir->i_sb;
--	char *kaddr = page_address(page);
- 	unsigned offs, rec_len;
- 	unsigned limit = PAGE_SIZE;
- 	const unsigned chunk_mask = UFS_SB(sb)->s_uspi->s_dirblksize - 1;
-@@ -185,23 +184,32 @@ static bool ufs_check_page(struct page *page)
- 	return false;
- }
- 
-+/*
-+ * Calls to ufs_get_page()/ufs_put_page() must be nested according to the
-+ * rules documented in kmap_local_page()/kunmap_local().
-+ *
-+ * NOTE: ufs_find_entry() and ufs_dotdot() act as calls to ufs_get_page()
-+ * and must be treated accordingly for nesting purposes.
-+ */
- static void *ufs_get_page(struct inode *dir, unsigned long n, struct page **p)
- {
-+	char *kaddr;
-+
- 	struct address_space *mapping = dir->i_mapping;
- 	struct page *page = read_mapping_page(mapping, n, NULL);
- 	if (!IS_ERR(page)) {
--		kmap(page);
-+		kaddr = kmap_local_page(page);
- 		if (unlikely(!PageChecked(page))) {
--			if (!ufs_check_page(page))
-+			if (!ufs_check_page(page, kaddr))
- 				goto fail;
- 		}
- 		*p = page;
--		return page_address(page);
-+		return kaddr;
- 	}
- 	return ERR_CAST(page);
- 
- fail:
--	ufs_put_page(page);
-+	ufs_put_page(page, kaddr);
- 	return ERR_PTR(-EIO);
- }
- 
-@@ -227,6 +235,13 @@ ufs_next_entry(struct super_block *sb, struct ufs_dir_entry *p)
- 					fs16_to_cpu(sb, p->d_reclen));
- }
- 
-+/*
-+ * Calls to ufs_get_page()/ufs_put_page() must be nested according to the
-+ * rules documented in kmap_local_page()/kunmap_local().
-+ *
-+ * ufs_dotdot() acts as a call to ufs_get_page() and must be treated
-+ * accordingly for nesting purposes.
-+ */
- struct ufs_dir_entry *ufs_dotdot(struct inode *dir, struct page **p)
- {
- 	struct ufs_dir_entry *de = ufs_get_page(dir, 0, p);
-@@ -244,6 +259,11 @@ struct ufs_dir_entry *ufs_dotdot(struct inode *dir, struct page **p)
-  * returns the page in which the entry was found, and the entry itself
-  * (as a parameter - res_dir). Page is returned mapped and unlocked.
-  * Entry is guaranteed to be valid.
-+ *
-+ * On Success ufs_put_page() should be called on *res_page.
-+ *
-+ * ufs_find_entry() acts as a call to ufs_get_page() and must be treated
-+ * accordingly for nesting purposes.
-  */
- struct ufs_dir_entry *ufs_find_entry(struct inode *dir, const struct qstr *qstr,
- 				     struct page **res_page)
-@@ -282,7 +302,7 @@ struct ufs_dir_entry *ufs_find_entry(struct inode *dir, const struct qstr *qstr,
- 					goto found;
- 				de = ufs_next_entry(sb, de);
- 			}
--			ufs_put_page(page);
-+			ufs_put_page(page, kaddr);
- 		}
- 		if (++n >= npages)
- 			n = 0;
-@@ -360,7 +380,7 @@ int ufs_add_link(struct dentry *dentry, struct inode *inode)
- 			de = (struct ufs_dir_entry *) ((char *) de + rec_len);
- 		}
- 		unlock_page(page);
--		ufs_put_page(page);
-+		ufs_put_page(page, kaddr);
- 	}
- 	BUG();
- 	return -EINVAL;
-@@ -390,7 +410,7 @@ int ufs_add_link(struct dentry *dentry, struct inode *inode)
- 	mark_inode_dirty(dir);
- 	/* OFFSET_CACHE */
- out_put:
--	ufs_put_page(page);
-+	ufs_put_page(page, kaddr);
- 	return err;
- out_unlock:
- 	unlock_page(page);
-@@ -468,13 +488,13 @@ ufs_readdir(struct file *file, struct dir_context *ctx)
- 					       ufs_get_de_namlen(sb, de),
- 					       fs32_to_cpu(sb, de->d_ino),
- 					       d_type)) {
--					ufs_put_page(page);
-+					ufs_put_page(page, kaddr);
- 					return 0;
- 				}
- 			}
- 			ctx->pos += fs16_to_cpu(sb, de->d_reclen);
- 		}
--		ufs_put_page(page);
-+		ufs_put_page(page, kaddr);
- 	}
- 	return 0;
- }
-@@ -485,10 +505,15 @@ ufs_readdir(struct file *file, struct dir_context *ctx)
-  * previous entry.
-  */
- int ufs_delete_entry(struct inode *inode, struct ufs_dir_entry *dir,
--		     struct page * page)
-+		     struct page *page)
- {
- 	struct super_block *sb = inode->i_sb;
--	char *kaddr = page_address(page);
-+	/*
-+	 * The "dir" dentry points somewhere in the same page whose we need the
-+	 * address of; therefore, we can simply get the base address "kaddr" by
-+	 * masking the previous with PAGE_MASK.
-+	 */
-+	char *kaddr = (char *)((unsigned long)dir & PAGE_MASK);
- 	unsigned int from = offset_in_page(dir) & ~(UFS_SB(sb)->s_uspi->s_dirblksize - 1);
- 	unsigned int to = offset_in_page(dir) + fs16_to_cpu(sb, dir->d_reclen);
- 	loff_t pos;
-@@ -527,7 +552,7 @@ int ufs_delete_entry(struct inode *inode, struct ufs_dir_entry *dir,
- 	inode->i_ctime = inode->i_mtime = current_time(inode);
- 	mark_inode_dirty(inode);
- out:
--	ufs_put_page(page);
-+	ufs_put_page(page, kaddr);
- 	UFSD("EXIT\n");
- 	return err;
- }
-@@ -551,8 +576,7 @@ int ufs_make_empty(struct inode * inode, struct inode *dir)
- 		goto fail;
- 	}
- 
--	kmap(page);
--	base = (char*)page_address(page);
-+	base = kmap_local_page(page);
- 	memset(base, 0, PAGE_SIZE);
- 
- 	de = (struct ufs_dir_entry *) base;
-@@ -569,7 +593,7 @@ int ufs_make_empty(struct inode * inode, struct inode *dir)
- 	de->d_reclen = cpu_to_fs16(sb, chunk_size - UFS_DIR_REC_LEN(1));
- 	ufs_set_de_namlen(sb, de, 2);
- 	strcpy (de->d_name, "..");
--	kunmap(page);
-+	kunmap_local(base);
- 
- 	err = ufs_commit_chunk(page, 0, chunk_size);
- fail:
-@@ -585,9 +609,9 @@ int ufs_empty_dir(struct inode * inode)
- 	struct super_block *sb = inode->i_sb;
- 	struct page *page = NULL;
- 	unsigned long i, npages = dir_pages(inode);
-+	char *kaddr;
- 
- 	for (i = 0; i < npages; i++) {
--		char *kaddr;
- 		struct ufs_dir_entry *de;
- 
- 		kaddr = ufs_get_page(inode, i, &page);
-@@ -620,12 +644,12 @@ int ufs_empty_dir(struct inode * inode)
- 			}
- 			de = ufs_next_entry(sb, de);
- 		}
--		ufs_put_page(page);
-+		ufs_put_page(page, kaddr);
- 	}
- 	return 1;
- 
- not_empty:
--	ufs_put_page(page);
-+	ufs_put_page(page, kaddr);
- 	return 0;
- }
- 
-diff --git a/fs/ufs/namei.c b/fs/ufs/namei.c
-index 486b0f2e8b7a..7175d45e704c 100644
---- a/fs/ufs/namei.c
-+++ b/fs/ufs/namei.c
-@@ -250,7 +250,7 @@ static int ufs_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
- 	struct inode *old_inode = d_inode(old_dentry);
- 	struct inode *new_inode = d_inode(new_dentry);
- 	struct page *dir_page = NULL;
--	struct ufs_dir_entry * dir_de = NULL;
-+	struct ufs_dir_entry *dir_de = NULL;
- 	struct page *old_page;
- 	struct ufs_dir_entry *old_de;
- 	int err = -ENOENT;
-@@ -307,7 +307,7 @@ static int ufs_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
- 		if (old_dir != new_dir)
- 			ufs_set_link(old_inode, dir_de, dir_page, new_dir, 0);
- 		else {
--			ufs_put_page(dir_page);
-+			ufs_put_page(dir_page, dir_de);
- 		}
- 		inode_dec_link_count(old_dir);
- 	}
-@@ -316,10 +316,10 @@ static int ufs_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
- 
- out_dir:
- 	if (dir_de) {
--		ufs_put_page(dir_page);
-+		ufs_put_page(dir_page, dir_de);
- 	}
- out_old:
--	ufs_put_page(old_page);
-+	ufs_put_page(old_page, old_de);
- out:
- 	return err;
- }
-diff --git a/fs/ufs/ufs.h b/fs/ufs/ufs.h
-index f7ba8df25d03..942639e9a817 100644
---- a/fs/ufs/ufs.h
-+++ b/fs/ufs/ufs.h
-@@ -98,7 +98,7 @@ extern struct ufs_cg_private_info * ufs_load_cylinder (struct super_block *, uns
- extern void ufs_put_cylinder (struct super_block *, unsigned);
- 
- /* dir.c */
--extern void ufs_put_page(struct page *page);
-+extern void ufs_put_page(struct page *page, void *vaddr);
- extern const struct inode_operations ufs_dir_inode_operations;
- extern int ufs_add_link (struct dentry *, struct inode *);
- extern ino_t ufs_inode_by_name(struct inode *, const struct qstr *);
--- 
-2.39.0
 
+> The verifier got smarter and we could have removed all of them,
+> but uapi rules makes it impossible.
+> The bpf prog could have been enabled to access all these task_struct
+> and cgroup fields directly. Likely without any kfuncs.
+>
+> bpf_send_signal vs bpf_send_signal_thread
+> bpf_jiffies64 vs bpf_this_cpu_ptr
+> etc
+> there are plenty examples where uapi bpf helpers became a burden.
+> They are working and will keep working, but we could have done
+> much better job if not for uapi.
+> These are the examples where uapi rules are too strong for bpf development.
+> Our pace of adding new features is high.
+> The kernel uapi rules are too strict for us.
+
+I'm familiar with the burden of maintaining API stability and
+backwards compat. But it's not just about the library/system
+developer's convenience and burden, it's also about the end user's
+experience and convenience. BPF tool developers really appreciate when
+there are few less quirks to remember and work around across kernel
+versions, configurations, architectures, etc. It's the pain that
+kernel engineers working on BPF bleeding-edge don't experience in the
+BPF selftests environment.
+
+>
+> At one point DaveM declared freeze on sizeof(struct sk_buff).
+> It was a difficult, but correct decision.
+> We have to declare freeze on bpf helpers.
+> 211 helpers that have to be maintained forever is a huge burden.
+
+I still didn't get why we have to freeze anything and how exactly
+helpers are a burden.
+
+But especially in this specific case of few simple dynptr helpers,
+especially that other dynptrs generic APIs are already BPF helpers. I
+just don't get it and honestly all I see from this discussion is that
+you've made up your mind and there is nothing that can be done to
+convince you.
+
+The only "BPF helpers are stable and thus a burden" argument is just
+not convincing and I'd even say is mostly false. There are no upsides
+to having dynptr helpers as kfuncs, as far as I'm concerned. But there
+are a bunch of downsides, even if some of those might be lifted in the
+future.
+
+The unfortunate thing is that end users that are meant to benefit from
+all these helpers and them being "a standard API offering" are not
+well represented on the BPF mailing list, unfortunately. And my
+opinion and arguments as a proxy for theirs is clearly not enough.
+
+> All new features should use kfuncs and we need to figure out a deprecation
+> and stability story for them. How to document kfuncs cleanly,
+> how to discover them, etc.
