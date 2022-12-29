@@ -2,155 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DDD658F5B
-	for <lists+bpf@lfdr.de>; Thu, 29 Dec 2022 18:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8F165907E
+	for <lists+bpf@lfdr.de>; Thu, 29 Dec 2022 19:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbiL2RAl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Dec 2022 12:00:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42718 "EHLO
+        id S231226AbiL2SjZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Dec 2022 13:39:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233619AbiL2RA0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Dec 2022 12:00:26 -0500
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7E610FC2
-        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 09:00:25 -0800 (PST)
-Received: by mail-qt1-f177.google.com with SMTP id bp44so12784164qtb.0
-        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 09:00:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FE+3orv6Ns/IA4s0EwezT5vnqvghWwWBamaae0X2cOM=;
-        b=FdYD7vj/pr3GKJm0Od0KseFAHmzF9j/3dDAxgCI4Sa2SE4zKjCPVLwpePKh7ZaAf6W
-         XqC/ORHA0hklkmm1Pc9+nCef1C3TJ2MZ+MGQVSFZFlFl+16YjD0eV5gtrjfT9V3TfdZB
-         bl3eyN4fD/Hsy+yCwJIzoOUGMNI82xrmnU5nJpbFcBL7WzvAuVMczWUhriiJq+eUdSU7
-         Gv++p3oZ1fbrhO6NSXb/e5ChKp89RhMk4siu8+ExO0yTcHDx6NVvt8C5dYGn9TTUztVc
-         hhdhmOHeCj3n5yxeWvmM7S+LIInOP0ZRdn/n6LBZbX+LTczmedtcdKlumbF6YFdp78U4
-         EDkQ==
-X-Gm-Message-State: AFqh2koVXd5UIb/wJM9ATpnv5CmFrQvkrEpO06HsTtY97/aluA9teWLN
-        9aZjlvfPFeNPAw1HieJqknY=
-X-Google-Smtp-Source: AMrXdXvcFtwats1XDeo+LCk6nllRW+0h1W5s5UJQr2Dl2Kw6EMFJCaoWB7JHq3a4Mn02J9d3PJvyTw==
-X-Received: by 2002:ac8:776f:0:b0:3a7:f3f0:483 with SMTP id h15-20020ac8776f000000b003a7f3f00483mr35212201qtu.60.1672333224597;
-        Thu, 29 Dec 2022 09:00:24 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:290a])
-        by smtp.gmail.com with ESMTPSA id u15-20020a37ab0f000000b006fafc111b12sm13305380qke.83.2022.12.29.09.00.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Dec 2022 09:00:24 -0800 (PST)
-Date:   Thu, 29 Dec 2022 11:00:29 -0600
-From:   David Vernet <void@manifault.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 bpf-next 01/13] bpf: Support multiple arg regs w/
- ref_obj_id for kfuncs
-Message-ID: <Y63HrbJV+rTSmvVe@maniforge.lan>
-References: <20221217082506.1570898-1-davemarchevsky@fb.com>
- <20221217082506.1570898-2-davemarchevsky@fb.com>
- <Y602StijD+4Nymf6@maniforge.lan>
- <CAADnVQJREMX7p6QwmPsX9xsGnd3+CqB2WQbokf1vev6h7ZS7Pg@mail.gmail.com>
+        with ESMTP id S231313AbiL2SjO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Dec 2022 13:39:14 -0500
+X-Greylist: delayed 999 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 29 Dec 2022 10:39:12 PST
+Received: from gandi.kataplop.net (gandi.kataplop.net [46.226.111.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D2E207
+        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 10:39:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kataplop.net; s=rsa1; h=Content-Type:MIME-Version:Message-ID:Date:cc:
+        In-Reply-To:Subject:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:References:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=o2bLwIu302OPIxzzOb17jUDgPpigXlSAm3M0BzArS1o=; b=fEBBnRE+/XLyyzz0TLYYAzC544
+        i83oKapU0FxQKpf/66xl2QinusJeo9oiJIH06VEk6PVtZI6h4OWCMClLTH0cMN6yZqlyOCm/g/iBu
+        QetK6wn08HMNaypDH7jt8maSLsSV1XVWjFkI/WHzQBbpk/VLHG6ceEyN0Nr7DqexQU+w=;
+Received: from [176.191.105.132] (helo=arrakis)
+        by gandi.kataplop.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <dkm@kataplop.net>)
+        id 1pAxXy-0006DF-NU; Thu, 29 Dec 2022 19:22:31 +0100
+From:   Marc =?utf-8?Q?Poulhi=C3=A8s?= <dkm@kataplop.net>
+To:     jose.marchesi@oracle.com
+Subject: Re: Support for gcc
+In-Reply-To: 87pmc6xzzp.fsf@oracle.com
+cc:     anolasc13@gmail.com, bpf@vger.kernel.org
+Date:   Thu, 29 Dec 2022 19:22:21 +0100
+Message-ID: <87lemqvzmq.fsf@kataplop.net>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJREMX7p6QwmPsX9xsGnd3+CqB2WQbokf1vev6h7ZS7Pg@mail.gmail.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam_score: -1.0
+X-Spam_bar: -
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FAKE_REPLY_C,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 29, 2022 at 08:50:19AM -0800, Alexei Starovoitov wrote:
-> On Wed, Dec 28, 2022 at 10:40 PM David Vernet <void@manifault.com> wrote:
-> >
-> > On Sat, Dec 17, 2022 at 12:24:54AM -0800, Dave Marchevsky wrote:
-> > > Currently, kfuncs marked KF_RELEASE indicate that they release some
-> > > previously-acquired arg. The verifier assumes that such a function will
-> > > only have one arg reg w/ ref_obj_id set, and that that arg is the one to
-> > > be released. Multiple kfunc arg regs have ref_obj_id set is considered
-> > > an invalid state.
-> > >
-> > > For helpers, RELEASE is used to tag a particular arg in the function
-> > > proto, not the function itself. The arg with OBJ_RELEASE type tag is the
-> > > arg that the helper will release. There can only be one such tagged arg.
-> > > When verifying arg regs, multiple helper arg regs w/ ref_obj_id set is
-> > > also considered an invalid state.
-> > >
-> > > Later patches in this series will result in some linked_list helpers
-> > > marked KF_RELEASE having a valid reason to take two ref_obj_id args.
-> > > Specifically, bpf_list_push_{front,back} can push a node to a list head
-> > > which is itself part of a list node. In such a scenario both arguments
-> > > to these functions would have ref_obj_id > 0, thus would fail
-> > > verification under current logic.
-> > >
-> > > This patch changes kfunc ref_obj_id searching logic to find the last arg
-> > > reg w/ ref_obj_id and consider that the reg-to-release. This should be
-> > > backwards-compatible with all current kfuncs as they only expect one
-> > > such arg reg.
-> >
-> > Can't say I'm a huge fan of this proposal :-( While I think it's really
-> > unfortunate that kfunc flags are not defined per-arg for this exact type
-> > of reason, adding more flag-specific semantics like this is IMO a step
-> > in the wrong direction.  It's similar to the existing __sz and __k
-> > argument-naming semantics that inform the verifier that the arguments
-> > have special meaning. All of these little additions of special-case
-> > handling for kfunc flags end up requiring people writing kfuncs (and
-> > sometimes calling them) to read through the verifier to understand
-> > what's going on (though I will say that it's nice that __sz and __k are
-> > properly documented in [0]).
-> 
-> Before getting to pros/cons of KF_* vs name suffix vs helper style
-> per-arg description...
-> It's important to highlight that here we're talking about
-> link list and rb tree kfuncs that are not like other kfuncs.
-> Majority of kfuncs can be added by subsystems like hid-bpf
-> without touching the verifier.
 
-I hear you and I agree. It wasn't my intention to drag us into a larger
-discussion about kfuncs vs. helpers, but rather just to point out that I
-think we have to try hard to avoid adding special-case logic that
-requires looking into the verifier to understand the semantics. I think
-we're on the same page about this, based on this and your other
-response.
+>> BTW, when I tried to use bpf-gcc in godbolt.org, I did not add any
+>> additional compile options, and it reported an error:
+>>
+>> /opt/compiler-explorer/bpf/gcc-trunk-20221225/bpf-unknown-none/lib/gcc/bpf-unknown-none/13.0.0/../../../../bpf-unknown-none/bin/ld:
+>> -pie not supported
+>> collect2: error: ld returned 1 exit status
+>> Compiler returned: 1
+>
+> Hmm, I just tried and it didn't add -pie to the command line options.  I
+> think that somehow godbolt.org remembers and re-uses the settings used
+> by the last user.  At least when it comes to select the cross compiler.
+> Maybe it is the same with the compilation options...
 
-> Here we're paving the way for graph (aka new gen data structs)
-> and so far not only kfuncs, but their arg types have to have
-> special handling inside the verifier.
-> There is not much yet to generalize and expose as generic KF_
-> flag or as a name suffix.
-> Therefore I think it's more appropriate to implement them
-> with minimal verifier changes and minimal complexity.
+Hi,
 
-Agreed
+Happened to find this discussion and am taking the liberty to reply,
+hope that's ok :)
 
-> There is no 3rd graph algorithm on the horizon after link list
-> and rbtree. Instead there is a big todo list for
-> 'multi owner graph node' and 'bpf_refcount_t'.
+Compiler-Explorer does not reuse anything from another user. It may
+reuse something you've used in a previous session stored in your local
+browser, but then this will show in the "Compiler Options...." text
+field.
 
-In this case my point in [0] of the only option for generalizing being
-to have something like KF_GRAPH_INSERT / KF_GRAPH_REMOVE is just not the
-way forward (which I also said was my opinion when I pointed it out as
-an option). Let's just special-case these kfuncs. There's already a
-precedence for doing that in the verifier anyways. Minimal complexity,
-minimal API changes. It's a win-win.
+Here's my findings about this pie. By default, we only emit
+assembly (so you won't see any ld error). But if you ask for linking to
+a binary (Output >> Compile to binary), you will get this error:
 
-[0]: https://lore.kernel.org/all/Y63GLqZil9l1NzY4@maniforge.lan/
+https://godbolt.org/z/za3sbr5qn
 
-> Those will require bigger changes in the verifier,
-> so I'd like to avoid premature generalization :) as analogous
-> to premature optimization :)
+Looks like our toolchain defaults to PIE. I'll look into that
+(https://github.com/compiler-explorer/compiler-explorer/issues/4517).
 
-And of course given my points above and in other threads: agreed. I
-think we have an ideal middle-ground for minimizing complexity in the
-short term, and some nice follow-on todo-list items to work on in the
-medium-long term which will continue to improve things without
-(negatively) affecting users in any way. All SGTM
+You can use -fno-pie or uncheck "compile to binary" in the meantime.
+
+Thanks,
+Marc
+
+PS: If you think you have a bug in compiler-explorer, click the "share"
+menu (top right) and provide us with a link (short or full, both work,
+but short will be easier to share in a mail).
