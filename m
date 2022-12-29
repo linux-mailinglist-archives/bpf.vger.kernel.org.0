@@ -2,216 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB55658950
-	for <lists+bpf@lfdr.de>; Thu, 29 Dec 2022 05:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDB46589A9
+	for <lists+bpf@lfdr.de>; Thu, 29 Dec 2022 07:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbiL2ECn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Dec 2022 23:02:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
+        id S230478AbiL2G0k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Dec 2022 01:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbiL2ECn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Dec 2022 23:02:43 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C503CEE39
-        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 20:02:41 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id jl4so11563234plb.8
-        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 20:02:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0rw7NDkC0CVN/zsE0bL+HkTWoIEGxXdNZMk50rrSLyI=;
-        b=hbrPk2jDxpeIfNxrI7B37VFyM3y+QiI1CbJxtZYzBn+oRtz6vzt4O6L8ZM2yCnwJi0
-         cpphq9TWjVtCLrXYVPEbqSNA9pwy4q66/+t8AY1WE9w/CoIMpse+dsXhReg8VIPgRSka
-         +Kevf9Ug1agAJsj7f2QeLRKOX7zD7Z5E5KOgB937E6Kc2bqyOSIBgUWGn5JTvmHS1l/e
-         JzzXNYiaL8fn3TotK4Q9wgFU0AOCKBgbFyat6c3nx1FwCorY3VOii745+ODSSTuJTH7O
-         /9FeVNAU43O0q6e6VMkbooZtYE8H+gkESnNv7w+HCAmmDtvTDu3Fmx8xRl9NxNIqA5M0
-         Np2w==
+        with ESMTP id S229822AbiL2G0j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Dec 2022 01:26:39 -0500
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7D99FD0
+        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 22:26:37 -0800 (PST)
+Received: by mail-il1-f198.google.com with SMTP id g3-20020a056e021a2300b00305e3da9585so11394659ile.16
+        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 22:26:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0rw7NDkC0CVN/zsE0bL+HkTWoIEGxXdNZMk50rrSLyI=;
-        b=p7Mf0tS3cO7GKAmkzgcqPWWYCYJFIW5hObGSKuK//8nb3jyPdVptySmj1o/jBoaAAz
-         0kP7EBOMeZ1H+1y8jetREAmAgSS6wAaib0tuqNK9s3a9luS32ufRc0f+IR021oLGR477
-         5uWOgs2X7vGEHvmdeEpopvM017STE0g9cm73F7OqQtQ4U5apEcI6HJ28iOC1FJwlo6jC
-         p/EmHQNJdZ6Laqb+IY0F0D10s4VBFNZdvdOhrzo6lQZZfmmQKFAdFfjWdOtI3lzbQ6oX
-         VyOQ8jA4ZcFHG4xf4eyKJ57UJLotCFJA4J4NRtf20HOIleUWS+8HRahfaaP4/R/jv59R
-         LFbg==
-X-Gm-Message-State: AFqh2ko8eJDc6mstDs3MijX53R1HMJU7kOo4ikwRGh0FFFiSLBEvEbjt
-        TlaQtEUUhKOMblxDI6JdE3CphV1UFAo=
-X-Google-Smtp-Source: AMrXdXsd00CK3HcoPn/IgpGjoE3x7hg3M87NNfJTNUmFQViQIWUc3Oh6d3rgI1SMp21CW6YPdE1WJA==
-X-Received: by 2002:a17:902:b782:b0:192:6fc5:60 with SMTP id e2-20020a170902b78200b001926fc50060mr17006844pls.25.1672286561091;
-        Wed, 28 Dec 2022 20:02:41 -0800 (PST)
-Received: from MacBook-Pro-6.local ([2620:10d:c090:400::5:e38b])
-        by smtp.gmail.com with ESMTPSA id ix7-20020a170902f80700b00192a04bc620sm425289plb.295.2022.12.28.20.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Dec 2022 20:02:40 -0800 (PST)
-Date:   Wed, 28 Dec 2022 20:02:38 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 bpf-next 09/13] bpf: Special verifier handling for
- bpf_rbtree_{remove, first}
-Message-ID: <20221229040238.b2sbmsnz7rapdthd@MacBook-Pro-6.local>
-References: <20221217082506.1570898-1-davemarchevsky@fb.com>
- <20221217082506.1570898-10-davemarchevsky@fb.com>
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BhbflDOV2k1KLyHwZs0cA13pq6md2aueXIcWzsW7/xQ=;
+        b=1UFScYmvwmdg7E0/VaXKdFWMUO+1jQIOwtyopHZhRxmrGFsHBYaBaFMxQqoZuKjCQ2
+         AdbFyT8bpl3PjC8Lpds2XABLugXzGLyg8D5uo7sG3oN8wnwcJfA8j1bEwAahmIP5xOBL
+         GpN7Mkh1Sks2vJUdQ6Nmb7j3/RFnW9G7LrA75XdVO1fQPGhOjPYKJ5Ank/duQCf8m/4E
+         kNwYPTNpuPHYczyvuKgJpefoGWxpDuXURlTKChp+/aez1u9nUclokHW9Eb5XIFyaP18t
+         y+gi9HbF3LZKmr9UgDSidmqr7PG2uKbo+28FzcLHeSBcNW51yD40zgAZNdGZZXukMjW2
+         pEGg==
+X-Gm-Message-State: AFqh2krIgc//hJyoPWcasDV1huko0LAdAeRxFrCAKCR9GleJiQ+WyDSu
+        hsYjbyjD5rd/VWfISw9r2Zbw+KxeT4Va0+gpSlC8mAiOkoc8
+X-Google-Smtp-Source: AMrXdXtEXNg77rqsguWCrJD35UlA6mDxsEdnkiJQx9de80ndRMBTEEGwG/IbtoSUP4YA+jNL5E5JiryM/qq7CbLOIJW1ese8qpQL
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221217082506.1570898-10-davemarchevsky@fb.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:803:b0:304:c661:f53 with SMTP id
+ u3-20020a056e02080300b00304c6610f53mr2292911ilm.155.1672295196843; Wed, 28
+ Dec 2022 22:26:36 -0800 (PST)
+Date:   Wed, 28 Dec 2022 22:26:36 -0800
+In-Reply-To: <00000000000033a0120588fac894@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002ae67f05f0f191aa@google.com>
+Subject: Re: [syzbot] WARNING: locking bug in inet_autobind
+From:   syzbot <syzbot+94cc2a66fc228b23f360@syzkaller.appspotmail.com>
+To:     Alexander.Deucher@amd.com, Christian.Koenig@amd.com,
+        David1.Zhou@amd.com, Evan.Quan@amd.com, Felix.Kuehling@amd.com,
+        Harry.Wentland@amd.com, Oak.Zeng@amd.com, Ray.Huang@amd.com,
+        Yong.Zhao@amd.com, airlied@linux.ie, alexander.deucher@amd.com,
+        amd-gfx@lists.freedesktop.org, ast@kernel.org,
+        boqun.feng@gmail.com, bpf@vger.kernel.org,
+        christian.koenig@amd.com, daniel@ffwll.ch, daniel@iogearbox.net,
+        davem@davemloft.net, david1.zhou@amd.com,
+        dri-devel@lists.freedesktop.org, dsahern@kernel.org,
+        edumazet@google.com, evan.quan@amd.com, felix.kuehling@amd.com,
+        gautammenghani201@gmail.com, harry.wentland@amd.com,
+        jakub@cloudflare.com, kafai@fb.com, kuba@kernel.org,
+        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
+        longman@redhat.com, mingo@redhat.com, netdev@vger.kernel.org,
+        ozeng@amd.com, pabeni@redhat.com,
+        penguin-kernel@I-love.SAKURA.ne.jp,
+        penguin-kernel@i-love.sakura.ne.jp, peterz@infradead.org,
+        ray.huang@amd.com, rex.zhu@amd.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, will@kernel.org, yhs@fb.com,
+        yong.zhao@amd.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 17, 2022 at 12:25:02AM -0800, Dave Marchevsky wrote:
-> Newly-added bpf_rbtree_{remove,first} kfuncs have some special properties
-> that require handling in the verifier:
-> 
->   * both bpf_rbtree_remove and bpf_rbtree_first return the type containing
->     the bpf_rb_node field, with the offset set to that field's offset,
->     instead of a struct bpf_rb_node *
->     * mark_reg_graph_node helper added in previous patch generalizes
->       this logic, use it
-> 
->   * bpf_rbtree_remove's node input is a node that's been inserted
->     in the tree - a non-owning reference.
-> 
->   * bpf_rbtree_remove must invalidate non-owning references in order to
->     avoid aliasing issue. Add KF_INVALIDATE_NON_OWN flag, which
->     indicates that the marked kfunc is a non-owning ref invalidation
->     point, and associated verifier logic using previously-added
->     invalidate_non_owning_refs helper.
-> 
->   * Unlike other functions, which convert one of their input arg regs to
->     non-owning reference, bpf_rbtree_first takes no arguments and just
->     returns a non-owning reference (possibly null)
->     * For now verifier logic for this is special-cased instead of
->       adding new kfunc flag.
-> 
-> This patch, along with the previous one, complete special verifier
-> handling for all rbtree API functions added in this series.
-> 
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  include/linux/btf.h   |  1 +
->  kernel/bpf/helpers.c  |  2 +-
->  kernel/bpf/verifier.c | 34 ++++++++++++++++++++++++++++------
->  3 files changed, 30 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index 8aee3f7f4248..3663911bb7c0 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -72,6 +72,7 @@
->  #define KF_DESTRUCTIVE		(1 << 6) /* kfunc performs destructive actions */
->  #define KF_RCU			(1 << 7) /* kfunc only takes rcu pointer arguments */
->  #define KF_RELEASE_NON_OWN	(1 << 8) /* kfunc converts its referenced arg into non-owning ref */
-> +#define KF_INVALIDATE_NON_OWN	(1 << 9) /* kfunc invalidates non-owning refs after return */
->  
->  /*
->   * Return the name of the passed struct, if exists, or halt the build if for
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index de4523c777b7..0e6d010e6423 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2121,7 +2121,7 @@ BTF_ID_FLAGS(func, bpf_task_acquire, KF_ACQUIRE | KF_TRUSTED_ARGS)
->  BTF_ID_FLAGS(func, bpf_task_acquire_not_zero, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_task_kptr_get, KF_ACQUIRE | KF_KPTR_GET | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_task_release, KF_RELEASE)
-> -BTF_ID_FLAGS(func, bpf_rbtree_remove, KF_ACQUIRE)
-> +BTF_ID_FLAGS(func, bpf_rbtree_remove, KF_ACQUIRE | KF_INVALIDATE_NON_OWN)
+syzbot has found a reproducer for the following issue on:
 
-I don't like this 'generalization' either.
+HEAD commit:    1b929c02afd3 Linux 6.2-rc1
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=145c6a68480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2651619a26b4d687
+dashboard link: https://syzkaller.appspot.com/bug?extid=94cc2a66fc228b23f360
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e13e32480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13790f08480000
 
->  BTF_ID_FLAGS(func, bpf_rbtree_add, KF_RELEASE | KF_RELEASE_NON_OWN)
->  BTF_ID_FLAGS(func, bpf_rbtree_first, KF_RET_NULL)
->  
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 75979f78399d..b4bf3701de7f 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -8393,6 +8393,11 @@ static bool is_kfunc_release_non_own(struct bpf_kfunc_call_arg_meta *meta)
->  	return meta->kfunc_flags & KF_RELEASE_NON_OWN;
->  }
->  
-> +static bool is_kfunc_invalidate_non_own(struct bpf_kfunc_call_arg_meta *meta)
-> +{
-> +	return meta->kfunc_flags & KF_INVALIDATE_NON_OWN;
-> +}
-> +
->  static bool is_kfunc_trusted_args(struct bpf_kfunc_call_arg_meta *meta)
->  {
->  	return meta->kfunc_flags & KF_TRUSTED_ARGS;
-> @@ -9425,10 +9430,20 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
->  				verbose(env, "arg#%d expected pointer to allocated object\n", i);
->  				return -EINVAL;
->  			}
-> -			if (!reg->ref_obj_id) {
-> +			if (meta->func_id == special_kfunc_list[KF_bpf_rbtree_remove]) {
-> +				if (reg->ref_obj_id) {
-> +					verbose(env, "rbtree_remove node input must be non-owning ref\n");
-> +					return -EINVAL;
-> +				}
-> +				if (in_rbtree_lock_required_cb(env)) {
-> +					verbose(env, "rbtree_remove not allowed in rbtree cb\n");
-> +					return -EINVAL;
-> +				}
-> +			} else if (!reg->ref_obj_id) {
->  				verbose(env, "allocated object must be referenced\n");
->  				return -EINVAL;
->  			}
-> +
->  			ret = process_kf_arg_ptr_to_rbtree_node(env, reg, regno, meta);
->  			if (ret < 0)
->  				return ret;
-> @@ -9665,11 +9680,12 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->  				   meta.func_id == special_kfunc_list[KF_bpf_list_pop_back]) {
->  				struct btf_field *field = meta.arg_list_head.field;
->  
-> -				mark_reg_known_zero(env, regs, BPF_REG_0);
-> -				regs[BPF_REG_0].type = PTR_TO_BTF_ID | MEM_ALLOC;
-> -				regs[BPF_REG_0].btf = field->graph_root.btf;
-> -				regs[BPF_REG_0].btf_id = field->graph_root.value_btf_id;
-> -				regs[BPF_REG_0].off = field->graph_root.node_offset;
-> +				mark_reg_graph_node(regs, BPF_REG_0, &field->graph_root);
-> +			} else if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_remove] ||
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d1849f1ca322/disk-1b929c02.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/924cb8aa4ada/vmlinux-1b929c02.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8c7330dae0a0/bzImage-1b929c02.xz
 
-Just call invalidate_non_owning_refs() here since it needs to be a special case anyway.
+The issue was bisected to:
 
-> +				   meta.func_id == special_kfunc_list[KF_bpf_rbtree_first]) {
-> +				struct btf_field *field = meta.arg_rbtree_root.field;
-> +
-> +				mark_reg_graph_node(regs, BPF_REG_0, &field->graph_root);
->  			} else if (meta.func_id == special_kfunc_list[KF_bpf_cast_to_kern_ctx]) {
->  				mark_reg_known_zero(env, regs, BPF_REG_0);
->  				regs[BPF_REG_0].type = PTR_TO_BTF_ID | PTR_TRUSTED;
-> @@ -9735,7 +9751,13 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->  			if (is_kfunc_ret_null(&meta))
->  				regs[BPF_REG_0].id = id;
->  			regs[BPF_REG_0].ref_obj_id = id;
-> +		} else if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_first]) {
-> +			ref_set_non_owning_lock(env, &regs[BPF_REG_0]);
->  		}
-> +
-> +		if (is_kfunc_invalidate_non_own(&meta))
-> +			invalidate_non_owning_refs(env, &env->cur_state->active_lock);
-> +
->  		if (reg_may_point_to_spin_lock(&regs[BPF_REG_0]) && !regs[BPF_REG_0].id)
->  			regs[BPF_REG_0].id = ++env->id_gen;
->  	} /* else { add_kfunc_call() ensures it is btf_type_is_void(t) } */
-> -- 
-> 2.30.2
-> 
+commit c0d9271ecbd891cdeb0fad1edcdd99ee717a655f
+Author: Yong Zhao <Yong.Zhao@amd.com>
+Date:   Fri Feb 1 23:36:21 2019 +0000
+
+    drm/amdgpu: Delete user queue doorbell variables
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1433ece4a00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1633ece4a00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1233ece4a00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+94cc2a66fc228b23f360@syzkaller.appspotmail.com
+Fixes: c0d9271ecbd8 ("drm/amdgpu: Delete user queue doorbell variables")
+
+------------[ cut here ]------------
+Looking for class "l2tp_sock" with key l2tp_socket_class, but found a different class "slock-AF_INET6" with the same key
+WARNING: CPU: 0 PID: 7280 at kernel/locking/lockdep.c:937 look_up_lock_class+0x97/0x110 kernel/locking/lockdep.c:937
+Modules linked in:
+CPU: 0 PID: 7280 Comm: syz-executor835 Not tainted 6.2.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:look_up_lock_class+0x97/0x110 kernel/locking/lockdep.c:937
+Code: 17 48 81 fa e0 e5 f6 8f 74 59 80 3d 5d bc 57 04 00 75 50 48 c7 c7 00 4d 4c 8a 48 89 04 24 c6 05 49 bc 57 04 01 e8 a9 42 b9 ff <0f> 0b 48 8b 04 24 eb 31 9c 5a 80 e6 02 74 95 e8 45 38 02 fa 85 c0
+RSP: 0018:ffffc9000b5378b8 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffffffff91c06a00 RCX: 0000000000000000
+RDX: ffff8880292d0000 RSI: ffffffff8166721c RDI: fffff520016a6f09
+RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000201 R11: 20676e696b6f6f4c R12: 0000000000000000
+R13: ffff88802a5820b0 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f1fd7a97700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000100 CR3: 0000000078ab4000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ register_lock_class+0xbe/0x1120 kernel/locking/lockdep.c:1289
+ __lock_acquire+0x109/0x56d0 kernel/locking/lockdep.c:4934
+ lock_acquire kernel/locking/lockdep.c:5668 [inline]
+ lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:355 [inline]
+ lock_sock_nested+0x5f/0xf0 net/core/sock.c:3473
+ lock_sock include/net/sock.h:1725 [inline]
+ inet_autobind+0x1a/0x190 net/ipv4/af_inet.c:177
+ inet_send_prepare net/ipv4/af_inet.c:813 [inline]
+ inet_send_prepare+0x325/0x4e0 net/ipv4/af_inet.c:807
+ inet6_sendmsg+0x43/0xe0 net/ipv6/af_inet6.c:655
+ sock_sendmsg_nosec net/socket.c:714 [inline]
+ sock_sendmsg+0xd3/0x120 net/socket.c:734
+ __sys_sendto+0x23a/0x340 net/socket.c:2117
+ __do_sys_sendto net/socket.c:2129 [inline]
+ __se_sys_sendto net/socket.c:2125 [inline]
+ __x64_sys_sendto+0xe1/0x1b0 net/socket.c:2125
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f1fd78538b9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1fd7a971f8 EFLAGS: 00000212 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007f1fd78f0038 RCX: 00007f1fd78538b9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 00007f1fd78f0030 R08: 0000000020000100 R09: 000000000000001c
+R10: 0000000004008000 R11: 0000000000000212 R12: 00007f1fd78f003c
+R13: 00007f1fd79ffc8f R14: 00007f1fd7a97300 R15: 0000000000022000
+ </TASK>
+
