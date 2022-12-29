@@ -2,366 +2,486 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE466589B0
-	for <lists+bpf@lfdr.de>; Thu, 29 Dec 2022 07:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B796589C0
+	for <lists+bpf@lfdr.de>; Thu, 29 Dec 2022 07:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbiL2GaG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Dec 2022 01:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        id S230467AbiL2GkK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Dec 2022 01:40:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbiL2GaE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Dec 2022 01:30:04 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0554BCBC
-        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 22:30:02 -0800 (PST)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 2BT64xIA024436;
-        Wed, 28 Dec 2022 22:29:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=1GE4c6akrTO2oTxRA8S36dHyT39y+dG5s45Lgi/8W3s=;
- b=k+b3PJHUdcWuoywdW5xe7Bi9dr+gXwMWRvgNHXy8cuu8hbvJzW8fbuCtHzrszJfjAgBK
- 9+TtdWEV56VAREpOS5tGntxpSaZsGs6w3aE3t7r93yTZCkEx780ui4xUL7kshiWElhsu
- ai2KlMSDYn+a18Z7hUy0ZGMFx6LzbRn4tN+pLXOh/J5pjVC1Y2ff2SzhIS/FFZmlOMKo
- p4UohAdTAvtx0Q5V2FU+fv5b6okS7HITnxnZLdMlWKLhe8lJ6RsL+AJvN9wWUxpVaAx+
- BaTeZcrK3i0bxkLGY+vl+7a0jTZdJorbgudAbZJooGrX7z+su3wBfD+WmDqfGl1SolZB VQ== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3mr097jnxc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Dec 2022 22:29:28 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VWAV94dJEyA6/1Dy6mw8bN65I4bocWYPbPZ4qzi7Mnpp/bHBGHCmxDzUbt3FOEoysDuaIMExU7IfFYfE3t4mPU/ZuWCjMKbcyicTOldYEUj1cFI/IvPUQgNEwEHltggeqfgp4Syqv95psGyfcfaztxlB6yFZBcZwhRmUYwCu7TXqbrNO/Ui+5rNCwUQAJXDl8Zn1jW0jCpUBx3fZovL1U24NciaURfE8JTFRtuDqjmjsBIRFbCL6JALCkrAPMAUfShooXySe0m+x6PVV8VKp8WAcu8hUNw9OBdSc4Xh1liXfej52ugguCJkUCNrdHTlFBgDj7JJddmrY9KnmCyPDnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1GE4c6akrTO2oTxRA8S36dHyT39y+dG5s45Lgi/8W3s=;
- b=aKGeYQ8sdxBvMO8kUX/aRRAZDGI2JbrewODNXFmni0JqdObaFSQiMy7hLaPwaBu+gzjC4Gq+xZVdmXh4qCbK9fsEG7FG3duduPgLJ5tMmnUNkcx+yn+sZIFV+HM9Xq9b/A0ONJll2Q1Mjp7AsC+kjtwP29LGrGQ94psjrtrrJ3FVfpiOqYdv/vXxDn3PlJwVb2l4826W+7FAmsMKSLnk+39pLy74WeMnwmqiQD+qqnunJBP3oZ9wQUoVo9rgd151tVMUh5dad6tex1xeiEz+tvpJaT6qn6FVDHnRdL/3giZiBK+nyITx/Gdso7mM4MUTSr6ZtZfE04JBCPqR3f9G8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM6PR15MB3942.namprd15.prod.outlook.com (2603:10b6:5:2b9::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.16; Thu, 29 Dec
- 2022 06:29:25 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5944.016; Thu, 29 Dec 2022
- 06:29:25 +0000
-Message-ID: <ac540d41-4ac3-4d70-39e8-722e3fb360cd@meta.com>
-Date:   Wed, 28 Dec 2022 22:29:22 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [bpf-next v3 2/2] selftests/bpf: add test case for htab map
-Content-Language: en-US
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     xiangxia.m.yue@gmail.com, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229644AbiL2GkI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Dec 2022 01:40:08 -0500
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46A4BE04
+        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 22:40:06 -0800 (PST)
+Received: by mail-qt1-f181.google.com with SMTP id bp44so11761825qtb.0
+        for <bpf@vger.kernel.org>; Wed, 28 Dec 2022 22:40:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oFtqKMhMcQb76PWxOqyL1oFpXf5xYx46WNplY5qdfuE=;
+        b=Cr+WSQ36ddIswbA/kNskrPG/zBg8fnNcG2138+IhbxDQzulqQgDk8DoG3JKbvS+xXr
+         +OMUi9ikfaJAi/WQFWTlm3VSe1IrXE4wj3t9SL+Rd6i9MzkcaIBXurR2C4dztF1m+0+s
+         ijgZPXaSdOZsdroGRa812sXVM+7196leOwt4egEh/lj/wYBQIQHV6/UXBp4xDDuUu0SY
+         YwB0mHN98xF9QBcKDUR9IA/fRmGuknMWfu2Mcn34z+8Y8lPo3N3zEer3w0YJT2ah8Vli
+         Ha5SFQaILfmSv332/WJkiQWmNnLbQbKmYPW+L8AlPPSGBZpwYOh46zCUZVrYtUiGVh7g
+         u7EA==
+X-Gm-Message-State: AFqh2koP9nfFmVbwxPUaE3rWYg0I9YPjr9HMwV0Yvgvd5sFz9qg+3Sk1
+        fE87oBRCH/b3tgFvES7wXRw=
+X-Google-Smtp-Source: AMrXdXuqb24gi5vZDUZ+AW1XYslHq2G9L0R487gGomIf7Y+f+KfAFmQJ6uPx52AvYhAhWsp0UGIrUQ==
+X-Received: by 2002:ac8:5406:0:b0:3a6:930b:b3b1 with SMTP id b6-20020ac85406000000b003a6930bb3b1mr39882613qtq.20.1672296005601;
+        Wed, 28 Dec 2022 22:40:05 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:8b37])
+        by smtp.gmail.com with ESMTPSA id u7-20020a05620a430700b006cbc6e1478csm12674532qko.57.2022.12.28.22.40.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Dec 2022 22:40:05 -0800 (PST)
+Date:   Thu, 29 Dec 2022 00:40:10 -0600
+From:   David Vernet <void@manifault.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-References: <20221219041551.69344-1-xiangxia.m.yue@gmail.com>
- <20221219041551.69344-2-xiangxia.m.yue@gmail.com>
- <c41daf29-43b4-8924-b5af-49f287ba8cdc@meta.com>
- <CAADnVQLE+M0xEK+L8Tu7fqsjFxNFdEyFvR4q3U1f1N1tomZ2bQ@mail.gmail.com>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <CAADnVQLE+M0xEK+L8Tu7fqsjFxNFdEyFvR4q3U1f1N1tomZ2bQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0385.namprd03.prod.outlook.com
- (2603:10b6:a03:3a1::30) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 01/13] bpf: Support multiple arg regs w/
+ ref_obj_id for kfuncs
+Message-ID: <Y602StijD+4Nymf6@maniforge.lan>
+References: <20221217082506.1570898-1-davemarchevsky@fb.com>
+ <20221217082506.1570898-2-davemarchevsky@fb.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM6PR15MB3942:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3a57e63c-b48c-488b-6077-08dae96607aa
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: B9nBjvmaEgTE0CrFuIrOXn023eeJ/i+Ptnj9Q5bP8MVl5Ty40bz4qFOFATZWEUs7Q4Ld1tP7L7h1pEz4Dtoq1u6pHqRuMhXM8Ts06R7HXRpByVYudvPIgDUUqIchl3PTtH5kwpDZYvnh724/1D4xqoi1x610Q8t8ZqPd8dwExZPFTLR74ha+6y9iGFkxWaiIo068ngzocX49IIjjwlvA1OmtjhFNQHUNerGpz/jBWqJxBbu6yCHb/Cpj2rz/oSaQkozY90XSrqOYECWtKFFezTyFvrLDhXGM6/EC2DzZ5BpIO0GSrEbwYmnb5t2XaIfmWtIZJdbWcX/FfinTyy1zAMTaWF2vTEOYiPfIkAeEpVrEsjE7M1UMs5xRU3h2QveFY1ByUurkZ9TQTaLjWMvIomeE1o33ly5pOCpACnRTu7ItS7oaLwneAtGj5PGbhizuXGpc9bqQTfbfTWJONu9Y7suOVGPXMKzePa8eCymYjTA95DpBOXFmJTcDi9eqUNlJNlDwZOaqtGClz7+54cKmFsSG4IKc4qARPWOOXUPSknKUeOHbO6vkFxZVNdOOhoZlspZOrFss2nd1ZRs/1SPAtXTv1CqDhCjfeCZwp0Vy+uIcU7VutxJqSKxtxKkoU3/SV2Uv2cXr9g3gaJiumCpnkxs5u/D3EsRc2C2SKAlCKmSQqH2g7QdBwB9wvVj37jrHeF7zaiwlvNjY97MPT9s0RPGYWWypr14z5NRfXcEwQEA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(136003)(366004)(396003)(346002)(39860400002)(451199015)(53546011)(6506007)(186003)(6512007)(478600001)(6486002)(316002)(86362001)(2906002)(31696002)(6666004)(6916009)(54906003)(36756003)(31686004)(2616005)(7416002)(41300700001)(38100700002)(5660300002)(66946007)(66556008)(4326008)(83380400001)(8676002)(66476007)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eVRiWllrTHNGb1p3SDB1WmdiS3ZiYkN0djRrZ0V5Mk9uSHp3Ulo2NFFNWGUr?=
- =?utf-8?B?MXZCY2Z3TERORlk1a2xKOVNDb25nUWZwWHU1bUcrRm4vSWhKZW4xaWV2WjNv?=
- =?utf-8?B?VFNackFJVzFvOTgrMW1rczV3SGxnbE82TGRYdzNOVmZDSm5RU0JMZndyOUpr?=
- =?utf-8?B?VTFtaWxHbnVTLzgrVFY5bjlRUkdtVU9OZnpycVZkemNNbkY5MjYvWkp5RFV4?=
- =?utf-8?B?aTAzUjFYSE5wcTN0NHBaV3RyaVlXTVVGMGJqSWw4alpWY3JZQ3FydVB3QjRW?=
- =?utf-8?B?Z0djTFhZclRmaVhPbWxPcnlscmRYdCtpVWJDWEVwQURNTHZwZkhIbk1Lb25Q?=
- =?utf-8?B?dFRuSE1KOXRoQjZ1MkJlcU96NjFVOXNIcmhFMFRTYk5hUGc4QVRKMzlkazY5?=
- =?utf-8?B?bHlnWkc3dzlLRVFQNkRuVkxvRUV2NVQ3WU15RVpPaVEyZEZPRU4zQmNocVpX?=
- =?utf-8?B?dEdkblZUK1dBNEVEcVRUWS9aZU5YNXdTUHdwdVhSbFB3SnBJYk9ncTI1b3pl?=
- =?utf-8?B?Ym9pVGZVRnBEcXQ2OUYwNUZwT1VNMkdGL29mcVEyaTJ3d1NHa0Z2bG51eUJU?=
- =?utf-8?B?aGVzSGRZV1U2VnJ3Zmc4MWxqcGw4cTlzbmJaZHFmdFJoNGFrZXc1UkRSSFdz?=
- =?utf-8?B?d2tkYTBZbVZyMzZtK0c1WkZiKzdrZVRVSHFEb3o1RHVsZzU1OEYrRVM2MmE1?=
- =?utf-8?B?QnBzaVo3dUpRWmpDQkU4Y2I2NTkxVkcxRGxMVzFoZkk1VzJQTDlIYzJHc2Rn?=
- =?utf-8?B?V01ES09IbThmQzRaUDhnTW5tRFlvY3o2SG5hdGFUSWwyQ3FqU2ZxK1I0T215?=
- =?utf-8?B?Q0svVitxVlgxL3hiK2FhbVdwcU8rWGs5NUgwQ20zWFdGelE5RzJUN0t3TlpH?=
- =?utf-8?B?SkQvcmpvbXNIa1ljRnh4K3U1aXhyVHA2NVVCb1lDSWx5c2IxZ1hsTFJTOGRx?=
- =?utf-8?B?YnM5NndlNjF2dUlnb0o5RlkwS21iL1pNZGF0L0hyTWQ2TVVLcU9aQS9RdlRI?=
- =?utf-8?B?RDhBclBNQmN1SGtDQ0NDTVFWbUdSZkdVMDRVaTFhZFc5Z3EwV0ZNRU01QXBx?=
- =?utf-8?B?M2FaUElwRzZOZGI0OTdiZXdtbkN5WEFXQmpLQ1BSRE5BV0VKMlpCWjJuaTQ0?=
- =?utf-8?B?cEI5eWtLKzY5MmlEb2k0cWdoVy9pWXl1TVJlZmNQVTZXS1RUeFBsY3J4d0o5?=
- =?utf-8?B?MTNHaWlRV3hOUWxiTTBCYVhqVkwrcURtTHMzZGxCb3ZMNDBkN1hLQXhMU3ZJ?=
- =?utf-8?B?bW5uYVBXTHBNL0FZaEQvdDZ4ak1VbFRTdzkzVGFGVzViejJMWXc2UWh2M29Y?=
- =?utf-8?B?VUF1eTNmNWQwNENRRGEzS1Fia2pZNjdGNzVmbDQyalFDWUZqQ0N5SGFZeEMw?=
- =?utf-8?B?UU01cmFaeUVxUHV1TjByd0lyRGdtYUx5NXpGSmRTRXRJV0tvcGw5MU5NU2Jx?=
- =?utf-8?B?M0lwV2p5S2FCNG5sNGh3TkRET2xLNjhic3hDWUROV3BJbFpuSTlHVkF2N0RN?=
- =?utf-8?B?M3RwbG5NTCtueVgvanI4WENjMnpxWDBUa3QrSDg0WXZyTWRZRU9EZmEwSXJm?=
- =?utf-8?B?aFFkSW5CZnFGR0JZZkgwMWg5YXFRNzd4a1F5MmtGV3hTWTM4WTZUbU84ZWFX?=
- =?utf-8?B?TU4wWk1YYlExdUc1dUUySnE2Nm8xblFva2hrVE96UVo4eDhEb0Q0OTFiV2c4?=
- =?utf-8?B?VVdrNS9RMWNRYTR0c1Z1WG0wT1BzRlMyaXJvSlVueFBxd1l1azFxTzdaeXV5?=
- =?utf-8?B?VlhCMDdOYlFBUjIwNVBSUmZyN0gxd3pFaGFqdHZrVENyZ2p1R2J3amZPdzBN?=
- =?utf-8?B?N2pTSzhWSjFwOVk3U0wwWTEybjlmSStzT2hIRmRvWkt0aG1kZC9ZN0x1ZUpM?=
- =?utf-8?B?M3MzZCt1MGZmd1F0SzRKS3hEaC9uMHY3eU9zMjR2c0VIV2hmand6YXZ0SWFk?=
- =?utf-8?B?WkdkdzFSU2RtcjRpNjlmalFzU3lISTJjdTNJYXQrWGJRVHpFT0V3YUVkL0JZ?=
- =?utf-8?B?V1lKTUFUTDBYWkp5dzlKM1pqYWEvYmNTVVozcHlWdHVUN2pVKzBZRDcwWDlP?=
- =?utf-8?B?NXZWaW5ZMFJQelhyamREb2tYZ1BpZk1DNXlYUkg1a1pnbjA2UXFhUDBtc3FD?=
- =?utf-8?B?WkdkSmpDY25TcnhYM3lpSUJ2SUE4S0tSVk94a2wxaFFHTjA0V0h1ZDluQzRF?=
- =?utf-8?B?Tnc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a57e63c-b48c-488b-6077-08dae96607aa
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2022 06:29:25.2763
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GuBschL90IcareqPyGSsPaf0zwhcFFCwzjuO9PgUI//TaVIL4fW97xxYN5YZWoTn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3942
-X-Proofpoint-ORIG-GUID: cgeVR_ibvZO4bWHsyi6YPAGBd1RKW0HD
-X-Proofpoint-GUID: cgeVR_ibvZO4bWHsyi6YPAGBd1RKW0HD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-29_03,2022-12-28_02,2022-06-22_01
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221217082506.1570898-2-davemarchevsky@fb.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 12/28/22 2:24 PM, Alexei Starovoitov wrote:
-> On Tue, Dec 27, 2022 at 8:43 PM Yonghong Song <yhs@meta.com> wrote:
->>
->>
->>
->> On 12/18/22 8:15 PM, xiangxia.m.yue@gmail.com wrote:
->>> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
->>>
->>> This testing show how to reproduce deadlock in special case.
->>> We update htab map in Task and NMI context. Task can be interrupted by
->>> NMI, if the same map bucket was locked, there will be a deadlock.
->>>
->>> * map max_entries is 2.
->>> * NMI using key 4 and Task context using key 20.
->>> * so same bucket index but map_locked index is different.
->>>
->>> The selftest use perf to produce the NMI and fentry nmi_handle.
->>> Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
->>> map syscall increase this counter in bpf_disable_instrumentation.
->>> Then fentry nmi_handle and update hash map will reproduce the issue.
->>>
->>> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
->>> Cc: Alexei Starovoitov <ast@kernel.org>
->>> Cc: Daniel Borkmann <daniel@iogearbox.net>
->>> Cc: Andrii Nakryiko <andrii@kernel.org>
->>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
->>> Cc: Song Liu <song@kernel.org>
->>> Cc: Yonghong Song <yhs@fb.com>
->>> Cc: John Fastabend <john.fastabend@gmail.com>
->>> Cc: KP Singh <kpsingh@kernel.org>
->>> Cc: Stanislav Fomichev <sdf@google.com>
->>> Cc: Hao Luo <haoluo@google.com>
->>> Cc: Jiri Olsa <jolsa@kernel.org>
->>> Cc: Hou Tao <houtao1@huawei.com>
->>> Acked-by: Yonghong Song <yhs@fb.com>
->>> ---
->>>    tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
->>>    tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
->>>    .../selftests/bpf/prog_tests/htab_deadlock.c  | 75 +++++++++++++++++++
->>>    .../selftests/bpf/progs/htab_deadlock.c       | 32 ++++++++
->>>    4 files changed, 109 insertions(+)
->>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
->>>    create mode 100644 tools/testing/selftests/bpf/progs/htab_deadlock.c
->>>
->>> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
->>> index 99cc33c51eaa..87e8fc9c9df2 100644
->>> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
->>> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
->>> @@ -24,6 +24,7 @@ fexit_test                                       # fexit_attach unexpected error
->>>    get_func_args_test                               # get_func_args_test__attach unexpected error: -524 (errno 524) (trampoline)
->>>    get_func_ip_test                                 # get_func_ip_test__attach unexpected error: -524 (errno 524) (trampoline)
->>>    htab_update/reenter_update
->>> +htab_deadlock                                    # failed to find kernel BTF type ID of 'nmi_handle': -3 (trampoline)
->>>    kfree_skb                                        # attach fentry unexpected error: -524 (trampoline)
->>>    kfunc_call/subprog                               # extern (var ksym) 'bpf_prog_active': not found in kernel BTF
->>>    kfunc_call/subprog_lskel                         # skel unexpected error: -2
->>> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
->>> index 585fcf73c731..735239b31050 100644
->>> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
->>> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
->>> @@ -26,6 +26,7 @@ get_func_args_test                   # trampoline
->>>    get_func_ip_test                         # get_func_ip_test__attach unexpected error: -524                             (trampoline)
->>>    get_stack_raw_tp                         # user_stack corrupted user stack                                             (no backchain userspace)
->>>    htab_update                              # failed to attach: ERROR: strerror_r(-524)=22                                (trampoline)
->>> +htab_deadlock                            # failed to find kernel BTF type ID of 'nmi_handle': -3                       (trampoline)
->>>    kfree_skb                                # attach fentry unexpected error: -524                                        (trampoline)
->>>    kfunc_call                               # 'bpf_prog_active': not found in kernel BTF                                  (?)
->>>    kfunc_dynptr_param                       # JIT does not support calling kernel function                                (kfunc)
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
->>> new file mode 100644
->>> index 000000000000..137dce8f1346
->>> --- /dev/null
->>> +++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
->>> @@ -0,0 +1,75 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/* Copyright (c) 2022 DiDi Global Inc. */
->>> +#define _GNU_SOURCE
->>> +#include <pthread.h>
->>> +#include <sched.h>
->>> +#include <test_progs.h>
->>> +
->>> +#include "htab_deadlock.skel.h"
->>> +
->>> +static int perf_event_open(void)
->>> +{
->>> +     struct perf_event_attr attr = {0};
->>> +     int pfd;
->>> +
->>> +     /* create perf event on CPU 0 */
->>> +     attr.size = sizeof(attr);
->>> +     attr.type = PERF_TYPE_HARDWARE;
->>> +     attr.config = PERF_COUNT_HW_CPU_CYCLES;
->>> +     attr.freq = 1;
->>> +     attr.sample_freq = 1000;
->>> +     pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
->>> +
->>> +     return pfd >= 0 ? pfd : -errno;
->>> +}
->>> +
->>> +void test_htab_deadlock(void)
->>> +{
->>> +     unsigned int val = 0, key = 20;
->>> +     struct bpf_link *link = NULL;
->>> +     struct htab_deadlock *skel;
->>> +     int err, i, pfd;
->>> +     cpu_set_t cpus;
->>> +
->>> +     skel = htab_deadlock__open_and_load();
->>> +     if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
->>> +             return;
->>> +
->>> +     err = htab_deadlock__attach(skel);
->>> +     if (!ASSERT_OK(err, "skel_attach"))
->>> +             goto clean_skel;
->>> +
->>> +     /* NMI events. */
->>> +     pfd = perf_event_open();
->>> +     if (pfd < 0) {
->>> +             if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
->>> +                     printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
->>> +                     test__skip();
->>> +                     goto clean_skel;
->>> +             }
->>> +             if (!ASSERT_GE(pfd, 0, "perf_event_open"))
->>> +                     goto clean_skel;
->>> +     }
->>> +
->>> +     link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
->>> +     if (!ASSERT_OK_PTR(link, "attach_perf_event"))
->>> +             goto clean_pfd;
->>> +
->>> +     /* Pinned on CPU 0 */
->>> +     CPU_ZERO(&cpus);
->>> +     CPU_SET(0, &cpus);
->>> +     pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
->>> +
->>> +     /* update bpf map concurrently on CPU0 in NMI and Task context.
->>> +      * there should be no kernel deadlock.
->>> +      */
->>> +     for (i = 0; i < 100000; i++)
->>> +             bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
->>> +                                 &key, &val, BPF_ANY);
->>> +
->>> +     bpf_link__destroy(link);
->>> +clean_pfd:
->>> +     close(pfd);
->>> +clean_skel:
->>> +     htab_deadlock__destroy(skel);
->>> +}
->>> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
->>> new file mode 100644
->>> index 000000000000..d394f95e97c3
->>> --- /dev/null
->>> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
->>> @@ -0,0 +1,32 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/* Copyright (c) 2022 DiDi Global Inc. */
->>> +#include <linux/bpf.h>
->>> +#include <bpf/bpf_helpers.h>
->>> +#include <bpf/bpf_tracing.h>
->>> +
->>> +char _license[] SEC("license") = "GPL";
->>> +
->>> +struct {
->>> +     __uint(type, BPF_MAP_TYPE_HASH);
->>> +     __uint(max_entries, 2);
->>> +     __uint(map_flags, BPF_F_ZERO_SEED);
->>> +     __type(key, unsigned int);
->>> +     __type(value, unsigned int);
->>> +} htab SEC(".maps");
->>> +
->>> +/* nmi_handle on x86 platform. If changing keyword
->>> + * "static" to "inline", this prog load failed. */
->>> +SEC("fentry/nmi_handle")
->>
->> The above comment is not what I mean. In arch/x86/kernel/nmi.c,
->> we have
->>     static int nmi_handle(unsigned int type, struct pt_regs *regs)
->>     {
->>          ...
->>     }
->>     ...
->>     static noinstr void default_do_nmi(struct pt_regs *regs)
->>     {
->>          ...
->>          handled = nmi_handle(NMI_LOCAL, regs);
->>          ...
->>     }
->>
->> Since nmi_handle is a static function, it is possible that
->> the function might be inlined in default_do_nmi by the
->> compiler. If this happens, fentry/nmi_handle will not
->> be triggered and the test will pass.
->>
->> So I suggest to change the comment to
->>     nmi_handle() is a static function and might be
->>     inlined into its caller. If this happens, the
->>     test can still pass without previous kernel fix.
+On Sat, Dec 17, 2022 at 12:24:54AM -0800, Dave Marchevsky wrote:
+> Currently, kfuncs marked KF_RELEASE indicate that they release some
+> previously-acquired arg. The verifier assumes that such a function will
+> only have one arg reg w/ ref_obj_id set, and that that arg is the one to
+> be released. Multiple kfunc arg regs have ref_obj_id set is considered
+> an invalid state.
 > 
-> It's worse than this.
-> fentry is buggy.
-> We shouldn't allow attaching fentry to:
-> NOKPROBE_SYMBOL(nmi_handle);
+> For helpers, RELEASE is used to tag a particular arg in the function
+> proto, not the function itself. The arg with OBJ_RELEASE type tag is the
+> arg that the helper will release. There can only be one such tagged arg.
+> When verifying arg regs, multiple helper arg regs w/ ref_obj_id set is
+> also considered an invalid state.
+> 
+> Later patches in this series will result in some linked_list helpers
+> marked KF_RELEASE having a valid reason to take two ref_obj_id args.
+> Specifically, bpf_list_push_{front,back} can push a node to a list head
+> which is itself part of a list node. In such a scenario both arguments
+> to these functions would have ref_obj_id > 0, thus would fail
+> verification under current logic.
+> 
+> This patch changes kfunc ref_obj_id searching logic to find the last arg
+> reg w/ ref_obj_id and consider that the reg-to-release. This should be
+> backwards-compatible with all current kfuncs as they only expect one
+> such arg reg.
 
-Okay, I see. Looks we should prevent fentry from
-attaching any NOKPROBE_SYMBOL functions.
+Can't say I'm a huge fan of this proposal :-( While I think it's really
+unfortunate that kfunc flags are not defined per-arg for this exact type
+of reason, adding more flag-specific semantics like this is IMO a step
+in the wrong direction.  It's similar to the existing __sz and __k
+argument-naming semantics that inform the verifier that the arguments
+have special meaning. All of these little additions of special-case
+handling for kfunc flags end up requiring people writing kfuncs (and
+sometimes calling them) to read through the verifier to understand
+what's going on (though I will say that it's nice that __sz and __k are
+properly documented in [0]).
 
-BTW, I think fentry/nmi_handle can be replaced with
-tracepoint nmi/nmi_handler. it is more reliable
-and won't be impacted by potential NOKPROBE_SYMBOL
-issues.
+[0]: https://docs.kernel.org/bpf/kfuncs.html#sz-annotation
+
+The correct thing to do here, in my opinion, is to work to combine kfunc
+and helper definitions. Right now that's of course not possible for a
+number of reasons, including the fact that kfuncs can do things that
+helpers cannot. If we do end up merging it, at the very least I'd ask
+you to please loudly document the behavior both in
+Documentation/bpf/kfuncs.rst, and in the code where the kfunc flags are
+defined, if you don't mind.
+
+Of course, that's assuming that we decide that we still need this, per
+Alexei's comment in [1].
+
+[1]: https://lore.kernel.org/all/20221229032442.dkastsstktsxjymb@MacBook-Pro-6.local/
+
+> 
+> Currently the ref_obj_id and OBJ_RELEASE searching is done in the code
+> that examines each individual arg (check_func_arg for helpers and
+> check_kfunc_args inner loop for kfuncs). This patch pulls out this
+> searching to occur before individual arg type handling, resulting in a
+> cleaner separation of logic.
+> 
+> Two new helpers are added:
+>   * args_find_ref_obj_id_regno
+>     * For helpers and kfuncs. Searches through arg regs to find
+>       ref_obj_id reg and returns its regno. Helpers set allow_multi =
+>       false, retaining "only one ref_obj_id arg" behavior, while kfuncs
+>       set allow_multi = true and get the last ref_obj_id arg reg back.
+> 
+>   * helper_proto_find_release_arg_regno
+>     * For helpers only. Searches through fn proto args to find the
+>       OBJ_RELEASE arg and returns the corresponding regno.
+> 
+> Aside from the intentional semantic change for kfuncs, the rest of the
+> refactoring strives to keep failure logic and error messages unchanged.
+> However, because the release arg searching is now done before any
+> arg-specific type checking, verifier states that are invalid due to both
+> invalid release arg state _and_ some type- or helper-specific checking
+> might see release arg-related error message first.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> ---
+>  kernel/bpf/verifier.c | 206 ++++++++++++++++++++++++++++--------------
+>  1 file changed, 138 insertions(+), 68 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index a5255a0dcbb6..824e2242eae5 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -6412,49 +6412,6 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  		return err;
+>  
+>  skip_type_check:
+> -	if (arg_type_is_release(arg_type)) {
+> -		if (arg_type_is_dynptr(arg_type)) {
+> -			struct bpf_func_state *state = func(env, reg);
+> -			int spi;
+> -
+> -			/* Only dynptr created on stack can be released, thus
+> -			 * the get_spi and stack state checks for spilled_ptr
+> -			 * should only be done before process_dynptr_func for
+> -			 * PTR_TO_STACK.
+> -			 */
+> -			if (reg->type == PTR_TO_STACK) {
+> -				spi = get_spi(reg->off);
+> -				if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
+> -				    !state->stack[spi].spilled_ptr.ref_obj_id) {
+> -					verbose(env, "arg %d is an unacquired reference\n", regno);
+> -					return -EINVAL;
+> -				}
+> -			} else {
+> -				verbose(env, "cannot release unowned const bpf_dynptr\n");
+> -				return -EINVAL;
+> -			}
+> -		} else if (!reg->ref_obj_id && !register_is_null(reg)) {
+> -			verbose(env, "R%d must be referenced when passed to release function\n",
+> -				regno);
+> -			return -EINVAL;
+> -		}
+> -		if (meta->release_regno) {
+> -			verbose(env, "verifier internal error: more than one release argument\n");
+> -			return -EFAULT;
+> -		}
+> -		meta->release_regno = regno;
+> -	}
+> -
+> -	if (reg->ref_obj_id) {
+> -		if (meta->ref_obj_id) {
+> -			verbose(env, "verifier internal error: more than one arg with ref_obj_id R%d %u %u\n",
+> -				regno, reg->ref_obj_id,
+> -				meta->ref_obj_id);
+> -			return -EFAULT;
+> -		}
+> -		meta->ref_obj_id = reg->ref_obj_id;
+> -	}
+> -
+>  	switch (base_type(arg_type)) {
+>  	case ARG_CONST_MAP_PTR:
+>  		/* bpf_map_xxx(map_ptr) call: remember that map_ptr */
+> @@ -6565,6 +6522,27 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  		err = check_mem_size_reg(env, reg, regno, true, meta);
+>  		break;
+>  	case ARG_PTR_TO_DYNPTR:
+> +		if (meta->release_regno == regno) {
+> +			struct bpf_func_state *state = func(env, reg);
+> +			int spi;
+> +
+> +			/* Only dynptr created on stack can be released, thus
+> +			 * the get_spi and stack state checks for spilled_ptr
+> +			 * should only be done before process_dynptr_func for
+> +			 * PTR_TO_STACK.
+> +			 */
+> +			if (reg->type == PTR_TO_STACK) {
+> +				spi = get_spi(reg->off);
+> +				if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
+> +				    !state->stack[spi].spilled_ptr.ref_obj_id) {
+> +					verbose(env, "arg %d is an unacquired reference\n", regno);
+> +					return -EINVAL;
+> +				}
+> +			} else {
+> +				verbose(env, "cannot release unowned const bpf_dynptr\n");
+> +				return -EINVAL;
+> +			}
+> +		}
+>  		err = process_dynptr_func(env, regno, arg_type, meta);
+>  		if (err)
+>  			return err;
+> @@ -7699,10 +7677,78 @@ static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno
+>  				 state->callback_subprogno == subprogno);
+>  }
+>  
+> +/* Call arg meta's ref_obj_id is used to either:
+> + *   - For release funcs, keep track of ref that needs to be released
+> + *   - For other funcs, keep track of ref that needs to be propagated to retval
+> + *
+> + * Find and return:
+> + *   - Regno that should become meta->ref_obj_id on success
+> + *     (regno > 0 since BPF_REG_1 is first arg)
+> + *   - 0 if no arg had ref_obj_id set
+> + *   - Negative err if some invalid arg reg state
+> + *
+> + * allow_multi controls whether multiple args w/ ref_obj_id set is valid
+> + *   - true: regno of _last_ such arg reg is returned
+> + *   - false: err if multiple args w/ ref_obj_id set are seen
+> + */
+
+Could you please update this function header to match the suggested
+formatting in the coding style ([1])? Applies to
+helper_proto_find_release_arg_regno() as well.
+
+[1]: https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html#function-documentation
+
+> +static int args_find_ref_obj_id_regno(struct bpf_verifier_env *env, struct bpf_reg_state *regs,
+> +				      u32 nargs, bool allow_multi)
+> +{
+> +	struct bpf_reg_state *reg;
+> +	u32 i, regno, found_regno = 0;
+> +
+> +	for (i = 0; i < nargs; i++) {
+> +		regno = i + 1;
+> +		reg = &regs[regno];
+> +
+> +		if (!reg->ref_obj_id)
+> +			continue;
+> +
+> +		if (!allow_multi && found_regno) {
+> +			verbose(env, "verifier internal error: more than one arg with ref_obj_id R%d %u %u\n",
+> +				regno, reg->ref_obj_id, regs[found_regno].ref_obj_id);
+> +			return -EFAULT;
+> +		}
+> +
+> +		found_regno = regno;
+> +	}
+> +
+> +	return found_regno;
+> +}
+> +
+> +/* Find the OBJ_RELEASE arg in helper func proto and return:
+> + *   - regno of single OBJ_RELEASE arg
+> + *   - 0 if no arg in the proto was OBJ_RELEASE
+> + *   - Negative err if some invalid func proto state
+> + */
+> +static int helper_proto_find_release_arg_regno(struct bpf_verifier_env *env,
+> +					       const struct bpf_func_proto *fn, u32 nargs)
+> +{
+> +	enum bpf_arg_type arg_type;
+> +	int i, release_regno = 0;
+> +
+> +	for (i = 0; i < nargs; i++) {
+> +		arg_type = fn->arg_type[i];
+> +
+> +		if (!arg_type_is_release(arg_type))
+> +			continue;
+> +
+> +		if (release_regno) {
+> +			verbose(env, "verifier internal error: more than one release argument\n");
+> +			return -EFAULT;
+> +		}
+> +
+> +		release_regno = i + BPF_REG_1;
+> +	}
+> +
+> +	return release_regno;
+> +}
+> +
+>  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  			     int *insn_idx_p)
+>  {
+>  	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+> +	int i, err, func_id, nargs, release_regno, ref_regno;
+>  	const struct bpf_func_proto *fn = NULL;
+>  	enum bpf_return_type ret_type;
+>  	enum bpf_type_flag ret_flag;
+> @@ -7710,7 +7756,6 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  	struct bpf_call_arg_meta meta;
+>  	int insn_idx = *insn_idx_p;
+>  	bool changes_data;
+> -	int i, err, func_id;
+>  
+>  	/* find function prototype */
+>  	func_id = insn->imm;
+> @@ -7774,8 +7819,38 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  	}
+>  
+>  	meta.func_id = func_id;
+> +	regs = cur_regs(env);
+> +
+> +	/* find actual arg count */
+> +	for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++)
+> +		if (fn->arg_type[i] == ARG_DONTCARE)
+> +			break;
+> +	nargs = i;
+
+Is this just an optimization to avoid unnecessary loop iterations? If
+so, can we pull it into a separate patch? Also, you could very slightly
+simplify this by doing the for loop over nargs here instead of i. Feel
+free to ignore though if you think that will be less readable.
+
+> +
+> +	release_regno = helper_proto_find_release_arg_regno(env, fn, nargs);
+> +	if (release_regno < 0)
+> +		return release_regno;
+> +
+> +	ref_regno = args_find_ref_obj_id_regno(env, regs, nargs, false);
+> +	if (ref_regno < 0)
+> +		return ref_regno;
+
+Hmm, I'm confused. Why are we tracking two different registers here,
+given that it's a helper function so the release argument should be
+unambiguous? Can we just get rid of ref_regno and use release_regno
+here? Or am I missing something?
+
+Note that I don't think it's necessarily incorrect to pass multiple
+arguments with ref_obj_id > 0 to a helper function precisly because
+there's no ambiguity as to which argument is being released. One
+argument could be a refcounted object that's not being released, and
+another could be the object being released. I don't think we have any
+such helpers, but conceptually it doesn't seem like something we'd need
+to protect against. It's actually kfuncs where it feels problematic to
+have multiple ref_obj_id > 0 args due to the inherent ambiguity, though
+I realize the intention of this patch is to enable the behavior for
+kfuncs.
+
+> +	else if (ref_regno > 0)
+> +		meta.ref_obj_id = regs[ref_regno].ref_obj_id;
+> +
+> +	if (release_regno > 0) {
+> +		if (!regs[release_regno].ref_obj_id &&
+> +		    !register_is_null(&regs[release_regno]) &&
+> +		    !arg_type_is_dynptr(fn->arg_type[release_regno - BPF_REG_1])) {
+> +			verbose(env, "R%d must be referenced when passed to release function\n",
+> +				release_regno);
+> +			return -EINVAL;
+> +		}
+> +
+> +		meta.release_regno = release_regno;
+> +	}
+> +
+>  	/* check args */
+> -	for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> +	for (i = 0; i < nargs; i++) {
+>  		err = check_func_arg(env, i, &meta, fn);
+>  		if (err)
+>  			return err;
+> @@ -7799,8 +7874,6 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  			return err;
+>  	}
+>  
+> -	regs = cur_regs(env);
+> -
+>  	/* This can only be set for PTR_TO_STACK, as CONST_PTR_TO_DYNPTR cannot
+>  	 * be reinitialized by any dynptr helper. Hence, mark_stack_slots_dynptr
+>  	 * is safe to do directly.
+> @@ -8795,10 +8868,11 @@ static int process_kf_arg_ptr_to_list_node(struct bpf_verifier_env *env,
+>  static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_arg_meta *meta)
+>  {
+>  	const char *func_name = meta->func_name, *ref_tname;
+> +	struct bpf_reg_state *regs = cur_regs(env);
+>  	const struct btf *btf = meta->btf;
+>  	const struct btf_param *args;
+>  	u32 i, nargs;
+> -	int ret;
+> +	int ret, ref_regno;
+>  
+>  	args = (const struct btf_param *)(meta->func_proto + 1);
+>  	nargs = btf_type_vlen(meta->func_proto);
+> @@ -8808,17 +8882,31 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>  		return -EINVAL;
+>  	}
+>  
+> +	ref_regno = args_find_ref_obj_id_regno(env, cur_regs(env), nargs, true);
+> +	if (ref_regno < 0) {
+> +		return ref_regno;
+> +	} else if (!ref_regno && is_kfunc_release(meta)) {
+> +		verbose(env, "release kernel function %s expects refcounted PTR_TO_BTF_ID\n",
+> +			func_name);
+> +		return -EINVAL;
+> +	}
+> +
+> +	meta->ref_obj_id = regs[ref_regno].ref_obj_id;
+> +	if (is_kfunc_release(meta))
+> +		meta->release_regno = ref_regno;
+> +
+>  	/* Check that BTF function arguments match actual types that the
+>  	 * verifier sees.
+>  	 */
+>  	for (i = 0; i < nargs; i++) {
+> -		struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[i + 1];
+>  		const struct btf_type *t, *ref_t, *resolve_ret;
+>  		enum bpf_arg_type arg_type = ARG_DONTCARE;
+>  		u32 regno = i + 1, ref_id, type_size;
+>  		bool is_ret_buf_sz = false;
+> +		struct bpf_reg_state *reg;
+>  		int kf_arg_type;
+>  
+> +		reg = &regs[regno];
+>  		t = btf_type_skip_modifiers(btf, args[i].type, NULL);
+>  
+>  		if (is_kfunc_arg_ignore(btf, &args[i]))
+> @@ -8875,18 +8963,6 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>  			return -EINVAL;
+>  		}
+>  
+> -		if (reg->ref_obj_id) {
+> -			if (is_kfunc_release(meta) && meta->ref_obj_id) {
+> -				verbose(env, "verifier internal error: more than one arg with ref_obj_id R%d %u %u\n",
+> -					regno, reg->ref_obj_id,
+> -					meta->ref_obj_id);
+> -				return -EFAULT;
+> -			}
+> -			meta->ref_obj_id = reg->ref_obj_id;
+> -			if (is_kfunc_release(meta))
+> -				meta->release_regno = regno;
+> -		}
+> -
+>  		ref_t = btf_type_skip_modifiers(btf, t->type, &ref_id);
+>  		ref_tname = btf_name_by_offset(btf, ref_t->name_off);
+>  
+> @@ -8929,7 +9005,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>  			return -EFAULT;
+>  		}
+>  
+> -		if (is_kfunc_release(meta) && reg->ref_obj_id)
+> +		if (is_kfunc_release(meta) && regno == meta->release_regno)
+>  			arg_type |= OBJ_RELEASE;
+>  		ret = check_func_arg_reg_off(env, reg, regno, arg_type);
+>  		if (ret < 0)
+> @@ -9049,12 +9125,6 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>  		}
+>  	}
+>  
+> -	if (is_kfunc_release(meta) && !meta->release_regno) {
+> -		verbose(env, "release kernel function %s expects refcounted PTR_TO_BTF_ID\n",
+> -			func_name);
+> -		return -EINVAL;
+> -	}
+> -
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.30.2
+> 
