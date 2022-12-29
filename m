@@ -2,61 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8732659257
-	for <lists+bpf@lfdr.de>; Thu, 29 Dec 2022 23:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0939659269
+	for <lists+bpf@lfdr.de>; Thu, 29 Dec 2022 23:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbiL2WAI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Dec 2022 17:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49722 "EHLO
+        id S231299AbiL2WQq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Dec 2022 17:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234090AbiL2WAF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Dec 2022 17:00:05 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DB117409
-        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 14:00:02 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id s5so28285505edc.12
-        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 14:00:02 -0800 (PST)
+        with ESMTP id S230219AbiL2WQo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Dec 2022 17:16:44 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F9525CF;
+        Thu, 29 Dec 2022 14:16:41 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id t17so47805991eju.1;
+        Thu, 29 Dec 2022 14:16:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NfILxOtTrwOessBNpH/M2cZYHaUdUsckQa5zxZrMslQ=;
-        b=TfIxjCr5FzO5XPN4bO73oQSVc2FylIEKfMNGR/FLa1jEUkZroBJiQGlwGC3OkkxzV7
-         ca/8to7VSm3o1xLJiNroyHFpwEl7d2qVI9QlIVbzj9kfslpJjtt+Q3UDC7cZdBBb/GC3
-         icK0vizI6GuPFJnI/8+CeqEj+y4GWywocfZ3EDPykFtPenWt7jx2C1wcngBxw/k75FG+
-         BGUYU3dTvUbgxOkv42QJ42VgkpPvXVrpUoepZSsOk89ntvkeuqtx+QDXsY/ktZ8jF/NH
-         UuacSqXavY4+kHeSOkaTj4fnZ4G+jFJ6dgtz2ycX5FK/IhtvE2cHsxennW3XEXUXA0Dd
-         FMiA==
+        bh=+uXIwHjmBTEbzlmG51pMQlcQdZJUEDhh8YTdD/BVqjk=;
+        b=jqIHITlmlzHV72j4hlF6Dk8CRTwrTvDzor3PKbBk1fBbN3bRG3k0866nAyMJf0c7Qy
+         IKGEOt2am2hr1LENSs57OPKuI0lFceoIbLqct9h5dxWGEehhdzH1E0Yv6QHhV/6nE4ph
+         pHDYVm0wYJ5nffQDr7anLIAt5Uo337u97vXISbqhtgbSu27m0it/i/o1xt4R06N/CTJn
+         tCWoYshsWW7TponRtAfb+Pye+eI81DFgAflS4RiEMiY5Tv9KxU25DnrcgLHMuQ0Ggp+M
+         Bd9BwzSt7/lgjtsUQy4o0QFxvRCxjTg0HBnniVvjo7xABlGnvPZVqH+oqrkcvkWKKCjC
+         KvVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NfILxOtTrwOessBNpH/M2cZYHaUdUsckQa5zxZrMslQ=;
-        b=pxXzXA/aktth6oeeATrJfSTO4Ob2J6YkhQdN6xrVjXgk3FwGCc7PbU6uGM17FpyEf/
-         0wZI4s44KnN+fXpUhctf8ur+RHtcHIv5TLSdURtg7i3Nr8D06U+3Ri3A6UHVAV8FfKRW
-         9tJGfbv0tWdQ78DvUIUeJ3hMdyFEcO/XOs8/ZY/yp2V/MHwAYOoEjN7+fyXK7E8oc+ul
-         th4nDMDA9lIrQURKmiW5eq1HMO6XLmx7Fqe0ezOB6Rn+sNoc/e1ii1W7Es2Gd/uacUn/
-         LzGK1xNxPxhzY59VaujkTTNF6SoBjq2zprSQuwKbcuq/EufXeNcdTq9rUTkN6SOXqYfw
-         4U3A==
-X-Gm-Message-State: AFqh2kqE7deCBVZV70nqk9HePcLKHeI4WVUY1s1Pj/659sZm8NlGnjiJ
-        56hMQl/RofVK5BEcItioYvvGMeEdBbjmqbUA57w=
-X-Google-Smtp-Source: AMrXdXv9KsCmvXn0Ki3nXCMt6HfYC8xPO2w7oEBcr1siwvJZtKUg+98PftA3+11uxVTA2ac9N8BaZ1695bRVIgo/99w=
-X-Received: by 2002:a05:6402:2208:b0:48a:7ada:b260 with SMTP id
- cq8-20020a056402220800b0048a7adab260mr144864edb.311.1672351201351; Thu, 29
- Dec 2022 14:00:01 -0800 (PST)
+        bh=+uXIwHjmBTEbzlmG51pMQlcQdZJUEDhh8YTdD/BVqjk=;
+        b=RnlflQMA4pPlouAxA7w0THWumXWgnNKEt0QtCJwphXzbJyf5rRKmzY6QWYP+ZrvyDi
+         ijwzwC4JSzQySsqcAw69q74W6YQq1QhsHJWCNjF6tDnYF680eAZqLrRznLlCdcVlSaYF
+         9kbjLl7o3XvVlG/a74yyHxHKI9gY1zJN5qEnvWycctwBb60EVeFh9Dm+NgftcHwwTD+s
+         CCXB2fZHhgpRNwGbDgzZNpMvtvEl/mB3EQw/AXuFXrA1IX8AAbXwzPQSqoNi8ar8U2t/
+         QD6ipgIWJGLc0oB06F3DBv9DGiRm6Zgmv84YCwfI6+IczWw7RVbvmW6jZRDST6X+G18a
+         9aLg==
+X-Gm-Message-State: AFqh2kqCuyhRo2Qr6TFcIyB5Og4ebHKhIVblZfO1KUOHrqK+jjATYApl
+        gFRCRK8wlCpawl+wnA53ik6GtibgThsGHsp/1+g=
+X-Google-Smtp-Source: AMrXdXtX7n7+6Ba1MBIST0JlR5dxLrmpyho7SXRZ6//yuP7YkYmk9/oPtmm1DAu+OYRo5/nrUBvGE4/Awj3/wRvYUW0=
+X-Received: by 2002:a17:906:e51:b0:7b7:eaa9:c1cb with SMTP id
+ q17-20020a1709060e5100b007b7eaa9c1cbmr3868042eji.745.1672352199993; Thu, 29
+ Dec 2022 14:16:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20221223054921.958283-1-andrii@kernel.org> <20221223054921.958283-8-andrii@kernel.org>
- <20221228020015.xquaykefotqmok7r@macbook-pro-6.dhcp.thefacebook.com>
-In-Reply-To: <20221228020015.xquaykefotqmok7r@macbook-pro-6.dhcp.thefacebook.com>
+References: <CACkBjsaXNceR8ZjkLG=dT3P=4A8SBsg0Z5h5PWLryF5=ghKq=g@mail.gmail.com>
+ <Y6C36gvJ2JnwKm3X@google.com> <CAEf4BzbY8SDL04W_3Vot6iiYu69Lqg9W9aMCp26+RwLBh6C_0g@mail.gmail.com>
+ <ba5aacc8-7e10-e20a-936b-f3f81d7fcf03@meta.com>
+In-Reply-To: <ba5aacc8-7e10-e20a-936b-f3f81d7fcf03@meta.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Dec 2022 13:59:49 -0800
-Message-ID: <CAEf4BzaT_kp-F3QMeGqpCf8ekhmDVjHwV4y7fYtxjWPFq1yhSg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/7] bpf: unify PTR_TO_MAP_{KEY,VALUE} with
- default case in regsafe()
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com
+Date:   Thu, 29 Dec 2022 14:16:27 -0800
+Message-ID: <CAEf4BzY-DMVEpy+mPTObEO56E7=fzqab8zW_4JyBeyGtTqqcXg@mail.gmail.com>
+Subject: Re: WARNING in __mark_chain_precision
+To:     Yonghong Song <yhs@meta.com>
+Cc:     sdf@google.com, Hao Sun <sunhao.th@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,107 +79,169 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 27, 2022 at 6:00 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Dec 27, 2022 at 9:24 PM Yonghong Song <yhs@meta.com> wrote:
 >
-> On Thu, Dec 22, 2022 at 09:49:21PM -0800, Andrii Nakryiko wrote:
-> > Make default case in regsafe() safer. Instead of doing byte-by-byte
 >
-> I love the patches 1-6, but this one is not making it safer.
-> It looks to be going less safe route.
-> More below.
 >
-> > comparison, take into account ID remapping and also range and var_off
+> On 12/20/22 4:30 PM, Andrii Nakryiko wrote:
+> > On Mon, Dec 19, 2022 at 11:13 AM <sdf@google.com> wrote:
+> >>
+> >> On 12/19, Hao Sun wrote:
+> >>> Hi,
+> >>
+> >>> The following backtracking bug can be triggered on the latest bpf-next and
+> >>> Linux 6.1 with the C prog provided. I don't have enough knowledge about
+> >>> this part in the verifier, don't know how to fix this.
+> >>
+> >> Maybe something related to commit be2ef8161572 ("bpf: allow precision
+> >> tracking
+> >> for programs with subprogs") and/or the related ones?
+> >>
+> >>
+> >>> This can be reproduced on:
+> >>
+> >>> HEAD commit: 0e43662e61f2 tools/resolve_btfids: Use pkg-config to locate
+> >>> libelf
+> >>> git tree: bpf-next
+> >>> console log: https://pastebin.com/raw/45hZ7iqm
+> >>> kernel config: https://pastebin.com/raw/0pu1CHRm
+> >>> C reproducer: https://pastebin.com/raw/tqsiezvT
+> >>
+> >>> func#0 @0
+> >>> 0: R1=ctx(off=0,imm=0) R10=fp0
+> >>> 0: (18) r2 = 0x8000000000000          ; R2_w=2251799813685248
+> >>> 2: (18) r6 = 0xffff888027358000       ;
+> >>> R6_w=map_ptr(off=0,ks=3032,vs=3664,imm=0)
+> >>> 4: (18) r7 = 0xffff88802735a000       ;
+> >>> R7_w=map_ptr(off=0,ks=156,vs=2624,imm=0)
+> >>> 6: (18) r8 = 0xffff88802735e000       ;
+> >>> R8_w=map_ptr(off=0,ks=2396,vs=76,imm=0)
+> >>> 8: (18) r9 = 0x8e9700000000           ; R9_w=156779191205888
+> >>> 10: (36) if w9 >= 0xffffffe3 goto pc+1
+> >>> last_idx 10 first_idx 0
+> >>> regs=200 stack=0 before 8: (18) r9 = 0x8e9700000000
+> >>> 11: R9_w=156779191205888
+> >>> 11: (85) call #0
+> >>> 12: (cc) w2 s>>= w7
+> >
+> > w2 should have been set to NOT_INIT (because r1-r5 are clobbered by
+> > calls) and rejected here as !read_ok (see check_reg_arg()) before
+> > attempting to mark precision for r2. Can you please try to debug and
+> > understand why that didn't happen here?
 >
-> ID remapping is handled by the patch 6 in regs_exact().
-> This patch adds range and var_off check as default.
-> Which might not be correct in the future.
+> The verifier is doing the right thing here and the 'call #0' does
+> implicitly cleared r1-r5.
 >
-> > checks. For most of registers range and var_off will be zero (not set),
-> > which doesn't matter. For some, like PTR_TO_MAP_{KEY,VALUE}, this
-> > generalized logic is exactly matching what regsafe() was doing as
-> > a special case. But in any case, if register has id and/or ref_obj_id
-> > set, check it using check_ids() logic, taking into account idmap.
+> So for 'w2 s>>= w7', since w2 is used, the verifier tries to find
+> its definition by backtracing. It encountered 'call #0', which clears
+
+and that's what I'm saying is incorrect. Normally we'd get !read_ok
+error because s>>= is both READ and WRITE on w2, which is
+uninitialized after call instruction according to BPF ABI. And that's
+what actually seems to happen correctly in my (simpler) tests locally.
+But something is special about this specific repro that somehow either
+bypasses this logic, or attempts to mark precision before we get to
+that test. That's what we should investigate. I haven't tried to run
+this specific repro locally yet, so can't tell for sure.
+
+
+> r1-r5. Since w2 is not defined, the verifier issued the error:
+>    BUG regs 4
 >
-> That was already done in patch 6. So the commit log is misleading.
-> It's arguing that it's a benefit of this change while it was in the previous patch.
-
-True, I think I had regs_exact() and regs_equals() change in one
-commit and split it at the last minute before submitting (I felt like
-patch #7 will be controversial ;) ), should have proofread messages
-more carefully. Sorry about that.
-
+> The specific verifier code is in backtrack_insn():
 >
-> > With these changes, default case should be handling most registers more
-> > correctly, and even for future register would be a good default. For some
-> > special cases, like PTR_TO_PACKET, one would still need to implement extra
-> > checks (like special handling of reg->range) to get better state
-> > equivalence, but default logic shouldn't be wrong.
+>          } else if (class == BPF_JMP || class == BPF_JMP32) {
+>                  if (opcode == BPF_CALL) {
+>                          if (insn->src_reg == BPF_PSEUDO_CALL)
+>                                  return -ENOTSUPP;
+>                          /* BPF helpers that invoke callback subprogs are
+>                           * equivalent to BPF_PSEUDO_CALL above
+>                           */
+>                          if (insn->src_reg == 0 &&
+> is_callback_calling_function(insn->imm))
+>                                  return -ENOTSUPP;
+>                          /* regular helper call sets R0 */
+>                          *reg_mask &= ~1;
+>                          if (*reg_mask & 0x3f) {
+>                                  /* if backtracing was looking for
+> registers R1-R5
+>                                   * they should have been found already.
+>                                   */
+>                                  verbose(env, "BUG regs %x\n", *reg_mask);
+>                                  WARN_ONCE(1, "verifier backtracking bug");
+>                                  return -EFAULT;
+>                          }
+>                  }
 >
-> PTR_TO_BTF_ID with var_off would be a counter example where
-> such default of comparing ranges and var_off would lead to issues.
-> Currently PTR_TO_BTF_ID doesn't allow var_off, but folks requested this support.
-> The range_within() logic is safe only for types like PTR_TO_MAP_KEY/VALUE
-> that start from zero and have uniform typeless blob of bytes.
-> PTR_TO_BTF_ID with var_off would be wrong to do with just range_within().
-
-I'm trying to understand this future problem. I think this is the same
-issue that Kumar was trying to fix before, but when I asked for more
-specifics I didn't really get good answer of when this combined
-var_off and range_within() would be incorrect.
-
-Do you mind showing (even if hypothetically) an example when
-var_off+range_within() won't work? I'm trying to understand this. We
-should either document why this is not safe, in general, or come to
-conclusion that it is safe. It's second time this comes up, so let's
-spend a bit of time getting to the bottom of this?
-
+> Note that the above mask '0x3f' which corresponds to registers r1-r5.
+> If it tries to find the definition for any of them, 'BUG regs <mask>'
+> will be printed out.
 >
-> SCALARS and PTR_TO_BTF_ID will likely dominate future bpf progs.
-> Keeping default as regs_exact (that does ID match) is safer default.
-
-It's fine, though the point of this patch set was patch #7, enabling
-logic similar to PTR_TO_MAP_VALUE for PTR_TO_MEM and PTR_TO_BUF. I can
-send specific fixes for that, no problem. But as I said above, I'm
-really curious to understand what kind of situations will lead to
-unsafety if we do var_off+range_within checks.
-
 >
-> Having said all that the focus on safety should be balanced with focus on performance
-> of the verifier itself.
-> The regsafe is the hottest function.
-> That first memcmp used to be the hottest part of the whole verifier.
-
-yeah, and it was done unconditionally even if not needed, which was
-kind of weird when I started looking at this. Probably some
-refactoring leftover.
-
-> I suspect this refactoring won't change the perf profile, but we can optimize it.
-> Assuming that SCALAR, PTR_TO_BTF_ID and PTR_TO_MAP will be the majority of types
-> we can special case them and refactor comparison to only things
-> that matter to these types. var_off and min/max_value are the biggest part
-> of bpf_reg_state. They should be zero for PTR_TO_BTF_ID, but we already check
-> that in other parts of the verifier. There is no need to compare zeros again
-> in the hottest regsafe() function.
-> Same thing for SCALAR. Doing regs_exact() with big memcmp and then finer range_within()
-> on the same bytes is probably wasteful and can be optimized.
-> We might consider reshuffling bpf_reg_state fields again depending on cache line usage.
-> I suspect doing "smart" reg comparison we will be able to significantly
-> improve verification speed. Please consider for a follow up.
-
-I agree. Perf wasn't the point for me (this is a preliminary for
-iterator stuff to improve state equivalence checks), so I didn't want
-to spend extra time on this (especially that benchmarking this
-properly is time consuming, as benchmarking under QEMU isn't
-representative (from me experiences with BPF ringbuf benchmarking).
-But I'll keep it on TODO list, either for me or anyone interested in
-contributing.
-
->
-> I've applied the first 6 patches.
-
-Cool, thanks, less patches to carry around. If you don't mind, let's
-look at this var_off concern in details. I can send
-PTR_TO_MEM-specific follow up fix, but if we can convince ourselves
-that generic logic is safe and future-proof, I'd rather do a generic
-change.
+> >
+> >
+> >>> last_idx 12 first_idx 12
+> >>> parent didn't have regs=4 stack=0 marks: R1=ctx(off=0,imm=0)
+> >>> R2_rw=P2251799813685248 R6_w=map_ptr(off=0,ks=3032,vs=3664,imm=0)
+> >>> R7_rw=map_ptr(off=0,ks=156,vs=2624,imm=0)
+> >>> R8_w=map_ptr(off=0,ks=2396,vs=76,imm=0) R9_w=156779191205888 R10=fp0
+> >>> last_idx 11 first_idx 0
+> >>> regs=4 stack=0 before 11: (85) call #0
+> >>> BUG regs 4
+> >>> processed 8 insns (limit 1000000) max_states_per_insn 0 total_states 1
+> >>> peak_states 1 mark_read 1
+> >>
+> >>> ------------[ cut here ]------------
+> >>> verifier backtracking bug
+> >>> WARNING: CPU: 6 PID: 8646 at kernel/bpf/verifier.c:2756 backtrack_insn
+> >>> kernel/bpf/verifier.c:2756 [inline]
+> >>> WARNING: CPU: 6 PID: 8646 at kernel/bpf/verifier.c:2756
+> >>> __mark_chain_precision+0x1baf/0x1d70 kernel/bpf/verifier.c:3065
+> >>> Modules linked in:
+> >>> CPU: 6 PID: 8646 Comm: a.out Not tainted 6.1.0-09634-g0e43662e61f2 #146
+> >>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux
+> >>> 1.16.1-1-1 04/01/2014
+> >>> RIP: 0010:backtrack_insn kernel/bpf/verifier.c:2756 [inline]
+> >>> RIP: 0010:__mark_chain_precision+0x1baf/0x1d70 kernel/bpf/verifier.c:3065
+> >>> Code: 0d 31 ff 89 de e8 91 ec ed ff 84 db 0f 85 ef fe ff ff e8 b4 f0
+> >>> ed ff 48 c7 c7 e0 8f 53 8a c6 05 28 71 ab 0d 01 e8 83 b3 1e 08 <0f> 0b
+> >>> e9 50 f8 ff ff 48 8b 74 24 38 48 c7 c7 80 d0 63 8d e8 49 46
+> >>> RSP: 0018:ffffc9001463f1a0 EFLAGS: 00010282
+> >>> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> >>> RDX: ffff888020470000 RSI: ffffffff816662c0 RDI: fffff520028c7e26
+> >>> RBP: 0000000000000004 R08: 0000000000000005 R09: 0000000000000000
+> >>> R10: 0000000080000000 R11: 0000000000000000 R12: 0000000000000020
+> >>> R13: dffffc0000000000 R14: 000000000000000b R15: ffff88802be74000
+> >>> FS: 00007fd3daeb8440(0000) GS:ffff888063980000(0000)
+> >>> knlGS:0000000000000000
+> >>> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >>> CR2: 0000000020000240 CR3: 0000000017394000 CR4: 0000000000750ee0
+> >>> PKRU: 55555554
+> >>> Call Trace:
+> >>> <TASK>
+> >>> mark_chain_precision kernel/bpf/verifier.c:3165 [inline]
+> >>> adjust_reg_min_max_vals+0x981/0x58d0 kernel/bpf/verifier.c:10715
+> >>> check_alu_op+0x380/0x1820 kernel/bpf/verifier.c:10928
+> >>> do_check kernel/bpf/verifier.c:13821 [inline]
+> >>> do_check_common+0x1c3b/0xe520 kernel/bpf/verifier.c:16289
+> >>> do_check_main kernel/bpf/verifier.c:16352 [inline]
+> >>> bpf_check+0x83b4/0xb310 kernel/bpf/verifier.c:16936
+> >>> bpf_prog_load+0xf7a/0x21a0 kernel/bpf/syscall.c:2619
+> >>> __sys_bpf+0xf03/0x5840 kernel/bpf/syscall.c:4979
+> >>> __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
+> >>> __se_sys_bpf kernel/bpf/syscall.c:5081 [inline]
+> >>> __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5081
+> >>> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >>> do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+> >>> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >>> RIP: 0033:0x7fd3da8e4469
+> >>> Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48
+> >>> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> >>> 01 f0 ff ff 73 01 c3 48 8b 0d ff 49 2b 00 f7 d8 64 89 01 48
+> >>> RSP: 002b:00007fff090c1a78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> >>> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd3da8e4469
+> >>> RDX: 0000000000000080 RSI: 0000000020000840 RDI: 0000000000000005
+> >>> RBP: 00007fff090c2a90 R08: 00007fd3da92e160 R09: 0000000000000000
+> >>> R10: 0000000000000000 R11: 0000000000000246 R12: 0000561aefc006c0
+> >>> R13: 00007fff090c2b70 R14: 0000000000000000 R15: 0000000000000000
+> >>> </TASK>
