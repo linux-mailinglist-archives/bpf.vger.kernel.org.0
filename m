@@ -2,173 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA9B659468
-	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 04:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B7C659495
+	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 05:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbiL3Dif (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Dec 2022 22:38:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        id S229570AbiL3EML (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Dec 2022 23:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbiL3Did (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Dec 2022 22:38:33 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F83518389
-        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 19:38:32 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id jl4so14447960plb.8
-        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 19:38:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5fydax2I5e8hodR7TsTth7TEIP2I2sf/t20unGpGvPU=;
-        b=U6Pp9ruQQHbezeJRx0weI9Y7dOKH1Ye00AMfT/WK3gTlAExt8VIClGJ04o2sIwhJ4g
-         G99cVPmwQrYphw6Uatp1VEC2uY2TX0Ih9No+Eqn8FIbA/BIJBy6R57zjhoPo4UY2UetC
-         UnpAAgSTzatT6FfsTfpcMCphTP0oe+tGBJZC71Kr0JdCyUAANs0b0j6QMb9CCVrkqCmX
-         1+v//guhZlyBA1UaT/W+v3PPF6lKSjZNhyW2aD/Tk6NbnVft8O1bGlVK5OZZjFQu12Oi
-         34UGHzGvuU2zSoSZhORjWV078craW6eNdX1CiddsVpQudfCxny9d3W1KQhNXlpQ1SGiL
-         txIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5fydax2I5e8hodR7TsTth7TEIP2I2sf/t20unGpGvPU=;
-        b=7nB6MUzKnWs3q3y6m5D85YJUNR0/WLgznWyVlr+BbWCwkBO2+U0vlDhwwqvEkIx1OQ
-         GEHuuqyGygrWO1p/WEybKAXXXPz8VgittzmfHflHAn4vXb14qxHaPS39kUFQcOPyYEKf
-         LBJVHNmXnhkYkia72CamtJ3DvpwOppcW0sGz/BKJoiJL7PssLH6RnjzAr9bK1XCphfbS
-         pZ6yuQBNLTzUa9bNnLNN81w/C4u/Gkw99EvEC5+vXRAHfhpJyImVYtlNMG8dyACx7dhP
-         +2s6HYjQWFc7+2EuVBYGsXSRQxya6YsU4uaysCGUUgVK1Mup5UzoSOD/vzJn0zWtjlgB
-         otOg==
-X-Gm-Message-State: AFqh2kpvNrwEVSoJ9E7VQLCuu01VTkX/uYREbTyrCUiHJwhqtJCxql9d
-        zkvZ+HGGeQ8+Mp5DpUVrW4XmlxXcaQ10xmmL85dAwA==
-X-Google-Smtp-Source: AMrXdXv4sT7d1E5xTQ1OLVal0h9ETKqceM6oFv050lNNRkQVd8/d3SOuoUbV3z1O+qFefPhXQrIQU9To83Ly6L2v+do=
-X-Received: by 2002:a17:902:b20d:b0:191:283d:612e with SMTP id
- t13-20020a170902b20d00b00191283d612emr1471231plr.88.1672371511611; Thu, 29
- Dec 2022 19:38:31 -0800 (PST)
-MIME-Version: 1.0
-References: <CAADnVQ+pgN8m3ApZtk9Vr=iv+OcXcv5hhASCwP6ZJGt9Z2JvMw@mail.gmail.com>
- <20221227033528.1032724-1-stfomichev@yandex.ru> <1855474adf8.28e3.85c95baa4474aabc7814e68940a78392@paul-moore.com>
- <CAKH8qBvR3=sSGvgGB_CqCFZhKynxdgatCK7N0mBZs1gBPDvTWw@mail.gmail.com> <CAADnVQ+MRTYs9sbN4a1oAV7TJ2bqRS4QE9ShmofQ9M--KQducg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+MRTYs9sbN4a1oAV7TJ2bqRS4QE9ShmofQ9M--KQducg@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 29 Dec 2022 19:38:19 -0800
-Message-ID: <CAKH8qBsN+ypbKyE-oiTzmH06ML71TmN9zqEr4=6KvXwt8TE0QQ@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
- and PERF_BPF_EVENT_PROG_UNLOAD
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Stanislav Fomichev <stfomichev@yandex.ru>,
+        with ESMTP id S229624AbiL3EMJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Dec 2022 23:12:09 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C15B18397;
+        Thu, 29 Dec 2022 20:12:05 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NjsKB35M3z4f3mLG;
+        Fri, 30 Dec 2022 12:11:58 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgAHcLMPZa5j3H4SAw--.35465S4;
+        Fri, 30 Dec 2022 12:12:01 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Burn Alting <burn.alting@iinet.net.au>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>, linux-audit@redhat.com,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+Date:   Fri, 30 Dec 2022 12:11:45 +0800
+Message-Id: <20221230041151.1231169-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAHcLMPZa5j3H4SAw--.35465S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGw4UGw18urWxKw4kAr4ruFg_yoWrJw1fpa
+        yS9w15JFyv9ryfKw1xZws7WF1rCws3GFW7GF12qryUuw4rWrn7Ar1Ika1YvFWrCFs3JF90
+        qrn0vwn3Z3s8C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 29, 2022 at 7:10 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Dec 29, 2022 at 6:13 PM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > On Tue, Dec 27, 2022 at 8:40 AM Paul Moore <paul@paul-moore.com> wrote:
-> > >
-> > > On December 26, 2022 10:35:49 PM Stanislav Fomichev <stfomichev@yandex.ru>
-> > > wrote:
-> > > >> On Fri, Dec 23, 2022 at 5:49 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > > >> get_func_ip() */
-> > > >>>> -                               tstamp_type_access:1; /* Accessed
-> > > >>>> __sk_buff->tstamp_type */
-> > > >>>> +                               tstamp_type_access:1, /* Accessed
-> > > >>>> __sk_buff->tstamp_type */
-> > > >>>> +                               valid_id:1; /* Is bpf_prog::aux::__id valid? */
-> > > >>>>    enum bpf_prog_type      type;           /* Type of BPF program */
-> > > >>>>    enum bpf_attach_type    expected_attach_type; /* For some prog types */
-> > > >>>>    u32                     len;            /* Number of filter blocks */
-> > > >>>> @@ -1688,6 +1689,12 @@ void bpf_prog_inc(struct bpf_prog *prog);
-> > > >>>> struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
-> > > >>>> void bpf_prog_put(struct bpf_prog *prog);
-> > > >>>>
-> > > >>>> +static inline u32 bpf_prog_get_id(const struct bpf_prog *prog)
-> > > >>>> +{
-> > > >>>> +       if (WARN(!prog->valid_id, "Attempting to use an invalid eBPF program"))
-> > > >>>> +               return 0;
-> > > >>>> +       return prog->aux->__id;
-> > > >>>> +}
-> > > >>>
-> > > >>> I'm still missing why we need to have this WARN and have a check at all.
-> > > >>> IIUC, we're actually too eager in resetting the id to 0, and need to
-> > > >>> keep that stale id around at least for perf/audit.
-> > > >>> Why not have a flag only to protect against double-idr_remove
-> > > >>> bpf_prog_free_id and keep the rest as is?
-> > > >>> Which places are we concerned about that used to report id=0 but now
-> > > >>> would report stale id?
-> > > >>
-> > > >> What double-idr_remove are you concerned about?
-> > > >> bpf_prog_by_id() is doing bpf_prog_inc_not_zero
-> > > >> while __bpf_prog_put just dropped it to zero.
-> > > >
-> > > > (traveling, sending from an untested setup, hope it reaches everyone)
-> > > >
-> > > > There is a call to bpf_prog_free_id from __bpf_prog_offload_destroy which
-> > > > tries to make offloaded program disappear from the idr when the netdev
-> > > > goes offline. So I'm assuming that '!prog->aux->id' check in bpf_prog_free_id
-> > > > is to handle that case where we do bpf_prog_free_id much earlier than the
-> > > > rest of the __bpf_prog_put stuff.
-> > > >
-> > > >> Maybe just move bpf_prog_free_id() into bpf_prog_put_deferred()
-> > > >> after perf_event_bpf_event and bpf_audit_prog ?
-> > > >> Probably can remove the obsolete do_idr_lock bool flag as
-> > > >> separate patch?
-> > > >
-> > > > +1 on removing do_idr_lock separately.
-> > > >
-> > > >> Much simpler fix and no code churn.
-> > > >> Both valid_id and saved_id approaches have flaws.
-> > > >
-> > > > Given the __bpf_prog_offload_destroy path above, we still probably need
-> > > > some flag to indicate that the id has been already removed from the idr?
-> > >
-> > > So what do you guys want in a patch?  Is there a consensus on what you
-> > > would merge to fix this bug/regression?
-> >
-> > Can we try the following?
-> >
-> > 1. Remove calls to bpf_prog_free_id (and bpf_map_free_id?) from
-> > kernel/bpf/offload.c; that should make it easier to reason about those
-> > '!id' checks
->
-> calls? you mean a single call, right?
+From: Hou Tao <houtao1@huawei.com>
 
-Right, there is a single call to bpf_prog_free_id. But there is also
-another single call to bpf_map_free_id with the same "remove it from
-idr so it can't be found if GET_NEXT_ID" reasoning.
-It's probably worth it to look into whether we can remove it as well
-to have consistent id management for progs and maps?
+Hi,
 
-> > 2. Move bpf_prog_free_id (and bpf_map_free_id?) to happen after
-> > audit/perf in kernel/bpf/syscall.c (there are comments that say "must
-> > be called first", but I don't see why; seems like GET_FD_BY_ID would
-> > correctly return -ENOENT; maybe Martin can chime in, CC'ed him
-> > explicitly)
->
-> The comment says that it should be removed from idr
-> before __bpf_prog_put_noref will proceed to clean up.
+The patchset tries to fix the problems found when checking how htab map
+handles element reuse in bpf memory allocator. The immediate reuse of
+freed elements may lead to two problems in htab map:
 
-Which one? I was trying to see if there is any reasoning in the
-original commit 34ad5580f8f9 ("bpf: Add BPF_(PROG|MAP)_GET_NEXT_ID
-command"), but couldn't find anything useful :-(
+(1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
+    htab map value and it may corrupt lookup procedure with BFP_F_LOCK
+    flag which acquires bpf-spin-lock during value copying. The
+    corruption of bpf-spin-lock may result in hard lock-up.
+(2) lookup procedure may get incorrect map value if the found element is
+    freed and then reused.
 
-> > 3. (optionally) Remove do_idr_lock arguments (all callers are passing 'true')
->
-> yes. please.
+Because the type of htab map elements are the same, so problem #1 can be
+fixed by supporting ctor in bpf memory allocator. The ctor initializes
+these special fields in map element only when the map element is newly
+allocated. If it is just a reused element, there will be no
+reinitialization.
+
+Problem #2 exists for both non-preallocated and preallocated htab map.
+By adding seq in htab element, doing reuse check and retrying the
+lookup procedure may be a feasible solution, but it will make the
+lookup API being hard to use, because the user needs to check whether
+the found element is reused or not and repeat the lookup procedure if it
+is reused. A simpler solution would be just disabling freed elements
+reuse and freeing these elements after lookup procedure ends.
+
+In order to reduce the overhead of call_rcu_tasks_trace() for each freed
+elements, freeing these elements in batch by moving these freed elements
+into a global per-cpu free list firstly, then after the number of freed
+elements reaches the threshold, these freed elements will be moved into
+a dymaically allocated object and being freed by a global per-cpu worker
+by calling call_rcu_tasks_trace().
+
+Because the solution frees memory by allocating new memory, so if there
+is no memory available, the global per-cpu worker will call
+rcu_barrier_tasks_trace() to wait for the expiration of RCU grace period
+and free these free elements which have been spliced into a temporary
+list. And the newly freed elements will be freed after another round of
+rcu_barrier_tasks_trace() if there is still no memory. Maybe need to
+reserve some bpf_ma_free_batch to speed up the free. Now also doesn't
+consider the scenario when RCU grace period is slow. Because these
+newly-allocated memory (aka bpf_ma_free_batch) will be freed after the
+expiration of RCU grace period, so if grace period is slow, there may be
+too much bpf_ma_free_batch being allocated.
+
+Aftering applying BPF_MA_NO_REUSE in htab map, the performance of
+"./map_perf_test 4 18 8192" drops from 520K to 330K events per sec on
+one CPU. It is a big performance degradation, so hope to get some
+feedbacks on whether or not it is necessary and how to better fixing the
+reuse problem in htab map (global allocated object may have the same
+problems as htab map). Comments are always welcome.
+
+Regards,
+Hou
+
+Hou Tao (6):
+  bpf: Support ctor in bpf memory allocator
+  bpf: Factor out a common helper free_llist()
+  bpf: Pass bitwise flags to bpf_mem_alloc_init()
+  bpf: Introduce BPF_MA_NO_REUSE for bpf memory allocator
+  bpf: Use BPF_MA_NO_REUSE in htab map
+  selftests/bpf: Add test case for element reuse in htab map
+
+ include/linux/bpf_mem_alloc.h                 |  12 +-
+ kernel/bpf/core.c                             |   2 +-
+ kernel/bpf/hashtab.c                          |  17 +-
+ kernel/bpf/memalloc.c                         | 218 ++++++++++++++++--
+ .../selftests/bpf/prog_tests/htab_reuse.c     | 111 +++++++++
+ .../testing/selftests/bpf/progs/htab_reuse.c  |  19 ++
+ 6 files changed, 353 insertions(+), 26 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_reuse.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_reuse.c
+
+-- 
+2.29.2
+
