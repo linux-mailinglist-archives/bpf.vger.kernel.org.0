@@ -2,81 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4816596EC
-	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 10:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5146E6596F9
+	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 10:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234691AbiL3JpB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Dec 2022 04:45:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40822 "EHLO
+        id S230316AbiL3JyV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Dec 2022 04:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbiL3Jo7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Dec 2022 04:44:59 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994091A3BB;
-        Fri, 30 Dec 2022 01:44:58 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id 18so1984661pfx.7;
-        Fri, 30 Dec 2022 01:44:58 -0800 (PST)
+        with ESMTP id S229876AbiL3JyU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Dec 2022 04:54:20 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0449140D2;
+        Fri, 30 Dec 2022 01:54:18 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id z7so8496326pfq.13;
+        Fri, 30 Dec 2022 01:54:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tsxWU+7JXoo0HKla64t5E5/IriNtkmkOsQcwskb5TXQ=;
-        b=mcD3qMK0skxweug7P1cOb0vrwaNOmLXOoUYzKN5qSYfC5mnPY7MnX2dDHSwP3PLZ2R
-         HFDBoaEiY9RuBwGhORAcjjXu0GW2KWBYAANLo2kYZpjCu/Beyt9Ac18MsogHnsby/o1Z
-         WK5s6Psbp+tw7aqNUFR5YQNNVZvLFGr5vEkG+CWTXM2wroPzedJcp0jp+D5qHRBQcXqG
-         Q4xKtoj2uiD94qlcRILS9TQbLqAQO6M6qbrOR4F4ndvJo9729Gc+CCr7Kjsmv1XFZsQD
-         jhqpOMN1bMwo1tN7EJB7lIy9an7wsgefxDmlS7BnDcjforjJUS53+NlAhdYFKZjWuTNC
-         6c5Q==
+        bh=nupBY8IgCxlZ4P9Kxn+Uy2z0GV1YOr96iu4t1qMcG7I=;
+        b=VCpCd6pswqeSZwAFO1KQNPvpSckF62CmpP24C/LpkF1mvmbmBQ9qWY26OXStaR6yqN
+         I72Dwh3jIsYQu5DpgmCYxI0atsdZsNgrbhQ2vxIUr7Rb++4QBw5Sa8KaxKNUHUgAZ23r
+         Van+nro4tE50vFJpXfYrgs4Ncyqn8olfKxjVwlDHYs/mHB7iYPyjVTQ93aPxy8Eeqq33
+         3cCgRr2NtECCt6rs/PczhsmwILm2lTxdwPasPDSbNHcL10NgofH956PUfDIdUsyn/nkF
+         T7K3uT7XV8VjBuvUPBV97GlW3GdVGgDPyt5sUlt+GCA1kGK88e8WQG211qpMr9ETtd+r
+         QGzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tsxWU+7JXoo0HKla64t5E5/IriNtkmkOsQcwskb5TXQ=;
-        b=hIANinVosshu7PlKse009VYYmcv6FsEsK9kor9Uc0piuMMz1nNhl61xbEA01esUvaz
-         5zUnCRCMrMdSIIMyEbU5neGv2hFEzdsLwOozIVzNh7DrXiQvP3Kln9qEumcPERQFG6H5
-         tGDgm/1ReFlZ11XQfCiZkKqgMVs0v6DngO6L8hKysuxl7WxZpjX5ypJq0HpTH+6pe4dn
-         rj6O5F7yPzC+5GEmk6D4Bvpk5asU6moTJcS4xl1pf6i5fTGMXRy2YTM4K/4F0FCGIXoh
-         EH5i/ecXIIHnujSDyaIxkXPLDrm3Yd6GV64RFiodGZ9EeF7/IM2tymQVQ/aA7oHV2m6B
-         nXNQ==
-X-Gm-Message-State: AFqh2kpyJnYroEM9TVj26/78walzdxjnGfyQsi65LXp/A4QntquAEZId
-        EqLUygYMP9wMDYq/KP66Pg==
-X-Google-Smtp-Source: AMrXdXvBZxNV4/WpuHBV4rHRrG+3YpUxsZePqSHms11ehR5JSbCWSQWZ4iIaHXWqhZV4hBA5G6Ne+w==
-X-Received: by 2002:a05:6a00:27a0:b0:57f:cf88:edf5 with SMTP id bd32-20020a056a0027a000b0057fcf88edf5mr42243045pfb.24.1672393498010;
-        Fri, 30 Dec 2022 01:44:58 -0800 (PST)
+        bh=nupBY8IgCxlZ4P9Kxn+Uy2z0GV1YOr96iu4t1qMcG7I=;
+        b=q4E4jn48t+dXoXuGAUU736RDcJTmW082R/NkMF2GRJII3QDj7tUFiyqTU+uUX863BT
+         L7Oyh2Vv6SGhHyAnnaHw1UpnqBZ21NUqfhvBhs/CDoiMNwWFYTguE/E7Z3Lgbifvjh2T
+         mBZLAJKfrs1zLymUCKGwmGnVnaBjS9WTejiEu5X6fJe6KLeAFOMqArQ7XQyvRgXJHwWr
+         zv4C8WJtHqsR5ixCe2mWg+NYOR0rFiEklrUVIri9zU4/SlvQ9z/V2JxBL3NFKCaonl91
+         CCYAkD8P3UQJakhWNjKyK1EoRhOhCqJRXTcB6kpW+8UwErYSP9yjy8EMQMfSBxCXmpHg
+         ISJg==
+X-Gm-Message-State: AFqh2kqXFrcD1DwSvlFQjrDHPoGX8qCbjpLBAfMUmyqNAtPYWv5brPdT
+        U7hu/InV1gjaNDsU9BQCGQ==
+X-Google-Smtp-Source: AMrXdXubpKdrsO5YigBeNw/YayOXVNsmcDYEDBKPpiSbgbnG9ZYTAnrKYExHgA7A/lS46RrdDQkazA==
+X-Received: by 2002:a62:6546:0:b0:578:119c:1c52 with SMTP id z67-20020a626546000000b00578119c1c52mr26595111pfb.14.1672394058343;
+        Fri, 30 Dec 2022 01:54:18 -0800 (PST)
 Received: from smtpclient.apple ([144.214.0.13])
-        by smtp.gmail.com with ESMTPSA id d63-20020a623642000000b005821156cd70sm205594pfa.190.2022.12.30.01.44.54
+        by smtp.gmail.com with ESMTPSA id 2-20020a621902000000b0058167c59bd7sm6141878pfz.40.2022.12.30.01.54.15
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 30 Dec 2022 01:44:57 -0800 (PST)
+        Fri, 30 Dec 2022 01:54:18 -0800 (PST)
 Content-Type: text/plain;
-        charset=utf-8
+        charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.300.101.1.3\))
-Subject: Re: WARNING in __mark_chain_precision
+Subject: Re: kernel panic: Attempted to kill init!
 From:   Hao Sun <sunhao.th@gmail.com>
-In-Reply-To: <CAEf4BzY-DMVEpy+mPTObEO56E7=fzqab8zW_4JyBeyGtTqqcXg@mail.gmail.com>
-Date:   Fri, 30 Dec 2022 17:44:43 +0800
-Cc:     Yonghong Song <yhs@meta.com>, Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+In-Reply-To: <ef46c1f6-0939-c2ed-3efb-c3c5f28d1931@meta.com>
+Date:   Fri, 30 Dec 2022 17:54:04 +0800
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <29B647B3-174A-4BE7-9E0E-83AE94B0EADF@gmail.com>
-References: <CACkBjsaXNceR8ZjkLG=dT3P=4A8SBsg0Z5h5PWLryF5=ghKq=g@mail.gmail.com>
- <Y6C36gvJ2JnwKm3X@google.com>
- <CAEf4BzbY8SDL04W_3Vot6iiYu69Lqg9W9aMCp26+RwLBh6C_0g@mail.gmail.com>
- <ba5aacc8-7e10-e20a-936b-f3f81d7fcf03@meta.com>
- <CAEf4BzY-DMVEpy+mPTObEO56E7=fzqab8zW_4JyBeyGtTqqcXg@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Message-Id: <73E3CA9E-F67E-429F-A2DB-C77649E32D7A@gmail.com>
+References: <20221222043507.33037-1-sunhao.th@gmail.com>
+ <ef46c1f6-0939-c2ed-3efb-c3c5f28d1931@meta.com>
+To:     Yonghong Song <yhs@meta.com>
 X-Mailer: Apple Mail (2.3731.300.101.1.3)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -90,102 +85,104 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> =E4=BA=8E2022=E5=B9=B412=E6=9C=
-=8830=E6=97=A5=E5=91=A8=E4=BA=94 06:16=E5=86=99=E9=81=93=EF=BC=9A
+> On 28 Dec 2022, at 2:35 PM, Yonghong Song <yhs@meta.com> wrote:
 >=20
-> On Tue, Dec 27, 2022 at 9:24 PM Yonghong Song <yhs@meta.com> wrote:
->>=20
->>=20
->>=20
->> On 12/20/22 4:30 PM, Andrii Nakryiko wrote:
->>> On Mon, Dec 19, 2022 at 11:13 AM <sdf@google.com> wrote:
->>>>=20
->>>> On 12/19, Hao Sun wrote:
->>>>> Hi,
->>>>=20
->>>>> The following backtracking bug can be triggered on the latest =
-bpf-next and
->>>>> Linux 6.1 with the C prog provided. I don't have enough knowledge =
-about
->>>>> this part in the verifier, don't know how to fix this.
->>>>=20
->>>> Maybe something related to commit be2ef8161572 ("bpf: allow =
-precision
->>>> tracking
->>>> for programs with subprogs") and/or the related ones?
->>>>=20
->>>>=20
->>>>> This can be reproduced on:
->>>>=20
->>>>> HEAD commit: 0e43662e61f2 tools/resolve_btfids: Use pkg-config to =
-locate
->>>>> libelf
->>>>> git tree: bpf-next
->>>>> console log: https://pastebin.com/raw/45hZ7iqm
->>>>> kernel config: https://pastebin.com/raw/0pu1CHRm
->>>>> C reproducer: https://pastebin.com/raw/tqsiezvT
->>>>=20
->>>>> func#0 @0
->>>>> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
->>>>> 0: (18) r2 =3D 0x8000000000000          ; R2_w=3D2251799813685248
->>>>> 2: (18) r6 =3D 0xffff888027358000       ;
->>>>> R6_w=3Dmap_ptr(off=3D0,ks=3D3032,vs=3D3664,imm=3D0)
->>>>> 4: (18) r7 =3D 0xffff88802735a000       ;
->>>>> R7_w=3Dmap_ptr(off=3D0,ks=3D156,vs=3D2624,imm=3D0)
->>>>> 6: (18) r8 =3D 0xffff88802735e000       ;
->>>>> R8_w=3Dmap_ptr(off=3D0,ks=3D2396,vs=3D76,imm=3D0)
->>>>> 8: (18) r9 =3D 0x8e9700000000           ; R9_w=3D156779191205888
->>>>> 10: (36) if w9 >=3D 0xffffffe3 goto pc+1
->>>>> last_idx 10 first_idx 0
->>>>> regs=3D200 stack=3D0 before 8: (18) r9 =3D 0x8e9700000000
->>>>> 11: R9_w=3D156779191205888
->>>>> 11: (85) call #0
->>>>> 12: (cc) w2 s>>=3D w7
->>>=20
->>> w2 should have been set to NOT_INIT (because r1-r5 are clobbered by
->>> calls) and rejected here as !read_ok (see check_reg_arg()) before
->>> attempting to mark precision for r2. Can you please try to debug and
->>> understand why that didn't happen here?
->>=20
->> The verifier is doing the right thing here and the 'call #0' does
->> implicitly cleared r1-r5.
->>=20
->> So for 'w2 s>>=3D w7', since w2 is used, the verifier tries to find
->> its definition by backtracing. It encountered 'call #0', which clears
 >=20
-> and that's what I'm saying is incorrect. Normally we'd get !read_ok
-> error because s>>=3D is both READ and WRITE on w2, which is
-> uninitialized after call instruction according to BPF ABI. And that's
-> what actually seems to happen correctly in my (simpler) tests locally.
-> But something is special about this specific repro that somehow either
-> bypasses this logic, or attempts to mark precision before we get to
-> that test. That's what we should investigate. I haven't tried to run
-> this specific repro locally yet, so can't tell for sure.
 >=20
+> On 12/21/22 8:35 PM, Hao Sun wrote:
+>> Hi,
+>> This crash can be triggered by executing the C reproducer for
+>> multiple times, which just keep loading the following prog as
+>> raw tracepoint into kmem_cache_free().
+>> The prog send SIGSEGV to current via bpf_send_signal_thread(),
+>> after load this, whoever tries to free mem would trigger this,
+>> kernel crashed when this happens to init.
+>> Seems we should filter init out in bpf_send_signal_common() by
+>> is_global_init(current), or maybe we should check this in the
+>> verifier?
+>=20
+> The helper is just to send a particular signal to *current*
+> thread. In typical use case, it is never a good idea to send
+> the signal to a *random* thread. In certain cases, maybe user
+> indeed wants to send the signal to init thread to observe
+> something. Note that such destructive side effect already
+> exists in the bpf land. For example, for a xdp program,
+> it could drop all packets to make machine not responsive
+> to ssh etc. Therefore, I recommend to keep the existing
+> bpf_send_signal_common() helper behavior.
 
-So, the reason why w2 is not marked as uninit is that the kfunc call in
-the BPF program is invalid, "call #0", imm is zero, right?
-In check_kfunc_call(), it skips this error temporarily:
+Sound the two are different cases. Not responsive in XDP seems like
+an intended behaviour, panic caused by killing init is buggy. If the
+last thread of global init was killed, kernel panic immediately.
 
-/* skip for now, but return error when we find this in fixup_kfunc_call =
-*/
- if (!insn->imm)
- return 0;
 
-So the kfunc call is the previous instruction before "w2 s>>=3D w7", =
-this
-leads to the warning in backtrack_insn():
-
-/* regular helper call sets R0 */
-*reg_mask &=3D ~1;
-if (*reg_mask & 0x3f) {
-	/* if backtracing was looking for registers R1-R5
-	* they should have been found already.
-	*/
-	verbose(env, "BUG regs %x\n", *reg_mask);
-	WARN_ONCE(1, "verifier backtracking bug=E2=80=9D);
-	return -EFAULT;
-}
-
-Any idea or hint on how to fix this?
+>=20
+>> This can be reproduced on:
+>> HEAD commit: 59fe41b5255f selftests/bpf: Add verifier test exercising =
+jit PROBE_MEM logic
+>> git tree: bpf-next
+>> console output: https://pastebin.com/raw/FMgyvEnH
+>> kernel config : https://pastebin.com/raw/XeF6jU43
+>> C reproducer  : https://pastebin.com/raw/Tag5N893
+>> func#0 @0
+>> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+>> 0: (18) r0 =3D 0x0                      ; R0_w=3D0
+>> 2: (18) r6 =3D 0x0                      ; R6_w=3D0
+>> 4: (18) r7 =3D 0x0                      ; R7_w=3D0
+>> 6: (18) r8 =3D 0x0                      ; R8_w=3D0
+>> 8: (18) r9 =3D 0x0                      ; R9_w=3D0
+>> 10: (2d) if r0 > r0 goto pc+2
+>> last_idx 10 first_idx 0
+>> regs=3D1 stack=3D0 before 8: (18) r9 =3D 0x0
+>> regs=3D1 stack=3D0 before 6: (18) r8 =3D 0x0
+>> regs=3D1 stack=3D0 before 4: (18) r7 =3D 0x0
+>> regs=3D1 stack=3D0 before 2: (18) r6 =3D 0x0
+>> regs=3D1 stack=3D0 before 0: (18) r0 =3D 0x0
+>> last_idx 10 first_idx 0
+>> regs=3D1 stack=3D0 before 8: (18) r9 =3D 0x0
+>> regs=3D1 stack=3D0 before 6: (18) r8 =3D 0x0
+>> regs=3D1 stack=3D0 before 4: (18) r7 =3D 0x0
+>> regs=3D1 stack=3D0 before 2: (18) r6 =3D 0x0
+>> regs=3D1 stack=3D0 before 0: (18) r0 =3D 0x0
+>> 11: R0_w=3D0
+>> 11: (b7) r1 =3D 11                      ; R1_w=3D11
+>> 12: (85) call bpf_send_signal_thread#117      ; R0=3Dscalar()
+>> 13: (95) exit
+>> processed 9 insns (limit 1000000) max_states_per_insn 0 total_states =
+1 peak_states 1 mark_read 1
+>> Kernel panic - not syncing: Attempted to kill init! =
+exitcode=3D0x0000000b
+>> CPU: 3 PID: 1 Comm: systemd Not tainted 6.1.0-09652-g59fe41b5255f =
+#148
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
+rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+>> Call Trace:
+>>  <TASK>
+>>  __dump_stack lib/dump_stack.c:88 [inline]
+>>  dump_stack_lvl+0x100/0x178 lib/dump_stack.c:106
+>>  panic+0x2c4/0x60f kernel/panic.c:275
+>>  do_exit.cold+0x63/0xe4 kernel/exit.c:789
+>>  do_group_exit+0xd4/0x2a0 kernel/exit.c:950
+>>  get_signal+0x2460/0x2600 kernel/signal.c:2858
+>>  arch_do_signal_or_restart+0x78/0x5d0 arch/x86/kernel/signal.c:306
+>>  exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+>>  exit_to_user_mode_prepare+0x15f/0x250 kernel/entry/common.c:203
+>>  __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+>>  syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
+>>  do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+>>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> RIP: 0033:0x55e738964df0
+>> Code: 00 31 f6 89 ef 4c 8d 05 be 1b 0d 00 48 8d 15 b0 85 0c 00 31 c0 =
+e8 f0 c3 ff ff e9 1c ff ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 <41> 57 =
+41 56 41 55 41 54 41 89 fc 55 53 48 81 ec 48 01 00 00 64 48
+>> RSP: 002b:00007ffeb8e87bb8 EFLAGS: 00000246 ORIG_RAX: =
+00000000000000f7
+>> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f29dc8a6bc1
+>> RDX: 00007ffeb8e87bc0 RSI: 00007ffeb8e87cf0 RDI: 000000000000000b
+>> RBP: 00007ffeb90b73c0 R08: 0000000000000000 R09: 0000000000000002
+>> R10: 0000000000000004 R11: 0000000000000246 R12: 00007f29dc3f76c8
+>> R13: 000000000000294d R14: 0000000000000000 R15: 00007ffeb9686870
+>>  </TASK>
+>> Kernel Offset: disabled
+>> Rebooting in 86400 seconds..
 
