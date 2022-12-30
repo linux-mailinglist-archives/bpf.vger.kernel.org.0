@@ -2,233 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 477C7659499
-	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 05:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8CF65949E
+	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 05:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234312AbiL3EMP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Dec 2022 23:12:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        id S229537AbiL3ETL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Dec 2022 23:19:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234095AbiL3EMJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Dec 2022 23:12:09 -0500
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7522A186C5;
-        Thu, 29 Dec 2022 20:12:07 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NjsKF6DnKz4f3nqS;
-        Fri, 30 Dec 2022 12:12:01 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAHcLMPZa5j3H4SAw--.35465S10;
-        Fri, 30 Dec 2022 12:12:04 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: [RFC PATCH bpf-next 6/6] selftests/bpf: Add test case for element reuse in htab map
-Date:   Fri, 30 Dec 2022 12:11:51 +0800
-Message-Id: <20221230041151.1231169-7-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20221230041151.1231169-1-houtao@huaweicloud.com>
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+        with ESMTP id S229507AbiL3ETI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Dec 2022 23:19:08 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96D11183F
+        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 20:18:59 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id u18so27714078eda.9
+        for <bpf@vger.kernel.org>; Thu, 29 Dec 2022 20:18:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5LDRs4PLNOZi6E/lSAZ1su22s9pgjU7A0PvegEN5lh0=;
+        b=OuKcCEY6XPX/zYYZylNcbFQqz9n1ZW0CyBsrryxI8oVcYi2QU27McWJu2BXUQK3jXb
+         zuDj3qFjBbbZwsSPfB3YW1t26iCIVutV9RUIQkjjKT3qYkrJhzAAZvEjJRcJDBunCUnx
+         BzkT5jGO//W2h4JxKT0C4ph2FGWJtkg9ztgjLYdkz2F66vbbrKNjCSbmaBD8ySHscVYt
+         rFJ6XaU1dwF5v2m3W+2nRSqjeqsAmFCngeVjiA/GcRONsPhktTV5KyIaEQtFAKttqjpg
+         TKWNc1WUr/10BYM8OSNhAuNgHLoUsCV0VjNA/DiXwaJ17lBFkswUWmvDoaJaEIGABPzm
+         rOcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5LDRs4PLNOZi6E/lSAZ1su22s9pgjU7A0PvegEN5lh0=;
+        b=4JEUW3Q704XKJxulJwO1uvBT9YwolEXT3CtxZg1KYBDg9H17SC7RAkDsGyUv7EVzDv
+         tAjZ053Wp6dEKrbNR4np06boTpCL6YuuL4Cq6pvMtlvbhmfBD3QWCeZA25Wzpe1ZQ8+X
+         uxyTyCT+JeDdeWWwOtD7X3pHy2TM4VL8xUQYaYQGknCOd5lqbbaFrf/CRIfLQ8Ow3vsI
+         zVt/YG2aC2Cqen11S2ZkG4jigXh3vecSNO5SaxTZsUDiUl2Gk/BlGAQp7eP15m6OUYVj
+         OT9EFf2YZc9UqMcTMG+ZgM2ERQzISYPpmiPIOEKTrSDVmmHjOASp/J2TwYrLIChjbepB
+         soDQ==
+X-Gm-Message-State: AFqh2krWWTOtI8Agw+EcGSBKbFQ+pv3ach4PhcRRrJzcMB1T5OJx2/h3
+        GL2ThOl/KewhaEhdMgNga3b+GWvmlJ+GNmXSib8=
+X-Google-Smtp-Source: AMrXdXtbxD3Aujg79QuPh+xUGj42jdrm4/O9QSW2CkQVl5lyICwYNx414FNSXM9JH5jWFcqWXWMspQ7PDmby+x/zwKU=
+X-Received: by 2002:aa7:d7c6:0:b0:486:9f80:8fbc with SMTP id
+ e6-20020aa7d7c6000000b004869f808fbcmr1497251eds.421.1672373938065; Thu, 29
+ Dec 2022 20:18:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHcLMPZa5j3H4SAw--.35465S10
-X-Coremail-Antispam: 1UD129KBjvJXoWxGw1DKw45Kr43GF1rWr13XFb_yoWrAF4Upa
-        yrC34UKrWxXwn8Ww15Jan7KF4ftw1rZay5AFn3Ww1avw1UZr9avr1xKFW7tF1fCrZ3Xryr
-        Zayfta15Zr48Cw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-        xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAI
-        cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
-        IEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFgAwUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAADnVQ+pgN8m3ApZtk9Vr=iv+OcXcv5hhASCwP6ZJGt9Z2JvMw@mail.gmail.com>
+ <20221227033528.1032724-1-stfomichev@yandex.ru> <1855474adf8.28e3.85c95baa4474aabc7814e68940a78392@paul-moore.com>
+ <CAKH8qBvR3=sSGvgGB_CqCFZhKynxdgatCK7N0mBZs1gBPDvTWw@mail.gmail.com>
+ <CAADnVQ+MRTYs9sbN4a1oAV7TJ2bqRS4QE9ShmofQ9M--KQducg@mail.gmail.com> <CAKH8qBsN+ypbKyE-oiTzmH06ML71TmN9zqEr4=6KvXwt8TE0QQ@mail.gmail.com>
+In-Reply-To: <CAKH8qBsN+ypbKyE-oiTzmH06ML71TmN9zqEr4=6KvXwt8TE0QQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 29 Dec 2022 20:18:46 -0800
+Message-ID: <CAADnVQ+JswT0KE_mwshO-igoP-LYLCOco61+FGP+opY4xES8Eg@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
+ and PERF_BPF_EVENT_PROG_UNLOAD
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Stanislav Fomichev <stfomichev@yandex.ru>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Burn Alting <burn.alting@iinet.net.au>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@kernel.org>, linux-audit@redhat.com,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+On Thu, Dec 29, 2022 at 7:38 PM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> On Thu, Dec 29, 2022 at 7:10 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Thu, Dec 29, 2022 at 6:13 PM Stanislav Fomichev <sdf@google.com> wrote:
+> > >
+> > > On Tue, Dec 27, 2022 at 8:40 AM Paul Moore <paul@paul-moore.com> wrote:
+> > > >
+> > > > On December 26, 2022 10:35:49 PM Stanislav Fomichev <stfomichev@yandex.ru>
+> > > > wrote:
+> > > > >> On Fri, Dec 23, 2022 at 5:49 PM Stanislav Fomichev <sdf@google.com> wrote:
+> > > > >> get_func_ip() */
+> > > > >>>> -                               tstamp_type_access:1; /* Accessed
+> > > > >>>> __sk_buff->tstamp_type */
+> > > > >>>> +                               tstamp_type_access:1, /* Accessed
+> > > > >>>> __sk_buff->tstamp_type */
+> > > > >>>> +                               valid_id:1; /* Is bpf_prog::aux::__id valid? */
+> > > > >>>>    enum bpf_prog_type      type;           /* Type of BPF program */
+> > > > >>>>    enum bpf_attach_type    expected_attach_type; /* For some prog types */
+> > > > >>>>    u32                     len;            /* Number of filter blocks */
+> > > > >>>> @@ -1688,6 +1689,12 @@ void bpf_prog_inc(struct bpf_prog *prog);
+> > > > >>>> struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
+> > > > >>>> void bpf_prog_put(struct bpf_prog *prog);
+> > > > >>>>
+> > > > >>>> +static inline u32 bpf_prog_get_id(const struct bpf_prog *prog)
+> > > > >>>> +{
+> > > > >>>> +       if (WARN(!prog->valid_id, "Attempting to use an invalid eBPF program"))
+> > > > >>>> +               return 0;
+> > > > >>>> +       return prog->aux->__id;
+> > > > >>>> +}
+> > > > >>>
+> > > > >>> I'm still missing why we need to have this WARN and have a check at all.
+> > > > >>> IIUC, we're actually too eager in resetting the id to 0, and need to
+> > > > >>> keep that stale id around at least for perf/audit.
+> > > > >>> Why not have a flag only to protect against double-idr_remove
+> > > > >>> bpf_prog_free_id and keep the rest as is?
+> > > > >>> Which places are we concerned about that used to report id=0 but now
+> > > > >>> would report stale id?
+> > > > >>
+> > > > >> What double-idr_remove are you concerned about?
+> > > > >> bpf_prog_by_id() is doing bpf_prog_inc_not_zero
+> > > > >> while __bpf_prog_put just dropped it to zero.
+> > > > >
+> > > > > (traveling, sending from an untested setup, hope it reaches everyone)
+> > > > >
+> > > > > There is a call to bpf_prog_free_id from __bpf_prog_offload_destroy which
+> > > > > tries to make offloaded program disappear from the idr when the netdev
+> > > > > goes offline. So I'm assuming that '!prog->aux->id' check in bpf_prog_free_id
+> > > > > is to handle that case where we do bpf_prog_free_id much earlier than the
+> > > > > rest of the __bpf_prog_put stuff.
+> > > > >
+> > > > >> Maybe just move bpf_prog_free_id() into bpf_prog_put_deferred()
+> > > > >> after perf_event_bpf_event and bpf_audit_prog ?
+> > > > >> Probably can remove the obsolete do_idr_lock bool flag as
+> > > > >> separate patch?
+> > > > >
+> > > > > +1 on removing do_idr_lock separately.
+> > > > >
+> > > > >> Much simpler fix and no code churn.
+> > > > >> Both valid_id and saved_id approaches have flaws.
+> > > > >
+> > > > > Given the __bpf_prog_offload_destroy path above, we still probably need
+> > > > > some flag to indicate that the id has been already removed from the idr?
+> > > >
+> > > > So what do you guys want in a patch?  Is there a consensus on what you
+> > > > would merge to fix this bug/regression?
+> > >
+> > > Can we try the following?
+> > >
+> > > 1. Remove calls to bpf_prog_free_id (and bpf_map_free_id?) from
+> > > kernel/bpf/offload.c; that should make it easier to reason about those
+> > > '!id' checks
+> >
+> > calls? you mean a single call, right?
+>
+> Right, there is a single call to bpf_prog_free_id. But there is also
+> another single call to bpf_map_free_id with the same "remove it from
+> idr so it can't be found if GET_NEXT_ID" reasoning.
 
-The immediate reuse of free htab elements can lead to two problems:
-1) lookup may get unexpected map value if the found element is deleted
-and then reused.
-2) the reinitialization of spin-lock in map value after reuse may
-corrupt lookup with BPF_F_LOCK flag and result in hard lock-up.
+map offloading is different from prog offload.
+Like:
+        if (bpf_map_is_dev_bound(map))
+                return bpf_map_offload_lookup_elem(map, key, value);
 
-So add one test case to demonostrate these two problems.
+gotta be much more careful with them and offload.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/htab_reuse.c     | 111 ++++++++++++++++++
- .../testing/selftests/bpf/progs/htab_reuse.c  |  19 +++
- 2 files changed, 130 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_reuse.c
- create mode 100644 tools/testing/selftests/bpf/progs/htab_reuse.c
+> It's probably worth it to look into whether we can remove it as well
+> to have consistent id management for progs and maps?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/htab_reuse.c b/tools/testing/selftests/bpf/prog_tests/htab_reuse.c
-new file mode 100644
-index 000000000000..995972958d1d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/htab_reuse.c
-@@ -0,0 +1,111 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <stdbool.h>
-+#include <test_progs.h>
-+#include "htab_reuse.skel.h"
-+
-+struct htab_op_ctx {
-+	int fd;
-+	int loop;
-+	bool stop;
-+};
-+
-+struct htab_val {
-+	unsigned int lock;
-+	unsigned int data;
-+};
-+
-+static void *htab_lookup_fn(void *arg)
-+{
-+	struct htab_op_ctx *ctx = arg;
-+	int ret = 0, i = 0;
-+
-+        while (i++ < ctx->loop && !ctx->stop) {
-+		struct htab_val value;
-+		unsigned int key;
-+		int err;
-+
-+		/*
-+		 * Use BPF_F_LOCK to use spin-lock in map value. And also
-+		 * check whether or not an unexpected value is returned.
-+		 */
-+		key = 7;
-+                err = bpf_map_lookup_elem_flags(ctx->fd, &key, &value, BPF_F_LOCK);
-+		if (!err && key != value.data)
-+			ret = EINVAL;
-+        }
-+
-+        return (void *)(long)ret;
-+}
-+
-+static void *htab_update_fn(void *arg)
-+{
-+	struct htab_op_ctx *ctx = arg;
-+	int i = 0;
-+
-+        while (i++ < ctx->loop && !ctx->stop) {
-+		struct htab_val value;
-+                unsigned int key;
-+
-+		key = 7;
-+		value.lock = 0;
-+		value.data = key;
-+                bpf_map_update_elem(ctx->fd, &key, &value, BPF_F_LOCK);
-+		bpf_map_delete_elem(ctx->fd, &key);
-+
-+		key = 24;
-+		value.lock = 0;
-+		value.data = key;
-+                bpf_map_update_elem(ctx->fd, &key, &value, BPF_F_LOCK);
-+		bpf_map_delete_elem(ctx->fd, &key);
-+        }
-+
-+        return NULL;
-+}
-+
-+void test_htab_reuse(void)
-+{
-+	unsigned int i, wr_nr = 1, rd_nr = 4;
-+	pthread_t tids[wr_nr + rd_nr];
-+	struct htab_reuse *skel;
-+	struct htab_op_ctx ctx;
-+	int err;
-+
-+	skel = htab_reuse__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "htab_reuse__open_and_load"))
-+		return;
-+
-+	ctx.fd = bpf_map__fd(skel->maps.htab);
-+	ctx.loop = 500;
-+	ctx.stop = false;
-+
-+	memset(tids, 0, sizeof(tids));
-+	for (i = 0; i < wr_nr; i++) {
-+		err = pthread_create(&tids[i], NULL, htab_update_fn, &ctx);
-+		if (!ASSERT_OK(err, "pthread_create")) {
-+			ctx.stop = true;
-+			goto reap;
-+		}
-+	}
-+	for (i = 0; i < rd_nr; i++) {
-+		err = pthread_create(&tids[i + wr_nr], NULL, htab_lookup_fn, &ctx);
-+		if (!ASSERT_OK(err, "pthread_create")) {
-+			ctx.stop = true;
-+			goto reap;
-+		}
-+	}
-+
-+reap:
-+	for (i = 0; i < wr_nr + rd_nr; i++) {
-+		void *thread_err;
-+
-+		if (!tids[i])
-+			continue;
-+		thread_err = NULL;
-+		pthread_join(tids[i], &thread_err);
-+		ASSERT_NULL(thread_err, "thread error");
-+	}
-+	htab_reuse__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/htab_reuse.c b/tools/testing/selftests/bpf/progs/htab_reuse.c
-new file mode 100644
-index 000000000000..e6dcc70517f9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/htab_reuse.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct htab_val {
-+	struct bpf_spin_lock lock;
-+	unsigned int data;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 64);
-+	__type(key, unsigned int);
-+	__type(value, struct htab_val);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+} htab SEC(".maps");
--- 
-2.29.2
+I'd rather not at this point.
+Consistency sounds nice, but requires a ton more work.
 
+> > > 2. Move bpf_prog_free_id (and bpf_map_free_id?) to happen after
+> > > audit/perf in kernel/bpf/syscall.c (there are comments that say "must
+> > > be called first", but I don't see why; seems like GET_FD_BY_ID would
+> > > correctly return -ENOENT; maybe Martin can chime in, CC'ed him
+> > > explicitly)
+> >
+> > The comment says that it should be removed from idr
+> > before __bpf_prog_put_noref will proceed to clean up.
+>
+> Which one? I was trying to see if there is any reasoning in the
+> original commit 34ad5580f8f9 ("bpf: Add BPF_(PROG|MAP)_GET_NEXT_ID
+> command"), but couldn't find anything useful :-(
+
+Maybe back then we didn't have atomic_inc_not_zero(prog/map->refcnt) ?
+I don't really recall what race we were worried about.
+
+> > > 3. (optionally) Remove do_idr_lock arguments (all callers are passing 'true')
+> >
+> > yes. please.
