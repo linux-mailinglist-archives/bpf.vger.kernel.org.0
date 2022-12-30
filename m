@@ -2,31 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4124A6597AB
-	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 12:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE376597CB
+	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 12:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234931AbiL3L3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Dec 2022 06:29:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
+        id S230250AbiL3LjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Dec 2022 06:39:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbiL3L2x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Dec 2022 06:28:53 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D01A140C0;
-        Fri, 30 Dec 2022 03:28:52 -0800 (PST)
-Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Nk2w02KdgzqTHX;
-        Fri, 30 Dec 2022 19:24:16 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 30 Dec 2022 19:28:49 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
+        with ESMTP id S229449AbiL3Li7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Dec 2022 06:38:59 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ED91AD9E
+        for <bpf@vger.kernel.org>; Fri, 30 Dec 2022 03:38:52 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id n12so9125297pjp.1
+        for <bpf@vger.kernel.org>; Fri, 30 Dec 2022 03:38:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/zHQ7C/1hwR4uoIgftTGe8gWm7LYuzkWgGstoQ9CsfM=;
+        b=dx0C/DbyadxlXvzgiQwGswsxfpXQ1fLCXYdyaB9BlOHNqOOA7Tifncz4KkvCvd8zHC
+         /LCbGx8FLVLOhxwyk3zTKDmfH9DhmnyPq5BBERPvIzevTyz2x1D+pbPAetQqYwJw08Lv
+         PGwPI3XhSBnbeEr7rX8JItAQxcQBdMxTLRkOKjnPbeG6vcnLKBMtpSVo9Zbv5wS15xnD
+         MwKOqXQVCA2XbkmIzwFRrkjD4jAi5WpULPRZvtcCgdjnV6ykgtxXocfvAHNfFXsshaDn
+         VSVZCOIqbXzr83w2pMxpiMrpLlg09zsOUFI1Gj/jMGbfHuO7D3fK+FHgqsz82IHWztFJ
+         CPXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/zHQ7C/1hwR4uoIgftTGe8gWm7LYuzkWgGstoQ9CsfM=;
+        b=4t0prYv0unfiv9JDjQdF2vbDqiolEwCOjBk5DZxI3wdf4krzppIWeGBJhm8KngqMJG
+         TXAXH9YfQ4poGG2p6NDL3pOLTclL2neujZB2kHoiszpgy9cIXfEWbPsWj9/rblvPYyAK
+         lz/mEIirNuHvZ9t+fp9zG0gSmc8bFwtiyQm+xmmQrLFskdDWxbCwKMh/1WNshRV7DwOc
+         DYfvtkYycYY0C6UxKPEaRMlEW8M45mAFAz77dd2MbjVAyWFZDTNP4+MGQr3QCNaXztrG
+         Rv+4FQptF1zUKKhEOVnZJPGRNm59IH9qM18RCHiaWJtqnE3TJRGkBJJz7TKsLzW6R8Ew
+         eG6Q==
+X-Gm-Message-State: AFqh2krVQgdW78wC5L2fe2j3Er4rBAeNdP+BWIRrjfLgpKt6DsuKWwkD
+        FAvgw/KisbIN1uhMxH40kTqg6t0MMsw=
+X-Google-Smtp-Source: AMrXdXtOvsR7JNfRGdzk1kjRYofW18Twcn7Q7nKqRazx1APDSN73mkJNrDgXCK2P9KlpiVlmZi0olw==
+X-Received: by 2002:a17:902:b60d:b0:192:6464:f433 with SMTP id b13-20020a170902b60d00b001926464f433mr22642675pls.1.1672400331329;
+        Fri, 30 Dec 2022 03:38:51 -0800 (PST)
+Received: from localhost.localdomain ([1.202.165.115])
+        by smtp.gmail.com with ESMTPSA id jd4-20020a170903260400b001897e2fd65dsm10855254plb.9.2022.12.30.03.38.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 30 Dec 2022 03:38:50 -0800 (PST)
+From:   xiangxia.m.yue@gmail.com
+To:     bpf@vger.kernel.org
+Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -36,189 +60,144 @@ To:     Josh Poimboeuf <jpoimboe@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, <bpf@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <live-patching@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        <linux-modules@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 3/3] kallsyms: Delete an unused parameter related to {module_}kallsyms_on_each_symbol()
-Date:   Fri, 30 Dec 2022 19:27:29 +0800
-Message-ID: <20221230112729.351-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20221230112729.351-1-thunder.leizhen@huawei.com>
-References: <20221230112729.351-1-thunder.leizhen@huawei.com>
+        Hou Tao <houtao1@huawei.com>
+Subject: [bpf-next] bpf, x86_64: fix JIT to dump the valid insn
+Date:   Fri, 30 Dec 2022 19:38:32 +0800
+Message-Id: <20221230113832.22938-1-xiangxia.m.yue@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The parameter 'struct module *' in the hook function associated with
-{module_}kallsyms_on_each_symbol() is no longer used. Delete it.
+From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-Suggested-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+With bpf_jit_binary_pack_finalize invoked, we copy
+rw_header to header and then image/insn is valid.
+
+Write a test BPF prog which include subprog:
+
+$ llvm-objdump -d subprog.o
+Disassembly of section .text:
+0000000000000000 <subprog>:
+       0:	18 01 00 00 73 75 62 70 00 00 00 00 72 6f 67 00	r1 = 29114459903653235 ll
+       2:	7b 1a f8 ff 00 00 00 00	*(u64 *)(r10 - 8) = r1
+       3:	bf a1 00 00 00 00 00 00	r1 = r10
+       4:	07 01 00 00 f8 ff ff ff	r1 += -8
+       5:	b7 02 00 00 08 00 00 00	r2 = 8
+       6:	85 00 00 00 06 00 00 00	call 6
+       7:	95 00 00 00 00 00 00 00	exit
+Disassembly of section raw_tp/sys_enter:
+0000000000000000 <entry>:
+       0:	85 10 00 00 ff ff ff ff	call -1
+       1:	b7 00 00 00 00 00 00 00	r0 = 0
+       2:	95 00 00 00 00 00 00 00	exit
+
+Without this patch, kernel print message:
+[  580.775387] flen=8 proglen=51 pass=3 image=ffffffffa000c20c from=kprobe-load pid=1643
+[  580.777236] JIT code: 00000000: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
+[  580.779037] JIT code: 00000010: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
+[  580.780767] JIT code: 00000020: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
+[  580.782568] JIT code: 00000030: cc cc cc
+
+$ bpf_jit_disasm
+51 bytes emitted from JIT compiler (pass:3, flen:8)
+ffffffffa000c20c + <x>:
+   0:	int3
+   1:	int3
+   2:	int3
+   3:	int3
+   4:	int3
+   5:	int3
+   ...
+
+To fix this issue:
+[  260.016071] flen=3 proglen=20 pass=1 image=ffffffffa000c11c from=kprobe-load pid=1568
+[  260.018094] JIT code: 00000000: 0f 1f 44 00 00 66 90 55 48 89 e5 e8 38 00 00 00
+[  260.020124] JIT code: 00000010: 31 c0 c9 c3
+[  260.021229] flen=8 proglen=51 pass=1 image=ffffffffa000c164 from=kprobe-load pid=1568
+[  260.023132] JIT code: 00000000: 0f 1f 44 00 00 66 90 55 48 89 e5 48 81 ec 08 00
+[  260.025129] JIT code: 00000010: 00 00 48 bf 73 75 62 70 72 6f 67 00 48 89 7d f8
+[  260.027199] JIT code: 00000020: 48 89 ef 48 83 c7 f8 be 08 00 00 00 e8 9e 19 1d
+[  260.029226] JIT code: 00000030: e1 c9 c3
+
+$ bpf_jit_disasm
+51 bytes emitted from JIT compiler (pass:1, flen:8)
+ffffffffa000c164 + <x>:
+   0:	nopl   0x0(%rax,%rax,1)
+   5:	xchg   %ax,%ax
+   7:	push   %rbp
+   8:	mov    %rsp,%rbp
+   b:	sub    $0x8,%rsp
+  12:	movabs $0x676f7270627573,%rdi
+  1c:	mov    %rdi,-0x8(%rbp)
+  20:	mov    %rbp,%rdi
+  23:	add    $0xfffffffffffffff8,%rdi
+  27:	mov    $0x8,%esi
+  2c:	callq  0xffffffffe11d19cf
+  31:	leaveq
+  32:	retq
+
+$ bpf_jit_disasm
+20 bytes emitted from JIT compiler (pass:1, flen:3)
+ffffffffa000c11c + <x>:
+   0:	nopl   0x0(%rax,%rax,1)
+   5:	xchg   %ax,%ax
+   7:	push   %rbp
+   8:	mov    %rsp,%rbp
+   b:	callq  0x0000000000000048
+  10:	xor    %eax,%eax
+  12:	leaveq
+  13:	retq
+
+Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Hou Tao <houtao1@huawei.com>
 ---
- include/linux/kallsyms.h   | 3 +--
- include/linux/module.h     | 6 ++----
- kernel/kallsyms.c          | 5 ++---
- kernel/kallsyms_selftest.c | 6 +++---
- kernel/livepatch/core.c    | 3 +--
- kernel/module/kallsyms.c   | 5 ++---
- kernel/trace/ftrace.c      | 3 +--
- 7 files changed, 12 insertions(+), 19 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-index 0065209cc00424b..d4079b3d951d1ef 100644
---- a/include/linux/kallsyms.h
-+++ b/include/linux/kallsyms.h
-@@ -67,8 +67,7 @@ static inline void *dereference_symbol_descriptor(void *ptr)
- 
- #ifdef CONFIG_KALLSYMS
- unsigned long kallsyms_sym_address(int idx);
--int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
--				      unsigned long),
-+int kallsyms_on_each_symbol(int (*fn)(void *, const char *, unsigned long),
- 			    void *data);
- int kallsyms_on_each_match_symbol(int (*fn)(void *, unsigned long),
- 				  const char *name, void *data);
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 514bc81568c5220..39f928e9d9fed7e 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -880,13 +880,11 @@ static inline bool module_sig_ok(struct module *module)
- 
- #if defined(CONFIG_MODULES) && defined(CONFIG_KALLSYMS)
- int module_kallsyms_on_each_symbol(const char *modname,
--				   int (*fn)(void *, const char *,
--					     struct module *, unsigned long),
-+				   int (*fn)(void *, const char *, unsigned long),
- 				   void *data);
- #else
- static inline int module_kallsyms_on_each_symbol(const char *modname,
--						 int (*fn)(void *, const char *,
--						 struct module *, unsigned long),
-+						 int (*fn)(void *, const char *, unsigned long),
- 						 void *data)
- {
- 	return -EOPNOTSUPP;
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 83f499182c9aa31..77747391f49b66c 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -288,8 +288,7 @@ unsigned long kallsyms_lookup_name(const char *name)
-  * Iterate over all symbols in vmlinux.  For symbols from modules use
-  * module_kallsyms_on_each_symbol instead.
-  */
--int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
--				      unsigned long),
-+int kallsyms_on_each_symbol(int (*fn)(void *, const char *, unsigned long),
- 			    void *data)
- {
- 	char namebuf[KSYM_NAME_LEN];
-@@ -299,7 +298,7 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
- 
- 	for (i = 0, off = 0; i < kallsyms_num_syms; i++) {
- 		off = kallsyms_expand_symbol(off, namebuf, ARRAY_SIZE(namebuf));
--		ret = fn(data, namebuf, NULL, kallsyms_sym_address(i));
-+		ret = fn(data, namebuf, kallsyms_sym_address(i));
- 		if (ret != 0)
- 			return ret;
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 36ffe67ad6e5..4e017102cc16 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -2543,9 +2543,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
  		cond_resched();
-diff --git a/kernel/kallsyms_selftest.c b/kernel/kallsyms_selftest.c
-index 9c94f06aa951971..1b6891a0a79052b 100644
---- a/kernel/kallsyms_selftest.c
-+++ b/kernel/kallsyms_selftest.c
-@@ -97,7 +97,7 @@ static struct test_item test_items[] = {
+ 	}
  
- static char stub_name[KSYM_NAME_LEN];
+-	if (bpf_jit_enable > 1)
+-		bpf_jit_dump(prog->len, proglen, pass + 1, image);
+-
+ 	if (image) {
+ 		if (!prog->is_func || extra_pass) {
+ 			/*
+@@ -2561,6 +2558,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 				goto out_image;
+ 			}
  
--static int stat_symbol_len(void *data, const char *name, struct module *mod, unsigned long addr)
-+static int stat_symbol_len(void *data, const char *name, unsigned long addr)
- {
- 	*(u32 *)data += strlen(name);
- 
-@@ -156,7 +156,7 @@ static void test_kallsyms_compression_ratio(void)
- 	pr_info(" ---------------------------------------------------------\n");
- }
- 
--static int lookup_name(void *data, const char *name, struct module *mod, unsigned long addr)
-+static int lookup_name(void *data, const char *name, unsigned long addr)
- {
- 	u64 t0, t1, t;
- 	unsigned long flags;
-@@ -212,7 +212,7 @@ static bool match_cleanup_name(const char *s, const char *name)
- 	return !strncmp(s, name, len);
- }
- 
--static int find_symbol(void *data, const char *name, struct module *mod, unsigned long addr)
-+static int find_symbol(void *data, const char *name, unsigned long addr)
- {
- 	struct test_stat *stat = (struct test_stat *)data;
- 
-diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-index c973ed9e42f8177..bdb40a4b1f29845 100644
---- a/kernel/livepatch/core.c
-+++ b/kernel/livepatch/core.c
-@@ -142,8 +142,7 @@ static int klp_match_callback(void *data, unsigned long addr)
- 	return 0;
- }
- 
--static int klp_find_callback(void *data, const char *name,
--			     struct module *mod, unsigned long addr)
-+static int klp_find_callback(void *data, const char *name, unsigned long addr)
- {
- 	struct klp_find_arg *args = data;
- 
-diff --git a/kernel/module/kallsyms.c b/kernel/module/kallsyms.c
-index ab2376a1be88e7e..c4fe856e5052ff7 100644
---- a/kernel/module/kallsyms.c
-+++ b/kernel/module/kallsyms.c
-@@ -495,8 +495,7 @@ unsigned long module_kallsyms_lookup_name(const char *name)
- }
- 
- int module_kallsyms_on_each_symbol(const char *modname,
--				   int (*fn)(void *, const char *,
--					     struct module *, unsigned long),
-+				   int (*fn)(void *, const char *, unsigned long),
- 				   void *data)
- {
- 	struct module *mod;
-@@ -525,7 +524,7 @@ int module_kallsyms_on_each_symbol(const char *modname,
- 				continue;
- 
- 			ret = fn(data, kallsyms_symbol_name(kallsyms, i),
--				 mod, kallsyms_symbol_value(sym));
-+				 kallsyms_symbol_value(sym));
- 			if (ret != 0)
- 				goto out;
- 		}
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index d249a55d9005765..8f12524f8062686 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -8271,8 +8271,7 @@ struct kallsyms_data {
-  * and returns 1 in case we resolved all the requested symbols,
-  * 0 otherwise.
-  */
--static int kallsyms_callback(void *data, const char *name,
--			     struct module *mod, unsigned long addr)
-+static int kallsyms_callback(void *data, const char *name, unsigned long addr)
- {
- 	struct kallsyms_data *args = data;
- 	const char **sym;
++			if (bpf_jit_enable > 1)
++				bpf_jit_dump(prog->len, proglen, pass + 1, image);
++
+ 			bpf_tail_call_direct_fixup(prog);
+ 		} else {
+ 			jit_data->addrs = addrs;
 -- 
-2.25.1
+2.27.0
 
