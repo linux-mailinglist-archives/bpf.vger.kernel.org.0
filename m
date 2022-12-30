@@ -2,199 +2,411 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A88659ABD
-	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 17:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F6B659B72
+	for <lists+bpf@lfdr.de>; Fri, 30 Dec 2022 19:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235260AbiL3Q4y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Dec 2022 11:56:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        id S230434AbiL3Siy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Dec 2022 13:38:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235242AbiL3Q4w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Dec 2022 11:56:52 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35D419026
-        for <bpf@vger.kernel.org>; Fri, 30 Dec 2022 08:56:51 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id qk9so52427470ejc.3
-        for <bpf@vger.kernel.org>; Fri, 30 Dec 2022 08:56:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y+PxYAjCz6pA+XOYNcSzCn/iyn9hJ/93qYAJF+05rOU=;
-        b=VlFxTem26z2u/IwBfwaENpaYbDNMq1V32rylZj0iXGjK3qU98QF7MSAHKa5q2086XX
-         QPMwp+ZLjcgLXkGxYL96L1jSZ/NL43aRah660AJHeMMR+Ob86wtoIlaawXndE5Xvc5Vt
-         6D4Kf13Lopec+htmr6gTnmXQFpAbTRTs7bYoZJ8tWRQ6po2rpDNCg5KYImr0n8pvHoeb
-         0zLgrqn5N3sXiLTF4MpJ8mIImJOuCkbF+o0lYuhUHfcFy5fTyTGU7aIaKcRhz0y9b1jO
-         sG+MrKFO9Hmlt3MdrqTffmITGCfaG74Dur8WVH+alQRI/xnonaztp4j0MKudGtwHdczo
-         7Czw==
+        with ESMTP id S235274AbiL3Six (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Dec 2022 13:38:53 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8662319C37
+        for <bpf@vger.kernel.org>; Fri, 30 Dec 2022 10:38:51 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id v14so14947231qtq.3
+        for <bpf@vger.kernel.org>; Fri, 30 Dec 2022 10:38:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y+PxYAjCz6pA+XOYNcSzCn/iyn9hJ/93qYAJF+05rOU=;
-        b=M7CQzmg17wzji8DC96B4kYnx3QDVCk/W2Eqsr96ELLK9HfK8vh5pj7KZu6YctdEby+
-         4FDnkwz3PN+lMYwKzUXq3HKEvqzmODQpjyDSMMN9tJYgAWPUWrd0Lq8ZuLS0F/+Jb6nR
-         wEb8WwMZkk5G6wQK/4LN9VmVYR78eJaJNINpfRyW6Lrw1UjY1VP8vr04ujuSRKCy7Ff+
-         xYGu8aYTmCIVpVIvbjUtnxHgehW97okYQeez8aTp/eh0DXjspNqCXnHBj+Sz8C0E+Yjv
-         +jgI8IMn+5E1Mprq3RJbu/YzLYfKR/dA0+SZgRy6+JQpFscbCd49E2EF6ttAVcIA9DaA
-         mwUQ==
-X-Gm-Message-State: AFqh2koAg/zXZuc9ktY1/1jFK3ZSq0TDbGi/XAwyM6ROAgcZ/Lz2Z+WK
-        uEnTuFDPuG73HyTFAKJVluXb3v+ES2THM5+7MAo=
-X-Google-Smtp-Source: AMrXdXssHniFOzpZ2KjvM195dfd3+/+XDdVeUDhzqUCvheknkglBSgTUyK1rOq3Fs3E170UI51MTsV/drKDsQmV+Hvc=
-X-Received: by 2002:a17:906:f157:b0:7c0:8b4c:e30f with SMTP id
- gw23-20020a170906f15700b007c08b4ce30fmr4017482ejb.502.1672419410089; Fri, 30
- Dec 2022 08:56:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20221230113832.22938-1-xiangxia.m.yue@gmail.com>
-In-Reply-To: <20221230113832.22938-1-xiangxia.m.yue@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 30 Dec 2022 08:56:38 -0800
-Message-ID: <CAADnVQJUF1_1bUgu7VoehdH7f04zZ6bP=o1tLYeyTsAbNY7giw@mail.gmail.com>
-Subject: Re: [bpf-next] bpf, x86_64: fix JIT to dump the valid insn
-To:     xiangxia.m.yue@gmail.com
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UAYXzzIFwf7k+U1S1hpOJG0WfL39E92veq7V43125Fk=;
+        b=Gji/pTlKMb1hPmiO4F3r/5pyJr/oJBBz65xlpKIHqdkfSE2WXv/kVu47zOdEuiGbaL
+         E/MqzCn1mrO/fvFsyQ6FLaUcehtGcLgy0QrFPVWXjHOY8YD4y6oduECMc+PrJ9m0RQzo
+         meXloxVJDhvvBv1IzjozFU5lrMD1P/diRUoaNyOwMGSt9eBpm/Hc0XmjQjIxEjvSGPVW
+         YoL50WlxBonaf3Nc/9CN+mLpPzSz/eUqtzWE3yigRJYoQ5KIpaXEBSt/glAo6cTa0DwZ
+         mL8/XqKCMeVdDCQRhB/58jeZ5UfzoaKjojOMz4Pi5LaLS31vRNGUF8zaOlapwksd2bNJ
+         1VsA==
+X-Gm-Message-State: AFqh2kp9oM9OSaKCvDI0LZ6UIkzEpP2ywvgBpW3dK+8erctpw2H3SiIW
+        DMlxlXJNHNGWXMUQ0LiXmAg=
+X-Google-Smtp-Source: AMrXdXtBekofqs7zCSBs/CoQINQc0tv8L21skgwMQ89cEC5tEVdy1CBF95gMZ9BwYtWzE6KkfYoSsg==
+X-Received: by 2002:ac8:541a:0:b0:3ab:5ce2:6b98 with SMTP id b26-20020ac8541a000000b003ab5ce26b98mr44217842qtq.22.1672425530078;
+        Fri, 30 Dec 2022 10:38:50 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:3384])
+        by smtp.gmail.com with ESMTPSA id fc16-20020a05622a489000b003a6a7a20575sm13441527qtb.73.2022.12.30.10.38.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Dec 2022 10:38:49 -0800 (PST)
+Date:   Fri, 30 Dec 2022 12:38:55 -0600
+From:   David Vernet <void@manifault.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team@meta.com, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Song Liu <song@kernel.org>
+Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
+ convenience helpers
+Message-ID: <Y68wP/MQHOhUy2EY@maniforge.lan>
+References: <20221207205537.860248-1-joannelkoong@gmail.com>
+ <20221208015434.ervz6q5j7bb4jt4a@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzYGUf=yMry5Ezen2PZqvkfS+o1jSF2e1Fpa+pgAmx+OcA@mail.gmail.com>
+ <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
+ <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
+ <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local>
+ <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
+ <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
+ <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 30, 2022 at 3:38 AM <xiangxia.m.yue@gmail.com> wrote:
->
-> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
->
-> With bpf_jit_binary_pack_finalize invoked, we copy
-> rw_header to header and then image/insn is valid.
->
-> Write a test BPF prog which include subprog:
->
-> $ llvm-objdump -d subprog.o
-> Disassembly of section .text:
-> 0000000000000000 <subprog>:
->        0:       18 01 00 00 73 75 62 70 00 00 00 00 72 6f 67 00 r1 = 29114459903653235 ll
->        2:       7b 1a f8 ff 00 00 00 00 *(u64 *)(r10 - 8) = r1
->        3:       bf a1 00 00 00 00 00 00 r1 = r10
->        4:       07 01 00 00 f8 ff ff ff r1 += -8
->        5:       b7 02 00 00 08 00 00 00 r2 = 8
->        6:       85 00 00 00 06 00 00 00 call 6
->        7:       95 00 00 00 00 00 00 00 exit
-> Disassembly of section raw_tp/sys_enter:
-> 0000000000000000 <entry>:
->        0:       85 10 00 00 ff ff ff ff call -1
->        1:       b7 00 00 00 00 00 00 00 r0 = 0
->        2:       95 00 00 00 00 00 00 00 exit
->
-> Without this patch, kernel print message:
-> [  580.775387] flen=8 proglen=51 pass=3 image=ffffffffa000c20c from=kprobe-load pid=1643
-> [  580.777236] JIT code: 00000000: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
-> [  580.779037] JIT code: 00000010: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
-> [  580.780767] JIT code: 00000020: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
-> [  580.782568] JIT code: 00000030: cc cc cc
->
-> $ bpf_jit_disasm
-> 51 bytes emitted from JIT compiler (pass:3, flen:8)
-> ffffffffa000c20c + <x>:
->    0:   int3
->    1:   int3
->    2:   int3
->    3:   int3
->    4:   int3
->    5:   int3
->    ...
->
-> To fix this issue:
-> [  260.016071] flen=3 proglen=20 pass=1 image=ffffffffa000c11c from=kprobe-load pid=1568
-> [  260.018094] JIT code: 00000000: 0f 1f 44 00 00 66 90 55 48 89 e5 e8 38 00 00 00
-> [  260.020124] JIT code: 00000010: 31 c0 c9 c3
-> [  260.021229] flen=8 proglen=51 pass=1 image=ffffffffa000c164 from=kprobe-load pid=1568
-> [  260.023132] JIT code: 00000000: 0f 1f 44 00 00 66 90 55 48 89 e5 48 81 ec 08 00
-> [  260.025129] JIT code: 00000010: 00 00 48 bf 73 75 62 70 72 6f 67 00 48 89 7d f8
-> [  260.027199] JIT code: 00000020: 48 89 ef 48 83 c7 f8 be 08 00 00 00 e8 9e 19 1d
-> [  260.029226] JIT code: 00000030: e1 c9 c3
->
-> $ bpf_jit_disasm
-> 51 bytes emitted from JIT compiler (pass:1, flen:8)
-> ffffffffa000c164 + <x>:
->    0:   nopl   0x0(%rax,%rax,1)
->    5:   xchg   %ax,%ax
->    7:   push   %rbp
->    8:   mov    %rsp,%rbp
->    b:   sub    $0x8,%rsp
->   12:   movabs $0x676f7270627573,%rdi
->   1c:   mov    %rdi,-0x8(%rbp)
->   20:   mov    %rbp,%rdi
->   23:   add    $0xfffffffffffffff8,%rdi
->   27:   mov    $0x8,%esi
->   2c:   callq  0xffffffffe11d19cf
->   31:   leaveq
->   32:   retq
->
-> $ bpf_jit_disasm
-> 20 bytes emitted from JIT compiler (pass:1, flen:3)
-> ffffffffa000c11c + <x>:
->    0:   nopl   0x0(%rax,%rax,1)
->    5:   xchg   %ax,%ax
->    7:   push   %rbp
->    8:   mov    %rsp,%rbp
->    b:   callq  0x0000000000000048
->   10:   xor    %eax,%eax
->   12:   leaveq
->   13:   retq
->
-> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Hou Tao <houtao1@huawei.com>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 36ffe67ad6e5..4e017102cc16 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -2543,9 +2543,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->                 cond_resched();
->         }
->
-> -       if (bpf_jit_enable > 1)
-> -               bpf_jit_dump(prog->len, proglen, pass + 1, image);
-> -
->         if (image) {
->                 if (!prog->is_func || extra_pass) {
->                         /*
-> @@ -2561,6 +2558,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->                                 goto out_image;
->                         }
->
-> +                       if (bpf_jit_enable > 1)
-> +                               bpf_jit_dump(prog->len, proglen, pass + 1, image);
-> +
+On Thu, Dec 29, 2022 at 06:46:41PM -0800, Alexei Starovoitov wrote:
+> On Thu, Dec 29, 2022 at 03:10:22PM -0800, Andrii Nakryiko wrote:
+> > On Sun, Dec 25, 2022 at 1:52 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Dec 20, 2022 at 11:31:25AM -0800, Andrii Nakryiko wrote:
+> > > > On Fri, Dec 16, 2022 at 9:35 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, Dec 12, 2022 at 12:12:09PM -0800, Andrii Nakryiko wrote:
+> > > > > >
+> > > > > > There is no clean way to ever move from unstable kfunc to a stable helper.
+> > > > >
+> > > > > No clean way? Yet in the other email you proposed a way.
+> > > > > Not pretty, but workable.
+> > > > > I'm sure if ever there will be a need to stabilize the kfunc we will
+> > > > > find a clean way to do it.
+> > > >
+> > > > You can't have stable and unstable helper definition in the same .c
+> > > > file,
+> > >
+> > > of course we can.
+> > > uapi helpers vs kfuncs argument is not a black and white comparison.
+> > > It's not just stable vs unstable.
+> > > uapi has strict rules and helpers in uapi/bpf.h have to follow those rules.
+> > > While kfuncs in terms of stability are equivalent to EXPORT_SYMBOL_GPL.
+> > > Meaning they are largely unstable.
+> > > The upsteam kernel keeps changing those EXPORT_SYMBOL* functions,
+> > > but distros can apply their own "stability rules".
+> > > See Redhat's kABI, for example. A distro can guarantee a stability
+> > > of certain EXPORT_SYMBOL* for their customers, but that doesn't bind
+> > > upstream development.
 
-bpf_jit_enable==2 is broken.
-Please delete it from everywhere including docs.
-Use bpftool prog dump instead.
+This also sounds more in line with what was discussed at the maintainers
+summit [0]. "A BPF program that depends on kernel symbols is not really
+a user program anymore." Given that perspective, EXPORT_SYMBOL_GPL
+sounds like the correct equivalency to "public BPF symbols".
+
+[0]: https://lwn.net/Articles/908464/
+
+> > >
+> > > With uapi bpf helpers we have to guarantee their stability,
+> > > while with kfuncs we can do whatever we want. Right now all kfuncs are
+> > > unstable and to prove the point we changed them couple times already (nf_conn*).
+> > > We also have bpf_obj_new_impl() kfunc which is equivalent to EXPORT_SYMBOL(__kmalloc).
+> > > Hard to imagine more stable and more fundamental function.
+> > > Of course we want bpf programs to use bpf_obj_new() and assume
+> > > that it's going to be available in all future kernel releases.
+> > > But at the same time we're not bound by uapi rules.
+> > > bpf_obj_new() will likely be stable, but not uapi stable.
+> > > If we screw up (or find better way to allocate memory in the future)
+> > > we can change it.
+> > > We can invent our own deprecation rules for stable-ish kfuncs and
+> > > invent our more-unstable-than-current-unstable rules for kfuncs that
+> > > are too much kernel release dependent.
+> >
+> > I'm talking about *mechanics* of having two incompatible definitions
+> > of functions with the same name, not the *concept* of stable vs
+> > unstable API. See [0] where I explained this as a reply to Joanne.
+> >
+> >   [0] https://lore.kernel.org/bpf/CAEf4BzbRQLEjAFUkzzStv0c0=O+r9iZ8hq33sJB2RtSuGrGAEA@mail.gmail.com/
+>
+> Mechanics for kfuncs are much better than for helpers.
+>
+> extern bool bpf_dynptr_is_null(const struct bpf_dynptr *p) __ksym;
+>
+> will likely work with both gcc and clang.
+> And if it doesn't we can fix it.
+>
+> While when gcc folks saw helpers:
+>
+> static bool (*bpf_dynptr_is_null)(const struct bpf_dynptr *p) = (void *) 777;
+>
+> they realized that it is a hack that abuses compiler optimizations.
+> They even invented attr(kernel_helper) to workaround this issue.
+> After a bunch of arguing gcc added support for this hack without attr,
+> but it's going to be around forever... in gcc, in clang and in kernel.
+> It's something that we could have fixed if it wasn't for uapi.
+> Just one more example of unfixable mistake that causing issues
+> to multiple projects.
+> That's the core issue of kernel uapi rules: inability to fix mistakes.
+>
+> > >
+> > > > But regardless, dynptr is modeled as black box with hidden state, and
+> > > > its API surface area is bigger (offset, size, is null or not,
+> > > > manipulations over those aspects; then there is skb/xdp abstraction to
+> > > > be taken care of for generic read/write). It has a wider *generic* API
+> > > > surface to be useful and effectively used.
+> > >
+> > > tbh dynptr as an abstraction of skb/xdp is not convincing.
+> > > cilium created their own abstraction on top of skb and xdp and it's zero cost.
+> > > While dynptr is not free, so xdp users unlikely to use dynptr(xdp) for perf reasons.
+> > > So I suspect it won't be a success story in the long run, but we
+> > > can certainly try it out since they will be kfuncs and can be deprecated
+> > > if maintenance outweighs the number of users.
+> > >
+> > > > All *two* of them, bpf_get_current_task() and
+> > > > bpf_get_current_task_btf(), right? They are 2 years apart.
+> > > > bpf_get_current_task() was added before BTF era. It is still actively
+> > > > used today and there is nothing wrong with it. It works on older
+> > > > kernels just fine, even with BPF CO-RE (as backporting a few simple
+> > > > patches to generate BTF is simple and easy; not so much with BPF
+> > > > verifier changes to add native BTF support). I don't see much problem
+> > > > having both, they are not maintenance burden.
+> > >
+> > > bpf_get_current_pid_tgid
+> > > bpf_get_current_uid_gid
+> > > bpf_get_current_comm
+> > > bpf_get_current_task
+> > > bpf_get_current_task_btf
+> > > bpf_get_current_cgroup_id
+> > > bpf_get_current_ancestor_cgroup_id
+> > > bpf_skb_ancestor_cgroup_id
+> > > bpf_sk_cgroup_id
+> > > bpf_sk_ancestor_cgroup_id
+> > >
+> > > _are_ a maintenance burden.
+> >
+> > bpf_get_current_pid_tgid() was added in 2015, slightly and
+> > uncritically touched by Daniel in 2016 and we never had any problems
+> > with it ever since. No updates, no maintenance. I don't remember much
+> > problem with other helpers in this list, but I didn't check each one.
+
+You could argue that this actually a point in favor of kfuncs. If we
+implement these as kfuncs and never touch them again, users will not
+need to change anything and will have the same exact experience as if it
+was in UAPI (minus being on platforms that don't support kfuncs, which
+is something we should work to fix in general). It will just work
+indefinitely, as long as we decide to support it.
+
+The only time there will be pain felt by users is if we in fact do
+actually have to change it. If we have to add a flags field, or change
+the semantics to have different behavior, etc. I think Alexei's point is
+that we simply _can't_ do that if we're bound by UAPI. At least with
+kfuncs we have the choice to change it if we deem it necessary.
+
+Taking bpf_get_current_task() as an example, I think it's better to have
+the debate be "should we keep supporting this / are users still using
+it?" rather than, "it's UAPI, there's nothing to even discuss". The
+point being that even if bpf_get_current_task() is still used, there may
+(and inevitably will) be other UAPI helpers that are useless and that we
+just can't remove.
+
+> >
+> > But we certainly have a different understanding of what "maintenance
+> > burden" is. If some code doesn't require constant change and doesn't
+> > prevent changes in some other parts of the system, it's not a
+> > maintenance burden.
+>
+> As I said it's not about working today. If one doesn't touch code
+> it will keep working.
+> It's about being able to change it.
+> The uapi bits we simply cannot change.
+
+I think Michael Kerrisk's classic "Once upon an API" talk [1] provides a
+compelling, real-world example of this point:
+
+[1]: https://kernel-recipes.org/en/2022/once-upon-an-api/
+
+APIs can seem innocuous when you first add them, and then as you use
+them more and in different ways, your platform grows more featureful and
+things change, etc, you realize that the axioms upon which you designed
+your APIs in the first place are no longer true. prctl() started out as
+a dead-simple syscall where a child process would get a signal if its
+parent process dies. Over the years, it's morphed into a monstrosity [2]
+of a syscall with tons of odd behavior that's impossible [3] to fix even
+a decade+ after the API was first introduced due to the possibility of
+breaking applications that have come to rely on that non-sensical
+behavior. Never breaking user space is a great philosophy, but I don't
+think we need to inflict that same pain on ourselves for _kernel_
+programs, which is what we're discussing here.
+
+[2]: https://man7.org/linux/man-pages/man2/prctl.2.html
+[3]: https://bugzilla.kernel.org/show_bug.cgi?id=43300#c22
+
+I'm not trying to paint a false equivalency between prctl() and the
+helpers you enumerated in [4], because I agree with you that it's very
+unlikely that they'll change, but I also think it's impossible to know
+that for sure, and I do agree with Alexei that the "hypothetical chance
+to change something in the future" is hugely valuable. That being said,
+I comment more on the dynptr helpers down below.
+
+[4]: https://lore.kernel.org/all/CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com/
+
+> >
+> > > The verifier got smarter and we could have removed all of them,
+> > > but uapi rules makes it impossible.
+> > > The bpf prog could have been enabled to access all these task_struct
+> > > and cgroup fields directly. Likely without any kfuncs.
+> > >
+> > > bpf_send_signal vs bpf_send_signal_thread
+> > > bpf_jiffies64 vs bpf_this_cpu_ptr
+> > > etc
+> > > there are plenty examples where uapi bpf helpers became a burden.
+> > > They are working and will keep working, but we could have done
+> > > much better job if not for uapi.
+> > > These are the examples where uapi rules are too strong for bpf development.
+> > > Our pace of adding new features is high.
+> > > The kernel uapi rules are too strict for us.
+> >
+> > I'm familiar with the burden of maintaining API stability and
+> > backwards compat. But it's not just about the library/system
+>
+> libbpf 1.0 wasn't the smoothest example of deprecation.
+> But we still did it despite all kinds of negative flame.
+> With uapi helpers we cannot do any of that. No deprecation schemes.
+> While kfuncs allow innovation.
+>
+> > developer's convenience and burden, it's also about the end user's
+> > experience and convenience. BPF tool developers really appreciate when
+> > there are few less quirks to remember and work around across kernel
+> > versions, configurations, architectures, etc. It's the pain that
+> > kernel engineers working on BPF bleeding-edge don't experience in the
+> > BPF selftests environment.
+>
+> There is a trade off between users and developers. We want to make user
+> experience as smooth as possible while preserve the speed of development
+> for the kernel. uapi is in the way of that.
+
+As illustrated in the prctl() example above, UAPI can get in the way of
+users as well. If we can't fix an API or its semantics, some users are
+stuck with that crappy behavior (while, admittedly, others get to enjoy
+the consistency of the weird / existing behavior not changing out from
+under them). I certainly see why there are strong reasons to have a
+stable UAPI for user space, but for kernel programs I don't think so.
+
+> > >
+> > > At one point DaveM declared freeze on sizeof(struct sk_buff).
+> > > It was a difficult, but correct decision.
+> > > We have to declare freeze on bpf helpers.
+> > > 211 helpers that have to be maintained forever is a huge burden.
+
+While I agree that we should freeze helpers at some point, I also think
+we need to take care of a few things before that can or should formally
+go into effect. You mentioned some things we should take care of in [5].
+Automatically emitting kfuncs into vmlinux.h, properly documenting
+kfuncs. I think that list is insufficient, and that we need:
+
+[5]: https://lore.kernel.org/all/20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local/
+
+1. A formal, build-enforced policy for documenting kfuncs, as we
+currently have for helpers (as you mentioned, minus the
+build-enforcement).
+
+2. Emitting kfuncs into vmlinux.h, as you mentioned.
+
+3. Allowing users to specify flags per-argument in kfuncs. In my opinion
+this is a big deficiency of kfuncs relative to helpers. This would mean
+e.g. getting rid of the __sz and __k hacks. I think it's fine for us to
+live with it for now while we're continuing to flesh-out and improve
+kfuncs (a process which is happening quickly), but IMO it's really not
+appropriate for it to be the official only way to add helpers. It's a
+beta feature :-)
+
+4. Getting rid of KF_TRUSTED_ARGS and making that the default.
+
+5. Ideally we could improve the story for _defining_ kfuncs as well,
+though IMO it's already far less painful than defining helpers. It would
+be nice if you could just tag a kfunc with something like a __bpf_kfunc
+macro and it would do the following:
+
+- Automatically disable the -Wmissing-prototypes warning. I doubt this
+  is possible without adding some compiler features that let you do
+  something like __attribute__(__nowarn__("Wmissing-prototypes")), so
+  maybe this isn't a hard blocker, but more of a medium / long-term
+  goal.
+- Add whatever other attributes we need for the kfuncs to be safe. For
+  example, 'noinline' and '__used'. Even if the symbols are global,
+  we'll probably need '__used' for LTO.
+
+Overall, my point is really that we still have some homework to do
+before we can just unilaterally freeze helpers. We're getting close, but
+IMO not quite there yet.
+
+> >
+> > I still didn't get why we have to freeze anything and how exactly
+> > helpers are a burden.
+> >
+> > But especially in this specific case of few simple dynptr helpers,
+> > especially that other dynptrs generic APIs are already BPF helpers. I
+> > just don't get it and honestly all I see from this discussion is that
+> > you've made up your mind and there is nothing that can be done to
+> > convince you.
+> >
+> > The only "BPF helpers are stable and thus a burden" argument is just
+> > not convincing and I'd even say is mostly false. There are no upsides
+> > to having dynptr helpers as kfuncs, as far as I'm concerned.
+>
+> The main and only upside for everything as kfunc is that we can change it.
+> That's it.
+>
+> > But there
+> > are a bunch of downsides, even if some of those might be lifted in the
+> > future.
+>
+> imo ability to change outweighs all downsides, since downsides are fixable
+> while inability to change is a burden.
+>
+> > The unfortunate thing is that end users that are meant to benefit from
+> > all these helpers and them being "a standard API offering" are not
+> > well represented on the BPF mailing list, unfortunately. And my
+> > opinion and arguments as a proxy for theirs is clearly not enough.
+>
+> I also would like to hear what others on the list are thinking.
+
+The last thing I'll say is that everything I've said above is really in
+regards to the more general debate of helpers vs. kfuncs. Specifically
+for the dynptrs being added in this set, I agree with Andrii that it's
+arguably an odd user experience for certain platforms to support
+different only specific parts of the dynptr API surface.
+
+I'm not sure whether that's enough to warrant making them helpers
+instead of kfuncs, but I do think it's not exactly an apples to apples
+comparison with future features that today have no helper API presence.
+Putting myself in the shoes of a dynptr user, I would be very surprised
+and confused if all of a sudden, I couldn't use some of the core dynptr
+APIs due to being on a platform that doesn't have kfunc support. My two
+cents are that letting these dynptr functions stay as helpers, while
+agreeing that kfuncs is the way forward (though I don't think Andrii
+agrees with that even aside from just these dynptrs) is a reasonable
+compromise that errs on the side of user-friendliness for dynptr users.
+
+FWIW, I also don't think it's fair or logical to argue at this point in
+the game that dynptrs as a concept is inherently flawed. They were super
+useful for enabling the user ringbuf map type, which is a key part of
+rhone / user-space scheduling in sched_ext, and I wouldn't be surprised
+if ghOSt started using it as well as a way to make scheduling decisions
+without trapping into the kernel as well. Also, the attendees at LSFMM
+generally seemed enthusiastic about dynptrs and user ringbuf, though I
+admittedly don't know who's using either feature outside of rhone.
+
+That being said, to reiterate, I personally agree that once we take care
+of a few more things for kfuncs , they're 100% the way forward over
+helpers. BPF programs are kernel programs, no UAPI pain should be
+necessary.
