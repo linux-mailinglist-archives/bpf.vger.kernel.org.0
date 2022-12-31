@@ -2,59 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B519865A371
-	for <lists+bpf@lfdr.de>; Sat, 31 Dec 2022 11:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9CB65A573
+	for <lists+bpf@lfdr.de>; Sat, 31 Dec 2022 16:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbiLaKIU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Dec 2022 05:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34022 "EHLO
+        id S230477AbiLaPPV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 31 Dec 2022 10:15:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbiLaKIT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Dec 2022 05:08:19 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033B7D10D
-        for <bpf@vger.kernel.org>; Sat, 31 Dec 2022 02:08:18 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id e10so1623719pgc.9
-        for <bpf@vger.kernel.org>; Sat, 31 Dec 2022 02:08:17 -0800 (PST)
+        with ESMTP id S229842AbiLaPPT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 31 Dec 2022 10:15:19 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C924C310;
+        Sat, 31 Dec 2022 07:15:18 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id a30so496320pfr.6;
+        Sat, 31 Dec 2022 07:15:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=caYBi8+Qt+SIFvPenZGmyOkcUedrR0YCFyP77etiBps=;
-        b=ggXAqQShudCniXqA622DYIC+fqJZ4fxh/7M8gwkk3zudEz6sXU6BMG/qpTlCz9iVf9
-         LyAC8xKhe+ZWeNdN6sKaBNdl64bhn6iP6jfT+jd8c5nEKtzxtml5lXnILxrFU27rSWtA
-         dtoJhLTK8jhSDYptWvbmswBXEzV91Szrg/qR7Xjc0BFKtnzYQEqgcVzdGvA/ALkcU7Ib
-         OEggVL5HcXSkHl9fzlnLWjIQNWSTLdRQgxvys8utAdBdK6mywC7tYVwMU1G1rKgJaXSW
-         bk7NtuSNCXdkO85vpYuhDYg+5HNgOgao5I5djdQavdtShkfyqLRbh4JonfoSCoOLQySf
-         n29g==
+        bh=z1dUhnKe7gxJ0QUpJzxtakKCkxVA8FGz20WPR9Jz1/A=;
+        b=Pfsdy4keTpSvVmVxuLNg3r5OP9eykOkfltTBMdPNeiWVWNbSgdh68ebjMbbkbmA3rS
+         Ym56ZntslJpWn+omQpg3lnWStnO5L6Kept6rCqyNP0RtfHjAaF+0P2quWeZtMziPkltA
+         sBvlfEeFyhI+4B09Ht1iLsYQ4veFIxPYk/7t7uItzCgMT3HFc/WQIA7VT0TAYNDkkJGv
+         VgqZGiUpSZCa9g7Lk+o1V7Ar8v1rjyT5fk+jtMbTy75ufNZRKl0u/tCl/9SPbL+7mrWO
+         SaCpkuMSmEKk9l8pXvt8kA5tjWPnp5Z/0AyPvkKNUXckJJq9si3owYvJ9FiM28AK795x
+         mYeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=caYBi8+Qt+SIFvPenZGmyOkcUedrR0YCFyP77etiBps=;
-        b=SN8qzi5O1tKf2MgI/L4EsFAojjO9rRXRowIag3ncT7EYFIqC9D71PcqyVEMcanwjDp
-         8q3AFr7Ii3QvbiRkjSdlPm5fmx7xwsGzAVQc6j8DEJCyJeBRMQpLk28XJ541raDv4Whj
-         TU//cfG6PgGX/FsaQAqOMV5Aw9/B5zV08GBHRCgkUxMLSYQwpymo8+nWI/PbDVjUxGA4
-         RAxiHRZi2o5uGuuTNtwvbeIVUzviJeQ40IijZ0iYodWdnvQSDqfFO13sYe4Ut8A2P8rx
-         EZNFz8XLQa0GvJVTldAUCGoC24IteqXSynP4OCP5dhdbGAlDnNnQf7cPJJNxGaimt650
-         0TSw==
-X-Gm-Message-State: AFqh2krBoCyVI5kVrnozb/IbWNJwmLT+n4uWrGVNfMrNG+i9pDm/deNn
-        faPYYRhN0N9GtP2gRn6rPtj8rorE9Oo=
-X-Google-Smtp-Source: AMrXdXvRFOm6/G6GqKv7ySNbOZE5KZoIFVQErFCPYzbVce40UFz38eA7bs8vxhDiPSTZLTKkh7HVTw==
-X-Received: by 2002:a05:6a00:d1:b0:580:eb71:40f0 with SMTP id e17-20020a056a0000d100b00580eb7140f0mr27202693pfj.23.1672481297326;
-        Sat, 31 Dec 2022 02:08:17 -0800 (PST)
-Received: from localhost.localdomain ([43.132.141.3])
-        by smtp.gmail.com with ESMTPSA id g23-20020aa796b7000000b005811082f134sm10543679pfk.158.2022.12.31.02.08.16
+        bh=z1dUhnKe7gxJ0QUpJzxtakKCkxVA8FGz20WPR9Jz1/A=;
+        b=j8Efpbm2WzfH4nCGfh2Li+aLew9v4XSjfLP3YhHRHS7PWyyypZu/gsZemrM95jZ3gb
+         Dn0zDbhuyFEfBWiN1S3gKMRtD/mSMIIa2syrdap9mP9a85mpzDh/Eoo5gU4rL2DvnqqH
+         R/qQwNgBcAH6uE0k7wQdbshR/0fAcLAezl0d+zaAmzC+m4qY3c6QIr8CytgHi3SPR45c
+         1DFPjih3vRZkOFxBtmHAa3i15Saf/tIrRYWrSCaulWCBwIXcShOZCVz5paCnksENXCGe
+         JMIYPnfssjmbii0tsHcwtXXxzBjinRJCzFqNPstQjLEgUjS63hPqjMy2sJhBxLbOLl8h
+         h/dA==
+X-Gm-Message-State: AFqh2ko8amsH4ybileQqVLA5KqQ3S3RsBioX3m6+CIQeKuFpxm8ayjAn
+        6RrCimd+C1/kdvreGhLZ0Gk=
+X-Google-Smtp-Source: AMrXdXs3YnXxZr6dG5JSm/x6WvFszUmSOBr+k+fIrvn/yzJzy3QICOwDWoWaupvMdkjeDVOWj7Ydtg==
+X-Received: by 2002:aa7:9284:0:b0:581:6069:5c00 with SMTP id j4-20020aa79284000000b0058160695c00mr17152838pfa.28.1672499718315;
+        Sat, 31 Dec 2022 07:15:18 -0800 (PST)
+Received: from WRT-WX9.. ([103.135.103.220])
+        by smtp.gmail.com with ESMTPSA id a8-20020aa78e88000000b005765a5ff1fasm385992pfr.213.2022.12.31.07.15.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Dec 2022 02:08:17 -0800 (PST)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org, loongarch@lists.linux.dev, andrii@kernel.org
-Cc:     hengqi.chen@gmail.com
-Subject: [PATCH bpf-next] libbpf: Add LoongArch support to bpf_tracing.h
-Date:   Sat, 31 Dec 2022 18:07:57 +0800
-Message-Id: <20221231100757.3177034-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Sat, 31 Dec 2022 07:15:17 -0800 (PST)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH] libbpf: Return -ENODATA for missing btf section
+Date:   Sat, 31 Dec 2022 23:14:36 +0800
+Message-Id: <20221231151436.6541-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -67,62 +78,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add PT_REGS macros for LoongArch ([0]).
+As discussed before, return -ENODATA (No data available) would be more
+meaningful than ENOENT (No such file or directory).
 
-  [0]: https://loongson.github.io/LoongArch-Documentation/LoongArch-ELF-ABI-EN.html
-
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+Suggested-by: Leo Yan <leo.yan@linaro.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
 ---
- tools/lib/bpf/bpf_tracing.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ tools/lib/bpf/btf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index 9c1b1689068d..bdb0f6b5be84 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -32,6 +32,9 @@
- #elif defined(__TARGET_ARCH_arc)
- 	#define bpf_target_arc
- 	#define bpf_target_defined
-+#elif defined(__TARGET_ARCH_loongarch)
-+	#define bpf_target_loongarch
-+	#define bpf_target_defined
- #else
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index dd2badf1a54e..2c89454c0136 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -991,7 +991,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+ 
+ 	if (!btf_data) {
+ 		pr_warn("failed to find '%s' ELF section in %s\n", BTF_ELF_SEC, path);
+-		err = -ENOENT;
++		err = -ENODATA;
+ 		goto done;
+ 	}
+ 	btf = btf_new(btf_data->d_buf, btf_data->d_size, base_btf);
+-- 
+2.37.2
 
- /* Fall back to what the compiler says */
-@@ -62,6 +65,9 @@
- #elif defined(__arc__)
- 	#define bpf_target_arc
- 	#define bpf_target_defined
-+#elif defined(__loongarch__)
-+	#define bpf_target_loongarch
-+	#define bpf_target_defined
- #endif /* no compiler target */
-
- #endif
-@@ -258,6 +264,23 @@ struct pt_regs___arm64 {
- /* arc does not select ARCH_HAS_SYSCALL_WRAPPER. */
- #define PT_REGS_SYSCALL_REGS(ctx) ctx
-
-+#elif defined(bpf_target_loongarch)
-+
-+/* https://loongson.github.io/LoongArch-Documentation/LoongArch-ELF-ABI-EN.html */
-+
-+#define __PT_PARM1_REG regs[4]
-+#define __PT_PARM2_REG regs[5]
-+#define __PT_PARM3_REG regs[6]
-+#define __PT_PARM4_REG regs[7]
-+#define __PT_PARM5_REG regs[8]
-+#define __PT_RET_REG regs[1]
-+#define __PT_FP_REG regs[22]
-+#define __PT_RC_REG regs[4]
-+#define __PT_SP_REG regs[3]
-+#define __PT_IP_REG csr_era
-+/* loongarch does not select ARCH_HAS_SYSCALL_WRAPPER. */
-+#define PT_REGS_SYSCALL_REGS(ctx) ctx
-+
- #endif
-
- #if defined(bpf_target_defined)
---
-2.31.1
