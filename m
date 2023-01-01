@@ -2,143 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BE665AB06
-	for <lists+bpf@lfdr.de>; Sun,  1 Jan 2023 19:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6251A65AB26
+	for <lists+bpf@lfdr.de>; Sun,  1 Jan 2023 20:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjAASsx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Jan 2023 13:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S229539AbjAATU3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Jan 2023 14:20:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjAASsv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Jan 2023 13:48:51 -0500
+        with ESMTP id S229447AbjAATU2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Jan 2023 14:20:28 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6012199;
-        Sun,  1 Jan 2023 10:48:49 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 301FNvnn018491;
-        Sun, 1 Jan 2023 10:48:09 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7947F26D1;
+        Sun,  1 Jan 2023 11:20:27 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 301FdDSG016860;
+        Sun, 1 Jan 2023 11:20:06 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=M8aC6ZjKwYt+CC6NNAlSmW8NtV0mgw+ajC8ob7laARo=;
- b=VgxELCJypVVHNohlQPTdqsgpK7VHpqCGSYXV0PBxEwH28yt//NBc9PF4m/KU6kisNW7s
- kvelNpKp42qfg57/RTyT/u3CyeIKOtxNiUtS/Yg5/QnZ36UaTKvAupHulDgiOt8sCciU
- o3HIyYcw9Wbsjlap+blByZawG2D5/phPZl8vIAqKPtRjGcIOUytnjrZ7FdBfGFvCEoFV
- Mh5ynTWGziIX+tD2uhy4gVBg+d1fy2n/ZByiqUwKwkdT2PNtqpSlkF1oBOaq/S9pSeiz
- WhIOK46Djbb92XgtQ8dI/q5/HRZSenhTYnhKKF2gFfhrVrfjsFbqVQaWkJZfk3kMHeID QA== 
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2040.outbound.protection.outlook.com [104.47.51.40])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mtk34w55s-1
+ bh=qEwAA/mpOvJHvx15zQYgp2GSJ6/Ht1z68HMqHUlxf8Q=;
+ b=h8MfqbFBjBZUsHEWX2hc3qA3ZipWG3QYhwrg4BgKYfpogN8uztYEZvRXFuV+badME+2j
+ 8cASODOPXyu5cbtWLK+DhMvgQ88yA8w7Uphon1j7P0WMimvRetVF6aQTaX/2jYIF949q
+ 8smwOCZF/JfUa7gdsDiBCjOrEZ4k2AdWfP01aKHhAlV23IsKnp/BvUq3QGPc4u1i9O8U
+ oAQ1ms15SdT0poeQLtWMQPSmg3G5DFlG3PcdcViv1QH1DbzSVGqOfMa9SDMzvnxFc38t
+ tAwyEeOrv28iRalCWKBlWMFqlTkYNU/ulKiot99OBUyfldkpyJpJ7dkp6K21gsAodslf mQ== 
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2043.outbound.protection.outlook.com [104.47.74.43])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3mtn9an4fq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 01 Jan 2023 10:48:09 -0800
+        Sun, 01 Jan 2023 11:20:05 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DrCBZMzuVpxHBhoggyTzltfZYWSUhsBH7dVl49sBEyPCgpjJwxMvUeuMzXUNk5YkAVDDzDzctqeLA2Jd8MUQnw54+54gBbHg1LJAZz7I+HjsUH/r5fNtr1nuZ7i146XaWTtBJfXlfuC83fP1wukPw0E0O2A5wASA2z/+PPNcMN5/+n1NR4mF4+34h05U6Yv4tviPUr4AMiG+y090GcivYP7qtbyJVphD6O8vo/ASqH2dqL49n2prJ9x+ea8CXHVDVlDphgHNbGc2By5B+QPmaStaBoObKlEH+39TrMS9PycBStGkOn2l1wY0VdjKtpjJKdlOmMPJX0zoqPgriOhGPA==
+ b=kJlvDeAYhemdJhIkBSMZ321pknP/YY6ztyyLdASxsIwW9ac3meivaSQvblh4APAMRkgAdCAovmRDxnAsEt56qP1oFybzscxCOc6SacbY+dZR23+XnlfOQO4nShyxR4RqBchyhpvbYYkaANeK619C3823EScazLO1urYY0QIo5bol+WOWaXXOpCWMqmc6ETkKOsOh3+i/ymkFNqszZkNT+DZVFRCnQZjCy9J41rRzzZBG21DpFuy5ZQUtKSItk/am6iKErjUNymjHLG2DUWYQwQq9lQ6X3agl+Nrfc7FifEKAaQLe6EJEY9Hmos0MsS+fCYqAH4CQHcbaivspOiYryg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M8aC6ZjKwYt+CC6NNAlSmW8NtV0mgw+ajC8ob7laARo=;
- b=dcRun/qPUN4sLN2nX6KgRDKkkgrcKan82L1L+F2Jgi+fIJZJh0y8CMdOagblco1o+55eU6NExVe3/ItUVShKfn0tppJh4JOB61WQdo7syo4YgaLP+fQWUMu/hUj/Zhb9HiigS8hSJV6sY5bYmy+EAeMLC6y6orvjYWAqnCgbP6dJt24IVqfXcwYT0OMxwS7cgSv/c11ZiPryULDXGLCYbJ+JgQLJqvAa5n/keQvu5Ixw/49gXFJ01BysJp5WHhC5lUd1kj9+m//Qcb/LQT3fV5j+4djySA8Kfp4U21+U69BXFXcrixVdL+nh0TQhRsNHzQUP0Pm64eP+0fVbOS/OPA==
+ bh=LGxrXKAF0+hOrDTavTZEDS/til96eWcf5SBmuLzt8v0=;
+ b=aoGwA9B3P3Qw8aEdCnb2c+3d6n8XqlOyU/GzcJ5kH76tzQa5GiigrZRvqb55dCfAKkfAM1BIev7843dcc+mKh115HuHdp9ozB71ZY7ftRYSEAfQBr2LjO9YkytkoW9tDpCSupWxScGKK5UwT7ShtK/T/LO4ho+PFOG2EPTUyQzLFsoG67/N21gl2UL/PuKYFUG9DbIm4AcXyL4g4idZE3npw1ZeVhN7CQ9OTX0AS71oJHnLOc6PJGHnub69GG74TCaOzXKtQJk9g/GkOgSGypPcnIk/JJEUmZwp8o6Cy6VHlmcN4kHoezkGxtEZM2k3f833tF9sh2ODmz7IjJFjsWQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH7PR15MB5767.namprd15.prod.outlook.com (2603:10b6:510:275::11) with
+ by DM6PR15MB3337.namprd15.prod.outlook.com (2603:10b6:5:170::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Sun, 1 Jan
- 2023 18:48:06 +0000
+ 2023 19:20:00 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::3cc9:4d23:d516:59f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::3cc9:4d23:d516:59f0%4]) with mapi id 15.20.5944.018; Sun, 1 Jan 2023
- 18:48:06 +0000
-Message-ID: <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
-Date:   Sun, 1 Jan 2023 10:48:03 -0800
+ 19:20:00 +0000
+Message-ID: <04c66278-b044-98e4-2861-218bd159bd15@meta.com>
+Date:   Sun, 1 Jan 2023 11:19:57 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
+Subject: Re: WARNING in __mark_chain_precision
+Content-Language: en-US
+To:     Hao Sun <sunhao.th@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
-Content-Language: en-US
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CACkBjsaXNceR8ZjkLG=dT3P=4A8SBsg0Z5h5PWLryF5=ghKq=g@mail.gmail.com>
+ <Y6C36gvJ2JnwKm3X@google.com>
+ <CAEf4BzbY8SDL04W_3Vot6iiYu69Lqg9W9aMCp26+RwLBh6C_0g@mail.gmail.com>
+ <ba5aacc8-7e10-e20a-936b-f3f81d7fcf03@meta.com>
+ <CAEf4BzY-DMVEpy+mPTObEO56E7=fzqab8zW_4JyBeyGtTqqcXg@mail.gmail.com>
+ <29B647B3-174A-4BE7-9E0E-83AE94B0EADF@gmail.com>
 From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+In-Reply-To: <29B647B3-174A-4BE7-9E0E-83AE94B0EADF@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: BYAPR05CA0001.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::14) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR05CA0034.namprd05.prod.outlook.com
+ (2603:10b6:a03:33f::9) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|PH7PR15MB5767:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1e6dde90-8690-4ea8-0f6b-08daec28b834
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM6PR15MB3337:EE_
+X-MS-Office365-Filtering-Correlation-Id: f21046ca-4dd5-4b98-2378-08daec2d2d3b
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F+uRNwLfGeA/KVkvOYVgj76ZTpICWudhpnx+Ce5R2BxyQRfvj+nCcGnup07AP9tL8kOzLlVuwIhXEc8SPCfV/81smhD1v9pEKNfXrAzFoEktCP7cFsDzuWezRn4AcKEbhsasvXY47xu4GFd4Ae8YW6bKitoQs1MgaQzQswzvcTS1oQUbdPOy8qUOGbzGC0Xqy+gR7OxpWsiXFS++udAyoC2AoTrIUkrjsZpckbNA//u2DfAzSB+CzVivG9R7g+6p0DrI5YltugXRKeH0huiqWUwAi94g4jkug/wHqo1gHqzbIMrdCyVcoLSF4RBUUqwqFkBP4W/l3pxwBpoFVFbY9zUtLv4blWt5Ix0hFx0R0PfpPy2DlFjhADdr/4E4uBdrFBs4ROWndPZd19OrUeZ30PbgzcPdah7CBiqLHoCbwwdnQ/5YD1GFbNLGprVe8Hlfx7evRmY02I2brfmL5QvefP78XS7TtqW2hAzB+XG5i5cPb2a0IRnuk2UzVhiMJmoutqfWrb0HA/+UslEDNdb8Bna7NmPrSlGRbmdl5AFPrZNTcaNJQ4/b7vEhAz7eF9fBGGgzgwCDb+Xc7oToRFnq2myy55JeNVxtXuyhcqFVppkMCojS8tugx0fNpWtHtKGP0nISUoxCQ75WCGLbf316JSlJw3q87GT/pn//yByQ6le+rAcuMCUfdGvwNKHOWnUyyRsA74bFFrKEJdYU01vHWU47CEj0EgZxIv4w/SPfMFn3+UfvgvAaKsVXtNCb2Pbpqska+4IghLhIjrYnGlx41Yqhhw/d/6Gek6w/dC/jzVY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(136003)(366004)(376002)(396003)(39860400002)(451199015)(36756003)(2906002)(38100700002)(5660300002)(8936002)(41300700001)(7416002)(31696002)(86362001)(83380400001)(6486002)(966005)(66946007)(66556008)(110136005)(54906003)(31686004)(6506007)(6666004)(478600001)(6512007)(4326008)(8676002)(66476007)(316002)(53546011)(186003)(2616005)(22166003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 45bhUtCEfmkabCVoX4l8pjyqS+jN62P2lotPhGsxMSZDsZKJ6R8OzgqbKTKg3weJJNM+AXitDd9CSvEx3sOF1YE6BieDGlfQsH9fqjTmmX1RqHMIIau2wbH+0tGzjAf3G016Qq4BkEgsXT+iLCJPUQ+trgOUO87vXACNzgoo+E29oUOInKNPyXVrhgELLLFgkJQn85xUv60jrHZUUgWqH5fW9W0f4BmwVjDIDNwfEMBBGfidC2mlM0fhmAGF53ev2fdmoETgwpnDvDuEv+fXgHRYp6Bpz05zhgeXSGNefdhJAODQiVSWFis0aqf+eDhaQ5+vTpZQR3r7+qtqRXB0PpxNnVJmWF2+OrFzSr+fcgmNRFhAb6+4lG3vPWxgdU6l5zxr+vWnVZAXXn+XCmeNirmyhPAxVcqKR9zGp6xZQbHjdm6jpGJeInro16s0V933RKj1Yt8Xw39Q04s0Wa+48lCIs0VzfGPLrpXvU6JLPVfxcySYOekHFghaUE+dTORDmY3A72qijZPPDufGU9W8+ydupGAM8WuPsM4piunLLmXFO7gy7Mv1XwQJNzF4f5RmiT/NKkfKEsWSNBom+j+H4Usb0OrOpus/PO+iZUvxgflOvIKYw9G64i2uWoKTpYkiShzOymHYGk/8CgvjE3FkBn5YwzCKaPMWx/GuHBpEZayKrLkHeQiL2BSrQpIrj7oOA5LDpxCtYLCGrrd9MpPS8wb+gMp161d7UowS8xNlNJFVY4c0nzvdWgbtk/2GPISuTD/Y0uBV3sZyzV7Lq4ZYgpAdiUKVp6ZBilX2UsxJkTTzOgSp321+lzJGNLMXc480K7lhcnunzQ/J7s0ZfNFIquybElKi4kuihwXYR3d2uqM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(396003)(366004)(136003)(376002)(346002)(451199015)(186003)(2616005)(6512007)(53546011)(38100700002)(31696002)(86362001)(83380400001)(36756003)(31686004)(7416002)(316002)(8936002)(41300700001)(5660300002)(8676002)(4326008)(66946007)(66476007)(66556008)(6666004)(478600001)(966005)(6486002)(6506007)(110136005)(54906003)(2906002)(22166005)(10126625003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ako1UnNGd0p3RkxHT1NtcUpDcEtZRlFNRFF3VDF6Z3BuUXJIbzFJMHBKcWRU?=
- =?utf-8?B?akNycEVrblBoamdBSzVJT0VrSjIzSUJzQWU2aFNmaytRcDhPWE1aR1ZWWnRv?=
- =?utf-8?B?Y0pJdEgvT2ZSVWFSNlR1SGNkaDBUeG8yRS9keUJIMy9xUk04WUZ3SCtTcmNt?=
- =?utf-8?B?bFR3WFlVUnJrYlJKZ1h4ZmRLZkpHb1R6TElReUxmOEZXWDBIeVUzSHA5MVhq?=
- =?utf-8?B?Njk5U3gxYWpvRU94YTgvVms3R2ptdVpHdllYU2FBa0ZwRGs5VU9ieG1SMFVx?=
- =?utf-8?B?V1B3SnJNbERlK0hZKzlMeXhzK3VuTVIxWXJnQkVjRGhPR20vU0ZON25hd0Nx?=
- =?utf-8?B?TjI4alFNRTArVFdSdVl5dzBlSWpPaEFYWnl4U29mWlhNRk53WXNBMUpWT1Bw?=
- =?utf-8?B?OWFtbDhVWW1rcHpyU1Bpai9ZRXBDdUo3c29FMGFCQWV5eEppdUc2bkNUY2dX?=
- =?utf-8?B?c1N5U1B1MFZlOG5mZXNleXplTzJ5U1lmYjZNMVdzTys2V3RkT0UwM002ZW1j?=
- =?utf-8?B?V1Z1ZnRnWTY2akoramN3WXROb29SWU1CUldIUE5kUWEyZHR6YVNOVXp6aE1p?=
- =?utf-8?B?UnAwelpHSjBxWVZsbGlFWjAvM3RuaFAwYWwxb0g5K25meUU0WHFCWnJLazhG?=
- =?utf-8?B?VEpJNVY3blpFNFJwWXV5eGpZRGl2SlZGbkVxWFRUcmUzVFpaaUhKZDlxM2Q0?=
- =?utf-8?B?ekxhOGp5VWdOaC9DZ3cxblRDdko3cU1oYzhOLzRlRHl6a2FXSjVlajdWcWlm?=
- =?utf-8?B?UzVsNEdrQXhmbWtsNlRhd2QwbWY2bUxYRGJJWlh4eTR3aHE3WitSSEE1ZWJr?=
- =?utf-8?B?bnNVUERJOFY4b2ZzOGdMZ1cyRWc5c2ZoMW56WUpmL2w3Z0s5K09PcUFCcXJk?=
- =?utf-8?B?MVp0dUdTR2ZvUDc2WTVEYnVPN3hWdXZKQ2swOXRtTHowTW9tSjk1eldnMEJo?=
- =?utf-8?B?VG90YVJjTlhIWm44SjZVWm5VV1d4Y05KVkJIbHB2YVR5dDlhYzRzYXNpVXZ0?=
- =?utf-8?B?Sy9KOXRHL25lL1BHOHdjQ0dMQWU1ZUw4N2dDT29WMzd6RW9ZYWo2aWp2QXlv?=
- =?utf-8?B?OUZDeDRDY0FvMmE5QzhXd1hRL0N0UG9VNEt1Y1NWZUZPZVkrWStHbWNiS3cv?=
- =?utf-8?B?SDdLeU90dklPUXdna3NRajdVb0FmNGZwTmFESWdVOEhsSFdXYVJJeVRQNWxa?=
- =?utf-8?B?Y0JzQWpZQ2t1SFYzcFZzQ0hTOFZ3clA5YnNtRlpLTEoxV0tLNStkTTA5Rjl6?=
- =?utf-8?B?VldiTUY3SW5YT3M2T3N1Z0llVS9HaXBSMmJ0Nmwwb2FMeTg2N09UU0pFSk1s?=
- =?utf-8?B?WGNLaVFtRWVRZXJMaG9HbWx0dktSRi9IbHA4L0ZXRU5HT0ZLL3R1NjQyeENK?=
- =?utf-8?B?M3FyeFp5QXRkREdIbWNuNDd4WGR6UkhWcDJDR2xQNzZQM0lOVldWYUdKMkRV?=
- =?utf-8?B?OTRMT1lHOFYzYVIva1hIc29remZaTURwcm1GdHNWUTZ2QStRVXg5cm9mS2RN?=
- =?utf-8?B?NHpMS1krQ1ZZeGJFank0dkEzeWVEdktOSWFiWm0xMmg0eldBWjEydFJDZWtO?=
- =?utf-8?B?N2lTT3F0bDZiSWt5c29IZDI3M09CblFUeE4wc0hzbEJ5K28va0lWMlQxZWgr?=
- =?utf-8?B?OUNwbXRNTm1RcUNGb0lnWkJqWm52NHExazZRK29iQXI5YjFkbnNWQmNLWHFy?=
- =?utf-8?B?Yy9ZK3ZwZXVrd2xQTTZCOG8zWkltMDh4MXBoUzNXbEF3WkczbzYyZ2hXOTFG?=
- =?utf-8?B?b2E4ZGQ3bklUK2hHdmsxVnBVcXdWdU5mT1lOMGJRUFc0bW5Od1lGUE01YUk1?=
- =?utf-8?B?dlNqcVYxeDNaY3JGNExqekU1M2pEUjFqQmV1Z3ZDSmgxaWxqYXI5cVJKQ2NX?=
- =?utf-8?B?UnRpRzdQWXJvaS9Zd1NwNGhNRGV3bjd1a3hmUWNUVlVKeXVBT2lHMy93UkhN?=
- =?utf-8?B?R3dPTnoyemF0aTJ5RUd3cEdLNThDZCtwMmw0UkxIeWlDaFJsTlVROGV2bmNq?=
- =?utf-8?B?dzRZRDdCdVV0NmhWdjA5c2VQcXBSMDJHaFZReWxPTisvSitMRFFUa1FZU01t?=
- =?utf-8?B?aDk4a21lRDNuUjE2VklIMlZqS0pseUkrUUM2NHhRdmhFL1M1K2NJNWpLdkNJ?=
- =?utf-8?B?VEpRemM4TGpLamRiY1pIWGhZWXhRRlRhckhvSkc5YjRXM1ZsSDg5TTZ6VkhE?=
- =?utf-8?B?YWc9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TDhPVGJ2TjR5cnk5bDhhb1lhZTRvdis4cjk3dVdtY0hteGV6WlE5cWl0bjZj?=
+ =?utf-8?B?K3ZqdEpDRWJ5WTl2S3k5RXlIRFNMQ0VhMmhwclBqN0xwMlhDaVJwWmVpVTAz?=
+ =?utf-8?B?VzBDRVpSMW16bHFOTnV1N1VNZlp0bTdZbU1qVmw2ZWpvNGViNmxoS3hrMVY5?=
+ =?utf-8?B?OFZxd3ByTjBCT3BlKytXaWVkNDhsSWk4c016eHl2c2JLVEJ5T1hNQW5EVjQx?=
+ =?utf-8?B?RFlPL3E2dE12WjdQUU9wL2JnbitRY2swOWMyRi9HT2hHSmx0SGlaSG5EaXdT?=
+ =?utf-8?B?dHZja0VBSDZtK09RMitQdTAvMHhmTXdjMEY3bHp0SkhsWnpZT2tYdThaWnBt?=
+ =?utf-8?B?UHc0emxnTUluTTlSL3lzdUVTNHhRdTBaeHdIbXBkM1FieGxSeWZ4L01mWnZv?=
+ =?utf-8?B?Q2lPeVF1ZkthU2hHcTdWWFNSV3BnVXhzcFhIenVxUVA3THNPRW9TNFY5eVRm?=
+ =?utf-8?B?YkhZUFVrQUpERWpwT0NzSFlqVG1JWjhROEMzZ3BrWWZISDJyRDFHajJMYTM1?=
+ =?utf-8?B?RG5vZ3JIemdNdWx1ODdreS9xWFhLbnBYQnR5SVpqOGZ2dzdzMEFoYWFYeWh5?=
+ =?utf-8?B?MDBDUTNDRHVvMWEzWllJR1g2dzhoL01JTVM4YnlsbW1PZzU0ejZFZWcxMFFV?=
+ =?utf-8?B?Rnp0Vk1CR0hscU15Z1U4bkhnUXA2MVhsbE9kL0ZCSFIzQWQ3d3pUZW5rVFFS?=
+ =?utf-8?B?Y3YrMEppWC9DcjRvM3BnVU9DV2tqeXF4Z3RTcnZWbnE2eFB1ajVEclAvSVI0?=
+ =?utf-8?B?SmdEWUtQOGhrMFN3OWdsMUJTM280aGpxOXJzSHp4Y051OTYwSWpnYXV5alZl?=
+ =?utf-8?B?Z1VxbDFHSENMb0JSNjFINE0ydkZCTWdGak9DMk1jMWNlRnk3VXZLTmtzbXF6?=
+ =?utf-8?B?SWJnNFFYVkZLblNVSklqaXltNDYwemMxdkFTZVRGSGp6Uyt5TnVVTGRtbDZn?=
+ =?utf-8?B?YTRJcHRLU0JMNWdWUytnRHhLTGwwajRTbXFaWXRXb1h6SFhSREhPcHFMQW0v?=
+ =?utf-8?B?L0JXSFVXYzFzVGJNbWFNMHVTSHcwcmt2dmh6WDNhR2IvUEd0RnpFN0VrUUtJ?=
+ =?utf-8?B?WUhiSjRTOFQwWDErNmJwNGJxYStWOFRxL2M0Si9GNXNlSnpyTFc5TGRXbk1l?=
+ =?utf-8?B?NTdRTmZ5K216cnFxbjNxbC9SRDQ3WFI5bVc2U0xtemNTd1hrRCt4VisxZERt?=
+ =?utf-8?B?Nnk4MnFTSjl2STlma2VwMllrTzljckdOYU9rUVk1c1RPd2RzdXVScW0xSUZo?=
+ =?utf-8?B?T25IZ0w2c0NsTGJKMUx6WCtTYXI1VlRGcmxnWEp1dXJrUmg0UXZZV1FaOUdW?=
+ =?utf-8?B?WEoxZzlzSVhxU2taMnFMWWhsSTVtQW8zRitMejVmRmNpd05sWmY3VDc5eWMv?=
+ =?utf-8?B?MXJyWU52YytqV2YxKzhXZmYvTUZadmpCSkpnMGd3dk14WUhwZTZxYjBXN3Iz?=
+ =?utf-8?B?ZmpSNmdCN0NiTndGRHNUcGF3Nkh4YmJPKzAweDdDY2RlZllLZDNIZEdyZGcz?=
+ =?utf-8?B?a0ZZZzI4NnFDWmp1WFNobzBiQlBTNkZnQ2pwTXMwbDVWQVdQVXlDYUJ3c3Rn?=
+ =?utf-8?B?NjI1SlpVUzc3eE1FRkdWdnRRVldYMEhoUmZKZXovUlpadTVLMlEzNkZYUlhE?=
+ =?utf-8?B?TjcrbDR1TEpkL3ZaQkJXeHVsNXp3MDAxa1ZBUEozNjlUQmw2ZFF4YU1CWjhI?=
+ =?utf-8?B?QjdQeGtlbEZyaEFTb3VjSlZaWi8wdEpkOU1yRjZaOHdVTXVWK1NOMnhQb24z?=
+ =?utf-8?B?SFh3NWxrQmJuZzM3Y2ZVNE1ObGRKazJRQXd6UVluVzFCc2t1djg1bXVNbWNj?=
+ =?utf-8?B?NkYzcmx3M2k4cVBrUTkrUG03ejFwUWtkQURRd0RJdFpnRU5ZcFJ1QnVkV3Ro?=
+ =?utf-8?B?THFWcUtwdmFNbTd1VXArMVBaNnFBNVhYSEdFdnVDRVZFckM0ckZFem93QzM5?=
+ =?utf-8?B?ZUFWZVhycndGOXFmelp2dThLajNFT2gxTmUrSEpUWVM1VGpWcTdyNEN4OWk3?=
+ =?utf-8?B?d00xNmZUTTdIZlBTNzVPbkc4azBxbkVqQWNhalpTdk9BTDd5WDgzUTNyUXV4?=
+ =?utf-8?B?OXlJb2ppSklyTEtNb0FkSDJ5enN4QUZOYUhyMVcrVXlmd0Q2TVBtbE1Mb1RH?=
+ =?utf-8?B?WGw1SXJUTXM3ZjcvSzJLa3lVdDRUK1gzczg3T0ZxMWpKeVl4czA3Qm8rdzk3?=
+ =?utf-8?B?clE9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e6dde90-8690-4ea8-0f6b-08daec28b834
+X-MS-Exchange-CrossTenant-Network-Message-Id: f21046ca-4dd5-4b98-2378-08daec2d2d3b
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jan 2023 18:48:06.1175
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jan 2023 19:20:00.4911
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zTeGDqJK+qqfVs3Fh5TbNLMuyXdE9vF9qnrnrGSuviIw240EGE8sVMu7FwsTl33I
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR15MB5767
-X-Proofpoint-ORIG-GUID: QzYkfjzdpvdetHZOZdxTxDar2Ou-skU1
-X-Proofpoint-GUID: QzYkfjzdpvdetHZOZdxTxDar2Ou-skU1
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+X-MS-Exchange-CrossTenant-UserPrincipalName: fvnFZQrlpUKTfkmmNNZWK3d2SFpG1UlWCdmX6wB98eZ7gQqFKKwxlYQbkUu+y8ni
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3337
+X-Proofpoint-ORIG-GUID: -FUo-hSH9DY5EEGWzkPAA0BYs4ikRx-i
+X-Proofpoint-GUID: -FUo-hSH9DY5EEGWzkPAA0BYs4ikRx-i
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 3 URL's were un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
@@ -155,60 +160,173 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 12/31/22 5:26 PM, Alexei Starovoitov wrote:
-> On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> Hi,
->>
->> The patchset tries to fix the problems found when checking how htab map
->> handles element reuse in bpf memory allocator. The immediate reuse of
->> freed elements may lead to two problems in htab map:
->>
->> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
->>      htab map value and it may corrupt lookup procedure with BFP_F_LOCK
->>      flag which acquires bpf-spin-lock during value copying. The
->>      corruption of bpf-spin-lock may result in hard lock-up.
->> (2) lookup procedure may get incorrect map value if the found element is
->>      freed and then reused.
->>
->> Because the type of htab map elements are the same, so problem #1 can be
->> fixed by supporting ctor in bpf memory allocator. The ctor initializes
->> these special fields in map element only when the map element is newly
->> allocated. If it is just a reused element, there will be no
->> reinitialization.
+On 12/30/22 1:44 AM, Hao Sun wrote:
 > 
-> Instead of adding the overhead of ctor callback let's just
-> add __GFP_ZERO to flags in __alloc().
-> That will address the issue 1 and will make bpf_mem_alloc behave just
-> like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
-> will behave the same way.
+> 
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> 于2022年12月30日周五 06:16写道：
+>>
+>> On Tue, Dec 27, 2022 at 9:24 PM Yonghong Song <yhs@meta.com> wrote:
+>>>
+>>>
+>>>
+>>> On 12/20/22 4:30 PM, Andrii Nakryiko wrote:
+>>>> On Mon, Dec 19, 2022 at 11:13 AM <sdf@google.com> wrote:
+>>>>>
+>>>>> On 12/19, Hao Sun wrote:
+>>>>>> Hi,
+>>>>>
+>>>>>> The following backtracking bug can be triggered on the latest bpf-next and
+>>>>>> Linux 6.1 with the C prog provided. I don't have enough knowledge about
+>>>>>> this part in the verifier, don't know how to fix this.
+>>>>>
+>>>>> Maybe something related to commit be2ef8161572 ("bpf: allow precision
+>>>>> tracking
+>>>>> for programs with subprogs") and/or the related ones?
+>>>>>
+>>>>>
+>>>>>> This can be reproduced on:
+>>>>>
+>>>>>> HEAD commit: 0e43662e61f2 tools/resolve_btfids: Use pkg-config to locate
+>>>>>> libelf
+>>>>>> git tree: bpf-next
+>>>>>> console log: https://pastebin.com/raw/45hZ7iqm
+>>>>>> kernel config: https://pastebin.com/raw/0pu1CHRm
+>>>>>> C reproducer: https://pastebin.com/raw/tqsiezvT
+>>>>>
+>>>>>> func#0 @0
+>>>>>> 0: R1=ctx(off=0,imm=0) R10=fp0
+>>>>>> 0: (18) r2 = 0x8000000000000          ; R2_w=2251799813685248
+>>>>>> 2: (18) r6 = 0xffff888027358000       ;
+>>>>>> R6_w=map_ptr(off=0,ks=3032,vs=3664,imm=0)
+>>>>>> 4: (18) r7 = 0xffff88802735a000       ;
+>>>>>> R7_w=map_ptr(off=0,ks=156,vs=2624,imm=0)
+>>>>>> 6: (18) r8 = 0xffff88802735e000       ;
+>>>>>> R8_w=map_ptr(off=0,ks=2396,vs=76,imm=0)
+>>>>>> 8: (18) r9 = 0x8e9700000000           ; R9_w=156779191205888
+>>>>>> 10: (36) if w9 >= 0xffffffe3 goto pc+1
+>>>>>> last_idx 10 first_idx 0
+>>>>>> regs=200 stack=0 before 8: (18) r9 = 0x8e9700000000
+>>>>>> 11: R9_w=156779191205888
+>>>>>> 11: (85) call #0
+>>>>>> 12: (cc) w2 s>>= w7
+>>>>
+>>>> w2 should have been set to NOT_INIT (because r1-r5 are clobbered by
+>>>> calls) and rejected here as !read_ok (see check_reg_arg()) before
+>>>> attempting to mark precision for r2. Can you please try to debug and
+>>>> understand why that didn't happen here?
+>>>
+>>> The verifier is doing the right thing here and the 'call #0' does
+>>> implicitly cleared r1-r5.
+>>>
+>>> So for 'w2 s>>= w7', since w2 is used, the verifier tries to find
+>>> its definition by backtracing. It encountered 'call #0', which clears
+>>
+>> and that's what I'm saying is incorrect. Normally we'd get !read_ok
+>> error because s>>= is both READ and WRITE on w2, which is
+>> uninitialized after call instruction according to BPF ABI. And that's
+>> what actually seems to happen correctly in my (simpler) tests locally.
+>> But something is special about this specific repro that somehow either
+>> bypasses this logic, or attempts to mark precision before we get to
+>> that test. That's what we should investigate. I haven't tried to run
+>> this specific repro locally yet, so can't tell for sure.
+>>
+> 
+> So, the reason why w2 is not marked as uninit is that the kfunc call in
+> the BPF program is invalid, "call #0", imm is zero, right?
 
-Patch 
-https://lore.kernel.org/all/20220809213033.24147-3-memxor@gmail.com/ 
-tried to address a similar issue for lru hash table.
-Maybe we need to do similar things after bpf_mem_cache_alloc() for
-hash table?
+Yes, "call #0" is invalid. As the code below
+
+ > /* skip for now, but return error when we find this in 
+fixup_kfunc_call */
+ >   if (!insn->imm)
+ >   return 0;
+
+The error report will be delayed later in fixup_kfunc_call().
+
+static int fixup_kfunc_call(struct bpf_verifier_env *env, struct 
+bpf_insn *insn,
+                             struct bpf_insn *insn_buf, int insn_idx, 
+int *cnt)
+{
+         const struct bpf_kfunc_desc *desc;
+
+         if (!insn->imm) {
+                 verbose(env, "invalid kernel function call not 
+eliminated in verifier pass\n");
+                 return -EINVAL;
+         }
 
 
+> In check_kfunc_call(), it skips this error temporarily:
 > 
->> Problem #2 exists for both non-preallocated and preallocated htab map.
->> By adding seq in htab element, doing reuse check and retrying the
->> lookup procedure may be a feasible solution, but it will make the
->> lookup API being hard to use, because the user needs to check whether
->> the found element is reused or not and repeat the lookup procedure if it
->> is reused. A simpler solution would be just disabling freed elements
->> reuse and freeing these elements after lookup procedure ends.
+> /* skip for now, but return error when we find this in fixup_kfunc_call */
+>   if (!insn->imm)
+>   return 0;
 > 
-> You've proposed this 'solution' twice already in qptrie thread and both
-> times the answer was 'no, we cannot do this' with reasons explained.
-> The 3rd time the answer is still the same.
-> This 'issue 2' existed in hashmap since very beginning for many years.
-> It's a known quirk. There is nothing to fix really.
+> So the kfunc call is the previous instruction before "w2 s>>= w7", this
+> leads to the warning in backtrack_insn():
 > 
-> The graph apis (aka new gen data structs) with link list and rbtree are
-> in active development. Soon bpf progs will be able to implement their own
-> hash maps with explicit bpf_rcu_read_lock. At that time the progs will
-> be making the trade off between performance and lookup/delete race.
-> So please respin with just __GFP_ZERO and update the patch 6
-> to check for lockup only.
+> /* regular helper call sets R0 */
+> *reg_mask &= ~1;
+> if (*reg_mask & 0x3f) {
+> 	/* if backtracing was looking for registers R1-R5
+> 	* they should have been found already.
+> 	*/
+> 	verbose(env, "BUG regs %x\n", *reg_mask);
+> 	WARN_ONCE(1, "verifier backtracking bug”);
+> 	return -EFAULT;
+> }
+
+The main triggering the backtrack_insn() is due to
+
+                         } else {
+                                 /* scalar += pointer
+                                  * This is legal, but we have to 
+reverse our
+                                  * src/dest handling in computing the range
+                                  */
+                                 err = mark_chain_precision(env, 
+insn->dst_reg);
+                                 if (err)
+                                         return err;
+                                 return adjust_ptr_min_max_vals(env, insn,
+                                                                src_reg, 
+dst_reg);
+                         }
+
+
+unc#0 @0
+0: R1=ctx(off=0,imm=0) R10=fp0
+0: (18) r2 = 0x8000000000000          ; R2_w=2251799813685248
+2: (18) r6 = 0xffff888100d29000       ; 
+R6_w=map_ptr(off=0,ks=3032,vs=3664,imm=0)
+4: (18) r7 = 0xffff888100d2a000       ; 
+R7_w=map_ptr(off=0,ks=156,vs=2624,imm=0)
+6: (18) r8 = 0xffff888100d2ac00       ; 
+R8_w=map_ptr(off=0,ks=2396,vs=76,imm=0)
+8: (18) r9 = 0x8e9700000000           ; R9_w=156779191205888
+10: (36) if w9 >= 0xffffffe3 goto pc+1
+last_idx 10 first_idx 0
+regs=200 stack=0 before 8: (18) r9 = 0x8e9700000000
+11: R9_w=156779191205888
+11: (85) call #0
+12: (cc) w2 s>>= w7
+last_idx 12 first_idx 12
+parent didn't have regs=4 stack=0 marks: R1=ctx(off=0,imm=0) 
+R2_rw=P2251799813685248 R6_w=map_ptr(off=0,ks=3032,vs=3664,imm=0) 
+R7_rw=map_ptr(off=0,ks=156,vs=2624,imm=0) R8_w=map_ptr(off=0,ks=2396,v0
+last_idx 11 first_idx 0
+regs=4 stack=0 before 11: (85) call #0
+BUG regs 4
+
+For insn 12, 'w2 s>>= w7', w2 is a scalar and w7 is a map_ptr. Hence, 
+based on the above verifier code, mark_chain_precision() is triggered.
+
+Not sure what is the purpose of this test. But to make it succeed,
+first "call #0" need to change to a valid kfunc call, and second, you
+might want to change 'w2 s>>= w7' to e.g., 'w9 s>>= w7' to avoid
+precision tracking.
+
+> 
+> Any idea or hint on how to fix this?
+> 
