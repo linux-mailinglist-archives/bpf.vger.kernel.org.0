@@ -2,74 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FDA65A88A
-	for <lists+bpf@lfdr.de>; Sun,  1 Jan 2023 02:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3814165A946
+	for <lists+bpf@lfdr.de>; Sun,  1 Jan 2023 09:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbjAAB0h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Dec 2022 20:26:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
+        id S229501AbjAAIeJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Jan 2023 03:34:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjAAB0g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Dec 2022 20:26:36 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9B9CCB;
-        Sat, 31 Dec 2022 17:26:34 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id 17so25814699pll.0;
-        Sat, 31 Dec 2022 17:26:34 -0800 (PST)
+        with ESMTP id S229446AbjAAIeI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Jan 2023 03:34:08 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264F42AC5
+        for <bpf@vger.kernel.org>; Sun,  1 Jan 2023 00:34:07 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id m7-20020a17090a730700b00225ebb9cd01so18030970pjk.3
+        for <bpf@vger.kernel.org>; Sun, 01 Jan 2023 00:34:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YXmArirWOKCsQqCkNHR2H0NTz1sBS3ob8z6XYfcJhSM=;
-        b=EkVi5mqEApUhYw8yprhreYLai5e3q3lxe+INSuDsewQ3EQ48mQvzHn6HbETqUW05R+
-         xrIPH87p3ltq6jXww+1C9edquRfLZKhbuDxgRsHbvybJ1N51VYjbf/peuwq1wAPC6YEK
-         rjs+aXPITNrQoqWZtJk/Dv+pdQYfwEKUzBt5Bheon1LAF/NrfLhaYDu1VboUp4Bw52rb
-         d5szHOBAMLRaioeL4LKRj+lwvxZIofEShhmiS3FjXbBrH89EK4N/9xolw2Ef0wxQ2Si4
-         0jx/0j2nsQwQ8O5lt8OrI8wM9N5sNKIW47FXM8qXjjuBs1feuxAUYgfIWg9PQvjEqHXJ
-         zgmA==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=41J6sbp1oqLox8j2lSCpQyHOqor/I1SSkTi7Ee/zp3A=;
+        b=BFTWUdi2ACz5gCtnKeA0MWP7Gi2oEM95zWwteTR0bBKb8kNSxxl4p9DRQ7XHjJ+H+a
+         kU5LgqOfm1FfqYeCf64fpAZPpUftszGydhGir0nRW+tLI6Z3/fPdHLMPS1pBZIZ5VJ0V
+         OLK3i/wZvaD2wF2mljEgaHG9KtAsJUMxlU6pSWXwnkL94/pyJS+bT+TNJgLjcz4mO3JR
+         9lD6Q3akHceqHtODLTpbSpcWzWNOfgKjgpzs+mNyzaeLdz0EnAMYrxXfs7FaUKGrlhZy
+         A/rmOr7I4B5gSrhJ+Zgm1lwsQJdyUONohMVBBIXJXu7aDos5WoooQuzHtf2utFunR9MA
+         NFjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YXmArirWOKCsQqCkNHR2H0NTz1sBS3ob8z6XYfcJhSM=;
-        b=tVMNzJybuN0hZfPZjsAHE8TaeaVLQVFHdiQWK8NRJlJCb4hqY2236v13QZNRjKnmhe
-         qj03ywrnWd9Q0JETKqOjsn6cjSS8p6o5eprLXlgxk8LRuQQT00iMZHYOtTgvzSGDLms5
-         haz7om5XNL+KeFR/yhao1BBeAl6T1mElCrlEi0lzfRSk9SDy6fs1PYzYuLLx7BWuVr/w
-         BNuM3JIEDs+qwansM3mGkCcdDVlP834/GVkjQGHRJQJSBiq7Q226MP9TgXHGmf9e7IQo
-         wkx4jD7zgovev7NcGUlcbxCcc76S19WIv2MfAKA3B+O4JdRuMM5xU1YfBoe/UeelokWT
-         8Ktg==
-X-Gm-Message-State: AFqh2kqHrFj1dfcK/4YjB4pf7ngreYGy4IDwY+NzYMuSKC1xKXlb/oMv
-        clxp6+xRRY2HnyGCGHjBP/c=
-X-Google-Smtp-Source: AMrXdXsTBnCWk7472F4WmCpZRZXDkmFWIlofS1s0e2dhVoI6r3MpgId5n8Lcix3+7LC2tVVRXm4JXQ==
-X-Received: by 2002:a17:903:230d:b0:192:a174:178f with SMTP id d13-20020a170903230d00b00192a174178fmr16633582plh.37.1672536394008;
-        Sat, 31 Dec 2022 17:26:34 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:1385])
-        by smtp.gmail.com with ESMTPSA id l3-20020a170902e2c300b00192bf7eaf28sm1216327plc.286.2022.12.31.17.26.31
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=41J6sbp1oqLox8j2lSCpQyHOqor/I1SSkTi7Ee/zp3A=;
+        b=AsWuFGqp0z71Gh8TFoeWl81HuGWAMpibtIGh7qOCvtfAquQczLXfZ+58MZpC1cb1z+
+         bNtlDKFFjpD7e1hq6mqUJm9GQB5Z0XZz1ZBVpbfim/srbgdTD9o0Ss4o3mNFTPp01+Oa
+         MbZOrGePlsDoe5GTht9f0yzrwBiM2f4FAYEcjQUMqYXkHsou0Lp43hGPrARuuH0gmmp9
+         lZ2lqu+qWgR9ZlPMAWvH7TYDWJdUyLNzsOeblx9dDy824lJaeTSG6ts9VPA6PZ6S8hOg
+         i2Z1cWeEs45sBO01UCZmcUShA8R3JdIo69qicDEw7SMXtmDtHtLaXo7zhDXCy3xTOP3A
+         3jHw==
+X-Gm-Message-State: AFqh2koYmnrKl4RMmN7uNDqiIzT2znxj1K9FImrUjCtx8FU2+GArDQOr
+        jz35idzHombIyu0PVMGqZjUOyeUDLc4oltkD
+X-Google-Smtp-Source: AMrXdXv7Yl59ygNrry3r1WIYtPFZZ3qrmLRxfGAOxWnnyzb0p8Lt3Q5Y0nZpWl44m4GCc3PDIE0sJw==
+X-Received: by 2002:a17:90a:fa6:b0:225:da94:58e0 with SMTP id 35-20020a17090a0fa600b00225da9458e0mr27131022pjz.23.1672562046367;
+        Sun, 01 Jan 2023 00:34:06 -0800 (PST)
+Received: from localhost ([2405:201:6014:d8bc:6259:1a87:ebdd:30a7])
+        by smtp.gmail.com with ESMTPSA id ml4-20020a17090b360400b00225ab429953sm16922555pjb.6.2023.01.01.00.34.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Dec 2022 17:26:33 -0800 (PST)
-Date:   Sat, 31 Dec 2022 17:26:29 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Sun, 01 Jan 2023 00:34:06 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-Message-ID: <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 0/8] Dynptr fixes
+Date:   Sun,  1 Jan 2023 14:03:54 +0530
+Message-Id: <20230101083403.332783-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221230041151.1231169-1-houtao@huaweicloud.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1298; i=memxor@gmail.com; h=from:subject; bh=KdsZ9FRq+X2M0XGa6+ELGsGOLJJ1SlzE5uIMEFUYAmY=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjsUV0pcko8DrtvTV7AEOja9J/TRRb71e3mlD9wtY+ 2qY/aHGJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY7FFdAAKCRBM4MiGSL8Ryj/RD/ 9a9MmJ2tsJdMAldApX0hI8ts7UMef3UOmXudbf7E3sA87fGXnQqGDmTEThHIpPa82G1pcJSwJD1cqu D1wJfwNVmfSOWMPEkafX9y4r316cJTmu8sL6GaLItrXDQmKvwCl/DhkVu+dczBzrFYZxvSpz7HglHR MwNZePncgspwdagQSEfwixyVi0YNGjhrvkKsUAHDDT2BZfwIZl0RjY/yj12LFP2ldxas0cmQGIDbri GR35s5nEUhmSUkXFhryssTUyW1KClzARxDvWDJWd2qBPvLDSn8xIqw3KuZXhCWdBbgA8aavlvIK38J tTg0fZNx87Gbqg5+DysQFQbO+phnDV5subDVmFQbDgYWe0ZVN6SvcFbQA/3PVk49Q77LcYd9YGrMDD /XPPjkPqErlpNZlQMjU/7fD6T6CXrfmexPN6Q2epDzvND2f1k+3ogxjFMqLZCUhmXIQB/mqbVi39EC LkbmdgxaUvNXOj1TlbECM5XNWMfIu7K3H/w0g06P/He/X2HpPR5qWtcYolvt0CtGKbmZEB6UZfYLi1 kVpyuvlTGhYL6DQbgsMTOd+2ZmAYW+r3no/31IQMODD+h9y0suA91GKjTL8RUAIqNJBf7qE2XOoJLq OcGJWryDnp+emye/vRpGtcmUnXipx408/l+NX8pMfFyguAibgcc2B9zufy/g==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -80,51 +75,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> Hi,
-> 
-> The patchset tries to fix the problems found when checking how htab map
-> handles element reuse in bpf memory allocator. The immediate reuse of
-> freed elements may lead to two problems in htab map:
-> 
-> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
->     htab map value and it may corrupt lookup procedure with BFP_F_LOCK
->     flag which acquires bpf-spin-lock during value copying. The
->     corruption of bpf-spin-lock may result in hard lock-up.
-> (2) lookup procedure may get incorrect map value if the found element is
->     freed and then reused.
-> 
-> Because the type of htab map elements are the same, so problem #1 can be
-> fixed by supporting ctor in bpf memory allocator. The ctor initializes
-> these special fields in map element only when the map element is newly
-> allocated. If it is just a reused element, there will be no
-> reinitialization.
+Happy New Year!
 
-Instead of adding the overhead of ctor callback let's just
-add __GFP_ZERO to flags in __alloc().
-That will address the issue 1 and will make bpf_mem_alloc behave just
-like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
-will behave the same way.
+This is part 2 of https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com.
 
-> Problem #2 exists for both non-preallocated and preallocated htab map.
-> By adding seq in htab element, doing reuse check and retrying the
-> lookup procedure may be a feasible solution, but it will make the
-> lookup API being hard to use, because the user needs to check whether
-> the found element is reused or not and repeat the lookup procedure if it
-> is reused. A simpler solution would be just disabling freed elements
-> reuse and freeing these elements after lookup procedure ends.
+Changelog:
+----------
+Old v1 -> v1
+Old v1: https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com
 
-You've proposed this 'solution' twice already in qptrie thread and both
-times the answer was 'no, we cannot do this' with reasons explained.
-The 3rd time the answer is still the same.
-This 'issue 2' existed in hashmap since very beginning for many years.
-It's a known quirk. There is nothing to fix really.
+ * Allow overwriting dynptr stack slots from dynptr init helpers
+ * Fix a bug in alignment check where reg->var_off.value was still not included
+ * Address other minor nits
 
-The graph apis (aka new gen data structs) with link list and rbtree are
-in active development. Soon bpf progs will be able to implement their own
-hash maps with explicit bpf_rcu_read_lock. At that time the progs will
-be making the trade off between performance and lookup/delete race.
-So please respin with just __GFP_ZERO and update the patch 6
-to check for lockup only.
+Kumar Kartikeya Dwivedi (8):
+  bpf: Fix state pruning for STACK_DYNPTR stack slots
+  bpf: Fix missing var_off check for ARG_PTR_TO_DYNPTR
+  bpf: Fix partial dynptr stack slot reads/writes
+  bpf: Allow reinitializing unreferenced dynptr stack slots
+  selftests/bpf: Add dynptr pruning tests
+  selftests/bpf: Add dynptr var_off tests
+  selftests/bpf: Add dynptr partial slot overwrite tests
+  selftests/bpf: Add dynptr helper tests
+
+ kernel/bpf/verifier.c                         | 243 ++++++++++++++++--
+ .../bpf/prog_tests/kfunc_dynptr_param.c       |   2 +-
+ .../testing/selftests/bpf/progs/dynptr_fail.c |  68 ++++-
+ tools/testing/selftests/bpf/verifier/dynptr.c | 182 +++++++++++++
+ 4 files changed, 464 insertions(+), 31 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/verifier/dynptr.c
+
+
+base-commit: bb5747cfbc4b7fe29621ca6cd4a695d2723bf2e8
+-- 
+2.39.0
+
