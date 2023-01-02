@@ -2,88 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2460965AECA
-	for <lists+bpf@lfdr.de>; Mon,  2 Jan 2023 10:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C28B65B6F2
+	for <lists+bpf@lfdr.de>; Mon,  2 Jan 2023 20:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbjABJmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Jan 2023 04:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
+        id S230230AbjABT2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Jan 2023 14:28:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbjABJmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Jan 2023 04:42:39 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB7B5585;
-        Mon,  2 Jan 2023 01:42:38 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id jl4so22824492plb.8;
-        Mon, 02 Jan 2023 01:42:38 -0800 (PST)
+        with ESMTP id S230170AbjABT2r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Jan 2023 14:28:47 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B6D5F96
+        for <bpf@vger.kernel.org>; Mon,  2 Jan 2023 11:28:44 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id z26so42773952lfu.8
+        for <bpf@vger.kernel.org>; Mon, 02 Jan 2023 11:28:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ymM0tmAmeUubwlu4LB3pUvTGT9//VpcDAd8Jqd49OcQ=;
-        b=PqM9YRD3RmKBaFB2fGG9pNBYbcD3uk80EAg51tC1PtKXWmpJTQxAW9Fbgoo8zpb27N
-         b3tbyXQmx+E7i7KyQ5Mta6e5SBvlJlXxCe/8vdSgX6RVkUZQfYYQhNYdWAN1PwJge2hu
-         DxgKsRkX+kJUeFqkdFmjH9ITCsguSNLCgT0MvTWveAtwhoAarGLTZRO7zaVXslJmBve4
-         7QKG8kBrePnHUfaCG7aCLImeBmaFyuAEJpDPBoQxHANIdl908aQioIwkrt1p1oOLuV6j
-         JfPOPFbKHNFrYroZstShAbuWBArlXbAJe4YebenYAUYfWW+VmNaH3qd9ebgj6ZowuA0X
-         GWuQ==
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Yo6JJVUQq0xwZNEtxyrA4mChIdVM9HZPPBMFqYc2vKg=;
+        b=Qh8AXlcqGCFPiSdXDWsCgPNPKnRg6JcarZjunmllJedFJiWPcaSNRFuhFsUUSl8xOh
+         qks1UJWbHqkhvfhMVCyq1D6pJX4glg3dp9Hcnkum3Cux2xupSGI2hNsV/Mxl5ihvJcHX
+         uUIlYNHbCpnORDaZclTz89e5oUCrAdfEke+SvQlSNNitCS47+6RNCryhaoKEVXKDastj
+         lToWExk0if+UGOviq+u/+aVkjQm0/3TDQXT44nLn9h8hQ989oQ28fuQLeEZ5XFtyXaZy
+         OWRQxkrAfOY/AAhFsRA7SnwNLeIrVXgvFJKSfQgRGQio6U+0WkpxWhQ6tlV2PvkJLJVU
+         i2yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ymM0tmAmeUubwlu4LB3pUvTGT9//VpcDAd8Jqd49OcQ=;
-        b=SuABIpnt06kqmv7ydb5gpTvx8zxI9HQ3m/DG9hfri1MTrxqquxcYWr8k1m7McIai++
-         6fLi2QKoQeWFBp5skLYW6emdZ9OsgFZD1IKjUHDBZD1QavJgoIx9AI6lcU24MqleejcZ
-         31ctU+iU5ojCPLGq7fVIuqzd0+bd1tb2mK5kTS85tvaS/g3gUeHjv2zG1hfc1jq9Lih+
-         F9Bm6FDF4EwLlsgCCxWV8JYnyEfYmrXffSXV9jXkFr7iiMDxjrgezCHQ0RCZWfyM5w4x
-         hwxL3bW+Nw64xp0oQour7bHKkAMJD3btY2ROfEsEEnfZWmhVNbadcdeGCLu787Svl/gq
-         hiag==
-X-Gm-Message-State: AFqh2krSYJwQExP4rGduIvHX2bxz1YFTtV5zwzTbDlc8hOjrh1ghsALI
-        ior9i/rhOeE/JPiHQZt9LlQZ3dpSZbqO
-X-Google-Smtp-Source: AMrXdXvxIYZyMLXqd6lKLtoRzntlgXFGl/Jsu5Hp8vxw+ikCT9cPtK5mfw+fUvb3cCmtda3b6G/prQ==
-X-Received: by 2002:a05:6a20:1581:b0:a2:ed21:d820 with SMTP id h1-20020a056a20158100b000a2ed21d820mr81811003pzj.42.1672652557743;
-        Mon, 02 Jan 2023 01:42:37 -0800 (PST)
-Received: from smtpclient.apple (n119236129232.netvigator.com. [119.236.129.232])
-        by smtp.gmail.com with ESMTPSA id 128-20020a630086000000b004a099a12937sm3880746pga.84.2023.01.02.01.42.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Jan 2023 01:42:37 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.300.101.1.3\))
-Subject: Re: WARNING in __mark_chain_precision
-From:   Hao Sun <sunhao.th@gmail.com>
-In-Reply-To: <04c66278-b044-98e4-2861-218bd159bd15@meta.com>
-Date:   Mon, 2 Jan 2023 17:42:22 +0800
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Yo6JJVUQq0xwZNEtxyrA4mChIdVM9HZPPBMFqYc2vKg=;
+        b=lzIgs8czMNcJny57JZfeMUWpN/5LelYbKmh6uZ+/hjMMxXCGp3ICekJ7F7SAGRK37W
+         xJs6jd2VmeBXD8PJLJJ06KQx5FIh3qP0xpZTSKmn43jnpTEU7+43VrOKYKd9C+KAdBzB
+         P5WTg/vg+aEUlqgSafOMyVZqmEhrE/DoZF5fhYD+zmSlte6Uf+CnCAaZkQFlhkf8Wz9y
+         B3K+8YnC7PPiS+HBRjEgRD0+fDcpPz0Sghezd97WUzpF9GjVy9NUJC0uztU9xDb/aqa4
+         t5dDhEDjRXhpz/nn4D+E7RmMPUjPc8i55VngyNK0Kw21IhXrrckX6jHjAmQOsI3fKL/K
+         mjvg==
+X-Gm-Message-State: AFqh2kqFd8trbzZgRb+Q4jF+a5MGvLZLsTncertPV/pEOWsADAAK4Ypt
+        7AR2kdkblGmymIG97hCAZ40=
+X-Google-Smtp-Source: AMrXdXt/lc3XSNnd/0MBW2+DFeVXECMb7s5MI9YiI2lY/16kFHyiLI1hVEwTDBPqYlMtUGJ/9Hvyww==
+X-Received: by 2002:a05:6512:e89:b0:4b5:b7be:136b with SMTP id bi9-20020a0565120e8900b004b5b7be136bmr12161716lfb.69.1672687722543;
+        Mon, 02 Jan 2023 11:28:42 -0800 (PST)
+Received: from [192.168.1.113] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id be33-20020a056512252100b004b56de48f05sm4510273lfb.27.2023.01.02.11.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Jan 2023 11:28:41 -0800 (PST)
+Message-ID: <f4bde187c49109d041e44ab19bbd23c7eccfc716.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/8] bpf: Fix state pruning for STACK_DYNPTR
+ stack slots
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>
+Date:   Mon, 02 Jan 2023 21:28:40 +0200
+In-Reply-To: <20230101083403.332783-2-memxor@gmail.com>
+References: <20230101083403.332783-1-memxor@gmail.com>
+         <20230101083403.332783-2-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <CB67D529-B384-4B1C-AC01-DD99D4F6DEA5@gmail.com>
-References: <CACkBjsaXNceR8ZjkLG=dT3P=4A8SBsg0Z5h5PWLryF5=ghKq=g@mail.gmail.com>
- <Y6C36gvJ2JnwKm3X@google.com>
- <CAEf4BzbY8SDL04W_3Vot6iiYu69Lqg9W9aMCp26+RwLBh6C_0g@mail.gmail.com>
- <ba5aacc8-7e10-e20a-936b-f3f81d7fcf03@meta.com>
- <CAEf4BzY-DMVEpy+mPTObEO56E7=fzqab8zW_4JyBeyGtTqqcXg@mail.gmail.com>
- <29B647B3-174A-4BE7-9E0E-83AE94B0EADF@gmail.com>
- <04c66278-b044-98e4-2861-218bd159bd15@meta.com>
-To:     Yonghong Song <yhs@meta.com>
-X-Mailer: Apple Mail (2.3731.300.101.1.3)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,267 +78,255 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sun, 2023-01-01 at 14:03 +0530, Kumar Kartikeya Dwivedi wrote:
+> The root of the problem is missing liveness marking for STACK_DYNPTR
+> slots. This leads to all kinds of problems inside stacksafe.
+>=20
+> The verifier by default inside stacksafe ignores spilled_ptr in stack
+> slots which do not have REG_LIVE_READ marks. Since this is being checked
+> in the 'old' explored state, it must have already done clean_live_states
+> for this old bpf_func_state. Hence, it won't be receiving any more
+> liveness marks from to be explored insns (it has received REG_LIVE_DONE
+> marking from liveness point of view).
+>=20
+> What this means is that verifier considers that it's safe to not compare
+> the stack slot if was never read by children states. While liveness
+> marks are usually propagated correctly following the parentage chain for
+> spilled registers (SCALAR_VALUE and PTR_* types), the same is not the
+> case for STACK_DYNPTR.
+>=20
+> clean_live_states hence simply rewrites these stack slots to the type
+> STACK_INVALID since it sees no REG_LIVE_READ marks.
+>=20
+> The end result is that we will never see STACK_DYNPTR slots in explored
+> state. Even if verifier was conservatively matching !REG_LIVE_READ
+> slots, very next check continuing the stacksafe loop on seeing
+> STACK_INVALID would again prevent further checks.
+>=20
+> Now as long as verifier stores an explored state which we can compare to
+> when reaching a pruning point, we can abuse this bug to make verifier
+> prune search for obviously unsafe paths using STACK_DYNPTR slots
+> thinking they are never used hence safe.
+>=20
+> Doing this in unprivileged mode is a bit challenging. add_new_state is
+> only set when seeing BPF_F_TEST_STATE_FREQ (which requires privileges)
+> or when jmps_processed difference is >=3D 2 and insn_processed difference
+> is >=3D 8. So coming up with the unprivileged case requires a little more
+> work, but it is still totally possible. The test case being discussed
+> below triggers the heuristic even in unprivileged mode.
+>=20
+> However, it no longer works since commit
+> 8addbfc7b308 ("bpf: Gate dynptr API behind CAP_BPF").
+>=20
+> Let's try to study the test step by step.
+>=20
+> Consider the following program (C style BPF ASM):
+>=20
+> 0  r0 =3D 0;
+> 1  r6 =3D &ringbuf_map;
+> 3  r1 =3D r6;
+> 4  r2 =3D 8;
+> 5  r3 =3D 0;
+> 6  r4 =3D r10;
+> 7  r4 -=3D -16;
+> 8  call bpf_ringbuf_reserve_dynptr;
+> 9  if r0 =3D=3D 0 goto pc+1;
+> 10 goto pc+1;
+> 11 *(r10 - 16) =3D 0xeB9F;
+> 12 r1 =3D r10;
+> 13 r1 -=3D -16;
+> 14 r2 =3D 0;
+> 15 call bpf_ringbuf_discard_dynptr;
+> 16 r0 =3D 0;
+> 17 exit;
+>=20
+> We know that insn 12 will be a pruning point, hence if we force
+> add_new_state for it, it will first verify the following path as
+> safe in straight line exploration:
+> 0 1 3 4 5 6 7 8 9 -> 10 -> (12) 13 14 15 16 17
+>=20
+> Then, when we arrive at insn 12 from the following path:
+> 0 1 3 4 5 6 7 8 9 -> 11 (12)
+>=20
+> We will find a state that has been verified as safe already at insn 12.
+> Since register state is same at this point, regsafe will pass. Next, in
+> stacksafe, for spi =3D 0 and spi =3D 1 (location of our dynptr) is skippe=
+d
+> seeing !REG_LIVE_READ. The rest matches, so stacksafe returns true.
+> Next, refsafe is also true as reference state is unchanged in both
+> states.
+>=20
+> The states are considered equivalent and search is pruned.
+>=20
+> Hence, we are able to construct a dynptr with arbitrary contents and use
+> the dynptr API to operate on this arbitrary pointer and arbitrary size +
+> offset.
+>=20
+> To fix this, first define a mark_dynptr_read function that propagates
+> liveness marks whenever a valid initialized dynptr is accessed by dynptr
+> helpers. REG_LIVE_WRITTEN is marked whenever we initialize an
+> uninitialized dynptr. This is done in mark_stack_slots_dynptr. It allows
+> screening off mark_reg_read and not propagating marks upwards from that
+> point.
+>=20
+> This ensures that we either set REG_LIVE_READ64 on both dynptr slots, or
+> none, so clean_live_states either sets both slots to STACK_INVALID or
+> none of them. This is the invariant the checks inside stacksafe rely on.
+>=20
+> Next, do a complete comparison of both stack slots whenever they have
+> STACK_DYNPTR. Compare the dynptr type stored in the spilled_ptr, and
+> also whether both form the same first_slot. Only then is the later path
+> safe.
+>=20
+> Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 73 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>=20
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 4a25375ebb0d..f7248235e119 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -781,6 +781,9 @@ static int mark_stack_slots_dynptr(struct bpf_verifie=
+r_env *env, struct bpf_reg_
+>  		state->stack[spi - 1].spilled_ptr.ref_obj_id =3D id;
+>  	}
+> =20
+> +	state->stack[spi].spilled_ptr.live |=3D REG_LIVE_WRITTEN;
+> +	state->stack[spi - 1].spilled_ptr.live |=3D REG_LIVE_WRITTEN;
+> +
+>  	return 0;
+>  }
+> =20
+> @@ -805,6 +808,26 @@ static int unmark_stack_slots_dynptr(struct bpf_veri=
+fier_env *env, struct bpf_re
+> =20
+>  	__mark_reg_not_init(env, &state->stack[spi].spilled_ptr);
+>  	__mark_reg_not_init(env, &state->stack[spi - 1].spilled_ptr);
+> +
+> +	/* Why do we need to set REG_LIVE_WRITTEN for STACK_INVALID slot?
+> +	 *
+> +	 * While we don't allow reading STACK_INVALID, it is still possible to
+> +	 * do <8 byte writes marking some but not all slots as STACK_MISC. Then=
+,
+> +	 * helpers or insns can do partial read of that part without failing,
+> +	 * but check_stack_range_initialized, check_stack_read_var_off, and
+> +	 * check_stack_read_fixed_off will do mark_reg_read for all 8-bytes of
+> +	 * the slot conservatively. Hence we need to screen off those liveness
+> +	 * marking walks.
+> +	 *
+> +	 * This was not a problem before because STACK_INVALID is only set by
+> +	 * default, or in clean_live_states after REG_LIVE_DONE, not randomly
+> +	 * during verifier state exploration. Hence, for this case parentage
+> +	 * chain will still be live, while earlier reg->parent was NULL, so we
+> +	 * need REG_LIVE_WRITTEN to screen off read marker propagation.
+> +	 */
+> +	state->stack[spi].spilled_ptr.live |=3D REG_LIVE_WRITTEN;
+> +	state->stack[spi - 1].spilled_ptr.live |=3D REG_LIVE_WRITTEN;
+> +
 
+This is purely to assist with verifier state pruning and does not
+affect correctness, right?
+Commenting the lines does not seem to fail any tests, maybe add one
+matching some "77 safe: ..." jump in the log?
 
-Yonghong Song <yhs@meta.com> =E4=BA=8E2023=E5=B9=B41=E6=9C=882=E6=97=A5=E5=
-=91=A8=E4=B8=80 03:20=E5=86=99=E9=81=93=EF=BC=9A
->=20
->=20
->=20
-> On 12/30/22 1:44 AM, Hao Sun wrote:
->>=20
->>=20
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> =
-=E4=BA=8E2022=E5=B9=B412=E6=9C=8830=E6=97=A5=E5=91=A8=E4=BA=94 =
-06:16=E5=86=99=E9=81=93=EF=BC=9A
->>>=20
->>> On Tue, Dec 27, 2022 at 9:24 PM Yonghong Song <yhs@meta.com> wrote:
->>>>=20
->>>>=20
->>>>=20
->>>> On 12/20/22 4:30 PM, Andrii Nakryiko wrote:
->>>>> On Mon, Dec 19, 2022 at 11:13 AM <sdf@google.com> wrote:
->>>>>>=20
->>>>>> On 12/19, Hao Sun wrote:
->>>>>>> Hi,
->>>>>>=20
->>>>>>> The following backtracking bug can be triggered on the latest =
-bpf-next and
->>>>>>> Linux 6.1 with the C prog provided. I don't have enough =
-knowledge about
->>>>>>> this part in the verifier, don't know how to fix this.
->>>>>>=20
->>>>>> Maybe something related to commit be2ef8161572 ("bpf: allow =
-precision
->>>>>> tracking
->>>>>> for programs with subprogs") and/or the related ones?
->>>>>>=20
->>>>>>=20
->>>>>>> This can be reproduced on:
->>>>>>=20
->>>>>>> HEAD commit: 0e43662e61f2 tools/resolve_btfids: Use pkg-config =
-to locate
->>>>>>> libelf
->>>>>>> git tree: bpf-next
->>>>>>> console log: https://pastebin.com/raw/45hZ7iqm
->>>>>>> kernel config: https://pastebin.com/raw/0pu1CHRm
->>>>>>> C reproducer: https://pastebin.com/raw/tqsiezvT
->>>>>>=20
->>>>>>> func#0 @0
->>>>>>> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
->>>>>>> 0: (18) r2 =3D 0x8000000000000          ; R2_w=3D2251799813685248
->>>>>>> 2: (18) r6 =3D 0xffff888027358000       ;
->>>>>>> R6_w=3Dmap_ptr(off=3D0,ks=3D3032,vs=3D3664,imm=3D0)
->>>>>>> 4: (18) r7 =3D 0xffff88802735a000       ;
->>>>>>> R7_w=3Dmap_ptr(off=3D0,ks=3D156,vs=3D2624,imm=3D0)
->>>>>>> 6: (18) r8 =3D 0xffff88802735e000       ;
->>>>>>> R8_w=3Dmap_ptr(off=3D0,ks=3D2396,vs=3D76,imm=3D0)
->>>>>>> 8: (18) r9 =3D 0x8e9700000000           ; R9_w=3D156779191205888
->>>>>>> 10: (36) if w9 >=3D 0xffffffe3 goto pc+1
->>>>>>> last_idx 10 first_idx 0
->>>>>>> regs=3D200 stack=3D0 before 8: (18) r9 =3D 0x8e9700000000
->>>>>>> 11: R9_w=3D156779191205888
->>>>>>> 11: (85) call #0
->>>>>>> 12: (cc) w2 s>>=3D w7
->>>>>=20
->>>>> w2 should have been set to NOT_INIT (because r1-r5 are clobbered =
-by
->>>>> calls) and rejected here as !read_ok (see check_reg_arg()) before
->>>>> attempting to mark precision for r2. Can you please try to debug =
-and
->>>>> understand why that didn't happen here?
->>>>=20
->>>> The verifier is doing the right thing here and the 'call #0' does
->>>> implicitly cleared r1-r5.
->>>>=20
->>>> So for 'w2 s>>=3D w7', since w2 is used, the verifier tries to find
->>>> its definition by backtracing. It encountered 'call #0', which =
-clears
->>>=20
->>> and that's what I'm saying is incorrect. Normally we'd get !read_ok
->>> error because s>>=3D is both READ and WRITE on w2, which is
->>> uninitialized after call instruction according to BPF ABI. And =
-that's
->>> what actually seems to happen correctly in my (simpler) tests =
-locally.
->>> But something is special about this specific repro that somehow =
-either
->>> bypasses this logic, or attempts to mark precision before we get to
->>> that test. That's what we should investigate. I haven't tried to run
->>> this specific repro locally yet, so can't tell for sure.
->>>=20
->>=20
->> So, the reason why w2 is not marked as uninit is that the kfunc call =
-in
->> the BPF program is invalid, "call #0", imm is zero, right?
->=20
-> Yes, "call #0" is invalid. As the code below
->=20
->> /* skip for now, but return error when we find this in
-> fixup_kfunc_call */
->>  if (!insn->imm)
->>  return 0;
->=20
-> The error report will be delayed later in fixup_kfunc_call().
->=20
-> static int fixup_kfunc_call(struct bpf_verifier_env *env, struct
-> bpf_insn *insn,
->                             struct bpf_insn *insn_buf, int insn_idx,
-> int *cnt)
-> {
->         const struct bpf_kfunc_desc *desc;
->=20
->         if (!insn->imm) {
->                 verbose(env, "invalid kernel function call not
-> eliminated in verifier pass\n");
->                 return -EINVAL;
->         }
->=20
->=20
->> In check_kfunc_call(), it skips this error temporarily:
->>=20
->> /* skip for now, but return error when we find this in =
-fixup_kfunc_call */
->>  if (!insn->imm)
->>  return 0;
->>=20
->> So the kfunc call is the previous instruction before "w2 s>>=3D w7", =
-this
->> leads to the warning in backtrack_insn():
->>=20
->> /* regular helper call sets R0 */
->> *reg_mask &=3D ~1;
->> if (*reg_mask & 0x3f) {
->>      /* if backtracing was looking for registers R1-R5
->>      * they should have been found already.
->>      */
->>      verbose(env, "BUG regs %x\n", *reg_mask);
->>      WARN_ONCE(1, "verifier backtracking bug=E2=80=9D);
->>      return -EFAULT;
->> }
->=20
-> The main triggering the backtrack_insn() is due to
->=20
->                         } else {
->                                 /* scalar +=3D pointer
->                                  * This is legal, but we have to
-> reverse our
->                                  * src/dest handling in computing the =
-range
->                                  */
->                                 err =3D mark_chain_precision(env,
-> insn->dst_reg);
->                                 if (err)
->                                         return err;
->                                 return adjust_ptr_min_max_vals(env, =
-insn,
->                                                                =
-src_reg,
-> dst_reg);
->                         }
->=20
->=20
-> unc#0 @0
-> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> 0: (18) r2 =3D 0x8000000000000          ; R2_w=3D2251799813685248
-> 2: (18) r6 =3D 0xffff888100d29000       ;
-> R6_w=3Dmap_ptr(off=3D0,ks=3D3032,vs=3D3664,imm=3D0)
-> 4: (18) r7 =3D 0xffff888100d2a000       ;
-> R7_w=3Dmap_ptr(off=3D0,ks=3D156,vs=3D2624,imm=3D0)
-> 6: (18) r8 =3D 0xffff888100d2ac00       ;
-> R8_w=3Dmap_ptr(off=3D0,ks=3D2396,vs=3D76,imm=3D0)
-> 8: (18) r9 =3D 0x8e9700000000           ; R9_w=3D156779191205888
-> 10: (36) if w9 >=3D 0xffffffe3 goto pc+1
-> last_idx 10 first_idx 0
-> regs=3D200 stack=3D0 before 8: (18) r9 =3D 0x8e9700000000
-> 11: R9_w=3D156779191205888
-> 11: (85) call #0
-> 12: (cc) w2 s>>=3D w7
-> last_idx 12 first_idx 12
-> parent didn't have regs=3D4 stack=3D0 marks: R1=3Dctx(off=3D0,imm=3D0)
-> R2_rw=3DP2251799813685248 R6_w=3Dmap_ptr(off=3D0,ks=3D3032,vs=3D3664,imm=
-=3D0)
-> R7_rw=3Dmap_ptr(off=3D0,ks=3D156,vs=3D2624,imm=3D0) =
-R8_w=3Dmap_ptr(off=3D0,ks=3D2396,v0
-> last_idx 11 first_idx 0
-> regs=3D4 stack=3D0 before 11: (85) call #0
-> BUG regs 4
->=20
-> For insn 12, 'w2 s>>=3D w7', w2 is a scalar and w7 is a map_ptr. =
-Hence,
-> based on the above verifier code, mark_chain_precision() is triggered.
->=20
-> Not sure what is the purpose of this test. But to make it succeed,
-> first "call #0" need to change to a valid kfunc call, and second, you
-> might want to change 'w2 s>>=3D w7' to e.g., 'w9 s>>=3D w7' to avoid
-> precision tracking.
->=20
+>  	return 0;
+>  }
+> =20
+> @@ -2388,6 +2411,30 @@ static int mark_reg_read(struct bpf_verifier_env *=
+env,
+>  	return 0;
+>  }
+> =20
+> +static int mark_dynptr_read(struct bpf_verifier_env *env, struct bpf_reg=
+_state *reg)
+> +{
+> +	struct bpf_func_state *state =3D func(env, reg);
+> +	int spi, ret;
+> +
+> +	/* For CONST_PTR_TO_DYNPTR, it must have already been done by
+> +	 * check_reg_arg in check_helper_call and mark_btf_func_reg_size in
+> +	 * check_kfunc_call.
+> +	 */
+> +	if (reg->type =3D=3D CONST_PTR_TO_DYNPTR)
+> +		return 0;
+> +	spi =3D get_spi(reg->off);
+> +	/* Caller ensures dynptr is valid and initialized, which means spi is i=
+n
+> +	 * bounds and spi is the first dynptr slot. Simply mark stack slot as
+> +	 * read.
+> +	 */
+> +	ret =3D mark_reg_read(env, &state->stack[spi].spilled_ptr,
+> +			    state->stack[spi].spilled_ptr.parent, REG_LIVE_READ64);
+> +	if (ret)
+> +		return ret;
+> +	return mark_reg_read(env, &state->stack[spi - 1].spilled_ptr,
+> +			     state->stack[spi - 1].spilled_ptr.parent, REG_LIVE_READ64);
+> +}
+> +
+>  /* This function is supposed to be used by the following 32-bit optimiza=
+tion
+>   * code only. It returns TRUE if the source or destination register oper=
+ates
+>   * on 64-bit, otherwise return FALSE.
+> @@ -5928,6 +5975,7 @@ int process_dynptr_func(struct bpf_verifier_env *en=
+v, int regno,
+>  			enum bpf_arg_type arg_type, struct bpf_call_arg_meta *meta)
+>  {
+>  	struct bpf_reg_state *regs =3D cur_regs(env), *reg =3D &regs[regno];
+> +	int err;
+> =20
+>  	/* MEM_UNINIT and MEM_RDONLY are exclusive, when applied to an
+>  	 * ARG_PTR_TO_DYNPTR (or ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_*):
+> @@ -6008,6 +6056,10 @@ int process_dynptr_func(struct bpf_verifier_env *e=
+nv, int regno,
+>  				err_extra, regno);
+>  			return -EINVAL;
+>  		}
+> +
+> +		err =3D mark_dynptr_read(env, reg);
+> +		if (err)
+> +			return err;
+>  	}
+>  	return 0;
+>  }
+> @@ -13204,6 +13256,27 @@ static bool stacksafe(struct bpf_verifier_env *e=
+nv, struct bpf_func_state *old,
+>  			 * return false to continue verification of this path
+>  			 */
+>  			return false;
+> +		/* Both are same slot_type, but STACK_DYNPTR requires more
+> +		 * checks before it can considered safe.
+> +		 */
+> +		if (old->stack[spi].slot_type[i % BPF_REG_SIZE] =3D=3D STACK_DYNPTR) {
+> +			/* If both are STACK_DYNPTR, type must be same */
+> +			if (old->stack[spi].spilled_ptr.dynptr.type !=3D cur->stack[spi].spil=
+led_ptr.dynptr.type)
+> +				return false;
+> +			/* Both should also have first slot at same spi */
+> +			if (old->stack[spi].spilled_ptr.dynptr.first_slot !=3D cur->stack[spi=
+].spilled_ptr.dynptr.first_slot)
+> +				return false;
+> +			/* ids should be same */
+> +			if (!!old->stack[spi].spilled_ptr.ref_obj_id !=3D !!cur->stack[spi].s=
+pilled_ptr.ref_obj_id)
+> +				return false;
+> +			if (old->stack[spi].spilled_ptr.ref_obj_id &&
+> +			    !check_ids(old->stack[spi].spilled_ptr.ref_obj_id,
+> +				       cur->stack[spi].spilled_ptr.ref_obj_id, idmap))
+> +				return false;
+> +			WARN_ON_ONCE(i % BPF_REG_SIZE);
+> +			i +=3D BPF_REG_SIZE - 1;
+> +			continue;
+> +		}
 
-The purpose is not to make the test "succeed", the verifier temporarily
-skips the invalid kfunc insn "call #0", but this insn triggered a =
-warning
-in backtrack_insn(), while it is supposed to reject the program either
-due to insn#12 32bit ptr alu or insn#11 invalid kfunc.
+Nitpick: maybe move the checks above inside regsafe() as all
+conditions operate on old/cur->stack[spi].spilled_ptr ?
 
-Maybe something like the bellow, after applying the patch, the =
-reproducer
-is rejected:
+Acked-by: Eduard Zingerman <eddyz@gmail.com>
 
-func#0 @0
-0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-0: (18) r2 =3D 0x8000000000000          ; R2_w=3D2251799813685248
-2: (18) r6 =3D 0xffff88817d563000       ; =
-R6_w=3Dmap_ptr(off=3D0,ks=3D3032,vs=3D3664,imm=3D0)
-4: (18) r7 =3D 0xffff888171ee9000       ; =
-R7_w=3Dmap_ptr(off=3D0,ks=3D156,vs=3D2624,imm=3D0)
-6: (18) r8 =3D 0xffff888171ee8000       ; =
-R8_w=3Dmap_ptr(off=3D0,ks=3D2396,vs=3D76,imm=3D0)
-8: (18) r9 =3D 0x8e9700000000           ; R9_w=3D156779191205888
-10: (36) if w9 >=3D 0xffffffe3 goto pc+1
-last_idx 10 first_idx 0
-regs=3D200 stack=3D0 before 8: (18) r9 =3D 0x8e9700000000
-11: R9_w=3D156779191205888
-11: (85) call #0
-12: (cc) w2 s>>=3D w7
-last_idx 12 first_idx 12
-parent didn't have regs=3D4 stack=3D0 marks: R1=3Dctx(off=3D0,imm=3D0) =
-R2_rw=3DP2251799813685248 R6_w=3Dmap_ptr(off=3D0,ks=3D3032,vs=3D3664,imm=3D=
-0) R7_rw=3Dmap_ptr(off=3D0,ks=3D156,vs=3D2624,imm=3D0) =
-R8_w=3Dmap_ptr(off=3D0,ks=3D2396,vs=3D76,imm=3D0) R9_w=3D156779191205888 =
-R10=3Dfp0
-last_idx 11 first_idx 0
-regs=3D4 stack=3D0 before 11: (85) call #0
-regs=3D4 stack=3D0 before 10: (36) if w9 >=3D 0xffffffe3 goto pc+1
-regs=3D4 stack=3D0 before 8: (18) r9 =3D 0x8e9700000000
-regs=3D4 stack=3D0 before 6: (18) r8 =3D 0xffff888171ee8000
-regs=3D4 stack=3D0 before 4: (18) r7 =3D 0xffff888171ee9000
-regs=3D4 stack=3D0 before 2: (18) r6 =3D 0xffff88817d563000
-regs=3D4 stack=3D0 before 0: (18) r2 =3D 0x8000000000000
-R2 32-bit pointer arithmetic prohibited
-processed 8 insns (limit 1000000) max_states_per_insn 0 total_states 1 =
-peak_states 1 mark_read 1=20
+>  		if (i % BPF_REG_SIZE !=3D BPF_REG_SIZE - 1)
+>  			continue;
+>  		if (!is_spilled_reg(&old->stack[spi]))
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 4a25375ebb0d..abc7e96d826f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2743,6 +2743,9 @@ static int backtrack_insn(struct bpf_verifier_env =
-*env, int idx,
- 			*reg_mask |=3D sreg;
- 	} else if (class =3D=3D BPF_JMP || class =3D=3D BPF_JMP32) {
- 		if (opcode =3D=3D BPF_CALL) {
-+			/* skip for now, should return error when we =
-find this in fixup_kfunc_call */
-+			if (insn->src_reg =3D=3D BPF_PSEUDO_KFUNC_CALL =
-&& insn->imm =3D=3D 0)
-+				return 0;
- 			if (insn->src_reg =3D=3D BPF_PSEUDO_CALL)
- 				return -ENOTSUPP;
- 			/* BPF helpers that invoke callback subprogs are
-
-
-
-
->>=20
->> Any idea or hint on how to fix this?
->>=20
