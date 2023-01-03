@@ -2,85 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5310765C2E3
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 16:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AEE65C328
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 16:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233337AbjACPUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 10:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
+        id S231279AbjACPkD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 10:40:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237875AbjACPUl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Jan 2023 10:20:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C4A1055B
-        for <bpf@vger.kernel.org>; Tue,  3 Jan 2023 07:19:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1672759193;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8tFVbE4QN6qhi0O2aBkIXiBf6pHY8zcS3cdBJgDR0kE=;
-        b=GblZlRHi6xabx+mTvEmIzzTOLReTElsnxTfFPeduv7PqLbY29XewupPvhpwptBRak5annz
-        7/7KxKHex8G4LDg4cR4BORHSn2ao/nnYRhY9QLW+A4aQc5auVN6BWTkG9azu7s8QkdNKbX
-        r5mw/SdiS3LSFh9FQjFJB8tlUArWq8k=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-553-6JTPsOviPFOLYT3YbjGA-A-1; Tue, 03 Jan 2023 10:19:52 -0500
-X-MC-Unique: 6JTPsOviPFOLYT3YbjGA-A-1
-Received: by mail-ed1-f71.google.com with SMTP id c12-20020a05640227cc00b004853521ef55so13506228ede.8
-        for <bpf@vger.kernel.org>; Tue, 03 Jan 2023 07:19:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8tFVbE4QN6qhi0O2aBkIXiBf6pHY8zcS3cdBJgDR0kE=;
-        b=jNHTusdBunovH7JHjxaTWW2uL3W+Y5J8QedRvZsr986Y6yix4FoFxKNKONBEr+3TkM
-         owrqzllRBFAnoJ6nA5ca2//yzOjCGAulQB6S58sqhZRVnwFay85aUL8dEI8otAlj5v86
-         PbO20RtfBWbPzUKcga2uUJaAnxoPMvvaJm96Wx2ygZmmnrY4DOQmQPbj5qdGWD/tdAwV
-         X5W0t2eMz+9Dy0c8zu4cGkLKzD+10B2K7eSRb4nKoWvjfpUF0ygBBiryFOPpv43BPaxH
-         YommuZ7NJetqMHpCVl/2/DeXMbqqvyUAAnZfQi8SYgNf3pWvkhp0q4sIBasJWCwctRME
-         KBqQ==
-X-Gm-Message-State: AFqh2koj7YJW0TDZFnTbZjtdIQPDx1qJZQLc955A3jFJhx+RkmWROUKz
-        h7gL5yP/kvPwBSzN+oIVa5CIpFaKjZxJ11MyXsAec6VrjApD4di9HJPn1l6fty35/8Pxb/HQjW8
-        i0V6zgWbuzUz6
-X-Received: by 2002:a05:6402:685:b0:470:25cf:99d1 with SMTP id f5-20020a056402068500b0047025cf99d1mr38395917edy.31.1672759191009;
-        Tue, 03 Jan 2023 07:19:51 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXsXKEhPwpG4WD26/S8ItwuDbPLpP1zllLWTgdQUjI2l22k2Bionu0USrmbqSUGT5LdKx5RBsQ==
-X-Received: by 2002:a05:6402:685:b0:470:25cf:99d1 with SMTP id f5-20020a056402068500b0047025cf99d1mr38395894edy.31.1672759190722;
-        Tue, 03 Jan 2023 07:19:50 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id co5-20020a0564020c0500b00483dd234ac6sm11424853edb.96.2023.01.03.07.19.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Jan 2023 07:19:50 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 44CE68A2678; Tue,  3 Jan 2023 16:19:49 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Tariq Toukan <ttoukan.linux@gmail.com>,
-        Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, lorenzo.bianconi@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Andy Gospodarek <gospo@broadcom.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, gal@nvidia.com,
-        Saeed Mahameed <saeedm@nvidia.com>, tariqt@nvidia.com
-Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
- support xdp multibuffer
-In-Reply-To: <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com>
-References: <20220621175402.35327-1-gospo@broadcom.com>
- <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 03 Jan 2023 16:19:49 +0100
-Message-ID: <87k0234pd6.fsf@toke.dk>
+        with ESMTP id S229459AbjACPkC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Jan 2023 10:40:02 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2082.outbound.protection.outlook.com [40.107.93.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A0911C1A;
+        Tue,  3 Jan 2023 07:40:00 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kG+3il/qVm/N6UMNmqF7/oJNrHl1YjT5x6reJaV1TxpXS4O65ZZRjZap4sV2mV+kfXSuwsRMzgi+awn3TqKJelgBBcc/D7zZNmyWTR6TvfNTnYSdTEbEG5Lh/3cRfMp/XWQq9nuEmvkENX2r7peSgDfk0MEFb1faIxuqfWmHc92vxRtfreqa01fByuHjXoN+G9j39Xc5yuWOerQugWEvXS/wjfIyHs/W7RWSiLu3Lj5j5ys7/DJ50MSWOdsTX1PegKIwq1y2O0uJzc+glpIw/X+jp9wAi5BSSg1IE9flxcYbO9HTnVH78Zoyx1TJM0NZ194x1mcgOkVS2RoYKfxCTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iOQY0wxj8IGPhcO93ksvwGIBM5d5IId5rRIOBXryFUg=;
+ b=NzrtD9/4f74xDvMZVarwgkVtHE+8iIRK0P11dfytbjEfDdqgTQ0UjCRoWre/fvAQLkclyzcUpcERqSkrEHfEBEEpMHnDkBFxdPxH7iVsgkIzlKX5CrgqplHAbPcLtd8uYyPCDZZkvg1lEL0ipka14Ytb88SxFprGgNIbKBCEoWQhsLN1Zbj/MMBfla13PeDyxAcXaRE0Usy6cAcAwqAgSlqxE+yZeoJcK3gKPBScBTcamPzqqsv8TjBJeT0fRJ+QBS/BGdBdNHVITxTfLRrKe5QXUcwaaXapfEkjwpeFga+k6Ccn9zcZwwQs783HFjEreIPyd+h9v515kVEXS12H2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iOQY0wxj8IGPhcO93ksvwGIBM5d5IId5rRIOBXryFUg=;
+ b=bWnrN5G/rGwaxi/JEtzQAqzzNWp+PY8G13M/+QFfEA908KDwGlAkinq0/TcbKDOiKZc9m6KE7VE+ylN05C5gyZhSayGQ/YtZAUqE7FzWfqLdT5FX7ccMyY5Kc456j2ezqDzC8HwlcSeNlfc8gqAsBVDx1uc4hmO7kUyZGX/EriY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by CO6PR12MB5428.namprd12.prod.outlook.com (2603:10b6:5:35c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Tue, 3 Jan
+ 2023 15:39:51 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::c3f5:aede:fa4d:5411]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::c3f5:aede:fa4d:5411%4]) with mapi id 15.20.5944.019; Tue, 3 Jan 2023
+ 15:39:51 +0000
+Message-ID: <ea9c2977-f05f-3acd-ee3e-2443229b7b55@amd.com>
+Date:   Tue, 3 Jan 2023 10:39:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [syzbot] WARNING: locking bug in inet_autobind
+To:     syzbot <syzbot+94cc2a66fc228b23f360@syzkaller.appspotmail.com>,
+        Alexander.Deucher@amd.com, Christian.Koenig@amd.com,
+        David1.Zhou@amd.com, Evan.Quan@amd.com, Harry.Wentland@amd.com,
+        Oak.Zeng@amd.com, Ray.Huang@amd.com, Yong.Zhao@amd.com,
+        airlied@linux.ie, amd-gfx@lists.freedesktop.org, ast@kernel.org,
+        boqun.feng@gmail.com, bpf@vger.kernel.org, daniel@ffwll.ch,
+        daniel@iogearbox.net, davem@davemloft.net,
+        dri-devel@lists.freedesktop.org, dsahern@kernel.org,
+        edumazet@google.com, gautammenghani201@gmail.com,
+        jakub@cloudflare.com, kafai@fb.com, kuba@kernel.org,
+        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
+        longman@redhat.com, mingo@redhat.com, netdev@vger.kernel.org,
+        ozeng@amd.com, pabeni@redhat.com,
+        penguin-kernel@I-love.SAKURA.ne.jp, peterz@infradead.org,
+        rex.zhu@amd.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, will@kernel.org, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+References: <0000000000002ae67f05f0f191aa@google.com>
+Content-Language: en-US
+From:   Felix Kuehling <felix.kuehling@amd.com>
+In-Reply-To: <0000000000002ae67f05f0f191aa@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YT1PR01CA0083.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::22) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|CO6PR12MB5428:EE_
+X-MS-Office365-Filtering-Correlation-Id: f359f0d4-9294-431c-3208-08daeda0c070
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ta77K+TNJn9bPBVSS5yrjUKR+gzZ05bNIHzXRXYB6rDSoOfOS39MdouluhBKn6rgzU2cvidF7bTcDSYzW2r3VLgg809uPcasMQkJu2S6bjushtE9qvezRK/ZlhriAyoqiddwz+JkOAinb9T17QaoPChRqWtCt/p9piPnB+0wK43GShQWRa4j+iV3QITRqOAL0gIcGZKjM7CO/zhi6HmDA1T27sOulUE/gucqHclcowmhme3qmsqGaczTHgv02zNdNVqvwFxkyyknxJvJmaHEd+32d8rCdd9bYQbXcMjyHgkLJK61zb76HpVVYlcmcI5Ln2phyVBEYX0Ff396IotfMdIFy3tAiiEHImd07PjE3q8vOIqTrXXLVkphfMRL/MX1Rk6UMH+SrB67gN6BDquK0k789UkudD9X5NvbcZGfxSQ8VnrZ4TMenV5JD1guXIYogNDDcoCkDUwqs/4m07oeMb/kCyDMlU1kvgDMZRA9QLsMpYZRflWoK+i+eag6NiKqPm3sFLCPNSjO6xOLsLr1/L/TxmyfkC5Idy20/pEFz58ho81m1+XwbIRS7Hb/GLBeZTt5qHxydA+O6xOj5hEXlJeSi0zMt/VDGUacP5Cc99YbkuzgrZJ8c+Da+uOmCaEflCu+yHtrI+AThv3IPBNgMV8BoGaBcTVUWPMitivYK4hJ11lVfZQVX13vz/hnqn+s42RoI7jlAMhIWJGW4Ssrqg0lN7UVfHSZSN/CCZe/X0o+XphkQAjDGmqEHXJhOGloVFkRVs9G2MfBcCfMdOjh5G8nFfUMUloqtFBVgZh4SM8SgjBu0P1qm0WeMAVB7uJMvcU/jCwz4OmINvBdWVMEhVk9uHagqV1LYzdi6usSggE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(136003)(376002)(396003)(366004)(346002)(451199015)(31686004)(66476007)(66946007)(66556008)(6506007)(41300700001)(921005)(8676002)(83380400001)(86362001)(2906002)(186003)(6666004)(316002)(26005)(4001150100001)(31696002)(44832011)(478600001)(966005)(6486002)(6512007)(38100700002)(8936002)(45080400002)(5660300002)(7416002)(2616005)(36756003)(22166006)(99710200001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1VxcCs5ZkRyK01YRHI2Q0taTG5xRkJpYkg5WUQwb2xIWlpnWDdIRDduVS80?=
+ =?utf-8?B?OVhvQm0zRHRzTkQzQjRVVUQyeGhoeW5BTGM3S2MrZk5hUVU3ZFhGdldwWlY4?=
+ =?utf-8?B?Wm5mSWU3NVFQWTY5RWlyalhMY2gzRkRJam1LYzBidThkL2VXVmRsSG5hQ2s0?=
+ =?utf-8?B?Zm9mUFUreUxLWWhSeVZPQjNaZ2paeEk1VHIrYVl3ckpYVWViVjllUXFGbHlG?=
+ =?utf-8?B?ZmViTktpU3BzVWJ3VGhSQldwWnAyUDFqdW8xMW1SVUVLcmJrbW1TbElDcEd3?=
+ =?utf-8?B?S2puUWhQNmdieHNIUXpWWitpL0M2UlI3bnIvdFJFWDE1REo2TU1RQnZxUDNI?=
+ =?utf-8?B?VjBWZElkRjFSa0xBWVkwQ04xOSt2MEZYYkY1Q3N1RW5CZGJqQUt2eFFaZU1k?=
+ =?utf-8?B?WGxOS0xwSU5tSTdjYVRwZ1MxODVOVXBqQzNBbkxDLzREbHZlNU5lSk45L3BD?=
+ =?utf-8?B?Rnc3U054ZlNldk1tN2txbTRrTkJNZnNoN2JJRzBBQkRnZ0ZJbWJlZjIzOGt6?=
+ =?utf-8?B?U1FUa091MHI0b1VVSDdicHkydVJGckFRa2R3NlA0OTZMUlNheVRaem5xQ0hh?=
+ =?utf-8?B?VFVvWis4NjM2MFFlVjh6eXNFYW9xbjRRTlZMZ2Q5ZE5WRnNHL1RiV2gwU0VL?=
+ =?utf-8?B?M3lQSkpraHVXSXp2VVBJL2JuQnFLS0lMd2phSlpOOUtwSi9ubk9TOHo3WGpq?=
+ =?utf-8?B?ZEkyYk5LTmhCVW56LzJFT0RwZ1QwbXArdVpPNEF0cEJ6NE5kbzJ1U0ZZNmh3?=
+ =?utf-8?B?amg1M1Y4aXhBY3lKMkhiVXAwUDhlOGVaWDdzb0FSclBKUXVNVTREY2FBL1FT?=
+ =?utf-8?B?WGZsUGZLN2xHcUpBRCtjWUcrYnQ1Vm5nUnJWWFllR0t0dXc0anhiYUIzYnpj?=
+ =?utf-8?B?SjVGMmdWeERva0p3NnNLQytLOEhWWXQzZHcrM1U5dkkzbUk4dmVPS201NHli?=
+ =?utf-8?B?Z3FSRlZLb1I4cVVkWmhOVDRPTFduNjAzczR4V3lxNEZ2RnU4MFNIa2s1UVdH?=
+ =?utf-8?B?a0pGNmg4VjJiekdTanoxRTRSRFJEMEk1MjJGQkdhcERHQnlXaTF6Slc1VlU0?=
+ =?utf-8?B?UTFvNUdNdVVGUWcrNGF4VVMxNzJkamhnSmc1NUtJN3ByQmlkSnJDMm9WcWZl?=
+ =?utf-8?B?NE56OFZ5TUd2YmFhcHZtS2F6ejQ2alI5TjFtWXVsN0pFZG9RNFZXamVnZXlM?=
+ =?utf-8?B?N1VsQlJtZElCV2tGK2dld1VWYzQ4NE1iV3lMU2dPQjNyYWJkK1NuajdtU04x?=
+ =?utf-8?B?cDhDNnVmMlhkb25iUFpWOTRQQXN6QVVrWFZBOHcrK1d0MVdHZ0NHT2g2dUhZ?=
+ =?utf-8?B?Y01YRHVUeitIU3JSTCsrL1V6Mk9rMW9MWEp3U1JySXc2Ri81czIxUDRoenV0?=
+ =?utf-8?B?K1YxdlV1UEZzVVVwMitOV015UnV0K3ZjcjRteHVrYjFEVXJ6YlFoYkgrL2FK?=
+ =?utf-8?B?TmtneWN6cTMvS3NVUEQ5VUJsWnZnbXZLVUtyd2s4WTBaNWRBeTljMFE2OGZw?=
+ =?utf-8?B?SE1SWWpyZ1pSVkN0VmIvdVJiY2UxbnptdFlwcC83RUdwcTRaRDZFdlhRVk1x?=
+ =?utf-8?B?WjV1cnQvVUdOS2dWRUFoeWRlUzBPS2NJbGpFZWRkTU9NYUIvdmZ3ajR4eXJv?=
+ =?utf-8?B?aXhlTktqQjRDcDNaZ3FpSU1oaTdBaUhIbVljOVFwbFdseXAxSVRYR1l0b0xH?=
+ =?utf-8?B?RjNJUmlVRzNKTXRPWEpVeEl5a2RoTXV5WnFQZ1JnSzlhMU9BTjArMHRNSFhV?=
+ =?utf-8?B?aWxTRll3Vm52MXQ3QS91bnZxQ3owbTNZUnZ0QllJbjMrTDJRTXlNZmI0SHhI?=
+ =?utf-8?B?OWVlQjByYnR3ZVhzbXFCRExYaDMxL09yL05FWWMrZGFpM21yQU5ZQ3pEOCtY?=
+ =?utf-8?B?NjZVUWlPM0RETjdYZ1JCbzRlZ1lRMmExRW5XQVllNmhmZDFpSFdDbjJMNmFB?=
+ =?utf-8?B?REYzZ1NqSXNhL1JXV2VKaUVIK0J1ZjZ4WVlFUjJmQkVNM3I5cGJYTit3a3Qv?=
+ =?utf-8?B?NGg0Nlc5OGJhZUNjcU04eVNqN1dROWVXbzRVK1pKOHJpNTdwK1k1ZHBQc1ht?=
+ =?utf-8?B?ekFwTjNqQ2Y0R0ZMZVYrclZCYktreGFvOEJQQXlpeHU5MFNNOGdnd0duQjBC?=
+ =?utf-8?Q?fTut3FJf+2/Tj+QYYGN4h86D0?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f359f0d4-9294-431c-3208-08daeda0c070
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2023 15:39:51.0942
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8uHx5/d3ETFg9US0LD0mn64uoTcgDYYsKL728eAcjNhjbCRxIS1PvOd0ARSzupac/oDS1dThtnH8DjFE37dHug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5428
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,51 +137,97 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tariq Toukan <ttoukan.linux@gmail.com> writes:
+The regression point doesn't make sense. The kernel config doesn't 
+enable CONFIG_DRM_AMDGPU, so there is no way that a change in AMDGPU 
+could have caused this regression.
 
-> On 21/06/2022 20:54, Andy Gospodarek wrote:
->> This changes the section name for the bpf program embedded in these
->> files to "xdp.frags" to allow the programs to be loaded on drivers that
->> are using an MTU greater than PAGE_SIZE.  Rather than directly accessing
->> the buffers, the packet data is now accessed via xdp helper functions to
->> provide an example for those who may need to write more complex
->> programs.
->> 
->> v2: remove new unnecessary variable
->> 
+Regards,
+   Felix
+
+
+Am 2022-12-29 um 01:26 schrieb syzbot:
+> syzbot has found a reproducer for the following issue on:
 >
-> Hi,
+> HEAD commit:    1b929c02afd3 Linux 6.2-rc1
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=145c6a68480000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2651619a26b4d687
+> dashboard link: https://syzkaller.appspot.com/bug?extid=94cc2a66fc228b23f360
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e13e32480000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13790f08480000
 >
-> I'm trying to understand if there are any assumptions/requirements on 
-> the length of the xdp_buf linear part when passed to XDP multi-buf programs?
-> Can the linear part be empty, with all data residing in the fragments? 
-> Is it valid?
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/d1849f1ca322/disk-1b929c02.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/924cb8aa4ada/vmlinux-1b929c02.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/8c7330dae0a0/bzImage-1b929c02.xz
 >
-> Per the proposed pattern below (calling bpf_xdp_load_bytes() to memcpy 
-> packet data into a local buffer), no such assumption is required, and an 
-> xdp_buf created by the driver with an empty linear part is valid.
+> The issue was bisected to:
 >
-> However, in the _xdp_tx_iptunnel example program, it fails (returns 
-> XDP_DROP) in case the headers are not in the linear part.
-
-Hmm, good question! I don't think we've ever explicitly documented any
-assumptions one way or the other. My own mental model has certainly
-always assumed the first frag would continue to be the same size as in
-non-multi-buf packets.
-
-I do seem to recall there was some discussion around this when we were
-discussing whether or not we needed programs to explicitly opt-in to
-multi-buf support (what ended up being the "xdp.frags" section). The
-reason we said it might *not* be necessary to do that was that most
-programs would just continue working, and it would only be those that
-either tried to access the end of the packet, or to compute the packet
-length as data_end-data that would need any changes before enabling
-the frags flag. Which also kinda implies that headers etc would continue
-to be in the linear part.
-
-This is all from memory, though, so maybe others have different
-recollections. In any case this is probably something we should document
-somewhere :)
-
--Toke
-
+> commit c0d9271ecbd891cdeb0fad1edcdd99ee717a655f
+> Author: Yong Zhao <Yong.Zhao@amd.com>
+> Date:   Fri Feb 1 23:36:21 2019 +0000
+>
+>      drm/amdgpu: Delete user queue doorbell variables
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1433ece4a00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1633ece4a00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1233ece4a00000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+94cc2a66fc228b23f360@syzkaller.appspotmail.com
+> Fixes: c0d9271ecbd8 ("drm/amdgpu: Delete user queue doorbell variables")
+>
+> ------------[ cut here ]------------
+> Looking for class "l2tp_sock" with key l2tp_socket_class, but found a different class "slock-AF_INET6" with the same key
+> WARNING: CPU: 0 PID: 7280 at kernel/locking/lockdep.c:937 look_up_lock_class+0x97/0x110 kernel/locking/lockdep.c:937
+> Modules linked in:
+> CPU: 0 PID: 7280 Comm: syz-executor835 Not tainted 6.2.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+> RIP: 0010:look_up_lock_class+0x97/0x110 kernel/locking/lockdep.c:937
+> Code: 17 48 81 fa e0 e5 f6 8f 74 59 80 3d 5d bc 57 04 00 75 50 48 c7 c7 00 4d 4c 8a 48 89 04 24 c6 05 49 bc 57 04 01 e8 a9 42 b9 ff <0f> 0b 48 8b 04 24 eb 31 9c 5a 80 e6 02 74 95 e8 45 38 02 fa 85 c0
+> RSP: 0018:ffffc9000b5378b8 EFLAGS: 00010082
+> RAX: 0000000000000000 RBX: ffffffff91c06a00 RCX: 0000000000000000
+> RDX: ffff8880292d0000 RSI: ffffffff8166721c RDI: fffff520016a6f09
+> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000080000201 R11: 20676e696b6f6f4c R12: 0000000000000000
+> R13: ffff88802a5820b0 R14: 0000000000000000 R15: 0000000000000000
+> FS:  00007f1fd7a97700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020000100 CR3: 0000000078ab4000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   register_lock_class+0xbe/0x1120 kernel/locking/lockdep.c:1289
+>   __lock_acquire+0x109/0x56d0 kernel/locking/lockdep.c:4934
+>   lock_acquire kernel/locking/lockdep.c:5668 [inline]
+>   lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
+>   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+>   _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
+>   spin_lock_bh include/linux/spinlock.h:355 [inline]
+>   lock_sock_nested+0x5f/0xf0 net/core/sock.c:3473
+>   lock_sock include/net/sock.h:1725 [inline]
+>   inet_autobind+0x1a/0x190 net/ipv4/af_inet.c:177
+>   inet_send_prepare net/ipv4/af_inet.c:813 [inline]
+>   inet_send_prepare+0x325/0x4e0 net/ipv4/af_inet.c:807
+>   inet6_sendmsg+0x43/0xe0 net/ipv6/af_inet6.c:655
+>   sock_sendmsg_nosec net/socket.c:714 [inline]
+>   sock_sendmsg+0xd3/0x120 net/socket.c:734
+>   __sys_sendto+0x23a/0x340 net/socket.c:2117
+>   __do_sys_sendto net/socket.c:2129 [inline]
+>   __se_sys_sendto net/socket.c:2125 [inline]
+>   __x64_sys_sendto+0xe1/0x1b0 net/socket.c:2125
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f1fd78538b9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f1fd7a971f8 EFLAGS: 00000212 ORIG_RAX: 000000000000002c
+> RAX: ffffffffffffffda RBX: 00007f1fd78f0038 RCX: 00007f1fd78538b9
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
+> RBP: 00007f1fd78f0030 R08: 0000000020000100 R09: 000000000000001c
+> R10: 0000000004008000 R11: 0000000000000212 R12: 00007f1fd78f003c
+> R13: 00007f1fd79ffc8f R14: 00007f1fd7a97300 R15: 0000000000022000
+>   </TASK>
+>
