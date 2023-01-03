@@ -2,163 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDD365C7A0
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 20:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DA965C872
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 21:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238032AbjACTis (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 14:38:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38544 "EHLO
+        id S234136AbjACUxB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 15:53:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233869AbjACTia (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Jan 2023 14:38:30 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EEF313F8A;
-        Tue,  3 Jan 2023 11:38:29 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id gh17so76634500ejb.6;
-        Tue, 03 Jan 2023 11:38:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uz0z6glvR6UTm9zIA9gGqEZh5IwSDdS2kpGh3fCJmBQ=;
-        b=eU3X0ITvyRxl1EqO2mDe9c2uMd6T094prAz1zPve5YB91Q1TsfRZPIX/fwnFyTjPLX
-         Xa89qt3djHl6S4ne0ZoJfi6Ar0Oczcg/bfFTtn0yaXe+RJfDtxZ79pDG7Mk634qhJjRo
-         7h4gRiqPMe0gZrr57QmKfup+uLt0+ygvojKzbtMjHcycOmnazAeKQrqbjBt+dfwqCYOR
-         R+NpZk2W81FZyN3eWT7sazgzzD03QvRXwVH2LnHvYt3FC6TNOL56cvF0TUTX3uLWinUY
-         HwdTRa2fVXg7l/NBvr04FChqFMvrMj1ceDbVMym302+cgbsRKZxVqJ9+8NO44ZSPrrBQ
-         UVEw==
+        with ESMTP id S232129AbjACUw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Jan 2023 15:52:58 -0500
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB78EDFFC;
+        Tue,  3 Jan 2023 12:52:57 -0800 (PST)
+Received: by mail-il1-f171.google.com with SMTP id a9so6321030ilk.6;
+        Tue, 03 Jan 2023 12:52:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uz0z6glvR6UTm9zIA9gGqEZh5IwSDdS2kpGh3fCJmBQ=;
-        b=Z5u1A6QCPR+K8PmIq25Df/Dtc9ZmI9JH5q9VBIsKP9mvjZT6/WKtlyXw9yofb8uygZ
-         Ss2TpOrJ+wAwGkHXpILzEE1ub1I0Bv5v3tiADBwGki6poNlygyzN7Fln8IcCe2/uRS/L
-         6yOkdP0q9HWoeZqZU9AiEcSIAmL3tpnuRd2NxgKVFIpJ1aqvjll1t9dI0C/ezIT22Iyk
-         I0YGh+N2wO9DPkUQBAoFmuYiLSBWr6VYGyVTDic6q6jilPruTC98DDoz5Y7jFSKc6CTP
-         7LVhHifS25ttS7t8yTdby2GK34FeORVCJAPR24RXELKNAC6E+neveWli7FQBtHSzsSdT
-         Jhpw==
-X-Gm-Message-State: AFqh2krQsASicEmciK5oSVvtL4WAAcMoN/Mism4iwbTzUyajSattDAiu
-        8HCfmUWlK+sTFVZ8G7QbXCmSivuy5DK2eJy53zw=
-X-Google-Smtp-Source: AMrXdXvq+a9qcP7tn1hp8z3zpiaeSBFQ0UGor0fKnc7utm+qIjLj/+ZB2EGjw6cg5TNwBHrodjRAHKRsT7nRDs/IHXU=
-X-Received: by 2002:a17:906:2818:b0:836:e897:648a with SMTP id
- r24-20020a170906281800b00836e897648amr2293613ejc.94.1672774707576; Tue, 03
- Jan 2023 11:38:27 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TcjxuWhsew0S4JMMZ0LVIr9mYr0ZItiOrBsIyKBjzxA=;
+        b=2NToks0C7J1Ro1UvG/6kt01FVvqSE9HR9qVAMAfaZb06yTAwrVLN65XEVXoYdk2sb/
+         FMDH86QOTkf1wdMlMR0dleIvp+iKloeh8GdzK1VfMzIR5mKBmjC5nnJFQD8eXF3nkv2c
+         dY7pzjpWv1OB2HULmgz9jZIO8vW435au8tXaxTXsClyEWgoz1g9qzlEG3Rvr13+3bRd2
+         sVlR2JmEJsANGr6A5u4z8LXD9rOrFNBNl2fwYhTpwN6SRkp5lS/7jyhfQVKayBh/JXLn
+         MlcxThMHg4KRVQgojY41+30qpXSL/0YXGHsHVLY34H6PJw+HYfF8wXBSBQUNQjTOidrU
+         gmMw==
+X-Gm-Message-State: AFqh2kqZ2tsPOgwVUCwTSoEgDRfiW27l+kCz1xXxrsewl87pch2FncLQ
+        Id3nHQnTweBl/NWr7CvSoQ==
+X-Google-Smtp-Source: AMrXdXs7CLCkBhA2bAs8+otIJJ87HLmOu2iBxk7dmL/ZdUhdNLgBmJbpCAkIQKJL5QLEGLa5kGxn6A==
+X-Received: by 2002:a05:6e02:549:b0:306:d1b4:f3c7 with SMTP id i9-20020a056e02054900b00306d1b4f3c7mr25689876ils.20.1672779176867;
+        Tue, 03 Jan 2023 12:52:56 -0800 (PST)
+Received: from robh_at_kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id c24-20020a023b18000000b00388b6508ec8sm9836486jaa.115.2023.01.03.12.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Jan 2023 12:52:56 -0800 (PST)
+Received: (nullmailer pid 3961459 invoked by uid 1000);
+        Tue, 03 Jan 2023 20:52:50 -0000
+Date:   Tue, 3 Jan 2023 14:52:50 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yann Sionneau <ysionneau@kalray.eu>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>, bpf@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        devicetree@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>,
+        Eric Paris <eparis@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Jason Baron <jbaron@akamai.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-audit@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, Alex Michon <amichon@kalray.eu>,
+        Ashley Lesdalons <alesdalons@kalray.eu>,
+        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
+        Clement Leger <clement.leger@bootlin.com>,
+        Guillaume Missonnier <gmissonnier@kalray.eu>,
+        Guillaume Thouvenin <gthouvenin@kalray.eu>,
+        Jean-Christophe Pince <jcpince@gmail.com>,
+        Jonathan Borne <jborne@kalray.eu>,
+        Jules Maselbas <jmaselbas@kalray.eu>,
+        Julian Vetter <jvetter@kalray.eu>,
+        Julien Hascoet <jhascoet@kalray.eu>,
+        Julien Villette <jvillette@kalray.eu>,
+        Louis Morhet <lmorhet@kalray.eu>,
+        Luc Michel <lmichel@kalray.eu>,
+        =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
+        Marius Gligor <mgligor@kalray.eu>,
+        Samuel Jones <sjones@kalray.eu>,
+        Thomas Costis <tcostis@kalray.eu>,
+        Vincent Chardon <vincent.chardon@elsys-design.com>
+Subject: Re: [RFC PATCH 00/25] Upstream kvx Linux port
+Message-ID: <20230103205250.GB3942221-robh@kernel.org>
+References: <20230103164359.24347-1-ysionneau@kalray.eu>
 MIME-Version: 1.0
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com> <2f875cf9-88ac-1406-4ad0-f7647fb92883@huaweicloud.com>
-In-Reply-To: <2f875cf9-88ac-1406-4ad0-f7647fb92883@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 3 Jan 2023 11:38:16 -0800
-Message-ID: <CAADnVQ+z-Y6Yv2i-icAUy=Uyh9yiN4S1AOrLd=K8mu32TXORkw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230103164359.24347-1-ysionneau@kalray.eu>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 3, 2023 at 5:40 AM Hou Tao <houtao@huaweicloud.com> wrote:
->
-> Hi,
->
-> On 1/1/2023 9:26 AM, Alexei Starovoitov wrote:
-> > On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> >>
-> >> Hi,
-> >>
-> >> The patchset tries to fix the problems found when checking how htab map
-> >> handles element reuse in bpf memory allocator. The immediate reuse of
-> >> freed elements may lead to two problems in htab map:
-> >>
-> >> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
-> >>     htab map value and it may corrupt lookup procedure with BFP_F_LOCK
-> >>     flag which acquires bpf-spin-lock during value copying. The
-> >>     corruption of bpf-spin-lock may result in hard lock-up.
-> >> (2) lookup procedure may get incorrect map value if the found element is
-> >>     freed and then reused.
-> >>
-> >> Because the type of htab map elements are the same, so problem #1 can be
-> >> fixed by supporting ctor in bpf memory allocator. The ctor initializes
-> >> these special fields in map element only when the map element is newly
-> >> allocated. If it is just a reused element, there will be no
-> >> reinitialization.
-> > Instead of adding the overhead of ctor callback let's just
-> > add __GFP_ZERO to flags in __alloc().
-> > That will address the issue 1 and will make bpf_mem_alloc behave just
-> > like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
-> > will behave the same way.
-> Use __GPF_ZERO will be simpler, but the overhead of memset() for every allocated
-> object may be bigger than ctor callback when the size of allocated object is
-> large. And it also introduces unnecessary memory zeroing if there is no special
-> field in the map value.
+On Tue, Jan 03, 2023 at 05:43:34PM +0100, Yann Sionneau wrote:
+> This patch series adds support for the kv3-1 CPU architecture of the kvx family
+> found in the Coolidge (aka MPPA3-80) SoC of Kalray.
+> 
+> This is an RFC, since kvx support is not yet upstreamed into gcc/binutils,
+> therefore this patch series cannot be merged into Linux for now.
+> 
+> The goal is to have preliminary reviews and to fix problems early.
+> 
+> The Kalray VLIW processor family (kvx) has the following features:
+> * 32/64 bits execution mode
+> * 6-issue VLIW architecture
+> * 64 x 64bits general purpose registers
+> * SIMD instructions
+> * little-endian
+> * deep learning co-processor
+> 
+> Kalray kv3-1 core which is the third of the kvx family is embedded in Kalray
+> Coolidge SoC currently used on K200 and K200-LP boards.
+> 
+> The Coolidge SoC contains 5 clusters each of which is made of:
+> * 4MiB of on-chip memory (SMEM)
+> * 1 dedicated safety/security core (kv3-1 core).
+> * 16 PEs (Processing Elements) (kv3-1 cores).
+> * 16 Co-processors (one per PE)
+> * 2 Crypto accelerators
+> 
+> The Coolidge SoC contains the following features:
+> * 5 Clusters
+> * 2 100G Ethernet controllers
+> * 8 PCIe GEN4 controllers (Root Complex and Endpoint capable)
+> * 2 USB 2.0 controllers
+> * 1 Octal SPI-NOR flash controller
+> * 1 eMMC controller
+> * 3 Quad SPI controllers
+> * 6 UART
+> * 5 I2C controllers (3 of which are SMBus capable)
+> * 4 CAN controllers
+> * 1 OTP memory
+> 
+> A kvx toolchain can be built using:
+> # install dependencies: texinfo bison flex libgmp-dev libmpc-dev libmpfr-dev
+> $ git clone https://github.com/kalray/build-scripts
+> $ cd build-scripts
+> $ source last.refs
+> $ ./build-kvx-xgcc.sh output
+> 
+> The kvx toolchain will be installed in the "output" directory.
+> 
+> A buildroot image (kernel+rootfs) and toolchain can be built using:
+> $ git clone -b coolidge-for-upstream https://github.com/kalray/buildroot
+> $ cd buildroot
+> $ make O=build_kvx kvx_defconfig
+> $ make O=build_kvx
+> 
+> The vmlinux image can be found in buildroot/build_kvx/images/vmlinux.
+> 
+> If you are just interested in building the Linux kernel with no rootfs you can
+> just do this with the kvx-elf- toolchain:
+> $ make ARCH=kvx O=build_kvx CROSS_COMPILE=kvx-elf- default_defconfig
+> $ make ARCH=kvx O=build_kvx CROSS_COMPILE=kvx-elf- -j$(($(nproc) + 1))
+> 
+> The vmlinux ELF can be run with qemu by doing:
+> # install dependencies: ninja pkg-config libglib-2.0-dev cmake libfdt-dev libpixman-1-dev zlib1g-dev
+> $ git clone https://github.com/kalray/qemu-builder
+> $ cd qemu-builder
+> $ git submodule update --init
+> $ make -j$(($(nproc) + 1))
+> $ ./qemu-system-kvx -m 1024 -nographic -kernel <path/to/vmlinux>
+> 
+> Yann Sionneau (25):
+>   Documentation: kvx: Add basic documentation
+>   kvx: Add ELF-related definitions
+>   kvx: Add build infrastructure
+>   kvx: Add CPU definition headers
+>   kvx: Add atomic/locking headers
+>   kvx: Add other common headers
+>   kvx: Add boot and setup routines
+>   kvx: Add exception/interrupt handling
+>   kvx: irqchip: Add support for irq controllers
+>   kvx: Add process management
+>   kvx: Add memory management
+>   kvx: Add system call support
+>   kvx: Add signal handling support
+>   kvx: Add ELF relocations and module support
+>   kvx: Add misc common routines
+>   kvx: Add some library functions
+>   kvx: Add multi-processor (SMP) support
+>   kvx: Add kvx default config file
+>   kvx: power: scall poweroff driver
+>   kvx: gdb: add kvx related gdb helpers
+>   kvx: Add support for ftrace
+>   kvx: Add support for jump labels
+>   kvx: Add debugging related support
+>   kvx: Add support for CPU Perf Monitors
+>   kvx: Add support for cpuinfo
 
-Small memset is often faster than an indirect call.
-I doubt that adding GFP_ZERO will have a measurable perf difference
-in map_perf_test and other benchmarks.
+You should strip this series down to just what's needed to boot. You 
+don't need the last 7 patches at least.
 
-> >> Problem #2 exists for both non-preallocated and preallocated htab map.
-> >> By adding seq in htab element, doing reuse check and retrying the
-> >> lookup procedure may be a feasible solution, but it will make the
-> >> lookup API being hard to use, because the user needs to check whether
-> >> the found element is reused or not and repeat the lookup procedure if it
-> >> is reused. A simpler solution would be just disabling freed elements
-> >> reuse and freeing these elements after lookup procedure ends.
-> > You've proposed this 'solution' twice already in qptrie thread and both
-> > times the answer was 'no, we cannot do this' with reasons explained.
-> > The 3rd time the answer is still the same.
-> This time a workable demo which calls call_rcu_task_trace() in batch is provided
-> :) Also because I can not find a better solution for the reuse problem. But you
-> are right, although don't reuse the freed element will make the implementation
-> of map simpler, the potential OOM problem is hard to solve specially when RCU
-> tasks trace grace period is slow. Hope Paul can provide some insight about the
-> problem.
-
-OOM is exactly the reason why we cannot do this delaying logic
-in the general case. We don't control what progs do and rcu tasks trace
-may take a long time.
-
-> > This 'issue 2' existed in hashmap since very beginning for many years.
-> > It's a known quirk. There is nothing to fix really.
-> Do we need to document the unexpected behavior somewhere, because I really don't
-> know nothing about the quirk ?
-
-Yeah. It's not documented in Documentation/bpf/map_hash.rst.
-Please send a patch to add it.
-
-> >
-> > The graph apis (aka new gen data structs) with link list and rbtree are
-> > in active development. Soon bpf progs will be able to implement their own
-> > hash maps with explicit bpf_rcu_read_lock. At that time the progs will
-> > be making the trade off between performance and lookup/delete race.
-> It seems these new gen data struct also need to solve the reuse problem because
-> a global bpf memory allocator is used.
-
-Currently the graph api is single owner and kptr_xchg is used to allow
-single cpu at a time to observe the object.
-In the future we will add bpf_refcount and multi owner.
-Then multiple cpus will be able to access the same object concurrently.
-They will race to read/write the fields and it will be prog decision
-to arbitrate the access.
-In other words the bpf prog needs to have mechanisms to deal with reuse.
+Rob
