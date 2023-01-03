@@ -2,234 +2,279 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9438165B777
-	for <lists+bpf@lfdr.de>; Mon,  2 Jan 2023 23:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C96765B8D4
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 02:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbjABWKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Jan 2023 17:10:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35296 "EHLO
+        id S231276AbjACBaj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Jan 2023 20:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjABWKT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Jan 2023 17:10:19 -0500
-Received: from zproxy130.enst.fr (zproxy130.enst.fr [IPv6:2001:660:330f:2::c2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC645F68
-        for <bpf@vger.kernel.org>; Mon,  2 Jan 2023 14:10:17 -0800 (PST)
-Received: from localhost (localhost [IPv6:::1])
-        by zproxy130.enst.fr (Postfix) with ESMTP id 7D7CD1204B9;
-        Mon,  2 Jan 2023 23:10:15 +0100 (CET)
-Received: from zproxy130.enst.fr ([IPv6:::1])
-        by localhost (zproxy130.enst.fr [IPv6:::1]) (amavisd-new, port 10032)
-        with ESMTP id OaNy3mEXeZSD; Mon,  2 Jan 2023 23:10:14 +0100 (CET)
-Received: from localhost (localhost [IPv6:::1])
-        by zproxy130.enst.fr (Postfix) with ESMTP id 542831204EE;
-        Mon,  2 Jan 2023 23:10:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 zproxy130.enst.fr 542831204EE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ip-paris.fr;
-        s=DC645FAA-A815-11EB-B77D-7E405BEDA08B; t=1672697414;
-        bh=4ZOLmU9DHUAYS+fWq+OvOxFQqR/V1QwSgn3eRAnn7Yw=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=BxEs/nwNT4Tug8dSuO6PRKPRPcbwP4fmMYJTG+9fMRWQLcWnAV2nzZIRN8r9EHXpI
-         LZJ64lnejO89CFfxYVbM+HWxMIG+V4TFnR6RHCA1ex0G48DDveFCCfC8Quo6KuZ1hu
-         LtLBxfqxfMVj1hMHsFzQ3fbd63lsKj60CbJ3e9oyiEWAzX+cEY90I5WK4/zBK+TeL2
-         pox/V8N6jQdC4zM342BlbIZnI6hb3ww77r3jXu70ZHTUvpXueQw9Lj8xufOJmEkVkP
-         Gt692rNDpacEkFniWDXFXdg5pwJ/UznyDa+vbkRXks0LmjQOojEvMz9qMVbvUtl0K8
-         tJPMJmsJTP1nw==
-X-Virus-Scanned: amavisd-new at zproxy130.enst.fr
-Received: from zproxy130.enst.fr ([IPv6:::1])
-        by localhost (zproxy130.enst.fr [IPv6:::1]) (amavisd-new, port 10026)
-        with ESMTP id Vn343mnjQwo0; Mon,  2 Jan 2023 23:10:14 +0100 (CET)
-Received: from zmail-ipp1.enst.fr (zmail-ipp1.enst.fr [137.194.2.209])
-        by zproxy130.enst.fr (Postfix) with ESMTP id 21D541204EB;
-        Mon,  2 Jan 2023 23:10:14 +0100 (CET)
-Date:   Mon, 2 Jan 2023 23:10:13 +0100 (CET)
-From:   Victor Laforet <victor.laforet@ip-paris.fr>
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf <bpf@vger.kernel.org>
-Message-ID: <690620297.606148.1672697413986.JavaMail.zimbra@ip-paris.fr>
-In-Reply-To: <42d3f4d8-fa8b-5774-0f6b-b12162c24736@meta.com>
-References: <346230382.476954.1672152966557.JavaMail.zimbra@ip-paris.fr> <Y6sWqgncfvtRHp+b@krava> <505155146.488099.1672236042622.JavaMail.zimbra@ip-paris.fr> <42d3f4d8-fa8b-5774-0f6b-b12162c24736@meta.com>
-Subject: Re: bpf_probe_read_user EFAULT
+        with ESMTP id S230080AbjACBai (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Jan 2023 20:30:38 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86DCCF4;
+        Mon,  2 Jan 2023 17:30:36 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NmFY31stQz4f3v4p;
+        Tue,  3 Jan 2023 09:30:31 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.67.175.61])
+        by APP3 (Coremail) with SMTP id _Ch0CgA3MR84hbNjzHakAw--.49033S2;
+        Tue, 03 Jan 2023 09:30:33 +0800 (CST)
+From:   Pu Lehui <pulehui@huaweicloud.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next] bpf, x86: Simplify the parsing logic of structure parameters
+Date:   Tue,  3 Jan 2023 09:31:58 +0800
+Message-Id: <20230103013158.1945869-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [2a01:e0a:167:4b30:a199:12ee:dade:6fa8]
-X-Mailer: Zimbra 9.0.0_GA_4485 (ZimbraWebClient - GC108 (Mac)/9.0.0_GA_4478)
-Thread-Topic: bpf_probe_read_user EFAULT
-Thread-Index: JLS3UgftQn3zfJZzPuYr14VZSc7MUw==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_BAD_THREAD_QP_64,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgA3MR84hbNjzHakAw--.49033S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3JF1xCFWxZw4xWF1xWrW8Xrb_yoWxAw45pa
+        nxu3WSyF4kXrsrWrZ7Xw4kXF1ayaykX347CFWrCa4fCrs8Jr95J3WrKFyFyrWYkryvyF4a
+        9rn0vr95Ar1fJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UdHUDUUUUU=
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks!
+From: Pu Lehui <pulehui@huawei.com>
 
-I have tried to use bpf_copy_from_user_task() in place of bpf_probe_read_us=
-er() however I cannot seem to run my program. It fails with 'unknown func b=
-pf_copy_from_user_task=E2=80=99.
-If I understood correctly, this function should be in =E2=80=98bpf/bpf_help=
-ers.h=E2=80=99?
+Extra_nregs of structure parameters and nr_args can be
+added directly at the beginning, and using a flip flag
+to identifiy structure parameters. Meantime, renaming
+some variables to make them more sense.
 
-Another quick question:
-I have set the bpf program as sleepable using =E2=80=98=09bpf_program__set_=
-flags(skel, BPF_F_SLEEPABLE);'
-I couldn=E2=80=99t find any other way to do that. Is it the right way to se=
-t it sleepable?
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 99 +++++++++++++++++--------------------
+ 1 file changed, 46 insertions(+), 53 deletions(-)
 
-Victor
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index e3e2b57e4e13..e7b72299f5a4 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1839,62 +1839,57 @@ st:			if (is_imm8(insn->off))
+ 	return proglen;
+ }
+ 
+-static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
++static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
+ 		      int stack_size)
+ {
+-	int i, j, arg_size, nr_regs;
++	int i, j, arg_size;
++	bool is_struct = false;
++
+ 	/* Store function arguments to stack.
+ 	 * For a function that accepts two pointers the sequence will be:
+ 	 * mov QWORD PTR [rbp-0x10],rdi
+ 	 * mov QWORD PTR [rbp-0x8],rsi
+ 	 */
+-	for (i = 0, j = 0; i < min(nr_args, 6); i++) {
+-		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
+-			nr_regs = (m->arg_size[i] + 7) / 8;
++	for (i = 0, j = 0; i < min(nr_regs, 6); i++) {
++		arg_size = m->arg_size[j];
++		if (arg_size > 8) {
+ 			arg_size = 8;
+-		} else {
+-			nr_regs = 1;
+-			arg_size = m->arg_size[i];
++			is_struct ^= 1;
+ 		}
+ 
+-		while (nr_regs) {
+-			emit_stx(prog, bytes_to_bpf_size(arg_size),
+-				 BPF_REG_FP,
+-				 j == 5 ? X86_REG_R9 : BPF_REG_1 + j,
+-				 -(stack_size - j * 8));
+-			nr_regs--;
+-			j++;
+-		}
++		emit_stx(prog, bytes_to_bpf_size(arg_size),
++			 BPF_REG_FP,
++			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
++			 -(stack_size - i * 8));
++
++		j = is_struct ? j : j + 1;
+ 	}
+ }
+ 
+-static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
++static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
+ 			 int stack_size)
+ {
+-	int i, j, arg_size, nr_regs;
++	int i, j, arg_size;
++	bool is_struct = false;
+ 
+ 	/* Restore function arguments from stack.
+ 	 * For a function that accepts two pointers the sequence will be:
+ 	 * EMIT4(0x48, 0x8B, 0x7D, 0xF0); mov rdi,QWORD PTR [rbp-0x10]
+ 	 * EMIT4(0x48, 0x8B, 0x75, 0xF8); mov rsi,QWORD PTR [rbp-0x8]
+ 	 */
+-	for (i = 0, j = 0; i < min(nr_args, 6); i++) {
+-		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
+-			nr_regs = (m->arg_size[i] + 7) / 8;
++	for (i = 0, j = 0; i < min(nr_regs, 6); i++) {
++		arg_size = m->arg_size[j];
++		if (arg_size > 8) {
+ 			arg_size = 8;
+-		} else {
+-			nr_regs = 1;
+-			arg_size = m->arg_size[i];
++			is_struct ^= 1;
+ 		}
+ 
+-		while (nr_regs) {
+-			emit_ldx(prog, bytes_to_bpf_size(arg_size),
+-				 j == 5 ? X86_REG_R9 : BPF_REG_1 + j,
+-				 BPF_REG_FP,
+-				 -(stack_size - j * 8));
+-			nr_regs--;
+-			j++;
+-		}
++		emit_ldx(prog, bytes_to_bpf_size(arg_size),
++			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
++			 BPF_REG_FP,
++			 -(stack_size - i * 8));
++
++		j = is_struct ? j : j + 1;
+ 	}
+ }
+ 
+@@ -2120,8 +2115,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 				struct bpf_tramp_links *tlinks,
+ 				void *func_addr)
+ {
+-	int ret, i, nr_args = m->nr_args, extra_nregs = 0;
+-	int regs_off, ip_off, args_off, stack_size = nr_args * 8, run_ctx_off;
++	int i, ret, nr_regs = m->nr_args, stack_size = 0;
++	int regs_off, nregs_off, ip_off, run_ctx_off;
+ 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
+ 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+ 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
+@@ -2130,17 +2125,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	u8 *prog;
+ 	bool save_ret;
+ 
+-	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
+-	if (nr_args > 6)
+-		return -ENOTSUPP;
+-
+-	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
++	/* extra registers for struct arguments */
++	for (i = 0; i < m->nr_args; i++)
+ 		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
+-			extra_nregs += (m->arg_size[i] + 7) / 8 - 1;
+-	}
+-	if (nr_args + extra_nregs > 6)
++			nr_regs += (m->arg_size[i] + 7) / 8 - 1;
++
++	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
++	if (nr_regs > 6)
+ 		return -ENOTSUPP;
+-	stack_size += extra_nregs * 8;
+ 
+ 	/* Generated trampoline stack layout:
+ 	 *
+@@ -2154,7 +2146,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	 *                 [ ...             ]
+ 	 * RBP - regs_off  [ reg_arg1        ]  program's ctx pointer
+ 	 *
+-	 * RBP - args_off  [ arg regs count  ]  always
++	 * RBP - nregs_off [ regs count	     ]  always
+ 	 *
+ 	 * RBP - ip_off    [ traced function ]  BPF_TRAMP_F_IP_ARG flag
+ 	 *
+@@ -2166,11 +2158,12 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	if (save_ret)
+ 		stack_size += 8;
+ 
++	stack_size += nr_regs * 8;
+ 	regs_off = stack_size;
+ 
+-	/* args count  */
++	/* regs count  */
+ 	stack_size += 8;
+-	args_off = stack_size;
++	nregs_off = stack_size;
+ 
+ 	if (flags & BPF_TRAMP_F_IP_ARG)
+ 		stack_size += 8; /* room for IP address argument */
+@@ -2198,11 +2191,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	EMIT1(0x53);		 /* push rbx */
+ 
+ 	/* Store number of argument registers of the traced function:
+-	 *   mov rax, nr_args + extra_nregs
+-	 *   mov QWORD PTR [rbp - args_off], rax
++	 *   mov rax, nr_regs
++	 *   mov QWORD PTR [rbp - nregs_off], rax
+ 	 */
+-	emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_args + extra_nregs);
+-	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -args_off);
++	emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_regs);
++	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -nregs_off);
+ 
+ 	if (flags & BPF_TRAMP_F_IP_ARG) {
+ 		/* Store IP address of the traced function:
+@@ -2213,7 +2206,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
+ 	}
+ 
+-	save_regs(m, &prog, nr_args, regs_off);
++	save_regs(m, &prog, nr_regs, regs_off);
+ 
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+ 		/* arg1: mov rdi, im */
+@@ -2243,7 +2236,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	}
+ 
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+-		restore_regs(m, &prog, nr_args, regs_off);
++		restore_regs(m, &prog, nr_regs, regs_off);
+ 
+ 		if (flags & BPF_TRAMP_F_ORIG_STACK) {
+ 			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
+@@ -2284,7 +2277,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 		}
+ 
+ 	if (flags & BPF_TRAMP_F_RESTORE_REGS)
+-		restore_regs(m, &prog, nr_args, regs_off);
++		restore_regs(m, &prog, nr_regs, regs_off);
+ 
+ 	/* This needs to be done regardless. If there were fmod_ret programs,
+ 	 * the return value is only updated on the stack and still needs to be
+-- 
+2.25.1
 
-De: "Yonghong Song" <yhs@meta.com>
-=C3=80: "Victor Laforet" <victor.laforet@ip-paris.fr>, "Jiri Olsa" <olsajir=
-i@gmail.com>
-Cc: "bpf" <bpf@vger.kernel.org>
-Envoy=C3=A9: Mercredi 28 D=C3=A9cembre 2022 20:41:33
-Objet: Re: bpf_probe_read_user EFAULT
-
-On 12/28/22 6:00 AM, Victor Laforet wrote:
-> Yes I am sorry I did not mention that the example I sent was a minimal wo=
-rking example. I am filtering the events to select only preempted and event=
-s with the right pid as prev.
->=20
-> Would bpf_copy_from_user_task work better in this setting than bpf_probe_=
-read_user ?
-> I don=E2=80=99t really understand why bpf_probe_read_user would not work =
-for this use case.
-
-Right, bpf_copy_from_user_task() is better than bpf_probe_read_user().=20
-You could also use bpf_copy_from_user() if you have target_pid checking.
-
-It is possible that the user variable you intended to access is not in=20
-memory. In such cases, bpf_probe_read_user() will return EFAULT. But
-bpf_copy_from_user() and bpf_copy_from_user_task() will go through
-page fault process to bring the variable to the memory.
-Also because of this extra work, bpf_copy_from_user() and
-bpf_copy_from_user_task() only work for sleepable programs.
-
->=20
-> Victor
->=20
-> ----- Mail original -----
-> De: "Jiri Olsa" <olsajiri@gmail.com>
-> =C3=80: "Victor Laforet" <victor.laforet@ip-paris.fr>
-> Cc: "bpf" <bpf@vger.kernel.org>
-> Envoy=C3=A9: Mardi 27 D=C3=A9cembre 2022 17:00:42
-> Objet: Re: bpf_probe_read_user EFAULT
->=20
-> On Tue, Dec 27, 2022 at 03:56:06PM +0100, Victor Laforet wrote:
->> Hi all,
->>
->> I am trying to use bpf_probe_read_user to read a user space value from B=
-PF. The issue is that I am getting -14 (-EFAULT) result from bpf_probe_read=
-_user. I haven=E2=80=99t been able to make this function work reliably. Som=
-etimes I get no error code then it goes back to EFAULT.
->>
->> I am seeking your help to try and make this code work.
->> Thank you!
->>
->> My goal is to read the variable pid on every bpf event.
->> Here is a full example:
->> (cat /sys/kernel/debug/tracing/trace_pipe to read the output).
->>
->> sched_switch.bpf.c
->> ```
->> #include "vmlinux.h"
->> #include <bpf/bpf_helpers.h>
->>
->> int *input_pid;
->>
->> char _license[4] SEC("license") =3D "GPL";
->>
->> SEC("tp_btf/sched_switch")
->> int handle_sched_switch(u64 *ctx)
->=20
-> you might want to filter for your task, because sched_switch
-> tracepoint is called for any task scheduler switch
->=20
-> check BPF_PROG macro in bpf selftests on how to access tp_btf
-> arguments from context, for sched_switch it's:
->=20
->          TP_PROTO(bool preempt,
->                   struct task_struct *prev,
->                   struct task_struct *next,
->                   unsigned int prev_state),
->=20
-> and call the read helper only for prev->pid =3D=3D 'your app pid',
->=20
-> there's bpf_copy_from_user_task helper you could use to read
-> another task's user memory reliably, but it needs to be called
-> from sleepable probe and you need to have the task pointer
->=20
-> jirka
->=20
->> {
->>    int pid;
->>    int err;
->>
->>    err =3D bpf_probe_read_user(&pid, sizeof(int), (void *)input_pid);
->>    if (err !=3D 0)
->>    {
->>      bpf_printk("Error on bpf_probe_read_user(pid) -> %d.\n", err);
->>      return 0;
->>    }
->>
->>    bpf_printk("pid %d.\n", pid);
->>    return 0;
->> }
->> ```
->>
->> sched_switch.c
->> ```
->> #include <stdio.h>
->> #include <unistd.h>
->> #include <sys/resource.h>
->> #include <bpf/libbpf.h>
->> #include "sched_switch.skel.h"
->> #include <time.h>
->>
->> static int libbpf_print_fn(enum libbpf_print_level level, const char *fo=
-rmat, va_list args)
->> {
->>    return vfprintf(stderr, format, args);
->> }
->>
->> int main(int argc, char **argv)
->> {
->>    struct sched_switch_bpf *skel;
->>    int err;
->>    int pid =3D getpid();
->>
->>    libbpf_set_print(libbpf_print_fn);
->>
->>    skel =3D sched_switch_bpf__open();
->>    if (!skel)
->>    {
->>      fprintf(stderr, "Failed to open BPF skeleton\n");
->>      return 1;
->>    }
->>
->>    skel->bss->input_pid =3D &pid;
->>
->>    err =3D sched_switch_bpf__load(skel);
->>    if (err)
->>    {
->>      fprintf(stderr, "Failed to load and verify BPF skeleton\n");
->>      goto cleanup;
->>    }
->>
->>    err =3D sched_switch_bpf__attach(skel);
->>    if (err)
->>    {
->>      fprintf(stderr, "Failed to attach BPF skeleton\n");
->>      goto cleanup;
->>    }
->>
->>    while (1);
->>
->> cleanup:
->>    sched_switch_bpf__destroy(skel);
->>    return -err;
->> }
->> ```
