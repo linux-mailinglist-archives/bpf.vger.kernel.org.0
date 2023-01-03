@@ -2,436 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3502965C751
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 20:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC5965C77E
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 20:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238774AbjACTTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 14:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
+        id S239206AbjACT1M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 14:27:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238957AbjACTSr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Jan 2023 14:18:47 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D08914013;
-        Tue,  3 Jan 2023 11:16:08 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0A58FB80EC2;
-        Tue,  3 Jan 2023 19:16:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43FF3C433EF;
-        Tue,  3 Jan 2023 19:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672773365;
-        bh=HhMs3t/zIdqnxX2JbM4RqMDeRaqtKPlBFU+vbiniQjA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=fwbAR0oPzL30Dh0H8GJfSnj3RE0ev+CQvMjIehePCPwHnCSalXNpw/SxiP+uXlzc5
-         XDWrdnGzn59pxf7nbgT9jtcc8yXmadUf1sG3dJugfb/2SWUxin1SSmvW2Mufy1uZzF
-         /qqx2bTbHmYvlpFWzusikla01if1xn1UWZnL4WKWPwh6eHvslre0bIMJZyvFc+Bv7+
-         AZEuosVusw+qJUtc8L2HyBZLpK2s2yhJE0mEny6e/7+ipUMlVx92TRREcvKYjmepQa
-         W6yp6Fr4mXqJHOgvNUxdlU0O55CaFvuydBrrB8gtuJ7KSd3WkjrDFVPAS5/uXXCUNx
-         X8VjkV5a9EO7w==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: Re: [RFC PATCH RESEND bpf-next 4/4] riscv, bpf: Add bpf trampoline
- support for RV64
-In-Reply-To: <20221220021319.1655871-5-pulehui@huaweicloud.com>
-References: <20221220021319.1655871-1-pulehui@huaweicloud.com>
- <20221220021319.1655871-5-pulehui@huaweicloud.com>
-Date:   Tue, 03 Jan 2023 20:16:03 +0100
-Message-ID: <87y1qjpgy4.fsf@all.your.base.are.belong.to.us>
+        with ESMTP id S239100AbjACT0E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Jan 2023 14:26:04 -0500
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751C01583C
+        for <bpf@vger.kernel.org>; Tue,  3 Jan 2023 11:24:38 -0800 (PST)
+Received: by mail-il1-f197.google.com with SMTP id z19-20020a921a53000000b0030b90211df1so19689593ill.2
+        for <bpf@vger.kernel.org>; Tue, 03 Jan 2023 11:24:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v+2AjUcsc0OYCtIFl34Tn6lgJi8EhFx8zXDoCwBqQds=;
+        b=sWllVYge4aBZLMh6QyaFzFZ+zAr7v9zLs3QjNzxl3rFW9TXffCVUhexIrDLzhxD+dT
+         t6FUaLnVSXhKhWCeLO3dZ+cfY4DVz1PPbG7ljHJutIh7wwIo8BWzGoNtVRdccxQ0ZPMY
+         DLaYDC7HEz5EEadSQYr3nRD+mL924ajdDU3VfyVLspJL30S2IGtoZwggM0FQzgjuf+sV
+         3lCE6jPMlTxjxcDXI7ZgnRv8rIuZJFrviJUbYo02JYpYvIGR+F448XK8dp7t5Fbo4mIO
+         D8dSgH6KVRD7U0yeC0tlVWEZsMTO9u+yzg11wH8zWge05EQ0wW/81VxGRn2h+liN5nTI
+         VxUg==
+X-Gm-Message-State: AFqh2kr7Jhq/POUkE9OfcRTg1iQJ6LaY9fBL7CnXB9CttkE2FeUSx05k
+        KUw4aH/gF1uAskSNaYnjaU76qlAa+9dTplQ88FExzz8P2wPl
+X-Google-Smtp-Source: AMrXdXu4Y0W1gdLk3oxa/oFwE94zA7vHb0goFskOit3ICPBBHxqWJuc5BSSwEzmqJEEGV4SgAb+QcH20SDfYkAx3ONhN0Ho5Lv1q
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a5d:9f56:0:b0:6de:383e:4146 with SMTP id
+ u22-20020a5d9f56000000b006de383e4146mr2372259iot.48.1672773877811; Tue, 03
+ Jan 2023 11:24:37 -0800 (PST)
+Date:   Tue, 03 Jan 2023 11:24:37 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c6d3dc05f16104a1@google.com>
+Subject: [syzbot] kernel BUG in inet_sock_destruct
+From:   syzbot <syzbot+bebc6f1acdf4cbb79b03@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pu Lehui <pulehui@huaweicloud.com> writes:
+Hello,
 
-> From: Pu Lehui <pulehui@huawei.com>
->
-> BPF trampoline is the critical infrastructure of the bpf
-> subsystem, acting as a mediator between kernel functions
-> and BPF programs. Numerous important features, such as
-> using ebpf program for zero overhead kernel introspection,
-> rely on this key component. We can't wait to support bpf
-> trampoline on RV64. The implementation of bpf trampoline
-> was closely to x86 and arm64 for future development. The
-> related tests have passed, as well as the test_verifier
-> with no new failure ceses.
->
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> ---
->  arch/riscv/net/bpf_jit_comp64.c | 322 ++++++++++++++++++++++++++++++++
->  1 file changed, 322 insertions(+)
->
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
-p64.c
-> index fa8b03c52463..11c001782e7b 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -738,6 +738,328 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke=
-_type poke_type,
->  	       bpf_text_poke_jump(ip, old_addr, new_addr);
->  }
->=20=20
-> +static void store_args(int nregs, int args_off, struct rv_jit_context *c=
-tx)
-> +{
-> +	int i;
-> +
-> +	for (i =3D 0; i < nregs; i++) {
-> +		emit_sd(RV_REG_FP, -args_off, RV_REG_A0 + i, ctx);
-> +		args_off -=3D 8;
-> +	}
-> +}
-> +
-> +static void restore_args(int nregs, int args_off, struct rv_jit_context =
-*ctx)
-> +{
-> +	int i;
-> +
-> +	for (i =3D 0; i < nregs; i++) {
-> +		emit_ld(RV_REG_A0 + i, -args_off, RV_REG_FP, ctx);
-> +		args_off -=3D 8;
-> +	}
-> +}
-> +
-> +static int invoke_bpf_prog(struct bpf_tramp_link *l, int args_off, int r=
-etval_off,
-> +			   int run_ctx_off, bool save_ret, struct rv_jit_context *ctx)
-> +{
-> +	u32 insn;
-> +	int ret, branch_off, offset;
-> +	struct bpf_prog *p =3D l->link.prog;
-> +	int cookie_off =3D offsetof(struct bpf_tramp_run_ctx, bpf_cookie);
-> +
-> +	if (l->cookie) {
-> +		emit_imm(RV_REG_T1, l->cookie, ctx);
-> +		emit_sd(RV_REG_FP, -run_ctx_off + cookie_off, RV_REG_T1, ctx);
-> +	} else {
-> +		emit_sd(RV_REG_FP, -run_ctx_off + cookie_off, RV_REG_ZERO, ctx);
-> +	}
-> +
-> +	/* arg1: prog */
-> +	emit_imm(RV_REG_A0, (const s64)p, ctx);
-> +	/* arg2: &run_ctx */
-> +	emit_addi(RV_REG_A1, RV_REG_FP, -run_ctx_off, ctx);
-> +	ret =3D emit_call((const u64)bpf_trampoline_enter(p), true, ctx);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* if (__bpf_prog_enter(prog) =3D=3D 0)
-> +	 *	goto skip_exec_of_prog;
-> +	 */
-> +	branch_off =3D ctx->ninsns;
-> +	/* nop reserved for conditional jump */
-> +	emit(rv_nop(), ctx);
-> +
-> +	/* store prog start time */
-> +	emit_mv(RV_REG_S1, RV_REG_A0, ctx);
-> +
-> +	/* arg1: &args_off */
-> +	emit_addi(RV_REG_A0, RV_REG_FP, -args_off, ctx);
-> +	if (!p->jited)
-> +		/* arg2: progs[i]->insnsi for interpreter */
-> +		emit_imm(RV_REG_A1, (const s64)p->insnsi, ctx);
-> +	ret =3D emit_call((const u64)p->bpf_func, true, ctx);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (save_ret)
-> +		emit_sd(RV_REG_FP, -retval_off, regmap[BPF_REG_0], ctx);
-> +
-> +	/* update branch with beqz */
-> +	offset =3D ninsns_rvoff(ctx->ninsns - branch_off);
-> +	insn =3D rv_beq(RV_REG_A0, RV_REG_ZERO, offset >> 1);
-> +	*(u32 *)(ctx->insns + branch_off) =3D insn;
-> +
-> +	/* arg1: prog */
-> +	emit_imm(RV_REG_A0, (const s64)p, ctx);
-> +	/* arg2: prog start time */
-> +	emit_mv(RV_REG_A1, RV_REG_S1, ctx);
-> +	/* arg3: &run_ctx */
-> +	emit_addi(RV_REG_A2, RV_REG_FP, -run_ctx_off, ctx);
-> +	ret =3D emit_call((const u64)bpf_trampoline_exit(p), true, ctx);
-> +
-> +	return ret;
-> +}
-> +
-> +static int invoke_bpf_mod_ret(struct bpf_tramp_links *tl, int args_off, =
-int retval_off,
-> +			      int run_ctx_off, int *branches_off, struct rv_jit_context *ctx)
-> +{
-> +	int i, ret;
-> +
-> +	/* cleanup to avoid garbage return value confusion */
-> +	emit_sd(RV_REG_FP, -retval_off, RV_REG_ZERO, ctx);
-> +	for (i =3D 0; i < tl->nr_links; i++) {
-> +		ret =3D invoke_bpf_prog(tl->links[i], args_off, retval_off,
-> +				run_ctx_off, true, ctx);
-> +		if (ret)
-> +			return ret;
-> +		emit_ld(RV_REG_T1, -retval_off, RV_REG_FP, ctx);
-> +		branches_off[i] =3D ctx->ninsns;
-> +		/* nop reserved for conditional jump */
-> +		emit(rv_nop(), ctx);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
-> +					 const struct btf_func_model *m,
-> +					 struct bpf_tramp_links *tlinks,
-> +					 void *func_addr, u32 flags,
-> +					 struct rv_jit_context *ctx)
-> +{
-> +	int i, ret, offset;
-> +	int *branches_off =3D NULL;
-> +	int stack_size =3D 0, nregs =3D m->nr_args;
-> +	int retaddr_off, fp_off, retval_off, args_off;
-> +	int nregs_off, ip_off, run_ctx_off, sreg_off;
-> +	struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
-> +	struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
-> +	struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_RETURN];
-> +	void *orig_call =3D func_addr;
-> +	bool save_ret;
-> +	u32 insn;
-> +
-> +	/* Generated trampoline stack layout:
-> +	 *
-> +	 * FP - 8	    [ RA of parent func	] return address of parent
-> +	 *					  function
-> +	 * FP - retaddr_off [ RA of traced func	] return address of traced
-> +	 *					  function
-> +	 * FP - fp_off	    [ FP of parent func ]
-> +	 *
-> +	 * FP - retval_off  [ return value      ] BPF_TRAMP_F_CALL_ORIG or
-> +	 *					  BPF_TRAMP_F_RET_FENTRY_RET
-> +	 *                  [ argN              ]
-> +	 *                  [ ...               ]
-> +	 * FP - args_off    [ arg1              ]
-> +	 *
-> +	 * FP - nregs_off   [ regs count        ]
-> +	 *
-> +	 * FP - ip_off      [ traced func	] BPF_TRAMP_F_IP_ARG
-> +	 *
-> +	 * FP - run_ctx_off [ bpf_tramp_run_ctx ]
-> +	 *
-> +	 * FP - sreg_off    [ callee saved reg	]
-> +	 *
-> +	 *		    [ pads              ] pads for 16 bytes alignment
-> +	 */
-> +
-> +	if (flags & (BPF_TRAMP_F_ORIG_STACK | BPF_TRAMP_F_SHARE_IPMODIFY))
-> +		return -ENOTSUPP;
-> +
-> +	/* extra regiters for struct arguments */
-> +	for (i =3D 0; i < m->nr_args; i++)
-> +		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
-> +			nregs +=3D round_up(m->arg_size[i], 8) / 8 - 1;
-> +
-> +	/* 8 arguments passed by registers */
-> +	if (nregs > 8)
-> +		return -ENOTSUPP;
-> +
-> +	/* room for parent function return address */
-> +	stack_size +=3D 8;
-> +
-> +	stack_size +=3D 8;
-> +	retaddr_off =3D stack_size;
-> +
-> +	stack_size +=3D 8;
-> +	fp_off =3D stack_size;
-> +
-> +	save_ret =3D flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RE=
-T);
-> +	if (save_ret) {
-> +		stack_size +=3D 8;
-> +		retval_off =3D stack_size;
-> +	}
-> +
-> +	stack_size +=3D nregs * 8;
-> +	args_off =3D stack_size;
-> +
-> +	stack_size +=3D 8;
-> +	nregs_off =3D stack_size;
-> +
-> +	if (flags & BPF_TRAMP_F_IP_ARG) {
-> +		stack_size +=3D 8;
-> +		ip_off =3D stack_size;
-> +	}
-> +
-> +	stack_size +=3D round_up(sizeof(struct bpf_tramp_run_ctx), 8);
-> +	run_ctx_off =3D stack_size;
-> +
-> +	stack_size +=3D 8;
-> +	sreg_off =3D stack_size;
-> +
-> +	stack_size =3D round_up(stack_size, 16);
-> +
-> +	emit_addi(RV_REG_SP, RV_REG_SP, -stack_size, ctx);
-> +
-> +	emit_sd(RV_REG_SP, stack_size - retaddr_off, RV_REG_RA, ctx);
-> +	emit_sd(RV_REG_SP, stack_size - fp_off, RV_REG_FP, ctx);
-> +
-> +	emit_addi(RV_REG_FP, RV_REG_SP, stack_size, ctx);
-> +
-> +	/* callee saved register S1 to pass start time */
-> +	emit_sd(RV_REG_FP, -sreg_off, RV_REG_S1, ctx);
-> +
-> +	/* store ip address of the traced function */
-> +	if (flags & BPF_TRAMP_F_IP_ARG) {
-> +		emit_imm(RV_REG_T1, (const s64)func_addr, ctx);
-> +		emit_sd(RV_REG_FP, -ip_off, RV_REG_T1, ctx);
-> +	}
-> +
-> +	emit_li(RV_REG_T1, nregs, ctx);
-> +	emit_sd(RV_REG_FP, -nregs_off, RV_REG_T1, ctx);
-> +
-> +	store_args(nregs, args_off, ctx);
-> +
-> +	/* skip to actual body of traced function */
-> +	if (flags & BPF_TRAMP_F_SKIP_FRAME)
-> +		orig_call +=3D 16;
-> +
-> +	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-> +		emit_imm(RV_REG_A0, (const s64)im, ctx);
-> +		ret =3D emit_call((const u64)__bpf_tramp_enter, true, ctx);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	for (i =3D 0; i < fentry->nr_links; i++) {
-> +		ret =3D invoke_bpf_prog(fentry->links[i], args_off, retval_off, run_ct=
-x_off,
-> +				      flags & BPF_TRAMP_F_RET_FENTRY_RET, ctx);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	if (fmod_ret->nr_links) {
-> +		branches_off =3D kcalloc(fmod_ret->nr_links, sizeof(int), GFP_KERNEL);
-> +		if (!branches_off)
-> +			return -ENOMEM;
-> +
-> +		ret =3D invoke_bpf_mod_ret(fmod_ret, args_off, retval_off, run_ctx_off,
-> +					 branches_off, ctx);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-> +		restore_args(nregs, args_off, ctx);
-> +		ret =3D emit_call((const u64)orig_call, true, ctx);
-> +		if (ret)
-> +			return ret;
-> +		emit_sd(RV_REG_FP, -retval_off, RV_REG_A0, ctx);
-> +		/* nop reserved for bpf_tramp_image_put */
-> +		im->ip_after_call =3D ctx->insns + ctx->ninsns;
-> +		emit(rv_nop(), ctx);
-> +	}
-> +
-> +	/* update branches saved in invoke_bpf_mod_ret with bnez */
-> +	for (i =3D 0; i < fmod_ret->nr_links; i++) {
-> +		offset =3D ninsns_rvoff(ctx->ninsns - branches_off[i]);
-> +		insn =3D rv_bne(RV_REG_T1, RV_REG_ZERO, offset >> 1);
-> +		*(u32 *)(ctx->insns + branches_off[i]) =3D insn;
-> +	}
-> +
-> +	for (i =3D 0; i < fexit->nr_links; i++) {
-> +		ret =3D invoke_bpf_prog(fexit->links[i], args_off, retval_off,
-> +				      run_ctx_off, false, ctx);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-> +		im->ip_epilogue =3D ctx->insns + ctx->ninsns;
-> +		emit_imm(RV_REG_A0, (const s64)im, ctx);
-> +		ret =3D emit_call((const u64)__bpf_tramp_exit, true, ctx);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	if (flags & BPF_TRAMP_F_RESTORE_REGS)
-> +		restore_args(nregs, args_off, ctx);
-> +
-> +	if (save_ret)
-> +		emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
-> +
-> +	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
-> +
-> +	if (flags & BPF_TRAMP_F_SKIP_FRAME)
-> +		/* return address of parent function */
-> +		emit_ld(RV_REG_RA, stack_size - 8, RV_REG_SP, ctx);
-> +	else
-> +		/* return address of traced function */
-> +		emit_ld(RV_REG_RA, stack_size - retaddr_off, RV_REG_SP, ctx);
-> +
-> +	emit_ld(RV_REG_FP, stack_size - fp_off, RV_REG_SP, ctx);
-> +	emit_addi(RV_REG_SP, RV_REG_SP, stack_size, ctx);
-> +
-> +	emit_jalr(RV_REG_ZERO, RV_REG_RA, 0, ctx);
-> +
-> +	bpf_flush_icache(ctx->insns, ctx->insns + ctx->ninsns);
-> +
-> +	kfree(branches_off);
-> +
-> +	return ctx->ninsns;
-> +
-> +}
-> +
-> +int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
-> +				void *image_end, const struct btf_func_model *m,
-> +				u32 flags, struct bpf_tramp_links *tlinks,
-> +				void *func_addr)
-> +{
-> +	int ret;
-> +	struct rv_jit_context ctx;
-> +
-> +	ctx.ninsns =3D 0;
-> +	ctx.insns =3D image;
-> +	ret =3D __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, flags, =
-&ctx);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (ninsns_rvoff(ret) > (long)image_end - (long)image)
-> +		return -EFBIG;
+syzbot found the following issue on:
 
-This looks risky! First you generate the image, and here you realize
-that you already wrote in all the wrong places?!
+HEAD commit:    d039535850ee net: phy: xgmiitorgmii: Fix refcount leak in ..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=10985f5c480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8ca07260bb631fb4
+dashboard link: https://syzkaller.appspot.com/bug?extid=bebc6f1acdf4cbb79b03
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=169b492a480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10eab934480000
 
-> +
-> +	return ninsns_rvoff(ret);
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/083b3aeb8e8a/disk-d0395358.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/eeb552a151bd/vmlinux-d0395358.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4ea1ac5916aa/bzImage-d0395358.xz
 
-Ok, this was a bit subtle to me. The return value of the this function
-is used in kernel/bpf/bpf_struct_ops.c. Now I know! :-)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bebc6f1acdf4cbb79b03@syzkaller.appspotmail.com
+
+ kfree_skb include/linux/skbuff.h:1218 [inline]
+ __skb_queue_purge include/linux/skbuff.h:3112 [inline]
+ inet_sock_destruct+0x10f/0x890 net/ipv4/af_inet.c:136
+ __sk_destruct+0x4d/0x750 net/core/sock.c:2133
+ rcu_do_batch kernel/rcu/tree.c:2246 [inline]
+ rcu_core+0x81f/0x1980 kernel/rcu/tree.c:2506
+ __do_softirq+0x1fb/0xadc kernel/softirq.c:571
+------------[ cut here ]------------
+kernel BUG at include/linux/mm.h:760!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5072 Comm: syz-executor406 Not tainted 6.1.0-syzkaller-04343-gd039535850ee #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:put_page_testzero include/linux/mm.h:760 [inline]
+RIP: 0010:folio_put_testzero include/linux/mm.h:766 [inline]
+RIP: 0010:folio_put include/linux/mm.h:1249 [inline]
+RIP: 0010:put_page include/linux/mm.h:1319 [inline]
+RIP: 0010:__skb_frag_unref include/linux/skbuff.h:3388 [inline]
+RIP: 0010:skb_release_data+0x73c/0x870 net/core/skbuff.c:845
+Code: fd ff ff e8 b6 42 bf f9 48 8b 6c 24 10 48 83 ed 01 e9 62 fd ff ff e8 a3 42 bf f9 48 c7 c6 20 e0 5a 8b 48 89 ef e8 54 ed f6 f9 <0f> 0b 4c 89 e7 e8 ea 43 0d fa e9 29 f9 ff ff 48 8b 7c 24 08 e8 3b
+RSP: 0018:ffffc900001e0d30 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff88807d4adb40 RCX: 0000000000000100
+RDX: ffff888021990000 RSI: ffffffff87c20f4c RDI: 0000000000000000
+RBP: ffffea0000810600 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffffea0000810634
+R13: ffff88807023b4f0 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00005555568ca300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007feda96e73a0 CR3: 00000000205ab000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ skb_release_all net/core/skbuff.c:916 [inline]
+ __kfree_skb net/core/skbuff.c:930 [inline]
+ kfree_skb_reason+0x1ab/0x4f0 net/core/skbuff.c:956
+ kfree_skb include/linux/skbuff.h:1218 [inline]
+ __skb_queue_purge include/linux/skbuff.h:3112 [inline]
+ inet_sock_destruct+0x10f/0x890 net/ipv4/af_inet.c:136
+ __sk_destruct+0x4d/0x750 net/core/sock.c:2133
+ rcu_do_batch kernel/rcu/tree.c:2246 [inline]
+ rcu_core+0x81f/0x1980 kernel/rcu/tree.c:2506
+ __do_softirq+0x1fb/0xadc kernel/softirq.c:571
+ invoke_softirq kernel/softirq.c:445 [inline]
+ __irq_exit_rcu+0x123/0x180 kernel/softirq.c:650
+ irq_exit_rcu+0x9/0x20 kernel/softirq.c:662
+ sysvec_apic_timer_interrupt+0x97/0xc0 arch/x86/kernel/apic/apic.c:1107
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:649
+RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+RIP: 0010:_raw_spin_unlock_irqrestore+0x3c/0x70 kernel/locking/spinlock.c:194
+Code: 74 24 10 e8 46 e6 5a f7 48 89 ef e8 ee 52 5b f7 81 e3 00 02 00 00 75 25 9c 58 f6 c4 02 75 2d 48 85 db 74 01 fb bf 01 00 00 00 <e8> 2f b6 4d f7 65 8b 05 e0 a2 fa 75 85 c0 74 0a 5b 5d c3 e8 ec ca
+RSP: 0018:ffffc90003adfc78 EFLAGS: 00000206
+RAX: 0000000000000006 RBX: 0000000000000200 RCX: 1ffffffff1ce5581
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+RBP: ffff888020b921e0 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffed100417243c R11: 0000000000000000 R12: dffffc0000000000
+R13: 00007ffea9da3db4 R14: 0000000000000004 R15: 0000000000000000
+ do_wait+0x17f/0xd70 kernel/exit.c:1579
+ kernel_wait4+0x150/0x260 kernel/exit.c:1766
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1794
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7feda969c0e6
+Code: 0f 1f 40 00 31 c9 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 49 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 11 b8 3d 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 90 48 83 ec 28 89 54 24 14 48 89 74 24
+RSP: 002b:00007ffea9da3da8 EFLAGS: 00000246 ORIG_RAX: 000000000000003d
+RAX: ffffffffffffffda RBX: 00007ffea9da3dd0 RCX: 00007feda969c0e6
+RDX: 0000000040000001 RSI: 00007ffea9da3db4 RDI: 00000000ffffffff
+RBP: 000000000000032b R08: 0000000000000070 R09: 00007ffea9dee080
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffea9da3dc0
+R13: 00000000000f4240 R14: 000000000001b5dc R15: 00007ffea9da3db4
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:put_page_testzero include/linux/mm.h:760 [inline]
+RIP: 0010:folio_put_testzero include/linux/mm.h:766 [inline]
+RIP: 0010:folio_put include/linux/mm.h:1249 [inline]
+RIP: 0010:put_page include/linux/mm.h:1319 [inline]
+RIP: 0010:__skb_frag_unref include/linux/skbuff.h:3388 [inline]
+RIP: 0010:skb_release_data+0x73c/0x870 net/core/skbuff.c:845
+Code: fd ff ff e8 b6 42 bf f9 48 8b 6c 24 10 48 83 ed 01 e9 62 fd ff ff e8 a3 42 bf f9 48 c7 c6 20 e0 5a 8b 48 89 ef e8 54 ed f6 f9 <0f> 0b 4c 89 e7 e8 ea 43 0d fa e9 29 f9 ff ff 48 8b 7c 24 08 e8 3b
+RSP: 0018:ffffc900001e0d30 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff88807d4adb40 RCX: 0000000000000100
+RDX: ffff888021990000 RSI: ffffffff87c20f4c RDI: 0000000000000000
+RBP: ffffea0000810600 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffffea0000810634
+R13: ffff88807023b4f0 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00005555568ca300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007feda96e73a0 CR3: 00000000205ab000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	74 24                	je     0x26
+   2:	10 e8                	adc    %ch,%al
+   4:	46 e6 5a             	rex.RX out %al,$0x5a
+   7:	f7 48 89 ef e8 ee 52 	testl  $0x52eee8ef,-0x77(%rax)
+   e:	5b                   	pop    %rbx
+   f:	f7 81 e3 00 02 00 00 	testl  $0x9c257500,0x200e3(%rcx)
+  16:	75 25 9c
+  19:	58                   	pop    %rax
+  1a:	f6 c4 02             	test   $0x2,%ah
+  1d:	75 2d                	jne    0x4c
+  1f:	48 85 db             	test   %rbx,%rbx
+  22:	74 01                	je     0x25
+  24:	fb                   	sti
+  25:	bf 01 00 00 00       	mov    $0x1,%edi
+* 2a:	e8 2f b6 4d f7       	callq  0xf74db65e <-- trapping instruction
+  2f:	65 8b 05 e0 a2 fa 75 	mov    %gs:0x75faa2e0(%rip),%eax        # 0x75faa316
+  36:	85 c0                	test   %eax,%eax
+  38:	74 0a                	je     0x44
+  3a:	5b                   	pop    %rbx
+  3b:	5d                   	pop    %rbp
+  3c:	c3                   	retq
+  3d:	e8                   	.byte 0xe8
+  3e:	ec                   	in     (%dx),%al
+  3f:	ca                   	.byte 0xca
 
 
-Thanks!
-Bj=C3=B6rn
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
