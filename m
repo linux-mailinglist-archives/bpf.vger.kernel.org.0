@@ -2,434 +2,268 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6313865C504
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 18:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D869C65C5CD
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 19:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbjACR33 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 12:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        id S238716AbjACSMK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 13:12:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbjACR32 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Jan 2023 12:29:28 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD05CE28;
-        Tue,  3 Jan 2023 09:29:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=KesCTdq3mlijR1GjVvhL2+3YxDFnDL5BOvuiaw/kI54=; b=dQQLsDRKIG/7qI2OVeSHKvK2G0
-        2TAzPqaOuUEBLXawYiQNb6SHqGTfTUQAHvTIwSuglmRI6Lq907iC2rpkBmV1PYAAsVqqZvLnYrGKw
-        DhWEMbaOCVJfEqc/GtHBHjpgqJWS/RTix3mLw0GskFhThguCNPatIi2BkMw7O5r2eZtxW5biUGBXU
-        vzKHSjBCHaPGu95m6EjMe2WsvdlvGsdJP0ZG4QBag16rrm/PSd4WJ3xgSqqpU2Qitym03nlZRd34B
-        R2czkGGk7mZfEVzkSdWMTVredoL/samwVHTAI6TnblwJX3aLawoSFDlR1LaqFYZ33L0EZe4tunybg
-        tx/gBVRg==;
-Received: from [2601:1c2:d80:3110::a2e7]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pCl6J-003Pum-0S; Tue, 03 Jan 2023 17:29:23 +0000
-Message-ID: <b27e6aa6-5560-e509-a1fd-21807dd5b23e@infradead.org>
-Date:   Tue, 3 Jan 2023 09:29:21 -0800
+        with ESMTP id S238742AbjACSMH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Jan 2023 13:12:07 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653FAE7F;
+        Tue,  3 Jan 2023 10:12:06 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0199A614B8;
+        Tue,  3 Jan 2023 18:12:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB502C433EF;
+        Tue,  3 Jan 2023 18:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672769525;
+        bh=xPTONxYTtJqAfLr329AYZvkB7QNlHmA83t7R/LUR6tk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=UitcWki67SW8Yaw+gzxlB+xfxHuJUYr5//DsFeyELyyhtzpfQBr293EID2MYOCC2+
+         Cx8YmX5Tx52hkCAAZgpV5lcUztlxLcqY6egDV6miPF391jPIDXarRKeBOtHn+LhLGz
+         oea6rMnLEU3BWg7EZffrInAHyFn4o5mc63+hLBPwTn6y6HHKTJVtugJq1IKHv2Nf5G
+         YjYTIj5xQSaMBZSYNoEQ0wxhYlvFup/ouPUmIuNxsX6zraGPyJpFFDWLzPF9QMdaln
+         YX5swWnvzQ+sKFfNkANzymsEBX/099LLHhpwWXsZWSVHBGESdCjbYbBtaq2dAe4Xfg
+         LPFrkOKtuht1g==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: Re: [RFC PATCH RESEND bpf-next 3/4] riscv, bpf: Add
+ bpf_arch_text_poke support for RV64
+In-Reply-To: <20221220021319.1655871-4-pulehui@huaweicloud.com>
+References: <20221220021319.1655871-1-pulehui@huaweicloud.com>
+ <20221220021319.1655871-4-pulehui@huaweicloud.com>
+Date:   Tue, 03 Jan 2023 19:12:02 +0100
+Message-ID: <871qobqyh9.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [RFC PATCH 03/25] kvx: Add build infrastructure
-Content-Language: en-US
-To:     Yann Sionneau <ysionneau@kalray.eu>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Clement Leger <clement.leger@bootlin.com>,
-        Guillaume Thouvenin <gthouvenin@kalray.eu>,
-        Jonathan Borne <jborne@kalray.eu>,
-        Jules Maselbas <jmaselbas@kalray.eu>,
-        Julian Vetter <jvetter@kalray.eu>,
-        =?UTF-8?Q?Marc_Poulhi=c3=a8s?= <dkm@kataplop.net>,
-        Marius Gligor <mgligor@kalray.eu>,
-        Samuel Jones <sjones@kalray.eu>,
-        Vincent Chardon <vincent.chardon@elsys-design.com>
-References: <20230103164359.24347-1-ysionneau@kalray.eu>
- <20230103164359.24347-4-ysionneau@kalray.eu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230103164359.24347-4-ysionneau@kalray.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Pu Lehui <pulehui@huaweicloud.com> writes:
 
-On 1/3/23 08:43, Yann Sionneau wrote:
-> Add Kbuild, Makefile, Kconfig and link script for kvx build infrastructure.
-> 
-> CC: linux-kernel@vger.kernel.org
-> CC: bpf@vger.kernel.org
-> Co-developed-by: Clement Leger <clement.leger@bootlin.com>
-> Signed-off-by: Clement Leger <clement.leger@bootlin.com>
-> Co-developed-by: Guillaume Thouvenin <gthouvenin@kalray.eu>
-> Signed-off-by: Guillaume Thouvenin <gthouvenin@kalray.eu>
-> Co-developed-by: Jonathan Borne <jborne@kalray.eu>
-> Signed-off-by: Jonathan Borne <jborne@kalray.eu>
-> Co-developed-by: Jules Maselbas <jmaselbas@kalray.eu>
-> Signed-off-by: Jules Maselbas <jmaselbas@kalray.eu>
-> Co-developed-by: Julian Vetter <jvetter@kalray.eu>
-> Signed-off-by: Julian Vetter <jvetter@kalray.eu>
-> Co-developed-by: Marc Poulhiès <dkm@kataplop.net>
-> Signed-off-by: Marc Poulhiès <dkm@kataplop.net>
-> Co-developed-by: Marius Gligor <mgligor@kalray.eu>
-> Signed-off-by: Marius Gligor <mgligor@kalray.eu>
-> Co-developed-by: Samuel Jones <sjones@kalray.eu>
-> Signed-off-by: Samuel Jones <sjones@kalray.eu>
-> Co-developed-by: Vincent Chardon <vincent.chardon@elsys-design.com>
-> Signed-off-by: Vincent Chardon <vincent.chardon@elsys-design.com>
-> Co-developed-by: Yann Sionneau <ysionneau@kalray.eu>
-> Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
+> From: Pu Lehui <pulehui@huawei.com>
+>
+> Implement bpf_arch_text_poke for RV64. For call scenario,
+> ftrace framework reserve 4 nops for RV64 kernel function
+> as function entry, and use auipc+jalr instructions to call
+> kernel or module functions. However, since the auipc+jalr
+> call instructions is non-atomic operation, we need to use
+> stop-machine to make sure instruction patching in atomic
+> context. As for jump scenario, since we only jump inside
+> the trampoline, a jal instruction is sufficient.
+
+Hmm, is that really true? More below!
+
+>
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
 > ---
->  arch/kvx/Kconfig                 | 249 +++++++++++++++++++++++++++++++
->  arch/kvx/Kconfig.debug           |  70 +++++++++
->  arch/kvx/Makefile                |  52 +++++++
->  arch/kvx/include/asm/Kbuild      |  20 +++
->  arch/kvx/include/uapi/asm/Kbuild |   1 +
->  arch/kvx/kernel/Makefile         |  27 ++++
->  arch/kvx/kernel/kvx_ksyms.c      |  24 +++
->  arch/kvx/kernel/vmlinux.lds.S    | 173 +++++++++++++++++++++
->  arch/kvx/lib/Makefile            |   6 +
->  arch/kvx/mm/Makefile             |  10 ++
->  arch/kvx/platform/Makefile       |   7 +
->  11 files changed, 639 insertions(+)
->  create mode 100644 arch/kvx/Kconfig
->  create mode 100644 arch/kvx/Kconfig.debug
->  create mode 100644 arch/kvx/Makefile
->  create mode 100644 arch/kvx/include/asm/Kbuild
->  create mode 100644 arch/kvx/include/uapi/asm/Kbuild
->  create mode 100644 arch/kvx/kernel/Makefile
->  create mode 100644 arch/kvx/kernel/kvx_ksyms.c
->  create mode 100644 arch/kvx/kernel/vmlinux.lds.S
->  create mode 100644 arch/kvx/lib/Makefile
->  create mode 100644 arch/kvx/mm/Makefile
->  create mode 100644 arch/kvx/platform/Makefile
-> 
-> diff --git a/arch/kvx/Kconfig b/arch/kvx/Kconfig
-> new file mode 100644
-> index 000000000000..8e8820c5c860
-> --- /dev/null
-> +++ b/arch/kvx/Kconfig
-> @@ -0,0 +1,249 @@
-> +#
-> +# For a description of the syntax of this configuration file,
-> +# see Documentation/kbuild/kconfig-language.txt.
-> +#
+>  arch/riscv/net/bpf_jit.h        |   5 ++
+>  arch/riscv/net/bpf_jit_comp64.c | 131 +++++++++++++++++++++++++++++++-
+>  2 files changed, 134 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> index d926e0f7ef57..bf9802a63061 100644
+> --- a/arch/riscv/net/bpf_jit.h
+> +++ b/arch/riscv/net/bpf_jit.h
+> @@ -573,6 +573,11 @@ static inline u32 rv_fence(u8 pred, u8 succ)
+>  	return rv_i_insn(imm11_0, 0, 0, 0, 0xf);
+>  }
+>=20=20
+> +static inline u32 rv_nop(void)
+> +{
+> +	return rv_i_insn(0, 0, 0, 0, 0x13);
+> +}
 > +
-> +config 64BIT
-> +	def_bool y
+>  /* RVC instrutions. */
+>=20=20
+>  static inline u16 rvc_addi4spn(u8 rd, u32 imm10)
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index bf4721a99a09..fa8b03c52463 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -8,6 +8,8 @@
+>  #include <linux/bitfield.h>
+>  #include <linux/bpf.h>
+>  #include <linux/filter.h>
+> +#include <linux/memory.h>
+> +#include <linux/stop_machine.h>
+>  #include "bpf_jit.h"
+>=20=20
+>  #define RV_REG_TCC RV_REG_A6
+> @@ -238,7 +240,7 @@ static void __build_epilogue(bool is_tail_call, struc=
+t rv_jit_context *ctx)
+>  	if (!is_tail_call)
+>  		emit_mv(RV_REG_A0, RV_REG_A5, ctx);
+>  	emit_jalr(RV_REG_ZERO, is_tail_call ? RV_REG_T3 : RV_REG_RA,
+> -		  is_tail_call ? 4 : 0, /* skip TCC init */
+> +		  is_tail_call ? 20 : 0, /* skip reserved nops and TCC init */
+>  		  ctx);
+>  }
+>=20=20
+> @@ -615,6 +617,127 @@ static int add_exception_handler(const struct bpf_i=
+nsn *insn,
+>  	return 0;
+>  }
+>=20=20
+> +struct text_poke_args {
+> +	void *addr;
+> +	const void *insns;
+> +	size_t len;
+> +	atomic_t cpu_count;
+> +};
 > +
-> +config GENERIC_CALIBRATE_DELAY
-> +	def_bool y
+> +static int do_text_poke(void *data)
+> +{
+> +	int ret =3D 0;
+> +	struct text_poke_args *patch =3D data;
 > +
-> +config FIX_EARLYCON_MEM
-> +	def_bool y
+> +	if (atomic_inc_return(&patch->cpu_count) =3D=3D num_online_cpus()) {
+> +		ret =3D patch_text_nosync(patch->addr, patch->insns, patch->len);
+> +		atomic_inc(&patch->cpu_count);
+> +	} else {
+> +		while (atomic_read(&patch->cpu_count) <=3D num_online_cpus())
+> +			cpu_relax();
+> +		smp_mb();
+> +	}
 > +
-> +config MMU
-> +	def_bool y
+> +	return ret;
+> +}
 > +
-> +config KALLSYMS_BASE_RELATIVE
-> +	def_bool n
+> +static int bpf_text_poke_stop_machine(void *addr, const void *insns, siz=
+e_t len)
+> +{
+> +	struct text_poke_args patch =3D {
+> +		.addr =3D addr,
+> +		.insns =3D insns,
+> +		.len =3D len,
+> +		.cpu_count =3D ATOMIC_INIT(0),
+> +	};
 > +
-> +config GENERIC_CSUM
-> +	def_bool y
+> +	return stop_machine(do_text_poke, &patch, cpu_online_mask);
+> +}
 > +
-> +config RWSEM_GENERIC_SPINLOCK
-> +	def_bool y
+> +static int gen_call_or_nops(void *target, void *ip, u32 *insns)
+> +{
+> +	int i, ret;
+> +	s64 rvoff;
+> +	struct rv_jit_context ctx;
 > +
-> +config GENERIC_HWEIGHT
-> +	def_bool y
+> +	ctx.ninsns =3D 0;
+> +	ctx.insns =3D (u16 *)insns;
 > +
-> +config ARCH_MMAP_RND_BITS_MAX
-> +	default 24
+> +	if (!target) {
+> +		for (i =3D 0; i < 4; i++)
+> +			emit(rv_nop(), &ctx);
+> +		return 0;
+> +	}
 > +
+> +	rvoff =3D (s64)(target - ip);
+> +	emit(rv_sd(RV_REG_SP, -8, RV_REG_RA), &ctx);
+> +	ret =3D emit_jump_and_link(RV_REG_RA, rvoff, false, &ctx);
+> +	if (ret)
+> +		return ret;
+> +	emit(rv_ld(RV_REG_RA, -8, RV_REG_SP), &ctx);
+> +
+> +	return 0;
+> +
+> +}
+> +
+> +static int bpf_text_poke_call(void *ip, void *old_addr, void *new_addr)
+> +{
+> +	int ret;
+> +	u32 old_insns[4], new_insns[4];
+> +
+> +	ret =3D gen_call_or_nops(old_addr, ip + 4, old_insns);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret =3D gen_call_or_nops(new_addr, ip + 4, new_insns);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mutex_lock(&text_mutex);
+> +	if (memcmp(ip, old_insns, sizeof(old_insns))) {
+> +		ret =3D -EFAULT;
+> +		goto out;
+> +	}
+> +
+> +	if (memcmp(ip, new_insns, sizeof(new_insns)))
+> +		ret =3D bpf_text_poke_stop_machine(ip, new_insns,
+> sizeof(new_insns));
 
-Do the above and below configs need an "int" line for their type?
-I notice that the patch does that below for PGTABLE_LEVELS.
+I'd rather see that you added a patch_text variant to
+arch/riscv/kernel/patch.c (something like your
+bpf_text_poke_stop_machine()), and use that here. Might be other users
+of that as well -- Andy's ftrace patch maybe? :-)
 
-> +config ARCH_MMAP_RND_BITS_MIN
-> +	default 18
+> +out:
+> +	mutex_unlock(&text_mutex);
+> +	return ret;
+> +}
 > +
-> +config STACKTRACE_SUPPORT
-> +	def_bool y
+> +static int bpf_text_poke_jump(void *ip, void *old_addr, void *new_addr)
+> +{
+> +	int ret;
+> +	u32 old_insn, new_insn;
 > +
-> +config LOCKDEP_SUPPORT
-> +	def_bool y
+> +	old_insn =3D old_addr ? rv_jal(RV_REG_ZERO, (s64)(old_addr - ip) >> 1) =
+: rv_nop();
+> +	new_insn =3D new_addr ? rv_jal(RV_REG_ZERO, (s64)(new_addr - ip) >> 1) =
+: rv_nop();
 > +
-> +config GENERIC_BUG
-> +	def_bool y
-> +	depends on BUG
+> +	mutex_lock(&text_mutex);
+> +	if (memcmp(ip, &old_insn, sizeof(old_insn))) {
+> +		ret =3D -EFAULT;
+> +		goto out;
+> +	}
 > +
-> +config KVX_4K_PAGES
-> +	def_bool y
+> +	if (memcmp(ip, &new_insn, sizeof(new_insn)))
+> +		ret =3D patch_text_nosync(ip, &new_insn, sizeof(new_insn));
+> +out:
+> +	mutex_unlock(&text_mutex);
+> +	return ret;
+> +}
 > +
-> +config KVX
-> +	def_bool y
-[deletes]
-> +
-> +config PGTABLE_LEVELS
-> +	int
-> +	default 3
-^^^^^^^^^^^^^^^^^^^^^^^^
+> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+> +		       void *old_addr, void *new_addr)
 
-> +
-> +config HAVE_KPROBES
-> +	def_bool n
-> +
-> +menu "System setup"
-> +
-> +config POISON_INITMEM
-> +	bool "Enable to poison freed initmem"
-> +	default y
-> +	help
-> +	  In order to debug initmem, using poison allows to verify if
-> +	  some data/code is stille using them. Enable this for debug
+AFAIU there's nothing in the bpf_arch_text_poke() API that say that
+BPF_MOD_JUMP is jumps within the trampoline. That is one usage, but not
+the only one. In general, the jal might not have enough reach.
 
-	                    still
-
-> +	  purposes
-
-	  purposes.
-
-> +
-> +config KVX_PHYS_OFFSET
-> +	hex "RAM address of memory base"
-> +	default 0x100000000
-> +
-> +config KVX_PAGE_OFFSET
-> +	hex "kernel virtual address of memory base"
-> +	default 0xFFFFFF8000000000
-> +
-> +config ARCH_FLATMEM_ENABLE
-> +	def_bool y
-> +
-> +config ARCH_SPARSEMEM_ENABLE
-> +	def_bool y
-> +
-> +config ARCH_SPARSEMEM_DEFAULT
-> +	def_bool ARCH_SPARSEMEM_ENABLE
-> +
-> +config ARCH_SELECT_MEMORY_MODEL
-> +	def_bool ARCH_SPARSEMEM_ENABLE
-> +
-> +config STACK_MAX_DEPTH_TO_PRINT
-> +	int "Maximum depth of stack to print"
-> +	range 1 128
-> +	default "24"
-> +
-> +config L2_CACHE
-> +	bool "Enable l2 cache driver"
-
-	             L2
-
-> +	default y
-> +	help
-> +	  Enable L2 cache driver in order to handle it. This driver can be
-> +	  disabled to eliminate any overhead related to L2 cache
-> +	  inval/writeback. Note that L2 cache is mandatory for SMP in order
-> +	  to maintain coherency on DDR between all PEs.
-> +
-> +config SECURE_DAME_HANDLING
-> +	bool "Secure DAME handling"
-> +	default y
-> +	help
-> +	  In order to securely handle Data Asynchronous Memory Errors, we need
-> +	  to do a barrier upon kernel entry when coming from userspace. This
-> +	  barrier guarantee us that any pending DAME will be serviced right
-
-	          guarantees
-
-> +	  away. We also need to do a barrier when returning from kernel to user.
-> +	  This way, if the kernel or the user triggered a DAME, it will be
-> +	  serviced by knowing we are coming from kernel or user and avoid
-> +	  pulling the wrong lever (panic for kernel or sigfault for user).
-> +	  This can be costly but ensure that user cannot interfere with kernel.
-
-	                         ensures
-
-> +	  /!\ Do not disable unless you want to open a giant breach between
-> +	  user and kernel /!\
-> +
-> +config CACHECTL_UNSAFE_PHYS_OPERATIONS
-> +	bool "Enable cachectl syscall unsafe physical operations"
-> +	default n
-> +	help
-> +	  Enable cachectl syscall to allow writebacking/invalidating ranges
-> +	  based on physical addresses. These operations requires the
-> +	  CAP_SYS_ADMIN capability
-
-	                capability.
-
-> +
-> +config ENABLE_TCA
-> +	bool "Enable TCA coprocessor support"
-> +	default y
-> +	help
-> +	  This option enables TCA coprocessor support. It will allow the user to
-> +	  use the coprocessor and save registers on context switch if used.
-> +	  Registers content will also be cleared when switching.
-> +
-> +config SMP
-> +	bool "Symmetric multi-processing support"
-> +	default n
-> +	select GENERIC_SMP_IDLE_THREAD
-> +	select GENERIC_IRQ_IPI
-> +	select IRQ_DOMAIN_HIERARCHY
-> +	select IRQ_DOMAIN
-> +	select L2_CACHE
-> +	help
-> +	  This enables support for systems with more than one CPU. If you have
-> +	  a system with only one CPU, say N. If you have a system with more
-> +	  than one CPU, say Y.
-> +
-> +	  If you say N here, the kernel will run on uni- and multiprocessor
-> +	  machines, but will use only one CPU of a multiprocessor machine. If
-> +	  you say Y here, the kernel will run on many, but not all,
-> +	  uniprocessor machines. On a uniprocessor machine, the kernel
-> +	  will run faster if you say N here.
-> +
-> +config NR_CPUS
-> +	int "Maximum number of CPUs"
-> +	range 1 16
-> +	default "16"
-> +	depends on SMP
-> +	help
-> +	  Kalray support can handle a maximum of 16 CPUs.
-> +
-> +config KVX_PAGE_SHIFT
-> +	int
-> +	default 12
-> +
-> +config CMDLINE
-> +	string "Default kernel command string"
-> +	default ""
-> +	help
-> +	  On some architectures there is currently no way for the boot loader
-> +	  to pass arguments to the kernel. For these architectures, you should
-> +	  supply some command-line options at build time by entering them
-> +	  here.
-> +
-> +endmenu
-> +
-> +menu "Kernel Features"
-> +source "kernel/Kconfig.hz"
-> +endmenu
-> diff --git a/arch/kvx/Kconfig.debug b/arch/kvx/Kconfig.debug
-> new file mode 100644
-> index 000000000000..027e919a1e14
-> --- /dev/null
-> +++ b/arch/kvx/Kconfig.debug
-> @@ -0,0 +1,70 @@
-> +menu "KVX debugging"
-> +
-> +config KVX_DEBUG_ASN
-> +	bool "Check ASN before writing TLB entry"
-> +	default n
-> +	help
-> +	  This option allows to check if the ASN of the current
-> +	  process is matching the ASN found in MMC. If it is not the
-
-	s/is matching/matches/
-
-> +	  case an error will be printed.
-> +
-> +config KVX_DEBUG_TLB_WRITE
-> +	bool "Enable TLBs write checks"
-> +	default n
-> +	help
-> +	  Enabling this option will enable TLB access checks. This is
-> +	  particularly helpful when modifying the assembly code responsible
-> +	  of TLB refill. If set, mmc.e will be checked each time the tlb are
-
-	  for TLB refill.                                            TLB
-
-> +	  written and a panic will be thrown on error.
-> +
-> +config KVX_DEBUG_TLB_ACCESS
-> +	bool "Enable TLBs accesses logging"
-> +	default n
-> +	help
-> +	  Enabling this option will enable TLB entry manipulation logging.
-> +	  Each time an entry will be added to the TLBs, it will be logged in
-
-	                    s/will be/is/               s/will be/is/
-
-> +	  an array readable via gdb scripts. This can be useful to understand
-> +	  strange crashes related to suspicious virtual/physical addresses.
-> +
-> +config KVX_DEBUG_TLB_ACCESS_BITS
-> +	int "Number of bits used as index of entries in log table"
-> +	default 12
-> +	depends on KVX_DEBUG_TLB_ACCESS
-> +	help
-> +	  Set the number of bits used as index of entries that will be logged
-> +	  in a ring buffer called kvx_tlb_access. One entry in the table
-> +	  contains registers TEL, TEH and MMC. It also logs the type of the
-> +	  operations (0:read, 1:write, 2:probe). Buffer is per CPU. For one
-> +	  entry 24 bytes are used. So by default it uses 96Ko of memory per
-
-What does "Ko" mean?
-
-> +	  CPU to store 2^12 (4096) entries.
-> +
-> +config KVX_MMU_STATS
-> +	bool "Register mmu stats debugfs entries"
-
-Preferably             MMU
-
-> +	default n
-> +	select DEBUG_FS
-
-Preferably:
-	depends on DEBUG_FS
-
-> +	help
-> +	  Enable debugfs attribute which will allow inspecting various metric
-
-	                                                               metrics
-
-> +	  regarding MMU:
-> +	  - Number of nomapping traps handled
-> +	  - avg/min/max time for nomapping refill (user/kernel)
-> +
-> +config DEBUG_EXCEPTION_STACK
-> +	bool "Enable exception stack debugging"
-> +	default n
-> +	help
-> +	  Enable stack check debugging when entering/exiting
-> +	  exception handlers.
-> +	  This can be particularly helpful after modifying stack
-> +	  handling to see if stack when exiting is the same as the one
-> +	  when entering exception handler.
-> +
-> +config DEBUG_SFR_SET_MASK
-> +	bool "Enable sfr set_mask debugging"
-> +	default n
-> +	help
-> +	  Verify that values written using kvx_sfr_set_mask are matching the
-
-	  s/are matching/match/
-
-> +	  mask. This ensure that no extra bits of sfr will be overridden by some
-
-	             ensures
-
-and preferably s/sfr/SFR/ in 2 places (not in kvx_sfr_set_mask).
-
-> +	  incorrectly truncated values. This can lead to huge problems by
-> +	  modifying important bits in system registers.
-> +
-> +endmenu
+I believe that this needs to be an auipc/jalr pair similar to
+BPF_MOD_CALL (w/o linked register).=20
 
 
-Thanks.
-
--- 
-~Randy
+And again, thanks for working on the RV trampoline!
+Bj=C3=B6rn
