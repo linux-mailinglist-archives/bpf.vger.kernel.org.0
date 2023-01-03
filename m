@@ -2,28 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C96765B8D4
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 02:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACABF65B96D
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 03:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbjACBaj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Jan 2023 20:30:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
+        id S232576AbjACClE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Jan 2023 21:41:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbjACBai (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Jan 2023 20:30:38 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86DCCF4;
-        Mon,  2 Jan 2023 17:30:36 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NmFY31stQz4f3v4p;
-        Tue,  3 Jan 2023 09:30:31 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.67.175.61])
-        by APP3 (Coremail) with SMTP id _Ch0CgA3MR84hbNjzHakAw--.49033S2;
-        Tue, 03 Jan 2023 09:30:33 +0800 (CST)
-From:   Pu Lehui <pulehui@huaweicloud.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230080AbjACClC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Jan 2023 21:41:02 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0885FE6
+        for <bpf@vger.kernel.org>; Mon,  2 Jan 2023 18:40:57 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id bs20so25903456wrb.3
+        for <bpf@vger.kernel.org>; Mon, 02 Jan 2023 18:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eBc4c2ZZnBlcyWGy6xA3STh4MCbq3afCJLcnMJKUb74=;
+        b=YveUjU1TN51kPgduh4G5OIlzVnF58HsIuVsKLNrCahxFNywGz3GiIJOm3w8NCXSMw5
+         vWNVUA+Ff1PXmskvcJFoWwHczAQ12VxeoVtNBsOX25iwnQRuwoaUoiPSFisoAM9bYnGV
+         4Lqr3IFa+3ylS4J5N8sb9evxULjYM33sZ/8cWj4cyqvITuNjRqfrgRGM/NUmnTsB2FfP
+         OK1zh6v8KbL+KV3wF/o6bf6ZyL9UXBDei3sVKMvaxJ7/aqqUi346DT2jY7ahwf1YeGRv
+         03OY8paj0fQB74MCuIm+nY69732yYipN9E7Jjy9wUsmg1ntaPYCNk0sCIoRSy1tDv4RI
+         gsfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eBc4c2ZZnBlcyWGy6xA3STh4MCbq3afCJLcnMJKUb74=;
+        b=KML25CANqHsFC3FWvmcFdSP/z2bq/w6r1MrFwze3J5fo5fJf3oFYj/7CO+YnARKvRm
+         /YZCvpiECgetUtWub1+IJ05VO7rb+BcL9YS+6tRFIpKNXvf1FXT+lfI8Vdi3dPP+vPLK
+         ncDZ0fFD3mZxWGOcUznVt98hasBDFDrsv1y277ZkR35uEHz8MsUoLf6U6fYHyHzsJm6i
+         AoKoiTXy3bXJR3J9cbWHybhs9i4kjwI9Zjq4hFdBew6N9brEvmuVj696oT8bfUitfBZk
+         ewiU+uCAbKSabe3BoYIEn3hEp7ICG3I9h2y1YhLtNHjLL+vv3B+rqR8eF/CAW1x1nuDg
+         cmqw==
+X-Gm-Message-State: AFqh2kpFPpuYTCMzAnyF/6mEy5LVeS6BMbnYhIgjaeM8ngu/1CRV3pRX
+        bxmFdwXd26u9Wepg4N3/x8rvikypdbby1HbURLE=
+X-Google-Smtp-Source: AMrXdXv0T8ccM4iFMzW882qs079XmaZFPfwQgwrTEfVBvTJhBdE2n5y/e8DyAK2kC4KbwkhpVqlcXsP616TwPPRk+58=
+X-Received: by 2002:adf:f64e:0:b0:242:5675:5a0d with SMTP id
+ x14-20020adff64e000000b0024256755a0dmr1275722wrp.199.1672713656139; Mon, 02
+ Jan 2023 18:40:56 -0800 (PST)
+MIME-Version: 1.0
+References: <20221219041551.69344-1-xiangxia.m.yue@gmail.com>
+ <20221219041551.69344-2-xiangxia.m.yue@gmail.com> <c41daf29-43b4-8924-b5af-49f287ba8cdc@meta.com>
+ <CAADnVQLE+M0xEK+L8Tu7fqsjFxNFdEyFvR4q3U1f1N1tomZ2bQ@mail.gmail.com> <ac540d41-4ac3-4d70-39e8-722e3fb360cd@meta.com>
+In-Reply-To: <ac540d41-4ac3-4d70-39e8-722e3fb360cd@meta.com>
+From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Date:   Tue, 3 Jan 2023 10:40:18 +0800
+Message-ID: <CAMDZJNV_J-LmxxzX5DMGHQLm6WyYqG2GAMHb=WZvBG_y1rUOYg@mail.gmail.com>
+Subject: Re: [bpf-next v3 2/2] selftests/bpf: add test case for htab map
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -32,249 +65,240 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf-next] bpf, x86: Simplify the parsing logic of structure parameters
-Date:   Tue,  3 Jan 2023 09:31:58 +0800
-Message-Id: <20230103013158.1945869-1-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgA3MR84hbNjzHakAw--.49033S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3JF1xCFWxZw4xWF1xWrW8Xrb_yoWxAw45pa
-        nxu3WSyF4kXrsrWrZ7Xw4kXF1ayaykX347CFWrCa4fCrs8Jr95J3WrKFyFyrWYkryvyF4a
-        9rn0vr95Ar1fJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-        UdHUDUUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Hou Tao <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Pu Lehui <pulehui@huawei.com>
+ a
 
-Extra_nregs of structure parameters and nr_args can be
-added directly at the beginning, and using a flip flag
-to identifiy structure parameters. Meantime, renaming
-some variables to make them more sense.
+On Thu, Dec 29, 2022 at 2:29 PM Yonghong Song <yhs@meta.com> wrote:
+>
+>
+>
+> On 12/28/22 2:24 PM, Alexei Starovoitov wrote:
+> > On Tue, Dec 27, 2022 at 8:43 PM Yonghong Song <yhs@meta.com> wrote:
+> >>
+> >>
+> >>
+> >> On 12/18/22 8:15 PM, xiangxia.m.yue@gmail.com wrote:
+> >>> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> >>>
+> >>> This testing show how to reproduce deadlock in special case.
+> >>> We update htab map in Task and NMI context. Task can be interrupted by
+> >>> NMI, if the same map bucket was locked, there will be a deadlock.
+> >>>
+> >>> * map max_entries is 2.
+> >>> * NMI using key 4 and Task context using key 20.
+> >>> * so same bucket index but map_locked index is different.
+> >>>
+> >>> The selftest use perf to produce the NMI and fentry nmi_handle.
+> >>> Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
+> >>> map syscall increase this counter in bpf_disable_instrumentation.
+> >>> Then fentry nmi_handle and update hash map will reproduce the issue.
+> >>>
+> >>> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> >>> Cc: Alexei Starovoitov <ast@kernel.org>
+> >>> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> >>> Cc: Andrii Nakryiko <andrii@kernel.org>
+> >>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> >>> Cc: Song Liu <song@kernel.org>
+> >>> Cc: Yonghong Song <yhs@fb.com>
+> >>> Cc: John Fastabend <john.fastabend@gmail.com>
+> >>> Cc: KP Singh <kpsingh@kernel.org>
+> >>> Cc: Stanislav Fomichev <sdf@google.com>
+> >>> Cc: Hao Luo <haoluo@google.com>
+> >>> Cc: Jiri Olsa <jolsa@kernel.org>
+> >>> Cc: Hou Tao <houtao1@huawei.com>
+> >>> Acked-by: Yonghong Song <yhs@fb.com>
+> >>> ---
+> >>>    tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
+> >>>    tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
+> >>>    .../selftests/bpf/prog_tests/htab_deadlock.c  | 75 +++++++++++++++++++
+> >>>    .../selftests/bpf/progs/htab_deadlock.c       | 32 ++++++++
+> >>>    4 files changed, 109 insertions(+)
+> >>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+> >>>    create mode 100644 tools/testing/selftests/bpf/progs/htab_deadlock.c
+> >>>
+> >>> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+> >>> index 99cc33c51eaa..87e8fc9c9df2 100644
+> >>> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
+> >>> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+> >>> @@ -24,6 +24,7 @@ fexit_test                                       # fexit_attach unexpected error
+> >>>    get_func_args_test                               # get_func_args_test__attach unexpected error: -524 (errno 524) (trampoline)
+> >>>    get_func_ip_test                                 # get_func_ip_test__attach unexpected error: -524 (errno 524) (trampoline)
+> >>>    htab_update/reenter_update
+> >>> +htab_deadlock                                    # failed to find kernel BTF type ID of 'nmi_handle': -3 (trampoline)
+> >>>    kfree_skb                                        # attach fentry unexpected error: -524 (trampoline)
+> >>>    kfunc_call/subprog                               # extern (var ksym) 'bpf_prog_active': not found in kernel BTF
+> >>>    kfunc_call/subprog_lskel                         # skel unexpected error: -2
+> >>> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
+> >>> index 585fcf73c731..735239b31050 100644
+> >>> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
+> >>> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+> >>> @@ -26,6 +26,7 @@ get_func_args_test                   # trampoline
+> >>>    get_func_ip_test                         # get_func_ip_test__attach unexpected error: -524                             (trampoline)
+> >>>    get_stack_raw_tp                         # user_stack corrupted user stack                                             (no backchain userspace)
+> >>>    htab_update                              # failed to attach: ERROR: strerror_r(-524)=22                                (trampoline)
+> >>> +htab_deadlock                            # failed to find kernel BTF type ID of 'nmi_handle': -3                       (trampoline)
+> >>>    kfree_skb                                # attach fentry unexpected error: -524                                        (trampoline)
+> >>>    kfunc_call                               # 'bpf_prog_active': not found in kernel BTF                                  (?)
+> >>>    kfunc_dynptr_param                       # JIT does not support calling kernel function                                (kfunc)
+> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+> >>> new file mode 100644
+> >>> index 000000000000..137dce8f1346
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+> >>> @@ -0,0 +1,75 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +/* Copyright (c) 2022 DiDi Global Inc. */
+> >>> +#define _GNU_SOURCE
+> >>> +#include <pthread.h>
+> >>> +#include <sched.h>
+> >>> +#include <test_progs.h>
+> >>> +
+> >>> +#include "htab_deadlock.skel.h"
+> >>> +
+> >>> +static int perf_event_open(void)
+> >>> +{
+> >>> +     struct perf_event_attr attr = {0};
+> >>> +     int pfd;
+> >>> +
+> >>> +     /* create perf event on CPU 0 */
+> >>> +     attr.size = sizeof(attr);
+> >>> +     attr.type = PERF_TYPE_HARDWARE;
+> >>> +     attr.config = PERF_COUNT_HW_CPU_CYCLES;
+> >>> +     attr.freq = 1;
+> >>> +     attr.sample_freq = 1000;
+> >>> +     pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+> >>> +
+> >>> +     return pfd >= 0 ? pfd : -errno;
+> >>> +}
+> >>> +
+> >>> +void test_htab_deadlock(void)
+> >>> +{
+> >>> +     unsigned int val = 0, key = 20;
+> >>> +     struct bpf_link *link = NULL;
+> >>> +     struct htab_deadlock *skel;
+> >>> +     int err, i, pfd;
+> >>> +     cpu_set_t cpus;
+> >>> +
+> >>> +     skel = htab_deadlock__open_and_load();
+> >>> +     if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> >>> +             return;
+> >>> +
+> >>> +     err = htab_deadlock__attach(skel);
+> >>> +     if (!ASSERT_OK(err, "skel_attach"))
+> >>> +             goto clean_skel;
+> >>> +
+> >>> +     /* NMI events. */
+> >>> +     pfd = perf_event_open();
+> >>> +     if (pfd < 0) {
+> >>> +             if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
+> >>> +                     printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
+> >>> +                     test__skip();
+> >>> +                     goto clean_skel;
+> >>> +             }
+> >>> +             if (!ASSERT_GE(pfd, 0, "perf_event_open"))
+> >>> +                     goto clean_skel;
+> >>> +     }
+> >>> +
+> >>> +     link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
+> >>> +     if (!ASSERT_OK_PTR(link, "attach_perf_event"))
+> >>> +             goto clean_pfd;
+> >>> +
+> >>> +     /* Pinned on CPU 0 */
+> >>> +     CPU_ZERO(&cpus);
+> >>> +     CPU_SET(0, &cpus);
+> >>> +     pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
+> >>> +
+> >>> +     /* update bpf map concurrently on CPU0 in NMI and Task context.
+> >>> +      * there should be no kernel deadlock.
+> >>> +      */
+> >>> +     for (i = 0; i < 100000; i++)
+> >>> +             bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
+> >>> +                                 &key, &val, BPF_ANY);
+> >>> +
+> >>> +     bpf_link__destroy(link);
+> >>> +clean_pfd:
+> >>> +     close(pfd);
+> >>> +clean_skel:
+> >>> +     htab_deadlock__destroy(skel);
+> >>> +}
+> >>> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
+> >>> new file mode 100644
+> >>> index 000000000000..d394f95e97c3
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
+> >>> @@ -0,0 +1,32 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +/* Copyright (c) 2022 DiDi Global Inc. */
+> >>> +#include <linux/bpf.h>
+> >>> +#include <bpf/bpf_helpers.h>
+> >>> +#include <bpf/bpf_tracing.h>
+> >>> +
+> >>> +char _license[] SEC("license") = "GPL";
+> >>> +
+> >>> +struct {
+> >>> +     __uint(type, BPF_MAP_TYPE_HASH);
+> >>> +     __uint(max_entries, 2);
+> >>> +     __uint(map_flags, BPF_F_ZERO_SEED);
+> >>> +     __type(key, unsigned int);
+> >>> +     __type(value, unsigned int);
+> >>> +} htab SEC(".maps");
+> >>> +
+> >>> +/* nmi_handle on x86 platform. If changing keyword
+> >>> + * "static" to "inline", this prog load failed. */
+> >>> +SEC("fentry/nmi_handle")
+> >>
+> >> The above comment is not what I mean. In arch/x86/kernel/nmi.c,
+> >> we have
+> >>     static int nmi_handle(unsigned int type, struct pt_regs *regs)
+> >>     {
+> >>          ...
+> >>     }
+> >>     ...
+> >>     static noinstr void default_do_nmi(struct pt_regs *regs)
+> >>     {
+> >>          ...
+> >>          handled = nmi_handle(NMI_LOCAL, regs);
+> >>          ...
+> >>     }
+> >>
+> >> Since nmi_handle is a static function, it is possible that
+> >> the function might be inlined in default_do_nmi by the
+> >> compiler. If this happens, fentry/nmi_handle will not
+> >> be triggered and the test will pass.
+> >>
+> >> So I suggest to change the comment to
+> >>     nmi_handle() is a static function and might be
+> >>     inlined into its caller. If this happens, the
+> >>     test can still pass without previous kernel fix.
+> >
+> > It's worse than this.
+> > fentry is buggy.
+> > We shouldn't allow attaching fentry to:
+> > NOKPROBE_SYMBOL(nmi_handle);
+>
+> Okay, I see. Looks we should prevent fentry from
+> attaching any NOKPROBE_SYMBOL functions.
+>
+> BTW, I think fentry/nmi_handle can be replaced with
+> tracepoint nmi/nmi_handler. it is more reliable
+The tracepoint will not reproduce the deadlock(we have discussed v2).
+If it's not easy to complete a test for this case, should we drop this
+testcase patch? or fentry the nmi_handle and update the comments.
+> and won't be impacted by potential NOKPROBE_SYMBOL
+> issues.
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- arch/x86/net/bpf_jit_comp.c | 99 +++++++++++++++++--------------------
- 1 file changed, 46 insertions(+), 53 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index e3e2b57e4e13..e7b72299f5a4 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1839,62 +1839,57 @@ st:			if (is_imm8(insn->off))
- 	return proglen;
- }
- 
--static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
-+static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
- 		      int stack_size)
- {
--	int i, j, arg_size, nr_regs;
-+	int i, j, arg_size;
-+	bool is_struct = false;
-+
- 	/* Store function arguments to stack.
- 	 * For a function that accepts two pointers the sequence will be:
- 	 * mov QWORD PTR [rbp-0x10],rdi
- 	 * mov QWORD PTR [rbp-0x8],rsi
- 	 */
--	for (i = 0, j = 0; i < min(nr_args, 6); i++) {
--		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
--			nr_regs = (m->arg_size[i] + 7) / 8;
-+	for (i = 0, j = 0; i < min(nr_regs, 6); i++) {
-+		arg_size = m->arg_size[j];
-+		if (arg_size > 8) {
- 			arg_size = 8;
--		} else {
--			nr_regs = 1;
--			arg_size = m->arg_size[i];
-+			is_struct ^= 1;
- 		}
- 
--		while (nr_regs) {
--			emit_stx(prog, bytes_to_bpf_size(arg_size),
--				 BPF_REG_FP,
--				 j == 5 ? X86_REG_R9 : BPF_REG_1 + j,
--				 -(stack_size - j * 8));
--			nr_regs--;
--			j++;
--		}
-+		emit_stx(prog, bytes_to_bpf_size(arg_size),
-+			 BPF_REG_FP,
-+			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
-+			 -(stack_size - i * 8));
-+
-+		j = is_struct ? j : j + 1;
- 	}
- }
- 
--static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
-+static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
- 			 int stack_size)
- {
--	int i, j, arg_size, nr_regs;
-+	int i, j, arg_size;
-+	bool is_struct = false;
- 
- 	/* Restore function arguments from stack.
- 	 * For a function that accepts two pointers the sequence will be:
- 	 * EMIT4(0x48, 0x8B, 0x7D, 0xF0); mov rdi,QWORD PTR [rbp-0x10]
- 	 * EMIT4(0x48, 0x8B, 0x75, 0xF8); mov rsi,QWORD PTR [rbp-0x8]
- 	 */
--	for (i = 0, j = 0; i < min(nr_args, 6); i++) {
--		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
--			nr_regs = (m->arg_size[i] + 7) / 8;
-+	for (i = 0, j = 0; i < min(nr_regs, 6); i++) {
-+		arg_size = m->arg_size[j];
-+		if (arg_size > 8) {
- 			arg_size = 8;
--		} else {
--			nr_regs = 1;
--			arg_size = m->arg_size[i];
-+			is_struct ^= 1;
- 		}
- 
--		while (nr_regs) {
--			emit_ldx(prog, bytes_to_bpf_size(arg_size),
--				 j == 5 ? X86_REG_R9 : BPF_REG_1 + j,
--				 BPF_REG_FP,
--				 -(stack_size - j * 8));
--			nr_regs--;
--			j++;
--		}
-+		emit_ldx(prog, bytes_to_bpf_size(arg_size),
-+			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
-+			 BPF_REG_FP,
-+			 -(stack_size - i * 8));
-+
-+		j = is_struct ? j : j + 1;
- 	}
- }
- 
-@@ -2120,8 +2115,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 				struct bpf_tramp_links *tlinks,
- 				void *func_addr)
- {
--	int ret, i, nr_args = m->nr_args, extra_nregs = 0;
--	int regs_off, ip_off, args_off, stack_size = nr_args * 8, run_ctx_off;
-+	int i, ret, nr_regs = m->nr_args, stack_size = 0;
-+	int regs_off, nregs_off, ip_off, run_ctx_off;
- 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
- 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
- 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
-@@ -2130,17 +2125,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	u8 *prog;
- 	bool save_ret;
- 
--	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
--	if (nr_args > 6)
--		return -ENOTSUPP;
--
--	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
-+	/* extra registers for struct arguments */
-+	for (i = 0; i < m->nr_args; i++)
- 		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
--			extra_nregs += (m->arg_size[i] + 7) / 8 - 1;
--	}
--	if (nr_args + extra_nregs > 6)
-+			nr_regs += (m->arg_size[i] + 7) / 8 - 1;
-+
-+	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
-+	if (nr_regs > 6)
- 		return -ENOTSUPP;
--	stack_size += extra_nregs * 8;
- 
- 	/* Generated trampoline stack layout:
- 	 *
-@@ -2154,7 +2146,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	 *                 [ ...             ]
- 	 * RBP - regs_off  [ reg_arg1        ]  program's ctx pointer
- 	 *
--	 * RBP - args_off  [ arg regs count  ]  always
-+	 * RBP - nregs_off [ regs count	     ]  always
- 	 *
- 	 * RBP - ip_off    [ traced function ]  BPF_TRAMP_F_IP_ARG flag
- 	 *
-@@ -2166,11 +2158,12 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	if (save_ret)
- 		stack_size += 8;
- 
-+	stack_size += nr_regs * 8;
- 	regs_off = stack_size;
- 
--	/* args count  */
-+	/* regs count  */
- 	stack_size += 8;
--	args_off = stack_size;
-+	nregs_off = stack_size;
- 
- 	if (flags & BPF_TRAMP_F_IP_ARG)
- 		stack_size += 8; /* room for IP address argument */
-@@ -2198,11 +2191,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	EMIT1(0x53);		 /* push rbx */
- 
- 	/* Store number of argument registers of the traced function:
--	 *   mov rax, nr_args + extra_nregs
--	 *   mov QWORD PTR [rbp - args_off], rax
-+	 *   mov rax, nr_regs
-+	 *   mov QWORD PTR [rbp - nregs_off], rax
- 	 */
--	emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_args + extra_nregs);
--	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -args_off);
-+	emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_regs);
-+	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -nregs_off);
- 
- 	if (flags & BPF_TRAMP_F_IP_ARG) {
- 		/* Store IP address of the traced function:
-@@ -2213,7 +2206,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
- 	}
- 
--	save_regs(m, &prog, nr_args, regs_off);
-+	save_regs(m, &prog, nr_regs, regs_off);
- 
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
- 		/* arg1: mov rdi, im */
-@@ -2243,7 +2236,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	}
- 
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
--		restore_regs(m, &prog, nr_args, regs_off);
-+		restore_regs(m, &prog, nr_regs, regs_off);
- 
- 		if (flags & BPF_TRAMP_F_ORIG_STACK) {
- 			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
-@@ -2284,7 +2277,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 		}
- 
- 	if (flags & BPF_TRAMP_F_RESTORE_REGS)
--		restore_regs(m, &prog, nr_args, regs_off);
-+		restore_regs(m, &prog, nr_regs, regs_off);
- 
- 	/* This needs to be done regardless. If there were fmod_ret programs,
- 	 * the return value is only updated on the stack and still needs to be
+
 -- 
-2.25.1
-
+Best regards, Tonghao
