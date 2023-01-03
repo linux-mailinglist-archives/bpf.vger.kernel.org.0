@@ -2,99 +2,339 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDDB65C930
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 23:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39D365C9A3
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 23:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjACWJo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 17:09:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S230166AbjACW11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 17:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbjACWJ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Jan 2023 17:09:28 -0500
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FA7F003;
-        Tue,  3 Jan 2023 14:09:27 -0800 (PST)
-Received: from fsav112.sakura.ne.jp (fsav112.sakura.ne.jp [27.133.134.239])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 303M7k2O030536;
-        Wed, 4 Jan 2023 07:07:46 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav112.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav112.sakura.ne.jp);
- Wed, 04 Jan 2023 07:07:46 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav112.sakura.ne.jp)
-Received: from [192.168.1.20] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 303M7j07030532
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 4 Jan 2023 07:07:45 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <2b35515e-5ad0-ee84-c90f-cb61428be4e4@I-love.SAKURA.ne.jp>
-Date:   Wed, 4 Jan 2023 07:07:45 +0900
+        with ESMTP id S238918AbjACW0t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Jan 2023 17:26:49 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9389E165A7
+        for <bpf@vger.kernel.org>; Tue,  3 Jan 2023 14:24:11 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id 141so2736902pgc.0
+        for <bpf@vger.kernel.org>; Tue, 03 Jan 2023 14:24:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=a2SjNr3Z+L3Cp/DNbgmAZXuHJ6agN6FwcAp+3Hg5iyI=;
+        b=XaVLfl+Uz2SAGMIm8MHnc1EOkdySdC0+p02dxb+6tSFKTC27IMm/WSDBzQVKM1r08V
+         Lw32E0gUQLHLEFt8wFVV98f8PMp90YGhMzXksrwEW9oaLF2tQlpj2xsihveAvDJYWrIj
+         A1oQMGAOZ6kW3IRmbgCMDtSl0uGbx3SEAE8EtlVeOiEsTHwnpsWO8KzGHLp8krAFoADo
+         boX+EVA+t7hOmRETa5t+vj1S/PSpmxpaLrEbQRCs/3Og7ZGj6wVsf72AAsnd/8LuzwRD
+         diRccQUZbx+hgK5rKDmSHD2EhqWZzC0UvLXJvUJk1Zy3zCC9hQLrep/877ofbA9QthGG
+         Vo2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a2SjNr3Z+L3Cp/DNbgmAZXuHJ6agN6FwcAp+3Hg5iyI=;
+        b=ZDyyEprdHWiXrMfcYgPVRrKPft7+pe2ADtvD+ILsdGQthNmtrtR5TM4D0CL3rJ0tMI
+         Vkqnq3m67BN5SX4NQQcTlODXtPaMFswU/K12zOJyuHSnguui1T0nDqgi+L2JQyHgbTCj
+         N0nC8UglWfQBywdSkbrlmYbd9Kstd04yjKUZF4WX7seK/LKZwp+W6ecslDAeLGMnayuf
+         hWpY6Llol66sPiFgvEsd+qdIqAwhaLsr7ZpyEDj0ThdhHFmwrQCzshUWnhx2twPWGpx9
+         m2QTzCM2QP+Ccg2HF4y9hXgS+A2uqFI3kY02qVD0gAo5DhpXQEV3x9MxR6Ttgcuhckbk
+         fWDg==
+X-Gm-Message-State: AFqh2krQD10UFWoph89hB8sG1zm76xGYxa9AlpLY5YET8vIwwJ7a4Oah
+        CshuUMgv6K6VLixOw7EcDBoUzhjp7ZzXI9S0HtN01A==
+X-Google-Smtp-Source: AMrXdXtxZlxStVXvaH//rng+QDYaVuAN8FmKPBh5ylM5uibagK+/VgEmrqQWvfUp+YW09kCcaPU6c2FM4Zu9FXLnA+Q=
+X-Received: by 2002:a65:53c3:0:b0:478:b7ab:2f72 with SMTP id
+ z3-20020a6553c3000000b00478b7ab2f72mr2625285pgr.186.1672784595474; Tue, 03
+ Jan 2023 14:23:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [syzbot] WARNING: locking bug in inet_autobind
-Content-Language: en-US
-To:     Felix Kuehling <felix.kuehling@amd.com>,
-        Waiman Long <longman@redhat.com>, edumazet@google.com,
-        jakub@cloudflare.com
-References: <0000000000002ae67f05f0f191aa@google.com>
- <ea9c2977-f05f-3acd-ee3e-2443229b7b55@amd.com>
- <3e531d65-72a7-a82a-3d18-004aeab9144b@redhat.com>
- <a47b840f-b2b8-95d7-ddc0-c9d5dde3c28c@amd.com>
-Cc:     syzkaller-bugs@googlegroups.com, netdev@vger.kernel.org,
-        syzbot <syzbot+94cc2a66fc228b23f360@syzkaller.appspotmail.com>,
-        Alexander.Deucher@amd.com, Christian.Koenig@amd.com,
-        David1.Zhou@amd.com, Evan.Quan@amd.com, Harry.Wentland@amd.com,
-        Oak.Zeng@amd.com, Ray.Huang@amd.com, Yong.Zhao@amd.com,
-        airlied@linux.ie, ast@kernel.org, boqun.feng@gmail.com,
-        daniel@ffwll.ch, daniel@iogearbox.net, davem@davemloft.net,
-        dsahern@kernel.org, gautammenghani201@gmail.com, kafai@fb.com,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru, mingo@redhat.com,
-        ozeng@amd.com, pabeni@redhat.com, peterz@infradead.org,
-        rex.zhu@amd.com, songliubraving@fb.com, will@kernel.org,
-        yhs@fb.com, yoshfuji@linux-ipv6.org
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <a47b840f-b2b8-95d7-ddc0-c9d5dde3c28c@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20221220222043.3348718-1-sdf@google.com> <20221220222043.3348718-2-sdf@google.com>
+ <Y6x7+BL7eWERwpGy@maniforge.lan>
+In-Reply-To: <Y6x7+BL7eWERwpGy@maniforge.lan>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 3 Jan 2023 14:23:03 -0800
+Message-ID: <CAKH8qBs8+gUekdNDRKnU1hg8gCB4Q29eMBhF2NeTT7Y1pyitQQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 01/17] bpf: Document XDP RX metadata
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2023/01/04 1:20, Felix Kuehling wrote:
-> 
-> Am 2023-01-03 um 11:05 schrieb Waiman Long:
->> On 1/3/23 10:39, Felix Kuehling wrote:
->>> The regression point doesn't make sense. The kernel config doesn't enable CONFIG_DRM_AMDGPU, so there is no way that a change in AMDGPU could have caused this regression.
->>>
->> I agree. It is likely a pre-existing problem or caused by another commit that got triggered because of the change in cacheline alignment caused by commit c0d9271ecbd ("drm/amdgpu: Delete user queue doorbell variable").
-> I don't think the change can affect cache line alignment. The entire amdgpu driver doesn't even get compiled in the kernel config that was used, and the change doesn't touch any files outside drivers/gpu/drm/amd/amdgpu:
-> 
-> # CONFIG_DRM_AMDGPU is not set
-> 
-> My guess would be that it's an intermittent bug that is confusing bisect.
-> 
-> Regards,
->   Felix
+On Wed, Dec 28, 2022 at 9:25 AM David Vernet <void@manifault.com> wrote:
+>
+> On Tue, Dec 20, 2022 at 02:20:27PM -0800, Stanislav Fomichev wrote:
+> > Document all current use-cases and assumptions.
+> >
+> > Cc: John Fastabend <john.fastabend@gmail.com>
+> > Cc: David Ahern <dsahern@gmail.com>
+> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: Willem de Bruijn <willemb@google.com>
+> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> > Cc: Maryam Tahhan <mtahhan@redhat.com>
+> > Cc: xdp-hints@xdp-project.net
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  Documentation/networking/index.rst           |   1 +
+> >  Documentation/networking/xdp-rx-metadata.rst | 107 +++++++++++++++++++
+> >  2 files changed, 108 insertions(+)
+> >  create mode 100644 Documentation/networking/xdp-rx-metadata.rst
+> >
+> > diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
+> > index 4f2d1f682a18..4ddcae33c336 100644
+> > --- a/Documentation/networking/index.rst
+> > +++ b/Documentation/networking/index.rst
+> > @@ -120,6 +120,7 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
+> >     xfrm_proc
+> >     xfrm_sync
+> >     xfrm_sysctl
+> > +   xdp-rx-metadata
+> >
+> >  .. only::  subproject and html
+> >
+> > diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
+> > new file mode 100644
+> > index 000000000000..37e8192d9b60
+> > --- /dev/null
+> > +++ b/Documentation/networking/xdp-rx-metadata.rst
+>
+> Hey Stanislav,
+>
+> This is looking excellent. Left a few more minor comments and
+> suggestions.
+>
+> > @@ -0,0 +1,107 @@
+> > +===============
+> > +XDP RX Metadata
+> > +===============
+> > +
+> > +This document describes how an XDP program can access hardware metadata
+>
+> In similar fashion to LWN articles, can we spell out what XDP means the
+> first time it's used, e.g.:
+>
+> ...describes how an eXpress Data Path (XDP) program...
+>
+> In general this applies to other acronyms unless they're super obvious,
+> like "CPU" (thanks for already having done it for XSK).
 
-This was already explained in https://groups.google.com/g/syzkaller-bugs/c/1rmGDmbXWIw/m/nIQm0EmxBAAJ .
+Sure. Hopefully no need to explain RX below? Don't see anything else..
+LMK if I missed something
 
-Jakub Sitnicki suggested
+> > +related to a packet using a set of helper functions, and how it can pass
+> > +that metadata on to other consumers.
+> > +
+> > +General Design
+> > +==============
+> > +
+> > +XDP has access to a set of kfuncs to manipulate the metadata in an XDP frame.
+> > +Every device driver that wishes to expose additional packet metadata can
+> > +implement these kfuncs. The set of kfuncs is declared in ``include/net/xdp.h``
+> > +via ``XDP_METADATA_KFUNC_xxx``.
+> > +
+> > +Currently, the following kfuncs are supported. In the future, as more
+> > +metadata is supported, this set will grow:
+> > +
+> > +- ``bpf_xdp_metadata_rx_timestamp`` returns a packet's RX timestamp
+> > +- ``bpf_xdp_metadata_rx_hash`` returns a packet's RX hash
+>
+> So, I leave this up to you as to whether or not you want to do this, but
+> there is a built-in mechanism in sphinx that converts doxygen comments
+> to rendered documentation for a function, struct, etc, and also
+> automatically links other places in documentation where the function is
+> referenced. See [0] for an example of this in code, and [1] for an
+> example of how it's rendered.
+>
+> [0]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/Documentation/bpf/kfuncs.rst#n239
+> [1]: https://docs.kernel.org/bpf/kfuncs.html#c.bpf_task_acquire
+>
+> So you would do something like add function headers to the kfuncs, and
+> then do:
+>
+> .. kernel-doc:: net/core/xdp.c
+>    :identifiers: bpf_xdp_metadata_rx_timestamp bpf_xdp_metadata_rx_hash
+>
+> At some point we will need a consistent story for how we document
+> kfuncs. That's not set in stone yet, which is why I'm saying it's up to
+> you whether or not you want to do this or just leave it as teletype with
+> a written description next to it.  Later on when we settle on a
+> documentation story for kfuncs, we can update all of them to be
+> documented in the same way.
 
-  What if we revisit Eric's lockdep splat fix in 37159ef2c1ae ("l2tp: fix
-  a lockdep splat") and: 
+Let me try and see how it looks in the html doc. I like the idea of
+referencing the code directly, hopefully less chance it goes stale.
 
-  1. remove the lockdep_set_class_and_name(...) call in l2tp; it looks
-     like an odd case within the network stack, and
+> > +The XDP program can use these kfuncs to read the metadata into stack
+>
+> s/The/An
 
-  2. switch to bh_lock_sock_nested in l2tp_xmit_core so that we don't
-     break what has been fixed in 37159ef2c1ae.
+Ack, ty!
 
-and we are waiting for response from Eric Dumazet.
+> > +variables for its own consumption. Or, to pass the metadata on to other
+> > +consumers, an XDP program can store it into the metadata area carried
+> > +ahead of the packet.
+> > +
+> > +Not all kfuncs have to be implemented by the device driver; when not
+> > +implemented, the default ones that return ``-EOPNOTSUPP`` will be used.
+> > +
+> > +Within the XDP frame, the metadata layout is as follows::
+>
+> s/the/an
 
+Thx!
+
+> > +
+> > +  +----------+-----------------+------+
+> > +  | headroom | custom metadata | data |
+> > +  +----------+-----------------+------+
+> > +             ^                 ^
+> > +             |                 |
+> > +   xdp_buff->data_meta   xdp_buff->data
+> > +
+> > +The XDP program can store individual metadata items into this data_meta
+>
+> Can we teletype ``data_meta``? Also, s/The XDP program/An XDP program
+
+Sure.
+
+> > +area in whichever format it chooses. Later consumers of the metadata
+> > +will have to agree on the format by some out of band contract (like for
+> > +the AF_XDP use case, see below).
+> > +
+> > +AF_XDP
+> > +======
+> > +
+> > +``AF_XDP`` use-case implies that there is a contract between the BPF program
+> > +that redirects XDP frames into the ``AF_XDP`` socket (``XSK``) and the final
+> > +consumer. Thus the BPF program manually allocates a fixed number of
+>
+> Can we have ``AF_XDP`` link to the ``AF_XDP`` docs page for any reader
+> that's not familiar with it? I think you can just do the following and
+> it should just work:
+>
+> s/``AF_XDP``/:doc:`af_xdp`
+
+Will try.
+
+> > +bytes out of metadata via ``bpf_xdp_adjust_meta`` and calls a subset
+> > +of kfuncs to populate it. The userspace ``XSK`` consumer computes
+> > +``xsk_umem__get_data() - METADATA_SIZE`` to locate its metadata.
+>
+> s/to locate its metadata/to locate that metadata
+
+SG.
+
+> to make it clear that the consumer is consuming the metadata that was
+> populated by bpf_xdp_adjust_meta()? It's pretty clear from context but I
+> think "its metadata" may confuse some people as the metadata is not
+
+[..]
+
+> really owned by the consumer. Also, should we mention that
+> xsk_umem__get_data() is defined in libxdp?
+
+Add something like:
+
+Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
+``METADATA_SIZE`` is an application-specific constant.
+
+?
+
+> One other probably dumb question: is METADATA_SIZE static? If so, should
+> we provide a libxdp wrapper to access it?
+
+(added a note above)
+
+> > +
+> > +Here is the ``AF_XDP`` consumer layout (note missing ``data_meta`` pointer)::
+> > +
+> > +  +----------+-----------------+------+
+> > +  | headroom | custom metadata | data |
+> > +  +----------+-----------------+------+
+> > +                               ^
+> > +                               |
+> > +                        rx_desc->address
+> > +
+> > +XDP_PASS
+> > +========
+> > +
+> > +This is the path where the packets processed by the XDP program are passed
+> > +into the kernel. The kernel creates the ``skb`` out of the ``xdp_buff``
+> > +contents. Currently, every driver has custom kernel code to parse
+> > +the descriptors and populate ``skb`` metadata when doing this ``xdp_buff->skb``
+> > +conversion, and the XDP metadata is not used by the kernel when building
+> > +skbs. However, TC-BPF programs can access the XDP metadata area using
+> > +the data_meta pointer.
+>
+> ``data_meta``
+
+Ack.
+
+> > +
+> > +In the future, we'd like to support a case where an XDP program
+> > +can override some of the metadata used for building skbs.
+> > +
+> > +bpf_redirect_map
+> > +================
+> > +
+> > +``bpf_redirect_map`` can redirect the frame to a different device.
+> > +Some devices (like virtual ethernet links) support running a second XDP
+> > +program after the redirect. However, the final consumer doesn't have
+> > +access to the original hardware descriptor and can't access any of
+> > +the original metadata. The same applies to XDP programs installed
+> > +into devmaps and cpumaps.
+> > +
+> > +This means that for redirected packets only custom metadata is
+> > +currently supported, which has to be prepared by the initial XDP program
+> > +before redirect. If the frame is eventually passed to the kernel, the
+> > +skb created from such a frame won't have any hardware metadata populated
+> > +in its skb. And if such a packet is later redirected into an ``XSK``,
+>
+> s/And if/If
+>
+> Also, can you add teletype ``skb`` in this paragraph?
+
+Sure, thanks.
+
+> > +that will also only have access to the custom metadata.
+> > +
+> > +
+> > +bpf_tail_call
+> > +=============
+> > +
+> > +Adding programs that access metadata kfuncs to the ``BPF_MAP_TYPE_PROG_ARRAY``
+> > +is currently not supported.
+> > +
+> > +Example
+> > +=======
+> > +
+> > +See ``tools/testing/selftests/bpf/progs/xdp_metadata.c`` and
+> > +``tools/testing/selftests/bpf/prog_tests/xdp_metadata.c`` for an example of
+> > +BPF program that handles XDP metadata.
+> > --
+> > 2.39.0.314.g84b9a713c41-goog
+>
+> Looks great otherwise, thanks.
