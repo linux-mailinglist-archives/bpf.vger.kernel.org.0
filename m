@@ -2,173 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E89C265BABD
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 07:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E080B65BAF8
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 07:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236717AbjACGke (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 01:40:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59842 "EHLO
+        id S231956AbjACGxo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 01:53:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236780AbjACGk2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Jan 2023 01:40:28 -0500
-Received: from out30-6.freemail.mail.aliyun.com (out30-6.freemail.mail.aliyun.com [115.124.30.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDB4D114;
-        Mon,  2 Jan 2023 22:40:25 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VYhs78x_1672728022;
-Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VYhs78x_1672728022)
-          by smtp.aliyun-inc.com;
-          Tue, 03 Jan 2023 14:40:23 +0800
-From:   Heng Qi <hengqi@linux.alibaba.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v3 9/9] virtio-net: support multi-buffer xdp
-Date:   Tue,  3 Jan 2023 14:40:12 +0800
-Message-Id: <20230103064012.108029-10-hengqi@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20230103064012.108029-1-hengqi@linux.alibaba.com>
-References: <20230103064012.108029-1-hengqi@linux.alibaba.com>
+        with ESMTP id S230254AbjACGxn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Jan 2023 01:53:43 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AAE1B48
+        for <bpf@vger.kernel.org>; Mon,  2 Jan 2023 22:53:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C94CEB80E14
+        for <bpf@vger.kernel.org>; Tue,  3 Jan 2023 06:53:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E037C433EF
+        for <bpf@vger.kernel.org>; Tue,  3 Jan 2023 06:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672728819;
+        bh=wbWN2d3IanVfbt0qnVLEs1kFgkAHIJ7y4rljhzLPY8U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Qjrhz9ud2ZdY5LEz7riR0Atr5StTgwPHE6xvDOBcoQl6jMqUgE+QWn02erYe4a//v
+         Ego/2Saxw7Zv0yS+HtVYq24qll4+0YaOh8bLb0wHFPMQmW7QtuWc5+75ovzyJPLEEC
+         FYFPtR4y9BGoXcE74hnI3Q1j8B6QCLi+mbWCZhHTqP9GPIbXCKK/mM6AX/Nm+B+eu6
+         v2niHbIkcH3Of2vFUplrCIptJN/srX8Cq7IDdPKJad0CVx4hXBeWEpoLHngRpEDvhh
+         Cl5eEsTW8zQ06fF50Pdr/jzjxezwUJBvvKx0O2XujKhW4f12752WUb6fgzjfGY0Gbz
+         +cwv1pKNnzzmQ==
+Received: by mail-ed1-f54.google.com with SMTP id u28so37763985edd.10
+        for <bpf@vger.kernel.org>; Mon, 02 Jan 2023 22:53:39 -0800 (PST)
+X-Gm-Message-State: AFqh2kp8BB80EcIBYIX48a2YARKU6ClHcFsPuPxkndDhfi/2LvJgrGRR
+        GnBuVhkXjXmHwdxOxY/D51+gbeJXLKxbzWL9N5k=
+X-Google-Smtp-Source: AMrXdXtsCm2upyz5f+49LawIIF8A7kWqG7pOZzLb+iBBtm0rcndCRzkmW6uY8SF8DerP1ABCrUAJDqvFp3GsAT3vLPA=
+X-Received: by 2002:aa7:d44e:0:b0:47f:5431:89ea with SMTP id
+ q14-20020aa7d44e000000b0047f543189eamr3703643edr.284.1672728817812; Mon, 02
+ Jan 2023 22:53:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20221231100757.3177034-1-hengqi.chen@gmail.com>
+In-Reply-To: <20221231100757.3177034-1-hengqi.chen@gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 3 Jan 2023 14:53:25 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6hdXXE4EwFe66rUxJMixc=s7PYuxeyCjaQ5z3Fck40jA@mail.gmail.com>
+Message-ID: <CAAhV-H6hdXXE4EwFe66rUxJMixc=s7PYuxeyCjaQ5z3Fck40jA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Add LoongArch support to bpf_tracing.h
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf@vger.kernel.org, loongarch@lists.linux.dev, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Driver can pass the skb to stack by build_skb_from_xdp_buff().
+LGTM, I will queue this patch for loongarch-next if no one has
+objections. Thank you.
 
-Driver forwards multi-buffer packets using the send queue
-when XDP_TX and XDP_REDIRECT, and clears the reference of multi
-pages when XDP_DROP.
 
-Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
-Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/net/virtio_net.c | 65 +++++++---------------------------------
- 1 file changed, 10 insertions(+), 55 deletions(-)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 2c7dcad049fb..aaa6fe9b214a 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1083,7 +1083,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 	struct bpf_prog *xdp_prog;
- 	unsigned int truesize = mergeable_ctx_to_truesize(ctx);
- 	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
--	unsigned int metasize = 0;
- 	unsigned int tailroom = headroom ? sizeof(struct skb_shared_info) : 0;
- 	unsigned int room = SKB_DATA_ALIGN(headroom + tailroom);
- 	unsigned int frame_sz, xdp_room;
-@@ -1179,63 +1178,24 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 
- 		switch (act) {
- 		case XDP_PASS:
--			metasize = xdp.data - xdp.data_meta;
--
--			/* recalculate offset to account for any header
--			 * adjustments and minus the metasize to copy the
--			 * metadata in page_to_skb(). Note other cases do not
--			 * build an skb and avoid using offset
--			 */
--			offset = xdp.data - page_address(xdp_page) -
--				 vi->hdr_len - metasize;
--
--			/* recalculate len if xdp.data, xdp.data_end or
--			 * xdp.data_meta were adjusted
--			 */
--			len = xdp.data_end - xdp.data + vi->hdr_len + metasize;
--
--			/* recalculate headroom if xdp.data or xdp_data_meta
--			 * were adjusted, note that offset should always point
--			 * to the start of the reserved bytes for virtio_net
--			 * header which are followed by xdp.data, that means
--			 * that offset is equal to the headroom (when buf is
--			 * starting at the beginning of the page, otherwise
--			 * there is a base offset inside the page) but it's used
--			 * with a different starting point (buf start) than
--			 * xdp.data (buf start + vnet hdr size). If xdp.data or
--			 * data_meta were adjusted by the xdp prog then the
--			 * headroom size has changed and so has the offset, we
--			 * can use data_hard_start, which points at buf start +
--			 * vnet hdr size, to calculate the new headroom and use
--			 * it later to compute buf start in page_to_skb()
--			 */
--			headroom = xdp.data - xdp.data_hard_start - metasize;
--
--			/* We can only create skb based on xdp_page. */
--			if (unlikely(xdp_page != page)) {
--				rcu_read_unlock();
-+			if (unlikely(xdp_page != page))
- 				put_page(page);
--				head_skb = page_to_skb(vi, rq, xdp_page, offset,
--						       len, PAGE_SIZE);
--				return head_skb;
--			}
--			break;
-+			head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
-+			rcu_read_unlock();
-+			return head_skb;
- 		case XDP_TX:
- 			stats->xdp_tx++;
- 			xdpf = xdp_convert_buff_to_frame(&xdp);
- 			if (unlikely(!xdpf)) {
--				if (unlikely(xdp_page != page))
--					put_page(xdp_page);
--				goto err_xdp;
-+				netdev_dbg(dev, "convert buff to frame failed for xdp\n");
-+				goto err_xdp_frags;
- 			}
- 			err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
- 			if (unlikely(!err)) {
- 				xdp_return_frame_rx_napi(xdpf);
- 			} else if (unlikely(err < 0)) {
- 				trace_xdp_exception(vi->dev, xdp_prog, act);
--				if (unlikely(xdp_page != page))
--					put_page(xdp_page);
--				goto err_xdp;
-+				goto err_xdp_frags;
- 			}
- 			*xdp_xmit |= VIRTIO_XDP_TX;
- 			if (unlikely(xdp_page != page))
-@@ -1245,11 +1205,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 		case XDP_REDIRECT:
- 			stats->xdp_redirects++;
- 			err = xdp_do_redirect(dev, &xdp, xdp_prog);
--			if (err) {
--				if (unlikely(xdp_page != page))
--					put_page(xdp_page);
--				goto err_xdp;
--			}
-+			if (err)
-+				goto err_xdp_frags;
- 			*xdp_xmit |= VIRTIO_XDP_REDIR;
- 			if (unlikely(xdp_page != page))
- 				put_page(page);
-@@ -1262,9 +1219,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 			trace_xdp_exception(vi->dev, xdp_prog, act);
- 			fallthrough;
- 		case XDP_DROP:
--			if (unlikely(xdp_page != page))
--				__free_pages(xdp_page, 0);
--			goto err_xdp;
-+			goto err_xdp_frags;
- 		}
- err_xdp_frags:
- 		if (unlikely(xdp_page != page))
--- 
-2.19.1.6.gb485710b
-
+On Sat, Dec 31, 2022 at 6:08 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>
+> Add PT_REGS macros for LoongArch ([0]).
+>
+>   [0]: https://loongson.github.io/LoongArch-Documentation/LoongArch-ELF-ABI-EN.html
+>
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  tools/lib/bpf/bpf_tracing.h | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+>
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index 9c1b1689068d..bdb0f6b5be84 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -32,6 +32,9 @@
+>  #elif defined(__TARGET_ARCH_arc)
+>         #define bpf_target_arc
+>         #define bpf_target_defined
+> +#elif defined(__TARGET_ARCH_loongarch)
+> +       #define bpf_target_loongarch
+> +       #define bpf_target_defined
+>  #else
+>
+>  /* Fall back to what the compiler says */
+> @@ -62,6 +65,9 @@
+>  #elif defined(__arc__)
+>         #define bpf_target_arc
+>         #define bpf_target_defined
+> +#elif defined(__loongarch__)
+> +       #define bpf_target_loongarch
+> +       #define bpf_target_defined
+>  #endif /* no compiler target */
+>
+>  #endif
+> @@ -258,6 +264,23 @@ struct pt_regs___arm64 {
+>  /* arc does not select ARCH_HAS_SYSCALL_WRAPPER. */
+>  #define PT_REGS_SYSCALL_REGS(ctx) ctx
+>
+> +#elif defined(bpf_target_loongarch)
+> +
+> +/* https://loongson.github.io/LoongArch-Documentation/LoongArch-ELF-ABI-EN.html */
+> +
+> +#define __PT_PARM1_REG regs[4]
+> +#define __PT_PARM2_REG regs[5]
+> +#define __PT_PARM3_REG regs[6]
+> +#define __PT_PARM4_REG regs[7]
+> +#define __PT_PARM5_REG regs[8]
+> +#define __PT_RET_REG regs[1]
+> +#define __PT_FP_REG regs[22]
+> +#define __PT_RC_REG regs[4]
+> +#define __PT_SP_REG regs[3]
+> +#define __PT_IP_REG csr_era
+> +/* loongarch does not select ARCH_HAS_SYSCALL_WRAPPER. */
+> +#define PT_REGS_SYSCALL_REGS(ctx) ctx
+> +
+>  #endif
+>
+>  #if defined(bpf_target_defined)
+> --
+> 2.31.1
+>
