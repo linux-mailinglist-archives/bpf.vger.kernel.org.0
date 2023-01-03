@@ -2,139 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7B365C11A
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 14:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7419B65C2AD
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 16:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237554AbjACNsF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 08:48:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
+        id S233414AbjACPEA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 10:04:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237654AbjACNsB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Jan 2023 08:48:01 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAC21144E;
-        Tue,  3 Jan 2023 05:47:59 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NmYvr6HV4z4f3v6S;
-        Tue,  3 Jan 2023 21:47:52 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgDn2ugCMrRj6SAPBA--.49839S2;
-        Tue, 03 Jan 2023 21:47:49 +0800 (CST)
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Yonghong Song <yhs@meta.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
+        with ESMTP id S233311AbjACPD6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Jan 2023 10:03:58 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12861183D
+        for <bpf@vger.kernel.org>; Tue,  3 Jan 2023 07:03:56 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id c65-20020a1c3544000000b003cfffd00fc0so26535111wma.1
+        for <bpf@vger.kernel.org>; Tue, 03 Jan 2023 07:03:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kKYTQm49doq3QZeNRKUKNt+F+gYY9l1F+kH6s4sZsDY=;
+        b=C5o5JgpATe056oWRrmwujioyJ7WOq8ChNKjqCpuzt09p8YeYqabBW9Rqa7FvThc3wY
+         RPVUzi68gGgChAoLluP1TmZJZZ+mgi1f15GN73bg+VTfcaan+9Sw3T6N2I/S0ezF/G6L
+         7egxW4wZ+ofHIzh4QEbuJvgktidl7Hn9BzwI2SkpFRDpFFvaxJTw1XCNE42+CBO3UfHE
+         2wSQRkElfhazko9OzeCNkWr5bO1TWS0GOmVaI2JJxcqyB8N6tHLtt8ujsaxzHgZ7MFvm
+         zW3cIlAIujGgLuPQC8EaRTMBp/k2Ka8FUJHNIe5aAIziUlg/GlyXG9gHbYbnk6zvMAuJ
+         LDZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kKYTQm49doq3QZeNRKUKNt+F+gYY9l1F+kH6s4sZsDY=;
+        b=Q508GSw8eQdtTlK5l7awOq0r2GDKSbqbLt2kblLkJWCzV0dsChzmBaOslAPAH9KwkI
+         2aSieiF30Ok3bfmjrAp+5XOFULjMdJvA4yGa76YF8Ui+vU5JlR6xkWBTgovlKY2tqVgD
+         fnCxuu48narPQBC2NhN36NpHrycvra/8F6bC/oY00PgbNsbjlgDA1H0jBlq1Yo0QTcxy
+         iMcgXanzK85tfHB3N4YnxMgasUylodXQakxHVGscBjbizkO10+dZtj7LAujjIsNMlpo0
+         mA3yUGIDrpune+OgTcJ8xyb8z2Rcz/+1WSZ/zZ1XC3um8H02uawZdpm2PPlvFwLTDP/M
+         NueA==
+X-Gm-Message-State: AFqh2kqJABesaR8mMo5ymSCahMlJT16Z4EcJOn6PabfGOmRBRaeZPX0D
+        PMxXPN1341nbqvv87mUJOfxbGQ==
+X-Google-Smtp-Source: AMrXdXtyC5PDiiKBdsV8joYm1O+4/YLDTbRpzINJhFu1AUyEr1TV8WE7DYKR6Df4NvCC42QIBvacxw==
+X-Received: by 2002:a05:600c:1d98:b0:3d3:48f4:7a69 with SMTP id p24-20020a05600c1d9800b003d348f47a69mr38782616wms.17.1672758234700;
+        Tue, 03 Jan 2023 07:03:54 -0800 (PST)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id p12-20020a05600c468c00b003cf5ec79bf9sm41980076wmo.40.2023.01.03.07.03.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Jan 2023 07:03:54 -0800 (PST)
+Message-ID: <ea02357d-c5c7-aeff-e045-d639315d87e9@isovalent.com>
+Date:   Tue, 3 Jan 2023 15:03:53 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH v3 1/2] libbpf: show error info about missing ".BTF"
+ section
+Content-Language: en-GB
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Leo Yan <leo.yan@linaro.org>
+Cc:     Changbin Du <changbin.du@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
-Date:   Tue, 3 Jan 2023 21:47:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgDn2ugCMrRj6SAPBA--.49839S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZry7Xr1fXF47Gw48Ww4DArb_yoW5ArW3pF
-        WSga15ArWkCw1I9w42vwnxGFyUKw4fGFy7Grn8A34UCrsYgrn3trWSqa15CFyUAFZ5GF1q
-        qF1qq393Zw1aya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UdxhLUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20221217223509.88254-1-changbin.du@gmail.com>
+ <20221217223509.88254-2-changbin.du@gmail.com>
+ <Y5/eE+ds+e+k3VJO@leoy-yangtze.lan>
+ <20221220013114.zkkxkqh7orahxbzh@mail.google.com>
+ <Y6GdofET0gHQzRX6@leoy-yangtze.lan>
+ <CAEf4Bzb_XOEoG9anNdzQVJRqd3G4yKJTSa9Dgc9xkMXqn-xdFg@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <CAEf4Bzb_XOEoG9anNdzQVJRqd3G4yKJTSa9Dgc9xkMXqn-xdFg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+2022-12-20 16:13 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Tue, Dec 20, 2022 at 3:34 AM Leo Yan <leo.yan@linaro.org> wrote:
+>>
+>> On Tue, Dec 20, 2022 at 09:31:14AM +0800, Changbin Du wrote:
+>>
+>> [...]
+>>
+>>>>> Now will print below info:
+>>>>> libbpf: failed to find '.BTF' ELF section in /home/changbin/work/linux/vmlinux
+>>>>
+>>>> Recently I encountered the same issue, it could be caused by:
+>>>> either missing to install tool pahole or missing to enable kernel
+>>>> configuration CONFIG_DEBUG_INFO_BTF.
+>>>>
+>>>> Could we give explict info for reasoning failure?  Like:
+>>>>
+>>>> "libbpf: failed to find '.BTF' ELF section in /home/changbin/work/linux/vmlinux,
+>>>> please install pahole and enable CONFIG_DEBUG_INFO_BTF=y for kernel building".
+>>>>
+>>> This is vmlinux special information and similar tips are removed from
+>>> patch V2. libbpf is common for all ELFs.
+>>
+>> Okay, I see.  Sorry for noise.
+>>
+>>>>> Error: failed to load BTF from /home/changbin/work/linux/vmlinux: No such file or directory
+>>>>
+>>>> This log is confusing when we can find vmlinux file but without BTF
+>>>> section.  Consider to use a separate patch to detect vmlinux not
+>>>> found case and print out "No such file or directory"?
+>>>>
+>>> I think it's already there. If the file doesn't exist, open will fail.
+>>
+>> [...]
+>>
+>>>>> @@ -990,6 +990,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+>>>>>   err = 0;
+>>>>>
+>>>>>   if (!btf_data) {
+>>>>> +         pr_warn("failed to find '%s' ELF section in %s\n", BTF_ELF_SEC, path);
+>>>>>           err = -ENOENT;
+>>
+>> btf_parse_elf() returns -ENOENT when ELF file doesn't contain BTF
+>> section, therefore, bpftool dumps error string "No such file or
+>> directory".  It's confused that actually vmlinux is existed.
+>>
+>> I am wondering if we can use error -LIBBPF_ERRNO__FORMAT (or any
+>> better choice?) to replace -ENOENT at here, this can avoid bpftool to
+>> outputs "No such file or directory" in this case.
+> 
+> The only really meaningful error code would be -ESRCH, which
+> strerror() will translate to "No such process", which is also
+> completely confusing.
+> 
+> In general, I always found these strerror() messages extremely
+> unhelpful and confusing. I wonder if we should make an effort to
+> actually emit symbolic names of errors instead (literally, "-ENOENT"
+> in this case). This is all tooling for engineers, I find -ENOENT or
+> -ESRCH much more meaningful as an error message, compared to "No such
+> file" seemingly human-readable interpretation.
+> 
+> Quenting, what do you think about the above proposal for bpftool? We
+> can have some libbpf helper internally and do it in libbpf error
+> messages as well and just reuse the logic in bpftool, perhaps?
 
-On 1/2/2023 2:48 AM, Yonghong Song wrote:
->
->
-> On 12/31/22 5:26 PM, Alexei Starovoitov wrote:
->> On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
->>> From: Hou Tao <houtao1@huawei.com>
->>>
->>> Hi,
->>>
->>> The patchset tries to fix the problems found when checking how htab map
->>> handles element reuse in bpf memory allocator. The immediate reuse of
->>> freed elements may lead to two problems in htab map:
->>>
->>> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
->>>      htab map value and it may corrupt lookup procedure with BFP_F_LOCK
->>>      flag which acquires bpf-spin-lock during value copying. The
->>>      corruption of bpf-spin-lock may result in hard lock-up.
->>> (2) lookup procedure may get incorrect map value if the found element is
->>>      freed and then reused.
->>>
->>> Because the type of htab map elements are the same, so problem #1 can be
->>> fixed by supporting ctor in bpf memory allocator. The ctor initializes
->>> these special fields in map element only when the map element is newly
->>> allocated. If it is just a reused element, there will be no
->>> reinitialization.
->>
->> Instead of adding the overhead of ctor callback let's just
->> add __GFP_ZERO to flags in __alloc().
->> That will address the issue 1 and will make bpf_mem_alloc behave just
->> like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
->> will behave the same way.
->
-> Patch https://lore.kernel.org/all/20220809213033.24147-3-memxor@gmail.com/
-> tried to address a similar issue for lru hash table.
-> Maybe we need to do similar things after bpf_mem_cache_alloc() for
-> hash table?
-IMO ctor or __GFP_ZERO will fix the issue. Did I miss something here ?
->
->
->>
->>> Problem #2 exists for both non-preallocated and preallocated htab map.
->>> By adding seq in htab element, doing reuse check and retrying the
->>> lookup procedure may be a feasible solution, but it will make the
->>> lookup API being hard to use, because the user needs to check whether
->>> the found element is reused or not and repeat the lookup procedure if it
->>> is reused. A simpler solution would be just disabling freed elements
->>> reuse and freeing these elements after lookup procedure ends.
->>
->> You've proposed this 'solution' twice already in qptrie thread and both
->> times the answer was 'no, we cannot do this' with reasons explained.
->> The 3rd time the answer is still the same.
->> This 'issue 2' existed in hashmap since very beginning for many years.
->> It's a known quirk. There is nothing to fix really.
->>
->> The graph apis (aka new gen data structs) with link list and rbtree are
->> in active development. Soon bpf progs will be able to implement their own
->> hash maps with explicit bpf_rcu_read_lock. At that time the progs will
->> be making the trade off between performance and lookup/delete race.
->> So please respin with just __GFP_ZERO and update the patch 6
->> to check for lockup only.
+Apologies for the delay.
+What you're proposing is to replace all messages currently looking like
+this:
 
+	$ bpftool prog
+	Error: can't get next program: Operation not permitted
+
+by:
+
+	$ bpftool prog
+	Error: can't get next program: -EPERM
+
+Do I understand correctly?
+
+I think the strerror() messages are helpful in some occasions (they
+_are_ more human-friendly to many users), but it's also true that
+they're not always precise. With bpftool, "Invalid argument" is a
+classic when the program doesn't load, and may lead to confusion with
+the args passed to bpftool on the command line. Then there are the other
+corner cases like the one discussed in this thread. So, why not.
+
+If we do change, yeah I'd rather have as much of this handling in libbpf
+itself, and then adjust bpftool to handle the remaining cases, for
+consistency.
+
+Quentin
