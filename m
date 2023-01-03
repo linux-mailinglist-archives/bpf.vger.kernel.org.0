@@ -2,23 +2,23 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B49AE65BCC8
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 10:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE7765BCC3
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 10:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237160AbjACJG5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 04:06:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
+        id S232838AbjACJGz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 04:06:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237168AbjACJGj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S237167AbjACJGj (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 3 Jan 2023 04:06:39 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE90D59;
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B61D5C;
         Tue,  3 Jan 2023 01:06:37 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NmRgC41lvz4f41Ls;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NmRgC6CMRz4f3wY5;
         Tue,  3 Jan 2023 17:06:31 +0800 (CST)
 Received: from localhost.localdomain (unknown [10.67.175.61])
-        by APP4 (Coremail) with SMTP id gCh0CgAn3bAV8LNj9H0UBA--.54080S4;
+        by APP4 (Coremail) with SMTP id gCh0CgAn3bAV8LNj9H0UBA--.54080S5;
         Tue, 03 Jan 2023 17:06:34 +0800 (CST)
 From:   Pu Lehui <pulehui@huaweicloud.com>
 To:     bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
@@ -40,20 +40,20 @@ Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
         Albert Ou <aou@eecs.berkeley.edu>,
         Pu Lehui <pulehui@huawei.com>,
         Pu Lehui <pulehui@huaweicloud.com>
-Subject: [RFC PATCH bpf-next v2 2/4] riscv, bpf: Factor out emit_call for kernel and bpf context
-Date:   Tue,  3 Jan 2023 17:07:54 +0800
-Message-Id: <20230103090756.1993820-3-pulehui@huaweicloud.com>
+Subject: [RFC PATCH bpf-next v2 3/4] riscv, bpf: Add bpf_arch_text_poke support for RV64
+Date:   Tue,  3 Jan 2023 17:07:55 +0800
+Message-Id: <20230103090756.1993820-4-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230103090756.1993820-1-pulehui@huaweicloud.com>
 References: <20230103090756.1993820-1-pulehui@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAn3bAV8LNj9H0UBA--.54080S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxurWfuw13GrWUJFykWFyrXrb_yoW5Zr4xpF
-        W5CFn3C3yvqF1SgFyDGFs5Zr1akr4v9r13tF93W395KFsFqrsrKF15Ka1Yqa4YyryrGr4r
-        JFsFkFnxu3WUZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+X-CM-TRANSID: gCh0CgAn3bAV8LNj9H0UBA--.54080S5
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4fKF13Aw1xJFW8tFW5Jrb_yoW7uF17pF
+        srKry5ArWvqF4fXFy7Ja1DXr1Ykw4kWFW7GrWUKw4SkFsFqrn3C3WrKr43tr98CrW8CF1I
+        vF4DKFnxuan8A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUP014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
         x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
         Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
         A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
@@ -64,8 +64,8 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxurWfuw13GrWUJFykWFyrXrb_yoW5Zr4xpF
         6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2
         Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
         Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8Jw
-        CI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOJPEUUUU
-        U
+        CI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbJ73DUU
+        UUU==
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -78,106 +78,207 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Pu Lehui <pulehui@huawei.com>
 
-The current emit_call function is not suitable for kernel
-function call as it store return value to bpf R0 register.
-We can separate it out for common use. Meanwhile, simplify
-judgment logic, that is, fixed function address can use jal
-or auipc+jalr, while the unfixed can use only auipc+jalr.
+Implement bpf_arch_text_poke for RV64. For call scenario,
+ftrace framework reserve 4 nops for RV64 kernel function
+as function entry, and use auipc+jalr instructions to call
+kernel or module functions. However, since the auipc+jalr
+call instructions is non-atomic operation, we need to use
+stop-machine to make sure instruction patching in atomic
+context. As for jump scenario, since we only jump inside
+the trampoline, a jal instruction is sufficient.
 
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- arch/riscv/net/bpf_jit_comp64.c | 30 +++++++++++++-----------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
+ arch/riscv/net/bpf_jit.h        |   5 ++
+ arch/riscv/net/bpf_jit_comp64.c | 131 +++++++++++++++++++++++++++++++-
+ 2 files changed, 134 insertions(+), 2 deletions(-)
 
+diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+index d926e0f7ef57..bf9802a63061 100644
+--- a/arch/riscv/net/bpf_jit.h
++++ b/arch/riscv/net/bpf_jit.h
+@@ -573,6 +573,11 @@ static inline u32 rv_fence(u8 pred, u8 succ)
+ 	return rv_i_insn(imm11_0, 0, 0, 0, 0xf);
+ }
+ 
++static inline u32 rv_nop(void)
++{
++	return rv_i_insn(0, 0, 0, 0, 0x13);
++}
++
+ /* RVC instrutions. */
+ 
+ static inline u16 rvc_addi4spn(u8 rd, u32 imm10)
 diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index f2417ac54edd..69ebab81d935 100644
+index 69ebab81d935..2e6f1f39831d 100644
 --- a/arch/riscv/net/bpf_jit_comp64.c
 +++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -428,12 +428,12 @@ static void emit_sext_32_rd(u8 *rd, struct rv_jit_context *ctx)
- 	*rd = RV_REG_T2;
+@@ -8,6 +8,8 @@
+ #include <linux/bitfield.h>
+ #include <linux/bpf.h>
+ #include <linux/filter.h>
++#include <linux/memory.h>
++#include <linux/stop_machine.h>
+ #include "bpf_jit.h"
+ 
+ #define RV_REG_TCC RV_REG_A6
+@@ -238,7 +240,7 @@ static void __build_epilogue(bool is_tail_call, struct rv_jit_context *ctx)
+ 	if (!is_tail_call)
+ 		emit_mv(RV_REG_A0, RV_REG_A5, ctx);
+ 	emit_jalr(RV_REG_ZERO, is_tail_call ? RV_REG_T3 : RV_REG_RA,
+-		  is_tail_call ? 4 : 0, /* skip TCC init */
++		  is_tail_call ? 20 : 0, /* skip reserved nops and TCC init */
+ 		  ctx);
  }
  
--static int emit_jump_and_link(u8 rd, s64 rvoff, bool force_jalr,
-+static int emit_jump_and_link(u8 rd, s64 rvoff, bool fixed_addr,
- 			      struct rv_jit_context *ctx)
- {
- 	s64 upper, lower;
- 
--	if (rvoff && is_21b_int(rvoff) && !force_jalr) {
-+	if (rvoff && fixed_addr && is_21b_int(rvoff)) {
- 		emit(rv_jal(rd, rvoff >> 1), ctx);
- 		return 0;
- 	} else if (in_auipc_jalr_range(rvoff)) {
-@@ -454,24 +454,17 @@ static bool is_signed_bpf_cond(u8 cond)
- 		cond == BPF_JSGE || cond == BPF_JSLE;
+@@ -615,6 +617,127 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 	return 0;
  }
  
--static int emit_call(bool fixed, u64 addr, struct rv_jit_context *ctx)
-+static int emit_call(u64 addr, bool fixed_addr, struct rv_jit_context *ctx)
- {
- 	s64 off = 0;
- 	u64 ip;
--	u8 rd;
--	int ret;
- 
- 	if (addr && ctx->insns) {
- 		ip = (u64)(long)(ctx->insns + ctx->ninsns);
- 		off = addr - ip;
- 	}
- 
--	ret = emit_jump_and_link(RV_REG_RA, off, !fixed, ctx);
--	if (ret)
--		return ret;
--	rd = bpf_to_rv_reg(BPF_REG_0, ctx);
--	emit_mv(rd, RV_REG_A0, ctx);
--	return 0;
-+	return emit_jump_and_link(RV_REG_RA, off, fixed_addr, ctx);
- }
- 
- static void emit_atomic(u8 rd, u8 rs, s16 off, s32 imm, bool is64,
-@@ -913,7 +906,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	/* JUMP off */
- 	case BPF_JMP | BPF_JA:
- 		rvoff = rv_offset(i, off, ctx);
--		ret = emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx);
-+		ret = emit_jump_and_link(RV_REG_ZERO, rvoff, true, ctx);
- 		if (ret)
- 			return ret;
- 		break;
-@@ -1032,17 +1025,20 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	/* function call */
- 	case BPF_JMP | BPF_CALL:
- 	{
--		bool fixed;
-+		bool fixed_addr;
- 		u64 addr;
- 
- 		mark_call(ctx);
--		ret = bpf_jit_get_func_addr(ctx->prog, insn, extra_pass, &addr,
--					    &fixed);
-+		ret = bpf_jit_get_func_addr(ctx->prog, insn, extra_pass,
-+					    &addr, &fixed_addr);
- 		if (ret < 0)
- 			return ret;
--		ret = emit_call(fixed, addr, ctx);
++struct text_poke_args {
++	void *addr;
++	const void *insns;
++	size_t len;
++	atomic_t cpu_count;
++};
 +
-+		ret = emit_call(addr, fixed_addr, ctx);
- 		if (ret)
- 			return ret;
++static int do_text_poke(void *data)
++{
++	int ret = 0;
++	struct text_poke_args *patch = data;
 +
-+		emit_mv(bpf_to_rv_reg(BPF_REG_0, ctx), RV_REG_A0, ctx);
- 		break;
- 	}
- 	/* tail call */
-@@ -1057,7 +1053,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 			break;
++	if (atomic_inc_return(&patch->cpu_count) == num_online_cpus()) {
++		ret = patch_text_nosync(patch->addr, patch->insns, patch->len);
++		atomic_inc(&patch->cpu_count);
++	} else {
++		while (atomic_read(&patch->cpu_count) <= num_online_cpus())
++			cpu_relax();
++		smp_mb();
++	}
++
++	return ret;
++}
++
++static int bpf_text_poke_stop_machine(void *addr, const void *insns, size_t len)
++{
++	struct text_poke_args patch = {
++		.addr = addr,
++		.insns = insns,
++		.len = len,
++		.cpu_count = ATOMIC_INIT(0),
++	};
++
++	return stop_machine(do_text_poke, &patch, cpu_online_mask);
++}
++
++static int gen_call_or_nops(void *target, void *ip, u32 *insns)
++{
++	int i, ret;
++	s64 rvoff;
++	struct rv_jit_context ctx;
++
++	ctx.ninsns = 0;
++	ctx.insns = (u16 *)insns;
++
++	if (!target) {
++		for (i = 0; i < 4; i++)
++			emit(rv_nop(), &ctx);
++		return 0;
++	}
++
++	rvoff = (s64)(target - ip);
++	emit(rv_sd(RV_REG_SP, -8, RV_REG_RA), &ctx);
++	ret = emit_jump_and_link(RV_REG_RA, rvoff, false, &ctx);
++	if (ret)
++		return ret;
++	emit(rv_ld(RV_REG_RA, -8, RV_REG_SP), &ctx);
++
++	return 0;
++
++}
++
++static int bpf_text_poke_call(void *ip, void *old_addr, void *new_addr)
++{
++	int ret;
++	u32 old_insns[4], new_insns[4];
++
++	ret = gen_call_or_nops(old_addr, ip + 4, old_insns);
++	if (ret)
++		return ret;
++
++	ret = gen_call_or_nops(new_addr, ip + 4, new_insns);
++	if (ret)
++		return ret;
++
++	mutex_lock(&text_mutex);
++	if (memcmp(ip, old_insns, sizeof(old_insns))) {
++		ret = -EFAULT;
++		goto out;
++	}
++
++	if (memcmp(ip, new_insns, sizeof(new_insns)))
++		ret = bpf_text_poke_stop_machine(ip, new_insns, sizeof(new_insns));
++out:
++	mutex_unlock(&text_mutex);
++	return ret;
++}
++
++static int bpf_text_poke_jump(void *ip, void *old_addr, void *new_addr)
++{
++	int ret;
++	u32 old_insn, new_insn;
++
++	old_insn = old_addr ? rv_jal(RV_REG_ZERO, (s64)(old_addr - ip) >> 1) : rv_nop();
++	new_insn = new_addr ? rv_jal(RV_REG_ZERO, (s64)(new_addr - ip) >> 1) : rv_nop();
++
++	mutex_lock(&text_mutex);
++	if (memcmp(ip, &old_insn, sizeof(old_insn))) {
++		ret = -EFAULT;
++		goto out;
++	}
++
++	if (memcmp(ip, &new_insn, sizeof(new_insn)))
++		ret = patch_text_nosync(ip, &new_insn, sizeof(new_insn));
++out:
++	mutex_unlock(&text_mutex);
++	return ret;
++}
++
++int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
++		       void *old_addr, void *new_addr)
++{
++	if (!is_kernel_text((unsigned long)ip) &&
++	    !is_bpf_text_address((unsigned long)ip))
++		return -ENOTSUPP;
++
++	return poke_type == BPF_MOD_CALL ?
++	       bpf_text_poke_call(ip, old_addr, new_addr) :
++	       bpf_text_poke_jump(ip, old_addr, new_addr);
++}
++
+ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		      bool extra_pass)
+ {
+@@ -1266,7 +1389,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
  
- 		rvoff = epilogue_offset(ctx);
--		ret = emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx);
-+		ret = emit_jump_and_link(RV_REG_ZERO, rvoff, true, ctx);
- 		if (ret)
- 			return ret;
- 		break;
+ void bpf_jit_build_prologue(struct rv_jit_context *ctx)
+ {
+-	int stack_adjust = 0, store_offset, bpf_stack_adjust;
++	int i, stack_adjust = 0, store_offset, bpf_stack_adjust;
+ 
+ 	bpf_stack_adjust = round_up(ctx->prog->aux->stack_depth, 16);
+ 	if (bpf_stack_adjust)
+@@ -1293,6 +1416,10 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx)
+ 
+ 	store_offset = stack_adjust - 8;
+ 
++	/* reserve 4 nop insns */
++	for (i = 0; i < 4; i++)
++		emit(rv_nop(), ctx);
++
+ 	/* First instruction is always setting the tail-call-counter
+ 	 * (TCC) register. This instruction is skipped for tail calls.
+ 	 * Force using a 4-byte (non-compressed) instruction.
 -- 
 2.25.1
 
