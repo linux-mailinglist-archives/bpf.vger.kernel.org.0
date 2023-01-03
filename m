@@ -2,39 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAD065BB4F
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 08:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C8B65BB8D
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 09:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236907AbjACHh7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 02:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
+        id S236865AbjACIBk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 03:01:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236912AbjACHh6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Jan 2023 02:37:58 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8476A5FF7;
-        Mon,  2 Jan 2023 23:37:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2DEF9B80E52;
-        Tue,  3 Jan 2023 07:37:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FE4C433D2;
-        Tue,  3 Jan 2023 07:37:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672731472;
-        bh=+1+K/QMGEwB/t9nyEjns1p8p9ReMrS/m95IVeeWjbDc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=X5xqNylbdKKqVQfqkbksbhlW4tsgpB0FIoJT/BVb5+jvGU0iOh7fIINlPD3cF1m89
-         QPuEUm1whigKxqMb3sONrxLlrz07QjEpyFMKU9Nj78To6LwhEoUWphYy9DfG1jf+3C
-         bbpJiEKSBrhNaAYj6o6VMfpXs/gF2igh3KRyO/Tn/cdOJj3eKZE7MiakBnq1FijBQ5
-         gi+T8NAVQJaZVz4Q16SAUyx19U76SnGrwd1rAGVFUCpk0DHlUkKWpQekv7MDI5wXFq
-         9wSNQVLbxReD9Mw0YlV3aBm86EpAryp4bz02J1aOv88rZdh+e8pK6k8DMJlC8JMRUC
-         C5wi/oOP5iOCA==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S236903AbjACIBb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Jan 2023 03:01:31 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6662C39A;
+        Tue,  3 Jan 2023 00:01:29 -0800 (PST)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NmQ7X0klRzJpYP;
+        Tue,  3 Jan 2023 15:57:28 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Tue, 3 Jan 2023 16:01:26 +0800
+Message-ID: <713f9f26-da42-eda8-c804-338d61b1557c@huawei.com>
+Date:   Tue, 3 Jan 2023 16:01:25 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [RFC PATCH bpf-next 3/4] riscv, bpf: Add bpf_arch_text_poke
+ support for RV64
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Pu Lehui <pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -45,48 +42,54 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: Re: [RFC PATCH bpf-next 3/4] riscv, bpf: Add bpf_arch_text_poke
- support for RV64
-In-Reply-To: <20221219133736.1387008-4-pulehui@huaweicloud.com>
+        Albert Ou <aou@eecs.berkeley.edu>
 References: <20221219133736.1387008-1-pulehui@huaweicloud.com>
  <20221219133736.1387008-4-pulehui@huaweicloud.com>
-Date:   Tue, 03 Jan 2023 08:37:50 +0100
-Message-ID: <87v8looypd.fsf@all.your.base.are.belong.to.us>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <87v8looypd.fsf@all.your.base.are.belong.to.us>
+Content-Language: en-US
+From:   Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <87v8looypd.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pu Lehui <pulehui@huaweicloud.com> writes:
-
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
-p64.c
-> index bf4721a99a09..fa8b03c52463 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-
-> @@ -1266,7 +1389,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, =
-struct rv_jit_context *ctx,
->=20=20
->  void bpf_jit_build_prologue(struct rv_jit_context *ctx)
->  {
-> -	int stack_adjust =3D 0, store_offset, bpf_stack_adjust;
-> +	int i, stack_adjust =3D 0, store_offset, bpf_stack_adjust;
->  	bool is_main_prog =3D ctx->prog->aux->func_idx =3D=3D 0;
-
-This line magically appeared, and makes it hard to apply the series
-without hacking the patches manually. Going forward, please supply a
-base tree commit to the series (or a link to a complete git tree).
 
 
-Bj=C3=B6rn
+On 2023/1/3 15:37, Björn Töpel wrote:
+> Pu Lehui <pulehui@huaweicloud.com> writes:
+> 
+>> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+>> index bf4721a99a09..fa8b03c52463 100644
+>> --- a/arch/riscv/net/bpf_jit_comp64.c
+>> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> 
+>> @@ -1266,7 +1389,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+>>   
+>>   void bpf_jit_build_prologue(struct rv_jit_context *ctx)
+>>   {
+>> -	int stack_adjust = 0, store_offset, bpf_stack_adjust;
+>> +	int i, stack_adjust = 0, store_offset, bpf_stack_adjust;
+>>   	bool is_main_prog = ctx->prog->aux->func_idx == 0;
+> 
+> This line magically appeared, and makes it hard to apply the series
+> without hacking the patches manually. Going forward, please supply a
+> base tree commit to the series (or a link to a complete git tree).
+> 
+
+A rebase version has been resend as follow:
+
+https://lore.kernel.org/bpf/20221220021319.1655871-1-pulehui@huaweicloud.com/
+
+> 
+> Björn
