@@ -2,37 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A1865BC5D
-	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 09:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F96365BCC7
+	for <lists+bpf@lfdr.de>; Tue,  3 Jan 2023 10:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbjACIj6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Jan 2023 03:39:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
+        id S236999AbjACJGz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Jan 2023 04:06:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236949AbjACIjr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Jan 2023 03:39:47 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32143BE1F;
-        Tue,  3 Jan 2023 00:39:46 -0800 (PST)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NmQzh4gJHzJpXn;
-        Tue,  3 Jan 2023 16:35:44 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Tue, 3 Jan 2023 16:39:42 +0800
-Message-ID: <09763a5e-22c9-513d-ca51-9234478b9c67@huawei.com>
-Date:   Tue, 3 Jan 2023 16:39:42 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [RFC PATCH bpf-next 3/4] riscv, bpf: Add bpf_arch_text_poke
- support for RV64
-Content-Language: en-US
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Pu Lehui <pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S237165AbjACJGi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Jan 2023 04:06:38 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FE8311;
+        Tue,  3 Jan 2023 01:06:36 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NmRgC25LNz4f3v6m;
+        Tue,  3 Jan 2023 17:06:31 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.67.175.61])
+        by APP4 (Coremail) with SMTP id gCh0CgAn3bAV8LNj9H0UBA--.54080S2;
+        Tue, 03 Jan 2023 17:06:30 +0800 (CST)
+From:   Pu Lehui <pulehui@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -43,67 +37,83 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <20221219133736.1387008-1-pulehui@huaweicloud.com>
- <20221219133736.1387008-4-pulehui@huaweicloud.com>
- <87v8looypd.fsf@all.your.base.are.belong.to.us>
- <713f9f26-da42-eda8-c804-338d61b1557c@huawei.com>
- <877cy4xc2l.fsf@all.your.base.are.belong.to.us>
-From:   Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <877cy4xc2l.fsf@all.your.base.are.belong.to.us>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: [RFC PATCH bpf-next v2 0/4] Support bpf trampoline for RV64
+Date:   Tue,  3 Jan 2023 17:07:52 +0800
+Message-Id: <20230103090756.1993820-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500020.china.huawei.com (7.221.188.8)
+X-CM-TRANSID: gCh0CgAn3bAV8LNj9H0UBA--.54080S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw17GrWfJw4xAF4fArWDurg_yoW8GFyDpa
+        yFkry3CFyDXF9rJwnIqa1UZa1Fvw4kX3W5Gw13J3yrCanxXry7Ar1Yga15t3s5CFyfZw1U
+        twn0qF4jkas8Aa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UQvtAUUUUU=
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+BPF trampoline is the critical infrastructure of the bpf
+subsystem, acting as a mediator between kernel functions
+and BPF programs. Numerous important features, such as
+using ebpf program for zero overhead kernel introspection,
+rely on this key component. We can't wait to support bpf
+trampoline on RV64. The implementation of bpf trampoline
+was closely to x86 and arm64 for future development.
 
+As most of riscv cpu support unaligned memory accesses,
+we temporarily use patch [1] to facilitate testing. The
+test results are as follow, and test_verifier with no
+new failure ceses.
 
-On 2023/1/3 16:21, Björn Töpel wrote:
-> Pu Lehui <pulehui@huawei.com> writes:
-> 
->> On 2023/1/3 15:37, Björn Töpel wrote:
->>> Pu Lehui <pulehui@huaweicloud.com> writes:
->>>
->>>> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
->>>> index bf4721a99a09..fa8b03c52463 100644
->>>> --- a/arch/riscv/net/bpf_jit_comp64.c
->>>> +++ b/arch/riscv/net/bpf_jit_comp64.c
->>>
->>>> @@ -1266,7 +1389,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>>>    
->>>>    void bpf_jit_build_prologue(struct rv_jit_context *ctx)
->>>>    {
->>>> -	int stack_adjust = 0, store_offset, bpf_stack_adjust;
->>>> +	int i, stack_adjust = 0, store_offset, bpf_stack_adjust;
->>>>    	bool is_main_prog = ctx->prog->aux->func_idx == 0;
->>>
->>> This line magically appeared, and makes it hard to apply the series
->>> without hacking the patches manually. Going forward, please supply a
->>> base tree commit to the series (or a link to a complete git tree).
->>>
->>
->> A rebase version has been resend as follow:
->>
->> https://lore.kernel.org/bpf/20221220021319.1655871-1-pulehui@huaweicloud.com/
-> 
-> Yes, but with the same issue:
-> https://lore.kernel.org/bpf/20221220021319.1655871-4-pulehui@huaweicloud.com/
-> 
-> The "is_main_prog" line is still around in the resend.
-> 
+- fexit_test:OK
+- fentry_test:OK
+- fentry_fexit:OK
+- fexit_stress:OK
+- fexit_bpf2bpf:OK
+- xdp_bpf2bpf:OK
+- dummy_st_ops:OK
+- modify_return:OK
+- trampoline_count:OK
+- get_func_ip_test:OK
+- get_func_args_test:OK
 
-Oops, something was left when debugging mixing bpf2bpf and tailcalls. 
-Sorry, will send v2.
+[1] https://lore.kernel.org/linux-riscv/20210916130855.4054926-2-chenhuang5@huawei.com/
 
-> 
-> Björn
+v2:
+- rebase for bpf-next tree.
+
+Pu Lehui (4):
+  bpf: Rollback to text_poke when arch not supported ftrace direct call
+  riscv, bpf: Factor out emit_call for kernel and bpf context
+  riscv, bpf: Add bpf_arch_text_poke support for RV64
+  riscv, bpf: Add bpf trampoline support for RV64
+
+ arch/riscv/net/bpf_jit.h        |   5 +
+ arch/riscv/net/bpf_jit_comp64.c | 483 ++++++++++++++++++++++++++++++--
+ kernel/bpf/trampoline.c         |   8 +-
+ 3 files changed, 471 insertions(+), 25 deletions(-)
+
+-- 
+2.25.1
+
