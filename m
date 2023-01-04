@@ -2,76 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EBD65E0AD
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 00:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B4365E0AC
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 00:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234795AbjADW6t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 17:58:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        id S234792AbjADXB6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 18:01:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjADW6g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 17:58:36 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF9213E95
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 14:58:02 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id i19so24146776ljg.8
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 14:58:02 -0800 (PST)
+        with ESMTP id S234724AbjADXBw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 18:01:52 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2201900E
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 15:01:51 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id bp15so52619723lfb.13
+        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 15:01:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:references:in-reply-to:reply-to
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XppnWxwUDd4VKlDQMnttNa0YhBi85GdHW05upV3mZfc=;
-        b=fJM+bXf1CCW0+0edI2hk1VwRp1Om2TirjIk0wHeI+o2Fip0lBU0Jjm1kxWHjazNp4o
-         U7EA36Jujv5wauB3KRLyhGE8X4dAqB+USfoatgowcTJX9nD3cULCxd8wyNaXl0CzG4KB
-         q1HcvnOvh5jlGaNrj21gzpE7HMEp4pjmsP7U0gdGn3U2nrzuXjbw3rvKt+or7s2te/za
-         cTZsWqT7aLlUTptqj0nR+jGau8aTt5qffhq0az4zHRkJrZ/+KF+czgYl+KjqDUkMbpwm
-         8Z2dOoumlMeioBUESsiAN7mNa9ZlBhrKhuH62S0BQ34rCGnox6tZmLwDQqkVGFpc5ukr
-         1eyA==
+        bh=7hgjdjVmSCAjQXc9BiQk/HuDSt/hP8r1TxUdDybOj4U=;
+        b=NrJQ1AnmZ+KiQFac+aUI/3XTaXALDlzNP19tJZ7NA0P36IhhjLBcoLK6AjFF0t22LT
+         aYMqZp3wEnpst3zJ2a24MqXl3Wa340QDlDqhSrqdba4d413lOWQ3U3RPP2dAu/LUdhRY
+         Zyus5KNzAdr8etWw7lppZz12HSv2ukmEzMaE7ygwpbohxCtEz8NE19WbiHss9v5MrK/c
+         fBTLCJhuFFS0kXpzHlqxKWTqVPu8yToLXquqvzzK1OftV6KpxZvNpuK/S+H6XWH1nMqU
+         COitpgELebMyMGSgvjqTvXjakFS9cntTOom7OShP0Jik1AXHnOqTqGtr6W1EdXGj7UPO
+         zAtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:references:in-reply-to:reply-to
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XppnWxwUDd4VKlDQMnttNa0YhBi85GdHW05upV3mZfc=;
-        b=P/6xRhNFhXjZn5ceWnd1wbJbsnn2qZEY82PkkA8bKEvNa3YM0db990mjTGfVQ4kg1U
-         BDRenUwKjuebOUC8YRvJtIhvXvRK/mVkm2nUGv1hr55oc8uvih5gu+8fYGM2n2AW1n2N
-         Kbo+FrQ0xfQhhVOeWXoG4Z48j8K3K6Zfj+Pmb4V2fJYiqSWjq2qU7ZaI7qQ3ED1DDgHu
-         PB1PHmK5a9LfUN1gJ4w0QYNq1NNBHUPpPnE0V8rRpxi4BtH7mPxaj/u6xKhY1gGwg/rs
-         6/fuy5nsA5lee/fsjJVzjm6+q4xBu1pJcbSjQqcM9QSoJWtpQDxvocy/oZQz6UuZ3q7B
-         kxZw==
-X-Gm-Message-State: AFqh2kqIzQUS1f+tb0VGmwXlUgMrdO5WZHGOCzmzuNGUipTyU/wQAl7a
-        2D2GaWb87VkxRLM4K0xAfIu0RnY7eNQ/nDXIym8C7sRGt13e7g==
-X-Google-Smtp-Source: AMrXdXs+eVvyiCxCKe24ziuU8uM070gry+IFf5pBWvFzFx3rMu2JixMyHB0JlUgCGg9QAI/vgJPYEC8PADaLxGNXkoc=
-X-Received: by 2002:a17:906:7ac8:b0:840:758a:9157 with SMTP id
- k8-20020a1709067ac800b00840758a9157mr2678444ejo.434.1672872652893; Wed, 04
- Jan 2023 14:50:52 -0800 (PST)
+        bh=7hgjdjVmSCAjQXc9BiQk/HuDSt/hP8r1TxUdDybOj4U=;
+        b=4g0KtLl4KDEUG4ulL0jdqAfnIUVuHu07Lyd8Nox+HYtG9B7C0WLxz924JvlDva2prs
+         rKRE0HarXrI4m1YImeGEbqVAAD/m36s+DMvP9BOHMw9x9V+ZgtXqXsrdZ4ftkXA2xK3O
+         mZNkwXLILMQZ3WP4k4mJ2mHLslxdIYF3mv46tSnaopQcro0sTFJMXSMP0tqIrOrBsjV6
+         2JczSfSbnpJDtEqGXFukE6g1sJabWeCSEjCqY89Tbib2rovRAaTBn/dTHv7XDzY1Mq/D
+         N0khg23fJm0O73CQ5yloycHDUtxJYQsTVV0iXGWYBJo/ed0pXW+SlWBFOz+lW+39sQln
+         pv9w==
+X-Gm-Message-State: AFqh2ko7B5g2DHbntKsoRfhIAohC9DT4Q4CBVlXjZJ6d+VCLFxDmbMcu
+        Cu4xN1whOaQ5dvTNH2dWzdqVz1lQmU8aZc6zWkHX6woozuQ=
+X-Google-Smtp-Source: AMrXdXs9yfXc0WrjMaB3QgZemxoLsslLPbqFRvVA6ybu/DANK179SeR4b1eIbd0FP8i6P1tVGYPvAMp8qyQ93IG7+cg=
+X-Received: by 2002:aa7:c948:0:b0:48e:9afd:de63 with SMTP id
+ h8-20020aa7c948000000b0048e9afdde63mr768221edt.232.1672872699761; Wed, 04 Jan
+ 2023 14:51:39 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a05:6f02:81b:b0:27:37f1:bc15 with HTTP; Wed, 4 Jan 2023
- 14:50:51 -0800 (PST)
-Reply-To: lisaarobet@gmail.com
-In-Reply-To: <CAJ8KLPZKUxDZq39GHC=jv+B5FtcA3dQoRwAozXyT7mpDqtT2MA@mail.gmail.com>
-References: <CAJ8KLPauCfukWsXYV4A=eUrGM8=Aa0FFD3dUDvGJt=CZTLaKVw@mail.gmail.com>
- <62eb867e.050a0220.0cc7.16e7.GMR@mx.google.com> <CAJ8KLPa5uwGGTPzicNhFHwz-0rZdKfrDTSwNBWxdF--Mfc8t2g@mail.gmail.com>
- <CAJ8KLPZKUxDZq39GHC=jv+B5FtcA3dQoRwAozXyT7mpDqtT2MA@mail.gmail.com>
-From:   Lisa <smithgrace507@gmail.com>
-Date:   Wed, 4 Jan 2023 22:50:51 +0000
-Message-ID: <CAJ8KLPa5V8mMkqJ5HrpQXy=DunsCNFEus7aiLDDOTEgH4NQXmA@mail.gmail.com>
-Subject: Re: Delivery Status Notification (Failure)
-To:     undisclosed-recipients:;
+References: <20230101083403.332783-1-memxor@gmail.com>
+In-Reply-To: <20230101083403.332783-1-memxor@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 4 Jan 2023 14:51:27 -0800
+Message-ID: <CAEf4BzaZuCWq5KrO-NPZjAya1etM4_zCFxWgva4zVDYaWJ89iw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 0/8] Dynptr fixes
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>,
+        Eduard Zingerman <eddyz87@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Sun, Jan 1, 2023 at 12:34 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> Happy New Year!
+>
+> This is part 2 of https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com.
+>
+> Changelog:
+> ----------
+> Old v1 -> v1
+> Old v1: https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com
+>
+>  * Allow overwriting dynptr stack slots from dynptr init helpers
+>  * Fix a bug in alignment check where reg->var_off.value was still not included
+>  * Address other minor nits
+>
+> Kumar Kartikeya Dwivedi (8):
+>   bpf: Fix state pruning for STACK_DYNPTR stack slots
+>   bpf: Fix missing var_off check for ARG_PTR_TO_DYNPTR
+>   bpf: Fix partial dynptr stack slot reads/writes
+>   bpf: Allow reinitializing unreferenced dynptr stack slots
+>   selftests/bpf: Add dynptr pruning tests
+>   selftests/bpf: Add dynptr var_off tests
+>   selftests/bpf: Add dynptr partial slot overwrite tests
+>   selftests/bpf: Add dynptr helper tests
+>
 
-Just wanted to check in and see if you receive my request?
+Hey Kumar, thanks for fixes! Left few comments, but I was also
+wondering if you thought about current is_spilled_reg() usage in the
+code? It makes an assumption that stack slots can be either a scalar
+(MISC/ZERO/INVALID) or STACK_SPILL. With STACK_DYNPTR it's not the
+case anymore, so it feels like we need to audit all the places where
+we assume stack spill and see if anything should be fixed. Was just
+wondering if you already looked at this?
 
-Thanks
+>  kernel/bpf/verifier.c                         | 243 ++++++++++++++++--
+>  .../bpf/prog_tests/kfunc_dynptr_param.c       |   2 +-
+>  .../testing/selftests/bpf/progs/dynptr_fail.c |  68 ++++-
+>  tools/testing/selftests/bpf/verifier/dynptr.c | 182 +++++++++++++
+>  4 files changed, 464 insertions(+), 31 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/verifier/dynptr.c
+>
+>
+> base-commit: bb5747cfbc4b7fe29621ca6cd4a695d2723bf2e8
+> --
+> 2.39.0
+>
