@@ -2,63 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 171C665DF75
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 23:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17F765DF77
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 23:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240455AbjADWAj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 17:00:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
+        id S240527AbjADWAv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 17:00:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240456AbjADWAI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 17:00:08 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF403D1DA
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 14:00:06 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-487b0bf1117so211077567b3.5
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 14:00:06 -0800 (PST)
+        with ESMTP id S240421AbjADWAW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 17:00:22 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07FD3FC8B
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 14:00:07 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 69-20020a630148000000b00478118684c4so16192009pgb.20
+        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 14:00:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zicm0rX/TpnKyflA/xReyBN3Yj+d6N9OR/OU9dOQUDY=;
-        b=jBZ1QEGOuMyQzsWHnTwNeuvaUxxwg/daMpPqFRHYC0+Xc7jFbc6RgFBeQCO0D1n6aQ
-         Yaz6fdopcx/FkKLGfkfi/UayQEZbphclrQR3L4lZtzPLT5Gp9oiqAKBHGj7rQkIl7M28
-         J26w3g9UpDZ8oVuu9kV6cgi/bHQ+C88Zp5FLrDa+yyIwur6WBetSoUDOMnzBopTPSNft
-         K6ybGOxal1Q/jYJmIPnS+3O5qkwDyt12+yczWk7F3dQaQOg2XR9N4C7pR1Wbw9hCCXjV
-         k2oy63vMCso7RHWAVYBsHGoCauokF+XrnhOgeNCY/fesPlsl3mGEpycTEODi4qj+9E7z
-         xBpg==
+        bh=42wm0a27iiQaqPiSJuj7splEpSMGU4ZjOPqnU9s94do=;
+        b=k3XKm53A73H1G14794cQS0avTc3XA8JX/GFT1FuxQcPckDyDbGIPKIi0ocagThsLFI
+         EADZVMRcvk8uy+x4BKC8JxrdS3rsiRfeChoYT+epRNG1YwT8z/2d4C9bLg6iEw81J5AT
+         4XyO+DCp11XUEUIUiHanIVXWTc9OA81Gh3e4Cdgixt6UXKj6BCRNAFA5Rtxj3frdLWfm
+         qy8vIjazU+FIKShNAbUSveDlmrdgMOtkWzwD3MLaKR5A5ewxrM6TeIwMzjOgarEDPK23
+         H/Pq7sTY4cvtMMN6vOGu4+nYsymB6sPaZ2GM/7Bpev4obdtbNTd8cvunscN/0KWupn0h
+         4kgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zicm0rX/TpnKyflA/xReyBN3Yj+d6N9OR/OU9dOQUDY=;
-        b=eyGWc2i1dJxPv9iwnGqmhbdm3HsT9yfOiekDGgK8nr03gN9BNhVfgFHt280BA8yh5r
-         QcoBnzLLjjQrjeIQR5hK6Umsr2gGzVHtLU7ZW0m/ZYJQeI+ic3fFbjhC38qEsfqPx7R9
-         mlHBgwjzIXe0wQuE4E/FviLZLj0yZPWr/+PGdvhIpZVaDzRW9Jl5QLZsa6SfNZ2wl3QP
-         4gvNyVYusijGtztdCMi8W0WR2dPp2/xaqF3gn0eQLZ05v2V+wSgLKKd9hUzW3csP19qk
-         cUQoJ1EK5R9JlTqnj8AVk8V0C3cmhCoRXnFp22V9fa5zW8aRwrIn2fd2p4u0fEwQXpCW
-         iutA==
-X-Gm-Message-State: AFqh2krpiHv5xk+/NJYB83fNa+NVp6YEZJBrzVrr56ZBmYu5B5/I2VP7
-        OeN5C9DVq1mE+7qXxkJQazaIgYmkRwwtjzpDPz8f86w35QEMhAUKKPucduJyj0n5WJuj2Ypf7+C
-        DBFPfhKeOxoUu002tL/RSg3lJ69qbL+7kpPWhi/wv6K70Bt9nrg==
-X-Google-Smtp-Source: AMrXdXuhiejvSXEGCP9bcvjU9hAnjTgT6yBCh05yjAlcEiwJTU1UPk1vl+ykmRxhcMavL/G0m94sL/U=
+        bh=42wm0a27iiQaqPiSJuj7splEpSMGU4ZjOPqnU9s94do=;
+        b=z6SMW954TsF/tG834PqdPxrHKhOO60PkATWKPIBiGOtlQUSi+hHGvfJCY3ucT1XkEx
+         2qFG9r9nguqGKYn5jwlGfiWqKmvQl3dEmw4gzTwYsa0U4vO+5tRHQ1xjAeu8mX+o32Yk
+         t/2+dlDGz6WQXq2TioQmo6v5Cp5EG/APzGlrc1f6G3A5DhQDQcFJ05/j74HszN9cHppk
+         0C4IuAvheJiX+zrAvgIQE+NBSAYFZprVLDoaRhqCVIcG1Odeh0im2ZnesAbEzhmpxrMx
+         Z3vep++Tr+kzCVtyk3RCgnCBMaMSslMDl3Cx5j/35el21gq7K1O/Ea2BYzXvNp69LkbH
+         7E2Q==
+X-Gm-Message-State: AFqh2kp4ul8bJgFpySopPm/JjpbdQw2pFlm5KKorhyFtIbWFR3KIk1Cf
+        nC+l6qnkO4AQcMmqlO2XQYrqjrlfzT1Ucr4hE5jZhRJ2ZQb0hjGq9PyhCbLhj3dTdgvx3dAv6Zq
+        gOTBaT56+9bj9t+vnlrvEMyneMcF2vyJ+IBMhb5kp6RX40s6gLg==
+X-Google-Smtp-Source: AMrXdXt0cCRdNR5czKiU3+Ddrl7ukwPVKOG/rhsNk7JkIChwoVeTSXzpIFM5VOImyPn3XROgS9wwNvI=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:904:0:b0:6fb:e344:9665 with SMTP id
- 4-20020a250904000000b006fbe3449665mr6260288ybj.98.1672869605489; Wed, 04 Jan
- 2023 14:00:05 -0800 (PST)
-Date:   Wed,  4 Jan 2023 13:59:41 -0800
+ (user=sdf job=sendgmr) by 2002:a17:90a:6081:b0:226:659c:c5b2 with SMTP id
+ z1-20020a17090a608100b00226659cc5b2mr1351234pji.238.1672869607075; Wed, 04
+ Jan 2023 14:00:07 -0800 (PST)
+Date:   Wed,  4 Jan 2023 13:59:42 -0800
 In-Reply-To: <20230104215949.529093-1-sdf@google.com>
 Mime-Version: 1.0
 References: <20230104215949.529093-1-sdf@google.com>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Message-ID: <20230104215949.529093-10-sdf@google.com>
-Subject: [PATCH bpf-next v6 09/17] veth: Introduce veth_xdp_buff wrapper for xdp_buff
+Message-ID: <20230104215949.529093-11-sdf@google.com>
+Subject: [PATCH bpf-next v6 10/17] veth: Support RX XDP metadata
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Willem de Bruijn <willemb@google.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
@@ -78,8 +79,10 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-No functional changes. Boilerplate to allow stuffing more data after xdp_buff.
+The goal is to enable end-to-end testing of the metadata for AF_XDP.
 
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: David Ahern <dsahern@gmail.com>
 Cc: Martin KaFai Lau <martin.lau@linux.dev>
 Cc: Jakub Kicinski <kuba@kernel.org>
 Cc: Willem de Bruijn <willemb@google.com>
@@ -92,164 +95,86 @@ Cc: xdp-hints@xdp-project.net
 Cc: netdev@vger.kernel.org
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- drivers/net/veth.c | 56 +++++++++++++++++++++++++---------------------
- 1 file changed, 31 insertions(+), 25 deletions(-)
+ drivers/net/veth.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
 diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index ac7c0653695f..04ffd8cb2945 100644
+index 04ffd8cb2945..71966de4e942 100644
 --- a/drivers/net/veth.c
 +++ b/drivers/net/veth.c
-@@ -116,6 +116,10 @@ static struct {
- 	{ "peer_ifindex" },
+@@ -118,6 +118,7 @@ static struct {
+ 
+ struct veth_xdp_buff {
+ 	struct xdp_buff xdp;
++	struct sk_buff *skb;
  };
  
-+struct veth_xdp_buff {
-+	struct xdp_buff xdp;
+ static int veth_get_link_ksettings(struct net_device *dev,
+@@ -602,6 +603,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
+ 
+ 		xdp_convert_frame_to_buff(frame, xdp);
+ 		xdp->rxq = &rq->xdp_rxq;
++		vxbuf.skb = NULL;
+ 
+ 		act = bpf_prog_run_xdp(xdp_prog, xdp);
+ 
+@@ -823,6 +825,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+ 	__skb_push(skb, skb->data - skb_mac_header(skb));
+ 	if (veth_convert_skb_to_xdp_buff(rq, xdp, &skb))
+ 		goto drop;
++	vxbuf.skb = skb;
+ 
+ 	orig_data = xdp->data;
+ 	orig_data_end = xdp->data_end;
+@@ -1601,6 +1604,28 @@ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+ 	}
+ }
+ 
++static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
++{
++	struct veth_xdp_buff *_ctx = (void *)ctx;
++
++	if (!_ctx->skb)
++		return -EOPNOTSUPP;
++
++	*timestamp = skb_hwtstamps(_ctx->skb)->hwtstamp;
++	return 0;
++}
++
++static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
++{
++	struct veth_xdp_buff *_ctx = (void *)ctx;
++
++	if (!_ctx->skb)
++		return -EOPNOTSUPP;
++
++	*hash = skb_get_hash(_ctx->skb);
++	return 0;
++}
++
+ static const struct net_device_ops veth_netdev_ops = {
+ 	.ndo_init            = veth_dev_init,
+ 	.ndo_open            = veth_open,
+@@ -1622,6 +1647,11 @@ static const struct net_device_ops veth_netdev_ops = {
+ 	.ndo_get_peer_dev	= veth_peer_dev,
+ };
+ 
++static const struct xdp_metadata_ops veth_xdp_metadata_ops = {
++	.xmo_rx_timestamp		= veth_xdp_rx_timestamp,
++	.xmo_rx_hash			= veth_xdp_rx_hash,
 +};
 +
- static int veth_get_link_ksettings(struct net_device *dev,
- 				   struct ethtool_link_ksettings *cmd)
- {
-@@ -592,23 +596,24 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
- 	rcu_read_lock();
- 	xdp_prog = rcu_dereference(rq->xdp_prog);
- 	if (likely(xdp_prog)) {
--		struct xdp_buff xdp;
-+		struct veth_xdp_buff vxbuf;
-+		struct xdp_buff *xdp = &vxbuf.xdp;
- 		u32 act;
+ #define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HW_CSUM | \
+ 		       NETIF_F_RXCSUM | NETIF_F_SCTP_CRC | NETIF_F_HIGHDMA | \
+ 		       NETIF_F_GSO_SOFTWARE | NETIF_F_GSO_ENCAP_ALL | \
+@@ -1638,6 +1668,7 @@ static void veth_setup(struct net_device *dev)
+ 	dev->priv_flags |= IFF_PHONY_HEADROOM;
  
--		xdp_convert_frame_to_buff(frame, &xdp);
--		xdp.rxq = &rq->xdp_rxq;
-+		xdp_convert_frame_to_buff(frame, xdp);
-+		xdp->rxq = &rq->xdp_rxq;
- 
--		act = bpf_prog_run_xdp(xdp_prog, &xdp);
-+		act = bpf_prog_run_xdp(xdp_prog, xdp);
- 
- 		switch (act) {
- 		case XDP_PASS:
--			if (xdp_update_frame_from_buff(&xdp, frame))
-+			if (xdp_update_frame_from_buff(xdp, frame))
- 				goto err_xdp;
- 			break;
- 		case XDP_TX:
- 			orig_frame = *frame;
--			xdp.rxq->mem = frame->mem;
--			if (unlikely(veth_xdp_tx(rq, &xdp, bq) < 0)) {
-+			xdp->rxq->mem = frame->mem;
-+			if (unlikely(veth_xdp_tx(rq, xdp, bq) < 0)) {
- 				trace_xdp_exception(rq->dev, xdp_prog, act);
- 				frame = &orig_frame;
- 				stats->rx_drops++;
-@@ -619,8 +624,8 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
- 			goto xdp_xmit;
- 		case XDP_REDIRECT:
- 			orig_frame = *frame;
--			xdp.rxq->mem = frame->mem;
--			if (xdp_do_redirect(rq->dev, &xdp, xdp_prog)) {
-+			xdp->rxq->mem = frame->mem;
-+			if (xdp_do_redirect(rq->dev, xdp, xdp_prog)) {
- 				frame = &orig_frame;
- 				stats->rx_drops++;
- 				goto err_xdp;
-@@ -801,7 +806,8 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- {
- 	void *orig_data, *orig_data_end;
- 	struct bpf_prog *xdp_prog;
--	struct xdp_buff xdp;
-+	struct veth_xdp_buff vxbuf;
-+	struct xdp_buff *xdp = &vxbuf.xdp;
- 	u32 act, metalen;
- 	int off;
- 
-@@ -815,22 +821,22 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 	}
- 
- 	__skb_push(skb, skb->data - skb_mac_header(skb));
--	if (veth_convert_skb_to_xdp_buff(rq, &xdp, &skb))
-+	if (veth_convert_skb_to_xdp_buff(rq, xdp, &skb))
- 		goto drop;
- 
--	orig_data = xdp.data;
--	orig_data_end = xdp.data_end;
-+	orig_data = xdp->data;
-+	orig_data_end = xdp->data_end;
- 
--	act = bpf_prog_run_xdp(xdp_prog, &xdp);
-+	act = bpf_prog_run_xdp(xdp_prog, xdp);
- 
- 	switch (act) {
- 	case XDP_PASS:
- 		break;
- 	case XDP_TX:
--		veth_xdp_get(&xdp);
-+		veth_xdp_get(xdp);
- 		consume_skb(skb);
--		xdp.rxq->mem = rq->xdp_mem;
--		if (unlikely(veth_xdp_tx(rq, &xdp, bq) < 0)) {
-+		xdp->rxq->mem = rq->xdp_mem;
-+		if (unlikely(veth_xdp_tx(rq, xdp, bq) < 0)) {
- 			trace_xdp_exception(rq->dev, xdp_prog, act);
- 			stats->rx_drops++;
- 			goto err_xdp;
-@@ -839,10 +845,10 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 		rcu_read_unlock();
- 		goto xdp_xmit;
- 	case XDP_REDIRECT:
--		veth_xdp_get(&xdp);
-+		veth_xdp_get(xdp);
- 		consume_skb(skb);
--		xdp.rxq->mem = rq->xdp_mem;
--		if (xdp_do_redirect(rq->dev, &xdp, xdp_prog)) {
-+		xdp->rxq->mem = rq->xdp_mem;
-+		if (xdp_do_redirect(rq->dev, xdp, xdp_prog)) {
- 			stats->rx_drops++;
- 			goto err_xdp;
- 		}
-@@ -862,7 +868,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 	rcu_read_unlock();
- 
- 	/* check if bpf_xdp_adjust_head was used */
--	off = orig_data - xdp.data;
-+	off = orig_data - xdp->data;
- 	if (off > 0)
- 		__skb_push(skb, off);
- 	else if (off < 0)
-@@ -871,21 +877,21 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 	skb_reset_mac_header(skb);
- 
- 	/* check if bpf_xdp_adjust_tail was used */
--	off = xdp.data_end - orig_data_end;
-+	off = xdp->data_end - orig_data_end;
- 	if (off != 0)
- 		__skb_put(skb, off); /* positive on grow, negative on shrink */
- 
- 	/* XDP frag metadata (e.g. nr_frags) are updated in eBPF helpers
- 	 * (e.g. bpf_xdp_adjust_tail), we need to update data_len here.
- 	 */
--	if (xdp_buff_has_frags(&xdp))
-+	if (xdp_buff_has_frags(xdp))
- 		skb->data_len = skb_shinfo(skb)->xdp_frags_size;
- 	else
- 		skb->data_len = 0;
- 
- 	skb->protocol = eth_type_trans(skb, rq->dev);
- 
--	metalen = xdp.data - xdp.data_meta;
-+	metalen = xdp->data - xdp->data_meta;
- 	if (metalen)
- 		skb_metadata_set(skb, metalen);
- out:
-@@ -898,7 +904,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 	return NULL;
- err_xdp:
- 	rcu_read_unlock();
--	xdp_return_buff(&xdp);
-+	xdp_return_buff(xdp);
- xdp_xmit:
- 	return NULL;
- }
+ 	dev->netdev_ops = &veth_netdev_ops;
++	dev->xdp_metadata_ops = &veth_xdp_metadata_ops;
+ 	dev->ethtool_ops = &veth_ethtool_ops;
+ 	dev->features |= NETIF_F_LLTX;
+ 	dev->features |= VETH_FEATURES;
 -- 
 2.39.0.314.g84b9a713c41-goog
 
