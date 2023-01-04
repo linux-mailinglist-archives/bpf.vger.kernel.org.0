@@ -2,81 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BE965DD0B
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 20:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F074965DD13
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 20:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235476AbjADToy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 14:44:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
+        id S229649AbjADTrO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 14:47:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239891AbjADTon (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 14:44:43 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3384E18B05
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 11:44:42 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id o7-20020a17090a0a0700b00226c9b82c3aso231823pjo.3
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 11:44:42 -0800 (PST)
+        with ESMTP id S240278AbjADTrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 14:47:09 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EF06353
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 11:47:08 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id c2-20020a17090a020200b00226c762ed23so997034pjc.5
+        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 11:47:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8DvL5QVYWg/UbWmA6+wkZYawOSBnwGHoIUPa2/e2M1w=;
-        b=D8cVfGlWxhzFsGbgLl2h+dPsclXk/EpWKBHZpUexbZBYueBUI7dTLA0sDR2aCPG3nS
-         LUXPWl+7pCNXwytk9fq+42ro1MyHZx6xYN3z76OBkvJD0aFjLr6mysh5D1/dHYDYi1/g
-         jnqtLVu13YDkF9OyC3GkIAYN721ujkOrfaVNY75bv8vAcEgbmF3fhVoQDyoEARAbAwg6
-         MurlAwkr+4ih5iqXHMKqgSlA6rAWWMLjCxfmTFbYbBieVZlNDAe6wXgMiKuZY5gK7zpY
-         3AODJoKS8oF5YxKhR3eb84f/1zfPa2bcYdb8hwQzyYt/f626u8ipwq0aPje7t/H9oG0v
-         rdjQ==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1+ZxaLqo6czTJixfvj4dJy4us36huKKjG3N4a2kAExA=;
+        b=ZOPAsW88NhVEW6Jj+wbDU76yp1N1s1DJOl2aeNw5FLl3F+86FvIsGVqsZ9Dm9DJ6sX
+         LV5kj9upMi1a5CPpJGBbvPkvSp2Qu+vYI/z1ng8IeOjjcz9JtvJ6eDBZCmFDTi4lYa1t
+         htUcd+2f60c8gdNzoOyBwjk/3nTvgJQiZlDSow3N3cmgKh/dnTBHRD1X8PT0106sDMFe
+         RCUQyLEhhvyvjGjtmnI20BklzH4EpwO5mGC5Avnx/ULMnJqrxlVWwGaZGdH6NFZs14rw
+         2EA3Aj+gS9UdfYLPQvL3g9beZq7vANxrqZ+isqfdaJzMygZp2rSx3uJR4ACrV+ErRjG8
+         Ws+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8DvL5QVYWg/UbWmA6+wkZYawOSBnwGHoIUPa2/e2M1w=;
-        b=gGeQVDeqo8kgHUJZn8w4ghhKSNkaL7Q9m+IRH7WU7JVNMbqgcK/xWK5scxk87k5zdP
-         mmKzMzQS8ptGrdOBO8VyGhRsm5aVe/DXdqfhTzneTqGNyFZQ4A85obuKj4vr8BaDGA8i
-         qIMgNcu4cYKPNzQbCWnzJrH7OCyEtJeK0HMIA7x23jBhZlNAKtB/neEsME1kmIA+1DtF
-         VRFC72bxgNEfGoCkJ3HntGR6oRFq9T/xEtDS+eGB60quEVZf+3v92L0MCSviq48UH3j2
-         y0tOwbWd1U1mbxxd/VpSaKwjDQowTrQSYgXgpsmm8gcqfpoaL9sZVwxjL6vKJB8I1mo8
-         8fXA==
-X-Gm-Message-State: AFqh2kpUhxweF5rD1ba7wgBWRi+QA8VXWH5cjiyK3caqaZgYDWincCAk
-        NLKzLlIPXULLHgcyF7SZqRA4rtExb4w=
-X-Google-Smtp-Source: AMrXdXuIXy4jaQhlydAHt6mgQQlEVa6YrjqSbZErx/0B9JtKIZlC8513ToW2kCnysxvMvlN3nUFXWA==
-X-Received: by 2002:a17:90a:17a6:b0:225:e3e5:7558 with SMTP id q35-20020a17090a17a600b00225e3e57558mr37418062pja.29.1672861481604;
-        Wed, 04 Jan 2023 11:44:41 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:1385])
-        by smtp.gmail.com with ESMTPSA id 30-20020a17090a09a100b00225f49bd4b6sm15627160pjo.36.2023.01.04.11.44.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jan 2023 11:44:41 -0800 (PST)
-Date:   Wed, 4 Jan 2023 11:44:38 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel-team@meta.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>
-Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
- convenience helpers
-Message-ID: <20230104194438.4lfigy2c5m4xx6hh@macbook-pro-6.dhcp.thefacebook.com>
-References: <20221208015434.ervz6q5j7bb4jt4a@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYGUf=yMry5Ezen2PZqvkfS+o1jSF2e1Fpa+pgAmx+OcA@mail.gmail.com>
- <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
- <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
- <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local>
- <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
- <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
- <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local>
- <CAEf4Bzbvg2bXOj8LPwkRQ0jfTR4y5XQn=ajK_ApVf5W-F=wG2Q@mail.gmail.com>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1+ZxaLqo6czTJixfvj4dJy4us36huKKjG3N4a2kAExA=;
+        b=u79lEMFwBzxzMKW9kUsPz5FAPaX7PwAkuX7tFxJW8J+Uvwh1k85SFDi6jBZQvdBXQ7
+         ysW4mpHRayQvtbzJ7fK0GMhxoVZH+UvuyLjzW3aCp/0NMPqvS+w5rlysWadtTJ7vDLzw
+         8y87yp6Ua+NHJRywomGCpyBJ9UWj5gF4DLzdfzyctf7V+lv5iR41SbOKSwkFybUHvavS
+         WEwkYOV7/0n2DMvrbjwYdW9Osgu3gRgYauuax/FJn6J46wX9qFIg6zyoRECdG5opAP9J
+         KL49v+3m+WeNatuEQGVblYFP6IwA8gaQKaHFpsrPYGVUhHgpbBSRSGrA1rBAev2XxR4y
+         PyTw==
+X-Gm-Message-State: AFqh2kqsPH/4FUOZUs5KxXtuormQRrgG78vHE3/sQ/VLexbwEpZqkLW0
+        S3OHHH985S7qMM/NhzYLDq7zgt12NH7qXgL1X8OjXw==
+X-Google-Smtp-Source: AMrXdXveWslLDalTitJJ3BDq3DfcLlfJfsMV1ge/fg/u2xBECYH8xpwO+b/Hh2wPB2PYad5xQIl4y52BdQkFEMy/8VM=
+X-Received: by 2002:a17:90a:5296:b0:219:fbc:a088 with SMTP id
+ w22-20020a17090a529600b002190fbca088mr4602380pjh.162.1672861627821; Wed, 04
+ Jan 2023 11:47:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbvg2bXOj8LPwkRQ0jfTR4y5XQn=ajK_ApVf5W-F=wG2Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230104121744.2820-1-magnus.karlsson@gmail.com>
+ <20230104121744.2820-12-magnus.karlsson@gmail.com> <Y7XCEPFUCUNZqtAY@maniforge.lan>
+ <CAKH8qBt1HVcpxUMV0+gWN7eptr2+V899TRk39yYZwcoYMgkYCg@mail.gmail.com> <Y7XP9924wTevHcBT@maniforge.lan>
+In-Reply-To: <Y7XP9924wTevHcBT@maniforge.lan>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 4 Jan 2023 11:46:56 -0800
+Message-ID: <CAKH8qBuypCkTZYoSPHH1rbeAd3yRB_n2PidS4KN5CGfCpQTMtA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 11/15] selftests/xsk: get rid of built-in XDP program
+To:     David Vernet <void@manifault.com>
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, bpf@vger.kernel.org, yhs@fb.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, tirthendu.sarkar@intel.com,
+        jonathan.lemon@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,58 +77,185 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 10:43:37AM -0800, Andrii Nakryiko wrote:
-> > extern bool bpf_dynptr_is_null(const struct bpf_dynptr *p) __ksym;
+On Wed, Jan 4, 2023 at 11:14 AM David Vernet <void@manifault.com> wrote:
+>
+> On Wed, Jan 04, 2023 at 10:19:37AM -0800, Stanislav Fomichev wrote:
+> > On Wed, Jan 4, 2023 at 10:14 AM David Vernet <void@manifault.com> wrote=
+:
+> > >
+> > > On Wed, Jan 04, 2023 at 01:17:40PM +0100, Magnus Karlsson wrote:
+> > > > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> > > >
+> > > > Get rid of the built-in XDP program that was part of the old libbpf
+> > > > code in xsk.c and replace it with an eBPF program build using the
+> > > > framework by all the other bpf selftests. This will form the base f=
+or
+> > > > adding more programs in later commits.
+> > > >
+> > > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > > > ---
+> > > >  tools/testing/selftests/bpf/Makefile          |  2 +-
+> > > >  .../selftests/bpf/progs/xsk_xdp_progs.c       | 19 ++++
+> > > >  tools/testing/selftests/bpf/xsk.c             | 88 ++++-----------=
+----
+> > > >  tools/testing/selftests/bpf/xsk.h             |  6 +-
+> > > >  tools/testing/selftests/bpf/xskxceiver.c      | 72 ++++++++-------
+> > > >  tools/testing/selftests/bpf/xskxceiver.h      |  7 +-
+> > > >  6 files changed, 88 insertions(+), 106 deletions(-)
+> > > >  create mode 100644 tools/testing/selftests/bpf/progs/xsk_xdp_progs=
+.c
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/s=
+elftests/bpf/Makefile
+> > > > index 205e8c3c346a..a0193a8f9da6 100644
+> > > > --- a/tools/testing/selftests/bpf/Makefile
+> > > > +++ b/tools/testing/selftests/bpf/Makefile
+> > > > @@ -240,7 +240,7 @@ $(OUTPUT)/flow_dissector_load: $(TESTING_HELPER=
+S)
+> > > >  $(OUTPUT)/test_maps: $(TESTING_HELPERS)
+> > > >  $(OUTPUT)/test_verifier: $(TESTING_HELPERS) $(CAP_HELPERS)
+> > > >  $(OUTPUT)/xsk.o: $(BPFOBJ)
+> > > > -$(OUTPUT)/xskxceiver: $(OUTPUT)/xsk.o
+> > > > +$(OUTPUT)/xskxceiver: $(OUTPUT)/xsk.o $(OUTPUT)/xsk_xdp_progs.skel=
+.h
+> > >
+> > > Hi Magnus,
+> > >
+> > > This seems to break the selftests build for clang:
+> > >
+> > > $ pwd
+> > > <redacted>/bpf-next/tools/testing/selftests/bpf
+> > >
+> > > $ make LLVM=3D1 CC=3Dclang
+> > >   MKDIR    libbpf
+> > >   HOSTCC  /home/void/upstream/bpf-next/tools/testing/selftests/bpf/to=
+ols/build/libbpf/fixdep.o
+> > >   HOSTLD  /home/void/upstream/bpf-next/tools/testing/selftests/bpf/to=
+ols/build/libbpf/fixdep-in.o
+> > >   LINK    /home/void/upstream/bpf-next/tools/testing/selftests/bpf/to=
+ols/build/libbpf/fixdep
+> > >
+> > > ...
+> > >
+> > >   GEN-SKEL [test_progs-no_alu32] test_static_linked.skel.h
+> > >   LINK-BPF [test_progs-no_alu32] test_usdt.bpf.o
+> > >   GEN-SKEL [test_progs-no_alu32] linked_vars.skel.h
+> > >   GEN-SKEL [test_progs-no_alu32] linked_funcs.skel.h
+> > >   EXT-COPY [test_progs-no_alu32] urandom_read bpf_testmod.ko liburand=
+om_read.so xdp_synproxy sign-file ima_setup.sh verify_sig_setup.sh btf_dump=
+_test_case_bitfields.c btf_dump_test_case_multidim.c btf_dump_test_case_nam=
+espacing.c btf_dump_test_case_ordering.c btf_dump_test_case_packing.c btf_d=
+ump_test_case_padding.c btf_dump_test_case_syntax.c
+> > >   GEN-SKEL [test_progs-no_alu32] linked_maps.skel.h
+> > >   GEN-SKEL [test_progs-no_alu32] test_subskeleton.skel.h
+> > >   BINARY   xskxceiver
+> > >   BINARY   bench
+> > >   GEN-SKEL [test_progs-no_alu32] test_subskeleton_lib.skel.h
+> > >   GEN-SKEL [test_progs-no_alu32] test_usdt.skel.h
+> > > clang-15: error: cannot specify -o when generating multiple output fi=
+les
+> > > make: *** [Makefile:171: /home/void/upstream/bpf-next/tools/testing/s=
+elftests/bpf/xskxceiver] Error 1
+> > > make: *** Waiting for unfinished jobs....
+> > > make[1]: Nothing to be done for 'docs'.
+> > > $
+> > >
+> > > It's also broken on CI: https://github.com/kernel-patches/bpf/actions=
+/runs/3837984934/jobs/6533917001
+> > >
+> > > Could you please look into this?
 > >
-> > will likely work with both gcc and clang.
-> > And if it doesn't we can fix it.
+> > Ugh, that's the same issue I'm getting for my xdp_hw_metadata binary.
+> > And I'm still at loss on how to reproduce it locally. (I've tried 'apt
+> > install clang-16 in ubuntu latest docker container' and it's still
+> > fine).
+>
+> I was able to reproduce this issue locally:
+
+Damn, I was missing LLVM=3D1, that does make it reproduce for me, thanks!
+
+> [void@maniforge bpf]$ make -j LLVM=3D1 CC=3Dclang
+>   GEN-SKEL [test_progs] pyperf600.skel.h
+>   GEN-SKEL [test_progs] test_verif_scale2.skel.h
+>   LINK-BPF [test_progs] test_static_linked.bpf.o
+>   LINK-BPF [test_progs] linked_funcs.bpf.o
+>
+> ...
+>
+>   LINK-BPF [test_progs-no_alu32] test_usdt.bpf.o
+>   EXT-COPY [test_progs-no_alu32] urandom_read bpf_testmod.ko liburandom_r=
+ead.so xdp_synproxy sign-file ima_setup.sh verify_sig_setup.sh btf_dump_tes=
+t_case_bitfields.c btf_dump_test_case_multidim.c btf_dump_test_case_namespa=
+cing.c btf_dump_test_case_ordering.c btf_dump_test_case_packing.c btf_dump_=
+test_case_padding.c btf_dump_test_case_syntax.c
+>   GEN-SKEL [test_progs-no_alu32] linked_funcs.skel.h
+>   BINARY   bench
+>   GEN-SKEL [test_progs-no_alu32] test_subskeleton.skel.h
+>   BINARY   xdp_hw_metadata
+>   GEN-SKEL [test_progs-no_alu32] test_subskeleton_lib.skel.h
+>   GEN-SKEL [test_progs-no_alu32] test_usdt.skel.h
+> clang-15: error: cannot specify -o when generating multiple output files
+> make: *** [Makefile:171: /home/void/upstream/bpf-next/tools/testing/selft=
+ests/bpf/xdp_hw_metadata] Error 1
+> make: *** Waiting for unfinished jobs....
+> make[1]: Nothing to be done for 'docs'.
+>
+> Here's the actual clang command being executed:
+>
+> [void@maniforge bpf]$ make LLVM=3D1 --dry-run xdp_hw_metadata
+> printf '  %-8s%s %s%s\n' "BINARY" "" "xdp_hw_metadata" "";
+> clang --target=3Dx86_64-linux-gnu -fintegrated-as -g -O0 -rdynamic -Wall =
+-Werror -DHAVE_GENHDR  -I/home/void/upstream/bpf-next/tools/testing/selftes=
+ts/bpf -I/home/void/upstream/bpf-next/tools/testing/selftests/bpf/tools/inc=
+lude -I/home/void/upstream/bpf-next/include/generated -I/home/void/upstream=
+/bpf-next/tools/lib -I/home/void/upstream/bpf-next/tools/include -I/home/vo=
+id/upstream/bpf-next/tools/include/uapi -I/home/void/upstream/bpf-next/tool=
+s/testing/selftests/bpf -Wno-unused-command-line-argument     -static  xdp_=
+hw_metadata.c /home/void/upstream/bpf-next/tools/testing/selftests/bpf/tool=
+s/build/libbpf/libbpf.a /home/void/upstream/bpf-next/tools/testing/selftest=
+s/bpf/xsk.o /home/void/upstream/bpf-next/tools/testing/selftests/bpf/xdp_hw=
+_metadata.skel.h /home/void/upstream/bpf-next/tools/testing/selftests/bpf/n=
+etwork_helpers.o -lelf -lz -lrt -lpthread -o /home/void/upstream/bpf-next/t=
+ools/testing/selftests/bpf/xdp_hw_metadata
+>
+> and the output using --debug=3Dj
+>
+> [void@maniforge bpf]$ make LLVM=3D1 --debug=3Dj xdp_hw_metadata
+> Putting child 0x55cc78cd6670 (/home/void/upstream/bpf-next/tools/testing/=
+selftests/bpf/xdp_hw_metadata) PID 693804 on the chain.
+> Live child 0x55cc78cd6670 (/home/void/upstream/bpf-next/tools/testing/sel=
+ftests/bpf/xdp_hw_metadata) PID 693804
+>   BINARY   xdp_hw_metadata
+> Reaping winning child 0x55cc78cd6670 PID 693804
+> Live child 0x55cc78cd6670 (/home/void/upstream/bpf-next/tools/testing/sel=
+ftests/bpf/xdp_hw_metadata) PID 693805
+> clang-15: error: cannot specify -o when generating multiple output files
+> Reaping losing child 0x55cc78cd6670 PID 693805
+> make: *** [Makefile:171: /home/void/upstream/bpf-next/tools/testing/selft=
+ests/bpf/xdp_hw_metadata] Error 1
+> Removing child 0x55cc78cd6670 PID 693805 from chain.
+>
+> make is taking the xdp_hw_metadata.skel.h file and providing it as an
+> input to clang. So I believe what's going on here is that the clang
+> command above is actually creating two output files:
+>
+> 1. xdp_hw_metadata
+> 2. The precompiled header generated from xdp_hw_metadata.skel.h
+>
+> and the error is clang reasonably saying: "I don't know which output
+> file you're referring to with -o". I'm surprised that gcc doesn't
+> complain about this, but I assume that it's doing the far more
+> non-intuitive thing of first outputting the precompiled header as
+> xdp_hw_metadata, and then immediately overwriting it with the actual
+> xdp_hw_metadata binary.
+
+Hm, I'm a bit surprised that clang can't handle .h as an extra input.
+GCC seems to be doing the right thing; the headers compile to nothing
+-> use that nothing as an extra input and don't complain..
+Seems like the way to go is to explicitly have a '$(CC) xxx' rule that
+filters it out. Will try.
+
+> > Any pointers on how to debug those github actions locally?
 > >
-> > While when gcc folks saw helpers:
-> >
-> > static bool (*bpf_dynptr_is_null)(const struct bpf_dynptr *p) = (void *) 777;
-> >
-> > they realized that it is a hack that abuses compiler optimizations.
-> > They even invented attr(kernel_helper) to workaround this issue.
-> > After a bunch of arguing gcc added support for this hack without attr,
-> > but it's going to be around forever... in gcc, in clang and in kernel.
-> > It's something that we could have fixed if it wasn't for uapi.
-> > Just one more example of unfixable mistake that causing issues
-> > to multiple projects.
-> > That's the core issue of kernel uapi rules: inability to fix mistakes.
-> 
-> This is BPF ISA defining `call #N;` to call helper with ID N, which
-> you agree that it (ISA) has to be stable, documented and standardized,
-> right?
-> 
-> Everything else is just how we expose those constants into C code and
-> how libbpf deals with them. Libbpf could support new attribute or even
-> extern-based convention, if necessary.
-> 
-> But it wasn't necessary for years and only was brought up during GCC's
-> attempt to invent a new convention here. And they successfully dealt
-> with this challenge.
-
-'dealt with this challenge'? You mean didn't, right?
-gcc doesn't guarantee that '= (void *) 777;' will work even with optimization on.
-In clang we cannot guarantee that either.
-Nothing requires a compiler to do constant propagation.
-
-> 
-> Yes, we won't change existing helpers, but we can add new ones if we
-> need to extend them. That's how APIs work. Yes, they need careful
-> considerations when designing and implementing new APIs. Yes, mistakes
-> do happen, that's just fact of life and par for the course of software
-> development. Yes, we have to live with those mistakes. Nothing changed
-> about that.
-> 
-> But somehow libraries and kernel still produce stable APIs and
-> maintain them because they clearly provide benefits to end users.
-
-Did you 'live with mistakes done in libbpf 0.x' ? No.
-You've introduced libbpf 1.0 with incompatible api and some users suffereed.
-
-> We'll get the same amount of flame when we try to change kfunc that's
-> widely adopted.
-
-Of course. That's why we need to define a stability and deperecation
-plan for them.
+> > > Thanks,
+> > > David
