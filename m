@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 684F065D57F
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 15:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB7965D581
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 15:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239484AbjADOV0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 09:21:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
+        id S231319AbjADOWH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 09:22:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239410AbjADOVY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 09:21:24 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D9D38A;
-        Wed,  4 Jan 2023 06:21:24 -0800 (PST)
+        with ESMTP id S239516AbjADOVz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 09:21:55 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C41FAA;
+        Wed,  4 Jan 2023 06:21:55 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E31EB6174E;
-        Wed,  4 Jan 2023 14:21:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31743C433EF;
-        Wed,  4 Jan 2023 14:21:23 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CD971B81674;
+        Wed,  4 Jan 2023 14:21:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65CDAC433D2;
+        Wed,  4 Jan 2023 14:21:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672842083;
-        bh=VGhv39M7ZvdZ4R6rSSfVY15QnkI8S72J/pfHLmLDaGY=;
+        s=k20201202; t=1672842112;
+        bh=S0pBAaBYAWYNmqrdaqt5KAjvTcU4XOUWLTxzTiYZlc0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WTowqK06nFDvlyL3xR8NjzFU7r4BInoCdFJr5/oGad+uE4y+aMOvr7k8DSJs4GwGg
-         LKD7X8+xR288oMO4I8vQ1QgTmmj/MfgdaTBzj5kfB3yd5fXnAc9Dz1BvlKOD3GlCUy
-         gT66rmqcLpXsYRvyR/AHyqD01GHMOQlZ/fQXpkvvprpmshfPL0YLwucfH5El0dHdKz
-         oXHG/+WTsHFGeUzbuQH+IWTUGLm3ECQG1PjMX/eTwD104cGdMc07vJiVHl2A3ZxJKK
-         4Gd06BWRfL2VWVDEEgjAQ7IFxYpuGqNpLPxz0lrZhBoRjWtnv8taKy8ksfCOHfinIF
-         SUzyHpGyVkHOg==
+        b=P7/+rbmx9zgpXDCY2DL8IiEBDNoJZQz8nHuPnLxP2v+Cr9Dbj8uxTnGewRb6SPMso
+         KlyfTvck3sL5jLdaihFnx4EsmF5uAj7hOP2JoZ0MmxVlO/18ySgOT+goOPmJtIJq7j
+         JGZ7O+SsY5Uqsz2ow1+FUmWnGGS5oo3bAwnQ6uS6duUsiCuR9TqKFbYCM2lIygqMoN
+         B3I0JAfzNdnLvOkUtrSv3hPgA+JuTC7oUX+9kzm9lkqIi91EPaCBXV/MeTzka+qaPR
+         KjDj8/i+A2U0FrPRQ8GwQeuzOhjnY76JP9MVzbE5EozR7RMofDm74uhC71MN9nw5G0
+         /Ku+8JEuL228A==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 964B240468; Wed,  4 Jan 2023 11:21:19 -0300 (-03)
-Date:   Wed, 4 Jan 2023 11:21:19 -0300
+        id 71CA140468; Wed,  4 Jan 2023 11:21:50 -0300 (-03)
+Date:   Wed, 4 Jan 2023 11:21:50 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Namhyung Kim <namhyung@kernel.org>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
@@ -43,14 +43,13 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
         bpf@vger.kernel.org
-Subject: Re: [PATCH 4/4] perf stat: Do not use the same cgroup more than once
-Message-ID: <Y7WLX3W0yCrZUp2t@kernel.org>
+Subject: Re: [PATCH 0/4] perf bpf_counter: A set of random fixes (v1)
+Message-ID: <Y7WLfqrR6NlMQPTs@kernel.org>
 References: <20230104064402.1551516-1-namhyung@kernel.org>
- <20230104064402.1551516-5-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230104064402.1551516-5-namhyung@kernel.org>
+In-Reply-To: <20230104064402.1551516-1-namhyung@kernel.org>
 X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -61,114 +60,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Jan 03, 2023 at 10:44:02PM -0800, Namhyung Kim escreveu:
-> The --for-each-cgroup can have the same cgroup multiple times, but it makes
-> bpf counters confused (since they have the same cgroup id), and the last
-> cgroup events are counted only.  Let's check the cgroup name before adding
-> a new entry.
+Em Tue, Jan 03, 2023 at 10:43:58PM -0800, Namhyung Kim escreveu:
+> Hello,
 > 
-> Before:
->   $ sudo ./perf stat -a --bpf-counters --for-each-cgroup /,/ sleep 1
+> This is a collection of small fixes for perf stat bpf counters (bperf).
 > 
->    Performance counter stats for 'system wide':
+> The bperf framework maintains perf_attr_map in the BPF fs to share the
+> same event as much as possible.  But the size was limited to 16 and
+> perf stat with -ddd option would create more than 16 events and fails.
 > 
->        <not counted> msec cpu-clock                        /
->        <not counted>      context-switches                 /
->        <not counted>      cpu-migrations                   /
->        <not counted>      page-faults                      /
->        <not counted>      cycles                           /
->        <not counted>      instructions                     /
->        <not counted>      branches                         /
->        <not counted>      branch-misses                    /
->             8,016.04 msec cpu-clock                        /                #    7.998 CPUs utilized
->                6,152      context-switches                 /                #  767.461 /sec
->                  250      cpu-migrations                   /                #   31.187 /sec
->                  442      page-faults                      /                #   55.139 /sec
->          613,111,487      cycles                           /                #    0.076 GHz
->          280,599,604      instructions                     /                #    0.46  insn per cycle
->           57,692,724      branches                         /                #    7.197 M/sec
->            3,385,168      branch-misses                    /                #    5.87% of all branches
+> Also cgroup events with --for-each-cgroup had some other problems when
+> dealing with unsupported events and duplicate cgroups.
 > 
->          1.002220125 seconds time elapsed
+> The code is available at 'perf/stat-bpf-fix-v1' branch in
 > 
-> After:
->   $ sudo ./perf stat -a --bpf-counters --for-each-cgroup /,/  sleep 1
-> 
->    Performance counter stats for 'system wide':
-> 
->             8,013.38 msec cpu-clock                        /                #    7.998 CPUs utilized
->                6,859      context-switches                 /                #  855.944 /sec
->                  334      cpu-migrations                   /                #   41.680 /sec
->                  345      page-faults                      /                #   43.053 /sec
->          782,326,119      cycles                           /                #    0.098 GHz
->          471,645,724      instructions                     /                #    0.60  insn per cycle
->           94,963,430      branches                         /                #   11.851 M/sec
->            3,685,511      branch-misses                    /                #    3.88% of all branches
-> 
->          1.001864539 seconds time elapsed
-> 
-> Fixes: bb1c15b60b981 ("perf stat: Support regex pattern in --for-each-cgroup")
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
 
-Tested and appied.
+The first two are improvements, not strict fixes, so I'm leaving them
+for the next merge window.
 
 - Arnaldo
-
-> ---
->  tools/perf/util/cgroup.c | 23 ++++++++++++++++++-----
->  1 file changed, 18 insertions(+), 5 deletions(-)
+ 
+> Thanks,
+> Namhyung
 > 
-> diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-> index e99b41f9be45..cd978c240e0d 100644
-> --- a/tools/perf/util/cgroup.c
-> +++ b/tools/perf/util/cgroup.c
-> @@ -224,6 +224,19 @@ static int add_cgroup_name(const char *fpath, const struct stat *sb __maybe_unus
->  	return 0;
->  }
->  
-> +static int check_and_add_cgroup_name(const char *fpath)
-> +{
-> +	struct cgroup_name *cn;
-> +
-> +	list_for_each_entry(cn, &cgroup_list, list) {
-> +		if (!strcmp(cn->name, fpath))
-> +			return 0;
-> +	}
-> +
-> +	/* pretend if it's added by ftw() */
-> +	return add_cgroup_name(fpath, NULL, FTW_D, NULL);
-> +}
-> +
->  static void release_cgroup_list(void)
->  {
->  	struct cgroup_name *cn;
-> @@ -242,7 +255,7 @@ static int list_cgroups(const char *str)
->  	struct cgroup_name *cn;
->  	char *s;
->  
-> -	/* use given name as is - for testing purpose */
-> +	/* use given name as is when no regex is given */
->  	for (;;) {
->  		p = strchr(str, ',');
->  		e = p ? p : eos;
-> @@ -253,13 +266,13 @@ static int list_cgroups(const char *str)
->  			s = strndup(str, e - str);
->  			if (!s)
->  				return -1;
-> -			/* pretend if it's added by ftw() */
-> -			ret = add_cgroup_name(s, NULL, FTW_D, NULL);
-> +
-> +			ret = check_and_add_cgroup_name(s);
->  			free(s);
-> -			if (ret)
-> +			if (ret < 0)
->  				return -1;
->  		} else {
-> -			if (add_cgroup_name("", NULL, FTW_D, NULL) < 0)
-> +			if (check_and_add_cgroup_name("/") < 0)
->  				return -1;
->  		}
->  
+> Namhyung Kim (4):
+>   perf bpf_counter: Add more error messages for bperf
+>   perf bpf_counter: Increase perf_attr_map entries to 32
+>   perf bpf_counter: Handle unsupported cgroup events
+>   perf stat: Do not use the same cgroup more than once
+> 
+>  tools/perf/util/bpf_counter.c        | 11 ++++++++---
+>  tools/perf/util/bpf_counter_cgroup.c | 14 +++-----------
+>  tools/perf/util/cgroup.c             | 23 ++++++++++++++++++-----
+>  3 files changed, 29 insertions(+), 19 deletions(-)
+> 
+> 
+> base-commit: d8d85ce86dc82de4f88b821a78f533b9d5b22a45
 > -- 
 > 2.39.0.314.g84b9a713c41-goog
 
