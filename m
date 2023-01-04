@@ -2,188 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E0B65CDE3
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 08:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFACC65CDE4
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 08:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbjADHvi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 02:51:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
+        id S229557AbjADHxN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 02:53:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233819AbjADHvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 02:51:09 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E8315FFF
-        for <bpf@vger.kernel.org>; Tue,  3 Jan 2023 23:51:07 -0800 (PST)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Nn1s555SpzJpvw;
-        Wed,  4 Jan 2023 15:47:05 +0800 (CST)
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Wed, 4 Jan 2023 15:51:05 +0800
-Subject: Re: [bpf-next v3 2/2] selftests/bpf: add test case for htab map
-To:     Yonghong Song <yhs@meta.com>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20221219041551.69344-1-xiangxia.m.yue@gmail.com>
- <20221219041551.69344-2-xiangxia.m.yue@gmail.com>
- <c41daf29-43b4-8924-b5af-49f287ba8cdc@meta.com>
- <CAADnVQLE+M0xEK+L8Tu7fqsjFxNFdEyFvR4q3U1f1N1tomZ2bQ@mail.gmail.com>
- <ac540d41-4ac3-4d70-39e8-722e3fb360cd@meta.com>
- <CAMDZJNV_J-LmxxzX5DMGHQLm6WyYqG2GAMHb=WZvBG_y1rUOYg@mail.gmail.com>
- <323005b1-67f6-9eec-46af-4952e133e1c4@meta.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <dc658ded-719f-17bd-9166-e335a86150a6@huawei.com>
-Date:   Wed, 4 Jan 2023 15:51:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S230251AbjADHw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 02:52:58 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3C6F6F
+        for <bpf@vger.kernel.org>; Tue,  3 Jan 2023 23:52:58 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id o2so29835487pjh.4
+        for <bpf@vger.kernel.org>; Tue, 03 Jan 2023 23:52:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AgsU3TKYj1ea+xyRd1YeQ6QbaDveXYDp3sPPYkvfdzA=;
+        b=X3wlSK3mECwh16qnKQYIBEBJ7WwOizWPqmXryx+DRVo85/0ZsTgqsDZR7/hN2NO7pu
+         csytyJLiK/4UpBP9o5k6uLjSVPxOmTejZY/eyTV3nBhT1gxRRFCYGgvZEMH4YJTsT69y
+         1MwWEe0Q5VB4/ix++6S8zurF8LLElDo4ppw4Rbv37zVkxo0UL3rjwkeQ+GyHQ4E/PiW8
+         J5N8+0Qk5A/1+jC3yjjgj4lQ0UNITHh93ZE/Dmb/VBqJRl3VWC0Kyz6wiBko9Wb2aEz8
+         g60wh4tN2TSxUHj08JNDtIUZknkVJy16eldKyXGdi+mwNlGTDV8wdfU03fbJ6gW6lf7O
+         D4Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AgsU3TKYj1ea+xyRd1YeQ6QbaDveXYDp3sPPYkvfdzA=;
+        b=2W6SyfUMBZXyfd3Jk/V6Bni/Xov3ByDtn5lZv5punhVShSkGioH00QLDo4bxYrMOCb
+         r7rc2Ofjkpr5B+8/FXafWYXMmE5nHugkG9zvUpiKrgoO6yQp77r6/w+6J6/RlDbmFGu+
+         cfjT7QuZltkw5ZyrwPIqW96mTdcQnFYqYUUVm3OIDyM30bzJr0HCknqnOc28kBG7e+U3
+         k7aXbDinVQA2z9WPftnm4U1X8KxBn7CSBwB3Tu9rXuVW2wGcd1ZLvcCWDwZCO6l4unhR
+         JBxyPnNJY0CAtuuhackBsU7PaZNpXx/dkXchiEGLRVq6/2IoixRvegtVGvKHC6Q55n6L
+         glzw==
+X-Gm-Message-State: AFqh2kqfwNFNPVmYtFsv7Q5NMhF3LTj7l6BBPWYGLrbf0+JQNx5C+09b
+        7We4ez3uq8yG55TSoNU4gWq2szlDGTtH7jAXlzE=
+X-Google-Smtp-Source: AMrXdXuGlXHVU5jXWmAFBqNIdpTPtP2B9Lm+POK5RbtdJ298jNbAOpo+b+H+agURxEiGLWsFjpHRGFCC6Clixx4U2Eo=
+X-Received: by 2002:a17:90a:638b:b0:221:52e3:1f56 with SMTP id
+ f11-20020a17090a638b00b0022152e31f56mr3605687pjj.225.1672818777356; Tue, 03
+ Jan 2023 23:52:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <323005b1-67f6-9eec-46af-4952e133e1c4@meta.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:a05:6a10:a4cd:b0:367:4897:b131 with HTTP; Tue, 3 Jan 2023
+ 23:52:56 -0800 (PST)
+Reply-To: Gregdenzell9@gmail.com
+From:   Greg Denzell <gd134517@gmail.com>
+Date:   Wed, 4 Jan 2023 07:52:56 +0000
+Message-ID: <CADYS8vB662jATBi-Bm9C6YKV-re+dxfb189Cb0nvUJjEJ0+Nfw@mail.gmail.com>
+Subject: Happy new year,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Happy new year,
 
-On 1/4/2023 3:09 PM, Yonghong Song wrote:
->
->
-> On 1/2/23 6:40 PM, Tonghao Zhang wrote:
->>   a
->>
->> On Thu, Dec 29, 2022 at 2:29 PM Yonghong Song <yhs@meta.com> wrote:
->>>
->>>
->>>
->>> On 12/28/22 2:24 PM, Alexei Starovoitov wrote:
->>>> On Tue, Dec 27, 2022 at 8:43 PM Yonghong Song <yhs@meta.com> wrote:
->>>>>
->>>>>
->>>>>
->>>>> On 12/18/22 8:15 PM, xiangxia.m.yue@gmail.com wrote:
->>>>>> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
->>>>>>
->>>>>> This testing show how to reproduce deadlock in special case.
->>>>>> We update htab map in Task and NMI context. Task can be interrupted by
->>>>>> NMI, if the same map bucket was locked, there will be a deadlock.
->>>>>>
->>>>>> * map max_entries is 2.
->>>>>> * NMI using key 4 and Task context using key 20.
->>>>>> * so same bucket index but map_locked index is different.
->>>>>>
->>>>>> The selftest use perf to produce the NMI and fentry nmi_handle.
->>>>>> Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
->>>>>> map syscall increase this counter in bpf_disable_instrumentation.
->>>>>> Then fentry nmi_handle and update hash map will reproduce the issue.
-SNIP
->>>>>> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c
->>>>>> b/tools/testing/selftests/bpf/progs/htab_deadlock.c
->>>>>> new file mode 100644
->>>>>> index 000000000000..d394f95e97c3
->>>>>> --- /dev/null
->>>>>> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
->>>>>> @@ -0,0 +1,32 @@
->>>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>>> +/* Copyright (c) 2022 DiDi Global Inc. */
->>>>>> +#include <linux/bpf.h>
->>>>>> +#include <bpf/bpf_helpers.h>
->>>>>> +#include <bpf/bpf_tracing.h>
->>>>>> +
->>>>>> +char _license[] SEC("license") = "GPL";
->>>>>> +
->>>>>> +struct {
->>>>>> +     __uint(type, BPF_MAP_TYPE_HASH);
->>>>>> +     __uint(max_entries, 2);
->>>>>> +     __uint(map_flags, BPF_F_ZERO_SEED);
->>>>>> +     __type(key, unsigned int);
->>>>>> +     __type(value, unsigned int);
->>>>>> +} htab SEC(".maps");
->>>>>> +
->>>>>> +/* nmi_handle on x86 platform. If changing keyword
->>>>>> + * "static" to "inline", this prog load failed. */
->>>>>> +SEC("fentry/nmi_handle")
->>>>>
->>>>> The above comment is not what I mean. In arch/x86/kernel/nmi.c,
->>>>> we have
->>>>>      static int nmi_handle(unsigned int type, struct pt_regs *regs)
->>>>>      {
->>>>>           ...
->>>>>      }
->>>>>      ...
->>>>>      static noinstr void default_do_nmi(struct pt_regs *regs)
->>>>>      {
->>>>>           ...
->>>>>           handled = nmi_handle(NMI_LOCAL, regs);
->>>>>           ...
->>>>>      }
->>>>>
->>>>> Since nmi_handle is a static function, it is possible that
->>>>> the function might be inlined in default_do_nmi by the
->>>>> compiler. If this happens, fentry/nmi_handle will not
->>>>> be triggered and the test will pass.
->>>>>
->>>>> So I suggest to change the comment to
->>>>>      nmi_handle() is a static function and might be
->>>>>      inlined into its caller. If this happens, the
->>>>>      test can still pass without previous kernel fix.
->>>>
->>>> It's worse than this.
->>>> fentry is buggy.
->>>> We shouldn't allow attaching fentry to:
->>>> NOKPROBE_SYMBOL(nmi_handle);
->>>
->>> Okay, I see. Looks we should prevent fentry from
->>> attaching any NOKPROBE_SYMBOL functions.
->>>
->>> BTW, I think fentry/nmi_handle can be replaced with
->>> tracepoint nmi/nmi_handler. it is more reliable
->> The tracepoint will not reproduce the deadlock(we have discussed v2).
->> If it's not easy to complete a test for this case, should we drop this
->> testcase patch? or fentry the nmi_handle and update the comments.
->
-> could we use a softirq perf event (timer), e.g.,
->
->         struct perf_event_attr attr = {
->                 .sample_period = 1,
->                 .type = PERF_TYPE_SOFTWARE,
->                 .config = PERF_COUNT_SW_CPU_CLOCK,
->         };
->
-> then you can attach function hrtimer_run_softirq (not tested) or
-> similar functions?
-The context will be a hard-irq context, right ? Because htab_lock_bucket() has
-already disabled hard-irq on current CPU, so the dead-lock will be impossible.
->
-> I suspect most (if not all) functions in nmi path cannot
-> be kprobe'd.
-It seems that perf_event_nmi_handler() is also nokprobe function. However I
-think we could try its callees (e.g., x86_pmu_handle_irq or perf_event_overflow).
->
->>> and won't be impacted by potential NOKPROBE_SYMBOL
->>> issues.
->>
->>
->>
-> .
 
+This will remind you again that I have not yet received your reply to
+my last message to you.
