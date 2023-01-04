@@ -2,211 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E9A65D7B0
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 16:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4469065D7CA
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 17:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbjADP7Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 10:59:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        id S234907AbjADQCw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 11:02:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239739AbjADP6t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 10:58:49 -0500
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A551413F6B;
-        Wed,  4 Jan 2023 07:58:47 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 284635C00D1;
-        Wed,  4 Jan 2023 10:58:45 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 04 Jan 2023 10:58:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1672847925; x=1672934325; bh=H0UTR4kJze
-        AkAZivC7ap8DwhEwb/MXnY4XPO+uy9kKc=; b=U8pU6dYSVrl/CVJUPPEqx1R9Aq
-        lRxcqMgYm/TyRX26ZRhyXa5uD+cs/yqjcy+nxmXyUIG+GTv181nQJi14UJAOIAjf
-        9og92IBPb31uZ6dMCyYRlMnZEfzQ6xvntOWmT3FWGrbwUq5HC7doLJZu6KqzASKI
-        hx0t/iE+7VsGIErLSpVMU0gFj5/H+ZQaKAZypwzKqJpGCyYDp223hOv+Zz4SLqW0
-        aap4i0c2yXuHQ0fuFazE/+lmbeVPJ9sjpKCGtqT+ziNxFO9URfDlN8d6S8yyG2Kc
-        gfoSMJGJPpNha+B3JWXggdUNoTtSLSxTxQuqa+jy3h74M4/4siNT+25L+AnA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1672847925; x=1672934325; bh=H0UTR4kJzeAkAZivC7ap8DwhEwb/
-        MXnY4XPO+uy9kKc=; b=HgaFI40sC8yMY8VOy7QQ2F4//wyS3hYp0LPxGg03HAWk
-        qEtLjRM+JzoyCdjTkYPOh/vyRMocCgEQJJqgRHD5+URJ6Ih4+/PWfKLiNnp0SZ5c
-        2eVHhYC4JvCfKwLmmEFnjnFQRQl/X6q87HzGKYozVQvf+hOjcXLbChRn7u4v6rVv
-        A7h6PsV/16E/QY06UxPPdbXrMJQ3AXHk2Coz61RWuHtjaXz5GAT/CtwzH0J/hC6Z
-        8GBNd2fU1eV3VheOX6SEI3N2hK9df+iJYKLxk619yg08GulRxfRBLXa5HcZVP0mX
-        atQsepbklOuSYA/wRkqz2dILaWkGdP1/uzO37OwLPg==
-X-ME-Sender: <xms:NKK1Y48HslmbYS4XfyvkV25JDSKz4gqEZbPhEXvALJOvcqVVorgYrQ>
-    <xme:NKK1YwvOYWU86IT641Xjgz28D53RJaLRPWwjvOCq1FuTvXSRIj9DM-9LxgP0a6zpv
-    RWXh9d7Rchms20DgzA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrjeeigdekvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:NKK1Y-D0Rn03uTnG6oMJtNULtppKVKQLRwrnCdfDvZq1rkRA1aAVAg>
-    <xmx:NKK1Y4fvmlqny8-TiW5EIb1Km8tOPFA7Fqn4qJNuwbm4wf6rLLbgkw>
-    <xmx:NKK1Y9MK4-XTCquhXJiLE_n3OfFxMW22ddTI_UZsemVu5efG4lpnyQ>
-    <xmx:NaK1YztseASQahJ66RWxLZYnhH-1ueAQdizsGnk9d2-oLHJ_jMdhJw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 43F24B6008D; Wed,  4 Jan 2023 10:58:44 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1185-g841157300a-fm-20221208.002-g84115730
-Mime-Version: 1.0
-Message-Id: <7c531595-e987-422b-bcf7-48ad0ba49ce6@app.fastmail.com>
-In-Reply-To: <20230103164359.24347-1-ysionneau@kalray.eu>
-References: <20230103164359.24347-1-ysionneau@kalray.eu>
-Date:   Wed, 04 Jan 2023 16:58:25 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Yann Sionneau" <ysionneau@kalray.eu>
-Cc:     "Albert Ou" <aou@eecs.berkeley.edu>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Aneesh Kumar" <aneesh.kumar@linux.ibm.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        "Boqun Feng" <boqun.feng@gmail.com>, bpf@vger.kernel.org,
-        "Christian Brauner" <brauner@kernel.org>,
-        devicetree@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Eric Paris" <eparis@redhat.com>, "Ingo Molnar" <mingo@redhat.com>,
-        "Jan Kiszka" <jan.kiszka@siemens.com>,
-        "Jason Baron" <jbaron@akamai.com>, "Jiri Olsa" <jolsa@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Josh Poimboeuf" <jpoimboe@kernel.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Kieran Bingham" <kbingham@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-audit@redhat.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org,
-        "Marc Zyngier" <maz@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        "Oleg Nesterov" <oleg@redhat.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Paul Moore" <paul@paul-moore.com>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Sebastian Reichel" <sre@kernel.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Waiman Long" <longman@redhat.com>,
-        "Will Deacon" <will@kernel.org>, "Alex Michon" <amichon@kalray.eu>,
-        "Ashley Lesdalons" <alesdalons@kalray.eu>,
-        "Benjamin Mugnier" <mugnier.benjamin@gmail.com>,
-        "Clement Leger" <clement.leger@bootlin.com>,
-        "Guillaume Missonnier" <gmissonnier@kalray.eu>,
-        "Guillaume Thouvenin" <gthouvenin@kalray.eu>,
-        "Jean-Christophe Pince" <jcpince@gmail.com>,
-        "Jonathan Borne" <jborne@kalray.eu>,
-        "Jules Maselbas" <jmaselbas@kalray.eu>,
-        "Julian Vetter" <jvetter@kalray.eu>,
-        "Julien Hascoet" <jhascoet@kalray.eu>,
-        "Julien Villette" <jvillette@kalray.eu>,
-        "Louis Morhet" <lmorhet@kalray.eu>,
-        "Luc Michel" <lmichel@kalray.eu>,
-        =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
-        "Marius Gligor" <mgligor@kalray.eu>,
-        "Samuel Jones" <sjones@kalray.eu>,
-        "Thomas Costis" <tcostis@kalray.eu>,
-        "Vincent Chardon" <vincent.chardon@elsys-design.com>
-Subject: Re: [RFC PATCH 00/25] Upstream kvx Linux port
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229739AbjADQCv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 11:02:51 -0500
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6792CB01;
+        Wed,  4 Jan 2023 08:02:50 -0800 (PST)
+Received: by mail-qt1-f172.google.com with SMTP id z12so27529950qtv.5;
+        Wed, 04 Jan 2023 08:02:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qwSsj6dKaBLyzBS+oljx3z67n7iA+If7j6wt5yj7OGk=;
+        b=fgrZ6ee2emsMmV5mzuKTPj+vr4xNyvDPDSRQc4vaHvZ7pFPfOG3KbV08DVpoXMbNSR
+         bjvGkQGMLQ3flRB6dmt75TpznlwgwcgkdnN1Qmin0LNxUDH/8bncGZINoNr8r3K4F2lf
+         8FlSaG/hEjzMaQDEKN4RJ5ctDhACqEvHyb3YmONivmsisdJ2zerx3bIn3JkoTlbXFhYl
+         zAJr3QfK9WQiSUmhrahxcvv4wAqDRo+gZte21fPcE+Z1HYmPoblaBvN6EfUFeM4XoWDX
+         3gSvfVNWO2yb8q1ghMwqrNxPpvtqAoiai2Ss6VvQBuvVNo8GulPo22WYf3XjR1W7iHEQ
+         XvWw==
+X-Gm-Message-State: AFqh2kpdwWyetDEvW87cFrUwUGuXtjKQ6nCpup5Yo3IJdAk1QEHY95//
+        YJDdZ9Q9KAJqrMz7BemjzVs=
+X-Google-Smtp-Source: AMrXdXuMglJVXwPAb6rs5TQsBK2qJgPizgdczySE1YEsATFGWEriPNwr0oOzc96UlJ9LEqSbLw7X3w==
+X-Received: by 2002:ac8:4a07:0:b0:3a5:8084:9f60 with SMTP id x7-20020ac84a07000000b003a580849f60mr67619083qtq.64.1672848169338;
+        Wed, 04 Jan 2023 08:02:49 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:7c6c])
+        by smtp.gmail.com with ESMTPSA id t1-20020ac865c1000000b003a7e4129f83sm19996524qto.85.2023.01.04.08.02.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Jan 2023 08:02:48 -0800 (PST)
+Date:   Wed, 4 Jan 2023 10:02:48 -0600
+From:   David Vernet <void@manifault.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 01/17] bpf: Document XDP RX metadata
+Message-ID: <Y7WjKNv10wt0GZ6y@maniforge.lan>
+References: <20221220222043.3348718-1-sdf@google.com>
+ <20221220222043.3348718-2-sdf@google.com>
+ <Y6x7+BL7eWERwpGy@maniforge.lan>
+ <CAKH8qBs8+gUekdNDRKnU1hg8gCB4Q29eMBhF2NeTT7Y1pyitQQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKH8qBs8+gUekdNDRKnU1hg8gCB4Q29eMBhF2NeTT7Y1pyitQQ@mail.gmail.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 3, 2023, at 17:43, Yann Sionneau wrote:
-> This patch series adds support for the kv3-1 CPU architecture of the kvx family
-> found in the Coolidge (aka MPPA3-80) SoC of Kalray.
->
-> This is an RFC, since kvx support is not yet upstreamed into gcc/binutils,
-> therefore this patch series cannot be merged into Linux for now.
->
-> The goal is to have preliminary reviews and to fix problems early.
->
-> The Kalray VLIW processor family (kvx) has the following features:
-> * 32/64 bits execution mode
-> * 6-issue VLIW architecture
-> * 64 x 64bits general purpose registers
-> * SIMD instructions
-> * little-endian
-> * deep learning co-processor
+On Tue, Jan 03, 2023 at 02:23:03PM -0800, Stanislav Fomichev wrote:
+> On Wed, Dec 28, 2022 at 9:25 AM David Vernet <void@manifault.com> wrote:
+> >
+> > On Tue, Dec 20, 2022 at 02:20:27PM -0800, Stanislav Fomichev wrote:
+> > > Document all current use-cases and assumptions.
+> > >
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Cc: David Ahern <dsahern@gmail.com>
+> > > Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > Cc: Willem de Bruijn <willemb@google.com>
+> > > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> > > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> > > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> > > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> > > Cc: Maryam Tahhan <mtahhan@redhat.com>
+> > > Cc: xdp-hints@xdp-project.net
+> > > Cc: netdev@vger.kernel.org
+> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > ---
+> > >  Documentation/networking/index.rst           |   1 +
+> > >  Documentation/networking/xdp-rx-metadata.rst | 107 +++++++++++++++++++
+> > >  2 files changed, 108 insertions(+)
+> > >  create mode 100644 Documentation/networking/xdp-rx-metadata.rst
+> > >
+> > > diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
+> > > index 4f2d1f682a18..4ddcae33c336 100644
+> > > --- a/Documentation/networking/index.rst
+> > > +++ b/Documentation/networking/index.rst
+> > > @@ -120,6 +120,7 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
+> > >     xfrm_proc
+> > >     xfrm_sync
+> > >     xfrm_sysctl
+> > > +   xdp-rx-metadata
+> > >
+> > >  .. only::  subproject and html
+> > >
+> > > diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
+> > > new file mode 100644
+> > > index 000000000000..37e8192d9b60
+> > > --- /dev/null
+> > > +++ b/Documentation/networking/xdp-rx-metadata.rst
+> >
+> > Hey Stanislav,
+> >
+> > This is looking excellent. Left a few more minor comments and
+> > suggestions.
+> >
+> > > @@ -0,0 +1,107 @@
+> > > +===============
+> > > +XDP RX Metadata
+> > > +===============
+> > > +
+> > > +This document describes how an XDP program can access hardware metadata
+> >
+> > In similar fashion to LWN articles, can we spell out what XDP means the
+> > first time it's used, e.g.:
+> >
+> > ...describes how an eXpress Data Path (XDP) program...
+> >
+> > In general this applies to other acronyms unless they're super obvious,
+> > like "CPU" (thanks for already having done it for XSK).
+> 
+> Sure. Hopefully no need to explain RX below? Don't see anything else..
+> LMK if I missed something
 
-Thanks for posting these, I had been wondering about the
-state of the port. Overall this looks really nice, I can
-see that you and the team have looked at other ports
-and generally made the right decisions.
+Yeah, I think we can forego RX.
 
-I commented on the syscall patch directly, I think it's
-important to stop using the deprecated syscalls as soon
-as possible to avoid having dependencies in too many
-libc binaries. Almost everything else can be changed
-easily as you get closer to upstream inclusion.
+> 
+> > > +related to a packet using a set of helper functions, and how it can pass
+> > > +that metadata on to other consumers.
+> > > +
+> > > +General Design
+> > > +==============
+> > > +
+> > > +XDP has access to a set of kfuncs to manipulate the metadata in an XDP frame.
+> > > +Every device driver that wishes to expose additional packet metadata can
+> > > +implement these kfuncs. The set of kfuncs is declared in ``include/net/xdp.h``
+> > > +via ``XDP_METADATA_KFUNC_xxx``.
+> > > +
+> > > +Currently, the following kfuncs are supported. In the future, as more
+> > > +metadata is supported, this set will grow:
+> > > +
+> > > +- ``bpf_xdp_metadata_rx_timestamp`` returns a packet's RX timestamp
+> > > +- ``bpf_xdp_metadata_rx_hash`` returns a packet's RX hash
+> >
+> > So, I leave this up to you as to whether or not you want to do this, but
+> > there is a built-in mechanism in sphinx that converts doxygen comments
+> > to rendered documentation for a function, struct, etc, and also
+> > automatically links other places in documentation where the function is
+> > referenced. See [0] for an example of this in code, and [1] for an
+> > example of how it's rendered.
+> >
+> > [0]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/Documentation/bpf/kfuncs.rst#n239
+> > [1]: https://docs.kernel.org/bpf/kfuncs.html#c.bpf_task_acquire
+> >
+> > So you would do something like add function headers to the kfuncs, and
+> > then do:
+> >
+> > .. kernel-doc:: net/core/xdp.c
+> >    :identifiers: bpf_xdp_metadata_rx_timestamp bpf_xdp_metadata_rx_hash
+> >
+> > At some point we will need a consistent story for how we document
+> > kfuncs. That's not set in stone yet, which is why I'm saying it's up to
+> > you whether or not you want to do this or just leave it as teletype with
+> > a written description next to it.  Later on when we settle on a
+> > documentation story for kfuncs, we can update all of them to be
+> > documented in the same way.
+> 
+> Let me try and see how it looks in the html doc. I like the idea of
+> referencing the code directly, hopefully less chance it goes stale.
 
-I did not receive most of the other patches as I'm
-not subscribed to all the mainline lists. For future 
-submissions, can you add the linux-arch list to Cc for
-all patches?
+Sounds good!
 
-Reading the rest of the series through lore.kernel.org,
-most of the comments I have are for improvements that
-you may find valuable rather than serious mistakes:
+[...]
 
-- the {copy_to,copy_from,clear}_user functions are
-  well worth optimizing better than the byte-at-a-time
-  version you have, even just a C version built around
-  your __get_user/__put_user inline asm should help, and
-  could be added to lib/usercopy.c.
+Thanks for making all these changes.
 
-- The __raw_{read,write}{b,w,l,q} helpers should
-  normally be defined as inline asm instead of
-  volatile pointer dereferences, I've seen cases where
-  the compiler ends up splitting the access or does
-  other things you may not want on MMIO areas.
-
-- I would recomment implementing HAVE_ARCH_VMAP_STACK
-  as well as IRQ stacks, both of these help to
-  avoid data corruption from stack overflow that you
-  will eventually run into.
-
-- You use qspinlock as the only available spinlock
-  implementation, but only support running on a
-  single cluster of 16 cores. It may help to use
-  the generic ticket spinlock instead, or leave it
-  as a Kconfig option, in particular since you only
-  have the emulated xchg16() atomic for qspinlock.
-
-- Your defconfig file enables CONFIG_EMBEDDED, which
-  in turn enables CONFIG_EXPERT. This is probably
-  not what you want, so better turn off both of these.
-
-- The GENERIC_CALIBRATE_DELAY should not be necessary
-  since you have a get_cycles() based delay loop.
-  Just set loops_per_jiffy to the correct value based
-  on the frequency of the cycle counter, to save
-  a little time during boot and get a more accurate
-  delay loop.
-
-    Arnd
+- David
