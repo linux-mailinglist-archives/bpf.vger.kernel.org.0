@@ -2,74 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 304E665DC13
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 19:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A25F65DC51
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 19:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbjADS0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 13:26:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
+        id S235358AbjADSnx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 13:43:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239757AbjADS00 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 13:26:26 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B3F2C6;
-        Wed,  4 Jan 2023 10:26:25 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id jo4so84724136ejb.7;
-        Wed, 04 Jan 2023 10:26:25 -0800 (PST)
+        with ESMTP id S235202AbjADSnx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 13:43:53 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350401BEB1
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 10:43:51 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id t17so84668954eju.1
+        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 10:43:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=itueWGntME/HJ7mxZ4jEceXi5tp6FXhPueApKpZ9kUg=;
-        b=huxAJLozgoYyBdPxHez+iNgzCdUbuBFXuopahtVd3Oawsaj9btL7D21ClfP+g52eU7
-         93an1oJxDmElkYCxFGozKX8cEH1hKzJ4/MvBn8sGjxmx2AcyYrZ0a4a7NkaOBlSr5btm
-         GaUqcoyJ9EKjJNM1i7F72CVZNJkjlHzZgAI8nc6X4DQoYYtKTCRpx1dCoxXtFGI2+FFO
-         sSFDuHEG+UViEiCEpWNkYT9L0hzfQN/8MjSxebjI5Y906qrX23Z3WIVrn7G19exqA3He
-         bOLHGsieHj3JWoAnNWPqWUcneremyKiu6h/uDS6ys9HgdrV4EbMwXMJhQuE3zR7WFOPJ
-         yxzg==
+        bh=8003zCYODD4/kbWiqTzJi/r6aKzJ3FIQ13/5/KV0E38=;
+        b=qawC9VrIjOKwtIweERH5w8/QuBUsyuNFpswI1RTviVZRDyeZBS5Yy0dmKQBqbkmPF8
+         wu4nrcV1SJw9QowR4m61YicBTBGWOIZosQwari7JymvzU9Dc+ezUE8/e5cOyvvAC+BUM
+         PrMeN7+N2td4bNOZQAAHfN1Al+hq/dWGjp+2QSfVoA4C/M7YxMGGKb3Q2FxFZGOq+/Dj
+         ZjMPBAPU1mNhw93VU5ttNfiEHWlZ4fsXdnJslccOA/sNOaQkXA6OmVV7Rs9TYJbaVwVf
+         zFQPYgteJH3iF5sQbzGIr0yGToh2gSX8uxKftk0hqvuYDITT4NKVGALqwN+Dx8cKHNdD
+         wEfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=itueWGntME/HJ7mxZ4jEceXi5tp6FXhPueApKpZ9kUg=;
-        b=71GoTHs9fTOB2NpFCOESkYzv2t3+BZWay7myZ7bPvPZxITy7tGSbMIIyJiogzu7xQe
-         Ft0+xC0mtJcuFbkhhD99PMRsiAlPzkcioJ9MIEtRhswZnuBv/ZaYXKNgBKVLrTdXylVH
-         LRrHj8Jv8gtNZriUxBIdiUPY3vtGLqTcUileghR3lgQNa8BBMas/pstbDVmnvc9w6tSn
-         +fIytBCig1vZMcCRy1N0Oi2AlvCCMPV9jp0hmLEZCs1oh9t+GyDFeoWk5ChBTVa4vp2k
-         SrDZLfpX+BXlDvjUvXtpwK+0cb5wi9yHQ+pHweKT7nz1iNmSbhTHYPSKD7iGCX9wSPq4
-         vpQA==
-X-Gm-Message-State: AFqh2kq+cH/P9xRAWE2+kJGqWNy/kUoG/P2cO0GtKVoO0hnBcKTyHptP
-        XPGR+nguLQE8AWo/EfnVYvm/Ns6akQyEXIhD3uM=
-X-Google-Smtp-Source: AMrXdXvnMUOKpRxjUz2DoU/uauO3gbCdMCVKOfcRopDdliVKTeyPtpyF9ZTuqTgGvFDyEMJXcIo+gRs5kzkWSgoUXwU=
-X-Received: by 2002:a17:906:30c9:b0:7c1:bb5:f29c with SMTP id
- b9-20020a17090630c900b007c10bb5f29cmr2853641ejb.58.1672856783768; Wed, 04 Jan
- 2023 10:26:23 -0800 (PST)
+        bh=8003zCYODD4/kbWiqTzJi/r6aKzJ3FIQ13/5/KV0E38=;
+        b=KiJv8alFj49MhdfXiFrVQ4jMtw5FQpvdpXd0Jdu5A+xyXvFIzw2rpih8q+dACKH5g5
+         vcJfRmn1R17DBXVDBMws1Lmp1g3B9pTdUbX20xc1wJWhePWYQMplpsjiwly4sqDcyF0c
+         UrwBYivvWUMAQy9539QVYsmur0042CzIFsia4hDqD0Hp5cyBTTDyE4WCgG1c+h4cy1m6
+         dwh6IdQsiy/30DSJc5K3z2BlFcrgODKOr1sXz+OX6YuOZcUczzZQ9a8Z9RPdMO/yW9/t
+         foqKM7GW8JHElkWqsD7znjeflYLJtUJwKvi5v/X6tNKwQYFSAVp9FJk+/OM2+gVTTjDe
+         ebnw==
+X-Gm-Message-State: AFqh2kqJ8Rg4x9ya7AIYFGprm0eQdNZQdUuSFXxl2Yf6uGRKSeLG8qNT
+        lCY3s+4j/YiA/cJtaOL/JkcXCmQZmv5ZdTXrX/c=
+X-Google-Smtp-Source: AMrXdXsInRIjD03SLg4RfSKuBWqpI3Dv5atuByE069Wx6ALif5AgKdcGTiAEKuT73URx13KH6T44e1E1Pai/fqs/IAw=
+X-Received: by 2002:a17:906:a014:b0:7c1:8450:f964 with SMTP id
+ p20-20020a170906a01400b007c18450f964mr4597931ejy.176.1672857829582; Wed, 04
+ Jan 2023 10:43:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com> <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com> <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
-In-Reply-To: <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 4 Jan 2023 10:26:12 -0800
-Message-ID: <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Hou Tao <houtao@huaweicloud.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
+References: <20221207205537.860248-1-joannelkoong@gmail.com>
+ <20221208015434.ervz6q5j7bb4jt4a@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzYGUf=yMry5Ezen2PZqvkfS+o1jSF2e1Fpa+pgAmx+OcA@mail.gmail.com>
+ <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
+ <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
+ <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local> <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
+ <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com> <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local>
+In-Reply-To: <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 4 Jan 2023 10:43:37 -0800
+Message-ID: <CAEf4Bzbvg2bXOj8LPwkRQ0jfTR4y5XQn=ajK_ApVf5W-F=wG2Q@mail.gmail.com>
+Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
+ convenience helpers
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, kernel-team@meta.com,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -81,120 +78,260 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 3, 2023 at 11:14 PM Yonghong Song <yhs@meta.com> wrote:
+On Thu, Dec 29, 2022 at 6:46 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->
->
-> On 1/3/23 10:30 PM, Hou Tao wrote:
-> > Hi,
+> On Thu, Dec 29, 2022 at 03:10:22PM -0800, Andrii Nakryiko wrote:
+> > On Sun, Dec 25, 2022 at 1:52 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Dec 20, 2022 at 11:31:25AM -0800, Andrii Nakryiko wrote:
+> > > > On Fri, Dec 16, 2022 at 9:35 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, Dec 12, 2022 at 12:12:09PM -0800, Andrii Nakryiko wrote:
+> > > > > >
+> > > > > > There is no clean way to ever move from unstable kfunc to a stable helper.
+> > > > >
+> > > > > No clean way? Yet in the other email you proposed a way.
+> > > > > Not pretty, but workable.
+> > > > > I'm sure if ever there will be a need to stabilize the kfunc we will
+> > > > > find a clean way to do it.
+> > > >
+> > > > You can't have stable and unstable helper definition in the same .c
+> > > > file,
+> > >
+> > > of course we can.
+> > > uapi helpers vs kfuncs argument is not a black and white comparison.
+> > > It's not just stable vs unstable.
+> > > uapi has strict rules and helpers in uapi/bpf.h have to follow those rules.
+> > > While kfuncs in terms of stability are equivalent to EXPORT_SYMBOL_GPL.
+> > > Meaning they are largely unstable.
+> > > The upsteam kernel keeps changing those EXPORT_SYMBOL* functions,
+> > > but distros can apply their own "stability rules".
+> > > See Redhat's kABI, for example. A distro can guarantee a stability
+> > > of certain EXPORT_SYMBOL* for their customers, but that doesn't bind
+> > > upstream development.
+> > >
+> > > With uapi bpf helpers we have to guarantee their stability,
+> > > while with kfuncs we can do whatever we want. Right now all kfuncs are
+> > > unstable and to prove the point we changed them couple times already (nf_conn*).
+> > > We also have bpf_obj_new_impl() kfunc which is equivalent to EXPORT_SYMBOL(__kmalloc).
+> > > Hard to imagine more stable and more fundamental function.
+> > > Of course we want bpf programs to use bpf_obj_new() and assume
+> > > that it's going to be available in all future kernel releases.
+> > > But at the same time we're not bound by uapi rules.
+> > > bpf_obj_new() will likely be stable, but not uapi stable.
+> > > If we screw up (or find better way to allocate memory in the future)
+> > > we can change it.
+> > > We can invent our own deprecation rules for stable-ish kfuncs and
+> > > invent our more-unstable-than-current-unstable rules for kfuncs that
+> > > are too much kernel release dependent.
 > >
-> > On 1/4/2023 2:10 PM, Yonghong Song wrote:
-> >>
-> >>
-> >> On 1/3/23 5:47 AM, Hou Tao wrote:
-> >>> Hi,
-> >>>
-> >>> On 1/2/2023 2:48 AM, Yonghong Song wrote:
-> >>>>
-> >>>>
-> >>>> On 12/31/22 5:26 PM, Alexei Starovoitov wrote:
-> >>>>> On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
-> >>>>>> From: Hou Tao <houtao1@huawei.com>
-> >>>>>>
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> The patchset tries to fix the problems found when checking how htab map
-> >>>>>> handles element reuse in bpf memory allocator. The immediate reuse of
-> >>>>>> freed elements may lead to two problems in htab map:
-> >>>>>>
-> >>>>>> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
-> >>>>>>        htab map value and it may corrupt lookup procedure with BFP_F_LOCK
-> >>>>>>        flag which acquires bpf-spin-lock during value copying. The
-> >>>>>>        corruption of bpf-spin-lock may result in hard lock-up.
-> >>>>>> (2) lookup procedure may get incorrect map value if the found element is
-> >>>>>>        freed and then reused.
-> >>>>>>
-> >>>>>> Because the type of htab map elements are the same, so problem #1 can be
-> >>>>>> fixed by supporting ctor in bpf memory allocator. The ctor initializes
-> >>>>>> these special fields in map element only when the map element is newly
-> >>>>>> allocated. If it is just a reused element, there will be no
-> >>>>>> reinitialization.
-> >>>>>
-> >>>>> Instead of adding the overhead of ctor callback let's just
-> >>>>> add __GFP_ZERO to flags in __alloc().
-> >>>>> That will address the issue 1 and will make bpf_mem_alloc behave just
-> >>>>> like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
-> >>>>> will behave the same way.
-> >>>>
-> >>>> Patch https://lore.kernel.org/all/20220809213033.24147-3-memxor@gmail.com/
-> >>>> tried to address a similar issue for lru hash table.
-> >>>> Maybe we need to do similar things after bpf_mem_cache_alloc() for
-> >>>> hash table?
-> >>> IMO ctor or __GFP_ZERO will fix the issue. Did I miss something here ?
-> >>
-> >> The following is my understanding:
-> >> in function alloc_htab_elem() (hashtab.c), we have
-> >>
-> >>                  if (is_map_full(htab))
-> >>                          if (!old_elem)
-> >>                                  /* when map is full and update() is replacing
-> >>                                   * old element, it's ok to allocate, since
-> >>                                   * old element will be freed immediately.
-> >>                                   * Otherwise return an error
-> >>                                   */
-> >>                                  return ERR_PTR(-E2BIG);
-> >>                  inc_elem_count(htab);
-> >>                  l_new = bpf_mem_cache_alloc(&htab->ma);
-> >>                  if (!l_new) {
-> >>                          l_new = ERR_PTR(-ENOMEM);
-> >>                          goto dec_count;
-> >>                  }
-> >>                  check_and_init_map_value(&htab->map,
-> >>                                           l_new->key + round_up(key_size, 8));
-> >>
-> >> In the above check_and_init_map_value() intends to do initializing
-> >> for an element from bpf_mem_cache_alloc (could be reused from the free list).
-> >>
-> >> The check_and_init_map_value() looks like below (in include/linux/bpf.h)
-> >>
-> >> static inline void bpf_obj_init(const struct btf_field_offs *foffs, void *obj)
-> >> {
-> >>          int i;
-> >>
-> >>          if (!foffs)
-> >>                  return;
-> >>          for (i = 0; i < foffs->cnt; i++)
-> >>                  memset(obj + foffs->field_off[i], 0, foffs->field_sz[i]);
-> >> }
-> >>
-> >> static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
-> >> {
-> >>          bpf_obj_init(map->field_offs, dst);
-> >> }
-> >>
-> >> IIUC, bpf_obj_init() will bzero those fields like spin_lock, timer,
-> >> list_head, list_node, etc.
-> >>
-> >> This is the problem for above problem #1.
-> >> Maybe I missed something?
-> > Yes. It is the problem patch #1 tries to fix exactly. Patch #1 tries to fix the
-> > problem by only calling check_and_init_map_value() once for the newly-allocated
-> > element, so if a freed element is reused, its special fields will not be zeroed
-> > again. Is there any other cases which are not covered by the solution or any
-> > other similar problems in hash-tab ?
+> > I'm talking about *mechanics* of having two incompatible definitions
+> > of functions with the same name, not the *concept* of stable vs
+> > unstable API. See [0] where I explained this as a reply to Joanne.
+> >
+> >   [0] https://lore.kernel.org/bpf/CAEf4BzbRQLEjAFUkzzStv0c0=O+r9iZ8hq33sJB2RtSuGrGAEA@mail.gmail.com/
 >
-> No, I checked all cases of check_and_init_map_value() and didn't find
-> any other instances.
+> Mechanics for kfuncs are much better than for helpers.
 
-check_and_init_map_value() is called in two other cases:
-lookup_and_delete[_batch].
-There the zeroing of the fields is necessary because the 'value'
-is a temp buffer that is going to be copied to user space.
-I think the way forward is to add GFP_ZERO to mem_alloc
-(to make it equivalent to prealloc), remove one case
-of check_and_init_map_value from hashmap, add short comments
-to two other cases and add a big comment to check_and_init_map_value()
-that should say that 'dst' must be a temp buffer and should not
-point to memory that could be used in parallel by a bpf prog.
-It feels like we've dealt with this issue a couple times already
-and keep repeating this mistake, so the more comments the better.
+>> *mechanics* of having two incompatible definitions
+>> of functions with the same name,
+
+but you made it clear that no unstable kfunc will ever be promoted to
+BPF helper, so I see no point in arguing further
+
+>
+> extern bool bpf_dynptr_is_null(const struct bpf_dynptr *p) __ksym;
+>
+> will likely work with both gcc and clang.
+> And if it doesn't we can fix it.
+>
+> While when gcc folks saw helpers:
+>
+> static bool (*bpf_dynptr_is_null)(const struct bpf_dynptr *p) = (void *) 777;
+>
+> they realized that it is a hack that abuses compiler optimizations.
+> They even invented attr(kernel_helper) to workaround this issue.
+> After a bunch of arguing gcc added support for this hack without attr,
+> but it's going to be around forever... in gcc, in clang and in kernel.
+> It's something that we could have fixed if it wasn't for uapi.
+> Just one more example of unfixable mistake that causing issues
+> to multiple projects.
+> That's the core issue of kernel uapi rules: inability to fix mistakes.
+
+This is BPF ISA defining `call #N;` to call helper with ID N, which
+you agree that it (ISA) has to be stable, documented and standardized,
+right?
+
+Everything else is just how we expose those constants into C code and
+how libbpf deals with them. Libbpf could support new attribute or even
+extern-based convention, if necessary.
+
+But it wasn't necessary for years and only was brought up during GCC's
+attempt to invent a new convention here. And they successfully dealt
+with this challenge.
+
+>
+> > >
+> > > > But regardless, dynptr is modeled as black box with hidden state, and
+> > > > its API surface area is bigger (offset, size, is null or not,
+> > > > manipulations over those aspects; then there is skb/xdp abstraction to
+> > > > be taken care of for generic read/write). It has a wider *generic* API
+> > > > surface to be useful and effectively used.
+> > >
+> > > tbh dynptr as an abstraction of skb/xdp is not convincing.
+> > > cilium created their own abstraction on top of skb and xdp and it's zero cost.
+> > > While dynptr is not free, so xdp users unlikely to use dynptr(xdp) for perf reasons.
+> > > So I suspect it won't be a success story in the long run, but we
+> > > can certainly try it out since they will be kfuncs and can be deprecated
+> > > if maintenance outweighs the number of users.
+> > >
+> > > > All *two* of them, bpf_get_current_task() and
+> > > > bpf_get_current_task_btf(), right? They are 2 years apart.
+> > > > bpf_get_current_task() was added before BTF era. It is still actively
+> > > > used today and there is nothing wrong with it. It works on older
+> > > > kernels just fine, even with BPF CO-RE (as backporting a few simple
+> > > > patches to generate BTF is simple and easy; not so much with BPF
+> > > > verifier changes to add native BTF support). I don't see much problem
+> > > > having both, they are not maintenance burden.
+> > >
+> > > bpf_get_current_pid_tgid
+> > > bpf_get_current_uid_gid
+> > > bpf_get_current_comm
+> > > bpf_get_current_task
+> > > bpf_get_current_task_btf
+> > > bpf_get_current_cgroup_id
+> > > bpf_get_current_ancestor_cgroup_id
+> > > bpf_skb_ancestor_cgroup_id
+> > > bpf_sk_cgroup_id
+> > > bpf_sk_ancestor_cgroup_id
+> > >
+> > > _are_ a maintenance burden.
+> >
+> > bpf_get_current_pid_tgid() was added in 2015, slightly and
+> > uncritically touched by Daniel in 2016 and we never had any problems
+> > with it ever since. No updates, no maintenance. I don't remember much
+> > problem with other helpers in this list, but I didn't check each one.
+> >
+> > But we certainly have a different understanding of what "maintenance
+> > burden" is. If some code doesn't require constant change and doesn't
+> > prevent changes in some other parts of the system, it's not a
+> > maintenance burden.
+>
+> As I said it's not about working today. If one doesn't touch code
+
+Where do you see "working today"? Quoting myself, just few lines above:
+
+> > If some code doesn't require constant change and doesn't
+> > prevent changes in some other parts of the system, it's not a
+> > maintenance burden.
+
+Which of those helpers prevent us from doing something new? Which ones
+are slowing us down and by how much?
+
+> it will keep working.
+> It's about being able to change it.
+> The uapi bits we simply cannot change.
+
+Yes, we won't change existing helpers, but we can add new ones if we
+need to extend them. That's how APIs work. Yes, they need careful
+considerations when designing and implementing new APIs. Yes, mistakes
+do happen, that's just fact of life and par for the course of software
+development. Yes, we have to live with those mistakes. Nothing changed
+about that.
+
+But somehow libraries and kernel still produce stable APIs and
+maintain them because they clearly provide benefits to end users.
+
+>
+> >
+> > > The verifier got smarter and we could have removed all of them,
+> > > but uapi rules makes it impossible.
+> > > The bpf prog could have been enabled to access all these task_struct
+> > > and cgroup fields directly. Likely without any kfuncs.
+> > >
+> > > bpf_send_signal vs bpf_send_signal_thread
+> > > bpf_jiffies64 vs bpf_this_cpu_ptr
+> > > etc
+> > > there are plenty examples where uapi bpf helpers became a burden.
+> > > They are working and will keep working, but we could have done
+> > > much better job if not for uapi.
+> > > These are the examples where uapi rules are too strong for bpf development.
+> > > Our pace of adding new features is high.
+> > > The kernel uapi rules are too strict for us.
+> >
+> > I'm familiar with the burden of maintaining API stability and
+> > backwards compat. But it's not just about the library/system
+>
+> libbpf 1.0 wasn't the smoothest example of deprecation.
+> But we still did it despite all kinds of negative flame.
+> With uapi helpers we cannot do any of that. No deprecation schemes.
+> While kfuncs allow innovation.
+
+We'll get the same amount of flame when we try to change kfunc that's
+widely adopted.
+
+You are missing the point, though, in trying to pit BPF helpers
+against kfuncs. I'm not saying it has to always be BPF helpers and
+never kfuncs. Both have the right to exist. My point is that in some
+cases BPF helpers are better, in others - kfuncs are more adequate.
+Why is this so controversial?
+
+>
+> > developer's convenience and burden, it's also about the end user's
+> > experience and convenience. BPF tool developers really appreciate when
+> > there are few less quirks to remember and work around across kernel
+> > versions, configurations, architectures, etc. It's the pain that
+> > kernel engineers working on BPF bleeding-edge don't experience in the
+> > BPF selftests environment.
+>
+> There is a trade off between users and developers. We want to make user
+> experience as smooth as possible while preserve the speed of development
+> for the kernel. uapi is in the way of that.
+>
+> > >
+> > > At one point DaveM declared freeze on sizeof(struct sk_buff).
+> > > It was a difficult, but correct decision.
+> > > We have to declare freeze on bpf helpers.
+> > > 211 helpers that have to be maintained forever is a huge burden.
+> >
+> > I still didn't get why we have to freeze anything and how exactly
+> > helpers are a burden.
+> >
+> > But especially in this specific case of few simple dynptr helpers,
+> > especially that other dynptrs generic APIs are already BPF helpers. I
+> > just don't get it and honestly all I see from this discussion is that
+> > you've made up your mind and there is nothing that can be done to
+> > convince you.
+> >
+> > The only "BPF helpers are stable and thus a burden" argument is just
+> > not convincing and I'd even say is mostly false. There are no upsides
+> > to having dynptr helpers as kfuncs, as far as I'm concerned.
+>
+> The main and only upside for everything as kfunc is that we can change it.
+> That's it.
+
+And that's not reason enough to outlaw new BPF helpers wholesale.
+
+>
+> > But there
+> > are a bunch of downsides, even if some of those might be lifted in the
+> > future.
+>
+> imo ability to change outweighs all downsides, since downsides are fixable
+> while inability to change is a burden.
+
+I'm curious what's the mechanism when people disagree with your "imo"
+and have good reasons for that? Is there a scenario where opinion
+other than yours prevails even if you disagree with it?
+
+
+>
+> > The unfortunate thing is that end users that are meant to benefit from
+> > all these helpers and them being "a standard API offering" are not
+> > well represented on the BPF mailing list, unfortunately. And my
+> > opinion and arguments as a proxy for theirs is clearly not enough.
+>
+> I also would like to hear what others on the list are thinking.
