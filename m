@@ -2,65 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A610565E005
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 23:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A3065E011
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 23:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240297AbjADWci (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 17:32:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49330 "EHLO
+        id S240595AbjADWf1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 17:35:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240647AbjADWc0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 17:32:26 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FEC1C10F
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 14:32:24 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id m18so85909227eji.5
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 14:32:24 -0800 (PST)
+        with ESMTP id S235536AbjADWf0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 17:35:26 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E57C42E00
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 14:35:25 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id o2so32291188pjh.4
+        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 14:35:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WNUQbzaHxPQ9Vzi13ZQW11Lvnv1T3eBUyygJnVUR064=;
-        b=C/aDdu6CmNgyd2V/zFwc96SDc/UjFEcUUC0Rup7pHaYld98gWIm5XLCDNCEisy4nC7
-         TOM97zl9D3fzT5XnoDqtAfvHBV+ugZEWUFTwaP4MV63DFqOruAuCDD6RkpWpF3f5fZOr
-         XCRCmoypVI8S7Cmbo3ewll/BInTupj7Y5N6/6JiBcRzoBOYLDixPecLW2bMnRPMRAcFx
-         Wr2C6RBwS4ZMyOODi1XmMnxfXSUbI6TrMqqs3MVhv9wbyz4wB5FiZIPzR+k+WP5OZGxa
-         JjK5p/Z0Vy1jYxjNYl2ShKaRYDjYx50+RBcCOYZEi2ZeKSjkTPRvgXY/sckY31xW/dAQ
-         ZsFw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=16xp0Ny29Nkv4172hDYB/4erWPv+elMmk2a21V3qfrg=;
+        b=IYQc6/BR8oV/io1GlaxTrpE2Vv59OuuI1IfzO1Uclad7LwuMGaY52zuEGIXmkRB2nx
+         bBKn9+Yu5Kb1ykw4heVhPOVxwIwqpmXAHi02hmDrNTsxMgz6W9sWqxR9mV0l2uNvdHYO
+         PRgrQLDM7GoWVmYIcThimdyniFLJlsFWNbvqlsYwsMprYWQ1FKJ7GRHMj0/7xS8+KKhK
+         4QNg8ul1awa2bXP95TPCFn4Q8MjAz3bxDW6kNYJpnhs7SvI7XhHgyU49brKfhvvh2pBA
+         bG70oDMsXfuTZ+O6fTTxtkye8OVcZKRmhI62jBic38iptQKKdJ92cWCUQMengzbgiKp7
+         Hx5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WNUQbzaHxPQ9Vzi13ZQW11Lvnv1T3eBUyygJnVUR064=;
-        b=0TLCZc0NwNWbxqGiOEO5BM4SakL6USdw55QDasS0/eMNnLwUAa4KLrriWPeounBEoI
-         haWl0cHXSRMxXIJ646njKeB8ELaB2NQeqbbKRy9q0Cw11b+y0Vn6L37HxxlYPKLur/qo
-         WPY1riore6LhpIKqQip2EdMMhAZVDI+Fg2l51X0XycFvacIA7VH62ey1XILScKIDUN0m
-         rW6Vlos82CHZ+NoPcuRrfOHMijisDwaDrUkmvakscvSTXJWYWaZ088NZECXFEBFhy5Kq
-         Ibi+5QwGFgWhXOp6kGlEen4M6slm3HkY5DnIa/eDWC3XL8NGakR5I5IM9G6JFJKelsEc
-         5PyQ==
-X-Gm-Message-State: AFqh2kol6vr1i6z7lWGcr9Pkdkl7k2ydNoOAIsWlm+2dvkqrV+ABO3GR
-        JLndAG1TVoOZ7CoaFUjDPqiibAy6rL8WxFzdKBq24gWxwBo=
-X-Google-Smtp-Source: AMrXdXtYadKRdCvGeres6SXp8CEpc+b8YDUIBpRTlyTVc3zbfThhD79btQM0+Co1PtM0nQdS2VLIfGNUo+AS9F2yv1M=
-X-Received: by 2002:a17:906:2ccc:b0:7f3:3b2:314f with SMTP id
- r12-20020a1709062ccc00b007f303b2314fmr3797472ejr.115.1672871543392; Wed, 04
- Jan 2023 14:32:23 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=16xp0Ny29Nkv4172hDYB/4erWPv+elMmk2a21V3qfrg=;
+        b=Cd9syHV9qTn0boBmiksuU3teEPLBIsE4FydfvP+yW01h7emW/+mil31fgf6teEPqlk
+         p3WGUb/BcpNwUKVsxqrUTERBeR6o5FsC9Si0iMY3zmvG/eaYGgBfpfgfzDLsYImkZDju
+         C3n9II7zD1pUNk/A0bk9Vc76r64f/npWtf71z2YJ9GaokW5vAOSykS4Myn2f68LWy188
+         HaPDh9gxPrxJj6tf4i3WPT9v+3l8lYAh2jmQ5+0ZOGPz2dd6pjLIaV2SNfBu1rxvgLmL
+         cSnOrbGrj/CheiYxDiFmglOsIHnV+ctSJWmJchcxSMtJcGsr71fwr/bFxxPkwk5qfq5k
+         AbRg==
+X-Gm-Message-State: AFqh2kpQOKKuen2c44QJ/gzUtj5bEYSIzfQ9g97LtL9dxs2awUhsdYaS
+        IrWt7g+f3HBforjlb1+jdXg=
+X-Google-Smtp-Source: AMrXdXt2FLeMFLp51KfoM2qLNv4ZXGF3a2Lc7vxTmKQL37tG0378FmUs963AQ5dCmcXFY9g19zrkdQ==
+X-Received: by 2002:a17:90a:d784:b0:226:a539:1dfe with SMTP id z4-20020a17090ad78400b00226a5391dfemr5593049pju.11.1672871724708;
+        Wed, 04 Jan 2023 14:35:24 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:1385])
+        by smtp.gmail.com with ESMTPSA id f62-20020a17090a704400b00225f49bd4b6sm50492pjk.36.2023.01.04.14.35.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Jan 2023 14:35:24 -0800 (PST)
+Date:   Wed, 4 Jan 2023 14:35:21 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 7/7] bpf: unify PTR_TO_MAP_{KEY,VALUE} with
+ default case in regsafe()
+Message-ID: <20230104223521.hi2wvabfn7ldgh6o@macbook-pro-6.dhcp.thefacebook.com>
+References: <20221223054921.958283-1-andrii@kernel.org>
+ <20221223054921.958283-8-andrii@kernel.org>
+ <20221228020015.xquaykefotqmok7r@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzaT_kp-F3QMeGqpCf8ekhmDVjHwV4y7fYtxjWPFq1yhSg@mail.gmail.com>
+ <20221230021917.yuvm4g7sjj7vy5qc@MacBook-Pro-6.local>
+ <CAEf4BzaaE1B0Xezb5jrH0p-my4_GEb7EPqfAQVBPLyLkq672=g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230101083403.332783-1-memxor@gmail.com> <20230101083403.332783-3-memxor@gmail.com>
-In-Reply-To: <20230101083403.332783-3-memxor@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 4 Jan 2023 14:32:11 -0800
-Message-ID: <CAEf4BzZ9-n+F8DoFHCskW9iQ3BZsUBB4ua2TwWdcyYXTjOvHjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/8] bpf: Fix missing var_off check for ARG_PTR_TO_DYNPTR
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        David Vernet <void@manifault.com>,
-        Eduard Zingerman <eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaaE1B0Xezb5jrH0p-my4_GEb7EPqfAQVBPLyLkq672=g@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,163 +76,123 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 1, 2023 at 12:34 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> Currently, the dynptr function is not checking the variable offset part
-> of PTR_TO_STACK that it needs to check. The fixed offset is considered
-> when computing the stack pointer index, but if the variable offset was
-> not a constant (such that it could not be accumulated in reg->off), we
-> will end up a discrepency where runtime pointer does not point to the
-> actual stack slot we mark as STACK_DYNPTR.
->
-> It is impossible to precisely track dynptr state when variable offset is
-> not constant, hence, just like bpf_timer, kptr, bpf_spin_lock, etc.
-> simply reject the case where reg->var_off is not constant. Then,
-> consider both reg->off and reg->var_off.value when computing the stack
-> pointer index.
->
-> A new helper dynptr_get_spi is introduced to hide over these details
-> since the dynptr needs to be located in multiple places outside the
-> process_dynptr_func checks, hence once we know it's a PTR_TO_STACK, we
-> need to enforce these checks in all places.
->
-> Note that it is disallowed for unprivileged users to have a non-constant
-> var_off, so this problem should only be possible to trigger from
-> programs having CAP_PERFMON. However, its effects can vary.
->
-> Without the fix, it is possible to replace the contents of the dynptr
-> arbitrarily by making verifier mark different stack slots than actual
-> location and then doing writes to the actual stack address of dynptr at
-> runtime.
->
-> Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  kernel/bpf/verifier.c                         | 83 ++++++++++++++-----
->  .../bpf/prog_tests/kfunc_dynptr_param.c       |  2 +-
->  .../testing/selftests/bpf/progs/dynptr_fail.c |  6 +-
->  3 files changed, 66 insertions(+), 25 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index f7248235e119..ca970f80e395 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -638,11 +638,34 @@ static void print_liveness(struct bpf_verifier_env *env,
->                 verbose(env, "D");
->  }
->
-> -static int get_spi(s32 off)
-> +static int __get_spi(s32 off)
->  {
->         return (-off - 1) / BPF_REG_SIZE;
->  }
->
-> +static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> +{
-> +       int off, spi;
-> +
-> +       if (!tnum_is_const(reg->var_off)) {
-> +               verbose(env, "dynptr has to be at the constant offset\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       off = reg->off + reg->var_off.value;
-> +       if (off % BPF_REG_SIZE) {
-> +               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
+On Tue, Jan 03, 2023 at 02:04:44PM -0800, Andrii Nakryiko wrote:
+> > It sounds logical, but it can get tricky with ranges and branch taken logic.
+> > Consider something like:
+> > R1=(min=2,max=8), R2=(min=1, max=10)
+> > if (R1 within R2) // bpf prog is doing its own 'within'
+> 
+> a bit confused what is "R1 within R2" here and what you mean "bpf prog
+> is doing its own 'within'"? Any sort of `R1 < R2` checks (and any
+> other op: <=, >=, etc) can't really kick in branch elimination because
+> R2_min=1 < R1_max=8, so arithmetically speaking we can't conclude that
+> "R1 is always smaller than R2", so both branches would have to be
+> examined.
 
-s/reg->off/off/ ?
+Something like that. Details didn't matter to me.
+It was hypothetical 'within' operation just to illustrate the point.
 
-> +               return -EINVAL;
-> +       }
-> +
-> +       spi = __get_spi(off);
-> +       if (spi < 1) {
-> +               verbose(env, "cannot pass in dynptr at an offset=%d\n", (int)(off + reg->var_off.value));
+> But I probably misunderstood your example, sorry.
+> 
+> >   // branch taken kicks in
+> > else
+> >   // issues that were never checked
+> >
+> > Now new state has:
+> > R1=(min=4,max=6), R2=(min=5, max=5)
+> >
+> > Both R1 and R2 of new state individually range_within of old safe state,
+> > but together the prog may go to the unverified path.
+> > Not sure whether it's practical today.
+> > You asked for hypothetical, so here it goes :)
+> 
+> No problem with "hypothetical-ness". But my confusion and argument is
+> similarly "in principle"-like. Because if such an example above can be
+> constructed then this would be an issue for SCALAR as well, right? And
+> if you can bypass verifier's safety with SCALAR, you (hypothetically)
+> could use that SCALAR to do out-of-bounds memory access by adding this
+> SCALAR to some mem-like register.
 
-s/(int)(off + reg->var_off.value)/off/?
+Correct. The issue would apply to regular scalar if such 'within' operation
+was available.
 
-> +               return -EINVAL;
-> +       }
-> +       return spi;
-> +}
-> +
+> So that's my point and my source of confusion: if we don't trust
+> var_off+range_within() logic to handle *all* situations correctly,
+> then we should be worried about SCALARs just as much as anything else
+> (unless, as usual, I missed something).
 
-[...]
+Yes. I personally don't believe that doing range_within for all regtypes
+by default is a safer way forward.
+The example wasn't real. It was trying to demonstrate a possible issue.
+You insist to see a real example with range_within.
+I don't have it. It's a gut feel that it could be there because
+I could construct it with fake 'within'.
 
-> @@ -2422,7 +2456,9 @@ static int mark_dynptr_read(struct bpf_verifier_env *env, struct bpf_reg_state *
->          */
->         if (reg->type == CONST_PTR_TO_DYNPTR)
->                 return 0;
-> -       spi = get_spi(reg->off);
-> +       spi = dynptr_get_spi(env, reg);
-> +       if (WARN_ON_ONCE(spi < 0))
-> +               return spi;
->         /* Caller ensures dynptr is valid and initialized, which means spi is in
->          * bounds and spi is the first dynptr slot. Simply mark stack slot as
->          * read.
-> @@ -5946,6 +5982,11 @@ static int process_kptr_func(struct bpf_verifier_env *env, int regno,
->         return 0;
->  }
->
-> +static bool arg_type_is_release(enum bpf_arg_type type)
-> +{
-> +       return type & OBJ_RELEASE;
-> +}
-> +
+> > More gut feel than real issue.
+> >
+> > >
+> > > >
+> > > > SCALARS and PTR_TO_BTF_ID will likely dominate future bpf progs.
+> > > > Keeping default as regs_exact (that does ID match) is safer default.
+> > >
+> > > It's fine, though the point of this patch set was patch #7, enabling
+> > > logic similar to PTR_TO_MAP_VALUE for PTR_TO_MEM and PTR_TO_BUF. I can
+> > > send specific fixes for that, no problem. But as I said above, I'm
+> > > really curious to understand what kind of situations will lead to
+> > > unsafety if we do var_off+range_within checks.
+> >
+> > PTR_TO_MEM and PTR_TO_BUF explicitly are likely ok despite my convoluted
+> > example above.
+> > I'm less sure about PTR_TO_BTF_ID. It could be ok.
+> > Just feels safer to opt-in each type explicitly.
+> 
+> Sure, I can just do a simple opt-in, no problem. As I said, mostly
+> trying to understand the issue overall.
+> 
+> For PTR_TO_BTF_ID specifically, I can see how we can enable
+> var_off+range_within for cases when we access some array, right? But
+> then I think we'll be enforcing that we are staying within the
+> boundaries of a single array field, never crossing into another field.
 
-no need to move it?
+Likely yes, but why?
+You're trying hard to collapse the switch statement in regsafe()
+while claiming it's a safer way. I don't see it this way.
+For example the upcoming active_lock_id would need its own check_ids() call.
+It will be necessary for PTR_TO_BTF_ID only.
+Why collapse the switch into 'default:' just to bring some back?
+The default without checking active_lock_id through check_ids
+would be wrong, so collapsed switch doesn't make things safer.
 
->  /* There are two register types representing a bpf_dynptr, one is PTR_TO_STACK
->   * which points to a stack slot, and the other is CONST_PTR_TO_DYNPTR.
->   *
-> @@ -5986,12 +6027,14 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
->         }
->         /* CONST_PTR_TO_DYNPTR already has fixed and var_off as 0 due to
->          * check_func_arg_reg_off's logic. We only need to check offset
-> -        * alignment for PTR_TO_STACK.
-> +        * and its alignment for PTR_TO_STACK.
->          */
-> -       if (reg->type == PTR_TO_STACK && (reg->off % BPF_REG_SIZE)) {
-> -               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
-> -               return -EINVAL;
-> +       if (reg->type == PTR_TO_STACK) {
-> +               err = dynptr_get_spi(env, reg);
-> +               if (err < 0)
-> +                       return err;
->         }
-> +
->         /*  MEM_UNINIT - Points to memory that is an appropriate candidate for
->          *               constructing a mutable bpf_dynptr object.
->          *
-> @@ -6070,11 +6113,6 @@ static bool arg_type_is_mem_size(enum bpf_arg_type type)
->                type == ARG_CONST_SIZE_OR_ZERO;
->  }
->
-> -static bool arg_type_is_release(enum bpf_arg_type type)
-> -{
-> -       return type & OBJ_RELEASE;
-> -}
-> -
->  static bool arg_type_is_dynptr(enum bpf_arg_type type)
->  {
->         return base_type(type) == ARG_PTR_TO_DYNPTR;
-> @@ -6404,8 +6442,9 @@ static u32 dynptr_ref_obj_id(struct bpf_verifier_env *env, struct bpf_reg_state
+> But just to take a step back, from my perspective var_off and
+> range_within are complementary and solve slightly different uses, but
+> should be both satisfied:
+>   - var_off is not precise with range boundaries (due to some bits too
+> coarsely marked as unknown), but it's useful to enforce having a value
+> being a multiple of some power-of-2 (e.g., knowing for sure that
+> lowest 2 bits are zero means that value is multiple of 4; I haven't
+> checked, but I assume we check with for various pointer accesses to
+> ensure we don't have misaligned reads). They can be only approximately
+> used for actual possible range of values.
 
-why not make dynptr_ref_obj_id return int and <0 on error? There seems
-to be just one place where we call dynptr_ref_obj_id and we can check
-and report error there
+Right. var_off is used for alignment checking too. grep tnum_is_aligned.
+We have bare minimum of testing for that though.
+Only few tests in the test_verifier use BPF_F_STRICT_ALIGNMENT
 
->
->         if (reg->type == CONST_PTR_TO_DYNPTR)
->                 return reg->ref_obj_id;
-> -
-> -       spi = get_spi(reg->off);
-> +       spi = dynptr_get_spi(env, reg);
-> +       if (WARN_ON_ONCE(spi < 0))
-> +               return U32_MAX;
->         return state->stack[spi].spilled_ptr.ref_obj_id;
->  }
->
+>   - range_within() can and should be used for *precise* range of value
+> tracking, but it can't express that alignment restriction.
 
-[...]
+Right.
+
+> So while I previously thought that we can do away without var_off, I
+> now think there are cases when it's necessary. But if we are sure that
+> we handle any SCALAR case correctly for any possible var_off +
+> range_within situation, it should be fine to do that for any mem-like
+> pointer just as much, as var_off+range_within is basically a MEM +
+> SCALAR combined case.
+
+Right. Likely true.
+
+> Anyways, I'm not blocked on this, but I think we'll benefit from
+> taking this discussion to its logical conclusion.
+
+Not sure what conclusion you're looking for.
