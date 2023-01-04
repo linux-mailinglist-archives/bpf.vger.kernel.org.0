@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E77265DD1E
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 20:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE1165DD45
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 20:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235434AbjADTwZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 14:52:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        id S231406AbjADT4K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 14:56:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240323AbjADTvo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 14:51:44 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5154F1DDC1
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 11:51:42 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id cl14so760186pjb.2
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 11:51:42 -0800 (PST)
+        with ESMTP id S239744AbjADT4F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 14:56:05 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE73B88
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 11:56:04 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id k19so15933840pfg.11
+        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 11:56:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gGfRufgwiyUdXa3eJ5tbVx7FLU0LfHSZG2806Bmarno=;
-        b=a7cAHwHS7ZlNYSGok8EvRN6QNUXBaWx3gPocN9uoNpzzwh+af6FTMM8fNHrSVkYnUc
-         pGlHd+RqrawjuL737+gg5m3F0kJ5kast+M6+WOSADCoLkS623xIevutmof4BPfY+B3W6
-         YY37vn0E2gWk6Yyp9xa85MPepiPiPAfO9raQ5I2KuFeQ4KJi/lj65243ia4xLH8iUyre
-         pDmjVOBew5VbrjO2abkWm8SGdzVZc6uHoL2dWxYBcFp7B71DCUgLg3yGtY6PGWfYLJUh
-         6J7lGnmAQypVA06MpK9/HdaEmi4gsApUb6oi+H6Md/XVrHoKGI9bdiswZJqFwlJD9G6p
-         0kzA==
+        bh=GL9qc3LxvXagBCtSqVAYj+m4hsRmatQLtuw0RiWDYZw=;
+        b=M6OzN8cFTpXG1AaQfjdrhd6bJFBZTFEsy8BRCI18XoNXqShKbqXfpBMF1lvMBXnVD3
+         PqZ/S/KAbZ8SLlP2242LgNqrtdNHoJca6UUhY+twr1KZ2NbbBvUbh6EBd+/WicFynccS
+         ViPFqW835zbUqgPWpe14rsTHuaSEyQCLEaHnaHOxJ6CkQPqXG14SqenPK+9NPFU8MHSf
+         fheii8MJ76vUp5UIPtcNpdSu7tZZWCxQ9UeSyaS0JvCtXPTh+yR64MFqAIK2AgSxmvzA
+         u60iWNN0IgZLJ9Ch2PBzKfs27dVX+zmkVOz634nEAOIkxBpWkAeyqoO5IN3FtL3lE5Ih
+         5/Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gGfRufgwiyUdXa3eJ5tbVx7FLU0LfHSZG2806Bmarno=;
-        b=UbyiGr8Y7+SKorWXZYSZUbF3xDhvchC27oPn12iyP8SItlQb9Q8QpYvD9O9cexcQQ2
-         xm3EjKPq2HQzZzFbXynMCjeYRmzskJeuLSQTjsFHDtE/UdvsSCA6rIGR/1dkjjd4EVXu
-         d712EAwrHvii1UFYqTTHpGS9xKL0rNvvzTus9yMeO6T8ZrMNDWyaRStTgGcsmAs0upfZ
-         66VjQyopNB9zOFGCmV7z0f16TL6DBrdmlWRP6Fzkpn7Gli++BGigW+EpH5y+KMJ75YDB
-         yzzui96uqwTpKcCbdu8VAffiWZTRh6eVLPFpzT+CA8s0MdqgVLYk4hBFccCNvKe3f9Ic
-         h2Gg==
-X-Gm-Message-State: AFqh2kp35Cp/KBYiFayjcKRrMcSwWIVKMwQHhxJcQkNBwJY6VwVMOSU0
-        sZ7ccmKJq2gJQNAiewmSL0Y=
-X-Google-Smtp-Source: AMrXdXuuW8SkFvlTcwqyBhcRGrQTcMIDNsiznM/UCdIWGj6KkmeTDkTUhYD+g8h3JpzTyvLuzOMHOA==
-X-Received: by 2002:a17:903:41c7:b0:189:ea22:6d6a with SMTP id u7-20020a17090341c700b00189ea226d6amr69897590ple.60.1672861901781;
-        Wed, 04 Jan 2023 11:51:41 -0800 (PST)
+        bh=GL9qc3LxvXagBCtSqVAYj+m4hsRmatQLtuw0RiWDYZw=;
+        b=KiOJv2FV2T9AtfzSKyJa0R0S3zJvctbC/j21eXTQTKUIOKoomfociT7eJGltLlM8zm
+         3m0YzW3NOH6jo4Q3BqIZJaRiCFDFKRys/yhiTdKLwjrRPFk8G67uCWrVM4KW9YhyVUX5
+         L1MMuZzG0QbWzIF46PNRQYG1qd7jYWPrBCI5fcqFjkaX/mN6FUqXGgAwcxxkU/p2LeYX
+         CiVOY4mYkqNRC9Xg5LBxEtu3vOqbgHlbC77kjHph+zu++oe9+lbm/nSMb5sZ6p+bfsfv
+         kav9C3bfGStXwsF0teM7dtFqg9KIknIR62LJ7PUFSo2nhHjQhvFYT8w0/viXtnwUD6wK
+         j3Cg==
+X-Gm-Message-State: AFqh2ko+JCMMpJarEkT4U6fOMiXfYlH+GpYBiPzhyKqDmILBvWo/7bYO
+        k3nRr4uXcFwMtftJNB5SxY4=
+X-Google-Smtp-Source: AMrXdXvDxj6OWhvB+z6dp3oQEmUXi493uoKuI3Uf/nL5R5v+vOdJAQTO7h4JRBNthI1uhB/cP3w9sQ==
+X-Received: by 2002:a05:6a00:1d8e:b0:578:16e6:815d with SMTP id z14-20020a056a001d8e00b0057816e6815dmr52387236pfw.21.1672862163527;
+        Wed, 04 Jan 2023 11:56:03 -0800 (PST)
 Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:1385])
-        by smtp.gmail.com with ESMTPSA id jd6-20020a170903260600b00192a8d795f3sm11597370plb.192.2023.01.04.11.51.40
+        by smtp.gmail.com with ESMTPSA id 63-20020a620542000000b0056be1581126sm23573708pff.143.2023.01.04.11.56.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jan 2023 11:51:41 -0800 (PST)
-Date:   Wed, 4 Jan 2023 11:51:38 -0800
+        Wed, 04 Jan 2023 11:56:02 -0800 (PST)
+Date:   Wed, 4 Jan 2023 11:56:00 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     David Vernet <void@manifault.com>,
@@ -60,9 +60,8 @@ Cc:     David Vernet <void@manifault.com>,
         Song Liu <song@kernel.org>
 Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
  convenience helpers
-Message-ID: <20230104195138.q43ioskabs4c32py@macbook-pro-6.dhcp.thefacebook.com>
-References: <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
- <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local>
+Message-ID: <20230104195600.wmsgfuhtjlzbgyrc@macbook-pro-6.dhcp.thefacebook.com>
+References: <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local>
  <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
  <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
  <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
@@ -70,11 +69,12 @@ References: <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
  <Y68wP/MQHOhUy2EY@maniforge.lan>
  <20221230193112.h23ziwoqqb747zn7@macbook-pro-6.dhcp.thefacebook.com>
  <Y69RZeEvP2dXO7to@maniforge.lan>
- <CAEf4BzY0aJNGT321Y7Fx01sjHAMT_ynu2-kN_8gB_UELvd7+vw@mail.gmail.com>
+ <20221231004213.h5fx3loccbs5hyzu@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4Bzb06r3bbkngJDYD-XjHJ1ibW_eqr5JwSBATEqJFM0umuQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzY0aJNGT321Y7Fx01sjHAMT_ynu2-kN_8gB_UELvd7+vw@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb06r3bbkngJDYD-XjHJ1ibW_eqr5JwSBATEqJFM0umuQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -85,81 +85,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 10:43:52AM -0800, Andrii Nakryiko wrote:
+On Wed, Jan 04, 2023 at 10:44:07AM -0800, Andrii Nakryiko wrote:
+> >
+> > Agree that any hard policy like 'only kfuncs from now on' gotta have its limits.
+> > Maybe there will be a strong reason to add a new helper one day,
+> > so we can keep the door open a tiny bit for an exception,
+> > but for dynptr...
+> > There are kfuncs with dynptr already (bpf_verify_pkcs7_signature)
+> > So precedent is already made.
 > 
-> struct bpf_dynptr dptr = ...;
-> bool is_null = false;
+> bpf_verify_pkcs7_signature() is using dynptr as a pointer to memory.
+> It's a totally valid and intended use case, to pass memory area of
+> statically unknown size, yes.
 > 
-> if (bpf_core_value_exists(enum bpf_func_id, BPF_FUNC_dynptr_is_null)) {
->     is_null = bpf_dynptr_is_null(&dptr);
-> } else {
->     struct bpf_dynptr_kern *kdptr = (void*)&dptr;
->     is_null = !!BPF_CORE_READ(kdptr, data);
-> }
-> 
-> How do you detect the existence of kfunc today? Preferably without
-> doing extra work in user-space.
-> 
-> Now, let's say kfunc changes its signature. Show me a short example on
-> how you deal with that in BPF C code?
+> But that's very different from having basic dynptr helpers like
+> is_null() and trim/advance as kfunc. Such helpers are stable, they
+> manipulate generic attributes of dynptr: size, offset, underlying
+> memory pointer. There is nothing unstable and potentially changing
+> about them.
 
-Didn't we add bpf_core_type_matches for func protos specifically
-to deal with function signature changes in the kernel after tracepoint
-args got swapped?
-I'm assuming the same mechanism will work for kfuncs.
-If not we can come up with a new one.
+dynptr is defined in uapi as:
+struct bpf_dynptr {
+        __u64 :64;
+        __u64 :64;
+} __attribute__((aligned(8)));
 
-> 
-> Think about sched_ext. Right now it's so bleeding edge that you have
-> to assume the very latest and freshest kernel code. So you know all
-> the kfuncs that you need should exist otherwise sched_ext doesn't work
-> at all. Ok, happy place.
-> 
-> Now a year or two passes by. Some kfuncs are added, some are changed.
-> We still believe that BPF CO-RE (compile once - run everywhere) is
-> good and we don't want to compile and distribute multiple versions of
-> BPF application, right? You'll want to do some extra (or more
-> performant) stuff if kernel is recent and has some new kfunc, but
-> fallback to some default suboptimal behavior otherwise. How do you do
-> that in a simple and straightforward way? 
+So sizes, offset and memory pointer are not stable today and
+there is no need to stabilize this part of it.
 
-with a help of CORE, of course.
-If it doesn't exist today we can add it.
+> From original exchange:
+> 
+> > > > So just because there is no perfect way to
+> > > > handle all the SKB/XDP physical non-contiguity, doesn't mean that the
+> > > > dynptr concept itself is flawed or not well thought out. It's just
+> > >
+> > > I think that's exactly what it means. dynptr concept is flawed.
+> 
+> Must be a lot of typos in here ;) because as written it clearly states
+> that the whole concept of dynptr is flawed.
 
-> But even worse is what if
-> some critical kfunc is changed between kernel versions and you do
-> *need* to support both versions. Think about those aspects, because
-> sched_ext will run into them almost inevitably soon after its
-> inclusion into kernel.
-> 
-> 
-> One way or another there are some technical solution of various
-> degrees of creativity. And I'm actually not sure if I have a solution
-> for kfunc signature change at all. Without BTF we could use two
-> separate .c files and statically link them together, which would work
-> because extern is untyped in pure C. But with BPF static linking we do
-> have BTF information for each extern, and those BTF types will be
-> incompatible for the same extern func.
-> 
-> We can probably come up with some hacks and conventions, as usual, but
-> better start thinking about them now.
-> 
-> But hopefully you can empathize a bit more with poor end users that
-> have to do hack like this and why having bpf_dynptr API defined as
-> stable BPF helpers, with no extra dependencies on BTF in kernel, 
-
-BTF is a reasonable dependency.
-You've just used it to detect whether helper exists or not.
-So it's fine to use the same to check whether kfunc exists or not.
-
-> 
-> Depends on perspective. If I was some humble dev trying to build
-> BPF-based tool that should work on x86, arm64, s390x, and riscv (or
-> whatever other architecture), and dynptr API is only based on kfuncs,
-> I'm screwed. I can't sponsor or do kfunc support for my favorite
-> architecture, I'm stuck waiting for this to be done by someone some
-> time, if ever.
-
-If kfuncs and bpf trampoline don't work on a particular architecture
-that developer is likely screwed anyway. Dynptr is the last thing they
-would worry about.
+Maybe will we realize a year from now that it is?
+We have some uapi exposure of dynptr in uapi. I think it's a safer bet
+to keep it to the minimum.
