@@ -2,72 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E3D65DF73
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 23:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171C665DF75
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 23:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240440AbjADWAi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 17:00:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
+        id S240455AbjADWAj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 17:00:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240446AbjADWAH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 17:00:07 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7C941005
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 14:00:04 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id e11-20020a63d94b000000b0048988ed9a6cso15913735pgj.1
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 14:00:04 -0800 (PST)
+        with ESMTP id S240456AbjADWAI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 17:00:08 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF403D1DA
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 14:00:06 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-487b0bf1117so211077567b3.5
+        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 14:00:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yDeG9+Wzk9wr1VVLbh/dGRxB/zWq+4DEDPFG5kjmy3g=;
-        b=JAb2H4G7vcjy0JCG7T/EERs8v3dCscA07ujTHrXyqhk+QHtB0OUpl+RWkWSVCu8EVX
-         bNhJGcRCX8WPLzrEkRAtHruWmMYGNPz2Vuh0STKk7sIovTkAxiTIVSKWFMz8b6P3yFla
-         l5DPtKmFxAG56coIITSDg4RSMgS9u7LsjaSe7hLXn8iA95PfP61zzMNIBDrp1hp2b2g4
-         jQ3SuBSXqb+vFxXFXWpxXc5KOLVWh5ReGwESWASoj3l2V2X42d1gFuRIB7DEdSMp5Vd6
-         M0meMz0LBbDlY6yUiP6COF/ZOQwE94T3rKnHRds7Qi3CmSv7WPTCvxwxSDAxujESGltk
-         5r1Q==
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zicm0rX/TpnKyflA/xReyBN3Yj+d6N9OR/OU9dOQUDY=;
+        b=jBZ1QEGOuMyQzsWHnTwNeuvaUxxwg/daMpPqFRHYC0+Xc7jFbc6RgFBeQCO0D1n6aQ
+         Yaz6fdopcx/FkKLGfkfi/UayQEZbphclrQR3L4lZtzPLT5Gp9oiqAKBHGj7rQkIl7M28
+         J26w3g9UpDZ8oVuu9kV6cgi/bHQ+C88Zp5FLrDa+yyIwur6WBetSoUDOMnzBopTPSNft
+         K6ybGOxal1Q/jYJmIPnS+3O5qkwDyt12+yczWk7F3dQaQOg2XR9N4C7pR1Wbw9hCCXjV
+         k2oy63vMCso7RHWAVYBsHGoCauokF+XrnhOgeNCY/fesPlsl3mGEpycTEODi4qj+9E7z
+         xBpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yDeG9+Wzk9wr1VVLbh/dGRxB/zWq+4DEDPFG5kjmy3g=;
-        b=Vvf0qbSSUntEEn201qVq0+U1ooApnGROHIHeOx0VuiVkXF5+pz8LJLcl/fpm/nUvpk
-         jDi5jgXWD4ulLAwytPbFt/QMI/WrJ1/LfcnIDDOaovQi1H+9n6sn1B5yB+gD2HIGwwVQ
-         mLCiGUkeq1klSxDMDNYO8LMx1/SQOfAYHDAapK5qIqG3T8ojS3zF0m6v5suLPdo4gk7O
-         ZAwJdWsuXAcwmkYyoxhWXw98uSTZ2ls4q+FYgbkb+n2pax8/Q27CsyrkoB2paAANpGOj
-         Hn9ThK50DQDuQcolswobaKwSddTpDFAtluW7q4jI9iz8dj8SzIO2V4+4/CFWecmSHGls
-         PVYA==
-X-Gm-Message-State: AFqh2krL0Q/7JMjPPWfD3MY3E+ZAJgbJ4Xw9Ct0l5iGGxFDgmMKMtJws
-        ywOOtj55VtLRa9LCqxgH3KcAg1EF0jqa/D4L41TqPaR3xen4hdZwbsUm6bFq7ziDpFyvgVfOG5K
-        pyM9ydeWOxBE8DPIEYQ/vXyYZR3IFNn+TLiWkw5olCFD64rgwPQ==
-X-Google-Smtp-Source: AMrXdXuzXBNTgT7HGUrUqrT/gTkC9VaD4HhtgEVoPAUjkQgz5J/BXnelrp/vng9CN6LNilqC8zfndSg=
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zicm0rX/TpnKyflA/xReyBN3Yj+d6N9OR/OU9dOQUDY=;
+        b=eyGWc2i1dJxPv9iwnGqmhbdm3HsT9yfOiekDGgK8nr03gN9BNhVfgFHt280BA8yh5r
+         QcoBnzLLjjQrjeIQR5hK6Umsr2gGzVHtLU7ZW0m/ZYJQeI+ic3fFbjhC38qEsfqPx7R9
+         mlHBgwjzIXe0wQuE4E/FviLZLj0yZPWr/+PGdvhIpZVaDzRW9Jl5QLZsa6SfNZ2wl3QP
+         4gvNyVYusijGtztdCMi8W0WR2dPp2/xaqF3gn0eQLZ05v2V+wSgLKKd9hUzW3csP19qk
+         cUQoJ1EK5R9JlTqnj8AVk8V0C3cmhCoRXnFp22V9fa5zW8aRwrIn2fd2p4u0fEwQXpCW
+         iutA==
+X-Gm-Message-State: AFqh2krpiHv5xk+/NJYB83fNa+NVp6YEZJBrzVrr56ZBmYu5B5/I2VP7
+        OeN5C9DVq1mE+7qXxkJQazaIgYmkRwwtjzpDPz8f86w35QEMhAUKKPucduJyj0n5WJuj2Ypf7+C
+        DBFPfhKeOxoUu002tL/RSg3lJ69qbL+7kpPWhi/wv6K70Bt9nrg==
+X-Google-Smtp-Source: AMrXdXuhiejvSXEGCP9bcvjU9hAnjTgT6yBCh05yjAlcEiwJTU1UPk1vl+ykmRxhcMavL/G0m94sL/U=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a62:e90e:0:b0:57f:1e2b:4c56 with SMTP id
- j14-20020a62e90e000000b0057f1e2b4c56mr2460294pfh.31.1672869603825; Wed, 04
- Jan 2023 14:00:03 -0800 (PST)
-Date:   Wed,  4 Jan 2023 13:59:40 -0800
+ (user=sdf job=sendgmr) by 2002:a25:904:0:b0:6fb:e344:9665 with SMTP id
+ 4-20020a250904000000b006fbe3449665mr6260288ybj.98.1672869605489; Wed, 04 Jan
+ 2023 14:00:05 -0800 (PST)
+Date:   Wed,  4 Jan 2023 13:59:41 -0800
 In-Reply-To: <20230104215949.529093-1-sdf@google.com>
 Mime-Version: 1.0
 References: <20230104215949.529093-1-sdf@google.com>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Message-ID: <20230104215949.529093-9-sdf@google.com>
-Subject: [PATCH bpf-next v6 08/17] bpf: Support consuming XDP HW metadata from
- fext programs
+Message-ID: <20230104215949.529093-10-sdf@google.com>
+Subject: [PATCH bpf-next v6 09/17] veth: Introduce veth_xdp_buff wrapper for xdp_buff
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org,
-        "=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,303 +78,178 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+No functional changes. Boilerplate to allow stuffing more data after xdp_buff.
 
-Instead of rejecting the attaching of PROG_TYPE_EXT programs to XDP
-programs that consume HW metadata, implement support for propagating the
-offload information. The extension program doesn't need to set a flag or
-ifindex, these will just be propagated from the target by the verifier.
-We need to create a separate offload object for the extension program,
-though, since it can be reattached to a different program later (which
-means we can't just inherit the offload information from the target).
-
-An additional check is added on attach that the new target is compatible
-with the offload information in the extension prog.
-
-Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: Maryam Tahhan <mtahhan@redhat.com>
+Cc: xdp-hints@xdp-project.net
+Cc: netdev@vger.kernel.org
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/linux/bpf.h   |  14 ++++++
- kernel/bpf/offload.c  | 113 ++++++++++++++++++++++++++++++++----------
- kernel/bpf/syscall.c  |  13 +++++
- kernel/bpf/verifier.c |   5 --
- 4 files changed, 113 insertions(+), 32 deletions(-)
+ drivers/net/veth.c | 56 +++++++++++++++++++++++++---------------------
+ 1 file changed, 31 insertions(+), 25 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a9078f842b96..2ea32d242fc7 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2484,6 +2484,7 @@ int bpf_dev_bound_kfunc_check(struct bpf_verifier_log=
- *log,
- 			      struct bpf_prog_aux *prog_aux);
- void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id);
- int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr);
-+int bpf_prog_dev_bound_inherit(struct bpf_prog *new_prog, struct bpf_prog =
-*old_prog);
- void bpf_dev_bound_netdev_unregister(struct net_device *dev);
-=20
- static inline bool bpf_prog_is_dev_bound(const struct bpf_prog_aux *aux)
-@@ -2496,6 +2497,8 @@ static inline bool bpf_prog_is_offloaded(const struct=
- bpf_prog_aux *aux)
- 	return aux->offload_requested;
- }
-=20
-+bool bpf_prog_dev_bound_match(struct bpf_prog *lhs, struct bpf_prog *rhs);
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index ac7c0653695f..04ffd8cb2945 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -116,6 +116,10 @@ static struct {
+ 	{ "peer_ifindex" },
+ };
+ 
++struct veth_xdp_buff {
++	struct xdp_buff xdp;
++};
 +
- static inline bool bpf_map_is_offloaded(struct bpf_map *map)
+ static int veth_get_link_ksettings(struct net_device *dev,
+ 				   struct ethtool_link_ksettings *cmd)
  {
- 	return unlikely(map->ops =3D=3D &bpf_map_offload_ops);
-@@ -2535,6 +2538,12 @@ static inline int bpf_prog_dev_bound_init(struct bpf=
-_prog *prog,
- 	return -EOPNOTSUPP;
- }
-=20
-+static inline int bpf_prog_dev_bound_inherit(struct bpf_prog *new_prog,
-+					     struct bpf_prog *old_prog)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline void bpf_dev_bound_netdev_unregister(struct net_device *dev)
+@@ -592,23 +596,24 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
+ 	rcu_read_lock();
+ 	xdp_prog = rcu_dereference(rq->xdp_prog);
+ 	if (likely(xdp_prog)) {
+-		struct xdp_buff xdp;
++		struct veth_xdp_buff vxbuf;
++		struct xdp_buff *xdp = &vxbuf.xdp;
+ 		u32 act;
+ 
+-		xdp_convert_frame_to_buff(frame, &xdp);
+-		xdp.rxq = &rq->xdp_rxq;
++		xdp_convert_frame_to_buff(frame, xdp);
++		xdp->rxq = &rq->xdp_rxq;
+ 
+-		act = bpf_prog_run_xdp(xdp_prog, &xdp);
++		act = bpf_prog_run_xdp(xdp_prog, xdp);
+ 
+ 		switch (act) {
+ 		case XDP_PASS:
+-			if (xdp_update_frame_from_buff(&xdp, frame))
++			if (xdp_update_frame_from_buff(xdp, frame))
+ 				goto err_xdp;
+ 			break;
+ 		case XDP_TX:
+ 			orig_frame = *frame;
+-			xdp.rxq->mem = frame->mem;
+-			if (unlikely(veth_xdp_tx(rq, &xdp, bq) < 0)) {
++			xdp->rxq->mem = frame->mem;
++			if (unlikely(veth_xdp_tx(rq, xdp, bq) < 0)) {
+ 				trace_xdp_exception(rq->dev, xdp_prog, act);
+ 				frame = &orig_frame;
+ 				stats->rx_drops++;
+@@ -619,8 +624,8 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
+ 			goto xdp_xmit;
+ 		case XDP_REDIRECT:
+ 			orig_frame = *frame;
+-			xdp.rxq->mem = frame->mem;
+-			if (xdp_do_redirect(rq->dev, &xdp, xdp_prog)) {
++			xdp->rxq->mem = frame->mem;
++			if (xdp_do_redirect(rq->dev, xdp, xdp_prog)) {
+ 				frame = &orig_frame;
+ 				stats->rx_drops++;
+ 				goto err_xdp;
+@@ -801,7 +806,8 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
  {
- }
-@@ -2549,6 +2558,11 @@ static inline bool bpf_prog_is_offloaded(struct bpf_=
-prog_aux *aux)
- 	return false;
- }
-=20
-+static inline bool bpf_prog_dev_bound_match(struct bpf_prog *lhs, struct b=
-pf_prog *rhs)
-+{
-+	return false;
-+}
-+
- static inline bool bpf_map_is_offloaded(struct bpf_map *map)
- {
- 	return false;
-diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-index 50ba391af281..e0956d524578 100644
---- a/kernel/bpf/offload.c
-+++ b/kernel/bpf/offload.c
-@@ -187,39 +187,27 @@ static void __bpf_offload_dev_netdev_unregister(struc=
-t bpf_offload_dev *offdev,
- 	kfree(ondev);
- }
-=20
--int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
-+static int __bpf_prog_dev_bound_init(struct bpf_prog *prog, struct net_dev=
-ice *netdev)
- {
- 	struct bpf_offload_netdev *ondev;
- 	struct bpf_prog_offload *offload;
- 	int err;
-=20
--	if (attr->prog_type !=3D BPF_PROG_TYPE_SCHED_CLS &&
--	    attr->prog_type !=3D BPF_PROG_TYPE_XDP)
--		return -EINVAL;
--
--	if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-+	if (!netdev)
- 		return -EINVAL;
-=20
--	if (attr->prog_type =3D=3D BPF_PROG_TYPE_SCHED_CLS &&
--	    attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY)
--		return -EINVAL;
-+	offload =3D kzalloc(sizeof(*offload), GFP_USER);
-+	if (!offload)
-+		return -ENOMEM;
-=20
- 	offload->prog =3D prog;
-+	offload->netdev =3D netdev;
-=20
--	offload->netdev =3D dev_get_by_index(current->nsproxy->net_ns,
--					   attr->prog_ifindex);
--	err =3D bpf_dev_offload_check(offload->netdev);
--	if (err)
--		goto err_maybe_put;
--
--	prog->aux->offload_requested =3D !(attr->prog_flags & BPF_F_XDP_DEV_BOUND=
-_ONLY);
--
--	down_write(&bpf_devs_lock);
- 	ondev =3D bpf_offload_find_netdev(offload->netdev);
- 	if (!ondev) {
- 		if (bpf_prog_is_offloaded(prog->aux)) {
- 			err =3D -EINVAL;
--			goto err_unlock;
-+			goto err_free;
+ 	void *orig_data, *orig_data_end;
+ 	struct bpf_prog *xdp_prog;
+-	struct xdp_buff xdp;
++	struct veth_xdp_buff vxbuf;
++	struct xdp_buff *xdp = &vxbuf.xdp;
+ 	u32 act, metalen;
+ 	int off;
+ 
+@@ -815,22 +821,22 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+ 	}
+ 
+ 	__skb_push(skb, skb->data - skb_mac_header(skb));
+-	if (veth_convert_skb_to_xdp_buff(rq, &xdp, &skb))
++	if (veth_convert_skb_to_xdp_buff(rq, xdp, &skb))
+ 		goto drop;
+ 
+-	orig_data = xdp.data;
+-	orig_data_end = xdp.data_end;
++	orig_data = xdp->data;
++	orig_data_end = xdp->data_end;
+ 
+-	act = bpf_prog_run_xdp(xdp_prog, &xdp);
++	act = bpf_prog_run_xdp(xdp_prog, xdp);
+ 
+ 	switch (act) {
+ 	case XDP_PASS:
+ 		break;
+ 	case XDP_TX:
+-		veth_xdp_get(&xdp);
++		veth_xdp_get(xdp);
+ 		consume_skb(skb);
+-		xdp.rxq->mem = rq->xdp_mem;
+-		if (unlikely(veth_xdp_tx(rq, &xdp, bq) < 0)) {
++		xdp->rxq->mem = rq->xdp_mem;
++		if (unlikely(veth_xdp_tx(rq, xdp, bq) < 0)) {
+ 			trace_xdp_exception(rq->dev, xdp_prog, act);
+ 			stats->rx_drops++;
+ 			goto err_xdp;
+@@ -839,10 +845,10 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+ 		rcu_read_unlock();
+ 		goto xdp_xmit;
+ 	case XDP_REDIRECT:
+-		veth_xdp_get(&xdp);
++		veth_xdp_get(xdp);
+ 		consume_skb(skb);
+-		xdp.rxq->mem = rq->xdp_mem;
+-		if (xdp_do_redirect(rq->dev, &xdp, xdp_prog)) {
++		xdp->rxq->mem = rq->xdp_mem;
++		if (xdp_do_redirect(rq->dev, xdp, xdp_prog)) {
+ 			stats->rx_drops++;
+ 			goto err_xdp;
  		}
-=20
- 		/* When only binding to the device, explicitly
-@@ -227,25 +215,80 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, un=
-ion bpf_attr *attr)
- 		 */
- 		err =3D __bpf_offload_dev_netdev_register(NULL, offload->netdev);
- 		if (err)
--			goto err_unlock;
-+			goto err_free;
- 		ondev =3D bpf_offload_find_netdev(offload->netdev);
- 	}
- 	offload->offdev =3D ondev->offdev;
- 	prog->aux->offload =3D offload;
- 	list_add_tail(&offload->offloads, &ondev->progs);
--	dev_put(offload->netdev);
--	up_write(&bpf_devs_lock);
-=20
- 	return 0;
--err_unlock:
--	up_write(&bpf_devs_lock);
--err_maybe_put:
--	if (offload->netdev)
--		dev_put(offload->netdev);
-+err_free:
- 	kfree(offload);
- 	return err;
+@@ -862,7 +868,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+ 	rcu_read_unlock();
+ 
+ 	/* check if bpf_xdp_adjust_head was used */
+-	off = orig_data - xdp.data;
++	off = orig_data - xdp->data;
+ 	if (off > 0)
+ 		__skb_push(skb, off);
+ 	else if (off < 0)
+@@ -871,21 +877,21 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+ 	skb_reset_mac_header(skb);
+ 
+ 	/* check if bpf_xdp_adjust_tail was used */
+-	off = xdp.data_end - orig_data_end;
++	off = xdp->data_end - orig_data_end;
+ 	if (off != 0)
+ 		__skb_put(skb, off); /* positive on grow, negative on shrink */
+ 
+ 	/* XDP frag metadata (e.g. nr_frags) are updated in eBPF helpers
+ 	 * (e.g. bpf_xdp_adjust_tail), we need to update data_len here.
+ 	 */
+-	if (xdp_buff_has_frags(&xdp))
++	if (xdp_buff_has_frags(xdp))
+ 		skb->data_len = skb_shinfo(skb)->xdp_frags_size;
+ 	else
+ 		skb->data_len = 0;
+ 
+ 	skb->protocol = eth_type_trans(skb, rq->dev);
+ 
+-	metalen = xdp.data - xdp.data_meta;
++	metalen = xdp->data - xdp->data_meta;
+ 	if (metalen)
+ 		skb_metadata_set(skb, metalen);
+ out:
+@@ -898,7 +904,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
+ 	return NULL;
+ err_xdp:
+ 	rcu_read_unlock();
+-	xdp_return_buff(&xdp);
++	xdp_return_buff(xdp);
+ xdp_xmit:
+ 	return NULL;
  }
-=20
-+int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
-+{
-+	struct net_device *netdev;
-+	int err;
-+
-+	if (attr->prog_type !=3D BPF_PROG_TYPE_SCHED_CLS &&
-+	    attr->prog_type !=3D BPF_PROG_TYPE_XDP)
-+		return -EINVAL;
-+
-+	if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-+		return -EINVAL;
-+
-+	if (attr->prog_type =3D=3D BPF_PROG_TYPE_SCHED_CLS &&
-+	    attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY)
-+		return -EINVAL;
-+
-+	netdev =3D dev_get_by_index(current->nsproxy->net_ns, attr->prog_ifindex)=
-;
-+	if (!netdev)
-+		return -EINVAL;
-+
-+	err =3D bpf_dev_offload_check(netdev);
-+	if (err)
-+		goto out;
-+
-+	prog->aux->offload_requested =3D !(attr->prog_flags & BPF_F_XDP_DEV_BOUND=
-_ONLY);
-+
-+	down_write(&bpf_devs_lock);
-+	err =3D __bpf_prog_dev_bound_init(prog, netdev);
-+	up_write(&bpf_devs_lock);
-+
-+out:
-+	dev_put(netdev);
-+	return err;
-+}
-+
-+int bpf_prog_dev_bound_inherit(struct bpf_prog *new_prog, struct bpf_prog =
-*old_prog)
-+{
-+	int err;
-+
-+	if (!bpf_prog_is_dev_bound(old_prog->aux))
-+		return 0;
-+
-+	if (bpf_prog_is_offloaded(old_prog->aux))
-+		return -EINVAL;
-+
-+	new_prog->aux->dev_bound =3D old_prog->aux->dev_bound;
-+	new_prog->aux->offload_requested =3D old_prog->aux->offload_requested;
-+
-+	down_write(&bpf_devs_lock);
-+	if (!old_prog->aux->offload) {
-+		err =3D -EINVAL;
-+		goto out;
-+	}
-+
-+	err =3D __bpf_prog_dev_bound_init(new_prog, old_prog->aux->offload->netde=
-v);
-+
-+out:
-+	up_write(&bpf_devs_lock);
-+	return err;
-+}
-+
- int bpf_prog_offload_verifier_prep(struct bpf_prog *prog)
- {
- 	struct bpf_prog_offload *offload;
-@@ -671,6 +714,22 @@ bool bpf_offload_dev_match(struct bpf_prog *prog, stru=
-ct net_device *netdev)
- }
- EXPORT_SYMBOL_GPL(bpf_offload_dev_match);
-=20
-+bool bpf_prog_dev_bound_match(struct bpf_prog *lhs, struct bpf_prog *rhs)
-+{
-+	bool ret;
-+
-+	if (bpf_prog_is_offloaded(lhs->aux) !=3D bpf_prog_is_offloaded(rhs->aux))
-+		return false;
-+
-+	down_read(&bpf_devs_lock);
-+	ret =3D lhs->aux->offload && rhs->aux->offload &&
-+	      lhs->aux->offload->netdev &&
-+	      lhs->aux->offload->netdev =3D=3D rhs->aux->offload->netdev;
-+	up_read(&bpf_devs_lock);
-+
-+	return ret;
-+}
-+
- bool bpf_offload_prog_map_match(struct bpf_prog *prog, struct bpf_map *map=
-)
- {
- 	struct bpf_offloaded_map *offmap;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 191a4312f4b7..2ec2f53eeff6 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2605,6 +2605,13 @@ static int bpf_prog_load(union bpf_attr *attr, bpfpt=
-r_t uattr)
- 			goto free_prog_sec;
- 	}
-=20
-+	if (type =3D=3D BPF_PROG_TYPE_EXT && dst_prog &&
-+	    bpf_prog_is_dev_bound(dst_prog->aux)) {
-+		err =3D bpf_prog_dev_bound_inherit(prog, dst_prog);
-+		if (err)
-+			goto free_prog_sec;
-+	}
-+
- 	/* find program type: socket_filter vs tracing_filter */
- 	err =3D find_prog_type(type, prog);
- 	if (err < 0)
-@@ -3021,6 +3028,12 @@ static int bpf_tracing_prog_attach(struct bpf_prog *=
-prog,
- 			goto out_put_prog;
- 		}
-=20
-+		if (bpf_prog_is_dev_bound(prog->aux) &&
-+		    !bpf_prog_dev_bound_match(prog, tgt_prog)) {
-+			err =3D -EINVAL;
-+			goto out_put_prog;
-+		}
-+
- 		key =3D bpf_trampoline_compute_key(tgt_prog, NULL, btf_id);
- 	}
-=20
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0d0a49a2c5fd..8c1b1259f30b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -16531,11 +16531,6 @@ int bpf_check_attach_target(struct bpf_verifier_lo=
-g *log,
- 	if (tgt_prog) {
- 		struct bpf_prog_aux *aux =3D tgt_prog->aux;
-=20
--		if (bpf_prog_is_dev_bound(tgt_prog->aux)) {
--			bpf_log(log, "Replacing device-bound programs not supported\n");
--			return -EINVAL;
--		}
--
- 		for (i =3D 0; i < aux->func_info_cnt; i++)
- 			if (aux->func_info[i].type_id =3D=3D btf_id) {
- 				subprog =3D i;
---=20
+-- 
 2.39.0.314.g84b9a713c41-goog
 
