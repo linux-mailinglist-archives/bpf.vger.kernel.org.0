@@ -2,238 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC87C65D5BA
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 15:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E071865D737
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 16:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239412AbjADOdA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 09:33:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        id S229528AbjADPYf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 10:24:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239580AbjADOcr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 09:32:47 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D728637533
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 06:32:45 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id bn26so13696048wrb.0
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 06:32:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3YqrE2THxqluakJiX4FbxNBBk15XXMhZz6zppelXSlA=;
-        b=Mxv/hg71BxBqapN6RTpQY//7OmCLMVTGPR9bPmtuBKdEfk6MEyqBDFMrjuGpJI0Nc0
-         BLfkjKYA3bR4SYXDZUq2u79e7NglSdrEG69GYwrswcSZA/BBaJvB4YccCWV3/8XOz2tm
-         oHXyFi2ZLlW+BE7qNUeTO3eciTb5y5yBAibze+q1qSqfCEGFVubT/kPZDv9hoOAXOU/j
-         OkX5wkCSDLXufT5OXEdRTgGy8oipImusJX3A23RushAhcb38PddiANlsxYQySjbUUlMj
-         1ZC3A4XBAMBvnJBX0HAARJhe2ngGzm/z5Qx9ed6p835Ehd5fYnCoEAdPPVuRr2HV6oaH
-         NX1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3YqrE2THxqluakJiX4FbxNBBk15XXMhZz6zppelXSlA=;
-        b=2Pp5Sz0mUcm4Daoup/4DTCgJ62QfgbWsg2SxmlH2wfbbQiymC21wXHFlF9aIxPtRcV
-         FfAfeYOeZIXlg8xuzhr3oVRfaO1rHiG3XcFLYz2SnAPIMuyz02AnnmQkv+zIMLzXH0aL
-         poQCEj9jhly7Edyse61f1wQ8Wf3z9sLywOiYdcfJd6+B8DUPfDs6uzktcmXUKNMunPRW
-         sSTGNonKHx3W7PlJwwrN7ZScyf8U8M/95TqMV+VbDVa4qmlMQrhG2qip6PmTtsA+ZbnH
-         GgDriM9kKt3oO5jZbXAE/xM6NAEQueEgIDmqHv+Vro+zPHir4YWrk3JwPG50GrSvNZKU
-         GRDA==
-X-Gm-Message-State: AFqh2kr44/3AC7d4TMwpLKsqDbhJm7ID2yC9Y4AhpOd9XnIpp2xIOAhQ
-        ij1Q39huIXwdgod1WuCs/UvAoMql4ygHpKX2bzP5sA3M5eM=
-X-Google-Smtp-Source: AMrXdXv9ysQ1WtvbpHccQImvhRz71iUgjjPMhP4zMIRNKlcib+vz2iDqQCwAzNR+znTp1ipdXxt6gDBzT72UBGg8KCQ=
-X-Received: by 2002:adf:d222:0:b0:25d:a7fd:6797 with SMTP id
- k2-20020adfd222000000b0025da7fd6797mr929438wrh.346.1672842764299; Wed, 04 Jan
- 2023 06:32:44 -0800 (PST)
+        with ESMTP id S229499AbjADPYe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 10:24:34 -0500
+Received: from zproxy110.enst.fr (zproxy110.enst.fr [IPv6:2001:660:330f:2::c0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64C2EB1
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 07:24:30 -0800 (PST)
+Received: from localhost (localhost [IPv6:::1])
+        by zproxy110.enst.fr (Postfix) with ESMTP id 37CDD8124F;
+        Wed,  4 Jan 2023 16:24:28 +0100 (CET)
+Received: from zproxy110.enst.fr ([IPv6:::1])
+        by localhost (zproxy110.enst.fr [IPv6:::1]) (amavisd-new, port 10032)
+        with ESMTP id h5qR78F9jTB0; Wed,  4 Jan 2023 16:24:27 +0100 (CET)
+Received: from localhost (localhost [IPv6:::1])
+        by zproxy110.enst.fr (Postfix) with ESMTP id BF0CE81269;
+        Wed,  4 Jan 2023 16:24:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.10.3 zproxy110.enst.fr BF0CE81269
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ip-paris.fr;
+        s=DC645FAA-A815-11EB-B77D-7E405BEDA08B; t=1672845867;
+        bh=mqM87GZnNdNeOa1zrQ8ZSBe0TRLUV5MPVAyG6fQgf+8=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=cB52+bE5Kw2OYmpt9M8U3+3Fq51oA2iQdYaj8kDm2CTCyLBXY1faQoM1CYvS+Tlwh
+         F8Fn/n2MGKXmsGlNgg8JLt/3A+QzdJ/1gPFifsImpcfPzvryzKrWpa5thU83yP03rN
+         JWo/XaPHNH6AqXHYvWYbyysmg552cVbxBgL7+JK1TGGbc+5Ig5VAnjHCrQQhoJ6e0i
+         0XkSp6kB9moUu6id2L9QyekHiJvskrN9gAAP8zIOjp1w+5WyejlXEkIuVSj/Bt8l9U
+         xHoKCxdRNt5YAO6Gd5zbMvB0YbSR7UsV4XwIhsRHCuykjpR3nJeMIXfnT8ej9T3WXe
+         +kuZx0J4TiecQ==
+X-Virus-Scanned: amavisd-new at zproxy110.enst.fr
+Received: from zproxy110.enst.fr ([IPv6:::1])
+        by localhost (zproxy110.enst.fr [IPv6:::1]) (amavisd-new, port 10026)
+        with ESMTP id Wobi9TVGnHxY; Wed,  4 Jan 2023 16:24:27 +0100 (CET)
+Received: from zmail-ipp1.enst.fr (zmail-ipp1.enst.fr [137.194.2.209])
+        by zproxy110.enst.fr (Postfix) with ESMTP id 9FB038124F;
+        Wed,  4 Jan 2023 16:24:27 +0100 (CET)
+Date:   Wed, 4 Jan 2023 16:24:27 +0100 (CET)
+From:   Victor Laforet <victor.laforet@ip-paris.fr>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     bpf@vger.kernel.org
+Message-ID: <1105578275.675049.1672845867568.JavaMail.zimbra@ip-paris.fr>
+In-Reply-To: <Y7PhWlqdG/TjwT75@krava>
+References: <346230382.476954.1672152966557.JavaMail.zimbra@ip-paris.fr> <Y6sWqgncfvtRHp+b@krava> <505155146.488099.1672236042622.JavaMail.zimbra@ip-paris.fr> <42d3f4d8-fa8b-5774-0f6b-b12162c24736@meta.com> <5692f180-5b78-48e0-b974-b60bd58c0839@Spark> <Y7PhWlqdG/TjwT75@krava>
+Subject: Re: bpf_probe_read_user EFAULT
 MIME-Version: 1.0
-References: <20221219041551.69344-1-xiangxia.m.yue@gmail.com>
- <20221219041551.69344-2-xiangxia.m.yue@gmail.com> <c41daf29-43b4-8924-b5af-49f287ba8cdc@meta.com>
- <CAADnVQLE+M0xEK+L8Tu7fqsjFxNFdEyFvR4q3U1f1N1tomZ2bQ@mail.gmail.com>
- <ac540d41-4ac3-4d70-39e8-722e3fb360cd@meta.com> <CAMDZJNV_J-LmxxzX5DMGHQLm6WyYqG2GAMHb=WZvBG_y1rUOYg@mail.gmail.com>
- <323005b1-67f6-9eec-46af-4952e133e1c4@meta.com> <dc658ded-719f-17bd-9166-e335a86150a6@huawei.com>
- <ff6473d8-c640-267e-c0f7-a92ce747c888@meta.com>
-In-Reply-To: <ff6473d8-c640-267e-c0f7-a92ce747c888@meta.com>
-From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Date:   Wed, 4 Jan 2023 22:32:06 +0800
-Message-ID: <CAMDZJNWs3jSbZwbSe-U4ypMSqhjgJ=Z8AyYcz=wEzX-B4pJg7w@mail.gmail.com>
-Subject: Re: [bpf-next v3 2/2] selftests/bpf: add test case for htab map
-To:     Yonghong Song <yhs@meta.com>, Hou Tao <houtao1@huawei.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [2a04:8ec0:0:144:e9f5:68c4:e3a1:2559]
+X-Mailer: Zimbra 9.0.0_GA_4485 (ZimbraWebClient - GC108 (Mac)/9.0.0_GA_4478)
+Thread-Topic: bpf_probe_read_user EFAULT
+Thread-Index: l2VwSDzLdlWsCvnEX5viTFOLpZAESQ==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_BAD_THREAD_QP_64,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 4, 2023 at 4:01 PM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 1/3/23 11:51 PM, Hou Tao wrote:
-> > Hi,
+Ok thanks. As I understand, tp_btf/+ probes (specifically tp_btf/sched_swit=
+ch that I need) cannot be sleepable? It is then not possible to read user s=
+pace memory from the bpf code?
+
+----- Mail original -----
+De: "Jiri Olsa" <olsajiri@gmail.com>
+=C3=80: "Victor Laforet" <victor.laforet@ip-paris.fr>
+Cc: "Jiri Olsa" <olsajiri@gmail.com>, "Yonghong Song" <yhs@meta.com>, "bpf"=
+ <bpf@vger.kernel.org>
+Envoy=C3=A9: Mardi 3 Janvier 2023 09:03:38
+Objet: Re: bpf_probe_read_user EFAULT
+
+On Mon, Jan 02, 2023 at 11:07:50PM +0100, Victor Laforet wrote:
+> Thanks!
+>=20
+> I have tried to use bpf_copy_from_user_task() in place of bpf_probe_read_=
+user() however I cannot seem to run my program. It fails with 'unknown func=
+ bpf_copy_from_user_task=E2=80=99.
+> If I understood correctly, this function should be in =E2=80=98bpf/bpf_he=
+lpers.h=E2=80=99?
+
+the declaration is in bpf_helper_defs.h, which is included by
+bpf_helpers.h, so you need to #include it
+
+>=20
+> Another quick question:
+> I have set the bpf program as sleepable using =E2=80=98=09bpf_program__se=
+t_flags(skel, BPF_F_SLEEPABLE);'
+> I couldn=E2=80=99t find any other way to do that. Is it the right way to =
+set it sleepable?
+
+should work, but you could specify that directly in the program
+section name, like SEC("fentry.s/...")
+
+and it's just certain program types that can sleep:
+
+=09[jolsa@krava bpf]$ grep SEC_SLEEPABLE libbpf.c
+=09...
+        SEC_DEF("uprobe.s+",            KPROBE, 0, SEC_SLEEPABLE, attach_up=
+robe),
+        SEC_DEF("uretprobe.s+",         KPROBE, 0, SEC_SLEEPABLE, attach_up=
+robe),
+        SEC_DEF("fentry.s+",            TRACING, BPF_TRACE_FENTRY, SEC_ATTA=
+CH_BTF | SEC_SLEEPABLE, attach_trace),
+        SEC_DEF("fmod_ret.s+",          TRACING, BPF_MODIFY_RETURN, SEC_ATT=
+ACH_BTF | SEC_SLEEPABLE, attach_trace),
+        SEC_DEF("fexit.s+",             TRACING, BPF_TRACE_FEXIT, SEC_ATTAC=
+H_BTF | SEC_SLEEPABLE, attach_trace),
+        SEC_DEF("lsm.s+",               LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | =
+SEC_SLEEPABLE, attach_lsm),
+        SEC_DEF("iter.s+",              TRACING, BPF_TRACE_ITER, SEC_ATTACH=
+_BTF | SEC_SLEEPABLE, attach_iter),
+        SEC_DEF("syscall",              SYSCALL, 0, SEC_SLEEPABLE),
+
+jirka
+
+
+>=20
+> Victor
+> On 28 Dec 2022 at 20:41 +0100, Yonghong Song <yhs@meta.com>, wrote:
 > >
-> > On 1/4/2023 3:09 PM, Yonghong Song wrote:
-> >>
-> >>
-> >> On 1/2/23 6:40 PM, Tonghao Zhang wrote:
-> >>>    a
-> >>>
-> >>> On Thu, Dec 29, 2022 at 2:29 PM Yonghong Song <yhs@meta.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 12/28/22 2:24 PM, Alexei Starovoitov wrote:
-> >>>>> On Tue, Dec 27, 2022 at 8:43 PM Yonghong Song <yhs@meta.com> wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> On 12/18/22 8:15 PM, xiangxia.m.yue@gmail.com wrote:
-> >>>>>>> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> >>>>>>>
-> >>>>>>> This testing show how to reproduce deadlock in special case.
-> >>>>>>> We update htab map in Task and NMI context. Task can be interrupted by
-> >>>>>>> NMI, if the same map bucket was locked, there will be a deadlock.
-> >>>>>>>
-> >>>>>>> * map max_entries is 2.
-> >>>>>>> * NMI using key 4 and Task context using key 20.
-> >>>>>>> * so same bucket index but map_locked index is different.
-> >>>>>>>
-> >>>>>>> The selftest use perf to produce the NMI and fentry nmi_handle.
-> >>>>>>> Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
-> >>>>>>> map syscall increase this counter in bpf_disable_instrumentation.
-> >>>>>>> Then fentry nmi_handle and update hash map will reproduce the issue.
-> > SNIP
-> >>>>>>> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> >>>>>>> b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> >>>>>>> new file mode 100644
-> >>>>>>> index 000000000000..d394f95e97c3
-> >>>>>>> --- /dev/null
-> >>>>>>> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> >>>>>>> @@ -0,0 +1,32 @@
-> >>>>>>> +// SPDX-License-Identifier: GPL-2.0
-> >>>>>>> +/* Copyright (c) 2022 DiDi Global Inc. */
-> >>>>>>> +#include <linux/bpf.h>
-> >>>>>>> +#include <bpf/bpf_helpers.h>
-> >>>>>>> +#include <bpf/bpf_tracing.h>
-> >>>>>>> +
-> >>>>>>> +char _license[] SEC("license") = "GPL";
-> >>>>>>> +
-> >>>>>>> +struct {
-> >>>>>>> +     __uint(type, BPF_MAP_TYPE_HASH);
-> >>>>>>> +     __uint(max_entries, 2);
-> >>>>>>> +     __uint(map_flags, BPF_F_ZERO_SEED);
-> >>>>>>> +     __type(key, unsigned int);
-> >>>>>>> +     __type(value, unsigned int);
-> >>>>>>> +} htab SEC(".maps");
-> >>>>>>> +
-> >>>>>>> +/* nmi_handle on x86 platform. If changing keyword
-> >>>>>>> + * "static" to "inline", this prog load failed. */
-> >>>>>>> +SEC("fentry/nmi_handle")
-> >>>>>>
-> >>>>>> The above comment is not what I mean. In arch/x86/kernel/nmi.c,
-> >>>>>> we have
-> >>>>>>       static int nmi_handle(unsigned int type, struct pt_regs *regs)
-> >>>>>>       {
-> >>>>>>            ...
-> >>>>>>       }
-> >>>>>>       ...
-> >>>>>>       static noinstr void default_do_nmi(struct pt_regs *regs)
-> >>>>>>       {
-> >>>>>>            ...
-> >>>>>>            handled = nmi_handle(NMI_LOCAL, regs);
-> >>>>>>            ...
-> >>>>>>       }
-> >>>>>>
-> >>>>>> Since nmi_handle is a static function, it is possible that
-> >>>>>> the function might be inlined in default_do_nmi by the
-> >>>>>> compiler. If this happens, fentry/nmi_handle will not
-> >>>>>> be triggered and the test will pass.
-> >>>>>>
-> >>>>>> So I suggest to change the comment to
-> >>>>>>       nmi_handle() is a static function and might be
-> >>>>>>       inlined into its caller. If this happens, the
-> >>>>>>       test can still pass without previous kernel fix.
-> >>>>>
-> >>>>> It's worse than this.
-> >>>>> fentry is buggy.
-> >>>>> We shouldn't allow attaching fentry to:
-> >>>>> NOKPROBE_SYMBOL(nmi_handle);
-> >>>>
-> >>>> Okay, I see. Looks we should prevent fentry from
-> >>>> attaching any NOKPROBE_SYMBOL functions.
-> >>>>
-> >>>> BTW, I think fentry/nmi_handle can be replaced with
-> >>>> tracepoint nmi/nmi_handler. it is more reliable
-> >>> The tracepoint will not reproduce the deadlock(we have discussed v2).
-> >>> If it's not easy to complete a test for this case, should we drop this
-> >>> testcase patch? or fentry the nmi_handle and update the comments.
-> >>
-> >> could we use a softirq perf event (timer), e.g.,
-> >>
-> >>          struct perf_event_attr attr = {
-> >>                  .sample_period = 1,
-> >>                  .type = PERF_TYPE_SOFTWARE,
-> >>                  .config = PERF_COUNT_SW_CPU_CLOCK,
-> >>          };
-> >>
-> >> then you can attach function hrtimer_run_softirq (not tested) or
-> >> similar functions?
-> > The context will be a hard-irq context, right ? Because htab_lock_bucket() has
-> > already disabled hard-irq on current CPU, so the dead-lock will be impossible.
->
-> Okay, I see. soft-irq doesn't work. The only thing it works is nmi since
-> it is non-masking.
->
-> >>
-> >> I suspect most (if not all) functions in nmi path cannot
-> >> be kprobe'd.
-> > It seems that perf_event_nmi_handler() is also nokprobe function. However I
-> > think we could try its callees (e.g., x86_pmu_handle_irq or perf_event_overflow).
->
-> If we can find a function in nmi handling path which is not marked as
-> nonkprobe, sure, we can use that function for fentry.
-I think perf_event_overflow is ok.
-[   93.233093]  dump_stack_lvl+0x57/0x81
-[   93.233098]  lock_acquire+0x1f4/0x29a
-[   93.233103]  ? htab_lock_bucket+0x61/0x6c
-[   93.233108]  _raw_spin_lock_irqsave+0x43/0x7f
-[   93.233111]  ? htab_lock_bucket+0x61/0x6c
-[   93.233114]  htab_lock_bucket+0x61/0x6c
-[   93.233118]  htab_map_update_elem+0x11e/0x220
-[   93.233124]  bpf_prog_df326439468c24a9_bpf_prog1+0x41/0x45
-[   93.233137]  bpf_trampoline_6442478975_0+0x48/0x1000
-[   93.233144]  perf_event_overflow+0x5/0x15
-[   93.233149]  handle_pmi_common+0x1ad/0x1f0
-[   93.233166]  intel_pmu_handle_irq+0x136/0x18a
-[   93.233170]  perf_event_nmi_handler+0x28/0x47
-[   93.233176]  nmi_handle+0xb8/0x254
-[   93.233182]  default_do_nmi+0x3d/0xf6
-[   93.233187]  exc_nmi+0xa1/0x109
-[   93.233191]  end_repeat_nmi+0x16/0x67
-> >>
-> >>>> and won't be impacted by potential NOKPROBE_SYMBOL
-> >>>> issues.
-> >>>
-> >>>
-> >>>
-> >> .
 > >
-
-
-
--- 
-Best regards, Tonghao
+> > On 12/28/22 6:00 AM, Victor Laforet wrote:
+> > > Yes I am sorry I did not mention that the example I sent was a minima=
+l working example. I am filtering the events to select only preempted and e=
+vents with the right pid as prev.
+> > >
+> > > Would bpf_copy_from_user_task work better in this setting than bpf_pr=
+obe_read_user ?
+> > > I don=E2=80=99t really understand why bpf_probe_read_user would not w=
+ork for this use case.
+> >
+> > Right, bpf_copy_from_user_task() is better than bpf_probe_read_user().
+> > You could also use bpf_copy_from_user() if you have target_pid checking=
+.
+> >
+> > It is possible that the user variable you intended to access is not in
+> > memory. In such cases, bpf_probe_read_user() will return EFAULT. But
+> > bpf_copy_from_user() and bpf_copy_from_user_task() will go through
+> > page fault process to bring the variable to the memory.
+> > Also because of this extra work, bpf_copy_from_user() and
+> > bpf_copy_from_user_task() only work for sleepable programs.
+> >
+> > >
+> > > Victor
+> > >
+> > > ----- Mail original -----
+> > > De: "Jiri Olsa" <olsajiri@gmail.com>
+> > > =C3=80: "Victor Laforet" <victor.laforet@ip-paris.fr>
+> > > Cc: "bpf" <bpf@vger.kernel.org>
+> > > Envoy=C3=A9: Mardi 27 D=C3=A9cembre 2022 17:00:42
+> > > Objet: Re: bpf_probe_read_user EFAULT
+> > >
+> > > On Tue, Dec 27, 2022 at 03:56:06PM +0100, Victor Laforet wrote:
+> > > > Hi all,
+> > > >
+> > > > I am trying to use bpf_probe_read_user to read a user space value f=
+rom BPF. The issue is that I am getting -14 (-EFAULT) result from bpf_probe=
+_read_user. I haven=E2=80=99t been able to make this function work reliably=
+. Sometimes I get no error code then it goes back to EFAULT.
+> > > >
+> > > > I am seeking your help to try and make this code work.
+> > > > Thank you!
+> > > >
+> > > > My goal is to read the variable pid on every bpf event.
+> > > > Here is a full example:
+> > > > (cat /sys/kernel/debug/tracing/trace_pipe to read the output).
+> > > >
+> > > > sched_switch.bpf.c
+> > > > ```
+> > > > #include "vmlinux.h"
+> > > > #include <bpf/bpf_helpers.h>
+> > > >
+> > > > int *input_pid;
+> > > >
+> > > > char _license[4] SEC("license") =3D "GPL";
+> > > >
+> > > > SEC("tp_btf/sched_switch")
+> > > > int handle_sched_switch(u64 *ctx)
+> > >
+> > > you might want to filter for your task, because sched_switch
+> > > tracepoint is called for any task scheduler switch
+> > >
+> > > check BPF_PROG macro in bpf selftests on how to access tp_btf
+> > > arguments from context, for sched_switch it's:
+> > >
+> > > TP_PROTO(bool preempt,
+> > > struct task_struct *prev,
+> > > struct task_struct *next,
+> > > unsigned int prev_state),
+> > >
+> > > and call the read helper only for prev->pid =3D=3D 'your app pid',
+> > >
+> > > there's bpf_copy_from_user_task helper you could use to read
+> > > another task's user memory reliably, but it needs to be called
+> > > from sleepable probe and you need to have the task pointer
+> > >
+> > > jirka
+> > >
+> > > > {
+> > > > int pid;
+> > > > int err;
+> > > >
+> > > > err =3D bpf_probe_read_user(&pid, sizeof(int), (void *)input_pid);
+> > > > if (err !=3D 0)
+> > > > {
+> > > > bpf_printk("Error on bpf_probe_read_user(pid) -> %d.\n", err);
+> > > > return 0;
+> > > > }
+> > > >
+> > > > bpf_printk("pid %d.\n", pid);
+> > > > return 0;
+> > > > }
+> > > > ```
+> > > >
+> > > > sched_switch.c
+> > > > ```
+> > > > #include <stdio.h>
+> > > > #include <unistd.h>
+> > > > #include <sys/resource.h>
+> > > > #include <bpf/libbpf.h>
+> > > > #include "sched_switch.skel.h"
+> > > > #include <time.h>
+> > > >
+> > > > static int libbpf_print_fn(enum libbpf_print_level level, const cha=
+r *format, va_list args)
+> > > > {
+> > > > return vfprintf(stderr, format, args);
+> > > > }
+> > > >
+> > > > int main(int argc, char **argv)
+> > > > {
+> > > > struct sched_switch_bpf *skel;
+> > > > int err;
+> > > > int pid =3D getpid();
+> > > >
+> > > > libbpf_set_print(libbpf_print_fn);
+> > > >
+> > > > skel =3D sched_switch_bpf__open();
+> > > > if (!skel)
+> > > > {
+> > > > fprintf(stderr, "Failed to open BPF skeleton\n");
+> > > > return 1;
+> > > > }
+> > > >
+> > > > skel->bss->input_pid =3D &pid;
+> > > >
+> > > > err =3D sched_switch_bpf__load(skel);
+> > > > if (err)
+> > > > {
+> > > > fprintf(stderr, "Failed to load and verify BPF skeleton\n");
+> > > > goto cleanup;
+> > > > }
+> > > >
+> > > > err =3D sched_switch_bpf__attach(skel);
+> > > > if (err)
+> > > > {
+> > > > fprintf(stderr, "Failed to attach BPF skeleton\n");
+> > > > goto cleanup;
+> > > > }
+> > > >
+> > > > while (1);
+> > > >
+> > > > cleanup:
+> > > > sched_switch_bpf__destroy(skel);
+> > > > return -err;
+> > > > }
+> > > > ```
