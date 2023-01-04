@@ -2,69 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC8765DF5D
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 22:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A336865DF60
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 22:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240405AbjADVzx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 16:55:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
+        id S229610AbjADV5E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 16:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240430AbjADVzs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 16:55:48 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2100F1E3FD
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 13:55:46 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id i15so50593126edf.2
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 13:55:46 -0800 (PST)
+        with ESMTP id S239756AbjADV5C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 16:57:02 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FE934741
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 13:57:01 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id u19so85880030ejm.8
+        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 13:57:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LVEjZegwDYZGoHcmt7fWjNSRhlh3I00NZVl2D2lY6Ck=;
-        b=A0kqIBkJsJ0GNv+7ZFU7owJnCMliEW7AiqMWnPwWpaysdqwAhSwvUKTxzofSQeiwEG
-         klsDvd2ibrwHtBQzHHztm9/cTBEVOO8ilv8SmIcYLXoSck+c6Rz59gAJeY8NXTIx87ey
-         6e8MT6nhKqU5AaVNFvszF5nt+H7BMcFy1yxwVyXfpQtORLSrmKygXZH4dkEKxT04wkbY
-         mehSkLk1jzdQc7MHtbTAjEGcA9TVZQcEDsRmzoAR5cSsBEfrL7ziD36RwXymTOEpyYeL
-         Vv5BcNHocf6c1pqEmYVA2zQMlnJPnxnM/O6mTaXXXI7xCe1otVKVfYa2aPyv9Mb3YklF
-         V+Dg==
+        bh=IXIQ5EZidnsDKRb1e70VHwZObXiiLQTv7QOCJ8AKqm0=;
+        b=FzojvtIVvzyYWgGZUE8WYyZf8yttiCdCGNNWRL6LeMqsyPCzRBDySoDNYF/gEtqy8E
+         eo/0uV7EGV//A9oLCUQyhx1thxsSejCTOhPeLbE156cDCTxTbVozmwHyh/KbrLaocCxm
+         ONXS1t4YFZoUzSkGIEEvE8UDtBLBrE9JheUz6vtEN0pDj8OF9BUljMynC9c/KwqnGK4x
+         Iesm6W8cyYd+SnExat5eMjF6HtR5kdqlzawsm9FKm6nQrLU5crl3qGpDWE70sFY24NYE
+         vFY/f7YravuVxuTO95iz4j0pf3ozZg5lAF+vOlTxxUrak2pewURFl8jooZtwC+7UUTtZ
+         JFAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LVEjZegwDYZGoHcmt7fWjNSRhlh3I00NZVl2D2lY6Ck=;
-        b=GqodAYjI809Ld3kb+CF/erdaNaFu2Gei5p0Lp1lY2SNZNE+hb/tVaOkO6uX9pl6/0/
-         zIGDwgmrIDZp3WdiN/aK2NLjXSokj+957TmrjuorYwglup8u7lyx4Wb1vAfLsFVbb5sM
-         q/7l+osaJfBvKiKJmlSB5vKPB2rSrIooHH9hxs7OGhv52ewTSumfhRHZgy6Sc3TGTxGi
-         wXxywVfRwnajulTGExnM7v9JOdiM07WuVy6SF+Q5LfiAtqSg9ibT7sKYJaUNSMPCTBTK
-         Emoq6syCYQSe6QRxY4YuGhV3S6wJM34w33kZJSppyY1TArZsyYZR0FaLratDd3xE5orJ
-         Deig==
-X-Gm-Message-State: AFqh2krZmU7pdGk+0jjD/n1qYbo3MohIDPrBlfkjXPz5oU8V+pm330QU
-        FEi1EvWUYZb8ln5R+t9xyHmpBS5pqO03P/eI0NI=
-X-Google-Smtp-Source: AMrXdXvwKqlUBUcFOA3eIyUPcWbHydZ3t70dGYBIuXwtOtHKLHDjIUDU9qQDogjCQPqwYUCa7WZj6UM1g+U8jErvSyE=
-X-Received: by 2002:aa7:cb52:0:b0:484:93ac:33a6 with SMTP id
- w18-20020aa7cb52000000b0048493ac33a6mr2842205edt.81.1672869344401; Wed, 04
- Jan 2023 13:55:44 -0800 (PST)
+        bh=IXIQ5EZidnsDKRb1e70VHwZObXiiLQTv7QOCJ8AKqm0=;
+        b=3hmRSshNAD2AztrFGiLaiLfTv21LSp7xPBnfuOnNkmVl4RhCfNa3G109g9dtic3dIc
+         teIEoTpOGASvwrWPXNADLesJ93MHPHsma7moEfNBnIRF9O03QpvnvqomT4Jzti/CllsX
+         aad5iSLGp757H8rUpyJjPsfMdD4x7VG5aBBUAdaJ6f1o/cSEHadR+2twoH57f5YL736+
+         7CH4eCepK69+jD7QlHdS8aAgmG1XbyjKPKoeYd15hNm8LKNFF4emMeFWYEpw3o7pxjjk
+         L6SgiGvw23C763H6Phj9NYK5z5BGTwydWqfulw49Ye8Gcgm8ucatM9jajxa4V83ZLqdw
+         gE/g==
+X-Gm-Message-State: AFqh2ko34nWQ2hXaXUk5N7n8fI3muT4ph8ReXkwKwYhrfYIQta24npsB
+        i65Al58Z+1ksOHLZGVdtA13ZvXBGkl5zQWHwPcA=
+X-Google-Smtp-Source: AMrXdXvF8SmcElLif+YnVsle7Afv0WKcYd7j11fGR95psquAU7z6KkK5Vm79w1FlZQscSyqDXfRz69TDrLc2WCW5HMI=
+X-Received: by 2002:a17:906:f209:b0:7fd:f0b1:c8ec with SMTP id
+ gt9-20020a170906f20900b007fdf0b1c8ecmr3176153ejb.114.1672869419863; Wed, 04
+ Jan 2023 13:56:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20221208015434.ervz6q5j7bb4jt4a@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYGUf=yMry5Ezen2PZqvkfS+o1jSF2e1Fpa+pgAmx+OcA@mail.gmail.com>
- <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
- <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
+References: <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
  <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local> <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
  <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
  <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
- <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local> <CAEf4Bzbvg2bXOj8LPwkRQ0jfTR4y5XQn=ajK_ApVf5W-F=wG2Q@mail.gmail.com>
- <20230104194438.4lfigy2c5m4xx6hh@macbook-pro-6.dhcp.thefacebook.com>
-In-Reply-To: <20230104194438.4lfigy2c5m4xx6hh@macbook-pro-6.dhcp.thefacebook.com>
+ <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local> <Y68wP/MQHOhUy2EY@maniforge.lan>
+ <20221230193112.h23ziwoqqb747zn7@macbook-pro-6.dhcp.thefacebook.com>
+ <Y69RZeEvP2dXO7to@maniforge.lan> <CAEf4BzY0aJNGT321Y7Fx01sjHAMT_ynu2-kN_8gB_UELvd7+vw@mail.gmail.com>
+ <20230104195138.q43ioskabs4c32py@macbook-pro-6.dhcp.thefacebook.com>
+In-Reply-To: <20230104195138.q43ioskabs4c32py@macbook-pro-6.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 4 Jan 2023 13:55:32 -0800
-Message-ID: <CAEf4Bzag8K=7+TY-LPEiBJ7ocRi-U+SiDioAQvPDto+j0U5YaQ@mail.gmail.com>
+Date:   Wed, 4 Jan 2023 13:56:47 -0800
+Message-ID: <CAEf4Bzas8USa0k2Qcfc0p8dWjRUAdoD6ogeM=Mbp7eLdpL29jw@mail.gmail.com>
 Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
  convenience helpers
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel-team@meta.com,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     David Vernet <void@manifault.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team@meta.com, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>
@@ -79,108 +79,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 4, 2023 at 11:44 AM Alexei Starovoitov
+On Wed, Jan 4, 2023 at 11:51 AM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Wed, Jan 04, 2023 at 10:43:37AM -0800, Andrii Nakryiko wrote:
-> > > extern bool bpf_dynptr_is_null(const struct bpf_dynptr *p) __ksym;
-> > >
-> > > will likely work with both gcc and clang.
-> > > And if it doesn't we can fix it.
-> > >
-> > > While when gcc folks saw helpers:
-> > >
-> > > static bool (*bpf_dynptr_is_null)(const struct bpf_dynptr *p) = (void *) 777;
-> > >
-> > > they realized that it is a hack that abuses compiler optimizations.
-> > > They even invented attr(kernel_helper) to workaround this issue.
-> > > After a bunch of arguing gcc added support for this hack without attr,
-> > > but it's going to be around forever... in gcc, in clang and in kernel.
-> > > It's something that we could have fixed if it wasn't for uapi.
-> > > Just one more example of unfixable mistake that causing issues
-> > > to multiple projects.
-> > > That's the core issue of kernel uapi rules: inability to fix mistakes.
+> On Wed, Jan 04, 2023 at 10:43:52AM -0800, Andrii Nakryiko wrote:
 > >
-> > This is BPF ISA defining `call #N;` to call helper with ID N, which
-> > you agree that it (ISA) has to be stable, documented and standardized,
-> > right?
+> > struct bpf_dynptr dptr = ...;
+> > bool is_null = false;
 > >
-> > Everything else is just how we expose those constants into C code and
-> > how libbpf deals with them. Libbpf could support new attribute or even
-> > extern-based convention, if necessary.
+> > if (bpf_core_value_exists(enum bpf_func_id, BPF_FUNC_dynptr_is_null)) {
+> >     is_null = bpf_dynptr_is_null(&dptr);
+> > } else {
+> >     struct bpf_dynptr_kern *kdptr = (void*)&dptr;
+> >     is_null = !!BPF_CORE_READ(kdptr, data);
+> > }
 > >
-> > But it wasn't necessary for years and only was brought up during GCC's
-> > attempt to invent a new convention here. And they successfully dealt
-> > with this challenge.
+> > How do you detect the existence of kfunc today? Preferably without
+> > doing extra work in user-space.
+> >
+> > Now, let's say kfunc changes its signature. Show me a short example on
+> > how you deal with that in BPF C code?
 >
-> 'dealt with this challenge'? You mean didn't, right?
-> gcc doesn't guarantee that '= (void *) 777;' will work even with optimization on.
+> Didn't we add bpf_core_type_matches for func protos specifically
+> to deal with function signature changes in the kernel after tracepoint
+> args got swapped?
+> I'm assuming the same mechanism will work for kfuncs.
+> If not we can come up with a new one.
 
-I don't use gcc-bpf, but given they dropped kernel_helper attribute,
-and given you said "After a bunch of arguing gcc added support for
-this hack without attr but it's going to be around forever..." I
-assumed it does work. Are you saying it doesn't?
+It would be good if someone actually try that and see if it works, and
+if it doesn't, to come up with an approach that does. Right now I just
+see hand-wavy arguments that BPF helpers and BPF kfuncs are equivalent
+in this regard. Which currently I'm afraid they are not.
 
-> In clang we cannot guarantee that either.
-
-It works today, if it ever regresses there will be a lot of noise and
-this regression will be fixed. So maybe technically it's not
-guaranteed, but in practice it will keep working.
-
-We had a `const volatile` case recently, variables were not being put
-into .rodata section properly. GCC was changed to do it the same way
-as Clang so that all the existing apps can keep working.
-
-
-> Nothing requires a compiler to do constant propagation.
 >
 > >
-> > Yes, we won't change existing helpers, but we can add new ones if we
-> > need to extend them. That's how APIs work. Yes, they need careful
-> > considerations when designing and implementing new APIs. Yes, mistakes
-> > do happen, that's just fact of life and par for the course of software
-> > development. Yes, we have to live with those mistakes. Nothing changed
-> > about that.
+> > Think about sched_ext. Right now it's so bleeding edge that you have
+> > to assume the very latest and freshest kernel code. So you know all
+> > the kfuncs that you need should exist otherwise sched_ext doesn't work
+> > at all. Ok, happy place.
 > >
-> > But somehow libraries and kernel still produce stable APIs and
-> > maintain them because they clearly provide benefits to end users.
+> > Now a year or two passes by. Some kfuncs are added, some are changed.
+> > We still believe that BPF CO-RE (compile once - run everywhere) is
+> > good and we don't want to compile and distribute multiple versions of
+> > BPF application, right? You'll want to do some extra (or more
+> > performant) stuff if kernel is recent and has some new kfunc, but
+> > fallback to some default suboptimal behavior otherwise. How do you do
+> > that in a simple and straightforward way?
 >
-> Did you 'live with mistakes done in libbpf 0.x' ? No.
+> with a help of CORE, of course.
+> If it doesn't exist today we can add it.
+>
+> > But even worse is what if
+> > some critical kfunc is changed between kernel versions and you do
 
-for a long time yes. And it's not apples to apples comparison, with
-library it is possible to deprecate APIs, which is what we did. With
-lots of work and gradual transition, but did it.
+How about this one? I'm honestly curious to see someone try and figure
+out what works and what doesn't.
 
-If we couldn't pull this through, yeah, I would live with whatever
-APIs are there. And added new ones as a better replacement. As is
-always done for APIs, nothing new here.
+> > *need* to support both versions. Think about those aspects, because
+> > sched_ext will run into them almost inevitably soon after its
+> > inclusion into kernel.
+> >
+> >
+> > One way or another there are some technical solution of various
+> > degrees of creativity. And I'm actually not sure if I have a solution
+> > for kfunc signature change at all. Without BTF we could use two
+> > separate .c files and statically link them together, which would work
+> > because extern is untyped in pure C. But with BPF static linking we do
+> > have BTF information for each extern, and those BTF types will be
+> > incompatible for the same extern func.
+> >
+> > We can probably come up with some hacks and conventions, as usual, but
+> > better start thinking about them now.
+> >
+> > But hopefully you can empathize a bit more with poor end users that
+> > have to do hack like this and why having bpf_dynptr API defined as
+> > stable BPF helpers, with no extra dependencies on BTF in kernel,
+>
+> BTF is a reasonable dependency.
+> You've just used it to detect whether helper exists or not.
+> So it's fine to use the same to check whether kfunc exists or not.
 
-Within 0.x and 1.x APIs are stable and we live with them. This API
-stability fear doesn't paralyze libbpf development, we still add new
-stable APIs, if they are considered useful and thought through enough.
+BTFGen doesn't require kernel to be built with BTF, and yet I get BPF
+CO-RE stuff. But you are jumbling everything together. I don't need
+BPF CO-RE to build a useful BPF application that needs to use
+ringbuf+dynptr (think uprobe'ing of some app, USDTs, etc), yet we will
+require BTF for no reason.
 
-> You've introduced libbpf 1.0 with incompatible api and some users suffereed.
-
-By "suffered" you mean a few systemd folks being grumpy about this?
-And having to do 100 lines of code changes ([0]) to support two
-incompatible major versions of libbpf *simultaneously*?
-
-On the other hand we got a library with saner error propagation
-behavior and various API normalizations and additions. Not too bad of
-a trade off.
-
-Sure, deprecation is not easy or free, there was a lot of prep work,
-and some users had to adjust their code to use new APIs. But this is
-quite a tangent.
-
-  [0] https://github.com/systemd/systemd/pull/24511/
+Just as you are afraid of not getting UAPI right because we can't
+anticipate possible changes, let's be just as much afraid of
+unnecessary dependencies, which can be a blocker or pain for some
+users in some situations. Isn't that fair?
 
 >
-> > We'll get the same amount of flame when we try to change kfunc that's
-> > widely adopted.
+> >
+> > Depends on perspective. If I was some humble dev trying to build
+> > BPF-based tool that should work on x86, arm64, s390x, and riscv (or
+> > whatever other architecture), and dynptr API is only based on kfuncs,
+> > I'm screwed. I can't sponsor or do kfunc support for my favorite
+> > architecture, I'm stuck waiting for this to be done by someone some
+> > time, if ever.
 >
-> Of course. That's why we need to define a stability and deperecation
-> plan for them.
+> If kfuncs and bpf trampoline don't work on a particular architecture
+> that developer is likely screwed anyway. Dynptr is the last thing they
+> would worry about.
 
-Lots of things that need to be defined and figured out, but we are
-already quick to freeze BPF helpers.
+uprobe+dynptr+ringbuf is all I need for useful apps. Likely or not can
+be argued to the end of times.
