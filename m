@@ -2,310 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8781665DDDC
-	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 21:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E78D965DF00
+	for <lists+bpf@lfdr.de>; Wed,  4 Jan 2023 22:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbjADUuN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 15:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48074 "EHLO
+        id S234370AbjADVYl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 16:24:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232953AbjADUuM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 15:50:12 -0500
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB5813EB1
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 12:50:10 -0800 (PST)
-Received: by mail-qv1-f53.google.com with SMTP id qb7so9471533qvb.5
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 12:50:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b6QqkUq4GQihek04SBCcwO9lFAoRn3CAw0zYWzhFXOE=;
-        b=kdtw03zQWIZbbIt5lrn5tAY5bzlbCGqH1tTlrrdmBQ51gUCd3BxdbrCMsiCAMKVQfB
-         jx84UIJGV6GbfRpQtIqS5evr2ecHIE8AYLMButnrzQnYO26Yu+6ASB6nfVTPzpU9jLsq
-         e8kXsLkuxE0Xt8IqlLU0bOE+GAAghVYJPxo5apCjVUCx5Mc86uJYeSpMPjQNYJBkxsqE
-         onA0i0ZQMrvlHR6niUt8m9DuGuT9KtWwvnQiPS9mGg8wG94YTit5FdP5/EhDQol2C9u2
-         CjuYJwTC52MgC5F0h/0ttJwvHBdEIQ85z2u06uhkCQLY+hOKU6MuPRSnfA/SJ7gytl6A
-         cWhg==
-X-Gm-Message-State: AFqh2kqpsVc8oYwW8YMJpaLM1eltrgMoAcdSvjRs1ooABNJWhJ37OXU7
-        kOijpjjzo8MEHBjImB6/K1E=
-X-Google-Smtp-Source: AMrXdXv88cKkbMwutmlMpSjchpoPH8sU5hQEV1CoapM4q3/OdN7AD20RCAW8GgW2weqUux3waJ1Z6Q==
-X-Received: by 2002:a05:6214:37c6:b0:4c7:6454:5b1b with SMTP id nj6-20020a05621437c600b004c764545b1bmr68914684qvb.6.1672865408987;
-        Wed, 04 Jan 2023 12:50:08 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:7c6c])
-        by smtp.gmail.com with ESMTPSA id s21-20020a05620a0bd500b006fa4ac86bfbsm24395457qki.55.2023.01.04.12.50.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jan 2023 12:50:08 -0800 (PST)
-Date:   Wed, 4 Jan 2023 14:50:08 -0600
-From:   David Vernet <void@manifault.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@meta.com, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>
-Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
- convenience helpers
-Message-ID: <Y7XmgFrxqoWJA1sV@maniforge.lan>
-References: <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
- <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local>
- <Y68wP/MQHOhUy2EY@maniforge.lan>
- <20221230193112.h23ziwoqqb747zn7@macbook-pro-6.dhcp.thefacebook.com>
- <Y69RZeEvP2dXO7to@maniforge.lan>
- <20221231004213.h5fx3loccbs5hyzu@macbook-pro-6.dhcp.thefacebook.com>
- <f69b7d7a-cdac-a478-931a-f534b34924e9@iogearbox.net>
- <20230103235107.k5dobpvrui5ux3ar@macbook-pro-6.dhcp.thefacebook.com>
- <43406cdf-19c1-b80e-0f10-39a1afbf4b8b@iogearbox.net>
+        with ESMTP id S240244AbjADVVp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 16:21:45 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A992431A0
+        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 13:17:03 -0800 (PST)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 304GJ3B9025805
+        for <bpf@vger.kernel.org>; Wed, 4 Jan 2023 13:17:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type : content-id :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=qQkLKv6XIgLuQeBBbA+FToIvqkq8JQUwLMU2P1IjR5A=;
+ b=GbKGViYqtQ8KfldXr/1vPiwaK+jry3i0xdRO4on9HNO7Ct3LrZXl9GeMJYC9Vesr5yKg
+ KtcbWYScZHj+kE/Tyy3driTl8BdRjd4WN9o1S163ZWjwsWVwSZAm/WFNuKTvss03D83p
+ 5Oe0hz2BjBSV2/tL3EBcTHehZJ2eSI0Cr2AIVuZnYl2c7UTpF5S4a0nCZs9f3Jw2Z+Jp
+ 5/MPmdePYLdeu7DFJQXWxUJ4wJRVpa+0bNqA4vCt9tMtFgytlnkehgDrcjZ6tPT2lD1V
+ 54KbCrStNoC7J2KcI1bhxVhwQLAJzzSRsnrDk0RGtIN72HUy/K7kIVC41KcZt/V8iG1F Sg== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3mvvt8qwm4-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 13:17:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hLbM06sv4JVmlWGQt9EVwdygPuVCOeAOLxcLbddbmtxzp+YtThgjG41trMOKe02QUNLbKHJVvpxz/E7qnlfsUGwAQVhS1XwMJmLJdYU+2rrpG63QDBKDQGi3BWaEksQQb7S5ZV50MdNoNIZ3na1KbIC3MXi7qinlo4mPFP78tA+Ahs19D4WJWl1q8b0qKG/xQAaMtmriVAYOtZmjUIHgMWzgo4FBHLe1PVK+Adb5o5i9dgNODi/wGUhxTFqfkUiouZ3/ePvpFHQ4faX8IJIv4xLEaFytqe5dz20CoUn+BIKQRrhbibVUGqCW3nCN8Dcj6V9IwHCDSSpZuxgmDSnLmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qQkLKv6XIgLuQeBBbA+FToIvqkq8JQUwLMU2P1IjR5A=;
+ b=ZUOl6AfC2/22mX6PATQifeRYTPcDR/r0HqlM4IgUSormXbQ5nPFVcV28vwerZNR1ov3a402cOMxAh80qPFS/SJv3N36/pBeci5msj3aoYcx6gjGDZnh0aauBVN4quau8DSn0htZ3DHH6BneiqRf55+70qWzLYxpal7EqUgpLlGHXRqNkSrb5Xo76+KIQ/MaLteodlkfbzO9TUITJTtkQbUad6bhGkproJkzYnyGRdevmefbu8DoUYiCpMehg9Yp87b9zkxX6YyfVsR6w7o/Y3bG3/JIxhoF689VIzgfT/WZfmHFSMh0ZJGsO+LVl4EoQEGjVdm2avKeuKhN/JFUt6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from BY5PR15MB3651.namprd15.prod.outlook.com (2603:10b6:a03:1f7::15)
+ by PH7PR15MB5151.namprd15.prod.outlook.com (2603:10b6:510:13b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Wed, 4 Jan
+ 2023 21:16:59 +0000
+Received: from BY5PR15MB3651.namprd15.prod.outlook.com
+ ([fe80::307c:32e1:ea90:bbf3]) by BY5PR15MB3651.namprd15.prod.outlook.com
+ ([fe80::307c:32e1:ea90:bbf3%7]) with mapi id 15.20.5944.019; Wed, 4 Jan 2023
+ 21:16:59 +0000
+From:   Kui-Feng Lee <kuifeng@meta.com>
+To:     Kernel Team <kernel-team@meta.com>, Yonghong Song <yhs@meta.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "song@kernel.org" <song@kernel.org>,
+        Kui-Feng Lee <kuifeng@meta.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2 0/2] bpf: fix the crash caused by task
+ iterators over vma
+Thread-Topic: [PATCH bpf-next v2 0/2] bpf: fix the crash caused by task
+ iterators over vma
+Thread-Index: AQHZEZxt/vuq5Z285EmId/qSoY9ryK6O4IQA
+Date:   Wed, 4 Jan 2023 21:16:59 +0000
+Message-ID: <691f88317785d0114a1c6b3626be7b7538b1978f.camel@fb.com>
+References: <20221216221855.4122288-1-kuifeng@meta.com>
+In-Reply-To: <20221216221855.4122288-1-kuifeng@meta.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR15MB3651:EE_|PH7PR15MB5151:EE_
+x-ms-office365-filtering-correlation-id: 342176d0-0469-4df7-a906-08daee99046b
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KNgwIbgOZcH5dcFPzaCgWqvmtjqYAw7C6iv9P6mTrlu7IfYlE0f2TKy/0u9uB8tyDwB9Ytnu8cPtHK76tuVON4YMK8V92kF3dHGW+WO6xOB1SOAmF0mVv4jpSeLcG0QHJJfhmFYpFRimwEK8jL0wpBMl14irgcQYW4+CaGYK/av+LZXCpZz1Mh+om4UHPyRjC3iq3RCDSsf2zdAttCBNkpdYK46itJBqcCPEDdzb/Gxj6HlDK0RnjeETGZo0Ha/BTstiqJvamrujVyeXJHysWIJiEMJsAqYMCxUqv+2RC1VW/BU+Qamu4laBkRB0tXdjRlDk6vxaTtV3v75pprMwSS0JUNusgPtM4EGjYWPSQhKqVJdxYYxvatBDypUwAyCfXSxThkMt4s03vae0hgYZUFZDBl3yddebgVEPTg0Uw/mnlUnTthuhDHLsFIv9YfH1OdWj6j54O4j1lkvE4VjHOxqRhakzotqsN1Wv/F8fk8F+biQ7atJg0BF7FRoGaV+2juJwiKbIAtaukchw0QUJWxmtzOEFFMVi4acBai6nVplKFu90cW6IEvDuXVp07zxptiVhKBBd5V/yPiCZZUbRXO3MhpEqGnf7YjcF48DWmT+yFyxr2EjcV3TAd5zEOuidKOMksvzqbWFjgRPQFkI0hVXWGyPAfNw4BPQPAczJDw6xp53NXitPnuTmTf2qhIVi4ppG7EGFhJRivZ97SHqeyyptFvKSq0Br6friOVQ4QzY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3651.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(396003)(376002)(366004)(39860400002)(136003)(451199015)(8936002)(4001150100001)(2906002)(41300700001)(38100700002)(76116006)(66946007)(122000001)(66476007)(5660300002)(8676002)(64756008)(66556008)(66446008)(83380400001)(6512007)(478600001)(966005)(38070700005)(71200400001)(6486002)(9686003)(186003)(316002)(110136005)(36756003)(6506007)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UDU5d3NCWDdzcTAwQVN6Ymk0L0dMbnZYS1BSNDd5MFFxK3dJWTJDNnJRcU1G?=
+ =?utf-8?B?aUd4dWIwYi9IOUF5Rm9rdEl4WFdaaHdrM0VCRnBTZ1g0Q2FvbTI0UnJEQ3pl?=
+ =?utf-8?B?dVUyZXlITkRoSkFGSmZ4NnlvSGF6UXR0OGNjbU9xd2lMNVF3ZWN3YXRieTV6?=
+ =?utf-8?B?Zjg4dEZEd1Z0OEdpaXRjMUh3UEg4UjFPWXJ4OXZ3dnlHRkViVmZSY21wNWhD?=
+ =?utf-8?B?M08rajBaZkg2c3pGTk1FazQzc0Q4SyttSC93WTlwYk1QVXBXT2dlQzBvdTR5?=
+ =?utf-8?B?YXg4d0VhWVY0cnM4UWFDdlgwcXQ1VTBheEswUCtscFlKMjVQMHF4TDZ5SlZi?=
+ =?utf-8?B?eitLQld2NGluN2hOZVRFdlBIclJSSFIrT0Z2Vkdoa2J3UEcveXhCdXF6S0Zn?=
+ =?utf-8?B?WUszRksySjN2RDdNaStNSEFqTlRNRmZvL01peEN1V1paMjlodDlCVXZIN3hW?=
+ =?utf-8?B?dFI1M3pTTlM1eFo2ZlVHZVd6M09IWGRiOWZ3ZGlDQyt1NG9UdW1Zbm5DVVhN?=
+ =?utf-8?B?T05sTWp4Zkp3R1F3ZW1BcDJLdnFPcG9qdlY2S0dZY1BZcWVGZ1IrWVUybkRi?=
+ =?utf-8?B?NUF1M2hBaDZZbE4zM3RZWDVNOGJhaUZUdUJ6azMxL1FmMGpzck9ubFBxSW9V?=
+ =?utf-8?B?bkxxT1crRUFvWTJ5RERHUzRCZkJ3cVEzcDVrVjlKTDJxQXFabG0yRXBFV2VJ?=
+ =?utf-8?B?THg0UzFBSGNsajQzbDdPYnhvbVdUSkd2L3BzRmFLTE0rdnZBaHVVdE9QbnJZ?=
+ =?utf-8?B?a1VnZkltbkEzWFV2T3JDU25KQXFTTzcyeTJCdU1nZ1p5ZHhGdm5hRWxvaW5D?=
+ =?utf-8?B?eXByV2VrTDhMblArOFUvRndxNWlPYmlodS9LVnVkN1luMEVUSytWdzBINnFN?=
+ =?utf-8?B?QWlPeW1wVm9qR1Y1cExEYzh5RUFYTmlCREg0NzFSRGJ5RGNXVTZwSm4yRHFm?=
+ =?utf-8?B?a1pUbWVQdHEvQytQdldodWg2WTJSclZnSGh0ak0yZTcwNWkzVEVrenhoZFZ3?=
+ =?utf-8?B?bDNCQUpuaGVVc291aGRJWldjZlU1Z3FpQ3RRejZNRW1XU0xQbXYydjIySGta?=
+ =?utf-8?B?QWtYbFhDa0pEYklpNzRVbU9XMnZma3pCL1JwSXE3Wkdud3RpdkE1b0NIa0Zx?=
+ =?utf-8?B?b1VpdW1kN2FIanlIdFRTTExsTjh2UmhucmtBQkNsV2VYdHdkb2U2NVRTdU43?=
+ =?utf-8?B?bURXbjhLemJ0a2hHa2kvM3RWZ2pBVDkvLzdlQTlOTnAwemJzLzRPM1JmWkZx?=
+ =?utf-8?B?aEJFUEdnTmpYTk1OQ2c5OTFJRjg3N1JTTWtMVllNRGkybzZCYWY0L3JlcjZ6?=
+ =?utf-8?B?TEdBNDhBTGUzaGNjUDVPT2toZEdnMXRWUVpDeUZMVVhndmhqb2s5bHFuTkhm?=
+ =?utf-8?B?Z3pmMTBJVFM5RVdobTlZSG9KVituWkt1WFhCeEVNMzdaMGQrMFZYTGFtQzJM?=
+ =?utf-8?B?VDgzSTMwY0ZHaGE0aS9MM1FPeDBoZ0NxVGxzYUFhK3JVVmc2WlBJQURQV040?=
+ =?utf-8?B?UUV2bFNtbGY4cDRROThPZDhMVERadzFJY05Qc2E0RStFZnE0K0tUL2Z4ZVpB?=
+ =?utf-8?B?MHhnL3FVWjFRaXBrei9uWmVrRmdpYlA5WndwbTdPTTVYOHh2cldnSXNqQ3RH?=
+ =?utf-8?B?cS9jLy8ySENzd3N4UWQ1VG5kMGEvNVY5THFPWFhoYXFxckdWWkJlSTRjS2Va?=
+ =?utf-8?B?cnZFVDBuOXNjOG1Oem1jZkZaT2Z2NENGbUQ4MFVrK0xnb2dlVE5jaG1XZTRG?=
+ =?utf-8?B?bUZ2T1Y1d1M0Vy9qOVlWdktnZm1keTltZzR1VWJQLzVkYXV3WGpaNTJpaUcr?=
+ =?utf-8?B?d2VheS9GSFpEZXVVZkUrelJSRVgrUmcrZ2tybHJaNWJrUGpyaUV3QW16cUZT?=
+ =?utf-8?B?eXRwQUQrakMxWDhlcDdnM2wwdllrZWpYSnBHbHR3bU1VV01tSTNpT0JFWmwz?=
+ =?utf-8?B?emdpUjBiZnVKNytWbWpmUXh6cjlDNDVONW9QcDRoUFRDcDdOQnpNU05rUHgr?=
+ =?utf-8?B?RXpIaXlLN0M3cjFwVWZ2OXRZcjdpQzdFMmo2RGdjU0F4dFpHTzVvWFlRa3A3?=
+ =?utf-8?B?WW1MWk5Eb3VqK2MrL21EZlZYeWhjL1NlMk15cS80akhyRFhiVENnZDFta3hp?=
+ =?utf-8?B?WkdNSUY4UjlDMVFNcUZnRmhqV3lFTlBPUDNRSkpqZHVpN2lNV05YKzYwZVRK?=
+ =?utf-8?Q?bI4PTjrPtqaL/QXWIqEe2IU=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4C7CD07F18828849B7008A9197F9E4D5@namprd15.prod.outlook.com>
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3651.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 342176d0-0469-4df7-a906-08daee99046b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2023 21:16:59.7449
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AUSRk4QqorabFf23MpDRQb+FMvyrvT4WqndVybdBAOSpy8v/CGKKZAQg/af5X4qmZeapTzdb403YPcb7+2/eNQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR15MB5151
+X-Proofpoint-GUID: sv0h79cWVWU8g-qDgZzQNrqHjqWBAZz2
+X-Proofpoint-ORIG-GUID: sv0h79cWVWU8g-qDgZzQNrqHjqWBAZz2
+Content-Transfer-Encoding: base64
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43406cdf-19c1-b80e-0f10-39a1afbf4b8b@iogearbox.net>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2023-01-04_07,2023-01-04_02,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 03:25:00PM +0100, Daniel Borkmann wrote:
-> On 1/4/23 12:51 AM, Alexei Starovoitov wrote:
-> > On Tue, Jan 03, 2023 at 12:43:58PM +0100, Daniel Borkmann wrote:
-> > > On 12/31/22 1:42 AM, Alexei Starovoitov wrote:
-> > > > On Fri, Dec 30, 2022 at 03:00:21PM -0600, David Vernet wrote:
-> > > > > > > 
-> > > > > > > Taking bpf_get_current_task() as an example, I think it's better to have
-> > > > > > > the debate be "should we keep supporting this / are users still using
-> > > > > > > it?" rather than, "it's UAPI, there's nothing to even discuss". The
-> > > > > > > point being that even if bpf_get_current_task() is still used, there may
-> > > > > > > (and inevitably will) be other UAPI helpers that are useless and that we
-> > > > > > > just can't remove.
-> > > > 
-> > > > Sorry, missed this question in the previous reply.
-> > > > The answer is "it's UAPI, there's nothing to even discuss".
-> > > > It doesn't matter whether bpf_get_current_task() is used heavily or not used at all.
-> > > > The chance of breaking user space is what paralyzes the changes.
-> > > > Any change to uapi header file is looked at with a magnifying glass.
-> > > > There is no deprecation story for uapi.
-> > > > The definition and semantics of bpf helpers are frozen _forever_.
-> > > > And our uapi/bpf.h is not in a good company:
-> > > > ls -Sla include/uapi/linux/|head
-> > > > -rw-r--r-- 1 ast users 331159 Nov  3 08:32 nl80211.h
-> > > > -rw-r--r-- 1 ast users 265312 Dec 25 13:51 bpf.h
-> > > > -rw-r--r-- 1 ast users 118621 Dec 25 13:51 v4l2-controls.h
-> > > > -rw-r--r-- 1 ast users  99533 Dec 25 13:51 videodev2.h
-> > > > -rw-r--r-- 1 ast users  86460 Nov 29 11:15 ethtool.h
-> > > > 
-> > > > "Freeze bpf helpers now" is a minimum we should do right now.
-> > > > We need to take aggressive steps to freeze the growth of the whole uapi/bpf.h
-> > > 
-> > > Imho, freezing BPF helpers now is way too aggressive step. One aspect which was
-> > > not discussed here is that unstable kfuncs will be a pain for user experience
-> > > compared to BPF helpers. Probably not for FB or G who maintain they own limited
-> > > set of kernels, but for all others. If there is valid reason that kfuncs will have
-> > > to change one way or another, then BPF applications using them will have to carry
-> > > the maintenance burden on their side to be able to support a variety of kernel
-> > > versions with working around the kfunc quirks. So you're essentially outsourcing
-> > > the problem from kernel to users, which will suck from a user experience (and add
-> > > to development cost on their side).
-> > 
-> > It's actually the opposite.
-> > A small company that wants to use BPF needs to have a workaround/plan B for
-> > different kernels and different distros.
-> > That's why cilium and others have to detect availability of helpers and bpf features.
-> > One bpf prog for newer kernel and potentially completely different solution
-> > for older kernels.
-> > That's the biggest obstacle in bpf adoption: the required features are in
-> > the latest kernels, but companies have to support older kernels too.
-> > Now look at the problem from different angle:
-> > Detecting kfuncs is no different than detecting helpers.
-> > The bpf users has to have a workaround when helper/kfunc is not available.
-> > In that sense stability of the helpers vs instability of kfuncs is irrelevant.
-> > Both might not exist in a particular kernel.
-> > So if cilium starts to use kfunc it won't be extra development cost and
-> > bpf program writer experience using kfuncs vs using helpers is the same as well.
-> 
-> But that was not the point I was making. What you describe above is the baseline
-> cost which is there regardless of BPF helper vs kfunc.. detecting availability
-> and having a workaround for older kernel if needed. The added cost is if kfunc
-> changes over time for whichever valid reason, then you are essentially pushing
-
-But if there is a "valid reason" to change something, then it's better
-to have the _option_ to change it, no? IMHO that's the key point here.
-With kfuncs, "reasons" are allowed to be part of the discussion. With
-UAPI, there is nothing to discuss.
-
-And that's the fundamental problem with having things in UAPI. Forever
-is a very long time. Do we really not want to have the option of
-changing or removing something after (e.g.) 20 years? 40 years? 60
-years? I agree with you that it's unambiguous that using kfuncs instead
-of helpers does shift some maintenance cost from the kernel to users,
-but IMO the point is that with kfuncs we at least have the ability to
-control that cost. Taking an extreme example, we could decide to support
-a kfunc for 30 years, and then deprecate it for 10 years, and then and
-then finally remove it. With UAPI our childrens' childrens' children
-will have to support it. I don't think guaranteed stability is worth
-that cost. Not for symbols exported by the kernel, used by other kernel
-programs, which is fundamentally what BPF programs are.
-
-Another way to look at it would be: do we expect tooling to support all
-kernel versions and features indefinitely? When we're on Linux 50.15, do
-we expect that there will be tooling that requires us to support
-bpf_get_current_task() instead of bpf_get_current_task_btf()? And even
-if there is a tool that needs it, is it worth the cost of keeping it
-around? With kfuncs the question would matter, even if it's "yes it's
-worth it". With UAPI, the question is meaningless.
-
-I realize that I'm being a bit hyperbolic here, and it is not my
-intention to misrepresent any points made in favor of not freezing UAPI.
-I just think it's necessary to be hyperbolic when it comes to UAPI to
-really underscore the implications of using it.  There are very good
-reasons for having UAPI in general, but IMHO, those reasons don't apply
-to kernel programs, which is really what we're talking about here.
-
-> the maintenance cost _from kernel to users_ when they need to keep track of that
-> and implement workarounds specifically to make the kfunc work in their program
-> for a set of kernels they plan to support, which they otherwise would /not/ have
-> if it was a BPF helper. It raises the barrier from user side. Similarly, if users
-> started out with using kfunc from a base kernel, and in future it might get
-> removed given its not stable, then a workaround (if possible) needs to be
-> implemented for newer kernels - probably rare occasion but not impossible or
-> something that can be ruled out entirely. So the stability of the helpers vs
-> instability of kfuncs is relevant in that case, not for the case you describe
-> above, and that is extra development cost on user side. Generally, what I'm saying
-> is, there needs to be a path forward where we are still open for both instead of
-> completely freezing the former.
-
-Curious what you envision as the policy long term (i.e. after the path
-forward)?
-
-The reason I ask is that on the one hand we're claiming that kfuncs work
-for some things, while on the other we seem to be claiming that UAPI is
-_necessary_ for users to have guaranteed stability and adopt the
-platform (and I will preemptively apologize if I'm unintentionally
-misrepresenting your view by saying that).
-
-If we operate under the assumption that helpers are necessary for
-certain things due to its stability guarantees, whereas kfuncs are
-appropriate in some cases, I think that begs the question: what criteria
-are we using to decide when stability is really necessary? We could say
-"for core functionality", but how do we know that there aren't other
-users out there who are using "non-core-functionality" kfuncs instead of
-helpers? Why do we give stability to some users but not others? The fact
-that we don't have a crystal ball seems to be the central argument
-around why we need UAPI, but I think it's a fallacy to have that view at
-the same time as also supporting the existence of kfuncs.
-
-[...]
-
-> > > Discoverability plus being able to know semantics from a user PoV to figure out when
-> > > workarounds for older/newer kernels are required to be able to support both kernels.
-> > 
-> > Sounds like your concern is that there could be a kfunc that changed it semantics,
-> > but kept exact same name and arguments? Yeah. That would be bad, but we should prevent
-> > such patches from landing. It's up to us to define sane and user friendly deprecation of kfuncs.
-> 
-> Yes, that is a concern. New kfunc and deprecation with eventual removal of the old
-> one might be better in such case, agree.
-
-Agreed. With kfuncs, say that the scenario described comes to pass. We
-could have a hypothetical deprecation policy like the following:
-
-1. Add the new kfunc with the changed semantics, arguments, etc, under a
-different name.
-2. Deprecate the old kfunc for X years / releases, where X is whatever
-conservative deprecation value we deem appropriate (and one which we
-could always extend if need be).
-3. Once we feel we're ready to remove the old kfunc, we remove it,
-rename the new (now old) kfunc from (1) to that name, and then keep the
-temporary name from the new-old kfunc in (1) as a wrapper / alias around
-it. That temporary alias can itself then be deprecated and removed after
-X years.
-
-All of this is carefully orchestrated, and we have the flexibility to be
-as conservative as we'd like in support of users. Maybe we decide that
-we can never stop supporting the original kfunc because it's too
-ubiquitous. It will surely depend on the policy we end up crafting for
-kfuncs, and will probably sometimes require a case-by-case
-determination, but at least we'll have the flexibility to choose.
-
-> 
-> [...]
-> > > is imho repeating the same story as BPF helpers vs kfuncs. Saying a kfunc is 'pretty
-> > > stable' is kind of hinting to users that it's close to UAPI, but yet it's unstable.
-> > 
-> > correct.
-> > 
-> > > It'll confuse even more. I'd rather have a path forward where those kfuncs get promoted
-> > 
-> > why confuse more? There are EXPORT_SYMBOL like kmalloc that are quite stable,
-> > yet they can change.
-> > EXPORT_SYMBOL_GPL is exact analogy to kfunc.
-> 
-> They are quite stable because they are used in lots of places in-tree and changing
-> would cause a ton of needless churn and merge conflicts for everyone, etc. You might
-> not always have this kind of visibility on usage of kfuncs. The data you have is
-> from your internal code base and what's in some of the larger OSS projects, but
-> certainly a more limited/biased view. So as with 'soft' freeze this is just as well open
-> to interpretation. "confuse more" because you declare it quite stable, yet not stable.
-> Why is there fear to make them proper uapi then with the given known guarantees? From
-> user side this guarantee is a good thing, not a bad thing. Mistakes were/are made all
-> the time and learned from. Imagine syscall API is not stable anymore. Would you invest
-> the cost to develop an application against it? Imho, it's one of BPF's strengths and
-> we should keep the door open, not close it.
-
-But we're talking about _kernel_ programs here, not user programs. And
-from that perspective, one could argue that having kfuncs actually
-promotes more upstreaming of BPF programs for the exact reasons you're
-spelling out here, just as EXPORT_SYMBOL_GPL promotes the upstreaming of
-modules. Of course, it won't be the exact same as EXPORT_SYMBOL_GPL
-because we'll still come up with a well documented, reliable deprecation
-story, but the benefits of upstreaming the BPF program still apply.
-
-In general, I think BPF programs and the syscall layer is really an
-apples and oranges comparison. The kernel has internally never had a
-stable interface as Greg describes in [0]. I don't see why we'd frame
-BPF programs differently than any other kernel program in that regard.
-
-[0]: https://www.kernel.org/doc/Documentation/process/stable-api-nonsense.rst
-
-> > > to actual BPF helpers by then where we go and say, that kfunc has proven itself in production
-> > > and from an API PoV that it is ready to be a proper BPF helper, and until this point
-> > 
-> > "Proper BPF helper" model is broken.
-> > static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
-> > 
-> > is a hack that works only when compiler optimizes the code.
-> > See gcc's attr(kernel_helper) workaround.
-> > This 'proper helper' hack is the reason we cannot compile bpf programs with -O0.
-> > And because it's uapi we cannot even fix this
-> > With kfuncs we will be able to compile with -O0 and debug bpf programs with better tools.
-> > These tools don't exist yet, but we have a way forward whereas with helpers
-> > we are stuck with -O2.
-> 
-> Better debugging tools are needed either way, independent of -O0 or -O2. I don't
-> think -O0 is a requirement or barrier for that. It may open up possibilities for
-
-I personally disagree that not being able to support -O0 is sane for a
-debugging tool, but IMHO that's not the main point. Rather, it's that
-what we have now is kind of a mess (I think we're all in agreement on
-that?), and we can never fix it because of UAPI. IMO, that is a sign
-that things need to change.
-
-> new tools, but production is still running with -O2. Proper BPF helper model is
-> broken, but everyone relies on it, and will be for a very very long time to come,
-> whether we like it or not. There is a larger ecosystem around BPF devs outside of
-> kernel, and developers will use the existing means today. There are recommendations /
-> guidelines that we can provide but we also don't have control over what developers
-> are doing. Yet we should make their life easier, not harder. Better debugging
-> possibilities should cater to everyone.
-> 
-> Thanks,
-> Daniel
+SGkgZXZlcnlvbmUsDQoNClRoaXMgcGF0Y2hzZXQgc2VlbXMgdG8gYmUgZm9yZ290IGR1cmluZyB0
+aGUgaG9saWRheSBzZWFzb24uDQpIb3BlIHRoaXMgbWVzc2FnZSBnZXRzIHNvbWUgbm90aWNlLg0K
+DQpPbiBGcmksIDIwMjItMTItMTYgYXQgMTQ6MTggLTA4MDAsIEt1aS1GZW5nIExlZSB3cm90ZToN
+Cj4gVGhpcyBpc3N1ZSBpcyByZWxhdGVkIHRvIHRhc2sgaXRlcmF0b3JzIG92ZXIgdm1hLiBBIHN5
+c3RlbSBjcmFzaCBjYW4NCj4gb2NjdXIgd2hlbiBhIHRhc2sgaXRlcmF0b3IgdHJhdmVscyB0aHJv
+dWdoIHZtYSBvZiB0YXNrcyBhcyB0aGUgZGVhdGgNCj4gb2YgYSB0YXNrIHdpbGwgY2xlYXIgdGhl
+IHBvaW50ZXIgdG8gaXRzIG1tLCBldmVuIHRob3VnaCB0aGUNCj4gdGFza19zdHJ1Y3QgaXMgc3Rp
+bGwgaGVsZC4gQXMgYSByZXN1bHQsIGFuIHVuZXhwZWN0ZWQgY3Jhc2ggaGFwcGVucw0KPiBkdWUg
+dG8gYSBudWxsIHBvaW50ZXIuIFRvIGFkZHJlc3MgdGhpcyBwcm9ibGVtLCBhIHJlZmVyZW5jZSB0
+byBtbSBpcw0KPiBrZXB0IG9uIHRoZSBpdGVyYXRvciB0byBtYWtlIHN1cmUgdGhhdCB0aGUgcG9p
+bnRlciBpcyBhbHdheXMNCj4gdmFsaWQuIFRoaXMgcGF0Y2ggc2V0IHByb3ZpZGVzIGEgc29sdXRp
+b24gZm9yIHRoaXMgY3Jhc2ggYnkgcHJvcGVybHkNCj4gcmVmZXJlbmNpbmcgbW0gb24gdGFzayBp
+dGVyYXRvcnMgb3ZlciB2bWEuDQo+IA0KPiBUaGUgbWFqb3IgY2hhbmdlcyBmcm9tIHYxIGFyZToN
+Cj4gDQo+IMKgLSBGaXggY29tbWl0IGxvZ3Mgb2YgdGhlIHRlc3QgY2FzZS4NCj4gDQo+IMKgLSBV
+c2UgcmV2ZXJzZSBDaHJpc3RtYXMgdHJlZSBjb2Rpbmcgc3R5bGUuDQo+IA0KPiDCoC0gUmVtb3Zl
+IHVubmVjZXNzYXJ5IGVycm9yIGhhbmRsaW5nIGZvciB0aW1lKCkuDQo+IA0KPiB2MToNCj4gaHR0
+cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYnBmLzIwMjIxMjE2MDE1OTEyLjk5MTYxNi0xLWt1aWZlbmdA
+bWV0YS5jb20vDQo+IA0KPiBLdWktRmVuZyBMZWUgKDIpOg0KPiDCoCBicGY6IGtlZXAgYSByZWZl
+cmVuY2UgdG8gdGhlIG1tLCBpbiBjYXNlIHRoZSB0YXNrIGlzIGRlYWQuDQo+IMKgIHNlbGZ0ZXN0
+cy9icGY6IGFkZCBhIHRlc3QgZm9yIGl0ZXIvdGFza192bWEgZm9yIHNob3J0LWxpdmVkDQo+IHBy
+b2Nlc3Nlcw0KPiANCj4gwqBrZXJuZWwvYnBmL3Rhc2tfaXRlci5jwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8IDM5ICsrKysrKystLS0NCj4gwqAuLi4vc2Vs
+ZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL2JwZl9pdGVyLmPCoMKgwqDCoMKgwqAgfCA3Mw0KPiArKysr
+KysrKysrKysrKysrKysrDQo+IMKgMiBmaWxlcyBjaGFuZ2VkLCAxMDAgaW5zZXJ0aW9ucygrKSwg
+MTIgZGVsZXRpb25zKC0pDQo+IA0KDQo=
