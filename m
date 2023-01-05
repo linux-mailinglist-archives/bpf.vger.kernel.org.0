@@ -2,227 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 411C365E963
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 11:55:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239E965E96D
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 11:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbjAEKzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 05:55:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
+        id S231830AbjAEK5X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 05:57:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbjAEKzF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 05:55:05 -0500
-X-Greylist: delayed 881 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Jan 2023 02:55:04 PST
-Received: from fx308.security-mail.net (smtpout30.security-mail.net [85.31.212.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5454044C65
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 02:55:04 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by fx308.security-mail.net (Postfix) with ESMTP id A0BAA75A6C1
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 11:40:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalray.eu;
-        s=sec-sig-email; t=1672915221;
-        bh=HozEVKpsnPTz1W+OmWAJHb2nflwGQpHJX/pPziyjbkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=z8nnqsOPLAZ31pVTrEaSU8Vi1jwkux3kRJ9jir01BPlgH3Vm0rvu0GKLTqA8QcOvp
-         kLczG4JPQ06aIFlsEnPWzgHdo4KICmI9A0K7HrUsCBAfrXYX+XrUXZNvGHj/AcXF+p
-         bTvO3vB+RrFhkrZgRrmVTSG9wbJg55lN4Wsmg9nc=
-Received: from fx308 (localhost [127.0.0.1]) by fx308.security-mail.net
- (Postfix) with ESMTP id 7006775A3E7; Thu,  5 Jan 2023 11:40:21 +0100 (CET)
-Received: from zimbra2.kalray.eu (unknown [217.181.231.53]) by
- fx308.security-mail.net (Postfix) with ESMTPS id 0F44375AB2B; Thu,  5 Jan
- 2023 11:40:21 +0100 (CET)
-Received: from zimbra2.kalray.eu (localhost [127.0.0.1]) by
- zimbra2.kalray.eu (Postfix) with ESMTPS id D52FF27E0373; Thu,  5 Jan 2023
- 11:40:20 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1]) by zimbra2.kalray.eu
- (Postfix) with ESMTP id B47A227E02E4; Thu,  5 Jan 2023 11:40:20 +0100 (CET)
-Received: from zimbra2.kalray.eu ([127.0.0.1]) by localhost
- (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026) with ESMTP id
- h9vZft-QceM0; Thu,  5 Jan 2023 11:40:20 +0100 (CET)
-Received: from tellis.lin.mbt.kalray.eu (unknown [192.168.36.206]) by
- zimbra2.kalray.eu (Postfix) with ESMTPSA id 5854D27E02AC; Thu,  5 Jan 2023
- 11:40:20 +0100 (CET)
-X-Virus-Scanned: E-securemail
-Secumail-id: <141b8.63b6a915.e31d.0>
-DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu B47A227E02E4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
- s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1672915220;
- bh=rBdSTEj4sEHV5aOdgiMVbZa0c1+4vHmKGKt/utxqTFU=;
- h=Date:From:To:Message-ID:MIME-Version;
- b=pKs+CePZ3R3W41fZHlmw/owOk940TBb9jGKa8X1N/B6at/r5t/99lcM7BYNSm1sbm
- GgU4FIb/vUiDD0dGYY0QwPK6QJVEAcqdlcP4MzXTRQlqlJaTfeeQw469yNJ0IyFuvr
- H4nRIuARzCz4d0RA5Dr/HYW0RULCkMt83j3YDunc=
-Date:   Thu, 5 Jan 2023 11:40:19 +0100
-From:   Jules Maselbas <jmaselbas@kalray.eu>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Yann Sionneau <ysionneau@kalray.eu>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Aneesh Kumar <aneesh.kumar@linux.ibm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, bpf@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        devicetree@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Eric Paris <eparis@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Jason Baron <jbaron@akamai.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-audit@redhat.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, Alex Michon <amichon@kalray.eu>,
-        Ashley Lesdalons <alesdalons@kalray.eu>,
-        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
-        Clement Leger <clement.leger@bootlin.com>,
-        Guillaume Missonnier <gmissonnier@kalray.eu>,
-        Guillaume Thouvenin <gthouvenin@kalray.eu>,
-        Jean-Christophe Pince <jcpince@gmail.com>,
-        Jonathan Borne <jborne@kalray.eu>,
-        Julian Vetter <jvetter@kalray.eu>,
-        Julien Hascoet <jhascoet@kalray.eu>,
-        Julien Villette <jvillette@kalray.eu>,
-        Louis Morhet <lmorhet@kalray.eu>,
-        Luc Michel <lmichel@kalray.eu>,
-        Marc =?utf-8?b?UG91bGhpw6hz?= <dkm@kataplop.net>,
-        Marius Gligor <mgligor@kalray.eu>,
-        Samuel Jones <sjones@kalray.eu>,
-        Thomas Costis <tcostis@kalray.eu>,
-        Vincent Chardon <vincent.chardon@elsys-design.com>
-Subject: Re: [RFC PATCH 00/25] Upstream kvx Linux port
-Message-ID: <20230105104019.GA7446@tellis.lin.mbt.kalray.eu>
-References: <20230103164359.24347-1-ysionneau@kalray.eu>
- <7c531595-e987-422b-bcf7-48ad0ba49ce6@app.fastmail.com>
+        with ESMTP id S233074AbjAEK5U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 05:57:20 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EE650E7E
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 02:57:16 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Nnjwf5ZkXzqTvk;
+        Thu,  5 Jan 2023 18:52:34 +0800 (CST)
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Thu, 5 Jan 2023 18:57:14 +0800
+Subject: Re: [bpf-next v4 2/2] selftests/bpf: add test case for htab map
+To:     <tong@infragraf.org>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <20230105092637.35069-1-tong@infragraf.org>
+ <20230105092637.35069-2-tong@infragraf.org>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <a5c0ae06-774f-daa6-54f9-08054b6250f7@huawei.com>
+Date:   Thu, 5 Jan 2023 18:56:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7c531595-e987-422b-bcf7-48ad0ba49ce6@app.fastmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-ALTERMIMEV2_out: done
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230105092637.35069-2-tong@infragraf.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
 
-On Wed, Jan 04, 2023 at 04:58:25PM +0100, Arnd Bergmann wrote:
-> On Tue, Jan 3, 2023, at 17:43, Yann Sionneau wrote:
-> > This patch series adds support for the kv3-1 CPU architecture of the kvx family
-> > found in the Coolidge (aka MPPA3-80) SoC of Kalray.
-> >
-> > This is an RFC, since kvx support is not yet upstreamed into gcc/binutils,
-> > therefore this patch series cannot be merged into Linux for now.
-> >
-> > The goal is to have preliminary reviews and to fix problems early.
-> >
-> > The Kalray VLIW processor family (kvx) has the following features:
-> > * 32/64 bits execution mode
-> > * 6-issue VLIW architecture
-> > * 64 x 64bits general purpose registers
-> > * SIMD instructions
-> > * little-endian
-> > * deep learning co-processor
-> 
-> Thanks for posting these, I had been wondering about the
-> state of the port. Overall this looks really nice, I can
-> see that you and the team have looked at other ports
-> and generally made the right decisions.
 
-Thank you and all for the reviews. We are currently going
-through every remarks and we are trying to do our best to
-send a new patch series with everything addressed.
-
-> I commented on the syscall patch directly, I think it's
-> important to stop using the deprecated syscalls as soon
-> as possible to avoid having dependencies in too many
-> libc binaries. Almost everything else can be changed
-> easily as you get closer to upstream inclusion.
-> 
-> I did not receive most of the other patches as I'm
-> not subscribed to all the mainline lists. For future 
-> submissions, can you add the linux-arch list to Cc for
-> all patches?
-
-We misused get_maintainers.pl, running it on each patch instead
-of using it on the whole series. next time every one will be in
-copy of every patch in the series and including linux-arch.
-
-> Reading the rest of the series through lore.kernel.org,
-> most of the comments I have are for improvements that
-> you may find valuable rather than serious mistakes:
-> 
-> - the {copy_to,copy_from,clear}_user functions are
->   well worth optimizing better than the byte-at-a-time
->   version you have, even just a C version built around
->   your __get_user/__put_user inline asm should help, and
->   could be added to lib/usercopy.c.
-
-right, we are using memcpy for {copy_to,copy_from}_user_page
-which has a simple optimized version introduced in
-(kvx: Add some library functions).
-I wonder if it is possible to do the same for copy_*_user functions.
-
-> - The __raw_{read,write}{b,w,l,q} helpers should
->   normally be defined as inline asm instead of
->   volatile pointer dereferences, I've seen cases where
->   the compiler ends up splitting the access or does
->   other things you may not want on MMIO areas.
+On 1/5/2023 5:26 PM, tong@infragraf.org wrote:
+> From: Tonghao Zhang <tong@infragraf.org>
 >
-> - I would recomment implementing HAVE_ARCH_VMAP_STACK
->   as well as IRQ stacks, both of these help to
->   avoid data corruption from stack overflow that you
->   will eventually run into.
-> 
-> - You use qspinlock as the only available spinlock
->   implementation, but only support running on a
->   single cluster of 16 cores. It may help to use
->   the generic ticket spinlock instead, or leave it
->   as a Kconfig option, in particular since you only
->   have the emulated xchg16() atomic for qspinlock.
-> 
-> - Your defconfig file enables CONFIG_EMBEDDED, which
->   in turn enables CONFIG_EXPERT. This is probably
->   not what you want, so better turn off both of these.
-> 
-> - The GENERIC_CALIBRATE_DELAY should not be necessary
->   since you have a get_cycles() based delay loop.
->   Just set loops_per_jiffy to the correct value based
->   on the frequency of the cycle counter, to save
->   a little time during boot and get a more accurate
->   delay loop.
+> This testing show how to reproduce deadlock in special case.
+> We update htab map in Task and NMI context. Task can be interrupted by
+> NMI, if the same map bucket was locked, there will be a deadlock.
 >
-Ack !
-
-   Jules
-
-
-
+> * map max_entries is 2.
+> * NMI using key 4 and Task context using key 20.
+> * so same bucket index but map_locked index is different.
+>
+> The selftest use perf to produce the NMI and fentry nmi_handle.
+> Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
+> map syscall increase this counter in bpf_disable_instrumentation.
+> Then fentry nmi_handle and update hash map will reproduce the issue.
+>
+> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Song Liu <song@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: Hao Luo <haoluo@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Hou Tao <houtao1@huawei.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
+Acked-by: Hou Tao<houtao1@huawei.com>
+> ---
+>  tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
+>  tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
+>  .../selftests/bpf/prog_tests/htab_deadlock.c  | 75 +++++++++++++++++++
+>  .../selftests/bpf/progs/htab_deadlock.c       | 30 ++++++++
+>  4 files changed, 107 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/htab_deadlock.c
+>
+> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+> index 99cc33c51eaa..42d98703f209 100644
+> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
+> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+> @@ -24,6 +24,7 @@ fexit_test                                       # fexit_attach unexpected error
+>  get_func_args_test                               # get_func_args_test__attach unexpected error: -524 (errno 524) (trampoline)
+>  get_func_ip_test                                 # get_func_ip_test__attach unexpected error: -524 (errno 524) (trampoline)
+>  htab_update/reenter_update
+> +htab_deadlock                                    # fentry failed: -524 (trampoline)
+>  kfree_skb                                        # attach fentry unexpected error: -524 (trampoline)
+>  kfunc_call/subprog                               # extern (var ksym) 'bpf_prog_active': not found in kernel BTF
+>  kfunc_call/subprog_lskel                         # skel unexpected error: -2
+> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
+> index 3efe091255bf..ab11f71842a5 100644
+> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
+> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+> @@ -26,6 +26,7 @@ get_func_args_test	                 # trampoline
+>  get_func_ip_test                         # get_func_ip_test__attach unexpected error: -524                             (trampoline)
+>  get_stack_raw_tp                         # user_stack corrupted user stack                                             (no backchain userspace)
+>  htab_update                              # failed to attach: ERROR: strerror_r(-524)=22                                (trampoline)
+> +htab_deadlock                            # fentry failed: -524                                                         (trampoline)
+>  jit_probe_mem                            # jit_probe_mem__open_and_load unexpected error: -524                         (kfunc)
+>  kfree_skb                                # attach fentry unexpected error: -524                                        (trampoline)
+>  kfunc_call                               # 'bpf_prog_active': not found in kernel BTF                                  (?)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+> new file mode 100644
+> index 000000000000..137dce8f1346
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+> @@ -0,0 +1,75 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 DiDi Global Inc. */
+> +#define _GNU_SOURCE
+> +#include <pthread.h>
+> +#include <sched.h>
+> +#include <test_progs.h>
+> +
+> +#include "htab_deadlock.skel.h"
+> +
+> +static int perf_event_open(void)
+> +{
+> +	struct perf_event_attr attr = {0};
+> +	int pfd;
+> +
+> +	/* create perf event on CPU 0 */
+> +	attr.size = sizeof(attr);
+> +	attr.type = PERF_TYPE_HARDWARE;
+> +	attr.config = PERF_COUNT_HW_CPU_CYCLES;
+> +	attr.freq = 1;
+> +	attr.sample_freq = 1000;
+> +	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+> +
+> +	return pfd >= 0 ? pfd : -errno;
+> +}
+> +
+> +void test_htab_deadlock(void)
+> +{
+> +	unsigned int val = 0, key = 20;
+> +	struct bpf_link *link = NULL;
+> +	struct htab_deadlock *skel;
+> +	int err, i, pfd;
+> +	cpu_set_t cpus;
+> +
+> +	skel = htab_deadlock__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> +		return;
+> +
+> +	err = htab_deadlock__attach(skel);
+> +	if (!ASSERT_OK(err, "skel_attach"))
+> +		goto clean_skel;
+> +
+> +	/* NMI events. */
+> +	pfd = perf_event_open();
+> +	if (pfd < 0) {
+> +		if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
+> +			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
+> +			test__skip();
+> +			goto clean_skel;
+> +		}
+> +		if (!ASSERT_GE(pfd, 0, "perf_event_open"))
+> +			goto clean_skel;
+> +	}
+> +
+> +	link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
+> +	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
+> +		goto clean_pfd;
+> +
+> +	/* Pinned on CPU 0 */
+> +	CPU_ZERO(&cpus);
+> +	CPU_SET(0, &cpus);
+> +	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
+> +
+> +	/* update bpf map concurrently on CPU0 in NMI and Task context.
+> +	 * there should be no kernel deadlock.
+> +	 */
+> +	for (i = 0; i < 100000; i++)
+> +		bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
+> +				    &key, &val, BPF_ANY);
+> +
+> +	bpf_link__destroy(link);
+> +clean_pfd:
+> +	close(pfd);
+> +clean_skel:
+> +	htab_deadlock__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
+> new file mode 100644
+> index 000000000000..dacd003b1ccb
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
+> @@ -0,0 +1,30 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 DiDi Global Inc. */
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_HASH);
+> +	__uint(max_entries, 2);
+> +	__uint(map_flags, BPF_F_ZERO_SEED);
+> +	__type(key, unsigned int);
+> +	__type(value, unsigned int);
+> +} htab SEC(".maps");
+> +
+> +SEC("fentry/perf_event_overflow")
+> +int bpf_nmi_handle(struct pt_regs *regs)
+> +{
+> +	unsigned int val = 0, key = 4;
+> +
+> +	bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
+> +	return 0;
+> +}
+> +
+> +SEC("perf_event")
+> +int bpf_empty(struct pt_regs *regs)
+> +{
+> +	return 0;
+> +}
 
