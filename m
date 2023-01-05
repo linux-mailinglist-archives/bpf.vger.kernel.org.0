@@ -2,171 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBCB65F18F
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 17:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F40565F31D
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 18:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbjAEQ5m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 11:57:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S231583AbjAERsh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 12:48:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbjAEQ5l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 11:57:41 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F560392FA
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 08:57:40 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id 124so25775620pfy.0
-        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 08:57:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qklyOCxfCUcZboToekn30enOfFtg7jdWSCtxv11/91E=;
-        b=AiwVgqhYbXcvon+g4I18+p2ZxDc2xlVSSlD6YWWeB8L5uI3QVj8A/TzN8w+l51zT2m
-         EqZS6q5EpeAJTVCTTyBmVtRmGOZJZ0xKKb4dc3tTanc2ycrk5BpH/4hq0KLOw+si6JBV
-         H28ZGrCzLw6ZyA4tolPJTHU3EFl5B8L7l0VxY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qklyOCxfCUcZboToekn30enOfFtg7jdWSCtxv11/91E=;
-        b=5PUTIeLCd/DBdtK2tfNjM0H4viFO4EPq69oSfBA+k0rbw6Q1m6UhwGQJv95nQb125e
-         sNInAW91W16O+8jw3VaKRlDSrY/U50bBIdIBiVz67ZLkyIvYOu8CypfEA41DJ+ySPKpA
-         EGwO6CL+UK9AmDYthGMq5YpFE2Nku3KU03CKmZ49/uEOz+nk4kHKlwDgHyoDJrSzoyaI
-         kuhrWIGK4xP9rbNfG6QTkPpd86mjv1Zgxwp6JXzb8wDinOVYks5FFxd39fTrFQVd8tkb
-         Yxwgl8Ox0zIPAz5BI83cs6oV9CYqbylXPkYuKEA7ngeaOD15EQZ868jvqztddprILtcD
-         hw2A==
-X-Gm-Message-State: AFqh2kquh3xBJ+RhJxraMeCLyId7uH0YZ/Ls/aTHTyUifTB9s+RvsuXp
-        nY7Hj7xldd0bdcXhLv1zqXLTQw==
-X-Google-Smtp-Source: AMrXdXuMNeGVN/9ui5XXdTjmRUvXi3k8EKEyY5mCV5EvSQWxjAogVicLZMkHTQUitTf98cfkChSJ6A==
-X-Received: by 2002:a05:6a00:1906:b0:580:9d4a:4e1c with SMTP id y6-20020a056a00190600b005809d4a4e1cmr56998227pfi.3.1672937859663;
-        Thu, 05 Jan 2023 08:57:39 -0800 (PST)
-Received: from C02YVCJELVCG.dhcp.broadcom.net ([192.19.144.250])
-        by smtp.gmail.com with ESMTPSA id z13-20020aa7948d000000b005765df21e68sm14519513pfk.94.2023.01.05.08.57.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jan 2023 08:57:39 -0800 (PST)
-From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
-X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
-Date:   Thu, 5 Jan 2023 11:57:32 -0500
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Tariq Toukan <ttoukan.linux@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, lorenzo.bianconi@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>, gal@nvidia.com,
-        Saeed Mahameed <saeedm@nvidia.com>, tariqt@nvidia.com
-Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
- support xdp multibuffer
-Message-ID: <Y7cBfE7GpX04EI97@C02YVCJELVCG.dhcp.broadcom.net>
-References: <20220621175402.35327-1-gospo@broadcom.com>
- <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com>
- <87k0234pd6.fsf@toke.dk>
- <20230103172153.58f231ba@kernel.org>
- <Y7U8aAhdE3TuhtxH@lore-desk>
- <87bkne32ly.fsf@toke.dk>
- <a12de9d9-c022-3b57-0a15-e22cdae210fa@gmail.com>
- <871qo90yxr.fsf@toke.dk>
+        with ESMTP id S235469AbjAERX2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 12:23:28 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC50269521
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 09:17:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 64743B819C1
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 17:17:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D57BC433F1
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 17:17:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672939036;
+        bh=CRoT2a99GRhh3fpktEOzQz4vLaferYuk4IPytTP0pOk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i0ocL4roCTLvA2W3rvOSHk4p0uoUnx2ih7/vd3kV0RcDPAxuF6OqJ87cffsMwsM14
+         a/bXI98SWWNSbceQAb3LDHTNzjS6QFm8Aq/bD1TbzDtzTpgr/hfWp5f/oJDFKzvoh7
+         y8SRYBf1IP85RffFVfwGpBuzxl9tILyTlmK4hKles7X6FNkviqrjAngEOVWv0PS6Bx
+         K+4tYMJJbbkkTQX6JFhgBl/S0Yk2IDwQT7ArqbfoNK8nlBa2OjRM6FuG3A1QUe5nxX
+         DbpZu6En+ajjdgP4MKhN1te70qVgzN3RqIGHVUdvPrVL7BCB18YpkNrNO79qWdkRcI
+         otp1anqtsSa3g==
+Received: by mail-ed1-f52.google.com with SMTP id i15so53762523edf.2
+        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 09:17:16 -0800 (PST)
+X-Gm-Message-State: AFqh2kpF+YH/f77MTeQSyZZWGV6SCpWwiWCchUCw6HYVSG5rQ4LyLcBi
+        Ixf+W6hEHZ8JaRnGwcpqsMbOfd/9sGe3BSLTZd7nmA==
+X-Google-Smtp-Source: AMrXdXuj1F1wYCjPM4ZygLyIdwpvtP5vo3DBTW71CZq8y+Em1VQVHhqwW50vIZktvQineqX7pyw4oJvBplNIfsa+ZF4=
+X-Received: by 2002:a05:6402:2710:b0:481:6616:bff3 with SMTP id
+ y16-20020a056402271000b004816616bff3mr4049672edd.162.1672939034378; Thu, 05
+ Jan 2023 09:17:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <871qo90yxr.fsf@toke.dk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
+ <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local> <Y68wP/MQHOhUy2EY@maniforge.lan>
+ <20221230193112.h23ziwoqqb747zn7@macbook-pro-6.dhcp.thefacebook.com>
+ <Y69RZeEvP2dXO7to@maniforge.lan> <20221231004213.h5fx3loccbs5hyzu@macbook-pro-6.dhcp.thefacebook.com>
+ <f69b7d7a-cdac-a478-931a-f534b34924e9@iogearbox.net> <20230103235107.k5dobpvrui5ux3ar@macbook-pro-6.dhcp.thefacebook.com>
+ <43406cdf-19c1-b80e-0f10-39a1afbf4b8b@iogearbox.net> <20230104193735.ji4fa5imvjvnhrqf@macbook-pro-6.dhcp.thefacebook.com>
+ <5cde0738-67d3-ca70-d025-cbd1769b0900@linux.dev>
+In-Reply-To: <5cde0738-67d3-ca70-d025-cbd1769b0900@linux.dev>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Thu, 5 Jan 2023 18:17:03 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ4WEZ8J5-3L=e3TV0qGi=Xx9bEiDEYsOnOio4gnz5D_0A@mail.gmail.com>
+Message-ID: <CACYkzJ4WEZ8J5-3L=e3TV0qGi=Xx9bEiDEYsOnOio4gnz5D_0A@mail.gmail.com>
+Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
+ convenience helpers
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Vernet <void@manifault.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        bpf <bpf@vger.kernel.org>, kernel-team@meta.com,
+        Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 04:43:28PM +0100, Toke Høiland-Jørgensen wrote:
-> Tariq Toukan <ttoukan.linux@gmail.com> writes:
-> 
-> > On 04/01/2023 14:28, Toke Høiland-Jørgensen wrote:
-> >> Lorenzo Bianconi <lorenzo@kernel.org> writes:
-> >> 
-> >>>> On Tue, 03 Jan 2023 16:19:49 +0100 Toke Høiland-Jørgensen wrote:
-> >>>>> Hmm, good question! I don't think we've ever explicitly documented any
-> >>>>> assumptions one way or the other. My own mental model has certainly
-> >>>>> always assumed the first frag would continue to be the same size as in
-> >>>>> non-multi-buf packets.
-> >>>>
-> >>>> Interesting! :) My mental model was closer to GRO by frags
-> >>>> so the linear part would have no data, just headers.
+On Thu, Jan 5, 2023 at 1:14 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>
+> On 1/4/23 11:37 AM, Alexei Starovoitov wrote:
+> > Would you invest in developing application against unstable syscall API? Absolutely.
+> > People develop all tons of stuff on top of fuse-fs. People develop apps that interact
+> > with tracing bpf progs that are clearly unstable. They do suffer when kernel side
+> > changes and people accept that cost. BPF and tracing in general contributed to that mind change.
+> > In a datacenter quite a few user apps are tied to kernel internals.
+> >
+> >> Imho, it's one of BPF's strengths and
+> >> we should keep the door open, not close it.
+> > The strength of BPF was and still is that it has both stable and unstable interfaces.
+> > Roughly: networking is stable, tracing is unstable.
+> > The point is that to be stable one doesn't need to use helpers.
+> > We can make kfuncs stable too if we focus all our efforts this way and
+> > for that we need to abandon adding helpers though it's a pain short term.
+> >
+> >>>> to actual BPF helpers by then where we go and say, that kfunc has proven itself in production
+> >>>> and from an API PoV that it is ready to be a proper BPF helper, and until this point
+> >>> "Proper BPF helper" model is broken.
+> >>> static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
 > >>>
-> >>> That is assumption as well.
-> >> 
-> >> Right, okay, so how many headers? Only Ethernet, or all the way up to
-> >> L4 (TCP/UDP)?
-> >> 
-> >> I do seem to recall a discussion around the header/data split for TCP
-> >> specifically, but I think I mentally put that down as "something people
-> >> may way to do at some point in the future", which is why it hasn't made
-> >> it into my own mental model (yet?) :)
-> >> 
-> >> -Toke
-> >> 
-> >
-> > I don't think that all the different GRO layers assume having their 
-> > headers/data in the linear part. IMO they will just perform better if 
-> > these parts are already there. Otherwise, the GRO flow manages, and 
-> > pulls the needed amount into the linear part.
-> > As examples, see calls to gro_pull_from_frag0 in net/core/gro.c, and the 
-> > call to pskb_may_pull() from skb_gro_header_slow().
-> >
-> > This resembles the bpf_xdp_load_bytes() API used here in the xdp prog.
-> 
-> Right, but that is kernel code; what we end up doing with the API here
-> affects how many programs need to make significant changes to work with
-> multibuf, and how many can just set the frags flag and continue working.
-> Which also has a performance impact, see below.
-> 
-> > The context of my questions is that I'm looking for the right memory 
-> > scheme for adding xdp-mb support to mlx5e striding RQ.
-> > In striding RQ, the RX buffer consists of "strides" of a fixed size set 
-> > by pthe driver. An incoming packet is written to the buffer starting from 
-> > the beginning of the next available stride, consuming as much strides as 
-> > needed.
-> >
-> > Due to the need for headroom and tailroom, there's no easy way of 
-> > building the xdp_buf in place (around the packet), so it should go to a 
-> > side buffer.
-> >
-> > By using 0-length linear part in a side buffer, I can address two 
-> > challenging issues: (1) save the in-driver headers memcpy (copy might 
-> > still exist in the xdp program though), and (2) conform to the 
-> > "fragments of the same size" requirement/assumption in xdp-mb. 
-> > Otherwise, if we pull from frag[0] into the linear part, frag[0] becomes 
-> > smaller than the next fragments.
-> 
-> Right, I see.
-> 
-> So my main concern would be that if we "allow" this, the only way to
-> write an interoperable XDP program will be to use bpf_xdp_load_bytes()
-> for every packet access. Which will be slower than DPA, so we may end up
-> inadvertently slowing down all of the XDP ecosystem, because no one is
-> going to bother with writing two versions of their programs. Whereas if
-> you can rely on packet headers always being in the linear part, you can
-> write a lot of the "look at headers and make a decision" type programs
-> using just DPA, and they'll work for multibuf as well.
+> >>> is a hack that works only when compiler optimizes the code.
+> >>> See gcc's attr(kernel_helper) workaround.
+> >>> This 'proper helper' hack is the reason we cannot compile bpf programs with -O0.
+> >>> And because it's uapi we cannot even fix this
+> >>> With kfuncs we will be able to compile with -O0 and debug bpf programs with better tools.
+> >>> These tools don't exist yet, but we have a way forward whereas with helpers
+> >>> we are stuck with -O2.
+> >> Better debugging tools are needed either way, independent of -O0 or -O2. I don't
+> >> think -O0 is a requirement or barrier for that. It may open up possibilities for
+> >> new tools, but production is still running with -O2. Proper BPF helper model is
+> >> broken, but everyone relies on it, and will be for a very very long time to come,
+> >> whether we like it or not. There is a larger ecosystem around BPF devs outside of
+> >> kernel, and developers will use the existing means today. There are recommendations /
+> >> guidelines that we can provide but we also don't have control over what developers
+> >> are doing. Yet we should make their life easier, not harder.
+> > Fully fleshed out kfunc infra will make developers job easier. No one is advocating
+> > to make users suffer.
+>
+> It is a long discussion. I am replying on a thread with points that I have also
+> been thinking about kfunc and helper.
+>
+> I think bpf helper is a kernel function but helpers need to be defined in a more
+> tedious form. It requires to define bpf_func_proto and then wrap into
+> BPF_CALL_x. It was not obvious for me to get around to understand the reason
+> behind it. With kfunc, it is a more natural way for other kernel developers to
+> expose subsystem features to bpf prog. In time, I believe we will be able to
+> make kfunc has a similar experience as EXPORT_SYMBOL_*.
+>
+> Thus, for subsystem (hid, fuse, netdev...etc) exposing functions to bpf prog, I
+> think it makes sense to stay with kfunc from now on. The subsystem is not
+> exposing something like syscall as an uapi. bpf prog is part of the kernel in
+> the sense that it extends that subsystem code. I don't think bpf needs to
+> provide extra and more guarantee than the EXPORT_SYMBOL_* in term of api. That
+> said, we should still review kfunc in a way that ensuring it is competent to the
+> best of our knowledge at that point with the limited initial use cases at hand.
+> I won't be surprised some of the existing EXPORT_SYMBOL_* kernel functions will
+> be exposed to the bpf prog as kfunc as-is without any change in the future. For
+> example, a few tcp cc kfuncs such as tcp_slow_start. They are likely stable
+> without much change for a long time. It can be directly exposed as bpf kfunc.
+> kfunc is a way to expose subsystem function without needing the bpf_func_proto
+> and BPF_CALL_x quirks. When the function can be dual compiled later, the kfunc
+> can also be inlined.
+>
+> If kfunc will be used for subsystem, it is very likely the number of kfunc will
+> grow and exceed the bpf helpers soon.  This seems to be a stronger need to work
+> on the user experience problems about kfunc that have mentioned in this thread
+> sooner than later. They have to be solved regardless. May be start with stable
+> kfunc first. If the new helper is guaranteed stable, then why it cannot be kfunc
+> but instead needs to go through the bpf_func_proto and BPF_CALL_x?  In time, I
+> hope the bpf helper support in the verifier can be quieted down (eg.
+> check_helper_call vs check_kfunc_call) and focus energy into kfunc like inlining
+> kfunc...etc.
 
-The question I would have is what is really the 'slow down' for
-bpf_xdp_load_bytes() vs DPA?  I know you and Jesper can tell me how many
-instructions each use. :)
 
-Taking a step back...years ago Dave mentioned wanting to make XDP
-programs easy to write and it feels like using these accessor APIs would
-help accomplish that.  If the kernel examples use bpf_xdp_load_bytes()
-accessors everywhere then that would accomplish that.
+Sorry, I am late to this discussion. The way I read this is that
+kfuncs and helpers are implementation details and the real question is
+about the stability and mutability of the helper methods.
 
-> But maybe I'm mistaken and people are just going to use the load_bytes
-> helper anyway because they want to go deeper than whatever "headers" bit
-> we'll end up guaranteeing is in the linear part?
+I think there are two kinds of BPF program developers, and I might be
+oversimplifying to convey a point here:
+
+[1] Tracing people: They craft tracing programs and are more
+accustomed to probing deeper into kernel internals, handling variable
+renames and consequently will tolerate a kfunc changing its signature,
+being renamed or disappearing.
+
+[2] Network people: They are not accustomed to mutability the same way
+as the tracing people. If there is mutability here, these users will
+face a change in developer experience.
+
+I see two paths forward here:
+
+[a] We want to somewhat preserve the developer experience of [2] and
+we find a way to do somewhat stable APIs. kfuncs have the benefit that
+they are eventually mutable, but a longer stability guarantee for
+helpers used by [2] could ameliorate the pains of mutability. e.g.
+something we could do for certain helpers is a deprecation story, e.g.
+a kfunc won't change for X kernel versions, or when we annotate kfuncs
+as deprecated, libbpf can warn users "this kfunc is going away in
+kernel version Z").
+
+If this would be difficult to guarantee and we do care about developer
+experience, we might need to have some helpers exposed as UAPI.
+
+[b] We accept the fact the user experience will change more for [2]
+and that's a trade-off we accept. IMHO, this is not ideal and while
+tracing folks have found a way to cope, it would be yet another thing
+to worry about for folks who are not used to it.
+
+There are things we can do to make it slightly less burdensome for the
+user by adding a shim in BPF headers (however, it won't solve problems
+for everyone though e.g. inline BPF, other languages but will give
+them a template for their respective "shims").
+
+Another thing to consider if there are use-cases where some users
+disable BTF (for whatever reason, like running BPF in a pacemaker :P
+or in extremely low memory cases).
