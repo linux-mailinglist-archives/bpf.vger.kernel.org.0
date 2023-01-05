@@ -2,58 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A291C65F0F5
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 17:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F59965F106
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 17:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbjAEQSW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 11:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
+        id S234974AbjAEQWK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 11:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234891AbjAEQST (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 11:18:19 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8954E41F
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 08:18:17 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id 6so22928927pfz.4
-        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 08:18:17 -0800 (PST)
+        with ESMTP id S234429AbjAEQWH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 11:22:07 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D63514D03
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 08:22:07 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id z12so30310937qtv.5
+        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 08:22:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NmOnbvbzPsM3UBiTW8b7sIm8/4Px8e8NnuSYjmEBarA=;
-        b=BummfiJYiUs36pY/vWeArXspdkcludEXNneoXDD/35V7VoUFCzQxFkZbgfUOLFkmPq
-         qbz0vVgmTCbdPwTSCST3fqYwqsNNgRt96ZraiCvzauKP+cbOgdtMk9s1yY/h57MCiQ2y
-         x6MMnZ23MGyWfDSNTKm69Y1BIrVNDoVNK4G9Q=
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ffFs6MhOEallo9JreaDhoMujgaZC+42IQ6jp+96uB8w=;
+        b=chfT8y0msZkaskvuV7/8nOEOPp9zd2IJZ4h+Bqm8yFlbbArirbxKxYrl8ahe7tCwqM
+         xZwOKo2o8v6FEGoIEExZcLq9r8MPTgZn+tH/KgVEcpyH8lggaDWB7DRTv1Q5gblrayKs
+         AaSgUBsBeikTN2AwblmVBUGW1NCfL9gkpqStY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NmOnbvbzPsM3UBiTW8b7sIm8/4Px8e8NnuSYjmEBarA=;
-        b=VV/954lOoNTml5wS1jHwLnQaEiBYQngTIXM9Mbg1P834xcMIcsYbH+vuHm0kvXBCuS
-         og71Hn8aTT9k8rE05d+H6Mxfsjt3CXZqdpiIa6fwCZoBjCcw8IfRlKpdE86/B40/ZvWz
-         R2En4pc0dpmz0YiBNvN8DiT/fsdZ4vbosPF6Req7GEP+YKy7kbzG15nhvLDyUofZAglY
-         m5tEH9RdX95041KDG59Tn59r7OMZ4OGgTza6Zb5Gm35qABcE4njVEBXZIv5F1HD5cBqS
-         GReBHwoSCM59R7BfsSpyLqlGXzZFjslOWcuDfH45mc3e74CLTavrvp6hhp92KOAdzFuD
-         5skw==
-X-Gm-Message-State: AFqh2kq+J5/yJEu3xb0hc3txcmwJrxAF+Jao0wZI5OfFsKvs8QbUbFO+
-        eF8xca6EAKZ4E/aO+5OzUPTURQ==
-X-Google-Smtp-Source: AMrXdXuXs24lvc5njAw1w5c4pxtYAKZk7O0A/9WswXqvoQjWus1dNuO2ckV5SA0LBtcyjxoqInduEg==
-X-Received: by 2002:a05:6a00:706:b0:580:d409:396c with SMTP id 6-20020a056a00070600b00580d409396cmr46023525pfl.6.1672935497059;
-        Thu, 05 Jan 2023 08:18:17 -0800 (PST)
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ffFs6MhOEallo9JreaDhoMujgaZC+42IQ6jp+96uB8w=;
+        b=KFw429/DFqof2SBPAVmmEOgjnNH/Fpi1q2JuYNN/vsk0+otA47kRlFO3L6P+wlhk/l
+         1P/4R7olFHpoNyNvp2H03FsvcPa+FA3nkeyJLhjRjHiThA2dx6wteDusrQsSqcmoMEni
+         db/ybG4wNvF8cKVWsa+niJnsLGFeXFvi1anxFKUcI72aRfKDT4sKMtMotq1MOVefdUiL
+         qaH4rJPVApTYwq4sZAmN8UQii/nLJ66411Z5viuKQylHJO57TDt8MY6vGSxu2wT4j6b+
+         yGnSsn4Uf7CF8Rv/UoMTbqCXZ8lZavV0PR1Pm8kub1W2Ejg+7WrdIdCJophoW2tw2L+e
+         MaBw==
+X-Gm-Message-State: AFqh2kpOgQckCokYgfwy3PHI1rPGsK4enoK1q+5VqmZsQBmDTrAMbef8
+        FerhVr6oHJvr0fE7Zcr4wiCleA==
+X-Google-Smtp-Source: AMrXdXtDytKaVmtg0efflOyXfymcBKXt5koF+tMQJ6ARq++uJEKl8yn91O4CftNKJAXeTMUNP38wpA==
+X-Received: by 2002:ac8:7551:0:b0:3a7:f46b:7a82 with SMTP id b17-20020ac87551000000b003a7f46b7a82mr68271708qtr.21.1672935726225;
+        Thu, 05 Jan 2023 08:22:06 -0800 (PST)
 Received: from C02YVCJELVCG.dhcp.broadcom.net ([192.19.144.250])
-        by smtp.gmail.com with ESMTPSA id f26-20020aa7969a000000b0058103f45d9esm18129874pfk.82.2023.01.05.08.18.13
+        by smtp.gmail.com with ESMTPSA id v15-20020a05620a440f00b0070495934152sm25987506qkp.48.2023.01.05.08.22.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jan 2023 08:18:16 -0800 (PST)
+        Thu, 05 Jan 2023 08:22:05 -0800 (PST)
 From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
 X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
-Date:   Thu, 5 Jan 2023 11:18:06 -0500
-To:     Tariq Toukan <ttoukan.linux@gmail.com>
-Cc:     Andy Gospodarek <andrew.gospodarek@broadcom.com>, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+Date:   Thu, 5 Jan 2023 11:22:03 -0500
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
         hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, toke@redhat.com, lorenzo.bianconi@redhat.com,
+        kpsingh@kernel.org, lorenzo.bianconi@redhat.com,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
@@ -61,13 +64,16 @@ Cc:     Andy Gospodarek <andrew.gospodarek@broadcom.com>, ast@kernel.org,
         Saeed Mahameed <saeedm@nvidia.com>, tariqt@nvidia.com
 Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
  support xdp multibuffer
-Message-ID: <Y7b4Pj0ASpV7Z8TS@C02YVCJELVCG.dhcp.broadcom.net>
+Message-ID: <Y7b5K2NCp17xHU/N@C02YVCJELVCG.dhcp.broadcom.net>
 References: <20220621175402.35327-1-gospo@broadcom.com>
  <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com>
+ <87k0234pd6.fsf@toke.dk>
+ <20230103172153.58f231ba@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230103172153.58f231ba@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -77,144 +83,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 03, 2023 at 02:55:22PM +0200, Tariq Toukan wrote:
+On Tue, Jan 03, 2023 at 05:21:53PM -0800, Jakub Kicinski wrote:
+> On Tue, 03 Jan 2023 16:19:49 +0100 Toke Høiland-Jørgensen wrote:
+> > Hmm, good question! I don't think we've ever explicitly documented any
+> > assumptions one way or the other. My own mental model has certainly
+> > always assumed the first frag would continue to be the same size as in
+> > non-multi-buf packets.
 > 
-> 
-> On 21/06/2022 20:54, Andy Gospodarek wrote:
-> > This changes the section name for the bpf program embedded in these
-> > files to "xdp.frags" to allow the programs to be loaded on drivers that
-> > are using an MTU greater than PAGE_SIZE.  Rather than directly accessing
-> > the buffers, the packet data is now accessed via xdp helper functions to
-> > provide an example for those who may need to write more complex
-> > programs.
-> > 
-> > v2: remove new unnecessary variable
-> > 
-> 
-> Hi,
-> 
-> I'm trying to understand if there are any assumptions/requirements on the
-> length of the xdp_buf linear part when passed to XDP multi-buf programs?
-> Can the linear part be empty, with all data residing in the fragments? Is it
-> valid?
+> Interesting! :) My mental model was closer to GRO by frags 
+> so the linear part would have no data, just headers.
 
-That's a great question.  The implementation in bnxt_en was based on the
-implementation as I understood it in mvneta where the linear area
-contained approx the first 4k of data - xdp headroom - dma_offset.  This
-means that you have something that looks like this with a 9k MTU:
+As I mentioned in my mail just a few mins ago, I think this would be a good
+model to consider.  All headers (including potentially tunnel headers) could be
+in the linear area with the actual packet data in frags.
 
-skb->data	[~3.6k of packet data]
-skb->frag[0]	[4k of paket data]
-     frag[1]	[remainder of packet data]
-
-At some point, I'd like to take the opportunity to test something like
-this:
-
-skb->data	[header only + space for header expansion]
-skb->frag[0]	[first 4k of data]
-     frag[1]	[second 4k of data]
-     frag[2]	[remainder of packet data]
-
-Though this will use a bit more memory, I think it will be much more
-performant for data that is ultimately consumed rather than forwarded
-by the host as the actual packet data will be aligned on page boundaries.
-
-With the ability to have packets that are handled by an XDP program
-span buffers, I would also like to test out whether or not it would be
-worthwhile to have standard MTU packets also look like this:
-
-skb->data	[header only + space for header expansion]
-skb->frag[0]	[packet data]
-
-I think the overall system performance would be better in the XDP_PASS
-case, but until there is data to back this up, that's just speculation. 
-
-> Per the proposed pattern below (calling bpf_xdp_load_bytes() to memcpy
-> packet data into a local buffer), no such assumption is required, and an
-> xdp_buf created by the driver with an empty linear part is valid.
-> 
-> However, in the _xdp_tx_iptunnel example program, it fails (returns
-> XDP_DROP) in case the headers are not in the linear part.
-> 
-> Regards,
-> Tariq
-> 
-> > Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
-> > Acked-by: John Fastabend <john.fastabend@gmail.com>
-> > Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >   samples/bpf/xdp1_kern.c            | 11 ++++++++---
-> >   samples/bpf/xdp2_kern.c            | 11 ++++++++---
-> >   samples/bpf/xdp_tx_iptunnel_kern.c |  2 +-
-> >   3 files changed, 17 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
-> > index f0c5d95084de..0a5c704badd0 100644
-> > --- a/samples/bpf/xdp1_kern.c
-> > +++ b/samples/bpf/xdp1_kern.c
-> > @@ -39,11 +39,13 @@ static int parse_ipv6(void *data, u64 nh_off, void *data_end)
-> >   	return ip6h->nexthdr;
-> >   }
-> > -SEC("xdp1")
-> > +#define XDPBUFSIZE	64
-> > +SEC("xdp.frags")
-> >   int xdp_prog1(struct xdp_md *ctx)
-> >   {
-> > -	void *data_end = (void *)(long)ctx->data_end;
-> > -	void *data = (void *)(long)ctx->data;
-> > +	__u8 pkt[XDPBUFSIZE] = {};
-> > +	void *data_end = &pkt[XDPBUFSIZE-1];
-> > +	void *data = pkt;
-> >   	struct ethhdr *eth = data;
-> >   	int rc = XDP_DROP;
-> >   	long *value;
-> > @@ -51,6 +53,9 @@ int xdp_prog1(struct xdp_md *ctx)
-> >   	u64 nh_off;
-> >   	u32 ipproto;
-> > +	if (bpf_xdp_load_bytes(ctx, 0, pkt, sizeof(pkt)))
-> > +		return rc;
-> > +
-> >   	nh_off = sizeof(*eth);
-> >   	if (data + nh_off > data_end)
-> >   		return rc;
-> > diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
-> > index d8a64ab077b0..3332ba6bb95f 100644
-> > --- a/samples/bpf/xdp2_kern.c
-> > +++ b/samples/bpf/xdp2_kern.c
-> > @@ -55,11 +55,13 @@ static int parse_ipv6(void *data, u64 nh_off, void *data_end)
-> >   	return ip6h->nexthdr;
-> >   }
-> > -SEC("xdp1")
-> > +#define XDPBUFSIZE	64
-> > +SEC("xdp.frags")
-> >   int xdp_prog1(struct xdp_md *ctx)
-> >   {
-> > -	void *data_end = (void *)(long)ctx->data_end;
-> > -	void *data = (void *)(long)ctx->data;
-> > +	__u8 pkt[XDPBUFSIZE] = {};
-> > +	void *data_end = &pkt[XDPBUFSIZE-1];
-> > +	void *data = pkt;
-> >   	struct ethhdr *eth = data;
-> >   	int rc = XDP_DROP;
-> >   	long *value;
-> > @@ -67,6 +69,9 @@ int xdp_prog1(struct xdp_md *ctx)
-> >   	u64 nh_off;
-> >   	u32 ipproto;
-> > +	if (bpf_xdp_load_bytes(ctx, 0, pkt, sizeof(pkt)))
-> > +		return rc;
-> > +
-> >   	nh_off = sizeof(*eth);
-> >   	if (data + nh_off > data_end)
-> >   		return rc;
-> > diff --git a/samples/bpf/xdp_tx_iptunnel_kern.c b/samples/bpf/xdp_tx_iptunnel_kern.c
-> > index 575d57e4b8d6..0e2bca3a3fff 100644
-> > --- a/samples/bpf/xdp_tx_iptunnel_kern.c
-> > +++ b/samples/bpf/xdp_tx_iptunnel_kern.c
-> > @@ -212,7 +212,7 @@ static __always_inline int handle_ipv6(struct xdp_md *xdp)
-> >   	return XDP_TX;
-> >   }
-> > -SEC("xdp_tx_iptunnel")
-> > +SEC("xdp.frags")
-> >   int _xdp_tx_iptunnel(struct xdp_md *xdp)
-> >   {
-> >   	void *data_end = (void *)(long)xdp->data_end;
+> A random datapoint is that bpf_xdp_adjust_head() seems 
+> to enforce that there is at least ETH_HLEN.
