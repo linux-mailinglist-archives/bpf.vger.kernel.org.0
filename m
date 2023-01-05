@@ -2,258 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C5F65EEB5
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 15:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED89865EEE0
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 15:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbjAEO0g convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 5 Jan 2023 09:26:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
+        id S232069AbjAEOhx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 09:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233840AbjAEO0Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 09:26:25 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.221.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FC91182E
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 06:26:23 -0800 (PST)
-X-QQ-mid: bizesmtp80t1672928763to5kjq9k
-Received: from [10.0.0.18] ( [111.201.151.239])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 05 Jan 2023 22:26:01 +0800 (CST)
-X-QQ-SSF: 00000000006000403000B00A0000000
-X-QQ-FEAT: RQW/96u6Togprg+xfrIvqt8KhGgluaxzssLX2W1tRuTlhPCPmyclJocfAmCSJ
-        lRHcr5kqfAgrnFfS08C4olcBzMD2dZ9OsXFnQPjhu+2nTL2jOKhlBZF9qjgOjo9MEcd5Xu9
-        XRqnyWNxrT43lBlqJ6dZ7wdZPMVzO9reZ875n7ISyYxkQBhRDSC8hi5XNyLhHqCX+ah42c0
-        HUWu9Qwjjae6TF1hlL1ffljTftDLvM5SikmNWWLTbQ2E/k4/mC7J+qkxLiqVLpI9T9PEbLm
-        X51AaiUufQzZki3Wd3yl8dRmlmRJK258MIcYCYTmqG9xjmt5IcI/pLPNbF9z2v53jMyAoY4
-        7GD03iHJOGBoq8+TCYgkAuLJOA4QNt5PXFAdlmJIUGA+FEw1V4ch8si+e1K6f6VpaA7Jpuh
-        Tmxz+GO/xig=
-X-QQ-GoodBg: 0
-User-Agent: Microsoft-MacOutlook/16.68.22121100
-Date:   Thu, 05 Jan 2023 22:26:00 +0800
-Subject: Re: [bpf-next v1] bpf: hash map, suppress lockdep warning
-From:   Tonghao Zhang <tong@infragraf.org>
-To:     Hou Tao <houtao1@huawei.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229514AbjAEOhw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 09:37:52 -0500
+X-Greylist: delayed 68 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Jan 2023 06:37:49 PST
+Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD4359337;
+        Thu,  5 Jan 2023 06:37:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1672929467;
+        bh=3tPdRO47uzjqDz/kcaWbYMUahaQxKcrA7demosetVcM=;
+        h=From:To:Cc:Subject:Date;
+        b=Nytg0sCgJ9JBlCaoTuZwG3RHCB72oHHlHRpcNieOLjkD5nzP79pz/NFihnB4r75s8
+         2c9GOhZ27bMWWMIwtENz4TPd607x4hKzfYWRPEr4KcHp+nEeuYMitIy6eHkXWyR3UW
+         u36yft5+MkqPk9FLh+qsBC1AkOdXfK8SuJGgeBRw=
+Received: from rtoax.. ([111.199.188.149])
+        by newxmesmtplogicsvrszb1-0.qq.com (NewEsmtp) with SMTP
+        id 92383400; Thu, 05 Jan 2023 22:36:35 +0800
+X-QQ-mid: xmsmtpt1672929395tmioqcc4u
+Message-ID: <tencent_5695A257C4D16B4413036BA1DAACDECB0B07@qq.com>
+X-QQ-XMAILINFO: MyHh0PQai9FptsYZjeGyA4xOuh2HhEr4BPPfP44xe/bb/TVbOgidXF62o1O4I7
+         LAtNMi/1Hg7Y0HP8Ne/MEc8nF5IzSU3Ben/9WWffdHB4cNn5YNHy3BnUPoI0dk8p24/bBzUyKyJr
+         d2UStuh1Ep5rqzDC4uBHmsXngjkSLyVGC46XjHLWG63ZY8kGv7JHlbaOE2FP92EA/WsN9QkooKe/
+         gcp5bSuavwxWqbGcDotO33swBHcnTqAmfYfLDj9ccUxugi+4gGIdSeQ0actBGDQ8NnyUmxTfhnXU
+         W1MUb6JrF6e/NF2pHTpTqo//VhdVy/vbbfvc+0Yqt7K0gxTeKpYoZ0bfejTH0013PQDkREa1zafp
+         ojLTbCrzKpBGaSqMMnpQA6gsZ/YAdoTTlcYv/qTnbnEDFFqcFFI6o34bU3rO0C3xOk5tf0zLfOrJ
+         8AwtgYAbw4ZBJl2tihHKuavLrPincuKbUljN/7iWvZ9cDcRDkTRriTsO8S9n+fOqQsqC5MFcTqGd
+         LbAsuunhWSHQ528XstyU92wYrhUtj+uD7UynuAVdw9coHliJs3R71S02/TcUIn9amJ+Cklv5fHy/
+         2pREbTVcFivh6fyN1ls4PrtrblNObWyoeRmBhiGCVahwcPm9ClsA3jR2UQRXEv6/ogp6M152YSMF
+         7wN/n5Bz1D9l3nblzbul0Ya55yVvCywjIEzIaNdF/PNjSHVZHYbVdzsNLkOtccjqoGNpeMyCOHey
+         IeoY/RJtmXQxYMMsd2xNhoFPPWLW5CITuj35apGpbJtKnmxg/TrVNGXzkVPfHWV5RfXJcefH5uS4
+         bjFqfERw1BDTUHXJ6nEDUXzzXB2v1zOIXEimKvl+Ghwnqaf08xpOEvwiA00niwsYQTZF9xg2Km9Z
+         yvVEdZ+veBZLRdxXv0m28g+IeJ7S/Pa++EuZQoeHPmf6ayr+DQ9V42YqrqLZr97oqb+j3OoiESwB
+         hp7mSaaOKimFWRC/pb3H+vAW2tWtW2
+From:   Rong Tao <rtoax@foxmail.com>
+To:     andrii@kernel.org
+Cc:     rongtao@cestc.cn, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Message-ID: <323BABB0269C740E+0CA62C2D-131E-4A00-B8FE-C21F74ED068D@infragraf.org>
-Thread-Topic: [bpf-next v1] bpf: hash map, suppress lockdep warning
-References: <20230105112749.38421-1-tong@infragraf.org>
- <785a918e-5908-d999-8eb5-ae749b239d64@huawei.com>
-In-Reply-To: <785a918e-5908-d999-8eb5-ae749b239d64@huawei.com>
-Mime-version: 1.0
-Content-type: text/plain;
-        charset="UTF-8"
-Content-transfer-encoding: 8BIT
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MIME_QP_LONG_LINE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org (open list:BPF [LIBRARY] (libbpf)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next] libbpf: poison strlcpy()
+Date:   Thu,  5 Jan 2023 22:36:33 +0800
+X-OQ-MSGID: <20230105143634.119201-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Rong Tao <rongtao@cestc.cn>
 
+Since commit 9fc205b413b3("libbpf: Add sane strncpy alternative and use
+it internally") introduce libbpf_strlcpy(), thus add strlcpy() to a poison
+list to prevent accidental use of it.
 
-﻿在 2023/1/5 下午8:06，“Hou Tao”<houtao1@huawei.com> 写入:
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ tools/lib/bpf/libbpf_internal.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-    Hi,
-
-    On 1/5/2023 7:27 PM, tong@infragraf.org wrote:
-    > From: Tonghao Zhang <tong@infragraf.org>
-    >
-    > The lock may be taken in both NMI and non-NMI contexts.
-    > There is a lockdep warning (inconsistent lock state), if
-    > enable lockdep. For performance, this patch doesn't use trylock,
-    > and disable lockdep temporarily.
-    >
-    > [   82.474075] ================================
-    > [   82.474076] WARNING: inconsistent lock state
-    > [   82.474090] 6.1.0+ #48 Tainted: G            E
-    > [   82.474093] --------------------------------
-    > [   82.474100] inconsistent {INITIAL USE} -> {IN-NMI} usage.
-    > [   82.474101] kprobe-load/1740 [HC1[1]:SC0[0]:HE0:SE1] takes:
-    > [   82.474105] ffff88860a5cf7b0 (&htab->lockdep_key){....}-{2:2}, at: htab_lock_bucket+0x61/0x6c
-    > [   82.474120] {INITIAL USE} state was registered at:
-    > [   82.474122]   mark_usage+0x1d/0x11d
-    > [   82.474130]   __lock_acquire+0x3c9/0x6ed
-    > [   82.474131]   lock_acquire+0x23d/0x29a
-    > [   82.474135]   _raw_spin_lock_irqsave+0x43/0x7f
-    > [   82.474148]   htab_lock_bucket+0x61/0x6c
-    > [   82.474151]   htab_map_update_elem+0x11e/0x220
-    > [   82.474155]   bpf_map_update_value+0x267/0x28e
-    > [   82.474160]   map_update_elem+0x13e/0x17d
-    > [   82.474164]   __sys_bpf+0x2ae/0xb2e
-    > [   82.474167]   __do_sys_bpf+0xd/0x15
-    > [   82.474171]   do_syscall_64+0x6d/0x84
-    > [   82.474174]   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-    > [   82.474178] irq event stamp: 1496498
-    > [   82.474180] hardirqs last  enabled at (1496497): [<ffffffff817eb9d9>] syscall_enter_from_user_mode+0x63/0x8d
-    > [   82.474184] hardirqs last disabled at (1496498): [<ffffffff817ea6b6>] exc_nmi+0x87/0x109
-    > [   82.474187] softirqs last  enabled at (1446698): [<ffffffff81a00347>] __do_softirq+0x347/0x387
-    > [   82.474191] softirqs last disabled at (1446693): [<ffffffff810b9b06>] __irq_exit_rcu+0x67/0xc6
-    > [   82.474195]
-    > [   82.474195] other info that might help us debug this:
-    > [   82.474196]  Possible unsafe locking scenario:
-    > [   82.474196]
-    > [   82.474197]        CPU0
-    > [   82.474198]        ----
-    > [   82.474198]   lock(&htab->lockdep_key);
-    > [   82.474200]   <Interrupt>
-    > [   82.474200]     lock(&htab->lockdep_key);
-    > [   82.474201]
-    > [   82.474201]  *** DEADLOCK ***
-    > [   82.474201]
-    > [   82.474202] no locks held by kprobe-load/1740.
-    > [   82.474203]
-    > [   82.474203] stack backtrace:
-    > [   82.474205] CPU: 14 PID: 1740 Comm: kprobe-load Tainted: G            E      6.1.0+ #48
-    > [   82.474208] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-    > [   82.474213] Call Trace:
-    > [   82.474218]  <NMI>
-    > [   82.474224]  dump_stack_lvl+0x57/0x81
-    > [   82.474228]  lock_acquire+0x1f4/0x29a
-    > [   82.474233]  ? htab_lock_bucket+0x61/0x6c
-    > [   82.474237]  ? rcu_read_lock_held_common+0xe/0x38
-    > [   82.474245]  _raw_spin_lock_irqsave+0x43/0x7f
-    > [   82.474249]  ? htab_lock_bucket+0x61/0x6c
-    > [   82.474253]  htab_lock_bucket+0x61/0x6c
-    > [   82.474257]  htab_map_update_elem+0x11e/0x220
-    > [   82.474264]  bpf_prog_df326439468c24a9_bpf_prog1+0x41/0x45
-    > [   82.474276]  bpf_trampoline_6442457183_0+0x43/0x1000
-    > [   82.474283]  nmi_handle+0x5/0x254
-    > [   82.474289]  default_do_nmi+0x3d/0xf6
-    > [   82.474293]  exc_nmi+0xa1/0x109
-    > [   82.474297]  end_repeat_nmi+0x16/0x67
-    > [   82.474300] RIP: 0010:cpu_online+0xa/0x12
-    > [   82.474308] Code: 08 00 00 00 39 c6 0f 43 c6 83 c0 07 83 e0 f8 c3 cc cc cc cc 0f 1f 44 00 00 31 c0 c3 cc cc cc cc 89 ff 48 0f a3 3d 5f 52 75 01 <0f> 92 c0 c3 cc cc cc cc 55 48 89 e5 41 57 49 89 f7 41 56 49 896
-    > [   82.474310] RSP: 0018:ffffc9000131bd38 EFLAGS: 00000283
-    > [   82.474313] RAX: ffff88860b85fe78 RBX: 0000000000102cc0 RCX: 0000000000000008
-    > [   82.474315] RDX: 0000000000000004 RSI: ffff88860b85fe78 RDI: 000000000000000e
-    > [   82.474316] RBP: 00000000ffffffff R08: 0000000000102cc0 R09: 00000000ffffffff
-    > [   82.474318] R10: 0000000000000001 R11: 0000000000000000 R12: ffff888100042200
-    > [   82.474320] R13: 0000000000000004 R14: ffffffff81271dc2 R15: ffff88860b85fe78
-    > [   82.474322]  ? kvmalloc_node+0x44/0xd2
-    > [   82.474333]  ? cpu_online+0xa/0x12
-    > [   82.474338]  ? cpu_online+0xa/0x12
-    > [   82.474342]  </NMI>
-    > [   82.474343]  <TASK>
-    > [   82.474343]  trace_kmalloc+0x7c/0xe6
-    > [   82.474347]  ? kvmalloc_node+0x44/0xd2
-    > [   82.474350]  __kmalloc_node+0x9a/0xaf
-    > [   82.474354]  kvmalloc_node+0x44/0xd2
-    > [   82.474359]  kvmemdup_bpfptr+0x29/0x66
-    > [   82.474363]  map_update_elem+0x119/0x17d
-    > [   82.474370]  __sys_bpf+0x2ae/0xb2e
-    > [   82.474380]  __do_sys_bpf+0xd/0x15
-    > [   82.474384]  do_syscall_64+0x6d/0x84
-    > [   82.474387]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-    > [   82.474391] RIP: 0033:0x7fe75d4f752d
-    > [   82.474394] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 79 2c 00 f7 d8 64 89 018
-    > [   82.474396] RSP: 002b:00007ffe95d1cd78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-    > [   82.474398] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe75d4f752d
-    > [   82.474400] RDX: 0000000000000078 RSI: 00007ffe95d1cd80 RDI: 0000000000000002
-    > [   82.474401] RBP: 00007ffe95d1ce30 R08: 0000000000000000 R09: 0000000000000004
-    > [   82.474403] R10: 00007ffe95d1cd80 R11: 0000000000000246 R12: 00000000004007f0
-    > [   82.474405] R13: 00007ffe95d1cf10 R14: 0000000000000000 R15: 0000000000000000
-    > [   82.474412]  </TASK>
-    >
-    > Signed-off-by: Tonghao Zhang <tong@infragraf.org>
-    > Cc: Alexei Starovoitov <ast@kernel.org>
-    > Cc: Daniel Borkmann <daniel@iogearbox.net>
-    > Cc: Andrii Nakryiko <andrii@kernel.org>
-    > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-    > Cc: Song Liu <song@kernel.org>
-    > Cc: Yonghong Song <yhs@fb.com>
-    > Cc: John Fastabend <john.fastabend@gmail.com>
-    > Cc: KP Singh <kpsingh@kernel.org>
-    > Cc: Stanislav Fomichev <sdf@google.com>
-    > Cc: Hao Luo <haoluo@google.com>
-    > Cc: Jiri Olsa <jolsa@kernel.org>
-    > Cc: Hou Tao <houtao1@huawei.com>
-    > ---
-    > previous discussion: 20221121100521.56601-2-xiangxia.m.yue@gmail.com <https://lore.kernel.org/all/<a href=>/">https://lore.kernel.org/all/20221121100521.56601-2-xiangxia.m.yue@gmail.com/
-    > ---
-    >  kernel/bpf/hashtab.c | 16 ++++++++++++++++
-    >  1 file changed, 16 insertions(+)
-    >
-    > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-    > index 974f104f47a0..146433c9bd1a 100644
-    > --- a/kernel/bpf/hashtab.c
-    > +++ b/kernel/bpf/hashtab.c
-    > @@ -161,6 +161,19 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
-    >  		return -EBUSY;
-    >  	}
-    >  
-    > +	/*
-    > +	 * The lock may be taken in both NMI and non-NMI contexts.
-    > +	 * There is a lockdep warning (inconsistent lock state), if
-    > +	 * enable lockdep. The potential deadlock happens when the
-    > +	 * lock is contended from the same cpu. map_locked rejects
-    > +	 * concurrent access to the same bucket from the same CPU.
-    > +	 * When the lock is contended from a remote cpu, we would
-    > +	 * like the remote cpu to spin and wait, instead of giving
-    > +	 * up immediately. As this gives better throughput. So replacing
-    > +	 * the current raw_spin_lock_irqsave() with trylock sacrifices
-    > +	 * this performance gain. lockdep_off temporarily.
-    > +	 */
-    > +	lockdep_off();
-    >  	raw_spin_lock_irqsave(&b->raw_lock, flags);
-    >  	*pflags = flags;
-    Only use lockdep_off() and lockdep_on() to wrap
-    raw_spin_lock_irqsave()/raw_spin_unlock_irqrestore() will be enough.
-Hi Do you mean that:
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 974f104f47a0..cae4417a3894 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -161,7 +161,9 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
-                return -EBUSY;
-        }
-
-+       lockdep_off();
-        raw_spin_lock_irqsave(&b->raw_lock, flags);
-+       lockdep_on();
-        *pflags = flags;
-
-        return 0;
-@@ -172,7 +174,11 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
-                                      unsigned long flags)
- {
-        hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
-+
-+       lockdep_off();
-        raw_spin_unlock_irqrestore(&b->raw_lock, flags);
-+       lockdep_on();
-+
-        __this_cpu_dec(*(htab->map_locked[hash]));
-        preempt_enable();
- }
-
-This way, do we off/on the lockdep frequently. ? Thai is why I off the lockdep in htab_lock_bucket and on it again in htab_unlock_bucket.
-
-
-    >  
-    > @@ -172,7 +185,10 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
-    >  				      unsigned long flags)
-    >  {
-    >  	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
-    > +
-    >  	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
-    > +	lockdep_on();
-    > +
-    >  	__this_cpu_dec(*(htab->map_locked[hash]));
-    >  	preempt_enable();
-    >  }
-
-
-
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index 377642ff51fc..2d26ded383ca 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -20,8 +20,8 @@
+ /* make sure libbpf doesn't use kernel-only integer typedefs */
+ #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
+ 
+-/* prevent accidental re-addition of reallocarray() */
+-#pragma GCC poison reallocarray
++/* prevent accidental re-addition of reallocarray()/strlcpy() */
++#pragma GCC poison reallocarray strlcpy
+ 
+ #include "libbpf.h"
+ #include "btf.h"
+-- 
+2.39.0
 
