@@ -2,54 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D460865E9EE
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 12:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA3F65E9FF
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 12:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbjAELcJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 06:32:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
+        id S233273AbjAELeB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 06:34:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbjAELcI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 06:32:08 -0500
-X-Greylist: delayed 7473 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Jan 2023 03:32:02 PST
-Received: from smtpbgeu1.qq.com (smtpbgeu1.qq.com [52.59.177.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFBBBF4
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 03:32:01 -0800 (PST)
-X-QQ-mid: bizesmtp79t1672918085t5afya5g
-Received: from localhost.localdomain ( [1.202.165.115])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 05 Jan 2023 19:28:02 +0800 (CST)
-X-QQ-SSF: 01000000000000405000000A0000000
-X-QQ-FEAT: Xz3VOcA7Mr1SxpTG0bJ8FbR0Rm8Uc3tsZkgoNybaVkTxhsljUtvfsiD0JgFd5
-        c3blEtAs/w1tHIVbe/lw8yyxJ85VOWHVrk6yWU3MUsBUKBECh+RHOx3tsFCMYeh0mNer8+T
-        t/3Ues6oNsV7UfQU+3syaxKO6YRymr7lQyPXttkXOBr+hpB3kMjx1+rCsfQwsNPSn4TAyAq
-        /sQn6ouzIBFBrTjO2iM7z/0XQAUIkrb9w1YaufDxtCNMjrpbXdtXCHq+0tdBtv1ExLxBKiD
-        Trj18y7Cc4YqCGnH0Aa1o3tGM/0QVhr26E7UpIdduuOUh4m1Vq3FFszZX9pYpC400/kq6/V
-        IeNKOhVZTc/frD3g0p4B1/81CcqYbWe9xdrYoMACLW8ceM0/eRqMS9NDVMJPjjllRPOIZk1
-X-QQ-GoodBg: 0
-From:   tong@infragraf.org
+        with ESMTP id S233214AbjAELd6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 06:33:58 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3EE4FD67
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 03:33:57 -0800 (PST)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 304MDwbh008873;
+        Thu, 5 Jan 2023 11:33:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2022-7-12; bh=qSR3sRM4epmmQaqqTr5ltXVl43+GlAs5d4Efz+niHrQ=;
+ b=ca5bBkS5rpTPJY+Ej2C8BXbn2AeIdP+zBdX704b4aMCn1TEMWbtFjN+FI7JEXGhbCHWW
+ jvLkK9uBq7e2tkNrGFRDOZk3z5nBaps1kr80cHQ/WFq8ApFpeQJP8IjjT5uuWhjRm+Tf
+ opomvadkwb3jLuf2qgjssIMXE+X2zGKzoDME1WUIYSd11TIEbALv8Y01fZdwcc3ec2t6
+ +5SbN91uvMYnv3hWfAX/SoxN0+Yjnum2rkenwlX48U7yOrq27oqkGYB722J2Di2GCtgK
+ gPreMr/7S2lZwJBGDCK9tqXy+6RjbUi0lNj9Tdg1Yffv3p6tZIn9PvNUf8w7532ejZ03 5g== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3mtcpt8mh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Jan 2023 11:33:51 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 305AB7Ql029099;
+        Thu, 5 Jan 2023 11:33:50 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3mwdf09bvk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Jan 2023 11:33:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fEl/6/hdLHzHJlSV78JJYZT9PzLg7km63m7RTKwJsU7xQrmSU299wuQWftuWWeVxXhlHevz6VSrloNcX+5hBncxnM55D5ezoRS41IAs+lsC4RFmAQvi5vUQ00RixO/Rr6Tay6y9EvbYE5vbu9CRZ3OYAzd+PW/kw0xMENCmr4n3BcFKsKHPoRa5/wHriyVOnBpy571VKZ/MUEyNb55lkRJs/e4hystyEgFvT1ikPphefC2dxDfwZVykZtO7qwwcCPHX04jnhlc/Tq/WvRU7PC6S5ZZz2lYAjcUHBeP3BvCLuNFGvOkwg70O7qNtyODEhHvy7PMcNnGI0ajgfQDfSSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qSR3sRM4epmmQaqqTr5ltXVl43+GlAs5d4Efz+niHrQ=;
+ b=cAtYShTbR7qFUjoIv0C5qqH4eas41raAMppc8BfMVNkb+yhivCzrttyjIBCPi+8ShprNVsftlNwFc0N8e/wxCka+VDMwtlyU0GBbScBNo+hesEuOotiurensLuJ8uMM9+k8N/vz6BELHCGfMpmGezvprWPIhJOQc1T/7yD/NX2KZ3QbG21KXCidQOxtJIrme71AxcLytFm0mkUQWmqptiAT8K7gttciXEz4Cx9SYI+XwrAR8IxiFfpKjYNwAvcQLkcr+Ad15z2JzBOOIiUt1J/bZhzPKkc6Jw0RrRvBVfoa59SkFgENgn0Xa9Dx7ioTuNdXNcUtHg1uoOqK41v0alA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qSR3sRM4epmmQaqqTr5ltXVl43+GlAs5d4Efz+niHrQ=;
+ b=R+otmIYvZmj9ndnK9biKTimdr8dReThgjYUZTUxozduBeifGGykPXTKj0F4UwUz+3JLwnuV5hp+S4QeTM4FjNaJ3Ts8vze7GsSZfW3HoqQObSFUsQQ2SiMECv3HHpbJctnXQzKYaMqF72iAdWol1iexTNu8v89Bh4ovL94dPFv8=
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
+ by DS7PR10MB7347.namprd10.prod.outlook.com (2603:10b6:8:eb::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Thu, 5 Jan
+ 2023 11:33:48 +0000
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::ebe9:b7c9:82ae:d256]) by BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::ebe9:b7c9:82ae:d256%7]) with mapi id 15.20.5944.019; Thu, 5 Jan 2023
+ 11:33:48 +0000
+From:   "Jose E. Marchesi" <jose.marchesi@oracle.com>
 To:     bpf@vger.kernel.org
-Cc:     Tonghao Zhang <tong@infragraf.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-Subject: [bpf-next v1] bpf: hash map, suppress lockdep warning
-Date:   Thu,  5 Jan 2023 19:27:49 +0800
-Message-Id: <20230105112749.38421-1-tong@infragraf.org>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+Cc:     david.faust@oracle.com, James Hilliard <james.hilliard1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        David Malcolm <dmalcolm@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>, elena.zannoni@oracle.com
+Subject: BTF tag support in DWARF (notes for today's BPF Office Hours)
+Date:   Thu, 05 Jan 2023 12:37:57 +0100
+Message-ID: <87r0w9jjoq.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Content-Type: text/plain
+X-ClientProxiedBy: LO6P123CA0009.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:338::12) To BYAPR10MB2888.namprd10.prod.outlook.com
+ (2603:10b6:a03:88::32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_NONE,T_SPF_HELO_TEMPERROR autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2888:EE_|DS7PR10MB7347:EE_
+X-MS-Office365-Filtering-Correlation-Id: ccf1f48b-23db-4795-dfb8-08daef10b633
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: z2APsMrFwtL6TnZo9Aev/dYCHhuwTQAIeblICm3D26KwNvnJmEROk2oPgBF11f2WDFl3/rDQS2qx4TR4CA/h6pD1BF3pfRK0q/4WWPrsxBe+QAuW86PevL4XQKX8V0v0qfZZRenUdM3QxniYoyBtGDns4XnFR71q3nQUL1eg8jP0VbNi1Ab6aeQjLKK30/N5wXchu4lHjveadxTJsDDpMUjaIZepI9psjD4u0QnQhpHFyrxoUFTEch0RjkTm/gEkObzdMXqj8ky8xc83qN9nJ3xXNends/eOJ1C8LLJQw/VD0Vhp2cOO/Gzs9jR6KEaU3ThnZjwApkwlwBxQ42h7FADm/+5KQkLqHZnLno/XVY62V7kN9nKZ5XSRK43WSWV1l7aP0TjGMijQT8jMHeP47FhMEfDyRsCXuj9lzRmj2dlOfeobvuCDPBtyMWqGBLO97zum58+ZkBveWdaUJXabiaNwEn/Yc6KqqDXw56v4TaBbMGcqTCnzO0piKAyFgtYC62izlPJrF0v5c9Yz6+IxXFK2CH0djl0EQljPlVt7Nz31k9r9Ca5QD3lA0JrW6E5owyoFrKuN02ZB3BWy7VJ6mE3GRtyqsMkYZEV4NrM1OyT5hHumjgiOF28nsYEDjbY1cZpMTZvG2eQRUZSWR2aXAg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2888.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(376002)(39860400002)(396003)(366004)(346002)(451199015)(66476007)(4326008)(66899015)(66946007)(66556008)(41300700001)(6506007)(8676002)(86362001)(107886003)(186003)(54906003)(2906002)(83380400001)(316002)(6666004)(26005)(6916009)(478600001)(6486002)(6512007)(38100700002)(8936002)(36756003)(5660300002)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EDch3FTUa2vixvo1ry2zo/WY+QlRbkh0V88lkdPbQSkcCTD2VF6Pyl2RSt4f?=
+ =?us-ascii?Q?Kc4g4z7iZijb12GghAFZra7uyDuITJIDnNEXsLDmpLYm1feKBan8fotQXbMn?=
+ =?us-ascii?Q?AHU/sBooWp2xE95qVubhg4yuUoCn8y1njv/j4KhEMeStPHJCdplkMQLz/dWR?=
+ =?us-ascii?Q?BBoy+EZht/T3E9EHWqtzvOw0MuIHrSwdr7nldd50darucSOVJ465DLKmSqUG?=
+ =?us-ascii?Q?SV/zkMIrF84bHQB3nMFqzgKRUcQ26KxE/DJObaC+hXSysSbf02T7mB0xtwUY?=
+ =?us-ascii?Q?D4ew9jtx17+yrfPw2gtjTjbwRNVGALKjmp3ARzHkZ9VSGnFIyDxIrYN4tpMU?=
+ =?us-ascii?Q?/ETCmvWYg0D6o8kWv+5QsB4dY8Fw2Rm1y7x4IprZ+1RcrhskAa+V8a9i+18U?=
+ =?us-ascii?Q?C+ZoAB44LKraYVt46t/eepoGvBigklsWg5HuPIvKx4QMImBLNf1YzR754ht7?=
+ =?us-ascii?Q?y/cPfduhm5JMYf1BjsheSQETc3VxA5SI0SNDuAKfb4lRKpK4ULKwt1/dqVGO?=
+ =?us-ascii?Q?qE+FUjZ8s7l8xYOrYtQymaZZbx4utXUz3gtPFbDcRF3NKl1Sf1gaBLThEEXd?=
+ =?us-ascii?Q?INZTnaRRr0c7VMjX2tP4ghmLZTZtiLLRChLHzPJZu2ZZ7pOQPhpTmjbGz2nC?=
+ =?us-ascii?Q?egb5Dgaehn9JiKbAi3I5fZS9yVNNXeCW6qaPS3rifmCxJ3szy/089u+C5S8n?=
+ =?us-ascii?Q?RnIYSj8GTGo+5z6w/ltUmfZ3AeoETU8jwr2GMx0ctB02hbidGu3g9lLHORbk?=
+ =?us-ascii?Q?zRzJKAqkVrY1F6tBrZhnMGxdsO1c9g3wU+Lnt4dcg/y0uK5EHZvQT+p+cHs/?=
+ =?us-ascii?Q?h85XAbeL0MCvfwM/Prx8mN2cYwf0gHtm4eww86bhR3KE7kEED/y5Tk4tv6Zj?=
+ =?us-ascii?Q?tFek/vRPiXgE7500krS+isG6pZG9vNlsMLK46ydojxByDewVKXx3C3WK/Lc8?=
+ =?us-ascii?Q?XFoEsGrDG+nNfKT+rRHNWORJG3mBPss74nKh8IFKq5byR4+dKsVW8kggjs3w?=
+ =?us-ascii?Q?f5LfzmMD6VzZCisQtgmh3N+gC65ex2tWZLs7J83wajsN6mG7uT+0RJnPFRFL?=
+ =?us-ascii?Q?huW9e/INV5vQCFeuAEhP44tK3/E8otKTbZNsspjlKW48UG28w61cvVvbiTy+?=
+ =?us-ascii?Q?UaX7fF2u0K9k5m+WOwzimvTdd8vGqALnpfU2BBMSwxOtstPh9pDjmc5uoDIu?=
+ =?us-ascii?Q?sbZ8yB7EG3K0iUX44HIIIHhwsZKBKEubAFgaLV1ILF13rATEImFhjTEGBFIY?=
+ =?us-ascii?Q?DzfR+/Ibto6aC1htabkQcW0CQO1LeIGckQeeDDCn6HL/E0ohlQr1lmajHFht?=
+ =?us-ascii?Q?vbqcAG2PHNox6ejj4SnhwXBxWiN7JVZo6xdVu3gQMVj4+qFmzQbgS/B1M9Sw?=
+ =?us-ascii?Q?CtE95ckBw2icrmDcIRf230m/+zDojRA9vDROLA8hF9g/whr3WjHWCMW/WtDG?=
+ =?us-ascii?Q?Wo73Zl5vVwuKfjxZ5uuFtqeREUiFofpajoQpYgQTncD9DN53xdEtbK3FMe41?=
+ =?us-ascii?Q?hxmsHxd+zo9pu2uf5npZzabCWQlHZwr5vmJhGi+WgjcG68hjDUmgrH2n2r7B?=
+ =?us-ascii?Q?CkmbDY1hzlJ6ozsh0eakbO0BE9U7jOTh+Qs+NkmhpuSzIqQ8W+jaTmftv5kt?=
+ =?us-ascii?Q?Pg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: N6bUacKA1o/dMsVAqbgn/MHXcHfbfCq3i5B58zrY1UaEobXbEATTUK52gm4DWYV3A6sxzdx2Zn8A9uxVKdeaUDwhzMlAhKo8c4xZ41gqPeNTif1NNme1nai3zbOBY0LCiO8q+KryytwH2eImEj6+AVLZY//K1HdAJcHixF9mzgdN8nSI/5j5OohcJdH3yBgPRv8O/oFyDkiRc0WbDPYxe7bEmZvrDx7Vl1mH6PtkhzUukFlrsQoJ2owMKQUaJu+HvPHl77oDZ1nphxq7ezybJuBrRm/d7wcvOXepIj25PQf/yEdMg/8F9w4UGsWrL8X1G8HaiZ4Q2IMBzAqrYg+iR9HFjuvE0jcKBb58qrBJ/+LgTKaVgemH73x8WxVFkvsPZOAR4zTIfuZ5pn2izaYNicOHWsF+M1R4efUzNsZDmvpz3OlcshFVFHMIBMv1TPzThVeTbd3wm8BsGLJHDUXjpFNiJAcihfMmgs3jsYWoRgMzVTb3JSDsxA6DKii2sssknasptrV88MpVhuzQUB65icrqsjq1fFVV8B1QCFTGmGwYx09yefxwIqiLaMSbtr3lP0Lpo3BH9wvuAWSCrS/uQq0W6nZLiPT3O1RMxMrWi8CIvlkBxkZHl25zQLETen3j56JBEBargXL0uI//Vn2XyaNtEO1RKPyc6qS12C0f3jm9SpfgD9KDDxvcr8aacFqUln4i71NcOzKKM2ngws96BAM28/e0dq+rVdAMKJ5SMp5rA29NQh7ZQ2YUtxbzlRUmqRgJbdIKKn2L/uL2Yc6Ia680Ox0bTp4c/JsGhdQNsXtQPX/kNP9CqUEertw95ZOy3N+jc1eVcIppZInQIfrVgy2Wpy3aDogiHiXeW55kJQy8kRO+LpcahwcnqlK2+qQo
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ccf1f48b-23db-4795-dfb8-08daef10b633
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2023 11:33:48.4058
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MF/Cqy2sQmjyTXHO/FIYCcO0uw5Gq4EAJHGr60u5fNIT5Hk/mzDZDX6L+fvR7gvT+1jFDV54lcKwD0ZcYAwWS4KzYbOJsTDs0ljOxx+iKBM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB7347
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2023-01-05_04,2023-01-04_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2301050092
+X-Proofpoint-ORIG-GUID: UNEveLFLx_CcZgCEiRQZfSFUS-ZuECC_
+X-Proofpoint-GUID: UNEveLFLx_CcZgCEiRQZfSFUS-ZuECC_
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,158 +144,306 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Tonghao Zhang <tong@infragraf.org>
 
-The lock may be taken in both NMI and non-NMI contexts.
-There is a lockdep warning (inconsistent lock state), if
-enable lockdep. For performance, this patch doesn't use trylock,
-and disable lockdep temporarily.
+Hello all.
 
-[   82.474075] ================================
-[   82.474076] WARNING: inconsistent lock state
-[   82.474090] 6.1.0+ #48 Tainted: G            E
-[   82.474093] --------------------------------
-[   82.474100] inconsistent {INITIAL USE} -> {IN-NMI} usage.
-[   82.474101] kprobe-load/1740 [HC1[1]:SC0[0]:HE0:SE1] takes:
-[   82.474105] ffff88860a5cf7b0 (&htab->lockdep_key){....}-{2:2}, at: htab_lock_bucket+0x61/0x6c
-[   82.474120] {INITIAL USE} state was registered at:
-[   82.474122]   mark_usage+0x1d/0x11d
-[   82.474130]   __lock_acquire+0x3c9/0x6ed
-[   82.474131]   lock_acquire+0x23d/0x29a
-[   82.474135]   _raw_spin_lock_irqsave+0x43/0x7f
-[   82.474148]   htab_lock_bucket+0x61/0x6c
-[   82.474151]   htab_map_update_elem+0x11e/0x220
-[   82.474155]   bpf_map_update_value+0x267/0x28e
-[   82.474160]   map_update_elem+0x13e/0x17d
-[   82.474164]   __sys_bpf+0x2ae/0xb2e
-[   82.474167]   __do_sys_bpf+0xd/0x15
-[   82.474171]   do_syscall_64+0x6d/0x84
-[   82.474174]   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[   82.474178] irq event stamp: 1496498
-[   82.474180] hardirqs last  enabled at (1496497): [<ffffffff817eb9d9>] syscall_enter_from_user_mode+0x63/0x8d
-[   82.474184] hardirqs last disabled at (1496498): [<ffffffff817ea6b6>] exc_nmi+0x87/0x109
-[   82.474187] softirqs last  enabled at (1446698): [<ffffffff81a00347>] __do_softirq+0x347/0x387
-[   82.474191] softirqs last disabled at (1446693): [<ffffffff810b9b06>] __irq_exit_rcu+0x67/0xc6
-[   82.474195]
-[   82.474195] other info that might help us debug this:
-[   82.474196]  Possible unsafe locking scenario:
-[   82.474196]
-[   82.474197]        CPU0
-[   82.474198]        ----
-[   82.474198]   lock(&htab->lockdep_key);
-[   82.474200]   <Interrupt>
-[   82.474200]     lock(&htab->lockdep_key);
-[   82.474201]
-[   82.474201]  *** DEADLOCK ***
-[   82.474201]
-[   82.474202] no locks held by kprobe-load/1740.
-[   82.474203]
-[   82.474203] stack backtrace:
-[   82.474205] CPU: 14 PID: 1740 Comm: kprobe-load Tainted: G            E      6.1.0+ #48
-[   82.474208] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[   82.474213] Call Trace:
-[   82.474218]  <NMI>
-[   82.474224]  dump_stack_lvl+0x57/0x81
-[   82.474228]  lock_acquire+0x1f4/0x29a
-[   82.474233]  ? htab_lock_bucket+0x61/0x6c
-[   82.474237]  ? rcu_read_lock_held_common+0xe/0x38
-[   82.474245]  _raw_spin_lock_irqsave+0x43/0x7f
-[   82.474249]  ? htab_lock_bucket+0x61/0x6c
-[   82.474253]  htab_lock_bucket+0x61/0x6c
-[   82.474257]  htab_map_update_elem+0x11e/0x220
-[   82.474264]  bpf_prog_df326439468c24a9_bpf_prog1+0x41/0x45
-[   82.474276]  bpf_trampoline_6442457183_0+0x43/0x1000
-[   82.474283]  nmi_handle+0x5/0x254
-[   82.474289]  default_do_nmi+0x3d/0xf6
-[   82.474293]  exc_nmi+0xa1/0x109
-[   82.474297]  end_repeat_nmi+0x16/0x67
-[   82.474300] RIP: 0010:cpu_online+0xa/0x12
-[   82.474308] Code: 08 00 00 00 39 c6 0f 43 c6 83 c0 07 83 e0 f8 c3 cc cc cc cc 0f 1f 44 00 00 31 c0 c3 cc cc cc cc 89 ff 48 0f a3 3d 5f 52 75 01 <0f> 92 c0 c3 cc cc cc cc 55 48 89 e5 41 57 49 89 f7 41 56 49 896
-[   82.474310] RSP: 0018:ffffc9000131bd38 EFLAGS: 00000283
-[   82.474313] RAX: ffff88860b85fe78 RBX: 0000000000102cc0 RCX: 0000000000000008
-[   82.474315] RDX: 0000000000000004 RSI: ffff88860b85fe78 RDI: 000000000000000e
-[   82.474316] RBP: 00000000ffffffff R08: 0000000000102cc0 R09: 00000000ffffffff
-[   82.474318] R10: 0000000000000001 R11: 0000000000000000 R12: ffff888100042200
-[   82.474320] R13: 0000000000000004 R14: ffffffff81271dc2 R15: ffff88860b85fe78
-[   82.474322]  ? kvmalloc_node+0x44/0xd2
-[   82.474333]  ? cpu_online+0xa/0x12
-[   82.474338]  ? cpu_online+0xa/0x12
-[   82.474342]  </NMI>
-[   82.474343]  <TASK>
-[   82.474343]  trace_kmalloc+0x7c/0xe6
-[   82.474347]  ? kvmalloc_node+0x44/0xd2
-[   82.474350]  __kmalloc_node+0x9a/0xaf
-[   82.474354]  kvmalloc_node+0x44/0xd2
-[   82.474359]  kvmemdup_bpfptr+0x29/0x66
-[   82.474363]  map_update_elem+0x119/0x17d
-[   82.474370]  __sys_bpf+0x2ae/0xb2e
-[   82.474380]  __do_sys_bpf+0xd/0x15
-[   82.474384]  do_syscall_64+0x6d/0x84
-[   82.474387]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[   82.474391] RIP: 0033:0x7fe75d4f752d
-[   82.474394] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 79 2c 00 f7 d8 64 89 018
-[   82.474396] RSP: 002b:00007ffe95d1cd78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-[   82.474398] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe75d4f752d
-[   82.474400] RDX: 0000000000000078 RSI: 00007ffe95d1cd80 RDI: 0000000000000002
-[   82.474401] RBP: 00007ffe95d1ce30 R08: 0000000000000000 R09: 0000000000000004
-[   82.474403] R10: 00007ffe95d1cd80 R11: 0000000000000246 R12: 00000000004007f0
-[   82.474405] R13: 00007ffe95d1cf10 R14: 0000000000000000 R15: 0000000000000000
-[   82.474412]  </TASK>
+Find below the notes we intend to use in today's BPF office hour to
+discuss possible solutions for the current limitations in the DWARF
+representation of the btf_type_tag C attributes, and hopefully decide on
+one so we can move forward with this.
 
-Signed-off-by: Tonghao Zhang <tong@infragraf.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Hou Tao <houtao1@huawei.com>
----
-previous discussion: https://lore.kernel.org/all/20221121100521.56601-2-xiangxia.m.yue@gmail.com/
----
- kernel/bpf/hashtab.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+The list of suggested solutions below is of course not closed: these are
+just the ones we could think about.  Better alternatives and suggestions
+are very welcome!
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 974f104f47a0..146433c9bd1a 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -161,6 +161,19 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
- 		return -EBUSY;
- 	}
- 
-+	/*
-+	 * The lock may be taken in both NMI and non-NMI contexts.
-+	 * There is a lockdep warning (inconsistent lock state), if
-+	 * enable lockdep. The potential deadlock happens when the
-+	 * lock is contended from the same cpu. map_locked rejects
-+	 * concurrent access to the same bucket from the same CPU.
-+	 * When the lock is contended from a remote cpu, we would
-+	 * like the remote cpu to spin and wait, instead of giving
-+	 * up immediately. As this gives better throughput. So replacing
-+	 * the current raw_spin_lock_irqsave() with trylock sacrifices
-+	 * this performance gain. lockdep_off temporarily.
-+	 */
-+	lockdep_off();
- 	raw_spin_lock_irqsave(&b->raw_lock, flags);
- 	*pflags = flags;
- 
-@@ -172,7 +185,10 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
- 				      unsigned long flags)
- {
- 	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
-+
- 	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
-+	lockdep_on();
-+
- 	__this_cpu_dec(*(htab->map_locked[hash]));
- 	preempt_enable();
- }
--- 
-2.27.0
+BTF tag support in DWARF
 
+* Current situation: annotations as children DIEs for pointees
+
+  DWARF information is structured as a tree of DIE nodes.  Nodes can
+  have attributes associated to them, as well as zero or more DIE
+  children.
+   
+  clang extends DWARF with a new tag (DIE type) =DW_TAG_LLVM_annotation=.
+  Nodes of this type are used to associate a tag name with a tag value that
+  is also a string.
+
+  Example:
+
+  :  DW_TAG_LLVM_annotation
+  :     DW_AT_name        "btf_type_tag"
+  :     DW_AT_const_value "user"
+
+  At the moment, clang generates =DW_TAG_LLVM_annotation= nodes as children
+  of =DW_TAG_pointer_type= nodes.  The intended semantic is that the
+  annotation applies to the pointed-to type.
+
+  For example (indentation reflects the parent-children tree structure):
+
+  : DW_TAG_pointer_type
+  :   DW_AT_type "int"
+  :   DW_TAG_LLVM_annotation
+  :     DW_AT_name        "btf_type_tag"
+  :     DW_AT_const_value "tag1"
+
+  The example above associates a "btf_type_tag->tag1" named annotation to the
+  type pointed by its containing pointer_type, which is "int".
+
+  This approach has the advantage that, since the new
+  =DW_TAG_LLVM_annotation= nodes are effectively used as attributes, they are
+  safely ignored by DWARF consumers that do not understand this DIE type.
+
+  But this approach also has a big caveat: types that are not pointed-to by
+  pointer types are not expressible in this design.  This obviously impacts
+  simple types such as =int= but also pointer types that are not pointees
+  themselves.
+
+  For example, it is not possible to associate the tag =__tag2= to the type
+  =int **= in this example (Note this is sparse/clang ordering.):
+
+  : int * __tag1 * __tag2 h;
+
+  - sparse
+    +  __tag1 applies to int*, __tag2 applies to int**
+    : got int *[noderef] __tag1 *[addressable] [noderef] [toplevel] __tag2 h
+  - clang
+    + According to DWARF __tag1 applies to int*, no __tag2 (??).
+    + According to BTF  __tag1 applies to int*, no __tag2 (??).
+    : DWARF
+    : 0x00000023:   DW_TAG_variable
+    :                 DW_AT_name	("h")
+    :                 DW_AT_type	(0x0000002e "int **")
+    :
+    : 0x0000002e:   DW_TAG_pointer_type
+    :                 DW_AT_type	(0x00000037 "int *")
+    :
+    : 0x00000033:     DW_TAG_LLVM_annotation
+    :                 DW_AT_name	("btf_type_tag")
+    :                 DW_AT_const_value	("tag1")
+    : BTF
+    : [1] TYPE_TAG 'tag1' type_id=3
+    : [2] PTR '(anon)' type_id=1
+    : [3] PTR '(anon)' type_id=4
+    : [4] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+    : [5] VAR 'h' type_id=2, linkage=global
+    :
+    : 'h' -> ptr -> 'tag1' -> ptr -> int
+
+* A note about `void'
+
+  The DWARF specification recommends to denote the =void= C type by
+  generating a DIE with =DW_TAG_unspecified_type= and name "void".
+
+  However, both GCC and LLVM do _not_ follow this recommendation and instead
+  they denote the =void= type as the absence of a =DW_AT_type= attribute in
+  whatever containing node.
+
+  Example, for a pointer to =void=:
+
+  : 3      DW_TAG_pointer_type    [no children]
+
+  Note also that the kernel sources have sparse annotations like:
+
+  : void __user * data;
+
+  Which, using sparse ordering, means that the type which is annotated is
+  =void=.  Therefore it is very important to be able to tag the =void= basic
+  type in this design.
+
+  GDB and other DWARF consumers understand the spec-recommended way to denote
+  =void=.
+
+* Solution 1: annotations as qualifiers
+
+  A possible solution for this is to handle =DW_TAG_LLVM_annotation= the same
+  way than C type qualifiers are handled in DWARF: including them in the type
+  chain linked by =DW_AT_type= attributes.
+
+  For example:
+
+  : DW_TAG_pointer_type
+  :   DW_AT_type ("btf_type_tag")
+  :
+  : DW_TAG_LLVM_annotation
+  :   DW_AT_name        "btf_type_tag"
+  :   DW_AT_const_value "tag1"
+  :   DW_AT_type        ("int")
+  :
+  : DW_TAG_base_type
+  :   DW_AT_name ("int")
+
+  Note how now the =LLVM_annotation= has the annotated type linked by
+  =DW_AT_type=, and acts itself as a type linked from =DW_TAG_pointer_type=.
+
+  Advantages of this approach:
+
+  - It makes sense for annotations to be implemented as qualifiers, because
+    they actually qualify a target type.
+
+  - This approach is totally flexible and makes it possible to annotate any
+    type, qualified or not, pointed-to or not.
+
+  - The resulting DWARF looks like the BTF.
+
+  - It can handle annotated `void', as currently generated by GCC and
+    clang/LLVM:
+
+    :   DW_TAG_LLVM_annotation
+    :     DW_AT_name        "btf_type_tag"
+    :     DW_AT_const_value "tag1"
+    :     DW_AT_type NULL
+
+  Disadvantages of this approach:
+
+  - Implementing this is more elaborated, and it requires DWARF consumers to
+    understand this new DIE type, in order to follow the type chains in the
+    tree: =DW_TAG_LLVM_annotation= should now be expected in any =DW_AT_type=
+    reference.
+
+  - This breaks DWARF, making it very difficult to be implemented as a
+    compiler extension, and will likely require make it part of DWARF.
+
+  - This is not backwards compatible to what clang currently generates.
+
+* Solution 2: annotations as children DIEs
+
+  This approach involves keeping the =DW_TAG_LLVM_annotation= DIE, with the
+  same internal structure it has now, but associating it to the type DIE that
+  is its parent.  (Note this is not the same than being linked by a
+  =DW_AT_type= attribute like in Solution 1.)
+
+  This means that this DWARF tree:
+
+  : DW_TAG_pointer_type
+  :   DW_AT_type "int"
+  :   DW_TAG_LLVM_annotation
+  :     DW_AT_name        "btf_type_tag"
+  :     DW_AT_const_value "tag1"
+
+  Denotes an annotation that applies to the type =int*=, not the pointee type
+  =int=.
+
+  Advantages of this approach:
+
+  - This approach makes it possible to annotate any type, qualified or not,
+    pointed-to or not.
+
+  - This can easily be implemented as a compiler extension, because existing
+    DWARF consumers will happily ignore the new attributes in case they don't
+    support them;  the type chains in the tree remain the same.
+
+  - Easy to implement in GCC.
+
+  Disadvantages of this approach:
+
+  - This may result in an increased number of type nodes in the tree.  For
+    example, we may have a tagged =int*= and a non-tagged =int*=, which now
+    will have to be implemented using two different DIEs.
+   
+  - This is not backwards-compatible to what clang currently generates, in
+    the case of pointer types.
+
+  - It cannot handle annotated `void' as currently generated by GCC and
+    clang/LLVM, so for tagged =void= we would need to generate unspecified
+    types with name "void":
+
+    : DW_TAG_unspecified_type
+    :   DW_AT_name "void"
+    :   DW_TAG_LLVM_annotation
+    :     DW_AT_name        "btf_type_tag"
+    :     DW_AT_const_value "tag1"
+
+    But this should be supported by DWARF consumers, as per the DWARF spec,
+    and it is certainly recognized by GDB.
+
+* Solution 3a: annotations as set of attributes
+
+  Another possible solution is to extend DWARF with a pair of two new
+  attributes =DW_AT_annotation_tag= and =DW_AT_annotation_value=.
+
+  Annotated types will have these attributes defined.  Example:
+
+  : DW_TAG_pointer_type
+  :   DW_AT_type "int"
+  :   DW_AT_annotation_tag   "btf_type_tag"
+  :   DW_AT_annotation_value "tag1"
+
+  Note that in this example the tag applies to the pointer type, not the
+  pointee, i.e. to =int*=.
+
+  Advantages of this approach:
+
+  - This can easily be implemented as a compiler extension, because existing
+    DWARF consumers will happily ignore the new attributes in case they don't
+    support them;  the type chains in the tree remain the same.
+
+  - This is backwards compatible to what clang currently generates.
+
+  - Easy to implement in GCC.
+   
+  Disadvantages of this approach:
+
+  - This may result in an increased number of type nodes in the tree.  For
+    example, we may have a tagged =int*= and a non-tagged =int*=, which now
+    will have to be implemented using two different DIEs.
+
+  - It cannot handle annotated `void' as currently generated by GCC and
+    clang/LLVM, so for tagged =void= we would need to generate unspecified
+    types with name "void":
+
+    : DW_TAG_unspecified_type
+    :   DW_AT_name "void"
+    :   DW_AT_annotation_tag   "btf_type_tag"
+    :   DW_AT_annotation_value "tag1"
+
+    But this should be supported by DWARF consumers, as per the DWARF spec,
+    and it is certainly recognized by GDB.
+   
+* Solution 3b: annotations as single "structured" attributes
+
+  This is like 3a, but using a single attribute =DW_AT_annotation= instead of
+  two, and encoding the tag name and the tag value in the string value using
+  some convention.
+
+  For example:
+
+  : DW_TAG_pointer_type
+  :   DW_AT_type "int"
+  :   DW_AT_annotation "btf_type_tag tag1"
+
+  Meaning the tag name is "btf_type_tag" and the tag value is "tag1", using
+  the convention that a white character separates them.
+
+  Advantages over 3a:
+
+  - Using a single attribute is more robust, since it eliminates the possible
+    situation of a node having =DW_AT_annotation_tag= and not
+    =DW_AT_annotation_value=.
+
+  - It is easier to extend it, since the string stored in the
+    =DW_AT_annotation= attribute may be made as complex as desired.  Better
+    than adding more =DW_AT_annotation_FOO= attributes.
+
+  - This is backwards compatible to what clang currently generates.
+
+  - Easy to implement in GCC.
+   
+  Disadvantages over 3a:
+
+  - This requires defining conventions specifying the structure of the string
+    stored in the attribute.
+
+  - This has the danger of overzealous design: "let's store a JSON tree in
+    =DW_AT_annotation= for future extensions instead of continue bothering
+    with DWARF".
+
+  - It cannot handle annotated `void' as currently generated by GCC and
+    clang/LLVM, so for tagged =void= we would need to generate unspecified
+    types with name "void":
+
+    : DW_TAG_unspecified_type
+    :   DW_AT_name "void"
+    :   DW_AT_annotation  "btf_type_tag tag1"
+
+    But this should be supported by DWARF consumers, as per the DWARF spec,
+    and it is certainly recognized by GDB.
