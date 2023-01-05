@@ -2,160 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D7C65E750
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 10:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3162465E7C3
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 10:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbjAEJGa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 04:06:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
+        id S232079AbjAEJ1X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 04:27:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjAEJFm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 04:05:42 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F75B50E4C;
-        Thu,  5 Jan 2023 01:05:15 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 45D526BB8B;
-        Thu,  5 Jan 2023 09:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1672909514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KjEYGtXHIvu5hfDTBI8PtDhvnl4Ui5seQm0BK9rUcK8=;
-        b=oT4Pi+UDQ61FFQ2pvNpb5HDPBMOdDXl/+KeEPQdLvXx8DTxCNt1kvcn7EvJbYumniXfSXP
-        UFEZtFAR/xYctcYWIXlevMJxR4zs8vDY9ADm64BI0B1lSG0yW96MGLJ3+zvorUgj3gnkoP
-        dtVt4S6G1Oti9+JKmMwbfp4d2TYtUEk=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A8CFD2C17B;
-        Thu,  5 Jan 2023 09:05:13 +0000 (UTC)
-Date:   Thu, 5 Jan 2023 10:05:13 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Song Liu <song@kernel.org>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
+        with ESMTP id S232003AbjAEJ1W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 04:27:22 -0500
+Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A898A5006C
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 01:27:20 -0800 (PST)
+X-QQ-mid: bizesmtp82t1672910822tr1dd83r
+Received: from localhost.localdomain ( [1.202.165.115])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 05 Jan 2023 17:26:58 +0800 (CST)
+X-QQ-SSF: 01000000000000304000000A0000000
+X-QQ-FEAT: MP4BvZ4HVgv39ITKXZVaA1g3wmRh05VEIp3YJ8p0VH3OfYSTkA1q+mh/B2NkM
+        9SZjeOOlX7NW3QvUuwb10MJxDGkkT8AXseTZ0ryxuvzi1kDRFN2yQ7H5peiDCj6zo4Rr1Vu
+        0meRUtd48EBQHDIjiwkSEIW0OWdyaMMUHQFoe0YmQ7NcELmKjvHt8c7Ri+oiQdJveNwO4gA
+        keMVdckfHkh+IFxvrboGlm5NBnO7iuZhVI4AakSECgDTCH84jnwLxe0wpdMKirfOzqp24tr
+        JlhIUM6hU+MB5MWInu08mF9yvfc6xqQcezVXWhfHh/KSamKIvKxEROmG1+a/naLwseXuvm8
+        xY4drNpYRTUM7jgsnPRlwDey1M/oX2RT5+q3jNoEcXjfDK/JRA=
+X-QQ-GoodBg: 0
+From:   tong@infragraf.org
+To:     bpf@vger.kernel.org
+Cc:     Tonghao Zhang <tong@infragraf.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org
-Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
-Message-ID: <Y7aSyb0n4B2aCRZH@alley>
-References: <20221230112729.351-1-thunder.leizhen@huawei.com>
- <20221230112729.351-3-thunder.leizhen@huawei.com>
- <Y7WoZARt37xGpjXD@alley>
- <CAPhsuW6sZ9yQvZvKLd0g9m4FoabmUzwn-txX6T_A-_VYgJoXFg@mail.gmail.com>
+        Hou Tao <houtao1@huawei.com>
+Subject: [bpf-next v4 1/2] bpf: hash map, avoid deadlock with suitable hash mask
+Date:   Thu,  5 Jan 2023 17:26:36 +0800
+Message-Id: <20230105092637.35069-1-tong@infragraf.org>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW6sZ9yQvZvKLd0g9m4FoabmUzwn-txX6T_A-_VYgJoXFg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed 2023-01-04 09:07:02, Song Liu wrote:
-> On Wed, Jan 4, 2023 at 8:25 AM Petr Mladek <pmladek@suse.com> wrote:
-> >
-> > On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
-> > > Function __module_address() can quickly return the pointer of the module
-> > > to which an address belongs. We do not need to traverse the symbols of all
-> > > modules to check whether each address in addrs[] is the start address of
-> > > the corresponding symbol, because register_fprobe_ips() will do this check
-> > > later.
-> > >
-> > > Assuming that there are m modules, each module has n symbols on average,
-> > > and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
-> > > complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
-> > > and the time complexity of current method is O(K * (log(m) + M)), M <= m.
-> > > (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
-> > > the ratio is still greater than 1. Therefore, the new method will
-> > > generally have better performance.
-> > >
-> > > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> > > ---
-> > >  kernel/trace/bpf_trace.c | 101 ++++++++++++++++-----------------------
-> > >  1 file changed, 40 insertions(+), 61 deletions(-)
-> > >
-> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > index 5f3be4bc16403a5..0ff9037098bd241 100644
-> > > --- a/kernel/trace/bpf_trace.c
-> > > +++ b/kernel/trace/bpf_trace.c
-> > > @@ -2684,69 +2684,55 @@ static void symbols_swap_r(void *a, void *b, int size, const void *priv)
-> > >       }
-> > >  }
-> > >
-> > > -struct module_addr_args {
-> > > -     unsigned long *addrs;
-> > > -     u32 addrs_cnt;
-> > > -     struct module **mods;
-> > > -     int mods_cnt;
-> > > -     int mods_cap;
-> > > -};
-> > > -
-> > > -static int module_callback(void *data, const char *name,
-> > > -                        struct module *mod, unsigned long addr)
-> > > +static int get_modules_for_addrs(struct module ***out_mods, unsigned long *addrs, u32 addrs_cnt)
-> > >  {
-> > > -     struct module_addr_args *args = data;
-> > > -     struct module **mods;
-> > > -
-> > > -     /* We iterate all modules symbols and for each we:
-> > > -      * - search for it in provided addresses array
-> > > -      * - if found we check if we already have the module pointer stored
-> > > -      *   (we iterate modules sequentially, so we can check just the last
-> > > -      *   module pointer)
-> > > -      * - take module reference and store it
-> > > -      */
-> > > -     if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
-> > > -                    bpf_kprobe_multi_addrs_cmp))
-> > > -             return 0;
-> > > +     int i, j, err;
-> > > +     int mods_cnt = 0;
-> > > +     int mods_cap = 0;
-> > > +     struct module *mod;
-> > > +     struct module **mods = NULL;
-> > >
-> > > -     if (args->mods && args->mods[args->mods_cnt - 1] == mod)
-> > > -             return 0;
-> > > +     for (i = 0; i < addrs_cnt; i++) {
-> > > +             mod = __module_address(addrs[i]);
-> >
-> > This must be called under module_mutex to make sure that the module
-> > would not disappear.
-> 
-> module_mutex is not available outside kernel/module/. The common
-> practice is to disable preempt before calling __module_address().
-> CONFIG_LOCKDEP should catch this.
+From: Tonghao Zhang <tong@infragraf.org>
 
-I see. Sigh, it is always better to take mutex than disable
-preemption. But it might be acceptable in this case. We just need
-to be careful.
+The deadlock still may occur while accessed in NMI and non-NMI
+context. Because in NMI, we still may access the same bucket but with
+different map_locked index.
 
-First, the preemption must stay disabled all the time until
-try_module_get(). Otherwise the returned struct module could
-disappear in the meantime.
+For example, on the same CPU, .max_entries = 2, we update the hash map,
+with key = 4, while running bpf prog in NMI nmi_handle(), to update
+hash map with key = 20, so it will have the same bucket index but have
+different map_locked index.
 
-Second, krealloc_array() has to be called with preemption
-enabled. It is perfectly fine to do it after try_module_get().
+To fix this issue, using min mask to hash again.
 
-Best Regards,
-Petr
+Signed-off-by: Tonghao Zhang <tong@infragraf.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Hou Tao <houtao1@huawei.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+Acked-by: Hou Tao <houtao1@huawei.com>
+---
+ kernel/bpf/hashtab.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 5aa2b5525f79..974f104f47a0 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -152,7 +152,7 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
+ {
+ 	unsigned long flags;
+ 
+-	hash = hash & HASHTAB_MAP_LOCK_MASK;
++	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
+ 
+ 	preempt_disable();
+ 	if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
+@@ -171,7 +171,7 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+ 				      struct bucket *b, u32 hash,
+ 				      unsigned long flags)
+ {
+-	hash = hash & HASHTAB_MAP_LOCK_MASK;
++	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
+ 	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+ 	__this_cpu_dec(*(htab->map_locked[hash]));
+ 	preempt_enable();
+-- 
+2.27.0
+
