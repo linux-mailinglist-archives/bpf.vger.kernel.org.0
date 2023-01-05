@@ -2,72 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1E565E6D8
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 09:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6C565E6F0
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 09:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbjAEI1Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 03:27:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
+        id S231258AbjAEIii (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 03:38:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbjAEI0s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 03:26:48 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574174C705
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 00:26:47 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id s6-20020a259006000000b00706c8bfd130so36239521ybl.11
-        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 00:26:47 -0800 (PST)
+        with ESMTP id S231138AbjAEIih (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 03:38:37 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F184C717;
+        Thu,  5 Jan 2023 00:38:36 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id u19so88449021ejm.8;
+        Thu, 05 Jan 2023 00:38:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7v/gEXdtTx+UxkZcAUgCVgz4MqYf6krsrfnmQSxx5Nk=;
-        b=MOmoDn853XiABNLgzeFY1zINcWjdyYDZgMjA+UzzOZtj9lI8m9iFChZ8xKfl5yhu7m
-         GgQ4eeoUjNQwcCp66d6+VkJLXk5f1vbaPSLFAy/6UxTPSUznUMcPxKpfnw2XsTl8fgsi
-         bkDwzfeHUylhi+VwwPOZh1rvzAuP2xf/p0aBbDEckSzuITvMJZGzno5h8Cz8WLU90KIv
-         95qcS0l7viSe07zEj+JjfkIKsgR4APZLrfGfEpD0xTWlxPrztm2446P9poO+EtTxj4Us
-         ChabmwB0Gr7DT0OlsTqIhWL1e6E1yn5yVkl+xeuXIf4/TFzX/r0cfmm5xtQi6gbpnaLo
-         ECOA==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+8xeEYZVKn58+C4NC2Fr2u9sUd2mC0FIQGRQdKj9Ibw=;
+        b=nMGzSrcRFdfnY6Wa4lHpmmUbWBWVyucYIygEhW26gK9M2qhCQ5WBv98dp5HkvgQWDs
+         xhim5FZDT0BNRF0xgu9kCt5hFvCo4Q1CsI5GD7OGuwttWspeWBtUGNsuBcVFNQEbJ2qs
+         9QZuAVAqeCJ/dSY8lF19Rdhjt+TGfKTX5I9c1PAIVWTJHRbVzG8zE2uauFK+7FQ0G2TR
+         sexUKc2+Q/A3ipGxdbcmPaiQkyKOmjUEpCeuYOS92QetS+Pxpr92m72lSsLWCkUBIlUo
+         1YASHYJCox3T/22yVb5JfVhDyjS5laemv5/8VJEUlu7I7xFPKK4PV103BgjyRAjyZnuB
+         iKmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7v/gEXdtTx+UxkZcAUgCVgz4MqYf6krsrfnmQSxx5Nk=;
-        b=0uEfo2IJAwIC5nyzPByeOHIsyr25iylWbmt/quPWZp68+EWUVUKalQLub64Tulz2aG
-         vxJSLBaRtQUPu54DZjCGyx+s9V2SQeSn2vZF4OBwr6ZxznDfr1Qq8eW/W7A4Syc+xQks
-         uPbXqPkAaii3Mdf3Rh9WufWMDSWc1CHbC163/Wxcy8R7xabpjwO0W4l1Z9srb5n71P9x
-         /7qbE5/Dv5+48Va2XC632cyzHErFv0mQkmSCcfXOu/t2PDMqAHyWT/H3IYVLycGY89HG
-         KRJLVqhAvm34zGJYKAWC+pQMI6W0fwNEXSJkZXUKZy7hWyFCKhXDne7pYnK//I8YX0m0
-         lZlQ==
-X-Gm-Message-State: AFqh2koBLBXSYbWyn0oo0TvpasWa07GTiwT0rcEvci0lUJRlqMcHtDUy
-        mXMrOMpdwgYigYaea4SL0T7KrQDAzt6p
-X-Google-Smtp-Source: AMrXdXuewYyrwXwhMLNamHCQBtT1ApP5gJHM/sJsyBFYGsV/bQVTiEcy1qsCqV8yZhxZzVYytEaqhDTrPA5G
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:8775:c864:37e:2f9b])
- (user=irogers job=sendgmr) by 2002:a0d:dbce:0:b0:4ad:7104:1f63 with SMTP id
- d197-20020a0ddbce000000b004ad71041f63mr1246510ywe.49.1672907206617; Thu, 05
- Jan 2023 00:26:46 -0800 (PST)
-Date:   Thu,  5 Jan 2023 00:26:09 -0800
-Message-Id: <20230105082609.344538-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Subject: [PATCH v1] perf llvm: Fix inadvertent file creation
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Ian Rogers <irogers@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+8xeEYZVKn58+C4NC2Fr2u9sUd2mC0FIQGRQdKj9Ibw=;
+        b=yGLJT8DxRkw1jUXydWzXzlX2kOAsssXXOnr3xiXbJFgOA81u4wzr6ha9Lh6lUhgUcZ
+         pB0u9P4KVEum7bd5eZTb/CvHudjvP/fdjy1CGH72z2ygEP6/7UZVFiG+M4JVzJwiO84Q
+         TfbqHUIAHpsvY02PD9iJ2M2vhyKQLaXLBZ2msh3cgvGETJO7rP/pABBBi6SvviYQrisD
+         BXk33EqsohYgLzduG4w7iixE+pCVuL+PwhwRT9f8Kr6bJUXGobd7aEXxN+4KO3czJsqj
+         X7Tg1vLyHBX+EIS+cwRpBgvLi2jFDQX+gV84xm2pkyqDWSLBsLNAHVUOPJrhGoTOsUK6
+         fPUw==
+X-Gm-Message-State: AFqh2kpXqgGPsb1sgWhlJYlvMTWSYxeDkQwdQfBvRsRkM7R8yqOqFg4M
+        50CotU1tSCn11u3BEA41PWMKcV9awWHFiFq9eDc=
+X-Google-Smtp-Source: AMrXdXsId2nApFSWCct5D1Spcy7auVmjlo+cMEKsVKFUQPTxYMz4lQLukSnZn8gb7SaLV0OgQ11nt3LXf3RR+GKuCos=
+X-Received: by 2002:a17:906:71d0:b0:7ad:b45c:dbca with SMTP id
+ i16-20020a17090671d000b007adb45cdbcamr5718963ejk.388.1672907914707; Thu, 05
+ Jan 2023 00:38:34 -0800 (PST)
+MIME-Version: 1.0
+References: <20230104121744.2820-1-magnus.karlsson@gmail.com>
+ <20230104121744.2820-12-magnus.karlsson@gmail.com> <Y7XCEPFUCUNZqtAY@maniforge.lan>
+In-Reply-To: <Y7XCEPFUCUNZqtAY@maniforge.lan>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 5 Jan 2023 09:38:22 +0100
+Message-ID: <CAJ8uoz03bLb7Xc29bRjD+QNy73XtjA2XEszZ8xnzqS2Y7QCsTg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 11/15] selftests/xsk: get rid of built-in XDP program
+To:     David Vernet <void@manifault.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, bpf@vger.kernel.org, yhs@fb.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tirthendu.sarkar@intel.com,
+        jonathan.lemon@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,70 +74,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The LLVM template is first echo-ed into command_out and then
-command_out executed. The echo surrounds the template with double
-quotes, however, the template itself may contain quotes. This is
-generally innocuous but in tools/perf/tests/bpf-script-test-prologue.c
-we see:
-...
-SEC("func=null_lseek file->f_mode offset orig")
-...
-where the first double quote ends the double quote of the echo, then
-the > redirects output into a file called f_mode.
+On Wed, Jan 4, 2023 at 7:14 PM David Vernet <void@manifault.com> wrote:
+>
+> On Wed, Jan 04, 2023 at 01:17:40PM +0100, Magnus Karlsson wrote:
+> > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> >
+> > Get rid of the built-in XDP program that was part of the old libbpf
+> > code in xsk.c and replace it with an eBPF program build using the
+> > framework by all the other bpf selftests. This will form the base for
+> > adding more programs in later commits.
+> >
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > ---
+> >  tools/testing/selftests/bpf/Makefile          |  2 +-
+> >  .../selftests/bpf/progs/xsk_xdp_progs.c       | 19 ++++
+> >  tools/testing/selftests/bpf/xsk.c             | 88 ++++---------------
+> >  tools/testing/selftests/bpf/xsk.h             |  6 +-
+> >  tools/testing/selftests/bpf/xskxceiver.c      | 72 ++++++++-------
+> >  tools/testing/selftests/bpf/xskxceiver.h      |  7 +-
+> >  6 files changed, 88 insertions(+), 106 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
+ests/bpf/Makefile
+> > index 205e8c3c346a..a0193a8f9da6 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -240,7 +240,7 @@ $(OUTPUT)/flow_dissector_load: $(TESTING_HELPERS)
+> >  $(OUTPUT)/test_maps: $(TESTING_HELPERS)
+> >  $(OUTPUT)/test_verifier: $(TESTING_HELPERS) $(CAP_HELPERS)
+> >  $(OUTPUT)/xsk.o: $(BPFOBJ)
+> > -$(OUTPUT)/xskxceiver: $(OUTPUT)/xsk.o
+> > +$(OUTPUT)/xskxceiver: $(OUTPUT)/xsk.o $(OUTPUT)/xsk_xdp_progs.skel.h
+>
+> Hi Magnus,
+>
+> This seems to break the selftests build for clang:
+>
+> $ pwd
+> <redacted>/bpf-next/tools/testing/selftests/bpf
+>
+> $ make LLVM=3D1 CC=3Dclang
+>   MKDIR    libbpf
+>   HOSTCC  /home/void/upstream/bpf-next/tools/testing/selftests/bpf/tools/=
+build/libbpf/fixdep.o
+>   HOSTLD  /home/void/upstream/bpf-next/tools/testing/selftests/bpf/tools/=
+build/libbpf/fixdep-in.o
+>   LINK    /home/void/upstream/bpf-next/tools/testing/selftests/bpf/tools/=
+build/libbpf/fixdep
+>
+> ...
+>
+>   GEN-SKEL [test_progs-no_alu32] test_static_linked.skel.h
+>   LINK-BPF [test_progs-no_alu32] test_usdt.bpf.o
+>   GEN-SKEL [test_progs-no_alu32] linked_vars.skel.h
+>   GEN-SKEL [test_progs-no_alu32] linked_funcs.skel.h
+>   EXT-COPY [test_progs-no_alu32] urandom_read bpf_testmod.ko liburandom_r=
+ead.so xdp_synproxy sign-file ima_setup.sh verify_sig_setup.sh btf_dump_tes=
+t_case_bitfields.c btf_dump_test_case_multidim.c btf_dump_test_case_namespa=
+cing.c btf_dump_test_case_ordering.c btf_dump_test_case_packing.c btf_dump_=
+test_case_padding.c btf_dump_test_case_syntax.c
+>   GEN-SKEL [test_progs-no_alu32] linked_maps.skel.h
+>   GEN-SKEL [test_progs-no_alu32] test_subskeleton.skel.h
+>   BINARY   xskxceiver
+>   BINARY   bench
+>   GEN-SKEL [test_progs-no_alu32] test_subskeleton_lib.skel.h
+>   GEN-SKEL [test_progs-no_alu32] test_usdt.skel.h
+> clang-15: error: cannot specify -o when generating multiple output files
+> make: *** [Makefile:171: /home/void/upstream/bpf-next/tools/testing/selft=
+ests/bpf/xskxceiver] Error 1
+> make: *** Waiting for unfinished jobs....
+> make[1]: Nothing to be done for 'docs'.
+> $
+>
+> It's also broken on CI: https://github.com/kernel-patches/bpf/actions/run=
+s/3837984934/jobs/6533917001
+>
+> Could you please look into this?
 
-To avoid this inadvertent behavior substitute redirects and similar
-characters to be ASCII control codes, then substitute the output in
-the echo back again.
+Thanks for spotting this David. Will fix it in the v3.
 
-Fixes: 5eab5a7ee032 ("perf llvm: Display eBPF compiling command in debug output")
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/llvm-utils.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/llvm-utils.c b/tools/perf/util/llvm-utils.c
-index 650ffe336f3a..4e8e243a6e4b 100644
---- a/tools/perf/util/llvm-utils.c
-+++ b/tools/perf/util/llvm-utils.c
-@@ -531,14 +531,37 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
- 
- 	pr_debug("llvm compiling command template: %s\n", template);
- 
-+	/*
-+	 * Below, substitute control characters for values that can cause the
-+	 * echo to misbehave, then substitute the values back.
-+	 */
- 	err = -ENOMEM;
--	if (asprintf(&command_echo, "echo -n \"%s\"", template) < 0)
-+	if (asprintf(&command_echo, "echo -n \a%s\a", template) < 0)
- 		goto errout;
- 
-+#define SWAP_CHAR(a, b) do { if (*p == a) *p = b; } while (0)
-+	for (char *p = command_echo; *p; p++) {
-+		SWAP_CHAR('<', '\001');
-+		SWAP_CHAR('>', '\002');
-+		SWAP_CHAR('"', '\003');
-+		SWAP_CHAR('\'', '\004');
-+		SWAP_CHAR('|', '\005');
-+		SWAP_CHAR('&', '\006');
-+		SWAP_CHAR('\a', '"');
-+	}
- 	err = read_from_pipe(command_echo, (void **) &command_out, NULL);
- 	if (err)
- 		goto errout;
- 
-+	for (char *p = command_out; *p; p++) {
-+		SWAP_CHAR('\001', '<');
-+		SWAP_CHAR('\002', '>');
-+		SWAP_CHAR('\003', '"');
-+		SWAP_CHAR('\004', '\'');
-+		SWAP_CHAR('\005', '|');
-+		SWAP_CHAR('\006', '&');
-+	}
-+#undef SWAP_CHAR
- 	pr_debug("llvm compiling command : %s\n", command_out);
- 
- 	err = read_from_pipe(template, &obj_buf, &obj_buf_sz);
--- 
-2.39.0.314.g84b9a713c41-goog
-
+> Thanks,
+> David
