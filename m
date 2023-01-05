@@ -2,88 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98DE965F5D3
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 22:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F020265F66D
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 23:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235856AbjAEVb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 16:31:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
+        id S236152AbjAEWIy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 17:08:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236000AbjAEVbT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 16:31:19 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36E8671BC;
-        Thu,  5 Jan 2023 13:31:16 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id x22so92966227ejs.11;
-        Thu, 05 Jan 2023 13:31:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=B+QbiATlPmFrXKy6nPSw6HbywpLiFa74L0gMt+w3HXo=;
-        b=qj5/VhmYMrx458qhW1RtbNfzF0pB8bER0AZvKuyMddO0TpwpwBvdL+Vfwjn3QpYy0m
-         kMKAgUIU5H69cZuJsR0Vu49tuI4u0O9K5b8/BP7qnniAyJh/zDyxsEAZiycNAkkAcyM4
-         IsLFhHauY6y127jhEykj04Eyx4ngJ10p1DOGx/aCUSz+Ky8KRhNbKjJ3gPGe0nFB1U4l
-         clBUPbVzfS6+dqMd3NrdxXpQbaMkuFUjYaFX99bb0G4VcQr7giqoXp3Wp0wq6MzNzHtc
-         TxsPE8x+OD8/d9CknHeaGY2nJCKl3XVh5+/FRCuIVEwZ0xj240JL9dblYgXT0jqaLWfU
-         fSsA==
+        with ESMTP id S235353AbjAEWIh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 17:08:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042A567BE4
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 14:07:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1672956470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3YOSltnvGCgHoui8rGSPPtll0eWrr6bzdIvNenAKi10=;
+        b=ZBiFP3AwMhGkdLLonKTdwzXfMFw/AF5sYh/q6eHpbUNIyg/bXry6+mWe1vRyHDlmB+NuHX
+        DyMtAJWP1MZKCoGr+bTgP7SH/rGJnltfyatpk8+An8Nos6zqlPOCXm9AZIOQab3pEgDB6K
+        UOWP0el8EhNuuaVLH+s7n/7Vkz/kmlY=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-455-WL-zSu7VMsuhRxrpr_3sHA-1; Thu, 05 Jan 2023 17:07:49 -0500
+X-MC-Unique: WL-zSu7VMsuhRxrpr_3sHA-1
+Received: by mail-ed1-f70.google.com with SMTP id w3-20020a056402268300b00487e0d9b53fso15363473edd.10
+        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 14:07:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B+QbiATlPmFrXKy6nPSw6HbywpLiFa74L0gMt+w3HXo=;
-        b=R9ki2ue50att5qkHJlKWJUqLzZcymcXIQPS3Sddy9aKMHTbm0P2+B6ZeQkkVTcLRsF
-         Vu4zr6uVR9xNn1409KIzrLMUqOApgIzkcSsKoyPPs1Btr3tuDiyP/orRFsSUTe6b6HYO
-         Mno1Fd5z9hZUn0cczGcXzwwK/pB4y9qrpmmZaDkwPP1JlR19D9v9Ze+PiTC3i9sIbikk
-         wPLLqekJk3/m4x+Zyy6ANJ7lltzmt5Fb469CZt0IR77pXAkRAwKvcvBKDlyGpAIKCBQj
-         GYwRoU2pM2iHtRyQU7vwblUEcvVlZP5Nw9mxJuKNP7c+x7PAHYNpS2R0eUghjE3Gh77N
-         gBgw==
-X-Gm-Message-State: AFqh2kpb5QAezeD3vjTrHlxbhX5Gj6fUgI9YvSMSXL3Vmz9O06ueMnQq
-        oz23IHOR1lCjSbaxHilpzh4=
-X-Google-Smtp-Source: AMrXdXvmYnINBuJQtPtPn2mLwtnU7N1wi8jwfdQij6aIk7h717hh+mc372S1TYy8rTIjNfVAJrntuw==
-X-Received: by 2002:a17:907:3ea1:b0:7c1:7f84:10ac with SMTP id hs33-20020a1709073ea100b007c17f8410acmr76492493ejc.33.1672954275287;
-        Thu, 05 Jan 2023 13:31:15 -0800 (PST)
-Received: from krava ([83.240.63.194])
-        by smtp.gmail.com with ESMTPSA id o21-20020a170906769500b007b935641971sm16698031ejm.5.2023.01.05.13.31.13
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3YOSltnvGCgHoui8rGSPPtll0eWrr6bzdIvNenAKi10=;
+        b=qX5R/xtEzUM3vDMelBmj813e5XpD7I/f/0KgCv3uCRS5Cf9X31LECCoR+Tf24wqYxX
+         DG7p90lOUpk+xYRDbKyl0nQ0Dyv4Ne9bUH3IcZHm1yjmpQyZ1SrsP7Qitox0RemfMXkK
+         S3XwGpdP2Bhd8weBKQmSquWRGxxclsY8CDXsrhFsl/OqiY8MuYjB0GTvy7RyIcCBANqo
+         z04XoPfdbqBG2Y2enugxO5HZmWOlQ9Zda8nZuJfHMWLMOCD59o6wFWiIKKRN7JtEw4SN
+         357t+CkwheIpYIv/2ILAbdBabD8iGPoPbQtWBjUIIG09fnLZH0lz8Q4DaNsVFgbyZM/k
+         hWNA==
+X-Gm-Message-State: AFqh2kqQHl9t82XYykqgsnU7mY7UDZdH3tbY1uOQ+rqYzrkqliqux7JS
+        ryrK8UcO52W4bzYbkpG1zMZaIIA27i5FjXBkrbpk0uGp+sqSupZgXAcTP+uHnb4FFZ6bOWlx82Y
+        7YqLUQllTRsbl
+X-Received: by 2002:a17:907:d311:b0:829:5e3f:3c92 with SMTP id vg17-20020a170907d31100b008295e3f3c92mr62084512ejc.73.1672956466510;
+        Thu, 05 Jan 2023 14:07:46 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXuExOLlObe9DFxMUemSRSpluUWYv8k07Rq8NnwtmWi4jUGLJHA/M15nW117Z6A+tZB0ODTH2w==
+X-Received: by 2002:a17:907:d311:b0:829:5e3f:3c92 with SMTP id vg17-20020a170907d31100b008295e3f3c92mr62084358ejc.73.1672956464203;
+        Thu, 05 Jan 2023 14:07:44 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id z27-20020a1709063a1b00b007aea1dc1840sm16997455eje.111.2023.01.05.14.07.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jan 2023 13:31:14 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 5 Jan 2023 22:31:12 +0100
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org
-Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
-Message-ID: <Y7dBoII5kZnHGFdL@krava>
-References: <20221230112729.351-1-thunder.leizhen@huawei.com>
- <20221230112729.351-3-thunder.leizhen@huawei.com>
- <Y7WoZARt37xGpjXD@alley>
+        Thu, 05 Jan 2023 14:07:43 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D08AA8D9F2E; Thu,  5 Jan 2023 23:07:42 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andy Gospodarek <andrew.gospodarek@broadcom.com>
+Cc:     Tariq Toukan <ttoukan.linux@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, lorenzo.bianconi@redhat.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>, gal@nvidia.com,
+        Saeed Mahameed <saeedm@nvidia.com>, tariqt@nvidia.com
+Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
+ support xdp multibuffer
+In-Reply-To: <Y7cBfE7GpX04EI97@C02YVCJELVCG.dhcp.broadcom.net>
+References: <20220621175402.35327-1-gospo@broadcom.com>
+ <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com> <87k0234pd6.fsf@toke.dk>
+ <20230103172153.58f231ba@kernel.org> <Y7U8aAhdE3TuhtxH@lore-desk>
+ <87bkne32ly.fsf@toke.dk> <a12de9d9-c022-3b57-0a15-e22cdae210fa@gmail.com>
+ <871qo90yxr.fsf@toke.dk> <Y7cBfE7GpX04EI97@C02YVCJELVCG.dhcp.broadcom.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 05 Jan 2023 23:07:42 +0100
+Message-ID: <87v8lkzlch.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y7WoZARt37xGpjXD@alley>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,206 +95,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 05:25:08PM +0100, Petr Mladek wrote:
-> On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
-> > Function __module_address() can quickly return the pointer of the module
-> > to which an address belongs. We do not need to traverse the symbols of all
-> > modules to check whether each address in addrs[] is the start address of
-> > the corresponding symbol, because register_fprobe_ips() will do this check
-> > later.
+Andy Gospodarek <andrew.gospodarek@broadcom.com> writes:
 
-hum, for some reason I can see only replies to this patch and
-not the actual patch.. I'll dig it out of the lore I guess
+> On Thu, Jan 05, 2023 at 04:43:28PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Tariq Toukan <ttoukan.linux@gmail.com> writes:
+>>=20
+>> > On 04/01/2023 14:28, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> >> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+>> >>=20
+>> >>>> On Tue, 03 Jan 2023 16:19:49 +0100 Toke H=C3=B8iland-J=C3=B8rgensen=
+ wrote:
+>> >>>>> Hmm, good question! I don't think we've ever explicitly documented=
+ any
+>> >>>>> assumptions one way or the other. My own mental model has certainly
+>> >>>>> always assumed the first frag would continue to be the same size a=
+s in
+>> >>>>> non-multi-buf packets.
+>> >>>>
+>> >>>> Interesting! :) My mental model was closer to GRO by frags
+>> >>>> so the linear part would have no data, just headers.
+>> >>>
+>> >>> That is assumption as well.
+>> >>=20
+>> >> Right, okay, so how many headers? Only Ethernet, or all the way up to
+>> >> L4 (TCP/UDP)?
+>> >>=20
+>> >> I do seem to recall a discussion around the header/data split for TCP
+>> >> specifically, but I think I mentally put that down as "something peop=
+le
+>> >> may way to do at some point in the future", which is why it hasn't ma=
+de
+>> >> it into my own mental model (yet?) :)
+>> >>=20
+>> >> -Toke
+>> >>=20
+>> >
+>> > I don't think that all the different GRO layers assume having their=20
+>> > headers/data in the linear part. IMO they will just perform better if=
+=20
+>> > these parts are already there. Otherwise, the GRO flow manages, and=20
+>> > pulls the needed amount into the linear part.
+>> > As examples, see calls to gro_pull_from_frag0 in net/core/gro.c, and t=
+he=20
+>> > call to pskb_may_pull() from skb_gro_header_slow().
+>> >
+>> > This resembles the bpf_xdp_load_bytes() API used here in the xdp prog.
+>>=20
+>> Right, but that is kernel code; what we end up doing with the API here
+>> affects how many programs need to make significant changes to work with
+>> multibuf, and how many can just set the frags flag and continue working.
+>> Which also has a performance impact, see below.
+>>=20
+>> > The context of my questions is that I'm looking for the right memory=20
+>> > scheme for adding xdp-mb support to mlx5e striding RQ.
+>> > In striding RQ, the RX buffer consists of "strides" of a fixed size se=
+t=20
+>> > by pthe driver. An incoming packet is written to the buffer starting f=
+rom=20
+>> > the beginning of the next available stride, consuming as much strides =
+as=20
+>> > needed.
+>> >
+>> > Due to the need for headroom and tailroom, there's no easy way of=20
+>> > building the xdp_buf in place (around the packet), so it should go to =
+a=20
+>> > side buffer.
+>> >
+>> > By using 0-length linear part in a side buffer, I can address two=20
+>> > challenging issues: (1) save the in-driver headers memcpy (copy might=
+=20
+>> > still exist in the xdp program though), and (2) conform to the=20
+>> > "fragments of the same size" requirement/assumption in xdp-mb.=20
+>> > Otherwise, if we pull from frag[0] into the linear part, frag[0] becom=
+es=20
+>> > smaller than the next fragments.
+>>=20
+>> Right, I see.
+>>=20
+>> So my main concern would be that if we "allow" this, the only way to
+>> write an interoperable XDP program will be to use bpf_xdp_load_bytes()
+>> for every packet access. Which will be slower than DPA, so we may end up
+>> inadvertently slowing down all of the XDP ecosystem, because no one is
+>> going to bother with writing two versions of their programs. Whereas if
+>> you can rely on packet headers always being in the linear part, you can
+>> write a lot of the "look at headers and make a decision" type programs
+>> using just DPA, and they'll work for multibuf as well.
+>
+> The question I would have is what is really the 'slow down' for
+> bpf_xdp_load_bytes() vs DPA?  I know you and Jesper can tell me how many
+> instructions each use. :)
 
-> > 
-> > Assuming that there are m modules, each module has n symbols on average,
-> > and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
-> > complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
-> > and the time complexity of current method is O(K * (log(m) + M)), M <= m.
-> > (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
-> > the ratio is still greater than 1. Therefore, the new method will
-> > generally have better performance.
+I can try running some benchmarks to compare the two, sure!
 
-could you try to benchmark that? I tried something similar but was not
-able to get better performance
+-Toke
 
-I'll review and run my benchmark test tomorrow
-
-thanks,
-jirka
-
-> > 
-> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> > ---
-> >  kernel/trace/bpf_trace.c | 101 ++++++++++++++++-----------------------
-> >  1 file changed, 40 insertions(+), 61 deletions(-)
-> > 
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 5f3be4bc16403a5..0ff9037098bd241 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -2684,69 +2684,55 @@ static void symbols_swap_r(void *a, void *b, int size, const void *priv)
-> >  	}
-> >  }
-> >  
-> > -struct module_addr_args {
-> > -	unsigned long *addrs;
-> > -	u32 addrs_cnt;
-> > -	struct module **mods;
-> > -	int mods_cnt;
-> > -	int mods_cap;
-> > -};
-> > -
-> > -static int module_callback(void *data, const char *name,
-> > -			   struct module *mod, unsigned long addr)
-> > +static int get_modules_for_addrs(struct module ***out_mods, unsigned long *addrs, u32 addrs_cnt)
-> >  {
-> > -	struct module_addr_args *args = data;
-> > -	struct module **mods;
-> > -
-> > -	/* We iterate all modules symbols and for each we:
-> > -	 * - search for it in provided addresses array
-> > -	 * - if found we check if we already have the module pointer stored
-> > -	 *   (we iterate modules sequentially, so we can check just the last
-> > -	 *   module pointer)
-> > -	 * - take module reference and store it
-> > -	 */
-> > -	if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
-> > -		       bpf_kprobe_multi_addrs_cmp))
-> > -		return 0;
-> > +	int i, j, err;
-> > +	int mods_cnt = 0;
-> > +	int mods_cap = 0;
-> > +	struct module *mod;
-> > +	struct module **mods = NULL;
-> >  
-> > -	if (args->mods && args->mods[args->mods_cnt - 1] == mod)
-> > -		return 0;
-> > +	for (i = 0; i < addrs_cnt; i++) {
-> > +		mod = __module_address(addrs[i]);
-> 
-> This must be called under module_mutex to make sure that the module
-> would not disappear.
-> 
-> > +		if (!mod)
-> > +			continue;
-> >  
-> > -	if (args->mods_cnt == args->mods_cap) {
-> > -		args->mods_cap = max(16, args->mods_cap * 3 / 2);
-> > -		mods = krealloc_array(args->mods, args->mods_cap, sizeof(*mods), GFP_KERNEL);
-> > -		if (!mods)
-> > -			return -ENOMEM;
-> > -		args->mods = mods;
-> > -	}
-> > +		/* check if we already have the module pointer stored */
-> > +		for (j = 0; j < mods_cnt; j++) {
-> > +			if (mods[j] == mod)
-> > +				break;
-> > +		}
-> 
-> This might get optimized like the original code.
-> 
-> My understanding is that the addresses are sorted in "addrs" array.
-> So, the address is either part of the last found module or it belongs
-> to a completely new module.
-> 
-> 	for (i = 0; i < addrs_cnt; i++) {
-> 		/*
-> 		 * The adresses are sorted. The adress either belongs
-> 		 * to the last found module or a new one.
-> 		 *
-> 		 * This is safe because we already have reference
-> 		 * on the found modules.
-> 		 */
-> 		 if (mods_cnt && within_module(addrs[i], mods[mods_cnt - 1]))
-> 			continue;
-> 
-> 		mutex_lock(&module_mutex);
-> 		mod = __module_address(addrs[i]);
-> 		if (mod && !try_module_get(mod)) {
-> 			mutex_unlock(&module_mutex);
-> 			goto failed;
-> 		}
-> 		mutex_unlock(&module_mutex);
-> 
-> 		/*
-> 		 * Nope when the address was not from a module.
-> 		 *
-> 		 * Is this correct? What if the module has gone in
-> 		 * the meantime? Anyway, the original code
-> 		 * worked this way.
-> 		 *
-> 		 * FIXME: I would personally make sure that it is part
-> 		 * of vmlinux or so.
-> 		 */
-> 		if (!mod)
-> 			continue;
-> 
-> 		/* store the module into mods array */
-> 		...
-> 
-> 
-> 
-> 
-> > +		if (j < mods_cnt)
-> > +			continue;
-> >  
-> > -	if (!try_module_get(mod))
-> > -		return -EINVAL;
-> > +		if (mods_cnt == mods_cap) {
-> > +			struct module **new_mods;
-> >  
-> > -	args->mods[args->mods_cnt] = mod;
-> > -	args->mods_cnt++;
-> > -	return 0;
-> > -}
-> > +			mods_cap = max(16, mods_cap * 3 / 2);
-> > +			new_mods = krealloc_array(mods, mods_cap, sizeof(*mods), GFP_KERNEL);
-> > +			if (!new_mods) {
-> > +				err = -ENOMEM;
-> > +				goto failed;
-> > +			}
-> > +			mods = new_mods;
-> > +		}
-> >  
-> > -static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u32 addrs_cnt)
-> > -{
-> > -	struct module_addr_args args = {
-> > -		.addrs     = addrs,
-> > -		.addrs_cnt = addrs_cnt,
-> > -	};
-> > -	int err;
-> > +		if (!try_module_get(mod)) {
-> > +			err = -EINVAL;
-> > +			goto failed;
-> > +		}
-> >  
-> > -	/* We return either err < 0 in case of error, ... */
-> > -	err = module_kallsyms_on_each_symbol(NULL, module_callback, &args);
-> > -	if (err) {
-> > -		kprobe_multi_put_modules(args.mods, args.mods_cnt);
-> > -		kfree(args.mods);
-> > -		return err;
-> > +		mods[mods_cnt] = mod;
-> > +		mods_cnt++;
-> >  	}
-> >  
-> > -	/* or number of modules found if everything is ok. */
-> > -	*mods = args.mods;
-> > -	return args.mods_cnt;
-> > +	*out_mods = mods;
-> > +	return mods_cnt;
-> > +
-> > +failed:
-> > +	kprobe_multi_put_modules(mods, mods_cnt);
-> > +	kfree(mods);
-> > +	return err;
-> >  }
-> >  
-> >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> 
-> Otherwise, it looks good. IMHO, the new code looks more straightforward
-> than the original one.
-> 
-> Best Regards,
-> Petr
