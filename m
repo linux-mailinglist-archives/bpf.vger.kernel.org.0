@@ -2,100 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F59965F106
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 17:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAEF65F13F
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 17:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234974AbjAEQWK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 11:22:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
+        id S233378AbjAEQcl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 11:32:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234429AbjAEQWH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 11:22:07 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D63514D03
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 08:22:07 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id z12so30310937qtv.5
-        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 08:22:07 -0800 (PST)
+        with ESMTP id S231889AbjAEQcj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 11:32:39 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB1A5D423
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 08:32:38 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id d10so24831579pgm.13
+        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 08:32:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ffFs6MhOEallo9JreaDhoMujgaZC+42IQ6jp+96uB8w=;
-        b=chfT8y0msZkaskvuV7/8nOEOPp9zd2IJZ4h+Bqm8yFlbbArirbxKxYrl8ahe7tCwqM
-         xZwOKo2o8v6FEGoIEExZcLq9r8MPTgZn+tH/KgVEcpyH8lggaDWB7DRTv1Q5gblrayKs
-         AaSgUBsBeikTN2AwblmVBUGW1NCfL9gkpqStY=
+        d=googlemail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ow2r2TZdrVhfIknj/l1EkyeUhZdKgzWR4bhV6QJcLZM=;
+        b=RNH1RNWDmugvTkQ9quJjXS8UMMS4yhPMAQRQBWh3M0TIU/APglmLfVUWsL6REJwkEL
+         8VxHIJJyQj/1Z1Zj51W5g73OX32SIU7+asrHG3rH35LdvX8vrRqmLhLiUruXrjetDkR4
+         oWcMAf0U9mkfV6dDO7KvUB3TIUjrf2F7t0auzUkhirxlw0IB96yuxPdQnn10rAl3WMvd
+         HhO74sTBTqlviH5WSwP1OEXhRYepVovwhLcX7t2zmC0GyVV8BHVRUs5D4lZgFRTV4C3P
+         qeh9PI85Wi54dxuWvekAuXW37w5VkIKVQ2e6kY9YfnPIsgUb3Kz+2MxmXGuX/d88dLsS
+         lPXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ffFs6MhOEallo9JreaDhoMujgaZC+42IQ6jp+96uB8w=;
-        b=KFw429/DFqof2SBPAVmmEOgjnNH/Fpi1q2JuYNN/vsk0+otA47kRlFO3L6P+wlhk/l
-         1P/4R7olFHpoNyNvp2H03FsvcPa+FA3nkeyJLhjRjHiThA2dx6wteDusrQsSqcmoMEni
-         db/ybG4wNvF8cKVWsa+niJnsLGFeXFvi1anxFKUcI72aRfKDT4sKMtMotq1MOVefdUiL
-         qaH4rJPVApTYwq4sZAmN8UQii/nLJ66411Z5viuKQylHJO57TDt8MY6vGSxu2wT4j6b+
-         yGnSsn4Uf7CF8Rv/UoMTbqCXZ8lZavV0PR1Pm8kub1W2Ejg+7WrdIdCJophoW2tw2L+e
-         MaBw==
-X-Gm-Message-State: AFqh2kpOgQckCokYgfwy3PHI1rPGsK4enoK1q+5VqmZsQBmDTrAMbef8
-        FerhVr6oHJvr0fE7Zcr4wiCleA==
-X-Google-Smtp-Source: AMrXdXtDytKaVmtg0efflOyXfymcBKXt5koF+tMQJ6ARq++uJEKl8yn91O4CftNKJAXeTMUNP38wpA==
-X-Received: by 2002:ac8:7551:0:b0:3a7:f46b:7a82 with SMTP id b17-20020ac87551000000b003a7f46b7a82mr68271708qtr.21.1672935726225;
-        Thu, 05 Jan 2023 08:22:06 -0800 (PST)
-Received: from C02YVCJELVCG.dhcp.broadcom.net ([192.19.144.250])
-        by smtp.gmail.com with ESMTPSA id v15-20020a05620a440f00b0070495934152sm25987506qkp.48.2023.01.05.08.22.04
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ow2r2TZdrVhfIknj/l1EkyeUhZdKgzWR4bhV6QJcLZM=;
+        b=A1lYUfHbcPeZ98AmUTi8GVFFf5Dmtbnin4K9a5N8PEsvJgVc0JF26b9JFrE073YYsZ
+         fOhdCtd2phBgnzjxlKs5AJ2xwr33xtiqcOpFH8IPqdR8zdF5jhV/zrSLKKEG0mT1l/Bi
+         /UzW4rs5qgELLEAdPw0q1RWKNDpqTTbjeB0JcLn6vfBiCDiOdT/cTyfhQ+hf1XC7cMme
+         I9Vwh1u+kHl0XDyzRgmTUDp17raUtzC22dup52EPT5Lz27zMGQrnmTjjeoIrXhlGK91v
+         6jqyKNnm14/ARsT6ssQrrDKJzmY3UdFqhO7kMFtil/rLmy1cCv+wSXsFHYMFk+jPi9Gp
+         hx0w==
+X-Gm-Message-State: AFqh2kp12tZn/yb4lW03rTjoCzyL60f5x1Cd68H6OXo5TkjPVZt8P+xH
+        VJnY7Nk7L48OOOQNnTAOQLxHnHxY4UC89A==
+X-Google-Smtp-Source: AMrXdXtNvg7212lkqlfpekfb99VROoN4KnstcQvEkXn+PPPfGkjVc6UW8ejjLUsgNiINCVmesT628w==
+X-Received: by 2002:a62:14cb:0:b0:583:3a9c:1df8 with SMTP id 194-20020a6214cb000000b005833a9c1df8mr1059898pfu.23.1672936357872;
+        Thu, 05 Jan 2023 08:32:37 -0800 (PST)
+Received: from mariner-vm.. (c-71-197-160-159.hsd1.wa.comcast.net. [71.197.160.159])
+        by smtp.gmail.com with ESMTPSA id k26-20020aa79d1a000000b0058130f1eca1sm19224375pfp.182.2023.01.05.08.32.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jan 2023 08:22:05 -0800 (PST)
-From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
-X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
-Date:   Thu, 5 Jan 2023 11:22:03 -0500
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Tariq Toukan <ttoukan.linux@gmail.com>,
-        Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, lorenzo.bianconi@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, gal@nvidia.com,
-        Saeed Mahameed <saeedm@nvidia.com>, tariqt@nvidia.com
-Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
- support xdp multibuffer
-Message-ID: <Y7b5K2NCp17xHU/N@C02YVCJELVCG.dhcp.broadcom.net>
-References: <20220621175402.35327-1-gospo@broadcom.com>
- <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com>
- <87k0234pd6.fsf@toke.dk>
- <20230103172153.58f231ba@kernel.org>
+        Thu, 05 Jan 2023 08:32:37 -0800 (PST)
+From:   dthaler1968@googlemail.com
+To:     bpf@vger.kernel.org
+Cc:     Dave Thaler <dthaler@microsoft.com>
+Subject: [PATCH] bpf, docs: Fix modulo zero, division by zero, overflow, and underflow
+Date:   Thu,  5 Jan 2023 16:32:23 +0000
+Message-Id: <20230105163223.3472-1-dthaler1968@googlemail.com>
+X-Mailer: git-send-email 2.33.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230103172153.58f231ba@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 03, 2023 at 05:21:53PM -0800, Jakub Kicinski wrote:
-> On Tue, 03 Jan 2023 16:19:49 +0100 Toke Høiland-Jørgensen wrote:
-> > Hmm, good question! I don't think we've ever explicitly documented any
-> > assumptions one way or the other. My own mental model has certainly
-> > always assumed the first frag would continue to be the same size as in
-> > non-multi-buf packets.
-> 
-> Interesting! :) My mental model was closer to GRO by frags 
-> so the linear part would have no data, just headers.
+From: Dave Thaler <dthaler@microsoft.com>
 
-As I mentioned in my mail just a few mins ago, I think this would be a good
-model to consider.  All headers (including potentially tunnel headers) could be
-in the linear area with the actual packet data in frags.
+Fix modulo zero, division by zero, overflow, and underflow.
+Also clarify how a negative immediate value is used in unsigned division
 
-> A random datapoint is that bpf_xdp_adjust_head() seems 
-> to enforce that there is at least ETH_HLEN.
+Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+---
+ Documentation/bpf/instruction-set.rst | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+index e672d5ec6cc..2ba7c618f33 100644
+--- a/Documentation/bpf/instruction-set.rst
++++ b/Documentation/bpf/instruction-set.rst
+@@ -99,19 +99,26 @@ code      value  description
+ BPF_ADD   0x00   dst += src
+ BPF_SUB   0x10   dst -= src
+ BPF_MUL   0x20   dst \*= src
+-BPF_DIV   0x30   dst /= src
++BPF_DIV   0x30   dst = (src != 0) ? (dst / src) : 0
+ BPF_OR    0x40   dst \|= src
+ BPF_AND   0x50   dst &= src
+ BPF_LSH   0x60   dst <<= src
+ BPF_RSH   0x70   dst >>= src
+ BPF_NEG   0x80   dst = ~src
+-BPF_MOD   0x90   dst %= src
++BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
+ BPF_XOR   0xa0   dst ^= src
+ BPF_MOV   0xb0   dst = src
+ BPF_ARSH  0xc0   sign extending shift right
+ BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+ ========  =====  ==========================================================
+ 
++Underflow and overflow are allowed during arithmetic operations,
++meaning the 64-bit or 32-bit value will wrap.  If
++eBPF program execution would result in division by zero,
++the destination register is instead set to zero.
++If execution would result in modulo by zero,
++the destination register is instead left unchanged.
++
+ ``BPF_ADD | BPF_X | BPF_ALU`` means::
+ 
+   dst_reg = (u32) dst_reg + (u32) src_reg;
+@@ -128,6 +135,10 @@ BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+ 
+   dst_reg = dst_reg ^ imm32
+ 
++Also note that the division and modulo operations are unsigned,
++where 'imm' is first sign extended to 64 bits and then converted
++to an unsigned 64-bit value.  There are no instructions for
++signed division or modulo.
+ 
+ Byte swap instructions
+ ~~~~~~~~~~~~~~~~~~~~~~
+-- 
+2.33.4
+
