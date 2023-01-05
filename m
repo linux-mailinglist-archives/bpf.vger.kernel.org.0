@@ -2,28 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239E965E96D
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 11:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D460865E9EE
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 12:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbjAEK5X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 05:57:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
+        id S232000AbjAELcJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 06:32:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233074AbjAEK5U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 05:57:20 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EE650E7E
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 02:57:16 -0800 (PST)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Nnjwf5ZkXzqTvk;
-        Thu,  5 Jan 2023 18:52:34 +0800 (CST)
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Thu, 5 Jan 2023 18:57:14 +0800
-Subject: Re: [bpf-next v4 2/2] selftests/bpf: add test case for htab map
-To:     <tong@infragraf.org>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231824AbjAELcI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 06:32:08 -0500
+X-Greylist: delayed 7473 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Jan 2023 03:32:02 PST
+Received: from smtpbgeu1.qq.com (smtpbgeu1.qq.com [52.59.177.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFBBBF4
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 03:32:01 -0800 (PST)
+X-QQ-mid: bizesmtp79t1672918085t5afya5g
+Received: from localhost.localdomain ( [1.202.165.115])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 05 Jan 2023 19:28:02 +0800 (CST)
+X-QQ-SSF: 01000000000000405000000A0000000
+X-QQ-FEAT: Xz3VOcA7Mr1SxpTG0bJ8FbR0Rm8Uc3tsZkgoNybaVkTxhsljUtvfsiD0JgFd5
+        c3blEtAs/w1tHIVbe/lw8yyxJ85VOWHVrk6yWU3MUsBUKBECh+RHOx3tsFCMYeh0mNer8+T
+        t/3Ues6oNsV7UfQU+3syaxKO6YRymr7lQyPXttkXOBr+hpB3kMjx1+rCsfQwsNPSn4TAyAq
+        /sQn6ouzIBFBrTjO2iM7z/0XQAUIkrb9w1YaufDxtCNMjrpbXdtXCHq+0tdBtv1ExLxBKiD
+        Trj18y7Cc4YqCGnH0Aa1o3tGM/0QVhr26E7UpIdduuOUh4m1Vq3FFszZX9pYpC400/kq6/V
+        IeNKOhVZTc/frD3g0p4B1/81CcqYbWe9xdrYoMACLW8ceM0/eRqMS9NDVMJPjjllRPOIZk1
+X-QQ-GoodBg: 0
+From:   tong@infragraf.org
+To:     bpf@vger.kernel.org
+Cc:     Tonghao Zhang <tong@infragraf.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -31,25 +38,18 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20230105092637.35069-1-tong@infragraf.org>
- <20230105092637.35069-2-tong@infragraf.org>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <a5c0ae06-774f-daa6-54f9-08054b6250f7@huawei.com>
-Date:   Thu, 5 Jan 2023 18:56:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hou Tao <houtao1@huawei.com>
+Subject: [bpf-next v1] bpf: hash map, suppress lockdep warning
+Date:   Thu,  5 Jan 2023 19:27:49 +0800
+Message-Id: <20230105112749.38421-1-tong@infragraf.org>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-In-Reply-To: <20230105092637.35069-2-tong@infragraf.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_NONE,T_SPF_HELO_TEMPERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,187 +57,158 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Tonghao Zhang <tong@infragraf.org>
 
+The lock may be taken in both NMI and non-NMI contexts.
+There is a lockdep warning (inconsistent lock state), if
+enable lockdep. For performance, this patch doesn't use trylock,
+and disable lockdep temporarily.
 
-On 1/5/2023 5:26 PM, tong@infragraf.org wrote:
-> From: Tonghao Zhang <tong@infragraf.org>
->
-> This testing show how to reproduce deadlock in special case.
-> We update htab map in Task and NMI context. Task can be interrupted by
-> NMI, if the same map bucket was locked, there will be a deadlock.
->
-> * map max_entries is 2.
-> * NMI using key 4 and Task context using key 20.
-> * so same bucket index but map_locked index is different.
->
-> The selftest use perf to produce the NMI and fentry nmi_handle.
-> Note that bpf_overflow_handler checks bpf_prog_active, but in bpf update
-> map syscall increase this counter in bpf_disable_instrumentation.
-> Then fentry nmi_handle and update hash map will reproduce the issue.
->
-> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Hou Tao <houtao1@huawei.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-Acked-by: Hou Tao<houtao1@huawei.com>
-> ---
->  tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
->  tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
->  .../selftests/bpf/prog_tests/htab_deadlock.c  | 75 +++++++++++++++++++
->  .../selftests/bpf/progs/htab_deadlock.c       | 30 ++++++++
->  4 files changed, 107 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
->  create mode 100644 tools/testing/selftests/bpf/progs/htab_deadlock.c
->
-> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> index 99cc33c51eaa..42d98703f209 100644
-> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> @@ -24,6 +24,7 @@ fexit_test                                       # fexit_attach unexpected error
->  get_func_args_test                               # get_func_args_test__attach unexpected error: -524 (errno 524) (trampoline)
->  get_func_ip_test                                 # get_func_ip_test__attach unexpected error: -524 (errno 524) (trampoline)
->  htab_update/reenter_update
-> +htab_deadlock                                    # fentry failed: -524 (trampoline)
->  kfree_skb                                        # attach fentry unexpected error: -524 (trampoline)
->  kfunc_call/subprog                               # extern (var ksym) 'bpf_prog_active': not found in kernel BTF
->  kfunc_call/subprog_lskel                         # skel unexpected error: -2
-> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
-> index 3efe091255bf..ab11f71842a5 100644
-> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
-> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-> @@ -26,6 +26,7 @@ get_func_args_test	                 # trampoline
->  get_func_ip_test                         # get_func_ip_test__attach unexpected error: -524                             (trampoline)
->  get_stack_raw_tp                         # user_stack corrupted user stack                                             (no backchain userspace)
->  htab_update                              # failed to attach: ERROR: strerror_r(-524)=22                                (trampoline)
-> +htab_deadlock                            # fentry failed: -524                                                         (trampoline)
->  jit_probe_mem                            # jit_probe_mem__open_and_load unexpected error: -524                         (kfunc)
->  kfree_skb                                # attach fentry unexpected error: -524                                        (trampoline)
->  kfunc_call                               # 'bpf_prog_active': not found in kernel BTF                                  (?)
-> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-> new file mode 100644
-> index 000000000000..137dce8f1346
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 DiDi Global Inc. */
-> +#define _GNU_SOURCE
-> +#include <pthread.h>
-> +#include <sched.h>
-> +#include <test_progs.h>
-> +
-> +#include "htab_deadlock.skel.h"
-> +
-> +static int perf_event_open(void)
-> +{
-> +	struct perf_event_attr attr = {0};
-> +	int pfd;
-> +
-> +	/* create perf event on CPU 0 */
-> +	attr.size = sizeof(attr);
-> +	attr.type = PERF_TYPE_HARDWARE;
-> +	attr.config = PERF_COUNT_HW_CPU_CYCLES;
-> +	attr.freq = 1;
-> +	attr.sample_freq = 1000;
-> +	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-> +
-> +	return pfd >= 0 ? pfd : -errno;
-> +}
-> +
-> +void test_htab_deadlock(void)
-> +{
-> +	unsigned int val = 0, key = 20;
-> +	struct bpf_link *link = NULL;
-> +	struct htab_deadlock *skel;
-> +	int err, i, pfd;
-> +	cpu_set_t cpus;
-> +
-> +	skel = htab_deadlock__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-> +		return;
-> +
-> +	err = htab_deadlock__attach(skel);
-> +	if (!ASSERT_OK(err, "skel_attach"))
-> +		goto clean_skel;
-> +
-> +	/* NMI events. */
-> +	pfd = perf_event_open();
-> +	if (pfd < 0) {
-> +		if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
-> +			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
-> +			test__skip();
-> +			goto clean_skel;
-> +		}
-> +		if (!ASSERT_GE(pfd, 0, "perf_event_open"))
-> +			goto clean_skel;
-> +	}
-> +
-> +	link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
-> +	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
-> +		goto clean_pfd;
-> +
-> +	/* Pinned on CPU 0 */
-> +	CPU_ZERO(&cpus);
-> +	CPU_SET(0, &cpus);
-> +	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
-> +
-> +	/* update bpf map concurrently on CPU0 in NMI and Task context.
-> +	 * there should be no kernel deadlock.
-> +	 */
-> +	for (i = 0; i < 100000; i++)
-> +		bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
-> +				    &key, &val, BPF_ANY);
-> +
-> +	bpf_link__destroy(link);
-> +clean_pfd:
-> +	close(pfd);
-> +clean_skel:
-> +	htab_deadlock__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> new file mode 100644
-> index 000000000000..dacd003b1ccb
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> @@ -0,0 +1,30 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 DiDi Global Inc. */
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(max_entries, 2);
-> +	__uint(map_flags, BPF_F_ZERO_SEED);
-> +	__type(key, unsigned int);
-> +	__type(value, unsigned int);
-> +} htab SEC(".maps");
-> +
-> +SEC("fentry/perf_event_overflow")
-> +int bpf_nmi_handle(struct pt_regs *regs)
-> +{
-> +	unsigned int val = 0, key = 4;
-> +
-> +	bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
-> +	return 0;
-> +}
-> +
-> +SEC("perf_event")
-> +int bpf_empty(struct pt_regs *regs)
-> +{
-> +	return 0;
-> +}
+[   82.474075] ================================
+[   82.474076] WARNING: inconsistent lock state
+[   82.474090] 6.1.0+ #48 Tainted: G            E
+[   82.474093] --------------------------------
+[   82.474100] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+[   82.474101] kprobe-load/1740 [HC1[1]:SC0[0]:HE0:SE1] takes:
+[   82.474105] ffff88860a5cf7b0 (&htab->lockdep_key){....}-{2:2}, at: htab_lock_bucket+0x61/0x6c
+[   82.474120] {INITIAL USE} state was registered at:
+[   82.474122]   mark_usage+0x1d/0x11d
+[   82.474130]   __lock_acquire+0x3c9/0x6ed
+[   82.474131]   lock_acquire+0x23d/0x29a
+[   82.474135]   _raw_spin_lock_irqsave+0x43/0x7f
+[   82.474148]   htab_lock_bucket+0x61/0x6c
+[   82.474151]   htab_map_update_elem+0x11e/0x220
+[   82.474155]   bpf_map_update_value+0x267/0x28e
+[   82.474160]   map_update_elem+0x13e/0x17d
+[   82.474164]   __sys_bpf+0x2ae/0xb2e
+[   82.474167]   __do_sys_bpf+0xd/0x15
+[   82.474171]   do_syscall_64+0x6d/0x84
+[   82.474174]   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[   82.474178] irq event stamp: 1496498
+[   82.474180] hardirqs last  enabled at (1496497): [<ffffffff817eb9d9>] syscall_enter_from_user_mode+0x63/0x8d
+[   82.474184] hardirqs last disabled at (1496498): [<ffffffff817ea6b6>] exc_nmi+0x87/0x109
+[   82.474187] softirqs last  enabled at (1446698): [<ffffffff81a00347>] __do_softirq+0x347/0x387
+[   82.474191] softirqs last disabled at (1446693): [<ffffffff810b9b06>] __irq_exit_rcu+0x67/0xc6
+[   82.474195]
+[   82.474195] other info that might help us debug this:
+[   82.474196]  Possible unsafe locking scenario:
+[   82.474196]
+[   82.474197]        CPU0
+[   82.474198]        ----
+[   82.474198]   lock(&htab->lockdep_key);
+[   82.474200]   <Interrupt>
+[   82.474200]     lock(&htab->lockdep_key);
+[   82.474201]
+[   82.474201]  *** DEADLOCK ***
+[   82.474201]
+[   82.474202] no locks held by kprobe-load/1740.
+[   82.474203]
+[   82.474203] stack backtrace:
+[   82.474205] CPU: 14 PID: 1740 Comm: kprobe-load Tainted: G            E      6.1.0+ #48
+[   82.474208] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[   82.474213] Call Trace:
+[   82.474218]  <NMI>
+[   82.474224]  dump_stack_lvl+0x57/0x81
+[   82.474228]  lock_acquire+0x1f4/0x29a
+[   82.474233]  ? htab_lock_bucket+0x61/0x6c
+[   82.474237]  ? rcu_read_lock_held_common+0xe/0x38
+[   82.474245]  _raw_spin_lock_irqsave+0x43/0x7f
+[   82.474249]  ? htab_lock_bucket+0x61/0x6c
+[   82.474253]  htab_lock_bucket+0x61/0x6c
+[   82.474257]  htab_map_update_elem+0x11e/0x220
+[   82.474264]  bpf_prog_df326439468c24a9_bpf_prog1+0x41/0x45
+[   82.474276]  bpf_trampoline_6442457183_0+0x43/0x1000
+[   82.474283]  nmi_handle+0x5/0x254
+[   82.474289]  default_do_nmi+0x3d/0xf6
+[   82.474293]  exc_nmi+0xa1/0x109
+[   82.474297]  end_repeat_nmi+0x16/0x67
+[   82.474300] RIP: 0010:cpu_online+0xa/0x12
+[   82.474308] Code: 08 00 00 00 39 c6 0f 43 c6 83 c0 07 83 e0 f8 c3 cc cc cc cc 0f 1f 44 00 00 31 c0 c3 cc cc cc cc 89 ff 48 0f a3 3d 5f 52 75 01 <0f> 92 c0 c3 cc cc cc cc 55 48 89 e5 41 57 49 89 f7 41 56 49 896
+[   82.474310] RSP: 0018:ffffc9000131bd38 EFLAGS: 00000283
+[   82.474313] RAX: ffff88860b85fe78 RBX: 0000000000102cc0 RCX: 0000000000000008
+[   82.474315] RDX: 0000000000000004 RSI: ffff88860b85fe78 RDI: 000000000000000e
+[   82.474316] RBP: 00000000ffffffff R08: 0000000000102cc0 R09: 00000000ffffffff
+[   82.474318] R10: 0000000000000001 R11: 0000000000000000 R12: ffff888100042200
+[   82.474320] R13: 0000000000000004 R14: ffffffff81271dc2 R15: ffff88860b85fe78
+[   82.474322]  ? kvmalloc_node+0x44/0xd2
+[   82.474333]  ? cpu_online+0xa/0x12
+[   82.474338]  ? cpu_online+0xa/0x12
+[   82.474342]  </NMI>
+[   82.474343]  <TASK>
+[   82.474343]  trace_kmalloc+0x7c/0xe6
+[   82.474347]  ? kvmalloc_node+0x44/0xd2
+[   82.474350]  __kmalloc_node+0x9a/0xaf
+[   82.474354]  kvmalloc_node+0x44/0xd2
+[   82.474359]  kvmemdup_bpfptr+0x29/0x66
+[   82.474363]  map_update_elem+0x119/0x17d
+[   82.474370]  __sys_bpf+0x2ae/0xb2e
+[   82.474380]  __do_sys_bpf+0xd/0x15
+[   82.474384]  do_syscall_64+0x6d/0x84
+[   82.474387]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[   82.474391] RIP: 0033:0x7fe75d4f752d
+[   82.474394] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 79 2c 00 f7 d8 64 89 018
+[   82.474396] RSP: 002b:00007ffe95d1cd78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+[   82.474398] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe75d4f752d
+[   82.474400] RDX: 0000000000000078 RSI: 00007ffe95d1cd80 RDI: 0000000000000002
+[   82.474401] RBP: 00007ffe95d1ce30 R08: 0000000000000000 R09: 0000000000000004
+[   82.474403] R10: 00007ffe95d1cd80 R11: 0000000000000246 R12: 00000000004007f0
+[   82.474405] R13: 00007ffe95d1cf10 R14: 0000000000000000 R15: 0000000000000000
+[   82.474412]  </TASK>
+
+Signed-off-by: Tonghao Zhang <tong@infragraf.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Hou Tao <houtao1@huawei.com>
+---
+previous discussion: https://lore.kernel.org/all/20221121100521.56601-2-xiangxia.m.yue@gmail.com/
+---
+ kernel/bpf/hashtab.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 974f104f47a0..146433c9bd1a 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -161,6 +161,19 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
+ 		return -EBUSY;
+ 	}
+ 
++	/*
++	 * The lock may be taken in both NMI and non-NMI contexts.
++	 * There is a lockdep warning (inconsistent lock state), if
++	 * enable lockdep. The potential deadlock happens when the
++	 * lock is contended from the same cpu. map_locked rejects
++	 * concurrent access to the same bucket from the same CPU.
++	 * When the lock is contended from a remote cpu, we would
++	 * like the remote cpu to spin and wait, instead of giving
++	 * up immediately. As this gives better throughput. So replacing
++	 * the current raw_spin_lock_irqsave() with trylock sacrifices
++	 * this performance gain. lockdep_off temporarily.
++	 */
++	lockdep_off();
+ 	raw_spin_lock_irqsave(&b->raw_lock, flags);
+ 	*pflags = flags;
+ 
+@@ -172,7 +185,10 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+ 				      unsigned long flags)
+ {
+ 	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
++
+ 	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
++	lockdep_on();
++
+ 	__this_cpu_dec(*(htab->map_locked[hash]));
+ 	preempt_enable();
+ }
+-- 
+2.27.0
 
