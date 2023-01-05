@@ -2,125 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAEF65F13F
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 17:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBCB65F18F
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 17:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbjAEQcl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 11:32:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34910 "EHLO
+        id S234601AbjAEQ5m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 11:57:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231889AbjAEQcj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 11:32:39 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB1A5D423
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 08:32:38 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id d10so24831579pgm.13
-        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 08:32:38 -0800 (PST)
+        with ESMTP id S230477AbjAEQ5l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 11:57:41 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F560392FA
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 08:57:40 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id 124so25775620pfy.0
+        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 08:57:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ow2r2TZdrVhfIknj/l1EkyeUhZdKgzWR4bhV6QJcLZM=;
-        b=RNH1RNWDmugvTkQ9quJjXS8UMMS4yhPMAQRQBWh3M0TIU/APglmLfVUWsL6REJwkEL
-         8VxHIJJyQj/1Z1Zj51W5g73OX32SIU7+asrHG3rH35LdvX8vrRqmLhLiUruXrjetDkR4
-         oWcMAf0U9mkfV6dDO7KvUB3TIUjrf2F7t0auzUkhirxlw0IB96yuxPdQnn10rAl3WMvd
-         HhO74sTBTqlviH5WSwP1OEXhRYepVovwhLcX7t2zmC0GyVV8BHVRUs5D4lZgFRTV4C3P
-         qeh9PI85Wi54dxuWvekAuXW37w5VkIKVQ2e6kY9YfnPIsgUb3Kz+2MxmXGuX/d88dLsS
-         lPXQ==
+        d=broadcom.com; s=google;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qklyOCxfCUcZboToekn30enOfFtg7jdWSCtxv11/91E=;
+        b=AiwVgqhYbXcvon+g4I18+p2ZxDc2xlVSSlD6YWWeB8L5uI3QVj8A/TzN8w+l51zT2m
+         EqZS6q5EpeAJTVCTTyBmVtRmGOZJZ0xKKb4dc3tTanc2ycrk5BpH/4hq0KLOw+si6JBV
+         H28ZGrCzLw6ZyA4tolPJTHU3EFl5B8L7l0VxY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ow2r2TZdrVhfIknj/l1EkyeUhZdKgzWR4bhV6QJcLZM=;
-        b=A1lYUfHbcPeZ98AmUTi8GVFFf5Dmtbnin4K9a5N8PEsvJgVc0JF26b9JFrE073YYsZ
-         fOhdCtd2phBgnzjxlKs5AJ2xwr33xtiqcOpFH8IPqdR8zdF5jhV/zrSLKKEG0mT1l/Bi
-         /UzW4rs5qgELLEAdPw0q1RWKNDpqTTbjeB0JcLn6vfBiCDiOdT/cTyfhQ+hf1XC7cMme
-         I9Vwh1u+kHl0XDyzRgmTUDp17raUtzC22dup52EPT5Lz27zMGQrnmTjjeoIrXhlGK91v
-         6jqyKNnm14/ARsT6ssQrrDKJzmY3UdFqhO7kMFtil/rLmy1cCv+wSXsFHYMFk+jPi9Gp
-         hx0w==
-X-Gm-Message-State: AFqh2kp12tZn/yb4lW03rTjoCzyL60f5x1Cd68H6OXo5TkjPVZt8P+xH
-        VJnY7Nk7L48OOOQNnTAOQLxHnHxY4UC89A==
-X-Google-Smtp-Source: AMrXdXtNvg7212lkqlfpekfb99VROoN4KnstcQvEkXn+PPPfGkjVc6UW8ejjLUsgNiINCVmesT628w==
-X-Received: by 2002:a62:14cb:0:b0:583:3a9c:1df8 with SMTP id 194-20020a6214cb000000b005833a9c1df8mr1059898pfu.23.1672936357872;
-        Thu, 05 Jan 2023 08:32:37 -0800 (PST)
-Received: from mariner-vm.. (c-71-197-160-159.hsd1.wa.comcast.net. [71.197.160.159])
-        by smtp.gmail.com with ESMTPSA id k26-20020aa79d1a000000b0058130f1eca1sm19224375pfp.182.2023.01.05.08.32.36
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qklyOCxfCUcZboToekn30enOfFtg7jdWSCtxv11/91E=;
+        b=5PUTIeLCd/DBdtK2tfNjM0H4viFO4EPq69oSfBA+k0rbw6Q1m6UhwGQJv95nQb125e
+         sNInAW91W16O+8jw3VaKRlDSrY/U50bBIdIBiVz67ZLkyIvYOu8CypfEA41DJ+ySPKpA
+         EGwO6CL+UK9AmDYthGMq5YpFE2Nku3KU03CKmZ49/uEOz+nk4kHKlwDgHyoDJrSzoyaI
+         kuhrWIGK4xP9rbNfG6QTkPpd86mjv1Zgxwp6JXzb8wDinOVYks5FFxd39fTrFQVd8tkb
+         Yxwgl8Ox0zIPAz5BI83cs6oV9CYqbylXPkYuKEA7ngeaOD15EQZ868jvqztddprILtcD
+         hw2A==
+X-Gm-Message-State: AFqh2kquh3xBJ+RhJxraMeCLyId7uH0YZ/Ls/aTHTyUifTB9s+RvsuXp
+        nY7Hj7xldd0bdcXhLv1zqXLTQw==
+X-Google-Smtp-Source: AMrXdXuMNeGVN/9ui5XXdTjmRUvXi3k8EKEyY5mCV5EvSQWxjAogVicLZMkHTQUitTf98cfkChSJ6A==
+X-Received: by 2002:a05:6a00:1906:b0:580:9d4a:4e1c with SMTP id y6-20020a056a00190600b005809d4a4e1cmr56998227pfi.3.1672937859663;
+        Thu, 05 Jan 2023 08:57:39 -0800 (PST)
+Received: from C02YVCJELVCG.dhcp.broadcom.net ([192.19.144.250])
+        by smtp.gmail.com with ESMTPSA id z13-20020aa7948d000000b005765df21e68sm14519513pfk.94.2023.01.05.08.57.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jan 2023 08:32:37 -0800 (PST)
-From:   dthaler1968@googlemail.com
-To:     bpf@vger.kernel.org
-Cc:     Dave Thaler <dthaler@microsoft.com>
-Subject: [PATCH] bpf, docs: Fix modulo zero, division by zero, overflow, and underflow
-Date:   Thu,  5 Jan 2023 16:32:23 +0000
-Message-Id: <20230105163223.3472-1-dthaler1968@googlemail.com>
-X-Mailer: git-send-email 2.33.4
+        Thu, 05 Jan 2023 08:57:39 -0800 (PST)
+From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
+X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
+Date:   Thu, 5 Jan 2023 11:57:32 -0500
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Tariq Toukan <ttoukan.linux@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, lorenzo.bianconi@redhat.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>, gal@nvidia.com,
+        Saeed Mahameed <saeedm@nvidia.com>, tariqt@nvidia.com
+Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
+ support xdp multibuffer
+Message-ID: <Y7cBfE7GpX04EI97@C02YVCJELVCG.dhcp.broadcom.net>
+References: <20220621175402.35327-1-gospo@broadcom.com>
+ <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com>
+ <87k0234pd6.fsf@toke.dk>
+ <20230103172153.58f231ba@kernel.org>
+ <Y7U8aAhdE3TuhtxH@lore-desk>
+ <87bkne32ly.fsf@toke.dk>
+ <a12de9d9-c022-3b57-0a15-e22cdae210fa@gmail.com>
+ <871qo90yxr.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <871qo90yxr.fsf@toke.dk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Dave Thaler <dthaler@microsoft.com>
+On Thu, Jan 05, 2023 at 04:43:28PM +0100, Toke Høiland-Jørgensen wrote:
+> Tariq Toukan <ttoukan.linux@gmail.com> writes:
+> 
+> > On 04/01/2023 14:28, Toke Høiland-Jørgensen wrote:
+> >> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> >> 
+> >>>> On Tue, 03 Jan 2023 16:19:49 +0100 Toke Høiland-Jørgensen wrote:
+> >>>>> Hmm, good question! I don't think we've ever explicitly documented any
+> >>>>> assumptions one way or the other. My own mental model has certainly
+> >>>>> always assumed the first frag would continue to be the same size as in
+> >>>>> non-multi-buf packets.
+> >>>>
+> >>>> Interesting! :) My mental model was closer to GRO by frags
+> >>>> so the linear part would have no data, just headers.
+> >>>
+> >>> That is assumption as well.
+> >> 
+> >> Right, okay, so how many headers? Only Ethernet, or all the way up to
+> >> L4 (TCP/UDP)?
+> >> 
+> >> I do seem to recall a discussion around the header/data split for TCP
+> >> specifically, but I think I mentally put that down as "something people
+> >> may way to do at some point in the future", which is why it hasn't made
+> >> it into my own mental model (yet?) :)
+> >> 
+> >> -Toke
+> >> 
+> >
+> > I don't think that all the different GRO layers assume having their 
+> > headers/data in the linear part. IMO they will just perform better if 
+> > these parts are already there. Otherwise, the GRO flow manages, and 
+> > pulls the needed amount into the linear part.
+> > As examples, see calls to gro_pull_from_frag0 in net/core/gro.c, and the 
+> > call to pskb_may_pull() from skb_gro_header_slow().
+> >
+> > This resembles the bpf_xdp_load_bytes() API used here in the xdp prog.
+> 
+> Right, but that is kernel code; what we end up doing with the API here
+> affects how many programs need to make significant changes to work with
+> multibuf, and how many can just set the frags flag and continue working.
+> Which also has a performance impact, see below.
+> 
+> > The context of my questions is that I'm looking for the right memory 
+> > scheme for adding xdp-mb support to mlx5e striding RQ.
+> > In striding RQ, the RX buffer consists of "strides" of a fixed size set 
+> > by pthe driver. An incoming packet is written to the buffer starting from 
+> > the beginning of the next available stride, consuming as much strides as 
+> > needed.
+> >
+> > Due to the need for headroom and tailroom, there's no easy way of 
+> > building the xdp_buf in place (around the packet), so it should go to a 
+> > side buffer.
+> >
+> > By using 0-length linear part in a side buffer, I can address two 
+> > challenging issues: (1) save the in-driver headers memcpy (copy might 
+> > still exist in the xdp program though), and (2) conform to the 
+> > "fragments of the same size" requirement/assumption in xdp-mb. 
+> > Otherwise, if we pull from frag[0] into the linear part, frag[0] becomes 
+> > smaller than the next fragments.
+> 
+> Right, I see.
+> 
+> So my main concern would be that if we "allow" this, the only way to
+> write an interoperable XDP program will be to use bpf_xdp_load_bytes()
+> for every packet access. Which will be slower than DPA, so we may end up
+> inadvertently slowing down all of the XDP ecosystem, because no one is
+> going to bother with writing two versions of their programs. Whereas if
+> you can rely on packet headers always being in the linear part, you can
+> write a lot of the "look at headers and make a decision" type programs
+> using just DPA, and they'll work for multibuf as well.
 
-Fix modulo zero, division by zero, overflow, and underflow.
-Also clarify how a negative immediate value is used in unsigned division
+The question I would have is what is really the 'slow down' for
+bpf_xdp_load_bytes() vs DPA?  I know you and Jesper can tell me how many
+instructions each use. :)
 
-Signed-off-by: Dave Thaler <dthaler@microsoft.com>
----
- Documentation/bpf/instruction-set.rst | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+Taking a step back...years ago Dave mentioned wanting to make XDP
+programs easy to write and it feels like using these accessor APIs would
+help accomplish that.  If the kernel examples use bpf_xdp_load_bytes()
+accessors everywhere then that would accomplish that.
 
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index e672d5ec6cc..2ba7c618f33 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -99,19 +99,26 @@ code      value  description
- BPF_ADD   0x00   dst += src
- BPF_SUB   0x10   dst -= src
- BPF_MUL   0x20   dst \*= src
--BPF_DIV   0x30   dst /= src
-+BPF_DIV   0x30   dst = (src != 0) ? (dst / src) : 0
- BPF_OR    0x40   dst \|= src
- BPF_AND   0x50   dst &= src
- BPF_LSH   0x60   dst <<= src
- BPF_RSH   0x70   dst >>= src
- BPF_NEG   0x80   dst = ~src
--BPF_MOD   0x90   dst %= src
-+BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
- BPF_XOR   0xa0   dst ^= src
- BPF_MOV   0xb0   dst = src
- BPF_ARSH  0xc0   sign extending shift right
- BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
- ========  =====  ==========================================================
- 
-+Underflow and overflow are allowed during arithmetic operations,
-+meaning the 64-bit or 32-bit value will wrap.  If
-+eBPF program execution would result in division by zero,
-+the destination register is instead set to zero.
-+If execution would result in modulo by zero,
-+the destination register is instead left unchanged.
-+
- ``BPF_ADD | BPF_X | BPF_ALU`` means::
- 
-   dst_reg = (u32) dst_reg + (u32) src_reg;
-@@ -128,6 +135,10 @@ BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
- 
-   dst_reg = dst_reg ^ imm32
- 
-+Also note that the division and modulo operations are unsigned,
-+where 'imm' is first sign extended to 64 bits and then converted
-+to an unsigned 64-bit value.  There are no instructions for
-+signed division or modulo.
- 
- Byte swap instructions
- ~~~~~~~~~~~~~~~~~~~~~~
--- 
-2.33.4
-
+> But maybe I'm mistaken and people are just going to use the load_bytes
+> helper anyway because they want to go deeper than whatever "headers" bit
+> we'll end up guaranteeing is in the linear part?
