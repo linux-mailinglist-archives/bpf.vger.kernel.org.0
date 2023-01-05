@@ -2,85 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9865C65E7EE
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 10:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A61365E82B
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 10:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbjAEJgn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 04:36:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43768 "EHLO
+        id S231435AbjAEJrz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 04:47:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjAEJgn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 04:36:43 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7677150F66;
-        Thu,  5 Jan 2023 01:36:42 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 12CA861948;
-        Thu,  5 Jan 2023 09:36:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0252BC433EF;
-        Thu,  5 Jan 2023 09:36:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672911401;
-        bh=m5deoU/iNE9s4Vf89FWDMooWeaxz9CcPD3sBSp186Jc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=XAIF+O/OJ8hBrx0XzmPtDLuBUKq1L7we5ffh4nU0DiEwdYjDuZac51Wso30jJIXI7
-         7UdB+1Up/st73efB6kDy9jSKt8fsIjDDVW1luXjxGQ3tXjnpAZYc4ZwwQqwIW05Q4M
-         HhyiOXwyM4MouTVuSouy27QZk/drd+8Mt+sLauqQJLv5veN4qc2oGN/T/hG/UPoesC
-         qc4lK6AhHapx5A6VflLx01e6ATIAF1fvVZDoRGsHyPZv4lse8uVPpDZsPQPzfIgfaQ
-         qkr/QlxpgTMERkK/4vkOLDFNz0Gs03AYb1ySIb5XUJFd0DpUe7gUpK6NFfw+JSZaoB
-         idO9R04j1Pugw==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     tong@infragraf.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.or, loongarch@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Cc:     Tonghao Zhang <tong@infragraf.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-Subject: Re: [bpf-next v2] bpf: drop deprecated bpf_jit_enable == 2
-In-Reply-To: <20230105030614.26842-1-tong@infragraf.org>
-References: <20230105030614.26842-1-tong@infragraf.org>
-Date:   Thu, 05 Jan 2023 10:36:38 +0100
-Message-ID: <87zgaxqq55.fsf@all.your.base.are.belong.to.us>
+        with ESMTP id S231977AbjAEJro (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 04:47:44 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173554C737
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 01:47:44 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id fc4so88741057ejc.12
+        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 01:47:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZxGh8mMHMz91AO8quvCFee1+JAN7YWNxuZJ3K904sfY=;
+        b=nggz5Jpv3NxEyf5xrOmVL9AaIL4VfmUNEDHTDSdlV2SUYNQgmLeNCKNaX42HEa2lMa
+         N7r0o4EygiADefBA8RMh6POviAUX8CA4pEKeH7qy/arZvBswdz0a+uZJgCNo/Ie+cjKK
+         E3gsDBborpukPLsxx7Ll9+rVPjWo+TeAROo8lxwb5jINPnh+oOFMJYUsj5Vdw1yv5urd
+         Do96v3JTD4kGG8iDilp+S93Yn/bz64bRBJ9dQfCq/zkOk7orRDrMNoGfFAFpGwpctJ6M
+         yfa8c0BbSjVA8vvtN/n+bVItyL7phcdVU0oqNcIVf0Ipm60y3A7w+pXoGOaGIqv6J342
+         w9/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZxGh8mMHMz91AO8quvCFee1+JAN7YWNxuZJ3K904sfY=;
+        b=YfwTh4e5EQ85vEC+rF6bSUc1OyzB09COfrVS+nWxNkxbvBnE0hu9RoqDLiaUwl8Kf4
+         teaTV3Sv7MNgrRKR/fJnZqPM5RFHf6D2ANo9O8ReGX0UtyUUg24uzTxgVMp1aYSIYCuG
+         9xGzsJBwTN8jOtrxOVAFQ6YdfmIiu+Aa9fJX1DzJ5+z2tGniUb3X1QmzCBupJCdiaGtX
+         CkrbbKw/6aZerqtxWLm3rkZHYV/nmhvB1xVS00TvYXETIjjHDexuZiRwIZJ90uEVn7GJ
+         Muc6rtf4FlWNU5cgSG4e33rZmjXSrzJ4XEdFBH0ZU2LPwjciwYUkYBg2WRszXftrISIL
+         HCDg==
+X-Gm-Message-State: AFqh2kpem2WCZstYLyj0DW7scadAqJlupt2ocx99D+kpZyeSio4yzwbP
+        FT8Ih2Jj3COCZ5xMUZG6A1U=
+X-Google-Smtp-Source: AMrXdXutQ6t2w9GafOmVV6YhfzXAsuF7EEPvko3utfj/d1cd+bIxwbyzmjfswLoGUgFrE1FLvCBMPA==
+X-Received: by 2002:a17:906:5e04:b0:7c0:e803:4ebb with SMTP id n4-20020a1709065e0400b007c0e8034ebbmr42381564eju.70.1672912062432;
+        Thu, 05 Jan 2023 01:47:42 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id la26-20020a170907781a00b0084767d40f0dsm16029996ejc.115.2023.01.05.01.47.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Jan 2023 01:47:41 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 5 Jan 2023 10:47:40 +0100
+To:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Victor Laforet <victor.laforet@ip-paris.fr>, bpf@vger.kernel.org
+Subject: Re: bpf_probe_read_user EFAULT
+Message-ID: <Y7acvJqbBJt4V21+@krava>
+References: <346230382.476954.1672152966557.JavaMail.zimbra@ip-paris.fr>
+ <Y6sWqgncfvtRHp+b@krava>
+ <505155146.488099.1672236042622.JavaMail.zimbra@ip-paris.fr>
+ <42d3f4d8-fa8b-5774-0f6b-b12162c24736@meta.com>
+ <5692f180-5b78-48e0-b974-b60bd58c0839@Spark>
+ <Y7PhWlqdG/TjwT75@krava>
+ <1105578275.675049.1672845867568.JavaMail.zimbra@ip-paris.fr>
+ <Y7Xyp6sQaAqi8qzw@krava>
+ <Y7X3qEOXeimw1JmF@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y7X3qEOXeimw1JmF@krava>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tong@infragraf.org writes:
+On Wed, Jan 04, 2023 at 11:08:23PM +0100, Jiri Olsa wrote:
+> On Wed, Jan 04, 2023 at 10:42:02PM +0100, Jiri Olsa wrote:
+> > On Wed, Jan 04, 2023 at 04:24:27PM +0100, Victor Laforet wrote:
+> > > Ok thanks. As I understand, tp_btf/+ probes (specifically tp_btf/sched_switch that I need) cannot be sleepable? It is then not possible to read user space memory from the bpf code?
+> > 
+> > yes, only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable
 
-> diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-> index 737baf8715da..ff168c50d46a 100644
-> --- a/arch/riscv/net/bpf_jit_core.c
-> +++ b/arch/riscv/net/bpf_jit_core.c
-> @@ -151,9 +151,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog =
-*prog)
->  	}
->  	bpf_jit_build_epilogue(ctx);
->=20=20
-> -	if (bpf_jit_enable > 1)
-> -		bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
-> -
->  	prog->bpf_func =3D (void *)ctx->insns;
->  	prog->jited =3D 1;
->  	prog->jited_len =3D prog_size;
+we actually allow to create tp_btf program with BPF_F_SLEEPABLE flag,
+because it's TRACING prog type, but still bpf program can't sleep when
+executed in tracepoint context..  so I wonder we should not allow to
+load it, Alexei?
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> # RISC-V
+jirka
+
+
+---
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 98a8051ce316..390621d79fbb 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16755,10 +16755,14 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (prog->aux->sleepable && prog->type != BPF_PROG_TYPE_TRACING &&
+-	    prog->type != BPF_PROG_TYPE_LSM && prog->type != BPF_PROG_TYPE_KPROBE) {
+-		verbose(env, "Only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable\n");
+-		return -EINVAL;
++	if (prog->aux->sleepable) {
++		if ((prog->type == BPF_PROG_TYPE_TRACING &&
++		     prog->expected_attach_type == BPF_TRACE_RAW_TP) ||
++		    (prog->type != BPF_PROG_TYPE_TRACING &&
++		     prog->type != BPF_PROG_TYPE_LSM && prog->type != BPF_PROG_TYPE_KPROBE)) {
++			verbose(env, "Only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable\n");
++			return -EINVAL;
++		}
+ 	}
+ 
+ 	if (prog->type == BPF_PROG_TYPE_STRUCT_OPS)
