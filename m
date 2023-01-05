@@ -2,244 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B075C65E118
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 00:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B85665E147
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 01:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjADXro (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Jan 2023 18:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46638 "EHLO
+        id S231224AbjAEAJd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Jan 2023 19:09:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjADXrn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Jan 2023 18:47:43 -0500
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD1242E2E
-        for <bpf@vger.kernel.org>; Wed,  4 Jan 2023 15:47:42 -0800 (PST)
-Received: by mail-qt1-f174.google.com with SMTP id h21so28695806qta.12
-        for <bpf@vger.kernel.org>; Wed, 04 Jan 2023 15:47:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p/mUped/7UKLiTLR3ava1AZiuLbINwedV1mSqN1ol3g=;
-        b=n2ufHyPQzJcx4YyCm6rbrkSgmU7GVlR5v96GecGtYDJIuM4zDszMDZky1HqEZKWci0
-         UKuDf7De4BFju4iL9oe49ewesehkvpTuEEK1C/86Hl6zeazWG3sQl21b/L7tyq2iXtKC
-         96BjNEPSBclWyj57y920Xzq7W3yRMVQHSgBZGFvz6VyQalwfp8hqgmv+yVXl2kfkkvdT
-         UMgYoK/G6IWcjL16hWFvL9Ta2VtEpudme0YRvle5oY9IrpLFgGVvg7I5R3fgP+Wuv/Ak
-         Ir4KlGIe0x6CYEBCa6PBdFdORbJlBlXr4/eccn3rhdrFuIjzRieMBzYiHEDG2KZuPUih
-         bWMg==
-X-Gm-Message-State: AFqh2koQapG3D9kycp3iJhaM3G0tpZvfMb1EXdZx4taX1+ND2Woxyn3x
-        aU2Z7YF9xWMaycHXySuhxjg=
-X-Google-Smtp-Source: AMrXdXv8EWKCN3acsNYx6yHqChkL9nqxEUqG3xHV5D5aheYQFqFmRvPWXL5PvpoE9PxrhYb0xaqvNw==
-X-Received: by 2002:ac8:60cc:0:b0:3a8:12be:4136 with SMTP id i12-20020ac860cc000000b003a812be4136mr71495173qtm.8.1672876060924;
-        Wed, 04 Jan 2023 15:47:40 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:7c6c])
-        by smtp.gmail.com with ESMTPSA id u22-20020a05620a455600b006fb112f512csm24860083qkp.74.2023.01.04.15.47.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jan 2023 15:47:40 -0800 (PST)
-Date:   Wed, 4 Jan 2023 17:47:40 -0600
-From:   David Vernet <void@manifault.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@meta.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>
-Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
- convenience helpers
-Message-ID: <Y7YQHC4FgYuLWmab@maniforge.lan>
-References: <CAADnVQKgTCwzLHRXRzTDGAkVOv4fTKX_r9v=OavUc1JOWtqOew@mail.gmail.com>
- <CAEf4BzZM0+j6DXMgu2o2UvjtzoOxcjsJtT8j-jqVZYvAqxc52g@mail.gmail.com>
- <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local>
- <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
- <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
- <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local>
- <CAEf4Bzbvg2bXOj8LPwkRQ0jfTR4y5XQn=ajK_ApVf5W-F=wG2Q@mail.gmail.com>
- <20230104194438.4lfigy2c5m4xx6hh@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4Bzag8K=7+TY-LPEiBJ7ocRi-U+SiDioAQvPDto+j0U5YaQ@mail.gmail.com>
+        with ESMTP id S229832AbjAEAJc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:09:32 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB2C42E37;
+        Wed,  4 Jan 2023 16:09:30 -0800 (PST)
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pDDp0-0005nv-Tf; Thu, 05 Jan 2023 01:09:26 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2023-01-04
+Date:   Thu,  5 Jan 2023 01:09:26 +0100
+Message-Id: <20230105000926.31350-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzag8K=7+TY-LPEiBJ7ocRi-U+SiDioAQvPDto+j0U5YaQ@mail.gmail.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26771/Wed Jan  4 09:47:43 2023)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 01:55:32PM -0800, Andrii Nakryiko wrote:
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-[...]
+The following pull-request contains BPF updates for your *net-next* tree.
 
-> > > Yes, we won't change existing helpers, but we can add new ones if we
-> > > need to extend them. That's how APIs work. Yes, they need careful
-> > > considerations when designing and implementing new APIs. Yes, mistakes
-> > > do happen, that's just fact of life and par for the course of software
-> > > development. Yes, we have to live with those mistakes. Nothing changed
-> > > about that.
-> > >
-> > > But somehow libraries and kernel still produce stable APIs and
-> > > maintain them because they clearly provide benefits to end users.
-> >
-> > Did you 'live with mistakes done in libbpf 0.x' ? No.
-> 
-> for a long time yes. And it's not apples to apples comparison, with
-> library it is possible to deprecate APIs, which is what we did. With
-> lots of work and gradual transition, but did it.
+We've added 45 non-merge commits during the last 21 day(s) which contain
+a total of 50 files changed, 1454 insertions(+), 375 deletions(-).
 
-User space <-> kernel is not an apples to apples comparison with kernel
-<-> BPF programs either. Also, you're using the word "possible" here
-like it's a foregone conclusion. It is "possible" to deprecate BPF APIs
-as well, if we start using kfuncs going forward instead of adding to the
-UAPI boundary.
+The main changes are:
 
-> If we couldn't pull this through, yeah, I would live with whatever
-> APIs are there. And added new ones as a better replacement. As is
-> always done for APIs, nothing new here.
+1) Fixes, improvements and refactoring of parts of BPF verifier's state equivalence
+   checks, from Andrii Nakryiko.
 
-The point is that you had a choice.
+2) Fix a few corner cases in libbpf's BTF-to-C converter in particular around padding
+   handling and enums, also from Andrii Nakryiko.
 
-> Within 0.x and 1.x APIs are stable and we live with them. This API
-> stability fear doesn't paralyze libbpf development, we still add new
-> stable APIs, if they are considered useful and thought through enough.
+3) Add BPF_F_NO_TUNNEL_KEY extension to bpf_skb_set_tunnel_key to better support decap
+   on GRE tunnel devices not operating in collect metadata, from Christian Ehrig.
 
-Nobody is claiming that we can't have stable APIs. We're arguing in
-favor of being able to _choose_ which APIs to deprecate. Using your
-logic, you wouldn't have been able to deprecate _anything_ for fear of
-some user, somewhere being affected by it. I understand the sentiment,
-and I agree that it's very important to have conservative and
-predictable approaches to deprecation. What I don't think is important
-is to provide _indefinite_ guarantees for _all_ APIs between two
-different kernel contexts.
+4) Improve x86 JIT's codegen for PROBE_MEM runtime error checks, from Dave Marchevsky.
 
-And to reiterate, as I've said a few times now but nobody seems to be
-responding to (unless I missed something), this is for kernel <-> kernel
-programs. We're not even talking about APIs that are available to user
-space. Let's at least be clear about the boundaries for which we're
-debating the merits of stability, because while some user space tooling
-would certainly affected by choosing to freeze BPF helpers, kfuncs and
-BPF helpers are ever invoked by _kernel_ programs.
+5) Remove the need for trace_printk_lock for bpf_trace_printk and bpf_trace_vprintk
+   helpers, from Jiri Olsa.
 
-> > You've introduced libbpf 1.0 with incompatible api and some users suffereed.
-> 
-> By "suffered" you mean a few systemd folks being grumpy about this?
-> And having to do 100 lines of code changes ([0]) to support two
-> incompatible major versions of libbpf *simultaneously*?
-> 
-> On the other hand we got a library with saner error propagation
-> behavior and various API normalizations and additions. Not too bad of
-> a trade off.
+6) Add proper documentation for BPF_MAP_TYPE_SOCK{MAP,HASH} maps, from Maryam Tahhan.
 
-This sounds like an argument in favor of why it is acceptable to
-deprecate some things? Why are some users allowed to feel "pain" (a term
-you've used in other threads), but other users who are affected by your
-choices are just "grumpy"? Also, what about the myriad hypothetical
-users you've never heard of (the ones who we're really protecting with
-UAPI) who had to deal with breaking API stability changes?
+7) Improvements in libbpf's btf_parse_elf error handling, from Changbin Du.
 
-> Sure, deprecation is not easy or free, there was a lot of prep work,
-> and some users had to adjust their code to use new APIs. But this is
-> quite a tangent.
+8) Bigger batch of improvements to BPF tracing code samples, from Daniel T. Lee.
 
-I don't see how this is tangential to the discussion -- it seems very
-relevant. From my perspective, the core of the discussion has been
-whether it's acceptable to shift _any_ of the burden of API stability to
-users. My point, and I believe Alexei's point as well, is that the
-answer is "it depends and it's a tradeoff", as you've essentially said
-here.
+9) Add LoongArch support to libbpf's bpf_tracing helper header, from Hengqi Chen.
 
-What I'm failing to understand is why your argument that there are
-tradeoffs applies here, but not for kernel <-> BPF kernel programs? I'm
-genuinely trying to understand what the distinction is, because from
-where I'm sitting it feels like we're being selective about when the
-unknown _threat_ of API instability automatically completely overrides
-our ability to choose our own deprecation and stability story (a
-stability story which is informed by our perception of an API's
-importance, usage, etc).
+10) Fix a libbpf compiler warning in perf_event_open_probe on arm32, from Khem Raj.
 
-Note that my point here applies to something you've raised on other
-threads as well, such as on [0] where you (reasonably) reiterated this
-point:
+11) Optimize bpf_local_storage_elem by removing 56 bytes of padding, from Martin KaFai Lau.
 
-[0]: https://lore.kernel.org/all/CAEf4BzY0aJNGT321Y7Fx01sjHAMT_ynu2-kN_8gB_UELvd7+vw@mail.gmail.com/
+12) Use pkg-config to locate libelf for resolve_btfids build, from Shen Jiamin.
 
-> But again. Let me repeat my point *again*. BPF helpers and kfuncs are
-> not mutually exclusive, both can and should exist and evolve. That's
-> one of the main points which is somehow eluding this conversation.
+13) Various libbpf improvements around API documentation and errno handling, from Xin Liu.
 
-This is one of the big disconnects for me. If you argue that both BPF
-helpers and kfuncs can and should continue to coexist indefinitely, it
-feels like you're arguing for two incompatible points (and please
-correct me anywhere that I'm unintentionally misrepresenting your
-perspective here):
+Please consider pulling these changes from:
 
-- On the one hand you're arguing that in some cases, _no_ API
-  instability is acceptable. That in general, the main kernel <-> kernel
-  BPF program API boundary is equivalent to UAPI, and that it's _never_
-  acceptable for us to ever, _ever_ deprecate certain APIs because
-  _some_ users may be using them, and the possibilty of APIs ever
-  changing or being deprecated will impose an unacceptable pain to users
-  which will make it too difficult to build tooling and, and end up
-  discouraging adoption onto BPF. It seems that you've been making
-  making this argument in favor of what you consider to be "core" BPF
-  helpers such as bpf_dynptr_is_null(), etc.
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
 
-- At the same time, on the other hand, you're arguing that _some_ of the
-  API boundary between kernel <-> BPF program can be unstable. That it's
-  acceptable for _some_ users and _some_ tooling to feel the pain of
-  certain APIs changing. To perhaps extrapolate your point a bit
-  further, you're arguing that niche / non-core kfuncs can be unstable,
-  and that we don't have to worry about the unknown, hypothetical user
-  who would feel pain from having to deal with them being deprecated,
-  because they're not "core".
+Thanks a lot!
 
-Assuming that's all true, my question is:
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
 
-Why not just give ourselves the _option_ of being able to deem those
-core helpers as being indefinitely stable for the foreseeable future,
-and keep the unstable kfuncs to have the same stability guarantees as
-what they have today? In terms of _stability_ specifically (so ignoring
-other concerns you've raised, such as that we need BTF and BPF
-trampoline support for kfuncs -- not because they're irrelevant, but
-just to keep the discussion focused on stability), what do we gain by
-keeping the "core" / "stable" functions as BPF helpers, instead of just
-making them "super stable" kfuncs? At least then we have the option in
-the far-far-far future to deprecate them if they eventually, way later,
-become 100% obsolete. Plus you get the other benefits that Alexei
-mentioned such as potentially being able to backport them to older
-kernels by including them in modules, etc.
+Andrii Nakryiko, Bagas Sanjaya, David Vernet, Eduard Zingerman, Hao Sun, 
+Huacai Chen, Jakub Sitnicki, Jiri Olsa, John Fastabend, Per Sundström 
+XP, Quentin Monnet, Stanislav Fomichev, Yonghong Song
 
-Note that I'm not saying with 100% conviction that we don't have _any_
-work to do before freezing helpers (though IMO we should just rip the
-bandaid and do it now), but I am arguing with strong conviction that
-once any of that precursor work is taken care of, there is no reason to
-use BPF helpers in place of kfuncs. At least, that's how I see it at
-this point.
+----------------------------------------------------------------
 
->   [0] https://github.com/systemd/systemd/pull/24511/
-> 
-> >
-> > > We'll get the same amount of flame when we try to change kfunc that's
-> > > widely adopted.
-> >
-> > Of course. That's why we need to define a stability and deperecation
-> > plan for them.
-> 
-> Lots of things that need to be defined and figured out, but we are
-> already quick to freeze BPF helpers.
+The following changes since commit 7e68dd7d07a28faa2e6574dd6b9dbd90cdeaae91:
 
-I agree with you that it would be prudent for us to iron some of this
-out more concretely. In this discussion it seems like one of the key
-points of contention has been around stability, and that the lack of a
-concrete policy for kfuncs has largely (but not completely) been the
-cause for concern. Perhaps it would help clarify things if someone
-submitted a patch set that included a more formal kfunc stability
-proposal?
+  Merge tag 'net-next-6.2' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next (2022-12-13 15:47:48 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
+
+for you to fetch changes up to acd3b7768048fe338248cdf43ccfbf8c084a6bc1:
+
+  libbpf: Return -ENODATA for missing btf section (2023-01-03 14:27:42 -0800)
+
+----------------------------------------------------------------
+bpf-next-for-netdev
+
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      libbpf: Restore errno after pr_warn.
+
+Andrii Nakryiko (16):
+      libbpf: Fix single-line struct definition output in btf_dump
+      libbpf: Handle non-standardly sized enums better in BTF-to-C dumper
+      selftests/bpf: Add non-standardly sized enum tests for btf_dump
+      libbpf: Fix btf__align_of() by taking into account field offsets
+      libbpf: Fix BTF-to-C converter's padding logic
+      selftests/bpf: Add few corner cases to test padding handling of btf_dump
+      libbpf: Fix btf_dump's packed struct determination
+      Merge branch 'bpftool: improve error handing for missing .BTF section'
+      libbpf: start v1.2 development cycle
+      bpf: teach refsafe() to take into account ID remapping
+      bpf: reorganize struct bpf_reg_state fields
+      bpf: generalize MAYBE_NULL vs non-MAYBE_NULL rule
+      bpf: reject non-exact register type matches in regsafe()
+      bpf: perform byte-by-byte comparison only when necessary in regsafe()
+      bpf: fix regs_exact() logic in regsafe() to remap IDs correctly
+      Merge branch 'samples/bpf: enhance syscall tracing program'
+
+Changbin Du (3):
+      libbpf: Show error info about missing ".BTF" section
+      bpf: makefiles: Do not generate empty vmlinux.h
+      libbpf: Return -ENODATA for missing btf section
+
+Christian Ehrig (2):
+      bpf: Add flag BPF_F_NO_TUNNEL_KEY to bpf_skb_set_tunnel_key()
+      selftests/bpf: Add BPF_F_NO_TUNNEL_KEY test
+
+Daniel Borkmann (1):
+      selftests/bpf: Add jit probe_mem corner case tests to s390x denylist
+
+Daniel T. Lee (9):
+      samples/bpf: remove unused function with test_lru_dist
+      samples/bpf: replace meaningless counter with tracex4
+      samples/bpf: fix uninitialized warning with test_current_task_under_cgroup
+      samples/bpf: Use kyscall instead of kprobe in syscall tracing program
+      samples/bpf: Use vmlinux.h instead of implicit headers in syscall tracing program
+      samples/bpf: Change _kern suffix to .bpf with syscall tracing program
+      samples/bpf: Fix tracex2 by using BPF_KSYSCALL macro
+      samples/bpf: Use BPF_KSYSCALL macro in syscall tracing programs
+      libbpf: Fix invalid return address register in s390
+
+Dave Marchevsky (3):
+      bpf, x86: Improve PROBE_MEM runtime load check
+      selftests/bpf: Add verifier test exercising jit PROBE_MEM logic
+      bpf: rename list_head -> graph_root in field info types
+
+Hengqi Chen (1):
+      libbpf: Add LoongArch support to bpf_tracing.h
+
+Jiri Olsa (3):
+      bpf: Add struct for bin_args arg in bpf_bprintf_prepare
+      bpf: Do cleanup in bpf_bprintf_cleanup only when needed
+      bpf: Remove trace_printk_lock
+
+Khem Raj (1):
+      libbpf: Fix build warning on ref_ctr_off for 32-bit architectures
+
+Martin KaFai Lau (2):
+      Merge branch 'samples/bpf: fix LLVM compilation warning'
+      bpf: Reduce smap->elem_size
+
+Maryam Tahhan (1):
+      docs: BPF_MAP_TYPE_SOCK[MAP|HASH]
+
+Ricardo Ribalda (1):
+      bpf: Remove unused field initialization in bpf's ctl_table
+
+Shen Jiamin (1):
+      tools/resolve_btfids: Use pkg-config to locate libelf
+
+Xin Liu (3):
+      libbpf: Optimized return value in libbpf_strerror when errno is libbpf errno
+      libbpf: fix errno is overwritten after being closed.
+      libbpf: Added the description of some API functions
+
+ Documentation/bpf/map_sockmap.rst                  | 498 +++++++++++++++++++++
+ arch/x86/net/bpf_jit_comp.c                        |  70 +--
+ include/linux/bpf.h                                |  16 +-
+ include/linux/bpf_verifier.h                       |  40 +-
+ include/uapi/linux/bpf.h                           |   4 +
+ kernel/bpf/bpf_local_storage.c                     |   4 +-
+ kernel/bpf/btf.c                                   |  21 +-
+ kernel/bpf/helpers.c                               |  71 +--
+ kernel/bpf/syscall.c                               |   1 -
+ kernel/bpf/verifier.c                              | 153 ++++---
+ kernel/trace/bpf_trace.c                           |  56 ++-
+ net/core/filter.c                                  |   5 +-
+ samples/bpf/Makefile                               |  10 +-
+ samples/bpf/gnu/stubs.h                            |   1 +
+ .../{map_perf_test_kern.c => map_perf_test.bpf.c}  |  48 +-
+ samples/bpf/map_perf_test_user.c                   |   2 +-
+ ...kern.c => test_current_task_under_cgroup.bpf.c} |  11 +-
+ samples/bpf/test_current_task_under_cgroup_user.c  |   8 +-
+ samples/bpf/test_lru_dist.c                        |   5 -
+ samples/bpf/test_map_in_map_kern.c                 |   1 -
+ ...ite_user_kern.c => test_probe_write_user.bpf.c} |  20 +-
+ samples/bpf/test_probe_write_user_user.c           |   2 +-
+ samples/bpf/trace_common.h                         |  13 -
+ .../{trace_output_kern.c => trace_output.bpf.c}    |   6 +-
+ samples/bpf/trace_output_user.c                    |   2 +-
+ samples/bpf/{tracex2_kern.c => tracex2.bpf.c}      |  13 +-
+ samples/bpf/tracex2_user.c                         |   2 +-
+ samples/bpf/tracex4_user.c                         |   4 +-
+ tools/bpf/bpftool/Makefile                         |   3 +
+ tools/bpf/resolve_btfids/Makefile                  |   8 +-
+ tools/include/uapi/linux/bpf.h                     |   4 +
+ tools/lib/bpf/bpf_tracing.h                        |  25 +-
+ tools/lib/bpf/btf.c                                |  16 +-
+ tools/lib/bpf/btf_dump.c                           | 199 +++++---
+ tools/lib/bpf/libbpf.c                             |   2 +-
+ tools/lib/bpf/libbpf.h                             |  29 +-
+ tools/lib/bpf/libbpf.map                           |   3 +
+ tools/lib/bpf/libbpf_errno.c                       |  16 +-
+ tools/lib/bpf/libbpf_internal.h                    |   1 +
+ tools/lib/bpf/libbpf_version.h                     |   2 +-
+ tools/testing/selftests/bpf/DENYLIST.s390x         |   1 +
+ tools/testing/selftests/bpf/Makefile               |   3 +
+ .../selftests/bpf/prog_tests/jit_probe_mem.c       |  28 ++
+ .../bpf/progs/btf_dump_test_case_bitfields.c       |   2 +-
+ .../bpf/progs/btf_dump_test_case_packing.c         |  80 +++-
+ .../bpf/progs/btf_dump_test_case_padding.c         | 162 ++++++-
+ .../bpf/progs/btf_dump_test_case_syntax.c          |  36 ++
+ tools/testing/selftests/bpf/progs/jit_probe_mem.c  |  61 +++
+ .../testing/selftests/bpf/progs/test_tunnel_kern.c |  21 +
+ tools/testing/selftests/bpf/test_tunnel.sh         |  40 +-
+ 50 files changed, 1454 insertions(+), 375 deletions(-)
+ create mode 100644 Documentation/bpf/map_sockmap.rst
+ create mode 100644 samples/bpf/gnu/stubs.h
+ rename samples/bpf/{map_perf_test_kern.c => map_perf_test.bpf.c} (85%)
+ rename samples/bpf/{test_current_task_under_cgroup_kern.c => test_current_task_under_cgroup.bpf.c} (84%)
+ rename samples/bpf/{test_probe_write_user_kern.c => test_probe_write_user.bpf.c} (71%)
+ delete mode 100644 samples/bpf/trace_common.h
+ rename samples/bpf/{trace_output_kern.c => trace_output.bpf.c} (82%)
+ rename samples/bpf/{tracex2_kern.c => tracex2.bpf.c} (89%)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/jit_probe_mem.c
+ create mode 100644 tools/testing/selftests/bpf/progs/jit_probe_mem.c
