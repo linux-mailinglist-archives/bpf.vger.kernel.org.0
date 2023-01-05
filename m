@@ -2,71 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F40565F31D
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 18:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B7965F29F
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 18:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjAERsh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 12:48:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
+        id S235359AbjAER1d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 12:27:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235469AbjAERX2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 12:23:28 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC50269521
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 09:17:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 64743B819C1
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 17:17:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D57BC433F1
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 17:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672939036;
-        bh=CRoT2a99GRhh3fpktEOzQz4vLaferYuk4IPytTP0pOk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=i0ocL4roCTLvA2W3rvOSHk4p0uoUnx2ih7/vd3kV0RcDPAxuF6OqJ87cffsMwsM14
-         a/bXI98SWWNSbceQAb3LDHTNzjS6QFm8Aq/bD1TbzDtzTpgr/hfWp5f/oJDFKzvoh7
-         y8SRYBf1IP85RffFVfwGpBuzxl9tILyTlmK4hKles7X6FNkviqrjAngEOVWv0PS6Bx
-         K+4tYMJJbbkkTQX6JFhgBl/S0Yk2IDwQT7ArqbfoNK8nlBa2OjRM6FuG3A1QUe5nxX
-         DbpZu6En+ajjdgP4MKhN1te70qVgzN3RqIGHVUdvPrVL7BCB18YpkNrNO79qWdkRcI
-         otp1anqtsSa3g==
-Received: by mail-ed1-f52.google.com with SMTP id i15so53762523edf.2
-        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 09:17:16 -0800 (PST)
-X-Gm-Message-State: AFqh2kpF+YH/f77MTeQSyZZWGV6SCpWwiWCchUCw6HYVSG5rQ4LyLcBi
-        Ixf+W6hEHZ8JaRnGwcpqsMbOfd/9sGe3BSLTZd7nmA==
-X-Google-Smtp-Source: AMrXdXuj1F1wYCjPM4ZygLyIdwpvtP5vo3DBTW71CZq8y+Em1VQVHhqwW50vIZktvQineqX7pyw4oJvBplNIfsa+ZF4=
-X-Received: by 2002:a05:6402:2710:b0:481:6616:bff3 with SMTP id
- y16-20020a056402271000b004816616bff3mr4049672edd.162.1672939034378; Thu, 05
- Jan 2023 09:17:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
- <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local> <Y68wP/MQHOhUy2EY@maniforge.lan>
- <20221230193112.h23ziwoqqb747zn7@macbook-pro-6.dhcp.thefacebook.com>
- <Y69RZeEvP2dXO7to@maniforge.lan> <20221231004213.h5fx3loccbs5hyzu@macbook-pro-6.dhcp.thefacebook.com>
- <f69b7d7a-cdac-a478-931a-f534b34924e9@iogearbox.net> <20230103235107.k5dobpvrui5ux3ar@macbook-pro-6.dhcp.thefacebook.com>
- <43406cdf-19c1-b80e-0f10-39a1afbf4b8b@iogearbox.net> <20230104193735.ji4fa5imvjvnhrqf@macbook-pro-6.dhcp.thefacebook.com>
- <5cde0738-67d3-ca70-d025-cbd1769b0900@linux.dev>
-In-Reply-To: <5cde0738-67d3-ca70-d025-cbd1769b0900@linux.dev>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Thu, 5 Jan 2023 18:17:03 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ4WEZ8J5-3L=e3TV0qGi=Xx9bEiDEYsOnOio4gnz5D_0A@mail.gmail.com>
-Message-ID: <CACYkzJ4WEZ8J5-3L=e3TV0qGi=Xx9bEiDEYsOnOio4gnz5D_0A@mail.gmail.com>
-Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
- convenience helpers
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        David Vernet <void@manifault.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        bpf <bpf@vger.kernel.org>, kernel-team@meta.com,
-        Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        with ESMTP id S235411AbjAER1B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 12:27:01 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03CD59F9F
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 09:23:00 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id az7so12411852wrb.5
+        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 09:23:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XcfKvBPEIZCBpfejnS73x0WwQlLjDoYOq2loLUX6TbU=;
+        b=KwTi/H999k5fva2x4E5wBta5Rx9fvc3JiOCJaif8gKrNStViCRTQIJjqOJ+RkI+kjG
+         bM32qjnNVWALAET3QCG4YDk0O705dgkfl2PfMRQSiKS3cX4asOWiKDNABJ51/Nrp41gg
+         fVGpKaGTnNqm8/+uSoIDeG9rZQpdb8V5uGEBQIBWoxCTWSg+0HNSjXEoy9eXdJgQJ6vC
+         qVPjg/atlKyDzrkoDWHxsykXvOfgYXqolFnE5HF9jwpodI04uIu8Vn6LMa9H71Xeypmf
+         WcIcTR4hfxQ17/9nJ2Xf+ANDx++GsspwhdR256Vf/Fgq9oyh6/wGQuOXh3ZHtAswozK2
+         kajg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XcfKvBPEIZCBpfejnS73x0WwQlLjDoYOq2loLUX6TbU=;
+        b=hEHFi4QkNICgcqHxd8NI6zSDpImRsuPGb7VESLHmmr/7iB0CVZBscdXe8YLGeb480X
+         3omi6bG3GpS+ZLWg9H75UqhIUE9ubwO9ZJcASOgt1IvriISdtSFFo1pG+4ExsCiWRdzW
+         y2UeBoUHhV6Bbtij/kSegd40W8c2dDxwD74ToO7GbuKHmrQbiq8Dmuojcfn2LDyKqzgx
+         fKOqItKTS+ZuTtlbUO6xeuPkZZk+uYJcAwl5ZuOdIlGLOCn2EmCx7f69AEzDNxQDp2KZ
+         XV1pkhWc0ygEQhzlxDHRAf47EJBJspPsLKrDhpI3hsKvkJiPAL3LxPf+m6RydcU6r9zl
+         noBw==
+X-Gm-Message-State: AFqh2ko1lgKeVl5saSHwbEsz6BCKuT3R1xG++3x4Ee1vPOfxSgeDaawv
+        u9NNvmOPd33I7iIYhTWtPptg5A==
+X-Google-Smtp-Source: AMrXdXsVuG3jlXxidmoUuxedWXclZfrZDMaXokX92TAiPz2xuCOg2zd6+8EV0DNZLOtS/hNregUGCw==
+X-Received: by 2002:adf:9dd1:0:b0:242:f3f:28df with SMTP id q17-20020adf9dd1000000b002420f3f28dfmr32911549wre.58.1672939379261;
+        Thu, 05 Jan 2023 09:22:59 -0800 (PST)
+Received: from linaro.org ([2a00:23c5:6809:2201:dca6:3efa:4e3:1e42])
+        by smtp.gmail.com with ESMTPSA id s13-20020adfdb0d000000b002420dba6447sm37871273wri.59.2023.01.05.09.22.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Jan 2023 09:22:58 -0800 (PST)
+From:   Mike Leach <mike.leach@linaro.org>
+To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, acme@kernel.org, irogers@google.com
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, Mike Leach <mike.leach@linaro.org>
+Subject: [PATCH] perf build: Fix build error when NO_LIBBPF=1
+Date:   Thu,  5 Jan 2023 17:22:43 +0000
+Message-Id: <20230105172243.7238-1-mike.leach@linaro.org>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,122 +66,83 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 5, 2023 at 1:14 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 1/4/23 11:37 AM, Alexei Starovoitov wrote:
-> > Would you invest in developing application against unstable syscall API? Absolutely.
-> > People develop all tons of stuff on top of fuse-fs. People develop apps that interact
-> > with tracing bpf progs that are clearly unstable. They do suffer when kernel side
-> > changes and people accept that cost. BPF and tracing in general contributed to that mind change.
-> > In a datacenter quite a few user apps are tied to kernel internals.
-> >
-> >> Imho, it's one of BPF's strengths and
-> >> we should keep the door open, not close it.
-> > The strength of BPF was and still is that it has both stable and unstable interfaces.
-> > Roughly: networking is stable, tracing is unstable.
-> > The point is that to be stable one doesn't need to use helpers.
-> > We can make kfuncs stable too if we focus all our efforts this way and
-> > for that we need to abandon adding helpers though it's a pain short term.
-> >
-> >>>> to actual BPF helpers by then where we go and say, that kfunc has proven itself in production
-> >>>> and from an API PoV that it is ready to be a proper BPF helper, and until this point
-> >>> "Proper BPF helper" model is broken.
-> >>> static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
-> >>>
-> >>> is a hack that works only when compiler optimizes the code.
-> >>> See gcc's attr(kernel_helper) workaround.
-> >>> This 'proper helper' hack is the reason we cannot compile bpf programs with -O0.
-> >>> And because it's uapi we cannot even fix this
-> >>> With kfuncs we will be able to compile with -O0 and debug bpf programs with better tools.
-> >>> These tools don't exist yet, but we have a way forward whereas with helpers
-> >>> we are stuck with -O2.
-> >> Better debugging tools are needed either way, independent of -O0 or -O2. I don't
-> >> think -O0 is a requirement or barrier for that. It may open up possibilities for
-> >> new tools, but production is still running with -O2. Proper BPF helper model is
-> >> broken, but everyone relies on it, and will be for a very very long time to come,
-> >> whether we like it or not. There is a larger ecosystem around BPF devs outside of
-> >> kernel, and developers will use the existing means today. There are recommendations /
-> >> guidelines that we can provide but we also don't have control over what developers
-> >> are doing. Yet we should make their life easier, not harder.
-> > Fully fleshed out kfunc infra will make developers job easier. No one is advocating
-> > to make users suffer.
->
-> It is a long discussion. I am replying on a thread with points that I have also
-> been thinking about kfunc and helper.
->
-> I think bpf helper is a kernel function but helpers need to be defined in a more
-> tedious form. It requires to define bpf_func_proto and then wrap into
-> BPF_CALL_x. It was not obvious for me to get around to understand the reason
-> behind it. With kfunc, it is a more natural way for other kernel developers to
-> expose subsystem features to bpf prog. In time, I believe we will be able to
-> make kfunc has a similar experience as EXPORT_SYMBOL_*.
->
-> Thus, for subsystem (hid, fuse, netdev...etc) exposing functions to bpf prog, I
-> think it makes sense to stay with kfunc from now on. The subsystem is not
-> exposing something like syscall as an uapi. bpf prog is part of the kernel in
-> the sense that it extends that subsystem code. I don't think bpf needs to
-> provide extra and more guarantee than the EXPORT_SYMBOL_* in term of api. That
-> said, we should still review kfunc in a way that ensuring it is competent to the
-> best of our knowledge at that point with the limited initial use cases at hand.
-> I won't be surprised some of the existing EXPORT_SYMBOL_* kernel functions will
-> be exposed to the bpf prog as kfunc as-is without any change in the future. For
-> example, a few tcp cc kfuncs such as tcp_slow_start. They are likely stable
-> without much change for a long time. It can be directly exposed as bpf kfunc.
-> kfunc is a way to expose subsystem function without needing the bpf_func_proto
-> and BPF_CALL_x quirks. When the function can be dual compiled later, the kfunc
-> can also be inlined.
->
-> If kfunc will be used for subsystem, it is very likely the number of kfunc will
-> grow and exceed the bpf helpers soon.  This seems to be a stronger need to work
-> on the user experience problems about kfunc that have mentioned in this thread
-> sooner than later. They have to be solved regardless. May be start with stable
-> kfunc first. If the new helper is guaranteed stable, then why it cannot be kfunc
-> but instead needs to go through the bpf_func_proto and BPF_CALL_x?  In time, I
-> hope the bpf helper support in the verifier can be quieted down (eg.
-> check_helper_call vs check_kfunc_call) and focus energy into kfunc like inlining
-> kfunc...etc.
+Recent updates to perf build result in the following output when cross
+compiling to aarch64, with libelf unavailable, and therefore
+NO_LIBBPF=1 set.
 
+```
+  $make -C tools/perf
 
-Sorry, I am late to this discussion. The way I read this is that
-kfuncs and helpers are implementation details and the real question is
-about the stability and mutability of the helper methods.
+  <cut>
 
-I think there are two kinds of BPF program developers, and I might be
-oversimplifying to convey a point here:
+  Makefile.config:428: No libelf found. Disables 'probe' tool, jvmti
+  and BPF support in 'perf record'. Please install libelf-dev,
+  libelf-devel or elfutils-libelf-devel
 
-[1] Tracing people: They craft tracing programs and are more
-accustomed to probing deeper into kernel internals, handling variable
-renames and consequently will tolerate a kfunc changing its signature,
-being renamed or disappearing.
+  <cut>
 
-[2] Network people: They are not accustomed to mutability the same way
-as the tracing people. If there is mutability here, these users will
-face a change in developer experience.
+  libbpf.c:46:10: fatal error: libelf.h: No such file or directory
+      46 | #include <libelf.h>
+         |          ^~~~~~~~~~
+  compilation terminated.
 
-I see two paths forward here:
+  ./tools/build/Makefile.build:96: recipe for target
+  '.tools/perf/libbpf/staticobjs/libbpf.o' failed
 
-[a] We want to somewhat preserve the developer experience of [2] and
-we find a way to do somewhat stable APIs. kfuncs have the benefit that
-they are eventually mutable, but a longer stability guarantee for
-helpers used by [2] could ameliorate the pains of mutability. e.g.
-something we could do for certain helpers is a deprecation story, e.g.
-a kfunc won't change for X kernel versions, or when we annotate kfuncs
-as deprecated, libbpf can warn users "this kfunc is going away in
-kernel version Z").
+```
 
-If this would be difficult to guarantee and we do care about developer
-experience, we might need to have some helpers exposed as UAPI.
+plus one other include error for <gelf.h>
 
-[b] We accept the fact the user experience will change more for [2]
-and that's a trade-off we accept. IMHO, this is not ideal and while
-tracing folks have found a way to cope, it would be yet another thing
-to worry about for folks who are not used to it.
+The issue is that the commit noted below adds libbpf to the prepare:
+target but no longer accounts for the NO_LIBBPF define. Additionally
+changing the include directories means that even if the libbpf target
+build is prevented, bpf headers are missing in other parts of the build.
 
-There are things we can do to make it slightly less burdensome for the
-user by adding a shim in BPF headers (however, it won't solve problems
-for everyone though e.g. inline BPF, other languages but will give
-them a template for their respective "shims").
+This patch ensures that in the case of NO_LIBBPF=1, the build target is
+changed to a header only target, and the headers are installed, without
+attempting to build the libbpf.a target.
 
-Another thing to consider if there are use-cases where some users
-disable BTF (for whatever reason, like running BPF in a pacemaker :P
-or in extremely low memory cases).
+Applies to perf/core
+
+Fixes: 746bd29e348f ("perf build: Use tools/lib headers from install path")
+Signed-off-by: Mike Leach <mike.leach@linaro.org>
+---
+ tools/perf/Makefile.perf | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 13e7d26e77f0..ee08ecf469f6 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -305,7 +305,11 @@ else
+ endif
+ LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
+ LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
++ifndef NO_LIBBPF
+ LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
++else
++LIBBPF = $(LIBBPF_INCLUDE)/bpf/bpf.h
++endif
+ CFLAGS += -I$(LIBBPF_OUTPUT)/include
+ 
+ ifneq ($(OUTPUT),)
+@@ -826,10 +830,16 @@ $(LIBAPI)-clean:
+ 	$(call QUIET_CLEAN, libapi)
+ 	$(Q)$(RM) -r -- $(LIBAPI_OUTPUT)
+ 
++ifndef NO_LIBBPF
+ $(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
+ 	$(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=$(FEATURE_DUMP_EXPORT) \
+ 		O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
+ 		$@ install_headers
++else
++$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
++	$(Q)$(MAKE) -C $(LIBBPF_DIR) OUTPUT=$(LIBBPF_OUTPUT)/ \
++		DESTDIR=$(LIBBPF_DESTDIR) prefix= install_headers
++endif
+ 
+ $(LIBBPF)-clean:
+ 	$(call QUIET_CLEAN, libbpf)
+-- 
+2.17.1
+
