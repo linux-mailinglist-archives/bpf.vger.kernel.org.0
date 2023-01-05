@@ -2,74 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 849E465F57A
-	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 22:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DE965F5D3
+	for <lists+bpf@lfdr.de>; Thu,  5 Jan 2023 22:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbjAEVEG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 16:04:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
+        id S235856AbjAEVb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 16:31:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbjAEVEE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 16:04:04 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A36360CFC
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 13:04:03 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id fc4so92787247ejc.12
-        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 13:04:03 -0800 (PST)
+        with ESMTP id S236000AbjAEVbT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 16:31:19 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36E8671BC;
+        Thu,  5 Jan 2023 13:31:16 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id x22so92966227ejs.11;
+        Thu, 05 Jan 2023 13:31:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KnLN5bJklK26mKCAKIJayeUn7YGkJc/gqcU6xHvOyBU=;
-        b=RxtEPk3zOpjBWxxTB6idpRERGRVuHC65+JxlFHMPxUGhyZHpnGdHFX1AAgr6Q8FQvn
-         Us2hsewcf4cAcyFoSbsOYu0kOEa3crAOlLoyaJkkQ5YTp2T6RnsS4hLuqgYczr8iQSC6
-         GEZIusTw6tBHhbksfzdWZbMOKW24Jgj8Rgvx60D4aGjkXg0kDhA5MMgtslaHXX89+rk5
-         2qQFpm49sxhT2MFeJYbpg7YcolJ1coU8I39deBlWjugRdAv15gKU9LxNaM7J8drISrfg
-         RYu3nASpMt4RRm9Drdsu8601UK9g/V1fLfNsgPKxENiqrCkPI6Rrga3i4YvCNKiGgld0
-         BBSg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B+QbiATlPmFrXKy6nPSw6HbywpLiFa74L0gMt+w3HXo=;
+        b=qj5/VhmYMrx458qhW1RtbNfzF0pB8bER0AZvKuyMddO0TpwpwBvdL+Vfwjn3QpYy0m
+         kMKAgUIU5H69cZuJsR0Vu49tuI4u0O9K5b8/BP7qnniAyJh/zDyxsEAZiycNAkkAcyM4
+         IsLFhHauY6y127jhEykj04Eyx4ngJ10p1DOGx/aCUSz+Ky8KRhNbKjJ3gPGe0nFB1U4l
+         clBUPbVzfS6+dqMd3NrdxXpQbaMkuFUjYaFX99bb0G4VcQr7giqoXp3Wp0wq6MzNzHtc
+         TxsPE8x+OD8/d9CknHeaGY2nJCKl3XVh5+/FRCuIVEwZ0xj240JL9dblYgXT0jqaLWfU
+         fSsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KnLN5bJklK26mKCAKIJayeUn7YGkJc/gqcU6xHvOyBU=;
-        b=zmuWLX5NLWv0JIx3Uc69YBG+pquKHN3HyUQn+4ZIyjwX3d/U0z/usDlpmA4ZoCUcIr
-         emxRx6nB8SHeXaXRiYtVGsGNl2LQZ0vZ5yF5l8PkSy6Lk8rwAQN2R+w2cHCfvSsEPisg
-         FsjDEoERrx4kv6RitChKgdReMwtAEw9dkbQk5+XMHJiQmJkD3GO3Ubnyi1oF+TXzX7RM
-         aTFrRqSGTwb4D3IJp1EyDHmg73CYqakEAYgIpdHE8VqJDyqdK7erTHPYdsC/AVjU6pCs
-         79/ssQjUGuPM26Lj+yq4xDW6PbbwZeWtxFRicRYB2hJ7FoboT9HiYIHUi4EjnGqK8ift
-         Q7xA==
-X-Gm-Message-State: AFqh2kqWllpDsK18dhM/MzSSFNnqAlw2TLs+mX9PNxaw3OFXYpfglSM3
-        74qDf78x2jpdd3uLcZE3UC2z58FOY0pBlnVJeZc=
-X-Google-Smtp-Source: AMrXdXsa6ocnVn2rWD+Q4QLDNiMCedPOrXeflUPHqMk0rAoAFab0hQpLxQ71P+Ahg4ZQfP0txn/U9FgNSsNFgzDAdhA=
-X-Received: by 2002:a17:906:a014:b0:7c1:8450:f964 with SMTP id
- p20-20020a170906a01400b007c18450f964mr5014496ejy.176.1672952641848; Thu, 05
- Jan 2023 13:04:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
- <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local> <Y68wP/MQHOhUy2EY@maniforge.lan>
- <20221230193112.h23ziwoqqb747zn7@macbook-pro-6.dhcp.thefacebook.com>
- <Y69RZeEvP2dXO7to@maniforge.lan> <20221231004213.h5fx3loccbs5hyzu@macbook-pro-6.dhcp.thefacebook.com>
- <f69b7d7a-cdac-a478-931a-f534b34924e9@iogearbox.net> <20230103235107.k5dobpvrui5ux3ar@macbook-pro-6.dhcp.thefacebook.com>
- <43406cdf-19c1-b80e-0f10-39a1afbf4b8b@iogearbox.net> <20230104193735.ji4fa5imvjvnhrqf@macbook-pro-6.dhcp.thefacebook.com>
- <5cde0738-67d3-ca70-d025-cbd1769b0900@linux.dev> <CACYkzJ4WEZ8J5-3L=e3TV0qGi=Xx9bEiDEYsOnOio4gnz5D_0A@mail.gmail.com>
-In-Reply-To: <CACYkzJ4WEZ8J5-3L=e3TV0qGi=Xx9bEiDEYsOnOio4gnz5D_0A@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 5 Jan 2023 13:03:49 -0800
-Message-ID: <CAEf4Bza=HHoDPgeNTWzVhKtpAK=qTF--VHZxLnRc3uJGEdzVoQ@mail.gmail.com>
-Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
- convenience helpers
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B+QbiATlPmFrXKy6nPSw6HbywpLiFa74L0gMt+w3HXo=;
+        b=R9ki2ue50att5qkHJlKWJUqLzZcymcXIQPS3Sddy9aKMHTbm0P2+B6ZeQkkVTcLRsF
+         Vu4zr6uVR9xNn1409KIzrLMUqOApgIzkcSsKoyPPs1Btr3tuDiyP/orRFsSUTe6b6HYO
+         Mno1Fd5z9hZUn0cczGcXzwwK/pB4y9qrpmmZaDkwPP1JlR19D9v9Ze+PiTC3i9sIbikk
+         wPLLqekJk3/m4x+Zyy6ANJ7lltzmt5Fb469CZt0IR77pXAkRAwKvcvBKDlyGpAIKCBQj
+         GYwRoU2pM2iHtRyQU7vwblUEcvVlZP5Nw9mxJuKNP7c+x7PAHYNpS2R0eUghjE3Gh77N
+         gBgw==
+X-Gm-Message-State: AFqh2kpb5QAezeD3vjTrHlxbhX5Gj6fUgI9YvSMSXL3Vmz9O06ueMnQq
+        oz23IHOR1lCjSbaxHilpzh4=
+X-Google-Smtp-Source: AMrXdXvmYnINBuJQtPtPn2mLwtnU7N1wi8jwfdQij6aIk7h717hh+mc372S1TYy8rTIjNfVAJrntuw==
+X-Received: by 2002:a17:907:3ea1:b0:7c1:7f84:10ac with SMTP id hs33-20020a1709073ea100b007c17f8410acmr76492493ejc.33.1672954275287;
+        Thu, 05 Jan 2023 13:31:15 -0800 (PST)
+Received: from krava ([83.240.63.194])
+        by smtp.gmail.com with ESMTPSA id o21-20020a170906769500b007b935641971sm16698031ejm.5.2023.01.05.13.31.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Jan 2023 13:31:14 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 5 Jan 2023 22:31:12 +0100
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        David Vernet <void@manifault.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        bpf <bpf@vger.kernel.org>, kernel-team@meta.com,
-        Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        linux-modules@vger.kernel.org
+Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
+Message-ID: <Y7dBoII5kZnHGFdL@krava>
+References: <20221230112729.351-1-thunder.leizhen@huawei.com>
+ <20221230112729.351-3-thunder.leizhen@huawei.com>
+ <Y7WoZARt37xGpjXD@alley>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y7WoZARt37xGpjXD@alley>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -80,137 +91,206 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 5, 2023 at 9:17 AM KP Singh <kpsingh@kernel.org> wrote:
->
-> On Thu, Jan 5, 2023 at 1:14 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> >
-> > On 1/4/23 11:37 AM, Alexei Starovoitov wrote:
-> > > Would you invest in developing application against unstable syscall API? Absolutely.
-> > > People develop all tons of stuff on top of fuse-fs. People develop apps that interact
-> > > with tracing bpf progs that are clearly unstable. They do suffer when kernel side
-> > > changes and people accept that cost. BPF and tracing in general contributed to that mind change.
-> > > In a datacenter quite a few user apps are tied to kernel internals.
-> > >
-> > >> Imho, it's one of BPF's strengths and
-> > >> we should keep the door open, not close it.
-> > > The strength of BPF was and still is that it has both stable and unstable interfaces.
-> > > Roughly: networking is stable, tracing is unstable.
-> > > The point is that to be stable one doesn't need to use helpers.
-> > > We can make kfuncs stable too if we focus all our efforts this way and
-> > > for that we need to abandon adding helpers though it's a pain short term.
-> > >
-> > >>>> to actual BPF helpers by then where we go and say, that kfunc has proven itself in production
-> > >>>> and from an API PoV that it is ready to be a proper BPF helper, and until this point
-> > >>> "Proper BPF helper" model is broken.
-> > >>> static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
-> > >>>
-> > >>> is a hack that works only when compiler optimizes the code.
-> > >>> See gcc's attr(kernel_helper) workaround.
-> > >>> This 'proper helper' hack is the reason we cannot compile bpf programs with -O0.
-> > >>> And because it's uapi we cannot even fix this
-> > >>> With kfuncs we will be able to compile with -O0 and debug bpf programs with better tools.
-> > >>> These tools don't exist yet, but we have a way forward whereas with helpers
-> > >>> we are stuck with -O2.
-> > >> Better debugging tools are needed either way, independent of -O0 or -O2. I don't
-> > >> think -O0 is a requirement or barrier for that. It may open up possibilities for
-> > >> new tools, but production is still running with -O2. Proper BPF helper model is
-> > >> broken, but everyone relies on it, and will be for a very very long time to come,
-> > >> whether we like it or not. There is a larger ecosystem around BPF devs outside of
-> > >> kernel, and developers will use the existing means today. There are recommendations /
-> > >> guidelines that we can provide but we also don't have control over what developers
-> > >> are doing. Yet we should make their life easier, not harder.
-> > > Fully fleshed out kfunc infra will make developers job easier. No one is advocating
-> > > to make users suffer.
-> >
-> > It is a long discussion. I am replying on a thread with points that I have also
-> > been thinking about kfunc and helper.
-> >
-> > I think bpf helper is a kernel function but helpers need to be defined in a more
-> > tedious form. It requires to define bpf_func_proto and then wrap into
-> > BPF_CALL_x. It was not obvious for me to get around to understand the reason
-> > behind it. With kfunc, it is a more natural way for other kernel developers to
-> > expose subsystem features to bpf prog. In time, I believe we will be able to
-> > make kfunc has a similar experience as EXPORT_SYMBOL_*.
-> >
-> > Thus, for subsystem (hid, fuse, netdev...etc) exposing functions to bpf prog, I
-> > think it makes sense to stay with kfunc from now on. The subsystem is not
-> > exposing something like syscall as an uapi. bpf prog is part of the kernel in
-> > the sense that it extends that subsystem code. I don't think bpf needs to
-> > provide extra and more guarantee than the EXPORT_SYMBOL_* in term of api. That
-> > said, we should still review kfunc in a way that ensuring it is competent to the
-> > best of our knowledge at that point with the limited initial use cases at hand.
-> > I won't be surprised some of the existing EXPORT_SYMBOL_* kernel functions will
-> > be exposed to the bpf prog as kfunc as-is without any change in the future. For
-> > example, a few tcp cc kfuncs such as tcp_slow_start. They are likely stable
-> > without much change for a long time. It can be directly exposed as bpf kfunc.
-> > kfunc is a way to expose subsystem function without needing the bpf_func_proto
-> > and BPF_CALL_x quirks. When the function can be dual compiled later, the kfunc
-> > can also be inlined.
-> >
-> > If kfunc will be used for subsystem, it is very likely the number of kfunc will
-> > grow and exceed the bpf helpers soon.  This seems to be a stronger need to work
-> > on the user experience problems about kfunc that have mentioned in this thread
-> > sooner than later. They have to be solved regardless. May be start with stable
-> > kfunc first. If the new helper is guaranteed stable, then why it cannot be kfunc
-> > but instead needs to go through the bpf_func_proto and BPF_CALL_x?  In time, I
-> > hope the bpf helper support in the verifier can be quieted down (eg.
-> > check_helper_call vs check_kfunc_call) and focus energy into kfunc like inlining
-> > kfunc...etc.
->
->
-> Sorry, I am late to this discussion. The way I read this is that
-> kfuncs and helpers are implementation details and the real question is
-> about the stability and mutability of the helper methods.
->
-> I think there are two kinds of BPF program developers, and I might be
-> oversimplifying to convey a point here:
->
-> [1] Tracing people: They craft tracing programs and are more
-> accustomed to probing deeper into kernel internals, handling variable
-> renames and consequently will tolerate a kfunc changing its signature,
-> being renamed or disappearing.
->
-> [2] Network people: They are not accustomed to mutability the same way
-> as the tracing people. If there is mutability here, these users will
-> face a change in developer experience.
->
-> I see two paths forward here:
+On Wed, Jan 04, 2023 at 05:25:08PM +0100, Petr Mladek wrote:
+> On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
+> > Function __module_address() can quickly return the pointer of the module
+> > to which an address belongs. We do not need to traverse the symbols of all
+> > modules to check whether each address in addrs[] is the start address of
+> > the corresponding symbol, because register_fprobe_ips() will do this check
+> > later.
 
-As I mentioned in another reply, I took a liberty to add "BPF helpers
-freeze" as a topic for next BPF office hours. It's probably going to
-be a bit more productive to discuss it there. WDYT?
+hum, for some reason I can see only replies to this patch and
+not the actual patch.. I'll dig it out of the lore I guess
 
->
-> [a] We want to somewhat preserve the developer experience of [2] and
-> we find a way to do somewhat stable APIs. kfuncs have the benefit that
-> they are eventually mutable, but a longer stability guarantee for
-> helpers used by [2] could ameliorate the pains of mutability. e.g.
-> something we could do for certain helpers is a deprecation story, e.g.
-> a kfunc won't change for X kernel versions, or when we annotate kfuncs
-> as deprecated, libbpf can warn users "this kfunc is going away in
-> kernel version Z").
->
-> If this would be difficult to guarantee and we do care about developer
-> experience, we might need to have some helpers exposed as UAPI.
->
-> [b] We accept the fact the user experience will change more for [2]
-> and that's a trade-off we accept. IMHO, this is not ideal and while
-> tracing folks have found a way to cope, it would be yet another thing
-> to worry about for folks who are not used to it.
->
-> There are things we can do to make it slightly less burdensome for the
-> user by adding a shim in BPF headers (however, it won't solve problems
-> for everyone though e.g. inline BPF, other languages but will give
-> them a template for their respective "shims").
->
-> Another thing to consider if there are use-cases where some users
-> disable BTF (for whatever reason, like running BPF in a pacemaker :P
-> or in extremely low memory cases).
+> > 
+> > Assuming that there are m modules, each module has n symbols on average,
+> > and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
+> > complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
+> > and the time complexity of current method is O(K * (log(m) + M)), M <= m.
+> > (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
+> > the ratio is still greater than 1. Therefore, the new method will
+> > generally have better performance.
 
-There are various embedded systems (which usually means stricter
-memory requirements and less mainstream architectures) and people are
-experimenting with them, trying to run libbpf-tools and such there, or
-building their own tracing tools. I keep getting Github issues in
-libbpf-bootstrap and libbpf about something not working on some
-embedded system and it's absolutely unclear why. I'd rather not have
-to debug stuff like this for dynptr or for the loop iterator.
+could you try to benchmark that? I tried something similar but was not
+able to get better performance
+
+I'll review and run my benchmark test tomorrow
+
+thanks,
+jirka
+
+> > 
+> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> > ---
+> >  kernel/trace/bpf_trace.c | 101 ++++++++++++++++-----------------------
+> >  1 file changed, 40 insertions(+), 61 deletions(-)
+> > 
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 5f3be4bc16403a5..0ff9037098bd241 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2684,69 +2684,55 @@ static void symbols_swap_r(void *a, void *b, int size, const void *priv)
+> >  	}
+> >  }
+> >  
+> > -struct module_addr_args {
+> > -	unsigned long *addrs;
+> > -	u32 addrs_cnt;
+> > -	struct module **mods;
+> > -	int mods_cnt;
+> > -	int mods_cap;
+> > -};
+> > -
+> > -static int module_callback(void *data, const char *name,
+> > -			   struct module *mod, unsigned long addr)
+> > +static int get_modules_for_addrs(struct module ***out_mods, unsigned long *addrs, u32 addrs_cnt)
+> >  {
+> > -	struct module_addr_args *args = data;
+> > -	struct module **mods;
+> > -
+> > -	/* We iterate all modules symbols and for each we:
+> > -	 * - search for it in provided addresses array
+> > -	 * - if found we check if we already have the module pointer stored
+> > -	 *   (we iterate modules sequentially, so we can check just the last
+> > -	 *   module pointer)
+> > -	 * - take module reference and store it
+> > -	 */
+> > -	if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
+> > -		       bpf_kprobe_multi_addrs_cmp))
+> > -		return 0;
+> > +	int i, j, err;
+> > +	int mods_cnt = 0;
+> > +	int mods_cap = 0;
+> > +	struct module *mod;
+> > +	struct module **mods = NULL;
+> >  
+> > -	if (args->mods && args->mods[args->mods_cnt - 1] == mod)
+> > -		return 0;
+> > +	for (i = 0; i < addrs_cnt; i++) {
+> > +		mod = __module_address(addrs[i]);
+> 
+> This must be called under module_mutex to make sure that the module
+> would not disappear.
+> 
+> > +		if (!mod)
+> > +			continue;
+> >  
+> > -	if (args->mods_cnt == args->mods_cap) {
+> > -		args->mods_cap = max(16, args->mods_cap * 3 / 2);
+> > -		mods = krealloc_array(args->mods, args->mods_cap, sizeof(*mods), GFP_KERNEL);
+> > -		if (!mods)
+> > -			return -ENOMEM;
+> > -		args->mods = mods;
+> > -	}
+> > +		/* check if we already have the module pointer stored */
+> > +		for (j = 0; j < mods_cnt; j++) {
+> > +			if (mods[j] == mod)
+> > +				break;
+> > +		}
+> 
+> This might get optimized like the original code.
+> 
+> My understanding is that the addresses are sorted in "addrs" array.
+> So, the address is either part of the last found module or it belongs
+> to a completely new module.
+> 
+> 	for (i = 0; i < addrs_cnt; i++) {
+> 		/*
+> 		 * The adresses are sorted. The adress either belongs
+> 		 * to the last found module or a new one.
+> 		 *
+> 		 * This is safe because we already have reference
+> 		 * on the found modules.
+> 		 */
+> 		 if (mods_cnt && within_module(addrs[i], mods[mods_cnt - 1]))
+> 			continue;
+> 
+> 		mutex_lock(&module_mutex);
+> 		mod = __module_address(addrs[i]);
+> 		if (mod && !try_module_get(mod)) {
+> 			mutex_unlock(&module_mutex);
+> 			goto failed;
+> 		}
+> 		mutex_unlock(&module_mutex);
+> 
+> 		/*
+> 		 * Nope when the address was not from a module.
+> 		 *
+> 		 * Is this correct? What if the module has gone in
+> 		 * the meantime? Anyway, the original code
+> 		 * worked this way.
+> 		 *
+> 		 * FIXME: I would personally make sure that it is part
+> 		 * of vmlinux or so.
+> 		 */
+> 		if (!mod)
+> 			continue;
+> 
+> 		/* store the module into mods array */
+> 		...
+> 
+> 
+> 
+> 
+> > +		if (j < mods_cnt)
+> > +			continue;
+> >  
+> > -	if (!try_module_get(mod))
+> > -		return -EINVAL;
+> > +		if (mods_cnt == mods_cap) {
+> > +			struct module **new_mods;
+> >  
+> > -	args->mods[args->mods_cnt] = mod;
+> > -	args->mods_cnt++;
+> > -	return 0;
+> > -}
+> > +			mods_cap = max(16, mods_cap * 3 / 2);
+> > +			new_mods = krealloc_array(mods, mods_cap, sizeof(*mods), GFP_KERNEL);
+> > +			if (!new_mods) {
+> > +				err = -ENOMEM;
+> > +				goto failed;
+> > +			}
+> > +			mods = new_mods;
+> > +		}
+> >  
+> > -static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u32 addrs_cnt)
+> > -{
+> > -	struct module_addr_args args = {
+> > -		.addrs     = addrs,
+> > -		.addrs_cnt = addrs_cnt,
+> > -	};
+> > -	int err;
+> > +		if (!try_module_get(mod)) {
+> > +			err = -EINVAL;
+> > +			goto failed;
+> > +		}
+> >  
+> > -	/* We return either err < 0 in case of error, ... */
+> > -	err = module_kallsyms_on_each_symbol(NULL, module_callback, &args);
+> > -	if (err) {
+> > -		kprobe_multi_put_modules(args.mods, args.mods_cnt);
+> > -		kfree(args.mods);
+> > -		return err;
+> > +		mods[mods_cnt] = mod;
+> > +		mods_cnt++;
+> >  	}
+> >  
+> > -	/* or number of modules found if everything is ok. */
+> > -	*mods = args.mods;
+> > -	return args.mods_cnt;
+> > +	*out_mods = mods;
+> > +	return mods_cnt;
+> > +
+> > +failed:
+> > +	kprobe_multi_put_modules(mods, mods_cnt);
+> > +	kfree(mods);
+> > +	return err;
+> >  }
+> >  
+> >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> 
+> Otherwise, it looks good. IMHO, the new code looks more straightforward
+> than the original one.
+> 
+> Best Regards,
+> Petr
