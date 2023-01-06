@@ -2,199 +2,328 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CF365FE47
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 10:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA7C65FE77
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 10:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbjAFJrJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 04:47:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
+        id S229694AbjAFJ6k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 04:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbjAFJqT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 04:46:19 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698D869B3B;
-        Fri,  6 Jan 2023 01:45:45 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id c65-20020a1c3544000000b003cfffd00fc0so3167204wma.1;
-        Fri, 06 Jan 2023 01:45:45 -0800 (PST)
+        with ESMTP id S233342AbjAFJ6c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 04:58:32 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1EEF17E39
+        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 01:58:28 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id z9-20020a17090a468900b00226b6e7aeeaso1204317pjf.1
+        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 01:58:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PN8//UfAoVwKaLm31eaWicz8hNpiTUFBXEnuGYY6upA=;
-        b=FlwDESQyeNbwEOF9phOaSdZuMcQArQruAlYMTIIZ6+wSGyki259+Z+Sbg2rCI+BVQt
-         sn9X3mES4FYL0nwejFeAt+UGU5KL6LpEanaT9TjhL8UDHNtgsndEgp/y8K1EIX3vxA3n
-         Z4RlkGCMmQa9J5f+NxM8mSeSlbHjY6+DRna3iodggUIwdycTIXd5f1/VV/VOMKpN4dh3
-         4HAHYShdm7RrVrqqnLISKJ9Mp+f0ysYmVu0Q5RJ39oG+0QOQMCFeTmNbH5ljcGBn7WTx
-         nOER6ELX9ikWuNZjskCtbq5SEpXtds8xMJ05K3DiU/V5OZy7YAob2+UaBkXAWzBuQVux
-         bA2A==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9CrjUnzx6Y0AzNC4bTmiJNh2GA82mK4lsLIP1FqHbkU=;
+        b=Pk1/5aKBsJT3eZHlz15O4D34VNL6zvi3OXcDFug+6Jrvoxw7A+4PBcW4+Obj7WwGjv
+         cJl2N9alD1MxZrPaBC07/GFkVKlcOFmz6pcQ4mPndrvGfW7A9zAiHy5NYt2B8pZ5HGWY
+         XODS1gb9Q5eLn/ydD52Suvy5PuKVenhcbziPV+lqfcXa75xC0x27SEH23bh+CYTqlKlC
+         oA6uQZSbtI9Twzbm+b1iUXd+R+NgZa8AxPoBptXJGacAhEffwwjunaUvgEY2knGKOIpu
+         x/bgBy38gENtmclOtoyjvms2R2bwzlwoyXmvhOonE5U7oofl23F8rCASUu9Lj5aInu9T
+         DzCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PN8//UfAoVwKaLm31eaWicz8hNpiTUFBXEnuGYY6upA=;
-        b=QRL2oqrjWWXNKZxBt/9+IJ0LvXHs4UYKnoysqqykq+rxLGfbVQGzr7BPZ6NYSWWE4u
-         VvAnLgyrRDrHOlS4derW8ACDjB+1wIAXKM+GgeJWwSLmTpAIzGQNmy1o76R8gN37MW8Q
-         pBgaQkH1qC5NQ6bSoEFuA8HDusjq5tAq8tt/ntqUzIGETfT6c0N4k/HQufEiRjSmYHq6
-         u1tNyHV08dJm67xxCcpBmWno7j2Pih1lRqo4u8DmK8XMbPm/N6PindTP2XmZs0y8KJ91
-         eDa5tSidOIwNXr/ZVSUiFzTeaAtFyGMSW6IIqjDe/t/n4xHcsU1Trl0LGhx6SLMT5nED
-         psdQ==
-X-Gm-Message-State: AFqh2krhoYSkvJPFBC7fQkrVWEKWZQ0THZ3q1l0K7quawcv+Jbp2He6u
-        QgAAS8p6mqZr0IgscFfrMw0=
-X-Google-Smtp-Source: AMrXdXvGEs46DZ+1Nu9hdjrmPn0yZt8DrEET0vDFvTytRbxXI3AghL6OK5+dJLdJNIH2WxrVI2eIew==
-X-Received: by 2002:a05:600c:3ca2:b0:3d9:a5a2:65fa with SMTP id bg34-20020a05600c3ca200b003d9a5a265famr17725332wmb.7.1672998343858;
-        Fri, 06 Jan 2023 01:45:43 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id bg24-20020a05600c3c9800b003cfa3a12660sm13739987wmb.1.2023.01.06.01.45.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Jan 2023 01:45:43 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 6 Jan 2023 10:45:40 +0100
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org
-Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
-Message-ID: <Y7ftxIiV35Wd75lZ@krava>
-References: <20221230112729.351-1-thunder.leizhen@huawei.com>
- <20221230112729.351-3-thunder.leizhen@huawei.com>
- <Y7WoZARt37xGpjXD@alley>
- <Y7dBoII5kZnHGFdL@krava>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9CrjUnzx6Y0AzNC4bTmiJNh2GA82mK4lsLIP1FqHbkU=;
+        b=jwZEy4FlAJYhlY8zlrH/XKXaSGJJTO5h5GxsY+WqjZx7xxBqt6/QnX0ZOs1mtSoQMg
+         VfBqRoKwu6KxrYExCIxHR2nmeCZWm2QKaeFwAonbVUxzaEs+lbSCSHry5P25U5brZZ1x
+         eF0/ThKjD6Y7pKeCQJl4ANvbtOogAfrMgo0sSCZuGz8aXdbFy+Bv6RucF4Lka1c0QHJK
+         ZOB2Ls7R1+4udnStsclAW5wg5iGF2NCcpE20oINYpo8ZxPVuokRczDKtdaRLhSUCcVSg
+         2qxtimYsk/qD0X1YLUJ+g66Z8ReFl6stbsfs1JdIBIQ9mpVypPVCh+R5hMlNnvM6KxYr
+         cwgA==
+X-Gm-Message-State: AFqh2krPBghKP/IryaXV7GmqINK5Gur8U++U1Se8Cn78k7KxuNoepI4u
+        4Ga+0HUGbFNvXb9X8OvUHlyIoIABSTenarqPIIUoCQ==
+X-Google-Smtp-Source: AMrXdXt0NM4Sg9RjyPjiTwK8ETP4ogyEw1QoPM3sKp27jjbda4129oRr5vXkXCWIEvSGlyU0j3722ScHNflvJBBxTPg=
+X-Received: by 2002:a17:902:6b05:b0:18c:5dae:6f2 with SMTP id
+ o5-20020a1709026b0500b0018c5dae06f2mr3140065plk.24.1672999108061; Fri, 06 Jan
+ 2023 01:58:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y7dBoII5kZnHGFdL@krava>
+References: <20230105172243.7238-1-mike.leach@linaro.org> <CAP-5=fVbPVE4rxJ2s8phhJ5RRH4EnKaWrF2kaT0oCmK6kvhP2g@mail.gmail.com>
+ <CAJ9a7Vi7cB2t3wao9d78j3G9v4zpO8_hHf8DB4vKOzgT9O+j6g@mail.gmail.com> <CAP-5=fV5tiKNyJRUKC0gD_2Y=RgN=NrAtee4k1ZT1tynyJpL6w@mail.gmail.com>
+In-Reply-To: <CAP-5=fV5tiKNyJRUKC0gD_2Y=RgN=NrAtee4k1ZT1tynyJpL6w@mail.gmail.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Fri, 6 Jan 2023 09:58:17 +0000
+Message-ID: <CAJ9a7ViY=XOnp2ZJgEdR4qqXth=N4MRLHZWifJw-3-qT-md12g@mail.gmail.com>
+Subject: Re: [PATCH] perf build: Fix build error when NO_LIBBPF=1
+To:     Ian Rogers <irogers@google.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, acme@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 10:31:12PM +0100, Jiri Olsa wrote:
-> On Wed, Jan 04, 2023 at 05:25:08PM +0100, Petr Mladek wrote:
-> > On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
-> > > Function __module_address() can quickly return the pointer of the module
-> > > to which an address belongs. We do not need to traverse the symbols of all
-> > > modules to check whether each address in addrs[] is the start address of
-> > > the corresponding symbol, because register_fprobe_ips() will do this check
-> > > later.
-> 
-> hum, for some reason I can see only replies to this patch and
-> not the actual patch.. I'll dig it out of the lore I guess
-> 
-> > > 
-> > > Assuming that there are m modules, each module has n symbols on average,
-> > > and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
-> > > complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
-> > > and the time complexity of current method is O(K * (log(m) + M)), M <= m.
-> > > (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
-> > > the ratio is still greater than 1. Therefore, the new method will
-> > > generally have better performance.
-> 
-> could you try to benchmark that? I tried something similar but was not
-> able to get better performance
+Hi Ian,
 
-hm looks like I tried the smilar thing (below) like you did,
-but wasn't able to get better performace
+On Fri, 6 Jan 2023 at 06:24, Ian Rogers <irogers@google.com> wrote:
+>
+> On Thu, Jan 5, 2023 at 3:40 PM Mike Leach <mike.leach@linaro.org> wrote:
+> >
+> > Hi,
+> >
+> > On Thu, 5 Jan 2023 at 19:03, Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > On Thu, Jan 5, 2023 at 9:22 AM Mike Leach <mike.leach@linaro.org> wro=
+te:
+> > > >
+> > > > Recent updates to perf build result in the following output when cr=
+oss
+> > > > compiling to aarch64, with libelf unavailable, and therefore
+> > > > NO_LIBBPF=3D1 set.
+> > > >
+> > > > ```
+> > > >   $make -C tools/perf
+> > > >
+> > > >   <cut>
+> > > >
+> > > >   Makefile.config:428: No libelf found. Disables 'probe' tool, jvmt=
+i
+> > > >   and BPF support in 'perf record'. Please install libelf-dev,
+> > > >   libelf-devel or elfutils-libelf-devel
+> > > >
+> > > >   <cut>
+> > > >
+> > > >   libbpf.c:46:10: fatal error: libelf.h: No such file or directory
+> > > >       46 | #include <libelf.h>
+> > > >          |          ^~~~~~~~~~
+> > > >   compilation terminated.
+> > > >
+> > > >   ./tools/build/Makefile.build:96: recipe for target
+> > > >   '.tools/perf/libbpf/staticobjs/libbpf.o' failed
+> > > >
+> > > > ```
+> > > >
+> > > > plus one other include error for <gelf.h>
+> > >
+> > > Ouch, apologies for the breakage. You wouldn't happen to have
+> > > something like a way with say a docker image to repro the problem? Th=
+e
+> > > make line above is somewhat minimal.
+> > >
+> >
+> > Unfortunately not - I was cross compiling on my main workstation.
+> > However, in theory
+> > $make -C tools/perf NO_LIBBPF=3D1
+> > should explicitly exclude the library from the build - which without
+> > the fix it does not.
+> >
+> > > > The issue is that the commit noted below adds libbpf to the prepare=
+:
+> > > > target but no longer accounts for the NO_LIBBPF define. Additionall=
+y
+> > > > changing the include directories means that even if the libbpf targ=
+et
+> > > > build is prevented, bpf headers are missing in other parts of the b=
+uild.
+> > > >
+> > > > This patch ensures that in the case of NO_LIBBPF=3D1, the build tar=
+get is
+> > > > changed to a header only target, and the headers are installed, wit=
+hout
+> > > > attempting to build the libbpf.a target.
+> > > >
+> > > > Applies to perf/core
+> > > >
+> > > > Fixes: 746bd29e348f ("perf build: Use tools/lib headers from instal=
+l path")
+> > > > Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> > > > ---
+> > > >  tools/perf/Makefile.perf | 10 ++++++++++
+> > > >  1 file changed, 10 insertions(+)
+> > > >
+> > > > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> > > > index 13e7d26e77f0..ee08ecf469f6 100644
+> > > > --- a/tools/perf/Makefile.perf
+> > > > +++ b/tools/perf/Makefile.perf
+> > > > @@ -305,7 +305,11 @@ else
+> > > >  endif
+> > > >  LIBBPF_DESTDIR =3D $(LIBBPF_OUTPUT)
+> > > >  LIBBPF_INCLUDE =3D $(LIBBPF_DESTDIR)/include
+> > > > +ifndef NO_LIBBPF
+> > > >  LIBBPF =3D $(LIBBPF_OUTPUT)/libbpf.a
+> > > > +else
+> > > > +LIBBPF =3D $(LIBBPF_INCLUDE)/bpf/bpf.h
+> > >
+> > > This seems strange, don't we want to avoid libbpf targets?
+> > >
+> >
+> > This is a header only target - see my continuation comment below....
+> >
+> > > > +endif
+> > > >  CFLAGS +=3D -I$(LIBBPF_OUTPUT)/include
+> > > >
+> > > >  ifneq ($(OUTPUT),)
+> > > > @@ -826,10 +830,16 @@ $(LIBAPI)-clean:
+> > > >         $(call QUIET_CLEAN, libapi)
+> > > >         $(Q)$(RM) -r -- $(LIBAPI_OUTPUT)
+> > > >
+> > > > +ifndef NO_LIBBPF
+> > > >  $(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
+> > > >         $(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=3D$(FEATURE_DUMP=
+_EXPORT) \
+> > > >                 O=3D OUTPUT=3D$(LIBBPF_OUTPUT)/ DESTDIR=3D$(LIBBPF_=
+DESTDIR) prefix=3D \
+> > > >                 $@ install_headers
+> > > > +else
+> > > > +$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
+> > > > +       $(Q)$(MAKE) -C $(LIBBPF_DIR) OUTPUT=3D$(LIBBPF_OUTPUT)/ \
+> > > > +               DESTDIR=3D$(LIBBPF_DESTDIR) prefix=3D install_heade=
+rs
+> > > > +endif
+> > >
+> > > Shouldn't we just be able to conditionalize having $(LIBBPF) as a
+> > > dependency for the perf binary? If there is no dependency then the
+> > > targets won't be built and we shouldn't need to conditionalize here.
+> > >
+> >
+> > I did try doing just that, but the build process does two things when
+> > building libbpf
+> > a) builds the library
+> > b) installs the bpf headers in the libbpf output location.
+> >
+> > Now what the original patch  - "perf build: Use tools/lib headers from
+> > install path"  - does is to also change the include paths to the
+> > compiler to pick up the headers,
+> > removing the line:
+> >
+> > INC_FLAGS +=3D -I$(srctree)/tools/lib/
+> >
+> > from tools/perf/Makefile.config and adding the line
+> >
+> > CFLAGS +=3D -I$(LIBBPF_OUTPUT)/include
+> >
+> > in tools/perf/Makefile.perf (along with similar lines for libperf, liba=
+pi etc)
+> >
+> > The result of this is that if you only remove the library build, the
+> > headers are not installed and other compilation units fail as the
+> > headers are still included even if the library is not in use.
+> > These were originally satisfied by the now removed INC_FLAGS +=3D
+> > -I$(srctree)/tools/lib.
+> >
+> > Thus when NO_LIBBPF=3D1 even though we do not build the library - we
+> > still need to install the headers to retain the consistency - hence a
+> > "header only" target, that only installs the headers without building
+> > the library.
+> >
+> > This avoids restoring the original -I$(srctree)/tools/lib/, which
+> > would potentially mess up the oher library builds that have changed
+> > their header include paths.
+> >
+> > Regards
+> >
+> > Mike
+>
+>
+> Thanks Mike,
+>
+> The -I is needed for the libbpf headers but if NO_LIBBPF is enabled
+> then the C define HAVE_LIBBPF_SUPPORT isn't and we shouldn't include
+> any of these headers. This means updating the CFLAGS for libbpf should
+> only be done if we actually build the static  libbpf.a, the dynamic
+> version's headers should already be on the include path. I sent out a
+> variant of this fix doing that here:
+> https://lore.kernel.org/lkml/20230106061631.571659-1-irogers@google.com/
+>
+> Apologies again for the breakage, I can buy you a beer the next time
+> I'm home in Manchester.
+> Ian
+>
 
-I guess your goal is to get rid of the module arg in
-module_kallsyms_on_each_symbol callback that we use?
-I'm ok with the change if the performace is not worse
+Applying your new patch to perf/core and building I get:-
 
-jirka
+  CC      builtin-stat.o
+In file included from builtin-stat.c:71:
+util/bpf_counter.h:7:10: fatal error: bpf/bpf.h: No such file or directory
+    7 | #include <bpf/bpf.h>
+      |          ^~~~~~~~~~~
+compilation terminated.
+/datadisk/mike/work/kernel-ups/tools/build/Makefile.build:96: recipe
+for target 'builtin-stat.o' failed
+make[3]: *** [builtin-stat.o] Error 1
+make[3]: *** Waiting for unfinished jobs....
+  LD      pmu-events/pmu-events-in.o
+Makefile.perf:673: recipe for target 'perf-in.o' failed
+make[2]: *** [perf-in.o] Error 2
+Makefile.perf:235: recipe for target 'sub-make' failed
+make[1]: *** [sub-make] Error 2
+Makefile:69: recipe for target 'all' failed
+make: *** [all] Error 2
+
+which is a result of the bpf headers not being installed in their new
+location and the removal of the -I from the old location as mentioned
+in my last.
+So perhaps the issue is less about the build operations and more about
+the lack of #ifdef HAVE_LIBBPF_SUPPORT in certain other source files.
+
+However, if I put the #ifdef HAVE_LIBBPF_SUPPORT around the #include
+of util/bpf_counter.h, then compilation fails with multiple
+
+builtin-stat.c: In function =E2=80=98read_bpf_map_counters=E2=80=99:
+builtin-stat.c:463:9: error: implicit declaration of function
+=E2=80=98bpf_counter__read=E2=80=99; did you mean =E2=80=98refcount_read=E2=
+=80=99?
+[-Werror=3Dimplicit-function-declaration]
+  463 |   err =3D bpf_counter__read(counter);
+      |         ^~~~~~~~~~~~~~~~~
+      |         refcount_read
+
+type errors.
+
+Turns out that bpf_counter.h has inline stubs for these functions
+bracketed by #ifdef HAVE_BPF_SKEL / #else / #endif, which I presume
+are used in the non-bpf case.
+
+I can get a clean build with your patch if I adjust the HAVE_BFP_SKEL
+bracketing to encompass everything (including header includes, struct
+defines and other functions) other than the stubs in the #ifdef case
+and only the stubs in the #else case  - but I have no idea if this
+will have an adverse effect on other tools which may use the same
+header.
+
+Thanks and Regards
+
+Mike
+
+> >
+> > > Thanks!
+> > > Ian
+> > >
+> > > >  $(LIBBPF)-clean:
+> > > >         $(call QUIET_CLEAN, libbpf)
+> > > > --
+> > > > 2.17.1
+> > > >
+> >
+> >
+> >
+> > --
+> > Mike Leach
+> > Principal Engineer, ARM Ltd.
+> > Manchester Design Centre. UK
 
 
----
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 5b9008bc597b..3280c22009f1 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2692,23 +2692,16 @@ struct module_addr_args {
- 	int mods_cap;
- };
- 
--static int module_callback(void *data, const char *name,
--			   struct module *mod, unsigned long addr)
-+static int add_module(struct module_addr_args *args, struct module *mod)
- {
--	struct module_addr_args *args = data;
- 	struct module **mods;
- 
--	/* We iterate all modules symbols and for each we:
--	 * - search for it in provided addresses array
--	 * - if found we check if we already have the module pointer stored
--	 *   (we iterate modules sequentially, so we can check just the last
--	 *   module pointer)
-+	/* We iterate sorted addresses and for each within module we:
-+	 * - check if we already have the module pointer stored for it
-+	 *   (we iterate sorted addresses sequentially, so we can check
-+	 *   just the last module pointer)
- 	 * - take module reference and store it
- 	 */
--	if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
--		       bpf_kprobe_multi_addrs_cmp))
--		return 0;
--
- 	if (args->mods && args->mods[args->mods_cnt - 1] == mod)
- 		return 0;
- 
-@@ -2734,10 +2727,24 @@ static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u3
- 		.addrs     = addrs,
- 		.addrs_cnt = addrs_cnt,
- 	};
--	int err;
-+	u32 i, err = 0;
-+
-+	for (i = 0; !err && i < addrs_cnt; i++) {
-+		struct module *mod;
-+		bool found = false;
-+
-+		preempt_disable();
-+		mod = __module_text_address(addrs[i]);
-+		found = mod && try_module_get(mod);
-+		preempt_enable();
-+
-+		if (found) {
-+			err = add_module(&args, mod);
-+			module_put(mod);
-+		}
-+	}
- 
- 	/* We return either err < 0 in case of error, ... */
--	err = module_kallsyms_on_each_symbol(module_callback, &args);
- 	if (err) {
- 		kprobe_multi_put_modules(args.mods, args.mods_cnt);
- 		kfree(args.mods);
-@@ -2862,7 +2869,8 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	} else {
- 		/*
- 		 * We need to sort addrs array even if there are no cookies
--		 * provided, to allow bsearch in get_modules_for_addrs.
-+		 * provided, to allow sequential address walk in
-+		 * get_modules_for_addrs.
- 		 */
- 		sort(addrs, cnt, sizeof(*addrs),
- 		       bpf_kprobe_multi_addrs_cmp, NULL);
+
+--=20
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
