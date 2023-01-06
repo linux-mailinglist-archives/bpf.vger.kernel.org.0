@@ -2,159 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C876603A2
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 16:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182086603B3
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 16:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjAFPoF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 10:44:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
+        id S233796AbjAFPu5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 10:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbjAFPoE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 10:44:04 -0500
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2665C3D5FA
-        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 07:44:04 -0800 (PST)
-Received: by mail-vs1-xe34.google.com with SMTP id m129so1797984vsc.11
-        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 07:44:04 -0800 (PST)
+        with ESMTP id S232218AbjAFPu4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 10:50:56 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C452D1182E
+        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 07:50:49 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id bp44so2500072qtb.0
+        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 07:50:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fd5JRFn3Cr5IWNkuRQ9nibDUI9vKExSd4SCBuH3OmNw=;
-        b=W3BOxt4a7zLzcHt5RbOYmVdoHtne+0CNMYaCjuAlZ9GrHaRCSgiq5pAPd3KQqye6oq
-         axxavehyxKqrmf4Gvj0BZGFH+nd7kVyWug5Gt4p/iJzcW9crHQ2O1IIgCcPqIvxV2/QI
-         bODjxUlpV5Hb6Wk/dR9Q1OnABzB3T9BmoAhkjnxEBwiUPTNMZdhXNlyHsVv/nF1Exxsr
-         f0/6aGV3qQgLTxICpzYYOMnNlIgVSARZu6ZW3Rlx5quL/egJ/oFQXi0ITJ005k73Wn67
-         KjXWBcma04sLmLsLZR1i22/8RpI69T/x/2wBIthk8qQHVT+kg0erEoYsOkhhXv7/iv0r
-         CEcA==
+        bh=/lXpoIfaZTxbS2QRN9RfCIEN9vyUFx7ZzXfKlV5Axnk=;
+        b=VczK0CKG873/g1w+1QU8CxC4ftcvgTK9vA6BMHGenhPMKFhjsXkZRbfOT4pEoXQCA1
+         lnG4mSp0PSQd2JDN7/u2OQ5wQ+CjOLSGcKZsUVwFW9Gk35pOGpqVOKYHxg+wJnvtojqO
+         aNSI0T2LMzmupUZ24i3q2hpCtGbnNx/SLO5PwdCXckdTW7A2lYCzEHO8VfwppiAZF05E
+         npc0j05wJsy4kyjjrKACUrExn4tf4EKaYdmCYm8InQvddpW10ZoehOlw5H+SOwPluG3R
+         MECpiIemvkgGMixzlYaPbtx4dbQ3HGKVp2yipd2vwrngoyI4A6QLf24YRRhNRs4HEh3f
+         PZiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fd5JRFn3Cr5IWNkuRQ9nibDUI9vKExSd4SCBuH3OmNw=;
-        b=KetlojoTMO2ScxRIwkNXJRWqLmMvqfsoGv6q2o1TFTXVadGf5Z4nbrhNOU/fq3ttb4
-         4aH5pser9cWNbi48CFToI7DeyPa4+UE58YDSLImvl0b2jyjTohemFDEX1p3DHKwYbzPx
-         mZMEvKzCe6xErEdFDZiu5OcjtswHgBHi0w9oLoUl3Qg2Rp/0skADQP1xifsfG5YCsHt4
-         g2zZMlCVTTFoHhYbs6gLGawwcGIxrbiuQZkWCX388bVOVgr12PkJh0YrvnzwRwqnkuDv
-         Dofz0aNLppI6jY4zU/4eJJLkw/KSO8XeJWnhoNq4mTQ59XY1rAnVwXXK79hyEl6fAb3z
-         M8zA==
-X-Gm-Message-State: AFqh2krRltLUAzKO6xCnumG+XZw86plueDpj3YtKmjDXNkO5f+SJiaaw
-        5aHsvH0LJjRHIsqBMJhuMSp5KxanQe6Gwo8=
-X-Google-Smtp-Source: AMrXdXs8rijHgVUdSfFZAXBKIH6T7FgQK3p9S5Uiy+/kLe4hL1kOCqS28Jglq6Smsm8NfhFBWxp6fA==
-X-Received: by 2002:a67:fe8c:0:b0:3cc:fb78:e403 with SMTP id b12-20020a67fe8c000000b003ccfb78e403mr13173588vsr.10.1673019843168;
-        Fri, 06 Jan 2023 07:44:03 -0800 (PST)
-Received: from localhost (pool-108-26-161-203.bstnma.fios.verizon.net. [108.26.161.203])
-        by smtp.gmail.com with ESMTPSA id w19-20020a05620a445300b006fc3fa1f589sm678167qkp.114.2023.01.06.07.44.02
+        bh=/lXpoIfaZTxbS2QRN9RfCIEN9vyUFx7ZzXfKlV5Axnk=;
+        b=7gstXbgB6GxobPbm40eq1VM/DePR9FFoLu3YSchghHa0rGSrF+p5Cmy4OylSd2ZEyv
+         tjb39bDR4nVVBnbuhErK30FNJM0QHVBppZSiXEVckSkSWi85MMszWzW6BIsS00ognaNb
+         EZ2xL/b4uAS4XhTBza24dGHnJ/Jneh9tGpyIpo10RZwWGKXm1S0GAAZ99pXC9w5NiaFd
+         Wxj+zgsUVcAWr1DTCx8xJVN5t/IYfy9fp4vQc13aMosC+ySXSGHnxwiiknOdtFNl+8+U
+         WHhdLfQ1nmvB17977zu4IAwK8ZjD6/9pP18nEGRqYzDUa0571GCXVxQ5RpFi8rPB2OxZ
+         7tcQ==
+X-Gm-Message-State: AFqh2kpLN4Yg1FWsd/L8gqblRxpZEScQuw44C2+fLfTGI2pCPdksFn4g
+        aZwU+Ck4XK1iBLdq+dy+yX+HpGg8JUBQE6s4zPI=
+X-Google-Smtp-Source: AMrXdXtc7PWmTSHdCDcPJ2d/kmBDEJP1055b985rDFtVppY/PUVNujWwHos/D72bfVswPQ2KbSH8Mw==
+X-Received: by 2002:a05:622a:1f14:b0:3a5:43af:d7ac with SMTP id ca20-20020a05622a1f1400b003a543afd7acmr83801465qtb.67.1673020248733;
+        Fri, 06 Jan 2023 07:50:48 -0800 (PST)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id s13-20020ac85ecd000000b003a69de747c9sm664205qtx.19.2023.01.06.07.50.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Jan 2023 07:44:02 -0800 (PST)
-From:   Paul Moore <paul@paul-moore.com>
-To:     linux-audit@redhat.com, bpf@vger.kernel.org
-Cc:     Burn Alting <burn.alting@iinet.net.au>,
-        Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH v3 2/2] bpf: remove the do_idr_lock parameter from bpf_prog_free_id()
-Date:   Fri,  6 Jan 2023 10:44:00 -0500
-Message-Id: <20230106154400.74211-2-paul@paul-moore.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230106154400.74211-1-paul@paul-moore.com>
-References: <20230106154400.74211-1-paul@paul-moore.com>
+        Fri, 06 Jan 2023 07:50:48 -0800 (PST)
+Date:   Fri, 6 Jan 2023 10:50:46 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     lsf-pc@lists.linuxfoundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: LSF/MM/BPF: 2023: Call for Proposals
+Message-ID: <Y7hDVliKq+PzY1yY@localhost.localdomain>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It was determined that the do_idr_lock parameter to
-bpf_prog_free_id() was not necessary as it should always be true.
+The annual Linux Storage, Filesystem, Memory Management, and BPF
+(LSF/MM/BPF) Summit for 2023 will be held from May 8 to May 10 at the
+Vancouver Convention Center in Vancouver, British Columbia, Canada.
+LSF/MM/BPF is an invitation-only technical workshop to map out
+improvements to the Linux storage, filesystem, BPF, and memory
+management subsystems that will make their way into the mainline kernel
+within the coming years.
 
-Suggested-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+LSF/MM/BPF 2023 will be a three day, stand-alone conference with four
+subsystem-specific tracks, cross-track discussions, as well as BoF and
+hacking sessions.
 
----
-* v3
-- initial draft
----
- include/linux/bpf.h  |  2 +-
- kernel/bpf/syscall.c | 20 ++++++--------------
- 2 files changed, 7 insertions(+), 15 deletions(-)
+	https://events.linuxfoundation.org/lsfmm/
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3de24cfb7a3d..634d37a599fa 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1832,7 +1832,7 @@ void bpf_prog_inc(struct bpf_prog *prog);
- struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
- void bpf_prog_put(struct bpf_prog *prog);
- 
--void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock);
-+void bpf_prog_free_id(struct bpf_prog *prog);
- void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock);
- 
- struct btf_field *btf_record_find(const struct btf_record *rec,
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 61bb19e81b9c..ecca9366c7a6 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2001,7 +2001,7 @@ static int bpf_prog_alloc_id(struct bpf_prog *prog)
- 	return id > 0 ? 0 : id;
- }
- 
--void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
-+void bpf_prog_free_id(struct bpf_prog *prog)
- {
- 	unsigned long flags;
- 
-@@ -2013,18 +2013,10 @@ void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
- 	if (!prog->aux->id)
- 		return;
- 
--	if (do_idr_lock)
--		spin_lock_irqsave(&prog_idr_lock, flags);
--	else
--		__acquire(&prog_idr_lock);
--
-+	spin_lock_irqsave(&prog_idr_lock, flags);
- 	idr_remove(&prog_idr, prog->aux->id);
- 	prog->aux->id = 0;
--
--	if (do_idr_lock)
--		spin_unlock_irqrestore(&prog_idr_lock, flags);
--	else
--		__release(&prog_idr_lock);
-+	spin_unlock_irqrestore(&prog_idr_lock, flags);
- }
- 
- static void __bpf_prog_put_rcu(struct rcu_head *rcu)
-@@ -2067,11 +2059,11 @@ static void bpf_prog_put_deferred(struct work_struct *work)
- 	prog = aux->prog;
- 	perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_UNLOAD, 0);
- 	bpf_audit_prog(prog, BPF_AUDIT_UNLOAD);
--	bpf_prog_free_id(prog, true);
-+	bpf_prog_free_id(prog);
- 	__bpf_prog_put_noref(prog, true);
- }
- 
--static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
-+static void __bpf_prog_put(struct bpf_prog *prog)
- {
- 	struct bpf_prog_aux *aux = prog->aux;
- 
-@@ -2087,7 +2079,7 @@ static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
- 
- void bpf_prog_put(struct bpf_prog *prog)
- {
--	__bpf_prog_put(prog, true);
-+	__bpf_prog_put(prog);
- }
- EXPORT_SYMBOL_GPL(bpf_prog_put);
- 
--- 
-2.39.0
+On behalf of the committee I am issuing a call for agenda proposals
+that are suitable for cross-track discussion as well as technical
+subjects for the breakout sessions.
 
+If advance notice is required for visa applications then please point
+that out in your proposal or request to attend, and submit the topic as
+soon as possible.
+
+We're asking that you please let us know you want to be invited by March
+1, 2023.  We realize that travel is an ever changing target, but it
+helps us get an idea of possible attendance numbers.  Clearly things can
+and will change, so consider the request to attend deadline more about
+planning and less about concrete plans.
+
+1) Fill out the following Google form to request attendance and
+suggest any topics
+
+	https://forms.gle/VKVXjWGBHZbnsz226
+
+In previous years we have accidentally missed people's attendance
+requests because they either didn't cc lsf-pc@ or we simply missed them
+in the flurry of emails we get.  Our community is large and our
+volunteers are busy, filling this out will help us make sure we don't
+miss anybody.
+
+2) Proposals for agenda topics should still be sent to the following
+lists to allow for discussion among your peers.  This will help us
+figure out which topics are important for the agenda.
+
+        lsf-pc@lists.linux-foundation.org
+
+and CC the mailing lists that are relevant for the topic in question:
+
+        FS:     linux-fsdevel@vger.kernel.org
+        MM:     linux-mm@kvack.org
+        Block:  linux-block@vger.kernel.org
+        ATA:    linux-ide@vger.kernel.org
+        SCSI:   linux-scsi@vger.kernel.org
+        NVMe:   linux-nvme@lists.infradead.org
+        BPF:    bpf@vger.kernel.org
+
+Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
+track. In addition, please make sure to start a new thread for each
+topic rather than following up to an existing one. Agenda topics and
+attendees will be selected by the program committee, but the final
+agenda will be formed by consensus of the attendees on the day.
+
+3) This year we would like to try and make sure we are including new
+members in the community that the program committee may not be familiar
+with.  The Google form has an area for people to add required/optional
+attendees.  Please encourage new members of the community to submit a
+request for an invite as well, but additionally if maintainers or long
+term community members could add nominees to the form it would help us
+make sure that new members get the proper consideration.
+
+For discussion leaders, slides and visualizations are encouraged to
+outline the subject matter and focus the discussions. Please refrain
+from lengthy presentations and talks; the sessions are supposed to be
+interactive, inclusive discussions.
+
+The COVID related restrictions can be found here, however at this time
+there are no protocols defined.
+
+	https://events.linuxfoundation.org/lsfmm/attend/health-and-safety/
+
+We are still looking into the virtual component.  We will likely run
+something similar to what we did in 2022, but details on that will be
+forthcoming.
+
+2022: https://lwn.net/Articles/lsfmm2022/
+
+2019: https://lwn.net/Articles/lsfmm2019/
+
+2018: https://lwn.net/Articles/lsfmm2018/
+
+2017: https://lwn.net/Articles/lsfmm2017/
+
+2016: https://lwn.net/Articles/lsfmm2016/
+
+2015: https://lwn.net/Articles/lsfmm2015/
+
+2014: http://lwn.net/Articles/LSFMM2014/
+
+3) If you have feedback on last year's meeting that we can use to
+improve this year's, please also send that to:
+
+        lsf-pc@lists.linux-foundation.org
+
+Thank you on behalf of the program committee:
+
+        Josef Bacik (Filesystems)
+        Amir Goldstein (Filesystems)
+        Martin K. Petersen (Storage)
+        Javier González (Storage)
+        Michal Hocko (MM)
+        Dan Williams (MM)
+        Martin KaFai Lau (BPF)
+        Daniel Borkmann (BPF)
