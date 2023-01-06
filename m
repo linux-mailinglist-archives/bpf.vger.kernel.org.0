@@ -2,208 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 017C66602A5
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 15:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDE26602C4
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 16:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjAFOzj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 09:55:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S229601AbjAFPJG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 10:09:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235562AbjAFOzg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 09:55:36 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22158110B;
-        Fri,  6 Jan 2023 06:55:35 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 30257CE1D06;
-        Fri,  6 Jan 2023 14:55:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1194BC433EF;
-        Fri,  6 Jan 2023 14:55:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673016932;
-        bh=UyzAwDFj483hUCSJgJwOF1/K5+N5Cz7AuCJePXSb/Ak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W++K1xDs78oD3sadQHcJb/VGnRR+TjNwleDAIIMV7LiJ34YG6txNOJKG5XyfFTdOA
-         Rjg4fCFEMjCyP16hwAJ2Ym6dsdRpm/SpW1Jd0SS3VcEkX8R/vZ7lHhEa4tnfSHdsmb
-         r8P8sSxug0TnC9/JJ1vAeZ1hqwWaBE0dPT3O3yj31/vzTVu/kPEHISNgVkCPBenBxf
-         tYUAq6YlgwkdP5uJTn7wZQNIgHy5cFKRB8dXWia6ljjho3zD34S69Su+13AlOBHu8W
-         Z+CZeTH/5LkbRYhbJn9uLzP66wmUqtHuBkJE08VPJxq7z04MUsnlem+/etCUqpfK8h
-         4WAq+21OPTrQA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9396840468; Fri,  6 Jan 2023 11:55:29 -0300 (-03)
-Date:   Fri, 6 Jan 2023 11:55:29 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org
-Subject: Re: [PATCH v2 1/2] perf build: Properly guard libbpf includes
-Message-ID: <Y7g2YXNaP0VM+F1o@kernel.org>
-References: <20230106142537.607399-1-irogers@google.com>
+        with ESMTP id S230501AbjAFPJE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 10:09:04 -0500
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63484687B9;
+        Fri,  6 Jan 2023 07:09:03 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-4a0d6cb12c5so26092657b3.7;
+        Fri, 06 Jan 2023 07:09:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qK3fDVWQGXg5FS5RnUEt2ia8jXyHkl44RT+JR8v153M=;
+        b=KEDfPuXrlXM8HFvuOr7YVKptgipngs72AEXXuwv962rsjWz15PMt7DhbTpmcddg4CL
+         o6S8KpX9TASxmWTxTm/7hkSkC+ls9R9Uz2e6zYFCt+/UUp3cWpUAI9LxgTPfC4RjYjjG
+         XIQyRTQ7LjwGT7OA7ifVTevddQFSAWfXgC6UWBi4dDAHXLn2Kq5XsrGKsoeOHvSkJH3R
+         vbQJzoxQLz+30Vvy1JYpAXk+QP6bAgO7ZboIoYc3JWm+UJAEdsObnGhQZbkY4LAFUkZg
+         0aHFrCb26nStv0Vut3Bl4po177nwfVbfczW+zIFRb4xYv9Grf89kqT0OoIo+d5WM0SVf
+         j8LA==
+X-Gm-Message-State: AFqh2koai/jeq2MFYOTZlKDl99Q02fJs2b8a6XVTyU5ud8w7fj4OIs1p
+        HJBCDOMWFNyPPy7elENe8/8=
+X-Google-Smtp-Source: AMrXdXtosbJGC2k2PXaOuIcAoFtUEXrzOWtl+/Nzn31WXTi8KKOyjRX2myhPGvlm/MVHWLP77JSMLw==
+X-Received: by 2002:a05:7500:12d1:b0:f0:3a77:6218 with SMTP id o17-20020a05750012d100b000f03a776218mr69654gao.6.1673017742346;
+        Fri, 06 Jan 2023 07:09:02 -0800 (PST)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::1:a6f6])
+        by smtp.gmail.com with ESMTPSA id m4-20020a05620a290400b00705377347b9sm643879qkp.70.2023.01.06.07.09.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Jan 2023 07:09:01 -0800 (PST)
+Date:   Fri, 6 Jan 2023 09:09:01 -0600
+From:   David Vernet <void@manifault.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v6 01/17] bpf: Document XDP RX metadata
+Message-ID: <Y7g5jbXMrt19c9XE@maniforge.dhcp.thefacebook.com>
+References: <20230104215949.529093-1-sdf@google.com>
+ <20230104215949.529093-2-sdf@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230106142537.607399-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230104215949.529093-2-sdf@google.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Jan 06, 2023 at 06:25:36AM -0800, Ian Rogers escreveu:
-> Including libbpf header files should be guarded by
-> HAVE_LIBBPF_SUPPORT. In bpf_counter.h, move the skeleton utilities
-> under HAVE_BPF_SKEL.
+On Wed, Jan 04, 2023 at 01:59:33PM -0800, Stanislav Fomichev wrote:
+> Document all current use-cases and assumptions.
 > 
-> Fixes: d6a735ef3277 ("perf bpf_counter: Move common functions to bpf_counter.h")
-> Reported-by: Mike Leach <mike.leach@linaro.org>
-> Signed-off-by: Ian Rogers <irogers@google.com>
-
-Can this be done in a way that reduces patch size?
-
-- Arnaldo
-
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: David Ahern <dsahern@gmail.com>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> Cc: Maryam Tahhan <mtahhan@redhat.com>
+> Cc: xdp-hints@xdp-project.net
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
->  tools/perf/builtin-trace.c    |  2 +
->  tools/perf/util/bpf_counter.h | 85 ++++++++++++++++++-----------------
->  2 files changed, 46 insertions(+), 41 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index 86e06f136f40..d21fe0f32a6d 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -16,7 +16,9 @@
->  
->  #include "util/record.h"
->  #include <api/fs/tracing_path.h>
-> +#ifdef HAVE_LIBBPF_SUPPORT
->  #include <bpf/bpf.h>
-> +#endif
->  #include "util/bpf_map.h"
->  #include "util/rlimit.h"
->  #include "builtin.h"
-> diff --git a/tools/perf/util/bpf_counter.h b/tools/perf/util/bpf_counter.h
-> index 4dbf26408b69..9113c8bf5cb0 100644
-> --- a/tools/perf/util/bpf_counter.h
-> +++ b/tools/perf/util/bpf_counter.h
-> @@ -4,9 +4,12 @@
->  
->  #include <linux/list.h>
->  #include <sys/resource.h>
-> +
-> +#ifdef HAVE_LIBBPF_SUPPORT
->  #include <bpf/bpf.h>
->  #include <bpf/btf.h>
->  #include <bpf/libbpf.h>
-> +#endif
->  
->  struct evsel;
->  struct target;
-> @@ -42,6 +45,47 @@ int bpf_counter__read(struct evsel *evsel);
->  void bpf_counter__destroy(struct evsel *evsel);
->  int bpf_counter__install_pe(struct evsel *evsel, int cpu_map_idx, int fd);
->  
-> +static inline __u32 bpf_link_get_id(int fd)
-> +{
-> +	struct bpf_link_info link_info = { .id = 0, };
-> +	__u32 link_info_len = sizeof(link_info);
-> +
-> +	bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-> +	return link_info.id;
-> +}
-> +
-> +static inline __u32 bpf_link_get_prog_id(int fd)
-> +{
-> +	struct bpf_link_info link_info = { .id = 0, };
-> +	__u32 link_info_len = sizeof(link_info);
-> +
-> +	bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-> +	return link_info.prog_id;
-> +}
-> +
-> +static inline __u32 bpf_map_get_id(int fd)
-> +{
-> +	struct bpf_map_info map_info = { .id = 0, };
-> +	__u32 map_info_len = sizeof(map_info);
-> +
-> +	bpf_obj_get_info_by_fd(fd, &map_info, &map_info_len);
-> +	return map_info.id;
-> +}
-> +
-> +/* trigger the leader program on a cpu */
-> +static inline int bperf_trigger_reading(int prog_fd, int cpu)
-> +{
-> +	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-> +			    .ctx_in = NULL,
-> +			    .ctx_size_in = 0,
-> +			    .flags = BPF_F_TEST_RUN_ON_CPU,
-> +			    .cpu = cpu,
-> +			    .retval = 0,
-> +		);
-> +
-> +	return bpf_prog_test_run_opts(prog_fd, &opts);
-> +}
-> +
->  #else /* HAVE_BPF_SKEL */
->  
->  #include <linux/err.h>
-> @@ -87,45 +131,4 @@ static inline void set_max_rlimit(void)
->  	setrlimit(RLIMIT_MEMLOCK, &rinf);
->  }
->  
-> -static inline __u32 bpf_link_get_id(int fd)
-> -{
-> -	struct bpf_link_info link_info = { .id = 0, };
-> -	__u32 link_info_len = sizeof(link_info);
-> -
-> -	bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-> -	return link_info.id;
-> -}
-> -
-> -static inline __u32 bpf_link_get_prog_id(int fd)
-> -{
-> -	struct bpf_link_info link_info = { .id = 0, };
-> -	__u32 link_info_len = sizeof(link_info);
-> -
-> -	bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-> -	return link_info.prog_id;
-> -}
-> -
-> -static inline __u32 bpf_map_get_id(int fd)
-> -{
-> -	struct bpf_map_info map_info = { .id = 0, };
-> -	__u32 map_info_len = sizeof(map_info);
-> -
-> -	bpf_obj_get_info_by_fd(fd, &map_info, &map_info_len);
-> -	return map_info.id;
-> -}
-> -
-> -/* trigger the leader program on a cpu */
-> -static inline int bperf_trigger_reading(int prog_fd, int cpu)
-> -{
-> -	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-> -			    .ctx_in = NULL,
-> -			    .ctx_size_in = 0,
-> -			    .flags = BPF_F_TEST_RUN_ON_CPU,
-> -			    .cpu = cpu,
-> -			    .retval = 0,
-> -		);
-> -
-> -	return bpf_prog_test_run_opts(prog_fd, &opts);
-> -}
-> -
->  #endif /* __PERF_BPF_COUNTER_H */
-> -- 
-> 2.39.0.314.g84b9a713c41-goog
 
--- 
+This looks great, thanks Stanislav.
 
-- Arnaldo
+Acked-by: David Vernet <void@manifault.com>
