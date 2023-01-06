@@ -2,118 +2,253 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B189566028D
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 15:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7B666027B
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 15:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235244AbjAFOvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 09:51:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49298 "EHLO
+        id S229908AbjAFOtK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 09:49:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235241AbjAFOvV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 09:51:21 -0500
-X-Greylist: delayed 447 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 06 Jan 2023 06:51:19 PST
-Received: from 10.mo545.mail-out.ovh.net (10.mo545.mail-out.ovh.net [87.98.138.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B609392DE
-        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 06:51:19 -0800 (PST)
-Received: from ex4.mail.ovh.net (unknown [10.111.172.143])
-        by mo545.mail-out.ovh.net (Postfix) with ESMTPS id 943A22579B;
-        Fri,  6 Jan 2023 14:43:48 +0000 (UTC)
-Received: from [192.168.1.125] (37.65.8.229) by DAG10EX1.indiv4.local
- (172.16.2.91) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.16; Fri, 6 Jan
- 2023 15:43:40 +0100
-Message-ID: <8773f286-74ba-4efb-4a94-0c1f91d959bd@naccy.de>
-Date:   Fri, 6 Jan 2023 15:43:39 +0100
+        with ESMTP id S230244AbjAFOtH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 09:49:07 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA202669;
+        Fri,  6 Jan 2023 06:49:05 -0800 (PST)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pDnzC-000CSH-FZ; Fri, 06 Jan 2023 15:46:22 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pDnzB-000KKs-Uf; Fri, 06 Jan 2023 15:46:21 +0100
+Subject: Re: [PATCH bpf-next v4] bpf: Add kernel function call support in
+ 32-bit ARM for EABI
+To:     Yang Jihong <yangjihong1@huawei.com>, ast@kernel.org,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        illusionist.neo@gmail.com, linux@armlinux.org.uk,
+        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20221220115313.29949-1-yangjihong1@huawei.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Florent Revest <revest@chromium.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <02a9bfb2-4a75-d56f-4565-6ce5ea5e03c4@iogearbox.net>
+Date:   Fri, 6 Jan 2023 15:46:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [PATCH bpf-next v3 00/16] bpfilter
-Content-Language: fr
-To:     Florian Westphal <fw@strlen.de>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Dmitrii Banshchikov <me@ubique.spb.ru>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>
-References: <20221224000402.476079-1-qde@naccy.de>
- <20230103114540.GB13151@breakpoint.cc>
-From:   Quentin Deslandes <qde@naccy.de>
-In-Reply-To: <20230103114540.GB13151@breakpoint.cc>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [37.65.8.229]
-X-ClientProxiedBy: CAS11.indiv4.local (172.16.1.11) To DAG10EX1.indiv4.local
- (172.16.2.91)
-X-Ovh-Tracer-Id: 3721662146057268988
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvhedrkedtgdeikecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfhisehtkeertddtfeejnecuhfhrohhmpefsuhgvnhhtihhnucffvghslhgrnhguvghsuceoqhguvgesnhgrtggthidruggvqeenucggtffrrghtthgvrhhnpeegtefggeegtedtfeefkedvkeefleeiffeludetlefhkeffffejkefhgeeludeftdenucfkphepuddvjedrtddrtddruddpfeejrdeihedrkedrvddvleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehquggvsehnrggttgihrdguvgeqpdhnsggprhgtphhtthhopedupdhrtghpthhtohepfhifsehsthhrlhgvnhdruggvpdhlihhnuhigqdhkshgvlhhfthgvshhtsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdgsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpmhgvsehusghiqhhuvgdrshhpsgdrrhhupdhshhhurghhsehkvghrnhgvlhdrohhrghdpmhihkhholhgrlhesfhgsrdgtohhmpdhprggsvghnihesrhgvughhrghtrdgtohhmpdhkuhgsrgeskhgvrhhnvghlrdhorhhgpdgvughumhgrii
- gvthesghhoohhglhgvrdgtohhmpdgurghvvghmsegurghvvghmlhhofhhtrdhnvghtpdhjohhlshgrsehkvghrnhgvlhdrohhrghdphhgrohhluhhosehgohhoghhlvgdrtghomhdpshgufhesghhoohhglhgvrdgtohhmpdhkphhsihhnghhhsehkvghrnhgvlhdrohhrghdpjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdihhhhssehfsgdrtghomhdpshhonhhgsehkvghrnhgvlhdrohhrghdpmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdgrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdgurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprghstheskhgvrhhnvghlrdhorhhgpdhnvghtuggvvhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpkhgvrhhnvghlqdhtvggrmhesmhgvthgrrdgtohhmpdfovfetjfhoshhtpehmohehgeehpdhmohguvgepshhmthhpohhuth
+In-Reply-To: <20221220115313.29949-1-yangjihong1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26773/Fri Jan  6 09:48:44 2023)
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Le 03/01/2023 à 12:45, Florian Westphal a écrit :
-> Quentin Deslandes <qde@naccy.de> wrote:
->> The patchset is based on the patches from David S. Miller [1],
->> Daniel Borkmann [2], and Dmitrii Banshchikov [3].
->>
->> Note: I've partially sent this patchset earlier due to a
->> mistake on my side, sorry for then noise.
->>
->> The main goal of the patchset is to prepare bpfilter for
->> iptables' configuration blob parsing and code generation.
->>
->> The patchset introduces data structures and code for matches,
->> targets, rules and tables. Beside that the code generation
->> is introduced.
->>
->> The first version of the code generation supports only "inline"
->> mode - all chains and their rules emit instructions in linear
->> approach.
->>
->> Things that are not implemented yet:
->>    1) The process of switching from the previous BPF programs to the
->>       new set isn't atomic.
+On 12/20/22 12:53 PM, Yang Jihong wrote:
+> This patch adds kernel function call support to 32-bit ARM bpf jit for
+> EABI.
 > 
-> You can't make this atomic from userspace perspective, the
-> get/setsockopt API of iptables uses a read-modify-write model.
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+> 
+> Changes since v3:
+>    - Submit patches related to the ARM32 architecture separately.
+> 
+> Changes since v2:
+>    - Remove patches to adjust sk size check for CO_RE in 32-bit arch.
+>    - Add check of kfunc's return value in insn_def_regno.
+>    - Adjust is_reg64 for insn_def_regno.
+>    - The check of CONFIG_AEABI is moved from emit_kfunc_call to
+>      bpf_jit_supports_kfunc_call.
+>    - Fix a comment error in fixup_kfunc_call.
+> 
+>   arch/arm/net/bpf_jit_32.c | 137 ++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 137 insertions(+)
+> 
+> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+> index 6a1c9fca5260..ae3a36d909f4 100644
+> --- a/arch/arm/net/bpf_jit_32.c
+> +++ b/arch/arm/net/bpf_jit_32.c
+> @@ -1337,6 +1337,125 @@ static void build_epilogue(struct jit_ctx *ctx)
+>   #endif
+>   }
+>   
+> +/*
+> + * Input parameters of function in 32-bit ARM architecture:
+> + * The first four word-sized parameters passed to a function will be
+> + * transferred in registers R0-R3. Sub-word sized arguments, for example,
+> + * char, will still use a whole register.
+> + * Arguments larger than a word will be passed in multiple registers.
+> + * If more arguments are passed, the fifth and subsequent words will be passed
+> + * on the stack.
+> + *
+> + * The first for args of a function will be considered for
+> + * putting into the 32bit register R1, R2, R3 and R4.
+> + *
+> + * Two 32bit registers are used to pass a 64bit arg.
+> + *
+> + * For example,
+> + * void foo(u32 a, u32 b, u32 c, u32 d, u32 e):
+> + *      u32 a: R0
+> + *      u32 b: R1
+> + *      u32 c: R2
+> + *      u32 d: R3
+> + *      u32 e: stack
+> + *
+> + * void foo(u64 a, u32 b, u32 c, u32 d):
+> + *      u64 a: R0 (lo32) R1 (hi32)
+> + *      u32 b: R2
+> + *      u32 c: R3
+> + *      u32 d: stack
+> + *
+> + * void foo(u32 a, u64 b, u32 c, u32 d):
+> + *       u32 a: R0
+> + *       u64 b: R2 (lo32) R3 (hi32)
+> + *       u32 c: stack
+> + *       u32 d: stack
+> + *
+> + * void foo(u32 a, u32 b, u64 c, u32 d):
+> + *       u32 a: R0
+> + *       u32 b: R1
+> + *       u64 c: R2 (lo32) R3 (hi32)
+> + *       u32 d: stack
+> + *
+> + * void foo(u64 a, u64 b):
+> + *       u64 a: R0 (lo32) R1 (hi32)
+> + *       u64 b: R2 (lo32) R3 (hi32)
+> + *
+> + * The return value will be stored in the R0 (and R1 for 64bit value).
+> + *
+> + * For example,
+> + * u32 foo(u32 a, u32 b, u32 c):
+> + *      return value: R0
+> + *
+> + * u64 foo(u32 a, u32 b, u32 c):
+> + *      return value: R0 (lo32) R1 (hi32)
+> + *
+> + * The above is for AEABI only, OABI does not support this function.
+> + */
+> +static int emit_kfunc_call(const struct bpf_insn *insn, struct jit_ctx *ctx, const u32 func)
+> +{
+> +	int i;
+> +	const struct btf_func_model *fm;
+> +	const s8 *tmp = bpf2a32[TMP_REG_1];
+> +	const u8 arg_regs[] = { ARM_R0, ARM_R1, ARM_R2, ARM_R3 };
+> +	int nr_arg_regs = ARRAY_SIZE(arg_regs);
+> +	int arg_regs_idx = 0, stack_off = 0;
+> +	const s8 *rd;
+> +	s8 rt;
+> +
+> +	fm = bpf_jit_find_kfunc_model(ctx->prog, insn);
+> +	if (!fm)
+> +		return -EINVAL;
+> +
+> +	for (i = 0; i < fm->nr_args; i++) {
+> +		if (fm->arg_size[i] > sizeof(u32)) {
+> +			rd = arm_bpf_get_reg64(bpf2a32[BPF_REG_1 + i], tmp, ctx);
+> +
+> +			if (arg_regs_idx + 1 < nr_arg_regs) {
+> +				/*
+> +				 * AAPCS states:
+> +				 * A double-word sized type is passed in two
+> +				 * consecutive registers (e.g., r0 and r1, or
+> +				 * r2 and r3). The content of the registers is
+> +				 * as if the value had been loaded from memory
+> +				 * representation with a single LDM instruction.
+> +				 */
+> +				if (arg_regs_idx & 1)
+> +					arg_regs_idx++;
+> +
+> +				emit(ARM_MOV_R(arg_regs[arg_regs_idx++], rd[1]), ctx);
+> +				emit(ARM_MOV_R(arg_regs[arg_regs_idx++], rd[0]), ctx);
+> +			} else {
+> +				stack_off = ALIGN(stack_off, STACK_ALIGNMENT);
+> +
+> +				if (__LINUX_ARM_ARCH__ >= 6 ||
+> +				    ctx->cpu_architecture >= CPU_ARCH_ARMv5TE) {
+> +					emit(ARM_STRD_I(rd[1], ARM_SP, stack_off), ctx);
+> +				} else {
+> +					emit(ARM_STR_I(rd[1], ARM_SP, stack_off), ctx);
+> +					emit(ARM_STR_I(rd[0], ARM_SP, stack_off), ctx);
+> +				}
+> +
+> +				stack_off += 8;
+> +			}
+> +		} else {
+> +			rt = arm_bpf_get_reg32(bpf2a32[BPF_REG_1 + i][1], tmp[1], ctx);
+> +
+> +			if (arg_regs_idx  < nr_arg_regs) {
+> +				emit(ARM_MOV_R(arg_regs[arg_regs_idx++], rt), ctx);
+> +			} else {
+> +				emit(ARM_STR_I(rt, ARM_SP, stack_off), ctx);
+> +				stack_off += 4;
+> +			}
+> +		}
+> +	}
+> +
+> +	emit_a32_mov_i(tmp[1], func, ctx);
+> +	emit_blx_r(tmp[1], ctx);
+> +
+> +	return 0;
+> +}
+> +
+>   /*
+>    * Convert an eBPF instruction to native instruction, i.e
+>    * JITs an eBPF instruction.
+> @@ -1603,6 +1722,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
+>   	case BPF_LDX | BPF_MEM | BPF_H:
+>   	case BPF_LDX | BPF_MEM | BPF_B:
+>   	case BPF_LDX | BPF_MEM | BPF_DW:
+> +	case BPF_LDX | BPF_PROBE_MEM | BPF_W:
+> +	case BPF_LDX | BPF_PROBE_MEM | BPF_H:
+> +	case BPF_LDX | BPF_PROBE_MEM | BPF_B:
+> +	case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
 
-This refers to updating the programs from bpfilter's side. It won't
-be atomic from iptables point of view, but currently bpfilter will
-remove the program associated to a table, before installing the new
-one. This means packets received in between those operations are
-not filtered. I assume a better solution is possible.
+This doesn't look right, why is this part of the patch? It's not kfunc related
+and if you plan to add support for ldx_probe_mem then it should be separated from
+this set. Check out 800834285361 ("bpf, arm64: Add BPF exception tables"), why is
+this not needed for arm32?
 
-> Tentatively I'd try to extend libnftnl and generate bpf code there,
-> since its used by both iptables(-nft) and nftables we'd automatically
-> get support for both.
+>   		rn = arm_bpf_get_reg32(src_lo, tmp2[1], ctx);
+>   		emit_ldx_r(dst, rn, off, ctx, BPF_SIZE(code));
+>   		break;
+> @@ -1785,6 +1908,16 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
+>   		const s8 *r5 = bpf2a32[BPF_REG_5];
+>   		const u32 func = (u32)__bpf_call_base + (u32)imm;
+>   
+> +		if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+> +			int err;
+> +
+> +			err = emit_kfunc_call(insn, ctx, func);
+> +
+> +			if (err)
+> +				return err;
+> +			break;
+> +		}
+> +
+>   		emit_a32_mov_r64(true, r0, r1, ctx);
+>   		emit_a32_mov_r64(true, r1, r2, ctx);
+>   		emit_push_r64(r5, ctx);
+> @@ -2022,3 +2155,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   	return prog;
+>   }
+>   
+> +bool bpf_jit_supports_kfunc_call(void)
+> +{
+> +	return IS_ENABLED(CONFIG_AEABI);
+> +}
+> 
 
-That's one of the option, this could also remain in the kernel
-tree or in a dedicated git repository. I don't know which one would
-be the best, I'm open to suggestions.
-
-> I was planning to look into "attach bpf progs to raw netfilter hooks"
-> in Q1 2023, once the initial nf-bpf-codegen is merged.
-
-Is there any plan to support non raw hooks? That's mainly out
-of curiosity, I don't even know whether that would be a good thing
-or not.
