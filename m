@@ -2,114 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFADB6608FA
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 22:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EA6660930
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 23:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjAFVyj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 16:54:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        id S236551AbjAFWBU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 17:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjAFVyi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 16:54:38 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504C52ACC;
-        Fri,  6 Jan 2023 13:54:37 -0800 (PST)
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pDufZ-0006V4-LP; Fri, 06 Jan 2023 22:54:33 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pDufZ-000XXS-46; Fri, 06 Jan 2023 22:54:33 +0100
-Subject: Re: [PATCH] bpf: skip task with pid=1 in send_signal_common()
-To:     Stanislav Fomichev <sdf@google.com>, Hao Sun <sunhao.th@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, davem@davemloft.net, linux-kernel@vger.kernel.org
-References: <20230106084838.12690-1-sunhao.th@gmail.com>
- <CAKH8qBtAubqGg42+QgNv5nTHeHke=OWskfR1bxX0TG4yGb-FAg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f262fb2a-a173-a979-f34f-d8a7eba49441@iogearbox.net>
-Date:   Fri, 6 Jan 2023 22:54:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S236749AbjAFWAz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 17:00:55 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF324872B0;
+        Fri,  6 Jan 2023 14:00:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2247E61F95;
+        Fri,  6 Jan 2023 22:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D095C43392;
+        Fri,  6 Jan 2023 22:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673042417;
+        bh=i7T+6JKz2WTXvDqYqk418QBPETZDvfGBp3oBV0fcCTI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=X2v/+Li3fK8OXsYOhpJOzW9VqLnI51p5GwXqhGUElAmQTuLOIAeQQUZBrYJn5b8WW
+         x7AYgfBq0FV06KxqISIUOlVDPJF5BxVD3eycISYsWLEbJtoRYAO654yKGtqxOgofeW
+         F85o2RKPtc7T9eKYeWyjfUXnrYSOFAtArAG2gjanx1QicLUxiH5SS/Z4EVOtA5l34A
+         wOl32XhF94LSVEsMjobroUMYqTr1tQlbUROnt36xJpTRHQxM7PiF+VV1AoKnwxqoTQ
+         q9YxBZDScjr/bRAm8qgEmGNIfVVqit1LnzVzhrKc+kpCicBwn2FouTP+uqy/7ERo6a
+         OQ2rQ+ToNoEFw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5071BE5724D;
+        Fri,  6 Jan 2023 22:00:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAKH8qBtAubqGg42+QgNv5nTHeHke=OWskfR1bxX0TG4yGb-FAg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26773/Fri Jan  6 09:48:44 2023)
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bpf: skip task with pid=1 in send_signal_common()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167304241732.27890.12549455955282879496.git-patchwork-notify@kernel.org>
+Date:   Fri, 06 Jan 2023 22:00:17 +0000
+References: <20230106084838.12690-1-sunhao.th@gmail.com>
+In-Reply-To: <20230106084838.12690-1-sunhao.th@gmail.com>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/6/23 8:44 PM, Stanislav Fomichev wrote:
-> On Fri, Jan 6, 2023 at 12:48 AM Hao Sun <sunhao.th@gmail.com> wrote:
->>
->> The following kernel panic can be triggered when a task with pid=1
->> attach a prog that attempts to send killing signal to itself, also
->> see [1] for more details:
->>
->> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
->> CPU: 3 PID: 1 Comm: systemd Not tainted 6.1.0-09652-g59fe41b5255f #148
->> Call Trace:
->> <TASK>
->> __dump_stack lib/dump_stack.c:88 [inline]
->> dump_stack_lvl+0x100/0x178 lib/dump_stack.c:106
->> panic+0x2c4/0x60f kernel/panic.c:275
->> do_exit.cold+0x63/0xe4 kernel/exit.c:789
->> do_group_exit+0xd4/0x2a0 kernel/exit.c:950
->> get_signal+0x2460/0x2600 kernel/signal.c:2858
->> arch_do_signal_or_restart+0x78/0x5d0 arch/x86/kernel/signal.c:306
->> exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
->> exit_to_user_mode_prepare+0x15f/0x250 kernel/entry/common.c:203
->> __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
->> syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
->> do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
->> entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>
->> So skip task with pid=1 in bpf_send_signal_common() to avoid the panic.
->>
->> [1] https://lore.kernel.org/bpf/20221222043507.33037-1-sunhao.th@gmail.com
->>
->> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+Hello:
+
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Fri,  6 Jan 2023 16:48:38 +0800 you wrote:
+> The following kernel panic can be triggered when a task with pid=1
+> attach a prog that attempts to send killing signal to itself, also
+> see [1] for more details:
 > 
-> Acked-by: Stanislav Fomichev <sdf@google.com>
+> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> CPU: 3 PID: 1 Comm: systemd Not tainted 6.1.0-09652-g59fe41b5255f #148
+> Call Trace:
+> <TASK>
+> __dump_stack lib/dump_stack.c:88 [inline]
+> dump_stack_lvl+0x100/0x178 lib/dump_stack.c:106
+> panic+0x2c4/0x60f kernel/panic.c:275
+> do_exit.cold+0x63/0xe4 kernel/exit.c:789
+> do_group_exit+0xd4/0x2a0 kernel/exit.c:950
+> get_signal+0x2460/0x2600 kernel/signal.c:2858
+> arch_do_signal_or_restart+0x78/0x5d0 arch/x86/kernel/signal.c:306
+> exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+> exit_to_user_mode_prepare+0x15f/0x250 kernel/entry/common.c:203
+> __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+> syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
+> do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> [...]
 
-Looks good, agree & applied. These three tests could actually be refactored and also
-reused in bpf_probe_write_user() given also the latter should have no business to
-mess with pid 1.
+Here is the summary with links:
+  - bpf: skip task with pid=1 in send_signal_common()
+    https://git.kernel.org/bpf/bpf/c/a3d81bc1eaef
 
->>   kernel/trace/bpf_trace.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index 23ce498bca97..ed21ab9fe846 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -844,6 +844,9 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
->>           */
->>          if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
->>                  return -EPERM;
->> +       /* Task should not be pid=1 to avoid kernel panic. */
->> +       if (unlikely(is_global_init(current)))
->> +               return -EPERM;
->>          if (unlikely(!nmi_uaccess_okay()))
->>                  return -EPERM;
->>
->>
->> base-commit: 4aea86b4033f92f01547e6d4388d4451ae9b0980
->> --
->> 2.39.0
->>
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
