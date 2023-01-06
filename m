@@ -2,107 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E395366057D
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 18:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590586605A8
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 18:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbjAFRRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 12:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
+        id S231414AbjAFRZ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 12:25:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235724AbjAFRRg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 12:17:36 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E9A140D4
-        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 09:17:35 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id y1so2303774plb.2
-        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 09:17:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+BszObA54pUrS6LbjCGZnkDETNcwahguKQU7tKjQAnc=;
-        b=nxhl4YlRNgXEL6DzvFH0wf5sH3oKGJZwZW5j+mDfxIXt/jrXR/AvYhsm/DTbSwyH2M
-         GlVyjfa8U81CTQwoVMfXXM2deCySN+LnBLXtMlTopy7jvlxMkgRJdUOzny0vjF5Gu80u
-         UUJNnnceo33J2VG8PCW6A2hog6DTu34bTcfJ362Y/YfH9TSEa6TT8vTobx9p8UFTYMjh
-         CAbsws84tyQQ/RS6kIbTZLWTsPGP8aZDfVZj2Eij1KZRa5N4wrs13BPG099tAQeFfZ9H
-         3vAP33Fl5lpJx7ZS93miXyFDImJjBrdnJ9Zk3Ifn8nxSvSa2NBoZa6RbD16lNXnZPT7V
-         /3nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+BszObA54pUrS6LbjCGZnkDETNcwahguKQU7tKjQAnc=;
-        b=2fHjoRc01O4ek+uVfIl6R/b5SN3LpSZXXGLj5WGQVq8SOHAjfIQF7yCYFHbSkxRITA
-         RCNkwBEEhYa1CCWbS3XRA74GSGwWIFYaYE4NS6Ngq3JfENX7RcjTRWeUS369MUXL6n9b
-         u0iSSu41KvBLnbxNISuaJqP4SVg33/8tSdT1v5jMlCPSRGnqtZLGlernAdahzAcVJSx6
-         EvKC+i4piA8Pf5bJL1tswTi99RPgNZg4SZQEYJXK1RlxVgs/zW9GLFRTy05RmXgFQ/a9
-         dcaZVwaDOj75AAdNVrArJyGZzccNHt6GgkqH5z9GmP4AS/GCLIh7qtSSZcKd9O9ikbq+
-         axGA==
-X-Gm-Message-State: AFqh2kpHy+pXahnfmMI26CUn2Xh9ry1Kh8hBidmNR2dS17uSeNKLFtaj
-        35owauqZYKKDKjiiMxScTskSSM0bzGQmFNXCH7LiTQ==
-X-Google-Smtp-Source: AMrXdXsHeN7kO1opdugoqFTEsv0uWWRotDtg2lt7BlV0dLV+THh3uWF07Tz6TyKnsVTE2MPc28OY8yjdWAMHnomHBKM=
-X-Received: by 2002:a17:90a:8b92:b0:218:9107:381b with SMTP id
- z18-20020a17090a8b9200b002189107381bmr4368808pjn.75.1673025454798; Fri, 06
- Jan 2023 09:17:34 -0800 (PST)
+        with ESMTP id S235695AbjAFRZN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 12:25:13 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA2C7D9D7;
+        Fri,  6 Jan 2023 09:25:11 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 0A133CE1DAF;
+        Fri,  6 Jan 2023 17:25:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAA64C433EF;
+        Fri,  6 Jan 2023 17:25:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673025908;
+        bh=E0AMAcCDFiW3hKyGu+BfqHYfZVwE7Pp21GrhIKvYXUE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sL95n0g4oKqnBJasaQSHf6Zj1FG/nGZ57LvX/UjhNsZp7C1njL8RJU86DSCdnrSuu
+         jnXIJTkHxdDJYXfFXiJ0vbwHvnho0aF66OOwWz7PJC089NC5vk8K/KU7stV218tS/G
+         91l+93BoFP+gENAHDh3rdZNLySKc8ZJhKUee9lQUMENWXRfXEehcuRk2Fsmn2/byQL
+         l1smFR5EZnaeFg/zVylCgdQgG1kAdx7a6oRr8usb0GdyOwNmtyKTDU2frKCaybAUQF
+         Bt1JGPQD1cukLzcJO3OtzQGwjVu/tiukgNXMXSQugLdhFyIaZDXqGsSXovEB9pul31
+         IP9h5sD7wXZVw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4752C40468; Fri,  6 Jan 2023 14:25:05 -0300 (-03)
+Date:   Fri, 6 Jan 2023 14:25:05 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org
+Subject: Re: [PATCH v3 1/2] perf build: Properly guard libbpf includes
+Message-ID: <Y7hZccgOiueB31a+@kernel.org>
+References: <20230106151320.619514-1-irogers@google.com>
+ <CAJ9a7ViGE3UJX02oA42A9TSTKsOozPzdHjyL+OSP4J-9dZFqrg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230104215949.529093-1-sdf@google.com> <20230104215949.529093-6-sdf@google.com>
- <2795feb1-c968-b588-6a4c-9716afd8ecf2@linux.dev>
-In-Reply-To: <2795feb1-c968-b588-6a4c-9716afd8ecf2@linux.dev>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 6 Jan 2023 09:17:23 -0800
-Message-ID: <CAKH8qBvgE09m21ugW3j5Af99fOLqh8K0MH+4VM7hgS3TFW5Cdg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 05/17] bpf: Introduce device-bound XDP programs
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ9a7ViGE3UJX02oA42A9TSTKsOozPzdHjyL+OSP4J-9dZFqrg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 5, 2023 at 4:41 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 1/4/23 1:59 PM, Stanislav Fomichev wrote:
-> > @@ -199,12 +197,12 @@ int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
-> >           attr->prog_type != BPF_PROG_TYPE_XDP)
-> >               return -EINVAL;
+Em Fri, Jan 06, 2023 at 03:28:03PM +0000, Mike Leach escreveu:
+> On Fri, 6 Jan 2023 at 15:13, Ian Rogers <irogers@google.com> wrote:
 > >
-> > -     if (attr->prog_flags)
-> > +     if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-> >               return -EINVAL;
+> > Including libbpf header files should be guarded by
+> > HAVE_LIBBPF_SUPPORT. In bpf_counter.h, move the skeleton utilities
+> > under HAVE_BPF_SKEL.
 > >
-> > -     offload = kzalloc(sizeof(*offload), GFP_USER);
->
-> The kzalloc is still needed. Although a latter patch added it bad, it is better
-> not to miss it in the first place.
+> > Fixes: d6a735ef3277 ("perf bpf_counter: Move common functions to bpf_counter.h")
+> > Reported-by: Mike Leach <mike.leach@linaro.org>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 
-Oh, good catch, probably lost during reshuffling some changes around, will undo.
+Thanks, applied.
 
+- Arnaldo
 
-> > -     if (!offload)
-> > -             return -ENOMEM;
-> > +     if (attr->prog_type == BPF_PROG_TYPE_SCHED_CLS &&
-> > +         attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY)
-> > +             return -EINVAL;
+> > ---
+> >  tools/perf/builtin-trace.c    | 2 ++
+> >  tools/perf/util/bpf_counter.h | 6 ++++++
+> >  2 files changed, 8 insertions(+)
 > >
-> >       offload->prog = prog;
+> > diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> > index 86e06f136f40..d21fe0f32a6d 100644
+> > --- a/tools/perf/builtin-trace.c
+> > +++ b/tools/perf/builtin-trace.c
+> > @@ -16,7 +16,9 @@
 > >
->
+> >  #include "util/record.h"
+> >  #include <api/fs/tracing_path.h>
+> > +#ifdef HAVE_LIBBPF_SUPPORT
+> >  #include <bpf/bpf.h>
+> > +#endif
+> >  #include "util/bpf_map.h"
+> >  #include "util/rlimit.h"
+> >  #include "builtin.h"
+> > diff --git a/tools/perf/util/bpf_counter.h b/tools/perf/util/bpf_counter.h
+> > index 4dbf26408b69..c6d21c07b14c 100644
+> > --- a/tools/perf/util/bpf_counter.h
+> > +++ b/tools/perf/util/bpf_counter.h
+> > @@ -4,9 +4,12 @@
+> >
+> >  #include <linux/list.h>
+> >  #include <sys/resource.h>
+> > +
+> > +#ifdef HAVE_LIBBPF_SUPPORT
+> >  #include <bpf/bpf.h>
+> >  #include <bpf/btf.h>
+> >  #include <bpf/libbpf.h>
+> > +#endif
+> >
+> >  struct evsel;
+> >  struct target;
+> > @@ -87,6 +90,8 @@ static inline void set_max_rlimit(void)
+> >         setrlimit(RLIMIT_MEMLOCK, &rinf);
+> >  }
+> >
+> > +#ifdef HAVE_BPF_SKEL
+> > +
+> >  static inline __u32 bpf_link_get_id(int fd)
+> >  {
+> >         struct bpf_link_info link_info = { .id = 0, };
+> > @@ -127,5 +132,6 @@ static inline int bperf_trigger_reading(int prog_fd, int cpu)
+> >
+> >         return bpf_prog_test_run_opts(prog_fd, &opts);
+> >  }
+> > +#endif /* HAVE_BPF_SKEL */
+> >
+> >  #endif /* __PERF_BPF_COUNTER_H */
+> > --
+> > 2.39.0.314.g84b9a713c41-goog
+> >
+> 
+> 
+> This version builds fine too.
+> 
+> Mike
+> -- 
+> Mike Leach
+> Principal Engineer, ARM Ltd.
+> Manchester Design Centre. UK
+
+-- 
+
+- Arnaldo
