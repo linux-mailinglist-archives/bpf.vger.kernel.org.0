@@ -2,106 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD24C65FEDA
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 11:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A53265FFA4
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 12:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbjAFKZz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 05:25:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
+        id S229808AbjAFLkv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 06:40:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbjAFKY5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 05:24:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2812C6C2B2
-        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 02:24:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673000646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TEHObZijjJUTNDtqqI8JM1N/tfOCpCjHguBWcNndJb4=;
-        b=Uucm/wom+7mdelCvewmqwLwFXc4NPR18jaGg4xmuMYTAYSIdcTcWykum/xM/MCIRXzyoEp
-        fjVaUHJkoND1P7US0TzBLzIRmfr7ot8f7tQTlWurNGjk+kpLCe9C6wlikEHCKZBgXbSeoa
-        RQfwiieQxwPzxsYcwf0yxbviojMkkxA=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-568-tWF9Y5jIPEmZn9-cpEBG-g-1; Fri, 06 Jan 2023 05:24:00 -0500
-X-MC-Unique: tWF9Y5jIPEmZn9-cpEBG-g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4D6D41C05AE7;
-        Fri,  6 Jan 2023 10:24:00 +0000 (UTC)
-Received: from plouf.redhat.com (unknown [10.39.192.97])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D6FBC15BAD;
-        Fri,  6 Jan 2023 10:23:58 +0000 (UTC)
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
+        with ESMTP id S229498AbjAFLkt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 06:40:49 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE47D7148D;
+        Fri,  6 Jan 2023 03:40:47 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C312F250F6;
+        Fri,  6 Jan 2023 11:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1673005244; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Pq8vo72VlOIQypibTelr8uWjzVpZ26KKZVeqmmbrazM=;
+        b=FKpJpfyRQKcremgQ+4r8TS5oT0mCAMfqVMntXZGxvcxb3S2OUdSCNOSXx0ecUMit01ktWj
+        +ZVLPc2n1jVInQxyXM3B5kN16x49BSUoyAAJabAEC5ODMkE7ia35wdv+dkpHLiSuHHuye4
+        AmuP1HMiQJRxj9Gypf+Va4XQAVMIS8k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1673005244;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Pq8vo72VlOIQypibTelr8uWjzVpZ26KKZVeqmmbrazM=;
+        b=RkjMr1qzKL+z+wZS5TezVCSDPmKTGuXMnsUbbp3Qap4Ao886wi4xAzu+nkR6aHXWuZzpPX
+        XJA4ui9CY316i6Cw==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        by relay2.suse.de (Postfix) with ESMTP id 606E02C143;
+        Fri,  6 Jan 2023 11:40:44 +0000 (UTC)
+From:   Michal Suchanek <msuchanek@suse.de>
+Cc:     Michal Suchanek <msuchanek@suse.de>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH HID for-next v1 9/9] HID: bpf: reorder BPF registration
-Date:   Fri,  6 Jan 2023 11:23:32 +0100
-Message-Id: <20230106102332.1019632-10-benjamin.tissoires@redhat.com>
-In-Reply-To: <20230106102332.1019632-1-benjamin.tissoires@redhat.com>
-References: <20230106102332.1019632-1-benjamin.tissoires@redhat.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
+        Tools)), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] bpf_doc: Fix build error with older python versions
+Date:   Fri,  6 Jan 2023 12:40:37 +0100
+Message-Id: <20230106114037.25036-1-msuchanek@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Given that our initial BPF program is not using any kfuncs anymore,
-we can reorder the initialization to first try to load it and then
-register the kfuncs. This has the advantage of not exporting kfuncs
-when HID-BPF is not working.
++ make -j48 -s -C /dev/shm/kbuild/linux.33946/current ARCH=powerpc HOSTCC=gcc CROSS_COMPILE=powerpc64-suse-linux- clean
+TypeError: '_sre.SRE_Match' object is not subscriptable
 
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Fixes: 8a76145a2ec2 ("bpf: explicitly define BPF_FUNC_xxx integer values")
+
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
 ---
- drivers/hid/bpf/hid_bpf_dispatch.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ scripts/bpf_doc.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf_dispatch.c
-index 26117b4ec016..8a034a555d4c 100644
---- a/drivers/hid/bpf/hid_bpf_dispatch.c
-+++ b/drivers/hid/bpf/hid_bpf_dispatch.c
-@@ -514,15 +514,16 @@ static int __init hid_bpf_init(void)
- 		return 0;
- 	}
- 
--	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &hid_bpf_kfunc_set);
-+	err = hid_bpf_preload_skel();
- 	if (err) {
--		pr_warn("error while setting HID BPF tracing kfuncs: %d", err);
-+		pr_warn("error while preloading HID BPF dispatcher: %d", err);
- 		return 0;
- 	}
- 
--	err = hid_bpf_preload_skel();
-+	/* register tracing kfuncs after we are sure we can load our preloaded bpf program */
-+	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &hid_bpf_kfunc_set);
- 	if (err) {
--		pr_warn("error while preloading HID BPF dispatcher: %d", err);
-+		pr_warn("error while setting HID BPF tracing kfuncs: %d", err);
- 		return 0;
- 	}
- 
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index e8d90829f23e..38d51e05c7a2 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -271,7 +271,7 @@ class HeaderParser(object):
+             if capture:
+                 fn_defines_str += self.line
+                 helper_name = capture.expand(r'bpf_\1')
+-                self.helper_enum_vals[helper_name] = int(capture[2])
++                self.helper_enum_vals[helper_name] = int(capture.group(2))
+                 self.helper_enum_pos[helper_name] = i
+                 i += 1
+             else:
 -- 
-2.38.1
+2.35.3
 
