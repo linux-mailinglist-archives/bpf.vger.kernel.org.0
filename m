@@ -2,65 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 923B165FD0E
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 09:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CF365FE47
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 10:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbjAFIsw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 03:48:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
+        id S229446AbjAFJrJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 04:47:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbjAFIsp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 03:48:45 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E48954724;
-        Fri,  6 Jan 2023 00:48:45 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id j8-20020a17090a3e0800b00225fdd5007fso1054800pjc.2;
-        Fri, 06 Jan 2023 00:48:45 -0800 (PST)
+        with ESMTP id S233742AbjAFJqT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 04:46:19 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698D869B3B;
+        Fri,  6 Jan 2023 01:45:45 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id c65-20020a1c3544000000b003cfffd00fc0so3167204wma.1;
+        Fri, 06 Jan 2023 01:45:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CLvpBtlWPC1Y4yYI2pgDTW/iPqU69O+/L6LCbdiNubM=;
-        b=lHv5XTXiqHurmIC9daS85WL8F1hlIf+iMEPyKW/hqT5o6m23V36EImDG5+lebQRKh7
-         2rP/ozBPce66wr0G1nAHk8/dW/TCH5f1TsDPgdXZmFDqO5RiiValeEKncRc2RHt4kILf
-         eonuRBauT79z5oxxhHdll1stttLZGbIvf+OyUqPvaVX5K7Bg4/2e85/Wgh3kvRtnjoql
-         hS8c9IpERfH9+FDXga1NmZqwbw/Qrr0D8PaqUpr+7sRtH5lorO8aHxZu06g51dOUf58b
-         m+KeVRccO0fjzADOYFQplOOFDksFH4Eeo2d/d3NFs6OyU6noDiqMFRtJEoc79SyrI4Tm
-         iNfw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PN8//UfAoVwKaLm31eaWicz8hNpiTUFBXEnuGYY6upA=;
+        b=FlwDESQyeNbwEOF9phOaSdZuMcQArQruAlYMTIIZ6+wSGyki259+Z+Sbg2rCI+BVQt
+         sn9X3mES4FYL0nwejFeAt+UGU5KL6LpEanaT9TjhL8UDHNtgsndEgp/y8K1EIX3vxA3n
+         Z4RlkGCMmQa9J5f+NxM8mSeSlbHjY6+DRna3iodggUIwdycTIXd5f1/VV/VOMKpN4dh3
+         4HAHYShdm7RrVrqqnLISKJ9Mp+f0ysYmVu0Q5RJ39oG+0QOQMCFeTmNbH5ljcGBn7WTx
+         nOER6ELX9ikWuNZjskCtbq5SEpXtds8xMJ05K3DiU/V5OZy7YAob2+UaBkXAWzBuQVux
+         bA2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CLvpBtlWPC1Y4yYI2pgDTW/iPqU69O+/L6LCbdiNubM=;
-        b=B/1+p1JdVnUiUe32VPR8lhWnBhvDJUVYXqzpxz7HTdkFt1QCmBJEM2apcev/0Rcff4
-         KU902RQ6gulDaVRXm11RUGLE3MRxNvyV1oatRLAypIBC9INfKGeYBzQNGGiq3UUnbMnS
-         5DdJv1rJqJlw0FQAj4+u17ASED2bscNbzcJnpPfnerrSTT5Lii1CUOk/XNUKkOMcWehX
-         2iV2CF6Q9Pz3JsWCUu6gyk5H4jXKAgY4PzdFaSW2OOVuukscWhdStOb/kuzeDa4qqB+t
-         jf9d80bmNDm4ClKYu9iTZhNwvxh8OaRiIr3OLKNNSD7EsiPG+Th9jETWi92edhbbYEsW
-         C2Ig==
-X-Gm-Message-State: AFqh2kr2RC8/QBK6Jq5QQQPD31rJ2ePGt39g7Roo0y9jfFplAmWhZxj/
-        K7UDD4+ueGWvV4r4Mgmx45wcram2Mw/y
-X-Google-Smtp-Source: AMrXdXtgJ2BhPl0zgwGWxM9NuOuMxVGVUoOI1lEAZJenlI7nk4b+Rj04PBbjF8EF5bk+mhPxDQqjhw==
-X-Received: by 2002:a17:902:d346:b0:192:9160:6cd with SMTP id l6-20020a170902d34600b00192916006cdmr35802234plk.13.1672994924239;
-        Fri, 06 Jan 2023 00:48:44 -0800 (PST)
-Received: from localhost.localdomain ([144.214.0.13])
-        by smtp.gmail.com with ESMTPSA id o9-20020a170903210900b0017fe9b038fdsm469840ple.14.2023.01.06.00.48.41
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 06 Jan 2023 00:48:43 -0800 (PST)
-From:   Hao Sun <sunhao.th@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, Hao Sun <sunhao.th@gmail.com>
-Subject: [PATCH] bpf: skip task with pid=1 in send_signal_common()
-Date:   Fri,  6 Jan 2023 16:48:38 +0800
-Message-Id: <20230106084838.12690-1-sunhao.th@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PN8//UfAoVwKaLm31eaWicz8hNpiTUFBXEnuGYY6upA=;
+        b=QRL2oqrjWWXNKZxBt/9+IJ0LvXHs4UYKnoysqqykq+rxLGfbVQGzr7BPZ6NYSWWE4u
+         VvAnLgyrRDrHOlS4derW8ACDjB+1wIAXKM+GgeJWwSLmTpAIzGQNmy1o76R8gN37MW8Q
+         pBgaQkH1qC5NQ6bSoEFuA8HDusjq5tAq8tt/ntqUzIGETfT6c0N4k/HQufEiRjSmYHq6
+         u1tNyHV08dJm67xxCcpBmWno7j2Pih1lRqo4u8DmK8XMbPm/N6PindTP2XmZs0y8KJ91
+         eDa5tSidOIwNXr/ZVSUiFzTeaAtFyGMSW6IIqjDe/t/n4xHcsU1Trl0LGhx6SLMT5nED
+         psdQ==
+X-Gm-Message-State: AFqh2krhoYSkvJPFBC7fQkrVWEKWZQ0THZ3q1l0K7quawcv+Jbp2He6u
+        QgAAS8p6mqZr0IgscFfrMw0=
+X-Google-Smtp-Source: AMrXdXvGEs46DZ+1Nu9hdjrmPn0yZt8DrEET0vDFvTytRbxXI3AghL6OK5+dJLdJNIH2WxrVI2eIew==
+X-Received: by 2002:a05:600c:3ca2:b0:3d9:a5a2:65fa with SMTP id bg34-20020a05600c3ca200b003d9a5a265famr17725332wmb.7.1672998343858;
+        Fri, 06 Jan 2023 01:45:43 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id bg24-20020a05600c3c9800b003cfa3a12660sm13739987wmb.1.2023.01.06.01.45.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Jan 2023 01:45:43 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 6 Jan 2023 10:45:40 +0100
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        linux-modules@vger.kernel.org
+Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
+Message-ID: <Y7ftxIiV35Wd75lZ@krava>
+References: <20221230112729.351-1-thunder.leizhen@huawei.com>
+ <20221230112729.351-3-thunder.leizhen@huawei.com>
+ <Y7WoZARt37xGpjXD@alley>
+ <Y7dBoII5kZnHGFdL@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y7dBoII5kZnHGFdL@krava>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,53 +93,108 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The following kernel panic can be triggered when a task with pid=1
-attach a prog that attempts to send killing signal to itself, also
-see [1] for more details:
+On Thu, Jan 05, 2023 at 10:31:12PM +0100, Jiri Olsa wrote:
+> On Wed, Jan 04, 2023 at 05:25:08PM +0100, Petr Mladek wrote:
+> > On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
+> > > Function __module_address() can quickly return the pointer of the module
+> > > to which an address belongs. We do not need to traverse the symbols of all
+> > > modules to check whether each address in addrs[] is the start address of
+> > > the corresponding symbol, because register_fprobe_ips() will do this check
+> > > later.
+> 
+> hum, for some reason I can see only replies to this patch and
+> not the actual patch.. I'll dig it out of the lore I guess
+> 
+> > > 
+> > > Assuming that there are m modules, each module has n symbols on average,
+> > > and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
+> > > complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
+> > > and the time complexity of current method is O(K * (log(m) + M)), M <= m.
+> > > (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
+> > > the ratio is still greater than 1. Therefore, the new method will
+> > > generally have better performance.
+> 
+> could you try to benchmark that? I tried something similar but was not
+> able to get better performance
 
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-CPU: 3 PID: 1 Comm: systemd Not tainted 6.1.0-09652-g59fe41b5255f #148
-Call Trace:
-<TASK>
-__dump_stack lib/dump_stack.c:88 [inline]
-dump_stack_lvl+0x100/0x178 lib/dump_stack.c:106
-panic+0x2c4/0x60f kernel/panic.c:275
-do_exit.cold+0x63/0xe4 kernel/exit.c:789
-do_group_exit+0xd4/0x2a0 kernel/exit.c:950
-get_signal+0x2460/0x2600 kernel/signal.c:2858
-arch_do_signal_or_restart+0x78/0x5d0 arch/x86/kernel/signal.c:306
-exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
-exit_to_user_mode_prepare+0x15f/0x250 kernel/entry/common.c:203
-__syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
-syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
-do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
+hm looks like I tried the smilar thing (below) like you did,
+but wasn't able to get better performace
 
-So skip task with pid=1 in bpf_send_signal_common() to avoid the panic.
+I guess your goal is to get rid of the module arg in
+module_kallsyms_on_each_symbol callback that we use?
+I'm ok with the change if the performace is not worse
 
-[1] https://lore.kernel.org/bpf/20221222043507.33037-1-sunhao.th@gmail.com
+jirka
 
-Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+
 ---
- kernel/trace/bpf_trace.c | 3 +++
- 1 file changed, 3 insertions(+)
-
 diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 23ce498bca97..ed21ab9fe846 100644
+index 5b9008bc597b..3280c22009f1 100644
 --- a/kernel/trace/bpf_trace.c
 +++ b/kernel/trace/bpf_trace.c
-@@ -844,6 +844,9 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
- 	 */
- 	if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
- 		return -EPERM;
-+	/* Task should not be pid=1 to avoid kernel panic. */
-+	if (unlikely(is_global_init(current)))
-+		return -EPERM;
- 	if (unlikely(!nmi_uaccess_okay()))
- 		return -EPERM;
+@@ -2692,23 +2692,16 @@ struct module_addr_args {
+ 	int mods_cap;
+ };
  
-
-base-commit: 4aea86b4033f92f01547e6d4388d4451ae9b0980
--- 
-2.39.0
-
+-static int module_callback(void *data, const char *name,
+-			   struct module *mod, unsigned long addr)
++static int add_module(struct module_addr_args *args, struct module *mod)
+ {
+-	struct module_addr_args *args = data;
+ 	struct module **mods;
+ 
+-	/* We iterate all modules symbols and for each we:
+-	 * - search for it in provided addresses array
+-	 * - if found we check if we already have the module pointer stored
+-	 *   (we iterate modules sequentially, so we can check just the last
+-	 *   module pointer)
++	/* We iterate sorted addresses and for each within module we:
++	 * - check if we already have the module pointer stored for it
++	 *   (we iterate sorted addresses sequentially, so we can check
++	 *   just the last module pointer)
+ 	 * - take module reference and store it
+ 	 */
+-	if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
+-		       bpf_kprobe_multi_addrs_cmp))
+-		return 0;
+-
+ 	if (args->mods && args->mods[args->mods_cnt - 1] == mod)
+ 		return 0;
+ 
+@@ -2734,10 +2727,24 @@ static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u3
+ 		.addrs     = addrs,
+ 		.addrs_cnt = addrs_cnt,
+ 	};
+-	int err;
++	u32 i, err = 0;
++
++	for (i = 0; !err && i < addrs_cnt; i++) {
++		struct module *mod;
++		bool found = false;
++
++		preempt_disable();
++		mod = __module_text_address(addrs[i]);
++		found = mod && try_module_get(mod);
++		preempt_enable();
++
++		if (found) {
++			err = add_module(&args, mod);
++			module_put(mod);
++		}
++	}
+ 
+ 	/* We return either err < 0 in case of error, ... */
+-	err = module_kallsyms_on_each_symbol(module_callback, &args);
+ 	if (err) {
+ 		kprobe_multi_put_modules(args.mods, args.mods_cnt);
+ 		kfree(args.mods);
+@@ -2862,7 +2869,8 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 	} else {
+ 		/*
+ 		 * We need to sort addrs array even if there are no cookies
+-		 * provided, to allow bsearch in get_modules_for_addrs.
++		 * provided, to allow sequential address walk in
++		 * get_modules_for_addrs.
+ 		 */
+ 		sort(addrs, cnt, sizeof(*addrs),
+ 		       bpf_kprobe_multi_addrs_cmp, NULL);
