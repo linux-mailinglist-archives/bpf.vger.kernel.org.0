@@ -2,99 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EA6660930
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 23:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C79660956
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 23:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236551AbjAFWBU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 17:01:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
+        id S234858AbjAFWMD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 17:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236749AbjAFWAz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 17:00:55 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF324872B0;
-        Fri,  6 Jan 2023 14:00:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2247E61F95;
-        Fri,  6 Jan 2023 22:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D095C43392;
-        Fri,  6 Jan 2023 22:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673042417;
-        bh=i7T+6JKz2WTXvDqYqk418QBPETZDvfGBp3oBV0fcCTI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=X2v/+Li3fK8OXsYOhpJOzW9VqLnI51p5GwXqhGUElAmQTuLOIAeQQUZBrYJn5b8WW
-         x7AYgfBq0FV06KxqISIUOlVDPJF5BxVD3eycISYsWLEbJtoRYAO654yKGtqxOgofeW
-         F85o2RKPtc7T9eKYeWyjfUXnrYSOFAtArAG2gjanx1QicLUxiH5SS/Z4EVOtA5l34A
-         wOl32XhF94LSVEsMjobroUMYqTr1tQlbUROnt36xJpTRHQxM7PiF+VV1AoKnwxqoTQ
-         q9YxBZDScjr/bRAm8qgEmGNIfVVqit1LnzVzhrKc+kpCicBwn2FouTP+uqy/7ERo6a
-         OQ2rQ+ToNoEFw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5071BE5724D;
-        Fri,  6 Jan 2023 22:00:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230270AbjAFWMC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 17:12:02 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1CD35911;
+        Fri,  6 Jan 2023 14:12:01 -0800 (PST)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pDuwJ-000AGE-3n; Fri, 06 Jan 2023 23:11:51 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pDuwI-0006S9-Kh; Fri, 06 Jan 2023 23:11:50 +0100
+Subject: Re: [PATCH] bpf_doc: Fix build error with older python versions
+To:     Quentin Monnet <quentin@isovalent.com>,
+        Michal Suchanek <msuchanek@suse.de>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20230106114037.25036-1-msuchanek@suse.de>
+ <c8020dc5-e911-e9a1-a269-5fbcb682f346@isovalent.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <521abe2f-1aa3-563f-48ec-c016450602d9@iogearbox.net>
+Date:   Fri, 6 Jan 2023 23:11:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: skip task with pid=1 in send_signal_common()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167304241732.27890.12549455955282879496.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Jan 2023 22:00:17 +0000
-References: <20230106084838.12690-1-sunhao.th@gmail.com>
-In-Reply-To: <20230106084838.12690-1-sunhao.th@gmail.com>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <c8020dc5-e911-e9a1-a269-5fbcb682f346@isovalent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26773/Fri Jan  6 09:48:44 2023)
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Fri,  6 Jan 2023 16:48:38 +0800 you wrote:
-> The following kernel panic can be triggered when a task with pid=1
-> attach a prog that attempts to send killing signal to itself, also
-> see [1] for more details:
+On 1/6/23 1:11 PM, Quentin Monnet wrote:
+> 2023-01-06 12:40 UTC+0100 ~ Michal Suchanek <msuchanek@suse.de>
+>> + make -j48 -s -C /dev/shm/kbuild/linux.33946/current ARCH=powerpc HOSTCC=gcc CROSS_COMPILE=powerpc64-suse-linux- clean
+>> TypeError: '_sre.SRE_Match' object is not subscriptable
+>>
+>> Fixes: 8a76145a2ec2 ("bpf: explicitly define BPF_FUNC_xxx integer values")
+>>
+>> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+>> ---
+>>   scripts/bpf_doc.py | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+>> index e8d90829f23e..38d51e05c7a2 100755
+>> --- a/scripts/bpf_doc.py
+>> +++ b/scripts/bpf_doc.py
+>> @@ -271,7 +271,7 @@ class HeaderParser(object):
+>>               if capture:
+>>                   fn_defines_str += self.line
+>>                   helper_name = capture.expand(r'bpf_\1')
+>> -                self.helper_enum_vals[helper_name] = int(capture[2])
+>> +                self.helper_enum_vals[helper_name] = int(capture.group(2))
+>>                   self.helper_enum_pos[helper_name] = i
+>>                   i += 1
+>>               else:
 > 
-> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> CPU: 3 PID: 1 Comm: systemd Not tainted 6.1.0-09652-g59fe41b5255f #148
-> Call Trace:
-> <TASK>
-> __dump_stack lib/dump_stack.c:88 [inline]
-> dump_stack_lvl+0x100/0x178 lib/dump_stack.c:106
-> panic+0x2c4/0x60f kernel/panic.c:275
-> do_exit.cold+0x63/0xe4 kernel/exit.c:789
-> do_group_exit+0xd4/0x2a0 kernel/exit.c:950
-> get_signal+0x2460/0x2600 kernel/signal.c:2858
-> arch_do_signal_or_restart+0x78/0x5d0 arch/x86/kernel/signal.c:306
-> exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
-> exit_to_user_mode_prepare+0x15f/0x250 kernel/entry/common.c:203
-> __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
-> syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
-> do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
-> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> Thanks, the change looks good.
 > 
-> [...]
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
+> 
+> Would be nice to have a bit more context in the commit log: As I
+> understand, Match objects have been scriptable since Python 3.6 (2016).
+> 
+> Reference: https://docs.python.org/3/whatsnew/3.6.html#re
 
-Here is the summary with links:
-  - bpf: skip task with pid=1 in send_signal_common()
-    https://git.kernel.org/bpf/bpf/c/a3d81bc1eaef
+Agree, Michal, could you improve the commit description as it's a bit terse
+as-is and then resubmit your patch.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Daniel
