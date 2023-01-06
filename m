@@ -2,67 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A7766077A
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 20:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D4C66089C
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 22:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233994AbjAFT4Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 14:56:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43444 "EHLO
+        id S230032AbjAFVIL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 16:08:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236255AbjAFTz6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 14:55:58 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7A181D73
-        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 11:55:56 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id p14-20020a170902e74e00b00192f6d0600eso1839175plf.3
-        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 11:55:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mIPfW8itmy1nSGwQkVM3Is8GI7aiE3cD3klmvrspZs0=;
-        b=gK3Rq0cvWTBHU4Zc/89GDyZmL/Xomq02yNExaES11bqv8Qq6JyQxyps2qm2tOQvOhp
-         MbEEjC8t5aDfiWotmAxiEYDOrCrfryogB9kDZ8HBnvDDnv+wLO0I3D50hZDVOnxRh0QL
-         KS0HCMkKuEwWmya6zPvpdkxXifclPDqjLFRVBR4+682IgC1pb2cdNqHshG3XiYX8+yQo
-         /V8SUEOJm4t9FvsszVrJ0b+YhuIuFulrrZjiVP1oJAYuOOWeLl2PXrTjfIPNvoFkQryH
-         /006iPK9TwLv4N5LGWPGQQSUzR6LlwzsNfUBS0Cq5LUlHdgT0xYxpGOyYrdCM+Pzt5o1
-         9whQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mIPfW8itmy1nSGwQkVM3Is8GI7aiE3cD3klmvrspZs0=;
-        b=MuyVCXKnl86c6G8qY+7OHYu+VVev6HQnCY0GcDP+S+K9XsEBv7a8LLyMK0UDvct5oR
-         LxevnqqF+V8AqAKttE3pcRBrbXEMhoUVjQMXCHAxvwUBpxgIwSD2GOuI2fD2k0j7jvgh
-         PPB6FfbUJr0MIzvMILgODTz11b5TRA3KCG6n+zZGTKnHhq/5mavQMa7GnueGG3Z8AizV
-         o5P58ERygmdqTJOxBH/9NCI4m83z7CARENN42r73syMZ3426MNdouyO7hYqOQjCvfEbX
-         j5ou+6nn35basvGRZW5WfKMtNTpV/me8f0YxaLEjhEZ8b8aZWAvn1cNlWULklIUlclZ0
-         D0iw==
-X-Gm-Message-State: AFqh2kpJd8nVGHBdZV1gaE+av4nA6sIiEzXWmXgCqkcp0tek0L9sP5Na
-        Jfp4jEV5vWkTnBzTceegotge0NA=
-X-Google-Smtp-Source: AMrXdXvyR146I6BbPaAgJWkImFp33rAI/P5iLiFaYEMqoHm7uOIZBP467ozGpC8WQiBzBaYOkhw75fQ=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a62:6502:0:b0:577:d52e:b585 with SMTP id
- z2-20020a626502000000b00577d52eb585mr3905945pfb.57.1673034956425; Fri, 06 Jan
- 2023 11:55:56 -0800 (PST)
-Date:   Fri, 6 Jan 2023 11:55:54 -0800
-In-Reply-To: <7e9ca6837b20bea661248957dbbd1db198e3d1f8.1672976410.git.william.xuanziyang@huawei.com>
-Mime-Version: 1.0
-References: <cover.1672976410.git.william.xuanziyang@huawei.com> <7e9ca6837b20bea661248957dbbd1db198e3d1f8.1672976410.git.william.xuanziyang@huawei.com>
-Message-ID: <Y7h8yrOEkPuHkNpJ@google.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add ipip6 and ip6ip decap support for bpf_skb_adjust_room()
-From:   sdf@google.com
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, willemb@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        with ESMTP id S229752AbjAFVIK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 16:08:10 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B61780631
+        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 13:08:08 -0800 (PST)
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pDtwa-000It6-MW; Fri, 06 Jan 2023 22:08:04 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pDtwa-000EgJ-G9; Fri, 06 Jan 2023 22:08:04 +0100
+Subject: Re: [Bpf] [PATCH] bpf, docs: Fix modulo zero, division by zero,
+ overflow, and underflow
+To:     Dave Thaler <dthaler@microsoft.com>,
+        "sdf@google.com" <sdf@google.com>,
+        "dthaler1968@googlemail.com" <dthaler1968@googlemail.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "bpf@ietf.org" <bpf@ietf.org>
+References: <20230105163223.3472-1-dthaler1968@googlemail.com>
+ <Y7cefSXEQ3M3C9pk@google.com>
+ <51a639d4-c140-a10e-cd67-fff92ebcda9d@iogearbox.net>
+ <BN6PR21MB07880DB65051DCAC6F8D0021A3FB9@BN6PR21MB0788.namprd21.prod.outlook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ac61c733-73f3-8347-83db-b611967459ca@iogearbox.net>
+Date:   Fri, 6 Jan 2023 22:08:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <BN6PR21MB07880DB65051DCAC6F8D0021A3FB9@BN6PR21MB0788.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26773/Fri Jan  6 09:48:44 2023)
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,103 +56,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/06, Ziyang Xuan wrote:
-> Add ipip6 and ip6ip decap support for bpf_skb_adjust_room().
-> Main use case is for using cls_bpf on ingress hook to decapsulate
-> IPv4 over IPv6 and IPv6 over IPv4 tunnel packets.
+On 1/6/23 7:11 PM, Dave Thaler wrote:
+> Daniel Borkmann wrote:
+> [...]
+>>>> +Also note that the division and modulo operations are unsigned,
+>>>> +where 'imm' is first sign extended to 64 bits and then converted to
+>>>> +an unsigned 64-bit value.  There are no instructions for signed
+>>>> +division or modulo.
+>>>
+>>> Less sure about this part, but it looks to be true at least by looking
+>>> at the interpreter which does:
+>>>
+>>> DST = DST / IMM
+>>>
+>>> where:
+>>>
+>>> DST === (u64) regs[insn->dst_reg]
+>>> IMM === (s32) insn->imm
+>>>
+>>> (and s32 is sign-expanded to u64 according to C rules)
+>>
+>> Yeap, the actual operation is in the target width, so for 32 bit it's casted to
+>> u32, e.g. for modulo (note that the verifier rewrites it into `(src != 0) ?
+>> (dst % src) : dst` form, so here is just the extract of the plain mod insn and it's
+>> similar for div):
+>>
+>>           ALU64_MOD_X:
+>>                   div64_u64_rem(DST, SRC, &AX);
+>>                   DST = AX;
+>>                   CONT;
+>>           ALU_MOD_X:
+>>                   AX = (u32) DST;
+>>                   DST = do_div(AX, (u32) SRC);
+>>                   CONT;
+>>           ALU64_MOD_K:
+>>                   div64_u64_rem(DST, IMM, &AX);
+>>                   DST = AX;
+>>                   CONT;
+>>           ALU_MOD_K:
+>>                   AX = (u32) DST;
+>>                   DST = do_div(AX, (u32) IMM);
+>>                   CONT;
+>>
+>> So in above phrasing the middle part needs to be adapted or just removed.
+> 
+> The phrasing was based on the earlier discussion on this list (see
+> https://lore.kernel.org/bpf/CAADnVQJ387tWd7WgxqfoB44xMe17bY0RRp_Sng3xMnKsywFpxg@mail.gmail.com/) where
+> Alexei wrote "imm32 is _sign_ extended everywhere",
+> and I cited the div_k tests in lib/test_bpf.c that assume sign extension
+> not zero extension.
 
-CC'd Willem since he has done bpf_skb_adjust_room changes in the past.
-There might be a lot of GRO/GSO context I'm missing.
+`Where 'imm' is first sign extended to 64 bits and then converted to an unsigned
+64-bit value` is true for the 64 bit operation, for the 32-bit it's just converted
+to an unsigned 32-bit value, see the (u32)IMM which is (u32)(s32) insn->imm. From
+the phrasing, it was a bit less clear perhaps.
 
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-> ---
->   net/core/filter.c | 34 ++++++++++++++++++++++++++++++++--
->   1 file changed, 32 insertions(+), 2 deletions(-)
-
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 929358677183..73982fb4fe2e 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3495,6 +3495,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb,  
-> u32 off, u32 len_diff,
->   static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
->   			      u64 flags)
->   {
-> +	union {
-> +		struct iphdr *v4;
-> +		struct ipv6hdr *v6;
-> +		unsigned char *hdr;
-> +	} ip;
-> +	__be16 proto;
->   	int ret;
-
->   	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
-> @@ -3512,10 +3518,19 @@ static int bpf_skb_net_shrink(struct sk_buff  
-> *skb, u32 off, u32 len_diff,
->   	if (unlikely(ret < 0))
->   		return ret;
-
-> +	ip.hdr = skb_inner_network_header(skb);
-> +	if (ip.v4->version == 4)
-> +		proto = htons(ETH_P_IP);
-> +	else
-> +		proto = htons(ETH_P_IPV6);
-> +
->   	ret = bpf_skb_net_hdr_pop(skb, off, len_diff);
->   	if (unlikely(ret < 0))
->   		return ret;
-
-> +	/* Match skb->protocol to new outer l3 protocol */
-> +	skb->protocol = proto;
-> +
->   	if (skb_is_gso(skb)) {
->   		struct skb_shared_info *shinfo = skb_shinfo(skb);
-
-> @@ -3578,10 +3593,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,  
-> skb, s32, len_diff,
->   	   u32, mode, u64, flags)
->   {
->   	u32 len_cur, len_diff_abs = abs(len_diff);
-> -	u32 len_min = bpf_skb_net_base_len(skb);
-> -	u32 len_max = BPF_SKB_MAX_LEN;
-> +	u32 len_min, len_max = BPF_SKB_MAX_LEN;
->   	__be16 proto = skb->protocol;
->   	bool shrink = len_diff < 0;
-> +	union {
-> +		struct iphdr *v4;
-> +		struct ipv6hdr *v6;
-> +		unsigned char *hdr;
-> +	} ip;
->   	u32 off;
->   	int ret;
-
-> @@ -3594,6 +3613,9 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,  
-> skb, s32, len_diff,
->   		     proto != htons(ETH_P_IPV6)))
->   		return -ENOTSUPP;
-
-> +	if (unlikely(shrink && !skb->encapsulation))
-> +		return -ENOTSUPP;
-> +
->   	off = skb_mac_header_len(skb);
->   	switch (mode) {
->   	case BPF_ADJ_ROOM_NET:
-> @@ -3605,6 +3627,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,  
-> skb, s32, len_diff,
->   		return -ENOTSUPP;
->   	}
-
-> +	if (shrink) {
-> +		ip.hdr = skb_inner_network_header(skb);
-> +		if (ip.v4->version == 4)
-> +			len_min = sizeof(struct iphdr);
-> +		else
-> +			len_min = sizeof(struct ipv6hdr);
-> +	}
-> +
->   	len_cur = skb->len - skb_network_offset(skb);
->   	if ((shrink && (len_diff_abs >= len_cur ||
->   			len_cur - len_diff_abs < len_min)) ||
-> --
-> 2.25.1
-
+Thanks,
+Daniel
