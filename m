@@ -2,250 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A41D65F910
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 02:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C45665F925
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 02:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbjAFB2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 20:28:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
+        id S229684AbjAFBcl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 20:32:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbjAFB2U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 20:28:20 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9A1625D5;
-        Thu,  5 Jan 2023 17:22:23 -0800 (PST)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Np57Z5myqzJq5f;
-        Fri,  6 Jan 2023 09:18:18 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 6 Jan 2023 09:22:20 +0800
-Subject: Re: [PATCH bpf-next v4] bpf: Add kernel function call support in
- 32-bit ARM for EABI
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>,
-        <illusionist.neo@gmail.com>, <linux@armlinux.org.uk>,
-        <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20221220115313.29949-1-yangjihong1@huawei.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <49b136b0-89e1-745d-2bb1-2ddad3f7259d@huawei.com>
-Date:   Fri, 6 Jan 2023 09:22:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        with ESMTP id S229652AbjAFBck (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 20:32:40 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598C76160
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 17:32:39 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 041D9B81C1F
+        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 01:32:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B863EC43396
+        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 01:32:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672968756;
+        bh=z9kyY/DW8gOJpCM4Sh33H7wp0Nn5FHgW3KJIf6Jj0+Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PK8B2BUwSA7Tka/btGxqbDWdHLTxVcebM+uycQys+CCuhtv2Z3j8XzgEyo40wILOr
+         kef8aUqn1uO9FeAnu34XodrOGz/mLNlwnvkuvj9xPW/Yuc1xaFSIm+v9DN1qSbsJF2
+         pQGUeYb1lOTx3TCvEB8O3Ijvi6jgxHXPn0nO+i+bzurjXjtxcbbfm3rIVgjnhMMP4f
+         cQrJgHbxAwMx9DNB6JKudzvjgI/FUismyA+aCrCWlXwS0WNID74fol6QEQOjaczoGG
+         9KDZSQiGHjw4sGG8gXzoH/qEsYiJLyqGQMDyONHlfjqNWxaVjEcIzljUwlVMmVA6EC
+         bTCaO86Cw6iXw==
+Received: by mail-ej1-f51.google.com with SMTP id t17so632860eju.1
+        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 17:32:36 -0800 (PST)
+X-Gm-Message-State: AFqh2kp/CmbGqenAa9tmnusvbhLy05Ag4lUtTu4mEm5yxoqfBVcdMwzz
+        ubV4sI827QiqzGRjkKombpQ0dQ3ACQOCg1OkdAiHMQ==
+X-Google-Smtp-Source: AMrXdXu0rxhmd3gU+epckdEcLqDWCT0x1xK09c0d5YxllwCvAnYxT+G4D/ckMEoGkOnJLslmpGprJOJk4Nm+gyl4r9M=
+X-Received: by 2002:a17:907:8024:b0:84d:df2:81f5 with SMTP id
+ ft36-20020a170907802400b0084d0df281f5mr293045ejc.406.1672968754932; Thu, 05
+ Jan 2023 17:32:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20221220115313.29949-1-yangjihong1@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
+ <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local> <Y68wP/MQHOhUy2EY@maniforge.lan>
+ <20221230193112.h23ziwoqqb747zn7@macbook-pro-6.dhcp.thefacebook.com>
+ <Y69RZeEvP2dXO7to@maniforge.lan> <20221231004213.h5fx3loccbs5hyzu@macbook-pro-6.dhcp.thefacebook.com>
+ <f69b7d7a-cdac-a478-931a-f534b34924e9@iogearbox.net> <20230103235107.k5dobpvrui5ux3ar@macbook-pro-6.dhcp.thefacebook.com>
+ <43406cdf-19c1-b80e-0f10-39a1afbf4b8b@iogearbox.net> <20230104193735.ji4fa5imvjvnhrqf@macbook-pro-6.dhcp.thefacebook.com>
+ <5cde0738-67d3-ca70-d025-cbd1769b0900@linux.dev> <CACYkzJ4WEZ8J5-3L=e3TV0qGi=Xx9bEiDEYsOnOio4gnz5D_0A@mail.gmail.com>
+ <CAEf4Bza=HHoDPgeNTWzVhKtpAK=qTF--VHZxLnRc3uJGEdzVoQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bza=HHoDPgeNTWzVhKtpAK=qTF--VHZxLnRc3uJGEdzVoQ@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 6 Jan 2023 02:32:23 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ55nqsGNHjwVCysD=KMz8D_AgVYJrH7FFEdjv_tQMX0mg@mail.gmail.com>
+Message-ID: <CACYkzJ55nqsGNHjwVCysD=KMz8D_AgVYJrH7FFEdjv_tQMX0mg@mail.gmail.com>
+Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
+ convenience helpers
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Vernet <void@manifault.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        bpf <bpf@vger.kernel.org>, kernel-team@meta.com,
+        Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+[...]
 
-PING.
+> > I see two paths forward here:
+>
+> As I mentioned in another reply, I took a liberty to add "BPF helpers
+> freeze" as a topic for next BPF office hours. It's probably going to
+> be a bit more productive to discuss it there. WDYT?
 
-Thanks,
-Yang
+Perfect, much easier to discuss during office hours. Thanks for adding it!
 
-On 2022/12/20 19:53, Yang Jihong wrote:
-> This patch adds kernel function call support to 32-bit ARM bpf jit for
-> EABI.
-> 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> ---
-> 
-> Changes since v3:
->    - Submit patches related to the ARM32 architecture separately.
-> 
-> Changes since v2:
->    - Remove patches to adjust sk size check for CO_RE in 32-bit arch.
->    - Add check of kfunc's return value in insn_def_regno.
->    - Adjust is_reg64 for insn_def_regno.
->    - The check of CONFIG_AEABI is moved from emit_kfunc_call to
->      bpf_jit_supports_kfunc_call.
->    - Fix a comment error in fixup_kfunc_call.
-> 
->   arch/arm/net/bpf_jit_32.c | 137 ++++++++++++++++++++++++++++++++++++++
->   1 file changed, 137 insertions(+)
-> 
-> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-> index 6a1c9fca5260..ae3a36d909f4 100644
-> --- a/arch/arm/net/bpf_jit_32.c
-> +++ b/arch/arm/net/bpf_jit_32.c
-> @@ -1337,6 +1337,125 @@ static void build_epilogue(struct jit_ctx *ctx)
->   #endif
->   }
->   
-> +/*
-> + * Input parameters of function in 32-bit ARM architecture:
-> + * The first four word-sized parameters passed to a function will be
-> + * transferred in registers R0-R3. Sub-word sized arguments, for example,
-> + * char, will still use a whole register.
-> + * Arguments larger than a word will be passed in multiple registers.
-> + * If more arguments are passed, the fifth and subsequent words will be passed
-> + * on the stack.
-> + *
-> + * The first for args of a function will be considered for
-> + * putting into the 32bit register R1, R2, R3 and R4.
-> + *
-> + * Two 32bit registers are used to pass a 64bit arg.
-> + *
-> + * For example,
-> + * void foo(u32 a, u32 b, u32 c, u32 d, u32 e):
-> + *      u32 a: R0
-> + *      u32 b: R1
-> + *      u32 c: R2
-> + *      u32 d: R3
-> + *      u32 e: stack
-> + *
-> + * void foo(u64 a, u32 b, u32 c, u32 d):
-> + *      u64 a: R0 (lo32) R1 (hi32)
-> + *      u32 b: R2
-> + *      u32 c: R3
-> + *      u32 d: stack
-> + *
-> + * void foo(u32 a, u64 b, u32 c, u32 d):
-> + *       u32 a: R0
-> + *       u64 b: R2 (lo32) R3 (hi32)
-> + *       u32 c: stack
-> + *       u32 d: stack
-> + *
-> + * void foo(u32 a, u32 b, u64 c, u32 d):
-> + *       u32 a: R0
-> + *       u32 b: R1
-> + *       u64 c: R2 (lo32) R3 (hi32)
-> + *       u32 d: stack
-> + *
-> + * void foo(u64 a, u64 b):
-> + *       u64 a: R0 (lo32) R1 (hi32)
-> + *       u64 b: R2 (lo32) R3 (hi32)
-> + *
-> + * The return value will be stored in the R0 (and R1 for 64bit value).
-> + *
-> + * For example,
-> + * u32 foo(u32 a, u32 b, u32 c):
-> + *      return value: R0
-> + *
-> + * u64 foo(u32 a, u32 b, u32 c):
-> + *      return value: R0 (lo32) R1 (hi32)
-> + *
-> + * The above is for AEABI only, OABI does not support this function.
-> + */
-> +static int emit_kfunc_call(const struct bpf_insn *insn, struct jit_ctx *ctx, const u32 func)
-> +{
-> +	int i;
-> +	const struct btf_func_model *fm;
-> +	const s8 *tmp = bpf2a32[TMP_REG_1];
-> +	const u8 arg_regs[] = { ARM_R0, ARM_R1, ARM_R2, ARM_R3 };
-> +	int nr_arg_regs = ARRAY_SIZE(arg_regs);
-> +	int arg_regs_idx = 0, stack_off = 0;
-> +	const s8 *rd;
-> +	s8 rt;
-> +
-> +	fm = bpf_jit_find_kfunc_model(ctx->prog, insn);
-> +	if (!fm)
-> +		return -EINVAL;
-> +
-> +	for (i = 0; i < fm->nr_args; i++) {
-> +		if (fm->arg_size[i] > sizeof(u32)) {
-> +			rd = arm_bpf_get_reg64(bpf2a32[BPF_REG_1 + i], tmp, ctx);
-> +
-> +			if (arg_regs_idx + 1 < nr_arg_regs) {
-> +				/*
-> +				 * AAPCS states:
-> +				 * A double-word sized type is passed in two
-> +				 * consecutive registers (e.g., r0 and r1, or
-> +				 * r2 and r3). The content of the registers is
-> +				 * as if the value had been loaded from memory
-> +				 * representation with a single LDM instruction.
-> +				 */
-> +				if (arg_regs_idx & 1)
-> +					arg_regs_idx++;
-> +
-> +				emit(ARM_MOV_R(arg_regs[arg_regs_idx++], rd[1]), ctx);
-> +				emit(ARM_MOV_R(arg_regs[arg_regs_idx++], rd[0]), ctx);
-> +			} else {
-> +				stack_off = ALIGN(stack_off, STACK_ALIGNMENT);
-> +
-> +				if (__LINUX_ARM_ARCH__ >= 6 ||
-> +				    ctx->cpu_architecture >= CPU_ARCH_ARMv5TE) {
-> +					emit(ARM_STRD_I(rd[1], ARM_SP, stack_off), ctx);
-> +				} else {
-> +					emit(ARM_STR_I(rd[1], ARM_SP, stack_off), ctx);
-> +					emit(ARM_STR_I(rd[0], ARM_SP, stack_off), ctx);
-> +				}
-> +
-> +				stack_off += 8;
-> +			}
-> +		} else {
-> +			rt = arm_bpf_get_reg32(bpf2a32[BPF_REG_1 + i][1], tmp[1], ctx);
-> +
-> +			if (arg_regs_idx  < nr_arg_regs) {
-> +				emit(ARM_MOV_R(arg_regs[arg_regs_idx++], rt), ctx);
-> +			} else {
-> +				emit(ARM_STR_I(rt, ARM_SP, stack_off), ctx);
-> +				stack_off += 4;
-> +			}
-> +		}
-> +	}
-> +
-> +	emit_a32_mov_i(tmp[1], func, ctx);
-> +	emit_blx_r(tmp[1], ctx);
-> +
-> +	return 0;
-> +}
-> +
->   /*
->    * Convert an eBPF instruction to native instruction, i.e
->    * JITs an eBPF instruction.
-> @@ -1603,6 +1722,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
->   	case BPF_LDX | BPF_MEM | BPF_H:
->   	case BPF_LDX | BPF_MEM | BPF_B:
->   	case BPF_LDX | BPF_MEM | BPF_DW:
-> +	case BPF_LDX | BPF_PROBE_MEM | BPF_W:
-> +	case BPF_LDX | BPF_PROBE_MEM | BPF_H:
-> +	case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-> +	case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
->   		rn = arm_bpf_get_reg32(src_lo, tmp2[1], ctx);
->   		emit_ldx_r(dst, rn, off, ctx, BPF_SIZE(code));
->   		break;
-> @@ -1785,6 +1908,16 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
->   		const s8 *r5 = bpf2a32[BPF_REG_5];
->   		const u32 func = (u32)__bpf_call_base + (u32)imm;
->   
-> +		if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
-> +			int err;
-> +
-> +			err = emit_kfunc_call(insn, ctx, func);
-> +
-> +			if (err)
-> +				return err;
-> +			break;
-> +		}
-> +
->   		emit_a32_mov_r64(true, r0, r1, ctx);
->   		emit_a32_mov_r64(true, r1, r2, ctx);
->   		emit_push_r64(r5, ctx);
-> @@ -2022,3 +2155,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   	return prog;
->   }
->   
-> +bool bpf_jit_supports_kfunc_call(void)
-> +{
-> +	return IS_ENABLED(CONFIG_AEABI);
-> +}
-> 
+>
+> >
+> > [a] We want to somewhat preserve the developer experience of [2] and
+> > we find a way to do somewhat stable APIs. kfuncs have the benefit that
+
+[...]
