@@ -2,68 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA0565FB68
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 07:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 923B165FD0E
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 09:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbjAFGYu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 01:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33050 "EHLO
+        id S231876AbjAFIsw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 03:48:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbjAFGYf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 01:24:35 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4026CFE9
-        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 22:24:32 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id c65-20020a1c3544000000b003cfffd00fc0so2908235wma.1
-        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 22:24:32 -0800 (PST)
+        with ESMTP id S232243AbjAFIsp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 03:48:45 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E48954724;
+        Fri,  6 Jan 2023 00:48:45 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id j8-20020a17090a3e0800b00225fdd5007fso1054800pjc.2;
+        Fri, 06 Jan 2023 00:48:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DV1t0rzqIB6z+X/yrkwUe3maiIiJ2Fcpdq7MxWlVXGk=;
-        b=gQmQGmhfaKEWO6GLxj+xZcZl0OEJwClA+m7G0rYT/qnum8Gestw+8StAQKNHtNQov+
-         czRWH3Oz1pf3C7KUYcqd0yxO1Xi82BF1CN0qdAVba2gK9JuumugjU3kjL1dxrVrg0mQI
-         bwVmdG17+ESfUMrq16/2pWqOxzPauw2s2C2AfEqaghVXIqdvyQQ3eZ1uihm9Ayth6KbM
-         6szgn/uYpXUzJKUjt93P0SCQNeqO5VGgaaMVdJtmSWKtuaVKFADjmNCH4nVerGq9+1zb
-         CBAKp8uva+jOjjuk5IHEhrSSVJXahSfU+Oli7jpFddxZG6a34v23xbLv3JpH76BsU+wY
-         yIfA==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CLvpBtlWPC1Y4yYI2pgDTW/iPqU69O+/L6LCbdiNubM=;
+        b=lHv5XTXiqHurmIC9daS85WL8F1hlIf+iMEPyKW/hqT5o6m23V36EImDG5+lebQRKh7
+         2rP/ozBPce66wr0G1nAHk8/dW/TCH5f1TsDPgdXZmFDqO5RiiValeEKncRc2RHt4kILf
+         eonuRBauT79z5oxxhHdll1stttLZGbIvf+OyUqPvaVX5K7Bg4/2e85/Wgh3kvRtnjoql
+         hS8c9IpERfH9+FDXga1NmZqwbw/Qrr0D8PaqUpr+7sRtH5lorO8aHxZu06g51dOUf58b
+         m+KeVRccO0fjzADOYFQplOOFDksFH4Eeo2d/d3NFs6OyU6noDiqMFRtJEoc79SyrI4Tm
+         iNfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DV1t0rzqIB6z+X/yrkwUe3maiIiJ2Fcpdq7MxWlVXGk=;
-        b=1Zp4Yv56HG77A8/Z5adYbPkmNyXutCD9KHc+yaxyTGkwgjh4wDtzM9TGMx82BjB87t
-         6t18IJW+FKjuh2mmgkY/KqjAb7/xhZ9YqLgkfTkuWnpb1BCfhgzzrN2Bo9xwTUJNbjWs
-         5Z28qM479aLV3V6gsK0EeOAd6lem8KWkGJaHHdoCt/lhPijt1lwNPrPIiVkIOsRtlnLB
-         BVZv9kR/UzTmrDuqUjzhv1k/IZXuNnemkc/LtSPLfmcXrIygQsqSD5zHC4gXoqaup4Ea
-         /+KnHwd0nmKv5EaRGUc5VIhUtCBAMivAN/pJ6L/LXpi3m28elryXtp6cFuRbAWvWwky+
-         idTg==
-X-Gm-Message-State: AFqh2kqH0p+56ZRKWBmkXSSR2G2i3bvKNlM9RcHV00WQQlBxAT7gMUfd
-        7VthP0ldGW/PtNdzEyimzMef3ObVATnrGXwjn08ezQ==
-X-Google-Smtp-Source: AMrXdXvyfLhh52MCe7324YaZzZlNKssK5gq1cKgT7/lg+HimYUwMTBr476xcjRM7156hhU1/e5t7qVZ6t1CbMCiuECc=
-X-Received: by 2002:a05:600c:5d5:b0:3cf:6a4c:af8b with SMTP id
- p21-20020a05600c05d500b003cf6a4caf8bmr3969518wmd.115.1672986271093; Thu, 05
- Jan 2023 22:24:31 -0800 (PST)
+        bh=CLvpBtlWPC1Y4yYI2pgDTW/iPqU69O+/L6LCbdiNubM=;
+        b=B/1+p1JdVnUiUe32VPR8lhWnBhvDJUVYXqzpxz7HTdkFt1QCmBJEM2apcev/0Rcff4
+         KU902RQ6gulDaVRXm11RUGLE3MRxNvyV1oatRLAypIBC9INfKGeYBzQNGGiq3UUnbMnS
+         5DdJv1rJqJlw0FQAj4+u17ASED2bscNbzcJnpPfnerrSTT5Lii1CUOk/XNUKkOMcWehX
+         2iV2CF6Q9Pz3JsWCUu6gyk5H4jXKAgY4PzdFaSW2OOVuukscWhdStOb/kuzeDa4qqB+t
+         jf9d80bmNDm4ClKYu9iTZhNwvxh8OaRiIr3OLKNNSD7EsiPG+Th9jETWi92edhbbYEsW
+         C2Ig==
+X-Gm-Message-State: AFqh2kr2RC8/QBK6Jq5QQQPD31rJ2ePGt39g7Roo0y9jfFplAmWhZxj/
+        K7UDD4+ueGWvV4r4Mgmx45wcram2Mw/y
+X-Google-Smtp-Source: AMrXdXtgJ2BhPl0zgwGWxM9NuOuMxVGVUoOI1lEAZJenlI7nk4b+Rj04PBbjF8EF5bk+mhPxDQqjhw==
+X-Received: by 2002:a17:902:d346:b0:192:9160:6cd with SMTP id l6-20020a170902d34600b00192916006cdmr35802234plk.13.1672994924239;
+        Fri, 06 Jan 2023 00:48:44 -0800 (PST)
+Received: from localhost.localdomain ([144.214.0.13])
+        by smtp.gmail.com with ESMTPSA id o9-20020a170903210900b0017fe9b038fdsm469840ple.14.2023.01.06.00.48.41
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 06 Jan 2023 00:48:43 -0800 (PST)
+From:   Hao Sun <sunhao.th@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, Hao Sun <sunhao.th@gmail.com>
+Subject: [PATCH] bpf: skip task with pid=1 in send_signal_common()
+Date:   Fri,  6 Jan 2023 16:48:38 +0800
+Message-Id: <20230106084838.12690-1-sunhao.th@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-References: <20230105172243.7238-1-mike.leach@linaro.org> <CAP-5=fVbPVE4rxJ2s8phhJ5RRH4EnKaWrF2kaT0oCmK6kvhP2g@mail.gmail.com>
- <CAJ9a7Vi7cB2t3wao9d78j3G9v4zpO8_hHf8DB4vKOzgT9O+j6g@mail.gmail.com>
-In-Reply-To: <CAJ9a7Vi7cB2t3wao9d78j3G9v4zpO8_hHf8DB4vKOzgT9O+j6g@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 5 Jan 2023 22:24:18 -0800
-Message-ID: <CAP-5=fV5tiKNyJRUKC0gD_2Y=RgN=NrAtee4k1ZT1tynyJpL6w@mail.gmail.com>
-Subject: Re: [PATCH] perf build: Fix build error when NO_LIBBPF=1
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, acme@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,176 +71,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 5, 2023 at 3:40 PM Mike Leach <mike.leach@linaro.org> wrote:
->
-> Hi,
->
-> On Thu, 5 Jan 2023 at 19:03, Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Thu, Jan 5, 2023 at 9:22 AM Mike Leach <mike.leach@linaro.org> wrote:
-> > >
-> > > Recent updates to perf build result in the following output when cross
-> > > compiling to aarch64, with libelf unavailable, and therefore
-> > > NO_LIBBPF=1 set.
-> > >
-> > > ```
-> > >   $make -C tools/perf
-> > >
-> > >   <cut>
-> > >
-> > >   Makefile.config:428: No libelf found. Disables 'probe' tool, jvmti
-> > >   and BPF support in 'perf record'. Please install libelf-dev,
-> > >   libelf-devel or elfutils-libelf-devel
-> > >
-> > >   <cut>
-> > >
-> > >   libbpf.c:46:10: fatal error: libelf.h: No such file or directory
-> > >       46 | #include <libelf.h>
-> > >          |          ^~~~~~~~~~
-> > >   compilation terminated.
-> > >
-> > >   ./tools/build/Makefile.build:96: recipe for target
-> > >   '.tools/perf/libbpf/staticobjs/libbpf.o' failed
-> > >
-> > > ```
-> > >
-> > > plus one other include error for <gelf.h>
-> >
-> > Ouch, apologies for the breakage. You wouldn't happen to have
-> > something like a way with say a docker image to repro the problem? The
-> > make line above is somewhat minimal.
-> >
->
-> Unfortunately not - I was cross compiling on my main workstation.
-> However, in theory
-> $make -C tools/perf NO_LIBBPF=1
-> should explicitly exclude the library from the build - which without
-> the fix it does not.
->
-> > > The issue is that the commit noted below adds libbpf to the prepare:
-> > > target but no longer accounts for the NO_LIBBPF define. Additionally
-> > > changing the include directories means that even if the libbpf target
-> > > build is prevented, bpf headers are missing in other parts of the build.
-> > >
-> > > This patch ensures that in the case of NO_LIBBPF=1, the build target is
-> > > changed to a header only target, and the headers are installed, without
-> > > attempting to build the libbpf.a target.
-> > >
-> > > Applies to perf/core
-> > >
-> > > Fixes: 746bd29e348f ("perf build: Use tools/lib headers from install path")
-> > > Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> > > ---
-> > >  tools/perf/Makefile.perf | 10 ++++++++++
-> > >  1 file changed, 10 insertions(+)
-> > >
-> > > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > > index 13e7d26e77f0..ee08ecf469f6 100644
-> > > --- a/tools/perf/Makefile.perf
-> > > +++ b/tools/perf/Makefile.perf
-> > > @@ -305,7 +305,11 @@ else
-> > >  endif
-> > >  LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
-> > >  LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
-> > > +ifndef NO_LIBBPF
-> > >  LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
-> > > +else
-> > > +LIBBPF = $(LIBBPF_INCLUDE)/bpf/bpf.h
-> >
-> > This seems strange, don't we want to avoid libbpf targets?
-> >
->
-> This is a header only target - see my continuation comment below....
->
-> > > +endif
-> > >  CFLAGS += -I$(LIBBPF_OUTPUT)/include
-> > >
-> > >  ifneq ($(OUTPUT),)
-> > > @@ -826,10 +830,16 @@ $(LIBAPI)-clean:
-> > >         $(call QUIET_CLEAN, libapi)
-> > >         $(Q)$(RM) -r -- $(LIBAPI_OUTPUT)
-> > >
-> > > +ifndef NO_LIBBPF
-> > >  $(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
-> > >         $(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=$(FEATURE_DUMP_EXPORT) \
-> > >                 O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
-> > >                 $@ install_headers
-> > > +else
-> > > +$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
-> > > +       $(Q)$(MAKE) -C $(LIBBPF_DIR) OUTPUT=$(LIBBPF_OUTPUT)/ \
-> > > +               DESTDIR=$(LIBBPF_DESTDIR) prefix= install_headers
-> > > +endif
-> >
-> > Shouldn't we just be able to conditionalize having $(LIBBPF) as a
-> > dependency for the perf binary? If there is no dependency then the
-> > targets won't be built and we shouldn't need to conditionalize here.
-> >
->
-> I did try doing just that, but the build process does two things when
-> building libbpf
-> a) builds the library
-> b) installs the bpf headers in the libbpf output location.
->
-> Now what the original patch  - "perf build: Use tools/lib headers from
-> install path"  - does is to also change the include paths to the
-> compiler to pick up the headers,
-> removing the line:
->
-> INC_FLAGS += -I$(srctree)/tools/lib/
->
-> from tools/perf/Makefile.config and adding the line
->
-> CFLAGS += -I$(LIBBPF_OUTPUT)/include
->
-> in tools/perf/Makefile.perf (along with similar lines for libperf, libapi etc)
->
-> The result of this is that if you only remove the library build, the
-> headers are not installed and other compilation units fail as the
-> headers are still included even if the library is not in use.
-> These were originally satisfied by the now removed INC_FLAGS +=
-> -I$(srctree)/tools/lib.
->
-> Thus when NO_LIBBPF=1 even though we do not build the library - we
-> still need to install the headers to retain the consistency - hence a
-> "header only" target, that only installs the headers without building
-> the library.
->
-> This avoids restoring the original -I$(srctree)/tools/lib/, which
-> would potentially mess up the oher library builds that have changed
-> their header include paths.
->
-> Regards
->
-> Mike
+The following kernel panic can be triggered when a task with pid=1
+attach a prog that attempts to send killing signal to itself, also
+see [1] for more details:
 
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+CPU: 3 PID: 1 Comm: systemd Not tainted 6.1.0-09652-g59fe41b5255f #148
+Call Trace:
+<TASK>
+__dump_stack lib/dump_stack.c:88 [inline]
+dump_stack_lvl+0x100/0x178 lib/dump_stack.c:106
+panic+0x2c4/0x60f kernel/panic.c:275
+do_exit.cold+0x63/0xe4 kernel/exit.c:789
+do_group_exit+0xd4/0x2a0 kernel/exit.c:950
+get_signal+0x2460/0x2600 kernel/signal.c:2858
+arch_do_signal_or_restart+0x78/0x5d0 arch/x86/kernel/signal.c:306
+exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+exit_to_user_mode_prepare+0x15f/0x250 kernel/entry/common.c:203
+__syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
+do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Thanks Mike,
+So skip task with pid=1 in bpf_send_signal_common() to avoid the panic.
 
-The -I is needed for the libbpf headers but if NO_LIBBPF is enabled
-then the C define HAVE_LIBBPF_SUPPORT isn't and we shouldn't include
-any of these headers. This means updating the CFLAGS for libbpf should
-only be done if we actually build the static  libbpf.a, the dynamic
-version's headers should already be on the include path. I sent out a
-variant of this fix doing that here:
-https://lore.kernel.org/lkml/20230106061631.571659-1-irogers@google.com/
+[1] https://lore.kernel.org/bpf/20221222043507.33037-1-sunhao.th@gmail.com
 
-Apologies again for the breakage, I can buy you a beer the next time
-I'm home in Manchester.
-Ian
+Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+---
+ kernel/trace/bpf_trace.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
->
-> > Thanks!
-> > Ian
-> >
-> > >  $(LIBBPF)-clean:
-> > >         $(call QUIET_CLEAN, libbpf)
-> > > --
-> > > 2.17.1
-> > >
->
->
->
-> --
-> Mike Leach
-> Principal Engineer, ARM Ltd.
-> Manchester Design Centre. UK
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 23ce498bca97..ed21ab9fe846 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -844,6 +844,9 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
+ 	 */
+ 	if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
+ 		return -EPERM;
++	/* Task should not be pid=1 to avoid kernel panic. */
++	if (unlikely(is_global_init(current)))
++		return -EPERM;
+ 	if (unlikely(!nmi_uaccess_okay()))
+ 		return -EPERM;
+ 
+
+base-commit: 4aea86b4033f92f01547e6d4388d4451ae9b0980
+-- 
+2.39.0
+
