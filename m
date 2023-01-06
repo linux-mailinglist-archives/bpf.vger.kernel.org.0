@@ -2,37 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 932BF65F954
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 02:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDC365F96F
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 03:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbjAFB54 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 20:57:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
+        id S229464AbjAFCNJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 21:13:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjAFB54 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 20:57:56 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBE318682;
-        Thu,  5 Jan 2023 17:57:53 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Np6182CN7z4f3wY5;
-        Fri,  6 Jan 2023 09:57:48 +0800 (CST)
-Received: from [10.67.109.184] (unknown [10.67.109.184])
-        by APP4 (Coremail) with SMTP id gCh0CgAnj7IdgLdjuwi5BA--.25658S2;
-        Fri, 06 Jan 2023 09:57:50 +0800 (CST)
-Message-ID: <755a5b80-f916-7383-6746-3e202224dfcc@huaweicloud.com>
-Date:   Fri, 6 Jan 2023 09:57:49 +0800
+        with ESMTP id S229450AbjAFCNH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 21:13:07 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13981C40F
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 18:13:05 -0800 (PST)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Np6KL0Rr1zJqqF;
+        Fri,  6 Jan 2023 10:11:50 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Fri, 6 Jan 2023 10:13:02 +0800
+Message-ID: <6004bbc1-54a8-0141-04af-0a5fba82e6ee@huawei.com>
+Date:   Fri, 6 Jan 2023 10:13:02 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [RFC PATCH RESEND bpf-next 3/4] riscv, bpf: Add
- bpf_arch_text_poke support for RV64
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [bpf-next v1] bpf: hash map, suppress lockdep warning
 Content-Language: en-US
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+To:     <tong@infragraf.org>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -41,249 +38,180 @@ Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Pu Lehui <pulehui@huawei.com>
-References: <20221220021319.1655871-1-pulehui@huaweicloud.com>
- <20221220021319.1655871-4-pulehui@huaweicloud.com>
- <871qobqyh9.fsf@all.your.base.are.belong.to.us>
-From:   Pu Lehui <pulehui@huaweicloud.com>
-In-Reply-To: <871qobqyh9.fsf@all.your.base.are.belong.to.us>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnj7IdgLdjuwi5BA--.25658S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3JrWDWr13CF1xJFyxJFWUJwb_yoWxJw13pF
-        WUKrZ8AFWkXF1xJFy2qa1DXr4ayrs5WF9FkrWUtayFyFnF9r97Cw1rK3yakr95Cr48CF10
-        vF4jvrn3uan0yFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUFDGOUUUUU
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+        Hou Tao <houtao1@huawei.com>
+References: <20230105112749.38421-1-tong@infragraf.org>
+From:   Xu Kuohai <xukuohai@huawei.com>
+In-Reply-To: <20230105112749.38421-1-tong@infragraf.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 1/5/2023 7:27 PM, tong@infragraf.org wrote:
+> From: Tonghao Zhang <tong@infragraf.org>
+> 
+> The lock may be taken in both NMI and non-NMI contexts.
+> There is a lockdep warning (inconsistent lock state), if
+> enable lockdep. For performance, this patch doesn't use trylock,
+> and disable lockdep temporarily.
+> 
+> [   82.474075] ================================
+> [   82.474076] WARNING: inconsistent lock state
+> [   82.474090] 6.1.0+ #48 Tainted: G            E
+> [   82.474093] --------------------------------
+> [   82.474100] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+> [   82.474101] kprobe-load/1740 [HC1[1]:SC0[0]:HE0:SE1] takes:
+> [   82.474105] ffff88860a5cf7b0 (&htab->lockdep_key){....}-{2:2}, at: htab_lock_bucket+0x61/0x6c
+> [   82.474120] {INITIAL USE} state was registered at:
+> [   82.474122]   mark_usage+0x1d/0x11d
+> [   82.474130]   __lock_acquire+0x3c9/0x6ed
+> [   82.474131]   lock_acquire+0x23d/0x29a
+> [   82.474135]   _raw_spin_lock_irqsave+0x43/0x7f
+> [   82.474148]   htab_lock_bucket+0x61/0x6c
+> [   82.474151]   htab_map_update_elem+0x11e/0x220
+> [   82.474155]   bpf_map_update_value+0x267/0x28e
+> [   82.474160]   map_update_elem+0x13e/0x17d
+> [   82.474164]   __sys_bpf+0x2ae/0xb2e
+> [   82.474167]   __do_sys_bpf+0xd/0x15
+> [   82.474171]   do_syscall_64+0x6d/0x84
+> [   82.474174]   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> [   82.474178] irq event stamp: 1496498
+> [   82.474180] hardirqs last  enabled at (1496497): [<ffffffff817eb9d9>] syscall_enter_from_user_mode+0x63/0x8d
+> [   82.474184] hardirqs last disabled at (1496498): [<ffffffff817ea6b6>] exc_nmi+0x87/0x109
+> [   82.474187] softirqs last  enabled at (1446698): [<ffffffff81a00347>] __do_softirq+0x347/0x387
+> [   82.474191] softirqs last disabled at (1446693): [<ffffffff810b9b06>] __irq_exit_rcu+0x67/0xc6
+> [   82.474195]
+> [   82.474195] other info that might help us debug this:
+> [   82.474196]  Possible unsafe locking scenario:
+> [   82.474196]
+> [   82.474197]        CPU0
+> [   82.474198]        ----
+> [   82.474198]   lock(&htab->lockdep_key);
+> [   82.474200]   <Interrupt>
+> [   82.474200]     lock(&htab->lockdep_key);
+> [   82.474201]
+> [   82.474201]  *** DEADLOCK ***
+> [   82.474201]
+> [   82.474202] no locks held by kprobe-load/1740.
+> [   82.474203]
+> [   82.474203] stack backtrace:
+> [   82.474205] CPU: 14 PID: 1740 Comm: kprobe-load Tainted: G            E      6.1.0+ #48
+> [   82.474208] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [   82.474213] Call Trace:
+> [   82.474218]  <NMI>
+> [   82.474224]  dump_stack_lvl+0x57/0x81
+> [   82.474228]  lock_acquire+0x1f4/0x29a
+> [   82.474233]  ? htab_lock_bucket+0x61/0x6c
+> [   82.474237]  ? rcu_read_lock_held_common+0xe/0x38
+> [   82.474245]  _raw_spin_lock_irqsave+0x43/0x7f
+> [   82.474249]  ? htab_lock_bucket+0x61/0x6c
+> [   82.474253]  htab_lock_bucket+0x61/0x6c
+> [   82.474257]  htab_map_update_elem+0x11e/0x220
+> [   82.474264]  bpf_prog_df326439468c24a9_bpf_prog1+0x41/0x45
+> [   82.474276]  bpf_trampoline_6442457183_0+0x43/0x1000
+> [   82.474283]  nmi_handle+0x5/0x254
+> [   82.474289]  default_do_nmi+0x3d/0xf6
+> [   82.474293]  exc_nmi+0xa1/0x109
+> [   82.474297]  end_repeat_nmi+0x16/0x67
+> [   82.474300] RIP: 0010:cpu_online+0xa/0x12
+> [   82.474308] Code: 08 00 00 00 39 c6 0f 43 c6 83 c0 07 83 e0 f8 c3 cc cc cc cc 0f 1f 44 00 00 31 c0 c3 cc cc cc cc 89 ff 48 0f a3 3d 5f 52 75 01 <0f> 92 c0 c3 cc cc cc cc 55 48 89 e5 41 57 49 89 f7 41 56 49 896
+> [   82.474310] RSP: 0018:ffffc9000131bd38 EFLAGS: 00000283
+> [   82.474313] RAX: ffff88860b85fe78 RBX: 0000000000102cc0 RCX: 0000000000000008
+> [   82.474315] RDX: 0000000000000004 RSI: ffff88860b85fe78 RDI: 000000000000000e
+> [   82.474316] RBP: 00000000ffffffff R08: 0000000000102cc0 R09: 00000000ffffffff
+> [   82.474318] R10: 0000000000000001 R11: 0000000000000000 R12: ffff888100042200
+> [   82.474320] R13: 0000000000000004 R14: ffffffff81271dc2 R15: ffff88860b85fe78
+> [   82.474322]  ? kvmalloc_node+0x44/0xd2
+> [   82.474333]  ? cpu_online+0xa/0x12
+> [   82.474338]  ? cpu_online+0xa/0x12
+> [   82.474342]  </NMI>
+> [   82.474343]  <TASK>
+> [   82.474343]  trace_kmalloc+0x7c/0xe6
+> [   82.474347]  ? kvmalloc_node+0x44/0xd2
+> [   82.474350]  __kmalloc_node+0x9a/0xaf
+> [   82.474354]  kvmalloc_node+0x44/0xd2
+> [   82.474359]  kvmemdup_bpfptr+0x29/0x66
+> [   82.474363]  map_update_elem+0x119/0x17d
+> [   82.474370]  __sys_bpf+0x2ae/0xb2e
+> [   82.474380]  __do_sys_bpf+0xd/0x15
+> [   82.474384]  do_syscall_64+0x6d/0x84
+> [   82.474387]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> [   82.474391] RIP: 0033:0x7fe75d4f752d
+> [   82.474394] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 79 2c 00 f7 d8 64 89 018
+> [   82.474396] RSP: 002b:00007ffe95d1cd78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> [   82.474398] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe75d4f752d
+> [   82.474400] RDX: 0000000000000078 RSI: 00007ffe95d1cd80 RDI: 0000000000000002
+> [   82.474401] RBP: 00007ffe95d1ce30 R08: 0000000000000000 R09: 0000000000000004
+> [   82.474403] R10: 00007ffe95d1cd80 R11: 0000000000000246 R12: 00000000004007f0
+> [   82.474405] R13: 00007ffe95d1cf10 R14: 0000000000000000 R15: 0000000000000000
+> [   82.474412]  </TASK>
+> 
+> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Song Liu <song@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: Hao Luo <haoluo@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Hou Tao <houtao1@huawei.com>
+> ---
+> previous discussion: https://lore.kernel.org/all/20221121100521.56601-2-xiangxia.m.yue@gmail.com/
+> ---
+>   kernel/bpf/hashtab.c | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 974f104f47a0..146433c9bd1a 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -161,6 +161,19 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
+>   		return -EBUSY;
+>   	}
+>   
+> +	/*
+> +	 * The lock may be taken in both NMI and non-NMI contexts.
+> +	 * There is a lockdep warning (inconsistent lock state), if
+> +	 * enable lockdep. The potential deadlock happens when the
+> +	 * lock is contended from the same cpu. map_locked rejects
+> +	 * concurrent access to the same bucket from the same CPU.
+> +	 * When the lock is contended from a remote cpu, we would
+> +	 * like the remote cpu to spin and wait, instead of giving
+> +	 * up immediately. As this gives better throughput. So replacing
+> +	 * the current raw_spin_lock_irqsave() with trylock sacrifices
+> +	 * this performance gain. lockdep_off temporarily.
+> +	 */
+> +	lockdep_off();
 
+seems it's better to define map_locked as a raw spin lock and use trylock(map_locked[hash])
+to check if this cpu has locked the bucket.
 
-On 2023/1/4 2:12, Björn Töpel wrote:
-> Pu Lehui <pulehui@huaweicloud.com> writes:
-> 
->> From: Pu Lehui <pulehui@huawei.com>
->>
->> Implement bpf_arch_text_poke for RV64. For call scenario,
->> ftrace framework reserve 4 nops for RV64 kernel function
->> as function entry, and use auipc+jalr instructions to call
->> kernel or module functions. However, since the auipc+jalr
->> call instructions is non-atomic operation, we need to use
->> stop-machine to make sure instruction patching in atomic
->> context. As for jump scenario, since we only jump inside
->> the trampoline, a jal instruction is sufficient.
-> 
-> Hmm, is that really true? More below!
-> 
->>
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->> ---
->>   arch/riscv/net/bpf_jit.h        |   5 ++
->>   arch/riscv/net/bpf_jit_comp64.c | 131 +++++++++++++++++++++++++++++++-
->>   2 files changed, 134 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
->> index d926e0f7ef57..bf9802a63061 100644
->> --- a/arch/riscv/net/bpf_jit.h
->> +++ b/arch/riscv/net/bpf_jit.h
->> @@ -573,6 +573,11 @@ static inline u32 rv_fence(u8 pred, u8 succ)
->>   	return rv_i_insn(imm11_0, 0, 0, 0, 0xf);
->>   }
->>   
->> +static inline u32 rv_nop(void)
->> +{
->> +	return rv_i_insn(0, 0, 0, 0, 0x13);
->> +}
->> +
->>   /* RVC instrutions. */
->>   
->>   static inline u16 rvc_addi4spn(u8 rd, u32 imm10)
->> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
->> index bf4721a99a09..fa8b03c52463 100644
->> --- a/arch/riscv/net/bpf_jit_comp64.c
->> +++ b/arch/riscv/net/bpf_jit_comp64.c
->> @@ -8,6 +8,8 @@
->>   #include <linux/bitfield.h>
->>   #include <linux/bpf.h>
->>   #include <linux/filter.h>
->> +#include <linux/memory.h>
->> +#include <linux/stop_machine.h>
->>   #include "bpf_jit.h"
->>   
->>   #define RV_REG_TCC RV_REG_A6
->> @@ -238,7 +240,7 @@ static void __build_epilogue(bool is_tail_call, struct rv_jit_context *ctx)
->>   	if (!is_tail_call)
->>   		emit_mv(RV_REG_A0, RV_REG_A5, ctx);
->>   	emit_jalr(RV_REG_ZERO, is_tail_call ? RV_REG_T3 : RV_REG_RA,
->> -		  is_tail_call ? 4 : 0, /* skip TCC init */
->> +		  is_tail_call ? 20 : 0, /* skip reserved nops and TCC init */
->>   		  ctx);
->>   }
->>   
->> @@ -615,6 +617,127 @@ static int add_exception_handler(const struct bpf_insn *insn,
->>   	return 0;
->>   }
->>   
->> +struct text_poke_args {
->> +	void *addr;
->> +	const void *insns;
->> +	size_t len;
->> +	atomic_t cpu_count;
->> +};
->> +
->> +static int do_text_poke(void *data)
->> +{
->> +	int ret = 0;
->> +	struct text_poke_args *patch = data;
->> +
->> +	if (atomic_inc_return(&patch->cpu_count) == num_online_cpus()) {
->> +		ret = patch_text_nosync(patch->addr, patch->insns, patch->len);
->> +		atomic_inc(&patch->cpu_count);
->> +	} else {
->> +		while (atomic_read(&patch->cpu_count) <= num_online_cpus())
->> +			cpu_relax();
->> +		smp_mb();
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->> +static int bpf_text_poke_stop_machine(void *addr, const void *insns, size_t len)
->> +{
->> +	struct text_poke_args patch = {
->> +		.addr = addr,
->> +		.insns = insns,
->> +		.len = len,
->> +		.cpu_count = ATOMIC_INIT(0),
->> +	};
->> +
->> +	return stop_machine(do_text_poke, &patch, cpu_online_mask);
->> +}
->> +
->> +static int gen_call_or_nops(void *target, void *ip, u32 *insns)
->> +{
->> +	int i, ret;
->> +	s64 rvoff;
->> +	struct rv_jit_context ctx;
->> +
->> +	ctx.ninsns = 0;
->> +	ctx.insns = (u16 *)insns;
->> +
->> +	if (!target) {
->> +		for (i = 0; i < 4; i++)
->> +			emit(rv_nop(), &ctx);
->> +		return 0;
->> +	}
->> +
->> +	rvoff = (s64)(target - ip);
->> +	emit(rv_sd(RV_REG_SP, -8, RV_REG_RA), &ctx);
->> +	ret = emit_jump_and_link(RV_REG_RA, rvoff, false, &ctx);
->> +	if (ret)
->> +		return ret;
->> +	emit(rv_ld(RV_REG_RA, -8, RV_REG_SP), &ctx);
->> +
->> +	return 0;
->> +
->> +}
->> +
->> +static int bpf_text_poke_call(void *ip, void *old_addr, void *new_addr)
->> +{
->> +	int ret;
->> +	u32 old_insns[4], new_insns[4];
->> +
->> +	ret = gen_call_or_nops(old_addr, ip + 4, old_insns);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = gen_call_or_nops(new_addr, ip + 4, new_insns);
->> +	if (ret)
->> +		return ret;
->> +
->> +	mutex_lock(&text_mutex);
->> +	if (memcmp(ip, old_insns, sizeof(old_insns))) {
->> +		ret = -EFAULT;
->> +		goto out;
->> +	}
->> +
->> +	if (memcmp(ip, new_insns, sizeof(new_insns)))
->> +		ret = bpf_text_poke_stop_machine(ip, new_insns,
->> sizeof(new_insns));
-> 
-> I'd rather see that you added a patch_text variant to
-> arch/riscv/kernel/patch.c (something like your
-> bpf_text_poke_stop_machine()), and use that here. Might be other users
-> of that as well -- Andy's ftrace patch maybe? :-)
-> 
-
-Good idea.
-
->> +out:
->> +	mutex_unlock(&text_mutex);
->> +	return ret;
->> +}
->> +
->> +static int bpf_text_poke_jump(void *ip, void *old_addr, void *new_addr)
->> +{
->> +	int ret;
->> +	u32 old_insn, new_insn;
->> +
->> +	old_insn = old_addr ? rv_jal(RV_REG_ZERO, (s64)(old_addr - ip) >> 1) : rv_nop();
->> +	new_insn = new_addr ? rv_jal(RV_REG_ZERO, (s64)(new_addr - ip) >> 1) : rv_nop();
->> +
->> +	mutex_lock(&text_mutex);
->> +	if (memcmp(ip, &old_insn, sizeof(old_insn))) {
->> +		ret = -EFAULT;
->> +		goto out;
->> +	}
->> +
->> +	if (memcmp(ip, &new_insn, sizeof(new_insn)))
->> +		ret = patch_text_nosync(ip, &new_insn, sizeof(new_insn));
->> +out:
->> +	mutex_unlock(&text_mutex);
->> +	return ret;
->> +}
->> +
->> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
->> +		       void *old_addr, void *new_addr)
-> 
-> AFAIU there's nothing in the bpf_arch_text_poke() API that say that
-> BPF_MOD_JUMP is jumps within the trampoline. That is one usage, but not
-> the only one. In general, the jal might not have enough reach.
-> 
-> I believe that this needs to be an auipc/jalr pair similar to
-> BPF_MOD_CALL (w/o linked register).
-> 
-
-The initial idea was that currently BPF_MOD_JUMP only serves for 
-bpf_tramp_image_put, and jal, which range is +/- 1MB, is sufficient for 
-the distance between im->ip_after_call and im->ip_epilogue, and try to 
-not use not-atomic auipc/jalr pair. But take deep consideration, this 
-might be extended to other uses, such as tailcall optimization. So agree 
-with your suggestion.
-
-> 
-> And again, thanks for working on the RV trampoline!
-> Björn
+>   	raw_spin_lock_irqsave(&b->raw_lock, flags);
+>   	*pflags = flags;
+>   
+> @@ -172,7 +185,10 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+>   				      unsigned long flags)
+>   {
+>   	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
+> +
+>   	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+> +	lockdep_on();
+> +
+>   	__this_cpu_dec(*(htab->map_locked[hash]));
+>   	preempt_enable();
+>   }
 
