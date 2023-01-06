@@ -2,122 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D546601A0
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 14:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3F76601E1
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 15:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbjAFN5L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 08:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
+        id S232599AbjAFOP2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 09:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjAFN5K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 08:57:10 -0500
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E614687B1
-        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 05:57:09 -0800 (PST)
-Received: by mail-vs1-xe2d.google.com with SMTP id i185so1514386vsc.6
-        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 05:57:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=soEyyt7+ke/EsbfgoWOrqE55snldr7SLoTwPDy3CMeY=;
-        b=AkkNad1rjTGucAaU2dHBnnW+cBKWYZyAhZx6HNrp856hl3FeP7Atubf4FrRXomaJUV
-         mxuDZb+FVqgIXOXroOj6P8Gy3QwMLUeAJR3SDg1A3K0FXA/ntjx5lU8JAE9e8/1cxdms
-         p1qF/vttIVleWlJHQzyu0wB1yTf9AiPMXjJxM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=soEyyt7+ke/EsbfgoWOrqE55snldr7SLoTwPDy3CMeY=;
-        b=fhZ5Fghq5/dHWtwdvt9bnrT1DnGv/h006oSf8wUs1kW2PXySgsL+Q0z6Ekab2mdTHb
-         0vbNfDWkEI6QiIKvvHRH2utHLbQAk59mPPGKqJV5pulVGt+1BZQfuVJeztZvcvRAnNwH
-         hdszHqlcdOMESprBrwgLFt/2bnuEIYhaqDSrQcGOXOFEOVN0MRM0yc+3cp4bRoQ9AWTj
-         3Fh9ndc1WAayjFtvNfJj6CAUk5EW86MCBuZhCfq/viO2y/qDTM5wucyWYPRKGfNkqNzX
-         PZ+IMOPvFGZc+XcKY+0sLKqB2JLzHuaPjhfKtn1wCEIUx4Rb2p5iLUjkUOpugpnZtFdz
-         nLmw==
-X-Gm-Message-State: AFqh2kqFrQIqi8aqlOM12bv0oKMMGCrRIZrKZNi4wxiiG4ZS+lDWDVVz
-        0HX1AcwPzeVyxvfw5wTP5X0pwA==
-X-Google-Smtp-Source: AMrXdXtVbNTx+ftJZ+o859NRgn8LDUvAQikRdJRoKsOkfUGoqNvqym3cn+XI39mMoDvFpPPYmd1PuQ==
-X-Received: by 2002:a67:f749:0:b0:3ca:b9:928 with SMTP id w9-20020a67f749000000b003ca00b90928mr19734815vso.33.1673013428446;
-        Fri, 06 Jan 2023 05:57:08 -0800 (PST)
-Received: from C02YVCJELVCG ([136.56.52.194])
-        by smtp.gmail.com with ESMTPSA id bs15-20020a05620a470f00b006b61b2cb1d2sm554675qkb.46.2023.01.06.05.57.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Jan 2023 05:57:07 -0800 (PST)
-From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
-X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
-Date:   Fri, 6 Jan 2023 08:56:59 -0500
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Tariq Toukan <ttoukan.linux@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        lorenzo.bianconi@redhat.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>, gal@nvidia.com,
-        Saeed Mahameed <saeedm@nvidia.com>, tariqt@nvidia.com
-Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
- support xdp multibuffer
-Message-ID: <Y7goqzGAb+dk8KIw@C02YVCJELVCG>
-References: <20220621175402.35327-1-gospo@broadcom.com>
- <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com>
- <87k0234pd6.fsf@toke.dk>
- <20230103172153.58f231ba@kernel.org>
- <Y7U8aAhdE3TuhtxH@lore-desk>
- <87bkne32ly.fsf@toke.dk>
- <a12de9d9-c022-3b57-0a15-e22cdae210fa@gmail.com>
- <871qo90yxr.fsf@toke.dk>
- <Y7cBfE7GpX04EI97@C02YVCJELVCG.dhcp.broadcom.net>
- <20230105101642.1a31f278@kernel.org>
+        with ESMTP id S235075AbjAFOPV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 09:15:21 -0500
+Received: from 4.mo619.mail-out.ovh.net (4.mo619.mail-out.ovh.net [46.105.36.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95E877D30
+        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 06:15:18 -0800 (PST)
+Received: from ex4.mail.ovh.net (unknown [10.108.4.137])
+        by mo619.mail-out.ovh.net (Postfix) with ESMTPS id E39B22288D;
+        Fri,  6 Jan 2023 14:15:14 +0000 (UTC)
+Received: from [192.168.1.125] (37.65.8.229) by DAG10EX1.indiv4.local
+ (172.16.2.91) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.16; Fri, 6 Jan
+ 2023 15:15:12 +0100
+Message-ID: <cf6f7e30-9b0e-497b-87d4-df450949cd32@naccy.de>
+Date:   Fri, 6 Jan 2023 15:15:12 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230105101642.1a31f278@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+Subject: Re: [PATCH bpf-next v3 00/16] bpfilter
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Dmitrii Banshchikov <me@ubique.spb.ru>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>, <fw@strlen.de>
+References: <20221224000402.476079-1-qde@naccy.de>
+ <20221227182242.ozkc6u2lbwneoi4r@macbook-pro-6.dhcp.thefacebook.com>
+Content-Language: fr
+From:   Quentin Deslandes <qde@naccy.de>
+In-Reply-To: <20221227182242.ozkc6u2lbwneoi4r@macbook-pro-6.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [37.65.8.229]
+X-ClientProxiedBy: CAS11.indiv4.local (172.16.1.11) To DAG10EX1.indiv4.local
+ (172.16.2.91)
+X-Ovh-Tracer-Id: 3239214032702926553
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -85
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvhedrkedtgdeivdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfghrlhcuvffnffculdduhedmnecujfgurhepkfffgggfuffvvehfhfgjtgfgihesthekredttdefjeenucfhrhhomhepsfhuvghnthhinhcuffgvshhlrghnuggvshcuoehquggvsehnrggttgihrdguvgeqnecuggftrfgrthhtvghrnhephfeuieffudeutdfgkeelffehtefhueeuudegteeghfetgfeutdejhfefhfdtgedtnecuffhomhgrihhnpegsrhgvrghkphhoihhnthdrtggtnecukfhppeduvdejrddtrddtrddupdefjedrieehrdekrddvvdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeoqhguvgesnhgrtggthidruggvqedpnhgspghrtghpthhtohepuddprhgtphhtthhopegrlhgvgigvihdrshhtrghrohhvohhithhovhesghhmrghilhdrtghomhdpnhgvthguvghvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhlihhnuhigqdhkshgvlhhfthgvshhtsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdgsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpmhgvsehusghiqhhuvgdrshhpsgdrrh
+ hupdhshhhurghhsehkvghrnhgvlhdrohhrghdpmhihkhholhgrlhesfhgsrdgtohhmpdhprggsvghnihesrhgvughhrghtrdgtohhmpdhkuhgsrgeskhgvrhhnvghlrdhorhhgpdgvughumhgriigvthesghhoohhglhgvrdgtohhmpdhkvghrnhgvlhdqthgvrghmsehmvghtrgdrtghomhdpuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdphhgrohhluhhosehgohhoghhlvgdrtghomhdpshgufhesghhoohhglhgvrdgtohhmpdhkphhsihhnghhhsehkvghrnhgvlhdrohhrghdpjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdihhhhssehfsgdrtghomhdpshhonhhgsehkvghrnhgvlhdrohhrghdpmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdgrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdgurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprghstheskhgvrhhnvghlrdhorhhgpdhjohhlshgrsehkvghrnhgvlhdrohhrghdpfhifsehsthhrlhgvnhdruggvpdfovfetjfhoshhtpehmoheiudelpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 10:16:42AM -0800, Jakub Kicinski wrote:
-> On Thu, 5 Jan 2023 11:57:32 -0500 Andy Gospodarek wrote:
-> > > So my main concern would be that if we "allow" this, the only way to
-> > > write an interoperable XDP program will be to use bpf_xdp_load_bytes()
-> > > for every packet access. Which will be slower than DPA, so we may end up
-> > > inadvertently slowing down all of the XDP ecosystem, because no one is
-> > > going to bother with writing two versions of their programs. Whereas if
-> > > you can rely on packet headers always being in the linear part, you can
-> > > write a lot of the "look at headers and make a decision" type programs
-> > > using just DPA, and they'll work for multibuf as well.  
-> > 
-> > The question I would have is what is really the 'slow down' for
-> > bpf_xdp_load_bytes() vs DPA?  I know you and Jesper can tell me how many
-> > instructions each use. :)
+Le 27/12/2022 à 19:22, Alexei Starovoitov a écrit :
+> On Sat, Dec 24, 2022 at 01:03:46AM +0100, Quentin Deslandes wrote:
+>>
+>> Due to poor hardware availability on my side, I've not been able to
+>> benchmark those changes. I plan to get some numbers for the next iteration.
 > 
-> Until we have an efficient and inlined DPA access to frags an
-> unconditional memcpy() of the first 2 cachelines-worth of headers
-> in the driver must be faster than a piece-by-piece bpf_xdp_load_bytes()
-> onto the stack, right?
+> Yeah. Performance numbers would be my main question :)
 
-100% 
+Hardware is on the way! :)
 
-Seems like we are back to speed vs ease of use, then?
-
-> > Taking a step back...years ago Dave mentioned wanting to make XDP
-> > programs easy to write and it feels like using these accessor APIs would
-> > help accomplish that.  If the kernel examples use bpf_xdp_load_bytes()
-> > accessors everywhere then that would accomplish that.
+>> FORWARD filter chain is now supported, however, it's attached to
+>> TC INGRESS along with INPUT filter chain. This is due to XDP not supporting
+>> multiple programs to be attached. I could generate a single program
+>> out of both INPUT and FORWARD chains, but that would prevent another
+>> BPF program to be attached to the interface anyway. If a solution
+>> exists to attach both those programs to XDP while allowing for other
+>> programs to be attached, it requires more investigation. In the meantime,
+>> INPUT and FORWARD filtering is supported using TC.
 > 
-> I've been pushing for an skb_header_pointer()-like helper but 
-> the semantics were not universally loved :)
+> I think we can ignore XDP chaining for now assuming that Daniel's bpf_link-tc work
+> will be applicable to XDP as well, so we'll have a simple chaining
+> for XDP eventually.
+> 
+> As far as attaching to TC... I think it would be great to combine bpfilter
+> codegen and attach to Florian's bpf hooks exactly at netfilter.
+> See
+> https://git.breakpoint.cc/cgit/fw/nf-next.git/commit/?h=nf_hook_jit_bpf_29&id=0c1ec06503cb8a142d3ad9f760b72d94ea0091fa
+> With nf_hook_ingress() calling either into classic iptable or into bpf_prog_run_nf
+> which is either generated by Florian's optimizer of nf chains or into
+> bpfilter generated code would be ideal.
 
-I didn't recall that -- maybe I'll check the archives and see what I can
-find.
-
+That sounds interesting. If my understanding is correct, Florian's
+work doesn't yet allow for userspace-generated programs to be attached,
+which will be required for bpfilter.
