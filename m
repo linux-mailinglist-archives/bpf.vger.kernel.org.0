@@ -2,75 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC4065F9E1
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 04:03:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1252865FA26
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 04:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbjAFDDU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Jan 2023 22:03:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
+        id S229643AbjAFD1C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Jan 2023 22:27:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbjAFDCg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Jan 2023 22:02:36 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF9B6CFD6;
-        Thu,  5 Jan 2023 19:01:36 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id u19so864190ejm.8;
-        Thu, 05 Jan 2023 19:01:36 -0800 (PST)
+        with ESMTP id S230194AbjAFD1B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Jan 2023 22:27:01 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C412367BC3
+        for <bpf@vger.kernel.org>; Thu,  5 Jan 2023 19:26:58 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id s5so692325edc.12
+        for <bpf@vger.kernel.org>; Thu, 05 Jan 2023 19:26:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DVcc+AxLpCmQrlskmey4vC08mDyFoGGH7C3hKYNnPeU=;
-        b=KyBwqA61hhb573NY68anN4JJhf/FDP6mtESP9g8HKfZDbLob0CXE58tJ7D72qlUF/I
-         ZeOlr0JSH7cYqiZA5aBujlP2AgDlJsk47vUpp2JzgBL8BdIa0QRWFmLRvIEIUNfe4gy6
-         o74DcelkHmrAN22CqGmPE9FJGemnmdFx9uChqSVlu2zeQb6aSuA1t7DlKNtJZbE/d3O/
-         PV3UPuttuaN79iGBCFikgreqiH/ROAj57x8/G7xjlDoxSRMKUHTkOBGpsW4nEIgZDPhc
-         bST+VVu152lvvY5HXy0r6cDRQv2evCGjJIjGFwl8fSjdsm5Y6Ji/ymwSPxah9D9LU4Ou
-         RYSw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VQ3XXuAVxS5rVyqjqMcCPu/tF2/okDTCHYgNzrRdpa8=;
+        b=LqxXUCz4afVyIuwW5vFeZz3hyDx+PWVfshzcPJHg5gpRp2PyC+QDOuODGz8FMxnWWt
+         y0vTAuRvMr7ZPrLGCjEfQD0BhS8maBaWTGVFZxYlyx7SQMBn1voVy1JOqdqh0EzrzVuJ
+         LPKkNUwB60Wh+KMhoQzVC0PjIORWDDyvbFm+yYLD2vzo5ceTwTc0AvmAlRegWuX8ecI4
+         3cJh6rB4IKH2lF+HrocTDtLr1Q8BT+agUsdSmdcFiYLBjXRZzD3J+TmyA/qKWwX1eqGx
+         CfcOAkRwhBOju+WKgKaFE7yNKyBFeXi6Tbe+WNCaIQ6P7imT/7hkNoJUtR5tY+ea+hYS
+         wF3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DVcc+AxLpCmQrlskmey4vC08mDyFoGGH7C3hKYNnPeU=;
-        b=IFPYUFG2fwVko7sckKwFdGbVgQrzo2P21MQTsZ3QR5wWHC0EUT5URTKwWuV+SgJ12+
-         uCtdbhysKfHbWUXhmFkW1jY6sisEmTjDGC0U1MaNrwIsJasOfvedVZxGZ1ZPU2ZYMUtX
-         vRSm7KJxPwue6jh2lXZH8+E+fzKzdDhGmuC3uR4UcpgBLHX2T2y+WgYJAzsbX8c7Ur0g
-         StRgEPgTdny84nHjLe/MzFpoB91kn4VapMYN05M4BZa8eMr1Opz/GBaltp61mlSuqtIr
-         LK9+jGcPpGW6t73pgbs8mCQMXyP2L/7CW6zVihEa+vVwbk8k+G2Z1zn7lQGNPj1BJi18
-         g/7g==
-X-Gm-Message-State: AFqh2krNoPo2i7yZLlmuyXjZNd7qWH57+PjDUfmd2azdGCALRBrXr4aj
-        0lHwHYNQGSp2221UgTT6inF1xpj+luifwlBNTvY=
-X-Google-Smtp-Source: AMrXdXtD/C50xIj69PIBAAAiCwaJUZqAb3iIigVRXQwB0u0HQGZ6rKr0z0kWnqgii5JAdCZw/aoNaGqC7odblE8kwGU=
-X-Received: by 2002:a17:906:dcf:b0:7c1:6781:9c97 with SMTP id
- p15-20020a1709060dcf00b007c167819c97mr3806934eji.676.1672974094765; Thu, 05
- Jan 2023 19:01:34 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VQ3XXuAVxS5rVyqjqMcCPu/tF2/okDTCHYgNzrRdpa8=;
+        b=v8lzLh3cGFFQrPO3HbCacv/0aTVLm/TCsQ327+H3dJ9TGpwaScBIOiP58E4pa9aKct
+         QpXyHZaWueVSl19CBCptGA3yblVHoR/wp+hVoH55PibebgM5LmWMg/AnLYjG3woGuauM
+         C+h88xhP24XT81A2SbQQ6C/W+4K+QeifUptR081JyidNfJk35o5h1ZNQpZn78NHIQy2B
+         BcpX/2D0PUdWBe0mdC5fPMG1WsJ5Ts09wy++PAQxyQegi9VCPK+OWeh7foirOiQc2TN1
+         nhDyPP+5JoAZdVj8UPzuO/xTvi1DgaE41aHGKUhApeBDV/JIbOHeei24pvpG5JzD924x
+         QtkA==
+X-Gm-Message-State: AFqh2kqGM3kxTwgDuy6ukgerpTHhqGBYhGgXz8RHX96irKyKzIfg8mKo
+        Ds/RDjPkDhUU5C3c1wvaEaslBRY4B7tfiMMaSM6hDWEl
+X-Google-Smtp-Source: AMrXdXuiFzm55vrVrIfMOzqA7KOJVkEISHhe62pPwj83oBuHwBx8gXctn79uPz54jIEVBhU+CNXU93C1egGcmbqFtBI=
+X-Received: by 2002:aa7:d7c6:0:b0:486:9f80:8fbc with SMTP id
+ e6-20020aa7d7c6000000b004869f808fbcmr4289363eds.421.1672975617352; Thu, 05
+ Jan 2023 19:26:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20221222043507.33037-1-sunhao.th@gmail.com> <ef46c1f6-0939-c2ed-3efb-c3c5f28d1931@meta.com>
- <73E3CA9E-F67E-429F-A2DB-C77649E32D7A@gmail.com> <CAADnVQ+EMzAmeKvivFKvqCNj6H9X-1rBtBBnjRzDiNvkocsc6A@mail.gmail.com>
- <2EC740FA-A10B-4208-8080-9A268BD8E675@gmail.com> <CAADnVQKzRS6HcbOPuJRJ=8SOXDDDdy2EBN-LP6vSgB9tLb27Ug@mail.gmail.com>
- <F6713293-7B1E-4C2B-8B6F-683A1B3E002D@gmail.com>
-In-Reply-To: <F6713293-7B1E-4C2B-8B6F-683A1B3E002D@gmail.com>
+References: <346230382.476954.1672152966557.JavaMail.zimbra@ip-paris.fr>
+ <Y6sWqgncfvtRHp+b@krava> <505155146.488099.1672236042622.JavaMail.zimbra@ip-paris.fr>
+ <42d3f4d8-fa8b-5774-0f6b-b12162c24736@meta.com> <5692f180-5b78-48e0-b974-b60bd58c0839@Spark>
+ <Y7PhWlqdG/TjwT75@krava> <1105578275.675049.1672845867568.JavaMail.zimbra@ip-paris.fr>
+ <Y7Xyp6sQaAqi8qzw@krava> <Y7X3qEOXeimw1JmF@krava> <Y7acvJqbBJt4V21+@krava>
+In-Reply-To: <Y7acvJqbBJt4V21+@krava>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 5 Jan 2023 19:01:23 -0800
-Message-ID: <CAADnVQ+1F-vZNr5d38hdQwnyR0Vq9qXW_1YMprQMLHKwrPk3SA@mail.gmail.com>
-Subject: Re: kernel panic: Attempted to kill init!
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 5 Jan 2023 19:26:45 -0800
+Message-ID: <CAADnVQJmRYSyi+aJ2FjcjoonYtJvJwibWr+1Nb63DQihFaMYHg@mail.gmail.com>
+Subject: Re: bpf_probe_read_user EFAULT
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Victor Laforet <victor.laforet@ip-paris.fr>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -81,34 +70,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 5, 2023 at 1:00 AM Hao Sun <sunhao.th@gmail.com> wrote:
-> >
-> > Does syzbot running without any user space?
-> > Is syzbot itself a pid=3D1 ? and the only process ?
-> > If so, the error would makes sense.
+On Thu, Jan 5, 2023 at 1:47 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> Yes, after read the C reproducer again, noticed that after a
-> bunch of sandbox setup, the pid of the reproducer process at
-> runtime is 1.
+> On Wed, Jan 04, 2023 at 11:08:23PM +0100, Jiri Olsa wrote:
+> > On Wed, Jan 04, 2023 at 10:42:02PM +0100, Jiri Olsa wrote:
+> > > On Wed, Jan 04, 2023 at 04:24:27PM +0100, Victor Laforet wrote:
+> > > > Ok thanks. As I understand, tp_btf/+ probes (specifically tp_btf/sched_switch that I need) cannot be sleepable? It is then not possible to read user space memory from the bpf code?
+> > >
+> > > yes, only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable
 >
-> > I guess we can add a safety check to bpf_send_signal_common
-> > to prevent syzbot from killing itself.
+> we actually allow to create tp_btf program with BPF_F_SLEEPABLE flag,
+> because it's TRACING prog type, but still bpf program can't sleep when
+> executed in tracepoint context..  so I wonder we should not allow to
+> load it, Alexei?
 >
-> Maybe something like this? This can avoid the panic, but won=E2=80=99t
-> allow task with pid=3D1 to send signal with prog.
+> jirka
 >
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 23ce498bca97..94d2af2ce433 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -844,6 +844,8 @@ static int bpf_send_signal_common(u32 sig, enum pid_t=
-ype type)
->          */
->         if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
->                 return -EPERM;
-> +       if (unlikely(is_global_init(current)))
-> +               return -EPERM;
->         if (unlikely(!nmi_uaccess_okay()))
->                 return -EPERM;
+>
+> ---
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 98a8051ce316..390621d79fbb 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -16755,10 +16755,14 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+>                 return -EINVAL;
+>         }
+>
+> -       if (prog->aux->sleepable && prog->type != BPF_PROG_TYPE_TRACING &&
+> -           prog->type != BPF_PROG_TYPE_LSM && prog->type != BPF_PROG_TYPE_KPROBE) {
+> -               verbose(env, "Only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable\n");
+> -               return -EINVAL;
+> +       if (prog->aux->sleepable) {
+> +               if ((prog->type == BPF_PROG_TYPE_TRACING &&
+> +                    prog->expected_attach_type == BPF_TRACE_RAW_TP) ||
+> +                   (prog->type != BPF_PROG_TYPE_TRACING &&
+> +                    prog->type != BPF_PROG_TYPE_LSM && prog->type != BPF_PROG_TYPE_KPROBE)) {
+> +                       verbose(env, "Only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable\n");
+> +                       return -EINVAL;
 
-Yep. Good idea. Pls send an official patch.
+Ahh. good catch. The sleepable flag makes no difference for tp_btf.
+Indeed, let's disable this combo.
+I was thinking whether explicit list of
+fentry/fexit/fmod_ret || lsm || kprobe would be cleaner?
