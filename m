@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0917660752
-	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 20:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3B3660754
+	for <lists+bpf@lfdr.de>; Fri,  6 Jan 2023 20:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbjAFTph (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 14:45:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
+        id S235914AbjAFTp5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 14:45:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235962AbjAFTpX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 14:45:23 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFE07A3B7
-        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 11:45:22 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 7so1843697pga.1
-        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 11:45:22 -0800 (PST)
+        with ESMTP id S235677AbjAFTpn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 14:45:43 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DAA81C12
+        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 11:45:42 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id o7-20020a17090a0a0700b00226c9b82c3aso2795201pjo.3
+        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 11:45:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CvZXlAdRBFAHyGz96jB9ItzH1/RXpSiQ90ZYvIcBjik=;
-        b=HJPV+ijzoiKlKYgQmKPByc9bSoOoRKqrJ7LEql2I7BJ6gbqkPp8/u44r+nhVJmFd+N
-         hJNCwAIjZNJKGd2CFUeQ0+ydsaOmvJcB3rKwiPshkiq1uDeTK1Sn8/gHMjJRO1mjXnHl
-         3U3NWRydliBq7AZ1YbG/dT//t4A86pae88qJSCruX1DRNsWSibMQI7hwaZAm2hM7xiGV
-         j7E2AtkQX3fisiO37t+Gx8lY0vpMg59JAqI18h6xJV2Gg+flpS/XnsA2QWV/w375OYWK
-         5GYriCedflN+YLuyWKs0nXBVDfxnhYl8rjaK1PEFDmVGvQ6is0cG3zSsWmlxuuHaQ8kV
-         zglw==
+        bh=UL/gZX7lFLKx3GMDq4Xe8lHpVhl3DvS0+DdhugdlYL0=;
+        b=idiuu+c592aJh6IVrfrcGszOnB5gXR/W7Zp36xSZX4nIR9y9L9AVlN57mOlrbeuMm8
+         hpVghubKTeWmww9Et762Fe/CDrkjD0fDpBzBtJZw/Tb50eU7wNxtejw7ZRVDGUFfpNa8
+         wANhDTmKkoX8KJ971OKFPqx1ua6oZkrPO4SaItPKqpdXPM+Wv3dpalunbNIOdc2rdDJD
+         Jhq2btOlHQnWeVPKQito4+rguf3hPuxp3Fdh11FskkqK69C+aPz2DCqhUJxivwPOq7dc
+         oENBXLdEngkipp9Y6+xGkY00sK6Mybf02mgoAQZEVUeIXdLsuybbwhbDDeut7+bFJ1Kk
+         LG2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CvZXlAdRBFAHyGz96jB9ItzH1/RXpSiQ90ZYvIcBjik=;
-        b=hpjYoCGWqgOx7wFfRstVRRuNvA/pfVKPX2x/+ftRylF+LAvf0QNcD3vOZq3WFJw69M
-         FSZEFGt0ojLN5tEXszA1qgzGfB5UHbSt2OQqa2DRSp13M+lmmdsDDtr7QOGYenIyZdFb
-         HcITMOsQXKHdq3oTKoIbkRlw+IyDOR/lAMkJfq6K5wQ0tgutD3yyJjDeXJ6afBbhUerM
-         ZWUt5mlU9w1Sr0kJrDDIOAU5Hn2j//Z4RQoGXJny7Wa3wCtBAD8QrVnXJ/oikAEeYTqb
-         QynBCvY49EdffUispERtJwuHKAzjZC1/Y8xpfvCKSv84ZMVY6SQbzyXnsn3Dm3WWEEW1
-         rEFw==
-X-Gm-Message-State: AFqh2kqOrtieS6Lr0djU30rGPhyNpt+Bs12rkYofTH/0EkLqsaW7+3c1
-        qNG+qRl2AAau0zeYfCM3IWREwKJhT+ndkaPaLlYz1w==
-X-Google-Smtp-Source: AMrXdXtPSADREsfUCJ3xXPZnlv7Q8cwXmq4nNdSMZUShJmr2W8sgfT+Xk+QXpXccd4BSpoRguJb2C1+aNDX/kF6UJpk=
-X-Received: by 2002:a62:3004:0:b0:573:6cfc:2210 with SMTP id
- w4-20020a623004000000b005736cfc2210mr4105117pfw.55.1673034321778; Fri, 06 Jan
- 2023 11:45:21 -0800 (PST)
+        bh=UL/gZX7lFLKx3GMDq4Xe8lHpVhl3DvS0+DdhugdlYL0=;
+        b=3+5ne+RSs8YA2USKzr1zNuJnXQcxZJhsFbipOgUYwrrlcQvkRPs29Hi+T3Xo943R3m
+         e+kf/oTHwSHZZx5oJcynyZSs7/FFB4XSxEhyFiogF9SK42Lfj1XydCyJwMejcnvqCVVa
+         O3HCNexupTX3f2MCUv73BZeZeT6ZZngXWMxM2PVqMossRXbp8KrW8RcOuxhfuxlvBwQq
+         hO6O8vbkdTnS0GyuXXxYUvAHs3ji9z+vA7+P4DSLntpFThiHRRIrEJTWfCWOaDyaCnSF
+         mN0Rt8wSa08FNR/cLBzZ2xVw5F72j8WmBGk0IuciOT6pZuNpNAWmiSOPT92JHwRfDmM0
+         AsKw==
+X-Gm-Message-State: AFqh2kqcy+ZWY4gIDpCjxFQetwtrdAdwSlEijs16DnB2m9VLSFRaSnti
+        Wm9bxgTkQeWXXYg1APjOKiZtZZhYinfc+dQPHKBGrg14Hid6XQ==
+X-Google-Smtp-Source: AMrXdXvZk+D/eAuuOVKWJEp0kfGRFlSmVOvJLa6TDu0N3/23vRIYKC/RldJpNY8oeOe+faA6+hpwKQGOoRDD72RDw7g=
+X-Received: by 2002:a17:902:a506:b0:189:97e2:ab8b with SMTP id
+ s6-20020a170902a50600b0018997e2ab8bmr5657246plq.131.1673034341447; Fri, 06
+ Jan 2023 11:45:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20230106154400.74211-1-paul@paul-moore.com>
-In-Reply-To: <20230106154400.74211-1-paul@paul-moore.com>
+References: <20230106154400.74211-1-paul@paul-moore.com> <20230106154400.74211-2-paul@paul-moore.com>
+In-Reply-To: <20230106154400.74211-2-paul@paul-moore.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 6 Jan 2023 11:45:09 -0800
-Message-ID: <CAKH8qBtyR20ZWAc11z1-6pGb3Hd47AQUTbE_cfoktG59TqaJ7Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] bpf: restore the ebpf program ID for
- BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD
+Date:   Fri, 6 Jan 2023 11:45:30 -0800
+Message-ID: <CAKH8qBtr3A+EH2J6DCaVbgoGMetKbLUOQ8ZF=cJSFd8ym-0vxw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] bpf: remove the do_idr_lock parameter from bpf_prog_free_id()
 To:     Paul Moore <paul@paul-moore.com>
 Cc:     linux-audit@redhat.com, bpf@vger.kernel.org,
         Burn Alting <burn.alting@iinet.net.au>,
@@ -71,116 +70,96 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Jan 6, 2023 at 7:44 AM Paul Moore <paul@paul-moore.com> wrote:
 >
-> When changing the ebpf program put() routines to support being called
-> from within IRQ context the program ID was reset to zero prior to
-> calling the perf event and audit UNLOAD record generators, which
-> resulted in problems as the ebpf program ID was bogus (always zero).
-> This patch addresses this problem by removing an unnecessary call to
-> bpf_prog_free_id() in __bpf_prog_offload_destroy() and adjusting
-> __bpf_prog_put() to only call bpf_prog_free_id() after audit and perf
-> have finished their bpf program unload tasks in
-> bpf_prog_put_deferred().  For the record, no one can determine, or
-> remember, why it was necessary to free the program ID, and remove it
-> from the IDR, prior to executing bpf_prog_put_deferred();
-> regardless, both Stanislav and Alexei agree that the approach in this
-> patch should be safe.
+> It was determined that the do_idr_lock parameter to
+> bpf_prog_free_id() was not necessary as it should always be true.
 >
-> It is worth noting that when moving the bpf_prog_free_id() call, the
-> do_idr_lock parameter was forced to true as the ebpf devs determined
-> this was the correct as the do_idr_lock should always be true.  The
-> do_idr_lock parameter will be removed in a follow-up patch, but it
-> was kept here to keep the patch small in an effort to ease any stable
-> backports.
->
-> I also modified the bpf_audit_prog() logic used to associate the
-> AUDIT_BPF record with other associated records, e.g. @ctx != NULL.
-> Instead of keying off the operation, it now keys off the execution
-> context, e.g. '!in_irg && !irqs_disabled()', which is much more
-> appropriate and should help better connect the UNLOAD operations with
-> the associated audit state (other audit records).
->
-> Cc: stable@vger.kernel.org
-> Fixes: d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq context.")
-> Reported-by: Burn Alting <burn.alting@iinet.net.au>
-> Reported-by: Jiri Olsa <olsajiri@gmail.com>
 > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Signed-off-by: Paul Moore <paul@paul-moore.com>
+
+nit: I believe it's been suggested several times by different people
 
 Acked-by: Stanislav Fomichev <sdf@google.com>
 
-Thank you! There might be a chance it breaks test_offload.py (I don't
-remember whether it checks this prog-is-removed-from-id part or not),
-but I don't think it's fair to ask to address it :-)
-Since it doesn't trigger in CI, I'll take another look next week when
-doing a respin of my 'xdp-hints' series.
 
-
+> Signed-off-by: Paul Moore <paul@paul-moore.com>
+>
 > ---
 > * v3
-> - abandon most of the changes in v2
-> - move bpf_prog_free_id() after the audit/perf unload hooks
-> - remove bpf_prog_free_id() from __bpf_prog_offload_destroy()
-> - added stable tag
-> * v2
-> - change subj
-> - add mention of the perf regression
-> - drop the dedicated program audit ID
-> - add the bpf_prog::valid_id flag, bpf_prog_get_id() getter
-> - convert prog ID users to new ID getter
-> * v1
-> - subj was: "bpf: restore the ebpf audit UNLOAD id field"
 > - initial draft
 > ---
->  kernel/bpf/offload.c | 3 ---
->  kernel/bpf/syscall.c | 6 ++----
->  2 files changed, 2 insertions(+), 7 deletions(-)
+>  include/linux/bpf.h  |  2 +-
+>  kernel/bpf/syscall.c | 20 ++++++--------------
+>  2 files changed, 7 insertions(+), 15 deletions(-)
 >
-> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> index 13e4efc971e6..190d9f9dc987 100644
-> --- a/kernel/bpf/offload.c
-> +++ b/kernel/bpf/offload.c
-> @@ -216,9 +216,6 @@ static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
->         if (offload->dev_state)
->                 offload->offdev->ops->destroy(prog);
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 3de24cfb7a3d..634d37a599fa 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1832,7 +1832,7 @@ void bpf_prog_inc(struct bpf_prog *prog);
+>  struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
+>  void bpf_prog_put(struct bpf_prog *prog);
 >
-> -       /* Make sure BPF_PROG_GET_NEXT_ID can't find this dead program */
-> -       bpf_prog_free_id(prog, true);
-> -
->         list_del_init(&offload->offloads);
->         kfree(offload);
->         prog->aux->offload = NULL;
+> -void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock);
+> +void bpf_prog_free_id(struct bpf_prog *prog);
+>  void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock);
+>
+>  struct btf_field *btf_record_find(const struct btf_record *rec,
 > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 64131f88c553..61bb19e81b9c 100644
+> index 61bb19e81b9c..ecca9366c7a6 100644
 > --- a/kernel/bpf/syscall.c
 > +++ b/kernel/bpf/syscall.c
-> @@ -1972,7 +1972,7 @@ static void bpf_audit_prog(const struct bpf_prog *prog, unsigned int op)
+> @@ -2001,7 +2001,7 @@ static int bpf_prog_alloc_id(struct bpf_prog *prog)
+>         return id > 0 ? 0 : id;
+>  }
+>
+> -void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
+> +void bpf_prog_free_id(struct bpf_prog *prog)
+>  {
+>         unsigned long flags;
+>
+> @@ -2013,18 +2013,10 @@ void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
+>         if (!prog->aux->id)
 >                 return;
->         if (audit_enabled == AUDIT_OFF)
->                 return;
-> -       if (op == BPF_AUDIT_LOAD)
-> +       if (!in_irq() && !irqs_disabled())
->                 ctx = audit_context();
->         ab = audit_log_start(ctx, GFP_ATOMIC, AUDIT_BPF);
->         if (unlikely(!ab))
-> @@ -2067,6 +2067,7 @@ static void bpf_prog_put_deferred(struct work_struct *work)
+>
+> -       if (do_idr_lock)
+> -               spin_lock_irqsave(&prog_idr_lock, flags);
+> -       else
+> -               __acquire(&prog_idr_lock);
+> -
+> +       spin_lock_irqsave(&prog_idr_lock, flags);
+>         idr_remove(&prog_idr, prog->aux->id);
+>         prog->aux->id = 0;
+> -
+> -       if (do_idr_lock)
+> -               spin_unlock_irqrestore(&prog_idr_lock, flags);
+> -       else
+> -               __release(&prog_idr_lock);
+> +       spin_unlock_irqrestore(&prog_idr_lock, flags);
+>  }
+>
+>  static void __bpf_prog_put_rcu(struct rcu_head *rcu)
+> @@ -2067,11 +2059,11 @@ static void bpf_prog_put_deferred(struct work_struct *work)
 >         prog = aux->prog;
 >         perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_UNLOAD, 0);
 >         bpf_audit_prog(prog, BPF_AUDIT_UNLOAD);
-> +       bpf_prog_free_id(prog, true);
+> -       bpf_prog_free_id(prog, true);
+> +       bpf_prog_free_id(prog);
 >         __bpf_prog_put_noref(prog, true);
 >  }
 >
-> @@ -2075,9 +2076,6 @@ static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
+> -static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
+> +static void __bpf_prog_put(struct bpf_prog *prog)
+>  {
 >         struct bpf_prog_aux *aux = prog->aux;
 >
->         if (atomic64_dec_and_test(&aux->refcnt)) {
-> -               /* bpf_prog_free_id() must be called first */
-> -               bpf_prog_free_id(prog, do_idr_lock);
-> -
->                 if (in_irq() || irqs_disabled()) {
->                         INIT_WORK(&aux->work, bpf_prog_put_deferred);
->                         schedule_work(&aux->work);
+> @@ -2087,7 +2079,7 @@ static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
+>
+>  void bpf_prog_put(struct bpf_prog *prog)
+>  {
+> -       __bpf_prog_put(prog, true);
+> +       __bpf_prog_put(prog);
+>  }
+>  EXPORT_SYMBOL_GPL(bpf_prog_put);
+>
 > --
 > 2.39.0
 >
