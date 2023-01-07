@@ -2,128 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6556660BC5
-	for <lists+bpf@lfdr.de>; Sat,  7 Jan 2023 03:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7EA660C10
+	for <lists+bpf@lfdr.de>; Sat,  7 Jan 2023 03:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbjAGCJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 21:09:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
+        id S235330AbjAGCyo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Jan 2023 21:54:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjAGCJr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 21:09:47 -0500
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18C63224F;
-        Fri,  6 Jan 2023 18:09:45 -0800 (PST)
-Received: by mail-qv1-f53.google.com with SMTP id p17so2252890qvn.1;
-        Fri, 06 Jan 2023 18:09:45 -0800 (PST)
+        with ESMTP id S229809AbjAGCyn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Jan 2023 21:54:43 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6555B8B53A
+        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 18:54:41 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id bq10-20020a056a000e0a00b00581221976c0so1618664pfb.10
+        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 18:54:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/LXD7bWn6Jkwh9hHWJBLtYnysPLbu62uMIUKDSw+zHg=;
+        b=D/axEx4FkjtSzhj6GtMgJ/eJNW2W8y+wGrdJ6WK+JKRibRRQcNB02GD5Ej+HMaYzOn
+         I4r8jetP7aQCigvNTyA+nvW63VqQ2V6lagidpSk2Wc6g3eMvIVBCfLScXdMjhdGhYnS2
+         gZdq4p+zvacBigitPU1lyIDbtuDurtbuBWboWKzVSJylU00HTdVPoEFrfKombEw7cYgp
+         fkl7HePlLnEugAAkQqbvJFIge9bxGIJIlNcDBXdTB4qpZZSDOGPLVcMmn64hFW/w8vgf
+         8UdkiTCNLip4UgwFTTGJyht9/eGWnzVCemsh9yUucwUUbZONP3ieq5KhQWJigpJdk5M1
+         VWag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ADJOnrT0to95tRJZIpNulRS9Rqms0FjnaYypouP2xC8=;
-        b=PMQwBNt4iZk1UVn+kk6C2Lx+aVWaFHyp+35kScSFSILnX9XBXknauRHxgf5sVlQnNM
-         9NsQ9lL2n+M8bpxQ+8+CPfp2hBO2KjgsHQDa67q/U+gLCyikzriZNEovjnbIjhHmrD53
-         n/zysA4oQTcs/gGAQQTWyYGF2DaH2lrjsE4Zp3/n4JgQayvOCcq3VXn7SIB3xuX0C4n+
-         md8OQTt3LuQaSvGwqPzUKH1LuhVQvqIvQrE08PNh7JbH2qkYKx/qlSF1k7E7bXjQDeFU
-         BuIYpVaSJHkgUIf+QFyx/RQ7mtFFf1VETJlyHBQN7mCngaBNSUJvbE3BTMgSDzHTO+SQ
-         G30A==
-X-Gm-Message-State: AFqh2kr1iJBIK8uXgXtCl+jGp1uXi0pwe3xJKnbU0CkiuNz0jN1FS3ej
-        z2FaA2IDxwJcqSkRZQ1/zJY=
-X-Google-Smtp-Source: AMrXdXtH++oYwIKBplmbiV7cBYZqZQi7FYNZiFHoFt8wTlWpN2zDpRWCHJW4QMheAVDjwZQ+MCvthA==
-X-Received: by 2002:a0c:bf03:0:b0:531:c5a5:6713 with SMTP id m3-20020a0cbf03000000b00531c5a56713mr26572538qvi.13.1673057384571;
-        Fri, 06 Jan 2023 18:09:44 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:c7d8])
-        by smtp.gmail.com with ESMTPSA id t11-20020a05620a034b00b006fa31bf2f3dsm1450503qkm.47.2023.01.06.18.09.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Jan 2023 18:09:44 -0800 (PST)
-Date:   Fri, 6 Jan 2023 20:09:44 -0600
-From:   David Vernet <void@manifault.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/LXD7bWn6Jkwh9hHWJBLtYnysPLbu62uMIUKDSw+zHg=;
+        b=yjw/ps2W1B0IkagG0ppGkS5HGEUtI8HEvMaURX5h0WSjrLlRdntVP6oFqWQnLNgVYF
+         no8t2XoNShtSPQjZ4TEyL7RRP/6xPaWgG9fWTlZsU0PzAspkhygMvnqu8PUzVPYPBr18
+         cRfT7tpvNVJ8Ll45OhDVr4CSkIlB/YldvngwjajXhVkWTI/gAB4enjQa+NmLV39i9m4X
+         WLdK2P6R9Z/BKz//XRWr0RvCRDiEBe9+DBVI75ArT+nBCC2sj+vZ2Hnas2ZcBeBnla3O
+         Gzsj3TZDaZVvPxKxqCCpMSWb5igshN8EPp1GlDLt4Gdw+2tGoGFaK2xyRBxX//3y/o28
+         wh1w==
+X-Gm-Message-State: AFqh2kq9P+Ayn3GL4sfa5C7YELhtPvB4AcAl4ZiCezC2jyftNnXCVVNE
+        gHPF0PfMQ9kcqClNWwnJNyVazbnAdoXelJsCjMDWBHm49S3Hc43npq/m0t+D2skzZg1lI/ZdhGk
+        8cE+h+vhXpWBJ+Dk0Rs39Ky0iWYy48lyxWkDon7br9Su+bahxbz1L+VkoAajQ
+X-Google-Smtp-Source: AMrXdXuGpkSqOris5d+pibbC28QA9/oo3sbz/IB0DzZeTVqkNYBWIuBFM7QwHx+JujDwlaS/nrNsSF5P8JLU
+X-Received: from connoro.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:a99])
+ (user=connoro job=sendgmr) by 2002:a05:6a00:440b:b0:583:860:7a30 with SMTP id
+ br11-20020a056a00440b00b0058308607a30mr906809pfb.1.1673060080726; Fri, 06 Jan
+ 2023 18:54:40 -0800 (PST)
+Date:   Sat,  7 Jan 2023 02:53:31 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
+Message-ID: <20230107025331.3240536-1-connoro@google.com>
+Subject: [PATCH bpf-next v3] bpf: btf: limit logging of ignored BTF mismatches
+From:   "Connor O'Brien" <connoro@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@meta.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Add __bpf_kfunc tag for marking kernel
- functions as kfuncs
-Message-ID: <Y7jUaDD9V556Px3b@maniforge.lan>
-References: <20230106195130.1216841-1-void@manifault.com>
- <20230106195130.1216841-2-void@manifault.com>
- <CAADnVQLpK7WXTjF6GS1hcfPXf=8iERJmEeVFfvmG75mJj0DdaA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLpK7WXTjF6GS1hcfPXf=8iERJmEeVFfvmG75mJj0DdaA@mail.gmail.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        linux-kernel@vger.kernel.org, "Connor O'Brien" <connoro@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 06, 2023 at 05:04:02PM -0800, Alexei Starovoitov wrote:
-> On Fri, Jan 6, 2023 at 11:51 AM David Vernet <void@manifault.com> wrote:
-> >
-> > kfuncs are functions defined in the kernel, which may be invoked by BPF
-> > programs. They may or may not also be used as regular kernel functions,
-> > implying that they may be static (in which case the compiler could e.g.
-> > inline it away), or it could have external linkage, but potentially be
-> > elided in an LTO build if a function is observed to never be used, and
-> > is stripped from the final kernel binary.
-> >
-> > We therefore require some convenience macro that kfunc developers can
-> > use just add to their kfuncs, and which will prevent all of the above
-> > issues from happening. This is in contrast with what we have today,
-> > where some kfunc definitions have "noinline", some have "__used", and
-> > others are static and have neither.
-> >
-> > In addition to providing the obvious correctness benefits, having such a
-> > macro / tag also provides the following advantages:
-> >
-> > - Giving an easy and intuitive thing to query for if people are looking
-> >   for kfuncs, as Christoph suggested at the kernel maintainers summit
-> >   (https://lwn.net/Articles/908464/). This is currently possible by
-> >   grepping for BTF_ID_FLAGS(func, but having something more self
-> >   describing would be useful as well.
-> >
-> > - In the future, the tag can be expanded with other useful things such
-> >   as the ability to suppress -Wmissing-prototype for the kfuncs rather
-> >   than requiring developers to surround the kfunc with __diags to
-> >   suppress the warning (this requires compiler support that as far as I
-> >   know currently does not exist).
-> 
-> Have you considered doing bpf_kfunc_start/bpf_kfunc_end ?
-> The former would include:
-> __diag_push(); __diag_ignore_all(); __used noinline
+Enabling CONFIG_MODULE_ALLOW_BTF_MISMATCH is an indication that BTF
+mismatches are expected and module loading should proceed
+anyway. Logging with pr_warn() on every one of these "benign"
+mismatches creates unnecessary noise when many such modules are
+loaded. Instead, handle this case with a single log warning that BTF
+info may be unavailable.
 
-Yeah that's certainly an option. The downside is that all functions
-within scope of the __diag_push() will be affected, and sometimes we mix
-kfuncs with non-kfuncs (including e.g. static helper functions that are
-used by the kfuncs themselves). -Wmissing-prototypes isn't a big deal,
-but __used and noinline are kind of unfortunate. Not a big deal though,
-it'll just result in a few extra __bpf_kfuncs_start() and
-__bpf_kfuncs_end() sprinkled throughout to avoid them being included.
-The upside is of course that we can get rid of the __diag_push()'es we
-currently have to prevent -Wmissing-prototypes.
+Mismatches also result in calls to __btf_verifier_log() via
+__btf_verifier_log_type() or btf_verifier_log_member(), adding several
+additional lines of logging per mismatched module. Add checks to these
+paths to skip logging for module BTF mismatches in the "allow
+mismatch" case.
 
-Wdyt? I do like the idea of getting rid of those ugly __diag_push()'es.
-And we could always go back to using a __bpf_kfunc macro if and when
-compilers ever support using attributes to ignore warnings for specific
-functions.
+All existing logging behavior is preserved in the default
+CONFIG_MODULE_ALLOW_BTF_MISMATCH=n case.
 
-> 
-> Also how about using bpf_kfunc on the same line ?
-> Then 'git grep' will be easier.
+Signed-off-by: Connor O'Brien <connoro@google.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+v3:
+- fix commenting style
+- reuse existing "log->level == BPF_LOG_KERNEL" check for kernel BTF
 
-Sure, if we keep this approach I'll do this in v2.
+v2:
+- Use pr_warn_once instead of skipping logging entirely
+- Also skip btf verifier logs for ignored mismatches
+
+v1: https://lore.kernel.org/bpf/20221109024155.2810410-1-connoro@google.com/
+---
+ kernel/bpf/btf.c | 38 +++++++++++++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 11 deletions(-)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index f7dd8af06413..67eee2d83dc8 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -1397,12 +1397,18 @@ __printf(4, 5) static void __btf_verifier_log_type(struct btf_verifier_env *env,
+ 	if (!bpf_verifier_log_needed(log))
+ 		return;
+ 
+-	/* btf verifier prints all types it is processing via
+-	 * btf_verifier_log_type(..., fmt = NULL).
+-	 * Skip those prints for in-kernel BTF verification.
+-	 */
+-	if (log->level == BPF_LOG_KERNEL && !fmt)
+-		return;
++	if (log->level == BPF_LOG_KERNEL) {
++		/* btf verifier prints all types it is processing via
++		 * btf_verifier_log_type(..., fmt = NULL).
++		 * Skip those prints for in-kernel BTF verification.
++		 */
++		if (!fmt)
++			return;
++
++		/* Skip logging when loading module BTF with mismatches permitted */
++		if (env->btf->base_btf && IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
++			return;
++	}
+ 
+ 	__btf_verifier_log(log, "[%u] %s %s%s",
+ 			   env->log_type_id,
+@@ -1441,8 +1447,15 @@ static void btf_verifier_log_member(struct btf_verifier_env *env,
+ 	if (!bpf_verifier_log_needed(log))
+ 		return;
+ 
+-	if (log->level == BPF_LOG_KERNEL && !fmt)
+-		return;
++	if (log->level == BPF_LOG_KERNEL) {
++		if (!fmt)
++			return;
++
++		/* Skip logging when loading module BTF with mismatches permitted */
++		if (env->btf->base_btf && IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
++			return;
++	}
++
+ 	/* The CHECK_META phase already did a btf dump.
+ 	 *
+ 	 * If member is logged again, it must hit an error in
+@@ -7260,11 +7273,14 @@ static int btf_module_notify(struct notifier_block *nb, unsigned long op,
+ 		}
+ 		btf = btf_parse_module(mod->name, mod->btf_data, mod->btf_data_size);
+ 		if (IS_ERR(btf)) {
+-			pr_warn("failed to validate module [%s] BTF: %ld\n",
+-				mod->name, PTR_ERR(btf));
+ 			kfree(btf_mod);
+-			if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
++			if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH)) {
++				pr_warn("failed to validate module [%s] BTF: %ld\n",
++					mod->name, PTR_ERR(btf));
+ 				err = PTR_ERR(btf);
++			} else {
++				pr_warn_once("Kernel module BTF mismatch detected, BTF debug info may be unavailable for some modules\n");
++			}
+ 			goto out;
+ 		}
+ 		err = btf_alloc_id(btf);
+-- 
+2.39.0.314.g84b9a713c41-goog
+
