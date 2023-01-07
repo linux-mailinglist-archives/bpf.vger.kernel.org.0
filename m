@@ -2,175 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7EA660C10
-	for <lists+bpf@lfdr.de>; Sat,  7 Jan 2023 03:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B93660C8D
+	for <lists+bpf@lfdr.de>; Sat,  7 Jan 2023 06:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235330AbjAGCyo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Jan 2023 21:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
+        id S230339AbjAGF1R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 7 Jan 2023 00:27:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjAGCyn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Jan 2023 21:54:43 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6555B8B53A
-        for <bpf@vger.kernel.org>; Fri,  6 Jan 2023 18:54:41 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id bq10-20020a056a000e0a00b00581221976c0so1618664pfb.10
-        for <bpf@vger.kernel.org>; Fri, 06 Jan 2023 18:54:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/LXD7bWn6Jkwh9hHWJBLtYnysPLbu62uMIUKDSw+zHg=;
-        b=D/axEx4FkjtSzhj6GtMgJ/eJNW2W8y+wGrdJ6WK+JKRibRRQcNB02GD5Ej+HMaYzOn
-         I4r8jetP7aQCigvNTyA+nvW63VqQ2V6lagidpSk2Wc6g3eMvIVBCfLScXdMjhdGhYnS2
-         gZdq4p+zvacBigitPU1lyIDbtuDurtbuBWboWKzVSJylU00HTdVPoEFrfKombEw7cYgp
-         fkl7HePlLnEugAAkQqbvJFIge9bxGIJIlNcDBXdTB4qpZZSDOGPLVcMmn64hFW/w8vgf
-         8UdkiTCNLip4UgwFTTGJyht9/eGWnzVCemsh9yUucwUUbZONP3ieq5KhQWJigpJdk5M1
-         VWag==
+        with ESMTP id S229454AbjAGF1Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 7 Jan 2023 00:27:16 -0500
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5515530B;
+        Fri,  6 Jan 2023 21:27:15 -0800 (PST)
+Received: by mail-qt1-f178.google.com with SMTP id bp44so4047348qtb.0;
+        Fri, 06 Jan 2023 21:27:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/LXD7bWn6Jkwh9hHWJBLtYnysPLbu62uMIUKDSw+zHg=;
-        b=yjw/ps2W1B0IkagG0ppGkS5HGEUtI8HEvMaURX5h0WSjrLlRdntVP6oFqWQnLNgVYF
-         no8t2XoNShtSPQjZ4TEyL7RRP/6xPaWgG9fWTlZsU0PzAspkhygMvnqu8PUzVPYPBr18
-         cRfT7tpvNVJ8Ll45OhDVr4CSkIlB/YldvngwjajXhVkWTI/gAB4enjQa+NmLV39i9m4X
-         WLdK2P6R9Z/BKz//XRWr0RvCRDiEBe9+DBVI75ArT+nBCC2sj+vZ2Hnas2ZcBeBnla3O
-         Gzsj3TZDaZVvPxKxqCCpMSWb5igshN8EPp1GlDLt4Gdw+2tGoGFaK2xyRBxX//3y/o28
-         wh1w==
-X-Gm-Message-State: AFqh2kq9P+Ayn3GL4sfa5C7YELhtPvB4AcAl4ZiCezC2jyftNnXCVVNE
-        gHPF0PfMQ9kcqClNWwnJNyVazbnAdoXelJsCjMDWBHm49S3Hc43npq/m0t+D2skzZg1lI/ZdhGk
-        8cE+h+vhXpWBJ+Dk0Rs39Ky0iWYy48lyxWkDon7br9Su+bahxbz1L+VkoAajQ
-X-Google-Smtp-Source: AMrXdXuGpkSqOris5d+pibbC28QA9/oo3sbz/IB0DzZeTVqkNYBWIuBFM7QwHx+JujDwlaS/nrNsSF5P8JLU
-X-Received: from connoro.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:a99])
- (user=connoro job=sendgmr) by 2002:a05:6a00:440b:b0:583:860:7a30 with SMTP id
- br11-20020a056a00440b00b0058308607a30mr906809pfb.1.1673060080726; Fri, 06 Jan
- 2023 18:54:40 -0800 (PST)
-Date:   Sat,  7 Jan 2023 02:53:31 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Message-ID: <20230107025331.3240536-1-connoro@google.com>
-Subject: [PATCH bpf-next v3] bpf: btf: limit logging of ignored BTF mismatches
-From:   "Connor O'Brien" <connoro@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org, "Connor O'Brien" <connoro@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c6PynqUW6l4kS1lyZqH/R8YKL1BlPuz4Tj3BtK4Od38=;
+        b=rfBv17Pjz7e2dZYCgBo+07Pejt8JxeObkzEHJDzss7dIQltXvf919JyVI/n+EF1bpW
+         tcqj2yS8ZNXGbeyu2uQDzdVmDX+IoFdQfcZvwMCsuheJ5OhPPbxrSkV7D5yjUv9z7HKH
+         IdMpMJPPNW2Z5QZln5HX4z4r7P2QJSKz+09zuouGlULdig6FmbaxHN0+uZ9hbRHfsNcI
+         5ujs5KUHNhhgtTmdf2PZadgjLp9nTjiXUgwORSitXuLccWuJJK8IBMutIuES4ySh37Ge
+         YlPbAc03va/gKkpDFo+q5cXL75D45keV6d01uZS36nmSXgunlpUTcA0WTKNincB7tR41
+         iWTw==
+X-Gm-Message-State: AFqh2kqSbUwiXFh2vnGK6+blMcewVZsSKaRUha1l1j8QfaL/Xfv59dPG
+        SjDjad3FNIasg45hfiG+fV0=
+X-Google-Smtp-Source: AMrXdXvgXIUmalVwluvtioyOMwoumtB20yKUMWQY6rWB9kVHyfMj8kT4X4sSvpPZSSYd5d23sNKthw==
+X-Received: by 2002:ac8:73c7:0:b0:3a7:f3e7:5149 with SMTP id v7-20020ac873c7000000b003a7f3e75149mr73224654qtp.61.1673069234169;
+        Fri, 06 Jan 2023 21:27:14 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:c7d8])
+        by smtp.gmail.com with ESMTPSA id q5-20020a05620a0d8500b006eee3a09ff3sm1688602qkl.69.2023.01.06.21.27.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Jan 2023 21:27:13 -0800 (PST)
+Date:   Fri, 6 Jan 2023 23:27:14 -0600
+From:   David Vernet <void@manifault.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 0/3] Annotate kfuncs with new __bpf_kfunc macro
+Message-ID: <Y7kCsjBZ/FrsWW/e@maniforge.lan>
+References: <20230106195130.1216841-1-void@manifault.com>
+ <CAKH8qBuakT6qtY5TZomWEAB=1ZJfdgXYt2A7WVOjtHAYsdbrVA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKH8qBuakT6qtY5TZomWEAB=1ZJfdgXYt2A7WVOjtHAYsdbrVA@mail.gmail.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Enabling CONFIG_MODULE_ALLOW_BTF_MISMATCH is an indication that BTF
-mismatches are expected and module loading should proceed
-anyway. Logging with pr_warn() on every one of these "benign"
-mismatches creates unnecessary noise when many such modules are
-loaded. Instead, handle this case with a single log warning that BTF
-info may be unavailable.
+On Fri, Jan 06, 2023 at 04:47:35PM -0800, Stanislav Fomichev wrote:
+> On Fri, Jan 6, 2023 at 11:51 AM David Vernet <void@manifault.com> wrote:
+> >
+> > BPF kfuncs are kernel functions that can be invoked by BPF programs.
+> > kfuncs can be kernel functions which are also called elsewhere in the
+> > main kernel (such as crash_kexec()), or may be functions that are only
+> > meant to be used by BPF programs, such as bpf_task_acquire(), and which
+> > are not called from anywhere else in the kernel.
+> >
+> > While thus far we haven't observed any issues such as kfuncs being
+> > elided by the compiler, at some point we could easily run into problems
+> > such as the following:
+> >
+> > - static kernel functions that are also used as kfuncs could be inlined
+> >   and/or elided by the compiler.
+> > - BPF-specific kfuncs with external linkage may at some point be elided
+> >   by the compiler in LTO builds, when it's determined that they aren't
+> >   called anywhere.
+> >
+> > To address this, this patch set introduces a new __bpf_kfunc macro which
+> > should be added to all kfuncs, and which will protect kfuncs from such
+> > problems. Note that some kfuncs kind of try to do this already by
+> > specifying noinline or __used. We are inconsistent in how this is
+> > applied. __bpf_kfunc should provide a uniform and more-future-proof way
+> > to do this.
+> 
+> The series looks reasonable to me. Would be nice if we can somehow
+> prevent (with a checkpatch?) adding new kfuncs without this new tag,
+> but I don't see an easy way.
+> I was waiting in case other would like to comment, but if nothing to discuss:
 
-Mismatches also result in calls to __btf_verifier_log() via
-__btf_verifier_log_type() or btf_verifier_log_member(), adding several
-additional lines of logging per mismatched module. Add checks to these
-paths to skip logging for module BTF mismatches in the "allow
-mismatch" case.
+Thanks for the review, Stanislav. I agree that it would be nice to have
+some automation to prevent forgetting the tag. I thought about ways to
+possibly do it, including playing around with putting the kfuncs into a
+separate section for post-processing which we could check against
+.BTF_ids, but it felt like a lot of complexity / possibly controversial
+changes that I'm hesitant to bring into the patch set which should be
+pretty non-controversial otherwise.
 
-All existing logging behavior is preserved in the default
-CONFIG_MODULE_ALLOW_BTF_MISMATCH=n case.
+With respect to validating the presence of kfunc "tags" (i.e. the
+__diag_push() / __diag_pop() we were doing before), we're in the same
+state after this patch as we were before, so my preference is to defer
+improving that until a later time when we've fried some of the bigger
+kfunc fish. Does that sound ok?
 
-Signed-off-by: Connor O'Brien <connoro@google.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
-v3:
-- fix commenting style
-- reuse existing "log->level == BPF_LOG_KERNEL" check for kernel BTF
+> Acked-by: Stanislav Fomichev <sdf@google.com>
 
-v2:
-- Use pr_warn_once instead of skipping logging entirely
-- Also skip btf verifier logs for ignored mismatches
+Thanks! FYI, I'm planning on sending a v2 with Alexei's suggestion [0]
 
-v1: https://lore.kernel.org/bpf/20221109024155.2810410-1-connoro@google.com/
----
- kernel/bpf/btf.c | 38 +++++++++++++++++++++++++++-----------
- 1 file changed, 27 insertions(+), 11 deletions(-)
+[0]: https://lore.kernel.org/all/CAADnVQLpK7WXTjF6GS1hcfPXf=8iERJmEeVFfvmG75mJj0DdaA@mail.gmail.com/
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index f7dd8af06413..67eee2d83dc8 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -1397,12 +1397,18 @@ __printf(4, 5) static void __btf_verifier_log_type(struct btf_verifier_env *env,
- 	if (!bpf_verifier_log_needed(log))
- 		return;
- 
--	/* btf verifier prints all types it is processing via
--	 * btf_verifier_log_type(..., fmt = NULL).
--	 * Skip those prints for in-kernel BTF verification.
--	 */
--	if (log->level == BPF_LOG_KERNEL && !fmt)
--		return;
-+	if (log->level == BPF_LOG_KERNEL) {
-+		/* btf verifier prints all types it is processing via
-+		 * btf_verifier_log_type(..., fmt = NULL).
-+		 * Skip those prints for in-kernel BTF verification.
-+		 */
-+		if (!fmt)
-+			return;
-+
-+		/* Skip logging when loading module BTF with mismatches permitted */
-+		if (env->btf->base_btf && IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-+			return;
-+	}
- 
- 	__btf_verifier_log(log, "[%u] %s %s%s",
- 			   env->log_type_id,
-@@ -1441,8 +1447,15 @@ static void btf_verifier_log_member(struct btf_verifier_env *env,
- 	if (!bpf_verifier_log_needed(log))
- 		return;
- 
--	if (log->level == BPF_LOG_KERNEL && !fmt)
--		return;
-+	if (log->level == BPF_LOG_KERNEL) {
-+		if (!fmt)
-+			return;
-+
-+		/* Skip logging when loading module BTF with mismatches permitted */
-+		if (env->btf->base_btf && IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-+			return;
-+	}
-+
- 	/* The CHECK_META phase already did a btf dump.
- 	 *
- 	 * If member is logged again, it must hit an error in
-@@ -7260,11 +7273,14 @@ static int btf_module_notify(struct notifier_block *nb, unsigned long op,
- 		}
- 		btf = btf_parse_module(mod->name, mod->btf_data, mod->btf_data_size);
- 		if (IS_ERR(btf)) {
--			pr_warn("failed to validate module [%s] BTF: %ld\n",
--				mod->name, PTR_ERR(btf));
- 			kfree(btf_mod);
--			if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH))
-+			if (!IS_ENABLED(CONFIG_MODULE_ALLOW_BTF_MISMATCH)) {
-+				pr_warn("failed to validate module [%s] BTF: %ld\n",
-+					mod->name, PTR_ERR(btf));
- 				err = PTR_ERR(btf);
-+			} else {
-+				pr_warn_once("Kernel module BTF mismatch detected, BTF debug info may be unavailable for some modules\n");
-+			}
- 			goto out;
- 		}
- 		err = btf_alloc_id(btf);
--- 
-2.39.0.314.g84b9a713c41-goog
+I'll go ahead and preemptively leave off your Acked-by for that, as the
+patches will have changed enough that it probably warrants another
+read through.
 
+- David
+
+> 
+> 
+> 
+> 
+> > David Vernet (3):
+> >   bpf: Add __bpf_kfunc tag for marking kernel functions as kfuncs
+> >   bpf: Document usage of the new __bpf_kfunc macro
+> >   bpf: Add __bpf_kfunc tag to all kfuncs
+> >
+> >  Documentation/bpf/kfuncs.rst                  | 18 +++++
+> >  Documentation/conf.py                         |  3 +
+> >  include/linux/btf.h                           |  9 +++
+> >  kernel/bpf/helpers.c                          | 19 +++++
+> >  kernel/cgroup/rstat.c                         |  2 +
+> >  kernel/kexec_core.c                           |  2 +
+> >  kernel/trace/bpf_trace.c                      |  4 +
+> >  net/bpf/test_run.c                            | 76 ++++++++++++-------
+> >  net/ipv4/tcp_bbr.c                            |  8 ++
+> >  net/ipv4/tcp_cong.c                           |  5 ++
+> >  net/ipv4/tcp_cubic.c                          |  6 ++
+> >  net/ipv4/tcp_dctcp.c                          |  6 ++
+> >  net/netfilter/nf_conntrack_bpf.c              | 14 +++-
+> >  net/netfilter/nf_nat_bpf.c                    |  1 +
+> >  net/xfrm/xfrm_interface_bpf.c                 |  4 +-
+> >  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  2 +-
+> >  16 files changed, 146 insertions(+), 33 deletions(-)
+> >
+> > --
+> > 2.39.0
+> >
