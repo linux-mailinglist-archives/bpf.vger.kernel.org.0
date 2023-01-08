@@ -2,76 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB0966187C
-	for <lists+bpf@lfdr.de>; Sun,  8 Jan 2023 20:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE6B661B06
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 00:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233663AbjAHTUz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 8 Jan 2023 14:20:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        id S229460AbjAHXSI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Jan 2023 18:18:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbjAHTUv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 Jan 2023 14:20:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1061E6476
-        for <bpf@vger.kernel.org>; Sun,  8 Jan 2023 11:20:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673205603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UGWOldglTZNuYLIRTUhiHDe8Itvv2F7MA7RR2Udh84E=;
-        b=AxMqI9v4qLa+TNKccnKTW0NMIreKzM24l44hC1yGSBe7I0tt3u0AHZVSyHf664/5OjYDrf
-        pCRBZEdEWD3u9VMxefAmsAbETc5pkihcF7bgYGFPN00iSqD1jYQ9B3Vf05W3D23iYikRb8
-        3YSzgmztT1fBzIjEhuB7jp2neAGtTBo=
-Received: from mail-ua1-f70.google.com (mail-ua1-f70.google.com
- [209.85.222.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-169-FgPDdZdRO9aIQ38zWWrjpQ-1; Sun, 08 Jan 2023 14:19:54 -0500
-X-MC-Unique: FgPDdZdRO9aIQ38zWWrjpQ-1
-Received: by mail-ua1-f70.google.com with SMTP id a5-20020ab00805000000b0052816f498d8so3296757uaf.1
-        for <bpf@vger.kernel.org>; Sun, 08 Jan 2023 11:19:53 -0800 (PST)
+        with ESMTP id S230431AbjAHXSH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Jan 2023 18:18:07 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6F3C75E;
+        Sun,  8 Jan 2023 15:18:06 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id gh17so16139639ejb.6;
+        Sun, 08 Jan 2023 15:18:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=swAeOSxPoqd6eOEXYrgkE8zquyIImkg2oEpvR8IJQyA=;
+        b=ShrGtiNep+6LyTsCgXKVo6KcvpUZqu4Hy3mDP+Ce3PcsNy798Z1x4EADEMk2ZfWP4h
+         z/p3gUIHWKwYY1Plm4SejVbEXRyH/JaqL4DjX0+llaw/zYOq3RzrojWC63E/APqzKaaS
+         rxJRq8QtNdmk/1pjoz2OJ6Kz6H3EQsjq0o6q2flaEDQejG3b1aDN32Mn1sWleQF6xm0T
+         Gc+Q4BLWEl/r/FZ/vIYvQ9Yc0e9HxN/yESXsSz8oA7SzqvRVJJL/9qUR+m+NTHSTOLfE
+         Fx2HlrfOskRcucNSHb/l/51MII4Z1E7gHAX3Z0/AaCWwOJATZxXhKJaUqNsT65IB9Ryp
+         VxGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UGWOldglTZNuYLIRTUhiHDe8Itvv2F7MA7RR2Udh84E=;
-        b=2Wamw+a30skOQDx465KjFKo6xhFfIcEklTXjK2GLTVivkq/mnuAoqqgfQvq1PeWDAE
-         HXOqedlo/dDhwBf3UPeafWKmH5x++KJTvansPiLZ1fBeJGBjF23YlU4pWN8DnMtinGXS
-         ej804WiXosaK3ZDtlNP7Bq1/Nu471B4Xcq2V/dCDivnhgtuyUe9fhDCmbskOLKZrsd/O
-         OlE/slyel0c6WmMPKMPM8XEwOJptIEmBAtq18/M9UJjZnBHSRYFsNk1Zv9EyppswuO13
-         HlGMIj1ywgl8CDFIWhKgrpD1pb2ombcgHfQnxCj6ugNMH0ZSur3JpxG8D8bt2g3vFVHg
-         CxCg==
-X-Gm-Message-State: AFqh2krwx1/wqsCxHmpQ/CjUPnEkH/fvwEJ/7lg0VqSqxR8Lj9Q1WzgJ
-        prCLMC9Be9pNskPFd4sO3l13Lva2EEIloxY7LDuU5dMJYMlAk5OBtpdO9CIImSyCaRxFDE/TGGx
-        uNK9fL+SRPn+z0p69fsG4rZTdGcDG
-X-Received: by 2002:a1f:add4:0:b0:3d5:42a2:5e01 with SMTP id w203-20020a1fadd4000000b003d542a25e01mr5820271vke.17.1673205592822;
-        Sun, 08 Jan 2023 11:19:52 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXvrE0KA+L2UWzyCz8oDv1qyJUvHwkro33C4K3lgEK9XL1Gh3ge6pVg1XYnyBegKhG1mGQ4M7rJKXAAiqBb/Mqo=
-X-Received: by 2002:a1f:add4:0:b0:3d5:42a2:5e01 with SMTP id
- w203-20020a1fadd4000000b003d542a25e01mr5820264vke.17.1673205592530; Sun, 08
- Jan 2023 11:19:52 -0800 (PST)
+        bh=swAeOSxPoqd6eOEXYrgkE8zquyIImkg2oEpvR8IJQyA=;
+        b=jHrCsQtRX/WBTRKQ83DOiqfh1iT+mg7c2/O+wca1OhBweOr37CLU6HeiMFU3bE6TrM
+         o+OL4971Ze91c4Ac0L14VBaLt5iRTUZma2Z+ROQfshwQHpgrJChuu4FLs7OVRUnmmdvs
+         6fKeHuL08icgmNiodA2SjxLkYHEwU26ww78FGHcIluTg2vuVo2trg1Ri/AQYmnnqctGn
+         vFZ3k8cQh/UQXTYthjetq80SRtgqQmPtjnp6sJ7J6Bj4qDpNKzxl008EbgeL5UUjM7bE
+         tznXVF8iIbYouFpXzGSh5vfF52+Gn/OX9oDazXl8ABg2jjZ+KGdCu3HuRo+EKsqXUsBR
+         DrdQ==
+X-Gm-Message-State: AFqh2kr3frV1t9OG4HMYm5ZxtXrg7MNM97LTHKMCb3zEfTDIyGI68KQn
+        AFmE6nHbavE732QpTGrsT9HJeUVXsAKgPIjkFzk=
+X-Google-Smtp-Source: AMrXdXuLm5u2S6WL5f8d1BHoWibYOpUPjSpm4RCAFYJ8IlG4MO4si2rR2Ofrdv+bZAU8cw8svFNNsUDBax+LiLy8z0s=
+X-Received: by 2002:a17:907:3a97:b0:84d:3601:4910 with SMTP id
+ fh23-20020a1709073a9700b0084d36014910mr252558ejc.633.1673219885266; Sun, 08
+ Jan 2023 15:18:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20230108021450.120791-1-yakoyoku@gmail.com> <CAOgh=Fzc3_bCLCKE+6KVzyMbBUOcQ_s9ef6Rw33amD5+yu-_WA@mail.gmail.com>
-In-Reply-To: <CAOgh=Fzc3_bCLCKE+6KVzyMbBUOcQ_s9ef6Rw33amD5+yu-_WA@mail.gmail.com>
-From:   Eric Curtin <ecurtin@redhat.com>
-Date:   Sun, 8 Jan 2023 19:19:36 +0000
-Message-ID: <CAOgh=FxxXQ0UV_3PEGS-_575WNfR2SpKp+i78HtSVX4XO4eC0A@mail.gmail.com>
-Subject: Re: [PATCH v2] scripts: Exclude Rust CUs with pahole
-To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Neal Gompa <neal@gompa.dev>, bpf@vger.kernel.org,
-        rust-for-linux@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20230106195130.1216841-1-void@manifault.com> <20230106195130.1216841-2-void@manifault.com>
+ <CAADnVQLpK7WXTjF6GS1hcfPXf=8iERJmEeVFfvmG75mJj0DdaA@mail.gmail.com> <Y7jUaDD9V556Px3b@maniforge.lan>
+In-Reply-To: <Y7jUaDD9V556Px3b@maniforge.lan>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 8 Jan 2023 15:17:54 -0800
+Message-ID: <CAADnVQJJaTXa8Y-aGctrBTjasKzsMDq4nW7Na5X3i8oobpT9NQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Add __bpf_kfunc tag for marking kernel
+ functions as kfuncs
+To:     David Vernet <void@manifault.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@meta.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,132 +77,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 8 Jan 2023 at 15:18, Eric Curtin <ecurtin@redhat.com> wrote:
+On Fri, Jan 6, 2023 at 6:09 PM David Vernet <void@manifault.com> wrote:
 >
-> On Sun, 8 Jan 2023 at 02:15, Martin Rodriguez Reboredo
-> <yakoyoku@gmail.com> wrote:
+> On Fri, Jan 06, 2023 at 05:04:02PM -0800, Alexei Starovoitov wrote:
+> > On Fri, Jan 6, 2023 at 11:51 AM David Vernet <void@manifault.com> wrote:
+> > >
+> > > kfuncs are functions defined in the kernel, which may be invoked by BPF
+> > > programs. They may or may not also be used as regular kernel functions,
+> > > implying that they may be static (in which case the compiler could e.g.
+> > > inline it away), or it could have external linkage, but potentially be
+> > > elided in an LTO build if a function is observed to never be used, and
+> > > is stripped from the final kernel binary.
+> > >
+> > > We therefore require some convenience macro that kfunc developers can
+> > > use just add to their kfuncs, and which will prevent all of the above
+> > > issues from happening. This is in contrast with what we have today,
+> > > where some kfunc definitions have "noinline", some have "__used", and
+> > > others are static and have neither.
+> > >
+> > > In addition to providing the obvious correctness benefits, having such a
+> > > macro / tag also provides the following advantages:
+> > >
+> > > - Giving an easy and intuitive thing to query for if people are looking
+> > >   for kfuncs, as Christoph suggested at the kernel maintainers summit
+> > >   (https://lwn.net/Articles/908464/). This is currently possible by
+> > >   grepping for BTF_ID_FLAGS(func, but having something more self
+> > >   describing would be useful as well.
+> > >
+> > > - In the future, the tag can be expanded with other useful things such
+> > >   as the ability to suppress -Wmissing-prototype for the kfuncs rather
+> > >   than requiring developers to surround the kfunc with __diags to
+> > >   suppress the warning (this requires compiler support that as far as I
+> > >   know currently does not exist).
 > >
-> > Version 1.24 of pahole has the capability to exclude compilation units
-> > (CUs) of specific languages. Rust, as of writing, is not currently
-> > supported by pahole and if it's used with a build that has BTF debugging
-> > enabled it results in malformed kernel and module binaries (see
-> > Rust-for-Linux/linux#735). So it's better for pahole to exclude Rust
-> > CUs until support for it arrives.
-> >
-> > Reviewed-by: Eric Curtin <ecurtin@redhat.com>
-> > Tested-by: Eric Curtin <ecurtin@redhat.com>
-> > Reviewed-by: Neal Gompa <neal@gompa.dev>
-> > Tested-by: Neal Gompa <neal@gompa.dev>
-> > Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> > ---
-> > V1 -> V2: Removed dependency on auto.conf
-> >
-> >  init/Kconfig              | 2 +-
-> >  lib/Kconfig.debug         | 9 +++++++++
-> >  scripts/Makefile.modfinal | 4 ++++
-> >  scripts/link-vmlinux.sh   | 4 ++++
-> >  4 files changed, 18 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 694f7c160c9c..360aef8d7292 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -1913,7 +1913,7 @@ config RUST
-> >         depends on !MODVERSIONS
-> >         depends on !GCC_PLUGINS
-> >         depends on !RANDSTRUCT
-> > -       depends on !DEBUG_INFO_BTF
-> > +       depends on !DEBUG_INFO_BTF || PAHOLE_HAS_LANG_EXCLUDE
-> >         select CONSTRUCTORS
-> >         help
-> >           Enables Rust support in the kernel.
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index ea4c903c9868..d473d491e709 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -364,6 +364,15 @@ config PAHOLE_HAS_BTF_TAG
-> >           btf_decl_tag) or not. Currently only clang compiler implements
-> >           these attributes, so make the config depend on CC_IS_CLANG.
-> >
-> > +config PAHOLE_HAS_LANG_EXCLUDE
-> > +       def_bool PAHOLE_VERSION >= 124
-> > +       help
-> > +         Support for the --lang_exclude flag which makes pahole exclude
-> > +         compilation units from the supplied language. Used in Kbuild to
-> > +         omit Rust CUs which are not supported in version 1.24 of pahole,
-> > +         otherwise it would emit malformed kernel and module binaries when
-> > +         using DEBUG_INFO_BTF_MODULES.
-> > +
-> >  config DEBUG_INFO_BTF_MODULES
-> >         def_bool y
-> >         depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > index 25bedd83644b..a880f2d6918f 100644
-> > --- a/scripts/Makefile.modfinal
-> > +++ b/scripts/Makefile.modfinal
-> > @@ -30,6 +30,10 @@ quiet_cmd_cc_o_c = CC [M]  $@
-> >
-> >  ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
-> >
-> > +ifdef CONFIG_RUST
-> > +PAHOLE_FLAGS += --lang_exclude=rust
-> > +endif
-> > +
-> >  quiet_cmd_ld_ko_o = LD [M]  $@
-> >        cmd_ld_ko_o +=                                                   \
-> >         $(LD) -r $(KBUILD_LDFLAGS)                                      \
-> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> > index 918470d768e9..69eb0bea89bf 100755
-> > --- a/scripts/link-vmlinux.sh
-> > +++ b/scripts/link-vmlinux.sh
-> > @@ -122,6 +122,10 @@ gen_btf()
-> >                 return 1
-> >         fi
-> >
-> > +       if is_enabled CONFIG_RUST; then
-> > +               PAHOLE_FLAGS="${PAHOLE_FLAGS} --lang_exclude=rust"
-> > +       fi
+> > Have you considered doing bpf_kfunc_start/bpf_kfunc_end ?
+> > The former would include:
+> > __diag_push(); __diag_ignore_all(); __used noinline
 >
-> If it was me, I would do things more like v1 of the patch (instead
-> just checking pahole version), because this is the only flag set in
-> scripts/Makefile.modfinal, which is a little confusing and
-> inconsistent. It's ok to set --lang_exclude=rust in all cases, as long
-> as pahole_ver is recent enough.
->
-> +if [ "${pahole_ver}" -ge "124" ]; then
-> +       # see PAHOLE_HAS_LANG_EXCLUDE
-> +       extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
-> +fi
->
-> But I'm not too opinionated either on this so...
->
-> Reviewed-by: Eric Curtin <ecurtin@redhat.com>
->
-> can be reapplied. I'm gonna test this again to see if it works in a
-> Fedora Asahi rpm build.
+> Yeah that's certainly an option. The downside is that all functions
+> within scope of the __diag_push() will be affected, and sometimes we mix
+> kfuncs with non-kfuncs (including e.g. static helper functions that are
+> used by the kfuncs themselves). -Wmissing-prototypes isn't a big deal,
+> but __used and noinline are kind of unfortunate. Not a big deal though,
+> it'll just result in a few extra __bpf_kfuncs_start() and
+> __bpf_kfuncs_end() sprinkled throughout to avoid them being included.
+> The upside is of course that we can get rid of the __diag_push()'es we
+> currently have to prevent -Wmissing-prototypes.
 
-After testing I probably have to retract my Reviewed-by tag,
-apologies, bpf and all that did not work with this patch when I built
-in the fedora way, but, the good news is when I alter v1 of the patch
-to just check pahole version like so (instead of the is_enabled
-check):
+I meant to use bpf_kfunc_start/bpf_kfunc_end around every kfunc.
+Ideally bpf_kfunc_start would be on the same line as func proto
+for nice grepping.
+Maybe it's an overkill.
+Maybe 3 macroses then?
+bpf_kfunc_start to hide __diag
+bpf_kfunc on the proto line
+bpf_kfunc_end to finish __diag_pop
 
-+if [ "${pahole_ver}" -ge "124" ]; then
-+        # see PAHOLE_HAS_LANG_EXCLUDE
-+        extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
-+fi
-
-it worked just fine, and that should satisfy the testbot and all the
-other ways we build too. Could we change to that @Martin Rodriguez
-Reboredo ?
-
+> Wdyt? I do like the idea of getting rid of those ugly __diag_push()'es.
+> And we could always go back to using a __bpf_kfunc macro if and when
+> compilers ever support using attributes to ignore warnings for specific
+> functions.
 >
+> >
+> > Also how about using bpf_kfunc on the same line ?
+> > Then 'git grep' will be easier.
 >
-> > +
-> >         vmlinux_link ${1}
-> >
-> >         info "BTF" ${2}
-> > --
-> > 2.39.0
-> >
-
+> Sure, if we keep this approach I'll do this in v2.
