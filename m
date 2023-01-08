@@ -2,70 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C60EA661879
-	for <lists+bpf@lfdr.de>; Sun,  8 Jan 2023 20:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB0966187C
+	for <lists+bpf@lfdr.de>; Sun,  8 Jan 2023 20:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233435AbjAHTRD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 8 Jan 2023 14:17:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
+        id S233663AbjAHTUz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Jan 2023 14:20:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbjAHTRB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 Jan 2023 14:17:01 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23FA2606
-        for <bpf@vger.kernel.org>; Sun,  8 Jan 2023 11:16:57 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id p188so6797378yba.5
-        for <bpf@vger.kernel.org>; Sun, 08 Jan 2023 11:16:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Er/+EiMLnn2MKOdED8S8DUPSutRL5plgxPKOLwEBOA=;
-        b=b62kpT+jNiZkYzBUrwAjmCq0+LwNmLNCpUNp0qj/LQg3ja1haJJayz5RAOSi8e/tLD
-         pIBLeTmrtEKjxN1jJzEfaPSKLGbr9BbgiszrvLswEANsF0LoyE0U5RYA8nvVCh97Yj0+
-         GUl5A8DsUZfMbnF3QBEo49wl0n6TpF2VMoOyd4Y62AayhLxADAI07K0y6sVLqQNzeAvh
-         YQTAuHlc/jqHIx+5TViii0lHZhmMDZ8iXbUwD+cpEqRzJ+3zGRrlwBJ+wPWqgjK8Tyl8
-         1dsgrXn9BV6DeGH+rYoaT0quA0NlMRaZQKuBt0TG6DjVVoMqjmz/uO5ADetuuGlNi3FF
-         fFKw==
+        with ESMTP id S231300AbjAHTUv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Jan 2023 14:20:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1061E6476
+        for <bpf@vger.kernel.org>; Sun,  8 Jan 2023 11:20:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673205603;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UGWOldglTZNuYLIRTUhiHDe8Itvv2F7MA7RR2Udh84E=;
+        b=AxMqI9v4qLa+TNKccnKTW0NMIreKzM24l44hC1yGSBe7I0tt3u0AHZVSyHf664/5OjYDrf
+        pCRBZEdEWD3u9VMxefAmsAbETc5pkihcF7bgYGFPN00iSqD1jYQ9B3Vf05W3D23iYikRb8
+        3YSzgmztT1fBzIjEhuB7jp2neAGtTBo=
+Received: from mail-ua1-f70.google.com (mail-ua1-f70.google.com
+ [209.85.222.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-169-FgPDdZdRO9aIQ38zWWrjpQ-1; Sun, 08 Jan 2023 14:19:54 -0500
+X-MC-Unique: FgPDdZdRO9aIQ38zWWrjpQ-1
+Received: by mail-ua1-f70.google.com with SMTP id a5-20020ab00805000000b0052816f498d8so3296757uaf.1
+        for <bpf@vger.kernel.org>; Sun, 08 Jan 2023 11:19:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8Er/+EiMLnn2MKOdED8S8DUPSutRL5plgxPKOLwEBOA=;
-        b=0fPgYsImdplRu5hGY+VudUlyEAExiwphl3u2Z1XxOznCEqirbHGYowN9UHrw44RjBU
-         7TD7qR8mNVJnQa/v5U1c979jxvDgNs6dcxtAYeF0NBP+kEYv1x7oh7DMCsLQhOLM5ku+
-         qMy/WHnlu6WpCpO/ClH/yz6W5CoyPA3o4fbYuOT098wGct7PluyknywUOkajX7wSro2j
-         xJr9fdMtt0v+EGXK3pobyCcGcp2llCxszeI2fKYIpLqOwULKtw/qW5Vb/BYS+7+u61nT
-         5fTD8WGR8YQVkgIhwzG95KrPe7CnRWtFyWqlZZK60Mt5IMkYB4FT4yHSXAxsoWJy9AtE
-         eV+A==
-X-Gm-Message-State: AFqh2kpCPPaHun01x9xjWa3aYnbmIZeTKQcB+j1uJOzmgNMuuOtrrEWp
-        UGpEQv8B0wjw2zvI9BKt0w36rv6QXcOfTMskqJn3nQ==
-X-Google-Smtp-Source: AMrXdXv9u1GJ+TrQhYZOYcZZpBtGnkyLnuLoYleIexHo9LA7cdegAieoGhDUCR410+YPzXH0UXT2U57JRLrH3lpLeZ8=
-X-Received: by 2002:a25:d8d4:0:b0:7b8:16c:e66d with SMTP id
- p203-20020a25d8d4000000b007b8016ce66dmr1228558ybg.85.1673205417106; Sun, 08
- Jan 2023 11:16:57 -0800 (PST)
+        bh=UGWOldglTZNuYLIRTUhiHDe8Itvv2F7MA7RR2Udh84E=;
+        b=2Wamw+a30skOQDx465KjFKo6xhFfIcEklTXjK2GLTVivkq/mnuAoqqgfQvq1PeWDAE
+         HXOqedlo/dDhwBf3UPeafWKmH5x++KJTvansPiLZ1fBeJGBjF23YlU4pWN8DnMtinGXS
+         ej804WiXosaK3ZDtlNP7Bq1/Nu471B4Xcq2V/dCDivnhgtuyUe9fhDCmbskOLKZrsd/O
+         OlE/slyel0c6WmMPKMPM8XEwOJptIEmBAtq18/M9UJjZnBHSRYFsNk1Zv9EyppswuO13
+         HlGMIj1ywgl8CDFIWhKgrpD1pb2ombcgHfQnxCj6ugNMH0ZSur3JpxG8D8bt2g3vFVHg
+         CxCg==
+X-Gm-Message-State: AFqh2krwx1/wqsCxHmpQ/CjUPnEkH/fvwEJ/7lg0VqSqxR8Lj9Q1WzgJ
+        prCLMC9Be9pNskPFd4sO3l13Lva2EEIloxY7LDuU5dMJYMlAk5OBtpdO9CIImSyCaRxFDE/TGGx
+        uNK9fL+SRPn+z0p69fsG4rZTdGcDG
+X-Received: by 2002:a1f:add4:0:b0:3d5:42a2:5e01 with SMTP id w203-20020a1fadd4000000b003d542a25e01mr5820271vke.17.1673205592822;
+        Sun, 08 Jan 2023 11:19:52 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXvrE0KA+L2UWzyCz8oDv1qyJUvHwkro33C4K3lgEK9XL1Gh3ge6pVg1XYnyBegKhG1mGQ4M7rJKXAAiqBb/Mqo=
+X-Received: by 2002:a1f:add4:0:b0:3d5:42a2:5e01 with SMTP id
+ w203-20020a1fadd4000000b003d542a25e01mr5820264vke.17.1673205592530; Sun, 08
+ Jan 2023 11:19:52 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1672976410.git.william.xuanziyang@huawei.com>
- <7e9ca6837b20bea661248957dbbd1db198e3d1f8.1672976410.git.william.xuanziyang@huawei.com>
- <Y7h8yrOEkPuHkNpJ@google.com>
-In-Reply-To: <Y7h8yrOEkPuHkNpJ@google.com>
-From:   Willem de Bruijn <willemb@google.com>
-Date:   Sun, 8 Jan 2023 14:16:20 -0500
-Message-ID: <CA+FuTSdZ+za55p1kKOcGby89F_ybRhAfy2cG0R+Y00yaJTbVkg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add ipip6 and ip6ip decap support for bpf_skb_adjust_room()
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, sdf@google.com
+References: <20230108021450.120791-1-yakoyoku@gmail.com> <CAOgh=Fzc3_bCLCKE+6KVzyMbBUOcQ_s9ef6Rw33amD5+yu-_WA@mail.gmail.com>
+In-Reply-To: <CAOgh=Fzc3_bCLCKE+6KVzyMbBUOcQ_s9ef6Rw33amD5+yu-_WA@mail.gmail.com>
+From:   Eric Curtin <ecurtin@redhat.com>
+Date:   Sun, 8 Jan 2023 19:19:36 +0000
+Message-ID: <CAOgh=FxxXQ0UV_3PEGS-_575WNfR2SpKp+i78HtSVX4XO4eC0A@mail.gmail.com>
+Subject: Re: [PATCH v2] scripts: Exclude Rust CUs with pahole
+To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Neal Gompa <neal@gompa.dev>, bpf@vger.kernel.org,
+        rust-for-linux@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,118 +79,132 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 6, 2023 at 2:55 PM <sdf@google.com> wrote:
+On Sun, 8 Jan 2023 at 15:18, Eric Curtin <ecurtin@redhat.com> wrote:
 >
-> On 01/06, Ziyang Xuan wrote:
-> > Add ipip6 and ip6ip decap support for bpf_skb_adjust_room().
-> > Main use case is for using cls_bpf on ingress hook to decapsulate
-> > IPv4 over IPv6 and IPv6 over IPv4 tunnel packets.
->
-> CC'd Willem since he has done bpf_skb_adjust_room changes in the past.
-> There might be a lot of GRO/GSO context I'm missing.
->
-> > Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> On Sun, 8 Jan 2023 at 02:15, Martin Rodriguez Reboredo
+> <yakoyoku@gmail.com> wrote:
+> >
+> > Version 1.24 of pahole has the capability to exclude compilation units
+> > (CUs) of specific languages. Rust, as of writing, is not currently
+> > supported by pahole and if it's used with a build that has BTF debugging
+> > enabled it results in malformed kernel and module binaries (see
+> > Rust-for-Linux/linux#735). So it's better for pahole to exclude Rust
+> > CUs until support for it arrives.
+> >
+> > Reviewed-by: Eric Curtin <ecurtin@redhat.com>
+> > Tested-by: Eric Curtin <ecurtin@redhat.com>
+> > Reviewed-by: Neal Gompa <neal@gompa.dev>
+> > Tested-by: Neal Gompa <neal@gompa.dev>
+> > Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 > > ---
-> >   net/core/filter.c | 34 ++++++++++++++++++++++++++++++++--
-> >   1 file changed, 32 insertions(+), 2 deletions(-)
->
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 929358677183..73982fb4fe2e 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -3495,6 +3495,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb,
-> > u32 off, u32 len_diff,
-> >   static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
-> >                             u64 flags)
-> >   {
-> > +     union {
-> > +             struct iphdr *v4;
-> > +             struct ipv6hdr *v6;
-> > +             unsigned char *hdr;
-> > +     } ip;
-> > +     __be16 proto;
-> >       int ret;
->
-> >       if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
-> > @@ -3512,10 +3518,19 @@ static int bpf_skb_net_shrink(struct sk_buff
-> > *skb, u32 off, u32 len_diff,
-> >       if (unlikely(ret < 0))
-> >               return ret;
->
-> > +     ip.hdr = skb_inner_network_header(skb);
-> > +     if (ip.v4->version == 4)
-> > +             proto = htons(ETH_P_IP);
-> > +     else
-> > +             proto = htons(ETH_P_IPV6);
+> > V1 -> V2: Removed dependency on auto.conf
+> >
+> >  init/Kconfig              | 2 +-
+> >  lib/Kconfig.debug         | 9 +++++++++
+> >  scripts/Makefile.modfinal | 4 ++++
+> >  scripts/link-vmlinux.sh   | 4 ++++
+> >  4 files changed, 18 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index 694f7c160c9c..360aef8d7292 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -1913,7 +1913,7 @@ config RUST
+> >         depends on !MODVERSIONS
+> >         depends on !GCC_PLUGINS
+> >         depends on !RANDSTRUCT
+> > -       depends on !DEBUG_INFO_BTF
+> > +       depends on !DEBUG_INFO_BTF || PAHOLE_HAS_LANG_EXCLUDE
+> >         select CONSTRUCTORS
+> >         help
+> >           Enables Rust support in the kernel.
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index ea4c903c9868..d473d491e709 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -364,6 +364,15 @@ config PAHOLE_HAS_BTF_TAG
+> >           btf_decl_tag) or not. Currently only clang compiler implements
+> >           these attributes, so make the config depend on CC_IS_CLANG.
+> >
+> > +config PAHOLE_HAS_LANG_EXCLUDE
+> > +       def_bool PAHOLE_VERSION >= 124
+> > +       help
+> > +         Support for the --lang_exclude flag which makes pahole exclude
+> > +         compilation units from the supplied language. Used in Kbuild to
+> > +         omit Rust CUs which are not supported in version 1.24 of pahole,
+> > +         otherwise it would emit malformed kernel and module binaries when
+> > +         using DEBUG_INFO_BTF_MODULES.
 > > +
-> >       ret = bpf_skb_net_hdr_pop(skb, off, len_diff);
-> >       if (unlikely(ret < 0))
-> >               return ret;
->
-> > +     /* Match skb->protocol to new outer l3 protocol */
-> > +     skb->protocol = proto;
+> >  config DEBUG_INFO_BTF_MODULES
+> >         def_bool y
+> >         depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> > index 25bedd83644b..a880f2d6918f 100644
+> > --- a/scripts/Makefile.modfinal
+> > +++ b/scripts/Makefile.modfinal
+> > @@ -30,6 +30,10 @@ quiet_cmd_cc_o_c = CC [M]  $@
+> >
+> >  ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
+> >
+> > +ifdef CONFIG_RUST
+> > +PAHOLE_FLAGS += --lang_exclude=rust
+> > +endif
 > > +
-> >       if (skb_is_gso(skb)) {
-> >               struct skb_shared_info *shinfo = skb_shinfo(skb);
+> >  quiet_cmd_ld_ko_o = LD [M]  $@
+> >        cmd_ld_ko_o +=                                                   \
+> >         $(LD) -r $(KBUILD_LDFLAGS)                                      \
+> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> > index 918470d768e9..69eb0bea89bf 100755
+> > --- a/scripts/link-vmlinux.sh
+> > +++ b/scripts/link-vmlinux.sh
+> > @@ -122,6 +122,10 @@ gen_btf()
+> >                 return 1
+> >         fi
+> >
+> > +       if is_enabled CONFIG_RUST; then
+> > +               PAHOLE_FLAGS="${PAHOLE_FLAGS} --lang_exclude=rust"
+> > +       fi
 >
-> > @@ -3578,10 +3593,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
-> > skb, s32, len_diff,
-> >          u32, mode, u64, flags)
-> >   {
-> >       u32 len_cur, len_diff_abs = abs(len_diff);
-> > -     u32 len_min = bpf_skb_net_base_len(skb);
-> > -     u32 len_max = BPF_SKB_MAX_LEN;
-> > +     u32 len_min, len_max = BPF_SKB_MAX_LEN;
-> >       __be16 proto = skb->protocol;
-> >       bool shrink = len_diff < 0;
-> > +     union {
-> > +             struct iphdr *v4;
-> > +             struct ipv6hdr *v6;
-> > +             unsigned char *hdr;
-> > +     } ip;
-> >       u32 off;
-> >       int ret;
+> If it was me, I would do things more like v1 of the patch (instead
+> just checking pahole version), because this is the only flag set in
+> scripts/Makefile.modfinal, which is a little confusing and
+> inconsistent. It's ok to set --lang_exclude=rust in all cases, as long
+> as pahole_ver is recent enough.
 >
-> > @@ -3594,6 +3613,9 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
-> > skb, s32, len_diff,
-> >                    proto != htons(ETH_P_IPV6)))
-> >               return -ENOTSUPP;
+> +if [ "${pahole_ver}" -ge "124" ]; then
+> +       # see PAHOLE_HAS_LANG_EXCLUDE
+> +       extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
+> +fi
 >
-> > +     if (unlikely(shrink && !skb->encapsulation))
-> > +             return -ENOTSUPP;
+> But I'm not too opinionated either on this so...
+>
+> Reviewed-by: Eric Curtin <ecurtin@redhat.com>
+>
+> can be reapplied. I'm gonna test this again to see if it works in a
+> Fedora Asahi rpm build.
+
+After testing I probably have to retract my Reviewed-by tag,
+apologies, bpf and all that did not work with this patch when I built
+in the fedora way, but, the good news is when I alter v1 of the patch
+to just check pahole version like so (instead of the is_enabled
+check):
+
++if [ "${pahole_ver}" -ge "124" ]; then
++        # see PAHOLE_HAS_LANG_EXCLUDE
++        extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
++fi
+
+it worked just fine, and that should satisfy the testbot and all the
+other ways we build too. Could we change to that @Martin Rodriguez
+Reboredo ?
+
+>
+>
 > > +
-
-This new restriction might break existing users.
-
-There is no pre-existing requirement that shrink is used solely with
-packets encapsulated by the protocol stack.
-
-Indeed, skb->encapsulation is likely not set on packets arriving from
-the wire, even if encapsulated. Referring to your comment "Main use
-case is for using cls_bpf on ingress hook to decapsulate"
-
-Can a combination of the existing bpf_skb_adjust_room and
-bpf_skb_change_proto address your problem?
-
-> >       off = skb_mac_header_len(skb);
-> >       switch (mode) {
-> >       case BPF_ADJ_ROOM_NET:
-> > @@ -3605,6 +3627,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
-> > skb, s32, len_diff,
-> >               return -ENOTSUPP;
-> >       }
->
-> > +     if (shrink) {
-> > +             ip.hdr = skb_inner_network_header(skb);
-> > +             if (ip.v4->version == 4)
-> > +                     len_min = sizeof(struct iphdr);
-> > +             else
-> > +                     len_min = sizeof(struct ipv6hdr);
-> > +     }
-> > +
-> >       len_cur = skb->len - skb_network_offset(skb);
-> >       if ((shrink && (len_diff_abs >= len_cur ||
-> >                       len_cur - len_diff_abs < len_min)) ||
+> >         vmlinux_link ${1}
+> >
+> >         info "BTF" ${2}
 > > --
-> > 2.25.1
->
+> > 2.39.0
+> >
+
