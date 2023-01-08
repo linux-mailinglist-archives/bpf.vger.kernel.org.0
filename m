@@ -2,109 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9B4661608
-	for <lists+bpf@lfdr.de>; Sun,  8 Jan 2023 16:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5886166161C
+	for <lists+bpf@lfdr.de>; Sun,  8 Jan 2023 16:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbjAHPLj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 8 Jan 2023 10:11:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44132 "EHLO
+        id S231415AbjAHPTG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Jan 2023 10:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbjAHPLj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 Jan 2023 10:11:39 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A7E6265;
-        Sun,  8 Jan 2023 07:11:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673190698; x=1704726698;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3aSyeGbeMNfHDYKc5OXsAMpLIkaVT1dnok7Bt0nCv9I=;
-  b=FqIlfoQ0wMhk/JOx5a6VgPu+3qZX/eRX88Pm9rJZCSGcJ/p2vEvCyfRo
-   IkqWchwOC/2gPynA3xt56ONgxpTORstYLuj2rSDCUqCDIzLboPr1L91XK
-   S7gHTMdMTtfAi5xjHFriN6beO77fFLy2wilS3QykNW8RwAr5gqpcoz7ab
-   ogKiwh5th7kk64ZupRo+sNBawxKgwBeNM6VddvZbFUZXlB3bM3gyYwPr9
-   3t0c2VyGerkYjlG7Jc6hi8VzKXWFVLTWf+779mEZs1E5q3WDGtuDqCfxj
-   kWj7I5Q8SVIrANbc+wSeUQbZioIV9IX1lavD23pLhdKCxOSymvrMtV6e9
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10584"; a="349941525"
-X-IronPort-AV: E=Sophos;i="5.96,310,1665471600"; 
-   d="scan'208";a="349941525"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2023 07:11:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10584"; a="658348255"
-X-IronPort-AV: E=Sophos;i="5.96,310,1665471600"; 
-   d="scan'208";a="658348255"
-Received: from sse-cse-haiyue-nuc.sh.intel.com ([10.239.241.114])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Jan 2023 07:11:33 -0800
-From:   Haiyue Wang <haiyue.wang@intel.com>
-To:     bpf@vger.kernel.org
-Cc:     Haiyue Wang <haiyue.wang@intel.com>,
+        with ESMTP id S230393AbjAHPTE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Jan 2023 10:19:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7D962F6
+        for <bpf@vger.kernel.org>; Sun,  8 Jan 2023 07:18:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673191099;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EPjethgfbpXdoRd0XcBNPqRZDZHvORJ5WlXtoiZqGUc=;
+        b=TIqzD15Sz/YmSo6ZiKCBD7lhIXiz/VX4KHAfQVuj26zt1/6ET2VRRNklxxQH0oHQQFCz7L
+        IhM4h35BdvsYk3MPMDrhIWj1E4MkV/76nrDTpkVcN3PR3xLiIuoKneA8TR16PzKlunl264
+        KIEVnPzLL96WoVIH9VjrnU8BmN1nrak=
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
+ [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-319-e3ZZYKxCMbOIZSUG10yefg-1; Sun, 08 Jan 2023 10:18:17 -0500
+X-MC-Unique: e3ZZYKxCMbOIZSUG10yefg-1
+Received: by mail-ua1-f72.google.com with SMTP id z42-20020ab0492d000000b00423b333ff7dso3083878uac.22
+        for <bpf@vger.kernel.org>; Sun, 08 Jan 2023 07:18:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EPjethgfbpXdoRd0XcBNPqRZDZHvORJ5WlXtoiZqGUc=;
+        b=rhjpl7xi7jfaNsspVET4ktIObwBGqOoT1XLKGle66rczV+UW8JX34YrMaDNkpm508b
+         oNpzVqXw/ksf/lZUWtHutWEJhSpd20MYiUqY1iCDxzrcG0CFRuW8mRsQLW46lzbeFKeP
+         oR1qFftOPCDX3AfK6WjP7DQYcSiJ72T6ZZy9x614SSfHzsFDvHPSR5PaVdTdhDqO113A
+         c6UexC33pHw5gy9JtFICwnVlqkihnwwcmtXsJBEhZ0hI+9I1AQEcGg3c2W+1eZl7x/iW
+         ofaBpy9kpF4yq/1VKcjEycWOOnYtrgrEc080QJopxAQlhrqyDDQkZBx9Cr8TTr1S520E
+         sMaA==
+X-Gm-Message-State: AFqh2kpGfg0E+E+vo5yk4hBtHnSvELxRU+Hol5iA93MIlXCZp32WQ1rA
+        W0M6ynEYipigXJ+T5eK3De9GyGQlf8B9J7oBn/8ky79Kn7eWi48Sp3fSEabhBVsrKgfXS0tzU5v
+        bz6DUdWQRHgg6WUXcjOUwQDbt+8Sr
+X-Received: by 2002:a05:6102:cd4:b0:3c8:92b3:7a28 with SMTP id g20-20020a0561020cd400b003c892b37a28mr8001449vst.13.1673191097005;
+        Sun, 08 Jan 2023 07:18:17 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXv5uPF/b7nQYydA6iJsSIN/vLj3t+rmsB67d7rcUj743rnIxdOe6LNBEQfGJwF2XY2FZzdDep8AFEmkHmX2BdE=
+X-Received: by 2002:a05:6102:cd4:b0:3c8:92b3:7a28 with SMTP id
+ g20-20020a0561020cd400b003c892b37a28mr8001446vst.13.1673191096800; Sun, 08
+ Jan 2023 07:18:16 -0800 (PST)
+MIME-Version: 1.0
+References: <20230108021450.120791-1-yakoyoku@gmail.com>
+In-Reply-To: <20230108021450.120791-1-yakoyoku@gmail.com>
+From:   Eric Curtin <ecurtin@redhat.com>
+Date:   Sun, 8 Jan 2023 15:18:01 +0000
+Message-ID: <CAOgh=Fzc3_bCLCKE+6KVzyMbBUOcQ_s9ef6Rw33amD5+yu-_WA@mail.gmail.com>
+Subject: Re: [PATCH v2] scripts: Exclude Rust CUs with pahole
+To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Neal Gompa <neal@gompa.dev>, bpf@vger.kernel.org,
+        rust-for-linux@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        netdev@vger.kernel.org (open list:BPF [NETWORKING] (tc BPF, sock_addr)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next v1] bpf: Remove the unnecessary insn buffer comparison
-Date:   Sun,  8 Jan 2023 23:12:57 +0800
-Message-Id: <20230108151258.96570-1-haiyue.wang@intel.com>
-X-Mailer: git-send-email 2.39.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The variable 'insn' is initialized to 'insn_buf' without being changed,
-only some helper macros are defined, so the insn buffer comparison is
-unnecessary, just remove it.
+On Sun, 8 Jan 2023 at 02:15, Martin Rodriguez Reboredo
+<yakoyoku@gmail.com> wrote:
+>
+> Version 1.24 of pahole has the capability to exclude compilation units
+> (CUs) of specific languages. Rust, as of writing, is not currently
+> supported by pahole and if it's used with a build that has BTF debugging
+> enabled it results in malformed kernel and module binaries (see
+> Rust-for-Linux/linux#735). So it's better for pahole to exclude Rust
+> CUs until support for it arrives.
+>
+> Reviewed-by: Eric Curtin <ecurtin@redhat.com>
+> Tested-by: Eric Curtin <ecurtin@redhat.com>
+> Reviewed-by: Neal Gompa <neal@gompa.dev>
+> Tested-by: Neal Gompa <neal@gompa.dev>
+> Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+> ---
+> V1 -> V2: Removed dependency on auto.conf
+>
+>  init/Kconfig              | 2 +-
+>  lib/Kconfig.debug         | 9 +++++++++
+>  scripts/Makefile.modfinal | 4 ++++
+>  scripts/link-vmlinux.sh   | 4 ++++
+>  4 files changed, 18 insertions(+), 1 deletion(-)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 694f7c160c9c..360aef8d7292 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1913,7 +1913,7 @@ config RUST
+>         depends on !MODVERSIONS
+>         depends on !GCC_PLUGINS
+>         depends on !RANDSTRUCT
+> -       depends on !DEBUG_INFO_BTF
+> +       depends on !DEBUG_INFO_BTF || PAHOLE_HAS_LANG_EXCLUDE
+>         select CONSTRUCTORS
+>         help
+>           Enables Rust support in the kernel.
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index ea4c903c9868..d473d491e709 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -364,6 +364,15 @@ config PAHOLE_HAS_BTF_TAG
+>           btf_decl_tag) or not. Currently only clang compiler implements
+>           these attributes, so make the config depend on CC_IS_CLANG.
+>
+> +config PAHOLE_HAS_LANG_EXCLUDE
+> +       def_bool PAHOLE_VERSION >= 124
+> +       help
+> +         Support for the --lang_exclude flag which makes pahole exclude
+> +         compilation units from the supplied language. Used in Kbuild to
+> +         omit Rust CUs which are not supported in version 1.24 of pahole,
+> +         otherwise it would emit malformed kernel and module binaries when
+> +         using DEBUG_INFO_BTF_MODULES.
+> +
+>  config DEBUG_INFO_BTF_MODULES
+>         def_bool y
+>         depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 25bedd83644b..a880f2d6918f 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -30,6 +30,10 @@ quiet_cmd_cc_o_c = CC [M]  $@
+>
+>  ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
+>
+> +ifdef CONFIG_RUST
+> +PAHOLE_FLAGS += --lang_exclude=rust
+> +endif
+> +
+>  quiet_cmd_ld_ko_o = LD [M]  $@
+>        cmd_ld_ko_o +=                                                   \
+>         $(LD) -r $(KBUILD_LDFLAGS)                                      \
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index 918470d768e9..69eb0bea89bf 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -122,6 +122,10 @@ gen_btf()
+>                 return 1
+>         fi
+>
+> +       if is_enabled CONFIG_RUST; then
+> +               PAHOLE_FLAGS="${PAHOLE_FLAGS} --lang_exclude=rust"
+> +       fi
 
-Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
----
- net/core/filter.c | 6 ------
- 1 file changed, 6 deletions(-)
+If it was me, I would do things more like v1 of the patch (instead
+just checking pahole version), because this is the only flag set in
+scripts/Makefile.modfinal, which is a little confusing and
+inconsistent. It's ok to set --lang_exclude=rust in all cases, as long
+as pahole_ver is recent enough.
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index ab811293ae5d..d9befa6ba04e 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -6847,9 +6847,6 @@ u32 bpf_tcp_sock_convert_ctx_access(enum bpf_access_type type,
- 					FIELD));			\
- 	} while (0)
- 
--	if (insn > insn_buf)
--		return insn - insn_buf;
--
- 	switch (si->off) {
- 	case offsetof(struct bpf_tcp_sock, rtt_min):
- 		BUILD_BUG_ON(sizeof_field(struct tcp_sock, rtt_min) !=
-@@ -10147,9 +10144,6 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
- 			SOCK_OPS_GET_FIELD(BPF_FIELD, OBJ_FIELD, OBJ);	      \
- 	} while (0)
- 
--	if (insn > insn_buf)
--		return insn - insn_buf;
--
- 	switch (si->off) {
- 	case offsetof(struct bpf_sock_ops, op):
- 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct bpf_sock_ops_kern,
--- 
-2.39.0
++if [ "${pahole_ver}" -ge "124" ]; then
++       # see PAHOLE_HAS_LANG_EXCLUDE
++       extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
++fi
+
+But I'm not too opinionated either on this so...
+
+Reviewed-by: Eric Curtin <ecurtin@redhat.com>
+
+can be reapplied. I'm gonna test this again to see if it works in a
+Fedora Asahi rpm build.
+
+
+> +
+>         vmlinux_link ${1}
+>
+>         info "BTF" ${2}
+> --
+> 2.39.0
+>
 
