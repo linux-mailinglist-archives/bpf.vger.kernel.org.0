@@ -2,64 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2AC6617FE
-	for <lists+bpf@lfdr.de>; Sun,  8 Jan 2023 19:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C60EA661879
+	for <lists+bpf@lfdr.de>; Sun,  8 Jan 2023 20:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbjAHSUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 8 Jan 2023 13:20:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50206 "EHLO
+        id S233435AbjAHTRD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Jan 2023 14:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233278AbjAHSUX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 Jan 2023 13:20:23 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021921DA
-        for <bpf@vger.kernel.org>; Sun,  8 Jan 2023 10:20:23 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id k26-20020a05600c1c9a00b003d972646a7dso7414812wms.5
-        for <bpf@vger.kernel.org>; Sun, 08 Jan 2023 10:20:22 -0800 (PST)
+        with ESMTP id S231378AbjAHTRB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Jan 2023 14:17:01 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23FA2606
+        for <bpf@vger.kernel.org>; Sun,  8 Jan 2023 11:16:57 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id p188so6797378yba.5
+        for <bpf@vger.kernel.org>; Sun, 08 Jan 2023 11:16:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7tPoncGXTLNRxdDVgMHCAQCttzuU5+X9I7EJBTDUues=;
-        b=LGMqMb9TIsPqUco6O/LdH34tw+Q1kDY9w5xEHdKMG4bHEIa7rzqQyr79Z/6iZIWX9T
-         MaKMdwK1RlqjfeGTvhCOHT2OOW1mK2OdNCpMzSLDjOLLyCd+mQyULjtdoIu+BapyKNs2
-         sdnvt5qo6rbgscqfeX7wDbOlTGX/GsXaP7rGzn7CUHypt5JGkxZFuIa/r7SlheQ5zGPg
-         9l3VAv1+EEjvf7Fe4ZmC7Yt2OxSaqi+rbRmewQ3ZxOsBKzIiNpMXFByHrmnRCEBgFJQs
-         PLj294fjcKnKs1Ecek/rFYVQ1dS5+lpSBFucNKoBlkh8QqELtj3+dODBcJBp5uH9jHlo
-         lboA==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Er/+EiMLnn2MKOdED8S8DUPSutRL5plgxPKOLwEBOA=;
+        b=b62kpT+jNiZkYzBUrwAjmCq0+LwNmLNCpUNp0qj/LQg3ja1haJJayz5RAOSi8e/tLD
+         pIBLeTmrtEKjxN1jJzEfaPSKLGbr9BbgiszrvLswEANsF0LoyE0U5RYA8nvVCh97Yj0+
+         GUl5A8DsUZfMbnF3QBEo49wl0n6TpF2VMoOyd4Y62AayhLxADAI07K0y6sVLqQNzeAvh
+         YQTAuHlc/jqHIx+5TViii0lHZhmMDZ8iXbUwD+cpEqRzJ+3zGRrlwBJ+wPWqgjK8Tyl8
+         1dsgrXn9BV6DeGH+rYoaT0quA0NlMRaZQKuBt0TG6DjVVoMqjmz/uO5ADetuuGlNi3FF
+         fFKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7tPoncGXTLNRxdDVgMHCAQCttzuU5+X9I7EJBTDUues=;
-        b=RyajFJTnAWYEaNxR0L3x0cIrZzu1p1FGnFKH80Ei45H+o8sHMnpItfpJQP26ShGAt8
-         bbkW3kRvH3RZepE9KTXGXYyfE0LXtr8rneI/2UH7dZw6vIsNUzR2uzbO+yk4GQLvXClE
-         CkTQgSCbegaTNWD1wulbKuFLXXjh92ajcpB3/4+QPEWin3e2Beg4RtOwRCcNdwbSmnFT
-         f9JIzvr3Gu1O0Ql2m17a6OBAcFSXnAp7p7YNuM6UVUX/ZQuPNN9MZpzFq8sZSs4ppdmh
-         Pocd0i+BoQLoQ01W9pVjpKqlq04Wcbw9H084CUUmX7EsI2fqVg5BYo0yNHL2wTelF50b
-         5nkg==
-X-Gm-Message-State: AFqh2ko9Kckty9USCZzlHc6aHvBvhY4dRIwiQqkyG6OEhdGfutUtdity
-        haFtkkpTxfeq03WHQBrdfeM=
-X-Google-Smtp-Source: AMrXdXvqny7SwFn8dljUGagiA2J2dUVcHX0kn78X4PtOKbRka8v0hX5qij8pa1GYZx5xwzZ2JzYhzQ==
-X-Received: by 2002:a05:600c:3d91:b0:3d9:103d:9078 with SMTP id bi17-20020a05600c3d9100b003d9103d9078mr43278336wmb.22.1673202021483;
-        Sun, 08 Jan 2023 10:20:21 -0800 (PST)
-Received: from localhost.localdomain (2a01cb088f43a50095017c09ef444c72.ipv6.abo.wanadoo.fr. [2a01:cb08:8f43:a500:9501:7c09:ef44:4c72])
-        by smtp.gmail.com with ESMTPSA id bg23-20020a05600c3c9700b003d1de805de5sm9937330wmb.16.2023.01.08.10.20.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Jan 2023 10:20:21 -0800 (PST)
-From:   Ludovic L'Hours <ludovic.lhours@gmail.com>
-To:     andrii@kernel.org
-Cc:     bpf@vger.kernel.org, Ludovic L'Hours <ludovic.lhours@gmail.com>
-Subject: [PATCH] libbpf: Fix map creation flags sanitization
-Date:   Sun,  8 Jan 2023 19:20:18 +0100
-Message-Id: <20230108182018.24433-1-ludovic.lhours@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=8Er/+EiMLnn2MKOdED8S8DUPSutRL5plgxPKOLwEBOA=;
+        b=0fPgYsImdplRu5hGY+VudUlyEAExiwphl3u2Z1XxOznCEqirbHGYowN9UHrw44RjBU
+         7TD7qR8mNVJnQa/v5U1c979jxvDgNs6dcxtAYeF0NBP+kEYv1x7oh7DMCsLQhOLM5ku+
+         qMy/WHnlu6WpCpO/ClH/yz6W5CoyPA3o4fbYuOT098wGct7PluyknywUOkajX7wSro2j
+         xJr9fdMtt0v+EGXK3pobyCcGcp2llCxszeI2fKYIpLqOwULKtw/qW5Vb/BYS+7+u61nT
+         5fTD8WGR8YQVkgIhwzG95KrPe7CnRWtFyWqlZZK60Mt5IMkYB4FT4yHSXAxsoWJy9AtE
+         eV+A==
+X-Gm-Message-State: AFqh2kpCPPaHun01x9xjWa3aYnbmIZeTKQcB+j1uJOzmgNMuuOtrrEWp
+        UGpEQv8B0wjw2zvI9BKt0w36rv6QXcOfTMskqJn3nQ==
+X-Google-Smtp-Source: AMrXdXv9u1GJ+TrQhYZOYcZZpBtGnkyLnuLoYleIexHo9LA7cdegAieoGhDUCR410+YPzXH0UXT2U57JRLrH3lpLeZ8=
+X-Received: by 2002:a25:d8d4:0:b0:7b8:16c:e66d with SMTP id
+ p203-20020a25d8d4000000b007b8016ce66dmr1228558ybg.85.1673205417106; Sun, 08
+ Jan 2023 11:16:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <cover.1672976410.git.william.xuanziyang@huawei.com>
+ <7e9ca6837b20bea661248957dbbd1db198e3d1f8.1672976410.git.william.xuanziyang@huawei.com>
+ <Y7h8yrOEkPuHkNpJ@google.com>
+In-Reply-To: <Y7h8yrOEkPuHkNpJ@google.com>
+From:   Willem de Bruijn <willemb@google.com>
+Date:   Sun, 8 Jan 2023 14:16:20 -0500
+Message-ID: <CA+FuTSdZ+za55p1kKOcGby89F_ybRhAfy2cG0R+Y00yaJTbVkg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add ipip6 and ip6ip decap support for bpf_skb_adjust_room()
+To:     Ziyang Xuan <william.xuanziyang@huawei.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, sdf@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,28 +73,118 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As BPF_F_MMAPABLE flag is now conditionnaly set (by map_is_mmapable),
-it should not be toggled but disabled if not supported by kernel.
+On Fri, Jan 6, 2023 at 2:55 PM <sdf@google.com> wrote:
+>
+> On 01/06, Ziyang Xuan wrote:
+> > Add ipip6 and ip6ip decap support for bpf_skb_adjust_room().
+> > Main use case is for using cls_bpf on ingress hook to decapsulate
+> > IPv4 over IPv6 and IPv6 over IPv4 tunnel packets.
+>
+> CC'd Willem since he has done bpf_skb_adjust_room changes in the past.
+> There might be a lot of GRO/GSO context I'm missing.
+>
+> > Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> > ---
+> >   net/core/filter.c | 34 ++++++++++++++++++++++++++++++++--
+> >   1 file changed, 32 insertions(+), 2 deletions(-)
+>
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 929358677183..73982fb4fe2e 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -3495,6 +3495,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb,
+> > u32 off, u32 len_diff,
+> >   static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+> >                             u64 flags)
+> >   {
+> > +     union {
+> > +             struct iphdr *v4;
+> > +             struct ipv6hdr *v6;
+> > +             unsigned char *hdr;
+> > +     } ip;
+> > +     __be16 proto;
+> >       int ret;
+>
+> >       if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
+> > @@ -3512,10 +3518,19 @@ static int bpf_skb_net_shrink(struct sk_buff
+> > *skb, u32 off, u32 len_diff,
+> >       if (unlikely(ret < 0))
+> >               return ret;
+>
+> > +     ip.hdr = skb_inner_network_header(skb);
+> > +     if (ip.v4->version == 4)
+> > +             proto = htons(ETH_P_IP);
+> > +     else
+> > +             proto = htons(ETH_P_IPV6);
+> > +
+> >       ret = bpf_skb_net_hdr_pop(skb, off, len_diff);
+> >       if (unlikely(ret < 0))
+> >               return ret;
+>
+> > +     /* Match skb->protocol to new outer l3 protocol */
+> > +     skb->protocol = proto;
+> > +
+> >       if (skb_is_gso(skb)) {
+> >               struct skb_shared_info *shinfo = skb_shinfo(skb);
+>
+> > @@ -3578,10 +3593,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
+> > skb, s32, len_diff,
+> >          u32, mode, u64, flags)
+> >   {
+> >       u32 len_cur, len_diff_abs = abs(len_diff);
+> > -     u32 len_min = bpf_skb_net_base_len(skb);
+> > -     u32 len_max = BPF_SKB_MAX_LEN;
+> > +     u32 len_min, len_max = BPF_SKB_MAX_LEN;
+> >       __be16 proto = skb->protocol;
+> >       bool shrink = len_diff < 0;
+> > +     union {
+> > +             struct iphdr *v4;
+> > +             struct ipv6hdr *v6;
+> > +             unsigned char *hdr;
+> > +     } ip;
+> >       u32 off;
+> >       int ret;
+>
+> > @@ -3594,6 +3613,9 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
+> > skb, s32, len_diff,
+> >                    proto != htons(ETH_P_IPV6)))
+> >               return -ENOTSUPP;
+>
+> > +     if (unlikely(shrink && !skb->encapsulation))
+> > +             return -ENOTSUPP;
+> > +
 
-Fixes: 4fcac46c7e10 ("libbpf: only add BPF_F_MMAPABLE flag for data maps with global vars")
-Signed-off-by: Ludovic L'Hours <ludovic.lhours@gmail.com>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This new restriction might break existing users.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index a5c67a3c93c5..f8dfee32c2bc 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7355,7 +7355,7 @@ static int bpf_object__sanitize_maps(struct bpf_object *obj)
- 		if (!bpf_map__is_internal(m))
- 			continue;
- 		if (!kernel_supports(obj, FEAT_ARRAY_MMAP))
--			m->def.map_flags ^= BPF_F_MMAPABLE;
-+			m->def.map_flags &= ~BPF_F_MMAPABLE;
- 	}
- 
- 	return 0;
--- 
-2.25.1
+There is no pre-existing requirement that shrink is used solely with
+packets encapsulated by the protocol stack.
 
+Indeed, skb->encapsulation is likely not set on packets arriving from
+the wire, even if encapsulated. Referring to your comment "Main use
+case is for using cls_bpf on ingress hook to decapsulate"
+
+Can a combination of the existing bpf_skb_adjust_room and
+bpf_skb_change_proto address your problem?
+
+> >       off = skb_mac_header_len(skb);
+> >       switch (mode) {
+> >       case BPF_ADJ_ROOM_NET:
+> > @@ -3605,6 +3627,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
+> > skb, s32, len_diff,
+> >               return -ENOTSUPP;
+> >       }
+>
+> > +     if (shrink) {
+> > +             ip.hdr = skb_inner_network_header(skb);
+> > +             if (ip.v4->version == 4)
+> > +                     len_min = sizeof(struct iphdr);
+> > +             else
+> > +                     len_min = sizeof(struct ipv6hdr);
+> > +     }
+> > +
+> >       len_cur = skb->len - skb_network_offset(skb);
+> >       if ((shrink && (len_diff_abs >= len_cur ||
+> >                       len_cur - len_diff_abs < len_min)) ||
+> > --
+> > 2.25.1
+>
