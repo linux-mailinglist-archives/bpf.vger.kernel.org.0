@@ -2,95 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B09C661459
-	for <lists+bpf@lfdr.de>; Sun,  8 Jan 2023 10:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8128661515
+	for <lists+bpf@lfdr.de>; Sun,  8 Jan 2023 13:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbjAHJor (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 8 Jan 2023 04:44:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
+        id S232675AbjAHMeD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Jan 2023 07:34:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbjAHJn7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 Jan 2023 04:43:59 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08122167FA
-        for <bpf@vger.kernel.org>; Sun,  8 Jan 2023 01:43:58 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id x10so5401917edd.10
-        for <bpf@vger.kernel.org>; Sun, 08 Jan 2023 01:43:57 -0800 (PST)
+        with ESMTP id S231255AbjAHMeC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Jan 2023 07:34:02 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3534EBF5C;
+        Sun,  8 Jan 2023 04:34:00 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id fy8so13661313ejc.13;
+        Sun, 08 Jan 2023 04:34:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FocuR5aXn3z28LzYD0rCmA/t4By4lcIW0G986gs+i74=;
-        b=Qe45HwNg7p5qqmTnF6alKo9Ouj2BwgO9PcI+g6fIOW+QAfTSIb9Tu8sMWI+4Ipvg3t
-         rifpCipOCFch7Pvhhi1elVRq26Ymr537oxctAWMo2taVACQZ5pdkXdOgI8ExXbTXIdM4
-         YXVxmZsig9GTlQGnHvr/JTgDocuGbPURJYepelWpVbLekdtfoQmWTy4z6K/9uBA95Ob+
-         kOt42yITqONu5yo+SYZ94NoAC6s7xhAblhtNyEWQ0LMoh60i6eltD+T51OabTEUxZ9Ft
-         LbIlcmhicKmke3psco5qqwuVBxo7h4+Y7Ukc+sJb20E0AestQztLMxCX9J3tsVKtCjDj
-         kUuA==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XIRyk2y61xmdD/0Njep3MetjdHYndWgObyJ8GP2ZYB4=;
+        b=aP2b+SBDI9HY41lQH+8nV2TbYOdNkT1EO/CEIdf1NKDSydYCP8mA/4iKToqbH7Omvq
+         8FfTJ6U20cYvRrfZcfTLuUQB1w7hZkSMGBPc1IjqQCT2E0zjMF2hpZn/gAHOYnfB4PRS
+         gfObBLsJf4aM7sYLHSTWBaHNDcl1ZkEiPbmhBTq8qunKs8L/Uhed4c11SJB+nPhzqXzs
+         vBqERoJxTQ2laQ0uch2+aVeZProxRntTMTLOx/J90fZt4dzjP2qZWn3W/Y29cabMVh01
+         jI9M2ymQVuLb/oSGND0h3+9eIQzNEmAdf7+8dSFyieLMWeNnDHwgrAxoXf2Ta1YUjySt
+         wNVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FocuR5aXn3z28LzYD0rCmA/t4By4lcIW0G986gs+i74=;
-        b=k9fCSnX2S6jceDz6SnUsli5Hedz6Op8f1YuPpB4iMk5MyYlYpgWQhhnGuaNYQScqWi
-         alfwSOdx77Ab+ZGj8ah50F+hH3fxXa7RjBbEn5m/sixwgUoVbhe6bXvjpVQ3Iy/yRBEM
-         n1pIIWEf1/vyQMLrkEsfD/Oi770Mm2fU23qPIL/jDSrpZHcu1gB18ulqFTpSauOV8zQc
-         WidJzOHy1gh80+vGnz8K58roH2bjPpVXahrQyPP0snWbvTtLT77oNZxd7KdSODkcEUTi
-         e4/1TIZtEpzw0NW//ZO9Q428CLbjxVsp8fmSdSnk7rjmKNqkEcME703cU4atAX8166dH
-         olDA==
-X-Gm-Message-State: AFqh2krKZmbDkKXrbre2tYH7mmbMj2yj1NjPAWa9hEcEHF8KU4LjSKaN
-        t89mkij691/EK8xxhCT09HRAFSK8tOKuY/RbxYc=
-X-Google-Smtp-Source: AMrXdXuWmenPHRUO7GL4gprWEAbayp5AOgCyrqagwKhtrGzDPzXW7dv9y0tEw8Wvp9fYjz6KsI2MbNTersFwNL3H4Fc=
-X-Received: by 2002:a05:6402:291a:b0:489:644e:8bd3 with SMTP id
- ee26-20020a056402291a00b00489644e8bd3mr4038307edb.422.1673171036468; Sun, 08
- Jan 2023 01:43:56 -0800 (PST)
+        bh=XIRyk2y61xmdD/0Njep3MetjdHYndWgObyJ8GP2ZYB4=;
+        b=RU5SJ+XjJIb3zRLNoEzLMq3jGUhcS6z5Qeb07XSlWXTS97iaINSZeprOa1xzHxbYZ+
+         +mMSYFVTz7Aj2ANefspo1NOqw6jXjvhHt/IKz0FllMCBDHHY69fIS5DE3Aqw8XHmXAwR
+         AtebMkx075qurPMGhwUjpj1pKmClfBtC7pX1PvPczWxEntP5gOCuHOZQPKo+WKGA+413
+         PP1bbyW7fByTkKevz8DEcJlwc5aCCuAk2l4iJ+mpbBTXLkewRWbGI5DgsVlyduZqTsKD
+         cGrVG4VPdC8AE8MLfN3kS3jdgrUdAXkuafN2cRT03z0AK/6xfUptQRRNR9ROCPDYvV4T
+         Vvlg==
+X-Gm-Message-State: AFqh2kolxN/vhblgEn8BH8Tv2qdQS064Oc5op2G0CApUo0+I94ZKafgc
+        2u8PlJ0e1MXt74J4lh0H9iUGvVyGgL0RMQFi
+X-Google-Smtp-Source: AMrXdXtKLATHJHv5VOm2Ma50GBMoIQUnOoUDsUz4NfJvShg0zUAs4YevNRlSYHpPOgUq30dCa/2hCQ==
+X-Received: by 2002:a17:906:958:b0:7c0:be4d:46d6 with SMTP id j24-20020a170906095800b007c0be4d46d6mr47584747ejd.59.1673181238720;
+        Sun, 08 Jan 2023 04:33:58 -0800 (PST)
+Received: from [192.168.0.105] ([77.126.9.245])
+        by smtp.gmail.com with ESMTPSA id lb24-20020a170907785800b008448d273670sm2453924ejc.49.2023.01.08.04.33.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Jan 2023 04:33:58 -0800 (PST)
+Message-ID: <8b8107bd-87da-7a86-6284-119e440d2aaf@gmail.com>
+Date:   Sun, 8 Jan 2023 14:33:55 +0200
 MIME-Version: 1.0
-Received: by 2002:a17:907:8b11:b0:7cd:5a90:3400 with HTTP; Sun, 8 Jan 2023
- 01:43:55 -0800 (PST)
-Reply-To: khalil588577@gmail.com
-From:   Abdul Latif <maryamm77775qqqq@gmail.com>
-Date:   Sun, 8 Jan 2023 09:43:55 +0000
-Message-ID: <CAFKE0mA_coGQE7MG8q1o_OB1XUaDsZD8-gfGDKtQa21mur7cWA@mail.gmail.com>
-Subject: GET BACK TO ME
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,UNDISC_FREEM
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:533 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4885]
-        *  1.0 HK_RANDOM_FROM From username looks random
-        *  0.0 HK_RANDOM_ENVFROM Envelope sender username looks random
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [maryamm77775qqqq[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [khalil588577[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
+ support xdp multibuffer
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Andy Gospodarek <andrew.gospodarek@broadcom.com>
+Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, ast@kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        lorenzo.bianconi@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>, gal@nvidia.com,
+        Saeed Mahameed <saeedm@nvidia.com>, tariqt@nvidia.com
+References: <20220621175402.35327-1-gospo@broadcom.com>
+ <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com> <87k0234pd6.fsf@toke.dk>
+ <20230103172153.58f231ba@kernel.org> <Y7U8aAhdE3TuhtxH@lore-desk>
+ <87bkne32ly.fsf@toke.dk> <a12de9d9-c022-3b57-0a15-e22cdae210fa@gmail.com>
+ <871qo90yxr.fsf@toke.dk> <Y7cBfE7GpX04EI97@C02YVCJELVCG.dhcp.broadcom.net>
+ <20230105101642.1a31f278@kernel.org>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20230105101642.1a31f278@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I am Mr.Abdul Latif i have something to discuss with you
+
+
+On 05/01/2023 20:16, Jakub Kicinski wrote:
+> On Thu, 5 Jan 2023 11:57:32 -0500 Andy Gospodarek wrote:
+>>> So my main concern would be that if we "allow" this, the only way to
+>>> write an interoperable XDP program will be to use bpf_xdp_load_bytes()
+>>> for every packet access. Which will be slower than DPA, so we may end up
+>>> inadvertently slowing down all of the XDP ecosystem, because no one is
+>>> going to bother with writing two versions of their programs. Whereas if
+>>> you can rely on packet headers always being in the linear part, you can
+>>> write a lot of the "look at headers and make a decision" type programs
+>>> using just DPA, and they'll work for multibuf as well.
+>>
+>> The question I would have is what is really the 'slow down' for
+>> bpf_xdp_load_bytes() vs DPA?  I know you and Jesper can tell me how many
+>> instructions each use. :)
+> 
+> Until we have an efficient and inlined DPA access to frags an
+> unconditional memcpy() of the first 2 cachelines-worth of headers
+> in the driver must be faster than a piece-by-piece bpf_xdp_load_bytes()
+> onto the stack, right?
+> 
+>> Taking a step back...years ago Dave mentioned wanting to make XDP
+>> programs easy to write and it feels like using these accessor APIs would
+>> help accomplish that.  If the kernel examples use bpf_xdp_load_bytes()
+>> accessors everywhere then that would accomplish that.
+> 
+> I've been pushing for an skb_header_pointer()-like helper but
+> the semantics were not universally loved :)
+
+Maybe it's time to re-consider.
+
+Is it something like an API that given an offset returns a pointer + 
+allowed length to be accessed?
+
+This sounds like a good direction to me, that avoids having any 
+linear-part-length assumptions, while preserving good performance.
+
+Maybe we can still require/guarantee that each single header (eth, ip, 
+tcp, ...) does not cross a frag/page boundary. For otherwise, a prog 
+needs to handle cases where headers span several fragments, so it has to 
+reconstruct the header by copying the different parts into some local 
+buffer.
+
+This can be achieved by having another assumption that AFAIK already 
+holds today: all fragments are of size PAGE_SIZE.
+
+Regards,
+Tariq
