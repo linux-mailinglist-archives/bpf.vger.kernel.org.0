@@ -2,55 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E20A662159
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 10:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8766621DB
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 10:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbjAIJWT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 04:22:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        id S231264AbjAIJnj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 04:43:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233309AbjAIJVk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 04:21:40 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14C5BB5;
-        Mon,  9 Jan 2023 01:19:57 -0800 (PST)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Nr7f06HNLzRr31;
-        Mon,  9 Jan 2023 17:18:16 +0800 (CST)
-Received: from [10.174.179.200] (10.174.179.200) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Mon, 9 Jan 2023 17:19:55 +0800
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add ipip6 and ip6ip decap support for
- bpf_skb_adjust_room()
-To:     Willem de Bruijn <willemb@google.com>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <martin.lau@linux.dev>,
-        <song@kernel.org>, <yhs@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>, <haoluo@google.com>, <jolsa@kernel.org>,
-        <sdf@google.com>
-References: <cover.1672976410.git.william.xuanziyang@huawei.com>
- <7e9ca6837b20bea661248957dbbd1db198e3d1f8.1672976410.git.william.xuanziyang@huawei.com>
- <Y7h8yrOEkPuHkNpJ@google.com>
- <CA+FuTSdZ+za55p1kKOcGby89F_ybRhAfy2cG0R+Y00yaJTbVkg@mail.gmail.com>
-From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Message-ID: <4d0e5f2b-d088-58f4-d86d-00aa444d77c0@huawei.com>
-Date:   Mon, 9 Jan 2023 17:19:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        with ESMTP id S231126AbjAIJni (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 04:43:38 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459AE1166;
+        Mon,  9 Jan 2023 01:43:37 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id c9so5674768pfj.5;
+        Mon, 09 Jan 2023 01:43:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=001Ob8msDHYSJ4H6+BAMlx9g50lKceUKFFGpbLEZpGo=;
+        b=eYDyOUaHHTHcueKILaSCYIfEciTW1pbEIlEDRLZdc9Ld42Fi2TMY/zFOiUclIOYxKE
+         G3/Vdt+ep3en4CD1mF1VzlSKuo+Wh9HxpkvfD9ZxyfG2pUc4J+5QBSTBaqsv0puA5093
+         Qu9WF+zTU+e/LwbJOmsbes/c0YUi3NyINImEReG2kovWz6Wvfh0NfJoHTvzal72OKPmz
+         61xy1Eh8diyfbUQbVjVt0GljfAvO+xDSAPx4ODJJMHsDZZYuir01obzwfCabdj6JAyF/
+         WE5/hm2vf1huqC9lEba3pNmbEHqaTcg3Xwj/ovuUgF8h08W+FGa52hgsIdz66aXOjA+L
+         EozA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=001Ob8msDHYSJ4H6+BAMlx9g50lKceUKFFGpbLEZpGo=;
+        b=4ls3ZSJ89YHmWAiBGRBfdptqdECbkarkPa3NlYFCtG2ZZoK9v4YlSR9iShIrnrNq6I
+         bG9bbKWiwnvSk4UkwK1gVR0E3sJDbc3a/3z/mmnzSbcGyUqPeu9D1BctoCxe3f0Fwi+C
+         mvp+KHqRC1ox2K2QArXmboobn5qLbA0Kb+zzkua4KcgS+YtW5ms75bcvi4vw+dFPotzC
+         VnoZQ0dKmfnrdHFDBnZ2KLhnIiOvR2sKKB7rUUmmqZ28DrcKXKeNXc8cQlD4NHJ+jq4g
+         FMNS4xPwCl8EGa/KduPloI7Ti7ycPmA7DzNmlndKQ0WS7PgnB00oDnwgZiR4iW4omC1D
+         SnDw==
+X-Gm-Message-State: AFqh2kpC8eJd7vRq+/rxBhO7ARCWWJG8AEbAXcSXuta/jxGfaAljlfoY
+        kU3EaIL0HQ7HIZ04ys6Ukrw=
+X-Google-Smtp-Source: AMrXdXvDm89D+EhcP8RUapv3tOByyW5gaBVPaMYRnrQQnRB++bFW5P3AFGSMG+z2cmA4N6tdKEu4fQ==
+X-Received: by 2002:a05:6a00:414c:b0:581:7c46:debd with SMTP id bv12-20020a056a00414c00b005817c46debdmr44941706pfb.24.1673257416708;
+        Mon, 09 Jan 2023 01:43:36 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.20])
+        by smtp.gmail.com with ESMTPSA id z8-20020aa79e48000000b00580849b55a2sm5629527pfq.26.2023.01.09.01.43.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jan 2023 01:43:36 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     daniel@iogearbox.net
+Cc:     ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Subject: [PATCH] libbpf: resolve kernel function name optimization for kprobe
+Date:   Mon,  9 Jan 2023 17:42:47 +0800
+Message-Id: <20230109094247.1464856-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-In-Reply-To: <CA+FuTSdZ+za55p1kKOcGby89F_ybRhAfy2cG0R+Y00yaJTbVkg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.200]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500006.china.huawei.com (7.192.105.130)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,208 +72,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Fri, Jan 6, 2023 at 2:55 PM <sdf@google.com> wrote:
->>
->> On 01/06, Ziyang Xuan wrote:
->>> Add ipip6 and ip6ip decap support for bpf_skb_adjust_room().
->>> Main use case is for using cls_bpf on ingress hook to decapsulate
->>> IPv4 over IPv6 and IPv6 over IPv4 tunnel packets.
->>
->> CC'd Willem since he has done bpf_skb_adjust_room changes in the past.
->> There might be a lot of GRO/GSO context I'm missing.
->>
->>> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
->>> ---
->>>   net/core/filter.c | 34 ++++++++++++++++++++++++++++++++--
->>>   1 file changed, 32 insertions(+), 2 deletions(-)
->>
->>> diff --git a/net/core/filter.c b/net/core/filter.c
->>> index 929358677183..73982fb4fe2e 100644
->>> --- a/net/core/filter.c
->>> +++ b/net/core/filter.c
->>> @@ -3495,6 +3495,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb,
->>> u32 off, u32 len_diff,
->>>   static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
->>>                             u64 flags)
->>>   {
->>> +     union {
->>> +             struct iphdr *v4;
->>> +             struct ipv6hdr *v6;
->>> +             unsigned char *hdr;
->>> +     } ip;
->>> +     __be16 proto;
->>>       int ret;
->>
->>>       if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
->>> @@ -3512,10 +3518,19 @@ static int bpf_skb_net_shrink(struct sk_buff
->>> *skb, u32 off, u32 len_diff,
->>>       if (unlikely(ret < 0))
->>>               return ret;
->>
->>> +     ip.hdr = skb_inner_network_header(skb);
->>> +     if (ip.v4->version == 4)
->>> +             proto = htons(ETH_P_IP);
->>> +     else
->>> +             proto = htons(ETH_P_IPV6);
->>> +
->>>       ret = bpf_skb_net_hdr_pop(skb, off, len_diff);
->>>       if (unlikely(ret < 0))
->>>               return ret;
->>
->>> +     /* Match skb->protocol to new outer l3 protocol */
->>> +     skb->protocol = proto;
->>> +
->>>       if (skb_is_gso(skb)) {
->>>               struct skb_shared_info *shinfo = skb_shinfo(skb);
->>
->>> @@ -3578,10 +3593,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
->>> skb, s32, len_diff,
->>>          u32, mode, u64, flags)
->>>   {
->>>       u32 len_cur, len_diff_abs = abs(len_diff);
->>> -     u32 len_min = bpf_skb_net_base_len(skb);
->>> -     u32 len_max = BPF_SKB_MAX_LEN;
->>> +     u32 len_min, len_max = BPF_SKB_MAX_LEN;
->>>       __be16 proto = skb->protocol;
->>>       bool shrink = len_diff < 0;
->>> +     union {
->>> +             struct iphdr *v4;
->>> +             struct ipv6hdr *v6;
->>> +             unsigned char *hdr;
->>> +     } ip;
->>>       u32 off;
->>>       int ret;
->>
->>> @@ -3594,6 +3613,9 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
->>> skb, s32, len_diff,
->>>                    proto != htons(ETH_P_IPV6)))
->>>               return -ENOTSUPP;
->>
->>> +     if (unlikely(shrink && !skb->encapsulation))
->>> +             return -ENOTSUPP;
->>> +
-> 
-> This new restriction might break existing users.
-> 
-> There is no pre-existing requirement that shrink is used solely with
-> packets encapsulated by the protocol stack.
-> 
-> Indeed, skb->encapsulation is likely not set on packets arriving from
-> the wire, even if encapsulated. Referring to your comment "Main use
-> case is for using cls_bpf on ingress hook to decapsulate"
-> 
-> Can a combination of the existing bpf_skb_adjust_room and
-> bpf_skb_change_proto address your problem?
+From: Menglong Dong <imagedong@tencent.com>
 
-Hello Willem,
+The function name in kernel may be changed by the compiler. For example,
+the function 'ip_rcv_core' can be compiled to 'ip_rcv_core.isra.0'.
 
-I think combination bpf_skb_adjust_room and bpf_skb_change_proto can not
-address my problem.
+This kind optimization can happen in any kernel function. Therefor, we
+should conside this case.
 
-Now, bpf_skb_adjust_room() would fail for "len_cur - len_diff_abs < len_min"
-when decap ipip6 packet, because "len_min" should be sizeof(struct iphdr)
-but not sizeof(struct ipv6hdr).
+If we failed to attach kprobe with a '-ENOENT', then we can lookup the
+kallsyms and check if there is a similar function end with '.xxx', and
+retry.
 
-We can remove skb->encapsulation restriction and parse outer and inner IP
-header to determine ipip6 and ip6ip packets. As following:
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
+---
+ tools/lib/bpf/libbpf.c | 37 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 36 insertions(+), 1 deletion(-)
 
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3498,6 +3498,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
- static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
-                              u64 flags)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index a5c67a3c93c5..fdfb1ca34ced 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -10375,12 +10375,30 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+ 	return libbpf_err_ptr(err);
+ }
+ 
++struct kprobe_resolve {
++	char pattern[128];
++	char name[128];
++};
++
++static int kprobe_kallsyms_cb(unsigned long long sym_addr, char sym_type,
++			      const char *sym_name, void *ctx)
++{
++	struct kprobe_resolve *res = ctx;
++
++	if (!glob_match(sym_name, res->pattern))
++		return 0;
++	strcpy(res->name, sym_name);
++	return 1;
++}
++
+ static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf_link **link)
  {
-+       union {
-+               struct iphdr *v4;
-+               struct ipv6hdr *v6;
-+               unsigned char *hdr;
-+       } ip;
-+       __be16 proto;
-        int ret;
-
-        if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
-@@ -3515,10 +3521,23 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
-        if (unlikely(ret < 0))
-                return ret;
-
-+       ip.hdr = skb_network_header(skb);
-+       if (ip.v4->version == 4) {
-+               if (ip.v4->protocol == IPPROTO_IPV6)
-+                       proto = htons(ETH_P_IPV6);
-+       } else {
-+               struct ipv6_opt_hdr *opt_hdr = (struct ipv6_opt_hdr *)(skb_network_header(skb) + sizeof(struct ipv6hdr));
-+               if (ip.v6->nexthdr == NEXTHDR_DEST && opt_hdr->nexthdr == NEXTHDR_IPV4)
-+                       proto = htons(ETH_P_IP);
-+       }
+ 	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
++	struct kprobe_resolve res = {};
+ 	unsigned long offset = 0;
+ 	const char *func_name;
+ 	char *func;
++	int err;
+ 	int n;
+ 
+ 	*link = NULL;
+@@ -10408,8 +10426,25 @@ static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf
+ 
+ 	opts.offset = offset;
+ 	*link = bpf_program__attach_kprobe_opts(prog, func, &opts);
++	err = libbpf_get_error(*link);
 +
-        ret = bpf_skb_net_hdr_pop(skb, off, len_diff);
-        if (unlikely(ret < 0))
-                return ret;
-
-+       /* Match skb->protocol to new outer l3 protocol */
-+       skb->protocol = proto;
++	if (!err || err != -ENOENT)
++		goto out;
 +
-        if (skb_is_gso(skb)) {
-                struct skb_shared_info *shinfo = skb_shinfo(skb);
-
-@@ -3585,6 +3604,11 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
-        u32 len_max = BPF_SKB_MAX_LEN;
-        __be16 proto = skb->protocol;
-        bool shrink = len_diff < 0;
-+       union {
-+               struct iphdr *v4;
-+               struct ipv6hdr *v6;
-+               unsigned char *hdr;
-+       } ip;
-        u32 off;
-        int ret;
-
-@@ -3608,6 +3632,19 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
-                return -ENOTSUPP;
-        }
-
-+       if (shrink) {
-+               ip.hdr = skb_network_header(skb);
-+               if (ip.v4->version == 4) {
-+                       if (ip.v4->protocol == IPPROTO_IPV6)
-+                               len_min = sizeof(struct ipv6hdr);
-+               } else {
-+                       struct ipv6_opt_hdr *opt_hdr = (struct ipv6_opt_hdr *)(skb_network_header(skb) + sizeof(struct ipv6hdr));
-+                       if (ip.v6->nexthdr == NEXTHDR_DEST && opt_hdr->nexthdr == NEXTHDR_IPV4) {
-+                               len_min = sizeof(struct iphdr);
-+                       }
-+               }
-+       }
++	sprintf(res.pattern, "%s.*", func);
++	if (!libbpf_kallsyms_parse(kprobe_kallsyms_cb, &res))
++		goto out;
 +
-        len_cur = skb->len - skb_network_offset(skb);
++	pr_warn("prog '%s': trying to create %s '%s+0x%zx' perf event instead\n",
++		prog->name, opts.retprobe ? "kretprobe" : "kprobe",
++		res.name, offset);
++
++	*link = bpf_program__attach_kprobe_opts(prog, res.name, &opts);
++	err = libbpf_get_error(*link);
++
++out:
+ 	free(func);
+-	return libbpf_get_error(*link);
++	return err;
+ }
+ 
+ static int attach_ksyscall(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+-- 
+2.39.0
 
-
-Look forward to your comments and suggestions.
-
-Thank you!
-
-> 
->>>       off = skb_mac_header_len(skb);
->>>       switch (mode) {
->>>       case BPF_ADJ_ROOM_NET:
->>> @@ -3605,6 +3627,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
->>> skb, s32, len_diff,
->>>               return -ENOTSUPP;
->>>       }
->>
->>> +     if (shrink) {
->>> +             ip.hdr = skb_inner_network_header(skb);
->>> +             if (ip.v4->version == 4)
->>> +                     len_min = sizeof(struct iphdr);
->>> +             else
->>> +                     len_min = sizeof(struct ipv6hdr);
->>> +     }
->>> +
->>>       len_cur = skb->len - skb_network_offset(skb);
->>>       if ((shrink && (len_diff_abs >= len_cur ||
->>>                       len_cur - len_diff_abs < len_min)) ||
->>> --
->>> 2.25.1
->>
-> .
-> 
