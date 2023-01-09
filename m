@@ -2,215 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A699C662A93
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 16:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E43662B05
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 17:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbjAIPxz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 10:53:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36892 "EHLO
+        id S229514AbjAIQTs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 11:19:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbjAIPxs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 10:53:48 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B0910F4;
-        Mon,  9 Jan 2023 07:53:48 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id g68so5060926pgc.11;
-        Mon, 09 Jan 2023 07:53:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Kr5NMyR17w820E39Zxy+TJT5WIxXv3t9mTGHg5DI4M8=;
-        b=p925wfq85MYYr0Q3szQHiqh8M9TGBDNLmFWeMdVCKRfm+cOHibl08yqwJoSo2r7XJP
-         wq9Jltk/+brtH8hNCZXvq0DxtwSQIazxtjZdEKfg/0vGYUECRtOKJhbchra23Qxq01EI
-         LW2KfmroEgha10Hiqqq7sbs4sKftMAXbHM5UfrApMgHovRtAjqup/7ZDx5c66hJHq9Cr
-         iYTmJQehTgnexoKO7TcMDfBVxLmHJagL/RtulJH5m9HvVCQxeaP/W6dGAdxxBRvcFDn6
-         /uu4CaMMaHvzdo/E1y8HoopqpLRDOCKFzxs2QxX+RtbfC5zpKXwCLbC6QNQfLNGjuHM5
-         8s7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Kr5NMyR17w820E39Zxy+TJT5WIxXv3t9mTGHg5DI4M8=;
-        b=vsVUyyhZaXC1xZa0W/BkpO28agq8dxXdBLZwJdYz8+hOKSGPkePAbr+IXJer1xGS/x
-         vIa08qKS+TyQTvnM8R3uG7GqRUPS+6gIzWiLrfTPFdU1WcAyl9kU3Wh9FZIAZu+JzHzo
-         dVDzK3utkV+zj8y4iS+c8obaR64okqEHZYm9NISdKQEpy6YKMkdAI+Cfpz/9CTWrBPPO
-         cHHwE8mEkKTaODrCdOYUxzxx42uPAUFQlKe2+YOAszc9LCC20yEsMue6PEAGX3IoZ+MY
-         nBf7hl7rmNfCFfEvDMqMo6ELbsXW4MZmF1edhQREXln6fDUnnTaF/FcFprn42l1vkL5i
-         adrg==
-X-Gm-Message-State: AFqh2kr93MOknIB1o+1etlr9ym9CmzXNP1B0/FZCyO0i3FGNkIZXOEsT
-        q7dmOOQoczYQQb/o/KO9Kk0o5oFyY6CcOaZRa+0=
-X-Google-Smtp-Source: AMrXdXu5iAQa5w4G/nXooBZotH/u8Cle9aRMcHOGEDe3ZcG1lDUD8XzrRE/n7dp+CGJamrwD1EZHy0OvHYQNsDsudys=
-X-Received: by 2002:a63:1e42:0:b0:478:9503:f498 with SMTP id
- p2-20020a631e42000000b004789503f498mr3557980pgm.96.1673279627421; Mon, 09 Jan
- 2023 07:53:47 -0800 (PST)
+        with ESMTP id S232864AbjAIQTr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 11:19:47 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57FC193C1
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 08:19:46 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 53D75611CA
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 16:19:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACD38C43392
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 16:19:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673281185;
+        bh=mhAX4ypzBHbXRvNftq0w6poGrboCAFvmYvtK0zKjEu0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Iq6w+TW4AZ4q3PKKjS0P27s74+pBuP0pxS2lGYpDB6abkoT4KouEyyDyK8bAa0uY5
+         BlssD8UdaVUNLMAJ4wD6SrwX4+M5eEVlqYyQMItnqG8ZPE348AY1d0Yk3KeGLm3KcA
+         STeBeLaoCCHe8pewVRRG0crwODHl+kZJ4LVx7xZu7VnQmM+KvuhGaMSRNlvqrPPkFd
+         m9W+EDfSDsXZ0r9/P6dod2wodwhnf3A0fIHYMwuJPqlgmMunaGARs8yr5kCWLwXl+w
+         JAusgMYYPMYQdGakM5Q+AGObqPymFVYUCqqpyps2qSogTLc4YR4eGGIsXoRQVzlpXq
+         4RYaVSy721/9g==
+Received: by mail-lf1-f51.google.com with SMTP id v25so13743606lfe.12
+        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 08:19:45 -0800 (PST)
+X-Gm-Message-State: AFqh2kpj7wmZ6Y1k2BAMF6tWtya3sM8/2GTgHGhgJZeU5cvCEUEnCyUJ
+        6ISrn/rGxcD8C2PmV5qS4ZkC5KhTXkatfp4lm7I=
+X-Google-Smtp-Source: AMrXdXuYHaNwScIfkskNKkmspiEZiEpGQ40CciOYXWQFaWWO84rGr8TaB9X20+dlwL6GvWcTYt1yWrRhjY/GAkE+SMI=
+X-Received: by 2002:a05:6512:2987:b0:4b5:8f03:a2b6 with SMTP id
+ du7-20020a056512298700b004b58f03a2b6mr6935743lfb.643.1673281183634; Mon, 09
+ Jan 2023 08:19:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20230103164359.24347-1-ysionneau@kalray.eu> <CAEr6+ECRh_9App18zmcS6FUR81YYhR=n4kGdeZAtQBsdMB55_A@mail.gmail.com>
- <6570d22d-ee19-f8b1-6fb4-bf8865ec4142@kalray.eu> <CAEr6+ECPFeokSULpWzYEYLROYHXNA0PtvdUchT37d4_qVA-PKQ@mail.gmail.com>
- <bccad498-3af2-08f1-8264-cf7b438732d3@kalray.eu>
-In-Reply-To: <bccad498-3af2-08f1-8264-cf7b438732d3@kalray.eu>
-From:   Jeff Xie <xiehuan09@gmail.com>
-Date:   Mon, 9 Jan 2023 23:53:35 +0800
-Message-ID: <CAEr6+EC0SCXLrQ2YNYyCyMK1Z9=3=ajbbLP+RKSsARGsmJO9YA@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/25] Upstream kvx Linux port
-To:     Yann Sionneau <ysionneau@kalray.eu>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, bpf@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        devicetree@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>,
-        Eric Paris <eparis@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Jason Baron <jbaron@akamai.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-audit@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, Alex Michon <amichon@kalray.eu>,
-        Ashley Lesdalons <alesdalons@kalray.eu>,
-        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
-        Clement Leger <clement.leger@bootlin.com>,
-        Guillaume Missonnier <gmissonnier@kalray.eu>,
-        Guillaume Thouvenin <gthouvenin@kalray.eu>,
-        Jean-Christophe Pince <jcpince@gmail.com>,
-        Jonathan Borne <jborne@kalray.eu>,
-        Jules Maselbas <jmaselbas@kalray.eu>,
-        Julian Vetter <jvetter@kalray.eu>,
-        Julien Hascoet <jhascoet@kalray.eu>,
-        Julien Villette <jvillette@kalray.eu>,
-        Louis Morhet <lmorhet@kalray.eu>,
-        Luc Michel <lmichel@kalray.eu>,
-        =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
-        Marius Gligor <mgligor@kalray.eu>,
-        Samuel Jones <sjones@kalray.eu>,
-        Thomas Costis <tcostis@kalray.eu>,
-        Vincent Chardon <vincent.chardon@elsys-design.com>
+References: <20230109143716.2332415-1-jolsa@kernel.org>
+In-Reply-To: <20230109143716.2332415-1-jolsa@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 9 Jan 2023 08:19:31 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4n4ZM2yF+tDQ8=hicyyRExSyhMkGTT15G8asbBkhyHCg@mail.gmail.com>
+Message-ID: <CAPhsuW4n4ZM2yF+tDQ8=hicyyRExSyhMkGTT15G8asbBkhyHCg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Do not allow to load sleepable
+ BPF_TRACE_RAW_TP program
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 9, 2023 at 11:30 PM Yann Sionneau <ysionneau@kalray.eu> wrote:
+On Mon, Jan 9, 2023 at 6:37 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Hi Jeff,
+> Currently we allow to load any tracing program as sleepable,
+> but BPF_TRACE_RAW_TP can't sleep. Making the check explicit
+> for tracing programs attach types, so sleepable BPF_TRACE_RAW_TP
+> will fail to load.
 >
-> On 1/9/23 16:11, Jeff Xie wrote:
-> > On Mon, Jan 9, 2023 at 9:21 PM Yann Sionneau <ysionneau@kalray.eu> wrot=
-e:
-> >> Hi Jeff,
-> >>
-> >> On 1/7/23 07:25, Jeff Xie wrote:
-> >>> Hi,
-> >>>
-> >>> On Wed, Jan 4, 2023 at 1:01 AM Yann Sionneau <ysionneau@kalray.eu> wr=
-ote:
-> >>>> [snip]
-> >>>>
-> >>>> A kvx toolchain can be built using:
-> >>>> # install dependencies: texinfo bison flex libgmp-dev libmpc-dev lib=
-mpfr-dev
-> >>>> $ git clone https://github.com/kalray/build-scripts
-> >>>> $ cd build-scripts
-> >>>> $ source last.refs
-> >>>> $ ./build-kvx-xgcc.sh output
-> >>> I would like to build the kvx-xgcc to compile and test the linux
-> >>> kernel, but it reported a compile error.
-> >>> I wonder what version of gcc you are using.
-> >>>
-> >>> My build environment:
-> >>> VERSION=3D"20.04.2 LTS (Focal Fossa)"
-> >>> gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)
-> >>>
-> >>>
-> >>> Compile error:
-> >>> $ ./build-kvx-xgcc.sh output
-> >>>
-> >>> ../../binutils/libiberty/fibheap.c: In function =E2=80=98fibheap_repl=
-ace_key_data=E2=80=99:
-> >>> ../../binutils/libiberty/fibheap.c:38:24: error: =E2=80=98LONG_MIN=E2=
-=80=99 undeclared
-> >>> (first use in this function)
-> >>>      38 | #define FIBHEAPKEY_MIN LONG_MIN
-> >>>         |                        ^~~~~~~~
-> >>> [snip]
-> >> What SHA1 of https://github.com/kalray/build-scripts are you using?
-> > I have executed the "source last.refs"
+> Updating the verifier error to mention iter programs as well.
 >
-> I was referring to the SHA1 of the repo itself (build-scripts).
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/bpf/verifier.c | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
 >
-> `last.refs` is a symbolic link which can point to several releases,
-> depending on "when" you did the clone.
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index fa4c911603e9..121a64ee841a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -16743,6 +16743,18 @@ BTF_ID(func, rcu_read_unlock_strict)
+>  #endif
+>  BTF_SET_END(btf_id_deny)
 >
-> I am asking this because we recently published new toolchains.
->
-> I want to make sure which one you are trying to build.
+> +static int can_be_sleepable(struct bpf_prog *prog)
 
-Unfortunately I deleted this repo a few minutes before you asked me ;-(
-But I remember that I cloned this repo two days ago.
-it should be:  last.refs -> refs/4.11.0.refs
+Shall we return bool?
 
-
-> >> We are building our toolchain on Ubuntu 18.04 / 20.04 and 22.04 withou=
-t
-> >> issues, I don't understand why it does not work for you, although inde=
-ed
-> >> the error log you are having pops out on my search engine and seems to
-> >> be some well known issue.
-> > Yes, there are many answers on the web, but none of them solve this pro=
-blem.
-> >
-> >> If the build-script does not work for you, you can still use the
-> >> pre-built toolchains generated by the GitHub automated actions:
-> >> https://github.com/kalray/build-scripts/releases/tag/v4.11.1 ("latest"
-> >> means 22.04)
-> > Thanks, this is the final solution ;-)
-> Good to see it helped :)
+> +{
+> +       if (prog->type == BPF_PROG_TYPE_TRACING) {
+> +               return prog->expected_attach_type == BPF_TRACE_FENTRY ||
+> +                      prog->expected_attach_type == BPF_TRACE_FEXIT ||
+> +                      prog->expected_attach_type == BPF_MODIFY_RETURN ||
+> +                      prog->expected_attach_type == BPF_TRACE_ITER;
+> +       }
+> +       return prog->type == BPF_PROG_TYPE_LSM ||
+> +              prog->type == BPF_PROG_TYPE_KPROBE;
+> +}
+> +
+>  static int check_attach_btf_id(struct bpf_verifier_env *env)
+>  {
+>         struct bpf_prog *prog = env->prog;
+> @@ -16761,9 +16773,8 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+>                 return -EINVAL;
+>         }
 >
-> Regards,
+> -       if (prog->aux->sleepable && prog->type != BPF_PROG_TYPE_TRACING &&
+> -           prog->type != BPF_PROG_TYPE_LSM && prog->type != BPF_PROG_TYPE_KPROBE) {
+> -               verbose(env, "Only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable\n");
+> +       if (prog->aux->sleepable && !can_be_sleepable(prog)) {
+> +               verbose(env, "Only fentry/fexit/fmod_ret, lsm, iter and kprobe/uprobe programs can be sleepable\n");
+>                 return -EINVAL;
+>         }
+
+Maybe add a verifier test for this?
+
+Thanks,
+Song
+
 >
 > --
+> 2.39.0
 >
-> Yann
->
->
->
->
->
-
-
---=20
-Thanks,
-JeffXie
