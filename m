@@ -2,184 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91671662988
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 16:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F45662990
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 16:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237170AbjAIPNI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 10:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55974 "EHLO
+        id S237089AbjAIPOG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 10:14:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237063AbjAIPMb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 10:12:31 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23733590E;
-        Mon,  9 Jan 2023 07:11:58 -0800 (PST)
-Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NrHNY30LLzqV45;
-        Mon,  9 Jan 2023 23:07:09 +0800 (CST)
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Mon, 9 Jan 2023 23:11:53 +0800
-Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
-To:     Jiri Olsa <olsajiri@gmail.com>
-CC:     Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, <bpf@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <live-patching@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        <linux-modules@vger.kernel.org>
-References: <20221230112729.351-1-thunder.leizhen@huawei.com>
- <20221230112729.351-3-thunder.leizhen@huawei.com> <Y7WoZARt37xGpjXD@alley>
- <Y7dBoII5kZnHGFdL@krava> <Y7ftxIiV35Wd75lZ@krava>
- <652e0eea-1ab2-a4fd-151a-e634bcb4e1da@huawei.com> <Y7wbNinAXM6O62ZF@krava>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <78754aee-7c06-cbc3-b68c-d723f09b7f77@huawei.com>
-Date:   Mon, 9 Jan 2023 23:11:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S237062AbjAIPNI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 10:13:08 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889E114024;
+        Mon,  9 Jan 2023 07:12:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 252366117E;
+        Mon,  9 Jan 2023 15:12:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56B76C4339E;
+        Mon,  9 Jan 2023 15:12:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673277138;
+        bh=daZxDGs86Bk5MzJICViW/vk55hlhK8dtOjzS01jPUdk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AeciNFTE67BGP9fkkAqtyDeygJS/MFRECSzsSBN2B93Jv4QgR2sVekPUYyjp6/6ty
+         Y32B5J+XlZb1gH7tErm7KYMrq5jZbXodSvGNrN9wGfRMOUKBRQwRbUTKF6kLORTpRR
+         Lbse5yYItfyjcYh/kvP4BwzNd+SesrxNdGfnGDTOKm2HFOeLJYhXAX2uY9nc/vQum6
+         kwrRJkxY9YfahipQzRaPqCaSoarFt30Q5nQIPwLQexSo5egaMP91iDSs6ZnR6FG1KH
+         JBjUeGCrRO2303DBWwJN+1Jj4Xy7hrFDbf5xFqA4EsXpIt1K5goZ3wsgC9bEhzcHeJ
+         FW/BPCXK5iKCQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C726C40468; Mon,  9 Jan 2023 12:12:15 -0300 (-03)
+Date:   Mon, 9 Jan 2023 12:12:15 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc:     Mike Leach <mike.leach@linaro.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org
+Subject: Re: [PATCH v3 1/2] perf build: Properly guard libbpf includes
+Message-ID: <Y7wuz6EOggZ8Wysb@kernel.org>
+References: <20230106151320.619514-1-irogers@google.com>
+ <CAJ9a7ViGE3UJX02oA42A9TSTKsOozPzdHjyL+OSP4J-9dZFqrg@mail.gmail.com>
+ <Y7hZccgOiueB31a+@kernel.org>
+ <Y7hgKMDGzQlankL1@kernel.org>
+ <Y7hgoVKBoulCbA4l@kernel.org>
+ <CAP-5=fXPPSHvN6VYc=8tzBz4xtKg4Ofa17zV4pAk0ycorXje8w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <Y7wbNinAXM6O62ZF@krava>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fXPPSHvN6VYc=8tzBz4xtKg4Ofa17zV4pAk0ycorXje8w@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Em Fri, Jan 06, 2023 at 11:06:46AM -0800, Ian Rogers escreveu:
+> So trying to get build-test working on my Debian derived distro is a
+> PITA with broken feature detection for options I don't normally use.
 
+Its really difficult to have perf building with so many dependent
+libraries, mowing out some should be in order.
 
-On 2023/1/9 21:48, Jiri Olsa wrote:
-> On Mon, Jan 09, 2023 at 04:51:37PM +0800, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2023/1/6 17:45, Jiri Olsa wrote:
->>> On Thu, Jan 05, 2023 at 10:31:12PM +0100, Jiri Olsa wrote:
->>>> On Wed, Jan 04, 2023 at 05:25:08PM +0100, Petr Mladek wrote:
->>>>> On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
->>>>>> Function __module_address() can quickly return the pointer of the module
->>>>>> to which an address belongs. We do not need to traverse the symbols of all
->>>>>> modules to check whether each address in addrs[] is the start address of
->>>>>> the corresponding symbol, because register_fprobe_ips() will do this check
->>>>>> later.
->>>>
->>>> hum, for some reason I can see only replies to this patch and
->>>> not the actual patch.. I'll dig it out of the lore I guess
->>>>
->>>>>>
->>>>>> Assuming that there are m modules, each module has n symbols on average,
->>>>>> and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
->>>>>> complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
->>>>>> and the time complexity of current method is O(K * (log(m) + M)), M <= m.
->>>>>> (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
->>>>>> the ratio is still greater than 1. Therefore, the new method will
->>>>>> generally have better performance.
->>>>
->>>> could you try to benchmark that? I tried something similar but was not
->>>> able to get better performance
->>>
->>> hm looks like I tried the smilar thing (below) like you did,
->>
->> Yes. I just found out you're working on this improvement, too.
->>
->>> but wasn't able to get better performace
->>
->> Your implementation below is already the limit that can be optimized.
->> If the performance is not improved, it indicates that this place is
->> not the bottleneck.
->>
->>>
->>> I guess your goal is to get rid of the module arg in
->>> module_kallsyms_on_each_symbol callback that we use?
->>
->> It's not a bad thing to keep argument 'mod' for function
->> module_kallsyms_on_each_symbol(), but for kallsyms_on_each_symbol(),
->> it's completely redundant. Now these two functions often use the
->> same hook function. So I carefully analyzed get_modules_for_addrs(),
->> which is the only place that involves the use of parameter 'mod'.
->> Looks like there's a possibility of eliminating parameter 'mod'.
->>
->>> I'm ok with the change if the performace is not worse
->>
->> OK, thanks.
->>
->>>
->>> jirka
->>>
->>>
->>> ---
->>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->>> index 5b9008bc597b..3280c22009f1 100644
->>> --- a/kernel/trace/bpf_trace.c
->>> +++ b/kernel/trace/bpf_trace.c
->>> @@ -2692,23 +2692,16 @@ struct module_addr_args {
->>>  	int mods_cap;
->>>  };
->>>  
->>> -static int module_callback(void *data, const char *name,
->>> -			   struct module *mod, unsigned long addr)
->>> +static int add_module(struct module_addr_args *args, struct module *mod)
->>>  {
->>> -	struct module_addr_args *args = data;
->>>  	struct module **mods;
->>>  
->>> -	/* We iterate all modules symbols and for each we:
->>> -	 * - search for it in provided addresses array
->>> -	 * - if found we check if we already have the module pointer stored
->>> -	 *   (we iterate modules sequentially, so we can check just the last
->>> -	 *   module pointer)
->>> +	/* We iterate sorted addresses and for each within module we:
->>> +	 * - check if we already have the module pointer stored for it
->>> +	 *   (we iterate sorted addresses sequentially, so we can check
->>> +	 *   just the last module pointer)
->>>  	 * - take module reference and store it
->>>  	 */
->>> -	if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
->>> -		       bpf_kprobe_multi_addrs_cmp))
->>> -		return 0;
->>> -
->>>  	if (args->mods && args->mods[args->mods_cnt - 1] == mod)
->>>  		return 0;
->>
->> There'll be problems Petr mentioned.
->>
->> https://lkml.org/lkml/2023/1/5/191
-> 
-> ok, makes sense.. I guess we could just search args->mods in here?
-> are you going to send new version, or should I update my patch with that?
+> I'll try to fix this.
 
-It's better for you to update! I'm not familiar with the bpf module.
+Thanks.
+ 
+> In any case I think I've spotted what is really happening here and it
+> isn't a failure but a feature :-D The build is specifying
 
-> 
-> thanks,
-> jirka
-> .
-> 
+I get it.
 
--- 
-Regards,
-  Zhen Lei
+> LIBBPF_DYNAMIC=1 which means you get the libbpf headers from
+> /usr/include. I think the build is trying to do this on a system with
+> an old libbpf and hence getting the failures above. Previously, even
+> though we wanted the dynamic headers we still had a -I, this time for
+> the install_headers version. Now you really are using the system
+> version and it is broken. This means a few things:
+> - the libbpf feature test should fail if code like above is going to fail,
+
+Agreed.
+
+> - we may want to contemplate supporting older libbpfs (I'd rather not),
+
+I'd rather require everybody to be up to the latest trends, but I really
+don't think that is a reasonable expectation.
+
+> - does build-test have a way to skip known issues like this?
+
+Unsure, Jiri?
+
+But yeah, previous experiences with Andrii were that we can do not too
+costly feature checks, not using .c programs that would fail if some
+required feature wasn't present but instead would just do some grep on a
+header and if some "smell" wasn't scent, just fail the cap query.
+
+- Arnaldo
