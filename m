@@ -2,71 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B38C1662725
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 14:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496F16627A5
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 14:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbjAINdm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 08:33:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
+        id S233975AbjAINs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 08:48:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237001AbjAINco (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 08:32:44 -0500
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79031EECC
-        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 05:32:42 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-4c15c4fc8ccso112701767b3.4
-        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 05:32:42 -0800 (PST)
+        with ESMTP id S237087AbjAINso (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 08:48:44 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD9E1EECC;
+        Mon,  9 Jan 2023 05:48:43 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id ay12-20020a05600c1e0c00b003d9ea12bafcso3658721wmb.3;
+        Mon, 09 Jan 2023 05:48:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=olTOKnPOgS/t+4/UoX5jAk49hINYRAGGMffFkFN4Zyg=;
-        b=G6gQ8d/IvBZu3F0phv08SuiPHxUXSuiMOKjDhEh+YdFq1I7L7atA0RoEn9jsuTi86k
-         ocwPkUn95iAasKCv1D4lBF77iihiuFsmx4pm/9MRsMjI18cuL6z/FaOats5iNfRPXIhZ
-         XoBEyeC75IT7vej4dKP2MrrP3LY7Eydc+13aEQz8E0tSyG+OL4Uo7xuLbLPjmWXlrV0r
-         oXaFLs9chOxbNDAeesqa64P2RMF22EVbyP03C5g4ZXllbJHFaAmO0nLcqaxLFqpM5K+4
-         7NeNPuu0HXLpJiTRO8qHXcDa66gmglJuDHggCBILSNIEYAClWSXuX16Rhvgq3HdxgBX3
-         kuDg==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sjM8hOV94cypu49wh5dstQmAlWS++C//GRjTU4M89js=;
+        b=kuF0jPfU1UAscJ/zjoV4o3aiOyJLdHX8uCTjK8Y3fTHphmKuozDbGagrYmLT3cRScU
+         UHfV4CZnHOHXDIqslfQNrQ24aVJBjA8OGcDD2Ga0FxfOAE1USvznKgqLGFyKgOnaEl1N
+         piLhdt3d46Gnc25HPCt8Nv//q5Pi64evsmTyjTl3hguDqAhrpYg7hLyLvS83tiPm3NgU
+         jiJXcFkxJ5jEZ9fnnRhoum2vQAOFIfKonm70FVb/lEm9GDpl3FPMwb/9E69tDxuR73DC
+         2nrhjNQc22VSchGsdm/gDvllkeUdGF8rY5QLjjCZsidONJ8KzmNIjGVhJpDkV7InQwR5
+         xahQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=olTOKnPOgS/t+4/UoX5jAk49hINYRAGGMffFkFN4Zyg=;
-        b=2Y6t7FmIyCLJTzU6GNgV2lgOvK3sChw9S3hI99OvlDFHTgyxJ2JS/X3KBrbsAfAAZb
-         JflpbLKYi6AxW71RQ2KIIYSmEgVZzJlZ6O9Nmk6wF8rJ0InP6pk9zXasTrNRKqnmUs3r
-         1tkpv61h+6nhBHTtQbjLQ0a6WwiSZtP5YUsCrwXcqUufa3QsW28Yk/wVKz78PnHqwuJ0
-         qGGxqcgSwyVeoTy/yTqkH8dIJaKXqP99yQkKCoc7anMyBfw2+D+AZ/q1+oSf0qFMDsoa
-         v6u2wcHWCugzdyZ2PiFOcDybsqSxJRupuaCPg/RHPYUMwUL3w2syTXyg5sid62ExAIul
-         n1vw==
-X-Gm-Message-State: AFqh2kqLgSjeN32OvjKe3nD1/kD6bvchwZZz4XgJFYwijWHOt8JXzbRT
-        sLGsqMX+8mUUQ3gYNBnlZIYOwaKVi1KelfnfXZBaxQ==
-X-Google-Smtp-Source: AMrXdXsLkT9+aDSKB/tl/3oeQXVB7Ro0cimypp97ea7ZYM3G78SCsOvtnytn6p78vuCkM3SRVQjtEPScBVde134tKGA=
-X-Received: by 2002:a05:690c:fd1:b0:4ac:cd7c:18d2 with SMTP id
- dg17-20020a05690c0fd100b004accd7c18d2mr2410681ywb.427.1673271162057; Mon, 09
- Jan 2023 05:32:42 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sjM8hOV94cypu49wh5dstQmAlWS++C//GRjTU4M89js=;
+        b=iDqGKmRQ8tIqMPb7sRewaxbf3KWuzy+Nl0+ofMy/iHNctPvPz7UAzSKTIXjBlL6KpY
+         S1fFVahqgrn0/gC72XXMA+AIy4sP4xySIgsFEUYweR8H9S49C9tbiTm4cbEmvOaEZ9sD
+         HsmzYtU+3GVXpm6r+Anac2+JcWpwVdN0ZzOj/Rwz45GCWuPFKW8nIkxqORnhf34O6Zk7
+         ltYkzUhiRx2d81+EAGviHeb+NxBIw68oCDHjdiz0mc8I6ZygAAZYnaN7n0POMxWgvhF1
+         llP6j9l34Z4B5xlu2TDFRt1U+Xk3GicJE0XuSvX0RRekL2AigiUgnF4e0nCvMnYJWvTH
+         7S0w==
+X-Gm-Message-State: AFqh2krkjbVrlDhwyOUO5QTc1t3IiVaepAOnLcfSmGYzSiCfOzCCcOnd
+        qpL6VCh3RK1m1d8zzyiLdZs=
+X-Google-Smtp-Source: AMrXdXt0DAoCSuzsNaAgux29pMWEu5IX5Y7NgvCBZaVgMQKZl1rKa1+RRfp3V+X3kTpEb2gF5gwWXg==
+X-Received: by 2002:a1c:4c12:0:b0:3c6:e63e:89a6 with SMTP id z18-20020a1c4c12000000b003c6e63e89a6mr46312893wmf.2.1673272121828;
+        Mon, 09 Jan 2023 05:48:41 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id o5-20020a05600c510500b003b4ff30e566sm25387847wms.3.2023.01.09.05.48.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jan 2023 05:48:40 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 9 Jan 2023 14:48:38 +0100
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        linux-modules@vger.kernel.org
+Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
+Message-ID: <Y7wbNinAXM6O62ZF@krava>
+References: <20221230112729.351-1-thunder.leizhen@huawei.com>
+ <20221230112729.351-3-thunder.leizhen@huawei.com>
+ <Y7WoZARt37xGpjXD@alley>
+ <Y7dBoII5kZnHGFdL@krava>
+ <Y7ftxIiV35Wd75lZ@krava>
+ <652e0eea-1ab2-a4fd-151a-e634bcb4e1da@huawei.com>
 MIME-Version: 1.0
-References: <cover.1672976410.git.william.xuanziyang@huawei.com>
- <7e9ca6837b20bea661248957dbbd1db198e3d1f8.1672976410.git.william.xuanziyang@huawei.com>
- <Y7h8yrOEkPuHkNpJ@google.com> <CA+FuTSdZ+za55p1kKOcGby89F_ybRhAfy2cG0R+Y00yaJTbVkg@mail.gmail.com>
- <4d0e5f2b-d088-58f4-d86d-00aa444d77c0@huawei.com>
-In-Reply-To: <4d0e5f2b-d088-58f4-d86d-00aa444d77c0@huawei.com>
-From:   Willem de Bruijn <willemb@google.com>
-Date:   Mon, 9 Jan 2023 08:32:05 -0500
-Message-ID: <CA+FuTSeE-S9_Uc6Cqs=EqYZd-K6kj=Ex4sudNx7u8HMLcrereQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add ipip6 and ip6ip decap support for bpf_skb_adjust_room()
-To:     "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, sdf@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <652e0eea-1ab2-a4fd-151a-e634bcb4e1da@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,221 +94,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 9, 2023 at 4:20 AM Ziyang Xuan (William)
-<william.xuanziyang@huawei.com> wrote:
->
-> > On Fri, Jan 6, 2023 at 2:55 PM <sdf@google.com> wrote:
+On Mon, Jan 09, 2023 at 04:51:37PM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2023/1/6 17:45, Jiri Olsa wrote:
+> > On Thu, Jan 05, 2023 at 10:31:12PM +0100, Jiri Olsa wrote:
+> >> On Wed, Jan 04, 2023 at 05:25:08PM +0100, Petr Mladek wrote:
+> >>> On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
+> >>>> Function __module_address() can quickly return the pointer of the module
+> >>>> to which an address belongs. We do not need to traverse the symbols of all
+> >>>> modules to check whether each address in addrs[] is the start address of
+> >>>> the corresponding symbol, because register_fprobe_ips() will do this check
+> >>>> later.
 > >>
-> >> On 01/06, Ziyang Xuan wrote:
-> >>> Add ipip6 and ip6ip decap support for bpf_skb_adjust_room().
-> >>> Main use case is for using cls_bpf on ingress hook to decapsulate
-> >>> IPv4 over IPv6 and IPv6 over IPv4 tunnel packets.
+> >> hum, for some reason I can see only replies to this patch and
+> >> not the actual patch.. I'll dig it out of the lore I guess
 > >>
-> >> CC'd Willem since he has done bpf_skb_adjust_room changes in the past.
-> >> There might be a lot of GRO/GSO context I'm missing.
+> >>>>
+> >>>> Assuming that there are m modules, each module has n symbols on average,
+> >>>> and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
+> >>>> complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
+> >>>> and the time complexity of current method is O(K * (log(m) + M)), M <= m.
+> >>>> (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
+> >>>> the ratio is still greater than 1. Therefore, the new method will
+> >>>> generally have better performance.
 > >>
-> >>> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-> >>> ---
-> >>>   net/core/filter.c | 34 ++++++++++++++++++++++++++++++++--
-> >>>   1 file changed, 32 insertions(+), 2 deletions(-)
-> >>
-> >>> diff --git a/net/core/filter.c b/net/core/filter.c
-> >>> index 929358677183..73982fb4fe2e 100644
-> >>> --- a/net/core/filter.c
-> >>> +++ b/net/core/filter.c
-> >>> @@ -3495,6 +3495,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb,
-> >>> u32 off, u32 len_diff,
-> >>>   static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
-> >>>                             u64 flags)
-> >>>   {
-> >>> +     union {
-> >>> +             struct iphdr *v4;
-> >>> +             struct ipv6hdr *v6;
-> >>> +             unsigned char *hdr;
-> >>> +     } ip;
-> >>> +     __be16 proto;
-> >>>       int ret;
-> >>
-> >>>       if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
-> >>> @@ -3512,10 +3518,19 @@ static int bpf_skb_net_shrink(struct sk_buff
-> >>> *skb, u32 off, u32 len_diff,
-> >>>       if (unlikely(ret < 0))
-> >>>               return ret;
-> >>
-> >>> +     ip.hdr = skb_inner_network_header(skb);
-> >>> +     if (ip.v4->version == 4)
-> >>> +             proto = htons(ETH_P_IP);
-> >>> +     else
-> >>> +             proto = htons(ETH_P_IPV6);
-> >>> +
-> >>>       ret = bpf_skb_net_hdr_pop(skb, off, len_diff);
-> >>>       if (unlikely(ret < 0))
-> >>>               return ret;
-> >>
-> >>> +     /* Match skb->protocol to new outer l3 protocol */
-> >>> +     skb->protocol = proto;
-> >>> +
-> >>>       if (skb_is_gso(skb)) {
-> >>>               struct skb_shared_info *shinfo = skb_shinfo(skb);
-> >>
-> >>> @@ -3578,10 +3593,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
-> >>> skb, s32, len_diff,
-> >>>          u32, mode, u64, flags)
-> >>>   {
-> >>>       u32 len_cur, len_diff_abs = abs(len_diff);
-> >>> -     u32 len_min = bpf_skb_net_base_len(skb);
-> >>> -     u32 len_max = BPF_SKB_MAX_LEN;
-> >>> +     u32 len_min, len_max = BPF_SKB_MAX_LEN;
-> >>>       __be16 proto = skb->protocol;
-> >>>       bool shrink = len_diff < 0;
-> >>> +     union {
-> >>> +             struct iphdr *v4;
-> >>> +             struct ipv6hdr *v6;
-> >>> +             unsigned char *hdr;
-> >>> +     } ip;
-> >>>       u32 off;
-> >>>       int ret;
-> >>
-> >>> @@ -3594,6 +3613,9 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
-> >>> skb, s32, len_diff,
-> >>>                    proto != htons(ETH_P_IPV6)))
-> >>>               return -ENOTSUPP;
-> >>
-> >>> +     if (unlikely(shrink && !skb->encapsulation))
-> >>> +             return -ENOTSUPP;
-> >>> +
-> >
-> > This new restriction might break existing users.
-> >
-> > There is no pre-existing requirement that shrink is used solely with
-> > packets encapsulated by the protocol stack.
-> >
-> > Indeed, skb->encapsulation is likely not set on packets arriving from
-> > the wire, even if encapsulated. Referring to your comment "Main use
-> > case is for using cls_bpf on ingress hook to decapsulate"
-> >
-> > Can a combination of the existing bpf_skb_adjust_room and
-> > bpf_skb_change_proto address your problem?
->
-> Hello Willem,
->
-> I think combination bpf_skb_adjust_room and bpf_skb_change_proto can not
-> address my problem.
->
-> Now, bpf_skb_adjust_room() would fail for "len_cur - len_diff_abs < len_min"
-> when decap ipip6 packet, because "len_min" should be sizeof(struct iphdr)
-> but not sizeof(struct ipv6hdr).
->
-> We can remove skb->encapsulation restriction and parse outer and inner IP
-> header to determine ipip6 and ip6ip packets. As following:
+> >> could you try to benchmark that? I tried something similar but was not
+> >> able to get better performance
+> > 
+> > hm looks like I tried the smilar thing (below) like you did,
+> 
+> Yes. I just found out you're working on this improvement, too.
+> 
+> > but wasn't able to get better performace
+> 
+> Your implementation below is already the limit that can be optimized.
+> If the performance is not improved, it indicates that this place is
+> not the bottleneck.
+> 
+> > 
+> > I guess your goal is to get rid of the module arg in
+> > module_kallsyms_on_each_symbol callback that we use?
+> 
+> It's not a bad thing to keep argument 'mod' for function
+> module_kallsyms_on_each_symbol(), but for kallsyms_on_each_symbol(),
+> it's completely redundant. Now these two functions often use the
+> same hook function. So I carefully analyzed get_modules_for_addrs(),
+> which is the only place that involves the use of parameter 'mod'.
+> Looks like there's a possibility of eliminating parameter 'mod'.
+> 
+> > I'm ok with the change if the performace is not worse
+> 
+> OK, thanks.
+> 
+> > 
+> > jirka
+> > 
+> > 
+> > ---
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 5b9008bc597b..3280c22009f1 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2692,23 +2692,16 @@ struct module_addr_args {
+> >  	int mods_cap;
+> >  };
+> >  
+> > -static int module_callback(void *data, const char *name,
+> > -			   struct module *mod, unsigned long addr)
+> > +static int add_module(struct module_addr_args *args, struct module *mod)
+> >  {
+> > -	struct module_addr_args *args = data;
+> >  	struct module **mods;
+> >  
+> > -	/* We iterate all modules symbols and for each we:
+> > -	 * - search for it in provided addresses array
+> > -	 * - if found we check if we already have the module pointer stored
+> > -	 *   (we iterate modules sequentially, so we can check just the last
+> > -	 *   module pointer)
+> > +	/* We iterate sorted addresses and for each within module we:
+> > +	 * - check if we already have the module pointer stored for it
+> > +	 *   (we iterate sorted addresses sequentially, so we can check
+> > +	 *   just the last module pointer)
+> >  	 * - take module reference and store it
+> >  	 */
+> > -	if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
+> > -		       bpf_kprobe_multi_addrs_cmp))
+> > -		return 0;
+> > -
+> >  	if (args->mods && args->mods[args->mods_cnt - 1] == mod)
+> >  		return 0;
+> 
+> There'll be problems Petr mentioned.
+> 
+> https://lkml.org/lkml/2023/1/5/191
 
-Adding logic for network layer protocol conversion like this looks
-good to me. bpf_skb_adjust_room already has a few other metadata
-quirks.
+ok, makes sense.. I guess we could just search args->mods in here?
+are you going to send new version, or should I update my patch with that?
 
-But like those, let's make this intent explicit: define a new flag
-that requests this behavior.
-
-Let's avoid introducing a new union. Just use check (ip_hdr(skb)->version == 4).
-
->
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3498,6 +3498,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
->  static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
->                               u64 flags)
->  {
-> +       union {
-> +               struct iphdr *v4;
-> +               struct ipv6hdr *v6;
-> +               unsigned char *hdr;
-> +       } ip;
-> +       __be16 proto;
->         int ret;
->
->         if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
-> @@ -3515,10 +3521,23 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
->         if (unlikely(ret < 0))
->                 return ret;
->
-> +       ip.hdr = skb_network_header(skb);
-> +       if (ip.v4->version == 4) {
-> +               if (ip.v4->protocol == IPPROTO_IPV6)
-> +                       proto = htons(ETH_P_IPV6);
-> +       } else {
-> +               struct ipv6_opt_hdr *opt_hdr = (struct ipv6_opt_hdr *)(skb_network_header(skb) + sizeof(struct ipv6hdr));
-> +               if (ip.v6->nexthdr == NEXTHDR_DEST && opt_hdr->nexthdr == NEXTHDR_IPV4)
-> +                       proto = htons(ETH_P_IP);
-> +       }
-> +
->         ret = bpf_skb_net_hdr_pop(skb, off, len_diff);
->         if (unlikely(ret < 0))
->                 return ret;
->
-> +       /* Match skb->protocol to new outer l3 protocol */
-> +       skb->protocol = proto;
-> +
->         if (skb_is_gso(skb)) {
->                 struct skb_shared_info *shinfo = skb_shinfo(skb);
->
-> @@ -3585,6 +3604,11 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
->         u32 len_max = BPF_SKB_MAX_LEN;
->         __be16 proto = skb->protocol;
->         bool shrink = len_diff < 0;
-> +       union {
-> +               struct iphdr *v4;
-> +               struct ipv6hdr *v6;
-> +               unsigned char *hdr;
-> +       } ip;
->         u32 off;
->         int ret;
->
-> @@ -3608,6 +3632,19 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
->                 return -ENOTSUPP;
->         }
->
-> +       if (shrink) {
-> +               ip.hdr = skb_network_header(skb);
-> +               if (ip.v4->version == 4) {
-> +                       if (ip.v4->protocol == IPPROTO_IPV6)
-> +                               len_min = sizeof(struct ipv6hdr);
-> +               } else {
-> +                       struct ipv6_opt_hdr *opt_hdr = (struct ipv6_opt_hdr *)(skb_network_header(skb) + sizeof(struct ipv6hdr));
-> +                       if (ip.v6->nexthdr == NEXTHDR_DEST && opt_hdr->nexthdr == NEXTHDR_IPV4) {
-> +                               len_min = sizeof(struct iphdr);
-> +                       }
-> +               }
-> +       }
-> +
->         len_cur = skb->len - skb_network_offset(skb);
->
->
-> Look forward to your comments and suggestions.
->
-> Thank you!
->
-> >
-> >>>       off = skb_mac_header_len(skb);
-> >>>       switch (mode) {
-> >>>       case BPF_ADJ_ROOM_NET:
-> >>> @@ -3605,6 +3627,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
-> >>> skb, s32, len_diff,
-> >>>               return -ENOTSUPP;
-> >>>       }
-> >>
-> >>> +     if (shrink) {
-> >>> +             ip.hdr = skb_inner_network_header(skb);
-> >>> +             if (ip.v4->version == 4)
-> >>> +                     len_min = sizeof(struct iphdr);
-> >>> +             else
-> >>> +                     len_min = sizeof(struct ipv6hdr);
-> >>> +     }
-> >>> +
-> >>>       len_cur = skb->len - skb_network_offset(skb);
-> >>>       if ((shrink && (len_diff_abs >= len_cur ||
-> >>>                       len_cur - len_diff_abs < len_min)) ||
-> >>> --
-> >>> 2.25.1
-> >>
-> > .
-> >
+thanks,
+jirka
