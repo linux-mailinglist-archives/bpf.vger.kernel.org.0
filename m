@@ -2,38 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE068661E96
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 07:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDEE661EEF
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 08:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbjAIGLA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 9 Jan 2023 01:11:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39648 "EHLO
+        id S234167AbjAIHDh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 02:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjAIGK6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 01:10:58 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.221.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD02EEA5
-        for <bpf@vger.kernel.org>; Sun,  8 Jan 2023 22:10:51 -0800 (PST)
-X-QQ-mid: bizesmtp73t1673244629tkg3klec
-Received: from smtpclient.apple ( [1.202.165.115])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 09 Jan 2023 14:10:26 +0800 (CST)
-X-QQ-SSF: 01000000000000509000000A0000000
-X-QQ-FEAT: SX+E1PC0a4BzDGPdy1egCKAM6tCJ05Fm7wzPtB4vdDDLzqdI1HN7abD7qrRk2
-        CocJ/HzIXjv1LPMmTFDP0vusPV1KBf+betfMUVAvMwPXyJXZjrmdbHUDEy6bRb9tSnLmEVB
-        ZId9moz2ZKxUmLKE7yOcHJ8G6mNoNx9t98eMhhun/so0CenO5qDebwcrebqTBU6vaTXpZFr
-        5PQ1N8cNrC39yUgOvzkEKxaokf7Qw/zhsEhDD99eJCW2QpfgqY0y6QK3/G6w+aYqG/T5H/S
-        c3CPlkM66AOyOQFwHp/3VOWQ9+lz99/3jAcUBJ0GRKI73drQWng+G3BvvJkwV5J97aqjCOP
-        VkGse83UEP0j21t+YQPAtK8qak6gVHM/tTqzow5
-X-QQ-GoodBg: 0
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [bpf-next v1] bpf: hash map, suppress lockdep warning
-From:   Tonghao Zhang <tong@infragraf.org>
-In-Reply-To: <a13aed2a-9033-5176-64ce-4e3429bba6f4@huawei.com>
-Date:   Mon, 9 Jan 2023 14:10:25 +0800
-Cc:     Xu Kuohai <xukuohai@huawei.com>, bpf@vger.kernel.org,
+        with ESMTP id S233080AbjAIHDg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 02:03:36 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2AD6361;
+        Sun,  8 Jan 2023 23:03:34 -0800 (PST)
+Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Nr4cd5Ly4zRr3d;
+        Mon,  9 Jan 2023 15:01:53 +0800 (CST)
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Mon, 9 Jan 2023 15:03:31 +0800
+Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
+To:     Jiri Olsa <olsajiri@gmail.com>
+CC:     Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -42,18 +36,34 @@ Cc:     Xu Kuohai <xukuohai@huawei.com>, bpf@vger.kernel.org,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <E9EDA733-793B-4B39-AA82-34D3CB419E01@infragraf.org>
-References: <20230105112749.38421-1-tong@infragraf.org>
- <6004bbc1-54a8-0141-04af-0a5fba82e6ee@huawei.com>
- <a13aed2a-9033-5176-64ce-4e3429bba6f4@huawei.com>
-To:     Hou Tao <houtao1@huawei.com>, Xu Kuohai <xukuohai@huawei.com>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, <bpf@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>,
+        <live-patching@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        <linux-modules@vger.kernel.org>
+References: <20221230112729.351-1-thunder.leizhen@huawei.com>
+ <20221230112729.351-3-thunder.leizhen@huawei.com> <Y7WoZARt37xGpjXD@alley>
+ <Y7dBoII5kZnHGFdL@krava>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <15c72493-90d9-9e8a-e354-0a1b043b75dd@huawei.com>
+Date:   Mon, 9 Jan 2023 15:03:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <Y7dBoII5kZnHGFdL@krava>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -62,186 +72,219 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-> On Jan 6, 2023, at 12:19 PM, Hou Tao <houtao1@huawei.com> wrote:
+On 2023/1/6 5:31, Jiri Olsa wrote:
+> On Wed, Jan 04, 2023 at 05:25:08PM +0100, Petr Mladek wrote:
+>> On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
+>>> Function __module_address() can quickly return the pointer of the module
+>>> to which an address belongs. We do not need to traverse the symbols of all
+>>> modules to check whether each address in addrs[] is the start address of
+>>> the corresponding symbol, because register_fprobe_ips() will do this check
+>>> later.
 > 
-> Hi,
-> 
-> On 1/6/2023 10:13 AM, Xu Kuohai wrote:
->> On 1/5/2023 7:27 PM, tong@infragraf.org wrote:
->>> From: Tonghao Zhang <tong@infragraf.org>
->>> 
->>> The lock may be taken in both NMI and non-NMI contexts.
->>> There is a lockdep warning (inconsistent lock state), if
->>> enable lockdep. For performance, this patch doesn't use trylock,
->>> and disable lockdep temporarily.
->>> 
->>> [   82.474075] ================================
->>> [   82.474076] WARNING: inconsistent lock state
->>> [   82.474090] 6.1.0+ #48 Tainted: G            E
->>> [   82.474093] --------------------------------
->>> [   82.474100] inconsistent {INITIAL USE} -> {IN-NMI} usage.
->>> [   82.474101] kprobe-load/1740 [HC1[1]:SC0[0]:HE0:SE1] takes:
->>> [   82.474105] ffff88860a5cf7b0 (&htab->lockdep_key){....}-{2:2}, at:
->>> htab_lock_bucket+0x61/0x6c
->>> [   82.474120] {INITIAL USE} state was registered at:
->>> [   82.474122]   mark_usage+0x1d/0x11d
->>> [   82.474130]   __lock_acquire+0x3c9/0x6ed
->>> [   82.474131]   lock_acquire+0x23d/0x29a
->>> [   82.474135]   _raw_spin_lock_irqsave+0x43/0x7f
->>> [   82.474148]   htab_lock_bucket+0x61/0x6c
->>> [   82.474151]   htab_map_update_elem+0x11e/0x220
->>> [   82.474155]   bpf_map_update_value+0x267/0x28e
->>> [   82.474160]   map_update_elem+0x13e/0x17d
->>> [   82.474164]   __sys_bpf+0x2ae/0xb2e
->>> [   82.474167]   __do_sys_bpf+0xd/0x15
->>> [   82.474171]   do_syscall_64+0x6d/0x84
->>> [   82.474174]   entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>> [   82.474178] irq event stamp: 1496498
->>> [   82.474180] hardirqs last  enabled at (1496497): [<ffffffff817eb9d9>]
->>> syscall_enter_from_user_mode+0x63/0x8d
->>> [   82.474184] hardirqs last disabled at (1496498): [<ffffffff817ea6b6>]
->>> exc_nmi+0x87/0x109
->>> [   82.474187] softirqs last  enabled at (1446698): [<ffffffff81a00347>]
->>> __do_softirq+0x347/0x387
->>> [   82.474191] softirqs last disabled at (1446693): [<ffffffff810b9b06>]
->>> __irq_exit_rcu+0x67/0xc6
->>> [   82.474195]
->>> [   82.474195] other info that might help us debug this:
->>> [   82.474196]  Possible unsafe locking scenario:
->>> [   82.474196]
->>> [   82.474197]        CPU0
->>> [   82.474198]        ----
->>> [   82.474198]   lock(&htab->lockdep_key);
->>> [   82.474200]   <Interrupt>
->>> [   82.474200]     lock(&htab->lockdep_key);
->>> [   82.474201]
->>> [   82.474201]  *** DEADLOCK ***
->>> [   82.474201]
->>> [   82.474202] no locks held by kprobe-load/1740.
->>> [   82.474203]
->>> [   82.474203] stack backtrace:
->>> [   82.474205] CPU: 14 PID: 1740 Comm: kprobe-load Tainted: G           
->>> E      6.1.0+ #48
->>> [   82.474208] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
->>> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
->>> [   82.474213] Call Trace:
->>> [   82.474218]  <NMI>
->>> [   82.474224]  dump_stack_lvl+0x57/0x81
->>> [   82.474228]  lock_acquire+0x1f4/0x29a
->>> [   82.474233]  ? htab_lock_bucket+0x61/0x6c
->>> [   82.474237]  ? rcu_read_lock_held_common+0xe/0x38
->>> [   82.474245]  _raw_spin_lock_irqsave+0x43/0x7f
->>> [   82.474249]  ? htab_lock_bucket+0x61/0x6c
->>> [   82.474253]  htab_lock_bucket+0x61/0x6c
->>> [   82.474257]  htab_map_update_elem+0x11e/0x220
->>> [   82.474264]  bpf_prog_df326439468c24a9_bpf_prog1+0x41/0x45
->>> [   82.474276]  bpf_trampoline_6442457183_0+0x43/0x1000
->>> [   82.474283]  nmi_handle+0x5/0x254
->>> [   82.474289]  default_do_nmi+0x3d/0xf6
->>> [   82.474293]  exc_nmi+0xa1/0x109
->>> [   82.474297]  end_repeat_nmi+0x16/0x67
->>> [   82.474300] RIP: 0010:cpu_online+0xa/0x12
->>> [   82.474308] Code: 08 00 00 00 39 c6 0f 43 c6 83 c0 07 83 e0 f8 c3 cc cc cc
->>> cc 0f 1f 44 00 00 31 c0 c3 cc cc cc cc 89 ff 48 0f a3 3d 5f 52 75 01 <0f> 92
->>> c0 c3 cc cc cc cc 55 48 89 e5 41 57 49 89 f7 41 56 49 896
->>> [   82.474310] RSP: 0018:ffffc9000131bd38 EFLAGS: 00000283
->>> [   82.474313] RAX: ffff88860b85fe78 RBX: 0000000000102cc0 RCX: 0000000000000008
->>> [   82.474315] RDX: 0000000000000004 RSI: ffff88860b85fe78 RDI: 000000000000000e
->>> [   82.474316] RBP: 00000000ffffffff R08: 0000000000102cc0 R09: 00000000ffffffff
->>> [   82.474318] R10: 0000000000000001 R11: 0000000000000000 R12: ffff888100042200
->>> [   82.474320] R13: 0000000000000004 R14: ffffffff81271dc2 R15: ffff88860b85fe78
->>> [   82.474322]  ? kvmalloc_node+0x44/0xd2
->>> [   82.474333]  ? cpu_online+0xa/0x12
->>> [   82.474338]  ? cpu_online+0xa/0x12
->>> [   82.474342]  </NMI>
->>> [   82.474343]  <TASK>
->>> [   82.474343]  trace_kmalloc+0x7c/0xe6
->>> [   82.474347]  ? kvmalloc_node+0x44/0xd2
->>> [   82.474350]  __kmalloc_node+0x9a/0xaf
->>> [   82.474354]  kvmalloc_node+0x44/0xd2
->>> [   82.474359]  kvmemdup_bpfptr+0x29/0x66
->>> [   82.474363]  map_update_elem+0x119/0x17d
->>> [   82.474370]  __sys_bpf+0x2ae/0xb2e
->>> [   82.474380]  __do_sys_bpf+0xd/0x15
->>> [   82.474384]  do_syscall_64+0x6d/0x84
->>> [   82.474387]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>> [   82.474391] RIP: 0033:0x7fe75d4f752d
->>> [   82.474394] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89
->>> f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
->>> 01 f0 ff ff 73 01 c3 48 8b 0d 2b 79 2c 00 f7 d8 64 89 018
->>> [   82.474396] RSP: 002b:00007ffe95d1cd78 EFLAGS: 00000246 ORIG_RAX:
->>> 0000000000000141
->>> [   82.474398] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe75d4f752d
->>> [   82.474400] RDX: 0000000000000078 RSI: 00007ffe95d1cd80 RDI: 0000000000000002
->>> [   82.474401] RBP: 00007ffe95d1ce30 R08: 0000000000000000 R09: 0000000000000004
->>> [   82.474403] R10: 00007ffe95d1cd80 R11: 0000000000000246 R12: 00000000004007f0
->>> [   82.474405] R13: 00007ffe95d1cf10 R14: 0000000000000000 R15: 0000000000000000
->>> [   82.474412]  </TASK>
->>> 
->>> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
->>> Cc: Alexei Starovoitov <ast@kernel.org>
->>> Cc: Daniel Borkmann <daniel@iogearbox.net>
->>> Cc: Andrii Nakryiko <andrii@kernel.org>
->>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
->>> Cc: Song Liu <song@kernel.org>
->>> Cc: Yonghong Song <yhs@fb.com>
->>> Cc: John Fastabend <john.fastabend@gmail.com>
->>> Cc: KP Singh <kpsingh@kernel.org>
->>> Cc: Stanislav Fomichev <sdf@google.com>
->>> Cc: Hao Luo <haoluo@google.com>
->>> Cc: Jiri Olsa <jolsa@kernel.org>
->>> Cc: Hou Tao <houtao1@huawei.com>
->>> ---
->>> previous discussion:
->>> https://lore.kernel.org/all/20221121100521.56601-2-xiangxia.m.yue@gmail.com/
->>> ---
->>>   kernel/bpf/hashtab.c | 16 ++++++++++++++++
->>>   1 file changed, 16 insertions(+)
->>> 
->>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
->>> index 974f104f47a0..146433c9bd1a 100644
->>> --- a/kernel/bpf/hashtab.c
->>> +++ b/kernel/bpf/hashtab.c
->>> @@ -161,6 +161,19 @@ static inline int htab_lock_bucket(const struct bpf_htab
->>> *htab,
->>>           return -EBUSY;
->>>       }
->>>   +    /*
->>> +     * The lock may be taken in both NMI and non-NMI contexts.
->>> +     * There is a lockdep warning (inconsistent lock state), if
->>> +     * enable lockdep. The potential deadlock happens when the
->>> +     * lock is contended from the same cpu. map_locked rejects
->>> +     * concurrent access to the same bucket from the same CPU.
->>> +     * When the lock is contended from a remote cpu, we would
->>> +     * like the remote cpu to spin and wait, instead of giving
->>> +     * up immediately. As this gives better throughput. So replacing
->>> +     * the current raw_spin_lock_irqsave() with trylock sacrifices
->>> +     * this performance gain. lockdep_off temporarily.
->>> +     */
->>> +    lockdep_off();
->> 
->> seems it's better to define map_locked as a raw spin lock and use
->> trylock(map_locked[hash])
->> to check if this cpu has locked the bucket.
-> Redefining map_locked as per-cpu raw spinlock array seems a good idea, so we
-Yes, one question, do this drop performance compared with atomic.
-> don't need to call lock_acquire() and lock_release() manually. But lockdep_off()
-> is still needed here, else there will always be lockdep warning.
->> 
->>>       raw_spin_lock_irqsave(&b->raw_lock, flags);
->>>       *pflags = flags;
->>>   @@ -172,7 +185,10 @@ static inline void htab_unlock_bucket(const struct
->>> bpf_htab *htab,
->>>                         unsigned long flags)
->>>   {
->>>       hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets -1);
->>> +
->>>       raw_spin_unlock_irqrestore(&b->raw_lock, flags);
->>> +    lockdep_on();
->>> +
->>>       __this_cpu_dec(*(htab->map_locked[hash]));
->>>       preempt_enable();
->>>   }
->> 
->> .
+> hum, for some reason I can see only replies to this patch and
+> not the actual patch.. I'll dig it out of the lore I guess
 
+https://lkml.org/lkml/2022/12/30/195
+
+> 
+>>>
+>>> Assuming that there are m modules, each module has n symbols on average,
+>>> and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
+>>> complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
+>>> and the time complexity of current method is O(K * (log(m) + M)), M <= m.
+>>> (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
+>>> the ratio is still greater than 1. Therefore, the new method will
+>>> generally have better performance.
+> 
+> could you try to benchmark that? I tried something similar but was not
+> able to get better performance
+
+I'm just theoretically analyzing, at least the performance won't get worse.
+
+> 
+> I'll review and run my benchmark test tomorrow
+> 
+> thanks,
+> jirka
+> 
+>>>
+>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>> ---
+>>>  kernel/trace/bpf_trace.c | 101 ++++++++++++++++-----------------------
+>>>  1 file changed, 40 insertions(+), 61 deletions(-)
+>>>
+>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>>> index 5f3be4bc16403a5..0ff9037098bd241 100644
+>>> --- a/kernel/trace/bpf_trace.c
+>>> +++ b/kernel/trace/bpf_trace.c
+>>> @@ -2684,69 +2684,55 @@ static void symbols_swap_r(void *a, void *b, int size, const void *priv)
+>>>  	}
+>>>  }
+>>>  
+>>> -struct module_addr_args {
+>>> -	unsigned long *addrs;
+>>> -	u32 addrs_cnt;
+>>> -	struct module **mods;
+>>> -	int mods_cnt;
+>>> -	int mods_cap;
+>>> -};
+>>> -
+>>> -static int module_callback(void *data, const char *name,
+>>> -			   struct module *mod, unsigned long addr)
+>>> +static int get_modules_for_addrs(struct module ***out_mods, unsigned long *addrs, u32 addrs_cnt)
+>>>  {
+>>> -	struct module_addr_args *args = data;
+>>> -	struct module **mods;
+>>> -
+>>> -	/* We iterate all modules symbols and for each we:
+>>> -	 * - search for it in provided addresses array
+>>> -	 * - if found we check if we already have the module pointer stored
+>>> -	 *   (we iterate modules sequentially, so we can check just the last
+>>> -	 *   module pointer)
+>>> -	 * - take module reference and store it
+>>> -	 */
+>>> -	if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
+>>> -		       bpf_kprobe_multi_addrs_cmp))
+>>> -		return 0;
+>>> +	int i, j, err;
+>>> +	int mods_cnt = 0;
+>>> +	int mods_cap = 0;
+>>> +	struct module *mod;
+>>> +	struct module **mods = NULL;
+>>>  
+>>> -	if (args->mods && args->mods[args->mods_cnt - 1] == mod)
+>>> -		return 0;
+>>> +	for (i = 0; i < addrs_cnt; i++) {
+>>> +		mod = __module_address(addrs[i]);
+>>
+>> This must be called under module_mutex to make sure that the module
+>> would not disappear.
+>>
+>>> +		if (!mod)
+>>> +			continue;
+>>>  
+>>> -	if (args->mods_cnt == args->mods_cap) {
+>>> -		args->mods_cap = max(16, args->mods_cap * 3 / 2);
+>>> -		mods = krealloc_array(args->mods, args->mods_cap, sizeof(*mods), GFP_KERNEL);
+>>> -		if (!mods)
+>>> -			return -ENOMEM;
+>>> -		args->mods = mods;
+>>> -	}
+>>> +		/* check if we already have the module pointer stored */
+>>> +		for (j = 0; j < mods_cnt; j++) {
+>>> +			if (mods[j] == mod)
+>>> +				break;
+>>> +		}
+>>
+>> This might get optimized like the original code.
+>>
+>> My understanding is that the addresses are sorted in "addrs" array.
+>> So, the address is either part of the last found module or it belongs
+>> to a completely new module.
+>>
+>> 	for (i = 0; i < addrs_cnt; i++) {
+>> 		/*
+>> 		 * The adresses are sorted. The adress either belongs
+>> 		 * to the last found module or a new one.
+>> 		 *
+>> 		 * This is safe because we already have reference
+>> 		 * on the found modules.
+>> 		 */
+>> 		 if (mods_cnt && within_module(addrs[i], mods[mods_cnt - 1]))
+>> 			continue;
+>>
+>> 		mutex_lock(&module_mutex);
+>> 		mod = __module_address(addrs[i]);
+>> 		if (mod && !try_module_get(mod)) {
+>> 			mutex_unlock(&module_mutex);
+>> 			goto failed;
+>> 		}
+>> 		mutex_unlock(&module_mutex);
+>>
+>> 		/*
+>> 		 * Nope when the address was not from a module.
+>> 		 *
+>> 		 * Is this correct? What if the module has gone in
+>> 		 * the meantime? Anyway, the original code
+>> 		 * worked this way.
+>> 		 *
+>> 		 * FIXME: I would personally make sure that it is part
+>> 		 * of vmlinux or so.
+>> 		 */
+>> 		if (!mod)
+>> 			continue;
+>>
+>> 		/* store the module into mods array */
+>> 		...
+>>
+>>
+>>
+>>
+>>> +		if (j < mods_cnt)
+>>> +			continue;
+>>>  
+>>> -	if (!try_module_get(mod))
+>>> -		return -EINVAL;
+>>> +		if (mods_cnt == mods_cap) {
+>>> +			struct module **new_mods;
+>>>  
+>>> -	args->mods[args->mods_cnt] = mod;
+>>> -	args->mods_cnt++;
+>>> -	return 0;
+>>> -}
+>>> +			mods_cap = max(16, mods_cap * 3 / 2);
+>>> +			new_mods = krealloc_array(mods, mods_cap, sizeof(*mods), GFP_KERNEL);
+>>> +			if (!new_mods) {
+>>> +				err = -ENOMEM;
+>>> +				goto failed;
+>>> +			}
+>>> +			mods = new_mods;
+>>> +		}
+>>>  
+>>> -static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u32 addrs_cnt)
+>>> -{
+>>> -	struct module_addr_args args = {
+>>> -		.addrs     = addrs,
+>>> -		.addrs_cnt = addrs_cnt,
+>>> -	};
+>>> -	int err;
+>>> +		if (!try_module_get(mod)) {
+>>> +			err = -EINVAL;
+>>> +			goto failed;
+>>> +		}
+>>>  
+>>> -	/* We return either err < 0 in case of error, ... */
+>>> -	err = module_kallsyms_on_each_symbol(NULL, module_callback, &args);
+>>> -	if (err) {
+>>> -		kprobe_multi_put_modules(args.mods, args.mods_cnt);
+>>> -		kfree(args.mods);
+>>> -		return err;
+>>> +		mods[mods_cnt] = mod;
+>>> +		mods_cnt++;
+>>>  	}
+>>>  
+>>> -	/* or number of modules found if everything is ok. */
+>>> -	*mods = args.mods;
+>>> -	return args.mods_cnt;
+>>> +	*out_mods = mods;
+>>> +	return mods_cnt;
+>>> +
+>>> +failed:
+>>> +	kprobe_multi_put_modules(mods, mods_cnt);
+>>> +	kfree(mods);
+>>> +	return err;
+>>>  }
+>>>  
+>>>  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>>
+>> Otherwise, it looks good. IMHO, the new code looks more straightforward
+>> than the original one.
+>>
+>> Best Regards,
+>> Petr
+> .
+> 
+
+-- 
+Regards,
+  Zhen Lei
