@@ -2,48 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6DD661C6C
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 03:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C18661D1F
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 05:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233818AbjAICsQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 8 Jan 2023 21:48:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        id S234208AbjAIECU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Jan 2023 23:02:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233962AbjAICsQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 Jan 2023 21:48:16 -0500
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3159DBC8E;
-        Sun,  8 Jan 2023 18:48:13 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VZ5fU.D_1673232488;
-Received: from 30.221.147.179(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VZ5fU.D_1673232488)
-          by smtp.aliyun-inc.com;
-          Mon, 09 Jan 2023 10:48:10 +0800
-Message-ID: <8ae89098-594f-b28b-4040-b0625b816e14@linux.alibaba.com>
-Date:   Mon, 9 Jan 2023 10:48:05 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0)
- Gecko/20100101 Thunderbird/108.0
-Subject: Re: [PATCH v3 2/9] virtio-net: set up xdp for multi buffer packets
-From:   Heng Qi <hengqi@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S236253AbjAIECT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Jan 2023 23:02:19 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD42CE1C;
+        Sun,  8 Jan 2023 20:02:17 -0800 (PST)
+Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Nr0bv1fszzJrLy;
+        Mon,  9 Jan 2023 12:00:59 +0800 (CST)
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Mon, 9 Jan 2023 12:02:14 +0800
+Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
+To:     Petr Mladek <pmladek@suse.com>, Song Liu <song@kernel.org>
+CC:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-References: <20230103064012.108029-1-hengqi@linux.alibaba.com>
- <20230103064012.108029-3-hengqi@linux.alibaba.com>
-In-Reply-To: <20230103064012.108029-3-hengqi@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, <bpf@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>,
+        <live-patching@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        <linux-modules@vger.kernel.org>
+References: <20221230112729.351-1-thunder.leizhen@huawei.com>
+ <20221230112729.351-3-thunder.leizhen@huawei.com> <Y7WoZARt37xGpjXD@alley>
+ <CAPhsuW6sZ9yQvZvKLd0g9m4FoabmUzwn-txX6T_A-_VYgJoXFg@mail.gmail.com>
+ <Y7aSyb0n4B2aCRZH@alley>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <4447b3b1-8023-3100-da6b-1f399e50005f@huawei.com>
+Date:   Mon, 9 Jan 2023 12:02:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <Y7aSyb0n4B2aCRZH@alley>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,49 +72,100 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-在 2023/1/3 下午2:40, Heng Qi 写道:
-> When the xdp program sets xdp.frags, which means it can process
-> multi-buffer packets over larger MTU, so we continue to support xdp.
-> But for single-buffer xdp, we should keep checking for MTU.
->
-> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
-> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->   drivers/net/virtio_net.c | 10 ++++++----
->   1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 443aa7b8f0ad..60e199811212 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -3074,7 +3074,9 @@ static int virtnet_restore_guest_offloads(struct virtnet_info *vi)
->   static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->   			   struct netlink_ext_ack *extack)
->   {
-> -	unsigned long int max_sz = PAGE_SIZE - sizeof(struct padded_vnet_hdr);
-> +	unsigned int room = SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM +
-> +					   sizeof(struct skb_shared_info));
-> +	unsigned int max_sz = PAGE_SIZE - room - ETH_HLEN;
+On 2023/1/5 17:05, Petr Mladek wrote:
+> On Wed 2023-01-04 09:07:02, Song Liu wrote:
+>> On Wed, Jan 4, 2023 at 8:25 AM Petr Mladek <pmladek@suse.com> wrote:
+>>>
+>>> On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
+>>>> Function __module_address() can quickly return the pointer of the module
+>>>> to which an address belongs. We do not need to traverse the symbols of all
+>>>> modules to check whether each address in addrs[] is the start address of
+>>>> the corresponding symbol, because register_fprobe_ips() will do this check
+>>>> later.
+>>>>
+>>>> Assuming that there are m modules, each module has n symbols on average,
+>>>> and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
+>>>> complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
+>>>> and the time complexity of current method is O(K * (log(m) + M)), M <= m.
+>>>> (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
+>>>> the ratio is still greater than 1. Therefore, the new method will
+>>>> generally have better performance.
+>>>>
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>> ---
+>>>>  kernel/trace/bpf_trace.c | 101 ++++++++++++++++-----------------------
+>>>>  1 file changed, 40 insertions(+), 61 deletions(-)
+>>>>
+>>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>>>> index 5f3be4bc16403a5..0ff9037098bd241 100644
+>>>> --- a/kernel/trace/bpf_trace.c
+>>>> +++ b/kernel/trace/bpf_trace.c
+>>>> @@ -2684,69 +2684,55 @@ static void symbols_swap_r(void *a, void *b, int size, const void *priv)
+>>>>       }
+>>>>  }
+>>>>
+>>>> -struct module_addr_args {
+>>>> -     unsigned long *addrs;
+>>>> -     u32 addrs_cnt;
+>>>> -     struct module **mods;
+>>>> -     int mods_cnt;
+>>>> -     int mods_cap;
+>>>> -};
+>>>> -
+>>>> -static int module_callback(void *data, const char *name,
+>>>> -                        struct module *mod, unsigned long addr)
+>>>> +static int get_modules_for_addrs(struct module ***out_mods, unsigned long *addrs, u32 addrs_cnt)
+>>>>  {
+>>>> -     struct module_addr_args *args = data;
+>>>> -     struct module **mods;
+>>>> -
+>>>> -     /* We iterate all modules symbols and for each we:
+>>>> -      * - search for it in provided addresses array
+>>>> -      * - if found we check if we already have the module pointer stored
+>>>> -      *   (we iterate modules sequentially, so we can check just the last
+>>>> -      *   module pointer)
+>>>> -      * - take module reference and store it
+>>>> -      */
+>>>> -     if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
+>>>> -                    bpf_kprobe_multi_addrs_cmp))
+>>>> -             return 0;
+>>>> +     int i, j, err;
+>>>> +     int mods_cnt = 0;
+>>>> +     int mods_cap = 0;
+>>>> +     struct module *mod;
+>>>> +     struct module **mods = NULL;
+>>>>
+>>>> -     if (args->mods && args->mods[args->mods_cnt - 1] == mod)
+>>>> -             return 0;
+>>>> +     for (i = 0; i < addrs_cnt; i++) {
+>>>> +             mod = __module_address(addrs[i]);
+>>>
+>>> This must be called under module_mutex to make sure that the module
+>>> would not disappear.
+>>
+>> module_mutex is not available outside kernel/module/. The common
+>> practice is to disable preempt before calling __module_address().
+>> CONFIG_LOCKDEP should catch this.
+> 
+> I see. Sigh, it is always better to take mutex than disable
+> preemption. But it might be acceptable in this case. We just need
+> to be careful.
+> 
+> First, the preemption must stay disabled all the time until
+> try_module_get(). Otherwise the returned struct module could
+> disappear in the meantime.
+> 
+> Second, krealloc_array() has to be called with preemption
+> enabled. It is perfectly fine to do it after try_module_get().
 
-Hi Jason, I've updated the calculation of 'max_sz' in this patch instead 
-of a separate bugfix, since doing so also seemed clear.
+Okay, thanks for the heads-up.
 
-Thanks.
+> 
+> Best Regards,
+> Petr
+> .
+> 
 
->   	struct virtnet_info *vi = netdev_priv(dev);
->   	struct bpf_prog *old_prog;
->   	u16 xdp_qp = 0, curr_qp;
-> @@ -3095,9 +3097,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->   		return -EINVAL;
->   	}
->   
-> -	if (dev->mtu > max_sz) {
-> -		NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP");
-> -		netdev_warn(dev, "XDP requires MTU less than %lu\n", max_sz);
-> +	if (prog && !prog->aux->xdp_has_frags && dev->mtu > max_sz) {
-> +		NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP without frags");
-> +		netdev_warn(dev, "single-buffer XDP requires MTU less than %u\n", max_sz);
->   		return -EINVAL;
->   	}
->   
-
+-- 
+Regards,
+  Zhen Lei
