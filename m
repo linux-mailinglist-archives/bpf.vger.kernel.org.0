@@ -2,91 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 496F16627A5
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 14:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E7F6627C0
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 14:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbjAINs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 08:48:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
+        id S236160AbjAINvq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 08:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237087AbjAINso (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 08:48:44 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD9E1EECC;
-        Mon,  9 Jan 2023 05:48:43 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id ay12-20020a05600c1e0c00b003d9ea12bafcso3658721wmb.3;
-        Mon, 09 Jan 2023 05:48:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sjM8hOV94cypu49wh5dstQmAlWS++C//GRjTU4M89js=;
-        b=kuF0jPfU1UAscJ/zjoV4o3aiOyJLdHX8uCTjK8Y3fTHphmKuozDbGagrYmLT3cRScU
-         UHfV4CZnHOHXDIqslfQNrQ24aVJBjA8OGcDD2Ga0FxfOAE1USvznKgqLGFyKgOnaEl1N
-         piLhdt3d46Gnc25HPCt8Nv//q5Pi64evsmTyjTl3hguDqAhrpYg7hLyLvS83tiPm3NgU
-         jiJXcFkxJ5jEZ9fnnRhoum2vQAOFIfKonm70FVb/lEm9GDpl3FPMwb/9E69tDxuR73DC
-         2nrhjNQc22VSchGsdm/gDvllkeUdGF8rY5QLjjCZsidONJ8KzmNIjGVhJpDkV7InQwR5
-         xahQ==
+        with ESMTP id S234644AbjAINvj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 08:51:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEF833D54
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 05:50:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673272238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VuOIdD/WEfpoJLynNTHzxtmnrk74A30Mt5Qb8Fjwiys=;
+        b=hwbM0J4EcH7XzRRhtVXIYi9T/MLZyIhW1nxl2hb/w/fwwQB0vW5EpEsCVP7tT+eEk6BY9v
+        WiCJ5Sw0ttDgQB8SolndzymRgcVrnMAIoiI/2+8OWIBIPDMZlGRLza5IaBhL636WN4Urpv
+        +xRW1i0u9zi5nvRfuZWkyxhSMVS7X/I=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-281-7vsXtYjvNsKkJqGzbS_QxA-1; Mon, 09 Jan 2023 08:50:37 -0500
+X-MC-Unique: 7vsXtYjvNsKkJqGzbS_QxA-1
+Received: by mail-ej1-f72.google.com with SMTP id jg25-20020a170907971900b007c0e98ad898so5481590ejc.15
+        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 05:50:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sjM8hOV94cypu49wh5dstQmAlWS++C//GRjTU4M89js=;
-        b=iDqGKmRQ8tIqMPb7sRewaxbf3KWuzy+Nl0+ofMy/iHNctPvPz7UAzSKTIXjBlL6KpY
-         S1fFVahqgrn0/gC72XXMA+AIy4sP4xySIgsFEUYweR8H9S49C9tbiTm4cbEmvOaEZ9sD
-         HsmzYtU+3GVXpm6r+Anac2+JcWpwVdN0ZzOj/Rwz45GCWuPFKW8nIkxqORnhf34O6Zk7
-         ltYkzUhiRx2d81+EAGviHeb+NxBIw68oCDHjdiz0mc8I6ZygAAZYnaN7n0POMxWgvhF1
-         llP6j9l34Z4B5xlu2TDFRt1U+Xk3GicJE0XuSvX0RRekL2AigiUgnF4e0nCvMnYJWvTH
-         7S0w==
-X-Gm-Message-State: AFqh2krkjbVrlDhwyOUO5QTc1t3IiVaepAOnLcfSmGYzSiCfOzCCcOnd
-        qpL6VCh3RK1m1d8zzyiLdZs=
-X-Google-Smtp-Source: AMrXdXt0DAoCSuzsNaAgux29pMWEu5IX5Y7NgvCBZaVgMQKZl1rKa1+RRfp3V+X3kTpEb2gF5gwWXg==
-X-Received: by 2002:a1c:4c12:0:b0:3c6:e63e:89a6 with SMTP id z18-20020a1c4c12000000b003c6e63e89a6mr46312893wmf.2.1673272121828;
-        Mon, 09 Jan 2023 05:48:41 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id o5-20020a05600c510500b003b4ff30e566sm25387847wms.3.2023.01.09.05.48.39
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VuOIdD/WEfpoJLynNTHzxtmnrk74A30Mt5Qb8Fjwiys=;
+        b=HsEf+/LU1yduY1eMyYMLMcwB4ieQxQ4Pq1jgzdvjtQ4qFplff06h4x8YBtYmWUYlzm
+         8+leroEFcXezrJt2F+JWZMNjsHJLiKGXlmEBmMvzh1ZTZCJKVbrdVRagcIJP5wh+8emc
+         sC6vzXouzJUsGEfj3TTIpmrh3jHMqE1vI+wd/qaggzGf98+K+nz1+0LXnvdRzdU9LG52
+         B+IZe1wTpEbzcwOPGU06obEW8JAtam/aJAWIFAHMkcXqO2l+ZfNwydkqgM02Lev93RSa
+         nKJ5w7Ah39HWr2Jm0vkPeR7g40Tm0lLMMRNNPbKujX0G/SZ1XL7a9MWf0fMjVxELx0m+
+         bCQA==
+X-Gm-Message-State: AFqh2kqjmeTEIkO4kuvtxR6v1ekK+l5Wj8jzT4Yo88i+rKgaHcf5LYox
+        pScF0m7Dbl5pYc+NOnWcRv9u/hZmC4R6V1p5erHUlp83GbvYdDR08rAMLhGwnfCxju8XhaX6jCz
+        OVRtu8xk9Z8ac
+X-Received: by 2002:a17:906:b00d:b0:7c1:435c:d777 with SMTP id v13-20020a170906b00d00b007c1435cd777mr53804640ejy.9.1673272235401;
+        Mon, 09 Jan 2023 05:50:35 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXtnzvpUi3hn0k9bF9Hzds5wwVbnGtACM4C4O+W/mU2OrGwJ5iYVoktmdCHZpfvT3LRy6Kxafw==
+X-Received: by 2002:a17:906:b00d:b0:7c1:435c:d777 with SMTP id v13-20020a170906b00d00b007c1435cd777mr53804590ejy.9.1673272234656;
+        Mon, 09 Jan 2023 05:50:34 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id k11-20020a1709062a4b00b0073022b796a7sm3851312eje.93.2023.01.09.05.50.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Jan 2023 05:48:40 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 9 Jan 2023 14:48:38 +0100
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org
-Subject: Re: [PATCH 2/3] bpf: Optimize get_modules_for_addrs()
-Message-ID: <Y7wbNinAXM6O62ZF@krava>
-References: <20221230112729.351-1-thunder.leizhen@huawei.com>
- <20221230112729.351-3-thunder.leizhen@huawei.com>
- <Y7WoZARt37xGpjXD@alley>
- <Y7dBoII5kZnHGFdL@krava>
- <Y7ftxIiV35Wd75lZ@krava>
- <652e0eea-1ab2-a4fd-151a-e634bcb4e1da@huawei.com>
+        Mon, 09 Jan 2023 05:50:33 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 641B7900180; Mon,  9 Jan 2023 14:50:33 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andy Gospodarek <andrew.gospodarek@broadcom.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, ast@kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        lorenzo.bianconi@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>, gal@nvidia.com,
+        Saeed Mahameed <saeedm@nvidia.com>, tariqt@nvidia.com
+Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
+ support xdp multibuffer
+In-Reply-To: <4a44bdec-b635-20ef-e915-1733e53c6f38@gmail.com>
+References: <20220621175402.35327-1-gospo@broadcom.com>
+ <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com> <87k0234pd6.fsf@toke.dk>
+ <20230103172153.58f231ba@kernel.org> <Y7U8aAhdE3TuhtxH@lore-desk>
+ <87bkne32ly.fsf@toke.dk> <a12de9d9-c022-3b57-0a15-e22cdae210fa@gmail.com>
+ <871qo90yxr.fsf@toke.dk> <Y7cBfE7GpX04EI97@C02YVCJELVCG.dhcp.broadcom.net>
+ <20230105101642.1a31f278@kernel.org>
+ <8369e348-a8ec-cb10-f91f-4277e5041a27@nvidia.com>
+ <4a44bdec-b635-20ef-e915-1733e53c6f38@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 09 Jan 2023 14:50:33 +0100
+Message-ID: <87fscjakba.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <652e0eea-1ab2-a4fd-151a-e634bcb4e1da@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,103 +96,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 04:51:37PM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2023/1/6 17:45, Jiri Olsa wrote:
-> > On Thu, Jan 05, 2023 at 10:31:12PM +0100, Jiri Olsa wrote:
-> >> On Wed, Jan 04, 2023 at 05:25:08PM +0100, Petr Mladek wrote:
-> >>> On Fri 2022-12-30 19:27:28, Zhen Lei wrote:
-> >>>> Function __module_address() can quickly return the pointer of the module
-> >>>> to which an address belongs. We do not need to traverse the symbols of all
-> >>>> modules to check whether each address in addrs[] is the start address of
-> >>>> the corresponding symbol, because register_fprobe_ips() will do this check
-> >>>> later.
-> >>
-> >> hum, for some reason I can see only replies to this patch and
-> >> not the actual patch.. I'll dig it out of the lore I guess
-> >>
-> >>>>
-> >>>> Assuming that there are m modules, each module has n symbols on average,
-> >>>> and the number of addresses 'addrs_cnt' is abbreviated as K. Then the time
-> >>>> complexity of the original method is O(K * log(K)) + O(m * n * log(K)),
-> >>>> and the time complexity of current method is O(K * (log(m) + M)), M <= m.
-> >>>> (m * n * log(K)) / (K * m) ==> n / log2(K). Even if n is 10 and K is 128,
-> >>>> the ratio is still greater than 1. Therefore, the new method will
-> >>>> generally have better performance.
-> >>
-> >> could you try to benchmark that? I tried something similar but was not
-> >> able to get better performance
-> > 
-> > hm looks like I tried the smilar thing (below) like you did,
-> 
-> Yes. I just found out you're working on this improvement, too.
-> 
-> > but wasn't able to get better performace
-> 
-> Your implementation below is already the limit that can be optimized.
-> If the performance is not improved, it indicates that this place is
-> not the bottleneck.
-> 
-> > 
-> > I guess your goal is to get rid of the module arg in
-> > module_kallsyms_on_each_symbol callback that we use?
-> 
-> It's not a bad thing to keep argument 'mod' for function
-> module_kallsyms_on_each_symbol(), but for kallsyms_on_each_symbol(),
-> it's completely redundant. Now these two functions often use the
-> same hook function. So I carefully analyzed get_modules_for_addrs(),
-> which is the only place that involves the use of parameter 'mod'.
-> Looks like there's a possibility of eliminating parameter 'mod'.
-> 
-> > I'm ok with the change if the performace is not worse
-> 
-> OK, thanks.
-> 
-> > 
-> > jirka
-> > 
-> > 
-> > ---
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 5b9008bc597b..3280c22009f1 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -2692,23 +2692,16 @@ struct module_addr_args {
-> >  	int mods_cap;
-> >  };
-> >  
-> > -static int module_callback(void *data, const char *name,
-> > -			   struct module *mod, unsigned long addr)
-> > +static int add_module(struct module_addr_args *args, struct module *mod)
-> >  {
-> > -	struct module_addr_args *args = data;
-> >  	struct module **mods;
-> >  
-> > -	/* We iterate all modules symbols and for each we:
-> > -	 * - search for it in provided addresses array
-> > -	 * - if found we check if we already have the module pointer stored
-> > -	 *   (we iterate modules sequentially, so we can check just the last
-> > -	 *   module pointer)
-> > +	/* We iterate sorted addresses and for each within module we:
-> > +	 * - check if we already have the module pointer stored for it
-> > +	 *   (we iterate sorted addresses sequentially, so we can check
-> > +	 *   just the last module pointer)
-> >  	 * - take module reference and store it
-> >  	 */
-> > -	if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
-> > -		       bpf_kprobe_multi_addrs_cmp))
-> > -		return 0;
-> > -
-> >  	if (args->mods && args->mods[args->mods_cnt - 1] == mod)
-> >  		return 0;
-> 
-> There'll be problems Petr mentioned.
-> 
-> https://lkml.org/lkml/2023/1/5/191
+Tariq Toukan <ttoukan.linux@gmail.com> writes:
 
-ok, makes sense.. I guess we could just search args->mods in here?
-are you going to send new version, or should I update my patch with that?
+> On 08/01/2023 14:33, Tariq Toukan wrote:
+>>=20
+>>=20
+>> On 05/01/2023 20:16, Jakub Kicinski wrote:
+>>> On Thu, 5 Jan 2023 11:57:32 -0500 Andy Gospodarek wrote:
+>>>>> So my main concern would be that if we "allow" this, the only way to
+>>>>> write an interoperable XDP program will be to use bpf_xdp_load_bytes()
+>>>>> for every packet access. Which will be slower than DPA, so we may=20
+>>>>> end up
+>>>>> inadvertently slowing down all of the XDP ecosystem, because no one is
+>>>>> going to bother with writing two versions of their programs. Whereas =
+if
+>>>>> you can rely on packet headers always being in the linear part, you c=
+an
+>>>>> write a lot of the "look at headers and make a decision" type programs
+>>>>> using just DPA, and they'll work for multibuf as well.
+>>>>
+>>>> The question I would have is what is really the 'slow down' for
+>>>> bpf_xdp_load_bytes() vs DPA?=C2=A0 I know you and Jesper can tell me h=
+ow many
+>>>> instructions each use. :)
+>>>
+>>> Until we have an efficient and inlined DPA access to frags an
+>>> unconditional memcpy() of the first 2 cachelines-worth of headers
+>>> in the driver must be faster than a piece-by-piece bpf_xdp_load_bytes()
+>>> onto the stack, right?
+>>>
+>>>> Taking a step back...years ago Dave mentioned wanting to make XDP
+>>>> programs easy to write and it feels like using these accessor APIs wou=
+ld
+>>>> help accomplish that.=C2=A0 If the kernel examples use bpf_xdp_load_by=
+tes()
+>>>> accessors everywhere then that would accomplish that.
+>>>
+>>> I've been pushing for an skb_header_pointer()-like helper but
+>>> the semantics were not universally loved :)
+>>=20
+>> Maybe it's time to re-consider.
+>>=20
+>> Is it something like an API that given an offset returns a pointer +=20
+>> allowed length to be accessed?
+>>=20
+>> This sounds like a good direction to me, that avoids having any=20
+>> linear-part-length assumptions, while preserving good performance.
+>>=20
+>> Maybe we can still require/guarantee that each single header (eth, ip,=20
+>> tcp, ...) does not cross a frag/page boundary. For otherwise, a prog=20
+>> needs to handle cases where headers span several fragments, so it has to=
+=20
+>> reconstruct the header by copying the different parts into some local=20
+>> buffer.
+>>=20
+>> This can be achieved by having another assumption that AFAIK already=20
+>> holds today: all fragments are of size PAGE_SIZE.
+>>=20
+>> Regards,
+>> Tariq
+>
+> This can be a good starting point:
+> static void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len)
+>
+> It's currently not exposed as a bpf-helper, and it works a bit=20
+> differently to what I mentioned earlier: It gets the desired length, and=
+=20
+> fails in case it's not continuously accessible (i.e. this piece of data=20
+> spans multiple frags).
 
-thanks,
-jirka
+Did a bit of digging through the mail archives. Exposing
+bpf_xdp_pointer() as a helper was proposed back in March last year:
+
+https://lore.kernel.org/r/20220306234311.452206-1-memxor@gmail.com
+
+The discussion of this seems to have ended on "let's use dynptrs
+instead". There was a patch series posted for this as well, which seems
+to have stalled out with this comment from Alexei in October:
+
+https://lore.kernel.org/r/CAADnVQKhv2YBrUAQJq6UyqoZJ-FGNQbKenGoPySPNK+GaOjB=
+Og@mail.gmail.com
+
+-Toke
+
