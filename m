@@ -2,120 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B8F661C63
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 03:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6DD661C6C
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 03:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbjAICiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 8 Jan 2023 21:38:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54268 "EHLO
+        id S233818AbjAICsQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Jan 2023 21:48:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233986AbjAICiT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 Jan 2023 21:38:19 -0500
-Received: from mx07-001d1705.pphosted.com (mx07-001d1705.pphosted.com [185.132.183.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884A1A47C
-        for <bpf@vger.kernel.org>; Sun,  8 Jan 2023 18:38:17 -0800 (PST)
-Received: from pps.filterd (m0209328.ppops.net [127.0.0.1])
-        by mx08-001d1705.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3092RW4A007786;
-        Mon, 9 Jan 2023 02:38:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
- subject : date : message-id; s=S1;
- bh=edY/tm2eSq9U5R0UYbDIP3xu66fP1v8wrJ7S/xD/irU=;
- b=ikRu7Hn5R2EDk8TsSccBboSQtWqxzyJFnlTnBx8hqc+eJe8ZY2i51dEJcbh+aiBJLPGq
- phqmBnTkyvd+Sh37Bm/qD/JxgGW3MVZYmgdP/wcRzwHaKis+Eayh2iY64/jmgibYCKM1
- OUzId0wmkqGWTQsPrMQkzcC+yyLh99+XGSQH2L35udJRh0Nb/dSDag9azYtcRIeighxO
- B7bhG5FpoKL8hVy1ethOFm9HEyVb1bxCGmwpnlue9XrDVsqLKvwLL/Raak/9RCDW/9Gy
- 56BWXI+d2vpEjMc2CznqhyAQ2cYB3TkRjalP4aFMPSbWitoW002YG4CzmCehTM473Jbj Xg== 
-Received: from usculxsntmt02v.am.sony.com ([160.33.194.234])
-        by mx08-001d1705.pphosted.com (PPS) with ESMTPS id 3my1wm94mv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 09 Jan 2023 02:38:15 +0000
-Received: from pps.filterd (USCULXSNTMT02v.am.sony.com [127.0.0.1])
-        by USCULXSNTMT02v.am.sony.com (8.17.1.5/8.17.1.5) with ESMTP id 3092GaCF007513;
-        Mon, 9 Jan 2023 02:38:04 GMT
-Received: from usculxsntmt01v.am.sony.com ([146.215.230.189])
-        by USCULXSNTMT02v.am.sony.com (PPS) with ESMTPS id 3my0j9s7q0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Jan 2023 02:38:04 +0000
-Received: from pps.filterd (USCULXSNTMT01v.am.sony.com [127.0.0.1])
-        by USCULXSNTMT01v.am.sony.com (8.17.1.5/8.17.1.5) with ESMTP id 3092UgJ8028485;
-        Mon, 9 Jan 2023 02:38:04 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by USCULXSNTMT01v.am.sony.com (PPS) with ESMTPS id 3my0jdwmya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 09 Jan 2023 02:38:04 +0000
-Received: from USCULXSNTMT01v.am.sony.com (USCULXSNTMT01v.am.sony.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3092c3gf010326;
-        Mon, 9 Jan 2023 02:38:03 GMT
-Received: from prime ([10.10.10.214])
-        by USCULXSNTMT01v.am.sony.com (PPS) with ESMTP id 3my0jdwmy8-1;
-        Mon, 09 Jan 2023 02:38:03 +0000
-From:   Chethan Suresh <chethan.suresh@sony.com>
-To:     quentin@isovalent.com, bpf@vger.kernel.org
-Cc:     Chethan Suresh <chethan.suresh@sony.com>,
-        Kenta Tada <Kenta.Tada@sony.com>
-Subject: [PATCH bpf-next] bpftool: fix output for skipping kernel config check
-Date:   Mon,  9 Jan 2023 08:07:42 +0530
-Message-Id: <20230109023742.29657-1-chethan.suresh@sony.com>
-X-Mailer: git-send-email 2.17.1
-X-Sony-BusinessRelay-GUID: 3JW061EE9ErcP-3lKL4sSVOZUNfpU9gj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2023-01-08_19,2023-01-06_01,2022-06-22_01
-X-Sony-EdgeRelay-GUID: QpJwuOkMZtW-_2N-6ZR68bBSeaXdIDuU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2023-01-08_19,2023-01-06_01,2022-06-22_01
-X-Proofpoint-ORIG-GUID: l3so7z6Pw3v6jkdMXfjGPZGg24rLx-07
-X-Proofpoint-GUID: l3so7z6Pw3v6jkdMXfjGPZGg24rLx-07
-X-Sony-Outbound-GUID: l3so7z6Pw3v6jkdMXfjGPZGg24rLx-07
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2023-01-08_19,2023-01-06_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S233962AbjAICsQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Jan 2023 21:48:16 -0500
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3159DBC8E;
+        Sun,  8 Jan 2023 18:48:13 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VZ5fU.D_1673232488;
+Received: from 30.221.147.179(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VZ5fU.D_1673232488)
+          by smtp.aliyun-inc.com;
+          Mon, 09 Jan 2023 10:48:10 +0800
+Message-ID: <8ae89098-594f-b28b-4040-b0625b816e14@linux.alibaba.com>
+Date:   Mon, 9 Jan 2023 10:48:05 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0)
+ Gecko/20100101 Thunderbird/108.0
+Subject: Re: [PATCH v3 2/9] virtio-net: set up xdp for multi buffer packets
+From:   Heng Qi <hengqi@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20230103064012.108029-1-hengqi@linux.alibaba.com>
+ <20230103064012.108029-3-hengqi@linux.alibaba.com>
+In-Reply-To: <20230103064012.108029-3-hengqi@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When bpftool feature does not find kernel config
-files under default path or wrong format,
-do not output CONFIG_XYZ is not set.
-Skip kernel config check and continue.
 
-Signed-off-by: Chethan Suresh <chethan.suresh@sony.com>
-Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
----
- tools/bpf/bpftool/feature.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 36cf0f1517c9..da16e6a27ccc 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -486,16 +486,16 @@ static void probe_kernel_image_config(const char *define_prefix)
- 		}
- 	}
- 
--end_parse:
--	if (file)
--		gzclose(file);
--
- 	for (i = 0; i < ARRAY_SIZE(options); i++) {
- 		if (define_prefix && !options[i].macro_dump)
- 			continue;
- 		print_kernel_option(options[i].name, values[i], define_prefix);
- 		free(values[i]);
- 	}
-+
-+end_parse:
-+	if (file)
-+		gzclose(file);
- }
- 
- static bool probe_bpf_syscall(const char *define_prefix)
--- 
-2.17.1
+在 2023/1/3 下午2:40, Heng Qi 写道:
+> When the xdp program sets xdp.frags, which means it can process
+> multi-buffer packets over larger MTU, so we continue to support xdp.
+> But for single-buffer xdp, we should keep checking for MTU.
+>
+> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>   drivers/net/virtio_net.c | 10 ++++++----
+>   1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 443aa7b8f0ad..60e199811212 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -3074,7 +3074,9 @@ static int virtnet_restore_guest_offloads(struct virtnet_info *vi)
+>   static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>   			   struct netlink_ext_ack *extack)
+>   {
+> -	unsigned long int max_sz = PAGE_SIZE - sizeof(struct padded_vnet_hdr);
+> +	unsigned int room = SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM +
+> +					   sizeof(struct skb_shared_info));
+> +	unsigned int max_sz = PAGE_SIZE - room - ETH_HLEN;
+
+Hi Jason, I've updated the calculation of 'max_sz' in this patch instead 
+of a separate bugfix, since doing so also seemed clear.
+
+Thanks.
+
+>   	struct virtnet_info *vi = netdev_priv(dev);
+>   	struct bpf_prog *old_prog;
+>   	u16 xdp_qp = 0, curr_qp;
+> @@ -3095,9 +3097,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>   		return -EINVAL;
+>   	}
+>   
+> -	if (dev->mtu > max_sz) {
+> -		NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP");
+> -		netdev_warn(dev, "XDP requires MTU less than %lu\n", max_sz);
+> +	if (prog && !prog->aux->xdp_has_frags && dev->mtu > max_sz) {
+> +		NL_SET_ERR_MSG_MOD(extack, "MTU too large to enable XDP without frags");
+> +		netdev_warn(dev, "single-buffer XDP requires MTU less than %u\n", max_sz);
+>   		return -EINVAL;
+>   	}
+>   
 
