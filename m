@@ -2,108 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E3A662443
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 12:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47643662463
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 12:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbjAILfJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 06:35:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51830 "EHLO
+        id S230405AbjAILk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 06:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234450AbjAILex (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 06:34:53 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A2B18E2B;
-        Mon,  9 Jan 2023 03:34:52 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C05EC33F51;
-        Mon,  9 Jan 2023 11:34:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1673264089; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ed2kRG7zsuXiD58xhTaH2Hy8yTgKVPvLz0kMLwoU6tU=;
-        b=yh5Z1cxpS/L3xb2leT5iXLp/RzCHUd6FxyVD+igHcfoos37Dv9O3oQ/oZN4TG2ia1k4LDU
-        yGcaMAnmaOklWC5Px7j0PFDKQqzbeM6cAhm6SkeFMCvoRtplpg+F0dLFbb8AOKvhG42Xuj
-        DR9vQsZ5B8MmjfmQVCVlPGXZ2PxZIgk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1673264089;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ed2kRG7zsuXiD58xhTaH2Hy8yTgKVPvLz0kMLwoU6tU=;
-        b=zGJCspUCSdD9pErdNIJxC71ZwrfYJGePDWXsnPLrZp4Kj2HNj5XibAX6ccFpE1IsLzIfvM
-        MmhQdJ86x3402KCA==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        by relay2.suse.de (Postfix) with ESMTP id 6AB6F2C141;
-        Mon,  9 Jan 2023 11:34:49 +0000 (UTC)
-From:   Michal Suchanek <msuchanek@suse.de>
-Cc:     Michal Suchanek <msuchanek@suse.de>,
+        with ESMTP id S237012AbjAILkF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 06:40:05 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A64BBC
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 03:40:04 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id b17so1696601pld.7
+        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 03:40:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=w8inhaCjfnPZaeONRMBj8RCnjk4ubcoC8sf61WBoNjc=;
+        b=T1pzQvBAJLNtnU44KYqHGo3ulYw9mgQyyUqSWZnBdRiluUU+SukO2d3ZQ31Xc2rUIa
+         mINU1uIylvNLWTDF6E+DCW439WWKbW6xW/3rXO1pVVDJhpGkY+rAzE/Dtwr3PBsgDW7f
+         MR6CMP3ZGToOGePAuNsNpxKnLYPYYE3xtOcoo0NogJdWXB9cyQZ6vweKetDjWS57YnUm
+         DQTt0YJbajxWCnfYMx3dfygxL8NYqHRBNcTtdBYtVGAHJIz6M7z/OfAQhZRaDjIx3GJY
+         wI7Zqdf7kmBLlekwwBqpvp0ei5NyP4E365+m970Ky/vow12i0xUtlgpoLJUcJSN7wrQw
+         366Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w8inhaCjfnPZaeONRMBj8RCnjk4ubcoC8sf61WBoNjc=;
+        b=6UpQ+wQFvR1/Gq/1hFqy1qO4CCPkJUG9w/u3MXfrkAaHLf439jYP7sHMzR2DnjYqAO
+         UDcbs+iRzLMGicNLd7n0SfHP3FBlMapZDsP+Opd/9wstWb4il47YaL4BJWaH+93ITCGX
+         TTi4g/9PRQLW3a0gkwKF1GSx3nMMf5beRK+ppG8KCkxKgmy5ZduxDHsw040ra/u0wzvm
+         z52zZQfEMVrwld6C9Jt5zCrwWMvsoDGDRdfm5U0WlO3gr9F4zmE6F9vbK5joR+qW7Xr3
+         vVrLaMGUzciQzrgV1HOiuXiMKrQ8y/1mvtADXgXEiNIESc+r/6RCx6o3Q7JRdUivJZbt
+         yRkA==
+X-Gm-Message-State: AFqh2kqKOyy6X76hzMX4uXf5ijVGoNffgckRqSz7rqI80n9b6vRlIcZC
+        YBrWh7E03bWLktqre7PFMgg=
+X-Google-Smtp-Source: AMrXdXt6JqFjZpaymns2ieM6IhhXNPJQZSsoMlE7Ei/ZBeyknlrMY+r/WJiWlNgnQNV3j5H4DNdCtA==
+X-Received: by 2002:a17:902:e04b:b0:192:6b23:e38b with SMTP id x11-20020a170902e04b00b001926b23e38bmr53794548plx.24.1673264404095;
+        Mon, 09 Jan 2023 03:40:04 -0800 (PST)
+Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
+        by smtp.gmail.com with ESMTPSA id d4-20020a170902654400b0018bde2250fcsm4549436pln.203.2023.01.09.03.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jan 2023 03:40:03 -0800 (PST)
+Date:   Mon, 9 Jan 2023 17:10:01 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] bpf_doc: Fix build error with older python versions
-Date:   Mon,  9 Jan 2023 12:34:42 +0100
-Message-Id: <20230109113442.20946-1-msuchanek@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <521abe2f-1aa3-563f-48ec-c016450602d9@iogearbox.net>
-References: <521abe2f-1aa3-563f-48ec-c016450602d9@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: Re: [PATCH bpf-next v1 4/8] bpf: Allow reinitializing unreferenced
+ dynptr stack slots
+Message-ID: <20230109114001.54xlg56d7brhdenx@apollo>
+References: <20230101083403.332783-1-memxor@gmail.com>
+ <20230101083403.332783-5-memxor@gmail.com>
+ <CAEf4BzYVjd=Z-7n1E=wsMdPD-guOoDz-Cedc9=+QisZ9m2150w@mail.gmail.com>
+ <CAJnrk1athR7gdpN4HvQS07WH70OymLzE0Bb+wc1eDz8yeJ4rfg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJnrk1athR7gdpN4HvQS07WH70OymLzE0Bb+wc1eDz8yeJ4rfg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The ability to subscript match result as an array is only available
-since python 3.6. Existing code in bpf_doc uses the older group()
-interface but commit 8a76145a2ec2 adds code using the new interface.
+On Sat, Jan 07, 2023 at 01:03:24AM IST, Joanne Koong wrote:
+> On Wed, Jan 4, 2023 at 2:44 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sun, Jan 1, 2023 at 12:34 AM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > Consider a program like below:
+> > >
+> > > void prog(void)
+> > > {
+> > >         {
+> > >                 struct bpf_dynptr ptr;
+> > >                 bpf_dynptr_from_mem(...);
+> > >         }
+> > >         ...
+> > >         {
+> > >                 struct bpf_dynptr ptr;
+> > >                 bpf_dynptr_from_mem(...);
+> > >         }
+> > > }
+> > >
+> > > Here, the C compiler based on lifetime rules in the C standard would be
+> > > well within in its rights to share stack storage for dynptr 'ptr' as
+> > > their lifetimes do not overlap in the two distinct scopes. Currently,
+> > > such an example would be rejected by the verifier, but this is too
+> > > strict. Instead, we should allow reinitializing over dynptr stack slots
+> > > and forget information about the old dynptr object.
+> > >
+> >
+> > As mentioned in the previous patch, shouldn't we allow this only for
+> > dynptrs that don't require OBJ_RELEASE, which would be those with
+> > ref_obj_id == 0?
+> >
+>
+> +1
+>
 
-Use the old interface consistently to avoid build error on older
-distributions like the below:
+Ack, I'll make this change.
 
-+ make -j48 -s -C /dev/shm/kbuild/linux.33946/current ARCH=powerpc HOSTCC=gcc CROSS_COMPILE=powerpc64-suse-linux- clean
-TypeError: '_sre.SRE_Match' object is not subscriptable
+> >
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> > >  kernel/bpf/verifier.c | 16 +++++++++-------
+> > >  1 file changed, 9 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index b985d90505cc..e85e8c4be00d 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -786,6 +786,9 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
+> > >         if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+> > >                 return -EINVAL;
+> > >
+> > > +       destroy_stack_slots_dynptr(env, state, spi);
+> > > +       destroy_stack_slots_dynptr(env, state, spi - 1);
+>
+> We don't need the 2nd call since destroy_slots_dynptr() destroys both slots
+>
 
-Fixes: 8a76145a2ec2 ("bpf: explicitly define BPF_FUNC_xxx integer values")
+We do, I'll add a comment explaining this.
+There are two cases.
 
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-Acked-by: Quentin Monnet <quentin@isovalent.com>
----
-v2: Add more details to commit message
----
- scripts/bpf_doc.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+    [d1][d1][d2][d2]
+spi   3   2   1   0
 
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index e8d90829f23e..38d51e05c7a2 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -271,7 +271,7 @@ class HeaderParser(object):
-             if capture:
-                 fn_defines_str += self.line
-                 helper_name = capture.expand(r'bpf_\1')
--                self.helper_enum_vals[helper_name] = int(capture[2])
-+                self.helper_enum_vals[helper_name] = int(capture.group(2))
-                 self.helper_enum_pos[helper_name] = i
-                 i += 1
-             else:
--- 
-2.35.3
+If initializing on spi = 3, it will destroy d1, spi - 1 will see no STACK_DYNPTR
+and simply ignore the call.
+But in case we initialize on spi = 2, it will destroy d1 but not d2, only the
+next call will destroy the dynptr at d2.
 
+So for the case where we initialize over slots of two adjacent dynptrs, we'll
+miss that case without making the 2nd call.
+
+The call simply means 'destroy any dynptr which spi belongs to'. So it needs to
+be made for both, as both spi and spi-1 may belong to different dynptrs.
