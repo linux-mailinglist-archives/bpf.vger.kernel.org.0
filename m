@@ -2,71 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEBD662390
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 11:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A4C6623C7
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 12:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234126AbjAIK7c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 05:59:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
+        id S233862AbjAILFa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 06:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233808AbjAIK72 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 05:59:28 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D0FF5AD
-        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 02:59:27 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id c8-20020a17090a4d0800b00225c3614161so12344287pjg.5
-        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 02:59:27 -0800 (PST)
+        with ESMTP id S237023AbjAILF2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 06:05:28 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630D2167EC
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 03:05:26 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id h192so5594462pgc.7
+        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 03:05:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j49ZNqjjWnibjlV4EBu7m9kew+g79H5k3XZmccS70DQ=;
-        b=TqG6oUzqmshdUBRlG5YmHFFPTKGOFBa/0sD8/p5WS1EyqOFmNA9r1nSCseA2O9OsAW
-         AY2YpY31F99xRxmH3h4h9PlW5Is2WMLBNOdc6bH+lkIplnNXM7/I/DhhnYeD35T0Jd3x
-         27bz+OHrJpsyC3cJseAHQdUGwj5Oiq1Nw86yMdpXULdhQoTrrsyNre+CcuxdPUn7OOX5
-         VeDsVG2n64FFk9Pokl8Yh4JZoFEMXsWvrYiyG3A06rToAVmckVREfO2n7ibAyaJOW0BK
-         4Z/koa9Z7kIGR9mrEc7klf89Zn9fd/v3JLCXXuohUTMF24uO8gbmxZjopZYxesk7oEIM
-         V3mg==
+        bh=qasRphFTSovKCNjm+5fGqKWmg73GXCGWDc3u/3Vwqro=;
+        b=coBMHBXGBWIQAlzYY5uKwyu3312FXNM4ym5FWWLFJCdaLv3wCgTdvWPpRlenlZch/A
+         hs2U0rIcGuUnlhjYYhqqTspVAKCpJted3y3ONwbdHABxoIReKTBbps9aD6Uns/km+Gwu
+         S0it516+ubU53QAXmfwFGcMWJHbvpgXzMhKUZUnVGiyH+l406RtOYUHqIdDZ5bHkHG3+
+         aTxb81cJZJaCePp8asjLipe3gE2n26c0IMCi/OK6wig8zczvjZ4t2HzJXtRsBRRclULf
+         YP5ISi0s1+Bh6nlPTUJ2oRm19wm/xpgZM4LpF72S+z/0xMta2ITTiuDj2kyqPEmP21wo
+         Xdaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j49ZNqjjWnibjlV4EBu7m9kew+g79H5k3XZmccS70DQ=;
-        b=3OgPBVknLXj7WqW79yq/WQEEEMg3HJmJD6ZVhRAnOt0MceWZb0Xl2KiT0Dt4OS8otQ
-         gbkb+vjk0kTMw2D/xi1m2wRjcjdgXeqlKafNFcVL9BipegnDypINh3gXA25WhcW727Es
-         Vz4QyJMeTXP95i6kY50cdmPf5SUY4zrwdmwxh3uWKOOv/52HTBfGl6H6uQ7XN0S/GuQd
-         9twi1DFrNVcwyMX2eQG465aZXTQQN4Rr164J1bztdt1ymGaC8DutHYAT2gf2JztHq0du
-         mE+ptFU8reiMp8C3mSpT93/DMwQ3lr+ZcVtU31sQz/257NViliWv2Zsu5vXR1HDYg9mI
-         iTsA==
-X-Gm-Message-State: AFqh2ko13ZJ7LeBrDswaTtIMh8KojAKCfWOeh+5GsxVuwDYS7ScQ31eN
-        +hPIhZ5wdSv99ln6FXeBMRw=
-X-Google-Smtp-Source: AMrXdXutAh3AchmjDGYN4OsBz8uqpSD3NoFonHH32HCTSn5uD7cxBEIB+g0rZFo/wAKfiLZRD4mPmQ==
-X-Received: by 2002:a05:6a21:2d8e:b0:af:c871:bf4a with SMTP id ty14-20020a056a212d8e00b000afc871bf4amr75760924pzb.44.1673261966518;
-        Mon, 09 Jan 2023 02:59:26 -0800 (PST)
+        bh=qasRphFTSovKCNjm+5fGqKWmg73GXCGWDc3u/3Vwqro=;
+        b=uwILBObWrMQtFAoD5iec96jgMGgHviyc3+QLFZueHNcoOTi6+xBAxWAak9HukDXgzC
+         mqn7FlZkW131vlR1ueBBVMXAnKQU/kmGp9PIzk4z0H1VWhjnkNv/waca0UNbnTJLQxHQ
+         DX9mrFUWvTAhMmmcmYjP9vRsSb1XmFphkf8659duh7qzr479bex0nA1dsQACIxsp1dIz
+         fWcExLVjyCx4Rn80WSRKfmBcJE0ipRVtGGV91TzOnMB11lgvPmQveaaTfc3At0wcmUQ/
+         TqzeZHbswqJpVRkIXY8jBxMmkwe+CBBb4rEMT7Mkx5S3ExXOR32XUoiJM6w94/Wv1A0R
+         5SHQ==
+X-Gm-Message-State: AFqh2kqXKxaW/t61w8K1806IxaYBjRF3NwstbknUg/hAqtoVovK68Yex
+        39bRb9Tsw5RbubglCeqYs1c=
+X-Google-Smtp-Source: AMrXdXufy7bWvc94n7lpT+x8bGXWtAOOmIbbIsB6fVnEduHDaiYtHvaK92Sil5UTRfcXPKSo3al65Q==
+X-Received: by 2002:aa7:8812:0:b0:582:c142:d4b8 with SMTP id c18-20020aa78812000000b00582c142d4b8mr22321722pfo.0.1673262325536;
+        Mon, 09 Jan 2023 03:05:25 -0800 (PST)
 Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
-        by smtp.gmail.com with ESMTPSA id z6-20020a656646000000b00477a442d450sm4946339pgv.16.2023.01.09.02.59.25
+        by smtp.gmail.com with ESMTPSA id c76-20020a624e4f000000b00589c467ed88sm555105pfb.69.2023.01.09.03.05.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Jan 2023 02:59:26 -0800 (PST)
-Date:   Mon, 9 Jan 2023 16:29:22 +0530
+        Mon, 09 Jan 2023 03:05:25 -0800 (PST)
+Date:   Mon, 9 Jan 2023 16:35:22 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
-        David Vernet <void@manifault.com>
+        David Vernet <void@manifault.com>,
+        Eduard Zingerman <eddyz87@gmail.com>
 Subject: Re: [PATCH bpf-next v1 1/8] bpf: Fix state pruning for STACK_DYNPTR
  stack slots
-Message-ID: <20230109105922.gfn45m2hiol2ie3p@apollo>
+Message-ID: <20230109110522.nq34ozj4bo475a53@apollo>
 References: <20230101083403.332783-1-memxor@gmail.com>
  <20230101083403.332783-2-memxor@gmail.com>
- <f4bde187c49109d041e44ab19bbd23c7eccfc716.camel@gmail.com>
+ <CAEf4BzZsVQgCcFt-nZMp=YnikidBChyGn02bKp=-PsROGys0=w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f4bde187c49109d041e44ab19bbd23c7eccfc716.camel@gmail.com>
+In-Reply-To: <CAEf4BzZsVQgCcFt-nZMp=YnikidBChyGn02bKp=-PsROGys0=w@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,8 +78,10 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 03, 2023 at 12:58:40AM IST, Eduard Zingerman wrote:
-> On Sun, 2023-01-01 at 14:03 +0530, Kumar Kartikeya Dwivedi wrote:
+On Thu, Jan 05, 2023 at 03:54:03AM IST, Andrii Nakryiko wrote:
+> On Sun, Jan 1, 2023 at 12:34 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
 > > The root of the problem is missing liveness marking for STACK_DYNPTR
 > > slots. This leads to all kinds of problems inside stacksafe.
 > >
@@ -188,141 +191,181 @@ On Tue, Jan 03, 2023 at 12:58:40AM IST, Eduard Zingerman wrote:
 > > --- a/kernel/bpf/verifier.c
 > > +++ b/kernel/bpf/verifier.c
 > > @@ -781,6 +781,9 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
-> >  		state->stack[spi - 1].spilled_ptr.ref_obj_id = id;
-> >  	}
+> >                 state->stack[spi - 1].spilled_ptr.ref_obj_id = id;
+> >         }
 > >
-> > +	state->stack[spi].spilled_ptr.live |= REG_LIVE_WRITTEN;
-> > +	state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
+> > +       state->stack[spi].spilled_ptr.live |= REG_LIVE_WRITTEN;
+> > +       state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
 > > +
-> >  	return 0;
+> >         return 0;
 > >  }
 > >
 > > @@ -805,6 +808,26 @@ static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_re
 > >
-> >  	__mark_reg_not_init(env, &state->stack[spi].spilled_ptr);
-> >  	__mark_reg_not_init(env, &state->stack[spi - 1].spilled_ptr);
+> >         __mark_reg_not_init(env, &state->stack[spi].spilled_ptr);
+> >         __mark_reg_not_init(env, &state->stack[spi - 1].spilled_ptr);
 > > +
-> > +	/* Why do we need to set REG_LIVE_WRITTEN for STACK_INVALID slot?
-> > +	 *
-> > +	 * While we don't allow reading STACK_INVALID, it is still possible to
-> > +	 * do <8 byte writes marking some but not all slots as STACK_MISC. Then,
-> > +	 * helpers or insns can do partial read of that part without failing,
-> > +	 * but check_stack_range_initialized, check_stack_read_var_off, and
-> > +	 * check_stack_read_fixed_off will do mark_reg_read for all 8-bytes of
-> > +	 * the slot conservatively. Hence we need to screen off those liveness
-> > +	 * marking walks.
-> > +	 *
-> > +	 * This was not a problem before because STACK_INVALID is only set by
-> > +	 * default, or in clean_live_states after REG_LIVE_DONE, not randomly
-> > +	 * during verifier state exploration. Hence, for this case parentage
-> > +	 * chain will still be live, while earlier reg->parent was NULL, so we
-> > +	 * need REG_LIVE_WRITTEN to screen off read marker propagation.
-> > +	 */
-> > +	state->stack[spi].spilled_ptr.live |= REG_LIVE_WRITTEN;
-> > +	state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
+> > +       /* Why do we need to set REG_LIVE_WRITTEN for STACK_INVALID slot?
+> > +        *
+> > +        * While we don't allow reading STACK_INVALID, it is still possible to
+> > +        * do <8 byte writes marking some but not all slots as STACK_MISC. Then,
+> > +        * helpers or insns can do partial read of that part without failing,
+> > +        * but check_stack_range_initialized, check_stack_read_var_off, and
+> > +        * check_stack_read_fixed_off will do mark_reg_read for all 8-bytes of
+> > +        * the slot conservatively. Hence we need to screen off those liveness
+> > +        * marking walks.
+> > +        *
+> > +        * This was not a problem before because STACK_INVALID is only set by
+> > +        * default, or in clean_live_states after REG_LIVE_DONE, not randomly
+> > +        * during verifier state exploration. Hence, for this case parentage
+> > +        * chain will still be live, while earlier reg->parent was NULL, so we
+> > +        * need REG_LIVE_WRITTEN to screen off read marker propagation.
+> > +        */
+> > +       state->stack[spi].spilled_ptr.live |= REG_LIVE_WRITTEN;
+> > +       state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
 > > +
->
-> This is purely to assist with verifier state pruning and does not
-> affect correctness, right?
-
-Yes, it should not affect correctness (to the best of my knowledge).
-
-> Commenting the lines does not seem to fail any tests, maybe add one
-> matching some "77 safe: ..." jump in the log?
->
-
-I will, thanks.
-
-> >  	return 0;
+> >         return 0;
 > >  }
 > >
 > > @@ -2388,6 +2411,30 @@ static int mark_reg_read(struct bpf_verifier_env *env,
-> >  	return 0;
+> >         return 0;
 > >  }
 > >
 > > +static int mark_dynptr_read(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
 > > +{
-> > +	struct bpf_func_state *state = func(env, reg);
-> > +	int spi, ret;
+> > +       struct bpf_func_state *state = func(env, reg);
+> > +       int spi, ret;
 > > +
-> > +	/* For CONST_PTR_TO_DYNPTR, it must have already been done by
-> > +	 * check_reg_arg in check_helper_call and mark_btf_func_reg_size in
-> > +	 * check_kfunc_call.
-> > +	 */
-> > +	if (reg->type == CONST_PTR_TO_DYNPTR)
-> > +		return 0;
-> > +	spi = get_spi(reg->off);
-> > +	/* Caller ensures dynptr is valid and initialized, which means spi is in
-> > +	 * bounds and spi is the first dynptr slot. Simply mark stack slot as
-> > +	 * read.
-> > +	 */
-> > +	ret = mark_reg_read(env, &state->stack[spi].spilled_ptr,
-> > +			    state->stack[spi].spilled_ptr.parent, REG_LIVE_READ64);
-> > +	if (ret)
-> > +		return ret;
-> > +	return mark_reg_read(env, &state->stack[spi - 1].spilled_ptr,
-> > +			     state->stack[spi - 1].spilled_ptr.parent, REG_LIVE_READ64);
+> > +       /* For CONST_PTR_TO_DYNPTR, it must have already been done by
+> > +        * check_reg_arg in check_helper_call and mark_btf_func_reg_size in
+> > +        * check_kfunc_call.
+> > +        */
+> > +       if (reg->type == CONST_PTR_TO_DYNPTR)
+> > +               return 0;
+> > +       spi = get_spi(reg->off);
+> > +       /* Caller ensures dynptr is valid and initialized, which means spi is in
+> > +        * bounds and spi is the first dynptr slot. Simply mark stack slot as
+> > +        * read.
+> > +        */
+> > +       ret = mark_reg_read(env, &state->stack[spi].spilled_ptr,
+> > +                           state->stack[spi].spilled_ptr.parent, REG_LIVE_READ64);
+> > +       if (ret)
+> > +               return ret;
+> > +       return mark_reg_read(env, &state->stack[spi - 1].spilled_ptr,
+> > +                            state->stack[spi - 1].spilled_ptr.parent, REG_LIVE_READ64);
 > > +}
 > > +
 > >  /* This function is supposed to be used by the following 32-bit optimization
 > >   * code only. It returns TRUE if the source or destination register operates
 > >   * on 64-bit, otherwise return FALSE.
 > > @@ -5928,6 +5975,7 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
-> >  			enum bpf_arg_type arg_type, struct bpf_call_arg_meta *meta)
+> >                         enum bpf_arg_type arg_type, struct bpf_call_arg_meta *meta)
 > >  {
-> >  	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
-> > +	int err;
+> >         struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+> > +       int err;
 > >
-> >  	/* MEM_UNINIT and MEM_RDONLY are exclusive, when applied to an
-> >  	 * ARG_PTR_TO_DYNPTR (or ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_*):
+> >         /* MEM_UNINIT and MEM_RDONLY are exclusive, when applied to an
+> >          * ARG_PTR_TO_DYNPTR (or ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_*):
 > > @@ -6008,6 +6056,10 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
-> >  				err_extra, regno);
-> >  			return -EINVAL;
-> >  		}
+> >                                 err_extra, regno);
+> >                         return -EINVAL;
+> >                 }
 > > +
-> > +		err = mark_dynptr_read(env, reg);
-> > +		if (err)
-> > +			return err;
-> >  	}
-> >  	return 0;
+> > +               err = mark_dynptr_read(env, reg);
+> > +               if (err)
+> > +                       return err;
+> >         }
+> >         return 0;
 > >  }
 > > @@ -13204,6 +13256,27 @@ static bool stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old,
-> >  			 * return false to continue verification of this path
-> >  			 */
-> >  			return false;
-> > +		/* Both are same slot_type, but STACK_DYNPTR requires more
-> > +		 * checks before it can considered safe.
-> > +		 */
-> > +		if (old->stack[spi].slot_type[i % BPF_REG_SIZE] == STACK_DYNPTR) {
-> > +			/* If both are STACK_DYNPTR, type must be same */
-> > +			if (old->stack[spi].spilled_ptr.dynptr.type != cur->stack[spi].spilled_ptr.dynptr.type)
-> > +				return false;
-> > +			/* Both should also have first slot at same spi */
-> > +			if (old->stack[spi].spilled_ptr.dynptr.first_slot != cur->stack[spi].spilled_ptr.dynptr.first_slot)
-> > +				return false;
-> > +			/* ids should be same */
-> > +			if (!!old->stack[spi].spilled_ptr.ref_obj_id != !!cur->stack[spi].spilled_ptr.ref_obj_id)
-> > +				return false;
-> > +			if (old->stack[spi].spilled_ptr.ref_obj_id &&
-> > +			    !check_ids(old->stack[spi].spilled_ptr.ref_obj_id,
-> > +				       cur->stack[spi].spilled_ptr.ref_obj_id, idmap))
-> > +				return false;
-> > +			WARN_ON_ONCE(i % BPF_REG_SIZE);
-> > +			i += BPF_REG_SIZE - 1;
-> > +			continue;
-> > +		}
+> >                          * return false to continue verification of this path
+> >                          */
+> >                         return false;
+> > +               /* Both are same slot_type, but STACK_DYNPTR requires more
+> > +                * checks before it can considered safe.
+> > +                */
+> > +               if (old->stack[spi].slot_type[i % BPF_REG_SIZE] == STACK_DYNPTR) {
 >
-> Nitpick: maybe move the checks above inside regsafe() as all
-> conditions operate on old/cur->stack[spi].spilled_ptr ?
+> how about moving this check right after `if (i % BPF_REG_SIZE !=
+> BPF_REG_SIZE - 1)` ? Then we can actually generalize this to a switch
+> to handle STACK_SPILL and STACK_DYNPTR separately. I'm adding
+> STACK_ITER in my upcoming patch set, so this will have all the things
+> ready for that?
+>
+> switch (old->stack[spi].slot_type[BPF_REG_SIZE - 1]) {
+> case STACK_SPILL:
+>   if (!regsafe(...))
+>      return false;
+>   break;
+> case STACK_DYNPTR:
+>   ...
+>   break;
+> /* and then eventually */
+> case STACK_ITER:
+>   ...
+>
+> WDYT?
+>
 
-Good suggestion, but may need to tweak the condition that falls through to
-regsafe for is_spilled_reg, and include STACK_DYNPTR there. I'll check Andrii's
-comments as well and see how the end result looks.
+I can do this, it certainly makes sense with your upcoming changes, and it does
+look cleaner.
 
+> > +                       /* If both are STACK_DYNPTR, type must be same */
+> > +                       if (old->stack[spi].spilled_ptr.dynptr.type != cur->stack[spi].spilled_ptr.dynptr.type)
 >
-> Acked-by: Eduard Zingerman <eddyz@gmail.com>
+> struct bpf_reg_state *old_reg, *cur_reg;
 >
-> >  		if (i % BPF_REG_SIZE != BPF_REG_SIZE - 1)
-> >  			continue;
-> >  		if (!is_spilled_reg(&old->stack[spi]))
+> old_reg = &old->stack[spi].spilled_ptr;
+> cur_reg = &cur->stack[spi].spilled_ptr;
 >
+> and then use old_reg and cur_reg in one simple if
+>
+> here's how I have it locally:
+>
+>                 case STACK_DYNPTR:
+>                         old_reg = &old->stack[spi].spilled_ptr;
+>                         cur_reg = &cur->stack[spi].spilled_ptr;
+>                         if (old_reg->dynptr.type != cur_reg->dynptr.type ||
+>                             old_reg->dynptr.first_slot !=
+> cur_reg->dynptr.first_slot ||
+>                             !check_ids(old_reg->ref_obj_id,
+> cur_reg->ref_obj_id, idmap))
+>                                 return false;
+>                         break;
+>
+> seems a bit cleaner?
+>
+
+Yep.
+
+> I'm also thinking of getting rid of first_slot field and instead have
+> a rule that first slot has proper type set, but the next one has
+> BPF_DYNPTR_TYPE_INVALID as type. This should simplify things a bit, I
+> think. At least it seems that way for STACK_ITER state I'm adding. But
+> that's a separate refactoring, probably.
+>
+
+Yeah, I'd rather not mix that into this set. Let me know if you think that's
+better and I can follow up after the next iteration with that change.
+
+> > +                               return false;
+> > +                       /* Both should also have first slot at same spi */
+> > +                       if (old->stack[spi].spilled_ptr.dynptr.first_slot != cur->stack[spi].spilled_ptr.dynptr.first_slot)
+> > +                               return false;
+> > +                       /* ids should be same */
+> > +                       if (!!old->stack[spi].spilled_ptr.ref_obj_id != !!cur->stack[spi].spilled_ptr.ref_obj_id)
+> > +                               return false;
+> > +                       if (old->stack[spi].spilled_ptr.ref_obj_id &&
+> > +                           !check_ids(old->stack[spi].spilled_ptr.ref_obj_id,
+> > +                                      cur->stack[spi].spilled_ptr.ref_obj_id, idmap))
+>
+> my previous change to tech check_ids to enforce that either id have to
+> be zeroes or non-zeroes at the same time already landed, so you don't
+> need to check `old->stack[spi].spilled_ptr.ref_obj_id`. Even more, it
+> seems wrong to do this check like this, because if cur has ref_obj_id
+> set we'll ignore it, right?
+
+The check before that ensures either both are set or both are unset. If there is
+a mismatch we return false. I see that check_ids does it now, so yes it wouldn't
+be needed anymore. I am not sure about the last part, I don't think it will be
+ignored?
