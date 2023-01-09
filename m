@@ -2,72 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CAF662407
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 12:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBEE662412
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 12:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236732AbjAILTZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 06:19:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
+        id S234242AbjAILVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 06:21:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236892AbjAILSz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 06:18:55 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6052815F30
-        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 03:18:19 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id z9-20020a17090a468900b00226b6e7aeeaso9067839pjf.1
-        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 03:18:19 -0800 (PST)
+        with ESMTP id S233876AbjAILV2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 06:21:28 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A486E183AE
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 03:21:27 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id l1-20020a17090a384100b00226f05b9595so7039521pjf.0
+        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 03:21:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BV4do77qCq438iwRAnDFsstMaiPzE6dqLtHdDBv2L7Q=;
-        b=b3lB6+8PDt7Zki0N37iDeKdLy8amyabk5Vvh59u6GD+3546+jZBIyCwvKnWdsjgI2f
-         J4ub7/G0Acudjap9iyNf12L7Vz6FzdmyntcbWlTwJP+IGje1FIuYrnPnyenLceuUJdUT
-         /9knMx75pnK+vDR+PIHcwHNM7Cg8/bbO3pOjBXAKcEEbQUrZifMw/ScDEsnkHbz8pVC4
-         Lx4TCUxr71vE65hZd+gaRKt80iBAdaa1ELNTsllMqdp5IELbRk1uBank72fQOzNcIjE4
-         AKChvn3lBws9KAqO36zhFlWF4REXWxEtc7HAxsaEIilVuZXSmqfqi+IPYhWUZau/Ts+N
-         f9vQ==
+        bh=yka3n6xDbB26LBY9dS9pXuA8Tl9/i/Xm4mtmOKgRl/g=;
+        b=oaCp9Y57kXmiEbpFiT6sB2ANjdCXqjLaAPLq/4XB0ptzmIrxrU0gVdhoQzwbx0L05D
+         718CnbmAsyxp+8i3n9xP3Kgd02Lv+V7NHtYFte3klu7/5V97Bf85cOqblYwKCQsqmrSh
+         dDCc0dSXVhkwjgKyoM8gIE6HH0Wh8HzgVEdZV+oBWBtyXkKY8Urpje1lvgkmquN4jOHz
+         rgQECk54Kz7P/XNiXAYvQOrMBpiMekZGqZwWTfBCDUNAglncO2RnsGEGcIxGs6Mdh3Gt
+         yI+NsXdpXJxs76MbsU57ubqfiS8Jv3tOgDReBfDBfVN+JE4jBT+KYLAMr2kQ+QWn247d
+         gHDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BV4do77qCq438iwRAnDFsstMaiPzE6dqLtHdDBv2L7Q=;
-        b=7wG3uZIPUs5KwY2y/cO9ATq92YqWjHirmIf/KBZZk9V3QBpH1PQEa70JsBFCOP+YnY
-         E7Ewt3H5gMeLT1+VLvXSjQyQDQlSuTwZ9MDIY68u/Fmn/rjm+JUx3XfoIo2yTtS9igPJ
-         XXjdu9stOuX0fH7kJVqr9s3wGwk4O9T6VX7Bzz22cPmhzNmoP2P/lb+yCxFj49W6aDtb
-         nyn8kFhOKG0JLo3FRcxlifeD/mWZZLQdNg3BBN6QZY9PreT7wktdpkS06CYcXDLyG44p
-         iQHvwWMnHdYmXT6TFtrmFnRpYS3AJ/jx9JcFNZcQrAvEqI6AoYqDksGSHr1A7A//h8ru
-         OYEQ==
-X-Gm-Message-State: AFqh2koLH4YkomUUzlBjfNyWKwbfmub93qmC68so2SC44jJlBwyfVGlF
-        WmaVjzMzKerMoZFTGt0Ne3GejPL44zw=
-X-Google-Smtp-Source: AMrXdXsHdJbm64Q2m04EpToAPzv/XtnN1oVt+1A5SCgJgGN/L5dgNhb3dLknVTODgLX7YO9lUdGMJg==
-X-Received: by 2002:a17:90a:5b08:b0:227:1214:e7a6 with SMTP id o8-20020a17090a5b0800b002271214e7a6mr3222330pji.33.1673263098796;
-        Mon, 09 Jan 2023 03:18:18 -0800 (PST)
+        bh=yka3n6xDbB26LBY9dS9pXuA8Tl9/i/Xm4mtmOKgRl/g=;
+        b=0DXMz+dFPgMLZQO6hL5v6N6RU3yTmCktwbzSY7C5652LHJMnbTKzIK6osTHUABtQ1f
+         caM/6wgpvn4let/gFpNmbTSZ2vQ8vhR+4oTgGgdDsDxS3PvoQ8cwY4u9XEOzd5/iFVZe
+         eM5mJ2m8gANNYxq9WC3JIZPbUeQMDpDQl2g1jmnWQzLmVqrUtqwTusPbZHl0WH0U1ZIw
+         jsJr6HOtiXM5a0F8xJdkT8WlDQy+CE+EOrM1+r/Qzvxsbkh5HqwfctPWyf/Df/7fyiax
+         Iz6IkP4+MD2FVruP/XaO+GLf+pGS88zzSohpSh2HXf2SojiOPXLhXyvzR7S8MxRJMEef
+         Q+6A==
+X-Gm-Message-State: AFqh2krpmt08lUY+pa3158tff9tSUWey0scS2apitH/j5kjuAfjD8skL
+        USsnP4BeremjBwj1UkDbFyc=
+X-Google-Smtp-Source: AMrXdXswjVOJ+oDjVKdLYCVtlymc8KR6oCTC0dfTOPJKfyXd6ZG6NTWRa8tY8EJrX9mVPB3cBIAMWQ==
+X-Received: by 2002:a17:903:2d0:b0:192:b5b3:7ff5 with SMTP id s16-20020a17090302d000b00192b5b37ff5mr38375109plk.50.1673263286983;
+        Mon, 09 Jan 2023 03:21:26 -0800 (PST)
 Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
-        by smtp.gmail.com with ESMTPSA id 12-20020a17090a000c00b00225daca646csm3688343pja.34.2023.01.09.03.18.17
+        by smtp.gmail.com with ESMTPSA id d2-20020a170903230200b001754fa42065sm5880137plh.143.2023.01.09.03.21.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Jan 2023 03:18:18 -0800 (PST)
-Date:   Mon, 9 Jan 2023 16:48:15 +0530
+        Mon, 09 Jan 2023 03:21:26 -0800 (PST)
+Date:   Mon, 9 Jan 2023 16:51:24 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
         David Vernet <void@manifault.com>,
         Eduard Zingerman <eddyz87@gmail.com>
 Subject: Re: [PATCH bpf-next v1 2/8] bpf: Fix missing var_off check for
  ARG_PTR_TO_DYNPTR
-Message-ID: <20230109111815.ifb6nkrehjrgivut@apollo>
+Message-ID: <20230109112124.ihkrsf6cjcxyhite@apollo>
 References: <20230101083403.332783-1-memxor@gmail.com>
  <20230101083403.332783-3-memxor@gmail.com>
- <CAEf4BzZ9-n+F8DoFHCskW9iQ3BZsUBB4ua2TwWdcyYXTjOvHjg@mail.gmail.com>
+ <CAJnrk1bfWghAaSr44EC_jsQpc6hVEzKR9iCzGgru3wfedTM6HA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZ9-n+F8DoFHCskW9iQ3BZsUBB4ua2TwWdcyYXTjOvHjg@mail.gmail.com>
+In-Reply-To: <CAJnrk1bfWghAaSr44EC_jsQpc6hVEzKR9iCzGgru3wfedTM6HA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,7 +77,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 04:02:11AM IST, Andrii Nakryiko wrote:
+On Fri, Jan 06, 2023 at 06:27:06AM IST, Joanne Koong wrote:
 > On Sun, Jan 1, 2023 at 12:34 AM Kumar Kartikeya Dwivedi
 > <memxor@gmail.com> wrote:
 > >
@@ -144,10 +143,10 @@ On Thu, Jan 05, 2023 at 04:02:11AM IST, Andrii Nakryiko wrote:
 > > +       if (off % BPF_REG_SIZE) {
 > > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
 >
-> s/reg->off/off/ ?
+> I think you meant off instead of reg->off?
 >
 
-Yep, thanks for catching.
+Ack.
 
 > > +               return -EINVAL;
 > > +       }
@@ -156,19 +155,93 @@ Yep, thanks for catching.
 > > +       if (spi < 1) {
 > > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", (int)(off + reg->var_off.value));
 >
-> s/(int)(off + reg->var_off.value)/off/?
+> I think you meant off instead of off + reg->var_off.value
 >
 
-Same, yes.
+Ack.
 
 > > +               return -EINVAL;
 > > +       }
+>
+> I think this if (spi < 1) check should have the same logic
+> is_spi_bounds_valid() does (eg checking against total allocated slots
+> as well). I think we can combine is_spi_bounds_valid() with this
+> function and then every place we call is_spi_bounds_valid()
+>
+
+Ok, I'll combine both.
+
 > > +       return spi;
 > > +}
 > > +
->
-> [...]
->
+> >  static bool is_spi_bounds_valid(struct bpf_func_state *state, int spi, int nr_slots)
+> >  {
+> >         int allocated_slots = state->allocated_stack / BPF_REG_SIZE;
+> > @@ -754,7 +777,9 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
+> >         enum bpf_dynptr_type type;
+> >         int spi, i, id;
+> >
+> > -       spi = get_spi(reg->off);
+> > +       spi = dynptr_get_spi(env, reg);
+> > +       if (spi < 0)
+> > +               return spi;
+> >
+> >         if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+> >                 return -EINVAL;
+> > @@ -792,7 +817,9 @@ static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_re
+> >         struct bpf_func_state *state = func(env, reg);
+> >         int spi, i;
+> >
+> > -       spi = get_spi(reg->off);
+> > +       spi = dynptr_get_spi(env, reg);
+> > +       if (spi < 0)
+> > +               return spi;
+> >
+> >         if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+> >                 return -EINVAL;
+> > @@ -839,7 +866,11 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
+> >         if (reg->type == CONST_PTR_TO_DYNPTR)
+> >                 return false;
+> >
+> > -       spi = get_spi(reg->off);
+> > +       spi = dynptr_get_spi(env, reg);
+> > +       if (spi < 0)
+> > +               return spi;
+> > +
+> > +       /* We will do check_mem_access to check and update stack bounds later */
+> >         if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+> >                 return true;
+> >
+> > @@ -855,14 +886,15 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
+> >  static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> >  {
+> >         struct bpf_func_state *state = func(env, reg);
+> > -       int spi;
+> > -       int i;
+> > +       int spi, i;
+> >
+> >         /* This already represents first slot of initialized bpf_dynptr */
+> >         if (reg->type == CONST_PTR_TO_DYNPTR)
+> >                 return true;
+> >
+> > -       spi = get_spi(reg->off);
+> > +       spi = dynptr_get_spi(env, reg);
+> > +       if (spi < 0)
+> > +               return false;
+> >         if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
+> >             !state->stack[spi].spilled_ptr.dynptr.first_slot)
+> >                 return false;
+> > @@ -891,7 +923,9 @@ static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg
+> >         if (reg->type == CONST_PTR_TO_DYNPTR) {
+> >                 return reg->dynptr.type == dynptr_type;
+> >         } else {
+> > -               spi = get_spi(reg->off);
+> > +               spi = dynptr_get_spi(env, reg);
+> > +               if (WARN_ON_ONCE(spi < 0))
+> > +                       return false;
+> >                 return state->stack[spi].spilled_ptr.dynptr.type == dynptr_type;
+> >         }
+> >  }
 > > @@ -2422,7 +2456,9 @@ static int mark_dynptr_read(struct bpf_verifier_env *env, struct bpf_reg_state *
 > >          */
 > >         if (reg->type == CONST_PTR_TO_DYNPTR)
@@ -188,13 +261,13 @@ Same, yes.
 > > +{
 > > +       return type & OBJ_RELEASE;
 > > +}
+>
+> nit: I dont think you need this arg_type_is_release() change
+>
+
+Ack.
+
 > > +
->
-> no need to move it?
->
-
-Yeah, will fix.
-
 > >  /* There are two register types representing a bpf_dynptr, one is PTR_TO_STACK
 > >   * which points to a stack slot, and the other is CONST_PTR_TO_DYNPTR.
 > >   *
@@ -208,46 +281,30 @@ Yeah, will fix.
 > > -       if (reg->type == PTR_TO_STACK && (reg->off % BPF_REG_SIZE)) {
 > > -               verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
 > > -               return -EINVAL;
+>
 > > +       if (reg->type == PTR_TO_STACK) {
 > > +               err = dynptr_get_spi(env, reg);
 > > +               if (err < 0)
 > > +                       return err;
 > >         }
-> > +
-> >         /*  MEM_UNINIT - Points to memory that is an appropriate candidate for
-> >          *               constructing a mutable bpf_dynptr object.
-> >          *
-> > @@ -6070,11 +6113,6 @@ static bool arg_type_is_mem_size(enum bpf_arg_type type)
-> >                type == ARG_CONST_SIZE_OR_ZERO;
-> >  }
-> >
-> > -static bool arg_type_is_release(enum bpf_arg_type type)
-> > -{
-> > -       return type & OBJ_RELEASE;
-> > -}
-> > -
-> >  static bool arg_type_is_dynptr(enum bpf_arg_type type)
-> >  {
-> >         return base_type(type) == ARG_PTR_TO_DYNPTR;
-> > @@ -6404,8 +6442,9 @@ static u32 dynptr_ref_obj_id(struct bpf_verifier_env *env, struct bpf_reg_state
 >
-> why not make dynptr_ref_obj_id return int and <0 on error? There seems
-> to be just one place where we call dynptr_ref_obj_id and we can check
-> and report error there
+> nit: if we do something like
+>
+> If (reg->type == PTR_TO_STACK) {
+>     spi = dynptr_get_spi(env, reg);
+>     if (spi < 0)
+>         return spi;
+> } else {
+>     spi = __get_spi(reg->off);
+> }
+>
+> then we can just pass in spi to is_dynptr_reg_valid_uninit() and
+> is_dynptr_reg_valid_init() instead of having to recompute/check them
+> again
 >
 
-Good suggestion, I'll make that change.
+Seems a little misleading to set it to something in the else branch (where stack
+pointer index has no meaning), but I do see your point, I guess it can be
+ignored for the other case and set to 0 by default.
 
-> >
-> >         if (reg->type == CONST_PTR_TO_DYNPTR)
-> >                 return reg->ref_obj_id;
-> > -
-> > -       spi = get_spi(reg->off);
-> > +       spi = dynptr_get_spi(env, reg);
-> > +       if (WARN_ON_ONCE(spi < 0))
-> > +               return U32_MAX;
-> >         return state->stack[spi].spilled_ptr.ref_obj_id;
-> >  }
-> >
->
 > [...]
