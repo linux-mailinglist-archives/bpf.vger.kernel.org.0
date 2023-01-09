@@ -2,152 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C19E266295B
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 16:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E064D66297C
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 16:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236059AbjAIPIE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 10:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
+        id S236956AbjAIPMQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 10:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235112AbjAIPHb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 10:07:31 -0500
-X-Greylist: delayed 249 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Jan 2023 07:07:29 PST
-Received: from faui40.informatik.uni-erlangen.de (faui40.informatik.uni-erlangen.de [IPv6:2001:638:a000:4134::ffff:40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869DEB8D;
-        Mon,  9 Jan 2023 07:07:29 -0800 (PST)
-Received: from luis-i4.informatik.uni-erlangen.de (i4laptop35.informatik.uni-erlangen.de [10.188.34.202])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: gerhorst)
-        by faui40.informatik.uni-erlangen.de (Postfix) with ESMTPSA id 4NrHNs2GvsznkXl;
-        Mon,  9 Jan 2023 16:07:25 +0100 (CET)
-From:   Luis Gerhorst <gerhorst@cs.fau.de>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Piotr Krysiuk <piotras@gmail.com>,
-        Benedict Schlueter <benedict.schlueter@rub.de>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Cc:     Luis Gerhorst <gerhorst@cs.fau.de>,
-        stefan.saecherl@use.startmail.com,
-        Henriette Hofmeier <henriette.hofmeier@rub.de>
-Subject: [PATCH] bpf: Fix pointer-leak due to insufficient speculative store bypass mitigation
-Date:   Mon,  9 Jan 2023 16:05:46 +0100
-Message-Id: <20230109150544.41465-1-gerhorst@cs.fau.de>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <edc95bad-aada-9cfc-ffe2-fa9bb206583c@cs.fau.de>
-References: 
+        with ESMTP id S236945AbjAIPL2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 10:11:28 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7581FF02A;
+        Mon,  9 Jan 2023 07:11:19 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id c26so1905272pfp.10;
+        Mon, 09 Jan 2023 07:11:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mbMyQ+Lk6XMV45ZxQEld3vGI2Hm83HoIjGeiP+5YohY=;
+        b=UiyJWV8IESgIQ+htn089mbpQcf/DLM9JuIZW92t4SLyj7AJACTqzJqRhhioRc+Z08O
+         ffJigl+z8xYM/epYBQLukDEyeOtTH1tM7SAJbR7WOX7BbZ/FrxXl23ilCtw/lhtOVpeF
+         pQDilsaYeJlxPdgOuB2kpOB9N/22VjmvkMgJj3N35N3ajCe35g+vg/lIrj2unu/Evrpx
+         fU2zQ9eqCPlN/nNvTZOa47ifIE3siIIOYkbW9vsA3YVH85KM6Oa4xBeI6OXmCZpoM9i2
+         b5kAMbdtBNPmjzzxKBYfzZUeGVBUUWf0ZNBmFg9UICKxIcyhk5OqehRsRS1GdlmX7Sb4
+         De4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mbMyQ+Lk6XMV45ZxQEld3vGI2Hm83HoIjGeiP+5YohY=;
+        b=0Og63mnKnkLCjRttBZPdyN8VozjcRU0av3C0wx3bjU6vCL2kVOoAStZzPihJIktF9T
+         5nz9MKJFbzgHBVbl5ap3ff/fDyOf9six3gAeST+wS3Uo7w0GPnwQJRisZ/VfGTZ2/nIR
+         PV2lKB1l2+vPKGhMG6L3DsQADW1EmQpq7X84fnFazjrdFkZN9UujT7ZT4V+MbqJwG4Qq
+         7RHGhnpWrQOfGwYjgc42PVXfK7SP8DH4pG5YUTr0ZPdvZrrOG2iUhs3M4iV71cyMB30x
+         6+OEnxnlMHHTHpox/VRribSl0Wk+OxFsnYAXJ1ppTKPqen92EVXPIeXFAAmgf7aZA+JE
+         ZH3g==
+X-Gm-Message-State: AFqh2kpLebFNqVZUXPo/k2iJ3wOv+5LEkc0I2s6t7oI2cUOGtdRhHa8z
+        uI4aBLVclZKIhDYuAkZLBvLf8mFmvJYKf4rgz3w=
+X-Google-Smtp-Source: AMrXdXtaMXZw+A+awBZWMsLxBBg2VbK1BTjUoNNl6u+Vm395uYoqWXtbYO/zcm6KlM3AUdY2y8deWO0NXh0INgA2vaA=
+X-Received: by 2002:a63:f957:0:b0:477:98cc:3d01 with SMTP id
+ q23-20020a63f957000000b0047798cc3d01mr3281088pgk.505.1673277078970; Mon, 09
+ Jan 2023 07:11:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230103164359.24347-1-ysionneau@kalray.eu> <CAEr6+ECRh_9App18zmcS6FUR81YYhR=n4kGdeZAtQBsdMB55_A@mail.gmail.com>
+ <6570d22d-ee19-f8b1-6fb4-bf8865ec4142@kalray.eu>
+In-Reply-To: <6570d22d-ee19-f8b1-6fb4-bf8865ec4142@kalray.eu>
+From:   Jeff Xie <xiehuan09@gmail.com>
+Date:   Mon, 9 Jan 2023 23:11:07 +0800
+Message-ID: <CAEr6+ECPFeokSULpWzYEYLROYHXNA0PtvdUchT37d4_qVA-PKQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/25] Upstream kvx Linux port
+To:     Yann Sionneau <ysionneau@kalray.eu>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>, bpf@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        devicetree@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>,
+        Eric Paris <eparis@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Jason Baron <jbaron@akamai.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-audit@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, Alex Michon <amichon@kalray.eu>,
+        Ashley Lesdalons <alesdalons@kalray.eu>,
+        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
+        Clement Leger <clement.leger@bootlin.com>,
+        Guillaume Missonnier <gmissonnier@kalray.eu>,
+        Guillaume Thouvenin <gthouvenin@kalray.eu>,
+        Jean-Christophe Pince <jcpince@gmail.com>,
+        Jonathan Borne <jborne@kalray.eu>,
+        Jules Maselbas <jmaselbas@kalray.eu>,
+        Julian Vetter <jvetter@kalray.eu>,
+        Julien Hascoet <jhascoet@kalray.eu>,
+        Julien Villette <jvillette@kalray.eu>,
+        Louis Morhet <lmorhet@kalray.eu>,
+        Luc Michel <lmichel@kalray.eu>,
+        =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
+        Marius Gligor <mgligor@kalray.eu>,
+        Samuel Jones <sjones@kalray.eu>,
+        Thomas Costis <tcostis@kalray.eu>,
+        Vincent Chardon <vincent.chardon@elsys-design.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To mitigate Spectre v4, 2039f26f3aca ("bpf: Fix leakage due to
-insufficient speculative store bypass mitigation") inserts lfence
-instructions after 1) initializing a stack slot and 2) spilling a
-pointer to the stack.
+On Mon, Jan 9, 2023 at 9:21 PM Yann Sionneau <ysionneau@kalray.eu> wrote:
+>
+> Hi Jeff,
+>
+> On 1/7/23 07:25, Jeff Xie wrote:
+> > Hi,
+> >
+> > On Wed, Jan 4, 2023 at 1:01 AM Yann Sionneau <ysionneau@kalray.eu> wrot=
+e:
+> >> [snip]
+> >>
+> >> A kvx toolchain can be built using:
+> >> # install dependencies: texinfo bison flex libgmp-dev libmpc-dev libmp=
+fr-dev
+> >> $ git clone https://github.com/kalray/build-scripts
+> >> $ cd build-scripts
+> >> $ source last.refs
+> >> $ ./build-kvx-xgcc.sh output
+> > I would like to build the kvx-xgcc to compile and test the linux
+> > kernel, but it reported a compile error.
+> > I wonder what version of gcc you are using.
+> >
+> > My build environment:
+> > VERSION=3D"20.04.2 LTS (Focal Fossa)"
+> > gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)
+> >
+> >
+> > Compile error:
+> > $ ./build-kvx-xgcc.sh output
+> >
+> > ../../binutils/libiberty/fibheap.c: In function =E2=80=98fibheap_replac=
+e_key_data=E2=80=99:
+> > ../../binutils/libiberty/fibheap.c:38:24: error: =E2=80=98LONG_MIN=E2=
+=80=99 undeclared
+> > (first use in this function)
+> >     38 | #define FIBHEAPKEY_MIN LONG_MIN
+> >        |                        ^~~~~~~~
+> > [snip]
+>
+> What SHA1 of https://github.com/kalray/build-scripts are you using?
 
-However, this does not cover cases where a stack slot is first
-initialized with a pointer (subject to sanitization) but then
-overwritten with a scalar (not subject to sanitization because the slot
-was already initialized). In this case, the second write may be subject
-to speculative store bypass (SSB) creating a speculative
-pointer-as-scalar type confusion. This allows the program to
-subsequently leak the numerical pointer value using, for example, a
-branch-based cache side channel.
+I have executed the "source last.refs"
 
-To fix this, also sanitize scalars if they write a stack slot that
-previously contained a pointer. Assuming that pointer-spills are only
-generated by LLVM on register-pressure, the performance impact on most
-real-world BPF programs should be small.
+> We are building our toolchain on Ubuntu 18.04 / 20.04 and 22.04 without
+> issues, I don't understand why it does not work for you, although indeed
+> the error log you are having pops out on my search engine and seems to
+> be some well known issue.
 
-The following unprivileged BPF bytecode drafts a minimal exploit and the
-mitigation:
+Yes, there are many answers on the web, but none of them solve this problem=
+.
 
-  [...]
-  // r6 = 0 or 1 (skalar, unknown user input)
-  // r7 = accessible ptr for side channel
-  // r10 = frame pointer (fp), to be leaked
-  //
-  r9 = r10 # fp alias to encourage ssb
-  *(u64 *)(r9 - 8) = r10 // fp[-8] = ptr, to be leaked
-  // lfence added here because of pointer spill to stack.
-  //
-  // Ommitted: Dummy bpf_ringbuf_output() here to train alias predictor
-  // for no r9-r10 dependency.
-  //
-  *(u64 *)(r10 - 8) = r6 // fp[-8] = scalar, overwrites ptr
-  // 2039f26f3aca: no lfence added because stack slot was not STACK_INVALID,
-  // store may be subject to SSB
-  //
-  // fix: also add an lfence when the slot contained a ptr
-  //
-  r8 = *(u64 *)(r9 - 8)
-  // r8 = architecturally a scalar, speculatively a ptr
-  //
-  // leak ptr using branch-based cache side channel:
-  r8 &= 1 // choose bit to leak
-  if r8 == 0 goto SLOW // no mispredict
-  // architecturally dead code if input r6 is 0,
-  // only executes speculatively iff ptr bit is 1
-  r8 = *(u64 *)(r7 + 0) # encode bit in cache (0: slow, 1: fast)
-SLOW:
-  [...]
+> If the build-script does not work for you, you can still use the
+> pre-built toolchains generated by the GitHub automated actions:
+> https://github.com/kalray/build-scripts/releases/tag/v4.11.1 ("latest"
+> means 22.04)
 
-After running this, the program can time the access to *(r7 + 0) to
-determine whether the chosen pointer bit was 0 or 1. Repeat this 64
-times to recover the whole address on amd64.
+Thanks, this is the final solution ;-)
 
-In summary, sanitization can only be skipped if one scalar is
-overwritten with another scalar. Scalar-confusion due to speculative
-store bypass can not lead to invalid accesses because the pointer bounds
-deducted during verification are enforced using branchless logic. See
-979d63d50c0c ("bpf: prevent out of bounds speculation on pointer
-arithmetic") for details.
+>
+> I hope it will work for you.
+>
+> Regards,
+>
+> --
+>
+> Yann
+>
+>
+>
+>
+>
 
-Do not make the mitigation depend on
-!env->allow_{uninit_stack,ptr_leaks} because speculative leaks are
-likely unexpected if these were enabled. For example, leaking the
-address to a protected log file may be acceptable while disabling the
-mitigation might unintentionally leak the address into the cached-state
-of a map that is accessible to unprivileged processes.
 
-Fixes: 2039f26f3aca ("bpf: Fix leakage due to insufficient speculative store bypass mitigation")
-Signed-off-by: Luis Gerhorst <gerhorst@cs.fau.de>
-Acked-by: Henriette Hofmeier <henriette.hofmeier@rub.de>
----
- kernel/bpf/verifier.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a5255a0dcbb6..5e3aa4a75bd6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3287,7 +3287,8 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
- 		bool sanitize = reg && is_spillable_regtype(reg->type);
- 
- 		for (i = 0; i < size; i++) {
--			if (state->stack[spi].slot_type[i] == STACK_INVALID) {
-+			u8 type = state->stack[spi].slot_type[i];
-+			if (type != STACK_MISC && type != STACK_ZERO) {
- 				sanitize = true;
- 				break;
- 			}
--- 
-2.34.1
-
+--=20
+Thanks,
+JeffXie
