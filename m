@@ -2,85 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EF16626D8
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 14:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38C1662725
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 14:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236722AbjAINVs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 08:21:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
+        id S234660AbjAINdm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 08:33:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237177AbjAINVn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 08:21:43 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C5613F14;
-        Mon,  9 Jan 2023 05:21:37 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id c6so9490568pls.4;
-        Mon, 09 Jan 2023 05:21:37 -0800 (PST)
+        with ESMTP id S237001AbjAINco (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 08:32:44 -0500
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79031EECC
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 05:32:42 -0800 (PST)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-4c15c4fc8ccso112701767b3.4
+        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 05:32:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=55cpmeYHA7DCtU0PqJDR9yhzjmXYqv18FD85Rkv9woI=;
-        b=FK6l095MUD0scUeQQVsycfqA8gu9K77WOSdijrpoIOCh5uTZHEOZzosXBEot0ZobeI
-         7H+TRpqL78YqAh9D5XVgQkrWpWkZtuejaJorhoXE+W8nU7gAuxJ6XXE3JHaI2mXJ+eJh
-         30ObtdKJWlgQ1HuYmtG/c+6gJnJ6dRDwC9GrR90jAwS6zRkpZwM4xjg1OZ1o4JQhTtmr
-         xdckMIMZ9rzOdO1zv/O+dvyi9hwy9jbyD3eFfyxCoL3n0yxMyjayxfcQIr+22pvOmlZJ
-         P1wHshyYjqLp7HlnNqZzcysTM/PWuIOFqnvoiRtobV0Wbt38cbrX7keSHP0H1e5bwooP
-         6lVA==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=olTOKnPOgS/t+4/UoX5jAk49hINYRAGGMffFkFN4Zyg=;
+        b=G6gQ8d/IvBZu3F0phv08SuiPHxUXSuiMOKjDhEh+YdFq1I7L7atA0RoEn9jsuTi86k
+         ocwPkUn95iAasKCv1D4lBF77iihiuFsmx4pm/9MRsMjI18cuL6z/FaOats5iNfRPXIhZ
+         XoBEyeC75IT7vej4dKP2MrrP3LY7Eydc+13aEQz8E0tSyG+OL4Uo7xuLbLPjmWXlrV0r
+         oXaFLs9chOxbNDAeesqa64P2RMF22EVbyP03C5g4ZXllbJHFaAmO0nLcqaxLFqpM5K+4
+         7NeNPuu0HXLpJiTRO8qHXcDa66gmglJuDHggCBILSNIEYAClWSXuX16Rhvgq3HdxgBX3
+         kuDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=55cpmeYHA7DCtU0PqJDR9yhzjmXYqv18FD85Rkv9woI=;
-        b=mjhEZZPwpfkBgp53bLlBRORtESb9m8ExyyOM6W3PO7+zZ/XpIdbfTRvdOskfGjwCn1
-         t6MLLGrjXSi70H/pfOEFw70dBTgsqKrdS9Fo151/13yBK9KpSD+Euo8yTSZ+jjZARixn
-         Yh6eFnoOMwNAJ6GaiDL84KwQAQuae/0yTq9CP5hOyPrRpPRJgUYJ3EUg41/JTGaxH2q3
-         uwUnnfGMVVfqXGmg03CDH9yy4dPDhLQDZEssqL4PmZ4jENgfpBDCyXVQAclGlqA68cwg
-         k6Cq0UKyRqtWA7BEg4FCN3Ko/q2Cquo9yIDUm2tD/WYzg1AfiDsZDJMzUl5YnBa9Jf3a
-         1MnQ==
-X-Gm-Message-State: AFqh2kp1KhkVCvQ6TVL85yas9/vHJqWAP+i5Psj4dAW/chbss+J7YdXM
-        DArCNzFjfb+ORisw2gC/Ig==
-X-Google-Smtp-Source: AMrXdXvAYrPKulRkWDMDkwUh/XI/kD/WRdk/GJnFImKeGNuyE74rB44oQYKXTl1ohOR1xXeocb2aeg==
-X-Received: by 2002:a05:6a20:d68f:b0:9d:efbf:48e7 with SMTP id it15-20020a056a20d68f00b0009defbf48e7mr82635536pzb.43.1673270496686;
-        Mon, 09 Jan 2023 05:21:36 -0800 (PST)
-Received: from smtpclient.apple (n119236129232.netvigator.com. [119.236.129.232])
-        by smtp.gmail.com with ESMTPSA id x9-20020aa79569000000b00581f8965116sm5987111pfq.202.2023.01.09.05.21.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Jan 2023 05:21:36 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.300.101.1.3\))
-Subject: Re: KASAN: use-after-free Read in ___bpf_prog_run
-From:   Hao Sun <sunhao.th@gmail.com>
-In-Reply-To: <501fb848-5211-7706-aee2-4eac6310f1ae@meta.com>
-Date:   Mon, 9 Jan 2023 21:21:22 +0800
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <933A445C-725E-4BC2-8860-2D0A92C34C58@gmail.com>
-References: <CACkBjsbS0jeOUFzxWH-bBay9=cTQ_S2JbMnAa7V2sHpp_19PPw@mail.gmail.com>
- <52379286-960e-3fcd-84a2-3cab4d3b7c4e@meta.com>
- <5B270DBF-E305-4C86-B246-F5C8A5D942CA@gmail.com>
- <501fb848-5211-7706-aee2-4eac6310f1ae@meta.com>
-To:     Yonghong Song <yhs@meta.com>
-X-Mailer: Apple Mail (2.3731.300.101.1.3)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=olTOKnPOgS/t+4/UoX5jAk49hINYRAGGMffFkFN4Zyg=;
+        b=2Y6t7FmIyCLJTzU6GNgV2lgOvK3sChw9S3hI99OvlDFHTgyxJ2JS/X3KBrbsAfAAZb
+         JflpbLKYi6AxW71RQ2KIIYSmEgVZzJlZ6O9Nmk6wF8rJ0InP6pk9zXasTrNRKqnmUs3r
+         1tkpv61h+6nhBHTtQbjLQ0a6WwiSZtP5YUsCrwXcqUufa3QsW28Yk/wVKz78PnHqwuJ0
+         qGGxqcgSwyVeoTy/yTqkH8dIJaKXqP99yQkKCoc7anMyBfw2+D+AZ/q1+oSf0qFMDsoa
+         v6u2wcHWCugzdyZ2PiFOcDybsqSxJRupuaCPg/RHPYUMwUL3w2syTXyg5sid62ExAIul
+         n1vw==
+X-Gm-Message-State: AFqh2kqLgSjeN32OvjKe3nD1/kD6bvchwZZz4XgJFYwijWHOt8JXzbRT
+        sLGsqMX+8mUUQ3gYNBnlZIYOwaKVi1KelfnfXZBaxQ==
+X-Google-Smtp-Source: AMrXdXsLkT9+aDSKB/tl/3oeQXVB7Ro0cimypp97ea7ZYM3G78SCsOvtnytn6p78vuCkM3SRVQjtEPScBVde134tKGA=
+X-Received: by 2002:a05:690c:fd1:b0:4ac:cd7c:18d2 with SMTP id
+ dg17-20020a05690c0fd100b004accd7c18d2mr2410681ywb.427.1673271162057; Mon, 09
+ Jan 2023 05:32:42 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1672976410.git.william.xuanziyang@huawei.com>
+ <7e9ca6837b20bea661248957dbbd1db198e3d1f8.1672976410.git.william.xuanziyang@huawei.com>
+ <Y7h8yrOEkPuHkNpJ@google.com> <CA+FuTSdZ+za55p1kKOcGby89F_ybRhAfy2cG0R+Y00yaJTbVkg@mail.gmail.com>
+ <4d0e5f2b-d088-58f4-d86d-00aa444d77c0@huawei.com>
+In-Reply-To: <4d0e5f2b-d088-58f4-d86d-00aa444d77c0@huawei.com>
+From:   Willem de Bruijn <willemb@google.com>
+Date:   Mon, 9 Jan 2023 08:32:05 -0500
+Message-ID: <CA+FuTSeE-S9_Uc6Cqs=EqYZd-K6kj=Ex4sudNx7u8HMLcrereQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add ipip6 and ip6ip decap support for bpf_skb_adjust_room()
+To:     "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, sdf@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,114 +74,221 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Jan 9, 2023 at 4:20 AM Ziyang Xuan (William)
+<william.xuanziyang@huawei.com> wrote:
+>
+> > On Fri, Jan 6, 2023 at 2:55 PM <sdf@google.com> wrote:
+> >>
+> >> On 01/06, Ziyang Xuan wrote:
+> >>> Add ipip6 and ip6ip decap support for bpf_skb_adjust_room().
+> >>> Main use case is for using cls_bpf on ingress hook to decapsulate
+> >>> IPv4 over IPv6 and IPv6 over IPv4 tunnel packets.
+> >>
+> >> CC'd Willem since he has done bpf_skb_adjust_room changes in the past.
+> >> There might be a lot of GRO/GSO context I'm missing.
+> >>
+> >>> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> >>> ---
+> >>>   net/core/filter.c | 34 ++++++++++++++++++++++++++++++++--
+> >>>   1 file changed, 32 insertions(+), 2 deletions(-)
+> >>
+> >>> diff --git a/net/core/filter.c b/net/core/filter.c
+> >>> index 929358677183..73982fb4fe2e 100644
+> >>> --- a/net/core/filter.c
+> >>> +++ b/net/core/filter.c
+> >>> @@ -3495,6 +3495,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb,
+> >>> u32 off, u32 len_diff,
+> >>>   static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+> >>>                             u64 flags)
+> >>>   {
+> >>> +     union {
+> >>> +             struct iphdr *v4;
+> >>> +             struct ipv6hdr *v6;
+> >>> +             unsigned char *hdr;
+> >>> +     } ip;
+> >>> +     __be16 proto;
+> >>>       int ret;
+> >>
+> >>>       if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
+> >>> @@ -3512,10 +3518,19 @@ static int bpf_skb_net_shrink(struct sk_buff
+> >>> *skb, u32 off, u32 len_diff,
+> >>>       if (unlikely(ret < 0))
+> >>>               return ret;
+> >>
+> >>> +     ip.hdr = skb_inner_network_header(skb);
+> >>> +     if (ip.v4->version == 4)
+> >>> +             proto = htons(ETH_P_IP);
+> >>> +     else
+> >>> +             proto = htons(ETH_P_IPV6);
+> >>> +
+> >>>       ret = bpf_skb_net_hdr_pop(skb, off, len_diff);
+> >>>       if (unlikely(ret < 0))
+> >>>               return ret;
+> >>
+> >>> +     /* Match skb->protocol to new outer l3 protocol */
+> >>> +     skb->protocol = proto;
+> >>> +
+> >>>       if (skb_is_gso(skb)) {
+> >>>               struct skb_shared_info *shinfo = skb_shinfo(skb);
+> >>
+> >>> @@ -3578,10 +3593,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
+> >>> skb, s32, len_diff,
+> >>>          u32, mode, u64, flags)
+> >>>   {
+> >>>       u32 len_cur, len_diff_abs = abs(len_diff);
+> >>> -     u32 len_min = bpf_skb_net_base_len(skb);
+> >>> -     u32 len_max = BPF_SKB_MAX_LEN;
+> >>> +     u32 len_min, len_max = BPF_SKB_MAX_LEN;
+> >>>       __be16 proto = skb->protocol;
+> >>>       bool shrink = len_diff < 0;
+> >>> +     union {
+> >>> +             struct iphdr *v4;
+> >>> +             struct ipv6hdr *v6;
+> >>> +             unsigned char *hdr;
+> >>> +     } ip;
+> >>>       u32 off;
+> >>>       int ret;
+> >>
+> >>> @@ -3594,6 +3613,9 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
+> >>> skb, s32, len_diff,
+> >>>                    proto != htons(ETH_P_IPV6)))
+> >>>               return -ENOTSUPP;
+> >>
+> >>> +     if (unlikely(shrink && !skb->encapsulation))
+> >>> +             return -ENOTSUPP;
+> >>> +
+> >
+> > This new restriction might break existing users.
+> >
+> > There is no pre-existing requirement that shrink is used solely with
+> > packets encapsulated by the protocol stack.
+> >
+> > Indeed, skb->encapsulation is likely not set on packets arriving from
+> > the wire, even if encapsulated. Referring to your comment "Main use
+> > case is for using cls_bpf on ingress hook to decapsulate"
+> >
+> > Can a combination of the existing bpf_skb_adjust_room and
+> > bpf_skb_change_proto address your problem?
+>
+> Hello Willem,
+>
+> I think combination bpf_skb_adjust_room and bpf_skb_change_proto can not
+> address my problem.
+>
+> Now, bpf_skb_adjust_room() would fail for "len_cur - len_diff_abs < len_min"
+> when decap ipip6 packet, because "len_min" should be sizeof(struct iphdr)
+> but not sizeof(struct ipv6hdr).
+>
+> We can remove skb->encapsulation restriction and parse outer and inner IP
+> header to determine ipip6 and ip6ip packets. As following:
 
+Adding logic for network layer protocol conversion like this looks
+good to me. bpf_skb_adjust_room already has a few other metadata
+quirks.
 
-Yonghong Song <yhs@meta.com> =E4=BA=8E2022=E5=B9=B412=E6=9C=8818=E6=97=A5=E5=
-=91=A8=E6=97=A5 00:57=E5=86=99=E9=81=93=EF=BC=9A
->=20
->=20
->=20
-> On 12/16/22 10:54 PM, Hao Sun wrote:
->>=20
->>=20
->>> On 17 Dec 2022, at 1:07 PM, Yonghong Song <yhs@meta.com> wrote:
->>>=20
->>>=20
->>>=20
->>> On 12/14/22 11:49 PM, Hao Sun wrote:
->>>> Hi,
->>>> The following KASAN report can be triggered by loading and test
->>>> running this simple BPF prog with a random data/ctx:
->>>> 0: r0 =3D bpf_get_current_task_btf      ;
->>>> R0_w=3Dtrusted_ptr_task_struct(off=3D0,imm=3D0)
->>>> 1: r0 =3D *(u32 *)(r0 +8192)       ;
->>>> R0_w=3Dscalar(umax=3D4294967295,var_off=3D(0x0; 0xffffffff))
->>>> 2: exit
->>>> I've simplified the C reproducer but didn't find the root cause.
->>>> JIT was disabled, and the interpreter triggered UAF when executing
->>>> the load insn. A slab-out-of-bound read can also be triggered:
->>>> https://pastebin.com/raw/g9zXr8jU
->>>> This can be reproduced on:
->>>> HEAD commit: b148c8b9b926 selftests/bpf: Add few corner cases to =
-test
->>>> padding handling of btf_dump
->>>> git tree: bpf-next
->>>> console log: https://pastebin.com/raw/1EUi9tJe
->>>> kernel config: https://pastebin.com/raw/rgY3AJDZ
->>>> C reproducer: https://pastebin.com/raw/cfVGuCBm
->>>=20
->>> I I tried with your above kernel config and C reproducer and cannot =
-reproduce the kasan issue you reported.
->>>=20
->>> [root@arch-fb-vm1 bpf-next]# ./a.out
->>> func#0 @0
->>> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
->>> 0: (85) call bpf_get_current_task_btf#158     ; =
-R0_w=3Dtrusted_ptr_task_struct(off=3D0,imm=3D0)
->>> 1: (61) r0 =3D *(u32 *)(r0 +8192)       ; =
-R0_w=3Dscalar(umax=3D4294967295,var_off=3D(0x0; 0xffffffff))
->>> 2: (95) exit
->>> processed 3 insns (limit 1000000) max_states_per_insn 0 total_states =
-0 peak_states 0 mark_read 0
->>>=20
->>> prog fd: 3
->>> [root@arch-fb-vm1 bpf-next]#
->>>=20
->>> Your config indeed has kasan on.
->>=20
->> Hi,
->>=20
->> I can still reproduce this on a latest bpf-next build: 0e43662e61f25
->> (=E2=80=9Ctools/resolve_btfids: Use pkg-config to locate libelf=E2=80=9D=
-).
->> The simplified C reproducer sometime need to be run twice to trigger
->> the UAF. Also note that interpreter is required. Here is the original
->> C reproducer that loads and runs the BPF prog continuously for your
->> convenience:
->> https://pastebin.com/raw/WSJuNnVU
->>=20
->=20
-> I still cannot reproduce with more than 10 runs. The config has jit =
-off
-> so it already uses interpreter. It has kasan on as well.
-> # CONFIG_BPF_JIT is not set
->=20
-> Since you can reproduce it, I guess it would be great if you can
-> continue to debug this.
->=20
+But like those, let's make this intent explicit: define a new flag
+that requests this behavior.
 
-The load insn =E2=80=98r0 =3D *(u32*) (current + 8192)=E2=80=99 is OOB, =
-because sizeof(task_struct)
-is 7240 as shown in KASAN report. The issue is that struct task_struct =
-is special,
-its runtime size is actually smaller than it static type size. In X86:
+Let's avoid introducing a new union. Just use check (ip_hdr(skb)->version == 4).
 
-task_struct->thread_struct->fpu->fpstate->union fpregs_state is
-/*
-* ...
-* The size of the structure is determined by the largest
-* member - which is the xsave area. The padding is there
-* to ensure that statically-allocated task_structs (just
-* the init_task today) have enough space.
-*/
-union fpregs_state {
-	struct fregs_state fsave;
-	struct fxregs_state fxsave;
-	struct swregs_state soft;
-	struct xregs_state xsave;
-	u8 __padding[PAGE_SIZE];
-};
-
-In btf_struct_access(), the resolved size for task_struct is 10496, much =
-bigger
-than its runtime size, so the prog in reproducer passed the verifier and =
-leads
-to the oob. This can happen to all similar types, whose runtime size is =
-smaller
-than its static size.
-
-Not sure how many similar cases are there, maybe special check to =
-task_struct
-is enough. Any hint on how this should be addressed?
-
-
+>
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3498,6 +3498,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+>  static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+>                               u64 flags)
+>  {
+> +       union {
+> +               struct iphdr *v4;
+> +               struct ipv6hdr *v6;
+> +               unsigned char *hdr;
+> +       } ip;
+> +       __be16 proto;
+>         int ret;
+>
+>         if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
+> @@ -3515,10 +3521,23 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+>         if (unlikely(ret < 0))
+>                 return ret;
+>
+> +       ip.hdr = skb_network_header(skb);
+> +       if (ip.v4->version == 4) {
+> +               if (ip.v4->protocol == IPPROTO_IPV6)
+> +                       proto = htons(ETH_P_IPV6);
+> +       } else {
+> +               struct ipv6_opt_hdr *opt_hdr = (struct ipv6_opt_hdr *)(skb_network_header(skb) + sizeof(struct ipv6hdr));
+> +               if (ip.v6->nexthdr == NEXTHDR_DEST && opt_hdr->nexthdr == NEXTHDR_IPV4)
+> +                       proto = htons(ETH_P_IP);
+> +       }
+> +
+>         ret = bpf_skb_net_hdr_pop(skb, off, len_diff);
+>         if (unlikely(ret < 0))
+>                 return ret;
+>
+> +       /* Match skb->protocol to new outer l3 protocol */
+> +       skb->protocol = proto;
+> +
+>         if (skb_is_gso(skb)) {
+>                 struct skb_shared_info *shinfo = skb_shinfo(skb);
+>
+> @@ -3585,6 +3604,11 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
+>         u32 len_max = BPF_SKB_MAX_LEN;
+>         __be16 proto = skb->protocol;
+>         bool shrink = len_diff < 0;
+> +       union {
+> +               struct iphdr *v4;
+> +               struct ipv6hdr *v6;
+> +               unsigned char *hdr;
+> +       } ip;
+>         u32 off;
+>         int ret;
+>
+> @@ -3608,6 +3632,19 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
+>                 return -ENOTSUPP;
+>         }
+>
+> +       if (shrink) {
+> +               ip.hdr = skb_network_header(skb);
+> +               if (ip.v4->version == 4) {
+> +                       if (ip.v4->protocol == IPPROTO_IPV6)
+> +                               len_min = sizeof(struct ipv6hdr);
+> +               } else {
+> +                       struct ipv6_opt_hdr *opt_hdr = (struct ipv6_opt_hdr *)(skb_network_header(skb) + sizeof(struct ipv6hdr));
+> +                       if (ip.v6->nexthdr == NEXTHDR_DEST && opt_hdr->nexthdr == NEXTHDR_IPV4) {
+> +                               len_min = sizeof(struct iphdr);
+> +                       }
+> +               }
+> +       }
+> +
+>         len_cur = skb->len - skb_network_offset(skb);
+>
+>
+> Look forward to your comments and suggestions.
+>
+> Thank you!
+>
+> >
+> >>>       off = skb_mac_header_len(skb);
+> >>>       switch (mode) {
+> >>>       case BPF_ADJ_ROOM_NET:
+> >>> @@ -3605,6 +3627,14 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *,
+> >>> skb, s32, len_diff,
+> >>>               return -ENOTSUPP;
+> >>>       }
+> >>
+> >>> +     if (shrink) {
+> >>> +             ip.hdr = skb_inner_network_header(skb);
+> >>> +             if (ip.v4->version == 4)
+> >>> +                     len_min = sizeof(struct iphdr);
+> >>> +             else
+> >>> +                     len_min = sizeof(struct ipv6hdr);
+> >>> +     }
+> >>> +
+> >>>       len_cur = skb->len - skb_network_offset(skb);
+> >>>       if ((shrink && (len_diff_abs >= len_cur ||
+> >>>                       len_cur - len_diff_abs < len_min)) ||
+> >>> --
+> >>> 2.25.1
+> >>
+> > .
+> >
