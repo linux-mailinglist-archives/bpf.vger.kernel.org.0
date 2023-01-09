@@ -2,134 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB39662E0E
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 19:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3155662E51
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 19:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237500AbjAISFZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 13:05:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
+        id S233916AbjAISKP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 13:10:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237511AbjAISEo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 13:04:44 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8192F43DAC
-        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 10:04:05 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id y2-20020a17090a784200b00225c0839b80so3317992pjl.5
-        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 10:04:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=trG36qMQ9Re5MPDk2HW7Rz6kxqCJt0NIEgnLH9yO4Qo=;
-        b=HehybKvulMs/fj932ds2sW8yaDNuxCqU3mQZ9Xp/6FeZgQLCpuD3ZrO8yDhdhzCqGT
-         mtAIs9DLKCao4jgTr6Iw0jHGhPbTn2a/EI88HINLhb0DUgxyjbTMfQztJE4xniRi+GOv
-         OO3Qv4DtYFW+K1TEGk0WCN431bBV1ccEqlluaup5Pxi/ixG76aZud0oY8YFgc+Fcc77e
-         Bk7hooKkvwNM2B2TxYqBdnhVq1gcTGt9QpVM242Wy6Z6YKqowRrDjYYlg6PX8HRb8Pey
-         dCWY3vxAIvU2uqWH7j82OVQ4bimredsJCd4G42HHn31cO+u/iEmtxbwbkynLgsk8ebNu
-         TVKQ==
+        with ESMTP id S237379AbjAISJM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 13:09:12 -0500
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0426DAF
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 10:08:45 -0800 (PST)
+Received: by mail-il1-f198.google.com with SMTP id l13-20020a056e021c0d00b003034e24b866so6704016ilh.22
+        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 10:08:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=trG36qMQ9Re5MPDk2HW7Rz6kxqCJt0NIEgnLH9yO4Qo=;
-        b=YA8CzldjRu5Cxc5pF8Kj+KVcT91z73wwUBNZHt/Ctz12s9d8I9ypZ1JbLs6BX4WtUD
-         6fSG/X+5q9G96sW5kPL03mG/7o8b/RaWIr49POp7bkfwQtphnV95yqmToJaIeHO89eUS
-         gI6LO8MpLvBtlw3ZcD/1Yn4sBQPw/JkcyKfnm4/fZ/UIvJWSxPUsS8mfEEtmqn3jeXHJ
-         Z4IIE2tev4Xh8vrLj4caBXTSrOL+NuOPYJMLIydjSOGeqpo5LO9KouWaRIVMnGPtWi+C
-         ClFqH9ifVUc+XeZsVShB4euLup3ov2oVUofQj7C2c77CIb/xFewM1nPa8fX1M1MQ9/tQ
-         k1aQ==
-X-Gm-Message-State: AFqh2krAXfJ7ON38EVc+o7XSFVKIygZYj9mjfNTvcPJt7M0UK5e6Ujte
-        mHvOQ21v2RA7o5kv1ieHxXRxbVw=
-X-Google-Smtp-Source: AMrXdXvQAaSeLP8emdOQH4MJhf2F47/Fz7kLXToAn5bywJRXLQq7tIYxXrN2/Tv/EdBrmXZS7cufits=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:aa7:8c18:0:b0:588:3aa8:bd95 with SMTP id
- c24-20020aa78c18000000b005883aa8bd95mr364514pfd.14.1673287445067; Mon, 09 Jan
- 2023 10:04:05 -0800 (PST)
-Date:   Mon, 9 Jan 2023 10:04:03 -0800
-In-Reply-To: <CAHC9VhTzBP49x3EH6yeqYxnr4jgcS6RdcvtbX_BSuRJnCH6ypQ@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230106154400.74211-1-paul@paul-moore.com> <CAKH8qBtyR20ZWAc11z1-6pGb3Hd47AQUTbE_cfoktG59TqaJ7Q@mail.gmail.com>
- <CAHC9VhTzBP49x3EH6yeqYxnr4jgcS6RdcvtbX_BSuRJnCH6ypQ@mail.gmail.com>
-Message-ID: <Y7xXEx5NEV96fnPp@google.com>
-Subject: Re: [PATCH v3 1/2] bpf: restore the ebpf program ID for
- BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD
-From:   sdf@google.com
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     linux-audit@redhat.com, bpf@vger.kernel.org,
-        Burn Alting <burn.alting@iinet.net.au>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NNbXfP3zZE+WclPy0AUqx7K6Aj2YoB9mgrIl7FBGaA8=;
+        b=EB14qSjgjoCu2l+B0zovgB+ZkncqiJ4mw06PH2+L6dF4/Vclr41SNXd9xptw/Th6gI
+         IUiDnic85RSGMHea5ZX4yohDgUUqG1t7HsyFiiM6xa77rGl8DGvHGvoeJ9QNaIP9iv+c
+         nZ3h7+HBepw0hfOk6TvItYz3NcZqwzVrFu446r188nV24BtRC2CjWRhtqCldRed+hGRW
+         ExbCnJ1gnsBDvX38D/t1/7mBYnmEsKC72FjoHAVdy0v0VuUO2D1+c9VxbIfQ3fnVDrA2
+         8AnrOSgHJHM50/E1tIw4v3d7ikYS5+CQu8NE+lLKvCewjWlcec3UJ8K72oU0HfZHLVp5
+         dMLA==
+X-Gm-Message-State: AFqh2krmB4ZuYKQ2Z+t687kWAGnTrnX11U2ax1+FacAOif3ala/kj9LJ
+        k7lmYb434mSR8X9xIgulYvk+N2yv3262JJNpcNrFe4/zUr09
+X-Google-Smtp-Source: AMrXdXvpkKHHLqMZbhOHmwj6pgsDhxLa3dTss5kkOXIwr7JIziW6loNqGp1TbGtJjDKT2ofkUqryDL9mwDzOK776WAYxRd+MtrtH
+MIME-Version: 1.0
+X-Received: by 2002:a6b:7a0a:0:b0:6e9:b3db:b5ce with SMTP id
+ h10-20020a6b7a0a000000b006e9b3dbb5cemr5861411iom.179.1673287725171; Mon, 09
+ Jan 2023 10:08:45 -0800 (PST)
+Date:   Mon, 09 Jan 2023 10:08:45 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000774b9205f1d8a80d@google.com>
+Subject: [syzbot] WARNING in bpf_xdp_adjust_tail (4)
+From:   syzbot <syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+        netdev@vger.kernel.org, pabeni@redhat.com, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/09, Paul Moore wrote:
-> On Fri, Jan 6, 2023 at 2:45 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > On Fri, Jan 6, 2023 at 7:44 AM Paul Moore <paul@paul-moore.com> wrote:
-> > >
-> > > When changing the ebpf program put() routines to support being called
-> > > from within IRQ context the program ID was reset to zero prior to
-> > > calling the perf event and audit UNLOAD record generators, which
-> > > resulted in problems as the ebpf program ID was bogus (always zero).
-> > > This patch addresses this problem by removing an unnecessary call to
-> > > bpf_prog_free_id() in __bpf_prog_offload_destroy() and adjusting
-> > > __bpf_prog_put() to only call bpf_prog_free_id() after audit and perf
-> > > have finished their bpf program unload tasks in
-> > > bpf_prog_put_deferred().  For the record, no one can determine, or
-> > > remember, why it was necessary to free the program ID, and remove it
-> > > from the IDR, prior to executing bpf_prog_put_deferred();
-> > > regardless, both Stanislav and Alexei agree that the approach in this
-> > > patch should be safe.
-> > >
-> > > It is worth noting that when moving the bpf_prog_free_id() call, the
-> > > do_idr_lock parameter was forced to true as the ebpf devs determined
-> > > this was the correct as the do_idr_lock should always be true.  The
-> > > do_idr_lock parameter will be removed in a follow-up patch, but it
-> > > was kept here to keep the patch small in an effort to ease any stable
-> > > backports.
-> > >
-> > > I also modified the bpf_audit_prog() logic used to associate the
-> > > AUDIT_BPF record with other associated records, e.g. @ctx != NULL.
-> > > Instead of keying off the operation, it now keys off the execution
-> > > context, e.g. '!in_irg && !irqs_disabled()', which is much more
-> > > appropriate and should help better connect the UNLOAD operations with
-> > > the associated audit state (other audit records).
-> > >
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from  
-> irq context.")
-> > > Reported-by: Burn Alting <burn.alting@iinet.net.au>
-> > > Reported-by: Jiri Olsa <olsajiri@gmail.com>
-> > > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > > Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > > Signed-off-by: Paul Moore <paul@paul-moore.com>
-> >
-> > Acked-by: Stanislav Fomichev <sdf@google.com>
-> >
-> > Thank you! There might be a chance it breaks test_offload.py (I don't
-> > remember whether it checks this prog-is-removed-from-id part or not),
-> > but I don't think it's fair to ask to address it :-)
-> > Since it doesn't trigger in CI, I'll take another look next week when
-> > doing a respin of my 'xdp-hints' series.
+Hello,
 
-> No problem, I'm glad we found a solution that works for everyone; and
-> thank you for chasing down any test changes that may be necessary.
+syzbot found the following issue on:
 
-> I'd like to get this patch into Linus' tree sooner rather than later
-> as it fixes a kinda ugly problem, would you be okay if this went in
-> via the bpf tree?  With the appropriate ACKs I could send it to Linus
-> via the audit tree, but I think it would be much better to send it via
-> the bpf/netdev tree.
+HEAD commit:    fe69230f0589 caif: fix memory leak in cfctrl_linkup_reques..
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=135e909a480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8ca07260bb631fb4
+dashboard link: https://syzkaller.appspot.com/bug?extid=f817490f5bd20541b90a
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a3f770480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d48034480000
 
-Don't see any reason that this should go via bpf-next, so assuming
-going via bpf three should be fine.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/50a413c711d8/disk-fe69230f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7b754ff4c853/vmlinux-fe69230f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1cef7470412e/bzImage-fe69230f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+Too BIG xdp->frame_sz = 131072
+WARNING: CPU: 1 PID: 5082 at net/core/filter.c:4065 ____bpf_xdp_adjust_tail net/core/filter.c:4065 [inline]
+WARNING: CPU: 1 PID: 5082 at net/core/filter.c:4065 bpf_xdp_adjust_tail+0x461/0x9a0 net/core/filter.c:4047
+Modules linked in:
+CPU: 1 PID: 5082 Comm: syz-executor157 Not tainted 6.1.0-syzkaller-04386-gfe69230f0589 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:____bpf_xdp_adjust_tail net/core/filter.c:4065 [inline]
+RIP: 0010:bpf_xdp_adjust_tail+0x461/0x9a0 net/core/filter.c:4047
+Code: ff 89 de e8 11 74 af f9 84 db 0f 85 59 fd ff ff e8 94 77 af f9 89 ee 48 c7 c7 c0 df 5b 8b c6 05 9c dc 8b 06 01 e8 9f 37 ed 01 <0f> 0b e9 38 fd ff ff e8 43 78 fd f9 e9 64 fc ff ff e8 39 78 fd f9
+RSP: 0018:ffffc90003baf8f0 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888029903a80 RSI: ffffffff8166721c RDI: fffff52000775f10
+RBP: 0000000000020000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000200 R11: 0000000000000000 R12: ffffffffffffffea
+R13: ffff888076aafeef R14: 0000000000000000 R15: ffffc90003bafaa8
+FS:  00005555573ed300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020011000 CR3: 000000007daac000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bpf_prog_4add87e5301a4105+0x1a/0x1c
+ __bpf_prog_run include/linux/filter.h:600 [inline]
+ bpf_prog_run_xdp include/linux/filter.h:775 [inline]
+ bpf_prog_run_generic_xdp+0x578/0x11e0 net/core/dev.c:4752
+ netif_receive_generic_xdp+0x2e8/0x930 net/core/dev.c:4838
+ do_xdp_generic net/core/dev.c:4897 [inline]
+ do_xdp_generic+0x9a/0x1b0 net/core/dev.c:4890
+ tun_get_user+0x21ae/0x3870 drivers/net/tun.c:1913
+ tun_chr_write_iter+0xdf/0x200 drivers/net/tun.c:2029
+ call_write_iter include/linux/fs.h:2186 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x9ed/0xdd0 fs/read_write.c:584
+ ksys_write+0x12b/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f4723af0c33
+Code: 5d 41 5c 41 5d 41 5e e9 9b fd ff ff 66 2e 0f 1f 84 00 00 00 00 00 90 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 48 89 54 24 18
+RSP: 002b:00007ffee97bbf18 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007ffee97bbf40 RCX: 00007f4723af0c33
+RDX: 000000000000fdef RSI: 0000000020001600 RDI: 00000000000000c8
+RBP: 00007ffee97bbfa0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+R13: 00007ffee97bbf50 R14: 00007ffee97bbf70 R15: 00007ffee97bbf38
+ </TASK>
 
 
-> --
-> paul-moore.com
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
