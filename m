@@ -2,158 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C03662C34
-	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 18:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDC2662CFC
+	for <lists+bpf@lfdr.de>; Mon,  9 Jan 2023 18:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234538AbjAIRHM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 12:07:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
+        id S237191AbjAIRj2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 12:39:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234827AbjAIRG1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 12:06:27 -0500
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D0142E21;
-        Mon,  9 Jan 2023 09:05:44 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-4c186ff0506so121373537b3.6;
-        Mon, 09 Jan 2023 09:05:44 -0800 (PST)
+        with ESMTP id S237011AbjAIRj1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 12:39:27 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B0A2658
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 09:39:26 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id y37-20020a634b25000000b004b1d90ea947so1869785pga.15
+        for <bpf@vger.kernel.org>; Mon, 09 Jan 2023 09:39:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6EYMc5+vcvT6f31eLJLkK3p4u36cmy2i+T+Mh/4Q6NA=;
+        b=FLs67g0QQc461pVpmVYzv4JE42HcNJbYVaVQb86HYVjfvccG7Wve5dzAONsJVLjl3l
+         Kd3Bh3ROGfbudVrMmXU/eCnEBE/znoDln/DcgPLDeNgaUBkIUZ2UaJIOS8wMi0LSERgh
+         wgcWtKCgu98ayOkdDY+ifxqZaqtzjM77Ap2i0oWMKI3/QDdgQxt/4YeSOMnUXBhWwboY
+         lDBBvTaUxZNKyxLnC59v7GRd8us3KBx7ycMpLaVTANgMMVPtWo7T2xttqbrm6jvXxc61
+         8No1JfurnmCn4sAx7utqc+O0kjvC4lQU7OM0FpAApLY6DTU0t6x3ImBrnGVUo1N/07Ea
+         1GFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zPVCpbi7IFUjfl+kqKF1GBf38n57/rlv+lygUdA5yNk=;
-        b=C6sdNlPKP8IVlDrgemUvnEB8JOAhcPneEchpbYmapkPi9Sv5JE4M2uEc66dXNCr3EC
-         LDulgFnacU5lW2hGmxy1S6PdSELbF4cVP26FPGm8ga3xK8B8W6V/rylU+epqi2DTNBna
-         X+Hb2DVzevjcALkHNcikM9H0X9XSzl8/1Ip8oPjwVbd/t8513U2xzq6J+Frlo3w+sw+U
-         UidYWO7Re0E+Up7/2RTfzPRCFBHL27MCYEV8Dopr5HQlUGd8vHNLWjpHINxX7jUUnrO/
-         KyCYwczlLSItwe2KhSb5IHvbEWmsdAvF3BDBIeHQBLdeaWSJS25GeCubnfVaGCIfXRwU
-         Bo6w==
-X-Gm-Message-State: AFqh2kpzl+AdAZwTtPIJD/jFToNrrRCZFviaWozWSbaiQ4n71m6o31DZ
-        HpyA9UILLFVFqs8OuIaNNdc=
-X-Google-Smtp-Source: AMrXdXtEHccPbHcS/bkAY0ElT5eoj9Zj3sZoVq6gWorCDGTH/EovylXWCHjhVoFCkYFtPY5dX4/Tvg==
-X-Received: by 2002:a05:7500:338a:b0:f0:3bdd:b78f with SMTP id cr10-20020a057500338a00b000f03bddb78fmr446307gab.4.1673283943376;
-        Mon, 09 Jan 2023 09:05:43 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:40cc])
-        by smtp.gmail.com with ESMTPSA id bq35-20020a05620a46a300b00704c9015e68sm5656045qkb.116.2023.01.09.09.05.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Jan 2023 09:05:42 -0800 (PST)
-Date:   Mon, 9 Jan 2023 11:05:42 -0600
-From:   David Vernet <void@manifault.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6EYMc5+vcvT6f31eLJLkK3p4u36cmy2i+T+Mh/4Q6NA=;
+        b=glFPlmVKmFlr29+gsjBGwkjo/1cl9WvEpBZ969fSU48725ChogofO4MTo8vKtch9/v
+         92DCkPWN3MiQ4ZfUMwZ9bz8Czeoek16npBgt18THcGlkBa5+iZAhusA7XFo/uPahYHc4
+         Jpm93QrR+YQ9rhO3L3WXMyCSJIYx5IQ+9/3BRjX/bRnqXt5cp7XTv9pfyJHSuPheZgZa
+         hSRJrEaidNZuaoLLgSJH9TWwsZ+Ug57mKqGUqG704M3Kna62jN2IsFOFZRIQd8SW3hgz
+         bZPTubUX9q/Ah/UhYdFGMbz/F0EKInWKrbs/XsiaDPjm/bXHfZOUQq/vMKXMjeb8xcao
+         dy2Q==
+X-Gm-Message-State: AFqh2krwjMp+mnLvWiI3dsNFH7kgKBlcwn51yDVB7Wnc/R9JspRw1TGK
+        MLp79bm7t/7h3IgbM6pkHJ5XsMQ=
+X-Google-Smtp-Source: AMrXdXtvgn68FFnPUvQB/BnPtGld7g/pBzpiV+iqx7hVRMVQJmOFIdrSn3NeWo6eBus19cbmn3qcZTA=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:903:451:b0:192:821b:dbda with SMTP id
+ iw17-20020a170903045100b00192821bdbdamr3361160plb.58.1673285965987; Mon, 09
+ Jan 2023 09:39:25 -0800 (PST)
+Date:   Mon, 9 Jan 2023 09:39:24 -0800
+In-Reply-To: <20230108151258.96570-1-haiyue.wang@intel.com>
+Mime-Version: 1.0
+References: <20230108151258.96570-1-haiyue.wang@intel.com>
+Message-ID: <Y7xRLsOD1l9FpnC5@google.com>
+Subject: Re: [PATCH bpf-next v1] bpf: Remove the unnecessary insn buffer comparison
+From:   sdf@google.com
+To:     Haiyue Wang <haiyue.wang@intel.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@meta.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Add __bpf_kfunc tag for marking kernel
- functions as kfuncs
-Message-ID: <Y7xJZv6Ncw1JSoJy@maniforge.lan>
-References: <20230106195130.1216841-1-void@manifault.com>
- <20230106195130.1216841-2-void@manifault.com>
- <CAADnVQLpK7WXTjF6GS1hcfPXf=8iERJmEeVFfvmG75mJj0DdaA@mail.gmail.com>
- <Y7jUaDD9V556Px3b@maniforge.lan>
- <CAADnVQJJaTXa8Y-aGctrBTjasKzsMDq4nW7Na5X3i8oobpT9NQ@mail.gmail.com>
- <20230109120815.zx5mif4hnee6gyvc@apollo>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230109120815.zx5mif4hnee6gyvc@apollo>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 05:38:15PM +0530, Kumar Kartikeya Dwivedi wrote:
-> On Mon, Jan 09, 2023 at 04:47:54AM IST, Alexei Starovoitov wrote:
-> > On Fri, Jan 6, 2023 at 6:09 PM David Vernet <void@manifault.com> wrote:
-> > >
-> > > On Fri, Jan 06, 2023 at 05:04:02PM -0800, Alexei Starovoitov wrote:
-> > > > On Fri, Jan 6, 2023 at 11:51 AM David Vernet <void@manifault.com> wrote:
-> > > > >
-> > > > > kfuncs are functions defined in the kernel, which may be invoked by BPF
-> > > > > programs. They may or may not also be used as regular kernel functions,
-> > > > > implying that they may be static (in which case the compiler could e.g.
-> > > > > inline it away), or it could have external linkage, but potentially be
-> > > > > elided in an LTO build if a function is observed to never be used, and
-> > > > > is stripped from the final kernel binary.
-> > > > >
-> > > > > We therefore require some convenience macro that kfunc developers can
-> > > > > use just add to their kfuncs, and which will prevent all of the above
-> > > > > issues from happening. This is in contrast with what we have today,
-> > > > > where some kfunc definitions have "noinline", some have "__used", and
-> > > > > others are static and have neither.
-> > > > >
-> > > > > In addition to providing the obvious correctness benefits, having such a
-> > > > > macro / tag also provides the following advantages:
-> > > > >
-> > > > > - Giving an easy and intuitive thing to query for if people are looking
-> > > > >   for kfuncs, as Christoph suggested at the kernel maintainers summit
-> > > > >   (https://lwn.net/Articles/908464/). This is currently possible by
-> > > > >   grepping for BTF_ID_FLAGS(func, but having something more self
-> > > > >   describing would be useful as well.
-> > > > >
-> > > > > - In the future, the tag can be expanded with other useful things such
-> > > > >   as the ability to suppress -Wmissing-prototype for the kfuncs rather
-> > > > >   than requiring developers to surround the kfunc with __diags to
-> > > > >   suppress the warning (this requires compiler support that as far as I
-> > > > >   know currently does not exist).
-> > > >
-> > > > Have you considered doing bpf_kfunc_start/bpf_kfunc_end ?
-> > > > The former would include:
-> > > > __diag_push(); __diag_ignore_all(); __used noinline
-> > >
-> > > Yeah that's certainly an option. The downside is that all functions
-> > > within scope of the __diag_push() will be affected, and sometimes we mix
-> > > kfuncs with non-kfuncs (including e.g. static helper functions that are
-> > > used by the kfuncs themselves). -Wmissing-prototypes isn't a big deal,
-> > > but __used and noinline are kind of unfortunate. Not a big deal though,
-> > > it'll just result in a few extra __bpf_kfuncs_start() and
-> > > __bpf_kfuncs_end() sprinkled throughout to avoid them being included.
-> > > The upside is of course that we can get rid of the __diag_push()'es we
-> > > currently have to prevent -Wmissing-prototypes.
-> >
-> > I meant to use bpf_kfunc_start/bpf_kfunc_end around every kfunc.
-> > Ideally bpf_kfunc_start would be on the same line as func proto
-> > for nice grepping.
-> > Maybe it's an overkill.
-> > Maybe 3 macroses then?
-> > bpf_kfunc_start to hide __diag
-> > bpf_kfunc on the proto line
-> > bpf_kfunc_end to finish __diag_pop
+On 01/08, Haiyue Wang wrote:
+> The variable 'insn' is initialized to 'insn_buf' without being changed,
+> only some helper macros are defined, so the insn buffer comparison is
+> unnecessary, just remove it.
 
-Ah, I see. Hmm, I guess this is better than what we have now, but is
-still a lot of macros and boilerplate which IMO is a sign we're not
-going in quite the right direction. I don't really have a better
-suggestion at this point, though I do like Kumar's suggestion below.
+> Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
 
-> There's also the option of doing this:
-> 
-> #define BPF_KFUNC(proto) proto; __used noinline proto
-> 
-> BPF_KFUNC(void kfunc(arg1, arg2)) {
-> 	...
-> }
-> 
-> No need to disable the warning with diag push/pop, just put a declaration before
-> the definition to silence the compiler. The only awkward part is entire function
-> prototype becoming a macro argument (unlike the common case void MACRO(...)) but
-> it becomes less noisy and easy to grep as well.
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
-If nobody would come after us with pitchforks for this, IMO this is the
-most user-friendly option and what I would vote for. It doesn't seem
-like this is violating anything in [0]?
+Looks like these should have been removed as part of commit 2377b81de527
+("bpf: split shared bpf_tcp_sock and bpf_sock_ops implementation").
 
-[0]: https://www.kernel.org/doc/html/latest/process/coding-style.html#macros-enums-and-rtl
+> ---
+>   net/core/filter.c | 6 ------
+>   1 file changed, 6 deletions(-)
+
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index ab811293ae5d..d9befa6ba04e 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6847,9 +6847,6 @@ u32 bpf_tcp_sock_convert_ctx_access(enum  
+> bpf_access_type type,
+>   					FIELD));			\
+>   	} while (0)
+
+> -	if (insn > insn_buf)
+> -		return insn - insn_buf;
+> -
+>   	switch (si->off) {
+>   	case offsetof(struct bpf_tcp_sock, rtt_min):
+>   		BUILD_BUG_ON(sizeof_field(struct tcp_sock, rtt_min) !=
+> @@ -10147,9 +10144,6 @@ static u32 sock_ops_convert_ctx_access(enum  
+> bpf_access_type type,
+>   			SOCK_OPS_GET_FIELD(BPF_FIELD, OBJ_FIELD, OBJ);	      \
+>   	} while (0)
+
+> -	if (insn > insn_buf)
+> -		return insn - insn_buf;
+> -
+>   	switch (si->off) {
+>   	case offsetof(struct bpf_sock_ops, op):
+>   		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct bpf_sock_ops_kern,
+> --
+> 2.39.0
+
