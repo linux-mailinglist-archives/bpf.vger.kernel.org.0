@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39748664EB1
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 23:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A36664EB7
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 23:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbjAJWV7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 17:21:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
+        id S235152AbjAJWWt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 17:22:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234837AbjAJWV3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 17:21:29 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1A92F791
-        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 14:21:05 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id r8-20020a252b08000000b007b989d5e105so10839411ybr.11
-        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 14:21:05 -0800 (PST)
+        with ESMTP id S235080AbjAJWWJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 17:22:09 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6A02020
+        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 14:21:21 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id a4-20020a5b0004000000b006fdc6aaec4fso14341446ybp.20
+        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 14:21:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4sg2Aa5uCHWcDC8jm9J4EAv2OJFGtXnNHMXMT9mO4Gw=;
-        b=AW29Ki0ipdxS14sshMxXhqz4FZFcNVmZ3WvoBGdx8Bla7+yjxNrYSNmR1ihsyWRsrf
-         X60XFLMewiYm9IGefUm4eEzu+c8CeyIivN4qFu4JpwnYwB3jA2QMO7bOOM3Ko7g1jq8K
-         C5RnWXn1KhH66oHffsmy/GqlYcVahiBR3eqjUSNwhLqIpkauqFmAyRmy+3bD+cnZC0dZ
-         KFqMPnIG2GLgHMH6PYQiwuTfPPwsF8vA5I0JxA/flSZfhMIfeqXMaRE2xMVljQClk+CN
-         NAwV6KvZTl/6ClD/vaGcAe7VaWC8QwAk0u7Hs7wmIUwxTE33GdGdAYSdTQfnpepXNN/1
-         khRg==
+        bh=/FtIYr0/RheXwrssHV0cFATW8LMtUvVk/N1uI6ptIqc=;
+        b=RNYP627ovo2gwEzsZZbFylrtQb+tRstmx8+kwVlpER/K5C5tNb2oBe50zVPZpE1xuZ
+         NU9zXXblOxx6EAKLVYDrvaw3SP0ZyRrbegvCU8UFWhy7tdpYKJsjdqHS8Q8fCYTB2AA1
+         XfxIcjNfCJVewHShT9ogfUdkxa5rGgTTPcO795wa5pyopE3PY7OwUHSfWNK2py18qEHb
+         lU9rAZ5slO3ij3YjOrOQ5FnhJPYOoz0FdvRAzlSJcgOtT3Q85Tvra/8+nQofX8xCCpMS
+         FEo/8EYdWVgxNvEjlwcyYar4md8dE1bKiVeg7zyJe6xTPO25BRQ85Hz4YMsQr4Ew/YJj
+         ifFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4sg2Aa5uCHWcDC8jm9J4EAv2OJFGtXnNHMXMT9mO4Gw=;
-        b=s4OfmQBsfI9SVhV/oOoBY3JCn5uO8wKSsV45e1eGfHDmMcxSVcftRvVRQUaxC2of85
-         2e616CfsMFdbkwZ7LT2XVsm8WmY5SFwtQTJtK0r82FxhnRb7ABhIUdjw+UzHxTin5GEB
-         mLAM7pFfba8cbCOyUysW548/co8PV6O397Jv9K8pqZAmI3ZrLBWinU04UWoQCdRWinr+
-         JFsQEH4gfb5JSP7bud6kR9jnQlzTewN815HbWMdOLsAC3y1pKRPcdW66yU4gJ/5E+9Ze
-         q2y1+yaLbCN6l+VjgKyi9xQ9mzXIb0I7NNWM6TjBz9OVesATSw1Fu++j/8ejICnF7s9X
-         I1eg==
-X-Gm-Message-State: AFqh2kpaWVv+Ucs+S77MyUgyMyZqX7AOG22XT82Zl4N2y0Wee4v9hqKm
-        xsCkGuXvH3V2wNosxHrzVTaIX2RnfcYE
-X-Google-Smtp-Source: AMrXdXul//OabQOCLWyx1Luc6Hl+ueTmgO396xd2lzHTTOh6r4Z7uBXUeTt67VSekVDq2442YXd8T9SPuWGF
+        bh=/FtIYr0/RheXwrssHV0cFATW8LMtUvVk/N1uI6ptIqc=;
+        b=0bnM8FPuAs2xt4a7097ukaguJY5j/3inWe4iCH0Hfgh3Y2htse6wmyFBh2i/DKeCjg
+         CFlgOPJtQbQ5Q0e70ahplgPTrEaMse9Yxg+9HfHyz3revrLOKROYw0Es5yFJDUWTrbfd
+         tQC54VNM5W755ZoQeoqRxyGVW3PkFkhnauj0ojQ4DWy7yo5Ep1kUTVB1x8RBGh7mEvXw
+         k9HMAnt05YGA4cGvOqi7TkybFsZ20yP6CHT65lSeB30WfxpyFK2CQk+6C9qA7IYO8x10
+         eH7fEGF26nv7EerkSZVOM8xEW0qammLvD9A9Wv2EJbs+jgHhp28yY7P3tXoTnm3NvmpO
+         UJ4Q==
+X-Gm-Message-State: AFqh2kpvjbGio1eEZKpcNG0NSQtpIo8/Cwbb7xx9NZyAnNPf0fOE4yLH
+        p5I6Ihfu+V04W4K0/HZzg73sbJx2oduc
+X-Google-Smtp-Source: AMrXdXt8x+kd9UlLPbZYhu5Ooy9hNfxVHcOZmgh4OR3ywtB1lSBt3xtVEtTcEV9ZxG+DMlVpkAwMcWwdvcU8
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:cebf:c37e:8184:56])
- (user=irogers job=sendgmr) by 2002:a25:449:0:b0:7b6:f8d5:82f4 with SMTP id
- 70-20020a250449000000b007b6f8d582f4mr2181307ybe.646.1673389264926; Tue, 10
- Jan 2023 14:21:04 -0800 (PST)
-Date:   Tue, 10 Jan 2023 14:20:01 -0800
+ (user=irogers job=sendgmr) by 2002:a25:8110:0:b0:6f6:ec71:8ede with SMTP id
+ o16-20020a258110000000b006f6ec718edemr5909003ybk.422.1673389272586; Tue, 10
+ Jan 2023 14:21:12 -0800 (PST)
+Date:   Tue, 10 Jan 2023 14:20:02 -0800
 In-Reply-To: <20230110222003.1591436-1-irogers@google.com>
-Message-Id: <20230110222003.1591436-6-irogers@google.com>
+Message-Id: <20230110222003.1591436-7-irogers@google.com>
 Mime-Version: 1.0
 References: <20230110222003.1591436-1-irogers@google.com>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Subject: [PATCH v1 5/7] tools lib api: Tweak strbuf allocation size computation
+Subject: [PATCH v1 6/7] perf help: Use run_command_strbuf
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -89,7 +89,7 @@ Cc:     Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,57 +97,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-alloc_nr gives an estimate of the actual memory behind an allocation
-but isn't accurate. Use malloc_usable_size to accurately set the
-strbuf alloc, which potentially avoids realloc calls.
+Remove boiler plate by using library routine.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/lib/api/strbuf.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ tools/perf/builtin-help.c | 47 ++++++++++++---------------------------
+ 1 file changed, 14 insertions(+), 33 deletions(-)
 
-diff --git a/tools/lib/api/strbuf.c b/tools/lib/api/strbuf.c
-index eafa2c01f46a..a3d7f96d8b9f 100644
---- a/tools/lib/api/strbuf.c
-+++ b/tools/lib/api/strbuf.c
-@@ -4,6 +4,7 @@
- #include <linux/kernel.h>
- #include <linux/string.h>
- #include <linux/zalloc.h>
-+#include <malloc.h>
- #include <errno.h>
- #include <stdio.h>
- #include <stdlib.h>
-@@ -42,7 +43,6 @@ char *strbuf_detach(struct strbuf *sb, size_t *sz)
- 	return res;
- }
- 
--#define alloc_nr(x) (((x)+16)*3/2)
- int strbuf_grow(struct strbuf *sb, size_t extra)
+diff --git a/tools/perf/builtin-help.c b/tools/perf/builtin-help.c
+index 8874e1e0335b..1cb87358cd20 100644
+--- a/tools/perf/builtin-help.c
++++ b/tools/perf/builtin-help.c
+@@ -70,46 +70,27 @@ static const char *get_man_viewer_info(const char *name)
+ static int check_emacsclient_version(void)
  {
- 	char *buf;
-@@ -54,9 +54,6 @@ int strbuf_grow(struct strbuf *sb, size_t extra)
- 	if (nr <= sb->len)
- 		return -E2BIG;
+ 	struct strbuf buffer = STRBUF_INIT;
+-	struct child_process ec_process;
+-	const char *argv_ec[] = { "emacsclient", "--version", NULL };
+-	int version;
+ 	int ret = -1;
  
--	if (alloc_nr(sb->alloc) > nr)
--		nr = alloc_nr(sb->alloc);
+-	/* emacsclient prints its version number on stderr */
+-	memset(&ec_process, 0, sizeof(ec_process));
+-	ec_process.argv = argv_ec;
+-	ec_process.err = -1;
+-	ec_process.stdout_to_stderr = 1;
+-	if (start_command(&ec_process)) {
+-		fprintf(stderr, "Failed to start emacsclient.\n");
+-		return -1;
+-	}
+-	if (strbuf_read(&buffer, ec_process.err, 20) < 0) {
+-		fprintf(stderr, "Failed to read emacsclient version\n");
+-		goto out;
+-	}
+-	close(ec_process.err);
 -
  	/*
- 	 * Note that sb->buf == strbuf_slopbuf if sb->alloc == 0, and it is
- 	 * a static variable. Thus we have to avoid passing it to realloc.
-@@ -66,10 +63,9 @@ int strbuf_grow(struct strbuf *sb, size_t extra)
- 		return -ENOMEM;
+-	 * Don't bother checking return value, because "emacsclient --version"
+-	 * seems to always exits with code 1.
++	 * emacsclient may print its version number on stderr. Don't bother
++	 * checking return value, because some "emacsclient --version" commands
++	 * seem to always exits with code 1.
+ 	 */
+-	finish_command(&ec_process);
++	run_command_strbuf("emacsclient --version 2>&1", &buffer);
  
- 	sb->buf = buf;
--	sb->alloc = nr;
-+	sb->alloc = malloc_usable_size(buf);
- 	return 0;
+-	if (!strstarts(buffer.buf, "emacsclient")) {
++	if (!strstarts(buffer.buf, "emacsclient"))
+ 		fprintf(stderr, "Failed to parse emacsclient version.\n");
+-		goto out;
+-	}
+-
+-	version = atoi(buffer.buf + strlen("emacsclient"));
++	else {
++		int version = atoi(buffer.buf + strlen("emacsclient"));
+ 
+-	if (version < 22) {
+-		fprintf(stderr,
+-			"emacsclient version '%d' too old (< 22).\n",
+-			version);
+-	} else
+-		ret = 0;
+-out:
++		if (version < 22) {
++			fprintf(stderr,
++				"emacsclient version '%d' too old (< 22).\n",
++				version);
++		} else
++			ret = 0;
++	}
+ 	strbuf_release(&buffer);
+ 	return ret;
  }
--#undef alloc_nr
- 
- int strbuf_addch(struct strbuf *sb, int c)
- {
 -- 
 2.39.0.314.g84b9a713c41-goog
 
