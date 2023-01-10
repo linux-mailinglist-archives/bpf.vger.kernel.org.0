@@ -2,49 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C43A664889
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 19:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE96664929
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 19:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238802AbjAJSMY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 13:12:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
+        id S239034AbjAJSSl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 13:18:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238829AbjAJSL6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 13:11:58 -0500
+        with ESMTP id S239123AbjAJSSB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 13:18:01 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCB9B56;
-        Tue, 10 Jan 2023 10:10:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1AA49167;
+        Tue, 10 Jan 2023 10:16:22 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DB5556182C;
-        Tue, 10 Jan 2023 18:10:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2930C433D2;
-        Tue, 10 Jan 2023 18:10:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 22C576182C;
+        Tue, 10 Jan 2023 18:16:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01F4BC433EF;
+        Tue, 10 Jan 2023 18:16:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1673374230;
-        bh=9NdXOmkiTVBp0bp3bFhoadq9j659g/3HfDuElJpJhKs=;
+        s=korg; t=1673374581;
+        bh=+Lit4qXqjTU8SXzTxs+LdrnFmU+EcXSJrDMEiB6WfCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cvlFK+1x92rmHO2nxfUAJvbotJePTGcpR1jm7m28GZrpBvCjGjOdXBM4LhEfAt0nN
-         9ErglWA15vvDaIrvDcBHvTh4bgopmOTG1NxGj241WlGxDUFtmf0xBMD590fQ0XVGws
-         7NRfbVtkfrJJ1G0zse+ng1W24KYlvRjn0RfNuTmE=
+        b=evNfgRYDsNPLiDxwSOwyyBN+PZsweDoUfGtCCa4+iRNeetT2GoEhMkyCzC8cX9BHu
+         4x273fXq8+7z05uSxn4WHQRhJhwWLDmN9ruRA6Tu/mXyB4JiSan/xnHWix3aDrdmNa
+         B8N3Fh26X+7CrJV1cJ7g7zVqxz1QMFA5rqN1mxRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, bpf@vger.kernel.org,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
+        patches@lists.linux.dev, Hyunwoo Kim <v4bel@theori.io>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, Kees Cook <keescook@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.0 094/148] perf stat: Fix handling of --for-each-cgroup with --bpf-counters to match non BPF mode
-Date:   Tue, 10 Jan 2023 19:03:18 +0100
-Message-Id: <20230110180020.176795133@linuxfoundation.org>
+Subject: [PATCH 6.1 063/159] bpf: Always use maximal size for copy_array()
+Date:   Tue, 10 Jan 2023 19:03:31 +0100
+Message-Id: <20230110180020.309474655@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230110180017.145591678@linuxfoundation.org>
-References: <20230110180017.145591678@linuxfoundation.org>
+In-Reply-To: <20230110180018.288460217@linuxfoundation.org>
+References: <20230110180018.288460217@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,143 +62,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 54b353a20c7e8be98414754f5aff98c8a68fcc1f ]
+[ Upstream commit 45435d8da71f9f3e6860e6e6ea9667b6ec17ec64 ]
 
-The --for-each-cgroup can have the same cgroup multiple times, but this
-confuses BPF counters (since they have the same cgroup id), making only
-the last cgroup events to be counted.
+Instead of counting on prior allocations to have sized allocations to
+the next kmalloc bucket size, always perform a krealloc that is at least
+ksize(dst) in size (which is a no-op), so the size can be correctly
+tracked by all the various allocation size trackers (KASAN,
+__alloc_size, etc).
 
-Let's check the cgroup name before adding a new entry to the cgroups
-list.
-
-Before:
-
-  $ sudo ./perf stat -a --bpf-counters --for-each-cgroup /,/ sleep 1
-
-   Performance counter stats for 'system wide':
-
-       <not counted> msec cpu-clock                        /
-       <not counted>      context-switches                 /
-       <not counted>      cpu-migrations                   /
-       <not counted>      page-faults                      /
-       <not counted>      cycles                           /
-       <not counted>      instructions                     /
-       <not counted>      branches                         /
-       <not counted>      branch-misses                    /
-            8,016.04 msec cpu-clock                        /                #    7.998 CPUs utilized
-               6,152      context-switches                 /                #  767.461 /sec
-                 250      cpu-migrations                   /                #   31.187 /sec
-                 442      page-faults                      /                #   55.139 /sec
-         613,111,487      cycles                           /                #    0.076 GHz
-         280,599,604      instructions                     /                #    0.46  insn per cycle
-          57,692,724      branches                         /                #    7.197 M/sec
-           3,385,168      branch-misses                    /                #    5.87% of all branches
-
-         1.002220125 seconds time elapsed
-
-After it becomes similar to the non-BPF mode:
-
-  $ sudo ./perf stat -a --bpf-counters --for-each-cgroup /,/  sleep 1
-
-   Performance counter stats for 'system wide':
-
-            8,013.38 msec cpu-clock                        /                #    7.998 CPUs utilized
-               6,859      context-switches                 /                #  855.944 /sec
-                 334      cpu-migrations                   /                #   41.680 /sec
-                 345      page-faults                      /                #   43.053 /sec
-         782,326,119      cycles                           /                #    0.098 GHz
-         471,645,724      instructions                     /                #    0.60  insn per cycle
-          94,963,430      branches                         /                #   11.851 M/sec
-           3,685,511      branch-misses                    /                #    3.88% of all branches
-
-         1.001864539 seconds time elapsed
-
-Committer notes:
-
-As a reminder, to test with BPF counters one has to use BUILD_BPF_SKEL=1
-in the make command line and have clang/llvm installed when building
-perf, otherwise the --bpf-counters option will not be available:
-
-  # perf stat -a --bpf-counters --for-each-cgroup /,/ sleep 1
-  Error: unknown option `bpf-counters'
-
-   Usage: perf stat [<options>] [<command>]
-
-      -a, --all-cpus        system-wide collection from all CPUs
-  <SNIP>
-  #
-
-Fixes: bb1c15b60b981d10 ("perf stat: Support regex pattern in --for-each-cgroup")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: bpf@vger.kernel.org
-Cc: Ian Rogers <irogers@google.com>
-Cc: Ingo Molnar <mingo@kernel.org>
+Reported-by: Hyunwoo Kim <v4bel@theori.io>
+Link: https://lore.kernel.org/bpf/20221223094551.GA1439509@ubuntu
+Fixes: ceb35b666d42 ("bpf/verifier: Use kmalloc_size_roundup() to match ksize() usage")
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Link: https://lore.kernel.org/r/20230104064402.1551516-5-namhyung@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: bpf@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20221223182836.never.866-kees@kernel.org
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/cgroup.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ kernel/bpf/verifier.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-index e99b41f9be45..cd978c240e0d 100644
---- a/tools/perf/util/cgroup.c
-+++ b/tools/perf/util/cgroup.c
-@@ -224,6 +224,19 @@ static int add_cgroup_name(const char *fpath, const struct stat *sb __maybe_unus
- 	return 0;
- }
- 
-+static int check_and_add_cgroup_name(const char *fpath)
-+{
-+	struct cgroup_name *cn;
-+
-+	list_for_each_entry(cn, &cgroup_list, list) {
-+		if (!strcmp(cn->name, fpath))
-+			return 0;
-+	}
-+
-+	/* pretend if it's added by ftw() */
-+	return add_cgroup_name(fpath, NULL, FTW_D, NULL);
-+}
-+
- static void release_cgroup_list(void)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 242fe307032f..b4d5b343c191 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1000,6 +1000,8 @@ static void print_insn_state(struct bpf_verifier_env *env,
+  */
+ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t flags)
  {
- 	struct cgroup_name *cn;
-@@ -242,7 +255,7 @@ static int list_cgroups(const char *str)
- 	struct cgroup_name *cn;
- 	char *s;
++	size_t alloc_bytes;
++	void *orig = dst;
+ 	size_t bytes;
  
--	/* use given name as is - for testing purpose */
-+	/* use given name as is when no regex is given */
- 	for (;;) {
- 		p = strchr(str, ',');
- 		e = p ? p : eos;
-@@ -253,13 +266,13 @@ static int list_cgroups(const char *str)
- 			s = strndup(str, e - str);
- 			if (!s)
- 				return -1;
--			/* pretend if it's added by ftw() */
--			ret = add_cgroup_name(s, NULL, FTW_D, NULL);
-+
-+			ret = check_and_add_cgroup_name(s);
- 			free(s);
--			if (ret)
-+			if (ret < 0)
- 				return -1;
- 		} else {
--			if (add_cgroup_name("", NULL, FTW_D, NULL) < 0)
-+			if (check_and_add_cgroup_name("/") < 0)
- 				return -1;
- 		}
+ 	if (ZERO_OR_NULL_PTR(src))
+@@ -1008,11 +1010,11 @@ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t
+ 	if (unlikely(check_mul_overflow(n, size, &bytes)))
+ 		return NULL;
  
+-	if (ksize(dst) < ksize(src)) {
+-		kfree(dst);
+-		dst = kmalloc_track_caller(kmalloc_size_roundup(bytes), flags);
+-		if (!dst)
+-			return NULL;
++	alloc_bytes = max(ksize(orig), kmalloc_size_roundup(bytes));
++	dst = krealloc(orig, alloc_bytes, flags);
++	if (!dst) {
++		kfree(orig);
++		return NULL;
+ 	}
+ 
+ 	memcpy(dst, src, bytes);
 -- 
 2.35.1
 
