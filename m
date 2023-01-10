@@ -2,149 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E173664CFF
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 21:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED22C664DB0
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 21:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbjAJUGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 15:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
+        id S233904AbjAJUvk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 15:51:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233026AbjAJUGN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 15:06:13 -0500
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD1C11800;
-        Tue, 10 Jan 2023 12:06:12 -0800 (PST)
-Received: by mail-il1-f182.google.com with SMTP id d10so6944179ilc.12;
-        Tue, 10 Jan 2023 12:06:12 -0800 (PST)
+        with ESMTP id S233383AbjAJUvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 15:51:09 -0500
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC636218B
+        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 12:50:49 -0800 (PST)
+Received: by mail-io1-f71.google.com with SMTP id 16-20020a5d9c10000000b00702de2ee669so7078465ioe.10
+        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 12:50:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lyKV/IytE5L3JlZxm80nPUoeIMqTlPyGJhm6uaeKye4=;
-        b=SO6Y3r2pEYh4JUq90D9MdojmOGskMAkXevbyi/rZei4anwaRTsdefooRlL1WkM5TR+
-         yH3zM3LTVzwXX8voBNr8NcNjfLpFV1OnBsoph1HZECxAomFdYpScDcak9SWlGdLjEb7H
-         LWXFvTdxMv5dd2OJkKOQIuK2tmkUTpMuFokUoIKCcnkbfOqInzvSn/dXVoOcGz9QvMHH
-         MaM/kkwBGUnNqNrx3sLTsTepjSFJO04ncR/cBtFFI6/m3ZNoVi+5uDA0bjmhB4/4Dk69
-         LGULGi2g3PFzSQt/fQp8mJuKQUqs0rDVgKmf1qs9P8oFOxCNVPlee4f5BoELccTv9SDD
-         u/DA==
-X-Gm-Message-State: AFqh2kpIhGvVH0GSpsSHqmVbe45UvIjEWwYZmDUiRysZ+2epOhIuyYU0
-        hCVLuYqrcvoEvx4xBiCQ06POll/XATYzeL+F7kE=
-X-Google-Smtp-Source: AMrXdXt/+/adN2gKCvNbXg4gfavl2nxb2JhYEEKLba753rvVOiBRlbf09CD51deqIAzFQcnlp35Rfu98VmNH5ckGtDI=
-X-Received: by 2002:a92:d605:0:b0:304:b8db:82d8 with SMTP id
- w5-20020a92d605000000b00304b8db82d8mr4832855ilm.25.1673381172207; Tue, 10 Jan
- 2023 12:06:12 -0800 (PST)
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FrGb7T5CWFgT+AcNY8nFRNBTuSt+li16+JKxysSC3eM=;
+        b=lCu+AlMB4M7c/nbNmbvktYw94VJsJjSCTvK32QLbd+x/vo0ZUpEc94ODhoRPwIbQCd
+         NiwTwb04I3da2GHHX/MIFCXcN5OjtKk/wROrTrDwZ3C3X3CtK6ePS1KOQyGquxa07WZ0
+         NQKgl+CYTSXyKITRgc0wxtrnLFjT2BuPksUhKzIThi9NuxV6oiT5GeJC9RGbxUEjfpvz
+         PEcDVVuQiZm5RcjK8lW1FF8mHwHe0tj6eX6/sV4+dXrSRMW4ZI19PYUyLBz4kHfWNtPU
+         Cga6CO1liOPynjmoTsXRHWvE1swIjwEidVBLdBRida53EP1Dj1CzCPyiah5xjh/6WjIo
+         A8dg==
+X-Gm-Message-State: AFqh2krK2BIBFMRvkv19pwGyfWSfaqz4fvxLUUxKFiax5Dm4NzrSyVXL
+        pK8QQCYwUK5i3WyBOXtGArQz2KxLnPqErUZELsqi9GkWdjb+
+X-Google-Smtp-Source: AMrXdXuozUlqSWHDOAO0yfa4cKVIsQ+lkXBtEtXo76WRlFEP0Wb+ediaphFRjZIocZ4NTvwt+IWxb0USvCoWS18iAXPsUO8mwnXv
 MIME-Version: 1.0
-References: <20221229204101.1099430-1-namhyung@kernel.org> <20221229204101.1099430-2-namhyung@kernel.org>
- <Y7wFJ+NF0NwnmzLa@hirez.programming.kicks-ass.net> <Y7x3RUd67smv3EFQ@google.com>
-In-Reply-To: <Y7x3RUd67smv3EFQ@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 10 Jan 2023 12:06:00 -0800
-Message-ID: <CAM9d7ciVZCHk0YqpobfR+t0FPN_-tpnLgNbN981=EygkM_riDg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] perf/core: Set data->sample_flags in perf_prepare_sample()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>, bpf@vger.kernel.org
+X-Received: by 2002:a05:6638:3f18:b0:38d:30a7:2ae0 with SMTP id
+ ck24-20020a0566383f1800b0038d30a72ae0mr6851113jab.234.1673383848565; Tue, 10
+ Jan 2023 12:50:48 -0800 (PST)
+Date:   Tue, 10 Jan 2023 12:50:48 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dde02b05f1ef09a4@google.com>
+Subject: [syzbot] WARNING: locking bug in __perf_event_task_sched_in (2)
+From:   syzbot <syzbot+d94d214ea473e218fc89@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        bpf@vger.kernel.org, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 9, 2023 at 12:21 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hi Peter,
->
-> On Mon, Jan 09, 2023 at 01:14:31PM +0100, Peter Zijlstra wrote:
-> > On Thu, Dec 29, 2022 at 12:41:00PM -0800, Namhyung Kim wrote:
-> >
-> > So I like the general idea; I just think it's turned into a bit of a
-> > mess. That is code is already overly branchy which is known to hurt
-> > performance, we should really try and not make it worse than absolutely
-> > needed.
->
-> Agreed.
->
-> >
-> > >  kernel/events/core.c | 86 ++++++++++++++++++++++++++++++++------------
-> > >  1 file changed, 63 insertions(+), 23 deletions(-)
-> > >
-> > > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > > index eacc3702654d..70bff8a04583 100644
-> > > --- a/kernel/events/core.c
-> > > +++ b/kernel/events/core.c
-> > > @@ -7582,14 +7582,21 @@ void perf_prepare_sample(struct perf_event_header *header,
-> > >     filtered_sample_type = sample_type & ~data->sample_flags;
-> > >     __perf_event_header__init_id(header, data, event, filtered_sample_type);
-> > >
-> > > -   if (sample_type & (PERF_SAMPLE_IP | PERF_SAMPLE_CODE_PAGE_SIZE))
-> > > -           data->ip = perf_instruction_pointer(regs);
-> > > +   if (sample_type & (PERF_SAMPLE_IP | PERF_SAMPLE_CODE_PAGE_SIZE)) {
-> > > +           /* attr.sample_type may not have PERF_SAMPLE_IP */
-> >
-> > Right, but that shouldn't matter, IIRC its OK to have more bits set in
-> > data->sample_flags than we have set in attr.sample_type. It just means
-> > we have data available for sample types we're (possibly) not using.
-> >
-> > That is, I think you can simply write this like:
-> >
-> > > +           if (!(data->sample_flags & PERF_SAMPLE_IP)) {
-> > > +                   data->ip = perf_instruction_pointer(regs);
-> > > +                   data->sample_flags |= PERF_SAMPLE_IP;
-> > > +           }
-> > > +   }
-> >
-> >       if (filtered_sample_type & (PERF_SAMPLE_IP | PERF_SAMPLE_CODE_PAGE_SIZE)) {
-> >               data->ip = perf_instruction_pointer(regs);
-> >               data->sample_flags |= PERF_SAMPLE_IP);
-> >       }
-> >
-> >       ...
-> >
-> >       if (filtered_sample_type & PERF_SAMPLE_CODE_PAGE_SIZE) {
-> >               data->code_page_size = perf_get_page_size(data->ip);
-> >               data->sample_flags |= PERF_SAMPLE_CODE_PAGE_SIZE;
-> >       }
-> >
-> > Then after a single perf_prepare_sample() run we have:
-> >
-> >   pre                 |       post
-> >   ----------------------------------------
-> >   0                   |       0
-> >   IP                  |       IP
-> >   CODE_PAGE_SIZE      |       IP|CODE_PAGE_SIZE
-> >   IP|CODE_PAGE_SIZE   |       IP|CODE_PAGE_SIZE
-> >
-> > So while data->sample_flags will have an extra bit set in the 3rd case,
-> > that will not affect perf_sample_outout() which only looks at data->type
-> > (== attr.sample_type).
-> >
-> > And since data->sample_flags will have both bits set, a second run will
-> > filter out both and avoid the extra work (except doing that will mess up
-> > the branch predictors).
->
-> Yeah, it'd be better to check filtered_sample_type in the first place.
->
-> Btw, I was thinking about a hypothetical scenario that IP set by a PMU
-> driver not from the regs.  In this case, having CODE_PAGE_SIZE will
-> overwrite the IP.  I don't think we need to worry about that for now
-> since PMU drivers updates the regs (using set_linear_ip).  But it seems
-> like a possible scenario for something like PEBS or IBS.
+Hello,
 
-Another example, but in this case it's real, is ADDR.  We cannot update
-the data->addr just because filtered_sample_type has PHYS_ADDR or
-DATA_PAGE_SIZE as it'd lose the original value.
+syzbot found the following issue on:
 
-Other than that, I'll update the other paths to minimized the branches.
+HEAD commit:    6d0c4b11e743 libbpf: Poison strlcpy()
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17764f3a480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=46221e8203c7aca6
+dashboard link: https://syzkaller.appspot.com/bug?extid=d94d214ea473e218fc89
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Thanks,
-Namhyung
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/83567aa48724/disk-6d0c4b11.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6047fdb8660e/vmlinux-6d0c4b11.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a94d1047d7b7/bzImage-6d0c4b11.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d94d214ea473e218fc89@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(1)
+WARNING: CPU: 1 PID: 6975 at kernel/locking/lockdep.c:231 hlock_class kernel/locking/lockdep.c:231 [inline]
+WARNING: CPU: 1 PID: 6975 at kernel/locking/lockdep.c:231 hlock_class kernel/locking/lockdep.c:220 [inline]
+WARNING: CPU: 1 PID: 6975 at kernel/locking/lockdep.c:231 check_wait_context kernel/locking/lockdep.c:4754 [inline]
+WARNING: CPU: 1 PID: 6975 at kernel/locking/lockdep.c:231 __lock_acquire+0xecf/0x56d0 kernel/locking/lockdep.c:5005
+Modules linked in:
+CPU: 1 PID: 6975 Comm: kworker/u4:13 Not tainted 6.2.0-rc2-syzkaller-00302-g6d0c4b11e743 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+Workqueue: netns cleanup_net
+RIP: 0010:hlock_class kernel/locking/lockdep.c:231 [inline]
+RIP: 0010:hlock_class kernel/locking/lockdep.c:220 [inline]
+RIP: 0010:check_wait_context kernel/locking/lockdep.c:4754 [inline]
+RIP: 0010:__lock_acquire+0xecf/0x56d0 kernel/locking/lockdep.c:5005
+Code: 28 14 73 8e e8 02 bb 6b 00 8b 05 94 78 0f 0d 85 c0 0f 85 79 f8 ff ff 48 c7 c6 40 51 4c 8a 48 c7 c7 a0 4a 4c 8a e8 51 d6 5b 08 <0f> 0b 31 c0 e9 73 f7 ff ff 48 63 5c 24 18 be 08 00 00 00 48 89 d8
+RSP: 0018:ffffc900035ef518 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 000000000000070e RCX: 0000000000000000
+RDX: ffff888079031d40 RSI: ffffffff8166724c RDI: fffff520006bde95
+RBP: 0000000000000003 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000002 R11: 0000000000000001 R12: 0000000000000003
+R13: ffff888079031d40 R14: ffff888079032778 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc92edd748 CR3: 0000000044fa3000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lock_acquire kernel/locking/lockdep.c:5668 [inline]
+ lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
+ rcu_lock_acquire include/linux/rcupdate.h:325 [inline]
+ rcu_read_lock include/linux/rcupdate.h:764 [inline]
+ perf_event_context_sched_in kernel/events/core.c:3913 [inline]
+ __perf_event_task_sched_in+0xe2/0x6c0 kernel/events/core.c:3980
+ perf_event_task_sched_in include/linux/perf_event.h:1328 [inline]
+ finish_task_switch.isra.0+0x5e5/0xc80 kernel/sched/core.c:5118
+ context_switch kernel/sched/core.c:5247 [inline]
+ __schedule+0xb92/0x5450 kernel/sched/core.c:6555
+ schedule+0xde/0x1b0 kernel/sched/core.c:6631
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6690
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0xa48/0x1360 kernel/locking/mutex.c:747
+ devl_lock net/devlink/core.c:54 [inline]
+ devlink_pernet_pre_exit+0x10a/0x220 net/devlink/core.c:301
+ ops_pre_exit_list net/core/net_namespace.c:159 [inline]
+ cleanup_net+0x455/0xb10 net/core/net_namespace.c:594
+ process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
+ worker_thread+0x669/0x1090 kernel/workqueue.c:2436
+ kthread+0x2e8/0x3a0 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
