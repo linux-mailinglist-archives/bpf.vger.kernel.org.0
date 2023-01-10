@@ -2,32 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A69A664992
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 19:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29210664B37
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 19:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239113AbjAJSXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 13:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
+        id S239373AbjAJSjk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 13:39:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239201AbjAJSWb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 13:22:31 -0500
+        with ESMTP id S239685AbjAJSii (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 13:38:38 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DD05D439;
-        Tue, 10 Jan 2023 10:20:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CC84E40B;
+        Tue, 10 Jan 2023 10:34:06 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 393E1B8189A;
-        Tue, 10 Jan 2023 18:20:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35700C433D2;
-        Tue, 10 Jan 2023 18:20:01 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D1A91B81902;
+        Tue, 10 Jan 2023 18:34:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 022C3C433D2;
+        Tue, 10 Jan 2023 18:34:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1673374801;
+        s=korg; t=1673375643;
         bh=9NdXOmkiTVBp0bp3bFhoadq9j659g/3HfDuElJpJhKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rOIHvsRVO+8p8o/PdQC2c2kcw9ScJo+pgLeEyZeEmczqzWD9Vy9yyv5p3QP5M14RE
-         e+dZtCnuah76s8EW0dxIQxWMhM+y6hbs3IyPUbbSYC8RUfTQDG9Yq5wZKViD0ruhe3
-         C83kV2SnOl7K7zCrhcmWGG5mtj1DRkYeg4IbvBOM=
+        b=uBY2ycQ+qwpuTWMO/xRMhJTl6h+hjWywO4Tb4vbAXUMhzvRWKljzvDIhVF17IOZwW
+         QRQlK4rs5aE7zJ+l28c3JDS4wb9Lz4cExHw2aCERoF8+dhBfR4sh2vJCyNlNE4NkND
+         AunfnRVwSpDZTDf7f+/x1zKWyAuYzGtoU/XhaI4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -39,12 +39,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 099/159] perf stat: Fix handling of --for-each-cgroup with --bpf-counters to match non BPF mode
-Date:   Tue, 10 Jan 2023 19:04:07 +0100
-Message-Id: <20230110180021.437684262@linuxfoundation.org>
+Subject: [PATCH 5.15 255/290] perf stat: Fix handling of --for-each-cgroup with --bpf-counters to match non BPF mode
+Date:   Tue, 10 Jan 2023 19:05:47 +0100
+Message-Id: <20230110180040.802246507@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230110180018.288460217@linuxfoundation.org>
-References: <20230110180018.288460217@linuxfoundation.org>
+In-Reply-To: <20230110180031.620810905@linuxfoundation.org>
+References: <20230110180031.620810905@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
