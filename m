@@ -2,214 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A556636B4
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 02:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188E76636D7
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 02:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbjAJBeC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 20:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
+        id S229669AbjAJBqQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 20:46:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbjAJBeB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 20:34:01 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160A7395E3
-        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 17:33:59 -0800 (PST)
-Message-ID: <6bd49922-9d38-3bf9-47e8-3208adfd2f31@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1673314437;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zZ+NmBWQwEtZ0JMl5rxcGs/v+HZr3XBrZb7SmCxlvCs=;
-        b=XmOpK1Qav3DKGCH8hcPZuzkPxXgQQCLPV/bdIyK2LqsRMT78rYGw2rUwUy1pJ4Pv9875DT
-        8uTIG2Ouzb7KTitLzl77ozvK0FL4FYmcdcNYIHWzJHR9ehJZeXHI6SG/ab8yXZ+F62ugdd
-        A49bluCjo48n/r+nuH9ES5vFLoqDeKk=
-Date:   Mon, 9 Jan 2023 17:33:50 -0800
-MIME-Version: 1.0
-Subject: Re: [bpf-next v4 2/2] selftests/bpf: add test case for htab map
-Content-Language: en-US
-To:     tong@infragraf.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229595AbjAJBqP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 20:46:15 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54D662C5;
+        Mon,  9 Jan 2023 17:46:14 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id d10so5782099ilc.12;
+        Mon, 09 Jan 2023 17:46:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yg6y1Fs87+kBhTAphMrODZMR7wjoZTjmP4jc3ntB9JA=;
+        b=a5u7F1X3LBVSIFtTj5Av0HOhWzV0MOKgjdqu9aC6bx6UtLALeDSzOKoOoOe+e3wkhV
+         LxW8tt5V7UcdHlRmspbI3YQGR/aFQi1RfVW5/ft5Zq10HCFoMwxgfXem5OhrNi+4B3fK
+         JoUsItqoTF5mJI8d4rg+czQDuYvzps2qF01Z5yjBemIUVTHKe/auXwLCoPBZnHI+jPU6
+         OOSad3IgWc2zux0rnSQbFh/Z6gvmr/ZHaW9v93I35UNEB3k4Xk0jXyYlFVeCe3WODHAT
+         poumAzp6HZ19KrPU1FKyz9+/zje3md1DGLbNLsKHjYf/3AXdjKSHEenOkuc+ifR0YNJ0
+         PpuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Yg6y1Fs87+kBhTAphMrODZMR7wjoZTjmP4jc3ntB9JA=;
+        b=hH2AhlYYvXkj1yVpwk9eOzoYlwbIb6hGNnFzBwCVm7VljSfcLj1kgFhpHcnYuwsRkS
+         3WWqvkQKUE0FOhcaImBHtNoH2o35qXJym01J3UWLOV4iarIBU/rsq3qtvVzG6njfWHRJ
+         gQKS9g428l4TUWiS8isgqa9PcFH07C+QOfnOztqx1YRkcaiWejETB8AmiAYw0DwbgvBd
+         CJKGdCGZfFH8X/FpOenhEx3p48/LKtPhgBXv8+d7n7WhjX4HbE6vXfFGGHmPUQTTk3Jr
+         B1Yu5PENyqtPId+Z7a+mjmyxV4rgHaMDF7kVY7lkH0DEfaFwqIOVrZlWORAW14J4GgML
+         EX7w==
+X-Gm-Message-State: AFqh2koBR7nJI+33MstHkw0socAVTW4CJ55uYmJeJSwdp6g00eiCuEFB
+        YW0twWyVpr3NPAlxxtgtVKMpG/DCZd7KkG9s
+X-Google-Smtp-Source: AMrXdXuvA8vA+jqlZaO6XX4Bbg9OAHF02rJkjR8f4ojw6iIefHz0kEBESYuY+kf9G6XDBofvdS4Dnw==
+X-Received: by 2002:a92:cc88:0:b0:307:10be:a414 with SMTP id x8-20020a92cc88000000b0030710bea414mr41370919ilo.1.1673315173973;
+        Mon, 09 Jan 2023 17:46:13 -0800 (PST)
+Received: from james-x399.localdomain (71-33-132-231.hlrn.qwest.net. [71.33.132.231])
+        by smtp.gmail.com with ESMTPSA id y5-20020a927d05000000b003027f923d29sm3130637ilc.39.2023.01.09.17.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jan 2023 17:46:13 -0800 (PST)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org,
-        Manu Bretelle <chantra@meta.com>
-References: <20230105092637.35069-1-tong@infragraf.org>
- <20230105092637.35069-2-tong@infragraf.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230105092637.35069-2-tong@infragraf.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpftool: Add missing quotes to libbpf bootstrap submake vars
+Date:   Mon,  9 Jan 2023 18:45:04 -0700
+Message-Id: <20230110014504.3120711-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/5/23 1:26 AM, tong@infragraf.org wrote:
-> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-> new file mode 100644
-> index 000000000000..137dce8f1346
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 DiDi Global Inc. */
-> +#define _GNU_SOURCE
-> +#include <pthread.h>
-> +#include <sched.h>
-> +#include <test_progs.h>
-> +
-> +#include "htab_deadlock.skel.h"
-> +
-> +static int perf_event_open(void)
-> +{
-> +	struct perf_event_attr attr = {0};
-> +	int pfd;
-> +
-> +	/* create perf event on CPU 0 */
-> +	attr.size = sizeof(attr);
-> +	attr.type = PERF_TYPE_HARDWARE;
-> +	attr.config = PERF_COUNT_HW_CPU_CYCLES;
-> +	attr.freq = 1;
-> +	attr.sample_freq = 1000;
-> +	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-> +
-> +	return pfd >= 0 ? pfd : -errno;
-> +}
-> +
-> +void test_htab_deadlock(void)
-> +{
-> +	unsigned int val = 0, key = 20;
-> +	struct bpf_link *link = NULL;
-> +	struct htab_deadlock *skel;
-> +	int err, i, pfd;
-> +	cpu_set_t cpus;
-> +
-> +	skel = htab_deadlock__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-> +		return;
-> +
-> +	err = htab_deadlock__attach(skel);
-> +	if (!ASSERT_OK(err, "skel_attach"))
-> +		goto clean_skel;
-> +
-> +	/* NMI events. */
-> +	pfd = perf_event_open();
-> +	if (pfd < 0) {
-> +		if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
-> +			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
-> +			test__skip();
+When passing compiler variables like CC=$(HOSTCC) to a submake
+we must ensure the variable is quoted in order to handle cases
+where $(HOSTCC) may be multiple binaries.
 
-This test is a SKIP in bpf CI, so it won't be useful.
-https://github.com/kernel-patches/bpf/actions/runs/3858084722/jobs/6579470256#step:6:5198
+For example when using ccache $HOSTCC may be:
+"/usr/bin/ccache /usr/bin/gcc"
 
-Is there other way to test it or do you know what may be missing in vmtest.sh? 
-Not sure if the cloud setup in CI blocks HW_CPU_CYCLES.  If it is, I also don't 
-know a good way (Cc: Manu).
+If we pass CC without quotes like CC=$(HOSTCC) only the first
+"/usr/bin/ccache" part will be assigned to the CC variable which
+will cause an error due to dropping the "/usr/bin/gcc" part of
+the variable in the submake invocation.
 
-> +			goto clean_skel;
-> +		}
-> +		if (!ASSERT_GE(pfd, 0, "perf_event_open"))
-> +			goto clean_skel;
-> +	}
-> +
-> +	link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
-> +	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
-> +		goto clean_pfd;
-> +
-> +	/* Pinned on CPU 0 */
-> +	CPU_ZERO(&cpus);
-> +	CPU_SET(0, &cpus);
-> +	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
-> +
-> +	/* update bpf map concurrently on CPU0 in NMI and Task context.
-> +	 * there should be no kernel deadlock.
-> +	 */
-> +	for (i = 0; i < 100000; i++)
-> +		bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
-> +				    &key, &val, BPF_ANY);
-> +
-> +	bpf_link__destroy(link);
-> +clean_pfd:
-> +	close(pfd);
-> +clean_skel:
-> +	htab_deadlock__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> new file mode 100644
-> index 000000000000..dacd003b1ccb
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
-> @@ -0,0 +1,30 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 DiDi Global Inc. */
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(max_entries, 2);
-> +	__uint(map_flags, BPF_F_ZERO_SEED);
-> +	__type(key, unsigned int);
-> +	__type(value, unsigned int);
-> +} htab SEC(".maps");
-> +
-> +SEC("fentry/perf_event_overflow")
-> +int bpf_nmi_handle(struct pt_regs *regs)
-> +{
-> +	unsigned int val = 0, key = 4;
-> +
-> +	bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
+This fixes errors such as:
+/usr/bin/ccache: invalid option -- 'd'
 
-I ran it in my qemu setup which does not skip the test.  I got this splat though:
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+ tools/bpf/bpftool/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[   42.990306] ================================
-[   42.990307] WARNING: inconsistent lock state
-[   42.990310] 6.2.0-rc2-00304-gaf88a1bb9967 #409 Tainted: G           O
-[   42.990313] --------------------------------
-[   42.990315] inconsistent {INITIAL USE} -> {IN-NMI} usage.
-[   42.990317] test_progs/1546 [HC1[1]:SC0[0]:HE0:SE1] takes:
-[   42.990322] ffff888101245768 (&htab->lockdep_key){....}-{2:2}, at: 
-htab_map_update_elem+0x1e7/0x810
-[   42.990340] {INITIAL USE} state was registered at:
-[   42.990341]   lock_acquire+0x1e6/0x530
-[   42.990351]   _raw_spin_lock_irqsave+0xb8/0x100
-[   42.990362]   htab_map_update_elem+0x1e7/0x810
-[   42.990365]   bpf_map_update_value+0x40d/0x4f0
-[   42.990371]   map_update_elem+0x423/0x580
-[   42.990375]   __sys_bpf+0x54e/0x670
-[   42.990377]   __x64_sys_bpf+0x7c/0x90
-[   42.990382]   do_syscall_64+0x43/0x90
-[   42.990387]   entry_SYSCALL_64_after_hwframe+0x72/0xdc
-
-Please check.
-
-> +	return 0;
-> +}
-> +
-> +SEC("perf_event")
-> +int bpf_empty(struct pt_regs *regs)
-> +{
-
-btw, from a quick look at __perf_event_overflow, I suspect doing the 
-bpf_map_update_elem() here instead of the fentry/perf_event_overflow above can 
-also reproduce the patch 1 issue?
-
-> +	return 0;
-> +}
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index ab20ecc5acce..d40e31bc4c9d 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -53,7 +53,7 @@ $(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_
+ $(LIBBPF_BOOTSTRAP): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_BOOTSTRAP_OUTPUT)
+ 	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_BOOTSTRAP_OUTPUT) \
+ 		DESTDIR=$(LIBBPF_BOOTSTRAP_DESTDIR:/=) prefix= \
+-		ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD) AR=$(HOSTAR) $@ install_headers
++		ARCH= CROSS_COMPILE= CC="$(HOSTCC)" LD="$(HOSTLD)" AR="$(HOSTAR)" $@ install_headers
+ 
+ $(LIBBPF_BOOTSTRAP_INTERNAL_HDRS): $(LIBBPF_BOOTSTRAP_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_BOOTSTRAP_HDRS_DIR)
+ 	$(call QUIET_INSTALL, $@)
+-- 
+2.34.1
 
