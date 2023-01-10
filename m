@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 410E0664BD8
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 20:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A25E664BDD
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 20:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234680AbjAJTBr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 14:01:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        id S233739AbjAJTCQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 14:02:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239679AbjAJTBQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 14:01:16 -0500
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4456413DC4;
-        Tue, 10 Jan 2023 11:01:11 -0800 (PST)
-Received: by mail-io1-f50.google.com with SMTP id p66so6614888iof.1;
-        Tue, 10 Jan 2023 11:01:11 -0800 (PST)
+        with ESMTP id S239485AbjAJTBz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 14:01:55 -0500
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491E4C2C;
+        Tue, 10 Jan 2023 11:01:54 -0800 (PST)
+Received: by mail-io1-f53.google.com with SMTP id p66so6616043iof.1;
+        Tue, 10 Jan 2023 11:01:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=x+Xte7Ngl7YlLvj1z8sYEtuoSriWT+xO/RCHtzuknfc=;
-        b=m4Ta5LKJxQYFO3oDsKG4p+AUJhHXFADi2qW2nfp6SamL44NiGL0xtTjyfeZV516Ar7
-         +PeYl1EMCvB+dlC03R27D1vBNfn4NYP4MJWWVMR6rPEbCpNMnoljCp0lvGl7Q6DqIMnR
-         fwyKwAuSvWpuwJJOe8A34avbyqeo+30dfovslXewRBPc2e7yco9lOAVa9SCZjCNAmAsg
-         sP7G2inBRAmuDnyvI9e1gmtyWUYlUWxs3oK4O6lgvv11ouYxCGDLK31fPytIL+ELKemA
-         Mw303oeuG0iG3Uuz/MLr9U4tLKwZXNjqQH05B9o3TP6josySOGxxzhHtunrpGRJen3Io
-         KZ/w==
-X-Gm-Message-State: AFqh2kr4jgTypv0hAJd+G31Z0hnMXPC+dIxm3Ss/WpVkH2OtVZBnV9Rh
-        1I0fvMmcLjFrOvoQ6tzrEztD7Q5P/3ToTXwfJUI=
-X-Google-Smtp-Source: AMrXdXsrmSHXOsOSwjFFyEiBIpXUCp22xh80oaStljiyA0tuq5VCWRNrhlch7ZkOokhasWRsdzUMCA2poz7sKArHmt0=
-X-Received: by 2002:a6b:7f08:0:b0:6e2:ec05:87c8 with SMTP id
- l8-20020a6b7f08000000b006e2ec0587c8mr5648418ioq.144.1673377270497; Tue, 10
- Jan 2023 11:01:10 -0800 (PST)
+        bh=KO5oCqwQNxlo3PsacBQG8HGR8FuKe5qev8tcfYySGtc=;
+        b=SCejT9Jjziz1Rw5zHs25T3KqwBUTVHiojTOmhUxJxXUUexaaylCR/Qxsy1vYy/fCPn
+         RaOr0MPoXLhMX5Cd0sxyPYk7Q+yLW3w2lwUo2otHaA94Bt4ZRWzRcZfaiAuDn0IF6pFQ
+         XGo7Z47rLzblCeI0MIVn0NYCisJdPEFagXbO4HGLAwZeVWLJ2lThnED6SjITcHs+uxh3
+         up8Ycg3/dSW+WduNGg6caKgyUOO+LHeY6TZtR0yoRLgU/sDPbZOqHfwg+LdRMq5yxHTl
+         aizw1dfxzuXBro3ScRF5q6dNViQDpKWZbT9M23LFtWYo/TGzz+waeUxokX6KF2yZ3Cki
+         3gZw==
+X-Gm-Message-State: AFqh2kp00gKn549GFzstF7bwEbyqK8V8hR3m4sKlGyz4VIxqu6WTZAXB
+        JnMRc1313dPn28t/LrYRTa3KnUDaEWo4dshsqMw=
+X-Google-Smtp-Source: AMrXdXuaJ7As5yPR1zWPfLnl4dJ9RWgCNhmLDgmnaAW40Z8gylAKpaILAOPb5ewyT02ueudEyohZd1qiY8AId1+ll44=
+X-Received: by 2002:a6b:a16:0:b0:6e3:28c5:e8ee with SMTP id
+ z22-20020a6b0a16000000b006e328c5e8eemr6555797ioi.140.1673377313445; Tue, 10
+ Jan 2023 11:01:53 -0800 (PST)
 MIME-Version: 1.0
 References: <20221229204101.1099430-1-namhyung@kernel.org> <20221229204101.1099430-2-namhyung@kernel.org>
  <Y7wFJ+NF0NwnmzLa@hirez.programming.kicks-ass.net> <Y7x3RUd67smv3EFQ@google.com>
- <Y71D1FCzoGihMUv+@hirez.programming.kicks-ass.net> <Y71HvO5NV0OP6YYq@gmail.com>
-In-Reply-To: <Y71HvO5NV0OP6YYq@gmail.com>
+ <Y71ELS9GTz0hqaUt@hirez.programming.kicks-ass.net>
+In-Reply-To: <Y71ELS9GTz0hqaUt@hirez.programming.kicks-ass.net>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 10 Jan 2023 11:00:59 -0800
-Message-ID: <CAM9d7cha+ixj-XrisbDzBiPBJW7RPDxLGEuUT+J4mb8rig6cww@mail.gmail.com>
+Date:   Tue, 10 Jan 2023 11:01:42 -0800
+Message-ID: <CAM9d7cheB9_nVQoeai2_LkoofhWN7J7ejbXwjpgqTB30JpeASQ@mail.gmail.com>
 Subject: Re: [PATCH 2/3] perf/core: Set data->sample_flags in perf_prepare_sample()
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>,
@@ -61,29 +61,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Ingo,
-
-On Tue, Jan 10, 2023 at 3:10 AM Ingo Molnar <mingo@kernel.org> wrote:
+On Tue, Jan 10, 2023 at 2:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
+> On Mon, Jan 09, 2023 at 12:21:25PM -0800, Namhyung Kim wrote:
 >
-> * Peter Zijlstra <peterz@infradead.org> wrote:
->
-> > On Mon, Jan 09, 2023 at 12:21:25PM -0800, Namhyung Kim wrote:
+> > > However; inspired by your next patch; we can do something like so:
+> > >
+> > >     if (filtered_sample_type & PERF_SAMPLE_CALLCHAIN) {
+> > >             data->callchain = perf_callchain(event, regs);
+> > >             data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
+> > >
+> > >             data->size += (1 + data->callchain->nr) * sizeof(u64);
+> > >     }
 > >
-> > > Looks good.  But I'm confused by the tip-bot2 messages saying it's
-> > > merged.  Do you want me to work on it as a follow up?
-> >
-> > Ingo and me talked past one another, I agreed with 1/3 and he applied
-> > the whole series. Just talked to him again and he's just zapped these
-> > last two patches.
+> > This is fine as long as all other places (like in PMU drivers) set the
+> > callchain update the sample data size accordingly.  If not, we can get
+> > the callchain but the data size will be wrong.
 >
-> Yeah - perf/core is now:
->
->    7bdb1767bf01 ("perf/core: Change the layout of perf_sample_data")
->
-> which can be used for further work. Sorry about the confusion ...
+> Good point, maybe add a helper there to ensure that code doesn't
+> duplicate/diverge?
 
-No problem, thanks for your work!
+Sure, will do.
 
 Thanks,
 Namhyung
