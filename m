@@ -2,79 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B656637E5
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 04:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603926637F6
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 05:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbjAJDoU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 22:44:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
+        id S229896AbjAJEAT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 23:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjAJDoS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 22:44:18 -0500
-Received: from out-146.mta0.migadu.com (out-146.mta0.migadu.com [91.218.175.146])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E601EEE1
-        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 19:44:17 -0800 (PST)
-Message-ID: <7a476ec6-9bd0-beec-00ff-e8cd0121ce57@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1673322256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XadTJY4of2M6MLVPR0KC+JPokPjO4xpBN+kyvzgjFQk=;
-        b=TCYiY2TG6x/jFJWWp9mWRkNrbjaYeAlOGaFaTKrQ9d2UVjg5xRCnXirk8MsD1hOQMc79Pw
-        Q3ntXL7ZSfV59OsnzjMugALPa1ji/ZLmKsHbKZxEpUiN2VKevmp413NdouYIC6TusnpJDi
-        ZTngdT/62eI2AvXZ4AW58agKI7bgAmw=
-Date:   Mon, 9 Jan 2023 19:44:11 -0800
+        with ESMTP id S229635AbjAJEAR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 23:00:17 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E85D1EC66
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 20:00:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B9A93614D1
+        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 04:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EA1A2C433D2;
+        Tue, 10 Jan 2023 04:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673323216;
+        bh=uMO1JZGXjWHvtXsqCvlJjnhCsXLTdze1k4PZvm9Nrc0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BlqIXB2g9Vfd8uhp940jSGdWzRjRX8vyH+VBArt2LO74yRzV89BvH5C8WrCrWcvjV
+         ErBNNdLUGFu9LVnmNJzRtFkY0zS8EnsYJ18sCACgmP5AqEkoT3+CTMKh687w2EQiZK
+         A+G0Z8JnZgxfnZpDZrVUwng8T6SyyrHLgsajaN3d5cZ/3LODXiQKT+h/1hyheaQurf
+         afNSks5fsL7s5L2kLP2aBzAvw+uciYRjRFTwHNqUY9OVHfkGyzGvXUloWZibkclq4k
+         RrOpyST5hMe25T0ZuX4cqb6GeAxmY5C9yHr42eBWAkTIsCOgs9zIHhslS787HZqtsL
+         lcwll8UGQmFoA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CBF1EE524ED;
+        Tue, 10 Jan 2023 04:00:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [bpf-next v4 2/2] selftests/bpf: add test case for htab map
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-To:     Tonghao Zhang <tong@infragraf.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org,
-        Manu Bretelle <chantra@meta.com>
-References: <20230105092637.35069-1-tong@infragraf.org>
- <20230105092637.35069-2-tong@infragraf.org>
- <6bd49922-9d38-3bf9-47e8-3208adfd2f31@linux.dev>
- <AE6C6A22-4411-4109-93DD-164FA53DCBE0@infragraf.org>
- <85737292-efbf-636c-99f1-39569cd215c8@linux.dev>
-In-Reply-To: <85737292-efbf-636c-99f1-39569cd215c8@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 1/2] bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
+ and PERF_BPF_EVENT_PROG_UNLOAD
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167332321583.31727.12746775760763108962.git-patchwork-notify@kernel.org>
+Date:   Tue, 10 Jan 2023 04:00:15 +0000
+References: <20230106154400.74211-1-paul@paul-moore.com>
+In-Reply-To: <20230106154400.74211-1-paul@paul-moore.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     linux-audit@redhat.com, bpf@vger.kernel.org,
+        burn.alting@iinet.net.au, sdf@google.com, ast@kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/9/23 7:25 PM, Martin KaFai Lau wrote:
->>>
->>> btw, from a quick look at __perf_event_overflow, I suspect doing the 
->>> bpf_map_update_elem() here instead of the fentry/perf_event_overflow above 
->>> can also reproduce the patch 1 issue?
->> No
->> bpf_overflow_handler will check the bpf_prog_active, if syscall increase it, 
->> bpf_overflow_handler will skip the bpf prog.
-> 
-> tbh, I am quite surprised the bpf_prog_active would be noisy enough to avoid 
-> this deadlock being reproduced easily. fwiw, I just tried doing map_update here 
-> and can reproduce it in the very first run.
-Correcting my self. I only reproduced the warning splat but not the deadlock. 
-This test is using map_update from the syscall that bumps the prog_active.
+Hello:
 
-Agree that SEC("perf_event") alone won't work unless the bpf_map_update_elem() 
-is not done from the syscall in prog_tests/htab_deadlock.c, eg. from another bpf 
-prog.
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Fri,  6 Jan 2023 10:43:59 -0500 you wrote:
+> When changing the ebpf program put() routines to support being called
+> from within IRQ context the program ID was reset to zero prior to
+> calling the perf event and audit UNLOAD record generators, which
+> resulted in problems as the ebpf program ID was bogus (always zero).
+> This patch addresses this problem by removing an unnecessary call to
+> bpf_prog_free_id() in __bpf_prog_offload_destroy() and adjusting
+> __bpf_prog_put() to only call bpf_prog_free_id() after audit and perf
+> have finished their bpf program unload tasks in
+> bpf_prog_put_deferred().  For the record, no one can determine, or
+> remember, why it was necessary to free the program ID, and remove it
+> from the IDR, prior to executing bpf_prog_put_deferred();
+> regardless, both Stanislav and Alexei agree that the approach in this
+> patch should be safe.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v3,1/2] bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD
+    https://git.kernel.org/bpf/bpf/c/ef01f4e25c17
+  - [v3,2/2] bpf: remove the do_idr_lock parameter from bpf_prog_free_id()
+    https://git.kernel.org/bpf/bpf/c/e7895f017b79
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
