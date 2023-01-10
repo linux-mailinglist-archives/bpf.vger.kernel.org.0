@@ -2,129 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C85226644E0
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 16:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D137A6646A8
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 17:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233408AbjAJPbg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 10:31:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
+        id S230038AbjAJQzv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 11:55:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239122AbjAJPay (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 10:30:54 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B15DD2EC;
-        Tue, 10 Jan 2023 07:30:52 -0800 (PST)
-Received: from lhrpeml100006.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4NrvsN0FpRz67N2W;
-        Tue, 10 Jan 2023 23:30:48 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
- lhrpeml100006.china.huawei.com (7.191.160.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Tue, 10 Jan 2023 15:30:49 +0000
-Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
- lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2375.034;
- Tue, 10 Jan 2023 15:30:49 +0000
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Joao Martins <joao.m.martins@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yi Liu <yi.l.liu@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Chaitanya Kulkarni" <chaitanyak@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "Daniel Jordan" <daniel.m.jordan@oracle.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Eric Farman" <farman@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        zhukeqian <zhukeqian1@huawei.com>
-Subject: RE: [PATCH v4 00/17] IOMMUFD Generic interface
-Thread-Topic: [PATCH v4 00/17] IOMMUFD Generic interface
-Thread-Index: AQHY8wv6WqOaN9m/WUKJgvcZCnpZkK454qzggAFgXgCAXKMbQIAAKFmAgAAYaYCAAAM8UA==
-Date:   Tue, 10 Jan 2023 15:30:49 +0000
-Message-ID: <dc7ffdc5f38248caaaabac5a66de85bb@huawei.com>
-References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
-        <3a20e56423f544dab312bca1bcb56ce4@huawei.com>
-        <000cf099-9824-39b8-3719-cf43b33ae1ef@intel.com>
-        <36b0fdac061e4680b5966d2774f0026a@huawei.com> <Y71szSt7jRFKTMcl@nvidia.com>
- <5481b0e8-84dc-52a9-c99f-1df3417328d6@oracle.com>
-In-Reply-To: <5481b0e8-84dc-52a9-c99f-1df3417328d6@oracle.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.202.227.178]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S238948AbjAJQzi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 11:55:38 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B026319C13
+        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 08:55:36 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id o13so9524750pjg.2
+        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 08:55:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jR4tzWqElfmW8QXwRewDX/Da1DcZTjPzAW0JMNMjZzU=;
+        b=Im42JvnEz/G0ojG3vnz4B3EpJB9ByRDt8qrhjq+MV+G08a9YXDE2YIwy8p7/TRqS54
+         ulzIKFlFCCBfqXhcUeDAdaXLSF+qJavN8n3pF1VWb1oX64nmxoVyAaF40CkMiOmCp8Vi
+         CTPHw82A/0TDeR6e+EjIIyDPzTHsGRSdq+JGqkQLoGG71Pf1LXET10td5byJaeSq9s+S
+         1e3brCfuuKcHiritdbTzW4AeaxqMiiXimPEWB0+VU/eMT1MdkmGctBurbACaiSoBqr73
+         ESLvqDoGRBQWwyYvpc7SSvnOBkOYuAav1uAa85G8VxfUS8CRQYjb4P4IusSpVpTVf4b5
+         RolQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jR4tzWqElfmW8QXwRewDX/Da1DcZTjPzAW0JMNMjZzU=;
+        b=aOh04NOeu6NapxuldWMZgASibC+bZdu1tBYTpmKMC0s3F0D517OQfiBzopxqoBmONJ
+         TXF2WPKvVkQhydGn0BjW8hL0yJ/ehgUu5745RlFeNpOe3kbH82HcfnfV9QPKzjhoMmxq
+         A9Eu/qhRCzDg9ioMe7+vSTqsg7RfQIG7Cy546nya6qLGyPN2SPCBItlwMapted8uuuxU
+         8KpcB7qBY24NkjIJY+VsYN7xR9/WoTA7f/8e16+plKdR6HXOhnRTxUxrTjwxjTqnvikP
+         +p3W+o0VPITsgRXkjPWMHMSEmBJiF0Xh1jrbbmtKlOVs8bFrFVieRMLhc5pqkYyITKWV
+         TW5A==
+X-Gm-Message-State: AFqh2kpCvPq9vHnqQ8TWclTVLxE2SC5ZzIp4pz4Iegrk/cIKSRaee08M
+        X7TRc+saU3KR7MCQfWqF79wxwVOgXoHgX4WcwAYg/jVjOyx/
+X-Google-Smtp-Source: AMrXdXtAcgCtqLeebZzIIOK+6EKQdCv8fBk3I302FBiBvlAmgf3r32qYRRPeFyzTWm/YpxvQUe5njrN/Ek4jAX5NeLI=
+X-Received: by 2002:a17:902:968a:b0:192:7a00:c790 with SMTP id
+ n10-20020a170902968a00b001927a00c790mr4310537plp.12.1673369735961; Tue, 10
+ Jan 2023 08:55:35 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230106154400.74211-1-paul@paul-moore.com> <Y70rbnusftLg1ymg@krava>
+In-Reply-To: <Y70rbnusftLg1ymg@krava>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 10 Jan 2023 11:55:26 -0500
+Message-ID: <CAHC9VhTc19PbdqOLjP-s_AiEO-z4POF1cCPF7MjjO8GvB8=DNw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] bpf: restore the ebpf program ID for
+ BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     linux-audit@redhat.com, bpf@vger.kernel.org,
+        Burn Alting <burn.alting@iinet.net.au>,
+        Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9hbyBNYXJ0aW5zIFtt
-YWlsdG86am9hby5tLm1hcnRpbnNAb3JhY2xlLmNvbV0NCj4gU2VudDogMTAgSmFudWFyeSAyMDIz
-IDE1OjE2DQo+IFRvOiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BudmlkaWEuY29tPjsgU2hhbWVlcmFs
-aSBLb2xvdGh1bSBUaG9kaQ0KPiA8c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29t
-Pg0KPiBDYzogWWkgTGl1IDx5aS5sLmxpdUBpbnRlbC5jb20+OyBicGZAdmdlci5rZXJuZWwub3Jn
-OyBKb25hdGhhbiBDb3JiZXQNCj4gPGNvcmJldEBsd24ubmV0PjsgRGF2aWQgV29vZGhvdXNlIDxk
-d213MkBpbmZyYWRlYWQub3JnPjsNCj4gaW9tbXVAbGlzdHMubGludXguZGV2OyBKb2VyZyBSb2Vk
-ZWwgPGpvcm9AOGJ5dGVzLm9yZz47IEtldmluIFRpYW4NCj4gPGtldmluLnRpYW5AaW50ZWwuY29t
-PjsgbGludXgtZG9jQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta3NlbGZ0ZXN0QHZnZXIua2Vy
-bmVsLm9yZzsgbGx2bUBsaXN0cy5saW51eC5kZXY7IE5hdGhhbiBDaGFuY2VsbG9yDQo+IDxuYXRo
-YW5Aa2VybmVsLm9yZz47IE5pY2sgRGVzYXVsbmllcnMgPG5kZXNhdWxuaWVyc0Bnb29nbGUuY29t
-PjsgTWlndWVsDQo+IE9qZWRhIDxvamVkYUBrZXJuZWwub3JnPjsgUm9iaW4gTXVycGh5IDxyb2Jp
-bi5tdXJwaHlAYXJtLmNvbT47IFNodWFoDQo+IEtoYW4gPHNodWFoQGtlcm5lbC5vcmc+OyBTdXJh
-dmVlIFN1dGhpa3VscGFuaXQNCj4gPHN1cmF2ZWUuc3V0aGlrdWxwYW5pdEBhbWQuY29tPjsgVG9t
-IFJpeCA8dHJpeEByZWRoYXQuY29tPjsgV2lsbA0KPiBEZWFjb24gPHdpbGxAa2VybmVsLm9yZz47
-IEFsZXggV2lsbGlhbXNvbiA8YWxleC53aWxsaWFtc29uQHJlZGhhdC5jb20+Ow0KPiBMdSBCYW9s
-dSA8YmFvbHUubHVAbGludXguaW50ZWwuY29tPjsgQ2hhaXRhbnlhIEt1bGthcm5pDQo+IDxjaGFp
-dGFueWFrQG52aWRpYS5jb20+OyBDb3JuZWxpYSBIdWNrIDxjb2h1Y2tAcmVkaGF0LmNvbT47IERh
-bmllbA0KPiBKb3JkYW4gPGRhbmllbC5tLmpvcmRhbkBvcmFjbGUuY29tPjsgRGF2aWQgR2lic29u
-DQo+IDxkYXZpZEBnaWJzb24uZHJvcGJlYXIuaWQuYXU+OyBFcmljIEF1Z2VyIDxlcmljLmF1Z2Vy
-QHJlZGhhdC5jb20+OyBFcmljDQo+IEZhcm1hbiA8ZmFybWFuQGxpbnV4LmlibS5jb20+OyBKYXNv
-biBXYW5nIDxqYXNvd2FuZ0ByZWRoYXQuY29tPjsNCj4gSmVhbi1QaGlsaXBwZSBCcnVja2VyIDxq
-ZWFuLXBoaWxpcHBlQGxpbmFyby5vcmc+OyBrdm1Admdlci5rZXJuZWwub3JnOw0KPiBNYXR0aGV3
-IFJvc2F0byA8bWpyb3NhdG9AbGludXguaWJtLmNvbT47IE1pY2hhZWwgUy4gVHNpcmtpbg0KPiA8
-bXN0QHJlZGhhdC5jb20+OyBOaWNvbGluIENoZW4gPG5pY29saW5jQG52aWRpYS5jb20+OyBOaWts
-YXMgU2NobmVsbGUNCj4gPHNjaG5lbGxlQGxpbnV4LmlibS5jb20+OyB6aHVrZXFpYW4gPHpodWtl
-cWlhbjFAaHVhd2VpLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NCAwMC8xN10gSU9NTVVG
-RCBHZW5lcmljIGludGVyZmFjZQ0KPiANCj4gT24gMTAvMDEvMjAyMyAxMzo0OSwgSmFzb24gR3Vu
-dGhvcnBlIHdyb3RlOg0KPiA+IENhbiB5b3UgYWxzbyBsb29rIGF0IHRoZSBkaXJ0eSB0cmFja2lu
-ZyBzdHVmZj8gSSdkIHJlYWxseSBsaWtlIHRvIHNlZQ0KPiA+IHRoYXQgZG9uZSBmb3IgdGhlIGh1
-YXdlaSB2ZmlvIGxpdmUgbWlncmF0aW9uIGRyaXZlcg0KPiA+DQo+IA0KPiBIZSBkaWQgbG9vayBh
-bmQgcHJvdmlkZXMgY29tbWVudHMgYmFzZWQgb24gaGlzIHRlc3Rpbmcgb2YgdGhlIGluaXRpYWwg
-c2VyaWVzDQo+IChJSVVDIGZyb20gd2hhdCB3ZSBzcG9rZSBhdCBMUEMpLiB2MiBzaG91bGQgYmUg
-c2ltcGxlciwgdGhvdWdoIEkgYW0gc3RpbGwNCj4gd29ya2luZyBpdCBvdXQgdGhlIG1lcmdpbmcg
-b2YgdW5pdCB0ZXN0cyBpbnRvIGlvbW11ZmQuDQo+IA0KPiBNeSBwbGFuIG9uY2UgSSBwb3N0IHRo
-ZSB2MiB3YXMgdG8gaGFuZG92ZXIgdGhlIFNNTVV2MyBwYXJ0IGJhY2sgdG8NCj4gU2hhbWVlcmFs
-aQ0KPiBnaXZlbiB0aGUgZmFjdCBoZSBoYXMgaGFyZHdhcmUgdGhhdCBoYXMgdGhlIGZlYXR1cmUg
-YW5kIGNhbiBpdGVyYXRlIG1vcmUNCj4gbWVhbmluZ2Z1bGx5IHRoYW4gbWUuDQoNCk5vIHByb2Js
-ZW0uIEhhcHB5IHRvIGhlbHAuDQoNClRoYW5rcywNClNoYW1lZXINCg==
+On Tue, Jan 10, 2023 at 4:10 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> On Fri, Jan 06, 2023 at 10:43:59AM -0500, Paul Moore wrote:
+> > When changing the ebpf program put() routines to support being called
+> > from within IRQ context the program ID was reset to zero prior to
+> > calling the perf event and audit UNLOAD record generators, which
+> > resulted in problems as the ebpf program ID was bogus (always zero).
+> > This patch addresses this problem by removing an unnecessary call to
+> > bpf_prog_free_id() in __bpf_prog_offload_destroy() and adjusting
+> > __bpf_prog_put() to only call bpf_prog_free_id() after audit and perf
+> > have finished their bpf program unload tasks in
+> > bpf_prog_put_deferred().  For the record, no one can determine, or
+> > remember, why it was necessary to free the program ID, and remove it
+> > from the IDR, prior to executing bpf_prog_put_deferred();
+> > regardless, both Stanislav and Alexei agree that the approach in this
+> > patch should be safe.
+> >
+> > It is worth noting that when moving the bpf_prog_free_id() call, the
+> > do_idr_lock parameter was forced to true as the ebpf devs determined
+> > this was the correct as the do_idr_lock should always be true.  The
+> > do_idr_lock parameter will be removed in a follow-up patch, but it
+> > was kept here to keep the patch small in an effort to ease any stable
+> > backports.
+> >
+> > I also modified the bpf_audit_prog() logic used to associate the
+> > AUDIT_BPF record with other associated records, e.g. @ctx != NULL.
+> > Instead of keying off the operation, it now keys off the execution
+> > context, e.g. '!in_irg && !irqs_disabled()', which is much more
+> > appropriate and should help better connect the UNLOAD operations with
+> > the associated audit state (other audit records).
+> >
+> > Cc: stable@vger.kernel.org
+> > Fixes: d809e134be7a ("bpf: Prepare bpf_prog_put() to be called from irq context.")
+> > Reported-by: Burn Alting <burn.alting@iinet.net.au>
+> > Reported-by: Jiri Olsa <olsajiri@gmail.com>
+> > Suggested-by: Stanislav Fomichev <sdf@google.com>
+> > Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Signed-off-by: Paul Moore <paul@paul-moore.com>
+> >
+> > ---
+> > * v3
+> > - abandon most of the changes in v2
+> > - move bpf_prog_free_id() after the audit/perf unload hooks
+> > - remove bpf_prog_free_id() from __bpf_prog_offload_destroy()
+> > - added stable tag
+>
+> fwiw I checked and the perf UNLOAD events have proper id now
+> thanks for fixing this
+
+No problem, thanks for verifying that this solves the perf problem too.
+
+-- 
+paul-moore.com
