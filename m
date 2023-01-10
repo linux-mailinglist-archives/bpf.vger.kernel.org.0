@@ -2,180 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 018C86637BD
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 04:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E92556637D2
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 04:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbjAJDLn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Jan 2023 22:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
+        id S229572AbjAJDZf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Jan 2023 22:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjAJDLm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Jan 2023 22:11:42 -0500
-Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B89315F04;
-        Mon,  9 Jan 2023 19:11:41 -0800 (PST)
-Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-476e643d1d5so138801307b3.1;
-        Mon, 09 Jan 2023 19:11:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VqPkyqucvhXXbhtXozLAL9TWcFvcuJMd55Kn4s4jUEU=;
-        b=SuvWW3/Tj6tpFJDCHUwFFEQdZQeMsha5c3vK4PcZQH4s9E3EdveKZwfAm2RzY9h61x
-         Qva/qdSZgC9LmtlhWd5gSrTZK4d7vAAVceeewN3Y2w72lbyl2X/5EGuVKm8axq57xe4I
-         GRVDtC9OX2qaTUack6Y/I3bXrJvqLnfJpGNgbLsi6VCe6PZH/WQb4SIETGvG/Zjk0KBu
-         wpD4GKXAlrMGDSqf8OGWTpl4MxzSQX/Ii7xeZJgZuadbCnKMHgD2O+2OuLp584YnB17K
-         6eQr8PrbH9SoL1fLzUbbPK52X0bWxFRuMD1AyyP5g5TzV5t46BkCWkrm899B3dVRE+vX
-         hw8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VqPkyqucvhXXbhtXozLAL9TWcFvcuJMd55Kn4s4jUEU=;
-        b=TDEZgzG2LfTo9iI+we+8Us++LRqUVt+O5emxTfqQrdrWNEAwIYfEssueKIgLLrKAhx
-         ngMNcPIDGHklc/murCWt8EwJG0X4ZFP12IlwZNPfZy2SPKEfE5mVS+6eB7Zl0NMEluMa
-         Yowx3f0CVoiha8qISz7SMVfh1ThtXiHswYWH4Mj+8yvwUtUPowfZ3xkgO8eNuBeBcP00
-         lwyGYKVow2jAhwTbOv3F97oIygzEO/G+UD2HvdvHuETkdrKbhQngAmJ6LF4MFIItl/JW
-         ymVJUWZHIzySe/kfJbe4pXW1Gkn6N1JFIJp0TPU4wMSXYbEVhag8sTLwVZSKoWHNSoXM
-         8TxQ==
-X-Gm-Message-State: AFqh2kqQlP2lBKbMbBJSASgxlCqq32/+NFMCcJd6zpqFqN+VyWnFnaYy
-        EMIfK6UZ6cuiSG8kEMMP8X1+NxERxsT7jhAPyog=
-X-Google-Smtp-Source: AMrXdXvFP+Ml0IK5QECA0ExhOQCC0HxWT5A1AUQi56wTx9Rt7OUyeH1iYnVw4kjhkNtavutLxJShI1pxjj069Y8SUuo=
-X-Received: by 2002:a81:ac8:0:b0:4bb:7237:abf9 with SMTP id
- 191-20020a810ac8000000b004bb7237abf9mr2482201ywk.74.1673320300390; Mon, 09
- Jan 2023 19:11:40 -0800 (PST)
+        with ESMTP id S229743AbjAJDZf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Jan 2023 22:25:35 -0500
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4887B63A3
+        for <bpf@vger.kernel.org>; Mon,  9 Jan 2023 19:25:33 -0800 (PST)
+Message-ID: <85737292-efbf-636c-99f1-39569cd215c8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1673321131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MO2+weZAZRzG2H7ZkTEZhVDWHHp9gLCngGYuOE6dgJU=;
+        b=RJ1Jb1k8Tb1PpwrlT94m1pgSNJpMMwKEX/ktecsapW71HP03zAy/G51yjUCSujH4k9FCPl
+        LlrXPUUNTZtQ9mjLKpeGU58zlIeyCmOflqMFZ4G5NaGBKRlVdeyW2238Zd386qdA9yy7V/
+        WWWxUTf6XlCuyEw9tOMWd7unbVMOfxc=
+Date:   Mon, 9 Jan 2023 19:25:21 -0800
 MIME-Version: 1.0
-References: <20230109094247.1464856-1-imagedong@tencent.com> <504cc35a-74a8-751a-5899-186d7a0aff87@meta.com>
-In-Reply-To: <504cc35a-74a8-751a-5899-186d7a0aff87@meta.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Tue, 10 Jan 2023 11:11:29 +0800
-Message-ID: <CADxym3bRciuyM1nYCrbaAwSMRJQvgV=hJFSLeiu9jysejPaTQQ@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: resolve kernel function name optimization for kprobe
-To:     Yonghong Song <yhs@meta.com>
-Cc:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [bpf-next v4 2/2] selftests/bpf: add test case for htab map
+Content-Language: en-US
+To:     Tonghao Zhang <tong@infragraf.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org,
+        Manu Bretelle <chantra@meta.com>
+References: <20230105092637.35069-1-tong@infragraf.org>
+ <20230105092637.35069-2-tong@infragraf.org>
+ <6bd49922-9d38-3bf9-47e8-3208adfd2f31@linux.dev>
+ <AE6C6A22-4411-4109-93DD-164FA53DCBE0@infragraf.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <AE6C6A22-4411-4109-93DD-164FA53DCBE0@infragraf.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 10, 2023 at 4:29 AM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 1/9/23 1:42 AM, menglong8.dong@gmail.com wrote:
-> > From: Menglong Dong <imagedong@tencent.com>
-> >
-> > The function name in kernel may be changed by the compiler. For example,
-> > the function 'ip_rcv_core' can be compiled to 'ip_rcv_core.isra.0'.
-> >
-> > This kind optimization can happen in any kernel function. Therefor, we
-> > should conside this case.
-> >
-> > If we failed to attach kprobe with a '-ENOENT', then we can lookup the
-> > kallsyms and check if there is a similar function end with '.xxx', and
-> > retry.
->
-> This might produce incorrect result, so this approach won't work
-> for all .isra.0 cases. When a function name is changed from
-> <func> to <func>.isra.<num>, it is possible that compiler may have
-> make some changes to the arguments, e.g., removing one argument,
-> chaning a semantics of argument, etc. if bpf program still
-> uses the original function signature, the bpf program may
-> produce unexpected result.
+On 1/9/23 6:21 PM, Tonghao Zhang wrote:
+> 
+> 
+>> On Jan 10, 2023, at 9:33 AM, Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 1/5/23 1:26 AM, tong@infragraf.org wrote:
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+>>> new file mode 100644
+>>> index 000000000000..137dce8f1346
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
+>>> @@ -0,0 +1,75 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/* Copyright (c) 2022 DiDi Global Inc. */
+>>> +#define _GNU_SOURCE
+>>> +#include <pthread.h>
+>>> +#include <sched.h>
+>>> +#include <test_progs.h>
+>>> +
+>>> +#include "htab_deadlock.skel.h"
+>>> +
+>>> +static int perf_event_open(void)
+>>> +{
+>>> +	struct perf_event_attr attr = {0};
+>>> +	int pfd;
+>>> +
+>>> +	/* create perf event on CPU 0 */
+>>> +	attr.size = sizeof(attr);
+>>> +	attr.type = PERF_TYPE_HARDWARE;
+>>> +	attr.config = PERF_COUNT_HW_CPU_CYCLES;
+>>> +	attr.freq = 1;
+>>> +	attr.sample_freq = 1000;
+>>> +	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+>>> +
+>>> +	return pfd >= 0 ? pfd : -errno;
+>>> +}
+>>> +
+>>> +void test_htab_deadlock(void)
+>>> +{
+>>> +	unsigned int val = 0, key = 20;
+>>> +	struct bpf_link *link = NULL;
+>>> +	struct htab_deadlock *skel;
+>>> +	int err, i, pfd;
+>>> +	cpu_set_t cpus;
+>>> +
+>>> +	skel = htab_deadlock__open_and_load();
+>>> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+>>> +		return;
+>>> +
+>>> +	err = htab_deadlock__attach(skel);
+>>> +	if (!ASSERT_OK(err, "skel_attach"))
+>>> +		goto clean_skel;
+>>> +
+>>> +	/* NMI events. */
+>>> +	pfd = perf_event_open();
+>>> +	if (pfd < 0) {
+>>> +		if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
+>>> +			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
+>>> +			test__skip();
+>>
+>> This test is a SKIP in bpf CI, so it won't be useful.
+>> https://github.com/kernel-patches/bpf/actions/runs/3858084722/jobs/6579470256#step:6:5198
+>>
+>> Is there other way to test it or do you know what may be missing in vmtest.sh? Not sure if the cloud setup in CI blocks HW_CPU_CYCLES.  If it is, I also don't know a good way (Cc: Manu).
+> Hi
+> 
+> Other test cases using PERF_COUNT_HW_CPU_CYCLES were skipped too. For example,
+> send_signal
+> find_vma
+> get_stackid_cannot_attach
 
-Oops, I wasn't aware of this part. Can we make this function disabled
-by default and offer an option to users to enable it? Such as:
+Got it. Thanks for checking.
 
-    bpf_object_adapt_sym(struct bpf_object *obj)
+>>
+>>> +			goto clean_skel;
+>>> +		}
+>>> +		if (!ASSERT_GE(pfd, 0, "perf_event_open"))
+>>> +			goto clean_skel;
+>>> +	}
+>>> +
+>>> +	link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
+>>> +	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
+>>> +		goto clean_pfd;
+>>> +
+>>> +	/* Pinned on CPU 0 */
+>>> +	CPU_ZERO(&cpus);
+>>> +	CPU_SET(0, &cpus);
+>>> +	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
+>>> +
+>>> +	/* update bpf map concurrently on CPU0 in NMI and Task context.
+>>> +	 * there should be no kernel deadlock.
+>>> +	 */
+>>> +	for (i = 0; i < 100000; i++)
+>>> +		bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
+>>> +				    &key, &val, BPF_ANY);
+>>> +
+>>> +	bpf_link__destroy(link);
+>>> +clean_pfd:
+>>> +	close(pfd);
+>>> +clean_skel:
+>>> +	htab_deadlock__destroy(skel);
+>>> +}
+>>> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
+>>> new file mode 100644
+>>> index 000000000000..dacd003b1ccb
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
+>>> @@ -0,0 +1,30 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/* Copyright (c) 2022 DiDi Global Inc. */
+>>> +#include <linux/bpf.h>
+>>> +#include <bpf/bpf_helpers.h>
+>>> +#include <bpf/bpf_tracing.h>
+>>> +
+>>> +char _license[] SEC("license") = "GPL";
+>>> +
+>>> +struct {
+>>> +	__uint(type, BPF_MAP_TYPE_HASH);
+>>> +	__uint(max_entries, 2);
+>>> +	__uint(map_flags, BPF_F_ZERO_SEED);
+>>> +	__type(key, unsigned int);
+>>> +	__type(value, unsigned int);
+>>> +} htab SEC(".maps");
+>>> +
+>>> +SEC("fentry/perf_event_overflow")
+>>> +int bpf_nmi_handle(struct pt_regs *regs)
+>>> +{
+>>> +	unsigned int val = 0, key = 4;
+>>> +
+>>> +	bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
+>>
+>> I ran it in my qemu setup which does not skip the test.  I got this splat though:
+> This is a false alarm, not deadlock(this patch fix deadlock, only). I fix waring in other patch, please review
+> https://patchwork.kernel.org/project/netdevbpf/patch/20230105112749.38421-1-tong@infragraf.org/
 
-In my case, kernel function rename is common, and I have to
-check all functions and do such adaptation before attaching
-my kprobe programs, which makes me can't use auto-attach.
+Yeah, I just saw this thread also. Please submit the warning fix together with 
+this patch set since this test can trigger it.  They should be reviewed together.
 
-What's more, I haven't seen the arguments change so far, and
-maybe it's not a common case?
+>>
+>> [   42.990306] ================================
+>> [   42.990307] WARNING: inconsistent lock state
+>> [   42.990310] 6.2.0-rc2-00304-gaf88a1bb9967 #409 Tainted: G           O
+>> [   42.990313] --------------------------------
+>> [   42.990315] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+>> [   42.990317] test_progs/1546 [HC1[1]:SC0[0]:HE0:SE1] takes:
+>> [   42.990322] ffff888101245768 (&htab->lockdep_key){....}-{2:2}, at: htab_map_update_elem+0x1e7/0x810
+>> [   42.990340] {INITIAL USE} state was registered at:
+>> [   42.990341]   lock_acquire+0x1e6/0x530
+>> [   42.990351]   _raw_spin_lock_irqsave+0xb8/0x100
+>> [   42.990362]   htab_map_update_elem+0x1e7/0x810
+>> [   42.990365]   bpf_map_update_value+0x40d/0x4f0
+>> [   42.990371]   map_update_elem+0x423/0x580
+>> [   42.990375]   __sys_bpf+0x54e/0x670
+>> [   42.990377]   __x64_sys_bpf+0x7c/0x90
+>> [   42.990382]   do_syscall_64+0x43/0x90
+>> [   42.990387]   entry_SYSCALL_64_after_hwframe+0x72/0xdc
+>>
+>> Please check.
+>>
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +SEC("perf_event")
+>>> +int bpf_empty(struct pt_regs *regs)
+>>> +{
+>>
+>> btw, from a quick look at __perf_event_overflow, I suspect doing the bpf_map_update_elem() here instead of the fentry/perf_event_overflow above can also reproduce the patch 1 issue?
+> No
+> bpf_overflow_handler will check the bpf_prog_active, if syscall increase it, bpf_overflow_handler will skip the bpf prog.
 
-(Please just ignore this reply if it doesn't work :/ )
+tbh, I am quite surprised the bpf_prog_active would be noisy enough to avoid 
+this deadlock being reproduced easily. fwiw, I just tried doing map_update here 
+and can reproduce it in the very first run.
 
-Thanks!
-Menglong Dong
->
-> >
-> > Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> > ---
-> >   tools/lib/bpf/libbpf.c | 37 ++++++++++++++++++++++++++++++++++++-
-> >   1 file changed, 36 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index a5c67a3c93c5..fdfb1ca34ced 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -10375,12 +10375,30 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
-> >       return libbpf_err_ptr(err);
-> >   }
-> >
-> > +struct kprobe_resolve {
-> > +     char pattern[128];
-> > +     char name[128];
-> > +};
-> > +
-> > +static int kprobe_kallsyms_cb(unsigned long long sym_addr, char sym_type,
-> > +                           const char *sym_name, void *ctx)
-> > +{
-> > +     struct kprobe_resolve *res = ctx;
-> > +
-> > +     if (!glob_match(sym_name, res->pattern))
-> > +             return 0;
-> > +     strcpy(res->name, sym_name);
-> > +     return 1;
-> > +}
-> > +
-> >   static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf_link **link)
-> >   {
-> >       DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
-> > +     struct kprobe_resolve res = {};
-> >       unsigned long offset = 0;
-> >       const char *func_name;
-> >       char *func;
-> > +     int err;
-> >       int n;
-> >
-> >       *link = NULL;
-> > @@ -10408,8 +10426,25 @@ static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf
-> >
-> >       opts.offset = offset;
-> >       *link = bpf_program__attach_kprobe_opts(prog, func, &opts);
-> > +     err = libbpf_get_error(*link);
-> > +
-> > +     if (!err || err != -ENOENT)
-> > +             goto out;
-> > +
-> > +     sprintf(res.pattern, "%s.*", func);
-> > +     if (!libbpf_kallsyms_parse(kprobe_kallsyms_cb, &res))
-> > +             goto out;
-> > +
-> > +     pr_warn("prog '%s': trying to create %s '%s+0x%zx' perf event instead\n",
-> > +             prog->name, opts.retprobe ? "kretprobe" : "kprobe",
-> > +             res.name, offset);
-> > +
-> > +     *link = bpf_program__attach_kprobe_opts(prog, res.name, &opts);
-> > +     err = libbpf_get_error(*link);
-> > +
-> > +out:
-> >       free(func);
-> > -     return libbpf_get_error(*link);
-> > +     return err;
-> >   }
-> >
-> >   static int attach_ksyscall(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+> Fentry will not check the bpf_prog_active, and interrupt the task context. We have discussed that.
+
+Sure. fentry is fine. The reason I was asking is to see if the test can be 
+simplified and barring any future fentry blacklist.
