@@ -2,82 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 569EA663F2E
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 12:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2065A663F4F
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 12:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjAJLUB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 06:20:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        id S237838AbjAJLgT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 06:36:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbjAJLT7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 06:19:59 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C6C12602;
-        Tue, 10 Jan 2023 03:19:58 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id j16-20020a05600c1c1000b003d9ef8c274bso5239327wms.0;
-        Tue, 10 Jan 2023 03:19:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oxQkDdVDafHcjUoOF3EQnmddqLP5rPkgih0jPFZvU2E=;
-        b=oSJ8PVtgQcRGxfsFCxheDVMBtkmXR2RB3yi6lBOwAjKC6KZiGU5lWMLNyjABxMqsxb
-         mCdj37EWlNQMiajkDUGQR+qYTlwEuu3SPS88i/Xlwqx8bh7h0UQ9gsOd+fty/nba4RUi
-         geRWvLBnOYqPYhl1VOpo8vGc45wKqT6fXtQChyOwgqyf8X6/NZ451ea25vdiA9tKlvQN
-         9JJlYI3au4aBpWDaqxN9l2G2YRIrIOCWPNoF23CE698VVQHk6U0np8JrdZYVr9iGnK8w
-         gUjnpSMwS5jLX8w0nFVEVn4GzSxgP/ngP88zMuHp2P7bj3z+jvm97VtUbhDhh4tqN0mh
-         vm8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oxQkDdVDafHcjUoOF3EQnmddqLP5rPkgih0jPFZvU2E=;
-        b=yb8Y1E5zKt8yED6xAXY5lWyqHZL8uyiheNIx2JPTXuCAgt/muxlwKRSm8+q3cWMm1G
-         BLLZuKdMTF8TeoXo5S4iGTv6SQ2MAohQ6coxw45ipMFOo5qTwHCF3AvXVeYSKrUuOiw5
-         MFQs8ZOctBMVzQWdCWJt/S7Dy6+64ezAC+hlt3U7i2fsrUZoFiGp3VCvt/nNM9yr9XNR
-         dI2qqVWdHuMJgzydLG02zVBXEZis3DiP3lXgDDpWAyD6u9+FxonfCXzDfPYD2vcdvi+L
-         V8eI8u9Al+9XF6hKROUpAQO1ldOnG6GCbJGS6+Sfz9Q58pLuJsi60XqFEBW5aq6YpA4H
-         Rm/Q==
-X-Gm-Message-State: AFqh2kqYdzQ+NkWuzLPzIct0p00hFoFIRR3WuwyCrBNX+63hRHofmpG8
-        JicCn3oChsipe8u5GflgJ3Sp0cszqlA/CBC9
-X-Google-Smtp-Source: AMrXdXvZ75opWZTbfYPfpgM6I0lIFfRpx9gkSf25WUweD/6H0BELiuV1MCXQnbGxE3NfTzMZnGi0uw==
-X-Received: by 2002:a05:600c:48a8:b0:3cf:7197:e68a with SMTP id j40-20020a05600c48a800b003cf7197e68amr49737298wmp.18.1673349596531;
-        Tue, 10 Jan 2023 03:19:56 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id l36-20020a05600c1d2400b003d9fb59c16fsm997071wms.11.2023.01.10.03.19.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Jan 2023 03:19:56 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 10 Jan 2023 12:19:53 +0100
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org
-Subject: Re: [PATCH v3 1/2] perf build: Properly guard libbpf includes
-Message-ID: <Y71J2WpaMtked02+@krava>
-References: <CAJ9a7ViGE3UJX02oA42A9TSTKsOozPzdHjyL+OSP4J-9dZFqrg@mail.gmail.com>
- <Y7hZccgOiueB31a+@kernel.org>
- <Y7hgKMDGzQlankL1@kernel.org>
- <Y7hgoVKBoulCbA4l@kernel.org>
- <CAP-5=fXPPSHvN6VYc=8tzBz4xtKg4Ofa17zV4pAk0ycorXje8w@mail.gmail.com>
- <Y7wuz6EOggZ8Wysb@kernel.org>
- <Y7xYimp0h4YT72/N@krava>
- <CAP-5=fXwO5_kK=pMV09jdAVw386CB0JwArD0BZd=B=xCyWSP1g@mail.gmail.com>
- <CAP-5=fVa51_URGsdDFVTzpyGmdDRj_Dj2EKPuDHNQ0BYgMSzUA@mail.gmail.com>
- <CAP-5=fVtMEahrPMJNVOqsZGj-GoTxUnWsdzK7M+9F2+DhG_STQ@mail.gmail.com>
+        with ESMTP id S232310AbjAJLgL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 06:36:11 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04473113A;
+        Tue, 10 Jan 2023 03:36:03 -0800 (PST)
+Received: from lhrpeml500004.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4NrpXg50mcz6J91l;
+        Tue, 10 Jan 2023 19:30:59 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
+ lhrpeml500004.china.huawei.com (7.191.163.9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Tue, 10 Jan 2023 11:35:59 +0000
+Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
+ lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2375.034;
+ Tue, 10 Jan 2023 11:35:59 +0000
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     Yi Liu <yi.l.liu@intel.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tom Rix <trix@redhat.com>, Will Deacon <will@kernel.org>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Eric Auger <eric.auger@redhat.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        "Jason Wang" <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Niklas Schnelle" <schnelle@linux.ibm.com>,
+        zhukeqian <zhukeqian1@huawei.com>
+Subject: RE: [PATCH v4 00/17] IOMMUFD Generic interface
+Thread-Topic: [PATCH v4 00/17] IOMMUFD Generic interface
+Thread-Index: AQHY8wv6WqOaN9m/WUKJgvcZCnpZkK454qzggAFgXgCAXKMbQA==
+Date:   Tue, 10 Jan 2023 11:35:59 +0000
+Message-ID: <36b0fdac061e4680b5966d2774f0026a@huawei.com>
+References: <0-v4-0de2f6c78ed0+9d1-iommufd_jgg@nvidia.com>
+ <3a20e56423f544dab312bca1bcb56ce4@huawei.com>
+ <000cf099-9824-39b8-3719-cf43b33ae1ef@intel.com>
+In-Reply-To: <000cf099-9824-39b8-3719-cf43b33ae1ef@intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.202.227.178]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fVtMEahrPMJNVOqsZGj-GoTxUnWsdzK7M+9F2+DhG_STQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,151 +86,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 11:34:44AM -0800, Ian Rogers wrote:
-> On Mon, Jan 9, 2023 at 11:29 AM Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Mon, Jan 9, 2023 at 10:37 AM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > On Mon, Jan 9, 2023 at 10:10 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > >
-> > > > On Mon, Jan 09, 2023 at 12:12:15PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > > > Em Fri, Jan 06, 2023 at 11:06:46AM -0800, Ian Rogers escreveu:
-> > > > > > So trying to get build-test working on my Debian derived distro is a
-> > > > > > PITA with broken feature detection for options I don't normally use.
-> > > > >
-> > > > > Its really difficult to have perf building with so many dependent
-> > > > > libraries, mowing out some should be in order.
-> > > > >
-> > > > > > I'll try to fix this.
-> > > > >
-> > > > > Thanks.
-> > > > >
-> > > > > > In any case I think I've spotted what is really happening here and it
-> > > > > > isn't a failure but a feature :-D The build is specifying
-> > > > >
-> > > > > I get it.
-> > > > >
-> > > > > > LIBBPF_DYNAMIC=1 which means you get the libbpf headers from
-> > > > > > /usr/include. I think the build is trying to do this on a system with
-> > > > > > an old libbpf and hence getting the failures above. Previously, even
-> > > > > > though we wanted the dynamic headers we still had a -I, this time for
-> > > > > > the install_headers version. Now you really are using the system
-> > > > > > version and it is broken. This means a few things:
-> > > > > > - the libbpf feature test should fail if code like above is going to fail,
-> > > > >
-> > > > > Agreed.
-> > > > >
-> > > > > > - we may want to contemplate supporting older libbpfs (I'd rather not),
-> > > > >
-> > > > > I'd rather require everybody to be up to the latest trends, but I really
-> > > > > don't think that is a reasonable expectation.
-> > > > >
-> > > > > > - does build-test have a way to skip known issues like this?
-> > > > >
-> > > > > Unsure, Jiri?
-> > > >
-> > > > I don't think so it just triggers the build, it's up to the features check
-> > > > to disable the feature if the library is not compatible with perf code
-> > > >
-> > > > could we add that specific libbpf call to the libbpf feature check?
-> > >
-> > > Looking at the failure closer, the failing code is code inside a
-> > > feature check trying to workaround the feature not being present. We
-> > > need to do something like:
-> > >
-> > > ```
-> > > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-> > > index 6e9b06cf06ee..a1c3cc230273 100644
-> > > --- a/tools/perf/util/bpf-loader.c
-> > > +++ b/tools/perf/util/bpf-loader.c
-> > > @@ -33,17 +33,18 @@
-> > > #include <internal/xyarray.h>
-> > >
-> > > #ifndef HAVE_LIBBPF_BPF_PROGRAM__SET_INSNS
-> > > -int bpf_program__set_insns(struct bpf_program *prog __maybe_unused,
-> > > -                          struct bpf_insn *new_insns __maybe_unused,
-> > > size_t new_insn_cnt __maybe_un
-> > > used)
-> > > +static int bpf_program__set_insns(struct bpf_program *prog __maybe_unused,
-> > > +                                 struct bpf_insn *new_insns __maybe_unused,
-> > > +                                 size_t new_insn_cnt __maybe_unused)
-> > > {
-> > >        pr_err("%s: not support, update libbpf\n", __func__);
-> > >        return -ENOTSUP;
-> > > }
-> > >
-> > > -int libbpf_register_prog_handler(const char *sec __maybe_unused,
-> > > -                                 enum bpf_prog_type prog_type __maybe_unused,
-> > > -                                 enum bpf_attach_type exp_attach_type
-> > > __maybe_unused,
-> > > -                                 const struct
-> > > libbpf_prog_handler_opts *opts __maybe_unused)
-> > > +static int libbpf_register_prog_handler(const char *sec __maybe_unused,
-> > > +                                       enum bpf_prog_type prog_type
-> > > __maybe_unused,
-> > > +                                       enum bpf_attach_type
-> > > exp_attach_type __maybe_unused,
-> > > +                                       const void *opts __maybe_unused)
-> > > {
-> > >        pr_err("%s: not support, update libbpf\n", __func__);
-> > >        return -ENOTSUP;
-> > > ```
-> > >
-> > > There are some other fixes necessary too. I'll try to write the fuller
-> > > patch but I have no means for testing except for undefining
-> > > HAVE_LIBBPF_BPF_PROGRAM__SET_INSNS.
-> > >
-> > > Thanks,
-> > > Ian
-> >
-> > So libbpf_prog_handler_opts is missing in the failing build, this
-> > points to a libbpf before 0.8. I'm somewhat concerned that to work
-> > around these linkage problems we're adding runtime errors - we may
-> > build but the functionality is totally crippled. Is it worth
-> > maintaining these broken builds or to just upfront fail the feature
-> > test?
-> >
-> > We can also switch the feature tests for LIBBPF_MAJOR_VERSION and
-> > LIBBPF_MINOR_VERSION checks. This would have the property of letting
-> > us tie the error messages to what version of libbpf is assumed.
-> >
-> > In this case we could have a feature test for the libbpf version and
-> > if the version is before libbpf 0.8 fail the feature check. A quick
-> > way to do this is:
-> > ```
-> > diff --git a/tools/build/feature/test-libbpf.c
-> > b/tools/build/feature/test-libbpf.c
-> > index a508756cf4cc..dadd8186b71d 100644
-> > --- a/tools/build/feature/test-libbpf.c
-> > +++ b/tools/build/feature/test-libbpf.c
-> > @@ -1,6 +1,10 @@
-> > // SPDX-License-Identifier: GPL-2.0
-> > #include <bpf/libbpf.h>
-> >
-> > +#if (LIBBPF_MAJOR_VERSION == 0) && (LIBBPF_MINOR_VERSION < 8)
-> > +#error At least libbpf 0.8 is assumed for Linux tools.
-> > +#endif
-> > +
-> > int main(void)
-> > {
-> >        return bpf_object__open("test") ? 0 : -1;
-> > ```
-> >
-> > Thanks,
-> > Ian
-> 
-> Oh, just to note. While failing the feature test is disappointing for
-> a libbpf that isn't very old, we have the newer libbpf to statically
-> build in. Developers won't be impacted due to the static route. If you
-> are a distro maintainer, you should just update your libbpf. So we
-> could just bump the API assumption to 1.0 as I believe that'd have the
-> advantage of removing feature tests, workarounds, untested code (like
-> what broke here), etc.
-> 
-> What do you think?
-
-yes, seems good.. fedora has libbpf 1.0 already so should not be problem
-there at least ;-)
-
-thanks,
-jirka
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogWWkgTGl1IFttYWlsdG86
+eWkubC5saXVAaW50ZWwuY29tXQ0KPiBTZW50OiAxMiBOb3ZlbWJlciAyMDIyIDEyOjQ1DQo+IFRv
+OiBTaGFtZWVyYWxpIEtvbG90aHVtIFRob2RpIDxzaGFtZWVyYWxpLmtvbG90aHVtLnRob2RpQGh1
+YXdlaS5jb20+Ow0KPiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BudmlkaWEuY29tPjsgYnBmQHZnZXIu
+a2VybmVsLm9yZzsgSm9uYXRoYW4gQ29yYmV0DQo+IDxjb3JiZXRAbHduLm5ldD47IERhdmlkIFdv
+b2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz47DQo+IGlvbW11QGxpc3RzLmxpbnV4LmRldjsg
+Sm9lcmcgUm9lZGVsIDxqb3JvQDhieXRlcy5vcmc+OyBLZXZpbiBUaWFuDQo+IDxrZXZpbi50aWFu
+QGludGVsLmNvbT47IGxpbnV4LWRvY0B2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWtzZWxmdGVz
+dEB2Z2VyLmtlcm5lbC5vcmc7IGxsdm1AbGlzdHMubGludXguZGV2OyBOYXRoYW4gQ2hhbmNlbGxv
+cg0KPiA8bmF0aGFuQGtlcm5lbC5vcmc+OyBOaWNrIERlc2F1bG5pZXJzIDxuZGVzYXVsbmllcnNA
+Z29vZ2xlLmNvbT47IE1pZ3VlbA0KPiBPamVkYSA8b2plZGFAa2VybmVsLm9yZz47IFJvYmluIE11
+cnBoeSA8cm9iaW4ubXVycGh5QGFybS5jb20+OyBTaHVhaA0KPiBLaGFuIDxzaHVhaEBrZXJuZWwu
+b3JnPjsgU3VyYXZlZSBTdXRoaWt1bHBhbml0DQo+IDxzdXJhdmVlLnN1dGhpa3VscGFuaXRAYW1k
+LmNvbT47IFRvbSBSaXggPHRyaXhAcmVkaGF0LmNvbT47IFdpbGwNCj4gRGVhY29uIDx3aWxsQGtl
+cm5lbC5vcmc+DQo+IENjOiBBbGV4IFdpbGxpYW1zb24gPGFsZXgud2lsbGlhbXNvbkByZWRoYXQu
+Y29tPjsgTHUgQmFvbHUNCj4gPGJhb2x1Lmx1QGxpbnV4LmludGVsLmNvbT47IENoYWl0YW55YSBL
+dWxrYXJuaSA8Y2hhaXRhbnlha0BudmlkaWEuY29tPjsNCj4gQ29ybmVsaWEgSHVjayA8Y29odWNr
+QHJlZGhhdC5jb20+OyBEYW5pZWwgSm9yZGFuDQo+IDxkYW5pZWwubS5qb3JkYW5Ab3JhY2xlLmNv
+bT47IERhdmlkIEdpYnNvbg0KPiA8ZGF2aWRAZ2lic29uLmRyb3BiZWFyLmlkLmF1PjsgRXJpYyBB
+dWdlciA8ZXJpYy5hdWdlckByZWRoYXQuY29tPjsgRXJpYw0KPiBGYXJtYW4gPGZhcm1hbkBsaW51
+eC5pYm0uY29tPjsgSmFzb24gV2FuZyA8amFzb3dhbmdAcmVkaGF0LmNvbT47DQo+IEplYW4tUGhp
+bGlwcGUgQnJ1Y2tlciA8amVhbi1waGlsaXBwZUBsaW5hcm8ub3JnPjsgSm9hbyBNYXJ0aW5zDQo+
+IDxqb2FvLm0ubWFydGluc0BvcmFjbGUuY29tPjsga3ZtQHZnZXIua2VybmVsLm9yZzsgTWF0dGhl
+dyBSb3NhdG8NCj4gPG1qcm9zYXRvQGxpbnV4LmlibS5jb20+OyBNaWNoYWVsIFMuIFRzaXJraW4g
+PG1zdEByZWRoYXQuY29tPjsgTmljb2xpbg0KPiBDaGVuIDxuaWNvbGluY0BudmlkaWEuY29tPjsg
+TmlrbGFzIFNjaG5lbGxlIDxzY2huZWxsZUBsaW51eC5pYm0uY29tPjsNCj4gemh1a2VxaWFuIDx6
+aHVrZXFpYW4xQGh1YXdlaS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjQgMDAvMTddIElP
+TU1VRkQgR2VuZXJpYyBpbnRlcmZhY2UNCj4gDQo+IEhpIFNoYW1lZXIsDQo+IA0KPiBPbiAyMDIy
+LzExLzExIDIzOjUxLCBTaGFtZWVyYWxpIEtvbG90aHVtIFRob2RpIHdyb3RlOg0KPiA+DQo+ID4N
+Cj4gPj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPj4gRnJvbTogSmFzb24gR3VudGhv
+cnBlIFttYWlsdG86amdnQG52aWRpYS5jb21dDQo+ID4+IFNlbnQ6IDA4IE5vdmVtYmVyIDIwMjIg
+MDA6NDkNCj4gPj4gVG86IGJwZkB2Z2VyLmtlcm5lbC5vcmc7IEpvbmF0aGFuIENvcmJldCA8Y29y
+YmV0QGx3bi5uZXQ+OyBEYXZpZA0KPiA+PiBXb29kaG91c2UgPGR3bXcyQGluZnJhZGVhZC5vcmc+
+OyBpb21tdUBsaXN0cy5saW51eC5kZXY7IEpvZXJnDQo+IFJvZWRlbA0KPiA+PiA8am9yb0A4Ynl0
+ZXMub3JnPjsgS2V2aW4gVGlhbiA8a2V2aW4udGlhbkBpbnRlbC5jb20+Ow0KPiA+PiBsaW51eC1k
+b2NAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rc2VsZnRlc3RAdmdlci5rZXJuZWwub3JnOw0KPiA+
+PiBsbHZtQGxpc3RzLmxpbnV4LmRldjsgTmF0aGFuIENoYW5jZWxsb3IgPG5hdGhhbkBrZXJuZWwu
+b3JnPjsgTmljaw0KPiA+PiBEZXNhdWxuaWVycyA8bmRlc2F1bG5pZXJzQGdvb2dsZS5jb20+OyBN
+aWd1ZWwgT2plZGENCj4gPG9qZWRhQGtlcm5lbC5vcmc+Ow0KPiA+PiBSb2JpbiBNdXJwaHkgPHJv
+YmluLm11cnBoeUBhcm0uY29tPjsgU2h1YWggS2hhbg0KPiA8c2h1YWhAa2VybmVsLm9yZz47DQo+
+ID4+IFN1cmF2ZWUgU3V0aGlrdWxwYW5pdCA8c3VyYXZlZS5zdXRoaWt1bHBhbml0QGFtZC5jb20+
+OyBUb20gUml4DQo+ID4+IDx0cml4QHJlZGhhdC5jb20+OyBXaWxsIERlYWNvbiA8d2lsbEBrZXJu
+ZWwub3JnPg0KPiA+PiBDYzogQWxleCBXaWxsaWFtc29uIDxhbGV4LndpbGxpYW1zb25AcmVkaGF0
+LmNvbT47IEx1IEJhb2x1DQo+ID4+IDxiYW9sdS5sdUBsaW51eC5pbnRlbC5jb20+OyBDaGFpdGFu
+eWEgS3Vsa2FybmkNCj4gPGNoYWl0YW55YWtAbnZpZGlhLmNvbT47DQo+ID4+IENvcm5lbGlhIEh1
+Y2sgPGNvaHVja0ByZWRoYXQuY29tPjsgRGFuaWVsIEpvcmRhbg0KPiA+PiA8ZGFuaWVsLm0uam9y
+ZGFuQG9yYWNsZS5jb20+OyBEYXZpZCBHaWJzb24NCj4gPj4gPGRhdmlkQGdpYnNvbi5kcm9wYmVh
+ci5pZC5hdT47IEVyaWMgQXVnZXIgPGVyaWMuYXVnZXJAcmVkaGF0LmNvbT47DQo+IEVyaWMNCj4g
+Pj4gRmFybWFuIDxmYXJtYW5AbGludXguaWJtLmNvbT47IEphc29uIFdhbmcgPGphc293YW5nQHJl
+ZGhhdC5jb20+Ow0KPiA+PiBKZWFuLVBoaWxpcHBlIEJydWNrZXIgPGplYW4tcGhpbGlwcGVAbGlu
+YXJvLm9yZz47IEpvYW8gTWFydGlucw0KPiA+PiA8am9hby5tLm1hcnRpbnNAb3JhY2xlLmNvbT47
+IGt2bUB2Z2VyLmtlcm5lbC5vcmc7IE1hdHRoZXcgUm9zYXRvDQo+ID4+IDxtanJvc2F0b0BsaW51
+eC5pYm0uY29tPjsgTWljaGFlbCBTLiBUc2lya2luIDxtc3RAcmVkaGF0LmNvbT47DQo+IE5pY29s
+aW4NCj4gPj4gQ2hlbiA8bmljb2xpbmNAbnZpZGlhLmNvbT47IE5pa2xhcyBTY2huZWxsZSA8c2No
+bmVsbGVAbGludXguaWJtLmNvbT47DQo+ID4+IFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkgPHNo
+YW1lZXJhbGkua29sb3RodW0udGhvZGlAaHVhd2VpLmNvbT47DQo+IFlpDQo+ID4+IExpdSA8eWku
+bC5saXVAaW50ZWwuY29tPjsgemh1a2VxaWFuIDx6aHVrZXFpYW4xQGh1YXdlaS5jb20+DQo+ID4+
+IFN1YmplY3Q6IFtQQVRDSCB2NCAwMC8xN10gSU9NTVVGRCBHZW5lcmljIGludGVyZmFjZQ0KPiA+
+IFsuLi5dDQo+ID4+DQo+ID4+IC0gVXNlcnNwYWNlIHBhZ2UgdGFibGVzIGFrYSAnbmVzdGVkIHRy
+YW5zbGF0aW9uJyBmb3IgQVJNIGFuZCBJbnRlbCBpb21tdQ0KPiA+PiAgICBkcml2ZXJzOg0KPiA+
+PiAgICBodHRwczovL2dpdGh1Yi5jb20vbmljb2xpbmMvaW9tbXVmZC9jb21taXRzL2lvbW11ZmRf
+bmVzdGluZw0KPiA+DQo+ID4gSGkgRXJpYy9ZaS9OaWNvbGluLA0KPiA+DQo+ID4gQ291bGQgeW91
+IHBsZWFzZSBwcm92aWRlIGEgbGF0ZXN0IEtlcm5lbC9RZW11IGJyYW5jaCBmb3IgdGhlIEFSTSBu
+ZXN0aW5nDQo+IHN1cHBvcnQ/DQo+ID4gVGhlIGFib3ZlIGxpbmsgcG9pbnRzIHRvIFlpJ3MgZ2l0
+LCBidXQgbm90IHN1cmUgd2hpY2ggb25lIGlzIGxhdGVzdC9zdGFibGUgdG8NCj4gPiBoYXZlIGEg
+cGxheS4NCj4gDQo+IE5pY29saW4gYW5kIEkgYXJlIHdvcmtpbmcgb24gdGhlIG5ldyB2ZXJzaW9u
+IGZvciBuZXN0aW5nIHN1cHBvcnQuIEJlbG93DQo+IGtlcm5sIGJyYW5jaCBpcyBvdXIgbGF0ZXN0
+IHByb2dyZXNzIHNvIGZhci4gQXMgdGhlIG5hbWluZywgaXQncyBzdGlsbA0KPiB3aXAuIFdlIGFs
+c28gbmVlZCB0byB3b3Jrb3V0IGEgUWVtdSB2ZXJzaW9uLCBzbyBzdGlsbCBuZWVkIHNvbWUgdGlt
+ZQ0KPiBiZWZvcmUgc2hhcmluZyB3aXRoIHlvdS4NCj4gDQo+IGh0dHBzOi8vZ2l0aHViLmNvbS95
+aWxpdTE3NjUvaW9tbXVmZC90cmVlL3dpcC9pb21tdWZkLXY2LjEtcmMzLW5lc3RpbmcNCg0KSGkg
+WWksDQoNClRoYW5rcyBmb3IgdGhhdC4gSSBhdHRlbXB0ZWQgQVJNIHZTVkEgc3VwcG9ydCBiYXNl
+ZCBvbiB5b3VyIGFib3ZlIGJyYW5jaA0KYW5kIHJlbGF0ZWQgUWVtdSBicmFuY2guIFdpdGggZmV3
+IGhhY2tzIGFuZCBhZGRpdGlvbmFsIHBhdGNoZXMgdGhlIHByb3RvdHlwZQ0KY29kZSB3b3JrcyB3
+ZWxsIG9uIEhpU2lsaWNvbiBBUk0gcGxhdGZvcm0uIA0KDQpQbGVhc2UgZmluZCB0aGUgY29ycmVz
+cG9uZGluZyBicmFuY2hlcyBlcmUsDQpodHRwczovL2dpdGh1Yi5jb20vaGlzaWxpY29uL2tlcm5l
+bC1kZXYvdHJlZS9pb21tdWZkLXY2LjEtcmMzLW5lc3RpbmctYXJtLXZTVkENCmh0dHBzOi8vZ2l0
+aHViLmNvbS9oaXNpbGljb24vcWVtdS90cmVlL3FlbXUtaW9tbXVmZC02LjEtcmMzLWFybS12U1ZB
+DQoNClBsZWFzZSBsZXQgbWUga25vdyBpZiB0aGVyZSBhcmUgYW55IHJlY2VudCBicmFuY2hlcyBm
+b3IgQVJNIHN1cHBvcnQuDQoNClRoYW5rcywNClNoYW1lZXINCiANCj4gDQo+IC0tDQo+IFJlZ2Fy
+ZHMsDQo+IFlpIExpdQ0KDQo=
