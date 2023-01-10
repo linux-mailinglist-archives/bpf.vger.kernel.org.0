@@ -2,244 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33829663AA3
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 09:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB12C663B8D
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 09:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236183AbjAJILr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 10 Jan 2023 03:11:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
+        id S231642AbjAJIpX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 03:45:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjAJILF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 03:11:05 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.221.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F94013F87
-        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 00:10:28 -0800 (PST)
-X-QQ-mid: bizesmtp82t1673338209tlz9zmoi
-Received: from smtpclient.apple ( [1.202.165.115])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 10 Jan 2023 16:10:06 +0800 (CST)
-X-QQ-SSF: 01000000000000708000000A0000000
-X-QQ-FEAT: q+EIYT+FhZo+VpY/lUcWy8+u0M4/5Hhgot/lo/Fxa/UORWwF1mKhc9UcSiMX4
-        nWMkkrt7RlG7XSZ6DFLDjOCUcSlLh9NaCAYN/X1fLzL6h9XqFCdcKcfZOtaHsw3eLQKy91+
-        mKZdxHkWNk8HyJ0OvmMCJll7yeo6rim7NzYEprDWvD7Ol4AKriow2bzgBSaF2GRACqDI+0N
-        vEHwaPQ6yqyUY/INIqqNLSSwjIWLgw6tvSuftcTXGNXtXAGv8CPTWj5a4wpdeReeVSRZ4Ua
-        4nbfFTqzU3Z4KMnFgYKM4wMusJbNHUJiUCoGwKWuaWKbBzjv6Fl9DopKjjVhz/htQC45I4s
-        lCjJ7GVW25WyG6hkU2ttL2FGlhH8JEACwGuRxQCbUDmUIs6Wgl/793Uh1nwKhA3oeN8QoDk
-X-QQ-GoodBg: 0
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [bpf-next v4 2/2] selftests/bpf: add test case for htab map
-From:   Tonghao Zhang <tong@infragraf.org>
-In-Reply-To: <85737292-efbf-636c-99f1-39569cd215c8@linux.dev>
-Date:   Tue, 10 Jan 2023 16:10:06 +0800
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S237888AbjAJIox (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 03:44:53 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E70038AC0;
+        Tue, 10 Jan 2023 00:44:52 -0800 (PST)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30A8gAPX007099;
+        Tue, 10 Jan 2023 08:44:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=bPbVLnrZeHjCvgCyG+9ZQ+MmOB41TCBedqDoORx88c8=;
+ b=cKETTAOyvt9K1taRwRf2EAht24kLfEqOmWXTB2V1N9wnmnQHUTN2IvHuHPvSnWLk2Byc
+ TZOQ6JXgVWqd26KQpowMnfS/f2Hnajuk4PISqatpz6bv2nZgMg/mY+Vq0CB1LHuDaxV2
+ b44T6INTdDl/TjGhouARGn8Nrlse8wadhOiDPuBmcIN2o0a5z+ASfNv/LLmApPAFK3tG
+ cirRJYiPDUAAd70d2MyMkEhMp0Q2jYsRxW02OLukZfG/7gwmTS8JN8YauqRVneiYGBZj
+ o9GHOKlCcIkNe0HLkHOhq2kx7LAhFxnCgLF+fbd3hRppbfonVG8KqcffIU/sntOHzqUj eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3n14qx01gw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Jan 2023 08:44:24 +0000
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30A8iDtF012748;
+        Tue, 10 Jan 2023 08:44:24 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3n14qx01fk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Jan 2023 08:44:23 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 309Nedo1022493;
+        Tue, 10 Jan 2023 08:44:21 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3my0c6u735-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Jan 2023 08:44:21 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30A8iIPl16580940
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Jan 2023 08:44:19 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CDDF12004F;
+        Tue, 10 Jan 2023 08:44:18 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7492420040;
+        Tue, 10 Jan 2023 08:44:18 +0000 (GMT)
+Received: from localhost (unknown [9.124.31.92])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 10 Jan 2023 08:44:18 +0000 (GMT)
+Date:   Tue, 10 Jan 2023 14:14:17 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH v1 06/10] powerpc/bpf: Perform complete extra passes to
+ update addresses
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org,
-        Manu Bretelle <chantra@meta.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <4583040E-34F4-432F-ADFF-22F7F0032B19@infragraf.org>
-References: <20230105092637.35069-1-tong@infragraf.org>
- <20230105092637.35069-2-tong@infragraf.org>
- <6bd49922-9d38-3bf9-47e8-3208adfd2f31@linux.dev>
- <AE6C6A22-4411-4109-93DD-164FA53DCBE0@infragraf.org>
- <85737292-efbf-636c-99f1-39569cd215c8@linux.dev>
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Hou Tao <houtao1@huawei.com>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Song Liu <song@kernel.org>,
+        =?iso-8859-1?q?Yonghong=0A?= Song <yhs@fb.com>
+References: <fa025537f584599c0271fc129c5cf4f57fbe7505.1669881248.git.christophe.leroy@csgroup.eu>
+        <c13ebeb4d5d169bda6d1d60ccaa6cc956308308d.1669881248.git.christophe.leroy@csgroup.eu>
+        <1670926819.9nqhz2fj7v.naveen@linux.ibm.com>
+        <57406145-4199-00f7-8593-da2f498116f1@csgroup.eu>
+In-Reply-To: <57406145-4199-00f7-8593-da2f498116f1@csgroup.eu>
+MIME-Version: 1.0
+User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
+Message-Id: <1673339740.lyeaje9o3l.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 5GlDzDdghBRO1dRuKdtsYrLZ3eZ64pI1
+X-Proofpoint-GUID: ubhntUnEakEvEpFPP0ZiK6Y0MHgLRnX9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2023-01-10_02,2023-01-09_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0 clxscore=1011
+ priorityscore=1501 mlxlogscore=999 impostorscore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301100051
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Christophe Leroy wrote:
+>=20
+>=20
+> Le 13/12/2022 =C3=A0 11:23, Naveen N. Rao a =C3=A9crit=C2=A0:
+>> Christophe Leroy wrote:
+>>> BPF core calls the jit compiler again for an extra pass in order
+>>> to properly set subprog addresses.
+>>>
+>>> Unlike other architectures, powerpc only updates the addresses
+>>> during that extra pass. It means that holes must have been left
+>>> in the code in order to enable the maximum possible instruction
+>>> size.
+>>>
+>>> In order avoid waste of space, and waste of CPU time on powerpc
+>>> processors on which the NOP instruction is not 0-cycle, perform
+>>> two real additional passes.
+>>>
+>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>> ---
+>>> =C2=A0arch/powerpc/net/bpf_jit_comp.c | 85 ----------------------------=
+-----
+>>> =C2=A01 file changed, 85 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/net/bpf_jit_comp.c=20
+>>> b/arch/powerpc/net/bpf_jit_comp.c
+>>> index 43e634126514..8833bf23f5aa 100644
+>>> --- a/arch/powerpc/net/bpf_jit_comp.c
+>>> +++ b/arch/powerpc/net/bpf_jit_comp.c
+>>> @@ -23,74 +23,6 @@ static void bpf_jit_fill_ill_insns(void *area,=20
+>>> unsigned int size)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 memset32(area, BREAKPOINT_INSTRUCTION, size / =
+4);
+>>> =C2=A0}
+>>>
+>>> -/* Fix updated addresses (for subprog calls, ldimm64, et al) during=20
+>>> extra pass */
+>>> -static int bpf_jit_fixup_addresses(struct bpf_prog *fp, u32 *image,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct codegen_context *ctx, u32 *a=
+ddrs)
+>>> -{
+>>> -=C2=A0=C2=A0=C2=A0 const struct bpf_insn *insn =3D fp->insnsi;
+>>> -=C2=A0=C2=A0=C2=A0 bool func_addr_fixed;
+>>> -=C2=A0=C2=A0=C2=A0 u64 func_addr;
+>>> -=C2=A0=C2=A0=C2=A0 u32 tmp_idx;
+>>> -=C2=A0=C2=A0=C2=A0 int i, j, ret;
+>>> -
+>>> -=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < fp->len; i++) {
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * During the extra pa=
+ss, only the branch target addresses for
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * the subprog calls n=
+eed to be fixed. All other instructions
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * can left untouched.
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The JITed image len=
+gth does not change because we already
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * ensure that the JIT=
+ed instruction sequence for these calls
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * are of fixed length=
+ by padding them with NOPs.
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (insn[i].code =3D=3D (BP=
+F_JMP | BPF_CALL) &&
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ins=
+n[i].src_reg =3D=3D BPF_PSEUDO_CALL) {
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret=
+ =3D bpf_jit_get_func_addr(fp, &insn[i], true,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 &func_addr,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 &func_addr_fixed);
+>>=20
+>> I don't see you updating calls to bpf_jit_get_func_addr() in=20
+>> bpf_jit_build_body() to set extra_pass to true. Afaics, that's required=20
+>> to get the correct address to be branched to for subprogs.
+>>=20
+>=20
+> I don't understand what you mean.
+
+I am referring to the third parameter we pass to=20
+bpf_jit_get_func_addr().
+
+In bpf_jit_build_body(), we do:
+
+		case BPF_JMP | BPF_CALL:
+			ctx->seen |=3D SEEN_FUNC;
+
+			ret =3D bpf_jit_get_func_addr(fp, &insn[i], false,
+						    &func_addr, &func_addr_fixed);
 
 
-> On Jan 10, 2023, at 11:25 AM, Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> 
-> On 1/9/23 6:21 PM, Tonghao Zhang wrote:
->>> On Jan 10, 2023, at 9:33 AM, Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>> 
->>> On 1/5/23 1:26 AM, tong@infragraf.org wrote:
->>>> diff --git a/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
->>>> new file mode 100644
->>>> index 000000000000..137dce8f1346
->>>> --- /dev/null
->>>> +++ b/tools/testing/selftests/bpf/prog_tests/htab_deadlock.c
->>>> @@ -0,0 +1,75 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>> +/* Copyright (c) 2022 DiDi Global Inc. */
->>>> +#define _GNU_SOURCE
->>>> +#include <pthread.h>
->>>> +#include <sched.h>
->>>> +#include <test_progs.h>
->>>> +
->>>> +#include "htab_deadlock.skel.h"
->>>> +
->>>> +static int perf_event_open(void)
->>>> +{
->>>> +	struct perf_event_attr attr = {0};
->>>> +	int pfd;
->>>> +
->>>> +	/* create perf event on CPU 0 */
->>>> +	attr.size = sizeof(attr);
->>>> +	attr.type = PERF_TYPE_HARDWARE;
->>>> +	attr.config = PERF_COUNT_HW_CPU_CYCLES;
->>>> +	attr.freq = 1;
->>>> +	attr.sample_freq = 1000;
->>>> +	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
->>>> +
->>>> +	return pfd >= 0 ? pfd : -errno;
->>>> +}
->>>> +
->>>> +void test_htab_deadlock(void)
->>>> +{
->>>> +	unsigned int val = 0, key = 20;
->>>> +	struct bpf_link *link = NULL;
->>>> +	struct htab_deadlock *skel;
->>>> +	int err, i, pfd;
->>>> +	cpu_set_t cpus;
->>>> +
->>>> +	skel = htab_deadlock__open_and_load();
->>>> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
->>>> +		return;
->>>> +
->>>> +	err = htab_deadlock__attach(skel);
->>>> +	if (!ASSERT_OK(err, "skel_attach"))
->>>> +		goto clean_skel;
->>>> +
->>>> +	/* NMI events. */
->>>> +	pfd = perf_event_open();
->>>> +	if (pfd < 0) {
->>>> +		if (pfd == -ENOENT || pfd == -EOPNOTSUPP) {
->>>> +			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
->>>> +			test__skip();
->>> 
->>> This test is a SKIP in bpf CI, so it won't be useful.
->>> https://github.com/kernel-patches/bpf/actions/runs/3858084722/jobs/6579470256#step:6:5198
->>> 
->>> Is there other way to test it or do you know what may be missing in vmtest.sh? Not sure if the cloud setup in CI blocks HW_CPU_CYCLES.  If it is, I also don't know a good way (Cc: Manu).
->> Hi
->> Other test cases using PERF_COUNT_HW_CPU_CYCLES were skipped too. For example,
->> send_signal
->> find_vma
->> get_stackid_cannot_attach
-> 
-> Got it. Thanks for checking.
-> 
->>> 
->>>> +			goto clean_skel;
->>>> +		}
->>>> +		if (!ASSERT_GE(pfd, 0, "perf_event_open"))
->>>> +			goto clean_skel;
->>>> +	}
->>>> +
->>>> +	link = bpf_program__attach_perf_event(skel->progs.bpf_empty, pfd);
->>>> +	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
->>>> +		goto clean_pfd;
->>>> +
->>>> +	/* Pinned on CPU 0 */
->>>> +	CPU_ZERO(&cpus);
->>>> +	CPU_SET(0, &cpus);
->>>> +	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
->>>> +
->>>> +	/* update bpf map concurrently on CPU0 in NMI and Task context.
->>>> +	 * there should be no kernel deadlock.
->>>> +	 */
->>>> +	for (i = 0; i < 100000; i++)
->>>> +		bpf_map_update_elem(bpf_map__fd(skel->maps.htab),
->>>> +				    &key, &val, BPF_ANY);
->>>> +
->>>> +	bpf_link__destroy(link);
->>>> +clean_pfd:
->>>> +	close(pfd);
->>>> +clean_skel:
->>>> +	htab_deadlock__destroy(skel);
->>>> +}
->>>> diff --git a/tools/testing/selftests/bpf/progs/htab_deadlock.c b/tools/testing/selftests/bpf/progs/htab_deadlock.c
->>>> new file mode 100644
->>>> index 000000000000..dacd003b1ccb
->>>> --- /dev/null
->>>> +++ b/tools/testing/selftests/bpf/progs/htab_deadlock.c
->>>> @@ -0,0 +1,30 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>> +/* Copyright (c) 2022 DiDi Global Inc. */
->>>> +#include <linux/bpf.h>
->>>> +#include <bpf/bpf_helpers.h>
->>>> +#include <bpf/bpf_tracing.h>
->>>> +
->>>> +char _license[] SEC("license") = "GPL";
->>>> +
->>>> +struct {
->>>> +	__uint(type, BPF_MAP_TYPE_HASH);
->>>> +	__uint(max_entries, 2);
->>>> +	__uint(map_flags, BPF_F_ZERO_SEED);
->>>> +	__type(key, unsigned int);
->>>> +	__type(value, unsigned int);
->>>> +} htab SEC(".maps");
->>>> +
->>>> +SEC("fentry/perf_event_overflow")
->>>> +int bpf_nmi_handle(struct pt_regs *regs)
->>>> +{
->>>> +	unsigned int val = 0, key = 4;
->>>> +
->>>> +	bpf_map_update_elem(&htab, &key, &val, BPF_ANY);
->>> 
->>> I ran it in my qemu setup which does not skip the test.  I got this splat though:
->> This is a false alarm, not deadlock(this patch fix deadlock, only). I fix waring in other patch, please review
->> https://patchwork.kernel.org/project/netdevbpf/patch/20230105112749.38421-1-tong@infragraf.org/
-> 
-> Yeah, I just saw this thread also. Please submit the warning fix together with this patch set since this test can trigger it.  They should be reviewed together.
+The third parameter (extra_pass) to bpf_jit_get_func_addr() is set to=20
+false. In bpf_jit_get_func_addr(), we have:
 
-Hou, reviewed this patch https://patchwork.kernel.org/project/netdevbpf/patch/20230105112749.38421-1-tong@infragraf.org/
+	*func_addr_fixed =3D insn->src_reg !=3D BPF_PSEUDO_CALL;
+	if (!*func_addr_fixed) {
+		/* Place-holder address till the last pass has collected
+		 * all addresses for JITed subprograms in which case we
+		 * can pick them up from prog->aux.
+		 */
+		if (!extra_pass)
+			addr =3D NULL;
 
-I will send v2 with other patches together.
+Before this patch series, in bpf_jit_fixup_addresses(), we were calling=20
+bpf_jit_get_func_addr() with the third parameter set to true.
 
->>> 
->>> [   42.990306] ================================
->>> [   42.990307] WARNING: inconsistent lock state
->>> [   42.990310] 6.2.0-rc2-00304-gaf88a1bb9967 #409 Tainted: G           O
->>> [   42.990313] --------------------------------
->>> [   42.990315] inconsistent {INITIAL USE} -> {IN-NMI} usage.
->>> [   42.990317] test_progs/1546 [HC1[1]:SC0[0]:HE0:SE1] takes:
->>> [   42.990322] ffff888101245768 (&htab->lockdep_key){....}-{2:2}, at: htab_map_update_elem+0x1e7/0x810
->>> [   42.990340] {INITIAL USE} state was registered at:
->>> [   42.990341]   lock_acquire+0x1e6/0x530
->>> [   42.990351]   _raw_spin_lock_irqsave+0xb8/0x100
->>> [   42.990362]   htab_map_update_elem+0x1e7/0x810
->>> [   42.990365]   bpf_map_update_value+0x40d/0x4f0
->>> [   42.990371]   map_update_elem+0x423/0x580
->>> [   42.990375]   __sys_bpf+0x54e/0x670
->>> [   42.990377]   __x64_sys_bpf+0x7c/0x90
->>> [   42.990382]   do_syscall_64+0x43/0x90
->>> [   42.990387]   entry_SYSCALL_64_after_hwframe+0x72/0xdc
->>> 
->>> Please check.
->>> 
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +SEC("perf_event")
->>>> +int bpf_empty(struct pt_regs *regs)
->>>> +{
->>> 
->>> btw, from a quick look at __perf_event_overflow, I suspect doing the bpf_map_update_elem() here instead of the fentry/perf_event_overflow above can also reproduce the patch 1 issue?
->> No
->> bpf_overflow_handler will check the bpf_prog_active, if syscall increase it, bpf_overflow_handler will skip the bpf prog.
-> 
-> tbh, I am quite surprised the bpf_prog_active would be noisy enough to avoid this deadlock being reproduced easily. fwiw, I just tried doing map_update here and can reproduce it in the very first run.
-> 
->> Fentry will not check the bpf_prog_active, and interrupt the task context. We have discussed that.
-> 
-> Sure. fentry is fine. The reason I was asking is to see if the test can be simplified and barring any future fentry blacklist.
+
+- Naveen
 
