@@ -2,103 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0C9663F0F
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 12:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569EA663F2E
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 12:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238155AbjAJLMI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 06:12:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
+        id S230057AbjAJLUB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 06:20:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238169AbjAJLLl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 06:11:41 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFA4260E;
-        Tue, 10 Jan 2023 03:10:56 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id c4-20020a1c3504000000b003d9e2f72093so6710995wma.1;
-        Tue, 10 Jan 2023 03:10:56 -0800 (PST)
+        with ESMTP id S231772AbjAJLT7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 06:19:59 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C6C12602;
+        Tue, 10 Jan 2023 03:19:58 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id j16-20020a05600c1c1000b003d9ef8c274bso5239327wms.0;
+        Tue, 10 Jan 2023 03:19:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JwG3x8Jb1ESlAmiC0amTV8bv6zPRzHOfSpbTvokPrgw=;
-        b=PuQiiCp+VCjX55Ew0DP8agKIfZsn136JYzQFJsBKyDlMBynv0HYmVp/lJljXRi+F5f
-         wddtAWBoSoA+rUhBjrPbmHvmLkXkZ4gdc7Wbw4+sEuXjV4i+Hhf5KBsFGq0e+SBupjdU
-         w3kO6+UdXP7sjXHfuIPQEZp0SDvtFL6NAZ2TPAHmrE1rNV4nVzVfVic8a3ux5zti03Ai
-         WoN/bm3GsH+oWIcS+I9tdgjW5OudiIHPkywpJyUI0o+88l6nA0k4w+lpKwzEc7HCH4y4
-         dOJ33dauVBt2gSRiLC7Y4stizeQ5MMTTSUGeNqmHQPLlB1uqG9Ajm1R5yGOcyd1j5ko9
-         N61A==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oxQkDdVDafHcjUoOF3EQnmddqLP5rPkgih0jPFZvU2E=;
+        b=oSJ8PVtgQcRGxfsFCxheDVMBtkmXR2RB3yi6lBOwAjKC6KZiGU5lWMLNyjABxMqsxb
+         mCdj37EWlNQMiajkDUGQR+qYTlwEuu3SPS88i/Xlwqx8bh7h0UQ9gsOd+fty/nba4RUi
+         geRWvLBnOYqPYhl1VOpo8vGc45wKqT6fXtQChyOwgqyf8X6/NZ451ea25vdiA9tKlvQN
+         9JJlYI3au4aBpWDaqxN9l2G2YRIrIOCWPNoF23CE698VVQHk6U0np8JrdZYVr9iGnK8w
+         gUjnpSMwS5jLX8w0nFVEVn4GzSxgP/ngP88zMuHp2P7bj3z+jvm97VtUbhDhh4tqN0mh
+         vm8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JwG3x8Jb1ESlAmiC0amTV8bv6zPRzHOfSpbTvokPrgw=;
-        b=W+OmgrmBSkSd8H7EF4NJ+ImVWZ8BpqkUIQZxBrnfNvKkhDogOLwhuN1PAgDwlIvCM/
-         8df+bNuQwZE9gyC/6FB/n7JelKueYibQWDPtNf3nzFB8AEtGixG4Jn+4u0ln5QbUgnsp
-         2nurceHkHLndsnVWbrkaTaNXQTppiI2VfE+VHiCSRnGAZZ/2eBOWbsPk1g/xHXlprbjS
-         Nv0CbCjzyom45AjIsrfE+fG3vy6U27KLekvwNF0E28FM6txql9nlDsSQHGG6WRbPwPMg
-         EKEXZ45KxLHp+D2R43EVknZBU5629opxxlHONw+f2LxOn/0WghY6FRwvzWfHgOUxL+fg
-         6bQQ==
-X-Gm-Message-State: AFqh2krI4Wf4OfsQ3h359vaHU5orTNtyUCpDkXmU20fTxZnOu8qIB8tm
-        MDAl6F/Nl36iwhS/iwjjjx0=
-X-Google-Smtp-Source: AMrXdXvNGL7wXRjBiHe8SoL9AyEnExLLxDgJCHMjbnr4E3W0RuapsYh4AdGONLb6oOaiztnlEDzGsg==
-X-Received: by 2002:a05:600c:1c81:b0:3d1:e907:17cb with SMTP id k1-20020a05600c1c8100b003d1e90717cbmr49317896wms.1.1673349054884;
-        Tue, 10 Jan 2023 03:10:54 -0800 (PST)
-Received: from gmail.com (1F2EF2EB.nat.pool.telekom.hu. [31.46.242.235])
-        by smtp.gmail.com with ESMTPSA id p16-20020a05600c469000b003d9b87296a9sm20916439wmo.25.2023.01.10.03.10.53
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oxQkDdVDafHcjUoOF3EQnmddqLP5rPkgih0jPFZvU2E=;
+        b=yb8Y1E5zKt8yED6xAXY5lWyqHZL8uyiheNIx2JPTXuCAgt/muxlwKRSm8+q3cWMm1G
+         BLLZuKdMTF8TeoXo5S4iGTv6SQ2MAohQ6coxw45ipMFOo5qTwHCF3AvXVeYSKrUuOiw5
+         MFQs8ZOctBMVzQWdCWJt/S7Dy6+64ezAC+hlt3U7i2fsrUZoFiGp3VCvt/nNM9yr9XNR
+         dI2qqVWdHuMJgzydLG02zVBXEZis3DiP3lXgDDpWAyD6u9+FxonfCXzDfPYD2vcdvi+L
+         V8eI8u9Al+9XF6hKROUpAQO1ldOnG6GCbJGS6+Sfz9Q58pLuJsi60XqFEBW5aq6YpA4H
+         Rm/Q==
+X-Gm-Message-State: AFqh2kqYdzQ+NkWuzLPzIct0p00hFoFIRR3WuwyCrBNX+63hRHofmpG8
+        JicCn3oChsipe8u5GflgJ3Sp0cszqlA/CBC9
+X-Google-Smtp-Source: AMrXdXvZ75opWZTbfYPfpgM6I0lIFfRpx9gkSf25WUweD/6H0BELiuV1MCXQnbGxE3NfTzMZnGi0uw==
+X-Received: by 2002:a05:600c:48a8:b0:3cf:7197:e68a with SMTP id j40-20020a05600c48a800b003cf7197e68amr49737298wmp.18.1673349596531;
+        Tue, 10 Jan 2023 03:19:56 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id l36-20020a05600c1d2400b003d9fb59c16fsm997071wms.11.2023.01.10.03.19.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Jan 2023 03:10:54 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 10 Jan 2023 12:10:52 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Tue, 10 Jan 2023 03:19:56 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 10 Jan 2023 12:19:53 +0100
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH 2/3] perf/core: Set data->sample_flags in
- perf_prepare_sample()
-Message-ID: <Y71HvO5NV0OP6YYq@gmail.com>
-References: <20221229204101.1099430-1-namhyung@kernel.org>
- <20221229204101.1099430-2-namhyung@kernel.org>
- <Y7wFJ+NF0NwnmzLa@hirez.programming.kicks-ass.net>
- <Y7x3RUd67smv3EFQ@google.com>
- <Y71D1FCzoGihMUv+@hirez.programming.kicks-ass.net>
+        Mike Leach <mike.leach@linaro.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org
+Subject: Re: [PATCH v3 1/2] perf build: Properly guard libbpf includes
+Message-ID: <Y71J2WpaMtked02+@krava>
+References: <CAJ9a7ViGE3UJX02oA42A9TSTKsOozPzdHjyL+OSP4J-9dZFqrg@mail.gmail.com>
+ <Y7hZccgOiueB31a+@kernel.org>
+ <Y7hgKMDGzQlankL1@kernel.org>
+ <Y7hgoVKBoulCbA4l@kernel.org>
+ <CAP-5=fXPPSHvN6VYc=8tzBz4xtKg4Ofa17zV4pAk0ycorXje8w@mail.gmail.com>
+ <Y7wuz6EOggZ8Wysb@kernel.org>
+ <Y7xYimp0h4YT72/N@krava>
+ <CAP-5=fXwO5_kK=pMV09jdAVw386CB0JwArD0BZd=B=xCyWSP1g@mail.gmail.com>
+ <CAP-5=fVa51_URGsdDFVTzpyGmdDRj_Dj2EKPuDHNQ0BYgMSzUA@mail.gmail.com>
+ <CAP-5=fVtMEahrPMJNVOqsZGj-GoTxUnWsdzK7M+9F2+DhG_STQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y71D1FCzoGihMUv+@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAP-5=fVtMEahrPMJNVOqsZGj-GoTxUnWsdzK7M+9F2+DhG_STQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-* Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Mon, Jan 09, 2023 at 12:21:25PM -0800, Namhyung Kim wrote:
+On Mon, Jan 09, 2023 at 11:34:44AM -0800, Ian Rogers wrote:
+> On Mon, Jan 9, 2023 at 11:29 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > On Mon, Jan 9, 2023 at 10:37 AM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > On Mon, Jan 9, 2023 at 10:10 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > > >
+> > > > On Mon, Jan 09, 2023 at 12:12:15PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > > > Em Fri, Jan 06, 2023 at 11:06:46AM -0800, Ian Rogers escreveu:
+> > > > > > So trying to get build-test working on my Debian derived distro is a
+> > > > > > PITA with broken feature detection for options I don't normally use.
+> > > > >
+> > > > > Its really difficult to have perf building with so many dependent
+> > > > > libraries, mowing out some should be in order.
+> > > > >
+> > > > > > I'll try to fix this.
+> > > > >
+> > > > > Thanks.
+> > > > >
+> > > > > > In any case I think I've spotted what is really happening here and it
+> > > > > > isn't a failure but a feature :-D The build is specifying
+> > > > >
+> > > > > I get it.
+> > > > >
+> > > > > > LIBBPF_DYNAMIC=1 which means you get the libbpf headers from
+> > > > > > /usr/include. I think the build is trying to do this on a system with
+> > > > > > an old libbpf and hence getting the failures above. Previously, even
+> > > > > > though we wanted the dynamic headers we still had a -I, this time for
+> > > > > > the install_headers version. Now you really are using the system
+> > > > > > version and it is broken. This means a few things:
+> > > > > > - the libbpf feature test should fail if code like above is going to fail,
+> > > > >
+> > > > > Agreed.
+> > > > >
+> > > > > > - we may want to contemplate supporting older libbpfs (I'd rather not),
+> > > > >
+> > > > > I'd rather require everybody to be up to the latest trends, but I really
+> > > > > don't think that is a reasonable expectation.
+> > > > >
+> > > > > > - does build-test have a way to skip known issues like this?
+> > > > >
+> > > > > Unsure, Jiri?
+> > > >
+> > > > I don't think so it just triggers the build, it's up to the features check
+> > > > to disable the feature if the library is not compatible with perf code
+> > > >
+> > > > could we add that specific libbpf call to the libbpf feature check?
+> > >
+> > > Looking at the failure closer, the failing code is code inside a
+> > > feature check trying to workaround the feature not being present. We
+> > > need to do something like:
+> > >
+> > > ```
+> > > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> > > index 6e9b06cf06ee..a1c3cc230273 100644
+> > > --- a/tools/perf/util/bpf-loader.c
+> > > +++ b/tools/perf/util/bpf-loader.c
+> > > @@ -33,17 +33,18 @@
+> > > #include <internal/xyarray.h>
+> > >
+> > > #ifndef HAVE_LIBBPF_BPF_PROGRAM__SET_INSNS
+> > > -int bpf_program__set_insns(struct bpf_program *prog __maybe_unused,
+> > > -                          struct bpf_insn *new_insns __maybe_unused,
+> > > size_t new_insn_cnt __maybe_un
+> > > used)
+> > > +static int bpf_program__set_insns(struct bpf_program *prog __maybe_unused,
+> > > +                                 struct bpf_insn *new_insns __maybe_unused,
+> > > +                                 size_t new_insn_cnt __maybe_unused)
+> > > {
+> > >        pr_err("%s: not support, update libbpf\n", __func__);
+> > >        return -ENOTSUP;
+> > > }
+> > >
+> > > -int libbpf_register_prog_handler(const char *sec __maybe_unused,
+> > > -                                 enum bpf_prog_type prog_type __maybe_unused,
+> > > -                                 enum bpf_attach_type exp_attach_type
+> > > __maybe_unused,
+> > > -                                 const struct
+> > > libbpf_prog_handler_opts *opts __maybe_unused)
+> > > +static int libbpf_register_prog_handler(const char *sec __maybe_unused,
+> > > +                                       enum bpf_prog_type prog_type
+> > > __maybe_unused,
+> > > +                                       enum bpf_attach_type
+> > > exp_attach_type __maybe_unused,
+> > > +                                       const void *opts __maybe_unused)
+> > > {
+> > >        pr_err("%s: not support, update libbpf\n", __func__);
+> > >        return -ENOTSUP;
+> > > ```
+> > >
+> > > There are some other fixes necessary too. I'll try to write the fuller
+> > > patch but I have no means for testing except for undefining
+> > > HAVE_LIBBPF_BPF_PROGRAM__SET_INSNS.
+> > >
+> > > Thanks,
+> > > Ian
+> >
+> > So libbpf_prog_handler_opts is missing in the failing build, this
+> > points to a libbpf before 0.8. I'm somewhat concerned that to work
+> > around these linkage problems we're adding runtime errors - we may
+> > build but the functionality is totally crippled. Is it worth
+> > maintaining these broken builds or to just upfront fail the feature
+> > test?
+> >
+> > We can also switch the feature tests for LIBBPF_MAJOR_VERSION and
+> > LIBBPF_MINOR_VERSION checks. This would have the property of letting
+> > us tie the error messages to what version of libbpf is assumed.
+> >
+> > In this case we could have a feature test for the libbpf version and
+> > if the version is before libbpf 0.8 fail the feature check. A quick
+> > way to do this is:
+> > ```
+> > diff --git a/tools/build/feature/test-libbpf.c
+> > b/tools/build/feature/test-libbpf.c
+> > index a508756cf4cc..dadd8186b71d 100644
+> > --- a/tools/build/feature/test-libbpf.c
+> > +++ b/tools/build/feature/test-libbpf.c
+> > @@ -1,6 +1,10 @@
+> > // SPDX-License-Identifier: GPL-2.0
+> > #include <bpf/libbpf.h>
+> >
+> > +#if (LIBBPF_MAJOR_VERSION == 0) && (LIBBPF_MINOR_VERSION < 8)
+> > +#error At least libbpf 0.8 is assumed for Linux tools.
+> > +#endif
+> > +
+> > int main(void)
+> > {
+> >        return bpf_object__open("test") ? 0 : -1;
+> > ```
+> >
+> > Thanks,
+> > Ian
 > 
-> > Looks good.  But I'm confused by the tip-bot2 messages saying it's
-> > merged.  Do you want me to work on it as a follow up?
+> Oh, just to note. While failing the feature test is disappointing for
+> a libbpf that isn't very old, we have the newer libbpf to statically
+> build in. Developers won't be impacted due to the static route. If you
+> are a distro maintainer, you should just update your libbpf. So we
+> could just bump the API assumption to 1.0 as I believe that'd have the
+> advantage of removing feature tests, workarounds, untested code (like
+> what broke here), etc.
 > 
-> Ingo and me talked past one another, I agreed with 1/3 and he applied
-> the whole series. Just talked to him again and he's just zapped these
-> last two patches.
+> What do you think?
 
-Yeah - perf/core is now:
+yes, seems good.. fedora has libbpf 1.0 already so should not be problem
+there at least ;-)
 
-   7bdb1767bf01 ("perf/core: Change the layout of perf_sample_data")
-
-which can be used for further work. Sorry about the confusion ...
-
-Thanks,
-
-	Ingo
+thanks,
+jirka
