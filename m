@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53627664EA8
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 23:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E66E664EAB
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 23:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbjAJWUc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 17:20:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
+        id S234920AbjAJWUs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 17:20:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233693AbjAJWU1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 17:20:27 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0135D8B5
-        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 14:20:25 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id k204-20020a256fd5000000b007b8b040bc50so12642609ybc.1
-        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 14:20:25 -0800 (PST)
+        with ESMTP id S234716AbjAJWUi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 17:20:38 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D944A631BA
+        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 14:20:36 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-4597b0ff5e9so143312907b3.10
+        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 14:20:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7v/gEXdtTx+UxkZcAUgCVgz4MqYf6krsrfnmQSxx5Nk=;
-        b=PVrvr2OhQFTUO9zDrH5+2bNwVFqzBYaqjf4hDvEr10wr+zRc5//vzbPS9ggZSCWPfC
-         36TUo5BG7B8TkedHGtGVN2hi3FKU0/0IPbtRMt6oLWxVbgyfiBi/JwhyOQ9mrRzQ+rmn
-         U0DRvEz36y6B+ETuwktmXn/HAr2e4DC7uDZ17DROPT89WL6WZa3Q5woCWaCwOIKp+ep7
-         rA8MJ/3ZD7oa6ukMV9OmnaQ0IzvWquQc/+RCW1cJJN5pz4NzTHh14Tjt4c7U82HtGv1k
-         QabcgkXXuEptpfHctVAR8MIzbxgVBLAYpU14CFESsjoWuv0T+Eo4zNIMmKB/cGnUXsWh
-         utwA==
+        bh=wXlKtQGeWTp7vou3jM8pEXClHMn0X8ibzVPnBb6ixuM=;
+        b=hjTIUiM3nzSYOud7leDVomzWDX3omcRH7XxTp1cWtIJhcikMVufN+ADzaTNdzeYkj3
+         HC8m5Q1q0N4tWXzZdz62Ir1LPgLAO+IhU/NZoaVR4GFeUM6+9gdxTBxUG6xXuEsppqxe
+         4vnw6QbBUijTFsZg9n4sHratLsuRyEm4BjeV3UDRMt9++3Yh3Cq54hMnLSk3/4AROLWi
+         fsELZGJJQe97BgTCi3vctbH4g6noIJFn734K3HKJyuYmN0ckIZ3X1C+cnuvxMG2MVHUU
+         +jYZGmTxMrdoDqn9BRXhS5pXUVJNJf1poMGdTSp9IsSQGq4MmAoB+vrv5a5KcpnoI+PE
+         Ogzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7v/gEXdtTx+UxkZcAUgCVgz4MqYf6krsrfnmQSxx5Nk=;
-        b=5bC0ANFYL87d+njsxA1/xBfpyWEh4H5RxSqc552J18xn9ySSHCLPrXA8yrnOBzw6mg
-         Q5wwAE3+r156ba2Iaq8TI0s6Opst8RD/CNzLNum4mgaDa8W5Ivw5Th6eUB9uiea8Q39N
-         NEeS85L/+RY31s1+9uZVEsVWLmcaxGWifYliRh4tYQ9AbSxjEHK9xQbNJOgzJ6cVNl6+
-         ePDRu6O1jRAgGArw32/7iF0ONf3UHFYJtKtBOamcQLGjunvYsz08TY5T6rnNihGkBj5y
-         1Yttz9729LdVsCRi/7ceIdwY/29uLQE3HphASd3BE4U5T7w9PnV24QF8TmmXOyq7STcb
-         H9vg==
-X-Gm-Message-State: AFqh2kqJ8cTyu55ryrD8oDn/DRIB3gLoPeJGboxLejs+9qZ2FdbjBQSi
-        NBwZ2Oc2nSEZZB5O69D6I5+4U7mt8Zye
-X-Google-Smtp-Source: AMrXdXuLSIM1R2M2WKOVVqSZXBrLkDMxsBuumbJODjFU7Qxn1OGo2/6wdDF991wspJJd0u54TfIqk1msGa0+
+        bh=wXlKtQGeWTp7vou3jM8pEXClHMn0X8ibzVPnBb6ixuM=;
+        b=R42xOgimp4hrpIu/f4y/hxyR9LwN4zvhjI5illmi6TnwLg2Oyo5SV1jz9gJJa69ANs
+         KLSvJzuIpLj8Fbf7bzcs+25P8fG02LrivHqe8w3tovxvxhuTsS8NhZPrPZcYDkaRkXeL
+         fFbUy2RT2vvshBwDJhKZjLiWeBg95lg34GCyK2oznQgdttAJxLFXVAD9D+ul97mBmkbJ
+         73VNZv2iSBBtq+KAzCsOzPzTu+MVrAzR1dRyb4KCXkH7ygWFEPl4QKACkEDDD21z75KW
+         dyDMENuh2XV5Cxy9WzB6HkP3VoyEeDsyaSPQOiMxrwlVPCP9eAxHArWLmxzon3FsLbK0
+         +brQ==
+X-Gm-Message-State: AFqh2kpYdil9XJJR+xrC/XmCyxG195DJaxD0HFLNF+aNHuYWhBJJzAft
+        gsVTV8TKNv/qr1rvX+Sq8IvFDlhT7ASO
+X-Google-Smtp-Source: AMrXdXtsOl1f0Fb5fgvGa0gNKl1sLtoEETV+mVGmD2eGj8R7T4gSvIGR7mJ2SG2Ofoi48bTKkMaSZ7HQKeQj
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:cebf:c37e:8184:56])
- (user=irogers job=sendgmr) by 2002:a0d:d583:0:b0:3ec:a0cb:550 with SMTP id
- x125-20020a0dd583000000b003eca0cb0550mr1240169ywd.3.1673389225104; Tue, 10
- Jan 2023 14:20:25 -0800 (PST)
-Date:   Tue, 10 Jan 2023 14:19:57 -0800
+ (user=irogers job=sendgmr) by 2002:a0d:e60b:0:b0:3ec:2e89:409c with SMTP id
+ p11-20020a0de60b000000b003ec2e89409cmr1362309ywe.20.1673389236102; Tue, 10
+ Jan 2023 14:20:36 -0800 (PST)
+Date:   Tue, 10 Jan 2023 14:19:58 -0800
 In-Reply-To: <20230110222003.1591436-1-irogers@google.com>
-Message-Id: <20230110222003.1591436-2-irogers@google.com>
+Message-Id: <20230110222003.1591436-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20230110222003.1591436-1-irogers@google.com>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Subject: [PATCH v1 1/7] perf llvm: Fix inadvertent file creation
+Subject: [PATCH v1 2/7] tools lib: Move strbuf to libapi
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -89,7 +89,7 @@ Cc:     Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,70 +97,288 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The LLVM template is first echo-ed into command_out and then
-command_out executed. The echo surrounds the template with double
-quotes, however, the template itself may contain quotes. This is
-generally innocuous but in tools/perf/tests/bpf-script-test-prologue.c
-we see:
-...
-SEC("func=null_lseek file->f_mode offset orig")
-...
-where the first double quote ends the double quote of the echo, then
-the > redirects output into a file called f_mode.
+Move strbuf, appendable C strings, to libapi so that other libraries
+may use it.
 
-To avoid this inadvertent behavior substitute redirects and similar
-characters to be ASCII control codes, then substitute the output in
-the echo back again.
-
-Fixes: 5eab5a7ee032 ("perf llvm: Display eBPF compiling command in debug output")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/llvm-utils.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ tools/lib/api/Build                   | 1 +
+ tools/lib/api/Makefile                | 2 +-
+ tools/{perf/util => lib/api}/strbuf.c | 5 +++--
+ tools/{perf/util => lib/api}/strbuf.h | 0
+ tools/perf/bench/evlist-open-close.c  | 2 +-
+ tools/perf/builtin-help.c             | 2 +-
+ tools/perf/builtin-list.c             | 2 +-
+ tools/perf/util/Build                 | 1 -
+ tools/perf/util/cache.h               | 2 +-
+ tools/perf/util/dwarf-aux.c           | 2 +-
+ tools/perf/util/env.c                 | 2 +-
+ tools/perf/util/header.c              | 2 +-
+ tools/perf/util/metricgroup.c         | 2 +-
+ tools/perf/util/pfm.c                 | 2 +-
+ tools/perf/util/pmu.c                 | 2 +-
+ tools/perf/util/probe-event.c         | 2 +-
+ tools/perf/util/probe-file.c          | 2 +-
+ tools/perf/util/probe-finder.c        | 2 +-
+ tools/perf/util/sort.c                | 2 +-
+ 19 files changed, 19 insertions(+), 18 deletions(-)
+ rename tools/{perf/util => lib/api}/strbuf.c (97%)
+ rename tools/{perf/util => lib/api}/strbuf.h (100%)
 
-diff --git a/tools/perf/util/llvm-utils.c b/tools/perf/util/llvm-utils.c
-index 650ffe336f3a..4e8e243a6e4b 100644
---- a/tools/perf/util/llvm-utils.c
-+++ b/tools/perf/util/llvm-utils.c
-@@ -531,14 +531,37 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
+diff --git a/tools/lib/api/Build b/tools/lib/api/Build
+index 6e2373db5598..2eab5abbad50 100644
+--- a/tools/lib/api/Build
++++ b/tools/lib/api/Build
+@@ -3,6 +3,7 @@ libapi-y += fs/
+ libapi-y += cpu.o
+ libapi-y += debug.o
+ libapi-y += str_error_r.o
++libapi-y += strbuf.o
  
- 	pr_debug("llvm compiling command template: %s\n", template);
+ $(OUTPUT)str_error_r.o: ../str_error_r.c FORCE
+ 	$(call rule_mkdir)
+diff --git a/tools/lib/api/Makefile b/tools/lib/api/Makefile
+index 044860ac1ed1..dc2d810dfbad 100644
+--- a/tools/lib/api/Makefile
++++ b/tools/lib/api/Makefile
+@@ -99,7 +99,7 @@ install_lib: $(LIBFILE)
+ 		$(call do_install_mkdir,$(libdir_SQ)); \
+ 		cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
  
-+	/*
-+	 * Below, substitute control characters for values that can cause the
-+	 * echo to misbehave, then substitute the values back.
-+	 */
- 	err = -ENOMEM;
--	if (asprintf(&command_echo, "echo -n \"%s\"", template) < 0)
-+	if (asprintf(&command_echo, "echo -n \a%s\a", template) < 0)
- 		goto errout;
+-HDRS := cpu.h debug.h io.h
++HDRS := cpu.h debug.h io.h strbuf.h
+ FD_HDRS := fd/array.h
+ FS_HDRS := fs/fs.h fs/tracing_path.h
+ INSTALL_HDRS_PFX := $(DESTDIR)$(prefix)/include/api
+diff --git a/tools/perf/util/strbuf.c b/tools/lib/api/strbuf.c
+similarity index 97%
+rename from tools/perf/util/strbuf.c
+rename to tools/lib/api/strbuf.c
+index a64a37628f12..4639b2d02e62 100644
+--- a/tools/perf/util/strbuf.c
++++ b/tools/lib/api/strbuf.c
+@@ -1,6 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#include "cache.h"
+-#include "debug.h"
++#include "debug-internal.h"
+ #include "strbuf.h"
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+@@ -43,6 +42,7 @@ char *strbuf_detach(struct strbuf *sb, size_t *sz)
+ 	return res;
+ }
  
-+#define SWAP_CHAR(a, b) do { if (*p == a) *p = b; } while (0)
-+	for (char *p = command_echo; *p; p++) {
-+		SWAP_CHAR('<', '\001');
-+		SWAP_CHAR('>', '\002');
-+		SWAP_CHAR('"', '\003');
-+		SWAP_CHAR('\'', '\004');
-+		SWAP_CHAR('|', '\005');
-+		SWAP_CHAR('&', '\006');
-+		SWAP_CHAR('\a', '"');
-+	}
- 	err = read_from_pipe(command_echo, (void **) &command_out, NULL);
- 	if (err)
- 		goto errout;
++#define alloc_nr(x) (((x)+16)*3/2)
+ int strbuf_grow(struct strbuf *sb, size_t extra)
+ {
+ 	char *buf;
+@@ -69,6 +69,7 @@ int strbuf_grow(struct strbuf *sb, size_t extra)
+ 	sb->alloc = nr;
+ 	return 0;
+ }
++#undef alloc_nr
  
-+	for (char *p = command_out; *p; p++) {
-+		SWAP_CHAR('\001', '<');
-+		SWAP_CHAR('\002', '>');
-+		SWAP_CHAR('\003', '"');
-+		SWAP_CHAR('\004', '\'');
-+		SWAP_CHAR('\005', '|');
-+		SWAP_CHAR('\006', '&');
-+	}
-+#undef SWAP_CHAR
- 	pr_debug("llvm compiling command : %s\n", command_out);
+ int strbuf_addch(struct strbuf *sb, int c)
+ {
+diff --git a/tools/perf/util/strbuf.h b/tools/lib/api/strbuf.h
+similarity index 100%
+rename from tools/perf/util/strbuf.h
+rename to tools/lib/api/strbuf.h
+diff --git a/tools/perf/bench/evlist-open-close.c b/tools/perf/bench/evlist-open-close.c
+index 5a27691469ed..d8a8fcadb9ca 100644
+--- a/tools/perf/bench/evlist-open-close.c
++++ b/tools/perf/bench/evlist-open-close.c
+@@ -8,7 +8,7 @@
+ #include "../util/stat.h"
+ #include "../util/evlist.h"
+ #include "../util/evsel.h"
+-#include "../util/strbuf.h"
++#include <api/strbuf.h>
+ #include "../util/record.h"
+ #include "../util/parse-events.h"
+ #include "internal/threadmap.h"
+diff --git a/tools/perf/builtin-help.c b/tools/perf/builtin-help.c
+index 3976aebe3677..8874e1e0335b 100644
+--- a/tools/perf/builtin-help.c
++++ b/tools/perf/builtin-help.c
+@@ -6,7 +6,7 @@
+  */
+ #include "util/cache.h"
+ #include "util/config.h"
+-#include "util/strbuf.h"
++#include <api/strbuf.h>
+ #include "builtin.h"
+ #include <subcmd/exec-cmd.h>
+ #include "common-cmds.h"
+diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
+index 137d73edb541..ca52227f311c 100644
+--- a/tools/perf/builtin-list.c
++++ b/tools/perf/builtin-list.c
+@@ -17,7 +17,7 @@
+ #include "util/metricgroup.h"
+ #include "util/string2.h"
+ #include "util/strlist.h"
+-#include "util/strbuf.h"
++#include <api/strbuf.h>
+ #include <subcmd/pager.h>
+ #include <subcmd/parse-options.h>
+ #include <linux/zalloc.h>
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 79b9498886a2..5c68ab8c69f8 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -37,7 +37,6 @@ perf-y += libstring.o
+ perf-y += bitmap.o
+ perf-y += hweight.o
+ perf-y += smt.o
+-perf-y += strbuf.o
+ perf-y += string.o
+ perf-y += strlist.o
+ perf-y += strfilter.o
+diff --git a/tools/perf/util/cache.h b/tools/perf/util/cache.h
+index 9f2e36ef5072..19e60decb24c 100644
+--- a/tools/perf/util/cache.h
++++ b/tools/perf/util/cache.h
+@@ -2,7 +2,7 @@
+ #ifndef __PERF_CACHE_H
+ #define __PERF_CACHE_H
  
- 	err = read_from_pipe(template, &obj_buf, &obj_buf_sz);
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ #include <subcmd/pager.h>
+ #include "../ui/ui.h"
+ 
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index b07414409771..673ddfeb938d 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -9,7 +9,7 @@
+ #include <stdlib.h>
+ #include "debug.h"
+ #include "dwarf-aux.h"
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ #include "string2.h"
+ 
+ /**
+diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+index 5b8cf6a421a4..3dc1c51a8335 100644
+--- a/tools/perf/util/env.c
++++ b/tools/perf/util/env.c
+@@ -10,7 +10,7 @@
+ #include <sys/utsname.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ 
+ struct perf_env perf_env;
+ 
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index 404d816ca124..35067c22a47f 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -38,7 +38,7 @@
+ #include "cpumap.h"
+ #include "pmu.h"
+ #include "vdso.h"
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ #include "build-id.h"
+ #include "data.h"
+ #include <api/fs/fs.h>
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index b9c273ed080a..d1d21605715a 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -9,7 +9,7 @@
+ #include "debug.h"
+ #include "evlist.h"
+ #include "evsel.h"
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ #include "pmu.h"
+ #include "pmu-hybrid.h"
+ #include "print-events.h"
+diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
+index ac3227ba769c..c82e7bc7c5ea 100644
+--- a/tools/perf/util/pfm.c
++++ b/tools/perf/util/pfm.c
+@@ -12,7 +12,7 @@
+ #include "util/parse-events.h"
+ #include "util/pmu.h"
+ #include "util/pfm.h"
+-#include "util/strbuf.h"
++#include <api/strbuf.h>
+ 
+ #include <string.h>
+ #include <linux/kernel.h>
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 2bdeb89352e7..4648ccf0b50a 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -27,7 +27,7 @@
+ #include "print-events.h"
+ #include "header.h"
+ #include "string2.h"
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ #include "fncache.h"
+ #include "pmu-hybrid.h"
+ 
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 0c24bc7afbca..e609970e2113 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -38,7 +38,7 @@
+ #include "probe-file.h"
+ #include "session.h"
+ #include "string2.h"
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ 
+ #include <subcmd/pager.h>
+ #include <linux/ctype.h>
+diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+index 3d50de3217d5..c1f1ef3f48d4 100644
+--- a/tools/perf/util/probe-file.c
++++ b/tools/perf/util/probe-file.c
+@@ -20,7 +20,7 @@
+ #include "dso.h"
+ #include "color.h"
+ #include "symbol.h"
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ #include <api/fs/tracing_path.h>
+ #include <api/fs/fs.h>
+ #include "probe-event.h"
+diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+index 54b49ce85c9f..4368a9dffc35 100644
+--- a/tools/perf/util/probe-finder.c
++++ b/tools/perf/util/probe-finder.c
+@@ -24,7 +24,7 @@
+ #include "dso.h"
+ #include "debug.h"
+ #include "intlist.h"
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ #include "strlist.h"
+ #include "symbol.h"
+ #include "probe-finder.h"
+diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
+index e188f74698dd..32f00a340c0d 100644
+--- a/tools/perf/util/sort.c
++++ b/tools/perf/util/sort.c
+@@ -21,7 +21,7 @@
+ #include "evlist.h"
+ #include "srcline.h"
+ #include "strlist.h"
+-#include "strbuf.h"
++#include <api/strbuf.h>
+ #include "mem-events.h"
+ #include "annotate.h"
+ #include "event.h"
 -- 
 2.39.0.314.g84b9a713c41-goog
 
