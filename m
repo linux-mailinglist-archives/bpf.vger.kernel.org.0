@@ -2,139 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED22C664DB0
-	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 21:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8F4664DCA
+	for <lists+bpf@lfdr.de>; Tue, 10 Jan 2023 22:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbjAJUvk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 15:51:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
+        id S231553AbjAJVAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 16:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233383AbjAJUvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 15:51:09 -0500
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC636218B
-        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 12:50:49 -0800 (PST)
-Received: by mail-io1-f71.google.com with SMTP id 16-20020a5d9c10000000b00702de2ee669so7078465ioe.10
-        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 12:50:49 -0800 (PST)
+        with ESMTP id S231948AbjAJVAF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 16:00:05 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FC65A881;
+        Tue, 10 Jan 2023 13:00:03 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id cf18so25563613ejb.5;
+        Tue, 10 Jan 2023 13:00:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jMS9tdEfjQspwf8bB3Cerq4FNAfZvZjgP75R58Ynns0=;
+        b=Z8FY3kivlVlJBtxOwHUgE6Tf2kh4W+JhtZmPlhrGGlLT96Y04Xy2O4m35j+6sjAhSt
+         +Bx6W7SUQGTBRxtesvTphf4mdKUQ9z9gbqyGk+i66j7xPgSTaKzr6vSQNLF8driZKIo8
+         8riFjGB+kk9MNalRI+SWj+k3C3OBeFr2K5uXmwMZms4KGiTVNDIMYd1Vo2Xb9xEiBjvB
+         KzPjYvjs1filB9krLsqS8dexzXWE3UnPmz3s+addCGL1IXRQG/fHDUV43SdKIzUcINVS
+         ZX9R8VAKXJWIxVE82neiFllH4W9CTau5Dv5MIs1S3cc0B1QjS5Y0P6jVKqFL6Bh5bxWS
+         HfKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FrGb7T5CWFgT+AcNY8nFRNBTuSt+li16+JKxysSC3eM=;
-        b=lCu+AlMB4M7c/nbNmbvktYw94VJsJjSCTvK32QLbd+x/vo0ZUpEc94ODhoRPwIbQCd
-         NiwTwb04I3da2GHHX/MIFCXcN5OjtKk/wROrTrDwZ3C3X3CtK6ePS1KOQyGquxa07WZ0
-         NQKgl+CYTSXyKITRgc0wxtrnLFjT2BuPksUhKzIThi9NuxV6oiT5GeJC9RGbxUEjfpvz
-         PEcDVVuQiZm5RcjK8lW1FF8mHwHe0tj6eX6/sV4+dXrSRMW4ZI19PYUyLBz4kHfWNtPU
-         Cga6CO1liOPynjmoTsXRHWvE1swIjwEidVBLdBRida53EP1Dj1CzCPyiah5xjh/6WjIo
-         A8dg==
-X-Gm-Message-State: AFqh2krK2BIBFMRvkv19pwGyfWSfaqz4fvxLUUxKFiax5Dm4NzrSyVXL
-        pK8QQCYwUK5i3WyBOXtGArQz2KxLnPqErUZELsqi9GkWdjb+
-X-Google-Smtp-Source: AMrXdXuozUlqSWHDOAO0yfa4cKVIsQ+lkXBtEtXo76WRlFEP0Wb+ediaphFRjZIocZ4NTvwt+IWxb0USvCoWS18iAXPsUO8mwnXv
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jMS9tdEfjQspwf8bB3Cerq4FNAfZvZjgP75R58Ynns0=;
+        b=EmziFm/WpVkDU/e5nc5pdF+hCUB/YWnMqdxF5QDVILngkjeuk4urW7Q8J38e6l0Feh
+         2MkhddeMEXFx60xw29B6j+u0Jz/psh61SXIn4yDL3dEKySRy2Qt5vouVMM4tB+sVYPbB
+         ozyW17HvaiOI5B5vdzlCAMPRNJwP3emOSVK1J0AL/V39oCJJ3ulG3dyPrmHN+JCW9g61
+         dMfh2U9SJwmZAokxZtL/wxZMm3qmrUbmbEpt+RM89Qgj0Tvj55CbByikpZ9uVldP5b77
+         vy7dulh1PjKP5S4HM4CnxvnM5mJ1BR7FbGsf5BgWgYrDKHBuK2f7MKPi/FVlyIbwxp35
+         h6Uw==
+X-Gm-Message-State: AFqh2krE6pLrevi+n+GdEhUwhQ5dTl0ED7z9mkBzPEb7WqDpL4YwgWIO
+        2yFfKJiBIbiI+0u2g/Po5J0=
+X-Google-Smtp-Source: AMrXdXvo+ftZzz0FVfBjJyIknrQ4EGeQEtHORbQ0JTXvaj3GmUHz++5AoOVaiWa6p19zUWM0HyyCog==
+X-Received: by 2002:a17:906:3451:b0:857:b916:94bd with SMTP id d17-20020a170906345100b00857b91694bdmr2535090ejb.60.1673384401799;
+        Tue, 10 Jan 2023 13:00:01 -0800 (PST)
+Received: from localhost ([185.246.188.67])
+        by smtp.gmail.com with ESMTPSA id w22-20020a1709061f1600b0081bfc79beaesm5360564ejj.75.2023.01.10.13.00.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Jan 2023 13:00:01 -0800 (PST)
+Date:   Tue, 10 Jan 2023 22:59:55 +0200
+From:   Maxim Mikityanskiy <maxtram95@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Tariq Toukan <tariqt@nvidia.com>
+Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, lorenzo.bianconi@redhat.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Andy Gospodarek <gospo@broadcom.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, gal@nvidia.com,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
+ support xdp multibuffer
+Message-ID: <Y73Ry+nNqOkeZtaj@dragonfly.lan>
+References: <20220621175402.35327-1-gospo@broadcom.com>
+ <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com>
+ <87k0234pd6.fsf@toke.dk>
+ <20230103172153.58f231ba@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3f18:b0:38d:30a7:2ae0 with SMTP id
- ck24-20020a0566383f1800b0038d30a72ae0mr6851113jab.234.1673383848565; Tue, 10
- Jan 2023 12:50:48 -0800 (PST)
-Date:   Tue, 10 Jan 2023 12:50:48 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dde02b05f1ef09a4@google.com>
-Subject: [syzbot] WARNING: locking bug in __perf_event_task_sched_in (2)
-From:   syzbot <syzbot+d94d214ea473e218fc89@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        bpf@vger.kernel.org, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230103172153.58f231ba@kernel.org>
+X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Tue, Jan 03, 2023 at 05:21:53PM -0800, Jakub Kicinski wrote:
+> On Tue, 03 Jan 2023 16:19:49 +0100 Toke Høiland-Jørgensen wrote:
+> > Hmm, good question! I don't think we've ever explicitly documented any
+> > assumptions one way or the other. My own mental model has certainly
+> > always assumed the first frag would continue to be the same size as in
+> > non-multi-buf packets.
+> 
+> Interesting! :) My mental model was closer to GRO by frags 
+> so the linear part would have no data, just headers.
+> 
+> A random datapoint is that bpf_xdp_adjust_head() seems 
+> to enforce that there is at least ETH_HLEN.
 
-syzbot found the following issue on:
+Also bpf_xdp_frags_increase_tail has the following check:
 
-HEAD commit:    6d0c4b11e743 libbpf: Poison strlcpy()
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17764f3a480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=46221e8203c7aca6
-dashboard link: https://syzkaller.appspot.com/bug?extid=d94d214ea473e218fc89
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+	if (!rxq->frag_size || rxq->frag_size > xdp->frame_sz)
+		return -EOPNOTSUPP;
 
-Unfortunately, I don't have any reproducer for this issue yet.
+However, I can't seem to find where the `frag_size > frame_sz` part is
+actually used. Maybe this condition can be dropped? Can someone shed
+some light?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/83567aa48724/disk-6d0c4b11.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6047fdb8660e/vmlinux-6d0c4b11.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a94d1047d7b7/bzImage-6d0c4b11.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d94d214ea473e218fc89@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(1)
-WARNING: CPU: 1 PID: 6975 at kernel/locking/lockdep.c:231 hlock_class kernel/locking/lockdep.c:231 [inline]
-WARNING: CPU: 1 PID: 6975 at kernel/locking/lockdep.c:231 hlock_class kernel/locking/lockdep.c:220 [inline]
-WARNING: CPU: 1 PID: 6975 at kernel/locking/lockdep.c:231 check_wait_context kernel/locking/lockdep.c:4754 [inline]
-WARNING: CPU: 1 PID: 6975 at kernel/locking/lockdep.c:231 __lock_acquire+0xecf/0x56d0 kernel/locking/lockdep.c:5005
-Modules linked in:
-CPU: 1 PID: 6975 Comm: kworker/u4:13 Not tainted 6.2.0-rc2-syzkaller-00302-g6d0c4b11e743 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-Workqueue: netns cleanup_net
-RIP: 0010:hlock_class kernel/locking/lockdep.c:231 [inline]
-RIP: 0010:hlock_class kernel/locking/lockdep.c:220 [inline]
-RIP: 0010:check_wait_context kernel/locking/lockdep.c:4754 [inline]
-RIP: 0010:__lock_acquire+0xecf/0x56d0 kernel/locking/lockdep.c:5005
-Code: 28 14 73 8e e8 02 bb 6b 00 8b 05 94 78 0f 0d 85 c0 0f 85 79 f8 ff ff 48 c7 c6 40 51 4c 8a 48 c7 c7 a0 4a 4c 8a e8 51 d6 5b 08 <0f> 0b 31 c0 e9 73 f7 ff ff 48 63 5c 24 18 be 08 00 00 00 48 89 d8
-RSP: 0018:ffffc900035ef518 EFLAGS: 00010082
-RAX: 0000000000000000 RBX: 000000000000070e RCX: 0000000000000000
-RDX: ffff888079031d40 RSI: ffffffff8166724c RDI: fffff520006bde95
-RBP: 0000000000000003 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000002 R11: 0000000000000001 R12: 0000000000000003
-R13: ffff888079031d40 R14: ffff888079032778 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc92edd748 CR3: 0000000044fa3000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- lock_acquire kernel/locking/lockdep.c:5668 [inline]
- lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
- rcu_lock_acquire include/linux/rcupdate.h:325 [inline]
- rcu_read_lock include/linux/rcupdate.h:764 [inline]
- perf_event_context_sched_in kernel/events/core.c:3913 [inline]
- __perf_event_task_sched_in+0xe2/0x6c0 kernel/events/core.c:3980
- perf_event_task_sched_in include/linux/perf_event.h:1328 [inline]
- finish_task_switch.isra.0+0x5e5/0xc80 kernel/sched/core.c:5118
- context_switch kernel/sched/core.c:5247 [inline]
- __schedule+0xb92/0x5450 kernel/sched/core.c:6555
- schedule+0xde/0x1b0 kernel/sched/core.c:6631
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6690
- __mutex_lock_common kernel/locking/mutex.c:679 [inline]
- __mutex_lock+0xa48/0x1360 kernel/locking/mutex.c:747
- devl_lock net/devlink/core.c:54 [inline]
- devlink_pernet_pre_exit+0x10a/0x220 net/devlink/core.c:301
- ops_pre_exit_list net/core/net_namespace.c:159 [inline]
- cleanup_net+0x455/0xb10 net/core/net_namespace.c:594
- process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
- worker_thread+0x669/0x1090 kernel/workqueue.c:2436
- kthread+0x2e8/0x3a0 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+BTW, Tariq, we seem to have missed setting frag_size to a non-zero
+value. Could you check that increasing the tail indeed doesn't work on
+fragmented packets on mlx5e? I can send a oneliner to fix that.
