@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7085A665F96
-	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 16:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36202665F9E
+	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 16:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239254AbjAKPsD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Jan 2023 10:48:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
+        id S239381AbjAKPtV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Jan 2023 10:49:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239340AbjAKPrn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Jan 2023 10:47:43 -0500
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FBB38AF3
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 07:44:31 -0800 (PST)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-4c131bede4bso200178467b3.5
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 07:44:31 -0800 (PST)
+        with ESMTP id S239709AbjAKPst (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Jan 2023 10:48:49 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C6F3591F
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 07:48:22 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id v19so9550325ybv.1
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 07:48:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jab6oIU+d7nh/HCG7p9Q+mV4z+9I+vSbLspe/IwR6NQ=;
-        b=TjXTbsX0RPFT5TKtVkfQVwXPGZ6XVErmSjqakRPrBadWJKp9lxPkTbM6HiJ5U1B9ki
-         hoWDpgd7bsmahjPfPKynzrS2D9yrmJIypcrGc2cp2mIdMkqbrIRCqYrucYYuBj6jSYrh
-         Onwguu+OFQfmhR8EclgcH2sDd3P57mkKXP5xxJqF+4QTP2oQzUzK+1DaCvnHA9yHtq2t
-         8xZxU+OC5hNKwomy8iCsAW7zcFdUgNHsLEeUvlFIOhZ67LFcpHAc6SK59ja9mZEZl23X
-         rF5F963wrFqUc660nKc8MjOcuYr1k3MgYf8uX3Vvflro2v08hJ6Z+iUpq6sNljR0Iqar
-         eW7Q==
+        bh=oWXiKk5N76ghcPrYpnrhpW08LqZySwOUdbWXIWHxWBc=;
+        b=qR342MVgAspa6C1TGx9WVz/1cYTR+YeR9HoTjGffZVND8qcg0OHq1J72TpetAu/HNB
+         2+THEqpRejnwna90MXpyOp+3/Fq5W3DoyrAJXBN8J5ZKYln64yVWUF+e+sCKAAQOA9FS
+         Y8oRW47E3kdekVshbys8cs51Aqrvo0DHbYOJIUC77x9un0wFiOlZNPemabshL4Uw/Efa
+         DnD3DpuEsWOuFNLaJHV6GMdqfeTOBbbhOT3+yMY8eMnNKIMN5odanWwDQ4VVdUg6g+rM
+         9N45sETfK9LWUw9RKUly2uvsCuKP+eTCDjm8juuwwOpDcWz9unkBXfM1cRdQ1qzufKTs
+         Dn5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jab6oIU+d7nh/HCG7p9Q+mV4z+9I+vSbLspe/IwR6NQ=;
-        b=1myPXmb4993fcdu6UqvdrWpA3v6EQ1bqiOW0zDDUpNiBMuuMkGAwu7wMF4vwd7/uo2
-         qhA7pfURuPX+T6Rc9eTfWYTJfy1ifn8x+O041wRbUA7qZODDD9ZtLzHnop3FvSZYGUb2
-         QeiNOfH+imnlPWjxazB/lNoT2bbuGsHOimejUGCGxv3C4QzVpRmL8IEzjGgSlRGm0HD6
-         MoglcSinZValj47Xfi7ZiYNMBVnMlVpqnB2oBz8gpzCAUMqmD2V4F7zZdcdLHS8L+Kp6
-         slQhajcj3OfJ2vWGC5yYlIobIzl6dse0FW9PE4vbWONM/8LcQTp8AOGGM7jGGDvG/Qch
-         sPDQ==
-X-Gm-Message-State: AFqh2krYTyHwBuHz3Xih+iR8FaESYeHH+WyuCFCUp5seOopFNW58ZSMr
-        e3NakdCh9M5Hh8nAN3ZpFjOmUolSH4wvkJ5t/FXVZQ==
-X-Google-Smtp-Source: AMrXdXs2Es6S5GRw4U9xcdK05+efdlU/UK9pFU+J5jTfzQO1VhLoQb0vK24TXage0QJs4W7ahnonnsGdiTTD88dml20=
-X-Received: by 2002:a0d:f846:0:b0:3f6:489a:a06f with SMTP id
- i67-20020a0df846000000b003f6489aa06fmr15964ywf.470.1673451869354; Wed, 11 Jan
- 2023 07:44:29 -0800 (PST)
+        bh=oWXiKk5N76ghcPrYpnrhpW08LqZySwOUdbWXIWHxWBc=;
+        b=crlEEqhN73tLrsIcPUq6fcWRYjMDUkA6vJj6jjNUHohhV00oZ3Q51MYU4dY5Plv2vF
+         W38kTItWtoHoA4ZHKCrSHFv2hevI4+jUxnEuB3OmBH+eOtc0M9FoR2Wccs752QUTTQnC
+         D7jI899s5zdDRk8QeqR1soSv6SF8qTgmJ5GZp041lhqDIqdK3bSUGvvUpcFRzYUwz3Xm
+         pwFZhMB57R7CY1oBFEESfYJ1TJdxkdtFOF3+KZ2B+eqAEmBiwE7dYJGAWL5r5uGHZrNw
+         th0vdkhZ2uOmvNQJO6qxEsinXTzruhv6/OB14tJJvfeZgLDdmcwzE+YjdzXQCVJg1gZV
+         gzBA==
+X-Gm-Message-State: AFqh2kot/8YiBC01SoFwMRAJ8fc0TLSpRM6y+5HWm5y6zYWTUjfoH5RU
+        75Xvbx4wb1ATOjG+Eoey4Z0tx90Hx2yg9AmO1Rf4Pw==
+X-Google-Smtp-Source: AMrXdXuLnT+5i/eyQN5Bm5ScZRY47Yc3QKQd7ZWRW6c++xS955xVHS85ngwXh95gH7UiKLtX+r+Hq3+gByBM2HOGy9w=
+X-Received: by 2002:a25:7288:0:b0:78e:9ffb:6421 with SMTP id
+ n130-20020a257288000000b0078e9ffb6421mr5641227ybc.95.1673452101328; Wed, 11
+ Jan 2023 07:48:21 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1673423199.git.william.xuanziyang@huawei.com> <b231c7d0acacd702284158cd44734e72ef661a01.1673423199.git.william.xuanziyang@huawei.com>
-In-Reply-To: <b231c7d0acacd702284158cd44734e72ef661a01.1673423199.git.william.xuanziyang@huawei.com>
+References: <cover.1673423199.git.william.xuanziyang@huawei.com> <ec692898c848256540d146b76a3e239914453293.1673423199.git.william.xuanziyang@huawei.com>
+In-Reply-To: <ec692898c848256540d146b76a3e239914453293.1673423199.git.william.xuanziyang@huawei.com>
 From:   Willem de Bruijn <willemb@google.com>
-Date:   Wed, 11 Jan 2023 10:43:52 -0500
-Message-ID: <CA+FuTSfGDdXTGZsjK+NhZmzirawh+09HF4v-5Cr1+4boxfqnXQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add ipip6 and ip6ip decap support
- for bpf_skb_adjust_room()
+Date:   Wed, 11 Jan 2023 10:47:44 -0500
+Message-ID: <CA+FuTSe+YJcyDV8S-PAzceLe4kNe-ZTZ+JpqpFkSmYfASv27Ug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: add ipip6 and ip6ip decap
+ to test_tc_tunnel
 To:     Ziyang Xuan <william.xuanziyang@huawei.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
@@ -72,83 +72,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 11, 2023 at 3:01 AM Ziyang Xuan
+On Wed, Jan 11, 2023 at 3:02 AM Ziyang Xuan
 <william.xuanziyang@huawei.com> wrote:
 >
-> Add ipip6 and ip6ip decap support for bpf_skb_adjust_room().
-> Main use case is for using cls_bpf on ingress hook to decapsulate
-> IPv4 over IPv6 and IPv6 over IPv4 tunnel packets.
+> Add ipip6 and ip6ip decap testcases. Verify that bpf_skb_adjust_room()
+> correctly decapsulate ipip6 and ip6ip tunnel packets.
 >
-> Add two new flags BPF_F_ADJ_ROOM_DECAP_L3_IPV{4,6} to indicate the
-> new IP header version after decapsulating the outer IP header.
->
-> Suggested-by: Willem de Bruijn <willemb@google.com>
 > Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
 > ---
->  include/uapi/linux/bpf.h       |  8 ++++++++
->  net/core/filter.c              | 26 +++++++++++++++++++++++++-
->  tools/include/uapi/linux/bpf.h |  8 ++++++++
->  3 files changed, 41 insertions(+), 1 deletion(-)
+>  .../selftests/bpf/progs/test_tc_tunnel.c      | 91 ++++++++++++++++++-
+>  tools/testing/selftests/bpf/test_tc_tunnel.sh | 15 +--
+>  2 files changed, 98 insertions(+), 8 deletions(-)
 >
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 464ca3f01fe7..dde1c2ea1c84 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2644,6 +2644,12 @@ union bpf_attr {
->   *               Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
->   *               L2 type as Ethernet.
->   *
-> + *              * **BPF_F_ADJ_ROOM_DECAP_L3_IPV4**,
-> + *                **BPF_F_ADJ_ROOM_DECAP_L3_IPV6**:
-> + *                Indicate the new IP header version after decapsulating the
-> + *                outer IP header. Mainly used in scenarios that the inner and
-> + *                outer IP versions are different.
-> + *
-
-Nit (only since I have another comment below)
-
-Indicate -> Set
-[Mainly used .. that] -> [Used when]
-
->         if (skb_is_gso(skb)) {
->                 struct skb_shared_info *shinfo = skb_shinfo(skb);
+> diff --git a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
+> index a0e7762b1e5a..e6e678aa9874 100644
+> --- a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
+> +++ b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
+> @@ -38,6 +38,10 @@ static const int cfg_udp_src = 20000;
+>  #define        VXLAN_FLAGS     0x8
+>  #define        VXLAN_VNI       1
 >
-> @@ -3596,6 +3609,10 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
->         if (unlikely(proto != htons(ETH_P_IP) &&
->                      proto != htons(ETH_P_IPV6)))
->                 return -ENOTSUPP;
-> +       if (unlikely((shrink && ((flags & BPF_F_ADJ_ROOM_DECAP_L3_MASK) ==
-> +                     BPF_F_ADJ_ROOM_DECAP_L3_MASK)) || (!shrink &&
-> +                     flags & BPF_F_ADJ_ROOM_DECAP_L3_MASK)))
-> +               return -EINVAL;
->
->         off = skb_mac_header_len(skb);
->         switch (mode) {
-> @@ -3608,6 +3625,13 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
->                 return -ENOTSUPP;
->         }
->
-> +       if (shrink) {
-> +               if (flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV6)
-> +                       len_min = sizeof(struct ipv6hdr);
-> +               else if (flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV4)
-> +                       len_min = sizeof(struct iphdr);
-> +       }
-> +
+> +#ifndef NEXTHDR_DEST
+> +#define NEXTHDR_DEST   60
+> +#endif
 
-How about combining this branch with the above:
+Should not be needed if including the right header? include/net/ipv6.h
 
-  if (flags & BPF_F_ADJ_ROOM_DECAP_L3_MASK) {
-    if (!shrink)
-      return -EINVAL;
-
-    switch (flags & BPF_F_ADJ_ROOM_DECAP_L3_MASK) {
-      case BPF_F_ADJ_ROOM_DECAP_L3_IPV4:
-        len_min = sizeof(struct iphdr);
-        break;
-      case BPF_F_ADJ_ROOM_DECAP_L3_IPV6:
-        len_min = sizeof(struct ipv6hdr);
-        break;
-      default:
-        return -EINVAL;
-    }
+Otherwise very nice extension. Thanks for expanding the test.
