@@ -2,247 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEAA6655A6
-	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 09:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7798D66560F
+	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 09:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbjAKIDM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Jan 2023 03:03:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
+        id S230416AbjAKI2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Jan 2023 03:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbjAKICa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Jan 2023 03:02:30 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D066413D03;
-        Wed, 11 Jan 2023 00:01:54 -0800 (PST)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NsKlP48HYzqV5n;
-        Wed, 11 Jan 2023 15:57:05 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Wed, 11 Jan 2023 16:01:51 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <willemb@google.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <martin.lau@linux.dev>,
-        <song@kernel.org>, <yhs@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-        <jolsa@kernel.org>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: add ipip6 and ip6ip decap to test_tc_tunnel
-Date:   Wed, 11 Jan 2023 16:01:47 +0800
-Message-ID: <ec692898c848256540d146b76a3e239914453293.1673423199.git.william.xuanziyang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1673423199.git.william.xuanziyang@huawei.com>
-References: <cover.1673423199.git.william.xuanziyang@huawei.com>
+        with ESMTP id S235452AbjAKI14 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Jan 2023 03:27:56 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C11F2017
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 00:27:55 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id bi26-20020a05600c3d9a00b003d3404a89faso2019109wmb.1
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 00:27:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8H7BYWNK5QGRSV0QzyCVeNegt/4SpqVzk28XaNS779Y=;
+        b=JdZNOFUJNywder3CDGRlw0Bqc6gLffj8yH1iMmJmXz7LTLn0ElYkJkLcw4UxPI1i7y
+         WiOElNM97+kY5xybgJEx9t0DT7LUwcqljYYq0qy/fZGeTOWu71C57HjAffpbe70k+nZW
+         AlTWZsqx7xH8An0PpcWZ7WxmT9fdlxRjCPMMpvjZ0f2zMwqIyKYDXGEbNqUq2/MlxFBo
+         e2rU4ompZtn2Ftbgl1DyTG4DR4Q/WZ+tXn5cd2kk1zCn95wLeLCqlLlIVRzhzq+jglgc
+         QzdPcN2bCVUqpJM8+rrOVRkxFJraekjdkX1K1mhl94Jmx9fxrQSUaBCFAqs0CT5J9xf0
+         UY3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8H7BYWNK5QGRSV0QzyCVeNegt/4SpqVzk28XaNS779Y=;
+        b=VSmB+C5EsDpl94+GTCeU8GZNHy5fO0fJCwbxK0EM6wvTD6h39/RgERDVed+PiBJN9h
+         g31RuSh9bwPRc8RaKU3GoMrvPUlcT2hZPQyavFuzMHbHX0lNYISG0Q4ilCbp/1TNZGNv
+         +LHh+C9+O59A0wQPDMRx0vn8EIQX5mnF5PfSyQ99MlghDPf/XIVhEpmC5odv7oq4bWKP
+         ITryOz0i5BTCRug1s7DY9GY/oh38Pt8HjY3rqnQuQFXzGjeWZ2mv33bxKB9tvepst030
+         yQr1vURgtwD44gxkBB9BN9vhCANIjv2pfBk5PNyAu7KQ6m5oFr3yi4l/sx2H+mG7Ke09
+         amcA==
+X-Gm-Message-State: AFqh2kp7iI8akKhSyDBBJMEpEwxRjSZCZdUokOwyUXD/YdgzDdujNDNz
+        kiowGlO4nUNsP4+lV5+NTBs=
+X-Google-Smtp-Source: AMrXdXvuF4D0+RfBEqVx5PzCGllxosvXNT9QLwYCwbScZUM3jRoZMTDkzSQA16ESSOZ4PUW4fGGrqg==
+X-Received: by 2002:a1c:6a16:0:b0:3c6:f732:bf6f with SMTP id f22-20020a1c6a16000000b003c6f732bf6fmr51200025wmc.13.1673425673475;
+        Wed, 11 Jan 2023 00:27:53 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id u21-20020a7bc055000000b003d9aa76dc6asm26023905wmc.0.2023.01.11.00.27.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Jan 2023 00:27:52 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 11 Jan 2023 09:27:50 +0100
+To:     andrea terzolo <andreaterzolo3@gmail.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [QUESTION] usage of BPF_MAP_TYPE_RINGBUF
+Message-ID: <Y75zBpkr1tLXKMWX@krava>
+References: <CAGQdkDvVW1QhPdjOS_8yDidZA3qyW8O-H3Seb7RZHU34GGrmiA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500006.china.huawei.com (7.192.105.130)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGQdkDvVW1QhPdjOS_8yDidZA3qyW8O-H3Seb7RZHU34GGrmiA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add ipip6 and ip6ip decap testcases. Verify that bpf_skb_adjust_room()
-correctly decapsulate ipip6 and ip6ip tunnel packets.
+On Tue, Jan 10, 2023 at 02:49:59PM +0100, andrea terzolo wrote:
+> Hello!
+> 
+> If I can I would ask a question regarding the BPF_MAP_TYPE_RINGBUF
+> map. Looking at the kernel implementation [0] it seems that data pages
+> are mapped 2 times to have a more efficient and simpler
+> implementation. This seems to be a ring buffer peculiarity, the perf
+> buffer didn't have such an implementation. In the Falco project [1] we
+> use huge per-CPU buffers to collect almost all the syscalls that the
+> system throws and the default size of each buffer is 8 MB. This means
+> that using the ring buffer approach on a system with 128 CPUs, we will
+> have (128*8*2) MB, while with the perf buffer only (128*8) MB. The
 
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
----
- .../selftests/bpf/progs/test_tc_tunnel.c      | 91 ++++++++++++++++++-
- tools/testing/selftests/bpf/test_tc_tunnel.sh | 15 +--
- 2 files changed, 98 insertions(+), 8 deletions(-)
+hum IIUC it's not allocated twice but pages are just mapped twice,
+to cope with wrap around samples, described in git log:
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
-index a0e7762b1e5a..e6e678aa9874 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
-@@ -38,6 +38,10 @@ static const int cfg_udp_src = 20000;
- #define	VXLAN_FLAGS     0x8
- #define	VXLAN_VNI       1
- 
-+#ifndef NEXTHDR_DEST
-+#define NEXTHDR_DEST	60
-+#endif
-+
- /* MPLS label 1000 with S bit (last label) set and ttl of 255. */
- static const __u32 mpls_label = __bpf_constant_htonl(1000 << 12 |
- 						     MPLS_LS_S_MASK | 0xff);
-@@ -363,6 +367,61 @@ static __always_inline int __encap_ipv6(struct __sk_buff *skb, __u8 encap_proto,
- 	return TC_ACT_OK;
- }
- 
-+static int encap_ipv6_ipip6(struct __sk_buff *skb)
-+{
-+	struct iphdr iph_inner;
-+	struct v6hdr h_outer;
-+	struct tcphdr tcph;
-+	struct ethhdr eth;
-+	__u64 flags;
-+	int olen;
-+
-+	if (bpf_skb_load_bytes(skb, ETH_HLEN, &iph_inner,
-+			       sizeof(iph_inner)) < 0)
-+		return TC_ACT_OK;
-+
-+	/* filter only packets we want */
-+	if (bpf_skb_load_bytes(skb, ETH_HLEN + (iph_inner.ihl << 2),
-+			       &tcph, sizeof(tcph)) < 0)
-+		return TC_ACT_OK;
-+
-+	if (tcph.dest != __bpf_constant_htons(cfg_port))
-+		return TC_ACT_OK;
-+
-+	olen = sizeof(h_outer.ip);
-+
-+	flags = BPF_F_ADJ_ROOM_FIXED_GSO | BPF_F_ADJ_ROOM_ENCAP_L3_IPV6;
-+
-+	/* add room between mac and network header */
-+	if (bpf_skb_adjust_room(skb, olen, BPF_ADJ_ROOM_MAC, flags))
-+		return TC_ACT_SHOT;
-+
-+	/* prepare new outer network header */
-+	memset(&h_outer.ip, 0, sizeof(h_outer.ip));
-+	h_outer.ip.version = 6;
-+	h_outer.ip.hop_limit = iph_inner.ttl;
-+	h_outer.ip.saddr.s6_addr[1] = 0xfd;
-+	h_outer.ip.saddr.s6_addr[15] = 1;
-+	h_outer.ip.daddr.s6_addr[1] = 0xfd;
-+	h_outer.ip.daddr.s6_addr[15] = 2;
-+	h_outer.ip.payload_len = iph_inner.tot_len;
-+	h_outer.ip.nexthdr = IPPROTO_IPIP;
-+
-+	/* store new outer network header */
-+	if (bpf_skb_store_bytes(skb, ETH_HLEN, &h_outer, olen,
-+				BPF_F_INVALIDATE_HASH) < 0)
-+		return TC_ACT_SHOT;
-+
-+	/* update eth->h_proto */
-+	if (bpf_skb_load_bytes(skb, 0, &eth, sizeof(eth)) < 0)
-+		return TC_ACT_SHOT;
-+	eth.h_proto = bpf_htons(ETH_P_IPV6);
-+	if (bpf_skb_store_bytes(skb, 0, &eth, sizeof(eth), 0) < 0)
-+		return TC_ACT_SHOT;
-+
-+	return TC_ACT_OK;
-+}
-+
- static __always_inline int encap_ipv6(struct __sk_buff *skb, __u8 encap_proto,
- 				      __u16 l2_proto)
- {
-@@ -461,6 +520,15 @@ int __encap_ip6tnl_none(struct __sk_buff *skb)
- 		return TC_ACT_OK;
- }
- 
-+SEC("encap_ipip6_none")
-+int __encap_ipip6_none(struct __sk_buff *skb)
-+{
-+	if (skb->protocol == __bpf_constant_htons(ETH_P_IP))
-+		return encap_ipv6_ipip6(skb);
-+	else
-+		return TC_ACT_OK;
-+}
-+
- SEC("encap_ip6gre_none")
- int __encap_ip6gre_none(struct __sk_buff *skb)
- {
-@@ -528,13 +596,33 @@ int __encap_ip6vxlan_eth(struct __sk_buff *skb)
- 
- static int decap_internal(struct __sk_buff *skb, int off, int len, char proto)
- {
-+	__u64 flags = BPF_F_ADJ_ROOM_FIXED_GSO;
-+	struct ipv6_opt_hdr ip6_opt_hdr;
- 	struct gre_hdr greh;
- 	struct udphdr udph;
- 	int olen = len;
- 
- 	switch (proto) {
- 	case IPPROTO_IPIP:
-+		flags |= BPF_F_ADJ_ROOM_DECAP_L3_IPV4;
-+		break;
- 	case IPPROTO_IPV6:
-+		flags |= BPF_F_ADJ_ROOM_DECAP_L3_IPV6;
-+		break;
-+	case NEXTHDR_DEST:
-+		if (bpf_skb_load_bytes(skb, off + len, &ip6_opt_hdr,
-+				       sizeof(ip6_opt_hdr)) < 0)
-+			return TC_ACT_OK;
-+		switch (ip6_opt_hdr.nexthdr) {
-+		case IPPROTO_IPIP:
-+			flags |= BPF_F_ADJ_ROOM_DECAP_L3_IPV4;
-+			break;
-+		case IPPROTO_IPV6:
-+			flags |= BPF_F_ADJ_ROOM_DECAP_L3_IPV6;
-+			break;
-+		default:
-+			return TC_ACT_OK;
-+		}
- 		break;
- 	case IPPROTO_GRE:
- 		olen += sizeof(struct gre_hdr);
-@@ -569,8 +657,7 @@ static int decap_internal(struct __sk_buff *skb, int off, int len, char proto)
- 		return TC_ACT_OK;
- 	}
- 
--	if (bpf_skb_adjust_room(skb, -olen, BPF_ADJ_ROOM_MAC,
--				BPF_F_ADJ_ROOM_FIXED_GSO))
-+	if (bpf_skb_adjust_room(skb, -olen, BPF_ADJ_ROOM_MAC, flags))
- 		return TC_ACT_SHOT;
- 
- 	return TC_ACT_OK;
-diff --git a/tools/testing/selftests/bpf/test_tc_tunnel.sh b/tools/testing/selftests/bpf/test_tc_tunnel.sh
-index 334bdfeab940..910044f08908 100755
---- a/tools/testing/selftests/bpf/test_tc_tunnel.sh
-+++ b/tools/testing/selftests/bpf/test_tc_tunnel.sh
-@@ -100,6 +100,9 @@ if [[ "$#" -eq "0" ]]; then
- 	echo "ipip"
- 	$0 ipv4 ipip none 100
- 
-+	echo "ipip6"
-+	$0 ipv4 ipip6 none 100
-+
- 	echo "ip6ip6"
- 	$0 ipv6 ip6tnl none 100
- 
-@@ -224,6 +227,9 @@ elif [[ "$tuntype" =~ "gre" && "$mac" == "eth" ]]; then
- elif [[ "$tuntype" =~ "vxlan" && "$mac" == "eth" ]]; then
- 	ttype="vxlan"
- 	targs="id 1 dstport 8472 udp6zerocsumrx"
-+elif [[ "$tuntype" == "ipip6" ]]; then
-+	ttype="ip6tnl"
-+	targs=""
- else
- 	ttype=$tuntype
- 	targs=""
-@@ -233,6 +239,9 @@ fi
- if [[ "${tuntype}" == "sit" ]]; then
- 	link_addr1="${ns1_v4}"
- 	link_addr2="${ns2_v4}"
-+elif [[ "${tuntype}" == "ipip6" ]]; then
-+	link_addr1="${ns1_v6}"
-+	link_addr2="${ns2_v6}"
- else
- 	link_addr1="${addr1}"
- 	link_addr2="${addr2}"
-@@ -287,12 +296,6 @@ else
- 	server_listen
- fi
- 
--# bpf_skb_net_shrink does not take tunnel flags yet, cannot update L3.
--if [[ "${tuntype}" == "sit" ]]; then
--	echo OK
--	exit 0
--fi
--
- # serverside, use BPF for decap
- ip netns exec "${ns2}" ip link del dev testtun0
- ip netns exec "${ns2}" tc qdisc add dev veth2 clsact
--- 
-2.25.1
+    One interesting implementation bit, that significantly simplifies (and thus
+    speeds up as well) implementation of both producers and consumers is how data
+    area is mapped twice contiguously back-to-back in the virtual memory. This
+    allows to not take any special measures for samples that have to wrap around
+    at the end of the circular buffer data area, because the next page after the
+    last data page would be first data page again, and thus the sample will still
+    appear completely contiguous in virtual memory. See comment and a simple ASCII
+    diagram showing this visually in bpf_ringbuf_area_alloc().
 
+> issue is that this memory requirement could be too much for some
+> systems and also in Kubernetes environments where there are strict
+> resource limits... Our actual workaround is to use ring buffers shared
+> between more than one CPU with a BPF_MAP_TYPE_ARRAY_OF_MAPS, so for
+> example we allocate a ring buffer for each CPU pair. Unfortunately,
+> this solution has a price since we increase the contention on the ring
+> buffers and as highlighted here [2], the presence of multiple
+> competing writers on the same buffer could become a real bottleneck...
+> Sorry for the long introduction, my question here is, are there any
+> other approaches to manage such a scenario? Will there be a
+> possibility to use the ring buffer without the kernel double mapping
+> in the near future? The ring buffer has such amazing features with
+> respect to the perf buffer, but in a scenario like the Falco one,
+> where we have aggressive multiple producers, this double mapping could
+> become a limitation.
+
+AFAIK the bpf ring buffer can be used across cpus, so you don't need
+to have extra copy for each cpu if you don't really want to
+
+jirka
+
+> 
+> Thank you in advance for your time,
+> Andrea
+> 
+> 0: https://github.com/torvalds/linux/blob/master/kernel/bpf/ringbuf.c#L107
+> 1: https://github.com/falcosecurity/falco
+> 2: https://patchwork.ozlabs.org/project/netdev/patch/20200529075424.3139988-5-andriin@fb.com/
