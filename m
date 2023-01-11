@@ -2,80 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1263F665187
-	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 03:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9752D6651EE
+	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 03:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbjAKCKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Jan 2023 21:10:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
+        id S231735AbjAKChm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Jan 2023 21:37:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjAKCKv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Jan 2023 21:10:51 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE03E234
-        for <bpf@vger.kernel.org>; Tue, 10 Jan 2023 18:10:50 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1B11DB81AA6
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 02:10:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 942BEC433D2;
-        Wed, 11 Jan 2023 02:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673403016;
-        bh=gwjR3YR0+E/M7qPvFCuk3OTSxvc3YRWc43beBlCPkzM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ZFVVTW/i62GlKED+sFJufw6kujVukwFZ0CN5Y+xdbXWxIUbvccjYTFqhK79tepn8+
-         rIWCUOhUqWTX4oKyp84edCn8JnCEcFme5n9+XxBuR60pIpbI9pP41u79R0dfg5C0Hk
-         koERypUVtc9V5ehhoYb1acoRjmTX68ot4zIeC/tr8n8oCu74JSS0e7V8/TyyC28x5s
-         V8SMUOy4P9dDjemJEmdjNbF28VWSD/9mzSe9DmBtdVPNXdYOxs2XqAUM6oIoST+hnk
-         CzFv7h3CTIHuEOecSvhz8v9n01Ch79Zqy+5b183QJo6vfRazwG3s6WAibk8zGojsU1
-         Oq1qYci20+bJQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7D5DDE4D026;
-        Wed, 11 Jan 2023 02:10:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229816AbjAKChl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Jan 2023 21:37:41 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87AD411C2A;
+        Tue, 10 Jan 2023 18:37:38 -0800 (PST)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NsBYF71L7zqV4s;
+        Wed, 11 Jan 2023 10:32:49 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Wed, 11 Jan 2023 10:37:35 +0800
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add ipip6 and ip6ip decap support for
+ bpf_skb_adjust_room()
+To:     Willem de Bruijn <willemb@google.com>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <martin.lau@linux.dev>,
+        <song@kernel.org>, <yhs@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>, <haoluo@google.com>, <jolsa@kernel.org>,
+        <sdf@google.com>
+References: <cover.1672976410.git.william.xuanziyang@huawei.com>
+ <7e9ca6837b20bea661248957dbbd1db198e3d1f8.1672976410.git.william.xuanziyang@huawei.com>
+ <Y7h8yrOEkPuHkNpJ@google.com>
+ <CA+FuTSdZ+za55p1kKOcGby89F_ybRhAfy2cG0R+Y00yaJTbVkg@mail.gmail.com>
+ <4d0e5f2b-d088-58f4-d86d-00aa444d77c0@huawei.com>
+ <CA+FuTSeE-S9_Uc6Cqs=EqYZd-K6kj=Ex4sudNx7u8HMLcrereQ@mail.gmail.com>
+ <d6c60481-18a4-acfe-23a5-6950e2b3d5cd@huawei.com>
+ <CA+FuTSe+=Vmn+UJftVYrMuaqs90scYXnDsX77z02+KT7SZLHrQ@mail.gmail.com>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <189d7027-9148-f41e-1842-773f3f8e30a2@huawei.com>
+Date:   Wed, 11 Jan 2023 10:37:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] libbpf: Fix map creation flags sanitization
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167340301651.2379.15983088919526303033.git-patchwork-notify@kernel.org>
-Date:   Wed, 11 Jan 2023 02:10:16 +0000
-References: <20230108182018.24433-1-ludovic.lhours@gmail.com>
-In-Reply-To: <20230108182018.24433-1-ludovic.lhours@gmail.com>
-To:     Ludovic L'Hours <ludovic.lhours@gmail.com>
-Cc:     andrii@kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CA+FuTSe+=Vmn+UJftVYrMuaqs90scYXnDsX77z02+KT7SZLHrQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500006.china.huawei.com (7.192.105.130)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Sun,  8 Jan 2023 19:20:18 +0100 you wrote:
-> As BPF_F_MMAPABLE flag is now conditionnaly set (by map_is_mmapable),
-> it should not be toggled but disabled if not supported by kernel.
+>> I think you prefer like this:
 > 
-> Fixes: 4fcac46c7e10 ("libbpf: only add BPF_F_MMAPABLE flag for data maps with global vars")
-> Signed-off-by: Ludovic L'Hours <ludovic.lhours@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Yes, this looks good to me. A few comments inline.
+> 
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -2644,6 +2644,11 @@ union bpf_attr {
+>>   *               Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
+>>   *               L2 type as Ethernet.
+>>   *
+>> + *              * **BPF_F_ADJ_ROOM_DECAP_L3_IPV4**,
+>> + *                **BPF_F_ADJ_ROOM_DECAP_L3_IPV6**:
+>> + *                Indicates the new IP header version after decapsulate the
+>> + *                outer IP header.
+>> + *
+>>   *             A call to this helper is susceptible to change the underlying
+>>   *             packet buffer. Therefore, at load time, all checks on pointers
+>>   *             previously done by the verifier are invalidated and must be
+>> @@ -5803,6 +5808,8 @@ enum {
+>>         BPF_F_ADJ_ROOM_ENCAP_L4_UDP     = (1ULL << 4),
+>>         BPF_F_ADJ_ROOM_NO_CSUM_RESET    = (1ULL << 5),
+>>         BPF_F_ADJ_ROOM_ENCAP_L2_ETH     = (1ULL << 6),
+>> +       BPF_F_ADJ_ROOM_DECAP_L3_IPV4    = (1ULL << 7),
+>> +       BPF_F_ADJ_ROOM_DECAP_L3_IPV6    = (1ULL << 8),
+>>  };
+>>
+>>  enum {
+>> diff --git a/net/core/filter.c b/net/core/filter.c
+>> index 43cc1fe58a2c..0bbe5e67337c 100644
+>> --- a/net/core/filter.c
+>> +++ b/net/core/filter.c
+>> @@ -3381,13 +3381,17 @@ static u32 bpf_skb_net_base_len(const struct sk_buff *skb)
+>>  #define BPF_F_ADJ_ROOM_ENCAP_L3_MASK   (BPF_F_ADJ_ROOM_ENCAP_L3_IPV4 | \
+>>                                          BPF_F_ADJ_ROOM_ENCAP_L3_IPV6)
+>>
+>> +#define BPF_F_ADJ_ROOM_DECAP_L3_MASK   (BPF_F_ADJ_ROOM_DECAP_L3_IPV4 | \
+>> +                                        BPF_F_ADJ_ROOM_DECAP_L3_IPV6)
+>> +
+>>  #define BPF_F_ADJ_ROOM_MASK            (BPF_F_ADJ_ROOM_FIXED_GSO | \
+>>                                          BPF_F_ADJ_ROOM_ENCAP_L3_MASK | \
+>>                                          BPF_F_ADJ_ROOM_ENCAP_L4_GRE | \
+>>                                          BPF_F_ADJ_ROOM_ENCAP_L4_UDP | \
+>>                                          BPF_F_ADJ_ROOM_ENCAP_L2_ETH | \
+>>                                          BPF_F_ADJ_ROOM_ENCAP_L2( \
+>> -                                         BPF_ADJ_ROOM_ENCAP_L2_MASK))
+>> +                                         BPF_ADJ_ROOM_ENCAP_L2_MASK) | \
+>> +                                        BPF_F_ADJ_ROOM_DECAP_L3_MASK)
+>>
+>>  static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+>>                             u64 flags)
+>> @@ -3501,6 +3505,7 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+>>         int ret;
+>>
+>>         if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
+>> +                              BPF_F_ADJ_ROOM_DECAP_L3_MASK |
+>>                                BPF_F_ADJ_ROOM_NO_CSUM_RESET)))
+>>                 return -EINVAL;
+>>
+>> @@ -3519,6 +3524,14 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+>>         if (unlikely(ret < 0))
+>>                 return ret;
+>>
+>> +       /* Match skb->protocol to new outer l3 protocol */
+>> +       if (skb->protocol == htons(ETH_P_IP) &&
+>> +           flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV6)
+>> +               skb->protocol = htons(ETH_P_IPV6);
+>> +       else if (skb->protocol == htons(ETH_P_IPV6) &&
+>> +                flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV4)
+>> +               skb->protocol = htons(ETH_P_IP);
+>> +
+>>         if (skb_is_gso(skb)) {
+>>                 struct skb_shared_info *shinfo = skb_shinfo(skb);
+>>
+>> @@ -3597,6 +3610,10 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
+>>                      proto != htons(ETH_P_IPV6)))
+>>                 return -ENOTSUPP;
+>>
+>> +       if (unlikely(shrink && flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV4 &&
+>> +                    flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV6))
+>> +               return -EINVAL;
+>> +
+> 
+> parentheses and can use mask:
+> 
+>   if (shrink && (flags & .._MASK == .._MASK)
+> 
+> also should fail if the flags are passed but shrink is false.
 
-Here is the summary with links:
-  - libbpf: Fix map creation flags sanitization
-    https://git.kernel.org/bpf/bpf-next/c/6920b08661e3
+Thank you for your valuable comments!
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> 
+>>         off = skb_mac_header_len(skb);
+>>         switch (mode) {
+>>         case BPF_ADJ_ROOM_NET:
+>> @@ -3608,6 +3625,16 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
+>>                 return -ENOTSUPP;
+>>         }
+>>
+>> +       if (shrink) {
+>> +               if (proto == htons(ETH_P_IP) &&
+>> +                   flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV6) {
+>> +                       len_min = sizeof(struct ipv6hdr);
+>> +               } else if (proto == htons(ETH_P_IPV6) &&
+>> +                          flags & BPF_F_ADJ_ROOM_DECAP_L3_IPV4) {
+>> +                       len_min = sizeof(struct iphdr);
+>> +               }
+>> +       }
+>> +
+> 
+> No need to test proto first?
 
+Indeed, I will remove them in patch v2.
 
+> 
+>>         len_cur = skb->len - skb_network_offset(skb);
+>> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+>> index 464ca3f01fe7..041361bc6ccf 100644
+>> --- a/tools/include/uapi/linux/bpf.h
+>> +++ b/tools/include/uapi/linux/bpf.h
+>> @@ -2644,6 +2644,11 @@ union bpf_attr {
+>>   *               Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
+>>   *               L2 type as Ethernet.
+>>   *
+>> + *              * **BPF_F_ADJ_ROOM_DECAP_L3_IPV4**,
+>> + *                **BPF_F_ADJ_ROOM_DECAP_L3_IPV6**:
+>> + *                Indicates the new IP header version after decapsulate the
+>> + *                outer IP header.
+>> + *
+>>   *             A call to this helper is susceptible to change the underlying
+>>   *             packet buffer. Therefore, at load time, all checks on pointers
+>>   *             previously done by the verifier are invalidated and must be
+>> @@ -5803,6 +5808,8 @@ enum {
+>>         BPF_F_ADJ_ROOM_ENCAP_L4_UDP     = (1ULL << 4),
+>>         BPF_F_ADJ_ROOM_NO_CSUM_RESET    = (1ULL << 5),
+>>         BPF_F_ADJ_ROOM_ENCAP_L2_ETH     = (1ULL << 6),
+>> +       BPF_F_ADJ_ROOM_DECAP_L3_IPV4    = (1ULL << 7),
+>> +       BPF_F_ADJ_ROOM_DECAP_L3_IPV6    = (1ULL << 8),
+>>  };
+>>
+>>  enum {
+>>
+> .
+> 
