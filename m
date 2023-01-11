@@ -2,134 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AC8665BDE
-	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 13:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE5A665D3C
+	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 15:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbjAKMzt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Jan 2023 07:55:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
+        id S232696AbjAKOCp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Jan 2023 09:02:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238823AbjAKMz0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Jan 2023 07:55:26 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADC819285;
-        Wed, 11 Jan 2023 04:55:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VKsur9CfmJqd7RUyGBR9q++t3bYeorhbrnyT99ptMKU=; b=gVROtrLBNj1yG8sCxjN9JxNi4e
-        C9VB0rnlQ1k5fVCeA+nQ6FfyjaSOsRXlsRbOZ/Je/JlPZH+x+zZ5JcUy3epn/kPCP56GGmesEFS78
-        X1lY/6W0wZ2fqf7ihnUyqwuaMfvqlhK3WWwRF8gSFVWLoESF8L0cVzRy3auzjG6l1n7LKKqn0L3RT
-        yDIRAzkOOHrqJx9MBpDae7IY/Q5zXTlThhaahQ5Z+ocWKTuPuGJbTuC06PWDoFZZZOTBhupesObT4
-        54p3OGyHtdFHkS4h1SRWye6GNFWI+0WaJmFI2GfpuDRfWegdhhHQok6tLAWhq6N6FZUa5YVGhmdvo
-        lq9nsCYQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pFacy-003gFb-2p;
-        Wed, 11 Jan 2023 12:54:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 63BDF3001F7;
-        Wed, 11 Jan 2023 13:54:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 466A42C9F6B72; Wed, 11 Jan 2023 13:54:54 +0100 (CET)
-Date:   Wed, 11 Jan 2023 13:54:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH 2/3] perf/core: Set data->sample_flags in
- perf_prepare_sample()
-Message-ID: <Y76xng1U6UYpIGaW@hirez.programming.kicks-ass.net>
-References: <20221229204101.1099430-1-namhyung@kernel.org>
- <20221229204101.1099430-2-namhyung@kernel.org>
- <Y7wFJ+NF0NwnmzLa@hirez.programming.kicks-ass.net>
- <Y7x3RUd67smv3EFQ@google.com>
- <CAM9d7ciVZCHk0YqpobfR+t0FPN_-tpnLgNbN981=EygkM_riDg@mail.gmail.com>
+        with ESMTP id S231514AbjAKOCo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Jan 2023 09:02:44 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337175FE3;
+        Wed, 11 Jan 2023 06:02:43 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id jo4so37078481ejb.7;
+        Wed, 11 Jan 2023 06:02:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MxuU7wUaOVNWzw0OY3oc6kPjSUCRmmaSLecbjdN/GQ8=;
+        b=ggKPFUJBBcNKZth019Xt7c982oDgJ5nmFKL5yMDKnFaSJ2ViEjyI4embplmlXR9lHO
+         rkzEM5vxOGah9hsP7DiaVxpsUS/n/KIIT7FPScjzRiDi9vSWnq02Awb2aZwXH9iRm9FQ
+         PfD1Ao0oG7jsmp08+HINm+X4uT8+716n8OMy/Cn0H2vKeZztMvfUP7LN4kzvZokdf8By
+         g8Wfa3pEwQvEzKHxd3lFBlgKhOkexzcso8azKE/2/bML9u4p9TmHAGjw0d7Sqg9Wq2cm
+         TYwZ7YONoRbsTOonp4tTCp+V+06sdxP2q4ZjB2vTrjfrUkkjSYpQ6SJ059V6x91+aIA6
+         o4ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MxuU7wUaOVNWzw0OY3oc6kPjSUCRmmaSLecbjdN/GQ8=;
+        b=AN6c4N0mEx9B9Tn+j0wLTXfLxq+4cDkTaED/1PYk66Ee7DZrnz9J6I04U0ziOSQME0
+         L2nK+6nMBdVGB6KioQ1SOUIde+RIMjkT2krKf5cBSU9D6ijpq51ROgWIYbpm4HLUg/Uj
+         xrKD6+QVAyafb2BbCCEqgHKYD/3ODooQbmsmFyegpE8W9N/d6VgYKRsO1XsPVoiJgQqK
+         tJf5S+lklET6sfC/0ki+Ziu1T5W8yHnVtNoMZ1pQyUJEcVkNvfWo9hytapk8iKjfyAi6
+         r8r9pt35rjjyVXUUH6/aEr0KGrwYB6cbPTql1jsbuJfPqdMx50ayOFLp4YqLDvE7fcaO
+         1fRg==
+X-Gm-Message-State: AFqh2ko0w+u+Qw4KtNjSbRylKpfSzmNFiGtQGM0Y8aOAp0Likzq93UzX
+        HuYkt+O78v6HG1ONROWlEXe7t29psVnqM4um4Ko=
+X-Google-Smtp-Source: AMrXdXum1ycLaxVr3PZ7hmR/hV1SAdUF4+18LsTH7h3WtCqo8MXPCjlJBbjl/p4wlAmBFUu+K0bUgPR7/1eiJfQoz+I=
+X-Received: by 2002:a17:907:c709:b0:84d:3629:1664 with SMTP id
+ ty9-20020a170907c70900b0084d36291664mr1978436ejc.388.1673445761593; Wed, 11
+ Jan 2023 06:02:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7ciVZCHk0YqpobfR+t0FPN_-tpnLgNbN981=EygkM_riDg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <Y5pO+XL54ZlzZ7Qe@sbohrer-cf-dell> <20221220185903.1105011-1-sbohrer@cloudflare.com>
+ <e6b0414dbc7e97857fee5936ed04efca81b1d472.camel@redhat.com>
+In-Reply-To: <e6b0414dbc7e97857fee5936ed04efca81b1d472.camel@redhat.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 11 Jan 2023 15:02:29 +0100
+Message-ID: <CAJ8uoz2ZL54EbZw+jTCQowjmC=MBzdpVzn=uQNcM7K+sCH7K5Q@mail.gmail.com>
+Subject: Re: [PATCH] veth: Fix race with AF_XDP exposing old or uninitialized descriptors
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Shawn Bohrer <sbohrer@cloudflare.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, bjorn@kernel.org, kernel-team@cloudflare.com,
+        davem@davemloft.net
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 10, 2023 at 12:06:00PM -0800, Namhyung Kim wrote:
+On Thu, Dec 22, 2022 at 11:18 AM Paolo Abeni <pabeni@redhat.com> wrote:
+>
+> On Tue, 2022-12-20 at 12:59 -0600, Shawn Bohrer wrote:
+> > When AF_XDP is used on on a veth interface the RX ring is updated in two
+> > steps.  veth_xdp_rcv() removes packet descriptors from the FILL ring
+> > fills them and places them in the RX ring updating the cached_prod
+> > pointer.  Later xdp_do_flush() syncs the RX ring prod pointer with the
+> > cached_prod pointer allowing user-space to see the recently filled in
+> > descriptors.  The rings are intended to be SPSC, however the existing
+> > order in veth_poll allows the xdp_do_flush() to run concurrently with
+> > another CPU creating a race condition that allows user-space to see old
+> > or uninitialized descriptors in the RX ring.  This bug has been observed
+> > in production systems.
+> >
+> > To summarize, we are expecting this ordering:
+> >
+> > CPU 0 __xsk_rcv_zc()
+> > CPU 0 __xsk_map_flush()
+> > CPU 2 __xsk_rcv_zc()
+> > CPU 2 __xsk_map_flush()
+> >
+> > But we are seeing this order:
+> >
+> > CPU 0 __xsk_rcv_zc()
+> > CPU 2 __xsk_rcv_zc()
+> > CPU 0 __xsk_map_flush()
+> > CPU 2 __xsk_map_flush()
+> >
+> > This occurs because we rely on NAPI to ensure that only one napi_poll
+> > handler is running at a time for the given veth receive queue.
+> > napi_schedule_prep() will prevent multiple instances from getting
+> > scheduled. However calling napi_complete_done() signals that this
+> > napi_poll is complete and allows subsequent calls to
+> > napi_schedule_prep() and __napi_schedule() to succeed in scheduling a
+> > concurrent napi_poll before the xdp_do_flush() has been called.  For the
+> > veth driver a concurrent call to napi_schedule_prep() and
+> > __napi_schedule() can occur on a different CPU because the veth xmit
+> > path can additionally schedule a napi_poll creating the race.
+>
+> The above looks like a generic problem that other drivers could hit.
+> Perhaps it could be worthy updating the xdp_do_flush() doc text to
+> explicitly mention it must be called before napi_complete_done().
 
-> Another example, but in this case it's real, is ADDR.  We cannot update
-> the data->addr just because filtered_sample_type has PHYS_ADDR or
-> DATA_PAGE_SIZE as it'd lose the original value.
+Good observation. I took a quick peek at this and it seems there are
+at least 5 more drivers that can call napi_complete_done() before
+xdp_do_flush():
 
-Hmm, how about something like so?
+drivers/net/ethernet/qlogic/qede/
+drivers/net/ethernet/freescale/dpaa2
+drivers/net/ethernet/freescale/dpaa
+drivers/net/ethernet/microchip/lan966x
+drivers/net/virtio_net.c
 
-/*
- * if (flags & s) flags |= d; // without branches
- */
-static __always_inline unsigned long
-__cond_set(unsigned long flags, unsigned long s, unsigned long d)
-{
-	return flags | (d * !!(flags & s));
-}
+The question is then if this race can occur on these five drivers.
+Dpaa2 has AF_XDP zero-copy support implemented, so it can suffer from
+this race as the Tx zero-copy path is basically just a napi_schedule()
+and it can be called/invoked from multiple processes at the same time.
+In regards to the others, I do not know.
 
-Then:
+Would it be prudent to just switch the order of xdp_do_flush() and
+napi_complete_done() in all these drivers, or would that be too
+defensive?
 
-	fst = sample_type;
-	fst = __cond_set(fst, PERF_SAMPLE_CODE_PAGE_SIZE, PERF_SAMPLE_IP);
-	fst = __cond_set(fst, PERF_SAMPLE_DATA_PAGE_SIZE |
-			      PERF_SAMPLE_PHYS_ADDR,	  PERF_SAMPLE_ADDR);
-	fst = __cond_set(fst, PERF_SAMPLE_STACK_USER,     PERF_SAMPLE_REGS_USER);
-	fst &= ~data->sample_flags;
-
-This way we express the implicit conditions by setting the required
-sample data flags, then we mask those we already have set.
-
-After the above something like:
-
-	if (fst & PERF_SAMPLE_ADDR) {
-		data->addr = 0;
-		data->sample_flags |= PERF_SAMPLE_ADDR;
-	}
-
-	if (fst & PERF_SAMPLE_PHYS_ADDR) {
-		data->phys_addr = perf_virt_to_phys(data->addr);
-		data->sample_flags |= PERF_SAMPLE_PHYS_ADDR;
-	}
-
-	if (fst & PERF_SAMPLE_DATA_PAGE_SIZE) {
-		data->data_page_size = perf_get_page_size(data->addr);
-		data->sample_flags |= PERF_SAMPLE_DATA_PAGE_SIZE;
-	}
-
-And maybe something like:
-
-#define __IF_SAMPLE_DATA(f_)		({		\
-	bool __f = fst & PERF_SAMPLE_##f_;		\
-	if (__f) data->sample_flags |= PERF_SAMPLE_##f_;\
-	__f;				})
-
-#define IF_SAMPLE_DATA(f_) if (__IF_SAMPLE_DATA(f_))
-
-Then we can write:
-
-	IF_SAMPLE_DATA(ADDR)
-		data->addr = 0;
-
-	IF_SAMPLE_DATA(PHYS_ADDR)
-		data->phys_addr = perf_virt_to_phys(data->addr);
-
-	IF_SAMPLE_DATA(DATA_PAGE_SIZE)
-		data->data_page_size = perf_get_page_size(data->addr);
-
-But I didn't check code-gen for this last suggestion.
+> (in a separate, net-next patch)
+>
+> Thanks!
+>
+> Paolo
+>
+> >
+> > The fix as suggested by Magnus Karlsson, is to simply move the
+> > xdp_do_flush() call before napi_complete_done().  This syncs the
+> > producer ring pointers before another instance of napi_poll can be
+> > scheduled on another CPU.  It will also slightly improve performance by
+> > moving the flush closer to when the descriptors were placed in the
+> > RX ring.
+> >
+> > Fixes: d1396004dd86 ("veth: Add XDP TX and REDIRECT")
+> > Suggested-by: Magnus Karlsson <magnus.karlsson@gmail.com>
+> > Signed-off-by: Shawn Bohrer <sbohrer@cloudflare.com>
+> > ---
+> >  drivers/net/veth.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> > index ac7c0653695f..dfc7d87fad59 100644
+> > --- a/drivers/net/veth.c
+> > +++ b/drivers/net/veth.c
+> > @@ -974,6 +974,9 @@ static int veth_poll(struct napi_struct *napi, int budget)
+> >       xdp_set_return_frame_no_direct();
+> >       done = veth_xdp_rcv(rq, budget, &bq, &stats);
+> >
+> > +     if (stats.xdp_redirect > 0)
+> > +             xdp_do_flush();
+> > +
+> >       if (done < budget && napi_complete_done(napi, done)) {
+> >               /* Write rx_notify_masked before reading ptr_ring */
+> >               smp_store_mb(rq->rx_notify_masked, false);
+> > @@ -987,8 +990,6 @@ static int veth_poll(struct napi_struct *napi, int budget)
+> >
+> >       if (stats.xdp_tx > 0)
+> >               veth_xdp_flush(rq, &bq);
+> > -     if (stats.xdp_redirect > 0)
+> > -             xdp_do_flush();
+> >       xdp_clear_return_frame_no_direct();
+> >
+> >       return done;
+>
