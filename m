@@ -2,168 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3516658BA
-	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 11:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AC8665BDE
+	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 13:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238220AbjAKKNJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Jan 2023 05:13:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
+        id S229522AbjAKMzt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Jan 2023 07:55:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238742AbjAKKM2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Jan 2023 05:12:28 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA57D6B
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 02:12:01 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 690CBCE1AA2
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 10:11:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C8C3C433EF;
-        Wed, 11 Jan 2023 10:11:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673431917;
-        bh=4bKaK2zLXESHKi43ChDclvB+QiofVA67MwSl7Xi5zcA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L/TqRJEkT+SWI4dm6Z1E0e+q4QPK0ywjCYuA3G7wH+bFOU68AHhEaPG8EeR1HSwy/
-         B7/7XZEAVcAbKEnywYTbQhj6l8vGTFHuDaqtf7ufVOJDxp6k6IMWRjkYfA+lGfc6ub
-         Ln+kchPu5FiHhb9DS8uX4ufn2TeRgm2YUTmdcSZB3gkqOQ12rerH9E4oFqvzBD4JtN
-         PDkKC012xqUehe6sSxF4AkghKRwWsa+d/3F/IEOo8qCvXKWJqLRS+5McqkwaHglThw
-         7q/u+aFX1DvMZDdA76WJqwuBaoMIctVT3m+bO6V/w3Leirgsw7yG2BEArghw7dv441
-         kRu8D5lGM0org==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: [PATCHv2 bpf-next 2/2] bpf/selftests: Add verifier tests for loading sleepable programs
-Date:   Wed, 11 Jan 2023 11:11:42 +0100
-Message-Id: <20230111101142.562765-2-jolsa@kernel.org>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230111101142.562765-1-jolsa@kernel.org>
-References: <20230111101142.562765-1-jolsa@kernel.org>
+        with ESMTP id S238823AbjAKMz0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Jan 2023 07:55:26 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADC819285;
+        Wed, 11 Jan 2023 04:55:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VKsur9CfmJqd7RUyGBR9q++t3bYeorhbrnyT99ptMKU=; b=gVROtrLBNj1yG8sCxjN9JxNi4e
+        C9VB0rnlQ1k5fVCeA+nQ6FfyjaSOsRXlsRbOZ/Je/JlPZH+x+zZ5JcUy3epn/kPCP56GGmesEFS78
+        X1lY/6W0wZ2fqf7ihnUyqwuaMfvqlhK3WWwRF8gSFVWLoESF8L0cVzRy3auzjG6l1n7LKKqn0L3RT
+        yDIRAzkOOHrqJx9MBpDae7IY/Q5zXTlThhaahQ5Z+ocWKTuPuGJbTuC06PWDoFZZZOTBhupesObT4
+        54p3OGyHtdFHkS4h1SRWye6GNFWI+0WaJmFI2GfpuDRfWegdhhHQok6tLAWhq6N6FZUa5YVGhmdvo
+        lq9nsCYQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pFacy-003gFb-2p;
+        Wed, 11 Jan 2023 12:54:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 63BDF3001F7;
+        Wed, 11 Jan 2023 13:54:54 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 466A42C9F6B72; Wed, 11 Jan 2023 13:54:54 +0100 (CET)
+Date:   Wed, 11 Jan 2023 13:54:54 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 2/3] perf/core: Set data->sample_flags in
+ perf_prepare_sample()
+Message-ID: <Y76xng1U6UYpIGaW@hirez.programming.kicks-ass.net>
+References: <20221229204101.1099430-1-namhyung@kernel.org>
+ <20221229204101.1099430-2-namhyung@kernel.org>
+ <Y7wFJ+NF0NwnmzLa@hirez.programming.kicks-ass.net>
+ <Y7x3RUd67smv3EFQ@google.com>
+ <CAM9d7ciVZCHk0YqpobfR+t0FPN_-tpnLgNbN981=EygkM_riDg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7ciVZCHk0YqpobfR+t0FPN_-tpnLgNbN981=EygkM_riDg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding verifier tests for loading all types od allowed
-sleepable programs plus reject for tp_btf type.
+On Tue, Jan 10, 2023 at 12:06:00PM -0800, Namhyung Kim wrote:
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../selftests/bpf/verifier/sleepable.c        | 91 +++++++++++++++++++
- 1 file changed, 91 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/verifier/sleepable.c
+> Another example, but in this case it's real, is ADDR.  We cannot update
+> the data->addr just because filtered_sample_type has PHYS_ADDR or
+> DATA_PAGE_SIZE as it'd lose the original value.
 
-diff --git a/tools/testing/selftests/bpf/verifier/sleepable.c b/tools/testing/selftests/bpf/verifier/sleepable.c
-new file mode 100644
-index 000000000000..15da44f7ac8a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/sleepable.c
-@@ -0,0 +1,91 @@
-+{
-+	"sleepable fentry accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_FENTRY,
-+	.kfunc = "bpf_fentry_test1",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable fexit accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_FENTRY,
-+	.kfunc = "bpf_fentry_test1",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable fmod_ret accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_MODIFY_RETURN,
-+	.kfunc = "bpf_fentry_test1",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable iter accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_ITER,
-+	.kfunc = "task",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable lsm accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_LSM,
-+	.kfunc = "bpf",
-+	.expected_attach_type = BPF_LSM_MAC,
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable kprobe/uprobe accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_KPROBE,
-+	.kfunc = "bpf_fentry_test1",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable raw tracepoint reject",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_RAW_TP,
-+	.kfunc = "sched_switch",
-+	.result = REJECT,
-+	.errstr = "Only fentry/fexit/fmod_ret, lsm, iter and kprobe/uprobe programs can be sleepable",
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
--- 
-2.39.0
+Hmm, how about something like so?
 
+/*
+ * if (flags & s) flags |= d; // without branches
+ */
+static __always_inline unsigned long
+__cond_set(unsigned long flags, unsigned long s, unsigned long d)
+{
+	return flags | (d * !!(flags & s));
+}
+
+Then:
+
+	fst = sample_type;
+	fst = __cond_set(fst, PERF_SAMPLE_CODE_PAGE_SIZE, PERF_SAMPLE_IP);
+	fst = __cond_set(fst, PERF_SAMPLE_DATA_PAGE_SIZE |
+			      PERF_SAMPLE_PHYS_ADDR,	  PERF_SAMPLE_ADDR);
+	fst = __cond_set(fst, PERF_SAMPLE_STACK_USER,     PERF_SAMPLE_REGS_USER);
+	fst &= ~data->sample_flags;
+
+This way we express the implicit conditions by setting the required
+sample data flags, then we mask those we already have set.
+
+After the above something like:
+
+	if (fst & PERF_SAMPLE_ADDR) {
+		data->addr = 0;
+		data->sample_flags |= PERF_SAMPLE_ADDR;
+	}
+
+	if (fst & PERF_SAMPLE_PHYS_ADDR) {
+		data->phys_addr = perf_virt_to_phys(data->addr);
+		data->sample_flags |= PERF_SAMPLE_PHYS_ADDR;
+	}
+
+	if (fst & PERF_SAMPLE_DATA_PAGE_SIZE) {
+		data->data_page_size = perf_get_page_size(data->addr);
+		data->sample_flags |= PERF_SAMPLE_DATA_PAGE_SIZE;
+	}
+
+And maybe something like:
+
+#define __IF_SAMPLE_DATA(f_)		({		\
+	bool __f = fst & PERF_SAMPLE_##f_;		\
+	if (__f) data->sample_flags |= PERF_SAMPLE_##f_;\
+	__f;				})
+
+#define IF_SAMPLE_DATA(f_) if (__IF_SAMPLE_DATA(f_))
+
+Then we can write:
+
+	IF_SAMPLE_DATA(ADDR)
+		data->addr = 0;
+
+	IF_SAMPLE_DATA(PHYS_ADDR)
+		data->phys_addr = perf_virt_to_phys(data->addr);
+
+	IF_SAMPLE_DATA(DATA_PAGE_SIZE)
+		data->data_page_size = perf_get_page_size(data->addr);
+
+But I didn't check code-gen for this last suggestion.
