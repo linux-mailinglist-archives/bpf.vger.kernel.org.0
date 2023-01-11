@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AF76661BE
-	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 18:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521EF6661C1
+	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 18:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239340AbjAKRZJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Jan 2023 12:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
+        id S238893AbjAKR0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Jan 2023 12:26:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239667AbjAKRYS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Jan 2023 12:24:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE3E3F13F
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 09:22:39 -0800 (PST)
+        with ESMTP id S239475AbjAKR0U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Jan 2023 12:26:20 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861FE35912
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 09:23:03 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BCF8D61DB1
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 17:22:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28B75C433D2
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 17:22:16 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D837BB81C94
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 17:22:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93201C43392
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 17:22:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673457736;
-        bh=FP2FnhP1QvjFsheIERrvEoQhr5VEmzjlXXkhJqMugJs=;
+        s=k20201202; t=1673457765;
+        bh=0EwjWBcGzYtrkXJvozst7vss4Aw2LwlIyhfVLIiUSRw=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Wg6C+j1T3sSxQk0BJjc6WOUHch/xeUHNSfOPFqNpJpRu3ETdpvZmH+6U/V90cQj2Q
-         CxZHI8wVKnHEWekkwRxB2TejSb2dayGj6lGnQKv+mmp2baSBBtCPyc8NqbUTZFOMRz
-         IcGMk+W2tZxqDEKBtAuyjrHUYPECNwF8OBmcoCF2TzNA/bNrHdSpzfcQLT8t4mnMsM
-         CToNYPiDtF0idtxnsTa0jNrY+0HORyBVgQMzk9A6VS359T4cyQpLfDcrKpZnsGEXIA
-         y39uPcfsqpRuLQmpy8YgSlKL822pYXh+HcermuVg8woBAVIVlMv+tF/39YisRh839b
-         xWPpwwqCO4/Aw==
-Received: by mail-lj1-f173.google.com with SMTP id s22so16719570ljp.5
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 09:22:16 -0800 (PST)
-X-Gm-Message-State: AFqh2krsqCsk/b3g1WWURsHzUDAirO8/qldzor3Hx4tlF5bWkvVXBN1D
-        QZrhWLI9Tf6lpEMS8/bH3rIjIsu4V9orOIxjsPQ=
-X-Google-Smtp-Source: AMrXdXtuk7i1GnSUpySjbF1/fm8a0ds7bHQXAAVWxrGG9OVNWN2ry4C6YiblaV3cx1kq8Oswfna6YZbB0bbSIhXs3yA=
-X-Received: by 2002:a2e:a26a:0:b0:285:3383:6635 with SMTP id
- k10-20020a2ea26a000000b0028533836635mr831505ljm.323.1673457734226; Wed, 11
- Jan 2023 09:22:14 -0800 (PST)
+        b=ZaP7OuSOT05ceXj6tetTa7nHO+LaqNDdh7rH6K93rs4/pT+LV2W2Kc0ONWaebk3X4
+         lzMmyyCSh4pi4nIcIe8kLozwBNPynTqkIUDrIj9spVOGGs9md9R1oxnIbMwMovtzk8
+         2Wv63e2Vb477iOYX6OS3jPCgBjfKDd2gb5PXqTLFa0AXkp0ktmsK05jer+Z/Xz8A3p
+         sJsSH+eOWQkBgAKgrZoxNOtodXrLqz2g0apVo8C+z1ckkHq92+B0Vn+isH4YxnRiSA
+         hG7MUWo28B3RSwc2ksOAy+4mb2i9k1s2fO338ItJNSaNXQ4Cp73saxHsYROu9PgM5y
+         /mp85zaTMwFhg==
+Received: by mail-lj1-f178.google.com with SMTP id bn6so16710530ljb.13
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 09:22:45 -0800 (PST)
+X-Gm-Message-State: AFqh2kpTExTtvYQYfscOdMAZOZNHKC9CIBRemX77Hff4ZZ82T0Grpq8+
+        ZjLpPE2wgy8NTz0uXPl8SaOFASzB/qcA1CW5y4o=
+X-Google-Smtp-Source: AMrXdXtb7KV7Un+eg3Tm+03DP4dBhsTXuh23n1GYKHB/WYdAQO0iwKV/wYV1GeuJRSh0YjnwED7hg5GHK3H8c1oPfXQ=
+X-Received: by 2002:a05:651c:11d0:b0:289:1305:680d with SMTP id
+ z16-20020a05651c11d000b002891305680dmr90846ljo.421.1673457763610; Wed, 11 Jan
+ 2023 09:22:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20230111101142.562765-1-jolsa@kernel.org>
-In-Reply-To: <20230111101142.562765-1-jolsa@kernel.org>
+References: <20230111101142.562765-1-jolsa@kernel.org> <20230111101142.562765-2-jolsa@kernel.org>
+In-Reply-To: <20230111101142.562765-2-jolsa@kernel.org>
 From:   Song Liu <song@kernel.org>
-Date:   Wed, 11 Jan 2023 09:22:01 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7iznowc65UKQ_5oN6MPnfYrWWRn2G7-P3=4zbiqVxT+w@mail.gmail.com>
-Message-ID: <CAPhsuW7iznowc65UKQ_5oN6MPnfYrWWRn2G7-P3=4zbiqVxT+w@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 1/2] bpf: Do not allow to load sleepable
- BPF_TRACE_RAW_TP program
+Date:   Wed, 11 Jan 2023 09:22:30 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7R1q8KpScVEANQ-Hm4_FFWvj96iGSdaKgY_PvRwYmr8g@mail.gmail.com>
+Message-ID: <CAPhsuW7R1q8KpScVEANQ-Hm4_FFWvj96iGSdaKgY_PvRwYmr8g@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 2/2] bpf/selftests: Add verifier tests for
+ loading sleepable programs
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -70,60 +70,115 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Jan 11, 2023 at 2:13 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Currently we allow to load any tracing program as sleepable,
-> but BPF_TRACE_RAW_TP can't sleep. Making the check explicit
-> for tracing programs attach types, so sleepable BPF_TRACE_RAW_TP
-> will fail to load.
->
-> Updating the verifier error to mention iter programs as well.
+> Adding verifier tests for loading all types od allowed
+> sleepable programs plus reject for tp_btf type.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
 Acked-by: Song Liu <song@kernel.org>
 
 > ---
-> v2 changes:
->   - use bool for can_be_sleepable return value [Song]
->   - add tests [Song]
+>  .../selftests/bpf/verifier/sleepable.c        | 91 +++++++++++++++++++
+>  1 file changed, 91 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/verifier/sleepable.c
 >
->  kernel/bpf/verifier.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index fa4c911603e9..f20777c2a957 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -16743,6 +16743,18 @@ BTF_ID(func, rcu_read_unlock_strict)
->  #endif
->  BTF_SET_END(btf_id_deny)
->
-> +static bool can_be_sleepable(struct bpf_prog *prog)
+> diff --git a/tools/testing/selftests/bpf/verifier/sleepable.c b/tools/testing/selftests/bpf/verifier/sleepable.c
+> new file mode 100644
+> index 000000000000..15da44f7ac8a
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/verifier/sleepable.c
+> @@ -0,0 +1,91 @@
 > +{
-> +       if (prog->type == BPF_PROG_TYPE_TRACING) {
-> +               return prog->expected_attach_type == BPF_TRACE_FENTRY ||
-> +                      prog->expected_attach_type == BPF_TRACE_FEXIT ||
-> +                      prog->expected_attach_type == BPF_MODIFY_RETURN ||
-> +                      prog->expected_attach_type == BPF_TRACE_ITER;
-> +       }
-> +       return prog->type == BPF_PROG_TYPE_LSM ||
-> +              prog->type == BPF_PROG_TYPE_KPROBE;
-> +}
-> +
->  static int check_attach_btf_id(struct bpf_verifier_env *env)
->  {
->         struct bpf_prog *prog = env->prog;
-> @@ -16761,9 +16773,8 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
->                 return -EINVAL;
->         }
->
-> -       if (prog->aux->sleepable && prog->type != BPF_PROG_TYPE_TRACING &&
-> -           prog->type != BPF_PROG_TYPE_LSM && prog->type != BPF_PROG_TYPE_KPROBE) {
-> -               verbose(env, "Only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable\n");
-> +       if (prog->aux->sleepable && !can_be_sleepable(prog)) {
-> +               verbose(env, "Only fentry/fexit/fmod_ret, lsm, iter and kprobe/uprobe programs can be sleepable\n");
->                 return -EINVAL;
->         }
->
+> +       "sleepable fentry accept",
+> +       .insns = {
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type = BPF_PROG_TYPE_TRACING,
+> +       .expected_attach_type = BPF_TRACE_FENTRY,
+> +       .kfunc = "bpf_fentry_test1",
+> +       .result = ACCEPT,
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .runs = -1,
+> +},
+> +{
+> +       "sleepable fexit accept",
+> +       .insns = {
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type = BPF_PROG_TYPE_TRACING,
+> +       .expected_attach_type = BPF_TRACE_FENTRY,
+> +       .kfunc = "bpf_fentry_test1",
+> +       .result = ACCEPT,
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .runs = -1,
+> +},
+> +{
+> +       "sleepable fmod_ret accept",
+> +       .insns = {
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type = BPF_PROG_TYPE_TRACING,
+> +       .expected_attach_type = BPF_MODIFY_RETURN,
+> +       .kfunc = "bpf_fentry_test1",
+> +       .result = ACCEPT,
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .runs = -1,
+> +},
+> +{
+> +       "sleepable iter accept",
+> +       .insns = {
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type = BPF_PROG_TYPE_TRACING,
+> +       .expected_attach_type = BPF_TRACE_ITER,
+> +       .kfunc = "task",
+> +       .result = ACCEPT,
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .runs = -1,
+> +},
+> +{
+> +       "sleepable lsm accept",
+> +       .insns = {
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type = BPF_PROG_TYPE_LSM,
+> +       .kfunc = "bpf",
+> +       .expected_attach_type = BPF_LSM_MAC,
+> +       .result = ACCEPT,
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .runs = -1,
+> +},
+> +{
+> +       "sleepable kprobe/uprobe accept",
+> +       .insns = {
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type = BPF_PROG_TYPE_KPROBE,
+> +       .kfunc = "bpf_fentry_test1",
+> +       .result = ACCEPT,
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .runs = -1,
+> +},
+> +{
+> +       "sleepable raw tracepoint reject",
+> +       .insns = {
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type = BPF_PROG_TYPE_TRACING,
+> +       .expected_attach_type = BPF_TRACE_RAW_TP,
+> +       .kfunc = "sched_switch",
+> +       .result = REJECT,
+> +       .errstr = "Only fentry/fexit/fmod_ret, lsm, iter and kprobe/uprobe programs can be sleepable",
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .runs = -1,
+> +},
 > --
 > 2.39.0
 >
