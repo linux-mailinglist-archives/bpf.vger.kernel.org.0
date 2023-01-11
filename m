@@ -2,79 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1815665EA4
-	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 16:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89990665EFB
+	for <lists+bpf@lfdr.de>; Wed, 11 Jan 2023 16:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbjAKPCu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Jan 2023 10:02:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
+        id S236052AbjAKPVN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Jan 2023 10:21:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232339AbjAKPCT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Jan 2023 10:02:19 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0974E1C432;
-        Wed, 11 Jan 2023 07:02:17 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id c133so12934458oif.1;
-        Wed, 11 Jan 2023 07:02:17 -0800 (PST)
+        with ESMTP id S234134AbjAKPVB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Jan 2023 10:21:01 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAD6616C;
+        Wed, 11 Jan 2023 07:20:58 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id s66so12334809oib.7;
+        Wed, 11 Jan 2023 07:20:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0egSRlD5ysAF1/1Mcrzc43lEP8kki52Q/tp1KL0aFq0=;
-        b=JTRokcX3zaOOa5DZ0ocv+qAiNLHN7v+XuqXLh2ziEGBWUateS/D4TGVet0Zwm2i2A3
-         EqWWhy5jwA3vxH3xmmrWHlmpHypTsUMkT/AuH/bR+YPy3NlEQNnMRTmsMrRy5oa1scgv
-         nj22zJKb0qW5fzEasQIf2ykHCDGPKEdXGBtlgPkRGxy4bTY6+EoRZukOh1kdpVLToTWs
-         dNSlde+evDr3RAcQJYdoCS9NzqCXpTw8dYKYRt6DHZK6AZCOOyb7fx6XY55rlJsukgGs
-         N8yvTICMHBnPlrxUvtT0GzGPthYxWLBPzDGl+/caPJYUlHahaBcecxGf+WEamOPFbc6C
-         FVOw==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g1A7OF7t8dKNesifezT09S2y+QN0WpHYXu4atrcvTTM=;
+        b=CMGbORzNMzYcom0X3Jn8dk/2VBwgk6V6YDK27MHBeUikK0WZs/AIIE4/ICH0+UFOID
+         AP8p//rzuK4xzUZdZiGGSqiaNhMwJs8FHkjJtAyROh+FjPd2Fexczd3gR/cMa3raCyZA
+         U4GsJDy30MVwZKYuQU8iyfq7rLWjLFLq9Ykzpvgk78xxFyiGVk2I/IBmVo2x9DebVoz6
+         frnm3WTl7mLvGVLqWOXXtCjNV0jVGfIPj/xcuANAlXmq6Ix5wBlVkLa3htkK0OqEByS1
+         TOLrevJ9Xam4/dNk/pCHNowLdNOVZEQJ0HDlvU3TR77K0lo3CTQ6HjdPPTB6GjESXhi3
+         qVWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0egSRlD5ysAF1/1Mcrzc43lEP8kki52Q/tp1KL0aFq0=;
-        b=ewRNeZKkfTKrR5fI5vcBLuXvv2KsMtp9H5MACMyhdjTvdRLqQZcr3kPNTXXPHmmGgj
-         6vW2WcsFmEFdjnWnt88C6nDjj5l4HmwgNI6cC5/PIcyAr4rmrKE23blhddA1tjoOlz6l
-         LfmKqeNuh4wxOtjDFUAjjuoINyPn1aotRwpNvYoCHAmvHWhegyq3Eje0RR5x6Wnmkjgl
-         cYobAdXcCac9+E49qAIgbywJJ7cA/9/Ox1ZJqlw/xdJUNB8RHKQW5x7UUxWZWwVgczrP
-         ZtFD8OMhZ6qFqJkv/9uhoyEe5UQJOPjEfFEFRHplkG0ifk6qUAWYD/qtJY5ZgrwnBXya
-         8Qng==
-X-Gm-Message-State: AFqh2kqtXRs293VaoWjVtqicAino4oZqAuZbYUzjyFKRLPGFPxcL5j8V
-        HZ+DW3eOvtJMBTZ5rT6lTJI=
-X-Google-Smtp-Source: AMrXdXsJ68tmNlldOty2WkVziBaah7VubXfqbSPrUVre3rpkZtb+MXnE0CNjRpQ5vpLhanXefNOLww==
-X-Received: by 2002:a05:6808:28e:b0:35e:e530:a07b with SMTP id z14-20020a056808028e00b0035ee530a07bmr31314497oic.57.1673449337028;
-        Wed, 11 Jan 2023 07:02:17 -0800 (PST)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id bi38-20020a05680818a600b00353fe4fb4casm6690322oib.48.2023.01.11.07.02.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Jan 2023 07:02:16 -0800 (PST)
-Message-ID: <68c81196-5421-8731-52be-b9b620837eb5@gmail.com>
-Date:   Wed, 11 Jan 2023 12:02:12 -0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v2] scripts: Exclude Rust CUs with pahole
-To:     Eric Curtin <ecurtin@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Neal Gompa <neal@gompa.dev>, bpf@vger.kernel.org,
-        rust-for-linux@vger.kernel.org,
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g1A7OF7t8dKNesifezT09S2y+QN0WpHYXu4atrcvTTM=;
+        b=XoSm7lS9aRXBcu1NqmimJZXoZtWSfRYC/OGiCiQIJgurPxVo/NMSvXkQmxV4rXmW54
+         Y7K2aCEn5c3euRwQEsMNW8Fecp6XAUiccfykYab5qmf3T65DKlz2hl9OH+Z0vd5AonC2
+         +xXcMc4/kPFqDFzL8OM5727ZH8BqFfu+IZHAZir/NSxPMpXevDToKAEr0W1aBzzsgS4M
+         rHJjNBvIOR2E/LXrQ2KudgqkCX3VxzEbHi7V7SvDK/BFw1vI6tX1jf6lWV+AkRTg+bHN
+         721mATirvW01b9bcBnVK0/oe6yauUyssOefdq992pHprpS/YOHGgOkxv9huLsFtTxt1C
+         VvSQ==
+X-Gm-Message-State: AFqh2ko60qk33NZtWHk9eixeFTJQKrVict6s396gaB45SubduMlxMfmg
+        skcn4vkYLyQPyR7Cn2PPexvr76AchyXKLg==
+X-Google-Smtp-Source: AMrXdXsAIIoU2MBKLqNK+eH3to2M9xZjHfh/6lzyKP5PIB+/sO2dlnBtErRVfOgjk5pNEQQ14UzW3w==
+X-Received: by 2002:a05:6808:18aa:b0:35e:1a0f:7dea with SMTP id bi42-20020a05680818aa00b0035e1a0f7deamr42754619oib.12.1673450457030;
+        Wed, 11 Jan 2023 07:20:57 -0800 (PST)
+Received: from tx3000mach.io (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id h10-20020a9d554a000000b0066e968701f8sm7834109oti.27.2023.01.11.07.20.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Jan 2023 07:20:56 -0800 (PST)
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Neal Gompa <neal@gompa.dev>, Eric Curtin <ecurtin@redhat.com>,
+        bpf@vger.kernel.org, rust-for-linux@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>,
         Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-References: <20230108021450.120791-1-yakoyoku@gmail.com>
- <CAOgh=Fzc3_bCLCKE+6KVzyMbBUOcQ_s9ef6Rw33amD5+yu-_WA@mail.gmail.com>
- <CAOgh=FxxXQ0UV_3PEGS-_575WNfR2SpKp+i78HtSVX4XO4eC0A@mail.gmail.com>
-Content-Language: en-US
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <CAOgh=FxxXQ0UV_3PEGS-_575WNfR2SpKp+i78HtSVX4XO4eC0A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH v3] scripts: Exclude Rust CUs with pahole
+Date:   Wed, 11 Jan 2023 12:20:50 -0300
+Message-Id: <20230111152050.559334-1-yakoyoku@gmail.com>
+X-Mailer: git-send-email 2.39.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,60 +74,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/8/23 16:19, Eric Curtin wrote:
-> On Sun, 8 Jan 2023 at 15:18, Eric Curtin <ecurtin@redhat.com> wrote:
->>
->> On Sun, 8 Jan 2023 at 02:15, Martin Rodriguez Reboredo
->> <yakoyoku@gmail.com> wrote:
->>>
->>> [ ... ]
->>
->> If it was me, I would do things more like v1 of the patch (instead
->> just checking pahole version), because this is the only flag set in
->> scripts/Makefile.modfinal, which is a little confusing and
->> inconsistent. It's ok to set --lang_exclude=rust in all cases, as long
->> as pahole_ver is recent enough.
->>
->> +if [ "${pahole_ver}" -ge "124" ]; then
->> +       # see PAHOLE_HAS_LANG_EXCLUDE
->> +       extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
->> +fi
->>
->> But I'm not too opinionated either on this so...
->>
->> Reviewed-by: Eric Curtin <ecurtin@redhat.com>
->>
->> can be reapplied. I'm gonna test this again to see if it works in a
->> Fedora Asahi rpm build.
-> 
-> After testing I probably have to retract my Reviewed-by tag,
-> apologies, bpf and all that did not work with this patch when I built
-> in the fedora way, but, the good news is when I alter v1 of the patch
-> to just check pahole version like so (instead of the is_enabled
-> check):
-> 
-> +if [ "${pahole_ver}" -ge "124" ]; then
-> +        # see PAHOLE_HAS_LANG_EXCLUDE
-> +        extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
-> +fi
-> 
-> it worked just fine, and that should satisfy the testbot and all the
-> other ways we build too. Could we change to that @Martin Rodriguez
-> Reboredo ?
-> 
+Version 1.24 of pahole has the capability to exclude compilation units
+(CUs) of specific languages [1] [2]. Rust, as of writing, is not
+currently supported by pahole and if it's used with a build that has
+BTF debugging enabled it results in malformed kernel and module
+binaries [3]. So it's better for pahole to exclude Rust CUs until
+support for it arrives.
 
-From my POV I don't like this way due to it being set regardless whether
-or not you are building the kernel with Rust. Though, because it doesn't
-affect non `CONFIG_RUST` builds, I _think_ it won't hurt if we use that
-way for now. Gonna send v3.
+Link: https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=49358dfe2aaae4e90b072332c3e324019826783f [1]
+Link: https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=8ee363790b7437283c53090a85a9fec2f0b0fbc4 [2]
+Link: https://github.com/Rust-for-Linux/linux/issues/735 [3]
 
->>
->>
->>> +
->>>         vmlinux_link ${1}
->>>
->>>         info "BTF" ${2}
->>> --
->>> 2.39.0
->>>
-> 
+Co-developed-by: Eric Curtin <ecurtin@redhat.com>
+Signed-off-by: Eric Curtin <ecurtin@redhat.com>
+Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+---
+V2 -> V3: Enable pahole option upon comparing with version 1.24
+V1 -> V2: Removed dependency on auto.conf
+
+ init/Kconfig            | 2 +-
+ lib/Kconfig.debug       | 9 +++++++++
+ scripts/pahole-flags.sh | 4 ++++
+ 3 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 694f7c160c9c..360aef8d7292 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1913,7 +1913,7 @@ config RUST
+ 	depends on !MODVERSIONS
+ 	depends on !GCC_PLUGINS
+ 	depends on !RANDSTRUCT
+-	depends on !DEBUG_INFO_BTF
++	depends on !DEBUG_INFO_BTF || PAHOLE_HAS_LANG_EXCLUDE
+ 	select CONSTRUCTORS
+ 	help
+ 	  Enables Rust support in the kernel.
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index ea4c903c9868..d473d491e709 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -364,6 +364,15 @@ config PAHOLE_HAS_BTF_TAG
+ 	  btf_decl_tag) or not. Currently only clang compiler implements
+ 	  these attributes, so make the config depend on CC_IS_CLANG.
+ 
++config PAHOLE_HAS_LANG_EXCLUDE
++	def_bool PAHOLE_VERSION >= 124
++	help
++	  Support for the --lang_exclude flag which makes pahole exclude
++	  compilation units from the supplied language. Used in Kbuild to
++	  omit Rust CUs which are not supported in version 1.24 of pahole,
++	  otherwise it would emit malformed kernel and module binaries when
++	  using DEBUG_INFO_BTF_MODULES.
++
+ config DEBUG_INFO_BTF_MODULES
+ 	def_bool y
+ 	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
+index 0d99ef17e4a5..1f1f1d397c39 100755
+--- a/scripts/pahole-flags.sh
++++ b/scripts/pahole-flags.sh
+@@ -19,5 +19,9 @@ fi
+ if [ "${pahole_ver}" -ge "122" ]; then
+ 	extra_paholeopt="${extra_paholeopt} -j"
+ fi
++if [ "${pahole_ver}" -ge "124" ]; then
++	# see PAHOLE_HAS_LANG_EXCLUDE
++	extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
++fi
+ 
+ echo ${extra_paholeopt}
+-- 
+2.39.0
+
