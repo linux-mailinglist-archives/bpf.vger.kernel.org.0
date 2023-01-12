@@ -2,96 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C67066686A8
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 23:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DC26686CF
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 23:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbjALWOi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 17:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
+        id S238723AbjALWXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 17:23:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240603AbjALWNa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 17:13:30 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6941955B2
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:07:37 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id h21so17543402qta.12
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:07:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tQCpmL3a6I3MxHDBkkJKT+jxF8jK60rugL/II6rJ9zE=;
-        b=D2sgxEiGAND4B42uQI2ytVsWC++ObEZqrycdu4p0cyw+s2M9C0TIMShlAz9fArDpiz
-         j8mEr1hCn1Y6zovqeuePp1hYrkphWlUqhgYOhrJvu2OVJ2GaJOytcpjvEhALtre3xoQn
-         3FvoIcnz6c/HecUd5UOLxCMjVaxHjC02pwQEQJsUpojyF1aiBJeFE9SZpMvk/iI6f3OP
-         AnCLs4dmXVBRxwnoacbYYVxGFed/3F0ihEkQVuY2Rvr8TiaePQy+bKmonajWhUnjyVyq
-         M9/DH+2BJTrLzy7SrFW9/o5faciGL28Cjl+7T6TXrILqk1WKVskCIvBpzgptpQ6qJnjf
-         GOJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tQCpmL3a6I3MxHDBkkJKT+jxF8jK60rugL/II6rJ9zE=;
-        b=z3uzwqA3hRbTW6bcRzIgGxBsUBwzkTV8bqG/Y2+DBWrtw7fd4S/iNrPyCG9LJ7RpWJ
-         2TqiOxIvvgmzaegsTGsFTqt7NA4z82O6vln0oQclnORA4A29RZdM9r6KRjCs0y/CZUki
-         mVomeTsfalEyIM1h3flw1y8ky1e6Q8A8NVqFlqtObd8y1zDVd+lQpEN8RHmGqM2J8lUT
-         FQYG7extxFEX0u9YbuiIbVF5U+eiVN/9LG+6P84rnfatnh+69AEUKcR614+R0836Yfgf
-         WlqhhOrqJDb0IWh4dkI2ZCFyf3VaBhjvXG9oKpRVR2dAM5Y5onZc/bJlF5wvTusO/G03
-         g4Hg==
-X-Gm-Message-State: AFqh2kqXB5THBqES+XZbg0dJa6eg4/CLLv9Jf+0Y/fmRbl0iwG60P3Hf
-        LIM3qITawzXNG6YDEXG0gvtAQsO8ki0oXugXtsw=
-X-Google-Smtp-Source: AMrXdXvvahVDKYIBkah3OkjZbBNSrZpBSaHutOru5w6rAhMnREhbB8a9sSmSCYJSabcHFWYgdI74p6A/Xw4RhTHkbhI=
-X-Received: by 2002:ac8:7743:0:b0:3b0:4a76:512e with SMTP id
- g3-20020ac87743000000b003b04a76512emr323762qtu.113.1673561254230; Thu, 12 Jan
- 2023 14:07:34 -0800 (PST)
+        with ESMTP id S240147AbjALWXA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 17:23:00 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3941CB1E;
+        Thu, 12 Jan 2023 14:18:05 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 31D53B81E63;
+        Thu, 12 Jan 2023 22:18:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2050C433EF;
+        Thu, 12 Jan 2023 22:18:01 +0000 (UTC)
+Date:   Thu, 12 Jan 2023 17:17:59 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Ching-lin Yu <chinglinyu@google.com>
+Subject: Re: [LSF/MM/BPF TOPIC] tracing mapped pages for quicker boot
+ performance
+Message-ID: <20230112171759.70132384@gandalf.local.home>
+In-Reply-To: <Y8BvKZFI9RIoS4C/@casper.infradead.org>
+References: <20230112132153.38d52708@gandalf.local.home>
+        <Y8BvKZFI9RIoS4C/@casper.infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Sender: jennehkandeh9@gmail.com
-Received: by 2002:ab3:ef8d:0:b0:4b2:a25c:b9b0 with HTTP; Thu, 12 Jan 2023
- 14:07:33 -0800 (PST)
-From:   Jenneh Kandeh <jennehkandeh07@gmail.com>
-Date:   Thu, 12 Jan 2023 23:07:33 +0100
-X-Google-Sender-Auth: XmIbzuycgQaHw0Sjlr__L03NUMw
-Message-ID: <CAD6_1xoMZ2Jhyd8h4ja7XQLEFqLcpfK1wfeVg_-eF3+1XSDZLA@mail.gmail.com>
-Subject: re Regard My Father's Fund $10,200,000,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_80,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,NA_DOLLARS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I got your online connection - due to a serious search for a reliable
-personal. My name is Janna Kandih, date of birth
-May 23, 1994 in Freetown Capital Sierra Leone.
+On Thu, 12 Jan 2023 20:35:53 +0000
+Matthew Wilcox <willy@infradead.org> wrote:
 
-I am the nephew of Foday Sankoh, the rebel leader in Sierra Leone,
-He opposes the government of President Ahmed Tejan Kubba
-former leader. I was in exile in Benin-Porto-Novo. but me
-Current resident of Porto-Novo Benin because of the war of my country,
-my country
-Her mother was killed on 04/01/2002 in a civil war in Sierra Leone. my father
-I decided to change the country of residence with me because I am the only one
-A child from my family has bad news of the death of my father on 11/25/2019;
-During the war, my father made a lot of money by
-sell diamonds.
+> On Thu, Jan 12, 2023 at 01:21:53PM -0500, Steven Rostedt wrote:
+> > What I would like to discuss, is if there could be a way to add some sort
+> > of trace events that can tell an application exactly what pages in a file
+> > are being read from disk, where there is no such races. Then an application
+> > would simply have to read this information and store it, and then it can
+> > use this information later to call readahead() on these locations of the
+> > file so that they are available when needed.  
+> 
+> trace_mm_filemap_add_to_page_cache()?
 
-to the value of US$10,200,000 (ten million two hundred US dollars
-dollars). This money is currently held secretly in the Economic
-Community of West African States
-Security company here in Porto-Novo Benin, but because
-The political unrest that still exists in this Africa, I can't invest
-money myself, and then I ask for your help, to help me take this money
-In your charge to invest and also advise me how to invest them; And
-I would like to add here that if an agreement is reached, it will be
-30% of the total value of the fund
-Yours minus your total expenses incurred during the clearing
-Fund in Cotonou Benin that 30% amounts to 3,060,000 dollars (three million sixty
-thousand US dollars) to you from the fund after us
-Fund confirmed there. I am waiting to hear from you soon.
+Great! How do I translate this to files? Do I just do a full scan on the
+entire device to find which file maps to an inode? And I'm guessing that
+the ofs is the offset into the file?
+
+(from a 5.10 modified kernel)
+
+            <...>-177   [001]    13.166966: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a0 pfn=2586272 ofs=1204224
+            <...>-177   [001]    13.166968: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a1 pfn=2586273 ofs=1208320
+            <...>-177   [001]    13.166968: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a2 pfn=2586274 ofs=1212416
+            <...>-177   [001]    13.166969: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a3 pfn=2586275 ofs=1216512
+            <...>-177   [001]    13.166970: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a4 pfn=2586276 ofs=1220608
+            <...>-177   [001]    13.166971: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a5 pfn=2586277 ofs=1224704
+            <...>-177   [001]    13.166972: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a6 pfn=2586278 ofs=1228800
+            <...>-177   [001]    13.166972: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a7 pfn=2586279 ofs=1232896
+            <...>-177   [001]    13.166973: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a8 pfn=2586280 ofs=1236992
+            <...>-177   [001]    13.166974: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a9 pfn=2586281 ofs=1241088
+            <...>-177   [001]    13.166979: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776aa pfn=2586282 ofs=1245184
+            <...>-177   [001]    13.166980: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776ab pfn=2586283 ofs=1249280
+            <...>-177   [001]    13.166981: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776ac pfn=2586284 ofs=1253376
+            <...>-177   [001]    13.166981: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776ad pfn=2586285 ofs=1257472
+            <...>-177   [001]    13.166982: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776ae pfn=2586286 ofs=1261568
+            <...>-177   [001]    13.166983: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776af pfn=2586287 ofs=1265664
+
+The dev 259:5 is the root partition.
+
+Doing the following:
+
+ $ printf "%d\n" 0x9b11
+39697
+
+ $ sudo find / -xdev -inum 39697
+/lib64/libc.so.6
+
+I guess that's what I need to do. Thanks!
+
+I'll try it out. But I'd still like to have an invite as I have lots of
+other fun stuff to talk to you all about (mm, fs, and BPF) ;-)
+
+-- Steve
+
