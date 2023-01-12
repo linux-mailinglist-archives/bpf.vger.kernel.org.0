@@ -2,61 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F25667E60
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 19:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD28667E69
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 19:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbjALSs0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 13:48:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
+        id S234118AbjALSt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 13:49:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbjALSsG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 13:48:06 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDD7CE3D;
-        Thu, 12 Jan 2023 10:20:37 -0800 (PST)
-Message-ID: <be3913ae-ab2c-eb59-187b-1f202e0f3795@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1673547635;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6U+JSVqrc+yoFJl0Jg/9yO+ndlx7yLnVfK4r7uFQFIo=;
-        b=hmnexZabVfr3zirdYk/mERR634FtyUBKRgCT4fndDYudcNWTOo6gss0YdBHh46ax1TL7Wz
-        GypkmOlszR4TPvT7Ca1Bg8cWQo07kiFbFTvsvqvFF1t0P81YpUasVXPst1EAYQMPOFCGED
-        DTloRTjnj1S3WDj6IetO/aNlKhIWOKc=
-Date:   Thu, 12 Jan 2023 10:20:29 -0800
+        with ESMTP id S232268AbjALStY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 13:49:24 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D1E82F41;
+        Thu, 12 Jan 2023 10:21:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B2345620EA;
+        Thu, 12 Jan 2023 18:21:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 505F2C433D2;
+        Thu, 12 Jan 2023 18:21:55 +0000 (UTC)
+Date:   Thu, 12 Jan 2023 13:21:53 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     lsf-pc@lists.linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Ching-lin Yu <chinglinyu@google.com>
+Subject: [LSF/MM/BPF TOPIC] tracing mapped pages for quicker boot
+ performance
+Message-ID: <20230112132153.38d52708@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 00/17] xdp: hints via kfuncs
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>,
-        Tariq Toukan <ttoukan.linux@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, bpf@vger.kernel.org,
-        xdp-hints@xdp-project.net, netdev@vger.kernel.org
-References: <20230112003230.3779451-1-sdf@google.com>
- <f074b33d-c27a-822d-7bf6-16a5c8d9524d@linux.dev>
- <2f76e7d6-1771-a8f5-4bd1-6f7cd0b59173@gmail.com>
- <CAKH8qBtg-SW4PcQ+EbqoQCme38kgh4gkj-698Wmg8iWLA8qtNw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAKH8qBtg-SW4PcQ+EbqoQCme38kgh4gkj-698Wmg8iWLA8qtNw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,60 +44,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/12/23 10:09 AM, Stanislav Fomichev wrote:
-> On Thu, Jan 12, 2023 at 12:19 AM Tariq Toukan <ttoukan.linux@gmail.com> wrote:
->>
->>
->>
->> On 12/01/2023 9:29, Martin KaFai Lau wrote:
->>> On 1/11/23 4:32 PM, Stanislav Fomichev wrote:
->>>> Please see the first patch in the series for the overall
->>>> design and use-cases.
->>>>
->>>> See the following email from Toke for the per-packet metadata overhead:
->>>> https://lore.kernel.org/bpf/20221206024554.3826186-1-sdf@google.com/T/#m49d48ea08d525ec88360c7d14c4d34fb0e45e798
->>>>
->>>> Recent changes:
->>>>
->>>> - Bring back parts that were removed during patch reshuffling from "bpf:
->>>>     Introduce device-bound XDP programs" patch (Martin)
->>>>
->>>> - Remove netdev NULL check from __bpf_prog_dev_bound_init (Martin)
->>>>
->>>> - Remove netdev NULL check from bpf_dev_bound_resolve_kfunc (Martin)
->>>>
->>>> - Move target bound device verification from bpf_tracing_prog_attach into
->>>>     bpf_check_attach_target (Martin)
->>>>
->>>> - Move mlx5e_free_rx_in_progress_descs into txrx.h (Tariq)
->>>>
->>>> - mlx5e_fill_xdp_buff -> mlx5e_fill_mxbuf (Tariq)
->>>
->>> Thanks for the patches. The set lgtm.
->>>
->>> The selftest patch 11 and 17 have conflicts with the recent changes in
->>> selftests/bpf/xsk.{h,c} and selftests/bpf/Makefile. eg. it no longer
->>> needs XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD, so please respin. From a
->>> quick look, it should be some minor changes.
->>>
->>> Not sure if Tariq has a chance to look at the mlx5 changes shortly. The
->>> set is getting pretty long and the core part is ready with veth and mlx4
->>> support. I think it is better to get the ready parts landed first such
->>> that other drivers can also start adding support for it. One option is
->>> to post the two mlx5 patches as another patchset and they can be
->>> reviewed separately.
->>>
->>
->> Hi,
->> I posted new comments >> I think they can be handled quickly, and still be part of the next respin.
->>
->> I'm fine with both options though. You can keep the mlx5e patches or
->> defer them to a followup series. Whatever works best for you.
-> 
-> Either way is fine with me also. I can find some time today to address
-> Tariq's comments and respin if that works for everybody.
 
-Together SGTM also. Mentioned the option to separate and thought the core pieces 
-can be landed faster than the mlx5 piece but it seems there is no major concern 
-on the mlx5 changes.
+Title: Tracing mapped pages for quicker boot performance
 
+Description:
+
+ChromeOS currently uses ureadahead that will periodically trace files that
+are opened by the processes during the boot sequence. Then it will use this
+information to call the readahead() system call in order to prefetch pages
+before they are needed and speed up the applications. We have seen upward
+towards 60% (and even higher is certain cases) performance gains when it's
+working properly.
+
+The ureadahead program comes from Canonical, and has not been updated since
+2009 (although we've been adding patches on top of it since).
+
+  https://launchpad.net/ubuntu/+source/ureadahead
+
+The only changes Ubuntu has been doing with it is forward porting it to the
+next release. But no code actually has changed. The 0.100.0 release was
+last done in 2009.
+
+Another problem with ureadahead is that it requires kernel modifications.
+It adds in two tracepoints into the open paths so that it can see what
+files have been opened (and it doesn't handle relative paths). These
+tracepoints have been rejected upstream. We've been carrying them in our
+ChromeOS kernel to use ureadahead.
+
+ureadahead only looks at the files that are opened during boot, and then
+reads the extents to see what parts of the file are interesting. It stores
+this information into a "pack" file. Then on subsequent boots, instead of
+tracing, it reads the pack file, calls the readahead() system call on the
+locations it has in that pack file, to make sure they are in cache when the
+applications need them.
+
+One issue is that it can pick too much of the file, where it's reading
+ahead portions of the file that will never be read, and hence, waste system
+resources.
+
+I've been looking into other approaches. I wrote a simple program that
+reads the page_fault_user trace event, and every time it sees a new PID, it
+reads the /proc/<pid>/maps file. And using the page fault trace event's
+address, it can see exactly where in the file it is mapped to.
+
+There's several issues with this approach. The main one being the race
+condition between reading the pid and the /proc/<pid>/maps file. As the pid
+may no longer exist, or it does an exec where the page faults no longer map
+to the right location. But even with that, it does surprisingly well
+(especially since we care more about long running applications than short
+ones).
+
+  https://rostedt.org/code/file-mapping.c
+
+The above is just a toy application that tries this out, but could be used
+as a starting point to replace ureadahead.
+
+What I would like to discuss, is if there could be a way to add some sort
+of trace events that can tell an application exactly what pages in a file
+are being read from disk, where there is no such races. Then an application
+would simply have to read this information and store it, and then it can
+use this information later to call readahead() on these locations of the
+file so that they are available when needed.
+
+Note, in our use case boot ups do not change much. But I'm sure this could
+be useful for other distributions.
+
+This topic will require coordination with File systems, Storage, and MM.
+
+I'm also open to having BPF help with this. One issue I want to make sure
+we avoid, is any ABI we come up with that will hinder development later on.
+
+-- Steve
