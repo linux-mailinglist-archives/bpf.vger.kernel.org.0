@@ -2,76 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B246686F3
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 23:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9531C6686FD
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 23:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240429AbjALW3t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 17:29:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
+        id S232493AbjALWcE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 17:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240502AbjALW3J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 17:29:09 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A6F38AEE
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:27:23 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id c85so11581071pfc.8
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:27:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=SoyTSSdu+Qcthx/gmW86aii0JkzJszbHW58pSnxY3i4=;
-        b=OiP440+IvYPWlSWv71v8WSyQn6M0UDc0mC7ow4jdFp2waA//CoDvJBJzaS61vkasoy
-         L/lnTBD/K9Tt/AeOdzokC82fnG6oJaXXmqDi6nHYWjUad+4RWbydvWW2VMNFW1q8WEBv
-         xdI6KdE+HXOa1qjbHgp2VnnVslei00IkG0wEqvwv3L+/HuVjU01mPiBHDFjlMIIfCfKO
-         cDiVPO1FvGkHBy/zlRFmms6tcsbAyxnCa1eKHEdO7uCPWftO9ZEbfg96rHrJ7LvlO4rp
-         Abh4UXuKJrhn6wNjOH3B8eW9Z/LQxGvoPPeEiD+fdvs7d/r5q8ou21+Y0gAVV19O9wLa
-         5T9g==
+        with ESMTP id S235201AbjALWbf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 17:31:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB85C117D
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:30:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673562602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AmmMTMTkl1SpATAvKbKhhENq0+Dt4nDr+jehSO4eUlc=;
+        b=DXZnzuNfihmqAr9GUGiqoymcbTIuNU19yeQN6ZdQZix/TBB3Xz3RcktDQgkzz2bSGNRC7S
+        2fmY3251VhAvn0QChh4rTQHuqH1hGrTpyB5RnJPymduUum9LW95vUS4qhaI7kucmQcxO1y
+        2ensxCDUhw/sxJJx8FEC1y5mBk0rJ+o=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-478-m5Ti4f-BMKeVUKuj00cNeQ-1; Thu, 12 Jan 2023 17:30:00 -0500
+X-MC-Unique: m5Ti4f-BMKeVUKuj00cNeQ-1
+Received: by mail-ed1-f71.google.com with SMTP id z20-20020a05640240d400b0047028edd264so13391434edb.20
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:30:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SoyTSSdu+Qcthx/gmW86aii0JkzJszbHW58pSnxY3i4=;
-        b=LGEhKZ7ylRPyCDv4v3FDLMiiPXIkpi2qwJpOawFLmvgvH3YT5JXCYiKnDLzHXuKpRN
-         vWkfQ2Zd4nE8sg5rbKWONGtq+b/72q2tdCSbvgKe4Qhi3KK/Kb1yk4VmbyLGELuaX7rx
-         Vt03kDMdtj3sjGShxRKg7J65LnB2OK/eBSwV9V9i+HCRceYTzOQXl7JhPDmqrvk/zwMG
-         RAAzBO6ZSuMbSM5nmHuisxF7776SyROFVUwA8zEIxGRKDHB7LpwYqd0Bpy4mGLO+XjQq
-         NKz9l9LcjCnzo/LtTsGj5/21Nz2vb3+lliP8NqN/w+0sKYrAiXtZ0Z1dFY2AX9KRQwEq
-         6vvQ==
-X-Gm-Message-State: AFqh2kpNJlbAoEnm/cq5YWuMhksIN6dCR09KArKE1/MzUkpJQt0+RLc9
-        RJgK7427lyj+MZVcQZXNv1w=
-X-Google-Smtp-Source: AMrXdXvmBzF6ZsbnrX41SNRN+nj7ML3YRAPAq/PqL5TStW4bMryWDj9WjAXmb4UFLKsY11FtLOr8mw==
-X-Received: by 2002:aa7:86cb:0:b0:588:d6c1:66f9 with SMTP id h11-20020aa786cb000000b00588d6c166f9mr15378253pfo.31.1673562443169;
-        Thu, 12 Jan 2023 14:27:23 -0800 (PST)
-Received: from MacBook-Pro-6.local.dhcp.thefacebook.com ([2620:10d:c090:400::5:df0a])
-        by smtp.gmail.com with ESMTPSA id d206-20020a621dd7000000b00589ed7ae132sm6931257pfd.13.2023.01.12.14.27.21
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AmmMTMTkl1SpATAvKbKhhENq0+Dt4nDr+jehSO4eUlc=;
+        b=uu6c5zEyxGkk8bDltlgOfuRB/HDe3ZCAooYf/Y+keT2o9xRrBhUTk6HLM1BOcr1BWB
+         YgK2E48lRidW0TJ9nzsLKFmyzgqWeK3VwwkEmJNjxznDdgoQ9VG8aTf3e70RI0TdHlHJ
+         xISZpI5YSSHGX/oTsP2JWNtCmm+b/yfC97SCbhEYopuncwwc934+IOnxAFbQtrCFq92T
+         T3wcqLUt/P4ObWmo2Fw4+7qDsSZpA74ufdS+9oQSqbuw9NusxfNkgrNIYrddZmp1XHjK
+         b1HHvO1bZJiFIwxn+xlQpPLVwJwcFYdph51ggcIZnGXCVP/7+LSPUkDrC7SwEp3WPFqO
+         wZJw==
+X-Gm-Message-State: AFqh2kp+BDnx7Lan1gnd5pB21BIQZxK9l/1yG6DJSLxXCbL1J4i6PiBh
+        d4jCwRDUXfS+0Bz/dTX7bpe0ieweD2F533i9mZEZ2BqsU2k4kg+X2ZOKjjyLLVqjddWdyyfPxpY
+        Vhp6sQ3hnVCmV
+X-Received: by 2002:a17:906:9f20:b0:84d:43a0:7090 with SMTP id fy32-20020a1709069f2000b0084d43a07090mr15422509ejc.77.1673562599654;
+        Thu, 12 Jan 2023 14:29:59 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXsqPdHBhI5sdFZhQI7ZFU9LyJiPErvoKHj1tV1uSh9/yzeA+17qJ9uEVoWX2vLXSimcX2vkQQ==
+X-Received: by 2002:a17:906:9f20:b0:84d:43a0:7090 with SMTP id fy32-20020a1709069f2000b0084d43a07090mr15422479ejc.77.1673562599344;
+        Thu, 12 Jan 2023 14:29:59 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id c10-20020a17090618aa00b0084d14646fd9sm7751190ejf.165.2023.01.12.14.29.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jan 2023 14:27:22 -0800 (PST)
-Date:   Thu, 12 Jan 2023 14:27:19 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        david.faust@oracle.com, James Hilliard <james.hilliard1@gmail.com>
-Subject: Re: [RFC bpf-next 0/5] Support for BPF_ST instruction in LLVM C
- compiler
-Message-ID: <20230112222719.gdxwdocfutpbxust@MacBook-Pro-6.local.dhcp.thefacebook.com>
-References: <20221231163122.1360813-1-eddyz87@gmail.com>
- <CAEf4BzbNM_U4b3gi4AwiTV5GMXEsAsJx8sMVA32ijJRygrVpFg@mail.gmail.com>
- <874jt5mh2j.fsf@oracle.com>
- <1155fda8d54188f04270bb72c625d91f772e9999.camel@gmail.com>
+        Thu, 12 Jan 2023 14:29:58 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 45232900731; Thu, 12 Jan 2023 23:29:58 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Tariq Toukan <ttoukan.linux@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v7 15/17] net/mlx5e: Introduce
+ wrapper for xdp_buff
+In-Reply-To: <CAKH8qBvBsAj0s36=xHKz3XN5Nq1bDcEP1AOsnf9+Sgtm5wWUyQ@mail.gmail.com>
+References: <20230112003230.3779451-1-sdf@google.com>
+ <20230112003230.3779451-16-sdf@google.com>
+ <a0bac9bd-6772-64d4-8fd5-756ff4d8c2ad@gmail.com>
+ <CAKH8qBsUOdRax0m5XM8guudSX_VYpJuMz_mzdMJegDsq4_ezwA@mail.gmail.com>
+ <87k01rfojm.fsf@toke.dk> <87h6wvfmfa.fsf@toke.dk>
+ <CAKH8qBvBsAj0s36=xHKz3XN5Nq1bDcEP1AOsnf9+Sgtm5wWUyQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 12 Jan 2023 23:29:58 +0100
+Message-ID: <87edrzfkt5.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1155fda8d54188f04270bb72c625d91f772e9999.camel@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,114 +99,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 02:07:05PM +0200, Eduard Zingerman wrote:
-> On Thu, 2023-01-05 at 11:06 +0100, Jose E. Marchesi wrote:
-> > > On Sat, Dec 31, 2022 at 8:31 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > > > 
-> > > > BPF has two documented (non-atomic) memory store instructions:
-> > > > 
-> > > > BPF_STX: *(size *) (dst_reg + off) = src_reg
-> > > > BPF_ST : *(size *) (dst_reg + off) = imm32
-> > > > 
-> > > > Currently LLVM BPF back-end does not emit BPF_ST instruction and does
-> > > > not allow one to be specified as inline assembly.
-> > > > 
-> > > > Recently I've been exploring ways to port some of the verifier test
-> > > > cases from tools/testing/selftests/bpf/verifier/*.c to use inline assembly
-> > > > and machinery provided in tools/testing/selftests/bpf/test_loader.c
-> > > > (which should hopefully simplify tests maintenance).
-> > > > The BPF_ST instruction is popular in these tests: used in 52 of 94 files.
-> > > > 
-> > > > While it is possible to adjust LLVM to only support BPF_ST for inline
-> > > > assembly blocks it seems a bit wasteful. This patch-set contains a set
-> > > > of changes to verifier necessary in case when LLVM is allowed to
-> > > > freely emit BPF_ST instructions (source code is available here [1]).
-> > > 
-> > > Would we gate LLVM's emitting of BPF_ST for C code behind some new
-> > > cpu=v4? What is the benefit for compiler to start automatically emit
-> > > such instructions? Such thinking about logistics, if there isn't much
-> > > benefit, as BPF application owner I wouldn't bother enabling this
-> > > behavior risking regressions on old kernels that don't have these
-> > > changes.
-> > 
-> > Hmm, GCC happily generates BPF_ST instructions:
-> > 
-> >   $ echo 'int v; void foo () {  v = 666; }' | bpf-unknown-none-gcc -O2 -xc -S -o foo.s -
-> >   $ cat foo.s
-> >         .file	"<stdin>"
-> >         .text
-> >         .align	3
-> >         .global	foo
-> >         .type	foo, @function
-> >   foo:
-> >         lddw	%r0,v
-> >         stw	[%r0+0],666
-> >         exit
-> >         .size	foo, .-foo
-> >         .global	v
-> >         .type	v, @object
-> >         .lcomm	v,4,4
-> >         .ident	"GCC: (GNU) 12.0.0 20211206 (experimental)"
-> > 
-> > Been doing that since October 2019, I think before the cpu versioning
-> > mechanism was got in place?
-> > 
-> > We weren't aware this was problematic.  Does the verifier reject such
-> > instructions?
-> 
-> Interesting, do BPF selftests generated by GCC pass the same way they
-> do if generated by clang?
-> 
-> I had to do the following changes to the verifier to make the
-> selftests pass when BPF_ST instruction is allowed for selection:
-> 
-> - patch #1 in this patchset: track values of constants written to
->   stack using BPF_ST. Currently these are tracked imprecisely, unlike
->   the writes using BPF_STX, e.g.:
->   
->     fp[-8] = 42;   currently verifier assumes that fp[-8]=mmmmmmmm
->                    after such instruction, where m stands for "misc",
->                    just a note that something is written at fp[-8].
->                    
->     r1 = 42;       verifier tracks r1=42 after this instruction.
->     fp[-8] = r1;   verifier tracks fp[-8]=42 after this instruction.
-> 
->   So the patch makes both cases equivalent.
->   
-> - patch #3 in this patchset: adjusts verifier.c:convert_ctx_access()
->   to operate on BPF_ST alongside BPF_STX.
->   
->   Context parameters for some BPF programs types are "fake" data
->   structures. The verifier matches all BPF_STX and BPF_LDX
->   instructions that operate on pointers to such contexts and rewrites
->   these instructions. It might change an offset or add another layer
->   of indirection, etc. E.g. see filter.c:bpf_convert_ctx_access().
->   (This also implies that verifier forbids writes to non-constant
->    offsets inside such structures).
->    
->   So the patch extends this logic to also handle BPF_ST.
+Stanislav Fomichev <sdf@google.com> writes:
 
-The patch 3 is necessary to land before llvm starts generating 'st' for ctx access.
-That's clear, but I'm missing why patch 1 is necessary.
-Sure, it's making the verifier understand scalar spills with 'st' and
-makes 'st' equivalent to 'stx', but I'm missing why it's necessary.
-What kind of programs fail to be verified when llvm starts generating 'st' ?
+> On Thu, Jan 12, 2023 at 1:55 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
+>>
+>> > Stanislav Fomichev <sdf@google.com> writes:
+>> >
+>> >> On Thu, Jan 12, 2023 at 12:07 AM Tariq Toukan <ttoukan.linux@gmail.co=
+m> wrote:
+>> >>>
+>> >>>
+>> >>>
+>> >>> On 12/01/2023 2:32, Stanislav Fomichev wrote:
+>> >>> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >>> >
+>> >>> > Preparation for implementing HW metadata kfuncs. No functional cha=
+nge.
+>> >>> >
+>> >>> > Cc: Tariq Toukan <tariqt@nvidia.com>
+>> >>> > Cc: Saeed Mahameed <saeedm@nvidia.com>
+>> >>> > Cc: John Fastabend <john.fastabend@gmail.com>
+>> >>> > Cc: David Ahern <dsahern@gmail.com>
+>> >>> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
+>> >>> > Cc: Jakub Kicinski <kuba@kernel.org>
+>> >>> > Cc: Willem de Bruijn <willemb@google.com>
+>> >>> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+>> >>> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+>> >>> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+>> >>> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+>> >>> > Cc: Maryam Tahhan <mtahhan@redhat.com>
+>> >>> > Cc: xdp-hints@xdp-project.net
+>> >>> > Cc: netdev@vger.kernel.org
+>> >>> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >>> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>> >>> > ---
+>> >>> >   drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 +
+>> >>> >   .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  3 +-
+>> >>> >   .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  6 +-
+>> >>> >   .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   | 25 ++++----
+>> >>> >   .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 58 +++++++++----=
+------
+>> >>> >   5 files changed, 50 insertions(+), 43 deletions(-)
+>> >>> >
+>> >>> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/driver=
+s/net/ethernet/mellanox/mlx5/core/en.h
+>> >>> > index 2d77fb8a8a01..af663978d1b4 100644
+>> >>> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>> >>> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>> >>> > @@ -469,6 +469,7 @@ struct mlx5e_txqsq {
+>> >>> >   union mlx5e_alloc_unit {
+>> >>> >       struct page *page;
+>> >>> >       struct xdp_buff *xsk;
+>> >>> > +     struct mlx5e_xdp_buff *mxbuf;
+>> >>>
+>> >>> In XSK files below you mix usage of both alloc_units[page_idx].mxbuf=
+ and
+>> >>> alloc_units[page_idx].xsk, while both fields share the memory of a u=
+nion.
+>> >>>
+>> >>> As struct mlx5e_xdp_buff wraps struct xdp_buff, I think that you just
+>> >>> need to change the existing xsk field type from struct xdp_buff *xsk
+>> >>> into struct mlx5e_xdp_buff *xsk and align the usage.
+>> >>
+>> >> Hmmm, good point. I'm actually not sure how it works currently.
+>> >> mlx5e_alloc_unit.mxbuf doesn't seem to be initialized anywhere? Toke,
+>> >> am I missing something?
+>> >
+>> > It's initialised piecemeal in different places; but yeah, we're mixing
+>> > things a bit...
+>> >
+>> >> I'm thinking about something like this:
+>
+> Seems more invasive? I don't care much tbf, but what's wrong with
+> keeping 'xdp_buff xsk' member and use it consistently?
 
-Regarind -mcpu=v4.
-I think we need to add all of our upcoming instructions as a single flag.
-Otherwise we'll have -mcpu=v5,v6,v7 and full combinations of them.
+Yeah, it's more invasive, but it's also more consistent with the non-xsk
+path where every usage of struct xdp_buff is replaced with the wrapping
+struct?
 
--mcpu=v4 could mean:
-- ST
-- sign extending loads
-- sign extend a register
-- 32-bit JA
-- proper bswap insns: bswap16, bswap32, bswap64
+Both will work, I suppose (in fact I think the resulting code will be
+more or less identical), so it's more a matter of which one is easier to
+read and where we put the type-safety-breaking casts.
 
-The sign and 32-bit JA we've discussed earlier.
-The bswap was on my wish list forever.
-The existing TO_LE, TO_BE insns are really odd from compiler pov.
-The compiler should translate bswap IR op into proper bswap insn
-just like it does on all cpus.
+I can live with either one (just note you'll have to move the
+'mxbuf->rq' initialisation next to the one for mxbuf->cqe for yours, but
+that's probably fine too). Let's see which way Tariq prefers...
 
-Maybe add SDIV to -mcpu=v4 as well?
+-Toke
+
