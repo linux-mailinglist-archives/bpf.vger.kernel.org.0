@@ -2,102 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DC26686CF
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 23:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCC06686D7
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 23:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238723AbjALWXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 17:23:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        id S240054AbjALWXn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 17:23:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240147AbjALWXA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 17:23:00 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3941CB1E;
-        Thu, 12 Jan 2023 14:18:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 31D53B81E63;
-        Thu, 12 Jan 2023 22:18:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2050C433EF;
-        Thu, 12 Jan 2023 22:18:01 +0000 (UTC)
-Date:   Thu, 12 Jan 2023 17:17:59 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Ching-lin Yu <chinglinyu@google.com>
-Subject: Re: [LSF/MM/BPF TOPIC] tracing mapped pages for quicker boot
- performance
-Message-ID: <20230112171759.70132384@gandalf.local.home>
-In-Reply-To: <Y8BvKZFI9RIoS4C/@casper.infradead.org>
-References: <20230112132153.38d52708@gandalf.local.home>
-        <Y8BvKZFI9RIoS4C/@casper.infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S240647AbjALWXB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 17:23:01 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7446BB81
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:18:18 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id g20so14848792pfb.3
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:18:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=X1P2fSn3dI4UOACTvwLsfIYG4DV8Xk5OayjZY8tr+pk=;
+        b=e0XNUXEagm3x2RsteUn7b8zAn6lUMkJfXm8dhN87zRZEX2QBPvDxTeSYhaaB39gJ6x
+         vuBqohlEZ9epEFy1Ro2TTXvHUd7DjskTY/aJyBBDkC6wx46ArFpzL9llepWY+qG0kOk7
+         hXBpHRItcroFkxx5Q3F0E6VSAaFic0lUuQd9DBF+ZbUvGCp98MesOuUYALBjv6Ix7M97
+         7J3ByX0FUUuqPfoYDT+nzu0v8grpAXHkg6CxF/c8Awzz15Mu3wDSLEBVeaOo5rt4i/hH
+         mL1BDOK0ztA+P0JqpoeSLoSwB3883B/f1ABbxaBTsfF8TcRERYKUEGVFiEMWhqprUvmA
+         zQPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X1P2fSn3dI4UOACTvwLsfIYG4DV8Xk5OayjZY8tr+pk=;
+        b=KDGK5FEVaUJJEV0H0kvX/w+7ersvivtXgGgij5ab6zgZA9BM5zsCOXA4mgkttYC5lI
+         j8QnegNvHOzY0DafcCbem8zjuS6YWSN60iBbHnUYvU0TKS5dZ6qN9ssz8J6Iqe+gt3h2
+         qzF2zOxOHdiJxopcLIRDHvs2s9e+EJPCJeVCywt+qutC3hKH6G3HgBrzEKQ4smK3098z
+         SD9kOF7zE/zI9LimwZQyhr3Fe2VlqkQmjb8L6upMlc1BkikhZloeFXR7JaRTcTW9e7Pj
+         idiL3WwA8DaxFUdtba9kjGLrwh6dEoNSIKCM7qhoiQ+ixOyVzQ6kkv53cclBtrQtTY4A
+         AqKg==
+X-Gm-Message-State: AFqh2kqCaGdhBgwky+znctxIf2nvpY95eTq8a8+rgSqzrDkcQ/vZlJKF
+        0/C+pD5ibJFi0rEtNQnCdLvMp55E8sVRvncYoE8oPfE/Trnjdasw
+X-Google-Smtp-Source: AMrXdXuqErVRzNIHwHwF1CrimbUibvQaRDx0Z5B90a+Ubb8fiZlboIKYB62ZKEfX0wzSV2xbSoAG+egGObVF+jlaWwg=
+X-Received: by 2002:a63:4519:0:b0:47c:948e:c0bf with SMTP id
+ s25-20020a634519000000b0047c948ec0bfmr6976835pga.240.1673561897091; Thu, 12
+ Jan 2023 14:18:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 12 Jan 2023 14:18:05 -0800
+Message-ID: <CA+khW7ju-gewZVNxopBi3Uvhiv8Wb=a-D4gaW3MD-NkUg0WSSg@mail.gmail.com>
+Subject: CORE feature request: support checking field type directly
+To:     bpf <bpf@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 12 Jan 2023 20:35:53 +0000
-Matthew Wilcox <willy@infradead.org> wrote:
+Hi all,
 
-> On Thu, Jan 12, 2023 at 01:21:53PM -0500, Steven Rostedt wrote:
-> > What I would like to discuss, is if there could be a way to add some sort
-> > of trace events that can tell an application exactly what pages in a file
-> > are being read from disk, where there is no such races. Then an application
-> > would simply have to read this information and store it, and then it can
-> > use this information later to call readahead() on these locations of the
-> > file so that they are available when needed.  
-> 
-> trace_mm_filemap_add_to_page_cache()?
+Feature request:
 
-Great! How do I translate this to files? Do I just do a full scan on the
-entire device to find which file maps to an inode? And I'm guessing that
-the ofs is the offset into the file?
+To support checking the type of a specific field directly.
 
-(from a 5.10 modified kernel)
+Background:
 
-            <...>-177   [001]    13.166966: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a0 pfn=2586272 ofs=1204224
-            <...>-177   [001]    13.166968: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a1 pfn=2586273 ofs=1208320
-            <...>-177   [001]    13.166968: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a2 pfn=2586274 ofs=1212416
-            <...>-177   [001]    13.166969: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a3 pfn=2586275 ofs=1216512
-            <...>-177   [001]    13.166970: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a4 pfn=2586276 ofs=1220608
-            <...>-177   [001]    13.166971: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a5 pfn=2586277 ofs=1224704
-            <...>-177   [001]    13.166972: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a6 pfn=2586278 ofs=1228800
-            <...>-177   [001]    13.166972: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a7 pfn=2586279 ofs=1232896
-            <...>-177   [001]    13.166973: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a8 pfn=2586280 ofs=1236992
-            <...>-177   [001]    13.166974: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776a9 pfn=2586281 ofs=1241088
-            <...>-177   [001]    13.166979: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776aa pfn=2586282 ofs=1245184
-            <...>-177   [001]    13.166980: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776ab pfn=2586283 ofs=1249280
-            <...>-177   [001]    13.166981: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776ac pfn=2586284 ofs=1253376
-            <...>-177   [001]    13.166981: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776ad pfn=2586285 ofs=1257472
-            <...>-177   [001]    13.166982: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776ae pfn=2586286 ofs=1261568
-            <...>-177   [001]    13.166983: mm_filemap_add_to_page_cache: dev 259:5 ino 9b11 page=0x2776af pfn=2586287 ofs=1265664
+Currently, As far as I know, CORE is able to check a field=E2=80=99s
+existence, offset, size and signedness, but not the field=E2=80=99s type
+directly.
 
-The dev 259:5 is the root partition.
+There are changes that convert a field from a scalar type to a struct
+type, without changing the field=E2=80=99s name, offset or size. In that ca=
+se,
+it is currently difficult to use CORE to check such changes. For a
+concrete example,
 
-Doing the following:
+Commit 94a9717b3c (=E2=80=9Clocking/rwsem: Make rwsem->owner an atomic_long=
+_t=E2=80=9D)
 
- $ printf "%d\n" 0x9b11
-39697
+Changed the type of rw_semaphore::owner from tast_struct * to
+atomic_long_t. In that change, the field name, offset and size remain
+the same. But the BPF program code used to extract the value is
+different. For the kernel where the field is a pointer, we can write:
 
- $ sudo find / -xdev -inum 39697
-/lib64/libc.so.6
+sem->owner
 
-I guess that's what I need to do. Thanks!
+While in the kernel where the field is an atomic, we need to write:
 
-I'll try it out. But I'd still like to have an invite as I have lots of
-other fun stuff to talk to you all about (mm, fs, and BPF) ;-)
+sem->owner.counter.
 
--- Steve
+It would be great to be able to check a field=E2=80=99s type directly.
+Probably something like:
 
+#include =E2=80=9Cvmlinux.h=E2=80=9D
+
+struct rw_semaphore__old {
+        struct task_struct *owner;
+};
+
+struct rw_semaphore__new {
+        atomic_long_t owner;
+};
+
+u64 owner;
+if (bpf_core_field_type_is(sem->owner, struct task_struct *)) {
+        struct rw_semaphore__old *old =3D (struct rw_semaphore__old *)sem;
+        owner =3D (u64)sem->owner;
+} else if (bpf_core_field_type_is(sem->owner, atomic_long_t)) {
+        struct rw_semaphore__new *new =3D (struct rw_semaphore__new *)sem;
+        owner =3D new->owner.counter;
+}
+
+Hao
