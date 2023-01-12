@@ -2,116 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BB1667495
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 15:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECF0667A2A
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 17:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbjALOJ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 09:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
+        id S229730AbjALQBJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 11:01:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjALOIp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 09:08:45 -0500
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2109.outbound.protection.outlook.com [40.107.21.109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C1C5882D
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 06:05:00 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Edu3YTdFYhMkDe4Cmb4MBh+2SqFhfi7uhkXe2EKc6E5NNft/VCPcvbHShm6IMVlglCePDjTX1TVN9YNa4bryU5XriurMDfPJTOak5rO2vVULV1HXJlTCYUQZncsVHomE0EovXujVCev7rXLCLa92yG0zCMHjNAa2vx3OUj+NsejhAJfikdxLqLZMP79wxRJZOyNkzpRd7R+twTyhiKzQY7A4AYjGWTfx/kD33LPprDIWwbiHE1qyf9FgICelhY5q7vLLXYeG71JQ9UHWww83BtD/5C47S2s97GhAPEff5skarNUNqv69VgvYi4Fj6RT/cwdSiuh/gScQS9VSvJ3Wzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sO4IYpY8iBERtiNNf7re0M+IKWn+a4UwNLlo9FpXZLw=;
- b=JA4MB2DWn9CDuEKA4zi1Hzhj/Tz8eDgBMiNkv4W+EpNqFvkbmE1ArXa0unkePx8bRiu1Mp1PpJ/ywTyzl+488flf+EpARfwm1ADuBMlQmKxh2f8nDYUyHh6wUAm63DcW6B1IZP7MCjCXVU9vStAsIRA4y67RcxpquYSRR6OaFhw/R3QRHR7aH+0uscV8TzZ2vaPvVcoiDYfORalqyHX6jcM1B31TgeOBvpoi+8QJPZITMnHq2lI0jgHNwREG7g4RxGH4LPDPRg6Anv7DRduhjeMfH/8NypMqqL4fUc/It51gA9EOffizXXTKyuNSKOUzJadWMpi369cNaKavFvGDdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aquasec.com; dmarc=pass action=none header.from=aquasec.com;
- dkim=pass header.d=aquasec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Aquasec.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sO4IYpY8iBERtiNNf7re0M+IKWn+a4UwNLlo9FpXZLw=;
- b=i3R27S+bHcG79vQwHYYXgUyhYUiyWcRsnVYF4qBk/Kev0Wq2ruJ9E72/HwReYI+LODb7KHe6yE5+l1rh5HpmapF39UwjogMKod99UMgqiBJ2cTAZ1q+KXjn+pU7/wJan+YLR2z8yLxOXwlrxT/Pnc8+Zh6VI3/lyH0bfGuRT//L5y0wEW2Nt/3PF88e/iWPV0vpKxgqwg3t/5QTu1Tvz1ZCgsPSPjIdsibifhTCDEimDAVJIyPyUkxMyN8LH1xfBoZhOeoyxNtUydhLU3WAXV5cHSLcae19SUxxyB5zpi3Am6SnvlHkDjm+KHC/yaGn0JtGE+sbyY/moprYC4cNf4g==
-Received: from DU2PR03MB8006.eurprd03.prod.outlook.com (2603:10a6:10:2dd::12)
- by AM7PR03MB6232.eurprd03.prod.outlook.com (2603:10a6:20b:13b::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.12; Thu, 12 Jan
- 2023 14:04:46 +0000
-Received: from DU2PR03MB8006.eurprd03.prod.outlook.com
- ([fe80::fdf7:3aaa:ce1:5c70]) by DU2PR03MB8006.eurprd03.prod.outlook.com
- ([fe80::fdf7:3aaa:ce1:5c70%6]) with mapi id 15.20.6002.012; Thu, 12 Jan 2023
- 14:04:46 +0000
-From:   Ori Glassman <ori.glassman@aquasec.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Potential write after free to a task local storage within an eBPF
- program
-Thread-Topic: Potential write after free to a task local storage within an
- eBPF program
-Thread-Index: AQHZJoyCvyij5YHkqk2wOGaZw/JGf66az02C
-Date:   Thu, 12 Jan 2023 14:04:46 +0000
-Message-ID: <DU2PR03MB80060A94A9078440548B901196FD9@DU2PR03MB8006.eurprd03.prod.outlook.com>
-References: <DU2PR03MB8006816CEC3A464A3E94752E96FD9@DU2PR03MB8006.eurprd03.prod.outlook.com>
-In-Reply-To: <DU2PR03MB8006816CEC3A464A3E94752E96FD9@DU2PR03MB8006.eurprd03.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_218796d3-aea3-4b13-a12f-7c029d274f36_Enabled=True;MSIP_Label_218796d3-aea3-4b13-a12f-7c029d274f36_SiteId=bc034cf3-566b-41ca-9f24-5dc49474b05e;MSIP_Label_218796d3-aea3-4b13-a12f-7c029d274f36_SetDate=2023-01-12T14:04:46.588Z;MSIP_Label_218796d3-aea3-4b13-a12f-7c029d274f36_Name=All
- Employees
- (unrestricted);MSIP_Label_218796d3-aea3-4b13-a12f-7c029d274f36_ContentBits=0;MSIP_Label_218796d3-aea3-4b13-a12f-7c029d274f36_Method=Standard;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=aquasec.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU2PR03MB8006:EE_|AM7PR03MB6232:EE_
-x-ms-office365-filtering-correlation-id: 44451cdb-7a1b-4b27-414d-08daf4a5f680
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CVq5ce3MYu0P42epv6Kx9E/AvydzjB12m6vANArDgpQzCrq73k6BlNKZ49Ea7HMJojwKRibm1XUbUUoPec63TXtunPHAqHwbtMn+2EUs/ywOpHuRT+p/zVl5SMMMs2uLNN7CWCc8/BbpwrFJmOP5APywBYlhC1R7thOsdPk7l2aZq9YC+zkQQsJn6Yq0npMHYiy65rswzCebv2czdlif68/UQVvjjs0fUq/RdhjaL/EUcsUvoRTtZZlsvw9LDmiaJJe0PpZTyXVKc1xNbbdNceeUDxx+x3n2JO3tBbCM1IlTfXLE/1BR0DdDr5cIAOp8gzKPQmQfiSa1yikyxQA36ktFv3+deN2TF0XnCTDQqKhLc+dteKkwyLgrw7YKcO//hh0t1ItQdzLnVBjSRrEmBsUBgnMr96jzhU3txLiR+v+RUWn1wT8S06EQkq4WGGaAOhTEaKQzWd5dzwdLlmrG7wiWulTeT8gE2sa2lWaEBVscENDf5Ri9fXPznJQ6fWOFAOhqorBHcy5w3FK3BGjYHlToTv0T11r2hGMcAMc6emJDSoy9gdygJCn7WKKz1RrQHzy1N7vW96oOVDkfFzZYqMmMXYtim2b0QKWeu6zeTw1F0xQmM/tw1O5nRf1NDPMhWz+1J6F7yrUlnhlyU2OszS5o7xTyft886aOYTJe0T2N4F/qWnJP9dvgfP3GA+dQ5GGuF+TfEgpkaHhgy6UXksQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR03MB8006.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(39850400004)(366004)(346002)(376002)(396003)(451199015)(2906002)(5660300002)(52536014)(8936002)(33656002)(26005)(186003)(9686003)(2940100002)(4744005)(41300700001)(44832011)(76116006)(55016003)(66946007)(71200400001)(91956017)(38070700005)(64756008)(66446008)(66556008)(66476007)(86362001)(6916009)(8676002)(38100700002)(7696005)(122000001)(83380400001)(478600001)(6506007)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?0R9mM5AwBsCTfd75RZyfF3zuDuJOGbvSSBmumdCKicU1gGzWtDRKsaLYam?=
- =?iso-8859-1?Q?GtzN3ha8LWn3T2qBm5FmhFfC87vkVP1L6lir9U2DodjdastK3vb00WfiFA?=
- =?iso-8859-1?Q?y3sMwEZhtAEoc2b9gPONnuqhoRI0E+IVH8ZK0lxjk6M35zPNWqgzLMLE71?=
- =?iso-8859-1?Q?/oN5x+yE/xuKh+LNWwOXn21tsdZ83P0WguOxvVG3v9SQmatzrbYterZm+j?=
- =?iso-8859-1?Q?6DN0MwiuJo1atBr5cvEcfKVy9D3IPBEv6bdPi55NKKq25E0FAYDnIF9EZ1?=
- =?iso-8859-1?Q?mMAqyuJe7/D0RFPWhTJksB5E8WzIX5QIv6bK/R23sJZXJFBR828zA3Uf6e?=
- =?iso-8859-1?Q?qc4ySaHJPfkE6iu7YOB2SUxmiMU9WGm+MAN5VYLR2F7zfFCF/kNe2Tq5J6?=
- =?iso-8859-1?Q?FflMkfNt+yv29aYdLlDjkYArzFhnMeNVofJuyj2aAZhgT1dsxEfPonVamf?=
- =?iso-8859-1?Q?ZGTL1DwMeIEfRlkmNiTWjfrWP6g+wsyNudDP5aTuAR6L1j3snVqgWdTPKy?=
- =?iso-8859-1?Q?4fQKhsHN9U0XoC+j/mgk3NrzSwVSkmpmsqWx5lbrq54Fzy29xTbH0vZ49J?=
- =?iso-8859-1?Q?oNXgoJAAsTIt4y4vPv9Qa4zhOd3pOFM2PH3e9xhKzXxwxqCyPJ+YaYOikN?=
- =?iso-8859-1?Q?3CbYWaZlwQsBiI9D9X+QimqdIpLuUmTajz+pj7dDcLoGqHbf+FkGmEumlw?=
- =?iso-8859-1?Q?3xHrfPR6E83wBxvccs9Rbhi9Z85zz5FWg06zp5dm9D58vRA7d9RgBm26SX?=
- =?iso-8859-1?Q?7ZjgFRx7lS9edqBiBGX+33X26qMjV1tzh/jZHh7w9Qm8Loydyid5k8R/EQ?=
- =?iso-8859-1?Q?0NPLfachtuM5Y0i7NNcLvVX9alOs5lzFsVWXBwKnOTQHzAKB9KgnEL2WYb?=
- =?iso-8859-1?Q?Ej7lK1MJhab1yKoDarBpYvhyaelvONxujy44708/VcNFWWBNNbwiYQ2geN?=
- =?iso-8859-1?Q?+3wdKqKB36I8LMszu6k6zofc4huxDzKUoRF/gqKg5OGWbfLSBPtddTsWE0?=
- =?iso-8859-1?Q?w7DL1jHIH7YlaOtK9nBRUP+Qy3sbPZAKIraL3ekhW9sGjDQSCW2O80OldS?=
- =?iso-8859-1?Q?DJ34oYT28Q4oDNA0RpOBaDZjm1nLrwmxgW9wz7CPYDVsQVkXIgSMq2MR3N?=
- =?iso-8859-1?Q?XfM4E8mQQQbeS+Ce7cCqRpj+vU0UK2b4HU3wXUclYMJpEp5solcOQe+lJQ?=
- =?iso-8859-1?Q?0vtooyvjbR3vAWL7G7X4UzKIUyxfOXmCDRDd6zb7/LNG3JJ966kS+oIvsi?=
- =?iso-8859-1?Q?xx+PkhKQXDO5ZnTeXiRspvDCFiTLeFnb9MAzmT33wrRSqtLdVri3wPVUCz?=
- =?iso-8859-1?Q?/rrfREyqe1shXyNixtoC1503het/wH2wtyT43IVJ5Msbq5e8VOtFmjiHOg?=
- =?iso-8859-1?Q?w1Svtau9AyN8YL+VaUlMarUjyx0BYbtWROhT5seD2Bh4j11AQlOcAkolxC?=
- =?iso-8859-1?Q?3q9mFjxdb1WkDNoVx7j1N6PatPIbtDKysZtcGGFW8xT+UEXKQNfaN21k34?=
- =?iso-8859-1?Q?9ZL491OUOu98G9HuGCtg9bjfVxENghz1rMvc5n8eU6J9cnS329izsHE2Pk?=
- =?iso-8859-1?Q?PwqhVfiXD7eoJmFcoBSPZhU03rJft7h9w1EnA7dkZOyoT0lj9AB5YQaCZi?=
- =?iso-8859-1?Q?LShqy0YKa4rzD+7Z3eh9FxJAQU8ipDY6gm?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S231248AbjALQAm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 11:00:42 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BAE2203B
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:34 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id jr10so9499890qtb.7
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+b4oZC4k/u0MuI+eBhb5GDAbvtZlveaanBpbCBZGLuk=;
+        b=gH+YZsuYyNPgyszOqubkRLCS29SIJOB9PrQx1tS+xlG3QyAJ3bLTTWBPampZXiuPqs
+         KTjA5w3a6VtPl+bBdFurqalw8lyuxjz2A4sG9yff/uDc0KPTelAtNFUbVSWtgycVq3QP
+         ETITTnKP1toA9/o1j6NBt8NBf3hWk/pPK+Xbs3dnttA7wutvGvRjhvoiBOFTxKUyinsL
+         ZQzRD5nVGXI+QwkacI52G8jp09+KNKkVBdoJQKTHBZ+Ba0gFhaMYPjze8kqNsDHZdRaS
+         z2pSWMd+FbmGdTAJDgAgYGgXPSczYqXuIialaR265GI33BGLZMCQYdpezEEJ7gEamKHw
+         leqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+b4oZC4k/u0MuI+eBhb5GDAbvtZlveaanBpbCBZGLuk=;
+        b=hiS5Ejc4L5wkmlaBi/Mi3aQ8/7Qb8rMs2yvQkJVgGtWybh48JKqA19ukdGk6WWcNkB
+         nvQg6bkg0NYQ20PdavCkgduKCS/b8H6c5ixbpwI5povW7gfxJgjoaMyawUYGPV9azHzi
+         Er++FadDiEP44MIZMmJrngKGRju5x54gXsxOdU0rbse9Rq4cAqWdj/25tfvDR4yxMgVh
+         dxLrzwcDbrK3irG+z4JL9qTs3jCvJguF0R+WivPeggldeWUic8wW+2X2i1ewq1coqqeB
+         P6h5XFGiGyD3gDf2BKKdpG0xslpqww/thhUsAPSMLnYQMfy2sEj+t6+KZrx3zOtAdeHY
+         uItQ==
+X-Gm-Message-State: AFqh2krM7vbg7ocLI7EBnnFDxXd4Ss8kjhLS8gIEva/MkDRvcq0mcKAt
+        Zv5VGuVsKg2FvCN7QgYCJI0=
+X-Google-Smtp-Source: AMrXdXtGvY5tQVEkBtICluE5ihHdcXFG1vx0FJ6hV+iSciT1RQdYmWKrihwzvymSMNTVc073jfMhtA==
+X-Received: by 2002:a05:622a:1f10:b0:3a9:7782:fd7f with SMTP id ca16-20020a05622a1f1000b003a97782fd7fmr105567367qtb.21.1673538813262;
+        Thu, 12 Jan 2023 07:53:33 -0800 (PST)
+Received: from vultr.guest ([173.199.122.241])
+        by smtp.gmail.com with ESMTPSA id l17-20020ac848d1000000b003ab43dabfb1sm9280836qtr.55.2023.01.12.07.53.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Jan 2023 07:53:32 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     42.hyeyoo@gmail.com, vbabka@suse.cz, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, tj@kernel.org, dennis@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev
+Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next v2 00/11] mm, bpf: Add BPF into /proc/meminfo 
+Date:   Thu, 12 Jan 2023 15:53:15 +0000
+Message-Id: <20230112155326.26902-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-OriginatorOrg: aquasec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR03MB8006.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44451cdb-7a1b-4b27-414d-08daf4a5f680
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2023 14:04:46.8103
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bc034cf3-566b-41ca-9f24-5dc49474b05e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YnWL7HXb+M4CyQ8YiH/xCRtzXoDu5oOj0yAHtUKlR3klSywJ+uMEoMQV/CT38ifR+3SnaKaAD442dWZXzQj4wZnR0v04RTN70+iqKFJmEsU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR03MB6232
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -119,34 +74,152 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi everyone,=0A=
-=0A=
-I think I am able to write to an non allocated task local storage memory wi=
-thin an eBPF program (raw_tracepoint program), could anyone confirm this is=
- really a bug, and that I'm not missing anything? Here's the code (thanks!)=
-:=0A=
-=0A=
-----------------------------------------------------=0A=
-long *ptr;=0A=
-struct task_struct *task =3D bpf_get_current_task_btf();=0A=
-ptr =3D bpf_task_storage_get(&map_a, task, 0,=A0(1ULL << 0)); // create if =
-doesn't exist=0A=
-if (ptr)=0A=
-=A0 =A0 *ptr =3D 200;=0A=
-=A0=0A=
-int ret =3D bpf_task_storage_delete(&map_a, task);=0A=
-if (ret !=3D 0)=0A=
-=A0 =A0 return 0;=A0=0A=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=0A=
-=A0if (ptr)=0A=
-=A0 =A0 *ptr =3D 300; // writing to an un-mapped address=0A=
-=0A=
-const char fmt[] =3D "%ld";=0A=
-bpf_trace_printk(fmt, sizeof(fmt), *ptr); // this prints 300=0A=
-----------------------------------------------------=0A=
-=0A=
-My system is ('uname -a'): 'Linux ip-172-31-3-230 5.15.0-1027-aws #31-Ubunt=
-u SMP Wed Nov 30 20:19:26 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux'=0A=
-=0A=
-Thanks,=0A=
-Ori=
+Currently there's no way to get BPF memory usage, while we can only
+estimate the usage by bpftool or memcg, both of which are not reliable.
+
+- bpftool
+  `bpftool {map,prog} show` can show us the memlock of each map and
+  prog, but the memlock is vary from the real memory size. The memlock
+  of a bpf object is approximately
+  `round_up(key_size + value_size, 8) * max_entries`,
+  so 1) it can't apply to the non-preallocated bpf map which may
+  increase or decrease the real memory size dynamically. 2) the element
+  size of some bpf map is not `key_size + value_size`, for example the
+  element size of htab is
+  `sizeof(struct htab_elem) + round_up(key_size, 8) + round_up(value_size, 8)`
+  That said the differece between these two values may be very great if
+  the key_size and value_size is small. For example in my verifaction,
+  the size of memlock and real memory of a preallocated hash map are,
+
+  $ grep BPF /proc/meminfo
+  BPF:                 350 kB  <<< the size of preallocated memalloc pool
+
+  (create hash map)
+
+  $ bpftool map show
+  41549: hash  name count_map  flags 0x0
+        key 4B  value 4B  max_entries 1048576  memlock 8388608B
+
+  $ grep BPF /proc/meminfo
+  BPF:               82284 kB
+ 
+  So the real memory size is $((82284 - 350)) which is 81934 kB 
+  while the memlock is only 8192 kB. 
+
+- memcg  
+  With memcg we only know that the BPF memory usage is less than
+  memory.kmem.usage_in_bytes (or memory.current in v2). Furthermore, we
+  only know that the BPF memory usage is less than $MemTotal if the BPF
+  object is charged into root memcg :)
+
+So we need a way to get the BPF memory usage especially there will be
+more and more bpf programs running on the production environment. The
+memory usage of BPF memory is not trivial, which deserves a new item in
+/proc/meminfo.
+
+There're some ways to calculate the BPF memory usage. They all have pros
+and cons.
+
+- Option 1: Annotate BPF memory allocation only
+  It is how I implemented in RFC v1. You can look into the detail and
+  discussion on it via the link below[1]. 
+  - pros
+    We only need to annotate the BPF memory allocation, and then we can
+    find these allocated memory in the free path automatically. So it is
+    very easy to use, and we don't need to worry about the stat leak.
+  - cons
+    We must store the information of these allocated memory, in
+    particular the allocated slab objects. So it takes extra memory. If
+    we introduce a new member into struct page or add this member into
+    page_ext, it will take at least 0.2% of the total memory on 64bit
+    system, that is not acceptible.
+    One way to reduce this memory overhead is to introduce dynamic page
+    extension, but it will take great effort and it may not worth it.
+
+- Option 2: Annotate both allocation and free
+  It is similar to how I implemented in an earlier version[2].
+  - pros
+    There's almost no memory overhead.
+  - cons    
+    All the memory allocation and free must use the BPF helpers, but
+    can't use the generic helpers like kfree/vfree/percpu_free. So if
+    the user forget to use the helpers we introduced to allocate or
+    free BPF memory, there will be stat leak.
+    It is not easy to annotate some derferred allocation, in particular
+    the kfree_rcu(). So the user have to use call_rcu() instead of
+    kfree_rcu(). Another risk is that if we introduce other deferred
+    free helpers in the future, this BPF statistic may break easily.
+    
+- Option 3: Calculate the memory size via the pointer
+  It is how I implement in this patchset.    
+  After allocating some BPF memory, we get the full size from the
+  pointer and add it; Before freeing the BPF memory, we get the full
+  size from the pointer and sub it.
+  - pros    
+    No memory overhead.    
+    No code churn in MM core allocation and free path.
+    The impementation is quite clear and easy to maintain.
+  - cons
+    The calculation is not embedded in the MM allocation/free path, so
+    there will be some redundant code to execute to get the size via
+    pointer.    
+    BPF memory allocation and free must use the helpers we introduced,
+    otherwise there will be stat leak.
+
+I perfer the option 3. Its cons can be justified.    
+- bpf_map_free should be paired with bpf_map_alloc, that's reasonable.
+- Regarding the possible extra cpu cycles it may take, the user should
+  not allocate and free memory in the critical path if it is latency
+  sensitive. 
+
+[1]. https://lwn.net/Articles/917647/
+[2]. https://lore.kernel.org/linux-mm/20220921170002.29557-1-laoar.shao@gmail.com/
+
+v1->v2: don't use page_ext (Vlastimil, Hyeonggon)
+
+Yafang Shao (11):
+  mm: percpu: count memcg relevant memory only when kmemcg is enabled
+  mm: percpu: introduce percpu_size()
+  mm: slab: rename obj_full_size()
+  mm: slab: introduce ksize_full()
+  mm: vmalloc: introduce vsize()
+  mm: util: introduce kvsize()
+  bpf: introduce new helpers bpf_ringbuf_pages_{alloc,free}
+  bpf: use bpf_map_kzalloc in arraymap
+  bpf: use bpf_map_kvcalloc in bpf_local_storage
+  bpf: add and use bpf map free helpers
+  bpf: introduce bpf memory statistics
+
+ fs/proc/meminfo.c              |   4 ++
+ include/linux/bpf.h            | 115 +++++++++++++++++++++++++++++++++++++++--
+ include/linux/percpu.h         |   1 +
+ include/linux/slab.h           |  10 ++++
+ include/linux/vmalloc.h        |  15 ++++++
+ kernel/bpf/arraymap.c          |  20 +++----
+ kernel/bpf/bpf_cgrp_storage.c  |   2 +-
+ kernel/bpf/bpf_inode_storage.c |   2 +-
+ kernel/bpf/bpf_local_storage.c |  24 ++++-----
+ kernel/bpf/bpf_task_storage.c  |   2 +-
+ kernel/bpf/cpumap.c            |  13 +++--
+ kernel/bpf/devmap.c            |  10 ++--
+ kernel/bpf/hashtab.c           |   8 +--
+ kernel/bpf/helpers.c           |   2 +-
+ kernel/bpf/local_storage.c     |  12 ++---
+ kernel/bpf/lpm_trie.c          |  14 ++---
+ kernel/bpf/memalloc.c          |  19 ++++++-
+ kernel/bpf/ringbuf.c           |  75 ++++++++++++++++++---------
+ kernel/bpf/syscall.c           |  54 ++++++++++++++++++-
+ mm/percpu-internal.h           |   4 +-
+ mm/percpu.c                    |  35 +++++++++++++
+ mm/slab.h                      |  19 ++++---
+ mm/slab_common.c               |  52 +++++++++++++------
+ mm/slob.c                      |   2 +-
+ mm/util.c                      |  15 ++++++
+ net/core/bpf_sk_storage.c      |   4 +-
+ net/core/sock_map.c            |   2 +-
+ net/xdp/xskmap.c               |   2 +-
+ 28 files changed, 422 insertions(+), 115 deletions(-)
+
+-- 
+1.8.3.1
+
