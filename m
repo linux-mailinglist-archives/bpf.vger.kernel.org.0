@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6366E667A31
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 17:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1830667A32
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 17:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbjALQBX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 11:01:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
+        id S232975AbjALQBY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 11:01:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbjALQAu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 11:00:50 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672E4643B
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:45 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id g9so2142110qtu.2
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:45 -0800 (PST)
+        with ESMTP id S231899AbjALQAv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 11:00:51 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1176542
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:46 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id jr10so9500493qtb.7
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E3K14TM0boLxDmRFoAT7RRQ6Ph6mAKiCi/aS411tfbA=;
-        b=aU2EsvnuuPe3ZSnD50zuV9E4JG6cC0vrWHgi5vg4ikr91yqv2ZGfpwHTgtuioVbpBM
-         yyzQKV9/BjIWz7exRjSTq4RarPTJ/Rlay11Cq2e4N063c8OsXOEaMwQ+s4OEoF4KoPch
-         oWIcu/UkJwCVTSCFUjbild5uruartTUjGA2B+vrw7cJgwLrO1u6b2EFAn8IJTkNBc5OO
-         UlJE64nia/i0LkkrFI92NE/BnSEWTF9cfEphiDZKIJzaE3S1HPXo98teauQs5sn57MMQ
-         ceIE7gIKfpLLQKA7fWNK1yOatwIAlDmcEH49jqOD3eVtCUdCrdcwfOk8ScblBs3TJux0
-         xs7g==
+        bh=rS5gOGm/FV0EomE+G/HxAF0nnvFi+9pGVhYFw6UMCCU=;
+        b=UwdPEQKpeaenmGBhuznEUg2Sgbzj2CbVaC5pOx/wXR0lBhCD+Kmr+Ukcq32XrTVLeX
+         QD5J4wEyXv36kjjM5LJZD2ViCBneCDE+D38KzvcyswB6pmGebWYMatgB/TlTiTBbJVJt
+         4X/EnkVd1Js9zemKZm9qMUdchkr7bKUQEeIoIcwG+HebxpzFEJ7wnAtwcbpJMOpR3QxL
+         UZcwi5dRYZOX6riW+E4KupYoGQEPruyPGDOYSOkjE/yH8L2ypWd/VEi6SQRHHnZdlRUW
+         IVP5tx2gBV77V9Fjfr9na9W1tsh3ny+CcrEIlk/NIilzOE1vy8vTwWzy6zZ8H7H4nh2D
+         69RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=E3K14TM0boLxDmRFoAT7RRQ6Ph6mAKiCi/aS411tfbA=;
-        b=FR2YJ6zMeIPCta11oMDVX3IG3yt2zQdZbxtomJLo8upuoInumRhhZqUJrEoxdaRDJg
-         gU5DYaSNRle52xD7avVPumx1lKQ13A7F9irLHdbFPW+THO+wGT7hS6hT7p2P1/R4lZgH
-         AG4+0/eh2W0PdWuEoqb8JzORERgq2abh4hETAgXuxbAkFY8VIyScn/qjoFJdCXzEhMVU
-         p4RUpuDwYIjqO234C+4P9lEFX790sguBiuUmwRc0MenbblI7gR5Z9Z4HWJCV9O1TKdlq
-         Dj2tZo7HeAMlSSakZQMAXCExK8xyRyTwIv35fyH43C3rZd3LBX8LXaAYrnMV/ekCgrtR
-         XWmg==
-X-Gm-Message-State: AFqh2kp+oL6tPVuLGjuKseuweBsqfhOkX7FiOygI1764mqKZC48Gt4K3
-        +QPNqY+fB/qMvp3pqJA1DVI=
-X-Google-Smtp-Source: AMrXdXvViXPTwmFpafLglW8xYZpT4nbyGcr8EcVCNuoHszbaRFi7jBpgklWOBB6m5tYn5p20XICckQ==
-X-Received: by 2002:ac8:528c:0:b0:395:396f:a519 with SMTP id s12-20020ac8528c000000b00395396fa519mr101217124qtn.0.1673538824580;
-        Thu, 12 Jan 2023 07:53:44 -0800 (PST)
+        bh=rS5gOGm/FV0EomE+G/HxAF0nnvFi+9pGVhYFw6UMCCU=;
+        b=A9scgzXjOqIQplsXmJQNtbFtMSfrhmGmXiI3r+lmvYHXHYNeOrnVjGEHGa9SV+phDG
+         N0JnrDfECSKK2EhlW8QxRSzFrdGLCfxHjgUucBvOEkZ74i8zwqXFToYO30Dld/0Oc5oY
+         jVs5KFZY2X9+3YVu8ZoooyC3A1J3eqnj3QZQUNRPtXZZYyd69RZrRaRWW9Fh3W33Bkx2
+         csSTgpBBNcCxUM8XTCVRnmqr28FYqAkHyNgPVwQ13rM01WncUuEGWJORMWP3FRCkilO+
+         SBEjWwtXKV0TjozGLpT2XkaNPQujCuMGMy6DBeWHuK29ZfhYq/fg/a1hWGnMpznmm4wO
+         JjIA==
+X-Gm-Message-State: AFqh2krTcowc5BLGxG/mC9ASJGlU9IVsyWhTk1nEnQVkvjyBXDdsrKNT
+        7qIYTffdANbJUiGSdME89CY=
+X-Google-Smtp-Source: AMrXdXs89lOju7eofF5NQ1SL2Vit25d1eDBdT+g9j1z0eBLF0PzlschIVu6iMcAjd8ub9ViVM50vww==
+X-Received: by 2002:ac8:5e90:0:b0:3a7:ea9b:5627 with SMTP id r16-20020ac85e90000000b003a7ea9b5627mr13990618qtx.13.1673538825926;
+        Thu, 12 Jan 2023 07:53:45 -0800 (PST)
 Received: from vultr.guest ([173.199.122.241])
-        by smtp.gmail.com with ESMTPSA id l17-20020ac848d1000000b003ab43dabfb1sm9280836qtr.55.2023.01.12.07.53.43
+        by smtp.gmail.com with ESMTPSA id l17-20020ac848d1000000b003ab43dabfb1sm9280836qtr.55.2023.01.12.07.53.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jan 2023 07:53:43 -0800 (PST)
+        Thu, 12 Jan 2023 07:53:45 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     42.hyeyoo@gmail.com, vbabka@suse.cz, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
@@ -59,9 +59,9 @@ To:     42.hyeyoo@gmail.com, vbabka@suse.cz, ast@kernel.org,
         iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev
 Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next v2 08/11] bpf: use bpf_map_kzalloc in arraymap
-Date:   Thu, 12 Jan 2023 15:53:23 +0000
-Message-Id: <20230112155326.26902-9-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next v2 09/11] bpf: use bpf_map_kvcalloc in bpf_local_storage
+Date:   Thu, 12 Jan 2023 15:53:24 +0000
+Message-Id: <20230112155326.26902-10-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230112155326.26902-1-laoar.shao@gmail.com>
 References: <20230112155326.26902-1-laoar.shao@gmail.com>
@@ -77,47 +77,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allocates memory after map creation, then we can use the generic helper
-bpf_map_kzalloc() instead of the open-coded kzalloc().
+Introduce new helper bpf_map_kvcalloc() for this memory allocation.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/arraymap.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ include/linux/bpf.h            |  8 ++++++++
+ kernel/bpf/bpf_local_storage.c |  4 ++--
+ kernel/bpf/syscall.c           | 15 +++++++++++++++
+ 3 files changed, 25 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 4847069..e64a417 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -1102,20 +1102,20 @@ static struct bpf_map *prog_array_map_alloc(union bpf_attr *attr)
- 	struct bpf_array_aux *aux;
- 	struct bpf_map *map;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index ae7771c..fb14cc6 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1873,6 +1873,8 @@ int  generic_map_delete_batch(struct bpf_map *map,
+ void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
+ 			   int node);
+ void *bpf_map_kzalloc(const struct bpf_map *map, size_t size, gfp_t flags);
++void *bpf_map_kvcalloc(struct bpf_map *map, size_t n, size_t size,
++		       gfp_t flags);
+ void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
+ 				    size_t align, gfp_t flags);
+ #else
+@@ -1889,6 +1891,12 @@ void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
+ 	return kzalloc(size, flags);
+ }
  
--	aux = kzalloc(sizeof(*aux), GFP_KERNEL_ACCOUNT);
--	if (!aux)
-+	map = array_map_alloc(attr);
-+	if (IS_ERR(map))
- 		return ERR_PTR(-ENOMEM);
- 
-+	aux = bpf_map_kzalloc(map, sizeof(*aux), GFP_KERNEL);
-+	if (!aux) {
-+		array_map_free(map);
-+		return ERR_PTR(-ENOMEM);
-+	}
++static inline void *
++bpf_map_kvcalloc(struct bpf_map *map, size_t n, size_t size, gfp_t flags)
++{
++	return kvcalloc(n, size, flags);
++}
 +
- 	INIT_WORK(&aux->work, prog_array_map_clear_deferred);
- 	INIT_LIST_HEAD(&aux->poke_progs);
- 	mutex_init(&aux->poke_mutex);
+ static inline void __percpu *
+ bpf_map_alloc_percpu(const struct bpf_map *map, size_t size, size_t align,
+ 		     gfp_t flags)
+diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+index 373c3c2..35f4138 100644
+--- a/kernel/bpf/bpf_local_storage.c
++++ b/kernel/bpf/bpf_local_storage.c
+@@ -568,8 +568,8 @@ static struct bpf_local_storage_map *__bpf_local_storage_map_alloc(union bpf_att
+ 	nbuckets = max_t(u32, 2, nbuckets);
+ 	smap->bucket_log = ilog2(nbuckets);
  
--	map = array_map_alloc(attr);
--	if (IS_ERR(map)) {
--		kfree(aux);
--		return map;
--	}
--
- 	container_of(map, struct bpf_array, map)->aux = aux;
- 	aux->map = map;
+-	smap->buckets = kvcalloc(sizeof(*smap->buckets), nbuckets,
+-				 GFP_USER | __GFP_NOWARN | __GFP_ACCOUNT);
++	smap->buckets = bpf_map_kvcalloc(&smap->map, sizeof(*smap->buckets),
++					 nbuckets, GFP_USER | __GFP_NOWARN);
+ 	if (!smap->buckets) {
+ 		bpf_map_area_free(smap);
+ 		return ERR_PTR(-ENOMEM);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 35ffd80..9e266e8 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -470,6 +470,21 @@ void *bpf_map_kzalloc(const struct bpf_map *map, size_t size, gfp_t flags)
+ 	return ptr;
+ }
  
++void *bpf_map_kvcalloc(struct bpf_map *map, size_t n, size_t size,
++		       gfp_t flags)
++{
++	struct mem_cgroup *memcg, *old_memcg;
++	void *ptr;
++
++	memcg = bpf_map_get_memcg(map);
++	old_memcg = set_active_memcg(memcg);
++	ptr = kvcalloc(n, size, flags | __GFP_ACCOUNT);
++	set_active_memcg(old_memcg);
++	mem_cgroup_put(memcg);
++
++	return ptr;
++}
++
+ void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
+ 				    size_t align, gfp_t flags)
+ {
 -- 
 1.8.3.1
 
