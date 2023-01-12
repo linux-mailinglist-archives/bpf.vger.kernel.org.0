@@ -2,100 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7AE667CB9
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 18:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8B9667E37
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 19:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbjALRig (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 12:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
+        id S240456AbjALSiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 13:38:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbjALRhd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 12:37:33 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD5C6B5EB
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 08:58:11 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 08DE3B81EE8
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 16:48:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D1CAC433EF;
-        Thu, 12 Jan 2023 16:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1673542098;
-        bh=KFwT22c53rIZY8g9pc/A0DYZY/YJ9euFTtTdJbFcepA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=01A2odVJQe5R/xrks/3fsqBbgr5h7/i1Grt2DKY6NO/jYAebVXLcbCsAKhNA5z23b
-         /tR+M4z2TKZ23JnMl+QrIINlM4vum6pWWlqTd31qwpaoca7KWVzCR5P5x9Lqo8lFKe
-         9pasNn/3RONlcZ76XjNy52FuWwFtc6ftiahZWEMw=
-Date:   Thu, 12 Jan 2023 17:48:16 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     rainkin <rainkin1993@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Subject: Re: Kernel Panic in 4.19 ARM machines
-Message-ID: <Y8A50JKE65eohBCY@kroah.com>
-References: <CAHb-xauaGvVZrtRzCNNV370oc8swk2z3WYnLSMb3xy=rpLgOQw@mail.gmail.com>
+        with ESMTP id S238542AbjALShz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 13:37:55 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91E268CB4
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 10:09:35 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id x4so10246443pfj.1
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 10:09:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=t5QBMr0sFk9XRgwIjiMT2tjfg7T94fJD5dd8LZESWzw=;
+        b=EGNwY0DCO8idBlmOgRTnbr2+2Hi3QRuLGLlFONP3uXnMFbSk4B0glkItsDkVlXxxcV
+         asXL/RZQH1qXcWTYGYX5xdr1iBYmkVazXCdDTU7/iLkKjFjS67AWxZvNxlRY4BS7ZzBQ
+         fLoLmrA2Mf9RE9lnrzsKY72wBej3ezlhdJQQrlkXzQzaytdEJxlZ1thtevCgJknHGnU6
+         5SU0jDstU66bKFYHex6iIVEfFuL41CySCsyWi8U/tWhGHRAu30WgBInWTUNUuWWdftri
+         4UMjPfsJNnRjijb/jSmDTq5Lzi1Fe4gmM6rhZnWqf6GeFTwKgKwdk03+Ufc/lfY+if2w
+         aRsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t5QBMr0sFk9XRgwIjiMT2tjfg7T94fJD5dd8LZESWzw=;
+        b=4vE9gBqXcEHk0/9umG9Ql/xwaBHGLidBc91+LbEuXnZj9mE4plXRPIyUqf7nI7oV8C
+         DnXejDD+O2QLxfHQuV2zWGj7OdO89ng3TDu9L4p9kjjabzOhTTWNnumC1QErHqaBA0Hp
+         TkWlAXWXMiIK8PIRG3dHsrP+6cSB7SNd/U2UbFJlodsmYDVJlImHknkVAiG0DySh+5+V
+         cYhPap/d3PJ2zBQtV0ioWrZ7f+23SL8L8dPk5hdIp8XxaET3uzDfF2EJWQUhc0eh0U2R
+         3VzYIXZLfEBctLm6UgbsFtiQWdhUCwFJdaRdzVQRDc+CR1GhoRy5TYlCEOMzvaFe9hd1
+         1h/g==
+X-Gm-Message-State: AFqh2kolXiW4VnVofZhJ92uZ8Pv6AB/MQWZQv6ElncSbBh4bJLTJZAti
+        EP+YeWz1saTBJ+SE+gAw0OIAi7lDQ6Mxzk2eedLVuw==
+X-Google-Smtp-Source: AMrXdXu++3Jmlz5p16BLzI03q73YycsK1MGuj3lkgQ3wo57iGRPaENAIwmYCqwFP5/VC2KYMqzQsRQ8WgCRYKCO4mJo=
+X-Received: by 2002:a63:9d0a:0:b0:49f:478d:a72c with SMTP id
+ i10-20020a639d0a000000b0049f478da72cmr3327579pgd.250.1673546975069; Thu, 12
+ Jan 2023 10:09:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHb-xauaGvVZrtRzCNNV370oc8swk2z3WYnLSMb3xy=rpLgOQw@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230112003230.3779451-1-sdf@google.com> <f074b33d-c27a-822d-7bf6-16a5c8d9524d@linux.dev>
+ <2f76e7d6-1771-a8f5-4bd1-6f7cd0b59173@gmail.com>
+In-Reply-To: <2f76e7d6-1771-a8f5-4bd1-6f7cd0b59173@gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 12 Jan 2023 10:09:23 -0800
+Message-ID: <CAKH8qBtg-SW4PcQ+EbqoQCme38kgh4gkj-698Wmg8iWLA8qtNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 00/17] xdp: hints via kfuncs
+To:     Tariq Toukan <ttoukan.linux@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, bpf@vger.kernel.org,
+        xdp-hints@xdp-project.net, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 13, 2023 at 12:11:18AM +0800, rainkin wrote:
+On Thu, Jan 12, 2023 at 12:19 AM Tariq Toukan <ttoukan.linux@gmail.com> wrote:
+>
+>
+>
+> On 12/01/2023 9:29, Martin KaFai Lau wrote:
+> > On 1/11/23 4:32 PM, Stanislav Fomichev wrote:
+> >> Please see the first patch in the series for the overall
+> >> design and use-cases.
+> >>
+> >> See the following email from Toke for the per-packet metadata overhead:
+> >> https://lore.kernel.org/bpf/20221206024554.3826186-1-sdf@google.com/T/#m49d48ea08d525ec88360c7d14c4d34fb0e45e798
+> >>
+> >> Recent changes:
+> >>
+> >> - Bring back parts that were removed during patch reshuffling from "bpf:
+> >>    Introduce device-bound XDP programs" patch (Martin)
+> >>
+> >> - Remove netdev NULL check from __bpf_prog_dev_bound_init (Martin)
+> >>
+> >> - Remove netdev NULL check from bpf_dev_bound_resolve_kfunc (Martin)
+> >>
+> >> - Move target bound device verification from bpf_tracing_prog_attach into
+> >>    bpf_check_attach_target (Martin)
+> >>
+> >> - Move mlx5e_free_rx_in_progress_descs into txrx.h (Tariq)
+> >>
+> >> - mlx5e_fill_xdp_buff -> mlx5e_fill_mxbuf (Tariq)
+> >
+> > Thanks for the patches. The set lgtm.
+> >
+> > The selftest patch 11 and 17 have conflicts with the recent changes in
+> > selftests/bpf/xsk.{h,c} and selftests/bpf/Makefile. eg. it no longer
+> > needs XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD, so please respin. From a
+> > quick look, it should be some minor changes.
+> >
+> > Not sure if Tariq has a chance to look at the mlx5 changes shortly. The
+> > set is getting pretty long and the core part is ready with veth and mlx4
+> > support. I think it is better to get the ready parts landed first such
+> > that other drivers can also start adding support for it. One option is
+> > to post the two mlx5 patches as another patchset and they can be
+> > reviewed separately.
+> >
+>
 > Hi,
-> 
-> My ebpf program based on libbpf(v0.7) causes the kernel 4.19 (ARM
-> machine) panic:
-> 
-> Kernel panic - not syncing: softlockup: hung tasks
-> CPU: 3 PID: 2524351 Comm: sshd Kdump: loaded Tainted: G
-> Call trace:
-> dump_backtrace
-> show_stack
-> dump_stack
-> panic
-> lockup_detector_update_enable
-> __hrtimer_run_queues
-> hrtimer_interrupt
-> arch_timer_handler_virt
-> handle_percpu_devid_irq
-> generic_handle_irq
-> __handle_domain_irq
-> gic_handle_irq
-> el1_irq
-> smp_call_function_many
-> kick_all_cpus_sync
-> bpf_int_jit_compile
-> bpf_prog_select_runtime
-> bpf_prepare_filter
-> bpf_prog_create_from_user
-> seccomp_set_mode_filter
-> do_seccomp
-> prctl_set_seccomp
-> __se_sys_prctl
-> __arm64_sys_prctl
-> el0_svc_common
-> el0_svc_handler
-> el0_svc
-> 
-> Then I test the same ebpf program on kernel 4.19 (x86 machine), the
-> kernel DOES NOT panic.
-> I test it on kernel 5.10 (ARM machine), the kernel DOES NOT panic.
-> 
-> Thus I guess this is a kernel bug related to ARM arch and has been
-> fixed in 5.10.
-> 
-> Does anyone know any kernel bug or patch related to this issue?
+> I posted new comments.
+> I think they can be handled quickly, and still be part of the next respin.
+>
+> I'm fine with both options though. You can keep the mlx5e patches or
+> defer them to a followup series. Whatever works best for you.
 
-Can you use 'git bisect' to track down the commit that resolves this?
+Either way is fine with me also. I can find some time today to address
+Tariq's comments and respin if that works for everybody.
 
-thanks,
-
-greg k-h
+> Tariq
