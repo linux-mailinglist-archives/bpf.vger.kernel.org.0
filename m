@@ -2,399 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBD7668661
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 23:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67066686A8
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 23:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239693AbjALWIO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 17:08:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
+        id S230135AbjALWOi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 17:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239814AbjALWHP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 17:07:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FEE76AE6
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 13:55:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673560510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o2pqGz5pxnSufN+M86D4kyp6huaACG/FfcB/U9shMco=;
-        b=PnmbXo2XQ1gJgTtzmfHaZdSFHC38OS48X23GsWdBdJsAUVfuVWyRA21oI0OD67XB2snAPr
-        LPRK1gDZ85P1tVDBrxCkj9PX+rSNIESbqnzJWw5UqY+YCsCi2haDydWMEskKS2+4VsnUrx
-        AxZSQj3vuBLMEtBShFRrfUXUBELEtIQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-501-2SolUqqNMOWW9xpu6MUaWw-1; Thu, 12 Jan 2023 16:55:09 -0500
-X-MC-Unique: 2SolUqqNMOWW9xpu6MUaWw-1
-Received: by mail-ej1-f71.google.com with SMTP id qa18-20020a170907869200b007df87611618so13440525ejc.1
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 13:55:09 -0800 (PST)
+        with ESMTP id S240603AbjALWNa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 17:13:30 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6941955B2
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:07:37 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id h21so17543402qta.12
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 14:07:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tQCpmL3a6I3MxHDBkkJKT+jxF8jK60rugL/II6rJ9zE=;
+        b=D2sgxEiGAND4B42uQI2ytVsWC++ObEZqrycdu4p0cyw+s2M9C0TIMShlAz9fArDpiz
+         j8mEr1hCn1Y6zovqeuePp1hYrkphWlUqhgYOhrJvu2OVJ2GaJOytcpjvEhALtre3xoQn
+         3FvoIcnz6c/HecUd5UOLxCMjVaxHjC02pwQEQJsUpojyF1aiBJeFE9SZpMvk/iI6f3OP
+         AnCLs4dmXVBRxwnoacbYYVxGFed/3F0ihEkQVuY2Rvr8TiaePQy+bKmonajWhUnjyVyq
+         M9/DH+2BJTrLzy7SrFW9/o5faciGL28Cjl+7T6TXrILqk1WKVskCIvBpzgptpQ6qJnjf
+         GOJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o2pqGz5pxnSufN+M86D4kyp6huaACG/FfcB/U9shMco=;
-        b=FkDzrfXPfaUv/y27fbOF1Aek9ttXn3490vbg4mjI990ikC+zFiXjKQ+Nhj9DC2SuQk
-         2MUYBUvtSQfhaSWafT0fBwSWYJUkQER0erVDBnC5nKOUQqMZ2BD2GXx37vys6sKmqQwC
-         HPaQmj4Oxpe1YZgf3pSPfi8RD+HtBQk0Y7FnUzP53zZgad0NvRhvsvTTQUBuIT1ssC9K
-         yqeRi8xMXViK7vg9z4ungDQfEXFQ8BUDstr/R1BCCGOO3JAOEm5KjwuNZtKVfIbC3brv
-         7XEZKfIVftdeMt4w4zviLy3zdL0Ad5db4KdrHu+r1Csjh7YT+Ldyb+3U+poK/8n7O0m4
-         BhSQ==
-X-Gm-Message-State: AFqh2koqAIQGp87WYh0vmcN7TIvnt6M56Qg3WoKWH9a+QvfJKak+HMOi
-        OmFrgoTXXT6oxK6V9ifLS/sU/4SU0srceV8yXY7hruwmZ0cp+4waHATZBJKWBzplUwM1dIM+Yhg
-        MROOMwzwCz6Hx
-X-Received: by 2002:a17:907:2bed:b0:7c0:dd80:e95e with SMTP id gv45-20020a1709072bed00b007c0dd80e95emr1031483ejc.51.1673560507466;
-        Thu, 12 Jan 2023 13:55:07 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXskfiIzt1rRtcZmMG8KEcbynfep73CDRMmHyuGL20jYnjmciHfnH5BK2mK79hQJV+1g26p9+A==
-X-Received: by 2002:a17:907:2bed:b0:7c0:dd80:e95e with SMTP id gv45-20020a1709072bed00b007c0dd80e95emr1031428ejc.51.1673560506631;
-        Thu, 12 Jan 2023 13:55:06 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id r2-20020a17090609c200b007bd28b50305sm7861149eje.200.2023.01.12.13.55.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jan 2023 13:55:05 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3667E900729; Thu, 12 Jan 2023 22:55:05 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>,
-        Tariq Toukan <ttoukan.linux@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v7 15/17] net/mlx5e: Introduce
- wrapper for xdp_buff
-In-Reply-To: <87k01rfojm.fsf@toke.dk>
-References: <20230112003230.3779451-1-sdf@google.com>
- <20230112003230.3779451-16-sdf@google.com>
- <a0bac9bd-6772-64d4-8fd5-756ff4d8c2ad@gmail.com>
- <CAKH8qBsUOdRax0m5XM8guudSX_VYpJuMz_mzdMJegDsq4_ezwA@mail.gmail.com>
- <87k01rfojm.fsf@toke.dk>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 12 Jan 2023 22:55:05 +0100
-Message-ID: <87h6wvfmfa.fsf@toke.dk>
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tQCpmL3a6I3MxHDBkkJKT+jxF8jK60rugL/II6rJ9zE=;
+        b=z3uzwqA3hRbTW6bcRzIgGxBsUBwzkTV8bqG/Y2+DBWrtw7fd4S/iNrPyCG9LJ7RpWJ
+         2TqiOxIvvgmzaegsTGsFTqt7NA4z82O6vln0oQclnORA4A29RZdM9r6KRjCs0y/CZUki
+         mVomeTsfalEyIM1h3flw1y8ky1e6Q8A8NVqFlqtObd8y1zDVd+lQpEN8RHmGqM2J8lUT
+         FQYG7extxFEX0u9YbuiIbVF5U+eiVN/9LG+6P84rnfatnh+69AEUKcR614+R0836Yfgf
+         WlqhhOrqJDb0IWh4dkI2ZCFyf3VaBhjvXG9oKpRVR2dAM5Y5onZc/bJlF5wvTusO/G03
+         g4Hg==
+X-Gm-Message-State: AFqh2kqXB5THBqES+XZbg0dJa6eg4/CLLv9Jf+0Y/fmRbl0iwG60P3Hf
+        LIM3qITawzXNG6YDEXG0gvtAQsO8ki0oXugXtsw=
+X-Google-Smtp-Source: AMrXdXvvahVDKYIBkah3OkjZbBNSrZpBSaHutOru5w6rAhMnREhbB8a9sSmSCYJSabcHFWYgdI74p6A/Xw4RhTHkbhI=
+X-Received: by 2002:ac8:7743:0:b0:3b0:4a76:512e with SMTP id
+ g3-20020ac87743000000b003b04a76512emr323762qtu.113.1673561254230; Thu, 12 Jan
+ 2023 14:07:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Sender: jennehkandeh9@gmail.com
+Received: by 2002:ab3:ef8d:0:b0:4b2:a25c:b9b0 with HTTP; Thu, 12 Jan 2023
+ 14:07:33 -0800 (PST)
+From:   Jenneh Kandeh <jennehkandeh07@gmail.com>
+Date:   Thu, 12 Jan 2023 23:07:33 +0100
+X-Google-Sender-Auth: XmIbzuycgQaHw0Sjlr__L03NUMw
+Message-ID: <CAD6_1xoMZ2Jhyd8h4ja7XQLEFqLcpfK1wfeVg_-eF3+1XSDZLA@mail.gmail.com>
+Subject: re Regard My Father's Fund $10,200,000,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_80,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,NA_DOLLARS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
+I got your online connection - due to a serious search for a reliable
+personal. My name is Janna Kandih, date of birth
+May 23, 1994 in Freetown Capital Sierra Leone.
 
-> Stanislav Fomichev <sdf@google.com> writes:
->
->> On Thu, Jan 12, 2023 at 12:07 AM Tariq Toukan <ttoukan.linux@gmail.com> =
-wrote:
->>>
->>>
->>>
->>> On 12/01/2023 2:32, Stanislav Fomichev wrote:
->>> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>> >
->>> > Preparation for implementing HW metadata kfuncs. No functional change.
->>> >
->>> > Cc: Tariq Toukan <tariqt@nvidia.com>
->>> > Cc: Saeed Mahameed <saeedm@nvidia.com>
->>> > Cc: John Fastabend <john.fastabend@gmail.com>
->>> > Cc: David Ahern <dsahern@gmail.com>
->>> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
->>> > Cc: Jakub Kicinski <kuba@kernel.org>
->>> > Cc: Willem de Bruijn <willemb@google.com>
->>> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
->>> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
->>> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
->>> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
->>> > Cc: Maryam Tahhan <mtahhan@redhat.com>
->>> > Cc: xdp-hints@xdp-project.net
->>> > Cc: netdev@vger.kernel.org
->>> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
->>> > ---
->>> >   drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 +
->>> >   .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  3 +-
->>> >   .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  6 +-
->>> >   .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   | 25 ++++----
->>> >   .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 58 +++++++++-------=
----
->>> >   5 files changed, 50 insertions(+), 43 deletions(-)
->>> >
->>> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/n=
-et/ethernet/mellanox/mlx5/core/en.h
->>> > index 2d77fb8a8a01..af663978d1b4 100644
->>> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
->>> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
->>> > @@ -469,6 +469,7 @@ struct mlx5e_txqsq {
->>> >   union mlx5e_alloc_unit {
->>> >       struct page *page;
->>> >       struct xdp_buff *xsk;
->>> > +     struct mlx5e_xdp_buff *mxbuf;
->>>
->>> In XSK files below you mix usage of both alloc_units[page_idx].mxbuf and
->>> alloc_units[page_idx].xsk, while both fields share the memory of a unio=
-n.
->>>
->>> As struct mlx5e_xdp_buff wraps struct xdp_buff, I think that you just
->>> need to change the existing xsk field type from struct xdp_buff *xsk
->>> into struct mlx5e_xdp_buff *xsk and align the usage.
->>
->> Hmmm, good point. I'm actually not sure how it works currently.
->> mlx5e_alloc_unit.mxbuf doesn't seem to be initialized anywhere? Toke,
->> am I missing something?
->
-> It's initialised piecemeal in different places; but yeah, we're mixing
-> things a bit...
->
->> I'm thinking about something like this:
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h
->> b/drivers/net/ethernet/mellanox/mlx5/core/en.h
->> index af663978d1b4..2d77fb8a8a01 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
->> @@ -469,7 +469,6 @@ struct mlx5e_txqsq {
->>  union mlx5e_alloc_unit {
->>         struct page *page;
->>         struct xdp_buff *xsk;
->> -       struct mlx5e_xdp_buff *mxbuf;
->>  };
->
-> Hmm, for consistency with the non-XSK path we should rather go the other
-> direction and lose the xsk member, moving everything to mxbuf? Let me
-> give that a shot...
+I am the nephew of Foday Sankoh, the rebel leader in Sierra Leone,
+He opposes the government of President Ahmed Tejan Kubba
+former leader. I was in exile in Benin-Porto-Novo. but me
+Current resident of Porto-Novo Benin because of the war of my country,
+my country
+Her mother was killed on 04/01/2002 in a civil war in Sierra Leone. my father
+I decided to change the country of residence with me because I am the only one
+A child from my family has bad news of the death of my father on 11/25/2019;
+During the war, my father made a lot of money by
+sell diamonds.
 
-Something like the below?
-
--Toke
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/eth=
-ernet/mellanox/mlx5/core/en.h
-index 6de02d8aeab8..cb9cdb6421c5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -468,7 +468,6 @@ struct mlx5e_txqsq {
-=20
- union mlx5e_alloc_unit {
- 	struct page *page;
--	struct xdp_buff *xsk;
- 	struct mlx5e_xdp_buff *mxbuf;
- };
-=20
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h b/drivers/net=
-/ethernet/mellanox/mlx5/core/en/xdp.h
-index cb568c62aba0..95694a25ec31 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
-@@ -33,6 +33,7 @@
- #define __MLX5_EN_XDP_H__
-=20
- #include <linux/indirect_call_wrapper.h>
-+#include <net/xdp_sock_drv.h>
-=20
- #include "en.h"
- #include "en/txrx.h"
-@@ -112,6 +113,21 @@ static inline void mlx5e_xmit_xdp_doorbell(struct mlx5=
-e_xdpsq *sq)
- 	}
- }
-=20
-+static inline struct mlx5e_xdp_buff *mlx5e_xsk_buff_alloc(struct xsk_buff_=
-pool *pool)
-+{
-+	return (struct mlx5e_xdp_buff *)xsk_buff_alloc(pool);
-+}
-+
-+static inline void mlx5e_xsk_buff_free(struct mlx5e_xdp_buff *mxbuf)
-+{
-+	xsk_buff_free(&mxbuf->xdp);
-+}
-+
-+static inline dma_addr_t mlx5e_xsk_buff_xdp_get_frame_dma(struct mlx5e_xdp=
-_buff *mxbuf)
-+{
-+	return xsk_buff_xdp_get_frame_dma(&mxbuf->xdp);
-+}
-+
- /* Enable inline WQEs to shift some load from a congested HCA (HW) to
-  * a less congested cpu (SW).
-  */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c b/drivers/=
-net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
-index 8bf3029abd3c..1f166dbb7f22 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
-@@ -3,7 +3,6 @@
-=20
- #include "rx.h"
- #include "en/xdp.h"
--#include <net/xdp_sock_drv.h>
- #include <linux/filter.h>
-=20
- /* RX data path */
-@@ -21,7 +20,7 @@ int mlx5e_xsk_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
- 	if (unlikely(!xsk_buff_can_alloc(rq->xsk_pool, rq->mpwqe.pages_per_wqe)))
- 		goto err;
-=20
--	BUILD_BUG_ON(sizeof(wi->alloc_units[0]) !=3D sizeof(wi->alloc_units[0].xs=
-k));
-+	BUILD_BUG_ON(sizeof(wi->alloc_units[0]) !=3D sizeof(wi->alloc_units[0].mx=
-buf));
- 	XSK_CHECK_PRIV_TYPE(struct mlx5e_xdp_buff);
- 	batch =3D xsk_buff_alloc_batch(rq->xsk_pool, (struct xdp_buff **)wi->allo=
-c_units,
- 				     rq->mpwqe.pages_per_wqe);
-@@ -33,8 +32,8 @@ int mlx5e_xsk_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
- 	 * the first error, which will mean there are no more valid descriptors.
- 	 */
- 	for (; batch < rq->mpwqe.pages_per_wqe; batch++) {
--		wi->alloc_units[batch].xsk =3D xsk_buff_alloc(rq->xsk_pool);
--		if (unlikely(!wi->alloc_units[batch].xsk))
-+		wi->alloc_units[batch].mxbuf =3D mlx5e_xsk_buff_alloc(rq->xsk_pool);
-+		if (unlikely(!wi->alloc_units[batch].mxbuf))
- 			goto err_reuse_batch;
- 	}
-=20
-@@ -44,7 +43,7 @@ int mlx5e_xsk_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
-=20
- 	if (likely(rq->mpwqe.umr_mode =3D=3D MLX5E_MPWRQ_UMR_MODE_ALIGNED)) {
- 		for (i =3D 0; i < batch; i++) {
--			dma_addr_t addr =3D xsk_buff_xdp_get_frame_dma(wi->alloc_units[i].xsk);
-+			dma_addr_t addr =3D mlx5e_xsk_buff_xdp_get_frame_dma(wi->alloc_units[i]=
-.mxbuf);
-=20
- 			umr_wqe->inline_mtts[i] =3D (struct mlx5_mtt) {
- 				.ptag =3D cpu_to_be64(addr | MLX5_EN_WR),
-@@ -53,7 +52,7 @@ int mlx5e_xsk_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
- 		}
- 	} else if (unlikely(rq->mpwqe.umr_mode =3D=3D MLX5E_MPWRQ_UMR_MODE_UNALIG=
-NED)) {
- 		for (i =3D 0; i < batch; i++) {
--			dma_addr_t addr =3D xsk_buff_xdp_get_frame_dma(wi->alloc_units[i].xsk);
-+			dma_addr_t addr =3D mlx5e_xsk_buff_xdp_get_frame_dma(wi->alloc_units[i]=
-.mxbuf);
-=20
- 			umr_wqe->inline_ksms[i] =3D (struct mlx5_ksm) {
- 				.key =3D rq->mkey_be,
-@@ -65,7 +64,7 @@ int mlx5e_xsk_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
- 		u32 mapping_size =3D 1 << (rq->mpwqe.page_shift - 2);
-=20
- 		for (i =3D 0; i < batch; i++) {
--			dma_addr_t addr =3D xsk_buff_xdp_get_frame_dma(wi->alloc_units[i].xsk);
-+			dma_addr_t addr =3D mlx5e_xsk_buff_xdp_get_frame_dma(wi->alloc_units[i]=
-.mxbuf);
-=20
- 			umr_wqe->inline_ksms[i << 2] =3D (struct mlx5_ksm) {
- 				.key =3D rq->mkey_be,
-@@ -91,7 +90,7 @@ int mlx5e_xsk_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
- 		__be32 frame_size =3D cpu_to_be32(rq->xsk_pool->chunk_size);
-=20
- 		for (i =3D 0; i < batch; i++) {
--			dma_addr_t addr =3D xsk_buff_xdp_get_frame_dma(wi->alloc_units[i].xsk);
-+			dma_addr_t addr =3D mlx5e_xsk_buff_xdp_get_frame_dma(wi->alloc_units[i]=
-.mxbuf);
-=20
- 			umr_wqe->inline_klms[i << 1] =3D (struct mlx5_klm) {
- 				.key =3D rq->mkey_be,
-@@ -137,7 +136,7 @@ int mlx5e_xsk_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 i=
-x)
-=20
- err_reuse_batch:
- 	while (--batch >=3D 0)
--		xsk_buff_free(wi->alloc_units[batch].xsk);
-+		mlx5e_xsk_buff_free(wi->alloc_units[batch].mxbuf);
-=20
- err:
- 	rq->stats->buff_alloc_err++;
-@@ -156,7 +155,7 @@ int mlx5e_xsk_alloc_rx_wqes_batched(struct mlx5e_rq *rq=
-, u16 ix, int wqe_bulk)
- 	 * allocate XDP buffers straight into alloc_units.
- 	 */
- 	BUILD_BUG_ON(sizeof(rq->wqe.alloc_units[0]) !=3D
--		     sizeof(rq->wqe.alloc_units[0].xsk));
-+		     sizeof(rq->wqe.alloc_units[0].mxbuf));
- 	buffs =3D (struct xdp_buff **)rq->wqe.alloc_units;
- 	contig =3D mlx5_wq_cyc_get_size(wq) - ix;
- 	if (wqe_bulk <=3D contig) {
-@@ -177,8 +176,9 @@ int mlx5e_xsk_alloc_rx_wqes_batched(struct mlx5e_rq *rq=
-, u16 ix, int wqe_bulk)
- 		/* Assumes log_num_frags =3D=3D 0. */
- 		frag =3D &rq->wqe.frags[j];
-=20
--		addr =3D xsk_buff_xdp_get_frame_dma(frag->au->xsk);
-+		addr =3D mlx5e_xsk_buff_xdp_get_frame_dma(frag->au->mxbuf);
- 		wqe->data[0].addr =3D cpu_to_be64(addr + rq->buff.headroom);
-+		frag->au->mxbuf->rq =3D rq;
- 	}
-=20
- 	return alloc;
-@@ -199,12 +199,13 @@ int mlx5e_xsk_alloc_rx_wqes(struct mlx5e_rq *rq, u16 =
-ix, int wqe_bulk)
- 		/* Assumes log_num_frags =3D=3D 0. */
- 		frag =3D &rq->wqe.frags[j];
-=20
--		frag->au->xsk =3D xsk_buff_alloc(rq->xsk_pool);
--		if (unlikely(!frag->au->xsk))
-+		frag->au->mxbuf =3D mlx5e_xsk_buff_alloc(rq->xsk_pool);
-+		if (unlikely(!frag->au->mxbuf))
- 			return i;
-=20
--		addr =3D xsk_buff_xdp_get_frame_dma(frag->au->xsk);
-+		addr =3D mlx5e_xsk_buff_xdp_get_frame_dma(frag->au->mxbuf);
- 		wqe->data[0].addr =3D cpu_to_be64(addr + rq->buff.headroom);
-+		frag->au->mxbuf->rq =3D rq;
- 	}
-=20
- 	return wqe_bulk;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/=
-ethernet/mellanox/mlx5/core/en_rx.c
-index 7b08653be000..4313165709cb 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -41,7 +41,6 @@
- #include <net/gro.h>
- #include <net/udp.h>
- #include <net/tcp.h>
--#include <net/xdp_sock_drv.h>
- #include "en.h"
- #include "en/txrx.h"
- #include "en_tc.h"
-@@ -434,7 +433,7 @@ static inline void mlx5e_free_rx_wqe(struct mlx5e_rq *r=
-q,
- 		 * put into the Reuse Ring, because there is no way to return
- 		 * the page to the userspace when the interface goes down.
- 		 */
--		xsk_buff_free(wi->au->xsk);
-+		mlx5e_xsk_buff_free(wi->au->mxbuf);
- 		return;
- 	}
-=20
-@@ -515,7 +514,7 @@ mlx5e_free_rx_mpwqe(struct mlx5e_rq *rq, struct mlx5e_m=
-pw_info *wi, bool recycle
- 		 */
- 		for (i =3D 0; i < rq->mpwqe.pages_per_wqe; i++)
- 			if (no_xdp_xmit || !test_bit(i, wi->xdp_xmit_bitmap))
--				xsk_buff_free(alloc_units[i].xsk);
-+				mlx5e_xsk_buff_free(alloc_units[i].mxbuf);
- 	} else {
- 		for (i =3D 0; i < rq->mpwqe.pages_per_wqe; i++)
- 			if (no_xdp_xmit || !test_bit(i, wi->xdp_xmit_bitmap))
-
+to the value of US$10,200,000 (ten million two hundred US dollars
+dollars). This money is currently held secretly in the Economic
+Community of West African States
+Security company here in Porto-Novo Benin, but because
+The political unrest that still exists in this Africa, I can't invest
+money myself, and then I ask for your help, to help me take this money
+In your charge to invest and also advise me how to invest them; And
+I would like to add here that if an agreement is reached, it will be
+30% of the total value of the fund
+Yours minus your total expenses incurred during the clearing
+Fund in Cotonou Benin that 30% amounts to 3,060,000 dollars (three million sixty
+thousand US dollars) to you from the fund after us
+Fund confirmed there. I am waiting to hear from you soon.
