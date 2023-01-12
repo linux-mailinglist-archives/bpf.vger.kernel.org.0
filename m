@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 330A0667A29
+	by mail.lfdr.de (Postfix) with ESMTP id D47AC667A2B
 	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 17:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbjALQBK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 11:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        id S232564AbjALQBL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 11:01:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231759AbjALQAm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 11:00:42 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F163116C
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:35 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id a25so9626779qto.10
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:35 -0800 (PST)
+        with ESMTP id S234146AbjALQAn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 11:00:43 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E5A625C
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:36 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id z12so16745106qtv.5
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OeqvHlFMdqUrdKwM3stpBCHG4LxLYAKLvc5cbQKfD2M=;
-        b=S4nLopOsJYZ3zGIfDTyNZtVttayMeAqM2OAGWJeYz+rJMZVqUtVZ0qeVdz0pGGdEYp
-         RzXgIUgsGXuNW8ou5ahVgC9fDgvc/45xslOlfcZli/PwOeMzS+n1kz+fmj3tjM/kLFtc
-         nb4GiTTMVuRQ1ZWPYviO0Uist+d648cnZJPgSW46ZSvXWmr8vzq9TZ6460qWupRfItmj
-         QKGQLPzzCq/dWgpurqXSuDZFF9iwxaklOhCOG10RsQ45JSoQ++tBJCXDzXdGERYUaad8
-         OIIXmK+OLBSqpMmBhOFcKxnWNUTcRJNYwEm/1BdWY4tAKYsaLSIrvLhwbcTxUT0bgNvL
-         vtiA==
+        bh=0GttG9cGo2fGw7Ie6+QYs6E6KpCITpSOtaS4vLsszc8=;
+        b=Cs86hcYwXW1kyT1Ar3qnL76ZCbnEz0PuLFPljmDEP02SjXoY1Z3RjcF2o1cZcrfit5
+         QsRJZD+pHkF5Lp65YJU8iZVYq4d7OoijI3kadHA/0fI4edzur6B4RGyBR3E4vF662I/j
+         wNEecnuesci1bDHq9WwQtoP5yUf7oWgsfjkZY6J0nUR1rgflYRRAS4sWd2NT04xkGNd1
+         biHCt1RQu1AIGF++m/rRURQXtxdvBzCNjbZDBLpYJd7CRbWoeaX/X1UlYq/ECAWaQ3II
+         //PX23Rf28b9O8k3iB6GI8CVbc4v8x/BmlLTWUreFOpaZbasteZ4LBpLbnySid+akRmc
+         d17g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OeqvHlFMdqUrdKwM3stpBCHG4LxLYAKLvc5cbQKfD2M=;
-        b=fuD5A18PeKSmHlmiM8BZobnx6HfZJVdTrrevus19OPtIcDYFY2MTie7V430sR/75r/
-         b5dl45/Aa3/iCqGR5+seWKGXpG8tdPMv8+zeBKfn8024mWZqjkiXZDbZDS6+6wGeQFyc
-         imd32AFQe1zWtzZdvOx10NRO7MMpWVVPmHbUBbdAHGmEwGXCr/CJCvr/wefdd0ETzWpU
-         QGQ8KM+1Uq+fuvcQsgOjnrLELbNqftVtXtkCk9WfVliqYM7671H226RH8a01iGytNZ8E
-         t0kTD5LHUKAtrXofSaHRAKM13zZbsAbh22t9R7o1Rj+o4aQd+DbkfWz4ocsCuQ5tbI5E
-         09Ow==
-X-Gm-Message-State: AFqh2kqoeKuz31e7pYFurQy1cj5Iw27HENmr9V/YRl8rMQvF76h+5qgb
-        QWneWIR/DtHXBgHODyKp+wI=
-X-Google-Smtp-Source: AMrXdXsWmJxHSdOEBgnVEWIwQ0w62GOgHxRERmvpZuOPy7H7cm6CcasScRmQoJH25sfjpEi+fxKE+Q==
-X-Received: by 2002:ac8:12ca:0:b0:3a8:2d6:521e with SMTP id b10-20020ac812ca000000b003a802d6521emr15089349qtj.37.1673538814596;
-        Thu, 12 Jan 2023 07:53:34 -0800 (PST)
+        bh=0GttG9cGo2fGw7Ie6+QYs6E6KpCITpSOtaS4vLsszc8=;
+        b=uji2i+H0XuWauqeu8gnwFLHfy0MrUUV+hoZm6VP8BJ5mgJNhGgI7bE2/YzwqRxwCQe
+         VPZ02dyom8jH7iWMJ0KDKKW5TNWs+6GmJc/sNoHcVLF+WyaSqcGBNuVf823qyB2W8iry
+         2HT05CSQdoXlbBXSUeFbh28pTMCMMArKVuIKyWEc2CD1gbZrjY6S9eII36B/4wJjC+bG
+         TkUu0EC3VNtT5x5ebf9+hgIFLpTV2kXWDGA04dUcOSijtr+ZVCjwegb4k3JfKaOdRmi9
+         tYsr76FN1FaPrTDd2yEytI4k6bEJ3tG5WEcjHP5sy7rpyxMWXHCeimFR0GMcjKuyiNBz
+         xmVg==
+X-Gm-Message-State: AFqh2kr1sLHe39hNFw2p9/AczT85QPPKqdG3RQiU8NFcbcQJrBQ1cErh
+        240ah/ClId2CN/gHdHFghOg=
+X-Google-Smtp-Source: AMrXdXujjvIkIMxOnezoY+bqzXiyRl7Otg+3lH6xNrFMGBGSGIg4NYiYb1pdv7pwlHe5tHHIls2pwQ==
+X-Received: by 2002:ac8:7409:0:b0:3b1:691f:3d7a with SMTP id p9-20020ac87409000000b003b1691f3d7amr5867423qtq.68.1673538815891;
+        Thu, 12 Jan 2023 07:53:35 -0800 (PST)
 Received: from vultr.guest ([173.199.122.241])
-        by smtp.gmail.com with ESMTPSA id l17-20020ac848d1000000b003ab43dabfb1sm9280836qtr.55.2023.01.12.07.53.33
+        by smtp.gmail.com with ESMTPSA id l17-20020ac848d1000000b003ab43dabfb1sm9280836qtr.55.2023.01.12.07.53.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jan 2023 07:53:33 -0800 (PST)
+        Thu, 12 Jan 2023 07:53:35 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     42.hyeyoo@gmail.com, vbabka@suse.cz, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
@@ -58,11 +58,10 @@ To:     42.hyeyoo@gmail.com, vbabka@suse.cz, ast@kernel.org,
         akpm@linux-foundation.org, penberg@kernel.org, rientjes@google.com,
         iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev
 Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vasily Averin <vvs@openvz.org>
-Subject: [RFC PATCH bpf-next v2 01/11] mm: percpu: count memcg relevant memory only when kmemcg is enabled
-Date:   Thu, 12 Jan 2023 15:53:16 +0000
-Message-Id: <20230112155326.26902-2-laoar.shao@gmail.com>
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next v2 02/11] mm: percpu: introduce percpu_size()
+Date:   Thu, 12 Jan 2023 15:53:17 +0000
+Message-Id: <20230112155326.26902-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230112155326.26902-1-laoar.shao@gmail.com>
 References: <20230112155326.26902-1-laoar.shao@gmail.com>
@@ -78,41 +77,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The extra space which is used to store the obj_cgroup membership is only
-valid when kmemcg is enabled. The kmemcg can be disabled via the kernel
-parameter "cgroup.memory=nokmem" at runtime.
-This helper is also used in non-memcg code, for example the tracepoint,
-so we should fix it.
+Introduce a new helper percpu_size() to report full size of underlying
+allocation of a percpu address.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Vasily Averin <vvs@openvz.org>
 ---
- mm/percpu-internal.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/percpu.h |  1 +
+ mm/percpu.c            | 35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
-index 70b1ea2..2a95b1f 100644
---- a/mm/percpu-internal.h
-+++ b/mm/percpu-internal.h
-@@ -4,6 +4,7 @@
+diff --git a/include/linux/percpu.h b/include/linux/percpu.h
+index 1338ea2..7be4234 100644
+--- a/include/linux/percpu.h
++++ b/include/linux/percpu.h
+@@ -137,5 +137,6 @@ extern int __init pcpu_page_first_chunk(size_t reserved_size,
+ 						__alignof__(type))
  
- #include <linux/types.h>
- #include <linux/percpu.h>
-+#include <linux/memcontrol.h>
+ extern unsigned long pcpu_nr_pages(void);
++extern size_t percpu_size(void __percpu *ptr);
  
- /*
-  * pcpu_block_md is the metadata block struct.
-@@ -125,7 +126,8 @@ static inline size_t pcpu_obj_full_size(size_t size)
- 	size_t extra_size = 0;
+ #endif /* __LINUX_PERCPU_H */
+diff --git a/mm/percpu.c b/mm/percpu.c
+index acd78da..5580688 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -2302,6 +2302,41 @@ void free_percpu(void __percpu *ptr)
+ }
+ EXPORT_SYMBOL_GPL(free_percpu);
  
- #ifdef CONFIG_MEMCG_KMEM
--	extra_size += size / PCPU_MIN_ALLOC_SIZE * sizeof(struct obj_cgroup *);
-+	if (!mem_cgroup_kmem_disabled())
-+		extra_size += size / PCPU_MIN_ALLOC_SIZE * sizeof(struct obj_cgroup *);
- #endif
- 
- 	return size * num_possible_cpus() + extra_size;
++/**
++ * percpu_size - report full size of underlying allocation of percpu addr
++ * @ptr: pointer to percpu area
++ *
++ * CONTEXT:
++ * Can be called from atomic context.
++ */
++size_t percpu_size(void __percpu *ptr)
++{
++	int bit_off, bits, end, off, size;
++	struct pcpu_chunk *chunk;
++	unsigned long flags;
++	void *addr;
++
++	if (!ptr)
++		return 0;
++
++	addr = __pcpu_ptr_to_addr(ptr);
++
++	spin_lock_irqsave(&pcpu_lock, flags);
++	chunk = pcpu_chunk_addr_search(addr);
++	off = addr - chunk->base_addr;
++	bit_off = off / PCPU_MIN_ALLOC_SIZE;
++
++	/* find end index */
++	end = find_next_bit(chunk->bound_map, pcpu_chunk_map_bits(chunk),
++			    bit_off + 1);
++	spin_unlock_irqrestore(&pcpu_lock, flags);
++
++	bits = end - bit_off;
++	size = bits * PCPU_MIN_ALLOC_SIZE;
++
++	return pcpu_obj_full_size(size);
++}
++
+ bool __is_kernel_percpu_address(unsigned long addr, unsigned long *can_addr)
+ {
+ #ifdef CONFIG_SMP
 -- 
 1.8.3.1
 
