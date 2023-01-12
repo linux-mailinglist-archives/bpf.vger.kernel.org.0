@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D47AC667A2B
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 17:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C1F667A2C
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 17:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbjALQBL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 11:01:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S232699AbjALQBM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 11:01:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234146AbjALQAn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 11:00:43 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E5A625C
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:36 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id z12so16745106qtv.5
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:36 -0800 (PST)
+        with ESMTP id S234287AbjALQAo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 11:00:44 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29776262
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:37 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id a25so9626912qto.10
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:53:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0GttG9cGo2fGw7Ie6+QYs6E6KpCITpSOtaS4vLsszc8=;
-        b=Cs86hcYwXW1kyT1Ar3qnL76ZCbnEz0PuLFPljmDEP02SjXoY1Z3RjcF2o1cZcrfit5
-         QsRJZD+pHkF5Lp65YJU8iZVYq4d7OoijI3kadHA/0fI4edzur6B4RGyBR3E4vF662I/j
-         wNEecnuesci1bDHq9WwQtoP5yUf7oWgsfjkZY6J0nUR1rgflYRRAS4sWd2NT04xkGNd1
-         biHCt1RQu1AIGF++m/rRURQXtxdvBzCNjbZDBLpYJd7CRbWoeaX/X1UlYq/ECAWaQ3II
-         //PX23Rf28b9O8k3iB6GI8CVbc4v8x/BmlLTWUreFOpaZbasteZ4LBpLbnySid+akRmc
-         d17g==
+        bh=mVUzU5Lm9v4TwCr8MR19Sbma13E60mByaOAa7yrtf24=;
+        b=ALz+sfZNfS4qifRdKVjJ8liTZOnDRU+va/zE0oxhTHHmiy4uVJp/MTYMO3s8HKBBX7
+         kfY7l06ClrnXzuJ7SwOeoV5XP8m4rE/PpAwk2M/ze8SKWK3++rl0/fpfL9a1+7NncPo/
+         SsTYC3AIuXIEEPnYcGdNOIgGgXh6MnLjg7cFUrFJw3+s5Pzcdcwez0u3SEm8SWfVa8SI
+         lV3T8Y6TP2pAb72E04aXg+cxHgxvtBaUv2MNbXhHDcG968NZCThz/0JKKSqupM5LkS5s
+         bzBoNfaoCpdlDpOHwABYaSzg706CqymnvMJ07sqq4vcd/D+PIpKMKMaWwx7WypE2pfis
+         NrUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0GttG9cGo2fGw7Ie6+QYs6E6KpCITpSOtaS4vLsszc8=;
-        b=uji2i+H0XuWauqeu8gnwFLHfy0MrUUV+hoZm6VP8BJ5mgJNhGgI7bE2/YzwqRxwCQe
-         VPZ02dyom8jH7iWMJ0KDKKW5TNWs+6GmJc/sNoHcVLF+WyaSqcGBNuVf823qyB2W8iry
-         2HT05CSQdoXlbBXSUeFbh28pTMCMMArKVuIKyWEc2CD1gbZrjY6S9eII36B/4wJjC+bG
-         TkUu0EC3VNtT5x5ebf9+hgIFLpTV2kXWDGA04dUcOSijtr+ZVCjwegb4k3JfKaOdRmi9
-         tYsr76FN1FaPrTDd2yEytI4k6bEJ3tG5WEcjHP5sy7rpyxMWXHCeimFR0GMcjKuyiNBz
-         xmVg==
-X-Gm-Message-State: AFqh2kr1sLHe39hNFw2p9/AczT85QPPKqdG3RQiU8NFcbcQJrBQ1cErh
-        240ah/ClId2CN/gHdHFghOg=
-X-Google-Smtp-Source: AMrXdXujjvIkIMxOnezoY+bqzXiyRl7Otg+3lH6xNrFMGBGSGIg4NYiYb1pdv7pwlHe5tHHIls2pwQ==
-X-Received: by 2002:ac8:7409:0:b0:3b1:691f:3d7a with SMTP id p9-20020ac87409000000b003b1691f3d7amr5867423qtq.68.1673538815891;
-        Thu, 12 Jan 2023 07:53:35 -0800 (PST)
+        bh=mVUzU5Lm9v4TwCr8MR19Sbma13E60mByaOAa7yrtf24=;
+        b=UMkJtSaGFuo+57DS5ovt76zX/TXD9k/3qgQfvy3huzEMTn0TEpCFw+goNP1qHj8NBH
+         Kfzw+Gh2k1ZgijNrAxmEa6yzjT3RZt8lD6ONrJnEdeyWg0k5Ybqum7sRNYiW8iuGo4AA
+         CdDwNQDLv1N5m4awem+/q69m/fAitheSFa8S272Ww+Q4zfXeasjDm1fMBsO9ItFP4oMe
+         RU4oJCwudrnaH239y8HkDwqOe986orYyrxdIfFwghGs3KyRlrIysBP+7B42lk/hOWi8n
+         EiITgsZwoFbaKqCyghTnH+NLwYCuHE6gfVMgAneNmI09arAqKpyDT0j7FwHIG/PY5sFg
+         QRXQ==
+X-Gm-Message-State: AFqh2koWbA2s60ND0ZzScro8+hsKG1/c+HuWEEq92qXd614h2XRQERzq
+        Y4RMX6uMaFob4oKzotS0ss4=
+X-Google-Smtp-Source: AMrXdXsF0qX10TMukl4qhalYqOJc8cvWNp4i4Otvd5G6MW0t1u1Ue6UiuE5Z2o4FUsT/NSZGV/wCPQ==
+X-Received: by 2002:ac8:6c7:0:b0:3a7:f424:d1bb with SMTP id j7-20020ac806c7000000b003a7f424d1bbmr14664614qth.21.1673538817402;
+        Thu, 12 Jan 2023 07:53:37 -0800 (PST)
 Received: from vultr.guest ([173.199.122.241])
-        by smtp.gmail.com with ESMTPSA id l17-20020ac848d1000000b003ab43dabfb1sm9280836qtr.55.2023.01.12.07.53.34
+        by smtp.gmail.com with ESMTPSA id l17-20020ac848d1000000b003ab43dabfb1sm9280836qtr.55.2023.01.12.07.53.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jan 2023 07:53:35 -0800 (PST)
+        Thu, 12 Jan 2023 07:53:36 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     42.hyeyoo@gmail.com, vbabka@suse.cz, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
@@ -59,9 +59,9 @@ To:     42.hyeyoo@gmail.com, vbabka@suse.cz, ast@kernel.org,
         iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev
 Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next v2 02/11] mm: percpu: introduce percpu_size()
-Date:   Thu, 12 Jan 2023 15:53:17 +0000
-Message-Id: <20230112155326.26902-3-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next v2 03/11] mm: slab: rename obj_full_size()
+Date:   Thu, 12 Jan 2023 15:53:18 +0000
+Message-Id: <20230112155326.26902-4-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230112155326.26902-1-laoar.shao@gmail.com>
 References: <20230112155326.26902-1-laoar.shao@gmail.com>
@@ -77,72 +77,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce a new helper percpu_size() to report full size of underlying
-allocation of a percpu address.
+The helper obj_full_size() is a little misleading, because it is only
+valid when kmemcg is enabled. Meanwhile it is only used when kmemcg is
+enabled currently, so we just need to rename it to a more meaningful name.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
 ---
- include/linux/percpu.h |  1 +
- mm/percpu.c            | 35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ mm/slab.h | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/percpu.h b/include/linux/percpu.h
-index 1338ea2..7be4234 100644
---- a/include/linux/percpu.h
-+++ b/include/linux/percpu.h
-@@ -137,5 +137,6 @@ extern int __init pcpu_page_first_chunk(size_t reserved_size,
- 						__alignof__(type))
- 
- extern unsigned long pcpu_nr_pages(void);
-+extern size_t percpu_size(void __percpu *ptr);
- 
- #endif /* __LINUX_PERCPU_H */
-diff --git a/mm/percpu.c b/mm/percpu.c
-index acd78da..5580688 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -2302,6 +2302,41 @@ void free_percpu(void __percpu *ptr)
+diff --git a/mm/slab.h b/mm/slab.h
+index 7cc4329..35e0b3b 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -467,7 +467,10 @@ static inline void memcg_free_slab_cgroups(struct slab *slab)
+ 	slab->memcg_data = 0;
  }
- EXPORT_SYMBOL_GPL(free_percpu);
  
-+/**
-+ * percpu_size - report full size of underlying allocation of percpu addr
-+ * @ptr: pointer to percpu area
-+ *
-+ * CONTEXT:
-+ * Can be called from atomic context.
+-static inline size_t obj_full_size(struct kmem_cache *s)
++/*
++ * This helper is only valid when kmemcg isn't disabled.
 + */
-+size_t percpu_size(void __percpu *ptr)
-+{
-+	int bit_off, bits, end, off, size;
-+	struct pcpu_chunk *chunk;
-+	unsigned long flags;
-+	void *addr;
-+
-+	if (!ptr)
-+		return 0;
-+
-+	addr = __pcpu_ptr_to_addr(ptr);
-+
-+	spin_lock_irqsave(&pcpu_lock, flags);
-+	chunk = pcpu_chunk_addr_search(addr);
-+	off = addr - chunk->base_addr;
-+	bit_off = off / PCPU_MIN_ALLOC_SIZE;
-+
-+	/* find end index */
-+	end = find_next_bit(chunk->bound_map, pcpu_chunk_map_bits(chunk),
-+			    bit_off + 1);
-+	spin_unlock_irqrestore(&pcpu_lock, flags);
-+
-+	bits = end - bit_off;
-+	size = bits * PCPU_MIN_ALLOC_SIZE;
-+
-+	return pcpu_obj_full_size(size);
-+}
-+
- bool __is_kernel_percpu_address(unsigned long addr, unsigned long *can_addr)
++static inline size_t obj_kmemcg_size(struct kmem_cache *s)
  {
- #ifdef CONFIG_SMP
+ 	/*
+ 	 * For each accounted object there is an extra space which is used
+@@ -508,7 +511,7 @@ static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+ 			goto out;
+ 	}
+ 
+-	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s)))
++	if (obj_cgroup_charge(objcg, flags, objects * obj_kmemcg_size(s)))
+ 		goto out;
+ 
+ 	*objcgp = objcg;
+@@ -537,7 +540,7 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+ 			if (!slab_objcgs(slab) &&
+ 			    memcg_alloc_slab_cgroups(slab, s, flags,
+ 							 false)) {
+-				obj_cgroup_uncharge(objcg, obj_full_size(s));
++				obj_cgroup_uncharge(objcg, obj_kmemcg_size(s));
+ 				continue;
+ 			}
+ 
+@@ -545,9 +548,9 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+ 			obj_cgroup_get(objcg);
+ 			slab_objcgs(slab)[off] = objcg;
+ 			mod_objcg_state(objcg, slab_pgdat(slab),
+-					cache_vmstat_idx(s), obj_full_size(s));
++					cache_vmstat_idx(s), obj_kmemcg_size(s));
+ 		} else {
+-			obj_cgroup_uncharge(objcg, obj_full_size(s));
++			obj_cgroup_uncharge(objcg, obj_kmemcg_size(s));
+ 		}
+ 	}
+ 	obj_cgroup_put(objcg);
+@@ -576,9 +579,9 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+ 			continue;
+ 
+ 		objcgs[off] = NULL;
+-		obj_cgroup_uncharge(objcg, obj_full_size(s));
++		obj_cgroup_uncharge(objcg, obj_kmemcg_size(s));
+ 		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
+-				-obj_full_size(s));
++				-obj_kmemcg_size(s));
+ 		obj_cgroup_put(objcg);
+ 	}
+ }
 -- 
 1.8.3.1
 
