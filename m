@@ -2,116 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AB26668EC
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 03:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F9266692C
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 04:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbjALCam (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Jan 2023 21:30:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S235329AbjALDEN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Jan 2023 22:04:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235156AbjALCae (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Jan 2023 21:30:34 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0434A3D9DC;
-        Wed, 11 Jan 2023 18:30:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 61707B81DAB;
-        Thu, 12 Jan 2023 02:30:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EDCA6C433EF;
-        Thu, 12 Jan 2023 02:30:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673490626;
-        bh=w2IwsGN0o3LLtYByqFZPHgmCpcA2+aIo6UWPI7ZDCLY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nybjHTRU6F+cAyj0d+mT5bpEpf8Ib8P6tQxsUYb1++uz6gPb2J+dYwiHkYTJVR8Md
-         uaK7YZR0kmAKdp2trM4QoC4cBL+XxHr+GKHnFYGEdP631s+D+RIj8RcoY5VHm8Eo+K
-         WhhXNoy6UKdthL9fj918KqNLPI2MpV8TaTMllN9CC2uIFx4+pUvAqfLokv9MtOkYUc
-         rm4U0/efwnWEAKsRkXfEDnA648aG+ljz8F0S5K1iFpNEgvYdcmfArkqdfdnAITtNDS
-         t9ngw6jys7qTmJ6Cqo/nRhRUyg0JaliJu075k9nXZ0EFeOgJu75FjPo6momU/WLQyL
-         q+X82mFxgSRYw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BEA02E45233;
-        Thu, 12 Jan 2023 02:30:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231690AbjALDEN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Jan 2023 22:04:13 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2049F485BE;
+        Wed, 11 Jan 2023 19:04:11 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1pFnsf-00084U-Eo; Thu, 12 Jan 2023 04:03:53 +0100
+Date:   Thu, 12 Jan 2023 04:03:53 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Quentin Deslandes <qde@naccy.de>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Dmitrii Banshchikov <me@ubique.spb.ru>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        Kernel Team <kernel-team@meta.com>, fw@strlen.de
+Subject: Re: [PATCH bpf-next v3 00/16] bpfilter
+Message-ID: <20230112030353.GK27644@breakpoint.cc>
+References: <20221224000402.476079-1-qde@naccy.de>
+ <20221227182242.ozkc6u2lbwneoi4r@macbook-pro-6.dhcp.thefacebook.com>
+ <cf6f7e30-9b0e-497b-87d4-df450949cd32@naccy.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 00/15] selftests/xsk: speed-ups, fixes,
- and new XDP programs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167349062577.27632.8804687487948517842.git-patchwork-notify@kernel.org>
-Date:   Thu, 12 Jan 2023 02:30:25 +0000
-References: <20230111093526.11682-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20230111093526.11682-1-magnus.karlsson@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, bpf@vger.kernel.org, yhs@fb.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, tirthendu.sarkar@intel.com,
-        jonathan.lemon@gmail.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf6f7e30-9b0e-497b-87d4-df450949cd32@naccy.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Quentin Deslandes <qde@naccy.de> wrote:
+> That sounds interesting. If my understanding is correct, Florian's
+> work doesn't yet allow for userspace-generated programs to be attached,
+> which will be required for bpfilter.
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Yes, but I started working on the attachment side.  It doesn't depend
+on the nf-bpf generator patch set.
 
-On Wed, 11 Jan 2023 10:35:11 +0100 you wrote:
-> This is a patch set of various performance improvements, fixes, and
-> the introduction of more than one XDP program to the xsk selftests
-> framework so we can test more things in the future such as upcoming
-> multi-buffer and metadata support for AF_XDP. The new programs just
-> reuse the framework that all the other eBPF selftests use. The new
-> feature is used to implement one new test that does XDP_DROP on every
-> other packet. More tests using this will be added in future commits.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v3,01/15] selftests/xsk: print correct payload for packet dump
-    https://git.kernel.org/bpf/bpf-next/c/2d0b2ae2871a
-  - [bpf-next,v3,02/15] selftests/xsk: do not close unused file descriptors
-    https://git.kernel.org/bpf/bpf-next/c/5adaf52776a4
-  - [bpf-next,v3,03/15] selftests/xsk: submit correct number of frames in populate_fill_ring
-    https://git.kernel.org/bpf/bpf-next/c/1e04f23bccf9
-  - [bpf-next,v3,04/15] selftests/xsk: print correct error codes when exiting
-    https://git.kernel.org/bpf/bpf-next/c/085dcccfb7d3
-  - [bpf-next,v3,05/15] selftests/xsk: remove unused variable outstanding_tx
-    https://git.kernel.org/bpf/bpf-next/c/a4ca62277b6a
-  - [bpf-next,v3,06/15] selftests/xsk: add debug option for creating netdevs
-    https://git.kernel.org/bpf/bpf-next/c/703bfd371013
-  - [bpf-next,v3,07/15] selftests/xsk: replace asm acquire/release implementations
-    https://git.kernel.org/bpf/bpf-next/c/efe620e5ba03
-  - [bpf-next,v3,08/15] selftests/xsk: remove namespaces
-    https://git.kernel.org/bpf/bpf-next/c/64aef77d750e
-  - [bpf-next,v3,09/15] selftests/xsk: load and attach XDP program only once per mode
-    https://git.kernel.org/bpf/bpf-next/c/aa61d81f397c
-  - [bpf-next,v3,10/15] selftests/xsk: remove unnecessary code in control path
-    https://git.kernel.org/bpf/bpf-next/c/6b3c0821caa4
-  - [bpf-next,v3,11/15] selftests/xsk: get rid of built-in XDP program
-    https://git.kernel.org/bpf/bpf-next/c/f0a249df1b07
-  - [bpf-next,v3,12/15] selftests/xsk: add test when some packets are XDP_DROPed
-    https://git.kernel.org/bpf/bpf-next/c/80bea9acabb7
-  - [bpf-next,v3,13/15] selftests/xsk: merge dual and single thread dispatchers
-    https://git.kernel.org/bpf/bpf-next/c/7f881984073a
-  - [bpf-next,v3,14/15] selftests/xsk: automatically restore packet stream
-    https://git.kernel.org/bpf/bpf-next/c/e67b2554f301
-  - [bpf-next,v3,15/15] selftests/xsk: automatically switch XDP programs
-    https://git.kernel.org/bpf/bpf-next/c/7d8319a7cc66
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I think I can share PoC/RFC draft next week.
