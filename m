@@ -2,185 +2,414 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C99C666BA7
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 08:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD64666C19
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 09:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235535AbjALHfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 02:35:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        id S239698AbjALIHr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 03:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235405AbjALHfp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 02:35:45 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA6FBE06
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 23:35:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D2FD2B81DAA
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:35:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C1D2C433EF
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 07:35:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673508937;
-        bh=pT6qBK3u9t5MKdx4Za6f5K02gF1ptlftc/jyzZFDmu0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ddzkIcsJ4EzLxeAWx7cTC+Lg9oMa/ZmtUYpFVsNtHzv7gw2crsVS+m9Ldzcbpla97
-         daVcEiJXOfCIvs7t5uts33b7EjeckUSqgsGO/ZE++fuY+53elOmM6RMZzhGMAMLLp2
-         iQMeghHkGQ+xK79PtFO4hlr//yNSPTMMcnt/EPsFYTEg86EckDWD0kS3H7ErXvcUtE
-         5vrjZXS12RCv+Cv0GQe1hMsbzZHOEXGLZxPYHoxdFHOtk2zxwIJ4qDfXwoojArCLbd
-         sMS7zHR3Hcq9wpqfSTbClNXMFmHzeQ41ekcwMU3pzRCTbadv9xJT1Dom8ekzpYiLDo
-         QtULM6OOHkddg==
-Received: by mail-lf1-f52.google.com with SMTP id bf43so27198541lfb.6
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 23:35:37 -0800 (PST)
-X-Gm-Message-State: AFqh2krCn1c1C4WtKhid1dbFZDm6ybyyuoBoRp5rsP769WmZQaAhhdvA
-        qvVabLcsNiBeWV1EPG+Iwj3fKDeumY0SOHsAyr4=
-X-Google-Smtp-Source: AMrXdXs+/oM45w9cc7qPn0MV3SXpL6mb2AeehbfQhdkUdztczN+bBnQI30v2yC2BzrYcVOaTZWq8DaoyJKrHsQQE84Q=
-X-Received: by 2002:a05:6512:1395:b0:4b5:b46b:17c7 with SMTP id
- p21-20020a056512139500b004b5b46b17c7mr8007816lfa.215.1673508935200; Wed, 11
- Jan 2023 23:35:35 -0800 (PST)
+        with ESMTP id S238774AbjALIH2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 03:07:28 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B23048831;
+        Thu, 12 Jan 2023 00:07:25 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id z11so25769436ede.1;
+        Thu, 12 Jan 2023 00:07:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CbhF/nnSJPwM2+rbbAW9sDr9asQP06rO56ZNRMmJ5Fk=;
+        b=N5FTNt+xG/Sz+q4+gZzkgbPaTj84jHnLeFwdrg5xGbgmr+D9/choE46LyGuu7MisoH
+         tgXpWFC7koZU74la0/dgGXayzalbQBa3FaugpO2knQK5KmXR+n/053VCza+ROzE9h1PH
+         +JBeTLatPN/v1wUYAlTTOGnDPH5RMu9Gf59kxa55aTuelr/qBmh79kztbW/9/Rwg4q1J
+         TYHi0vPxQUXaij0Sw5+7AQd+44ZXn/1GEuK99pfCdwa5vru4eDQN6SrpSsJO6n20caJ8
+         ZyeDTsDYz1BJUeYoTvQnVKNc8Dvg+9AvgdxInxlH9OaELRfVPX+pZqBCRNjCq4SC2OC6
+         EQqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CbhF/nnSJPwM2+rbbAW9sDr9asQP06rO56ZNRMmJ5Fk=;
+        b=d/zUjD6CCF/Xvj6Wl4TdjjE1db1Zs29LzEfKO/1PmdThstuSzV5eR7vAnmUNrHoUw1
+         Vq6vU6kLcGQ582EopNxeUjLXEYp23PO8p5/lySnxkUuOvTF3wyRn2e73t8CJLu2UvycQ
+         fgCEJ7o+V+ziwNaF7mOFhI/eNHNqZQE+8nq/vngLPyDI3Chv2Yz2ehchAvQjamYINkCY
+         xAJ82VZ1ubTThWJkcMum4kzskNwi3Onu17CLrQqdi1Wg08GqTjDxGWnE37+VgEWggk21
+         YlsPDtND80o1g3QDK4AdpxZB0TYN3X4L9m7TF48SAZ0v3FydqOG0Vh7CcSAw8qi6OTuy
+         +1ew==
+X-Gm-Message-State: AFqh2krAt47GFJ1UsfmlF/4Kf5Rlws218ARwScfyyxQGHgG03WZ9XC+S
+        jJ0IHyiCnFZj3Fg1KYOqqvA=
+X-Google-Smtp-Source: AMrXdXtGiYH6c1xl+TLPb2WFGew1k2Hk3MAWLvnj/C29vnxGb6+FKKPkbK0tBRDrW+CK7RCnlri0rw==
+X-Received: by 2002:a05:6402:528c:b0:48e:c073:9453 with SMTP id en12-20020a056402528c00b0048ec0739453mr30507056edb.15.1673510843900;
+        Thu, 12 Jan 2023 00:07:23 -0800 (PST)
+Received: from [192.168.0.105] ([77.126.9.245])
+        by smtp.gmail.com with ESMTPSA id 17-20020a170906201100b007bff9fb211fsm7051222ejo.57.2023.01.12.00.07.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Jan 2023 00:07:23 -0800 (PST)
+Message-ID: <a0bac9bd-6772-64d4-8fd5-756ff4d8c2ad@gmail.com>
+Date:   Thu, 12 Jan 2023 10:07:20 +0200
 MIME-Version: 1.0
-References: <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local>
- <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
- <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
- <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local> <CAEf4Bzbvg2bXOj8LPwkRQ0jfTR4y5XQn=ajK_ApVf5W-F=wG2Q@mail.gmail.com>
- <20230104194438.4lfigy2c5m4xx6hh@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4Bzag8K=7+TY-LPEiBJ7ocRi-U+SiDioAQvPDto+j0U5YaQ@mail.gmail.com>
- <Y7YQHC4FgYuLWmab@maniforge.lan> <CAEf4BzaJ4h4o+nrApBPABZ8zu-f+TpuV4FUvEfHsrLRsu1bObw@mail.gmail.com>
- <20230106025420.6xdhhjsknhdhbu3d@MacBook-Pro-6.local> <CAEf4BzZTYcGNVWL7gSPHCqao_Ehx_3P7YK6r+p_-hrvpE8fEvA@mail.gmail.com>
- <CAPhsuW4ix_Q_nBSMnOzQr3GJAozN0PUcgh2K=4mcYpUXQDTYYg@mail.gmail.com> <CAADnVQJOrxwMJMrb8EmvsVbhwWF3HGAxR95BUi1WjoTxbrGOHg@mail.gmail.com>
-In-Reply-To: <CAADnVQJOrxwMJMrb8EmvsVbhwWF3HGAxR95BUi1WjoTxbrGOHg@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 11 Jan 2023 23:35:22 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4D=HM7pnDDYA0nOUz8oBqoxwgui0TVOib69rgc3V3Txw@mail.gmail.com>
-Message-ID: <CAPhsuW4D=HM7pnDDYA0nOUz8oBqoxwgui0TVOib69rgc3V3Txw@mail.gmail.com>
-Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
- convenience helpers
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Vernet <void@manifault.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@meta.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH bpf-next v7 15/17] net/mlx5e: Introduce wrapper for
+ xdp_buff
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+References: <20230112003230.3779451-1-sdf@google.com>
+ <20230112003230.3779451-16-sdf@google.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20230112003230.3779451-16-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 11, 2023 at 8:24 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-[...]
 
-> >
-> > 1. Do we want stable kfuncs (as stable as helpers)? Do we want
-> >    almost stable kfuncs?
->
-> Yes. We've touched on some of that earlier.
-> We can talk about a range:
-> unstable, deprecated, starting to deprecate, stable
-> plus orthogonal versioning scheme.
->
-> > Will most users of stable APIs be as happy
-> >    with almost stable alternatives?
->
-> kfuncs are very much analogous to EXPORT_SYMBOL_GPL.
-> There is no versioning scheme, nor deprecation scheme for that.
-> Yet in-kernel and out-of-tree users have been dealing with it.
-> There are kABI things that make things stable to various degrees.
-> So 'happy' is relative.
-> Using that analogy...
-> In-kernel bpf progs won't care. unstable or not they will get
-> carried along automatically when kfuncs change.
-> Out of tree bpf progs can be divided to kernel dependent
-> and kernel independent. The former are similar to in-tree
-> with extra pain that can be mitigated with kfunc detection.
-> The latter will always use stable with understandable deprecation path.
-> Yet it's all in theory.
-> In practice networking folks are using conntrack kfuncs and
-> xfrm kfuncs assuming we will make it all work somehow,
-> though right now we're saying kfuncs are unstable only.
 
-I think we need something more stable than EXPORT_SYMBOL_GPL,
-because: 1) there are more OOT bpf progs than OOT drivers;
-2) some BPF developers (network people in KP's categories)
-have less kernel experience, and thus have a stronger
-preference for more stable APIs. The range of stability on top
-of EXPORT_SYMBOL_GPL could be really helpful for these
-users.
+On 12/01/2023 2:32, Stanislav Fomichev wrote:
+> From: Toke Høiland-Jørgensen <toke@redhat.com>
+> 
+> Preparation for implementing HW metadata kfuncs. No functional change.
+> 
+> Cc: Tariq Toukan <tariqt@nvidia.com>
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: David Ahern <dsahern@gmail.com>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+> Cc: Maryam Tahhan <mtahhan@redhat.com>
+> Cc: xdp-hints@xdp-project.net
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 +
+>   .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  3 +-
+>   .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  6 +-
+>   .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   | 25 ++++----
+>   .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 58 +++++++++----------
+>   5 files changed, 50 insertions(+), 43 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> index 2d77fb8a8a01..af663978d1b4 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> @@ -469,6 +469,7 @@ struct mlx5e_txqsq {
+>   union mlx5e_alloc_unit {
+>   	struct page *page;
+>   	struct xdp_buff *xsk;
+> +	struct mlx5e_xdp_buff *mxbuf;
 
->
-> So 'happy' and 'pain' are relative depending on the usefulness
-> of kfunc. If bpf prog needs a feature it will use it.
-> If it's a shiny new feature, the prog authors might wait
-> until kfunc stabilizes.
-> Which is exactly the point.
-> We can wish for something to be useful, but we won't know
-> until we actually use it for real and not in some selftest.
->
-> And it becomes chicken and egg. If it's a cool new feature
-> the bpf prog wants it to be stable to rely on it later,
-> but because it's so new it's not clear whether it's actually useful,
-> so we shouldn't be declaring it stable and cause kernel pains.
->
-> > 2. Do we decide the stability of a kfunc when it is first added? Or
-> >     do we plan to promote (maybe also demote?) stability later?
->
-> Claiming that something is stable on day one
-> is a subjective opinion of the developer who's adding that feature.
-> There could even be a giant user space project next to it
-> attempting to use that feature, but we've seen that with other
-> uapi-s in the past.
+In XSK files below you mix usage of both alloc_units[page_idx].mxbuf and 
+alloc_units[page_idx].xsk, while both fields share the memory of a union.
 
-With the range of stability, stable could mean "not going away for
-at least 5 years". Then claiming something is stable means "I/we
-will support it for at least 5 years". It is probably not too crazy to
-make this type of promises for some core APIs.
+As struct mlx5e_xdp_buff wraps struct xdp_buff, I think that you just 
+need to change the existing xsk field type from struct xdp_buff *xsk 
+into struct mlx5e_xdp_buff *xsk and align the usage.
 
->
-> > 3. Besides stability, what are the concerns with kfuncs? How hard
-> >     is it to resolve them?
-> >     AFAICT, the concerns are: require BTF, require trampoline.
->
-> Only the former. kfuncs do not require bpf trampoline.
->
-> $ git grep bpf_jit_supports_kfunc_call
-> arch/arm64/net/bpf_jit_comp.c:bool bpf_jit_supports_kfunc_call(void)
-> arch/loongarch/net/bpf_jit.c:bool bpf_jit_supports_kfunc_call(void)
-> arch/x86/net/bpf_jit_comp.c:bool bpf_jit_supports_kfunc_call(void)
-> arch/x86/net/bpf_jit_comp32.c:bool bpf_jit_supports_kfunc_call(void)
->
-> iirc I've seen the patches for risc-v and arm32.
-
-Thanks for the correction. Reading commits that enabled kfunc for
-different archs, I think it is easier than enabling trampolines.
-
-AFAICT, more stability of some kfuncs and better availability of
-kfuncs should address most of the concerns. I would like to hear
-Andrii's thoughts on this.
-
-Thanks,
-Song
-
->
-> >     Anything else? I guess we will never remove BTF dependency.
-> >     Trampoline dependency is hard to resolve, but still possible?
-> >
-> > 4. We have feature-rich BPF with Linux-x86_64. Do we need some
-> >    bare-minimal BPF, say for Linux-MIPS, or Windows-ARM, or
-> >    even nvme-something? I guess this is also related to the BPF
-> >    standard?
->
-> It's not related to ISA standardization.
-> We're not even talking about BTF standardization.
-> Nor about psABI (calling convention and such).
-> It's going to happen much much later.
+>   };
+>   
+>   /* XDP packets can be transmitted in different ways. On completion, we need to
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> index 20507ef2f956..31bb6806bf5d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> @@ -158,8 +158,9 @@ mlx5e_xmit_xdp_buff(struct mlx5e_xdpsq *sq, struct mlx5e_rq *rq,
+>   
+>   /* returns true if packet was consumed by xdp */
+>   bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct page *page,
+> -		      struct bpf_prog *prog, struct xdp_buff *xdp)
+> +		      struct bpf_prog *prog, struct mlx5e_xdp_buff *mxbuf)
+>   {
+> +	struct xdp_buff *xdp = &mxbuf->xdp;
+>   	u32 act;
+>   	int err;
+>   
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
+> index bc2d9034af5b..389818bf6833 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
+> @@ -44,10 +44,14 @@
+>   	(MLX5E_XDP_INLINE_WQE_MAX_DS_CNT * MLX5_SEND_WQE_DS - \
+>   	 sizeof(struct mlx5_wqe_inline_seg))
+>   
+> +struct mlx5e_xdp_buff {
+> +	struct xdp_buff xdp;
+> +};
+> +
+>   struct mlx5e_xsk_param;
+>   int mlx5e_xdp_max_mtu(struct mlx5e_params *params, struct mlx5e_xsk_param *xsk);
+>   bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct page *page,
+> -		      struct bpf_prog *prog, struct xdp_buff *xdp);
+> +		      struct bpf_prog *prog, struct mlx5e_xdp_buff *mlctx);
+>   void mlx5e_xdp_mpwqe_complete(struct mlx5e_xdpsq *sq);
+>   bool mlx5e_poll_xdpsq_cq(struct mlx5e_cq *cq);
+>   void mlx5e_free_xdpsq_descs(struct mlx5e_xdpsq *sq);
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+> index c91b54d9ff27..9cff82d764e3 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+> @@ -22,6 +22,7 @@ int mlx5e_xsk_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
+>   		goto err;
+>   
+>   	BUILD_BUG_ON(sizeof(wi->alloc_units[0]) != sizeof(wi->alloc_units[0].xsk));
+> +	XSK_CHECK_PRIV_TYPE(struct mlx5e_xdp_buff);
+>   	batch = xsk_buff_alloc_batch(rq->xsk_pool, (struct xdp_buff **)wi->alloc_units,
+>   				     rq->mpwqe.pages_per_wqe);
+>   
+> @@ -233,7 +234,7 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
+>   						    u32 head_offset,
+>   						    u32 page_idx)
+>   {
+> -	struct xdp_buff *xdp = wi->alloc_units[page_idx].xsk;
+> +	struct mlx5e_xdp_buff *mxbuf = wi->alloc_units[page_idx].mxbuf;
+>   	struct bpf_prog *prog;
+>   
+>   	/* Check packet size. Note LRO doesn't use linear SKB */
+> @@ -249,9 +250,9 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
+>   	 */
+>   	WARN_ON_ONCE(head_offset);
+>   
+> -	xsk_buff_set_size(xdp, cqe_bcnt);
+> -	xsk_buff_dma_sync_for_cpu(xdp, rq->xsk_pool);
+> -	net_prefetch(xdp->data);
+> +	xsk_buff_set_size(&mxbuf->xdp, cqe_bcnt);
+> +	xsk_buff_dma_sync_for_cpu(&mxbuf->xdp, rq->xsk_pool);
+> +	net_prefetch(mxbuf->xdp.data);
+>   
+>   	/* Possible flows:
+>   	 * - XDP_REDIRECT to XSKMAP:
+> @@ -269,7 +270,7 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
+>   	 */
+>   
+>   	prog = rcu_dereference(rq->xdp_prog);
+> -	if (likely(prog && mlx5e_xdp_handle(rq, NULL, prog, xdp))) {
+> +	if (likely(prog && mlx5e_xdp_handle(rq, NULL, prog, mxbuf))) {
+>   		if (likely(__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)))
+>   			__set_bit(page_idx, wi->xdp_xmit_bitmap); /* non-atomic */
+>   		return NULL; /* page/packet was consumed by XDP */
+> @@ -278,14 +279,14 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
+>   	/* XDP_PASS: copy the data from the UMEM to a new SKB and reuse the
+>   	 * frame. On SKB allocation failure, NULL is returned.
+>   	 */
+> -	return mlx5e_xsk_construct_skb(rq, xdp);
+> +	return mlx5e_xsk_construct_skb(rq, &mxbuf->xdp);
+>   }
+>   
+>   struct sk_buff *mlx5e_xsk_skb_from_cqe_linear(struct mlx5e_rq *rq,
+>   					      struct mlx5e_wqe_frag_info *wi,
+>   					      u32 cqe_bcnt)
+>   {
+> -	struct xdp_buff *xdp = wi->au->xsk;
+> +	struct mlx5e_xdp_buff *mxbuf = wi->au->mxbuf;
+>   	struct bpf_prog *prog;
+>   
+>   	/* wi->offset is not used in this function, because xdp->data and the
+> @@ -295,17 +296,17 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_linear(struct mlx5e_rq *rq,
+>   	 */
+>   	WARN_ON_ONCE(wi->offset);
+>   
+> -	xsk_buff_set_size(xdp, cqe_bcnt);
+> -	xsk_buff_dma_sync_for_cpu(xdp, rq->xsk_pool);
+> -	net_prefetch(xdp->data);
+> +	xsk_buff_set_size(&mxbuf->xdp, cqe_bcnt);
+> +	xsk_buff_dma_sync_for_cpu(&mxbuf->xdp, rq->xsk_pool);
+> +	net_prefetch(mxbuf->xdp.data);
+>   
+>   	prog = rcu_dereference(rq->xdp_prog);
+> -	if (likely(prog && mlx5e_xdp_handle(rq, NULL, prog, xdp)))
+> +	if (likely(prog && mlx5e_xdp_handle(rq, NULL, prog, mxbuf)))
+>   		return NULL; /* page/packet was consumed by XDP */
+>   
+>   	/* XDP_PASS: copy the data from the UMEM to a new SKB. The frame reuse
+>   	 * will be handled by mlx5e_free_rx_wqe.
+>   	 * On SKB allocation failure, NULL is returned.
+>   	 */
+> -	return mlx5e_xsk_construct_skb(rq, xdp);
+> +	return mlx5e_xsk_construct_skb(rq, &mxbuf->xdp);
+>   }
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> index c8820ab22169..6affdddf5bcf 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> @@ -1575,11 +1575,11 @@ struct sk_buff *mlx5e_build_linear_skb(struct mlx5e_rq *rq, void *va,
+>   	return skb;
+>   }
+>   
+> -static void mlx5e_fill_xdp_buff(struct mlx5e_rq *rq, void *va, u16 headroom,
+> -				u32 len, struct xdp_buff *xdp)
+> +static void mlx5e_fill_mxbuf(struct mlx5e_rq *rq, void *va, u16 headroom,
+> +			     u32 len, struct mlx5e_xdp_buff *mxbuf)
+>   {
+> -	xdp_init_buff(xdp, rq->buff.frame0_sz, &rq->xdp_rxq);
+> -	xdp_prepare_buff(xdp, va, headroom, len, true);
+> +	xdp_init_buff(&mxbuf->xdp, rq->buff.frame0_sz, &rq->xdp_rxq);
+> +	xdp_prepare_buff(&mxbuf->xdp, va, headroom, len, true);
+>   }
+>   
+>   static struct sk_buff *
+> @@ -1606,16 +1606,16 @@ mlx5e_skb_from_cqe_linear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
+>   
+>   	prog = rcu_dereference(rq->xdp_prog);
+>   	if (prog) {
+> -		struct xdp_buff xdp;
+> +		struct mlx5e_xdp_buff mxbuf;
+>   
+>   		net_prefetchw(va); /* xdp_frame data area */
+> -		mlx5e_fill_xdp_buff(rq, va, rx_headroom, cqe_bcnt, &xdp);
+> -		if (mlx5e_xdp_handle(rq, au->page, prog, &xdp))
+> +		mlx5e_fill_mxbuf(rq, cqe, va, rx_headroom, cqe_bcnt, &mxbuf);
+> +		if (mlx5e_xdp_handle(rq, au->page, prog, &mxbuf))
+>   			return NULL; /* page/packet was consumed by XDP */
+>   
+> -		rx_headroom = xdp.data - xdp.data_hard_start;
+> -		metasize = xdp.data - xdp.data_meta;
+> -		cqe_bcnt = xdp.data_end - xdp.data;
+> +		rx_headroom = mxbuf.xdp.data - mxbuf.xdp.data_hard_start;
+> +		metasize = mxbuf.xdp.data - mxbuf.xdp.data_meta;
+> +		cqe_bcnt = mxbuf.xdp.data_end - mxbuf.xdp.data;
+>   	}
+>   	frag_size = MLX5_SKB_FRAG_SZ(rx_headroom + cqe_bcnt);
+>   	skb = mlx5e_build_linear_skb(rq, va, frag_size, rx_headroom, cqe_bcnt, metasize);
+> @@ -1637,9 +1637,9 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+>   	union mlx5e_alloc_unit *au = wi->au;
+>   	u16 rx_headroom = rq->buff.headroom;
+>   	struct skb_shared_info *sinfo;
+> +	struct mlx5e_xdp_buff mxbuf;
+>   	u32 frag_consumed_bytes;
+>   	struct bpf_prog *prog;
+> -	struct xdp_buff xdp;
+>   	struct sk_buff *skb;
+>   	dma_addr_t addr;
+>   	u32 truesize;
+> @@ -1654,8 +1654,8 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+>   	net_prefetchw(va); /* xdp_frame data area */
+>   	net_prefetch(va + rx_headroom);
+>   
+> -	mlx5e_fill_xdp_buff(rq, va, rx_headroom, frag_consumed_bytes, &xdp);
+> -	sinfo = xdp_get_shared_info_from_buff(&xdp);
+> +	mlx5e_fill_mxbuf(rq, va, rx_headroom, frag_consumed_bytes, &mxbuf);
+> +	sinfo = xdp_get_shared_info_from_buff(&mxbuf.xdp);
+>   	truesize = 0;
+>   
+>   	cqe_bcnt -= frag_consumed_bytes;
+> @@ -1673,13 +1673,13 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+>   		dma_sync_single_for_cpu(rq->pdev, addr + wi->offset,
+>   					frag_consumed_bytes, rq->buff.map_dir);
+>   
+> -		if (!xdp_buff_has_frags(&xdp)) {
+> +		if (!xdp_buff_has_frags(&mxbuf.xdp)) {
+>   			/* Init on the first fragment to avoid cold cache access
+>   			 * when possible.
+>   			 */
+>   			sinfo->nr_frags = 0;
+>   			sinfo->xdp_frags_size = 0;
+> -			xdp_buff_set_frags_flag(&xdp);
+> +			xdp_buff_set_frags_flag(&mxbuf.xdp);
+>   		}
+>   
+>   		frag = &sinfo->frags[sinfo->nr_frags++];
+> @@ -1688,7 +1688,7 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+>   		skb_frag_size_set(frag, frag_consumed_bytes);
+>   
+>   		if (page_is_pfmemalloc(au->page))
+> -			xdp_buff_set_frag_pfmemalloc(&xdp);
+> +			xdp_buff_set_frag_pfmemalloc(&mxbuf.xdp);
+>   
+>   		sinfo->xdp_frags_size += frag_consumed_bytes;
+>   		truesize += frag_info->frag_stride;
+> @@ -1701,7 +1701,7 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+>   	au = head_wi->au;
+>   
+>   	prog = rcu_dereference(rq->xdp_prog);
+> -	if (prog && mlx5e_xdp_handle(rq, au->page, prog, &xdp)) {
+> +	if (prog && mlx5e_xdp_handle(rq, au->page, prog, &mxbuf)) {
+>   		if (test_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
+>   			int i;
+>   
+> @@ -1711,22 +1711,22 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+>   		return NULL; /* page/packet was consumed by XDP */
+>   	}
+>   
+> -	skb = mlx5e_build_linear_skb(rq, xdp.data_hard_start, rq->buff.frame0_sz,
+> -				     xdp.data - xdp.data_hard_start,
+> -				     xdp.data_end - xdp.data,
+> -				     xdp.data - xdp.data_meta);
+> +	skb = mlx5e_build_linear_skb(rq, mxbuf.xdp.data_hard_start, rq->buff.frame0_sz,
+> +				     mxbuf.xdp.data - mxbuf.xdp.data_hard_start,
+> +				     mxbuf.xdp.data_end - mxbuf.xdp.data,
+> +				     mxbuf.xdp.data - mxbuf.xdp.data_meta);
+>   	if (unlikely(!skb))
+>   		return NULL;
+>   
+>   	page_ref_inc(au->page);
+>   
+> -	if (unlikely(xdp_buff_has_frags(&xdp))) {
+> +	if (unlikely(xdp_buff_has_frags(&mxbuf.xdp))) {
+>   		int i;
+>   
+>   		/* sinfo->nr_frags is reset by build_skb, calculate again. */
+>   		xdp_update_skb_shared_info(skb, wi - head_wi - 1,
+>   					   sinfo->xdp_frags_size, truesize,
+> -					   xdp_buff_is_frag_pfmemalloc(&xdp));
+> +					   xdp_buff_is_frag_pfmemalloc(&mxbuf.xdp));
+>   
+>   		for (i = 0; i < sinfo->nr_frags; i++) {
+>   			skb_frag_t *frag = &sinfo->frags[i];
+> @@ -2007,19 +2007,19 @@ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
+>   
+>   	prog = rcu_dereference(rq->xdp_prog);
+>   	if (prog) {
+> -		struct xdp_buff xdp;
+> +		struct mlx5e_xdp_buff mxbuf;
+>   
+>   		net_prefetchw(va); /* xdp_frame data area */
+> -		mlx5e_fill_xdp_buff(rq, va, rx_headroom, cqe_bcnt, &xdp);
+> -		if (mlx5e_xdp_handle(rq, au->page, prog, &xdp)) {
+> +		mlx5e_fill_mxbuf(rq, va, rx_headroom, cqe_bcnt, &mxbuf);
+> +		if (mlx5e_xdp_handle(rq, au->page, prog, &mxbuf)) {
+>   			if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags))
+>   				__set_bit(page_idx, wi->xdp_xmit_bitmap); /* non-atomic */
+>   			return NULL; /* page/packet was consumed by XDP */
+>   		}
+>   
+> -		rx_headroom = xdp.data - xdp.data_hard_start;
+> -		metasize = xdp.data - xdp.data_meta;
+> -		cqe_bcnt = xdp.data_end - xdp.data;
+> +		rx_headroom = mxbuf.xdp.data - mxbuf.xdp.data_hard_start;
+> +		metasize = mxbuf.xdp.data - mxbuf.xdp.data_meta;
+> +		cqe_bcnt = mxbuf.xdp.data_end - mxbuf.xdp.data;
+>   	}
+>   	frag_size = MLX5_SKB_FRAG_SZ(rx_headroom + cqe_bcnt);
+>   	skb = mlx5e_build_linear_skb(rq, va, frag_size, rx_headroom, cqe_bcnt, metasize);
