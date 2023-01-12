@@ -2,75 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D34C666A4E
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 05:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B80666A8B
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 05:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbjALE3b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Jan 2023 23:29:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S236117AbjALEtK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Jan 2023 23:49:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236659AbjALE2X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Jan 2023 23:28:23 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138DA5275A
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 20:24:12 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id fy8so41752460ejc.13
-        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 20:24:12 -0800 (PST)
+        with ESMTP id S235283AbjALEs1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Jan 2023 23:48:27 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77A04F125
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 20:48:22 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id hw16so30092166ejc.10
+        for <bpf@vger.kernel.org>; Wed, 11 Jan 2023 20:48:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=i+hZH6WG0gRLUDgHjb9mbmBa5HsD8qGEjjMfPdC+Jow=;
-        b=Ve2EIWvLNDrqsIjsXMeeN3RB+l0zF1v8MfqZ1C3OuKmaQBUIx7/6IVVSeFDsHy/rQa
-         upAUU/7tzbkG/VsI0nbZ5dn0rzqAdf5KLBfAT13byHo9w+zArX6NvIr1ZEv6GM3usG6o
-         suLomJLpk6unBfDBYdHSpq8fiVHgB1aVT2+dE+XUB4H5YOXV4mIMW8b2VCux8nTlRF4D
-         rWWY//k9RwfxXx2UqrJJkSqJYNFgTM0ihyw2Ux69uWaBBuehYvNB1GvqzmXEkSfXi9e5
-         www15+ggwmetvCxG+dtT9KjTtU3NFEY3bG3eIALiQJm0zOgwZDFDMyE7xQz+SUuzlGi3
-         ep0Q==
+        bh=M7NLyIH6Fx8/OyLsR/ZRMVfEyLhJg6nAnqvGDG/PDzU=;
+        b=GNBC8tK4OfQzO0svuIjt3qLTuz3h3qFYm6k8srVJ31AdPKgO5LvCHdZ4fYZGy/H/Ey
+         cGNM+FTnd7QNg5Xmil7/KzONU5Ie9D7U3mws/M4gnMbrQFJdXPbudUf5JIklFVYy0JmI
+         8La15LNvD0vuk6hX5nNJn7Ynsak9wxfXR6FVEGH/eC/maVtihewhfZzM+Vp+u+9vQzI5
+         5F7akTPXd9zBm9uH07TMsDy3WsUNv3lGJ9fCzwXt7nFGNyzgNqPQGTAYDGHjBxfpaXoF
+         xtjewr2rPESxLSFjax7+cjtGlBdZpq+n/2L2uckGXeddzRXMW4XTZ5WqO0KcmGRpYItv
+         BpzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=i+hZH6WG0gRLUDgHjb9mbmBa5HsD8qGEjjMfPdC+Jow=;
-        b=UCiQoXKsO+pfcv2CMeDsV+Ljg7s8M/6INGzVr3FcSJpU7tWd88DTLJ1BGxRIjJ8bCn
-         AAGepolUD8Dp+z0GnRLbWQnSjlauWhlR1i8Hc/DsAk7MgKgHhCCPm68hI9c/Yhjl23lI
-         GrvOqXMT8BihBd3nPR9IVXf1HUb+hNRRtdrs8mWMpzdmu5Jlil8/Q+AxVbYPxBn4fRdj
-         CUXpBNqUS07XZLRHAUxvX4BhTwKDKxsmB+7EQ0fH492N/XSGI8Ff7kCt1MMRSai5IcXU
-         7ha34EpJkNNqtJkq6bD+nA2bRUowIyJMddt+UnJ/kmsQeY6QsbtwQYApJkOYyjGIRQ/t
-         HgLQ==
-X-Gm-Message-State: AFqh2kqpZ346233udO0mED569lpqBMsCAzakgwTM2u08+LQu3Ia/mPWJ
-        KmjpuiccfoupRIV7IgHij5vtHCrEFvxicN6WLvA=
-X-Google-Smtp-Source: AMrXdXuB6bwXZ2okMc0kDTyf9VZntbbCschkYHsY5QfTazmsOFs8okdhZnjzGYMjDxn8N15z/X2Xs7ZnHIyBpxAfp00=
-X-Received: by 2002:a17:906:a18c:b0:7c0:f2cf:3515 with SMTP id
- s12-20020a170906a18c00b007c0f2cf3515mr5188844ejy.327.1673497447181; Wed, 11
- Jan 2023 20:24:07 -0800 (PST)
+        bh=M7NLyIH6Fx8/OyLsR/ZRMVfEyLhJg6nAnqvGDG/PDzU=;
+        b=kHVSE2euLggHHPPEg67qlNkntsz0iOTI2OtY428EwTSnyEAOE/niURLC85Gluy4iSl
+         Go0pChgSuoynuYFVsPNzbRN8ctoy8gBR91kood9t43NEHEXBtQFHsdEfLkWezKK9TMq/
+         t2zV1cmjdqPcRb/wgytgleAfVC5oNOkXg+y1M4FuACoWHPN7NAY8LQNzqZGO+g1fH88T
+         9+p2JpEUEUq7629SBb+s6CMEvUznvY8Igl0HA90UhybJf98bL5tUc4HB58ZNmrHQy59X
+         qhbMW7dI8kbtKn4nLyR3c2IGlgMFITLGrqPjbHYOFyKET3g4PprY45l+tUse5vdpKqLv
+         dZAQ==
+X-Gm-Message-State: AFqh2kpB1Sm9Bc9kZeBiQdBeZzOiM7t3Ruq9yqRlByrb+mqVfpsOzCBW
+        vRHkRRsVPA6+cuGjUVoMYE31OisYursducCU4Hg=
+X-Google-Smtp-Source: AMrXdXtsMvmGp11RfF8XZj+qhX7aTcKwjcj20rm0HK26lFRH2hmxK8Vi3mCS591velenQzcZenKESPFg6xvlJKXxdvg=
+X-Received: by 2002:a17:906:dcf:b0:7c1:6781:9c97 with SMTP id
+ p15-20020a1709060dcf00b007c167819c97mr5457001eji.676.1673498901232; Wed, 11
+ Jan 2023 20:48:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20221216173526.y3e5go6mgmjrv46l@MacBook-Pro-6.local>
- <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
+References: <CAEf4BzbVoiVSa1_49CMNu-q5NnOvmaaHsOWxed-nZo9rioooWg@mail.gmail.com>
  <20221225215210.ekmfhyczgubx4rih@macbook-pro-6.dhcp.thefacebook.com>
  <CAEf4BzYhn0vASt1wfKTZg8Foj8gG2oem2TmUnvSXQVKLnyEN-w@mail.gmail.com>
- <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local> <CAEf4Bzbvg2bXOj8LPwkRQ0jfTR4y5XQn=ajK_ApVf5W-F=wG2Q@mail.gmail.com>
- <20230104194438.4lfigy2c5m4xx6hh@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4Bzag8K=7+TY-LPEiBJ7ocRi-U+SiDioAQvPDto+j0U5YaQ@mail.gmail.com>
- <Y7YQHC4FgYuLWmab@maniforge.lan> <CAEf4BzaJ4h4o+nrApBPABZ8zu-f+TpuV4FUvEfHsrLRsu1bObw@mail.gmail.com>
- <20230106025420.6xdhhjsknhdhbu3d@MacBook-Pro-6.local> <CAEf4BzZTYcGNVWL7gSPHCqao_Ehx_3P7YK6r+p_-hrvpE8fEvA@mail.gmail.com>
- <CAPhsuW4ix_Q_nBSMnOzQr3GJAozN0PUcgh2K=4mcYpUXQDTYYg@mail.gmail.com>
-In-Reply-To: <CAPhsuW4ix_Q_nBSMnOzQr3GJAozN0PUcgh2K=4mcYpUXQDTYYg@mail.gmail.com>
+ <20221230024641.4m2qwkabkdvnirrr@MacBook-Pro-6.local> <Y68wP/MQHOhUy2EY@maniforge.lan>
+ <20221230193112.h23ziwoqqb747zn7@macbook-pro-6.dhcp.thefacebook.com>
+ <Y69RZeEvP2dXO7to@maniforge.lan> <20221231004213.h5fx3loccbs5hyzu@macbook-pro-6.dhcp.thefacebook.com>
+ <f69b7d7a-cdac-a478-931a-f534b34924e9@iogearbox.net> <20230103235107.k5dobpvrui5ux3ar@macbook-pro-6.dhcp.thefacebook.com>
+ <Y78+iIqqpyufjWOv@mail.gmail.com>
+In-Reply-To: <Y78+iIqqpyufjWOv@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 11 Jan 2023 20:23:55 -0800
-Message-ID: <CAADnVQJOrxwMJMrb8EmvsVbhwWF3HGAxR95BUi1WjoTxbrGOHg@mail.gmail.com>
+Date:   Wed, 11 Jan 2023 20:48:09 -0800
+Message-ID: <CAADnVQ+b+XBukob0VAvxraUvXAf9zv8pa2R4QhRvjyULm9=zKA@mail.gmail.com>
 Subject: Re: bpf helpers freeze. Was: [PATCH v2 bpf-next 0/6] Dynptr
  convenience helpers
-To:     Song Liu <song@kernel.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+To:     Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         David Vernet <void@manifault.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Joanne Koong <joannelkoong@gmail.com>,
         bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Kernel Team <kernel-team@meta.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -82,120 +81,152 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 11, 2023 at 1:29 PM Song Liu <song@kernel.org> wrote:
+On Wed, Jan 11, 2023 at 2:57 PM Maxim Mikityanskiy <maxtram95@gmail.com> wrote:
 >
->  ()
->
-> On Mon, Jan 9, 2023 at 9:47 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Tue, Jan 03, 2023 at 03:51:07PM -0800, Alexei Starovoitov wrote:
+> > On Tue, Jan 03, 2023 at 12:43:58PM +0100, Daniel Borkmann wrote:
+> > > Discoverability plus being able to know semantics from a user PoV to figure out when
+> > > workarounds for older/newer kernels are required to be able to support both kernels.
 > >
-> > On Thu, Jan 5, 2023 at 6:54 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Thu, Jan 05, 2023 at 01:01:56PM -0800, Andrii Nakryiko wrote:
-> > > > Didn't find the best place to put this, so it will be here. I think it
-> > > > would be beneficial to discuss BPF helpers freeze in BPF office hours.
-> > > > So I took the liberty to put it up for next BPF office hours, 9am, Jan
-> > > > 12th 2022. I hope that some more people that have exposure to
-> > > > real-world BPF application and pains associated with all that could
-> > > > join the discussion, but obviously anyone is welcome as well, no
-> > > > matter which way they are leaning.
-> > > >
-> > > > Please consider joining, see details on Zoom meeting at [0]
-> > > >
-> > > > For the rest, please see below. I'll be out for a few days and won't
-> > > > be able to reply, my apologies.
-> > > >
-> > > >   [0] https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU/edit#gid=0
-> > >
-> > > Thanks for adding it to the agenda.
-> > > Hopefully we'll be able to converge faster on a call.
+> > Sounds like your concern is that there could be a kfunc that changed it semantics,
+> > but kept exact same name and arguments? Yeah. That would be bad, but we should prevent
+> > such patches from landing. It's up to us to define sane and user friendly deprecation of kfuncs.
+>
+> I would advocate for adding versioning to BPF API (be it helpers or
+> "stable" kfuncs). Right now we have two extremes: helpers that can't be
+> changed/fixed/deprecated ever, and kfuncs that can be changed at any
+> time, so the end users can't be sure new kernel won't break their stuff.
+> Detecting and fixing the breakage can also be tricky: end users have to
+> write different probes on a case-by-case basis, and sometimes it's not
+> just a matter of checking the number of function parameters or presence
+> of some definition (such difficulties happen when backporting drivers to
+> older kernels, so I assume it may be an issue for BPF programs as well).
+>
+> Let's say we add a version number to the kernel, and the BPF program
+> also has an API version number it's compiled for. Whenever something
+> changes in the stable API on the kernel side, the version number is
+> increased. At the same time, compatibility on the kernel side is
+> preserved for some reasonable period of time (2 years, 5 years,
+> whatever), which means that if the kernel loads a BPF program with an
+> older version number, and that version is within the supported period of
+> time, the kernel will behave in the old way, i.e. verify the old
+> signature of a function, preserve the old behavior, etc.
+
+Right. I think somebody proposed a version scheme for kfuncs already.
+There were so many replies I've lost track.
+But yes it's definitely on the table and
+we should consider it.
+Something like libbpf.map
+We can declare which stable features are supported in which "version".
+
+> This approach has the following upsides:
+>
+> 1. End users can stop worrying that some function changes unexpectedly,
+> and they can have a smoother migration plan.
+>
+> 2. Clear deprecation schedule.
+>
+> 3. Easy way to probe for needed functionality, it's just a matter of
+> comparing numbers: the BPF program loader checks that the kernel is new
+> enough, and the kernel checks that the BPF program's API is not too old.
+>
+> 4. Kernel maintainers will have a deprecation strategy.
+
++1
+
+> Cons:
+>
+> 1. Arguably a maintainance burden to preserve compatibility on the
+> kernel side, but I would say it's a balance between helpers (which are
+> maintainance burden forever) and kfuncs (which can be changed in every
+> kernel version without keeping any compatibility). "Kfunc that changed
+> its semantics is bad, we should prevent such patches" are just words,
+> but if the developer needs to keep both versions for a while, it will
+> serve as a calm-down mechanism to prevent changes that aren't really
+> necessary. At the same time, the dead code will stop accumulating,
+> because it can be removed according to the schedule.
+
+That sounds like 'pro' instead of 'con' to me :)
+
+> 2. Having a single version number complicates backporting features to
+> older kernels, it would require backporting all previous features
+> chronologically, even if there is no direct dependency. Having multiple
+> version numbers (per feature) is cumbersome for the BPF program to
+> declare. However, this issue is not new, it's already the case for BPF
+> helpers (you can't backport new helpers skipping some other, because the
+> numbers in the list must match).
+
+yeah. I recall amazon linux or something else backported
+helpers out of order and that screwed up bpf progs.
+That was the reason we added numbers to the FN macro in uapi/bpf.h
+That will hopefully prevent such mistakes.
+
+But practically speaking...
+The distro that does out-of-order backporting and skips
+certain helpers is saying: I'm defining my own kABI equivalent
+for bpf progs.
+In that sense there is zero difference between helpers and kfuncs
+from distro point of view and from point of view of their customers.
+Both helpers and kfuncs are neither stable nor unstable.
+
+This discussion is only about pros and cons of the upstream kernel
+and bpf progs that consume upstream kernel.
+
+If we include hyperscalers in the discussion then all
+helpers and all kfuncs immediately become stable from
+point of view of their engineers.
+Big datacenters can maintain kernels with whatever helpers
+and kfuncs they need.
+
+>
+> The above description intentionally doesn't specify whether it should be
+> applied to helpers or kfuncs, because it's a universal concept, about
+> which I would like to hear opinions about versioning without bias to
+> helpers or kfuncs.
+>
+> Regarding freezing helpers, I think there should be a solution for
+> deprecating obsolete stuff. There are historical examples of removing
+> things from UAPI: removing i386 support, ipchains, devfs, IrDA
+> subsystem, even a few architectures [1]. If we apply the versioning
+> approach to helpers, we can make long-waiting incompatible changes in
+> v1, keeping the current set of helpers as v0, used for programs that
+> don't declare a version. Eventually (in 5 years, in 10 years, whatever
+> sounds reasonable) we can drop v0 and remove the support for unversioned
+> BPF programs altogether, similar to how other big things were removed
+> from the kernel. Does it sound feasible?
+
+Not to me. Breaking uapi in whichever way with whatever excuse
+is not on the table.
+We've documented our rules long ago:
+
+Q: Does BPF have a stable ABI?
+------------------------------
+A: YES. BPF instructions, arguments to BPF programs, set of helper
+functions and their arguments, recognized return codes are all part
+of ABI.
+
+> > "Proper BPF helper" model is broken.
+> > static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
 > >
-> > Yep, hopefully. Looking forward to BPF office hours this week.
-> >
-> > >
-> > > There are several things to discuss:
-> > > 1. whether or not to freeze helpers.
-> > > 2. whether dynptr accessors should be helpers or kfuncs.
-> > > 3. whether your future inline iterators should be helpers or kfuncs.
-> > > 4. whether cilium's bpf_sock_destroy should be helper or kfunc.
+> > is a hack that works only when compiler optimizes the code.
 >
-> I think these are all big questions. Maybe we can start with some
-> smaller questions? Here is a list of questions I have:
+> What if we replace codegen for helpers, so that it becomes something
+> like this?
 >
-> 1. Do we want stable kfuncs (as stable as helpers)? Do we want
->    almost stable kfuncs?
-
-Yes. We've touched on some of that earlier.
-We can talk about a range:
-unstable, deprecated, starting to deprecate, stable
-plus orthogonal versioning scheme.
-
-> Will most users of stable APIs be as happy
->    with almost stable alternatives?
-
-kfuncs are very much analogous to EXPORT_SYMBOL_GPL.
-There is no versioning scheme, nor deprecation scheme for that.
-Yet in-kernel and out-of-tree users have been dealing with it.
-There are kABI things that make things stable to various degrees.
-So 'happy' is relative.
-Using that analogy...
-In-kernel bpf progs won't care. unstable or not they will get
-carried along automatically when kfuncs change.
-Out of tree bpf progs can be divided to kernel dependent
-and kernel independent. The former are similar to in-tree
-with extra pain that can be mitigated with kfunc detection.
-The latter will always use stable with understandable deprecation path.
-Yet it's all in theory.
-In practice networking folks are using conntrack kfuncs and
-xfrm kfuncs assuming we will make it all work somehow,
-though right now we're saying kfuncs are unstable only.
-
-So 'happy' and 'pain' are relative depending on the usefulness
-of kfunc. If bpf prog needs a feature it will use it.
-If it's a shiny new feature, the prog authors might wait
-until kfunc stabilizes.
-Which is exactly the point.
-We can wish for something to be useful, but we won't know
-until we actually use it for real and not in some selftest.
-
-And it becomes chicken and egg. If it's a cool new feature
-the bpf prog wants it to be stable to rely on it later,
-but because it's so new it's not clear whether it's actually useful,
-so we shouldn't be declaring it stable and cause kernel pains.
-
-> 2. Do we decide the stability of a kfunc when it is first added? Or
->     do we plan to promote (maybe also demote?) stability later?
-
-Claiming that something is stable on day one
-is a subjective opinion of the developer who's adding that feature.
-There could even be a giant user space project next to it
-attempting to use that feature, but we've seen that with other
-uapi-s in the past.
-
-> 3. Besides stability, what are the concerns with kfuncs? How hard
->     is it to resolve them?
->     AFAICT, the concerns are: require BTF, require trampoline.
-
-Only the former. kfuncs do not require bpf trampoline.
-
-$ git grep bpf_jit_supports_kfunc_call
-arch/arm64/net/bpf_jit_comp.c:bool bpf_jit_supports_kfunc_call(void)
-arch/loongarch/net/bpf_jit.c:bool bpf_jit_supports_kfunc_call(void)
-arch/x86/net/bpf_jit_comp.c:bool bpf_jit_supports_kfunc_call(void)
-arch/x86/net/bpf_jit_comp32.c:bool bpf_jit_supports_kfunc_call(void)
-
-iirc I've seen the patches for risc-v and arm32.
-
->     Anything else? I guess we will never remove BTF dependency.
->     Trampoline dependency is hard to resolve, but still possible?
+> static inline void *bpf_map_lookup_elem(void *map, const void *key)
+> {
+>         // pseudocode alert!
+>         asm("call 1" : : "r1"(map), "r2"(key));
+> }
 >
-> 4. We have feature-rich BPF with Linux-x86_64. Do we need some
->    bare-minimal BPF, say for Linux-MIPS, or Windows-ARM, or
->    even nvme-something? I guess this is also related to the BPF
->    standard?
+> I.e. can we just throw in some inline BPF assembly that prepares
+> registers and invokes a call instruction with the helper number? That
+> should be portable across clang and gcc, allowing to stop relying on
+> optimizations.
 
-It's not related to ISA standardization.
-We're not even talking about BTF standardization.
-Nor about psABI (calling convention and such).
-It's going to happen much much later.
+Great idea!
+It needs "=r" to capture R0 into the 'ret' variable and then it should work.
+clang may have issues with such asm, but should be fixable.
+gcc is less clear.
+iirc they had their own incompatible inline asm :(
+It's a bigger issue.
