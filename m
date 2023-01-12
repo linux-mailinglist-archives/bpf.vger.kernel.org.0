@@ -2,54 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE509666C52
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 09:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B47666E5F
+	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 10:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236439AbjALIXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 03:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
+        id S239942AbjALJgk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 04:36:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239601AbjALIWo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 03:22:44 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42243FC9D;
-        Thu, 12 Jan 2023 00:20:49 -0800 (PST)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NsyBP67fCznVKx;
-        Thu, 12 Jan 2023 16:19:09 +0800 (CST)
-Received: from [10.174.179.200] (10.174.179.200) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Thu, 12 Jan 2023 16:20:45 +0800
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: add ipip6 and ip6ip decap
- to test_tc_tunnel
-To:     Willem de Bruijn <willemb@google.com>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <martin.lau@linux.dev>,
-        <song@kernel.org>, <yhs@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-        <jolsa@kernel.org>
-References: <cover.1673423199.git.william.xuanziyang@huawei.com>
- <ec692898c848256540d146b76a3e239914453293.1673423199.git.william.xuanziyang@huawei.com>
- <CA+FuTSe+YJcyDV8S-PAzceLe4kNe-ZTZ+JpqpFkSmYfASv27Ug@mail.gmail.com>
-From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Message-ID: <d15e7f66-0fa1-af9e-e9c6-8c0ac47096a9@huawei.com>
-Date:   Thu, 12 Jan 2023 16:20:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        with ESMTP id S236701AbjALJgB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 04:36:01 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A355B5371A;
+        Thu, 12 Jan 2023 01:29:27 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id z11so26030834ede.1;
+        Thu, 12 Jan 2023 01:29:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KPyNke11katUYVYKFm7Z4VEP11+FMuXLbYrVuyAaisM=;
+        b=O9CF3UILkD2Mr9IK8SVJ90xKZ335osvzailKpYgakO4gbyoj31i2mjg1fQF6R/Cw1L
+         nKnybvVITrO+RLm2dJlAe78fr5QciJVZZC7UftN9lPKNMIgayga19oinXzFzN4ngwcPE
+         UykmK1utMfl6SsouSvJ2BwJ2p2dgrKgu+fYtTnRL6nSzipbbMXQyFI5lnHRSRzjfOTX1
+         d49RM/3Ap+ncf+RrCY3cP901IFB/C/v2WUMmhnLvjqbaCezTahyTA+8QUg4TmiZBsyIv
+         xsz3vi9QqjgCRAPT6NSwNg2hgeJdUugm01YInEBuUY8fvyz95Ui84RCqV9DWdkZsSyPw
+         9Yhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KPyNke11katUYVYKFm7Z4VEP11+FMuXLbYrVuyAaisM=;
+        b=0dny6XQTK7JihQB9bdwSbD33aMUhQ+HPeCLtOLSQcimj3IMp7o8OX4AtYCHeXb/PCa
+         LXUqvHoRHTI11xcSeT04jdpR3wRFUpYxEhTkv8uZW61FBdjcH7Zo+k6W7SMX1I7e15AF
+         H136EmQJosDGF0qcZSjGVA0nyhym89nB1h+vuZ/IsAglJk/VJQwyUovUV7bA5iXFKBqG
+         vTeNhDwRpF1LZ/fBwz5xW/YalLOVtIbhibyYWTgB9BngDCXFPLrOQWsYzoNa1ofSQbWi
+         qO8hW+qdJCcRI8wpLqaB6aovWqtwiutCsgOC++5jlDf6x37n8r8RXZVSS/Adat2q1TPU
+         fkmQ==
+X-Gm-Message-State: AFqh2kotCtaTp/eC/YtJk558FNa+VnIxW4WejLkwa1+kJUTo7rKX9UBS
+        qVz0iOAO1mftPKqlWf++VIGVQ3PugmAuDTipE0o=
+X-Google-Smtp-Source: AMrXdXtSGPmcsUjSEtEVBaXtH2i+0rJGs5ljZRwqc6xoDn8ZOlubb6lKWu6F0VT7A6hpbAd2P0L08KC6LeKmWSAjfTE=
+X-Received: by 2002:a05:6402:371a:b0:499:c424:e893 with SMTP id
+ ek26-20020a056402371a00b00499c424e893mr1054351edb.156.1673515766217; Thu, 12
+ Jan 2023 01:29:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+FuTSe+YJcyDV8S-PAzceLe4kNe-ZTZ+JpqpFkSmYfASv27Ug@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.200]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500006.china.huawei.com (7.192.105.130)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230111093526.11682-1-magnus.karlsson@gmail.com>
+ <20230111093526.11682-5-magnus.karlsson@gmail.com> <20230112022328.zbazaaoxbxfornh6@MacBook-Pro-6.local>
+In-Reply-To: <20230112022328.zbazaaoxbxfornh6@MacBook-Pro-6.local>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 12 Jan 2023 10:29:13 +0100
+Message-ID: <CAJ8uoz2ujrys-YbkV=+PeGoRfgTitmJstZQwbQcbBbb=nAZ7Ww@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 04/15] selftests/xsk: print correct error
+ codes when exiting
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, bpf@vger.kernel.org, yhs@fb.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tirthendu.sarkar@intel.com,
+        jonathan.lemon@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,35 +73,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Wed, Jan 11, 2023 at 3:02 AM Ziyang Xuan
-> <william.xuanziyang@huawei.com> wrote:
->>
->> Add ipip6 and ip6ip decap testcases. Verify that bpf_skb_adjust_room()
->> correctly decapsulate ipip6 and ip6ip tunnel packets.
->>
->> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
->> ---
->>  .../selftests/bpf/progs/test_tc_tunnel.c      | 91 ++++++++++++++++++-
->>  tools/testing/selftests/bpf/test_tc_tunnel.sh | 15 +--
->>  2 files changed, 98 insertions(+), 8 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
->> index a0e7762b1e5a..e6e678aa9874 100644
->> --- a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
->> +++ b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
->> @@ -38,6 +38,10 @@ static const int cfg_udp_src = 20000;
->>  #define        VXLAN_FLAGS     0x8
->>  #define        VXLAN_VNI       1
->>
->> +#ifndef NEXTHDR_DEST
->> +#define NEXTHDR_DEST   60
->> +#endif
-> 
-> Should not be needed if including the right header? include/net/ipv6.h
-> 
-> Otherwise very nice extension. Thanks for expanding the test.
+On Thu, Jan 12, 2023 at 3:23 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jan 11, 2023 at 10:35:15AM +0100, Magnus Karlsson wrote:
+> > -                                             exit_with_error(-ret);
+> > +                                             exit_with_error(errno);
+> ...
+> > @@ -1323,18 +1323,18 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
+> >       if (ifobject->xdp_flags & XDP_FLAGS_SKB_MODE) {
+> >               if (opts.attach_mode != XDP_ATTACHED_SKB) {
+> >                       ksft_print_msg("ERROR: [%s] XDP prog not in SKB mode\n");
+> > -                     exit_with_error(-EINVAL);
+> > +                     exit_with_error(EINVAL);
+>
+> My understanding is that you want exit_with_error() to always see a positive error, right?
+> Have you considered doing something like:
+> #define exit_with_error(error) ({\
+>   if (__builtin_constant_p(error) && error < 0) // build error;
+>   __exit_with_error(error, __FILE__, __func__, __LINE__);
+> })
+> would it help to catch some of these issues?
 
-"net/ipv6.h" do not under /usr/include/ and can not be included in bpf programs.
-
-> .
-> 
+Yes it would. Will add this to the next series. Thanks!
