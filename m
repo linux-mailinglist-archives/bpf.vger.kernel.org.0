@@ -2,104 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF0B66A4C2
-	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 22:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA22166A4C8
+	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 22:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjAMVHB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Jan 2023 16:07:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S230377AbjAMVH6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Jan 2023 16:07:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbjAMVHA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Jan 2023 16:07:00 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54412714B8;
-        Fri, 13 Jan 2023 13:06:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 04724B821FF;
-        Fri, 13 Jan 2023 21:06:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A34AC433EF;
-        Fri, 13 Jan 2023 21:06:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673644016;
-        bh=a30n7ZWlIpTS3wZoDepJYx4lu30b9sERqyh3K9EcK+E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eScDXkaN8fgrOhSjiQQilqRGPKsW+p4ZtZoTxv6+09v98NSYjqzfX+gIZKHosRl0Y
-         /BJhZKltX8zolnklFmYkcuUCTqaDZfqU4wjawYsWTrjJLlzB1YOsLPaY6qezR502X1
-         rUtqsrKl/AeYQ/GdpE24792ERlsq3175ura5rdWdlWejuhZxrP1e3rTP+Tg7JWL44z
-         z/PkhT6ac5r1HjTBE1hnL53+oFeSySXogM1NxUQiYV7/tCwtgcJAKxzp/i22oraIh4
-         DlpsjH+Qrq15ndza/1JpS5sTH3rHGaTUfR7OyNOdr8Jqt47BylS93NWx/OD6s+mW5k
-         qIGPX+32VcDGg==
-Received: by mail-lj1-f180.google.com with SMTP id g14so23673581ljh.10;
-        Fri, 13 Jan 2023 13:06:56 -0800 (PST)
-X-Gm-Message-State: AFqh2krKi20ptXI4l46K70X0qscSW4FZp2l+43jIDnkLXwBI8CSnRN2J
-        qQ3KBQtSh6oxnIBHqdYW/wusrcOVMjymbitni5M=
-X-Google-Smtp-Source: AMrXdXuIlwtj6aR8GxQuD0A3dAfBI60Y4NDSvA21cklDjx8YsJA1979CVc5nVYcWFCLPdtcCM4GNXh6DgrtG2OTCUgc=
-X-Received: by 2002:a05:651c:11d0:b0:289:1305:680d with SMTP id
- z16-20020a05651c11d000b002891305680dmr484731ljo.421.1673644014573; Fri, 13
- Jan 2023 13:06:54 -0800 (PST)
+        with ESMTP id S230093AbjAMVHj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Jan 2023 16:07:39 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50FE88A3F;
+        Fri, 13 Jan 2023 13:07:33 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id tz12so55153702ejc.9;
+        Fri, 13 Jan 2023 13:07:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y799U3pjQRIaLfXmIj4zBC/UY5a59GVSQHE28cjR+UA=;
+        b=VecmKqX+y5k2hixW6pxEPzr76Apoh9mdcSNHZ0ExzA057R09OBvj2IH7NJ4H36sJlj
+         RooQaRe1ElWCkd1XDbFeczVeRzXz/DlBtU/D6ctcw36lPNEHTLifWM2lNghUyamgDwOI
+         vH8/j+UZpftNRLxxX3Znn6WNN0s9JsAYQBV5uU6xWNqgZ9Cq1XowOWjoj7tiIP8JYla4
+         RY6SFmTtnQYoVfdw4Jj1iMmF1+SfXFcYEgkrZN/vCBUBzlLqJrQhJbcSRWoPE5DEoP6X
+         V1/WOVY2ZhEspVOLU7ulakpGtu4HVKjOjFSYXe35csxqt1pXCkYA3JCnJXaEE8+AOSji
+         FIQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y799U3pjQRIaLfXmIj4zBC/UY5a59GVSQHE28cjR+UA=;
+        b=XOrOmpG3sBqgtkPntfD5OaJAeDCSBtJs31maYtupIapNsy6nuhZUdiU/Db7iDaMKUt
+         k0jVu+ZnK7c+rEG5ZsYmRNVTO6PwXWsuzgkqfX3WzKUwPdlLJa0NCZYA570YyMm/DFwv
+         SC8iTFweL+d/efBKSroWcrXYIO50tSKZXmKDIu0sZ2gEd19Bgb46LZwOHxcLmlnrPpjv
+         QJfskR/WfIRr1Zbob9B75t1wPgNMmLNpi06xj9BcGBj9k4aRIQNb0Uv3w3F28f4PQiF1
+         lw8u+dm414jK3W8IhwbqK47B5U+N5VLmHhj4Cc2ZxmhPe2QcLQSzSNZlprWUeywJ/vHM
+         3RRQ==
+X-Gm-Message-State: AFqh2krLlYGpHTUQ5jRaT/gJIDwR5lRgjewFodQIX2V/JXg6reUNJKoS
+        5KkE54/7G0m6ILety8gCowQqu/seqR7habLD
+X-Google-Smtp-Source: AMrXdXuleic1gqc2HKopibM/NzCjJpujxbhMsKeNamt9M3KTvADfZceQtmdZgdmZQ6InNgOOcWf/fw==
+X-Received: by 2002:a17:907:a0cc:b0:78d:f454:37a6 with SMTP id hw12-20020a170907a0cc00b0078df45437a6mr74017652ejc.73.1673644052185;
+        Fri, 13 Jan 2023 13:07:32 -0800 (PST)
+Received: from [192.168.0.105] ([77.126.1.183])
+        by smtp.gmail.com with ESMTPSA id j17-20020a17090623f100b00770812e2394sm6786689ejg.160.2023.01.13.13.07.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Jan 2023 13:07:31 -0800 (PST)
+Message-ID: <4866ab1d-4d3c-577c-c94f-a51d82ca56a7@gmail.com>
+Date:   Fri, 13 Jan 2023 23:07:28 +0200
 MIME-Version: 1.0
-References: <20230112214015.1014857-1-namhyung@kernel.org> <20230112214015.1014857-9-namhyung@kernel.org>
-In-Reply-To: <20230112214015.1014857-9-namhyung@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 13 Jan 2023 13:06:42 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5LFGzVA5RV-x1gWxcvG7O5yUie8C+Z-+aNnzEncgZqiA@mail.gmail.com>
-Message-ID: <CAPhsuW5LFGzVA5RV-x1gWxcvG7O5yUie8C+Z-+aNnzEncgZqiA@mail.gmail.com>
-Subject: Re: [PATCH 8/8] perf/core: Call perf_prepare_sample() before running BPF
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
+ support xdp multibuffer
+Content-Language: en-US
+To:     Maxim Mikityanskiy <maxtram95@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Tariq Toukan <tariqt@nvidia.com>
+Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, lorenzo.bianconi@redhat.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Andy Gospodarek <gospo@broadcom.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, gal@nvidia.com,
+        Saeed Mahameed <saeedm@nvidia.com>
+References: <20220621175402.35327-1-gospo@broadcom.com>
+ <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com> <87k0234pd6.fsf@toke.dk>
+ <20230103172153.58f231ba@kernel.org> <Y73Ry+nNqOkeZtaj@dragonfly.lan>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <Y73Ry+nNqOkeZtaj@dragonfly.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 12, 2023 at 1:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> As BPF can access sample data, it needs to populate the data.  Also
-> remove the logic to get the callchain specifically as it's covered by
-> the perf_prepare_sample() now.
->
-> Cc: Song Liu <song@kernel.org>
-> Cc: bpf@vger.kernel.org
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Acked-by: Song Liu <song@kernel.org>
 
-> ---
->  kernel/events/core.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 5c4f3fa3d2b7..af8365fb639a 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -10363,13 +10363,7 @@ static void bpf_overflow_handler(struct perf_event *event,
->         rcu_read_lock();
->         prog = READ_ONCE(event->prog);
->         if (prog) {
-> -               if (prog->call_get_stack &&
-> -                   (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) &&
-> -                   !(data->sample_flags & PERF_SAMPLE_CALLCHAIN)) {
-> -                       data->callchain = perf_callchain(event, regs);
-> -                       data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
-> -               }
-> -
-> +               perf_prepare_sample(data, event, regs);
->                 ret = bpf_prog_run(prog, &ctx);
->         }
->         rcu_read_unlock();
-> --
-> 2.39.0.314.g84b9a713c41-goog
->
+On 10/01/2023 22:59, Maxim Mikityanskiy wrote:
+> On Tue, Jan 03, 2023 at 05:21:53PM -0800, Jakub Kicinski wrote:
+>> On Tue, 03 Jan 2023 16:19:49 +0100 Toke Høiland-Jørgensen wrote:
+>>> Hmm, good question! I don't think we've ever explicitly documented any
+>>> assumptions one way or the other. My own mental model has certainly
+>>> always assumed the first frag would continue to be the same size as in
+>>> non-multi-buf packets.
+>>
+>> Interesting! :) My mental model was closer to GRO by frags
+>> so the linear part would have no data, just headers.
+>>
+>> A random datapoint is that bpf_xdp_adjust_head() seems
+>> to enforce that there is at least ETH_HLEN.
+> 
+> Also bpf_xdp_frags_increase_tail has the following check:
+> 
+> 	if (!rxq->frag_size || rxq->frag_size > xdp->frame_sz)
+> 		return -EOPNOTSUPP;
+> 
+> However, I can't seem to find where the `frag_size > frame_sz` part is
+> actually used. Maybe this condition can be dropped? Can someone shed
+> some light?
+> 
+> BTW, Tariq, we seem to have missed setting frag_size to a non-zero
+> value.
+
+Hey Maxim,
+Indeed. We use xdp_rxq_info_reg, it passes 0 as frag_size.
+
+> Could you check that increasing the tail indeed doesn't work on
+> fragmented packets on mlx5e? I can send a oneliner to fix that.
+
+I can test early next week, and update.
