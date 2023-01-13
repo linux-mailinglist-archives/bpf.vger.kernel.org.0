@@ -2,79 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3516D668B18
-	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 06:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D028668B1D
+	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 06:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbjAMFMB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Jan 2023 00:12:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
+        id S231162AbjAMFOY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Jan 2023 00:14:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbjAMFLq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Jan 2023 00:11:46 -0500
-X-Greylist: delayed 582 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 12 Jan 2023 21:11:45 PST
-Received: from mp-relay-02.fibernetics.ca (mp-relay-02.fibernetics.ca [208.85.217.137])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831935CFB8
-        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 21:11:45 -0800 (PST)
-Received: from mailpool-fe-01.fibernetics.ca (mailpool-fe-01.fibernetics.ca [208.85.217.144])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mp-relay-02.fibernetics.ca (Postfix) with ESMTPS id 59E1170359;
-        Fri, 13 Jan 2023 05:02:02 +0000 (UTC)
-Received: from localhost (mailpool-mx-02.fibernetics.ca [208.85.217.141])
-        by mailpool-fe-01.fibernetics.ca (Postfix) with ESMTP id 1BBFF26883;
-        Fri, 13 Jan 2023 05:02:02 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at 
-X-Spam-Score: 3.651
-X-Spam-Level: ******
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_99,BAYES_999,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_NONE,
-        SPF_PASS,SUBJ_ALL_CAPS autolearn=no autolearn_force=no version=3.4.6
-Received: from mailpool-fe-01.fibernetics.ca ([208.85.217.144])
-        by localhost (mail-mx-02.fibernetics.ca [208.85.217.141]) (amavisd-new, port 10024)
-        with ESMTP id gTkLqdlij6TY; Fri, 13 Jan 2023 05:02:01 +0000 (UTC)
-Received: from localhost (unknown [208.85.220.72])
-        by mail.ca.inter.net (Postfix) with ESMTP id 204C326881;
-        Fri, 13 Jan 2023 05:01:51 +0000 (UTC)
-Received: from reverse.rain.network (reverse.rain.network [197.184.176.8])
- by webmail.ca.inter.net (Horde Framework) with HTTP; Fri, 13 Jan 2023
- 00:01:51 -0500
-Message-ID: <20230113000151.18003d4yy3w9a94v@webmail.ca.inter.net>
-Date:   Fri, 13 Jan 2023 00:01:51 -0500
-From:   INFO <boothg@istar.ca>
-Reply-to: s.g0392440821@gmail.com
-To:     undisclosed-recipients:;
-Subject: IST DIESE E-MAIL AKTIV?
+        with ESMTP id S231716AbjAMFOO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Jan 2023 00:14:14 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C416660871
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 21:14:13 -0800 (PST)
+Message-ID: <b05c4042-ee7e-43ad-b518-411bd3afa95e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1673586851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eCjBifg6k1S0wrcDOQxh9S/ldCQazwMMhaP8Gj/SdBM=;
+        b=J0+GAUmgY3R6HJL/4yz9uGsMBxB9UmBcvLZWbSTitc6lWU6A7pqcRHW2C3qpynFn5u7t7w
+        EAg0Xvd8IAVfpYBbbSClr/+ANR2tAIZNd0GK4CgrguGJQZ5xyhvytHcCpIhUvxf1LoJU3J
+        piY2ITW7fWj0uiNkz/HudkJggvx9b7Y=
+Date:   Thu, 12 Jan 2023 21:14:05 -0800
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=ISO-8859-1;
- DelSp="Yes";
- format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Internet Messaging Program (IMP) H3 (4.3.7)
-X-Originating-User-Info: boothg@istar.ca 208.85.219.96
-X-Spam-Report: *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
-        *      [score: 1.0000]
-        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 1.0000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [s.g0392440821[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+Subject: Re: [bpf-next v5 3/3] bpf: hash map, suppress false lockdep warning
+Content-Language: en-US
+To:     Tonghao Zhang <tong@infragraf.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org
+References: <20230111092903.92389-1-tong@infragraf.org>
+ <20230111092903.92389-3-tong@infragraf.org>
+ <7e6d02ea-f9f7-2d09-bf10-ccd41b16a671@linux.dev>
+ <97068F10-C869-4FF3-8FE0-21FA6DA82D98@infragraf.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <97068F10-C869-4FF3-8FE0-21FA6DA82D98@infragraf.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 1/12/23 6:17 PM, Tonghao Zhang wrote:
+>> I am not very sure about the lockdep_off/on. Other than the false warning when using the very same htab map by both NMI and non-NMI context, I think the lockdep will still be useful
+> Agree, but there is no good way to fix this warning.
 
+I applied patch 1 to the bpf tree with the 'Fixes: 20b6cc34ea74 ("bpf: Avoid 
+hashtab deadlock with map_locked")' tag. Thanks.
 
-Sehr geehrter E-Mail-Begünstigter, Sie wurden für eine Spende in Höhe  
-von 3.500.000,00 ? ausgewählt. Wenden Sie sich an diese  
-E-Mail-Adresse: s.g0392440821@gmail.com, um weitere Informationen zum  
-Erhalt Ihrer Spende zu erhalten. Vielen Dank
-
+The commit message has a link to the test. Not ideal but keeping the lockdep is 
+more important.
