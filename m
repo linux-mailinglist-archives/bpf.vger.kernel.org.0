@@ -2,129 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4891466A581
-	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 22:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CA266A5AE
+	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 23:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbjAMV4u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Jan 2023 16:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
+        id S229631AbjAMWH2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Jan 2023 17:07:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjAMV4t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Jan 2023 16:56:49 -0500
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21798892CD;
-        Fri, 13 Jan 2023 13:56:49 -0800 (PST)
-Received: by mail-vk1-f180.google.com with SMTP id q141so8201821vkb.13;
-        Fri, 13 Jan 2023 13:56:49 -0800 (PST)
+        with ESMTP id S229978AbjAMWH1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Jan 2023 17:07:27 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA81011826;
+        Fri, 13 Jan 2023 14:07:25 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id u9so55494939ejo.0;
+        Fri, 13 Jan 2023 14:07:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wRJeuNMECfIR2T5BvBaStXjhMzdrlDtYinDb6OGqSJE=;
+        b=dHw6TfJ4L90yibFDOR5cZ0Zz+JuTtNZSRTD8LxZ/oDHeTYXpEN1B4fsGqa8ZqcvWV6
+         2RoMRVS8yIagHclgWsXA1nHlSRjh2m8AVsmUPV+L85/OimqvJKcHLqCDO6c1eJSrUIIj
+         ZNFD0zX7vtBdL7jq2eFVIfo8xvIYI49E8JplP/rj5uVFV96SJVF8hMtY2X2udSkWOgBx
+         /s498qcNS1Eid3rgSzccVAxlcYhpjXs+FwkfMAH3dfFg+PAncoaU/kB/0z1VjBfi5/3b
+         s+JmMbiI2DgQLVxXf9HlA46kl2PETUgoQqABmk80LNQeIaAYQV32Eq4Znvy8EJnu+ZnR
+         NqKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Cn5WaIR2kYHfvSAn6aGjThopDJINdcdLaEEO7lYUz7s=;
-        b=jt3l9jzeq4haX5c4B8Vtb7v7kpt2w3BctPHaRmBcSCqTdwF2h7ZilY696eylJx0Rr8
-         o3SOOgmAjWnGtJij2Q9aEmERh656Liz2UYVxM0hHkSVoRm/VYnOEW5A2JpMRc7ajkEuc
-         YIlFevLxxUnEUr3hnygom6EziZUX16lDj687SlSdrJnmF9oE6FSqrqVyZFw167N2kWtu
-         KMc+wluMwt3aDeY/wmmIiluO7nK+Vf54T1MQ35qjsWOU/zVlrFaPkvRmqvghmOgDPbVy
-         HdewqsS+u9zIOHgqxVw41FOO8zkPDB+fMDE+oukXJA4UrvO0J3RiIhEEka2Nd08ZNls0
-         SrSw==
-X-Gm-Message-State: AFqh2kqfewquwT0J+AtyW+WXNpcii1DOwoqitYFxMj0UH4UsK+Dref0d
-        PJR6vlZIbcW3qmpUVfZ/+lALfrxvNiC21MWFmoF+pDwg
-X-Google-Smtp-Source: AMrXdXsyz01JvYnrA7ongeX2V/NY8FwJtxhNN6Gq7WoTmKfST4Yz2gOETp14D6rsA56A9zPBSZXYdfUuKmK5T9r+8Z4=
-X-Received: by 2002:a05:6122:d9e:b0:3d5:3ee8:6603 with SMTP id
- bc30-20020a0561220d9e00b003d53ee86603mr9014889vkb.7.1673647008141; Fri, 13
- Jan 2023 13:56:48 -0800 (PST)
+        bh=wRJeuNMECfIR2T5BvBaStXjhMzdrlDtYinDb6OGqSJE=;
+        b=HFCfLy6twteL9FXGrWG2Y9OK6DwIJqEVMms1Ras+E9JWGezOvqcNjWGasy1NwDLQ9V
+         9ojJdcZuMzGEjx/NlOJUykZsIRzK4PSjwNvlVe4ij4vW30T1Bd85tBkpgn79G488qjXK
+         5+83ypMENKO1d9Nqu+PvyQwMH+8xG3JCSd7upn1H7Hm96tV9tneqxqeeo3O0tqAZixzt
+         kfjvPZEF/rtB/+6+SAsqkW5wCYVbsKzvTllESXcd/ztKIAgDpLtROMvycC4+VWx6sNnh
+         qE0EFG608oKzcoF3PfMNkA7Z/QOelGYY4c8DWdbnlg1Dql8vIRvfOoQMM9fBicAMguW6
+         i6wQ==
+X-Gm-Message-State: AFqh2kqYW/TzyrK0FXqVdOqAVRN4w/Lk0mqdFpNrdmxSJcejtVSZQ4K6
+        PV1OlFqmHZlss6aIOXPPuGxiwDVPw4B9UW463Ho=
+X-Google-Smtp-Source: AMrXdXu4DocIb/qbjx4z9p5zFrQigVSJqzdXoljmC8b6VFjo9zoeYd1+wzIw/gRCZ6atl2XwOr7aLjKah3k/7CPL9U0=
+X-Received: by 2002:a17:906:a014:b0:7c1:8450:f964 with SMTP id
+ p20-20020a170906a01400b007c18450f964mr7788457ejy.176.1673647644511; Fri, 13
+ Jan 2023 14:07:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20230112214015.1014857-1-namhyung@kernel.org> <20230112214015.1014857-4-namhyung@kernel.org>
- <CAPhsuW71GHAayZmGFfSrpCARiD3YEO1C8QBy1cc1ZEuSFJB=sA@mail.gmail.com>
-In-Reply-To: <CAPhsuW71GHAayZmGFfSrpCARiD3YEO1C8QBy1cc1ZEuSFJB=sA@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 13 Jan 2023 13:56:36 -0800
-Message-ID: <CAM9d7ciPAocvOvspzfrq2hym-u2+Fbg2A6WJhOQqxwG7CGiuJg@mail.gmail.com>
-Subject: Re: [PATCH 3/8] perf/core: Add perf_sample_save_raw_data() helper
-To:     Song Liu <song@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-s390@vger.kernel.org,
-        x86@kernel.org, bpf@vger.kernel.org
+References: <20230113093427.1666466-1-imagedong@tencent.com> <bdca73eb-07e3-2187-c46f-a3f14a9e50a4@oracle.com>
+In-Reply-To: <bdca73eb-07e3-2187-c46f-a3f14a9e50a4@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 13 Jan 2023 14:07:12 -0800
+Message-ID: <CAEf4BzZ5FNw-j3F8cUpy4knRiM1sqQOOPZnM43Kj8peN9kKQLg@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: replace '.' with '_' in legacy kprobe event name
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     menglong8.dong@gmail.com, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <imagedong@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Song,
-
-On Fri, Jan 13, 2023 at 1:01 PM Song Liu <song@kernel.org> wrote:
+On Fri, Jan 13, 2023 at 6:13 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> On Thu, Jan 12, 2023 at 1:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> On 13/01/2023 09:34, menglong8.dong@gmail.com wrote:
+> > From: Menglong Dong <imagedong@tencent.com>
 > >
-> > When it saves the raw_data to the perf sample data, it needs to update
-> > the sample flags and the dynamic size.  To make sure this, add the
-> > perf_sample_save_raw_data() helper and convert all call sites.
+> > '.' is not allowed in the event name of kprobe. Therefore, we will get a
+> > EINVAL if the kernel function name has a '.' in legacy kprobe attach
+> > case, such as 'icmp_reply.constprop.0'.
 > >
-> > Cc: linux-s390@vger.kernel.org
-> > Cc: x86@kernel.org
-> > Cc: bpf@vger.kernel.org
-> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > In order to adapt this case, we need to replace the '.' with other char
+> > in gen_kprobe_legacy_event_name(). And I use '_' for this propose.
+> >
+> > Signed-off-by: Menglong Dong <imagedong@tencent.com>
 > > ---
-
-[SNIP]
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index 0fba98b9cd65..133894ae5e30 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -7588,30 +7588,10 @@ void perf_prepare_sample(struct perf_event_header *header,
-> >         if (filtered_sample_type & PERF_SAMPLE_CALLCHAIN)
-> >                 perf_sample_save_callchain(data, event, regs);
+> >  tools/lib/bpf/libbpf.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
 > >
-> > -       if (sample_type & PERF_SAMPLE_RAW) {
-> > -               struct perf_raw_record *raw = data->raw;
-> > -               int size;
-> > -
-> > -               if (raw && (data->sample_flags & PERF_SAMPLE_RAW)) {
-> > -                       struct perf_raw_frag *frag = &raw->frag;
-> > -                       u32 sum = 0;
-> > -
-> > -                       do {
-> > -                               sum += frag->size;
-> > -                               if (perf_raw_frag_last(frag))
-> > -                                       break;
-> > -                               frag = frag->next;
-> > -                       } while (1);
-> > -
-> > -                       size = round_up(sum + sizeof(u32), sizeof(u64));
-> > -                       raw->size = size - sizeof(u32);
-> > -                       frag->pad = raw->size - sum;
-> > -               } else {
-> > -                       size = sizeof(u64);
-> > -                       data->raw = NULL;
-> > -               }
-> > -
-> > -               data->dyn_size += size;
-> > +       if (filtered_sample_type & PERF_SAMPLE_RAW) {
-> > +               data->raw = NULL;
-> > +               data->dyn_size += sizeof(u64);
-> > +               data->sample_flags |= PERF_SAMPLE_RAW;
-> >         }
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index fdfb1ca34ced..5d6f6675c2f2 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -9994,9 +9994,16 @@ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+> >                                        const char *kfunc_name, size_t offset)
+> >  {
+> >       static int index = 0;
+> > +     int i = 0;
+> >
+> >       snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx_%d", getpid(), kfunc_name, offset,
+> >                __sync_fetch_and_add(&index, 1));
+> > +
+> > +     while (buf[i] != '\0') {
+> > +             if (buf[i] == '.')
+> > +                     buf[i] = '_';
+> > +             i++;
+> > +     }
+> >  }
 >
-> I don't quite follow this change, and the commit log doesn't seem
-> to cover this part.
+> probably more naturally expressed as a for() loop as is done in
+> gen_uprobe_legacy_event_name(), but not a big deal.
+>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 
-It's for when the user requested RAW but no actual data.
-It assumes PMU drivers call perf_sample_save_raw_data()
-before perf_prepare_sample() if there's RAW data.
-So we can only handle the 'else' part in the original code.
+Applied, but tuned to be exactly the same loop as in
+gen_uprobe_legacy_event_name. Thanks.
 
-Thanks,
-Namhyung
+>
+> One issue with the legacy kprobe code is that we don't get test coverage
+> with it on new kernels - I wonder if it would be worth adding a force_legacy
+> option to bpf_kprobe_opts? A separate issue to this change of course, but
+> if we had that we could add some legacy kprobe tests that would run
+> for new kernels as well.
+
+Yep, good idea. If we ever have some bug in the latest greatest kprobe
+implementation, users will have an option to work around that with
+this.
+
+The only thing is that we already have 3 modes: legacy, perf-based
+through ioctl, and bpf_link-based, so I think it should be something
+like
+
+enum kprobe_mode {
+    KPROBE_MODE_DEFAULT = 0, /* latest supported by kernel */
+    KPROBE_MODE_LEGACY,
+    KPROBE_MODE_PERF,
+    KPROBE_MODE_LINK,
+};
+
+LEGACY/PERF/LINK naming should be thought through, just a quick example.
+
+And then just have `enum kprobe_mode mode;` in kprobe_opts, which
+would default to 0 (KPROBE_MODE_DEFAULT).
+
+Would that work?
+
+>
+> Alan
+> >
+> >  static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
+> >
