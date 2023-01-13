@@ -2,110 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71676692B6
-	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 10:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007386692CF
+	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 10:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232630AbjAMJOu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Jan 2023 04:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
+        id S231467AbjAMJX7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 13 Jan 2023 04:23:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241194AbjAMJM0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Jan 2023 04:12:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF11413F37
-        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 01:10:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673601007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/inVd9UHQixWXyAa+0MDkfw5LIKFllU3vs3HgZK6jgc=;
-        b=P90ZSvWOW6kqAiZNi1pcXu9mEcKBZ5CY+eIciNsiCrinx/YiuiJZP+G0QcpEIX9+pHtLuv
-        2SAyVjWKp8thXm4x+o1gd/pstt/IRrR4l1+RZO0cGKLKTswrNma6ZOORlfxw4mYJDjEOBN
-        DOweeYyby4rOJiq6ZZXYt06tCn3uExY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-550--HjQU60KNxmzY7XjHPb57A-1; Fri, 13 Jan 2023 04:10:03 -0500
-X-MC-Unique: -HjQU60KNxmzY7XjHPb57A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 40D81101A55E;
-        Fri, 13 Jan 2023 09:10:02 +0000 (UTC)
-Received: from plouf.redhat.com (ovpn-193-50.brq.redhat.com [10.40.193.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EF531121314;
-        Fri, 13 Jan 2023 09:09:59 +0000 (UTC)
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S241063AbjAMJXM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Jan 2023 04:23:12 -0500
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.67.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CEF7CDCC
+        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 01:15:48 -0800 (PST)
+X-QQ-mid: bizesmtp72t1673601335tme72edy
+Received: from smtpclient.apple ( [1.202.165.115])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 13 Jan 2023 17:15:31 +0800 (CST)
+X-QQ-SSF: 01000000000000709000000A0000000
+X-QQ-FEAT: UMQM+3VOEYseBZlRKeXvbt2WBTsGyGNiyrH/643arIXyqebICEhYjywDgl/aL
+        AtdKW+D2shKIZCrFe0J/YycwYoCXOqRLUyK3jjXTM3ow7Xa/60y0ii76aBQF2WPB92PiKas
+        iCM1T9qK+P+fTfLeHioGtFmWarALTX3c+h4vgLh9UqIzce9TCSyoiU9sbKSRvOQe49a9DoB
+        lfQFLLYi2yZwZxzDDa8xMX6nCUDj03IzJLUAV+tXoQBVQxrF5qlOZBxzX7MMm/wlJ5MbOO1
+        /XXa3J3HZvLFOiinIb8WDmEK0M3XRHtXvA7+W8CbhiT6A2/9Cb4SUJwtZzLgtl80Yioo3Oo
+        IPeMHwhx1vaNFuK7IlI76OCpWU8JI72mtoRjEso
+X-QQ-GoodBg: 0
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [bpf-next v5 3/3] bpf: hash map, suppress false lockdep warning
+From:   Tonghao Zhang <tong@infragraf.org>
+In-Reply-To: <7e6d02ea-f9f7-2d09-bf10-ccd41b16a671@linux.dev>
+Date:   Fri, 13 Jan 2023 17:15:31 +0800
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH HID for-next v2 9/9] HID: bpf: reorder BPF registration
-Date:   Fri, 13 Jan 2023 10:09:35 +0100
-Message-Id: <20230113090935.1763477-10-benjamin.tissoires@redhat.com>
-In-Reply-To: <20230113090935.1763477-1-benjamin.tissoires@redhat.com>
-References: <20230113090935.1763477-1-benjamin.tissoires@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <EE4608EF-84F5-4E4C-967F-37B96D680D2E@infragraf.org>
+References: <20230111092903.92389-1-tong@infragraf.org>
+ <20230111092903.92389-3-tong@infragraf.org>
+ <7e6d02ea-f9f7-2d09-bf10-ccd41b16a671@linux.dev>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Given that our initial BPF program is not using any kfuncs anymore,
-we can reorder the initialization to first try to load it and then
-register the kfuncs. This has the advantage of not exporting kfuncs
-when HID-BPF is not working.
 
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 
----
-
-no changes in v2
----
- drivers/hid/bpf/hid_bpf_dispatch.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf_dispatch.c
-index 26117b4ec016..8a034a555d4c 100644
---- a/drivers/hid/bpf/hid_bpf_dispatch.c
-+++ b/drivers/hid/bpf/hid_bpf_dispatch.c
-@@ -514,15 +514,16 @@ static int __init hid_bpf_init(void)
- 		return 0;
- 	}
- 
--	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &hid_bpf_kfunc_set);
-+	err = hid_bpf_preload_skel();
- 	if (err) {
--		pr_warn("error while setting HID BPF tracing kfuncs: %d", err);
-+		pr_warn("error while preloading HID BPF dispatcher: %d", err);
- 		return 0;
- 	}
- 
--	err = hid_bpf_preload_skel();
-+	/* register tracing kfuncs after we are sure we can load our preloaded bpf program */
-+	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &hid_bpf_kfunc_set);
- 	if (err) {
--		pr_warn("error while preloading HID BPF dispatcher: %d", err);
-+		pr_warn("error while setting HID BPF tracing kfuncs: %d", err);
- 		return 0;
- 	}
- 
--- 
-2.38.1
+> On Jan 13, 2023, at 9:53 AM, Martin KaFai Lau <martin.lau@linux.dev> wrote:
+> 
+> On 1/11/23 1:29 AM, tong@infragraf.org wrote:
+>> +	/*
+>> +	 * The lock may be taken in both NMI and non-NMI contexts.
+>> +	 * There is a false lockdep warning (inconsistent lock state),
+>> +	 * if lockdep enabled. The potential deadlock happens when the
+>> +	 * lock is contended from the same cpu. map_locked rejects
+>> +	 * concurrent access to the same bucket from the same CPU.
+>> +	 * When the lock is contended from a remote cpu, we would
+>> +	 * like the remote cpu to spin and wait, instead of giving
+>> +	 * up immediately. As this gives better throughput. So replacing
+>> +	 * the current raw_spin_lock_irqsave() with trylock sacrifices
+>> +	 * this performance gain. atomic map_locked is necessary.
+>> +	 * lockdep_off is invoked temporarily to fix the false warning.
+>> +	 */
+>> +	lockdep_off();
+>>  	raw_spin_lock_irqsave(&b->raw_lock, flags);
+>> -	*pflags = flags;
+>> +	lockdep_on();
+> 
+> I am not very sure about the lockdep_off/on. Other than the false warning when using the very same htab map by both NMI and non-NMI context, I think the lockdep will still be useful to catch other potential issues. The commit c50eb518e262 ("bpf: Use separate lockdep class for each hashtab") has already solved this false alarm when NMI happens on one map and non-NMI happens on another map.
+> 
+> Alexei, what do you think? May be only land the patch 1 fix for now.
+Hi Martin
+Patch 2 is used for patch 1 to test whether there is a deadlock. We should apply this two patches.
+> 
+>>  +	*pflags = flags;
+>>  	return 0;
+>>  }
+>>  @@ -172,7 +187,11 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+>>  				      unsigned long flags)
+>>  {
+>>  	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets - 1);
+>> +
+>> +	lockdep_off();
+>>  	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+>> +	lockdep_on();
+>> +
+>>  	__this_cpu_dec(*(htab->map_locked[hash]));
+>>  	preempt_enable();
+>>  }
+> 
+> 
 
