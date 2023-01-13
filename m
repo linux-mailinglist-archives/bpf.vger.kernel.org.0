@@ -2,95 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBFB66A197
-	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 19:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE66066A201
+	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 19:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjAMSKA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Jan 2023 13:10:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
+        id S230516AbjAMS1i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Jan 2023 13:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjAMSJN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Jan 2023 13:09:13 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBC28BA9A
-        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 10:03:17 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id v65so6521952ioe.4
-        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 10:03:16 -0800 (PST)
+        with ESMTP id S229436AbjAMS0p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Jan 2023 13:26:45 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379ED49167;
+        Fri, 13 Jan 2023 10:22:50 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id mp20so7586429ejc.7;
+        Fri, 13 Jan 2023 10:22:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=531BBPkt1DmHWyMU4u+I3syaYyiTCwRCCzBUbOgC11U=;
-        b=A9v+HRQbLiepEx8J67+/qbI7nwSx0aT72sv8ruifGJj0sV/ePmjoVynqMgVnshZXRn
-         FzBeLtfrtxLcSZq1p30YR30K1rOMorxI3lmvXV6kpgWXTLkVKJ2vsQQe4SJ9TRADeAAM
-         VioFUN1T9CUN9CzxClEAFuCBRym94KMEH6vwT4X0bzdoErNAT3XXBJ0Nlx90E/pEKmHt
-         SreQjSMsTm5ZwakMDnhjTXUAKDK6Gg3haZj9vTO6i8o9Iz5Pq4IhUfuKXNHryQikZEQ0
-         1c2PgbJn+Q0D8mWI4SHUWtsMsjDE0GDr7hehSVJh3w3EWAajuJ1T1+POYbRgQ1cbZzs2
-         71kA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SwxEeoGBgqRIV/iTuXNna3YResob5aMiHbzkuhRkD6k=;
+        b=qrUJyijRNovU1IU30Vqk0MDytJbYIrCDe+OrzY8r2B4HvjGDXaETA9j1xBZPQcrRyw
+         lCQZ55u//NbIUmrKleGsDP742Lmxmdk5dSwrm9rFkHry5YqZQa2/CP5Ur6Da/a/iHqiP
+         Sj0OAU9aYU3OC9HxwMV2FWdJicVaAY7KrwVCCjUe88QFVWHfoLG+G+IijWkdsKTQSgNI
+         Vgq8HapnzEAqUXZ5b3B3TOScfQAuZT8jQgxizfPPowxJ/ocSti634/M+SH7jySsbBsVe
+         +SnU8Pigbn6pL+U///bJs1il7DueHjH6vYVjQoR0qltcmxPeFiTuLdM4FpVwEpOm7a+X
+         Dxsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=531BBPkt1DmHWyMU4u+I3syaYyiTCwRCCzBUbOgC11U=;
-        b=7PvFXq0mRfeydNMhqYJuPaW91PdWo7oLpGSlGNCqaUW/qZoMVG3/hUgUnGY9RrI1ze
-         vw0uaSKqG6yTP/mB4Hoe/SQ45MWtnkYzfFXdPu3ci967BqHbnMHO6EkAIkKZCcUXcc7u
-         1B2s35MWUZUdMd8q5CS2NMo6FLZL4YknHvG/QNXMiKlygqBOAnZtMTffDaNUs3GQHYE1
-         cDqPQlMLKMjw0q3Zu9gFbAJjegMX5dZAMR/AamFtGnvbZGnfohJ6PUsxzZAwPboSbdxN
-         4zZxzDjYoLt6SlE2sawzZnh55YSbeBgR97kLpA9rmQ/HiPg+X/h0ApQlwExxjV643Fio
-         9VdA==
-X-Gm-Message-State: AFqh2kpC6/lafbI0QXiduJMIckljt3L9pH5o4YFgtyolET6j1/5tLYK/
-        xLqJVDNBYW9WWscRbVeG5weZz0y0A29GsA==
-X-Google-Smtp-Source: AMrXdXvErK78eehKFRdGNLuHywneRGxtCp9CCPQeIIBmjCD/3pu0kVDYnDmD7wjsHarwypm5pKRt9Q==
-X-Received: by 2002:a6b:d605:0:b0:6bb:df57:d586 with SMTP id w5-20020a6bd605000000b006bbdf57d586mr54284381ioa.0.1673632995676;
-        Fri, 13 Jan 2023 10:03:15 -0800 (PST)
-Received: from thinkpad.. ([207.107.159.62])
-        by smtp.gmail.com with ESMTPSA id z3-20020a05663822a300b003a07b44ef09sm269138jas.67.2023.01.13.10.03.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Jan 2023 10:03:15 -0800 (PST)
-From:   Roberto Valenzuela <valenzuelarober@gmail.com>
-To:     andrii@kernel.org, mykolal@fb.com
-Cc:     Roberto Valenzuela <valenzuelarober@gmail.com>, shuah@kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH] selftests/bpf: Fix missing space error
-Date:   Fri, 13 Jan 2023 13:02:57 -0500
-Message-Id: <20230113180257.39769-1-valenzuelarober@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        bh=SwxEeoGBgqRIV/iTuXNna3YResob5aMiHbzkuhRkD6k=;
+        b=IQmWoIuOjqqO/bXoJIpIvZCCBedD3X6TXVfSLQwYQGPfC/H15XVEbDgHKGrvAo1D06
+         1BWOvk3DCd8VKgTpP34yJd05NF9HtL/ZkfnoO3QnA3r7iDjok5CsPXuPwCJQvRmmJsHX
+         KblX9s83IZ8u6d67hj4PE810h/UD65DD2AWH2vmxc18pwe6GR8W8JxjWzwaMOwyL50hW
+         Ojx5pA9PPiohbQEGDp3NWWg69r7GTQAKBQJXNcwA3iB6cCiDNRCarXdEVV28Ssjjw8uH
+         kUPXmnkzABGvbT+pT9vlflZd/cR91efYwfS9ThNkRr43Gl/doTZrGlfulU5iDpZuHntJ
+         /XCw==
+X-Gm-Message-State: AFqh2krbWCAcIkKrXGF3OidnlKfvGWj63CgGPHLffRCP/FB2iis8yheZ
+        5eyapFbaFAUKxk6oPkMWMY344Y+vb10Kb/sViF8=
+X-Google-Smtp-Source: AMrXdXtDQ5zbeXxwiqexSN7tlDEbCSIXvSEfo9MUWeOCXq3VPu76R7iqDQmEY6zHzqbrZU0+ecj+i45QIdtFWZ+WGwc=
+X-Received: by 2002:a17:906:75a:b0:855:d6ed:60d8 with SMTP id
+ z26-20020a170906075a00b00855d6ed60d8mr1030695ejb.302.1673634169384; Fri, 13
+ Jan 2023 10:22:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+References: <cover.1671462950.git.lorenzo@kernel.org> <6cce9b15a57345402bb94366434a5ac5609583b8.1671462951.git.lorenzo@kernel.org>
+ <CAEf4BzbOF-S3kjbNVXCZR-K=TGarfi06ZwG1cbNF=HSSodwEfg@mail.gmail.com> <Y72f1U2/dw8jo0/0@lore-desk>
+In-Reply-To: <Y72f1U2/dw8jo0/0@lore-desk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 13 Jan 2023 10:22:37 -0800
+Message-ID: <CAEf4BzawqXs6q18U8e5GD5d+9v1_w2+QOJYqmEpNb9rZ40E1Tw@mail.gmail.com>
+Subject: Re: [RFC bpf-next 6/8] libbpf: add API to get XDP/XSK supported features
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
+        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
+        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
+        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
+        ecree.xilinx@gmail.com, grygorii.strashko@ti.com, mst@redhat.com,
+        bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
+        lorenzo.bianconi@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add the missing space after 'dest' variable assignment.
-This change will resolve the following checkpatch.pl
-script error:
+On Tue, Jan 10, 2023 at 9:26 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> > On Mon, Dec 19, 2022 at 7:42 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > >
+> > > From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > >
+> > > Add functions to get XDP/XSK supported function of netdev over route
+> > > netlink interface. These functions provide functionalities that are
+> > > going to be used in upcoming change.
+> > >
+> > > The newly added bpf_xdp_query_features takes a fflags_cnt parameter,
+> > > which denotes the number of elements in the output fflags array. This
+> > > must be at least 1 and maybe greater than XDP_FEATURES_WORDS. The
+> > > function only writes to words which is min of fflags_cnt and
+> > > XDP_FEATURES_WORDS.
+> > >
+> > > Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > Co-developed-by: Marek Majtyka <alardam@gmail.com>
+> > > Signed-off-by: Marek Majtyka <alardam@gmail.com>
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> > >  tools/lib/bpf/libbpf.h   |  1 +
+> > >  tools/lib/bpf/libbpf.map |  1 +
+> > >  tools/lib/bpf/netlink.c  | 62 ++++++++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 64 insertions(+)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > > index eee883f007f9..9d102eb5007e 100644
+> > > --- a/tools/lib/bpf/libbpf.h
+> > > +++ b/tools/lib/bpf/libbpf.h
+> > > @@ -967,6 +967,7 @@ LIBBPF_API int bpf_xdp_detach(int ifindex, __u32 flags,
+> > >                               const struct bpf_xdp_attach_opts *opts);
+> > >  LIBBPF_API int bpf_xdp_query(int ifindex, int flags, struct bpf_xdp_query_opts *opts);
+> > >  LIBBPF_API int bpf_xdp_query_id(int ifindex, int flags, __u32 *prog_id);
+> > > +LIBBPF_API int bpf_xdp_query_features(int ifindex, __u32 *fflags, __u32 *fflags_cnt);
+> >
+> > no need to add new API, just extend bpf_xdp_query()?
+>
+> Hi Andrii,
+>
+> AFAIK libbpf supports just NETLINK_ROUTE protocol. In order to connect with the
+> genl family code shared by Jakub we need to add NETLINK_GENERIC protocol support
+> to libbf. Is it ok to introduce a libmnl or libnl dependency in libbpf or do you
+> prefer to add open code to just what we need?
 
-ERROR: spaces required around that '+=' (ctx:VxW)
-Signed-off-by: Roberto Valenzuela <valenzuelarober@gmail.com>
----
- tools/testing/selftests/bpf/progs/test_xdp_vlan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'd very much like to avoid any extra dependencies. But I also have no
+clue how much new code we are talking about, tbh. Either way, the less
+dependencies, the better, if the result is an acceptable amount of
+extra code to maintain.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_vlan.c b/tools/testing/selftests/bpf/progs/test_xdp_vlan.c
-index 134768f6b788..cdf3c48d6cbb 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_vlan.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_vlan.c
-@@ -195,7 +195,7 @@ int  xdp_prognum2(struct xdp_md *ctx)
- 
- 	/* Moving Ethernet header, dest overlap with src, memmove handle this */
- 	dest = data;
--	dest+= VLAN_HDR_SZ;
-+	dest += VLAN_HDR_SZ;
- 	/*
- 	 * Notice: Taking over vlan_hdr->h_vlan_encapsulated_proto, by
- 	 * only moving two MAC addrs (12 bytes), not overwriting last 2 bytes
--- 
-2.34.1
+> I guess we should have a dedicated API to dump xdp features in this case since
+> all the other code relies on NETLINK_ROUTE protocol. What do you think?
+>
 
+From API standpoint it looks like an extension to bpf_xdp_query()
+family of APIs, which is already extendable through opts. Which is why
+I suggested that there is no need for new API. NETLINK_ROUTE vs
+NETLINK_GENERIC seems like an internal implementation detail (but
+again, I spent literally zero time trying to understand what's going
+on here).
+
+> Regards,
+> Lorenzo
+>
+> >
+> > >
+> > >  /* TC related API */
+> > >  enum bpf_tc_attach_point {
+> > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > > index 71bf5691a689..9c2abb58fa4b 100644
+> > > --- a/tools/lib/bpf/libbpf.map
+> > > +++ b/tools/lib/bpf/libbpf.map
+> > > @@ -362,6 +362,7 @@ LIBBPF_1.0.0 {
+> > >                 bpf_program__set_autoattach;
+> > >                 btf__add_enum64;
+> > >                 btf__add_enum64_value;
+> > > +               bpf_xdp_query_features;
+> > >                 libbpf_bpf_attach_type_str;
+> > >                 libbpf_bpf_link_type_str;
+> > >                 libbpf_bpf_map_type_str;
+> >
+> > [...]
