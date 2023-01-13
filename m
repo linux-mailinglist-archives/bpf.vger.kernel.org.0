@@ -2,47 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8081A6686FA
-	for <lists+bpf@lfdr.de>; Thu, 12 Jan 2023 23:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A13C668948
+	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 02:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbjALWbo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Jan 2023 17:31:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S238392AbjAMBx3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Jan 2023 20:53:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234575AbjALWbV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Jan 2023 17:31:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCA0282;
-        Thu, 12 Jan 2023 14:30:43 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F123AB8202B;
-        Thu, 12 Jan 2023 22:30:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B26E1C433EF;
-        Thu, 12 Jan 2023 22:30:39 +0000 (UTC)
-Date:   Thu, 12 Jan 2023 17:30:36 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Ching-lin Yu <chinglinyu@google.com>
-Subject: Re: [LSF/MM/BPF TOPIC] tracing mapped pages for quicker boot
- performance
-Message-ID: <20230112173036.01677fa7@gandalf.local.home>
-In-Reply-To: <Y8CItRIuL3KUqUlk@casper.infradead.org>
-References: <20230112132153.38d52708@gandalf.local.home>
-        <Y8BvKZFI9RIoS4C/@casper.infradead.org>
-        <20230112171759.70132384@gandalf.local.home>
-        <Y8CItRIuL3KUqUlk@casper.infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S240644AbjAMBx1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Jan 2023 20:53:27 -0500
+Received: from out-193.mta0.migadu.com (out-193.mta0.migadu.com [91.218.175.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7583A61445
+        for <bpf@vger.kernel.org>; Thu, 12 Jan 2023 17:53:25 -0800 (PST)
+Message-ID: <7e6d02ea-f9f7-2d09-bf10-ccd41b16a671@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1673574803;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=33Ku8g/h4myxf2UTWuqY4sRCItNB1UVhMBs8WSvSEuE=;
+        b=mCwR0Vm4mZ1nqSGgqju1K3rW340ihXvH6LXcqGEMqxa2ZXTrepriGReeuYvzoyZICi6plY
+        5yclT87TQ9Gp4XoUk8lUfzLS8Su9YLPqsNKDCkv42PmzoDvZzy1U6JdngVUiKy0pJhI0hH
+        e9ltXYPXk1wv8XXKSGGT4BC2k9Ew0uQ=
+Date:   Thu, 12 Jan 2023 17:53:18 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [bpf-next v5 3/3] bpf: hash map, suppress false lockdep warning
+To:     tong@infragraf.org, Alexei Starovoitov <ast@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org
+References: <20230111092903.92389-1-tong@infragraf.org>
+ <20230111092903.92389-3-tong@infragraf.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230111092903.92389-3-tong@infragraf.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,28 +55,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 12 Jan 2023 22:24:53 +0000
-Matthew Wilcox <willy@infradead.org> wrote:
+On 1/11/23 1:29 AM, tong@infragraf.org wrote:
+> +	/*
+> +	 * The lock may be taken in both NMI and non-NMI contexts.
+> +	 * There is a false lockdep warning (inconsistent lock state),
+> +	 * if lockdep enabled. The potential deadlock happens when the
+> +	 * lock is contended from the same cpu. map_locked rejects
+> +	 * concurrent access to the same bucket from the same CPU.
+> +	 * When the lock is contended from a remote cpu, we would
+> +	 * like the remote cpu to spin and wait, instead of giving
+> +	 * up immediately. As this gives better throughput. So replacing
+> +	 * the current raw_spin_lock_irqsave() with trylock sacrifices
+> +	 * this performance gain. atomic map_locked is necessary.
+> +	 * lockdep_off is invoked temporarily to fix the false warning.
+> +	 */
+> +	lockdep_off();
+>   	raw_spin_lock_irqsave(&b->raw_lock, flags);
+> -	*pflags = flags;
+> +	lockdep_on();
 
-> > Great! How do I translate this to files? Do I just do a full scan on the
-> > entire device to find which file maps to an inode? And I'm guessing that
-> > the ofs is the offset into the file?  
-> 
-> 'ofs' is, yes.  That should have been called 'pos'.
-> 
-> And as you know, inodes can have multiple names in the filesystem.
-> I imagine you'd want to trace open() to see which names are being
-> opened; you can fstat the fd to build the ino->name lookup.
+I am not very sure about the lockdep_off/on. Other than the false warning when 
+using the very same htab map by both NMI and non-NMI context, I think the 
+lockdep will still be useful to catch other potential issues. The commit 
+c50eb518e262 ("bpf: Use separate lockdep class for each hashtab") has already 
+solved this false alarm when NMI happens on one map and non-NMI happens on 
+another map.
 
-I'm not sure which file that points to the inode matters. I'm guessing that
-if I have two files that are hard-linked together, and I run the readahead()
-system call on one of them, it will speed up a read of the other one. Or am
-I mistaken?
+Alexei, what do you think? May be only land the patch 1 fix for now.
 
-If I'm not mistaken, then just finding any file that is mapped to the inode
-is sufficient.
+>   
+> +	*pflags = flags;
+>   	return 0;
+>   }
+>   
+> @@ -172,7 +187,11 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+>   				      unsigned long flags)
+>   {
+>   	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets - 1);
+> +
+> +	lockdep_off();
+>   	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+> +	lockdep_on();
+> +
+>   	__this_cpu_dec(*(htab->map_locked[hash]));
+>   	preempt_enable();
+>   }
 
-The purpose of this is to speed up boot by having portions of the files
-being read already in the page cache when they are needed.
-
--- Steve
