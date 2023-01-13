@@ -2,107 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 007386692CF
-	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 10:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C947E6692FD
+	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 10:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbjAMJX7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 13 Jan 2023 04:23:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
+        id S238371AbjAMJaa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Jan 2023 04:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241063AbjAMJXM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Jan 2023 04:23:12 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.67.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CEF7CDCC
-        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 01:15:48 -0800 (PST)
-X-QQ-mid: bizesmtp72t1673601335tme72edy
-Received: from smtpclient.apple ( [1.202.165.115])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Fri, 13 Jan 2023 17:15:31 +0800 (CST)
-X-QQ-SSF: 01000000000000709000000A0000000
-X-QQ-FEAT: UMQM+3VOEYseBZlRKeXvbt2WBTsGyGNiyrH/643arIXyqebICEhYjywDgl/aL
-        AtdKW+D2shKIZCrFe0J/YycwYoCXOqRLUyK3jjXTM3ow7Xa/60y0ii76aBQF2WPB92PiKas
-        iCM1T9qK+P+fTfLeHioGtFmWarALTX3c+h4vgLh9UqIzce9TCSyoiU9sbKSRvOQe49a9DoB
-        lfQFLLYi2yZwZxzDDa8xMX6nCUDj03IzJLUAV+tXoQBVQxrF5qlOZBxzX7MMm/wlJ5MbOO1
-        /XXa3J3HZvLFOiinIb8WDmEK0M3XRHtXvA7+W8CbhiT6A2/9Cb4SUJwtZzLgtl80Yioo3Oo
-        IPeMHwhx1vaNFuK7IlI76OCpWU8JI72mtoRjEso
-X-QQ-GoodBg: 0
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [bpf-next v5 3/3] bpf: hash map, suppress false lockdep warning
-From:   Tonghao Zhang <tong@infragraf.org>
-In-Reply-To: <7e6d02ea-f9f7-2d09-bf10-ccd41b16a671@linux.dev>
-Date:   Fri, 13 Jan 2023 17:15:31 +0800
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <EE4608EF-84F5-4E4C-967F-37B96D680D2E@infragraf.org>
-References: <20230111092903.92389-1-tong@infragraf.org>
- <20230111092903.92389-3-tong@infragraf.org>
- <7e6d02ea-f9f7-2d09-bf10-ccd41b16a671@linux.dev>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S240969AbjAMJ2M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Jan 2023 04:28:12 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADD2B1F9;
+        Fri, 13 Jan 2023 01:24:44 -0800 (PST)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NtbYg25FVz16Mmp;
+        Fri, 13 Jan 2023 17:23:03 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Fri, 13 Jan 2023 17:24:39 +0800
+From:   Ziyang Xuan <william.xuanziyang@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <willemb@google.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <martin.lau@linux.dev>,
+        <song@kernel.org>, <yhs@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
+        <jolsa@kernel.org>
+Subject: [PATCH bpf-next v3 0/2] bpf: Add ipip6 and ip6ip decap support for bpf_skb_adjust_room()
+Date:   Fri, 13 Jan 2023 17:24:36 +0800
+Message-ID: <cover.1673574419.git.william.xuanziyang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500006.china.huawei.com (7.192.105.130)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Add ipip6 and ip6ip decap support for bpf_skb_adjust_room().
+Main use case is for using cls_bpf on ingress hook to decapsulate
+IPv4 over IPv6 and IPv6 over IPv4 tunnel packets.
+
+And add ipip6 and ip6ip decap testcases to verify that
+bpf_skb_adjust_room() correctly decapsulate ipip6 and ip6ip
+tunnel packets.
+
+$./test_tc_tunnel.sh
+ipip
+encap 192.168.1.1 to 192.168.1.2, type ipip, mac none len 100
+test basic connectivity
+0
+test bpf encap without decap (expect failure)
+Ncat: TIMEOUT.
+1
+test bpf encap with tunnel device decap
+0
+test bpf encap with bpf decap
+0
+OK
+ipip6
+encap 192.168.1.1 to 192.168.1.2, type ipip6, mac none len 100
+test basic connectivity
+0
+test bpf encap without decap (expect failure)
+Ncat: TIMEOUT.
+1
+test bpf encap with tunnel device decap
+0
+test bpf encap with bpf decap
+0
+OK
+ip6ip6
+encap fd::1 to fd::2, type ip6tnl, mac none len 100
+test basic connectivity
+0
+test bpf encap without decap (expect failure)
+Ncat: TIMEOUT.
+1
+test bpf encap with tunnel device decap
+0
+test bpf encap with bpf decap
+0
+OK
+sit
+encap fd::1 to fd::2, type sit, mac none len 100
+test basic connectivity
+0
+test bpf encap without decap (expect failure)
+Ncat: TIMEOUT.
+1
+test bpf encap with tunnel device decap
+0
+test bpf encap with bpf decap
+0
+OK
+...
+OK. All tests passed
+
+v3:
+  - Fix compilation failure of selftests/bpf.
+  - Combine two new branches in bpf_skb_adjust_room().
+  - Simplify description for new flags BPF_F_ADJ_ROOM_DECAP_L3_IP*. 
+
+v2:
+  - Use decap flags to indicate the new IP header.
+    Do not rely on skb->encapsulation.
 
 
-> On Jan 13, 2023, at 9:53 AM, Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> 
-> On 1/11/23 1:29 AM, tong@infragraf.org wrote:
->> +	/*
->> +	 * The lock may be taken in both NMI and non-NMI contexts.
->> +	 * There is a false lockdep warning (inconsistent lock state),
->> +	 * if lockdep enabled. The potential deadlock happens when the
->> +	 * lock is contended from the same cpu. map_locked rejects
->> +	 * concurrent access to the same bucket from the same CPU.
->> +	 * When the lock is contended from a remote cpu, we would
->> +	 * like the remote cpu to spin and wait, instead of giving
->> +	 * up immediately. As this gives better throughput. So replacing
->> +	 * the current raw_spin_lock_irqsave() with trylock sacrifices
->> +	 * this performance gain. atomic map_locked is necessary.
->> +	 * lockdep_off is invoked temporarily to fix the false warning.
->> +	 */
->> +	lockdep_off();
->>  	raw_spin_lock_irqsave(&b->raw_lock, flags);
->> -	*pflags = flags;
->> +	lockdep_on();
-> 
-> I am not very sure about the lockdep_off/on. Other than the false warning when using the very same htab map by both NMI and non-NMI context, I think the lockdep will still be useful to catch other potential issues. The commit c50eb518e262 ("bpf: Use separate lockdep class for each hashtab") has already solved this false alarm when NMI happens on one map and non-NMI happens on another map.
-> 
-> Alexei, what do you think? May be only land the patch 1 fix for now.
-Hi Martin
-Patch 2 is used for patch 1 to test whether there is a deadlock. We should apply this two patches.
-> 
->>  +	*pflags = flags;
->>  	return 0;
->>  }
->>  @@ -172,7 +187,11 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
->>  				      unsigned long flags)
->>  {
->>  	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets - 1);
->> +
->> +	lockdep_off();
->>  	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
->> +	lockdep_on();
->> +
->>  	__this_cpu_dec(*(htab->map_locked[hash]));
->>  	preempt_enable();
->>  }
-> 
-> 
+Ziyang Xuan (2):
+  bpf: Add ipip6 and ip6ip decap support for bpf_skb_adjust_room()
+  selftests/bpf: add ipip6 and ip6ip decap to test_tc_tunnel
+
+ include/uapi/linux/bpf.h                      |  7 ++
+ net/core/filter.c                             | 31 ++++++-
+ tools/include/uapi/linux/bpf.h                |  7 ++
+ .../selftests/bpf/progs/test_tc_tunnel.c      | 91 ++++++++++++++++++-
+ tools/testing/selftests/bpf/test_tc_tunnel.sh | 15 +--
+ 5 files changed, 142 insertions(+), 9 deletions(-)
+
+-- 
+2.25.1
 
