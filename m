@@ -2,55 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22550669908
-	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 14:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E760669942
+	for <lists+bpf@lfdr.de>; Fri, 13 Jan 2023 15:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241652AbjAMNul (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Jan 2023 08:50:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
+        id S241230AbjAMOAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Jan 2023 09:00:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbjAMNuX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Jan 2023 08:50:23 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DBD5D6DBB0
-        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 05:45:09 -0800 (PST)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NtjGz746MzJqHV;
-        Fri, 13 Jan 2023 21:40:43 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 13 Jan 2023 21:44:53 +0800
-Message-ID: <fe0c092e-acf2-2173-a927-15e7880479c9@huawei.com>
-Date:   Fri, 13 Jan 2023 21:44:52 +0800
+        with ESMTP id S232879AbjAMN7k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Jan 2023 08:59:40 -0500
+X-Greylist: delayed 430 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 13 Jan 2023 05:56:35 PST
+Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C197E76EC0
+        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 05:56:34 -0800 (PST)
+Received: from tux.applied-asynchrony.com (p5b2e8e20.dip0.t-ipconnect.de [91.46.142.32])
+        by mail.itouring.de (Postfix) with ESMTPSA id 94754CF1A9D;
+        Fri, 13 Jan 2023 14:49:21 +0100 (CET)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id 57B18F01581;
+        Fri, 13 Jan 2023 14:49:21 +0100 (CET)
+To:     bpf@vger.kernel.org
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Subject: [PATCH] bpftool: Always disable stack protection for clang
+Organization: Applied Asynchrony, Inc.
+Cc:     Sam James <sam@gentoo.org>
+Message-ID: <74cd9d2e-6052-312a-241e-2b514a75c92c@applied-asynchrony.com>
+Date:   Fri, 13 Jan 2023 14:49:21 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf-next 21/25] libbpf: define riscv syscall regs spec in
- bpf_tracing.h
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>, Alan Maguire <alan.maguire@oracle.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>,
-        Vladimir Isaev <isaev@synopsys.com>,
-        Kenta Tada <Kenta.Tada@sony.com>,
-        Florent Revest <revest@chromium.org>
-References: <20230113083404.4015489-1-andrii@kernel.org>
- <20230113083404.4015489-22-andrii@kernel.org>
-From:   Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20230113083404.4015489-22-andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,42 +41,45 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
+When the clang toolchain has stack protection enabled in order to be consistent
+with gcc - which just happens to be the case on Gentoo - the bpftool build
+fails:
 
-On 2023/1/13 16:34, Andrii Nakryiko wrote:
-> Define explicit table of registers used for syscall argument passing.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->   tools/lib/bpf/bpf_tracing.h | 12 ++++++++++--
->   1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index b05420b57889..7a4b8b1f0177 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -359,13 +359,21 @@ struct pt_regs___arm64 {
->   #define __PT_PARM6_REG a5
->   #define __PT_PARM7_REG a6
->   #define __PT_PARM8_REG a7
-> +
-> +/* riscv does not select ARCH_HAS_SYSCALL_WRAPPER. */
-> +#define PT_REGS_SYSCALL_REGS(ctx) ctx
-> +#define __PT_PARM1_SYSCALL_REG __PT_PARM1_REG
-> +#define __PT_PARM2_SYSCALL_REG __PT_PARM2_REG
-> +#define __PT_PARM3_SYSCALL_REG __PT_PARM3_REG
-> +#define __PT_PARM4_SYSCALL_REG __PT_PARM4_REG
-> +#define __PT_PARM5_SYSCALL_REG __PT_PARM5_REG
-> +#define __PT_PARM6_SYSCALL_REG __PT_PARM6_REG
-> +
->   #define __PT_RET_REG ra
->   #define __PT_FP_REG s0
->   #define __PT_RC_REG a0
->   #define __PT_SP_REG sp
->   #define __PT_IP_REG pc
-> -/* riscv does not select ARCH_HAS_SYSCALL_WRAPPER. */
-> -#define PT_REGS_SYSCALL_REGS(ctx) ctx
->   
->   #elif defined(bpf_target_arc)
->   
+clang \
+	-I. \
+	-I/tmp/portage/dev-util/bpftool-6.0.12/work/linux-6.0/tools/include/uapi/ \
+	-I/tmp/portage/dev-util/bpftool-6.0.12/work/linux-6.0/tools/bpf/bpftool/bootstrap/libbpf/include \
+	-g -O2 -Wall -target bpf -c skeleton/pid_iter.bpf.c -o pid_iter.bpf.o
+clang \
+	-I. \
+	-I/tmp/portage/dev-util/bpftool-6.0.12/work/linux-6.0/tools/include/uapi/ \
+	-I/tmp/portage/dev-util/bpftool-6.0.12/work/linux-6.0/tools/bpf/bpftool/bootstrap/libbpf/include \
+	-g -O2 -Wall -target bpf -c skeleton/profiler.bpf.c -o profiler.bpf.o
+skeleton/profiler.bpf.c:40:14: error: A call to built-in function '__stack_chk_fail' is not supported.
+int BPF_PROG(fentry_XXX)
+              ^
+skeleton/profiler.bpf.c:94:14: error: A call to built-in function '__stack_chk_fail' is not supported.
+int BPF_PROG(fexit_XXX)
+              ^
+2 errors generated.
 
-Tested-by: Pu Lehui <pulehui@huawei.com> # RISC-V
+Since stack-protector makes no sense for the BPF bits just unconditionally
+disable it.
+
+Bug: https://bugs.gentoo.org/890638
+Signed-off-by: Holger Hoffstätte <holger@applied-asynchrony.com>
+
+--snip--
+
+diff a/src/Makefile b/src/Makefile
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -205,7 +205,7 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
+  		-I$(or $(OUTPUT),.) \
+  		-I$(srctree)/include/uapi/ \
+  		-I$(LIBBPF_BOOTSTRAP_INCLUDE) \
+-		-g -O2 -Wall -target bpf -c $< -o $@
++		-g -O2 -Wall -fno-stack-protector -target bpf -c $< -o $@
+  	$(Q)$(LLVM_STRIP) -g $@
+  
+  $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
