@@ -2,67 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E9366A850
-	for <lists+bpf@lfdr.de>; Sat, 14 Jan 2023 02:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EB566A8A1
+	for <lists+bpf@lfdr.de>; Sat, 14 Jan 2023 03:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbjANBbO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Jan 2023 20:31:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59812 "EHLO
+        id S231418AbjANCUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Jan 2023 21:20:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjANBbL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Jan 2023 20:31:11 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BA72BEC
-        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 17:31:06 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id fy8so56050006ejc.13
-        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 17:31:06 -0800 (PST)
+        with ESMTP id S231454AbjANCUL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Jan 2023 21:20:11 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E23E8CBD7
+        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 18:20:10 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id y5so17434735pfe.2
+        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 18:20:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uRJGZ74bpZQfNwKmKMW7zfvNaXTFAzOysYJvn4U5o3o=;
-        b=d96EweZFgjpWYsAkk8b039xuK5G1XC8wNJjk7K1oQxosaMiWXrqzGL2h3Wme18B06/
-         7AOPGnh353S9HMab0F9WJM7nDnyFpaoDM0Ma2MzMfFv/GZ5QY4qFWgY7vzIt1HPHCiDA
-         ytzz2ZN82z0qHcsq3YCdMlm32Uo77vSjHGz1rbNBygty9KsDyglSsb5AUYBk5axn/X+a
-         QagPgkb+VF2fJxGsd9kU5xiQ3U8YfPia4lv6rbS6dMCDDKbsB/nhW1QslPEzrZOGToCV
-         t8D+lxmUtYsa8zZFyqUTVH6Zx1EhoWQpz4XRDfE3YJFymZ45zjDGyfIazpWvN30OkcrX
-         HVXA==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oWEXMtv0fP2RB5AdlXVyfM+v8329B7HYzbhGXaBNKLU=;
+        b=fHLtqi4MkBnkcpLOkOHzR8tYKv+i4MtMriVC+5GVLE2ahnGxC1iST3yB3DvzTT5pLa
+         SZIxD60knGYZhZA29U7S9G0zYZHAOdiykAWWhIL8IrVYiUBg7VbwSGU/C3ym73UEMkll
+         YNpqyJcH2T4TjjurYbVvAaRsJoljIMsFcrNQFOYtdZwWjF2RnuLPzr+aFaKp3DHe3SAt
+         0E1KC0dYGXPFSFHZ48tYcVyBXEhw15ppKZNKHxvG3kNdjDSBET6+TzqqX7gcjhYRdL3R
+         5Oeki0aiyQUlUxcM1OVWXKlqv6lKzjWo3ONjIgx0uoWl8Q43LV2aEnF8YdFKiRL6sdGG
+         w+gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uRJGZ74bpZQfNwKmKMW7zfvNaXTFAzOysYJvn4U5o3o=;
-        b=Rm39OtGkw2RXFW68eGxd90BAxMIVwjeSSEl2kUksO+4KARzwPFC+tT4jjZRdLywjfG
-         sZFIAOkUaO+OXE4RemTLsavtvsHMba6j2tT7YttdilIMyWtzQ+ck2vq6mrKlFcwAOQbI
-         UKRmocSUkrahAhuRGm1dFbVkSBUQt2AX3rj3jRrTCbHNjiBPgI2dwzRyTqPd059YlVG/
-         o1plNKggnoAlypLBoPJkZGddDK0Y6FgJwY/LJS6IrXupzyzpRrp6e/iryx1wqQdhWXsz
-         5m3C3z8vF6CQJe7N12WFTlwH/bLMwyCL/9eJIIc4B6fRpYGGrUYVEx0gMqIm0yLmpexD
-         VylQ==
-X-Gm-Message-State: AFqh2kp2pmgT7xlFf+wzBmSC5ZguCW2o8xl1RsJZ/7SRi4HxXTfQSb9D
-        iiCgUOhTcACYCxnngkLOYualAA2PH8H7hrgzvB8=
-X-Google-Smtp-Source: AMrXdXvBI4xaBLvCvVriYdCgwUJFMpp18fygUXQuEa6A4f3gVuqo8HcBqaZj2o6te5ou4rB/NMBiu9GQQ6T+aBhgBfQ=
-X-Received: by 2002:a17:906:75a:b0:855:d6ed:60d8 with SMTP id
- z26-20020a170906075a00b00855d6ed60d8mr1088408ejb.302.1673659865021; Fri, 13
- Jan 2023 17:31:05 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oWEXMtv0fP2RB5AdlXVyfM+v8329B7HYzbhGXaBNKLU=;
+        b=OVnG1UAxhoB5CEa2leywo9q3yJ1V1++myQUEIRTvqziknFhy7Ernke5dE48pge+kFg
+         EUldjlZyLUJrsgr65V66caZyIbTYHFsKOIu0uF+ZNitF+/zoo1lUH1VOW82YyofcH/Az
+         t1Gb4kOp6wgRHGwD2iJniAL7vTicT1/d1Sj08fnk3xNb+uwI4dzECqu8KsT3lAKcCzqV
+         7mi1RWfWI8pqqrveHavPSN80yhmOrwzvFrkdzD4dVHwQ9boKsijMKglIuspfWmayfElh
+         Nmff9BJYTiIFUlJVm2deo9+ocA78EuhrLG7V47JSQyANb0Jhuzw0hZD4UVAaYl9yw7Pf
+         SPAw==
+X-Gm-Message-State: AFqh2kp1ipk+NnjVTuyLsv6BFV7heAxOr+65LKitmqx+/ldffzOkzdAp
+        zoMGGkbJvwHLQ16zswdvs7vPO1tpxhCmoCHRlQpP7A==
+X-Google-Smtp-Source: AMrXdXs2UIOVMtifo6bi3e7hwJrVG51LPBuPPAtnPD2tEZsZpuSMhaIBMdLul5rT8NYxjVUpg/eAcAw6WpSsCMRZDpo=
+X-Received: by 2002:a62:2901:0:b0:586:7e0c:372d with SMTP id
+ p1-20020a622901000000b005867e0c372dmr2102258pfp.14.1673662809738; Fri, 13 Jan
+ 2023 18:20:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20230106142214.1040390-1-eddyz87@gmail.com> <CAEf4BzYoB8Ut7UM62dw6TquHfBMAzjbKR=aG_c74XaCgYYyikg@mail.gmail.com>
- <e64e8dbea359c1e02b7c38724be72f354257c2f6.camel@gmail.com>
- <CAEf4BzY3e+ZuC6HUa8dCiUovQRg2SzEk7M-dSkqNZyn=xEmnPA@mail.gmail.com>
- <b836c36a68b670df8f649db621bb3ec74e03ef9b.camel@gmail.com> <CAEf4Bza8q2P1mqN4LYwiYqssBiQDorjkFaZDsudOQFCb2825Vw@mail.gmail.com>
-In-Reply-To: <CAEf4Bza8q2P1mqN4LYwiYqssBiQDorjkFaZDsudOQFCb2825Vw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 13 Jan 2023 17:30:53 -0800
-Message-ID: <CAEf4BzY9ikdrT5WN__QJgaYhWJ=h0Do8T7YkiYLpT9VftqecVg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/2] bpf: Fix to preserve reg parent/live
- fields when copying range info
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+References: <CA+khW7ju-gewZVNxopBi3Uvhiv8Wb=a-D4gaW3MD-NkUg0WSSg@mail.gmail.com>
+ <CAEf4BzYztcahNoFH_CvtWz_1dTA3SSYv+zOorsyP0TfX-2EdaA@mail.gmail.com>
+ <CA+khW7gXaHwxZjS1sp0oAF-t0jk0+CnwxdhV9kqyBfqEVack-w@mail.gmail.com> <CAEf4BzaQPtFMkcJdH4m5S0X5t3UD1M0M_bJk9Z65Zspb5bbxgA@mail.gmail.com>
+In-Reply-To: <CAEf4BzaQPtFMkcJdH4m5S0X5t3UD1M0M_bJk9Z65Zspb5bbxgA@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Fri, 13 Jan 2023 18:19:58 -0800
+Message-ID: <CA+khW7g44a7a1-C+q7B5NA1DPiM6zCanLsrXOfNm1vOvKwPtAw@mail.gmail.com>
+Subject: Re: CORE feature request: support checking field type directly
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,136 +78,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 13, 2023 at 5:17 PM Andrii Nakryiko
+On Fri, Jan 13, 2023 at 5:14 PM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
-> On Fri, Jan 13, 2023 at 4:10 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+> On Fri, Jan 13, 2023 at 5:06 PM Hao Luo <haoluo@google.com> wrote:
 > >
-> > On Fri, 2023-01-13 at 14:22 -0800, Andrii Nakryiko wrote:
-> > > On Fri, Jan 13, 2023 at 12:02 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > > >
-> > > > On Wed, 2023-01-11 at 16:24 -0800, Andrii Nakryiko wrote:
-> > > > [...]
-> > > > >
-> > > > > I'm wondering if we should consider allowing uninitialized
-> > > > > (STACK_INVALID) reads from stack, in general. It feels like it's
-> > > > > causing more issues than is actually helpful in practice. Common code
-> > > > > pattern is to __builtin_memset() some struct first, and only then
-> > > > > initialize it, basically doing unnecessary work of zeroing out. All
-> > > > > just to avoid verifier to complain about some irrelevant padding not
-> > > > > being initialized. I haven't thought about this much, but it feels
-> > > > > that STACK_MISC (initialized, but unknown scalar value) is basically
-> > > > > equivalent to STACK_INVALID for all intents and purposes. Thoughts?
-> > > >
-> > > > Do you have an example of the __builtin_memset() usage?
-> > > > I tried passing partially initialized stack allocated structure to
-> > > > bpf_map_update_elem() and bpf_probe_write_user() and verifier did not
-> > > > complain.
-> > > >
-> > > > Regarding STACK_MISC vs STACK_INVALID, I think it's ok to replace
-> > > > STACK_INVALID with STACK_MISC if we are talking about STX/LDX/ALU
-> > > > instructions because after LDX you would get a full range register and
-> > > > you can't do much with a full range value. However, if a structure
-> > > > containing un-initialized fields (e.g. not just padding) is passed to
-> > > > a helper or kfunc is it an error?
+> > On Fri, Jan 13, 2023 at 3:41 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
 > > >
-> > > if we are passing stack as a memory to helper/kfunc (which should be
-> > > the only valid use case with STACK_MISC, right?), then I think we
-> > > expect helper/kfunc to treat it as memory with unknowable contents.
-> > > Not sure if I'm missing something, but MISC says it's some unknown
-> > > value, and the only difference between INVALID and MISC is that MISC's
-> > > value was written by program explicitly, while for INVALID that
-> > > garbage value was there on the stack already (but still unknowable
-> > > scalar), which effectively is the same thing.
-> >
-> > I looked through the places where STACK_INVALID is used, here is the list:
-> >
-> > - unmark_stack_slots_dynptr()
-> >   Destroy dynptr marks. Suppose STACK_INVALID is replaced by
-> >   STACK_MISC here, in this case a scalar read would be possible from
-> >   such slot, which in turn might lead to pointer leak.
-> >   Might be a problem?
->
-> We are already talking to enable reading STACK_DYNPTR slots directly.
-> So not a problem?
->
-> >
-> > - scrub_spilled_slot()
-> >   mark spill slot STACK_MISC if not STACK_INVALID
-> >   Called from:
-> >   - save_register_state() called from check_stack_write_fixed_off()
-> >     Would mark not all slots only for 32-bit writes.
-> >   - check_stack_write_fixed_off() for insns like `fp[-8] = <const>` to
-> >     destroy previous stack marks.
-> >   - check_stack_range_initialized()
-> >     here it always marks all 8 spi slots as STACK_MISC.
-> >   Looks like STACK_MISC instead of STACK_INVALID wouldn't make a
-> >   difference in these cases.
-> >
-> > - check_stack_write_fixed_off()
-> >   Mark insn as sanitize_stack_spill if pointer is spilled to a stack
-> >   slot that is marked STACK_INVALID. This one is a bit strange.
-> >   E.g. the program like this:
-> >
-> >     ...
-> >     42:  fp[-8] = ptr
-> >     ...
-> >
-> >   Will mark insn (42) as sanitize_stack_spill.
-> >   However, the program like this:
-> >
-> >     ...
-> >     21:  fp[-8] = 22   ;; marks as STACK_MISC
-> >     ...
-> >     42:  fp[-8] = ptr
-> >     ...
-> >
-> >   Won't mark insn (42) as sanitize_stack_spill, which seems strange.
-> >
-> > - stack_write_var_off()
-> >   If !env->allow_ptr_leaks only allow writes if slots are not
-> >   STACK_INVALID. I'm not sure I understand the intention.
-> >
-> > - clean_func_state()
-> >   STACK_INVALID is used to mark spi's that are not REG_LIVE_READ as
-> >   such that should not take part in the state comparison. However,
-> >   stacksafe() has REG_LIVE_READ check as well, so this marking might
-> >   be unnecessary.
-> >
-> > - stacksafe()
-> >   STACK_INVALID is used as a mark that some bytes of an spi are not
-> >   important in a state cached for state comparison. E.g. a slot in an
-> >   old state might be marked 'mmmm????' and 'mmmmmmmm' or 'mmmm0000' in
-> >   a new state. However other checks in stacksafe() would catch these
-> >   variations.
-> >
-> > The conclusion being that some pointer leakage checks might need
-> > adjustment if STACK_INVALID is replaced by STACK_MISC.
->
-> Just to be clear. My suggestion was to *treat* STACK_INVALID as
-> equivalent to STACK_MISC in stacksafe(), not really replace all the
-> uses of STACK_INVALID with STACK_MISC. And to be on the safe side, I'd
-> do it only if env->allow_ptr_leaks, of course.
-
-Well, that, and to allow STACK_INVALID if env->allow_ptr_leaks in
-check_stack_read_fixed_off(), of course, to avoid "invalid read from
-stack off %d+%d size %d\n" error (that's fixing at least part of the
-problem with uninitialized struct padding).
-
->
-> >
+<...>
 > > >
-> > > >
-> > > > > Obviously, this is a completely separate change and issue from what
-> > > > > you are addressing in this patch set.
-> > > > >
-> > > > > Awesome job on tracking this down and fixing it! For the patch set:
-> > > >
-> > > > Thank you for reviewing this issue with me.
-> > > >
-> > > > >
-> > > > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > >
-> > > > >
-> > > > [...]
+> > > Have you tried bpf_core_type_matches()? It seems like exactly what yo=
+u
+> > > are looking for? See [0] for logic of what constitutes "a match".
+> > >
 > >
+> > It seems bpf_core_type_matches() is for the userspace code. I'm
+>
+> It's in the same family as bpf_type_{exists,size}() and
+> bpf_field_{exists,size,offset}(). It's purely BPF-side. Please grep
+> for bpf_core_type_matches() in selftests/bpf.
+>
+> > looking for type checking in the BPF code. We probably don't need to
+> > check type equivalence, just comparing the btf_id of the field's type
+> > and the btf_id of a target type may be sufficient.
+>
+> With the example above something like below should work:
+>
+> struct rw_semaphore__old {
+>         struct task_struct *owner;
+> };
+>
+> struct rw_semaphore__new {
+>         atomic_long_t owner;
+> };
+>
+> u64 owner;
+> if (bpf_core_type_matches(struct rw_semaphore__old) /* owner is
+> task_struct pointer */) {
+>         struct rw_semaphore__old *old =3D (struct rw_semaphore__old *)sem=
+;
+>         owner =3D (u64)sem->owner;
+> } else if (bpf_core_type_matches(struct rw_semaphore__old) /* owner
+> field is atomic_long_t */) {
+>         struct rw_semaphore__new *new =3D (struct rw_semaphore__new *)sem=
+;
+>         owner =3D new->owner.counter;
+> }
+>
+> >
+> > The commit 94a9717b3c (=E2=80=9Clocking/rwsem: Make rwsem->owner an
+> > atomic_long_t=E2=80=9D) is rare, but the 'owner' field is useful for tr=
+acking
+> > the owner of a kernel lock.
+>
+> We implemented bpf_core_type_matches() to detect tracepoint changes,
+> which is equivalent (if not harder) use case. Give it a try.
+>
+
+Thanks Andrii for the pointer. It's still not working. I got the
+following error when loading:
+
+libbpf: prog 'on_contention_begin': relo #1: parsing [43] struct
+rw_semaphore__old + 0 failed: -22
+libbpf: prog 'on_contention_begin': relo #1: failed to relocate: -22
+libbpf: failed to perform CO-RE relocations: -22
+
+I'll dig a little more next week.
