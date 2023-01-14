@@ -2,81 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B26366A734
-	for <lists+bpf@lfdr.de>; Sat, 14 Jan 2023 00:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8611466A762
+	for <lists+bpf@lfdr.de>; Sat, 14 Jan 2023 01:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjAMXoT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Jan 2023 18:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
+        id S230356AbjANAKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Jan 2023 19:10:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbjAMXoS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Jan 2023 18:44:18 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD9E7A397;
-        Fri, 13 Jan 2023 15:44:17 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id m21so33288936edc.3;
-        Fri, 13 Jan 2023 15:44:17 -0800 (PST)
+        with ESMTP id S229924AbjANAKM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Jan 2023 19:10:12 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2C84D716
+        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 16:10:11 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id ud5so55961198ejc.4
+        for <bpf@vger.kernel.org>; Fri, 13 Jan 2023 16:10:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WiD4XuljWboqUYIS4LRAcIps0II1sfWftKD+kMm06Go=;
-        b=C/s/9LuL/WYBqFD4EB5pxlKXWidNEPzGOv0vv1psvI3HB4A/OoUL4OYdPB9OVNHnSf
-         /zhA+pFWUCxOnaVoyzAL//ACBTXJR0oJhpYrBQ8/acEbAJ5dZ/s8gb0MDYGmFL+wRfv6
-         JN3v1W5I/8Jc3a0RRGgIna8GqMgyOPG43htzzVc508tueV1HT2I1PaerVBkKf1YD/KZ5
-         sMSS7IQzxl4yX+uKb9UpXWYZQHoSh2rVBjNhyHdKoZFuexeoDkouLOVOiySzNHtRuxkK
-         mVsgx8369gaO0PuGcl+dpF/xfVv3dt+tJTjzypzFWD6u7DNjdaJx7nBvmeyCfLS/vwiO
-         UnaA==
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sHH8wqJrFYYq8jIHgmXoM8DdwMkNa3V6oSSF5rvjaP4=;
+        b=N4n1Pa2fJNOnvxii0o0XoN3bTHqrhJsbOQ45d7t8jBfSBKjgzI9dCM8eXnuJDbZyDH
+         gxACiKyhxlU6R21wZWdM0H9OcN8kuznOmHCyMozRJzENH1EwmE3p7A64cYViqFVo0f2u
+         h1j6RFlLpXXjAixVfTGg2oIjcoWhxgd0E9WRvQy6GSbpZ+kTlEBLdGGMZSIJzIOe4SXi
+         H2dXwJEzWui/0xQE02qyZ4G0NcWmnakx6oFptYVc3+uGjxdZt7T9/uN2sCeAEkVUWtWU
+         pvcu45Bo7d9ZHAPHThe72ilKrmce+v+WNWRP5iMCRMxGNY3P0bugJhnvonmWwWSLBPc8
+         z0+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WiD4XuljWboqUYIS4LRAcIps0II1sfWftKD+kMm06Go=;
-        b=gGDLtEtQF6F1PrOZkYYiLohQ7KjI6JaqboJ1LLK0xoaPbHaBHOQGgFw7ZuPihheoaE
-         0eWvLjH5y4sLOY1eOeSGRQyrEZOpdg4omttJ/HmiltX2ZthQ8C7Ui0mTifw2pJ+VV9Gb
-         7xJGgU+YPKsjbYRXEbHg0fhlHXMd5rYHQ2rTeTgi9LB2rKjV/Lmu0SymgMnuJrp7NcpD
-         jp8b1KTcaYlzxWPVB6ndGTPLE9oaDZXybsajA4YSoyyfGB3sR0mGUDwp4n71MBKhsru+
-         wzkFKNb/ZViD1KwCFnMRQbEyUGgNrgqQbgAckAhg/p2I7okRIUVjdKyKj8l3XlIBob7T
-         ajUQ==
-X-Gm-Message-State: AFqh2kpIC8f02vdHkbdz5e/9i76CI77VbXnFNrIQS9XnuoVmOEgjXkYI
-        7VoNGBJFsbStgh1Skp7Id0nI0n/nO0uFgNxJnZ8=
-X-Google-Smtp-Source: AMrXdXugIxxCOTLCsJL5l1WzdJMhO1+av+OVIqu/rQiE4QSd8ANPBGJ7IOEjFzWCdrxmDHXl3I9pzXYhip9mmMxDPoc=
-X-Received: by 2002:a05:6402:6d9:b0:499:7efc:1d78 with SMTP id
- n25-20020a05640206d900b004997efc1d78mr1921636edy.81.1673653455917; Fri, 13
- Jan 2023 15:44:15 -0800 (PST)
-MIME-Version: 1.0
-References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
- <21be7356-8710-408a-94e3-1a0d3f5f842e@www.fastmail.com> <CAEf4BzawXPiXY3mNabi0ggyTS9wtg6mh8x97=fYGhuGj4=2hnw@mail.gmail.com>
- <a9367491-5ac3-385b-d0d6-820772ebd395@huaweicloud.com> <CAEf4BzZJDRNyafMEjy-1RX9cUmpcvZzYd9YBf9Q3uv_vVsiLCw@mail.gmail.com>
- <5abb0b0090fd0bce77dca0a6b9036de121b65cf5.camel@huaweicloud.com>
- <20f55084c341093d18d2bc462e49123c7f03cc8e.camel@huaweicloud.com>
- <CAADnVQLU+c+gsZ=V6myG0-GhU3EzZgqjzTPvqvYmCDBjqMoF+Q@mail.gmail.com>
- <3fa1fdafc4335c43f84259261dcd1f7d588985a6.camel@huaweicloud.com>
- <c0f7120e433c80b7c4e0af788eda58de8d1ecdad.camel@huaweicloud.com>
- <CAHC9VhQKa36C4xh1OiCdC1baNSeNL7OMLY9zg4O0UWahX-mzow@mail.gmail.com>
- <4175e56b-8522-5086-bdf1-b534122c841b@huaweicloud.com> <CAHC9VhSRs0cUowuedQ1Sth4U7P5vcJMqe-qTLMBvCpYbeZ5OxA@mail.gmail.com>
- <981170d7e587ff2c7e4673b1acc2886200e22392.camel@huaweicloud.com>
-In-Reply-To: <981170d7e587ff2c7e4673b1acc2886200e22392.camel@huaweicloud.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 13 Jan 2023 15:44:04 -0800
-Message-ID: <CAEf4BzYRx5gdwsEGTFY=C9-C72pus2Z3QV6THMLR4wACGMDrrQ@mail.gmail.com>
-Subject: Re: Closing the BPF map permission loophole
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sHH8wqJrFYYq8jIHgmXoM8DdwMkNa3V6oSSF5rvjaP4=;
+        b=J3tgmBbgXDTAW79JmsK7wzeq4RImO/0+LP8xDbG3Y48laRwwfy6OV3EVCIGcngpQvk
+         tbLPDp9aTzXFwp75O6fM1ylp6r0mFOcX/bv3xq9eaI49gtWPLNOLRTlyNNRfGd8NNN7c
+         zQtfQrY6RgQNQp4lMF07L5DPwzBdIdy2ujlfEIB+dnIzarFTOkoF8BPA6nhc1PL4+zhI
+         ommNF+u8SA83wDUNa2UVpg57lomDEClkpKUUaV6/A+Txk2Fdb3All6kolilnnL0emit7
+         FqXUx+Zf1xMrizrpIXgWyMEU9Z4p2fQ+pUxZRglqEU1/kI8g/hJ/9KriN1ap63PL8Qng
+         KURg==
+X-Gm-Message-State: AFqh2krRTrPMdyaA1f5RLMy4EmJ08dVtVfTJjJ34+Qd3w8d/pz1GIhJB
+        xMmshp5rRwWXfUmcPNrEIkEq+ID0uJ0=
+X-Google-Smtp-Source: AMrXdXuhkUevlGkHLhUcRnUquBCtTZAfilts0/pFtVkXcNFYDlG2ELfO6AiQiMEbLJ2cVIpGwC7eNw==
+X-Received: by 2002:a17:907:9006:b0:84d:411d:64a4 with SMTP id ay6-20020a170907900600b0084d411d64a4mr4451836ejc.38.1673655009787;
+        Fri, 13 Jan 2023 16:10:09 -0800 (PST)
+Received: from [192.168.1.113] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id 18-20020a170906211200b007c0b28b85c5sm9009730ejt.138.2023.01.13.16.10.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Jan 2023 16:10:09 -0800 (PST)
+Message-ID: <b836c36a68b670df8f649db621bb3ec74e03ef9b.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/2] bpf: Fix to preserve reg parent/live
+ fields when copying range info
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+Date:   Sat, 14 Jan 2023 02:10:07 +0200
+In-Reply-To: <CAEf4BzY3e+ZuC6HUa8dCiUovQRg2SzEk7M-dSkqNZyn=xEmnPA@mail.gmail.com>
+References: <20230106142214.1040390-1-eddyz87@gmail.com>
+         <CAEf4BzYoB8Ut7UM62dw6TquHfBMAzjbKR=aG_c74XaCgYYyikg@mail.gmail.com>
+         <e64e8dbea359c1e02b7c38724be72f354257c2f6.camel@gmail.com>
+         <CAEf4BzY3e+ZuC6HUa8dCiUovQRg2SzEk7M-dSkqNZyn=xEmnPA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,107 +76,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 10, 2023 at 1:12 AM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> On Wed, 2022-12-21 at 19:55 -0500, Paul Moore wrote:
-> > On Wed, Dec 21, 2022 at 4:54 AM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > On 12/20/2022 9:44 PM, Paul Moore wrote:
-> > > > On Fri, Dec 16, 2022 at 5:24 AM Roberto Sassu
-> > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > Ok, let me try to complete the solution for the issues Lorenz pointed
-> > > > > out. Here I discuss only the system call side of access.
-> > > > >
-> > > > > I was thinking on the meaning of the permissions on the inode of a
-> > > > > pinned eBPF object. Given that the object exists without pinning, this
-> > > > > double check of permissions first on the inode and then on the object
-> > > > > to me looks very confusing.
-> > > > >
-> > > > > So, here is a proposal: what if read and write in the context of
-> > > > > pinning don't refer to accessing the eBPF object itself but to the
-> > > > > ability to read the association between inode and eBPF object or to
-> > > > > write/replace the association with a different eBPF object (I guess not
-> > > > > supported now).
-> > > > >
-> > > > > We continue to do access control only at the time a requestor asks for
-> > > > > a fd. Currently there is only MAC, but we can add DAC and POSIX ACL too
-> > > > > (Andrii wanted to give read permission to a specific group). The owner
-> > > > > is who created the eBPF object and who can decide (for DAC and ACL) who
-> > > > > can access that object.
-> > > > >
-> > > > > The requestor obtains a fd with modes depending on what was granted. Fd
-> > > > > modes (current behavior) give the requestor the ability to do certain
-> > > > > operations. It is responsibility of the function performing the
-> > > > > operation on an eBPF object to check the fd modes first.
-> > > > >
-> > > > > It does not matter if the eBPF object is accessed through ID or inode,
-> > > > > access control is solely based on who is accessing the object, who
-> > > > > created it and the object permissions. *_GET_FD_BY_ID and OBJ_GET
-> > > > > operations will have the same access control.
-> > > > >
-> > > > > With my new proposal, once an eBPF object is pinned the owner or
-> > > > > whoever can access the inode could do chown/chmod. But this does not
-> > > > > have effect on the permissions of the object. It changes only who can
-> > > > > retrieve the association with the eBPF object itself.
-> > > >
-> > > > Just to make sure I understand you correctly, you're suggesting that
-> > > > the access modes assigned to a pinned map's fd are simply what is
-> > > > requested by the caller, and don't necessarily represent the access
-> > > > control modes of the underlying map, is that correct?  That seems a
-> > >
-> > > The fd modes don't necessarily represent the access control modes of the
-> > > inode the map is pinned to. But they surely represent the access control
-> > > modes of the map object itself.
-> > >
-> > > The access control modes of the inode tell if the requestor is able to
-> > > retrieve the map from it, before accessing the map is attempted. But,
-> > > even if the request is granted (i.e. the inode has read permission), the
-> > > requestor has still to pass access control on the map object, which is
-> > > separate.
-> >
-> > Okay, good.  That should work.
-> >
-> > > Fd modes are bound to the map access modes, but not necessarily bound to
-> > > the inode access modes (fd with write mode, on an inode with only read
-> > > permission). Fd modes are later enforced by map operations by checking
-> > > the compatibility of the operation (e.g. read-like operation requires fd
-> > > read mode).
-> > >
-> > > The last point is what it means getting a fd on the inode itself. It is
-> > > possible, because inodes could have seq_file operations. Thus, one could
-> > > dump the map content by just reading from the inode.
-> >
-> > Gotcha, yes, that would be bad.
-> >
-> > > Here, I suggest that we still do two separate checks. One is for the
-> > > open(), done by the VFS, and the other to access the map object. Not
-> > > having read permission on the inode means that the map content cannot be
-> > > dumped. But, having read permission on the inode does not imply the
-> > > ability to do it (still the map object check has to be passed).
-> >
-> > That makes sense to me.
->
-> Andrii, Lorenz, what do you think about the new interpretation of the
-> permissions of the inode of a pinned map?
+On Fri, 2023-01-13 at 14:22 -0800, Andrii Nakryiko wrote:
+> On Fri, Jan 13, 2023 at 12:02 PM Eduard Zingerman <eddyz87@gmail.com> wro=
+te:
+> >=20
+> > On Wed, 2023-01-11 at 16:24 -0800, Andrii Nakryiko wrote:
+> > [...]
+> > >=20
+> > > I'm wondering if we should consider allowing uninitialized
+> > > (STACK_INVALID) reads from stack, in general. It feels like it's
+> > > causing more issues than is actually helpful in practice. Common code
+> > > pattern is to __builtin_memset() some struct first, and only then
+> > > initialize it, basically doing unnecessary work of zeroing out. All
+> > > just to avoid verifier to complain about some irrelevant padding not
+> > > being initialized. I haven't thought about this much, but it feels
+> > > that STACK_MISC (initialized, but unknown scalar value) is basically
+> > > equivalent to STACK_INVALID for all intents and purposes. Thoughts?
+> >=20
+> > Do you have an example of the __builtin_memset() usage?
+> > I tried passing partially initialized stack allocated structure to
+> > bpf_map_update_elem() and bpf_probe_write_user() and verifier did not
+> > complain.
+> >=20
+> > Regarding STACK_MISC vs STACK_INVALID, I think it's ok to replace
+> > STACK_INVALID with STACK_MISC if we are talking about STX/LDX/ALU
+> > instructions because after LDX you would get a full range register and
+> > you can't do much with a full range value. However, if a structure
+> > containing un-initialized fields (e.g. not just padding) is passed to
+> > a helper or kfunc is it an error?
+>=20
+> if we are passing stack as a memory to helper/kfunc (which should be
+> the only valid use case with STACK_MISC, right?), then I think we
+> expect helper/kfunc to treat it as memory with unknowable contents.
+> Not sure if I'm missing something, but MISC says it's some unknown
+> value, and the only difference between INVALID and MISC is that MISC's
+> value was written by program explicitly, while for INVALID that
+> garbage value was there on the stack already (but still unknowable
+> scalar), which effectively is the same thing.
 
-Hi Roberto,
+I looked through the places where STACK_INVALID is used, here is the list:
 
-Sorry, I've lost track of all these intricacies a while ago. I'd like
-to hear from Lorenz as well. My role here was to expand on what I
-meant by "BPF map view" back then at BPF office hours and why I think
-it solves all the problems mentioned earlier.
+- unmark_stack_slots_dynptr()
+  Destroy dynptr marks. Suppose STACK_INVALID is replaced by
+  STACK_MISC here, in this case a scalar read would be possible from
+  such slot, which in turn might lead to pointer leak.
+  Might be a problem?
 
-You seem to be proposing some alternative, but I'm not clear why we
-need an alternative, given BPF map view seems to be the right
-abstraction here? Either way, I think Lorenz was passionate about
-solving this problem, so would certainly help to get his input as
-well.
+- scrub_spilled_slot()
+  mark spill slot STACK_MISC if not STACK_INVALID
+  Called from:
+  - save_register_state() called from check_stack_write_fixed_off()
+    Would mark not all slots only for 32-bit writes.
+  - check_stack_write_fixed_off() for insns like `fp[-8] =3D <const>` to
+    destroy previous stack marks.
+  - check_stack_range_initialized()
+    here it always marks all 8 spi slots as STACK_MISC.
+  Looks like STACK_MISC instead of STACK_INVALID wouldn't make a
+  difference in these cases.
 
-Thanks.
+- check_stack_write_fixed_off()
+  Mark insn as sanitize_stack_spill if pointer is spilled to a stack
+  slot that is marked STACK_INVALID. This one is a bit strange.
+  E.g. the program like this:
 
->
-> Thanks
->
-> Roberto
->
+    ...
+    42:  fp[-8] =3D ptr
+    ...
+   =20
+  Will mark insn (42) as sanitize_stack_spill.
+  However, the program like this:
+
+    ...
+    21:  fp[-8] =3D 22   ;; marks as STACK_MISC
+    ...
+    42:  fp[-8] =3D ptr
+    ...
+
+  Won't mark insn (42) as sanitize_stack_spill, which seems strange.
+
+- stack_write_var_off()
+  If !env->allow_ptr_leaks only allow writes if slots are not
+  STACK_INVALID. I'm not sure I understand the intention.
+
+- clean_func_state()
+  STACK_INVALID is used to mark spi's that are not REG_LIVE_READ as
+  such that should not take part in the state comparison. However,
+  stacksafe() has REG_LIVE_READ check as well, so this marking might
+  be unnecessary.
+
+- stacksafe()
+  STACK_INVALID is used as a mark that some bytes of an spi are not
+  important in a state cached for state comparison. E.g. a slot in an
+  old state might be marked 'mmmm????' and 'mmmmmmmm' or 'mmmm0000' in
+  a new state. However other checks in stacksafe() would catch these
+  variations.
+
+The conclusion being that some pointer leakage checks might need
+adjustment if STACK_INVALID is replaced by STACK_MISC.
+
+>=20
+> >=20
+> > > Obviously, this is a completely separate change and issue from what
+> > > you are addressing in this patch set.
+> > >=20
+> > > Awesome job on tracking this down and fixing it! For the patch set:
+> >=20
+> > Thank you for reviewing this issue with me.
+> >=20
+> > >=20
+> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > >=20
+> > >=20
+> > [...]
+
