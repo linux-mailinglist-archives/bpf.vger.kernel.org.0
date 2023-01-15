@@ -2,69 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C02CB66B439
-	for <lists+bpf@lfdr.de>; Sun, 15 Jan 2023 22:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F60466B444
+	for <lists+bpf@lfdr.de>; Sun, 15 Jan 2023 22:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbjAOVio (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 15 Jan 2023 16:38:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
+        id S231608AbjAOVtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 15 Jan 2023 16:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbjAOVid (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 15 Jan 2023 16:38:33 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCA71816F;
-        Sun, 15 Jan 2023 13:38:26 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id s5so38385651edc.12;
-        Sun, 15 Jan 2023 13:38:26 -0800 (PST)
+        with ESMTP id S231320AbjAOVtN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 15 Jan 2023 16:49:13 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE6B18152;
+        Sun, 15 Jan 2023 13:49:11 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id p1-20020a05600c1d8100b003d8c9b191e0so20951308wms.4;
+        Sun, 15 Jan 2023 13:49:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=57kdqOuHYhDuUykoWeKC7s2qeEWqbE2Ut7XWjHRvhF0=;
-        b=RrRMnrXYth8fjdxYLSDF4gGhWcZmgAPtzF/Eyk1IOAJyodqKBB3HjK4W9TFDoFQ9e0
-         cmY37ezVjZa34BnunJsTjDmzGA8MHHXGGc9a0jgQIroLBEr3FgiDBInCUtXxR5ejMvq/
-         fRUc8+QyVeGIbR3A25St0BRGQE2YXUYD5io5Cu4diI3uF91KmIVZYe1EUEsSR2DbCAde
-         Xf6HWBIdnaX0ebGso/5/IXdZw1LeoiWLXh0gTAT5ztWhmqsPgYzzaMvpBSqyLgPAFn/1
-         ufL+YNwpufUZ35Frfz1vMwejQqXjyApNpCFFKz/e7wDTn6DNgOf9mju1M5G2eFY1jtA5
-         hu6g==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gd7Ow2nPrEWd6lZ2zmUT7J4z0TLG/anTssBGwzt00Nc=;
+        b=UIl9Gprhiq5HCUZZup59Kkv+RXKDVsYOAXEAxEes7WEAImXJ2xVcxAdKA0R98q3nKh
+         inuXNmPXwE0hs+3pjZ24JVPIht4gbMfjpH8U0TRyJvlyDWWMgsAOYzR+KYS3OXd0soiC
+         ArPUNwYD2T082+UFZaB2/AE6EwAe3EmIDVZTWESaBcKExPjcznHRKuRFYp9a4tIMcF5V
+         P0bSPQEhc2VOnYgws+qrhbc1nkx53RPpBe+9fO02kDUjEc9db9KGc4UYSiASB5oXeRMp
+         HiIO3rzuKxqbP1dZojGal/Fp9+DK5oeb0g1sS6IPzDsZepgIguxjSn7NS1iq7B1i2hrW
+         n5eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=57kdqOuHYhDuUykoWeKC7s2qeEWqbE2Ut7XWjHRvhF0=;
-        b=Pdf+ZxSQYUf60RznkY9ckGoMrUdJidXSymfuxc3VT/IzCRJrv24PlkPZ333HJGySp4
-         kmbCpZoJZL3w16/lXjE+Z73L3hNfX9T/APt1yGr5Fl/MfcgVlV7ci+bG47eex1fOToFJ
-         azEVb2Z3QKNh3+bsc1KYAcBqwPCFk0LZJP6E4YvVLpn0VqUsIC/nAbpnAt+InxQDHsT6
-         YTaTQebkjSvHQTePjfzgZvnLpjIewM9KtfdISU3F9o8BagWc8ODB/tAWnmVhnheKWFtP
-         gIaWrtG+kVR82ehWpeUuFdujcOLImxMlWEg64tDgD8J4AXKJ9dg2RvbyX+zih2r0x10h
-         0MyQ==
-X-Gm-Message-State: AFqh2kpQhhMUtbok4X2kFuRRj8lP3hQ57DNHrT29mqG3WNQyaJWaPaKB
-        PYQlYOszzr24VXBfGudxhZSVhgqmI451ewZsipA=
-X-Google-Smtp-Source: AMrXdXtAygATLaDTW3nC5zGdOBYmLQijWgsrg34pGrvmgqQoQD1dBWfG9X/Qrby6TVGMDHm4SIsq5pGo81pKh8Pk/nk=
-X-Received: by 2002:aa7:db4e:0:b0:49e:1e:14b1 with SMTP id n14-20020aa7db4e000000b0049e001e14b1mr322202edt.6.1673818705066;
- Sun, 15 Jan 2023 13:38:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20230115071613.125791-1-danieltimlee@gmail.com>
-In-Reply-To: <20230115071613.125791-1-danieltimlee@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 15 Jan 2023 13:38:13 -0800
-Message-ID: <CAADnVQ+zP5bkjkSa97k+dK7=NabkdoLWQtZ1qRwRTUQgGdqhVA@mail.gmail.com>
-Subject: Re: [bpf-next 00/10] samples/bpf: modernize BPF functionality test programs
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gd7Ow2nPrEWd6lZ2zmUT7J4z0TLG/anTssBGwzt00Nc=;
+        b=ALVfZU9i8hpurt/tN2BM8ucvd27cOU1kJYVS9YyIshTB4PTKAKVpjUNqxsGtF3s7p2
+         RKIrsCxAOY8sCy9pVSmTEBKcfSKACWcHgsNjd6x7u5tIwlh0GKrtzNrLo1BqF9XtkIMo
+         t2UGG/LuWoyEviKXMUlPOst3EmIewQFFZ6A2YmHA0Z2gcIRMgx04sk28D/cgd7TWlFTr
+         +PItWqOPD2PBtdVCiKeyUGgxr/yhoS9OXWzZ+sGmpsZkq/3TQurNMEcGuII4Wg+gQQJM
+         /bwsE3RJ0ONCAWGqb4gBy+vCt43hvJAj048WezQ4mBIqF47a9oUQBEhpnYxRFfG/sX8N
+         mW2g==
+X-Gm-Message-State: AFqh2kq0JKbbUaQLF+bcQxsEoC8SQtupqeBpU9/Ivrw/HVhPb/KGW41m
+        EGnc8dmtFJ8P+27KngTiytA=
+X-Google-Smtp-Source: AMrXdXuwLlvobMgpyjk0yf7rfKUiaQcWvz2pRA5JHlX/iVn9xPH66Ik3FuDSLw1s9XtZiGUFB7Yh0w==
+X-Received: by 2002:a05:600c:4d11:b0:3da:f97b:2a95 with SMTP id u17-20020a05600c4d1100b003daf97b2a95mr2143498wmp.36.1673819349645;
+        Sun, 15 Jan 2023 13:49:09 -0800 (PST)
+Received: from krava ([83.240.63.124])
+        by smtp.gmail.com with ESMTPSA id z22-20020a7bc7d6000000b003cfa81e2eb4sm4441311wmk.38.2023.01.15.13.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Jan 2023 13:49:08 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Sun, 15 Jan 2023 22:49:06 +0100
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>, bpf@vger.kernel.org,
+        live-patching@vger.kernel.org, linux-modules@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Hao Luo <haoluo@google.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCHv2 bpf-next 2/3] selftests/bpf: Add
+ serial_test_kprobe_multi_bench_attach_kernel/module tests
+Message-ID: <Y8R00sRwznbKlJV3@krava>
+References: <20230113143303.867580-1-jolsa@kernel.org>
+ <20230113143303.867580-3-jolsa@kernel.org>
+ <CAEf4BzZSzM0NznnEH0oD9y6Zdd6YDZWEp4HyL1+2hLBrWk=j1w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZSzM0NznnEH0oD9y6Zdd6YDZWEp4HyL1+2hLBrWk=j1w@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,29 +92,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 14, 2023 at 11:16 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
->
-> Currently, there are many programs under samples/bpf to test the
-> various functionality of BPF that have been developed for a long time.
-> However, the kernel (BPF) has changed a lot compared to the 2016 when
-> some of these test programs were first introduced.
->
-> Therefore, some of these programs use the deprecated function of BPF,
-> and some programs no longer work normally due to changes in the API.
->
-> To list some of the kernel changes that this patch set is focusing on,
-> - legacy BPF map declaration syntax support had been dropped [1]
-> - bpf_trace_printk() always append newline at the end [2]
-> - deprecated styled BPF section header (bpf_load style) [3]
-> - urandom_read tracepoint is removed (used for testing overhead) [4]
-> - ping sends packet with SOCK_DGRAM instead of SOCK_RAW [5]*
-> - use "vmlinux.h" instead of including individual headers
->
-> In addition to this, this patchset tries to modernize the existing
-> testing scripts a bit. And for network-related testing programs,
-> a separate header file was created and applied. (To use the
-> Endianness conversion function from xdp_sample and bunch of constants)
+On Fri, Jan 13, 2023 at 02:43:47PM -0800, Andrii Nakryiko wrote:
+> On Fri, Jan 13, 2023 at 6:33 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Add bench test for module portion of the symbols as well.
+> >
+> >   # ./test_progs -v -t kprobe_multi_bench_attach_module
+> >   bpf_testmod.ko is already unloaded.
+> >   Loading bpf_testmod.ko...
+> >   Successfully loaded bpf_testmod.ko.
+> >   test_kprobe_multi_bench_attach:PASS:get_syms 0 nsec
+> >   test_kprobe_multi_bench_attach:PASS:kprobe_multi_empty__open_and_load 0 nsec
+> >   test_kprobe_multi_bench_attach:PASS:bpf_program__attach_kprobe_multi_opts 0 nsec
+> >   test_kprobe_multi_bench_attach: found 26620 functions
+> >   test_kprobe_multi_bench_attach: attached in   0.182s
+> >   test_kprobe_multi_bench_attach: detached in   0.082s
+> >   #96      kprobe_multi_bench_attach_module:OK
+> >   Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> >   Successfully unloaded bpf_testmod.ko.
+> >
+> > It's useful for testing kprobe multi link modules resolving.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../bpf/prog_tests/kprobe_multi_test.c        | 21 ++++++++++++++-----
+> >  1 file changed, 16 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> > index c6f37e825f11..017a6996f3fa 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> > @@ -322,7 +322,7 @@ static bool symbol_equal(long key1, long key2, void *ctx __maybe_unused)
+> >         return strcmp((const char *) key1, (const char *) key2) == 0;
+> >  }
+> >
+> > -static int get_syms(char ***symsp, size_t *cntp)
+> > +static int get_syms(char ***symsp, size_t *cntp, bool kernel)
+> >  {
+> >         size_t cap = 0, cnt = 0, i;
+> >         char *name = NULL, **syms = NULL;
+> > @@ -349,8 +349,9 @@ static int get_syms(char ***symsp, size_t *cntp)
+> >         }
+> >
+> >         while (fgets(buf, sizeof(buf), f)) {
+> > -               /* skip modules */
+> > -               if (strchr(buf, '['))
+> > +               if (kernel && strchr(buf, '['))
+> > +                       continue;
+> > +               if (!kernel && !strchr(buf, '['))
+> >                         continue;
+> >
+> >                 free(name);
+> > @@ -404,7 +405,7 @@ static int get_syms(char ***symsp, size_t *cntp)
+> >         return err;
+> >  }
+> >
+> > -void serial_test_kprobe_multi_bench_attach(void)
+> > +static void test_kprobe_multi_bench_attach(bool kernel)
+> >  {
+> >         LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
+> >         struct kprobe_multi_empty *skel = NULL;
+> > @@ -415,7 +416,7 @@ void serial_test_kprobe_multi_bench_attach(void)
+> >         char **syms = NULL;
+> >         size_t cnt = 0, i;
+> >
+> > -       if (!ASSERT_OK(get_syms(&syms, &cnt), "get_syms"))
+> > +       if (!ASSERT_OK(get_syms(&syms, &cnt, kernel), "get_syms"))
+> >                 return;
+> >
+> >         skel = kprobe_multi_empty__open_and_load();
+> > @@ -453,6 +454,16 @@ void serial_test_kprobe_multi_bench_attach(void)
+> >         }
+> >  }
+> >
+> > +void serial_test_kprobe_multi_bench_attach_kernel(void)
+> > +{
+> > +       test_kprobe_multi_bench_attach(true);
+> > +}
+> > +
+> > +void serial_test_kprobe_multi_bench_attach_module(void)
+> > +{
+> > +       test_kprobe_multi_bench_attach(false);
+> > +}
+> > +
+> 
+> minor nit: probably would be better to make kernel and module variants
+> into subtests?
 
-Nice set of cleanups. Applied.
-As a follow up could you convert some of them to proper selftests/bpf ?
-Unfortunately samples/bpf will keep bit rotting despite your herculean efforts.
+ok, will change that
+
+thanks,
+jirka
