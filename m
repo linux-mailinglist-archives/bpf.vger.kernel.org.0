@@ -2,139 +2,311 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB5F66AE90
-	for <lists+bpf@lfdr.de>; Sun, 15 Jan 2023 00:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF18F66AF91
+	for <lists+bpf@lfdr.de>; Sun, 15 Jan 2023 08:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjANXAd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 14 Jan 2023 18:00:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
+        id S229692AbjAOG7Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 15 Jan 2023 01:59:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjANXAc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 14 Jan 2023 18:00:32 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A347EE3B9
-        for <bpf@vger.kernel.org>; Sat, 14 Jan 2023 15:00:31 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id j15so16522791qtv.4
-        for <bpf@vger.kernel.org>; Sat, 14 Jan 2023 15:00:31 -0800 (PST)
+        with ESMTP id S229635AbjAOG7W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 15 Jan 2023 01:59:22 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4478A69;
+        Sat, 14 Jan 2023 22:59:20 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id mp20so14702034ejc.7;
+        Sat, 14 Jan 2023 22:59:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pefoley.com; s=google;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=F3XCi6AfxSAqS5zfTvqe8suxE7tzF8peDwUROyvJdd0=;
-        b=DCvz3bkLZakEpTkPpr0XwSu/dWqJzzD2YWAY+4X20tODPd+44+2woBDINF6C7uavGE
-         AFTr9bhlIK4sYaWzqEJmomyk79njyBOlnElNd3+5Rps98ZI84gaEsfE9zyATVnfNXZYK
-         W+UnBkv5gQcCvTEjV02mQ9yo4neMJ3xGyVMrA=
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Pxptz55Cwqa7TpAzHO0z5FDEjV2lumpg9wAZM72elNg=;
+        b=JJLLEQgRY8DYBbiWq2xF5D9kdSxHL0qfjS5P89tvbL5voWDJTqILYtQBfZ0c2TC38Q
+         ewlZql/yKF2SCoUBhwX0MQBJFzPUIfWXrByIn+PfqJgAo4XW5gWr6PWJcDbXSftB6EvB
+         0AH24918SLfEnKtzAQd17nkexOYFfpfARbarIql48bB0zXOqKCASiEjQvT+u6j+lYnMv
+         Ne3dKlMv63QtDIuV5Uk8jXO6qibeWbloLXqczDjZ/MyJwS1sQ336aSBzwkMWg42zfxYy
+         qGLNPI47DK84vLZhGpz/qIvKntQOBMRphV2znK4wpmPU5GHqBlfcZ/C4l5DY0CpUpzW+
+         EBiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F3XCi6AfxSAqS5zfTvqe8suxE7tzF8peDwUROyvJdd0=;
-        b=aW2AxZ3BkCoe1B8yj05oDf6XgvBlXda+7Iu0p/T2m4QXBgTCGl4qWy+pacvytSn+fT
-         yGpzP5kIMYA18SUkv3kottUl+3TsBojRTlqm1UKeVT0iz/r9OlMZ+96uMqDSHFTLtVdn
-         OJV5kZndFm6huAfTxqAnqQyVvYFd1NM5LHt62/ifiO2RjxLuWpfo7RpaVaBqGgUV3Wuu
-         NRThU4ApNQOP6mAYrVcfTnVWXmmKMQKjjCyqknsAqQdz78rIGPVGNMgT1z4b1FO6PLBS
-         juBYO4rZ+z3OiTPbB70pRC77jCpK8PZd4c31pLR6XrUSvDx2GXwwu6ZgaLNMyAD8Cx2a
-         BXqg==
-X-Gm-Message-State: AFqh2kqOG8RBG1ALdCmq5MgFdAY/xprYXoM2DU8E9otbr/Ti48EwhMph
-        q+emvGWZlXHqzfst+yufDfAXFw==
-X-Google-Smtp-Source: AMrXdXtV8kzhjM0mYYtQvEKOs5VCP5FkGjdffWhpq0GZ23j78oKYxQYXe68DedpEtslq0G1ShXI9ig==
-X-Received: by 2002:a05:622a:4d47:b0:3a6:46b4:2a6b with SMTP id fe7-20020a05622a4d4700b003a646b42a6bmr132730359qtb.27.1673737230600;
-        Sat, 14 Jan 2023 15:00:30 -0800 (PST)
-Received: from [192.168.1.3] ([2600:4040:29fb:d300:887b:7eff:fe74:68b2])
-        by smtp.gmail.com with ESMTPSA id s1-20020a05620a0bc100b006fa4ac86bfbsm15132169qki.55.2023.01.14.15.00.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Jan 2023 15:00:30 -0800 (PST)
-From:   Peter Foley <pefoley2@pefoley.com>
-Date:   Sat, 14 Jan 2023 18:00:18 -0500
-Subject: [PATCH] tools: bpf: Disable stack protector
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pxptz55Cwqa7TpAzHO0z5FDEjV2lumpg9wAZM72elNg=;
+        b=vlJPRog0I3xM0xA7ewTij3zW4NogDIg5IURjbLb3JVUXMYoMZtxMLUjuiYgkADI2fG
+         ViiHGQ+OATJnaA0yh7DV8McsX+iHJJnS0Y1jIXnKb8uSZg0YQ3zJW30819Fkhe2o57Ez
+         yFL8reLimhPpPfI8npFk9XOpFZqq7WKNVdniOQoxXaHKL5Ou3Pi8xwniOkR+2VF3eWUh
+         MDyQsYAmjK+bDKAxt1CJ3vlM7bJC/Rj5Jw2al9OyUNLwCLaH0BfseEccvEEhA+Girdgh
+         qAhyiAv8q1ryNPCQE6X/z0GZ1Y+wUG3JK7ZUqrJIudGZuo/a525zh+MZQ6CJuRnNxXL8
+         nhCw==
+X-Gm-Message-State: AFqh2kpLpME4sqa1eeSYbUiZfUugSRSORMtfkLNEOeVA9FrGTG94XLDY
+        gtR/mVWELHYYGn5YpskL33Y=
+X-Google-Smtp-Source: AMrXdXs/4YNUrETD4uk5muY15beC2zfbcOD5E6EY0AZhx7iryPCNpstuSanYkngaPdSTXzRnPHFftw==
+X-Received: by 2002:a17:906:88b:b0:850:52f8:5ca9 with SMTP id n11-20020a170906088b00b0085052f85ca9mr21257815eje.28.1673765958735;
+        Sat, 14 Jan 2023 22:59:18 -0800 (PST)
+Received: from [192.168.0.103] ([77.126.105.148])
+        by smtp.gmail.com with ESMTPSA id kx1-20020a170907774100b0084d368b1628sm9249006ejc.40.2023.01.14.22.59.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Jan 2023 22:59:18 -0800 (PST)
+Message-ID: <493fd525-10b3-c136-8458-a1560ed2cdcb@gmail.com>
+Date:   Sun, 15 Jan 2023 08:59:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230114-bpf-v1-1-f836695a8b62@pefoley.com>
-X-B4-Tracking: v=1; b=H4sIAAI0w2MC/x2MQQqEMAwAvyI5b8FUobpfkT2kGjUHu5KICOLfr
- R6HGeYEYxU2+BYnKO9i8k8Z8FNAP1Oa2MmQGXzpqxKxdnEdXYsNMfoQQyDIZSRjF5VSPz/tQrax
- PmJVHuV4993vum5craNsbgAAAA==
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Peter Foley <pefoley2@pefoley.com>
-X-Mailer: b4 0.11.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1673737229; l=1810;
- i=pefoley2@pefoley.com; s=20230111; h=from:subject:message-id;
- bh=QjHX5cBfbMx9A2AI5fA8Eg+Dzw4jlnZ+WyV+BAFRgnE=;
- b=SEteZLNsaPCTQYt40+vXrNdYOdi+lpPaAj0mBIbbUzFE4hE2tqD65Jb57PS7BkA4E8FTe4SJf0h+
- PnvXw2BLD200psGUovhBHMkygtVbohD3sm4+bOBG6vI4565haZmp
-X-Developer-Key: i=pefoley2@pefoley.com; a=ed25519;
- pk=DCQqIdN6rHnvfQH58WQiQzJFfGUo1HyWSvdYG8vnO5o=
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v7 15/17] net/mlx5e: Introduce
+ wrapper for xdp_buff
+Content-Language: en-US
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+References: <20230112003230.3779451-1-sdf@google.com>
+ <20230112003230.3779451-16-sdf@google.com>
+ <a0bac9bd-6772-64d4-8fd5-756ff4d8c2ad@gmail.com>
+ <CAKH8qBsUOdRax0m5XM8guudSX_VYpJuMz_mzdMJegDsq4_ezwA@mail.gmail.com>
+ <87k01rfojm.fsf@toke.dk> <87h6wvfmfa.fsf@toke.dk>
+ <d83f2193-3fb9-e30f-cfb0-f1098f039b67@gmail.com> <87358ef7e8.fsf@toke.dk>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <87358ef7e8.fsf@toke.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Avoid build errors on distros that force the stack protector on by
-default.
-e.g.
-  CLANG   /home/peter/linux/work/tools/bpf/bpftool/pid_iter.bpf.o
-skeleton/pid_iter.bpf.c:53:5: error: A call to built-in function '__stack_chk_fail' is not supported.
-int iter(struct bpf_iter__task_file *ctx)
-    ^
-1 error generated.
 
-Signed-off-by: Peter Foley <pefoley2@pefoley.com>
----
- tools/bpf/bpftool/Makefile    | 1 +
- tools/bpf/runqslower/Makefile | 5 +++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index f610e184ce02a..36ac0002e386f 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -215,6 +215,7 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
- 		-I$(or $(OUTPUT),.) \
- 		-I$(srctree)/tools/include/uapi/ \
- 		-I$(LIBBPF_BOOTSTRAP_INCLUDE) \
-+		-fno-stack-protector \
- 		-g -O2 -Wall -target bpf -c $< -o $@
- 	$(Q)$(LLVM_STRIP) -g $@
- 
-diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-index 8b3d87b82b7a2..f7313cc966a04 100644
---- a/tools/bpf/runqslower/Makefile
-+++ b/tools/bpf/runqslower/Makefile
-@@ -60,8 +60,9 @@ $(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(BPFTOOL)
- 	$(QUIET_GEN)$(BPFTOOL) gen skeleton $< > $@
- 
- $(OUTPUT)/%.bpf.o: %.bpf.c $(BPFOBJ) | $(OUTPUT)
--	$(QUIET_GEN)$(CLANG) -g -O2 -target bpf $(INCLUDES)		      \
--		 -c $(filter %.c,$^) -o $@ &&				      \
-+	$(QUIET_GEN)$(CLANG) -g -O2 -target bpf $(INCLUDES)		\
-+		 -fno-stack-protector 					\
-+		 -c $(filter %.c,$^) -o $@ &&				\
- 	$(LLVM_STRIP) -g $@
- 
- $(OUTPUT)/%.o: %.c | $(OUTPUT)
+On 13/01/2023 23:31, Toke Høiland-Jørgensen wrote:
+> Tariq Toukan <ttoukan.linux@gmail.com> writes:
+> 
+>> On 12/01/2023 23:55, Toke Høiland-Jørgensen wrote:
+>>> Toke Høiland-Jørgensen <toke@redhat.com> writes:
+>>>
+>>>> Stanislav Fomichev <sdf@google.com> writes:
+>>>>
+>>>>> On Thu, Jan 12, 2023 at 12:07 AM Tariq Toukan <ttoukan.linux@gmail.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 12/01/2023 2:32, Stanislav Fomichev wrote:
+>>>>>>> From: Toke Høiland-Jørgensen <toke@redhat.com>
+>>>>>>>
+>>>>>>> Preparation for implementing HW metadata kfuncs. No functional change.
+>>>>>>>
+>>>>>>> Cc: Tariq Toukan <tariqt@nvidia.com>
+>>>>>>> Cc: Saeed Mahameed <saeedm@nvidia.com>
+>>>>>>> Cc: John Fastabend <john.fastabend@gmail.com>
+>>>>>>> Cc: David Ahern <dsahern@gmail.com>
+>>>>>>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+>>>>>>> Cc: Jakub Kicinski <kuba@kernel.org>
+>>>>>>> Cc: Willem de Bruijn <willemb@google.com>
+>>>>>>> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+>>>>>>> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+>>>>>>> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+>>>>>>> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+>>>>>>> Cc: Maryam Tahhan <mtahhan@redhat.com>
+>>>>>>> Cc: xdp-hints@xdp-project.net
+>>>>>>> Cc: netdev@vger.kernel.org
+>>>>>>> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>>>>>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>>>>>>> ---
+>>>>>>>     drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 +
+>>>>>>>     .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  3 +-
+>>>>>>>     .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  6 +-
+>>>>>>>     .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   | 25 ++++----
+>>>>>>>     .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 58 +++++++++----------
+>>>>>>>     5 files changed, 50 insertions(+), 43 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>>>>>> index 2d77fb8a8a01..af663978d1b4 100644
+>>>>>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>>>>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>>>>>> @@ -469,6 +469,7 @@ struct mlx5e_txqsq {
+>>>>>>>     union mlx5e_alloc_unit {
+>>>>>>>         struct page *page;
+>>>>>>>         struct xdp_buff *xsk;
+>>>>>>> +     struct mlx5e_xdp_buff *mxbuf;
+>>>>>>
+>>>>>> In XSK files below you mix usage of both alloc_units[page_idx].mxbuf and
+>>>>>> alloc_units[page_idx].xsk, while both fields share the memory of a union.
+>>>>>>
+>>>>>> As struct mlx5e_xdp_buff wraps struct xdp_buff, I think that you just
+>>>>>> need to change the existing xsk field type from struct xdp_buff *xsk
+>>>>>> into struct mlx5e_xdp_buff *xsk and align the usage.
+>>>>>
+>>>>> Hmmm, good point. I'm actually not sure how it works currently.
+>>>>> mlx5e_alloc_unit.mxbuf doesn't seem to be initialized anywhere? Toke,
+>>>>> am I missing something?
+>>>>
+>>>> It's initialised piecemeal in different places; but yeah, we're mixing
+>>>> things a bit...
+>>>>
+>>>>> I'm thinking about something like this:
+>>>>>
+>>>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>>>> b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>>>> index af663978d1b4..2d77fb8a8a01 100644
+>>>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>>>> @@ -469,7 +469,6 @@ struct mlx5e_txqsq {
+>>>>>    union mlx5e_alloc_unit {
+>>>>>           struct page *page;
+>>>>>           struct xdp_buff *xsk;
+>>>>> -       struct mlx5e_xdp_buff *mxbuf;
+>>>>>    };
+>>>>
+>>>> Hmm, for consistency with the non-XSK path we should rather go the other
+>>>> direction and lose the xsk member, moving everything to mxbuf? Let me
+>>>> give that a shot...
+>>>
+>>> Something like the below?
+>>>
+>>> -Toke
+>>>
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>> index 6de02d8aeab8..cb9cdb6421c5 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>> @@ -468,7 +468,6 @@ struct mlx5e_txqsq {
+>>>    
+>>>    union mlx5e_alloc_unit {
+>>>    	struct page *page;
+>>> -	struct xdp_buff *xsk;
+>>>    	struct mlx5e_xdp_buff *mxbuf;
+>>>    };
+>>>    
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
+>>> index cb568c62aba0..95694a25ec31 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
+>>> @@ -33,6 +33,7 @@
+>>>    #define __MLX5_EN_XDP_H__
+>>>    
+>>>    #include <linux/indirect_call_wrapper.h>
+>>> +#include <net/xdp_sock_drv.h>
+>>>    
+>>>    #include "en.h"
+>>>    #include "en/txrx.h"
+>>> @@ -112,6 +113,21 @@ static inline void mlx5e_xmit_xdp_doorbell(struct mlx5e_xdpsq *sq)
+>>>    	}
+>>>    }
+>>>    
+>>> +static inline struct mlx5e_xdp_buff *mlx5e_xsk_buff_alloc(struct xsk_buff_pool *pool)
+>>> +{
+>>> +	return (struct mlx5e_xdp_buff *)xsk_buff_alloc(pool);
+>>
+>> What about the space needed for the rq / cqe fields? xsk_buff_alloc
+>> won't allocate it.
+> 
+> It will! See patch 14 in the series that adds a 'cb' field to
+> xdp_buff_xsk, meaning there's actually space after the xdp_buff struct
+> being allocated by the xsk_buff_alloc API. The XSK_CHECK_PRIV_TYPE macro
+> call is there to ensure the cb field is big enough for the struct we're
+> casting to in the driver.
+> 
 
----
-base-commit: 97ec4d559d939743e8af83628be5af8da610d9dc
-change-id: 20230114-bpf-918ae127b77a
+Oh okay, got it.
 
-Best regards,
--- 
-Peter Foley <pefoley2@pefoley.com>
+>>> +}
+>>> +
+>>> +static inline void mlx5e_xsk_buff_free(struct mlx5e_xdp_buff *mxbuf)
+>>> +{
+>>> +	xsk_buff_free(&mxbuf->xdp);
+>>> +}
+>>> +
+>>> +static inline dma_addr_t mlx5e_xsk_buff_xdp_get_frame_dma(struct mlx5e_xdp_buff *mxbuf)
+>>> +{
+>>> +	return xsk_buff_xdp_get_frame_dma(&mxbuf->xdp);
+>>> +}
+>>> +
+>>>    /* Enable inline WQEs to shift some load from a congested HCA (HW) to
+>>>     * a less congested cpu (SW).
+>>>     */
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+>>> index 8bf3029abd3c..1f166dbb7f22 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+>>> @@ -3,7 +3,6 @@
+>>>    
+>>>    #include "rx.h"
+>>>    #include "en/xdp.h"
+>>> -#include <net/xdp_sock_drv.h>
+>>>    #include <linux/filter.h>
+>>>    
+>>>    /* RX data path */
+>>> @@ -21,7 +20,7 @@ int mlx5e_xsk_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
+>>>    	if (unlikely(!xsk_buff_can_alloc(rq->xsk_pool, rq->mpwqe.pages_per_wqe)))
+>>>    		goto err;
+>>>    
+>>> -	BUILD_BUG_ON(sizeof(wi->alloc_units[0]) != sizeof(wi->alloc_units[0].xsk));
+>>> +	BUILD_BUG_ON(sizeof(wi->alloc_units[0]) != sizeof(wi->alloc_units[0].mxbuf));
+>>>    	XSK_CHECK_PRIV_TYPE(struct mlx5e_xdp_buff);
+>>>    	batch = xsk_buff_alloc_batch(rq->xsk_pool, (struct xdp_buff **)wi->alloc_units,
+>>>    				     rq->mpwqe.pages_per_wqe);
+>>
+>> This batching API gets broken as well...
+>> xsk_buff_alloc_batch fills an array of struct xdp_buff pointers, it
+>> cannot correctly act on the array of struct mlx5e_xdp_buff, as it
+>> contains additional fields.
+> 
+> See above for why this does, in fact, work. I agree it's not totally
+> obvious, and in any case there's going to be a point where the cast
+> happens where type safety will break, which is what I was alluding to in
+> my reply to Stanislav.
+> 
+> I guess we could try to rework the API in xdp_sock_drv.h to make this
+> more obvious instead of using the casting driver-specific wrappers I
+> suggested here. Or we could go with Stanislav's suggestion of keeping
+> allocation etc using xdp_buff and only casting to mlx5e_xdp_buff in the
+> function where it's used; then we can keep the casting localised to that
+> function, and put a comment there explaining why it works?
+> 
+
+Stanislav's proposal LGTM.
+Let's keep the casting localised, and make sure there's a comment there.
+
+>> Maybe letting mlx5e_xdp_buff point to its struct xdp_buff (instead of
+>> wrapping it) will solve the problems here, then we'll loop over the
+>> xdp_buff * array and copy the pointers into the struct mlx5e_xdp_buff *
+>> array.
+>> Need to give it deeper thoughts...
+>>
+>> struct mlx5e_xdp_buff {
+>> 	struct xdp_buff *xdp;
+>> 	struct mlx5_cqe64 *cqe;
+>> 	struct mlx5e_rq *rq;
+>> };
+> 
+> This was actually my original proposal; we discussed this back on v2 of
+> this patch series. People generally felt that the 'cb' field approach
+> (originally suggested by Jakub) was better.
+
+I agree.
+
+> See the discussion starting
+> from here:
+> 
+> https://lore.kernel.org/r/20221123111431.7b54668e@kernel.org
+> 
+> -Toke
+> 
+
