@@ -2,75 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C317F66B428
-	for <lists+bpf@lfdr.de>; Sun, 15 Jan 2023 22:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C02CB66B439
+	for <lists+bpf@lfdr.de>; Sun, 15 Jan 2023 22:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjAOVcT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 15 Jan 2023 16:32:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        id S231687AbjAOVio (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 15 Jan 2023 16:38:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbjAOVcS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 15 Jan 2023 16:32:18 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4213616314;
-        Sun, 15 Jan 2023 13:32:17 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id s3so237810edd.4;
-        Sun, 15 Jan 2023 13:32:17 -0800 (PST)
+        with ESMTP id S231726AbjAOVid (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 15 Jan 2023 16:38:33 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCA71816F;
+        Sun, 15 Jan 2023 13:38:26 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id s5so38385651edc.12;
+        Sun, 15 Jan 2023 13:38:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=n8tWmcU0b5fCDaTVTd0CKviDtOIBj5n4E8it6ot+1cI=;
-        b=TnPnt5c8/Jxn0HmkGujuci8y99eMOvK2OVIftaWvvJuOWqhCg8YjnmsNLbND6/+vrs
-         GvzmsgA2ngiwH4jsor1Z9w0Z8nJ4rF7BWGB2MsZ9EhMQs788nssIibehk9I7yTVuPvOK
-         R1IU+jgxwrzFQvKsNLUHzst3njireRs7Y8hueO8bpnjM0uT9D66ilYq+y7m37+lI4MBL
-         UmBfbN7voygoayetVOYG16v4lGgiPiNM8B1TFLUyLdiGpNMHr5p1LZQJ3IX6dOMJHaMR
-         x5RP6eJLTFYAE6nRmVDlFCkXwObdDkhyRePtO150uCZOM3qTrm8PKub0FAlpon6k5Ce6
-         0Jjw==
+        bh=57kdqOuHYhDuUykoWeKC7s2qeEWqbE2Ut7XWjHRvhF0=;
+        b=RrRMnrXYth8fjdxYLSDF4gGhWcZmgAPtzF/Eyk1IOAJyodqKBB3HjK4W9TFDoFQ9e0
+         cmY37ezVjZa34BnunJsTjDmzGA8MHHXGGc9a0jgQIroLBEr3FgiDBInCUtXxR5ejMvq/
+         fRUc8+QyVeGIbR3A25St0BRGQE2YXUYD5io5Cu4diI3uF91KmIVZYe1EUEsSR2DbCAde
+         Xf6HWBIdnaX0ebGso/5/IXdZw1LeoiWLXh0gTAT5ztWhmqsPgYzzaMvpBSqyLgPAFn/1
+         ufL+YNwpufUZ35Frfz1vMwejQqXjyApNpCFFKz/e7wDTn6DNgOf9mju1M5G2eFY1jtA5
+         hu6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=n8tWmcU0b5fCDaTVTd0CKviDtOIBj5n4E8it6ot+1cI=;
-        b=yV8DMNI9bn9Hm9/MuyJxwDDoEOtHiJfUljO5QWWCy/qHymylgDqbURnOaXrp5UntbP
-         ODY3NuhoKOrY/yE+kQdJaOThHIxLZtahW8fSpZlF8CsYVkQ22IjnunhDLkm8fmI/xKCC
-         H8uvVt0yLOoQhDCemaV3znpzgvMjmNNLQjX0FrVAHXxHfb8O3Qj1TiGHbBXRQE3vMxNq
-         hEj9NwtFZcioN/znIJl4XYOiiPrSiQ65shjiEj6GYFFEySP71MKzBUKQ84IIgvKvvUQB
-         +jrgT56/V1dWc057yD+2PVwimlmMPw2VeAlPqwsadTrUdq68eQrcZYZWU6PSYPisssQG
-         C7PQ==
-X-Gm-Message-State: AFqh2krZxPTDBXkxnLqiJYWaGKLzOUhDQB1JtiG6HbJra2I+3ue0TmN+
-        k5JyRkQXzTc0eaonfmlwX80E/e+NgfTorx5tZJo=
-X-Google-Smtp-Source: AMrXdXv790MuohmN6lXSu7rpoy1rkJOw+qexGvmcpLTKtvZcaUhi+wGOcbwOLtPLIrpsbU0CwiDLwqI5Ok8kiBznSck=
-X-Received: by 2002:a05:6402:500f:b0:46a:e6e3:b3cf with SMTP id
- p15-20020a056402500f00b0046ae6e3b3cfmr8470722eda.333.1673818335737; Sun, 15
- Jan 2023 13:32:15 -0800 (PST)
+        bh=57kdqOuHYhDuUykoWeKC7s2qeEWqbE2Ut7XWjHRvhF0=;
+        b=Pdf+ZxSQYUf60RznkY9ckGoMrUdJidXSymfuxc3VT/IzCRJrv24PlkPZ333HJGySp4
+         kmbCpZoJZL3w16/lXjE+Z73L3hNfX9T/APt1yGr5Fl/MfcgVlV7ci+bG47eex1fOToFJ
+         azEVb2Z3QKNh3+bsc1KYAcBqwPCFk0LZJP6E4YvVLpn0VqUsIC/nAbpnAt+InxQDHsT6
+         YTaTQebkjSvHQTePjfzgZvnLpjIewM9KtfdISU3F9o8BagWc8ODB/tAWnmVhnheKWFtP
+         gIaWrtG+kVR82ehWpeUuFdujcOLImxMlWEg64tDgD8J4AXKJ9dg2RvbyX+zih2r0x10h
+         0MyQ==
+X-Gm-Message-State: AFqh2kpQhhMUtbok4X2kFuRRj8lP3hQ57DNHrT29mqG3WNQyaJWaPaKB
+        PYQlYOszzr24VXBfGudxhZSVhgqmI451ewZsipA=
+X-Google-Smtp-Source: AMrXdXtAygATLaDTW3nC5zGdOBYmLQijWgsrg34pGrvmgqQoQD1dBWfG9X/Qrby6TVGMDHm4SIsq5pGo81pKh8Pk/nk=
+X-Received: by 2002:aa7:db4e:0:b0:49e:1e:14b1 with SMTP id n14-20020aa7db4e000000b0049e001e14b1mr322202edt.6.1673818705066;
+ Sun, 15 Jan 2023 13:38:25 -0800 (PST)
 MIME-Version: 1.0
-References: <SJ0PR04MB7248C599DE6F006F94997CF180C39@SJ0PR04MB7248.namprd04.prod.outlook.com>
-In-Reply-To: <SJ0PR04MB7248C599DE6F006F94997CF180C39@SJ0PR04MB7248.namprd04.prod.outlook.com>
+References: <20230115071613.125791-1-danieltimlee@gmail.com>
+In-Reply-To: <20230115071613.125791-1-danieltimlee@gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 15 Jan 2023 13:32:04 -0800
-Message-ID: <CAADnVQK4ucv=LugqZ3He9ubwdxDu6ohaBKr2E=TX0UT65+7WpQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Add CONFIG_BPF_HELPER_STRICT
-To:     Roland <kernel.pwn@outlook.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, bsegall@google.com,
-        Mel Gorman <mgorman@suse.de>, bristot <bristot@redhat.com>,
-        vschneid@redhat.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Sun, 15 Jan 2023 13:38:13 -0800
+Message-ID: <CAADnVQ+zP5bkjkSa97k+dK7=NabkdoLWQtZ1qRwRTUQgGdqhVA@mail.gmail.com>
+Subject: Re: [bpf-next 00/10] samples/bpf: modernize BPF functionality test programs
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Song Liu <song@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -82,16 +75,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 13, 2023 at 11:53 PM Roland <kernel.pwn@outlook.com> wrote:
+On Sat, Jan 14, 2023 at 11:16 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
 >
-> In container environment, ebpf helpers could be used maliciously to
->    leak information, DOS, even escape from containers.
->    CONFIG_BPF_HELPER_STRICT is as a mitigation of it.
->    Related Link: https://rolandorange.zone/report.html
+> Currently, there are many programs under samples/bpf to test the
+> various functionality of BPF that have been developed for a long time.
+> However, the kernel (BPF) has changed a lot compared to the 2016 when
+> some of these test programs were first introduced.
+>
+> Therefore, some of these programs use the deprecated function of BPF,
+> and some programs no longer work normally due to changes in the API.
+>
+> To list some of the kernel changes that this patch set is focusing on,
+> - legacy BPF map declaration syntax support had been dropped [1]
+> - bpf_trace_printk() always append newline at the end [2]
+> - deprecated styled BPF section header (bpf_load style) [3]
+> - urandom_read tracepoint is removed (used for testing overhead) [4]
+> - ping sends packet with SOCK_DGRAM instead of SOCK_RAW [5]*
+> - use "vmlinux.h" instead of including individual headers
+>
+> In addition to this, this patchset tries to modernize the existing
+> testing scripts a bit. And for network-related testing programs,
+> a separate header file was created and applied. (To use the
+> Endianness conversion function from xdp_sample and bunch of constants)
 
-The link is arguing that a process with CAP_SYS_ADMIN permissions
-can read memory of user processes, leak kernel addresses, etc.
-And this is somehow an issue with bpf helpers?
-and your suggested "temporary mitigation" is to CONFIG_BPF=n ?
-While this patch is a "proper fix" ?
-Sorry, but please stay with your "temporary mitigation" forever.
+Nice set of cleanups. Applied.
+As a follow up could you convert some of them to proper selftests/bpf ?
+Unfortunately samples/bpf will keep bit rotting despite your herculean efforts.
