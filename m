@@ -2,67 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C500566B422
-	for <lists+bpf@lfdr.de>; Sun, 15 Jan 2023 22:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C317F66B428
+	for <lists+bpf@lfdr.de>; Sun, 15 Jan 2023 22:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbjAOVWE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 15 Jan 2023 16:22:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41374 "EHLO
+        id S230307AbjAOVcT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 15 Jan 2023 16:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjAOVWD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 15 Jan 2023 16:22:03 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDAC144A4
-        for <bpf@vger.kernel.org>; Sun, 15 Jan 2023 13:22:01 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id x10so35491843edd.10
-        for <bpf@vger.kernel.org>; Sun, 15 Jan 2023 13:22:01 -0800 (PST)
+        with ESMTP id S231356AbjAOVcS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 15 Jan 2023 16:32:18 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4213616314;
+        Sun, 15 Jan 2023 13:32:17 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id s3so237810edd.4;
+        Sun, 15 Jan 2023 13:32:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0nW+/ovccJnuctjNQZ/ok4HmxvE8lBBwahv75JBb100=;
-        b=kg1HCgAJtNUh1RBxXOJud2wW7S7H78d6vRjo77hglWW4Wcx+Y/fipk2gS8kqIUBlU8
-         6+AIzJQ81sf/X71vhw8l2q/lMrCsp1t4shvQdee651C241o7MJcNM/NPyF1+nWnJmHeG
-         7ClgyrleVxlhinG11U/1RXZMzjxHh5LtAiOifkozcAgD3lL8E2VfoOON1XwgyU+R730D
-         HO45bEMRExYk3DDVzXf+pq6fXyVG2H4CUV/57EFSCr0gt3ah0+ufHIDTiiklE2wtLge6
-         SHnyW8snL5R7BT6GWHO2kPQI3Hi7nXMU6hnO996B2s+VChgjGtGmFUgM/bm/YEp5H8ZH
-         7LUA==
+        bh=n8tWmcU0b5fCDaTVTd0CKviDtOIBj5n4E8it6ot+1cI=;
+        b=TnPnt5c8/Jxn0HmkGujuci8y99eMOvK2OVIftaWvvJuOWqhCg8YjnmsNLbND6/+vrs
+         GvzmsgA2ngiwH4jsor1Z9w0Z8nJ4rF7BWGB2MsZ9EhMQs788nssIibehk9I7yTVuPvOK
+         R1IU+jgxwrzFQvKsNLUHzst3njireRs7Y8hueO8bpnjM0uT9D66ilYq+y7m37+lI4MBL
+         UmBfbN7voygoayetVOYG16v4lGgiPiNM8B1TFLUyLdiGpNMHr5p1LZQJ3IX6dOMJHaMR
+         x5RP6eJLTFYAE6nRmVDlFCkXwObdDkhyRePtO150uCZOM3qTrm8PKub0FAlpon6k5Ce6
+         0Jjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0nW+/ovccJnuctjNQZ/ok4HmxvE8lBBwahv75JBb100=;
-        b=2FsCizx/E6amYfezh0/V/l81osZUFB7yYaeX/2is9OAwL7FZExT3NxnX3CSv1N1Vk+
-         u3XpDuQh35Oe/fEetyXXGtIZEuE7BvaPvzgJbou7Hu2c77a4dzsxuGLtkusoO9eGG+e+
-         lUcN2TsyKfgsguJBNWIRQBWjUyJtFA0jmXIL20acPQCd/5DtEgMx8l/C5fUV8MMXzWM2
-         5iyu8/yfhlHHB6oi9YWBhR+bGlXHGAuF+oLPCseTKOQCveSlN/f9uPq00vMeG1wvAYuo
-         aifSdyaXDkCSvh3zgLnbi8ubB20/G/zq9wfnqV9gmkEtxmGkX0pq6TQ+Wy4zgz+eJQu/
-         Qg/w==
-X-Gm-Message-State: AFqh2kqpO+6JSArusIvJVVrz3OFYlj2QOV5/ifBDzXnoeDfN3mEcdAiJ
-        4O7HDXugAEW3Cv2+nqN7ZcRTJTLWbmmEwYLfLTooghXeQzo=
-X-Google-Smtp-Source: AMrXdXvCMPPticDBSiZ2FKN/fSIB05ESCtJ2uoQhyVBfJ33y2uJRu4jxGmbiDVk6Qlvtbj0pMcJTayYpiZym2nLewjY=
-X-Received: by 2002:aa7:d60b:0:b0:499:d297:4997 with SMTP id
- c11-20020aa7d60b000000b00499d2974997mr2157520edr.94.1673817719948; Sun, 15
- Jan 2023 13:21:59 -0800 (PST)
+        bh=n8tWmcU0b5fCDaTVTd0CKviDtOIBj5n4E8it6ot+1cI=;
+        b=yV8DMNI9bn9Hm9/MuyJxwDDoEOtHiJfUljO5QWWCy/qHymylgDqbURnOaXrp5UntbP
+         ODY3NuhoKOrY/yE+kQdJaOThHIxLZtahW8fSpZlF8CsYVkQ22IjnunhDLkm8fmI/xKCC
+         H8uvVt0yLOoQhDCemaV3znpzgvMjmNNLQjX0FrVAHXxHfb8O3Qj1TiGHbBXRQE3vMxNq
+         hEj9NwtFZcioN/znIJl4XYOiiPrSiQ65shjiEj6GYFFEySP71MKzBUKQ84IIgvKvvUQB
+         +jrgT56/V1dWc057yD+2PVwimlmMPw2VeAlPqwsadTrUdq68eQrcZYZWU6PSYPisssQG
+         C7PQ==
+X-Gm-Message-State: AFqh2krZxPTDBXkxnLqiJYWaGKLzOUhDQB1JtiG6HbJra2I+3ue0TmN+
+        k5JyRkQXzTc0eaonfmlwX80E/e+NgfTorx5tZJo=
+X-Google-Smtp-Source: AMrXdXv790MuohmN6lXSu7rpoy1rkJOw+qexGvmcpLTKtvZcaUhi+wGOcbwOLtPLIrpsbU0CwiDLwqI5Ok8kiBznSck=
+X-Received: by 2002:a05:6402:500f:b0:46a:e6e3:b3cf with SMTP id
+ p15-20020a056402500f00b0046ae6e3b3cfmr8470722eda.333.1673818335737; Sun, 15
+ Jan 2023 13:32:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20230111101142.562765-1-jolsa@kernel.org>
-In-Reply-To: <20230111101142.562765-1-jolsa@kernel.org>
+References: <SJ0PR04MB7248C599DE6F006F94997CF180C39@SJ0PR04MB7248.namprd04.prod.outlook.com>
+In-Reply-To: <SJ0PR04MB7248C599DE6F006F94997CF180C39@SJ0PR04MB7248.namprd04.prod.outlook.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 15 Jan 2023 13:21:48 -0800
-Message-ID: <CAADnVQJgwc3gjLa_Z5OxxW2g7dz0GtFk_aZpx55=k=LV-iiDDw@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 1/2] bpf: Do not allow to load sleepable
- BPF_TRACE_RAW_TP program
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Sun, 15 Jan 2023 13:32:04 -0800
+Message-ID: <CAADnVQK4ucv=LugqZ3He9ubwdxDu6ohaBKr2E=TX0UT65+7WpQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Add CONFIG_BPF_HELPER_STRICT
+To:     Roland <kernel.pwn@outlook.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>, bsegall@google.com,
+        Mel Gorman <mgorman@suse.de>, bristot <bristot@redhat.com>,
+        vschneid@redhat.com, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,44 +82,16 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 11, 2023 at 2:11 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Fri, Jan 13, 2023 at 11:53 PM Roland <kernel.pwn@outlook.com> wrote:
 >
-> Currently we allow to load any tracing program as sleepable,
-> but BPF_TRACE_RAW_TP can't sleep. Making the check explicit
-> for tracing programs attach types, so sleepable BPF_TRACE_RAW_TP
-> will fail to load.
->
-> Updating the verifier error to mention iter programs as well.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
-> v2 changes:
->   - use bool for can_be_sleepable return value [Song]
->   - add tests [Song]
->
->  kernel/bpf/verifier.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index fa4c911603e9..f20777c2a957 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -16743,6 +16743,18 @@ BTF_ID(func, rcu_read_unlock_strict)
->  #endif
->  BTF_SET_END(btf_id_deny)
->
-> +static bool can_be_sleepable(struct bpf_prog *prog)
-> +{
-> +       if (prog->type == BPF_PROG_TYPE_TRACING) {
-> +               return prog->expected_attach_type == BPF_TRACE_FENTRY ||
-> +                      prog->expected_attach_type == BPF_TRACE_FEXIT ||
-> +                      prog->expected_attach_type == BPF_MODIFY_RETURN ||
-> +                      prog->expected_attach_type == BPF_TRACE_ITER;
-> +       }
-> +       return prog->type == BPF_PROG_TYPE_LSM ||
-> +              prog->type == BPF_PROG_TYPE_KPROBE;
-> +}
+> In container environment, ebpf helpers could be used maliciously to
+>    leak information, DOS, even escape from containers.
+>    CONFIG_BPF_HELPER_STRICT is as a mitigation of it.
+>    Related Link: https://rolandorange.zone/report.html
 
-imo it's too verbose.
-Maybe try a switch stmt ?
-Or at least copy prog->expected_attach_type and prog->type into variables.
+The link is arguing that a process with CAP_SYS_ADMIN permissions
+can read memory of user processes, leak kernel addresses, etc.
+And this is somehow an issue with bpf helpers?
+and your suggested "temporary mitigation" is to CONFIG_BPF=n ?
+While this patch is a "proper fix" ?
+Sorry, but please stay with your "temporary mitigation" forever.
