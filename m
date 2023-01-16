@@ -2,48 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 845F066C7E7
-	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 17:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4A866C7F1
+	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 17:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbjAPQff (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Jan 2023 11:35:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
+        id S233433AbjAPQft (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Jan 2023 11:35:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbjAPQep (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Jan 2023 11:34:45 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE722A145;
-        Mon, 16 Jan 2023 08:22:37 -0800 (PST)
+        with ESMTP id S233401AbjAPQfL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Jan 2023 11:35:11 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D17630B16;
+        Mon, 16 Jan 2023 08:22:55 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E3FF6104D;
-        Mon, 16 Jan 2023 16:22:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EECE0C433EF;
-        Mon, 16 Jan 2023 16:22:35 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B6F62B8107A;
+        Mon, 16 Jan 2023 16:22:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3854C433EF;
+        Mon, 16 Jan 2023 16:22:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1673886156;
-        bh=g0qKH8gvQygXxaA0XdDhpfr8FrmKiNbx7fVi2ddaDow=;
+        s=korg; t=1673886172;
+        bh=GEqRgcv6qwOd4bMO2GWXjbCrKdAgRn9Gkkceh44pWFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rn2yyfuKEgmixZCLctwTKEQyNN7k9vSqR5W8pTbFc6+SoBdswRd9HMVyYxODB6amg
-         JeOXqMu7R7ZrlN05FNlnkpv/8VOyt9OoFldgkrxrQDW7SAxDs0vzCu86iBtE+oCIDO
-         x8xduqfaaD0qPNXpS0vBmLPCq0WGGDHv/O4wsSVE=
+        b=rHrBoq8x4nPgJkUtyjMHqjqZnMkYFRcNdRGB2I6LKQWBpRNSkZigcSoNb7f79VmCJ
+         XVG/MeOa5TRIbV1e4D0ohx2pgr6gNWlKgGG9xJbmP49YUkmeCcegpIMbZt1HcVr7xT
+         BNoKfK3tJc8PpFLVYgXwjp7B25XF3OlKwSACkMJU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         patches@lists.linux.dev, Leo Yan <leo.yan@linaro.org>,
         Ian Rogers <irogers@google.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        bpf@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 324/658] perf trace: Return error if a system call doesnt exist
-Date:   Mon, 16 Jan 2023 16:46:52 +0100
-Message-Id: <20230116154924.388367360@linuxfoundation.org>
+Subject: [PATCH 5.4 330/658] perf trace: Use macro RAW_SYSCALL_ARGS_NUM to replace number
+Date:   Mon, 16 Jan 2023 16:46:58 +0100
+Message-Id: <20230116154924.650597828@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230116154909.645460653@linuxfoundation.org>
 References: <20230116154909.645460653@linuxfoundation.org>
@@ -62,51 +61,78 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Leo Yan <leo.yan@linaro.org>
 
-[ Upstream commit d4223e1776c30b2ce8d0e6eaadcbf696e60fca3c ]
+[ Upstream commit eadcab4c7a66e1df03d32da0db55d89fd9343fcc ]
 
-When a system call is not detected, the reason is either because the
-system call ID is out of scope or failure to find the corresponding path
-in the sysfs, trace__read_syscall_info() returns zero.  Finally, without
-returning an error value it introduces confusion for the caller.
+This patch defines a macro RAW_SYSCALL_ARGS_NUM to replace the open
+coded number '6'.
 
-This patch lets the function trace__read_syscall_info() to return
--EEXIST when a system call doesn't exist.
-
-Fixes: b8b1033fcaa091d8 ("perf trace: Mark syscall ids that are not allocated to avoid unnecessary error messages")
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 Acked-by: Ian Rogers <irogers@google.com>
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: bpf@vger.kernel.org
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20221121075237.127706-3-leo.yan@linaro.org
+Cc: bpf@vger.kernel.org
+Link: https://lore.kernel.org/r/20221121075237.127706-2-leo.yan@linaro.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Stable-dep-of: 03e9a5d8eb55 ("perf trace: Handle failure when trace point folder is missed")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/builtin-trace.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/builtin-trace.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index a5201de1a191..d333f6c86c98 100644
+index 4cb3252623f5..e41b6ffafbd3 100644
 --- a/tools/perf/builtin-trace.c
 +++ b/tools/perf/builtin-trace.c
-@@ -1511,11 +1511,11 @@ static int trace__read_syscall_info(struct trace *trace, int id)
+@@ -86,6 +86,8 @@
+ # define F_LINUX_SPECIFIC_BASE	1024
+ #endif
  
- 	sc = trace->syscalls.table + id;
- 	if (sc->nonexistent)
--		return 0;
-+		return -EEXIST;
++#define RAW_SYSCALL_ARGS_NUM	6
++
+ /*
+  * strtoul: Go from a string to a value, i.e. for msr: MSR_FS_BASE to 0xc0000100
+  */
+@@ -105,7 +107,7 @@ struct syscall_fmt {
+ 		const char *sys_enter,
+ 			   *sys_exit;
+ 	}	   bpf_prog_name;
+-	struct syscall_arg_fmt arg[6];
++	struct syscall_arg_fmt arg[RAW_SYSCALL_ARGS_NUM];
+ 	u8	   nr_args;
+ 	bool	   errpid;
+ 	bool	   timeout;
+@@ -1018,7 +1020,7 @@ struct syscall {
+  */
+ struct bpf_map_syscall_entry {
+ 	bool	enabled;
+-	u16	string_args_len[6];
++	u16	string_args_len[RAW_SYSCALL_ARGS_NUM];
+ };
  
- 	if (name == NULL) {
- 		sc->nonexistent = true;
--		return 0;
-+		return -EEXIST;
+ /*
+@@ -1443,7 +1445,7 @@ static int syscall__alloc_arg_fmts(struct syscall *sc, int nr_args)
+ {
+ 	int idx;
+ 
+-	if (nr_args == 6 && sc->fmt && sc->fmt->nr_args != 0)
++	if (nr_args == RAW_SYSCALL_ARGS_NUM && sc->fmt && sc->fmt->nr_args != 0)
+ 		nr_args = sc->fmt->nr_args;
+ 
+ 	sc->arg_fmt = calloc(nr_args, sizeof(*sc->arg_fmt));
+@@ -1571,7 +1573,8 @@ static int trace__read_syscall_info(struct trace *trace, int id)
+ 		sc->tp_format = trace_event__tp_format("syscalls", tp_name);
  	}
  
- 	sc->name = name;
+-	if (syscall__alloc_arg_fmts(sc, IS_ERR(sc->tp_format) ? 6 : sc->tp_format->format.nr_fields))
++	if (syscall__alloc_arg_fmts(sc, IS_ERR(sc->tp_format) ?
++					RAW_SYSCALL_ARGS_NUM : sc->tp_format->format.nr_fields))
+ 		return -ENOMEM;
+ 
+ 	if (IS_ERR(sc->tp_format))
 -- 
 2.35.1
 
