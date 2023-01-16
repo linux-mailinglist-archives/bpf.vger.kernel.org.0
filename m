@@ -2,120 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCDA66B831
-	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 08:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C91166B97A
+	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 09:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbjAPHb1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Jan 2023 02:31:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
+        id S232417AbjAPI4G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Jan 2023 03:56:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjAPHb0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Jan 2023 02:31:26 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B8B46B1;
-        Sun, 15 Jan 2023 23:31:24 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id x2-20020a17090a46c200b002295ca9855aso2095115pjg.2;
-        Sun, 15 Jan 2023 23:31:24 -0800 (PST)
+        with ESMTP id S232406AbjAPIzu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Jan 2023 03:55:50 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C6F13D60;
+        Mon, 16 Jan 2023 00:55:48 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id y1so29670582plb.2;
+        Mon, 16 Jan 2023 00:55:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HOOg7H5N+Z63OpUC/u+N5UvkbhcnIUC0AQSISCJusN4=;
-        b=bNV/0vag1ZvLMpWwA4mawziLzieesOHeeP/uolhRj/Qp/fgoUEgKS7N3HGAUJ0hwEi
-         NNrZZvSk5PRav8zwcMHaV79OCbj1kyAbRLaXuJBlAkL2qROgelytvjsBqXyclWatD66P
-         Ugj2u4a35Qg8LB7A0QOSbJbcpeoiYZd4m2f45lFwkXfct6yFrIw9H9B2+WHzTF0gvm5o
-         AshIWCnV/8OV2oXEADbsYpB4TvdLkd4l84BBzh3/uu9idPKpYXziuWROZgnCLNhU+sJN
-         JRZO8KK8t6UrpaZbxL3OVAvsgPDH3MoIn0oJGJSBPHnnWKgt3Ul15ZHKTohvJxgO9iV7
-         E02Q==
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5WAPbAs4qNs3+IgrwRS+Oyx6LWS3F6A1afWPeS2gaZE=;
+        b=YMhGPwgnK1MFkgW0vtH6zBaFzz+mHKFtGswwQXsNYMp0XXfCCxqhS6BVXZgtGghuVX
+         svIKmqYB8fZoeF7kBNLJTzKnFo2nSsfKBqfLBXwc9ZLA1EkIS+Zvho2LuOP4kJJcWVi4
+         1HwfaUH0FKokvOsG9nlik8bUTDvegjmhKfy6AzV0e0QzFQBcAOXqNIjP2fxCNJGZYxwp
+         XPMYylb/r8Yr0KDDMgfRc2CvE3moG6PJoJC+nfXGTrcLruQ73i6aNf/34TQ1kNQ2HGac
+         Bfz29hdQCErq3D3AyoXaNoB5EOMulFrzJU9TLJ0t874bz8m8w7+oW74v8VT+PssqQ/a2
+         0uyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HOOg7H5N+Z63OpUC/u+N5UvkbhcnIUC0AQSISCJusN4=;
-        b=ngHwoVdMQSFl+TZTSIhZJpH1ygpEmiTsy9/PKXu+BHAKTGU8TlX0+GIdRzQnU5On/P
-         zcUINi/9kObNZAL/AKZGuDIwxuY3uiy6ESaN49ylhRGCb2lT5nd1en2Zy03o9QQQjhTL
-         vv3XoJNXPxzKnHJlTaRwmej3V939MS6IZ3sOmzkebvP+9WWMRqwxNbrCL+R0SjKBZk14
-         puoIkveFwnBdvbIeg8tYwAhvtwzwOpwyqIX5W4qBvWS54oM/WLo9XAi2ijYQVX/UQ+Ge
-         wBoA4HjwTjxdIaX98A3lgPElNQGG5d5T8fmOzoUtjpA3YHdEJ+QZlpqZ2tvaFL+XIyTr
-         MjbQ==
-X-Gm-Message-State: AFqh2koQ+8723qi1sLfeMOdWriT51Uj/MskCrUN5ss+WiCwTEyzMiJeV
-        O611GIIC7iZ/0VLnecoOY0GJAM9DG6OaBwq0E6Y=
-X-Google-Smtp-Source: AMrXdXsHaNFvTcwq7IYjoURTRKB9mLY6RlfohU9xRx/ch1k9FfnZTPFe5NEyMuszQC6sWUU/1ki2k4jRifdInbi8kL8=
-X-Received: by 2002:a17:90b:1112:b0:223:dd6f:13b2 with SMTP id
- gi18-20020a17090b111200b00223dd6f13b2mr6617650pjb.56.1673854283697; Sun, 15
- Jan 2023 23:31:23 -0800 (PST)
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5WAPbAs4qNs3+IgrwRS+Oyx6LWS3F6A1afWPeS2gaZE=;
+        b=YGoJkepdZM4ElfWQT2PJDq/z9phhyuNQnj634LG/QxfwcscvmzGFlIIBbiIulgVdlk
+         fL+EffQB7MwM3kwiBsKTrqBaaieeUTZ3SeupHTbZ+4ATo/lLxsI4ND3kMZ6rBbbo2q9R
+         Ow1doTc6Gt2zqKZPsmeU9fEa0yZOy8t0ySBYHKOjC7bXTy//LuKB4o3L9zIV+Oqd90Ff
+         KS/PzMUO1r2QOj9g1G0erYGFGEA/Wwbfy46Vs8r7K/WesjDq525psBEB/XX1xOAt3ErA
+         km7gfcBYMJo0qOgy5B+CyNmNJM+lrSXBuPDGNR/p4u5Sae6q4jsOLF77Bo/68f3u7zp0
+         cP+Q==
+X-Gm-Message-State: AFqh2kopjIKts2+01hna+5KD8fZcMQKiIG9/bMJeFgRFZyRQtftuyLfS
+        s+RUl9YInSrwtea/B1Lr6miHq4Nv6YWPQA==
+X-Google-Smtp-Source: AMrXdXvbiLCyZhCCqXfBy8uHXLmCRGhxA639S9jHdFC2k//d9UvckT9BoegeeYFdzv4Y0r2Seas66w==
+X-Received: by 2002:a17:90a:4282:b0:223:f131:3604 with SMTP id p2-20020a17090a428200b00223f1313604mr93583016pjg.17.1673859347789;
+        Mon, 16 Jan 2023 00:55:47 -0800 (PST)
+Received: from Laptop-X1 ([2409:8a02:781c:2330:c2cc:a0ba:7da8:3e4b])
+        by smtp.gmail.com with ESMTPSA id y7-20020a17090a474700b00219463262desm15945575pjg.39.2023.01.16.00.55.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Jan 2023 00:55:46 -0800 (PST)
+Date:   Mon, 16 Jan 2023 16:55:41 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Lina Wang <lina.wang@mediatek.com>,
+        Coleman Dietsch <dietschc@csp.edu>, bpf@vger.kernel.org,
+        Maciej enczykowski <maze@google.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Subject: Re: [PATCHv3 net-next] selftests/net: mv bpf/nat6to4.c to net folder
+Message-ID: <Y8URDVVQs9pRrNdU@Laptop-X1>
+References: <20221218082448.1829811-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-References: <20230103164359.24347-1-ysionneau@kalray.eu> <CAEr6+ECRh_9App18zmcS6FUR81YYhR=n4kGdeZAtQBsdMB55_A@mail.gmail.com>
- <6570d22d-ee19-f8b1-6fb4-bf8865ec4142@kalray.eu> <CAEr6+ECPFeokSULpWzYEYLROYHXNA0PtvdUchT37d4_qVA-PKQ@mail.gmail.com>
- <bccad498-3af2-08f1-8264-cf7b438732d3@kalray.eu> <CAEr6+EC0SCXLrQ2YNYyCyMK1Z9=3=ajbbLP+RKSsARGsmJO9YA@mail.gmail.com>
-In-Reply-To: <CAEr6+EC0SCXLrQ2YNYyCyMK1Z9=3=ajbbLP+RKSsARGsmJO9YA@mail.gmail.com>
-From:   Jeff Xie <xiehuan09@gmail.com>
-Date:   Mon, 16 Jan 2023 15:31:11 +0800
-Message-ID: <CAEr6+EC4e5QsodG_SpTVMBoGfW1GDAgUfBphahgrqy52vXFB+Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/25] Upstream kvx Linux port
-To:     Yann Sionneau <ysionneau@kalray.eu>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, bpf@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        devicetree@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>,
-        Eric Paris <eparis@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Jason Baron <jbaron@akamai.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-audit@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, Alex Michon <amichon@kalray.eu>,
-        Ashley Lesdalons <alesdalons@kalray.eu>,
-        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
-        Clement Leger <clement.leger@bootlin.com>,
-        Guillaume Missonnier <gmissonnier@kalray.eu>,
-        Guillaume Thouvenin <gthouvenin@kalray.eu>,
-        Jean-Christophe Pince <jcpince@gmail.com>,
-        Jonathan Borne <jborne@kalray.eu>,
-        Jules Maselbas <jmaselbas@kalray.eu>,
-        Julian Vetter <jvetter@kalray.eu>,
-        Julien Hascoet <jhascoet@kalray.eu>,
-        Julien Villette <jvillette@kalray.eu>,
-        Louis Morhet <lmorhet@kalray.eu>,
-        Luc Michel <lmichel@kalray.eu>,
-        =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
-        Marius Gligor <mgligor@kalray.eu>,
-        Samuel Jones <sjones@kalray.eu>,
-        Thomas Costis <tcostis@kalray.eu>,
-        Vincent Chardon <vincent.chardon@elsys-design.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221218082448.1829811-1-liuhangbin@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -123,112 +79,203 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 9, 2023 at 11:53 PM Jeff Xie <xiehuan09@gmail.com> wrote:
->
-> On Mon, Jan 9, 2023 at 11:30 PM Yann Sionneau <ysionneau@kalray.eu> wrote=
-:
-> >
-> > Hi Jeff,
-> >
-> > On 1/9/23 16:11, Jeff Xie wrote:
-> > > On Mon, Jan 9, 2023 at 9:21 PM Yann Sionneau <ysionneau@kalray.eu> wr=
-ote:
-> > >> Hi Jeff,
-> > >>
-> > >> On 1/7/23 07:25, Jeff Xie wrote:
-> > >>> Hi,
-> > >>>
-> > >>> On Wed, Jan 4, 2023 at 1:01 AM Yann Sionneau <ysionneau@kalray.eu> =
-wrote:
-> > >>>> [snip]
-> > >>>>
-> > >>>> A kvx toolchain can be built using:
-> > >>>> # install dependencies: texinfo bison flex libgmp-dev libmpc-dev l=
-ibmpfr-dev
-> > >>>> $ git clone https://github.com/kalray/build-scripts
-> > >>>> $ cd build-scripts
-> > >>>> $ source last.refs
-> > >>>> $ ./build-kvx-xgcc.sh output
-> > >>> I would like to build the kvx-xgcc to compile and test the linux
-> > >>> kernel, but it reported a compile error.
-> > >>> I wonder what version of gcc you are using.
-> > >>>
-> > >>> My build environment:
-> > >>> VERSION=3D"20.04.2 LTS (Focal Fossa)"
-> > >>> gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)
-> > >>>
-> > >>>
-> > >>> Compile error:
-> > >>> $ ./build-kvx-xgcc.sh output
-> > >>>
-> > >>> ../../binutils/libiberty/fibheap.c: In function =E2=80=98fibheap_re=
-place_key_data=E2=80=99:
-> > >>> ../../binutils/libiberty/fibheap.c:38:24: error: =E2=80=98LONG_MIN=
-=E2=80=99 undeclared
-> > >>> (first use in this function)
-> > >>>      38 | #define FIBHEAPKEY_MIN LONG_MIN
-> > >>>         |                        ^~~~~~~~
-> > >>> [snip]
-> > >> What SHA1 of https://github.com/kalray/build-scripts are you using?
-> > > I have executed the "source last.refs"
-> >
-> > I was referring to the SHA1 of the repo itself (build-scripts).
-> >
-> > `last.refs` is a symbolic link which can point to several releases,
-> > depending on "when" you did the clone.
-> >
-> > I am asking this because we recently published new toolchains.
-> >
-> > I want to make sure which one you are trying to build.
->
-> Unfortunately I deleted this repo a few minutes before you asked me ;-(
-> But I remember that I cloned this repo two days ago.
-> it should be:  last.refs -> refs/4.11.0.refs
+Hello,
 
-It should be my own environmental problem.
-I reinstalled the system once and it has been able to compile normally ;-)
+May I ask what's the status of this patch? I saw it's deferred[1] but I don't
+know what I should do.
 
-In the past few days, I have reviewed almost all the codes,
-which is very meaningful for me to learn, thank you team.
+[1] https://patchwork.kernel.org/project/netdevbpf/patch/20221218082448.1829811-1-liuhangbin@gmail.com/
 
+Thanks
+Hangbin
 
->
-> > >> We are building our toolchain on Ubuntu 18.04 / 20.04 and 22.04 with=
-out
-> > >> issues, I don't understand why it does not work for you, although in=
-deed
-> > >> the error log you are having pops out on my search engine and seems =
-to
-> > >> be some well known issue.
-> > > Yes, there are many answers on the web, but none of them solve this p=
-roblem.
-> > >
-> > >> If the build-script does not work for you, you can still use the
-> > >> pre-built toolchains generated by the GitHub automated actions:
-> > >> https://github.com/kalray/build-scripts/releases/tag/v4.11.1 ("lates=
-t"
-> > >> means 22.04)
-> > > Thanks, this is the final solution ;-)
-> > Good to see it helped :)
-> >
-> > Regards,
-> >
-> > --
-> >
-> > Yann
-> >
-> >
-> >
-> >
-> >
->
->
-> --
-> Thanks,
-> JeffXie
-
-
-
---
-Thanks,
-JeffXie
+On Sun, Dec 18, 2022 at 04:24:48PM +0800, Hangbin Liu wrote:
+> There are some issues with the bpf/nat6to4.c building.
+> 
+> 1. It use TEST_CUSTOM_PROGS, which will add the nat6to4.o to
+>    kselftest-list file and run by common run_tests.
+> 2. When building the test via `make -C tools/testing/selftests/
+>    TARGETS="net"`, the nat6to4.o will be build in selftests/net/bpf/
+>    folder. But in test udpgro_frglist.sh it refers to ../bpf/nat6to4.o.
+>    The correct path should be ./bpf/nat6to4.o.
+> 3. If building the test via `make -C tools/testing/selftests/ TARGETS="net"
+>    install`. The nat6to4.o will be installed to kselftest_install/net/
+>    folder. Then the udpgro_frglist.sh should refer to ./nat6to4.o.
+> 
+> To fix the confusing test path, let's just move the nat6to4.c to net folder
+> and build it as TEST_GEN_FILES.
+> 
+> Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-tests")
+> Tested-by: Björn Töpel <bjorn@kernel.org>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+> v3: remove unneeded $(OUTPUT)/bpf dir.
+> 
+> v2: Update the Makefile rules rely on commit 837a3d66d698 ("selftests:
+>     net: Add cross-compilation support for BPF programs").
+> ---
+>  tools/testing/selftests/net/Makefile          | 50 +++++++++++++++++-
+>  tools/testing/selftests/net/bpf/Makefile      | 51 -------------------
+>  .../testing/selftests/net/{bpf => }/nat6to4.c |  0
+>  tools/testing/selftests/net/udpgro_frglist.sh |  8 +--
+>  4 files changed, 52 insertions(+), 57 deletions(-)
+>  delete mode 100644 tools/testing/selftests/net/bpf/Makefile
+>  rename tools/testing/selftests/net/{bpf => }/nat6to4.c (100%)
+> 
+> diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
+> index 3007e98a6d64..47314f0b3006 100644
+> --- a/tools/testing/selftests/net/Makefile
+> +++ b/tools/testing/selftests/net/Makefile
+> @@ -75,14 +75,60 @@ TEST_GEN_PROGS += so_incoming_cpu
+>  TEST_PROGS += sctp_vrf.sh
+>  TEST_GEN_FILES += sctp_hello
+>  TEST_GEN_FILES += csum
+> +TEST_GEN_FILES += nat6to4.o
+>  
+>  TEST_FILES := settings
+>  
+>  include ../lib.mk
+>  
+> -include bpf/Makefile
+> -
+>  $(OUTPUT)/reuseport_bpf_numa: LDLIBS += -lnuma
+>  $(OUTPUT)/tcp_mmap: LDLIBS += -lpthread
+>  $(OUTPUT)/tcp_inq: LDLIBS += -lpthread
+>  $(OUTPUT)/bind_bhash: LDLIBS += -lpthread
+> +
+> +# Rules to generate bpf obj nat6to4.o
+> +CLANG ?= clang
+> +SCRATCH_DIR := $(OUTPUT)/tools
+> +BUILD_DIR := $(SCRATCH_DIR)/build
+> +BPFDIR := $(abspath ../../../lib/bpf)
+> +APIDIR := $(abspath ../../../include/uapi)
+> +
+> +CCINCLUDE += -I../bpf
+> +CCINCLUDE += -I../../../../usr/include/
+> +CCINCLUDE += -I$(SCRATCH_DIR)/include
+> +
+> +BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
+> +
+> +MAKE_DIRS := $(BUILD_DIR)/libbpf
+> +$(MAKE_DIRS):
+> +	mkdir -p $@
+> +
+> +# Get Clang's default includes on this system, as opposed to those seen by
+> +# '-target bpf'. This fixes "missing" files on some architectures/distros,
+> +# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
+> +#
+> +# Use '-idirafter': Don't interfere with include mechanics except where the
+> +# build would have failed anyways.
+> +define get_sys_includes
+> +$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
+> +	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
+> +$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
+> +endef
+> +
+> +ifneq ($(CROSS_COMPILE),)
+> +CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
+> +endif
+> +
+> +CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
+> +
+> +$(OUTPUT)/nat6to4.o: nat6to4.c $(BPFOBJ) | $(MAKE_DIRS)
+> +	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) $(CLANG_SYS_INCLUDES) -o $@
+> +
+> +$(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
+> +	   $(APIDIR)/linux/bpf.h					       \
+> +	   | $(BUILD_DIR)/libbpf
+> +	$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/     \
+> +		    EXTRA_CFLAGS='-g -O0'				       \
+> +		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
+> +
+> +EXTRA_CLEAN := $(SCRATCH_DIR)
+> diff --git a/tools/testing/selftests/net/bpf/Makefile b/tools/testing/selftests/net/bpf/Makefile
+> deleted file mode 100644
+> index 4abaf16d2077..000000000000
+> --- a/tools/testing/selftests/net/bpf/Makefile
+> +++ /dev/null
+> @@ -1,51 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -
+> -CLANG ?= clang
+> -SCRATCH_DIR := $(OUTPUT)/tools
+> -BUILD_DIR := $(SCRATCH_DIR)/build
+> -BPFDIR := $(abspath ../../../lib/bpf)
+> -APIDIR := $(abspath ../../../include/uapi)
+> -
+> -CCINCLUDE += -I../../bpf
+> -CCINCLUDE += -I../../../../../usr/include/
+> -CCINCLUDE += -I$(SCRATCH_DIR)/include
+> -
+> -BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
+> -
+> -MAKE_DIRS := $(BUILD_DIR)/libbpf $(OUTPUT)/bpf
+> -$(MAKE_DIRS):
+> -	mkdir -p $@
+> -
+> -TEST_CUSTOM_PROGS = $(OUTPUT)/bpf/nat6to4.o
+> -all: $(TEST_CUSTOM_PROGS)
+> -
+> -# Get Clang's default includes on this system, as opposed to those seen by
+> -# '-target bpf'. This fixes "missing" files on some architectures/distros,
+> -# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
+> -#
+> -# Use '-idirafter': Don't interfere with include mechanics except where the
+> -# build would have failed anyways.
+> -define get_sys_includes
+> -$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
+> -	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
+> -$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
+> -endef
+> -
+> -ifneq ($(CROSS_COMPILE),)
+> -CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
+> -endif
+> -
+> -CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
+> -
+> -$(TEST_CUSTOM_PROGS): $(OUTPUT)/%.o: %.c $(BPFOBJ) | $(MAKE_DIRS)
+> -	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) $(CLANG_SYS_INCLUDES) -o $@
+> -
+> -$(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
+> -	   $(APIDIR)/linux/bpf.h					       \
+> -	   | $(BUILD_DIR)/libbpf
+> -	$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/     \
+> -		    EXTRA_CFLAGS='-g -O0'				       \
+> -		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
+> -
+> -EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR)
+> -
+> diff --git a/tools/testing/selftests/net/bpf/nat6to4.c b/tools/testing/selftests/net/nat6to4.c
+> similarity index 100%
+> rename from tools/testing/selftests/net/bpf/nat6to4.c
+> rename to tools/testing/selftests/net/nat6to4.c
+> diff --git a/tools/testing/selftests/net/udpgro_frglist.sh b/tools/testing/selftests/net/udpgro_frglist.sh
+> index c9c4b9d65839..0a6359bed0b9 100755
+> --- a/tools/testing/selftests/net/udpgro_frglist.sh
+> +++ b/tools/testing/selftests/net/udpgro_frglist.sh
+> @@ -40,8 +40,8 @@ run_one() {
+>  
+>  	ip -n "${PEER_NS}" link set veth1 xdp object ${BPF_FILE} section xdp
+>  	tc -n "${PEER_NS}" qdisc add dev veth1 clsact
+> -	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file ../bpf/nat6to4.o section schedcls/ingress6/nat_6  direct-action
+> -	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file ../bpf/nat6to4.o section schedcls/egress4/snat4 direct-action
+> +	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file nat6to4.o section schedcls/ingress6/nat_6  direct-action
+> +	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file nat6to4.o section schedcls/egress4/snat4 direct-action
+>          echo ${rx_args}
+>  	ip netns exec "${PEER_NS}" ./udpgso_bench_rx ${rx_args} -r &
+>  
+> @@ -88,8 +88,8 @@ if [ ! -f ${BPF_FILE} ]; then
+>  	exit -1
+>  fi
+>  
+> -if [ ! -f bpf/nat6to4.o ]; then
+> -	echo "Missing nat6to4 helper. Build bpfnat6to4.o selftest first"
+> +if [ ! -f nat6to4.o ]; then
+> +	echo "Missing nat6to4 helper. Build bpf nat6to4.o selftest first"
+>  	exit -1
+>  fi
+>  
+> -- 
+> 2.38.1
+> 
