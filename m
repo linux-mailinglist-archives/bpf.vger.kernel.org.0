@@ -2,284 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F95F66BF48
-	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 14:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8CF66BFC5
+	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 14:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbjAPNOg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Jan 2023 08:14:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35832 "EHLO
+        id S229806AbjAPN3L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Jan 2023 08:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbjAPNN4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Jan 2023 08:13:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100F322005
-        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 05:10:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673874596;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jc4OJeoBzIgA4pINC3NorQcQX/ENG9cQlOJuRsKHw4A=;
-        b=OjqJYM4xLdoxXj+Zp98kLJLdkkr09yFf9K1Tk/mfDTFmc719h1ZbErCGjJtNABO47WkLU1
-        5SdAZEuH+et9BqymYXf3+TiXxzPn7Ab+Ga2svviRoV3d9K87sMPc65iNlKAGC7v/c+qf5d
-        Slx51sWJToNWyhNiCMkACyNT+z0Dd0w=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-393-zMXtOnbYNdmz0TJtMgU1UA-1; Mon, 16 Jan 2023 08:09:53 -0500
-X-MC-Unique: zMXtOnbYNdmz0TJtMgU1UA-1
-Received: by mail-ej1-f72.google.com with SMTP id du14-20020a17090772ce00b0087108bbcfa6so1464172ejc.7
-        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 05:09:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jc4OJeoBzIgA4pINC3NorQcQX/ENG9cQlOJuRsKHw4A=;
-        b=RgwDUATXJ8HNfqC7blFWP7lofngc8SU7cxLNff3d2y0X+E9dCWfJJzYSAr3lsBUYVJ
-         NJAX3z8Rqd9L9pXnihwT2hrbKg38BUzvKxvA1cpPhnH/pa+VYlbQuR9tnuoQhj7dtjga
-         8Z4yKhzXkIDQsUgKfnym/32z1SmgrtaZnIEIUFpFAxBGaxT3lDCObr23CsO3GZZ1rbWK
-         9o7J0CDQtpsJYk789vZ6QWxYvjFVPLErZ3BqMsUXaLOz/cyMpBa0qdQ/Rf4W+PD1Skzr
-         MzG2QJPzBASalJizQVJFepJsKJ0CMr1v5GvAmx6MEyK/p4i5scD1siwLCtBYGNdgnrLg
-         ZTKA==
-X-Gm-Message-State: AFqh2kqadFcEHMh3dLEDeYD7UcMvK5qYOEWiW/YC4X3H67MEHacMGwWa
-        BGxnNNLM1116QcuVJ45aaD8fbhmLGin78hFo0MC3FXTtoV3h7dnq5c1ICzYi1mW5L/r7g5W2UKX
-        Ut1pXPKD34OZN
-X-Received: by 2002:a05:6402:d71:b0:498:5cfe:da81 with SMTP id ec49-20020a0564020d7100b004985cfeda81mr33319392edb.3.1673874592277;
-        Mon, 16 Jan 2023 05:09:52 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXv2K1R7SKjG8Ag4i9+ZhuIVH/paecDngj97ILQwmPZLuLLhNRnEVSY1o3G3I7DvFi/2QD8zZw==
-X-Received: by 2002:a05:6402:d71:b0:498:5cfe:da81 with SMTP id ec49-20020a0564020d7100b004985cfeda81mr33319375edb.3.1673874592051;
-        Mon, 16 Jan 2023 05:09:52 -0800 (PST)
-Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id q18-20020a17090676d200b00857c2c29553sm7510010ejn.197.2023.01.16.05.09.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Jan 2023 05:09:51 -0800 (PST)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <affeb1e3-69e6-9783-0012-6d917972ba30@redhat.com>
-Date:   Mon, 16 Jan 2023 14:09:48 +0100
+        with ESMTP id S229606AbjAPN3K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Jan 2023 08:29:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DF8166DE
+        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 05:29:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4FA0FB80E8F
+        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 13:29:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFF1DC433EF;
+        Mon, 16 Jan 2023 13:29:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673875747;
+        bh=3zIvWmBmPnQmML9Gmp0G0efe/r3iDOETiDWpXFRZxTQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LBUuPOoM4TNvd39ouvHgReBA128XrBj4r+55O/30eI/tQkPXHkkLxFEjFPt800KwA
+         T+EBTu6l3VQzNv5iUHbdcEZ7aQQp7gCWpdj1RxCOipGJJkDbENhIHkQ+rgAWIJ5KHG
+         xtMITr7jJcRffL6q16MAf2haJl9x4FUsN/OGcOaNcOWFkKHgVwBlqpvU+zjJXL28er
+         QT90x9eDTdOM/b74DoaSre4TCBFN+yBV9+3ilIe9izhWhPzfj8nG+i5d03sbId4zOV
+         1iaElEDI4ROdg/n5C9NE8Cg/vqcpDcgH/4BU4p0REJLzoK4EvKKSYxjDjuRB3hastU
+         LORXXbftSwmiQ==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [PATCHv3 bpf-next 1/2] bpf: Do not allow to load sleepable BPF_TRACE_RAW_TP program
+Date:   Mon, 16 Jan 2023 14:29:00 +0100
+Message-Id: <20230116132901.161494-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, David Vernet <void@manifault.com>
-Subject: Re: [PATCH bpf-next v7 01/17] bpf: Document XDP RX metadata
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-References: <20230112003230.3779451-1-sdf@google.com>
- <20230112003230.3779451-2-sdf@google.com>
-In-Reply-To: <20230112003230.3779451-2-sdf@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Currently we allow to load any tracing program as sleepable,
+but BPF_TRACE_RAW_TP can't sleep. Making the check explicit
+for tracing programs attach types, so sleepable BPF_TRACE_RAW_TP
+will fail to load.
 
+Updating the verifier error to mention iter programs as well.
 
-On 12/01/2023 01.32, Stanislav Fomichev wrote:
-> Document all current use-cases and assumptions.
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: David Ahern <dsahern@gmail.com>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Willem de Bruijn <willemb@google.com>
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-> Cc: Maryam Tahhan <mtahhan@redhat.com>
-> Cc: xdp-hints@xdp-project.net
-> Cc: netdev@vger.kernel.org
-> Acked-by: David Vernet <void@manifault.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->   Documentation/networking/index.rst           |   1 +
->   Documentation/networking/xdp-rx-metadata.rst | 108 +++++++++++++++++++
->   2 files changed, 109 insertions(+)
->   create mode 100644 Documentation/networking/xdp-rx-metadata.rst
-> 
-> diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-> index 4f2d1f682a18..4ddcae33c336 100644
-> --- a/Documentation/networking/index.rst
-> +++ b/Documentation/networking/index.rst
-> @@ -120,6 +120,7 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
->      xfrm_proc
->      xfrm_sync
->      xfrm_sysctl
-> +   xdp-rx-metadata
->   
->   .. only::  subproject and html
->   
-> diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
-> new file mode 100644
-> index 000000000000..b6c8c77937c4
-> --- /dev/null
-> +++ b/Documentation/networking/xdp-rx-metadata.rst
-> @@ -0,0 +1,108 @@
-> +===============
-> +XDP RX Metadata
-> +===============
-> +
-> +This document describes how an eXpress Data Path (XDP) program can access
-> +hardware metadata related to a packet using a set of helper functions,
-> +and how it can pass that metadata on to other consumers.
-> +
-> +General Design
-> +==============
-> +
-> +XDP has access to a set of kfuncs to manipulate the metadata in an XDP frame.
-> +Every device driver that wishes to expose additional packet metadata can
-> +implement these kfuncs. The set of kfuncs is declared in ``include/net/xdp.h``
-> +via ``XDP_METADATA_KFUNC_xxx``.
-> +
-> +Currently, the following kfuncs are supported. In the future, as more
-> +metadata is supported, this set will grow:
-> +
-> +.. kernel-doc:: net/core/xdp.c
-> +   :identifiers: bpf_xdp_metadata_rx_timestamp bpf_xdp_metadata_rx_hash
-> +
-> +An XDP program can use these kfuncs to read the metadata into stack
-> +variables for its own consumption. Or, to pass the metadata on to other
-> +consumers, an XDP program can store it into the metadata area carried
-> +ahead of the packet.
-> +
-> +Not all kfuncs have to be implemented by the device driver; when not
-> +implemented, the default ones that return ``-EOPNOTSUPP`` will be used.
-> +
-> +Within an XDP frame, the metadata layout is as follows::
+Acked-by: Song Liu <song@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+v3 changes:
+  - use switch in can_be_sleepable [Alexei]
+  - added acks [Song]
 
-Below diagram describes XDP buff (xdp_buff), but text says 'XDP frame'.
-So XDP frame isn't referring literally to xdp_frame, which I find 
-slightly confusing.
-It is likely because I think too much about the code and the different 
-objects, xdp_frame, xdp_buff, xdp_md (xdp ctx seen be bpf-prog).
+ kernel/bpf/verifier.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-I tried to grep in the (recent added) bpf/xdp docs to see if there is a
-definition of a XDP "packet" or "frame".  Nothing popped up, except that
-Documentation/bpf/map_cpumap.rst talks about raw ``xdp_frame`` objects.
-
-Perhaps we can improve this doc by calling out xdp_buff here, like:
-
-  Within an XDP frame, the metadata layout (accessed via ``xdp_buff``) 
-is as follows::
-
-> +
-> +  +----------+-----------------+------+
-> +  | headroom | custom metadata | data |
-> +  +----------+-----------------+------+
-> +             ^                 ^
-> +             |                 |
-> +   xdp_buff->data_meta   xdp_buff->data
-> +
-> +An XDP program can store individual metadata items into this ``data_meta``
-> +area in whichever format it chooses. Later consumers of the metadata
-> +will have to agree on the format by some out of band contract (like for
-> +the AF_XDP use case, see below).
-> +
-> +AF_XDP
-> +======
-> +
-> +:doc:`af_xdp` use-case implies that there is a contract between the BPF
-> +program that redirects XDP frames into the ``AF_XDP`` socket (``XSK``) and
-> +the final consumer. Thus the BPF program manually allocates a fixed number of
-> +bytes out of metadata via ``bpf_xdp_adjust_meta`` and calls a subset
-> +of kfuncs to populate it. The userspace ``XSK`` consumer computes
-> +``xsk_umem__get_data() - METADATA_SIZE`` to locate that metadata.
-> +Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
-> +``METADATA_SIZE`` is an application-specific constant.
-
-The main problem with AF_XDP and metadata is that, the AF_XDP descriptor
-doesn't contain any info about the length METADATA_SIZE.
-
-The text does says this, but in a very convoluted way.
-I think this challenge should be more clearly spelled out.
-
-(p.s. This was something that XDP-hints via BTF have a proposed solution 
-for)
-
-> +
-> +Here is the ``AF_XDP`` consumer layout (note missing ``data_meta`` pointer)::
-
-The "note" also hint to this issue.
-
-> +
-> +  +----------+-----------------+------+
-> +  | headroom | custom metadata | data |
-> +  +----------+-----------------+------+
-> +                               ^
-> +                               |
-> +                        rx_desc->address
-> +
-> +XDP_PASS
-> +========
-> +
-> +This is the path where the packets processed by the XDP program are passed
-> +into the kernel. The kernel creates the ``skb`` out of the ``xdp_buff``
-> +contents. Currently, every driver has custom kernel code to parse
-> +the descriptors and populate ``skb`` metadata when doing this ``xdp_buff->skb``
-> +conversion, and the XDP metadata is not used by the kernel when building
-> +``skbs``. However, TC-BPF programs can access the XDP metadata area using
-> +the ``data_meta`` pointer.
-> +
-> +In the future, we'd like to support a case where an XDP program
-> +can override some of the metadata used for building ``skbs``.
-
-Happy this is mentioned as future work.
-
-> +
-> +bpf_redirect_map
-> +================
-> +
-> +``bpf_redirect_map`` can redirect the frame to a different device.
-> +Some devices (like virtual ethernet links) support running a second XDP
-> +program after the redirect. However, the final consumer doesn't have
-> +access to the original hardware descriptor and can't access any of
-> +the original metadata. The same applies to XDP programs installed
-> +into devmaps and cpumaps.
-> +
-> +This means that for redirected packets only custom metadata is
-> +currently supported, which has to be prepared by the initial XDP program
-> +before redirect. If the frame is eventually passed to the kernel, the
-> +``skb`` created from such a frame won't have any hardware metadata populated
-> +in its ``skb``. If such a packet is later redirected into an ``XSK``,
-> +that will also only have access to the custom metadata.
-> +
-
-Good that this is documented, but I hope we can fix/improve this as
-future work.
-
-> +bpf_tail_call
-> +=============
-> +
-> +Adding programs that access metadata kfuncs to the ``BPF_MAP_TYPE_PROG_ARRAY``
-> +is currently not supported.
-> +
-> +Example
-> +=======
-> +
-> +See ``tools/testing/selftests/bpf/progs/xdp_metadata.c`` and
-> +``tools/testing/selftests/bpf/prog_tests/xdp_metadata.c`` for an example of
-> +BPF program that handles XDP metadata.
-
-
---Jesper
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index fa4c911603e9..966dbfc14288 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16743,6 +16743,23 @@ BTF_ID(func, rcu_read_unlock_strict)
+ #endif
+ BTF_SET_END(btf_id_deny)
+ 
++static bool can_be_sleepable(struct bpf_prog *prog)
++{
++	if (prog->type == BPF_PROG_TYPE_TRACING) {
++		switch (prog->expected_attach_type) {
++		case BPF_TRACE_FENTRY:
++		case BPF_TRACE_FEXIT:
++		case BPF_MODIFY_RETURN:
++		case BPF_TRACE_ITER:
++			return true;
++		default:
++			return false;
++		}
++	}
++	return prog->type == BPF_PROG_TYPE_LSM ||
++	       prog->type == BPF_PROG_TYPE_KPROBE;
++}
++
+ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ {
+ 	struct bpf_prog *prog = env->prog;
+@@ -16761,9 +16778,8 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (prog->aux->sleepable && prog->type != BPF_PROG_TYPE_TRACING &&
+-	    prog->type != BPF_PROG_TYPE_LSM && prog->type != BPF_PROG_TYPE_KPROBE) {
+-		verbose(env, "Only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable\n");
++	if (prog->aux->sleepable && !can_be_sleepable(prog)) {
++		verbose(env, "Only fentry/fexit/fmod_ret, lsm, iter and kprobe/uprobe programs can be sleepable\n");
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.39.0
 
