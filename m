@@ -2,54 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F5F66B51E
-	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 02:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9466A66B523
+	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 02:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbjAPBBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 15 Jan 2023 20:01:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
+        id S231633AbjAPBBl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 15 Jan 2023 20:01:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbjAPBB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 15 Jan 2023 20:01:29 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EACA279
-        for <bpf@vger.kernel.org>; Sun, 15 Jan 2023 17:01:27 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-4597b0ff5e9so286757727b3.10
-        for <bpf@vger.kernel.org>; Sun, 15 Jan 2023 17:01:27 -0800 (PST)
+        with ESMTP id S231716AbjAPBBh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 15 Jan 2023 20:01:37 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC2CA279
+        for <bpf@vger.kernel.org>; Sun, 15 Jan 2023 17:01:36 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id y19-20020a056a00191300b0058217bbc6ceso11654700pfi.4
+        for <bpf@vger.kernel.org>; Sun, 15 Jan 2023 17:01:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=U8pQIe3b3eDqKtcKxZCuszKwm9/MxIa48mrJzbJLsxM=;
-        b=CtusI77hVYkkSpzCIWPeF+5W3whQRlq36FI4PV11OBIlbXcN+zCYP3yaWmsk7Vd1nu
-         b+ML0FY6BsokaJuKNlmYiyXq4NV8XuKYSukBibTNcz6C6JUEnfg+Y3P//VQOixX9oICk
-         jlqyXPcAodOswE8wE4Emco5exeD3Ty2q/8x8oFS1zS7OkEIAGrgxfg4QRW3vJ2DnIh7P
-         DRMnFXtt8XdFejSm7KgaloK3hEX4FNwXVynqnEIE6rwtR51hoErq0b/Ia3xyEv0Z9VJJ
-         nr5LIzQKEk7QfCEQJq2K2IYTMh/5jqks3aHIZlB2qccA54ells4wK0NTvWguNUDhWnlH
-         rcjA==
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tHhCz4k6MsqFldWGTt35hGeLdTBertltyGAk8DkitQI=;
+        b=oVMWfsW34/mGzPMwBFwgP503Mmst6dTXQwRmf7yhjQV3T611RrXu8SUNd69diz8msL
+         k2m6ORMzKffSio7JKlJDYGbJNzNcYNM/zi4Lh+Neq+n+22h8KgrCElrqrFrNrnrW9Fwt
+         4Q0aMoJtNkCMGnvh5OijMMjPPrdIaHndXZd6eLelQTfo1IFemkORMu4h77rN+LVcOu6N
+         pgHQSYw04OOZlUZjQ0ilOFIuOJMHbrpCoEgdIhWSmdlrkjyOIUDGbWBQLdvu3u2qmQbX
+         mHHPhWZK+IL4rEZKsQXiNAi2erx1zf9lypve5krMuoHLn300TU+ofqNc6LiwuoX1klx+
+         5Kkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U8pQIe3b3eDqKtcKxZCuszKwm9/MxIa48mrJzbJLsxM=;
-        b=UKdRiok6coIbS2pikEHjgHSwEut0ItVBtuXC1s+rDkoP+KkhHFzZLAUsZXgqO8VdMq
-         ca0lDuIBYj7x0xKurHzaEqusRo6M7lNC9G9u9tKWJfJqCD7TboyzqABtTs5cHv+6tkAm
-         8chiCK/I4525uHFonMDuD1f1P5oZ3gIoE2Ir486qzIyVfGG85lZ14VhjJvyy857StwBJ
-         zpUgKFEkRee8H26XCh1NH2OFdMYFaY7KbGpM7fUhWyFH2Gli3MRSyhQNaA+H0WS+28nL
-         oQdCOLDdzeHGhZzj/jdQWDlex+IyXh/TSW7ytFnul/jw+mq9ELoSuw/BnL+uuLTDt4XV
-         1B+Q==
-X-Gm-Message-State: AFqh2kp7cYo1kfDdMzCutlGjbCLMjpzMAjAYr3twJ+73bGjRODhixyi8
-        6Dr04S1MSWf4owknHT6nrxrTG0McpdoJ
-X-Google-Smtp-Source: AMrXdXujkx7N4RtyNWtiCeKOl5a/F0OWSBlmlkj8qlxnt3ts2/0if1/DCzxf7WApBksRDBZKcdHp8F/5Miid
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tHhCz4k6MsqFldWGTt35hGeLdTBertltyGAk8DkitQI=;
+        b=cZl3J1SKMFEdfaWE/GqdQ47JuQBrz4nJiVM5hIQcxzP6FUJ68pAIpWgFPa7XKcCL/O
+         lE9qxxT+JRU1P5Opsaler2wEZ6taFfiGy3s3hmJ1pIjdcGGVwQaCZ/ncaJixr6LrPyiV
+         fbK3GJf8g72GtIr+0j4v9JLWmxoIfJurSdRTOj9UF0WDfquMPVDaHkaROjXobTBqyMAp
+         5wUoQl0ANg1MbOLDj8jCypDP9onfVAiZWscurPBXmOUUEnFPf5++7VYyScLpe+cv2wGu
+         cDTm6ceZPTHJG5MyNh/lhwAkIAKmX6aDq3Tpfq81WsuUYemYCPEqCTUQz67KWw3LTDeO
+         Kr1Q==
+X-Gm-Message-State: AFqh2koRpiP17IWWKGtAZ+kHqXbRZea5GAGIIqt3oUsKVvOwnCn6q/fb
+        CeTlPvv2yComRwKhqzyVWNyTB7Un2Mqv
+X-Google-Smtp-Source: AMrXdXvaEANIV4ydnJVEVN/4TOnTdYZRjSst6vBFoO6VrG5s9o9TicPq79sqg2G3TQ4ogM26FcqU7DZSUxLt
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:79e:5e8e:382c:e7ce])
- (user=irogers job=sendgmr) by 2002:a81:a513:0:b0:4b5:55fb:6cbc with SMTP id
- u19-20020a81a513000000b004b555fb6cbcmr4181643ywg.10.1673830886744; Sun, 15
- Jan 2023 17:01:26 -0800 (PST)
-Date:   Sun, 15 Jan 2023 17:01:12 -0800
-Message-Id: <20230116010115.490713-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a17:90b:264d:b0:226:1564:643c with SMTP id
+ pa13-20020a17090b264d00b002261564643cmr5421842pjb.206.1673830895350; Sun, 15
+ Jan 2023 17:01:35 -0800 (PST)
+Date:   Sun, 15 Jan 2023 17:01:13 -0800
+In-Reply-To: <20230116010115.490713-1-irogers@google.com>
+Message-Id: <20230116010115.490713-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20230116010115.490713-1-irogers@google.com>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Subject: [PATCH v2 0/3]  Assume libbpf 1.0+
+Subject: [PATCH v2 1/3] tools build: Pass libbpf feature only if libbpf 1.0+
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -78,61 +80,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-libbpf 1.0 was a major change in API. Perf has partially supported
-older libbpf's but an implementation may be:
-..
-       pr_err("%s: not support, update libbpf\n", __func__);
-       return -ENOTSUP;
-..
+libbpf 1.0 represented a cleanup and stabilization of APIs. Simplify
+development by only passing the feature test if libbpf 1.0 is
+installed.
 
-Rather than build a binary that would fail at runtime it is
-preferrential just to build libbpf statically and link against
-that. The static version is in the kernel tools tree and newer than
-1.0.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/build/feature/test-libbpf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-These patches change the libbpf test to only pass when at least
-version 1.0 is installed, then remove the conditional build and
-feature logic.
-
-The issue is discussed here:
-https://lore.kernel.org/lkml/20230106151320.619514-1-irogers@google.com/
-perf bpf:
-
-A variant of this fix was added to Linux 6.2 in:
-"perf bpf: Avoid build breakage with libbpf < 0.8.0 + LIBBPF_DYNAMIC=1"
-https://lore.kernel.org/lkml/Y71+eh00Ju7WeEFX@kernel.org/
-This change goes further in removing logic that is now no longer
-necessary.
-
-v2. Rebase now that breakage fix patch is in linus/master.
-
-Ian Rogers (3):
-  tools build: Pass libbpf feature only if libbpf 1.0+
-  perf build: Remove libbpf pre-1.0 feature tests
-  perf bpf: Remove pre libbpf 1.0 conditional logic
-
- tools/build/feature/Makefile                  |  7 --
- .../feature/test-libbpf-bpf_map_create.c      |  8 ---
- .../test-libbpf-bpf_object__next_map.c        |  8 ---
- .../test-libbpf-bpf_object__next_program.c    |  8 ---
- .../build/feature/test-libbpf-bpf_prog_load.c |  9 ---
- .../test-libbpf-bpf_program__set_insns.c      |  8 ---
- .../test-libbpf-btf__load_from_kernel_by_id.c |  8 ---
- .../build/feature/test-libbpf-btf__raw_data.c |  8 ---
- tools/build/feature/test-libbpf.c             |  4 ++
- tools/perf/Makefile.config                    | 39 +----------
- tools/perf/util/bpf-event.c                   | 66 -------------------
- tools/perf/util/bpf-loader.c                  | 18 -----
- tools/perf/util/bpf_counter.c                 | 18 -----
- 13 files changed, 5 insertions(+), 204 deletions(-)
- delete mode 100644 tools/build/feature/test-libbpf-bpf_map_create.c
- delete mode 100644 tools/build/feature/test-libbpf-bpf_object__next_map.c
- delete mode 100644 tools/build/feature/test-libbpf-bpf_object__next_program.c
- delete mode 100644 tools/build/feature/test-libbpf-bpf_prog_load.c
- delete mode 100644 tools/build/feature/test-libbpf-bpf_program__set_insns.c
- delete mode 100644 tools/build/feature/test-libbpf-btf__load_from_kernel_by_id.c
- delete mode 100644 tools/build/feature/test-libbpf-btf__raw_data.c
-
+diff --git a/tools/build/feature/test-libbpf.c b/tools/build/feature/test-libbpf.c
+index a508756cf4cc..cd9989f52119 100644
+--- a/tools/build/feature/test-libbpf.c
++++ b/tools/build/feature/test-libbpf.c
+@@ -1,6 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <bpf/libbpf.h>
+ 
++#if !defined(LIBBPF_MAJOR_VERSION) || (LIBBPF_MAJOR_VERSION < 1)
++#error At least libbpf 1.0 is required for Linux tools.
++#endif
++
+ int main(void)
+ {
+ 	return bpf_object__open("test") ? 0 : -1;
 -- 
 2.39.0.314.g84b9a713c41-goog
 
