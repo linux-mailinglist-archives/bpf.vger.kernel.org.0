@@ -2,77 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C91166B97A
-	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 09:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91DB566BA76
+	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 10:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbjAPI4G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Jan 2023 03:56:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
+        id S232248AbjAPJeu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Jan 2023 04:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbjAPIzu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Jan 2023 03:55:50 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C6F13D60;
-        Mon, 16 Jan 2023 00:55:48 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id y1so29670582plb.2;
-        Mon, 16 Jan 2023 00:55:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5WAPbAs4qNs3+IgrwRS+Oyx6LWS3F6A1afWPeS2gaZE=;
-        b=YMhGPwgnK1MFkgW0vtH6zBaFzz+mHKFtGswwQXsNYMp0XXfCCxqhS6BVXZgtGghuVX
-         svIKmqYB8fZoeF7kBNLJTzKnFo2nSsfKBqfLBXwc9ZLA1EkIS+Zvho2LuOP4kJJcWVi4
-         1HwfaUH0FKokvOsG9nlik8bUTDvegjmhKfy6AzV0e0QzFQBcAOXqNIjP2fxCNJGZYxwp
-         XPMYylb/r8Yr0KDDMgfRc2CvE3moG6PJoJC+nfXGTrcLruQ73i6aNf/34TQ1kNQ2HGac
-         Bfz29hdQCErq3D3AyoXaNoB5EOMulFrzJU9TLJ0t874bz8m8w7+oW74v8VT+PssqQ/a2
-         0uyQ==
+        with ESMTP id S232285AbjAPJem (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Jan 2023 04:34:42 -0500
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA95716AF7
+        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 01:34:41 -0800 (PST)
+Received: by mail-io1-f71.google.com with SMTP id u24-20020a6be918000000b006ed1e9ad302so17750597iof.22
+        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 01:34:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5WAPbAs4qNs3+IgrwRS+Oyx6LWS3F6A1afWPeS2gaZE=;
-        b=YGoJkepdZM4ElfWQT2PJDq/z9phhyuNQnj634LG/QxfwcscvmzGFlIIBbiIulgVdlk
-         fL+EffQB7MwM3kwiBsKTrqBaaieeUTZ3SeupHTbZ+4ATo/lLxsI4ND3kMZ6rBbbo2q9R
-         Ow1doTc6Gt2zqKZPsmeU9fEa0yZOy8t0ySBYHKOjC7bXTy//LuKB4o3L9zIV+Oqd90Ff
-         KS/PzMUO1r2QOj9g1G0erYGFGEA/Wwbfy46Vs8r7K/WesjDq525psBEB/XX1xOAt3ErA
-         km7gfcBYMJo0qOgy5B+CyNmNJM+lrSXBuPDGNR/p4u5Sae6q4jsOLF77Bo/68f3u7zp0
-         cP+Q==
-X-Gm-Message-State: AFqh2kopjIKts2+01hna+5KD8fZcMQKiIG9/bMJeFgRFZyRQtftuyLfS
-        s+RUl9YInSrwtea/B1Lr6miHq4Nv6YWPQA==
-X-Google-Smtp-Source: AMrXdXvbiLCyZhCCqXfBy8uHXLmCRGhxA639S9jHdFC2k//d9UvckT9BoegeeYFdzv4Y0r2Seas66w==
-X-Received: by 2002:a17:90a:4282:b0:223:f131:3604 with SMTP id p2-20020a17090a428200b00223f1313604mr93583016pjg.17.1673859347789;
-        Mon, 16 Jan 2023 00:55:47 -0800 (PST)
-Received: from Laptop-X1 ([2409:8a02:781c:2330:c2cc:a0ba:7da8:3e4b])
-        by smtp.gmail.com with ESMTPSA id y7-20020a17090a474700b00219463262desm15945575pjg.39.2023.01.16.00.55.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Jan 2023 00:55:46 -0800 (PST)
-Date:   Mon, 16 Jan 2023 16:55:41 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Lina Wang <lina.wang@mediatek.com>,
-        Coleman Dietsch <dietschc@csp.edu>, bpf@vger.kernel.org,
-        Maciej enczykowski <maze@google.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Subject: Re: [PATCHv3 net-next] selftests/net: mv bpf/nat6to4.c to net folder
-Message-ID: <Y8URDVVQs9pRrNdU@Laptop-X1>
-References: <20221218082448.1829811-1-liuhangbin@gmail.com>
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XG+8BKQZXmEP0/38FNg8FgT9PiBrBcckD5PCX9//6rU=;
+        b=3P/s8518PLDDb86LyLVNUfwx0dc7BXeTb6+x6u2ZV/6x/u3HhYAyPSTJkm6wBrirO9
+         WSeLFe492ZDAWdIXQC9R5mvY0DIlS3DlFaMMGb8eJvk6y9hoQzsEwMX7GawAFVqhRwsm
+         eApn2/+xRS3Bh+ajjAWl/9e9ORMlzJ9VavEUHX5eH81bu528rBWSYYp0ibYWELRMBxSn
+         qssn7D9r3vbFs5Ysk5U2doKdXGdwm0xO+uInq/tQM8RtUzmUyWCYSmg9W/r2decv5mCB
+         muOPFbrxfhVDMuIbxkp+/vup0KQJSl9scAxpvLuuDQjkITyyraZsxI5pq3NwDeyln5MY
+         U64g==
+X-Gm-Message-State: AFqh2krmPLEhKD/M/DbKrER6sasvpv+aEakifzXbrygUSy/8LZM40gq4
+        DqWlCqDP5u0KAmEdUzY6XNuYUYBWoS/NunCFVbAP9Q/iK/RS
+X-Google-Smtp-Source: AMrXdXtBLIVPzMJ8XpSauUJN2DKRtc8QZaJS45FfN41f/bGLULX92rcj7lmH8JfkgZvHuYsG9bJuxoQi7SZfmB+9vDLqiPOPvhzP
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221218082448.1829811-1-liuhangbin@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:aa18:0:b0:39e:a033:90c with SMTP id
+ r24-20020a02aa18000000b0039ea033090cmr2060004jam.254.1673861681074; Mon, 16
+ Jan 2023 01:34:41 -0800 (PST)
+Date:   Mon, 16 Jan 2023 01:34:41 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e75aad05f25e4a1e@google.com>
+Subject: [syzbot] general protection fault in sock_poll
+From:   syzbot <syzbot+026ab7dc882b578abd78@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        richardcochran@gmail.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -81,201 +57,107 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello,
 
-May I ask what's the status of this patch? I saw it's deferred[1] but I don't
-know what I should do.
+syzbot found the following issue on:
 
-[1] https://patchwork.kernel.org/project/netdevbpf/patch/20221218082448.1829811-1-liuhangbin@gmail.com/
+HEAD commit:    0a093b2893c7 Add linux-next specific files for 20230112
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13a3e136480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=835f3591019836d5
+dashboard link: https://syzkaller.appspot.com/bug?extid=026ab7dc882b578abd78
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Thanks
-Hangbin
+Unfortunately, I don't have any reproducer for this issue yet.
 
-On Sun, Dec 18, 2022 at 04:24:48PM +0800, Hangbin Liu wrote:
-> There are some issues with the bpf/nat6to4.c building.
-> 
-> 1. It use TEST_CUSTOM_PROGS, which will add the nat6to4.o to
->    kselftest-list file and run by common run_tests.
-> 2. When building the test via `make -C tools/testing/selftests/
->    TARGETS="net"`, the nat6to4.o will be build in selftests/net/bpf/
->    folder. But in test udpgro_frglist.sh it refers to ../bpf/nat6to4.o.
->    The correct path should be ./bpf/nat6to4.o.
-> 3. If building the test via `make -C tools/testing/selftests/ TARGETS="net"
->    install`. The nat6to4.o will be installed to kselftest_install/net/
->    folder. Then the udpgro_frglist.sh should refer to ./nat6to4.o.
-> 
-> To fix the confusing test path, let's just move the nat6to4.c to net folder
-> and build it as TEST_GEN_FILES.
-> 
-> Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-tests")
-> Tested-by: Björn Töpel <bjorn@kernel.org>
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
-> v3: remove unneeded $(OUTPUT)/bpf dir.
-> 
-> v2: Update the Makefile rules rely on commit 837a3d66d698 ("selftests:
->     net: Add cross-compilation support for BPF programs").
-> ---
->  tools/testing/selftests/net/Makefile          | 50 +++++++++++++++++-
->  tools/testing/selftests/net/bpf/Makefile      | 51 -------------------
->  .../testing/selftests/net/{bpf => }/nat6to4.c |  0
->  tools/testing/selftests/net/udpgro_frglist.sh |  8 +--
->  4 files changed, 52 insertions(+), 57 deletions(-)
->  delete mode 100644 tools/testing/selftests/net/bpf/Makefile
->  rename tools/testing/selftests/net/{bpf => }/nat6to4.c (100%)
-> 
-> diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-> index 3007e98a6d64..47314f0b3006 100644
-> --- a/tools/testing/selftests/net/Makefile
-> +++ b/tools/testing/selftests/net/Makefile
-> @@ -75,14 +75,60 @@ TEST_GEN_PROGS += so_incoming_cpu
->  TEST_PROGS += sctp_vrf.sh
->  TEST_GEN_FILES += sctp_hello
->  TEST_GEN_FILES += csum
-> +TEST_GEN_FILES += nat6to4.o
->  
->  TEST_FILES := settings
->  
->  include ../lib.mk
->  
-> -include bpf/Makefile
-> -
->  $(OUTPUT)/reuseport_bpf_numa: LDLIBS += -lnuma
->  $(OUTPUT)/tcp_mmap: LDLIBS += -lpthread
->  $(OUTPUT)/tcp_inq: LDLIBS += -lpthread
->  $(OUTPUT)/bind_bhash: LDLIBS += -lpthread
-> +
-> +# Rules to generate bpf obj nat6to4.o
-> +CLANG ?= clang
-> +SCRATCH_DIR := $(OUTPUT)/tools
-> +BUILD_DIR := $(SCRATCH_DIR)/build
-> +BPFDIR := $(abspath ../../../lib/bpf)
-> +APIDIR := $(abspath ../../../include/uapi)
-> +
-> +CCINCLUDE += -I../bpf
-> +CCINCLUDE += -I../../../../usr/include/
-> +CCINCLUDE += -I$(SCRATCH_DIR)/include
-> +
-> +BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
-> +
-> +MAKE_DIRS := $(BUILD_DIR)/libbpf
-> +$(MAKE_DIRS):
-> +	mkdir -p $@
-> +
-> +# Get Clang's default includes on this system, as opposed to those seen by
-> +# '-target bpf'. This fixes "missing" files on some architectures/distros,
-> +# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
-> +#
-> +# Use '-idirafter': Don't interfere with include mechanics except where the
-> +# build would have failed anyways.
-> +define get_sys_includes
-> +$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
-> +	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
-> +$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
-> +endef
-> +
-> +ifneq ($(CROSS_COMPILE),)
-> +CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
-> +endif
-> +
-> +CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
-> +
-> +$(OUTPUT)/nat6to4.o: nat6to4.c $(BPFOBJ) | $(MAKE_DIRS)
-> +	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) $(CLANG_SYS_INCLUDES) -o $@
-> +
-> +$(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
-> +	   $(APIDIR)/linux/bpf.h					       \
-> +	   | $(BUILD_DIR)/libbpf
-> +	$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/     \
-> +		    EXTRA_CFLAGS='-g -O0'				       \
-> +		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
-> +
-> +EXTRA_CLEAN := $(SCRATCH_DIR)
-> diff --git a/tools/testing/selftests/net/bpf/Makefile b/tools/testing/selftests/net/bpf/Makefile
-> deleted file mode 100644
-> index 4abaf16d2077..000000000000
-> --- a/tools/testing/selftests/net/bpf/Makefile
-> +++ /dev/null
-> @@ -1,51 +0,0 @@
-> -# SPDX-License-Identifier: GPL-2.0
-> -
-> -CLANG ?= clang
-> -SCRATCH_DIR := $(OUTPUT)/tools
-> -BUILD_DIR := $(SCRATCH_DIR)/build
-> -BPFDIR := $(abspath ../../../lib/bpf)
-> -APIDIR := $(abspath ../../../include/uapi)
-> -
-> -CCINCLUDE += -I../../bpf
-> -CCINCLUDE += -I../../../../../usr/include/
-> -CCINCLUDE += -I$(SCRATCH_DIR)/include
-> -
-> -BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
-> -
-> -MAKE_DIRS := $(BUILD_DIR)/libbpf $(OUTPUT)/bpf
-> -$(MAKE_DIRS):
-> -	mkdir -p $@
-> -
-> -TEST_CUSTOM_PROGS = $(OUTPUT)/bpf/nat6to4.o
-> -all: $(TEST_CUSTOM_PROGS)
-> -
-> -# Get Clang's default includes on this system, as opposed to those seen by
-> -# '-target bpf'. This fixes "missing" files on some architectures/distros,
-> -# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
-> -#
-> -# Use '-idirafter': Don't interfere with include mechanics except where the
-> -# build would have failed anyways.
-> -define get_sys_includes
-> -$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
-> -	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
-> -$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("-D__riscv_xlen=%d -D__BITS_PER_LONG=%d", $$3, $$3)}')
-> -endef
-> -
-> -ifneq ($(CROSS_COMPILE),)
-> -CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
-> -endif
-> -
-> -CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
-> -
-> -$(TEST_CUSTOM_PROGS): $(OUTPUT)/%.o: %.c $(BPFOBJ) | $(MAKE_DIRS)
-> -	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) $(CLANG_SYS_INCLUDES) -o $@
-> -
-> -$(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
-> -	   $(APIDIR)/linux/bpf.h					       \
-> -	   | $(BUILD_DIR)/libbpf
-> -	$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/     \
-> -		    EXTRA_CFLAGS='-g -O0'				       \
-> -		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
-> -
-> -EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR)
-> -
-> diff --git a/tools/testing/selftests/net/bpf/nat6to4.c b/tools/testing/selftests/net/nat6to4.c
-> similarity index 100%
-> rename from tools/testing/selftests/net/bpf/nat6to4.c
-> rename to tools/testing/selftests/net/nat6to4.c
-> diff --git a/tools/testing/selftests/net/udpgro_frglist.sh b/tools/testing/selftests/net/udpgro_frglist.sh
-> index c9c4b9d65839..0a6359bed0b9 100755
-> --- a/tools/testing/selftests/net/udpgro_frglist.sh
-> +++ b/tools/testing/selftests/net/udpgro_frglist.sh
-> @@ -40,8 +40,8 @@ run_one() {
->  
->  	ip -n "${PEER_NS}" link set veth1 xdp object ${BPF_FILE} section xdp
->  	tc -n "${PEER_NS}" qdisc add dev veth1 clsact
-> -	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file ../bpf/nat6to4.o section schedcls/ingress6/nat_6  direct-action
-> -	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file ../bpf/nat6to4.o section schedcls/egress4/snat4 direct-action
-> +	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file nat6to4.o section schedcls/ingress6/nat_6  direct-action
-> +	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file nat6to4.o section schedcls/egress4/snat4 direct-action
->          echo ${rx_args}
->  	ip netns exec "${PEER_NS}" ./udpgso_bench_rx ${rx_args} -r &
->  
-> @@ -88,8 +88,8 @@ if [ ! -f ${BPF_FILE} ]; then
->  	exit -1
->  fi
->  
-> -if [ ! -f bpf/nat6to4.o ]; then
-> -	echo "Missing nat6to4 helper. Build bpfnat6to4.o selftest first"
-> +if [ ! -f nat6to4.o ]; then
-> +	echo "Missing nat6to4 helper. Build bpf nat6to4.o selftest first"
->  	exit -1
->  fi
->  
-> -- 
-> 2.38.1
-> 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/8111a570d6cb/disk-0a093b28.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ecc135b7fc9a/vmlinux-0a093b28.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ca8d73b446ea/bzImage-0a093b28.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+026ab7dc882b578abd78@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000008: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000040-0x0000000000000047]
+CPU: 1 PID: 24704 Comm: syz-executor.0 Not tainted 6.2.0-rc3-next-20230112-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:sock_poll+0xc0/0x5d0 net/socket.c:1341
+Code: 4c 89 f2 48 c1 ea 03 80 3c 02 00 0f 85 7e 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5d 20 48 8d 7b 40 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 51 04 00 00 48 8b 5b 40 31 c0 48 85 db 74 7f e8
+RSP: 0000:ffffc900037d79e0 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90004011000
+RDX: 0000000000000008 RSI: ffffffff87bf3d08 RDI: 0000000000000040
+RBP: ffff88808540aa00 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffc900037d7a88
+R13: ffff88802bfad900 R14: ffff88808540aa20 R15: ffff888083c93a78
+FS:  00007f544b91d700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8c14da8000 CR3: 000000001da7b000 CR4: 00000000003526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ vfs_poll include/linux/poll.h:88 [inline]
+ io_poll_check_events io_uring/poll.c:279 [inline]
+ io_poll_task_func+0x3a6/0x1220 io_uring/poll.c:327
+ handle_tw_list+0xa8/0x460 io_uring/io_uring.c:1169
+ tctx_task_work+0x12e/0x530 io_uring/io_uring.c:1224
+ task_work_run+0x16f/0x270 kernel/task_work.c:179
+ get_signal+0x1c7/0x24f0 kernel/signal.c:2635
+ arch_do_signal_or_restart+0x79/0x5c0 arch/x86/kernel/signal.c:306
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+ syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297
+ do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f544ac8c0c9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f544b91d218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: 0000000000000001 RBX: 00007f544adabf88 RCX: 00007f544ac8c0c9
+RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00007f544adabf8c
+RBP: 00007f544adabf80 R08: 00007ffdfa9bc080 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 00007f544adabf8c
+R13: 00007ffdfa9359ef R14: 00007f544b91d300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:sock_poll+0xc0/0x5d0 net/socket.c:1341
+Code: 4c 89 f2 48 c1 ea 03 80 3c 02 00 0f 85 7e 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5d 20 48 8d 7b 40 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 51 04 00 00 48 8b 5b 40 31 c0 48 85 db 74 7f e8
+RSP: 0000:ffffc900037d79e0 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90004011000
+RDX: 0000000000000008 RSI: ffffffff87bf3d08 RDI: 0000000000000040
+RBP: ffff88808540aa00 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffc900037d7a88
+R13: ffff88802bfad900 R14: ffff88808540aa20 R15: ffff888083c93a78
+FS:  00007f544b91d700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b3343a000 CR3: 000000001da7b000 CR4: 00000000003526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	4c 89 f2             	mov    %r14,%rdx
+   3:	48 c1 ea 03          	shr    $0x3,%rdx
+   7:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   b:	0f 85 7e 04 00 00    	jne    0x48f
+  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  18:	fc ff df
+  1b:	48 8b 5d 20          	mov    0x20(%rbp),%rbx
+  1f:	48 8d 7b 40          	lea    0x40(%rbx),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 51 04 00 00    	jne    0x485
+  34:	48 8b 5b 40          	mov    0x40(%rbx),%rbx
+  38:	31 c0                	xor    %eax,%eax
+  3a:	48 85 db             	test   %rbx,%rbx
+  3d:	74 7f                	je     0xbe
+  3f:	e8                   	.byte 0xe8
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
