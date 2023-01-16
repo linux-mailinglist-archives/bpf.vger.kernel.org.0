@@ -2,169 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1317866B59F
-	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 03:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F2666B6C1
+	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 05:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbjAPC2C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 15 Jan 2023 21:28:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
+        id S231702AbjAPEzW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 15 Jan 2023 23:55:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbjAPC15 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 15 Jan 2023 21:27:57 -0500
-Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F09E728D;
-        Sun, 15 Jan 2023 18:27:57 -0800 (PST)
-Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-4d59d518505so194063247b3.1;
-        Sun, 15 Jan 2023 18:27:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rf3oYMshP1FK8r55wtFcYr8p7u075CmKOwZBIt1AJME=;
-        b=ZbE+TFA+ei/ozO8vXf2wNwOOEbolWBI8xxLCZOqLChDIEyBkNgG6zT7qvQcPyGNaz1
-         tOMj+HW8Eg2bMExypX1UgwbvhsDtTTM4orD4k4frATLgEcq4ZzbCZBB/LJ/hL9VAlOvP
-         tq+O9QzDrg3rKqlNzjsOa0ZS4pkFEQ609xUGVZOVzhAMi+iP7E0WX/YL2U/IMNAmYQDL
-         47eMp73Amj+mTcLROge3gV0hQtE6HZ56Jms4zStCwmT5+0eRvlmYpohUid+a1b6nHTB/
-         c+5DOLNgaP3i/IvS5B2cr6FyzGtu3EE0+CMIaNfZ/RumgKVbnfGPMbh1gCPyJdSxAspb
-         5+nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rf3oYMshP1FK8r55wtFcYr8p7u075CmKOwZBIt1AJME=;
-        b=7KlxDZxYlJNuU5Q7cMs/zKGhN+1ZNXeGI6dIfPfiWxBUm/MZSfmMo97VVxw78wX4ih
-         AzXA5leZLG/qrmflAaRENOLh7zvP0oa2A7MqcjuFCc0Pi3G+d7Ywk356EboqgakNt4Jz
-         xAahOsWWyLYAY6CRQ5MPofPWsm1t/LM6rlDWCaJFryDktP1Da1RFd46tS39QiXTFSJCq
-         zhM2jC3/15pPL/1e+LmH3vD/YeeJhCTU9607/wMfBfiqDih1tCnufXYer307mA0tMjE6
-         mdjHK+LN2iWiun3Q6Udl6fBTaXKmydPBORodYRQxGO1b6V1R1uJ2aD1XuMFGSAuNXR0R
-         xyVg==
-X-Gm-Message-State: AFqh2kqPSntAQ9CqrgA7Oz9F21WhFoP9c3BLFVTAfJvnSnJs90B7qP4e
-        17+fShMZBT7SuFzgWEk6FMENHTu9w16UoDYnshY=
-X-Google-Smtp-Source: AMrXdXv3OEd1aT/KA9stR9zP/tT2p/re0Lpanqx7mbXkKxFVlAgShiM0BwqULHDALZcDJ7PVxFGcIpSOwkTQWpo8ub0=
-X-Received: by 2002:a81:4c83:0:b0:3be:16c3:6829 with SMTP id
- z125-20020a814c83000000b003be16c36829mr4581695ywa.298.1673836068557; Sun, 15
- Jan 2023 18:27:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20230113093427.1666466-1-imagedong@tencent.com>
- <bdca73eb-07e3-2187-c46f-a3f14a9e50a4@oracle.com> <CAEf4BzZ5FNw-j3F8cUpy4knRiM1sqQOOPZnM43Kj8peN9kKQLg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ5FNw-j3F8cUpy4knRiM1sqQOOPZnM43Kj8peN9kKQLg@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Mon, 16 Jan 2023 10:27:37 +0800
-Message-ID: <CADxym3YqgvYt71+WhMM4jzp+9uqkNdq3nB9kvBxT=CVM7hwRsA@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: replace '.' with '_' in legacy kprobe event name
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S231857AbjAPEzU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 15 Jan 2023 23:55:20 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5BA2F559F;
+        Sun, 15 Jan 2023 20:55:16 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Ax3eqz2MRjp84BAA--.5634S3;
+        Mon, 16 Jan 2023 12:55:15 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxX+Sx2MRjIQ8aAA--.13747S2;
+        Mon, 16 Jan 2023 12:55:14 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] selftests/bpf: Fix undeclared identifier build errors of test_bpf_nf.c
+Date:   Mon, 16 Jan 2023 12:55:08 +0800
+Message-Id: <1673844908-11533-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8AxX+Sx2MRjIQ8aAA--.13747S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvJXoW7WF13Kr4kCFW3Xr17ZryrWFg_yoW8JFW3pa
+        48Z3s0yFs5Ka1UuFn3CrW2vr4FyFs2vayUJw18ArW3Kr95Xr17tr4xKF47Jr9xGrWFq3s3
+        Za4IgFZrZF18A3JanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        bSxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
+        1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4
+        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
+        n4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
+        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E
+        87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxV
+        Aaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxY
+        O2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
+        WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
+        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
+        WUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4U
+        JbIYCTnIWIevJa73UjIFyTuYvjxU4Z2-UUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+$ make -C tools/testing/selftests/bpf/
 
-On Sat, Jan 14, 2023 at 6:07 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Jan 13, 2023 at 6:13 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >
-> > On 13/01/2023 09:34, menglong8.dong@gmail.com wrote:
-> > > From: Menglong Dong <imagedong@tencent.com>
-> > >
-> > > '.' is not allowed in the event name of kprobe. Therefore, we will get a
-> > > EINVAL if the kernel function name has a '.' in legacy kprobe attach
-> > > case, such as 'icmp_reply.constprop.0'.
-> > >
-> > > In order to adapt this case, we need to replace the '.' with other char
-> > > in gen_kprobe_legacy_event_name(). And I use '_' for this propose.
-> > >
-> > > Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index fdfb1ca34ced..5d6f6675c2f2 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -9994,9 +9994,16 @@ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
-> > >                                        const char *kfunc_name, size_t offset)
-> > >  {
-> > >       static int index = 0;
-> > > +     int i = 0;
-> > >
-> > >       snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx_%d", getpid(), kfunc_name, offset,
-> > >                __sync_fetch_and_add(&index, 1));
-> > > +
-> > > +     while (buf[i] != '\0') {
-> > > +             if (buf[i] == '.')
-> > > +                     buf[i] = '_';
-> > > +             i++;
-> > > +     }
-> > >  }
-> >
-> > probably more naturally expressed as a for() loop as is done in
-> > gen_uprobe_legacy_event_name(), but not a big deal.
-> >
-> > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
->
-> Applied, but tuned to be exactly the same loop as in
-> gen_uprobe_legacy_event_name. Thanks.
->
+  CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+progs/test_bpf_nf.c:160:42: error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+                bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+                                                       ^
+progs/test_bpf_nf.c:163:42: error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+                bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+                                                       ^
+2 errors generated.
 
-Thanks for your modification, it looks much better now!
+Copy the definitions in include/net/netfilter/nf_nat.h to test_bpf_nf.c
+to fix the above build errors.
 
-> >
-> > One issue with the legacy kprobe code is that we don't get test coverage
-> > with it on new kernels - I wonder if it would be worth adding a force_legacy
-> > option to bpf_kprobe_opts? A separate issue to this change of course, but
-> > if we had that we could add some legacy kprobe tests that would run
-> > for new kernels as well.
->
-> Yep, good idea. If we ever have some bug in the latest greatest kprobe
-> implementation, users will have an option to work around that with
-> this.
->
-> The only thing is that we already have 3 modes: legacy, perf-based
-> through ioctl, and bpf_link-based, so I think it should be something
-> like
->
-> enum kprobe_mode {
->     KPROBE_MODE_DEFAULT = 0, /* latest supported by kernel */
->     KPROBE_MODE_LEGACY,
->     KPROBE_MODE_PERF,
->     KPROBE_MODE_LINK,
-> };
->
-> LEGACY/PERF/LINK naming should be thought through, just a quick example.
->
-> And then just have `enum kprobe_mode mode;` in kprobe_opts, which
-> would default to 0 (KPROBE_MODE_DEFAULT).
->
-> Would that work?
->
+Fixes: b06b45e82b59 ("selftests/bpf: add tests for bpf_ct_set_nat_info kfunc")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Sounds great, which means I don't have to switch to an older
-kernel to test this function for my app.
+diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+index 227e85e..114f961 100644
+--- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
++++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+@@ -34,6 +34,11 @@ __be16 dport = 0;
+ int test_exist_lookup = -ENOENT;
+ u32 test_exist_lookup_mark = 0;
+ 
++enum nf_nat_manip_type {
++	NF_NAT_MANIP_SRC,
++	NF_NAT_MANIP_DST
++};
++
+ struct nf_conn;
+ 
+ struct bpf_ct_opts___local {
+-- 
+2.1.0
 
-BTW, should I do this job, (which is my pleasure), or Alan?
-
-
-Thanks!
-Menglong Dong
-
-> >
-> > Alan
-> > >
-> > >  static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
-> > >
