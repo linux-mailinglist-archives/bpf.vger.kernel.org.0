@@ -2,54 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2235B66BFC6
-	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 14:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF21D66BFE3
+	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 14:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjAPN3V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Jan 2023 08:29:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
+        id S230471AbjAPNgB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Jan 2023 08:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjAPN3V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Jan 2023 08:29:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B5C166DE
-        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 05:29:20 -0800 (PST)
+        with ESMTP id S230484AbjAPNgA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Jan 2023 08:36:00 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2FB1E1C3;
+        Mon, 16 Jan 2023 05:35:58 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0C017B80D30
-        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 13:29:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC162C433EF;
-        Mon, 16 Jan 2023 13:29:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 43D7160FB8;
+        Mon, 16 Jan 2023 13:35:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78513C433D2;
+        Mon, 16 Jan 2023 13:35:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673875757;
-        bh=wyJ7iMSlfS+oVwngzPGR/Py9YVoyOqW9cjsjqHgQ6V0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WKXfBmd8AsZXZfKKJMwiO+6MnBSZENrmJS3yQF3Nq1vKwPq47sffYTm156VQ+nYAq
-         Y/RZoumC+ycIwSJIJ3LH+XKirL0iAoj5s7l9eUGAoyV/f6muLnvsIHt6LnfuN1aYF2
-         fOy872cO4gDfNrUbxqvcON9Ir7G5TWUxhkBCSHGsFuJxnuU6Zvcm+j5ppLPUnEznAi
-         j21oxGnf1cT9ZduxI69lkv4vJkC7gqXQrcHdbD4XRb2OzHDNl/D250Jzyvec62AEAt
-         BMMCHJIbpdP09Kd8GuoD3OjwWWBsBfDrh0D6bYCeup4YC9kSG89YU7oCDIRDpmPFg6
-         6S5rm9H+TrIDQ==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        s=k20201202; t=1673876157;
+        bh=VGDHasLw5K/OcysDOXC+d/X98n+wpKKIJ36v49TyMnE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=W85pTBDdk1gqnpNirDMTKNhWQkLWGQf29BfgmNk1ToLV6m7kMwJCj/LEYojADGN4B
+         yFAlTjHrwRM2gLCnoRRrYBxHciel39gv3i207ub2cr5ZiSacR1XduAJKE+qz8o7Q55
+         Cn9I3En77pt/kkAXUvLEe/o4JIexLY4rzDI0pAHzkaIhcV7YIMvkLNotb44Bea60vA
+         eW9Ej6L+gX5mJOQKKGQGFNfraGJB/+Fypp1SbyBTu3aS983ohKazvgOXgKfYTPFkse
+         zxb38g9ITiWwgLEKiIacP+P1PJoQLQ7WD7S6zI/U7KjLHdEiOqykq3+dNiSzauzEuh
+         MPoEzSPPCXbIg==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 756B7900F2D; Mon, 16 Jan 2023 14:35:54 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: [PATCHv3 bpf-next 2/2] bpf/selftests: Add verifier tests for loading sleepable programs
-Date:   Mon, 16 Jan 2023 14:29:01 +0100
-Message-Id: <20230116132901.161494-2-jolsa@kernel.org>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230116132901.161494-1-jolsa@kernel.org>
-References: <20230116132901.161494-1-jolsa@kernel.org>
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [bpf-next 00/10] samples/bpf: modernize BPF functionality test
+ programs
+In-Reply-To: <CAEKGpzgzxabXqUKXz4A-dYx6B05vbDkGELadRDBnbCF_hLxMAQ@mail.gmail.com>
+References: <20230115071613.125791-1-danieltimlee@gmail.com>
+ <CAADnVQ+zP5bkjkSa97k+dK7=NabkdoLWQtZ1qRwRTUQgGdqhVA@mail.gmail.com>
+ <CAEKGpzgzxabXqUKXz4A-dYx6B05vbDkGELadRDBnbCF_hLxMAQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 16 Jan 2023 14:35:54 +0100
+Message-ID: <87ilh6eh51.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -59,113 +68,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding verifier tests for loading all types od allowed
-sleepable programs plus reject for tp_btf type.
+"Daniel T. Lee" <danieltimlee@gmail.com> writes:
 
-Acked-by: Song Liu <song@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../selftests/bpf/verifier/sleepable.c        | 91 +++++++++++++++++++
- 1 file changed, 91 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/verifier/sleepable.c
+> On Mon, Jan 16, 2023 at 6:38 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Sat, Jan 14, 2023 at 11:16 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+>> >
+>> > Currently, there are many programs under samples/bpf to test the
+>> > various functionality of BPF that have been developed for a long time.
+>> > However, the kernel (BPF) has changed a lot compared to the 2016 when
+>> > some of these test programs were first introduced.
+>> >
+>> > Therefore, some of these programs use the deprecated function of BPF,
+>> > and some programs no longer work normally due to changes in the API.
+>> >
+>> > To list some of the kernel changes that this patch set is focusing on,
+>> > - legacy BPF map declaration syntax support had been dropped [1]
+>> > - bpf_trace_printk() always append newline at the end [2]
+>> > - deprecated styled BPF section header (bpf_load style) [3]
+>> > - urandom_read tracepoint is removed (used for testing overhead) [4]
+>> > - ping sends packet with SOCK_DGRAM instead of SOCK_RAW [5]*
+>> > - use "vmlinux.h" instead of including individual headers
+>> >
+>> > In addition to this, this patchset tries to modernize the existing
+>> > testing scripts a bit. And for network-related testing programs,
+>> > a separate header file was created and applied. (To use the
+>> > Endianness conversion function from xdp_sample and bunch of constants)
+>>
+>> Nice set of cleanups. Applied.
+>> As a follow up could you convert some of them to proper selftests/bpf ?
+>> Unfortunately samples/bpf will keep bit rotting despite your herculean efforts.
+>
+> I really appreciate for your compliment!
+> I'll try to convert the existing sample to selftest in the next patch.
 
-diff --git a/tools/testing/selftests/bpf/verifier/sleepable.c b/tools/testing/selftests/bpf/verifier/sleepable.c
-new file mode 100644
-index 000000000000..4248c3326b89
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/sleepable.c
-@@ -0,0 +1,91 @@
-+{
-+	"sleepable fentry accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_FENTRY,
-+	.kfunc = "bpf_fentry_test1",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable fexit accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_FENTRY,
-+	.kfunc = "bpf_fentry_test1",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable fmod_ret accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_MODIFY_RETURN,
-+	.kfunc = "bpf_fentry_test1",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable iter accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_ITER,
-+	.kfunc = "task",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable lsm accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_LSM,
-+	.kfunc = "bpf",
-+	.expected_attach_type = BPF_LSM_MAC,
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable kprobe accept",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_KPROBE,
-+	.kfunc = "bpf_fentry_test1",
-+	.result = ACCEPT,
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
-+{
-+	"sleepable raw tracepoint reject",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_RAW_TP,
-+	.kfunc = "sched_switch",
-+	.result = REJECT,
-+	.errstr = "Only fentry/fexit/fmod_ret, lsm, iter and kprobe/uprobe programs can be sleepable",
-+	.flags = BPF_F_SLEEPABLE,
-+	.runs = -1,
-+},
--- 
-2.39.0
+Maybe this is a good time to mention that we recently ported some of the
+XDP utilities from samples/bpf to xdp-tools, in the form of the
+'xdp-bench' utility:
+https://github.com/xdp-project/xdp-tools/tree/master/xdp-bench
 
+It's basically a combination of all the xdp_redirect* samples, but also
+includes the functionality from the xdp_rxq_info sample program (i.e.,
+the ability to monitor RXQs and use other return codes).
+
+I'm planning to submit a patch to remove those utilities from
+samples/bpf after we tag the next release of xdp-tools (have one or two
+outstanding issues to clear before we do that), but wanted to give you a
+head's up so you don't spend any time on those particular utilities when
+you're cleaning up samples :)
+
+-Toke
