@@ -2,92 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E97D266B461
-	for <lists+bpf@lfdr.de>; Sun, 15 Jan 2023 23:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F5F66B51E
+	for <lists+bpf@lfdr.de>; Mon, 16 Jan 2023 02:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbjAOWwF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 15 Jan 2023 17:52:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
+        id S231391AbjAPBBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 15 Jan 2023 20:01:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbjAOWwE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 15 Jan 2023 17:52:04 -0500
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114091E9C3
-        for <bpf@vger.kernel.org>; Sun, 15 Jan 2023 14:52:02 -0800 (PST)
-Message-ID: <bfa2b221-9ed7-2791-08e2-2e5b29e21dee@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1673823121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k+/+Dl/ffhAYQAOWMtWO5yTqV8lc0WJllAA0Smoo7zw=;
-        b=LNtnvL87cLn7kMKovy1vFVRkJ1awBCS8NeAHsj4s6r5DhoOAoEFp+t7WR995e4u+9kWyf2
-        KGsGTjPMBMPML8VIJ3HeIxhU9ACC+ZMwKYbe5vmYoqPxcVWaJN6p4Ed//D2Wkr6mrLPdJW
-        opdG8BlfCg2GpP3gvoj4BAeeVtam+nQ=
-Date:   Sun, 15 Jan 2023 14:51:47 -0800
-MIME-Version: 1.0
-Subject: Re: [bpf-next v5 3/3] bpf: hash map, suppress false lockdep warning
-Content-Language: en-US
-To:     Tonghao Zhang <tong@infragraf.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S231630AbjAPBB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 15 Jan 2023 20:01:29 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EACA279
+        for <bpf@vger.kernel.org>; Sun, 15 Jan 2023 17:01:27 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-4597b0ff5e9so286757727b3.10
+        for <bpf@vger.kernel.org>; Sun, 15 Jan 2023 17:01:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=U8pQIe3b3eDqKtcKxZCuszKwm9/MxIa48mrJzbJLsxM=;
+        b=CtusI77hVYkkSpzCIWPeF+5W3whQRlq36FI4PV11OBIlbXcN+zCYP3yaWmsk7Vd1nu
+         b+ML0FY6BsokaJuKNlmYiyXq4NV8XuKYSukBibTNcz6C6JUEnfg+Y3P//VQOixX9oICk
+         jlqyXPcAodOswE8wE4Emco5exeD3Ty2q/8x8oFS1zS7OkEIAGrgxfg4QRW3vJ2DnIh7P
+         DRMnFXtt8XdFejSm7KgaloK3hEX4FNwXVynqnEIE6rwtR51hoErq0b/Ia3xyEv0Z9VJJ
+         nr5LIzQKEk7QfCEQJq2K2IYTMh/5jqks3aHIZlB2qccA54ells4wK0NTvWguNUDhWnlH
+         rcjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=U8pQIe3b3eDqKtcKxZCuszKwm9/MxIa48mrJzbJLsxM=;
+        b=UKdRiok6coIbS2pikEHjgHSwEut0ItVBtuXC1s+rDkoP+KkhHFzZLAUsZXgqO8VdMq
+         ca0lDuIBYj7x0xKurHzaEqusRo6M7lNC9G9u9tKWJfJqCD7TboyzqABtTs5cHv+6tkAm
+         8chiCK/I4525uHFonMDuD1f1P5oZ3gIoE2Ir486qzIyVfGG85lZ14VhjJvyy857StwBJ
+         zpUgKFEkRee8H26XCh1NH2OFdMYFaY7KbGpM7fUhWyFH2Gli3MRSyhQNaA+H0WS+28nL
+         oQdCOLDdzeHGhZzj/jdQWDlex+IyXh/TSW7ytFnul/jw+mq9ELoSuw/BnL+uuLTDt4XV
+         1B+Q==
+X-Gm-Message-State: AFqh2kp7cYo1kfDdMzCutlGjbCLMjpzMAjAYr3twJ+73bGjRODhixyi8
+        6Dr04S1MSWf4owknHT6nrxrTG0McpdoJ
+X-Google-Smtp-Source: AMrXdXujkx7N4RtyNWtiCeKOl5a/F0OWSBlmlkj8qlxnt3ts2/0if1/DCzxf7WApBksRDBZKcdHp8F/5Miid
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:79e:5e8e:382c:e7ce])
+ (user=irogers job=sendgmr) by 2002:a81:a513:0:b0:4b5:55fb:6cbc with SMTP id
+ u19-20020a81a513000000b004b555fb6cbcmr4181643ywg.10.1673830886744; Sun, 15
+ Jan 2023 17:01:26 -0800 (PST)
+Date:   Sun, 15 Jan 2023 17:01:12 -0800
+Message-Id: <20230116010115.490713-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
+Subject: [PATCH v2 0/3]  Assume libbpf 1.0+
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andres Freund <andres@anarazel.de>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Christy Lee <christylee@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org
-References: <20230111092903.92389-1-tong@infragraf.org>
- <20230111092903.92389-3-tong@infragraf.org>
- <7e6d02ea-f9f7-2d09-bf10-ccd41b16a671@linux.dev>
- <EE4608EF-84F5-4E4C-967F-37B96D680D2E@infragraf.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <EE4608EF-84F5-4E4C-967F-37B96D680D2E@infragraf.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/13/23 1:15 AM, Tonghao Zhang wrote:
-> 
-> 
->> On Jan 13, 2023, at 9:53 AM, Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 1/11/23 1:29 AM, tong@infragraf.org wrote:
->>> +	/*
->>> +	 * The lock may be taken in both NMI and non-NMI contexts.
->>> +	 * There is a false lockdep warning (inconsistent lock state),
->>> +	 * if lockdep enabled. The potential deadlock happens when the
->>> +	 * lock is contended from the same cpu. map_locked rejects
->>> +	 * concurrent access to the same bucket from the same CPU.
->>> +	 * When the lock is contended from a remote cpu, we would
->>> +	 * like the remote cpu to spin and wait, instead of giving
->>> +	 * up immediately. As this gives better throughput. So replacing
->>> +	 * the current raw_spin_lock_irqsave() with trylock sacrifices
->>> +	 * this performance gain. atomic map_locked is necessary.
->>> +	 * lockdep_off is invoked temporarily to fix the false warning.
->>> +	 */
->>> +	lockdep_off();
->>>   	raw_spin_lock_irqsave(&b->raw_lock, flags);
->>> -	*pflags = flags;
->>> +	lockdep_on();
->>
->> I am not very sure about the lockdep_off/on. Other than the false warning when using the very same htab map by both NMI and non-NMI context, I think the lockdep will still be useful to catch other potential issues. The commit c50eb518e262 ("bpf: Use separate lockdep class for each hashtab") has already solved this false alarm when NMI happens on one map and non-NMI happens on another map.
->>
->> Alexei, what do you think? May be only land the patch 1 fix for now.
-> Hi Martin
-> Patch 2 is used for patch 1 to test whether there is a deadlock. We should apply this two patches.
+libbpf 1.0 was a major change in API. Perf has partially supported
+older libbpf's but an implementation may be:
+..
+       pr_err("%s: not support, update libbpf\n", __func__);
+       return -ENOTSUP;
+..
 
-It is too noisy for test_progs that developers routinely run. Lets continue to 
-explore other ways (or a different test) without this false positive splat. 
-Patch 1 was applied as already mentioned in the earlier reply.
+Rather than build a binary that would fail at runtime it is
+preferrential just to build libbpf statically and link against
+that. The static version is in the kernel tools tree and newer than
+1.0.
+
+These patches change the libbpf test to only pass when at least
+version 1.0 is installed, then remove the conditional build and
+feature logic.
+
+The issue is discussed here:
+https://lore.kernel.org/lkml/20230106151320.619514-1-irogers@google.com/
+perf bpf:
+
+A variant of this fix was added to Linux 6.2 in:
+"perf bpf: Avoid build breakage with libbpf < 0.8.0 + LIBBPF_DYNAMIC=1"
+https://lore.kernel.org/lkml/Y71+eh00Ju7WeEFX@kernel.org/
+This change goes further in removing logic that is now no longer
+necessary.
+
+v2. Rebase now that breakage fix patch is in linus/master.
+
+Ian Rogers (3):
+  tools build: Pass libbpf feature only if libbpf 1.0+
+  perf build: Remove libbpf pre-1.0 feature tests
+  perf bpf: Remove pre libbpf 1.0 conditional logic
+
+ tools/build/feature/Makefile                  |  7 --
+ .../feature/test-libbpf-bpf_map_create.c      |  8 ---
+ .../test-libbpf-bpf_object__next_map.c        |  8 ---
+ .../test-libbpf-bpf_object__next_program.c    |  8 ---
+ .../build/feature/test-libbpf-bpf_prog_load.c |  9 ---
+ .../test-libbpf-bpf_program__set_insns.c      |  8 ---
+ .../test-libbpf-btf__load_from_kernel_by_id.c |  8 ---
+ .../build/feature/test-libbpf-btf__raw_data.c |  8 ---
+ tools/build/feature/test-libbpf.c             |  4 ++
+ tools/perf/Makefile.config                    | 39 +----------
+ tools/perf/util/bpf-event.c                   | 66 -------------------
+ tools/perf/util/bpf-loader.c                  | 18 -----
+ tools/perf/util/bpf_counter.c                 | 18 -----
+ 13 files changed, 5 insertions(+), 204 deletions(-)
+ delete mode 100644 tools/build/feature/test-libbpf-bpf_map_create.c
+ delete mode 100644 tools/build/feature/test-libbpf-bpf_object__next_map.c
+ delete mode 100644 tools/build/feature/test-libbpf-bpf_object__next_program.c
+ delete mode 100644 tools/build/feature/test-libbpf-bpf_prog_load.c
+ delete mode 100644 tools/build/feature/test-libbpf-bpf_program__set_insns.c
+ delete mode 100644 tools/build/feature/test-libbpf-btf__load_from_kernel_by_id.c
+ delete mode 100644 tools/build/feature/test-libbpf-btf__raw_data.c
+
+-- 
+2.39.0.314.g84b9a713c41-goog
+
