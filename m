@@ -2,51 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9215F66D571
-	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 05:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD07766D59D
+	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 06:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbjAQEuh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Jan 2023 23:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
+        id S235368AbjAQFbJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 17 Jan 2023 00:31:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235192AbjAQEuf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Jan 2023 23:50:35 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.221.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1156B234FB
-        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 20:50:29 -0800 (PST)
-X-QQ-mid: bizesmtp82t1673931018twi1c3g3
-Received: from localhost.localdomain ( [1.202.165.115])
+        with ESMTP id S235362AbjAQFbI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 00:31:08 -0500
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.67.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCEB2659E
+        for <bpf@vger.kernel.org>; Mon, 16 Jan 2023 21:31:06 -0800 (PST)
+X-QQ-mid: bizesmtp63t1673933452t22prkyo
+Received: from smtpclient.apple ( [1.202.165.115])
         by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 17 Jan 2023 12:50:14 +0800 (CST)
-X-QQ-SSF: 01000000000000709000000A0000000
-X-QQ-FEAT: QityeSR92A2LRM9HbIp6yqtbbENnQhbRc6Lqy6GH6yiTMl5HRRGRVKcS2bdJf
-        Dkximu1JZ/83DtHNYl6Q0qJRfT7fVgBFlYgu5xuB00aeHp2KOnPguk4xldRcZB1E9e4sfiv
-        wcfGrN83o6wDpvS+w/8bXxgZ08tqyI1ZfRulpuCUKTYSG6JMXOgRJi34DnSZocDLX7Z18jM
-        zge5ClwmPZx72OLLSVINiG72FCYWdcV5Cnz0v3M057jpcfWUOHw9BsT2SLUswXhMxn/p85w
-        2sYav/k701dpt0tv0WluNHBgxaDOodCNNpsUdA5Pv49hqXOQgK7uE1oIJksgnu5db3FOpXq
-        lh8cRk82tqE4HrzxusCxpsm8bTWsvFnKTxcVWakXycx03WgRVE=
+        id ; Tue, 17 Jan 2023 13:30:49 +0800 (CST)
+X-QQ-SSF: 00000000000000709000000A0000000
+X-QQ-FEAT: AC2Z5zz8gBT5NrlZsUHrGX7M6x4b6w7laLHTaGrrBF0cvQnK+h1mht/fhRhSz
+        1fICMuYxXFczf/h6V+62SQezYwdekoTVCEs41JyNQk2aRdNP/SQ+pr+TwXxBucFOaTo9KDm
+        KeG+KNgO43dfcagWaZA2fZQHokfiuaYC3+cgrPVaT1zBQxlmaEZ20ky8h8jHbtyqh06J6A8
+        SuMuNlSvWtc/bkoYYk8F1TAtRXBMn+SRMIZJq8KrMGtrSt3zAmaSQFz7mvrdGMJtsCRy4vq
+        ajkUAeM4j5IzVSIWdgCiDJQ+vm3Km2MoX8V5DPPwuD5oGSAegbggtiSk41aBSdUrOwNURBz
+        jly3lQb6uaae1MUuE8uC2LohNgljCe+zM7/FZWTxFLtBYkFFYrITSDRYxVuW1sz84gSWReP
 X-QQ-GoodBg: 0
-From:   tong@infragraf.org
-To:     bpf@vger.kernel.org
-Cc:     Tonghao Zhang <tong@infragraf.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [bpf-next v2] bpf: drop deprecated bpf_jit_enable == 2
+From:   Tonghao Zhang <tong@infragraf.org>
+In-Reply-To: <5836b464-290e-203f-00f2-fc6632c9f570@csgroup.eu>
+Date:   Tue, 17 Jan 2023 13:30:49 +0800
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.or" 
+        <linux-arm-kernel@lists.infradead.or>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        Hao Luo <haoluo@google.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: [bpf-next v1 2/2] bpftool: profile online CPUs instead of possible
-Date:   Tue, 17 Jan 2023 12:49:02 +0800
-Message-Id: <20230117044902.98938-2-tong@infragraf.org>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20230117044902.98938-1-tong@infragraf.org>
-References: <20230117044902.98938-1-tong@infragraf.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Jiri Olsa <jolsa@kernel.org>, Hou Tao <houtao1@huawei.com>,
+        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <147A796D-12C0-482F-B48A-16E67120622B@infragraf.org>
+References: <20230105030614.26842-1-tong@infragraf.org>
+ <ea7673e1-40ec-18be-af89-5f4fd0f71742@csgroup.eu>
+ <71c83f39-f85f-d990-95b7-ab6068839e6c@iogearbox.net>
+ <5836b464-290e-203f-00f2-fc6632c9f570@csgroup.eu>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Borkmann <daniel@iogearbox.net>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
@@ -57,69 +74,113 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Tonghao Zhang <tong@infragraf.org>
 
-The number of online cpu may be not equal to possible cpu.
-bpftool prog profile, can not create pmu event on possible
-but not online cpu.
 
-$ dmidecode -s system-product-name
-PowerEdge R620
-$ cat /sys/devices/system/cpu/online
-0-31
-$ cat /sys/devices/system/cpu/possible
-0-47
-
-To fix this issue, use online cpu instead of possible, to
-create perf event and other resource.
-
-Signed-off-by: Tonghao Zhang <tong@infragraf.org>
-Cc: Quentin Monnet <quentin@isovalent.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
----
- tools/bpf/bpftool/prog.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index cfc9fdc1e863..08b352dd799e 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -2056,6 +2056,7 @@ static int profile_parse_metrics(int argc, char **argv)
- 
- static void profile_read_values(struct profiler_bpf *obj)
- {
-+	__u32 possible_cpus = libbpf_num_possible_cpus();
- 	__u32 m, cpu, num_cpu = obj->rodata->num_cpu;
- 	int reading_map_fd, count_map_fd;
- 	__u64 counts[num_cpu];
-@@ -2080,7 +2081,7 @@ static void profile_read_values(struct profiler_bpf *obj)
- 		profile_total_count += counts[cpu];
- 
- 	for (m = 0; m < ARRAY_SIZE(metrics); m++) {
--		struct bpf_perf_event_value values[num_cpu];
-+		struct bpf_perf_event_value values[possible_cpus];
- 
- 		if (!metrics[m].selected)
- 			continue;
-@@ -2321,7 +2322,7 @@ static int do_profile(int argc, char **argv)
- 	if (num_metric <= 0)
- 		goto out;
- 
--	num_cpu = libbpf_num_possible_cpus();
-+	num_cpu = libbpf_num_online_cpus();
- 	if (num_cpu <= 0) {
- 		p_err("failed to identify number of CPUs");
- 		goto out;
--- 
-2.27.0
+> On Jan 9, 2023, at 4:15 PM, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+> 
+> 
+> 
+> Le 06/01/2023 à 16:37, Daniel Borkmann a écrit :
+>> On 1/5/23 6:53 PM, Christophe Leroy wrote:
+>>> Le 05/01/2023 à 04:06, tong@infragraf.org a écrit :
+>>>> From: Tonghao Zhang <tong@infragraf.org>
+>>>> 
+>>>> The x86_64 can't dump the valid insn in this way. A test BPF prog
+>>>> which include subprog:
+>>>> 
+>>>> $ llvm-objdump -d subprog.o
+>>>> Disassembly of section .text:
+>>>> 0000000000000000 <subprog>:
+>>>>          0:       18 01 00 00 73 75 62 70 00 00 00 00 72 6f 67 00 r1 
+>>>> = 29114459903653235 ll
+>>>>          2:       7b 1a f8 ff 00 00 00 00 *(u64 *)(r10 - 8) = r1
+>>>>          3:       bf a1 00 00 00 00 00 00 r1 = r10
+>>>>          4:       07 01 00 00 f8 ff ff ff r1 += -8
+>>>>          5:       b7 02 00 00 08 00 00 00 r2 = 8
+>>>>          6:       85 00 00 00 06 00 00 00 call 6
+>>>>          7:       95 00 00 00 00 00 00 00 exit
+>>>> Disassembly of section raw_tp/sys_enter:
+>>>> 0000000000000000 <entry>:
+>>>>          0:       85 10 00 00 ff ff ff ff call -1
+>>>>          1:       b7 00 00 00 00 00 00 00 r0 = 0
+>>>>          2:       95 00 00 00 00 00 00 00 exit
+>>>> 
+>>>> kernel print message:
+>>>> [  580.775387] flen=8 proglen=51 pass=3 image=ffffffffa000c20c 
+>>>> from=kprobe-load pid=1643
+>>>> [  580.777236] JIT code: 00000000: cc cc cc cc cc cc cc cc cc cc cc 
+>>>> cc cc cc cc cc
+>>>> [  580.779037] JIT code: 00000010: cc cc cc cc cc cc cc cc cc cc cc 
+>>>> cc cc cc cc cc
+>>>> [  580.780767] JIT code: 00000020: cc cc cc cc cc cc cc cc cc cc cc 
+>>>> cc cc cc cc cc
+>>>> [  580.782568] JIT code: 00000030: cc cc cc
+>>>> 
+>>>> $ bpf_jit_disasm
+>>>> 51 bytes emitted from JIT compiler (pass:3, flen:8)
+>>>> ffffffffa000c20c + <x>:
+>>>>      0:   int3
+>>>>      1:   int3
+>>>>      2:   int3
+>>>>      3:   int3
+>>>>      4:   int3
+>>>>      5:   int3
+>>>>      ...
+>>>> 
+>>>> Until bpf_jit_binary_pack_finalize is invoked, we copy rw_header to 
+>>>> header
+>>>> and then image/insn is valid. BTW, we can use the "bpftool prog dump" 
+>>>> JITed instructions.
+>>> 
+>>> NACK.
+>>> 
+>>> Because the feature is buggy on x86_64, you remove it for all
+>>> architectures ?
+>>> 
+>>> On powerpc bpf_jit_enable == 2 works and is very usefull.
+>>> 
+>>> Last time I tried to use bpftool on powerpc/32 it didn't work. I don't
+>>> remember the details, I think it was an issue with endianess. Maybe it
+>>> is fixed now, but it needs to be verified.
+>>> 
+>>> So please, before removing a working and usefull feature, make sure
+>>> there is an alternative available to it for all architectures in all
+>>> configurations.
+>>> 
+>>> Also, I don't think bpftool is usable to dump kernel BPF selftests.
+>>> That's vital when a selftest fails if you want to have a chance to
+>>> understand why it fails.
+>> 
+>> If this is actively used by JIT developers and considered useful, I'd be
+>> ok to leave it for the time being. Overall goal is to reach feature parity
+>> among (at least major arch) JITs and not just have most functionality only
+>> available on x86-64 JIT. Could you however check what is not working with
+>> bpftool on powerpc/32? Perhaps it's not too much effort to just fix it,
+>> but details would be useful otherwise 'it didn't work' is too fuzzy.
+> 
+> Sure I will try to test bpftool again in the coming days.
+> 
+> Previous discussion about that subject is here: 
+> https://patchwork.kernel.org/project/linux-riscv/patch/20210415093250.3391257-1-Jianlin.Lv@arm.com/#24176847=
+Hi Christophe
+Any progress? We discuss to deprecate the bpf_jit_enable == 2 in 2021, but bpftool can not run on powerpc.
+Now can we fix this issue? 
+> 
+>> 
+>> Also, with regards to the last statement that bpftool is not usable to
+>> dump kernel BPF selftests. Could you elaborate some more? I haven't used
+>> bpf_jit_enable == 2 in a long time and for debugging always relied on
+>> bpftool to dump xlated insns or JIT. Or do you mean by BPF selftests
+>> the test_bpf.ko module? Given it has a big batch with kernel-only tests,
+>> there I can see it's probably still useful.
+> 
+> Yes I mean test_bpf.ko
+> 
+> I used it as the test basis when I implemented eBPF for powerpc/32. And 
+> not so long ago it helped decover and fix a bug, see 
+> https://github.com/torvalds/linux/commit/89d21e259a94f7d5582ec675aa445f5a79f347e4
+> 
+>> 
+>> Cheers,
+>> Daniel
 
