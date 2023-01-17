@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 165C1670B35
-	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 23:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43041670B15
+	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 23:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbjAQWGd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 17:06:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
+        id S229882AbjAQWDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 17:03:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbjAQWFh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 17:05:37 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705D53A858
-        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 12:33:15 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id bj3so30397798pjb.0
-        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 12:33:15 -0800 (PST)
+        with ESMTP id S229750AbjAQWB5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 17:01:57 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4348F3A86B
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 12:33:20 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id x2-20020a17090a46c200b002295ca9855aso52042pjg.2
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 12:33:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mlmrr+LmPgwagRvDw6ZkuRXoRGz9oMUsyD3oXbejChs=;
-        b=MRJjKilPfgr+ZPCumKxddcm7V4VVsiT6mpCnCuE8nb3e77vnYMwr9KdrpI+NQ8fpUo
-         TmxpbXCur92dnSiGnfayjrL/bbf/Dc5EQXEl7fhe27DtOrtS+1abOe6VzsYw3ukTjH1b
-         8vFdik/6Aa1zPat9RAKlH/zQ0twaRskKejqq6M2Fy9TF9a1CaETxYppOeCiYwfHxeUH3
-         lNzPjrwu6gjPgpUQ/sSZDDKVk6s2OKHzdOEVslwYLQ73GUmH26Lq4LBCfVsEm7oJCpBY
-         7fBGQEjNx8QgLJeWoQYbfBixOobxfseV6VmMRuFn7x17mhfhBl2BL3zNttyU28wj+3Ik
-         wm9w==
+        bh=Xlv20x7rc2LFeLXWCgfj7A8D+eK5VfQcM6xak5NBrHI=;
+        b=A8HZXITwr1t8gOcv/TDVWtSCFBu7YyUKhYOkW6CnEb2M33k8a3Z2YMXnJBARTJ/qd9
+         2bgRfw1DXbl8HO+VYQ+6JQEDXveXkTHjc54I9Y4ZfD3703hAhytKIvbgWx3rcJur3K+0
+         GZp+Wn3orFuxgN6Ysw9OV6BkddjMcfdec6x32QpFSVej4ly0r0uHC9Pd0Y+p8TcCfRa1
+         I+LzMAkxAl0yZkM4GwZ28C+hSbHWhxYShYDo/C3vxE0Nrb/BQxVVJXlbZUeOAOqyV30W
+         4dVDTKfmhT06qr/yR2e1yqDZo1O6UlksagiShSQJKfgLcS8sy1fHSEQvgAqA54WWWEgj
+         TQNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Mlmrr+LmPgwagRvDw6ZkuRXoRGz9oMUsyD3oXbejChs=;
-        b=DZ9Pqaf8NNtIG7UGNn08qmdrdeMNQFxNDHtQN2ahnYtlOKUvP1uRsevH6RFlnh+Xea
-         X2G1ldWwGHXCuuxCynJaAn8l0h6xtmoebusXlpRKz4BuMJMgBrv8neqzQEI9CzTtNZgh
-         Yz5gZfQhnEQYSrquU2+6kmHu2ELr6swgXuObaPeYfuDLdU7xwv8dFC4jOEzp05FbLerv
-         X/HsUP1Bjky5CJraIKq4IOuB+cmB8Sg6+memkSZL9PKNOnDiMcqOkZI3mI/3uorN41Ji
-         G17ADiwLg3QmO4fUy4v2MGbEvTkfwS+HPcPf28pIyG7dEQbowJq0QAWibsRG28lFrdlA
-         cgug==
-X-Gm-Message-State: AFqh2kp/b6LYz0O8zG0BM9/o57dFTRAVu+Edp1VAJN+YLYKDdy3Gt46y
-        6YVeBWzYbMME/GH2OwzakHnCMsylkvM2MSU98V922g==
-X-Google-Smtp-Source: AMrXdXssDknjwW3ny/3IGkPjagEOf8+iy4LKiD9WQEExaRvgg4DU7xHizVGuIhVNaY0ggX/nRj2yT7xUafHNfzjZUvg=
-X-Received: by 2002:a17:902:b181:b0:193:20ba:e04d with SMTP id
- s1-20020a170902b18100b0019320bae04dmr346111plr.93.1673987594634; Tue, 17 Jan
- 2023 12:33:14 -0800 (PST)
+        bh=Xlv20x7rc2LFeLXWCgfj7A8D+eK5VfQcM6xak5NBrHI=;
+        b=EG/QZ0/WfapjV6/3i85Zu2x3wG60n1uesTAjT8dw6+ycXCNXIuSlcLB7yyRqgfFUep
+         HIn+5GM9t6AV1wOJaZKOBvriVxIEkp2AIvL7sExYjXxdX+Y2PWjDFk8uCUmFEsIcotbD
+         oIFZaim3eBBw3PNAjHsJ66a69gIpE8BKZDELbmrephV23N9cZsVWtpexmXb/Z96604KY
+         bwMv5ouDfjEZT/9kEzxqsVRD1rj3HIpWjhZeQwZ+t8Q2obOTOTvPCBjep1PUZhI61blK
+         pZ0kBFriYdy+RESWBFsL6hp8FWRW+TeJxbwQ0DPpGWSEasR4UG+O/pgmhAkZ39Xb3GzF
+         xp4A==
+X-Gm-Message-State: AFqh2krOC7B3E0Onu4RyTMLxVnR148CgpdWSZ6+Hn4HUiq2JBg+Zc9jF
+        mvsSPkLkbfVkAReb2sz/4D6iGYP5UCOCMpeAwrJFTQ==
+X-Google-Smtp-Source: AMrXdXs31p2u7HdHURCDmgZUyiEEHOQgVtrLzvGkLz9p2WGBfGTt92nBPq2q2xMgxfh0i8SA4nzOD1q+h8+gor/tVSU=
+X-Received: by 2002:a17:902:c506:b0:194:b553:234d with SMTP id
+ o6-20020a170902c50600b00194b553234dmr76045plx.62.1673987599489; Tue, 17 Jan
+ 2023 12:33:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20230112003230.3779451-1-sdf@google.com> <20230112003230.3779451-11-sdf@google.com>
- <a5ce7ac4-7901-6146-2c2a-5b4958c14e11@redhat.com>
-In-Reply-To: <a5ce7ac4-7901-6146-2c2a-5b4958c14e11@redhat.com>
+References: <20230112003230.3779451-1-sdf@google.com> <20230112003230.3779451-2-sdf@google.com>
+ <affeb1e3-69e6-9783-0012-6d917972ba30@redhat.com>
+In-Reply-To: <affeb1e3-69e6-9783-0012-6d917972ba30@redhat.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 17 Jan 2023 12:33:02 -0800
-Message-ID: <CAKH8qBszqz7Qi=E0=gsF0KDHqw4+QEWYyQvqRyS2_E_UsjNKvw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 10/17] veth: Support RX XDP metadata
+Date:   Tue, 17 Jan 2023 12:33:07 -0800
+Message-ID: <CAKH8qBuE5ipcncQ+=su_Ds1EHm5gUMG_od-+eqJHkuiV-Q6RhQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 01/17] bpf: Document XDP RX metadata
 To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
 Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
@@ -65,7 +65,7 @@ Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
         Alexander Lobakin <alexandr.lobakin@intel.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
+        netdev@vger.kernel.org, David Vernet <void@manifault.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -78,43 +78,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 16, 2023 at 8:21 AM Jesper Dangaard Brouer
+On Mon, Jan 16, 2023 at 5:09 AM Jesper Dangaard Brouer
 <jbrouer@redhat.com> wrote:
 >
 >
 >
 > On 12/01/2023 01.32, Stanislav Fomichev wrote:
-> > The goal is to enable end-to-end testing of the metadata for AF_XDP.
->
-> For me the goal with veth goes beyond *testing*.
->
-> This patch ignores the xdp_frame case.  I'm not blocking this patch, but
-> I'm saying we need to make sure there is a way forward for accessing
-> XDP-hints when handling redirected xdp_frame's.
-
-Sure, let's work towards getting that other part addressed!
-
-> I have two use-cases we should cover (as future work).
->
-> (#1) We have customers that want to redirect from physical NIC hardware
-> into containers, and then have the veth XDP-prog (selectively) redirect
-> into an AF_XDP socket (when matching fastpath packets).  Here they
-> (minimum) want access to the XDP hint info on HW checksum.
->
-> (#2) Both veth and cpumap can create SKBs based on xdp_frame's.  Here it
-> is essential to get HW checksum and HW hash when creating these SKBs
-> (else netstack have to do expensive csum calc and parsing in
-> flow-dissector).
-
-From my PoW, I'd probably have to look into the TX side first (tx
-timestamp) before looking into xdp->skb path. So if somebody on your
-side has cycles, feel free to drive this effort. I'm happy to provide
-reviews/comments/etc. I think we've discussed in the past that this
-will most likely look like another set of "export" kfuncs?
-
-We can start with extending new
-Documentation/networking/xdp-rx-metadata.rst with a high-level design.
-
+> > Document all current use-cases and assumptions.
+> >
 > > Cc: John Fastabend <john.fastabend@gmail.com>
 > > Cc: David Ahern <dsahern@gmail.com>
 > > Cc: Martin KaFai Lau <martin.lau@linux.dev>
@@ -127,104 +98,203 @@ Documentation/networking/xdp-rx-metadata.rst with a high-level design.
 > > Cc: Maryam Tahhan <mtahhan@redhat.com>
 > > Cc: xdp-hints@xdp-project.net
 > > Cc: netdev@vger.kernel.org
+> > Acked-by: David Vernet <void@manifault.com>
 > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > > ---
-> >   drivers/net/veth.c | 31 +++++++++++++++++++++++++++++++
-> >   1 file changed, 31 insertions(+)
+> >   Documentation/networking/index.rst           |   1 +
+> >   Documentation/networking/xdp-rx-metadata.rst | 108 +++++++++++++++++++
+> >   2 files changed, 109 insertions(+)
+> >   create mode 100644 Documentation/networking/xdp-rx-metadata.rst
 > >
-> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> > index 70f50602287a..ba3e05832843 100644
-> > --- a/drivers/net/veth.c
-> > +++ b/drivers/net/veth.c
-> > @@ -118,6 +118,7 @@ static struct {
+> > diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
+> > index 4f2d1f682a18..4ddcae33c336 100644
+> > --- a/Documentation/networking/index.rst
+> > +++ b/Documentation/networking/index.rst
+> > @@ -120,6 +120,7 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
+> >      xfrm_proc
+> >      xfrm_sync
+> >      xfrm_sysctl
+> > +   xdp-rx-metadata
 > >
-> >   struct veth_xdp_buff {
-> >       struct xdp_buff xdp;
-> > +     struct sk_buff *skb;
-> >   };
+> >   .. only::  subproject and html
 > >
-> >   static int veth_get_link_ksettings(struct net_device *dev,
-> > @@ -602,6 +603,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
-> >
-> >               xdp_convert_frame_to_buff(frame, xdp);
-> >               xdp->rxq = &rq->xdp_rxq;
-> > +             vxbuf.skb = NULL;
-> >
-> >               act = bpf_prog_run_xdp(xdp_prog, xdp);
-> >
-> > @@ -823,6 +825,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
-> >       __skb_push(skb, skb->data - skb_mac_header(skb));
-> >       if (veth_convert_skb_to_xdp_buff(rq, xdp, &skb))
-> >               goto drop;
-> > +     vxbuf.skb = skb;
-> >
-> >       orig_data = xdp->data;
-> >       orig_data_end = xdp->data_end;
-> > @@ -1602,6 +1605,28 @@ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
-> >       }
-> >   }
-> >
-> > +static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
-> > +{
-> > +     struct veth_xdp_buff *_ctx = (void *)ctx;
+> > diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
+> > new file mode 100644
+> > index 000000000000..b6c8c77937c4
+> > --- /dev/null
+> > +++ b/Documentation/networking/xdp-rx-metadata.rst
+> > @@ -0,0 +1,108 @@
+> > +===============
+> > +XDP RX Metadata
+> > +===============
 > > +
-> > +     if (!_ctx->skb)
-> > +             return -EOPNOTSUPP;
+> > +This document describes how an eXpress Data Path (XDP) program can access
+> > +hardware metadata related to a packet using a set of helper functions,
+> > +and how it can pass that metadata on to other consumers.
 > > +
-> > +     *timestamp = skb_hwtstamps(_ctx->skb)->hwtstamp;
+> > +General Design
+> > +==============
+> > +
+> > +XDP has access to a set of kfuncs to manipulate the metadata in an XDP frame.
+> > +Every device driver that wishes to expose additional packet metadata can
+> > +implement these kfuncs. The set of kfuncs is declared in ``include/net/xdp.h``
+> > +via ``XDP_METADATA_KFUNC_xxx``.
+> > +
+> > +Currently, the following kfuncs are supported. In the future, as more
+> > +metadata is supported, this set will grow:
+> > +
+> > +.. kernel-doc:: net/core/xdp.c
+> > +   :identifiers: bpf_xdp_metadata_rx_timestamp bpf_xdp_metadata_rx_hash
+> > +
+> > +An XDP program can use these kfuncs to read the metadata into stack
+> > +variables for its own consumption. Or, to pass the metadata on to other
+> > +consumers, an XDP program can store it into the metadata area carried
+> > +ahead of the packet.
+> > +
+> > +Not all kfuncs have to be implemented by the device driver; when not
+> > +implemented, the default ones that return ``-EOPNOTSUPP`` will be used.
+> > +
+> > +Within an XDP frame, the metadata layout is as follows::
 >
-> The SKB stores this skb_hwtstamps() in skb_shared_info memory area.
-> This memory area is actually also available to xdp_frames.  Thus, we
-> could store the HW rx_timestamp in same location for redirected
-> xdp_frames.  This could make code path sharing possible between SKB vs
-> xdp_frame in veth.
+> Below diagram describes XDP buff (xdp_buff), but text says 'XDP frame'.
+> So XDP frame isn't referring literally to xdp_frame, which I find
+> slightly confusing.
+> It is likely because I think too much about the code and the different
+> objects, xdp_frame, xdp_buff, xdp_md (xdp ctx seen be bpf-prog).
 >
-> This would also make it fast to "transfer" HW rx_timestamp when creating
-> an SKB from an xdp_frame, as data is already written in the correct place.
+> I tried to grep in the (recent added) bpf/xdp docs to see if there is a
+> definition of a XDP "packet" or "frame".  Nothing popped up, except that
+> Documentation/bpf/map_cpumap.rst talks about raw ``xdp_frame`` objects.
 >
-> Performance wise the down-side is that skb_shared_info memory area is in
-> a separate cacheline.  Thus, when no HW rx_timestamp is available, then
-> it is very expensive for a veth XDP bpf-prog to access this, just to get
-> a zero back.  Having an xdp_frame->flags bit that knows if HW
-> rx_timestamp have been stored, can mitigate this.
-
-That's one way to do it; although I'm not sure about the cases which
-don't use xdp_frame and use stack-allocated xdp_buff.
-
-> > +     return 0;
-> > +}
-> > +
-> > +static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
-> > +{
-> > +     struct veth_xdp_buff *_ctx = (void *)ctx;
-> > +
-> > +     if (!_ctx->skb)
-> > +             return -EOPNOTSUPP;
+> Perhaps we can improve this doc by calling out xdp_buff here, like:
 >
-> For xdp_frame case, I'm considering simply storing the u32 RX-hash in
-> struct xdp_frame.  This makes it easy to extract for xdp_frame to SKB
-> create use-case.
->
-> As have been mentioned before, the SKB also requires knowing the RSS
-> hash-type.  This HW hash-type actually contains a lot of information,
-> that today is lost when reduced to the SKB hash-type.  Due to
-> standardization from Microsoft, most HW provide info on (L3) IPv4 or
-> IPv6, and on (L4) TCP or UDP (and often SCTP).  Often hardware
-> descriptor also provide info on the header length.  Future work in this
-> area is exciting as we can speedup parsing of packets in XDP, if we can
-> get are more detailed HW info on hash "packet-type".
+>   Within an XDP frame, the metadata layout (accessed via ``xdp_buff``)
+> is as follows::
 
-Something like the version we've discussed a while back [0]?
-Seems workable overall if we remove it from the UAPI? (not everyone
-was happy about UAPI parts IIRC)
-
-0: https://lore.kernel.org/bpf/20221115030210.3159213-7-sdf@google.com/
-
+Sure, will amend!
 
 > > +
-> > +     *hash = skb_get_hash(_ctx->skb); > +    return 0;
-> > +}
+> > +  +----------+-----------------+------+
+> > +  | headroom | custom metadata | data |
+> > +  +----------+-----------------+------+
+> > +             ^                 ^
+> > +             |                 |
+> > +   xdp_buff->data_meta   xdp_buff->data
 > > +
+> > +An XDP program can store individual metadata items into this ``data_meta``
+> > +area in whichever format it chooses. Later consumers of the metadata
+> > +will have to agree on the format by some out of band contract (like for
+> > +the AF_XDP use case, see below).
+> > +
+> > +AF_XDP
+> > +======
+> > +
+> > +:doc:`af_xdp` use-case implies that there is a contract between the BPF
+> > +program that redirects XDP frames into the ``AF_XDP`` socket (``XSK``) and
+> > +the final consumer. Thus the BPF program manually allocates a fixed number of
+> > +bytes out of metadata via ``bpf_xdp_adjust_meta`` and calls a subset
+> > +of kfuncs to populate it. The userspace ``XSK`` consumer computes
+> > +``xsk_umem__get_data() - METADATA_SIZE`` to locate that metadata.
+> > +Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
+> > +``METADATA_SIZE`` is an application-specific constant.
+>
+> The main problem with AF_XDP and metadata is that, the AF_XDP descriptor
+> doesn't contain any info about the length METADATA_SIZE.
+>
+> The text does says this, but in a very convoluted way.
+> I think this challenge should be more clearly spelled out.
+>
+> (p.s. This was something that XDP-hints via BTF have a proposed solution
+> for)
+
+Any suggestions on how to clarify it better? I have two hints:
+1. ``METADATA_SIZE`` is an application-specific constant
+2. note missing ``data_meta`` pointer
+
+Do you prefer I also add a sentence where I spell it out more
+explicitly? Something like:
+
+Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
+``METADATA_SIZE`` is an application-specific constant (``AF_XDP``
+receive descriptor does _not_ explicitly carry the size of the
+metadata).
+
+> > +
+> > +Here is the ``AF_XDP`` consumer layout (note missing ``data_meta`` pointer)::
+>
+> The "note" also hint to this issue.
+
+This seems like an explicit design choice of the AF_XDP? In theory, I
+don't see why we can't have a v2 receive descriptor format where we
+return the size of the metadata?
+
+> > +
+> > +  +----------+-----------------+------+
+> > +  | headroom | custom metadata | data |
+> > +  +----------+-----------------+------+
+> > +                               ^
+> > +                               |
+> > +                        rx_desc->address
+> > +
+> > +XDP_PASS
+> > +========
+> > +
+> > +This is the path where the packets processed by the XDP program are passed
+> > +into the kernel. The kernel creates the ``skb`` out of the ``xdp_buff``
+> > +contents. Currently, every driver has custom kernel code to parse
+> > +the descriptors and populate ``skb`` metadata when doing this ``xdp_buff->skb``
+> > +conversion, and the XDP metadata is not used by the kernel when building
+> > +``skbs``. However, TC-BPF programs can access the XDP metadata area using
+> > +the ``data_meta`` pointer.
+> > +
+> > +In the future, we'd like to support a case where an XDP program
+> > +can override some of the metadata used for building ``skbs``.
+>
+> Happy this is mentioned as future work.
+
+As mentioned in a separate email, if you prefer to focus on that, feel
+free to drive it since I'm gonna look into the TX side first.
+
+> > +
+> > +bpf_redirect_map
+> > +================
+> > +
+> > +``bpf_redirect_map`` can redirect the frame to a different device.
+> > +Some devices (like virtual ethernet links) support running a second XDP
+> > +program after the redirect. However, the final consumer doesn't have
+> > +access to the original hardware descriptor and can't access any of
+> > +the original metadata. The same applies to XDP programs installed
+> > +into devmaps and cpumaps.
+> > +
+> > +This means that for redirected packets only custom metadata is
+> > +currently supported, which has to be prepared by the initial XDP program
+> > +before redirect. If the frame is eventually passed to the kernel, the
+> > +``skb`` created from such a frame won't have any hardware metadata populated
+> > +in its ``skb``. If such a packet is later redirected into an ``XSK``,
+> > +that will also only have access to the custom metadata.
+> > +
+>
+> Good that this is documented, but I hope we can fix/improve this as
+> future work.
+
+Definitely! Hopefully documenting it here acts as a sort-of TODO which
+we can eventually address. Maybe even starting with a section here on
+how it is supposed to work :-)
+
+
+> > +bpf_tail_call
+> > +=============
+> > +
+> > +Adding programs that access metadata kfuncs to the ``BPF_MAP_TYPE_PROG_ARRAY``
+> > +is currently not supported.
+> > +
+> > +Example
+> > +=======
+> > +
+> > +See ``tools/testing/selftests/bpf/progs/xdp_metadata.c`` and
+> > +``tools/testing/selftests/bpf/prog_tests/xdp_metadata.c`` for an example of
+> > +BPF program that handles XDP metadata.
+>
 >
 > --Jesper
 >
