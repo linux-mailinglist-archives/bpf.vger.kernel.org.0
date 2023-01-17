@@ -2,378 +2,317 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4442966DA54
-	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 10:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3A266DA55
+	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 10:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236109AbjAQJwo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 04:52:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
+        id S236011AbjAQJws (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 04:52:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236019AbjAQJwn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 04:52:43 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989FE2A9AB
-        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 01:52:40 -0800 (PST)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30H92rls023993;
-        Tue, 17 Jan 2023 09:51:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=o4kP+DIs7EUDO6dBqD1YhcerybZlwtCAUWxnCzqN8GE=;
- b=LvoOjwk3qXk1U8BftdpNREMJyFG06cJrwWVsUhnwKLL4tfO0G4cq7x7hTyTFcrDEMQP5
- hOlEkZCDzpw9ZDV+uWtGheYmgtqgLxJvt4NIFGQqoLfHqiV24l2B0sP7iC8OPC+GzWt4
- O4D/EEpWzVnAOBSxYYcROB6Ikzl4oft0Ytml2RuESx7/dLQ7eiD/l3BloGcHfcKCtr+3
- LdjkBaDDEQX+JXcmQp+9gh69Jmvpgn0ToKFaNFrnoleU5I9/5Y45bJb4Dej+1YDPmgMn
- v+ti29Zet74L3xNNzC7yXTJ/IPysEVjlDhhgedkE24NurRiOvQspk+EgwaFN2a/JGnXV AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3n5kcaqr0a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Jan 2023 09:51:44 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30H9m1an008033;
-        Tue, 17 Jan 2023 09:51:44 GMT
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3n5kcaqqyk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Jan 2023 09:51:43 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30GFTS35002145;
-        Tue, 17 Jan 2023 09:51:41 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma02fra.de.ibm.com (PPS) with ESMTPS id 3n3m16jme9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Jan 2023 09:51:41 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30H9pd3o46596570
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Jan 2023 09:51:39 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0333020040;
-        Tue, 17 Jan 2023 09:51:39 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 474CE2004B;
-        Tue, 17 Jan 2023 09:51:38 +0000 (GMT)
-Received: from [9.171.3.141] (unknown [9.171.3.141])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Jan 2023 09:51:38 +0000 (GMT)
-Message-ID: <5f212c293e08e91147b240e2ea41e168344897c9.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 00/25] libbpf: extend [ku]probe and syscall
- argument tracing support
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net
-Cc:     kernel-team@fb.com, Alan Maguire <alan.maguire@oracle.com>,
-        Pu Lehui <pulehui@huawei.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>,
-        Vladimir Isaev <isaev@synopsys.com>,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Kenta Tada <Kenta.Tada@sony.com>,
-        Florent Revest <revest@chromium.org>
-Date:   Tue, 17 Jan 2023 10:51:37 +0100
-In-Reply-To: <ed8ce036cd61741170dffe3fa733cd98d1970302.camel@linux.ibm.com>
-References: <20230113083404.4015489-1-andrii@kernel.org>
-         <f810f5c6a43af954464cedbe25d523896a59d500.camel@linux.ibm.com>
-         <ed8ce036cd61741170dffe3fa733cd98d1970302.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
+        with ESMTP id S236111AbjAQJwp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 04:52:45 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D0EAF2A9AD;
+        Tue, 17 Jan 2023 01:52:41 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8BxLuvnb8ZjWBECAA--.6283S3;
+        Tue, 17 Jan 2023 17:52:39 +0800 (CST)
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxrb7kb8ZjkK8aAA--.55653S3;
+        Tue, 17 Jan 2023 17:52:37 +0800 (CST)
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix undeclared identifier build
+ errors of test_bpf_nf.c
+To:     Yonghong Song <yhs@meta.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+References: <1673844908-11533-1-git-send-email-yangtiezhu@loongson.cn>
+ <14e0f634f084d0f07e447638c490da60943507d6.camel@gmail.com>
+ <556dc633-e7fb-da8a-1fa9-757684edd3a4@oracle.com>
+ <dffe5523-4ff7-8b27-46fa-079a9556166f@meta.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <d299be28-42f5-b387-5b54-74694ff5f340@loongson.cn>
+Date:   Tue, 17 Jan 2023 17:52:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5tAxUrMs9moCrX3k_18GT-DF6HCw46p0
-X-Proofpoint-GUID: svi2yXWA5Dt1AVQW6StEcBUYVq0HW0AY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.923,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-17_04,2023-01-13_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- priorityscore=1501 spamscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2301170080
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <dffe5523-4ff7-8b27-46fa-079a9556166f@meta.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8Dxrb7kb8ZjkK8aAA--.55653S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvJXoW3XF1xKF48tr47WFWfWw1fCrg_yoWfGr1rpa
+        48AFZYk3WkGF45trsYk392gFWrtws7XFWUJr18try2v34vvF97Jr4xKrW3GrsxurZ5tFs5
+        A34IgF1SvryrAw7anT9S1TB71UUUUjJqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        bq8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
+        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
+        x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2kK
+        e7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI
+        0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280
+        aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2
+        xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC
+        6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcApnDUUUU
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2023-01-16 at 23:37 +0100, Ilya Leoshkevich wrote:
-> On Mon, 2023-01-16 at 23:09 +0100, Ilya Leoshkevich wrote:
-> > On Fri, 2023-01-13 at 00:33 -0800, Andrii Nakryiko wrote:
-> > > This patch set fixes and extends libbpf's bpf_tracing.h support
-> > > for
-> > > tracing
-> > > arguments of kprobes/uprobes, and syscall as a special case.
-> > >=20
-> > > Depending on the architecture, anywhere between 3 and 8 arguments
-> > > can
-> > > be
-> > > passed to a function in registers (so relevant to kprobes and
-> > > uprobes), but
-> > > before this patch set libbpf's macros in bpf_tracing.h only
-> > > supported
-> > > up to
-> > > 5 arguments, which is limiting in practice. This patch set
-> > > extends
-> > > bpf_tracing.h to support up to 8 arguments, if architecture
-> > > allows.
-> > > This
-> > > includes explicit PT_REGS_PARMx() macro family, as well as
-> > > BPF_KPROBE() macro.
-> > >=20
-> > > Now, with tracing syscall arguments situation is sometimes quite
-> > > different.
-> > > For a lot of architectures syscall argument passing through
-> > > registers
-> > > differs
-> > > from function call sequence at least a little. For i386 it
-> > > differs
-> > > *a
-> > > lot*.
-> > > This patch set addresses this issue across all currently
-> > > supported
-> > > architectures and hopefully fixes existing issues. syscall(2)
-> > > manpage
-> > > defines
-> > > that either 6 or 7 arguments can be supported, depending on
-> > > architecture, so
-> > > libbpf defines 6 or 7 registers per architecture to be used to
-> > > fetch
-> > > syscall
-> > > arguments.
-> > >=20
-> > > Also, BPF_UPROBE and BPF_URETPROBE are introduced as part of this
-> > > patch set.
-> > > They are aliases for BPF_KPROBE and BPF_KRETPROBE (as mechanics
-> > > of
-> > > argument
-> > > fetching of kernel functions and user-space functions are
-> > > identical),
-> > > but it
-> > > allows BPF users to have less confusing BPF-side code when
-> > > working
-> > > with
-> > > uprobes.
-> > >=20
-> > > For both sets of changes selftests are extended to test these new
-> > > register
-> > > definitions to architecture-defined limits. Unfortunately I don't
-> > > have ability
-> > > to test it on all architectures, and BPF CI only tests 3
-> > > architecture
-> > > (x86-64,
-> > > arm64, and s390x), so it would be greatly appreciated if CC'ed
-> > > people
-> > > can help
-> > > review and test changes on architectures they are familiar with
-> > > (and
-> > > maybe
-> > > have direct access to for testing). Thank you.
-> > >=20
-> > > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > > Cc: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > Cc: Pu Lehui <pulehui@huawei.com>
-> > > Cc: Hengqi Chen <hengqi.chen@gmail.com>
-> > > Cc: Vladimir Isaev <isaev@synopsys.com>
-> > > Cc: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-> > > Cc: Kenta Tada <Kenta.Tada@sony.com>
-> > > Cc: Florent Revest <revest@chromium.org>
-> > >=20
-> > > Andrii Nakryiko (25):
-> > > =C2=A0 libbpf: add support for fetching up to 8 arguments in kprobes
-> > > =C2=A0 libbpf: add 6th argument support for x86-64 in bpf_tracing.h
-> > > =C2=A0 libbpf: fix arm and arm64 specs in bpf_tracing.h
-> > > =C2=A0 libbpf: complete mips spec in bpf_tracing.h
-> > > =C2=A0 libbpf: complete powerpc spec in bpf_tracing.h
-> > > =C2=A0 libbpf: complete sparc spec in bpf_tracing.h
-> > > =C2=A0 libbpf: complete riscv arch spec in bpf_tracing.h
-> > > =C2=A0 libbpf: fix and complete ARC spec in bpf_tracing.h
-> > > =C2=A0 libbpf: complete LoongArch (loongarch) spec in bpf_tracing.h
-> > > =C2=A0 libbpf: add BPF_UPROBE and BPF_URETPROBE macro aliases
-> > > =C2=A0 selftests/bpf: validate arch-specific argument registers limit=
-s
-> > > =C2=A0 libbpf: improve syscall tracing support in bpf_tracing.h
-> > > =C2=A0 libbpf: define x86-64 syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define i386 syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define s390x syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define arm syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define arm64 syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define mips syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define powerpc syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define sparc syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define riscv syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define arc syscall regs spec in bpf_tracing.h
-> > > =C2=A0 libbpf: define loongarch syscall regs spec in bpf_tracing.h
-> > > =C2=A0 selftests/bpf: add 6-argument syscall tracing test
-> > > =C2=A0 libbpf: clean up now not needed __PT_PARM{1-6}_SYSCALL_REG
-> > > defaults
-> > >=20
-> > > =C2=A0tools/lib/bpf/bpf_tracing.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | =
-301
-> > > +++++++++++++++-
-> > > --
-> > > =C2=A0.../bpf/prog_tests/test_bpf_syscall_macro.c=C2=A0=C2=A0 |=C2=A0=
- 18 +-
-> > > =C2=A0.../bpf/prog_tests/uprobe_autoattach.c=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |=C2=A0 33 +-
-> > > =C2=A0tools/testing/selftests/bpf/progs/bpf_misc.h=C2=A0 |=C2=A0 25 +=
+
+
+On 01/17/2023 02:48 PM, Yonghong Song wrote:
+>
+>
+> On 1/16/23 5:54 AM, Alan Maguire wrote:
+>> On 16/01/2023 12:30, Eduard Zingerman wrote:
+>>> On Mon, 2023-01-16 at 12:55 +0800, Tiezhu Yang wrote:
+>>>> $ make -C tools/testing/selftests/bpf/
+>>>>
+>>>>    CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+>>>> progs/test_bpf_nf.c:160:42: error: use of undeclared identifier
+>>>> 'NF_NAT_MANIP_SRC'
+>>>>                  bpf_ct_set_nat_info(ct, &saddr, sport,
+>>>> NF_NAT_MANIP_SRC);
+>>>>                                                         ^
+>>>> progs/test_bpf_nf.c:163:42: error: use of undeclared identifier
+>>>> 'NF_NAT_MANIP_DST'
+>>>>                  bpf_ct_set_nat_info(ct, &daddr, dport,
+>>>> NF_NAT_MANIP_DST);
+>>>>                                                         ^
+>>>> 2 errors generated.
+>>>>
+>>>> Copy the definitions in include/net/netfilter/nf_nat.h to test_bpf_nf.c
+>>>> to fix the above build errors.
+>>>>
+>>>> Fixes: b06b45e82b59 ("selftests/bpf: add tests for
+>>>> bpf_ct_set_nat_info kfunc")
+>>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>>>> ---
+>>>>   tools/testing/selftests/bpf/progs/test_bpf_nf.c | 5 +++++
+>>>>   1 file changed, 5 insertions(+)
+>>>>
+>>>> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+>>>> b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+>>>> index 227e85e..114f961 100644
+>>>> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+>>>> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+>>>> @@ -34,6 +34,11 @@ __be16 dport = 0;
+>>>>   int test_exist_lookup = -ENOENT;
+>>>>   u32 test_exist_lookup_mark = 0;
+>>>>   +enum nf_nat_manip_type {
+>>>> +    NF_NAT_MANIP_SRC,
+>>>> +    NF_NAT_MANIP_DST
+>>>> +};
+>>>> +
+>>>
+>>> This is confusing, when I build the kernel/tests I get the declaration
+>>> the "enum nf_nat_manip_type" from the vmlinux.h (which is included
+>>> from test_bpf_nf.c).
+>>> Which means that this patch results in compilation error with my
+>>> configuration.
+>>> Is there a chance that your kernel is configured without some
+>>> necessary netfilter
+>>> configuration options? Have you tried this patch with BPF CI?
+>>>
+>>
+>> Yep; I suspect if CONFIG_NF_NAT=m , the required definitions won't
+>> make it
+>> into vmlinux.h. The reference tools/testing/seftests/bpf/config has
+>> CONFIG_NF_NAT=y so it is at least documented in the referenced config.
+>>
+>> I'd suggest going the route of
+>>
+>> commit aa67961f3243dfff26c47769f87b4d94b07ec71f
+>> Author: Martin KaFai Lau <martin.lau@kernel.org>
+>> Date:   Tue Dec 6 11:35:54 2022 -0800
+>>
+>>      selftests/bpf: Allow building bpf tests with
+>> CONFIG_XFRM_INTERFACE=[m|n]
+>>      ...and adding/using local definitons like:
+>>
+>> enum nf_nat_manip_type_local {
+>>     NF_NAT_MANIP_SRC_LOCAL,
+>>     NF_NAT_MANIP_DST_LOCAL
+>> };
+>
+> The above won't support core, and since preserve_access_index attribute
+> does not support enum for now. We need to use bpf_core_enum_value to
+> retrieve the proper value through CORE.
+>
+> could you try the following?
+>
+> enum nf_nat_manip_type___local {
+>     NF_NAT_MANIP_SRC___LOCAL,
+>     NF_NAT_MANIP_DST___LOCAL,
+> };
+
+This is OK, it is similar with commit 1058b6a78db2 ("selftests/bpf: Do 
+not fail build if CONFIG_NF_CONNTRACK=m/n").
+
+>
+> ...
+> bpf_ct_set_nat_info(ct, &saddr, sport, bpf_core_enum_value(enum
+> nf_nat_manip_type___local,  NF_NAT_MANIP_SRC___LOCAL));
+> ...
+>
+> bpf_ct_set_nat_info(ct, &daddr, dport, bpf_core_enum_value(enum
+> nf_nat_manip_type___local,  NF_NAT_MANIP_DST___LOCAL));
+>
+> whether it works or not? Could you also try if the
+> enumerator sequence in enum nf_nat_manip_type___local changed?
+>
+>>
+>> ...to avoid the name clash.
+>>
+>>
+>> Alan
+
+I tested this on x86_64 fedora 36, using config-5.17.5-300.fc36.x86_64
+to generate .config, CONFIG_NF_CONNTRACK=m, CONFIG_NF_NAT=m, there are
+no definitions of NF_NAT_MANIP_SRC and NF_NAT_MANIP_DST in vmlinux.h,
+build test_bpf_nf.c failed.
+
+$ grep -w CONFIG_NF_CONNTRACK /boot/config-5.17.5-300.fc36.x86_64
+CONFIG_NF_CONNTRACK=m
+$ grep -w CONFIG_NF_NAT /boot/config-5.17.5-300.fc36.x86_64
+CONFIG_NF_NAT=m
+
+I tested with various configs, the definitions of NF_NAT_MANIP_SRC and
+NF_NAT_MANIP_DST in vmlinux.h only depend on CONFIG_NF_CONNTRACK=y.
+
+(1) CONFIG_NF_CONNTRACK=m, CONFIG_NF_NAT=m, no definitions
+$ grep -w CONFIG_NF_CONNTRACK .config
+CONFIG_NF_CONNTRACK=m
+$ grep -w CONFIG_NF_NAT .config
+CONFIG_NF_NAT=m
+$ grep NF_NAT_MANIP_SRC tools/testing/selftests/bpf/tools/include/vmlinux.h
+$ grep NF_NAT_MANIP_DST tools/testing/selftests/bpf/tools/include/vmlinux.h
+$
+
+(2) CONFIG_NF_CONNTRACK=m, CONFIG_NF_NAT=y, no definitions
+This case is unable, because CONFIG_NF_NAT depends on CONFIG_NF_CONNTRACK.
+
+(3) CONFIG_NF_CONNTRACK=m, CONFIG_NF_NAT=n, no definitions
+$ grep -w CONFIG_NF_CONNTRACK .config
+CONFIG_NF_CONNTRACK=m
+$ grep -w CONFIG_NF_NAT .config
+# CONFIG_NF_NAT is not set
+$ grep NF_NAT_MANIP_SRC tools/testing/selftests/bpf/tools/include/vmlinux.h
+$ grep NF_NAT_MANIP_DST tools/testing/selftests/bpf/tools/include/vmlinux.h
+$
+
+(4) CONFIG_NF_CONNTRACK=y, CONFIG_NF_NAT=m, have definitions
+$ grep -w CONFIG_NF_CONNTRACK .config
+CONFIG_NF_CONNTRACK=y
+$ grep -w CONFIG_NF_NAT .config
+CONFIG_NF_NAT=m
+$ grep NF_NAT_MANIP_SRC tools/testing/selftests/bpf/tools/include/vmlinux.h
+	NF_NAT_MANIP_SRC = 0,
+$ grep NF_NAT_MANIP_DST tools/testing/selftests/bpf/tools/include/vmlinux.h
+	NF_NAT_MANIP_DST = 1,
+
+(5) CONFIG_NF_CONNTRACK=y, CONFIG_NF_NAT=y, have definitions
+$ grep -w CONFIG_NF_CONNTRACK .config
+CONFIG_NF_CONNTRACK=y
+$ grep -w CONFIG_NF_NAT .config
+CONFIG_NF_NAT=y
+$ grep NF_NAT_MANIP_SRC tools/testing/selftests/bpf/tools/include/vmlinux.h
+	NF_NAT_MANIP_SRC = 0,
+$ grep NF_NAT_MANIP_DST tools/testing/selftests/bpf/tools/include/vmlinux.h
+	NF_NAT_MANIP_DST = 1,
+
+(6) CONFIG_NF_CONNTRACK=y, CONFIG_NF_NAT=n, have definitions
+$ grep -w CONFIG_NF_CONNTRACK .config
+CONFIG_NF_CONNTRACK=y
+$ grep -w CONFIG_NF_NAT .config
+# CONFIG_NF_NAT is not set
+$ grep NF_NAT_MANIP_SRC tools/testing/selftests/bpf/tools/include/vmlinux.h
+	NF_NAT_MANIP_SRC = 0,
+$ grep NF_NAT_MANIP_DST tools/testing/selftests/bpf/tools/include/vmlinux.h
+	NF_NAT_MANIP_DST = 1,
+
+(7) CONFIG_NF_CONNTRACK=n, CONFIG_NF_NAT=n, no definitions
+$ grep -w CONFIG_NF_CONNTRACK .config
+# CONFIG_NF_CONNTRACK is not set
+$ grep -w CONFIG_NF_NAT .config
+$ grep NF_NAT_MANIP_SRC tools/testing/selftests/bpf/tools/include/vmlinux.h
+$ grep NF_NAT_MANIP_DST tools/testing/selftests/bpf/tools/include/vmlinux.h
+$
+
+(8) CONFIG_NF_CONNTRACK=n, CONFIG_NF_NAT=y, no definitions
+This case is unable, because CONFIG_NF_NAT depends on CONFIG_NF_CONNTRACK.
+
+Here is an alternative change to check whether CONFIG_NF_CONNTRACK
+is m, enum nf_nat_manip_type___local is simple, which one is better?
+
+$ git diff tools/testing/selftests/bpf/
+diff --git a/tools/testing/selftests/bpf/Makefile 
+b/tools/testing/selftests/bpf/Makefile
+index 22533a18705e..f3cf02046c20 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -325,7 +325,7 @@ endif
+
+  CLANG_SYS_INCLUDES = $(call 
+get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
+  BPF_CFLAGS = -g -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)          \
+-            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)                   \
++            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR) -I$(TOOLSINCDIR)  \
+              -I$(abspath $(OUTPUT)/../usr/include)
+
+  CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
+diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c 
+b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+index 227e85e85dda..f2101807072f 100644
+--- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
++++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+@@ -2,6 +2,7 @@
+  #include <vmlinux.h>
+  #include <bpf/bpf_helpers.h>
+  #include <bpf/bpf_endian.h>
++#include <linux/kconfig.h>
+
+  #define EAFNOSUPPORT 97
+  #define EPROTO 71
+@@ -34,6 +35,13 @@ __be16 dport = 0;
+  int test_exist_lookup = -ENOENT;
+  u32 test_exist_lookup_mark = 0;
+
++#if IS_MODULE(CONFIG_NF_CONNTRACK)
++enum nf_nat_manip_type {
++       NF_NAT_MANIP_SRC,
++       NF_NAT_MANIP_DST
++};
++#endif
 +
-> > > =C2=A0.../selftests/bpf/progs/bpf_syscall_macro.c=C2=A0=C2=A0 |=C2=A0=
- 26 ++
-> > > =C2=A0.../bpf/progs/test_uprobe_autoattach.c=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |=C2=A0 48 ++-
-> > > =C2=A06 files changed, 405 insertions(+), 46 deletions(-)
-> > >=20
-> >=20
-> > With the following fixup for 24/25:
+  struct nf_conn;
 
-[...]
+  struct bpf_ct_opts___local {
 
-> > Tested-by:=C2=A0Ilya Leoshkevich <iii@linux.ibm.com>=C2=A0 # s390x
->=20
-> While the above fixup works, I realized that it's ugly. It's better
-> to
-> admit that mmap and old_mmap are different syscalls and create a
-> different probe, even if it means duplicating pid filtering code:
+Note that when unset CONFIG_NF_CONNTRACK, there are much more
+build errors, I do not know whether it is necessary to fix it
+and how to fix it properly. Here, I only consider the failed
+case CONFIG_NF_CONNTRACK=m.
 
-[...]
+Thanks,
+Tiezhu
 
-Sorry, I'm being dense. Both fixups defeat the purpose of having this
-test, because they don't use all 6 register arguments. We need to
-choose a different syscall; I believe splice() fits the bill. The other
-alternatives that I rejected were:
-
-- clone() - argument order is messy;
-- recvfrom() - s390x uses socketcall instead;
-- ipc() - doesn't seem to be available on aarch64.
-
-The following worked for me:
-
-diff --git
-a/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
-b/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
-index e18dd82eb801..2900c5e9a016 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
-@@ -1,20 +1,22 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright 2022 Sony Group Corporation */
-+#define _GNU_SOURCE
-+#include <fcntl.h>
- #include <sys/prctl.h>
--#include <sys/mman.h>
- #include <test_progs.h>
- #include "bpf_syscall_macro.skel.h"
-=20
- void test_bpf_syscall_macro(void)
- {
- 	struct bpf_syscall_macro *skel =3D NULL;
--	int err, page_size =3D getpagesize();
-+	int err;
- 	int exp_arg1 =3D 1001;
- 	unsigned long exp_arg2 =3D 12;
- 	unsigned long exp_arg3 =3D 13;
- 	unsigned long exp_arg4 =3D 14;
- 	unsigned long exp_arg5 =3D 15;
--	void *r;
-+	loff_t off_in, off_out;
-+	ssize_t r;
-=20
- 	/* check whether it can open program */
- 	skel =3D bpf_syscall_macro__open();
-@@ -71,18 +73,17 @@ void test_bpf_syscall_macro(void)
- 	ASSERT_EQ(skel->bss->arg4_syscall, exp_arg4,
-"BPF_KPROBE_SYSCALL_arg4");
- 	ASSERT_EQ(skel->bss->arg5_syscall, exp_arg5,
-"BPF_KPROBE_SYSCALL_arg5");
-=20
--	r =3D mmap((void *)0x12340000, 3 * page_size, PROT_READ |
-PROT_WRITE,
--		 MAP_PRIVATE, -42, 5 * page_size);
-+	r =3D splice(-42, &off_in, 42, &off_out, 0x12340000,
-SPLICE_F_NONBLOCK);
- 	err =3D -errno;
--	ASSERT_EQ(r, MAP_FAILED, "mmap_res");
--	ASSERT_EQ(err, -EBADF, "mmap_err");
-+	ASSERT_EQ(r, -1, "splice_res");
-+	ASSERT_EQ(err, -EBADF, "splice_err");
-=20
--	ASSERT_EQ(skel->bss->mmap_addr, 0x12340000, "mmap_arg1");
--	ASSERT_EQ(skel->bss->mmap_length, 3 * page_size, "mmap_arg2");
--	ASSERT_EQ(skel->bss->mmap_prot, PROT_READ | PROT_WRITE,
-"mmap_arg3");
--	ASSERT_EQ(skel->bss->mmap_flags, MAP_PRIVATE, "mmap_arg4");
--	ASSERT_EQ(skel->bss->mmap_fd, -42, "mmap_arg5");
--	ASSERT_EQ(skel->bss->mmap_offset, 5 * page_size, "mmap_arg6");
-+	ASSERT_EQ(skel->bss->splice_fd_in, -42, "splice_arg1");
-+	ASSERT_EQ(skel->bss->splice_off_in, (__u64)&off_in,
-"splice_arg2");
-+	ASSERT_EQ(skel->bss->splice_fd_out, 42, "splice_arg3");
-+	ASSERT_EQ(skel->bss->splice_off_out, (__u64)&off_out,
-"splice_arg4");
-+	ASSERT_EQ(skel->bss->splice_len, 0x12340000, "splice_arg5");
-+	ASSERT_EQ(skel->bss->splice_flags, SPLICE_F_NONBLOCK,
-"splice_arg6");
-=20
- cleanup:
- 	bpf_syscall_macro__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-index c07c5c52d5fc..1a476d8ed354 100644
---- a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-@@ -81,28 +81,28 @@ int BPF_KSYSCALL(prctl_enter, int option, unsigned
-long arg2,
- 	return 0;
- }
-=20
--__u64 mmap_addr;
--__u64 mmap_length;
--__u64 mmap_prot;
--__u64 mmap_flags;
--__u64 mmap_fd;
--__u64 mmap_offset;
--
--SEC("ksyscall/mmap")
--int BPF_KSYSCALL(mmap_enter, void *addr, size_t length, int prot, int
-flags,
--		 int fd, off_t offset)
-+__u64 splice_fd_in;
-+__u64 splice_off_in;
-+__u64 splice_fd_out;
-+__u64 splice_off_out;
-+__u64 splice_len;
-+__u64 splice_flags;
-+
-+SEC("ksyscall/splice")
-+int BPF_KSYSCALL(splice_enter, int fd_in, loff_t *off_in, int fd_out,
-+		 loff_t *off_out, size_t len, unsigned int flags)
- {
- 	pid_t pid =3D bpf_get_current_pid_tgid() >> 32;
-=20
- 	if (pid !=3D filter_pid)
- 		return 0;
-=20
--	mmap_addr =3D (__u64)addr;
--	mmap_length =3D length;
--	mmap_prot =3D prot;
--	mmap_flags =3D flags;
--	mmap_fd =3D fd;
--	mmap_offset =3D offset;
-+	splice_fd_in =3D fd_in;
-+	splice_off_in =3D (__u64)off_in;
-+	splice_fd_out =3D fd_out;
-+	splice_off_out =3D (__u64)off_out;
-+	splice_len =3D len;
-+	splice_flags =3D flags;
-=20
- 	return 0;
- }
---=20
-2.39.0
-
-Best regards,
-Ilya
