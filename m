@@ -2,89 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5096E670B93
-	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 23:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB334670B9E
+	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 23:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjAQWYI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 17:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
+        id S229511AbjAQW2D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 17:28:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbjAQWTH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 17:19:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9789B4ED11
-        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 13:59:33 -0800 (PST)
+        with ESMTP id S229528AbjAQW0x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 17:26:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0111D5DC27
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 14:04:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673992741;
+        s=mimecast20190719; t=1673993041;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZpC47ZAac9QR/hP8cE59hdbTaxenYITufUhqUaUmasI=;
-        b=JUdx6H9nrFt4fH1i2U+LArzxg0MUd3w5xzvVHja3CwrBaAhgchSUa0y71hSBOYr1rrZ7WN
-        lIZ0PAhdAcyZrjRAWtsEHTF0FYKvD5BNrQhwsXqlchLVFZx5BWYYkhxNfybkyeXA+gnJqO
-        dg/jWzVNqXlllnSGZx6q3i8989OKNOE=
+        bh=LVLFfBmp+CUn8SGWx1LHm/3sesm1t56Z7TGbwcew3W0=;
+        b=ep1eqCp7I06KBBSlZgAT52c0vhtBoJ+P8cmY4gx8yUc3rzKt7g19nHdqWwNPpQ2MhXCtiK
+        9kC484zTe3a0RRoqck3nWFkuFsgKl05HwaK53w+N48TJ0s5mcWmhgMGHAeNU0dXprcQXxM
+        FqKWr22x9GeV3oVHT/U2j7aeTfF1p38=
 Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
  [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-166-KEjgH5l3NqKo2pzbwowhJQ-1; Tue, 17 Jan 2023 16:59:00 -0500
-X-MC-Unique: KEjgH5l3NqKo2pzbwowhJQ-1
-Received: by mail-ej1-f70.google.com with SMTP id qa18-20020a170907869200b007df87611618so22273974ejc.1
-        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 13:59:00 -0800 (PST)
+ us-mta-607-u2G4xn6KP0CI3hHArh0DQw-1; Tue, 17 Jan 2023 17:04:00 -0500
+X-MC-Unique: u2G4xn6KP0CI3hHArh0DQw-1
+Received: by mail-ej1-f70.google.com with SMTP id qw29-20020a1709066a1d00b008725a1034caso2587102ejc.22
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 14:04:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZpC47ZAac9QR/hP8cE59hdbTaxenYITufUhqUaUmasI=;
-        b=16T6NbrES2B9GgST/IQspiGmykF4iXVr9qc+M3DwCfgL0AAAPVFcIhE9Nvo5OHHejT
-         yV8BJaBFH58tLRqP082ejfouTUQkAV0oOR1vGjXxQNPF0HhpZKvykJafXDvZVEew+aMS
-         n8wi2ZhvHwEy/NXVTw87pTe1akX9ph8A9Q77lL1hkJGz3PcfXQknGbEvf0oYtYIekAle
-         rZ8/kw5h90b2XlvxoX4R6WgTLyN+8bV4JuZSzQRLzqb3gg4cI9W4OD0zw8TIvtN1DVkd
-         HuVfl5DCllM0jxlV/cZSulL/0FiWTP43itGcetFcUgKY1iRy1pel3ryoOnwaCL+fCTlI
-         gUWQ==
-X-Gm-Message-State: AFqh2kr0ALa5RJBe9Wa1bKXw5Z/VoLVhtTiFYjiMa9KeANmsWfiLmm1C
-        NhdNtPLf7hi5bsKyhsvToCOcfsRscqc2O1GVckD+ABfBjgM+dOZUEcYToiej4gFWnFVbU1ZajZU
-        2nrupHtgJh0mM
-X-Received: by 2002:a17:906:5d1:b0:861:7a02:1046 with SMTP id t17-20020a17090605d100b008617a021046mr4454013ejt.37.1673992739097;
-        Tue, 17 Jan 2023 13:58:59 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXvn/uG4kaZgjhWjt2xaWdG8enkNDaED9Qq1xVDHJQawI8Y47x89PbCi4tmTDPx1m6XWiFFdeg==
-X-Received: by 2002:a17:906:5d1:b0:861:7a02:1046 with SMTP id t17-20020a17090605d100b008617a021046mr4453975ejt.37.1673992738768;
-        Tue, 17 Jan 2023 13:58:58 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id kx5-20020a170907774500b007c14ae38a80sm13562208ejc.122.2023.01.17.13.58.57
+        bh=LVLFfBmp+CUn8SGWx1LHm/3sesm1t56Z7TGbwcew3W0=;
+        b=ij0SFohvi7z101l7pzBcWYhrhoQiWs7DSWBzVc4jpwJBUv2icFooKqqOQMXksarj1e
+         kX+QdwBD3olzcosCupxQQwYEjPR4MTVhGE+N3/EMRA5Rx0QrYwjeWJR9p272Mss2jqyf
+         QS0OYbmuNfn+mGXKfaKfsHIs807GOs5nylPL5u2agyhvGTcpJZtRKCyNKULmzbnJZl8O
+         /x0yPlXP+QVT/aKfmNFK+jcTzHJv80+1Y9xo+5Lnf4V1i+fGDU4E5lvxrm4vov1ya75y
+         9y0nNd4QYDUR+2yciAORNUhAiuhvsHyfsKKc3+kjOHSpiysfYqgyShN2L2gMp8IrBedG
+         ADrg==
+X-Gm-Message-State: AFqh2kqR1CRvXfNp/5C4jMeyAr+A7a/f09j5lGr6TqiMr9SCEdURPQ8b
+        tMODA/afnOO33481NXK8l/Qrw9ko+opqJXBXKZv5Mnn78IRJKOfF0WS3FOpZxid62bw1Zd2xhdH
+        PDGZZ0BTUF8r1
+X-Received: by 2002:a05:6402:1a4f:b0:499:c083:fd2e with SMTP id bf15-20020a0564021a4f00b00499c083fd2emr4383630edb.36.1673993038665;
+        Tue, 17 Jan 2023 14:03:58 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXvo1n+XRfWk8NwUE/NMXO1OK3OzWbf6cj/qVSpZ8SnqUE+yj6jCkA78S53QJC+OleKYSqaRvg==
+X-Received: by 2002:a05:6402:1a4f:b0:499:c083:fd2e with SMTP id bf15-20020a0564021a4f00b00499c083fd2emr4383573edb.36.1673993037671;
+        Tue, 17 Jan 2023 14:03:57 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id p3-20020a056402500300b00488abbbadb3sm13311259eda.63.2023.01.17.14.03.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Jan 2023 13:58:58 -0800 (PST)
+        Tue, 17 Jan 2023 14:03:57 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6241190119F; Tue, 17 Jan 2023 22:58:57 +0100 (CET)
+        id 8357C9011A4; Tue, 17 Jan 2023 23:03:56 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, memxor@gmail.com, alardam@gmail.com,
-        saeedm@nvidia.com, anthony.l.nguyen@intel.com, gospo@broadcom.com,
-        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
-        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
-        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
-        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
-        lorenzo.bianconi@redhat.com
-Subject: Re: [RFC v2 bpf-next 2/7] drivers: net: turn on XDP features
-In-Reply-To: <Y8cTKOmCBbMEZK8D@sleipner.dyn.berto.se>
-References: <cover.1673710866.git.lorenzo@kernel.org>
- <b606e729c9baf36a28be246bf0bfa4d21cc097fb.1673710867.git.lorenzo@kernel.org>
- <Y8cTKOmCBbMEZK8D@sleipner.dyn.berto.se>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        David Vernet <void@manifault.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [RFC PATCH v2] Documentation/bpf: Add a description of "stable
+ kfuncs"
+In-Reply-To: <CAKH8qBuvBomTXqNB+a6n_PbJKSNFazrAxEWsVT-=4XfztuJ7dw@mail.gmail.com>
+References: <20230117212731.442859-1-toke@redhat.com>
+ <CAKH8qBuvBomTXqNB+a6n_PbJKSNFazrAxEWsVT-=4XfztuJ7dw@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 17 Jan 2023 22:58:57 +0100
-Message-ID: <87y1q0bz6m.fsf@toke.dk>
+Date:   Tue, 17 Jan 2023 23:03:56 +0100
+Message-ID: <87v8l4byyb.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,90 +90,188 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Niklas S=C3=B6derlund <niklas.soderlund@corigine.com> writes:
+Stanislav Fomichev <sdf@google.com> writes:
 
-> Hi Lorenzo and Marek,
+> On Tue, Jan 17, 2023 at 1:27 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Following up on the discussion at the BPF office hours, this patch adds a
+>> description of the (new) concept of "stable kfuncs", which are kfuncs th=
+at
+>> offer a "more stable" interface than what we have now, but is still not
+>> part of UAPI.
+>>
+>> This is mostly meant as a straw man proposal to focus discussions around
+>> stability guarantees. From the discussion, it seemed clear that there we=
+re
+>> at least some people (myself included) who felt that there needs to be s=
+ome
+>> way to export functionality that we consider "stable" (in the sense of
+>> "applications can rely on its continuing existence").
+>>
+>> One option is to keep BPF helpers as the stable interface and implement
+>> some technical solution for moving functionality from kfuncs to helpers
+>> once it has stood the test of time and we're comfortable committing to it
+>> as a stable API. Another is to freeze the helper definitions, and instead
+>> use kfuncs for this purpose as well, by marking a subset of them as
+>> "stable" in some way. Or we can do both and have multiple levels of
+>> "stable", I suppose.
+>>
+>> This patch is an attempt to describe what the "stable kfuncs" idea might
+>> look like, as well as to formulate some criteria for what we mean by
+>> "stable", and describe an explicit deprecation procedure. Feel free to
+>> critique any part of this (including rejecting the notion entirely).
+>>
+>> Some people mentioned (in the office hours) that should we decide to go =
+in
+>> this direction, there's some work that needs to be done in libbpf (and
+>> probably the kernel too?) to bring the kfunc developer experience up to =
+par
+>> with helpers. Things like exporting kfunc definitions to vmlinux.h (to m=
+ake
+>> them discoverable), and having CO-RE support for using them, etc. I kinda
+>> consider that orthogonal to what's described here, but I do think we sho=
+uld
+>> fix those issues before implementing the procedures described here.
+>>
+>> v2:
+>> - Incorporate Daniel's changes
+>>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>>  Documentation/bpf/kfuncs.rst | 87 +++++++++++++++++++++++++++++++++---
+>>  1 file changed, 81 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+>> index 9fd7fb539f85..dd40a4ee35f2 100644
+>> --- a/Documentation/bpf/kfuncs.rst
+>> +++ b/Documentation/bpf/kfuncs.rst
+>> @@ -7,9 +7,9 @@ BPF Kernel Functions (kfuncs)
+>>
+>>  BPF Kernel Functions or more commonly known as kfuncs are functions in =
+the Linux
+>>  kernel which are exposed for use by BPF programs. Unlike normal BPF hel=
+pers,
+>> -kfuncs do not have a stable interface and can change from one kernel re=
+lease to
+>> -another. Hence, BPF programs need to be updated in response to changes =
+in the
+>> -kernel.
+>> +kfuncs by default do not have a stable interface and can change from on=
+e kernel
+>> +release to another. Hence, BPF programs may need to be updated in respo=
+nse to
+>> +changes in the kernel. See :ref:`BPF_kfunc_stability`.
+>>
+>>  2. Defining a kfunc
+>>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> @@ -223,14 +223,89 @@ type. An example is shown below::
+>>          }
+>>          late_initcall(init_subsystem);
+>>
+>> -3. Core kfuncs
+>> +
+>> +.. _BPF_kfunc_stability:
+>> +
+>> +3. API (in)stability of kfuncs
+>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+>> +
+>> +By default, kfuncs exported to BPF programs are considered a kernel-int=
+ernal
+>> +interface that can change between kernel versions. This means that BPF =
+programs
+>> +using kfuncs may need to adapt to changes between kernel versions. In t=
+he
+>> +extreme case that could also include removal of a kfunc. In other words=
+, kfuncs
+>> +are _not_ part of the kernel UAPI! Rather, these kfuncs can be thought =
+of as
+>> +being similar to internal kernel API functions exported using the
 >
-> Thanks for your work.
+> [..]
 >
-> On 2023-01-14 16:54:32 +0100, Lorenzo Bianconi wrote:
+>> +``EXPORT_SYMBOL_GPL`` macro. All new BPF kernel helper-like functionali=
+ty must
+>> +initially start out as kfuncs.
 >
-> [...]
->
->>=20
->> Turn 'hw-offload' feature flag on for:
->>  - netronome (nfp)
->>  - netdevsim.
->
-> Is there a definition of the 'hw-offload' written down somewhere? From=20
-> reading this series I take it is the ability to offload a BPF program?=20=
-=20
+> To clarify, as part of this proposal, are we making a decision here
+> that we ban new helpers going forward?
 
-Yeah, basically this means "allows loading and attaching programs in
-XDP_MODE_HW", I suppose :)
+Good question! That is one of the things I'm hoping we can clear up by
+this discussing. I don't have a strong opinion on the matter myself, as
+long as there is *some* way to mark a subset of helpers/kfuncs as
+"stable"...
 
-> It would also be interesting to read documentation for the other flags=20
-> added in this series.
-
-Yup, we should definitely document them :)
-
-> [...]
->
->> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c=20
->> b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
->> index 18fc9971f1c8..5a8ddeaff74d 100644
->> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
->> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
->> @@ -2529,10 +2529,14 @@ static void nfp_net_netdev_init(struct nfp_net *=
-nn)
->>  	netdev->features &=3D ~NETIF_F_HW_VLAN_STAG_RX;
->>  	nn->dp.ctrl &=3D ~NFP_NET_CFG_CTRL_RXQINQ;
->>=20=20
->> +	nn->dp.netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC |
->> +				      NETDEV_XDP_ACT_HW_OFFLOAD;
->
-> If my assumption about the 'hw-offload' flag above is correct I think=20
-> NETDEV_XDP_ACT_HW_OFFLOAD should be conditioned on that the BPF firmware=
-=20
-> flavor is in use.
->
->     nn->dp.netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC;
->
->     if (nn->app->type->id =3D=3D NFP_APP_BPF_NIC)
->         nn->dp.netdev->xdp_features |=3D NETDEV_XDP_ACT_HW_OFFLOAD;
+> (also left some spelling nits below)
 >
 >> +
->>  	/* Finalise the netdev setup */
->>  	switch (nn->dp.ops->version) {
->>  	case NFP_NFD_VER_NFD3:
->>  		netdev->netdev_ops =3D &nfp_nfd3_netdev_ops;
->> +		nn->dp.netdev->xdp_features |=3D NETDEV_XDP_ACT_XSK_ZEROCOPY;
->>  		break;
->>  	case NFP_NFD_VER_NFDK:
->>  		netdev->netdev_ops =3D &nfp_nfdk_netdev_ops;
+>> +3.1 Promotion to "stable" kfuncs
+>> +--------------------------------
+>> +
+>> +While kfuncs are by default considered unstable as described above, som=
+e kfuncs
+>> +may warrant a stronger stability guarantee and can be marked as *stable=
+*. The
+>> +decision to move a kfunc to *stable* is taken on a case-by-case basis a=
+nd must
+>> +clear a high bar, taking into account the functions' usefulness under
+>> +longer-term production deployment without any unforeseen API issues or
+>> +limitations. In general, it is not expected that every kfunc will turn =
+into a
+>> +stable one - think of it as an exception rather than the norm.
+>> +
+>> +Those kfuncs which have been promoted to stable are then marked using t=
+he
+>> +``KF_STABLE`` tag. The process for requesting a kfunc be marked as stab=
+le
+>> +consists of submitting a patch to the bpf@vger.kernel.org mailing list =
+adding
+>> +the ``KF_STABLE`` tag to that kfunc's definition. The patch description=
+ must
+>> +include the rationale for why the kfunc should be promoted to stable, i=
+ncluding
+>> +references to existing production uses, etc. The patch will be consider=
+ed the
+>> +same was as any other patch, and ultimately the decision on whether a k=
+func
 >
-> This is also a wrinkle I would like to understand. Currently NFP support=
-=20
-> zero-copy on NFD3, but not for offloaded BPF programs. But with the BPF=20
-> firmware flavor running the device can still support zero-copy for=20
-> non-offloaded programs.
+> nit: most likely s/same was/same way/ here?
+
+Yup!
+
+>> +should be promoted to stable is taken by the BPF maintainers.
+>> +
+>> +Stable kfuncs provide the following stability guarantees:
+>> +
+>> +1. Stable kfuncs will not change their function signature or functional=
+ity in a
+>> +   way that may cause incompatibilities for BPF programs calling the fu=
+nction.
+>> +
+>> +2. The BPF community will make every reasonable effort to keep stable k=
+funcs
+>> +   around as long as they continue to be useful to real-world BPF appli=
+cations.
+>> +
+>> +3. Should a stable kfunc turn out to be no longer useful, the BPF commu=
+nity may
+>> +   decide to eventually remove it. In this case, before being removed t=
+hat kfunc
+>> +   will go through a deprecation procedure as outlined below.
+>> +
+>> +3.2 Deprecation of kfuncs
+>> +-------------------------
+>> +
+>> +As described above, the community will make every reasonable effort to =
+keep
+>> +kfuncs available through future kernel versions once they are marked as=
+ stable.
+>> +However, it may happen case that BPF development moves in an unforeseen
 >
-> Is it a problem that the driver advertises support for both=20
-> hardware-offload _and_ zero-copy at the same time, even if they can't be=
-=20
-> used together but separately?
+> 'may happen case' -> 'may happen in case' ?
 
-Hmm, so the idea with this is to only expose feature flags that are
-supported "right now" (you'll note that some of the drivers turn the
-REDIRECT_TARGET flag on and off at runtime). Having features that are
-"supported but in a different configuration" is one of the points of
-user confusion we want to clear up with the explicit flags.
-
-So I guess it depends a little bit what you mean by "can't be used
-together"? I believe it's possible to load two programs at the same
-time, one in HW mode and one in native (driver) mode, right? In this
-case, could the driver mode program use XSK zerocopy while the HW mode
-program is also loaded?
+Think I actually meant to drop 'case' entirely; thanks for spotting!
 
 -Toke
 
