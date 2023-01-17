@@ -2,71 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43041670B15
-	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 23:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3168E670BC4
+	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 23:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjAQWDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 17:03:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45920 "EHLO
+        id S229532AbjAQWlW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 17:41:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjAQWB5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 17:01:57 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4348F3A86B
-        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 12:33:20 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id x2-20020a17090a46c200b002295ca9855aso52042pjg.2
-        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 12:33:20 -0800 (PST)
+        with ESMTP id S229702AbjAQWk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 17:40:58 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179B659565
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 13:54:12 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id 20so7620050plo.3
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 13:54:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xlv20x7rc2LFeLXWCgfj7A8D+eK5VfQcM6xak5NBrHI=;
-        b=A8HZXITwr1t8gOcv/TDVWtSCFBu7YyUKhYOkW6CnEb2M33k8a3Z2YMXnJBARTJ/qd9
-         2bgRfw1DXbl8HO+VYQ+6JQEDXveXkTHjc54I9Y4ZfD3703hAhytKIvbgWx3rcJur3K+0
-         GZp+Wn3orFuxgN6Ysw9OV6BkddjMcfdec6x32QpFSVej4ly0r0uHC9Pd0Y+p8TcCfRa1
-         I+LzMAkxAl0yZkM4GwZ28C+hSbHWhxYShYDo/C3vxE0Nrb/BQxVVJXlbZUeOAOqyV30W
-         4dVDTKfmhT06qr/yR2e1yqDZo1O6UlksagiShSQJKfgLcS8sy1fHSEQvgAqA54WWWEgj
-         TQNw==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uA5nGfSb05/+KgMMi2NPhYL9k+WFqw7TAMf42QWZw+s=;
+        b=Msm7wjQ+mXKeJbh0LJLLyZRw9tR++DlBsq1FxIp2P+5GkK3tRxCO/VNpWjskYSuk5V
+         c+h3LBXZ0BLhYaSZ3q+S62ibzS4B7+4NZ6vbFUxgpXGYZwvyOiw0NJwGUX8daP63Rb83
+         Q7eSmQVjGYtWlAqgRdPQ2PtuB645f4jZsLOXDPwcvsJ3IbwWMMEDzy/9H8etwGKa5eyq
+         MU4MQJ5vlcgL31GB0FaDZNhcFaSN9nr7FirjH6mM3K+Fd3gYdeIw/X951/5TxErQvo3O
+         0zzH0NiWu9KJOpHQ5fuFUcuNYKKmX3isxLXOTJPyn9RwwAGkfpKy4BHiZczSJv1lnJ4I
+         8MOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xlv20x7rc2LFeLXWCgfj7A8D+eK5VfQcM6xak5NBrHI=;
-        b=EG/QZ0/WfapjV6/3i85Zu2x3wG60n1uesTAjT8dw6+ycXCNXIuSlcLB7yyRqgfFUep
-         HIn+5GM9t6AV1wOJaZKOBvriVxIEkp2AIvL7sExYjXxdX+Y2PWjDFk8uCUmFEsIcotbD
-         oIFZaim3eBBw3PNAjHsJ66a69gIpE8BKZDELbmrephV23N9cZsVWtpexmXb/Z96604KY
-         bwMv5ouDfjEZT/9kEzxqsVRD1rj3HIpWjhZeQwZ+t8Q2obOTOTvPCBjep1PUZhI61blK
-         pZ0kBFriYdy+RESWBFsL6hp8FWRW+TeJxbwQ0DPpGWSEasR4UG+O/pgmhAkZ39Xb3GzF
-         xp4A==
-X-Gm-Message-State: AFqh2krOC7B3E0Onu4RyTMLxVnR148CgpdWSZ6+Hn4HUiq2JBg+Zc9jF
-        mvsSPkLkbfVkAReb2sz/4D6iGYP5UCOCMpeAwrJFTQ==
-X-Google-Smtp-Source: AMrXdXs31p2u7HdHURCDmgZUyiEEHOQgVtrLzvGkLz9p2WGBfGTt92nBPq2q2xMgxfh0i8SA4nzOD1q+h8+gor/tVSU=
-X-Received: by 2002:a17:902:c506:b0:194:b553:234d with SMTP id
- o6-20020a170902c50600b00194b553234dmr76045plx.62.1673987599489; Tue, 17 Jan
- 2023 12:33:19 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uA5nGfSb05/+KgMMi2NPhYL9k+WFqw7TAMf42QWZw+s=;
+        b=LiUNYYPxhad7hVdpRicki+JLN5BRHS8Cn6XbmIQpz7owHKWIjLswc0k3wj/OuKM77a
+         KEToh1mGLy8xHP42Zl8UQUQIvzAeAOiAzmRtj4t2qIO341j/tWKfRBtnbSCDaFGlK5B3
+         Bl6IoZVjBr0kfqRyuCwPkSiYLFLRT7KrGEVGegp/xzA9CuIltH8dVCIz5VwOzPM7RrZ0
+         4kF20bFSWZ2VJ3TeWdZhb2wJeZ7oWSOVmKDuiHy4uiqyWYWrQyzqTccKJQjVGPWvUa0F
+         xXddl4BCkV2j7cuSyw2zd5+svABQ31ZG/fzgxXbvDVMoCAnNjAVFzyM94ISplfafWmf5
+         myrg==
+X-Gm-Message-State: AFqh2kr6UrLXMbR34MJ26JRns5+vyUb2heDf129o3FCWzWYEx4M/f2sm
+        Zzc1c9Ct+1X/LE5Q2byMdw172YCfBVcZIhAtcA8rog==
+X-Google-Smtp-Source: AMrXdXvS2PRk8JL58UuG98zgI6yr+Q3IDcUMYIvWwicLGFzWb3TdABpdREp/0zOlgVY9h98URGldf47qulmadNhBDM8=
+X-Received: by 2002:a17:90a:2c4d:b0:229:2410:ef30 with SMTP id
+ p13-20020a17090a2c4d00b002292410ef30mr408668pjm.66.1673992451224; Tue, 17 Jan
+ 2023 13:54:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20230112003230.3779451-1-sdf@google.com> <20230112003230.3779451-2-sdf@google.com>
- <affeb1e3-69e6-9783-0012-6d917972ba30@redhat.com>
-In-Reply-To: <affeb1e3-69e6-9783-0012-6d917972ba30@redhat.com>
+References: <20230117212731.442859-1-toke@redhat.com>
+In-Reply-To: <20230117212731.442859-1-toke@redhat.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 17 Jan 2023 12:33:07 -0800
-Message-ID: <CAKH8qBuE5ipcncQ+=su_Ds1EHm5gUMG_od-+eqJHkuiV-Q6RhQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 01/17] bpf: Document XDP RX metadata
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, David Vernet <void@manifault.com>
+Date:   Tue, 17 Jan 2023 13:53:59 -0800
+Message-ID: <CAKH8qBuvBomTXqNB+a6n_PbJKSNFazrAxEWsVT-=4XfztuJ7dw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] Documentation/bpf: Add a description of "stable kfuncs"
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        David Vernet <void@manifault.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -78,223 +77,234 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 16, 2023 at 5:09 AM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
+On Tue, Jan 17, 2023 at 1:27 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
+> Following up on the discussion at the BPF office hours, this patch adds a
+> description of the (new) concept of "stable kfuncs", which are kfuncs tha=
+t
+> offer a "more stable" interface than what we have now, but is still not
+> part of UAPI.
 >
+> This is mostly meant as a straw man proposal to focus discussions around
+> stability guarantees. From the discussion, it seemed clear that there wer=
+e
+> at least some people (myself included) who felt that there needs to be so=
+me
+> way to export functionality that we consider "stable" (in the sense of
+> "applications can rely on its continuing existence").
 >
-> On 12/01/2023 01.32, Stanislav Fomichev wrote:
-> > Document all current use-cases and assumptions.
-> >
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: David Ahern <dsahern@gmail.com>
-> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: Willem de Bruijn <willemb@google.com>
-> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> > Cc: Anatoly Burakov <anatoly.burakov@intel.com>
-> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-> > Cc: Maryam Tahhan <mtahhan@redhat.com>
-> > Cc: xdp-hints@xdp-project.net
-> > Cc: netdev@vger.kernel.org
-> > Acked-by: David Vernet <void@manifault.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >   Documentation/networking/index.rst           |   1 +
-> >   Documentation/networking/xdp-rx-metadata.rst | 108 +++++++++++++++++++
-> >   2 files changed, 109 insertions(+)
-> >   create mode 100644 Documentation/networking/xdp-rx-metadata.rst
-> >
-> > diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-> > index 4f2d1f682a18..4ddcae33c336 100644
-> > --- a/Documentation/networking/index.rst
-> > +++ b/Documentation/networking/index.rst
-> > @@ -120,6 +120,7 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
-> >      xfrm_proc
-> >      xfrm_sync
-> >      xfrm_sysctl
-> > +   xdp-rx-metadata
-> >
-> >   .. only::  subproject and html
-> >
-> > diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
-> > new file mode 100644
-> > index 000000000000..b6c8c77937c4
-> > --- /dev/null
-> > +++ b/Documentation/networking/xdp-rx-metadata.rst
-> > @@ -0,0 +1,108 @@
-> > +===============
-> > +XDP RX Metadata
-> > +===============
-> > +
-> > +This document describes how an eXpress Data Path (XDP) program can access
-> > +hardware metadata related to a packet using a set of helper functions,
-> > +and how it can pass that metadata on to other consumers.
-> > +
-> > +General Design
-> > +==============
-> > +
-> > +XDP has access to a set of kfuncs to manipulate the metadata in an XDP frame.
-> > +Every device driver that wishes to expose additional packet metadata can
-> > +implement these kfuncs. The set of kfuncs is declared in ``include/net/xdp.h``
-> > +via ``XDP_METADATA_KFUNC_xxx``.
-> > +
-> > +Currently, the following kfuncs are supported. In the future, as more
-> > +metadata is supported, this set will grow:
-> > +
-> > +.. kernel-doc:: net/core/xdp.c
-> > +   :identifiers: bpf_xdp_metadata_rx_timestamp bpf_xdp_metadata_rx_hash
-> > +
-> > +An XDP program can use these kfuncs to read the metadata into stack
-> > +variables for its own consumption. Or, to pass the metadata on to other
-> > +consumers, an XDP program can store it into the metadata area carried
-> > +ahead of the packet.
-> > +
-> > +Not all kfuncs have to be implemented by the device driver; when not
-> > +implemented, the default ones that return ``-EOPNOTSUPP`` will be used.
-> > +
-> > +Within an XDP frame, the metadata layout is as follows::
+> One option is to keep BPF helpers as the stable interface and implement
+> some technical solution for moving functionality from kfuncs to helpers
+> once it has stood the test of time and we're comfortable committing to it
+> as a stable API. Another is to freeze the helper definitions, and instead
+> use kfuncs for this purpose as well, by marking a subset of them as
+> "stable" in some way. Or we can do both and have multiple levels of
+> "stable", I suppose.
 >
-> Below diagram describes XDP buff (xdp_buff), but text says 'XDP frame'.
-> So XDP frame isn't referring literally to xdp_frame, which I find
-> slightly confusing.
-> It is likely because I think too much about the code and the different
-> objects, xdp_frame, xdp_buff, xdp_md (xdp ctx seen be bpf-prog).
+> This patch is an attempt to describe what the "stable kfuncs" idea might
+> look like, as well as to formulate some criteria for what we mean by
+> "stable", and describe an explicit deprecation procedure. Feel free to
+> critique any part of this (including rejecting the notion entirely).
 >
-> I tried to grep in the (recent added) bpf/xdp docs to see if there is a
-> definition of a XDP "packet" or "frame".  Nothing popped up, except that
-> Documentation/bpf/map_cpumap.rst talks about raw ``xdp_frame`` objects.
+> Some people mentioned (in the office hours) that should we decide to go i=
+n
+> this direction, there's some work that needs to be done in libbpf (and
+> probably the kernel too?) to bring the kfunc developer experience up to p=
+ar
+> with helpers. Things like exporting kfunc definitions to vmlinux.h (to ma=
+ke
+> them discoverable), and having CO-RE support for using them, etc. I kinda
+> consider that orthogonal to what's described here, but I do think we shou=
+ld
+> fix those issues before implementing the procedures described here.
 >
-> Perhaps we can improve this doc by calling out xdp_buff here, like:
+> v2:
+> - Incorporate Daniel's changes
 >
->   Within an XDP frame, the metadata layout (accessed via ``xdp_buff``)
-> is as follows::
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  Documentation/bpf/kfuncs.rst | 87 +++++++++++++++++++++++++++++++++---
+>  1 file changed, 81 insertions(+), 6 deletions(-)
+>
+> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> index 9fd7fb539f85..dd40a4ee35f2 100644
+> --- a/Documentation/bpf/kfuncs.rst
+> +++ b/Documentation/bpf/kfuncs.rst
+> @@ -7,9 +7,9 @@ BPF Kernel Functions (kfuncs)
+>
+>  BPF Kernel Functions or more commonly known as kfuncs are functions in t=
+he Linux
+>  kernel which are exposed for use by BPF programs. Unlike normal BPF help=
+ers,
+> -kfuncs do not have a stable interface and can change from one kernel rel=
+ease to
+> -another. Hence, BPF programs need to be updated in response to changes i=
+n the
+> -kernel.
+> +kfuncs by default do not have a stable interface and can change from one=
+ kernel
+> +release to another. Hence, BPF programs may need to be updated in respon=
+se to
+> +changes in the kernel. See :ref:`BPF_kfunc_stability`.
+>
+>  2. Defining a kfunc
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> @@ -223,14 +223,89 @@ type. An example is shown below::
+>          }
+>          late_initcall(init_subsystem);
+>
+> -3. Core kfuncs
+> +
+> +.. _BPF_kfunc_stability:
+> +
+> +3. API (in)stability of kfuncs
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> +
+> +By default, kfuncs exported to BPF programs are considered a kernel-inte=
+rnal
+> +interface that can change between kernel versions. This means that BPF p=
+rograms
+> +using kfuncs may need to adapt to changes between kernel versions. In th=
+e
+> +extreme case that could also include removal of a kfunc. In other words,=
+ kfuncs
+> +are _not_ part of the kernel UAPI! Rather, these kfuncs can be thought o=
+f as
+> +being similar to internal kernel API functions exported using the
 
-Sure, will amend!
+[..]
 
-> > +
-> > +  +----------+-----------------+------+
-> > +  | headroom | custom metadata | data |
-> > +  +----------+-----------------+------+
-> > +             ^                 ^
-> > +             |                 |
-> > +   xdp_buff->data_meta   xdp_buff->data
-> > +
-> > +An XDP program can store individual metadata items into this ``data_meta``
-> > +area in whichever format it chooses. Later consumers of the metadata
-> > +will have to agree on the format by some out of band contract (like for
-> > +the AF_XDP use case, see below).
-> > +
-> > +AF_XDP
-> > +======
-> > +
-> > +:doc:`af_xdp` use-case implies that there is a contract between the BPF
-> > +program that redirects XDP frames into the ``AF_XDP`` socket (``XSK``) and
-> > +the final consumer. Thus the BPF program manually allocates a fixed number of
-> > +bytes out of metadata via ``bpf_xdp_adjust_meta`` and calls a subset
-> > +of kfuncs to populate it. The userspace ``XSK`` consumer computes
-> > +``xsk_umem__get_data() - METADATA_SIZE`` to locate that metadata.
-> > +Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
-> > +``METADATA_SIZE`` is an application-specific constant.
+> +``EXPORT_SYMBOL_GPL`` macro. All new BPF kernel helper-like functionalit=
+y must
+> +initially start out as kfuncs.
+
+To clarify, as part of this proposal, are we making a decision here
+that we ban new helpers going forward?
+
+(also left some spelling nits below)
+
+> +
+> +3.1 Promotion to "stable" kfuncs
+> +--------------------------------
+> +
+> +While kfuncs are by default considered unstable as described above, some=
+ kfuncs
+> +may warrant a stronger stability guarantee and can be marked as *stable*=
+. The
+> +decision to move a kfunc to *stable* is taken on a case-by-case basis an=
+d must
+> +clear a high bar, taking into account the functions' usefulness under
+> +longer-term production deployment without any unforeseen API issues or
+> +limitations. In general, it is not expected that every kfunc will turn i=
+nto a
+> +stable one - think of it as an exception rather than the norm.
+> +
+> +Those kfuncs which have been promoted to stable are then marked using th=
+e
+> +``KF_STABLE`` tag. The process for requesting a kfunc be marked as stabl=
+e
+> +consists of submitting a patch to the bpf@vger.kernel.org mailing list a=
+dding
+> +the ``KF_STABLE`` tag to that kfunc's definition. The patch description =
+must
+> +include the rationale for why the kfunc should be promoted to stable, in=
+cluding
+> +references to existing production uses, etc. The patch will be considere=
+d the
+> +same was as any other patch, and ultimately the decision on whether a kf=
+unc
+
+nit: most likely s/same was/same way/ here?
+
+> +should be promoted to stable is taken by the BPF maintainers.
+> +
+> +Stable kfuncs provide the following stability guarantees:
+> +
+> +1. Stable kfuncs will not change their function signature or functionali=
+ty in a
+> +   way that may cause incompatibilities for BPF programs calling the fun=
+ction.
+> +
+> +2. The BPF community will make every reasonable effort to keep stable kf=
+uncs
+> +   around as long as they continue to be useful to real-world BPF applic=
+ations.
+> +
+> +3. Should a stable kfunc turn out to be no longer useful, the BPF commun=
+ity may
+> +   decide to eventually remove it. In this case, before being removed th=
+at kfunc
+> +   will go through a deprecation procedure as outlined below.
+> +
+> +3.2 Deprecation of kfuncs
+> +-------------------------
+> +
+> +As described above, the community will make every reasonable effort to k=
+eep
+> +kfuncs available through future kernel versions once they are marked as =
+stable.
+> +However, it may happen case that BPF development moves in an unforeseen
+
+'may happen case' -> 'may happen in case' ?
+
+> +direction so that even a stable kfunc ceases to be useful for program
+> +development.
+> +
+> +In this case, stable kfuncs can be marked as *deprecated* using the
+> +``KF_DEPRECATED`` tag. Such a deprecation request cannot be arbitrary an=
+d must
+> +explain why a given stable kfunc should be deprecated. Once a kfunc is m=
+arked as
+> +deprecated, the following procedure will be followed for removal:
+> +
+> +1. A kfunc marked as deprecated will be kept in the kernel for a conserv=
+atively
+> +   chosen period of time after it was first marked as deprecated (usuall=
+y
+> +   corresponding to a span of multiple years).
+> +
+> +2. Deprecated functions will be documented in the kernel docs along with=
+ their
+> +   remaining lifespan and including a recommendation for new functionali=
+ty that
+> +   can replace the usage of the deprecated function (or an explanation f=
+or why
+> +   no such replacement exists).
+> +
+> +3. After the deprecation period, the kfunc will be removed and the funct=
+ion name
+> +   will be marked as invalid inside the kernel (to ensure that no new kf=
+unc is
+> +   accidentally introduced with the same name in the future). After this
+> +   happens, BPF programs calling the kfunc will be rejected by the verif=
+ier.
+> +
+> +4. Core kfuncs
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 >
-> The main problem with AF_XDP and metadata is that, the AF_XDP descriptor
-> doesn't contain any info about the length METADATA_SIZE.
+>  The BPF subsystem provides a number of "core" kfuncs that are potentiall=
+y
+>  applicable to a wide variety of different possible use cases and program=
+s.
+>  Those kfuncs are documented here.
 >
-> The text does says this, but in a very convoluted way.
-> I think this challenge should be more clearly spelled out.
+> -3.1 struct task_struct * kfuncs
+> +4.1 struct task_struct * kfuncs
+>  -------------------------------
 >
-> (p.s. This was something that XDP-hints via BTF have a proposed solution
-> for)
-
-Any suggestions on how to clarify it better? I have two hints:
-1. ``METADATA_SIZE`` is an application-specific constant
-2. note missing ``data_meta`` pointer
-
-Do you prefer I also add a sentence where I spell it out more
-explicitly? Something like:
-
-Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
-``METADATA_SIZE`` is an application-specific constant (``AF_XDP``
-receive descriptor does _not_ explicitly carry the size of the
-metadata).
-
-> > +
-> > +Here is the ``AF_XDP`` consumer layout (note missing ``data_meta`` pointer)::
+>  There are a number of kfuncs that allow ``struct task_struct *`` objects=
+ to be
+> @@ -306,7 +381,7 @@ Here is an example of it being used:
+>                 return 0;
+>         }
 >
-> The "note" also hint to this issue.
-
-This seems like an explicit design choice of the AF_XDP? In theory, I
-don't see why we can't have a v2 receive descriptor format where we
-return the size of the metadata?
-
-> > +
-> > +  +----------+-----------------+------+
-> > +  | headroom | custom metadata | data |
-> > +  +----------+-----------------+------+
-> > +                               ^
-> > +                               |
-> > +                        rx_desc->address
-> > +
-> > +XDP_PASS
-> > +========
-> > +
-> > +This is the path where the packets processed by the XDP program are passed
-> > +into the kernel. The kernel creates the ``skb`` out of the ``xdp_buff``
-> > +contents. Currently, every driver has custom kernel code to parse
-> > +the descriptors and populate ``skb`` metadata when doing this ``xdp_buff->skb``
-> > +conversion, and the XDP metadata is not used by the kernel when building
-> > +``skbs``. However, TC-BPF programs can access the XDP metadata area using
-> > +the ``data_meta`` pointer.
-> > +
-> > +In the future, we'd like to support a case where an XDP program
-> > +can override some of the metadata used for building ``skbs``.
+> -3.2 struct cgroup * kfuncs
+> +4.2 struct cgroup * kfuncs
+>  --------------------------
 >
-> Happy this is mentioned as future work.
-
-As mentioned in a separate email, if you prefer to focus on that, feel
-free to drive it since I'm gonna look into the TX side first.
-
-> > +
-> > +bpf_redirect_map
-> > +================
-> > +
-> > +``bpf_redirect_map`` can redirect the frame to a different device.
-> > +Some devices (like virtual ethernet links) support running a second XDP
-> > +program after the redirect. However, the final consumer doesn't have
-> > +access to the original hardware descriptor and can't access any of
-> > +the original metadata. The same applies to XDP programs installed
-> > +into devmaps and cpumaps.
-> > +
-> > +This means that for redirected packets only custom metadata is
-> > +currently supported, which has to be prepared by the initial XDP program
-> > +before redirect. If the frame is eventually passed to the kernel, the
-> > +``skb`` created from such a frame won't have any hardware metadata populated
-> > +in its ``skb``. If such a packet is later redirected into an ``XSK``,
-> > +that will also only have access to the custom metadata.
-> > +
->
-> Good that this is documented, but I hope we can fix/improve this as
-> future work.
-
-Definitely! Hopefully documenting it here acts as a sort-of TODO which
-we can eventually address. Maybe even starting with a section here on
-how it is supposed to work :-)
-
-
-> > +bpf_tail_call
-> > +=============
-> > +
-> > +Adding programs that access metadata kfuncs to the ``BPF_MAP_TYPE_PROG_ARRAY``
-> > +is currently not supported.
-> > +
-> > +Example
-> > +=======
-> > +
-> > +See ``tools/testing/selftests/bpf/progs/xdp_metadata.c`` and
-> > +``tools/testing/selftests/bpf/prog_tests/xdp_metadata.c`` for an example of
-> > +BPF program that handles XDP metadata.
->
->
-> --Jesper
+>  ``struct cgroup *`` objects also have acquire and release functions:
+> --
+> 2.39.0
 >
