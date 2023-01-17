@@ -2,241 +2,312 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA6666E2A1
-	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 16:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A0D66E29A
+	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 16:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbjAQPqF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 10:46:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43442 "EHLO
+        id S230315AbjAQPpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 10:45:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjAQPpV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 10:45:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3A54B181
-        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 07:42:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673970136;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VwrmeCk3Vdh5Ni4V2DeawssQ/R4WD/TS7RftRQHb0hI=;
-        b=jK4/sBkfW3vjkCaQxo1ts1Bvv7sYjZGE6rlJl9tJCsqXUN0ljA4WrO5k1cV+Rj8hrGQtEt
-        fdnMtW7fb6tYjcQwarKd7ojdRsrnAQG/x/0JY3WBleAYm+F7yZJYvNsxsex9/+YHKNCOvu
-        LTxSRFdgE5l9WdxxIL045hb0NBrkCJY=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-637-UKb0We2WNeeXslPhPMfjAQ-1; Tue, 17 Jan 2023 10:42:12 -0500
-X-MC-Unique: UKb0We2WNeeXslPhPMfjAQ-1
-Received: by mail-ej1-f72.google.com with SMTP id hs18-20020a1709073e9200b007c0f9ac75f9so21738088ejc.9
-        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 07:42:00 -0800 (PST)
+        with ESMTP id S233533AbjAQPo4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 10:44:56 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285BC42DE0
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 07:42:57 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id r9so8232361wrw.4
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 07:42:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7To1PtEGVp3/tPOk0JXLL+U9DaqHG+W01y2JfF1hK5I=;
+        b=sqjNmW/XT9f6bMUz2HReEOEm15NNiVvPMxUXTumv8HXRcwKFSzVq7Sn7osexqENlED
+         cxpgAQoVCMBcA79O0bs/6PdcgcYa/TCGcPRaPZH025Da/t856WXh9yyikX2+AO+uKUnh
+         N/OeBwjz/VL3hTVLOWDw0z7c7IzRwqNe2Ce/AGJOzFkyMqwHDc2CeYEacuaLbTZ5uI6W
+         sWCWb3Bh5+J4VBpHVjxd4368wMNeEWsviX25PYwG6Dq6KYh8qxIr/YflMdXoWlib7AyQ
+         rtoZqZ3C3qfWKwOcfB1ILORxKgwThZUzHy8KkJQFu+nsJhPv4IlmTQt+X32frJsjt9Fv
+         8zmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VwrmeCk3Vdh5Ni4V2DeawssQ/R4WD/TS7RftRQHb0hI=;
-        b=FHSATNWaG/ZUyVK07EWumlaOfMBMSx5Di9mP4SCTbsdQYz19/qTNVqjDgbtkLLlwkU
-         u69crbhCZrMWavt+NotWtELbVm0TawZS6bXVh3sWQWRFdoFt4Y3jbAi3cKChQE2AZGM8
-         vokD+Bb62ZpCEV4jA+cGh0g/tgUDPI+4CSZiKmTeCSOSe01+CbH1oi5ZGOYGcCCnLUP+
-         MnZ3cLBERJz3gfY/fjKnNcJzafRqPBGE+qomJSLMl+2vLa7p3+oXmWsINL5e118hG3G5
-         Y5YL7RWHSABUV7BezhLKo1as//xvpRVXylEOv0/e4GLNSCoaFCm1UIMioN9cx5lk6L0m
-         nXIA==
-X-Gm-Message-State: AFqh2krAJARbe7cFaKTdcVq7DmDsiH10zRiCkfnbGv6k+hv1Mc0iTFcP
-        XQCbJ3AA6wGOf4hrMJFYoOl6e5HfAnTo0o9tkeouTM4ddX/TRl9pdzilICYEzKNSdKmUNc3QczM
-        LHNbi8NkNBIXJ
-X-Received: by 2002:a17:907:d38a:b0:86e:c9e2:6313 with SMTP id vh10-20020a170907d38a00b0086ec9e26313mr3485219ejc.32.1673970118899;
-        Tue, 17 Jan 2023 07:41:58 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXtZ8j8Q7Y3SggC04i+UfU3PH+M+2OWdMokXvtBaIUSRdw4xLDlHb6BwrlLx8vDmPvDQ51yp7w==
-X-Received: by 2002:a17:907:d38a:b0:86e:c9e2:6313 with SMTP id vh10-20020a170907d38a00b0086ec9e26313mr3485172ejc.32.1673970117985;
-        Tue, 17 Jan 2023 07:41:57 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id kw17-20020a170907771100b0084c4b87aa18sm13388557ejc.37.2023.01.17.07.41.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Jan 2023 07:41:57 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D297F901137; Tue, 17 Jan 2023 16:41:56 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     David Vernet <void@manifault.com>, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [RFC PATCH bpf-next] Documentation/bpf: Add a description of
- "stable kfuncs"
-In-Reply-To: <21baf37f-32a1-69cb-bf3d-afe253bd8243@iogearbox.net>
-References: <20230116225724.377099-1-toke@redhat.com>
- <6deb800f-57d8-9ee5-d588-ee6354e74aa9@iogearbox.net>
- <87fsc9csa5.fsf@toke.dk>
- <bb5b4544-7011-ecca-5d10-cb7c6e72f181@iogearbox.net>
- <87cz7dcpvy.fsf@toke.dk>
- <aaa31102-7ac9-0b39-b545-a51352deaf27@iogearbox.net>
- <874jspcjk8.fsf@toke.dk>
- <21baf37f-32a1-69cb-bf3d-afe253bd8243@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 17 Jan 2023 16:41:56 +0100
-Message-ID: <871qntcgmz.fsf@toke.dk>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7To1PtEGVp3/tPOk0JXLL+U9DaqHG+W01y2JfF1hK5I=;
+        b=AY/ylnPubilYvX2KqeHcNeXTqnBCrwDgcB1nHzcL9sdQox/MLMskmEg5DMw9Wy/2Cs
+         6HQDJmFh8lgrggsVrHHNXfEwgKW/YNDfOtobs0gXqOEU4Ox287DMQv2yCKeEsc5VuuHB
+         is842IFOP/Tn2XwxRFS7wlB9TyD1KaHvOt2fUky8Ugundl6JN6PC8RfHBVARTWKKx1ix
+         zfGDKVCWjzHfzMpqPsBrfonIbj66vYVUooeQpIhilalWaO6d7uOJagdl3J1swoU/zx1U
+         8jAyXO5Gn4QXCiouBiG/hbcFB/yqCghkImLH0YUgpCnw7VSTVyoMwe033Kdg/PJJyqqO
+         s3zw==
+X-Gm-Message-State: AFqh2kp0bVqrMIfD9eNIq0PF9B6JQ1ZSiDQWCW4ZsXGNU6ifsZP5SlKu
+        W1lXC2+44m6j98lw/9a7iFWouA==
+X-Google-Smtp-Source: AMrXdXtTN1BLtD1pbah3CZTaOxF4sW540xUc7Q3jg68foOOF4e44hppWy+ht1PSRvVqSopEM+M//jg==
+X-Received: by 2002:a5d:4384:0:b0:2bd:f8c8:9786 with SMTP id i4-20020a5d4384000000b002bdf8c89786mr2922814wrq.64.1673970175526;
+        Tue, 17 Jan 2023 07:42:55 -0800 (PST)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id a1-20020a5d4d41000000b002bdef155868sm9467141wru.106.2023.01.17.07.42.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Jan 2023 07:42:55 -0800 (PST)
+Message-ID: <43e6cd9f-ac54-46da-dba9-d535a2a77207@isovalent.com>
+Date:   Tue, 17 Jan 2023 15:42:54 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [bpf-next v2] bpf: drop deprecated bpf_jit_enable == 2
+Content-Language: en-GB
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Tonghao Zhang <tong@infragraf.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Hou Tao <houtao1@huawei.com>,
+        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>
+References: <20230105030614.26842-1-tong@infragraf.org>
+ <ea7673e1-40ec-18be-af89-5f4fd0f71742@csgroup.eu>
+ <71c83f39-f85f-d990-95b7-ab6068839e6c@iogearbox.net>
+ <5836b464-290e-203f-00f2-fc6632c9f570@csgroup.eu>
+ <147A796D-12C0-482F-B48A-16E67120622B@infragraf.org>
+ <0b46b813-05f2-5083-9f2e-82d72970dae2@csgroup.eu>
+ <0792068b-9aff-d658-5c7d-086e6d394c6c@csgroup.eu>
+ <C811FC00-CE38-4227-B2E8-4CD8989D8B94@infragraf.org>
+ <4ab9aafe-6436-b90d-5448-f74da22ddddb@csgroup.eu>
+ <376f9737-f9a4-da68-8b7f-26020021613c@isovalent.com>
+ <21b09e52-142d-92f5-4f8b-e4190f89383b@csgroup.eu>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <21b09e52-142d-92f5-4f8b-e4190f89383b@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
-
-> On 1/17/23 3:38 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Daniel Borkmann <daniel@iogearbox.net> writes:
->>> On 1/17/23 1:22 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>> Daniel Borkmann <daniel@iogearbox.net> writes:
->>>>> On 1/17/23 12:30 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>>>> Daniel Borkmann <daniel@iogearbox.net> writes:
->>>>>>> On 1/16/23 11:57 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>>>>>> Following up on the discussion at the BPF office hours, this patch=
- adds a
->>>>>>>> description of the (new) concept of "stable kfuncs", which are kfu=
-ncs that
->>>>>>>> offer a "more stable" interface than what we have now, but is stil=
-l not
->>>>>>>> part of UAPI.
->>>>>>>>
->>>>>>>> This is mostly meant as a straw man proposal to focus discussions =
-around
->>>>>>>> stability guarantees. From the discussion, it seemed clear that th=
-ere were
->>>>>>>> at least some people (myself included) who felt that there needs t=
-o be some
->>>>>>>> way to export functionality that we consider "stable" (in the sens=
-e of
->>>>>>>> "applications can rely on its continuing existence").
->>>>>>>>
->>>>>>>> One option is to keep BPF helpers as the stable interface and impl=
-ement
->>>>>>>> some technical solution for moving functionality from kfuncs to he=
-lpers
->>>>>>>> once it has stood the test of time and we're comfortable committin=
-g to it
->>>>>>>> as a stable API. Another is to freeze the helper definitions, and =
-instead
->>>>>>>> use kfuncs for this purpose as well, by marking a subset of them as
->>>>>>>> "stable" in some way. Or we can do both and have multiple levels o=
-f "stable",
->>>>>>>> I suppose.
->>>>>>>>
->>>>>>>> This patch is an attempt to describe what the "stable kfuncs" idea=
- might look
->>>>>>>> like, as well as to formulate some criteria for what we mean by "s=
-table", and
->>>>>>>> describe an explicit deprecation procedure. Feel free to critique =
-any part
->>>>>>>> of this (including rejecting the notion entirely).
->>>>>>>>
->>>>>>>> Some people mentioned (in the office hours) that should we decide =
-to go in
->>>>>>>> this direction, there's some work that needs to be done in libbpf =
-(and
->>>>>>>> probably the kernel too?) to bring the kfunc developer experience =
-up to par
->>>>>>>> with helpers. Things like exporting kfunc definitions to vmlinux.h=
- (to make
->>>>>>>> them discoverable), and having CO-RE support for using them, etc. =
-I kinda
->>>>>>>> consider that orthogonal to what's described here, but I added a
->>>>>>>> placeholder reference indicating that this (TBD) functionality exi=
-sts.
->>>>>>>
->>>>>>> Thanks for the writeup.. I did some edits to your sections to make =
-some parts
->>>>>>> more clear and to leave out other parts (e.g. libbpf-related bits w=
-hich are not
->>>>>>> relevant in here and it's one of many libs). I also edited some par=
-ts to leave
->>>>>>> us more flexibility. Here would be my take mixed in:
->>>>>>
->>>>>> Edits LGTM, with just one nit, below:
->>>>>>
->>>>>>> 3. API (in)stability of kfuncs
->>>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
->>>>>>>
->>>>>>> By default, kfuncs exported to BPF programs are considered a kernel=
--internal
->>>>>>> interface that can change between kernel versions. In the extreme c=
-ase that
->>>>>>> could also include removal of a kfunc. This means that BPF programs=
- using
->>>>>>> kfuncs might need to adapt to changes between kernel versions. In o=
-ther words,
->>>>>>> kfuncs are _not_ part of the kernel UAPI! Rather, these kfuncs can =
-be thought
->>>>>>> of as being similar to internal kernel API functions exported using=
- the
->>>>>>> ``EXPORT_SYMBOL_GPL`` macro. All new BPF kernel helper-like functio=
-nality must
->>>>>>> initially start out as kfuncs.
->>>>>>>
->>>>>>> 3.1 Promotion to "stable"
->>>>>>> -------------------------
->>>>>>>
->>>>>>> While kfuncs are by default considered unstable as described above,=
- some kfuncs
->>>>>>> may warrant a stronger stability guarantee and could be marked as *=
-stable*. The
->>>>>>> decision to move a kfunc to *stable* is taken on a case-by-case bas=
-is and has
->>>>>>> a high barrier, taking into account its usefulness under longer-ter=
-m production
->>>>>>> deployment without any unforeseen API issues or limitations. In gen=
-eral, it is
->>>>>
->>>>> Forgot, we should probably also add after "[...] or limitations.":
->>>>>
->>>>>      Such promotion request along with aforementioned argumentation o=
-n why a kfunc
->>>>>      is ready to be stabilized must be driven from developer-side.
->>>>
->>>> What does "driven from developer-side" mean, exactly? And what kind of
->>>> developers (BPF app developers, or kernel devs)?
+2023-01-17 14:55 UTC+0000 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
+> 
+> Le 17/01/2023 à 15:41, Quentin Monnet a écrit :
+>> [Vous ne recevez pas souvent de courriers de quentin@isovalent.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+>>
+>> 2023-01-17 14:25 UTC+0000 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
 >>>
->>> Mainly to denote that this needs to be an explicit request from the com=
-munity
->>> rather than something that would happen automagically after some time (=
-e.g.
->>> where maintainers would just put the KF_STABLE stamp to it). 'kfunc xyz=
- has
->>> been used in our fleet in production in the context of project abc for =
-two
->>> years now and its API is sufficient to cover all foreseeable needs. The
->>> kfunc didn't need to get extended since it was added [...]', for exampl=
-e.
->>> The developer-hat can be both as long as there is a concrete relation to
->>> usage of the kfunc that can be provided to then make the case.
->>=20
->> Right, makes sense! So how about:
->>=20
->> "The process for requesting a kfunc be marked as stable consists of
->> submitting a patch to the bpf@vger.kernel.org mailing list adding the
->> KF_STABLE tag to that kfunc's definition. The patch description must
->> include the rationale for why the kfunc should be promoted to stable,
->> including references to existing production uses, etc."
->
-> Sounds good to me!
+>>>
+>>> Le 17/01/2023 à 15:18, Tonghao Zhang a écrit :
+>>>>
+>>>>
+>>>>> On Jan 17, 2023, at 7:36 PM, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+>>>>>
+>>>>>
+>>>>>
+>>>>> Le 17/01/2023 à 08:30, Christophe Leroy a écrit :
+>>>>>>
+>>>>>>
+>>>>>> Le 17/01/2023 à 06:30, Tonghao Zhang a écrit :
+>>>>>>>
+>>>>>>>
+>>>>>>>> On Jan 9, 2023, at 4:15 PM, Christophe Leroy
+>>>>>>>> <christophe.leroy@csgroup.eu> wrote:
+>>
+>> [...]
+>>
+>>>>>>>> Sure I will try to test bpftool again in the coming days.
+>>>>>>>>
+>>>>>>>> Previous discussion about that subject is here:
+>>>>>>>> https://patchwork.kernel.org/project/linux-riscv/patch/20210415093250.3391257-1-Jianlin.Lv@arm.com/#24176847=
+>>
+>> Christophe, apologies from dropping the discussion the last time, it
+>> seems your last message on that thread didn't make it to my inbox at the
+>> time :/. Thanks a lot for looking into that again!
+>>
+>>>>>>> Hi Christophe
+>>>>>>> Any progress? We discuss to deprecate the bpf_jit_enable == 2 in 2021,
+>>>>>>> but bpftool can not run on powerpc.
+>>>>>>> Now can we fix this issue?
+>>>>>>
+>>>>>> Hi Tong,
+>>>>>>
+>>>>>> I have started to look at it but I don't have any fruitfull feedback yet.
+>>>>>
+>>>>> Hi Again,
+>>>>>
+>>>>> I tested again, the problem is still the same as one year ago:
+>>>>>
+>>>>> root@vgoip:~# ./bpftool prog
+>>>>> libbpf: elf: endianness mismatch in pid_iter_bpf.
+>>>> It seem to be not right ehdr->e_ident[EI_DATA]. Do we can print the real value?
+>>>> /*
+>>>>    * e_ident[EI_DATA]
+>>>>    */
+>>>> #define ELFDATANONE     0
+>>>> #define ELFDATA2LSB     1
+>>>> #define ELFDATA2MSB     2
+>>>> #define ELFDATANUM      3
+>>>>
+>>>> bpf_object__elf_init:
+>>>> obj->efile.ehdr = ehdr = elf64_getehdr(elf);
+>>>>
+>>>>> libbpf: failed to initialize skeleton BPF object 'pid_iter_bpf': -4003
+>>>>> Error: failed to open PID iterator skeleton
+>>>>>
+>>>>> root@vgoip:~# uname -a
+>>>>> Linux vgoip 6.2.0-rc3-02596-g1c2c9c13e256 #242 PREEMPT Tue Jan 17
+>>>>> 09:36:08 CET 2023 ppc GNU/Linux
+>>>> On my pc, elf is little endian.
+>>>> # readelf -h tools/bpf/bpftool/pid_iter.bpf.o
+>>>> ELF Header:
+>>>>     Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+>>>>     Class:                             ELF64
+>>>>     Data:                              2's complement, little endian # x86_64
+>>>>     Version:                           1 (current)
+>>>>     OS/ABI:                            UNIX - System V
+>>>>     ABI Version:                       0
+>>>>     Type:                              REL (Relocatable file)
+>>>>     Machine:                           Linux BPF
+>>>>     Version:                           0x1
+>>>>     Entry point address:               0x0
+>>>>     Start of program headers:          0 (bytes into file)
+>>>>     Start of section headers:          64832 (bytes into file)
+>>>>     Flags:                             0x0
+>>>>     Size of this header:               64 (bytes)
+>>>>     Size of program headers:           0 (bytes)
+>>>>     Number of program headers:         0
+>>>>     Size of section headers:           64 (bytes)
+>>>>     Number of section headers:         13
+>>>>     Section header string table index: 1
+>>>>
+>>>
+>>> Yes, must be something wrong with the build, I get same as you :
+>>>
+>>> $ LANG= readelf -h pid_iter.bpf.o
+>>> ELF Header:
+>>>     Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+>>>     Class:                             ELF64
+>>>     Data:                              2's complement, little endian
+>>>     Version:                           1 (current)
+>>>     OS/ABI:                            UNIX - System V
+>>>     ABI Version:                       0
+>>>     Type:                              REL (Relocatable file)
+>>>     Machine:                           Linux BPF
+>>>     Version:                           0x1
+>>>     Entry point address:               0x0
+>>>     Start of program headers:          0 (bytes into file)
+>>>     Start of section headers:          34704 (bytes into file)
+>>>     Flags:                             0x0
+>>>     Size of this header:               64 (bytes)
+>>>     Size of program headers:           0 (bytes)
+>>>     Number of program headers:         0
+>>>     Size of section headers:           64 (bytes)
+>>>     Number of section headers:         13
+>>>     Section header string table index: 1
+>>>
+>>>
+>>> Whereas I expect the same as bpftool I suppose, which is :
+>>>
+>>> $ LANG= readelf -h bpftool
+>>> ELF Header:
+>>>     Magic:   7f 45 4c 46 01 02 01 00 00 00 00 00 00 00 00 00
+>>>     Class:                             ELF32
+>>>     Data:                              2's complement, big endian
+>>>     Version:                           1 (current)
+>>>     OS/ABI:                            UNIX - System V
+>>>     ABI Version:                       0
+>>>     Type:                              EXEC (Executable file)
+>>>     Machine:                           PowerPC
+>>>     Version:                           0x1
+>>>     Entry point address:               0x100027d0
+>>>     Start of program headers:          52 (bytes into file)
+>>>     Start of section headers:          1842896 (bytes into file)
+>>>     Flags:                             0x0
+>>>     Size of this header:               52 (bytes)
+>>>     Size of program headers:           32 (bytes)
+>>>     Number of program headers:         9
+>>>     Size of section headers:           40 (bytes)
+>>>     Number of section headers:         39
+>>>     Section header string table index: 38
+>>>
+>>
+>> pid_iter.bpf.o should be generated from that command in bpftool's Makefile:
+>>
+>>          $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h \
+>>                          $(LIBBPF_BOOTSTRAP)
+>>                  $(QUIET_CLANG)$(CLANG) \
+>>                          -I$(or $(OUTPUT),.) \
+>>                          -I$(srctree)/tools/include/uapi/ \
+>>                          -I$(LIBBPF_BOOTSTRAP_INCLUDE) \
+>>                          -g -O2 -Wall -fno-stack-protector \
+>>                          -target bpf -c $< -o $@
+>>
+>> My understanding is that "-target bpf" is supposed to pick the
+>> endianness for the host (see "llc --version | grep bpf". If that's not
+>> the case, could you please try to turn that into '-target bpfeb' in the
+>> Makefile instead? I'd be curious to see if it helps.
+>>
+> 
+> I guess it cannot work if it picks the endianness for the build host. It 
+> should pick the endianness for the target host.
+> 
+> That's worse it seems with bpfeb : it fails at build :
+> 
+>    LINK    /home/chleroy/linux-powerpc/tools/bpf/bpftool/bootstrap/bpftool
+>    GEN     vmlinux.h
+>    CLANG   pid_iter.bpf.o
+>    GEN     pid_iter.skel.h
+> libbpf: elf: endianness mismatch in pid_iter_bpf.
+> Error: failed to open BPF object file: Endian mismatch
+> make: *** [Makefile:222: pid_iter.skel.h] Error 93
+> 
+> 
+> Complete build in case it helps:
+> 
+> $ LANG= make CROSS_COMPILE=ppc-linux- ARCH=powerpc
+> 
+> Auto-detecting system features:
+> ...                         clang-bpf-co-re: [ [32mon[m  ]
+> ...                                    llvm: [ [31mOFF[m ]
+> ...                                  libcap: [ [31mOFF[m ]
+> ...                                  libbfd: [ [31mOFF[m ]
 
-Cool. I'll incorporate your changes (+ what we discussed) and send a v2
-to make it easier for others to chime in...
+[...]
 
--Toke
+>    CLANG   pid_iter.bpf.o
+>    GEN     pid_iter.skel.h
+> libbpf: elf: endianness mismatch in pid_iter_bpf.
+> Error: failed to open BPF object file: Endian mismatch
+> make: *** [Makefile:222: pid_iter.skel.h] Error 93
 
+
+Right sorry, I forgot you were cross-compiling. As far as I understand,
+it seems that bpftool's Makefile picks up the host endianness when
+building the skeleton header file and embedding the BPF program in it,
+so loading it on the target host doesn't work. We would like it to build
+the skeleton with the target endianness instead, but it seems that
+libbpf does not support that (referring to
+bpf_object__check_endianness() in tools/lib/bpf/libbpf.c).
+
+I don't know if there's a way to make libbpf work here, or plans to add
+it (Andrii do you know?).
+
+In the meantime, you could disable the use of skeletons in bpftool, by
+removing "clang-bpf-co-re" from FEATURE_TESTS from the Makefile. You
+should get a functional binary, which would only miss a few features
+(namely, printing the pids of programs holding references to BPF
+programs, and the "bpftool prog profile" command).
