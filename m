@@ -2,79 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2884C670BAE
-	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 23:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 273BF670BC3
+	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 23:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjAQWbq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 17:31:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        id S229600AbjAQWkw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 17:40:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbjAQWbA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 17:31:00 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930712BF1E;
-        Tue, 17 Jan 2023 14:08:18 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id v6so47055885edd.6;
-        Tue, 17 Jan 2023 14:08:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L6iofbbwZHLgCsKlgr1rNIbEck8OSQGQnY2PcA0tm8E=;
-        b=RfD3OG5eaRLuot2OBFZQHHIQ0bEFoq9pfKVZzo/Ewahcf2cbpeGKTZowv7I3GNKUVa
-         YUGoWK04JmBXW4Mrp6jS1eQiiPLBxcGJZHKf14gRE9d4K2Ow3BVKmd0qxTQPvyjsq+vg
-         rt94uF4eg3M3J3i/dF+UBYxdcc65YMWaDFa7d73K2UnWykOR6FLMlkOEHrsdGfTs0wM/
-         02KA7EIRqR8G114NhqItCGGRJ4hf8pIWPWq9AGyjqnZSBzR6qpWaD8D8vKm9An5T2b4N
-         e7mdlpzjxjgBObflxSlpZhjni1FP+iGVW0yh3y4YDAU/eNbDKqPrhqxrzDV0Jd6pyu1m
-         75yQ==
+        with ESMTP id S229834AbjAQWjz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 17:39:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB7D22DD2
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 14:15:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673993757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nVCdnSPpgSc0Lut4xjL5N2UTJnAW1T5qJ5v9mxraf2M=;
+        b=Z0jSZfcKa7GOt0cbXWP5pQcSFSLScW2iTK09TAFann4frOugGfZpV8W6OVkCkePACApXeX
+        jFk/YT9MqlXLZTbY+BimQ4W6/XsD5VeQPADl4JsC1TJVa4wDlBFuFZph6UXVx60su+uckU
+        tS3U/5dX7rojwV2vAsjpwj/7zFUmRLY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-509-axfMPtKbPKSb919lV1l8KA-1; Tue, 17 Jan 2023 17:15:50 -0500
+X-MC-Unique: axfMPtKbPKSb919lV1l8KA-1
+Received: by mail-ed1-f69.google.com with SMTP id f11-20020a056402354b00b0049e18f0076dso4718864edd.15
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 14:15:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L6iofbbwZHLgCsKlgr1rNIbEck8OSQGQnY2PcA0tm8E=;
-        b=qF1QnEM1O1n7cilgJF2Lq1sfYy8C/p8HeWzN3LyAVIA+iBfRYYv5HYBnlfW1j6OhHg
-         G+Czh+PDzS43nfYoehXQkb9Af/YNinWZ42CEfl3Kj5PZ1Yt2jdmd1Se+KduL36ybX7L0
-         hs6qS9qPJ0+L0OdvwUBGbOMz6KJTh36MZ92ZE166Q96mhM1kFOPUT0CtWNWTbakbb59x
-         elvXblAV0h5wlOBPU9PmydpmNuJ9zNaL5auUta1dp/EkrTvJUgeOgp3Tybh11foxquOS
-         9q/kayO+pE9zunydNjjgmurcrvq4s209QifyzzF7SMMZInU893fRz3tQwVOTiz4HRRUY
-         ZbSw==
-X-Gm-Message-State: AFqh2kqkIEVdnWsDSLHLOrfYIwmODzPTPDwqkw5y+x4G3bFzRdd/jUDR
-        YoMq61CTIWfXwFeFHDiHImM=
-X-Google-Smtp-Source: AMrXdXvebIZG5RejqLTEny7PNMVO11/Jdt0IfqvnaZeQq/vDjGif74IcBwgPwECAukq6s87NONNG3Q==
-X-Received: by 2002:aa7:cc8f:0:b0:492:8207:f2ba with SMTP id p15-20020aa7cc8f000000b004928207f2bamr15164877edt.1.1673993297309;
-        Tue, 17 Jan 2023 14:08:17 -0800 (PST)
-Received: from krava ([83.240.63.124])
-        by smtp.gmail.com with ESMTPSA id d2-20020a056402000200b0049e09105705sm3613073edu.62.2023.01.17.14.08.16
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nVCdnSPpgSc0Lut4xjL5N2UTJnAW1T5qJ5v9mxraf2M=;
+        b=Vo47o+C6Lr25aARFouy1/YAYSBKjasKWxE2ag16Ic1stwJbGLB4/6QS96iXSmEB1du
+         1dfBtBWZ5stgsanvfJ4NJXWPkqp6OLjtjFCGUAXXPYui1jxUTLDHWP1iS33CcffdLriI
+         WLPJnQmEd81IyHQxrK/mGjov/iXMLBO6lqoXvWrFrlV3+qHEi+Ct39/x054Q7E2wRQqh
+         JKkxwSMLsUz9z5mgOzMcvfnYfHFKWPYEpbX9PGexIxJZB0cKpKaiCry5me1OepqP0O1Y
+         1k6wSKfLb6+qi5Vr2KwTFFEzXSSroupWpryIEOrCCkszihkJb2jrM5QI9WgCPPhubb7S
+         4tQQ==
+X-Gm-Message-State: AFqh2kqWGLIElybaUl/iXjPDaYIjfNqKwOU1KZmc2eUS0tfJetMXXbdG
+        57tHiBepG+J2pnKtLRhQPatMSPEl7SP3bhQkxA3tfhQ9lhjAUdEZiDUizG29gLn69ycqDXQLweN
+        hA1XOx52x1k73
+X-Received: by 2002:a17:907:76c6:b0:877:564a:6fd3 with SMTP id kf6-20020a17090776c600b00877564a6fd3mr182119ejc.21.1673993749157;
+        Tue, 17 Jan 2023 14:15:49 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXtct0L+6H586Hqk7KUwB31Uwdc2ltJ7NpPWPm0QfBMU5pi3ouGi3JVmNp1YtMSvhkEzQ5BRBw==
+X-Received: by 2002:a17:907:76c6:b0:877:564a:6fd3 with SMTP id kf6-20020a17090776c600b00877564a6fd3mr182089ejc.21.1673993748801;
+        Tue, 17 Jan 2023 14:15:48 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id r2-20020a17090609c200b007bd28b50305sm13685716eje.200.2023.01.17.14.15.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Jan 2023 14:08:16 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 17 Jan 2023 23:08:14 +0100
-To:     Ian Rogers <irogers@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Connor OBrien <connoro@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] tools/resolve_btfids: Install subcmd headers
-Message-ID: <Y8ccTrSfHi3VRm2h@krava>
-References: <20230116215751.633675-1-irogers@google.com>
+        Tue, 17 Jan 2023 14:15:48 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 819879011A9; Tue, 17 Jan 2023 23:15:47 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@corigine.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        memxor@gmail.com, alardam@gmail.com, saeedm@nvidia.com,
+        anthony.l.nguyen@intel.com, gospo@broadcom.com,
+        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
+        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
+        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
+        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
+        lorenzo.bianconi@redhat.com
+Subject: Re: [RFC v2 bpf-next 2/7] drivers: net: turn on XDP features
+In-Reply-To: <Y8cboWSmvoOKxav2@oden.dyn.berto.se>
+References: <cover.1673710866.git.lorenzo@kernel.org>
+ <b606e729c9baf36a28be246bf0bfa4d21cc097fb.1673710867.git.lorenzo@kernel.org>
+ <Y8cTKOmCBbMEZK8D@sleipner.dyn.berto.se> <87y1q0bz6m.fsf@toke.dk>
+ <Y8cboWSmvoOKxav2@oden.dyn.berto.se>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 17 Jan 2023 23:15:47 +0100
+Message-ID: <87sfg8byek.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230116215751.633675-1-irogers@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,104 +93,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 16, 2023 at 01:57:50PM -0800, Ian Rogers wrote:
-> Previously tools/lib/subcmd was added to the include path, switch to
-> installing the headers and then including from that directory. This
-> avoids dependencies on headers internal to tools/lib/subcmd. Add the
-> missing subcmd directory to the affected #include.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Niklas S=C3=B6derlund <niklas.soderlund@corigine.com> writes:
 
-Acked-by: iri Olsa <jolsa@kernel.org>
+> Hi Toke,
+>
+> On 2023-01-17 22:58:57 +0100, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Niklas S=C3=B6derlund <niklas.soderlund@corigine.com> writes:
+>>=20
+>> > Hi Lorenzo and Marek,
+>> >
+>> > Thanks for your work.
+>> >
+>> > On 2023-01-14 16:54:32 +0100, Lorenzo Bianconi wrote:
+>> >
+>> > [...]
+>> >
+>> >>=20
+>> >> Turn 'hw-offload' feature flag on for:
+>> >>  - netronome (nfp)
+>> >>  - netdevsim.
+>> >
+>> > Is there a definition of the 'hw-offload' written down somewhere? From=
+=20
+>> > reading this series I take it is the ability to offload a BPF program?=
+=20=20
+>>=20
+>> Yeah, basically this means "allows loading and attaching programs in
+>> XDP_MODE_HW", I suppose :)
+>>=20
+>> > It would also be interesting to read documentation for the other flags=
+=20
+>> > added in this series.
+>>=20
+>> Yup, we should definitely document them :)
+>>=20
+>> > [...]
+>> >
+>> >> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c=20
+>> >> b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+>> >> index 18fc9971f1c8..5a8ddeaff74d 100644
+>> >> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+>> >> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+>> >> @@ -2529,10 +2529,14 @@ static void nfp_net_netdev_init(struct nfp_ne=
+t *nn)
+>> >>  	netdev->features &=3D ~NETIF_F_HW_VLAN_STAG_RX;
+>> >>  	nn->dp.ctrl &=3D ~NFP_NET_CFG_CTRL_RXQINQ;
+>> >>=20=20
+>> >> +	nn->dp.netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC |
+>> >> +				      NETDEV_XDP_ACT_HW_OFFLOAD;
+>> >
+>> > If my assumption about the 'hw-offload' flag above is correct I think=
+=20
+>> > NETDEV_XDP_ACT_HW_OFFLOAD should be conditioned on that the BPF firmwa=
+re=20
+>> > flavor is in use.
+>> >
+>> >     nn->dp.netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC;
+>> >
+>> >     if (nn->app->type->id =3D=3D NFP_APP_BPF_NIC)
+>> >         nn->dp.netdev->xdp_features |=3D NETDEV_XDP_ACT_HW_OFFLOAD;
+>> >
+>> >> +
+>> >>  	/* Finalise the netdev setup */
+>> >>  	switch (nn->dp.ops->version) {
+>> >>  	case NFP_NFD_VER_NFD3:
+>> >>  		netdev->netdev_ops =3D &nfp_nfd3_netdev_ops;
+>> >> +		nn->dp.netdev->xdp_features |=3D NETDEV_XDP_ACT_XSK_ZEROCOPY;
+>> >>  		break;
+>> >>  	case NFP_NFD_VER_NFDK:
+>> >>  		netdev->netdev_ops =3D &nfp_nfdk_netdev_ops;
+>> >
+>> > This is also a wrinkle I would like to understand. Currently NFP suppo=
+rt=20
+>> > zero-copy on NFD3, but not for offloaded BPF programs. But with the BP=
+F=20
+>> > firmware flavor running the device can still support zero-copy for=20
+>> > non-offloaded programs.
+>> >
+>> > Is it a problem that the driver advertises support for both=20
+>> > hardware-offload _and_ zero-copy at the same time, even if they can't =
+be=20
+>> > used together but separately?
+>>=20
+>> Hmm, so the idea with this is to only expose feature flags that are
+>> supported "right now" (you'll note that some of the drivers turn the
+>> REDIRECT_TARGET flag on and off at runtime). Having features that are
+>> "supported but in a different configuration" is one of the points of
+>> user confusion we want to clear up with the explicit flags.
+>>=20
+>> So I guess it depends a little bit what you mean by "can't be used
+>> together"? I believe it's possible to load two programs at the same
+>> time, one in HW mode and one in native (driver) mode, right? In this
+>> case, could the driver mode program use XSK zerocopy while the HW mode
+>> program is also loaded?
+>
+> Exactly, this is my concern. Two programs can be loaded at the same=20
+> time, one in HW mode and one in native mode. The program in native mode=20
+> can use zero-copy at the same time as another program runs in HW mode.
+>
+> But the program running in HW mode can never use zero-copy.
 
-jirka
+Hmm, but zero-copy is an AF_XDP feature, and AFAIK offloaded programs
+can't use AF_XDP at all? So the zero-copy "feature" is available on the
+hardware, it's just intrinsic to that feature that it doesn't work on
+offloaded programs?
 
-> ---
->  tools/bpf/resolve_btfids/Makefile | 19 ++++++++++++++-----
->  tools/bpf/resolve_btfids/main.c   |  2 +-
->  2 files changed, 15 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> index 19a3112e271a..76b737b2560d 100644
-> --- a/tools/bpf/resolve_btfids/Makefile
-> +++ b/tools/bpf/resolve_btfids/Makefile
-> @@ -35,21 +35,29 @@ SUBCMD_SRC := $(srctree)/tools/lib/subcmd/
->  BPFOBJ     := $(OUTPUT)/libbpf/libbpf.a
->  LIBBPF_OUT := $(abspath $(dir $(BPFOBJ)))/
->  SUBCMDOBJ  := $(OUTPUT)/libsubcmd/libsubcmd.a
-> +SUBCMD_OUT := $(abspath $(dir $(SUBCMDOBJ)))/
->  
->  LIBBPF_DESTDIR := $(LIBBPF_OUT)
->  LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)include
->  
-> +SUBCMD_DESTDIR := $(SUBCMD_OUT)
-> +SUBCMD_INCLUDE := $(SUBCMD_DESTDIR)include
-> +
->  BINARY     := $(OUTPUT)/resolve_btfids
->  BINARY_IN  := $(BINARY)-in.o
->  
->  all: $(BINARY)
->  
-> +prepare: $(BPFOBJ) $(SUBCMDOBJ)
-> +
->  $(OUTPUT) $(OUTPUT)/libsubcmd $(LIBBPF_OUT):
->  	$(call msg,MKDIR,,$@)
->  	$(Q)mkdir -p $(@)
->  
->  $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
-> -	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
-> +	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(SUBCMD_OUT) \
-> +		    DESTDIR=$(SUBCMD_DESTDIR) prefix= \
-> +		    $(abspath $@) install_headers
->  
->  $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUT)
->  	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(LIBBPF_OUT)    \
-> @@ -60,14 +68,14 @@ CFLAGS += -g \
->            -I$(srctree)/tools/include \
->            -I$(srctree)/tools/include/uapi \
->            -I$(LIBBPF_INCLUDE) \
-> -          -I$(SUBCMD_SRC)
-> +          -I$(SUBCMD_INCLUDE)
->  
->  LIBS = -lelf -lz
->  
->  export srctree OUTPUT CFLAGS Q
->  include $(srctree)/tools/build/Makefile.include
->  
-> -$(BINARY_IN): $(BPFOBJ) fixdep FORCE | $(OUTPUT)
-> +$(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
->  	$(Q)$(MAKE) $(build)=resolve_btfids
->  
->  $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
-> @@ -79,7 +87,8 @@ clean_objects := $(wildcard $(OUTPUT)/*.o                \
->                              $(OUTPUT)/.*.o.d             \
->                              $(LIBBPF_OUT)                \
->                              $(LIBBPF_DESTDIR)            \
-> -                            $(OUTPUT)/libsubcmd          \
-> +                            $(SUBCMD_OUT)                \
-> +                            $(SUBCMD_DESTDIR)            \
->                              $(OUTPUT)/resolve_btfids)
->  
->  ifneq ($(clean_objects),)
-> @@ -96,4 +105,4 @@ tags:
->  
->  FORCE:
->  
-> -.PHONY: all FORCE clean tags
-> +.PHONY: all FORCE clean tags prepare
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index 80cd7843c677..77058174082d 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -75,7 +75,7 @@
->  #include <linux/err.h>
->  #include <bpf/btf.h>
->  #include <bpf/libbpf.h>
-> -#include <parse-options.h>
-> +#include <subcmd/parse-options.h>
->  
->  #define BTF_IDS_SECTION	".BTF_ids"
->  #define BTF_ID		"__BTF_ID__"
-> -- 
-> 2.39.0.314.g84b9a713c41-goog
-> 
+Which goes back to: yeah, we should document what the feature flags mean :)
+
+-Toke
+
