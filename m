@@ -2,67 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E65466DCDE
-	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 12:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C7666DCF4
+	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 12:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjAQLx5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 06:53:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33606 "EHLO
+        id S236292AbjAQL42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 06:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236901AbjAQLxX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 06:53:23 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5B334C2A;
-        Tue, 17 Jan 2023 03:53:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1673956402; x=1705492402;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=EyCiChHftQ8iN2gWVAhtRIoldyffQXVLXSIIFcFPlts=;
-  b=CveQnbVUaufo5PQvmSC6013lZk59BmzC0bdlvauoaGpZpOX8dv+deQYn
-   Sh7T/XdbFL9Cmb45mhvhPTXdvGBK2YFFRtWSPyGioab38S5GyHBF7AyhY
-   nbKQiVoey3NMrU7oLZ0m+pyY3uTFda2aYIm1ryClp6l27+YtWRynadiej
-   dokaOM6mJX4Auro2dGyknHSJJMVgRoy5Y2aO80BLP1Mi/IlkwlfH8YMC4
-   QVbzJ8XVhZt9z+Wz+VS1FNgni9x6goz0itOZiM7+e0lKi6l41TD43Xb3t
-   Oy5fxdOcI+DAasd1Vyo6UeoGBrlCSrS2/v5mmi56vklVkt4jGBjYlBoD5
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.97,222,1669100400"; 
-   d="scan'208";a="192589119"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Jan 2023 04:53:20 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Tue, 17 Jan 2023 04:53:18 -0700
-Received: from HNO-LT-M43596A.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.16 via Frontend Transport; Tue, 17 Jan 2023 04:53:13 -0700
-Message-ID: <c45808c864e0aa60b34324c953d021ec10a0ee92.camel@microchip.com>
-Subject: Re: [PATCH net 2/5] lan966x: execute xdp_do_flush() before
- napi_complete_done()
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        <magnus.karlsson@intel.com>, <bjorn@kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <jonathan.lemon@gmail.com>, <maciej.fijalkowski@intel.com>,
-        <kuba@kernel.org>, <toke@redhat.com>, <pabeni@redhat.com>,
-        <davem@davemloft.net>, <aelior@marvell.com>, <manishc@marvell.com>,
-        <horatiu.vultur@microchip.com>, <UNGLinuxDriver@microchip.com>,
-        <mst@redhat.com>, <jasowang@redhat.com>, <ioana.ciornei@nxp.com>,
-        <madalin.bucur@nxp.com>
-CC:     <bpf@vger.kernel.org>
-Date:   Tue, 17 Jan 2023 12:53:13 +0100
-In-Reply-To: <20230117092533.5804-3-magnus.karlsson@gmail.com>
-References: <20230117092533.5804-1-magnus.karlsson@gmail.com>
-         <20230117092533.5804-3-magnus.karlsson@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S236550AbjAQL40 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 06:56:26 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905491E5F7
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 03:56:24 -0800 (PST)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pHkZZ-000Ley-JH; Tue, 17 Jan 2023 12:56:13 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pHkZZ-0002QN-19; Tue, 17 Jan 2023 12:56:13 +0100
+Subject: Re: [RFC PATCH bpf-next] Documentation/bpf: Add a description of
+ "stable kfuncs"
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc:     David Vernet <void@manifault.com>, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <20230116225724.377099-1-toke@redhat.com>
+ <6deb800f-57d8-9ee5-d588-ee6354e74aa9@iogearbox.net> <87fsc9csa5.fsf@toke.dk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <bb5b4544-7011-ecca-5d10-cb7c6e72f181@iogearbox.net>
+Date:   Tue, 17 Jan 2023 12:56:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+In-Reply-To: <87fsc9csa5.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26784/Tue Jan 17 09:29:12 2023)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,69 +60,122 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Magnus,
+On 1/17/23 12:30 PM, Toke Høiland-Jørgensen wrote:
+> Daniel Borkmann <daniel@iogearbox.net> writes:
+> 
+>> On 1/16/23 11:57 PM, Toke Høiland-Jørgensen wrote:
+>>> Following up on the discussion at the BPF office hours, this patch adds a
+>>> description of the (new) concept of "stable kfuncs", which are kfuncs that
+>>> offer a "more stable" interface than what we have now, but is still not
+>>> part of UAPI.
+>>>
+>>> This is mostly meant as a straw man proposal to focus discussions around
+>>> stability guarantees. From the discussion, it seemed clear that there were
+>>> at least some people (myself included) who felt that there needs to be some
+>>> way to export functionality that we consider "stable" (in the sense of
+>>> "applications can rely on its continuing existence").
+>>>
+>>> One option is to keep BPF helpers as the stable interface and implement
+>>> some technical solution for moving functionality from kfuncs to helpers
+>>> once it has stood the test of time and we're comfortable committing to it
+>>> as a stable API. Another is to freeze the helper definitions, and instead
+>>> use kfuncs for this purpose as well, by marking a subset of them as
+>>> "stable" in some way. Or we can do both and have multiple levels of "stable",
+>>> I suppose.
+>>>
+>>> This patch is an attempt to describe what the "stable kfuncs" idea might look
+>>> like, as well as to formulate some criteria for what we mean by "stable", and
+>>> describe an explicit deprecation procedure. Feel free to critique any part
+>>> of this (including rejecting the notion entirely).
+>>>
+>>> Some people mentioned (in the office hours) that should we decide to go in
+>>> this direction, there's some work that needs to be done in libbpf (and
+>>> probably the kernel too?) to bring the kfunc developer experience up to par
+>>> with helpers. Things like exporting kfunc definitions to vmlinux.h (to make
+>>> them discoverable), and having CO-RE support for using them, etc. I kinda
+>>> consider that orthogonal to what's described here, but I added a
+>>> placeholder reference indicating that this (TBD) functionality exists.
+>>
+>> Thanks for the writeup.. I did some edits to your sections to make some parts
+>> more clear and to leave out other parts (e.g. libbpf-related bits which are not
+>> relevant in here and it's one of many libs). I also edited some parts to leave
+>> us more flexibility. Here would be my take mixed in:
+> 
+> Edits LGTM, with just one nit, below:
+> 
+>> 3. API (in)stability of kfuncs
+>> ==============================
+>>
+>> By default, kfuncs exported to BPF programs are considered a kernel-internal
+>> interface that can change between kernel versions. In the extreme case that
+>> could also include removal of a kfunc. This means that BPF programs using
+>> kfuncs might need to adapt to changes between kernel versions. In other words,
+>> kfuncs are _not_ part of the kernel UAPI! Rather, these kfuncs can be thought
+>> of as being similar to internal kernel API functions exported using the
+>> ``EXPORT_SYMBOL_GPL`` macro. All new BPF kernel helper-like functionality must
+>> initially start out as kfuncs.
+>>
+>> 3.1 Promotion to "stable"
+>> -------------------------
+>>
+>> While kfuncs are by default considered unstable as described above, some kfuncs
+>> may warrant a stronger stability guarantee and could be marked as *stable*. The
+>> decision to move a kfunc to *stable* is taken on a case-by-case basis and has
+>> a high barrier, taking into account its usefulness under longer-term production
+>> deployment without any unforeseen API issues or limitations. In general, it is
 
-This looks good to me.
+Forgot, we should probably also add after "[...] or limitations.":
 
-Acked-by: Steen Hegelund <Steen.Hegelund@microchip.com>
+   Such promotion request along with aforementioned argumentation on why a kfunc
+   is ready to be stabilized must be driven from developer-side.
 
-BR
-Steen
+>> not expected that every kfunc will turn into a stable one - think of it as an
+>> exception rather than the norm. kfuncs which have been promoted to stable are
+>> then marked using the ``KF_STABLE`` tag. The possibility from a stable kfunc to
+>> a BPF helper addition is up to the maintainers to decide.
+>>
+>> 1. Stable kfuncs will not change their function signature or functionality in
+>>      a way that may cause incompatibilities for BPF programs calling the function.
+>>
+>> 2. The BPF community will make every reasonable effort to keep stable kfuncs
+>>      around as long as they continue to be useful to real-world BPF applications.
+>>
+>> 3. Should a stable kfunc turn out to be no longer useful, a deprecation procedure
+>>      might be implemented for them as outlined below.
+> 
+> "deprecation procedure might be implemented" could be interpreted as "we
+> may implement a deprecation procedure, or we may just remove it without
+> one". Which is presumably not what you meant? So maybe:
+> 
+>   3. Should a stable kfunc turn out to be no longer useful, the BPF
+>      community may decide to eventually remove it. In this case, before
+>      being removed that kfunc will go through a deprecation procedure as
+>      outlined below.
 
-On Tue, 2023-01-17 at 10:25 +0100, Magnus Karlsson wrote:
-> [Some people who received this message don't often get email from magnus.karlsson@gmail.com. Learn
-> why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> 
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
-> 
-> Make sure that xdp_do_flush() is always executed before
-> napi_complete_done(). This is important for two reasons. First, a
-> redirect to an XSKMAP assumes that a call to xdp_do_redirect() from
-> napi context X on CPU Y will be follwed by a xdp_do_flush() from the
-> same napi context and CPU. This is not guaranteed if the
-> napi_complete_done() is executed before xdp_do_flush(), as it tells
-> the napi logic that it is fine to schedule napi context X on another
-> CPU. Details from a production system triggering this bug using the
-> veth driver can be found following the first link below.
-> 
-> The second reason is that the XDP_REDIRECT logic in itself relies on
-> being inside a single NAPI instance through to the xdp_do_flush() call
-> for RCU protection of all in-kernel data structures. Details can be
-> found in the second link below.
-> 
-> Fixes: a825b611c7c1 ("net: lan966x: Add support for XDP_REDIRECT")
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Link: https://lore.kernel.org/r/20221220185903.1105011-1-sbohrer@cloudflare.com
-> Link: https://lore.kernel.org/all/20210624160609.292325-1-toke@redhat.com/
-> ---
->  drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> index 5314c064ceae..55b484b10562 100644
-> --- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> @@ -608,12 +608,12 @@ static int lan966x_fdma_napi_poll(struct napi_struct *napi, int weight)
->                 lan966x_fdma_rx_reload(rx);
->         }
-> 
-> -       if (counter < weight && napi_complete_done(napi, counter))
-> -               lan_wr(0xff, lan966x, FDMA_INTR_DB_ENA);
-> -
->         if (redirect)
->                 xdp_do_flush();
-> 
-> +       if (counter < weight && napi_complete_done(napi, counter))
-> +               lan_wr(0xff, lan966x, FDMA_INTR_DB_ENA);
-> +
->         return counter;
->  }
-> 
-> --
-> 2.34.1
-> 
+Yes, that sounds good to me.
 
+>> 3.2 Deprecation of kfuncs
+>> -------------------------
+>>
+>> As described above, the community will make every reasonable effort to keep
+>> kfuncs available through future kernel versions once they are marked as stable.
+>> However, there may be the unforeseen case that BPF development moves in a
+>> direction where even a stable kfunc is no longer useful for program development.
+>> In this case, stable kfuncs can be marked as *deprecated* using the
+>> ``KF_DEPRECATED`` tag. Such deprecation request cannot be arbitrary and must
+>> explain why a given stable kfunc should be deprecated.
+>>
+>> 1. A deprecated stable kfunc will be kept in the kernel for a conservatively
+>>      chosen period of time after it got first marked as deprecated (usually
+>>      corresponding to a span of multiple years).
+>> 2. Deprecated functions will be documented in the kernel docs along with their
+>>      remaining lifespan and including a recommendation for new functionality that
+>>      can replace the usage of the deprecated function (or an explanation for why
+>>      no such replacement exists).
+>>
+>> 3. After the deprecation period, the kfunc will be removed and the function name
+>>      will be marked as invalid inside the kernel (to ensure that no new kfunc is
+>>      accidentally introduced with the same name in the future). After this
+>>      happens, BPF programs calling the kfunc will be refused by the verifier.
+> 
 
