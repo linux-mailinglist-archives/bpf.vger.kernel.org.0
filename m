@@ -2,71 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E6A66D9E8
-	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 10:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C07566DA2A
+	for <lists+bpf@lfdr.de>; Tue, 17 Jan 2023 10:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbjAQJ2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 04:28:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
+        id S236032AbjAQJmN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 04:42:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236587AbjAQJ1t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 04:27:49 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A2C2B0A8;
-        Tue, 17 Jan 2023 01:26:08 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id f25-20020a1c6a19000000b003da221fbf48so7616037wmc.1;
-        Tue, 17 Jan 2023 01:26:08 -0800 (PST)
+        with ESMTP id S235285AbjAQJlJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 04:41:09 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85A9524F;
+        Tue, 17 Jan 2023 01:40:07 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id k8so15436899wrc.9;
+        Tue, 17 Jan 2023 01:40:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xuCStn9V5oARcXzlZlnENM3b/8Cc1xy/rZz8yfu4umE=;
-        b=PJn4IsJGWNquOVoX8uL9scHqVHfzRajzDZEFkK2LdugQseNexbc8pSDFCYwDMLZheg
-         Ym7No27ExKWVxoYMOHV2mm9v/bDZrw5umNjsVYLgyhFxg7+e6JO1laoSJFDmZCzjmSKB
-         CON13JslubqUQEOxvaKDycXJmc1jjyOqlhfMdEqdoTHUNvXDoO6d2Q3kFwm5qedk2Z+V
-         RMs58griQ0c7us6XdvdFYvp0Hmx6Ux5C7rpBM/NIrFhl214Pe9ew9VBvgh2SLGZntBaB
-         fqx0XtwcClTYJ3emRj6LZxHQzDYv1zozQndy9bSG4DNs/aMAZ89Srt1O3tggxu1meLEU
-         7Ytg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=THhjTlzh4Q1QKe7vc6e+LLqrfDal4EePNtipGdR1YJc=;
+        b=iwPF0CMT/C5eoSllHfEljDINf5D6bMfvuN95gcRDFOcDD86ysmH5HD54XcBdbZs5iI
+         WbY5rkKqw3XsC9qR8QIqzQxfcGsNW61ORCoOkDhWV0xPn2UIrPCRvbfXiEp2vEBEMUV2
+         TllrUFElKXoWel8sre6WHs2AkkBeaIIWcyy6rE8vA+dsWF16HZ1r4H69KnLxvub6wZuo
+         lyDula8KxGvHm04z8x91vjCBu3MLSOY5KCzqC3eWHb6MiyaTLYbqQ7MvcYGc4g6P2E+n
+         /z6Dsn6vHNqEIRwgWGz1o6ile/h6J/2zY+Gn//+qkTO6jVpSGlL0nEt4OnPiAauPdVTM
+         AWDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xuCStn9V5oARcXzlZlnENM3b/8Cc1xy/rZz8yfu4umE=;
-        b=AUMcyYkZzKofBccGybzQs3eBbHGZGvHN9cQVIwRZPC5cJhu+9FM/wrUrH8RX2fBfk0
-         w2P+uS5/FAxujdLcsEepZ4Ax4XgvESGhxzbrCUOBYFRmOXZWeUFNG/7Ce58SI9BLSOjR
-         MvX6pypqV0XRklDslMxG2qu7RUX0vARWWk6c8Dkp6T+/fXkmI/GkG+uwO/5/TwzzC6UJ
-         8/TQ+sqkOK32aHCWlGcwRHXN4EaOexWtTXmUeNaNc2yAyErhffJ17X51rbX21ep7g6qL
-         YhuZE+aZl4BxILF8jxzmGnQPdWRQnPj0A/XlxfK5ss311r2D0DOEmFfJlyCeR6acWYX5
-         t5VA==
-X-Gm-Message-State: AFqh2koc61pEsr0IF6AlVtM/i/2ghjuEJihyvp/yJVoIFqxfOd/v6Bh3
-        a9B+RmJcuWhVeZaIsCuPEdg=
-X-Google-Smtp-Source: AMrXdXvDjoxt129uWZFHqLVwl/vcOBXNnnJ3Rjx+QizZos3M3OWWOqB8EhGi1c311sBxHjDl+rkofw==
-X-Received: by 2002:a05:600c:b54:b0:3c6:e60f:3f6f with SMTP id k20-20020a05600c0b5400b003c6e60f3f6fmr2283961wmr.38.1673947568043;
-        Tue, 17 Jan 2023 01:26:08 -0800 (PST)
-Received: from localhost.localdomain (h-176-10-254-193.A165.priv.bahnhof.se. [176.10.254.193])
-        by smtp.gmail.com with ESMTPSA id u21-20020a7bc055000000b003d9aa76dc6asm48008881wmc.0.2023.01.17.01.26.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Jan 2023 01:26:07 -0800 (PST)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, maciej.fijalkowski@intel.com,
-        kuba@kernel.org, toke@redhat.com, pabeni@redhat.com,
-        davem@davemloft.net, aelior@marvell.com, manishc@marvell.com,
-        horatiu.vultur@microchip.com, UNGLinuxDriver@microchip.com,
-        mst@redhat.com, jasowang@redhat.com, ioana.ciornei@nxp.com,
-        madalin.bucur@nxp.com
-Cc:     bpf@vger.kernel.org
-Subject: [PATCH net 5/5] dpaa2-eth: execute xdp_do_flush() before napi_complete_done()
-Date:   Tue, 17 Jan 2023 10:25:33 +0100
-Message-Id: <20230117092533.5804-6-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230117092533.5804-1-magnus.karlsson@gmail.com>
-References: <20230117092533.5804-1-magnus.karlsson@gmail.com>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=THhjTlzh4Q1QKe7vc6e+LLqrfDal4EePNtipGdR1YJc=;
+        b=24iVbn1tzLdZKvnsoavAKANyLpNL46iWYpJjjO8mWFJB1eIrSJxmHKBDKJx1ZyNnh4
+         KBOgN+/D9F2zEpqalYCOFhgUw9QORry0GCYELKRk/3w+gaNVvO7qRWJSWSAgNY7Gbs62
+         UR/ezorU5QqF5JaE8RA3kfoe7zRTRIDDMII2LbTmWf1jAsnTw/XwwnAp8lANoVcVwiV9
+         gm35Sfm82dA04/amSFOB56ZRSKCs4Ig94pSxcsy5wjtbv3sxQXiKIDZuB9UWZZUf+8F+
+         7Kng5dVm+iZFfnyTCbG+32Hy8zXIHkFF3+ow3MWmi6VS8mMk1EFhKANU0QaomX0j9ind
+         k/Tw==
+X-Gm-Message-State: AFqh2kqIq0TWdrKClZe/iNoqeMHHju/0juK1WWI9mkfj0LD3yvkPC8Ea
+        FTohhVaZWr0JMK/+XRImKhs=
+X-Google-Smtp-Source: AMrXdXuaVTlQRWuKLXI3mMTjwxspgpIFicHEHtoe1Jkq4/bPn5ZULiXU+wGqHS5xSjdLOJMZNFt3Lw==
+X-Received: by 2002:a5d:610a:0:b0:2bd:fd25:788c with SMTP id v10-20020a5d610a000000b002bdfd25788cmr2210383wrt.21.1673948406450;
+        Tue, 17 Jan 2023 01:40:06 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id i15-20020a05600011cf00b00294176c2c01sm28026169wrx.86.2023.01.17.01.40.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Jan 2023 01:40:06 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 17 Jan 2023 10:40:03 +0100
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Paul Moore <paul@paul-moore.com>
+Subject: Re: [Patch bpf-next 2/2] bpf: remove a redundant parameter of
+ bpf_prog_free_id()
+Message-ID: <Y8Zs8yU7rg2FtCBQ@krava>
+References: <20230117060249.912679-1-xiyou.wangcong@gmail.com>
+ <20230117060249.912679-3-xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230117060249.912679-3-xiyou.wangcong@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,62 +77,122 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Mon, Jan 16, 2023 at 10:02:49PM -0800, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> The second parameter of bpf_prog_free_id() is always true,
+> hence can be just eliminated.
 
-Make sure that xdp_do_flush() is always executed before
-napi_complete_done(). This is important for two reasons. First, a
-redirect to an XSKMAP assumes that a call to xdp_do_redirect() from
-napi context X on CPU Y will be follwed by a xdp_do_flush() from the
-same napi context and CPU. This is not guaranteed if the
-napi_complete_done() is executed before xdp_do_flush(), as it tells
-the napi logic that it is fine to schedule napi context X on another
-CPU. Details from a production system triggering this bug using the
-veth driver can be found following the first link below.
+hi,
+Paul did this already:
+  https://lore.kernel.org/bpf/20230106154400.74211-2-paul@paul-moore.com/
 
-The second reason is that the XDP_REDIRECT logic in itself relies on
-being inside a single NAPI instance through to the xdp_do_flush() call
-for RCU protection of all in-kernel data structures. Details can be
-found in the second link below.
+it's in bpf/master now
 
-Fixes: d678be1dc1ec ("dpaa2-eth: add XDP_REDIRECT support")
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Link: https://lore.kernel.org/r/20221220185903.1105011-1-sbohrer@cloudflare.com
-Link: https://lore.kernel.org/all/20210624160609.292325-1-toke@redhat.com/
----
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+bpf_map_free_id change lgtm, but might be better
+to sync with bpf/master first
 
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-index 0c35abb7d065..2e79d18fc3c7 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-@@ -1993,10 +1993,15 @@ static int dpaa2_eth_poll(struct napi_struct *napi, int budget)
- 		if (rx_cleaned >= budget ||
- 		    txconf_cleaned >= DPAA2_ETH_TXCONF_PER_NAPI) {
- 			work_done = budget;
-+			if (ch->xdp.res & XDP_REDIRECT)
-+				xdp_do_flush();
- 			goto out;
- 		}
- 	} while (store_cleaned);
- 
-+	if (ch->xdp.res & XDP_REDIRECT)
-+		xdp_do_flush();
-+
- 	/* Update NET DIM with the values for this CDAN */
- 	dpaa2_io_update_net_dim(ch->dpio, ch->stats.frames_per_cdan,
- 				ch->stats.bytes_per_cdan);
-@@ -2032,9 +2037,7 @@ static int dpaa2_eth_poll(struct napi_struct *napi, int budget)
- 		txc_fq->dq_bytes = 0;
- 	}
- 
--	if (ch->xdp.res & XDP_REDIRECT)
--		xdp_do_flush_map();
--	else if (rx_cleaned && ch->xdp.res & XDP_TX)
-+	if (rx_cleaned && ch->xdp.res & XDP_TX)
- 		dpaa2_eth_xdp_tx_flush(priv, ch, &priv->fq[flowid]);
- 
- 	return work_done;
--- 
-2.34.1
+jirka
 
+> 
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  include/linux/bpf.h  |  2 +-
+>  kernel/bpf/offload.c |  2 +-
+>  kernel/bpf/syscall.c | 23 +++++------------------
+>  3 files changed, 7 insertions(+), 20 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 3558c192871c..2c0d2383cea0 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1832,7 +1832,7 @@ void bpf_prog_inc(struct bpf_prog *prog);
+>  struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
+>  void bpf_prog_put(struct bpf_prog *prog);
+>  
+> -void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock);
+> +void bpf_prog_free_id(struct bpf_prog *prog);
+>  void bpf_map_free_id(struct bpf_map *map);
+>  
+>  struct btf_field *btf_record_find(const struct btf_record *rec,
+> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+> index ae6d5a5c0798..658032e294ed 100644
+> --- a/kernel/bpf/offload.c
+> +++ b/kernel/bpf/offload.c
+> @@ -217,7 +217,7 @@ static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
+>  		offload->offdev->ops->destroy(prog);
+>  
+>  	/* Make sure BPF_PROG_GET_NEXT_ID can't find this dead program */
+> -	bpf_prog_free_id(prog, true);
+> +	bpf_prog_free_id(prog);
+>  
+>  	list_del_init(&offload->offloads);
+>  	kfree(offload);
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 1eaa1a18aef7..b56f65328d9c 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1988,7 +1988,7 @@ static int bpf_prog_alloc_id(struct bpf_prog *prog)
+>  	return id > 0 ? 0 : id;
+>  }
+>  
+> -void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
+> +void bpf_prog_free_id(struct bpf_prog *prog)
+>  {
+>  	unsigned long flags;
+>  
+> @@ -2000,18 +2000,10 @@ void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock)
+>  	if (!prog->aux->id)
+>  		return;
+>  
+> -	if (do_idr_lock)
+> -		spin_lock_irqsave(&prog_idr_lock, flags);
+> -	else
+> -		__acquire(&prog_idr_lock);
+> -
+> +	spin_lock_irqsave(&prog_idr_lock, flags);
+>  	idr_remove(&prog_idr, prog->aux->id);
+>  	prog->aux->id = 0;
+> -
+> -	if (do_idr_lock)
+> -		spin_unlock_irqrestore(&prog_idr_lock, flags);
+> -	else
+> -		__release(&prog_idr_lock);
+> +	spin_unlock_irqrestore(&prog_idr_lock, flags);
+>  }
+>  
+>  static void __bpf_prog_put_rcu(struct rcu_head *rcu)
+> @@ -2057,13 +2049,13 @@ static void bpf_prog_put_deferred(struct work_struct *work)
+>  	__bpf_prog_put_noref(prog, true);
+>  }
+>  
+> -static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
+> +void bpf_prog_put(struct bpf_prog *prog)
+>  {
+>  	struct bpf_prog_aux *aux = prog->aux;
+>  
+>  	if (atomic64_dec_and_test(&aux->refcnt)) {
+>  		/* bpf_prog_free_id() must be called first */
+> -		bpf_prog_free_id(prog, do_idr_lock);
+> +		bpf_prog_free_id(prog);
+>  
+>  		if (in_irq() || irqs_disabled()) {
+>  			INIT_WORK(&aux->work, bpf_prog_put_deferred);
+> @@ -2073,11 +2065,6 @@ static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
+>  		}
+>  	}
+>  }
+> -
+> -void bpf_prog_put(struct bpf_prog *prog)
+> -{
+> -	__bpf_prog_put(prog, true);
+> -}
+>  EXPORT_SYMBOL_GPL(bpf_prog_put);
+>  
+>  static int bpf_prog_release(struct inode *inode, struct file *filp)
+> -- 
+> 2.34.1
+> 
