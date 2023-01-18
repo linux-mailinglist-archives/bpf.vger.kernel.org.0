@@ -2,144 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 449CB671C17
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 13:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70ED671F89
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 15:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbjARMdA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 07:33:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
+        id S231195AbjARO0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 09:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbjARMcm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 07:32:42 -0500
-X-Greylist: delayed 1805 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 Jan 2023 03:49:53 PST
-Received: from m126.mail.126.com (m126.mail.126.com [123.126.96.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 644295A375;
-        Wed, 18 Jan 2023 03:49:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=z3knI
-        4o7Y51dXHG8FRsTjca3hUpw5Zs0AgfUz081W6I=; b=PjLcNMP6y9SVUHnX1xO8F
-        ivhmX/D8wAQQRyo3GB7iuuQmH56wATfTaFvy59q4G+msk6gTrFmounEzQ0dcvdMx
-        QEPFKB5spDTAd6erpjLVg4ln0ud4ynhGVkhagDVq7WHK/XIk0fR/kxUxXa0OJBqS
-        sEYmuAGDsqZEiMZJDqswJM=
-Received: from localhost.localdomain (unknown [202.112.238.191])
-        by smtp12 (Coremail) with SMTP id fORpCgA3FHSf1cdj8fmvAA--.15435S4;
-        Wed, 18 Jan 2023 19:18:56 +0800 (CST)
-From:   Yi He <clangllvm@126.com>
-To:     daniel@iogearbox.net
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        clangllvm@126.com, haoluo@google.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev,
-        mhiramat@kernel.org, rostedt@goodmis.org, sdf@google.com,
-        song@kernel.org, yhs@fb.com, yhs@meta.com,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH V2] bpf: security enhancement by limiting the offensive eBPF helpers
-Date:   Wed, 18 Jan 2023 19:18:54 +0800
-Message-Id: <20230118111854.744810-1-clangllvm@126.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <ef9b8445-b02b-3f6a-a566-587695f322b7@iogearbox.net>
-References: <ef9b8445-b02b-3f6a-a566-587695f322b7@iogearbox.net>
+        with ESMTP id S231239AbjARO02 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Jan 2023 09:26:28 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD2F302A8;
+        Wed, 18 Jan 2023 06:10:35 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id BD0193EF47;
+        Wed, 18 Jan 2023 14:10:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1674051033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GGYhHqk9lAfnC0oeawDzo48jNfxg1s75ZFbKqNg+POw=;
+        b=OVjneds/B14mHveueZZ//I+0ccc7E/FG+o+Z/xavu7kdORWyymsAQ4k5ZRUMlTdzqy9Gtd
+        Ck4aM3Jh/AQmgwjPBpNTMVJQj3rJNEmf/3S/7zBfWZZwkjwMjDbafT8s8Y5bNHmltmG0hv
+        1rusI+rrQ37oKvcuNeAaJEq/XblG+oQ=
+Received: from suse.cz (unknown [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 032772C141;
+        Wed, 18 Jan 2023 14:10:33 +0000 (UTC)
+Date:   Wed, 18 Jan 2023 15:10:32 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Zhen Lei <thunder.leizhen@huawei.com>, bpf@vger.kernel.org,
+        live-patching@vger.kernel.org, linux-modules@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCHv3 bpf-next 3/3] bpf: Change modules resolving for kprobe
+ multi link
+Message-ID: <Y8f92N1AjLM0hYis@alley>
+References: <20230116101009.23694-1-jolsa@kernel.org>
+ <20230116101009.23694-4-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: fORpCgA3FHSf1cdj8fmvAA--.15435S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXFy3tw13XF48uF4xZr18Krg_yoWrZw45pF
-        WDGF93CrZ7JF4IgrsrJ34xGFWrA3y5WrW7GFWDKw18Za9Fqr4Yqr47tF4a93Z5ZrZxW3y2
-        qa12vFZ0yF1qga7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRb_-PUUUUU=
-X-Originating-IP: [202.112.238.191]
-X-CM-SenderInfo: xfod0wpooyzqqrswhudrp/1tbiqB36y1pD-eYBBwABsB
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230116101009.23694-4-jolsa@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_send_singal, bpf_send_singal_thread and bpf_override_return
-is similar to bpf_write_user and can affect userspace processes.
-Thus, these three helpers should also be restricted by security lockdown.
+On Mon 2023-01-16 11:10:09, Jiri Olsa wrote:
+> We currently use module_kallsyms_on_each_symbol that iterates all
+> modules/symbols and we try to lookup each such address in user
+> provided symbols/addresses to get list of used modules.
+> 
+> This fix instead only iterates provided kprobe addresses and calls
+> __module_address on each to get list of used modules. This turned
+> out ot be simpler and also bit faster.
+> 
+> On my setup with workload (executed 10 times):
+> 
+>    # test_progs -t kprobe_multi_bench_attach/modules
+> 
+> Current code:
+> 
+>  Performance counter stats for './test.sh' (5 runs):
+> 
+>     76,081,161,596      cycles:k                   ( +-  0.47% )
+> 
+>            18.3867 +- 0.0992 seconds time elapsed  ( +-  0.54% )
+> 
+> With the fix:
+> 
+>  Performance counter stats for './test.sh' (5 runs):
+> 
+>     74,079,889,063      cycles:k                   ( +-  0.04% )
+> 
+>            17.8514 +- 0.0218 seconds time elapsed  ( +-  0.12% )
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Signed-off-by: Yi He <clangllvm@126.com>
----
+The change looks good to me:
 
-Thanks for your feedback.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-This patch aims to mitigate the offensive eBPF problem which has been dicussed since 2019 [1]. Recently, we find that enable eBPF in container environemnt can lead to container escape or cross-nodes attacks (which may compromise mutiple VMs) in the Kubernetes [2]. Since lots of eBPF based tools are used in containers, mutiple containers have the CAP_SYS_ADMIN needed by eBPF which may be abused by untrusted eBPF code. 
-
-We are still working for a better fine-grained eBPF permission model which add capability fitler bits to control the permissions of different eBPF program types and helper functions of a processes [3].
-
-Security lockdown seems to be a simple way to mitigate this problem. It only restrict all the offensive features and enable other eBPF features needed by benign eBPF program such as Cillium (which do not use these offensive features but only need bpf_read_user).
-
-> I'm not applying this.. i) this means by default you effectively remove these
-> helpers from existing users in the wild given integrity mode is default for
-> secure boot, but also ii) should we lock-down and remove the ability for other
-> privileged entities like processes to send signals, seccomp to ret_kill, ptrace,
-> etc given they all "can affect userspace processes"
-
-It does not affect other privielge processes (e.g., ptrace) to kill process. Seccomp is classic bpf does not use this eBPF helper [4].
-
->  check out already existing FUNCTION_ERROR_INJECTION kernel config.
-We do not think the FUNCTION_ERROR_INJECTION  config can solve this problem as this option is default enable in many linux distributions such as debian/ubuntu. All the syscall are in allowlist of error injection and can be attacked by evil eBPF via eBPF override return.
-
-We hop you can rethink this problem. 
-
-[1]. J. Dileo. Evil eBPF: Practical Abuses of an In-Kernel Bytecode Runtime. DEFCON 27
-[2]. https://rolandorange.zone/report.html
-[3]. https://lore.kernel.org/bpf/CAADnVQK4ucv=LugqZ3He9ubwdxDu6ohaBKr2E=TX0UT65+7WpQ@mail.gmail.com/T/ 
-[4]. https://elixir.bootlin.com/linux/v6.2-rc4/source/kernel/seccomp.c#L1304
-
-
- V1 -> V2: add security lockdown to bpf_send_singal_thread and remove 
-	the unused LOCKDOWN_OFFENSIVE_BPF_MAX.
-
- include/linux/security.h | 2 ++
- kernel/trace/bpf_trace.c | 9 ++++++---
- 2 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 5b67f208f..42420e620 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -123,6 +123,8 @@ enum lockdown_reason {
- 	LOCKDOWN_DEBUGFS,
- 	LOCKDOWN_XMON_WR,
- 	LOCKDOWN_BPF_WRITE_USER,
-+	LOCKDOWN_BPF_SEND_SIGNAL,
-+	LOCKDOWN_BPF_OVERRIDE_RETURN,
- 	LOCKDOWN_DBG_WRITE_KERNEL,
- 	LOCKDOWN_RTAS_ERROR_INJECTION,
- 	LOCKDOWN_INTEGRITY_MAX,
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 3bbd3f0c8..fdb94868d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1463,9 +1463,11 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_cgrp_storage_delete_proto;
- #endif
- 	case BPF_FUNC_send_signal:
--		return &bpf_send_signal_proto;
-+		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
-+		       NULL : &bpf_send_signal_proto;
- 	case BPF_FUNC_send_signal_thread:
--		return &bpf_send_signal_thread_proto;
-+		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
-+		       NULL : &bpf_send_signal_thread_proto;
- 	case BPF_FUNC_perf_event_read_value:
- 		return &bpf_perf_event_read_value_proto;
- 	case BPF_FUNC_get_ns_current_pid_tgid:
-@@ -1531,7 +1533,8 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_stack_proto;
- #ifdef CONFIG_BPF_KPROBE_OVERRIDE
- 	case BPF_FUNC_override_return:
--		return &bpf_override_return_proto;
-+		return security_locked_down(LOCKDOWN_BPF_OVERRIDE_RETURN) < 0 ?
-+		       NULL : &bpf_override_return_proto;
- #endif
- 	case BPF_FUNC_get_func_ip:
- 		return prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI ?
--- 
-2.25.1
-
+Best Regards,
+Petr
