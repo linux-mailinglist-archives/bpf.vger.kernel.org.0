@@ -2,128 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5DA6722EC
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 17:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C41967242E
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 17:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjARQXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 11:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        id S229706AbjARQw6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 11:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjARQWh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 11:22:37 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62EC46085
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 08:20:46 -0800 (PST)
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pIBB5-000CD7-IV; Wed, 18 Jan 2023 17:20:43 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pIBB5-0009qW-Be; Wed, 18 Jan 2023 17:20:43 +0100
-Subject: Re: [PATCH] bpf, docs: Fix modulo zero, division by zero, overflow,
- and underflow
-To:     dthaler1968@googlemail.com, bpf@vger.kernel.org
-Cc:     Dave Thaler <dthaler@microsoft.com>
-References: <87o7qw18l8.fsf@oracle.com>
- <20230118152329.877-1-dthaler1968@googlemail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f92955a7-8e92-eed2-243f-a532baf739b6@iogearbox.net>
-Date:   Wed, 18 Jan 2023 17:20:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229865AbjARQw5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Jan 2023 11:52:57 -0500
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95C112F2A
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 08:52:55 -0800 (PST)
+Received: by mail-io1-f71.google.com with SMTP id t3-20020a6bc303000000b006f7844c6298so21795940iof.23
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 08:52:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CUF80VzlHqe0u3cUtU7I01bid/TGucfa6cXL81Xyavo=;
+        b=KNeccN5P/j+AH8kX6TmnCq5kyTvOSf688XgMnC4eDiAXNZj7bxUfVjWZMD/+vmlQma
+         EByq7uV3GwphZOAe/YT+A91OR4UCF/eqiH92i/iTMkjTCToR4dLcScfFKX9AsTCAj2XZ
+         5bjF5wk1+wISjQwARogFzFs/d5ZR8gGcGlNayeLV9MDnJXsSmNO2K8CMjr+8CBdz/EWi
+         mIKXnE/jtjQOto17Aa9FUfcS5WViKX2ATfbWYwoltd2Xsk2kt7BPJ1RnWImbfql2FiD0
+         4etJyv6woBwvB9rsxd/lmyzYwiUkFpcay8JzhXJKBskcBezRSVEs51Ds3XRUS1WmDJqw
+         oGog==
+X-Gm-Message-State: AFqh2koZDnS+vuZh83AvrNicBgu2TCaTdLuERxOHJlzBm9D3Out3DzUU
+        hDHdW+jK25G6enGbhy7pexsYUP0/u3kbYpYbREP3ESs5LqFd
+X-Google-Smtp-Source: AMrXdXv08pIf4C9Y2+YsDPxfNJC1X8DT8RXxxyXWaYvzbCwU0ndKM7Z37YkBcjrAb/Dv/q51cGKWGjHyPdN1d5thBzAsBPbCEwwl
 MIME-Version: 1.0
-In-Reply-To: <20230118152329.877-1-dthaler1968@googlemail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26785/Wed Jan 18 09:42:40 2023)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:4410:b0:3a5:e65b:5d57 with SMTP id
+ bp16-20020a056638441000b003a5e65b5d57mr605002jab.305.1674060775129; Wed, 18
+ Jan 2023 08:52:55 -0800 (PST)
+Date:   Wed, 18 Jan 2023 08:52:55 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d58eae05f28ca51f@google.com>
+Subject: [syzbot] kernel BUG in ip_frag_next
+From:   syzbot <syzbot+c8a2e66e37eee553c4fd@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, brouer@redhat.com, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, saeed@kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/18/23 4:23 PM, dthaler1968@googlemail.com wrote:
-> From: Dave Thaler <dthaler@microsoft.com>
-> 
-> Fix modulo zero, division by zero, overflow, and underflow.
-> Also clarify how a negative immediate value is used in unsigned division
-> 
-> Changes from last submission: addressed conversion comment from
-> Jose.
-> 
-> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
-> ---
->   Documentation/bpf/instruction-set.rst | 16 ++++++++++++++--
->   1 file changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-> index e672d5ec6cc..f79dae527ad 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -99,19 +99,26 @@ code      value  description
->   BPF_ADD   0x00   dst += src
->   BPF_SUB   0x10   dst -= src
->   BPF_MUL   0x20   dst \*= src
-> -BPF_DIV   0x30   dst /= src
-> +BPF_DIV   0x30   dst = (src != 0) ? (dst / src) : 0
->   BPF_OR    0x40   dst \|= src
->   BPF_AND   0x50   dst &= src
->   BPF_LSH   0x60   dst <<= src
->   BPF_RSH   0x70   dst >>= src
->   BPF_NEG   0x80   dst = ~src
-> -BPF_MOD   0x90   dst %= src
-> +BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
->   BPF_XOR   0xa0   dst ^= src
->   BPF_MOV   0xb0   dst = src
->   BPF_ARSH  0xc0   sign extending shift right
->   BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
->   ========  =====  ==========================================================
->   
-> +Underflow and overflow are allowed during arithmetic operations,
-> +meaning the 64-bit or 32-bit value will wrap.  If
-> +eBPF program execution would result in division by zero,
-> +the destination register is instead set to zero.
-> +If execution would result in modulo by zero,
-> +the destination register is instead left unchanged.
+Hello,
 
-Looks good to go with one small nit for the previous sentence which could be
-misinterpreted. The rewrites from verifier for modulo op are:
+syzbot found the following issue on:
 
-       mod32:                            mod64:
+HEAD commit:    0c68c8e5ec68 net: mdio: cavium: Remove unneeded simicolons
+git tree:       net-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=147c7051480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4695869845c5f393
+dashboard link: https://syzkaller.appspot.com/bug?extid=c8a2e66e37eee553c4fd
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173fca39480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107ba0a9480000
 
-       (16) if w0 == 0x0 goto pc+2       (15) if r0 == 0x0 goto pc+1
-       (9c) w1 %= w0                     (9f) r1 %= r0
-       (05) goto pc+1
-       (bc) w1 = w1
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/15c191498614/disk-0c68c8e5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7c4c9368d89c/vmlinux-0c68c8e5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/083770efc7c4/bzImage-0c68c8e5.xz
 
-So for BPF_ALU as 32-bit op, it is expected that the result is 32-bit
-value, too. So for 32-bit op the destination register is truncated to
-32-bit value. (Related commit 9b00f1b78809 ("bpf: Fix truncation handling
-for mod32 dst reg wrt zero")).
+The issue was bisected to:
 
->   ``BPF_ADD | BPF_X | BPF_ALU`` means::
->   
->     dst_reg = (u32) dst_reg + (u32) src_reg;
-> @@ -128,6 +135,11 @@ BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
->   
->     dst_reg = dst_reg ^ imm32
->   
-> +Also note that the division and modulo operations are unsigned.
-> +Thus, for `BPF_ALU`, 'imm' is first interpreted as an unsigned
-> +32-bit value, whereas for `BPF_ALU64`, 'imm' is first sign extended
-> +to 64 bits and the result interpreted as an unsigned 64-bit value.
-> +There are no instructions for signed division or modulo.
->   
->   Byte swap instructions
->   ~~~~~~~~~~~~~~~~~~~~~~
-> 
+commit eedade12f4cb7284555c4c0314485e9575c70ab7
+Author: Jesper Dangaard Brouer <brouer@redhat.com>
+Date:   Fri Jan 13 13:52:04 2023 +0000
 
+    net: kfree_skb_list use kmem_cache_free_bulk
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1136ec41480000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1336ec41480000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1536ec41480000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c8a2e66e37eee553c4fd@syzkaller.appspotmail.com
+Fixes: eedade12f4cb ("net: kfree_skb_list use kmem_cache_free_bulk")
+
+raw_sendmsg: syz-executor409 forgot to set AF_INET. Fix it!
+------------[ cut here ]------------
+kernel BUG at net/ipv4/ip_output.c:724!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5073 Comm: syz-executor409 Not tainted 6.2.0-rc3-syzkaller-00457-g0c68c8e5ec68 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/12/2023
+RIP: 0010:ip_frag_next+0xa03/0xa50 net/ipv4/ip_output.c:724
+Code: e8 82 b1 86 f9 e9 95 fa ff ff 48 8b 3c 24 e8 74 b1 86 f9 e9 5b f8 ff ff 4c 89 ff e8 67 b1 86 f9 e9 1f f8 ff ff e8 3d ad 38 f9 <0f> 0b 48 89 54 24 20 4c 89 44 24 18 e8 4c b1 86 f9 48 8b 54 24 20
+RSP: 0018:ffffc90003a6f6b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc90003a6f818 RCX: 0000000000000000
+RDX: ffff8880772c0000 RSI: ffffffff8848a583 RDI: 0000000000000005
+RBP: 00000000000005c8 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000fffffff2 R11: 0000000000000000 R12: ffff888026841dc0
+R13: ffffc90003a6f81c R14: 00000000fffffff2 R15: ffffc90003a6f830
+FS:  0000555555b08300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005622b70166a8 CR3: 000000007780f000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ip_do_fragment+0x873/0x17d0 net/ipv4/ip_output.c:902
+ ip_fragment.constprop.0+0x16b/0x240 net/ipv4/ip_output.c:581
+ __ip_finish_output net/ipv4/ip_output.c:304 [inline]
+ __ip_finish_output+0x2de/0x650 net/ipv4/ip_output.c:288
+ ip_finish_output+0x31/0x280 net/ipv4/ip_output.c:316
+ NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+ ip_mc_output+0x21f/0x710 net/ipv4/ip_output.c:415
+ dst_output include/net/dst.h:444 [inline]
+ ip_local_out net/ipv4/ip_output.c:126 [inline]
+ ip_send_skb net/ipv4/ip_output.c:1586 [inline]
+ ip_push_pending_frames+0x129/0x2b0 net/ipv4/ip_output.c:1606
+ raw_sendmsg+0x1338/0x2df0 net/ipv4/raw.c:645
+ inet_sendmsg+0x9d/0xe0 net/ipv4/af_inet.c:827
+ sock_sendmsg_nosec net/socket.c:722 [inline]
+ sock_sendmsg+0xde/0x190 net/socket.c:745
+ __sys_sendto+0x23a/0x340 net/socket.c:2142
+ __do_sys_sendto net/socket.c:2154 [inline]
+ __se_sys_sendto net/socket.c:2150 [inline]
+ __x64_sys_sendto+0xe1/0x1b0 net/socket.c:2150
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f8efa22c499
+Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd43ed3198 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007ffd43ed31b8 RCX: 00007f8efa22c499
+RDX: 000000000000fcf2 RSI: 0000000020000380 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 0000000020001380 R09: 000000000000006e
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd43ed31c0
+R13: 00007ffd43ed31e0 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ip_frag_next+0xa03/0xa50 net/ipv4/ip_output.c:724
+Code: e8 82 b1 86 f9 e9 95 fa ff ff 48 8b 3c 24 e8 74 b1 86 f9 e9 5b f8 ff ff 4c 89 ff e8 67 b1 86 f9 e9 1f f8 ff ff e8 3d ad 38 f9 <0f> 0b 48 89 54 24 20 4c 89 44 24 18 e8 4c b1 86 f9 48 8b 54 24 20
+RSP: 0018:ffffc90003a6f6b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc90003a6f818 RCX: 0000000000000000
+RDX: ffff8880772c0000 RSI: ffffffff8848a583 RDI: 0000000000000005
+RBP: 00000000000005c8 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000fffffff2 R11: 0000000000000000 R12: ffff888026841dc0
+R13: ffffc90003a6f81c R14: 00000000fffffff2 R15: ffffc90003a6f830
+FS:  0000555555b08300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557162e92068 CR3: 000000007780f000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
