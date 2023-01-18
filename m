@@ -2,91 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF151672541
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 18:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3036725A1
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 18:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbjARRnQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 12:43:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        id S230144AbjARRzr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 12:55:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbjARRmx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 12:42:53 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CCA3CE01;
-        Wed, 18 Jan 2023 09:42:20 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id mp20so38478289ejc.7;
-        Wed, 18 Jan 2023 09:42:20 -0800 (PST)
+        with ESMTP id S229525AbjARRzo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Jan 2023 12:55:44 -0500
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC844ED0B
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 09:55:43 -0800 (PST)
+Received: by mail-vk1-xa33.google.com with SMTP id b81so16797515vkf.1
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 09:55:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GpEuzue5d7ygPxB29FruCUnMnsWzWZ3lXy2MX+rDytc=;
-        b=W4GyWlsm8ALFRSIsMwvrTySOOS9hTBdV1OpvndBADGEMCQmWskkBoGTZ10dO14lWCf
-         9s1n4M/XC9OkFc3nvfoiyyKAMYrMlPJ0ppYyY+z8s2eN1loLgOBwv4z6v+2FLlrF90bv
-         6ZQb0cEa3IV6p0ZdEwQIujwy2ozbVyqJAY7e6Yk5uyW9Llgr7+WvB5XW3wcqIg/dx2yT
-         17z5d97RmSdOjf5TThzOxk0Us4hQ4yEz6sdImR7U3ItWvIdR8t6+FSY2EQHJLxcM+eqW
-         5J2agrByKnKRNQN3SrcInPeeW4duGeXWPdMGDvkLB3GJ62GM7FerjTYlFLjh3dYLIy/B
-         FVcw==
+        bh=gI5tmqxh4LXLtNT2ROOUZSkVdcevre1I5+FSwfIgMc8=;
+        b=H5IYcWt7tp1sB/UfkvMNWKsSPuhroay931C8XBTxV5n0k4y/SVS6lzR6syJCOWAf6Y
+         SzcyF6jrmYX/V3SmeNdv11sJhJP+54Jg4pviVLXiRgYpR1GPawQPOs1VRR4jYcrbsNOJ
+         SP/TiUcpMMaz4uXbKzfqUqEZSnruvZgB28AcClNqCmA1H1CxEP+5G7OEb2lv/mZk4hOi
+         aBQYcAIijDMA3NytE5NAOr4TEiYREkWHFXQ5/xFAFFGl7FcBYhjGGPYJd2U5yGnHnkQC
+         M9udpPOxlEQc3EezbXpb6LDrV3E/lQHz1NLFFa4Az5YIpV6SuOKprbctArIGYydvk2kw
+         uB/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GpEuzue5d7ygPxB29FruCUnMnsWzWZ3lXy2MX+rDytc=;
-        b=MrOAbseckeuIlF+d93yPtIBIh5bzjSZjr2kkeaOnVsaPcqc1biF7QA70AzxMvPY5M9
-         +pUylyC8pHHp22cXB9BfYaEaOxVXXL5PBGfEIFAhub3hBVJC4mxcxLpYFDlnlNRFKVuA
-         dEnnWkNW4xeuiHEoII5Mo6jSwjZloXqd7J+uJ4LdWX3KEX04DEhXMMFOCVKZQG+sHaoq
-         csvfweF9KH7U186ywbMBzkQKK/Elp5GFQRe6ke/l55vSkOT2yVj0olC/CsDWJGGQ86yZ
-         Fj/T++Hnb+lxoKgF86Yrec8ioIqk78fJn6A0pM5NC5mWwfZ+ZgCFHNtG84NYSDvVnen5
-         x9Fg==
-X-Gm-Message-State: AFqh2kpIWQHShFBBgEqcIIUARtPIbcNyUlPBRBF4DO/0EzdweJXM62zQ
-        8ols6+2fVvC+jGYzjsgQ7SCXsx9O+I+H2GWmjb8=
-X-Google-Smtp-Source: AMrXdXuMaX0n1Hxu6XGSukmrVfG28F8T8Ib+RkX+SQ8+JvzXGjjDRpkDNnyAZVdVPrYouEW9ECCsgOvI5WFVc49eZlI=
-X-Received: by 2002:a17:906:40d7:b0:836:e897:648a with SMTP id
- a23-20020a17090640d700b00836e897648amr470430ejk.94.1674063739084; Wed, 18 Jan
- 2023 09:42:19 -0800 (PST)
+        bh=gI5tmqxh4LXLtNT2ROOUZSkVdcevre1I5+FSwfIgMc8=;
+        b=v/kY8JK7qKNJHZAbNeIY3ZzSXSP16CXyXMMwRtBk5CLz0L/cG6tIeIUur62zrWJMZw
+         qyUb6jcPYt5UQS/Y3Ck+otqrpZ01Eeuh/mEOPsjR+zmC2cIc40W+u8FvLCDUzkulBCSJ
+         xmQuMOsb7JYbKXTH1N6DaT1ZvfqefLngd3tlgt2rxBQitgFBl+fhyR17kHnQynX/aNxJ
+         DnKNHNpz1/w/COqCBZ3avCgenuYw6kFbqIwa1EdZox7aay9NlPKwliwA2XrLrSdx6VQN
+         bCXiymSE3D7JRDPVYrM+yeQX2bJwRlTuLv3gJ3Y5f8vpZTG9H/g6/sJWrcSPLTlO9ZF9
+         eP9g==
+X-Gm-Message-State: AFqh2ko1OR3vywRTuOAPvCcTYMDbZ0hNxoRadb+8KkCbBBNj616dIwNB
+        ata0OZuxvVe2xbCTbgeL6Edz2ReyYsrgMH5GZfv0MQ==
+X-Google-Smtp-Source: AMrXdXvhlwkfbIQb4Zke2l6wU4S1JFiHXCOrYzwGkvURRsdvuPCrVFrTXAdw0ZZESyeLRw+noSicF8ZD5LeZGCYHsl4=
+X-Received: by 2002:a1f:a017:0:b0:3db:14db:2cc6 with SMTP id
+ j23-20020a1fa017000000b003db14db2cc6mr981661vke.17.1674064542793; Wed, 18 Jan
+ 2023 09:55:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20230105030614.26842-1-tong@infragraf.org> <ea7673e1-40ec-18be-af89-5f4fd0f71742@csgroup.eu>
- <71c83f39-f85f-d990-95b7-ab6068839e6c@iogearbox.net> <5836b464-290e-203f-00f2-fc6632c9f570@csgroup.eu>
- <147A796D-12C0-482F-B48A-16E67120622B@infragraf.org> <0b46b813-05f2-5083-9f2e-82d72970dae2@csgroup.eu>
- <4380D454-3ED0-43F4-9A79-102BB0E3577A@infragraf.org> <d91bbb9e-484b-d43d-e62d-0474ff21cf91@iogearbox.net>
- <7159E8F8-AE66-4563-8A29-D10D66EFAF3D@infragraf.org> <CAADnVQLf_UhRP76i9+OaLGrmuoM942QebMXT3OA3mgrP_UV0KA@mail.gmail.com>
- <d807b7fb-dbd2-8e4c-812c-48a1a01c190e@csgroup.eu>
-In-Reply-To: <d807b7fb-dbd2-8e4c-812c-48a1a01c190e@csgroup.eu>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 18 Jan 2023 09:42:07 -0800
-Message-ID: <CAADnVQKAAhbL-9qGPfRFsfw3oh6KnrEpeYLnfhrKUSzX8VmFuQ@mail.gmail.com>
-Subject: Re: [bpf-next v2] bpf: drop deprecated bpf_jit_enable == 2
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Tonghao Zhang <tong@infragraf.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.or" 
-        <linux-arm-kernel@lists.infradead.or>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Hou Tao <houtao1@huawei.com>,
-        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>
+References: <20230112003230.3779451-1-sdf@google.com> <20230112003230.3779451-2-sdf@google.com>
+ <affeb1e3-69e6-9783-0012-6d917972ba30@redhat.com> <CAKH8qBuE5ipcncQ+=su_Ds1EHm5gUMG_od-+eqJHkuiV-Q6RhQ@mail.gmail.com>
+ <27e552c4-e1cf-40d3-305c-e4a57ab87bcf@redhat.com>
+In-Reply-To: <27e552c4-e1cf-40d3-305c-e4a57ab87bcf@redhat.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 18 Jan 2023 09:55:30 -0800
+Message-ID: <CAKH8qBtSVr8CQfSnKC_GdL80KTgj-+kykZ8chXnhqJ1pcL6ZTA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 01/17] bpf: Document XDP RX metadata
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, David Vernet <void@manifault.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,236 +82,156 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 11:36 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On Wed, Jan 18, 2023 at 6:28 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
 >
->
-> Le 18/01/2023 =C3=A0 03:21, Alexei Starovoitov a =C3=A9crit :
-> > On Tue, Jan 17, 2023 at 6:13 PM Tonghao Zhang <tong@infragraf.org> wrot=
-e:
+> On 17/01/2023 21.33, Stanislav Fomichev wrote:
+> > On Mon, Jan 16, 2023 at 5:09 AM Jesper Dangaard Brouer
+> > <jbrouer@redhat.com> wrote:
 > >>
-> >>
-> >>
-> >>> On Jan 17, 2023, at 11:59 PM, Daniel Borkmann <daniel@iogearbox.net> =
-wrote:
+> >> On 12/01/2023 01.32, Stanislav Fomichev wrote:
+> >>> Document all current use-cases and assumptions.
 > >>>
-> >>> On 1/17/23 3:22 PM, Tonghao Zhang wrote:
-> >>>>> On Jan 17, 2023, at 3:30 PM, Christophe Leroy <christophe.leroy@csg=
-roup.eu> wrote:
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>>> Le 17/01/2023 =C3=A0 06:30, Tonghao Zhang a =C3=A9crit :
-> >>>>>>
-> >>>>>>
-> >>>>>>> On Jan 9, 2023, at 4:15 PM, Christophe Leroy <christophe.leroy@cs=
-group.eu> wrote:
-> >>>>>>>
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> Le 06/01/2023 =C3=A0 16:37, Daniel Borkmann a =C3=A9crit :
-> >>>>>>>> On 1/5/23 6:53 PM, Christophe Leroy wrote:
-> >>>>>>>>> Le 05/01/2023 =C3=A0 04:06, tong@infragraf.org a =C3=A9crit :
-> >>>>>>>>>> From: Tonghao Zhang <tong@infragraf.org>
-> >>>>>>>>>>
-> >>>>>>>>>> The x86_64 can't dump the valid insn in this way. A test BPF p=
-rog
-> >>>>>>>>>> which include subprog:
-> >>>>>>>>>>
-> >>>>>>>>>> $ llvm-objdump -d subprog.o
-> >>>>>>>>>> Disassembly of section .text:
-> >>>>>>>>>> 0000000000000000 <subprog>:
-> >>>>>>>>>>           0:       18 01 00 00 73 75 62 70 00 00 00 00 72 6f 6=
-7 00 r1
-> >>>>>>>>>> =3D 29114459903653235 ll
-> >>>>>>>>>>           2:       7b 1a f8 ff 00 00 00 00 *(u64 *)(r10 - 8) =
-=3D r1
-> >>>>>>>>>>           3:       bf a1 00 00 00 00 00 00 r1 =3D r10
-> >>>>>>>>>>           4:       07 01 00 00 f8 ff ff ff r1 +=3D -8
-> >>>>>>>>>>           5:       b7 02 00 00 08 00 00 00 r2 =3D 8
-> >>>>>>>>>>           6:       85 00 00 00 06 00 00 00 call 6
-> >>>>>>>>>>           7:       95 00 00 00 00 00 00 00 exit
-> >>>>>>>>>> Disassembly of section raw_tp/sys_enter:
-> >>>>>>>>>> 0000000000000000 <entry>:
-> >>>>>>>>>>           0:       85 10 00 00 ff ff ff ff call -1
-> >>>>>>>>>>           1:       b7 00 00 00 00 00 00 00 r0 =3D 0
-> >>>>>>>>>>           2:       95 00 00 00 00 00 00 00 exit
-> >>>>>>>>>>
-> >>>>>>>>>> kernel print message:
-> >>>>>>>>>> [  580.775387] flen=3D8 proglen=3D51 pass=3D3 image=3Dffffffff=
-a000c20c
-> >>>>>>>>>> from=3Dkprobe-load pid=3D1643
-> >>>>>>>>>> [  580.777236] JIT code: 00000000: cc cc cc cc cc cc cc cc cc =
-cc cc
-> >>>>>>>>>> cc cc cc cc cc
-> >>>>>>>>>> [  580.779037] JIT code: 00000010: cc cc cc cc cc cc cc cc cc =
-cc cc
-> >>>>>>>>>> cc cc cc cc cc
-> >>>>>>>>>> [  580.780767] JIT code: 00000020: cc cc cc cc cc cc cc cc cc =
-cc cc
-> >>>>>>>>>> cc cc cc cc cc
-> >>>>>>>>>> [  580.782568] JIT code: 00000030: cc cc cc
-> >>>>>>>>>>
-> >>>>>>>>>> $ bpf_jit_disasm
-> >>>>>>>>>> 51 bytes emitted from JIT compiler (pass:3, flen:8)
-> >>>>>>>>>> ffffffffa000c20c + <x>:
-> >>>>>>>>>>       0:   int3
-> >>>>>>>>>>       1:   int3
-> >>>>>>>>>>       2:   int3
-> >>>>>>>>>>       3:   int3
-> >>>>>>>>>>       4:   int3
-> >>>>>>>>>>       5:   int3
-> >>>>>>>>>>       ...
-> >>>>>>>>>>
-> >>>>>>>>>> Until bpf_jit_binary_pack_finalize is invoked, we copy rw_head=
-er to
-> >>>>>>>>>> header
-> >>>>>>>>>> and then image/insn is valid. BTW, we can use the "bpftool pro=
-g dump"
-> >>>>>>>>>> JITed instructions.
-> >>>>>>>>>
-> >>>>>>>>> NACK.
-> >>>>>>>>>
-> >>>>>>>>> Because the feature is buggy on x86_64, you remove it for all
-> >>>>>>>>> architectures ?
-> >>>>>>>>>
-> >>>>>>>>> On powerpc bpf_jit_enable =3D=3D 2 works and is very usefull.
-> >>>>>>>>>
-> >>>>>>>>> Last time I tried to use bpftool on powerpc/32 it didn't work. =
-I don't
-> >>>>>>>>> remember the details, I think it was an issue with endianess. M=
-aybe it
-> >>>>>>>>> is fixed now, but it needs to be verified.
-> >>>>>>>>>
-> >>>>>>>>> So please, before removing a working and usefull feature, make =
-sure
-> >>>>>>>>> there is an alternative available to it for all architectures i=
-n all
-> >>>>>>>>> configurations.
-> >>>>>>>>>
-> >>>>>>>>> Also, I don't think bpftool is usable to dump kernel BPF selfte=
-sts.
-> >>>>>>>>> That's vital when a selftest fails if you want to have a chance=
- to
-> >>>>>>>>> understand why it fails.
-> >>>>>>>>
-> >>>>>>>> If this is actively used by JIT developers and considered useful=
-, I'd be
-> >>>>>>>> ok to leave it for the time being. Overall goal is to reach feat=
-ure parity
-> >>>>>>>> among (at least major arch) JITs and not just have most function=
-ality only
-> >>>>>>>> available on x86-64 JIT. Could you however check what is not wor=
-king with
-> >>>>>>>> bpftool on powerpc/32? Perhaps it's not too much effort to just =
-fix it,
-> >>>>>>>> but details would be useful otherwise 'it didn't work' is too fu=
-zzy.
-> >>>>>>>
-> >>>>>>> Sure I will try to test bpftool again in the coming days.
-> >>>>>>>
-> >>>>>>> Previous discussion about that subject is here:
-> >>>>>>> https://patchwork.kernel.org/project/linux-riscv/patch/2021041509=
-3250.3391257-1-Jianlin.Lv@arm.com/#24176847=3D
-> >>>>>> Hi Christophe
-> >>>>>> Any progress? We discuss to deprecate the bpf_jit_enable =3D=3D 2 =
-in 2021, but bpftool can not run on powerpc.
-> >>>>>> Now can we fix this issue?
-> >>>>>
-> >>>>> Hi Tong,
-> >>>>>
-> >>>>> I have started to look at it but I don't have any fruitfull feedbac=
-k yet.
-> >>>>>
-> >>>>> In the meantime, were you able to confirm that bpftool can also be =
-used
-> >>>>> to dump jitted tests from test_bpf.ko module on x86_64 ? In that ca=
-n you
-> >>>>> tell me how to proceed ?
-> >>>> Now I do not test, but we can dump the insn after bpf_prog_select_ru=
-ntime in test_bpf.ko. bpf_map_get_info_by_fd can copy the insn to userspace=
-, but we can
-> >>>> dump them in test_bpf.ko in the same way.
+> [...]
+> >>> Acked-by: David Vernet <void@manifault.com>
+> >>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >>> ---
+> >>>    Documentation/networking/index.rst           |   1 +
+> >>>    Documentation/networking/xdp-rx-metadata.rst | 108 +++++++++++++++=
+++++
+> >>>    2 files changed, 109 insertions(+)
+> >>>    create mode 100644 Documentation/networking/xdp-rx-metadata.rst
 > >>>
-> >>> Issue is that these progs are not consumable from userspace (and ther=
-efore not bpftool).
-> >>> it's just simple bpf_prog_alloc + copy of test insns + bpf_prog_selec=
-t_runtime() to test
-> >>> JITs (see generate_filter()). Some of them could be converted over to=
- test_verifier, but
-> >>> not all might actually pass verifier, iirc. Don't think it's a good i=
-dea to allow exposing
-> >>> them via fd tbh.
-> >> Hi
-> >> I mean that, can we invoke the bpf_jit_dump in test_bpf.ko directly ?.=
- bpf_prog_get_info_by_fd copy the insn to userspace, but we only dump insn =
-in test_bpf.ko
+> >>> diff --git a/Documentation/networking/index.rst b/Documentation/netwo=
+rking/index.rst
+> >>> index 4f2d1f682a18..4ddcae33c336 100644
+> >>> --- a/Documentation/networking/index.rst
+> >>> +++ b/Documentation/networking/index.rst
+> [...cut...]
+> >>> +AF_XDP
+> >>> +=3D=3D=3D=3D=3D=3D
+> >>> +
+> >>> +:doc:`af_xdp` use-case implies that there is a contract between the =
+BPF
+> >>> +program that redirects XDP frames into the ``AF_XDP`` socket (``XSK`=
+`) and
+> >>> +the final consumer. Thus the BPF program manually allocates a fixed =
+number of
+> >>> +bytes out of metadata via ``bpf_xdp_adjust_meta`` and calls a subset
+> >>> +of kfuncs to populate it. The userspace ``XSK`` consumer computes
+> >>> +``xsk_umem__get_data() - METADATA_SIZE`` to locate that metadata.
+> >>> +Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
+> >>> +``METADATA_SIZE`` is an application-specific constant.
 > >>
-> >>                  if (bpf_dump_raw_ok(file->f_cred)) {// code copied fr=
-om bpf_prog_get_info_by_fd, not tested
+> >> The main problem with AF_XDP and metadata is that, the AF_XDP descript=
+or
+> >> doesn't contain any info about the length METADATA_SIZE.
 > >>
-> >>                          /* for multi-function programs, copy the JITe=
-d
-> >>                           * instructions for all the functions
-> >>                           */
-> >>                          if (prog->aux->func_cnt) {
-> >>                                  for (i =3D 0; i < prog->aux->func_cnt=
-; i++) {
-> >>                                          len =3D prog->aux->func[i]->j=
-ited_len;
-> >>                                          img =3D (u8 *) prog->aux->fun=
-c[i]->bpf_func;
-> >>                                          bpf_jit_dump(1, len, 1, img);
-> >>                                  }
-> >>                          } else {
-> >>                                  bpf_jit_dump(1, ulen, 1, prog->bpf_fu=
-nc);
-> >>                          }
-> >>                  }
+> >> The text does says this, but in a very convoluted way.
+> >> I think this challenge should be more clearly spelled out.
+> >>
+> >> (p.s. This was something that XDP-hints via BTF have a proposed soluti=
+on
+> >> for)
 > >
-> > Let's not reinvent the wheel.
-> > bpftool prog dump jited
-> > is our supported command.
-> > ppc issue with bpftool is related to endianness of embedded skeleton.
-> > which means that none of the bpftool prog commands work on ppc.
-> > It's a bigger issue to address with cross compilation of bpftool.
+> > Any suggestions on how to clarify it better? I have two hints:
+> > 1. ``METADATA_SIZE`` is an application-specific constant
+> > 2. note missing ``data_meta`` pointer
 > >
-> > bpftool supports gnu and llvm disassembler. It retrieves and
-> > prints BTF, line info and source code along with asm.
-> > The user experience is at different level comparing to bpf_jit_dump.
+> > Do you prefer I also add a sentence where I spell it out more
+> > explicitly? Something like:
+> >
+> > Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
+> > ``METADATA_SIZE`` is an application-specific constant (``AF_XDP``
+> > receive descriptor does _not_ explicitly carry the size of the
+> > metadata).
 >
-> Hi Alexei,
+> That addition works for me.
+> (Later we can hopefully come up with a solution for this)
 >
-> Fair enough, we are going to try and fix bpftool.
+> >>> +
+> >>> +Here is the ``AF_XDP`` consumer layout (note missing ``data_meta`` p=
+ointer)::
+> >>
+> >> The "note" also hint to this issue.
+> >
+> > This seems like an explicit design choice of the AF_XDP? In theory, I
+> > don't see why we can't have a v2 receive descriptor format where we
+> > return the size of the metadata?
 >
-> But for test_bpf.ko module, how do you use bpftool to dump the BPF tests
-> ? Even on x86 I have not been able to use bpftool for that until now.
-> Can you tell me how you do ?
+> (Cc. Magnus+Bj=C3=B8rn)
+> Yes, it was a design choice from AF_XDP not to include the metadata lengt=
+h.
+>
+> The AF_XDP descriptor, see struct  xdp_desc (below) from
+> /include/uapi/linux/if_xdp.h.
+>
+>   /* Rx/Tx descriptor */
+>   struct xdp_desc {
+>         __u64 addr;
+>         __u32 len;
+>         __u32 options;
+>   };
+>
+> Does contain a 'u32 options' field, that we could use.
+>
+> In previous discussions, the proposed solution (from Bj=C3=B8rn+Magnus) w=
+as
+> to use some bits in the 'options' field to say metadata is present, and
+> xsk_umem__get_data minus 4 (or 8) bytes contain a BTF_ID.  The AF_XDP
+> programmer can then get the metadata length by looking up the BTF_ID.
 
-test_bpf.ko is useful to JIT developers when they're starting
-to work on it, but its test coverage is inadequate for real
-world bpf usage comparing to selftests/bpf.
-Johan Almbladh did some great additions to test_bpf.ko back in 2021.
-Since then there wasn't much.
+Yeah, that's one way to do it. Instead of BTF_ID, we can just put the
+size of the metadata.
+But it wasn't needed for the use-cases described in this patchset.
+For redirect use-case, I agree, we might carry some extra information
+about the layout, up to you.
 
-Here it's important to distinguish the target user.
-Is it a kernel JIT developer or user space bpf prog developer?
-When it's a kernel developer they can easily
-add print_hex_dump() in the right places.
-That's what I did when I was developing bpf trampoline.
-bpf is more than just JIT. There are trampoline, kfuncs, dispatch.
-The kernel devs should not add a debug code.
-Long ago bpf_jit_enable=3D2 was useful to user space bpf developers.
-They wanted to see how JITed code look like to optimize it and what not.
-Now 'perf record' captures bpf asm and annotates it in 'perf report',
-so performance analysis problem is solved that way.
-bpftool prog dump jit addressed the needs of users and admins who
-want to understand what bpf progs are loaded and what are they doing.
-Both 'dump jited' and 'dump xlated' are useful for this case.
-So bpf_jit_enable=3D2 remained useful to kernel developers only and
-in that sense it become a kernel debug feature for a narrow set of
-JIT developers. On x86 bpf_jit_dump() was neglected and broken.
-I suspect the other archs will follow the same fate. If not already.
-Having a sysctl for kernel developers is not something the kernel
-developers should have around. Hence the cleanup of this patch.
+> >>> +
+> >>> +  +----------+-----------------+------+
+> >>> +  | headroom | custom metadata | data |
+> >>> +  +----------+-----------------+------+
+> >>> +                               ^
+> >>> +                               |
+> >>> +                        rx_desc->address
+> >>> +
+> >>> +XDP_PASS
+> >>> +=3D=3D=3D=3D=3D=3D=3D=3D
+> >>> +
+> >>> +This is the path where the packets processed by the XDP program are =
+passed
+> >>> +into the kernel. The kernel creates the ``skb`` out of the ``xdp_buf=
+f``
+> >>> +contents. Currently, every driver has custom kernel code to parse
+> >>> +the descriptors and populate ``skb`` metadata when doing this ``xdp_=
+buff->skb``
+> >>> +conversion, and the XDP metadata is not used by the kernel when buil=
+ding
+> >>> +``skbs``. However, TC-BPF programs can access the XDP metadata area =
+using
+> >>> +the ``data_meta`` pointer.
+> >>> +
+> >>> +In the future, we'd like to support a case where an XDP program
+> >>> +can override some of the metadata used for building ``skbs``.
+> >>
+> >> Happy this is mentioned as future work.
+> >
+> > As mentioned in a separate email, if you prefer to focus on that, feel
+>
+> Yes, I'm going to work on PoC code that explore this area.
+>
+> > free to drive it since I'm gonna look into the TX side first.
+>
+> Happy to hear you are going to look into TX-side.
+> Are your use case related to TX timestamping?
+
+Yes, I'll try to start with a tx timestamp. But looking (briefly) at
+the code, that seems like a more invasive addition.
+If we want to return that tx timstamp via the original umem, some
+completion mechanism has to be added (besides the existing one it).
+LMK if you have some pointers to the previous discussions. Or maybe
+Bj=C3=B8rn/Magnus had some plans/ideas about that?
+
+> --Jesper
+>
