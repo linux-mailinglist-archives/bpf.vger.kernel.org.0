@@ -2,122 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 521CC67197D
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 11:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F3A671A32
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 12:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbjARKpf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 05:45:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
+        id S229448AbjARLOg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 06:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjARKnQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 05:43:16 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B8A676DE;
-        Wed, 18 Jan 2023 01:49:14 -0800 (PST)
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pI544-000GsH-Jt; Wed, 18 Jan 2023 10:49:04 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pI543-000TL6-U9; Wed, 18 Jan 2023 10:49:03 +0100
-Subject: Re: [PATCH V2] bpf: security enhancement by limiting the offensive
- eBPF helpers
-To:     Yi He <clangllvm@126.com>, yhs@meta.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev,
-        mhiramat@kernel.org, rostedt@goodmis.org, sdf@google.com,
-        song@kernel.org, yhs@fb.com
-References: <f539bfef-c098-5ff0-51ef-bfa8fd0c4661@meta.com>
- <20230118005432.634229-1-clangllvm@126.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ef9b8445-b02b-3f6a-a566-587695f322b7@iogearbox.net>
-Date:   Wed, 18 Jan 2023 10:49:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229841AbjARLNq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Jan 2023 06:13:46 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F351A9CBAB
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 02:24:31 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id y19so15393777edc.2
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 02:24:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JjbMwH7wtztxpVEzNDiuMUnQ9Jvb8RCm9+Fyzzo0gjk=;
+        b=UzNqf6FOmPUpYW645ortHl8wDnagAGHRpJHHs9QnDIiIVW9zacYmj7qBcfYKUEeTrc
+         G5temDQ+tSHuqDM4aBehgXY8mxW2N+zo5Hl0buBlJDJZg+oDBnLe6Mh6wYV73r/G+M6Y
+         1PhuLW+xWdxbqW+eWeJnEfRzeGKEcm5Fbp6N+LNxKvu5Fv6foCJhGGe8EKk9yWdVAdsw
+         BpsKIUvIfXqxB3B6N1DxXd+3ygULc5Qic+NFpyxnozpvDBsgPtIxN/onOfU/W5BUz1JD
+         4XNVcSHLjheO7uGUTk7ewwviHvp6ORdfAWAUsNjCK0gW1qsJDAowDxkK20lPDbbMwIzo
+         bCdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JjbMwH7wtztxpVEzNDiuMUnQ9Jvb8RCm9+Fyzzo0gjk=;
+        b=Lrb9hD0CNTRYDM7TO88Bb27oikAwreaRJ+FA+19Hj4KFCsNh3WP/w16SHINtVi9U0R
+         fTloaM1mwmNnItBy6FmYsaDFLZ8X4P3IiPhp34G5Ur6R7zcPZhDxPIgeZCFVLQbdxKjJ
+         k/+8yCwgGPi9NXQy05kAfXEJJ21mX8xH6tug5sAVe6CthvxAbgPzZmhcFPbowOTABBEC
+         xbgYNvFdidHPk1ooYxHg90QpU85YLAk6BqkuArTOk3sQjbvnz/mdvSSqveUZScqOJyiM
+         p+payRhSOrGPGZAhUcwB3D8AjCFS3smQ/QBqKWeJAF2XOwOsZQsg/uv1UlHhz7BzLXtu
+         W8xA==
+X-Gm-Message-State: AFqh2kqN7CO1LM0SFOfh1TPXcLfPmHxTHFxPmkVhAe634KJyf1BfIxmz
+        g5ONIFqBiFcNBAlL/z3CWfHCxkqz7IxGSqgGNbs=
+X-Google-Smtp-Source: AMrXdXvxG2UFjI2adD6QzfBccbt7Eb5ZTd2DVw7HeTOwMJprH/2Un0PwUQyDi22SiBoS/7LiEyafCHF8dUx646aB2O8=
+X-Received: by 2002:a05:6402:1203:b0:495:5232:b05c with SMTP id
+ c3-20020a056402120300b004955232b05cmr606317edw.286.1674037470107; Wed, 18 Jan
+ 2023 02:24:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20230118005432.634229-1-clangllvm@126.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26785/Wed Jan 18 09:42:40 2023)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Sender: cherryfreya22@gmail.com
+Received: by 2002:a05:7208:552b:b0:61:3f08:1323 with HTTP; Wed, 18 Jan 2023
+ 02:24:29 -0800 (PST)
+From:   Jenneh Kandeh <jennehkandeh07@gmail.com>
+Date:   Wed, 18 Jan 2023 11:24:29 +0100
+X-Google-Sender-Auth: jAMIMxA6FLzRFlZ_1aAfjBmAo5E
+Message-ID: <CAJ4SZEP6ktgdjE_X+pOBTo6BfT-Wvprha5Z_HQ+cRXzfRkQcSA@mail.gmail.com>
+Subject: Re: Regarding Of My Late Father's Fund $10,200,000......
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=5.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,MILLION_USD,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:52b listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5314]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [cherryfreya22[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [jennehkandeh07[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
+        *  2.0 MILLION_USD BODY: Talks about millions of dollars
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/18/23 1:54 AM, Yi He wrote:
-> The bpf_send_singal, bpf_send_singal_thread and bpf_override_return
-> is similar to bpf_write_user and can affect userspace processes.
-> Thus, these three helpers should also be restricted by security lockdown.
-> 
-> Signed-off-by: Yi He <clangllvm@126.com>
-> ---
->   V1 -> V2: add security lockdown to bpf_send_singal_thread and remove
-> 	the unused LOCKDOWN_OFFENSIVE_BPF_MAX.
-> 
->   include/linux/security.h | 2 ++
->   kernel/trace/bpf_trace.c | 9 ++++++---
->   2 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 5b67f208f..42420e620 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -123,6 +123,8 @@ enum lockdown_reason {
->   	LOCKDOWN_DEBUGFS,
->   	LOCKDOWN_XMON_WR,
->   	LOCKDOWN_BPF_WRITE_USER,
-> +	LOCKDOWN_BPF_SEND_SIGNAL,
-> +	LOCKDOWN_BPF_OVERRIDE_RETURN,
->   	LOCKDOWN_DBG_WRITE_KERNEL,
->   	LOCKDOWN_RTAS_ERROR_INJECTION,
->   	LOCKDOWN_INTEGRITY_MAX,
+......
+Hello
+I got your contact through the internet - due to serious searching
+fora reliable personality. My name is Jenneh Kandeh birth date
+May/23rd/1994 in Free Town Capital of Sierra Leone.
 
-I'm not applying this.. i) this means by default you effectively remove these
-helpers from existing users in the wild given integrity mode is default for
-secure boot, but also ii) should we lock-down and remove the ability for other
-privileged entities like processes to send signals, seccomp to ret_kill, ptrace,
-etc given they all "can affect userspace processes". For the other one, check
-out already existing FUNCTION_ERROR_INJECTION kernel config.
+l am a nephew to Foday Sankoh, the rebel leader of Sierra Leone,
+opposed to the government of President Ahmad Tejan Kebbah the
+ex-leader. I have been on exile in the Benin - Porto- Novo. But l am
+current residing in PORTO-NOVO BENIN due to war of my country, my
+mother was killed on 04/01/2002 for Sierra Leone civilian war. my father
+decided to change another residence country with me because I am the only
+child of my family, bad news that my father pass away=C2=A0 on 25/11/2019;
+During the war, My father made a lot of money through the
+sales of Diamonds.
 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 3bbd3f0c8..fdb94868d 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1463,9 +1463,11 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   		return &bpf_cgrp_storage_delete_proto;
->   #endif
->   	case BPF_FUNC_send_signal:
-> -		return &bpf_send_signal_proto;
-> +		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
-> +		       NULL : &bpf_send_signal_proto;
->   	case BPF_FUNC_send_signal_thread:
-> -		return &bpf_send_signal_thread_proto;
-> +		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
-> +		       NULL : &bpf_send_signal_thread_proto;
->   	case BPF_FUNC_perf_event_read_value:
->   		return &bpf_perf_event_read_value_proto;
->   	case BPF_FUNC_get_ns_current_pid_tgid:
-> @@ -1531,7 +1533,8 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   		return &bpf_get_stack_proto;
->   #ifdef CONFIG_BPF_KPROBE_OVERRIDE
->   	case BPF_FUNC_override_return:
-> -		return &bpf_override_return_proto;
-> +		return security_locked_down(LOCKDOWN_BPF_OVERRIDE_RETURN) < 0 ?
-> +		       NULL : &bpf_override_return_proto;
->   #endif
->   	case BPF_FUNC_get_func_ip:
->   		return prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI ?
-> 
-
+To the tune of $10,200,000 (Ten Million Two Hundred United States
+Dollars). This money is currently and secretly kept in a ECOWAS
+security company here in Porto-Novo Benin, but because of the
+political turmoil which still exists in this africa, I can not invest
+the money myself, hence am soliciting your help, to help me take these fund=
+s
+into your custody for investment and also advise me on how to invest it; an=
+d
+=C2=A0I want to add here that if agreed 30% of the total worth of the fund =
+will be
+yours minus your total expenses incurred during the clearing of the
+fund in Cotonou Benin that 30% is a $3,060,000 (Three Million Sixty
+Thousand United State Dollars) is yours out of the fund after we
+confirmed the fund there. l'm waitting to hear from you soon.
