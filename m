@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C9C671439
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 07:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56896713D0
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 07:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbjARGbr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 01:31:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57038 "EHLO
+        id S229531AbjARGVy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 01:21:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjARGZy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 01:25:54 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7440D552B3;
-        Tue, 17 Jan 2023 22:14:26 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id u1-20020a17090a450100b0022936a63a21so1267093pjg.4;
-        Tue, 17 Jan 2023 22:14:26 -0800 (PST)
+        with ESMTP id S229718AbjARGTs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Jan 2023 01:19:48 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C94C1E284;
+        Tue, 17 Jan 2023 22:06:12 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 7so23755898pga.1;
+        Tue, 17 Jan 2023 22:06:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xzb3dDf80FIRCQmibSPI5U5nXORwuSiNGSgRt/kZLJ0=;
-        b=ktpzLfRdqURJuPDPKtq3ilBF/shlSgM+zuRpAf6OrVPdaUahGR82u/YgTl0v+6Y7S2
-         UXi7fChjOc2fX/K2UsltwuKWnVpQW3M7e1MZWB361SDU4d4sy7nKEnD+YkbEL+Kxi09S
-         fgAINUrK9U7b6YCXtKY8y2CaP6CWmefcU/nnQsXW7WdxHjHef/h8icQTgnho0VpcW/hn
-         7oVF7Brnx5fsgldJZcPCutOsUUkT5e7SuQDvdmXLLhcIH1JPL/tiowMnNdIWbB4+p6eR
-         uwbxYax8x4khmav4eyaMznL2YQ8uybHKOUd43982irD7ZXorKN5n7KdQgt+4dhJEbUnP
-         pwjw==
+        bh=1UMOA0c+N7OAsEuvPNaOaIppjJrZZvJ4XmiXNPGO7jM=;
+        b=nRTb7lNQXs0UljzO9lnEQzwEFyUDs2cUuu24BBrSK7xU5xhX7gkvGADL+JeOfVtOC7
+         bIh9UfRtdt5x0p7jQ5buGbLMxxD4GH68XWLFI0pEfTkFFrBnIQmXCiffcKS8udc0Pd1t
+         eoRJ3+NjwhuRuGPZo1KBHobDhbItVN1Z950lTWYGOZ3R8YEJCksgCmHT31TALo18DEmp
+         2+xlckgBjhhKib0P9MNtdZhYONTXiuL1OwwZZHMjda84Ftk8HHJpHXic5ob6JMuLrSRY
+         yHXI+9wB/K1UC6n/zbwENCNGT5l6reo1OGB5/TT/TxEFYoz9bZJfTx/FHjiM6Er9Akyb
+         V0BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Xzb3dDf80FIRCQmibSPI5U5nXORwuSiNGSgRt/kZLJ0=;
-        b=c2YX7KQ5XqCMkN7BS7HneeosTaUgojjHi24t9Qh1uZz/RD3Fi3BnFBlIztiB+mSXlf
-         msPNJpVqImRvWixZse5vg9o6mQjBfkVVps5ePhPsubju1+CyU8qpAOQmvmsswPYX7PXm
-         8jEHoTMeWVifJP694d7gpEhI5WuM6vJvww9oM+wgE45ly+1mtnAmW1KZyZGI5Q8gm4cd
-         HpJf+BBUcKLBxoVYB764N2qWI+M4aSAOwrrOf0z1id+xAajCYOKhKOs+ko0y0O96DhyN
-         P/JVequchCB7nuN8xc0Ebz7MSeGhi8zLd1m8sv8nFMGS+k2YdRJyP3h5RjJ2Tk8hNUvO
-         WYXA==
-X-Gm-Message-State: AFqh2kpsIrhKp0OrTtM5Z2VbCPs4sYHuDoLi1GaUpcX3Qn9MBgH6KF5f
-        GZ8hKijBB1ORw9xxBlM1a6tS+fY6KOA=
-X-Google-Smtp-Source: AMrXdXu6gygno9P1g5Po2rkAAg4WltPLLTA2MBIM0tMtwy6iL08lEqK5rXFqXcGgtQpkcOIqrLc+ZA==
-X-Received: by 2002:a05:6a00:4ac8:b0:581:bae0:d5d5 with SMTP id ds8-20020a056a004ac800b00581bae0d5d5mr5814871pfb.9.1674021963543;
-        Tue, 17 Jan 2023 22:06:03 -0800 (PST)
+        bh=1UMOA0c+N7OAsEuvPNaOaIppjJrZZvJ4XmiXNPGO7jM=;
+        b=k6HkI6AnKJIUeALw0c1tT+EQmAknvPIArmqQSHn2EJQtKtyzf0ueD8cmNQZ/pwPDCf
+         /n97P5nXuwtUH7hoe/8FE+2xA37lxgZLu2OF8AUmKgoV+vMhgRYGoimvN/End/NUJr2y
+         tbWQPYeAe8F/zA/ycmPd25zarlf5j8sFHxDnWyh63FDHhpRlpwdIKoZ4qvQifTmqzORD
+         M0TxHUtJidQQRMLGki0hgXRhJJUIn8ydmOW7XEn+5X8Avua48WDXueVI/ZH1HHeWocuZ
+         YNK0iqZsQoXHD2AIt+qYhZY48Kb1Trha9yIPDB3w9eWF6M8HL+cgalbwjW3/q1CR3svc
+         lYcQ==
+X-Gm-Message-State: AFqh2krK8Sb7viN110NW0vGxvU3DbpMEiFbiuzcWjaZO4e9Qo/TgcZIi
+        plKj5tVHLgqcVhWk/+2Qew0=
+X-Google-Smtp-Source: AMrXdXsgpHAFSMvfJ97QDSqfE+WKzuYVN0tIzxUSZMMoa+G5QN0omUTUE4jyZ8Y78ZCzjIzUjJpfRQ==
+X-Received: by 2002:aa7:9607:0:b0:580:9e9e:c442 with SMTP id q7-20020aa79607000000b005809e9ec442mr5956540pfg.24.1674021964985;
+        Tue, 17 Jan 2023 22:06:04 -0800 (PST)
 Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:ff0:3749:9eb3:dfb5:f449])
-        by smtp.gmail.com with ESMTPSA id b126-20020a62cf84000000b00574e84ed847sm10990180pfg.24.2023.01.17.22.06.02
+        by smtp.gmail.com with ESMTPSA id b126-20020a62cf84000000b00574e84ed847sm10990180pfg.24.2023.01.17.22.06.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Jan 2023 22:06:03 -0800 (PST)
+        Tue, 17 Jan 2023 22:06:04 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
@@ -58,10 +58,10 @@ Cc:     Mark Rutland <mark.rutland@arm.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>, Song Liu <song@kernel.org>,
-        bpf@vger.kernel.org, x86@kernel.org
-Subject: [PATCH 2/8] perf/core: Add perf_sample_save_callchain() helper
-Date:   Tue, 17 Jan 2023 22:05:53 -0800
-Message-Id: <20230118060559.615653-3-namhyung@kernel.org>
+        bpf@vger.kernel.org, linux-s390@vger.kernel.org, x86@kernel.org
+Subject: [PATCH 3/8] perf/core: Add perf_sample_save_raw_data() helper
+Date:   Tue, 17 Jan 2023 22:05:54 -0800
+Message-Id: <20230118060559.615653-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
 In-Reply-To: <20230118060559.615653-1-namhyung@kernel.org>
 References: <20230118060559.615653-1-namhyung@kernel.org>
@@ -77,134 +77,217 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When it saves the callchain to the perf sample data, it needs to update
+When it saves the raw_data to the perf sample data, it needs to update
 the sample flags and the dynamic size.  To make sure this, add the
-perf_sample_save_callchain() helper and convert all call sites.
+perf_sample_save_raw_data() helper and convert all call sites.
 
+Cc: linux-s390@vger.kernel.org
 Cc: x86@kernel.org
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Cc: bpf@vger.kernel.org
 Acked-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Song Liu <song@kernel.org>
 Tested-by: Jiri Olsa <jolsa@kernel.org>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- arch/x86/events/amd/ibs.c  |  6 ++----
- arch/x86/events/intel/ds.c | 12 ++++--------
- include/linux/perf_event.h | 16 +++++++++++++++-
- kernel/events/core.c       | 12 ++----------
- 4 files changed, 23 insertions(+), 23 deletions(-)
+ arch/s390/kernel/perf_cpum_cf.c    |  4 +---
+ arch/s390/kernel/perf_pai_crypto.c |  4 +---
+ arch/s390/kernel/perf_pai_ext.c    |  4 +---
+ arch/x86/events/amd/ibs.c          |  3 +--
+ include/linux/perf_event.h         | 33 +++++++++++++++++++++++++-----
+ kernel/events/core.c               | 31 +++++-----------------------
+ kernel/trace/bpf_trace.c           |  6 ++----
+ 7 files changed, 39 insertions(+), 46 deletions(-)
 
+diff --git a/arch/s390/kernel/perf_cpum_cf.c b/arch/s390/kernel/perf_cpum_cf.c
+index f043a7ff220b..aa38649c7c27 100644
+--- a/arch/s390/kernel/perf_cpum_cf.c
++++ b/arch/s390/kernel/perf_cpum_cf.c
+@@ -662,9 +662,7 @@ static int cfdiag_push_sample(struct perf_event *event,
+ 	if (event->attr.sample_type & PERF_SAMPLE_RAW) {
+ 		raw.frag.size = cpuhw->usedss;
+ 		raw.frag.data = cpuhw->stop;
+-		raw.size = raw.frag.size;
+-		data.raw = &raw;
+-		data.sample_flags |= PERF_SAMPLE_RAW;
++		perf_sample_save_raw_data(&data, &raw);
+ 	}
+ 
+ 	overflow = perf_event_overflow(event, &data, &regs);
+diff --git a/arch/s390/kernel/perf_pai_crypto.c b/arch/s390/kernel/perf_pai_crypto.c
+index 985e243a2ed8..a7b339c4fd7c 100644
+--- a/arch/s390/kernel/perf_pai_crypto.c
++++ b/arch/s390/kernel/perf_pai_crypto.c
+@@ -362,9 +362,7 @@ static int paicrypt_push_sample(void)
+ 	if (event->attr.sample_type & PERF_SAMPLE_RAW) {
+ 		raw.frag.size = rawsize;
+ 		raw.frag.data = cpump->save;
+-		raw.size = raw.frag.size;
+-		data.raw = &raw;
+-		data.sample_flags |= PERF_SAMPLE_RAW;
++		perf_sample_save_raw_data(&data, &raw);
+ 	}
+ 
+ 	overflow = perf_event_overflow(event, &data, &regs);
+diff --git a/arch/s390/kernel/perf_pai_ext.c b/arch/s390/kernel/perf_pai_ext.c
+index 1138f57baae3..555597222bad 100644
+--- a/arch/s390/kernel/perf_pai_ext.c
++++ b/arch/s390/kernel/perf_pai_ext.c
+@@ -451,9 +451,7 @@ static int paiext_push_sample(void)
+ 	if (event->attr.sample_type & PERF_SAMPLE_RAW) {
+ 		raw.frag.size = rawsize;
+ 		raw.frag.data = cpump->save;
+-		raw.size = raw.frag.size;
+-		data.raw = &raw;
+-		data.sample_flags |= PERF_SAMPLE_RAW;
++		perf_sample_save_raw_data(&data, &raw);
+ 	}
+ 
+ 	overflow = perf_event_overflow(event, &data, &regs);
 diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
-index da3f5ebac4e1..417c80bd3274 100644
+index 417c80bd3274..64582954b5f6 100644
 --- a/arch/x86/events/amd/ibs.c
 +++ b/arch/x86/events/amd/ibs.c
-@@ -1122,10 +1122,8 @@ static int perf_ibs_handle_irq(struct perf_ibs *perf_ibs, struct pt_regs *iregs)
- 	 * recorded as part of interrupt regs. Thus we need to use rip from
- 	 * interrupt regs while unwinding call stack.
- 	 */
--	if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) {
--		data.callchain = perf_callchain(event, iregs);
--		data.sample_flags |= PERF_SAMPLE_CALLCHAIN;
--	}
-+	if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN)
-+		perf_sample_save_callchain(&data, event, iregs);
+@@ -1110,8 +1110,7 @@ static int perf_ibs_handle_irq(struct perf_ibs *perf_ibs, struct pt_regs *iregs)
+ 				.data = ibs_data.data,
+ 			},
+ 		};
+-		data.raw = &raw;
+-		data.sample_flags |= PERF_SAMPLE_RAW;
++		perf_sample_save_raw_data(&data, &raw);
+ 	}
  
- 	throttle = perf_event_overflow(event, &data, &regs);
- out:
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 6ec326b47e2e..158cf845fc80 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -1617,10 +1617,8 @@ static void setup_pebs_fixed_sample_data(struct perf_event *event,
- 	 * previous PMI context or an (I)RET happened between the record and
- 	 * PMI.
- 	 */
--	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
--		data->callchain = perf_callchain(event, iregs);
--		data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
--	}
-+	if (sample_type & PERF_SAMPLE_CALLCHAIN)
-+		perf_sample_save_callchain(data, event, iregs);
- 
- 	/*
- 	 * We use the interrupt regs as a base because the PEBS record does not
-@@ -1795,10 +1793,8 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
- 	 * previous PMI context or an (I)RET happened between the record and
- 	 * PMI.
- 	 */
--	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
--		data->callchain = perf_callchain(event, iregs);
--		data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
--	}
-+	if (sample_type & PERF_SAMPLE_CALLCHAIN)
-+		perf_sample_save_callchain(data, event, iregs);
- 
- 	*regs = *iregs;
- 	/* The ip in basic is EventingIP */
+ 	if (perf_ibs == &perf_ibs_op)
 diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 16b980014449..a9419608402b 100644
+index a9419608402b..569dfac5887f 100644
 --- a/include/linux/perf_event.h
 +++ b/include/linux/perf_event.h
-@@ -1095,6 +1095,8 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- extern u64 perf_event_read_value(struct perf_event *event,
- 				 u64 *enabled, u64 *running);
+@@ -95,6 +95,11 @@ struct perf_raw_record {
+ 	u32				size;
+ };
  
-+extern struct perf_callchain_entry *perf_callchain(struct perf_event *event, struct pt_regs *regs);
++static __always_inline bool perf_raw_frag_last(const struct perf_raw_frag *frag)
++{
++	return frag->pad < sizeof(u64);
++}
 +
- 
- struct perf_sample_data {
- 	/*
-@@ -1167,6 +1169,19 @@ static inline void perf_sample_data_init(struct perf_sample_data *data,
- 	}
+ /*
+  * branch stack layout:
+  *  nr: number of taken branches stored in entries[]
+@@ -1182,6 +1187,29 @@ static inline void perf_sample_save_callchain(struct perf_sample_data *data,
+ 	data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
  }
  
-+static inline void perf_sample_save_callchain(struct perf_sample_data *data,
-+					      struct perf_event *event,
-+					      struct pt_regs *regs)
++static inline void perf_sample_save_raw_data(struct perf_sample_data *data,
++					     struct perf_raw_record *raw)
 +{
-+	int size = 1;
++	struct perf_raw_frag *frag = &raw->frag;
++	u32 sum = 0;
++	int size;
 +
-+	data->callchain = perf_callchain(event, regs);
-+	size += data->callchain->nr;
++	do {
++		sum += frag->size;
++		if (perf_raw_frag_last(frag))
++			break;
++		frag = frag->next;
++	} while (1);
 +
-+	data->dyn_size += size * sizeof(u64);
-+	data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
++	size = round_up(sum + sizeof(u32), sizeof(u64));
++	raw->size = size - sizeof(u32);
++	frag->pad = raw->size - sum;
++
++	data->raw = raw;
++	data->dyn_size += size;
++	data->sample_flags |= PERF_SAMPLE_RAW;
 +}
 +
  /*
   * Clear all bitfields in the perf_branch_entry.
   * The to and from fields are not cleared because they are
-@@ -1408,7 +1423,6 @@ extern void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct
- extern struct perf_callchain_entry *
- get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
- 		   u32 max_stack, bool crosstask, bool add_mark);
--extern struct perf_callchain_entry *perf_callchain(struct perf_event *event, struct pt_regs *regs);
- extern int get_callchain_buffers(int max_stack);
- extern void put_callchain_buffers(void);
- extern struct perf_callchain_entry *get_callchain_entry(int *rctx);
+@@ -1690,11 +1718,6 @@ extern void perf_restore_debug_store(void);
+ static inline void perf_restore_debug_store(void)			{ }
+ #endif
+ 
+-static __always_inline bool perf_raw_frag_last(const struct perf_raw_frag *frag)
+-{
+-	return frag->pad < sizeof(u64);
+-}
+-
+ #define perf_output_put(handle, x) perf_output_copy((handle), &(x), sizeof(x))
+ 
+ struct perf_pmu_events_attr {
 diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 8c8de26f04ab..0fba98b9cd65 100644
+index 0fba98b9cd65..133894ae5e30 100644
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -7585,16 +7585,8 @@ void perf_prepare_sample(struct perf_event_header *header,
- 	if (sample_type & (PERF_SAMPLE_IP | PERF_SAMPLE_CODE_PAGE_SIZE))
- 		data->ip = perf_instruction_pointer(regs);
+@@ -7588,30 +7588,10 @@ void perf_prepare_sample(struct perf_event_header *header,
+ 	if (filtered_sample_type & PERF_SAMPLE_CALLCHAIN)
+ 		perf_sample_save_callchain(data, event, regs);
  
--	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
--		int size = 1;
+-	if (sample_type & PERF_SAMPLE_RAW) {
+-		struct perf_raw_record *raw = data->raw;
+-		int size;
 -
--		if (filtered_sample_type & PERF_SAMPLE_CALLCHAIN)
--			data->callchain = perf_callchain(event, regs);
+-		if (raw && (data->sample_flags & PERF_SAMPLE_RAW)) {
+-			struct perf_raw_frag *frag = &raw->frag;
+-			u32 sum = 0;
 -
--		size += data->callchain->nr;
+-			do {
+-				sum += frag->size;
+-				if (perf_raw_frag_last(frag))
+-					break;
+-				frag = frag->next;
+-			} while (1);
 -
--		data->dyn_size += size * sizeof(u64);
--	}
-+	if (filtered_sample_type & PERF_SAMPLE_CALLCHAIN)
-+		perf_sample_save_callchain(data, event, regs);
+-			size = round_up(sum + sizeof(u32), sizeof(u64));
+-			raw->size = size - sizeof(u32);
+-			frag->pad = raw->size - sum;
+-		} else {
+-			size = sizeof(u64);
+-			data->raw = NULL;
+-		}
+-
+-		data->dyn_size += size;
++	if (filtered_sample_type & PERF_SAMPLE_RAW) {
++		data->raw = NULL;
++		data->dyn_size += sizeof(u64);
++		data->sample_flags |= PERF_SAMPLE_RAW;
+ 	}
  
- 	if (sample_type & PERF_SAMPLE_RAW) {
- 		struct perf_raw_record *raw = data->raw;
+ 	if (sample_type & PERF_SAMPLE_BRANCH_STACK) {
+@@ -10127,8 +10107,7 @@ void perf_tp_event(u16 event_type, u64 count, void *record, int entry_size,
+ 	};
+ 
+ 	perf_sample_data_init(&data, 0, 0);
+-	data.raw = &raw;
+-	data.sample_flags |= PERF_SAMPLE_RAW;
++	perf_sample_save_raw_data(&data, &raw);
+ 
+ 	perf_trace_buf_update(record, event_type);
+ 
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 3bbd3f0c810c..ad37608afc35 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -687,8 +687,7 @@ BPF_CALL_5(bpf_perf_event_output, struct pt_regs *, regs, struct bpf_map *, map,
+ 	}
+ 
+ 	perf_sample_data_init(sd, 0, 0);
+-	sd->raw = &raw;
+-	sd->sample_flags |= PERF_SAMPLE_RAW;
++	perf_sample_save_raw_data(sd, &raw);
+ 
+ 	err = __bpf_perf_event_output(regs, map, flags, sd);
+ 
+@@ -746,8 +745,7 @@ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+ 
+ 	perf_fetch_caller_regs(regs);
+ 	perf_sample_data_init(sd, 0, 0);
+-	sd->raw = &raw;
+-	sd->sample_flags |= PERF_SAMPLE_RAW;
++	perf_sample_save_raw_data(sd, &raw);
+ 
+ 	ret = __bpf_perf_event_output(regs, map, flags, sd);
+ out:
 -- 
 2.39.0.314.g84b9a713c41-goog
 
