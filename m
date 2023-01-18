@@ -2,108 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A70ED671F89
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 15:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F862671FD4
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 15:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbjARO0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 09:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        id S229456AbjAROj6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 09:39:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbjARO02 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 09:26:28 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD2F302A8;
-        Wed, 18 Jan 2023 06:10:35 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id BD0193EF47;
-        Wed, 18 Jan 2023 14:10:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1674051033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S230472AbjAROjc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Jan 2023 09:39:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE7238B53
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 06:28:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1674052119;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GGYhHqk9lAfnC0oeawDzo48jNfxg1s75ZFbKqNg+POw=;
-        b=OVjneds/B14mHveueZZ//I+0ccc7E/FG+o+Z/xavu7kdORWyymsAQ4k5ZRUMlTdzqy9Gtd
-        Ck4aM3Jh/AQmgwjPBpNTMVJQj3rJNEmf/3S/7zBfWZZwkjwMjDbafT8s8Y5bNHmltmG0hv
-        1rusI+rrQ37oKvcuNeAaJEq/XblG+oQ=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 032772C141;
-        Wed, 18 Jan 2023 14:10:33 +0000 (UTC)
-Date:   Wed, 18 Jan 2023 15:10:32 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Zhen Lei <thunder.leizhen@huawei.com>, bpf@vger.kernel.org,
-        live-patching@vger.kernel.org, linux-modules@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCHv3 bpf-next 3/3] bpf: Change modules resolving for kprobe
- multi link
-Message-ID: <Y8f92N1AjLM0hYis@alley>
-References: <20230116101009.23694-1-jolsa@kernel.org>
- <20230116101009.23694-4-jolsa@kernel.org>
+        bh=zvohO/cAGi/GlRju0XPQ5MY7w85GbbV+IBrhlRqRyqg=;
+        b=el2UBSgitT3dcct6yjx/EBzLUgY+X7WW6jBFLuFQyiAbxWjS3G3puyM1i8NMf/CYLRegx5
+        602m3s9Twzsxz6jzz5On1mrJt3t1oP0dQOHKjTshl3oj9oC3z7bTMOg86pS3EpgMAtuwn1
+        LSfubpYeudg1FdP20QxFd2hsurYBa64=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-516-k4l3rvMsNYGchiQK4rRetg-1; Wed, 18 Jan 2023 09:28:38 -0500
+X-MC-Unique: k4l3rvMsNYGchiQK4rRetg-1
+Received: by mail-ed1-f69.google.com with SMTP id y21-20020a056402359500b0049e171c4ad0so6410451edc.6
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 06:28:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zvohO/cAGi/GlRju0XPQ5MY7w85GbbV+IBrhlRqRyqg=;
+        b=N+rknDl9YYmojYDZ8uWeES3AGfQZM9EXEInmjb2JryFFb2dY6eueRq3F5/Egbp6BLI
+         41dDeEsvLIAZFhXPCN2xGoSsGDh30S+VvHyq/8csPAOj6HunXu+N0h0/5qXp4w8RxMiB
+         sBc48xQOR2ow6TgQDAus12oZQWypfsWfugoKpEswayTr+h0omMARoUc36q/NtdwDV0WR
+         EBlNS4HN6IdCmx3NV8JAggj2nYp+5mPmCk/WOHGnnoJegg8feqQnZ+fT2zunLoXoGqq+
+         oJWZPFGfJpKeXB3q/7XsKd3m5ZgpOvXUKJBbuu2VYav++3wXt8u3ebLR0uf68UADW+ez
+         /eVw==
+X-Gm-Message-State: AFqh2kpyL//BRjqj/0yRtVjOaPSFrEkOd/2GUCThps/1i4ivux0yEIoN
+        r9Nozj2Fk4NvZ7nAT32AteXfoqZCEUNOGJOpbdkbekYH1gcsHy8QQjj9bMSyXk8dN4/uMZz/wyH
+        YhYBlWwFHsfhJ
+X-Received: by 2002:a50:eac3:0:b0:499:b48b:2c3 with SMTP id u3-20020a50eac3000000b00499b48b02c3mr7114311edp.25.1674052117337;
+        Wed, 18 Jan 2023 06:28:37 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXuFLUJf8MuNit9FWrOTugYppUKXSNpuc7vMhIE+hzF9fX7e4lG5pAmiPAioshiQjMW+qb/yJg==
+X-Received: by 2002:a50:eac3:0:b0:499:b48b:2c3 with SMTP id u3-20020a50eac3000000b00499b48b02c3mr7114277edp.25.1674052117041;
+        Wed, 18 Jan 2023 06:28:37 -0800 (PST)
+Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id la19-20020a170907781300b007aee7ca1199sm14857759ejc.10.2023.01.18.06.28.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Jan 2023 06:28:36 -0800 (PST)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <27e552c4-e1cf-40d3-305c-e4a57ab87bcf@redhat.com>
+Date:   Wed, 18 Jan 2023 15:28:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230116101009.23694-4-jolsa@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, David Vernet <void@manifault.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Subject: Re: [PATCH bpf-next v7 01/17] bpf: Document XDP RX metadata
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <20230112003230.3779451-1-sdf@google.com>
+ <20230112003230.3779451-2-sdf@google.com>
+ <affeb1e3-69e6-9783-0012-6d917972ba30@redhat.com>
+ <CAKH8qBuE5ipcncQ+=su_Ds1EHm5gUMG_od-+eqJHkuiV-Q6RhQ@mail.gmail.com>
+In-Reply-To: <CAKH8qBuE5ipcncQ+=su_Ds1EHm5gUMG_od-+eqJHkuiV-Q6RhQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon 2023-01-16 11:10:09, Jiri Olsa wrote:
-> We currently use module_kallsyms_on_each_symbol that iterates all
-> modules/symbols and we try to lookup each such address in user
-> provided symbols/addresses to get list of used modules.
-> 
-> This fix instead only iterates provided kprobe addresses and calls
-> __module_address on each to get list of used modules. This turned
-> out ot be simpler and also bit faster.
-> 
-> On my setup with workload (executed 10 times):
-> 
->    # test_progs -t kprobe_multi_bench_attach/modules
-> 
-> Current code:
-> 
->  Performance counter stats for './test.sh' (5 runs):
-> 
->     76,081,161,596      cycles:k                   ( +-  0.47% )
-> 
->            18.3867 +- 0.0992 seconds time elapsed  ( +-  0.54% )
-> 
-> With the fix:
-> 
->  Performance counter stats for './test.sh' (5 runs):
-> 
->     74,079,889,063      cycles:k                   ( +-  0.04% )
-> 
->            17.8514 +- 0.0218 seconds time elapsed  ( +-  0.12% )
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-The change looks good to me:
+On 17/01/2023 21.33, Stanislav Fomichev wrote:
+> On Mon, Jan 16, 2023 at 5:09 AM Jesper Dangaard Brouer
+> <jbrouer@redhat.com> wrote:
+>>
+>> On 12/01/2023 01.32, Stanislav Fomichev wrote:
+>>> Document all current use-cases and assumptions.
+>>>
+[...]
+>>> Acked-by: David Vernet <void@manifault.com>
+>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>>> ---
+>>>    Documentation/networking/index.rst           |   1 +
+>>>    Documentation/networking/xdp-rx-metadata.rst | 108 +++++++++++++++++++
+>>>    2 files changed, 109 insertions(+)
+>>>    create mode 100644 Documentation/networking/xdp-rx-metadata.rst
+>>>
+>>> diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
+>>> index 4f2d1f682a18..4ddcae33c336 100644
+>>> --- a/Documentation/networking/index.rst
+>>> +++ b/Documentation/networking/index.rst
+[...cut...]
+>>> +AF_XDP
+>>> +======
+>>> +
+>>> +:doc:`af_xdp` use-case implies that there is a contract between the BPF
+>>> +program that redirects XDP frames into the ``AF_XDP`` socket (``XSK``) and
+>>> +the final consumer. Thus the BPF program manually allocates a fixed number of
+>>> +bytes out of metadata via ``bpf_xdp_adjust_meta`` and calls a subset
+>>> +of kfuncs to populate it. The userspace ``XSK`` consumer computes
+>>> +``xsk_umem__get_data() - METADATA_SIZE`` to locate that metadata.
+>>> +Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
+>>> +``METADATA_SIZE`` is an application-specific constant.
+>>
+>> The main problem with AF_XDP and metadata is that, the AF_XDP descriptor
+>> doesn't contain any info about the length METADATA_SIZE.
+>>
+>> The text does says this, but in a very convoluted way.
+>> I think this challenge should be more clearly spelled out.
+>>
+>> (p.s. This was something that XDP-hints via BTF have a proposed solution
+>> for)
+> 
+> Any suggestions on how to clarify it better? I have two hints:
+> 1. ``METADATA_SIZE`` is an application-specific constant
+> 2. note missing ``data_meta`` pointer
+> 
+> Do you prefer I also add a sentence where I spell it out more
+> explicitly? Something like:
+> 
+> Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
+> ``METADATA_SIZE`` is an application-specific constant (``AF_XDP``
+> receive descriptor does _not_ explicitly carry the size of the
+> metadata).
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+That addition works for me.
+(Later we can hopefully come up with a solution for this)
 
-Best Regards,
-Petr
+>>> +
+>>> +Here is the ``AF_XDP`` consumer layout (note missing ``data_meta`` pointer)::
+>>
+>> The "note" also hint to this issue.
+> 
+> This seems like an explicit design choice of the AF_XDP? In theory, I
+> don't see why we can't have a v2 receive descriptor format where we
+> return the size of the metadata?
+
+(Cc. Magnus+Bjørn)
+Yes, it was a design choice from AF_XDP not to include the metadata length.
+
+The AF_XDP descriptor, see struct  xdp_desc (below) from 
+/include/uapi/linux/if_xdp.h.
+
+  /* Rx/Tx descriptor */
+  struct xdp_desc {
+	__u64 addr;
+	__u32 len;
+	__u32 options;
+  };
+
+Does contain a 'u32 options' field, that we could use.
+
+In previous discussions, the proposed solution (from Bjørn+Magnus) was
+to use some bits in the 'options' field to say metadata is present, and
+xsk_umem__get_data minus 4 (or 8) bytes contain a BTF_ID.  The AF_XDP
+programmer can then get the metadata length by looking up the BTF_ID.
+
+
+>>> +
+>>> +  +----------+-----------------+------+
+>>> +  | headroom | custom metadata | data |
+>>> +  +----------+-----------------+------+
+>>> +                               ^
+>>> +                               |
+>>> +                        rx_desc->address
+>>> +
+>>> +XDP_PASS
+>>> +========
+>>> +
+>>> +This is the path where the packets processed by the XDP program are passed
+>>> +into the kernel. The kernel creates the ``skb`` out of the ``xdp_buff``
+>>> +contents. Currently, every driver has custom kernel code to parse
+>>> +the descriptors and populate ``skb`` metadata when doing this ``xdp_buff->skb``
+>>> +conversion, and the XDP metadata is not used by the kernel when building
+>>> +``skbs``. However, TC-BPF programs can access the XDP metadata area using
+>>> +the ``data_meta`` pointer.
+>>> +
+>>> +In the future, we'd like to support a case where an XDP program
+>>> +can override some of the metadata used for building ``skbs``.
+>>
+>> Happy this is mentioned as future work.
+> 
+> As mentioned in a separate email, if you prefer to focus on that, feel
+
+Yes, I'm going to work on PoC code that explore this area.
+
+> free to drive it since I'm gonna look into the TX side first.
+
+Happy to hear you are going to look into TX-side.
+Are your use case related to TX timestamping?
+
+--Jesper
+
