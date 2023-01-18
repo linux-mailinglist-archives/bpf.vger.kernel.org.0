@@ -2,165 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F81671A87
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 12:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0435C671A97
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 12:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjARL0v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 06:26:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
+        id S229794AbjARLaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 06:30:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbjARLYl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 06:24:41 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A515837B48
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 02:41:57 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id j34-20020a05600c1c2200b003da1b054057so1074526wms.5
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 02:41:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pgGy7VZXmHRuoUnB6hQe3Q3Kgauh1ddIbldihbQu6PY=;
-        b=dqb+D75YhAaZYS95pL6Eozeng2FpAv4ZjrCjnLkDVqB9rVh27puXp2sERdt7zhD6A3
-         rjBpkKpSYh72EdXS2E22Fo8ESoCw5IXWRU63fg+mcZ1M4tfw6WKc5Cib8NSrwU3a0Ixx
-         y5UVkp4CmjSz47ufGzENYw74sK9RXaV59oIkjW85fbD3XBrU/1e+Y4Bv4c6W+srm8tmr
-         v6ThTXhRxt6dYR8JFjiIfSPs83Rd8b92zq8GRcclJMQnuQNpv2R4m3RXN5RFhDgO6NY6
-         rJGlByaXbZtO01Mc7qaKOvwvRlGX2O7cQW2B42kUx37d3HNcNKBmCPk8UWbYD3w7GjN9
-         96xQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pgGy7VZXmHRuoUnB6hQe3Q3Kgauh1ddIbldihbQu6PY=;
-        b=rI7SBcglHo9fdFM0IYTyF88/kJIgYppuf76gy4E+OuRSATXSs7jRsAcHwHELWYjCjS
-         PbObzjaeWAHZYNLt9C4WkZDZbli22/EDfjywPyRo1yPNxYYseJjsrFq2ETh2Rghs3yBK
-         k6Hj5k3X84ommOc6+M8Ml/eBnjkRKfGyaVbHgVpLK4tl22RJlUFYFKaSb9icAUt6Z0hD
-         vgjPnMtPLF/t0BYCfRZ49ZOKMK5CcMylHwcxvzx0x3DcBkOasGbddPWAtxRRvXIhVN+9
-         th0pXxXirkLPKla+SPmB+SgKrRFGIOTAPgPZcCSyeqCUBDBkjO4Ew3RIZmONVArZxO8f
-         sU6g==
-X-Gm-Message-State: AFqh2kqVZJ8mptvBmeAbNm7x+qL2T6XrpSDst4AJzOSU9CehI5nh/z/y
-        kZc9ADnM1Jo+XV9xtw5IKZdbzA==
-X-Google-Smtp-Source: AMrXdXtyOaJW59cahS/P5zvkuxEMnkiVyzTCLrUppeFCApClnt+TEu/zIEeme1xZ24PcV3sMJl0g6w==
-X-Received: by 2002:a05:600c:4e03:b0:3da:2870:7dc7 with SMTP id b3-20020a05600c4e0300b003da28707dc7mr2135047wmq.24.1674038516232;
-        Wed, 18 Jan 2023 02:41:56 -0800 (PST)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id fk6-20020a05600c0cc600b003c6b70a4d69sm1537480wmb.42.2023.01.18.02.41.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Jan 2023 02:41:55 -0800 (PST)
-Message-ID: <64b7fb86-5757-13ec-acf3-ab7ded978cd4@isovalent.com>
-Date:   Wed, 18 Jan 2023 10:41:55 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [bpf-next v1 2/2] bpftool: profile online CPUs instead of
- possible
-Content-Language: en-GB
-To:     tong@infragraf.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S229524AbjARL34 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Jan 2023 06:29:56 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB67C45BC
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 02:49:09 -0800 (PST)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pI604-0008Nq-Vo; Wed, 18 Jan 2023 11:49:01 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pI604-0000I1-Dd; Wed, 18 Jan 2023 11:49:00 +0100
+Subject: Re: [RFC PATCH v2] Documentation/bpf: Add a description of "stable
+ kfuncs"
+To:     Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20230117044902.98938-1-tong@infragraf.org>
- <20230117044902.98938-2-tong@infragraf.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230117044902.98938-2-tong@infragraf.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Vernet <void@manifault.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <20230117212731.442859-1-toke@redhat.com>
+ <CAKH8qBuvBomTXqNB+a6n_PbJKSNFazrAxEWsVT-=4XfztuJ7dw@mail.gmail.com>
+ <87v8l4byyb.fsf@toke.dk>
+ <CAKH8qBs=nEhhy2Qu7CpyAHx6gOaWR25tRF7aopti5-TSuw66HQ@mail.gmail.com>
+ <CAADnVQKy1QzM+wg1BxfYA30QsTaM4M5RRCi+VHN6A7ah2BeZZw@mail.gmail.com>
+ <CAKH8qBvZgoOe24MMY+Jn-6guJzGVuJS9zW4v6H+fhgcp7X_9jQ@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <3500bace-de87-0335-3fe3-6a5c0b4ce6ad@iogearbox.net>
+Date:   Wed, 18 Jan 2023 11:48:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAKH8qBvZgoOe24MMY+Jn-6guJzGVuJS9zW4v6H+fhgcp7X_9jQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26785/Wed Jan 18 09:42:40 2023)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2023-01-17 12:49 UTC+0800 ~ tong@infragraf.org
-> From: Tonghao Zhang <tong@infragraf.org>
-> 
-> The number of online cpu may be not equal to possible cpu.
-> bpftool prog profile, can not create pmu event on possible
-> but not online cpu.
+On 1/18/23 3:00 AM, Stanislav Fomichev wrote:
+> On Tue, Jan 17, 2023 at 3:19 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Tue, Jan 17, 2023 at 2:20 PM Stanislav Fomichev <sdf@google.com> wrote:
+>>> On Tue, Jan 17, 2023 at 2:04 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>> Stanislav Fomichev <sdf@google.com> writes:
+>>>>> On Tue, Jan 17, 2023 at 1:27 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>>>>
+>>>>>> Following up on the discussion at the BPF office hours, this patch adds a
+>>>>>> description of the (new) concept of "stable kfuncs", which are kfuncs that
+>>>>>> offer a "more stable" interface than what we have now, but is still not
+>>>>>> part of UAPI.
+>>>>>>
+>>>>>> This is mostly meant as a straw man proposal to focus discussions around
+>>>>>> stability guarantees. From the discussion, it seemed clear that there were
+>>>>>> at least some people (myself included) who felt that there needs to be some
+>>>>>> way to export functionality that we consider "stable" (in the sense of
+>>>>>> "applications can rely on its continuing existence").
+>>>>>>
+>>>>>> One option is to keep BPF helpers as the stable interface and implement
+>>>>>> some technical solution for moving functionality from kfuncs to helpers
+>>>>>> once it has stood the test of time and we're comfortable committing to it
+>>>>>> as a stable API. Another is to freeze the helper definitions, and instead
+>>>>>> use kfuncs for this purpose as well, by marking a subset of them as
+>>>>>> "stable" in some way. Or we can do both and have multiple levels of
+>>>>>> "stable", I suppose.
+>>>>>>
+>>>>>> This patch is an attempt to describe what the "stable kfuncs" idea might
+>>>>>> look like, as well as to formulate some criteria for what we mean by
+>>>>>> "stable", and describe an explicit deprecation procedure. Feel free to
+>>>>>> critique any part of this (including rejecting the notion entirely).
+>>>>>>
+>>>>>> Some people mentioned (in the office hours) that should we decide to go in
+>>>>>> this direction, there's some work that needs to be done in libbpf (and
+>>>>>> probably the kernel too?) to bring the kfunc developer experience up to par
+>>>>>> with helpers. Things like exporting kfunc definitions to vmlinux.h (to make
+>>>>>> them discoverable), and having CO-RE support for using them, etc. I kinda
+>>>>>> consider that orthogonal to what's described here, but I do think we should
+>>>>>> fix those issues before implementing the procedures described here.
+>>>>>>
+>>>>>> v2:
+>>>>>> - Incorporate Daniel's changes
+>>>>>>
+>>>>>> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>>>>>> ---
+>>>>>>   Documentation/bpf/kfuncs.rst | 87 +++++++++++++++++++++++++++++++++---
+>>>>>>   1 file changed, 81 insertions(+), 6 deletions(-)
+>>>>>>
+>>>>>> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+>>>>>> index 9fd7fb539f85..dd40a4ee35f2 100644
+>>>>>> --- a/Documentation/bpf/kfuncs.rst
+>>>>>> +++ b/Documentation/bpf/kfuncs.rst
+>>>>>> @@ -7,9 +7,9 @@ BPF Kernel Functions (kfuncs)
+>>>>>>
+>>>>>>   BPF Kernel Functions or more commonly known as kfuncs are functions in the Linux
+>>>>>>   kernel which are exposed for use by BPF programs. Unlike normal BPF helpers,
+>>>>>> -kfuncs do not have a stable interface and can change from one kernel release to
+>>>>>> -another. Hence, BPF programs need to be updated in response to changes in the
+>>>>>> -kernel.
+>>>>>> +kfuncs by default do not have a stable interface and can change from one kernel
+>>>>>> +release to another. Hence, BPF programs may need to be updated in response to
+>>>>>> +changes in the kernel. See :ref:`BPF_kfunc_stability`.
+>>>>>>
+>>>>>>   2. Defining a kfunc
+>>>>>>   ===================
+>>>>>> @@ -223,14 +223,89 @@ type. An example is shown below::
+>>>>>>           }
+>>>>>>           late_initcall(init_subsystem);
+>>>>>>
+>>>>>> -3. Core kfuncs
+>>>>>> +
+>>>>>> +.. _BPF_kfunc_stability:
 
-s/not/on/ ?
+small nit: please also link from Documentation/bpf/bpf_design_QA.rst, so these sections
+here are easier to find.
 
+>>>>>> +3. API (in)stability of kfuncs
+>>>>>> +==============================
+>>>>>> +
+>>>>>> +By default, kfuncs exported to BPF programs are considered a kernel-internal
+>>>>>> +interface that can change between kernel versions. This means that BPF programs
+>>>>>> +using kfuncs may need to adapt to changes between kernel versions. In the
+>>>>>> +extreme case that could also include removal of a kfunc. In other words, kfuncs
+>>>>>> +are _not_ part of the kernel UAPI! Rather, these kfuncs can be thought of as
+>>>>>> +being similar to internal kernel API functions exported using the
+>>>>>
+>>>>> [..]
+>>>>>
+>>>>>> +``EXPORT_SYMBOL_GPL`` macro. All new BPF kernel helper-like functionality must
+>>>>>> +initially start out as kfuncs.
+>>>>>
+>>>>> To clarify, as part of this proposal, are we making a decision here
+>>>>> that we ban new helpers going forward?
+>>>>
+>>>> Good question! That is one of the things I'm hoping we can clear up by
+>>>> this discussing. I don't have a strong opinion on the matter myself, as
+>>>> long as there is *some* way to mark a subset of helpers/kfuncs as
+>>>> "stable"...
+>>>
+>>> Might be worth it to capitalize in this case to indicate that it's a
+>>> MUST from the RFC world? (or go with SHOULD otherwise).
+>>> I'm fine either way. The only thing that stops me from fully embracing
+>>> MUST is the kfunc requirement on the explicit jit support; I'm not
+>>> sure why it exists and at this point I'm too afraid to ask. But having
+>>> MUST here might give us motivation to address the shortcomings...
+>>
+>> Did you do:
+>> git grep bpf_jit_supports_kfunc_call
+>> and didn't find your favorite architecture there and
+>> didn't find it in the upcoming patches for riscv and arm32?
+>> If you care about kfuncs on arm32 please help reviewing posted patches.
 > 
-> $ dmidecode -s system-product-name
-> PowerEdge R620
-> $ cat /sys/devices/system/cpu/online
-> 0-31
-> $ cat /sys/devices/system/cpu/possible
-> 0-47
-> 
-> To fix this issue, use online cpu instead of possible, to
-> create perf event and other resource.
-> 
-> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/bpf/bpftool/prog.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> index cfc9fdc1e863..08b352dd799e 100644
-> --- a/tools/bpf/bpftool/prog.c
-> +++ b/tools/bpf/bpftool/prog.c
-> @@ -2056,6 +2056,7 @@ static int profile_parse_metrics(int argc, char **argv)
->  
->  static void profile_read_values(struct profiler_bpf *obj)
->  {
-> +	__u32 possible_cpus = libbpf_num_possible_cpus();
->  	__u32 m, cpu, num_cpu = obj->rodata->num_cpu;
->  	int reading_map_fd, count_map_fd;
->  	__u64 counts[num_cpu];
-> @@ -2080,7 +2081,7 @@ static void profile_read_values(struct profiler_bpf *obj)
->  		profile_total_count += counts[cpu];
->  
->  	for (m = 0; m < ARRAY_SIZE(metrics); m++) {
-> -		struct bpf_perf_event_value values[num_cpu];
-> +		struct bpf_perf_event_value values[possible_cpus];
->  
->  		if (!metrics[m].selected)
->  			continue;
-> @@ -2321,7 +2322,7 @@ static int do_profile(int argc, char **argv)
->  	if (num_metric <= 0)
->  		goto out;
->  
-> -	num_cpu = libbpf_num_possible_cpus();
-> +	num_cpu = libbpf_num_online_cpus();
->  	if (num_cpu <= 0) {
->  		p_err("failed to identify number of CPUs");
->  		goto out;
+> Exactly why I'm going to support whatever decision is being made here.
+> Just trying to clarify what that decision is.
 
-Thanks, but it doesn't seem to be enough to solve the issue. How did you
-test it? With your series applied locally, I'm trying the following
-(Intel x86_64, CPUs: 0..7):
+My $0.02 is that I don't think we need to make a hard-cut ban as part of this.
+The 'All new BPF kernel helper-like functionality must initially start out as
+kfuncs.' is pretty clear where things would need to start out with, and we could
+leave the option on the table if really needed to go BPF helper route when
+promoting kfunc to stable at the same time. I had that in the text suggestion
+earlier, it's more corner case and maybe we'll never need it but we also don't
+drive ourselves into a corner where we close the door on it. Lets let the infra
+around kfuncs evolve further first.
 
-	# echo 0 > /sys/devices/system/cpu/cpu2/online
-	# ./bpftool prog profile id 1525 duration 1 cycles instructions
-	Error: failed to create event cycles on cpu 2
-
-It seems that we're still trying to open the perf events on the offline
-CPU in profile_open_perf_events(), because even though we try to use
-fewer of the possible CPUs we're still referencing them in order by
-their index. So it works if I only disabled the last CPUs instead (#7,
-then #6, ...), but to work with _any_ CPU disabled, we would need to
-retrieve the list of online CPUs.
+Thanks,
+Daniel
