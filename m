@@ -2,115 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AD4671127
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 03:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DB7670F7F
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 02:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbjARC3B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 21:29:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
+        id S229617AbjARBHS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 20:07:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjARC3A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 21:29:00 -0500
-X-Greylist: delayed 3614 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 17 Jan 2023 18:28:57 PST
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E29AA47EE8;
-        Tue, 17 Jan 2023 18:28:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=kDukO
-        GUxCUhmiVTpo0WAwM5Sv6NWbvEKkGh0Nqs0F78=; b=c8zU+ous/g1cR/dxhstnG
-        ymyDhwVgZZFNWpvQGwG13ugq+1nOYpWe/2geWhe//LT7NmgQlD4lMxgKtO4PhvZA
-        j0NqCL9B7WpeCOvDTTIyLUeG2EJY4CwkIeUjaELq8Bu9tQgpogncN4UrrKcSP2Nu
-        Fh3o4rt4tf41YN0J2Y3Mkk=
-Received: from localhost.localdomain (unknown [202.112.238.191])
-        by zwqz-smtp-mta-g0-1 (Coremail) with SMTP id _____wBHec9iQ8djSFyfAA--.53903S4;
-        Wed, 18 Jan 2023 08:54:58 +0800 (CST)
-From:   Yi He <clangllvm@126.com>
-To:     yhs@meta.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        clangllvm@126.com, daniel@iogearbox.net, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        martin.lau@linux.dev, mhiramat@kernel.org, rostedt@goodmis.org,
-        sdf@google.com, song@kernel.org, yhs@fb.com
-Subject: [PATCH V2] bpf: security enhancement by limiting the offensive eBPF helpers
-Date:   Wed, 18 Jan 2023 08:54:32 +0800
-Message-Id: <20230118005432.634229-1-clangllvm@126.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <f539bfef-c098-5ff0-51ef-bfa8fd0c4661@meta.com>
-References: <f539bfef-c098-5ff0-51ef-bfa8fd0c4661@meta.com>
+        with ESMTP id S229752AbjARBGs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 20:06:48 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CF24B4BD
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 16:55:57 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id s3so22431881pfd.12
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 16:55:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qsvv2gS4uCvYkqiwZFbM5ckEnt1ocYo1UbmP/627MbI=;
+        b=BdOf/00j+mYl9ytan3wr0CPeAaEHzTTjgZuDZfHZmf882iWqusXpN8mwkYzmeifme7
+         p2VSr4lJudCu1OLaJHxCyBJP7fzVfxJpcg98Ya9pZXAioYdVvO3inA+YSCfERaWkcORr
+         fDaD7hbS/BTo645Z5CdFPfw3xk2VxvTrHIu8dODlD4XyEzLWxbJL578mPO1+gMhq241f
+         mgaCSDenDtmWdYicMM+dtAzL6YW+O909OB21VtxowhqsNEwbmqAV8kxNEESa3higJmgQ
+         oQ6BwPGjlbK6WGROY05WCPOJwbbjYoejAWI1oaJS0dkQ2CrW+o1z3ww2JxbdvRnC4eSq
+         1PtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qsvv2gS4uCvYkqiwZFbM5ckEnt1ocYo1UbmP/627MbI=;
+        b=CUSLs/Z2Yj7FMXV/Fpj1uhQtKKvIQaVpYXWRYY5ljoJgjdgAX7R0FHCTF6i3O8skSS
+         BsKu50Qx1HlsQMH3vPWGX7ome2PuJH7PhWrni7fd/iinz2xmKn3/cSOEHcRZpRge+VCk
+         Ikruefn3vtX6ZP9XD1ZlYoEL3q4E3+bFLFeXedsvvpJhMFfP4tNlep6C9rqJ5MX4GN5x
+         4QcQWZTzwSgu2vgCc8N4Zz+ktJqi9g4onfbGmgPd0JaVG57XdDMdLtkNe4ZnbuQY3Pon
+         diYUyvYiusnKHECdfFWXMLWv0nsPA6rvWcs6ctIn2dvXWH3opBNy0oB8GJz18BoeHFiW
+         wvEQ==
+X-Gm-Message-State: AFqh2kpgxBNam+eut/dtpIu7aQgT8xJ1RF4QQBVhw2h1hB/LmxgvdIWI
+        F3GIcgi5qFnHaj9ZdYSLsGQH+ms0k3wp8WR6UXWbkw==
+X-Google-Smtp-Source: AMrXdXujCftcG8mO9D9Itp/oAKLrkOaPstzkodGufrTYsR0zFncyDaJ/54JMo1lZK5g8jILC8sXbccmj645nI0jlX6A=
+X-Received: by 2002:a63:d02:0:b0:479:4295:b4e5 with SMTP id
+ c2-20020a630d02000000b004794295b4e5mr330635pgl.252.1674003356321; Tue, 17 Jan
+ 2023 16:55:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wBHec9iQ8djSFyfAA--.53903S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uFykGFy8KFy3JF1kXr1DWrg_yoW8tw43pF
-        WDGF97Ars7JF42grnrJw1xGrWrC3y5WrW7GFWDGw48ZwsrXr4jqr1jkF4I9F1rZrZxGrW3
-        ua129rZ0kF12ga7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRb_-PUUUUU=
-X-Originating-IP: [202.112.238.191]
-X-CM-SenderInfo: xfod0wpooyzqqrswhudrp/1tbiqAP6y1pD-eLLiQAAse
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <CA+khW7ju-gewZVNxopBi3Uvhiv8Wb=a-D4gaW3MD-NkUg0WSSg@mail.gmail.com>
+ <20230117215658.xec7cirlfx2z7z2m@muellerd-fedora-PC2BDTX9> <20230117222158.uyezr5ab72ck5fhv@muellerd-fedora-PC2BDTX9>
+In-Reply-To: <20230117222158.uyezr5ab72ck5fhv@muellerd-fedora-PC2BDTX9>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 17 Jan 2023 16:55:44 -0800
+Message-ID: <CA+khW7gFq3VKEvF7hZXQsLJagz=HMZ4kJwh=QdmFG1pFbq1xRw@mail.gmail.com>
+Subject: Re: CORE feature request: support checking field type directly
+To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_send_singal, bpf_send_singal_thread and bpf_override_return
-is similar to bpf_write_user and can affect userspace processes.
-Thus, these three helpers should also be restricted by security lockdown.
+Hi Daniel,
 
-Signed-off-by: Yi He <clangllvm@126.com>
----
- V1 -> V2: add security lockdown to bpf_send_singal_thread and remove 
-	the unused LOCKDOWN_OFFENSIVE_BPF_MAX.
+On Tue, Jan 17, 2023 at 2:22 PM Daniel M=C3=BCller <deso@posteo.net> wrote:
+>
+> I apologize for the response. Somehow Andrii's reply and the entire threa=
+d was
+> lost on me. Anyway, glad it's working for you.
+>
 
- include/linux/security.h | 2 ++
- kernel/trace/bpf_trace.c | 9 ++++++---
- 2 files changed, 8 insertions(+), 3 deletions(-)
+Andrii helped me get it work. TYPE_MATCHES is a solution to my
+problem. Now I have a better understanding on how
+bpf_core_type_matches works.
 
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 5b67f208f..42420e620 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -123,6 +123,8 @@ enum lockdown_reason {
- 	LOCKDOWN_DEBUGFS,
- 	LOCKDOWN_XMON_WR,
- 	LOCKDOWN_BPF_WRITE_USER,
-+	LOCKDOWN_BPF_SEND_SIGNAL,
-+	LOCKDOWN_BPF_OVERRIDE_RETURN,
- 	LOCKDOWN_DBG_WRITE_KERNEL,
- 	LOCKDOWN_RTAS_ERROR_INJECTION,
- 	LOCKDOWN_INTEGRITY_MAX,
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 3bbd3f0c8..fdb94868d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1463,9 +1463,11 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_cgrp_storage_delete_proto;
- #endif
- 	case BPF_FUNC_send_signal:
--		return &bpf_send_signal_proto;
-+		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
-+		       NULL : &bpf_send_signal_proto;
- 	case BPF_FUNC_send_signal_thread:
--		return &bpf_send_signal_thread_proto;
-+		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
-+		       NULL : &bpf_send_signal_thread_proto;
- 	case BPF_FUNC_perf_event_read_value:
- 		return &bpf_perf_event_read_value_proto;
- 	case BPF_FUNC_get_ns_current_pid_tgid:
-@@ -1531,7 +1533,8 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_stack_proto;
- #ifdef CONFIG_BPF_KPROBE_OVERRIDE
- 	case BPF_FUNC_override_return:
--		return &bpf_override_return_proto;
-+		return security_locked_down(LOCKDOWN_BPF_OVERRIDE_RETURN) < 0 ?
-+		       NULL : &bpf_override_return_proto;
- #endif
- 	case BPF_FUNC_get_func_ip:
- 		return prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI ?
--- 
-2.25.1
+For the record, the following works on my old kernel and new kernels:
 
+struct rw_semaphore___old {
+        struct task_struct *owner;
+};
+
+struct rw_semaphore___new {
+        atomic_long_t owner;
+};
+
+u64 owner;
+if (bpf_core_type_matches(struct rw_semaphore___old)) { /* owner is
+task_struct pointer */
+        struct rw_semaphore___old *old =3D (struct rw_semaphore___old *)sem=
+;
+        owner =3D (u64)sem->owner;
+} else if (bpf_core_type_matches(struct rw_semaphore___new)) { /*
+owner field is atomic_long_t */
+        struct rw_semaphore___new *new =3D (struct rw_semaphore___new *)sem=
+;
+        owner =3D (u64)new->owner.counter;
+}
+
+Thanks for your response!
+Hao
