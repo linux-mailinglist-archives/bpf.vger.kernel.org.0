@@ -2,170 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C41967242E
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 17:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6DE672430
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 17:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbjARQw6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 11:52:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S229684AbjARQx7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 11:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbjARQw5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 11:52:57 -0500
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95C112F2A
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 08:52:55 -0800 (PST)
-Received: by mail-io1-f71.google.com with SMTP id t3-20020a6bc303000000b006f7844c6298so21795940iof.23
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 08:52:55 -0800 (PST)
+        with ESMTP id S229654AbjARQx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Jan 2023 11:53:57 -0500
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4722EA5D3
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 08:53:56 -0800 (PST)
+Received: by mail-qv1-f54.google.com with SMTP id l14so20346701qvw.12
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 08:53:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CUF80VzlHqe0u3cUtU7I01bid/TGucfa6cXL81Xyavo=;
-        b=KNeccN5P/j+AH8kX6TmnCq5kyTvOSf688XgMnC4eDiAXNZj7bxUfVjWZMD/+vmlQma
-         EByq7uV3GwphZOAe/YT+A91OR4UCF/eqiH92i/iTMkjTCToR4dLcScfFKX9AsTCAj2XZ
-         5bjF5wk1+wISjQwARogFzFs/d5ZR8gGcGlNayeLV9MDnJXsSmNO2K8CMjr+8CBdz/EWi
-         mIKXnE/jtjQOto17Aa9FUfcS5WViKX2ATfbWYwoltd2Xsk2kt7BPJ1RnWImbfql2FiD0
-         4etJyv6woBwvB9rsxd/lmyzYwiUkFpcay8JzhXJKBskcBezRSVEs51Ds3XRUS1WmDJqw
-         oGog==
-X-Gm-Message-State: AFqh2koZDnS+vuZh83AvrNicBgu2TCaTdLuERxOHJlzBm9D3Out3DzUU
-        hDHdW+jK25G6enGbhy7pexsYUP0/u3kbYpYbREP3ESs5LqFd
-X-Google-Smtp-Source: AMrXdXv08pIf4C9Y2+YsDPxfNJC1X8DT8RXxxyXWaYvzbCwU0ndKM7Z37YkBcjrAb/Dv/q51cGKWGjHyPdN1d5thBzAsBPbCEwwl
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Se5pzVcy8yYw9hX0iljYERwy7YURcFd22xGAU8NttTM=;
+        b=2DXkZzerEivn2lxk2qfOutc8UBBwYu36pf0sirP7pAmkz/in+m+xWGXDDmRN+Utizd
+         EmR8qmT0MVe9aRZTGk7RFIsTWNP504i95KvDx3jS7J0S8K4768/Fnl4ajOA/rtYQ1E3B
+         7sjKLIWoyfN6HwR/1BTBkGC300h8NUqmdXeu56xvZYZgiopuTHklKfGahkL901knu2R1
+         34ZUNVcXzPQaNxK7gIKhik6KFP/q9Cu5GCd+mQBMLgfV51Qln4kdbQ6GHu3f3F/uofem
+         Bh72jl1N1JvZUtrqle780mBgrnjg8cHvHCrNZEPrbvlIv3kKfMNLZPkD9M10/TKW8Skv
+         G4+A==
+X-Gm-Message-State: AFqh2kqryT7PWQAMRp/dGytq70uAtNpTYjYH9lxF/7iIe803JSerldtB
+        lVs91H0M3hdxndoe/zQxiZw=
+X-Google-Smtp-Source: AMrXdXva/n5NBLm1Nf7rJwKnsgJNuH1Rn4h+tQHQMslSi15EkRLDR5V3Tu6eeLxBeNYBe7Ej+du3Zw==
+X-Received: by 2002:a05:6214:32f:b0:532:299d:99c9 with SMTP id j15-20020a056214032f00b00532299d99c9mr9171872qvu.1.1674060835179;
+        Wed, 18 Jan 2023 08:53:55 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:2fc9])
+        by smtp.gmail.com with ESMTPSA id t2-20020a37ea02000000b006fb9bbb071fsm22494619qkj.29.2023.01.18.08.53.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Jan 2023 08:53:54 -0800 (PST)
+Date:   Wed, 18 Jan 2023 10:53:58 -0600
+From:   David Vernet <void@manifault.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [RFC PATCH v2] Documentation/bpf: Add a description of "stable
+ kfuncs"
+Message-ID: <Y8gkJv4l2LHNJW1x@maniforge.lan>
+References: <20230117212731.442859-1-toke@redhat.com>
+ <CAKH8qBuvBomTXqNB+a6n_PbJKSNFazrAxEWsVT-=4XfztuJ7dw@mail.gmail.com>
+ <87v8l4byyb.fsf@toke.dk>
+ <CAKH8qBs=nEhhy2Qu7CpyAHx6gOaWR25tRF7aopti5-TSuw66HQ@mail.gmail.com>
+ <CAADnVQKy1QzM+wg1BxfYA30QsTaM4M5RRCi+VHN6A7ah2BeZZw@mail.gmail.com>
+ <CAKH8qBvZgoOe24MMY+Jn-6guJzGVuJS9zW4v6H+fhgcp7X_9jQ@mail.gmail.com>
+ <3500bace-de87-0335-3fe3-6a5c0b4ce6ad@iogearbox.net>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4410:b0:3a5:e65b:5d57 with SMTP id
- bp16-20020a056638441000b003a5e65b5d57mr605002jab.305.1674060775129; Wed, 18
- Jan 2023 08:52:55 -0800 (PST)
-Date:   Wed, 18 Jan 2023 08:52:55 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d58eae05f28ca51f@google.com>
-Subject: [syzbot] kernel BUG in ip_frag_next
-From:   syzbot <syzbot+c8a2e66e37eee553c4fd@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, brouer@redhat.com, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, saeed@kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3500bace-de87-0335-3fe3-6a5c0b4ce6ad@iogearbox.net>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Wed, Jan 18, 2023 at 11:48:59AM +0100, Daniel Borkmann wrote:
+> On 1/18/23 3:00 AM, Stanislav Fomichev wrote:
+> > On Tue, Jan 17, 2023 at 3:19 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > > On Tue, Jan 17, 2023 at 2:20 PM Stanislav Fomichev <sdf@google.com> wrote:
+> > > > On Tue, Jan 17, 2023 at 2:04 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> > > > > Stanislav Fomichev <sdf@google.com> writes:
+> > > > > > On Tue, Jan 17, 2023 at 1:27 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> > > > > > > 
+> > > > > > > Following up on the discussion at the BPF office hours, this patch adds a
+> > > > > > > description of the (new) concept of "stable kfuncs", which are kfuncs that
+> > > > > > > offer a "more stable" interface than what we have now, but is still not
+> > > > > > > part of UAPI.
+> > > > > > > 
+> > > > > > > This is mostly meant as a straw man proposal to focus discussions around
+> > > > > > > stability guarantees. From the discussion, it seemed clear that there were
+> > > > > > > at least some people (myself included) who felt that there needs to be some
+> > > > > > > way to export functionality that we consider "stable" (in the sense of
+> > > > > > > "applications can rely on its continuing existence").
+> > > > > > > 
+> > > > > > > One option is to keep BPF helpers as the stable interface and implement
+> > > > > > > some technical solution for moving functionality from kfuncs to helpers
+> > > > > > > once it has stood the test of time and we're comfortable committing to it
+> > > > > > > as a stable API. Another is to freeze the helper definitions, and instead
+> > > > > > > use kfuncs for this purpose as well, by marking a subset of them as
+> > > > > > > "stable" in some way. Or we can do both and have multiple levels of
+> > > > > > > "stable", I suppose.
+> > > > > > > 
+> > > > > > > This patch is an attempt to describe what the "stable kfuncs" idea might
+> > > > > > > look like, as well as to formulate some criteria for what we mean by
+> > > > > > > "stable", and describe an explicit deprecation procedure. Feel free to
+> > > > > > > critique any part of this (including rejecting the notion entirely).
+> > > > > > > 
+> > > > > > > Some people mentioned (in the office hours) that should we decide to go in
+> > > > > > > this direction, there's some work that needs to be done in libbpf (and
+> > > > > > > probably the kernel too?) to bring the kfunc developer experience up to par
+> > > > > > > with helpers. Things like exporting kfunc definitions to vmlinux.h (to make
+> > > > > > > them discoverable), and having CO-RE support for using them, etc. I kinda
+> > > > > > > consider that orthogonal to what's described here, but I do think we should
+> > > > > > > fix those issues before implementing the procedures described here.
+> > > > > > > 
+> > > > > > > v2:
+> > > > > > > - Incorporate Daniel's changes
+> > > > > > > 
+> > > > > > > Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> > > > > > > ---
+> > > > > > >   Documentation/bpf/kfuncs.rst | 87 +++++++++++++++++++++++++++++++++---
+> > > > > > >   1 file changed, 81 insertions(+), 6 deletions(-)
+> > > > > > > 
+> > > > > > > diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> > > > > > > index 9fd7fb539f85..dd40a4ee35f2 100644
+> > > > > > > --- a/Documentation/bpf/kfuncs.rst
+> > > > > > > +++ b/Documentation/bpf/kfuncs.rst
+> > > > > > > @@ -7,9 +7,9 @@ BPF Kernel Functions (kfuncs)
+> > > > > > > 
+> > > > > > >   BPF Kernel Functions or more commonly known as kfuncs are functions in the Linux
+> > > > > > >   kernel which are exposed for use by BPF programs. Unlike normal BPF helpers,
+> > > > > > > -kfuncs do not have a stable interface and can change from one kernel release to
+> > > > > > > -another. Hence, BPF programs need to be updated in response to changes in the
+> > > > > > > -kernel.
+> > > > > > > +kfuncs by default do not have a stable interface and can change from one kernel
+> > > > > > > +release to another. Hence, BPF programs may need to be updated in response to
+> > > > > > > +changes in the kernel. See :ref:`BPF_kfunc_stability`.
+> > > > > > > 
+> > > > > > >   2. Defining a kfunc
+> > > > > > >   ===================
+> > > > > > > @@ -223,14 +223,89 @@ type. An example is shown below::
+> > > > > > >           }
+> > > > > > >           late_initcall(init_subsystem);
+> > > > > > > 
+> > > > > > > -3. Core kfuncs
+> > > > > > > +
+> > > > > > > +.. _BPF_kfunc_stability:
+> 
+> small nit: please also link from Documentation/bpf/bpf_design_QA.rst, so these sections
+> here are easier to find.
+> 
+> > > > > > > +3. API (in)stability of kfuncs
+> > > > > > > +==============================
+> > > > > > > +
+> > > > > > > +By default, kfuncs exported to BPF programs are considered a kernel-internal
+> > > > > > > +interface that can change between kernel versions. This means that BPF programs
+> > > > > > > +using kfuncs may need to adapt to changes between kernel versions. In the
+> > > > > > > +extreme case that could also include removal of a kfunc. In other words, kfuncs
+> > > > > > > +are _not_ part of the kernel UAPI! Rather, these kfuncs can be thought of as
+> > > > > > > +being similar to internal kernel API functions exported using the
+> > > > > > 
+> > > > > > [..]
+> > > > > > 
+> > > > > > > +``EXPORT_SYMBOL_GPL`` macro. All new BPF kernel helper-like functionality must
+> > > > > > > +initially start out as kfuncs.
+> > > > > > 
+> > > > > > To clarify, as part of this proposal, are we making a decision here
+> > > > > > that we ban new helpers going forward?
+> > > > > 
+> > > > > Good question! That is one of the things I'm hoping we can clear up by
+> > > > > this discussing. I don't have a strong opinion on the matter myself, as
+> > > > > long as there is *some* way to mark a subset of helpers/kfuncs as
+> > > > > "stable"...
+> > > > 
+> > > > Might be worth it to capitalize in this case to indicate that it's a
+> > > > MUST from the RFC world? (or go with SHOULD otherwise).
+> > > > I'm fine either way. The only thing that stops me from fully embracing
+> > > > MUST is the kfunc requirement on the explicit jit support; I'm not
+> > > > sure why it exists and at this point I'm too afraid to ask. But having
+> > > > MUST here might give us motivation to address the shortcomings...
+> > > 
+> > > Did you do:
+> > > git grep bpf_jit_supports_kfunc_call
+> > > and didn't find your favorite architecture there and
+> > > didn't find it in the upcoming patches for riscv and arm32?
+> > > If you care about kfuncs on arm32 please help reviewing posted patches.
+> > 
+> > Exactly why I'm going to support whatever decision is being made here.
+> > Just trying to clarify what that decision is.
+> 
+> My $0.02 is that I don't think we need to make a hard-cut ban as part of this.
+> The 'All new BPF kernel helper-like functionality must initially start out as
+> kfuncs.' is pretty clear where things would need to start out with, and we could
+> leave the option on the table if really needed to go BPF helper route when
+> promoting kfunc to stable at the same time. I had that in the text suggestion
+> earlier, it's more corner case and maybe we'll never need it but we also don't
+> drive ourselves into a corner where we close the door on it. Lets let the infra
+> around kfuncs evolve further first.
 
-syzbot found the following issue on:
+I think that's reasonable, though I also think it would be good for us
+to be concrete about what we mean by "if really needed to go BPF helper
+route". One of Andrii's main points (hopefully I'm not misrepresenting
+anything) was that having things as kfuncs requires JIT support, which
+means that architectures which don't yet have JIT support wouldn't be
+able to reap the benefits of whatever functionality is added with
+kfuncs. On the other hand, Alexei pointed out in [0] that riscv and
+arm32 support is coming for JIT.
 
-HEAD commit:    0c68c8e5ec68 net: mdio: cavium: Remove unneeded simicolons
-git tree:       net-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=147c7051480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4695869845c5f393
-dashboard link: https://syzkaller.appspot.com/bug?extid=c8a2e66e37eee553c4fd
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173fca39480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107ba0a9480000
+[0]: https://lore.kernel.org/all/CAADnVQKy1QzM+wg1BxfYA30QsTaM4M5RRCi+VHN6A7ah2BeZZw@mail.gmail.com/
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/15c191498614/disk-0c68c8e5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7c4c9368d89c/vmlinux-0c68c8e5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/083770efc7c4/bzImage-0c68c8e5.xz
+I propose that we also specify that wanting the feature to be present on
+non-JIT / non-BTF kernels is not a sufficient reason for making them a
+helper. Not because there are no tradeoffs in doing so, but rather
+because:
 
-The issue was bisected to:
+1. I think we just need to make a decision and be consistent here to
+   avoid more lengthy debates.
 
-commit eedade12f4cb7284555c4c0314485e9575c70ab7
-Author: Jesper Dangaard Brouer <brouer@redhat.com>
-Date:   Fri Jan 13 13:52:04 2023 +0000
+2. I think that if something is really useful on an architecture, people
+   will add JIT support for it. An argument could always be made that we
+   should be able to rely only on the interpreter for new architectures
+   that are added, etc. As more time passes, BPF sans JIT (i.e.
+   interpreter BPF) will be less and less useful, and will diverge more
+   and more from JIT-BPF. It's really inevitable anyways given the
+   direction that things are going, and IMO we should just embrace that
+   and focus on enabling JIT / modern BPF on useful architectures rather
+   than adding things to helpers for the sake of those platforms.
 
-    net: kfree_skb_list use kmem_cache_free_bulk
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1136ec41480000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1336ec41480000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1536ec41480000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c8a2e66e37eee553c4fd@syzkaller.appspotmail.com
-Fixes: eedade12f4cb ("net: kfree_skb_list use kmem_cache_free_bulk")
-
-raw_sendmsg: syz-executor409 forgot to set AF_INET. Fix it!
-------------[ cut here ]------------
-kernel BUG at net/ipv4/ip_output.c:724!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 5073 Comm: syz-executor409 Not tainted 6.2.0-rc3-syzkaller-00457-g0c68c8e5ec68 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/12/2023
-RIP: 0010:ip_frag_next+0xa03/0xa50 net/ipv4/ip_output.c:724
-Code: e8 82 b1 86 f9 e9 95 fa ff ff 48 8b 3c 24 e8 74 b1 86 f9 e9 5b f8 ff ff 4c 89 ff e8 67 b1 86 f9 e9 1f f8 ff ff e8 3d ad 38 f9 <0f> 0b 48 89 54 24 20 4c 89 44 24 18 e8 4c b1 86 f9 48 8b 54 24 20
-RSP: 0018:ffffc90003a6f6b8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc90003a6f818 RCX: 0000000000000000
-RDX: ffff8880772c0000 RSI: ffffffff8848a583 RDI: 0000000000000005
-RBP: 00000000000005c8 R08: 0000000000000005 R09: 0000000000000000
-R10: 00000000fffffff2 R11: 0000000000000000 R12: ffff888026841dc0
-R13: ffffc90003a6f81c R14: 00000000fffffff2 R15: ffffc90003a6f830
-FS:  0000555555b08300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005622b70166a8 CR3: 000000007780f000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ip_do_fragment+0x873/0x17d0 net/ipv4/ip_output.c:902
- ip_fragment.constprop.0+0x16b/0x240 net/ipv4/ip_output.c:581
- __ip_finish_output net/ipv4/ip_output.c:304 [inline]
- __ip_finish_output+0x2de/0x650 net/ipv4/ip_output.c:288
- ip_finish_output+0x31/0x280 net/ipv4/ip_output.c:316
- NF_HOOK_COND include/linux/netfilter.h:291 [inline]
- ip_mc_output+0x21f/0x710 net/ipv4/ip_output.c:415
- dst_output include/net/dst.h:444 [inline]
- ip_local_out net/ipv4/ip_output.c:126 [inline]
- ip_send_skb net/ipv4/ip_output.c:1586 [inline]
- ip_push_pending_frames+0x129/0x2b0 net/ipv4/ip_output.c:1606
- raw_sendmsg+0x1338/0x2df0 net/ipv4/raw.c:645
- inet_sendmsg+0x9d/0xe0 net/ipv4/af_inet.c:827
- sock_sendmsg_nosec net/socket.c:722 [inline]
- sock_sendmsg+0xde/0x190 net/socket.c:745
- __sys_sendto+0x23a/0x340 net/socket.c:2142
- __do_sys_sendto net/socket.c:2154 [inline]
- __se_sys_sendto net/socket.c:2150 [inline]
- __x64_sys_sendto+0xe1/0x1b0 net/socket.c:2150
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f8efa22c499
-Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd43ed3198 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 00007ffd43ed31b8 RCX: 00007f8efa22c499
-RDX: 000000000000fcf2 RSI: 0000000020000380 RDI: 0000000000000003
-RBP: 0000000000000003 R08: 0000000020001380 R09: 000000000000006e
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd43ed31c0
-R13: 00007ffd43ed31e0 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ip_frag_next+0xa03/0xa50 net/ipv4/ip_output.c:724
-Code: e8 82 b1 86 f9 e9 95 fa ff ff 48 8b 3c 24 e8 74 b1 86 f9 e9 5b f8 ff ff 4c 89 ff e8 67 b1 86 f9 e9 1f f8 ff ff e8 3d ad 38 f9 <0f> 0b 48 89 54 24 20 4c 89 44 24 18 e8 4c b1 86 f9 48 8b 54 24 20
-RSP: 0018:ffffc90003a6f6b8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc90003a6f818 RCX: 0000000000000000
-RDX: ffff8880772c0000 RSI: ffffffff8848a583 RDI: 0000000000000005
-RBP: 00000000000005c8 R08: 0000000000000005 R09: 0000000000000000
-R10: 00000000fffffff2 R11: 0000000000000000 R12: ffff888026841dc0
-R13: ffffc90003a6f81c R14: 00000000fffffff2 R15: ffffc90003a6f830
-FS:  0000555555b08300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000557162e92068 CR3: 000000007780f000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Thanks,
+David
