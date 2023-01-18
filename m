@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4213671A80
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 12:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F81671A87
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 12:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjARLZS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 06:25:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41296 "EHLO
+        id S229799AbjARL0v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 06:26:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjARLYl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230134AbjARLYl (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 18 Jan 2023 06:24:41 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBA53756D
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 02:41:53 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id n7so7400836wrx.5
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 02:41:53 -0800 (PST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A515837B48
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 02:41:57 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id j34-20020a05600c1c2200b003da1b054057so1074526wms.5
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 02:41:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/yCBSiBaMnPBt6XCHGYi+xBWbtYNbT5WrPAhRjvrZBc=;
-        b=luTXF2+RWO7DcOokLrdb00iXeYZfn9FivP0lSnbm3PmAWiLKNSlceBha0XzoHpfA8B
-         ojk6ZZ4fcyqTd2UBvcg+4nr5daq1IXuAIYxmBX+8pbbQZKphPT3T/MJ6izB6LxVxQECg
-         0CACVvc85mJa+G+NxZSmXMtzNC+ua6jUdgV+ATeQfM6BIpTaUjO+ZS0+HNI1ZqegTnMo
-         06I5my4OPYe/i9S7rbElPDtOvmDY9Ob7wSRkDRM/JKJlkN0Wrw9+jOJzVTXOAk3L+WGD
-         uEQPTZkhmLHtpSShg66hY2eYqxjeFeTukBtZxbqDyStggGD+C2DXVMHyJuME7f7opc5y
-         mWDg==
+        bh=pgGy7VZXmHRuoUnB6hQe3Q3Kgauh1ddIbldihbQu6PY=;
+        b=dqb+D75YhAaZYS95pL6Eozeng2FpAv4ZjrCjnLkDVqB9rVh27puXp2sERdt7zhD6A3
+         rjBpkKpSYh72EdXS2E22Fo8ESoCw5IXWRU63fg+mcZ1M4tfw6WKc5Cib8NSrwU3a0Ixx
+         y5UVkp4CmjSz47ufGzENYw74sK9RXaV59oIkjW85fbD3XBrU/1e+Y4Bv4c6W+srm8tmr
+         v6ThTXhRxt6dYR8JFjiIfSPs83Rd8b92zq8GRcclJMQnuQNpv2R4m3RXN5RFhDgO6NY6
+         rJGlByaXbZtO01Mc7qaKOvwvRlGX2O7cQW2B42kUx37d3HNcNKBmCPk8UWbYD3w7GjN9
+         96xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/yCBSiBaMnPBt6XCHGYi+xBWbtYNbT5WrPAhRjvrZBc=;
-        b=8K6GF6Urvr+9rwiVttDyIxvYvYOQrM6azRLn0kItJpL7KSJrdKJbVcMbT19o34PK6I
-         r2NzN/QiRnGxg9OqdY+WhOZdz5J5+N2rA3wPfTC/hTRR4G9zfVipdDXyZHTA9cmkjx3X
-         DVY7S0w632qcB4YhzBgZYVuSo7ErhdmtBVmATwMOiHpLlUGM9wtnUm7h8esntF3W47iV
-         wbPetXlRCsRgcgxCFd4YiRF4juqWDL9ytt8KXdhKVOYZLtFUan2Rjv3yDtw8zJCRRD3A
-         rRPLCkxOH5rH6BXAn0lpEtcL7vgv8MkoDcPOkc4GzsnjcVf/9cbuwZEZXScb6Tcc+hS+
-         hYYQ==
-X-Gm-Message-State: AFqh2kot7I5sqMlxPWP45hJzOvlflz4YQPpnSZq2MWbBYnq/Gldf6faF
-        15GW1zILlIQ01XfPBShu6ydcTQ==
-X-Google-Smtp-Source: AMrXdXvD5Fl1QjN+isToC8Ex3iZlZ3YirqMxmqMyC73NDJu52kWwlSjc/fc0G9cKnMTjoyVDkQbrxQ==
-X-Received: by 2002:adf:f2c4:0:b0:2be:3503:2dcf with SMTP id d4-20020adff2c4000000b002be35032dcfmr663224wrp.44.1674038511936;
-        Wed, 18 Jan 2023 02:41:51 -0800 (PST)
+        bh=pgGy7VZXmHRuoUnB6hQe3Q3Kgauh1ddIbldihbQu6PY=;
+        b=rI7SBcglHo9fdFM0IYTyF88/kJIgYppuf76gy4E+OuRSATXSs7jRsAcHwHELWYjCjS
+         PbObzjaeWAHZYNLt9C4WkZDZbli22/EDfjywPyRo1yPNxYYseJjsrFq2ETh2Rghs3yBK
+         k6Hj5k3X84ommOc6+M8Ml/eBnjkRKfGyaVbHgVpLK4tl22RJlUFYFKaSb9icAUt6Z0hD
+         vgjPnMtPLF/t0BYCfRZ49ZOKMK5CcMylHwcxvzx0x3DcBkOasGbddPWAtxRRvXIhVN+9
+         th0pXxXirkLPKla+SPmB+SgKrRFGIOTAPgPZcCSyeqCUBDBkjO4Ew3RIZmONVArZxO8f
+         sU6g==
+X-Gm-Message-State: AFqh2kqVZJ8mptvBmeAbNm7x+qL2T6XrpSDst4AJzOSU9CehI5nh/z/y
+        kZc9ADnM1Jo+XV9xtw5IKZdbzA==
+X-Google-Smtp-Source: AMrXdXtyOaJW59cahS/P5zvkuxEMnkiVyzTCLrUppeFCApClnt+TEu/zIEeme1xZ24PcV3sMJl0g6w==
+X-Received: by 2002:a05:600c:4e03:b0:3da:2870:7dc7 with SMTP id b3-20020a05600c4e0300b003da28707dc7mr2135047wmq.24.1674038516232;
+        Wed, 18 Jan 2023 02:41:56 -0800 (PST)
 Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id o7-20020a5d62c7000000b002bbeda3809csm25089432wrv.11.2023.01.18.02.41.51
+        by smtp.gmail.com with ESMTPSA id fk6-20020a05600c0cc600b003c6b70a4d69sm1537480wmb.42.2023.01.18.02.41.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Jan 2023 02:41:51 -0800 (PST)
-Message-ID: <ff7263e3-fcd0-8257-a0ce-f5bf94546d52@isovalent.com>
-Date:   Wed, 18 Jan 2023 10:41:50 +0000
+        Wed, 18 Jan 2023 02:41:55 -0800 (PST)
+Message-ID: <64b7fb86-5757-13ec-acf3-ab7ded978cd4@isovalent.com>
+Date:   Wed, 18 Jan 2023 10:41:55 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.1
-Subject: Re: [bpf-next v1 1/2] libbpf: introduce new API
- libbpf_num_online_cpus
+Subject: Re: [bpf-next v1 2/2] bpftool: profile online CPUs instead of
+ possible
 Content-Language: en-GB
 To:     tong@infragraf.org, bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -68,8 +68,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
 References: <20230117044902.98938-1-tong@infragraf.org>
+ <20230117044902.98938-2-tong@infragraf.org>
 From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230117044902.98938-1-tong@infragraf.org>
+In-Reply-To: <20230117044902.98938-2-tong@infragraf.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,11 +85,22 @@ X-Mailing-List: bpf@vger.kernel.org
 2023-01-17 12:49 UTC+0800 ~ tong@infragraf.org
 > From: Tonghao Zhang <tong@infragraf.org>
 > 
-> Adding a new API libbpf_num_online_cpus() that helps user with
-> fetching online CPUs number.
+> The number of online cpu may be not equal to possible cpu.
+> bpftool prog profile, can not create pmu event on possible
+> but not online cpu.
+
+s/not/on/ ?
+
 > 
-> It's useful in system which number of online CPUs is different with
-> possible CPUs.
+> $ dmidecode -s system-product-name
+> PowerEdge R620
+> $ cat /sys/devices/system/cpu/online
+> 0-31
+> $ cat /sys/devices/system/cpu/possible
+> 0-47
+> 
+> To fix this issue, use online cpu instead of possible, to
+> create perf event and other resource.
 > 
 > Signed-off-by: Tonghao Zhang <tong@infragraf.org>
 > Cc: Quentin Monnet <quentin@isovalent.com>
@@ -104,121 +116,51 @@ X-Mailing-List: bpf@vger.kernel.org
 > Cc: Hao Luo <haoluo@google.com>
 > Cc: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/lib/bpf/libbpf.c   | 47 ++++++++++++++++++++++++++++++----------
->  tools/lib/bpf/libbpf.h   |  7 ++++++
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 43 insertions(+), 12 deletions(-)
+>  tools/bpf/bpftool/prog.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 27d9faa80471..b84904f79ffd 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -12192,30 +12192,53 @@ int parse_cpu_mask_file(const char *fcpu, bool **mask, int *mask_sz)
->  	return parse_cpu_mask_str(buf, mask, mask_sz);
->  }
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index cfc9fdc1e863..08b352dd799e 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -2056,6 +2056,7 @@ static int profile_parse_metrics(int argc, char **argv)
 >  
-> -int libbpf_num_possible_cpus(void)
-> +static int num_cpus(const char *fcpu)
+>  static void profile_read_values(struct profiler_bpf *obj)
 >  {
-> -	static const char *fcpu = "/sys/devices/system/cpu/possible";
-> -	static int cpus;
-> -	int err, n, i, tmp_cpus;
-> +	int err, n, i, cpus;
->  	bool *mask;
+> +	__u32 possible_cpus = libbpf_num_possible_cpus();
+>  	__u32 m, cpu, num_cpu = obj->rodata->num_cpu;
+>  	int reading_map_fd, count_map_fd;
+>  	__u64 counts[num_cpu];
+> @@ -2080,7 +2081,7 @@ static void profile_read_values(struct profiler_bpf *obj)
+>  		profile_total_count += counts[cpu];
 >  
-> -	tmp_cpus = READ_ONCE(cpus);
-> -	if (tmp_cpus > 0)
-> -		return tmp_cpus;
-> -
->  	err = parse_cpu_mask_file(fcpu, &mask, &n);
->  	if (err)
->  		return libbpf_err(err);
+>  	for (m = 0; m < ARRAY_SIZE(metrics); m++) {
+> -		struct bpf_perf_event_value values[num_cpu];
+> +		struct bpf_perf_event_value values[possible_cpus];
 >  
-> -	tmp_cpus = 0;
-> +	cpus = 0;
->  	for (i = 0; i < n; i++) {
->  		if (mask[i])
-> -			tmp_cpus++;
-> +			cpus++;
->  	}
->  	free(mask);
+>  		if (!metrics[m].selected)
+>  			continue;
+> @@ -2321,7 +2322,7 @@ static int do_profile(int argc, char **argv)
+>  	if (num_metric <= 0)
+>  		goto out;
 >  
-> -	WRITE_ONCE(cpus, tmp_cpus);
-> -	return tmp_cpus;
-> +	return cpus;
-> +}
-> +
-> +int libbpf_num_online_cpus(void)
-> +{
-> +	static int online_cpus;
-> +	int cpus;
-> +
-> +	cpus = READ_ONCE(online_cpus);
-> +	if (cpus > 0)
-> +		return cpus;
+> -	num_cpu = libbpf_num_possible_cpus();
+> +	num_cpu = libbpf_num_online_cpus();
+>  	if (num_cpu <= 0) {
+>  		p_err("failed to identify number of CPUs");
+>  		goto out;
 
-The number of online CPUs can change over time, I don't think you can
-READ_ONCE()/WRITE_ONCE().
+Thanks, but it doesn't seem to be enough to solve the issue. How did you
+test it? With your series applied locally, I'm trying the following
+(Intel x86_64, CPUs: 0..7):
 
-> +
-> +	cpus = num_cpus("/sys/devices/system/cpu/online");
-> +
-> +	WRITE_ONCE(online_cpus, cpus);
-> +	return cpus;
-> +}
-> +
-> +int libbpf_num_possible_cpus(void)
-> +{
-> +	static int possible_cpus;
-> +	int cpus;
-> +
-> +	cpus = READ_ONCE(possible_cpus);
-> +	if (cpus > 0)
-> +		return cpus;
-> +
-> +	cpus = num_cpus("/sys/devices/system/cpu/possible");
-> +
-> +	WRITE_ONCE(possible_cpus, cpus);
-> +	return cpus;
->  }
->  
->  static int populate_skeleton_maps(const struct bpf_object *obj,
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 898db26e42e9..e433575ff865 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -1332,6 +1332,13 @@ LIBBPF_API int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type,
->   */
->  LIBBPF_API int libbpf_num_possible_cpus(void);
->  
-> +/**
-> + * @brief **libbpf_num_online_cpus()** is a helper function to get the
-> + * number of online CPUs that the host kernel supports and expects.
-> + * @return number of online CPUs; or error code on failure
-> + */
-> +LIBBPF_API int libbpf_num_online_cpus(void);
-> +
->  struct bpf_map_skeleton {
->  	const char *name;
->  	struct bpf_map **map;
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 11c36a3c1a9f..384fb6333f3f 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -381,6 +381,7 @@ LIBBPF_1.1.0 {
->  		user_ring_buffer__reserve;
->  		user_ring_buffer__reserve_blocking;
->  		user_ring_buffer__submit;
-> +		libbpf_num_online_cpus;
->  } LIBBPF_1.0.0;
+	# echo 0 > /sys/devices/system/cpu/cpu2/online
+	# ./bpftool prog profile id 1525 duration 1 cycles instructions
+	Error: failed to create event cycles on cpu 2
 
-Libbpf v1.1.0 has shipped, so this would now go to the 1.2.0 block below.
-
->  
->  LIBBPF_1.2.0 {
-
-Thanks, but I'm not sure retrieving the number of online CPUs, without
-the list of those in use, is enough for fixing bpftool profiling
-feature. Please see my answer on the second patch.
-
-Quentin
+It seems that we're still trying to open the perf events on the offline
+CPU in profile_open_perf_events(), because even though we try to use
+fewer of the possible CPUs we're still referencing them in order by
+their index. So it works if I only disabled the last CPUs instead (#7,
+then #6, ...), but to work with _any_ CPU disabled, we would need to
+retrieve the list of online CPUs.
