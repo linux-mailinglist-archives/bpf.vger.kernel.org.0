@@ -2,87 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E58E8671111
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 03:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7D1671180
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 04:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjARCWE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 21:22:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
+        id S229700AbjARDIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 22:08:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjARCWC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 21:22:02 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0726E3E087;
-        Tue, 17 Jan 2023 18:22:01 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id hw16so68031523ejc.10;
-        Tue, 17 Jan 2023 18:22:00 -0800 (PST)
+        with ESMTP id S229585AbjARDIi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 22:08:38 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB32851C4D
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 19:08:26 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id c3so5322993ljh.1
+        for <bpf@vger.kernel.org>; Tue, 17 Jan 2023 19:08:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+advyT/5BIKUb5fwkTNOHjhet8rF/l8YyqhXFamTOh0=;
-        b=QMqw+wVZPsINTwHd4/KmdeLRt/y/BrPXNBYj3nwyqaDOCGfqE+DRjJiQ8lFAaqLyzK
-         ILklkcmRYMHUeE/JvRvd2S2HkSWkrTYoKBTkfRVQ6m7TB1nrnTgbf94Yrc/2FHH72aRc
-         u2NGIS9uHMGcmDEQQ29kFy0eXNl6hldOqJ+1jbSimQKgAuM4x4DgCAZYDtK0R3QF02t3
-         qDGBVYAgcJN4QoI3EanlLKBx5pANQeemRgjXI9xfPa1OSdGyS6WYvtO9EAa6vrHqQLYe
-         fRLA/txn23+DwuGpPY9IMML9FBcrPIgZS/cbeClmuoHDf1bj15KSEbV1385wsrvgqY5E
-         jTUw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lt/NFinXeCqS49IKrVARWuoaPBVffqEh8QE5qsQ5J7g=;
+        b=qac3T4OTJDZNtfrZzrGAd7p2pCJIG17tqjDOBIlEvQlUGcVfcTgEa4G+SPRUg3eXe0
+         EtyqT7RpyQtXEEr566UZ1OaZfDPaVOTnI1pYpSF8rNaIuWW4wKjq0H/xyL75p/TLUUO1
+         hlTKW/aJmyh2RuLHvmZkl3XBHp7PNyAUEVt6c9NLimY3vgwzGsBFfuz3ujEG0UvQnRgl
+         Lf9Y+wW4UHqAAG2nMIWB5EIC04BbmOr11G7m2OOpH9WPGmwvLdbNDc0FQPy9qTRibAX0
+         qSKzmHjdR/s4Azwr107OUWwikRqBI6DgAm6tASaqImWZkl5r0rWW5cAxugAnphhJMLsV
+         q9zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+advyT/5BIKUb5fwkTNOHjhet8rF/l8YyqhXFamTOh0=;
-        b=3TYZf9+nJFaqv53hAgWNqqqxVF+WS9SbD22Rj8r6hihXpY1LvaQ/DOFwRUCra4ygIz
-         W3VLc/eu8meo5AIvlWuKPGklKNp9SFdvFZXhjx7Jjxrul6OCUkRuzUSokP2ZG6AvVeFj
-         AraXG/Gb8DOJ6LEWmUrfAAEpZ+1foPR9086kJGwHW4LY/XSfSDLu0Q2PYjFtUFHAQeid
-         Pd5EXuuaiytUtFm4kBA0/eSTxmjzML/MvhLqxwtr+JIBhPK3WiqXvCcP4g+t6jUPP7aT
-         bmPHD9NP3hsqKnveod/ddQ+hS8NoFoZZ2ZlwM1ypWsC8Hsy9BT+ErMWTOrRBbGs+7bCy
-         mcZA==
-X-Gm-Message-State: AFqh2kpUGe3WQe4HaIDeKTZBibgdCmq+QLoKALKzX4Zq05YgJa1chTdY
-        Q1D8GNiKXEoU+aZFJQ+GMOg3be/7jTzfjmf1ozE=
-X-Google-Smtp-Source: AMrXdXsC3bnTE90KIYSWGJIwtCpPkYXNIcXQACD7qNM6JzO9ctSq9n1iBbUdWEJabAk8cwv58yOAJ37lgr92swbQP/o=
-X-Received: by 2002:a17:906:240a:b0:870:1522:2df3 with SMTP id
- z10-20020a170906240a00b0087015222df3mr399518eja.327.1674008519368; Tue, 17
- Jan 2023 18:21:59 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Lt/NFinXeCqS49IKrVARWuoaPBVffqEh8QE5qsQ5J7g=;
+        b=rA1cvq+tZsjInbpmn9w4bp4e7KZizImlmTWH8QPj1yRZ4ra93OS1OiwOwNnMLW6F8y
+         taECkTSgxzUEi1+NKxc2JTKK8VXHvpEVHoQSHWieuDTdQ/IBDZghx6GxgqwXAAXgwJU8
+         k06sdQEz0WkqEemQe8FZg4l3SNg639Hq2LOs4cndi6btQdj1eybw9ewbXxvpzEQlSAyy
+         PpQX0Rqon2tuklSn1th/prpORaQ/bB823ohJ2Q2qKAxdqi/xFZwcx0paGvxJpN0CBx1d
+         /owam/sn/dCQ7/GrTnGxoTph+mP+J3jhhxZN2Zt0mtXS9bKSfQVx7Opn/BWSjwi2Mb4D
+         UIjQ==
+X-Gm-Message-State: AFqh2krgscNSYMlQMy1gB+ru4mGPss5yh22qCyeoDop+vGLM6vwGznI8
+        ltfX1fPDQYj2zNpdt7tLiiGcAZi3JbFJDPA4QCxj81+4cjo=
+X-Google-Smtp-Source: AMrXdXsm+H5ADlb9ST8q40ikTozor3BacynUUl0x1jOpzLEQchLbHOZYVkp9fPiLqgGIG+5SRebL+FO4J5/JvCYLgSc=
+X-Received: by 2002:a05:651c:886:b0:28b:63e0:b8d5 with SMTP id
+ d6-20020a05651c088600b0028b63e0b8d5mr311533ljq.512.1674011304658; Tue, 17 Jan
+ 2023 19:08:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20230105030614.26842-1-tong@infragraf.org> <ea7673e1-40ec-18be-af89-5f4fd0f71742@csgroup.eu>
- <71c83f39-f85f-d990-95b7-ab6068839e6c@iogearbox.net> <5836b464-290e-203f-00f2-fc6632c9f570@csgroup.eu>
- <147A796D-12C0-482F-B48A-16E67120622B@infragraf.org> <0b46b813-05f2-5083-9f2e-82d72970dae2@csgroup.eu>
- <4380D454-3ED0-43F4-9A79-102BB0E3577A@infragraf.org> <d91bbb9e-484b-d43d-e62d-0474ff21cf91@iogearbox.net>
- <7159E8F8-AE66-4563-8A29-D10D66EFAF3D@infragraf.org>
-In-Reply-To: <7159E8F8-AE66-4563-8A29-D10D66EFAF3D@infragraf.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 17 Jan 2023 18:21:46 -0800
-Message-ID: <CAADnVQLf_UhRP76i9+OaLGrmuoM942QebMXT3OA3mgrP_UV0KA@mail.gmail.com>
-Subject: Re: [bpf-next v2] bpf: drop deprecated bpf_jit_enable == 2
-To:     Tonghao Zhang <tong@infragraf.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.or" 
-        <linux-arm-kernel@lists.infradead.or>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+References: <20230112155326.26902-1-laoar.shao@gmail.com> <CAADnVQJie8jSNxEio9iu6oXBkXyCjCg6h2mHssPv4mDHubWTwA@mail.gmail.com>
+ <CALOAHbAsQ66j77BWC6isTRiKRPgG1Ap2qf6L+wQ+x2SXJt8NjQ@mail.gmail.com> <CAADnVQJGF5Xthpn7D2DgHHvZz8+dnuz2xMi6yoSziuauXO7ncA@mail.gmail.com>
+In-Reply-To: <CAADnVQJGF5Xthpn7D2DgHHvZz8+dnuz2xMi6yoSziuauXO7ncA@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 18 Jan 2023 11:07:48 +0800
+Message-ID: <CALOAHbBVRvTkSxLin+9A20Wv0DZWz4epvNTY1jEaCTf7q0qWJA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 00/11] mm, bpf: Add BPF into /proc/meminfo
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Hou Tao <houtao1@huawei.com>,
-        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Tejun Heo <tj@kernel.org>, dennis@kernel.org,
+        Chris Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -93,192 +84,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 6:13 PM Tonghao Zhang <tong@infragraf.org> wrote:
+On Wed, Jan 18, 2023 at 1:25 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->
->
-> > On Jan 17, 2023, at 11:59 PM, Daniel Borkmann <daniel@iogearbox.net> wr=
-ote:
+> On Fri, Jan 13, 2023 at 3:53 AM Yafang Shao <laoar.shao@gmail.com> wrote:
 > >
-> > On 1/17/23 3:22 PM, Tonghao Zhang wrote:
-> >>> On Jan 17, 2023, at 3:30 PM, Christophe Leroy <christophe.leroy@csgro=
-up.eu> wrote:
-> >>>
-> >>>
-> >>>
-> >>> Le 17/01/2023 =C3=A0 06:30, Tonghao Zhang a =C3=A9crit :
-> >>>>
-> >>>>
-> >>>>> On Jan 9, 2023, at 4:15 PM, Christophe Leroy <christophe.leroy@csgr=
-oup.eu> wrote:
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>>> Le 06/01/2023 =C3=A0 16:37, Daniel Borkmann a =C3=A9crit :
-> >>>>>> On 1/5/23 6:53 PM, Christophe Leroy wrote:
-> >>>>>>> Le 05/01/2023 =C3=A0 04:06, tong@infragraf.org a =C3=A9crit :
-> >>>>>>>> From: Tonghao Zhang <tong@infragraf.org>
-> >>>>>>>>
-> >>>>>>>> The x86_64 can't dump the valid insn in this way. A test BPF pro=
-g
-> >>>>>>>> which include subprog:
-> >>>>>>>>
-> >>>>>>>> $ llvm-objdump -d subprog.o
-> >>>>>>>> Disassembly of section .text:
-> >>>>>>>> 0000000000000000 <subprog>:
-> >>>>>>>>          0:       18 01 00 00 73 75 62 70 00 00 00 00 72 6f 67 0=
-0 r1
-> >>>>>>>> =3D 29114459903653235 ll
-> >>>>>>>>          2:       7b 1a f8 ff 00 00 00 00 *(u64 *)(r10 - 8) =3D =
-r1
-> >>>>>>>>          3:       bf a1 00 00 00 00 00 00 r1 =3D r10
-> >>>>>>>>          4:       07 01 00 00 f8 ff ff ff r1 +=3D -8
-> >>>>>>>>          5:       b7 02 00 00 08 00 00 00 r2 =3D 8
-> >>>>>>>>          6:       85 00 00 00 06 00 00 00 call 6
-> >>>>>>>>          7:       95 00 00 00 00 00 00 00 exit
-> >>>>>>>> Disassembly of section raw_tp/sys_enter:
-> >>>>>>>> 0000000000000000 <entry>:
-> >>>>>>>>          0:       85 10 00 00 ff ff ff ff call -1
-> >>>>>>>>          1:       b7 00 00 00 00 00 00 00 r0 =3D 0
-> >>>>>>>>          2:       95 00 00 00 00 00 00 00 exit
-> >>>>>>>>
-> >>>>>>>> kernel print message:
-> >>>>>>>> [  580.775387] flen=3D8 proglen=3D51 pass=3D3 image=3Dffffffffa0=
-00c20c
-> >>>>>>>> from=3Dkprobe-load pid=3D1643
-> >>>>>>>> [  580.777236] JIT code: 00000000: cc cc cc cc cc cc cc cc cc cc=
- cc
-> >>>>>>>> cc cc cc cc cc
-> >>>>>>>> [  580.779037] JIT code: 00000010: cc cc cc cc cc cc cc cc cc cc=
- cc
-> >>>>>>>> cc cc cc cc cc
-> >>>>>>>> [  580.780767] JIT code: 00000020: cc cc cc cc cc cc cc cc cc cc=
- cc
-> >>>>>>>> cc cc cc cc cc
-> >>>>>>>> [  580.782568] JIT code: 00000030: cc cc cc
-> >>>>>>>>
-> >>>>>>>> $ bpf_jit_disasm
-> >>>>>>>> 51 bytes emitted from JIT compiler (pass:3, flen:8)
-> >>>>>>>> ffffffffa000c20c + <x>:
-> >>>>>>>>      0:   int3
-> >>>>>>>>      1:   int3
-> >>>>>>>>      2:   int3
-> >>>>>>>>      3:   int3
-> >>>>>>>>      4:   int3
-> >>>>>>>>      5:   int3
-> >>>>>>>>      ...
-> >>>>>>>>
-> >>>>>>>> Until bpf_jit_binary_pack_finalize is invoked, we copy rw_header=
- to
-> >>>>>>>> header
-> >>>>>>>> and then image/insn is valid. BTW, we can use the "bpftool prog =
-dump"
-> >>>>>>>> JITed instructions.
-> >>>>>>>
-> >>>>>>> NACK.
-> >>>>>>>
-> >>>>>>> Because the feature is buggy on x86_64, you remove it for all
-> >>>>>>> architectures ?
-> >>>>>>>
-> >>>>>>> On powerpc bpf_jit_enable =3D=3D 2 works and is very usefull.
-> >>>>>>>
-> >>>>>>> Last time I tried to use bpftool on powerpc/32 it didn't work. I =
-don't
-> >>>>>>> remember the details, I think it was an issue with endianess. May=
-be it
-> >>>>>>> is fixed now, but it needs to be verified.
-> >>>>>>>
-> >>>>>>> So please, before removing a working and usefull feature, make su=
-re
-> >>>>>>> there is an alternative available to it for all architectures in =
-all
-> >>>>>>> configurations.
-> >>>>>>>
-> >>>>>>> Also, I don't think bpftool is usable to dump kernel BPF selftest=
-s.
-> >>>>>>> That's vital when a selftest fails if you want to have a chance t=
-o
-> >>>>>>> understand why it fails.
-> >>>>>>
-> >>>>>> If this is actively used by JIT developers and considered useful, =
-I'd be
-> >>>>>> ok to leave it for the time being. Overall goal is to reach featur=
-e parity
-> >>>>>> among (at least major arch) JITs and not just have most functional=
-ity only
-> >>>>>> available on x86-64 JIT. Could you however check what is not worki=
-ng with
-> >>>>>> bpftool on powerpc/32? Perhaps it's not too much effort to just fi=
-x it,
-> >>>>>> but details would be useful otherwise 'it didn't work' is too fuzz=
-y.
-> >>>>>
-> >>>>> Sure I will try to test bpftool again in the coming days.
-> >>>>>
-> >>>>> Previous discussion about that subject is here:
-> >>>>> https://patchwork.kernel.org/project/linux-riscv/patch/202104150932=
-50.3391257-1-Jianlin.Lv@arm.com/#24176847=3D
-> >>>> Hi Christophe
-> >>>> Any progress? We discuss to deprecate the bpf_jit_enable =3D=3D 2 in=
- 2021, but bpftool can not run on powerpc.
-> >>>> Now can we fix this issue?
-> >>>
-> >>> Hi Tong,
-> >>>
-> >>> I have started to look at it but I don't have any fruitfull feedback =
-yet.
-> >>>
-> >>> In the meantime, were you able to confirm that bpftool can also be us=
-ed
-> >>> to dump jitted tests from test_bpf.ko module on x86_64 ? In that can =
-you
-> >>> tell me how to proceed ?
-> >> Now I do not test, but we can dump the insn after bpf_prog_select_runt=
-ime in test_bpf.ko. bpf_map_get_info_by_fd can copy the insn to userspace, =
-but we can
-> >> dump them in test_bpf.ko in the same way.
+> > On Fri, Jan 13, 2023 at 5:05 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Thu, Jan 12, 2023 at 7:53 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > >
+> > > > Currently there's no way to get BPF memory usage, while we can only
+> > > > estimate the usage by bpftool or memcg, both of which are not reliable.
+> > > >
+> > > > - bpftool
+> > > >   `bpftool {map,prog} show` can show us the memlock of each map and
+> > > >   prog, but the memlock is vary from the real memory size. The memlock
+> > > >   of a bpf object is approximately
+> > > >   `round_up(key_size + value_size, 8) * max_entries`,
+> > > >   so 1) it can't apply to the non-preallocated bpf map which may
+> > > >   increase or decrease the real memory size dynamically. 2) the element
+> > > >   size of some bpf map is not `key_size + value_size`, for example the
+> > > >   element size of htab is
+> > > >   `sizeof(struct htab_elem) + round_up(key_size, 8) + round_up(value_size, 8)`
+> > > >   That said the differece between these two values may be very great if
+> > > >   the key_size and value_size is small. For example in my verifaction,
+> > > >   the size of memlock and real memory of a preallocated hash map are,
+> > > >
+> > > >   $ grep BPF /proc/meminfo
+> > > >   BPF:                 350 kB  <<< the size of preallocated memalloc pool
+> > > >
+> > > >   (create hash map)
+> > > >
+> > > >   $ bpftool map show
+> > > >   41549: hash  name count_map  flags 0x0
+> > > >         key 4B  value 4B  max_entries 1048576  memlock 8388608B
+> > > >
+> > > >   $ grep BPF /proc/meminfo
+> > > >   BPF:               82284 kB
+> > > >
+> > > >   So the real memory size is $((82284 - 350)) which is 81934 kB
+> > > >   while the memlock is only 8192 kB.
+> > >
+> > > hashmap with key 4b and value 4b looks artificial to me,
+> > > but since you're concerned with accuracy of bpftool reporting,
+> > > please fix the estimation in bpf_map_memory_footprint().
 > >
-> > Issue is that these progs are not consumable from userspace (and theref=
-ore not bpftool).
-> > it's just simple bpf_prog_alloc + copy of test insns + bpf_prog_select_=
-runtime() to test
-> > JITs (see generate_filter()). Some of them could be converted over to t=
-est_verifier, but
-> > not all might actually pass verifier, iirc. Don't think it's a good ide=
-a to allow exposing
-> > them via fd tbh.
-> Hi
-> I mean that, can we invoke the bpf_jit_dump in test_bpf.ko directly ?. bp=
-f_prog_get_info_by_fd copy the insn to userspace, but we only dump insn in =
-test_bpf.ko
+> > I thought bpf_map_memory_footprint() was deprecated, so I didn't try
+> > to fix it before.
 >
->                 if (bpf_dump_raw_ok(file->f_cred)) {// code copied from b=
-pf_prog_get_info_by_fd, not tested
+> It's not deprecated. It's trying to be accurate.
+> See bpf_map_value_size().
+> In the past we had to be precise when we calculated the required memory
+> before we allocated and that was causing ongoing maintenance issues.
+> Now bpf_map_memory_footprint() is an estimate for show_fdinfo.
+> It can be made more accurate for this map with corner case key/value sizes.
 >
->                         /* for multi-function programs, copy the JITed
->                          * instructions for all the functions
->                          */
->                         if (prog->aux->func_cnt) {
->                                 for (i =3D 0; i < prog->aux->func_cnt; i+=
-+) {
->                                         len =3D prog->aux->func[i]->jited=
-_len;
->                                         img =3D (u8 *) prog->aux->func[i]=
-->bpf_func;
->                                         bpf_jit_dump(1, len, 1, img);
->                                 }
->                         } else {
->                                 bpf_jit_dump(1, ulen, 1, prog->bpf_func);
->                         }
->                 }
 
-Let's not reinvent the wheel.
-bpftool prog dump jited
-is our supported command.
-ppc issue with bpftool is related to endianness of embedded skeleton.
-which means that none of the bpftool prog commands work on ppc.
-It's a bigger issue to address with cross compilation of bpftool.
+Thanks for the clarification.
 
-bpftool supports gnu and llvm disassembler. It retrieves and
-prints BTF, line info and source code along with asm.
-The user experience is at different level comparing to bpf_jit_dump.
+> > > You're correct that:
+> > >
+> > > > size of some bpf map is not `key_size + value_size`, for example the
+> > > >   element size of htab is
+> > > >   `sizeof(struct htab_elem) + round_up(key_size, 8) + round_up(value_size, 8)`
+> > >
+> > > So just teach bpf_map_memory_footprint() to do this more accurately.
+> > > Add bucket size to it as well.
+> > > Make it even more accurate with prealloc vs not.
+> > > Much simpler change than adding run-time overhead to every alloc/free
+> > > on bpf side.
+> > >
+> >
+> > It seems that we'd better introduce ->memory_footprint for some
+> > specific bpf maps. I will think about it.
+>
+> No. Don't build it into a replica of what we had before.
+> Making existing bpf_map_memory_footprint() more accurate.
+>
+
+I just don't want to add many if-elses or switch-cases into
+bpf_map_memory_footprint(), because I think it is a little ugly.
+Introducing a new map ops could make it more clear.  For example,
+static unsigned long bpf_map_memory_footprint(const struct bpf_map *map)
+{
+    unsigned long size;
+
+    if (map->ops->map_mem_footprint)
+        return map->ops->map_mem_footprint(map);
+
+    size = round_up(map->key_size + bpf_map_value_size(map), 8);
+    return round_up(map->max_entries * size, PAGE_SIZE);
+}
+
+> > > bpf side tracks all of its allocation. There is no need to do that
+> > > in generic mm side.
+> > > Exposing an aggregated single number if /proc/meminfo also looks wrong.
+> >
+> > Do you mean that we shouldn't expose it in /proc/meminfo ?
+>
+> We should not because it helps one particular use case only.
+> Somebody else might want map mem info per container,
+> then somebody would need it per user, etc.
+
+It seems we should show memcg info and user info in bpftool map show.
+
+> bpftool map show | awk
+> solves all those cases without adding new uapi-s.
+
+Makes sense to me.
+
+-- 
+Regards
+Yafang
