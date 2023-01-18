@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 176AC6713C7
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 07:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D64E6713C4
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 07:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229504AbjARGU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 01:20:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
+        id S229484AbjARGUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 01:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjARGSR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S229521AbjARGSR (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 18 Jan 2023 01:18:17 -0500
 Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DA9193DE;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C7D442D4;
         Tue, 17 Jan 2023 22:06:03 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id d10so23711138pgm.13;
+Received: by mail-pg1-x533.google.com with SMTP id q9so23748273pgq.5;
         Tue, 17 Jan 2023 22:06:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=AJM2l+mABefkfyEbBF+RzKX6IR1PByT45QHpW0h3qe4=;
-        b=Uk9EEPHa9abUvjhRIQIWoxZOrA4S++vJR7Iml2l67ItI4NgzfFUOz1vV9Q63tFOjUm
-         +QDRMwrVP7wbKL/UfKcz0XLrcmk5e32iTNT/I5grbXwJRvkLJnjCkYa+PrzAHHaIocjd
-         uUtNOfaBvIUfMoTHFl8A7zTRslSf2vZPGjD9ijvZhaiqU66TeOxuFwSDxa+rlMS1wewi
-         V4d0JUaeSZU9li9O4KdejcCLA88DVAhh4Vrp06iPXC/A3UOgbKQXznTgqh+4Cnz3z4Am
-         iFtYE6EqMhZVXjwXvbIkYL/14mJS/XVDjY1S4HOxTFH+WMiR6KemWXi6zvzOhN53dQSV
-         59+A==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q4FWYNGqeIRLLvbuHSi4QxIqv+Z+4df4xqBN1sLuHUI=;
+        b=LWvdJAHv1jZf2z/7zujPgBAeAQ9KRsb7GuuOIaayNaFGOHtclEFJNra3G9kr6/uxei
+         zR2Juw7BZwh2ifMPPiDuNeZeXPCA48C1PahDHi7cWjsCw8fBkvm2qfeIw5L5lltkzDFF
+         WYb58icJKGcvZWXpubVZToPAOkDHgyJEr2xn9IP/zyx/kxIb0TLonxdTcmBotQFeeMGR
+         JQhjTOfvONTkw+R2EQ5+xeCiOtjEpdsE3/xy4H4W8R8E5UwLyNrR3JYh4rldqVb+VWEe
+         b1jWcd8/kyha9QadyEQuIu7zIy4uzz/xsHbt8GObU0YbAW2yMi9EnRC+mFAVX7DuiN6f
+         oEDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AJM2l+mABefkfyEbBF+RzKX6IR1PByT45QHpW0h3qe4=;
-        b=2BMNowzCbHzbQC4fZS2fhgVVmQnGKRy0lHmlcs1NGnksJMMIiXcCHU9F1iFwQg3M2Y
-         6ITpS0HDIx9s+q0r1J1v/hYr16zvr+QaCLnlUSPFxe0fgxhz92ixBI4tI1za5FtqrXzs
-         Pm0lCphsi2+DOY/snZ4mhBbPwVEnH6Nx79BnBWOwIZHlCtidAUM3jqtu03dnR8YybIZF
-         /B7vw9/eyYF1iGmyFIHK+vZJKcfNx8K9Qe1H6MzFhBr/UbWBI4dXbJo3rsXpWmNLKkGL
-         YRjTEJMsXO0rkE42FSZj12aLPG57/RriHjctZz5qXSQm0rSASKXvp6tMNuEH07peOzRY
-         6aag==
-X-Gm-Message-State: AFqh2kpN9ez7JgRRVNLFLeGC2+V9HKB51HLfmd/Ymmx/ovPgJpBuyTKt
-        mus8L1BOICciQJhrobWJJwU=
-X-Google-Smtp-Source: AMrXdXvJj/WuxPD1+Xma7Enk9QJHUshgvQ19l5+RsLJDTd/eY1Ms6gJENO1+HU9ZaSxZaP5H9LwKlg==
-X-Received: by 2002:a05:6a00:180d:b0:58d:c694:9a9e with SMTP id y13-20020a056a00180d00b0058dc6949a9emr7449718pfa.18.1674021960598;
-        Tue, 17 Jan 2023 22:06:00 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Q4FWYNGqeIRLLvbuHSi4QxIqv+Z+4df4xqBN1sLuHUI=;
+        b=tSgeZaUOzcqGTPO0151PFgXi2crUWlIySGcLGi50TiLLH9C2ZfQ5AmQ3XTFTPPOUFj
+         7ToHVAqXw3/3wJKGIXudIGsx/GRNb5TFBBoBT4ag4kb55x2Xhu8UH5F0SFrA39pMcVwz
+         M1INgCjrjnwZxK37vPygzj8GyZ7mXMJFVM2uZwY7JQOBbVLXb6VZ7ZeMmustEVb5iXUL
+         X0GQ9QrajGl1pyEj2QPJPk/Ox8PYH3xg221rKbiwkbohYZKfdAng6QOYS6AAvyu9Nt7m
+         KPtQhwQ22+a+NOGpvvKmqCXxdqGrg+WSO6x0q2ullJEWZEbJsYUh3APEMWc6q3LooGBo
+         +wQg==
+X-Gm-Message-State: AFqh2koWr93iWJFmfwks3xGl3mHurvrko9IhDcILICZgCp3Y2M+NzeV7
+        JtpFGKs2+Uo7BHO2mAtatnSlCvXYylA=
+X-Google-Smtp-Source: AMrXdXu4JZ8K4+nwdu5Ql6RmPRpETATz1ehBeMVqW1WRR163R1j1Zq1erJ2q6YP17Z7TMZGGtcXj4w==
+X-Received: by 2002:a62:640f:0:b0:581:f301:23fc with SMTP id y15-20020a62640f000000b00581f30123fcmr24054116pfb.12.1674021962020;
+        Tue, 17 Jan 2023 22:06:02 -0800 (PST)
 Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:ff0:3749:9eb3:dfb5:f449])
-        by smtp.gmail.com with ESMTPSA id b126-20020a62cf84000000b00574e84ed847sm10990180pfg.24.2023.01.17.22.05.59
+        by smtp.gmail.com with ESMTPSA id b126-20020a62cf84000000b00574e84ed847sm10990180pfg.24.2023.01.17.22.06.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Jan 2023 22:06:00 -0800 (PST)
+        Tue, 17 Jan 2023 22:06:01 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
@@ -58,10 +59,12 @@ Cc:     Mark Rutland <mark.rutland@arm.com>,
         Jiri Olsa <jolsa@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>, Song Liu <song@kernel.org>,
         bpf@vger.kernel.org
-Subject: [PATCHSET 0/8] perf/core: Prepare sample data for BPF (v3)
-Date:   Tue, 17 Jan 2023 22:05:51 -0800
-Message-Id: <20230118060559.615653-1-namhyung@kernel.org>
+Subject: [PATCH 1/8] perf/core: Save the dynamic parts of sample data size
+Date:   Tue, 17 Jan 2023 22:05:52 -0800
+Message-Id: <20230118060559.615653-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
+In-Reply-To: <20230118060559.615653-1-namhyung@kernel.org>
+References: <20230118060559.615653-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,72 +77,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+The perf sample data can be divided into parts.  The event->header_size
+and event->id_header_size keep the static part of the sample data which
+is determined by the sample_type flags.
 
-The perf_prepare_sample() is to fill the perf sample data and update the
-header info before sending it to the ring buffer.  But we want to use it
-for BPF overflow handler so that it can access the sample data to filter
-relevant ones.
+But other parts like CALLCHAIN and BRANCH_STACK are changing dynamically
+so it needs to see the actual data.  In preparation of handling repeated
+calls for perf_prepare_sample(), it can save the dynamic size to the
+perf sample data to avoid the duplicate work.
 
-Changes in v3)
- * update data->sample_flags in __perf_event_header__init_id()  (PeterZ)
- * add Acked-by's from Jiri and Song
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Acked-by: Song Liu <song@kernel.org>
+Tested-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ include/linux/perf_event.h |  2 ++
+ kernel/events/core.c       | 17 ++++++++++-------
+ 2 files changed, 12 insertions(+), 7 deletions(-)
 
-Changes in v2)
- * the layout change is merged
- * reduce branches using __cond_set  (PeterZ)
- * add helpers to set dynamic sample data  (PeterZ)
- * introduce perf_prepare_header()  (PeterZ)
- * call perf_prepare_sample() before bpf_overflow_handler unconditionally
-
-This means the perf_prepare_handler() can be called more than once.  To
-avoid duplicate work, use the data->sample_flags and save the data size.
-
-I also added a few of helpers to set those information accordingly.
-But it looks some fields like REGS_USER, STACK_USER and AUX are saved in
-the perf_prepare_sample() so I didn't add the helpers for them.
-
-After than we can just check the filtered_sample_type flags begin zero
-to determine if it has more work.  In that case, it needs to update the
-data->type since it's possible to miss when PMU driver sets all required
-sample flags before calling perf_prepare_sample().
-
-The code is also available at 'perf/prepare-sample-v3' branch in
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-Thanks,
-Namhyung
-
-Cc: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org
-
-Namhyung Kim (8):
-  perf/core: Save the dynamic parts of sample data size
-  perf/core: Add perf_sample_save_callchain() helper
-  perf/core: Add perf_sample_save_raw_data() helper
-  perf/core: Add perf_sample_save_brstack() helper
-  perf/core: Set data->sample_flags in perf_prepare_sample()
-  perf/core: Do not pass header for sample id init
-  perf/core: Introduce perf_prepare_header()
-  perf/core: Call perf_prepare_sample() before running BPF
-
- arch/powerpc/perf/core-book3s.c    |   3 +-
- arch/s390/kernel/perf_cpum_cf.c    |   4 +-
- arch/s390/kernel/perf_cpum_sf.c    |   3 +-
- arch/s390/kernel/perf_pai_crypto.c |   4 +-
- arch/s390/kernel/perf_pai_ext.c    |   4 +-
- arch/x86/events/amd/core.c         |   6 +-
- arch/x86/events/amd/ibs.c          |   9 +-
- arch/x86/events/intel/core.c       |   6 +-
- arch/x86/events/intel/ds.c         |  24 ++--
- include/linux/perf_event.h         | 133 +++++++++++++-----
- kernel/events/core.c               | 207 ++++++++++++++++-------------
- kernel/trace/bpf_trace.c           |   6 +-
- 12 files changed, 236 insertions(+), 173 deletions(-)
-
-
-base-commit: 9fcad995c6c52cc9791f7ee9f1386a5684055f9c
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 03949d017ac9..16b980014449 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1103,6 +1103,7 @@ struct perf_sample_data {
+ 	 */
+ 	u64				sample_flags;
+ 	u64				period;
++	u64				dyn_size;
+ 
+ 	/*
+ 	 * Fields commonly set by __perf_event_header__init_id(),
+@@ -1158,6 +1159,7 @@ static inline void perf_sample_data_init(struct perf_sample_data *data,
+ 	/* remaining struct members initialized in perf_prepare_sample() */
+ 	data->sample_flags = PERF_SAMPLE_PERIOD;
+ 	data->period = period;
++	data->dyn_size = 0;
+ 
+ 	if (addr) {
+ 		data->addr = addr;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index eacc3702654d..8c8de26f04ab 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -7593,7 +7593,7 @@ void perf_prepare_sample(struct perf_event_header *header,
+ 
+ 		size += data->callchain->nr;
+ 
+-		header->size += size * sizeof(u64);
++		data->dyn_size += size * sizeof(u64);
+ 	}
+ 
+ 	if (sample_type & PERF_SAMPLE_RAW) {
+@@ -7619,7 +7619,7 @@ void perf_prepare_sample(struct perf_event_header *header,
+ 			data->raw = NULL;
+ 		}
+ 
+-		header->size += size;
++		data->dyn_size += size;
+ 	}
+ 
+ 	if (sample_type & PERF_SAMPLE_BRANCH_STACK) {
+@@ -7631,7 +7631,7 @@ void perf_prepare_sample(struct perf_event_header *header,
+ 			size += data->br_stack->nr
+ 			      * sizeof(struct perf_branch_entry);
+ 		}
+-		header->size += size;
++		data->dyn_size += size;
+ 	}
+ 
+ 	if (sample_type & (PERF_SAMPLE_REGS_USER | PERF_SAMPLE_STACK_USER))
+@@ -7646,7 +7646,7 @@ void perf_prepare_sample(struct perf_event_header *header,
+ 			size += hweight64(mask) * sizeof(u64);
+ 		}
+ 
+-		header->size += size;
++		data->dyn_size += size;
+ 	}
+ 
+ 	if (sample_type & PERF_SAMPLE_STACK_USER) {
+@@ -7671,7 +7671,7 @@ void perf_prepare_sample(struct perf_event_header *header,
+ 			size += sizeof(u64) + stack_size;
+ 
+ 		data->stack_user_size = stack_size;
+-		header->size += size;
++		data->dyn_size += size;
+ 	}
+ 
+ 	if (filtered_sample_type & PERF_SAMPLE_WEIGHT_TYPE)
+@@ -7700,7 +7700,7 @@ void perf_prepare_sample(struct perf_event_header *header,
+ 			size += hweight64(mask) * sizeof(u64);
+ 		}
+ 
+-		header->size += size;
++		data->dyn_size += size;
+ 	}
+ 
+ 	if (sample_type & PERF_SAMPLE_PHYS_ADDR &&
+@@ -7745,8 +7745,11 @@ void perf_prepare_sample(struct perf_event_header *header,
+ 		size = perf_prepare_sample_aux(event, data, size);
+ 
+ 		WARN_ON_ONCE(size + header->size > U16_MAX);
+-		header->size += size;
++		data->dyn_size += size + sizeof(u64); /* size above */
+ 	}
++
++	header->size += data->dyn_size;
++
+ 	/*
+ 	 * If you're adding more sample types here, you likely need to do
+ 	 * something about the overflowing header::size, like repurpose the
 -- 
 2.39.0.314.g84b9a713c41-goog
 
