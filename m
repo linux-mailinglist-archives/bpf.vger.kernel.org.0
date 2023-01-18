@@ -2,275 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1BD672253
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 17:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5DA6722EC
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 17:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbjARQBg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 11:01:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
+        id S229846AbjARQXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Jan 2023 11:23:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbjARQAy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 11:00:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DF13B64F
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 07:57:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674057443;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZPeXXcK1CLj+cNYv/ExZzXS5GW+iGRbyo/9GsYa24Gs=;
-        b=Dxvx1iM8f4i1axJvEqkgx+bllOt/O1B45kYzLrbVLo4yWLcFK7TOsTtKCpcjdUgHTNCKsX
-        vyeMZQM4ExkWs0fhjD7xRMAZb8qQNKNR5OCXR/1Xt4CiBP/DkoRdo+CMMcl3VQdKeo4PFK
-        qfzv3ClmVxtAsTy61voZn8yElKLTOCw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-424-aDCgmu-eNBCyGrxWgU7mPw-1; Wed, 18 Jan 2023 10:57:21 -0500
-X-MC-Unique: aDCgmu-eNBCyGrxWgU7mPw-1
-Received: by mail-ed1-f71.google.com with SMTP id c12-20020a05640227cc00b0049e2c079aabso4809398ede.1
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 07:57:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPeXXcK1CLj+cNYv/ExZzXS5GW+iGRbyo/9GsYa24Gs=;
-        b=IZpBcVAE4Iv3FJKWnqhalsWCWL20c5myWzn+x8gHb0LEu+Le6DL+YxU6C2zPyY3u2u
-         G4xQsHW2iHs/YSVMJXHENVvt5ukDCdSH15CM9df8D4klmO7RQdNGzS221FFL5+x6BF75
-         LkaTFrBZQOb6Hunhhhx81FAiYjJBqDglpLggldvZ0Nm87fHmXN8iatzgpelZhigONKRL
-         7ypLDvPmAK7WHYjNuw8Aw0T9dmO7qTAS0klWNXJZmC5XigAIOyN0sjCh+cgkrov+BsQR
-         CCQIJqe6o/0/rQijuw3dYf5ahbig0EZRASbya6Z5ZPYfwPycSDkhNla45qKi8MmQEChB
-         rR8Q==
-X-Gm-Message-State: AFqh2kqxDgx9cjykbhT+ghcDOjqsUynjZr9Iqg7/PB8wH0PFztYJ/5KG
-        TkjtiA7GGVjmbvTqdRXJ26erm3wPiLmOypxn7/iYRH+xl5rLMf3gSXwyenqygK3teHF5RmU/0T9
-        C03ifkCQk3xOE
-X-Received: by 2002:aa7:d6d7:0:b0:498:3bb9:941 with SMTP id x23-20020aa7d6d7000000b004983bb90941mr7282525edr.19.1674057439525;
-        Wed, 18 Jan 2023 07:57:19 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXsRq3jLwOckVMMn3yYawyeZbVTC97znxUv2mZJvnRi+pwMF+wk2kPCOBiFT8hkCauO7cDh/IA==
-X-Received: by 2002:aa7:d6d7:0:b0:498:3bb9:941 with SMTP id x23-20020aa7d6d7000000b004983bb90941mr7282498edr.19.1674057439284;
-        Wed, 18 Jan 2023 07:57:19 -0800 (PST)
-Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id ba6-20020a0564021ac600b0045cf4f72b04sm14250683edb.94.2023.01.18.07.57.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Jan 2023 07:57:18 -0800 (PST)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <f24074b4-5df2-155f-2c6e-f0078e080b55@redhat.com>
-Date:   Wed, 18 Jan 2023 16:57:16 +0100
+        with ESMTP id S230344AbjARQWh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Jan 2023 11:22:37 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62EC46085
+        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 08:20:46 -0800 (PST)
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pIBB5-000CD7-IV; Wed, 18 Jan 2023 17:20:43 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pIBB5-0009qW-Be; Wed, 18 Jan 2023 17:20:43 +0100
+Subject: Re: [PATCH] bpf, docs: Fix modulo zero, division by zero, overflow,
+ and underflow
+To:     dthaler1968@googlemail.com, bpf@vger.kernel.org
+Cc:     Dave Thaler <dthaler@microsoft.com>
+References: <87o7qw18l8.fsf@oracle.com>
+ <20230118152329.877-1-dthaler1968@googlemail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f92955a7-8e92-eed2-243f-a532baf739b6@iogearbox.net>
+Date:   Wed, 18 Jan 2023 17:20:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 10/17] veth: Support RX XDP metadata
+In-Reply-To: <20230118152329.877-1-dthaler1968@googlemail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-References: <20230112003230.3779451-1-sdf@google.com>
- <20230112003230.3779451-11-sdf@google.com>
- <a5ce7ac4-7901-6146-2c2a-5b4958c14e11@redhat.com>
- <CAKH8qBszqz7Qi=E0=gsF0KDHqw4+QEWYyQvqRyS2_E_UsjNKvw@mail.gmail.com>
-In-Reply-To: <CAKH8qBszqz7Qi=E0=gsF0KDHqw4+QEWYyQvqRyS2_E_UsjNKvw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26785/Wed Jan 18 09:42:40 2023)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 17/01/2023 21.33, Stanislav Fomichev wrote:
-> On Mon, Jan 16, 2023 at 8:21 AM Jesper Dangaard Brouer
-> <jbrouer@redhat.com> wrote:
->>
->>
->> On 12/01/2023 01.32, Stanislav Fomichev wrote:
->>> The goal is to enable end-to-end testing of the metadata for AF_XDP.
->>
->> For me the goal with veth goes beyond *testing*.
->>
->> This patch ignores the xdp_frame case.  I'm not blocking this patch, but
->> I'm saying we need to make sure there is a way forward for accessing
->> XDP-hints when handling redirected xdp_frame's.
+On 1/18/23 4:23 PM, dthaler1968@googlemail.com wrote:
+> From: Dave Thaler <dthaler@microsoft.com>
 > 
-> Sure, let's work towards getting that other part addressed!
+> Fix modulo zero, division by zero, overflow, and underflow.
+> Also clarify how a negative immediate value is used in unsigned division
 > 
->> I have two use-cases we should cover (as future work).
->>
->> (#1) We have customers that want to redirect from physical NIC hardware
->> into containers, and then have the veth XDP-prog (selectively) redirect
->> into an AF_XDP socket (when matching fastpath packets).  Here they
->> (minimum) want access to the XDP hint info on HW checksum.
->>
->> (#2) Both veth and cpumap can create SKBs based on xdp_frame's.  Here it
->> is essential to get HW checksum and HW hash when creating these SKBs
->> (else netstack have to do expensive csum calc and parsing in
->> flow-dissector).
+> Changes from last submission: addressed conversion comment from
+> Jose.
 > 
->  From my PoW, I'd probably have to look into the TX side first (tx
-> timestamp) before looking into xdp->skb path. So if somebody on your
-> side has cycles, feel free to drive this effort. I'm happy to provide
-> reviews/comments/etc. I think we've discussed in the past that this
-> will most likely look like another set of "export" kfuncs?
+> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+> ---
+>   Documentation/bpf/instruction-set.rst | 16 ++++++++++++++--
+>   1 file changed, 14 insertions(+), 2 deletions(-)
 > 
+> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+> index e672d5ec6cc..f79dae527ad 100644
+> --- a/Documentation/bpf/instruction-set.rst
+> +++ b/Documentation/bpf/instruction-set.rst
+> @@ -99,19 +99,26 @@ code      value  description
+>   BPF_ADD   0x00   dst += src
+>   BPF_SUB   0x10   dst -= src
+>   BPF_MUL   0x20   dst \*= src
+> -BPF_DIV   0x30   dst /= src
+> +BPF_DIV   0x30   dst = (src != 0) ? (dst / src) : 0
+>   BPF_OR    0x40   dst \|= src
+>   BPF_AND   0x50   dst &= src
+>   BPF_LSH   0x60   dst <<= src
+>   BPF_RSH   0x70   dst >>= src
+>   BPF_NEG   0x80   dst = ~src
+> -BPF_MOD   0x90   dst %= src
+> +BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
+>   BPF_XOR   0xa0   dst ^= src
+>   BPF_MOV   0xb0   dst = src
+>   BPF_ARSH  0xc0   sign extending shift right
+>   BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+>   ========  =====  ==========================================================
+>   
+> +Underflow and overflow are allowed during arithmetic operations,
+> +meaning the 64-bit or 32-bit value will wrap.  If
+> +eBPF program execution would result in division by zero,
+> +the destination register is instead set to zero.
+> +If execution would result in modulo by zero,
+> +the destination register is instead left unchanged.
 
-I can use some cycles to look at this and come-up with some PoC code.
+Looks good to go with one small nit for the previous sentence which could be
+misinterpreted. The rewrites from verifier for modulo op are:
 
-Yes, I'm thinking of creating 'another set of "export" kfuncs' as you 
-say. I'm no-longer suggesting to add a "store" flag to this patchsets 
-kfuncs.
+       mod32:                            mod64:
 
-The advantages with another set of store/export kfuncs are that these 
-can live in the core-kernel code (e.g. not in drivers), and hopefully we 
-can "unroll" these as BPF-prog code (as you did earlier).
+       (16) if w0 == 0x0 goto pc+2       (15) if r0 == 0x0 goto pc+1
+       (9c) w1 %= w0                     (9f) r1 %= r0
+       (05) goto pc+1
+       (bc) w1 = w1
 
+So for BPF_ALU as 32-bit op, it is expected that the result is 32-bit
+value, too. So for 32-bit op the destination register is truncated to
+32-bit value. (Related commit 9b00f1b78809 ("bpf: Fix truncation handling
+for mod32 dst reg wrt zero")).
 
-> We can start with extending new
-> Documentation/networking/xdp-rx-metadata.rst with a high-level design.
-
-Sure, but I'll try to get some code working first.
-
->>> Cc: John Fastabend <john.fastabend@gmail.com>
->>> Cc: David Ahern <dsahern@gmail.com>
->>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
->>> Cc: Jakub Kicinski <kuba@kernel.org>
->>> Cc: Willem de Bruijn <willemb@google.com>
->>> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
->>> Cc: Anatoly Burakov <anatoly.burakov@intel.com>
->>> Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
->>> Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
->>> Cc: Maryam Tahhan <mtahhan@redhat.com>
->>> Cc: xdp-hints@xdp-project.net
->>> Cc: netdev@vger.kernel.org
->>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
->>> ---
->>>    drivers/net/veth.c | 31 +++++++++++++++++++++++++++++++
->>>    1 file changed, 31 insertions(+)
->>>
->>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
->>> index 70f50602287a..ba3e05832843 100644
->>> --- a/drivers/net/veth.c
->>> +++ b/drivers/net/veth.c
->>> @@ -118,6 +118,7 @@ static struct {
->>>
->>>    struct veth_xdp_buff {
->>>        struct xdp_buff xdp;
->>> +     struct sk_buff *skb;
->>>    };
->>>
->>>    static int veth_get_link_ksettings(struct net_device *dev,
->>> @@ -602,6 +603,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
->>>
->>>                xdp_convert_frame_to_buff(frame, xdp);
->>>                xdp->rxq = &rq->xdp_rxq;
->>> +             vxbuf.skb = NULL;
->>>
->>>                act = bpf_prog_run_xdp(xdp_prog, xdp);
->>>
->>> @@ -823,6 +825,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
->>>        __skb_push(skb, skb->data - skb_mac_header(skb));
->>>        if (veth_convert_skb_to_xdp_buff(rq, xdp, &skb))
->>>                goto drop;
->>> +     vxbuf.skb = skb;
->>>
->>>        orig_data = xdp->data;
->>>        orig_data_end = xdp->data_end;
->>> @@ -1602,6 +1605,28 @@ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
->>>        }
->>>    }
->>>
->>> +static int veth_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
->>> +{
->>> +     struct veth_xdp_buff *_ctx = (void *)ctx;
->>> +
->>> +     if (!_ctx->skb)
->>> +             return -EOPNOTSUPP;
->>> +
->>> +     *timestamp = skb_hwtstamps(_ctx->skb)->hwtstamp;
->>
->> The SKB stores this skb_hwtstamps() in skb_shared_info memory area.
->> This memory area is actually also available to xdp_frames.  Thus, we
->> could store the HW rx_timestamp in same location for redirected
->> xdp_frames.  This could make code path sharing possible between SKB vs
->> xdp_frame in veth.
->>
->> This would also make it fast to "transfer" HW rx_timestamp when creating
->> an SKB from an xdp_frame, as data is already written in the correct place.
->>
->> Performance wise the down-side is that skb_shared_info memory area is in
->> a separate cacheline.  Thus, when no HW rx_timestamp is available, then
->> it is very expensive for a veth XDP bpf-prog to access this, just to get
->> a zero back.  Having an xdp_frame->flags bit that knows if HW
->> rx_timestamp have been stored, can mitigate this.
+>   ``BPF_ADD | BPF_X | BPF_ALU`` means::
+>   
+>     dst_reg = (u32) dst_reg + (u32) src_reg;
+> @@ -128,6 +135,11 @@ BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+>   
+>     dst_reg = dst_reg ^ imm32
+>   
+> +Also note that the division and modulo operations are unsigned.
+> +Thus, for `BPF_ALU`, 'imm' is first interpreted as an unsigned
+> +32-bit value, whereas for `BPF_ALU64`, 'imm' is first sign extended
+> +to 64 bits and the result interpreted as an unsigned 64-bit value.
+> +There are no instructions for signed division or modulo.
+>   
+>   Byte swap instructions
+>   ~~~~~~~~~~~~~~~~~~~~~~
 > 
-> That's one way to do it; although I'm not sure about the cases which
-> don't use xdp_frame and use stack-allocated xdp_buff.
-
-Above I should have said xdp_buff->flags, to make it more clear that 
-this doesn't depend on xdp_frame.  The xdp_buff->flags gets copied to 
-xdp_frame->flags, so I see them as equivalent.
-
-The skb_shared_info memory area is also available to xdp_buff's.
-(See code #define xdp_data_hard_end in include/net/xdp.h)
-
-
->>> +     return 0;
->>> +}
->>> +
->>> +static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
->>> +{
->>> +     struct veth_xdp_buff *_ctx = (void *)ctx;
->>> +
->>> +     if (!_ctx->skb)
->>> +             return -EOPNOTSUPP;
->>
->> For xdp_frame case, I'm considering simply storing the u32 RX-hash in
->> struct xdp_frame.  This makes it easy to extract for xdp_frame to SKB
->> create use-case.
->>
->> As have been mentioned before, the SKB also requires knowing the RSS
->> hash-type.  This HW hash-type actually contains a lot of information,
->> that today is lost when reduced to the SKB hash-type.  Due to
->> standardization from Microsoft, most HW provide info on (L3) IPv4 or
->> IPv6, and on (L4) TCP or UDP (and often SCTP).  Often hardware
->> descriptor also provide info on the header length.  Future work in this
->> area is exciting as we can speedup parsing of packets in XDP, if we can
->> get are more detailed HW info on hash "packet-type".
-> 
-> Something like the version we've discussed a while back [0]?
-> Seems workable overall if we remove it from the UAPI? (not everyone
-> was happy about UAPI parts IIRC)
-> 
-> 0: https://lore.kernel.org/bpf/20221115030210.3159213-7-sdf@google.com/
-
-Yes, somewhat similar to [0].
-Except that:
-
-(1) Have a more granular design with more kfuncs for individually 
-exporting hints (like this patchset) giving BPF-programmer more 
-flexibility. (but unroll BPF-byte code to avoid func-call overhead).
-
-(2) No UAPI, except the kfunc calls, and kernel-code can hide where the 
-hints are stored, e.g. as member in struct xdp_frame, in skb_shared_info 
-memory area, or somehow in metadata memory area. (Hopefully avoiding too 
-much bikesheeting about memory area as we are free to change this later).
-
---Jesper
 
