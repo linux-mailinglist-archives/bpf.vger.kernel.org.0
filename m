@@ -2,82 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF206711BB
-	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 04:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F47671226
+	for <lists+bpf@lfdr.de>; Wed, 18 Jan 2023 04:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjARDUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Jan 2023 22:20:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46464 "EHLO
+        id S229604AbjARDw5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Jan 2023 22:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjARDUT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Jan 2023 22:20:19 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8544FCC9;
-        Tue, 17 Jan 2023 19:20:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DBD09615F4;
-        Wed, 18 Jan 2023 03:20:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 42D60C433EF;
-        Wed, 18 Jan 2023 03:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674012017;
-        bh=xoYAxsyudEntmtzESge+LUA8LPl0IhQkHhyVlHB9jGI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iwNIY7psXqv6eOW0mvtB5uUmnaueTl2mx0sGdA16Gt63b4OiUtTkPF1lvypQoMs83
-         WaDvHfEIWoL7NA9StGNzHreotyyF4D2S8xscevcl3he/rDsCHhPmnFN3bamVX/E8RO
-         ypiVc7m8zB8rGVQSlutpSEg2FQDMQ1LnxgBVtmtobL/a08tbAA04ZeWexbFohD7SAp
-         fUBYM4eVT8Fnbt+dSAzody0aWFIPfM64OlUJPKGeGoNqfB5F3ZtB9sx4vXlZogek7i
-         7ScktC8B/lnX707nG4j1SxBlH+6ZgRqn987rSDmjoHXMtPqXQn3zbkf3JRCkPDxgIj
-         CbEpzGAEB24QA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2841AC43147;
-        Wed, 18 Jan 2023 03:20:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229483AbjARDw4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Jan 2023 22:52:56 -0500
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3655353B11;
+        Tue, 17 Jan 2023 19:52:54 -0800 (PST)
+From:   Thomas =?utf-8?q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1674013973;
+        bh=LeJ7gI3yR8MhBw3LdfOaYZv4aNx3sO+fd4js1DkSvTk=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=aumQF/TcOjSY7DpoHL3bnZxTpOw/p54FeLWG97HAHPjnEQg+txWdK/gPtO0W6i45g
+         ttGko7iGFV+IRqIv/PWxgpsZFqZQVDNc4k2SWr8vmNOvUmmXwOINTXMuRB6Uib9wS+
+         +vs31as6Dd2UkdP8QgBGnOGSI94HSa1ddvleySLE=
+Date:   Wed, 18 Jan 2023 03:52:18 +0000
+Subject: [PATCH 1/3] selftests/bpf: align kbuild messages to standard
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf 2023-01-16
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167401201716.10723.4793610924544630359.git-patchwork-notify@kernel.org>
-Date:   Wed, 18 Jan 2023 03:20:17 +0000
-References: <20230116230745.21742-1-daniel@iogearbox.net>
-In-Reply-To: <20230116230745.21742-1-daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <20230118-kbuild-alignment-v1-1-eb5e9fd55c92@weissschuh.net>
+References: <20230118-kbuild-alignment-v1-0-eb5e9fd55c92@weissschuh.net>
+In-Reply-To: <20230118-kbuild-alignment-v1-0-eb5e9fd55c92@weissschuh.net>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Thomas =?utf-8?q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.11.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1674013966; l=1017;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=LeJ7gI3yR8MhBw3LdfOaYZv4aNx3sO+fd4js1DkSvTk=;
+ b=tBkx8uRJ5OT383z4h0Cc9/q/mtXjwWDwrQNqqqE2xzO28njGH8YjaQGfK9uXkZWjeYduZGVCJKh+
+ gjzRUk+FDKlW2QIxzV1YJHjlJpynKpzqgtgWZbeHfRXVfDgDKrQT
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+The common layout for kbuild messages is as follows:
 
-This pull request was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+- 2 spaces
+- 7 or more characters for the action
+- 1 space
+- name of the file being built/generated
 
-On Tue, 17 Jan 2023 00:07:45 +0100 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
-> 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 6 non-merge commits during the last 8 day(s) which contain
-> a total of 6 files changed, 22 insertions(+), 24 deletions(-).
-> 
-> [...]
+The custom message formatting included an additional space in the action
+part, which leads to misalignments with the rest of kbuild.
 
-Here is the summary with links:
-  - pull-request: bpf 2023-01-16
-    https://git.kernel.org/netdev/net/c/423c1d363c46
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ tools/testing/selftests/bpf/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You are awesome, thank you!
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index c22c43bbee19..5190c19295d4 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -98,7 +98,7 @@ Q =
+ msg =
+ else
+ Q = @
+-msg = @printf '  %-8s%s %s%s\n' "$(1)" "$(if $(2), [$(2)])" "$(notdir $(3))" "$(if $(4), $(4))";
++msg = @printf '  %-7s%s %s%s\n' "$(1)" "$(if $(2), [$(2)])" "$(notdir $(3))" "$(if $(4), $(4))";
+ MAKEFLAGS += --no-print-directory
+ submake_extras := feature_display=0
+ endif
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+2.39.1
