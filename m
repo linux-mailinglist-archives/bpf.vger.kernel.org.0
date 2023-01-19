@@ -2,74 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB01674209
-	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 20:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 994AB6742B7
+	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 20:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbjASTFL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 14:05:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
+        id S231326AbjASTXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 14:23:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbjASTFE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 14:05:04 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160B34AA41
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 11:04:13 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id r9so2807374wrw.4
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 11:04:13 -0800 (PST)
+        with ESMTP id S231382AbjASTWk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 14:22:40 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF5E9F054
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 11:21:47 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id hw16so8274228ejc.10
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 11:21:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bagGf68ry1JpnwUnvUmcScyJ7gubFGzB5rLy+GIW+8o=;
-        b=Lng8WB8mNVBoxfvrWFqe/ikPrxiqLnUVY+IlWZrUeFSnrEwGf8PQ2OSEZTbUoOIxIE
-         yp5GE7dz1OlvzCPE9TS5VjLyoxAwaMZCEIoP0SZg1kMHCCa/10c+q6CwO5wq8UNYkUYh
-         wFyujVatb6VulfkDnKiTp//G4JCu3dunSo1DaeIA50eCsOqBLJ0jdNRSbG9BNVwNQOP/
-         AGq1pS6ktFJQQWoB7HYUQGvtjxkNQBrJO8aF97LWtZJsc076PW9jvie+lTQZ9fXGMjDS
-         zxMxRNcyvHCAJgg0eUyoKBl5LHOTZSOnU93hmqE9TrMPOyVUWv/CcfMTLhJoLNvHfVXW
-         2FbQ==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UrMNPGogqT8fLvJK/JqqSTy9TRYLyQS4tZeM/ePW8Uk=;
+        b=EgNL7jw0GFsl7FBzK0EAQXeKEJuygHebTVSyb8IdZqqjIBA4foT9dT6+zDswRX2zKb
+         moVTkCkRxUW6LyKg4wAvphzKN+SFMvpWFryPt491kT5KlcqV5oYOzGN1uqDHjDl1yQe8
+         N/1apGwyAuY8nKnXLTLz4xjzrMNOPPUkPZPivfESray0p4yvICiKAkzpLsZPbHD1SSv+
+         GHV6SHsSi26HoLaga814HXaGITyUQrsYw3KGCNrFApbSnBs32yOoh1fb1PJz4KmM9fUs
+         WExGA1Ku46N6IPJGGuElDRcguB//BMhBMsbtIqQuv3wmJh+I3r16Tosk+7KUBwhaFACS
+         Qdzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bagGf68ry1JpnwUnvUmcScyJ7gubFGzB5rLy+GIW+8o=;
-        b=6lVHHdmscKqBfgsuwz8VzRA0P6eya7Z6yERoky/EkopCqLZr+ZoLrbr3hwyTmjb9vj
-         T2MK4HtC9qRI4rx6cXkoWuRvUIKiVW9m7LKPuAic+qTxb5BjOZYZMWmVIJE+vhktRygm
-         MoZF0sPMd+1LpPOuhzReX0j3Zk6doeREqsiiZ62UGUXRm9bPsPAe+h5n4wDkV89TaEDY
-         byHRZMHIYNoVaJlDFqJ5OMhFyTflh2ddVxUiWNKiD47AR4nYNvy3ryhXrvtA0ynTcI1I
-         lKiorRPPXjogOU2KOgQ5P1fVCxvUAsYLONhVo5+IOoAv2aiBKK8zPKfpddfCi5wq9GAm
-         VTAg==
-X-Gm-Message-State: AFqh2kpaV4OAT4cDgHg/rOfFL+ogeaJvUqfItV/1Jdn10GcnS9UPRo28
-        5S16P2m8mfO3I1Q+2ba7W6HvR83HLXs2rtg8yCfDMQ==
-X-Google-Smtp-Source: AMrXdXvTbpMyodd9JEqQHJBir1fi+EoHAfCdibnzLye5PKbc80ZS7WAGOSZ37YLGZY+MXuaY36zb5aZsWcHktYC9Nn0=
-X-Received: by 2002:adf:e2cd:0:b0:2bd:f8da:9be0 with SMTP id
- d13-20020adfe2cd000000b002bdf8da9be0mr407328wrj.375.1674154963570; Thu, 19
- Jan 2023 11:02:43 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UrMNPGogqT8fLvJK/JqqSTy9TRYLyQS4tZeM/ePW8Uk=;
+        b=hvk1LbpeNJEhaYmGhBJqpH5WVu/xJDGur8u/9eANyJgQevLccsgX5WNvBkdBSzOU5f
+         NFTKFXNNjkjqdAprozjDtZyhX53AOF5iTLzEZrnbyFSuYILZnf6vIVnwUqSamu3LdOXo
+         dD0Zicx3dfYpPMVwE52cfrmxOlAgA03TBwmgaYqyUpy3cTSd/XPI8eNa3Z6H8IUbC3og
+         EFDr+H9THhhd7iLw355HvXzQqEHV3sC980z3mqheg73s/14uUDT7CeTf38NUBjF67Lgz
+         OxmM2rb5tXgrnpCdUu7r0AOz7lR/xRT4EhperOwtLvf4ecr+uo3tRMphyOxOfmHxqybL
+         nRhw==
+X-Gm-Message-State: AFqh2ko01q5vxvMCyc++YIxkUb++lCTjQxNzhBM68a5yGzdC0qC2WIFd
+        g1Inz4jGUtMRyiJmGRriAIy8ANX4VS+loWgqTo0=
+X-Google-Smtp-Source: AMrXdXvNzLRV3qEYhRbS0N8XFUzSv11b/fgI8KtULkRKtgo5Dg/rKcEwstPdk2S2N4/GRYGIFkytdZSpbv0UrX/8NoE=
+X-Received: by 2002:a17:906:12cd:b0:871:2c9f:f480 with SMTP id
+ l13-20020a17090612cd00b008712c9ff480mr1572068ejb.502.1674156104314; Thu, 19
+ Jan 2023 11:21:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20230119183118.126387-1-irogers@google.com>
-In-Reply-To: <20230119183118.126387-1-irogers@google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 19 Jan 2023 11:02:31 -0800
-Message-ID: <CAP-5=fXsG06+j9bOyWTUK_wXJTZP0cvy=9hD6DFFuc3HQefyOg@mail.gmail.com>
-Subject: Re: [PATCH v3] perf script flamegraph: Avoid d3-flame-graph package dependency
-To:     Alexei Starovoitov <ast@kernel.org>,
+References: <20230118051443.78988-1-alexei.starovoitov@gmail.com> <202301190848.D0543F7CE@keescook>
+In-Reply-To: <202301190848.D0543F7CE@keescook>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 19 Jan 2023 11:21:33 -0800
+Message-ID: <CAADnVQK44J7AOy7vBm-uQ11phehYxieJBNM9X1N_q8ZABLqLjw@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] mm: Fix copy_from_user_nofault().
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
+        X86 ML <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Connor OBrien <connoro@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Hsin-Wei Hung <hsinweih@uci.edu>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Maguire <alan.maguire@oracle.com>, dylany@meta.com,
+        Rik van Riel <riel@surriel.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,178 +78,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 19, 2023 at 10:31 AM Ian Rogers <irogers@google.com> wrote:
+On Thu, Jan 19, 2023 at 8:52 AM Kees Cook <keescook@chromium.org> wrote:
 >
-> Currently flame graph generation requires a d3-flame-graph template to
-> be installed. Unfortunately this is hard to come by for things like
-> Debian [1]. If the template isn't installed then ask if it should be
-> downloaded from jsdelivr CDN. The downloaded HTML file is validated
-> against an md5sum. If the download fails, generate a minimal flame
-> graph with the javascript coming from links to jsdelivr CDN.
+> On Tue, Jan 17, 2023 at 09:14:42PM -0800, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > There are several issues with copy_from_user_nofault():
+> >
+> > - access_ok() is designed for user context only and for that reason
+> > it has WARN_ON_IN_IRQ() which triggers when bpf, kprobe, eprobe
+> > and perf on ppc are calling it from irq.
+> >
+> > - it's missing nmi_uaccess_okay() which is a nop on all architectures
+> > except x86 where it's required.
+> > The comment in arch/x86/mm/tlb.c explains the details why it's necessary.
+> > Calling copy_from_user_nofault() from bpf, [ke]probe without this check is not safe.
+> >
+> > - __copy_from_user_inatomic() under CONFIG_HARDENED_USERCOPY is calling
+> > check_object_size()->__check_object_size()->check_heap_object()->find_vmap_area()->spin_lock()
+> > which is not safe to do from bpf, [ke]probe and perf due to potential deadlock.
 >
-> v3. Adds a warning message and quits before download in live mode.
-> v2. Change the warning to a prompt about downloading and add the
->     --allow-download command line flag. Add an md5sum check for the
->     downloaded HTML.
->
-> [1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=996839
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> Er, this drops check_object_size() -- that needs to stay. The vmap area
+> test in check_object_size is likely what needs fixing. It was discussed
+> before:
+> https://lore.kernel.org/lkml/YySML2HfqaE%2FwXBU@casper.infradead.org/
 
+Thanks for the link.
+Unfortunately all options discussed in that link won't work,
+since all of them rely on in_interrupt() which will not catch the condition.
+[ke]probe, bpf, perf can run after spin_lock is taken.
+Like via trace_lock_release tracepoint.
+It's only with lockdep=on, but still.
+Or via trace_contention_begin tracepoint with lockdep=off.
+check_object_size() will not execute in_interrupt().
 
-Apologies, please ignore this patch. I accidentally picked this merged
-change up with a wild card.
+> The only reason it was ultimately tolerable to remove the check from
+> the x86-only _nmi function was because it was being used on compile-time
+> sized copies.
 
-Thanks,
-Ian
+It doesn't look to be the case.
+copy_from_user_nmi() is called via __output_copy_user by perf
+with run-time 'size'.
 
-> ---
->  tools/perf/scripts/python/flamegraph.py | 107 +++++++++++++++++++-----
->  1 file changed, 85 insertions(+), 22 deletions(-)
->
-> diff --git a/tools/perf/scripts/python/flamegraph.py b/tools/perf/scripts/python/flamegraph.py
-> index b6af1dd5f816..cf7ce8229a6c 100755
-> --- a/tools/perf/scripts/python/flamegraph.py
-> +++ b/tools/perf/scripts/python/flamegraph.py
-> @@ -19,12 +19,34 @@
->  # pylint: disable=missing-function-docstring
->
->  from __future__ import print_function
-> -import sys
-> -import os
-> -import io
->  import argparse
-> +import hashlib
-> +import io
->  import json
-> +import os
->  import subprocess
-> +import sys
-> +import urllib.request
-> +
-> +minimal_html = """<head>
-> +  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/d3-flame-graph@4.1.3/dist/d3-flamegraph.css">
-> +</head>
-> +<body>
-> +  <div id="chart"></div>
-> +  <script type="text/javascript" src="https://d3js.org/d3.v7.js"></script>
-> +  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/d3-flame-graph@4.1.3/dist/d3-flamegraph.min.js"></script>
-> +  <script type="text/javascript">
-> +  const stacks = [/** @flamegraph_json **/];
-> +  // Note, options is unused.
-> +  const options = [/** @options_json **/];
-> +
-> +  var chart = flamegraph();
-> +  d3.select("#chart")
-> +        .datum(stacks[0])
-> +        .call(chart);
-> +  </script>
-> +</body>
-> +"""
->
->  # pylint: disable=too-few-public-methods
->  class Node:
-> @@ -50,16 +72,6 @@ class FlameGraphCLI:
->          self.args = args
->          self.stack = Node("all", "root")
->
-> -        if self.args.format == "html" and \
-> -                not os.path.isfile(self.args.template):
-> -            print("Flame Graph template {} does not exist. Please install "
-> -                  "the js-d3-flame-graph (RPM) or libjs-d3-flame-graph (deb) "
-> -                  "package, specify an existing flame graph template "
-> -                  "(--template PATH) or another output format "
-> -                  "(--format FORMAT).".format(self.args.template),
-> -                  file=sys.stderr)
-> -            sys.exit(1)
-> -
->      @staticmethod
->      def get_libtype_from_dso(dso):
->          """
-> @@ -128,16 +140,63 @@ class FlameGraphCLI:
->              }
->              options_json = json.dumps(options)
->
-> +            template_md5sum = None
-> +            if self.args.format == "html":
-> +                if os.path.isfile(self.args.template):
-> +                    template = f"file://{self.args.template}"
-> +                else:
-> +                    if not self.args.allow_download:
-> +                        print(f"""Warning: Flame Graph template '{self.args.template}'
-> +does not exist. To avoid this please install a package such as the
-> +js-d3-flame-graph or libjs-d3-flame-graph, specify an existing flame
-> +graph template (--template PATH) or use another output format (--format
-> +FORMAT).""",
-> +                              file=sys.stderr)
-> +                        if self.args.input == "-":
-> +                            print("""Not attempting to download Flame Graph template as script command line
-> +input is disabled due to using live mode. If you want to download the
-> +template retry without live mode. For example, use 'perf record -a -g
-> +-F 99 sleep 60' and 'perf script report flamegraph'. Alternatively,
-> +download the template from:
-> +https://cdn.jsdelivr.net/npm/d3-flame-graph@4.1.3/dist/templates/d3-flamegraph-base.html
-> +and place it at:
-> +/usr/share/d3-flame-graph/d3-flamegraph-base.html""",
-> +                                  file=sys.stderr)
-> +                            quit()
-> +                        s = None
-> +                        while s != "y" and s != "n":
-> +                            s = input("Do you wish to download a template from cdn.jsdelivr.net? (this warning can be suppressed with --allow-download) [yn] ").lower()
-> +                        if s == "n":
-> +                            quit()
-> +                    template = "https://cdn.jsdelivr.net/npm/d3-flame-graph@4.1.3/dist/templates/d3-flamegraph-base.html"
-> +                    template_md5sum = "143e0d06ba69b8370b9848dcd6ae3f36"
-> +
->              try:
-> -                with io.open(self.args.template, encoding="utf-8") as template:
-> -                    output_str = (
-> -                        template.read()
-> -                        .replace("/** @options_json **/", options_json)
-> -                        .replace("/** @flamegraph_json **/", stacks_json)
-> -                    )
-> -            except IOError as err:
-> -                print("Error reading template file: {}".format(err), file=sys.stderr)
-> -                sys.exit(1)
-> +                with urllib.request.urlopen(template) as template:
-> +                    output_str = "".join([
-> +                        l.decode("utf-8") for l in template.readlines()
-> +                    ])
-> +            except Exception as err:
-> +                print(f"Error reading template {template}: {err}\n"
-> +                      "a minimal flame graph will be generated", file=sys.stderr)
-> +                output_str = minimal_html
-> +                template_md5sum = None
-> +
-> +            if template_md5sum:
-> +                download_md5sum = hashlib.md5(output_str.encode("utf-8")).hexdigest()
-> +                if download_md5sum != template_md5sum:
-> +                    s = None
-> +                    while s != "y" and s != "n":
-> +                        s = input(f"""Unexpected template md5sum.
-> +{download_md5sum} != {template_md5sum}, for:
-> +{output_str}
-> +continue?[yn] """).lower()
-> +                    if s == "n":
-> +                        quit()
-> +
-> +            output_str = output_str.replace("/** @options_json **/", options_json)
-> +            output_str = output_str.replace("/** @flamegraph_json **/", stacks_json)
-> +
->              output_fn = self.args.output or "flamegraph.html"
->          else:
->              output_str = stacks_json
-> @@ -172,6 +231,10 @@ if __name__ == "__main__":
->                          choices=["blue-green", "orange"])
->      parser.add_argument("-i", "--input",
->                          help=argparse.SUPPRESS)
-> +    parser.add_argument("--allow-download",
-> +                        default=False,
-> +                        action="store_true",
-> +                        help="allow unprompted downloading of HTML template")
->
->      cli_args = parser.parse_args()
->      cli = FlameGraphCLI(cli_args)
-> --
-> 2.39.0.314.g84b9a713c41-goog
->
+> We need to fix the vmap lookup so the checking doesn't regress --
+> especially for trace, bpf, etc, where we could have much more interested
+> dest/source/size combinations. :)
+
+Well, for bpf the 'dst' is never a vmalloc area, so
+is_vmalloc_addr() and later spin_lock() in check_heap_object()
+won't trigger.
+Also for bpf the 'dst' area is statically checked by the verifier
+at program load time, so at run-time the dst pointer is
+guaranteed to be valid and of correct dimensions.
+So doing check_object_size() is pointless unless there is a bug
+in the verifier, but if there is a bug kasan and friends
+will find it sooner. The 'dst' checks are generic and
+not copy_from_user_nofault() specific.
+
+For trace, kprobe and perf would be nice to keep check_object_size()
+working, of course.
+
+What do you suggest?
+I frankly don't see other options other than done in this patch,
+though it's not great.
+Happy to be proven otherwise.
