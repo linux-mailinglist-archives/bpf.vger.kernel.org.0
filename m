@@ -2,68 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD9D67460F
-	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 23:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE85674611
+	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 23:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbjASWcd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 17:32:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
+        id S230405AbjASWcm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 17:32:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbjASWb7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 17:31:59 -0500
-Received: from mail-oa1-x41.google.com (mail-oa1-x41.google.com [IPv6:2001:4860:4864:20::41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B445AA839C
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 14:14:48 -0800 (PST)
-Received: by mail-oa1-x41.google.com with SMTP id 586e51a60fabf-15f97c478a8so4174493fac.13
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 14:14:48 -0800 (PST)
+        with ESMTP id S230002AbjASWcH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 17:32:07 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4201DA83B7
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 14:15:38 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id m7-20020a170902db0700b00194bd3c810aso2062795plx.23
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 14:15:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sO18qtVu9ykXOQ6JXw+8FBPjUGZuTFUREnOoWTwoEv4=;
-        b=aNQhk/Lwfn7O64bvuNjClEGMP/sK1r/hesFl8Ojum+LvzrpE0zJeIZTcv9EU6OTMGT
-         7HS9Eg1dyyshjUbGkZq4uZNAHgMpYmeXXAy0vLlA5GUSbCM/u2st697SBL7PwO6Vck4E
-         5nArg5RhGB1Ymi38ECU/b8EItGnsxLiz3Rhs87iBj0cBwYZx+3XGS81gygK50knQI8kA
-         Zpdo5QPmjHG9IjOESmXNGUH2N5JIdSmYKPx5dd7tZ8dwaicil8KB2EuIaD+nsciQYZtm
-         uUgwqnRrqy2AcHvCuyu0DDgg6pObzp3jD1+SK52OPsm04kxHi+++eWlQlxJq6gzMx4Ip
-         mGxA==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s6wcP6RWB5SYtmKPUHmIscUbqw75lHL7Mr8Z5DyfUQs=;
+        b=Vos6f3EulFO6uFSnNRE8joDrp2WDDUxxxP3pEBifFl4gUqMQOcScQs4x0mTspgKiPD
+         fljHSEm27Fetsj0x5T8tEZ6dVtUXzlKBvrKQ8L7O6anWX5i3Z3NWOQyB8BzbyUcErY21
+         Pscr5P3cgalkv9Jc7v/gVbCTbqHBAe0wWqmP+lchGkIultxRZci416cTJFsV565U8eCQ
+         00jWH7Z5ORoX3yBNZZK1jQCWVaDOjw8EQab9/kesvzhhy2gU6MZeaxN7CB45ejgHRzVl
+         aK/1QqDD4AyelknPIAg8eOsezr6wH6xnSFBBK/mbfekdMwmCC0frQ202VfjsJ9TlLy4k
+         j6Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sO18qtVu9ykXOQ6JXw+8FBPjUGZuTFUREnOoWTwoEv4=;
-        b=KerQ4j0MSqhrMrH8ZH2pgvW+v6VJi8TWHVSLOIioJBDrJQgJWtfmcMAETencH6LHEF
-         oZ++g0B9PiI3dzc9DLpsFOJIa1+CGaAEyPNNaUBsmFj0lXBP98IG82zVysCTptlwTY6y
-         zKDy8ncAEal0Tmm8FIGiZdQUiKJj4wPrNOjhZfJZCeYB7a3cyvCF9DJKNMFTs/xJ6yzM
-         C9tOy45smK4wlo5kPnQeqK0MZQproYrm8Cz/c8RiFP2ZcoV3zmSJVgjfGuXjuvGk6yAZ
-         qKO+oH5WGmsj+p4H1kx+4hAyCbcTmynBmLmlNhv9ulUTQJdikcAHvgDBM+123q2KpgD/
-         SNAQ==
-X-Gm-Message-State: AFqh2kocrfn+mQE9UTlwz5rkiet+WYQBtFVvwXdVIxWf0cgQNp8aLDRi
-        AD28xiOTCt5ES7akT9kwLI37eWjN0RxHRhtj1upNVG2R
-X-Google-Smtp-Source: AMrXdXtZsGQqfXBUw1BfEzGvZ1EMWNZz8kaxBggh/twDj/jwFY5lrxCyNGS9usl53YozZ0LY/kUoWJDYUe5OOeC8U4k=
-X-Received: by 2002:a05:6870:6c14:b0:15f:4:7aa0 with SMTP id
- na20-20020a0568706c1400b0015f00047aa0mr958412oab.58.1674166487617; Thu, 19
- Jan 2023 14:14:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20230119021442.1465269-1-memxor@gmail.com> <20230119021442.1465269-3-memxor@gmail.com>
- <CAJnrk1a4j1zeztQ0nRdC7T85rxZhuf+hdpeh_7FWMioCHOjLNw@mail.gmail.com>
-In-Reply-To: <CAJnrk1a4j1zeztQ0nRdC7T85rxZhuf+hdpeh_7FWMioCHOjLNw@mail.gmail.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Fri, 20 Jan 2023 03:44:11 +0530
-Message-ID: <CAP01T75P2Vebc5r0+ymF23tQVDWUdtOQNVh9ksp9fVJwQ8hnKw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 02/11] bpf: Fix missing var_off check for ARG_PTR_TO_DYNPTR
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        David Vernet <void@manifault.com>,
-        Eduard Zingerman <eddyz87@gmail.com>
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s6wcP6RWB5SYtmKPUHmIscUbqw75lHL7Mr8Z5DyfUQs=;
+        b=f+B8MrN4bc0nXVnoUBf1xJuaOf07TYitJ8pHDjA8Qj024n8lGHQx+E513juGlGDhrY
+         k9osZwmTXn6+IpdRnRNqMHBl8/3CnMIw1MGxrvPf99yYa0KUEMRGqt6XOzwmVdJwNckV
+         wYaSiJuiVzOQY9Bdc/7eNCLgId39YHHxHv+yqSkbJV6KVA0YRLx4mqrEfLmMN9D2/FYG
+         z529esdb2+VnwVwtLv5GzaTXt2Y+LhDj0VmMNdAaW6H2mAiFzDEDXIjiFu6/z7cGQtIi
+         mrb0JwGzZ8McPw0iVGxLkuVyKigy2yl5zg7wW7Vm5x6zurF92JXaTXHm6rF7YschCXOv
+         ZF7Q==
+X-Gm-Message-State: AFqh2krf6VfvsVxZKZ68cJ8CDXQuW9FoyktocllQ/HAqu36W6NWhaV6U
+        y8YCqXL6ag0Y+mQ0N5UopUwMcImgP3q5BJ7b05bgS3xEqG7L/mXpXlNSeDDdSaIRti95dzWCNW9
+        gh9k7mJnDofjqlFUukLt8oefLq/702YPOu61YnsWL8ufhr3alzA==
+X-Google-Smtp-Source: AMrXdXvYvQ0murMOUx2J8H9DFUYWYb0VKQya/NfS9NsH1IIoz80c+rQuKkoe0Aohj4hDVe0U9BjkV2w=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:903:3252:b0:194:ca6a:529d with SMTP id
+ ji18-20020a170903325200b00194ca6a529dmr431836plb.33.1674166537546; Thu, 19
+ Jan 2023 14:15:37 -0800 (PST)
+Date:   Thu, 19 Jan 2023 14:15:19 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.0.246.g2a6d74b583-goog
+Message-ID: <20230119221536.3349901-1-sdf@google.com>
+Subject: [PATCH bpf-next v8 00/17] xdp: hints via kfuncs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,95 +79,134 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 20 Jan 2023 at 03:30, Joanne Koong <joannelkoong@gmail.com> wrote:
->
-> On Wed, Jan 18, 2023 at 6:14 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > Currently, the dynptr function is not checking the variable offset part
-> > of PTR_TO_STACK that it needs to check. The fixed offset is considered
-> > when computing the stack pointer index, but if the variable offset was
-> > not a constant (such that it could not be accumulated in reg->off), we
-> > will end up a discrepency where runtime pointer does not point to the
-> > actual stack slot we mark as STACK_DYNPTR.
-> >
-> > It is impossible to precisely track dynptr state when variable offset is
-> > not constant, hence, just like bpf_timer, kptr, bpf_spin_lock, etc.
-> > simply reject the case where reg->var_off is not constant. Then,
-> > consider both reg->off and reg->var_off.value when computing the stack
-> > pointer index.
-> >
-> > A new helper dynptr_get_spi is introduced to hide over these details
-> > since the dynptr needs to be located in multiple places outside the
-> > process_dynptr_func checks, hence once we know it's a PTR_TO_STACK, we
-> > need to enforce these checks in all places.
-> >
-> > Note that it is disallowed for unprivileged users to have a non-constant
-> > var_off, so this problem should only be possible to trigger from
-> > programs having CAP_PERFMON. However, its effects can vary.
-> >
-> > Without the fix, it is possible to replace the contents of the dynptr
-> > arbitrarily by making verifier mark different stack slots than actual
-> > location and then doing writes to the actual stack address of dynptr at
-> > runtime.
-> >
-> > Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c                         | 83 +++++++++++++++----
-> >  .../bpf/prog_tests/kfunc_dynptr_param.c       |  2 +-
-> >  .../testing/selftests/bpf/progs/dynptr_fail.c |  4 +-
-> >  3 files changed, 68 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 89de5bc46f27..eeb6f1b2bd60 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -638,11 +638,34 @@ static void print_liveness(struct bpf_verifier_env *env,
-> >                 verbose(env, "D");
-> >  }
-> >
-> > -static int get_spi(s32 off)
-> > +static int __get_spi(s32 off)
-> >  {
-> >         return (-off - 1) / BPF_REG_SIZE;
-> >  }
-> >
-> > +static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> > +{
-> > +       int off, spi;
-> > +
-> > +       if (!tnum_is_const(reg->var_off)) {
-> > +               verbose(env, "dynptr has to be at the constant offset\n");
->
-> nit: "at a constant offset" instead of "at the constant offset"?
->
+Please see the first patch in the series for the overall
+design and use-cases.
 
-Will fix.
+See the following email from Toke for the per-packet metadata overhead:
+https://lore.kernel.org/bpf/20221206024554.3826186-1-sdf@google.com/T/#m49d=
+48ea08d525ec88360c7d14c4d34fb0e45e798
 
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       off = reg->off + reg->var_off.value;
-> > +       if (off % BPF_REG_SIZE) {
-> > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", off);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       spi = __get_spi(off);
-> > +       if (spi < 1) {
-> > +               verbose(env, "cannot pass in dynptr at an offset=%d\n", off);
-> > +               return -EINVAL;
-> > +       }
->
-> I still think this if (spi < 1) check should have the same logic
-> is_spi_bounds_valid() does (eg checking against total allocated slots
-> as well). I think we can combine is_spi_bounds_valid() with this
-> function and then remove every place we call is_spi_bounds_valid().
-> WDYT?
->
+Recent changes:
+- Keep new functions in en/xdp.c, do 'extern mlx5_xdp_metadata_ops' (Tariq)
 
-I believe I addressed this in patch 5, but kept the name of the
-combined check as dynptr_get_spi instead (it looks better to me in the
-context of the code compared to is_spi_bounds_valid). Please take a
-look.
+- Remove mxbuf pointer and use xsk_buff_to_mxbuf (Tariq)
+
+- Clarify xdp_buff vs 'XDP frame' (Jesper)
+
+- Explicitly mention that AF_XDP RX descriptor lacks metadata size (Jesper)
+
+- Drop libbpf_flags/xdp_flags from selftests and use ifindex instead
+  of ifname (due to recent xsk.h refactoring)
+
+Prior art (to record pros/cons for different approaches):
+
+- Stable UAPI approach:
+  https://lore.kernel.org/bpf/20220628194812.1453059-1-alexandr.lobakin@int=
+el.com/
+- Metadata+BTF_ID appoach:
+  https://lore.kernel.org/bpf/166256538687.1434226.15760041133601409770.stg=
+it@firesoul/
+- v7:
+  https://lore.kernel.org/bpf/20230112003230.3779451-1-sdf@google.com/
+- v6:
+  https://lore.kernel.org/bpf/20230104215949.529093-1-sdf@google.com/
+- v5:
+  https://lore.kernel.org/bpf/20221220222043.3348718-1-sdf@google.com/
+- v4:
+  https://lore.kernel.org/bpf/20221213023605.737383-1-sdf@google.com/
+- v3:
+  https://lore.kernel.org/bpf/20221206024554.3826186-1-sdf@google.com/
+- v2:
+  https://lore.kernel.org/bpf/20221121182552.2152891-1-sdf@google.com/
+- v1:
+  https://lore.kernel.org/bpf/20221115030210.3159213-1-sdf@google.com/
+- kfuncs v2 RFC:
+  https://lore.kernel.org/bpf/20221027200019.4106375-1-sdf@google.com/
+- kfuncs v1 RFC:
+  https://lore.kernel.org/bpf/20221104032532.1615099-1-sdf@google.com/
+
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: David Ahern <dsahern@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Anatoly Burakov <anatoly.burakov@intel.com>
+Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: Maryam Tahhan <mtahhan@redhat.com>
+Cc: xdp-hints@xdp-project.net
+Cc: netdev@vger.kernel.org
+
+Stanislav Fomichev (13):
+  bpf: Document XDP RX metadata
+  bpf: Rename bpf_{prog,map}_is_dev_bound to is_offloaded
+  bpf: Move offload initialization into late_initcall
+  bpf: Reshuffle some parts of bpf/offload.c
+  bpf: Introduce device-bound XDP programs
+  selftests/bpf: Update expected test_offload.py messages
+  bpf: XDP metadata RX kfuncs
+  veth: Introduce veth_xdp_buff wrapper for xdp_buff
+  veth: Support RX XDP metadata
+  selftests/bpf: Verify xdp_metadata xdp->af_xdp path
+  net/mlx4_en: Introduce wrapper for xdp_buff
+  net/mlx4_en: Support RX XDP metadata
+  selftests/bpf: Simple program to dump XDP RX metadata
+
+Toke H=C3=B8iland-J=C3=B8rgensen (4):
+  bpf: Support consuming XDP HW metadata from fext programs
+  xsk: Add cb area to struct xdp_buff_xsk
+  net/mlx5e: Introduce wrapper for xdp_buff
+  net/mlx5e: Support RX XDP metadata
+
+ Documentation/networking/index.rst            |   1 +
+ Documentation/networking/xdp-rx-metadata.rst  | 110 +++++
+ drivers/net/ethernet/mellanox/mlx4/en_clock.c |  13 +-
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |   6 +
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  63 ++-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |   5 +
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |   5 +-
+ .../net/ethernet/mellanox/mlx5/core/en/txrx.h |   5 +
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  31 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  10 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |  47 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.h   |   2 +
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   1 +
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  99 ++--
+ drivers/net/netdevsim/bpf.c                   |   4 -
+ drivers/net/veth.c                            |  87 ++--
+ include/linux/bpf.h                           |  61 ++-
+ include/linux/netdevice.h                     |   8 +
+ include/net/xdp.h                             |  21 +
+ include/net/xsk_buff_pool.h                   |   5 +
+ include/uapi/linux/bpf.h                      |   5 +
+ kernel/bpf/core.c                             |  12 +-
+ kernel/bpf/offload.c                          | 425 ++++++++++++------
+ kernel/bpf/syscall.c                          |  34 +-
+ kernel/bpf/verifier.c                         |  44 +-
+ net/bpf/test_run.c                            |   3 +
+ net/core/dev.c                                |   9 +-
+ net/core/filter.c                             |   2 +-
+ net/core/xdp.c                                |  64 +++
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   9 +-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   | 410 +++++++++++++++++
+ .../selftests/bpf/progs/xdp_hw_metadata.c     |  81 ++++
+ .../selftests/bpf/progs/xdp_metadata.c        |  64 +++
+ .../selftests/bpf/progs/xdp_metadata2.c       |  23 +
+ tools/testing/selftests/bpf/test_offload.py   |  10 +-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 403 +++++++++++++++++
+ tools/testing/selftests/bpf/xdp_metadata.h    |  15 +
+ 39 files changed, 1910 insertions(+), 293 deletions(-)
+ create mode 100644 Documentation/networking/xdp-rx-metadata.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_metadata2.c
+ create mode 100644 tools/testing/selftests/bpf/xdp_hw_metadata.c
+ create mode 100644 tools/testing/selftests/bpf/xdp_metadata.h
+
+--=20
+2.39.0.246.g2a6d74b583-goog
+
