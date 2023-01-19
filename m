@@ -2,106 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B328673F5C
-	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 17:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0866E673F70
+	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 18:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjASQxJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 11:53:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
+        id S229653AbjASRCP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 12:02:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbjASQwj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 11:52:39 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C9D7F9BB
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 08:52:30 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id m3-20020a17090a414300b00229ef93c5b0so1652108pjg.2
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 08:52:30 -0800 (PST)
+        with ESMTP id S229659AbjASRCO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 12:02:14 -0500
+Received: from mail-oa1-x44.google.com (mail-oa1-x44.google.com [IPv6:2001:4860:4864:20::44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93267693
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 09:02:13 -0800 (PST)
+Received: by mail-oa1-x44.google.com with SMTP id 586e51a60fabf-15f97c478a8so3175170fac.13
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 09:02:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6QGfk59rwIeg+XhQWLICj9/beKrpjZV39AZ2vUX9R1E=;
-        b=D+nAM7QEAhiiTdVWh+ODvf/iWQXevJkY+WGH9jXCc2IVx2XiYo+sXpbPe0oBznnqt3
-         b1TP5yfGaAHhjdAJ8W34yugcBt2OroUIdaWmdbS+fDZzawT1p67v+hqiJhkVVmRiRaTb
-         81B/0agS/zvZ7YVMPjbXx4jn4V/MQ3BPeTLDs=
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xqJcG+rk0/yFhH7cO2OX+QADWK3GAOIC0vU6tY9etyA=;
+        b=EWfsM9DnR0EV/BmEyiLsTBlTKna/8y2/mFDKh9gB63admXNGLDu9oWuSwFTBobSM4t
+         oB3ZI6/+fzCf6oKuYD+Nk3xm2zF2ihej1znEHhCVsDRrn4X4sfwErx+VJu3OVniAKRAu
+         LMgyu4PazSpZ9tmStXyz1S8EZHWwzO7QMXxkR1BPrms3z6nEJDg0EtyT8DbCTYWQz2FR
+         3BewwqeblnS4c8slyiHICoIKcUoCtwHkNt7RYMNtXB58rAaciJK5puAfybTciAeAQAj7
+         y/Af9oKF1BzQfDcsju9viCym+r/zK09pyfKyxJ3AkQPd7mgm/BnhKwsjPWxgbXr1tF13
+         a2bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6QGfk59rwIeg+XhQWLICj9/beKrpjZV39AZ2vUX9R1E=;
-        b=mrBoVUuSQ6kazOB6SQoP9RAmLO2CIRXyh8H7IlMGsCxk6cjy7g+KsN4EJ/uka/5v6e
-         etEnYOX8NoT1czPdA3st8u35EKti+6LaiTomcC+tjOmBXPM4WvDyNwgZYlaxo25Xnm2z
-         snZ6J3abFyaZwChHnIZR5MhzVt1SxKbPky1q7RyVJ12Hjs5CIhf8DV7Jr0HD4HIj1JPY
-         3Txji6X2CoOcjK6gxo/8PdXqfo7MDmAuIprmuwofYxpYZR24JY5M0aUQLIQv1sN76JHV
-         C1b+DD0QcIXqmZs2NQc0vhh1RC+x0pRk0/YaW2c5Z4VTvbgie8VKMj4z+z7/HDJDmqfV
-         i9pQ==
-X-Gm-Message-State: AFqh2krm4WTpimAmkD6lAyMQ4oMD1ePdXf5aRH08ADFFZxXEw8K9GvGa
-        lQ0HKm9CG+fYIrmHNqGFhltGiA==
-X-Google-Smtp-Source: AMrXdXutvFC5QsUYb8WAHmLiIFAXP4i7mqFr154oyvWWagLODkSnT/yUiaYpajKBu5gjTteANLgDJg==
-X-Received: by 2002:a17:902:e84e:b0:189:aedf:677d with SMTP id t14-20020a170902e84e00b00189aedf677dmr40590087plg.69.1674147149945;
-        Thu, 19 Jan 2023 08:52:29 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i16-20020a170902cf1000b00192c5327021sm25420530plg.200.2023.01.19.08.52.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 08:52:29 -0800 (PST)
-Date:   Thu, 19 Jan 2023 08:52:27 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     torvalds@linuxfoundation.org, x86@kernel.org, davem@davemloft.net,
-        daniel@iogearbox.net, andrii@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, hsinweih@uci.edu, rostedt@goodmis.org,
-        vegard.nossum@oracle.com, gregkh@linuxfoundation.org,
-        alan.maguire@oracle.com, dylany@meta.com, riel@surriel.com,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf 1/2] mm: Fix copy_from_user_nofault().
-Message-ID: <202301190848.D0543F7CE@keescook>
-References: <20230118051443.78988-1-alexei.starovoitov@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xqJcG+rk0/yFhH7cO2OX+QADWK3GAOIC0vU6tY9etyA=;
+        b=Wf6RYl3Tq7K/5lLc7hasGNHQ4jpeaYQ/mwVMgl3G31o/2rNnnEiAJen6jZPPJZHmeY
+         2BQT+3L8svrxjGRMmQMescNKntxhUOwimddTkOldFdHuTlF0dXarPYMdX2GxykRAdbfX
+         YlFjFxWF8haJA/NdvrlZhFv6t9qqPICFoY+kspGcKnIfqg0BRJOaiiTRMm938KPTw+ac
+         Ybr3dbn9OIxdHnaNOnlvvpCHsHbzRDfsjXy1MgWUSSG55aJBKzGjpOs5Mw/949UUKcPY
+         8RO0QaUI42xw6mpnULBofqM2DyesjWtpn4KaUY/XD3U+P2KhqKvXZDQwZ7l+Q1wO0OYN
+         iMbA==
+X-Gm-Message-State: AFqh2koVo2iSywqwYL8fOw27rRfZrI1Lni0SN4qjUIo2ZmuaRcDNk/7P
+        mc3eQXj206lC9qxVgfa4SSUsxqCvtDR0kNIKw54=
+X-Google-Smtp-Source: AMrXdXsYF9+KMMxr98LTHOEoeoe0x7uOpT83jonGHAUqLh7OESWmBUzQ5nLtBiUFoe2XRGpSy/DN28j8SGFWShNl1pw=
+X-Received: by 2002:a05:6870:2a41:b0:15e:f69d:a25e with SMTP id
+ jd1-20020a0568702a4100b0015ef69da25emr718437oab.293.1674147732965; Thu, 19
+ Jan 2023 09:02:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230118051443.78988-1-alexei.starovoitov@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230119141331.962281-1-jolsa@kernel.org>
+In-Reply-To: <20230119141331.962281-1-jolsa@kernel.org>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Thu, 19 Jan 2023 22:31:36 +0530
+Message-ID: <CAP01T74jnDPaam-wDrk3+PiiV8fbqA0MzFuTom=yaRgR+Aq-Fw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Add missing btf_put to register_btf_id_dtor_kfuncs
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 09:14:42PM -0800, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> There are several issues with copy_from_user_nofault():
-> 
-> - access_ok() is designed for user context only and for that reason
-> it has WARN_ON_IN_IRQ() which triggers when bpf, kprobe, eprobe
-> and perf on ppc are calling it from irq.
-> 
-> - it's missing nmi_uaccess_okay() which is a nop on all architectures
-> except x86 where it's required.
-> The comment in arch/x86/mm/tlb.c explains the details why it's necessary.
-> Calling copy_from_user_nofault() from bpf, [ke]probe without this check is not safe.
-> 
-> - __copy_from_user_inatomic() under CONFIG_HARDENED_USERCOPY is calling
-> check_object_size()->__check_object_size()->check_heap_object()->find_vmap_area()->spin_lock()
-> which is not safe to do from bpf, [ke]probe and perf due to potential deadlock.
+On Thu, 19 Jan 2023 at 19:43, Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> We take the BTF reference before we register dtors and we need
+> to put it back when it's done.
+>
+> We probably won't se a problem with kernel BTF, but module BTF
+> would stay loaded (because of the extra ref) even when its module
+> is removed.
+>
+> Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Fixes: 5ce937d613a4 ("bpf: Populate pairs of btf_id and destructor kfunc in btf")
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
 
-Er, this drops check_object_size() -- that needs to stay. The vmap area
-test in check_object_size is likely what needs fixing. It was discussed
-before:
-https://lore.kernel.org/lkml/YySML2HfqaE%2FwXBU@casper.infradead.org/
+Thanks for the fix.
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-The only reason it was ultimately tolerable to remove the check from
-the x86-only _nmi function was because it was being used on compile-time
-sized copies.
-
-We need to fix the vmap lookup so the checking doesn't regress --
-especially for trace, bpf, etc, where we could have much more interested
-dest/source/size combinations. :)
-
--Kees
-
--- 
-Kees Cook
+>  kernel/bpf/btf.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index f7dd8af06413..b7017cae6fd1 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -7782,9 +7782,9 @@ int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_c
+>
+>         sort(tab->dtors, tab->cnt, sizeof(tab->dtors[0]), btf_id_cmp_func, NULL);
+>
+> -       return 0;
+>  end:
+> -       btf_free_dtor_kfunc_tab(btf);
+> +       if (ret)
+> +               btf_free_dtor_kfunc_tab(btf);
+>         btf_put(btf);
+>         return ret;
+>  }
+> --
+> 2.39.0
+>
