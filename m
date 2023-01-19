@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B17D67684F
-	for <lists+bpf@lfdr.de>; Sat, 21 Jan 2023 20:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8C3676B21
+	for <lists+bpf@lfdr.de>; Sun, 22 Jan 2023 06:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbjAUTWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Jan 2023 14:22:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
+        id S229508AbjAVFDT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Jan 2023 00:03:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjAUTWf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Jan 2023 14:22:35 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BA6279BD;
-        Sat, 21 Jan 2023 11:22:34 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id u13-20020a4aa34d000000b004f5219f9424so1544556ool.5;
-        Sat, 21 Jan 2023 11:22:34 -0800 (PST)
+        with ESMTP id S229480AbjAVFDS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Jan 2023 00:03:18 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A2118A97;
+        Sat, 21 Jan 2023 21:03:17 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id d10so6820078pgm.13;
+        Sat, 21 Jan 2023 21:03:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o445b1MnVY2xcczIeGhfEHs/6/N/MTgkwXpPKatAAvc=;
-        b=blGf0rssVVm4/xsfLxsV1fJdJ18QG6trE/kND3h68y2KoRQZ7YJqp3Ug2tjGJtc/7C
-         UIa94wgq+dllVnMbIEl45CyyUgycOLzfLCm/Gy8CwS+X82vAypOsKizt70EpHKmH35Cn
-         eXEc9zjW5E4B3Qzv5HwgiO9plLXKZ1AgZ50JWCmAMizmIZ0LPLCDEZdfGNhrH3W4Nu5u
-         pifwhrY8QR5QEvuKGRTWnGkd4zN7cGcM4cBrbXuNdE9Nz2zG1ea9YlqME+265CqNW4ky
-         ds2QxNvIFt0WFifhuegALERmlghRRPVH8ypCEe/w9wYyMoPO8g4IJkiV0DEiirQoRZFN
-         UluA==
+        bh=1rPxEawLgI/tGMgZXoPPdkllAiNZ4imDQSRKldW+0Tg=;
+        b=ZmJe4uoWdrrnu2t0uTnKxkUzdqQIQCbXavzLn5Cckr5wQAN/XNChg6QUa3fC3gqvec
+         ZmffyDkvxjsGFn8lwh7w0D2Wqa4wOTLJ6so7CRqVkI/3oPrMWiS7YDk5EU6RD4IAiARw
+         WO/6KN+/Y/+1/1XOkM5/8yvgltDyHbcAUSDgyZ51d5H+evuJC7n6s0N4/gWuEGKZljYU
+         H6dofb3q0KXwc6iZhZDP6IDfiBZBIgK26cERQryQo/3ttWk3pnyh+th3liOs7N1HT3VD
+         exVu0cfFBrJAXSXqMGAtUNVm3cISNCjmI7HSrQfjXbsnybNZsh9PGCBXdD+eQ//CEweb
+         FHZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o445b1MnVY2xcczIeGhfEHs/6/N/MTgkwXpPKatAAvc=;
-        b=w3qNgSPRbERFhYcL0okOdh4WllhjwSA6+KuAmP0/Up0stomBMPmbjAFPMnb8ToAh8P
-         eu+aqBB+9Px0gM03XwG26x6PuSD0YGvDHlE1xDBYMh49wzXcZilw5wQPAwFlvxitEq/i
-         rx36z72B31LlwyqGlS8G/aN39VOzqBBZglGxWP2au3wPVCvvXL8WmNuoh2oZYZjJPKcI
-         fmEGSgeWkqoG3B9BaGnBc5G2YwSqZIk71FBDOlpvHjwZweiBXgnirb91jYpyZ+fOWa4M
-         fpwqfQtHLw9sdmipE0mhY7lQC2MrRxK2lgb93EozrPBSUiLi7yGTUODFEt+fE+kxYZHZ
-         xXTQ==
-X-Gm-Message-State: AFqh2kpQohtdRrbUiJROZPcM2XTztY1A6Y6d5Ol+hpgsjVxeWHk06lvw
-        UTedBO12dsx5O5Fr8ALcrCU=
-X-Google-Smtp-Source: AMrXdXsPJ0hrC7d2aVvmAOndVW+aw6x1kZCJgXCrvyj1ojnc8V7P1KkUOwesPpPFMQGd6vCCgvmGgw==
-X-Received: by 2002:a4a:e68e:0:b0:4f5:200e:a1bf with SMTP id u14-20020a4ae68e000000b004f5200ea1bfmr8669367oot.1.1674328953754;
-        Sat, 21 Jan 2023 11:22:33 -0800 (PST)
-Received: from localhost ([2600:1700:65a0:ab60:b306:d5d0:37ec:2fa])
-        by smtp.gmail.com with ESMTPSA id i23-20020a4a8d97000000b004a0ad937ccdsm10693131ook.1.2023.01.21.11.22.32
+        bh=1rPxEawLgI/tGMgZXoPPdkllAiNZ4imDQSRKldW+0Tg=;
+        b=sqw+lnym3lFQ9Ah61wyFTZCX0rkzG/rnxetzqwy//eaPst26fiyS3Nc04gzf0b9zrD
+         U0PBKDgd+wvSFDR1NebN+TqB9vYQwi11Bdj5LEkgE0XdU0m8qvFH4HU6MhPnh6v1hgNp
+         u19AJBQW95I8Im8ow/9oc/d2tGgMQvEIArwxVQe4PmfXRGiM2hvgGcSe9r2PGvSgnLPU
+         VGXCLJsOlSHVv/DDhhyYxmLIq8VlCmoyidl97YbyfQMauPhzY8l7/K+q4AZbGzFzwll7
+         j8y53BUPmpu5nqrYH+KcHdvdeiXdzBDwUnVSRAoXLiYSElx0e2hESzrTvebf/1sjVhpx
+         dTag==
+X-Gm-Message-State: AFqh2kowCwCDW+73unZOIU1Bhbf2n3DapW1pTkezp+YG0aNMA9G/7Ylk
+        DbnpWMRumHH0z7I7ONTLr94=
+X-Google-Smtp-Source: AMrXdXu31CyeCOIYHJy4PMa+lMnTUCPNOOCVGdySsvrNk+I6w/8v5j3J3q9D4DHiL0qBs7XWzHuMxg==
+X-Received: by 2002:a05:6a00:4519:b0:58d:f047:53b7 with SMTP id cw25-20020a056a00451900b0058df04753b7mr14535557pfb.3.1674363796900;
+        Sat, 21 Jan 2023 21:03:16 -0800 (PST)
+Received: from localhost (c-73-164-155-12.hsd1.wa.comcast.net. [73.164.155.12])
+        by smtp.gmail.com with ESMTPSA id h11-20020a056a00000b00b0058dd9c46a8csm9062788pfk.64.2023.01.21.21.03.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Jan 2023 11:22:32 -0800 (PST)
-Date:   Sat, 21 Jan 2023 11:22:31 -0800
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Sat, 21 Jan 2023 21:03:16 -0800 (PST)
+Date:   Thu, 19 Jan 2023 03:47:02 +0000
+From:   Bobby Eshleman <bobbyeshleman@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
         Stefano Garzarella <sgarzare@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
@@ -75,13 +76,14 @@ Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
         linux-kselftest@vger.kernel.org,
         Cong Wang <cong.wang@bytedance.com>
 Subject: Re: [PATCH RFC 1/3] vsock: support sockmap
-Message-ID: <Y8w7d+6UASP3jUHf@pop-os.localdomain>
+Message-ID: <Y8i9NlRpIR/KE/q2@bullseye>
 References: <20230118-support-vsock-sockmap-connectible-v1-0-d47e6294827b@bytedance.com>
  <20230118-support-vsock-sockmap-connectible-v1-1-d47e6294827b@bytedance.com>
+ <Y8w7d+6UASP3jUHf@pop-os.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230118-support-vsock-sockmap-connectible-v1-1-d47e6294827b@bytedance.com>
+In-Reply-To: <Y8w7d+6UASP3jUHf@pop-os.localdomain>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -92,24 +94,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 12:27:39PM -0800, Bobby Eshleman wrote:
-> +static int vsock_read_skb(struct sock *sk, skb_read_actor_t read_actor)
-> +{
-> +	struct vsock_sock *vsk = vsock_sk(sk);
-> +
-> +	if (!vsk->transport)
-> +		return -ENODEV;
-> +
-> +	if (!vsk->transport->read_skb)
-> +		return -EOPNOTSUPP;
+On Sat, Jan 21, 2023 at 11:22:31AM -0800, Cong Wang wrote:
+> On Wed, Jan 18, 2023 at 12:27:39PM -0800, Bobby Eshleman wrote:
+> > +static int vsock_read_skb(struct sock *sk, skb_read_actor_t read_actor)
+> > +{
+> > +	struct vsock_sock *vsk = vsock_sk(sk);
+> > +
+> > +	if (!vsk->transport)
+> > +		return -ENODEV;
+> > +
+> > +	if (!vsk->transport->read_skb)
+> > +		return -EOPNOTSUPP;
+> 
+> Can we move these two checks to sockmap update path? It would make
+> vsock_read_skb() faster.
+> 
+> > +
+> > +	return vsk->transport->read_skb(vsk, read_actor);
+> > +}
+> 
+> Essentially can be just this one line.
+> 
+> Thanks.
 
-Can we move these two checks to sockmap update path? It would make
-vsock_read_skb() faster.
+That makes sense, will do.
 
-> +
-> +	return vsk->transport->read_skb(vsk, read_actor);
-> +}
-
-Essentially can be just this one line.
-
-Thanks.
+Thanks,
+Bobby
