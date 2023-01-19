@@ -2,44 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D51E16746FA
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 00:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 604826746FB
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 00:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbjASXOJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 18:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
+        id S231169AbjASXOL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 18:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbjASXNb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S231178AbjASXNb (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 19 Jan 2023 18:13:31 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0899E0;
-        Thu, 19 Jan 2023 15:10:40 -0800 (PST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6AA5BB9;
+        Thu, 19 Jan 2023 15:10:46 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7BF9A60CF5;
-        Thu, 19 Jan 2023 23:10:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC244C433D2;
-        Thu, 19 Jan 2023 23:10:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 097A761CEB;
+        Thu, 19 Jan 2023 23:10:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CA82C43392;
+        Thu, 19 Jan 2023 23:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674169839;
-        bh=3KzjNLNPNLSIodWpCueB2WhRu6smQFH2gkFhC5biMYc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=iI1EDxVJ6VqtP+pLzCFfQ2FNUhR+2aA2Q8HrMVBBtC6jjD4pt8LLoKez5D9cKjKfx
-         lpDOdbsE9I99B+WEyVpVUebnxCTQa1aJE7MjhqdCOTxGZuyXZm+ZR6aq9YhkbZ2BdE
-         XGz1XzKiYvBNqjKknyYA8y3cbuo3Os1u2X8FoIARx3tpcK6pnJPMaRUIIJdWGd6qIb
-         vB/ouUg4gh3uczAC2gq5hvq9pvJE9xXuuZFOQh4s5jIhcZkwrlTBqgY6HexFemvZPQ
-         eHvSxApy2lwF07Am5H9Q6u4DFyGir4KNj5knuLx3nrBySGOa2iXm+mG+Tl1Mq+EoEa
-         4YTvHQ25bE29A==
+        s=k20201202; t=1674169845;
+        bh=hc+zSS6UN7/G+UWGJaA93YRrvGjaJMf/t5FWQ/bg9VE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bjsZBJmizHCvJgwlmNokNYxSyHU01LMXcd7WQWlNqRK2t7Mqpd4o6kzErdvDwZK+0
+         ECoFT6rXetUkRVDeiWL2/ehqsqxgZE31/q6IoRihE50x0iHi71+kKk1Maz1dgU+Z48
+         t+VgSU6VFw4VI3Mbfrcgk2Um8pK0o7ZIfrCQh6unrK7H9tHkdjvs6KQrIu+g9FUPiY
+         m2EKA03ERBktiq8W84UjZG7emv8zWR1aQUR9C3bqK9TdODE2SfmXXZIH6E9eMxwgxk
+         y/yzcDbKShH9hsHtAwKVqKrLjmci2Dy/PqmBCKuwL8S5H6DxuYj3EqnaPFzw1jiqkn
+         j1ZehgtkTM0gQ==
 From:   KP Singh <kpsingh@kernel.org>
 To:     linux-security-module@vger.kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, jackmanb@google.com,
         renauld@google.com, paul@paul-moore.com, casey@schaufler-ca.com,
-        song@kernel.org, revest@chromium.org, keescook@chromium.org
-Subject: [PATCH bpf-next 0/4] Reduce overhead of LSMs with static calls
-Date:   Fri, 20 Jan 2023 00:10:29 +0100
-Message-Id: <20230119231033.1307221-1-kpsingh@kernel.org>
+        song@kernel.org, revest@chromium.org, keescook@chromium.org,
+        KP Singh <kpsingh@kernel.org>
+Subject: [PATCH bpf-next 2/4] security: Generate a header with the count of enabled LSMs
+Date:   Fri, 20 Jan 2023 00:10:31 +0100
+Message-Id: <20230119231033.1307221-3-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.39.0.246.g2a6d74b583-goog
+In-Reply-To: <20230119231033.1307221-1-kpsingh@kernel.org>
+References: <20230119231033.1307221-1-kpsingh@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -51,84 +54,147 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-# Background
+The header defines a MAX_LSM_COUNT constant which is used in a
+subsequent patch to generate the static calls for each LSM hook which
+are named using preprocessor token pasting. Since token pasting does not
+work with arithmetic expressions, generate a simple lsm_count.h header
+which represents the subset of LSMs that can be enabled on a given
+kernel based on the config.
 
-LSM hooks (callbacks) are currently invoked as indirect function calls. These
-callbacks are registered into a linked list at boot time as the order of the
-LSMs can be configured on the kernel command line with the "lsm=" command line
-parameter.
+While one can generate static calls for all the possible LSMs that the
+kernel has, this is actually wasteful as most kernels only enable a
+handful of LSMs.
 
-Indirect function calls have a high overhead due to retpoline mitigation for
-various speculative execution attacks.
-
-Retpolines remain relevant even with newer generation CPUs as recently
-discovered speculative attacks, like Spectre BHB need Retpolines to mitigate
-against branch history injection and still need to be used in combination with
-newer mitigation features like eIBRS.
-
-This overhead is especially significant for the "bpf" LSM which allows the user
-to implement LSM functionality with eBPF program. In order to facilitate this
-the "bpf" LSM provides a default callback for all LSM hooks. When enabled,
-the "bpf" LSM incurs an unnecessary / avoidable indirect call. This is
-especially bad in OS hot paths (e.g. in the networking stack).
-This overhead prevents the adoption of bpf LSM on performance critical
-systems, and also, in general, slows down all LSMs.
-
-Since we know the address of the enabled LSM callbacks at compile time and only
-the order is determined at boot time, the LSM framework can allocate static
-calls for each of the possible LSM callbacks and these calls can be updated once
-the order is determined at boot.
-
-This series is a respin of the RFC proposed by Paul Renauld (renauld@google.com)
-and Brendan Jackman (jackmanb@google.com) [1]
-
-# Performance improvement
-
-With this patch-set some syscalls with lots of LSM hooks in their path
-benefitted at an average of ~3%. Here are the results of the relevant Unixbench
-system benchmarks with BPF LSM and a major LSM (in this case apparmor) enabled
-with and without the series.
-
-Benchmark                                               Delta(%): (+ is better)
-===============================================================================
-Execl Throughput                                             +2.9015
-File Write 1024 bufsize 2000 maxblocks                       +5.4196
-Pipe Throughput                                              +7.7434
-Pipe-based Context Switching                                 +3.5118
-Process Creation                                             +0.3552
-Shell Scripts (1 concurrent)                                 +1.7106
-System Call Overhead                                         +3.0067
-System Benchmarks Index Score (Partial Only):                +3.1809
-
-In the best case, some syscalls like eventfd_create benefitted to about ~10%.
-The full analysis can be viewed at https://kpsingh.ch/lsm-perf
-
-[1] https://lore.kernel.org/linux-security-module/20200820164753.3256899-1-jackmanb@chromium.org/
-
-KP Singh (4):
-  kernel: Add helper macros for loop unrolling
-  security: Generate a header with the count of enabled LSMs
-  security: Replace indirect LSM hook calls with static calls
-  bpf: Only enable BPF LSM hooks when an LSM program is attached
-
- include/linux/bpf.h              |   1 +
- include/linux/bpf_lsm.h          |   1 +
- include/linux/lsm_hooks.h        |  94 +++++++++++--
- include/linux/unroll.h           |  35 +++++
- kernel/bpf/trampoline.c          |  29 ++++-
- scripts/Makefile                 |   1 +
- scripts/security/.gitignore      |   1 +
- scripts/security/Makefile        |   4 +
- scripts/security/gen_lsm_count.c |  57 ++++++++
- security/Makefile                |  11 ++
- security/bpf/hooks.c             |  26 +++-
- security/security.c              | 217 ++++++++++++++++++++-----------
- 12 files changed, 386 insertions(+), 91 deletions(-)
- create mode 100644 include/linux/unroll.h
+Signed-off-by: KP Singh <kpsingh@kernel.org>
+---
+ scripts/Makefile                 |  1 +
+ scripts/security/.gitignore      |  1 +
+ scripts/security/Makefile        |  4 +++
+ scripts/security/gen_lsm_count.c | 57 ++++++++++++++++++++++++++++++++
+ security/Makefile                | 11 ++++++
+ 5 files changed, 74 insertions(+)
  create mode 100644 scripts/security/.gitignore
  create mode 100644 scripts/security/Makefile
  create mode 100644 scripts/security/gen_lsm_count.c
 
+diff --git a/scripts/Makefile b/scripts/Makefile
+index 1575af84d557..9712249c0fb3 100644
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -41,6 +41,7 @@ targets += module.lds
+ subdir-$(CONFIG_GCC_PLUGINS) += gcc-plugins
+ subdir-$(CONFIG_MODVERSIONS) += genksyms
+ subdir-$(CONFIG_SECURITY_SELINUX) += selinux
++subdir-$(CONFIG_SECURITY) += security
+ 
+ # Let clean descend into subdirs
+ subdir-	+= basic dtc gdb kconfig mod
+diff --git a/scripts/security/.gitignore b/scripts/security/.gitignore
+new file mode 100644
+index 000000000000..684af16735f1
+--- /dev/null
++++ b/scripts/security/.gitignore
+@@ -0,0 +1 @@
++gen_lsm_count
+diff --git a/scripts/security/Makefile b/scripts/security/Makefile
+new file mode 100644
+index 000000000000..05f7e4109052
+--- /dev/null
++++ b/scripts/security/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
++hostprogs-always-y += gen_lsm_count
++HOST_EXTRACFLAGS += \
++	-I$(srctree)/include/uapi -I$(srctree)/include
+diff --git a/scripts/security/gen_lsm_count.c b/scripts/security/gen_lsm_count.c
+new file mode 100644
+index 000000000000..a9a227724d84
+--- /dev/null
++++ b/scripts/security/gen_lsm_count.c
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/* NOTE: we really do want to use the kernel headers here */
++#define __EXPORTED_HEADERS__
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <errno.h>
++#include <ctype.h>
++
++#include <linux/kconfig.h>
++
++#define GEN_MAX_LSM_COUNT (				\
++	/* Capabilities */				\
++	IS_ENABLED(CONFIG_SECURITY) +			\
++	IS_ENABLED(CONFIG_SECURITY_SELINUX) +		\
++	IS_ENABLED(CONFIG_SECURITY_SMACK) +		\
++	IS_ENABLED(CONFIG_SECURITY_TOMOYO) +		\
++	IS_ENABLED(CONFIG_SECURITY_APPARMOR) +		\
++	IS_ENABLED(CONFIG_SECURITY_YAMA) +		\
++	IS_ENABLED(CONFIG_SECURITY_LOADPIN) +		\
++	IS_ENABLED(CONFIG_SECURITY_SAFESETID) +		\
++	IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM) + 	\
++	IS_ENABLED(CONFIG_BPF_LSM) + \
++	IS_ENABLED(CONFIG_SECURITY_LANDLOCK))
++
++const char *progname;
++
++static void usage(void)
++{
++	printf("usage: %s lsm_count.h\n", progname);
++	exit(1);
++}
++
++int main(int argc, char *argv[])
++{
++	FILE *fout;
++
++	progname = argv[0];
++
++	if (argc < 2)
++		usage();
++
++	fout = fopen(argv[1], "w");
++	if (!fout) {
++		fprintf(stderr, "Could not open %s for writing:  %s\n",
++			argv[1], strerror(errno));
++		exit(2);
++	}
++
++	fprintf(fout, "#ifndef _LSM_COUNT_H_\n#define _LSM_COUNT_H_\n\n");
++	fprintf(fout, "\n#define MAX_LSM_COUNT %d\n", GEN_MAX_LSM_COUNT);
++	fprintf(fout, "#endif /* _LSM_COUNT_H_ */\n");
++	exit(0);
++}
+diff --git a/security/Makefile b/security/Makefile
+index 18121f8f85cd..7a47174831f4 100644
+--- a/security/Makefile
++++ b/security/Makefile
+@@ -3,6 +3,7 @@
+ # Makefile for the kernel security code
+ #
+ 
++gen := include/generated
+ obj-$(CONFIG_KEYS)			+= keys/
+ 
+ # always enable default capabilities
+@@ -27,3 +28,13 @@ obj-$(CONFIG_SECURITY_LANDLOCK)		+= landlock/
+ 
+ # Object integrity file lists
+ obj-$(CONFIG_INTEGRITY)			+= integrity/
++
++$(addprefix $(obj)/,$(obj-y)): $(gen)/lsm_count.h
++
++quiet_cmd_lsm_count = GEN     ${gen}/lsm_count.h
++      cmd_lsm_count = scripts/security/gen_lsm_count ${gen}/lsm_count.h
++
++targets += lsm_count.h
++
++${gen}/lsm_count.h: FORCE
++	$(call if_changed,lsm_count)
 -- 
 2.39.0.246.g2a6d74b583-goog
 
