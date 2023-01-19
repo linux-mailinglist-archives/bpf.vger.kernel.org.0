@@ -2,76 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFD8673FA3
-	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 18:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A76F673FA5
+	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 18:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjASRLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 12:11:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
+        id S229899AbjASRLz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 12:11:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbjASRLn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 12:11:43 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352598EFCF
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 09:11:18 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id c10-20020a05600c0a4a00b003db0636ff84so1790352wmq.0
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 09:11:18 -0800 (PST)
+        with ESMTP id S229912AbjASRLu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 12:11:50 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4824F8CE66;
+        Thu, 19 Jan 2023 09:11:40 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id u1-20020a17090a450100b0022936a63a21so6461394pjg.4;
+        Thu, 19 Jan 2023 09:11:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=57MZ11PIA1Ds77M28f1Y2wzXLAor7dO+jeAnFcbBukk=;
-        b=qu1lmXVDcrst171fCXQZj2UYdel55vP051+omjnETwBi9nDrS5EkD891yus1I2vTk+
-         1OBBUPISWNef2diCKh6Z7XpON5A9z9FUO9eF6SRJc2+VH4NpWRo5773UrWXC3HDxjC4h
-         KOuho9VWEtzmGDR6hjQSGXcr5LwzpA11mJiOhOqz+Bw04VUD5n4X0tyvLkY7S14haVAH
-         X4/3P/U1zkQtNNhHD4DmW3JwkljcAS+keSPWx/RhkjJfWfbHHcXjYKc4Hfk0ZD5J0UTM
-         M582YqiDTrsSrtb6tThsqYYa3nweMjCgG55w4L84hRfblI1sVmZs44xaUclIeOzUg2bg
-         QuOg==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eWyZ6OMpRDqwN7CwCYZdQQF6LML9EGI8pdw8AXpmI8Y=;
+        b=TZ94KDggWV7EOTXzLJurNLt0lH5k1N5QS2bco2lc2jIFe2TbJZ8XlytdlGbcCPvJQV
+         SBPqP5vBLQKXzsSkkxKxEjw6uPisnBEfdRLcWsamW4hF6xllrAl6RO5xMChS+Dt/rMu1
+         evvZvTQc//FlRv6kyp6kxq5RPZL20TFKwV4xHmOOOj2qTrihVpaErE5s/1bs12Nla2Gb
+         0txEcTr8N7NepuL2KNM4v2OXNLDziMiG7hWwCrQ6rzIXqUIS/9NTccyC7yklNAwNQa3I
+         0Qkg/+2peQ6HwFtjdJBiU1145RZbOCazkqYD4XSOjOwB6lkbMp2587zKJmsEcWdJ70N6
+         TJfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=57MZ11PIA1Ds77M28f1Y2wzXLAor7dO+jeAnFcbBukk=;
-        b=aJ/0UVX3SktpBZG8J+7PasQZX1DXkwK5JjZOLQQlEA5PPta+fgqLX0Dmn1tX7yxb+t
-         sTtW9egJAPXY5K21cBpLZ53kCSuXrEGxkmzmBWJhpxA+LJecnXky6/5OxjlcvCy2q+vt
-         cF8e6+GfsRx24DOWwellMzpzh3jsAitU0I2vwUrOOH44INPKgj9oFSqUwET3NsGhtug4
-         jpTeRypWdl8SZBBK4rO2m6ImgsbfCvgxx31dYlRB0lmmX5yXri4jQGDQ6LrVYx0PnVtl
-         Jjqjxx+e+jIU7wmZBdy4AyE4PMidLvhVVtQoPr6Y8z4lw9cbTKrrfW1bQxV4/utl7cbL
-         UhOg==
-X-Gm-Message-State: AFqh2kroXDXOqkyBP+vXSsD7QCxc6knqWL17hlRXwACtBUMGmGA/vA1U
-        93U49T6g7XBCVcOvaJmg77oW/IClprUQgwTut5QVYw==
-X-Google-Smtp-Source: AMrXdXtel17eHmu0TyITYUgjLXyvQ3eLG09ijZFyqepS9RqcxDo+jxWgody0tH02XzMHJO+k8KOqAJHzBmgABzur56M=
-X-Received: by 2002:a05:600c:1c9a:b0:3d9:ee45:8a9e with SMTP id
- k26-20020a05600c1c9a00b003d9ee458a9emr548716wms.174.1674148276579; Thu, 19
- Jan 2023 09:11:16 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eWyZ6OMpRDqwN7CwCYZdQQF6LML9EGI8pdw8AXpmI8Y=;
+        b=w8uM8ngXgwzJk7dlLBQZoyT+CqkoH8CAm4JuQGyGAv3N4IZQDkU/LygsUe8y4llZKq
+         PlIw3jMIyQMQvrTnWBW7sSUr7G6H+lNMXuO9qKB78crbqnHnGFeU1DmlY9GRbF1dv+YX
+         2hlFcp/U1E14MdnEPrER+aWEyJXTHO4O15AqQPsL3M5tKIj7T9vhVfjrs5WGtgF1nibR
+         bxMRB3vlJG4VV9NWFa59AB1h7nIsqaYt+3I2adx3PtbDIblWyqvx6T2bNW4Df0s25Sg5
+         qT0W66IsDCnv0i+/XeL27h/DFZ5m2zoCLhAoe7EbIP615l/D4U4kGH+U5ffDxH1hv6nl
+         /hoQ==
+X-Gm-Message-State: AFqh2krRZIFICQddiNNCPsp5tDQyVLM5OGTg++Uj7xHn0xIzubb9KfV4
+        VsVxM3fVg6m5uGth4PbQ8nU=
+X-Google-Smtp-Source: AMrXdXuQQ8bYqUq9pAsTvVWN9LBUtJea733+ceOorBCHNFd0CIQqE5Tqv4TOFkRe7AG3OHpAaa1ypQ==
+X-Received: by 2002:a17:902:e548:b0:194:751f:3e89 with SMTP id n8-20020a170902e54800b00194751f3e89mr17352460plf.63.1674148299530;
+        Thu, 19 Jan 2023 09:11:39 -0800 (PST)
+Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
+        by smtp.gmail.com with ESMTPSA id z6-20020a1709027e8600b0019445b8ef29sm17747855pla.61.2023.01.19.09.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Jan 2023 09:11:39 -0800 (PST)
+Date:   Thu, 19 Jan 2023 22:41:36 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bpf: skip task with pid=1 in send_signal_common()
+Message-ID: <20230119171136.3i25lucvhij2tr76@apollo>
+References: <20230106084838.12690-1-sunhao.th@gmail.com>
 MIME-Version: 1.0
-References: <20230116010115.490713-1-irogers@google.com>
-In-Reply-To: <20230116010115.490713-1-irogers@google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 19 Jan 2023 09:11:03 -0800
-Message-ID: <CAP-5=fVUgc8xtBzGi66YRUxZHyXvW2kiMjGz39dywaLxrO4Hpg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Assume libbpf 1.0+
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andres Freund <andres@anarazel.de>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Christy Lee <christylee@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
-        Ben Hutchings <ben@decadent.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230106084838.12690-1-sunhao.th@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,72 +73,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 15, 2023 at 5:01 PM Ian Rogers <irogers@google.com> wrote:
+On Fri, Jan 06, 2023 at 02:18:38PM IST, Hao Sun wrote:
+> The following kernel panic can be triggered when a task with pid=1
+> attach a prog that attempts to send killing signal to itself, also
+> see [1] for more details:
 >
-> libbpf 1.0 was a major change in API. Perf has partially supported
-> older libbpf's but an implementation may be:
-> ..
->        pr_err("%s: not support, update libbpf\n", __func__);
->        return -ENOTSUP;
-> ..
+> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> CPU: 3 PID: 1 Comm: systemd Not tainted 6.1.0-09652-g59fe41b5255f #148
+> Call Trace:
+> <TASK>
+> __dump_stack lib/dump_stack.c:88 [inline]
+> dump_stack_lvl+0x100/0x178 lib/dump_stack.c:106
+> panic+0x2c4/0x60f kernel/panic.c:275
+> do_exit.cold+0x63/0xe4 kernel/exit.c:789
+> do_group_exit+0xd4/0x2a0 kernel/exit.c:950
+> get_signal+0x2460/0x2600 kernel/signal.c:2858
+> arch_do_signal_or_restart+0x78/0x5d0 arch/x86/kernel/signal.c:306
+> exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+> exit_to_user_mode_prepare+0x15f/0x250 kernel/entry/common.c:203
+> __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+> syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
+> do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+> entry_SYSCALL_64_after_hwframe+0x63/0xcd
 >
-> Rather than build a binary that would fail at runtime it is
-> preferrential just to build libbpf statically and link against
-> that. The static version is in the kernel tools tree and newer than
-> 1.0.
+> So skip task with pid=1 in bpf_send_signal_common() to avoid the panic.
 >
-> These patches change the libbpf test to only pass when at least
-> version 1.0 is installed, then remove the conditional build and
-> feature logic.
+> [1] https://lore.kernel.org/bpf/20221222043507.33037-1-sunhao.th@gmail.com
 >
-> The issue is discussed here:
-> https://lore.kernel.org/lkml/20230106151320.619514-1-irogers@google.com/
-> perf bpf:
+> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> ---
+>  kernel/trace/bpf_trace.c | 3 +++
+>  1 file changed, 3 insertions(+)
 >
-> A variant of this fix was added to Linux 6.2 in:
-> "perf bpf: Avoid build breakage with libbpf < 0.8.0 + LIBBPF_DYNAMIC=1"
-> https://lore.kernel.org/lkml/Y71+eh00Ju7WeEFX@kernel.org/
-> This change goes further in removing logic that is now no longer
-> necessary.
->
-> v2. Rebase now that breakage fix patch is in linus/master.
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 23ce498bca97..ed21ab9fe846 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -844,6 +844,9 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
+>  	 */
+>  	if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
+>  		return -EPERM;
+> +	/* Task should not be pid=1 to avoid kernel panic. */
+> +	if (unlikely(is_global_init(current)))
+> +		return -EPERM;
 
-I missed the:
-Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
-I believe we are waiting for package maintainer input.
-
-Thanks,
-Ian
-
-
-
-> Ian Rogers (3):
->   tools build: Pass libbpf feature only if libbpf 1.0+
->   perf build: Remove libbpf pre-1.0 feature tests
->   perf bpf: Remove pre libbpf 1.0 conditional logic
->
->  tools/build/feature/Makefile                  |  7 --
->  .../feature/test-libbpf-bpf_map_create.c      |  8 ---
->  .../test-libbpf-bpf_object__next_map.c        |  8 ---
->  .../test-libbpf-bpf_object__next_program.c    |  8 ---
->  .../build/feature/test-libbpf-bpf_prog_load.c |  9 ---
->  .../test-libbpf-bpf_program__set_insns.c      |  8 ---
->  .../test-libbpf-btf__load_from_kernel_by_id.c |  8 ---
->  .../build/feature/test-libbpf-btf__raw_data.c |  8 ---
->  tools/build/feature/test-libbpf.c             |  4 ++
->  tools/perf/Makefile.config                    | 39 +----------
->  tools/perf/util/bpf-event.c                   | 66 -------------------
->  tools/perf/util/bpf-loader.c                  | 18 -----
->  tools/perf/util/bpf_counter.c                 | 18 -----
->  13 files changed, 5 insertions(+), 204 deletions(-)
->  delete mode 100644 tools/build/feature/test-libbpf-bpf_map_create.c
->  delete mode 100644 tools/build/feature/test-libbpf-bpf_object__next_map.c
->  delete mode 100644 tools/build/feature/test-libbpf-bpf_object__next_program.c
->  delete mode 100644 tools/build/feature/test-libbpf-bpf_prog_load.c
->  delete mode 100644 tools/build/feature/test-libbpf-bpf_program__set_insns.c
->  delete mode 100644 tools/build/feature/test-libbpf-btf__load_from_kernel_by_id.c
->  delete mode 100644 tools/build/feature/test-libbpf-btf__raw_data.c
->
-> --
-> 2.39.0.314.g84b9a713c41-goog
->
+Sorry for chiming in late.
+This seems a bit too restrictive, there are a lot of legitimate signals that can
+be sent to the init process (like the ones listed in man 1 systemd). Maybe you
+should only prevent sig == SIGKILL and not others?
