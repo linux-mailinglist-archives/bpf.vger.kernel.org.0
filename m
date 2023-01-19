@@ -2,179 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 696216730EB
-	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 06:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E2C67328B
+	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 08:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjASFDf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 00:03:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
+        id S229830AbjASHe7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 02:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjASFC4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 00:02:56 -0500
-X-Greylist: delayed 1810 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 Jan 2023 20:56:52 PST
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18FFEDB;
-        Wed, 18 Jan 2023 20:56:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version:
-        Content-Type; bh=ZQ//IA0NhKdNE+rYfKAyp7+VVDgWEzVXpQLE2095Tpg=;
-        b=f5bVgdyhOtYwDtdjvRtO78ken69rCoTHl+ndTtW+Kki+il066LR1BgJoPsvZqL
-        QqRf+r9qzbp976qfwSri6WkJ8/ufyENSUBcd+QrTtxYJwW/yHw/0VkCchUSyPdcB
-        K8/3SU5D+xSc0s6VCZ97ZA8udMXxCl8xRTDhVL+uppokM=
-Received: from localhost.localdomain (unknown [202.112.238.191])
-        by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wA3B2qWxchjSVC7AA--.61981S4;
-        Thu, 19 Jan 2023 12:22:48 +0800 (CST)
-From:   Yi He <clangllvm@126.com>
-To:     tixxdz@gmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        clangllvm@126.com, daniel@iogearbox.net, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev,
-        mhiramat@kernel.org, rostedt@goodmis.org, sdf@google.com,
-        song@kernel.org, yhs@fb.com, yhs@meta.com
-Subject: [PATCH V2] bpf: security enhancement by limiting the offensive eBPF helpers
-Date:   Thu, 19 Jan 2023 12:22:44 +0800
-Message-Id: <20230119042244.763779-1-clangllvm@126.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAEiveUd_N8qHy54AS0q90FuUSQ=7mePm8FL88Aw-sY7fT7NqFQ@mail.gmail.com>
-References: <CAEiveUd_N8qHy54AS0q90FuUSQ=7mePm8FL88Aw-sY7fT7NqFQ@mail.gmail.com>
+        with ESMTP id S229944AbjASHeo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 02:34:44 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB9A63097;
+        Wed, 18 Jan 2023 23:34:33 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30J5bZoN010043;
+        Wed, 18 Jan 2023 23:34:07 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=kdfvpMhkO8cLnvwFwifzskoFTr/XyVS9hCwSRDuZGRo=;
+ b=Xbsfsw7G9ZLvf2hwpL5hVuoKKix8JF3iyPykYc1na8r7LUlpBx8jLlgLxntUbM1K/Db3
+ 9iG5TKUfBC8BjHDtwZJCZA3j2AyJsLhRkWuCtIaTdKwC+fqiPpwAitV4hSJmhTcT/hgq
+ sxZRE8VDQUrrb5nsfsPjBNCJ1xv/Z1I4/VccL9zFokUShz2pyHuevpBMilqQ/8uvzth2
+ 9pHT4xlGPyjUKKZ7wKiYHpvk9eFCMGGsnGSKPOgyWAR+OGc4QTGltCDRTG2PAmvPAl8X
+ e7feqvsmVWDl0RXTmvokozFtvKe+12dnbGanU+GBXietcjsHbWYnb0fFq/gfWUVSyxfY eQ== 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3n6ubvsx8g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Jan 2023 23:34:07 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A7CtUN0TY8sBcucS6/Erm/w93wzSz6e90EzmR+X1nq/ACBatrggSVwzqXJP7B3LfOmSCYJGAqXLUaLWkEtW4AcsL5hZpqX2E9he0TT93VWvs8JL55/andybI5a/gZ8xRhi222sexLI4zHgiGW8bGz+CYn5jWepOSgvv+TujRlpOGYFGzEHjE/ZQKJQSUwsmwa114MUJ7JLeXQ5UYwgKczRvMCzwMGr+j5nbBTnKqkGGgk08fJOyGR2cqz+1FS7l4VylvI0pLFV0AtgdBQ/Ii02XbO5uc+xRu7pT3SwlvcpHYyPzSNwvodd9QTviixBNM0qLV4lBfX8Oyi4lZalkRqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4WwGl+BAQhjXoXvlHa5s5LCKRjhxtWdmyFnF0L4x3Qw=;
+ b=RhSGUuPryhIp1Tfk4lvCwDnAPnKE6RKaxJOzyb4nTmF/faGI7Gfz/WRBMyZy7Z5QUk0jr72jAuB2kdXDV7gzAcIk8I9TTdRWKEQ/+8XLeu50n2zI7ip2/M6IxOBgr46kuS9UdTYnQSI3CdUzGWr5aN4ObAY2Pc7GRCcoReOFl++8BtF98hpigLZRAm1wz/znSjpHEkKVBCdaseJIVCefWeTHzElirlg3v167l+pBfA+zJCzEfu6M3V3T/gp3SwfHWk5ZhN+/ZQzSNzjTDJlJP1RhkN30lN3NFzgOxqdTuZbA0isngvNdM/9kNNBnVwlQWxBJ3MylhCCjlfHnLJQhTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by CY8PR15MB5578.namprd15.prod.outlook.com (2603:10b6:930:99::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.25; Thu, 19 Jan
+ 2023 07:34:04 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::a595:5e4d:d501:dc18]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::a595:5e4d:d501:dc18%4]) with mapi id 15.20.6002.024; Thu, 19 Jan 2023
+ 07:34:04 +0000
+Message-ID: <4dc6a571-8564-b38c-31df-0d9741dfc592@meta.com>
+Date:   Wed, 18 Jan 2023 23:34:01 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+Subject: Re: [PATCH] tools: bpf: Disable stack protector
+Content-Language: en-US
+To:     Eduard Zingerman <eddyz87@gmail.com>,
+        Peter Foley <pefoley2@pefoley.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+References: <20230114-bpf-v1-1-f836695a8b62@pefoley.com>
+ <701abf4bbf5b7957a24d2f164c643e1d9f586fad.camel@gmail.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <701abf4bbf5b7957a24d2f164c643e1d9f586fad.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: SJ0PR03CA0273.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::8) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|CY8PR15MB5578:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16f38143-9e68-4444-6394-08daf9ef8a9d
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SUQIrltbl7hiTyecmsO29Qwa5qh9rPx9AP4nbjO+VaV+y8GXsz+UA5/OAjmnKombrLQ+z7zeFxIX3Sg1uJ/QZuhxaDqePYMHAS4u+FJPLZLsb8c6PtUZ3gbZdCfZbqC7P2yxV+pkIWjq1q7xNCyUvByQCEoi3YSFZzjN8HeXHWP4f/TW24XtLapdnlhek92CffrNp2Nw4rB1dk9fmu8EDE7OBANdCuL9/OCa8ZRxrHW0bHVTesB4UaEqJQJMFlIxg8gk7G/F7jlI3hcrc6+Rq47hcC+duIjaDjzUmLMt62EQO+hxY8OtgxRIpU9peC7l65bUm3osE9WUbHib4REICJ2zoAzQa0oDo4n9RZ2vfil1fMLuGBVuC6kKme5NeuJmq/S0oING4DMQQEzAnXvQGKU7EsjXXRO27+7POWBKOVqdhnOcS7kf8b/Kh7NxaYSLHDkdMnwgx8c95434Oixw2kz2NOISzBEdMpBDxlPCLGkfeJp8ITJGa4P9dhxiq4LVPqROQ3TQANQbMO1i8lioS4DYyP5PgqtgaGps8NEeEnApNyVcDodeOpQCZTIDpcDB7tKNPsU51JHS4NgcSNdH2VnUlKEM9OIxTtDgy71BAQb8jZXZjKPojVN5RYbkq1Uo4EN6TABO3hc5iXU5iQncLRd+478HGDAvyddfv6C9Q9QVFAxqMsUx2B155Y5PdLFKoP5p3jJpOo4tuAQnn+8EzgqPYfF1/XjA1bK6Kfp/vhO8WRb8Nlc8Nk3qOUAXV/Dyr+QoA7WnAV2PYdist/I7ZA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(346002)(136003)(376002)(39850400004)(366004)(451199015)(86362001)(53546011)(6506007)(31696002)(6666004)(966005)(6486002)(478600001)(36756003)(8936002)(5660300002)(316002)(66556008)(66946007)(7416002)(66476007)(4326008)(8676002)(38100700002)(41300700001)(921005)(186003)(6512007)(2616005)(2906002)(83380400001)(110136005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eXhqeWdhQW12dmpxYTFjMDhES1VITENpRzJWT0MyamJ0ZmUyUDhyR0U0MERa?=
+ =?utf-8?B?RzMybm5QdVZkUVRNY0RvSStiWG9pMVNreVFTWU5hSUF2TWdvMWpGWlFwdVM5?=
+ =?utf-8?B?NGJpQit3MS9ZdnRlbnBCUThDZE8yL1FJTXVHVHJVb3Fnc2NWamphcUpsSUpl?=
+ =?utf-8?B?YzNpVFlIdkQ3eUlhK2RLdDBTd0Z2RWdPd29KajV3cWI3eTJKZnZrU0J6bU8w?=
+ =?utf-8?B?UEhLdG1EYmJhSkZZRDFyNHlqOGdVZVovSDI2U0ZUTzVFTmMzQmFJWGhCaUhT?=
+ =?utf-8?B?UlV2OFpyQzNmWUVFZUR0NjNCendleW9nNzFzaHdCQUxHcE5SQkdtSzBjdFJB?=
+ =?utf-8?B?K0JtV09VUFcvTDc0cXhIYXhDa0dmaVVBcHIxYXdHL01pSi9zbjBpd0JLT3Zt?=
+ =?utf-8?B?MUtCY1BpVGkyZFM4MkcrTktMcW9EVnJxVk9ESHZGV0xBa3pxakthTjV6cnB3?=
+ =?utf-8?B?cXQrRkM3RVZ4akgzNWZ0UGwxcVZibWRhWmRyRTRzRTFoSElRckJyNThqc0Js?=
+ =?utf-8?B?aE1MdngzVFl0WVVnZS9PM0lXK0pvZmxkaTMrUC9SazlzcHdFUGZWbDB6V2Va?=
+ =?utf-8?B?eVdvUSt6Q2x4WjRVNVpjZUpTNW9OUXZjaDY0emtJSlpsdDdwdFVnWmpLWUZL?=
+ =?utf-8?B?OXFBanJEcjJqYStTNkJ0RVVPczgvVGFveTVGNUcxQjZCR2ZCOEhNVTNzcnNK?=
+ =?utf-8?B?ZlhPYnJOMHVBTUVUMGFhU0FJNkdQbDVtV0pmRVl5cU1QY1FzdEw0NjNKUWFW?=
+ =?utf-8?B?Qk5FTStNYURpMzBURE55SWd5UTdQNUNYaTVSbm51UmhGSTBSR1ZsM3NMZ1RU?=
+ =?utf-8?B?dkZMZ1E4NzdRaXR5U1J2MXIxcmR0eXR2dkd6ZEl5RmRtTEpPTk5IRE5EcVgz?=
+ =?utf-8?B?LzJDMXVjc1FDNytCaTB2Y3NSSEtnQWsyMVFBL1RKa1Z4Sy9tcnFjMlRJTDRs?=
+ =?utf-8?B?Tnh2bHZIWTNvUXp4dGpqT2VHUGNFZ2xnenhHc3k0bys2RUVMRks0b1dZcWFr?=
+ =?utf-8?B?d0V5ZHpJODAxejZ1TGpEa3NZSFJFbzdMZ0h0akhIWjJiQWxxRCt4bWwwcnQ5?=
+ =?utf-8?B?aC9WTUZKL1hiM3dTMWZXWkFOUFNMUUM3QnNxOEg4dXBlcDVJMnZJSk9lWnNB?=
+ =?utf-8?B?U1E5TDBNVi9KK2pDbXVFMzR3MTZXSFRLNlpPN1ZEU3o5Rjc5ZnFpdmduOHhl?=
+ =?utf-8?B?ZmtxU1VDZ1BsSkJLd0VlaTZlZ1UzYmN6TWJESFhaa1VLOHlQaGdZUjB4ZmxQ?=
+ =?utf-8?B?RGt5V21TaWR0QU9MUFNIRmc4V0hYb3F4cnVtLzBFb0JrMmtlNVJmTGdQMkc3?=
+ =?utf-8?B?bE4zQ0U2aHVsY1FHOEhUbE5TUjB0RHNuSVYyaENKcm15MkhKd2pjaGJPTDZB?=
+ =?utf-8?B?Z3k5RmgxUkdLb3NBWEMxS1dPenpFK0pTMmdHQlUvbFhtd3RCMktQTXBqdG9u?=
+ =?utf-8?B?RjZhazl1TVgvYW01ek1Oa3hNN2dhYU16SmVqQ2hzK0plUHlyM0E3Y3BLcXds?=
+ =?utf-8?B?MU9yZ0hSS0c0Zm1paS8vcm01TjIyUzQ2cDVObEZtTVBqejZuc1F0bjY4aEZN?=
+ =?utf-8?B?SUFnWmw5RkgzV2g0em9vYWNUUXg5dVZkYXdOME1TeGZsdjQ0bmJMOGFVSjB5?=
+ =?utf-8?B?TndJMmlEUnEzam5HVG9KNUhNaFdqYlY1OVduYzBLai81c1RzalViaHZYYXU4?=
+ =?utf-8?B?RElQTHZkYWs0aDA5bkRRSkRWc09PRHA4ZitHVzk3VzF6SVpkd0svSTlVY3NR?=
+ =?utf-8?B?S0RwdER6YjhicWJKVzBpTHFLT1lENGlFdXN5RStNWnVwdU1jVDFhSzlmSkJp?=
+ =?utf-8?B?d0VLaFFXMVNWaFFCU1FXSzVjMHNaSWRaeGU5UVliS1liMFFGZ0Y4UndRc1I0?=
+ =?utf-8?B?NWx5c3VHY2gvYXFQRndNZHM5L1dKRTM5cUZ2Q0VFVGhUeVc0Q0NybFdBRm95?=
+ =?utf-8?B?TkMzdXp4N3c3R3N3Q00yNzl0VFluSngydWt6dS9CM3dwSWdkWG0rN2RCOENK?=
+ =?utf-8?B?aktpNE9Oa3p0VGdnKzFKTk4rOXhheWFpMGhwRW9qa0FxQTArMGdnV2ZvbnhR?=
+ =?utf-8?B?S2FGdDBkak42UXdycG91NkY4LzBmWmZnMWxWWHJUTmV2ekRBS25mOThnOGsw?=
+ =?utf-8?B?UGJlM0VUSDJ0Mnc3Qml5MWtHWWNxV1FvTFVBRnc1anVGcUdGdWlaOE1ZaTZr?=
+ =?utf-8?B?RVE9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16f38143-9e68-4444-6394-08daf9ef8a9d
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2023 07:34:04.6448
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rBq3V91i8iCtCo2a0i7rEk7zDz8RoFNsUnROzRQzb2xTdvH+lz4TtJZdkBG3Zcl5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR15MB5578
+X-Proofpoint-GUID: -M9iWvRNBAuZIzdAku94vEEwvBJPJ2RF
+X-Proofpoint-ORIG-GUID: -M9iWvRNBAuZIzdAku94vEEwvBJPJ2RF
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wA3B2qWxchjSVC7AA--.61981S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Gw1DZr4DZF13Cr48Aw4rGrg_yoW7ur45pF
-        WDKry3Ar4kJr4Ik347J3yxWF4Fy3y5WrW7Gan5K3y8ZanxJr40gr1fKF4a9Fn5ZrZ8G3ya
-        q39FvrZ8Aa1Dua7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRb_-PUUUUU=
-X-Originating-IP: [202.112.238.191]
-X-CM-SenderInfo: xfod0wpooyzqqrswhudrp/1tbiYBn7y1pEKC6rqwAAsR
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.923,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-18_05,2023-01-18_01,2022-06-22_01
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_send_singal, bpf_send_singal_thread and bpf_override_return
-is similar to bpf_write_user and can affect userspace processes.
-Thus, these three helpers should also be restricted by security lockdown.
 
-Signed-off-by: Yi He <clangllvm@126.com>
----
 
-Thanks for you reply.
+On 1/18/23 11:28 AM, Eduard Zingerman wrote:
+> On Sat, 2023-01-14 at 18:00 -0500, Peter Foley wrote:
+>> Avoid build errors on distros that force the stack protector on by
+>> default.
+>> e.g.
+>>    CLANG   /home/peter/linux/work/tools/bpf/bpftool/pid_iter.bpf.o
+>> skeleton/pid_iter.bpf.c:53:5: error: A call to built-in function '__stack_chk_fail' is not supported.
+>> int iter(struct bpf_iter__task_file *ctx)
+>>      ^
+>> 1 error generated.
+>>
+>> Signed-off-by: Peter Foley <pefoley2@pefoley.com>
+>> ---
+>>   tools/bpf/bpftool/Makefile    | 1 +
+>>   tools/bpf/runqslower/Makefile | 5 +++--
+>>   2 files changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+>> index f610e184ce02a..36ac0002e386f 100644
+>> --- a/tools/bpf/bpftool/Makefile
+>> +++ b/tools/bpf/bpftool/Makefile
+>> @@ -215,6 +215,7 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
+>>   		-I$(or $(OUTPUT),.) \
+>>   		-I$(srctree)/tools/include/uapi/ \
+>>   		-I$(LIBBPF_BOOTSTRAP_INCLUDE) \
+>> +		-fno-stack-protector \
+> 
+> While working on clang patch to disable stack protector
+> for BPF target I've noticed that there is an option to
+> disable default configuration file altogether [1]:
+> 
+>    --no-default-config
+> 
+> Should we consider it instead of -fno-stack-protector
+> to shield ourselves from any potential distro-specific
+> changes?
 
-I have studied this problem for months. I would like to give more details to
- clarify why these two helpers can break the INTEGRITY and should be lockdown.
+Peter, could you help check whether adding --no-default-config works
+in your environment or not?
 
-First, this helpers are only for eBPF tracing programs. LSM-bpf and seccomp do 
-not need them. The documents say the two functions are experimental. 
-Now the eBPF products (e.g., Cillium, Falco) seldom use them but the evil eBPF 
-can abuse them.
-
-Second, override_return is similar to bpf_write_user can defintely break the 
-INTEGRITY by altering other processes' system call or kernel functions 
-(KProbe)'s return code.
-
-> Then solution should be toward restricting eBPF in container, there is already
-> sysctl, per process seccomp, LSM + bpf LSM for that.
-Yes, the solution is for restricting eBPF in container. But a fine-gained access 
-control is required, such as assigning different eBPF privilege to various containers, 
-rather than just disable eBPF in a container. 
- 
-The mechanisms you mententioned do not properly sovle the problem.
-sysctl can only disable the unprivielge
-users to access eBPF via the kernel.unprivileged_bpf_disabled flag. The untrusted eBPF
-are installed by privielge users inside a container but can harm the whole system and 
-other shared-kernel containers.
-seccomp also can only disable the bpf system call to totally disable eBPF while we may 
-need to selectively enable the benign features of eBPF and disallow the offensive features
-which may be abused.
-LSM + bpf LSM can implement this functionality. However, it is difficult to identify 
-a process from a container [1] as at many LSM hooks, we can only get a process's pid and
- name which can be forged by the mailicous program. A correct way is to use the inode number
- to set policy for benign processes. Moreover, the LSM bpf's overhead is unacceptable.
-
-[1]. https://blog.doyensec.com/2022/10/11/ebpf-bypass-security-monitoring.html
-
-> Those are more or less same as bpf sending signal. Supervisors are using
-> seccomp to ret kill process and/or sending signals. Where will you draw the
-> line? should we go restrict those too? IMHO this does not relate to lockdown.
-> I don't see that much difference between a seccomp kill and ebpf signal.
-
-The bpf_send_singal is different to any other signal sending functions as it 
-enables a eBPF tracing program from a container to kill any processes 
-(even the privielge proceess) of the host or other containers. 
-Supervisors and seccomp can only kill its child process. Other signal sending 
-do not need to be restricted as they can not be used inside a container to kill 
-any processes outside of a container. 
-
-> This reasoning will kill any effort to improve sandbox mechanisms that are
-> moving some functionality from seccomp ret kill to a more flexible and
-> transparent bpf-LSM model where privileged installs the sandbox. Actually,
-> we are already doing this and beside eBPF flexibility and transparency
-> (change policy at runtime without restart) from a _user perspective_
-We will try to implement alternative mechanisms for constrained eBPF 
-features only since the LSM-bpf have shortages in both flexibility and
- performance. 
-
-This patch is only for blocking the offensive features of eBPF and avoiding them 
-affecting the INTEGRITY of the container, given that the evil eBPF can abuse these
-helpers to affect any processes running in inside or outside of the container, 
-sharing the same kernel.
-
-[1]. https://github.com/Gui774ume/krie/blob/master/ebpf/krie/hooks/lsm.h
-
- include/linux/security.h | 2 ++
- kernel/trace/bpf_trace.c | 9 ++++++---
- 2 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 5b67f208f..42420e620 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -123,6 +123,8 @@ enum lockdown_reason {
- 	LOCKDOWN_DEBUGFS,
- 	LOCKDOWN_XMON_WR,
- 	LOCKDOWN_BPF_WRITE_USER,
-+	LOCKDOWN_BPF_SEND_SIGNAL,
-+	LOCKDOWN_BPF_OVERRIDE_RETURN,
- 	LOCKDOWN_DBG_WRITE_KERNEL,
- 	LOCKDOWN_RTAS_ERROR_INJECTION,
- 	LOCKDOWN_INTEGRITY_MAX,
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 3bbd3f0c8..fdb94868d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1463,9 +1463,11 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_cgrp_storage_delete_proto;
- #endif
- 	case BPF_FUNC_send_signal:
--		return &bpf_send_signal_proto;
-+		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
-+		       NULL : &bpf_send_signal_proto;
- 	case BPF_FUNC_send_signal_thread:
--		return &bpf_send_signal_thread_proto;
-+		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
-+		       NULL : &bpf_send_signal_thread_proto;
- 	case BPF_FUNC_perf_event_read_value:
- 		return &bpf_perf_event_read_value_proto;
- 	case BPF_FUNC_get_ns_current_pid_tgid:
-@@ -1531,7 +1533,8 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_stack_proto;
- #ifdef CONFIG_BPF_KPROBE_OVERRIDE
- 	case BPF_FUNC_override_return:
--		return &bpf_override_return_proto;
-+		return security_locked_down(LOCKDOWN_BPF_OVERRIDE_RETURN) < 0 ?
-+		       NULL : &bpf_override_return_proto;
- #endif
- 	case BPF_FUNC_get_func_ip:
- 		return prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI ?
--- 
-2.25.1
-
+> 
+> [1] https://clang.llvm.org/docs/ClangCommandLineReference.html#cmdoption-clang-no-default-config
+> 
+>>   		-g -O2 -Wall -target bpf -c $< -o $@
+>>   	$(Q)$(LLVM_STRIP) -g $@
+>>   
+>> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+>> index 8b3d87b82b7a2..f7313cc966a04 100644
+>> --- a/tools/bpf/runqslower/Makefile
+>> +++ b/tools/bpf/runqslower/Makefile
+>> @@ -60,8 +60,9 @@ $(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(BPFTOOL)
+>>   	$(QUIET_GEN)$(BPFTOOL) gen skeleton $< > $@
+>>   
+>>   $(OUTPUT)/%.bpf.o: %.bpf.c $(BPFOBJ) | $(OUTPUT)
+>> -	$(QUIET_GEN)$(CLANG) -g -O2 -target bpf $(INCLUDES)		      \
+>> -		 -c $(filter %.c,$^) -o $@ &&				      \
+>> +	$(QUIET_GEN)$(CLANG) -g -O2 -target bpf $(INCLUDES)		\
+>> +		 -fno-stack-protector 					\
+>> +		 -c $(filter %.c,$^) -o $@ &&				\
+>>   	$(LLVM_STRIP) -g $@
+>>   
+>>   $(OUTPUT)/%.o: %.c | $(OUTPUT)
+>>
+>> ---
+>> base-commit: 97ec4d559d939743e8af83628be5af8da610d9dc
+>> change-id: 20230114-bpf-918ae127b77a
+>>
+>> Best regards,
+> 
