@@ -2,208 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3873F673606
-	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 11:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FB367365E
+	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 12:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbjASKuO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 05:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41052 "EHLO
+        id S229806AbjASLJq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 06:09:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbjASKuC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 05:50:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660254A21C
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 02:49:13 -0800 (PST)
+        with ESMTP id S229542AbjASLJo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 06:09:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07FCF8
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 03:09:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674125352;
+        s=mimecast20190719; t=1674126547;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Tgsg+jKubTh3yv7ZSKQzF4Qxnk67C2646FcSbn/LaRg=;
-        b=deqVDl3O5RY7y/7dCvc3fa2E684cOn/Nt87fSYJx/NekiQVWj+U4aLziAqFj1Z08EG5nVl
-        xOgS+9v72VGFL8Qnogzm4wmONep+Ki2+LjVO9NJXFP1fFdwXMr3+afVrNnZP8zCkmbYTmZ
-        XRrXhWF6EJYL1IzQaWqrv4asRytM9bY=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=b5dacYO3mZ+IUzxPOKLB2WoCiOEmnU76gMH3WmurRYc=;
+        b=PWfxQi2LO7d2f80pN3vtm1TuWKwJIpaGtrfoX5CQuE9kog+/ALGYnlD6oZq3jOUs4v0g6x
+        sbNJDdvRMV4/yg0NwAFlftytYuDdQ8hzkCDg26EPqZYp3tciKkfecCi/A0W6lE0UdKBKyL
+        Igp8qqqf5pWF20sAeKpX1GsvWjpYWT0=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-500--RWUqug8M-Czj7gNAWo2hw-1; Thu, 19 Jan 2023 05:49:11 -0500
-X-MC-Unique: -RWUqug8M-Czj7gNAWo2hw-1
-Received: by mail-qt1-f199.google.com with SMTP id f23-20020ac84717000000b003b645f1491aso742377qtp.6
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 02:49:10 -0800 (PST)
+ us-mta-653-UbLYEln3MQejqY1Dh8m9Xg-1; Thu, 19 Jan 2023 06:09:05 -0500
+X-MC-Unique: UbLYEln3MQejqY1Dh8m9Xg-1
+Received: by mail-ed1-f72.google.com with SMTP id z20-20020a05640240d400b0049e1b5f6175so1392898edb.8
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 03:09:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tgsg+jKubTh3yv7ZSKQzF4Qxnk67C2646FcSbn/LaRg=;
-        b=0lVj5TsgAjPeM4aecx2DAsbYCkWLptdsgyYkzEONLxFICjWhAaOmCi73sLe0AmuLtu
-         XQdmdyO4as7n3bP0cT4X13WpqthvksxLjNVb9reuFnLBHFjJKkghb3I/ZZ0iZzIGG3X8
-         EQ3o/5OMSqdDMQpUR7rmn54lsbk+J1NCVtl7qSfwrxxc94VWvc4uN+iwcHlob1pB2kHd
-         yI0QO5c4rpHgWZA//RvYnNpPjM0D61fCrpPcdFVDT7abtmEgceJNZ3DnpECzsRw0S1nD
-         IENEiHmiUsJwcPc9VZZxPr4tKFmgwuaL5KcsoJ92N8/uWnVPmPbyJ920X9AbkHh8H0Xl
-         Yc+w==
-X-Gm-Message-State: AFqh2kqsLM4zdHV9kqK2fhVhSr/sQ7korRw/qySwLH5ToZ82KY9TiSE9
-        LdnDVAro5bUR1LKPILQH3thPMrLwYWGR+AfFGZy+NRP33YWnxge9jAHO1B1mDfDbSIrYfXSTCGU
-        iz3OQK6D8ykQd
-X-Received: by 2002:a05:622a:1e09:b0:3a7:f424:3ef9 with SMTP id br9-20020a05622a1e0900b003a7f4243ef9mr15448763qtb.13.1674125350349;
-        Thu, 19 Jan 2023 02:49:10 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXsJI/f+MaH+UXrw024umAES6RkR56bZGB0+a4DzacCjXf+fQdTonSXjzep3SUU/ku7BhybcWw==
-X-Received: by 2002:a05:622a:1e09:b0:3a7:f424:3ef9 with SMTP id br9-20020a05622a1e0900b003a7f4243ef9mr15448743qtb.13.1674125350057;
-        Thu, 19 Jan 2023 02:49:10 -0800 (PST)
-Received: from sgarzare-redhat (host-82-57-51-245.retail.telecomitalia.it. [82.57.51.245])
-        by smtp.gmail.com with ESMTPSA id q3-20020ac87343000000b003b6464eda40sm2568175qtp.25.2023.01.19.02.49.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 02:49:09 -0800 (PST)
-Date:   Thu, 19 Jan 2023 11:49:02 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>
-Subject: Re: [PATCH RFC 0/3] vsock: add support for sockmap
-Message-ID: <20230119104902.jxst4eblcuyjvums@sgarzare-redhat>
-References: <20230118-support-vsock-sockmap-connectible-v1-0-d47e6294827b@bytedance.com>
+        h=in-reply-to:references:to:content-language:subject:cc:user-agent
+         :mime-version:date:message-id:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b5dacYO3mZ+IUzxPOKLB2WoCiOEmnU76gMH3WmurRYc=;
+        b=66x+3anb80RWCSY49dWwZLObb5pta6M2oG4lPCoWJ6Fma/4GbSISt+6pqqgIWOP4L4
+         9R5No6th08x3w1PyoQLC4CrDbPPdKH3L/IJHLbQ70uvlq0RCEsapi+8rM5BGEazKPSJN
+         o/tTxEUj/8nY6eN4+pO6ZDtc8KxQDWfWy+X8xscMSdW7jineuNpiFtv1/2R67WjyUelY
+         tiqwoWQi7JOvx7yISfQ2h/oDv9MXIftlg+bayOLFHCaTE8XQ5OKVStscs1QZt6hK65+h
+         ib8WW2hfggnGq2Ic05TtuX7BcZbq9u12iqEag0w4NKV0aOes++SFL8lCUoZRTMSDK6DP
+         eqoA==
+X-Gm-Message-State: AFqh2koLAWZcdTxyZslKJj12LzSfLr4ZTIJRaMMoYOvwXNiRzT591LWY
+        aKjYflXcvuV4cubJnurP0p8ybyqpcDKp2i74SHUgESyqVyjt/W6U85XDe/4Jk8XontbncLHn7St
+        s+y0FCrek4yUD
+X-Received: by 2002:a17:906:855:b0:86e:f88:c098 with SMTP id f21-20020a170906085500b0086e0f88c098mr11242946ejd.70.1674126543403;
+        Thu, 19 Jan 2023 03:09:03 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXtbnHfYyGiwOrAeuPRTUID61Xrq5uRfFvaK2kWgnrDkLPDs8ZIDezNWcKJbX3L9nNggDd9XKQ==
+X-Received: by 2002:a17:906:855:b0:86e:f88:c098 with SMTP id f21-20020a170906085500b0086e0f88c098mr11242921ejd.70.1674126543111;
+        Thu, 19 Jan 2023 03:09:03 -0800 (PST)
+Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id o14-20020a17090637ce00b00871390a3b74sm5132112ejc.177.2023.01.19.03.09.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Jan 2023 03:09:02 -0800 (PST)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Content-Type: multipart/mixed; boundary="------------E0MBYAXpLI6FXJqC5vhpAEI7"
+Message-ID: <b29bd572-cd43-7d68-e4bb-4858551981f3@redhat.com>
+Date:   Thu, 19 Jan 2023 12:09:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230118-support-vsock-sockmap-connectible-v1-0-d47e6294827b@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Cc:     brouer@redhat.com
+Subject: Re: [syzbot] kernel BUG in ip_frag_next
+Content-Language: en-US
+To:     syzbot <syzbot+c8a2e66e37eee553c4fd@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, saeed@kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+References: <000000000000d58eae05f28ca51f@google.com>
+In-Reply-To: <000000000000d58eae05f28ca51f@google.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Bobby,
+This is a multi-part message in MIME format.
+--------------E0MBYAXpLI6FXJqC5vhpAEI7
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 18, 2023 at 12:27:39PM -0800, Bobby Eshleman wrote:
->Add support for sockmap to vsock.
->
->We're testing usage of vsock as a way to redirect guest-local UDS requests to
->the host and this patch series greatly improves the performance of such a
->setup.
->
->Compared to copying packets via userspace, this improves throughput by 221% in
->basic testing.
 
-Cool, nice series!
+On 18/01/2023 17.52, syzbot wrote:
+> Hello,
 
->
->Tested as follows.
->
->Setup: guest unix dgram sender -> guest vsock redirector -> host vsock server
->Threads: 1
->Payload: 64k
->No sockmap:
->- 76.3 MB/s
->- The guest vsock redirector was
->  "socat VSOCK-CONNECT:2:1234 UNIX-RECV:/path/to/sock"
->Using sockmap (this patch):
->- 168.8 MB/s (+221%)
+Hi Syzbot,
 
-Assuming the absolute value is correct, there is a typo here, it would 
-be +121% right?
+Could you test this attached patch please, against:
 
->- The guest redirector was a simple sockmap echo server,
->  redirecting unix ingress to vsock 2:1234 egress.
->- Same sender and server programs
->
->Only the virtio transport has been tested.
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
+master
 
-I think is fine for now.
 
->The loopback transport was used in
->writing bpf/selftests, but not thoroughly tested otherwise.
+> syzbot found the following issue on:
+> 
+> HEAD commit:    0c68c8e5ec68 net: mdio: cavium: Remove unneeded simicolons
+> git tree:       net-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=147c7051480000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=4695869845c5f393
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c8a2e66e37eee553c4fd
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173fca39480000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107ba0a9480000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/15c191498614/disk-0c68c8e5.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/7c4c9368d89c/vmlinux-0c68c8e5.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/083770efc7c4/bzImage-0c68c8e5.xz
+> 
+> The issue was bisected to:
+> 
+> commit eedade12f4cb7284555c4c0314485e9575c70ab7
+> Author: Jesper Dangaard Brouer <brouer@redhat.com>
+> Date:   Fri Jan 13 13:52:04 2023 +0000
+> 
+>      net: kfree_skb_list use kmem_cache_free_bulk
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1136ec41480000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1336ec41480000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1536ec41480000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c8a2e66e37eee553c4fd@syzkaller.appspotmail.com
+> Fixes: eedade12f4cb ("net: kfree_skb_list use kmem_cache_free_bulk")
+> 
+> raw_sendmsg: syz-executor409 forgot to set AF_INET. Fix it!
+> ------------[ cut here ]------------
+> kernel BUG at net/ipv4/ip_output.c:724!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 5073 Comm: syz-executor409 Not tainted 6.2.0-rc3-syzkaller-00457-g0c68c8e5ec68 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/12/2023
+> RIP: 0010:ip_frag_next+0xa03/0xa50 net/ipv4/ip_output.c:724
+> Code: e8 82 b1 86 f9 e9 95 fa ff ff 48 8b 3c 24 e8 74 b1 86 f9 e9 5b f8 ff ff 4c 89 ff e8 67 b1 86 f9 e9 1f f8 ff ff e8 3d ad 38 f9 <0f> 0b 48 89 54 24 20 4c 89 44 24 18 e8 4c b1 86 f9 48 8b 54 24 20
+> RSP: 0018:ffffc90003a6f6b8 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffffc90003a6f818 RCX: 0000000000000000
+> RDX: ffff8880772c0000 RSI: ffffffff8848a583 RDI: 0000000000000005
+> RBP: 00000000000005c8 R08: 0000000000000005 R09: 0000000000000000
+> R10: 00000000fffffff2 R11: 0000000000000000 R12: ffff888026841dc0
+> R13: ffffc90003a6f81c R14: 00000000fffffff2 R15: ffffc90003a6f830
+> FS:  0000555555b08300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00005622b70166a8 CR3: 000000007780f000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   ip_do_fragment+0x873/0x17d0 net/ipv4/ip_output.c:902
+>   ip_fragment.constprop.0+0x16b/0x240 net/ipv4/ip_output.c:581
+>   __ip_finish_output net/ipv4/ip_output.c:304 [inline]
+>   __ip_finish_output+0x2de/0x650 net/ipv4/ip_output.c:288
+>   ip_finish_output+0x31/0x280 net/ipv4/ip_output.c:316
+>   NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+>   ip_mc_output+0x21f/0x710 net/ipv4/ip_output.c:415
+>   dst_output include/net/dst.h:444 [inline]
+>   ip_local_out net/ipv4/ip_output.c:126 [inline]
+>   ip_send_skb net/ipv4/ip_output.c:1586 [inline]
+>   ip_push_pending_frames+0x129/0x2b0 net/ipv4/ip_output.c:1606
+>   raw_sendmsg+0x1338/0x2df0 net/ipv4/raw.c:645
+>   inet_sendmsg+0x9d/0xe0 net/ipv4/af_inet.c:827
+>   sock_sendmsg_nosec net/socket.c:722 [inline]
+>   sock_sendmsg+0xde/0x190 net/socket.c:745
+>   __sys_sendto+0x23a/0x340 net/socket.c:2142
+>   __do_sys_sendto net/socket.c:2154 [inline]
+>   __se_sys_sendto net/socket.c:2150 [inline]
+>   __x64_sys_sendto+0xe1/0x1b0 net/socket.c:2150
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f8efa22c499
+> Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffd43ed3198 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+> RAX: ffffffffffffffda RBX: 00007ffd43ed31b8 RCX: 00007f8efa22c499
+> RDX: 000000000000fcf2 RSI: 0000000020000380 RDI: 0000000000000003
+> RBP: 0000000000000003 R08: 0000000020001380 R09: 000000000000006e
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd43ed31c0
+> R13: 00007ffd43ed31e0 R14: 0000000000000000 R15: 0000000000000000
+>   </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:ip_frag_next+0xa03/0xa50 net/ipv4/ip_output.c:724
+> Code: e8 82 b1 86 f9 e9 95 fa ff ff 48 8b 3c 24 e8 74 b1 86 f9 e9 5b f8 ff ff 4c 89 ff e8 67 b1 86 f9 e9 1f f8 ff ff e8 3d ad 38 f9 <0f> 0b 48 89 54 24 20 4c 89 44 24 18 e8 4c b1 86 f9 48 8b 54 24 20
+> RSP: 0018:ffffc90003a6f6b8 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffffc90003a6f818 RCX: 0000000000000000
+> RDX: ffff8880772c0000 RSI: ffffffff8848a583 RDI: 0000000000000005
+> RBP: 00000000000005c8 R08: 0000000000000005 R09: 0000000000000000
+> R10: 00000000fffffff2 R11: 0000000000000000 R12: ffff888026841dc0
+> R13: ffffc90003a6f81c R14: 00000000fffffff2 R15: ffffc90003a6f830
+> FS:  0000555555b08300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000557162e92068 CR3: 000000007780f000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+> 
+--------------E0MBYAXpLI6FXJqC5vhpAEI7
+Content-Type: text/plain; charset=UTF-8; name="18-syzbot-proper-fix-test3"
+Content-Disposition: attachment; filename="18-syzbot-proper-fix-test3"
+Content-Transfer-Encoding: base64
 
-I did a quick review mainly for vsock stuff.
-Hoping others can take a better look at net/vmw_vsock/vsock_bpf.c, since 
-I'm not very familiar with that subsystem.
+bmV0OiBmaXgga2ZyZWVfc2tiX2xpc3QgdXNlIG9mIHNrYl9tYXJrX25vdF9vbl9saXN0CgpG
+cm9tOiBKZXNwZXIgRGFuZ2FhcmQgQnJvdWVyIDxicm91ZXJAcmVkaGF0LmNvbT4KCkEgYnVn
+IHdhcyBpbnRyb2R1Y2VkIGJ5IGNvbW1pdCBlZWRhZGUxMmY0Y2IgKCJuZXQ6IGtmcmVlX3Nr
+Yl9saXN0IHVzZQprbWVtX2NhY2hlX2ZyZWVfYnVsayIpLiBJdCB1bmNvbmRpdGlvbmFsbHkg
+dW5saW5rZWQgdGhlIFNLQiBsaXN0IHZpYQppbnZva2luZyBza2JfbWFya19ub3Rfb25fbGlz
+dCgpLgoKVGhlIHNrYl9tYXJrX25vdF9vbl9saXN0KCkgc2hvdWxkIG9ubHkgYmUgY2FsbGVk
+IGlmIF9fa2ZyZWVfc2tiX3JlYXNvbigpCnJldHVybnMgdHJ1ZSwgbWVhbmluZyB0aGUgU0tC
+IGlzIHJlYWR5IHRvIGJlIGZyZWUnZWQgKGFzIGl0IGNhbGxzL2NoZWNrCnNrYl91bnJlZigp
+KS4KClJlcG9ydGVkLWJ5OiBzeXpib3QrYzhhMmU2NmUzN2VlZTU1M2M0ZmRAc3l6a2FsbGVy
+LmFwcHNwb3RtYWlsLmNvbQpGaXhlczogZWVkYWRlMTJmNGNiICgibmV0OiBrZnJlZV9za2Jf
+bGlzdCB1c2Uga21lbV9jYWNoZV9mcmVlX2J1bGsiKQpTaWduZWQtb2ZmLWJ5OiBKZXNwZXIg
+RGFuZ2FhcmQgQnJvdWVyIDxicm91ZXJAcmVkaGF0LmNvbT4KLS0tCiBuZXQvY29yZS9za2J1
+ZmYuYyB8ICAgIDYgKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAz
+IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL25ldC9jb3JlL3NrYnVmZi5jIGIvbmV0L2Nv
+cmUvc2tidWZmLmMKaW5kZXggNGU3M2FiMzQ4MmI4Li4xYmZmYmNiZTYwODcgMTAwNjQ0Ci0t
+LSBhL25ldC9jb3JlL3NrYnVmZi5jCisrKyBiL25ldC9jb3JlL3NrYnVmZi5jCkBAIC05OTks
+MTAgKzk5OSwxMCBAQCBrZnJlZV9za2JfbGlzdF9yZWFzb24oc3RydWN0IHNrX2J1ZmYgKnNl
+Z3MsIGVudW0gc2tiX2Ryb3BfcmVhc29uIHJlYXNvbikKIAl3aGlsZSAoc2VncykgewogCQlz
+dHJ1Y3Qgc2tfYnVmZiAqbmV4dCA9IHNlZ3MtPm5leHQ7CiAKLQkJc2tiX21hcmtfbm90X29u
+X2xpc3Qoc2Vncyk7Ci0KLQkJaWYgKF9fa2ZyZWVfc2tiX3JlYXNvbihzZWdzLCByZWFzb24p
+KQorCQlpZiAoX19rZnJlZV9za2JfcmVhc29uKHNlZ3MsIHJlYXNvbikpIHsKKwkJCXNrYl9t
+YXJrX25vdF9vbl9saXN0KHNlZ3MpOwogCQkJa2ZyZWVfc2tiX2FkZF9idWxrKHNlZ3MsICZz
+YSwgcmVhc29uKTsKKwkJfQogCiAJCXNlZ3MgPSBuZXh0OwogCX0K
 
-FYI I will be off the next two weeks (till Feb 7) with limited internet 
-access.
-
-Thanks,
-Stefano
-
->
->This series requires the skb patch.
->
->To: Stefan Hajnoczi <stefanha@redhat.com>
->To: Stefano Garzarella <sgarzare@redhat.com>
->To: "Michael S. Tsirkin" <mst@redhat.com>
->To: Jason Wang <jasowang@redhat.com>
->To: "David S. Miller" <davem@davemloft.net>
->To: Eric Dumazet <edumazet@google.com>
->To: Jakub Kicinski <kuba@kernel.org>
->To: Paolo Abeni <pabeni@redhat.com>
->To: Andrii Nakryiko <andrii@kernel.org>
->To: Mykola Lysenko <mykolal@fb.com>
->To: Alexei Starovoitov <ast@kernel.org>
->To: Daniel Borkmann <daniel@iogearbox.net>
->To: Martin KaFai Lau <martin.lau@linux.dev>
->To: Song Liu <song@kernel.org>
->To: Yonghong Song <yhs@fb.com>
->To: John Fastabend <john.fastabend@gmail.com>
->To: KP Singh <kpsingh@kernel.org>
->To: Stanislav Fomichev <sdf@google.com>
->To: Hao Luo <haoluo@google.com>
->To: Jiri Olsa <jolsa@kernel.org>
->To: Shuah Khan <shuah@kernel.org>
->Cc: linux-kernel@vger.kernel.org
->Cc: kvm@vger.kernel.org
->Cc: virtualization@lists.linux-foundation.org
->Cc: netdev@vger.kernel.org
->Cc: bpf@vger.kernel.org
->Cc: linux-kselftest@vger.kernel.org
->Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
->
->---
->Bobby Eshleman (3):
->      vsock: support sockmap
->      selftests/bpf: add vsock to vmtest.sh
->      selftests/bpf: Add a test case for vsock sockmap
->
-> drivers/vhost/vsock.c                              |   1 +
-> include/linux/virtio_vsock.h                       |   1 +
-> include/net/af_vsock.h                             |  17 ++
-> net/vmw_vsock/Makefile                             |   1 +
-> net/vmw_vsock/af_vsock.c                           |  59 ++++++-
-> net/vmw_vsock/virtio_transport.c                   |   2 +
-> net/vmw_vsock/virtio_transport_common.c            |  22 +++
-> net/vmw_vsock/vsock_bpf.c                          | 180 +++++++++++++++++++++
-> net/vmw_vsock/vsock_loopback.c                     |   2 +
-> tools/testing/selftests/bpf/config.x86_64          |   4 +
-> .../selftests/bpf/prog_tests/sockmap_listen.c      | 163 +++++++++++++++++++
-> tools/testing/selftests/bpf/vmtest.sh              |   1 +
-> 12 files changed, 447 insertions(+), 6 deletions(-)
->---
->base-commit: f12f4326c6a75a74e908714be6d2f0e2f0fd0d76
->change-id: 20230118-support-vsock-sockmap-connectible-2e1297d2111a
->
->Best regards,
->-- 
->Bobby Eshleman <bobby.eshleman@bytedance.com>
->
+--------------E0MBYAXpLI6FXJqC5vhpAEI7--
 
