@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A346747AA
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 00:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDEB6747AC
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 00:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbjASX6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 18:58:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
+        id S230174AbjASX6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 18:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbjASX6o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 18:58:44 -0500
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A00FA2597;
-        Thu, 19 Jan 2023 15:58:34 -0800 (PST)
-Received: by mail-qt1-f180.google.com with SMTP id jr19so1744085qtb.7;
-        Thu, 19 Jan 2023 15:58:34 -0800 (PST)
+        with ESMTP id S230161AbjASX6t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 18:58:49 -0500
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E66A25AB;
+        Thu, 19 Jan 2023 15:58:36 -0800 (PST)
+Received: by mail-qv1-f42.google.com with SMTP id d13so2699753qvj.8;
+        Thu, 19 Jan 2023 15:58:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BhSKMP2yHsUoN/zBLwGaM1uaM3tp8od//0hsEDaGujQ=;
-        b=s6OdQ5WDPIAR4vX18yKprqSCWwNbkZSWnF+/57A2UTln1fDPPSp2jL5Vb9TWgRyAL6
-         m7AzgY3OACQflTOezYlHJ1Q8dRmkr5b3MQXolk22zYt1ZI7Iy7YRRvOV8NKXQlokqn4W
-         KGoGMKUaC06fYsqo84md04+sxP2HxL5fCXrnv125Xqi8AKQSCybzI+kaUWoBTOEC7AaM
-         mlDI2mBWa6ntzJD9+zgrkCfTWnYZpkfC93tFPHMNq+CAcUMMUKb0abKN6efdEp/mBIQ0
-         hARPVeiBykIRO3fnjFtwnn9wkeErGk16eC54LFFzG0Gp6y5R7ah+/fobC29l4MJBcMck
-         jEQg==
-X-Gm-Message-State: AFqh2ko9YicpNxjqvgj/OhcDl080IYjrDF/dj/pxpu5PVth+5UuhyUCk
-        STM0fjldehL1OFJAR/DwpflxYK/XYr3MDZe7
-X-Google-Smtp-Source: AMrXdXs1PXckCi8O24A2BPNSuCLfKpTDilzjeeAePe+JH/zXNHy4VKF/zVh81D+PgaINHFzZJCv3EQ==
-X-Received: by 2002:a05:622a:178d:b0:3b6:35cb:b946 with SMTP id s13-20020a05622a178d00b003b635cbb946mr23480628qtk.14.1674172712714;
-        Thu, 19 Jan 2023 15:58:32 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OGgllfnamKoMB7NglMYoKPB7FJSqNfqPQ0lhd43zF6A=;
+        b=Px8tLhsnAXMvQL3nNFKkfMLMaH5FCRCuOP1up2JWzr0XU22u0ZtzfsIz5K+mQqE8Ca
+         sHb0Vs4ULVzJ5rXKQAY31+jLKY+rpikD7BYjFs6K1lUikpGqFLXc5hQkjFz9Zz/G2B2k
+         0GlskyOycT/oFYDpza8CcIUPTHGhgB5JGpmu++NauB/UKv1f8/HeWRpy2FJITM0fM5eQ
+         PXUYVj0gMWPwyrsaQnFCMpBmgkBplj4PFAEbxRLeAvMAqsOzgtQfQXaaL1lHmdDmUmeJ
+         d7Dp98C6l015bvWBy0tBo1mgclzGDLsZqq9NnpYcBtcmWKXdmZhj7orLJS9M1/mOla3e
+         YuAA==
+X-Gm-Message-State: AFqh2kqoQbdlagZY92XiSKuBaTva6YgTrGaaM3tkafuLcIeSD2wMrNem
+        138rA2HSF2sGKY+GgRyr1Vs4aytfoaYzEe8T
+X-Google-Smtp-Source: AMrXdXtoWOGHcjX8V38cgTIt82cwCjuXRFbG6cpPzBjFu54VH2Jejv9JRh3icYkPRXGQoAYju1nycg==
+X-Received: by 2002:a0c:aace:0:b0:535:5cd6:38a6 with SMTP id g14-20020a0caace000000b005355cd638a6mr2679941qvb.50.1674172714601;
+        Thu, 19 Jan 2023 15:58:34 -0800 (PST)
 Received: from localhost ([2620:10d:c091:480::1:2fc9])
-        by smtp.gmail.com with ESMTPSA id bm37-20020a05620a19a500b00704d8ad2e11sm8063824qkb.42.2023.01.19.15.58.31
+        by smtp.gmail.com with ESMTPSA id s10-20020a05620a16aa00b006cfc9846594sm15573699qkj.93.2023.01.19.15.58.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 15:58:32 -0800 (PST)
+        Thu, 19 Jan 2023 15:58:34 -0800 (PST)
 From:   David Vernet <void@manifault.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -44,118 +44,201 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, tj@kernel.org
-Subject: [PATCH bpf-next 0/8] Enable cpumasks to be used as kptrs
-Date:   Thu, 19 Jan 2023 17:58:25 -0600
-Message-Id: <20230119235833.2948341-1-void@manifault.com>
+Subject: [PATCH bpf-next 1/8] bpf: Enable annotating trusted nested pointers
+Date:   Thu, 19 Jan 2023 17:58:26 -0600
+Message-Id: <20230119235833.2948341-2-void@manifault.com>
 X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230119235833.2948341-1-void@manifault.com>
+References: <20230119235833.2948341-1-void@manifault.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-'struct cpumask' is a bitmap data structure in the kernel whose indices
-reflect the CPUs on the system. Commonly, cpumasks are used to track
-which CPUs a task is affinitized to, but they can also be used to e.g.
-track which cores are associated with a scheduling domain, which cores
-on a machine are idle, etc.
+In kfuncs, a "trusted" pointer is a pointer that the kfunc can assume is
+safe, and which the verifier will allow to be passed to a
+KF_TRUSTED_ARGS kfunc. Currently, a KF_TRUSTED_ARGS kfunc disallows any
+pointer to be passed at a nonzero offset, but sometimes this is in fact
+safe if the "nested" pointer's lifetime is inherited from its parent.
+For example, the const cpumask_t *cpus_ptr field in a struct task_struct
+will remain valid until the task itself is destroyed, and thus would
+also be safe to pass to a KF_TRUSTED_ARGS kfunc.
 
-It would be useful to be able to query those cpumasks from BPF programs.
-For example, when tracing percpu operations, it would be convenient to
-have cpumask support if the tracing program wants to track which tasks
-end up running on which CPUs in different time intervals, and to check
-their cpumask distribution while doing so. Similarly, if we're tracking
-NUMA allocations, CPU scheduling domain associations, etc, it would be
-useful to be able to concretely compare decisions made by the kernel to
-a task's cpumask.
+While it would be conceptually simple to enable this by using BTF tags,
+gcc unfortunately does not yet support this. In the interim, this patch
+enables support for this by using a type-naming convention. A new
+BTF_TYPE_SAFE_NESTED macro is defined in verifier.c which allows a
+developer to specify the nested fields of a type which are considered
+trusted if its parent is also trusted. The verifier is also updated to
+account for this. A patch with selftests will be added in a follow-on
+change, along with documentation for this feature.
 
-So as to enable such use cases, this patch set proposes a set of kfuncs,
-namespaced to bpf_cpumask_*, which allow BPF programs to make queries
-against cpumasks, and to allocate and store them as kptrs.
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ include/linux/bpf.h   |  4 +++
+ kernel/bpf/btf.c      | 64 ++++++++++++++++++++++++++++++++++++++++++-
+ kernel/bpf/verifier.c | 32 ++++++++++++++++++++--
+ 3 files changed, 96 insertions(+), 4 deletions(-)
 
-In order to enable these kfuncs, this patch set adds two new
-kfunc-related capabilities to the verifier:
-
-1. Defining a mechanism that allows developers to specify which fields
-   of a struct type should inherit their parent's trust. Specifically,
-   we specify that the 'const cpumask_t *cpus_ptr' field will be
-   considered trusted if the parent struct task_struct is trusted.
-
-2. Allowing KF_TRUSTED_ARGS pointers to be walked to see if a BTF type
-   is equivalent to what a kfunc requires. For example, the patch set
-   defines the following type:
-
-struct bpf_cpumask {
-	cpumask_t cpumask;
-	refcount_t usage;
-};
-
-  cpumask_t typedefs a struct cpumask, so if a BPF program has a trusted
-  pointer to a struct bpf_cpumask, it would therefore be safe to pass
-  that to a kfunc expecting a const struct cpumask *. Note that 
-
-3. Updating the verifier to prevent NULL PTR_TO_MEM pointers to be
-   passed to KF_TRUSTED_ARGS kfuncs. Without this, a kfunc may crash if
-   it's given a pointer to what it thinks is a scalar struct, but in
-   reality is an address. For example, a bitmap embedded in a cpumask_t.
-
-Following these BPF verifier changes (and their associated selftest
-additions), this patchset adds a set of cpumask kfuncs in
-kernel/bpf/cpumask.c, and then tests and documents them.
-
-Lastly, note that some of the kfuncs that were added would benefit from
-additional verification logic. For example, any kfunc taking a CPU
-argument that exceeds the number of CPUs on the system, etc. For now, we
-silently check for and ignore these cases at runtime. When we have e.g.
-per-argument kfunc flags, it might be helpful to add another KF_CPU-type
-flag that specifies that the verifier should validate that it's a valid
-CPU.
-
-David Vernet (8):
-  bpf: Enable annotating trusted nested pointers
-  bpf: Allow trusted args to walk struct when checking BTF IDs
-  bpf: Disallow NULL PTR_TO_MEM for trusted kfuncs
-  bpf: Enable cpumasks to be queried and used as kptrs
-  selftests/bpf: Add nested trust selftests suite
-  selftests/bpf: Add selftest suite for cpumask kfuncs
-  bpf/docs: Document cpumask kfuncs in a new file
-  bpf/docs: Document how nested trusted fields may be defined
-
- Documentation/bpf/cpumasks.rst                | 353 +++++++++++++
- Documentation/bpf/index.rst                   |   1 +
- Documentation/bpf/kfuncs.rst                  |  26 +-
- include/linux/bpf.h                           |   4 +
- kernel/bpf/Makefile                           |   1 +
- kernel/bpf/btf.c                              |  64 ++-
- kernel/bpf/cpumask.c                          | 476 ++++++++++++++++++
- kernel/bpf/verifier.c                         |  67 ++-
- tools/testing/selftests/bpf/DENYLIST.s390x    |   2 +
- .../selftests/bpf/prog_tests/cpumask.c        |  74 +++
- .../selftests/bpf/prog_tests/nested_trust.c   |  64 +++
- .../selftests/bpf/progs/cpumask_common.h      | 114 +++++
- .../selftests/bpf/progs/cpumask_failure.c     | 125 +++++
- .../selftests/bpf/progs/cpumask_success.c     | 426 ++++++++++++++++
- .../selftests/bpf/progs/nested_trust_common.h |  12 +
- .../bpf/progs/nested_trust_failure.c          |  33 ++
- .../bpf/progs/nested_trust_success.c          |  29 ++
- 17 files changed, 1865 insertions(+), 6 deletions(-)
- create mode 100644 Documentation/bpf/cpumasks.rst
- create mode 100644 kernel/bpf/cpumask.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cpumask.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/nested_trust.c
- create mode 100644 tools/testing/selftests/bpf/progs/cpumask_common.h
- create mode 100644 tools/testing/selftests/bpf/progs/cpumask_failure.c
- create mode 100644 tools/testing/selftests/bpf/progs/cpumask_success.c
- create mode 100644 tools/testing/selftests/bpf/progs/nested_trust_common.h
- create mode 100644 tools/testing/selftests/bpf/progs/nested_trust_failure.c
- create mode 100644 tools/testing/selftests/bpf/progs/nested_trust_success.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index ae7771c7d750..283e96e5b228 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2186,6 +2186,10 @@ struct bpf_core_ctx {
+ 	const struct btf *btf;
+ };
+ 
++bool btf_nested_type_is_trusted(struct bpf_verifier_log *log,
++				const struct bpf_reg_state *reg,
++				int off);
++
+ int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
+ 		   int relo_idx, void *insn);
+ 
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 4ba749fcce9d..fcd66edc22af 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -24,6 +24,7 @@
+ #include <linux/perf_event.h>
+ #include <linux/bsearch.h>
+ #include <linux/kobject.h>
++#include <linux/stringify.h>
+ #include <linux/sysfs.h>
+ #include <net/sock.h>
+ #include "../tools/lib/bpf/relo_core.h"
+@@ -529,7 +530,7 @@ s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind)
+ 	return -ENOENT;
+ }
+ 
+-static s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p)
++s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p)
+ {
+ 	struct btf *btf;
+ 	s32 ret;
+@@ -8227,3 +8228,64 @@ int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
+ 	}
+ 	return err;
+ }
++
++bool btf_nested_type_is_trusted(struct bpf_verifier_log *log,
++				const struct bpf_reg_state *reg,
++				int off)
++{
++	struct btf *btf = reg->btf;
++	const struct btf_type *walk_type, *safe_type;
++	const char *tname;
++	char safe_tname[64];
++	long ret, safe_id;
++	const struct btf_member *member, *m_walk = NULL;
++	u32 i;
++	const char *walk_name;
++
++	walk_type = btf_type_by_id(btf, reg->btf_id);
++	if (!walk_type)
++		return false;
++
++	tname = btf_name_by_offset(btf, walk_type->name_off);
++
++	ret = snprintf(safe_tname, sizeof(safe_tname), "%s__safe_fields", tname);
++	if (ret < 0)
++		return false;
++
++	safe_id = btf_find_by_name_kind(btf, safe_tname, BTF_INFO_KIND(walk_type->info));
++	if (safe_id < 0)
++		return false;
++
++	safe_type = btf_type_by_id(btf, safe_id);
++	if (!safe_type)
++		return false;
++
++	for_each_member(i, walk_type, member) {
++		u32 moff;
++
++		/* We're looking for the PTR_TO_BTF_ID member in the struct
++		 * type we're walking which matches the specified offset.
++		 * Below, we'll iterate over the fields in the safe variant of
++		 * the struct and see if any of them has a matching type /
++		 * name.
++		 */
++		moff = __btf_member_bit_offset(walk_type, member) / 8;
++		if (off == moff) {
++			m_walk = member;
++			break;
++		}
++	}
++	if (m_walk == NULL)
++		return false;
++
++	walk_name = __btf_name_by_offset(btf, m_walk->name_off);
++	for_each_member(i, safe_type, member) {
++		const char *m_name = __btf_name_by_offset(btf, member->name_off);
++
++		/* If we match on both type and name, the field is considered trusted. */
++		if (m_walk->type == member->type && !strcmp(walk_name, m_name))
++			return true;
++	}
++
++	return false;
++}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ca7db2ce70b9..7f973847b58e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4755,6 +4755,25 @@ static int bpf_map_direct_read(struct bpf_map *map, int off, int size, u64 *val)
+ 	return 0;
+ }
+ 
++#define BTF_TYPE_SAFE_NESTED(__type)  __PASTE(__type, __safe_fields)
++
++BTF_TYPE_SAFE_NESTED(struct task_struct) {
++	const cpumask_t *cpus_ptr;
++};
++
++static bool nested_ptr_is_trusted(struct bpf_verifier_env *env,
++				  struct bpf_reg_state *reg,
++				  int off)
++{
++	/* If its parent is not trusted, it can't regain its trusted status. */
++	if (!is_trusted_reg(reg))
++		return false;
++
++	BTF_TYPE_EMIT(BTF_TYPE_SAFE_NESTED(struct task_struct));
++
++	return btf_nested_type_is_trusted(&env->log, reg, off);
++}
++
+ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+ 				   struct bpf_reg_state *regs,
+ 				   int regno, int off, int size,
+@@ -4843,10 +4862,17 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+ 	if (type_flag(reg->type) & PTR_UNTRUSTED)
+ 		flag |= PTR_UNTRUSTED;
+ 
+-	/* By default any pointer obtained from walking a trusted pointer is
+-	 * no longer trusted except the rcu case below.
++	/* By default any pointer obtained from walking a trusted pointer is no
++	 * longer trusted, unless the field being accessed has explicitly been
++	 * marked as inheriting its parent's state of trust.
++	 *
++	 * An RCU-protected pointer can also be deemed trusted if we are in an
++	 * RCU read region. This case is handled below.
+ 	 */
+-	flag &= ~PTR_TRUSTED;
++	if (nested_ptr_is_trusted(env, reg, off))
++		flag |= PTR_TRUSTED;
++	else
++		flag &= ~PTR_TRUSTED;
+ 
+ 	if (flag & MEM_RCU) {
+ 		/* Mark value register as MEM_RCU only if it is protected by
 -- 
 2.39.0
 
