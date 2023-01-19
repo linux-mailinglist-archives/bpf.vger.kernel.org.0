@@ -2,199 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F2167306D
-	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 05:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696216730EB
+	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 06:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbjASEiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Jan 2023 23:38:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56044 "EHLO
+        id S229714AbjASFDf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 00:03:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbjASEha (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Jan 2023 23:37:30 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E075F39F
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 20:34:13 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id d10so553986pgm.13
-        for <bpf@vger.kernel.org>; Wed, 18 Jan 2023 20:34:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G0ilO45QkkX+/f6PtRJ+jeYES3LN3IOqIe/SPz0rViU=;
-        b=UTvd3iQyKkljSq/BEInV+Bjgjsrs2X/F/1Mt1bgK8OgenuQj0jK7rIFvMCEuc7h348
-         6PFwd9Ct73QguW8RIKfgT6+WH8V1Tx8eJeV3RMTsepqwEbsteDkrO6sWEUauchAZYK3c
-         PntZIA51xXQzNrObzVjj8fl5OEWN9aEdfjwkoHqBFOfRAJg1E6OBjg2iGwMk3eoHjaYj
-         9pcR0f4N6Ab9j2urTw/TJTsHqaiUasDXkIoi7kVxaLTg7eWwKHDGzjGEZeSL0x2sjnHb
-         pwqNWiKd8h2DADuEfHS5hajSDGLLM+e/p22Ybpev/j804lTUGv5sKjTVurJAY3ckfkj3
-         kUUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G0ilO45QkkX+/f6PtRJ+jeYES3LN3IOqIe/SPz0rViU=;
-        b=dVaAzPUI0Wr9DB3D62zm0Ue161iPdgq4UmJtUWp/N2lw0A3/4qGEBIClqWz+rGKUjV
-         WphEQslFzOQr0xyKstd84EZ2a9XM0c5U2fN/MrqhlfGUonZ1OXr9MFj6m0+IJiBWaNNP
-         ZNtx9I4sx6Q9ILzzoDq4nfomkxWxcDhbkrlCJySACSeYvDzIe+AuNCnJmNRq/ysMGIy1
-         T96FgvTdeN6/EjJCVNJ0lMbIMXXu9ZXybumYKosTHHQbuerr+rmzo7W81uIrFTm/bRH0
-         rLRu1Rs0hw6/OPcB7qBIyXiwrVXIXZXS0m0NKnaZodZnZ8c9hXEWckxtz1Ce0hwZ+rUP
-         jDUg==
-X-Gm-Message-State: AFqh2kpRts4Y+09bNPVTyh/e6yE9ALwBuALMsQ63HiHInRz5e9+xX97h
-        kdJPbZ0rxXrsB9/rzFwfmzM=
-X-Google-Smtp-Source: AMrXdXuA/+R3UdeieH763BwIwZtKz5fBnBKw2+6FkHqe/YJKYl+3AtaeisbpvhcNC3tmr+j9tbr4bw==
-X-Received: by 2002:aa7:9250:0:b0:58d:917e:59d8 with SMTP id 16-20020aa79250000000b0058d917e59d8mr7962511pfp.7.1674102771770;
-        Wed, 18 Jan 2023 20:32:51 -0800 (PST)
-Received: from MacBook-Pro-6.local ([2620:10d:c090:400::5:194d])
-        by smtp.gmail.com with ESMTPSA id b131-20020a621b89000000b005815217e665sm22883058pfb.65.2023.01.18.20.32.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jan 2023 20:32:51 -0800 (PST)
-Date:   Wed, 18 Jan 2023 20:32:47 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Vernet <void@manifault.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [RFC PATCH v2] Documentation/bpf: Add a description of "stable
- kfuncs"
-Message-ID: <20230119043247.tktxsztjcr3ckbby@MacBook-Pro-6.local>
-References: <20230117212731.442859-1-toke@redhat.com>
- <CAKH8qBuvBomTXqNB+a6n_PbJKSNFazrAxEWsVT-=4XfztuJ7dw@mail.gmail.com>
- <87v8l4byyb.fsf@toke.dk>
- <CAKH8qBs=nEhhy2Qu7CpyAHx6gOaWR25tRF7aopti5-TSuw66HQ@mail.gmail.com>
- <CAADnVQKy1QzM+wg1BxfYA30QsTaM4M5RRCi+VHN6A7ah2BeZZw@mail.gmail.com>
- <CAKH8qBvZgoOe24MMY+Jn-6guJzGVuJS9zW4v6H+fhgcp7X_9jQ@mail.gmail.com>
- <3500bace-de87-0335-3fe3-6a5c0b4ce6ad@iogearbox.net>
+        with ESMTP id S229749AbjASFC4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 00:02:56 -0500
+X-Greylist: delayed 1810 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 Jan 2023 20:56:52 PST
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18FFEDB;
+        Wed, 18 Jan 2023 20:56:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version:
+        Content-Type; bh=ZQ//IA0NhKdNE+rYfKAyp7+VVDgWEzVXpQLE2095Tpg=;
+        b=f5bVgdyhOtYwDtdjvRtO78ken69rCoTHl+ndTtW+Kki+il066LR1BgJoPsvZqL
+        QqRf+r9qzbp976qfwSri6WkJ8/ufyENSUBcd+QrTtxYJwW/yHw/0VkCchUSyPdcB
+        K8/3SU5D+xSc0s6VCZ97ZA8udMXxCl8xRTDhVL+uppokM=
+Received: from localhost.localdomain (unknown [202.112.238.191])
+        by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wA3B2qWxchjSVC7AA--.61981S4;
+        Thu, 19 Jan 2023 12:22:48 +0800 (CST)
+From:   Yi He <clangllvm@126.com>
+To:     tixxdz@gmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        clangllvm@126.com, daniel@iogearbox.net, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev,
+        mhiramat@kernel.org, rostedt@goodmis.org, sdf@google.com,
+        song@kernel.org, yhs@fb.com, yhs@meta.com
+Subject: [PATCH V2] bpf: security enhancement by limiting the offensive eBPF helpers
+Date:   Thu, 19 Jan 2023 12:22:44 +0800
+Message-Id: <20230119042244.763779-1-clangllvm@126.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAEiveUd_N8qHy54AS0q90FuUSQ=7mePm8FL88Aw-sY7fT7NqFQ@mail.gmail.com>
+References: <CAEiveUd_N8qHy54AS0q90FuUSQ=7mePm8FL88Aw-sY7fT7NqFQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3500bace-de87-0335-3fe3-6a5c0b4ce6ad@iogearbox.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wA3B2qWxchjSVC7AA--.61981S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Gw1DZr4DZF13Cr48Aw4rGrg_yoW7ur45pF
+        WDKry3Ar4kJr4Ik347J3yxWF4Fy3y5WrW7Gan5K3y8ZanxJr40gr1fKF4a9Fn5ZrZ8G3ya
+        q39FvrZ8Aa1Dua7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRb_-PUUUUU=
+X-Originating-IP: [202.112.238.191]
+X-CM-SenderInfo: xfod0wpooyzqqrswhudrp/1tbiYBn7y1pEKC6rqwAAsR
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 11:48:59AM +0100, Daniel Borkmann wrote:
-> 
-> My $0.02 is that I don't think we need to make a hard-cut ban as part of this.
+The bpf_send_singal, bpf_send_singal_thread and bpf_override_return
+is similar to bpf_write_user and can affect userspace processes.
+Thus, these three helpers should also be restricted by security lockdown.
 
-The hard-cut is easier to enforce otherwise every developer will be arguing that
-their new feature is special and it requires a new discussion.
-This thread has been going for too long. We need to finish it now and
-don't come back to it again every now and then.
+Signed-off-by: Yi He <clangllvm@126.com>
+---
 
-imo this is the summary of the thread:
+Thanks for you reply.
 
-bpf folks fall into two categories: kernel maintainers and bpf developers/users.
-- developers add new bpf features. They obviously want to use them and want bpf users
-to know that the feature they added is not going to disappear in the next kernel.
-They want stability.
-- maintainers want to make sure that the kernel development doesn't suffer because
-developers keep adding new apis. They want freedom to innovate and change apis.
-Maintainers also know that developers make mistakes and might leave the community.
-The kernel is huge and core infra changes all the time.
-bpf apis must never be a reason not to change something in the kernel.
+I have studied this problem for months. I would like to give more details to
+ clarify why these two helpers can break the INTEGRITY and should be lockdown.
 
-Freedom to change and stability just don't overlap. 
-These two camps can never agree on what is more important.
-But we can make them co-exist.
+First, this helpers are only for eBPF tracing programs. LSM-bpf and seccomp do 
+not need them. The documents say the two functions are experimental. 
+Now the eBPF products (e.g., Cillium, Falco) seldom use them but the evil eBPF 
+can abuse them.
 
-The bpf developers adding new kfunc should assume that it's stable and proceed
-to use it in bpf progs and production applications.
-The bpf maintainers will keep this stability promise. They obviously will not
-reap it out of the kernel on the whim, but they will nuke it if this kfunc
-will be in the way of the kernel innovation.
-The longer the kfunc is present the harder it will be for maintainers to justify
-removing it. The developers have to stick around and demonstrate that their
-kfunc is actually being used. The better developers do it the bigger the effort
-maintainers will put into keeping the kfunc perfectly intact.
+Second, override_return is similar to bpf_write_user can defintely break the 
+INTEGRITY by altering other processes' system call or kernel functions 
+(KProbe)'s return code.
 
-Some kfunc might be perfect on the first try and it will be stable from the
-first kernel release it appeared in.
-Other kfuncs might be questionable. Like what happened with conntrack kfunc.
-It looked good first, but then the same developers who added it came back to change it.
-The approach of 'assume stable, but fix it if you like' worked in this case.
+> Then solution should be toward restricting eBPF in container, there is already
+> sysctl, per process seccomp, LSM + bpf LSM for that.
+Yes, the solution is for restricting eBPF in container. But a fine-gained access 
+control is required, such as assigning different eBPF privilege to various containers, 
+rather than just disable eBPF in a container. 
+ 
+The mechanisms you mententioned do not properly sovle the problem.
+sysctl can only disable the unprivielge
+users to access eBPF via the kernel.unprivileged_bpf_disabled flag. The untrusted eBPF
+are installed by privielge users inside a container but can harm the whole system and 
+other shared-kernel containers.
+seccomp also can only disable the bpf system call to totally disable eBPF while we may 
+need to selectively enable the benign features of eBPF and disallow the offensive features
+which may be abused.
+LSM + bpf LSM can implement this functionality. However, it is difficult to identify 
+a process from a container [1] as at many LSM hooks, we can only get a process's pid and
+ name which can be forged by the mailicous program. A correct way is to use the inode number
+ to set policy for benign processes. Moreover, the LSM bpf's overhead is unacceptable.
 
-Take bpf_obj_new kfunc. I think it's great and I hope the interface will stick.
-But we have an option to change it.
+[1]. https://blog.doyensec.com/2022/10/11/ebpf-bypass-security-monitoring.html
 
-Take Andrii's upcoming 'open coded iterators'. The concept and api look great.
-I hope we will do it right the first time and
-bpf progs will start to use it immediately.
-In such case why would anyone think of changing it?
-If api works well and progs are using we will keep it this way.
+> Those are more or less same as bpf sending signal. Supervisors are using
+> seccomp to ret kill process and/or sending signals. Where will you draw the
+> line? should we go restrict those too? IMHO this does not relate to lockdown.
+> I don't see that much difference between a seccomp kill and ebpf signal.
 
-But imagine we decide to replace the verifier with something better.
-It will give us much better flexibility, but sadly bounded loops and
-iterators will be in the way.
-What we most likely going to do in such case we'll keep two verifiers for
-several years and deprecate the old one along with kfuncs that we couldn't keep.
-That would be a scheme for deprecation of kfunc.
-Maybe we will use KF_DEPRECATE mechansim in such case or something else.
-I think we need to cross that bridge when we get there.
+The bpf_send_singal is different to any other signal sending functions as it 
+enables a eBPF tracing program from a container to kill any processes 
+(even the privielge proceess) of the host or other containers. 
+Supervisors and seccomp can only kill its child process. Other signal sending 
+do not need to be restricted as they can not be used inside a container to kill 
+any processes outside of a container. 
 
-Introducing KF_STABLE and KF_DEPRECATED right now looks premature.
-We can discuss it, but adding it to a doc and committing to it is too early.
-We don't have any kfuncs to mark as KF_STABLE or as KF_DEPRECATED.
-No one presented any data on usage of existing kfuncs.
-So we're not going to change or remove any one of them.
-bpf developers and users should assume that all kfuncs are stable and use them.
-When somebody comes to argue that a particular kfunc needs to change
-the developer who added that kfunc better to be around to argue that the kfunc is
-perfect the way it is. If developer is gone the maintainers will make a call.
-It's a self regulating system.
-kfuncs will be stable if developers/users are around.
-Yet the maintainers will have a freedom to change if absolutely necessary.
+> This reasoning will kill any effort to improve sandbox mechanisms that are
+> moving some functionality from seccomp ret kill to a more flexible and
+> transparent bpf-LSM model where privileged installs the sandbox. Actually,
+> we are already doing this and beside eBPF flexibility and transparency
+> (change policy at runtime without restart) from a _user perspective_
+We will try to implement alternative mechanisms for constrained eBPF 
+features only since the LSM-bpf have shortages in both flexibility and
+ performance. 
 
-Back to deprecation...
-I think KF_DEPRECATED is a good idea.
-When kfunc will be auto emitted into vmlinux.h (or whatever other file)
-or shipped in libbpf header we can emit
-__attribute__((deprecated("reason", "replacement")));
-to that header file (so it's seen during bpf prog build) and
-start dmesg warn on them in the verifier.
-Kernel splats do get noticed. The users would have to act quickly.
+This patch is only for blocking the offensive features of eBPF and avoiding them 
+affecting the INTEGRITY of the container, given that the evil eBPF can abuse these
+helpers to affect any processes running in inside or outside of the container, 
+sharing the same kernel.
 
-As far as KF_STABLE... I think it hurts the system in the long run.
-The developer can argue at one point in time that kfunc has to be KF_STABLE.
-The patch will be applied, but the developer is off the hook and can disappear.
-The maintainers would have to argue on behalf of the developer
-and keep maintaining it? The maintainers won't have a signal whether
-kfunc is still useful after initial KF_STABLE patch.
+[1]. https://github.com/Gui774ume/krie/blob/master/ebpf/krie/hooks/lsm.h
 
-I think it's more important to decide how we document kfuncs and
-how equivalent of bpf_helper_defs.h can be done.
+ include/linux/security.h | 2 ++
+ kernel/trace/bpf_trace.c | 9 ++++++---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-> The 'All new BPF kernel helper-like functionality must initially start out as
-> kfuncs.' is pretty clear where things would need to start out with, and we could
-> leave the option on the table if really needed to go BPF helper route when
-> promoting kfunc to stable at the same time. I had that in the text suggestion
-> earlier, it's more corner case and maybe we'll never need it but we also don't
-> drive ourselves into a corner where we close the door on it. Lets let the infra
-> around kfuncs evolve further first.
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 5b67f208f..42420e620 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -123,6 +123,8 @@ enum lockdown_reason {
+ 	LOCKDOWN_DEBUGFS,
+ 	LOCKDOWN_XMON_WR,
+ 	LOCKDOWN_BPF_WRITE_USER,
++	LOCKDOWN_BPF_SEND_SIGNAL,
++	LOCKDOWN_BPF_OVERRIDE_RETURN,
+ 	LOCKDOWN_DBG_WRITE_KERNEL,
+ 	LOCKDOWN_RTAS_ERROR_INJECTION,
+ 	LOCKDOWN_INTEGRITY_MAX,
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 3bbd3f0c8..fdb94868d 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1463,9 +1463,11 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_cgrp_storage_delete_proto;
+ #endif
+ 	case BPF_FUNC_send_signal:
+-		return &bpf_send_signal_proto;
++		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
++		       NULL : &bpf_send_signal_proto;
+ 	case BPF_FUNC_send_signal_thread:
+-		return &bpf_send_signal_thread_proto;
++		return security_locked_down(LOCKDOWN_BPF_SEND_SIGNAL) < 0 ?
++		       NULL : &bpf_send_signal_thread_proto;
+ 	case BPF_FUNC_perf_event_read_value:
+ 		return &bpf_perf_event_read_value_proto;
+ 	case BPF_FUNC_get_ns_current_pid_tgid:
+@@ -1531,7 +1533,8 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_stack_proto;
+ #ifdef CONFIG_BPF_KPROBE_OVERRIDE
+ 	case BPF_FUNC_override_return:
+-		return &bpf_override_return_proto;
++		return security_locked_down(LOCKDOWN_BPF_OVERRIDE_RETURN) < 0 ?
++		       NULL : &bpf_override_return_proto;
+ #endif
+ 	case BPF_FUNC_get_func_ip:
+ 		return prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI ?
+-- 
+2.25.1
 
-Going kfunc->helper for stability was discussed already. It probably got lost
-in the noise. The summary was that it's not an option for the following reason:
-kfuncs and helpers are done through different mechanisms on prog and kernel side.
-The prog either sees = (void *)1 hack or normal call to extern func.
-The generated code is different.
-Say, we convert a kfunc to helper. Immediately the existing bpf prog that uses 
-that kfunc will fail to load. That's the opposite of stability.
-We're going to require the developer to demonstrate the real world use of kfunc
-before promoting to stable, but with such 'promotion' we will break bpf progs.
-Say, we keep kfunc and introduce a new helper that does exactly the same.
-But it won't help bpf prog. The prog was using kfunc in production,
-why would it do some kind of CO-RE thing to compile 'call foo' differently
-depending whether 'foo' is kfunc or helper in the given kernel. And so on.
