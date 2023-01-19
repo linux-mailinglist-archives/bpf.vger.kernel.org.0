@@ -2,90 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8EA367427E
-	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 20:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB01674209
+	for <lists+bpf@lfdr.de>; Thu, 19 Jan 2023 20:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbjASTPQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 14:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        id S230483AbjASTFL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 14:05:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbjASTOW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 14:14:22 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F651966CA;
-        Thu, 19 Jan 2023 11:13:05 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id c26so2245247pfp.10;
-        Thu, 19 Jan 2023 11:13:05 -0800 (PST)
+        with ESMTP id S231300AbjASTFE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 14:05:04 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160B34AA41
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 11:04:13 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id r9so2807374wrw.4
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 11:04:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hp6yFzF+wsVEa0WBaxMhTO9O/mR1H5I+SKpcOxOzy5Q=;
-        b=jSnBKmfpUvc+un0ORHkgMHkHhLCrX46czrBEvsYvY3rNao+BfXLO00yf6juMSQxzeG
-         AMvRNowqWEtvr6xIstUJE/jUC/B59U+5ALN/BHTt7lH4mj942gu1TeXXX/nyQio0qxo8
-         OPpDK4TCS1Z8uY3Q1AaqT4Xfqh8vhSNiy+RMs5q3p9Ozu/HFw2ThlfB2JdLSIbtnU7SI
-         zVlzzDOHCkmfUyxho1of2ZzUOb2NU54nY+UClCIkLTCKoiohf0nUaf7F9K2g60NOcUFV
-         hnBqlclV9PHiFFjcOkXdPEg3YAWzSYrgSidbo89nXx9oYfqz2kbD0BGgb/OoAkKWmqDj
-         OJYg==
+        d=google.com; s=20210112;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bagGf68ry1JpnwUnvUmcScyJ7gubFGzB5rLy+GIW+8o=;
+        b=Lng8WB8mNVBoxfvrWFqe/ikPrxiqLnUVY+IlWZrUeFSnrEwGf8PQ2OSEZTbUoOIxIE
+         yp5GE7dz1OlvzCPE9TS5VjLyoxAwaMZCEIoP0SZg1kMHCCa/10c+q6CwO5wq8UNYkUYh
+         wFyujVatb6VulfkDnKiTp//G4JCu3dunSo1DaeIA50eCsOqBLJ0jdNRSbG9BNVwNQOP/
+         AGq1pS6ktFJQQWoB7HYUQGvtjxkNQBrJO8aF97LWtZJsc076PW9jvie+lTQZ9fXGMjDS
+         zxMxRNcyvHCAJgg0eUyoKBl5LHOTZSOnU93hmqE9TrMPOyVUWv/CcfMTLhJoLNvHfVXW
+         2FbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hp6yFzF+wsVEa0WBaxMhTO9O/mR1H5I+SKpcOxOzy5Q=;
-        b=WvR2QNzhZc5PrOl4wLNxx5nQAq7jQw1bzTn7A4dAZUNAXkSq21EImSOvipnr6qF9bG
-         vY+ETRwyhimnLv9kmZ5iqzCe9Pi3AjAA0R4+Ibk79YYpMEvzxOnwdu4E5GMQPfCGXvhZ
-         6wmny08wnxNwjCe4JiDhGa1+CnDSIsNJ1XnqbOE9iWfVcWCrNPZuI8MJMUixMQLL1Hfr
-         OgSGhhiIYiEI2hGSYt8OAXxNZEpH606LocUDKh7/hY90AyXkp6C9M384Qprn/qg4JDsD
-         hZ8rlARFrgsNAhfssriYkXwEPLKL4MXYkv/lE0PIgC/3DHDy1OW3Pws+tZXg+E8fDrcF
-         vhhg==
-X-Gm-Message-State: AFqh2krbIBGAb4pqRUs3IPSxPUHGZeDNV4X//aqjzub+VB4o7Uy0O/Es
-        Zk0Cmn6gT0nksvZbWlM4SiY=
-X-Google-Smtp-Source: AMrXdXttYXeHlAHsKvGQuRpv00MAksbsNKqK1QF216tiS6HVa5WDr4jr7q1JXOcqDjYlV4ASgYyv/Q==
-X-Received: by 2002:aa7:9607:0:b0:580:9e9e:c442 with SMTP id q7-20020aa79607000000b005809e9ec442mr13174811pfg.24.1674155582525;
-        Thu, 19 Jan 2023 11:13:02 -0800 (PST)
-Received: from localhost (c-73-164-155-12.hsd1.wa.comcast.net. [73.164.155.12])
-        by smtp.gmail.com with ESMTPSA id x10-20020aa79aca000000b0058a0e61136asm18539819pfp.66.2023.01.19.11.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 11:13:02 -0800 (PST)
-Date:   Wed, 18 Jan 2023 15:14:02 +0000
-From:   Bobby Eshleman <bobbyeshleman@gmail.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bagGf68ry1JpnwUnvUmcScyJ7gubFGzB5rLy+GIW+8o=;
+        b=6lVHHdmscKqBfgsuwz8VzRA0P6eya7Z6yERoky/EkopCqLZr+ZoLrbr3hwyTmjb9vj
+         T2MK4HtC9qRI4rx6cXkoWuRvUIKiVW9m7LKPuAic+qTxb5BjOZYZMWmVIJE+vhktRygm
+         MoZF0sPMd+1LpPOuhzReX0j3Zk6doeREqsiiZ62UGUXRm9bPsPAe+h5n4wDkV89TaEDY
+         byHRZMHIYNoVaJlDFqJ5OMhFyTflh2ddVxUiWNKiD47AR4nYNvy3ryhXrvtA0ynTcI1I
+         lKiorRPPXjogOU2KOgQ5P1fVCxvUAsYLONhVo5+IOoAv2aiBKK8zPKfpddfCi5wq9GAm
+         VTAg==
+X-Gm-Message-State: AFqh2kpaV4OAT4cDgHg/rOfFL+ogeaJvUqfItV/1Jdn10GcnS9UPRo28
+        5S16P2m8mfO3I1Q+2ba7W6HvR83HLXs2rtg8yCfDMQ==
+X-Google-Smtp-Source: AMrXdXvTbpMyodd9JEqQHJBir1fi+EoHAfCdibnzLye5PKbc80ZS7WAGOSZ37YLGZY+MXuaY36zb5aZsWcHktYC9Nn0=
+X-Received: by 2002:adf:e2cd:0:b0:2bd:f8da:9be0 with SMTP id
+ d13-20020adfe2cd000000b002bdf8da9be0mr407328wrj.375.1674154963570; Thu, 19
+ Jan 2023 11:02:43 -0800 (PST)
+MIME-Version: 1.0
+References: <20230119183118.126387-1-irogers@google.com>
+In-Reply-To: <20230119183118.126387-1-irogers@google.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 19 Jan 2023 11:02:31 -0800
+Message-ID: <CAP-5=fXsG06+j9bOyWTUK_wXJTZP0cvy=9hD6DFFuc3HQefyOg@mail.gmail.com>
+Subject: Re: [PATCH v3] perf script flamegraph: Avoid d3-flame-graph package dependency
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>
-Subject: Re: [PATCH RFC 3/3] selftests/bpf: Add a test case for vsock sockmap
-Message-ID: <Y8gMugD5vEi1BwBu@bullseye>
-References: <20230118-support-vsock-sockmap-connectible-v1-0-d47e6294827b@bytedance.com>
- <20230118-support-vsock-sockmap-connectible-v1-3-d47e6294827b@bytedance.com>
- <20230119104813.2bkmb3t43eq63i3o@sgarzare-redhat>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230119104813.2bkmb3t43eq63i3o@sgarzare-redhat>
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DATE_IN_PAST_24_48,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        Connor OBrien <connoro@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,249 +77,178 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 19, 2023 at 11:48:13AM +0100, Stefano Garzarella wrote:
-> On Wed, Jan 18, 2023 at 12:27:41PM -0800, Bobby Eshleman wrote:
-> > Add a test case testing the redirection from connectible AF_VSOCK
-> > sockets to connectible AF_UNIX sockets.
-> > 
-> > Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
-> > ---
-> > .../selftests/bpf/prog_tests/sockmap_listen.c      | 163 +++++++++++++++++++++
-> > 1 file changed, 163 insertions(+)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> > index 2cf0c7a3fe232..8b5a2e09c9ede 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> > @@ -18,6 +18,7 @@
-> > #include <string.h>
-> > #include <sys/select.h>
-> > #include <unistd.h>
-> > +#include <linux/vm_sockets.h>
-> > 
-> > #include <bpf/bpf.h>
-> > #include <bpf/libbpf.h>
-> > @@ -249,6 +250,16 @@ static void init_addr_loopback6(struct sockaddr_storage *ss, socklen_t *len)
-> > 	*len = sizeof(*addr6);
-> > }
-> > 
-> > +static void init_addr_loopback_vsock(struct sockaddr_storage *ss, socklen_t *len)
-> > +{
-> > +	struct sockaddr_vm *addr = memset(ss, 0, sizeof(*ss));
-> > +
-> > +	addr->svm_family = AF_VSOCK;
-> > +	addr->svm_port = VMADDR_PORT_ANY;
-> > +	addr->svm_cid = VMADDR_CID_LOCAL;
-> 
-> Wait, IIUC we only use loopback, so why do we need to attach the
-> vhost-vsock-pci device to QEMU?
-> 
-> At that point if we add CONFIG_VSOCKETS_LOOPBACK in all configurations, it
-> should also work with aarch64 and s390x.
-> 
+On Thu, Jan 19, 2023 at 10:31 AM Ian Rogers <irogers@google.com> wrote:
+>
+> Currently flame graph generation requires a d3-flame-graph template to
+> be installed. Unfortunately this is hard to come by for things like
+> Debian [1]. If the template isn't installed then ask if it should be
+> downloaded from jsdelivr CDN. The downloaded HTML file is validated
+> against an md5sum. If the download fails, generate a minimal flame
+> graph with the javascript coming from links to jsdelivr CDN.
+>
+> v3. Adds a warning message and quits before download in live mode.
+> v2. Change the warning to a prompt about downloading and add the
+>     --allow-download command line flag. Add an md5sum check for the
+>     downloaded HTML.
+>
+> [1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=996839
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Oh that is great, I'll drop the vhost-vsock-pci device then. I thought
-adding it fixed the error I was getting when trying to use
-VMADDR_CID_LOCAL, but it must have just been adding
-CONFIG_VSOCKETS_LOOPBACK that fixed it.
+
+Apologies, please ignore this patch. I accidentally picked this merged
+change up with a wild card.
 
 Thanks,
-Bobby
+Ian
 
-> > +	*len = sizeof(*addr);
-> > +}
-> > +
-> > static void init_addr_loopback(int family, struct sockaddr_storage *ss,
-> > 			       socklen_t *len)
-> > {
-> > @@ -259,6 +270,9 @@ static void init_addr_loopback(int family, struct sockaddr_storage *ss,
-> > 	case AF_INET6:
-> > 		init_addr_loopback6(ss, len);
-> > 		return;
-> > +	case AF_VSOCK:
-> > +		init_addr_loopback_vsock(ss, len);
-> > +		return;
-> > 	default:
-> > 		FAIL("unsupported address family %d", family);
-> > 	}
-> > @@ -1434,6 +1448,8 @@ static const char *family_str(sa_family_t family)
-> > 		return "IPv6";
-> > 	case AF_UNIX:
-> > 		return "Unix";
-> > +	case AF_VSOCK:
-> > +		return "VSOCK";
-> > 	default:
-> > 		return "unknown";
-> > 	}
-> > @@ -1644,6 +1660,151 @@ static void test_unix_redir(struct test_sockmap_listen *skel, struct bpf_map *ma
-> > 	unix_skb_redir_to_connected(skel, map, sotype);
-> > }
-> > 
-> > +/* Returns two connected loopback vsock sockets */
-> > +static int vsock_socketpair_connectible(int sotype, int *v0, int *v1)
-> > +{
-> > +	struct sockaddr_storage addr;
-> > +	socklen_t len = sizeof(addr);
-> > +	int s, p, c;
-> > +
-> > +	s = socket_loopback(AF_VSOCK, sotype);
-> > +	if (s < 0)
-> > +		return -1;
-> > +
-> > +	c = xsocket(AF_VSOCK, sotype | SOCK_NONBLOCK, 0);
-> > +	if (c == -1)
-> > +		goto close_srv;
-> > +
-> > +	if (getsockname(s, sockaddr(&addr), &len) < 0)
-> > +		goto close_cli;
-> > +
-> > +	if (connect(c, sockaddr(&addr), len) < 0 && errno != EINPROGRESS) {
-> > +		FAIL_ERRNO("connect");
-> > +		goto close_cli;
-> > +	}
-> > +
-> > +	len = sizeof(addr);
-> > +	p = accept_timeout(s, sockaddr(&addr), &len, IO_TIMEOUT_SEC);
-> > +	if (p < 0)
-> > +		goto close_cli;
-> > +
-> > +	*v0 = p;
-> > +	*v1 = c;
-> > +
-> > +	return 0;
-> > +
-> > +close_cli:
-> > +	close(c);
-> > +close_srv:
-> > +	close(s);
-> > +
-> > +	return -1;
-> > +}
-> > +
-> > +static void vsock_unix_redir_connectible(int sock_mapfd, int verd_mapfd,
-> > +					 enum redir_mode mode, int sotype)
-> > +{
-> > +	const char *log_prefix = redir_mode_str(mode);
-> > +	char a = 'a', b = 'b';
-> > +	int u0, u1, v0, v1;
-> > +	int sfd[2];
-> > +	unsigned int pass;
-> > +	int err, n;
-> > +	u32 key;
-> > +
-> > +	zero_verdict_count(verd_mapfd);
-> > +
-> > +	if (socketpair(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0, sfd))
-> > +		return;
-> > +
-> > +	u0 = sfd[0];
-> > +	u1 = sfd[1];
-> > +
-> > +	err = vsock_socketpair_connectible(sotype, &v0, &v1);
-> > +	if (err) {
-> > +		FAIL("vsock_socketpair_connectible() failed");
-> > +		goto close_uds;
-> > +	}
-> > +
-> > +	err = add_to_sockmap(sock_mapfd, u0, v0);
-> > +	if (err) {
-> > +		FAIL("add_to_sockmap failed");
-> > +		goto close_vsock;
-> > +	}
-> > +
-> > +	n = write(v1, &a, sizeof(a));
-> > +	if (n < 0)
-> > +		FAIL_ERRNO("%s: write", log_prefix);
-> > +	if (n == 0)
-> > +		FAIL("%s: incomplete write", log_prefix);
-> > +	if (n < 1)
-> > +		goto out;
-> > +
-> > +	n = recv(mode == REDIR_INGRESS ? u0 : u1, &b, sizeof(b), MSG_DONTWAIT);
-> > +	if (n < 0)
-> > +		FAIL("%s: recv() err, errno=%d", log_prefix, errno);
-> > +	if (n == 0)
-> > +		FAIL("%s: incomplete recv", log_prefix);
-> > +	if (b != a)
-> > +		FAIL("%s: vsock socket map failed, %c != %c", log_prefix, a, b);
-> > +
-> > +	key = SK_PASS;
-> > +	err = xbpf_map_lookup_elem(verd_mapfd, &key, &pass);
-> > +	if (err)
-> > +		goto out;
-> > +	if (pass != 1)
-> > +		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
-> > +out:
-> > +	key = 0;
-> > +	bpf_map_delete_elem(sock_mapfd, &key);
-> > +	key = 1;
-> > +	bpf_map_delete_elem(sock_mapfd, &key);
-> > +
-> > +close_vsock:
-> > +	close(v0);
-> > +	close(v1);
-> > +
-> > +close_uds:
-> > +	close(u0);
-> > +	close(u1);
-> > +}
-> > +
-> > +static void vsock_unix_skb_redir_connectible(struct test_sockmap_listen *skel,
-> > +					     struct bpf_map *inner_map,
-> > +					     int sotype)
-> > +{
-> > +	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-> > +	int verdict_map = bpf_map__fd(skel->maps.verdict_map);
-> > +	int sock_map = bpf_map__fd(inner_map);
-> > +	int err;
-> > +
-> > +	err = xbpf_prog_attach(verdict, sock_map, BPF_SK_SKB_VERDICT, 0);
-> > +	if (err)
-> > +		return;
-> > +
-> > +	skel->bss->test_ingress = false;
-> > +	vsock_unix_redir_connectible(sock_map, verdict_map, REDIR_EGRESS, sotype);
-> > +	skel->bss->test_ingress = true;
-> > +	vsock_unix_redir_connectible(sock_map, verdict_map, REDIR_INGRESS, sotype);
-> > +
-> > +	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
-> > +}
-> > +
-> > +static void test_vsock_redir(struct test_sockmap_listen *skel, struct bpf_map *map)
-> > +{
-> > +	const char *family_name, *map_name;
-> > +	char s[MAX_TEST_NAME];
-> > +
-> > +	family_name = family_str(AF_VSOCK);
-> > +	map_name = map_type_str(map);
-> > +	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
-> > +	if (!test__start_subtest(s))
-> > +		return;
-> > +
-> > +	vsock_unix_skb_redir_connectible(skel, map, SOCK_STREAM);
-> > +	vsock_unix_skb_redir_connectible(skel, map, SOCK_SEQPACKET);
-> > +}
-> > +
-> > static void test_reuseport(struct test_sockmap_listen *skel,
-> > 			   struct bpf_map *map, int family, int sotype)
-> > {
-> > @@ -2015,12 +2176,14 @@ void serial_test_sockmap_listen(void)
-> > 	run_tests(skel, skel->maps.sock_map, AF_INET6);
-> > 	test_unix_redir(skel, skel->maps.sock_map, SOCK_DGRAM);
-> > 	test_unix_redir(skel, skel->maps.sock_map, SOCK_STREAM);
-> > +	test_vsock_redir(skel, skel->maps.sock_map);
-> > 
-> > 	skel->bss->test_sockmap = false;
-> > 	run_tests(skel, skel->maps.sock_hash, AF_INET);
-> > 	run_tests(skel, skel->maps.sock_hash, AF_INET6);
-> > 	test_unix_redir(skel, skel->maps.sock_hash, SOCK_DGRAM);
-> > 	test_unix_redir(skel, skel->maps.sock_hash, SOCK_STREAM);
-> > +	test_vsock_redir(skel, skel->maps.sock_hash);
-> > 
-> > 	test_sockmap_listen__destroy(skel);
-> > }
-> > 
-> > -- 
-> > 2.30.2
-> > 
-> 
+> ---
+>  tools/perf/scripts/python/flamegraph.py | 107 +++++++++++++++++++-----
+>  1 file changed, 85 insertions(+), 22 deletions(-)
+>
+> diff --git a/tools/perf/scripts/python/flamegraph.py b/tools/perf/scripts/python/flamegraph.py
+> index b6af1dd5f816..cf7ce8229a6c 100755
+> --- a/tools/perf/scripts/python/flamegraph.py
+> +++ b/tools/perf/scripts/python/flamegraph.py
+> @@ -19,12 +19,34 @@
+>  # pylint: disable=missing-function-docstring
+>
+>  from __future__ import print_function
+> -import sys
+> -import os
+> -import io
+>  import argparse
+> +import hashlib
+> +import io
+>  import json
+> +import os
+>  import subprocess
+> +import sys
+> +import urllib.request
+> +
+> +minimal_html = """<head>
+> +  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/d3-flame-graph@4.1.3/dist/d3-flamegraph.css">
+> +</head>
+> +<body>
+> +  <div id="chart"></div>
+> +  <script type="text/javascript" src="https://d3js.org/d3.v7.js"></script>
+> +  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/d3-flame-graph@4.1.3/dist/d3-flamegraph.min.js"></script>
+> +  <script type="text/javascript">
+> +  const stacks = [/** @flamegraph_json **/];
+> +  // Note, options is unused.
+> +  const options = [/** @options_json **/];
+> +
+> +  var chart = flamegraph();
+> +  d3.select("#chart")
+> +        .datum(stacks[0])
+> +        .call(chart);
+> +  </script>
+> +</body>
+> +"""
+>
+>  # pylint: disable=too-few-public-methods
+>  class Node:
+> @@ -50,16 +72,6 @@ class FlameGraphCLI:
+>          self.args = args
+>          self.stack = Node("all", "root")
+>
+> -        if self.args.format == "html" and \
+> -                not os.path.isfile(self.args.template):
+> -            print("Flame Graph template {} does not exist. Please install "
+> -                  "the js-d3-flame-graph (RPM) or libjs-d3-flame-graph (deb) "
+> -                  "package, specify an existing flame graph template "
+> -                  "(--template PATH) or another output format "
+> -                  "(--format FORMAT).".format(self.args.template),
+> -                  file=sys.stderr)
+> -            sys.exit(1)
+> -
+>      @staticmethod
+>      def get_libtype_from_dso(dso):
+>          """
+> @@ -128,16 +140,63 @@ class FlameGraphCLI:
+>              }
+>              options_json = json.dumps(options)
+>
+> +            template_md5sum = None
+> +            if self.args.format == "html":
+> +                if os.path.isfile(self.args.template):
+> +                    template = f"file://{self.args.template}"
+> +                else:
+> +                    if not self.args.allow_download:
+> +                        print(f"""Warning: Flame Graph template '{self.args.template}'
+> +does not exist. To avoid this please install a package such as the
+> +js-d3-flame-graph or libjs-d3-flame-graph, specify an existing flame
+> +graph template (--template PATH) or use another output format (--format
+> +FORMAT).""",
+> +                              file=sys.stderr)
+> +                        if self.args.input == "-":
+> +                            print("""Not attempting to download Flame Graph template as script command line
+> +input is disabled due to using live mode. If you want to download the
+> +template retry without live mode. For example, use 'perf record -a -g
+> +-F 99 sleep 60' and 'perf script report flamegraph'. Alternatively,
+> +download the template from:
+> +https://cdn.jsdelivr.net/npm/d3-flame-graph@4.1.3/dist/templates/d3-flamegraph-base.html
+> +and place it at:
+> +/usr/share/d3-flame-graph/d3-flamegraph-base.html""",
+> +                                  file=sys.stderr)
+> +                            quit()
+> +                        s = None
+> +                        while s != "y" and s != "n":
+> +                            s = input("Do you wish to download a template from cdn.jsdelivr.net? (this warning can be suppressed with --allow-download) [yn] ").lower()
+> +                        if s == "n":
+> +                            quit()
+> +                    template = "https://cdn.jsdelivr.net/npm/d3-flame-graph@4.1.3/dist/templates/d3-flamegraph-base.html"
+> +                    template_md5sum = "143e0d06ba69b8370b9848dcd6ae3f36"
+> +
+>              try:
+> -                with io.open(self.args.template, encoding="utf-8") as template:
+> -                    output_str = (
+> -                        template.read()
+> -                        .replace("/** @options_json **/", options_json)
+> -                        .replace("/** @flamegraph_json **/", stacks_json)
+> -                    )
+> -            except IOError as err:
+> -                print("Error reading template file: {}".format(err), file=sys.stderr)
+> -                sys.exit(1)
+> +                with urllib.request.urlopen(template) as template:
+> +                    output_str = "".join([
+> +                        l.decode("utf-8") for l in template.readlines()
+> +                    ])
+> +            except Exception as err:
+> +                print(f"Error reading template {template}: {err}\n"
+> +                      "a minimal flame graph will be generated", file=sys.stderr)
+> +                output_str = minimal_html
+> +                template_md5sum = None
+> +
+> +            if template_md5sum:
+> +                download_md5sum = hashlib.md5(output_str.encode("utf-8")).hexdigest()
+> +                if download_md5sum != template_md5sum:
+> +                    s = None
+> +                    while s != "y" and s != "n":
+> +                        s = input(f"""Unexpected template md5sum.
+> +{download_md5sum} != {template_md5sum}, for:
+> +{output_str}
+> +continue?[yn] """).lower()
+> +                    if s == "n":
+> +                        quit()
+> +
+> +            output_str = output_str.replace("/** @options_json **/", options_json)
+> +            output_str = output_str.replace("/** @flamegraph_json **/", stacks_json)
+> +
+>              output_fn = self.args.output or "flamegraph.html"
+>          else:
+>              output_str = stacks_json
+> @@ -172,6 +231,10 @@ if __name__ == "__main__":
+>                          choices=["blue-green", "orange"])
+>      parser.add_argument("-i", "--input",
+>                          help=argparse.SUPPRESS)
+> +    parser.add_argument("--allow-download",
+> +                        default=False,
+> +                        action="store_true",
+> +                        help="allow unprompted downloading of HTML template")
+>
+>      cli_args = parser.parse_args()
+>      cli = FlameGraphCLI(cli_args)
+> --
+> 2.39.0.314.g84b9a713c41-goog
+>
