@@ -2,212 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB446757D8
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 15:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5C2675800
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 16:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbjATO4z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 09:56:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
+        id S229908AbjATPBi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 10:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjATO4y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 09:56:54 -0500
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E55945BD8;
-        Fri, 20 Jan 2023 06:56:53 -0800 (PST)
-Received: by mail-qv1-f54.google.com with SMTP id j9so4029472qvt.0;
-        Fri, 20 Jan 2023 06:56:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TP5Zo4bv8YXqc8TsPM9kTPTb6zh5MuuIxJfsaqqvfYE=;
-        b=v9ENv35z9HtjkDuobJ1yNS12Mo2sZP63QepZCu3WhptqGgMkSMdl0bfeF82Da5Q/KF
-         UjtpsnYn9+/yUB7+po2pO9RmtVgqxX2ONcVAe5kcY4c6HsAJMSYeG6+heeBXdSOfsUby
-         YtiaC+6lj5Jt0WRbgcXHY3zbIUA1VtJ1ysHtn/wUFFsgeQmymGN6y6JDwtymVEK57enh
-         dhXpD22p4JMkgjQdiVHtayZnReWMQt6A2R1LAfne7ugOotnQf9z5a5TIBkHFuby2/j7s
-         pNhIdKAnUSRgIx+C3YGR5QWh+hMV2BlZ21ElXoJqs0aHZc+1pz85Er3bzsovlb6Y/LcE
-         j94Q==
-X-Gm-Message-State: AFqh2krpCALZZNnYynZUjxiExSrPLFesH+NaET9IHvg0NkQjTyxUFV8N
-        fowVJd70iEjhvMHe0dFrqCk=
-X-Google-Smtp-Source: AMrXdXsIwQTYehUej2FFMNv9Ht+HN1oDYEUrfXhzXVE4187U//SQpSQ2VWfDXFr8XEdA9EcMhs0iYg==
-X-Received: by 2002:a0c:fca9:0:b0:534:75c3:3da3 with SMTP id h9-20020a0cfca9000000b0053475c33da3mr23093801qvq.46.1674226612000;
-        Fri, 20 Jan 2023 06:56:52 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:2fc9])
-        by smtp.gmail.com with ESMTPSA id e25-20020ac86719000000b003b2d890752dsm5211815qtp.88.2023.01.20.06.56.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Jan 2023 06:56:51 -0800 (PST)
-Date:   Fri, 20 Jan 2023 08:56:55 -0600
-From:   David Vernet <void@manifault.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, tj@kernel.org
-Subject: Re: [PATCH bpf-next 2/8] bpf: Allow trusted args to walk struct when
- checking BTF IDs
-Message-ID: <Y8qrt7pdWCS6Gef8@maniforge.lan>
-References: <20230119235833.2948341-1-void@manifault.com>
- <20230119235833.2948341-3-void@manifault.com>
- <20230120045815.4b7dc6obdt4uzy6a@apollo>
- <Y8olRi9SjcyNtam0@maniforge.lan>
- <20230120054027.wcj3jxqkx2s2zsxo@MacBook-Pro-6.local.dhcp.thefacebook.com>
- <CAP01T76aNAn2ish+jwFQuMrCk+11Rb_ZmteGe8RsE7ZMy1t4RA@mail.gmail.com>
- <20230120061441.3gifklagiugmkrtd@MacBook-Pro-6.local.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230120061441.3gifklagiugmkrtd@MacBook-Pro-6.local.dhcp.thefacebook.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S229590AbjATPBh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 10:01:37 -0500
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD5741B72;
+        Fri, 20 Jan 2023 07:01:36 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 64F0B320077A;
+        Fri, 20 Jan 2023 10:01:33 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Fri, 20 Jan 2023 10:01:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1674226892; x=1674313292; bh=1/i8XkaZ2k
+        WH/ANJugw9+lV13XFt/Z3piuqR1SILJ8I=; b=Z7ILUxnUEkzDx9iXK5m79/Qfx6
+        5NgR1h7GaZSs6m6EjGhB0T2JyLonAq8QbFo+zMdp+sskyZqCcQN4J4MCKdJrvyfA
+        /Zo/6LiA3eGCe2G6FQaiwRiamDyIYyyBsM8EJkVXknTRIEy5lxOjr8jdj6oXA1cx
+        7H9gGJWGdYNzHnIbeA5V+uqFjz8OHl1jLoaORBjHV+IiuGNpspQ+dRbLsVKOcXmw
+        pybet8+YyK0Pu1iSXizlB0CFOzrqdvJ4JF3UksO8pdnRNeb2Um/Alt0yZzVj1gXv
+        mGDyU2VjAxeLzFSgn56X3lP5U2gT7i7xaZfY+hFG/i+QEtPClr0MyyqtGxeQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1674226892; x=1674313292; bh=1/i8XkaZ2kWH/ANJugw9+lV13XFt
+        /Z3piuqR1SILJ8I=; b=AScM23Xt6qrpZI1KEsWsxYOn46MGu0a4483EASgzUxif
+        KYkOY2m52kcdjHCovknnMnYQJ99X6orCBhmLWS5xVQNF19oVu15lFoonVHv2dog0
+        MlegsyeEhaQHG7sDEAMLF52WrEfHd41pMMUH5jWBBBIgD5r/yVwPNdvoZLVRvCZs
+        XG5nbVuootxqzspKIpkBHJUrA/jQbdScKeazemZDA0PLBUbUKMeHPhT8dTcZfYa1
+        vMGiw2YIYuERhKpZr0F8jFDtOWVZmYE5EkKJ3QGc89GGjO2vTN5126Ne8Xy8EYkt
+        yE05gOqaELiKxFdzrS/8jcqdrHeyoZrmDrqh11FfTw==
+X-ME-Sender: <xms:y6zKY1--FxFV5WM_dvH3L-jhvDJdkUv2VKNjqycw8wsWi1kY60t_Hg>
+    <xme:y6zKY5uEr8VwywOYKxxuRFHA2t7uhUz8er2Qni3FDxgSf42PnIomr8bT4uWQPMrSj
+    vl6wYFssrKwy6qpeIw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudduvddgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:y6zKYzAQI32j9NDjRfMqwyTzyHZ7gpDAsgcrznJyKaxYWkjqDKkMig>
+    <xmx:y6zKY5dwnJnhoe3QJUqC8kllrSTTegH2oqUNSRINTZtDGCG_doy8wg>
+    <xmx:y6zKY6NeO-4u4ZZ4r7o7F71zTnD9XHdwpsJ3MbruCFIRzX2R-IamTw>
+    <xmx:zKzKY0uSG_2mGZuS71TMJo-MA0P9EOIrBzWmkXOZx-9ZotVtWq1S0w>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 786ABB60086; Fri, 20 Jan 2023 10:01:31 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-85-gd6d859e0cf-fm-20230116.001-gd6d859e0
+Mime-Version: 1.0
+Message-Id: <9965e2d1-bae8-4ce7-911c-783c772e9ff1@app.fastmail.com>
+In-Reply-To: <20230120145316.GA4155@tellis.lin.mbt.kalray.eu>
+References: <20230120141002.2442-1-ysionneau@kalray.eu>
+ <20230120141002.2442-10-ysionneau@kalray.eu>
+ <aa4d68b2-b5b5-4c17-a44f-7c6db443ea4c@app.fastmail.com>
+ <20230120145316.GA4155@tellis.lin.mbt.kalray.eu>
+Date:   Fri, 20 Jan 2023 16:01:11 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Jules Maselbas" <jmaselbas@kalray.eu>
+Cc:     "Yann Sionneau" <ysionneau@kalray.eu>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Marc Zyngier" <maz@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Will Deacon" <will@kernel.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Boqun Feng" <boqun.feng@gmail.com>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Oleg Nesterov" <oleg@redhat.com>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Waiman Long" <longman@redhat.com>,
+        "Aneesh Kumar" <aneesh.kumar@linux.ibm.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        "Paul Moore" <paul@paul-moore.com>,
+        "Eric Paris" <eparis@redhat.com>,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        "Albert Ou" <aou@eecs.berkeley.edu>,
+        "Guillaume Thouvenin" <gthouvenin@kalray.eu>,
+        "Clement Leger" <clement@clement-leger.fr>,
+        "Vincent Chardon" <vincent.chardon@elsys-design.com>,
+        =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
+        "Julian Vetter" <jvetter@kalray.eu>,
+        "Samuel Jones" <sjones@kalray.eu>,
+        "Ashley Lesdalons" <alesdalons@kalray.eu>,
+        "Thomas Costis" <tcostis@kalray.eu>,
+        "Marius Gligor" <mgligor@kalray.eu>,
+        "Jonathan Borne" <jborne@kalray.eu>,
+        "Julien Villette" <jvillette@kalray.eu>,
+        "Luc Michel" <lmichel@kalray.eu>,
+        "Louis Morhet" <lmorhet@kalray.eu>,
+        "Julien Hascoet" <jhascoet@kalray.eu>,
+        "Jean-Christophe Pince" <jcpince@gmail.com>,
+        "Guillaume Missonnier" <gmissonnier@kalray.eu>,
+        "Alex Michon" <amichon@kalray.eu>,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "WANG Xuerui" <git@xen0n.name>,
+        "Shaokun Zhang" <zhangshaokun@hisilicon.com>,
+        "John Garry" <john.garry@huawei.com>,
+        "Guangbin Huang" <huangguangbin2@huawei.com>,
+        "Bharat Bhushan" <bbhushan2@marvell.com>,
+        "Bibo Mao" <maobibo@loongson.cn>,
+        "Atish Patra" <atishp@atishpatra.org>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        "Qi Liu" <liuqi115@huawei.com>,
+        "Jiaxun Yang" <jiaxun.yang@flygoat.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Mark Brown" <broonie@kernel.org>,
+        "Janosch Frank" <frankja@linux.ibm.com>,
+        "Alexey Dobriyan" <adobriyan@gmail.com>,
+        "Benjamin Mugnier" <mugnier.benjamin@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mm@kvack.org,
+        Linux-Arch <linux-arch@vger.kernel.org>, linux-audit@redhat.com,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH v2 09/31] kvx: Add build infrastructure
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 19, 2023 at 10:14:41PM -0800, Alexei Starovoitov wrote:
-> On Fri, Jan 20, 2023 at 11:26:37AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > On Fri, 20 Jan 2023 at 11:10, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Thu, Jan 19, 2023 at 11:23:18PM -0600, David Vernet wrote:
-> > > > On Fri, Jan 20, 2023 at 10:28:15AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > > On Fri, Jan 20, 2023 at 05:28:27AM IST, David Vernet wrote:
-> > > > > > When validating BTF types for KF_TRUSTED_ARGS kfuncs, the verifier
-> > > > > > currently enforces that the top-level type must match when calling
-> > > > > > the kfunc. In other words, the verifier does not allow the BPF program
-> > > > > > to pass a bitwise equivalent struct, despite it being functionally safe.
-> > > > > > For example, if you have the following type:
-> > > > > >
-> > > > > > struct  nf_conn___init {
-> > > > > >   struct nf_conn ct;
-> > > > > > };
-> > > > > >
-> > > > > > It would be safe to pass a struct nf_conn___init to a kfunc expecting a
-> > > > > > struct nf_conn.
-> > > > >
-> > > > > Just running bpf_nf selftest would have shown this is false.
-> > > >
-> > > > And I feel silly, because I did run them, and could have sworn they
-> > > > passed...looking now at the change_status_after_alloc testcase I see
-> > > > you're of course correct. Very poor example, thank you for pointing it
-> > > > out.
-> > > >
-> > > > >
-> > > > > > Being able to do this will be useful for certain types
-> > > > > > of kfunc / kptrs enabled by BPF. For example, in a follow-on patch, a
-> > > > > > series of kfuncs will be added which allow programs to do bitwise
-> > > > > > queries on cpumasks that are either allocated by the program (in which
-> > > > > > case they'll be a 'struct bpf_cpumask' type that wraps a cpumask_t as
-> > > > > > its first element), or a cpumask that was allocated by the main kernel
-> > > > > > (in which case it will just be a straight cpumask_t, as in
-> > > > > >  task->cpus_ptr).
-> > > > > >
-> > > > > > Having the two types of cpumasks allows us to distinguish between the
-> > > > > > two for when a cpumask is read-only vs. mutatable. A struct bpf_cpumask
-> > > > > > can be mutated by e.g. bpf_cpumask_clear(), whereas a regular cpumask_t
-> > > > > > cannot be. On the other hand, a struct bpf_cpumask can of course be
-> > > > > > queried in the exact same manner as a cpumask_t, with e.g.
-> > > > > > bpf_cpumask_test_cpu().
-> > > > > >
-> > > > > > If we were to enforce that top level types match, then a user that's
-> > > > > > passing a struct bpf_cpumask to a read-only cpumask_t argument would
-> > > > > > have to cast with something like bpf_cast_to_kern_ctx() (which itself
-> > > > > > would need to be updated to expect the alias, and currently it only
-> > > > > > accommodates a single alias per prog type). Additionally, not specifying
-> > > > > > KF_TRUSTED_ARGS is not an option, as some kfuncs take one argument as a
-> > > > > > struct bpf_cpumask *, and another as a struct cpumask *
-> > > > > > (i.e. cpumask_t).
-> > > > > >
-> > > > > > In order to enable this, this patch relaxes the constraint that a
-> > > > > > KF_TRUSTED_ARGS kfunc must have strict type matching. In order to
-> > > > > > try and be conservative and match existing behavior / expectations, this
-> > > > > > patch also enforces strict type checking for acquire kfuncs. We were
-> > > > > > already enforcing it for release kfuncs, so this should also improve the
-> > > > > > consistency of the semantics for kfuncs.
-> > > > > >
-> > > > >
-> > > > > What you want is to simply follow type at off = 0 (but still enforce the off = 0
-> > > > > requirement). This is something which is currently done for bpf_sk_release (for
-> > > > > struct sk_common) in check_reg_type, but it is not safe in general to just open
-> > > > > this up for all cases. I suggest encoding this particular requirement in the
-> > > > > argument, and simply using triple underscore variant of the type for the special
-> > > > > 'read_only' requirement. This will allow you to use same type in your BPF C
-> > > > > program, while allowing verifier to see them as two different types in kfunc
-> > > > > parameters. Then just relax type following for the particular argument so that
-> > > > > one can pass cpumask_t___ro to kfunc expecting cpumask_t (but only at off = 0,
-> > > > > it just visits first member after failing match on top level type). off = 0
-> > > > > check is still necessary.
-> > > >
-> > > > Sigh, yeah, another ___ workaround but I agree it's probably the best we
-> > > > can do for now, and in general seems pretty useful. Obviously preferable
-> > > > to this patch which just doesn't work. Alexei, are you OK with this? If
-> > > > so, I'll take this approach for v2.
-> > >
-> > > We decided to rely on strict type match when we introduced 'struct nf_conn___init',
-> > > but with that we twisted the C standard to, what looks to be, a wrong direction.
-> > >
-> > > For definition:
-> > > struct nf_conn___init {
-> > >    struct nf_conn ct;
-> > > };
-> > > if a kfunc accepts a pointer to nf_conn it should always accept a pointer to nf_conn__init
-> > > for both read and write, because in C that's valid and safe type cast.
-> > >
-> > 
-> > The intention of this nf_conn___init was to be invisible to the user.
-> > In selftests there is no trace of nf_conn___init. It is only for
-> > enforcing semantics by virtue of type safety in the verifier.
-> > 
-> > Allocated but not inserted nf_conn -> nf_conn___init
-> > Inserted/looked up nf_conn -> nf_conn
-> > 
-> > We can't pass e.g. nf_conn___init * to a function expecting nf_conn *.
-> > The allocated nf_conn may not yet be fully initialized. It is only
-> > after bpf_ct_insert_entry takes the nf_conn___init * and returns
-> > inserted nf_conn * should it be allowed.
-> 
-> Yes. I know and agree with all of the above.
-> 
-> > But for the user in BPF C it will be the same nf_conn. The verifier
-> > can enforce different semantics on the underlying type's usage in
-> > kfuncs etc, while the user performs normal direct access to the
-> > nf_conn.
-> > 
-> > It will be the same case here, except you also introduce the case of
-> > kfuncs that are 'polymorphic' and can take both. Relaxing
-> > 'strict_type_match' for that arg and placing the type of member you
-> > wish to convert the pointer to gives you such polymorphism. But it's
-> > not correct to do for nf_conn___init to nf_conn, at least not by
-> > default.
-> 
-> Yes. Agree. I used unfortunate example in the previous reply with nf_conn___init.
-> I meant to say:
-> 
->  For definition:
->  struct nf_conn_init {
->     struct nf_conn ct;
->  };
->  if a kfunc accepts a pointer to nf_conn it should always accept a pointer to nf_conn_init
->  for both read and write, because in C that's valid and safe type cast.
-> 
-> Meainng that C rules apply.
-> Our triple underscore is special, because it's the "same type".
-> In the 2nd part of my reply I'm proposing to use the whole suffix "___init" to indicate that.
-> I think you're arguing that just "___" part is enough to enforce strict match.
-> Matching foo___flavor with foo should not be allowed.
-> While passing struct foo_flavor {struct foo;} into a kfunc that accepts 'struct foo'
-> is safe.
-> If so, I'm fine with such approach.
+On Fri, Jan 20, 2023, at 15:53, Jules Maselbas wrote:
+> On Fri, Jan 20, 2023 at 03:39:22PM +0100, Arnd Bergmann wrote:
+>> On Fri, Jan 20, 2023, at 15:09, Yann Sionneau wrote:
+>> >      - Fix clean target raising an error from gcc (LIBGCC)
+>> 
+>> I had not noticed this on v1 but:
+>> 
+>> > +# Link with libgcc to get __div* builtins.
+>> > +LIBGCC	:= $(shell $(CC) $(DEFAULT_OPTS) --print-libgcc-file-name)
+>> 
+>> It's better to copy the bits of libgcc that you actually need
+>> than to include the whole thing. The kernel is in a weird
+> It was initialy using KCONFIG_CFLAGS which do not contains valid options
+> when invoking the clean target.
+>
+> I am not exactly sure what's needed by gcc for --print-libgcc-file-name,
+> my guess is that only the -march option matters, I will double check
+> internally with compiler peoples.
+>
+>> state that is neither freestanding nor the normal libc based
+>> environment, so we generally want full control over what is
+>> used. This is particularly important for 32-bit architectures
+>> that do not want the 64-bit division, but there are probably
+>> enough other cases as well.
 
-Alright, I'll spin v2 to treat any type with name___.* as a disallowed
-alias, and update the documentation to mention it. I was originally
-going to push back and say that we should just use a single alias like
-__nocast to keep things simple, but it doesn't feel generalizable
-enough.
+To clarify: I meant you should not include libgcc.a at all but
+add the minimum set of required files as arch/kvx/lib/*.S.
+
+     Arnd
