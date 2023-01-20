@@ -2,54 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5886675EBF
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 21:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1022675ECB
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 21:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbjATUM4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 15:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
+        id S230051AbjATUP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 15:15:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbjATUMz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 15:12:55 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0714CFD02
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:12:26 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id c10-20020a05600c0a4a00b003db0636ff84so4526467wmq.0
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:12:26 -0800 (PST)
+        with ESMTP id S230021AbjATUP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 15:15:57 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE38A893CD
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:15:56 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 203so8111674yby.10
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:15:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2CXoT+7bD2FQOsPsa6Nm9x3leNHttFwc0jUiST/FDec=;
-        b=jYVfOpBwMOY714CycyIDi5phhr+sGl8XFKrtrwoKPI8/cF2qPGeKF7HFnSjRs9sF2G
-         vSAkkju1qImtBph0Ru2ydl1lS6ZBAkJSmVHkbU/eETfHDGoIg2PREqxP37e7ShjfFOPG
-         i+MYM1vTmo88i37YM+hyUi5/TrYugRkdRbKRdM+Ya9YI1x5zqKUGoKcKSB1ihSIq4wvV
-         MPHw9PyRXOm6uu6VDE8okQkgGKPuVfRxbTghwDdAO/XYgNIvy99+1CvpraRPydIuRHJt
-         dtVo8oho0c66c2zWLK7tLu1WfzkjR9SMzZZtnFMGlL3olxmeiXQzHVvpsdakhtfkmkbj
-         58Hg==
+        h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0SttUTJP8U9N4V2Fvv0U8GzKYs42n6qlFvW0XY0wmEY=;
+        b=XVff+7MC8Y4ys60IARKh4+lxsPvx8Ea+jf/4OWWsxmnVI7JksTaug+ClqdJ0W/pQ9k
+         TwKGrPgjWqW++UAIDn+P6gijEGrix6/p/TezpyZja7ZI0LGhSXjujCwcfGidQJMQMG2u
+         aqCn4d105E+kFHpBpsqcZv85c4CtDyOR/dZAOWYJML5wDiql/yf5pVMo+jx5Y+E3qoUO
+         E13YlOafPNfTaOOFSuH9xP2lsi/k/HKHBwZ6k4AVpY673vn32KxoREI0/CchwM5Qm39k
+         fNIhkyOEYFfHWavuhAogCPO+tF2j99ZTELGUNzR57aOtsR8oI6ERu15av1QT/aQZ016m
+         CcjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2CXoT+7bD2FQOsPsa6Nm9x3leNHttFwc0jUiST/FDec=;
-        b=0o5ULF/wsmQ+BFKPa131zaZUYFA9RmiSPvaBGmFulBO2aP4bc4ke2FkjJajHZJPjmG
-         VCFy4cCeDOgrHSY9oSR6nCdQAi8JKsGXG6TSntydSF+StOOxHrCVi4TYH8H7mMIhiRSp
-         OuPmDHvxB2iQJpxFyj+gxvb0xoyAj9v46F1s06WKThIWVjJJti8ONCusCBWuOD7lhHUe
-         e61SMf6GCAGbXEb7JyzTl1S4ktOrrh1FJ/GM6g69WHAYS9evEnrDjX8jhidRnaRcMqdD
-         fDwsuzrQPKOU8wBRPKzxYoUPnjAwEmnCETe6K0g0uwIewC1lXipBOXH4GUHHJFybMAxX
-         M2wg==
-X-Gm-Message-State: AFqh2kqsukp8wWg9c6mmdRfe0eBXkFLQrvrJMPQIeW2RhN5J+MuN0w34
-        0PUdhow6TAfK4ZWqkKievEUz9oPeD0sRjg==
-X-Google-Smtp-Source: AMrXdXt9spc3ed6XX0v36+wnwgpldLEnjdXbePpeGPxvGzCLI4xzHXhDIo6NrWCBOQQrJefwC7mgmw==
-X-Received: by 2002:a05:600c:4a27:b0:3db:3ef:2369 with SMTP id c39-20020a05600c4a2700b003db03ef2369mr15670901wmp.40.1674245544573;
-        Fri, 20 Jan 2023 12:12:24 -0800 (PST)
-Received: from localhost.localdomain ([2a02:3035:413:205e:4a24:a1a0:2076:6b5c])
-        by smtp.gmail.com with ESMTPSA id f14-20020a05600c154e00b003daff80f16esm4711645wmg.27.2023.01.20.12.12.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Jan 2023 12:12:21 -0800 (PST)
+        bh=0SttUTJP8U9N4V2Fvv0U8GzKYs42n6qlFvW0XY0wmEY=;
+        b=yg/QHfPVdV31PPvSjfMBrQZxi/oFArlKYRW7dnLPKoUnNSAfcLKEQXMb7zc6Gsc3vv
+         xm54L/36/JaBAJYvsQCJYkpLlI3aoL1wq0gchIJ+/qw6d+3ABj2xUmyHQz9HtLU6SFxm
+         CMqTAByhkLLnzR8kVrX8xfUivlPS9MNSwMfHnWMMPE4YIHoJKhmR3zDgl7j4gV1eoEsC
+         j+SA1PEsLwpnWsiys4LTH4KQG4bXbCmsa9+EctpIuPMMQ7k1oV+ESGyf86MGNldTz69x
+         FjeckYvsHqgbuPrGJlkU8vQbsedqBLbeIvMqChvpvvKjIsFI7CLabLCK98sK+EWhAw7M
+         i5Xg==
+X-Gm-Message-State: AFqh2krC1h5VUGmJeqIo0BkJUJHR3ZbAIH3ifZ1aHMw+DpWkhDFxe+3g
+        nxC8xX/t4UVo2GRosBkwY1VaVb2gMDNX2zHygoQ=
+X-Google-Smtp-Source: AMrXdXtO5ZMPDqEHX3UhEGijoKRIgKnvNSIp16Dw362TPRe2u5hiOoS1Fw5MlV8sMnJyCrNs48/mA3O68YmoywuQFE8=
+X-Received: by 2002:a25:c00a:0:b0:733:4dbc:7215 with SMTP id
+ c10-20020a25c00a000000b007334dbc7215mr1922970ybf.636.1674245756054; Fri, 20
+ Jan 2023 12:15:56 -0800 (PST)
+MIME-Version: 1.0
+References: <CA+icZUVbv2T7SExVULn6Bh1mB=VpmYGbH-4U63PKrHPyi6uULQ@mail.gmail.com>
+ <b4182459-3fcb-e3d4-09ba-69039a0bdbca@meta.com>
+In-Reply-To: <b4182459-3fcb-e3d4-09ba-69039a0bdbca@meta.com>
+Reply-To: sedat.dilek@gmail.com
 From:   Sedat Dilek <sedat.dilek@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+Date:   Fri, 20 Jan 2023 21:15:17 +0100
+Message-ID: <CA+icZUWRk44KR_dh+vme5MZa3aF=fjCZ6HtN2hjC-bjhWr2TEw@mail.gmail.com>
+Subject: Re: pahole: New version 1.25 release?
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -62,13 +68,7 @@ To:     Arnaldo Carvalho de Melo <acme@redhat.com>,
         bpf@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, llvm@lists.linux.dev
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>, Yonghong Song <yhs@meta.com>
-Subject: [PATCH] dwarf_loader: Sync with LINUX_ELFNOTE_LTO_INFO macro from kernel
-Date:   Fri, 20 Jan 2023 21:12:03 +0100
-Message-Id: <20230120201203.10785-1-sedat.dilek@gmail.com>
-X-Mailer: git-send-email 2.39.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,59 +79,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As long as I am using CONFIG_DEBUG_INFO_BTF=y with LLVM/Clang
-I have noticed the below macros where defined unconsistently.
-
-See here pahole latest Git...
-
-[ pahole:dwarf_loader ]
-
-/* Match the define in linux:include/linux/elfnote.h */
-#define LINUX_ELFNOTE_BUILD_LTO                0x101
-
-...and latest Linus v6.2-rc4+ Git:
-
-[ linux:include/linux/elfnote-lto.h ]
-
-#define LINUX_ELFNOTE_LTO_INFO         0x101
-
-Yonghong Song says:
+On Fri, Jan 20, 2023 at 8:15 PM Yonghong Song <yhs@meta.com> wrote:
+>
+>
+>
+> On 1/20/23 9:40 AM, Sedat Dilek wrote:
+> > Hi Arnaldo,
+> >
+> > I use CONFIG_DEBUG_INFO_BTF=y with LLVM-15.
+> >
+> > Darkly, I remember I needed some post-v1.24 fixes.
+> >
+> > Currently, I use:
+> >
+> > $ git describe
+> > v1.24-26-gb72f5188856d
+> >
+> > commit b72f5188856d
+> > "dwarves: Zero-initialize struct cu in cu__new() to prevent incorrect BTF types"
+> >
+> > Any plans to release a pahole version 1.25?
+> >
+> > Thanks.
+> >
+> > Best regards,
+> > -Sedat-
+> >
+> > P.S.: I still carry this diff around (attached as diff as Gmail might
+> > truncate the following lines):
+> >
+> > $ cd /path/to/pahole.git
+> >
+> > $ git diff dwarf_loader.c
+> > diff --git a/dwarf_loader.c b/dwarf_loader.c
+> > index 5a74035c5708..96ce5db4f5bc 100644
+> > --- a/dwarf_loader.c
+> > +++ b/dwarf_loader.c
+> > @@ -2808,8 +2808,8 @@ static int __cus__load_debug_types(struct
+> > conf_load *conf, Dwfl_Module *mod, Dwa
+> >         return 0;
+> > }
+> >
+> > -/* Match the define in linux:include/linux/elfnote.h */
+> > -#define LINUX_ELFNOTE_BUILD_LTO                0x101
+> > +/* Match the define in linux:include/linux/elfnote-lto.h */
+> > +#define LINUX_ELFNOTE_LTO_INFO         0x101
+> >
+> > static bool cus__merging_cu(Dwarf *dw, Elf *elf)
+> > {
+> > @@ -2827,7 +2827,7 @@ static bool cus__merging_cu(Dwarf *dw, Elf *elf)
+> >                         size_t name_off, desc_off, offset = 0;
+> >                         GElf_Nhdr hdr;
+> >                         while ((offset = gelf_getnote(data, offset,
+> > &hdr, &name_off, &desc_off)) != 0) {
+> > -                               if (hdr.n_type != LINUX_ELFNOTE_BUILD_LTO)
+> > +                               if (hdr.n_type != LINUX_ELFNOTE_LTO_INFO)
+> >                                         continue;
+> >
+> >                                 /* owner is Linux */
+>
 > Ya, LINUX_ELFNOTE_BUILD_LTO is initially proposed macro name but later
 > the formal kernel patch used LINUX_ELFNOTE_LTO_INFO. Could you submit
 > a pahole for this so it is consistent with kernel? Thanks!
+>
 
-Fix this by syncing the pahole macro with the one from linux-kernel.
+Patch sent, see:
 
-Suggested-by: Yonghong Song <yhs@meta.com>
-Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
----
- dwarf_loader.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+https://lore.kernel.org/all/20230120201203.10785-1-sedat.dilek@gmail.com/
 
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index 5a74035c5708..96ce5db4f5bc 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -2808,8 +2808,8 @@ static int __cus__load_debug_types(struct conf_load *conf, Dwfl_Module *mod, Dwa
- 	return 0;
- }
- 
--/* Match the define in linux:include/linux/elfnote.h */
--#define LINUX_ELFNOTE_BUILD_LTO		0x101
-+/* Match the define in linux:include/linux/elfnote-lto.h */
-+#define LINUX_ELFNOTE_LTO_INFO		0x101
- 
- static bool cus__merging_cu(Dwarf *dw, Elf *elf)
- {
-@@ -2827,7 +2827,7 @@ static bool cus__merging_cu(Dwarf *dw, Elf *elf)
- 			size_t name_off, desc_off, offset = 0;
- 			GElf_Nhdr hdr;
- 			while ((offset = gelf_getnote(data, offset, &hdr, &name_off, &desc_off)) != 0) {
--				if (hdr.n_type != LINUX_ELFNOTE_BUILD_LTO)
-+				if (hdr.n_type != LINUX_ELFNOTE_LTO_INFO)
- 					continue;
- 
- 				/* owner is Linux */
--- 
-2.39.0
+-Sedat-
 
+> >
+> > $ cd /path/to/linux.git
+> >
+> > $ git describe
+> > v6.2-rc4-77-gd368967cb103
+> >
+> > $ git grep LINUX_ELFNOTE_LTO_INFO include/linux/elfnote-lto.h
+> > include/linux/elfnote-lto.h:#define LINUX_ELFNOTE_LTO_INFO      0x101
+> > include/linux/elfnote-lto.h:#define BUILD_LTO_INFO
+> > ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 1)
+> > include/linux/elfnote-lto.h:#define BUILD_LTO_INFO
+> > ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 0)
+> > dileks@iniza:~/src/linux/git$ git describe
+> > v6.2-rc4-195-gf609936e078d
+> >
+> > -EOT-
