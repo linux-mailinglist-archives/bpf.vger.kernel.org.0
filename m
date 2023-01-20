@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7BB674CAE
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 06:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9363D674CB2
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 06:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbjATFmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 00:42:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
+        id S229918AbjATFor (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 00:44:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231546AbjATFl4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 00:41:56 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EB3AD3F;
-        Thu, 19 Jan 2023 21:40:33 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id t12-20020a17090aae0c00b00229f4cff534so624686pjq.1;
-        Thu, 19 Jan 2023 21:40:33 -0800 (PST)
+        with ESMTP id S229490AbjATFoq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 00:44:46 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56740D7;
+        Thu, 19 Jan 2023 21:44:45 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id z13so4433401plg.6;
+        Thu, 19 Jan 2023 21:44:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QOq/E+eWAxR3m2c7HHpMPBELzCOkd3FAZMP6lbhfN14=;
-        b=qYljow2z7HCHKOpjOtpG3wPSdhrUCuI0s3F+vmd+uxt4ke3scB+XV6nNekqb8qnpoF
-         q1BqqTSKMH7ERPohtcch+jgY3hAHWvClDZh8x4Kfha37jGrlmgK50aFIwnonCupS3XN/
-         +iqN8cyHh8AZGj/JmIq6aaSrx40f8zVcVQYgHJZN289FLGuRBJsJjli4CslG5eMsgmxZ
-         ikFkCSMK8vTN2m2CbnFsc6lBOx6tZeRsY1ObkuZjG9KBEPScDamarQlt8xizyI+N5YWd
-         YOvaWUtazMEWJkGbZy1txeuFmf/vR+s1+fO9ou1T4u5XjFQnUcf06C73n3O/tXur6J3t
-         sHvA==
+        bh=nERCpWYfNGboMH6ktxTA1jxs96/Wwbv8oC42fwIyWRM=;
+        b=copq2b8teUrjUxicfx2XltlZALg65zBEi19+dkpKL3oTuj9xxZkVbop5jyQHHZ5yBs
+         mVC/IZ2v7ZUZRNPB3BP/+V1aO0JAbrNB3YzJoRYqfj800sPENYWsZYCh0/UFtX+VcJd2
+         V9TCr3UBWkes8/dAlFQvdSPFFdPtgsJKiNMd+7LMvucw6ftLdVPMM2+v4uaSOhXgnjMn
+         PZAjD6dmMxckovdWb1tiYEyaJlIm1LLhkHNl7Jh4HTqGUYTK6v7feuPcETnqhZNm80gL
+         YJMP58EGEZov374O/eFVHWuWE6LFFlbQ1O0/lZSKThdGgiSnxOWoBceWQkyWj7Gfg8jl
+         /uyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QOq/E+eWAxR3m2c7HHpMPBELzCOkd3FAZMP6lbhfN14=;
-        b=Au/RrBYocRDitdSLhjS+PsIxvraTBsw9GcEEbptpJSEOeg9jRF6avHp3Qr4FdiTpGT
-         KEaE53P9Tlcr+ns0I7Q+eH2N9SOz/eWGt53AOo334HWyt36AeiHzajd0jEO96zhXLKzQ
-         s6oXxhQ5cyQOQfL8dpf0zMouZY9aCnSBBG/9mrLAINmAwOTDYu+Z+OIf6UW74Nh7H1oP
-         Y+YzupQNCgHBGD/j50KlTBujtNbU/F5SW+fJC/iCztPtZaZAGDKIO+KZmFEEgte+ldjW
-         S2ThfKI4W/X0wAZbO0drgSKvHAm7GjSV/rRcgxzIEy/0N8Ax+4usFoOq/mbyqjy7HtRt
-         F7Yg==
-X-Gm-Message-State: AFqh2kpcegP2mldibHzg/R+JloxPzr1pvTFCZCXMMV1bzFDEhCmhxhKF
-        4dVoK+xivByVFxox9bucZ6c=
-X-Google-Smtp-Source: AMrXdXuDwJXY+VutahkW4qUmvB2nzoSoJ1elA/5uiyiVVm3MQxu+93x3xEDSBLEk1Ow47nczsT0eMQ==
-X-Received: by 2002:a17:902:e5c9:b0:194:d0ad:53f0 with SMTP id u9-20020a170902e5c900b00194d0ad53f0mr6159588plf.9.1674193231756;
-        Thu, 19 Jan 2023 21:40:31 -0800 (PST)
+        bh=nERCpWYfNGboMH6ktxTA1jxs96/Wwbv8oC42fwIyWRM=;
+        b=h/G8EFfTISrl2RENCkEwmwqKAlLD74VsJ06cDipFf/B88AX02fBG5/M1fRFSw+BcKy
+         rKQWjTpPfOF6kTL1QVkgv0bYC4ZQhvglRPFcGDP5rl7aGnUsPDxNCmzzHQxitnshGP5m
+         kNkwgON2fXatkFSLYjCZk0MWW+8r41E2IJlYIXBFpHPbl7SicC2u5vOH5GowFj9S5P/a
+         nGy04Qh0iO58pgOA+GdwwiJeDpsvOmWOAYZNOl/qjtTMyx6nhtQQ4kZzlDwVQVvFXxbV
+         c3iZ1x7Cf/dT1QcFYlVcRKZY13ViKL16IllKq+VMIyShwQ5lrjXv9u06jDAfx4WAx078
+         BMEA==
+X-Gm-Message-State: AFqh2kpzd2Vak/ytQTEgfI0bRyYa7K3D2sDxRNgSlFadIaUb6CyDl4bM
+        j6ODLNmIXCy1Np1EFOFNXPU=
+X-Google-Smtp-Source: AMrXdXt8EbnGWXmqBhIONEGKe9nAvIiJctUS3xz4LckhFNlpf5KR/s3SzrrrkEX46SSfoecpN8e8HQ==
+X-Received: by 2002:a17:902:8a8a:b0:194:480d:6afc with SMTP id p10-20020a1709028a8a00b00194480d6afcmr12507712plo.48.1674193484604;
+        Thu, 19 Jan 2023 21:44:44 -0800 (PST)
 Received: from MacBook-Pro-6.local.dhcp.thefacebook.com ([2620:10d:c090:400::5:186c])
-        by smtp.gmail.com with ESMTPSA id j4-20020a170902da8400b0019479636f84sm11987243plx.11.2023.01.19.21.40.29
+        by smtp.gmail.com with ESMTPSA id d4-20020a170902654400b0018bde2250fcsm24566253pln.203.2023.01.19.21.44.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 21:40:31 -0800 (PST)
-Date:   Thu, 19 Jan 2023 21:40:27 -0800
+        Thu, 19 Jan 2023 21:44:43 -0800 (PST)
+Date:   Thu, 19 Jan 2023 21:44:41 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     David Vernet <void@manifault.com>
 Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
@@ -57,17 +57,17 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, tj@kernel.org
-Subject: Re: [PATCH bpf-next 2/8] bpf: Allow trusted args to walk struct when
- checking BTF IDs
-Message-ID: <20230120054027.wcj3jxqkx2s2zsxo@MacBook-Pro-6.local.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next 3/8] bpf: Disallow NULL PTR_TO_MEM for trusted
+ kfuncs
+Message-ID: <20230120054441.arj5h6yrnh5jsrgr@MacBook-Pro-6.local.dhcp.thefacebook.com>
 References: <20230119235833.2948341-1-void@manifault.com>
- <20230119235833.2948341-3-void@manifault.com>
- <20230120045815.4b7dc6obdt4uzy6a@apollo>
- <Y8olRi9SjcyNtam0@maniforge.lan>
+ <20230119235833.2948341-4-void@manifault.com>
+ <20230120052101.sevhc4jybcm6onu2@apollo>
+ <Y8onR2T2zmMU6MmH@maniforge.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y8olRi9SjcyNtam0@maniforge.lan>
+In-Reply-To: <Y8onR2T2zmMU6MmH@maniforge.lan>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,92 +78,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 19, 2023 at 11:23:18PM -0600, David Vernet wrote:
-> On Fri, Jan 20, 2023 at 10:28:15AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > On Fri, Jan 20, 2023 at 05:28:27AM IST, David Vernet wrote:
-> > > When validating BTF types for KF_TRUSTED_ARGS kfuncs, the verifier
-> > > currently enforces that the top-level type must match when calling
-> > > the kfunc. In other words, the verifier does not allow the BPF program
-> > > to pass a bitwise equivalent struct, despite it being functionally safe.
-> > > For example, if you have the following type:
+On Thu, Jan 19, 2023 at 11:31:51PM -0600, David Vernet wrote:
+> On Fri, Jan 20, 2023 at 10:51:01AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > On Fri, Jan 20, 2023 at 05:28:28AM IST, David Vernet wrote:
+> > > KF_TRUSTED_ARGS kfuncs currently have a subtle and insidious bug in
+> > > validating pointers to scalars. Say that you have a kfunc like the
+> > > following, which takes an array as the first argument:
 > > >
-> > > struct  nf_conn___init {
-> > > 	struct nf_conn ct;
-> > > };
+> > > bool bpf_cpumask_empty(const struct cpumask *cpumask)
+> > > {
+> > > 	return cpumask_empty(cpumask);
+> > > }
 > > >
-> > > It would be safe to pass a struct nf_conn___init to a kfunc expecting a
-> > > struct nf_conn.
-> > 
-> > Just running bpf_nf selftest would have shown this is false.
-> 
-> And I feel silly, because I did run them, and could have sworn they
-> passed...looking now at the change_status_after_alloc testcase I see
-> you're of course correct. Very poor example, thank you for pointing it
-> out.
-> 
-> > 
-> > > Being able to do this will be useful for certain types
-> > > of kfunc / kptrs enabled by BPF. For example, in a follow-on patch, a
-> > > series of kfuncs will be added which allow programs to do bitwise
-> > > queries on cpumasks that are either allocated by the program (in which
-> > > case they'll be a 'struct bpf_cpumask' type that wraps a cpumask_t as
-> > > its first element), or a cpumask that was allocated by the main kernel
-> > > (in which case it will just be a straight cpumask_t, as in
-> > >  task->cpus_ptr).
-> > >
-> > > Having the two types of cpumasks allows us to distinguish between the
-> > > two for when a cpumask is read-only vs. mutatable. A struct bpf_cpumask
-> > > can be mutated by e.g. bpf_cpumask_clear(), whereas a regular cpumask_t
-> > > cannot be. On the other hand, a struct bpf_cpumask can of course be
-> > > queried in the exact same manner as a cpumask_t, with e.g.
-> > > bpf_cpumask_test_cpu().
-> > >
-> > > If we were to enforce that top level types match, then a user that's
-> > > passing a struct bpf_cpumask to a read-only cpumask_t argument would
-> > > have to cast with something like bpf_cast_to_kern_ctx() (which itself
-> > > would need to be updated to expect the alias, and currently it only
-> > > accommodates a single alias per prog type). Additionally, not specifying
-> > > KF_TRUSTED_ARGS is not an option, as some kfuncs take one argument as a
-> > > struct bpf_cpumask *, and another as a struct cpumask *
-> > > (i.e. cpumask_t).
-> > >
-> > > In order to enable this, this patch relaxes the constraint that a
-> > > KF_TRUSTED_ARGS kfunc must have strict type matching. In order to
-> > > try and be conservative and match existing behavior / expectations, this
-> > > patch also enforces strict type checking for acquire kfuncs. We were
-> > > already enforcing it for release kfuncs, so this should also improve the
-> > > consistency of the semantics for kfuncs.
+> > > ...
+> > > BTF_ID_FLAGS(func, bpf_cpumask_empty, KF_TRUSTED_ARGS)
+> > > ...
 > > >
 > > 
-> > What you want is to simply follow type at off = 0 (but still enforce the off = 0
-> > requirement). This is something which is currently done for bpf_sk_release (for
-> > struct sk_common) in check_reg_type, but it is not safe in general to just open
-> > this up for all cases. I suggest encoding this particular requirement in the
-> > argument, and simply using triple underscore variant of the type for the special
-> > 'read_only' requirement. This will allow you to use same type in your BPF C
-> > program, while allowing verifier to see them as two different types in kfunc
-> > parameters. Then just relax type following for the particular argument so that
-> > one can pass cpumask_t___ro to kfunc expecting cpumask_t (but only at off = 0,
-> > it just visits first member after failing match on top level type). off = 0
-> > check is still necessary.
+> > This is known and expected.
 > 
-> Sigh, yeah, another ___ workaround but I agree it's probably the best we
-> can do for now, and in general seems pretty useful. Obviously preferable
-> to this patch which just doesn't work. Alexei, are you OK with this? If
-> so, I'll take this approach for v2.
+> Expected? So kfuncs are expected to always check whether any pointer to
+> a scalar is non-NULL? Seems like a poor UX. I like your suggestion below
+> to address it so it's opt-in.
 
-We decided to rely on strict type match when we introduced 'struct nf_conn___init',
-but with that we twisted the C standard to, what looks to be, a wrong direction.
+I'm confused as well.
+KF_TRUSTED_ARGS means that all arguments are valid and != NULL.
+From our doc:
+"
+The KF_TRUSTED_ARGS flag is used for kfuncs taking pointer arguments. It
+indicates that the all pointer arguments are valid, and that all pointers to
+BTF objects have been passed in their unmodified form (that is, at a zero
+"
 
-For definition:
-struct nf_conn___init {
-   struct nf_conn ct;
-};
-if a kfunc accepts a pointer to nf_conn it should always accept a pointer to nf_conn__init
-for both read and write, because in C that's valid and safe type cast.
+That includes that arguments are guaranted to be != NULL.
 
-We can fix this design issue by saying that '___init' suffix is special and
-C type casting rules don't apply to it.
-In all other cases bpf_cpumask/cpumask would should allow it.
+> > > If a BPF program were to invoke the kfunc with a NULL argument, it would
+> > > crash the kernel. The reason is that struct cpumask is defined as a
+> > > bitmap, which is itself defined as an array, and is accessed as a memory
+> > > address memory by bitmap operations. So when the verifier analyzes the
+> > > register, it interprets it as a pointer to a scalar struct, which is an
+> > > array of size 8. check_mem_reg() then sees that the register is NULL,
+> > > and returns 0, and the kfunc crashes when it passes it down to the
+> > > cpumask wrappers.
+> > >
+> > > To fix this, this patch adds a check for KF_ARG_PTR_TO_MEM which
+> > > verifies that the register doesn't contain a NULL pointer if the kfunc
+> > > is KF_TRUSTED_ARGS.
+> > >
+> > > This may or may not be desired behavior. Some kfuncs may want to
+> > > allow callers to pass NULL-able pointers. An alternative would be adding
+> > > a KF_NOT_NULL flag and leaving KF_TRUSTED_ARGS alone, though given that
+> > > a kfunc is saying it wants to "trust" an argument, it seems reasonable
+> > > to prevent NULL.
+> > >
+> > > Signed-off-by: David Vernet <void@manifault.com>
+> > > ---
+> > >  kernel/bpf/verifier.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 9fa101420046..28ccb92ebe65 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -9092,6 +9092,11 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+> > >  					i, btf_type_str(ref_t), ref_tname, PTR_ERR(resolve_ret));
+> > >  				return -EINVAL;
+> > >  			}
+> > > +			if (is_kfunc_trusted_args(meta) && register_is_null(reg)) {
+> > > +				verbose(env, "NULL pointer passed to trusted arg%d\n", i);
+> > > +				return -EACCES;
+> > > +			}
+> > > +
+> > 
+> > Current patch looks like a stop gap solution. Just checking for register_is_null
+> > is not enough, what about PTR_MAYBE_NULL? That can also be passed. Some
+> > arguments can be both PTR_TO_BTF_ID and PTR_TO_MEM, so it will be bypassed in
+> > the other case because this check is limited to KF_ARG_PTR_TO_MEM. It would
+> 
+> This wouldn't happen if you had a PTR_TO_BTF_ID, would it? In that case
+> you could just rely on PTR_TRUSTED. IMO that really should be the
+> default for any pointer argument. If you have KF_ARGS_TRUSTED, the kfunc
+> should just be able to assume that the pointers have been verified.
 
-__ro suffix idea will keep moving us into further discrepancies with C.
++1
+
+> Regardless, you're right that this isn't a complete solution because of
+> PTR_MAYBE_NULL. I'm fine with adding an __or_null suffix that allows
+> NULL, and we disallow NULL or PTR_MAYBE_NULL from any KF_TRUSTED_ARGS
+> argument otherwise. Or we just also disallow PTR_MAYBE_NULL and try to
+> hold off on adding yet another suffix until we have proper per-arg kfunc
+> definitions.
+
+PTR_MAYBE_NULL should not be allowed into kfunc with KF_TRUSTED_ARGS.
