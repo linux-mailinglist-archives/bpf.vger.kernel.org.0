@@ -2,162 +2,319 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 995A0674944
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 03:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07930674945
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 03:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbjATCSJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 21:18:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
+        id S229468AbjATCTp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 21:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjATCSI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 21:18:08 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C719F3A2
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 18:18:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7FD3061DE0
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 02:18:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0826C433F2
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 02:18:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674181084;
-        bh=2PrCTaCjkG8rOBsJOOm3wGXslPkcR1xqq6T6pH+p4mU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PqxjX0ggvA7R9rfBXXusaZDIcceEg1DYdnJ7xLgRe/3SLqTnE18HUasJJZxxULfaC
-         rflk6KgwF8cj+CgvU8NdAWl5TNfwzj2KCT88kK2GpAScmrWS5C25mh3YvI2JbiDRAS
-         hjNMx9lep3P4LtDu7KY+mfTyodiBH1ZW+HlP8bUuJMXa1lusVLZADqnfh4cqz4GIfI
-         k7VsAloadx7NAsGaJL/49CEB9m29DyrKXmDBDSYfACZHMgWCz3a4lxFgBcGRrd/X/G
-         IUkhX0wE1ClMJXYVK7RmCxMCOzs/yYZTt/5yJglHmi0Xb9ws7qa5bzGvqT0Ch4GqOz
-         PxwNejohSddOw==
-Received: by mail-ej1-f43.google.com with SMTP id rl14so7221936ejb.2
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 18:18:04 -0800 (PST)
-X-Gm-Message-State: AFqh2kqgAPMHxS9gN00BAEwp1Y0AKYTJFJ1hDGcsBNeB7ESai9YlpyxU
-        W0v5TNVl1HXmUgNsdLTlOUNa+aXHCAJdg1Lb2xzxzw==
-X-Google-Smtp-Source: AMrXdXsKS69bduFdqEDXQPj4B6yMaPqYxzlAnuiOv6G42gYiDX+uCuVbm4APDAoGQ2o6hqLDoDqlGRXzop783N+YeSw=
-X-Received: by 2002:a17:906:78d:b0:855:d6ed:60d8 with SMTP id
- l13-20020a170906078d00b00855d6ed60d8mr872102ejc.302.1674181083112; Thu, 19
- Jan 2023 18:18:03 -0800 (PST)
+        with ESMTP id S229453AbjATCTo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 21:19:44 -0500
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3DD9F3A2;
+        Thu, 19 Jan 2023 18:19:42 -0800 (PST)
+Received: by mail-qt1-f179.google.com with SMTP id z9so3186778qtv.5;
+        Thu, 19 Jan 2023 18:19:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w3Mh24f3syw1YMuVpvRFLAyGbyazWD5wf6ZyZDnVgNQ=;
+        b=r7mhRBF7ys3T5QHmkn/ez80xwb1ELwkOwtnx7W4b5lpt48nULRJQCG//TYuOOG0djw
+         l4dAAW47OcxFi1FqtKuwEehfPoibkE5HD+Wg+xHOfeEFa6OuCCZ4FMtJbxJjcKSgl+Xr
+         fgowi0F+qNukPGRA6aqEjxZnGAKQXp6WOKw3FfCore4K+0Bi1MFVdbKPcieCUtXZxFUR
+         03YgPCUrYcgf9Fgev4GIcxbjbeKERCcyYyh+x4hWT8S2WTI1ap3PPQ5c/7EU4a1M9nox
+         6zwnZF/dFcFDzzGTdosDTBMi0ABEyjlp2xlnibNJO4ke0RUOeZcmDyiAn4cb2BqNG/GO
+         5OqQ==
+X-Gm-Message-State: AFqh2krMFBKOsYRSCoxdiqBf5JEnewvk7qCA2f6AU2foparavaoGzS+B
+        zKiMqW3fay/4eCk/oawWLdnOqlapySq2ZTsh
+X-Google-Smtp-Source: AMrXdXuAg7pEF6hX69ZJhacnCAJ48oe4T/AM5UiQ5ryNHvZy11K/NRwKWDB/Os+p4vQUtsZS7lXN9g==
+X-Received: by 2002:ac8:44ac:0:b0:3a5:f9f8:3ec4 with SMTP id a12-20020ac844ac000000b003a5f9f83ec4mr16390621qto.30.1674181181587;
+        Thu, 19 Jan 2023 18:19:41 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:2fc9])
+        by smtp.gmail.com with ESMTPSA id d25-20020ac85459000000b003b630456b8fsm6957275qtq.89.2023.01.19.18.19.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Jan 2023 18:19:41 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: [PATCH bpf-next] selftests/bpf: Use __failure macro in task kfunc testsuite
+Date:   Thu, 19 Jan 2023 20:18:44 -0600
+Message-Id: <20230120021844.3048244-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-References: <20230119231033.1307221-1-kpsingh@kernel.org> <1e14f68c-90ba-f406-f08c-6d62bbfef6a0@schaufler-ca.com>
-In-Reply-To: <1e14f68c-90ba-f406-f08c-6d62bbfef6a0@schaufler-ca.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Fri, 20 Jan 2023 03:17:52 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6DEegggQBRJwe0Z2gChfxficOVmoe2K5mjAx7Zq0aApw@mail.gmail.com>
-Message-ID: <CACYkzJ6DEegggQBRJwe0Z2gChfxficOVmoe2K5mjAx7Zq0aApw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] Reduce overhead of LSMs with static calls
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, jackmanb@google.com,
-        renauld@google.com, paul@paul-moore.com, song@kernel.org,
-        revest@chromium.org, keescook@chromium.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 2:13 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
->
-> On 1/19/2023 3:10 PM, KP Singh wrote:
-> > # Background
-> >
-> > LSM hooks (callbacks) are currently invoked as indirect function calls. These
-> > callbacks are registered into a linked list at boot time as the order of the
-> > LSMs can be configured on the kernel command line with the "lsm=" command line
-> > parameter.
-> >
-> > Indirect function calls have a high overhead due to retpoline mitigation for
-> > various speculative execution attacks.
-> >
-> > Retpolines remain relevant even with newer generation CPUs as recently
-> > discovered speculative attacks, like Spectre BHB need Retpolines to mitigate
-> > against branch history injection and still need to be used in combination with
-> > newer mitigation features like eIBRS.
-> >
-> > This overhead is especially significant for the "bpf" LSM which allows the user
-> > to implement LSM functionality with eBPF program. In order to facilitate this
-> > the "bpf" LSM provides a default callback for all LSM hooks. When enabled,
-> > the "bpf" LSM incurs an unnecessary / avoidable indirect call. This is
-> > especially bad in OS hot paths (e.g. in the networking stack).
-> > This overhead prevents the adoption of bpf LSM on performance critical
-> > systems, and also, in general, slows down all LSMs.
-> >
-> > Since we know the address of the enabled LSM callbacks at compile time and only
-> > the order is determined at boot time,
->
-> No quite true. A system with Smack and AppArmor compiled in will only
-> be allowed to use one or the other.
->
-> >  the LSM framework can allocate static
-> > calls for each of the possible LSM callbacks and these calls can be updated once
-> > the order is determined at boot.
->
-> True if you also provide for the single "major" LSM restriction.
->
-> > This series is a respin of the RFC proposed by Paul Renauld (renauld@google.com)
-> > and Brendan Jackman (jackmanb@google.com) [1]
-> >
-> > # Performance improvement
-> >
-> > With this patch-set some syscalls with lots of LSM hooks in their path
-> > benefitted at an average of ~3%. Here are the results of the relevant Unixbench
-> > system benchmarks with BPF LSM and a major LSM (in this case apparmor) enabled
-> > with and without the series.
-> >
-> > Benchmark                                               Delta(%): (+ is better)
-> > ===============================================================================
-> > Execl Throughput                                             +2.9015
-> > File Write 1024 bufsize 2000 maxblocks                       +5.4196
-> > Pipe Throughput                                              +7.7434
-> > Pipe-based Context Switching                                 +3.5118
-> > Process Creation                                             +0.3552
-> > Shell Scripts (1 concurrent)                                 +1.7106
-> > System Call Overhead                                         +3.0067
-> > System Benchmarks Index Score (Partial Only):                +3.1809
->
-> How about socket creation and packet delivery impact? You'll need to
-> use either SELinux or Smack to get those numbers.
+In commit 537c3f66eac1 ("selftests/bpf: add generic BPF program
+tester-loader"), a new mechanism was added to the BPF selftest framework
+to allow testsuites to use macros to define expected failing testcases.
+This allows any testsuite which tests verification failure to remove a
+good amount of boilerplate code. This patch updates the task_kfunc
+selftest suite to use these new macros.
 
-I think the goal here is to show that hot paths are beneficial, and
-the results are pretty clear from this. I have an even more detailed
-analysis in https://kpsingh.ch/lsm-perf as to what happens when the
-static calls are enabled v/s not enabled. I don't have the socket
-numbers, but I expect this to be very similar to pipes. Is there a
-particular Unixbench test you want me to run?
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ .../selftests/bpf/prog_tests/task_kfunc.c     | 71 +------------------
+ .../selftests/bpf/progs/task_kfunc_failure.c  | 18 +++++
+ 2 files changed, 19 insertions(+), 70 deletions(-)
 
->
-> > In the best case, some syscalls like eventfd_create benefitted to about ~10%.
-> > The full analysis can be viewed at https://kpsingh.ch/lsm-perf
-> >
-> > [1] https://lore.kernel.org/linux-security-module/20200820164753.3256899-1-jackmanb@chromium.org/
-> >
-> > KP Singh (4):
-> >   kernel: Add helper macros for loop unrolling
-> >   security: Generate a header with the count of enabled LSMs
-> >   security: Replace indirect LSM hook calls with static calls
-> >   bpf: Only enable BPF LSM hooks when an LSM program is attached
-> >
-> >  include/linux/bpf.h              |   1 +
-> >  include/linux/bpf_lsm.h          |   1 +
-> >  include/linux/lsm_hooks.h        |  94 +++++++++++--
-> >  include/linux/unroll.h           |  35 +++++
-> >  kernel/bpf/trampoline.c          |  29 ++++-
-> >  scripts/Makefile                 |   1 +
-> >  scripts/security/.gitignore      |   1 +
-> >  scripts/security/Makefile        |   4 +
-> >  scripts/security/gen_lsm_count.c |  57 ++++++++
-> >  security/Makefile                |  11 ++
-> >  security/bpf/hooks.c             |  26 +++-
-> >  security/security.c              | 217 ++++++++++++++++++++-----------
-> >  12 files changed, 386 insertions(+), 91 deletions(-)
-> >  create mode 100644 include/linux/unroll.h
-> >  create mode 100644 scripts/security/.gitignore
-> >  create mode 100644 scripts/security/Makefile
-> >  create mode 100644 scripts/security/gen_lsm_count.c
-> >
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+index 18848c31e36f..f79fa5bc9a8d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
++++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+@@ -9,9 +9,6 @@
+ #include "task_kfunc_failure.skel.h"
+ #include "task_kfunc_success.skel.h"
+ 
+-static size_t log_buf_sz = 1 << 20; /* 1 MB */
+-static char obj_log_buf[1048576];
+-
+ static struct task_kfunc_success *open_load_task_kfunc_skel(void)
+ {
+ 	struct task_kfunc_success *skel;
+@@ -83,67 +80,6 @@ static const char * const success_tests[] = {
+ 	"test_task_from_pid_invalid",
+ };
+ 
+-static struct {
+-	const char *prog_name;
+-	const char *expected_err_msg;
+-} failure_tests[] = {
+-	{"task_kfunc_acquire_untrusted", "R1 must be referenced or trusted"},
+-	{"task_kfunc_acquire_fp", "arg#0 pointer type STRUCT task_struct must point"},
+-	{"task_kfunc_acquire_unsafe_kretprobe", "reg type unsupported for arg#0 function"},
+-	{"task_kfunc_acquire_trusted_walked", "R1 must be referenced or trusted"},
+-	{"task_kfunc_acquire_null", "arg#0 pointer type STRUCT task_struct must point"},
+-	{"task_kfunc_acquire_unreleased", "Unreleased reference"},
+-	{"task_kfunc_get_non_kptr_param", "arg#0 expected pointer to map value"},
+-	{"task_kfunc_get_non_kptr_acquired", "arg#0 expected pointer to map value"},
+-	{"task_kfunc_get_null", "arg#0 expected pointer to map value"},
+-	{"task_kfunc_xchg_unreleased", "Unreleased reference"},
+-	{"task_kfunc_get_unreleased", "Unreleased reference"},
+-	{"task_kfunc_release_untrusted", "arg#0 is untrusted_ptr_or_null_ expected ptr_ or socket"},
+-	{"task_kfunc_release_fp", "arg#0 pointer type STRUCT task_struct must point"},
+-	{"task_kfunc_release_null", "arg#0 is ptr_or_null_ expected ptr_ or socket"},
+-	{"task_kfunc_release_unacquired", "release kernel function bpf_task_release expects"},
+-	{"task_kfunc_from_pid_no_null_check", "arg#0 is ptr_or_null_ expected ptr_ or socket"},
+-	{"task_kfunc_from_lsm_task_free", "reg type unsupported for arg#0 function"},
+-};
+-
+-static void verify_fail(const char *prog_name, const char *expected_err_msg)
+-{
+-	LIBBPF_OPTS(bpf_object_open_opts, opts);
+-	struct task_kfunc_failure *skel;
+-	int err, i;
+-
+-	opts.kernel_log_buf = obj_log_buf;
+-	opts.kernel_log_size = log_buf_sz;
+-	opts.kernel_log_level = 1;
+-
+-	skel = task_kfunc_failure__open_opts(&opts);
+-	if (!ASSERT_OK_PTR(skel, "task_kfunc_failure__open_opts"))
+-		goto cleanup;
+-
+-	for (i = 0; i < ARRAY_SIZE(failure_tests); i++) {
+-		struct bpf_program *prog;
+-		const char *curr_name = failure_tests[i].prog_name;
+-
+-		prog = bpf_object__find_program_by_name(skel->obj, curr_name);
+-		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
+-			goto cleanup;
+-
+-		bpf_program__set_autoload(prog, !strcmp(curr_name, prog_name));
+-	}
+-
+-	err = task_kfunc_failure__load(skel);
+-	if (!ASSERT_ERR(err, "unexpected load success"))
+-		goto cleanup;
+-
+-	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err_msg")) {
+-		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
+-		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
+-	}
+-
+-cleanup:
+-	task_kfunc_failure__destroy(skel);
+-}
+-
+ void test_task_kfunc(void)
+ {
+ 	int i;
+@@ -155,10 +91,5 @@ void test_task_kfunc(void)
+ 		run_success_test(success_tests[i]);
+ 	}
+ 
+-	for (i = 0; i < ARRAY_SIZE(failure_tests); i++) {
+-		if (!test__start_subtest(failure_tests[i].prog_name))
+-			continue;
+-
+-		verify_fail(failure_tests[i].prog_name, failure_tests[i].expected_err_msg);
+-	}
++	RUN_TESTS(task_kfunc_failure);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_failure.c b/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
+index 1b47b94dbca0..e6950d6a9cf0 100644
+--- a/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
++++ b/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
+@@ -5,6 +5,7 @@
+ #include <bpf/bpf_tracing.h>
+ #include <bpf/bpf_helpers.h>
+ 
++#include "bpf_misc.h"
+ #include "task_kfunc_common.h"
+ 
+ char _license[] SEC("license") = "GPL";
+@@ -27,6 +28,7 @@ static struct __tasks_kfunc_map_value *insert_lookup_task(struct task_struct *ta
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("R1 must be referenced or trusted")
+ int BPF_PROG(task_kfunc_acquire_untrusted, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *acquired;
+@@ -44,6 +46,7 @@ int BPF_PROG(task_kfunc_acquire_untrusted, struct task_struct *task, u64 clone_f
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("arg#0 pointer type STRUCT task_struct must point")
+ int BPF_PROG(task_kfunc_acquire_fp, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *acquired, *stack_task = (struct task_struct *)&clone_flags;
+@@ -56,6 +59,7 @@ int BPF_PROG(task_kfunc_acquire_fp, struct task_struct *task, u64 clone_flags)
+ }
+ 
+ SEC("kretprobe/free_task")
++__failure __msg("reg type unsupported for arg#0 function")
+ int BPF_PROG(task_kfunc_acquire_unsafe_kretprobe, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *acquired;
+@@ -68,6 +72,7 @@ int BPF_PROG(task_kfunc_acquire_unsafe_kretprobe, struct task_struct *task, u64
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("R1 must be referenced or trusted")
+ int BPF_PROG(task_kfunc_acquire_trusted_walked, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *acquired;
+@@ -81,6 +86,7 @@ int BPF_PROG(task_kfunc_acquire_trusted_walked, struct task_struct *task, u64 cl
+ 
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("arg#0 pointer type STRUCT task_struct must point")
+ int BPF_PROG(task_kfunc_acquire_null, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *acquired;
+@@ -95,6 +101,7 @@ int BPF_PROG(task_kfunc_acquire_null, struct task_struct *task, u64 clone_flags)
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("Unreleased reference")
+ int BPF_PROG(task_kfunc_acquire_unreleased, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *acquired;
+@@ -107,6 +114,7 @@ int BPF_PROG(task_kfunc_acquire_unreleased, struct task_struct *task, u64 clone_
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("arg#0 expected pointer to map value")
+ int BPF_PROG(task_kfunc_get_non_kptr_param, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *kptr;
+@@ -122,6 +130,7 @@ int BPF_PROG(task_kfunc_get_non_kptr_param, struct task_struct *task, u64 clone_
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("arg#0 expected pointer to map value")
+ int BPF_PROG(task_kfunc_get_non_kptr_acquired, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *kptr, *acquired;
+@@ -140,6 +149,7 @@ int BPF_PROG(task_kfunc_get_non_kptr_acquired, struct task_struct *task, u64 clo
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("arg#0 expected pointer to map value")
+ int BPF_PROG(task_kfunc_get_null, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *kptr;
+@@ -155,6 +165,7 @@ int BPF_PROG(task_kfunc_get_null, struct task_struct *task, u64 clone_flags)
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("Unreleased reference")
+ int BPF_PROG(task_kfunc_xchg_unreleased, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *kptr;
+@@ -174,6 +185,7 @@ int BPF_PROG(task_kfunc_xchg_unreleased, struct task_struct *task, u64 clone_fla
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("Unreleased reference")
+ int BPF_PROG(task_kfunc_get_unreleased, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *kptr;
+@@ -193,6 +205,7 @@ int BPF_PROG(task_kfunc_get_unreleased, struct task_struct *task, u64 clone_flag
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("arg#0 is untrusted_ptr_or_null_ expected ptr_ or socket")
+ int BPF_PROG(task_kfunc_release_untrusted, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct __tasks_kfunc_map_value *v;
+@@ -208,6 +221,7 @@ int BPF_PROG(task_kfunc_release_untrusted, struct task_struct *task, u64 clone_f
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("arg#0 pointer type STRUCT task_struct must point")
+ int BPF_PROG(task_kfunc_release_fp, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *acquired = (struct task_struct *)&clone_flags;
+@@ -219,6 +233,7 @@ int BPF_PROG(task_kfunc_release_fp, struct task_struct *task, u64 clone_flags)
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("arg#0 is ptr_or_null_ expected ptr_ or socket")
+ int BPF_PROG(task_kfunc_release_null, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct __tasks_kfunc_map_value local, *v;
+@@ -251,6 +266,7 @@ int BPF_PROG(task_kfunc_release_null, struct task_struct *task, u64 clone_flags)
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("release kernel function bpf_task_release expects")
+ int BPF_PROG(task_kfunc_release_unacquired, struct task_struct *task, u64 clone_flags)
+ {
+ 	/* Cannot release trusted task pointer which was not acquired. */
+@@ -260,6 +276,7 @@ int BPF_PROG(task_kfunc_release_unacquired, struct task_struct *task, u64 clone_
+ }
+ 
+ SEC("tp_btf/task_newtask")
++__failure __msg("arg#0 is ptr_or_null_ expected ptr_ or socket")
+ int BPF_PROG(task_kfunc_from_pid_no_null_check, struct task_struct *task, u64 clone_flags)
+ {
+ 	struct task_struct *acquired;
+@@ -273,6 +290,7 @@ int BPF_PROG(task_kfunc_from_pid_no_null_check, struct task_struct *task, u64 cl
+ }
+ 
+ SEC("lsm/task_free")
++__failure __msg("reg type unsupported for arg#0 function")
+ int BPF_PROG(task_kfunc_from_lsm_task_free, struct task_struct *task)
+ {
+ 	struct task_struct *acquired;
+-- 
+2.39.0
+
