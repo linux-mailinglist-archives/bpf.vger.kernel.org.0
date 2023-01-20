@@ -2,112 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D5B674A4B
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 04:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A835674A4D
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 04:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjATDj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 22:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43790 "EHLO
+        id S229489AbjATDnU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 22:43:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjATDj0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 22:39:26 -0500
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE25EA2597;
-        Thu, 19 Jan 2023 19:39:24 -0800 (PST)
-Received: by mail-qv1-f51.google.com with SMTP id t7so3021221qvv.3;
-        Thu, 19 Jan 2023 19:39:24 -0800 (PST)
+        with ESMTP id S229437AbjATDnT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 22:43:19 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F2FA2951
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 19:43:17 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id c26so3046103pfp.10
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 19:43:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9MHAT7OW8PywAuR+Of767osGLsM8DdvVZzSMSONGcg=;
+        b=HdEta52qEbMUiSBZtS+lRvRjixNYlLrySUCAj89/wlQGd8eAkRGlsA4cf5lw/STGvG
+         gCQBox/dVSCNTFQjbgCPIbPj3saDAKrVM1tJudNuzHovq6C59ByHYF2iub0MB8d3Lhej
+         ZOgCHLO3KuxOQCKqeg0FQ0EH1KyrvztubxCczrBFlzEVU21q7ig+jKIJlKMD9xV/Phrw
+         +ZHeZpX9JnjtM9STioLKbauth5l3CB9PNiBna39cdBzoHS/qSSjNHlKRJt3t2CxO34Yi
+         Z9l4SwTydUA7Si10A4KJx9BLGCYNDq2DWLWtQnV+AXvHW4u4TdhCIlUgOIpF+NIKBbF5
+         ZxTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s2/u49MGkiTdhDi/wUNzsd0MzL5LPWw1jXjelpgTNjQ=;
-        b=LqWpHgtRjt1PgS+l1vW3ehG2VBjAVE2gZb12OBPSyQ/TgGD+TLc01r06TLQ7D4e+lF
-         MdRHsP+X3iB3C9PT+9NxRiQntVwsRdLH98DdxHmeCqub5iSDfOq82BhqtYwEnG4NGssh
-         YqEbsD2/1wpoGueP5AKnDPIf5z3hdUKMavhzSXRDwntrmTTayxLvmrI/M1Tf8Jpmmdm0
-         IyVKbxhDoT1KhbnUBoHOoBDFKHiUrXe83h8p07DbAxUaF5cl2GEElBkq1Hp0ePgqQhsp
-         qLCNlUZhz+g74uiAiUIxcMsNq/F2a0zUyGUSVipEU6ExvcwpL/hMTEwKnyG/xJsQqalb
-         ct1A==
-X-Gm-Message-State: AFqh2kqdFZJuqR3B82ye79DRUV9u5kciMZwmtaImL1XVB2PpNz0kCvoy
-        Sujc8noYS2xr2YFNaTpu8jY=
-X-Google-Smtp-Source: AMrXdXtmeyvC2AGHjJRQX0twXoVPRG4rYfCl/1AY5U+LOqUUu/GWx4y4szZt8bMWeJmZBfYOTxOL8Q==
-X-Received: by 2002:a05:6214:5d8d:b0:531:e636:e236 with SMTP id mf13-20020a0562145d8d00b00531e636e236mr18587890qvb.28.1674185963926;
-        Thu, 19 Jan 2023 19:39:23 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:2fc9])
-        by smtp.gmail.com with ESMTPSA id s1-20020a05620a0bc100b006fa4ac86bfbsm25132205qki.55.2023.01.19.19.39.21
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d9MHAT7OW8PywAuR+Of767osGLsM8DdvVZzSMSONGcg=;
+        b=2R+3itNF8Sl5NtjcfDAeAV1FjCmgWBRL1r1Mw8ex+T3kefzFWLRWvgKVgqrVhCxazA
+         0XZCeuSeM5F1g1uROhsZH+v/bmWc0fWjT5x/bI/pYGlPdBV9qKO/2pfK8/9bkRJ4EldY
+         GbxgC9R2+LGAm1lqza+oyv0uDnEM2ouVfQxoOC6JpkfCZeRgjltZDKwWRzH0qa2ivOeO
+         v0YsZH12yFepqzDq0vZ6T1K0PMZ39ZKbcQvRDTzJNkMvPDBWiAumyau3YtlvH5XREAIE
+         lVFdN77hfuzuSAP2+BkFB9G6Vugj971jlQtJ97+36etTIVCnp8XI5pFaVSP3/6Khvkgt
+         GI7Q==
+X-Gm-Message-State: AFqh2kq3VuARAj1QPPVueKtpz6iYm20oNwOsh8Lc0uivmdOwcQwbDrPV
+        8RD1yeDjLaF75u8tkNfERkJzRx3C65c=
+X-Google-Smtp-Source: AMrXdXsLzrIg/i01+rZYU/9qXbsVhnvU1p8AK3yI9cOXlKA6GIdckqvES4nr7jh9tqieMqq9VqHq7Q==
+X-Received: by 2002:aa7:8611:0:b0:582:df2e:595d with SMTP id p17-20020aa78611000000b00582df2e595dmr13374476pfn.4.1674186196935;
+        Thu, 19 Jan 2023 19:43:16 -0800 (PST)
+Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
+        by smtp.gmail.com with ESMTPSA id b11-20020aa78ecb000000b00587ca71704dsm21619420pfr.37.2023.01.19.19.43.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 19:39:23 -0800 (PST)
-Date:   Thu, 19 Jan 2023 21:39:27 -0600
-From:   David Vernet <void@manifault.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     bpf@vger.kernel.org, oe-kbuild-all@lists.linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@meta.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, tj@kernel.org
-Subject: Re: [PATCH bpf-next 4/8] bpf: Enable cpumasks to be queried and used
- as kptrs
-Message-ID: <Y8oM7xxNqNDDHUpT@maniforge.lan>
-References: <20230119235833.2948341-5-void@manifault.com>
- <202301201053.OKCBdOsh-lkp@intel.com>
+        Thu, 19 Jan 2023 19:43:16 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 00/12] Dynptr fixes
+Date:   Fri, 20 Jan 2023 09:13:02 +0530
+Message-Id: <20230120034314.1921848-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202301201053.OKCBdOsh-lkp@intel.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2627; i=memxor@gmail.com; h=from:subject; bh=gdBgv2RuRTjQjTE0kY+XxJ5AbuGf7PYz+Xi2uaOuMYI=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyg283o+kYkNPmNJtLkynThnvi1VwQuE10lS3yATv El1oxMCJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8oNvAAKCRBM4MiGSL8Rymn4D/ 4mTHfTxbHh7nu5LOLYRs0Q0m9uJVujYvbIinIVPhYTxhwWxO0afxhqlmy4/4j1yRLD0WxJ4PUumqZO eFNpKSmIDgVPPdsCmut/5NXZgzAqqlHW3vTWE84XtteKmeLrVqxQoEWgUSfVGsw9JofAHBMbbJKySQ q8k6rnXGtW7r1LDYKufr+XvTxpaTOxWM5JsaNfz4W+hoEI7BM5W0VNX7h26KXMaViDVP66KRLsH1Ps CSaTFDhwcK407mr5bdaEprgzlrdEP0VbMl5ruIbfe/zKIH+gM/JpG6I0zCNqyMhRcTCSN3o03qAXND hER12CiwOP4muI2dSDOlu95x5EwgiQk1hS2Tsw2o+6nWXU309sbtZC4BO+NrjWagBX0sKNaPpH7Q36 OxdV2KqrraA5Q0sqnIQUpFXK8j2MDoUXhLbbm4vivja09MNEpdP4hTbIiW+g1+f7hOgMXmwz/lnDEu x7h6pICvQqcNO+s7gX8x/7fDBvSFvHgbvmcTFKNl53h0SpmFku0zU9FzcnkpIwyk9iO2yqDSs4xjpe utTADshBzgS/h9sg8XjzWiIWD3Qj2ewTQ+z6dOq0pN8HuQqNp39eBjyqw6OJTdH5Gl9FW9+oVJ8HkI LmYomgTlLG6ElM6o0LUUYM9m0RjkxomNpwwd87fCIfWDqiO56W4T0y9hI3RA==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 10:36:24AM +0800, kernel test robot wrote:
-> Hi David,
-> 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on bpf-next/master]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/David-Vernet/bpf-Enable-annotating-trusted-nested-pointers/20230120-080139
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> patch link:    https://lore.kernel.org/r/20230119235833.2948341-5-void%40manifault.com
-> patch subject: [PATCH bpf-next 4/8] bpf: Enable cpumasks to be queried and used as kptrs
-> config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230120/202301201053.OKCBdOsh-lkp@intel.com/config)
-> compiler: sparc64-linux-gcc (GCC) 12.1.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/intel-lab-lkp/linux/commit/11541205c58f2226e5ffbc5967317469d65efac6
->         git remote add linux-review https://github.com/intel-lab-lkp/linux
->         git fetch --no-tags linux-review David-Vernet/bpf-Enable-annotating-trusted-nested-pointers/20230120-080139
->         git checkout 11541205c58f2226e5ffbc5967317469d65efac6
->         # save the config file
->         mkdir build_dir && cp config build_dir/.config
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sparc olddefconfig
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sparc SHELL=/bin/bash kernel/bpf/
-> 
-> If you fix the issue, kindly add following tag where applicable
-> | Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> kernel/bpf/cpumask.c:38:21: warning: no previous prototype for 'bpf_cpumask_create' [-Wmissing-prototypes]
->       38 | struct bpf_cpumask *bpf_cpumask_create(void)
+This is part 2 of https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com.
 
-Sorry, also forgot to do the __diag() dance described in [0]. I'll
-include that fix in v2.
+Changelog:
+----------
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20230119021442.1465269-1-memxor@gmail.com
 
-[0]: https://docs.kernel.org/bpf/kfuncs.html#creating-a-wrapper-kfunc
+ * Fix slice invalidation logic for unreferenced dynptrs (Joanne)
+ * Add selftests for precise slice invalidation on destruction
+ * Add Joanne's acks
 
-This is also reminding me to send out the v2 for [1]. I'll do that
-after I take care of another few small things I've been putting off.
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20230101083403.332783-1-memxor@gmail.com
 
-[1]: https://lore.kernel.org/lkml/20230106195130.1216841-3-void@manifault.com/T/
+ * Return error early in case of overwriting referenced dynptr slots (Andrii, Joanne)
+ * Rename destroy_stack_slots_dynptr to destroy_if_dynptr_stack_slot (Joanne)
+ * Invalidate dynptr slices associated with dynptr in destroy_if_dynptr_stack_slot (Joanne)
+ * Combine both dynptr_get_spi and is_spi_bounds_valid (Joanne)
+ * Compute spi once in process_dynptr_func and pass it as parameter instead of recomputing (Joanne)
+ * Add comments expanding REG_LIVE_WRITTEN marking in unmark_stack_slots_dynptr (Joanne)
+ * Add comments explaining why destroy_if_dynptr_stack_slot call needs to be done for both spi
+   and spi - 1 (Joanne)
+ * Port BPF assembly tests from test_verifier to test_progs framework (Andrii)
+ * Address misc feedback, rebase to bpf-next
 
-Thanks,
-David
+Old v1 -> v1
+Old v1: https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com
+
+ * Allow overwriting dynptr stack slots from dynptr init helpers
+ * Fix a bug in alignment check where reg->var_off.value was still not included
+ * Address other minor nits
+
+Eduard Zingerman (1):
+  selftests/bpf: convenience macro for use with 'asm volatile' blocks
+
+Kumar Kartikeya Dwivedi (11):
+  bpf: Fix state pruning for STACK_DYNPTR stack slots
+  bpf: Fix missing var_off check for ARG_PTR_TO_DYNPTR
+  bpf: Fix partial dynptr stack slot reads/writes
+  bpf: Invalidate slices on destruction of dynptrs on stack
+  bpf: Allow reinitializing unreferenced dynptr stack slots
+  bpf: Combine dynptr_get_spi and is_spi_bounds_valid
+  bpf: Avoid recomputing spi in process_dynptr_func
+  selftests/bpf: Add dynptr pruning tests
+  selftests/bpf: Add dynptr var_off tests
+  selftests/bpf: Add dynptr partial slot overwrite tests
+  selftests/bpf: Add dynptr helper tests
+
+ include/linux/bpf_verifier.h                  |   5 +-
+ kernel/bpf/verifier.c                         | 407 +++++++++++++++---
+ .../bpf/prog_tests/kfunc_dynptr_param.c       |   2 +-
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   7 +
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 390 ++++++++++++++++-
+ 5 files changed, 735 insertions(+), 76 deletions(-)
+
+
+base-commit: 00b8f39f1d15c7e16e3f5ca7538f522f3a89131f
+-- 
+2.39.1
+
