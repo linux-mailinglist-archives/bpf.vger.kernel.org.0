@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA44B674A52
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 04:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E477A674A53
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 04:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjATDng (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Jan 2023 22:43:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44630 "EHLO
+        id S229545AbjATDnj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Jan 2023 22:43:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbjATDnf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Jan 2023 22:43:35 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E513BB1ECB
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 19:43:33 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id n20-20020a17090aab9400b00229ca6a4636so7000182pjq.0
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 19:43:33 -0800 (PST)
+        with ESMTP id S229885AbjATDni (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Jan 2023 22:43:38 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C49B1ECB
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 19:43:37 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id t12-20020a17090aae0c00b00229f4cff534so467066pjq.1
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 19:43:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tJTE+2IiThjMO3PC0iuCb5HXJeu+oAk3QS1io4LW83g=;
-        b=dfMkB521OcQa1f3nrATddiAd+PcvT71EbJLKrimDD35olpG0v+iPcmIT1FPqACzbB/
-         5DMSAbv6rOWMtLqkce2S1iihRCL9dtc1eg+HOM3HVqwSci4fhfu6vGlnKyNaOly8HlfD
-         vnow+D0KV4O/Vp41EnQcgymgYxlgUJrkslaVgg7Sq6t9USUpGrlp7lgPpqGtIIzE/7Ba
-         FSQqDKz162nE5QSfka9Qnv9+bLMI6PxW9kt66eP8cOCe3V7weVdwUMl6418BiS/hf3Ez
-         AoGqAnZZFry2QGuggJLpmFDSGeNC4/PhQHQDcsRyPWY/vLVxt6G3a88mEoLYF+y9zLAI
-         oJDg==
+        bh=w6atmUnu6yUDSAXWR/NCWLDY2ibxR/H8Klr3dPFutJk=;
+        b=JY6L7tawJZ8OMcye/IcKmpTSG5/bQDnH4/oklrNqb6W/YzQlLQvXAaSBM6A+aRNpzD
+         vWEGFqFucw5zAMVrcs7srfOnyzrnkqKiDr3ojWYpi2/c6rBIND4mL0ml62Q7SIqVZAwg
+         OMV4AltsZjXW9LHVLXvQ3rfeHhJSAlNsgKhvkPYtiluwQHioEoR/eeQ7S/DTk4WeVnRu
+         RFc6JWwad2XH+9HjuweGYnrCct60FNgLEx3Xy/DSua9i435Bv4yYSYfmLJbUkm+EiMMy
+         98sluY1AFs89ocm+2bM4Z5AF3M2gnBojRcgwhKEhtjzkBXjYjVbRx5lGvTgJm2dH0UcW
+         RnxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tJTE+2IiThjMO3PC0iuCb5HXJeu+oAk3QS1io4LW83g=;
-        b=PUIBiiYbWXPIZLzV2RT1uE6ZupiX9fq60MivTdpyF5ulkB/T6lWKovIhERlzQhb7yI
-         MKApIiDewRCmdiHv/uTlUSV2u50tOkxZeqGzMPFBJ+MguD9lG9ca56L7TQoyBo4Xn2y0
-         WkOVk1KqCW4h4yeG1yRJlrGSHUl2vd3RkXme9/R/oMvUMu4+CdvxIYmqTJURKiCsBQCR
-         MpuBMbchEqngi4Sw9i2uL0bKG+vuC4u00EbsDHN7N8AofrHhYFeafRa6ci1kQAXrMjHG
-         /BlNoyHoOYpXKz0DngrykYQo3YCKEkCkmUdG49uDThtZYbpHMeSjYFjg4ZuK4l4/EE58
-         moQA==
-X-Gm-Message-State: AFqh2kq9+jqy0yhiUsEmgVN6T+3YwSrIFDIU9qsrKSPrHewHr15Hcnlf
-        jiLE54rT9MwM2tv8ssG4XonVESa3FDc=
-X-Google-Smtp-Source: AMrXdXsMpJt/Jtx9Zdx0e8NGa7hpktpJvKBt17UtFJKAxvRKZh4brTmoxy1jV1WpTCLKpgtTxtvMZg==
-X-Received: by 2002:a05:6a20:43a0:b0:b8:f026:754 with SMTP id i32-20020a056a2043a000b000b8f0260754mr10898333pzl.54.1674186213206;
-        Thu, 19 Jan 2023 19:43:33 -0800 (PST)
+        bh=w6atmUnu6yUDSAXWR/NCWLDY2ibxR/H8Klr3dPFutJk=;
+        b=mm7vkmZP2YEN/tdq9M8yFTGCe9c7rK4lCWV1GbgYTFGGLQ+wZOSY4lAJ2pLqFb+O4r
+         NBR16p0nCdALIFmGstYRMHHPdiauhLNKK3C9RZj4o1XMt0rh7yYPFxm4zc9GXVkzSJZ2
+         EjyDrpfPFdDwmILSB1E4Pwz5/y+0UA5PixU8BnqYvY4vF3XNwSKUXLvq8AtE7bBYEzWi
+         N7QozUvLlhe0SAHBKzFP7lml2sc0LnK7vb0Ia5Kk0FKsHA0zqSgn6PZjt/M/oY43H/U4
+         omlnSsAm4XycoAlvD7ph//7YVj8etA7XfGW4rL0OLoMu1wKC6+dpF0Eh5eE2c8WIPuM3
+         PPrg==
+X-Gm-Message-State: AFqh2krGhj8oH/+T/BDsK6otiDXyCIzGlfuGnyD92rPEVjvSL2J0P/C3
+        KXgF5HGX37S68KyrRNb7FOMbg2B65dQ=
+X-Google-Smtp-Source: AMrXdXskqZc1Hc6Jr3b0pmYJGLkogK4nE7pfNM8yhbYAFLwtNtuRwkTSNnNvH76ETq28PvCPspRFTw==
+X-Received: by 2002:a05:6a20:3558:b0:b8:8d2a:d37d with SMTP id f24-20020a056a20355800b000b88d2ad37dmr13333453pze.10.1674186216641;
+        Thu, 19 Jan 2023 19:43:36 -0800 (PST)
 Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
-        by smtp.gmail.com with ESMTPSA id y128-20020a623286000000b00576ebde78ffsm24668001pfy.192.2023.01.19.19.43.32
+        by smtp.gmail.com with ESMTPSA id d12-20020aa797ac000000b0058da3f2eba8sm8716235pfq.40.2023.01.19.19.43.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 19:43:32 -0800 (PST)
+        Thu, 19 Jan 2023 19:43:36 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Joanne Koong <joannelkoong@gmail.com>,
@@ -58,14 +58,14 @@ Cc:     Joanne Koong <joannelkoong@gmail.com>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         David Vernet <void@manifault.com>,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v3 05/12] bpf: Allow reinitializing unreferenced dynptr stack slots
-Date:   Fri, 20 Jan 2023 09:13:07 +0530
-Message-Id: <20230120034314.1921848-6-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 06/12] bpf: Combine dynptr_get_spi and is_spi_bounds_valid
+Date:   Fri, 20 Jan 2023 09:13:08 +0530
+Message-Id: <20230120034314.1921848-7-memxor@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230120034314.1921848-1-memxor@gmail.com>
 References: <20230120034314.1921848-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3888; i=memxor@gmail.com; h=from:subject; bh=YkhcRHw6M8R1uNyUytIog/IKy6jL6P3mgH0kEKFhQB8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyg28Jqykp549TuD8qfi+l8J7mju9PTDOmDmMoZB7 eluhbseJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8oNvAAKCRBM4MiGSL8RymlTD/ 45xWAJE/Wk0rNdGLz2HSx9OB+y50DL8In0OtbCod3+NSt1ABKEtbfzDitfraUNIQ2JUGj02nagnNu6 t0n7lgK6Y+X6mJkmvfiP0NTKe+jR9y8nk1YQOfKFpQoeb7fn0+MYowc4jgTO1bWSCf5YkaIWwxMHJu 6f2OAPArIWrv0wmNZey14f60zxeTuPqrqnBef4+Z1KTcKy7t+f3PJ6VPndpFnBx6R85ljX+2hN7csC /9aOnzcUr+V4m5gmwyRF7gCtg82VmJpTgx/iNK981T42W0Q05S30GiZeslwQguwoTAtIjZwSvYRTrd +cgpGcSWO8N44msU/u2lg9arKxoeUJohvuG3/Us6vROL0OCNYfYuGjpN+Ekj1rCNBKwh3fZv+zuZMl cmuX28DMQszu3rqYcffb+lwFNav9S8xwvckLSLZkZ+cY0Lm+WGKPOhEsi3m6nSea1EL2vgOC5vKNyV hm86++VAJAg5ZzUPzePfZetEyeDnEi7u03PWkFMzjAMtjakFEZSKzoPkFnXabhEmX5rqizaIKMTDB6 vwrvIlVYMWeA1N4LQ0x3Ejh41HFYDKVEx/awGd9rBSG4pSBlGe0OvHJ4remKHvHJw7dKSAafWoHafD 3gqtXiVRf7gxeJi3l6+ZnGeLjVoht8xTh+8HTwZWSpBg3NX3h2XPG3/ECa+w==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6180; i=memxor@gmail.com; h=from:subject; bh=Io8R4nMkdTkL0qipRPdCVbaGYoI8/FQxzBNP3ACEZXc=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyg28M4sVtlsxGoBslFWC6lc7p/kxompbmt4+GNFv n46VPXCJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8oNvAAKCRBM4MiGSL8RykH/D/ 4tgG1TmwJvmGv4tAdrlrR2mQIRaUIrxeP1I6tMTM0JuC8jrOJTYUT7iUK4LCXDDEgf+FdOCzeNhCE6 P3s4OiEHpdbnFhEWVZfQ8zadm71upEkXzebTDPKRHd9rqQcOIJfNljNtds6j0FUNMfBNobgJDPJ1bO 7SjrGSmXFbG+jI8dmskcm0pi9NEfhIydm5KUpY+TiZMClyKCMINLc8gmYAq1FFLKqx24rZ9+F0tO8T /tUj7qPkbltViUXLTTqhz7cKu63Z+NsRH0xG8GACVMcHde8q2DpBp0EpduEJmnFoyxXk0DLD5nLoVT 6KKGgJmt5pS62d//A3CaVRXgYp5Ixw0QtPWr8fSz1RcpAyE3Vb5+BBexoidYTpXQK0DyA2TixUZ/6W NwKvLi1mjWkcyu9M+EmzUiDiX5hPGRhTHI1HxVK3XJq59aq6HUTW9JVh0LvVBF3Q9kObPALjqF4lQd YLMzZnWxlxfwcrhktkiNR94BT2mpO7uuq6xzF5phTdnRrZqm0OM1u4GHdDUgEUicMMlgJrHWVLqO1X kLxK+cce99N03X6Cjzpol5CpYyjx6KTeTvsotx6fj6Tw8ASSfumOOE7Ds2P6GcEo+VMAu0cBtpjIVC DbRYQ0H5J1KXyGsrBoEZ9CJ/ROe3h1PpHT2iFzrwogXOURr7lii5Jm4G3YQQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,108 +78,169 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Consider a program like below:
+Currently, a check on spi resides in dynptr_get_spi, while others
+checking its validity for being within the allocated stack slots happens
+in is_spi_bounds_valid. Almost always barring a couple of cases (where
+being beyond allocated stack slots is not an error as stack slots need
+to be populated), both are used together to make checks. Hence, subsume
+the is_spi_bounds_valid check in dynptr_get_spi, and return -ERANGE to
+specially distinguish the case where spi is valid but not within
+allocated slots in the stack state.
 
-void prog(void)
-{
-	{
-		struct bpf_dynptr ptr;
-		bpf_dynptr_from_mem(...);
-	}
-	...
-	{
-		struct bpf_dynptr ptr;
-		bpf_dynptr_from_mem(...);
-	}
-}
+The is_spi_bounds_valid function is still kept around as it is a generic
+helper that will be useful for other objects on stack similar to dynptr
+in the future.
 
-Here, the C compiler based on lifetime rules in the C standard would be
-well within in its rights to share stack storage for dynptr 'ptr' as
-their lifetimes do not overlap in the two distinct scopes. Currently,
-such an example would be rejected by the verifier, but this is too
-strict. Instead, we should allow reinitializing over dynptr stack slots
-and forget information about the old dynptr object.
-
-The destroy_if_dynptr_stack_slot function already makes necessary checks
-to avoid overwriting referenced dynptr slots. This is done to present a
-better error message instead of forgetting dynptr information on stack
-and preserving reference state, leading to an inevitable but
-undecipherable error at the end about an unreleased reference which has
-to be associated back to its allocating call instruction to make any
-sense to the user.
-
+Suggested-by: Joanne Koong <joannelkoong@gmail.com>
 Acked-by: Joanne Koong <joannelkoong@gmail.com>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/verifier.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
+ kernel/bpf/verifier.c | 75 +++++++++++++++++++------------------------
+ 1 file changed, 33 insertions(+), 42 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 01cb802776fd..e5745b696bfe 100644
+index e5745b696bfe..29cbb3ef35e2 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -782,7 +782,7 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
- {
- 	struct bpf_func_state *state = func(env, reg);
- 	enum bpf_dynptr_type type;
--	int spi, i, id;
-+	int spi, i, id, err;
+@@ -644,6 +644,28 @@ static int __get_spi(s32 off)
+ 	return (-off - 1) / BPF_REG_SIZE;
+ }
  
- 	spi = dynptr_get_spi(env, reg);
- 	if (spi < 0)
-@@ -791,6 +791,22 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
- 	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
- 		return -EINVAL;
- 
-+	/* We cannot assume both spi and spi - 1 belong to the same dynptr,
-+	 * hence we need to call destroy_if_dynptr_stack_slot twice for both,
-+	 * to ensure that for the following example:
-+	 *	[d1][d1][d2][d2]
-+	 * spi    3   2   1   0
-+	 * So marking spi = 2 should lead to destruction of both d1 and d2. In
-+	 * case they do belong to same dynptr, second call won't see slot_type
-+	 * as STACK_DYNPTR and will simply skip destruction.
-+	 */
-+	err = destroy_if_dynptr_stack_slot(env, state, spi);
-+	if (err)
-+		return err;
-+	err = destroy_if_dynptr_stack_slot(env, state, spi - 1);
-+	if (err)
-+		return err;
++static struct bpf_func_state *func(struct bpf_verifier_env *env,
++				   const struct bpf_reg_state *reg)
++{
++	struct bpf_verifier_state *cur = env->cur_state;
 +
++	return cur->frame[reg->frameno];
++}
++
++static bool is_spi_bounds_valid(struct bpf_func_state *state, int spi, int nr_slots)
++{
++       int allocated_slots = state->allocated_stack / BPF_REG_SIZE;
++
++       /* We need to check that slots between [spi - nr_slots + 1, spi] are
++	* within [0, allocated_stack).
++	*
++	* Please note that the spi grows downwards. For example, a dynptr
++	* takes the size of two stack slots; the first slot will be at
++	* spi and the second slot will be at spi - 1.
++	*/
++       return spi - nr_slots + 1 >= 0 && spi < allocated_slots;
++}
++
+ static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+ {
+ 	int off, spi;
+@@ -664,29 +686,10 @@ static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *re
+ 		verbose(env, "cannot pass in dynptr at an offset=%d\n", off);
+ 		return -EINVAL;
+ 	}
+-	return spi;
+-}
+-
+-static bool is_spi_bounds_valid(struct bpf_func_state *state, int spi, int nr_slots)
+-{
+-	int allocated_slots = state->allocated_stack / BPF_REG_SIZE;
+ 
+-	/* We need to check that slots between [spi - nr_slots + 1, spi] are
+-	 * within [0, allocated_stack).
+-	 *
+-	 * Please note that the spi grows downwards. For example, a dynptr
+-	 * takes the size of two stack slots; the first slot will be at
+-	 * spi and the second slot will be at spi - 1.
+-	 */
+-	return spi - nr_slots + 1 >= 0 && spi < allocated_slots;
+-}
+-
+-static struct bpf_func_state *func(struct bpf_verifier_env *env,
+-				   const struct bpf_reg_state *reg)
+-{
+-	struct bpf_verifier_state *cur = env->cur_state;
+-
+-	return cur->frame[reg->frameno];
++	if (!is_spi_bounds_valid(func(env, reg), spi, BPF_DYNPTR_NR_SLOTS))
++		return -ERANGE;
++	return spi;
+ }
+ 
+ static const char *kernel_type_name(const struct btf* btf, u32 id)
+@@ -788,9 +791,6 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
+ 	if (spi < 0)
+ 		return spi;
+ 
+-	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+-		return -EINVAL;
+-
+ 	/* We cannot assume both spi and spi - 1 belong to the same dynptr,
+ 	 * hence we need to call destroy_if_dynptr_stack_slot twice for both,
+ 	 * to ensure that for the following example:
+@@ -844,9 +844,6 @@ static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_re
+ 	if (spi < 0)
+ 		return spi;
+ 
+-	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+-		return -EINVAL;
+-
  	for (i = 0; i < BPF_REG_SIZE; i++) {
- 		state->stack[spi].slot_type[i] = STACK_DYNPTR;
- 		state->stack[spi - 1].slot_type[i] = STACK_DYNPTR;
-@@ -936,7 +952,7 @@ static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
+ 		state->stack[spi].slot_type[i] = STACK_INVALID;
+ 		state->stack[spi - 1].slot_type[i] = STACK_INVALID;
+@@ -951,20 +948,18 @@ static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
+ 
  static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
  {
- 	struct bpf_func_state *state = func(env, reg);
--	int spi, i;
-+	int spi;
+-	struct bpf_func_state *state = func(env, reg);
+ 	int spi;
  
  	if (reg->type == CONST_PTR_TO_DYNPTR)
  		return false;
-@@ -949,12 +965,14 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
- 	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
- 		return true;
  
--	for (i = 0; i < BPF_REG_SIZE; i++) {
--		if (state->stack[spi].slot_type[i] == STACK_DYNPTR ||
--		    state->stack[spi - 1].slot_type[i] == STACK_DYNPTR)
--			return false;
--	}
--
-+	/* We allow overwriting existing unreferenced STACK_DYNPTR slots, see
-+	 * mark_stack_slots_dynptr which calls destroy_if_dynptr_stack_slot to
-+	 * ensure dynptr objects at the slots we are touching are completely
-+	 * destructed before we reinitialize them for a new one. For referenced
-+	 * ones, destroy_if_dynptr_stack_slot returns an error early instead of
-+	 * delaying it until the end where the user will get "Unreleased
-+	 * reference" error.
+ 	spi = dynptr_get_spi(env, reg);
++	/* For -ERANGE (i.e. spi not falling into allocated stack slots), we
++	 * will do check_mem_access to check and update stack bounds later, so
++	 * return true for that case.
 +	 */
- 	return true;
- }
+ 	if (spi < 0)
+-		return false;
+-
+-	/* We will do check_mem_access to check and update stack bounds later */
+-	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+-		return true;
+-
++		return spi == -ERANGE;
+ 	/* We allow overwriting existing unreferenced STACK_DYNPTR slots, see
+ 	 * mark_stack_slots_dynptr which calls destroy_if_dynptr_stack_slot to
+ 	 * ensure dynptr objects at the slots we are touching are completely
+@@ -988,8 +983,7 @@ static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_re
+ 	spi = dynptr_get_spi(env, reg);
+ 	if (spi < 0)
+ 		return false;
+-	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
+-	    !state->stack[spi].spilled_ptr.dynptr.first_slot)
++	if (!state->stack[spi].spilled_ptr.dynptr.first_slot)
+ 		return false;
  
+ 	for (i = 0; i < BPF_REG_SIZE; i++) {
+@@ -6160,7 +6154,7 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
+ 	if (reg->type == PTR_TO_STACK) {
+ 		int err = dynptr_get_spi(env, reg);
+ 
+-		if (err < 0)
++		if (err < 0 && err != -ERANGE)
+ 			return err;
+ 	}
+ 
+@@ -6668,10 +6662,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 			 */
+ 			if (reg->type == PTR_TO_STACK) {
+ 				spi = dynptr_get_spi(env, reg);
+-				if (spi < 0)
+-					return spi;
+-				if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
+-				    !state->stack[spi].spilled_ptr.ref_obj_id) {
++				if (spi < 0 || !state->stack[spi].spilled_ptr.ref_obj_id) {
+ 					verbose(env, "arg %d is an unacquired reference\n", regno);
+ 					return -EINVAL;
+ 				}
 -- 
 2.39.1
 
