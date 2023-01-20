@@ -2,44 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D0D675E92
+	by mail.lfdr.de (Postfix) with ESMTP id 26AC8675E91
 	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 21:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbjATUJ1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 20 Jan 2023 15:09:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
+        id S229489AbjATUJ0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 20 Jan 2023 15:09:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjATUJ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 15:09:26 -0500
+        with ESMTP id S229477AbjATUJZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 15:09:25 -0500
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E1C1285A
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:09:25 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30KI76wF011218
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:09:24 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3n7gdede2h-5
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418D2C668
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:09:24 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30KDiY4m023390
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:09:23 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3n6vy6vfyj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:09:24 -0800
-Received: from twshared24130.14.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:09:23 -0800
+Received: from twshared15216.17.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 20 Jan 2023 12:09:22 -0800
+ 15.1.2375.34; Fri, 20 Jan 2023 12:09:21 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id A4EE725B4AFB8; Fri, 20 Jan 2023 12:09:15 -0800 (PST)
+        id B7B2325B4AFCA; Fri, 20 Jan 2023 12:09:17 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next 00/25] libbpf: extend [ku]probe and syscall argument tracing support
-Date:   Fri, 20 Jan 2023 12:08:49 -0800
-Message-ID: <20230120200914.3008030-1-andrii@kernel.org>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH v2 bpf-next 01/25] libbpf: add support for fetching up to 8 arguments in kprobes
+Date:   Fri, 20 Jan 2023 12:08:50 -0800
+Message-ID: <20230120200914.3008030-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230120200914.3008030-1-andrii@kernel.org>
+References: <20230120200914.3008030-1-andrii@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: DQ-Q_Zx41jcw-1XRVMJmuGL0vduXgRAp
-X-Proofpoint-ORIG-GUID: DQ-Q_Zx41jcw-1XRVMJmuGL0vduXgRAp
+X-Proofpoint-ORIG-GUID: 8nTzS0yBGxUKUqwQxa7X-A06C9gBgKXo
+X-Proofpoint-GUID: 8nTzS0yBGxUKUqwQxa7X-A06C9gBgKXo
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
  definitions=2023-01-20_10,2023-01-20_01,2022-06-22_01
@@ -53,80 +57,128 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set fixes and extends libbpf's bpf_tracing.h support for tracing
-arguments of kprobes/uprobes, and syscall as a special case.
+Add BPF_KPROBE() and PT_REGS_PARMx() support for up to 8 arguments, if
+target architecture supports this. Currently all architectures are
+limited to only 5 register-placed arguments, which is limiting even on
+x86-64.
 
-Depending on the architecture, anywhere between 3 and 8 arguments can be
-passed to a function in registers (so relevant to kprobes and uprobes), but
-before this patch set libbpf's macros in bpf_tracing.h only supported up to
-5 arguments, which is limiting in practice. This patch set extends
-bpf_tracing.h to support up to 8 arguments, if architecture allows. This
-includes explicit PT_REGS_PARMx() macro family, as well as BPF_KPROBE() macro.
+This patch adds generic macro machinery to support up to 8 arguments
+both when explicitly fetching it from pt_regs through PT_REGS_PARMx()
+macros, as well as more ergonomic access in BPF_KPROBE().
 
-Now, with tracing syscall arguments situation is sometimes quite different.
-For a lot of architectures syscall argument passing through registers differs
-from function call sequence at least a little. For i386 it differs *a lot*.
-This patch set addresses this issue across all currently supported
-architectures and hopefully fixes existing issues. syscall(2) manpage defines
-that either 6 or 7 arguments can be supported, depending on architecture, so
-libbpf defines 6 or 7 registers per architecture to be used to fetch syscall
-arguments.
+Also, for i386 architecture we now don't have to define fake PARM4 and
+PARM5 definitions, they will be generically substituted, just like for
+PARM6 through PARM8.
 
-Also, BPF_UPROBE and BPF_URETPROBE are introduced as part of this patch set.
-They are aliases for BPF_KPROBE and BPF_KRETPROBE (as mechanics of argument
-fetching of kernel functions and user-space functions are identical), but it
-allows BPF users to have less confusing BPF-side code when working with
-uprobes.
+Subsequent patches will fill out architecture-specific definitions,
+where appropriate.
 
-For both sets of changes selftests are extended to test these new register
-definitions to architecture-defined limits. Unfortunately I don't have ability
-to test it on all architectures, and BPF CI only tests 3 architecture (x86-64,
-arm64, and s390x), so it would be greatly appreciated if people with access to
-architectures other than above 3 helped review and test changes.
+Tested-by: Alan Maguire <alan.maguire@oracle.com> # arm64
+Tested-by: Ilya Leoshkevich <iii@linux.ibm.com> # s390x
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/bpf_tracing.h | 41 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 37 insertions(+), 4 deletions(-)
 
-v1->v2:
-  - switched from mmap() to splice() syscall (Ilya);
-  - updated ABI spec link for s390x (Ilya);
-  - added a bunch of Tested-by and acks tags, thank you;
-  - dropped direct CCs because vger/patchworks blocked v1 patches, probably
-    due to too long CC list.
-
-
-Andrii Nakryiko (25):
-  libbpf: add support for fetching up to 8 arguments in kprobes
-  libbpf: add 6th argument support for x86-64 in bpf_tracing.h
-  libbpf: fix arm and arm64 specs in bpf_tracing.h
-  libbpf: complete mips spec in bpf_tracing.h
-  libbpf: complete powerpc spec in bpf_tracing.h
-  libbpf: complete sparc spec in bpf_tracing.h
-  libbpf: complete riscv arch spec in bpf_tracing.h
-  libbpf: fix and complete ARC spec in bpf_tracing.h
-  libbpf: complete LoongArch (loongarch) spec in bpf_tracing.h
-  libbpf: add BPF_UPROBE and BPF_URETPROBE macro aliases
-  selftests/bpf: validate arch-specific argument registers limits
-  libbpf: improve syscall tracing support in bpf_tracing.h
-  libbpf: define x86-64 syscall regs spec in bpf_tracing.h
-  libbpf: define i386 syscall regs spec in bpf_tracing.h
-  libbpf: define s390x syscall regs spec in bpf_tracing.h
-  libbpf: define arm syscall regs spec in bpf_tracing.h
-  libbpf: define arm64 syscall regs spec in bpf_tracing.h
-  libbpf: define mips syscall regs spec in bpf_tracing.h
-  libbpf: define powerpc syscall regs spec in bpf_tracing.h
-  libbpf: define sparc syscall regs spec in bpf_tracing.h
-  libbpf: define riscv syscall regs spec in bpf_tracing.h
-  libbpf: define arc syscall regs spec in bpf_tracing.h
-  libbpf: define loongarch syscall regs spec in bpf_tracing.h
-  selftests/bpf: add 6-argument syscall tracing test
-  libbpf: clean up now not needed __PT_PARM{1-6}_SYSCALL_REG defaults
-
- tools/lib/bpf/bpf_tracing.h                   | 303 +++++++++++++++---
- .../bpf/prog_tests/test_bpf_syscall_macro.c   |  17 +
- .../bpf/prog_tests/uprobe_autoattach.c        |  33 +-
- tools/testing/selftests/bpf/progs/bpf_misc.h  |  25 ++
- .../selftests/bpf/progs/bpf_syscall_macro.c   |  26 ++
- .../bpf/progs/test_uprobe_autoattach.c        |  48 ++-
- 6 files changed, 407 insertions(+), 45 deletions(-)
-
+diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+index bdb0f6b5be84..ef17d8fdd9d6 100644
+--- a/tools/lib/bpf/bpf_tracing.h
++++ b/tools/lib/bpf/bpf_tracing.h
+@@ -98,12 +98,10 @@
+ 
+ #ifdef __i386__
+ 
++/* i386 kernel is built with -mregparm=3 */
+ #define __PT_PARM1_REG eax
+ #define __PT_PARM2_REG edx
+ #define __PT_PARM3_REG ecx
+-/* i386 kernel is built with -mregparm=3 */
+-#define __PT_PARM4_REG __unsupported__
+-#define __PT_PARM5_REG __unsupported__
+ #define __PT_RET_REG esp
+ #define __PT_FP_REG ebp
+ #define __PT_RC_REG eax
+@@ -287,16 +285,39 @@ struct pt_regs___arm64 {
+ 
+ struct pt_regs;
+ 
+-/* allow some architecutres to override `struct pt_regs` */
++/* allow some architectures to override `struct pt_regs` */
+ #ifndef __PT_REGS_CAST
+ #define __PT_REGS_CAST(x) (x)
+ #endif
+ 
++/*
++ * Different architectures support different number of arguments passed
++ * through registers. i386 supports just 3, some arches support up to 8.
++ */
++#ifndef __PT_PARM4_REG
++#define __PT_PARM4_REG __unsupported__
++#endif
++#ifndef __PT_PARM5_REG
++#define __PT_PARM5_REG __unsupported__
++#endif
++#ifndef __PT_PARM6_REG
++#define __PT_PARM6_REG __unsupported__
++#endif
++#ifndef __PT_PARM7_REG
++#define __PT_PARM7_REG __unsupported__
++#endif
++#ifndef __PT_PARM8_REG
++#define __PT_PARM8_REG __unsupported__
++#endif
++
+ #define PT_REGS_PARM1(x) (__PT_REGS_CAST(x)->__PT_PARM1_REG)
+ #define PT_REGS_PARM2(x) (__PT_REGS_CAST(x)->__PT_PARM2_REG)
+ #define PT_REGS_PARM3(x) (__PT_REGS_CAST(x)->__PT_PARM3_REG)
+ #define PT_REGS_PARM4(x) (__PT_REGS_CAST(x)->__PT_PARM4_REG)
+ #define PT_REGS_PARM5(x) (__PT_REGS_CAST(x)->__PT_PARM5_REG)
++#define PT_REGS_PARM6(x) (__PT_REGS_CAST(x)->__PT_PARM6_REG)
++#define PT_REGS_PARM7(x) (__PT_REGS_CAST(x)->__PT_PARM7_REG)
++#define PT_REGS_PARM8(x) (__PT_REGS_CAST(x)->__PT_PARM8_REG)
+ #define PT_REGS_RET(x) (__PT_REGS_CAST(x)->__PT_RET_REG)
+ #define PT_REGS_FP(x) (__PT_REGS_CAST(x)->__PT_FP_REG)
+ #define PT_REGS_RC(x) (__PT_REGS_CAST(x)->__PT_RC_REG)
+@@ -308,6 +329,9 @@ struct pt_regs;
+ #define PT_REGS_PARM3_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM3_REG)
+ #define PT_REGS_PARM4_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM4_REG)
+ #define PT_REGS_PARM5_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM5_REG)
++#define PT_REGS_PARM6_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM6_REG)
++#define PT_REGS_PARM7_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM7_REG)
++#define PT_REGS_PARM8_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM8_REG)
+ #define PT_REGS_RET_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_RET_REG)
+ #define PT_REGS_FP_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_FP_REG)
+ #define PT_REGS_RC_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_RC_REG)
+@@ -360,6 +384,9 @@ struct pt_regs;
+ #define PT_REGS_PARM3(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_PARM4(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_PARM5(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
++#define PT_REGS_PARM6(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
++#define PT_REGS_PARM7(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
++#define PT_REGS_PARM8(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_RET(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_FP(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_RC(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+@@ -371,6 +398,9 @@ struct pt_regs;
+ #define PT_REGS_PARM3_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_PARM4_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_PARM5_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
++#define PT_REGS_PARM6_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
++#define PT_REGS_PARM7_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
++#define PT_REGS_PARM8_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_RET_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_FP_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+ #define PT_REGS_RC_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+@@ -576,6 +606,9 @@ struct pt_regs;
+ #define ___bpf_kprobe_args3(x, args...) ___bpf_kprobe_args2(args), (void *)PT_REGS_PARM3(ctx)
+ #define ___bpf_kprobe_args4(x, args...) ___bpf_kprobe_args3(args), (void *)PT_REGS_PARM4(ctx)
+ #define ___bpf_kprobe_args5(x, args...) ___bpf_kprobe_args4(args), (void *)PT_REGS_PARM5(ctx)
++#define ___bpf_kprobe_args6(x, args...) ___bpf_kprobe_args5(args), (void *)PT_REGS_PARM6(ctx)
++#define ___bpf_kprobe_args7(x, args...) ___bpf_kprobe_args6(args), (void *)PT_REGS_PARM7(ctx)
++#define ___bpf_kprobe_args8(x, args...) ___bpf_kprobe_args7(args), (void *)PT_REGS_PARM8(ctx)
+ #define ___bpf_kprobe_args(args...)     ___bpf_apply(___bpf_kprobe_args, ___bpf_narg(args))(args)
+ 
+ /*
 -- 
 2.30.2
 
