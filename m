@@ -2,70 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9217674DA6
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 08:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 274B8674DA7
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 08:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbjATHEI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 02:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        id S229437AbjATHEN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 02:04:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjATHEI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 02:04:08 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E41530D7
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 23:04:06 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id v23so4602079plo.1
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 23:04:06 -0800 (PST)
+        with ESMTP id S229713AbjATHEM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 02:04:12 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A774241D9
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 23:04:10 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c26so3292787pfp.10
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 23:04:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tbfmok1bo7nEVSKUA385ZnbR9z6ipfMuo+sDIvn1aHs=;
-        b=Y01TAT+fsEZCUp0QP066V2t97AUQa+L9o3hed4/bOFogBGI1B8wxs0izCfUK7buSkH
-         Be8uZGTdCRsGOesYTRJCy7kDrUBf2xWM9Uq9QoRD+B3n7jYq6CR/q4RbSikl3ORQ7zdW
-         ca6xKu7kIJ/+cy9QZcIYI9JFgbpdNok/IoIZAXn+j9HgsZDGU93Zwh/xlpjVDz6coqUN
-         7ELRKOAuFuBi4SKPwyJg0hAzNFi6hKboCQYh4q2ywzOF7b48vmnrAwX7r7NLPyMi6QR7
-         /wFM4iKrgOolEHOZI79k/LYtZMtOUWRlRuElvQ67J+/66i27l89u4YVX4ltVslLyIxw4
-         Fcdw==
+        bh=2H/54ZqUIjU3VYoXRIgXxyEiI8YMEx+pUQ0BaawvGCY=;
+        b=HhN3OrSSlscayczrtewUgp4FWDQwGakQf1b1rZlGPaZd4oyXjjSjy0KupaMU6Wvr7N
+         No2Kf4mF1Wqct+Af0RyQMwzunMu4741N+w3CHXNV6yZAJYKH27sKQVty6xI5IDAodwNs
+         KDtVIYAcsicwIYEIYV9Q2WZGcT/M4SRGn6+rtKU/DEDjlmO7ZUpxJKmEI9nf1ss041ve
+         /cdqPOx9jx5q0JRAMV31ZFtMqlAFNBR4rrjKYgkB3jQbZmJJSlZk5NXA24wK5Ava1V9h
+         4wZURlz6kdmFnh6EuOmR/LUF45MvocPwhCIyQpBbJmOnHHHWv6zpsKAKe1QcAk8PFh8o
+         ap2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tbfmok1bo7nEVSKUA385ZnbR9z6ipfMuo+sDIvn1aHs=;
-        b=KhWkDLsFstHBUfWv0G1mGr2Y0vMEm6A8fbwQNF8ryiN8J6POvUzB4W0K6yBi9wVzLz
-         i1qb3Ag718ErPqpWX1goEtphTP6XOKwIPHMMXuZGw0/P2yJAgim94qth2YM+J78haeqq
-         cHAnaFSdVaciv4d+enDLH/OXfzKnJfn3XhG0V7c71w7Sol2WLHcA1/X3+p7V9Qyr1Xsv
-         nVUXyMVGcHHwJUXKAs95XjO/FcYDsGicdL/GCXz1yLMfX+LTJ9kdKZIlN+CNoRJI/ePi
-         LSrCsUa2z3A1G7ujb9c2/MhsXCBmb8q0Dt5N1DsmyjuGTT09zbwSU3LLREZ6rLewjDpQ
-         zFEw==
-X-Gm-Message-State: AFqh2koVHkGZBl7CfwcGeWeu0k3zJclWeFl0yfKX3fc+Y9m1KUFQv37+
-        1Zqd3jR/xY2ETe5gylb5s9G2XoKst0s=
-X-Google-Smtp-Source: AMrXdXt1Tf7co94fsdBz3vipvUTPOq8UQpaYUdP77A96FSWeDkQ0obruzTuVVEt5YtmuZvLyP6DShg==
-X-Received: by 2002:a17:903:2448:b0:192:7845:e0cc with SMTP id l8-20020a170903244800b001927845e0ccmr51920031pls.68.1674198245984;
-        Thu, 19 Jan 2023 23:04:05 -0800 (PST)
+        bh=2H/54ZqUIjU3VYoXRIgXxyEiI8YMEx+pUQ0BaawvGCY=;
+        b=ihr1buSvKChEpUh7rkHZQAaeC8hHxeW+DpN+NQhwKMzZSVNBpYTWQT9guogjaxlqUU
+         9BD4zAVu8SoiNUNfC2dwTO+STJmNQEuyH93WClUM18huJG0bjQQz0dkZW+8sQTAbvKeG
+         auc59MEFEiX2/Yttlmbari1k1NQacmyP9JxPd56f69rUj1ci0ZUHNGDnYcnuvSxXf68P
+         DNwoxELWLXf0qwqsOfhZtMgQbRFoM8lE8Bc0dKbBNGikSnc4Xi7KtkbT9sZcBsVgCD7c
+         p+X72XCCNWrzyEzAnMQy1m1ad0RyBKYMGLXfry86hBQIlCI+6aqx04FZUCEat+vmHI4N
+         DWeQ==
+X-Gm-Message-State: AFqh2kpTlIRNzjNJUDClunlOneCsJSLgQ6HmQOx172PwB0Dfcs78ly9s
+        h4fsTaipsa4ih13yQazgimmBXZkVrC4=
+X-Google-Smtp-Source: AMrXdXsyBZ84sY2XHrYOPLeQpydbCDyb8QwetGnAgCWtQyEHgjDQe6265uPfnmoQgoj+5mglcXWMrw==
+X-Received: by 2002:a05:6a00:340a:b0:58d:aae8:1c2 with SMTP id cn10-20020a056a00340a00b0058daae801c2mr15911814pfb.8.1674198249706;
+        Thu, 19 Jan 2023 23:04:09 -0800 (PST)
 Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
-        by smtp.gmail.com with ESMTPSA id y7-20020a1709027c8700b00194afb5a3ebsm5825494pll.21.2023.01.19.23.04.05
+        by smtp.gmail.com with ESMTPSA id z20-20020aa79594000000b0058de2c315e6sm4792438pfj.158.2023.01.19.23.04.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 23:04:05 -0800 (PST)
+        Thu, 19 Jan 2023 23:04:09 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
-Cc:     Joanne Koong <joannelkoong@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
         David Vernet <void@manifault.com>,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v4 02/12] bpf: Fix missing var_off check for ARG_PTR_TO_DYNPTR
-Date:   Fri, 20 Jan 2023 12:33:45 +0530
-Message-Id: <20230120070355.1983560-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v4 03/12] bpf: Fix partial dynptr stack slot reads/writes
+Date:   Fri, 20 Jan 2023 12:33:46 +0530
+Message-Id: <20230120070355.1983560-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230120070355.1983560-1-memxor@gmail.com>
 References: <20230120070355.1983560-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9553; i=memxor@gmail.com; h=from:subject; bh=2s1pBDiiXTIV1BB1rUUx54yULFT49RyHEefJ0HCSxfo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyjzLl2cE3exe3tS2y0dU5xdJr1Vgd0s+vbl8nS4L rp+xG4SJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8o8ywAKCRBM4MiGSL8RyhEmD/ 4/tVINO6aN/REFg+2Z/nfDzGJieIGOijMSHvzDYU7S/hdkUlz0nln5VwbrfqnUANCEBfFHJSXMm9Lm +9l+DicbC+uydPi/Vhu+Ye9aP3MQp1YHyrOlYVGSHMorxm0WwMme9dxWpW/yxtSf6WBQ/3tsOl7FMq PVTpJr8nGsuM8Tgia3xb0/vw5fh2EkTLWs+W9QdrlyGFkI0jFsTnhIJzoFxdSw8e63Doz//0ykPdm6 NnLftu2mH02oOD4trJgs+hml2tA4Yqvgq2xjmD7MChsb+s7IxYWsqw0rjoNTkxLXwgJjBqa25fhYq9 oir25Jku2hKg6Ivs8y/+yqLrdc1Y9EVFHZs9DaOTq6WP2Vm2EiofknoQxkKW3PyVFWxD0em0NOzGoF wgaD/g4YRNb+IYVZ0ivAeLYAYt2I6zEwJZ46GbqyqYy09a1/pCiNPODcdz3fPyQpEghpzpPr7irzj7 JtekBdRxl8xqJmO/3+Yg/0KC/o3kUJsirKXudXg3cMMretuqJWjl88GGiBbv1NKN9u4M+JT6wKpner XoNgDLBmEUxVe9FA+c7qyFPbRnFn6991rGfIZ7BKhnfSdDgGjZzvQ2SJoICRMvFzGIWo8HBtTHCHUm lSGH0JHTrvbRxCEnj0/+zL7miBEsG2PF6zfyW4zwLg6RvKWBZwZQgLszE51w==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8936; i=memxor@gmail.com; h=from:subject; bh=88XPzRu2Z9EO4iSWHshfPh1pJZo++IffnWh/36lilyY=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyjzLDrwrMkcLcpOoo/SrtdbpZSaCSGvVeLRH4RUd 8HAwUXWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8o8ywAKCRBM4MiGSL8Ryuf5EA CcNaodh7bWhoYTOBAau7AxkvTn6LpGXzKMBikvnbm75MHz/gW3iVeDfsvcWndFOdyM+hXku/DcHO5i VD5sOUey1XJen0t5nTKo7GbBnyvaCCOWpo3TH9kF/q5i5mS2U7qikYbhH+9fMKPIhxqwHLEa2mPVi9 9/MyI7yMnKne97YnkEs2ATLHpLRdbKE3fcHcrxDDsIwZcUwRuAzmm7lznCHU/Lg465DvAjFgjEwJ8B sS9NS23G8dXoPo3uyt1JPNDZx4DtcPvE+XLTpKi2XXiD1wNSGsjC55o8sfgznTcR8EIjuH05HgHKgV lgM50zyLDNI3r2eQekW6WkS4+sBze/a65EWUD2UQtxje2T3K/ipnU83LWtrmUc+VuuLd9pNw6n6yVF MeRAdcoPVB1wVRLR4PCyd69MS9rVXYgJBRbwrLBkoptqwHIQvUFP5ObYIUosokXZEjNCgm91ABYCwO WT0nKjNDDT1uW28RMhNNu4P0a0w63IW+KshNBpPoUyAs7eEExPRbFp2KphCs3hTROMRLXlFazKTSZB RlbkzXBbyApNUWYt/NF6P+yv0C8HYLpQ3CLvU/KtbFXaWDfSwPYN2yIhPswOgnv9GdEJbKEPaf7uaN SybxWIo0X9EcOruo/NoSE1fRn20fojAsFAU4y3aLfIDs+14qpVPE8XGQn7SQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,263 +78,242 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, the dynptr function is not checking the variable offset part
-of PTR_TO_STACK that it needs to check. The fixed offset is considered
-when computing the stack pointer index, but if the variable offset was
-not a constant (such that it could not be accumulated in reg->off), we
-will end up a discrepency where runtime pointer does not point to the
-actual stack slot we mark as STACK_DYNPTR.
+Currently, while reads are disallowed for dynptr stack slots, writes are
+not. Reads don't work from both direct access and helpers, while writes
+do work in both cases, but have the effect of overwriting the slot_type.
 
-It is impossible to precisely track dynptr state when variable offset is
-not constant, hence, just like bpf_timer, kptr, bpf_spin_lock, etc.
-simply reject the case where reg->var_off is not constant. Then,
-consider both reg->off and reg->var_off.value when computing the stack
-pointer index.
+While this is fine, handling for a few edge cases is missing. Firstly,
+a user can overwrite the stack slots of dynptr partially.
 
-A new helper dynptr_get_spi is introduced to hide over these details
-since the dynptr needs to be located in multiple places outside the
-process_dynptr_func checks, hence once we know it's a PTR_TO_STACK, we
-need to enforce these checks in all places.
+Consider the following layout:
+spi: [d][d][?]
+      2  1  0
 
-Note that it is disallowed for unprivileged users to have a non-constant
-var_off, so this problem should only be possible to trigger from
-programs having CAP_PERFMON. However, its effects can vary.
+First slot is at spi 2, second at spi 1.
+Now, do a write of 1 to 8 bytes for spi 1.
 
-Without the fix, it is possible to replace the contents of the dynptr
-arbitrarily by making verifier mark different stack slots than actual
-location and then doing writes to the actual stack address of dynptr at
-runtime.
+This will essentially either write STACK_MISC for all slot_types or
+STACK_MISC and STACK_ZERO (in case of size < BPF_REG_SIZE partial write
+of zeroes). The end result is that slot is scrubbed.
+
+Now, the layout is:
+spi: [d][m][?]
+      2  1  0
+
+Suppose if user initializes spi = 1 as dynptr.
+We get:
+spi: [d][d][d]
+      2  1  0
+
+But this time, both spi 2 and spi 1 have first_slot = true.
+
+Now, when passing spi 2 to dynptr helper, it will consider it as
+initialized as it does not check whether second slot has first_slot ==
+false. And spi 1 should already work as normal.
+
+This effectively replaced size + offset of first dynptr, hence allowing
+invalid OOB reads and writes.
+
+Make a few changes to protect against this:
+When writing to PTR_TO_STACK using BPF insns, when we touch spi of a
+STACK_DYNPTR type, mark both first and second slot (regardless of which
+slot we touch) as STACK_INVALID. Reads are already prevented.
+
+Second, prevent writing	to stack memory from helpers if the range may
+contain any STACK_DYNPTR slots. Reads are already prevented.
+
+For helpers, we cannot allow it to destroy dynptrs from the writes as
+depending on arguments, helper may take uninit_mem and dynptr both at
+the same time. This would mean that helper may write to uninit_mem
+before it reads the dynptr, which would be bad.
+
+PTR_TO_MEM: [?????dd]
+
+Depending on the code inside the helper, it may end up overwriting the
+dynptr contents first and then read those as the dynptr argument.
+
+Verifier would only simulate destruction when it does byte by byte
+access simulation in check_helper_call for meta.access_size, and
+fail to catch this case, as it happens after argument checks.
+
+The same would need to be done for any other non-trivial objects created
+on the stack in the future, such as bpf_list_head on stack, or
+bpf_rb_root on stack.
+
+A common misunderstanding in the current code is that MEM_UNINIT means
+writes, but note that writes may also be performed even without
+MEM_UNINIT in case of helpers, in that case the code after handling meta
+&& meta->raw_mode will complain when it sees STACK_DYNPTR. So that
+invalid read case also covers writes to potential STACK_DYNPTR slots.
+The only loophole was in case of meta->raw_mode which simulated writes
+through instructions which could overwrite them.
+
+A future series sequenced after this will focus on the clean up of
+helper access checks and bugs around that.
 
 Fixes: 97e03f521050 ("bpf: Add verifier support for dynptrs")
-Acked-by: Joanne Koong <joannelkoong@gmail.com>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/verifier.c                         | 84 +++++++++++++++----
- .../bpf/prog_tests/kfunc_dynptr_param.c       |  2 +-
- .../testing/selftests/bpf/progs/dynptr_fail.c |  4 +-
- 3 files changed, 69 insertions(+), 21 deletions(-)
+ kernel/bpf/verifier.c                         | 88 +++++++++++++++++++
+ .../testing/selftests/bpf/progs/dynptr_fail.c |  6 +-
+ 2 files changed, 91 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 39d8ee38c338..76afdbea425a 100644
+index 76afdbea425a..5c7f29ca94ec 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -638,11 +638,34 @@ static void print_liveness(struct bpf_verifier_env *env,
- 		verbose(env, "D");
+@@ -769,6 +769,8 @@ static void mark_dynptr_cb_reg(struct bpf_reg_state *reg,
+ 	__mark_dynptr_reg(reg, type, true);
  }
  
--static int get_spi(s32 off)
-+static int __get_spi(s32 off)
- {
- 	return (-off - 1) / BPF_REG_SIZE;
++static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
++				        struct bpf_func_state *state, int spi);
+ 
+ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+ 				   enum bpf_arg_type arg_type, int insn_idx)
+@@ -863,6 +865,55 @@ static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_re
+ 	return 0;
  }
  
-+static int dynptr_get_spi(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
++static void __mark_reg_unknown(const struct bpf_verifier_env *env,
++			       struct bpf_reg_state *reg);
++
++static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
++				        struct bpf_func_state *state, int spi)
 +{
-+	int off, spi;
++	int i;
 +
-+	if (!tnum_is_const(reg->var_off)) {
-+		verbose(env, "dynptr has to be at a constant offset\n");
++	/* We always ensure that STACK_DYNPTR is never set partially,
++	 * hence just checking for slot_type[0] is enough. This is
++	 * different for STACK_SPILL, where it may be only set for
++	 * 1 byte, so code has to use is_spilled_reg.
++	 */
++	if (state->stack[spi].slot_type[0] != STACK_DYNPTR)
++		return 0;
++
++	/* Reposition spi to first slot */
++	if (!state->stack[spi].spilled_ptr.dynptr.first_slot)
++		spi = spi + 1;
++
++	if (dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.type)) {
++		verbose(env, "cannot overwrite referenced dynptr\n");
 +		return -EINVAL;
 +	}
 +
-+	off = reg->off + reg->var_off.value;
-+	if (off % BPF_REG_SIZE) {
-+		verbose(env, "cannot pass in dynptr at an offset=%d\n", off);
-+		return -EINVAL;
++	mark_stack_slot_scratched(env, spi);
++	mark_stack_slot_scratched(env, spi - 1);
++
++	/* Writing partially to one dynptr stack slot destroys both. */
++	for (i = 0; i < BPF_REG_SIZE; i++) {
++		state->stack[spi].slot_type[i] = STACK_INVALID;
++		state->stack[spi - 1].slot_type[i] = STACK_INVALID;
 +	}
 +
-+	spi = __get_spi(off);
-+	if (spi < 1) {
-+		verbose(env, "cannot pass in dynptr at an offset=%d\n", off);
-+		return -EINVAL;
-+	}
-+	return spi;
++	/* TODO: Invalidate any slices associated with this dynptr */
++
++	/* Do not release reference state, we are destroying dynptr on stack,
++	 * not using some helper to release it. Just reset register.
++	 */
++	__mark_reg_not_init(env, &state->stack[spi].spilled_ptr);
++	__mark_reg_not_init(env, &state->stack[spi - 1].spilled_ptr);
++
++	/* Same reason as unmark_stack_slots_dynptr above */
++	state->stack[spi].spilled_ptr.live |= REG_LIVE_WRITTEN;
++	state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
++
++	return 0;
 +}
 +
- static bool is_spi_bounds_valid(struct bpf_func_state *state, int spi, int nr_slots)
- {
- 	int allocated_slots = state->allocated_stack / BPF_REG_SIZE;
-@@ -754,7 +777,9 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
- 	enum bpf_dynptr_type type;
- 	int spi, i, id;
- 
--	spi = get_spi(reg->off);
-+	spi = dynptr_get_spi(env, reg);
-+	if (spi < 0)
-+		return spi;
- 
- 	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
- 		return -EINVAL;
-@@ -792,7 +817,9 @@ static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_re
- 	struct bpf_func_state *state = func(env, reg);
- 	int spi, i;
- 
--	spi = get_spi(reg->off);
-+	spi = dynptr_get_spi(env, reg);
-+	if (spi < 0)
-+		return spi;
- 
- 	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
- 		return -EINVAL;
-@@ -844,7 +871,11 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
- 	if (reg->type == CONST_PTR_TO_DYNPTR)
- 		return false;
- 
--	spi = get_spi(reg->off);
-+	spi = dynptr_get_spi(env, reg);
-+	if (spi < 0)
-+		return false;
-+
-+	/* We will do check_mem_access to check and update stack bounds later */
- 	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
- 		return true;
- 
-@@ -860,14 +891,15 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
- static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
  {
  	struct bpf_func_state *state = func(env, reg);
--	int spi;
--	int i;
-+	int spi, i;
- 
- 	/* This already represents first slot of initialized bpf_dynptr */
- 	if (reg->type == CONST_PTR_TO_DYNPTR)
- 		return true;
- 
--	spi = get_spi(reg->off);
-+	spi = dynptr_get_spi(env, reg);
-+	if (spi < 0)
-+		return false;
- 	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
- 	    !state->stack[spi].spilled_ptr.dynptr.first_slot)
- 		return false;
-@@ -896,7 +928,9 @@ static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg
- 	if (reg->type == CONST_PTR_TO_DYNPTR) {
- 		return reg->dynptr.type == dynptr_type;
- 	} else {
--		spi = get_spi(reg->off);
-+		spi = dynptr_get_spi(env, reg);
-+		if (spi < 0)
-+			return false;
- 		return state->stack[spi].spilled_ptr.dynptr.type == dynptr_type;
+@@ -3391,6 +3442,10 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
+ 			env->insn_aux_data[insn_idx].sanitize_stack_spill = true;
  	}
- }
-@@ -2429,7 +2463,9 @@ static int mark_dynptr_read(struct bpf_verifier_env *env, struct bpf_reg_state *
- 	 */
- 	if (reg->type == CONST_PTR_TO_DYNPTR)
- 		return 0;
--	spi = get_spi(reg->off);
-+	spi = dynptr_get_spi(env, reg);
-+	if (spi < 0)
-+		return spi;
- 	/* Caller ensures dynptr is valid and initialized, which means spi is in
- 	 * bounds and spi is the first dynptr slot. Simply mark stack slot as
- 	 * read.
-@@ -5992,12 +6028,15 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
- 	}
- 	/* CONST_PTR_TO_DYNPTR already has fixed and var_off as 0 due to
- 	 * check_func_arg_reg_off's logic. We only need to check offset
--	 * alignment for PTR_TO_STACK.
-+	 * and its alignment for PTR_TO_STACK.
- 	 */
--	if (reg->type == PTR_TO_STACK && (reg->off % BPF_REG_SIZE)) {
--		verbose(env, "cannot pass in dynptr at an offset=%d\n", reg->off);
--		return -EINVAL;
-+	if (reg->type == PTR_TO_STACK) {
-+		int err = dynptr_get_spi(env, reg);
+ 
++	err = destroy_if_dynptr_stack_slot(env, state, spi);
++	if (err)
++		return err;
 +
-+		if (err < 0)
+ 	mark_stack_slot_scratched(env, spi);
+ 	if (reg && !(off % BPF_REG_SIZE) && register_is_bounded(reg) &&
+ 	    !register_is_null(reg) && env->bpf_capable) {
+@@ -3504,6 +3559,14 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
+ 	if (err)
+ 		return err;
+ 
++	for (i = min_off; i < max_off; i++) {
++		int spi;
++
++		spi = __get_spi(i);
++		err = destroy_if_dynptr_stack_slot(env, state, spi);
++		if (err)
 +			return err;
++	}
+ 
+ 	/* Variable offset writes destroy any spilled pointers in range. */
+ 	for (i = min_off; i < max_off; i++) {
+@@ -5531,6 +5594,31 @@ static int check_stack_range_initialized(
  	}
+ 
+ 	if (meta && meta->raw_mode) {
++		/* Ensure we won't be overwriting dynptrs when simulating byte
++		 * by byte access in check_helper_call using meta.access_size.
++		 * This would be a problem if we have a helper in the future
++		 * which takes:
++		 *
++		 *	helper(uninit_mem, len, dynptr)
++		 *
++		 * Now, uninint_mem may overlap with dynptr pointer. Hence, it
++		 * may end up writing to dynptr itself when touching memory from
++		 * arg 1. This can be relaxed on a case by case basis for known
++		 * safe cases, but reject due to the possibilitiy of aliasing by
++		 * default.
++		 */
++		for (i = min_off; i < max_off + access_size; i++) {
++			int stack_off = -i - 1;
 +
- 	/*  MEM_UNINIT - Points to memory that is an appropriate candidate for
- 	 *		 constructing a mutable bpf_dynptr object.
- 	 *
-@@ -6405,15 +6444,16 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
- 	}
- }
- 
--static u32 dynptr_ref_obj_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-+static int dynptr_ref_obj_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
- {
- 	struct bpf_func_state *state = func(env, reg);
- 	int spi;
- 
- 	if (reg->type == CONST_PTR_TO_DYNPTR)
- 		return reg->ref_obj_id;
--
--	spi = get_spi(reg->off);
-+	spi = dynptr_get_spi(env, reg);
-+	if (spi < 0)
-+		return spi;
- 	return state->stack[spi].spilled_ptr.ref_obj_id;
- }
- 
-@@ -6487,7 +6527,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			 * PTR_TO_STACK.
- 			 */
- 			if (reg->type == PTR_TO_STACK) {
--				spi = get_spi(reg->off);
-+				spi = dynptr_get_spi(env, reg);
-+				if (spi < 0)
-+					return spi;
- 				if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
- 				    !state->stack[spi].spilled_ptr.ref_obj_id) {
- 					verbose(env, "arg %d is an unacquired reference\n", regno);
-@@ -7977,13 +8019,19 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 		for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
- 			if (arg_type_is_dynptr(fn->arg_type[i])) {
- 				struct bpf_reg_state *reg = &regs[BPF_REG_1 + i];
-+				int ref_obj_id;
- 
- 				if (meta.ref_obj_id) {
- 					verbose(env, "verifier internal error: meta.ref_obj_id already set\n");
- 					return -EFAULT;
- 				}
- 
--				meta.ref_obj_id = dynptr_ref_obj_id(env, reg);
-+				ref_obj_id = dynptr_ref_obj_id(env, reg);
-+				if (ref_obj_id < 0) {
-+					verbose(env, "verifier internal error: failed to obtain dynptr ref_obj_id\n");
-+					return ref_obj_id;
-+				}
-+				meta.ref_obj_id = ref_obj_id;
- 				break;
- 			}
- 		}
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-index a9229260a6ce..72800b1e8395 100644
---- a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-@@ -18,7 +18,7 @@ static struct {
- 	const char *expected_verifier_err_msg;
- 	int expected_runtime_err;
- } kfunc_dynptr_tests[] = {
--	{"not_valid_dynptr", "Expected an initialized dynptr as arg #1", 0},
-+	{"not_valid_dynptr", "cannot pass in dynptr at an offset=-8", 0},
- 	{"not_ptr_to_stack", "arg#0 expected pointer to stack or dynptr_ptr", 0},
- 	{"dynptr_data_null", NULL, -EBADMSG},
- };
++			spi = __get_spi(i);
++			/* raw_mode may write past allocated_stack */
++			if (state->allocated_stack <= stack_off)
++				continue;
++			if (state->stack[spi].slot_type[stack_off % BPF_REG_SIZE] == STACK_DYNPTR) {
++				verbose(env, "potential write to dynptr at off=%d disallowed\n", i);
++				return -EACCES;
++			}
++		}
+ 		meta->access_size = access_size;
+ 		meta->regno = regno;
+ 		return 0;
 diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-index 78debc1b3820..02d57b95cf6e 100644
+index 02d57b95cf6e..9dc3f23a8270 100644
 --- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
 +++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-@@ -382,7 +382,7 @@ int invalid_helper1(void *ctx)
- 
- /* A dynptr can't be passed into a helper function at a non-zero offset */
+@@ -420,7 +420,7 @@ int invalid_write1(void *ctx)
+  * offset
+  */
  SEC("?raw_tp")
 -__failure __msg("Expected an initialized dynptr as arg #3")
-+__failure __msg("cannot pass in dynptr at an offset=-8")
- int invalid_helper2(void *ctx)
++__failure __msg("cannot overwrite referenced dynptr")
+ int invalid_write2(void *ctx)
  {
  	struct bpf_dynptr ptr;
-@@ -584,7 +584,7 @@ int invalid_read4(void *ctx)
- 
- /* Initializing a dynptr on an offset should fail */
+@@ -444,7 +444,7 @@ int invalid_write2(void *ctx)
+  * non-const offset
+  */
  SEC("?raw_tp")
--__failure __msg("invalid write to stack")
-+__failure __msg("cannot pass in dynptr at an offset=0")
- int invalid_offset(void *ctx)
+-__failure __msg("Expected an initialized dynptr as arg #1")
++__failure __msg("cannot overwrite referenced dynptr")
+ int invalid_write3(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -476,7 +476,7 @@ static int invalid_write4_callback(__u32 index, void *data)
+  * be invalidated as a dynptr
+  */
+ SEC("?raw_tp")
+-__failure __msg("arg 1 is an unacquired reference")
++__failure __msg("cannot overwrite referenced dynptr")
+ int invalid_write4(void *ctx)
  {
  	struct bpf_dynptr ptr;
 -- 
