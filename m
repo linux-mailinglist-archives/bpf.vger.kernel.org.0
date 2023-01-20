@@ -2,37 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D615675EA8
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 21:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F73675EA4
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 21:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbjATUKO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 20 Jan 2023 15:10:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54388 "EHLO
+        id S229567AbjATUKK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 20 Jan 2023 15:10:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjATUKO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 15:10:14 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07E0B2D36
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:10:11 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30KJBOWq021199
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:10:11 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3n80w0r9ng-1
+        with ESMTP id S229570AbjATUKJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 15:10:09 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7883B9373F
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:10:07 -0800 (PST)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 30KDi1in007688
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:10:06 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3n7qeyuk1r-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:10:11 -0800
-Received: from twshared19053.17.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:10:06 -0800
+Received: from twshared18509.43.prn1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 20 Jan 2023 12:10:10 -0800
+ 15.1.2375.34; Fri, 20 Jan 2023 12:10:04 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id AC44325B4B181; Fri, 20 Jan 2023 12:09:56 -0800 (PST)
+        id B69C525B4B1D2; Fri, 20 Jan 2023 12:09:58 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next 20/25] libbpf: define sparc syscall regs spec in bpf_tracing.h
-Date:   Fri, 20 Jan 2023 12:09:09 -0800
-Message-ID: <20230120200914.3008030-21-andrii@kernel.org>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Pu Lehui <pulehui@huawei.com>
+Subject: [PATCH v2 bpf-next 21/25] libbpf: define riscv syscall regs spec in bpf_tracing.h
+Date:   Fri, 20 Jan 2023 12:09:10 -0800
+Message-ID: <20230120200914.3008030-22-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230120200914.3008030-1-andrii@kernel.org>
 References: <20230120200914.3008030-1-andrii@kernel.org>
@@ -40,8 +41,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: H8qa9F-0Zm7qczv0pIuoI-IbcawpqOs9
-X-Proofpoint-ORIG-GUID: H8qa9F-0Zm7qczv0pIuoI-IbcawpqOs9
+X-Proofpoint-ORIG-GUID: fB4fsFLdw_HztbIn_RJUVVS5GP1SMCCU
+X-Proofpoint-GUID: fB4fsFLdw_HztbIn_RJUVVS5GP1SMCCU
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
  definitions=2023-01-20_10,2023-01-20_01,2022-06-22_01
@@ -57,20 +58,23 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Define explicit table of registers used for syscall argument passing.
 
+Tested-by: Pu Lehui <pulehui@huawei.com> # RISC-V
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/bpf_tracing.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ tools/lib/bpf/bpf_tracing.h | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index b3647c4a6c0c..a2db267a6bce 100644
+index a2db267a6bce..047dc84c7cc9 100644
 --- a/tools/lib/bpf/bpf_tracing.h
 +++ b/tools/lib/bpf/bpf_tracing.h
-@@ -325,6 +325,14 @@ struct pt_regs___arm64 {
- #define __PT_PARM4_REG u_regs[UREG_I3]
- #define __PT_PARM5_REG u_regs[UREG_I4]
- #define __PT_PARM6_REG u_regs[UREG_I5]
+@@ -359,13 +359,21 @@ struct pt_regs___arm64 {
+ #define __PT_PARM6_REG a5
+ #define __PT_PARM7_REG a6
+ #define __PT_PARM8_REG a7
 +
++/* riscv does not select ARCH_HAS_SYSCALL_WRAPPER. */
++#define PT_REGS_SYSCALL_REGS(ctx) ctx
 +#define __PT_PARM1_SYSCALL_REG __PT_PARM1_REG
 +#define __PT_PARM2_SYSCALL_REG __PT_PARM2_REG
 +#define __PT_PARM3_SYSCALL_REG __PT_PARM3_REG
@@ -78,9 +82,16 @@ index b3647c4a6c0c..a2db267a6bce 100644
 +#define __PT_PARM5_SYSCALL_REG __PT_PARM5_REG
 +#define __PT_PARM6_SYSCALL_REG __PT_PARM6_REG
 +
- #define __PT_RET_REG u_regs[UREG_I7]
- #define __PT_FP_REG __unsupported__
- #define __PT_RC_REG u_regs[UREG_I0]
+ #define __PT_RET_REG ra
+ #define __PT_FP_REG s0
+ #define __PT_RC_REG a0
+ #define __PT_SP_REG sp
+ #define __PT_IP_REG pc
+-/* riscv does not select ARCH_HAS_SYSCALL_WRAPPER. */
+-#define PT_REGS_SYSCALL_REGS(ctx) ctx
+ 
+ #elif defined(bpf_target_arc)
+ 
 -- 
 2.30.2
 
