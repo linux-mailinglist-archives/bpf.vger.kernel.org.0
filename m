@@ -2,73 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 153D1674D7C
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 07:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A23DF674DA3
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 08:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbjATGo3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 01:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
+        id S229449AbjATHEC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 02:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjATGo2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 01:44:28 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4AC40D5
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 22:44:27 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id z13so4539322plg.6
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 22:44:27 -0800 (PST)
+        with ESMTP id S229437AbjATHEA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 02:04:00 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9EA40FB
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 23:03:59 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id x24-20020a17090ab01800b00229f43b506fso3163949pjq.5
+        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 23:03:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1QDr48EKa8pr/3SSYr55inHsW8rtOiovtnThf8tBf38=;
-        b=BozQTrikFeXMtsJo8hZmUklL8Ti8Xr2k/+5R3y0Yq/ONXtS8QKHobkISV+d0nUPcNP
-         Vr/yz9tlnKKoPXSf8xsJh8H753tM2OOyVYcwKn8qrC0LQgKXhAYD15VURd42HZus13rp
-         XofBJou13G1VFFtkjCmFBuEgCRa7XjYCxihcnbB1LZLH6BkOZyr/FQwg3YAhiIXJHun6
-         daaLdQ57LKulrJ/OKH45iirNWdo1NkYwMQxq74qgOLyyMnTYwtnrSjk9A8x/Ke61Krln
-         ze0R8lBNa+fj83/n3OLFJTvHRG4dUUbg1ojDcj8A3GNWBQGVuClaieMFDiytCfy4wm6b
-         T2ng==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4fql/IEhvJxf/AKgUEG4CG5i06RUoNjeEjV2gmlSH+4=;
+        b=o6i7IDWbS9e957RjAgRoVRVFmeclZuZ0qO5ScJa7DcERYJYjtBbzwU9Q/KHezFSJf0
+         FO9zi8vgbMdcBRCN9UVbj1Rh3oScoPEfqlC13YkOpzAbNwfwCzpy3n/3LISbWGXxy7RD
+         ECSQjejRuFacIuvBs+JK4vdxHcQjjc/lACOLhe22FMLoXzlBD3SWUrc9d/54nZLo3lPD
+         +yicRcIRAmemnQbb+aYd6MWydB7o65ytAZhgE3nb6rdlXWeLwNSWz8hOwUcme7McS2Np
+         HFGGFVcYASEKORcwneKatVFENXipkbz40zs3M+1qrS+vW38EPQU5lxNHTMVt5bdfsnFT
+         IXZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1QDr48EKa8pr/3SSYr55inHsW8rtOiovtnThf8tBf38=;
-        b=IyCkI0MP43aMH2/EgWhhCEoDnbAiJOwK/gu3phVGOOy/Ph4/Bwk4G6qAlcLjc3VegF
-         uneTuDo1NOmndXrZHfG9Tvc4inCrrFIMWv+RPnW8XDGQNe5QA7TNlunyHw0Dg44z4Vhh
-         KQLZqpXCzJgNs3xRGYAEWmn4s3SP8PREROfp0kD93I2AbgQGneN7IwyOgZ0fEWBN1N16
-         LdzskLzdBWURO5wJQy7HbARDFzYWg0+QJKH4/K+bQzKlsgnZR8DjL6FEFOoSBCGI0mlv
-         mYrJbLbNktNpsRIuGkU5Rnu9jl5CrAIqwfPkCfbTh9IOLBYNLL0ogFT+eREXdZFawWOu
-         EQRw==
-X-Gm-Message-State: AFqh2kp4CZfOYi/OkNYWvAKaxdLUN5mCh7DN/12xRH9cYzDBpqNo0NOa
-        Zg5Y1g41MdbyXRkgIVePMso=
-X-Google-Smtp-Source: AMrXdXtYGyzp8B6hA9XEGBxewt4LfyuQj0tH2xdz177jh6SZEtvRyyoeL5MyDNfxasEvjn9v+547Zg==
-X-Received: by 2002:a17:90a:51:b0:22b:b444:afc8 with SMTP id 17-20020a17090a005100b0022bb444afc8mr174042pjb.34.1674197067194;
-        Thu, 19 Jan 2023 22:44:27 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4fql/IEhvJxf/AKgUEG4CG5i06RUoNjeEjV2gmlSH+4=;
+        b=A/0Q/bqbIiQV4RHAaV6bqbId6O+p3rZAPepX/a9+uxV60TnQ3JkHBYUzaXHAPjje8t
+         oKA709Y39nYQxbw0xkFfBWFNge0N/H0h6d9RuXAtDyKIStshHqrxjClWFcU+ciGzXLcn
+         POKCGFFGkCM2C5XfedeNP9EqcGwFzaVLHFIUqjQqVO9cMWhAOVYh7sRHjSZmwMplPtCi
+         zvlxMcDkz6EYXsm4d2HvYnmV/wnUWQqWY5e0nW59WnkoFYnwknBJA3CYTIuCIKLmebcW
+         W1jGN7W6n8NIBx5TBs9kg5rGnh0ERvYYKrViov5zSyx0aTcpJGz9XHZmI3PM5xFwy16U
+         UeQg==
+X-Gm-Message-State: AFqh2kod5VUYaPYaXs1PiN1Qh/u7sYmg+XTKrPyyv7zGM5CYXRdNQxKy
+        5PYuiIIDq5id2g4yoruek3GAF3Qopyc=
+X-Google-Smtp-Source: AMrXdXsNK+xItfJguhicnemzT84dsfnFfNj9Uonc/X8l63vikTMEIN4CuWGo+1Ft83Yf1ZRrMevf5g==
+X-Received: by 2002:a17:902:b20d:b0:191:4389:f8f5 with SMTP id t13-20020a170902b20d00b001914389f8f5mr13976506plr.34.1674198238683;
+        Thu, 19 Jan 2023 23:03:58 -0800 (PST)
 Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
-        by smtp.gmail.com with ESMTPSA id t12-20020a17090a024c00b00228f45d589fsm693215pje.29.2023.01.19.22.44.26
+        by smtp.gmail.com with ESMTPSA id g38-20020a635666000000b004768b74f208sm21772444pgm.4.2023.01.19.23.03.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 22:44:26 -0800 (PST)
-Date:   Fri, 20 Jan 2023 12:14:24 +0530
+        Thu, 19 Jan 2023 23:03:58 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
         David Vernet <void@manifault.com>,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: Re: [PATCH bpf-next v3 09/12] selftests/bpf: Add dynptr pruning tests
-Message-ID: <20230120064424.3uldumqvlvxksiwb@apollo>
-References: <20230120034314.1921848-1-memxor@gmail.com>
- <20230120034314.1921848-10-memxor@gmail.com>
- <20230120062041.x7aylmmpmnoh4igx@MacBook-Pro-6.local.dhcp.thefacebook.com>
- <20230120063112.jslbuvyn2lfeps2x@apollo>
- <20230120063934.w6q7vioadgoctrwd@MacBook-Pro-6.local.dhcp.thefacebook.com>
+Subject: [PATCH bpf-next v4 00/12] Dynptr fixes
+Date:   Fri, 20 Jan 2023 12:33:43 +0530
+Message-Id: <20230120070355.1983560-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230120063934.w6q7vioadgoctrwd@MacBook-Pro-6.local.dhcp.thefacebook.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2772; i=memxor@gmail.com; h=from:subject; bh=qyahahOyIiYUEAAc3WmKtc/k6PZFb0wgmiVQueIVS0s=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyjzLIaIA9mV2gczXE0nh3kh4FDLwsnHmxR2oPJpv Xv5rt66JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8o8ywAKCRBM4MiGSL8Rys6lD/ 48KALqPgtKcMISC1xjFPoI1H1WvW2N1noEL2jGvV7IQJzB1/er4v1B9Pdbfbgh/IVEUmKQV2fWnSEf xUfQc5+LiZ+Pq2RQGfWcTpCv+UTKb8gKqFAETXjZLsaNCQQ+MM0f7GRSI2krF9C6AWs2QB3GuMr5Kp h54561LKy9ia+OQAmOnUO3DpHT5cF1mIEbOyScQZaSB0m9gb/POAkItaWuJdG0lGqsmRArpIxdDW4X FGxd4skFdaEHi7+KeupAAVABDiM/qXq457UHZlMmM3n/0hHMxwmldn7ZZPrHmiPSKSNwH1wLupUyYB NjfC89FKMZfjtXkfZQ55E7Gm6RgRcQ1s1tFieuTztJ7fYkLWxWf6BJRd154UauLq3ARfAq/M2FYcjL RtC/AsYfck3cWhTBppd1Z0l9C9aQVgen/sjnWbOvvHa89quF3Wq+JO8OWB1M3n7aMbo03/LcbRxVdI QPhVKSUbqjBAUJVS4XCelgfq3X5zMnEW63zrG0RRiE7fxX11KAlVRM8mzifFmMt8Xw68bVBblrABiC eylb5t1xmt+thiBG6k4OOro4oiy7istZCP4ngiEE1PQ6v5UKs/KB7jDtFxlBJAa68gztbrAlUDM6by oRcYYopOQSEXqGYVu1yuhB5AQNs+RVq6TeCcD+4LTKyoPV8q43XKcIDa1NMA==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,88 +75,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 12:09:34PM IST, Alexei Starovoitov wrote:
-> On Fri, Jan 20, 2023 at 12:01:12PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > On Fri, Jan 20, 2023 at 11:50:41AM IST, Alexei Starovoitov wrote:
-> > > On Fri, Jan 20, 2023 at 09:13:11AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > +
-> > > > +SEC("?tc")
-> > > > +__failure __msg("cannot overwrite referenced dynptr") __log_level(2)
-> > > > +int dynptr_pruning_overwrite(struct __sk_buff *ctx)
-> > > > +{
-> > > > +	asm volatile (
-> > > > +		"r9 = 0xeB9F;"
-> > > > +		"r6 = %[ringbuf] ll;"
-> > > > +		"r1 = r6;"
-> > > > +		"r2 = 8;"
-> > > > +		"r3 = 0;"
-> > > > +		"r4 = r10;"
-> > > > +		"r4 += -16;"
-> > > > +		"call %[bpf_ringbuf_reserve_dynptr];"
-> > > > +		"if r0 == 0 goto pjmp1;"
-> > > > +		"goto pjmp2;"
-> > > > +	"pjmp1:"
-> > > > +		"*(u64 *)(r10 - 16) = r9;"
-> > > > +	"pjmp2:"
-> > > > +		"r1 = r10;"
-> > > > +		"r1 += -16;"
-> > > > +		"r2 = 0;"
-> > > > +		"call %[bpf_ringbuf_discard_dynptr];"
-> > >
-> > > It should still work if we remove "" from every line, right?
-> > > Would it be easier to read?
-> >
-> > You mean write it like this?
-> >
-> > 	asm volatile (
-> > 	       "r9 = 0xeB9F;				\
-> > 		r6 = %[ringbuf] ll;			\
-> > 		r1 = r6;				\
-> > 		r2 = 8;					\
-> > 		r3 = 0;					\
-> > 		r4 = r10;				\
-> > 		r4 += -16;				\
-> > 		call %[bpf_ringbuf_reserve_dynptr];	\
-> > 		if r0 == 0 goto pjmp1;			\
-> > 		goto pjmp2;				\
-> > 	pjmp1:						\
-> > 		*(u64 *)(r10 - 16) = r9;		\
-> > 	pjmp2:						\
-> > 		r1 = r10;				\
-> > 		r1 += -16;				\
-> > 		r2 = 0;					\
-> > 		call %[bpf_ringbuf_discard_dynptr];	"
-> > 		:
-> > 		: __imm(bpf_ringbuf_reserve_dynptr),
-> > 		  __imm(bpf_ringbuf_discard_dynptr),
-> > 		  __imm_addr(ringbuf)
-> > 		: __clobber_all
-> > 	);
-> >
-> > I guess that does look a bit cleaner, if you think the same I can try converting
-> > them.
->
-> Only asking to consider different options because once we start adding tests
-> in this form everyone will copy paste the style.
-> In verifier/precise.c we use:
->         .errstr =
->         "26: (85) call bpf_probe_read_kernel#113\
->         last_idx 26 first_idx 22\
->         regs=4 stack=0 before 25\
->         regs=4 stack=0 before 24\
->         regs=4 stack=0 before 23\
->         regs=4 stack=0 before 22\
->
-> so the following is another option:
->  	asm volatile (
->  	       "r9 = 0xeB9F;\
->  		r6 = %[ringbuf] ll;\
->  		r1 = r6;\
->  		r2 = 8;\
->  		r3 = 0;\
->  		r4 = r10;\
->  		r4 += -16;
->
-> My vote goes to your 2nd approach where every \ is tab-aligned to the right.
+This is part 2 of https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com.
 
-Yeah, understood. I will convert to this style and respin. Thanks.
+Changelog:
+----------
+v3 -> v4
+v3: https://lore.kernel.org/bpf/20230120034314.1921848-1-memxor@gmail.com
+
+ * Adopt BPF ASM tests to more readable style (Alexei)
+
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20230119021442.1465269-1-memxor@gmail.com
+
+ * Fix slice invalidation logic for unreferenced dynptrs (Joanne)
+ * Add selftests for precise slice invalidation on destruction
+ * Add Joanne's acks
+
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20230101083403.332783-1-memxor@gmail.com
+
+ * Return error early in case of overwriting referenced dynptr slots (Andrii, Joanne)
+ * Rename destroy_stack_slots_dynptr to destroy_if_dynptr_stack_slot (Joanne)
+ * Invalidate dynptr slices associated with dynptr in destroy_if_dynptr_stack_slot (Joanne)
+ * Combine both dynptr_get_spi and is_spi_bounds_valid (Joanne)
+ * Compute spi once in process_dynptr_func and pass it as parameter instead of recomputing (Joanne)
+ * Add comments expanding REG_LIVE_WRITTEN marking in unmark_stack_slots_dynptr (Joanne)
+ * Add comments explaining why destroy_if_dynptr_stack_slot call needs to be done for both spi
+   and spi - 1 (Joanne)
+ * Port BPF assembly tests from test_verifier to test_progs framework (Andrii)
+ * Address misc feedback, rebase to bpf-next
+
+Old v1 -> v1
+Old v1: https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com
+
+ * Allow overwriting dynptr stack slots from dynptr init helpers
+ * Fix a bug in alignment check where reg->var_off.value was still not included
+ * Address other minor nits
+
+Eduard Zingerman (1):
+  selftests/bpf: convenience macro for use with 'asm volatile' blocks
+
+Kumar Kartikeya Dwivedi (11):
+  bpf: Fix state pruning for STACK_DYNPTR stack slots
+  bpf: Fix missing var_off check for ARG_PTR_TO_DYNPTR
+  bpf: Fix partial dynptr stack slot reads/writes
+  bpf: Invalidate slices on destruction of dynptrs on stack
+  bpf: Allow reinitializing unreferenced dynptr stack slots
+  bpf: Combine dynptr_get_spi and is_spi_bounds_valid
+  bpf: Avoid recomputing spi in process_dynptr_func
+  selftests/bpf: Add dynptr pruning tests
+  selftests/bpf: Add dynptr var_off tests
+  selftests/bpf: Add dynptr partial slot overwrite tests
+  selftests/bpf: Add dynptr helper tests
+
+ include/linux/bpf_verifier.h                  |   5 +-
+ kernel/bpf/verifier.c                         | 407 +++++++++++++++---
+ .../bpf/prog_tests/kfunc_dynptr_param.c       |   2 +-
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   7 +
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 390 ++++++++++++++++-
+ 5 files changed, 735 insertions(+), 76 deletions(-)
+
+
+base-commit: 00b8f39f1d15c7e16e3f5ca7538f522f3a89131f
+-- 
+2.39.1
+
