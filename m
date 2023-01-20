@@ -2,71 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D259675E9C
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 21:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5886675EBF
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 21:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjATUJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 15:09:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
+        id S230190AbjATUM4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 15:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjATUJt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 15:09:49 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC7412875
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:09:47 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id mg12so16721762ejc.5
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:09:47 -0800 (PST)
+        with ESMTP id S230167AbjATUMz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 15:12:55 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0714CFD02
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:12:26 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id c10-20020a05600c0a4a00b003db0636ff84so4526467wmq.0
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:12:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xj/z8HeJKpT17/8QHq3Rpb8Me4DmhEi4GjBeOkXGlD8=;
-        b=Unsk8GXNl+xeEASyFSgoNI6yIbklr82xJ4RGFc3N+zzsDu3MYfAqUqZP5i0qmKN2ro
-         sVOHvGzkXXdOwkTz1dFq8Q77YPHG4aZiSEC2lxIEX9hzjUALVdVTBYlRvpfDEg2dLyMa
-         zivuejCw0kfs/elWY17pJ/xD+kg+gJZkf5HkQSJPe6aqtRk77cWJTqjL0wnmd8d/9swH
-         49D9bKCL+46+f/JTP3utM1+lpSgkAN+RII/b95y7sPVs0cH1P0wpugjTisfCqXzdedyQ
-         1S0V07fSWP3iEDofmsol7OCB2iFZiPwDXA8UqdHb4BeB7SmONaNiGuE+UwVqSoEFsoV4
-         R+AA==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2CXoT+7bD2FQOsPsa6Nm9x3leNHttFwc0jUiST/FDec=;
+        b=jYVfOpBwMOY714CycyIDi5phhr+sGl8XFKrtrwoKPI8/cF2qPGeKF7HFnSjRs9sF2G
+         vSAkkju1qImtBph0Ru2ydl1lS6ZBAkJSmVHkbU/eETfHDGoIg2PREqxP37e7ShjfFOPG
+         i+MYM1vTmo88i37YM+hyUi5/TrYugRkdRbKRdM+Ya9YI1x5zqKUGoKcKSB1ihSIq4wvV
+         MPHw9PyRXOm6uu6VDE8okQkgGKPuVfRxbTghwDdAO/XYgNIvy99+1CvpraRPydIuRHJt
+         dtVo8oho0c66c2zWLK7tLu1WfzkjR9SMzZZtnFMGlL3olxmeiXQzHVvpsdakhtfkmkbj
+         58Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xj/z8HeJKpT17/8QHq3Rpb8Me4DmhEi4GjBeOkXGlD8=;
-        b=a0AgFFmDrgVk+oPFla6uFkk0fIabBicbMnClf8FEECqknPsP/uv77wJu/f4zP2xh9i
-         RaIiu7+Z+kOMwkmtCSTEKsb0SQl5wiw9MaAnJVL4e/KY43p1lAAT/1tcIUbJN9u6r8up
-         5vVwTENhnlB2OwnQAHzhUDcw84HLFsVs+ZdwapMnyNNcQzmsdB62FWraXnihz1baLwjI
-         XeHRbnQlxfG3ljJwd0m9IR5+UAl2bq6uF7GqOIrmS1srEEBFbV7IjjHtEgX4wAHiNKMO
-         Xy/CoseXbT0Hq1sCmDo+f7KLt35XNk7JYyv9+aat4tZ9tjnUuHrYZ3pewm0bZ/2xBDra
-         GZtg==
-X-Gm-Message-State: AFqh2kpqFBnJj0KMFv+R/qjWM+YlW4U49RWAwfyhgG4X0u1YG5jBFVG3
-        NsCZm6+gfDTSY0513AuUaRVttNjF9NUsO2O8rOU=
-X-Google-Smtp-Source: AMrXdXtGHqZdx7/NyvHkaX3L3TRlMN5RC1dIbFv0L4cN5o9Ij24D8/+1Un6pVf0LdLZe/+yT5pM4hyDhzORilgMd97c=
-X-Received: by 2002:a17:906:1e8c:b0:7fc:4242:f9ea with SMTP id
- e12-20020a1709061e8c00b007fc4242f9eamr1320672ejj.99.1674245386062; Fri, 20
- Jan 2023 12:09:46 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2CXoT+7bD2FQOsPsa6Nm9x3leNHttFwc0jUiST/FDec=;
+        b=0o5ULF/wsmQ+BFKPa131zaZUYFA9RmiSPvaBGmFulBO2aP4bc4ke2FkjJajHZJPjmG
+         VCFy4cCeDOgrHSY9oSR6nCdQAi8JKsGXG6TSntydSF+StOOxHrCVi4TYH8H7mMIhiRSp
+         OuPmDHvxB2iQJpxFyj+gxvb0xoyAj9v46F1s06WKThIWVjJJti8ONCusCBWuOD7lhHUe
+         e61SMf6GCAGbXEb7JyzTl1S4ktOrrh1FJ/GM6g69WHAYS9evEnrDjX8jhidRnaRcMqdD
+         fDwsuzrQPKOU8wBRPKzxYoUPnjAwEmnCETe6K0g0uwIewC1lXipBOXH4GUHHJFybMAxX
+         M2wg==
+X-Gm-Message-State: AFqh2kqsukp8wWg9c6mmdRfe0eBXkFLQrvrJMPQIeW2RhN5J+MuN0w34
+        0PUdhow6TAfK4ZWqkKievEUz9oPeD0sRjg==
+X-Google-Smtp-Source: AMrXdXt9spc3ed6XX0v36+wnwgpldLEnjdXbePpeGPxvGzCLI4xzHXhDIo6NrWCBOQQrJefwC7mgmw==
+X-Received: by 2002:a05:600c:4a27:b0:3db:3ef:2369 with SMTP id c39-20020a05600c4a2700b003db03ef2369mr15670901wmp.40.1674245544573;
+        Fri, 20 Jan 2023 12:12:24 -0800 (PST)
+Received: from localhost.localdomain ([2a02:3035:413:205e:4a24:a1a0:2076:6b5c])
+        by smtp.gmail.com with ESMTPSA id f14-20020a05600c154e00b003daff80f16esm4711645wmg.27.2023.01.20.12.12.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Jan 2023 12:12:21 -0800 (PST)
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, llvm@lists.linux.dev
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>, Yonghong Song <yhs@meta.com>
+Subject: [PATCH] dwarf_loader: Sync with LINUX_ELFNOTE_LTO_INFO macro from kernel
+Date:   Fri, 20 Jan 2023 21:12:03 +0100
+Message-Id: <20230120201203.10785-1-sedat.dilek@gmail.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-References: <20230113083404.4015489-1-andrii@kernel.org> <f810f5c6a43af954464cedbe25d523896a59d500.camel@linux.ibm.com>
- <ed8ce036cd61741170dffe3fa733cd98d1970302.camel@linux.ibm.com> <5f212c293e08e91147b240e2ea41e168344897c9.camel@linux.ibm.com>
-In-Reply-To: <5f212c293e08e91147b240e2ea41e168344897c9.camel@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 20 Jan 2023 12:09:34 -0800
-Message-ID: <CAEf4BzYzV9-5HwUyoXoiHt2FQ3wWvWNbA=9YukW1YuWG-ZD07A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/25] libbpf: extend [ku]probe and syscall
- argument tracing support
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Pu Lehui <pulehui@huawei.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>,
-        Vladimir Isaev <isaev@synopsys.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Kenta Tada <Kenta.Tada@sony.com>,
-        Florent Revest <revest@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,281 +79,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 1:52 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->
-> On Mon, 2023-01-16 at 23:37 +0100, Ilya Leoshkevich wrote:
-> > On Mon, 2023-01-16 at 23:09 +0100, Ilya Leoshkevich wrote:
-> > > On Fri, 2023-01-13 at 00:33 -0800, Andrii Nakryiko wrote:
-> > > > This patch set fixes and extends libbpf's bpf_tracing.h support
-> > > > for
-> > > > tracing
-> > > > arguments of kprobes/uprobes, and syscall as a special case.
-> > > >
-> > > > Depending on the architecture, anywhere between 3 and 8 arguments
-> > > > can
-> > > > be
-> > > > passed to a function in registers (so relevant to kprobes and
-> > > > uprobes), but
-> > > > before this patch set libbpf's macros in bpf_tracing.h only
-> > > > supported
-> > > > up to
-> > > > 5 arguments, which is limiting in practice. This patch set
-> > > > extends
-> > > > bpf_tracing.h to support up to 8 arguments, if architecture
-> > > > allows.
-> > > > This
-> > > > includes explicit PT_REGS_PARMx() macro family, as well as
-> > > > BPF_KPROBE() macro.
-> > > >
-> > > > Now, with tracing syscall arguments situation is sometimes quite
-> > > > different.
-> > > > For a lot of architectures syscall argument passing through
-> > > > registers
-> > > > differs
-> > > > from function call sequence at least a little. For i386 it
-> > > > differs
-> > > > *a
-> > > > lot*.
-> > > > This patch set addresses this issue across all currently
-> > > > supported
-> > > > architectures and hopefully fixes existing issues. syscall(2)
-> > > > manpage
-> > > > defines
-> > > > that either 6 or 7 arguments can be supported, depending on
-> > > > architecture, so
-> > > > libbpf defines 6 or 7 registers per architecture to be used to
-> > > > fetch
-> > > > syscall
-> > > > arguments.
-> > > >
-> > > > Also, BPF_UPROBE and BPF_URETPROBE are introduced as part of this
-> > > > patch set.
-> > > > They are aliases for BPF_KPROBE and BPF_KRETPROBE (as mechanics
-> > > > of
-> > > > argument
-> > > > fetching of kernel functions and user-space functions are
-> > > > identical),
-> > > > but it
-> > > > allows BPF users to have less confusing BPF-side code when
-> > > > working
-> > > > with
-> > > > uprobes.
-> > > >
-> > > > For both sets of changes selftests are extended to test these new
-> > > > register
-> > > > definitions to architecture-defined limits. Unfortunately I don't
-> > > > have ability
-> > > > to test it on all architectures, and BPF CI only tests 3
-> > > > architecture
-> > > > (x86-64,
-> > > > arm64, and s390x), so it would be greatly appreciated if CC'ed
-> > > > people
-> > > > can help
-> > > > review and test changes on architectures they are familiar with
-> > > > (and
-> > > > maybe
-> > > > have direct access to for testing). Thank you.
-> > > >
-> > > > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > > > Cc: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > > Cc: Pu Lehui <pulehui@huawei.com>
-> > > > Cc: Hengqi Chen <hengqi.chen@gmail.com>
-> > > > Cc: Vladimir Isaev <isaev@synopsys.com>
-> > > > Cc: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-> > > > Cc: Kenta Tada <Kenta.Tada@sony.com>
-> > > > Cc: Florent Revest <revest@chromium.org>
-> > > >
-> > > > Andrii Nakryiko (25):
-> > > >   libbpf: add support for fetching up to 8 arguments in kprobes
-> > > >   libbpf: add 6th argument support for x86-64 in bpf_tracing.h
-> > > >   libbpf: fix arm and arm64 specs in bpf_tracing.h
-> > > >   libbpf: complete mips spec in bpf_tracing.h
-> > > >   libbpf: complete powerpc spec in bpf_tracing.h
-> > > >   libbpf: complete sparc spec in bpf_tracing.h
-> > > >   libbpf: complete riscv arch spec in bpf_tracing.h
-> > > >   libbpf: fix and complete ARC spec in bpf_tracing.h
-> > > >   libbpf: complete LoongArch (loongarch) spec in bpf_tracing.h
-> > > >   libbpf: add BPF_UPROBE and BPF_URETPROBE macro aliases
-> > > >   selftests/bpf: validate arch-specific argument registers limits
-> > > >   libbpf: improve syscall tracing support in bpf_tracing.h
-> > > >   libbpf: define x86-64 syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define i386 syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define s390x syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define arm syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define arm64 syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define mips syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define powerpc syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define sparc syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define riscv syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define arc syscall regs spec in bpf_tracing.h
-> > > >   libbpf: define loongarch syscall regs spec in bpf_tracing.h
-> > > >   selftests/bpf: add 6-argument syscall tracing test
-> > > >   libbpf: clean up now not needed __PT_PARM{1-6}_SYSCALL_REG
-> > > > defaults
-> > > >
-> > > >  tools/lib/bpf/bpf_tracing.h                   | 301
-> > > > +++++++++++++++-
-> > > > --
-> > > >  .../bpf/prog_tests/test_bpf_syscall_macro.c   |  18 +-
-> > > >  .../bpf/prog_tests/uprobe_autoattach.c        |  33 +-
-> > > >  tools/testing/selftests/bpf/progs/bpf_misc.h  |  25 ++
-> > > >  .../selftests/bpf/progs/bpf_syscall_macro.c   |  26 ++
-> > > >  .../bpf/progs/test_uprobe_autoattach.c        |  48 ++-
-> > > >  6 files changed, 405 insertions(+), 46 deletions(-)
-> > > >
-> > >
-> > > With the following fixup for 24/25:
->
-> [...]
->
-> > > Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>  # s390x
-> >
-> > While the above fixup works, I realized that it's ugly. It's better
-> > to
-> > admit that mmap and old_mmap are different syscalls and create a
-> > different probe, even if it means duplicating pid filtering code:
->
-> [...]
->
-> Sorry, I'm being dense. Both fixups defeat the purpose of having this
-> test, because they don't use all 6 register arguments. We need to
-> choose a different syscall; I believe splice() fits the bill. The other
+As long as I am using CONFIG_DEBUG_INFO_BTF=y with LLVM/Clang
+I have noticed the below macros where defined unconsistently.
 
-nice, thanks for digging that up :) I've applied your suggested
-changes (and added Suggested-by tag), thanks! Let's hope v2 will make
-it to patchworks and we'll get BPF CI to test all this properly.
+See here pahole latest Git...
 
+[ pahole:dwarf_loader ]
 
-> alternatives that I rejected were:
->
-> - clone() - argument order is messy;
-> - recvfrom() - s390x uses socketcall instead;
-> - ipc() - doesn't seem to be available on aarch64.
->
-> The following worked for me:
->
-> diff --git
-> a/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
-> b/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
-> index e18dd82eb801..2900c5e9a016 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
-> @@ -1,20 +1,22 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /* Copyright 2022 Sony Group Corporation */
-> +#define _GNU_SOURCE
-> +#include <fcntl.h>
->  #include <sys/prctl.h>
-> -#include <sys/mman.h>
->  #include <test_progs.h>
->  #include "bpf_syscall_macro.skel.h"
->
->  void test_bpf_syscall_macro(void)
->  {
->         struct bpf_syscall_macro *skel =3D NULL;
-> -       int err, page_size =3D getpagesize();
-> +       int err;
->         int exp_arg1 =3D 1001;
->         unsigned long exp_arg2 =3D 12;
->         unsigned long exp_arg3 =3D 13;
->         unsigned long exp_arg4 =3D 14;
->         unsigned long exp_arg5 =3D 15;
-> -       void *r;
-> +       loff_t off_in, off_out;
-> +       ssize_t r;
->
->         /* check whether it can open program */
->         skel =3D bpf_syscall_macro__open();
-> @@ -71,18 +73,17 @@ void test_bpf_syscall_macro(void)
->         ASSERT_EQ(skel->bss->arg4_syscall, exp_arg4,
-> "BPF_KPROBE_SYSCALL_arg4");
->         ASSERT_EQ(skel->bss->arg5_syscall, exp_arg5,
-> "BPF_KPROBE_SYSCALL_arg5");
->
-> -       r =3D mmap((void *)0x12340000, 3 * page_size, PROT_READ |
-> PROT_WRITE,
-> -                MAP_PRIVATE, -42, 5 * page_size);
-> +       r =3D splice(-42, &off_in, 42, &off_out, 0x12340000,
-> SPLICE_F_NONBLOCK);
->         err =3D -errno;
-> -       ASSERT_EQ(r, MAP_FAILED, "mmap_res");
-> -       ASSERT_EQ(err, -EBADF, "mmap_err");
-> +       ASSERT_EQ(r, -1, "splice_res");
-> +       ASSERT_EQ(err, -EBADF, "splice_err");
->
-> -       ASSERT_EQ(skel->bss->mmap_addr, 0x12340000, "mmap_arg1");
-> -       ASSERT_EQ(skel->bss->mmap_length, 3 * page_size, "mmap_arg2");
-> -       ASSERT_EQ(skel->bss->mmap_prot, PROT_READ | PROT_WRITE,
-> "mmap_arg3");
-> -       ASSERT_EQ(skel->bss->mmap_flags, MAP_PRIVATE, "mmap_arg4");
-> -       ASSERT_EQ(skel->bss->mmap_fd, -42, "mmap_arg5");
-> -       ASSERT_EQ(skel->bss->mmap_offset, 5 * page_size, "mmap_arg6");
-> +       ASSERT_EQ(skel->bss->splice_fd_in, -42, "splice_arg1");
-> +       ASSERT_EQ(skel->bss->splice_off_in, (__u64)&off_in,
-> "splice_arg2");
-> +       ASSERT_EQ(skel->bss->splice_fd_out, 42, "splice_arg3");
-> +       ASSERT_EQ(skel->bss->splice_off_out, (__u64)&off_out,
-> "splice_arg4");
-> +       ASSERT_EQ(skel->bss->splice_len, 0x12340000, "splice_arg5");
-> +       ASSERT_EQ(skel->bss->splice_flags, SPLICE_F_NONBLOCK,
-> "splice_arg6");
->
->  cleanup:
->         bpf_syscall_macro__destroy(skel);
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-> b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-> index c07c5c52d5fc..1a476d8ed354 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-> @@ -81,28 +81,28 @@ int BPF_KSYSCALL(prctl_enter, int option, unsigned
-> long arg2,
->         return 0;
->  }
->
-> -__u64 mmap_addr;
-> -__u64 mmap_length;
-> -__u64 mmap_prot;
-> -__u64 mmap_flags;
-> -__u64 mmap_fd;
-> -__u64 mmap_offset;
-> -
-> -SEC("ksyscall/mmap")
-> -int BPF_KSYSCALL(mmap_enter, void *addr, size_t length, int prot, int
-> flags,
-> -                int fd, off_t offset)
-> +__u64 splice_fd_in;
-> +__u64 splice_off_in;
-> +__u64 splice_fd_out;
-> +__u64 splice_off_out;
-> +__u64 splice_len;
-> +__u64 splice_flags;
-> +
-> +SEC("ksyscall/splice")
-> +int BPF_KSYSCALL(splice_enter, int fd_in, loff_t *off_in, int fd_out,
-> +                loff_t *off_out, size_t len, unsigned int flags)
->  {
->         pid_t pid =3D bpf_get_current_pid_tgid() >> 32;
->
->         if (pid !=3D filter_pid)
->                 return 0;
->
-> -       mmap_addr =3D (__u64)addr;
-> -       mmap_length =3D length;
-> -       mmap_prot =3D prot;
-> -       mmap_flags =3D flags;
-> -       mmap_fd =3D fd;
-> -       mmap_offset =3D offset;
-> +       splice_fd_in =3D fd_in;
-> +       splice_off_in =3D (__u64)off_in;
-> +       splice_fd_out =3D fd_out;
-> +       splice_off_out =3D (__u64)off_out;
-> +       splice_len =3D len;
-> +       splice_flags =3D flags;
->
->         return 0;
->  }
-> --
-> 2.39.0
->
-> Best regards,
-> Ilya
+/* Match the define in linux:include/linux/elfnote.h */
+#define LINUX_ELFNOTE_BUILD_LTO                0x101
+
+...and latest Linus v6.2-rc4+ Git:
+
+[ linux:include/linux/elfnote-lto.h ]
+
+#define LINUX_ELFNOTE_LTO_INFO         0x101
+
+Yonghong Song says:
+> Ya, LINUX_ELFNOTE_BUILD_LTO is initially proposed macro name but later
+> the formal kernel patch used LINUX_ELFNOTE_LTO_INFO. Could you submit
+> a pahole for this so it is consistent with kernel? Thanks!
+
+Fix this by syncing the pahole macro with the one from linux-kernel.
+
+Suggested-by: Yonghong Song <yhs@meta.com>
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+ dwarf_loader.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/dwarf_loader.c b/dwarf_loader.c
+index 5a74035c5708..96ce5db4f5bc 100644
+--- a/dwarf_loader.c
++++ b/dwarf_loader.c
+@@ -2808,8 +2808,8 @@ static int __cus__load_debug_types(struct conf_load *conf, Dwfl_Module *mod, Dwa
+ 	return 0;
+ }
+ 
+-/* Match the define in linux:include/linux/elfnote.h */
+-#define LINUX_ELFNOTE_BUILD_LTO		0x101
++/* Match the define in linux:include/linux/elfnote-lto.h */
++#define LINUX_ELFNOTE_LTO_INFO		0x101
+ 
+ static bool cus__merging_cu(Dwarf *dw, Elf *elf)
+ {
+@@ -2827,7 +2827,7 @@ static bool cus__merging_cu(Dwarf *dw, Elf *elf)
+ 			size_t name_off, desc_off, offset = 0;
+ 			GElf_Nhdr hdr;
+ 			while ((offset = gelf_getnote(data, offset, &hdr, &name_off, &desc_off)) != 0) {
+-				if (hdr.n_type != LINUX_ELFNOTE_BUILD_LTO)
++				if (hdr.n_type != LINUX_ELFNOTE_LTO_INFO)
+ 					continue;
+ 
+ 				/* owner is Linux */
+-- 
+2.39.0
+
