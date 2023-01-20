@@ -2,76 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1022675ECB
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 21:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C44675ECD
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 21:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbjATUP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 15:15:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60854 "EHLO
+        id S230217AbjATUQk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 15:16:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbjATUP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 15:15:57 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE38A893CD
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:15:56 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id 203so8111674yby.10
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:15:56 -0800 (PST)
+        with ESMTP id S230021AbjATUQj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 15:16:39 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C0511EB1
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:16:38 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id v6-20020a17090ad58600b00229eec90a7fso2311375pju.0
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 12:16:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0SttUTJP8U9N4V2Fvv0U8GzKYs42n6qlFvW0XY0wmEY=;
-        b=XVff+7MC8Y4ys60IARKh4+lxsPvx8Ea+jf/4OWWsxmnVI7JksTaug+ClqdJ0W/pQ9k
-         TwKGrPgjWqW++UAIDn+P6gijEGrix6/p/TezpyZja7ZI0LGhSXjujCwcfGidQJMQMG2u
-         aqCn4d105E+kFHpBpsqcZv85c4CtDyOR/dZAOWYJML5wDiql/yf5pVMo+jx5Y+E3qoUO
-         E13YlOafPNfTaOOFSuH9xP2lsi/k/HKHBwZ6k4AVpY673vn32KxoREI0/CchwM5Qm39k
-         fNIhkyOEYFfHWavuhAogCPO+tF2j99ZTELGUNzR57aOtsR8oI6ERu15av1QT/aQZ016m
-         CcjA==
+        d=googlemail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KODQln6ez+ic1HmSpOLuD+9tDffxvK9UB2QVFZ+XXoQ=;
+        b=ZSN/FROfi5I5/TLO7caUFgwNIVpTG34HUBzJNUKi1uF7SLVVx9oSkQ9LuqLT6oYexl
+         p9wOqAfGGFUP275tI0F7F85uXZUT8CvxxtOS7dPiaJdsf18KABQ26sTRy691fXb/2U3j
+         xSqstwY8aESKyi27FYbY1KbAanRcNU1xwkPVv91NJ1al8FLmlUbh3V6S6LozKZxI6QdX
+         haejV5udcEUTf7sgMx+DCsMx9rpbQmOy1dsIWJ/qiIUnyYCVulnmeyLfQpww/Q0BgTMC
+         HSRDQPStHntWNNNiBHRoSfw1rPkcs6734+qd8KEe7+SFDteGxxhN9hyk0pm2QTosskpE
+         sOpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0SttUTJP8U9N4V2Fvv0U8GzKYs42n6qlFvW0XY0wmEY=;
-        b=yg/QHfPVdV31PPvSjfMBrQZxi/oFArlKYRW7dnLPKoUnNSAfcLKEQXMb7zc6Gsc3vv
-         xm54L/36/JaBAJYvsQCJYkpLlI3aoL1wq0gchIJ+/qw6d+3ABj2xUmyHQz9HtLU6SFxm
-         CMqTAByhkLLnzR8kVrX8xfUivlPS9MNSwMfHnWMMPE4YIHoJKhmR3zDgl7j4gV1eoEsC
-         j+SA1PEsLwpnWsiys4LTH4KQG4bXbCmsa9+EctpIuPMMQ7k1oV+ESGyf86MGNldTz69x
-         FjeckYvsHqgbuPrGJlkU8vQbsedqBLbeIvMqChvpvvKjIsFI7CLabLCK98sK+EWhAw7M
-         i5Xg==
-X-Gm-Message-State: AFqh2krC1h5VUGmJeqIo0BkJUJHR3ZbAIH3ifZ1aHMw+DpWkhDFxe+3g
-        nxC8xX/t4UVo2GRosBkwY1VaVb2gMDNX2zHygoQ=
-X-Google-Smtp-Source: AMrXdXtO5ZMPDqEHX3UhEGijoKRIgKnvNSIp16Dw362TPRe2u5hiOoS1Fw5MlV8sMnJyCrNs48/mA3O68YmoywuQFE8=
-X-Received: by 2002:a25:c00a:0:b0:733:4dbc:7215 with SMTP id
- c10-20020a25c00a000000b007334dbc7215mr1922970ybf.636.1674245756054; Fri, 20
- Jan 2023 12:15:56 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KODQln6ez+ic1HmSpOLuD+9tDffxvK9UB2QVFZ+XXoQ=;
+        b=vzKLUxwqQmS3AaPtiwDygLf7nR0CbbSpFL6Nkg/XtZ2QDJ71PyTi11zadrUl97avid
+         cJOjE7xUylLt5Lb6NqAIC+43VFHoMDx8Rn6DkF5QR/iNmWtSk6rrpVbuNPxcvnQddeBt
+         m5GUvqISfHAIBX9ijs01RuQtF6am5RMhTbcAcfvlvJkOe/iViCRRLFdvbxDmyq9wPfSC
+         Fo4VZREhtKItkwUUNwk/Cg7q1MVStstdznvW1EidWeJYPc1A2QNNxn52JcuplR2hWXwl
+         5qaa5P+lyrxpX3zuCr/ZIrvGONZZdQ0UoHIW8dYfpA4hFHa5c5vsx6m0p8YSR4ljUXES
+         6+Jg==
+X-Gm-Message-State: AFqh2kpphv1ebzYavMGACvH7XVIjHYjqGmK61LIR0c/QYX93qGTKX5i+
+        1WuUKYL6lfO0wvBkIvfu7DdlmAf6v7k=
+X-Google-Smtp-Source: AMrXdXsfhcYSI2PUS058d0WZL9Lx6PWVPhuyJ+e6FYSgR2ZViErYUNJDh1pOUuosYZkiVlKREVzXnA==
+X-Received: by 2002:a17:902:eb44:b0:194:84eb:290a with SMTP id i4-20020a170902eb4400b0019484eb290amr16610878pli.50.1674245798037;
+        Fri, 20 Jan 2023 12:16:38 -0800 (PST)
+Received: from mariner-vm.. (c-71-197-160-159.hsd1.wa.comcast.net. [71.197.160.159])
+        by smtp.gmail.com with ESMTPSA id d6-20020a170902654600b00186b69157ecsm27168127pln.202.2023.01.20.12.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Jan 2023 12:16:37 -0800 (PST)
+From:   dthaler1968@googlemail.com
+To:     bpf@vger.kernel.org
+Cc:     Dave Thaler <dthaler@microsoft.com>
+Subject: [PATCH] bpf, docs: Fix modulo zero, division by zero, overflow, and underflow
+Date:   Fri, 20 Jan 2023 20:16:34 +0000
+Message-Id: <20230120201634.1588-1-dthaler1968@googlemail.com>
+X-Mailer: git-send-email 2.33.4
+In-Reply-To: <CAADnVQLZd1u_wJUC2ViRcEPveRcGaAnOsjbPiZ8bPZcwV1p=gw@mail.gmail.com>
+References: <CAADnVQLZd1u_wJUC2ViRcEPveRcGaAnOsjbPiZ8bPZcwV1p=gw@mail.gmail.com>
 MIME-Version: 1.0
-References: <CA+icZUVbv2T7SExVULn6Bh1mB=VpmYGbH-4U63PKrHPyi6uULQ@mail.gmail.com>
- <b4182459-3fcb-e3d4-09ba-69039a0bdbca@meta.com>
-In-Reply-To: <b4182459-3fcb-e3d4-09ba-69039a0bdbca@meta.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 20 Jan 2023 21:15:17 +0100
-Message-ID: <CA+icZUWRk44KR_dh+vme5MZa3aF=fjCZ6HtN2hjC-bjhWr2TEw@mail.gmail.com>
-Subject: Re: pahole: New version 1.25 release?
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,89 +70,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 8:15 PM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 1/20/23 9:40 AM, Sedat Dilek wrote:
-> > Hi Arnaldo,
-> >
-> > I use CONFIG_DEBUG_INFO_BTF=y with LLVM-15.
-> >
-> > Darkly, I remember I needed some post-v1.24 fixes.
-> >
-> > Currently, I use:
-> >
-> > $ git describe
-> > v1.24-26-gb72f5188856d
-> >
-> > commit b72f5188856d
-> > "dwarves: Zero-initialize struct cu in cu__new() to prevent incorrect BTF types"
-> >
-> > Any plans to release a pahole version 1.25?
-> >
-> > Thanks.
-> >
-> > Best regards,
-> > -Sedat-
-> >
-> > P.S.: I still carry this diff around (attached as diff as Gmail might
-> > truncate the following lines):
-> >
-> > $ cd /path/to/pahole.git
-> >
-> > $ git diff dwarf_loader.c
-> > diff --git a/dwarf_loader.c b/dwarf_loader.c
-> > index 5a74035c5708..96ce5db4f5bc 100644
-> > --- a/dwarf_loader.c
-> > +++ b/dwarf_loader.c
-> > @@ -2808,8 +2808,8 @@ static int __cus__load_debug_types(struct
-> > conf_load *conf, Dwfl_Module *mod, Dwa
-> >         return 0;
-> > }
-> >
-> > -/* Match the define in linux:include/linux/elfnote.h */
-> > -#define LINUX_ELFNOTE_BUILD_LTO                0x101
-> > +/* Match the define in linux:include/linux/elfnote-lto.h */
-> > +#define LINUX_ELFNOTE_LTO_INFO         0x101
-> >
-> > static bool cus__merging_cu(Dwarf *dw, Elf *elf)
-> > {
-> > @@ -2827,7 +2827,7 @@ static bool cus__merging_cu(Dwarf *dw, Elf *elf)
-> >                         size_t name_off, desc_off, offset = 0;
-> >                         GElf_Nhdr hdr;
-> >                         while ((offset = gelf_getnote(data, offset,
-> > &hdr, &name_off, &desc_off)) != 0) {
-> > -                               if (hdr.n_type != LINUX_ELFNOTE_BUILD_LTO)
-> > +                               if (hdr.n_type != LINUX_ELFNOTE_LTO_INFO)
-> >                                         continue;
-> >
-> >                                 /* owner is Linux */
->
-> Ya, LINUX_ELFNOTE_BUILD_LTO is initially proposed macro name but later
-> the formal kernel patch used LINUX_ELFNOTE_LTO_INFO. Could you submit
-> a pahole for this so it is consistent with kernel? Thanks!
->
+From: Dave Thaler <dthaler@microsoft.com>
 
-Patch sent, see:
+Fix modulo zero, division by zero, overflow, and underflow.
+Also clarify how a negative immediate value is used in unsigned division
 
-https://lore.kernel.org/all/20230120201203.10785-1-sedat.dilek@gmail.com/
+Changes from last submission: addressed comments from Alexei.
 
--Sedat-
+Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+---
+ Documentation/bpf/instruction-set.rst | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-> >
-> > $ cd /path/to/linux.git
-> >
-> > $ git describe
-> > v6.2-rc4-77-gd368967cb103
-> >
-> > $ git grep LINUX_ELFNOTE_LTO_INFO include/linux/elfnote-lto.h
-> > include/linux/elfnote-lto.h:#define LINUX_ELFNOTE_LTO_INFO      0x101
-> > include/linux/elfnote-lto.h:#define BUILD_LTO_INFO
-> > ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 1)
-> > include/linux/elfnote-lto.h:#define BUILD_LTO_INFO
-> > ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 0)
-> > dileks@iniza:~/src/linux/git$ git describe
-> > v6.2-rc4-195-gf609936e078d
-> >
-> > -EOT-
+diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+index e672d5ec6cc..2546630fcbd 100644
+--- a/Documentation/bpf/instruction-set.rst
++++ b/Documentation/bpf/instruction-set.rst
+@@ -99,19 +99,28 @@ code      value  description
+ BPF_ADD   0x00   dst += src
+ BPF_SUB   0x10   dst -= src
+ BPF_MUL   0x20   dst \*= src
+-BPF_DIV   0x30   dst /= src
++BPF_DIV   0x30   dst = (src != 0) ? (dst / src) : 0
+ BPF_OR    0x40   dst \|= src
+ BPF_AND   0x50   dst &= src
+ BPF_LSH   0x60   dst <<= src
+ BPF_RSH   0x70   dst >>= src
+ BPF_NEG   0x80   dst = ~src
+-BPF_MOD   0x90   dst %= src
++BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
+ BPF_XOR   0xa0   dst ^= src
+ BPF_MOV   0xb0   dst = src
+ BPF_ARSH  0xc0   sign extending shift right
+ BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+ ========  =====  ==========================================================
+ 
++Underflow and overflow are allowed during arithmetic operations,
++meaning the 64-bit or 32-bit value will wrap.  If
++eBPF program execution would result in division by zero,
++the destination register is instead set to zero.
++If execution would result in modulo by zero,
++the destination register is instead set to the source register
++as ``BPF_MOV`` would do, meaning that for ``BPF_ALU64`` the value
++is unchanged whereas for ``BPF_ALU`` the upper 32 bits are zeroed.
++
+ ``BPF_ADD | BPF_X | BPF_ALU`` means::
+ 
+   dst_reg = (u32) dst_reg + (u32) src_reg;
+@@ -128,6 +137,11 @@ BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+ 
+   dst_reg = dst_reg ^ imm32
+ 
++Also note that the division and modulo operations are unsigned.
++Thus, for ``BPF_ALU``, 'imm' is first interpreted as an unsigned
++32-bit value, whereas for ``BPF_ALU64``, 'imm' is first sign extended
++to 64 bits and the result interpreted as an unsigned 64-bit value.
++There are no instructions for signed division or modulo.
+ 
+ Byte swap instructions
+ ~~~~~~~~~~~~~~~~~~~~~~
+-- 
+2.33.4
+
