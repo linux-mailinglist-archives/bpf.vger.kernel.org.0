@@ -2,144 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D0D675CCF
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 19:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4939E675CE1
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 19:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjATSfI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 13:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
+        id S229652AbjATSkM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 13:40:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjATSfG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 13:35:06 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB67A19A9;
-        Fri, 20 Jan 2023 10:35:05 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id s13-20020a17090a6e4d00b0022900843652so9911120pjm.1;
-        Fri, 20 Jan 2023 10:35:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0hAZdbE/uN4m+/i3D24ZXZKDjXUWi616Ji8kVqBjQ08=;
-        b=o85/ykBqIKazV0F0R8e7F042HSqj+iNcf6IEg6SnRPd7W+9jYtoP93D+9ii8cRURlZ
-         HLh8sjop+jruR4JIyAJ6C+uqYdtNfDPmL0laOR8TB9WtsIAB1W/5MfH1ew9TKUu82QLP
-         ZPcGsI/3V8J82ZhfpnFCVvu1aLwvgFJvC2lzZMV+EkxyENJRdQTnWPP2zZEiwH2H71tj
-         481H6EmvzdOuSnbgeivGfqnBLI3YSG711TaCWrAUj/ZcyPzutNZv4hb7P35HezH/alWg
-         NS80v+0PNVBWhOYKotXZ+UXJgvdMPFSS3os2m2DeO7Icd/ISTcC+VpHKq8ZL6aMlSKZZ
-         LX7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0hAZdbE/uN4m+/i3D24ZXZKDjXUWi616Ji8kVqBjQ08=;
-        b=H94+3o9FPJGdUHCQVyHkUUNVIU18uwasb3ro4u4R/yMHxtOR35+5c1M70aPMewRCV2
-         yZgO1eENDIEoPnVMhIXg+LUGjnJa96Z5+BPbQ6AYdtV8WWXKYu7ZeKoV02YjImEqHNp6
-         uS4lylQkDllvG74cqKymVtHr+wzyPWUX7XdaEJo5MZwpwX3TakwurvG97SQGdBnOaWX7
-         gY3zV+E091m+8OcXGlexMPU1gS1EQlZS5GukSJHgc51plkbeQUPmpTixs8X3NbaQOgLg
-         S40iDxd7EhhSldk9nXaMLK0HQfM+hXSb0xIcSMju/8H0iUlYBhHCo+M38ki/dlh3Svvm
-         ebZQ==
-X-Gm-Message-State: AFqh2kqYlpjQnhF8hhx8e3oXf7hdl/uJEYpGmeZajyUhmsuDnBfZ8tG5
-        QGUMFmuMBs9DHgwuXXKMK54=
-X-Google-Smtp-Source: AMrXdXsZ1g5OZwLjXfHmaIkwrVMSy8wBTsedCYDL8PbG0/g5L1dXnZdIqI+Yw0PL8DsVlHjKF1XZAw==
-X-Received: by 2002:a17:90a:4e4c:b0:228:cf57:32c1 with SMTP id t12-20020a17090a4e4c00b00228cf5732c1mr16855921pjl.0.1674239704861;
-        Fri, 20 Jan 2023 10:35:04 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21d6::13b1? ([2620:10d:c090:400::5:c08d])
-        by smtp.gmail.com with ESMTPSA id a4-20020a63e844000000b004b6c3d7aa21sm15961206pgk.8.2023.01.20.10.35.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Jan 2023 10:35:04 -0800 (PST)
-Message-ID: <9bf988ba-3f16-a402-2110-107cebfa7025@gmail.com>
-Date:   Fri, 20 Jan 2023 10:35:02 -0800
+        with ESMTP id S229379AbjATSkL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 13:40:11 -0500
+Received: from sonic305-27.consmr.mail.ne1.yahoo.com (sonic305-27.consmr.mail.ne1.yahoo.com [66.163.185.153])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BE34A1CB
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 10:40:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1674240009; bh=Mjh3WPf7K01vqLuF2A+21BXm3stlpVpgiPRlWUMuypE=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=nAfulSG5CG0pidzS32SfGQ6KFKW9ecFQy9IAtjsasD6r0fSmv9gKB9wYPzT65YYw+EU96wV50Qvqj27tW8vDt2/PwRDxtOOutpSAboYBybhIniZ6/LgQ/cFywHrh5JSm0NUjXIUKkClqSh6ADRuka5WDLyLZ/xnxrsvwzQByu4TKLlwRNbEuHq39rlyKoAUUpeXqr1HauxZlFRn5+7AOe2ZaA2PZJVNSOodP/ZOArFBifBHRDCrN3xKkkffppkOkMArCEtcnj4fbemc25yVsDhSh2Dhj/Df5hojAndk6B/z3MkbC2HFgl4qC3GbXm+h/v7HyIj2RNMReNwcmiyrivw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1674240009; bh=9zdo5TvItKHqT/B/TRdkpM/Te2XoIVGXqtRGqrD9B8h=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=USMvE6rfNV+2IlOIL6SAy/XFPyJFXMHQ2nLVfQ9qTnPejNVv/+AYR5P1VJq/LCDATgBwy9RrJUNSXw3qwY/So18aUeIQK8pVUoCFhj/lx/LHYX1E9Dl8UU5jaRNz+B8jkTXQTCmc5HOY5k3REaiwcpUsfaVVK0jJPqmWXhiarSCEtcZylXGpsxudK3Vdgczdba4Zx0+uUS1UP6ceTAIIqOkYaVmKxbHIs5Wvm4JyhgBlju8IwVEs4tsACNoZjtOh3Zq0/xcvC/zQ34Y+8cNjp8QkHOvfrx8Qqz5zgR9CRedvq1Otz2h0llJwXsr/KysWU9NdQ6nNP8ZGNBiTjdKW6A==
+X-YMail-OSG: IJblym4VM1k_d3.YT3lpapAD7dwDIDzJTzbofxWRpS3NQqkXqQlJs_8UrLyF0Tg
+ dOhjiJNuKHp4IWI9WfpQ7m58buoSPYd_z8cF2XN1y0wHbzS2AUEz5ceNMXCkEEn2P5xx.D89JJdh
+ PEcd26AaEtUuYQD9au9IxtpOXa9XhvfYabcTjwSA5AuOB9JrDX0vgJvJRuMxjLL51wuyTpYom1ia
+ xb9GoeLiPoav_AVaKu1EhObEloz3Btr9fqEq2w3JZ6Y74sLIJj5GpaRPwbndcXv2bfPrvCFRRcC8
+ 41biQH8dp5dqMI2uq8gPntrYLQqkzPPtMzJ5YVrEB4khqlBD1Dg3CvbJ02ZnKegO.RmMOvX_2Hqt
+ Z6J8FnF2JwUBSCBJqXyqqmqZFNZyRXbyHGe.ZCR2jVaXMrnBmG5RL7U104zcGV__S51wqpWFzewQ
+ gXRsCJUvm.GTSuSW9BcYL9XUmCSTnogsd8WzML8_iyvuugfnu3POOFjeh5TpZjwn.jt0r9vivJcd
+ j1UIm2vyoPtsesHq_7OhqLpSDwMzDyv.HHipuGM.TLm45rDbrWOvyH26HxrhDYj6hbreBnwbYqPk
+ Ct5IdYUda4ieZnWLgi.zn.RAm0CSqYDczp5RK1.dMHA_AoVJwHHGqKbFTrQlkbE5S3tXEQmio4wX
+ LFf7ATaWWNzElhKKz8UF.veh8G2ueYfzzv0q3Oi_kEp3WPK.bjQc6bMl4x8plUnERwe.OqyRYluK
+ 5b.W3qdQsZFGRTVuD_V71dPOi7c6HRxyXCIgJ5PNeLtNXOJBASyLHMM2qQ89hsUzQrYXVp226YF_
+ pjtBALm5D2qHd.bhFpPahd5CscrwwG3Lno93urZaRbmN9Pu6MKcVaIKHlV9tTlotdE92DHKDTHhp
+ 60fFjsAo0OeQ94bIYz0eLWFf8ipvgV00bEBbMcwljral3sradTYE6KBMb0JWKHeZT5jJNcRis3pE
+ EhtV.0.N6JAg3LGsiA_cTud0yAe108jK2yP1nw2ORN.gH_PQBwbeIYGJXeZ1dRjcmrFyDx6ioTyy
+ oi20sCPfMHu3FHjJxUhCUc48slKynl6m1DNYacisOWF_NRrrollji6pddPir6Oy8MuCwyLQes46F
+ fgT5x68P8s7yxvBTtn1MAfub2GLBtleblBBemGx1ly0XPhJR.8cy08m5_1BaypAeAAZVHAaozqua
+ S3XRepR3aJLxjQspv._nhv3iZYD2OBH9nhprphTwjwMebzeraKVebk4zAy91_ZZPUxoPfiQjhPUD
+ ZYbFE.FWptQYD2OR5fmA7jYHYZDnbByavsIdpsqoC8yYIFNHQOC6v3HUlQZLjsZ8KvoVXsnAsJyg
+ 2W61dVGKmjHV7Jbf6eMO0rBo6Dm6hyaZq1_8ev4aKPXjxH70lhJ.a.xl6GEn9.kBbMcnbuyUER2M
+ lAAb.CYsD4eqH87fTp7ZYkLR9i9tDZu9vHMSFNpAga.pVkrNVN2MEIx0flGWLeofgGcSCD4PQE9E
+ ATfcXt8MnNj8ZSP5jJBQuB8yvfQj1.rFTQGsCEY4NsEsqxszSnbyImUmWxHQvbdUT0Z23hc9YoMN
+ EPGp3QXcwAbSvn7WtOA5pSNl3BnAA8W5tsXKIvBajvWVO8PhABmZu9CE7So3dQsuk1bQuAFyYSkj
+ Lonp8HCRVukGN.KUUtNda2NbDrmwDtfzff9eB5F8G_aplreasdOIu3qlB9q6iR9rw2naE0Kv9ZNn
+ 4zzz1j7RnBrNQUpKKiJoVreMni8fpXV2Kd6QAZ5ZvNs8XMo8atAiOyH4UM0D3YmOu4RwrzQKQQgI
+ N3mp51NAUhYKgSGofpPOunZsNisEK1l2mludGZrFUfEfYqf.QcU8hC3K7TtTmgsY9DpRTT5IajmY
+ eQ4Ja_LKAo_UiWH85vOTI7p_AX7K7QnTT.QLaVOUOaUxlRdVSxiI4aPOSqjlZBR2XbAx.sPaSjYh
+ JJjPAm9iZ.bASCggAzGSlomHRL8OjeKzm7..IrueZYl0okfpReff6MRuZKmsNm8P_N7tUqowy6cN
+ 8yQ75huSxoq2QLW64sRKVEEaj2A554eQEDc6HSg.RPFNXEAuJBdGEeU_Dny6jKtqk05z8TO6O3yU
+ saeaortflc.J_GvJ9D3yNwf0VlG0Nqrt6.FST4PgMdIMug2lRQlbqS6YpsMdgf2rxgIvTt4ukpDa
+ CJ_sV1tXoQHNnvoHNkyw0P1nQWhAPOC2ggsNTIDyybCQNY.xacHkPmjlnr9Nee5TxgcuGcBSDr63
+ SqLZK34CJqla8xSjMkQHlAikXkaE0jpY-
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.ne1.yahoo.com with HTTP; Fri, 20 Jan 2023 18:40:09 +0000
+Received: by hermes--production-ne1-749986b79f-rgmsx (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 5a95df882e4421c4d8d91192e9e3b075;
+          Fri, 20 Jan 2023 18:40:05 +0000 (UTC)
+Message-ID: <77a767f5-48ae-0d5a-9222-c47040fd6b17@schaufler-ca.com>
+Date:   Fri, 20 Jan 2023 10:40:03 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH bpf-next 2/4] security: Generate a header with the count
- of enabled LSMs
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH bpf-next 0/4] Reduce overhead of LSMs with static calls
 Content-Language: en-US
-To:     KP Singh <kpsingh@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
+To:     KP Singh <kpsingh@kernel.org>
 Cc:     linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
         ast@kernel.org, daniel@iogearbox.net, jackmanb@google.com,
         renauld@google.com, paul@paul-moore.com, song@kernel.org,
-        revest@chromium.org, keescook@chromium.org
+        revest@chromium.org, keescook@chromium.org, casey@schaufler-ca.com
 References: <20230119231033.1307221-1-kpsingh@kernel.org>
- <20230119231033.1307221-3-kpsingh@kernel.org>
- <5e99e2d6-30a8-ea94-d911-de272a2a0a69@schaufler-ca.com>
- <CACYkzJ5LwLD_yo=b5MMvpDUBGJ_puzr2TLYEK-DR3NRDRwgSLw@mail.gmail.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CACYkzJ5LwLD_yo=b5MMvpDUBGJ_puzr2TLYEK-DR3NRDRwgSLw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <1e14f68c-90ba-f406-f08c-6d62bbfef6a0@schaufler-ca.com>
+ <CACYkzJ6DEegggQBRJwe0Z2gChfxficOVmoe2K5mjAx7Zq0aApw@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CACYkzJ6DEegggQBRJwe0Z2gChfxficOVmoe2K5mjAx7Zq0aApw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mailer: WebService/1.1.21096 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The following idea should work with the use case here.
-
-#define COUNT_8(x, y...) 8
-#define COUNT_7(x, y...) 7
-#define COUNT_6(x, y...) 6
-#define COUNT_5(x, y...) 5
-#define COUNT_4(x, y...) 4
-#define COUNT_3(x, y...) 3
-#define COUNT_2(x, y...) 2
-#define COUNT_1(x, y...) 1
-#define COUNT_0(x, y...) 0
-#define COUNT1_8(x, y...) COUNT ## x ## _9(y)
-#define COUNT1_7(x, y...) COUNT ## x ## _8(y)
-#define COUNT1_6(x, y...) COUNT ## x ## _7(y)
-#define COUNT1_5(x, y...) COUNT ## x ## _6(y)
-#define COUNT1_4(x, y...) COUNT ## x ## _5(y)
-#define COUNT1_3(x, y...) COUNT ## x ## _4(y)
-#define COUNT1_2(x, y...) COUNT ## x ## _3(y)
-#define COUNT1_1(x, y...) COUNT ## x ## _2(y)
-#define COUNT1_0(x, y...) COUNT ## x ## _1(y)
-#define COUNT(x, y...) COUNT ## x ## _0(y)
-
-#define COUNT_EXPAND(x...) COUNT(x)
-
-
-#if IS_ENABLED(CONFIG_SECURITY_SELINUX)
-#define SELINUX_ENABLE 1,
-#else
-#define SELINUX_ENABLE
-#endif
-#if IS_ENABLED(CONFIG_SECURITY_XXXX)
-#define XXX_ENABLE 1,
-#else
-#define XXX_ENABLE
-#endif
-....
-
-#define MAX_LSM_COUNT COUNT_EXPAND(SELINUX_ENABLE XXX_ENABLE ......)
-
-On 1/19/23 18:15, KP Singh wrote:
-> On Fri, Jan 20, 2023 at 2:32 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+On 1/19/2023 6:17 PM, KP Singh wrote:
+> On Fri, Jan 20, 2023 at 2:13 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
 >> On 1/19/2023 3:10 PM, KP Singh wrote:
->>> The header defines a MAX_LSM_COUNT constant which is used in a
->>> subsequent patch to generate the static calls for each LSM hook which
->>> are named using preprocessor token pasting. Since token pasting does not
->>> work with arithmetic expressions, generate a simple lsm_count.h header
->>> which represents the subset of LSMs that can be enabled on a given
->>> kernel based on the config.
+>>> # Background
 >>>
->>> While one can generate static calls for all the possible LSMs that the
->>> kernel has, this is actually wasteful as most kernels only enable a
->>> handful of LSMs.
->> Why "generate" anything? Why not include your GEN_MAX_LSM_COUNT macro
->> in security.h and be done with it? I've proposed doing just that in the
->> stacking patch set for some time. This seems to be much more complicated
->> than it needs to be.
-> The answer is in the commit description, the count is used in token
-> pasting and you cannot have arithmetic in when you generate tokens in
-> preprocessor macros.
+>>> LSM hooks (callbacks) are currently invoked as indirect function calls. These
+>>> callbacks are registered into a linked list at boot time as the order of the
+>>> LSMs can be configured on the kernel command line with the "lsm=" command line
+>>> parameter.
+>>>
+>>> Indirect function calls have a high overhead due to retpoline mitigation for
+>>> various speculative execution attacks.
+>>>
+>>> Retpolines remain relevant even with newer generation CPUs as recently
+>>> discovered speculative attacks, like Spectre BHB need Retpolines to mitigate
+>>> against branch history injection and still need to be used in combination with
+>>> newer mitigation features like eIBRS.
+>>>
+>>> This overhead is especially significant for the "bpf" LSM which allows the user
+>>> to implement LSM functionality with eBPF program. In order to facilitate this
+>>> the "bpf" LSM provides a default callback for all LSM hooks. When enabled,
+>>> the "bpf" LSM incurs an unnecessary / avoidable indirect call. This is
+>>> especially bad in OS hot paths (e.g. in the networking stack).
+>>> This overhead prevents the adoption of bpf LSM on performance critical
+>>> systems, and also, in general, slows down all LSMs.
+>>>
+>>> Since we know the address of the enabled LSM callbacks at compile time and only
+>>> the order is determined at boot time,
+>> No quite true. A system with Smack and AppArmor compiled in will only
+>> be allowed to use one or the other.
+>>
+>>>  the LSM framework can allocate static
+>>> calls for each of the possible LSM callbacks and these calls can be updated once
+>>> the order is determined at boot.
+>> True if you also provide for the single "major" LSM restriction.
+>>
+>>> This series is a respin of the RFC proposed by Paul Renauld (renauld@google.com)
+>>> and Brendan Jackman (jackmanb@google.com) [1]
+>>>
+>>> # Performance improvement
+>>>
+>>> With this patch-set some syscalls with lots of LSM hooks in their path
+>>> benefitted at an average of ~3%. Here are the results of the relevant Unixbench
+>>> system benchmarks with BPF LSM and a major LSM (in this case apparmor) enabled
+>>> with and without the series.
+>>>
+>>> Benchmark                                               Delta(%): (+ is better)
+>>> ===============================================================================
+>>> Execl Throughput                                             +2.9015
+>>> File Write 1024 bufsize 2000 maxblocks                       +5.4196
+>>> Pipe Throughput                                              +7.7434
+>>> Pipe-based Context Switching                                 +3.5118
+>>> Process Creation                                             +0.3552
+>>> Shell Scripts (1 concurrent)                                 +1.7106
+>>> System Call Overhead                                         +3.0067
+>>> System Benchmarks Index Score (Partial Only):                +3.1809
+>> How about socket creation and packet delivery impact? You'll need to
+>> use either SELinux or Smack to get those numbers.
+> I think the goal here is to show that hot paths are beneficial, and
+> the results are pretty clear from this. I have an even more detailed
+> analysis in https://kpsingh.ch/lsm-perf as to what happens when the
+> static calls are enabled v/s not enabled. I don't have the socket
+> numbers, but I expect this to be very similar to pipes. Is there a
+> particular Unixbench test you want me to run?
+
+It isn't wise to assume that the paths used in IP code behave the same
+way as any others. Unixbench doesn't look like a great tool for doing
+this measurement. I would look at iperf or even some of the low level
+tests in lmbench.
+
 >
-> you cannot generate bprm_check_security_call_1 + 1 + 1 this does not
-> get resolved by preprocessor.
+>>> In the best case, some syscalls like eventfd_create benefitted to about ~10%.
+>>> The full analysis can be viewed at https://kpsingh.ch/lsm-perf
+>>>
+>>> [1] https://lore.kernel.org/linux-security-module/20200820164753.3256899-1-jackmanb@chromium.org/
+>>>
+>>> KP Singh (4):
+>>>   kernel: Add helper macros for loop unrolling
+>>>   security: Generate a header with the count of enabled LSMs
+>>>   security: Replace indirect LSM hook calls with static calls
+>>>   bpf: Only enable BPF LSM hooks when an LSM program is attached
+>>>
+>>>  include/linux/bpf.h              |   1 +
+>>>  include/linux/bpf_lsm.h          |   1 +
+>>>  include/linux/lsm_hooks.h        |  94 +++++++++++--
+>>>  include/linux/unroll.h           |  35 +++++
+>>>  kernel/bpf/trampoline.c          |  29 ++++-
+>>>  scripts/Makefile                 |   1 +
+>>>  scripts/security/.gitignore      |   1 +
+>>>  scripts/security/Makefile        |   4 +
+>>>  scripts/security/gen_lsm_count.c |  57 ++++++++
+>>>  security/Makefile                |  11 ++
+>>>  security/bpf/hooks.c             |  26 +++-
+>>>  security/security.c              | 217 ++++++++++++++++++++-----------
+>>>  12 files changed, 386 insertions(+), 91 deletions(-)
+>>>  create mode 100644 include/linux/unroll.h
+>>>  create mode 100644 scripts/security/.gitignore
+>>>  create mode 100644 scripts/security/Makefile
+>>>  create mode 100644 scripts/security/gen_lsm_count.c
+>>>
