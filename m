@@ -2,221 +2,292 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 508C1675887
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 16:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB9A6758C6
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 16:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbjATP0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 10:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
+        id S229785AbjATPf4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 10:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbjATP0o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 10:26:44 -0500
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C49CD501;
-        Fri, 20 Jan 2023 07:26:23 -0800 (PST)
-Received: by mail-vs1-f41.google.com with SMTP id p1so6010097vsr.5;
-        Fri, 20 Jan 2023 07:26:23 -0800 (PST)
+        with ESMTP id S230393AbjATPfz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 10:35:55 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C2BCC5EC
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 07:35:17 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id iv8-20020a05600c548800b003db04a0a46bso1357140wmb.0
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 07:35:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7MvvkE0Ftb9zF+tL5k+QFwG+Dp+qVUYtim52OsRxGXo=;
+        b=n7dEKLtxlzcdnGyTTYLGLc14ZOLhY8IeVUsMg5G8HOTnjBX8W52vgJC+h/rMK60nn5
+         S5lhhauZ/DcjY0eaWHOwYkpXI1SV7/knGZXmD+FdcAkA3W6Zj+d1Ed01Ht9vwU4hRJYE
+         nDB0ssdexh0TSnOP5zoiBTvZE+32a+FH/GC/hfLLVa2XIVGhEGjCiuqsMLhk9r9K7HCJ
+         d1mh7cIizbMl+NcMrqzphnfgA9i3JWejMUXTJMLonoYQ5Vnq4CBRSfYNdwqRmQPkNmdb
+         PfyyFj3inPZbi5xpNB4r8UO8k6lnXtcenapxGWBJURlrsoJDiTOx9k46CS/Le4Mwg45b
+         bX5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LHCY4mL/EcA5eqCxZGkg0juV8XwTjSJS4YU5zJqXqHg=;
-        b=MkFCmnurndlWBqeDlFmaDdXS1Fj8DI8yhFx0L0ZIoNkFXng564Ps/4/Wsv1Gmf5tZ6
-         uLzDmLSgnizE9I9a4BTqGG378RR1FX2xo2IEFwjF9Nnp2FWQpkDEba+cHxaj0P4A8t/L
-         UKI2eFvFTGW0mvP8Gf0MlIAB3snDdsR1i8CmXX2wbfQctMD84whh+16PVA132ULJsDix
-         L42IwTuZzILeT3FJk3QHvmLzMBn9wuNuqHRifcIZU2zSva9VQmQbwAVUFqgaeZkhMHfL
-         4bI5APtkIb0LFtq5ISQS8cHI0/v94Ca+r+XjOm7saX4tkBk+y3bptDFPunGLJFTwku+f
-         /I5w==
-X-Gm-Message-State: AFqh2kpwKVc+xdmuzUkhcV35Xv/DdNGbhUcb4dLudp1O1OGU+/4QjfVg
-        PMthI9r2/mRakcaRS8TtZoc=
-X-Google-Smtp-Source: AMrXdXto9umr2qymfvMTYy/kytmz+PEAgBS9qsJJskS9p6hgQzlXaGIA6LglQNK04vyYqMUOuyrYlg==
-X-Received: by 2002:a05:6102:274a:b0:3d3:c424:4e68 with SMTP id p10-20020a056102274a00b003d3c4244e68mr10782339vsu.0.1674228382060;
-        Fri, 20 Jan 2023 07:26:22 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:2fc9])
-        by smtp.gmail.com with ESMTPSA id c4-20020a05620a268400b006fefa5f7fcesm21656593qkp.10.2023.01.20.07.26.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Jan 2023 07:26:21 -0800 (PST)
-Date:   Fri, 20 Jan 2023 09:26:26 -0600
-From:   David Vernet <void@manifault.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, tj@kernel.org
-Subject: Re: [PATCH bpf-next 2/8] bpf: Allow trusted args to walk struct when
- checking BTF IDs
-Message-ID: <Y8qyovnr2bkEpldc@maniforge.lan>
-References: <20230119235833.2948341-1-void@manifault.com>
- <20230119235833.2948341-3-void@manifault.com>
- <20230120045815.4b7dc6obdt4uzy6a@apollo>
- <Y8olRi9SjcyNtam0@maniforge.lan>
- <20230120054027.wcj3jxqkx2s2zsxo@MacBook-Pro-6.local.dhcp.thefacebook.com>
- <CAP01T76aNAn2ish+jwFQuMrCk+11Rb_ZmteGe8RsE7ZMy1t4RA@mail.gmail.com>
- <20230120061441.3gifklagiugmkrtd@MacBook-Pro-6.local.dhcp.thefacebook.com>
- <Y8qrt7pdWCS6Gef8@maniforge.lan>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7MvvkE0Ftb9zF+tL5k+QFwG+Dp+qVUYtim52OsRxGXo=;
+        b=DB/kehqN7iEVuep5xcJR2G7lUbLRGBRPd0bol4ZpDr9e0IllACjX7mID20jieanTWd
+         /OW5brOHt8Ee2asT/aQkJG1aZOMNfihD+MYmwdIPamOSsLudQtk5sL4aQl9qaknv8nKx
+         ToRJDzjt1qnx7evO4gbcYcKf9GEAo2G3y0unTBCJ8l4zHw1S2R7q6VRVYeASA+LSFrbW
+         uOsATbzkSA88P/2RNAyf+lxC0TRdV07qwK7o++5/U0YnRqvz0Wn2v413oXeWskJE5ycJ
+         zbFW76HXZZdnH3FICmxd1RR4Tp2F2CfKUuzT/vFtl4Zmr6F2OFpOtJnW9+C61aGKoNm4
+         M5Qg==
+X-Gm-Message-State: AFqh2krV8ixi4BIrW5zOE8I3rZhRMsOfc+uEAxxfMDnMwztq5djpIxuo
+        MvbEmqw8qw0gLlWXrjSxkESBxg==
+X-Google-Smtp-Source: AMrXdXtT+ZkGK3DEV4Pcr0Ko3hmLmG8Tr2ZIc7nNmgYgz4uU+iBUmWT0DC6F6ar0ZCGEDsQgpDwWDw==
+X-Received: by 2002:a05:600c:214f:b0:3cf:7197:e67c with SMTP id v15-20020a05600c214f00b003cf7197e67cmr14716991wml.25.1674228907928;
+        Fri, 20 Jan 2023 07:35:07 -0800 (PST)
+Received: from ?IPV6:2a02:8011:e80c:0:206a:3601:e166:48b6? ([2a02:8011:e80c:0:206a:3601:e166:48b6])
+        by smtp.gmail.com with ESMTPSA id 17-20020a05600c021100b003dafb0c8dfbsm2921920wmi.14.2023.01.20.07.35.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Jan 2023 07:35:07 -0800 (PST)
+Message-ID: <19047565-6f8e-8615-e555-434e5c126c25@isovalent.com>
+Date:   Fri, 20 Jan 2023 15:35:06 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y8qrt7pdWCS6Gef8@maniforge.lan>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [bpf-next v1 2/2] bpftool: profile online CPUs instead of
+ possible
+Content-Language: en-GB
+To:     Tonghao Zhang <tong@infragraf.org>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <20230117044902.98938-1-tong@infragraf.org>
+ <20230117044902.98938-2-tong@infragraf.org>
+ <64b7fb86-5757-13ec-acf3-ab7ded978cd4@isovalent.com>
+ <12D2AAAD-14CC-43EC-889B-6E625756C18F@infragraf.org>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <12D2AAAD-14CC-43EC-889B-6E625756C18F@infragraf.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 08:56:55AM -0600, David Vernet wrote:
-> On Thu, Jan 19, 2023 at 10:14:41PM -0800, Alexei Starovoitov wrote:
-> > On Fri, Jan 20, 2023 at 11:26:37AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > On Fri, 20 Jan 2023 at 11:10, Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Thu, Jan 19, 2023 at 11:23:18PM -0600, David Vernet wrote:
-> > > > > On Fri, Jan 20, 2023 at 10:28:15AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > > > On Fri, Jan 20, 2023 at 05:28:27AM IST, David Vernet wrote:
-> > > > > > > When validating BTF types for KF_TRUSTED_ARGS kfuncs, the verifier
-> > > > > > > currently enforces that the top-level type must match when calling
-> > > > > > > the kfunc. In other words, the verifier does not allow the BPF program
-> > > > > > > to pass a bitwise equivalent struct, despite it being functionally safe.
-> > > > > > > For example, if you have the following type:
-> > > > > > >
-> > > > > > > struct  nf_conn___init {
-> > > > > > >   struct nf_conn ct;
-> > > > > > > };
-> > > > > > >
-> > > > > > > It would be safe to pass a struct nf_conn___init to a kfunc expecting a
-> > > > > > > struct nf_conn.
-> > > > > >
-> > > > > > Just running bpf_nf selftest would have shown this is false.
-> > > > >
-> > > > > And I feel silly, because I did run them, and could have sworn they
-> > > > > passed...looking now at the change_status_after_alloc testcase I see
-> > > > > you're of course correct. Very poor example, thank you for pointing it
-> > > > > out.
-> > > > >
-> > > > > >
-> > > > > > > Being able to do this will be useful for certain types
-> > > > > > > of kfunc / kptrs enabled by BPF. For example, in a follow-on patch, a
-> > > > > > > series of kfuncs will be added which allow programs to do bitwise
-> > > > > > > queries on cpumasks that are either allocated by the program (in which
-> > > > > > > case they'll be a 'struct bpf_cpumask' type that wraps a cpumask_t as
-> > > > > > > its first element), or a cpumask that was allocated by the main kernel
-> > > > > > > (in which case it will just be a straight cpumask_t, as in
-> > > > > > >  task->cpus_ptr).
-> > > > > > >
-> > > > > > > Having the two types of cpumasks allows us to distinguish between the
-> > > > > > > two for when a cpumask is read-only vs. mutatable. A struct bpf_cpumask
-> > > > > > > can be mutated by e.g. bpf_cpumask_clear(), whereas a regular cpumask_t
-> > > > > > > cannot be. On the other hand, a struct bpf_cpumask can of course be
-> > > > > > > queried in the exact same manner as a cpumask_t, with e.g.
-> > > > > > > bpf_cpumask_test_cpu().
-> > > > > > >
-> > > > > > > If we were to enforce that top level types match, then a user that's
-> > > > > > > passing a struct bpf_cpumask to a read-only cpumask_t argument would
-> > > > > > > have to cast with something like bpf_cast_to_kern_ctx() (which itself
-> > > > > > > would need to be updated to expect the alias, and currently it only
-> > > > > > > accommodates a single alias per prog type). Additionally, not specifying
-> > > > > > > KF_TRUSTED_ARGS is not an option, as some kfuncs take one argument as a
-> > > > > > > struct bpf_cpumask *, and another as a struct cpumask *
-> > > > > > > (i.e. cpumask_t).
-> > > > > > >
-> > > > > > > In order to enable this, this patch relaxes the constraint that a
-> > > > > > > KF_TRUSTED_ARGS kfunc must have strict type matching. In order to
-> > > > > > > try and be conservative and match existing behavior / expectations, this
-> > > > > > > patch also enforces strict type checking for acquire kfuncs. We were
-> > > > > > > already enforcing it for release kfuncs, so this should also improve the
-> > > > > > > consistency of the semantics for kfuncs.
-> > > > > > >
-> > > > > >
-> > > > > > What you want is to simply follow type at off = 0 (but still enforce the off = 0
-> > > > > > requirement). This is something which is currently done for bpf_sk_release (for
-> > > > > > struct sk_common) in check_reg_type, but it is not safe in general to just open
-> > > > > > this up for all cases. I suggest encoding this particular requirement in the
-> > > > > > argument, and simply using triple underscore variant of the type for the special
-> > > > > > 'read_only' requirement. This will allow you to use same type in your BPF C
-> > > > > > program, while allowing verifier to see them as two different types in kfunc
-> > > > > > parameters. Then just relax type following for the particular argument so that
-> > > > > > one can pass cpumask_t___ro to kfunc expecting cpumask_t (but only at off = 0,
-> > > > > > it just visits first member after failing match on top level type). off = 0
-> > > > > > check is still necessary.
-> > > > >
-> > > > > Sigh, yeah, another ___ workaround but I agree it's probably the best we
-> > > > > can do for now, and in general seems pretty useful. Obviously preferable
-> > > > > to this patch which just doesn't work. Alexei, are you OK with this? If
-> > > > > so, I'll take this approach for v2.
-> > > >
-> > > > We decided to rely on strict type match when we introduced 'struct nf_conn___init',
-> > > > but with that we twisted the C standard to, what looks to be, a wrong direction.
-> > > >
-> > > > For definition:
-> > > > struct nf_conn___init {
-> > > >    struct nf_conn ct;
-> > > > };
-> > > > if a kfunc accepts a pointer to nf_conn it should always accept a pointer to nf_conn__init
-> > > > for both read and write, because in C that's valid and safe type cast.
-> > > >
-> > > 
-> > > The intention of this nf_conn___init was to be invisible to the user.
-> > > In selftests there is no trace of nf_conn___init. It is only for
-> > > enforcing semantics by virtue of type safety in the verifier.
-> > > 
-> > > Allocated but not inserted nf_conn -> nf_conn___init
-> > > Inserted/looked up nf_conn -> nf_conn
-> > > 
-> > > We can't pass e.g. nf_conn___init * to a function expecting nf_conn *.
-> > > The allocated nf_conn may not yet be fully initialized. It is only
-> > > after bpf_ct_insert_entry takes the nf_conn___init * and returns
-> > > inserted nf_conn * should it be allowed.
-> > 
-> > Yes. I know and agree with all of the above.
-> > 
-> > > But for the user in BPF C it will be the same nf_conn. The verifier
-> > > can enforce different semantics on the underlying type's usage in
-> > > kfuncs etc, while the user performs normal direct access to the
-> > > nf_conn.
-> > > 
-> > > It will be the same case here, except you also introduce the case of
-> > > kfuncs that are 'polymorphic' and can take both. Relaxing
-> > > 'strict_type_match' for that arg and placing the type of member you
-> > > wish to convert the pointer to gives you such polymorphism. But it's
-> > > not correct to do for nf_conn___init to nf_conn, at least not by
-> > > default.
-> > 
-> > Yes. Agree. I used unfortunate example in the previous reply with nf_conn___init.
-> > I meant to say:
-> > 
-> >  For definition:
-> >  struct nf_conn_init {
-> >     struct nf_conn ct;
-> >  };
-> >  if a kfunc accepts a pointer to nf_conn it should always accept a pointer to nf_conn_init
-> >  for both read and write, because in C that's valid and safe type cast.
-> > 
-> > Meainng that C rules apply.
-> > Our triple underscore is special, because it's the "same type".
-> > In the 2nd part of my reply I'm proposing to use the whole suffix "___init" to indicate that.
-> > I think you're arguing that just "___" part is enough to enforce strict match.
-> > Matching foo___flavor with foo should not be allowed.
-> > While passing struct foo_flavor {struct foo;} into a kfunc that accepts 'struct foo'
-> > is safe.
-> > If so, I'm fine with such approach.
+2023-01-19 16:22 UTC+0800 ~ Tonghao Zhang <tong@infragraf.org>
+>> On Jan 18, 2023, at 6:41 PM, Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> 2023-01-17 12:49 UTC+0800 ~ tong@infragraf.org
+>>> From: Tonghao Zhang <tong@infragraf.org>
+>>>
+>>> The number of online cpu may be not equal to possible cpu.
+>>> bpftool prog profile, can not create pmu event on possible
+>>> but not online cpu.
+>>
+>> s/not/on/ ?
+>>
+>>>
+>>> $ dmidecode -s system-product-name
+>>> PowerEdge R620
+>>> $ cat /sys/devices/system/cpu/online
+>>> 0-31
+>>> $ cat /sys/devices/system/cpu/possible
+>>> 0-47
+>>>
+>>> To fix this issue, use online cpu instead of possible, to
+>>> create perf event and other resource.
+>>>
+>>> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
+>>> Cc: Quentin Monnet <quentin@isovalent.com>
+>>> Cc: Alexei Starovoitov <ast@kernel.org>
+>>> Cc: Daniel Borkmann <daniel@iogearbox.net>
+>>> Cc: Andrii Nakryiko <andrii@kernel.org>
+>>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+>>> Cc: Song Liu <song@kernel.org>
+>>> Cc: Yonghong Song <yhs@fb.com>
+>>> Cc: John Fastabend <john.fastabend@gmail.com>
+>>> Cc: KP Singh <kpsingh@kernel.org>
+>>> Cc: Stanislav Fomichev <sdf@google.com>
+>>> Cc: Hao Luo <haoluo@google.com>
+>>> Cc: Jiri Olsa <jolsa@kernel.org>
+>>> ---
+>>> tools/bpf/bpftool/prog.c | 5 +++--
+>>> 1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+>>> index cfc9fdc1e863..08b352dd799e 100644
+>>> --- a/tools/bpf/bpftool/prog.c
+>>> +++ b/tools/bpf/bpftool/prog.c
+>>> @@ -2056,6 +2056,7 @@ static int profile_parse_metrics(int argc, char **argv)
+>>>
+>>> static void profile_read_values(struct profiler_bpf *obj)
+>>> {
+>>> +	__u32 possible_cpus = libbpf_num_possible_cpus();
+>>> 	__u32 m, cpu, num_cpu = obj->rodata->num_cpu;
+>>> 	int reading_map_fd, count_map_fd;
+>>> 	__u64 counts[num_cpu];
+>>> @@ -2080,7 +2081,7 @@ static void profile_read_values(struct profiler_bpf *obj)
+>>> 		profile_total_count += counts[cpu];
+>>>
+>>> 	for (m = 0; m < ARRAY_SIZE(metrics); m++) {
+>>> -		struct bpf_perf_event_value values[num_cpu];
+>>> +		struct bpf_perf_event_value values[possible_cpus];
+>>>
+>>> 		if (!metrics[m].selected)
+>>> 			continue;
+>>> @@ -2321,7 +2322,7 @@ static int do_profile(int argc, char **argv)
+>>> 	if (num_metric <= 0)
+>>> 		goto out;
+>>>
+>>> -	num_cpu = libbpf_num_possible_cpus();
+>>> +	num_cpu = libbpf_num_online_cpus();
+>>> 	if (num_cpu <= 0) {
+>>> 		p_err("failed to identify number of CPUs");
+>>> 		goto out;
+>>
+>> Thanks, but it doesn't seem to be enough to solve the issue. How did you
+>> test it? With your series applied locally, I'm trying the following
+>> (Intel x86_64, CPUs: 0..7):
+>>
+>> 	# echo 0 > /sys/devices/system/cpu/cpu2/online
+>> 	# ./bpftool prog profile id 1525 duration 1 cycles instructions
+>> 	Error: failed to create event cycles on cpu 2
+>>
+>> It seems that we're still trying to open the perf events on the offline
+>> CPU in profile_open_perf_events(), because even though we try to use
+>> fewer of the possible CPUs we're still referencing them in order by
+> Hi
+> Thanks for your review and comment.
+> I don’t test the case that one cpu is offline which is not last CPU.
+>> their index. So it works if I only disabled the last CPUs instead (#7,
+>> then #6, ...), but to work with _any_ CPU disabled, we would need to
+>> retrieve the list of online CPUs.
+>>
+> Yes, In other way, to fix it, we can use the errno return by open_perf_event. If errno is ENODEV, we can skip this cpu to profile? 
+> The patch fix this issue.
 > 
-> Alright, I'll spin v2 to treat any type with name___.* as a disallowed
-> alias, and update the documentation to mention it. I was originally
-> going to push back and say that we should just use a single alias like
-> __nocast to keep things simple, but it doesn't feel generalizable
-> enough.
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index 620032042576..deec7196b48c 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -55,6 +55,24 @@ void p_err(const char *fmt, ...)
+>  	va_end(ap);
+>  }
+> 
+> +void p_warn(const char *fmt, ...)
+> +{
+> +	va_list ap;
+> +
+> +	va_start(ap, fmt);
+> +	if (json_output) {
+> +		jsonw_start_object(json_wtr);
+> +		jsonw_name(json_wtr, "warning");
+> +		jsonw_vprintf_enquote(json_wtr, fmt, ap);
+> +		jsonw_end_object(json_wtr);
+> +	} else {
+> +		fprintf(stderr, "Warn: ");
+> +		vfprintf(stderr, fmt, ap);
+> +		fprintf(stderr, "\n");
+> +	}
+> +	va_end(ap);
+> +}
+> +
+>  void p_info(const char *fmt, ...)
+>  {
+>  	va_list ap;
+> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+> index a84224b6a604..e62edec9e13a 100644
+> --- a/tools/bpf/bpftool/main.h
+> +++ b/tools/bpf/bpftool/main.h
+> @@ -86,6 +86,7 @@ extern struct btf *base_btf;
+>  extern struct hashmap *refs_table;
+> 
+>  void __printf(1, 2) p_err(const char *fmt, ...);
+> +void __printf(1, 2) p_warn(const char *fmt, ...);
+>  void __printf(1, 2) p_info(const char *fmt, ...);
+> 
+>  bool is_prefix(const char *pfx, const char *str);
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index cfc9fdc1e863..d9363ba01ec0 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -2233,10 +2233,36 @@ static void profile_close_perf_events(struct profiler_bpf *obj)
+>  	profile_perf_event_cnt = 0;
+>  }
+> 
+> +static int profile_open_perf_event(int mid, int cpu, int map_fd)
+> +{
+> +	int pmu_fd;
+> +
+> +	pmu_fd = syscall(__NR_perf_event_open, &metrics[mid].attr,
+> +			 -1/*pid*/, cpu, -1/*group_fd*/, 0);
+> +	if (pmu_fd < 0) {
+> +		if (errno == ENODEV) {
+> +			p_warn("cpu %d may be offline, skip %s metric profiling.",
+> +				cpu, metrics[mid].name);
 
-On second thought, unless you guys feel strongly, I'll just check
-___init. The resulting code is going to be a lot of tricky string
-manipulation / math otherwise. Not _terrible_, but I'd prefer to avoid
-adding it until we have a concrete use-case. And I expect this could be
-implemented much simpler using something like tags, once gcc has support
-for it.
+Nit: I think it's fine to keep this at the info level (p_info()).
+
+> +			profile_perf_event_cnt++;
+> +			return 0;
+> +		}
+> +		return -1;
+> +	}
+> +
+> +	if (bpf_map_update_elem(map_fd,
+> +				&profile_perf_event_cnt,
+> +				&pmu_fd, BPF_ANY) ||
+> +	    ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0))
+> +		return -1;
+> +
+> +	profile_perf_events[profile_perf_event_cnt++] = pmu_fd;
+> +	return 0;
+> +}
+> +
+>  static int profile_open_perf_events(struct profiler_bpf *obj)
+>  {
+>  	unsigned int cpu, m;
+> -	int map_fd, pmu_fd;
+> +	int map_fd;
+> 
+>  	profile_perf_events = calloc(
+>  		sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
+> @@ -2255,17 +2281,11 @@ static int profile_open_perf_events(struct profiler_bpf *obj)
+>  		if (!metrics[m].selected)
+>  			continue;
+>  		for (cpu = 0; cpu < obj->rodata->num_cpu; cpu++) {
+> -			pmu_fd = syscall(__NR_perf_event_open, &metrics[m].attr,
+> -					 -1/*pid*/, cpu, -1/*group_fd*/, 0);
+> -			if (pmu_fd < 0 ||
+> -			    bpf_map_update_elem(map_fd, &profile_perf_event_cnt,
+> -						&pmu_fd, BPF_ANY) ||
+> -			    ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0)) {
+> +			if (profile_open_perf_event(m, cpu, map_fd)) {
+>  				p_err("failed to create event %s on cpu %d",
+>  				      metrics[m].name, cpu);
+>  				return -1;
+>  			}
+> -			profile_perf_events[profile_perf_event_cnt++] = pmu_fd;
+>  		}
+>  	}
+>  	return 0;
+> 
+> 
+> ----
+> Best Regards, Tonghao <tong@infragraf.org>
+> 
+
+I haven't tested this patch, but yes, looks like it should address the
+issue. Could you submit a proper v2, please?
+
+Quentin
