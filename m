@@ -2,232 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1108E674DB1
-	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 08:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E96674E2D
+	for <lists+bpf@lfdr.de>; Fri, 20 Jan 2023 08:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjATHEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 02:04:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
+        id S230177AbjATHeF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 02:34:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbjATHEo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 02:04:44 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0962A530D7
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 23:04:43 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id d9so4559440pll.9
-        for <bpf@vger.kernel.org>; Thu, 19 Jan 2023 23:04:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YyTWOZilBFDAJAIdzvGkhUiQOCd5v7yklxBaXynN35o=;
-        b=T1y1G6871uDzt9PPygMPduYST6f5C4V9yqZrJDfNs4SYywD2qY3NoMa5yS0NX4yNY2
-         p4w6EmjMcs7a6Y0ENSDAOY0oNs+E3lgUfT23JCnacoeIZ8SnwjlcFzQgN4j+PxAFALZq
-         7HO+ktUa5RHBtaDkcZNoqhIWn9pwcFAbGrIzCO4sHlBXfpr5I0iOOZrf0+f1YjcikdrN
-         AAkV4W6OeEXqve/plCI4NvodrX/WfbAbZcgc9yTISC2pTrZUn3q47pcqEhAvB/pFFyuv
-         6ZAOvRhSQdyhsM5enKImUtK9qb7Ak5z/Yl2Ce1cDjfxOgzZ0NzxVsFOyqKW0o8h0r18W
-         NZdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YyTWOZilBFDAJAIdzvGkhUiQOCd5v7yklxBaXynN35o=;
-        b=HPWWwAPo53MLW/Sv6sou/O07QOWy06YWeeKqLBMAyeuoyH2cZYYVRZb/DIoPqP59jI
-         SZqW88m4vhKFJRktul2u8loQ9GzvOqwF+El98AQwLGEGhmasRLTe423erfF8d0C0/jae
-         GnZDPXv1rXk+Nhn63ce48yQlipPT+tAf3nF6fljjxKbxGRCzKEyGfMzM2Y7Hok7Z7yFi
-         Fw+Vrv2pY3A/KABCHhTT1obyALzPQlBs9qb2hm4GQt+W9OVbKy1KrGylBOA9EW+8crPb
-         7YJ4AyOERP4cND7iumGRfn5clT/D+5HEvY/d93qpl5+XF32iJoLV5upcCw+2C9oD/yJA
-         CmNQ==
-X-Gm-Message-State: AFqh2krPUbH903bOjSk797DlDfaI9ZJ7v5baURlTBbjx6xuzK5nHzgE9
-        w+G9En8StHCwnbZ3CnluqzvXzzFG4nE=
-X-Google-Smtp-Source: AMrXdXvctzyr80C+xnoA7AxnmV3JFBhr1Tthefh4TvYkblcA3n5VJmIR58W3ZF+zCtPEkXm3XX9Qmg==
-X-Received: by 2002:a17:90a:f30e:b0:229:27a2:d80f with SMTP id ca14-20020a17090af30e00b0022927a2d80fmr14584940pjb.23.1674198282228;
-        Thu, 19 Jan 2023 23:04:42 -0800 (PST)
-Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
-        by smtp.gmail.com with ESMTPSA id n7-20020a170902e54700b00194ab9a4febsm6309823plf.74.2023.01.19.23.04.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 23:04:41 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        David Vernet <void@manifault.com>,
-        Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v4 12/12] selftests/bpf: Add dynptr helper tests
-Date:   Fri, 20 Jan 2023 12:33:55 +0530
-Message-Id: <20230120070355.1983560-13-memxor@gmail.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230120070355.1983560-1-memxor@gmail.com>
-References: <20230120070355.1983560-1-memxor@gmail.com>
+        with ESMTP id S229720AbjATHeA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 02:34:00 -0500
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6397798C4;
+        Thu, 19 Jan 2023 23:33:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1674200036; x=1705736036;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kyp1q4NF+AQWsmdJvGVKlDdz6pk0bNQYLVT4YSlYHhM=;
+  b=fH97re6BFIIoWj7t22iBINds/MAPWMHRJmpaQbioJUGfX10bHqCNrfCT
+   ipR7hVOGVbB2FcO5aKbFRs6k17IyILjYE8hXOFyH8LQF+0Lf8Ve/+1LLI
+   s5t2/80b4I8uIZad3dgxcG9TCVhRceDMdBpdCyYJdTkiVII/0DzLDxjTB
+   +R03cTESwgq2v4fAxJSwG4+6qVadLQA3gr/iPS/b4NynaCBnKVWq9sChu
+   Uw8J+/Fj/dmc7itfcHdYm3UbwqRQsSzSEt6sBIfkLMPKiiYn3dIudXDS2
+   dFQq1STFdbVVl/sQphPJxfJX9rczKJmlA0bJylDlrO1gAh6hBWd0He8Zm
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="327616484"
+X-IronPort-AV: E=Sophos;i="5.97,231,1669104000"; 
+   d="scan'208";a="327616484"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2023 23:33:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="989319597"
+X-IronPort-AV: E=Sophos;i="5.97,231,1669104000"; 
+   d="scan'208";a="989319597"
+Received: from lkp-server01.sh.intel.com (HELO 5646d64e7320) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 19 Jan 2023 23:33:52 -0800
+Received: from kbuild by 5646d64e7320 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pIluE-0002KY-38;
+        Fri, 20 Jan 2023 07:33:46 +0000
+Date:   Fri, 20 Jan 2023 15:33:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     KP Singh <kpsingh@kernel.org>,
+        linux-security-module@vger.kernel.org, bpf@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, ast@kernel.org,
+        daniel@iogearbox.net, jackmanb@google.com, renauld@google.com,
+        paul@paul-moore.com, casey@schaufler-ca.com, song@kernel.org,
+        revest@chromium.org, keescook@chromium.org,
+        KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH RESEND bpf-next 2/4] security: Generate a header with the
+ count of enabled LSMs
+Message-ID: <202301201525.vZDnlpJ2-lkp@intel.com>
+References: <20230120000818.1324170-3-kpsingh@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3628; i=memxor@gmail.com; h=from:subject; bh=KrTMop4yccSalaFbkhQLR70jCCGcHJeO+aSXiPpo0lA=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyjzMJ5kE1rcwnr3HwfkUejt1ifNTCMP0HJbgxP48 p5T38yeJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8o8zAAKCRBM4MiGSL8RylxLEA CpxqIv0gutmrt8bnDHFI1StkTS4+jClyK0gTAi6VLPH5BwlPUyHMZfe9/pafsUPwg3AJWHziqWhJ0e VM8jLzrRbyd9ol2IEUVJjgDoGEqtaX/UPWGV0V5vr8UX0ARa8YmL85SVlIDqyqKVRT2SOzeNiLIioK /c6sw/UI01Kn1YuIpI7UQw6bsGfnZoeNUhVHtA+lt9DaJwDenb88nLUNJ+0DuEtSYb+0KjUzcfporl 3MNJbdNtBLQopchNBGIpyZVdO8Ld81hsusU3t7W/xACwLi3yEyHqMPnE7s4M3vI9pTWVbRBUf4DBYQ +/2SLaWauIKKyCO4ghAgLRiztXEnaI3l22iIWfgtpO2bH1s2qxsksytSOWjV7P5UIPfszJ39MbOtpq k1gnfL9Zc/E1GhgYOYYErYzRKMGMw8bVsHbq6GjXdgnjMxg4YG01PAFAMaoc9Vux3JpRISciBcx+ke fR9ADycoC1UNRb6mITk6chIiZ+XzQavAqPR+xsRwQnp4qE7U/ywAmYLo4dgDK08ToCr4oS5TwCc4A6 Yv/2dzcM/1AIq9Qr/6GUAlhBEoW+m0tZG2YcKgYC+z04fosbg0qfmz5ehtK7CPdBOETH4W5pFsuq19 8LYf4RukK+HGF69WGG84+17vJVaNjhczfUB6iKkYQHirhPy3DH67QroMpV2Q==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230120000818.1324170-3-kpsingh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-First test that we allow overwriting dynptr slots and reinitializing
-them in unreferenced case, and disallow overwriting for referenced case.
-Include tests to ensure slices obtained from destroyed dynptrs are being
-invalidated on their destruction. The destruction needs to be scoped, as
-in slices of dynptr A should not be invalidated when dynptr B is
-destroyed. Next, test that MEM_UNINIT doesn't allow writing dynptr stack
-slots.
+Hi KP,
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../testing/selftests/bpf/progs/dynptr_fail.c | 129 ++++++++++++++++++
- 1 file changed, 129 insertions(+)
+I love your patch! Yet something to improve:
 
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-index 1cbec5468879..c10abb98e47d 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-@@ -900,3 +900,132 @@ int dynptr_partial_slot_invalidate(struct __sk_buff *ctx)
- 	);
- 	return 0;
- }
-+
-+SEC("?raw_tp")
-+__success
-+int dynptr_overwrite_unref(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	if (get_map_val_dynptr(&ptr))
-+		return 0;
-+	if (get_map_val_dynptr(&ptr))
-+		return 0;
-+	if (get_map_val_dynptr(&ptr))
-+		return 0;
-+
-+	return 0;
-+}
-+
-+SEC("?raw_tp")
-+__failure __msg("R1 type=scalar expected=percpu_ptr_")
-+int dynptr_invalidate_slice_or_null(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	__u8 *p;
-+
-+	if (get_map_val_dynptr(&ptr))
-+		return 0;
-+
-+	p = bpf_dynptr_data(&ptr, 0, 1);
-+	*(__u8 *)&ptr = 0;
-+	bpf_this_cpu_ptr(p);
-+	return 0;
-+}
-+
-+SEC("?raw_tp")
-+__failure __msg("R7 invalid mem access 'scalar'")
-+int dynptr_invalidate_slice_failure(void *ctx)
-+{
-+	struct bpf_dynptr ptr1;
-+	struct bpf_dynptr ptr2;
-+	__u8 *p1, *p2;
-+
-+	if (get_map_val_dynptr(&ptr1))
-+		return 0;
-+	if (get_map_val_dynptr(&ptr2))
-+		return 0;
-+
-+	p1 = bpf_dynptr_data(&ptr1, 0, 1);
-+	if (!p1)
-+		return 0;
-+	p2 = bpf_dynptr_data(&ptr2, 0, 1);
-+	if (!p2)
-+		return 0;
-+
-+	*(__u8 *)&ptr1 = 0;
-+	return *p1;
-+}
-+
-+SEC("?raw_tp")
-+__success
-+int dynptr_invalidate_slice_success(void *ctx)
-+{
-+	struct bpf_dynptr ptr1;
-+	struct bpf_dynptr ptr2;
-+	__u8 *p1, *p2;
-+
-+	if (get_map_val_dynptr(&ptr1))
-+		return 1;
-+	if (get_map_val_dynptr(&ptr2))
-+		return 1;
-+
-+	p1 = bpf_dynptr_data(&ptr1, 0, 1);
-+	if (!p1)
-+		return 1;
-+	p2 = bpf_dynptr_data(&ptr2, 0, 1);
-+	if (!p2)
-+		return 1;
-+
-+	*(__u8 *)&ptr1 = 0;
-+	return *p2;
-+}
-+
-+SEC("?raw_tp")
-+__failure __msg("cannot overwrite referenced dynptr")
-+int dynptr_overwrite_ref(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &ptr);
-+	if (get_map_val_dynptr(&ptr))
-+		bpf_ringbuf_discard_dynptr(&ptr, 0);
-+	return 0;
-+}
-+
-+/* Reject writes to dynptr slot from bpf_dynptr_read */
-+SEC("?raw_tp")
-+__failure __msg("potential write to dynptr at off=-16")
-+int dynptr_read_into_slot(void *ctx)
-+{
-+	union {
-+		struct {
-+			char _pad[48];
-+			struct bpf_dynptr ptr;
-+		};
-+		char buf[64];
-+	} data;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &data.ptr);
-+	/* this should fail */
-+	bpf_dynptr_read(data.buf, sizeof(data.buf), &data.ptr, 0, 0);
-+
-+	return 0;
-+}
-+
-+/* Reject writes to dynptr slot for uninit arg */
-+SEC("?raw_tp")
-+__failure __msg("potential write to dynptr at off=-16")
-+int uninit_write_into_slot(void *ctx)
-+{
-+	struct {
-+		char buf[64];
-+		struct bpf_dynptr ptr;
-+	} data;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 80, 0, &data.ptr);
-+	/* this should fail */
-+	bpf_get_current_comm(data.buf, 80);
-+
-+	return 0;
-+}
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/KP-Singh/kernel-Add-helper-macros-for-loop-unrolling/20230120-133309
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230120000818.1324170-3-kpsingh%40kernel.org
+patch subject: [PATCH RESEND bpf-next 2/4] security: Generate a header with the count of enabled LSMs
+config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20230120/202301201525.vZDnlpJ2-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/831b06220bb29c6db171467b13903dac0ef2faa5
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review KP-Singh/kernel-Add-helper-macros-for-loop-unrolling/20230120-133309
+        git checkout 831b06220bb29c6db171467b13903dac0ef2faa5
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 olddefconfig
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> /bin/bash: line 1: scripts/security/gen_lsm_count: No such file or directory
+
 -- 
-2.39.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
