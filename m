@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA766676641
-	for <lists+bpf@lfdr.de>; Sat, 21 Jan 2023 13:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD517676644
+	for <lists+bpf@lfdr.de>; Sat, 21 Jan 2023 13:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjAUMmN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Jan 2023 07:42:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
+        id S229746AbjAUMmV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Jan 2023 07:42:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjAUMmN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Jan 2023 07:42:13 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C0430E84
-        for <bpf@vger.kernel.org>; Sat, 21 Jan 2023 04:42:11 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id tz11so20294910ejc.0
-        for <bpf@vger.kernel.org>; Sat, 21 Jan 2023 04:42:11 -0800 (PST)
+        with ESMTP id S229744AbjAUMmT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Jan 2023 07:42:19 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2B83457E
+        for <bpf@vger.kernel.org>; Sat, 21 Jan 2023 04:42:14 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id v30so9633292edb.9
+        for <bpf@vger.kernel.org>; Sat, 21 Jan 2023 04:42:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mIDvWvTceP3dMNuGMTkeWoOyskDpFQfCLlKp/mFzwdo=;
-        b=NuzH8oSY+CwojhHaqnV8ct3qLg/UNiYgTEt9yZHSoTFSoEn4gh+/JcH7dTaVX0p8SE
-         A7hSadvSTTKhnzzrVyt0LLINldGqp3iMLtPS1APfFZefFKm79zgcLK88iWDKoVek8uuC
-         DU1s8VB9OKBUTSyji/j2QE1MFOq2nPQM+yXhQ=
+        bh=LjX4FJ8gRkEtjzAf9WCo0Kq35+A6/erPh54GkDAerRk=;
+        b=GCwPUECMnDFqKMhJOpLV9kvA4uDr9sjHrlCQIN6QEJzxwu9lYnJMuvD04RathL2YRK
+         yZAssOYSRJk6DrOAQwglUClqNJcQDvu7wEHiE2h+dETBqxcvM29qQnXNQdrndi6IwBae
+         3SoYlIlBvS388NIbtbRcJ7VP6RkfEzUwh3U50=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mIDvWvTceP3dMNuGMTkeWoOyskDpFQfCLlKp/mFzwdo=;
-        b=uysIeKfHpGdzt8d1qZWbZXps5NkxdHlfLSwZ1WoRGillzdkj86C8vglFrQusZWG7Hh
-         ikNLRowtNXQNayzkV887ekcZsEO80EBCKVSmbgb+oM4JpzvLVKs/+7RFDtTaaNqtjPDF
-         /kZ72DWWbLvpbYdBUMZ2jOyPrIfDN/nxcu5MmRHQCabsIrtyhteOm91w9lNWwwZdx8hk
-         qMznOmKhnAqfBMfOS3PgVB4hF7IWxJLLADbgJoDUTP34FoCDqvDLOdDKsHEW2sqkSTtq
-         nDiUIQJ60YkGiGOi6PnW7urTrR7vOPGlDVKuIe6crI33J3HmBGtQj6OFkkBIPnJ4t/u1
-         gkiw==
-X-Gm-Message-State: AFqh2krs/Z62+z/XWDPFAknLzy6GqH7atMnBfrAJkE6bWlLlm9uEBu93
-        sQEZLBqGa+ARLaSxoJpcfZk+Og==
-X-Google-Smtp-Source: AMrXdXtFbT8pecR99fgmUQHrx5jAf+ki752XYVqKMOX1frknMJNuyLQcamUAwr41omvSD8U2vydHxw==
-X-Received: by 2002:a17:906:368f:b0:877:593a:58d0 with SMTP id a15-20020a170906368f00b00877593a58d0mr14145005ejc.29.1674304930139;
-        Sat, 21 Jan 2023 04:42:10 -0800 (PST)
+        bh=LjX4FJ8gRkEtjzAf9WCo0Kq35+A6/erPh54GkDAerRk=;
+        b=rh6sSLg3nM2YDj8haiSf5z5rHXRDcYDKWbpgn+hDlezBl8IgHssZMSV9bvhbbOFzaD
+         mY5l/kKfuBLO9yVdYM0pMwmEfTDHPPONqiiE+RpcmYciG6ucRc3rb+3HHsihgNNdJ2Xo
+         6gkYaPr84qMT7xAiH0ytwBGPwHcRmoHI4Ydw+B+LwdMEk8uPwDBIesHOPkzaul8fCcrO
+         jmkEzBpVRxiDGglf6pEqsffI25BNYKEstF1pWEnJhEqO9XfjuDXqPoif0b67qoQ9mcNS
+         W3Q9kEsqsPdlIX1piZ6FHfadd/xFO4VnF+MbKU0KrVoI4S8FLJ34L0GR6D5EL2NBU5z3
+         iDTg==
+X-Gm-Message-State: AFqh2krb5DtnosDJ/sV4O+EkPhKgYN9GUw8CO15wQMofxgOZwispi+xW
+        exL0ioXvWzAZMIb4m+Vp4EevFw==
+X-Google-Smtp-Source: AMrXdXui1DV/13uq+rKAGkbW48xZirbek85clMWFGgnI3sZI1LxBY8gKr2F0+ZaOrxcL8Pd3w8em9Q==
+X-Received: by 2002:a05:6402:528b:b0:49e:28c1:9375 with SMTP id en11-20020a056402528b00b0049e28c19375mr19104122edb.10.1674304932041;
+        Sat, 21 Jan 2023 04:42:12 -0800 (PST)
 Received: from cloudflare.com (79.191.179.97.ipv4.supernova.orange.pl. [79.191.179.97])
-        by smtp.gmail.com with ESMTPSA id kz22-20020a17090777d600b007c1633cea13sm19651109ejc.12.2023.01.21.04.42.09
+        by smtp.gmail.com with ESMTPSA id f9-20020a056402068900b0048999d127e0sm18559536edy.86.2023.01.21.04.42.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Jan 2023 04:42:09 -0800 (PST)
+        Sat, 21 Jan 2023 04:42:11 -0800 (PST)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-Date:   Sat, 21 Jan 2023 13:41:45 +0100
-Subject: [PATCH bpf v2 3/4] selftests/bpf: Pass BPF skeleton to
- sockmap_listen ops tests
+Date:   Sat, 21 Jan 2023 13:41:46 +0100
+Subject: [PATCH bpf v2 4/4] selftests/bpf: Cover listener cloning with
+ progs attached to sockmap
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230113-sockmap-fix-v2-3-1e0ee7ac2f90@cloudflare.com>
+Message-Id: <20230113-sockmap-fix-v2-4-1e0ee7ac2f90@cloudflare.com>
 References: <20230113-sockmap-fix-v2-0-1e0ee7ac2f90@cloudflare.com>
 In-Reply-To: <20230113-sockmap-fix-v2-0-1e0ee7ac2f90@cloudflare.com>
 To:     bpf@vger.kernel.org
@@ -65,217 +65,75 @@ Cc:     netdev@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
 X-Mailer: b4 0.12.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Following patch extends the sockmap ops tests to cover the scenario when a
-sockmap with attached programs holds listening sockets.
+Today we test if a child socket is cloned properly from a listening socket
+inside a sockmap only when there are no BPF programs attached to the map.
 
-Pass the BPF skeleton to sockmap ops test so that the can access and attach
-the BPF programs.
+A bug has been reported [1] for the case when sockmap has a verdict program
+attached. So cover this case as well to prevent regressions.
+
+[1]: https://lore.kernel.org/r/00000000000073b14905ef2e7401@google.com
 
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- .../selftests/bpf/prog_tests/sockmap_listen.c      | 55 +++++++++++++++-------
- 1 file changed, 37 insertions(+), 18 deletions(-)
+ .../selftests/bpf/prog_tests/sockmap_listen.c      | 30 ++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 2cf0c7a3fe23..499fba8f55b9 100644
+index 499fba8f55b9..567e07c19ecc 100644
 --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
 +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -30,6 +30,8 @@
- #define MAX_STRERR_LEN 256
- #define MAX_TEST_NAME 80
- 
-+#define __always_unused	__attribute__((__unused__))
-+
- #define _FAIL(errnum, fmt...)                                                  \
- 	({                                                                     \
- 		error_at_line(0, (errnum), __func__, __LINE__, fmt);           \
-@@ -321,7 +323,8 @@ static int socket_loopback(int family, int sotype)
- 	return socket_loopback_reuseport(family, sotype, -1);
- }
- 
--static void test_insert_invalid(int family, int sotype, int mapfd)
-+static void test_insert_invalid(struct test_sockmap_listen *skel __always_unused,
-+				int family, int sotype, int mapfd)
- {
- 	u32 key = 0;
- 	u64 value;
-@@ -338,7 +341,8 @@ static void test_insert_invalid(int family, int sotype, int mapfd)
- 		FAIL_ERRNO("map_update: expected EBADF");
- }
- 
--static void test_insert_opened(int family, int sotype, int mapfd)
-+static void test_insert_opened(struct test_sockmap_listen *skel __always_unused,
-+			       int family, int sotype, int mapfd)
- {
- 	u32 key = 0;
- 	u64 value;
-@@ -359,7 +363,8 @@ static void test_insert_opened(int family, int sotype, int mapfd)
- 	xclose(s);
- }
- 
--static void test_insert_bound(int family, int sotype, int mapfd)
-+static void test_insert_bound(struct test_sockmap_listen *skel __always_unused,
-+			      int family, int sotype, int mapfd)
- {
- 	struct sockaddr_storage addr;
- 	socklen_t len;
-@@ -386,7 +391,8 @@ static void test_insert_bound(int family, int sotype, int mapfd)
- 	xclose(s);
- }
- 
--static void test_insert(int family, int sotype, int mapfd)
-+static void test_insert(struct test_sockmap_listen *skel __always_unused,
-+			int family, int sotype, int mapfd)
- {
- 	u64 value;
- 	u32 key;
-@@ -402,7 +408,8 @@ static void test_insert(int family, int sotype, int mapfd)
- 	xclose(s);
- }
- 
--static void test_delete_after_insert(int family, int sotype, int mapfd)
-+static void test_delete_after_insert(struct test_sockmap_listen *skel __always_unused,
-+				     int family, int sotype, int mapfd)
- {
- 	u64 value;
- 	u32 key;
-@@ -419,7 +426,8 @@ static void test_delete_after_insert(int family, int sotype, int mapfd)
- 	xclose(s);
- }
- 
--static void test_delete_after_close(int family, int sotype, int mapfd)
-+static void test_delete_after_close(struct test_sockmap_listen *skel __always_unused,
-+				    int family, int sotype, int mapfd)
- {
- 	int err, s;
- 	u64 value;
-@@ -442,7 +450,8 @@ static void test_delete_after_close(int family, int sotype, int mapfd)
- 		FAIL_ERRNO("map_delete: expected EINVAL/EINVAL");
- }
- 
--static void test_lookup_after_insert(int family, int sotype, int mapfd)
-+static void test_lookup_after_insert(struct test_sockmap_listen *skel __always_unused,
-+				     int family, int sotype, int mapfd)
- {
- 	u64 cookie, value;
- 	socklen_t len;
-@@ -470,7 +479,8 @@ static void test_lookup_after_insert(int family, int sotype, int mapfd)
- 	xclose(s);
- }
- 
--static void test_lookup_after_delete(int family, int sotype, int mapfd)
-+static void test_lookup_after_delete(struct test_sockmap_listen *skel __always_unused,
-+				     int family, int sotype, int mapfd)
- {
- 	int err, s;
- 	u64 value;
-@@ -493,7 +503,8 @@ static void test_lookup_after_delete(int family, int sotype, int mapfd)
- 	xclose(s);
- }
- 
--static void test_lookup_32_bit_value(int family, int sotype, int mapfd)
-+static void test_lookup_32_bit_value(struct test_sockmap_listen *skel __always_unused,
-+				     int family, int sotype, int mapfd)
- {
- 	u32 key, value32;
- 	int err, s;
-@@ -523,7 +534,8 @@ static void test_lookup_32_bit_value(int family, int sotype, int mapfd)
- 	xclose(s);
- }
- 
--static void test_update_existing(int family, int sotype, int mapfd)
-+static void test_update_existing(struct test_sockmap_listen *skel __always_unused,
-+				 int family, int sotype, int mapfd)
- {
- 	int s1, s2;
- 	u64 value;
-@@ -551,7 +563,8 @@ static void test_update_existing(int family, int sotype, int mapfd)
+@@ -563,8 +563,7 @@ static void test_update_existing(struct test_sockmap_listen *skel __always_unuse
  /* Exercise the code path where we destroy child sockets that never
   * got accept()'ed, aka orphans, when parent socket gets closed.
   */
--static void test_destroy_orphan_child(int family, int sotype, int mapfd)
-+static void test_destroy_orphan_child(struct test_sockmap_listen *skel __always_unused,
-+				      int family, int sotype, int mapfd)
+-static void test_destroy_orphan_child(struct test_sockmap_listen *skel __always_unused,
+-				      int family, int sotype, int mapfd)
++static void do_destroy_orphan_child(int family, int sotype, int mapfd)
  {
  	struct sockaddr_storage addr;
  	socklen_t len;
-@@ -585,7 +598,8 @@ static void test_destroy_orphan_child(int family, int sotype, int mapfd)
+@@ -595,6 +594,33 @@ static void test_destroy_orphan_child(struct test_sockmap_listen *skel __always_
+ 	xclose(s);
+ }
+ 
++static void test_destroy_orphan_child(struct test_sockmap_listen *skel,
++				      int family, int sotype, int mapfd)
++{
++	int msg_verdict = bpf_program__fd(skel->progs.prog_msg_verdict);
++	int skb_verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
++	const struct test {
++		int progfd;
++		enum bpf_attach_type atype;
++	} tests[] = {
++		{ -1, -1 },
++		{ msg_verdict, BPF_SK_MSG_VERDICT },
++		{ skb_verdict, BPF_SK_SKB_VERDICT },
++	};
++	const struct test *t;
++
++	for (t = tests; t < tests + ARRAY_SIZE(tests); t++) {
++		if (t->progfd != -1 &&
++		    xbpf_prog_attach(t->progfd, mapfd, t->atype, 0) != 0)
++			return;
++
++		do_destroy_orphan_child(family, sotype, mapfd);
++
++		if (t->progfd != -1)
++			xbpf_prog_detach2(t->progfd, mapfd, t->atype);
++	}
++}
++
  /* Perform a passive open after removing listening socket from SOCKMAP
   * to ensure that callbacks get restored properly.
   */
--static void test_clone_after_delete(int family, int sotype, int mapfd)
-+static void test_clone_after_delete(struct test_sockmap_listen *skel __always_unused,
-+				    int family, int sotype, int mapfd)
- {
- 	struct sockaddr_storage addr;
- 	socklen_t len;
-@@ -621,7 +635,8 @@ static void test_clone_after_delete(int family, int sotype, int mapfd)
-  * SOCKMAP, but got accept()'ed only after the parent has been removed
-  * from SOCKMAP, gets cloned without parent psock state or callbacks.
-  */
--static void test_accept_after_delete(int family, int sotype, int mapfd)
-+static void test_accept_after_delete(struct test_sockmap_listen *skel __always_unused,
-+				     int family, int sotype, int mapfd)
- {
- 	struct sockaddr_storage addr;
- 	const u32 zero = 0;
-@@ -675,7 +690,8 @@ static void test_accept_after_delete(int family, int sotype, int mapfd)
- /* Check that child socket that got created and accepted while parent
-  * was in a SOCKMAP is cloned without parent psock state or callbacks.
-  */
--static void test_accept_before_delete(int family, int sotype, int mapfd)
-+static void test_accept_before_delete(struct test_sockmap_listen *skel __always_unused,
-+				      int family, int sotype, int mapfd)
- {
- 	struct sockaddr_storage addr;
- 	const u32 zero = 0, one = 1;
-@@ -784,7 +800,8 @@ static void *connect_accept_thread(void *arg)
- 	return NULL;
- }
- 
--static void test_syn_recv_insert_delete(int family, int sotype, int mapfd)
-+static void test_syn_recv_insert_delete(struct test_sockmap_listen *skel __always_unused,
-+					int family, int sotype, int mapfd)
- {
- 	struct connect_accept_ctx ctx = { 0 };
- 	struct sockaddr_storage addr;
-@@ -847,7 +864,8 @@ static void *listen_thread(void *arg)
- 	return NULL;
- }
- 
--static void test_race_insert_listen(int family, int socktype, int mapfd)
-+static void test_race_insert_listen(struct test_sockmap_listen *skel __always_unused,
-+				    int family, int socktype, int mapfd)
- {
- 	struct connect_accept_ctx ctx = { 0 };
- 	const u32 zero = 0;
-@@ -1473,7 +1491,8 @@ static void test_ops(struct test_sockmap_listen *skel, struct bpf_map *map,
- 		     int family, int sotype)
- {
- 	const struct op_test {
--		void (*fn)(int family, int sotype, int mapfd);
-+		void (*fn)(struct test_sockmap_listen *skel,
-+			   int family, int sotype, int mapfd);
- 		const char *name;
- 		int sotype;
- 	} tests[] = {
-@@ -1520,7 +1539,7 @@ static void test_ops(struct test_sockmap_listen *skel, struct bpf_map *map,
- 		if (!test__start_subtest(s))
- 			continue;
- 
--		t->fn(family, sotype, map_fd);
-+		t->fn(skel, family, sotype, map_fd);
- 		test_ops_cleanup(map);
- 	}
- }
 
 -- 
 2.39.0
