@@ -2,68 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 145B6676257
-	for <lists+bpf@lfdr.de>; Sat, 21 Jan 2023 01:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125D167625D
+	for <lists+bpf@lfdr.de>; Sat, 21 Jan 2023 01:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjAUAZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 19:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
+        id S229761AbjAUAZY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 19:25:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjAUAY6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 19:24:58 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CC0BC77D
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 16:24:21 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id 5so1409721plo.3
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 16:24:21 -0800 (PST)
+        with ESMTP id S230340AbjAUAZB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 19:25:01 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425DAAA5CD
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 16:24:26 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id i1so5186309pfk.3
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 16:24:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Tmo0le0cUJOBzWSdrlYEJJL3gLctaWM5TmJR0sXVqHw=;
-        b=BrF7Cz1NYMkWC33zj7SG7Hl6MRL96n9ijAW2w0pH85p1aXh0ObQoAg64nzORaHI4Pg
-         toyFQPXRScj1GLglHxDbQDrtcAy+Gq7CWXNllBqdZuVbaQLuju/9uHygeepYve95s8qq
-         IDCC++jdAmfkTaJ/U3ejAc5PCNu5DLXR02Lb28fHlMK2FJHa2HdoFLDkNNGmIF2WIXQR
-         Q8hv4Rv8WR/7HYEOA1uelvLeEWbM9mwSbOTF5qk42RK4bMihirLUqo2iKyUlzQabFsot
-         w980YBfdZbdlo9Ph90gSnWr1xDU8qA3BpLDDibmCySoJKsdG5GTzX2NcgHa+CftecW/s
-         +CFA==
+        bh=Zs5n2Q1YRbL+FZCik99wIL5O/1FCJ2BZ9GlI4NG+zGU=;
+        b=quecMsS0/sgum1iU7XO+FkUnDIUSvEJwNZHSr5Cqyg0C3XH+VZhXABzpCQUo9pc/j/
+         9wj+kvgbg9zh+jd+AYfGNiaBf8pQ2btOoZxP/GXQjSEtWtNz38N1Ay4MqFPQrKUkJQoh
+         PNJ03BHEzdNcLIZJ2H7qiI0qU+rk6bWB9JXzoL+kWs0PzPrttgvheZ5nTGVCLJYjOF/N
+         Y6SOXE7NzvyE4qklh7Io9NJ8oebVfSgBdugnVG7grAHfwBrrevnF+9E+UMJGk64E4WPw
+         tp6j/BAf2uWgGn3BuSOs4MU03Mvorxz1HwNRsGO9VjumRXyJObMnPj8esETlXMQ2X7CY
+         TKAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Tmo0le0cUJOBzWSdrlYEJJL3gLctaWM5TmJR0sXVqHw=;
-        b=evm1pRLcjijbhTt61P44gFcFIlXuu/VcCnwsGCUW8d0/Z+cDwGmK03AO3gRSi823ev
-         qlcIr8jTGttZOWPjaTgZXTym1Zr4GHHO+44dpnAb4zx0+ep8z8l9uwijgihS3/WQwlz9
-         cow9uDOmbOQNzF3hC4esRibCbp0aJkJFO017mdMXouypeCsxwUzi8dPSG1R3GjvglzbI
-         D43spjYhe7tEF50yvBuGTKWA5Goy/XQvi0TYh67F3HjOA8R3EcQhw0GmHXWJZhGKuF/L
-         vSCo/VOLxQC0GMaM845k92x20EOGrhJ/t6FFIrJa3RF4oqNBy/5Ku/0hvJgDd+D3HeP7
-         QxEA==
-X-Gm-Message-State: AFqh2kp8DS5UHsPUUGM4s45PFR9uNloekqWGlvU9s/Lpd4VZjy4afQfk
-        kSmHNW57Y/q7Dbs5Q1+z3ZLO1fjhmAA=
-X-Google-Smtp-Source: AMrXdXt5FiOt4T4GmUIzpPMavTBt8O4nNxyZI63mwbVu1U7QmS5eVqOZAMz5Z1aimWI4MiqG2JaFwQ==
-X-Received: by 2002:a17:90a:ea86:b0:229:9369:e13 with SMTP id h6-20020a17090aea8600b0022993690e13mr17211032pjz.36.1674260590591;
-        Fri, 20 Jan 2023 16:23:10 -0800 (PST)
+        bh=Zs5n2Q1YRbL+FZCik99wIL5O/1FCJ2BZ9GlI4NG+zGU=;
+        b=66swDRDt4vz6vgyciyauRCwaJc5GCQFJUAnChT48SvU4llxAyL7LGDvgnZw5hAwe86
+         h8wuNG1tOhJ7YpElo/E3fXQzFaRMnb+IiJhlZDbsyz6DNJqu9Szb1tq+FP9WhUJ+A7ec
+         qGtyKxTIxx7a+0/ggOwjLx6qzmn0F1VruSlG/4Gc8WjA4KVT4DCuHWl4Z3fPILLXhm50
+         XAFaLEP2Urho666xXY9O7Duk/y2S5qJGl35YHyO2TUX2lSTadU2byWf4UKVwStUNs2SO
+         Atw7fVVLT1VKzALaLO0BMWvZgzzglWOsKAcVwj6eBjp1ekpFK0Sk7d3uVrImf8ZHv2Ow
+         WxYQ==
+X-Gm-Message-State: AFqh2kobje5h5a+3e8f+/XkG/5Bz8/a31dy/WFIQ5F54Kt99qnBloX+K
+        junPLKIqJV0KM1KOLZLQQvIK5UBkNVQ=
+X-Google-Smtp-Source: AMrXdXvKwY1QBZgQEYlXaLVucOoVSzOAkuZzcElsMvXrXZil4zD/ThTDf5PxjS7Ubx07ky+XlgTCFQ==
+X-Received: by 2002:aa7:880b:0:b0:58d:abd5:504a with SMTP id c11-20020aa7880b000000b0058dabd5504amr15658790pfo.31.1674260594221;
+        Fri, 20 Jan 2023 16:23:14 -0800 (PST)
 Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
-        by smtp.gmail.com with ESMTPSA id m13-20020a17090a3f8d00b00223ed94759csm2027823pjc.39.2023.01.20.16.23.09
+        by smtp.gmail.com with ESMTPSA id m63-20020a625842000000b005775c52dbc4sm3011286pfb.167.2023.01.20.16.23.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Jan 2023 16:23:10 -0800 (PST)
+        Fri, 20 Jan 2023 16:23:13 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
-Cc:     Joanne Koong <joannelkoong@gmail.com>,
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v5 07/12] bpf: Avoid recomputing spi in process_dynptr_func
-Date:   Sat, 21 Jan 2023 05:52:36 +0530
-Message-Id: <20230121002241.2113993-8-memxor@gmail.com>
+Subject: [PATCH bpf-next v5 08/12] selftests/bpf: convenience macro for use with 'asm volatile' blocks
+Date:   Sat, 21 Jan 2023 05:52:37 +0530
+Message-Id: <20230121002241.2113993-9-memxor@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230121002241.2113993-1-memxor@gmail.com>
 References: <20230121002241.2113993-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3698; i=memxor@gmail.com; h=from:subject; bh=n4U1dXvfeNH1zRNe/co4rVPmlxHdSUzypJJY0IRJzjw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyzAk1RvlX6RfReOLAFbMWC9wK/gvWsxIfRy4IvoV dOq3G5OJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8swJAAKCRBM4MiGSL8RyqKGEA CqWcomND/5jfg8ip0Mj/py7B5U47HQFLbmlgo2okv4V8mWQfqvQhOunSfJdlK3o//AtqzVMs054eUF 8Z8x+kkR+R5cmBT2Cq8d0hqwnYrPWrQ2+ZrsUJlCnpW/2/q4DuIJ6KYCtN3qXWVqrkkXh9JsES63H/ uLFtFQlLyRohmUE7rg5l1JKSLf6tpwbzSvXAnZfE+lN50JP1TWCUExsClCfR/gRoBQMQnosjNAJjBV 8X/Jnd7Ue916+xF8ivBzOJmMfzZVfXZaLeEp8t/HXN4TGcA4I1tOmtHjH1q5F8j4w9nQAk3TytBjL6 +VCRQjPpVUJlrOnkTu+RL9MB28Bvs1+TIQ3vAxJtJ8jjR5IObvik2Htv7Mc/ANLvKVRy2HZq4dvgW5 /99+plj+U2VcwgqERMa4+DuklNqh9ji/cANczr8BujJfRW+d1cmVlmIHZlCjFVwugo6Y1Vhh1+CQap OWaFw1WOezGhPrxW84za6r4sQCe+QvN/GpuiOxOgC1F0VlA34YlhQoDac6D4YH1jgBjvDcf8MbX+ZG ZSXDTBpMwqaSsmgeDqC88n3Q26KaonE8kz2c/D01bkCpjy3N3AAy4613iVxwLGiuEfFwlKYUCCJC9y 6EqiTEVEYeUPzgT/2Rn2sFcHM7kpiQ/CoMHOlGMpgvXgqFwSszj195t6K2NA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1699; i=memxor@gmail.com; h=from:subject; bh=SNRMXDcMW1zluX6a3W/WYa1RbpYDzrfdzhpCt6yThTA=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyzAks5JRMTd9QT6uBQgwWA2rgY8rE3jweRYNnMEY kA+RJ3KJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8swJAAKCRBM4MiGSL8RykP1EA CgtUWgZGiUO5Luilnr/T7cPGSXkCKQTfws7HQRMp9hZyPlOLfyRul3WDi9KjiRlvBwhvkYyuCSK5Wf tj8IQMKPlQHDhnedVp24GcymiBgizlrfMw/nQs9V13W+imV1h9ne/OVonZMs4KIeHxLDxHBUCtxbU9 wEubNbyik4Pr2fpE0FPYJbidEEgVwtoTSG0NknnDVwLTaLND7j0I32aJYN0hTLLUI7E2wQdvCOiAld qzaRhNp4ct/0938JbcU7S+z/OtBan7XX+siMaAIulKnwuTB9TSebYsv8CEx66z12A/rQ1jrqqYudZq fG7QaOfMa6Rll41Ei2H5zRa8ri8c0ZdLPhveP7Xz2zrx8/hq28GgGeohVeUeR3WXcXXHgKypas1cQo or+r57Hqjiv4I1h7Sp1PCysy9+HO/wrQgr5DcmxVlMCqtY67HMVltv7LJ906tEut8YYYgPPdREwcfm q7aSexttmeNfja9wNqYIgolRHhMaaAve4L6/RynQgqWYQJN/Ja6ydXXrYotehV6TrZhWD26T0SUKk9 PvucNz1sfEVUvtP0GV/7yuj5KgZfBRcmkp4XiMfOkb8KliY7dhjZu4AuDUypW2UjBJV6AsAeq64p72 Vmt2Oe8pm6dvZDo3F5zre7MQnU2ASm9r+y78gTWqST0rvSrI+P0o78TdIjEQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,102 +76,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, process_dynptr_func first calls dynptr_get_spi and then
-is_dynptr_reg_valid_init and is_dynptr_reg_valid_uninit have to call it
-again to obtain the spi value. Instead of doing this twice, reuse the
-already obtained value (which is by default 0, and is only set for
-PTR_TO_STACK, and only used in that case in aforementioned functions).
-The input value for these two functions will either be -ERANGE or >= 1,
-and can either be permitted or rejected based on the respective check.
+From: Eduard Zingerman <eddyz87@gmail.com>
 
-Suggested-by: Joanne Koong <joannelkoong@gmail.com>
-Acked-by: Joanne Koong <joannelkoong@gmail.com>
+A set of macros useful for writing naked BPF functions using inline
+assembly. E.g. as follows:
+
+struct map_struct {
+	...
+} map SEC(".maps");
+
+SEC(...)
+__naked int foo_test(void)
+{
+	asm volatile(
+		"r0 = 0;"
+		"*(u64*)(r10 - 8) = r0;"
+		"r1 = %[map] ll;"
+		"r2 = r10;"
+		"r2 += -8;"
+		"call %[bpf_map_lookup_elem];"
+		"r0 = 0;"
+		"exit;"
+		:
+		: __imm(bpf_map_lookup_elem),
+		  __imm_addr(map)
+		: __clobber_all);
+}
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+[ Kartikeya: Add acks, include __clobber_common from Andrii ]
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/verifier.c | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
+ tools/testing/selftests/bpf/progs/bpf_misc.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 29cbb3ef35e2..ecf7fed7881c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -946,14 +946,12 @@ static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
- 	return 0;
- }
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index 4a01ea9113bf..2d7b89b447b2 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -7,6 +7,13 @@
+ #define __success		__attribute__((btf_decl_tag("comment:test_expect_success")))
+ #define __log_level(lvl)	__attribute__((btf_decl_tag("comment:test_log_level="#lvl)))
  
--static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-+static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-+				       int spi)
- {
--	int spi;
--
- 	if (reg->type == CONST_PTR_TO_DYNPTR)
- 		return false;
- 
--	spi = dynptr_get_spi(env, reg);
- 	/* For -ERANGE (i.e. spi not falling into allocated stack slots), we
- 	 * will do check_mem_access to check and update stack bounds later, so
- 	 * return true for that case.
-@@ -971,16 +969,16 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
- 	return true;
- }
- 
--static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-+static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-+				     int spi)
- {
- 	struct bpf_func_state *state = func(env, reg);
--	int spi, i;
-+	int i;
- 
- 	/* This already represents first slot of initialized bpf_dynptr */
- 	if (reg->type == CONST_PTR_TO_DYNPTR)
- 		return true;
- 
--	spi = dynptr_get_spi(env, reg);
- 	if (spi < 0)
- 		return false;
- 	if (!state->stack[spi].spilled_ptr.dynptr.first_slot)
-@@ -6139,6 +6137,7 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
- 			enum bpf_arg_type arg_type, struct bpf_call_arg_meta *meta)
- {
- 	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
-+	int spi = 0;
- 
- 	/* MEM_UNINIT and MEM_RDONLY are exclusive, when applied to an
- 	 * ARG_PTR_TO_DYNPTR (or ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_*):
-@@ -6152,10 +6151,9 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
- 	 * and its alignment for PTR_TO_STACK.
- 	 */
- 	if (reg->type == PTR_TO_STACK) {
--		int err = dynptr_get_spi(env, reg);
--
--		if (err < 0 && err != -ERANGE)
--			return err;
-+		spi = dynptr_get_spi(env, reg);
-+		if (spi < 0 && spi != -ERANGE)
-+			return spi;
- 	}
- 
- 	/*  MEM_UNINIT - Points to memory that is an appropriate candidate for
-@@ -6174,7 +6172,7 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
- 	 *		 to.
- 	 */
- 	if (arg_type & MEM_UNINIT) {
--		if (!is_dynptr_reg_valid_uninit(env, reg)) {
-+		if (!is_dynptr_reg_valid_uninit(env, reg, spi)) {
- 			verbose(env, "Dynptr has to be an uninitialized dynptr\n");
- 			return -EINVAL;
- 		}
-@@ -6197,7 +6195,7 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
- 			return -EINVAL;
- 		}
- 
--		if (!is_dynptr_reg_valid_init(env, reg)) {
-+		if (!is_dynptr_reg_valid_init(env, reg, spi)) {
- 			verbose(env,
- 				"Expected an initialized dynptr as arg #%d\n",
- 				regno);
++/* Convenience macro for use with 'asm volatile' blocks */
++#define __naked __attribute__((naked))
++#define __clobber_all "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "memory"
++#define __clobber_common "r0", "r1", "r2", "r3", "r4", "r5", "memory"
++#define __imm(name) [name]"i"(name)
++#define __imm_addr(name) [name]"i"(&name)
++
+ #if defined(__TARGET_ARCH_x86)
+ #define SYSCALL_WRAPPER 1
+ #define SYS_PREFIX "__x64_"
 -- 
 2.39.1
 
