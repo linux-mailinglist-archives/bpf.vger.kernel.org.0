@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E6867626A
-	for <lists+bpf@lfdr.de>; Sat, 21 Jan 2023 01:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BD6676254
+	for <lists+bpf@lfdr.de>; Sat, 21 Jan 2023 01:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbjAUAbC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 19:31:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        id S229460AbjAUAZU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 19:25:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjAUAbB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 19:31:01 -0500
-Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EC21420D
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 16:30:34 -0800 (PST)
-Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-4d19b2686a9so95199907b3.6
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 16:30:34 -0800 (PST)
+        with ESMTP id S229796AbjAUAYx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 19:24:53 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1400273AFD
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 16:24:12 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id s3so5150235pfd.12
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 16:24:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s4u7MZwWeHdhMy6kBepje+uCs8FsJV9lKGUJW/7cWwQ=;
-        b=p4uyT9Ie/VFwUcIRXUnTkaI8hYOoahVouLilGlNAnZNmVcI1MZTCRL0Jpr1fKQJNG3
-         yjnqvzX3+GWjEFTsfhgZ+sLk6zCFkoFvptAp+g3lfeRUA5tWZN39FqHBlkDz+mzf+eMW
-         zLrSOvcxalmT6w7AGxYCr9pcWawximtt26egJ89L7ieaHLVcM/OINR0TN3Hg89saAPBG
-         mnwCiCJu/upqIamxtN4/Tlrxn9W+kaI0sdfGF3ibiBS2lsjibB7/Pf9SmQsX0HPk7olU
-         RVqRvwrNDhqZWjuakBMxIvfETs48OgbjjwStOXrSh0oSkn1HDTlAh/TxmnWp8RLC0TEk
-         tp1g==
+        bh=tJTE+2IiThjMO3PC0iuCb5HXJeu+oAk3QS1io4LW83g=;
+        b=ZVD11Jeh7M9TsMIZ5SKV15h4E4KcgvvjMz6S1BHSmBpYDEd1W2EGEgJusO/6z28DWC
+         pSQE51jt48s0/LVTrve9kPxtnK2Ru25yrviBkbYxFNvPqPYdWzapmeDSmTNLzM5/rqI3
+         U/aIybjDQYtJjNT65Azi9eN9T/PXIo6WkHe8vgOn2iknNqBnYrXA4RpwANYQ/B0ulFun
+         wThoXa5oSRCjb+SqwyGt1CahstkiZdWS2/qffV/Ai0tVxUBYtMiyLu2BWO3IbAcslnOo
+         g5PwdUB3yroUO4UPGArzS0f5WZxyodg7EzKHfsFJuauvb4fLokpz2n7tJ/T+1WglrJ3o
+         ExOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=s4u7MZwWeHdhMy6kBepje+uCs8FsJV9lKGUJW/7cWwQ=;
-        b=5tmTzsn/kRv9YonVkFFxe40wqblqaEEGWEwozSOFep1+BGL62Y4tzwEjOrREib3dp0
-         ssPEc0VPg4wa+KX2oPW7MARXyR+iJ4jCoqyjDuRqc1YgvibQiQ7AidD1vbdxaS/GsMui
-         B75b1x108+RH7UY1Quh5Y1W3BexAUjhYJPXbRLHi/rgc5sMnlOxet0I1lOXgDwC/6Ynh
-         +uDzPXHb0R9h3xgwHiLek1dTqMp8oepljgMI7SBL1A16xOQ9zLx7lAGUooAKEeXxM+pF
-         hd2bjfrfSAh1XUV8V31PmcIaN18cMfNfMQOb+w2eYaqU95gO3iV2r6Kqx4Je8pNzNbO0
-         ZXkQ==
-X-Gm-Message-State: AFqh2koF0P0Rtxd026rgol0g91ZpJoFQSNG8UzcjaHgLITPr+Tui1LvV
-        YFq7oCokYLpPdWRQoKc0FKXnbDm2HMQ=
-X-Google-Smtp-Source: AMrXdXtoRuaiqRwl+wty5QvsbpDJqRSNX0rxlIG5IP7rQ14T65C1LKiAwsW6sKmRo9ClPMlJYAE7jw==
-X-Received: by 2002:a17:902:ea0a:b0:191:24a:63e3 with SMTP id s10-20020a170902ea0a00b00191024a63e3mr21773258plg.50.1674260579025;
-        Fri, 20 Jan 2023 16:22:59 -0800 (PST)
+        bh=tJTE+2IiThjMO3PC0iuCb5HXJeu+oAk3QS1io4LW83g=;
+        b=DaClNpOKtax7Ir/hpLlQQc3f9L+vlc0SUc7g0z68zdINNqr6gyNvyf2FY4T96UMbIL
+         qzHBd/gaqC2hShT3JDTnRjWfBlL3qqkqsSOnxn4UbQQVC00JT/dbsz92KL1WGPa0/ocK
+         rxTKuxepGb94O8l7ygSYCeoKoO0dkDsj7XskjBluMloZI6qXo6fiCMhLjm3DkmjF57PC
+         z3T9dJQNNU6LS7NfUG3Ckf8UxOKyUMOVP74VtkuI7mYceBgnNUJSWpUet3if+nG0Lg3M
+         qGvZD8vw6oaTUiWRsZa2hJPH7eiBpRbZpfwaqoBR7mVhbcgaKXmAMLpKohlpWIHSFNp4
+         B3nA==
+X-Gm-Message-State: AFqh2kp5CUfIX+PBIFueaUzZnxRGFY4ggtIS9QtZoPM3rRDZrFI0f4ab
+        yDSf5k+XatW3MonWtYAgJ0cEimJFCyg=
+X-Google-Smtp-Source: AMrXdXuTavOUIAPkv7lRGlVIzLakOY8XDIPsuXfjkUwMrAc87hz9dqIxD91OOal9f2k0udHl1a/+6A==
+X-Received: by 2002:aa7:94ac:0:b0:58d:e33b:d562 with SMTP id a12-20020aa794ac000000b0058de33bd562mr12277938pfl.11.1674260581969;
+        Fri, 20 Jan 2023 16:23:01 -0800 (PST)
 Received: from localhost ([2405:201:6014:dae3:7dbb:8857:7c39:bb2a])
-        by smtp.gmail.com with ESMTPSA id k7-20020a170902ce0700b001885d15e3c1sm27510704plg.26.2023.01.20.16.22.58
+        by smtp.gmail.com with ESMTPSA id d8-20020aa797a8000000b0058837da69edsm22961524pfq.128.2023.01.20.16.23.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Jan 2023 16:22:58 -0800 (PST)
+        Fri, 20 Jan 2023 16:23:01 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Joanne Koong <joannelkoong@gmail.com>,
@@ -56,14 +56,14 @@ Cc:     Joanne Koong <joannelkoong@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v5 04/12] bpf: Invalidate slices on destruction of dynptrs on stack
-Date:   Sat, 21 Jan 2023 05:52:33 +0530
-Message-Id: <20230121002241.2113993-5-memxor@gmail.com>
+Subject: [PATCH bpf-next v5 05/12] bpf: Allow reinitializing unreferenced dynptr stack slots
+Date:   Sat, 21 Jan 2023 05:52:34 +0530
+Message-Id: <20230121002241.2113993-6-memxor@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230121002241.2113993-1-memxor@gmail.com>
 References: <20230121002241.2113993-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9379; i=memxor@gmail.com; h=from:subject; bh=UEDRNkOkEGa0JtceYQHiHofOqQt17c3+ZTwrz0wtH7s=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyzAjxb9l8iXwDCN2ZV6HLneiul+xz1IXLB2L+uMR bdikpWuJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8swIwAKCRBM4MiGSL8RyuckEA C7o1pEH0fgDqSbIMsO8KBOlVI5nm1XcI6B0bjC7qzJG0s0ThEL24nOCpq9ucU5mRBL5vgMRYaRSgPx pcr+kIiq/ZyJC9l0o1R2pfobh2iduF1XqbVyOjlG5laB0qEe+6BBFUARK75Lk9P2HFXGZPlj0P3Umq 68JYkLlRpjW7xB6nUulXdTGrJh/hI3m9qSf2HLuYhccJbM0E8Up6sm9+1PHa5EvLrVje4OYzw5Fuyy pH16baVQlK7SfgJ6+RKDI84ROt6OSnyrItpSxwX/DqExUllj5iGV9YyPMuLlK0JOChzqG2zwYyiaH7 tNzNfUPZXMcS8cMvQAJk9PrQM+uBP52UuFrvwAPnmkADqMaD7L9PglR1vWa//1qQ8Ai83gSooSKI2M qnJpjxnlmRpeCNQq/Uh1L+lXMmshhhG5lHio/VNyPf8ObPdX3VDcFRBLkB05elXyflOtGlI1hNGPPm +1Q0yjwM608A2pWnYmoDLPPNVjoikhD2kLDBGewF+t/fqffZt82YNNxI53iLd54kDCNeKiE1mtWd8Y Sb8su1dyALTE16ZVc6tnxv/OS70GzmGNjva6PlEHLN57ZXcHgjTOVmR6YTOpTA9xvECbYgbhCUmgXi yNtYu8eOv6v0d4FHWNOj9DT2b9eunDCDOmaPI0qwNDgvxqn8XYmKKa+iIV9g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3888; i=memxor@gmail.com; h=from:subject; bh=YkhcRHw6M8R1uNyUytIog/IKy6jL6P3mgH0kEKFhQB8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjyzAkJqykp549TuD8qfi+l8J7mju9PTDOmDmMoZB7 eluhbseJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY8swJAAKCRBM4MiGSL8RyqU8EA CIk5IXCIee4Z4x6+h/8564qNjbYFlWYLUHY3MA5qYoRHOXS1SCJrZO8wUP9iTtSYUrf8ogaK9bRviy xqVsC6fJVDDp8/l7z0eh+ysPOd9LbiNNE9ZsPmj0fjdQLKPFPuuQo76MnDy2EfAWy1oaV1B32TVGzh vusCOhq7yAC/PH2aFAgEDN/7rLUsYu3X2X0SQLizPODx01OO37vHhdseDoceBbx/jZChab2ZI3Bzpj xqbo6F8pAe34Yxl18zjVHEHrRfO6De2tlKCWr+pqii0LFRzXztp3/SaUm0HrRGJPi+9IfyAagQizsY uLUzcijmLkfjRdosbE+woC9deBVPGfHRjbyRfM8T4cMaVVDDvGJNkf/qHzIjgiu0JTL8+3i3Ds3+Rz rKmOgvFvDAm8kB4tMxSvAeNwVScJ8wqrmIruHUUk3DuTGWzXzoaBDgcmRXFXvs9JZ/H0OYyNAU3wMg csYmxSK56pssDNYSL11B+dF4Oyk2LtjGJOFgj5eD7NVu1c5oFicIC+nILbstvy1OiRkt5BxYvR7ggi l/HfeoOkrd9vmgsN8B/7zgoYbRkQ5Nk8gbDbpn4k9FV/GYkD1VqxAuCouLu8nNDh4aCWCFSB9t/xIs mSMIT93ePYP+mi0tOxVTEMGG8JzpGgmz0ZyB9eSelB7mTzODiUIBrv1FiWIg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,252 +76,108 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The previous commit implemented destroy_if_dynptr_stack_slot. It
-destroys the dynptr which given spi belongs to, but still doesn't
-invalidate the slices that belong to such a dynptr. While for the case
-of referenced dynptr, we don't allow their overwrite and return an error
-early, we still allow it and destroy the dynptr for unreferenced dynptr.
+Consider a program like below:
 
-To be able to enable precise and scoped invalidation of dynptr slices in
-this case, we must be able to associate the source dynptr of slices that
-have been obtained using bpf_dynptr_data. When doing destruction, only
-slices belonging to the dynptr being destructed should be invalidated,
-and nothing else. Currently, dynptr slices belonging to different
-dynptrs are indistinguishible.
+void prog(void)
+{
+	{
+		struct bpf_dynptr ptr;
+		bpf_dynptr_from_mem(...);
+	}
+	...
+	{
+		struct bpf_dynptr ptr;
+		bpf_dynptr_from_mem(...);
+	}
+}
 
-Hence, allocate a unique id to each dynptr (CONST_PTR_TO_DYNPTR and
-those on stack). This will be stored as part of reg->id. Whenever using
-bpf_dynptr_data, transfer this unique dynptr id to the returned
-PTR_TO_MEM_OR_NULL slice pointer, and store it in a new per-PTR_TO_MEM
-dynptr_id register state member.
+Here, the C compiler based on lifetime rules in the C standard would be
+well within in its rights to share stack storage for dynptr 'ptr' as
+their lifetimes do not overlap in the two distinct scopes. Currently,
+such an example would be rejected by the verifier, but this is too
+strict. Instead, we should allow reinitializing over dynptr stack slots
+and forget information about the old dynptr object.
 
-Finally, after establishing such a relationship between dynptrs and
-their slices, implement precise invalidation logic that only invalidates
-slices belong to the destroyed dynptr in destroy_if_dynptr_stack_slot.
+The destroy_if_dynptr_stack_slot function already makes necessary checks
+to avoid overwriting referenced dynptr slots. This is done to present a
+better error message instead of forgetting dynptr information on stack
+and preserving reference state, leading to an inevitable but
+undecipherable error at the end about an unreleased reference which has
+to be associated back to its allocating call instruction to make any
+sense to the user.
 
 Acked-by: Joanne Koong <joannelkoong@gmail.com>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf_verifier.h                  |  5 +-
- kernel/bpf/verifier.c                         | 74 ++++++++++++++++---
- .../testing/selftests/bpf/progs/dynptr_fail.c |  4 +-
- 3 files changed, 68 insertions(+), 15 deletions(-)
+ kernel/bpf/verifier.c | 34 ++++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 127058cfec47..aa83de1fe755 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -70,7 +70,10 @@ struct bpf_reg_state {
- 			u32 btf_id;
- 		};
- 
--		u32 mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-+		struct { /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-+			u32 mem_size;
-+			u32 dynptr_id; /* for dynptr slices */
-+		};
- 
- 		/* For dynptr stack slots */
- 		struct {
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5c7f29ca94ec..01cb802776fd 100644
+index 01cb802776fd..e5745b696bfe 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -255,6 +255,7 @@ struct bpf_call_arg_meta {
- 	int mem_size;
- 	u64 msize_max_value;
- 	int ref_obj_id;
-+	int dynptr_id;
- 	int map_uid;
- 	int func_id;
- 	struct btf *btf;
-@@ -750,23 +751,27 @@ static bool dynptr_type_refcounted(enum bpf_dynptr_type type)
- 
- static void __mark_dynptr_reg(struct bpf_reg_state *reg,
- 			      enum bpf_dynptr_type type,
--			      bool first_slot);
-+			      bool first_slot, int dynptr_id);
- 
- static void __mark_reg_not_init(const struct bpf_verifier_env *env,
- 				struct bpf_reg_state *reg);
- 
--static void mark_dynptr_stack_regs(struct bpf_reg_state *sreg1,
-+static void mark_dynptr_stack_regs(struct bpf_verifier_env *env,
-+				   struct bpf_reg_state *sreg1,
- 				   struct bpf_reg_state *sreg2,
- 				   enum bpf_dynptr_type type)
- {
--	__mark_dynptr_reg(sreg1, type, true);
--	__mark_dynptr_reg(sreg2, type, false);
-+	int id = ++env->id_gen;
-+
-+	__mark_dynptr_reg(sreg1, type, true, id);
-+	__mark_dynptr_reg(sreg2, type, false, id);
- }
- 
--static void mark_dynptr_cb_reg(struct bpf_reg_state *reg,
-+static void mark_dynptr_cb_reg(struct bpf_verifier_env *env,
-+			       struct bpf_reg_state *reg,
- 			       enum bpf_dynptr_type type)
- {
--	__mark_dynptr_reg(reg, type, true);
-+	__mark_dynptr_reg(reg, type, true, ++env->id_gen);
- }
- 
- static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
-@@ -795,7 +800,7 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
- 	if (type == BPF_DYNPTR_TYPE_INVALID)
- 		return -EINVAL;
- 
--	mark_dynptr_stack_regs(&state->stack[spi].spilled_ptr,
-+	mark_dynptr_stack_regs(env, &state->stack[spi].spilled_ptr,
- 			       &state->stack[spi - 1].spilled_ptr, type);
- 
- 	if (dynptr_type_refcounted(type)) {
-@@ -871,7 +876,9 @@ static void __mark_reg_unknown(const struct bpf_verifier_env *env,
- static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
- 				        struct bpf_func_state *state, int spi)
- {
--	int i;
-+	struct bpf_func_state *fstate;
-+	struct bpf_reg_state *dreg;
-+	int i, dynptr_id;
- 
- 	/* We always ensure that STACK_DYNPTR is never set partially,
- 	 * hence just checking for slot_type[0] is enough. This is
-@@ -899,7 +906,19 @@ static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
- 		state->stack[spi - 1].slot_type[i] = STACK_INVALID;
- 	}
- 
--	/* TODO: Invalidate any slices associated with this dynptr */
-+	dynptr_id = state->stack[spi].spilled_ptr.id;
-+	/* Invalidate any slices associated with this dynptr */
-+	bpf_for_each_reg_in_vstate(env->cur_state, fstate, dreg, ({
-+		/* Dynptr slices are only PTR_TO_MEM_OR_NULL and PTR_TO_MEM */
-+		if (dreg->type != (PTR_TO_MEM | PTR_MAYBE_NULL) && dreg->type != PTR_TO_MEM)
-+			continue;
-+		if (dreg->dynptr_id == dynptr_id) {
-+			if (!env->allow_ptr_leaks)
-+				__mark_reg_not_init(env, dreg);
-+			else
-+				__mark_reg_unknown(env, dreg);
-+		}
-+	}));
- 
- 	/* Do not release reference state, we are destroying dynptr on stack,
- 	 * not using some helper to release it. Just reset register.
-@@ -1562,7 +1581,7 @@ static void mark_reg_known_zero(struct bpf_verifier_env *env,
- }
- 
- static void __mark_dynptr_reg(struct bpf_reg_state *reg, enum bpf_dynptr_type type,
--			      bool first_slot)
-+			      bool first_slot, int dynptr_id)
- {
- 	/* reg->type has no meaning for STACK_DYNPTR, but when we set reg for
- 	 * callback arguments, it does need to be CONST_PTR_TO_DYNPTR, so simply
-@@ -1570,6 +1589,8 @@ static void __mark_dynptr_reg(struct bpf_reg_state *reg, enum bpf_dynptr_type ty
- 	 */
- 	__mark_reg_known_zero(reg);
- 	reg->type = CONST_PTR_TO_DYNPTR;
-+	/* Give each dynptr a unique id to uniquely associate slices to it. */
-+	reg->id = dynptr_id;
- 	reg->dynptr.type = type;
- 	reg->dynptr.first_slot = first_slot;
- }
-@@ -6532,6 +6553,19 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
- 	}
- }
- 
-+static int dynptr_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-+{
-+	struct bpf_func_state *state = func(env, reg);
-+	int spi;
-+
-+	if (reg->type == CONST_PTR_TO_DYNPTR)
-+		return reg->id;
-+	spi = dynptr_get_spi(env, reg);
-+	if (spi < 0)
-+		return spi;
-+	return state->stack[spi].spilled_ptr.id;
-+}
-+
- static int dynptr_ref_obj_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+@@ -782,7 +782,7 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
  {
  	struct bpf_func_state *state = func(env, reg);
-@@ -7601,7 +7635,7 @@ static int set_user_ringbuf_callback_state(struct bpf_verifier_env *env,
- 	 * callback_fn(const struct bpf_dynptr_t* dynptr, void *callback_ctx);
- 	 */
- 	__mark_reg_not_init(env, &callee->regs[BPF_REG_0]);
--	mark_dynptr_cb_reg(&callee->regs[BPF_REG_1], BPF_DYNPTR_TYPE_LOCAL);
-+	mark_dynptr_cb_reg(env, &callee->regs[BPF_REG_1], BPF_DYNPTR_TYPE_LOCAL);
- 	callee->regs[BPF_REG_2] = caller->regs[BPF_REG_3];
+ 	enum bpf_dynptr_type type;
+-	int spi, i, id;
++	int spi, i, id, err;
  
- 	/* unused */
-@@ -8107,18 +8141,31 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 		for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
- 			if (arg_type_is_dynptr(fn->arg_type[i])) {
- 				struct bpf_reg_state *reg = &regs[BPF_REG_1 + i];
--				int ref_obj_id;
-+				int id, ref_obj_id;
-+
-+				if (meta.dynptr_id) {
-+					verbose(env, "verifier internal error: meta.dynptr_id already set\n");
-+					return -EFAULT;
-+				}
+ 	spi = dynptr_get_spi(env, reg);
+ 	if (spi < 0)
+@@ -791,6 +791,22 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
+ 	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+ 		return -EINVAL;
  
- 				if (meta.ref_obj_id) {
- 					verbose(env, "verifier internal error: meta.ref_obj_id already set\n");
- 					return -EFAULT;
- 				}
- 
-+				id = dynptr_id(env, reg);
-+				if (id < 0) {
-+					verbose(env, "verifier internal error: failed to obtain dynptr id\n");
-+					return id;
-+				}
++	/* We cannot assume both spi and spi - 1 belong to the same dynptr,
++	 * hence we need to call destroy_if_dynptr_stack_slot twice for both,
++	 * to ensure that for the following example:
++	 *	[d1][d1][d2][d2]
++	 * spi    3   2   1   0
++	 * So marking spi = 2 should lead to destruction of both d1 and d2. In
++	 * case they do belong to same dynptr, second call won't see slot_type
++	 * as STACK_DYNPTR and will simply skip destruction.
++	 */
++	err = destroy_if_dynptr_stack_slot(env, state, spi);
++	if (err)
++		return err;
++	err = destroy_if_dynptr_stack_slot(env, state, spi - 1);
++	if (err)
++		return err;
 +
- 				ref_obj_id = dynptr_ref_obj_id(env, reg);
- 				if (ref_obj_id < 0) {
- 					verbose(env, "verifier internal error: failed to obtain dynptr ref_obj_id\n");
- 					return ref_obj_id;
- 				}
-+
-+				meta.dynptr_id = id;
- 				meta.ref_obj_id = ref_obj_id;
- 				break;
- 			}
-@@ -8275,6 +8322,9 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 		return -EFAULT;
- 	}
- 
-+	if (is_dynptr_ref_function(func_id))
-+		regs[BPF_REG_0].dynptr_id = meta.dynptr_id;
-+
- 	if (is_ptr_cast_function(func_id) || is_dynptr_ref_function(func_id)) {
- 		/* For release_reference() */
- 		regs[BPF_REG_0].ref_obj_id = meta.ref_obj_id;
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-index 9dc3f23a8270..e43000c63c66 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-@@ -67,7 +67,7 @@ static int get_map_val_dynptr(struct bpf_dynptr *ptr)
-  * bpf_ringbuf_submit/discard_dynptr call
-  */
- SEC("?raw_tp")
--__failure __msg("Unreleased reference id=1")
-+__failure __msg("Unreleased reference id=2")
- int ringbuf_missing_release1(void *ctx)
+ 	for (i = 0; i < BPF_REG_SIZE; i++) {
+ 		state->stack[spi].slot_type[i] = STACK_DYNPTR;
+ 		state->stack[spi - 1].slot_type[i] = STACK_DYNPTR;
+@@ -936,7 +952,7 @@ static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
+ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
  {
- 	struct bpf_dynptr ptr;
-@@ -80,7 +80,7 @@ int ringbuf_missing_release1(void *ctx)
+ 	struct bpf_func_state *state = func(env, reg);
+-	int spi, i;
++	int spi;
+ 
+ 	if (reg->type == CONST_PTR_TO_DYNPTR)
+ 		return false;
+@@ -949,12 +965,14 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
+ 	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+ 		return true;
+ 
+-	for (i = 0; i < BPF_REG_SIZE; i++) {
+-		if (state->stack[spi].slot_type[i] == STACK_DYNPTR ||
+-		    state->stack[spi - 1].slot_type[i] == STACK_DYNPTR)
+-			return false;
+-	}
+-
++	/* We allow overwriting existing unreferenced STACK_DYNPTR slots, see
++	 * mark_stack_slots_dynptr which calls destroy_if_dynptr_stack_slot to
++	 * ensure dynptr objects at the slots we are touching are completely
++	 * destructed before we reinitialize them for a new one. For referenced
++	 * ones, destroy_if_dynptr_stack_slot returns an error early instead of
++	 * delaying it until the end where the user will get "Unreleased
++	 * reference" error.
++	 */
+ 	return true;
  }
  
- SEC("?raw_tp")
--__failure __msg("Unreleased reference id=2")
-+__failure __msg("Unreleased reference id=4")
- int ringbuf_missing_release2(void *ctx)
- {
- 	struct bpf_dynptr ptr1, ptr2;
 -- 
 2.39.1
 
