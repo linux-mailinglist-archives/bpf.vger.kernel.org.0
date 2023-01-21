@@ -2,84 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4433D6762D1
-	for <lists+bpf@lfdr.de>; Sat, 21 Jan 2023 03:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF256762EB
+	for <lists+bpf@lfdr.de>; Sat, 21 Jan 2023 03:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjAUCG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Jan 2023 21:06:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        id S229448AbjAUCLD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Jan 2023 21:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjAUCG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Jan 2023 21:06:28 -0500
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126D158971
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 18:06:28 -0800 (PST)
-Received: by mail-il1-f199.google.com with SMTP id s12-20020a056e021a0c00b0030efd0ed890so4868539ild.7
-        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 18:06:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dd5wNecq6Iwv6f1dG8KNdC3uYkQa6Cax7xeMdbKruNc=;
-        b=gvqN0nly8n9Yk7bPRkKkYBxW9mrwo4URy85s9TzH0fbWBo5IEyLRJ7JyDsU19hRUh3
-         WnoDjSRl4c92vxBpHaE2mxTEBPkSpbjCdNVLEgfGdegmmv9+lIvGtgd2i5VpUopjJ/OV
-         5gCeyL3ruyMCtIjYm1ayoszrS7jOHenLRsNaxqfU5K7GZoWiiSo5VVW8ZbAgR+kNrIOO
-         dm0+C2FpWv/CNZrrWmULb4YDiaHX0PvRBcGgvJl+oYR1Usm3FBfxRJNWacqhlRPQoRpY
-         2uWA15Hb6fSZw3Nr2DS1M8OibqaRIHXt+VgKTzOFr2TvtSbldfzFrkpZ428Hyigrdh0g
-         +FYQ==
-X-Gm-Message-State: AFqh2kpr7aue9/hcQKOcWXbjcdqkPeZhip263f3BYH5C+xT/KQDJjEFC
-        l+Ty0NZrJFU5MAfIPdnC6UKQFIzTJZtFBbdIdCQ0kOmLBpEt
-X-Google-Smtp-Source: AMrXdXuiE0IWVmXxJeCGb0ni2t8km2avjyvmVVncmFvAcPb4QdDuRxSIc/M0BGbQD/iK6SAKylqwiFZkiLM+lWBM9yGzrPrY225N
+        with ESMTP id S229543AbjAUCLD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Jan 2023 21:11:03 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949F071365
+        for <bpf@vger.kernel.org>; Fri, 20 Jan 2023 18:10:20 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7BD1362168
+        for <bpf@vger.kernel.org>; Sat, 21 Jan 2023 02:10:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CC0CDC4339B;
+        Sat, 21 Jan 2023 02:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674267018;
+        bh=vA0nhGLSdzpG31+1rBAMbiy1E6sr43hLWZevThtNJ9Y=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DbqhzbyEdBi08huXO8IVL0xjHtQz0UlfP7k6yByMCY0EGdtVu6MeTPDul8mB7mF5R
+         19pHu6HtRBsb4W2uj+bwTQx9/GVmWRycdfY77h3kSR+iDbte6pFM1Q2Jqu6u5wyVYC
+         fcueUADL8YPJ5i2G3shRZMEFrjvYD6AkrxOBEOFuH2ca1L3AJpzqmqUvy7Pm0pr6fa
+         /42zuCHuJ3pXqFYm4UnyTlfTEnKStkhAfUDi9HjGBZx5fBcn4bnIspkVWybkAw1yy3
+         qdfvXtGRqKyUDmJ6Rhema0QpSr7l7fJKeSnzjw5LROHGsxAFEiUuixD8tZP+ozJYH3
+         D868qAQXJHPBg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AE458C04E34;
+        Sat, 21 Jan 2023 02:10:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Received: by 2002:a5d:889a:0:b0:6e0:34ee:4e97 with SMTP id
- d26-20020a5d889a000000b006e034ee4e97mr1273397ioo.38.1674266787394; Fri, 20
- Jan 2023 18:06:27 -0800 (PST)
-Date:   Fri, 20 Jan 2023 18:06:27 -0800
-In-Reply-To: <00000000000073b14905ef2e7401@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001f3d6405f2bc9d28@google.com>
-Subject: Re: [syzbot] BUG: stack guard page was hit in inet6_release
-From:   syzbot <syzbot+04c21ed96d861dccc5cd@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        error27@gmail.com, hdanton@sina.com, jakub@cloudflare.com,
-        john.fastabend@gmail.com, kafai@fb.com, kernel-team@cloudflare.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        lkp@intel.com, lmb@cloudflare.com, netdev@vger.kernel.org,
-        oe-kbuild-all@lists.linux.dev, oe-kbuild@lists.linux.dev,
-        pabeni@redhat.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 00/12] Dynptr fixes
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167426701870.27266.12568567569882447280.git-patchwork-notify@kernel.org>
+Date:   Sat, 21 Jan 2023 02:10:18 +0000
+References: <20230121002241.2113993-1-memxor@gmail.com>
+In-Reply-To: <20230121002241.2113993-1-memxor@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this issue to:
+Hello:
 
-commit 38207a5e81230d6ffbdd51e5fa5681be5116dcae
-Author: John Fastabend <john.fastabend@gmail.com>
-Date:   Fri Nov 19 18:14:17 2021 +0000
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-    bpf, sockmap: Attach map progs to psock early for feature probes
+On Sat, 21 Jan 2023 05:52:29 +0530 you wrote:
+> This is part 2 of https://lore.kernel.org/bpf/20221018135920.726360-1-memxor@gmail.com.
+> 
+> Changelog:
+> ----------
+> v4 -> v5
+> v5: https://lore.kernel.org/bpf/20230120070355.1983560-1-memxor@gmail.com
+> 
+> [...]
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106884b9480000
-start commit:   c8451c141e07 Merge tag 'acpi-6.2-rc2' of git://git.kernel...
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=126884b9480000
-console output: https://syzkaller.appspot.com/x/log.txt?x=146884b9480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2651619a26b4d687
-dashboard link: https://syzkaller.appspot.com/bug?extid=04c21ed96d861dccc5cd
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a1a692480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1575dc34480000
+Here is the summary with links:
+  - [bpf-next,v5,01/12] bpf: Fix state pruning for STACK_DYNPTR stack slots
+    https://git.kernel.org/bpf/bpf-next/c/d6fefa1105da
+  - [bpf-next,v5,02/12] bpf: Fix missing var_off check for ARG_PTR_TO_DYNPTR
+    https://git.kernel.org/bpf/bpf-next/c/79168a669d81
+  - [bpf-next,v5,03/12] bpf: Fix partial dynptr stack slot reads/writes
+    https://git.kernel.org/bpf/bpf-next/c/ef8fc7a07c0e
+  - [bpf-next,v5,04/12] bpf: Invalidate slices on destruction of dynptrs on stack
+    https://git.kernel.org/bpf/bpf-next/c/f8064ab90d66
+  - [bpf-next,v5,05/12] bpf: Allow reinitializing unreferenced dynptr stack slots
+    https://git.kernel.org/bpf/bpf-next/c/379d4ba831cf
+  - [bpf-next,v5,06/12] bpf: Combine dynptr_get_spi and is_spi_bounds_valid
+    https://git.kernel.org/bpf/bpf-next/c/f5b625e5f8bb
+  - [bpf-next,v5,07/12] bpf: Avoid recomputing spi in process_dynptr_func
+    https://git.kernel.org/bpf/bpf-next/c/1ee72bcbe48d
+  - [bpf-next,v5,08/12] selftests/bpf: convenience macro for use with 'asm volatile' blocks
+    https://git.kernel.org/bpf/bpf-next/c/91b875a5e43b
+  - [bpf-next,v5,09/12] selftests/bpf: Add dynptr pruning tests
+    https://git.kernel.org/bpf/bpf-next/c/f4d24edf1b92
+  - [bpf-next,v5,10/12] selftests/bpf: Add dynptr var_off tests
+    https://git.kernel.org/bpf/bpf-next/c/ef4810135396
+  - [bpf-next,v5,11/12] selftests/bpf: Add dynptr partial slot overwrite tests
+    https://git.kernel.org/bpf/bpf-next/c/011edc8e49b8
+  - [bpf-next,v5,12/12] selftests/bpf: Add dynptr helper tests
+    https://git.kernel.org/bpf/bpf-next/c/ae8e354c497a
 
-Reported-by: syzbot+04c21ed96d861dccc5cd@syzkaller.appspotmail.com
-Fixes: 38207a5e8123 ("bpf, sockmap: Attach map progs to psock early for feature probes")
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
