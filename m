@@ -2,120 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A37B67731D
-	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 00:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DB86772A6
+	for <lists+bpf@lfdr.de>; Sun, 22 Jan 2023 22:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbjAVXAb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Jan 2023 18:00:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
+        id S230006AbjAVV0P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Jan 2023 16:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjAVXA1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 Jan 2023 18:00:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E6618ABD;
-        Sun, 22 Jan 2023 15:00:24 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 572C060CA4;
-        Sun, 22 Jan 2023 23:00:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D740C433D2;
-        Sun, 22 Jan 2023 23:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674428423;
-        bh=uUTTKSl1nNDXWYdwLpdwmCAKDhgMF5jWMT+kNzvGmBU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J9n6ZPcCE7LMUifswqqagkI5taZpNjcsdxbFCMsbw4XO8ML5XDkrJ+DDueR4fidEN
-         m76zqLzFvYY0QYLgkM8LM57myy66VkbdzZID7/fUEflBjEE8+E6so6dElqvIA//aHB
-         QWPmVPsgLZ02+v5+2hi/wDYXeztv8vtHCr1t6/en8G/ZaZZImWaD+4Za4W7TGhxqlp
-         qOSe99EL6/COC7JyoSXyjPfMRm+n43t3lo+TsOIOJQhNy3CDISGPXqUwot9ufQnFtV
-         BNFAP4cwrs9xcjNRUWQrn2/QVSKgzfsJQNTLD9MNb0LavDCkwUhy4z9vaO7YVljat0
-         rDkjhzseHAIFQ==
-Date:   Sun, 22 Jan 2023 18:45:56 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Marek Majtyka <alardam@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, anthony.l.nguyen@intel.com,
-        Andy Gospodarek <gospo@broadcom.com>, vladimir.oltean@nxp.com,
-        Felix Fietkau <nbd@nbd.name>, john@phrozen.org,
-        leon@kernel.org, Simon Horman <simon.horman@corigine.com>,
-        Ariel Elior <aelior@marvell.com>,
-        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@corigine.com>
-Subject: Re: [PATCH bpf-next 1/7] netdev-genl: create a simple family for
- netdev stuff
-Message-ID: <Y812VL/IJ5fjrDqI@lore-desk>
-References: <cover.1674234430.git.lorenzo@kernel.org>
- <272fa19f57de2d14e9666b4cd9b1ae8a61a94807.1674234430.git.lorenzo@kernel.org>
- <CAADnVQLHsV2Y-UiDkEnhwnfvgRxGN4OY8mwi_p-a01WUTdDBNw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JG/nnC/faKMKtE/K"
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLHsV2Y-UiDkEnhwnfvgRxGN4OY8mwi_p-a01WUTdDBNw@mail.gmail.com>
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229971AbjAVV0O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Jan 2023 16:26:14 -0500
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966C21350B
+        for <bpf@vger.kernel.org>; Sun, 22 Jan 2023 13:26:11 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id F1DA85C008E;
+        Sun, 22 Jan 2023 16:26:08 -0500 (EST)
+Received: from imap42 ([10.202.2.92])
+  by compute1.internal (MEProxy); Sun, 22 Jan 2023 16:26:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1674422768; x=1674509168; bh=Fo6mBFrWR1
+        3canRuCwb1uAwn+xRoql2kUKT/KiEqy8o=; b=U+Gw0TO/wO7B/DTwTSTxPuEbLz
+        Pcqh4KRqtNX1IBUSbxtnZnW92g5Kwut9MbTL7ZoCz1re22ZKBLttX5DkLuXXgNcL
+        2csxW1+SGLMGtPOA8+xDD3lL28Xt6pA3tqSv14539ZqG96Xte0ZnhT8L6DztKuph
+        Fdi9M+FPV6GKYwwlRExpqPjGXQGl0rMjM0fdDHlMInU393DJry+q9jVakRvWxPgj
+        b1NmMknNAEo4HVyHPzE0h0tkTBatQuicmM64KS3XVhinZzpJ+aiDILANVkkGlAoC
+        BZfwsrfF5c73H9s4Yr7LudgNoTvhyj+l9kJEYiWWi971Qo3apiHFil2Bh+OA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1674422768; x=1674509168; bh=Fo6mBFrWR13canRuCwb1uAwn+xRo
+        ql2kUKT/KiEqy8o=; b=QTA/GGFMhLjkl/efyRn6zFS1B17G4lz2VzHLCNuo47JF
+        3yjt8nvH/0PuqyP5oQareVRnp2Bxr07zWhD4yV4q5NxDftK/KlxUbV/fCviWR7b5
+        lRTwZyqfhbG3wiluVR8KQDPG0XJXMsuRENsR/GTEYtsJ1M7IK6knMA8JTl/ScR/D
+        5bAVZGW+KwBQrSruUH8SVqjpud8YV9gziumJ9gdGuYcnKeWyena3+/vwIckLcW9T
+        RsKlwV1Xhvs6SB8URhNwsoBr/rbvbCxDnZOuQMFQnT44mmDXsEh3lpeGGPhDeCdY
+        rnqG96IHR/OLnQUpQHhsu7tQ+cT7XBnq/vxOLz/7Rw==
+X-ME-Sender: <xms:8KnNYxDAOanF94QXsREDqSBYCgCcBmeafbWF5fKAbHeKkPd0ReBFtg>
+    <xme:8KnNY_hC2yYyFYaT-_BXlcnvD824pvjIrdlRA9SCeJCNTyC5nSkkPbDICkJb5Dani
+    Ug6QhW8-J_Vma8YaQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudduiedgudehvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhepof
+    gfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfffgrnhhivghlucgi
+    uhdfuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhephffhgedtke
+    duheekueejfefgkeejffegtdekveeifedvjeffheejkeduiedugedtnecuffhomhgrihhn
+    pehkrghllhhshihmshdurdhsrghspdhkrghllhhshihmshdvrdhsrghspdhkrghllhhshi
+    hmshefrdhsrghsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:8KnNY8mrhk14U0az0YfQUxMNyQB4g7qwvJDEsngY2zrtN5g7GCH3nQ>
+    <xmx:8KnNY7wm3fDWyH2VBsHqBdBx7YY1cE-JQVY9aMkSuXmzHiREp56Ygg>
+    <xmx:8KnNY2Qqiji-n0O4KExDaWCzs7URu38O53WT_0VT6aM9dF3bOZU61A>
+    <xmx:8KnNY9Pcd1b1umZ5FLAy8u7VmL0fDd_M9IafADcnIHhbZkTU4vHAFQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id AB590BC0078; Sun, 22 Jan 2023 16:26:08 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-85-gd6d859e0cf-fm-20230116.001-gd6d859e0
+Mime-Version: 1.0
+Message-Id: <cf0f4f1f-b2b4-40e8-bc51-ef1e1771e1e2@app.fastmail.com>
+In-Reply-To: <57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com>
+References: <57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com>
+Date:   Sun, 22 Jan 2023 14:25:47 -0700
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Cc:     "Arnaldo Carvalho de Melo" <acme@kernel.org>
+Subject: Re: Kernel build fail with 'btf_encoder__encode: btf__dedup failed!'
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_PDS_OTHER_BAD_TLD,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sun, Jan 22, 2023, at 10:48 AM, Daniel Xu wrote:
+> Hi,
+>
+> I'm getting the following error during build:
+>
+>         $ ./tools/testing/selftests/bpf/vmtest.sh -j30
+>         [...]
+>           BTF     .btf.vmlinux.bin.o
+>         btf_encoder__encode: btf__dedup failed!
+>         Failed to encode BTF
+>           LD      .tmp_vmlinux.kallsyms1
+>           NM      .tmp_vmlinux.kallsyms1.syms
+>           KSYMS   .tmp_vmlinux.kallsyms1.S
+>           AS      .tmp_vmlinux.kallsyms1.S
+>           LD      .tmp_vmlinux.kallsyms2
+>           NM      .tmp_vmlinux.kallsyms2.syms
+>           KSYMS   .tmp_vmlinux.kallsyms2.S
+>           AS      .tmp_vmlinux.kallsyms2.S
+>           LD      .tmp_vmlinux.kallsyms3
+>           NM      .tmp_vmlinux.kallsyms3.syms
+>           KSYMS   .tmp_vmlinux.kallsyms3.S
+>           AS      .tmp_vmlinux.kallsyms3.S
+>           LD      vmlinux
+>           BTFIDS  vmlinux
+>         FAILED: load BTF from vmlinux: No such file or directory
+>         make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+>         make[1]: *** Deleting file 'vmlinux'
+>         make: *** [Makefile:1264: vmlinux] Error 2
+>
+> This happens on both bpf-next/master (84150795a49) and 6.2-rc5
+> (2241ab53cb).
+>
+> I've also tried arch linux pahole 1:1.24+r29+g02d67c5-1 as well as
+> upstream pahole on master (02d67c5176) and upstream pahole on
+> next (2ca56f4c6f659).
+>
+> Of the above 6 combinations, I think I've tried all of them (maybe
+> missing 1 or 2).
+>
+> Looks like GCC got updated recently on my machine, so perhaps
+> it's related?
+>
+>         CONFIG_CC_VERSION_TEXT="gcc (GCC) 12.2.1 20230111"
+>
+> I'll try some debugging, but just wanted to report it first.
+>
+> Thanks,
+> Daniel
 
---JG/nnC/faKMKtE/K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applying the following diff:
 
-On Jan 20, Alexei Starovoitov wrote:
-> On Fri, Jan 20, 2023 at 9:17 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
-te:
-> > +
-> > +#define NETDEV_XDP_ACT_BASIC           (NETDEV_XDP_ACT_DROP |  \
-> > +                                        NETDEV_XDP_ACT_PASS |  \
-> > +                                        NETDEV_XDP_ACT_TX |    \
-> > +                                        NETDEV_XDP_ACT_ABORTED)
->=20
-> Why split it into 4?
-> Is there a driver that does a subset?
+diff --git a/src/btf.c b/src/btf.c
+index ae1520f..8a2fa36 100644
+--- a/src/btf.c
++++ b/src/btf.c
+@@ -4576,8 +4576,11 @@ static int btf_dedup_ref_type(struct btf_dedup *d, __u32 type_id)
+        int ref_type_id;
+        long h;
 
-nope, at least all drivers support NETDEV_XDP_ACT_BASIC. I guess we can squ=
-ash
-them and just add  NETDEV_XDP_ACT_BASIC.
+-       if (d->map[type_id] == BTF_IN_PROGRESS_ID)
++       if (d->map[type_id] == BTF_IN_PROGRESS_ID) {
++               struct btf_type *t = btf_type_by_id(d->btf, type_id);
++               pr_warn("eloop type_id=%d, kind=%d, type=%d\n", type_id, btf_kind(t), t->type);
+                return -ELOOP;
++       }
+        if (d->map[type_id] <= BTF_MAX_NR_TYPES)
+                return resolve_type_id(d, type_id);
 
-Regards,
-Lorenzo
+Yields:
 
---JG/nnC/faKMKtE/K
-Content-Type: application/pgp-signature; name="signature.asc"
+          BTF     .btf.vmlinux.bin.o
+        libbpf: eloop type_id=2, kind=10, type=2
+        btf_encoder__encode: btf__dedup failed!
+        Failed to encode BTF
 
------BEGIN PGP SIGNATURE-----
+So it's a CONST pointing to itself?
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY812VAAKCRA6cBh0uS2t
-rPuwAP4i5puJyPSRIVKHOHLlPm0UaUEMqwzRZgndVwm2OXUAiQEAo1TMBEHHjutT
-scfxZ8+YzP8HXj5bjef2m6Sb7jPt7w0=
-=XpP9
------END PGP SIGNATURE-----
-
---JG/nnC/faKMKtE/K--
+I'm somewhat out of ideas here.
