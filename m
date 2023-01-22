@@ -2,110 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D51676C72
-	for <lists+bpf@lfdr.de>; Sun, 22 Jan 2023 12:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E47676C78
+	for <lists+bpf@lfdr.de>; Sun, 22 Jan 2023 12:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbjAVLt0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Jan 2023 06:49:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
+        id S229709AbjAVLtl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Jan 2023 06:49:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjAVLt0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 Jan 2023 06:49:26 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6993F35BD;
-        Sun, 22 Jan 2023 03:49:25 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFF8660BC1;
-        Sun, 22 Jan 2023 11:49:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE01C433D2;
-        Sun, 22 Jan 2023 11:49:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674388164;
-        bh=Vx8kZgpecl8j894UuS9Gy9fQuZxp9dtbzjLs5dhZuiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M13eMLVacR/YRSqNczt3ZXzVnr7q5dfyicuZPEXGiMjZ63P+TpCeUD1qRt3g6PRiQ
-         83MIGHNJm3ZZULp3JZbGVXlQRIXP41xEuheEDPP7DJpbp1mMU4WZggOo/dO0Yj0x8q
-         rKfMMa1pkQGKAJBo42r+KnSy+tvUnlcz3Vy57ohLw+jrGdhJuKMTWxe9zbUMLQR8Jb
-         OAtsVvntsNbS4wS7DT6NVqzhVkq0YtmO35XgwOEPxKJHPrhXih7QG/CB2sUuON38br
-         meH6mkihj2+3/thSEC9o6A9vTAuUbjgmOrhCc2CLRuyO7DqLpfc0TGqrtJ7Poa7LdI
-         R/6uawCbo0NUg==
-Date:   Sun, 22 Jan 2023 12:49:20 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        toke@redhat.com, memxor@gmail.com, alardam@gmail.com,
-        saeedm@nvidia.com, anthony.l.nguyen@intel.com, gospo@broadcom.com,
-        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
-        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
-        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
-        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
-        lorenzo.bianconi@redhat.com, niklas.soderlund@corigine.com
-Subject: Re: [PATCH bpf-next 2/7] drivers: net: turn on XDP features
-Message-ID: <Y80iwBNd3tPvEbMd@lore-desk>
-References: <cover.1674234430.git.lorenzo@kernel.org>
- <861224c406f78694530fde0d52c49d92e1e990a2.1674234430.git.lorenzo@kernel.org>
- <20230120191152.44d29bb1@kernel.org>
+        with ESMTP id S229944AbjAVLtk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Jan 2023 06:49:40 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219211CF5D
+        for <bpf@vger.kernel.org>; Sun, 22 Jan 2023 03:49:38 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id n7so8467857wrx.5
+        for <bpf@vger.kernel.org>; Sun, 22 Jan 2023 03:49:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L18XUoVuVYI0pnqHwuAZ/a/gl46rC1ac5Z5pGu4tjjA=;
+        b=caIlICVgjiM2KQmWSw2+dwCmFwH/QmHP5Tpt6H6wVsFqVFanIJ1vuRkXD5LMYCDALE
+         NRjmF+0baehzfnLLnyNncgVe/LMpVF+yHU61SKAbBoH7z61KGzW5m7flF/bFqihPw1Fn
+         O2fP7zc3nkMy81LxNCpHIWtu94zfu5UQvaOFSsNE8v5AYfQqfr8/s8K8Erb8fkRN+yAG
+         wkyY17RV1LAoGfa7M6MaWtFsVRYyBEJ/Cn1lnFbJ+7C3TkgZU6XRz0KkmJz40bv2YJcl
+         sWZRDoQaWXDOf5NedqV2uevyts9HBVC/g4grs5Il5oF6YrOPf4Yvjvay3LwHgph5/uVF
+         hkvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L18XUoVuVYI0pnqHwuAZ/a/gl46rC1ac5Z5pGu4tjjA=;
+        b=W5tNNtj4j74rryQw1g5hyHEcxrEZ6hFYF23J/tW1CCLBlNjDUJtqKHuqYJlKK//D/L
+         /+nnpOU7/i3k5YPis81z9CjjQ5XH5PLt+1RKXlHKoJ8IlwF+gy8F8BFwh8g1yqF6mMDQ
+         dpp/+TYgG+UTj6Q9fMlzNSVF6uDCI2T136S/W7/ortmSOFkyPpQXOH8oT1PumP/5FQuT
+         7kkvKtWrb3o1H8QnWZNqLZg4bnfFdQ0GF34lDxHAwnbwSv/Sgo8do4JKXLWUXgLeaEBZ
+         Mvl07Rf6uffo8shryXQx3SsFvpQGVIExuqlr2OBAzDFDI//nBMx2Frna9VOb6kjZWS2b
+         O0/A==
+X-Gm-Message-State: AFqh2kqKqmv/dAp0u5YPOVIY3v5Qeszfx3RKRmrEim/BAzOMFNVmMiOd
+        CPB+od7oRIbkA5PPWUzJqIhaVw==
+X-Google-Smtp-Source: AMrXdXuO4A8xyx6+67tnt5vSccGnQfMst13iHm3i0RgTmN8zIeWyW0hP20D/R/sapznzyBbbSLIUpw==
+X-Received: by 2002:adf:f606:0:b0:24b:b74d:8012 with SMTP id t6-20020adff606000000b0024bb74d8012mr17321312wrp.18.1674388176056;
+        Sun, 22 Jan 2023 03:49:36 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id m8-20020adfa3c8000000b00236545edc91sm1740479wrb.76.2023.01.22.03.49.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Jan 2023 03:49:35 -0800 (PST)
+Message-ID: <c8f7294d-6522-40f6-7923-c379ec8ca6bb@linaro.org>
+Date:   Sun, 22 Jan 2023 12:49:31 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="w+GUdlDdqYVq1hNu"
-Content-Disposition: inline
-In-Reply-To: <20230120191152.44d29bb1@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+Subject: Re: [RFC PATCH v2 05/31] Documentation: Add binding for
+ kalray,coolidge-itgen
+Content-Language: en-US
+To:     Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jules Maselbas <jmaselbas@kalray.eu>,
+        Guillaume Thouvenin <gthouvenin@kalray.eu>,
+        Clement Leger <clement@clement-leger.fr>,
+        Vincent Chardon <vincent.chardon@elsys-design.com>,
+        =?UTF-8?Q?Marc_Poulhi=c3=a8s?= <dkm@kataplop.net>,
+        Julian Vetter <jvetter@kalray.eu>,
+        Samuel Jones <sjones@kalray.eu>,
+        Ashley Lesdalons <alesdalons@kalray.eu>,
+        Thomas Costis <tcostis@kalray.eu>,
+        Marius Gligor <mgligor@kalray.eu>,
+        Jonathan Borne <jborne@kalray.eu>,
+        Julien Villette <jvillette@kalray.eu>,
+        Luc Michel <lmichel@kalray.eu>,
+        Louis Morhet <lmorhet@kalray.eu>,
+        Julien Hascoet <jhascoet@kalray.eu>,
+        Jean-Christophe Pince <jcpince@gmail.com>,
+        Guillaume Missonnier <gmissonnier@kalray.eu>,
+        Alex Michon <amichon@kalray.eu>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <git@xen0n.name>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        John Garry <john.garry@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Bharat Bhushan <bbhushan2@marvell.com>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Atish Patra <atishp@atishpatra.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Qi Liu <liuqi115@huawei.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Benjamin Mugnier <mugnier.benjamin@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-audit@redhat.com,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+References: <20230120141002.2442-1-ysionneau@kalray.eu>
+ <20230120141002.2442-6-ysionneau@kalray.eu>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230120141002.2442-6-ysionneau@kalray.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 20/01/2023 15:09, Yann Sionneau wrote:
+> From: Jules Maselbas <jmaselbas@kalray.eu>
+> 
+> Add documentation for `kalray,coolidge-itgen` binding.
+> 
+> Co-developed-by: Jules Maselbas <jmaselbas@kalray.eu>
+> Signed-off-by: Jules Maselbas <jmaselbas@kalray.eu>
+> Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
 
---w+GUdlDdqYVq1hNu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The same comments apply plus more...
 
-> On Fri, 20 Jan 2023 18:16:51 +0100 Lorenzo Bianconi wrote:
-> > +static inline void
-> > +xdp_features_set_redirect_target(xdp_features_t *xdp_features, bool su=
-pport_sg)
-> > +{
-> > +	*xdp_features |=3D NETDEV_XDP_ACT_NDO_XMIT;
-> > +	if (support_sg)
-> > +		*xdp_features |=3D NETDEV_XDP_ACT_NDO_XMIT_SG;
-> > +}
-> > +
-> > +static inline void
-> > +xdp_features_clear_redirect_target(xdp_features_t *xdp_features)
-> > +{
-> > +	*xdp_features &=3D ~(NETDEV_XDP_ACT_NDO_XMIT |
-> > +			   NETDEV_XDP_ACT_NDO_XMIT_SG);
-> > +}
-> > +
->=20
-> Shouldn't these generate netlink notifications?
+> ---
+> 
+> Notes:
+>     V1 -> V2: new patch
+> 
+>  .../kalray,coolidge-itgen.yaml                | 48 +++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/kalray,coolidge-itgen.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/kalray,coolidge-itgen.yaml b/Documentation/devicetree/bindings/interrupt-controller/kalray,coolidge-itgen.yaml
+> new file mode 100644
+> index 000000000000..47b503bff1d9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/kalray,coolidge-itgen.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: GPL-2.0
 
-ack, I would say we need to add NETDEV_XDP_FEAT_CHANGE case in
-netdev_genl_netdevice_event routine and maybe add a new
-NETDEV_XDP_FEAT_CHANGE flag in netdev_cmd. What do you think?
+Dual license. Checkpatch should complain about this - did you run it?
 
-Regards,
-Lorenzo
+This applies to all your other patches (both, run checkpatch and use
+proper license).
 
---w+GUdlDdqYVq1hNu
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/kalray,coolidge-itgen#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Kalray Coolidge SoC Interrupt Generator (ITGEN)
+> +
+> +description: |
+> +  The Interrupt Generator (ITGEN) is an interrupt controller block.
+> +  It's purpose is to convert IRQ lines coming from SoC peripherals into writes
+> +  on the AXI bus. The ITGEN intended purpose is to write into the APIC mailboxes.
+> +
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: kalray,coolidge-itgen
+> +
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY80iwAAKCRA6cBh0uS2t
-rAxtAP9ZfJkB37hk72ekJNDpeCVLGZ9NJ+YCmn3/JWHaNxQTzQEAycDTiwQ0yNkk
-GG1x89Gce/hWDOmYnA2ThF+j/KgquQo=
-=vN6K
------END PGP SIGNATURE-----
+So why suddenly this patch has proper blank lines...
 
---w+GUdlDdqYVq1hNu--
+Missing reg.
+
+> +  "#interrupt-cells":
+> +    const: 2
+> +    description: |
+> +      - 1st cell is for the IRQ number
+> +      - 2nd cell is for the trigger type as defined dt-bindings/interrupt-controller/irq.h
+> +
+> +  interrupt-controller: true
+> +
+> +  msi-parent: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#interrupt-cells"
+> +  - interrupt-controller
+> +  - msi-parent
+> +
+> +examples:
+> +  - |
+> +    itgen: interrupt-controller@27000000 {
+> +        compatible = "kalray,coolidge-itgen";
+> +        reg = <0 0x27000000 0 0x1104>;
+> +        #interrupt-cells = <2>;
+> +        interrupt-controller;
+> +        msi-parent = <&apic_mailbox>;
+> +    };
+> +
+> +...
+
+Best regards,
+Krzysztof
+
