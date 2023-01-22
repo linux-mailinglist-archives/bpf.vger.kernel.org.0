@@ -2,200 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB63676C96
-	for <lists+bpf@lfdr.de>; Sun, 22 Jan 2023 12:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C33676CAA
+	for <lists+bpf@lfdr.de>; Sun, 22 Jan 2023 13:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbjAVL6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Jan 2023 06:58:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
+        id S229710AbjAVMJo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Jan 2023 07:09:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjAVL6O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 Jan 2023 06:58:14 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1073A16317
-        for <bpf@vger.kernel.org>; Sun, 22 Jan 2023 03:58:13 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id c4-20020a1c3504000000b003d9e2f72093so8765637wma.1
-        for <bpf@vger.kernel.org>; Sun, 22 Jan 2023 03:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YjGs/N459uaRgS5yJ3WFfESguZ4NHWx9awwoiEeB780=;
-        b=RLa/BKWA8cCsFwOonds12wldvySF169J5xS3g1ZjPouXbBwg8nfDLWmWirXdCeITBU
-         JtxN07A1N9YTmSjdTqk69MmJEpCDGKsTc8PGV1JapOqPfZipKYIgUID+ocuZtC1YJbIc
-         CvIffWSaZOZXF4bb6gHjgaCjI1TcGvc0yfNNiFmjbhGo1nbZS+GLGdhLVrZqRKv6ZJKT
-         0R2jibeRxSxBa/ZobR7DcntMpt7XQrQWRGm5M4XEE/1v92ryG/PrXn4cN1IFRzsddNIe
-         fj2LW7ED9Xg7L0NXTAqnircEmI6Sxni0pP6pu3K6YaM7JEYEyj0r+5ovDanE7hInQqTq
-         obPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YjGs/N459uaRgS5yJ3WFfESguZ4NHWx9awwoiEeB780=;
-        b=ZNfQ1yWw+TK91MrGlE0cEBhHeIpH8tNbLZn6RagrmoG7FKtz1WjO9kFPiOxMnRbIY9
-         L0ljn4za3K4nTuEVmAZ8q/MSybKy700RDZOJF3f3k/YLM6wJayt7w1mvXc0C+80dtrbb
-         Kjn6QhD4d6KipM5L0Kjf//CA73vVd3d4w6lnhipLRHWXnQsfbg0jaz3rEn4bLEr2Qc3I
-         8RdLPVY5V6dUp5DcEH/KDwJUc5BL+jr5jmINQzN8Lpy3qlOS0+OuBGBAI4xH4vHly4tm
-         kQ0WllAwHEVqi9+p2yIZKDgyO7r+ySPNTnwARPpFGPnr9VsKGaLJMUHNkpPpD6bB1rYv
-         mUag==
-X-Gm-Message-State: AFqh2kq47Kvxnm4ee6U2COCrPhWKY9ZqfvXF4djPDUOwSQJLMrhyKdEX
-        cxueAshZ9uZB6+h3oE+/fMeZUQ==
-X-Google-Smtp-Source: AMrXdXtq5Rph9UIfC3hB2PBgU4uL+k5CyKLEV85gy72Xc9vXVhqLaj7EC+pHgTHApG8hI/7ahj3Ing==
-X-Received: by 2002:a05:600c:540d:b0:3d9:fb59:c16b with SMTP id he13-20020a05600c540d00b003d9fb59c16bmr17056417wmb.36.1674388691612;
-        Sun, 22 Jan 2023 03:58:11 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
-        by smtp.gmail.com with ESMTPSA id i22-20020a05600c355600b003a84375d0d1sm8262888wmq.44.2023.01.22.03.58.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Jan 2023 03:58:11 -0800 (PST)
-Message-ID: <9becf3e0-19cc-8924-6da9-8f62f8f8636c@linaro.org>
-Date:   Sun, 22 Jan 2023 12:58:07 +0100
+        with ESMTP id S229566AbjAVMJo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Jan 2023 07:09:44 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AAE18176;
+        Sun, 22 Jan 2023 04:09:43 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F70460BB8;
+        Sun, 22 Jan 2023 12:09:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B0EBC433EF;
+        Sun, 22 Jan 2023 12:09:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674389382;
+        bh=T0RMawtfeLWYRS29q6KiwNJBY0Mqii5zhUzrcZ1hlOU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=idc1lXaUwHxDTM8i2sAyiYggmThJuVvFcd0+c2Wn2eeRAMCexSlzIZ9VT9Ob7NzwC
+         RIPcjCvsaa+9tFOY5SbfvcUdXGyNxMca9zNvHphm8DwZEFinxaiUN31bcDbTLB2ndz
+         uF/sK/TBJxGaIrUKXrZekCxwrl2zWJWsYhCucC79x0QoS7RryYL0o/2iXwADXGFsbu
+         iJYjB+44HX42srxP41X0EKZ3wB9jcq/jg+HQOWCxWChui47HlV1Vbct05yKOkRPEAU
+         q39st4NHWaFI3/CaBQTgcoSUXpP6EAsM4TkffO82pO5tCZi2PW9PFhtVQMAKtOGZXr
+         qQYBZo0lHJ5cw==
+Date:   Sun, 22 Jan 2023 13:09:38 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        toke@redhat.com, memxor@gmail.com, alardam@gmail.com,
+        saeedm@nvidia.com, anthony.l.nguyen@intel.com, gospo@broadcom.com,
+        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
+        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
+        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
+        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
+        lorenzo.bianconi@redhat.com, niklas.soderlund@corigine.com
+Subject: Re: [PATCH bpf-next 5/7] libbpf: add API to get XDP/XSK supported
+ features
+Message-ID: <Y80ngqGcHIp3b8Rz@lore-desk>
+References: <cover.1674234430.git.lorenzo@kernel.org>
+ <31e46f564a30e0d3d1e06edb27045be9f318ff0b.1674234430.git.lorenzo@kernel.org>
+ <20230120192059.66d058bf@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [RFC PATCH v2 27/31] kvx: Add kvx default config file
-Content-Language: en-US
-To:     Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jules Maselbas <jmaselbas@kalray.eu>,
-        Guillaume Thouvenin <gthouvenin@kalray.eu>,
-        Clement Leger <clement@clement-leger.fr>,
-        Vincent Chardon <vincent.chardon@elsys-design.com>,
-        =?UTF-8?Q?Marc_Poulhi=c3=a8s?= <dkm@kataplop.net>,
-        Julian Vetter <jvetter@kalray.eu>,
-        Samuel Jones <sjones@kalray.eu>,
-        Ashley Lesdalons <alesdalons@kalray.eu>,
-        Thomas Costis <tcostis@kalray.eu>,
-        Marius Gligor <mgligor@kalray.eu>,
-        Jonathan Borne <jborne@kalray.eu>,
-        Julien Villette <jvillette@kalray.eu>,
-        Luc Michel <lmichel@kalray.eu>,
-        Louis Morhet <lmorhet@kalray.eu>,
-        Julien Hascoet <jhascoet@kalray.eu>,
-        Jean-Christophe Pince <jcpince@gmail.com>,
-        Guillaume Missonnier <gmissonnier@kalray.eu>,
-        Alex Michon <amichon@kalray.eu>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <git@xen0n.name>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        John Garry <john.garry@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Bharat Bhushan <bbhushan2@marvell.com>,
-        Bibo Mao <maobibo@loongson.cn>,
-        Atish Patra <atishp@atishpatra.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Qi Liu <liuqi115@huawei.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Benjamin Mugnier <mugnier.benjamin@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-audit@redhat.com,
-        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-28-ysionneau@kalray.eu>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230120141002.2442-28-ysionneau@kalray.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0tACK8m4bRM0/8/P"
+Content-Disposition: inline
+In-Reply-To: <20230120192059.66d058bf@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 20/01/2023 15:09, Yann Sionneau wrote:
-> Add a default config file for kvx based Coolidge SoC.
-> 
-> Co-developed-by: Ashley Lesdalons <alesdalons@kalray.eu>
-> Signed-off-by: Ashley Lesdalons <alesdalons@kalray.eu>
-> Co-developed-by: Benjamin Mugnier <mugnier.benjamin@gmail.com>
-> Signed-off-by: Benjamin Mugnier <mugnier.benjamin@gmail.com>
-> Co-developed-by: Clement Leger <clement@clement-leger.fr>
-> Signed-off-by: Clement Leger <clement@clement-leger.fr>
-> Co-developed-by: Guillaume Thouvenin <gthouvenin@kalray.eu>
-> Signed-off-by: Guillaume Thouvenin <gthouvenin@kalray.eu>
-> Co-developed-by: Jules Maselbas <jmaselbas@kalray.eu>
-> Signed-off-by: Jules Maselbas <jmaselbas@kalray.eu>
-> Co-developed-by: Julian Vetter <jvetter@kalray.eu>
-> Signed-off-by: Julian Vetter <jvetter@kalray.eu>
-> Co-developed-by: Samuel Jones <sjones@kalray.eu>
-> Signed-off-by: Samuel Jones <sjones@kalray.eu>
-> Co-developed-by: Thomas Costis <tcostis@kalray.eu>
-> Signed-off-by: Thomas Costis <tcostis@kalray.eu>
-> Co-developed-by: Vincent Chardon <vincent.chardon@elsys-design.com>
-> Signed-off-by: Vincent Chardon <vincent.chardon@elsys-design.com>
-> Co-developed-by: Yann Sionneau <ysionneau@kalray.eu>
-> Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
-> ---
-> 
-> Notes:
->     V1 -> V2: default_defconfig renamed to defconfig
-> 
->  arch/kvx/configs/defconfig | 127 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 127 insertions(+)
->  create mode 100644 arch/kvx/configs/defconfig
-> 
-> diff --git a/arch/kvx/configs/defconfig b/arch/kvx/configs/defconfig
-> new file mode 100644
-> index 000000000000..960784da0b1b
-> --- /dev/null
-> +++ b/arch/kvx/configs/defconfig
-> @@ -0,0 +1,127 @@
-> +CONFIG_DEFAULT_HOSTNAME="KVXlinux"
-> +CONFIG_SERIAL_KVX_SCALL_COMM=y
-> +CONFIG_CONFIGFS_FS=y
-> +CONFIG_DEBUG_KERNEL=y
-> +CONFIG_DEBUG_INFO=y
-> +CONFIG_DEBUG_INFO_DWARF4=y
-> +CONFIG_PRINTK_TIME=y
-> +CONFIG_CONSOLE_LOGLEVEL_DEFAULT=15
-> +CONFIG_MESSAGE_LOGLEVEL_DEFAULT=7
-> +CONFIG_PANIC_TIMEOUT=-1
-> +CONFIG_BLK_DEV_INITRD=y
-> +CONFIG_GDB_SCRIPTS=y
-> +CONFIG_FRAME_POINTER=y
-> +CONFIG_HZ_100=y
-> +CONFIG_SERIAL_EARLYCON=y
-> +CONFIG_HOTPLUG_PCI_PCIE=y
-> +CONFIG_PCIEAER=y
-> +CONFIG_PCIE_DPC=y
-> +CONFIG_HOTPLUG_PCI=y
-> +CONFIG_SERIAL_8250=y
 
-Are you sure this is the result of savedefconfig? Order looks a bit odd
-in several places, so I want to double check.
+--0tACK8m4bRM0/8/P
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+> On Fri, 20 Jan 2023 18:16:54 +0100 Lorenzo Bianconi wrote:
+> > +static int libbpf_netlink_resolve_genl_family_id(const char *name,
+> > +						 __u16 len, __u16 *id)
+> > +{
+> > +	struct libbpf_nla_req req =3D {
+> > +		.nh.nlmsg_len	=3D NLMSG_LENGTH(GENL_HDRLEN),
+> > +		.nh.nlmsg_type	=3D GENL_ID_CTRL,
+> > +		.nh.nlmsg_flags	=3D NLM_F_REQUEST,
+> > +		.gnl.cmd	=3D CTRL_CMD_GETFAMILY,
+> > +		.gnl.version	=3D 1,
+>=20
+> nlctrl is version 2, shouldn't matter in practice
 
+ack, I will fix it.
+
+Regards,
+Lorenzo
+
+--0tACK8m4bRM0/8/P
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY80nggAKCRA6cBh0uS2t
+rPC7AQDu6l1kKMwrf9Bhnb/F1h4rjFppYj8nmw/lsCuNWc4JSwD+OxLIp1k3DkBy
+Ts1xkVfkP6+VjvYnGb9NCb5k9adttwU=
+=1C3N
+-----END PGP SIGNATURE-----
+
+--0tACK8m4bRM0/8/P--
