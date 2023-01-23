@@ -2,76 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC75367871C
-	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 21:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6A2678735
+	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 21:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbjAWUER (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Jan 2023 15:04:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37394 "EHLO
+        id S232761AbjAWUG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Jan 2023 15:06:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbjAWUEQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Jan 2023 15:04:16 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D7C30297;
-        Mon, 23 Jan 2023 12:03:52 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B9A5D6101E;
-        Mon, 23 Jan 2023 20:03:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91EDC4339B;
-        Mon, 23 Jan 2023 20:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674504201;
-        bh=ZHGRoFsn+EUQs1iGPUoTvzLYTnpaq6FISKkR45iFTro=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qM6i+IIDqjcH4mojlWNvMQdFGCyzWZIhEo9WKN0AIWy6r1P2EzK6hmhI6K7e05/u+
-         yuAlLEc1mXRUW3OD9VXgQFvd4UMYSVNaNeKBL5caMIs4NmZN1xhi1z4BEzf/Uf1akh
-         U9iHLMURGhZBiFJ16l/rEiwQBx5/6PHFqZ1QrM76gWz99gXClgUt6pTraqfaKIH+ed
-         1m5G4I0oj39ZAhs7MilDbE2YVziYHW01OnWMKI8Atjv2qoKla8pJ2OyjfVPqucNJcV
-         I1bfIYUL9PJbPHao3HYvbFrsnC7Ee5/xWNiaHH0uamhQim2dA/dPNe70zuwN0fRol4
-         KLd28kbao71Zg==
-Date:   Mon, 23 Jan 2023 12:03:18 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        toke@redhat.com, memxor@gmail.com, alardam@gmail.com,
-        saeedm@nvidia.com, anthony.l.nguyen@intel.com, gospo@broadcom.com,
-        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
-        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
-        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
-        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
-        lorenzo.bianconi@redhat.com, niklas.soderlund@corigine.com
-Subject: Re: [PATCH bpf-next 2/7] drivers: net: turn on XDP features
-Message-ID: <20230123120318.358ef9a8@kernel.org>
-In-Reply-To: <Y80iwBNd3tPvEbMd@lore-desk>
-References: <cover.1674234430.git.lorenzo@kernel.org>
-        <861224c406f78694530fde0d52c49d92e1e990a2.1674234430.git.lorenzo@kernel.org>
-        <20230120191152.44d29bb1@kernel.org>
-        <Y80iwBNd3tPvEbMd@lore-desk>
+        with ESMTP id S232888AbjAWUGV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Jan 2023 15:06:21 -0500
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E493668D
+        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 12:06:10 -0800 (PST)
+Message-ID: <3a87b859-d7c9-2dfd-b659-cd3192a67003@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1674504368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AOQ59QPHmDUPZdHC3JGm0G/9zWHunFlEE0/hFcnMeas=;
+        b=Z/6iOHHwQJVJtceqXgejlaRMo8lbwZ0hfBm7YfNFBQbRmusfHGY1Uze/0Nipuq/dzB7OHV
+        pbflzpGajarxLsqoowhGseFG+YqlBi5VqKS8VkjM3ls3bG6qbNjq6AiWUmqxI1zBYOdjIu
+        ceojguBFnq6AtiAIVdSEHdr70fRg1RI=
+Date:   Mon, 23 Jan 2023 12:06:06 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: Are BPF programs preemptible?
+Content-Language: en-US
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@meta.com>
+References: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
+ <878rhty100.fsf@cloudflare.com>
+ <CAMy7=ZVLUpeHM4A_aZ5XT-CYEM8_uj8y=GRcPT89Bf5=jtS+og@mail.gmail.com>
+ <08dce08f-eb4b-d911-28e8-686ca3a85d4e@meta.com>
+ <CAMy7=ZWPc279vnKK6L1fssp5h7cb6cqS9_EuMNbfVBg_ixmTrQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAMy7=ZWPc279vnKK6L1fssp5h7cb6cqS9_EuMNbfVBg_ixmTrQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 22 Jan 2023 12:49:20 +0100 Lorenzo Bianconi wrote:
-> > Shouldn't these generate netlink notifications?  
-> 
-> ack, I would say we need to add NETDEV_XDP_FEAT_CHANGE case in
-> netdev_genl_netdevice_event routine and maybe add a new
-> NETDEV_XDP_FEAT_CHANGE flag in netdev_cmd. What do you think?
-
-No strong preference between a full event or just a direct call until
-we have another in-kernel user interested in the notification.
-The changes are wrapped nicely in helpers, so we can change it later
-easily.
+On 1/23/23 9:32 AM, Yaniv Agman wrote:
+>>> interrupted the first one. But even then, I will need to find a way to
+>>> know if my program currently interrupts the run of another program -
+>>> is there a way to do that?
+May be a percpu atomic counter to see if the bpf prog has been re-entered on the 
+same cpu.
