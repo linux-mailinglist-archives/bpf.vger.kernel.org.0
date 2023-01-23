@@ -2,106 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 237DB6779A1
-	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 11:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC976779AE
+	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 11:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231817AbjAWKyu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Jan 2023 05:54:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
+        id S231896AbjAWK6K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Jan 2023 05:58:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231789AbjAWKyn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Jan 2023 05:54:43 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649E01ABF3
-        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 02:54:42 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id y19so14082327edc.2
-        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 02:54:42 -0800 (PST)
+        with ESMTP id S231671AbjAWK6E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Jan 2023 05:58:04 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D83DBD5
+        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 02:58:01 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id k16so8656332wms.2
+        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 02:58:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=fC7rpfaSwbNfsDpt9B3A0bWFPATi+nwUhv2xdT4my5A=;
-        b=sB4KS7GkeChrwW8NwxbTcyQKYbNY/8b8pqb2TlzWbgKK+rcpmWF9UPLb+aaWkFHQMx
-         Si+P4lIBxAvdaP62VpCdR+4s5x6qRwu9dSOxlQW/MQIhRp0bp/YFnZyoE+OS+RsIW9o1
-         weza+UEoDQraWHy1CciXTSFYt71C5XDIl2NYM=
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GurJgwjoFQNdZqxTjXXtdzYvuIXsPElEsE5t8iRI348=;
+        b=g4dvnAt/e720eUN0Hw3mkuPvGH+bA9swS9a77z573C2TdQWW6YccWP0BkoVi78A7fD
+         9k0EDsHOFkjnhw2wOEifD+LuTl/asks5WHcBsVRuAWdUJEmWeCb5sfiPEmcBupKXco7L
+         GbvFD/7MEwApELk4GAbMkvKPw8jqR4On0BEH3X+b1r7t6TVjEb9KegIn8YBGFz3Vv8fw
+         Jh0FiWJzDYchnJxivLRKF4Wflf4aRgMtJaDCLIK/Po9RydhxUm8dX6Qe93tyzuQYH5D1
+         Lg/g6wjAGZI6WGgQ22tQbhjn6II6Mckqt+Hjv3IKqVUmi0cBYkGR5LBWB5l5q+psIVBr
+         2gFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fC7rpfaSwbNfsDpt9B3A0bWFPATi+nwUhv2xdT4my5A=;
-        b=osojIyLySAcBrWfNkpXOX/yoxfkuurjPmRKiadNfAQy8My8YDqLR2qTBwEaKQFzvxv
-         vR7Ro8S9Hy5XMoukzVedvrhgZCT/Wdn0AyddytwUkDPqAwuTJpIcNNfW+QlFryron5p3
-         Yey268hOQlYiDOa9zog29GttpMYYMkLtvNk9vwhyQaCOouC1Vz63NAmQoFLU+pdGM3mk
-         RlWDA+284unS1A2FnA2l8j6NMnXR0Cr7aTXtDahosKf8zggSGt0d481f8M1km2Cnwr5s
-         3eD3LX4oMzsoxidz91I+SrTN8EwkRdqgFi/X7LDhaM4G3nVwH/hxkRArWuKdoT0axktN
-         ejZA==
-X-Gm-Message-State: AFqh2kqsKDRURal9A2sa8VVo7I0UIgi++EoFAy1aO/4cDBIbHeDf4vZX
-        ajEIzSCXZb7kCiNTGnxxIP1P99adLIhms0by
-X-Google-Smtp-Source: AMrXdXtqr+4golq/ykzdhAYvG4XXj8HyYW0hmme6ADjkc2O8rIq+Dpv2RW8SUNLrtiHjvkWChv0jtA==
-X-Received: by 2002:a05:6402:2989:b0:461:1998:217f with SMTP id eq9-20020a056402298900b004611998217fmr24342750edb.4.1674471280687;
-        Mon, 23 Jan 2023 02:54:40 -0800 (PST)
-Received: from cloudflare.com (79.191.179.97.ipv4.supernova.orange.pl. [79.191.179.97])
-        by smtp.gmail.com with ESMTPSA id ew7-20020a056402538700b0049b58744f93sm14812190edb.81.2023.01.23.02.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Jan 2023 02:54:40 -0800 (PST)
-References: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
-User-agent: mu4e 1.6.10; emacs 28.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Yaniv Agman <yanivagman@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Subject: Re: Are BPF programs preemptible?
-Date:   Mon, 23 Jan 2023 11:46:58 +0100
-In-reply-to: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
-Message-ID: <878rhty100.fsf@cloudflare.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GurJgwjoFQNdZqxTjXXtdzYvuIXsPElEsE5t8iRI348=;
+        b=CQq1nt7xYkrd/mi1KVwiR2mMxJHcM5yxb8pXaCCsZfaPvynN/pmViKiefnOCDi5Tzx
+         ic3HDvZR0tsgx/uTV0LIkXfLl0TY+0+weH5XlBRvx4WTyFbyAoAvV7R86PdBm3W2kxwW
+         /9EOvBjTc092H4pCimNtW1cWXlwEiM5lRK2uz5XrAV+jY1h9LwywitFe4EsJ+X6uRYRo
+         vh1psU/+TI6PUhkQ7QoZ479ZIZS92/kZmOJa44GvNMYk6Zak5jRkLpVW5reuwrcKATAX
+         /XFI/bcKB83cdZ/LEAlFC5wY2a9EpFukG5WmPriTAMbNMZtF3YdsFVWf5ULjF/gbocLB
+         i2jg==
+X-Gm-Message-State: AFqh2kq+AQhsgrryMupYokzEHZI1bvjnrX98F9QeuZDoIC1RKp7WIXGN
+        rYuNnrIHEkIN+NGlZB/7xd+Tew==
+X-Google-Smtp-Source: AMrXdXsPRwYrnaXw9xX4B1eeQb0D5xrFH9eOI3n097aQpLYDHeyfCXKP4eQdFGO4lnW4dO+O4hOv4w==
+X-Received: by 2002:a05:600c:3545:b0:3c6:e60f:3f4a with SMTP id i5-20020a05600c354500b003c6e60f3f4amr23649013wmq.1.1674471479963;
+        Mon, 23 Jan 2023 02:57:59 -0800 (PST)
+Received: from ?IPV6:2a02:8011:e80c:0:c17d:2d7f:4a94:488b? ([2a02:8011:e80c:0:c17d:2d7f:4a94:488b])
+        by smtp.gmail.com with ESMTPSA id s5-20020a1cf205000000b003b47b80cec3sm10322397wmc.42.2023.01.23.02.57.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Jan 2023 02:57:59 -0800 (PST)
+Message-ID: <20dbac19-d510-c8f5-fd3d-588cb08a3afa@isovalent.com>
+Date:   Mon, 23 Jan 2023 10:57:58 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [bpf-next v2] bpf: drop deprecated bpf_jit_enable == 2
+Content-Language: en-GB
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Tonghao Zhang <tong@infragraf.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Hou Tao <houtao1@huawei.com>,
+        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>
+References: <20230105030614.26842-1-tong@infragraf.org>
+ <ea7673e1-40ec-18be-af89-5f4fd0f71742@csgroup.eu>
+ <71c83f39-f85f-d990-95b7-ab6068839e6c@iogearbox.net>
+ <5836b464-290e-203f-00f2-fc6632c9f570@csgroup.eu>
+ <147A796D-12C0-482F-B48A-16E67120622B@infragraf.org>
+ <0b46b813-05f2-5083-9f2e-82d72970dae2@csgroup.eu>
+ <0792068b-9aff-d658-5c7d-086e6d394c6c@csgroup.eu>
+ <C811FC00-CE38-4227-B2E8-4CD8989D8B94@infragraf.org>
+ <4ab9aafe-6436-b90d-5448-f74da22ddddb@csgroup.eu>
+ <376f9737-f9a4-da68-8b7f-26020021613c@isovalent.com>
+ <21b09e52-142d-92f5-4f8b-e4190f89383b@csgroup.eu>
+ <43e6cd9f-ac54-46da-dba9-d535a2a77207@isovalent.com>
+ <26e09ae3-dc7a-858d-c15c-7c2ff080d36d@csgroup.eu>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <26e09ae3-dc7a-858d-c15c-7c2ff080d36d@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 11:21 AM +02, Yaniv Agman wrote:
-> Hello!
->
-> Several places state that eBPF programs cannot be preempted by the
-> kernel (e.g. https://docs.cilium.io/en/latest/bpf/toolchain), however,
-> I did see a strange behavior where an eBPF percpu map gets overridden,
-> and I'm trying to figure out if it's due to a bug in my program or
-> some misunderstanding I have about eBPF. What caught my eye was a
-> sentence in a LWN article (https://lwn.net/Articles/812503/) that
-> says: "Alexei thankfully enlightened me recently over a beer that the
-> real intent here is to guarantee that the program runs to completion
-> on the same CPU where it started".
->
-> So my question is - are BPF programs guaranteed to run from start to
-> end without being interrupted at all or the only guarantee I get is
-> that they run on the same CPU but IRQs (NMIs, soft irqs, whatever) can
-> interrupt their run?
->
-> If the only guarantee is no migration, it means that a percpu map
-> cannot be safely used by two different BPF programs that can preempt
-> each other (e.g. some kprobe and a network cgroup program).
+2023-01-23 07:57 UTC+0000 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
+> 
+> Le 17/01/2023 à 16:42, Quentin Monnet a écrit :
+>>
+>> In the meantime, you could disable the use of skeletons in bpftool, by
+>> removing "clang-bpf-co-re" from FEATURE_TESTS from the Makefile. You
+>> should get a functional binary, which would only miss a few features
+>> (namely, printing the pids of programs holding references to BPF
+>> programs, and the "bpftool prog profile" command).
+> 
+> Ok, with "clang-bpf-co-re" removed, bpftool doesn't complain.
+> 
+> However, does it work at all ?
 
-Since v5.7 BPF program runners use migrate_disable() instead of
-preempt_disable(). See commit 2a916f2f546c ("bpf: Use
-migrate_disable/enable in array macros and cgroup/lirc code.") [1].
+Yes it does.
 
-But at that time migrate_disable() was merely an alias for
-preempt_disable() on !CONFIG_PREEMPT_RT kernels.
+> 
+> I started a 'tcpdump', I confirmed with ' bpf_jit_enable == 2' that a 
+> BPF jitted program is created by tcpdump.
+> 
+> 'bptool prog show' and 'bpftool prog list' returns no result.
 
-Since v5.11 migrate_disable() does no longer disable preemption on
-!CONFIG_PREEMPT_RT kernels. See commit 74d862b682f5 ("sched: Make
-migrate_disable/enable() independent of RT") [2].
+Bpftool works with eBPF, not with the older "classic" BPF (cBPF) used by
+tcpdump. You should see programs listed if you load anything eBPF, for
+example by using BCC tools, bpftrace, or load an eBPF program any other
+way from user space:
 
-So, yes, you are right, but it depends on the kernel version.
+	$ echo "int main(void) {return 0;}" | \
+		clang -O2 -target bpf -c -o foo.o -x c -
+	# bpftool prog load foo.o /sys/fs/bpf/foo type xdp
+	# bpftool prog list
+	# bpftool prog dump jited name main
+	# rm /sys/fs/bpf/foo
 
-PS. The migrate_disable vs per-CPU data problem is also covered in [3].
+I know tcpdump itself can show the cBPF bytecode for its programs, but I
+don't know of another way to dump the JIT-ed image for cBPF programs.
+Drgn could probably do it, with kernel debug symbols.
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2a916f2f546ca1c1e3323e2a4269307f6d9890eb
-[2]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=74d862b682f51e45d25b95b1ecf212428a4967b0
-[3]: https://lwn.net/Articles/836503/
+Quentin
