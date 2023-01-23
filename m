@@ -2,236 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A44677319
-	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 00:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D256773E7
+	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 02:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbjAVXAY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Jan 2023 18:00:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46094 "EHLO
+        id S229990AbjAWByH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Jan 2023 20:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbjAVXAX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 Jan 2023 18:00:23 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862D618ABD;
-        Sun, 22 Jan 2023 15:00:22 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1E07DB80AD7;
-        Sun, 22 Jan 2023 23:00:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28557C433D2;
-        Sun, 22 Jan 2023 23:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674428419;
-        bh=l6sVcqmyQgy5kjC6EfqdlezzQu1gDTlLgDSd7U2cr58=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WfR7vjIzJ9uGSElCjnLKxQq4fB3r1scO0Iql0EGNmSod+foUQpKcrurt58tKZL5PG
-         jjnVeWbnbo7GyiEDNsNMaroIV9YZuPT9dTzC+Q9Vdwyc2H+kx7Iad3m4HwZlf6Gb3i
-         0k0t66tEB4dHWooYdjTxGqImNx0meH57RMOH0U1lBF3S08n4q1k0C1SdKpmliazwEG
-         c/OgeLPmIHSz2xrkcHKWLcwANcX1NDztI0gJbJbbH+B+Q+LfeR61IyRLtnKiQZMZQG
-         GhGg47OrVdiW+4pININTNVpU9UVyxkg7p9yIiyJ5Mo3R6ordXXnkf7aKCYfFIaZTQ+
-         VEpvFYGdD4trw==
-Date:   Mon, 23 Jan 2023 00:00:15 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        toke@redhat.com, memxor@gmail.com, alardam@gmail.com,
-        saeedm@nvidia.com, anthony.l.nguyen@intel.com, gospo@broadcom.com,
-        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
-        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
-        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
-        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
-        lorenzo.bianconi@redhat.com, niklas.soderlund@corigine.com
-Subject: Re: [PATCH bpf-next 1/7] netdev-genl: create a simple family for
- netdev stuff
-Message-ID: <Y82//2EX6QQoZkV/@lore-desk>
-References: <cover.1674234430.git.lorenzo@kernel.org>
- <272fa19f57de2d14e9666b4cd9b1ae8a61a94807.1674234430.git.lorenzo@kernel.org>
- <20230120191126.06c9d514@kernel.org>
+        with ESMTP id S229817AbjAWByH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Jan 2023 20:54:07 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DD0C16B;
+        Sun, 22 Jan 2023 17:54:06 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id s3so12932383edd.4;
+        Sun, 22 Jan 2023 17:54:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l5z4Hd0Qs9SFsDBYXanxTnEoLsdmIZ6VAYEjeE+ksHI=;
+        b=P5gYeWZzJ8Apxca/oufOTx2EM0Y6R+dRr06gyzXSYyx3MnrVBl1t2/Lw4IMiuifRN/
+         YeneYV3iPCNnV49Fva/f21B5syoeuDJbm8JA27wI6a7miPEoR1gJwaRSLi3qIey5e2Df
+         QgQIiTgEgzbJpqH3NIA9wSzLqTa5AtbIAUEksSp7I9tEbmKCRdN7baxc3d3ekZ4vXea4
+         XWmi1cdz0S6VKn8t+o1d/xPTWC6GJgAae4jDzDQe9IYZV1MHcKn3Vu2id6swfjev4c4T
+         YTapkFdOggFMS0wDPmVYpSjliz9CF2IP//VkZhR1CcVMTtFiAWeV4nWeucLicFRE2wfL
+         E7+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l5z4Hd0Qs9SFsDBYXanxTnEoLsdmIZ6VAYEjeE+ksHI=;
+        b=UIbMrS1YSkwHtkhUbzQi02gfH0Dq91iojpwlAB00MFpVYbpZalJEYOR5Cv3SwqTp6q
+         lIWSwJaUF1GJN6IeThlctC1MKCue6HxBL9ickYhGVNkTzjI0STiHFe4eCyghmKE8syow
+         2k+CaFjZmFlfa3UdtpAyZ/OKBQmbC9/bmWGek39iOrsrknoxsISrhIg35X9v8tNf9i4s
+         A3kHgk5RoKT6zYfert0fmYUX2H6MaqV+WTxrjMcc9k1pIvu9R2l9RQHFqPaRfFZQFpKA
+         Jsq2pX/V2Hcr6oZHeErfcqa9XA6FHmXD4Y5HeITt6ruhgPxbRdYXPo8kEH5upzkpC0JR
+         3wGA==
+X-Gm-Message-State: AFqh2koS8iR251Ub/iRP7ckF81b9gXG08AM9AEMuzg1xpgp9k+ppUgJY
+        FAl6rj+GtuAvVnEXm1ttmf2cdcLQwxYIcxsyLsA=
+X-Google-Smtp-Source: AMrXdXskOC8lBwF/BL0baqLazqE0xc0riXJdq8ydWpJRRmiXrhRFTGNGSbpZ+7vKrvzzNMoiSpYu0Wnukjswy3VTYmc=
+X-Received: by 2002:a05:6402:28a4:b0:485:2bdf:ca28 with SMTP id
+ eg36-20020a05640228a400b004852bdfca28mr3299131edb.251.1674438844563; Sun, 22
+ Jan 2023 17:54:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Tja5EzIgFqyLPfdS"
-Content-Disposition: inline
-In-Reply-To: <20230120191126.06c9d514@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230121085521.9566-1-kerneljasonxing@gmail.com> <1bb796f9-b2dd-1c96-831a-34585770d80d@molgen.mpg.de>
+In-Reply-To: <1bb796f9-b2dd-1c96-831a-34585770d80d@molgen.mpg.de>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Mon, 23 Jan 2023 09:53:28 +0800
+Message-ID: <CAL+tcoDyeG8oLspkrdjwJX3=ZmcDD7JY63s=F3cmzaEsXNOveA@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH net] ixgbe: allow to increase MTU to
+ some extent with XDP enalbed
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, richardcochran@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.co,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
+        Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Jan 23, 2023 at 4:21 AM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+>
+> Dear Jason,
+>
+>
+> Thank you for your patch.
 
---Tja5EzIgFqyLPfdS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello Paul,
 
-> On Fri, 20 Jan 2023 18:16:50 +0100 Lorenzo Bianconi wrote:
-> > From: Jakub Kicinski <kuba@kernel.org>
-> >=20
-> > Add a Netlink spec-compatible family for netdevs.
-> > This is a very simple implementation without much
-> > thought going into it.
-> >=20
-> > It allows us to reap all the benefits of Netlink specs,
-> > one can use the generic client to issue the commands:
-> >=20
-> >   $ ./gen.py --spec netdev.yaml --do dev_get --json=3D'{"ifindex": 2}'
-> >   {'ifindex': 2, 'xdp-features': 31}
-> >=20
-> >   $ ./gen.py --spec netdev.yaml --dump dev_get
-> >   [{'ifindex': 1, 'xdp-features': 0}, {'ifindex': 2, 'xdp-features': 31=
-}]
->=20
-> In the meantime I added support for rendering enums in Python.
-> So you can show names in the example. eg:
->=20
-> $ ./cli.py --spec netdev.yaml --dump dev_get=20
-> [{'ifindex': 1, 'xdp-features': set()},
->  {'ifindex': 2,
->   'xdp-features': {'ndo-xmit', 'pass', 'redirect', 'aborted', 'drop'}},
->  {'ifindex': 3, 'xdp-features': {'rx-sg'}}]
->=20
-> > the generic python library does not have flags-by-name
-> > support, yet, but we also don't have to carry strings
-> > in the messages, as user space can get the names from
-> > the spec.
-> >=20
-> > Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > Co-developed-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > Co-developed-by: Marek Majtyka <alardam@gmail.com>
-> > Signed-off-by: Marek Majtyka <alardam@gmail.com>
-> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> > ---
-> >  Documentation/netlink/specs/netdev.yaml |  72 ++++++++++
->=20
-> FWIW I'm not 100% sure if we should scope the family to all of netdev
-> or just xdp. Same for the name of the op, should we call the op dev_get
-> or dev_xdp_get..
+Thanks for the review.
 
-is it likely we are going to add non-xdp info here in the near future? If n=
+>
+> Am 21.01.23 um 09:55 schrieb Jason Xing:
+> > From: Jason Xing <kernelxing@tencent.com>
+>
+> There is a small typo in the summary: ena*bl*ed
+>
+
+Sure it is. That's my fault.
+
+> > I encountered one case where I cannot increase the MTU size with XDP
+> > enabled if the server is equipped with IXGBE card, which happened on
+> > thousands of servers. I noticed it was prohibited from 2017[1] and
+>
+> That=E2=80=99s included since Linux 4.19-rc1.
+>
+> > added size checks[2] if allowed soon after the previous patch.
+> >
+> > Interesting part goes like this:
+> > 1) Changing MTU directly from 1500 (default value) to 2000 doesn't
+> > work because the driver finds out that 'new_frame_size >
+> > ixgbe_rx_bufsz(ring)' in ixgbe_change_mtu() function.
+> > 2) However, if we change MTU to 1501 then change from 1501 to 2000, it
+> > does work, because the driver sets __IXGBE_RX_3K_BUFFER when MTU size
+> > is converted to 1501, which later size check policy allows.
+> >
+> > The default MTU value for most servers is 1500 which cannot be adjusted
+> > directly to the value larger than IXGBE_MAX_2K_FRAME_BUILD_SKB (1534 or
+> > 1536) if it loads XDP.
+> >
+> > After I do a quick study on the manner of i40E driver allowing two kind=
+s
+> > of buffer size (one is 2048 while another is 3072) to support XDP mode =
+in
+> > i40e_max_xdp_frame_size(), I believe the default MTU size is possibly n=
 ot
-I would say we can target just xdp for the moment.
+> > satisfied in XDP mode when IXGBE driver is in use, we sometimes need to
+> > insert a new header, say, vxlan header. So setting the 3K-buffer flag
+> > could solve the issue.
+>
+> What card did you test with exactly?
+>
 
->=20
-> > diff --git a/include/uapi/linux/netdev.h b/include/uapi/linux/netdev.h
-> > new file mode 100644
-> > index 000000000000..254fc336d469
-> > --- /dev/null
-> > +++ b/include/uapi/linux/netdev.h
-> > @@ -0,0 +1,66 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +/* Do not edit directly, auto-generated from: */
->=20
-> Like this line says, you can't hand edit this file.
-> Next time someone adds an attribute all your changes will be wiped.
+It is the IXGBE driver that has such an issue.  The I40E driver I
+mentioned here is only for contrast. It's not that proper from my
+point of view if the IXGBE driver cannot directly adjust to 2000. Thus
+I would like more reviews and suggestions.
 
-ack, right.
+Thanks,
+Jason
 
->=20
-> > +/*	Documentation/netlink/specs/netdev.yaml */
-> > +/* YNL-GEN uapi header */
+> > [1] commit 38b7e7f8ae82 ("ixgbe: Do not allow LRO or MTU change with XD=
+P")
+> > [2] commit fabf1bce103a ("ixgbe: Prevent unsupported configurations wit=
+h
+> > XDP")
+>
+> I=E2=80=99d say to not break the line in references.
+>
+> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> > ---
+> >   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/ne=
+t/ethernet/intel/ixgbe/ixgbe_main.c
+> > index ab8370c413f3..dc016582f91e 100644
+> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> > @@ -4313,6 +4313,9 @@ static void ixgbe_set_rx_buffer_len(struct ixgbe_=
+adapter *adapter)
+> >               if (IXGBE_2K_TOO_SMALL_WITH_PADDING ||
+> >                   (max_frame > (ETH_FRAME_LEN + ETH_FCS_LEN)))
+> >                       set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
 > > +
-> > +#ifndef _UAPI_LINUX_NETDEV_H
-> > +#define _UAPI_LINUX_NETDEV_H
-> > +
-> > +#define NETDEV_FAMILY_NAME	"netdev"
-> > +#define NETDEV_FAMILY_VERSION	1
-> > +
-> > +enum netdev_xdp_act {
-> > +	NETDEV_XDP_ACT_ABORTED_BIT,
-> > +	NETDEV_XDP_ACT_DROP_BIT,
-> > +	NETDEV_XDP_ACT_PASS_BIT,
-> > +	NETDEV_XDP_ACT_TX_BIT,
-> > +	NETDEV_XDP_ACT_REDIRECT_BIT,
-> > +	NETDEV_XDP_ACT_NDO_XMIT_BIT,
-> > +	NETDEV_XDP_ACT_XSK_ZEROCOPY_BIT,
-> > +	NETDEV_XDP_ACT_HW_OFFLOAD_BIT,
-> > +	NETDEV_XDP_ACT_RX_SG_BIT,
-> > +	NETDEV_XDP_ACT_NDO_XMIT_SG_BIT
->=20
-> You need to add -bit to all the enum names in the yaml if you want=20
-> to have _BIT in the name here.
-
-ack, I do not think it is needed (according to the comment below).
-
->=20
-> > +};
-> > +
-> > +#define NETDEV_XDP_ACT_ABORTED		BIT(NETDEV_XDP_ACT_ABORTED_BIT)
-> > +#define NETDEV_XDP_ACT_DROP		BIT(NETDEV_XDP_ACT_DROP_BIT)
-> > +#define NETDEV_XDP_ACT_PASS		BIT(NETDEV_XDP_ACT_PASS_BIT)
-> > +#define NETDEV_XDP_ACT_TX		BIT(NETDEV_XDP_ACT_TX_BIT)
-> > +#define NETDEV_XDP_ACT_REDIRECT		BIT(NETDEV_XDP_ACT_REDIRECT_BIT)
-> > +#define NETDEV_XDP_ACT_NDO_XMIT		BIT(NETDEV_XDP_ACT_NDO_XMIT_BIT)
-> > +#define NETDEV_XDP_ACT_XSK_ZEROCOPY	BIT(NETDEV_XDP_ACT_XSK_ZEROCOPY_BI=
-T)
-> > +#define NETDEV_XDP_ACT_HW_OFFLOAD	BIT(NETDEV_XDP_ACT_HW_OFFLOAD_BIT)
-> > +#define NETDEV_XDP_ACT_RX_SG		BIT(NETDEV_XDP_ACT_RX_SG_BIT)
-> > +#define NETDEV_XDP_ACT_NDO_XMIT_SG	BIT(NETDEV_XDP_ACT_NDO_XMIT_SG_BIT)
-> > +
-> > +#define NETDEV_XDP_ACT_BASIC		(NETDEV_XDP_ACT_DROP |	\
-> > +					 NETDEV_XDP_ACT_PASS |	\
-> > +					 NETDEV_XDP_ACT_TX |	\
-> > +					 NETDEV_XDP_ACT_ABORTED)
-> > +#define NETDEV_XDP_ACT_FULL		(NETDEV_XDP_ACT_BASIC |	\
-> > +					 NETDEV_XDP_ACT_REDIRECT)
-> > +#define NETDEV_XDP_ACT_ZC		(NETDEV_XDP_ACT_FULL |	\
-> > +					 NETDEV_XDP_ACT_XSK_ZEROCOPY)
->=20
-> These defines don't belong in uAPI. Especially the use of BIT().
-
-since netdev xdp_features is a bitmask, can we use 'flags' as type for defi=
-nitions in
-netdev.yaml so we can get rid of this BIT() definitions for both user and
-kernel space?
-
->=20
-> > +			if (err < 0)
-> > +				break;
-> > +cont:
-> > +			idx++;
-> > +		}
-> > +	}
-> > +
-> > +	rtnl_unlock();
-> > +
-> > +	if (err !=3D -EMSGSIZE)
-> > +		return err;
-> > +
-> > +	cb->args[1] =3D idx;
-> > +	cb->args[0] =3D h;
-> > +	cb->seq =3D net->dev_base_seq;
-> > +	nl_dump_check_consistent(cb, nlmsg_hdr(skb));
->=20
-> I think that this line can be dropped.
-
-ack, I will fix it.
-
-Regards,
-Lorenzo
-
->=20
-> > +	return skb->len;
-> > +}
-
---Tja5EzIgFqyLPfdS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY82//wAKCRA6cBh0uS2t
-rPB3AQDozI0/knJ+CUWwlkYtcNHhL3s7GTUfjpU86CHD012vLAEAhzCxQ0vO1izj
-6uyMaGBsZxg3v/0H7LDsPSmw8+lloww=
-=aNj9
------END PGP SIGNATURE-----
-
---Tja5EzIgFqyLPfdS--
+> > +             if (ixgbe_enabled_xdp_adapter(adapter))
+> > +                     set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
+> >   #endif
+> >       }
+> >   }
+>
+>
+> Kind regards,
+>
+> Paul
