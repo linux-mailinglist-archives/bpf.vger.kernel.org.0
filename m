@@ -2,152 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71810678BE7
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 00:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DA8678BEF
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 00:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjAWXRv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Jan 2023 18:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
+        id S229557AbjAWXWh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Jan 2023 18:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjAWXRv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Jan 2023 18:17:51 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51961D50D;
-        Mon, 23 Jan 2023 15:17:49 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id v6so34672381ejg.6;
-        Mon, 23 Jan 2023 15:17:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rGHQVT6OOGT/1kN7WFy1iuELzwSb3GW4ljiie40ssGc=;
-        b=bwIjx0/nDLuZ7FsuDbvsDQXX63weXAifErsOCvGlSgINo0kfaUVeJzkcUZ9UokIR9w
-         GU98gDLCoRP2xD/e4z/YjYgw/lPnlCOdp99e0ChZv/ZWIVDGkFD4ESs87JVKduEYm77k
-         dlRnAE50km6Yij9AOVzU02CG6HbrcwaRquG+e5ufQgAPbvcg2ttZ3RAu3AeCl0kR4+ax
-         2WTet5AtQLr/rTTJxUfcTad9pxrxRiy9gqQAd5zEcKnxRxg1qZcV6Alq9JvJiqIkOutO
-         Z9qKoy/ttJx5lnTvs4jA/dwb3SIMtWac/SLT9s/XEG8siOxmOhXJCMpVu0iWC7U0hfRz
-         kc7Q==
+        with ESMTP id S229469AbjAWXWf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Jan 2023 18:22:35 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A92F17CF7;
+        Mon, 23 Jan 2023 15:22:35 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id jr19so10503762qtb.7;
+        Mon, 23 Jan 2023 15:22:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rGHQVT6OOGT/1kN7WFy1iuELzwSb3GW4ljiie40ssGc=;
-        b=H4QESPWjg8VzLQPaMU1yZGgBLp1s3ZDkRahssVEQ3FF7ch2p0ej1e7HNchB+BahoYd
-         /D/SoBa7Vtfv740PwGSMM/lSJ7XJgrxFmH/TXOz6VXQuzYrA0m5R7N/g8j719WajWwVF
-         ZHc5VaycRnufyjwgsbiQwN/xpwCjjRyrvcnoG1bXEMFvbJ0tTwAe3ksdDv9ra1gS6b9S
-         lso3Nt9oqVHnPiTuBJclHctsw45ynQ/byxsSZ9f2hWFgmbsxZQHOB3t8FaXawsu5tCBA
-         N2W279hRBIdX6sQAIMpoiSdafOL1QS32gDOk2Sq7g1iF0IS/JEXGmntrIWKJ09e8HNYI
-         wuRw==
-X-Gm-Message-State: AFqh2koXY+FHPxqOIPjAOkuH6CZSIzC/sQpVEKR0oCt9KWjkXolXhAei
-        hSdeeX2X+7tDryMIAuYcBdbIB3ntF12wfTGPz4f1S3M5i8I=
-X-Google-Smtp-Source: AMrXdXu0pw3W2DXe7/rd+P1f3BnuChmYExdV7mrCu15SFPLmnT7xk2iiFgYqo7vEHuwgHAhY34tBKbgcyOWKEd+PGN8=
-X-Received: by 2002:a17:906:c09:b0:86e:9975:81e6 with SMTP id
- s9-20020a1709060c0900b0086e997581e6mr2577122ejf.102.1674515867717; Mon, 23
- Jan 2023 15:17:47 -0800 (PST)
+        bh=04jkzre1j7/rYjmK6iSYqnpMbEfaeULGdhvfnEgScyY=;
+        b=H4Jc/ORnE4swwF1AYtKg27W13MLCSfxrfV9bWCDKNRnI3vWzWvgYpbHb+nTtB894yZ
+         0rgCsdO36lwrimbL0cd4VYjR6PV5xQZTCtdNgy8aGuG9+HBxE3cuqb1HCxDHmaymw+DN
+         OAJIb3CBd+56J0vfNzTxyNNrKzYTF2sf18he1O+6ZmPrlSXYZVp3P6sHqp+Ie7E1iRYt
+         7pl21mqz66g8BsWA7o8c3+ZN0wxKnIh6/esSsbY7PrWBNLFRTz+p7gF5PogfZCmpTyqb
+         6riwtQ89u27uSWNnBX3TV/iwsyLCKJTXsIoE7rynddTlMZwgP6pI3TOUd2UZ6NONu/BO
+         q8CA==
+X-Gm-Message-State: AFqh2kqVdX1PPOMwZL8xZ57zMlWuLPRb9XKWZB+NMlEK6p6/359kNf+K
+        lEhZr0HXmaYlX+TYMP4h8/7BkTs+HCqM6lg3
+X-Google-Smtp-Source: AMrXdXuoIIwMF3dRqgCDSAIByB9oXZ/ttc4bizmD4j5ZBRkL0XuPqDlHM41T7v/JczwF3yfEyLnyqA==
+X-Received: by 2002:ac8:5a88:0:b0:3a7:e2df:e868 with SMTP id c8-20020ac85a88000000b003a7e2dfe868mr48158327qtc.41.1674516153785;
+        Mon, 23 Jan 2023 15:22:33 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:93a0])
+        by smtp.gmail.com with ESMTPSA id p14-20020ac8408e000000b003b6894f7002sm212272qtl.9.2023.01.23.15.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Jan 2023 15:22:33 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, tj@kernel.org, memxor@gmail.com
+Subject: [PATCH bpf-next 0/3] Enable struct_ops programs to be sleepable
+Date:   Mon, 23 Jan 2023 17:22:25 -0600
+Message-Id: <20230123232228.646563-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-References: <1674028604-7113-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1674028604-7113-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 Jan 2023 15:17:35 -0800
-Message-ID: <CAEf4BzZfBb75smH0uTn4E36T6vk1xhZZ+5_ONtdh9aFQCMH2pw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix build errors if CONFIG_NF_CONNTRACK=m
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 11:57 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> If CONFIG_NF_CONNTRACK=m, there are no definitions of NF_NAT_MANIP_SRC
-> and NF_NAT_MANIP_DST in vmlinux.h, build test_bpf_nf.c failed.
->
-> $ make -C tools/testing/selftests/bpf/
->
->   CLNG-BPF [test_maps] test_bpf_nf.bpf.o
-> progs/test_bpf_nf.c:160:42: error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
->                 bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
->                                                        ^
-> progs/test_bpf_nf.c:163:42: error: use of undeclared identifier 'NF_NAT_MANIP_DST'
->                 bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
->                                                        ^
-> 2 errors generated.
->
-> Copy the definitions in include/net/netfilter/nf_nat.h to test_bpf_nf.c,
-> in order to avoid redefinitions if CONFIG_NF_CONNTRACK=y, rename them with
-> ___local suffix. This is similar with commit 1058b6a78db2 ("selftests/bpf:
-> Do not fail build if CONFIG_NF_CONNTRACK=m/n").
->
-> Fixes: b06b45e82b59 ("selftests/bpf: add tests for bpf_ct_set_nat_info kfunc")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  tools/testing/selftests/bpf/progs/test_bpf_nf.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> index 227e85e..9fc603c 100644
-> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> @@ -34,6 +34,11 @@ __be16 dport = 0;
->  int test_exist_lookup = -ENOENT;
->  u32 test_exist_lookup_mark = 0;
->
-> +enum nf_nat_manip_type___local {
-> +       NF_NAT_MANIP_SRC___local,
-> +       NF_NAT_MANIP_DST___local
-> +};
-> +
->  struct nf_conn;
->
->  struct bpf_ct_opts___local {
-> @@ -58,7 +63,7 @@ int bpf_ct_change_timeout(struct nf_conn *, u32) __ksym;
->  int bpf_ct_set_status(struct nf_conn *, u32) __ksym;
->  int bpf_ct_change_status(struct nf_conn *, u32) __ksym;
->  int bpf_ct_set_nat_info(struct nf_conn *, union nf_inet_addr *,
-> -                       int port, enum nf_nat_manip_type) __ksym;
-> +                       int port, enum nf_nat_manip_type___local) __ksym;
->
->  static __always_inline void
->  nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
-> @@ -157,10 +162,10 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
->
->                 /* snat */
->                 saddr.ip = bpf_get_prandom_u32();
-> -               bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
-> +               bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC___local);
->                 /* dnat */
->                 daddr.ip = bpf_get_prandom_u32();
-> -               bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
-> +               bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST___local);
->
+BPF struct_ops programs currently cannot be marked as sleepable. This
+need not be the case -- struct_ops programs could be sleepable, and e.g.
+invoke kfuncs that export the KF_SLEEPABLE flag.
 
-it would be a bit more reliable if you used `bpf_core_enum_value(enum
-nf_nat_manip_type___local, NF_NAT_MANIP_DST___local)`. That would make
-libbpf substitute correct absolute value, if actual enum
-nf_nat_manip_type in kernel ever changed. Please consider a follow up
-patch for this.
+Enabling this is simple -- we just have to change a couple of lines in
+the verifier. This patch set does that, then allows struct_ops backends
+to validate the program being loaded to check if it's allowed to be
+sleepable, and finally adds a testcase to validate all of this.
 
->                 ct_ins = bpf_ct_insert_entry(ct);
->                 if (ct_ins) {
-> --
-> 2.1.0
->
+David Vernet (3):
+  bpf: Allow BPF_PROG_TYPE_STRUCT_OPS programs to be sleepable
+  bpf: Pass const struct bpf_prog * to .check_member
+  bpf/selftests: Verify struct_ops prog sleepable behavior
+
+ include/linux/bpf.h                           |  4 +-
+ kernel/bpf/verifier.c                         |  7 +-
+ net/bpf/bpf_dummy_struct_ops.c                | 18 ++++
+ net/bpf/test_run.c                            |  6 ++
+ net/ipv4/bpf_tcp_ca.c                         |  3 +-
+ .../selftests/bpf/prog_tests/dummy_st_ops.c   | 85 +++++++++++++++++--
+ .../selftests/bpf/progs/dummy_st_ops.c        | 11 +++
+ 7 files changed, 121 insertions(+), 13 deletions(-)
+
+-- 
+2.39.0
+
