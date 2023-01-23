@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE63677E6B
-	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 15:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C3A677E6C
+	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 15:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbjAWOwQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Jan 2023 09:52:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        id S231770AbjAWOwS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Jan 2023 09:52:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231775AbjAWOwP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Jan 2023 09:52:15 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BDE1DB8F
-        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 06:52:14 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id q10-20020a1cf30a000000b003db0edfdb74so4469454wmq.1
-        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 06:52:14 -0800 (PST)
+        with ESMTP id S231991AbjAWOwQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Jan 2023 09:52:16 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804BC21A34
+        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 06:52:15 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id l8so9216090wms.3
+        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 06:52:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WNkqEIwHTvn3hwJGCd8FxWiXUHPri3PBAlA0TPJRr3s=;
-        b=jy5zehtW7P1TstsTHbcLTR3gCzsDqMHSvmFx+gTIxRyQ3fH9fCagRLXy4PU+zyW+ae
-         fU/fPqz6ZZETLp+ZG/Aq4An0MliI8TsULaMI2gUrs3ABNFaqsxfLEXj/dEwcpxV9uJ0j
-         9ZIRsQgY9HI2EKtuiVxMvMUCiZp1RspjFYbtAGVgYiwYNterybjkOfehGCuc0dNFcOpt
-         pzQ9NI4qiWDx2C/c8V5FWD4TzRzsJ1HQZIGVSUnkCQJpbFScX8l2lF0uAjR6rnh+SXFn
-         Lk3WnXdKDwIzO6+2g/xQOgRGRywbM2htpTTowwAVkUG97ESbvJPjJH7bCUxOANAUj+dh
-         3jEw==
+        bh=cNu9QsQPY2wu8htmYk3im2OcdGmOEVzjAIGzhmpVUyA=;
+        b=PcaQ28kH4SooClUlQz95G9uZ8tcSGUme7UrShXExdvQZEu0+ZmqtlNONtrDsCSwBZ0
+         w09/7zg5q1XeCkarCvdnps54Txg7CVonQJhy/1FT01SgVrKsJPNEQC2SYSboPSCKE+ul
+         ptWUOy9xNliPQggk6uIPKVWQV1csyBEwfvTMcTm1hIpnyT3Y53Rev5LzFumJg4c4UbFG
+         rRCA4qPMRP2ltvDfjKH1kAaJvhH4R2ZNOoJkSFh2cEomCMq6u7boSWKKVBC+ZtDFqKES
+         wubBYUo8rIcPmUdWVG6CAUGh9GWWn+Akz74f9LcSaKPfGYclAf/+1L9PNhft/r2lRs4s
+         onvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WNkqEIwHTvn3hwJGCd8FxWiXUHPri3PBAlA0TPJRr3s=;
-        b=nuv6ezUZTQk00sifOV1Jfd0mBoZ7NbSeHpn/v1ADgvRk8+GhjFij1iumq+J8NpH9Db
-         X2S+4Nee9kJ6Rc6Pe4SBzl2zJ2MF8yaX90TKHokFT3zj/CP6YQttEKxN6OBIpXzqWbUk
-         qOvmCk99HDhih88sIU3Knam5yqS2uZgXw+BBGshgFCTLCsZa+ztusHpBwtHIyZvyENik
-         7nJIMFDkIu84sxYrs/TybkSobFwC5c4Zx9hiGu4EbWb71Gq2T5Iu/CIwzz++qpZSzFkC
-         0nWKCv/MwjNjqynV9l7yNUavBThqON8/SWRBfi6HIUF/gBYd1C93Z2Dr9T5lliG3HTIm
-         4qAQ==
-X-Gm-Message-State: AFqh2kplvAmdIvzhYTS1ruGFyApvC37pkWFx14/k/JSbSPVCQaWRbYsI
-        69Eroq04Ga/mQFSI4YB3kx9aWqYAQhc=
-X-Google-Smtp-Source: AMrXdXu627OFmK84+AewYvjfzQB/hlP6n+VpaSypsJoycZugIn5NOerN+jX5oeb09WTYCiUOfMIIlQ==
-X-Received: by 2002:a05:600c:c0c:b0:3db:1caf:1044 with SMTP id fm12-20020a05600c0c0c00b003db1caf1044mr18169921wmb.13.1674485532975;
-        Mon, 23 Jan 2023 06:52:12 -0800 (PST)
+        bh=cNu9QsQPY2wu8htmYk3im2OcdGmOEVzjAIGzhmpVUyA=;
+        b=wC6DzCJsZUCjbn59t01T+G7/MXzROXi4q/j2J8Uah5uhTQozyhEx6nF5O6FLJhivs2
+         1haGHtYR763Rp6OBV83+c9LcgwwTVtcQS9YPu8SPD/hhKOmJ9e0bd3VkUQluYw/c7N9w
+         Dfnn0N65xAF1Sn4o2H0e9CJ33ICR2FZbyN8M47e4+MPYA9O7rY0at9zfwcWaQqYs1wZt
+         6Tnfjmy3e9SgW7RPHNp+CYJRh0XiJvpVcx9ZGq7cYYFBWAhteFWo9RliLPGsVxhx/SQ+
+         0Bj+4UgnSsg8YrGwqOCDTxP7MBrIYG6ZzlDCmjUTD5z74mEMUABgVdiTEfuNaSN07jbW
+         xYlA==
+X-Gm-Message-State: AFqh2krCoBjsLfOZfmSKjZ3YDWzd7FDwwDNXNlNc8Nsv1dqGh1luBDHG
+        hw+nV5KnSdv4BV16Sj2hap4P6eb4hMg=
+X-Google-Smtp-Source: AMrXdXtE/+Ze+aPJPbr15DWumFz/8NGqEg8OlFEgSb1A+VEGO4M2cOm3GWe8Ovw9igFz19tFe96neg==
+X-Received: by 2002:a7b:c5c4:0:b0:3d7:889:7496 with SMTP id n4-20020a7bc5c4000000b003d708897496mr23733156wmk.17.1674485533906;
+        Mon, 23 Jan 2023 06:52:13 -0800 (PST)
 Received: from pluto.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id c7-20020a05600c0a4700b003d1e1f421bfsm11999649wmq.10.2023.01.23.06.52.12
+        by smtp.gmail.com with ESMTPSA id c7-20020a05600c0a4700b003d1e1f421bfsm11999649wmq.10.2023.01.23.06.52.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Jan 2023 06:52:12 -0800 (PST)
+        Mon, 23 Jan 2023 06:52:13 -0800 (PST)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
         yhs@fb.com, Eduard Zingerman <eddyz87@gmail.com>
-Subject: [RFC bpf-next 3/5] selftests/bpf: generate boilerplate code for test_loader-based tests
-Date:   Mon, 23 Jan 2023 16:51:46 +0200
-Message-Id: <20230123145148.2791939-4-eddyz87@gmail.com>
+Subject: [RFC bpf-next 4/5] selftests/bpf: __imm_insn macro to embed raw insns in inline asm
+Date:   Mon, 23 Jan 2023 16:51:47 +0200
+Message-Id: <20230123145148.2791939-5-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230123145148.2791939-1-eddyz87@gmail.com>
 References: <20230123145148.2791939-1-eddyz87@gmail.com>
@@ -71,120 +71,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Automatically generate boilerplate code necessary to run tests that
-use test_loader.c.
+A convenience macro to allow the following usage:
 
-Adds a target 'prog_tests/test_loader_auto_wrappers.c' as part of
-rulesets for 'test_progs' and 'test_progs-no_alu32'. The content of
-this C file is generated by make and has the following structure:
+  #include <linux/filter.h>
 
-  #include <test_progs.h>
-
-  #include "some_test_1.skel.h"
-  #include "some_test_2.skel.h"
   ...
-
-  void test_some_test_1(void) { RUN_TESTS(some_test_1); }
-  void test_some_test_2(void) { RUN_TESTS(some_test_2); }
+  asm volatile (
   ...
-
-Here RUN_TESTS is a macro defined in test_progs.h, it expands to a
-code that uses test_loader.c:test_loader__run_subtests() function to
-load tests specified by appropriate skel.h.
-
-In order to get the list of tests included in
-'test_loader_auto_wrappers.c' the generation script looks for
-'progs/*.c' files that contain a special comment:
-
-  /* Use test_loader marker */
+  ".8byte %[raw_insn];"
+  ...
+  :
+  : __imm_insn(raw_insn, BPF_RAW_INSN(...))
+  : __clobber_all);
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- tools/testing/selftests/bpf/Makefile          | 34 +++++++++++++++++++
- .../selftests/bpf/prog_tests/.gitignore       |  1 +
- 2 files changed, 35 insertions(+)
+ tools/testing/selftests/bpf/progs/bpf_misc.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 26e66f9a0977..66ba2941677c 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -398,6 +398,11 @@ TRUNNER_OUTPUT := $(OUTPUT)$(if $2,/)$2
- TRUNNER_BINARY := $1$(if $2,-)$2
- TRUNNER_TEST_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.test.o,	\
- 				 $$(notdir $$(wildcard $(TRUNNER_TESTS_DIR)/*.c)))
-+ifneq ($(TRUNNER_TEST_LOADER_AUTO_WRAPPERS),)
-+TRUNNER_TEST_OBJS := $$(filter-out $$(TRUNNER_OUTPUT)/test_loader_auto_wrappers.test.o, \
-+				   $$(TRUNNER_TEST_OBJS))
-+TRUNNER_TEST_OBJS += $$(TRUNNER_OUTPUT)/test_loader_auto_wrappers.test.o
-+endif
- TRUNNER_EXTRA_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o,		\
- 				 $$(filter %.c,$(TRUNNER_EXTRA_SOURCES)))
- TRUNNER_EXTRA_HDRS := $$(filter %.h,$(TRUNNER_EXTRA_SOURCES))
-@@ -482,6 +487,32 @@ $(TRUNNER_TESTS_HDR): $(TRUNNER_TESTS_DIR)/*.c
- 		 ) > $$@)
- endif
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index e742a935de98..832bec4818d9 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -61,6 +61,7 @@
+ #define __clobber_common "r0", "r1", "r2", "r3", "r4", "r5", "memory"
+ #define __imm(name) [name]"i"(name)
+ #define __imm_addr(name) [name]"i"(&name)
++#define __imm_insn(name, expr) [name]"i"(*(long *)&(expr))
  
-+ifneq ($(TRUNNER_TEST_LOADER_AUTO_WRAPPERS),)
-+ifeq ($($(TRUNNER_TESTS_DIR)-test-loader-auto-wrappers-c),)
-+$(TRUNNER_TESTS_DIR)-test-loader-auto-wrappers-c := y
-+$(TRUNNER_TESTS_DIR)/test_loader_auto_wrappers.c: $(TRUNNER_BPF_PROGS_DIR)/*.c
-+	$$(call msg,GEN-TEST,$(TRUNNER_BINARY),$$@)
-+	$$(shell (echo '/* Generated source, do not edit */';			\
-+		  tests=$$$$(grep --null -lF '/* Use test_loader marker */'	\
-+				$$(TRUNNER_BPF_PROGS_DIR)/*.c			\
-+				| xargs -0 -I {} basename {} .c);		\
-+		  echo "#include <test_progs.h>";				\
-+		  echo "";							\
-+		  for case in $$$$tests;					\
-+		  do								\
-+			echo "#include \"$$$$case.skel.h\"";			\
-+		  done;								\
-+		  echo "";							\
-+		  for case in $$$$tests;					\
-+		  do								\
-+			printf	"void %-50s { %-50s }\n"			\
-+				"test_$$$$case(void)"				\
-+				"RUN_TESTS($$$$case);";				\
-+		  done) > $$@)
-+$(TRUNNER_TESTS_HDR): $(TRUNNER_TESTS_DIR)/test_loader_auto_wrappers.c
-+endif
-+endif # TRUNNER_TEST_LOADER_AUTO_WRAPPERS
-+
- # compile individual test files
- # Note: we cd into output directory to ensure embedded BPF object is found
- $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
-@@ -537,6 +568,7 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
- 		       verify_sig_setup.sh				\
- 		       $(wildcard progs/btf_dump_test_case_*.c)		\
- 		       $(wildcard progs/*.bpf.o)
-+TRUNNER_TEST_LOADER_AUTO_WRAPPERS := t
- TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
- TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS) -DENABLE_ATOMICS_TESTS
- $(eval $(call DEFINE_TEST_RUNNER,test_progs))
-@@ -560,6 +592,7 @@ TRUNNER_EXTRA_SOURCES := test_maps.c
- TRUNNER_EXTRA_FILES :=
- TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
- TRUNNER_BPF_CFLAGS :=
-+TRUNNER_TEST_LOADER_AUTO_WRAPPERS :=
- $(eval $(call DEFINE_TEST_RUNNER,test_maps))
- 
- # Define test_verifier test runner.
-@@ -625,6 +658,7 @@ $(OUTPUT)/veristat: $(OUTPUT)/veristat.o
- 
- EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
-+	prog_tests/test_loader_auto_wrappers.c				\
- 	feature bpftool							\
- 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
- 			       no_alu32 bpf_gcc bpf_testmod.ko		\
-diff --git a/tools/testing/selftests/bpf/prog_tests/.gitignore b/tools/testing/selftests/bpf/prog_tests/.gitignore
-index 89c4a3d37544..6a937c1cd78d 100644
---- a/tools/testing/selftests/bpf/prog_tests/.gitignore
-+++ b/tools/testing/selftests/bpf/prog_tests/.gitignore
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- tests.h
-+test_loader_auto_wrappers.c
+ #if defined(__TARGET_ARCH_x86)
+ #define SYSCALL_WRAPPER 1
 -- 
 2.39.0
 
