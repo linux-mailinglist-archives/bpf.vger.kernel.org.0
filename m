@@ -2,70 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA87678B40
-	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 23:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71810678BE7
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 00:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbjAWW7y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Jan 2023 17:59:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60852 "EHLO
+        id S229600AbjAWXRv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Jan 2023 18:17:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbjAWW7o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Jan 2023 17:59:44 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76FFEC50
-        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 14:59:18 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id lp10so9678350pjb.4
-        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 14:59:18 -0800 (PST)
+        with ESMTP id S229469AbjAWXRv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Jan 2023 18:17:51 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51961D50D;
+        Mon, 23 Jan 2023 15:17:49 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id v6so34672381ejg.6;
+        Mon, 23 Jan 2023 15:17:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mUw+5qOPqzT0QgGYWK9h2lLMx3Txbd3YBAfPD6m5U1Y=;
-        b=rPsxL2bRQ6/nupQU1Jp9WvRQOljLbKsg4RNOh1teS+06dzRYkoC2I9qcbBtrMoiNCv
-         irjB7YQ6NiQ2DRUF5jTUW7IhuWrrwAIqiD/1CQAVFhMGXXpv5DMhP5lKRoPBIaSX9tDs
-         hbDHplOT2rkDURb9qq/Z/HniFzTY5q9WoJA24r70t2h7rb+yRTLkOSt1FVwas685ICNz
-         s/19wELZGfi6rNoJnBwKw07d5u4mqMyow3eZ9MEjL0G/ZME5ozdpQhtGMO1z5QpvyyFw
-         v7DP6UGQ+kqUVDL/A6n24L/teWx1X6ibfNObO8Mpe3nTcGk8zOladW+y0mt1Ct2Vg/wM
-         6opw==
+        bh=rGHQVT6OOGT/1kN7WFy1iuELzwSb3GW4ljiie40ssGc=;
+        b=bwIjx0/nDLuZ7FsuDbvsDQXX63weXAifErsOCvGlSgINo0kfaUVeJzkcUZ9UokIR9w
+         GU98gDLCoRP2xD/e4z/YjYgw/lPnlCOdp99e0ChZv/ZWIVDGkFD4ESs87JVKduEYm77k
+         dlRnAE50km6Yij9AOVzU02CG6HbrcwaRquG+e5ufQgAPbvcg2ttZ3RAu3AeCl0kR4+ax
+         2WTet5AtQLr/rTTJxUfcTad9pxrxRiy9gqQAd5zEcKnxRxg1qZcV6Alq9JvJiqIkOutO
+         Z9qKoy/ttJx5lnTvs4jA/dwb3SIMtWac/SLT9s/XEG8siOxmOhXJCMpVu0iWC7U0hfRz
+         kc7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mUw+5qOPqzT0QgGYWK9h2lLMx3Txbd3YBAfPD6m5U1Y=;
-        b=4CWAuUWn2d8kdOnNhp+93Om/UFDgsek91bKRrdEwidAVdSPD0lHhnQxp9tNM+1RY1k
-         CSVnJgBGY3i7eHO9QqLfQtEnuU4mEzOXDa5aKRDS4qhPPkpENNCCfxVTGacVSPELsjB0
-         1I25AhCECdwdYyipaE4Apb0dhijbyiKY4SPLtTAzJUAn7/EXz2zJsQm6y0R3ufK71m/m
-         aXknynpAhUaB010sM8WwpvIbYWYC/rSbksIhdZ14miQSc65Zoa96poWb7y/gd5cqRtWv
-         zXw3wVEn5sAypC+TiIMZ5z2gW1dnSk8eshCMsT7SDrUfjvL/aLHNPO0AsVDz8+65917W
-         D9cg==
-X-Gm-Message-State: AFqh2kqP/m6PSumsXcMI8JDVQf8Q9gghHB96n+cx4tYpmX2LA+f5NPlH
-        fqaUOLLUvfg00ESmVnQkIvxXddGef/EqN1wIzSrdkQ==
-X-Google-Smtp-Source: AMrXdXtO0XFUkvEXzJzoxIe3sgPAsDPvPugKrLNWr7lWrmNPcEzij5QlGnC3yuGEkU8DQU1ly+mfyQyI7Tdphp++Z5E=
-X-Received: by 2002:a17:90a:2c4d:b0:229:2410:ef30 with SMTP id
- p13-20020a17090a2c4d00b002292410ef30mr2830399pjm.66.1674514748780; Mon, 23
- Jan 2023 14:59:08 -0800 (PST)
+        bh=rGHQVT6OOGT/1kN7WFy1iuELzwSb3GW4ljiie40ssGc=;
+        b=H4QESPWjg8VzLQPaMU1yZGgBLp1s3ZDkRahssVEQ3FF7ch2p0ej1e7HNchB+BahoYd
+         /D/SoBa7Vtfv740PwGSMM/lSJ7XJgrxFmH/TXOz6VXQuzYrA0m5R7N/g8j719WajWwVF
+         ZHc5VaycRnufyjwgsbiQwN/xpwCjjRyrvcnoG1bXEMFvbJ0tTwAe3ksdDv9ra1gS6b9S
+         lso3Nt9oqVHnPiTuBJclHctsw45ynQ/byxsSZ9f2hWFgmbsxZQHOB3t8FaXawsu5tCBA
+         N2W279hRBIdX6sQAIMpoiSdafOL1QS32gDOk2Sq7g1iF0IS/JEXGmntrIWKJ09e8HNYI
+         wuRw==
+X-Gm-Message-State: AFqh2koXY+FHPxqOIPjAOkuH6CZSIzC/sQpVEKR0oCt9KWjkXolXhAei
+        hSdeeX2X+7tDryMIAuYcBdbIB3ntF12wfTGPz4f1S3M5i8I=
+X-Google-Smtp-Source: AMrXdXu0pw3W2DXe7/rd+P1f3BnuChmYExdV7mrCu15SFPLmnT7xk2iiFgYqo7vEHuwgHAhY34tBKbgcyOWKEd+PGN8=
+X-Received: by 2002:a17:906:c09:b0:86e:9975:81e6 with SMTP id
+ s9-20020a1709060c0900b0086e997581e6mr2577122ejf.102.1674515867717; Mon, 23
+ Jan 2023 15:17:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20230124094403.76e0011f@canb.auug.org.au>
-In-Reply-To: <20230124094403.76e0011f@canb.auug.org.au>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 23 Jan 2023 14:58:56 -0800
-Message-ID: <CAKH8qBvO3QiR9tvu6=ic-A79O5qp8=WMSL8VR6sCDvO4cmOKqg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the bpf-next tree with Linus' tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+References: <1674028604-7113-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1674028604-7113-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 23 Jan 2023 15:17:35 -0800
+Message-ID: <CAEf4BzZfBb75smH0uTn4E36T6vk1xhZZ+5_ONtdh9aFQCMH2pw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix build errors if CONFIG_NF_CONNTRACK=m
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Paul Moore <paul@paul-moore.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,172 +76,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 2:44 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Tue, Jan 17, 2023 at 11:57 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> Hi all,
+> If CONFIG_NF_CONNTRACK=m, there are no definitions of NF_NAT_MANIP_SRC
+> and NF_NAT_MANIP_DST in vmlinux.h, build test_bpf_nf.c failed.
 >
-> Today's linux-next merge of the bpf-next tree got a conflict in:
+> $ make -C tools/testing/selftests/bpf/
 >
->   kernel/bpf/offload.c
+>   CLNG-BPF [test_maps] test_bpf_nf.bpf.o
+> progs/test_bpf_nf.c:160:42: error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
+>                 bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+>                                                        ^
+> progs/test_bpf_nf.c:163:42: error: use of undeclared identifier 'NF_NAT_MANIP_DST'
+>                 bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+>                                                        ^
+> 2 errors generated.
 >
-> between commit:
+> Copy the definitions in include/net/netfilter/nf_nat.h to test_bpf_nf.c,
+> in order to avoid redefinitions if CONFIG_NF_CONNTRACK=y, rename them with
+> ___local suffix. This is similar with commit 1058b6a78db2 ("selftests/bpf:
+> Do not fail build if CONFIG_NF_CONNTRACK=m/n").
 >
->   ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD")
+> Fixes: b06b45e82b59 ("selftests/bpf: add tests for bpf_ct_set_nat_info kfunc")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  tools/testing/selftests/bpf/progs/test_bpf_nf.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
 >
-> from Linus' tree and commit:
+> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> index 227e85e..9fc603c 100644
+> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> @@ -34,6 +34,11 @@ __be16 dport = 0;
+>  int test_exist_lookup = -ENOENT;
+>  u32 test_exist_lookup_mark = 0;
 >
->   89bbc53a4dbb ("bpf: Reshuffle some parts of bpf/offload.c")
+> +enum nf_nat_manip_type___local {
+> +       NF_NAT_MANIP_SRC___local,
+> +       NF_NAT_MANIP_DST___local
+> +};
+> +
+>  struct nf_conn;
 >
-> from the bpf-next tree.
+>  struct bpf_ct_opts___local {
+> @@ -58,7 +63,7 @@ int bpf_ct_change_timeout(struct nf_conn *, u32) __ksym;
+>  int bpf_ct_set_status(struct nf_conn *, u32) __ksym;
+>  int bpf_ct_change_status(struct nf_conn *, u32) __ksym;
+>  int bpf_ct_set_nat_info(struct nf_conn *, union nf_inet_addr *,
+> -                       int port, enum nf_nat_manip_type) __ksym;
+> +                       int port, enum nf_nat_manip_type___local) __ksym;
 >
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+>  static __always_inline void
+>  nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+> @@ -157,10 +162,10 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+>
+>                 /* snat */
+>                 saddr.ip = bpf_get_prandom_u32();
+> -               bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
+> +               bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC___local);
+>                 /* dnat */
+>                 daddr.ip = bpf_get_prandom_u32();
+> -               bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
+> +               bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST___local);
+>
 
-Yeah, that looks like a correct resolution, thank you!
-Not sure what would've been the correct way to handle it in bpf-next
-(except waiting for bpf tree to be merged)?
+it would be a bit more reliable if you used `bpf_core_enum_value(enum
+nf_nat_manip_type___local, NF_NAT_MANIP_DST___local)`. That would make
+libbpf substitute correct absolute value, if actual enum
+nf_nat_manip_type in kernel ever changed. Please consider a follow up
+patch for this.
 
+>                 ct_ins = bpf_ct_insert_entry(ct);
+>                 if (ct_ins) {
 > --
-> Cheers,
-> Stephen Rothwell
+> 2.1.0
 >
-> diff --cc kernel/bpf/offload.c
-> index 190d9f9dc987,e87cab2ed710..000000000000
-> --- a/kernel/bpf/offload.c
-> +++ b/kernel/bpf/offload.c
-> @@@ -75,20 -74,124 +74,121 @@@ bpf_offload_find_netdev(struct net_devi
->         return rhashtable_lookup_fast(&offdevs, &netdev, offdevs_params);
->   }
->
-> - int bpf_prog_offload_init(struct bpf_prog *prog, union bpf_attr *attr)
-> + static int __bpf_offload_dev_netdev_register(struct bpf_offload_dev *offdev,
-> +                                            struct net_device *netdev)
->   {
->         struct bpf_offload_netdev *ondev;
-> -       struct bpf_prog_offload *offload;
->         int err;
->
-> -       if (attr->prog_type != BPF_PROG_TYPE_SCHED_CLS &&
-> -           attr->prog_type != BPF_PROG_TYPE_XDP)
-> -               return -EINVAL;
-> +       ondev = kzalloc(sizeof(*ondev), GFP_KERNEL);
-> +       if (!ondev)
-> +               return -ENOMEM;
->
-> -       if (attr->prog_flags)
-> -               return -EINVAL;
-> +       ondev->netdev = netdev;
-> +       ondev->offdev = offdev;
-> +       INIT_LIST_HEAD(&ondev->progs);
-> +       INIT_LIST_HEAD(&ondev->maps);
-> +
-> +       err = rhashtable_insert_fast(&offdevs, &ondev->l, offdevs_params);
-> +       if (err) {
-> +               netdev_warn(netdev, "failed to register for BPF offload\n");
-> +               goto err_free;
-> +       }
-> +
-> +       if (offdev)
-> +               list_add(&ondev->offdev_netdevs, &offdev->netdevs);
-> +       return 0;
-> +
-> + err_free:
-> +       kfree(ondev);
-> +       return err;
-> + }
-> +
-> + static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
-> + {
-> +       struct bpf_prog_offload *offload = prog->aux->offload;
-> +
-> +       if (offload->dev_state)
-> +               offload->offdev->ops->destroy(prog);
-> +
->  -      /* Make sure BPF_PROG_GET_NEXT_ID can't find this dead program */
->  -      bpf_prog_free_id(prog, true);
->  -
-> +       list_del_init(&offload->offloads);
-> +       kfree(offload);
-> +       prog->aux->offload = NULL;
-> + }
-> +
-> + static int bpf_map_offload_ndo(struct bpf_offloaded_map *offmap,
-> +                              enum bpf_netdev_command cmd)
-> + {
-> +       struct netdev_bpf data = {};
-> +       struct net_device *netdev;
-> +
-> +       ASSERT_RTNL();
-> +
-> +       data.command = cmd;
-> +       data.offmap = offmap;
-> +       /* Caller must make sure netdev is valid */
-> +       netdev = offmap->netdev;
-> +
-> +       return netdev->netdev_ops->ndo_bpf(netdev, &data);
-> + }
-> +
-> + static void __bpf_map_offload_destroy(struct bpf_offloaded_map *offmap)
-> + {
-> +       WARN_ON(bpf_map_offload_ndo(offmap, BPF_OFFLOAD_MAP_FREE));
-> +       /* Make sure BPF_MAP_GET_NEXT_ID can't find this dead map */
-> +       bpf_map_free_id(&offmap->map, true);
-> +       list_del_init(&offmap->offloads);
-> +       offmap->netdev = NULL;
-> + }
-> +
-> + static void __bpf_offload_dev_netdev_unregister(struct bpf_offload_dev *offdev,
-> +                                               struct net_device *netdev)
-> + {
-> +       struct bpf_offload_netdev *ondev, *altdev = NULL;
-> +       struct bpf_offloaded_map *offmap, *mtmp;
-> +       struct bpf_prog_offload *offload, *ptmp;
-> +
-> +       ASSERT_RTNL();
-> +
-> +       ondev = rhashtable_lookup_fast(&offdevs, &netdev, offdevs_params);
-> +       if (WARN_ON(!ondev))
-> +               return;
-> +
-> +       WARN_ON(rhashtable_remove_fast(&offdevs, &ondev->l, offdevs_params));
-> +
-> +       /* Try to move the objects to another netdev of the device */
-> +       if (offdev) {
-> +               list_del(&ondev->offdev_netdevs);
-> +               altdev = list_first_entry_or_null(&offdev->netdevs,
-> +                                                 struct bpf_offload_netdev,
-> +                                                 offdev_netdevs);
-> +       }
-> +
-> +       if (altdev) {
-> +               list_for_each_entry(offload, &ondev->progs, offloads)
-> +                       offload->netdev = altdev->netdev;
-> +               list_splice_init(&ondev->progs, &altdev->progs);
-> +
-> +               list_for_each_entry(offmap, &ondev->maps, offloads)
-> +                       offmap->netdev = altdev->netdev;
-> +               list_splice_init(&ondev->maps, &altdev->maps);
-> +       } else {
-> +               list_for_each_entry_safe(offload, ptmp, &ondev->progs, offloads)
-> +                       __bpf_prog_offload_destroy(offload->prog);
-> +               list_for_each_entry_safe(offmap, mtmp, &ondev->maps, offloads)
-> +                       __bpf_map_offload_destroy(offmap);
-> +       }
-> +
-> +       WARN_ON(!list_empty(&ondev->progs));
-> +       WARN_ON(!list_empty(&ondev->maps));
-> +       kfree(ondev);
-> + }
-> +
-> + static int __bpf_prog_dev_bound_init(struct bpf_prog *prog, struct net_device *netdev)
-> + {
-> +       struct bpf_offload_netdev *ondev;
-> +       struct bpf_prog_offload *offload;
-> +       int err;
->
->         offload = kzalloc(sizeof(*offload), GFP_USER);
->         if (!offload)
