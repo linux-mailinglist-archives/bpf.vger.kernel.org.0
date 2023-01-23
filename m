@@ -2,170 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D256773E7
-	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 02:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783C56774A3
+	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 05:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbjAWByH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Jan 2023 20:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
+        id S230138AbjAWE2b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Jan 2023 23:28:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbjAWByH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 Jan 2023 20:54:07 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DD0C16B;
-        Sun, 22 Jan 2023 17:54:06 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id s3so12932383edd.4;
-        Sun, 22 Jan 2023 17:54:06 -0800 (PST)
+        with ESMTP id S229455AbjAWE2b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Jan 2023 23:28:31 -0500
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8B412068
+        for <bpf@vger.kernel.org>; Sun, 22 Jan 2023 20:28:28 -0800 (PST)
+Received: by mail-ua1-x92d.google.com with SMTP id c15so2406273uas.2
+        for <bpf@vger.kernel.org>; Sun, 22 Jan 2023 20:28:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l5z4Hd0Qs9SFsDBYXanxTnEoLsdmIZ6VAYEjeE+ksHI=;
-        b=P5gYeWZzJ8Apxca/oufOTx2EM0Y6R+dRr06gyzXSYyx3MnrVBl1t2/Lw4IMiuifRN/
-         YeneYV3iPCNnV49Fva/f21B5syoeuDJbm8JA27wI6a7miPEoR1gJwaRSLi3qIey5e2Df
-         QgQIiTgEgzbJpqH3NIA9wSzLqTa5AtbIAUEksSp7I9tEbmKCRdN7baxc3d3ekZ4vXea4
-         XWmi1cdz0S6VKn8t+o1d/xPTWC6GJgAae4jDzDQe9IYZV1MHcKn3Vu2id6swfjev4c4T
-         YTapkFdOggFMS0wDPmVYpSjliz9CF2IP//VkZhR1CcVMTtFiAWeV4nWeucLicFRE2wfL
-         E7+g==
+        d=pefoley.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vjjHK/TOmoBm6O8k+2N7BkktCx3pSWAVz7qW+oPVNVE=;
+        b=hPpsuvAwLZh1RRCrs7FTPeEjeZ1bFN6J74cr1RlkEBHsUWLp1jcyckOkVISwJOsUJd
+         ocwNmh7jSMAxjyZr95W33Vdo0HkqHvnUYFOqLpAwJBZASXSAMVc+L8dHPjYvGMrJac7t
+         hGiweTAlxha7IXjucOyG1O4TnBDS1rqatTJ7o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l5z4Hd0Qs9SFsDBYXanxTnEoLsdmIZ6VAYEjeE+ksHI=;
-        b=UIbMrS1YSkwHtkhUbzQi02gfH0Dq91iojpwlAB00MFpVYbpZalJEYOR5Cv3SwqTp6q
-         lIWSwJaUF1GJN6IeThlctC1MKCue6HxBL9ickYhGVNkTzjI0STiHFe4eCyghmKE8syow
-         2k+CaFjZmFlfa3UdtpAyZ/OKBQmbC9/bmWGek39iOrsrknoxsISrhIg35X9v8tNf9i4s
-         A3kHgk5RoKT6zYfert0fmYUX2H6MaqV+WTxrjMcc9k1pIvu9R2l9RQHFqPaRfFZQFpKA
-         Jsq2pX/V2Hcr6oZHeErfcqa9XA6FHmXD4Y5HeITt6ruhgPxbRdYXPo8kEH5upzkpC0JR
-         3wGA==
-X-Gm-Message-State: AFqh2koS8iR251Ub/iRP7ckF81b9gXG08AM9AEMuzg1xpgp9k+ppUgJY
-        FAl6rj+GtuAvVnEXm1ttmf2cdcLQwxYIcxsyLsA=
-X-Google-Smtp-Source: AMrXdXskOC8lBwF/BL0baqLazqE0xc0riXJdq8ydWpJRRmiXrhRFTGNGSbpZ+7vKrvzzNMoiSpYu0Wnukjswy3VTYmc=
-X-Received: by 2002:a05:6402:28a4:b0:485:2bdf:ca28 with SMTP id
- eg36-20020a05640228a400b004852bdfca28mr3299131edb.251.1674438844563; Sun, 22
- Jan 2023 17:54:04 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vjjHK/TOmoBm6O8k+2N7BkktCx3pSWAVz7qW+oPVNVE=;
+        b=vU0HuZWLF6Y1Whg0m+ERiJ3dnNqi0kaED1ZbYdjU6xWRjaMRe3pHRQGYOnAxOmh4AM
+         IyQXOJtD2WiVuGVJUGip5P5+SetoSTcUXiI5NnSm0P36LRKIrOHU8Bq2CYURRE/q69Di
+         FVHzfcr8BBQsqFQ+luDjySWt1UK7c6YZUp+b1SQB5wQAg+wnhfkFwa6nWxkh4n38jRxQ
+         rUG5ph/ipAIcLNS0CyNYJDyrM8hZI35PTkdjlcjUSDWdCvANSvx9RVay5xiBHW20ed3R
+         gY0XYvTl2K1SE9p2/imq2AC8YGfVM2tLFcnM34e5gjjoBGmdPZe0IuQg2jnzZ/YDRFor
+         bLsw==
+X-Gm-Message-State: AFqh2krqDllUt/A/T6oLOAIHALUUAlD8r7tgBpc0EikHX0YzBCms7iZf
+        bfZXRI/+MIb9JiFXR+sCLpXC45eFKVUc3OmxBnY34w==
+X-Google-Smtp-Source: AMrXdXsdoh8iqfsdbvQAPcLKMxmJ8Wx/zLXGK4/3eZvXbxxCNwT+oiDSGJknhi0DYvFAGaxJ3CyQrZHmh0JrQHnX4I0=
+X-Received: by 2002:ab0:1427:0:b0:5f7:89e9:d714 with SMTP id
+ b36-20020ab01427000000b005f789e9d714mr2463881uae.0.1674448107340; Sun, 22 Jan
+ 2023 20:28:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20230121085521.9566-1-kerneljasonxing@gmail.com> <1bb796f9-b2dd-1c96-831a-34585770d80d@molgen.mpg.de>
-In-Reply-To: <1bb796f9-b2dd-1c96-831a-34585770d80d@molgen.mpg.de>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Mon, 23 Jan 2023 09:53:28 +0800
-Message-ID: <CAL+tcoDyeG8oLspkrdjwJX3=ZmcDD7JY63s=F3cmzaEsXNOveA@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH net] ixgbe: allow to increase MTU to
- some extent with XDP enalbed
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.co,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
+References: <20230114-bpf-v1-1-f836695a8b62@pefoley.com> <701abf4bbf5b7957a24d2f164c643e1d9f586fad.camel@gmail.com>
+ <4dc6a571-8564-b38c-31df-0d9741dfc592@meta.com>
+In-Reply-To: <4dc6a571-8564-b38c-31df-0d9741dfc592@meta.com>
+From:   Peter Foley <pefoley2@pefoley.com>
+Date:   Sun, 22 Jan 2023 20:28:15 -0800
+Message-ID: <CAOFdcFOh_rNt3pfkNHPPeK=Kojro==Kpgmmu-VnLuaMYfFoiwg@mail.gmail.com>
+Subject: Re: [PATCH] tools: bpf: Disable stack protector
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 4:21 AM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
->
-> Dear Jason,
->
->
-> Thank you for your patch.
-
-Hello Paul,
-
-Thanks for the review.
-
->
-> Am 21.01.23 um 09:55 schrieb Jason Xing:
-> > From: Jason Xing <kernelxing@tencent.com>
->
-> There is a small typo in the summary: ena*bl*ed
->
-
-Sure it is. That's my fault.
-
-> > I encountered one case where I cannot increase the MTU size with XDP
-> > enabled if the server is equipped with IXGBE card, which happened on
-> > thousands of servers. I noticed it was prohibited from 2017[1] and
->
-> That=E2=80=99s included since Linux 4.19-rc1.
->
-> > added size checks[2] if allowed soon after the previous patch.
+On Wed, Jan 18, 2023 at 11:34 PM Yonghong Song <yhs@meta.com> wrote:
+> On 1/18/23 11:28 AM, Eduard Zingerman wrote:
 > >
-> > Interesting part goes like this:
-> > 1) Changing MTU directly from 1500 (default value) to 2000 doesn't
-> > work because the driver finds out that 'new_frame_size >
-> > ixgbe_rx_bufsz(ring)' in ixgbe_change_mtu() function.
-> > 2) However, if we change MTU to 1501 then change from 1501 to 2000, it
-> > does work, because the driver sets __IXGBE_RX_3K_BUFFER when MTU size
-> > is converted to 1501, which later size check policy allows.
+> > While working on clang patch to disable stack protector
+> > for BPF target I've noticed that there is an option to
+> > disable default configuration file altogether [1]:
 > >
-> > The default MTU value for most servers is 1500 which cannot be adjusted
-> > directly to the value larger than IXGBE_MAX_2K_FRAME_BUILD_SKB (1534 or
-> > 1536) if it loads XDP.
+> >    --no-default-config
 > >
-> > After I do a quick study on the manner of i40E driver allowing two kind=
-s
-> > of buffer size (one is 2048 while another is 3072) to support XDP mode =
-in
-> > i40e_max_xdp_frame_size(), I believe the default MTU size is possibly n=
-ot
-> > satisfied in XDP mode when IXGBE driver is in use, we sometimes need to
-> > insert a new header, say, vxlan header. So setting the 3K-buffer flag
-> > could solve the issue.
+> > Should we consider it instead of -fno-stack-protector
+> > to shield ourselves from any potential distro-specific
+> > changes?
 >
-> What card did you test with exactly?
+> Peter, could you help check whether adding --no-default-config works
+> in your environment or not?
 >
-
-It is the IXGBE driver that has such an issue.  The I40E driver I
-mentioned here is only for contrast. It's not that proper from my
-point of view if the IXGBE driver cannot directly adjust to 2000. Thus
-I would like more reviews and suggestions.
-
-Thanks,
-Jason
-
-> > [1] commit 38b7e7f8ae82 ("ixgbe: Do not allow LRO or MTU change with XD=
-P")
-> > [2] commit fabf1bce103a ("ixgbe: Prevent unsupported configurations wit=
-h
-> > XDP")
->
-> I=E2=80=99d say to not break the line in references.
->
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> >   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 +++
-> >   1 file changed, 3 insertions(+)
 > >
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/ne=
-t/ethernet/intel/ixgbe/ixgbe_main.c
-> > index ab8370c413f3..dc016582f91e 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > @@ -4313,6 +4313,9 @@ static void ixgbe_set_rx_buffer_len(struct ixgbe_=
-adapter *adapter)
-> >               if (IXGBE_2K_TOO_SMALL_WITH_PADDING ||
-> >                   (max_frame > (ETH_FRAME_LEN + ETH_FCS_LEN)))
-> >                       set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
-> > +
-> > +             if (ixgbe_enabled_xdp_adapter(adapter))
-> > +                     set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
-> >   #endif
-> >       }
-> >   }
->
->
-> Kind regards,
->
-> Paul
+> > [1] https://clang.llvm.org/docs/ClangCommandLineReference.html#cmdoption-clang-no-default-config
+
+I guess I could, but I'm not convinced that's the right thing to do.
+Ideally problems with distro-specific configs would cause loud
+failures (like this one) and result in fixes like the changes being
+made to upstream clang/gcc.
+Simply unconditionally disabling distro configs seems to be the wrong
+way to approach this and makes it less likely that future problems
+will be reported in the first place.
