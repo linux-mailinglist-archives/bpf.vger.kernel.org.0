@@ -2,104 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB5C678562
-	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 19:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3AE6785A8
+	for <lists+bpf@lfdr.de>; Mon, 23 Jan 2023 20:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbjAWS4G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Jan 2023 13:56:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
+        id S231757AbjAWTB0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Jan 2023 14:01:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbjAWS4F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Jan 2023 13:56:05 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D01E3A5
-        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 10:56:04 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 7so9717550pga.1
-        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 10:56:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=M1y2OVHARQCaTqCOpWZU/C4m9hlMIWAKFwJ3hNXzKA8=;
-        b=r6lfxV6Uf75FXpN/wKXCksxkAJtz8GBjNaxbQ7/mbyLTe429IpDtdUayJe+79hYI3l
-         lC097QGCBT4F5CShq04QyBM6588Ng0HdOlgOYmiOaXXBHxJv0Pgo9QrYOvz8uONiizoB
-         qRCGoz0Nc0FdFRYW2kuGHPPCWp9MokzcZyFghLWDZU9/HW+lpIDyHESspqS8ZHPPNlhN
-         1iegqNSGsN5//4E5BL8F47cV/8hnQlhobaYAB9mkDqHjKgFqjEf2K/T7cbLrrmBEd+Jb
-         xAij54QcuNPvQJjRinUSPwTPFAJcr64HM8w7QopRkZQ68P2X1HP7ov9/fAxQ3x+Od9vv
-         M6Yg==
+        with ESMTP id S229849AbjAWTBZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Jan 2023 14:01:25 -0500
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1CE1716;
+        Mon, 23 Jan 2023 11:01:25 -0800 (PST)
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-15ebfdf69adso15160690fac.0;
+        Mon, 23 Jan 2023 11:01:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M1y2OVHARQCaTqCOpWZU/C4m9hlMIWAKFwJ3hNXzKA8=;
-        b=h1KaKgz73LdkVT1rNLhFiRiqlcGke+gl2VZjVyaWCBHdNbYLe71aBmo7sagMmnb3e3
-         KOVIpxI+gayMHgsRVABO+SBRCOJtSgyrGt53u2JAemzSH3BApGXO5mLvXdKSOqUSACCH
-         Qxw/F3EQeJooWgbxNue9m5XdF5W3OYKib1Kj3t+mj7moCYGVejjdPN3RzPJ7L87YAqED
-         pgBjVqSY0joZD+VTKmvC6mvp4bow2BzOZPs6EldIQjOeUfXieHWfMFVLiOaSOfgem8eU
-         KHeFjMFDRPTtlhL1CprN/c6C3mGri2xVwYcItaSE/S0bvblm8UPtaIUP5AM1dv6ORJ41
-         HCvg==
-X-Gm-Message-State: AFqh2kok20p4ASNufbpgBZm0CVv0/oDLZLlRI0ocVvVIlOEvff+gUrQn
-        Ap/aBtbJispv8zwqn+qYmdMpzAjibLiTvSR9OWsQUQ==
-X-Google-Smtp-Source: AMrXdXuKPKURk4IyVwVpXhecitHzba9hblaC4FmOoq7Rl5wHtBgQA7X7iD71roc02Gf2njz4wKUwbb0VmU8+H9zPDp0=
-X-Received: by 2002:a63:5615:0:b0:49f:4740:291a with SMTP id
- k21-20020a635615000000b0049f4740291amr2015708pgb.197.1674500163652; Mon, 23
- Jan 2023 10:56:03 -0800 (PST)
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OULmjoxrXNFfajsRwEYVpdk0IuyLfogzJsALOOwtL2c=;
+        b=ls1s3XX/FGw4CP9T4NRI7erMiaGxXVIws51ToVCP2lIdQDN8qn2r6B7IS2AdXWGvnO
+         UD4pcc03l/qTnusDO8p/+DjWf5z9T1GSfFXqV60CdPZcXPFwUyOsxTy5zA6errt0kpQY
+         x7EQ4f/g3BWDp8LPYqTG1diSuSGi8UNYoYLcAOTDl8kd8xXeEQ7ZO7oDVbFM9a6LGHKI
+         wO8eQNv8/ykNlLfwbLHElMZdY3/h90eZqiSftFo+zuTLmZQ+J8YHr36tTbFqia/zgw4k
+         n8w0nLog294wOGuOP+8mJGaDbUMmc69S9Sx/SdJsQW98fJpIA6c38IUd2Z61CvWdCrpP
+         uzxg==
+X-Gm-Message-State: AFqh2koJ7RpuOVTm5duQYdlGnLJQd16Sakpfxvw3LQVYi+MqcWtbSRD2
+        Y+S23j5NIrFoxEmMeUnWn9U=
+X-Google-Smtp-Source: AMrXdXuirt+zBacvFuxugJc4Y3mxgRfVkz+LUawTMuxHLQ5y4JP9qo+PRdmW7oFHFMBDNmT9ySMIGA==
+X-Received: by 2002:a05:6870:812:b0:15f:58fd:2b59 with SMTP id fw18-20020a056870081200b0015f58fd2b59mr13801368oab.3.1674500484176;
+        Mon, 23 Jan 2023 11:01:24 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:93a0])
+        by smtp.gmail.com with ESMTPSA id a69-20020ae9e848000000b006ce580c2663sm2990qkg.35.2023.01.23.11.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Jan 2023 11:01:23 -0800 (PST)
+Date:   Mon, 23 Jan 2023 13:01:23 -0600
+From:   David Vernet <void@manifault.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        memxor@gmail.com
+Subject: Re: [PATCH bpf-next v2 3/3] bpf: Use BPF_KFUNC macro at all kfunc
+ definitions
+Message-ID: <Y87Zg1SEOwDmpwmx@maniforge.lan>
+References: <20230123171506.71995-1-void@manifault.com>
+ <20230123171506.71995-4-void@manifault.com>
+ <20230123183305.2mgoxgw4ca3sfk24@macbook-pro-6.dhcp.thefacebook.com>
+ <Y87We/92xiv5/+g+@maniforge.lan>
+ <20230123185434.ybfhrmbootcnjuoj@macbook-pro-6.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20230119221536.3349901-1-sdf@google.com> <901e1a7a-bb86-8d62-4bd7-512a1257d3b0@linux.dev>
-In-Reply-To: <901e1a7a-bb86-8d62-4bd7-512a1257d3b0@linux.dev>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 23 Jan 2023 10:55:52 -0800
-Message-ID: <CAKH8qBs=1NgpJBNwJg7dZQnSAAGpH4vJj0+=LNWuQamGFerfZw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 00/17] xdp: hints via kfuncs
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230123185434.ybfhrmbootcnjuoj@macbook-pro-6.dhcp.thefacebook.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 10:53 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 1/19/23 2:15 PM, Stanislav Fomichev wrote:
-> > Please see the first patch in the series for the overall
-> > design and use-cases.
-> >
-> > See the following email from Toke for the per-packet metadata overhead:
-> > https://lore.kernel.org/bpf/20221206024554.3826186-1-sdf@google.com/T/#m49d48ea08d525ec88360c7d14c4d34fb0e45e798
-> >
-> > Recent changes:
-> > - Keep new functions in en/xdp.c, do 'extern mlx5_xdp_metadata_ops' (Tariq)
-> >
-> > - Remove mxbuf pointer and use xsk_buff_to_mxbuf (Tariq)
-> >
-> > - Clarify xdp_buff vs 'XDP frame' (Jesper)
-> >
-> > - Explicitly mention that AF_XDP RX descriptor lacks metadata size (Jesper)
-> >
-> > - Drop libbpf_flags/xdp_flags from selftests and use ifindex instead
-> >    of ifname (due to recent xsk.h refactoring)
->
-> Applied with the minor changes in the selftests discussed in patch 11 and 17.
-> Thanks!
+On Mon, Jan 23, 2023 at 10:54:34AM -0800, Alexei Starovoitov wrote:
+> On Mon, Jan 23, 2023 at 12:48:27PM -0600, David Vernet wrote:
+> > On Mon, Jan 23, 2023 at 10:33:05AM -0800, Alexei Starovoitov wrote:
+> > > On Mon, Jan 23, 2023 at 11:15:06AM -0600, David Vernet wrote:
+> > > > -void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+> > > > +BPF_KFUNC(void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign))
+> > > >  {
+> > > >  	struct btf_struct_meta *meta = meta__ign;
+> > > >  	u64 size = local_type_id__k;
+> > > > @@ -1790,7 +1786,7 @@ void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+> > > >  	return p;
+> > > >  }
+> > > >  
+> > > > -void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
+> > > > +BPF_KFUNC(void bpf_obj_drop_impl(void *p__alloc, void *meta__ign))
+> > > >  {
+> > > 
+> > > The following also works:
+> > > -BPF_KFUNC(void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign))
+> > > +BPF_KFUNC(
+> > > +void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+> > > +)
+> > > 
+> > > and it looks little bit cleaner to me.
+> > > 
+> > > git grep -A1 BPF_KFUNC
+> > > can still find all instances of kfuncs.
+> > > 
+> > > wdyt?
+> > 
+> > I'm fine with putting it on its own line if that's your preference.
+> > Agreed that it might be a bit cleaner, especially for functions with the
+> > return type on its own line, so we'd have e.g.:
+> > 
+> > BPF_KFUNC(
+> > struct nf_conn *
+> > bpf_skb_ct_lookup(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
+> > 		  u32 tuple__sz, struct bpf_ct_opts *opts, u32 opts__sz)
+> 
+> Yeah. Especially for those.
+> 
+> > ) {
+> > 
+> > // ...
+> > 
+> > }
+> > 
+> > Note the presence of the { on the closing paren. Are you ok with that?
+> > Otherwise I think it will look a bit odd:
+> 
+> Yep. Good idea. Either ){ or ) { look good to me.
 
-Awesome, thanks! I was gonna resend around Wed, but thank you for
-taking care of that!
+Ack, will send v3 with that change later today, along with anything else
+if someone else reviews.
+
+> 
+> > BPF_KFUNC(
+> > struct nf_conn *
+> > bpf_skb_ct_lookup(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
+> > 		  u32 tuple__sz, struct bpf_ct_opts *opts, u32 opts__sz)
+> > )
+> > {
+> > 
+> > }
+> > 
+> > Thanks,
+> > David
