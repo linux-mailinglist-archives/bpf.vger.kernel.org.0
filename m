@@ -2,72 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4196C67A04E
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 18:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7414567A059
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 18:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234454AbjAXRiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 12:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39832 "EHLO
+        id S234204AbjAXRnI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 12:43:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234576AbjAXRiR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 12:38:17 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 569FE3E092
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:38:15 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id z3so11732539pfb.2
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:38:15 -0800 (PST)
+        with ESMTP id S231828AbjAXRnI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 12:43:08 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9926146731
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:43:06 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id jm10so15407300plb.13
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:43:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jJhVsHPQGApzwNfyQ0ypP1XFkAzyW8k3WSfxl+nGrbs=;
-        b=ZJvONw+GlhTBgOMtLQ6aF8I+JLtia9GcTT4V/xCUhFIPzWqwaA9Cz/yaX9BxJmdQAh
-         eRcA4zlWkHLe5rH8iyRwIxPDXiSeqBRBfsIf8Iqsn/yjlqgNyozu3KEPPSX1xZWEquXp
-         +RPoVLnrwx4ZL9z7O8QhmebyytaIrdLFr6SbERdS2eB/+Mra45D8HY08ulbjKd+Psi9D
-         50UFooKe6KENsb/18Htr5QeuDaY23lgkZyKiJpjoKl5WGOL4EifXULbzyGpyqYNdRvBO
-         KDlUYTLy7wv7o/Uoj9sMaZnfeFZt5S901GxZtHsXJnnt5uTomjEcZwAuwp9IwgKLd/OD
-         3TPA==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kVpn5SMLD9pIiP0+8Xm3dHvf5ZmENfuH2Pxsjs07rZM=;
+        b=Ri/8pJDvge0Awmaf5DNXwCqG+o70l5xFTNqs4AFQo1KC32MlZFz/pV8vYHoM6uKR+j
+         qhBXLXJwffqEN/YZedW4481g+haZdvtdVYHEZnNHvgPoM8qITPUdlHTy1segQg5UnlnV
+         dJUm2cHCSEZ54SGGPcVHPjbQwli1dtjJlXpYNykQ2G9mUivTaKUWZ4q33Wn1DxmyCMch
+         DPrJGTZaA0oEtRgVzdkiBus2MrIPe0VwH0GFu/MSVyADY8Ggd6FM/8DC22itey77m0O5
+         1/Dy6oE3d4IX8cvnMKArYgb+/8Ap27LdjqyLa0oejvqFffoAVKkdaPXOuuFqV1y3wzl6
+         4E9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jJhVsHPQGApzwNfyQ0ypP1XFkAzyW8k3WSfxl+nGrbs=;
-        b=V/RHs/7pbtOvsnH+pxJpbB/1If9DrG0aCtJBCbPyCXuWA8iJz3mTBTFqpyEUaI5AiJ
-         nQRo6dWRWH6VXqsR/ySQX7LFX+bwrU0gLNmEA93WuLcaGl7Ppkq8eO7MUAJi2aIAy6+X
-         F8IBGJ3wA7+o/44Ft6XZI2ju/APBErqJYP5QXkDciv59aGuUQ/dAveZhStm+vISPDROE
-         9F0xz8ecpMUF1tkqzF0JW0rBda/xs0jiXLuLSz0aHauQv0t0GLuP2Y/AvhwaRHUy3YdC
-         QSRIAY9MTTDRv4hRyHgYXbZdNMur6otGiG16LskxI7LyGk6F0tmMDY+RQZwBzGfcpTsl
-         3dGQ==
-X-Gm-Message-State: AFqh2kqFg6cgYiZfwQm8N8fSt0itps9mRniHnqlyn5y6zI+sEBig/XQN
-        zowAtD3NQ5qCykQn7VEvAWyVl45y0rWYdjRL+hg=
-X-Google-Smtp-Source: AMrXdXvVvWgPT9uLFVY4fPgT1RORdQjR/PAegJjcszZc53ns1E5CXipkmHJHtxzOIcrXA286BRRdQTUVq6hGFE1Hk+U=
-X-Received: by 2002:a05:6a00:f91:b0:58b:a1bd:6aae with SMTP id
- ct17-20020a056a000f9100b0058ba1bd6aaemr2912740pfb.25.1674581894416; Tue, 24
- Jan 2023 09:38:14 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kVpn5SMLD9pIiP0+8Xm3dHvf5ZmENfuH2Pxsjs07rZM=;
+        b=CsENJiuroy93Izx59eySIh9J4dCi78mdOZmufIz6/Mqc994b2TOtMaYBtPWkoDYEmL
+         LY/Ifpw5atfHi10PAed4Xsz3eyA4EGd8Wcc3d5bVKg/tS3g/Swv76kMxrTYdQl/oSD7K
+         yR7RtLhhVBXKk9l7ZdAdHdqwKUf50ABz7LOfRjsIx88pTy6TYk6zDdOZyB5KeKZUIiCj
+         OkhUbkQ7ZkujDByHH6PHWU8U+xDJF+6AmdsjtSyrIkGuJ9D35MpWAOj5n97Q6LF0rpF3
+         R2i02zIKaC+hKW6qPtoRqQ9N23H7YnfPSY5QG63WYN5oTpnoQiNw5QltmSCk6zLsJeVB
+         PeRw==
+X-Gm-Message-State: AFqh2koaPzgu0gVduF6kWvGV+YgYFknl36yiOrqj78lSsiz/5T6A+e4G
+        XecBcpRzfZx8LpyiI6/I9s4cL4Q1eDiRw5rVrtO+0Q==
+X-Google-Smtp-Source: AMrXdXu84A7RJILwgoKpk8B12punuj2R/JnqdpZOPgedaESUceXYwyUtZtIMeIQMeIEsAhgseHygWwjNvsCc5jsCxno=
+X-Received: by 2002:a17:90a:2c4d:b0:229:2410:ef30 with SMTP id
+ p13-20020a17090a2c4d00b002292410ef30mr3250936pjm.66.1674582185932; Tue, 24
+ Jan 2023 09:43:05 -0800 (PST)
 MIME-Version: 1.0
-References: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
- <878rhty100.fsf@cloudflare.com> <CAMy7=ZVLUpeHM4A_aZ5XT-CYEM8_uj8y=GRcPT89Bf5=jtS+og@mail.gmail.com>
- <08dce08f-eb4b-d911-28e8-686ca3a85d4e@meta.com> <CAMy7=ZWPc279vnKK6L1fssp5h7cb6cqS9_EuMNbfVBg_ixmTrQ@mail.gmail.com>
- <3a87b859-d7c9-2dfd-b659-cd3192a67003@linux.dev> <CAMy7=ZWi35SKj9rcKwj0eyH+xY8ZBgiX_vpF=mydxFDahK6trg@mail.gmail.com>
- <87k01dvt83.fsf@cloudflare.com> <CAMy7=ZXyqCzhosiwpLa9rsFqW2jX4V59-Ef4k-5dQtqKOakTFQ@mail.gmail.com>
- <CAADnVQJaCTQtmvOdQoeaZbt0wwPp4iYjbvaPvRZw4DBEOSrJYg@mail.gmail.com>
- <CAMy7=ZVpGMOK_kHk1qB4ywxV88Vvtt=rGw4Q-Fi1F7bGU+6prQ@mail.gmail.com> <CAADnVQLaKyRJwXnU4wZrih4pRduw_eWarA2uNuc=HssKQUAn_Q@mail.gmail.com>
-In-Reply-To: <CAADnVQLaKyRJwXnU4wZrih4pRduw_eWarA2uNuc=HssKQUAn_Q@mail.gmail.com>
-From:   Yaniv Agman <yanivagman@gmail.com>
-Date:   Tue, 24 Jan 2023 19:38:03 +0200
-Message-ID: <CAMy7=ZU7oEa-VJy1_5WM6+poWsVCyZ0Y7ocQLq3qkFcs2-ftBw@mail.gmail.com>
-Subject: Re: Are BPF programs preemptible?
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@meta.com>
+References: <20230119221536.3349901-1-sdf@google.com> <20230119221536.3349901-18-sdf@google.com>
+ <71be95ee-b522-b3db-105a-0f25d8dc52cb@redhat.com>
+In-Reply-To: <71be95ee-b522-b3db-105a-0f25d8dc52cb@redhat.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 24 Jan 2023 09:42:53 -0800
+Message-ID: <CAKH8qBvK-tJxQwBsUvQZ39KyhyAbd76H1xhdzmzeKbbN5Hzq7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 17/17] selftests/bpf: Simple program to dump
+ XDP RX metadata
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,79 +80,121 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=92=D7=
-=B3, 24 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-19:24 =D7=9E=D7=90=D7=AA=
- =E2=80=AAAlexei Starovoitov=E2=80=AC=E2=80=8F
-<=E2=80=AAalexei.starovoitov@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+On Tue, Jan 24, 2023 at 7:26 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
-> On Tue, Jan 24, 2023 at 7:47 AM Yaniv Agman <yanivagman@gmail.com> wrote:
-> >
-> > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=92=
-=D7=B3, 24 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-14:30 =D7=9E=D7=90=D7=
-=AA =E2=80=AAAlexei Starovoitov=E2=80=AC=E2=80=8F
-> > <=E2=80=AAalexei.starovoitov@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > >
-> > > On Mon, Jan 23, 2023 at 2:03 PM Yaniv Agman <yanivagman@gmail.com> wr=
-ote:
-> > > >
-> > > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =
-=D7=91=D7=B3, 23 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-23:25 =D7=9E=D7=
-=90=D7=AA =E2=80=AAJakub Sitnicki=E2=80=AC=E2=80=8F
-> > > > <=E2=80=AAjakub@cloudflare.com=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > > >
-> > > > > On Mon, Jan 23, 2023 at 11:01 PM +02, Yaniv Agman wrote:
-> > > > > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=
-=9D =D7=91=D7=B3, 23 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-22:06 =D7=
-=9E=D7=90=D7=AA =E2=80=AAMartin KaFai Lau=E2=80=AC=E2=80=8F
-> > > > > > <=E2=80=AAmartin.lau@linux.dev=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > > > >>
-> > > > > >> On 1/23/23 9:32 AM, Yaniv Agman wrote:
-> > > > > >> >>> interrupted the first one. But even then, I will need to f=
-ind a way to
-> > > > > >> >>> know if my program currently interrupts the run of another=
- program -
-> > > > > >> >>> is there a way to do that?
-> > > > > >> May be a percpu atomic counter to see if the bpf prog has been=
- re-entered on the
-> > > > > >> same cpu.
-> > > > > >
-> > > > > > Not sure I understand how this will help. If I want to save loc=
-al
-> > > > > > program data on a percpu map and I see that the counter is bigg=
-er then
-> > > > > > zero, should I ignore the event?
-> > > > >
-> > > > > map_update w/ BPF_F_LOCK disables preemption, if you're after upd=
-ating
-> > > > > an entry atomically. But it can't be used with PERCPU maps today.
-> > > > > Perhaps that's needed now too.
-> > > >
-> > > > Yep. I think what is needed here is the ability to disable preempti=
-on
-> > > > from the bpf program - maybe even adding a helper for that?
-> > >
-> > > I'm not sure what the issue is here.
-> > > Old preempt_disable() doesn't mean that one bpf program won't ever
-> > > be interrupted by another bpf prog.
-> > > Like networking bpf prog in old preempt_disable can call into somethi=
-ng
-> > > where there is a kprobe and another tracing bpf prog will be called.
-> > > The same can happen after we switched to migrate_disable.
-> >
-> > One difference here is that in what you describe the programmer can
-> > know in advance which functions might call others and avoid that or
-> > use other percpu maps, but if preemption can happen between functions
-> > which are not related to one another (don't have a relation of caller
-> > and callee), then the programmer can't have control over it
 >
-> Could you give a specific example?
+> Testing this on mlx5 and I'm not getting the RX-timestamp.
+> See command details below.
 
-Sure. I can give two examples from places where we saw such corruption:
+CC'ed Toke since I've never tested mlx5 myself.
+I was pretty close to getting the setup late last week, let me try to
+see whether it's ready or not.
 
-1. We use kprobes to trace some LSM hooks, e.g. security_file_open,
-and a percpu scratch map to prepare the event for submit. When we also
-added a TRACEPOINT to trace sched_process_free (where we also use this
-scratch percpu map), the security_file_open events got corrupted and
-we didn't know what was happening (was very hard to debug)
-2. same was happening when kprobes were combined with cgroup_skb
-programs to trace network events
+> On 19/01/2023 23.15, Stanislav Fomichev wrote:
+> > To be used for verification of driver implementations. Note that
+> > the skb path is gone from the series, but I'm still keeping the
+> > implementation for any possible future work.
+> >
+> > $ xdp_hw_metadata <ifname>
+>
+> sudo ./xdp_hw_metadata mlx5p1
+>
+> Output:
+> [...cut ...]
+> open bpf program...
+> load bpf program...
+> prepare skb endpoint...
+> XXX timestamping_enable(): setsockopt(SO_TIMESTAMPING) ret:0
+> prepare xsk map...
+> map[0] = 3
+> map[1] = 4
+> map[2] = 5
+> map[3] = 6
+> map[4] = 7
+> map[5] = 8
+> attach bpf program...
+> poll: 0 (0)
+> poll: 0 (0)
+> poll: 0 (0)
+> poll: 1 (0)
+> xsk_ring_cons__peek: 1
+> 0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+> rx_timestamp: 0
+> rx_hash: 2773355807
+> 0x1821788: complete idx=8 addr=8000
+> poll: 0 (0)
+>
+> The trace_pipe:
+>
+> $ sudo cat /sys/kernel/debug/tracing/trace_pipe
+>            <idle>-0       [005] ..s2.  2722.884762: bpf_trace_printk:
+> forwarding UDP:9091 to AF_XDP
+>            <idle>-0       [005] ..s2.  2722.884771: bpf_trace_printk:
+> populated rx_hash with 2773355807
+>
+>
+> > On the other machine:
+> >
+> > $ echo -n xdp | nc -u -q1 <target> 9091 # for AF_XDP
+>
+> Fixing the source-port to see if RX-hash remains the same.
+>
+>   $ echo xdp | nc --source-port=2000 --udp 198.18.1.1 9091
+>
+> > $ echo -n skb | nc -u -q1 <target> 9092 # for skb
+> >
+> > Sample output:
+> >
+> >    # xdp
+> >    xsk_ring_cons__peek: 1
+> >    0x19f9090: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+> >    rx_timestamp_supported: 1
+> >    rx_timestamp: 1667850075063948829
+> >    0x19f9090: complete idx=8 addr=8000
+>
+> xsk_ring_cons__peek: 1
+> 0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+> rx_timestamp: 0
+> rx_hash: 2773355807
+> 0x1821788: complete idx=8 addr=8000
+>
+> It doesn't look like hardware RX-timestamps are getting enabled.
+>
+> [... cut to relevant code ...]
+>
+> > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > new file mode 100644
+> > index 000000000000..0008f0f239e8
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > @@ -0,0 +1,403 @@
+> [...]
+>
+> > +static void timestamping_enable(int fd, int val)
+> > +{
+> > +     int ret;
+> > +
+> > +     ret = setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING, &val, sizeof(val));
+> > +     if (ret < 0)
+> > +             error(-1, errno, "setsockopt(SO_TIMESTAMPING)");
+> > +}
+> > +
+> > +int main(int argc, char *argv[])
+> > +{
+> [...]
+>
+> > +     printf("prepare skb endpoint...\n");
+> > +     server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092, 1000);
+> > +     if (server_fd < 0)
+> > +             error(-1, errno, "start_server");
+> > +     timestamping_enable(server_fd,
+> > +                         SOF_TIMESTAMPING_SOFTWARE |
+> > +                         SOF_TIMESTAMPING_RAW_HARDWARE);
+> > +
+>
+> I don't think this timestamping_enable() with these flags are enough to
+> enable hardware timestamping.
+>
+> --Jesper
+>
