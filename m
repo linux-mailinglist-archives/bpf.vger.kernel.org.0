@@ -2,76 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC3A6790EA
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 07:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D57C67910D
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 07:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjAXGap (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 01:30:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
+        id S232956AbjAXGf1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 01:35:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232847AbjAXG37 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 01:29:59 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B7F3E09C;
-        Mon, 23 Jan 2023 22:29:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4u7sdeygL2SI0vuOn3AQXqOOeojipj5nJ8JBXiSMSP4=; b=Y1N1Bp85zWT1Yc4mWO5RM/5swn
-        z1s/ae7nZBU1XI2LeDBAOv+06U0Bu1PJWHXCDrEjlbbph1xr+oh6cmoXIod4hdcTSIhg05KsUMsH6
-        Mt0SAUZbeNMdj95LikeyPio6/J/WyHzPQbupOE2KMJ+OXZv8xSLLdBNtO7Ot/A8dx2JalSA7ubKi2
-        aFuBB1XW7qW1wiu2y2b/BJd4x/N6dLqevlGltWAruZGC7j2J5NPe6Xz6f5IgVH1uIF87LFk4mGzQ9
-        1iI2DWcT8gQ30YpVU8YQ5BM2WIzRNm5oNr5lR1NU6lLpwGy0B15qzrZcjDOK9MRUi3zNGYFfM5749
-        r4m38yZA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pKCny-002Vim-8c; Tue, 24 Jan 2023 06:29:14 +0000
-Date:   Mon, 23 Jan 2023 22:29:14 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
-        tjmercier@google.com, hannes@cmpxchg.org, surenb@google.com,
-        mkoutny@suse.com, daniel@ffwll.ch, linuxppc-dev@lists.ozlabs.org,
-        linux-fpga@vger.kernel.org, linux-rdma@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org,
-        bpf@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 01/19] mm: Introduce vm_account
-Message-ID: <Y896ugI8HoXDRjp3@infradead.org>
-References: <cover.f52b9eb2792bccb8a9ecd6bc95055705cfe2ae03.1674538665.git-series.apopple@nvidia.com>
- <748338ffe4c42d86669923159fe0426808ecb04d.1674538665.git-series.apopple@nvidia.com>
+        with ESMTP id S233214AbjAXGf0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 01:35:26 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9355B3CE36;
+        Mon, 23 Jan 2023 22:34:52 -0800 (PST)
+Message-ID: <d2606312-1e04-55ff-e01e-daf83ed99836@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1674542090;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XoQl7uUFk5a4iB7hSBnRz259kIa6WGS8ZI2M0mlcDxc=;
+        b=UJ00gwjq4gFjn29yUIgtP3vJKG2pGDukPyC0hkIVIP2nqN05joUBN4WcO+osDMjimoNFlw
+        jsl0LQkfUx6HI3nz1gtWCAc7b2kCr0XlXsGZTlLXXEj3jCpUP8Pj0JXXPRLcpiWXydy+1m
+        UfNa2J/CmihbLVVjWaz3Ys4ifQ5VFxU=
+Date:   Mon, 23 Jan 2023 22:34:36 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <748338ffe4c42d86669923159fe0426808ecb04d.1674538665.git-series.apopple@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next 7/7] selftests/bpf: introduce XDP compliance test
+ tool
+Content-Language: en-US
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        toke@redhat.com, memxor@gmail.com, alardam@gmail.com,
+        saeedm@nvidia.com, anthony.l.nguyen@intel.com, gospo@broadcom.com,
+        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
+        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
+        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
+        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
+        lorenzo.bianconi@redhat.com, niklas.soderlund@corigine.com,
+        bpf@vger.kernel.org
+References: <cover.1674234430.git.lorenzo@kernel.org>
+ <986321f8621e9367653e21b35566e7cda976b886.1674234430.git.lorenzo@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <986321f8621e9367653e21b35566e7cda976b886.1674234430.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> +/**
-> + * vm_account_init - Initialise a new struct vm_account.
-> + * @vm_account: pointer to uninitialised vm_account.
-> + * @task: task to charge against.
-> + * @user: user to charge against. Must be non-NULL for VM_ACCOUNT_USER.
-> + * @flags: flags to use when charging to vm_account.
-> + *
-> + * Initialise a new uninitialiused struct vm_account. Takes references
-> + * on the task/mm/user/cgroup as required although callers must ensure
-> + * any references passed in remain valid for the duration of this
-> + * call.
-> + */
-> +void vm_account_init(struct vm_account *vm_account, struct task_struct *task,
-> +		struct user_struct *user, enum vm_account_flags flags);
+On 1/20/23 9:16 AM, Lorenzo Bianconi wrote:
+> +static __always_inline int xdp_process_echo_packet(struct xdp_md *xdp, bool dut)
+> +{
+> +	void *data_end = (void *)(long)xdp->data_end;
+> +	__be32 saddr = dut ? tester_ip : dut_ip;
+> +	__be32 daddr = dut ? dut_ip : tester_ip;
+> +	void *data = (void *)(long)xdp->data;
+> +	struct ethhdr *eh = data;
+> +	struct tlv_hdr *tlv;
+> +	struct udphdr *uh;
+> +	struct iphdr *ih;
+> +	__be16 port;
+> +	__u8 *cmd;
+> +
+> +	if (eh + 1 > (struct ethhdr *)data_end)
+> +		return -EINVAL;
+> +
+> +	if (eh->h_proto != bpf_htons(ETH_P_IP))
+> +		return -EINVAL;
 
+Both v6 and v4 support are needed as a tool.
 
-kerneldoc comments are supposed to be next to the implementation, and
-not the declaration in the header.
+[ ... ]
+
+> diff --git a/tools/testing/selftests/bpf/test_xdp_features.sh b/tools/testing/selftests/bpf/test_xdp_features.sh
+> new file mode 100755
+> index 000000000000..98b8fd2b6c16
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/test_xdp_features.sh
+> @@ -0,0 +1,99 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +# Create 2 namespaces with two veth peers, and
+> +# check reported and detected XDP capabilities
+> +#
+> +#   NS0(v00)              NS1(v11)
+> +#       |                     |
+> +#       |                     |
+> +# (v01, id:111)  ------  (v10,id:222)
+> +
+> +readonly NS0="ns1-$(mktemp -u XXXXXX)"
+> +readonly NS1="ns2-$(mktemp -u XXXXXX)"
+> +ret=1
+> +
+> +setup() {
+> +	{
+> +		ip netns add ${NS0}
+> +		ip netns add ${NS1}
+> +
+> +		ip link add v01 index 111 type veth peer name v00 netns ${NS0}
+> +		ip link add v10 index 222 type veth peer name v11 netns ${NS1}
+> +
+> +		ip link set v01 up
+> +		ip addr add 10.10.0.1/24 dev v01
+> +		ip link set v01 address 00:11:22:33:44:55
+> +		ip -n ${NS0} link set dev v00 up
+> +		ip -n ${NS0} addr add 10.10.0.11/24 dev v00
+> +		ip -n ${NS0} route add default via 10.10.0.1
+> +		ip -n ${NS0} link set v00 address 00:12:22:33:44:55
+> +
+> +		ip link set v10 up
+> +		ip addr add 10.10.1.1/24 dev v10
+> +		ip link set v10 address 00:13:22:33:44:55
+> +		ip -n ${NS1} link set dev v11 up
+> +		ip -n ${NS1} addr add 10.10.1.11/24 dev v11
+> +		ip -n ${NS1} route add default via 10.10.1.1
+> +		ip -n ${NS1} link set v11 address 00:14:22:33:44:55
+> +
+> +		sysctl -w net.ipv4.ip_forward=1
+> +		# Enable XDP mode
+> +		ethtool -K v01 gro on
+> +		ethtool -K v01 tx-checksumming off
+> +		ip netns exec ${NS0} ethtool -K v00 gro on
+> +		ip netns exec ${NS0} ethtool -K v00 tx-checksumming off
+> +		ethtool -K v10 gro on
+> +		ethtool -K v10 tx-checksumming off
+> +		ip netns exec ${NS1} ethtool -K v11 gro on
+> +		ip netns exec ${NS1} ethtool -K v11 tx-checksumming off
+> +	} > /dev/null 2>&1
+> +}
+> +
+> +cleanup() {
+> +	ip link del v01 2> /dev/null
+> +	ip link del v10 2> /dev/null
+> +	ip netns del ${NS0} 2> /dev/null
+> +	ip netns del ${NS1} 2> /dev/null
+> +	[ "$(pidof xdp_features)" = "" ] || kill $(pidof xdp_features) 2> /dev/null
+> +}
+> +
+> +test_xdp_features() {
+> +	setup
+> +
+> +	## XDP_PASS
+> +	ip netns exec ${NS1} ./xdp_features -f XDP_PASS -D 10.10.1.11 -T 10.10.0.11 v11 &
+> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_PASS -D 10.10.1.11 -C 10.10.1.11 -T 10.10.0.11 v00
+> +
+> +	[ $? -ne 0 ] && exit
+> +
+> +	# XDP_DROP
+> +	ip netns exec ${NS1} ./xdp_features -f XDP_DROP -D 10.10.1.11 -T 10.10.0.11 v11 &
+> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_DROP -D 10.10.1.11 -C 10.10.1.11 -T 10.10.0.11 v00
+> +
+> +	[ $? -ne 0 ] && exit
+> +
+> +	## XDP_TX
+> +	./xdp_features -f XDP_TX -D 10.10.0.1 -T 10.10.0.11 v01 &
+> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_TX -D 10.10.0.1 -C 10.10.0.1 -T 10.10.0.11 v00
+> +
+> +	## XDP_REDIRECT
+> +	ip netns exec ${NS1} ./xdp_features -f XDP_REDIRECT -D 10.10.1.11 -T 10.10.0.11 v11 &
+> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_REDIRECT -D 10.10.1.11 -C 10.10.1.11 -T 10.10.0.11 v00
+> +
+> +	[ $? -ne 0 ] && exit
+> +
+> +	## XDP_NDO_XMIT
+> +	./xdp_features -f XDP_NDO_XMIT -D 10.10.0.1 -T 10.10.0.11 v01 &
+> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_NDO_XMIT -D 10.10.0.1 -C 10.10.0.1 -T 10.10.0.11 v00
+> +
+> +	ret=$?
+> +	cleanup
+> +}
+> +
+> +set -e
+> +trap cleanup 2 3 6 9
+> +
+> +test_xdp_features
+
+This won't be run by bpf CI.
+
+A selftest in test_progs is needed to test the libbpf changes in patch 6.
 
