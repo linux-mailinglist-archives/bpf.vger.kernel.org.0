@@ -2,71 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E332C67A019
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 18:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51F267A043
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 18:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbjAXRYh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 12:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
+        id S233668AbjAXRf6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 12:35:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234830AbjAXRYg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 12:24:36 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7674DE0D
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:24:30 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id cm4so1020361edb.9
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:24:30 -0800 (PST)
+        with ESMTP id S232437AbjAXRf5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 12:35:57 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F81817171
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:35:56 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id g23so15402820plq.12
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:35:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7xEcvIY8/p/7nqlZJ5s3XfRHmSnbrODBDhAnqoCCCA0=;
-        b=hdUvAFONK43rP78vlWSoyscMPaG/wl0IfqtkNjtmx+kTmikRt6Nn+Vo6Kk2gflg5pP
-         sPvd/QOvYT2AkC+eQLsJgAojHRsepSpKZfmUM6jSI7ODc/QAj58f3DU/5H7pySlWrJBM
-         ayVL2AmUDYThZo1EWwQY+3hvBj/efIplnUhBpd20QdlRBKt9Ty8gQL4lTxHgWktxfNbs
-         QJAKbAxVNWveCvtqF1nUZcG0Rf3rphGkpybghXV6Tzj2FsvdpbRkXV8HOZEcohwya9Ku
-         QAfgGaPdW75OePpLUmJmt8n1ZsYonyDtZZTXbgq9ZeIvPs165SkrG1KuPIuJOhYprKF/
-         qSRg==
+        bh=3Xdvi7fIlYYO+f7EySJG/JTcc0Pmw2obhupOEULGvoM=;
+        b=FWddA1QM2tSZl3bk6p8veEjjy+nIv282XwDrC4a72f1F1DbSvsofCGGY+Q9+ZIbcAo
+         QzXs/ug7zKW5kEDStV6Hy2EfXks+nwn/a5t2lHc1Ds06qzXIrmAb1yYa/Pzlj7y3cZk/
+         J521plLn8oh6VREwqCOHqX9q92I4LA7kTMJUgnwHGsJS2MLGVC8vWy57X2f6tINr+N+E
+         tG3WNTmrXx3WDDptWXxAtbnIF4Pkt6ZITJ65E/cCXY620PwSyejDwHZSo63dKtwpnUDj
+         E/VDG4s56h9BDSwQKdzPaUdNoxWLYP49ryGmd1r2eaVXfi5yvcSJMo33tZnLkLqqN7nz
+         eshw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7xEcvIY8/p/7nqlZJ5s3XfRHmSnbrODBDhAnqoCCCA0=;
-        b=xlRI89jR9jd/JNnE798q0+3oEKbANoDnp7nFnkghri6ww2Fmhjec1pYwywvZhryjAt
-         UXd66nqNF2jWMEa63v9LiAF+XeLm7soXW/KM/UN+hDERWCzzPMI5zZ7TTQ8ETqLDrb7I
-         xeJeLOXSwWf/3JrQzLRPfTuH/l0vjbyZipwotreyaXdR6lLex/vHmZGqR+tO5vrsOgrI
-         CR1OI2bVJzYzoXD71JFiLThOhZ094NPEwNJ9fbxb4qybGXo7ys9ulK1kLBskeEtSMKLN
-         E/7AxCBHyEMUlC9JCO8YQ1TaL8wa7gDq2tKZcJaC/W5SqvampQrBaFeB9qxAZbVTbTBg
-         C+zQ==
-X-Gm-Message-State: AFqh2koYnzkj/hGMSQ83g7eSXDn6yrgHjEWBWNiTx2WA6k0iEYEdZUkc
-        4KUKfPIYUUZj0ta3maHOJ2GE5vdKIhRJiioYA+A=
-X-Google-Smtp-Source: AMrXdXupu/1FI93ab82lKxOAQOukaWgfQt0mbhiYdnR1alr0jr7Py31loAYCsJHQFCxUER/lwPA6F1GNJ7IGujyerxk=
-X-Received: by 2002:a05:6402:202:b0:48e:bf8a:23c6 with SMTP id
- t2-20020a056402020200b0048ebf8a23c6mr3650315edv.133.1674581068881; Tue, 24
- Jan 2023 09:24:28 -0800 (PST)
+        bh=3Xdvi7fIlYYO+f7EySJG/JTcc0Pmw2obhupOEULGvoM=;
+        b=4Nvt9PF4z/hbgyf7AzqAEhuBxlxgEz1X/oAdAXkNh7MRNCUb1s8G604wqxef+CCFLa
+         KqHPLEpbTwfTEupCmiALhApvj+3mN2G9dBIaNaAnPcyKYCVN0WlBIzFdkX7IoDYuBIvO
+         zujzkiuSJ+JkWrDAZKgXdaNIkUp66EASGYWds/JK66b/J4jhG5v+jt758gGmGa4eMYFM
+         yLFCnjxnE8hvx9Kj/jV8YsI7VRWGVCOQMhz8/TBSEPDbUzAXeM3rt5NZzMYCj2wiDOpM
+         crlvi4I5RfGOar+4s6QuDkmrlmNI+XhkFMBkanBHrdWPzgjyokE3rb+Kb4p/7YuA3n2S
+         60qw==
+X-Gm-Message-State: AFqh2krcknX20YzJtRGjTNyIGPlbuXhBNhXZG+I153wPdo0HzbGgZRZK
+        HGb3eqcw7RfvETlQIknnt2lMuT4iyuJR+F/gorIDNA==
+X-Google-Smtp-Source: AMrXdXsevx4h6ZcmBSNEUhpYybXYrpwt4VnRJPSPjl6wWgpUFF5obP1UAhJ0j2Qd5E0Ab3ihQWJJqoZ8/uJYeLh0WmU=
+X-Received: by 2002:a17:90b:3741:b0:219:fbc:a088 with SMTP id
+ ne1-20020a17090b374100b002190fbca088mr4176615pjb.162.1674581755350; Tue, 24
+ Jan 2023 09:35:55 -0800 (PST)
 MIME-Version: 1.0
-References: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
- <878rhty100.fsf@cloudflare.com> <CAMy7=ZVLUpeHM4A_aZ5XT-CYEM8_uj8y=GRcPT89Bf5=jtS+og@mail.gmail.com>
- <08dce08f-eb4b-d911-28e8-686ca3a85d4e@meta.com> <CAMy7=ZWPc279vnKK6L1fssp5h7cb6cqS9_EuMNbfVBg_ixmTrQ@mail.gmail.com>
- <3a87b859-d7c9-2dfd-b659-cd3192a67003@linux.dev> <CAMy7=ZWi35SKj9rcKwj0eyH+xY8ZBgiX_vpF=mydxFDahK6trg@mail.gmail.com>
- <87k01dvt83.fsf@cloudflare.com> <CAMy7=ZXyqCzhosiwpLa9rsFqW2jX4V59-Ef4k-5dQtqKOakTFQ@mail.gmail.com>
- <CAADnVQJaCTQtmvOdQoeaZbt0wwPp4iYjbvaPvRZw4DBEOSrJYg@mail.gmail.com> <CAMy7=ZVpGMOK_kHk1qB4ywxV88Vvtt=rGw4Q-Fi1F7bGU+6prQ@mail.gmail.com>
-In-Reply-To: <CAMy7=ZVpGMOK_kHk1qB4ywxV88Vvtt=rGw4Q-Fi1F7bGU+6prQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 24 Jan 2023 09:24:17 -0800
-Message-ID: <CAADnVQLaKyRJwXnU4wZrih4pRduw_eWarA2uNuc=HssKQUAn_Q@mail.gmail.com>
-Subject: Re: Are BPF programs preemptible?
-To:     Yaniv Agman <yanivagman@gmail.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@meta.com>
+References: <20230119221536.3349901-1-sdf@google.com> <901e1a7a-bb86-8d62-4bd7-512a1257d3b0@linux.dev>
+ <CAKH8qBs=1NgpJBNwJg7dZQnSAAGpH4vJj0+=LNWuQamGFerfZw@mail.gmail.com>
+ <5b757a2a-86a7-346c-4493-9ab903de19e4@intel.com> <87lelsp2yl.fsf@toke.dk> <da633a14-0d0e-0be3-6291-92313ab1550d@redhat.com>
+In-Reply-To: <da633a14-0d0e-0be3-6291-92313ab1550d@redhat.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 24 Jan 2023 09:35:42 -0800
+Message-ID: <CAKH8qBtOM6v0N6iRq+1EPPw2ow9kBD0FXCQJRxuc+02wa+mpkA@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v8 00/17] xdp: hints via kfuncs
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        brouer@redhat.com, Martin KaFai Lau <martin.lau@linux.dev>,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,61 +84,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 7:47 AM Yaniv Agman <yanivagman@gmail.com> wrote:
+On Tue, Jan 24, 2023 at 4:23 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
-> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=92=
-=D7=B3, 24 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-14:30 =D7=9E=D7=90=D7=
-=AA =E2=80=AAAlexei Starovoitov=E2=80=AC=E2=80=8F
-> <=E2=80=AAalexei.starovoitov@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
-> >
-> > On Mon, Jan 23, 2023 at 2:03 PM Yaniv Agman <yanivagman@gmail.com> wrot=
-e:
-> > >
-> > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=
-=91=D7=B3, 23 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-23:25 =D7=9E=D7=90=
-=D7=AA =E2=80=AAJakub Sitnicki=E2=80=AC=E2=80=8F
-> > > <=E2=80=AAjakub@cloudflare.com=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > >
-> > > > On Mon, Jan 23, 2023 at 11:01 PM +02, Yaniv Agman wrote:
-> > > > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =
-=D7=91=D7=B3, 23 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-22:06 =D7=9E=D7=
-=90=D7=AA =E2=80=AAMartin KaFai Lau=E2=80=AC=E2=80=8F
-> > > > > <=E2=80=AAmartin.lau@linux.dev=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > > >>
-> > > > >> On 1/23/23 9:32 AM, Yaniv Agman wrote:
-> > > > >> >>> interrupted the first one. But even then, I will need to fin=
-d a way to
-> > > > >> >>> know if my program currently interrupts the run of another p=
-rogram -
-> > > > >> >>> is there a way to do that?
-> > > > >> May be a percpu atomic counter to see if the bpf prog has been r=
-e-entered on the
-> > > > >> same cpu.
-> > > > >
-> > > > > Not sure I understand how this will help. If I want to save local
-> > > > > program data on a percpu map and I see that the counter is bigger=
- then
-> > > > > zero, should I ignore the event?
-> > > >
-> > > > map_update w/ BPF_F_LOCK disables preemption, if you're after updat=
-ing
-> > > > an entry atomically. But it can't be used with PERCPU maps today.
-> > > > Perhaps that's needed now too.
-> > >
-> > > Yep. I think what is needed here is the ability to disable preemption
-> > > from the bpf program - maybe even adding a helper for that?
-> >
-> > I'm not sure what the issue is here.
-> > Old preempt_disable() doesn't mean that one bpf program won't ever
-> > be interrupted by another bpf prog.
-> > Like networking bpf prog in old preempt_disable can call into something
-> > where there is a kprobe and another tracing bpf prog will be called.
-> > The same can happen after we switched to migrate_disable.
 >
-> One difference here is that in what you describe the programmer can
-> know in advance which functions might call others and avoid that or
-> use other percpu maps, but if preemption can happen between functions
-> which are not related to one another (don't have a relation of caller
-> and callee), then the programmer can't have control over it
+> On 24/01/2023 12.49, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+> >
+> >> From: Stanislav Fomichev <sdf@google.com>
+> >> Date: Mon, 23 Jan 2023 10:55:52 -0800
+> >>
+> >>> On Mon, Jan 23, 2023 at 10:53 AM Martin KaFai Lau <martin.lau@linux.d=
+ev> wrote:
+> >>>>
+> >>>> On 1/19/23 2:15 PM, Stanislav Fomichev wrote:
+> >>>>> Please see the first patch in the series for the overall
+> >>>>> design and use-cases.
+> >>>>>
+> >>>>> See the following email from Toke for the per-packet metadata overh=
+ead:
+> >>>>> https://lore.kernel.org/bpf/20221206024554.3826186-1-sdf@google.com=
+/T/#m49d48ea08d525ec88360c7d14c4d34fb0e45e798
+> >>>>>
+> >>>>> Recent changes:
+> >>>>> - Keep new functions in en/xdp.c, do 'extern mlx5_xdp_metadata_ops'=
+ (Tariq)
+> >>>>>
+> >>>>> - Remove mxbuf pointer and use xsk_buff_to_mxbuf (Tariq)
+> >>>>>
+> >>>>> - Clarify xdp_buff vs 'XDP frame' (Jesper)
+> >>>>>
+> >>>>> - Explicitly mention that AF_XDP RX descriptor lacks metadata size =
+(Jesper)
+> >>>>>
+> >>>>> - Drop libbpf_flags/xdp_flags from selftests and use ifindex instea=
+d
+> >>>>>     of ifname (due to recent xsk.h refactoring)
+> >>>>
+> >>>> Applied with the minor changes in the selftests discussed in patch 1=
+1 and 17.
+> >>>> Thanks!
+> >>>
+> >>> Awesome, thanks! I was gonna resend around Wed, but thank you for
+> >>> taking care of that!
+> >> Great stuff, congrats! :)
+> >
+> > Yeah! Thanks for carrying this forward, Stanislav! :)
 
-Could you give a specific example?
+Thank you all as well for the valuable feedback and reviews!
+
+> +1000 -- great work everybody! :-)
+>
+> To Alexander (Cc Jesse and Tony), do you think someone from Intel could
+> look at extending drivers:
+>
+>   drivers/net/ethernet/intel/igb/ - chip i210
+>   drivers/net/ethernet/intel/igc/ - chip i225
+>   drivers/net/ethernet/stmicro/stmmac - for CPU integrated LAN ports
+>
+> We have a customer that have been eager to get hardware RX-timestamping
+> for their AF_XDP use-case (PoC code[1] use software timestamping via
+> bpf_ktime_get_ns() today).  Getting driver support will qualify this
+> hardware as part of their HW solution.
+>
+> --Jesper
+> [1]
+> https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interactio=
+n/af_xdp_kern.c#L77
+>
