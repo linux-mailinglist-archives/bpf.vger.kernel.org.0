@@ -2,74 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 867E7679FF1
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 18:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E332C67A019
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 18:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjAXRR1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 12:17:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
+        id S234440AbjAXRYh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 12:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234624AbjAXRRZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 12:17:25 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AAB4CE46
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:17:21 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id az20so40955889ejc.1
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:17:21 -0800 (PST)
+        with ESMTP id S234830AbjAXRYg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 12:24:36 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7674DE0D
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:24:30 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id cm4so1020361edb.9
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 09:24:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=C1H6jtEPJJHC2ZJkbfQQZk5FIlfKQ58clKHcYIWaRHY=;
-        b=ghxO/vhdM15ZoreKxXSZv22syVyjY6JKbo/oV4SgnOcYI6KQpU+BEmwDWiLhGmIw10
-         Qyc2xoi5HlQHVP3zQjwwYt3ipaj3yHE2dGfrHszk0G7ZzpbWwIA4rL7qQooA6eXW6tOD
-         v+iP1ht9TC7EqbhlA3hwcoXyXZWLNlNbf/fTI648bS6+U9VZkd+vwBraUrcqHMs6UbT+
-         HtBRN+HCcAstcwdzUiOVcAY7CdFDKSoqvu9GeYbex3oSmFd5AF7cdh5JKeI7wpmGwGWb
-         dGC81gpTeumxKCzeQb4EIUKD0cNd1ojrXiHT6k2+Zd5d5Hn0WTKcBzakTK3cRgjKpOpM
-         uTng==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7xEcvIY8/p/7nqlZJ5s3XfRHmSnbrODBDhAnqoCCCA0=;
+        b=hdUvAFONK43rP78vlWSoyscMPaG/wl0IfqtkNjtmx+kTmikRt6Nn+Vo6Kk2gflg5pP
+         sPvd/QOvYT2AkC+eQLsJgAojHRsepSpKZfmUM6jSI7ODc/QAj58f3DU/5H7pySlWrJBM
+         ayVL2AmUDYThZo1EWwQY+3hvBj/efIplnUhBpd20QdlRBKt9Ty8gQL4lTxHgWktxfNbs
+         QJAKbAxVNWveCvtqF1nUZcG0Rf3rphGkpybghXV6Tzj2FsvdpbRkXV8HOZEcohwya9Ku
+         QAfgGaPdW75OePpLUmJmt8n1ZsYonyDtZZTXbgq9ZeIvPs165SkrG1KuPIuJOhYprKF/
+         qSRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C1H6jtEPJJHC2ZJkbfQQZk5FIlfKQ58clKHcYIWaRHY=;
-        b=Yuf4myiJ586q4eSwGFCG/+W2uNHnueJkH9hBsq1cCUWAj7en2hoL4YwKLSkGmR/IYv
-         P8G1Zn9HSH1Kn7ULJoduOZRgfeoNFqdl2oQmqupGXPhky7koxXeUT44tWqcX2U+K+D2l
-         tX610M8mIWjiCwwJOkWtmJGxFgnTbQqMSeg9ZaFvrm1hYooybr4N/4Go3QSH9xxNOSoq
-         X3vWHltTfcbmwAkMZMHQlgnkg+hw9MgZByK1ldEfMg3pF0pJm2IPXy02M5O98Qon7HT3
-         tprbWjdduKElKHWqKM4cjDNaPQcKleYNFJjeDDmdFzHE+4JaUQV0G0zuvtJY3/esAEkH
-         qE5A==
-X-Gm-Message-State: AFqh2kpT+ciYPFWzrrA0bWLMFyN0hRzSYKptHFI4pGCyeOxKpAOdjNvV
-        EtSU34MzU9HK2dsoUk+n0yAYxxelJ6blMVF/nL8=
-X-Google-Smtp-Source: AMrXdXugoLv8TeZQCKPUgxLhwfEftJm9hTYlm8FOTKE6d80Ul4WfynlTOroXEKQdGCpDDOvPwxvET/eJ7h8gxH3W/cA=
-X-Received: by 2002:a17:906:b106:b0:86d:d78d:61a5 with SMTP id
- u6-20020a170906b10600b0086dd78d61a5mr3082060ejy.253.1674580639409; Tue, 24
- Jan 2023 09:17:19 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7xEcvIY8/p/7nqlZJ5s3XfRHmSnbrODBDhAnqoCCCA0=;
+        b=xlRI89jR9jd/JNnE798q0+3oEKbANoDnp7nFnkghri6ww2Fmhjec1pYwywvZhryjAt
+         UXd66nqNF2jWMEa63v9LiAF+XeLm7soXW/KM/UN+hDERWCzzPMI5zZ7TTQ8ETqLDrb7I
+         xeJeLOXSwWf/3JrQzLRPfTuH/l0vjbyZipwotreyaXdR6lLex/vHmZGqR+tO5vrsOgrI
+         CR1OI2bVJzYzoXD71JFiLThOhZ094NPEwNJ9fbxb4qybGXo7ys9ulK1kLBskeEtSMKLN
+         E/7AxCBHyEMUlC9JCO8YQ1TaL8wa7gDq2tKZcJaC/W5SqvampQrBaFeB9qxAZbVTbTBg
+         C+zQ==
+X-Gm-Message-State: AFqh2koYnzkj/hGMSQ83g7eSXDn6yrgHjEWBWNiTx2WA6k0iEYEdZUkc
+        4KUKfPIYUUZj0ta3maHOJ2GE5vdKIhRJiioYA+A=
+X-Google-Smtp-Source: AMrXdXupu/1FI93ab82lKxOAQOukaWgfQt0mbhiYdnR1alr0jr7Py31loAYCsJHQFCxUER/lwPA6F1GNJ7IGujyerxk=
+X-Received: by 2002:a05:6402:202:b0:48e:bf8a:23c6 with SMTP id
+ t2-20020a056402020200b0048ebf8a23c6mr3650315edv.133.1674581068881; Tue, 24
+ Jan 2023 09:24:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20230117212731.442859-1-toke@redhat.com> <CAKH8qBuvBomTXqNB+a6n_PbJKSNFazrAxEWsVT-=4XfztuJ7dw@mail.gmail.com>
- <87v8l4byyb.fsf@toke.dk> <CAKH8qBs=nEhhy2Qu7CpyAHx6gOaWR25tRF7aopti5-TSuw66HQ@mail.gmail.com>
- <CAADnVQKy1QzM+wg1BxfYA30QsTaM4M5RRCi+VHN6A7ah2BeZZw@mail.gmail.com>
- <CAKH8qBvZgoOe24MMY+Jn-6guJzGVuJS9zW4v6H+fhgcp7X_9jQ@mail.gmail.com>
- <3500bace-de87-0335-3fe3-6a5c0b4ce6ad@iogearbox.net> <20230119043247.tktxsztjcr3ckbby@MacBook-Pro-6.local>
-In-Reply-To: <20230119043247.tktxsztjcr3ckbby@MacBook-Pro-6.local>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 24 Jan 2023 09:17:07 -0800
-Message-ID: <CAEf4BzbAt_Yp-GkAr3Ov4x_v2cawzuJXC5ux4NA-FZ2rv6PCAg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] Documentation/bpf: Add a description of "stable kfuncs"
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
+ <878rhty100.fsf@cloudflare.com> <CAMy7=ZVLUpeHM4A_aZ5XT-CYEM8_uj8y=GRcPT89Bf5=jtS+og@mail.gmail.com>
+ <08dce08f-eb4b-d911-28e8-686ca3a85d4e@meta.com> <CAMy7=ZWPc279vnKK6L1fssp5h7cb6cqS9_EuMNbfVBg_ixmTrQ@mail.gmail.com>
+ <3a87b859-d7c9-2dfd-b659-cd3192a67003@linux.dev> <CAMy7=ZWi35SKj9rcKwj0eyH+xY8ZBgiX_vpF=mydxFDahK6trg@mail.gmail.com>
+ <87k01dvt83.fsf@cloudflare.com> <CAMy7=ZXyqCzhosiwpLa9rsFqW2jX4V59-Ef4k-5dQtqKOakTFQ@mail.gmail.com>
+ <CAADnVQJaCTQtmvOdQoeaZbt0wwPp4iYjbvaPvRZw4DBEOSrJYg@mail.gmail.com> <CAMy7=ZVpGMOK_kHk1qB4ywxV88Vvtt=rGw4Q-Fi1F7bGU+6prQ@mail.gmail.com>
+In-Reply-To: <CAMy7=ZVpGMOK_kHk1qB4ywxV88Vvtt=rGw4Q-Fi1F7bGU+6prQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 24 Jan 2023 09:24:17 -0800
+Message-ID: <CAADnVQLaKyRJwXnU4wZrih4pRduw_eWarA2uNuc=HssKQUAn_Q@mail.gmail.com>
+Subject: Re: Are BPF programs preemptible?
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Vernet <void@manifault.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
+        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@meta.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -80,91 +74,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 8:32 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Jan 24, 2023 at 7:47 AM Yaniv Agman <yanivagman@gmail.com> wrote:
 >
-> On Wed, Jan 18, 2023 at 11:48:59AM +0100, Daniel Borkmann wrote:
+> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=92=
+=D7=B3, 24 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-14:30 =D7=9E=D7=90=D7=
+=AA =E2=80=AAAlexei Starovoitov=E2=80=AC=E2=80=8F
+> <=E2=80=AAalexei.starovoitov@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
 > >
-> > My $0.02 is that I don't think we need to make a hard-cut ban as part of this.
+> > On Mon, Jan 23, 2023 at 2:03 PM Yaniv Agman <yanivagman@gmail.com> wrot=
+e:
+> > >
+> > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=
+=91=D7=B3, 23 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-23:25 =D7=9E=D7=90=
+=D7=AA =E2=80=AAJakub Sitnicki=E2=80=AC=E2=80=8F
+> > > <=E2=80=AAjakub@cloudflare.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+> > > >
+> > > > On Mon, Jan 23, 2023 at 11:01 PM +02, Yaniv Agman wrote:
+> > > > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =
+=D7=91=D7=B3, 23 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-22:06 =D7=9E=D7=
+=90=D7=AA =E2=80=AAMartin KaFai Lau=E2=80=AC=E2=80=8F
+> > > > > <=E2=80=AAmartin.lau@linux.dev=E2=80=AC=E2=80=8F>:=E2=80=AC
+> > > > >>
+> > > > >> On 1/23/23 9:32 AM, Yaniv Agman wrote:
+> > > > >> >>> interrupted the first one. But even then, I will need to fin=
+d a way to
+> > > > >> >>> know if my program currently interrupts the run of another p=
+rogram -
+> > > > >> >>> is there a way to do that?
+> > > > >> May be a percpu atomic counter to see if the bpf prog has been r=
+e-entered on the
+> > > > >> same cpu.
+> > > > >
+> > > > > Not sure I understand how this will help. If I want to save local
+> > > > > program data on a percpu map and I see that the counter is bigger=
+ then
+> > > > > zero, should I ignore the event?
+> > > >
+> > > > map_update w/ BPF_F_LOCK disables preemption, if you're after updat=
+ing
+> > > > an entry atomically. But it can't be used with PERCPU maps today.
+> > > > Perhaps that's needed now too.
+> > >
+> > > Yep. I think what is needed here is the ability to disable preemption
+> > > from the bpf program - maybe even adding a helper for that?
+> >
+> > I'm not sure what the issue is here.
+> > Old preempt_disable() doesn't mean that one bpf program won't ever
+> > be interrupted by another bpf prog.
+> > Like networking bpf prog in old preempt_disable can call into something
+> > where there is a kprobe and another tracing bpf prog will be called.
+> > The same can happen after we switched to migrate_disable.
 >
-> The hard-cut is easier to enforce otherwise every developer will be arguing that
-> their new feature is special and it requires a new discussion.
-> This thread has been going for too long. We need to finish it now and
-> don't come back to it again every now and then.
+> One difference here is that in what you describe the programmer can
+> know in advance which functions might call others and avoid that or
+> use other percpu maps, but if preemption can happen between functions
+> which are not related to one another (don't have a relation of caller
+> and callee), then the programmer can't have control over it
 
-I wish that we could grant exception at least to complete dynptr
-basics (bpf_dynptr_is_null, bpf_dynptr_get_size,
-bpf_dynptr_{clone,trim,advance}) so that it is consistently provided
-as a unified set of helpers. Similarly, for open coded loop iterator
-(3 helpers), I believe it would be better for BPF ecosystem overall to
-work on any BPF-enabled architecture and configuration (no matter JIT
-or not, BTF of not, etc), just due to generality and unassuming nature
-of this functionality.
-
-But it is what it is, let's move on.
-
->
-> imo this is the summary of the thread:
->
-> bpf folks fall into two categories: kernel maintainers and bpf developers/users.
-> - developers add new bpf features. They obviously want to use them and want bpf users
-> to know that the feature they added is not going to disappear in the next kernel.
-> They want stability.
-> - maintainers want to make sure that the kernel development doesn't suffer because
-> developers keep adding new apis. They want freedom to innovate and change apis.
-> Maintainers also know that developers make mistakes and might leave the community.
-> The kernel is huge and core infra changes all the time.
-> bpf apis must never be a reason not to change something in the kernel.
->
-> Freedom to change and stability just don't overlap.
-> These two camps can never agree on what is more important.
-> But we can make them co-exist.
->
-> The bpf developers adding new kfunc should assume that it's stable and proceed
-> to use it in bpf progs and production applications.
-
-It's unclear what this means for library developers (libbpf, libxdp,
-and others), but I guess we'll find out with time.
-
-> The bpf maintainers will keep this stability promise. They obviously will not
-> reap it out of the kernel on the whim, but they will nuke it if this kfunc
-> will be in the way of the kernel innovation.
-> The longer the kfunc is present the harder it will be for maintainers to justify
-> removing it. The developers have to stick around and demonstrate that their
-> kfunc is actually being used. The better developers do it the bigger the effort
-> maintainers will put into keeping the kfunc perfectly intact.
->
-
-[...]
-
->
-> > The 'All new BPF kernel helper-like functionality must initially start out as
-> > kfuncs.' is pretty clear where things would need to start out with, and we could
-> > leave the option on the table if really needed to go BPF helper route when
-> > promoting kfunc to stable at the same time. I had that in the text suggestion
-> > earlier, it's more corner case and maybe we'll never need it but we also don't
-> > drive ourselves into a corner where we close the door on it. Lets let the infra
-> > around kfuncs evolve further first.
->
-> Going kfunc->helper for stability was discussed already. It probably got lost
-> in the noise. The summary was that it's not an option for the following reason:
-> kfuncs and helpers are done through different mechanisms on prog and kernel side.
-> The prog either sees = (void *)1 hack or normal call to extern func.
-> The generated code is different.
-> Say, we convert a kfunc to helper. Immediately the existing bpf prog that uses
-> that kfunc will fail to load. That's the opposite of stability.
-> We're going to require the developer to demonstrate the real world use of kfunc
-> before promoting to stable, but with such 'promotion' we will break bpf progs.
-> Say, we keep kfunc and introduce a new helper that does exactly the same.
-> But it won't help bpf prog. The prog was using kfunc in production,
-> why would it do some kind of CO-RE thing to compile 'call foo' differently
-> depending whether 'foo' is kfunc or helper in the given kernel. And so on.
-
-Correct. If we'd anticipated promotion of kfunc to helper (but it
-doesn't seem like we do), we'd need to have kfunc with a different
-name from its corresponding helper's name to avoid massive pain for
-users. So if we were to add bpf_dynptr_is_null() as kfunc with an eye
-for it to be stabilized as helper, I'd vote to add it as something
-like bpf_kf_dynptr_is_null() or something, and then eventually add
-bpf_dynptr_is_null(). That will at least less painful abstraction in
-user's BPF code (and libbpf's helpers, if any).
+Could you give a specific example?
