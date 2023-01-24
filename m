@@ -2,193 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D57C67910D
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 07:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8A1679131
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 07:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbjAXGf1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 01:35:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
+        id S232967AbjAXGni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 01:43:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233214AbjAXGf0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 01:35:26 -0500
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9355B3CE36;
-        Mon, 23 Jan 2023 22:34:52 -0800 (PST)
-Message-ID: <d2606312-1e04-55ff-e01e-daf83ed99836@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1674542090;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XoQl7uUFk5a4iB7hSBnRz259kIa6WGS8ZI2M0mlcDxc=;
-        b=UJ00gwjq4gFjn29yUIgtP3vJKG2pGDukPyC0hkIVIP2nqN05joUBN4WcO+osDMjimoNFlw
-        jsl0LQkfUx6HI3nz1gtWCAc7b2kCr0XlXsGZTlLXXEj3jCpUP8Pj0JXXPRLcpiWXydy+1m
-        UfNa2J/CmihbLVVjWaz3Ys4ifQ5VFxU=
-Date:   Mon, 23 Jan 2023 22:34:36 -0800
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 7/7] selftests/bpf: introduce XDP compliance test
- tool
-Content-Language: en-US
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        toke@redhat.com, memxor@gmail.com, alardam@gmail.com,
-        saeedm@nvidia.com, anthony.l.nguyen@intel.com, gospo@broadcom.com,
-        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
-        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
-        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
-        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
-        lorenzo.bianconi@redhat.com, niklas.soderlund@corigine.com,
-        bpf@vger.kernel.org
-References: <cover.1674234430.git.lorenzo@kernel.org>
- <986321f8621e9367653e21b35566e7cda976b886.1674234430.git.lorenzo@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <986321f8621e9367653e21b35566e7cda976b886.1674234430.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231838AbjAXGnh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 01:43:37 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D71327D55
+        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 22:43:36 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-4fa63c84621so143618377b3.20
+        for <bpf@vger.kernel.org>; Mon, 23 Jan 2023 22:43:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OrTgrRLylW19wsfnugIU2K6YrtxXGRZd048ZOU/pB04=;
+        b=pGDB8zVceKFlAS71Zz2UIMzSTQ4gkNUHMXGEOOgIEFvWN0QfHGKR1EV33cVWAkWQjG
+         woDMqzbLFCY1E6XDLMmnBI8JsnCKPKPe7xTszD9MYDJHzAQlYwSOrNHCHirqLCQ3XU8+
+         eCogsW/0aUEBQdO048bEyFvtiyWf589/HKoMeunnD/cqQOWpFkohB0DCWwvJcJn99SmB
+         FKFQl98vRJxPkJ4BG/3UqE9ggBKNZXP44erXVR/8H6dmdGQYQn/61LsfLWhgnkyq5Dxn
+         R3HWjl+s6baDiEDgWU0SJ6bqr41FZZ2rV8v+w1CV0kL1mSgTnWXbKHpwuAIu2xjbugpu
+         wNbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OrTgrRLylW19wsfnugIU2K6YrtxXGRZd048ZOU/pB04=;
+        b=USWG2FJ2S89Zg0ZZ8iv7qLwmTqgSwdeo0FzSLJXynLwN6oICmcwbGCPMhH6L7G5Csq
+         yvSFiTLwlO15qXbjr4gIQk1KVmtBsRm3REUsNnaKqMoJpr65j4OQqbh1xysLtlb8so4I
+         R67idZs7grRpE3dug+up43Qxs29GgK/aIVrKgEItGqE7XDKCAjPhxCppm4QZ1PGdl8XQ
+         2d32uQ5K1/l6i+OpPC5SviIWfuQY+E8GbRfcQ3g5KiKMe2u222InoqGr6XTF3qic8omc
+         k52jzgFnz6fDBXUAbiBrQiHN6PGZExvrmyjaieAXF5vr7z/6oA1MN546BTIpChTnas7T
+         1vpw==
+X-Gm-Message-State: AFqh2ko2Rq1il4/Lcz4s1UqamaZ0LIYWbNy4QLQVL5Ln1ZgIJWTHmziA
+        EikSrf6/il/f+LLe59OoeJM09Di7Un7z
+X-Google-Smtp-Source: AMrXdXu7sfn5ygCbiyFGXP1ACqzBFw2leq+yHhsBrzUhl/zVPTuZ0/Vo0X3uKu3r8+1yk07nvO3wXfbK21H4
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:460d:1b4a:acb8:ae9a])
+ (user=irogers job=sendgmr) by 2002:a81:7307:0:b0:464:4ea1:3baa with SMTP id
+ o7-20020a817307000000b004644ea13baamr2791679ywc.302.1674542615810; Mon, 23
+ Jan 2023 22:43:35 -0800 (PST)
+Date:   Mon, 23 Jan 2023 22:43:23 -0800
+Message-Id: <20230124064324.672022-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.0.246.g2a6d74b583-goog
+Subject: [PATCH v4 1/2] tools/resolve_btfids: Install subcmd headers
+From:   Ian Rogers <irogers@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Connor OBrien <connoro@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/20/23 9:16 AM, Lorenzo Bianconi wrote:
-> +static __always_inline int xdp_process_echo_packet(struct xdp_md *xdp, bool dut)
-> +{
-> +	void *data_end = (void *)(long)xdp->data_end;
-> +	__be32 saddr = dut ? tester_ip : dut_ip;
-> +	__be32 daddr = dut ? dut_ip : tester_ip;
-> +	void *data = (void *)(long)xdp->data;
-> +	struct ethhdr *eh = data;
-> +	struct tlv_hdr *tlv;
-> +	struct udphdr *uh;
-> +	struct iphdr *ih;
-> +	__be16 port;
-> +	__u8 *cmd;
-> +
-> +	if (eh + 1 > (struct ethhdr *)data_end)
-> +		return -EINVAL;
-> +
-> +	if (eh->h_proto != bpf_htons(ETH_P_IP))
-> +		return -EINVAL;
+Previously tools/lib/subcmd was added to the include path, switch to
+installing the headers and then including from that directory. This
+avoids dependencies on headers internal to tools/lib/subcmd. Add the
+missing subcmd directory to the affected #include.
 
-Both v6 and v4 support are needed as a tool.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/bpf/resolve_btfids/Makefile | 19 ++++++++++++++-----
+ tools/bpf/resolve_btfids/main.c   |  2 +-
+ 2 files changed, 15 insertions(+), 6 deletions(-)
 
-[ ... ]
-
-> diff --git a/tools/testing/selftests/bpf/test_xdp_features.sh b/tools/testing/selftests/bpf/test_xdp_features.sh
-> new file mode 100755
-> index 000000000000..98b8fd2b6c16
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/test_xdp_features.sh
-> @@ -0,0 +1,99 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +# Create 2 namespaces with two veth peers, and
-> +# check reported and detected XDP capabilities
-> +#
-> +#   NS0(v00)              NS1(v11)
-> +#       |                     |
-> +#       |                     |
-> +# (v01, id:111)  ------  (v10,id:222)
-> +
-> +readonly NS0="ns1-$(mktemp -u XXXXXX)"
-> +readonly NS1="ns2-$(mktemp -u XXXXXX)"
-> +ret=1
-> +
-> +setup() {
-> +	{
-> +		ip netns add ${NS0}
-> +		ip netns add ${NS1}
-> +
-> +		ip link add v01 index 111 type veth peer name v00 netns ${NS0}
-> +		ip link add v10 index 222 type veth peer name v11 netns ${NS1}
-> +
-> +		ip link set v01 up
-> +		ip addr add 10.10.0.1/24 dev v01
-> +		ip link set v01 address 00:11:22:33:44:55
-> +		ip -n ${NS0} link set dev v00 up
-> +		ip -n ${NS0} addr add 10.10.0.11/24 dev v00
-> +		ip -n ${NS0} route add default via 10.10.0.1
-> +		ip -n ${NS0} link set v00 address 00:12:22:33:44:55
-> +
-> +		ip link set v10 up
-> +		ip addr add 10.10.1.1/24 dev v10
-> +		ip link set v10 address 00:13:22:33:44:55
-> +		ip -n ${NS1} link set dev v11 up
-> +		ip -n ${NS1} addr add 10.10.1.11/24 dev v11
-> +		ip -n ${NS1} route add default via 10.10.1.1
-> +		ip -n ${NS1} link set v11 address 00:14:22:33:44:55
-> +
-> +		sysctl -w net.ipv4.ip_forward=1
-> +		# Enable XDP mode
-> +		ethtool -K v01 gro on
-> +		ethtool -K v01 tx-checksumming off
-> +		ip netns exec ${NS0} ethtool -K v00 gro on
-> +		ip netns exec ${NS0} ethtool -K v00 tx-checksumming off
-> +		ethtool -K v10 gro on
-> +		ethtool -K v10 tx-checksumming off
-> +		ip netns exec ${NS1} ethtool -K v11 gro on
-> +		ip netns exec ${NS1} ethtool -K v11 tx-checksumming off
-> +	} > /dev/null 2>&1
-> +}
-> +
-> +cleanup() {
-> +	ip link del v01 2> /dev/null
-> +	ip link del v10 2> /dev/null
-> +	ip netns del ${NS0} 2> /dev/null
-> +	ip netns del ${NS1} 2> /dev/null
-> +	[ "$(pidof xdp_features)" = "" ] || kill $(pidof xdp_features) 2> /dev/null
-> +}
-> +
-> +test_xdp_features() {
-> +	setup
-> +
-> +	## XDP_PASS
-> +	ip netns exec ${NS1} ./xdp_features -f XDP_PASS -D 10.10.1.11 -T 10.10.0.11 v11 &
-> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_PASS -D 10.10.1.11 -C 10.10.1.11 -T 10.10.0.11 v00
-> +
-> +	[ $? -ne 0 ] && exit
-> +
-> +	# XDP_DROP
-> +	ip netns exec ${NS1} ./xdp_features -f XDP_DROP -D 10.10.1.11 -T 10.10.0.11 v11 &
-> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_DROP -D 10.10.1.11 -C 10.10.1.11 -T 10.10.0.11 v00
-> +
-> +	[ $? -ne 0 ] && exit
-> +
-> +	## XDP_TX
-> +	./xdp_features -f XDP_TX -D 10.10.0.1 -T 10.10.0.11 v01 &
-> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_TX -D 10.10.0.1 -C 10.10.0.1 -T 10.10.0.11 v00
-> +
-> +	## XDP_REDIRECT
-> +	ip netns exec ${NS1} ./xdp_features -f XDP_REDIRECT -D 10.10.1.11 -T 10.10.0.11 v11 &
-> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_REDIRECT -D 10.10.1.11 -C 10.10.1.11 -T 10.10.0.11 v00
-> +
-> +	[ $? -ne 0 ] && exit
-> +
-> +	## XDP_NDO_XMIT
-> +	./xdp_features -f XDP_NDO_XMIT -D 10.10.0.1 -T 10.10.0.11 v01 &
-> +	ip netns exec ${NS0} ./xdp_features -t -f XDP_NDO_XMIT -D 10.10.0.1 -C 10.10.0.1 -T 10.10.0.11 v00
-> +
-> +	ret=$?
-> +	cleanup
-> +}
-> +
-> +set -e
-> +trap cleanup 2 3 6 9
-> +
-> +test_xdp_features
-
-This won't be run by bpf CI.
-
-A selftest in test_progs is needed to test the libbpf changes in patch 6.
+diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+index f7375a119f54..1fe0082b2ecc 100644
+--- a/tools/bpf/resolve_btfids/Makefile
++++ b/tools/bpf/resolve_btfids/Makefile
+@@ -35,21 +35,29 @@ SUBCMD_SRC := $(srctree)/tools/lib/subcmd/
+ BPFOBJ     := $(OUTPUT)/libbpf/libbpf.a
+ LIBBPF_OUT := $(abspath $(dir $(BPFOBJ)))/
+ SUBCMDOBJ  := $(OUTPUT)/libsubcmd/libsubcmd.a
++SUBCMD_OUT := $(abspath $(dir $(SUBCMDOBJ)))/
+ 
+ LIBBPF_DESTDIR := $(LIBBPF_OUT)
+ LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)include
+ 
++SUBCMD_DESTDIR := $(SUBCMD_OUT)
++SUBCMD_INCLUDE := $(SUBCMD_DESTDIR)include
++
+ BINARY     := $(OUTPUT)/resolve_btfids
+ BINARY_IN  := $(BINARY)-in.o
+ 
+ all: $(BINARY)
+ 
++prepare: $(BPFOBJ) $(SUBCMDOBJ)
++
+ $(OUTPUT) $(OUTPUT)/libsubcmd $(LIBBPF_OUT):
+ 	$(call msg,MKDIR,,$@)
+ 	$(Q)mkdir -p $(@)
+ 
+ $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
+-	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
++	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(SUBCMD_OUT) \
++		    DESTDIR=$(SUBCMD_DESTDIR) prefix= \
++		    $(abspath $@) install_headers
+ 
+ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUT)
+ 	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(LIBBPF_OUT)    \
+@@ -63,7 +71,7 @@ CFLAGS += -g \
+           -I$(srctree)/tools/include \
+           -I$(srctree)/tools/include/uapi \
+           -I$(LIBBPF_INCLUDE) \
+-          -I$(SUBCMD_SRC) \
++          -I$(SUBCMD_INCLUDE) \
+           $(LIBELF_FLAGS)
+ 
+ LIBS = $(LIBELF_LIBS) -lz
+@@ -71,7 +79,7 @@ LIBS = $(LIBELF_LIBS) -lz
+ export srctree OUTPUT CFLAGS Q
+ include $(srctree)/tools/build/Makefile.include
+ 
+-$(BINARY_IN): $(BPFOBJ) fixdep FORCE | $(OUTPUT)
++$(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
+ 	$(Q)$(MAKE) $(build)=resolve_btfids
+ 
+ $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
+@@ -83,7 +91,8 @@ clean_objects := $(wildcard $(OUTPUT)/*.o                \
+                             $(OUTPUT)/.*.o.d             \
+                             $(LIBBPF_OUT)                \
+                             $(LIBBPF_DESTDIR)            \
+-                            $(OUTPUT)/libsubcmd          \
++                            $(SUBCMD_OUT)                \
++                            $(SUBCMD_DESTDIR)            \
+                             $(OUTPUT)/resolve_btfids)
+ 
+ ifneq ($(clean_objects),)
+@@ -100,4 +109,4 @@ tags:
+ 
+ FORCE:
+ 
+-.PHONY: all FORCE clean tags
++.PHONY: all FORCE clean tags prepare
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 80cd7843c677..77058174082d 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -75,7 +75,7 @@
+ #include <linux/err.h>
+ #include <bpf/btf.h>
+ #include <bpf/libbpf.h>
+-#include <parse-options.h>
++#include <subcmd/parse-options.h>
+ 
+ #define BTF_IDS_SECTION	".BTF_ids"
+ #define BTF_ID		"__BTF_ID__"
+-- 
+2.39.0.246.g2a6d74b583-goog
 
