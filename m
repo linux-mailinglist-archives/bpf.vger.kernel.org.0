@@ -2,172 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC6B679D19
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 16:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9606F679D67
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 16:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjAXPOP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 10:14:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
+        id S234918AbjAXP06 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 10:26:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbjAXPOO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 10:14:14 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5E747098
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 07:14:10 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id r9so14199416wrw.4
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 07:14:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2RNiPoGQgZk00hKi0FAXLQ9h780umVeFRdv2t++gej8=;
-        b=ElNkH2skUaTvWVPDUgeGw4qCqbB5V9l5/X5sDaGndnrEWlF0Q5dyD++GQTv6SLP3CU
-         ZYgTMkZkR3ep61GiLmAlNk21t0y54OtiWSgLq3qy+Fz+N11eX2aC/4DwRb8CBRSpYr5z
-         nxZg/zsoCnklHK74pC5a2rTDWx3IOeKungsIZxldpL2/D7ysM7jYX+5Mf2n5C1gwDdwP
-         4YRb4vehaB2jvmsBHIP+p64IA7EK387EQk3wLQLb5NSWckCjDDouhtTKH4/Axp2uD+wC
-         Bw/YqazyzZasgR8mgDy1s9TDmTwieUlImHSnRt6LFCtWqr+Hrt9419dliMkcZNqXornn
-         mshQ==
+        with ESMTP id S234680AbjAXP05 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 10:26:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6C42449E
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 07:26:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1674573964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FUJyCyAKYGRjpKDQcowW9bwvdIvaMrIk3rgeMaf99ks=;
+        b=RuB/UaRKhAo4hUrpBcfaDloklwZnvZa9yVBvTbEnO4yPjA4gtZ5hDBwIndU0t7HucR8D1i
+        zadma06BJQHuFPVfkIXO3sbWbkEgXLEcrvN3D11TRYj2HiiK8x9oL3ypoVMj1pd3Mhwsgf
+        TvA4H7gH1kzbBs8qwVGVUpSmCMXmtFU=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-378-2wQxZt24P52ttiiXEwe_tQ-1; Tue, 24 Jan 2023 10:26:02 -0500
+X-MC-Unique: 2wQxZt24P52ttiiXEwe_tQ-1
+Received: by mail-ej1-f69.google.com with SMTP id hc30-20020a170907169e00b0086d90ee8b17so10138562ejc.10
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 07:26:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2RNiPoGQgZk00hKi0FAXLQ9h780umVeFRdv2t++gej8=;
-        b=vRNlwYe8mq4dyOCvTmxz32LWVNWGW6eKSdjX3rFNPxqdv7D2rMuE6UNbGbNHpvgyYv
-         bq44Fkr/nl9Yv+ErZ01L3VEaKNY7+3LU2ePYCLrL+egZpuikzNy//YRryqHGLYz41gGa
-         I75RVib4kUF6XLf9JkhImywygkvbi3v+FpxkGPecfk3OUKf6bbuGDHQWK8QZiX5qdtuG
-         iWOl/YMmI9oBD9XHYRgQLebU7mklI+rOCFbzXb3gUxJ0jfSmIL8hYPyh8fEgg2PehaDN
-         J+pLppXBiARmBFuNrlAhnOeESDL4PubaycDWiBF0cbiys4vUu1drR1eVEPnQbQSlK7PZ
-         21Ag==
-X-Gm-Message-State: AFqh2kqviDNBE9JlPqADnlIfdzRhtcgnZb8F3ZceAgwCkrYZ2/Xh4kOS
-        CWrKnc/qxAfsjQFSxPrNd3M=
-X-Google-Smtp-Source: AMrXdXtnAPyx2UqhSBQNfMy2wzi8ChRvmAWE/nuTbtc69mMXeEjh1qkhwr+hILeHOuObg+54bT7jag==
-X-Received: by 2002:a05:6000:3c2:b0:2bd:d45c:3929 with SMTP id b2-20020a05600003c200b002bdd45c3929mr27163251wrg.54.1674573248745;
-        Tue, 24 Jan 2023 07:14:08 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a5-20020adfeec5000000b002bfb5ebf8cfsm282845wrp.21.2023.01.24.07.14.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jan 2023 07:14:08 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 24 Jan 2023 16:14:05 +0100
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     acme@kernel.org, yhs@fb.com, ast@kernel.org, olsajiri@gmail.com,
-        timo@incline.eu, daniel@iogearbox.net, andrii@kernel.org,
-        songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
-        martin.lau@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves 0/5] dwarves: support encoding of optimized-out
- parameters, removal of inconsistent static functions
-Message-ID: <Y8/1vY5vaPcerfYw@krava>
-References: <1674567931-26458-1-git-send-email-alan.maguire@oracle.com>
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FUJyCyAKYGRjpKDQcowW9bwvdIvaMrIk3rgeMaf99ks=;
+        b=gTUooeIbhSvixlGWCwhTzGg9CrVReHXKVmOWZOojYt9Q8IO8+VM7t60eJt2b4wHoIH
+         f5jSZAUOlsraMJ25kK+wYiK1B4gn9XSVw4zz3bokR9YiU+QZtwP6Y9OCW/GkewqfIQu+
+         LA76r053nS1MUXZZOQ87IuYWK1D3m/1+bCTzyUGHwdD5WU2M6d7KxVet7GoX0Usz9cnf
+         aGiIdNPJHQzDOgP1EjRDKsPx9/U/CnadvvyE3jgnd0hAjdZ3JiS78Ww9D3HBD8GLEmvq
+         V9W5NCFTrQgtuJYY+eL0gDNzlY4i1S3CenN6znqyxvrY2v0wOnmLE6X9PjkeKN6VZBMH
+         fdEg==
+X-Gm-Message-State: AFqh2kpTy2G4qIHHy3u8YD6n/OI+a09+Mf19KuqowzbBKj6ZU0oNKIc4
+        nwCingmrTfcWbRQ0EhjAvg/qZ884AdBCYSKA/tGCbVcp3xufkHmBfr33Qpy7N+H5dXPbXlnRJM3
+        aACshrNqtVjbI
+X-Received: by 2002:a17:906:3ac5:b0:84d:207d:c00e with SMTP id z5-20020a1709063ac500b0084d207dc00emr28546459ejd.46.1674573960871;
+        Tue, 24 Jan 2023 07:26:00 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXtsIFzsBlh5TtYNTcaOqaVCCuGDCweP542aGQdEh50yP3946LVxecl33lOuTfWC0ROJOtWZdw==
+X-Received: by 2002:a17:906:3ac5:b0:84d:207d:c00e with SMTP id z5-20020a1709063ac500b0084d207dc00emr28546429ejd.46.1674573960658;
+        Tue, 24 Jan 2023 07:26:00 -0800 (PST)
+Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id q18-20020a1709063d5200b00870ab0c946fsm1024473ejf.131.2023.01.24.07.25.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Jan 2023 07:26:00 -0800 (PST)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <71be95ee-b522-b3db-105a-0f25d8dc52cb@redhat.com>
+Date:   Tue, 24 Jan 2023 16:25:58 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1674567931-26458-1-git-send-email-alan.maguire@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v8 17/17] selftests/bpf: Simple program to dump
+ XDP RX metadata
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+References: <20230119221536.3349901-1-sdf@google.com>
+ <20230119221536.3349901-18-sdf@google.com>
+In-Reply-To: <20230119221536.3349901-18-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 01:45:26PM +0000, Alan Maguire wrote:
-> At optimization level -O2 or higher in gcc, static functions may be
-> optimized such that they have suffixes like .isra.0, .constprop.0 etc.
-> These represent
-> 
-> - constant propagation (.constprop.0);
-> - interprocedural scalar replacement of aggregates, removal of
->   unused parameters and replacement of parameters passed by
->   reference by parameters passed by value (.isra.0)
-> 
-> See [1] for details.
-> 
-> Currently BTF encoding does not handle such optimized functions
-> that get renamed with a "." suffix such as ".isra.0", ".constprop.0".
-> This is safer because such suffixes can often indicate parameters have
-> been optimized out.  This series addresses this by matching a
-> function to a suffixed version ("foo" matching "foo.isra.0") while
-> ensuring that the function signature does not contain optimized-out
-> parameters.  Note that if the function is found ("foo") it will
-> be preferred, only falling back to "foo.isra.0" if lookup of the
-> function fails.  Addition to BTF is skipped if the function has
-> optimized-out parameters, since the expected function signature
-> will not match. BTF encoding does not include the "."-suffix to
-> be consistent with DWARF. In addition, the kernel currently does
-> not allow a "." suffix in a BTF function name.
-> 
-> A problem with this approach however is that BTF carries out the
-> encoding process in parallel across multiple CUs, and sometimes
-> a function has optimized-out parameters in one CU but not others;
-> we see this for NF_HOOK.constprop.0 for example.  So in order to
-> determine if the function has optimized-out parameters in any
-> CU, its addition is not carried out until we have processed all
-> CUs and are about to merge BTF.  At this point we know if any
-> such optimizations have occurred.  Patches 1-4 handle the
-> optimized-out parameter identification and matching "."-suffixed
-> functions with the original function to facilitate BTF
-> encoding.
-> 
-> Patch 5 addresses a related problem - it is entirely possible
-> for a static function of the same name to exist in different
-> CUs with different function signatures.  Because BTF does not
-> currently encode any information that would help disambiguate
-> which BTF function specification matches which static function
-> (in the case of multiple different function signatures), it is
-> best to eliminate such functions from BTF for now.  The same
-> mechanism that is used to compare static "."-suffixed functions
-> is re-used for the static function comparison.  A superficial
-> comparison of number of parameters/parameter names is done to
-> see if such representations are consistent, and if inconsistent
-> prototypes are observed, the function is flagged for exclusion
-> from BTF.
 
-should we remove all instances of static functions with same name?
+Testing this on mlx5 and I'm not getting the RX-timestamp.
+See command details below.
 
-Yonghong suggested in the other thread, that user will assume that
-the function he's attached to is the one he expects, while he will
-be attached to any (first) match we get from kallsyms_lookup_name
+On 19/01/2023 23.15, Stanislav Fomichev wrote:
+> To be used for verification of driver implementations. Note that
+> the skb path is gone from the series, but I'm still keeping the
+> implementation for any possible future work.
+> 
+> $ xdp_hw_metadata <ifname>
 
-thanks,
-jirka
+sudo ./xdp_hw_metadata mlx5p1
 
+Output:
+[...cut ...]
+open bpf program...
+load bpf program...
+prepare skb endpoint...
+XXX timestamping_enable(): setsockopt(SO_TIMESTAMPING) ret:0
+prepare xsk map...
+map[0] = 3
+map[1] = 4
+map[2] = 5
+map[3] = 6
+map[4] = 7
+map[5] = 8
+attach bpf program...
+poll: 0 (0)
+poll: 0 (0)
+poll: 0 (0)
+poll: 1 (0)
+xsk_ring_cons__peek: 1
+0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+rx_timestamp: 0
+rx_hash: 2773355807
+0x1821788: complete idx=8 addr=8000
+poll: 0 (0)
+
+The trace_pipe:
+
+$ sudo cat /sys/kernel/debug/tracing/trace_pipe
+           <idle>-0       [005] ..s2.  2722.884762: bpf_trace_printk: 
+forwarding UDP:9091 to AF_XDP
+           <idle>-0       [005] ..s2.  2722.884771: bpf_trace_printk: 
+populated rx_hash with 2773355807
+
+
+> On the other machine:
 > 
-> When these methods are combined - the additive encoding of
-> "."-suffixed functions and the subtractive elimination of
-> functions with inconsistent parameters - we see a small overall
-> increase in the number of functions in vmlinux BTF, from
-> 49538 to 50083.  It turns out that the inconsistent prototype
-> checking will actually eliminate some of the suffix matches
-> also, for cases where the DWARF representation of a function
-> differs across CUs, but not via the abstract origin late DWARF
-> references showing optimized-out parameters that we check
-> for in patch 1.
+> $ echo -n xdp | nc -u -q1 <target> 9091 # for AF_XDP
+
+Fixing the source-port to see if RX-hash remains the same.
+
+  $ echo xdp | nc --source-port=2000 --udp 198.18.1.1 9091
+
+> $ echo -n skb | nc -u -q1 <target> 9092 # for skb
 > 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
+> Sample output:
 > 
-> Alan Maguire (5):
->   dwarves: help dwarf loader spot functions with optimized-out
->     parameters
->   btf_encoder: refactor function addition into dedicated
->     btf_encoder__add_func
->   btf_encoder: child encoders should have a reference to parent encoder
->   btf_encoder: represent "."-suffixed optimized functions (".isra.0") in
->     BTF
->   btf_encoder: skip BTF encoding of static functions with inconsistent
->     prototypes
-> 
->  btf_encoder.c  | 357 +++++++++++++++++++++++++++++++++++++++++++++++++--------
->  btf_encoder.h  |   2 +-
->  dwarf_loader.c |  76 +++++++++++-
->  dwarves.h      |   5 +-
->  pahole.c       |   7 +-
->  5 files changed, 390 insertions(+), 57 deletions(-)
-> 
-> -- 
-> 1.8.3.1
-> 
+>    # xdp
+>    xsk_ring_cons__peek: 1
+>    0x19f9090: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+>    rx_timestamp_supported: 1
+>    rx_timestamp: 1667850075063948829
+>    0x19f9090: complete idx=8 addr=8000
+
+xsk_ring_cons__peek: 1
+0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+rx_timestamp: 0
+rx_hash: 2773355807
+0x1821788: complete idx=8 addr=8000
+
+It doesn't look like hardware RX-timestamps are getting enabled.
+
+[... cut to relevant code ...]
+
+> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> new file mode 100644
+> index 000000000000..0008f0f239e8
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> @@ -0,0 +1,403 @@
+[...]
+
+> +static void timestamping_enable(int fd, int val)
+> +{
+> +	int ret;
+> +
+> +	ret = setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING, &val, sizeof(val));
+> +	if (ret < 0)
+> +		error(-1, errno, "setsockopt(SO_TIMESTAMPING)");
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+[...]
+
+> +	printf("prepare skb endpoint...\n");
+> +	server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092, 1000);
+> +	if (server_fd < 0)
+> +		error(-1, errno, "start_server");
+> +	timestamping_enable(server_fd,
+> +			    SOF_TIMESTAMPING_SOFTWARE |
+> +			    SOF_TIMESTAMPING_RAW_HARDWARE);
+> +
+
+I don't think this timestamping_enable() with these flags are enough to
+enable hardware timestamping.
+
+--Jesper
+
