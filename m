@@ -2,272 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2B767A1B4
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 19:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C5067A34C
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 20:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbjAXSsx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 13:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
+        id S234038AbjAXTqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 14:46:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233689AbjAXSsw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 13:48:52 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C197E2BEED
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 10:48:51 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id s24-20020a17090aa11800b00229fef3ac5dso5687926pjp.5
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 10:48:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eJ9fHNI2bifYxES5qUmgRME8xH96EaZ2Dunhd4XnTao=;
-        b=L/7Y+NwB+jJPHXW7xEgDH/Jnx/MMVgmCXk/1P/mNUcDV+MVS2Ti397L/3gJlxNpUV1
-         zLhNmwaIj898y7EZpCGYPq/wplH5vF9TQV6qRHtvBG+93NwGzbnv+V97vMYKHdHJdRj6
-         hzDeAI3USTaASuj7uVRQomJh2kLMoqUVlavtAgmQqiX7TzJnJfcvklm0KShAQNvOJynT
-         Mzylywa+t+nrsm3OC+9fueASjKE+nK6knZU2Fp/yboLaISEZZZMTlCCMHgTHQfw81jh3
-         UNCKAHFRSmhi/X42/23Qx2ZnJE4WI9KZRrOcydNTv1wuOvqPWXjlSe6OSS3JvJsKudRe
-         5EBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eJ9fHNI2bifYxES5qUmgRME8xH96EaZ2Dunhd4XnTao=;
-        b=5YbFWpCqLGamZPjjJUpzmHQEAqneOyhJNZt4eKbsG0PzTuB+CCj2sT+EdyR3RrqsDS
-         VaYa7RgUNPsTxvl8kEd1KrFpH3eTbmScz95cXGQhnPC8CJHNMDfui/hTH2R3ulC5yAdU
-         H6MP6mplXhj6obPvjrNE7iSXl/WrrIyYfwbNiTJjS6YnUW0nCI4FDxveuOAeJLGH6STj
-         wKRdlYZNO61YS8KWKfW/9n5THz4h20KpFf8w3F6lTv6w7Q3kazCnPh8SqHP/CoLTmtNX
-         NicCeGYsFCJ5afbyWAXboWF8egzHNFtWPjw7cd+u+cRtQC8Z91OktQABkJpEhUm/MU/V
-         doJA==
-X-Gm-Message-State: AFqh2kr9ak9b9MUABhqNBpGQ2fPQT0bwmkuT54eMs+HlxEFWiUXpRG80
-        +a38HTOIbcloc03lXCXLYZbQHZU=
-X-Google-Smtp-Source: AMrXdXvYdye/snDN4tbW6TMN6VSZTjwGnXWqimnUH2dO5ZcGbE2uRqspfWjPkihUQB7DWrCIQhLF9/0=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:9a41:b0:195:eb15:6ee1 with SMTP id
- x1-20020a1709029a4100b00195eb156ee1mr1794642plv.23.1674586131050; Tue, 24 Jan
- 2023 10:48:51 -0800 (PST)
-Date:   Tue, 24 Jan 2023 10:48:49 -0800
-In-Reply-To: <CAKH8qBvK-tJxQwBsUvQZ39KyhyAbd76H1xhdzmzeKbbN5Hzq7Q@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230119221536.3349901-1-sdf@google.com> <20230119221536.3349901-18-sdf@google.com>
- <71be95ee-b522-b3db-105a-0f25d8dc52cb@redhat.com> <CAKH8qBvK-tJxQwBsUvQZ39KyhyAbd76H1xhdzmzeKbbN5Hzq7Q@mail.gmail.com>
-Message-ID: <Y9AoEcjb+MET41NB@google.com>
-Subject: Re: [PATCH bpf-next v8 17/17] selftests/bpf: Simple program to dump
- XDP RX metadata
-From:   sdf@google.com
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org,
-        "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230515AbjAXTqQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 14:46:16 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1B2DBF5;
+        Tue, 24 Jan 2023 11:46:15 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 369E66132A;
+        Tue, 24 Jan 2023 19:46:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F138AC433D2;
+        Tue, 24 Jan 2023 19:46:13 +0000 (UTC)
+Date:   Tue, 24 Jan 2023 14:46:11 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linyu Yuan <quic_linyyuan@quicinc.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] trace: add new file under include/trace/stages/
+ for perf/bpf
+Message-ID: <20230124144611.3476ad36@gandalf.local.home>
+In-Reply-To: <1671181385-5719-1-git-send-email-quic_linyyuan@quicinc.com>
+References: <1671181385-5719-1-git-send-email-quic_linyyuan@quicinc.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/24, Stanislav Fomichev wrote:
-> On Tue, Jan 24, 2023 at 7:26 AM Jesper Dangaard Brouer
-> <jbrouer@redhat.com> wrote:
-> >
-> >
-> > Testing this on mlx5 and I'm not getting the RX-timestamp.
-> > See command details below.
+On Fri, 16 Dec 2022 17:03:04 +0800
+Linyu Yuan <quic_linyyuan@quicinc.com> wrote:
 
-> CC'ed Toke since I've never tested mlx5 myself.
-> I was pretty close to getting the setup late last week, let me try to
-> see whether it's ready or not.
+> when experiment change for trace operation, the files under
+> include/trace/stages/ will be changed, perf/bpf trace may compile fail.
 
-> > On 19/01/2023 23.15, Stanislav Fomichev wrote:
-> > > To be used for verification of driver implementations. Note that
-> > > the skb path is gone from the series, but I'm still keeping the
-> > > implementation for any possible future work.
-> > >
-> > > $ xdp_hw_metadata <ifname>
-> >
-> > sudo ./xdp_hw_metadata mlx5p1
-> >
-> > Output:
-> > [...cut ...]
-> > open bpf program...
-> > load bpf program...
-> > prepare skb endpoint...
-> > XXX timestamping_enable(): setsockopt(SO_TIMESTAMPING) ret:0
-> > prepare xsk map...
-> > map[0] = 3
-> > map[1] = 4
-> > map[2] = 5
-> > map[3] = 6
-> > map[4] = 7
-> > map[5] = 8
-> > attach bpf program...
-> > poll: 0 (0)
-> > poll: 0 (0)
-> > poll: 0 (0)
-> > poll: 1 (0)
-> > xsk_ring_cons__peek: 1
-> > 0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
-> > rx_timestamp: 0
-> > rx_hash: 2773355807
-> > 0x1821788: complete idx=8 addr=8000
-> > poll: 0 (0)
-> >
-> > The trace_pipe:
-> >
-> > $ sudo cat /sys/kernel/debug/tracing/trace_pipe
-> >            <idle>-0       [005] ..s2.  2722.884762: bpf_trace_printk:
-> > forwarding UDP:9091 to AF_XDP
-> >            <idle>-0       [005] ..s2.  2722.884771: bpf_trace_printk:
-> > populated rx_hash with 2773355807
-> >
-> >
-> > > On the other machine:
-> > >
-> > > $ echo -n xdp | nc -u -q1 <target> 9091 # for AF_XDP
-> >
-> > Fixing the source-port to see if RX-hash remains the same.
-> >
-> >   $ echo xdp | nc --source-port=2000 --udp 198.18.1.1 9091
-> >
-> > > $ echo -n skb | nc -u -q1 <target> 9092 # for skb
-> > >
-> > > Sample output:
-> > >
-> > >    # xdp
-> > >    xsk_ring_cons__peek: 1
-> > >    0x19f9090: rx_desc[0]->addr=100000000008000 addr=8100  
-> comp_addr=8000
-> > >    rx_timestamp_supported: 1
-> > >    rx_timestamp: 1667850075063948829
-> > >    0x19f9090: complete idx=8 addr=8000
-> >
-> > xsk_ring_cons__peek: 1
-> > 0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
-> > rx_timestamp: 0
-> > rx_hash: 2773355807
-> > 0x1821788: complete idx=8 addr=8000
-> >
-> > It doesn't look like hardware RX-timestamps are getting enabled.
-> >
-> > [... cut to relevant code ...]
-> >
-> > > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c  
-> b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> > > new file mode 100644
-> > > index 000000000000..0008f0f239e8
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> > > @@ -0,0 +1,403 @@
-> > [...]
-> >
-> > > +static void timestamping_enable(int fd, int val)
-> > > +{
-> > > +     int ret;
-> > > +
-> > > +     ret = setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING, &val,  
-> sizeof(val));
-> > > +     if (ret < 0)
-> > > +             error(-1, errno, "setsockopt(SO_TIMESTAMPING)");
-> > > +}
-> > > +
-> > > +int main(int argc, char *argv[])
-> > > +{
-> > [...]
-> >
-> > > +     printf("prepare skb endpoint...\n");
-> > > +     server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092,  
-> 1000);
-> > > +     if (server_fd < 0)
-> > > +             error(-1, errno, "start_server");
-> > > +     timestamping_enable(server_fd,
-> > > +                         SOF_TIMESTAMPING_SOFTWARE |
-> > > +                         SOF_TIMESTAMPING_RAW_HARDWARE);
-> > > +
-> >
-> > I don't think this timestamping_enable() with these flags are enough to
-> > enable hardware timestamping.
+Sorry for the late reply, I was expecting some feedback from the perf
+and/or BPF folks.
 
-Yeah, agreed, looks like that's the issue. timestamping_enable() has
-been used for the xdp->skb path that I've eventually removed from the
-series, so it's mostly a noop here..
+> 
+> add new file stage8_perf_call.h and stage9_bpf_call.h under
+> include/trace/stages/, it will make sure no missing change when expriment.
+> 
 
-Maybe you can try the following before I send a proper patch?
+Actually, these are not part of the stage sequence. In fact they could
+possibly be replaced *with* the stage sequences (which I think I'll apply):
 
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c  
-b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 0008f0f239e8..dceddb17fbc9 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -24,6 +24,7 @@
-  #include <linux/net_tstamp.h>
-  #include <linux/udp.h>
-  #include <linux/sockios.h>
-+#include <linux/net_tstamp.h>
-  #include <sys/mman.h>
-  #include <net/if.h>
-  #include <poll.h>
-@@ -278,13 +279,37 @@ static int rxq_num(const char *ifname)
+For example:
 
-  	ret = ioctl(fd, SIOCETHTOOL, &ifr);
-  	if (ret < 0)
--		error(-1, errno, "socket");
-+		error(-1, errno, "ioctl(SIOCETHTOOL)");
-
-  	close(fd);
-
-  	return ch.rx_count + ch.combined_count;
-  }
-
-+static void hwtstamp_enable(const char *ifname)
-+{
-+	struct hwtstamp_config cfg = {
-+		.rx_filter = HWTSTAMP_FILTER_ALL,
+diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+index 155c495b89ea..1f7fc1fc590c 100644
+--- a/include/trace/bpf_probe.h
++++ b/include/trace/bpf_probe.h
+@@ -4,50 +4,7 @@
+ 
+ #ifdef CONFIG_BPF_EVENTS
+ 
+-#undef __entry
+-#define __entry entry
+-
+-#undef __get_dynamic_array
+-#define __get_dynamic_array(field)	\
+-		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
+-
+-#undef __get_dynamic_array_len
+-#define __get_dynamic_array_len(field)	\
+-		((__entry->__data_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_str
+-#define __get_str(field) ((char *)__get_dynamic_array(field))
+-
+-#undef __get_bitmask
+-#define __get_bitmask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_cpumask
+-#define __get_cpumask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_sockaddr
+-#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
+-
+-#undef __get_rel_dynamic_array
+-#define __get_rel_dynamic_array(field)	\
+-		((void *)(&__entry->__rel_loc_##field) +	\
+-		 sizeof(__entry->__rel_loc_##field) +		\
+-		 (__entry->__rel_loc_##field & 0xffff))
+-
+-#undef __get_rel_dynamic_array_len
+-#define __get_rel_dynamic_array_len(field)	\
+-		((__entry->__rel_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_rel_str
+-#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
+-
+-#undef __get_rel_bitmask
+-#define __get_rel_bitmask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_cpumask
+-#define __get_rel_cpumask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_sockaddr
+-#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
++#include "stages/stage6_event_callback.h"
+ 
+ #undef __perf_count
+ #define __perf_count(c)	(c)
+diff --git a/include/trace/perf.h b/include/trace/perf.h
+index 8f3bf1e17707..2c11181c82e0 100644
+--- a/include/trace/perf.h
++++ b/include/trace/perf.h
+@@ -4,51 +4,7 @@
+ 
+ #ifdef CONFIG_PERF_EVENTS
+ 
+-#undef __entry
+-#define __entry entry
+-
+-#undef __get_dynamic_array
+-#define __get_dynamic_array(field)	\
+-		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
+-
+-#undef __get_dynamic_array_len
+-#define __get_dynamic_array_len(field)	\
+-		((__entry->__data_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_str
+-#define __get_str(field) ((char *)__get_dynamic_array(field))
+-
+-#undef __get_bitmask
+-#define __get_bitmask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_cpumask
+-#define __get_cpumask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_sockaddr
+-#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
+-
+-#undef __get_rel_dynamic_array
+-#define __get_rel_dynamic_array(field)	\
+-		((void *)__entry +					\
+-		 offsetof(typeof(*__entry), __rel_loc_##field) +	\
+-		 sizeof(__entry->__rel_loc_##field) +			\
+-		 (__entry->__rel_loc_##field & 0xffff))
+-
+-#undef __get_rel_dynamic_array_len
+-#define __get_rel_dynamic_array_len(field)	\
+-		((__entry->__rel_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_rel_str
+-#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
+-
+-#undef __get_rel_bitmask
+-#define __get_rel_bitmask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_cpumask
+-#define __get_rel_cpumask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_sockaddr
+-#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
++#include "stages/stage6_event_callback.h"
+ 
+ #undef __perf_count
+ #define __perf_count(c)	(__count = (c))
+diff --git a/include/trace/stages/stage6_event_callback.h b/include/trace/stages/stage6_event_callback.h
+index 49c32394b53f..919b1a4da980 100644
+--- a/include/trace/stages/stage6_event_callback.h
++++ b/include/trace/stages/stage6_event_callback.h
+@@ -2,6 +2,9 @@
+ 
+ /* Stage 6 definitions for creating trace events */
+ 
++/* Reuse some of the stage 3 macros */
++#include "stage3_trace_output.h"
 +
-+	};
-+
-+	struct ifreq ifr = {
-+		.ifr_data = (void *)&cfg,
-+	};
-+	strcpy(ifr.ifr_name, ifname);
-+	int fd, ret;
-+
-+	fd = socket(AF_UNIX, SOCK_DGRAM, 0);
-+	if (fd < 0)
-+		error(-1, errno, "socket");
-+
-+	ret = ioctl(fd, SIOCSHWTSTAMP, &ifr);
-+	if (ret < 0)
-+		error(-1, errno, "ioctl(SIOCSHWTSTAMP)");
-+
-+	close(fd);
-+}
-+
-  static void cleanup(void)
-  {
-  	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-@@ -341,6 +366,8 @@ int main(int argc, char *argv[])
-
-  	printf("rxq: %d\n", rxq);
-
-+	hwtstamp_enable(ifname);
-+
-  	rx_xsk = malloc(sizeof(struct xsk) * rxq);
-  	if (!rx_xsk)
-  		error(-1, ENOMEM, "malloc");
-
-
-> > --Jesper
-> >
+ #undef __entry
+ #define __entry entry
+ 
