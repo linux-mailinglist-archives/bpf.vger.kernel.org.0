@@ -2,929 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C76867933D
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 09:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C9167964B
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 12:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbjAXIgz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 03:36:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
+        id S232655AbjAXLMt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 06:12:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbjAXIgx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 03:36:53 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934D3CE
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 00:36:49 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4P1Kqy1hg0z9xxhT
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 16:28:46 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwCXIAyLmM9jmePBAA--.30829S2;
-        Tue, 24 Jan 2023 09:36:34 +0100 (CET)
-Message-ID: <f78754c338891363f94018896135fb2915fbdd49.camel@huaweicloud.com>
-Subject: Re: [PATCH v1 bpf-next 1/2] selftests/bpf: Clean up user_ringbuf,
- cgrp_kfunc, task_kfunc, kfunc_dynptr_param tests
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        roberto.sassu@huawei.com, void@manifault.com
-Date:   Tue, 24 Jan 2023 09:36:12 +0100
-In-Reply-To: <20230123202648.1800946-1-joannelkoong@gmail.com>
-References: <20230123202648.1800946-1-joannelkoong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S232664AbjAXLMr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 06:12:47 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913818685;
+        Tue, 24 Jan 2023 03:12:45 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D4190B81151;
+        Tue, 24 Jan 2023 11:12:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06111C433EF;
+        Tue, 24 Jan 2023 11:12:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674558762;
+        bh=VX5KSFREMNYBtwN2SJjrbqgA/NIUxSyDN0ffRjhvy/8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sTx1wSkdnUU3zgLnYUtoQWaVrs8CKpC4v5JmhB5o2krnIrHnfEl9iFNXeO0K/WeuD
+         OS66bkjvMJOqF+/Qm8ZdhD8gIScOdB7q7kY45aLzng5BUyZwIQyjmk8gvULyVy2r9i
+         uS+QQa6HOtYTxK46tSTZMzxQCogH3kfNALaM/KTW3o83EHR+7oBXncQR8wNWQSNhJu
+         +dX52tF65nEDGtE56V9mYXUodhpNdcbfe8jHglTmpCtDrN8uWP6J9MT6teJ2VKo3Hc
+         zjlNOmGdRFul0jy432GnDCosPDcFRuvmm1NS+YFk2dk+2SjTYkLlHDvB8nuJY9FXf3
+         WEcci+DhkYF2Q==
+Date:   Tue, 24 Jan 2023 12:12:38 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        toke@redhat.com, memxor@gmail.com, alardam@gmail.com,
+        saeedm@nvidia.com, anthony.l.nguyen@intel.com, gospo@broadcom.com,
+        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
+        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
+        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
+        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
+        lorenzo.bianconi@redhat.com, niklas.soderlund@corigine.com,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 7/7] selftests/bpf: introduce XDP compliance
+ test tool
+Message-ID: <Y8+9Jmhr9OSty63Y@lore-desk>
+References: <cover.1674234430.git.lorenzo@kernel.org>
+ <986321f8621e9367653e21b35566e7cda976b886.1674234430.git.lorenzo@kernel.org>
+ <d2606312-1e04-55ff-e01e-daf83ed99836@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwCXIAyLmM9jmePBAA--.30829S2
-X-Coremail-Antispam: 1UD129KBjvAXoWfCry5Gw47Cw48Zr4xWw1UAwb_yoW5Kr4DWo
-        Z2gF4DAa1Ikrn7u398ArZYyayruay8KryDXa18KanxJF12kryxKryfJa9xZw1vq3W5Kas7
-        CF95G3yF9rWUJwn3n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUU5Q7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK
-        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF
-        7I0E14v26r1j6r4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-        6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3w
-        CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
-        xhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj4f48gABs-
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vXwS72sJheo8aQyw"
+Content-Disposition: inline
+In-Reply-To: <d2606312-1e04-55ff-e01e-daf83ed99836@linux.dev>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2023-01-23 at 12:26 -0800, Joanne Koong wrote:
-> Clean up user_ringbuf, cgrp_kfunc, task_kfunc, and kfunc_dynptr_param
-> tests to use the generic verification tester for checking verifier
-> rejections. The generic verification tester uses btf_decl_tag-based
-> annotations for verifying that the tests fail with the expected log
-> messages.
-> 
-> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 
-For the kfunc_dynptr_param test:
+--vXwS72sJheo8aQyw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+> On 1/20/23 9:16 AM, Lorenzo Bianconi wrote:
+> > +static __always_inline int xdp_process_echo_packet(struct xdp_md *xdp,=
+ bool dut)
+> > +{
+> > +	void *data_end =3D (void *)(long)xdp->data_end;
+> > +	__be32 saddr =3D dut ? tester_ip : dut_ip;
+> > +	__be32 daddr =3D dut ? dut_ip : tester_ip;
+> > +	void *data =3D (void *)(long)xdp->data;
+> > +	struct ethhdr *eh =3D data;
+> > +	struct tlv_hdr *tlv;
+> > +	struct udphdr *uh;
+> > +	struct iphdr *ih;
+> > +	__be16 port;
+> > +	__u8 *cmd;
+> > +
+> > +	if (eh + 1 > (struct ethhdr *)data_end)
+> > +		return -EINVAL;
+> > +
+> > +	if (eh->h_proto !=3D bpf_htons(ETH_P_IP))
+> > +		return -EINVAL;
+>=20
+> Both v6 and v4 support are needed as a tool.
 
-Roberto
+ack, I will fix it.
 
-> ---
->  .../selftests/bpf/prog_tests/cgrp_kfunc.c     | 69 +-----------------
->  .../bpf/prog_tests/kfunc_dynptr_param.c       | 72 ++++---------------
->  .../selftests/bpf/prog_tests/task_kfunc.c     | 71 +-----------------
->  .../selftests/bpf/prog_tests/user_ringbuf.c   | 62 +---------------
->  .../selftests/bpf/progs/cgrp_kfunc_failure.c  | 17 ++++-
->  .../selftests/bpf/progs/task_kfunc_failure.c  | 18 +++++
->  .../bpf/progs/test_kfunc_dynptr_param.c       |  4 ++
->  .../selftests/bpf/progs/user_ringbuf_fail.c   | 31 +++++---
->  8 files changed, 77 insertions(+), 267 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
-> index 973f0c5af965..b3f7985c8504 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
-> @@ -8,9 +8,6 @@
->  #include "cgrp_kfunc_failure.skel.h"
->  #include "cgrp_kfunc_success.skel.h"
->  
-> -static size_t log_buf_sz = 1 << 20; /* 1 MB */
-> -static char obj_log_buf[1048576];
-> -
->  static struct cgrp_kfunc_success *open_load_cgrp_kfunc_skel(void)
->  {
->  	struct cgrp_kfunc_success *skel;
-> @@ -89,65 +86,6 @@ static const char * const success_tests[] = {
->  	"test_cgrp_get_ancestors",
->  };
->  
-> -static struct {
-> -	const char *prog_name;
-> -	const char *expected_err_msg;
-> -} failure_tests[] = {
-> -	{"cgrp_kfunc_acquire_untrusted", "R1 must be referenced or trusted"},
-> -	{"cgrp_kfunc_acquire_fp", "arg#0 pointer type STRUCT cgroup must point"},
-> -	{"cgrp_kfunc_acquire_unsafe_kretprobe", "reg type unsupported for arg#0 function"},
-> -	{"cgrp_kfunc_acquire_trusted_walked", "R1 must be referenced or trusted"},
-> -	{"cgrp_kfunc_acquire_null", "arg#0 pointer type STRUCT cgroup must point"},
-> -	{"cgrp_kfunc_acquire_unreleased", "Unreleased reference"},
-> -	{"cgrp_kfunc_get_non_kptr_param", "arg#0 expected pointer to map value"},
-> -	{"cgrp_kfunc_get_non_kptr_acquired", "arg#0 expected pointer to map value"},
-> -	{"cgrp_kfunc_get_null", "arg#0 expected pointer to map value"},
-> -	{"cgrp_kfunc_xchg_unreleased", "Unreleased reference"},
-> -	{"cgrp_kfunc_get_unreleased", "Unreleased reference"},
-> -	{"cgrp_kfunc_release_untrusted", "arg#0 is untrusted_ptr_or_null_ expected ptr_ or socket"},
-> -	{"cgrp_kfunc_release_fp", "arg#0 pointer type STRUCT cgroup must point"},
-> -	{"cgrp_kfunc_release_null", "arg#0 is ptr_or_null_ expected ptr_ or socket"},
-> -	{"cgrp_kfunc_release_unacquired", "release kernel function bpf_cgroup_release expects"},
-> -};
-> -
-> -static void verify_fail(const char *prog_name, const char *expected_err_msg)
-> -{
-> -	LIBBPF_OPTS(bpf_object_open_opts, opts);
-> -	struct cgrp_kfunc_failure *skel;
-> -	int err, i;
-> -
-> -	opts.kernel_log_buf = obj_log_buf;
-> -	opts.kernel_log_size = log_buf_sz;
-> -	opts.kernel_log_level = 1;
-> -
-> -	skel = cgrp_kfunc_failure__open_opts(&opts);
-> -	if (!ASSERT_OK_PTR(skel, "cgrp_kfunc_failure__open_opts"))
-> -		goto cleanup;
-> -
-> -	for (i = 0; i < ARRAY_SIZE(failure_tests); i++) {
-> -		struct bpf_program *prog;
-> -		const char *curr_name = failure_tests[i].prog_name;
-> -
-> -		prog = bpf_object__find_program_by_name(skel->obj, curr_name);
-> -		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-> -			goto cleanup;
-> -
-> -		bpf_program__set_autoload(prog, !strcmp(curr_name, prog_name));
-> -	}
-> -
-> -	err = cgrp_kfunc_failure__load(skel);
-> -	if (!ASSERT_ERR(err, "unexpected load success"))
-> -		goto cleanup;
-> -
-> -	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err_msg")) {
-> -		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
-> -		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
-> -	}
-> -
-> -cleanup:
-> -	cgrp_kfunc_failure__destroy(skel);
-> -}
-> -
->  void test_cgrp_kfunc(void)
->  {
->  	int i, err;
-> @@ -163,12 +101,7 @@ void test_cgrp_kfunc(void)
->  		run_success_test(success_tests[i]);
->  	}
->  
-> -	for (i = 0; i < ARRAY_SIZE(failure_tests); i++) {
-> -		if (!test__start_subtest(failure_tests[i].prog_name))
-> -			continue;
-> -
-> -		verify_fail(failure_tests[i].prog_name, failure_tests[i].expected_err_msg);
-> -	}
-> +	RUN_TESTS(cgrp_kfunc_failure);
->  
->  cleanup:
->  	cleanup_cgroup_environment();
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> index 72800b1e8395..8cd298b78e44 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> @@ -10,17 +10,11 @@
->  #include <test_progs.h>
->  #include "test_kfunc_dynptr_param.skel.h"
->  
-> -static size_t log_buf_sz = 1048576; /* 1 MB */
-> -static char obj_log_buf[1048576];
-> -
->  static struct {
->  	const char *prog_name;
-> -	const char *expected_verifier_err_msg;
->  	int expected_runtime_err;
->  } kfunc_dynptr_tests[] = {
-> -	{"not_valid_dynptr", "cannot pass in dynptr at an offset=-8", 0},
-> -	{"not_ptr_to_stack", "arg#0 expected pointer to stack or dynptr_ptr", 0},
-> -	{"dynptr_data_null", NULL, -EBADMSG},
-> +	{"dynptr_data_null", -EBADMSG},
->  };
->  
->  static bool kfunc_not_supported;
-> @@ -38,29 +32,15 @@ static int libbpf_print_cb(enum libbpf_print_level level, const char *fmt,
->  	return 0;
->  }
->  
-> -static void verify_fail(const char *prog_name, const char *expected_err_msg)
-> +static bool has_pkcs7_kfunc_support(void)
->  {
->  	struct test_kfunc_dynptr_param *skel;
-> -	LIBBPF_OPTS(bpf_object_open_opts, opts);
->  	libbpf_print_fn_t old_print_cb;
-> -	struct bpf_program *prog;
->  	int err;
->  
-> -	opts.kernel_log_buf = obj_log_buf;
-> -	opts.kernel_log_size = log_buf_sz;
-> -	opts.kernel_log_level = 1;
-> -
-> -	skel = test_kfunc_dynptr_param__open_opts(&opts);
-> -	if (!ASSERT_OK_PTR(skel, "test_kfunc_dynptr_param__open_opts"))
-> -		goto cleanup;
-> -
-> -	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
-> -	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-> -		goto cleanup;
-> -
-> -	bpf_program__set_autoload(prog, true);
-> -
-> -	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
-> +	skel = test_kfunc_dynptr_param__open();
-> +	if (!ASSERT_OK_PTR(skel, "test_kfunc_dynptr_param__open"))
-> +		return false;
->  
->  	kfunc_not_supported = false;
->  
-> @@ -72,26 +52,18 @@ static void verify_fail(const char *prog_name, const char *expected_err_msg)
->  		fprintf(stderr,
->  		  "%s:SKIP:bpf_verify_pkcs7_signature() kfunc not supported\n",
->  		  __func__);
-> -		test__skip();
-> -		goto cleanup;
-> -	}
-> -
-> -	if (!ASSERT_ERR(err, "unexpected load success"))
-> -		goto cleanup;
-> -
-> -	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err_msg")) {
-> -		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
-> -		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
-> +		test_kfunc_dynptr_param__destroy(skel);
-> +		return false;
->  	}
->  
-> -cleanup:
->  	test_kfunc_dynptr_param__destroy(skel);
-> +
-> +	return true;
->  }
->  
->  static void verify_success(const char *prog_name, int expected_runtime_err)
->  {
->  	struct test_kfunc_dynptr_param *skel;
-> -	libbpf_print_fn_t old_print_cb;
->  	struct bpf_program *prog;
->  	struct bpf_link *link;
->  	__u32 next_id;
-> @@ -103,21 +75,7 @@ static void verify_success(const char *prog_name, int expected_runtime_err)
->  
->  	skel->bss->pid = getpid();
->  
-> -	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
-> -
-> -	kfunc_not_supported = false;
-> -
-> -	old_print_cb = libbpf_set_print(libbpf_print_cb);
->  	err = test_kfunc_dynptr_param__load(skel);
-> -	libbpf_set_print(old_print_cb);
-> -
-> -	if (err < 0 && kfunc_not_supported) {
-> -		fprintf(stderr,
-> -		  "%s:SKIP:bpf_verify_pkcs7_signature() kfunc not supported\n",
-> -		  __func__);
-> -		test__skip();
-> -		goto cleanup;
-> -	}
->  
->  	if (!ASSERT_OK(err, "test_kfunc_dynptr_param__load"))
->  		goto cleanup;
-> @@ -147,15 +105,15 @@ void test_kfunc_dynptr_param(void)
->  {
->  	int i;
->  
-> +	if (!has_pkcs7_kfunc_support())
-> +		return;
-> +
->  	for (i = 0; i < ARRAY_SIZE(kfunc_dynptr_tests); i++) {
->  		if (!test__start_subtest(kfunc_dynptr_tests[i].prog_name))
->  			continue;
->  
-> -		if (kfunc_dynptr_tests[i].expected_verifier_err_msg)
-> -			verify_fail(kfunc_dynptr_tests[i].prog_name,
-> -			  kfunc_dynptr_tests[i].expected_verifier_err_msg);
-> -		else
-> -			verify_success(kfunc_dynptr_tests[i].prog_name,
-> -				kfunc_dynptr_tests[i].expected_runtime_err);
-> +		verify_success(kfunc_dynptr_tests[i].prog_name,
-> +			kfunc_dynptr_tests[i].expected_runtime_err);
->  	}
-> +	RUN_TESTS(test_kfunc_dynptr_param);
->  }
-> diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
-> index 18848c31e36f..f79fa5bc9a8d 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
-> @@ -9,9 +9,6 @@
->  #include "task_kfunc_failure.skel.h"
->  #include "task_kfunc_success.skel.h"
->  
-> -static size_t log_buf_sz = 1 << 20; /* 1 MB */
-> -static char obj_log_buf[1048576];
-> -
->  static struct task_kfunc_success *open_load_task_kfunc_skel(void)
->  {
->  	struct task_kfunc_success *skel;
-> @@ -83,67 +80,6 @@ static const char * const success_tests[] = {
->  	"test_task_from_pid_invalid",
->  };
->  
-> -static struct {
-> -	const char *prog_name;
-> -	const char *expected_err_msg;
-> -} failure_tests[] = {
-> -	{"task_kfunc_acquire_untrusted", "R1 must be referenced or trusted"},
-> -	{"task_kfunc_acquire_fp", "arg#0 pointer type STRUCT task_struct must point"},
-> -	{"task_kfunc_acquire_unsafe_kretprobe", "reg type unsupported for arg#0 function"},
-> -	{"task_kfunc_acquire_trusted_walked", "R1 must be referenced or trusted"},
-> -	{"task_kfunc_acquire_null", "arg#0 pointer type STRUCT task_struct must point"},
-> -	{"task_kfunc_acquire_unreleased", "Unreleased reference"},
-> -	{"task_kfunc_get_non_kptr_param", "arg#0 expected pointer to map value"},
-> -	{"task_kfunc_get_non_kptr_acquired", "arg#0 expected pointer to map value"},
-> -	{"task_kfunc_get_null", "arg#0 expected pointer to map value"},
-> -	{"task_kfunc_xchg_unreleased", "Unreleased reference"},
-> -	{"task_kfunc_get_unreleased", "Unreleased reference"},
-> -	{"task_kfunc_release_untrusted", "arg#0 is untrusted_ptr_or_null_ expected ptr_ or socket"},
-> -	{"task_kfunc_release_fp", "arg#0 pointer type STRUCT task_struct must point"},
-> -	{"task_kfunc_release_null", "arg#0 is ptr_or_null_ expected ptr_ or socket"},
-> -	{"task_kfunc_release_unacquired", "release kernel function bpf_task_release expects"},
-> -	{"task_kfunc_from_pid_no_null_check", "arg#0 is ptr_or_null_ expected ptr_ or socket"},
-> -	{"task_kfunc_from_lsm_task_free", "reg type unsupported for arg#0 function"},
-> -};
-> -
-> -static void verify_fail(const char *prog_name, const char *expected_err_msg)
-> -{
-> -	LIBBPF_OPTS(bpf_object_open_opts, opts);
-> -	struct task_kfunc_failure *skel;
-> -	int err, i;
-> -
-> -	opts.kernel_log_buf = obj_log_buf;
-> -	opts.kernel_log_size = log_buf_sz;
-> -	opts.kernel_log_level = 1;
-> -
-> -	skel = task_kfunc_failure__open_opts(&opts);
-> -	if (!ASSERT_OK_PTR(skel, "task_kfunc_failure__open_opts"))
-> -		goto cleanup;
-> -
-> -	for (i = 0; i < ARRAY_SIZE(failure_tests); i++) {
-> -		struct bpf_program *prog;
-> -		const char *curr_name = failure_tests[i].prog_name;
-> -
-> -		prog = bpf_object__find_program_by_name(skel->obj, curr_name);
-> -		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-> -			goto cleanup;
-> -
-> -		bpf_program__set_autoload(prog, !strcmp(curr_name, prog_name));
-> -	}
-> -
-> -	err = task_kfunc_failure__load(skel);
-> -	if (!ASSERT_ERR(err, "unexpected load success"))
-> -		goto cleanup;
-> -
-> -	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err_msg")) {
-> -		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
-> -		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
-> -	}
-> -
-> -cleanup:
-> -	task_kfunc_failure__destroy(skel);
-> -}
-> -
->  void test_task_kfunc(void)
->  {
->  	int i;
-> @@ -155,10 +91,5 @@ void test_task_kfunc(void)
->  		run_success_test(success_tests[i]);
->  	}
->  
-> -	for (i = 0; i < ARRAY_SIZE(failure_tests); i++) {
-> -		if (!test__start_subtest(failure_tests[i].prog_name))
-> -			continue;
-> -
-> -		verify_fail(failure_tests[i].prog_name, failure_tests[i].expected_err_msg);
-> -	}
-> +	RUN_TESTS(task_kfunc_failure);
->  }
-> diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-> index dae68de285b9..3a13e102c149 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-> @@ -19,8 +19,6 @@
->  
->  #include "../progs/test_user_ringbuf.h"
->  
-> -static size_t log_buf_sz = 1 << 20; /* 1 MB */
-> -static char obj_log_buf[1048576];
->  static const long c_sample_size = sizeof(struct sample) + BPF_RINGBUF_HDR_SZ;
->  static const long c_ringbuf_size = 1 << 12; /* 1 small page */
->  static const long c_max_entries = c_ringbuf_size / c_sample_size;
-> @@ -663,23 +661,6 @@ static void test_user_ringbuf_blocking_reserve(void)
->  	user_ringbuf_success__destroy(skel);
->  }
->  
-> -static struct {
-> -	const char *prog_name;
-> -	const char *expected_err_msg;
-> -} failure_tests[] = {
-> -	/* failure cases */
-> -	{"user_ringbuf_callback_bad_access1", "negative offset dynptr_ptr ptr"},
-> -	{"user_ringbuf_callback_bad_access2", "dereference of modified dynptr_ptr ptr"},
-> -	{"user_ringbuf_callback_write_forbidden", "invalid mem access 'dynptr_ptr'"},
-> -	{"user_ringbuf_callback_null_context_write", "invalid mem access 'scalar'"},
-> -	{"user_ringbuf_callback_null_context_read", "invalid mem access 'scalar'"},
-> -	{"user_ringbuf_callback_discard_dynptr", "cannot release unowned const bpf_dynptr"},
-> -	{"user_ringbuf_callback_submit_dynptr", "cannot release unowned const bpf_dynptr"},
-> -	{"user_ringbuf_callback_invalid_return", "At callback return the register R0 has value"},
-> -	{"user_ringbuf_callback_reinit_dynptr_mem", "Dynptr has to be an uninitialized dynptr"},
-> -	{"user_ringbuf_callback_reinit_dynptr_ringbuf", "Dynptr has to be an uninitialized dynptr"},
-> -};
-> -
->  #define SUCCESS_TEST(_func) { _func, #_func }
->  
->  static struct {
-> @@ -700,42 +681,6 @@ static struct {
->  	SUCCESS_TEST(test_user_ringbuf_blocking_reserve),
->  };
->  
-> -static void verify_fail(const char *prog_name, const char *expected_err_msg)
-> -{
-> -	LIBBPF_OPTS(bpf_object_open_opts, opts);
-> -	struct bpf_program *prog;
-> -	struct user_ringbuf_fail *skel;
-> -	int err;
-> -
-> -	opts.kernel_log_buf = obj_log_buf;
-> -	opts.kernel_log_size = log_buf_sz;
-> -	opts.kernel_log_level = 1;
-> -
-> -	skel = user_ringbuf_fail__open_opts(&opts);
-> -	if (!ASSERT_OK_PTR(skel, "dynptr_fail__open_opts"))
-> -		goto cleanup;
-> -
-> -	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
-> -	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-> -		goto cleanup;
-> -
-> -	bpf_program__set_autoload(prog, true);
-> -
-> -	bpf_map__set_max_entries(skel->maps.user_ringbuf, getpagesize());
-> -
-> -	err = user_ringbuf_fail__load(skel);
-> -	if (!ASSERT_ERR(err, "unexpected load success"))
-> -		goto cleanup;
-> -
-> -	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err_msg")) {
-> -		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
-> -		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
-> -	}
-> -
-> -cleanup:
-> -	user_ringbuf_fail__destroy(skel);
-> -}
-> -
->  void test_user_ringbuf(void)
->  {
->  	int i;
-> @@ -747,10 +692,5 @@ void test_user_ringbuf(void)
->  		success_tests[i].test_callback();
->  	}
->  
-> -	for (i = 0; i < ARRAY_SIZE(failure_tests); i++) {
-> -		if (!test__start_subtest(failure_tests[i].prog_name))
-> -			continue;
-> -
-> -		verify_fail(failure_tests[i].prog_name, failure_tests[i].expected_err_msg);
-> -	}
-> +	RUN_TESTS(user_ringbuf_fail);
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c b/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
-> index a1369b5ebcf8..45f67d697864 100644
-> --- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
-> +++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_failure.c
-> @@ -5,6 +5,7 @@
->  #include <bpf/bpf_tracing.h>
->  #include <bpf/bpf_helpers.h>
->  
-> +#include "bpf_misc.h"
->  #include "cgrp_kfunc_common.h"
->  
->  char _license[] SEC("license") = "GPL";
-> @@ -28,6 +29,7 @@ static struct __cgrps_kfunc_map_value *insert_lookup_cgrp(struct cgroup *cgrp)
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("R1 must be referenced or trusted")
->  int BPF_PROG(cgrp_kfunc_acquire_untrusted, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *acquired;
-> @@ -45,6 +47,7 @@ int BPF_PROG(cgrp_kfunc_acquire_untrusted, struct cgroup *cgrp, const char *path
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("arg#0 pointer type STRUCT cgroup must point")
->  int BPF_PROG(cgrp_kfunc_acquire_fp, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *acquired, *stack_cgrp = (struct cgroup *)&path;
-> @@ -57,6 +60,7 @@ int BPF_PROG(cgrp_kfunc_acquire_fp, struct cgroup *cgrp, const char *path)
->  }
->  
->  SEC("kretprobe/cgroup_destroy_locked")
-> +__failure __msg("reg type unsupported for arg#0 function")
->  int BPF_PROG(cgrp_kfunc_acquire_unsafe_kretprobe, struct cgroup *cgrp)
->  {
->  	struct cgroup *acquired;
-> @@ -69,6 +73,7 @@ int BPF_PROG(cgrp_kfunc_acquire_unsafe_kretprobe, struct cgroup *cgrp)
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("cgrp_kfunc_acquire_trusted_walked")
->  int BPF_PROG(cgrp_kfunc_acquire_trusted_walked, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *acquired;
-> @@ -80,8 +85,8 @@ int BPF_PROG(cgrp_kfunc_acquire_trusted_walked, struct cgroup *cgrp, const char
->  	return 0;
->  }
->  
-> -
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("arg#0 pointer type STRUCT cgroup must point")
->  int BPF_PROG(cgrp_kfunc_acquire_null, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *acquired;
-> @@ -96,6 +101,7 @@ int BPF_PROG(cgrp_kfunc_acquire_null, struct cgroup *cgrp, const char *path)
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("Unreleased reference")
->  int BPF_PROG(cgrp_kfunc_acquire_unreleased, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *acquired;
-> @@ -108,6 +114,7 @@ int BPF_PROG(cgrp_kfunc_acquire_unreleased, struct cgroup *cgrp, const char *pat
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("arg#0 expected pointer to map value")
->  int BPF_PROG(cgrp_kfunc_get_non_kptr_param, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *kptr;
-> @@ -123,6 +130,7 @@ int BPF_PROG(cgrp_kfunc_get_non_kptr_param, struct cgroup *cgrp, const char *pat
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("arg#0 expected pointer to map value")
->  int BPF_PROG(cgrp_kfunc_get_non_kptr_acquired, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *kptr, *acquired;
-> @@ -141,6 +149,7 @@ int BPF_PROG(cgrp_kfunc_get_non_kptr_acquired, struct cgroup *cgrp, const char *
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("arg#0 expected pointer to map value")
->  int BPF_PROG(cgrp_kfunc_get_null, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *kptr;
-> @@ -156,6 +165,7 @@ int BPF_PROG(cgrp_kfunc_get_null, struct cgroup *cgrp, const char *path)
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("Unreleased reference")
->  int BPF_PROG(cgrp_kfunc_xchg_unreleased, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *kptr;
-> @@ -175,6 +185,7 @@ int BPF_PROG(cgrp_kfunc_xchg_unreleased, struct cgroup *cgrp, const char *path)
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("Unreleased reference")
->  int BPF_PROG(cgrp_kfunc_get_unreleased, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *kptr;
-> @@ -194,6 +205,7 @@ int BPF_PROG(cgrp_kfunc_get_unreleased, struct cgroup *cgrp, const char *path)
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("arg#0 is untrusted_ptr_or_null_ expected ptr_ or socket")
->  int BPF_PROG(cgrp_kfunc_release_untrusted, struct cgroup *cgrp, const char *path)
->  {
->  	struct __cgrps_kfunc_map_value *v;
-> @@ -209,6 +221,7 @@ int BPF_PROG(cgrp_kfunc_release_untrusted, struct cgroup *cgrp, const char *path
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("arg#0 pointer type STRUCT cgroup must point")
->  int BPF_PROG(cgrp_kfunc_release_fp, struct cgroup *cgrp, const char *path)
->  {
->  	struct cgroup *acquired = (struct cgroup *)&path;
-> @@ -220,6 +233,7 @@ int BPF_PROG(cgrp_kfunc_release_fp, struct cgroup *cgrp, const char *path)
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("arg#0 is ptr_or_null_ expected ptr_ or socket")
->  int BPF_PROG(cgrp_kfunc_release_null, struct cgroup *cgrp, const char *path)
->  {
->  	struct __cgrps_kfunc_map_value local, *v;
-> @@ -251,6 +265,7 @@ int BPF_PROG(cgrp_kfunc_release_null, struct cgroup *cgrp, const char *path)
->  }
->  
->  SEC("tp_btf/cgroup_mkdir")
-> +__failure __msg("release kernel function bpf_cgroup_release expects")
->  int BPF_PROG(cgrp_kfunc_release_unacquired, struct cgroup *cgrp, const char *path)
->  {
->  	/* Cannot release trusted cgroup pointer which was not acquired. */
-> diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_failure.c b/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
-> index 1b47b94dbca0..e6950d6a9cf0 100644
-> --- a/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
-> +++ b/tools/testing/selftests/bpf/progs/task_kfunc_failure.c
-> @@ -5,6 +5,7 @@
->  #include <bpf/bpf_tracing.h>
->  #include <bpf/bpf_helpers.h>
->  
-> +#include "bpf_misc.h"
->  #include "task_kfunc_common.h"
->  
->  char _license[] SEC("license") = "GPL";
-> @@ -27,6 +28,7 @@ static struct __tasks_kfunc_map_value *insert_lookup_task(struct task_struct *ta
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("R1 must be referenced or trusted")
->  int BPF_PROG(task_kfunc_acquire_untrusted, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *acquired;
-> @@ -44,6 +46,7 @@ int BPF_PROG(task_kfunc_acquire_untrusted, struct task_struct *task, u64 clone_f
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("arg#0 pointer type STRUCT task_struct must point")
->  int BPF_PROG(task_kfunc_acquire_fp, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *acquired, *stack_task = (struct task_struct *)&clone_flags;
-> @@ -56,6 +59,7 @@ int BPF_PROG(task_kfunc_acquire_fp, struct task_struct *task, u64 clone_flags)
->  }
->  
->  SEC("kretprobe/free_task")
-> +__failure __msg("reg type unsupported for arg#0 function")
->  int BPF_PROG(task_kfunc_acquire_unsafe_kretprobe, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *acquired;
-> @@ -68,6 +72,7 @@ int BPF_PROG(task_kfunc_acquire_unsafe_kretprobe, struct task_struct *task, u64
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("R1 must be referenced or trusted")
->  int BPF_PROG(task_kfunc_acquire_trusted_walked, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *acquired;
-> @@ -81,6 +86,7 @@ int BPF_PROG(task_kfunc_acquire_trusted_walked, struct task_struct *task, u64 cl
->  
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("arg#0 pointer type STRUCT task_struct must point")
->  int BPF_PROG(task_kfunc_acquire_null, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *acquired;
-> @@ -95,6 +101,7 @@ int BPF_PROG(task_kfunc_acquire_null, struct task_struct *task, u64 clone_flags)
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("Unreleased reference")
->  int BPF_PROG(task_kfunc_acquire_unreleased, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *acquired;
-> @@ -107,6 +114,7 @@ int BPF_PROG(task_kfunc_acquire_unreleased, struct task_struct *task, u64 clone_
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("arg#0 expected pointer to map value")
->  int BPF_PROG(task_kfunc_get_non_kptr_param, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *kptr;
-> @@ -122,6 +130,7 @@ int BPF_PROG(task_kfunc_get_non_kptr_param, struct task_struct *task, u64 clone_
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("arg#0 expected pointer to map value")
->  int BPF_PROG(task_kfunc_get_non_kptr_acquired, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *kptr, *acquired;
-> @@ -140,6 +149,7 @@ int BPF_PROG(task_kfunc_get_non_kptr_acquired, struct task_struct *task, u64 clo
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("arg#0 expected pointer to map value")
->  int BPF_PROG(task_kfunc_get_null, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *kptr;
-> @@ -155,6 +165,7 @@ int BPF_PROG(task_kfunc_get_null, struct task_struct *task, u64 clone_flags)
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("Unreleased reference")
->  int BPF_PROG(task_kfunc_xchg_unreleased, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *kptr;
-> @@ -174,6 +185,7 @@ int BPF_PROG(task_kfunc_xchg_unreleased, struct task_struct *task, u64 clone_fla
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("Unreleased reference")
->  int BPF_PROG(task_kfunc_get_unreleased, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *kptr;
-> @@ -193,6 +205,7 @@ int BPF_PROG(task_kfunc_get_unreleased, struct task_struct *task, u64 clone_flag
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("arg#0 is untrusted_ptr_or_null_ expected ptr_ or socket")
->  int BPF_PROG(task_kfunc_release_untrusted, struct task_struct *task, u64 clone_flags)
->  {
->  	struct __tasks_kfunc_map_value *v;
-> @@ -208,6 +221,7 @@ int BPF_PROG(task_kfunc_release_untrusted, struct task_struct *task, u64 clone_f
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("arg#0 pointer type STRUCT task_struct must point")
->  int BPF_PROG(task_kfunc_release_fp, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *acquired = (struct task_struct *)&clone_flags;
-> @@ -219,6 +233,7 @@ int BPF_PROG(task_kfunc_release_fp, struct task_struct *task, u64 clone_flags)
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("arg#0 is ptr_or_null_ expected ptr_ or socket")
->  int BPF_PROG(task_kfunc_release_null, struct task_struct *task, u64 clone_flags)
->  {
->  	struct __tasks_kfunc_map_value local, *v;
-> @@ -251,6 +266,7 @@ int BPF_PROG(task_kfunc_release_null, struct task_struct *task, u64 clone_flags)
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("release kernel function bpf_task_release expects")
->  int BPF_PROG(task_kfunc_release_unacquired, struct task_struct *task, u64 clone_flags)
->  {
->  	/* Cannot release trusted task pointer which was not acquired. */
-> @@ -260,6 +276,7 @@ int BPF_PROG(task_kfunc_release_unacquired, struct task_struct *task, u64 clone_
->  }
->  
->  SEC("tp_btf/task_newtask")
-> +__failure __msg("arg#0 is ptr_or_null_ expected ptr_ or socket")
->  int BPF_PROG(task_kfunc_from_pid_no_null_check, struct task_struct *task, u64 clone_flags)
->  {
->  	struct task_struct *acquired;
-> @@ -273,6 +290,7 @@ int BPF_PROG(task_kfunc_from_pid_no_null_check, struct task_struct *task, u64 cl
->  }
->  
->  SEC("lsm/task_free")
-> +__failure __msg("reg type unsupported for arg#0 function")
->  int BPF_PROG(task_kfunc_from_lsm_task_free, struct task_struct *task)
->  {
->  	struct task_struct *acquired;
-> diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> index f4a8250329b2..2fbef3cc7ad8 100644
-> --- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> +++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> @@ -10,6 +10,7 @@
->  #include <errno.h>
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
-> +#include "bpf_misc.h"
->  
->  extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
->  extern void bpf_key_put(struct bpf_key *key) __ksym;
-> @@ -19,6 +20,7 @@ extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
->  
->  struct {
->  	__uint(type, BPF_MAP_TYPE_RINGBUF);
-> +	__uint(max_entries, 4096);
->  } ringbuf SEC(".maps");
->  
->  struct {
-> @@ -33,6 +35,7 @@ int err, pid;
->  char _license[] SEC("license") = "GPL";
->  
->  SEC("?lsm.s/bpf")
-> +__failure __msg("cannot pass in dynptr at an offset=-8")
->  int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size)
->  {
->  	unsigned long val;
-> @@ -42,6 +45,7 @@ int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size)
->  }
->  
->  SEC("?lsm.s/bpf")
-> +__failure __msg("arg#0 expected pointer to stack or dynptr_ptr")
->  int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size)
->  {
->  	unsigned long val;
-> diff --git a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-> index f3201dc69a60..03ee946c6bf7 100644
-> --- a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-> +++ b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-> @@ -16,6 +16,7 @@ struct sample {
->  
->  struct {
->  	__uint(type, BPF_MAP_TYPE_USER_RINGBUF);
-> +	__uint(max_entries, 4096);
->  } user_ringbuf SEC(".maps");
->  
->  struct {
-> @@ -39,7 +40,8 @@ bad_access1(struct bpf_dynptr *dynptr, void *context)
->  /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
->   * not be able to read before the pointer.
->   */
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("negative offset dynptr_ptr ptr")
->  int user_ringbuf_callback_bad_access1(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, bad_access1, NULL, 0);
-> @@ -61,7 +63,8 @@ bad_access2(struct bpf_dynptr *dynptr, void *context)
->  /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
->   * not be able to read past the end of the pointer.
->   */
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("dereference of modified dynptr_ptr ptr")
->  int user_ringbuf_callback_bad_access2(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, bad_access2, NULL, 0);
-> @@ -80,7 +83,8 @@ write_forbidden(struct bpf_dynptr *dynptr, void *context)
->  /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
->   * not be able to write to that pointer.
->   */
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("invalid mem access 'dynptr_ptr'")
->  int user_ringbuf_callback_write_forbidden(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, write_forbidden, NULL, 0);
-> @@ -99,7 +103,8 @@ null_context_write(struct bpf_dynptr *dynptr, void *context)
->  /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
->   * not be able to write to that pointer.
->   */
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("invalid mem access 'scalar'")
->  int user_ringbuf_callback_null_context_write(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, null_context_write, NULL, 0);
-> @@ -120,7 +125,8 @@ null_context_read(struct bpf_dynptr *dynptr, void *context)
->  /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
->   * not be able to write to that pointer.
->   */
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("invalid mem access 'scalar'")
->  int user_ringbuf_callback_null_context_read(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, null_context_read, NULL, 0);
-> @@ -139,7 +145,8 @@ try_discard_dynptr(struct bpf_dynptr *dynptr, void *context)
->  /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
->   * not be able to read past the end of the pointer.
->   */
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("cannot release unowned const bpf_dynptr")
->  int user_ringbuf_callback_discard_dynptr(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, try_discard_dynptr, NULL, 0);
-> @@ -158,7 +165,8 @@ try_submit_dynptr(struct bpf_dynptr *dynptr, void *context)
->  /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
->   * not be able to read past the end of the pointer.
->   */
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("cannot release unowned const bpf_dynptr")
->  int user_ringbuf_callback_submit_dynptr(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, try_submit_dynptr, NULL, 0);
-> @@ -175,7 +183,8 @@ invalid_drain_callback_return(struct bpf_dynptr *dynptr, void *context)
->  /* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
->   * not be able to write to that pointer.
->   */
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("At callback return the register R0 has value")
->  int user_ringbuf_callback_invalid_return(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, invalid_drain_callback_return, NULL, 0);
-> @@ -197,14 +206,16 @@ try_reinit_dynptr_ringbuf(struct bpf_dynptr *dynptr, void *context)
->  	return 0;
->  }
->  
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("Dynptr has to be an uninitialized dynptr")
->  int user_ringbuf_callback_reinit_dynptr_mem(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, try_reinit_dynptr_mem, NULL, 0);
->  	return 0;
->  }
->  
-> -SEC("?raw_tp/")
-> +SEC("?raw_tp")
-> +__failure __msg("Dynptr has to be an uninitialized dynptr")
->  int user_ringbuf_callback_reinit_dynptr_ringbuf(void *ctx)
->  {
->  	bpf_user_ringbuf_drain(&user_ringbuf, try_reinit_dynptr_ringbuf, NULL, 0);
+>=20
+> [ ... ]
+>=20
+> > diff --git a/tools/testing/selftests/bpf/test_xdp_features.sh b/tools/t=
+esting/selftests/bpf/test_xdp_features.sh
+> > new file mode 100755
+> > index 000000000000..98b8fd2b6c16
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/test_xdp_features.sh
+> > @@ -0,0 +1,99 @@
+> > +#!/bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +# Create 2 namespaces with two veth peers, and
+> > +# check reported and detected XDP capabilities
+> > +#
+> > +#   NS0(v00)              NS1(v11)
+> > +#       |                     |
+> > +#       |                     |
+> > +# (v01, id:111)  ------  (v10,id:222)
+> > +
+> > +readonly NS0=3D"ns1-$(mktemp -u XXXXXX)"
+> > +readonly NS1=3D"ns2-$(mktemp -u XXXXXX)"
+> > +ret=3D1
+> > +
+> > +setup() {
+> > +	{
+> > +		ip netns add ${NS0}
+> > +		ip netns add ${NS1}
+> > +
+> > +		ip link add v01 index 111 type veth peer name v00 netns ${NS0}
+> > +		ip link add v10 index 222 type veth peer name v11 netns ${NS1}
+> > +
+> > +		ip link set v01 up
+> > +		ip addr add 10.10.0.1/24 dev v01
+> > +		ip link set v01 address 00:11:22:33:44:55
+> > +		ip -n ${NS0} link set dev v00 up
+> > +		ip -n ${NS0} addr add 10.10.0.11/24 dev v00
+> > +		ip -n ${NS0} route add default via 10.10.0.1
+> > +		ip -n ${NS0} link set v00 address 00:12:22:33:44:55
+> > +
+> > +		ip link set v10 up
+> > +		ip addr add 10.10.1.1/24 dev v10
+> > +		ip link set v10 address 00:13:22:33:44:55
+> > +		ip -n ${NS1} link set dev v11 up
+> > +		ip -n ${NS1} addr add 10.10.1.11/24 dev v11
+> > +		ip -n ${NS1} route add default via 10.10.1.1
+> > +		ip -n ${NS1} link set v11 address 00:14:22:33:44:55
+> > +
+> > +		sysctl -w net.ipv4.ip_forward=3D1
+> > +		# Enable XDP mode
+> > +		ethtool -K v01 gro on
+> > +		ethtool -K v01 tx-checksumming off
+> > +		ip netns exec ${NS0} ethtool -K v00 gro on
+> > +		ip netns exec ${NS0} ethtool -K v00 tx-checksumming off
+> > +		ethtool -K v10 gro on
+> > +		ethtool -K v10 tx-checksumming off
+> > +		ip netns exec ${NS1} ethtool -K v11 gro on
+> > +		ip netns exec ${NS1} ethtool -K v11 tx-checksumming off
+> > +	} > /dev/null 2>&1
+> > +}
+> > +
+> > +cleanup() {
+> > +	ip link del v01 2> /dev/null
+> > +	ip link del v10 2> /dev/null
+> > +	ip netns del ${NS0} 2> /dev/null
+> > +	ip netns del ${NS1} 2> /dev/null
+> > +	[ "$(pidof xdp_features)" =3D "" ] || kill $(pidof xdp_features) 2> /=
+dev/null
+> > +}
+> > +
+> > +test_xdp_features() {
+> > +	setup
+> > +
+> > +	## XDP_PASS
+> > +	ip netns exec ${NS1} ./xdp_features -f XDP_PASS -D 10.10.1.11 -T 10.1=
+0.0.11 v11 &
+> > +	ip netns exec ${NS0} ./xdp_features -t -f XDP_PASS -D 10.10.1.11 -C 1=
+0.10.1.11 -T 10.10.0.11 v00
+> > +
+> > +	[ $? -ne 0 ] && exit
+> > +
+> > +	# XDP_DROP
+> > +	ip netns exec ${NS1} ./xdp_features -f XDP_DROP -D 10.10.1.11 -T 10.1=
+0.0.11 v11 &
+> > +	ip netns exec ${NS0} ./xdp_features -t -f XDP_DROP -D 10.10.1.11 -C 1=
+0.10.1.11 -T 10.10.0.11 v00
+> > +
+> > +	[ $? -ne 0 ] && exit
+> > +
+> > +	## XDP_TX
+> > +	./xdp_features -f XDP_TX -D 10.10.0.1 -T 10.10.0.11 v01 &
+> > +	ip netns exec ${NS0} ./xdp_features -t -f XDP_TX -D 10.10.0.1 -C 10.1=
+0.0.1 -T 10.10.0.11 v00
+> > +
+> > +	## XDP_REDIRECT
+> > +	ip netns exec ${NS1} ./xdp_features -f XDP_REDIRECT -D 10.10.1.11 -T =
+10.10.0.11 v11 &
+> > +	ip netns exec ${NS0} ./xdp_features -t -f XDP_REDIRECT -D 10.10.1.11 =
+-C 10.10.1.11 -T 10.10.0.11 v00
+> > +
+> > +	[ $? -ne 0 ] && exit
+> > +
+> > +	## XDP_NDO_XMIT
+> > +	./xdp_features -f XDP_NDO_XMIT -D 10.10.0.1 -T 10.10.0.11 v01 &
+> > +	ip netns exec ${NS0} ./xdp_features -t -f XDP_NDO_XMIT -D 10.10.0.1 -=
+C 10.10.0.1 -T 10.10.0.11 v00
+> > +
+> > +	ret=3D$?
+> > +	cleanup
+> > +}
+> > +
+> > +set -e
+> > +trap cleanup 2 3 6 9
+> > +
+> > +test_xdp_features
+>=20
+> This won't be run by bpf CI.
+>=20
+> A selftest in test_progs is needed to test the libbpf changes in patch 6.
 
+ack, I will add it.
+
+Regards,
+Lorenzo
+
+>=20
+
+--vXwS72sJheo8aQyw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY8+9JgAKCRA6cBh0uS2t
+rAVxAQDuQpyo+82ZkOU6gyjeqezwLl9WA56TqSgJaO06eFYHVwEA6xd8k4wgRKir
++9gai1xpvVfvpukC3pmQrphAjU7O6Aw=
+=frY2
+-----END PGP SIGNATURE-----
+
+--vXwS72sJheo8aQyw--
