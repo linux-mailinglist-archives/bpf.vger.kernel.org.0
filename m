@@ -2,122 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5052C679E6C
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 17:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56291679E76
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 17:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbjAXQUe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 11:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
+        id S234051AbjAXQVe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 11:21:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjAXQUd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 11:20:33 -0500
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD78193FF;
-        Tue, 24 Jan 2023 08:20:32 -0800 (PST)
-Received: by mail-vk1-f172.google.com with SMTP id q141so7818091vkb.13;
-        Tue, 24 Jan 2023 08:20:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uRvaOYyC5sNficHNcLmGLW/x7PtaUYBGZNW6Hwgjd9c=;
-        b=jDZLGDNDmqDYpClhO6vDirABVVZlLBWaxiGyGt9zR81400MfI+RCW+smVchbZl8Sb6
-         IGzkVbr6vfMgx8+tt8IqFJBUYZ20XvzZiRFmqHHfv9DSFcMT1mLW0AV8UgUpKd6ZduAJ
-         a/S5Df5FD2WyZxA8JZ8u2Uy2HlCtf8ys7/7DJIc7SJeGowfV5QcT0IxJcVFJqgglI/D+
-         EuOQ+Nuusd6fjEmKKS3UideB/u/crVtqn2Bn/b0gAN8JbK6DY4VPY9r1qA3vMoSUkr2n
-         /1v45L411OlRJeZb6DuN5fB1KsF9+c6Ts3Y29TU9SnTi8cpK1H/yEfP+u4uuhtdgOQqs
-         Tp3Q==
-X-Gm-Message-State: AFqh2koMXZSA4WB3WSmLoeoLMOmlNzLGRgJJ7L/X9xDSLvfosONhYF73
-        8ueIokE/zV+dRzLd7FcgIXo=
-X-Google-Smtp-Source: AMrXdXsx6Hfo6IZT2JN9cIDAItjHKN5wOzRXKiCaXLDNj+g9Y7uqE/BTR52DfhoMyVekfZ6xhUv7hg==
-X-Received: by 2002:a1f:f881:0:b0:3c0:f6d6:3722 with SMTP id w123-20020a1ff881000000b003c0f6d63722mr18242290vkh.11.1674577231221;
-        Tue, 24 Jan 2023 08:20:31 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:93a0])
-        by smtp.gmail.com with ESMTPSA id r13-20020a05620a03cd00b006f9e103260dsm1638361qkm.91.2023.01.24.08.20.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jan 2023 08:20:30 -0800 (PST)
-Date:   Tue, 24 Jan 2023 10:20:31 -0600
-From:   David Vernet <void@manifault.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, memxor@gmail.com, hch@infradead.org
-Subject: Re: [PATCH bpf-next v2 3/3] bpf: Use BPF_KFUNC macro at all kfunc
- definitions
-Message-ID: <Y9AFT4pTydKh+PD3@maniforge.lan>
-References: <20230123171506.71995-1-void@manifault.com>
- <20230123171506.71995-4-void@manifault.com>
- <20230123183305.2mgoxgw4ca3sfk24@macbook-pro-6.dhcp.thefacebook.com>
- <Y87We/92xiv5/+g+@maniforge.lan>
- <20230123185434.ybfhrmbootcnjuoj@macbook-pro-6.dhcp.thefacebook.com>
- <ebff2166-8a70-af62-b859-6b5c6b008b36@iogearbox.net>
- <87o7qphspq.fsf@meer.lwn.net>
- <Y88sMlmrq0wCFSRP@maniforge.lan>
- <87lelsgf60.fsf@meer.lwn.net>
+        with ESMTP id S234032AbjAXQVc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 11:21:32 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32064ABEA;
+        Tue, 24 Jan 2023 08:21:28 -0800 (PST)
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pKM2x-0007MD-Fm; Tue, 24 Jan 2023 17:21:19 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pKM2w-000AGl-Ro; Tue, 24 Jan 2023 17:21:18 +0100
+Subject: Re: [PATCH] selftests/bpf: fix vmtest static compilation error
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20230121064128.67914-1-danieltimlee@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <32195f48-8b45-1a78-1964-dfe7b5a4933f@iogearbox.net>
+Date:   Tue, 24 Jan 2023 17:21:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lelsgf60.fsf@meer.lwn.net>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230121064128.67914-1-danieltimlee@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26791/Tue Jan 24 09:27:43 2023)
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 07:50:31AM -0700, Jonathan Corbet wrote:
-> David Vernet <void@manifault.com> writes:
+On 1/21/23 7:41 AM, Daniel T. Lee wrote:
+> As stated in README.rst, in order to resolve errors with linker errors,
+> 'LDLIBS=-static' should be used. Most problems will be solved by this
+> option, but in the case of urandom_read, this won't fix the problem. So
+> the Makefile is currently implemented to strip the 'static' option when
+> compiling the urandom_read. However, stripping this static option isn't
+> configured properly on $(LDLIBS) correctly, which is now causing errors
+> on static compilation.
 > 
-> > I was perhaps a bit naive to think we could just throw a __bpf_kfunc
-> > macro onto the function signatures and call it a day :-) I think it's
-> > probably best to table this for now, and either I or someone else can
-> > come back to it when we have bandwidth to solve the problem more
-> > appropriately.
+>      # LDLIBS=-static ./vmtest.sh
+>      ld.lld: error: attempted static link of dynamic object liburandom_read.so
+>      clang: error: linker command failed with exit code 1 (use -v to see invocation)
+>      make: *** [Makefile:190: /linux/tools/testing/selftests/bpf/urandom_read] Error 1
+>      make: *** Waiting for unfinished jobs....
 > 
-> Now I feel bad ... I was just tossing out a thought, not wanting to
-> bikeshed this work into oblivion.  If what you have solves a real
+> This commit fixes this problem by configuring the strip with $(LDLIBS).
+> 
+> Fixes: 68084a136420 ("selftests/bpf: Fix building bpf selftests statically")
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> ---
+>   tools/testing/selftests/bpf/Makefile | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 22533a18705e..7bd1ce9c8d87 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -188,7 +188,7 @@ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
+>   $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
+>   	$(call msg,BINARY,,$@)
+>   	$(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
+> -		     liburandom_read.so $(LDLIBS)			       \
+> +		     liburandom_read.so $(filter-out -static,$(LDLIBS))	     \
 
-No apologies necessary. I don't think this qualifies as bikeshedding.
-IMO folks are raising legitimate UX concerns, which is important and
-worth getting right.
+Do we need the same also for liburandom_read.so target's $(LDLIBS) further above?
 
-> problem and is the best that can be done now, perhaps it should just go
-> in and a "more appropriate" solution can be adopted later, should
-> somebody manage to come up with it?
+>   		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
+>   		     -Wl,-rpath=. -o $@
+>   
+> 
 
-That would be my preference, but I also understand folks' sentiment of
-wanting to keep out what they feel like is odd syntax, as Christoph said
-in [0], and Daniel alluded to earlier in this thread.
-
-[0]: https://lore.kernel.org/all/Y8+FeH7rz8jDTubt@infradead.org/
-
-I tested on an LTO build and wrapper kfuncs (with external linkage) were
-not being stripped despite not being called from anywhere else in the
-kernel, so for now I _think_ it's safe to call this patch set more of a
-cleanup / future-proofing than solving an immediate and pressing problem
-(as long as anyone adding kfuncs carefully follows the directions in
-[1]). In other words, I think we have some time to do this the right way
-without paying too much of a cost later. If we set up the UX correctly,
-just adding an EXPORT_SYMBOL_KFUNC call (or something to that effect,
-including just using BTF_ID_FLAGS) should be minimal effort even if
-there are a lot more kfuncs by then.
-
-[1]: https://docs.kernel.org/bpf/kfuncs.html
-
-If it turns out that we start to observe problems in LTO builds without
-specifying __used and/or noinline, or if folks are repeatedly making
-mistakes when adding kfuncs (by e.g. not giving wrapper kfuncs external
-linkage) then I think it would be a stronger case to get this in now and
-fix it up later.
-
-Thanks,
-David
