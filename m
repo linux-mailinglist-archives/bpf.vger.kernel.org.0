@@ -2,71 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D321867A6C5
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 00:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B0167A737
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 00:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbjAXXST (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 18:18:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
+        id S231246AbjAXXwY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 18:52:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjAXXST (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 18:18:19 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D647303DA
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 15:18:18 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id t16so16294830ybk.2
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 15:18:18 -0800 (PST)
+        with ESMTP id S230201AbjAXXwW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 18:52:22 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBDD04201
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 15:52:20 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id y9so14797945lji.2
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 15:52:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TjUuPxJorTm0S1nPSw7d6DNUWqTJizpz/YvXGGYX3vc=;
-        b=KF4tcIK0gbw+vY2lR8xRj+5d+XAJoS0vaSZzxt+m+1JprNDoqVwchWg9BQzpwQvD6Y
-         hL2F1Fe3+sZJiUD1PpfdC8xtZCwmhwEln0QXjALlLyRkDmqEb+7+nzBs8YHQjRyQpR8b
-         NREFUAmVQrZw969/ZAuLt12MctkHKUFnMJUa0O0A1ia/3O3iDvlyy03w4kd5quuoSaV0
-         sb9EsYmvgNzAFU8jLl7Hw9JjbuAUUt3bGLsq86K1sdVMK3bhfCEDk7XFeIXoQpZK4947
-         vwkcFQx+wzMLMtwJQmjMqDILy3BCSs6AGM8KLKDXxeuUEjOfefwWmsSjJ26lILpZ2tnj
-         nDeQ==
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CJ/QyPMvHYitchauxg+J4IBvV0VZtgC9RglXLyAlxPA=;
+        b=Dzmc0gKsy3coC0buILAgl3Ola3rZPSboh5rroD4xtmTTWP2JrxZS/00pmKma/b9kpi
+         Wot6qc0GaALU3tBU2c8hII6jla9H25Wz5rF8HzLqhGM0f6ITj9F4dHz+iF/1lLODnP0W
+         TiUXfjEilHxK2EALv546c6sIunqoefswFNMJgWp2R9SZVocOSVGKoo4+wpe4wB8ro++K
+         g0A5nuSxLgrnw/PmZLQai2UZUGeT2zWggomln7bfoy1dMR4jya69UQohRTm3YrO0bzco
+         PFrP2s917kBv00lPaEqt0gNnneOKxAfggzBAW6V4acXGtHfz8TlOj1w4NdqyLaC46un/
+         FVxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TjUuPxJorTm0S1nPSw7d6DNUWqTJizpz/YvXGGYX3vc=;
-        b=Q1wRKfJ9ppYqCPb2cluR8B2FfQ843azQxog/Y7oUSylO8UCu6YvegNN/bXcTmmIPl2
-         BwNXziHR0OqLu7drqT6JF+iohc9ngQ8lm+QD+boJ8kovM/8bZis1/3OJnv1uCVaDdotC
-         K1zTPeuqe3q3QV2fVqTKX5K2fw4pNWN0XwPB0v2voa5MXUHe1ksZIFfYs0L3h5v2tKXi
-         4zqjahM9gDQVytcFlLBBs4pqTH328Px6+3d36jfmO/hqjZ/NxsYzH4j8ODR1+WHkmtky
-         V/5nZGHR6Fvx93DWEm9FwLRYqr3VNVFGTBHUJXgr1xHaZmGt+SMpZgHTMlymqPsqky+8
-         uDEg==
-X-Gm-Message-State: AO0yUKVJKvIFBUMM1dWzpjcR0myjA3W//mF1Nsbz1xUuJK4//DHVeCMM
-        Cc29xS3hYOujAI9bFl1ujKo+B77bcvAm9mYww/xzbA==
-X-Google-Smtp-Source: AK7set/XvOUtuc3O6j/Z9MgQksHGSCV2XTyLVVrv1BztmRO6RuoPUE/8oEMDJ9CGLPktm/vmyCE/abzPN4XgK0R7XNc=
-X-Received: by 2002:a25:320c:0:b0:80b:5988:203e with SMTP id
- y12-20020a25320c000000b0080b5988203emr483335yby.52.1674602297335; Tue, 24 Jan
- 2023 15:18:17 -0800 (PST)
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CJ/QyPMvHYitchauxg+J4IBvV0VZtgC9RglXLyAlxPA=;
+        b=rjUTZP1mimSSYiRf8NsOg2ah6YBiSmF5W1PD1GKqB1XMFRlJXaJl+HKESWqVtGHDbV
+         FX95c1+3sOgmebnp2wIYgdE26608MtperYhU03vfo7i+C0svYISfe7wM4/Thm9Fg0FH+
+         V5jb7i+Q+m8ITHvBdXyAClu3qEUEgYtG4uUjIek7fik3joTmN4mR0gScfycS2ntDTGOI
+         f6E42bmhlc3r4GAaZj20nJHrv9NgDWgue95sEdzyPDSsc906wtnePjBWXcwKwc+eivKX
+         uQABguTQTFooO88lAEURzxV+hu4tg7rSR+oiy9iJIlNaj12Qf4TOQ7r6jjXUSTGQ32+z
+         c8vA==
+X-Gm-Message-State: AFqh2kp/bOB05Joiif4SFA3Sy/akEHXvDvxwtE3gXA8sJS7gcFqBefrl
+        SkVbmTycvFc09CPW2AJXNvl5rRuaH5rmGP7dJlM=
+X-Google-Smtp-Source: AMrXdXt0PEwEOVwXP1vGnWUzomUbgcR4XshWTFuFWWCLVH+vVWeePReiUMDOJfs5P81FjzBPL5mClTaQXWubeN8+iU8=
+X-Received: by 2002:a05:651c:555:b0:282:1326:7888 with SMTP id
+ q21-20020a05651c055500b0028213267888mr1496625ljp.496.1674604338289; Tue, 24
+ Jan 2023 15:52:18 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHBbfcUkr6fTm2X9GNsFNqV75fTG=aBQXFx_8Ayk+4hk7heB-g@mail.gmail.com>
- <296fcfac-9acd-9462-871c-b450fd140fa3@gmail.com> <7f2372c1-73c9-cd8a-c0e8-30d3fef8c23e@oracle.com>
-In-Reply-To: <7f2372c1-73c9-cd8a-c0e8-30d3fef8c23e@oracle.com>
-From:   Jason Ling <jasonling@google.com>
-Date:   Tue, 24 Jan 2023 15:17:41 -0800
-Message-ID: <CAHBbfcVwOQQsARw7qTTJ_xjnH_H7fs0a2nP0_rhn3ixtBYZtdA@mail.gmail.com>
-Subject: Re: Is fentry/fexit support possible with an external BTF?
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Kui-Feng Lee <sinquersw@gmail.com>, bpf@vger.kernel.org
+Received: by 2002:a05:651c:210f:0:0:0:0 with HTTP; Tue, 24 Jan 2023 15:52:17
+ -0800 (PST)
+Reply-To: ms.bbianca@yahoo.com
+From:   Ms Blake Bianca <lamoussadionou76@gmail.com>
+Date:   Tue, 24 Jan 2023 15:52:17 -0800
+Message-ID: <CAJY9HcAjrtc_d7J0gqnw1GgjVT203dauQiJEsDY3SOz7Ku+Xjg@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->Would it help in this environment if vmlinux BTF was in a module?
+Hello,
 
-Yes, that would fix our issues as we place our modules on a separate partition.
+      I have an offer for you, kindly reply back for more details.
+
+Remain Bless,
+Ms Blake Bianca
