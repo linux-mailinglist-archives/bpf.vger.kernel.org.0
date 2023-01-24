@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAE5679E21
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 17:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82019679A82
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 14:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbjAXQBX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 11:01:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
+        id S233890AbjAXNtf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 08:49:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbjAXQBW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 11:01:22 -0500
+        with ESMTP id S234520AbjAXNtW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 08:49:22 -0500
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80BD6593
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 08:01:21 -0800 (PST)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30ODI0vT002753;
-        Tue, 24 Jan 2023 13:45:37 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306404A1EC
+        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 05:47:11 -0800 (PST)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30ODI0vn020819;
+        Tue, 24 Jan 2023 13:45:41 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2022-7-12;
- bh=gLdns4UREkod8woqBJzvjA41jZKQBiHxJ02pdsQWhmk=;
- b=LqyOC/fgHty8wKwhluikGzbZCz+medHLFiJmvKdCbtq66J2k109BfK/PwKv6NJ44o9xs
- H8/ECw+butNMK1mRoEvyiChn2vaPmDTJe0hWI7FsF75Dk70T1HbITBoN4FHUt2mjw+jI
- rnGLxs1dzacr6Vo01wwGiLU17AN+8vNCiK6K7+qYXOWimxvrLIIm6EBWolgA8wB03dvR
- v23z0mMy3y88Tln7W574UmuBKoWiGpI2HNP8x1E7UtQTb04MjlM2AwKtYGGGCunwTyiA
- HESiHNJDozJONfVLFrcaU+IgCRk+uQQ7ulsm0p7yezuM4e68XOO84q+7ZrFEXAPH1s/5 Dg== 
+ subject : date : message-id : in-reply-to : references; s=corp-2022-7-12;
+ bh=6YmgzfREeWWPe+FbqSOX6JR1RgoKQWvYthiYsgCt1EQ=;
+ b=kwkUeKV7AzqvNJgXJeBGty4+AygjdOtwx3WbOM5qXFgSvsD8+Mubo60OUY9LBoKEht3m
+ YOfrCp8qYfvPNX2YZOJSYE4+YVZF1KMXW6Ey2++7zW9DPAWVsK2jyEVqMFmUzhE+Y9QR
+ 2J9XFJ7selEREyACBIytfhzF9TqUSJ59zLKU2zYTuvWVDGd4qkVIrhTOlApwshoCyqN6
+ jSQYoj++Xt2jFgVNZ6eDx4HbNV20s6O9+vE3N+KTwmqscQ9HKbHecbMvolf841GlGLZ8
+ rZaK0i5Sx9E22AviqFMsbplsqquUS+ovCrVa1PqVWLGrELJ+3hB3bpq9HLCTyWYwzheQ Pg== 
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3n883c5bua-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3n86u2wc5k-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Jan 2023 13:45:37 +0000
+        Tue, 24 Jan 2023 13:45:40 +0000
 Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 30OBmnFv021016;
-        Tue, 24 Jan 2023 13:45:36 GMT
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 30OBmnFx021016;
+        Tue, 24 Jan 2023 13:45:40 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3n86gbr5h5-1
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3n86gbr5jx-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Jan 2023 13:45:36 +0000
+        Tue, 24 Jan 2023 13:45:40 +0000
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30ODjZ3p037951;
-        Tue, 24 Jan 2023 13:45:35 GMT
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30ODjZ3r037951;
+        Tue, 24 Jan 2023 13:45:39 GMT
 Received: from myrouter.uk.oracle.com (dhcp-10-175-161-98.vpn.oracle.com [10.175.161.98])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3n86gbr5fj-1;
-        Tue, 24 Jan 2023 13:45:35 +0000
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3n86gbr5fj-2;
+        Tue, 24 Jan 2023 13:45:39 +0000
 From:   Alan Maguire <alan.maguire@oracle.com>
 To:     acme@kernel.org, yhs@fb.com, ast@kernel.org, olsajiri@gmail.com,
         timo@incline.eu
@@ -49,10 +49,12 @@ Cc:     daniel@iogearbox.net, andrii@kernel.org, songliubraving@fb.com,
         john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
         haoluo@google.com, martin.lau@kernel.org, bpf@vger.kernel.org,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH dwarves 0/5] dwarves: support encoding of optimized-out parameters, removal of inconsistent static functions
-Date:   Tue, 24 Jan 2023 13:45:26 +0000
-Message-Id: <1674567931-26458-1-git-send-email-alan.maguire@oracle.com>
+Subject: [PATCH dwarves 1/5] dwarves: help dwarf loader spot functions with optimized-out parameters
+Date:   Tue, 24 Jan 2023 13:45:27 +0000
+Message-Id: <1674567931-26458-2-git-send-email-alan.maguire@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1674567931-26458-1-git-send-email-alan.maguire@oracle.com>
+References: <1674567931-26458-1-git-send-email-alan.maguire@oracle.com>
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
  definitions=2023-01-23_12,2023-01-24_01,2022-06-22_01
@@ -60,8 +62,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxs
  bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
  definitions=main-2301240125
-X-Proofpoint-ORIG-GUID: sRMDQOS05guglMfjH2UMgl0fO7zd2-f3
-X-Proofpoint-GUID: sRMDQOS05guglMfjH2UMgl0fO7zd2-f3
+X-Proofpoint-GUID: unTRRNDAhYmCDQsvtnDJmMdWnNIcf-Nd
+X-Proofpoint-ORIG-GUID: unTRRNDAhYmCDQsvtnDJmMdWnNIcf-Nd
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -72,88 +74,166 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-At optimization level -O2 or higher in gcc, static functions may be
-optimized such that they have suffixes like .isra.0, .constprop.0 etc.
-These represent
+Compilation generates DWARF at several stages, and often the
+later DWARF representations more accurately represent optimizations
+that have occurred during compilation.
 
-- constant propagation (.constprop.0);
-- interprocedural scalar replacement of aggregates, removal of
-  unused parameters and replacement of parameters passed by
-  reference by parameters passed by value (.isra.0)
+In particular, parameter representations can be spotted by their
+abstract origin references to the original parameter, but they
+often have more accurate location information.  In most cases,
+the parameter locations will match calling conventions, and be
+registers for the first 6 parameters on x86_64, first 8 on ARM64
+etc.  If the parameter is not a register when it should be however,
+it is likely passed via the stack or the compiler has used a
+constant representation instead.
 
-See [1] for details.
+This change adds a field to parameters and their associated
+ftype to note if a parameter has been optimized out.  Having
+this information allows us to skip such functions, as their
+presence in CUs makes BTF encoding impossible.
 
-Currently BTF encoding does not handle such optimized functions
-that get renamed with a "." suffix such as ".isra.0", ".constprop.0".
-This is safer because such suffixes can often indicate parameters have
-been optimized out.  This series addresses this by matching a
-function to a suffixed version ("foo" matching "foo.isra.0") while
-ensuring that the function signature does not contain optimized-out
-parameters.  Note that if the function is found ("foo") it will
-be preferred, only falling back to "foo.isra.0" if lookup of the
-function fails.  Addition to BTF is skipped if the function has
-optimized-out parameters, since the expected function signature
-will not match. BTF encoding does not include the "."-suffix to
-be consistent with DWARF. In addition, the kernel currently does
-not allow a "." suffix in a BTF function name.
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ dwarf_loader.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ dwarves.h      |  4 +++-
+ 2 files changed, 77 insertions(+), 3 deletions(-)
 
-A problem with this approach however is that BTF carries out the
-encoding process in parallel across multiple CUs, and sometimes
-a function has optimized-out parameters in one CU but not others;
-we see this for NF_HOOK.constprop.0 for example.  So in order to
-determine if the function has optimized-out parameters in any
-CU, its addition is not carried out until we have processed all
-CUs and are about to merge BTF.  At this point we know if any
-such optimizations have occurred.  Patches 1-4 handle the
-optimized-out parameter identification and matching "."-suffixed
-functions with the original function to facilitate BTF
-encoding.
-
-Patch 5 addresses a related problem - it is entirely possible
-for a static function of the same name to exist in different
-CUs with different function signatures.  Because BTF does not
-currently encode any information that would help disambiguate
-which BTF function specification matches which static function
-(in the case of multiple different function signatures), it is
-best to eliminate such functions from BTF for now.  The same
-mechanism that is used to compare static "."-suffixed functions
-is re-used for the static function comparison.  A superficial
-comparison of number of parameters/parameter names is done to
-see if such representations are consistent, and if inconsistent
-prototypes are observed, the function is flagged for exclusion
-from BTF.
-
-When these methods are combined - the additive encoding of
-"."-suffixed functions and the subtractive elimination of
-functions with inconsistent parameters - we see a small overall
-increase in the number of functions in vmlinux BTF, from
-49538 to 50083.  It turns out that the inconsistent prototype
-checking will actually eliminate some of the suffix matches
-also, for cases where the DWARF representation of a function
-differs across CUs, but not via the abstract origin late DWARF
-references showing optimized-out parameters that we check
-for in patch 1.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
-
-Alan Maguire (5):
-  dwarves: help dwarf loader spot functions with optimized-out
-    parameters
-  btf_encoder: refactor function addition into dedicated
-    btf_encoder__add_func
-  btf_encoder: child encoders should have a reference to parent encoder
-  btf_encoder: represent "."-suffixed optimized functions (".isra.0") in
-    BTF
-  btf_encoder: skip BTF encoding of static functions with inconsistent
-    prototypes
-
- btf_encoder.c  | 357 +++++++++++++++++++++++++++++++++++++++++++++++++--------
- btf_encoder.h  |   2 +-
- dwarf_loader.c |  76 +++++++++++-
- dwarves.h      |   5 +-
- pahole.c       |   7 +-
- 5 files changed, 390 insertions(+), 57 deletions(-)
-
+diff --git a/dwarf_loader.c b/dwarf_loader.c
+index 5a74035..0220f1d 100644
+--- a/dwarf_loader.c
++++ b/dwarf_loader.c
+@@ -992,13 +992,67 @@ static struct class_member *class_member__new(Dwarf_Die *die, struct cu *cu,
+ 	return member;
+ }
+ 
+-static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu, struct conf_load *conf)
++/* How many function parameters are passed via registers?  Used below in
++ * determining if an argument has been optimized out or if it is simply
++ * an argument > NR_REGISTER_PARAMS.  Setting NR_REGISTER_PARAMS to 0
++ * allows unsupported architectures to skip tagging optimized-out
++ * values.
++ */
++#if defined(__x86_64__)
++#define NR_REGISTER_PARAMS      6
++#elif defined(__s390__)
++#define NR_REGISTER_PARAMS	5
++#elif defined(__aarch64__)
++#define NR_REGISTER_PARAMS      8
++#elif defined(__mips__)
++#define NR_REGISTER_PARAMS	8
++#elif defined(__powerpc__)
++#define NR_REGISTER_PARAMS	8
++#elif defined(__sparc__)
++#define NR_REGISTER_PARAMS	6
++#elif defined(__riscv) && __riscv_xlen == 64
++#define NR_REGISTER_PARAMS	8
++#elif defined(__arc__)
++#define NR_REGISTER_PARAMS	8
++#else
++#define NR_REGISTER_PARAMS      0
++#endif
++
++static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
++					struct conf_load *conf, int param_idx)
+ {
+ 	struct parameter *parm = tag__alloc(cu, sizeof(*parm));
+ 
+ 	if (parm != NULL) {
++		struct location loc;
++
+ 		tag__init(&parm->tag, cu, die);
+ 		parm->name = attr_string(die, DW_AT_name, conf);
++
++		/* Parameters which use DW_AT_abstract_origin to point at
++		 * the original parameter definition (with no name in the DIE)
++		 * are the result of later DWARF generation during compilation
++		 * so often better take into account if arguments were
++		 * optimized out.
++		 *
++		 * By checking that locations for parameters that are expected
++		 * to be passed as registers are actually passed as registers,
++		 * we can spot optimized-out parameters.
++		 */
++		if (param_idx < NR_REGISTER_PARAMS && !parm->name &&
++		    attr_location(die, &loc.expr, &loc.exprlen) == 0 &&
++		    loc.exprlen != 0) {
++			Dwarf_Op *expr = loc.expr;
++
++			switch (expr->atom) {
++			case DW_OP_reg1 ... DW_OP_reg31:
++			case DW_OP_breg0 ... DW_OP_breg31:
++				break;
++			default:
++				parm->optimized = true;
++				break;
++			}
++		}
+ 	}
+ 
+ 	return parm;
+@@ -1450,7 +1504,7 @@ static struct tag *die__create_new_parameter(Dwarf_Die *die,
+ 					     struct cu *cu, struct conf_load *conf,
+ 					     int param_idx)
+ {
+-	struct parameter *parm = parameter__new(die, cu, conf);
++	struct parameter *parm = parameter__new(die, cu, conf, param_idx);
+ 
+ 	if (parm == NULL)
+ 		return NULL;
+@@ -2209,6 +2263,10 @@ static void ftype__recode_dwarf_types(struct tag *tag, struct cu *cu)
+ 			}
+ 			pos->name = tag__parameter(dtype->tag)->name;
+ 			pos->tag.type = dtype->tag->type;
++			if (pos->optimized) {
++				tag__parameter(dtype->tag)->optimized = pos->optimized;
++				type->optimized_parms = 1;
++			}
+ 			continue;
+ 		}
+ 
+@@ -2219,6 +2277,20 @@ static void ftype__recode_dwarf_types(struct tag *tag, struct cu *cu)
+ 		}
+ 		pos->tag.type = dtype->small_id;
+ 	}
++	/* if parameters were optimized out, set flag for the ftype this
++	 * function tag referred to via abstract origin.
++	 */
++	if (type->optimized_parms) {
++		struct dwarf_tag *dtype = type->tag.priv;
++		struct dwarf_tag *dftype;
++
++		dftype = dwarf_cu__find_tag_by_ref(dcu, &dtype->abstract_origin);
++		if (dftype && dftype->tag) {
++			struct ftype *ftype = tag__ftype(dftype->tag);
++
++			ftype->optimized_parms = 1;
++		}
++	}
+ }
+ 
+ static void lexblock__recode_dwarf_types(struct lexblock *tag, struct cu *cu)
+diff --git a/dwarves.h b/dwarves.h
+index 589588e..1ad1b3b 100644
+--- a/dwarves.h
++++ b/dwarves.h
+@@ -808,6 +808,7 @@ size_t lexblock__fprintf(const struct lexblock *lexblock, const struct cu *cu,
+ struct parameter {
+ 	struct tag tag;
+ 	const char *name;
++	bool optimized;
+ };
+ 
+ static inline struct parameter *tag__parameter(const struct tag *tag)
+@@ -827,7 +828,8 @@ struct ftype {
+ 	struct tag	 tag;
+ 	struct list_head parms;
+ 	uint16_t	 nr_parms;
+-	uint8_t		 unspec_parms; /* just one bit is needed */
++	uint8_t		 unspec_parms:1; /* just one bit is needed */
++	uint8_t		 optimized_parms:1;
+ };
+ 
+ static inline struct ftype *tag__ftype(const struct tag *tag)
 -- 
 1.8.3.1
 
