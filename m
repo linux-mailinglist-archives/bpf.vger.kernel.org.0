@@ -2,193 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2AD67A620
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 23:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1B367A6A1
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 00:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbjAXWp4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 17:45:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
+        id S231538AbjAXXFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 18:05:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbjAXWpz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 17:45:55 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F43BBB2
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 14:45:54 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id t7-20020a05683014c700b006864760b1caso10152458otq.0
-        for <bpf@vger.kernel.org>; Tue, 24 Jan 2023 14:45:54 -0800 (PST)
+        with ESMTP id S229879AbjAXXFE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 18:05:04 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04984AA63;
+        Tue, 24 Jan 2023 15:05:02 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id vw16so43131833ejc.12;
+        Tue, 24 Jan 2023 15:05:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rdEmRstpJ5VL9/AbFjeXLuGklQXpCQMmK2i8pOJcKBU=;
-        b=HoWKhXC7hinVrbukwV3W1k0jaog8a+5aAefICCpXQ8aBcgxi/yjoIkMlJ7r36xX/mP
-         2Wgh1dgIdNK7h/niPKF99UNGfbDkLszJnJ59g7PDZzJGJcc1PgTnzxjPbrLFZd82uNEf
-         ETaukYeopilIuh6rTxRMsfkN9RIynevN8MBws=
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LFmKISUEP4KMKksliNnDW8AAbwgCUx4p8IWA7pxHiq8=;
+        b=pYl9Sv/vilxPNHDWR0TOktdrbscAf7wTpiE/As+ZQ+8c2it13bdNN7Ddyk+Y7JI1oQ
+         QVVyf4ZME0aXFz+NUUphEnBxEOObUuOeJgZGqRWa+7FOgDJM8rJ41sdw/LHgtnfTAArO
+         /iuFRe3off73GWeK7x6LwojsnO+jbwf0fycgy5Z4y68oNfPA8NZzBy9QJkrlz+Fpkh7L
+         Kkg3ji3izc5KkKHh/ZRgmM0r2ce11j7xfqMKPVXGO92YA5iwo9fxze5ZRjOMfzAtCIL4
+         fzVMf/xgJTG9/G9gxQtv2oGtXigJTQFN9smWwKM6ZiAx/nUJKc5xBgI5BWBHgiJJiiBr
+         ADXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rdEmRstpJ5VL9/AbFjeXLuGklQXpCQMmK2i8pOJcKBU=;
-        b=UCPJR0/OBChIGcMSOThmynuITJyYRYke2wLXCxodtW56hgMmEJ0NTmXzebNBUUMX4h
-         k81DHxsTr3ffSgZ9k9kgKLv+iXy0jiNjeoDszuAVZiHhVGDCNuZqrgGW+/KlGycXQVD/
-         ndHABWHtCIODVuz1Za5/dnzi7RAg5FHwWu+SjRJA+rOfdDKJpHXbwJ/tBirfuSPTqhq/
-         3JqsJ+7uHVEct6+sWUlJIDudo/iUuNmcHmorOZaVT2xodpapP/nWI3z0UkkQRGfpPQlM
-         2oPkmgnKH7hRhKtij7k7z0nV0jZc0JmlVkPZOAN2hBSKWvmYP4A1GgDDXq8D/WWFATRK
-         gJTg==
-X-Gm-Message-State: AFqh2kovotBs6Jc/ph3fZrkkDYz3B7adXDBteKqqp8mhxjE6ilP/W9zf
-        xN00bTq6AcSRy23uN0Q0gGJ0XyTesxJY0cht
-X-Google-Smtp-Source: AMrXdXsUiuZ4zcijFHSkKrs9tWXAnWNYL+cztoILrFOOevcmBzqGK0LVg+EDN1Eym7DJ+/D47bapTw==
-X-Received: by 2002:a05:6830:4428:b0:686:4f61:d65f with SMTP id q40-20020a056830442800b006864f61d65fmr18217279otv.10.1674600353937;
-        Tue, 24 Jan 2023 14:45:53 -0800 (PST)
-Received: from JNXK7M3 ([2a09:bac1:7680:e68::f:31e])
-        by smtp.gmail.com with ESMTPSA id t10-20020a9d728a000000b006706cd202b0sm1494825otj.11.2023.01.24.14.45.52
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LFmKISUEP4KMKksliNnDW8AAbwgCUx4p8IWA7pxHiq8=;
+        b=zuKehliS+DoQol3uXzohXlg3G4vN9nD19hAHYedtlO8vjXhX6LvBpRn8ziq7X24+kw
+         bqTeHMN+Ir4Z0VzTeWIuTa2nTcO1l/VsXrifS5SkHvCXY2N8sEk2HwWMIijdoupRBwAI
+         QmkNPhkTnpdawahe/A7GGozXHy6fGuli2N0nK/gMdhVsTm5eB8fexL2ZlW/gQJurSkdw
+         /+cRcPZqZtARfFzeosXP+rZZ5DrM0Kyz1s5Vol7qNw/FsvSLYwMII3UytscR9d7+rVJC
+         fsnYQsfAbwaZgMOcdQqxoj8VPwSPsGhH3QQ1AHVVqumIolrjPshNdIe/OcoznTw8W0bU
+         f/Cw==
+X-Gm-Message-State: AFqh2kqXJfx9tmuwxUn6GX/6gFJOjWN8tHjkhDfZfWMlsk4OIWdLIM2J
+        raA/woQpC3iE7+eKmtK+Ifk=
+X-Google-Smtp-Source: AMrXdXveaCF5SJskLiomc3lMHSStv0NhioAVOI3d2VT+5OEGZYo9xjWAP63yTJ42xtolAElwMtrbtg==
+X-Received: by 2002:a17:906:2308:b0:870:709e:169d with SMTP id l8-20020a170906230800b00870709e169dmr32337303eja.35.1674601500929;
+        Tue, 24 Jan 2023 15:05:00 -0800 (PST)
+Received: from krava ([83.240.61.48])
+        by smtp.gmail.com with ESMTPSA id p16-20020a1709060e9000b008779570227bsm1464215ejf.112.2023.01.24.15.04.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jan 2023 14:45:53 -0800 (PST)
-Date:   Tue, 24 Jan 2023 16:45:38 -0600
-From:   Shawn Bohrer <sbohrer@cloudflare.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     makita.toshiaki@lab.ntt.co.jp
-Subject: KASAN veth use after free in XDP_REDIRECT
-Message-ID: <Y9BfknDG0LXmruDu@JNXK7M3>
+        Tue, 24 Jan 2023 15:05:00 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 25 Jan 2023 00:04:57 +0100
+To:     Ian Rogers <irogers@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Connor OBrien <connoro@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] tools/resolve_btfids: Install subcmd headers
+Message-ID: <Y9BkGR8me2T7CWoT@krava>
+References: <20230124064324.672022-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230124064324.672022-1-irogers@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Mon, Jan 23, 2023 at 10:43:23PM -0800, Ian Rogers wrote:
+> Previously tools/lib/subcmd was added to the include path, switch to
+> installing the headers and then including from that directory. This
+> avoids dependencies on headers internal to tools/lib/subcmd. Add the
+> missing subcmd directory to the affected #include.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-We've seen the following KASAN report on our systems. When using
-AF_XDP on a veth.
+Acked-by: iri Olsa <jolsa@kernel.org>
 
-KASAN report:
+jirka
 
-BUG: KASAN: use-after-free in __xsk_rcv+0x18d/0x2c0
-Read of size 78 at addr ffff888976250154 by task napi/iconduit-g/148640
-
-CPU: 5 PID: 148640 Comm: napi/iconduit-g Kdump: loaded Tainted: G           O       6.1.4-cloudflare-kasan-2023.1.2 #1
-Hardware name: Quanta Computer Inc. QuantaPlex T41S-2U/S2S-MB, BIOS S2S_3B10.03 06/21/2018
-Call Trace:
- <TASK>
- dump_stack_lvl+0x34/0x48
- print_report+0x170/0x473
- ? __xsk_rcv+0x18d/0x2c0
- kasan_report+0xad/0x130
- ? __xsk_rcv+0x18d/0x2c0
- kasan_check_range+0x149/0x1a0
- memcpy+0x20/0x60
- __xsk_rcv+0x18d/0x2c0
- __xsk_map_redirect+0x1f3/0x490
- ? veth_xdp_rcv_skb+0x89c/0x1ba0 [veth]
- xdp_do_redirect+0x5ca/0xd60
- veth_xdp_rcv_skb+0x935/0x1ba0 [veth]
- ? __netif_receive_skb_list_core+0x671/0x920
- ? veth_xdp+0x670/0x670 [veth]
- veth_xdp_rcv+0x304/0xa20 [veth]
- ? do_xdp_generic+0x150/0x150
- ? veth_xdp_rcv_one+0xde0/0xde0 [veth]
- ? _raw_spin_lock_bh+0xe0/0xe0
- ? newidle_balance+0x887/0xe30
- ? __perf_event_task_sched_in+0xdb/0x800
- veth_poll+0x139/0x571 [veth]
- ? veth_xdp_rcv+0xa20/0xa20 [veth]
- ? _raw_spin_unlock+0x39/0x70
- ? finish_task_switch.isra.0+0x17e/0x7d0
- ? __switch_to+0x5cf/0x1070
- ? __schedule+0x95b/0x2640
- ? io_schedule_timeout+0x160/0x160
- __napi_poll+0xa1/0x440
- napi_threaded_poll+0x3d1/0x460
- ? __napi_poll+0x440/0x440
- ? __kthread_parkme+0xc6/0x1f0
- ? __napi_poll+0x440/0x440
- kthread+0x2a2/0x340
- ? kthread_complete_and_exit+0x20/0x20
- ret_from_fork+0x22/0x30
- </TASK>
-
-Freed by task 148640:
- kasan_save_stack+0x23/0x50
- kasan_set_track+0x21/0x30
- kasan_save_free_info+0x2a/0x40
- ____kasan_slab_free+0x169/0x1d0
- slab_free_freelist_hook+0xd2/0x190
- __kmem_cache_free+0x1a1/0x2f0
- skb_release_data+0x449/0x600
- consume_skb+0x9f/0x1c0
- veth_xdp_rcv_skb+0x89c/0x1ba0 [veth]
- veth_xdp_rcv+0x304/0xa20 [veth]
- veth_poll+0x139/0x571 [veth]
- __napi_poll+0xa1/0x440
- napi_threaded_poll+0x3d1/0x460
- kthread+0x2a2/0x340
- ret_from_fork+0x22/0x30
-
-
-The buggy address belongs to the object at ffff888976250000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 340 bytes inside of
- 2048-byte region [ffff888976250000, ffff888976250800)
-
-The buggy address belongs to the physical page:
-page:00000000ae18262a refcount:2 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x976250
-head:00000000ae18262a order:3 compound_mapcount:0 compound_pincount:0
-flags: 0x2ffff800010200(slab|head|node=0|zone=2|lastcpupid=0x1ffff)
-raw: 002ffff800010200 0000000000000000 dead000000000122 ffff88810004cf00
-raw: 0000000000000000 0000000080080008 00000002ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888976250000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888976250080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888976250100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                 ^
- ffff888976250180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888976250200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-
-
-If I understand the code correctly it looks like a xdp_buf is
-constructed pointing to the memory backed by a skb but consume_skb()
-is called while the xdp_buf() is still in use.
-
-```
-	case XDP_REDIRECT:
-		veth_xdp_get(&xdp);
-		consume_skb(skb);
-		xdp.rxq->mem = rq->xdp_mem;
-		if (xdp_do_redirect(rq->dev, &xdp, xdp_prog)) {
-			stats->rx_drops++;
-			goto err_xdp;
-		}
-		stats->xdp_redirect++;
-		rcu_read_unlock();
-		goto xdp_xmit;
-```
-
-It is worth noting that I think XDP_TX has the exact same problem.
-
-Again assuming I understand the problem one naive solution might be to
-move the consum_skb() call after xdp_do_redirect().  I think this
-might work for BPF_MAP_TYPE_XSKMAP, BPF_MAP_TYPE_DEVMAP, and
-BPF_MAP_TYPE_DEVMAP_HASH since those all seem to copy the xdb_buf to
-new memory.  The copy happens for XSKMAP in __xsk_rcv() and for the
-DEVMAP cases happens in dev_map_enqueue_clone().
-
-However, it would appear that for BPF_MAP_TYPE_CPUMAP that memory can
-live much longer, possibly even after xdp_do_flush().  If I'm correct,
-I'm not really sure where it would be safe to call consume_skb().
-
-The XDP_TX case looks similarly complex but I have not spent as much
-time looking at that one.
-
-Thanks,
-Shawn Bohrer
+> ---
+>  tools/bpf/resolve_btfids/Makefile | 19 ++++++++++++++-----
+>  tools/bpf/resolve_btfids/main.c   |  2 +-
+>  2 files changed, 15 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> index f7375a119f54..1fe0082b2ecc 100644
+> --- a/tools/bpf/resolve_btfids/Makefile
+> +++ b/tools/bpf/resolve_btfids/Makefile
+> @@ -35,21 +35,29 @@ SUBCMD_SRC := $(srctree)/tools/lib/subcmd/
+>  BPFOBJ     := $(OUTPUT)/libbpf/libbpf.a
+>  LIBBPF_OUT := $(abspath $(dir $(BPFOBJ)))/
+>  SUBCMDOBJ  := $(OUTPUT)/libsubcmd/libsubcmd.a
+> +SUBCMD_OUT := $(abspath $(dir $(SUBCMDOBJ)))/
+>  
+>  LIBBPF_DESTDIR := $(LIBBPF_OUT)
+>  LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)include
+>  
+> +SUBCMD_DESTDIR := $(SUBCMD_OUT)
+> +SUBCMD_INCLUDE := $(SUBCMD_DESTDIR)include
+> +
+>  BINARY     := $(OUTPUT)/resolve_btfids
+>  BINARY_IN  := $(BINARY)-in.o
+>  
+>  all: $(BINARY)
+>  
+> +prepare: $(BPFOBJ) $(SUBCMDOBJ)
+> +
+>  $(OUTPUT) $(OUTPUT)/libsubcmd $(LIBBPF_OUT):
+>  	$(call msg,MKDIR,,$@)
+>  	$(Q)mkdir -p $(@)
+>  
+>  $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
+> -	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
+> +	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(SUBCMD_OUT) \
+> +		    DESTDIR=$(SUBCMD_DESTDIR) prefix= \
+> +		    $(abspath $@) install_headers
+>  
+>  $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUT)
+>  	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(LIBBPF_OUT)    \
+> @@ -63,7 +71,7 @@ CFLAGS += -g \
+>            -I$(srctree)/tools/include \
+>            -I$(srctree)/tools/include/uapi \
+>            -I$(LIBBPF_INCLUDE) \
+> -          -I$(SUBCMD_SRC) \
+> +          -I$(SUBCMD_INCLUDE) \
+>            $(LIBELF_FLAGS)
+>  
+>  LIBS = $(LIBELF_LIBS) -lz
+> @@ -71,7 +79,7 @@ LIBS = $(LIBELF_LIBS) -lz
+>  export srctree OUTPUT CFLAGS Q
+>  include $(srctree)/tools/build/Makefile.include
+>  
+> -$(BINARY_IN): $(BPFOBJ) fixdep FORCE | $(OUTPUT)
+> +$(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
+>  	$(Q)$(MAKE) $(build)=resolve_btfids
+>  
+>  $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
+> @@ -83,7 +91,8 @@ clean_objects := $(wildcard $(OUTPUT)/*.o                \
+>                              $(OUTPUT)/.*.o.d             \
+>                              $(LIBBPF_OUT)                \
+>                              $(LIBBPF_DESTDIR)            \
+> -                            $(OUTPUT)/libsubcmd          \
+> +                            $(SUBCMD_OUT)                \
+> +                            $(SUBCMD_DESTDIR)            \
+>                              $(OUTPUT)/resolve_btfids)
+>  
+>  ifneq ($(clean_objects),)
+> @@ -100,4 +109,4 @@ tags:
+>  
+>  FORCE:
+>  
+> -.PHONY: all FORCE clean tags
+> +.PHONY: all FORCE clean tags prepare
+> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> index 80cd7843c677..77058174082d 100644
+> --- a/tools/bpf/resolve_btfids/main.c
+> +++ b/tools/bpf/resolve_btfids/main.c
+> @@ -75,7 +75,7 @@
+>  #include <linux/err.h>
+>  #include <bpf/btf.h>
+>  #include <bpf/libbpf.h>
+> -#include <parse-options.h>
+> +#include <subcmd/parse-options.h>
+>  
+>  #define BTF_IDS_SECTION	".BTF_ids"
+>  #define BTF_ID		"__BTF_ID__"
+> -- 
+> 2.39.0.246.g2a6d74b583-goog
+> 
