@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B10679A38
-	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 14:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A20EF679A60
+	for <lists+bpf@lfdr.de>; Tue, 24 Jan 2023 14:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234590AbjAXNpW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 08:45:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
+        id S234620AbjAXNq1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Jan 2023 08:46:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234374AbjAXNou (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 08:44:50 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07714269B;
-        Tue, 24 Jan 2023 05:43:38 -0800 (PST)
+        with ESMTP id S234618AbjAXNpn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Jan 2023 08:45:43 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA0247EE6;
+        Tue, 24 Jan 2023 05:44:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 92FA961225;
-        Tue, 24 Jan 2023 13:43:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7A53C4339B;
-        Tue, 24 Jan 2023 13:43:35 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 82764B811DA;
+        Tue, 24 Jan 2023 13:43:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A8D0C4339C;
+        Tue, 24 Jan 2023 13:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674567817;
-        bh=kDp6C65pVdVqhY4qD81CaQMBTLjF4OYidp1jbJSNjkk=;
+        s=k20201202; t=1674567829;
+        bh=uCIiHQzpCzLj7w5EfDpGVIqc92qbFsqM5jiyi3oFMOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ql6utiWClNfPYALNLQavXuVjpVqXodtZYhhOhpOzoFWe9Y0pPRQ8nCnDGscZdo+PQ
-         wU4EZaS5LTAqmCPZ+4Ax15jNuW8yp7RZ4YXodEq4CgLm+Injtd4JBOQEfe/WX/oN+S
-         lZHAEuFWRxPQFj1ddKvhLmED+JojiUC+7OaProswWFfdAVH622aggP0dQU2HiGHEma
-         FQ5ZS45SxlN22tRMH7KmKblKcdfuy0+VKO8zsY00M4js/gmFtSukC/lED2bWPWEJOc
-         OF0Bc75r8Z7dOGZhtntDEqe2QDj2NUESW2VNYctXHbDT4vgFaYt7Lt1dWBn5m8xDgb
-         z6j5+H2/VH6FA==
+        b=DUCwpsA2+uYyyJqGPuIgqHRh2qbOh7Bw8xhNeFE9iCT87exvN5wmUoRoHJEu1u27O
+         ybybUNnxJAUnYJJObTZMl5NaPI/+mNJD6bsAJtl0x3lSghoe7qONVJXIPBvwaqv8L4
+         DOZ8q4NosiVQtUCjKfEHFL6tJRIR1v4ERIPe1YH1wCt1s782Ku59sysoinJvORMk3x
+         d+HdUpmBupPJYdDvvUwyaUoF3AFoSEJRyKPbO8JoNdynko7TuekAy4GOM7kMuXXX/S
+         1R3GtDC1Sp2gzA3N1oMsf7oBQofZH1zoEdSbwwNqauUVNornZubK1I3oiKg1JgrAFH
+         xOwB8q5hIKXkA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Hao Sun <sunhao.th@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Stanislav Fomichev <sdf@google.com>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        andrii@kernel.org, song@kernel.org, rostedt@goodmis.org,
+        Sasha Levin <sashal@kernel.org>, song@kernel.org,
+        ast@kernel.org, andrii@kernel.org, rostedt@goodmis.org,
         mhiramat@kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 4/8] bpf: Skip task with pid=1 in send_signal_common()
-Date:   Tue, 24 Jan 2023 08:43:24 -0500
-Message-Id: <20230124134328.637707-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 2/6] bpf: Skip task with pid=1 in send_signal_common()
+Date:   Tue, 24 Jan 2023 08:43:40 -0500
+Message-Id: <20230124134344.637846-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230124134328.637707-1-sashal@kernel.org>
-References: <20230124134328.637707-1-sashal@kernel.org>
+In-Reply-To: <20230124134344.637846-1-sashal@kernel.org>
+References: <20230124134344.637846-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -98,10 +98,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+)
 
 diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index a9e074769881..ab4f51716645 100644
+index 4d9f81802911..1e1345cd21b4 100644
 --- a/kernel/trace/bpf_trace.c
 +++ b/kernel/trace/bpf_trace.c
-@@ -1072,6 +1072,9 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
+@@ -649,6 +649,9 @@ BPF_CALL_1(bpf_send_signal, u32, sig)
  		return -EPERM;
  	if (unlikely(!nmi_uaccess_okay()))
  		return -EPERM;
