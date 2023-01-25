@@ -2,117 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C9467A9AB
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 05:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E93967A9D2
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 06:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbjAYEkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Jan 2023 23:40:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
+        id S229671AbjAYFEK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 00:04:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjAYEkX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Jan 2023 23:40:23 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52FB539BE;
-        Tue, 24 Jan 2023 20:40:20 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 692516132D;
-        Wed, 25 Jan 2023 04:40:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BDD79C4339B;
-        Wed, 25 Jan 2023 04:40:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674621616;
-        bh=chjz9070j6mQLyORX1CNctcEH8HzirVYmMh+jA4h9fg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=YFj2v0beaPwUROicHo18JAGlArBMVyHbYiAurg4H2pijvDP7+lb2PXNcX8LDgiryK
-         sCzC98guItb5cFC/W1ymtq0vD5c1Y2NeQE2V9Zar3YeV6k3KwxSfDSFlGMsk+M5Vje
-         aibFexYjGatE0d+8thzT4dXU87gxQyLj0ePsvob0gGZMOf1/Vi0hvc+cAILqB30/vO
-         P+wE+wZGWUKpJtA51vCG0NrkoDQRCVJMHHjc+DS/oxMqjlJlM/5VGH6DCTkLxDbCfV
-         HZwoC0aLQi/sF0h1OD54KfV3XIYIp47kqdvTq+EUuOx7Ilmy8QOsB2iIDGq50OH1u4
-         8BUK0xrcVfJQg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A1947F83ECD;
-        Wed, 25 Jan 2023 04:40:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229528AbjAYFEK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 00:04:10 -0500
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF61474EA;
+        Tue, 24 Jan 2023 21:04:07 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id s3so12640649pfd.12;
+        Tue, 24 Jan 2023 21:04:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yQTyErXQ5tMybBRfl9siMYjWzCennbntv/U8mzyCIJU=;
+        b=33DLnX5DGXB9U4+tD6PKEk/duQnj6/JIJzYvdCs3TR22Wobwemz/pdGvmodGwIBudv
+         0KPwDtsO6i0TH3PDkb+Fo7as+ORoddXRZVSdbttM7h4hDTn4WVdVA2HlCm2FNceOZajp
+         FV8t4fFo3Uh1ChpKKqwIKIooSYwvGkzxoiBHmYu3qA1FEmRDSaiPXMsT0S4SYABzfNsw
+         jpdHSuqZhwxtK8CXJH8nRO5suQoI3gQ61S0bWlGSoqrBlACCjqIbSFtDqNiikQiKWGWN
+         kNbnkUAJQH4FpCctpNJu+sBfQjQQSStyEsLUoJ5DH61VAoC/HEO+xhL4oaYI2Psr60PM
+         3tUg==
+X-Gm-Message-State: AFqh2kq+0rqB4TaOJLhyJGDLcnbG7HpHH/l+wNjQ82sAgo3/kamjHhDR
+        Q72RjYsGa5YOTs6eqpOvUw0PIVMPOnyS3mh0
+X-Google-Smtp-Source: AMrXdXs+kEgy09V3cjRYSUn77y2tBTcB8HDL64c71/cZfOr2HYmJ2/1HUxO/8t40+fCAU/PTbJ9rdQ==
+X-Received: by 2002:a05:6a00:2986:b0:58d:8d7d:80a3 with SMTP id cj6-20020a056a00298600b0058d8d7d80a3mr32488130pfb.20.1674623045882;
+        Tue, 24 Jan 2023 21:04:05 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:d24a])
+        by smtp.gmail.com with ESMTPSA id a6-20020aa794a6000000b0058bc5f6426asm2494104pfl.169.2023.01.24.21.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Jan 2023 21:04:05 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, tj@kernel.org
+Subject: [PATCH bpf-next v3 0/4] Subject: [PATCH bpf-next v2 0/4] Enable struct_ops programs to be sleepable
+Date:   Tue, 24 Jan 2023 23:03:55 -0600
+Message-Id: <20230125050359.339273-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/9] Enable cpumasks to be used as kptrs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167462161665.8470.7244847116038822799.git-patchwork-notify@kernel.org>
-Date:   Wed, 25 Jan 2023 04:40:16 +0000
-References: <20230120192523.3650503-1-void@manifault.com>
-In-Reply-To: <20230120192523.3650503-1-void@manifault.com>
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com, tj@kernel.org,
-        memxor@gmail.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+This is part 3 of https://lore.kernel.org/bpf/20230123232228.646563-1-void@manifault.com/
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Part 2: https://lore.kernel.org/all/20230124160802.1122124-1-void@manifault.com/
 
-On Fri, 20 Jan 2023 13:25:14 -0600 you wrote:
-> This is part 2 of https://lore.kernel.org/all/20230119235833.2948341-1-void@manifault.com/
-> 
-> Changelog:
-> ----------
-> v1 -> v2:
-> - Put back 'static' keyword in bpf_find_btf_id()
->   (kernel test robot <lkp@intel.com>)
-> - Surround cpumask kfuncs in __diag() blocks to avoid no-prototype build
->   warnings (kernel test robot <lkp@intel.com>)
-> - Enable ___init suffixes to a type definition to signal that a type is
->   a nocast alias of another type. That is, that when passed to a kfunc
->   that expects one of the two types, the verifier will reject the other
->   even if they're equivalent according to the C standard (Kumar and
->   Alexei)
-> - Reject NULL for all trusted args, not just PTR_TO_MEM (Kumar)
-> - Reject both NULL and PTR_MAYBE_NULL for all trusted args (Kumar and
->   Alexei )
-> - Improve examples given in cpumask documentation (Alexei)
-> - Use __success macro for nested_trust test (Alexei)
-> - Fix comment typo in struct bpf_cpumask comment header.
-> - Fix another example in the bpf_cpumask doc examples.
-> - Add documentation for ___init suffix change mentioned above.
-> 
-> [...]
+Changelog:
+----------
+v2 -> v3:
+- Don't call a KF_SLEEPABLE kfunc from the dummy_st_ops testsuite, and
+  remove the newly added bpf_kfunc_call_test_sleepable() test kfunc
+  (Martin).
+- Include vmlinux.h from progs/dummy_st_ops_success.c (previously
+  progs/dummy_st_ops.c) rather than manually defining
+  struct bpf_dummy_ops_state and struct bpf_dummy_ops.
+  (Martin).
+- Fix a typo added to prog_tests/dummy_st_ops.c in a previous version:
+  s/trace_dummy_st_ops_success__open/trace_dummy_st_ops__open.
 
-Here is the summary with links:
-  - [bpf-next,v2,1/9] bpf: Enable annotating trusted nested pointers
-    https://git.kernel.org/bpf/bpf-next/c/57539b1c0ac2
-  - [bpf-next,v2,2/9] bpf: Allow trusted args to walk struct when checking BTF IDs
-    https://git.kernel.org/bpf/bpf-next/c/b613d335a743
-  - [bpf-next,v2,3/9] bpf: Disallow NULLable pointers for trusted kfuncs
-    (no matching commit)
-  - [bpf-next,v2,4/9] bpf: Enable cpumasks to be queried and used as kptrs
-    (no matching commit)
-  - [bpf-next,v2,5/9] selftests/bpf: Add nested trust selftests suite
-    (no matching commit)
-  - [bpf-next,v2,6/9] selftests/bpf: Add selftest suite for cpumask kfuncs
-    (no matching commit)
-  - [bpf-next,v2,7/9] bpf/docs: Document cpumask kfuncs in a new file
-    (no matching commit)
-  - [bpf-next,v2,8/9] bpf/docs: Document how nested trusted fields may be defined
-    (no matching commit)
-  - [bpf-next,v2,9/9] bpf/docs: Document the nocast aliasing behavior of ___init
-    (no matching commit)
+v1 -> v2:
+- Add support for specifying sleepable struct_ops programs with
+  struct_ops.s in libbpf (Alexei).
+- Move failure test case into new dummy_st_ops_fail.c prog file.
+- Update test_dummy_sleepable() to use struct_ops.s instead of manually
+  setting prog flags. Also remove open_load_skel() helper which is no
+  longer needed.
+- Fix verifier tests to expect new sleepable prog failure message.
 
-You are awesome, thank you!
+
+David Vernet (4):
+  bpf: Allow BPF_PROG_TYPE_STRUCT_OPS programs to be sleepable
+  libbpf: Support sleepable struct_ops.s section
+  bpf: Pass const struct bpf_prog * to .check_member
+  bpf/selftests: Verify struct_ops prog sleepable behavior
+
+ include/linux/bpf.h                           |  4 +-
+ kernel/bpf/verifier.c                         |  7 ++-
+ net/bpf/bpf_dummy_struct_ops.c                | 18 ++++++
+ net/ipv4/bpf_tcp_ca.c                         |  3 +-
+ tools/lib/bpf/libbpf.c                        |  1 +
+ .../selftests/bpf/prog_tests/dummy_st_ops.c   | 56 ++++++++++++++-----
+ .../selftests/bpf/progs/dummy_st_ops_fail.c   | 27 +++++++++
+ ...{dummy_st_ops.c => dummy_st_ops_success.c} | 19 +++----
+ .../selftests/bpf/verifier/sleepable.c        |  2 +-
+ 9 files changed, 105 insertions(+), 32 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/dummy_st_ops_fail.c
+ rename tools/testing/selftests/bpf/progs/{dummy_st_ops.c => dummy_st_ops_success.c} (72%)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.39.0
 
