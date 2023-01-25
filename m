@@ -2,110 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA5467B812
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 18:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6FC67B82B
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 18:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236133AbjAYRLY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 12:11:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
+        id S235681AbjAYROE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 12:14:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236124AbjAYRLI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 12:11:08 -0500
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517FA5AB78
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 09:10:19 -0800 (PST)
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        with ESMTP id S236059AbjAYRN6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 12:13:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B27D7;
+        Wed, 25 Jan 2023 09:13:52 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 636873FD9B
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:09:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1674666589;
-        bh=ThPASxkQPa8akyDheX0+gKydQu/0488KOg7wyMg90UM=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=RL/7jLfoAqLeGP2NnKeMKCv7rHvcuwr9yDweqKR7K+vyXAQ+hGHvLaoPbtSUemGRE
-         f39YQdm5lBBgOrVl6z8sGWszDFhPkhMvzskvWs2BG53Abvd9kkj8eOZ/I6QiBicLC9
-         lyAfowStXx2yk90b/7U/mYtjNdAQdnueiZqoaxsfcu1TKwSYEhkK/DhwmnmA5QwDwC
-         sQUtKjxxM+K49Che6v7Lj9sFtGK1NloL1UdLyTzwRnkGYpTVn2TyVjgMV/o9bv2xod
-         a7Mi7rNcOgID5QZ7yef08/Mq0z9QtAl6EKID4B5PwsohB1WAnmb6gvjaOnKS1S9Zf0
-         iNmmsHNm8hbng==
-Received: by mail-wm1-f71.google.com with SMTP id r15-20020a05600c35cf00b003d9a14517b2so1398659wmq.2
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 09:09:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ThPASxkQPa8akyDheX0+gKydQu/0488KOg7wyMg90UM=;
-        b=xj7uHRF3hrNzhF/xyZidGP2o1IRahnfLtF4Fwb7CW2C8D1QVVTHQSvMPxHXOuhglrd
-         cr1P0SbEn4iSA9L+ERCckjzJHwWnrRdQQAY6kw+8qrmaK0FwOddwa6pROihDjZNW7m5U
-         6tZnO4w+3W3iQhMz6Efl9NCyAlFVjPQxQWjoMNkyw/CydHgvLxZfdytPVDvK2Wk4JCcj
-         6Sir/d+/2q28JqLfwEzJ6MhZUkuJYrgoJ/8CdPTyw3J9ByVkPeVzADo9iDfDR/Oc+PpD
-         /04S18JGIKkAqQTmv59UWzuLLdjLkIQpdI4OATCVnc5irpw9oIWMWBoWJy63k1d/NZHd
-         3HPw==
-X-Gm-Message-State: AFqh2krvXlvq1TK6k3i8U/wbDe+2XgthLRGeFHlmYcro2dPU2niwxhDv
-        a+vTv+mvlEWaLIrxLf2FxT61357D+GHoYlnrp19J63hn0FpquKSoKEYPOG+OtLlPLI89tls2xTi
-        1Z51Nyb9pW8Dxjf76lOtZ5RHQHYoelQ==
-X-Received: by 2002:a05:600c:540d:b0:3d9:fb59:c16b with SMTP id he13-20020a05600c540d00b003d9fb59c16bmr29501080wmb.36.1674666588732;
-        Wed, 25 Jan 2023 09:09:48 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXttpC9n/HLYXg7sMnJ5cCNz0V3VuvEsRb/sRdznLMTLa9UoYawtcdp3z0yJ9R5hGsEyyqW5hQ==
-X-Received: by 2002:a05:600c:540d:b0:3d9:fb59:c16b with SMTP id he13-20020a05600c540d00b003d9fb59c16bmr29501071wmb.36.1674666588596;
-        Wed, 25 Jan 2023 09:09:48 -0800 (PST)
-Received: from qwirkle.internal ([81.2.157.149])
-        by smtp.gmail.com with ESMTPSA id a3-20020adff7c3000000b002bdc3f5945dsm4793280wrq.89.2023.01.25.09.09.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jan 2023 09:09:48 -0800 (PST)
-From:   Andrei Gherzan <andrei.gherzan@canonical.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 2/2] selftests: net: .gitignore the scratch directory of bpf
-Date:   Wed, 25 Jan 2023 17:08:46 +0000
-Message-Id: <20230125170845.85237-2-andrei.gherzan@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230125170845.85237-1-andrei.gherzan@canonical.com>
-References: <20230125170845.85237-1-andrei.gherzan@canonical.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1486E6159C;
+        Wed, 25 Jan 2023 17:13:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEDCCC433EF;
+        Wed, 25 Jan 2023 17:13:41 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.96)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1pKjLA-004Nvn-2v;
+        Wed, 25 Jan 2023 12:13:40 -0500
+Message-ID: <20230125171340.715046734@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Wed, 25 Jan 2023 12:13:04 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linyu Yuan <quic_linyyuan@quicinc.com>
+Subject: [for-next][PATCH 12/12] bpf/tracing: Use stage6 of tracing to not duplicate macros
+References: <20230125171252.431857411@goodmis.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The net/bpf Makefile uses a similar build infrastructure to BPF[1] while
-building libbpf as a dependency of nat6to4. This change adds a .gitignore
-entry for SCRATCH_DIR where libbpf and its headers end up built/installed.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-[1] Introduced in commit 837a3d66d698 ("selftests: net: Add
-cross-compilation support for BPF programs")
+The bpf events are created by the same macro magic as tracefs trace
+events are. But to hook into bpf, it has its own code. It duplicates many
+of the same macros as the tracefs macros and this is an issue because it
+misses bug fixes as well as any new enhancements that come with the other
+trace macros.
 
-Signed-off-by: Andrei Gherzan <andrei.gherzan@canonical.com>
+As the trace macros have been put into their own staging files, have bpf
+take advantage of this and use the tracefs stage 6 macros that the "fast
+ssign" portion of the trace event macro uses.
+
+Link: https://lkml.kernel.org/r/20230124202515.873075730@goodmis.org
+Link: https://lore.kernel.org/lkml/1671181385-5719-1-git-send-email-quic_linyyuan@quicinc.com/
+
+Cc: bpf@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Linyu Yuan <quic_linyyuan@quicinc.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tools/testing/selftests/net/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
+ include/trace/bpf_probe.h | 45 +--------------------------------------
+ 1 file changed, 1 insertion(+), 44 deletions(-)
 
-diff --git a/tools/testing/selftests/net/.gitignore b/tools/testing/selftests/net/.gitignore
-index a6911cae368c..0d07dd13c973 100644
---- a/tools/testing/selftests/net/.gitignore
-+++ b/tools/testing/selftests/net/.gitignore
-@@ -40,6 +40,7 @@ test_unix_oob
- timestamping
- tls
- toeplitz
-+/tools
- tun
- txring_overwrite
- txtimestamp
+diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+index 155c495b89ea..1f7fc1fc590c 100644
+--- a/include/trace/bpf_probe.h
++++ b/include/trace/bpf_probe.h
+@@ -4,50 +4,7 @@
+ 
+ #ifdef CONFIG_BPF_EVENTS
+ 
+-#undef __entry
+-#define __entry entry
+-
+-#undef __get_dynamic_array
+-#define __get_dynamic_array(field)	\
+-		((void *)__entry + (__entry->__data_loc_##field & 0xffff))
+-
+-#undef __get_dynamic_array_len
+-#define __get_dynamic_array_len(field)	\
+-		((__entry->__data_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_str
+-#define __get_str(field) ((char *)__get_dynamic_array(field))
+-
+-#undef __get_bitmask
+-#define __get_bitmask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_cpumask
+-#define __get_cpumask(field) (char *)__get_dynamic_array(field)
+-
+-#undef __get_sockaddr
+-#define __get_sockaddr(field) ((struct sockaddr *)__get_dynamic_array(field))
+-
+-#undef __get_rel_dynamic_array
+-#define __get_rel_dynamic_array(field)	\
+-		((void *)(&__entry->__rel_loc_##field) +	\
+-		 sizeof(__entry->__rel_loc_##field) +		\
+-		 (__entry->__rel_loc_##field & 0xffff))
+-
+-#undef __get_rel_dynamic_array_len
+-#define __get_rel_dynamic_array_len(field)	\
+-		((__entry->__rel_loc_##field >> 16) & 0xffff)
+-
+-#undef __get_rel_str
+-#define __get_rel_str(field) ((char *)__get_rel_dynamic_array(field))
+-
+-#undef __get_rel_bitmask
+-#define __get_rel_bitmask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_cpumask
+-#define __get_rel_cpumask(field) (char *)__get_rel_dynamic_array(field)
+-
+-#undef __get_rel_sockaddr
+-#define __get_rel_sockaddr(field) ((struct sockaddr *)__get_rel_dynamic_array(field))
++#include "stages/stage6_event_callback.h"
+ 
+ #undef __perf_count
+ #define __perf_count(c)	(c)
 -- 
-2.34.1
-
+2.39.0
