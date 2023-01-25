@@ -2,217 +2,335 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9AB67B541
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 15:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053BE67B596
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 16:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235247AbjAYO7F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 09:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
+        id S235042AbjAYPLf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 10:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233235AbjAYO7E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 09:59:04 -0500
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2074.outbound.protection.outlook.com [40.107.13.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7F62CFC9;
-        Wed, 25 Jan 2023 06:59:00 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d7hUtfigmJ9liYndAXuVD1qEX6xFwzkx7HQvcTCcEOzpN2DN7e2I3XXJQQQrH4Lx6+jFZLuCr6Bqmg2oDRZU/Ggnu2QlcgdoInYuikdhVlUdH2RAq3/q5wJCyzEZ9ccVtPZP04dc9znVnaJkmi4EW6UJsvEqJqRmP3gVw5lf6k/P0OtLtSo1iCfSxY+vUSYc358SxED/LCW8+wCstprYu+I5OZQ+lzHK/5ZKk4OjHx5HJl6kO/amVMKiIhNhwOVLOkRfo6t1VrqcT2Qa5XHMaQwyLkfSjg4TPyCEH8sOqIWq0ksH7tLAXQ11sr2p2Tz4FYKV8F05mAGrDVxXI6Iz+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FUgYT9b0WX1CbjFmmAbAO1YxCnIMElcV9VzCCCTphXw=;
- b=PBBZtGqBnuq5EoSckRMYrO4B7VHRHPa5H1uwG0z9k5orEUZRFl7G85hPjl0EmnXS+EkFZV5dXmlImyanEVQEkwyWon8P1p9LiBLxs9Ffp9/eUT2t5RMEG/55Z2Eb1sfEMyP3uCpapnRvIFEMXXbqgWL3zyIwmwBqfisAaHjJLApv6jNxUlaswahBecC4REdVa81b+pSvITg7/5b7qwrBJNFGzPWOjaV9jhhroxL1sjvPg+ukl6E3SILIlXDWWo1Ns+IPvijfuxpw2CGOHjlcetWvYHvfiuZqwfu0G2PkgIqRybuKJQYwW/u9F4vqTu4TLVAr2xpLbEs6I17jHnwnGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FUgYT9b0WX1CbjFmmAbAO1YxCnIMElcV9VzCCCTphXw=;
- b=FlUXPwib0WOU47ffB7G96uuKpBXwaJS2VLkajHicMMEOtPdi+8mlpPc27++gV8Fbi7agTSVR6xFIFRoy/dbLYQeXQO9hE750g2DeESiIB4dMuz58OkXE3W9CfyF/NOQ9E4kAa97i6AJcO41iksriMkJfSDqLN7upWI/+GVhR4m8=
-Received: from VI1PR04MB5807.eurprd04.prod.outlook.com (2603:10a6:803:ec::21)
- by VI1PR04MB6878.eurprd04.prod.outlook.com (2603:10a6:803:12f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.33; Wed, 25 Jan
- 2023 14:58:57 +0000
-Received: from VI1PR04MB5807.eurprd04.prod.outlook.com
- ([fe80::471d:5b0f:363c:5d60]) by VI1PR04MB5807.eurprd04.prod.outlook.com
- ([fe80::471d:5b0f:363c:5d60%5]) with mapi id 15.20.6002.033; Wed, 25 Jan 2023
- 14:58:56 +0000
-From:   Camelia Alexandra Groza <camelia.groza@nxp.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-        "maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "toke@redhat.com" <toke@redhat.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "aelior@marvell.com" <aelior@marvell.com>,
-        "manishc@marvell.com" <manishc@marvell.com>,
-        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH net v2 4/5] dpaa_eth: execute xdp_do_flush() before
- napi_complete_done()
-Thread-Topic: [PATCH net v2 4/5] dpaa_eth: execute xdp_do_flush() before
- napi_complete_done()
-Thread-Index: AQHZMJGNeUJQ6yAy/ESOIYM3G1Q81K6vOQ3w
-Date:   Wed, 25 Jan 2023 14:58:56 +0000
-Message-ID: <VI1PR04MB58072AA61FA976FE67EA0511F2CE9@VI1PR04MB5807.eurprd04.prod.outlook.com>
-References: <20230125074901.2737-1-magnus.karlsson@gmail.com>
- <20230125074901.2737-5-magnus.karlsson@gmail.com>
-In-Reply-To: <20230125074901.2737-5-magnus.karlsson@gmail.com>
-Accept-Language: en-GB, ro-RO, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: VI1PR04MB5807:EE_|VI1PR04MB6878:EE_
-x-ms-office365-filtering-correlation-id: 8da85ece-82b7-450e-8602-08dafee4aefb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: c/koBWgb/f/faGcGy2/j7HwgrklTPTvOXaFhc71R60BT5DHcN1Pl+WO8ySZUUfxXbCZxOvvRtYolzAjW8+ZFgkC1SILMSb6SmA5JSocBBOs/7/5RvmY98V29GbthqmGaKyZhF7urimBSdasOL1kiGU8IhS/SOWN4IWkOcAaAOBxCbDgtdBIB0NeYqBmYNsf1S3cQQFhQ1atcZ/621W/rD0OnDYYzAX8SJCkFARIZsluqDJSFCPppXnA+uWzm05IG8nri3TOUg/RyBor59vc1x2gr7W3b9vqRt4vJZaPp2eUanvGhToT5g8+Z+3XL8KDceU31JzliCKdY8jEIDbzkFm4h4gWQtD7CUF9Pv9LZ63ss6A+dLuigN1afFLL+T6pXALJAeIkXVq3OlPItBXj+/vZJRCcY9vL2+Si6ZVJ2t6xHed7t6tgkvE6xHiDWBs4bA2VyU9JLyqr82r8it6tk/t+V76QGxTIpCHDDo0aRVwZID3lQ+6fqpJWDyRZneSHyxoBlRPEV+2utKuIfzmnO9jJsHDqgQCd4hw+AHEXua1AxhcbHe3wPQO718iFgh0NvZQCnbAp92NBg6h2fo0pstO7bBR9Od+PyoMAcQlNpYqWCxa14Zh3q7Z60Mtd0ID3eemmleuzPJhPY9U71T1NROlxw8lOQtA1q2GYGI8Aw3XOmMPeK+v6e0QCkRbBRci6tUEmkoxI6+Bw3CHCjV6rvSl+BGsxs2yBByGAfAHK0i2SxrWALgZlwh0iahDONW7BQNJK4lVlgAf9oQkSexGD5+Yq49ys22RS1gGGflVMU9XM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5807.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(346002)(366004)(39860400002)(376002)(396003)(136003)(451199018)(5660300002)(86362001)(33656002)(83380400001)(122000001)(186003)(66574015)(478600001)(316002)(110136005)(66946007)(6506007)(53546011)(8676002)(64756008)(26005)(71200400001)(38070700005)(76116006)(966005)(66476007)(6636002)(66556008)(7696005)(2906002)(7416002)(921005)(38100700002)(55016003)(55236004)(9686003)(66446008)(8936002)(52536014)(4326008)(41300700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Gb3TsOKk5Dz9WvpKi2avxvaKoUHvVX85oyivTZZjwyuzSHwLWNMGiGUnFo?=
- =?iso-8859-1?Q?zwBojkL5uOAt3NpRXDCM94VHInULt7QdL3GgK/dWeyiYf2LFzd9w70dKLg?=
- =?iso-8859-1?Q?A7XG9TO4fdJe5QQLouxAz0jDdAjItgZ8Oz88hl3NFaEg7rTtIbkDwY44uH?=
- =?iso-8859-1?Q?S2Czchg/ap+stzSAeXZ3+zhIzJFamZhoNGQeUNhdcoWRHyhbowLDHnUvvr?=
- =?iso-8859-1?Q?/85cUtp1vs2/88CW3bWUKwaRPYPv7OxBsF4zmEtGfNyKgAFZiQ+hjB9/nY?=
- =?iso-8859-1?Q?wewCMvLWORy/jAHMO3HGMAR4R+winiuYKOs9v4kPphMoYNXXVYjoxbp6VV?=
- =?iso-8859-1?Q?Kr4FIEX7GVQDZibr43x8vX66SyFNnWewcuw57HP0ZTKCgAzAscRsp5G/cj?=
- =?iso-8859-1?Q?FFAhGHayX8H6EtHCcKy8Ec0QXINFjU2MeNIeBc220BlNhF3gOO4uhA6FAk?=
- =?iso-8859-1?Q?kNn5hCB+4uGaxW4YoDpK0pUSuwAU+zJpszQU3unxrInBhZu7UjffXt0TY1?=
- =?iso-8859-1?Q?UN5ElyqUj8wDSRFlpMWHMQzuaXbwGIvQaoxn8UtP03WnzQod1MyNCK7yzf?=
- =?iso-8859-1?Q?5z4rFFjvoouS/x4m6hM6HSfVKn4GCetUwteaOiuKw0EToz82xh8Pi5eFJm?=
- =?iso-8859-1?Q?RCO84MHzuPAXquhlYuMT/S1aJjBDWuCyfvjH5ON1RmBGeVmx0mSG2Y9q+V?=
- =?iso-8859-1?Q?ssKKM3ey7nNfE+aIBBDSwrRdC00aGKqqML9dAnj5UAeBl1X253xRfQ1ZXS?=
- =?iso-8859-1?Q?68yZTDuhukGoFeIqJPVxqjfDB6MYV6mAub8z+3FEKrB/yhaH8de2813y4N?=
- =?iso-8859-1?Q?OCQkYZHpDn9oaKOVUDoBlOqP/i6AnNqg5RcGaCuHsRE3sYE3nmQ/L9HHfM?=
- =?iso-8859-1?Q?rgCDyNDzCr0LHC982waI+P6po9rmeKAQbv7JOgoScZo6q8JnZc6dmaThdu?=
- =?iso-8859-1?Q?uU3VaT42CIrWXTNb7flzrRJKLAdiJ8jb9eV51/D4GE5xC5u8bJTVMjXD64?=
- =?iso-8859-1?Q?Jo0NIDbp7iuDVDal2Y0txR10SYPf/KcmxWwZNS2DgSNgFNTXw2zT964mxS?=
- =?iso-8859-1?Q?jygCzGn6pMakNYJVkj8seVCpU6zi5Y0gLCjjVJesb2+OBX5C8GgCo6nKmG?=
- =?iso-8859-1?Q?vf0RVvQaGhI1LLTVt7myvnl/15Ux0RE+vStawjPRLQlxB+4DneiK90x/1C?=
- =?iso-8859-1?Q?dpxfMYsOMsqQBnUMkuZ00g5QHR04JKUqsAM/2vpPiE4oqc2H8pZwwuK5Ie?=
- =?iso-8859-1?Q?30X08CnsyAK2nFoSDVXZcO1ASiubFuZaEsWnD+0BAX6KtSerRIxHL496l7?=
- =?iso-8859-1?Q?ff/ViR4n/DdoPu+mfzEgBBXt4Mn/Ep43pPGKWcBAEUfIKlHrPjbM3QRV+i?=
- =?iso-8859-1?Q?5T309Ylnb99I2v+Z3y+6DokuEzMx1Fwg2ddhalHEBW8+gSyWVWqEoMZqIs?=
- =?iso-8859-1?Q?MoFHEcStL94M7FmP2us+REscX5dNUZcduuNlctSMGTPO+igCEpHkcFfWPS?=
- =?iso-8859-1?Q?PozqtAsBVEtdmKNUOHsojRjFWV3Q4R7BRM0s9+pwP/jPO98YlaTABZFbet?=
- =?iso-8859-1?Q?mQfe2GZRO4W2QgokK21lHjoOLgsVmUH+woRMaItS/PV62rEk+0GOO4rKm6?=
- =?iso-8859-1?Q?SW40LZsh9aXlO5uZnv0GNEu8vPr7wegWah?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S236007AbjAYPLd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 10:11:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168762BED9
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 07:10:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1674659440;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V250dp57YvGpsXo8e5z0OqUiYsupt7OECDxcc0HcLsM=;
+        b=YFS7p11MLVxCzJx/QawVVABUbIxPs9YR7DHgEhsyjBHOcekqyEgbWjsqhndRH340LyJvU8
+        mBNAaao5KWbOMgWAmQWEM/JoEY4KNDo37odqTyW2/yEh3zzX7Zsj9R/sRvUTH8tC7fa9Z0
+        1VYrvnwL3zsnmYlIVJIi56jsABHpkfw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-132-Dacd0zxrNZqyQO2wWVfJOw-1; Wed, 25 Jan 2023 10:10:39 -0500
+X-MC-Unique: Dacd0zxrNZqyQO2wWVfJOw-1
+Received: by mail-ed1-f69.google.com with SMTP id h18-20020a056402281200b0049e5078a6c3so13151721ede.12
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 07:10:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V250dp57YvGpsXo8e5z0OqUiYsupt7OECDxcc0HcLsM=;
+        b=sDs4jQs0iH35ZemwTZbotRAxRq7v4dSlZOiSKpXm9tAUhvl9l2xN1xRsTSQABBHDB9
+         jqwnhRc6fY46n2usEisYtH+7nwVFGbxs/ahIOawgYnbZWskxQsWWuIR4j6bi+6UPHZIZ
+         g4FTj4BAN7hdhcFadGRZVlaXXHMBiXxpELIzjT4Jrv0FwXCa7e9OJy4JNfm+7aya2cEe
+         mfkqM85XLnqMcwrnULGwiryw7HzAECKZA1vE1ebq0pKS4YBMC2JhzdxkUwiOdrfGPSnc
+         0QrcA3f45u/bzRJ3bOQrHGKQtEN61c4nVWA3SrWaXQ8q6i634tWxA8Ule0gWC1VRko1S
+         lLSA==
+X-Gm-Message-State: AFqh2kqF5akip07zZad1cd7Rpvpme+iEgCLln5k6j8V0vjLebXqXVGbH
+        OUOZ9+w5nsBdwYNOx07l3a0smrLWywVH0fFrSev/TmkgbBjMfEbatgJICZS0VlJFUkd6fP7ST1r
+        ORIICQGBxlsaH
+X-Received: by 2002:a05:6402:524f:b0:49e:910:5706 with SMTP id t15-20020a056402524f00b0049e09105706mr47037681edd.2.1674659435855;
+        Wed, 25 Jan 2023 07:10:35 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXv9mD/nNbis0WE/I3tSCVhhJAQmz3Rn4k9HQBDL67wovPMOLXC1R45lFvlBjEtRRY5PLFM19w==
+X-Received: by 2002:a05:6402:524f:b0:49e:910:5706 with SMTP id t15-20020a056402524f00b0049e09105706mr47037641edd.2.1674659435478;
+        Wed, 25 Jan 2023 07:10:35 -0800 (PST)
+Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id fw19-20020a170907501300b0085a958808c6sm2481916ejc.7.2023.01.25.07.10.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Jan 2023 07:10:34 -0800 (PST)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <f3a116dc-1b14-3432-ad20-a36179ef0608@redhat.com>
+Date:   Wed, 25 Jan 2023 16:10:32 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5807.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8da85ece-82b7-450e-8602-08dafee4aefb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2023 14:58:56.7908
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Hr1YsK/tlS2UWDpX4WuUn22hyUMIPkAa6k7LPkfr70JI7evveG3uMDKJLqRdkGvP31RJPxpRACAzQi3S1nbtmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6878
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Anatoly Burakov <anatoly.burakov@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+        netdev@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v8 17/17] selftests/bpf: Simple program to dump
+ XDP RX metadata
+Content-Language: en-US
+To:     sdf@google.com, Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <20230119221536.3349901-1-sdf@google.com>
+ <20230119221536.3349901-18-sdf@google.com>
+ <71be95ee-b522-b3db-105a-0f25d8dc52cb@redhat.com>
+ <CAKH8qBvK-tJxQwBsUvQZ39KyhyAbd76H1xhdzmzeKbbN5Hzq7Q@mail.gmail.com>
+ <Y9AoEcjb+MET41NB@google.com>
+In-Reply-To: <Y9AoEcjb+MET41NB@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> -----Original Message-----
-> From: Magnus Karlsson <magnus.karlsson@gmail.com>
-> Sent: Wednesday, January 25, 2023 9:49
-> To: magnus.karlsson@intel.com; bjorn@kernel.org; ast@kernel.org;
-> daniel@iogearbox.net; netdev@vger.kernel.org;
-> jonathan.lemon@gmail.com; maciej.fijalkowski@intel.com;
-> kuba@kernel.org; toke@redhat.com; pabeni@redhat.com;
-> davem@davemloft.net; aelior@marvell.com; manishc@marvell.com;
-> horatiu.vultur@microchip.com; UNGLinuxDriver@microchip.com;
-> mst@redhat.com; jasowang@redhat.com; Ioana Ciornei
-> <ioana.ciornei@nxp.com>; Madalin Bucur <madalin.bucur@nxp.com>
-> Cc: bpf@vger.kernel.org
-> Subject: [PATCH net v2 4/5] dpaa_eth: execute xdp_do_flush() before
-> napi_complete_done()
->=20
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
->=20
-> Make sure that xdp_do_flush() is always executed before
-> napi_complete_done(). This is important for two reasons. First, a
-> redirect to an XSKMAP assumes that a call to xdp_do_redirect() from
-> napi context X on CPU Y will be followed by a xdp_do_flush() from the
-> same napi context and CPU. This is not guaranteed if the
-> napi_complete_done() is executed before xdp_do_flush(), as it tells
-> the napi logic that it is fine to schedule napi context X on another
-> CPU. Details from a production system triggering this bug using the
-> veth driver can be found following the first link below.
->=20
-> The second reason is that the XDP_REDIRECT logic in itself relies on
-> being inside a single NAPI instance through to the xdp_do_flush() call
-> for RCU protection of all in-kernel data structures. Details can be
-> found in the second link below.
->=20
-> Fixes: a1e031ffb422 ("dpaa_eth: add XDP_REDIRECT support")
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Acked-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
-> Link: https://lore.kernel.org/r/20221220185903.1105011-1-sbohrer@cloudfla=
-re.com
-> Link: https://lore.kernel.org/all/20210624160609.292325-1-toke@redhat.com=
-/
-> ---
 
-Acked-by: Camelia Groza <camelia.groza@nxp.com>
+On 24/01/2023 19.48, sdf@google.com wrote:
+> On 01/24, Stanislav Fomichev wrote:
+>> On Tue, Jan 24, 2023 at 7:26 AM Jesper Dangaard Brouer
+>> <jbrouer@redhat.com> wrote:
+>> >
+>> >
+>> > Testing this on mlx5 and I'm not getting the RX-timestamp.
+>> > See command details below.
+> 
+>> CC'ed Toke since I've never tested mlx5 myself.
+>> I was pretty close to getting the setup late last week, let me try to
+>> see whether it's ready or not.
+> 
+>> > On 19/01/2023 23.15, Stanislav Fomichev wrote:
+>> > > To be used for verification of driver implementations. Note that
+>> > > the skb path is gone from the series, but I'm still keeping the
+>> > > implementation for any possible future work.
+>> > >
+>> > > $ xdp_hw_metadata <ifname>
+>> >
+>> > sudo ./xdp_hw_metadata mlx5p1
+>> >
+>> > Output:
+>> > [...cut ...]
+>> > open bpf program...
+>> > load bpf program...
+>> > prepare skb endpoint...
+>> > XXX timestamping_enable(): setsockopt(SO_TIMESTAMPING) ret:0
+>> > prepare xsk map...
+>> > map[0] = 3
+>> > map[1] = 4
+>> > map[2] = 5
+>> > map[3] = 6
+>> > map[4] = 7
+>> > map[5] = 8
+>> > attach bpf program...
+>> > poll: 0 (0)
+>> > poll: 0 (0)
+>> > poll: 0 (0)
+>> > poll: 1 (0)
+>> > xsk_ring_cons__peek: 1
+>> > 0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+>> > rx_timestamp: 0
+>> > rx_hash: 2773355807
+>> > 0x1821788: complete idx=8 addr=8000
+>> > poll: 0 (0)
+>> >
+>> > The trace_pipe:
+>> >
+>> > $ sudo cat /sys/kernel/debug/tracing/trace_pipe
+>> >            <idle>-0       [005] ..s2.  2722.884762: bpf_trace_printk:
+>> > forwarding UDP:9091 to AF_XDP
+>> >            <idle>-0       [005] ..s2.  2722.884771: bpf_trace_printk:
+>> > populated rx_hash with 2773355807
+>> >
+>> >
+>> > > On the other machine:
+>> > >
+>> > > $ echo -n xdp | nc -u -q1 <target> 9091 # for AF_XDP
+>> >
+>> > Fixing the source-port to see if RX-hash remains the same.
+>> >
+>> >   $ echo xdp | nc --source-port=2000 --udp 198.18.1.1 9091
+>> >
+>> > > $ echo -n skb | nc -u -q1 <target> 9092 # for skb
+>> > >
+>> > > Sample output:
+>> > >
+>> > >    # xdp
+>> > >    xsk_ring_cons__peek: 1
+>> > >    0x19f9090: rx_desc[0]->addr=100000000008000 addr=8100 
+>> comp_addr=8000
+>> > >    rx_timestamp_supported: 1
+>> > >    rx_timestamp: 1667850075063948829
+>> > >    0x19f9090: complete idx=8 addr=8000
+>> >
+>> > xsk_ring_cons__peek: 1
+>> > 0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+>> > rx_timestamp: 0
+>> > rx_hash: 2773355807
+>> > 0x1821788: complete idx=8 addr=8000
+>> >
+>> > It doesn't look like hardware RX-timestamps are getting enabled.
+>> >
+>> > [... cut to relevant code ...]
+>> >
+>> > > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c 
+>> b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+>> > > new file mode 100644
+>> > > index 000000000000..0008f0f239e8
+>> > > --- /dev/null
+>> > > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+>> > > @@ -0,0 +1,403 @@
+>> > [...]
+>> >
+>> > > +static void timestamping_enable(int fd, int val)
+>> > > +{
+>> > > +     int ret;
+>> > > +
+>> > > +     ret = setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING, &val, 
+>> sizeof(val));
+>> > > +     if (ret < 0)
+>> > > +             error(-1, errno, "setsockopt(SO_TIMESTAMPING)");
+>> > > +}
+>> > > +
+>> > > +int main(int argc, char *argv[])
+>> > > +{
+>> > [...]
+>> >
+>> > > +     printf("prepare skb endpoint...\n");
+>> > > +     server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092, 
+>> 1000);
+>> > > +     if (server_fd < 0)
+>> > > +             error(-1, errno, "start_server");
+>> > > +     timestamping_enable(server_fd,
+>> > > +                         SOF_TIMESTAMPING_SOFTWARE |
+>> > > +                         SOF_TIMESTAMPING_RAW_HARDWARE);
+>> > > +
+>> >
+>> > I don't think this timestamping_enable() with these flags are enough to
+>> > enable hardware timestamping.
+> 
+> Yeah, agreed, looks like that's the issue. timestamping_enable() has
+> been used for the xdp->skb path that I've eventually removed from the
+> series, so it's mostly a noop here..
+> 
+> Maybe you can try the following before I send a proper patch?
 
-Thanks!
+Yes, below patch fixed the issue, thx.
 
->  drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-> b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-> index 3f8032947d86..027fff9f7db0 100644
-> --- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-> +++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-> @@ -2410,6 +2410,9 @@ static int dpaa_eth_poll(struct napi_struct *napi, =
-int
-> budget)
->=20
->  	cleaned =3D qman_p_poll_dqrr(np->p, budget);
->=20
-> +	if (np->xdp_act & XDP_REDIRECT)
-> +		xdp_do_flush();
+Now I get HW timestamps, plus I added some software CLOCK_TAI timestamps
+to compare against.
+
+Output is now:
+
+  poll: 1 (0)
+  xsk_ring_cons__peek: 1
+  0xf64788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+  rx_hash: 3697961069
+  rx_timestamp:  1674657672142214773 (sec:1674657672.1422)
+  XDP RX-time:   1674657709561774876 (sec:1674657709.5618) delta sec:37.4196
+  AF_XDP time:   1674657709561871034 (sec:1674657709.5619) delta 
+sec:0.0001 (96.158 usec)
+  0xf64788: complete idx=8 addr=8000
+
+My NIC hardware clock is clearly not synced with system time, as above 
+delta say 37.4 seconds between HW and XDP timestamps (using 
+bpf_ktime_get_tai_ns()).
+
+Time between XDP and AF_XDP wakeup is reported to be 96 usec, which is 
+also higher than I expected.  As explained in [1] this is caused by CPU 
+sleep states.
+
+My /dev/cpu_dma_latency was set to 2000000000.  Applying tuned-adm 
+profile latency-performance this value change to 2.
+
+  $ sudo hexdump --format '"%d\n"' /dev/cpu_dma_latency
+  2000000000
+  $ sudo hexdump --format '"%d\n"' /dev/cpu_dma_latency
+  2
+
+Now the time between XDP and AF_XDP wakeup is reduced to approx 12 usec.
+
+  rx_timestamp:  1674659206344977544 (sec:1674659206.3450)
+  XDP RX-time:   1674659243776087765 (sec:1674659243.7761) delta sec:37.4311
+  AF_XDP time:   1674659243776099841 (sec:1674659243.7761) delta 
+sec:0.0000 (12.076 usec)
+
+
+[1] 
+https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-interaction
+
+> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c 
+> b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> index 0008f0f239e8..dceddb17fbc9 100644
+> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> @@ -24,6 +24,7 @@
+>   #include <linux/net_tstamp.h>
+>   #include <linux/udp.h>
+>   #include <linux/sockios.h>
+> +#include <linux/net_tstamp.h>
+>   #include <sys/mman.h>
+>   #include <net/if.h>
+>   #include <poll.h>
+> @@ -278,13 +279,37 @@ static int rxq_num(const char *ifname)
+> 
+>       ret = ioctl(fd, SIOCETHTOOL, &ifr);
+>       if (ret < 0)
+> -        error(-1, errno, "socket");
+> +        error(-1, errno, "ioctl(SIOCETHTOOL)");
+> 
+>       close(fd);
+> 
+>       return ch.rx_count + ch.combined_count;
+>   }
+> 
+> +static void hwtstamp_enable(const char *ifname)
+> +{
+> +    struct hwtstamp_config cfg = {
+> +        .rx_filter = HWTSTAMP_FILTER_ALL,
 > +
->  	if (cleaned < budget) {
->  		napi_complete_done(napi, cleaned);
->  		qman_p_irqsource_add(np->p, QM_PIRQ_DQRI);
-> @@ -2417,9 +2420,6 @@ static int dpaa_eth_poll(struct napi_struct *napi, =
-int
-> budget)
->  		qman_p_irqsource_add(np->p, QM_PIRQ_DQRI);
->  	}
->=20
-> -	if (np->xdp_act & XDP_REDIRECT)
-> -		xdp_do_flush();
-> -
->  	return cleaned;
->  }
->=20
-> --
-> 2.34.1
+> +    };
+> +
+> +    struct ifreq ifr = {
+> +        .ifr_data = (void *)&cfg,
+> +    };
+> +    strcpy(ifr.ifr_name, ifname);
+> +    int fd, ret;
+> +
+> +    fd = socket(AF_UNIX, SOCK_DGRAM, 0);
+> +    if (fd < 0)
+> +        error(-1, errno, "socket");
+> +
+> +    ret = ioctl(fd, SIOCSHWTSTAMP, &ifr);
+> +    if (ret < 0)
+> +        error(-1, errno, "ioctl(SIOCSHWTSTAMP)");
+> +
+> +    close(fd);
+> +}
+> +
+>   static void cleanup(void)
+>   {
+>       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
+> @@ -341,6 +366,8 @@ int main(int argc, char *argv[])
+> 
+>       printf("rxq: %d\n", rxq);
+> 
+> +    hwtstamp_enable(ifname);
+> +
+>       rx_xsk = malloc(sizeof(struct xsk) * rxq);
+>       if (!rx_xsk)
+>           error(-1, ENOMEM, "malloc");
+> 
+> 
 
