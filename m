@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA1467B72C
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 17:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0167667B72E
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 17:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235484AbjAYQrn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 11:47:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
+        id S235673AbjAYQrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 11:47:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235580AbjAYQrn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 11:47:43 -0500
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509AF5955A;
-        Wed, 25 Jan 2023 08:47:42 -0800 (PST)
-Received: by mail-qt1-f178.google.com with SMTP id q15so16503913qtn.0;
-        Wed, 25 Jan 2023 08:47:42 -0800 (PST)
+        with ESMTP id S235644AbjAYQrp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 11:47:45 -0500
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AEA10D7;
+        Wed, 25 Jan 2023 08:47:43 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-4fd37a1551cso247167597b3.13;
+        Wed, 25 Jan 2023 08:47:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OQEsSarJb+hBFom7gqhSVfq6h8OCdNh0Feofy2X6fd4=;
-        b=1aRfFzV+r1Eb5piCGQsABx7yzn7AgDxsjUvVDNQrC1OodebG/j++Zh7FfmzgXm7XXK
-         1p7nNO8cd/cFANiqH0BYuOtM4BMkp94iKmyjOQuPELHZ/IHXtkQLFGWUJhVF4bS091kr
-         m44fAvTqq2kfnV4nI4m51M0poTlR8bTkE8bb4t+XNDx4rJFXil9jf6uakbwJLLgiU2xm
-         VEKgw3aBg1JxHVs78EAAQC9a6tAlUBiixh0OPqWaY7b3DZ5A7cQEX0Y0vNWro5B6bhWD
-         dRA8cDYrKqiODtrylEVEqBq9Yeb/6N/wEk5t2g3BUuvh8FnzTv5TatmX/1aw5EFORNgp
-         t0zg==
-X-Gm-Message-State: AFqh2kqqg+cNDc58/jUMTCNv66OVJaj9xHy5DyWp/fztofBh17GKQnqZ
-        vRgOQqjEQqhgGe2iFqTlkCU0NnMkjLjthY6E
-X-Google-Smtp-Source: AMrXdXv6Egz1YcKnc24a/RRcyWoKFe7SEUurBXv90qNUxRDuTNVF1/QCesedL410sCtU7A0YWqPMUw==
-X-Received: by 2002:ac8:564f:0:b0:3b6:2ee9:7424 with SMTP id 15-20020ac8564f000000b003b62ee97424mr45532927qtt.60.1674665261031;
-        Wed, 25 Jan 2023 08:47:41 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GXEvYhVDnMHXNpqr41k3IdTNthtzRVxr3+zGczCqXyE=;
+        b=Vj3mRByIac6HCB6wepeCufmGmkpQgfJ8Ux/SDBiG7mf3mTYoqxZWIUw6OZ0s0Lhfdw
+         1enWOm8xgxxejiYHxKyJ2lrfp2mrQ0cVM6LbsPJrEZVNVJNZGEvqJ4CoRVzKxu0We2TL
+         qtqVh4yxeRVefvYO+8TAR3h11DrDrH4cLOxdaskojjaDBrtE+x1yko+PGZGoCeKeJ6Xq
+         iBqW8AcyhGE9t0NhLEDv4Oku8mZUfpU1oyjqzbj0h176hjMeWYfYgDua6GIgr8kRbKMw
+         lKMjp2yMCMX6npBqvjFd7zJJOz6Qr3IZ5lRI3Nu/d5UX2XebZHGoJ2+Vc7U17lzWdcR2
+         YhjA==
+X-Gm-Message-State: AFqh2krZjlPq0jPkjnL0wFBtSs4J0sYgEux3Ws+Wt0fJfyqCIk0ww3i3
+        Olu2/XpY1czljoZZBASHCYWhVACWIezYbhgr
+X-Google-Smtp-Source: AMrXdXsQABazh4tUBPXcOonJJXYR4Y77SU0UHvOs8sVwgi13soYGjLykaX0Cz8B/xhOJcn+Urs/Yaw==
+X-Received: by 2002:a81:1353:0:b0:502:9f7e:3117 with SMTP id 80-20020a811353000000b005029f7e3117mr13066092ywt.10.1674665262446;
+        Wed, 25 Jan 2023 08:47:42 -0800 (PST)
 Received: from localhost ([2620:10d:c091:480::1:113e])
-        by smtp.gmail.com with ESMTPSA id r22-20020ac87ef6000000b003ab7aee56a0sm3577119qtc.39.2023.01.25.08.47.40
+        by smtp.gmail.com with ESMTPSA id q15-20020a05620a038f00b007090f7a4f2asm3769263qkm.82.2023.01.25.08.47.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jan 2023 08:47:40 -0800 (PST)
+        Wed, 25 Jan 2023 08:47:42 -0800 (PST)
 From:   David Vernet <void@manifault.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -44,74 +44,75 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, tj@kernel.org
-Subject: [PATCH bpf-next v4 0/4] Enable struct_ops programs to be sleepable
-Date:   Wed, 25 Jan 2023 10:47:31 -0600
-Message-Id: <20230125164735.785732-1-void@manifault.com>
+Subject: [PATCH bpf-next v4 1/4] bpf: Allow BPF_PROG_TYPE_STRUCT_OPS programs to be sleepable
+Date:   Wed, 25 Jan 2023 10:47:32 -0600
+Message-Id: <20230125164735.785732-2-void@manifault.com>
 X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230125164735.785732-1-void@manifault.com>
+References: <20230125164735.785732-1-void@manifault.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is part 4 of https://lore.kernel.org/bpf/20230123232228.646563-1-void@manifault.com/
+BPF struct_ops programs currently cannot be marked as sleepable. This
+need not be the case -- struct_ops programs can be sleepable, and e.g.
+invoke kfuncs that export the KF_SLEEPABLE flag. So as to allow future
+struct_ops programs to invoke such kfuncs, this patch updates the
+verifier to allow struct_ops programs to be sleepable. A follow-on patch
+will add support to libbpf for specifying struct_ops.s as a sleepable
+struct_ops program, and then another patch will add testcases to the
+dummy_st_ops selftest suite which test sleepable struct_ops behavior.
 
-Part 3: https://lore.kernel.org/all/20230125050359.339273-1-void@manifault.com/
-Part 2: https://lore.kernel.org/all/20230124160802.1122124-1-void@manifault.com/
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ kernel/bpf/verifier.c                            | 5 +++--
+ tools/testing/selftests/bpf/verifier/sleepable.c | 2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-Changelog:
-----------
-v3 -> v4:
-- Fix accidental typo in name of dummy_st_ops introduced in v2, moving
-  it back to dummy_st_ops from dummy_st_ops_success. Should fix s390x
-  testruns.
-
-v2 -> v3:
-- Don't call a KF_SLEEPABLE kfunc from the dummy_st_ops testsuite, and
-  remove the newly added bpf_kfunc_call_test_sleepable() test kfunc
-  (Martin).
-- Include vmlinux.h from progs/dummy_st_ops_success.c (previously
-  progs/dummy_st_ops.c) rather than manually defining
-  struct bpf_dummy_ops_state and struct bpf_dummy_ops.
-  (Martin).
-- Fix a typo added to prog_tests/dummy_st_ops.c in a previous version:
-  s/trace_dummy_st_ops_success__open/trace_dummy_st_ops__open.
-
-v1 -> v2:
-- Add support for specifying sleepable struct_ops programs with
-  struct_ops.s in libbpf (Alexei).
-- Move failure test case into new dummy_st_ops_fail.c prog file.
-- Update test_dummy_sleepable() to use struct_ops.s instead of manually
-  setting prog flags. Also remove open_load_skel() helper which is no
-  longer needed.
-- Fix verifier tests to expect new sleepable prog failure message.
-
-
-David Vernet (4):
-  bpf: Allow BPF_PROG_TYPE_STRUCT_OPS programs to be sleepable
-  libbpf: Support sleepable struct_ops.s section
-  bpf: Pass const struct bpf_prog * to .check_member
-  bpf/selftests: Verify struct_ops prog sleepable behavior
-
- include/linux/bpf.h                           |  4 +-
- kernel/bpf/verifier.c                         |  7 +--
- net/bpf/bpf_dummy_struct_ops.c                | 18 +++++++
- net/ipv4/bpf_tcp_ca.c                         |  3 +-
- tools/lib/bpf/libbpf.c                        |  1 +
- .../selftests/bpf/prog_tests/dummy_st_ops.c   | 52 ++++++++++++++-----
- .../selftests/bpf/progs/dummy_st_ops_fail.c   | 27 ++++++++++
- ...{dummy_st_ops.c => dummy_st_ops_success.c} | 19 +++----
- .../selftests/bpf/verifier/sleepable.c        |  2 +-
- 9 files changed, 103 insertions(+), 30 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/dummy_st_ops_fail.c
- rename tools/testing/selftests/bpf/progs/{dummy_st_ops.c => dummy_st_ops_success.c} (72%)
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index bb38b01b738f..c8907df49f81 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -17114,7 +17114,8 @@ static bool can_be_sleepable(struct bpf_prog *prog)
+ 		}
+ 	}
+ 	return prog->type == BPF_PROG_TYPE_LSM ||
+-	       prog->type == BPF_PROG_TYPE_KPROBE; /* only for uprobes */
++	       prog->type == BPF_PROG_TYPE_KPROBE /* only for uprobes */ ||
++	       prog->type == BPF_PROG_TYPE_STRUCT_OPS;
+ }
+ 
+ static int check_attach_btf_id(struct bpf_verifier_env *env)
+@@ -17136,7 +17137,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 	}
+ 
+ 	if (prog->aux->sleepable && !can_be_sleepable(prog)) {
+-		verbose(env, "Only fentry/fexit/fmod_ret, lsm, iter and uprobe programs can be sleepable\n");
++		verbose(env, "Only fentry/fexit/fmod_ret, lsm, iter, uprobe, and struct_ops programs can be sleepable\n");
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/tools/testing/selftests/bpf/verifier/sleepable.c b/tools/testing/selftests/bpf/verifier/sleepable.c
+index bea0daef908a..1f0d2bdc673f 100644
+--- a/tools/testing/selftests/bpf/verifier/sleepable.c
++++ b/tools/testing/selftests/bpf/verifier/sleepable.c
+@@ -85,7 +85,7 @@
+ 	.expected_attach_type = BPF_TRACE_RAW_TP,
+ 	.kfunc = "sched_switch",
+ 	.result = REJECT,
+-	.errstr = "Only fentry/fexit/fmod_ret, lsm, iter and uprobe programs can be sleepable",
++	.errstr = "Only fentry/fexit/fmod_ret, lsm, iter, uprobe, and struct_ops programs can be sleepable",
+ 	.flags = BPF_F_SLEEPABLE,
+ 	.runs = -1,
+ },
 -- 
 2.39.0
 
