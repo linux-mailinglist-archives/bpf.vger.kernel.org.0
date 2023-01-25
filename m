@@ -2,156 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBD367BECD
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 22:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0258867BF5F
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 22:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235764AbjAYVkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 16:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37528 "EHLO
+        id S230265AbjAYV4w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 16:56:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236864AbjAYVj5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 16:39:57 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354BE1F932
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 13:39:54 -0800 (PST)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30PKLext012818;
-        Wed, 25 Jan 2023 21:39:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=1uouxkzrS50D4rHklG11TaSvmLfVym+jKYuljlX5V8A=;
- b=tjJoMLtCIph4J5b0GtjDXKVPI5YTGDw/boM73gHoZYwOsPORJF3lR3wyFvBLQD4T/Wch
- Tx8fl9H0husIE00UXoixD8996V+7f60wrGTnNU0nHQZb6ABPVGi/D6zsFImeRaWNGECN
- QBrYAWqX0hlKnyUUOMyrycVOMNUOu9x5v9dedaUPDJq7DDMJonPH71T2f9wa9aEtwxPy
- jlCLm2M1Ld2PqCD+jIWE9/DJQb6kzApM0VnrODS7m8nitHf2RtagqxA0fa097uSMTa5H
- snIH3AbadpLZFLssabYS6iUutXn19VtJHwVnQP6KKcffKnP4vXbaS7jDv5C6gb2ecp/L Zg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nac21atbt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Jan 2023 21:39:41 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30PEqP9T028677;
-        Wed, 25 Jan 2023 21:39:39 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3n87afdkxa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Jan 2023 21:39:38 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30PLdZYZ46793036
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Jan 2023 21:39:35 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B48C20043;
-        Wed, 25 Jan 2023 21:39:35 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2798C20040;
-        Wed, 25 Jan 2023 21:39:35 +0000 (GMT)
-Received: from heavy.boeblingen.de.ibm.com (unknown [9.155.209.149])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 25 Jan 2023 21:39:35 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next 24/24] s390/bpf: Implement bpf_jit_supports_kfunc_call()
-Date:   Wed, 25 Jan 2023 22:38:17 +0100
-Message-Id: <20230125213817.1424447-25-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230125213817.1424447-1-iii@linux.ibm.com>
-References: <20230125213817.1424447-1-iii@linux.ibm.com>
+        with ESMTP id S236065AbjAYVzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 16:55:25 -0500
+Received: from fx403.security-mail.net (smtpout140.security-mail.net [85.31.212.143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B5F40F9
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 13:55:24 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by fx403.security-mail.net (Postfix) with ESMTP id 947A25792A5
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 22:55:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalray.eu;
+        s=sec-sig-email; t=1674683722;
+        bh=WtoB9JtlKwd4Y8mogATd1m73eAkNffWMtzkgdcOdrFg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=jpK3fSfJCzy3ZANEGkjKa68WlzWKHAnxNIOUyHjrFerEyLWvdC7JV4+9BbvbaYOVc
+         zG/WmhbgVQcAC7cuLJSoEk6kP3iplqZGTody8prkX2fh/DSCpiNkfhrN11Nmfvh2q9
+         5rHYkMRf2BwOr/BqbGtWV8yBWOizstOkO2UnIhWc=
+Received: from fx403 (localhost [127.0.0.1]) by fx403.security-mail.net
+ (Postfix) with ESMTP id 14D4C578EE2; Wed, 25 Jan 2023 22:55:22 +0100 (CET)
+Received: from zimbra2.kalray.eu (unknown [217.181.231.53]) by
+ fx403.security-mail.net (Postfix) with ESMTPS id 194FF578B2C; Wed, 25 Jan
+ 2023 22:55:21 +0100 (CET)
+Received: from zimbra2.kalray.eu (localhost [127.0.0.1]) by
+ zimbra2.kalray.eu (Postfix) with ESMTPS id D2EB627E0493; Wed, 25 Jan 2023
+ 22:55:20 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1]) by zimbra2.kalray.eu
+ (Postfix) with ESMTP id AEC3727E0491; Wed, 25 Jan 2023 22:55:20 +0100 (CET)
+Received: from zimbra2.kalray.eu ([127.0.0.1]) by localhost
+ (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026) with ESMTP id
+ si6Lv1AzzjtE; Wed, 25 Jan 2023 22:55:20 +0100 (CET)
+Received: from tellis.lin.mbt.kalray.eu (unknown [192.168.36.206]) by
+ zimbra2.kalray.eu (Postfix) with ESMTPSA id 4AA5127E0461; Wed, 25 Jan 2023
+ 22:55:20 +0100 (CET)
+X-Virus-Scanned: E-securemail
+Secumail-id: <13e79.63d1a549.170d1.0>
+DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu AEC3727E0491
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
+ s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1674683720;
+ bh=OP2H0clmfjMlntXGEQUOupSQETmz7iibW86xdOXdO/c=;
+ h=Date:From:To:Message-ID:MIME-Version;
+ b=FiSVH+wqDIs88qUIullcsu5BFjd2D7z2E5u8DrTYSpKgGNXgRV/wZx6pLf0jEnjj1
+ nq174SqV22wtEYt+DC4eOS10NI0yUL2JmwTj2bfQCvZEO4mxAawGM/7zjbG/MQC8HR
+ kpFf4zpnPjbRuo+I0TP0j3cj6aN2Vd984BCzoL6c=
+Date:   Wed, 25 Jan 2023 22:55:19 +0100
+From:   Jules Maselbas <jmaselbas@kalray.eu>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Guillaume Thouvenin <gthouvenin@kalray.eu>,
+        Clement Leger <clement@clement-leger.fr>,
+        Vincent Chardon <vincent.chardon@elsys-design.com>,
+        Marc =?utf-8?b?UG91bGhpw6hz?= <dkm@kataplop.net>,
+        Julian Vetter <jvetter@kalray.eu>,
+        Samuel Jones <sjones@kalray.eu>,
+        Ashley Lesdalons <alesdalons@kalray.eu>,
+        Thomas Costis <tcostis@kalray.eu>,
+        Marius Gligor <mgligor@kalray.eu>,
+        Jonathan Borne <jborne@kalray.eu>,
+        Julien Villette <jvillette@kalray.eu>,
+        Luc Michel <lmichel@kalray.eu>,
+        Louis Morhet <lmorhet@kalray.eu>,
+        Julien Hascoet <jhascoet@kalray.eu>,
+        Jean-Christophe Pince <jcpince@gmail.com>,
+        Guillaume Missonnier <gmissonnier@kalray.eu>,
+        Alex Michon <amichon@kalray.eu>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <git@xen0n.name>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        John Garry <john.garry@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Bharat Bhushan <bbhushan2@marvell.com>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Atish Patra <atishp@atishpatra.org>,
+        Qi Liu <liuqi115@huawei.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-audit@redhat.com,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH v2 12/31] kvx: Add other common headers
+Message-ID: <20230125215519.GE5952@tellis.lin.mbt.kalray.eu>
+References: <20230120141002.2442-1-ysionneau@kalray.eu>
+ <20230120141002.2442-13-ysionneau@kalray.eu> <Y8qlOpYgDefMPqWH@zx2c4.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <Y8qlOpYgDefMPqWH@zx2c4.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qHUvQAoawG9r_h2XDfgZRCHg2a05-vva
-X-Proofpoint-ORIG-GUID: qHUvQAoawG9r_h2XDfgZRCHg2a05-vva
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-25_13,2023-01-25_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 priorityscore=1501 spamscore=0 clxscore=1015
- impostorscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301250193
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ALTERMIMEV2_out: done
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Implement calling kernel functions from eBPF. In general, the eBPF ABI
-is fairly close to that of s390x, with one important difference: on
-s390x callers should sign-extend signed arguments. Handle that by using
-information returned by bpf_jit_find_kfunc_model().
+Hi Jason,
 
-At the moment bpf_jit_find_kfunc_model() does not seem to play nicely
-with XDP metadata functions: add_kfunc_call() adds an "abstract" bpf_*()
-version to kfunc_btf_tab, but then fixup_kfunc_call() puts the concrete
-version into insn->imm, which bpf_jit_find_kfunc_model() cannot find.
-But this seems to be a common code problem.
+On Fri, Jan 20, 2023 at 03:29:14PM +0100, Jason A. Donenfeld wrote:
+> Hi Yann,
+> 
+> On Fri, Jan 20, 2023 at 03:09:43PM +0100, Yann Sionneau wrote:
+> > +#include <linux/random.h>
+> > +#include <linux/version.h>
+> > +
+> > +extern unsigned long __stack_chk_guard;
+> > +
+> > +/*
+> > + * Initialize the stackprotector canary value.
+> > + *
+> > + * NOTE: this must only be called from functions that never return,
+> > + * and it must always be inlined.
+> > + */
+> > +static __always_inline void boot_init_stack_canary(void)
+> > +{
+> > +	unsigned long canary;
+> > +
+> > +	/* Try to get a semi random initial value. */
+> > +	get_random_bytes(&canary, sizeof(canary));
+> > +	canary ^= LINUX_VERSION_CODE;
+> > +	canary &= CANARY_MASK;
+> > +
+> > +	current->stack_canary = canary;
+> > +	__stack_chk_guard = current->stack_canary;
+> > +}
+> 
+> 
+> You should rewrite this as:
+> 
+>     current->stack_canary = get_random_canary();
+>     __stack_chk_guard = current->stack_canary;
+> 
+> which is what the other archs all now do. (They didn't used to, and this
+> looks like it's simply based on older code.)
+Thanks for the suggestion, this will be into v3
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- arch/s390/net/bpf_jit_comp.c | 25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+> > +#define get_cycles get_cycles
+> > +
+> > +#include <asm/sfr.h>
+> > +#include <asm-generic/timex.h>
+> > +
+> > +static inline cycles_t get_cycles(void)
+> > +{
+> > +	return kvx_sfr_get(PM0);
+> > +}
+> 
+> Glad to see this CPU has a cycle counter. Out of curiosity, what is
+> its resolution?
+This cpu has 4 performance monitor (PM), the first one is reserved to
+count cycles, and it is cycle accurate.
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index f4cdecb32629..74b38e817bd8 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -1401,9 +1401,10 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
- 	 */
- 	case BPF_JMP | BPF_CALL:
- 	{
--		u64 func;
-+		const struct btf_func_model *m;
- 		bool func_addr_fixed;
--		int ret;
-+		int j, ret;
-+		u64 func;
- 
- 		ret = bpf_jit_get_func_addr(fp, insn, extra_pass,
- 					    &func, &func_addr_fixed);
-@@ -1425,6 +1426,21 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
- 		/* mvc STK_OFF_TCCNT(4,%r15),N(%r15) */
- 		_EMIT6(0xd203f000 | STK_OFF_TCCNT,
- 		       0xf000 | (STK_OFF_TCCNT + STK_OFF + stack_depth));
-+
-+		/* Sign-extend the kfunc arguments. */
-+		if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
-+			m = bpf_jit_find_kfunc_model(fp, insn);
-+			if (!m)
-+				return -1;
-+
-+			for (j = 0; j < m->nr_args; j++) {
-+				if (sign_extend(jit, BPF_REG_1 + j,
-+						m->arg_size[j],
-+						m->arg_flags[j]))
-+					return -1;
-+			}
-+		}
-+
- 		/* lgrl %w1,func */
- 		EMIT6_PCREL_RILB(0xc4080000, REG_W1, _EMIT_CONST_U64(func));
- 		/* %r1() */
-@@ -1980,6 +1996,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	return fp;
- }
- 
-+bool bpf_jit_supports_kfunc_call(void)
-+{
-+	return true;
-+}
-+
- int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- 		       void *old_addr, void *new_addr)
- {
--- 
-2.39.1
+> Also, related, does this CPU happen to have a "RDRAND"-like instruction?
+I didn't knew about the RDRAND insruction, but no this CPU do not have
+an instruction like that.
+
+> (I don't know anything about kvx or even what it is.)
+It's a VLIW core, a bit like Itanium, there are currently not publicly
+available documentation.  We have started a discussion internally at
+Kalray to share more information regarding this CPU and its ABI.
+
+A very crude instruction listing can be found in our fork of
+gdb-binutils: https://raw.githubusercontent.com/kalray/binutils/binutils-2_35_2/coolidge/opcodes/kv3-opc.c
+
+Best regards,
+-- Jules
+
+
+
+
 
