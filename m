@@ -2,99 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDFE67B692
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 17:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E070267B69E
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 17:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235029AbjAYQGm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 11:06:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
+        id S234585AbjAYQKY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 11:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235792AbjAYQGj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 11:06:39 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6178559E75;
-        Wed, 25 Jan 2023 08:06:24 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id g11so16826426eda.12;
-        Wed, 25 Jan 2023 08:06:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=l4kWGlqJC/g488ocuFK/LpqeMy7MO0k2vXLk45E7PuA=;
-        b=Yp1kdybDLtCnI2z/5VhhA7iGsp6U22cJcv1sV+Vrt4BB4SxnuRzjyZcawy62hQgSP0
-         PhgVXQSdQS7OpozLe50sdNtwH4b8zyDOAH22bx52dfH4quSoyAh4gdBoX2M1/CM5svmK
-         BXZx5ZO+A3g4BRKxvLtO+yLhAUGrW0BlNoPb+73fiRPjOCxe7YokKjnLDUqfvwxpf5an
-         SxyLFTntE9ZqxwV7fcYq6HWnWWBe4Vk0LGb3RCzGh66Mo5ge3Hm9JkiBWugreuGYIVnx
-         A3yO2GzGVpWHMfjEbcBLSj+hrCIrQrE7SL6zBOOSPVxiZGpoo+5nb8KOHUUXIUxYuGlg
-         TTpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l4kWGlqJC/g488ocuFK/LpqeMy7MO0k2vXLk45E7PuA=;
-        b=7i23s/pGKqb068vbcy1KM6P4nkcIAxDY1YqO2JXCiRV8X0Di7rRA71glUomKDrbnh5
-         v7kKSL39B7QRV2tEH837KJpmV8rlmmZW73rKwxMt+cynIGYMGLvWf4ozm5sl96lfkM9l
-         vu1tYZfn9NdR5geg7JPlBbrmOZkmCNlpHFAEZu+LcbNPxzKrE7XCX0cYwqwkjmb7lspa
-         yfsyW1Og3jsb9iUWkhKO9E5M01iiSheH5AriQkb2/m33LGQ3US8AalkgZzFyC/o2kAl3
-         XWz/0cvmm6mzF6drXgAUcrEER1MAO+Een8ZViN/T4mI6HMj4hjenbuwjQdJJU/CUXTQ9
-         8CDQ==
-X-Gm-Message-State: AFqh2kq48bH871xVbkt0/TjJ2gewKp/t0gsDTQ3NbQmTp/COmV+i7JNP
-        QKxsR+f6YaOy0XoPxh2VDFutlrc9QHkHxihDFr4=
-X-Google-Smtp-Source: AMrXdXvMsK7VCK3lJs6JPXWyszE2beYfRsVcLZJ8q4Z4ovR0YsDmmv43+SS9/v/GAHu5h2IJrwRIg4xirUJy9rDfRdU=
-X-Received: by 2002:a05:6402:22f7:b0:49b:651d:7930 with SMTP id
- dn23-20020a05640222f700b0049b651d7930mr4339446edb.79.1674662782804; Wed, 25
- Jan 2023 08:06:22 -0800 (PST)
+        with ESMTP id S235225AbjAYQKV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 11:10:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDEE269D;
+        Wed, 25 Jan 2023 08:10:20 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1A6FFB81AC7;
+        Wed, 25 Jan 2023 16:10:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B4F9FC4339B;
+        Wed, 25 Jan 2023 16:10:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674663017;
+        bh=9nVgA44bWgMKV5OW6zijYVeOEm7u43KjiZYBbydbJuU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=CQsCyizpHP20tT4kdl4E42YiQp982+Gq48LivJXNqPLML4XPqjRiRg4oynOa0sMmO
+         bvwouH3BXsm9FxkpIGCChGLxP4s1BUwaPsa7Y3DLTuBs19FC3TU6IrMykGk7R0nCmX
+         ADswAS9DAWvDk+43eiYzeowOoFr3MUT3xGhHypdgziBavOKBYHh/kTgQmaqrlV+ps6
+         Un8m1ME2cVQNrfvjhgCZioyHyCQgsndD0RGVUQruQIyXEBYp5swjrqjy7/8Gd3KDFL
+         TEQ3fZkTiPZ5olytJp5wCNRZPNUP1plNP+dgsOctnJ0P68+CejRwg8R7nlLyuZ85C1
+         UfxfivliBM9fw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9961AF83ED0;
+        Wed, 25 Jan 2023 16:10:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230125050359.339273-1-void@manifault.com> <20230125050359.339273-5-void@manifault.com>
-In-Reply-To: <20230125050359.339273-5-void@manifault.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 25 Jan 2023 08:06:11 -0800
-Message-ID: <CAADnVQJ18MRB+z5feD-hu8zdV2s=rhTW--RWW06NWp-kQaBhag@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/4] bpf/selftests: Verify struct_ops prog
- sleepable behavior
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 0/7] Enable cpumasks to be used as kptrs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167466301762.32537.3494037602376161495.git-patchwork-notify@kernel.org>
+Date:   Wed, 25 Jan 2023 16:10:17 +0000
+References: <20230125143816.721952-1-void@manifault.com>
+In-Reply-To: <20230125143816.721952-1-void@manifault.com>
 To:     David Vernet <void@manifault.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@meta.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com, tj@kernel.org,
+        memxor@gmail.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 9:04 PM David Vernet <void@manifault.com> wrote:
->
-> In a set of prior changes, we added the ability for struct_ops programs
-> to be sleepable. This patch enhances the dummy_st_ops selftest suite to
-> validate this behavior by adding a new sleepable struct_ops entry to
-> dummy_st_ops.
->
-> Signed-off-by: David Vernet <void@manifault.com>
-> ---
->  include/linux/bpf.h                           |  1 +
->  net/bpf/bpf_dummy_struct_ops.c                | 18 +++++++
->  .../selftests/bpf/prog_tests/dummy_st_ops.c   | 54 ++++++++++++++-----
->  .../selftests/bpf/progs/dummy_st_ops_fail.c   | 27 ++++++++++
->  ...{dummy_st_ops.c => dummy_st_ops_success.c} | 19 +++----
->  5 files changed, 94 insertions(+), 25 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/dummy_st_ops_fail.c
->  rename tools/testing/selftests/bpf/progs/{dummy_st_ops.c => dummy_st_ops_success.c} (72%)
+Hello:
 
-It fails on s390:
-dummy_st_ops_success/dummy_multiple_args:FAIL
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Please add to DENYLIST as part of this patch.
+On Wed, 25 Jan 2023 08:38:09 -0600 you wrote:
+> This is part 3 of https://lore.kernel.org/all/20230119235833.2948341-1-void@manifault.com/
+> 
+> Part 2: https://lore.kernel.org/bpf/20230120192523.3650503-1-void@manifault.com/
+> 
+> This series is based off of commit b613d335a743 ("bpf: Allow trusted
+> args to walk struct when checking BTF IDs").
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v3,1/7] bpf: Disallow NULLable pointers for trusted kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/caf713c338bd
+  - [bpf-next,v3,2/7] bpf: Enable cpumasks to be queried and used as kptrs
+    https://git.kernel.org/bpf/bpf-next/c/516f4d3397c9
+  - [bpf-next,v3,3/7] selftests/bpf: Add nested trust selftests suite
+    https://git.kernel.org/bpf/bpf-next/c/a6541f4d2804
+  - [bpf-next,v3,4/7] selftests/bpf: Add selftest suite for cpumask kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/7b6abcfa15cd
+  - [bpf-next,v3,5/7] bpf/docs: Document cpumask kfuncs in a new file
+    https://git.kernel.org/bpf/bpf-next/c/bdbda395845e
+  - [bpf-next,v3,6/7] bpf/docs: Document how nested trusted fields may be defined
+    https://git.kernel.org/bpf/bpf-next/c/d94cbde2183f
+  - [bpf-next,v3,7/7] bpf/docs: Document the nocast aliasing behavior of ___init
+    https://git.kernel.org/bpf/bpf-next/c/027bdec89364
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
