@@ -2,87 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 243B767B2BF
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 13:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C7167B388
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 14:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbjAYMuD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 07:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
+        id S232999AbjAYNjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 08:39:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbjAYMuC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 07:50:02 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B69577D3;
-        Wed, 25 Jan 2023 04:50:01 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id q10-20020a1cf30a000000b003db0edfdb74so2447380wmq.1;
-        Wed, 25 Jan 2023 04:50:01 -0800 (PST)
+        with ESMTP id S234844AbjAYNjL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 08:39:11 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74065552A6
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 05:39:06 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id ss4so47581957ejb.11
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 05:39:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GIWztrViLruhqrA3Sum0LxEzXWQEdtdzBQds6pkFKVQ=;
-        b=KbH6fGsbbkOaLqn+1voZeYNsvQihRMEymKPXvDMGWJ8kVstAgUm7hxzYTKPoPlkLVS
-         pL8XDMr0mMecvJhA9v8fKJ0p1Fha+uLhpR1O+fqALjUp4ZRfab0DiLwg527vGUlXwaOW
-         IQpx5gI9KUFYBN9rs2hCYHYnNp/HIHnPUIon6Fdqmmeve/oPLO+nI5Qe/5TO0+8W8kbi
-         t5AhKH/8Ldw0ExeF95YekjnIprXxOOUvtwIUj529Nf1VsCsT+cGkpp4gtLzPQzfD/9lC
-         krJaEpU2zfXQ0zGim6I9DH4P6v1ffrbgAXTvCyz+JzMzhxszIJjfeVEnQ4t5EMluA3rJ
-         ZJ0Q==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jmpFBokXGbkJYF/ngahseYdeCFL2T96XR84JAFtd5wU=;
+        b=oNFJ77t1JqK1TcmmJgOqWYon/v0qQSoP4t8vU/JZ0KEhbNbnxnfD0+knRSx72rnHZm
+         ZtcE4vwTVdZCLTgyNZn1Pu7p8BSS0eEWIN8nD7B3H8a/D7LVs1jeAXKjXsZWcVThDRdF
+         jukxsaZRc6Bop3g8kIRQdJQHooY/uufAh8e6Z3QnPfpkwX8kd2HOOzcrsbHBp4K/SelA
+         LPO111eImKlhXN+KEiuFLrhbkd80rf/I/BMHNSXRvq+/3xDJT7Xsx4YL6BYG0b4gzqQj
+         hjH2BBKykJIeEDJ8iEyhW6nU3c9R/9siqVUiPUHNJf8jTNiJFO/TUJHYFvX5nAQBZ8au
+         7R7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GIWztrViLruhqrA3Sum0LxEzXWQEdtdzBQds6pkFKVQ=;
-        b=43nnYq/HBvUYhuy5ncYdYbO4SeM46UyzulK2hCQL+bMyBBnOoOzzNu+PFtzzyetBJR
-         Z+YcsbFXSPE2xFZA+WlodN73Z/Z+EN/K5fyI86EMoXJWAFVojiPH4kxT6+S49OMNftMz
-         iM3AYH+r4a7mnmfq6t8l3/TgeiUL5zTrm0up4A3cMMTZYDZYYD63uKMe5HYnJO6PpGYs
-         s5bqcdReJIyXiiBoyAa4cGzwyURXzKKiZURlHRkRy39HCzPMylpQsGzlQGKntAJJ7oBs
-         G+vZxYwyuTx7m9If+/AD+qLp/hwE7ry1o2b27YFEeTo+KAWKETkjG3xzcCbremTAu2fM
-         y8JQ==
-X-Gm-Message-State: AFqh2kqH2/ctRYtaDHq5ZXngs7cEef45PbdN5gRpOsL+n+cr1tG4mJvN
-        kGi+eADpRMN9Ipv/SfIHz6c=
-X-Google-Smtp-Source: AMrXdXsqgd1xkyIrOp/l2qeZpSLtDd2Yf3DWYBOc7sm9H9eqdqhK3FFrGkami/yFu77+6pReYCDYjA==
-X-Received: by 2002:a05:600c:540a:b0:3db:a3a:45ac with SMTP id he10-20020a05600c540a00b003db0a3a45acmr31559568wmb.32.1674651000193;
-        Wed, 25 Jan 2023 04:50:00 -0800 (PST)
-Received: from [192.168.0.106] ([77.126.163.156])
-        by smtp.gmail.com with ESMTPSA id d24-20020a05600c4c1800b003db0cab0844sm1674479wmp.40.2023.01.25.04.49.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Jan 2023 04:49:59 -0800 (PST)
-Message-ID: <6ab07d63-10c7-c591-152b-473ebf37b5ff@gmail.com>
-Date:   Wed, 25 Jan 2023 14:49:56 +0200
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jmpFBokXGbkJYF/ngahseYdeCFL2T96XR84JAFtd5wU=;
+        b=VnnI1mevIyI+Yn9LtvCWQAFbKKgZnUmIuHmAzADRjEW+z8QAceRirFxgkr/+HUCDy1
+         DIFqWQZ519ylemyfskhKf3azztQAc4/GXN83lLdjYN7i8GoG7KhHn+dQcuIS8r6bqw2X
+         xpKZYYl4FPJLTVYUOb8l2lciBGWPzgSSBBtXwmhAS60qZioad8yDe4CA8/sRvup8SO+R
+         ySaSag2bY7F/S4PdYDRU9SO6pM6yl8xDYXEWmkPtOLc4xLdT4+Mi+xtmpxzhlgMLTX5Z
+         UrzLWg7acD1dS/AN666V3Xer6E9zXKDFF6YHLW4lORCElAv5/kcQyZLfGmt0zR3iHIea
+         rgLQ==
+X-Gm-Message-State: AFqh2krBW90rzjTp3fw4hwPQOTI31FTTCSKgYvHeMXQOzDQo6v0Djl6r
+        yok0A/j3kTlTA14t8lmaWu8D6ZM3jMu5FQ==
+X-Google-Smtp-Source: AMrXdXtHTzKtiXd3NFWrU3ZNJ1tCbaqgLT+ehlg0Bt7l/4PelhIfNsmH0I0gu+luIpYi6et0cn24NQ==
+X-Received: by 2002:a17:906:5417:b0:877:5dbc:da84 with SMTP id q23-20020a170906541700b008775dbcda84mr27109850ejo.72.1674653944811;
+        Wed, 25 Jan 2023 05:39:04 -0800 (PST)
+Received: from krava ([83.240.62.58])
+        by smtp.gmail.com with ESMTPSA id fw19-20020a170907501300b0085a958808c6sm2377591ejc.7.2023.01.25.05.39.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Jan 2023 05:39:04 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 25 Jan 2023 14:39:02 +0100
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     acme@kernel.org, yhs@fb.com, ast@kernel.org, olsajiri@gmail.com,
+        timo@incline.eu, daniel@iogearbox.net, andrii@kernel.org,
+        songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
+        martin.lau@kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves 5/5] btf_encoder: skip BTF encoding of static
+ functions with inconsistent prototypes
+Message-ID: <Y9Ew9iwd3Jg5vk9c@krava>
+References: <1674567931-26458-1-git-send-email-alan.maguire@oracle.com>
+ <1674567931-26458-6-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
- support xdp multibuffer
-Content-Language: en-US
-To:     Maxim Mikityanskiy <maxtram95@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Tariq Toukan <tariqt@nvidia.com>
-Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, lorenzo.bianconi@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Andy Gospodarek <gospo@broadcom.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, gal@nvidia.com,
-        Saeed Mahameed <saeedm@nvidia.com>
-References: <20220621175402.35327-1-gospo@broadcom.com>
- <40fd78fc-2bb1-8eed-0b64-55cb3db71664@gmail.com> <87k0234pd6.fsf@toke.dk>
- <20230103172153.58f231ba@kernel.org> <Y73Ry+nNqOkeZtaj@dragonfly.lan>
- <4866ab1d-4d3c-577c-c94f-a51d82ca56a7@gmail.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <4866ab1d-4d3c-577c-c94f-a51d82ca56a7@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1674567931-26458-6-git-send-email-alan.maguire@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -91,66 +76,120 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Jan 24, 2023 at 01:45:31PM +0000, Alan Maguire wrote:
 
+SNIP
 
-On 13/01/2023 23:07, Tariq Toukan wrote:
+>  static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct function *fn)
+>  {
+> @@ -819,13 +837,51 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
+>  	}
+>  	/* If we find an existing entry, we want to merge observations
+>  	 * across both functions, checking that the "seen optimized-out
+> -	 * parameters" status is reflected in our tree entry.
+> +	 * parameters"/inconsistent proto status is reflected in tree entry.
+>  	 * If the entry is new, record encoder state required
+>  	 * to add the local function later (encoder + type_id_off)
+> -	 * such that we can add the function later.
+> +	 * such that we can add the function later.  Parameter names are
+> +	 * also stored in state to speed up multiple static function
+> +	 * comparisons.
+>  	 */
+>  	if (*nodep != fn) {
+> -		(*nodep)->proto.optimized_parms |= fn->proto.optimized_parms;
+> +		struct function *ofn = *nodep;
+> +
+> +		ofn->proto.optimized_parms |= fn->proto.optimized_parms;
+> +		/* compare parameters to see if signatures match */
+> +
+> +		if (ofn->proto.inconsistent_proto)
+> +			goto out;
+> +
+> +		if (ofn->proto.nr_parms != fn->proto.nr_parms) {
+> +			ofn->proto.inconsistent_proto = 1;
+> +			goto out;
+> +		}
+> +		if (ofn->proto.nr_parms > 0) {
+> +			struct btf_encoder_state *state = ofn->priv;
+> +			const char *parameter_names[BTF_ENCODER_MAX_PARAMETERS];
+> +			int i;
+> +
+> +			if (!state->got_parameter_names) {
+> +				parameter_names__get(&ofn->proto, BTF_ENCODER_MAX_PARAMETERS,
+> +						     state->parameter_names);
+> +				state->got_parameter_names = true;
+> +			}
+> +			parameter_names__get(&fn->proto, BTF_ENCODER_MAX_PARAMETERS,
+> +					     parameter_names);
+> +			for (i = 0; i < ofn->proto.nr_parms; i++) {
+> +				if (!state->parameter_names[i]) {
+> +					if (!parameter_names[i])
+> +						continue;
+> +				} else if (parameter_names[i]) {
+> +					if (strcmp(state->parameter_names[i],
+> +						   parameter_names[i]) == 0)
+> +						continue;
+
+I guess we can't check type easily? tag has type field,
+but I'm not sure if we can get reasonable type info from that
+
+jirka
+
+> +				}
+> +				ofn->proto.inconsistent_proto = 1;
+> +				goto out;
+> +			}
+> +		}
+>  	} else {
+>  		struct btf_encoder_state *state = zalloc(sizeof(*state));
+>  
+> @@ -898,10 +954,12 @@ static void btf_encoder__add_saved_func(const void *nodep, const VISIT which,
+>  	/* we can safely free encoder state since we visit each node once */
+>  	free(fn->priv);
+>  	fn->priv = NULL;
+> -	if (fn->proto.optimized_parms) {
+> +	if (fn->proto.optimized_parms || fn->proto.inconsistent_proto) {
+>  		if (encoder->verbose)
+> -			printf("skipping addition of '%s' due to optimized-out parameters\n",
+> -			       function__name(fn));
+> +			printf("skipping addition of '%s' due to %s\n",
+> +			       function__name(fn),
+> +			       fn->proto.optimized_parms ? "optimized-out parameters" :
+> +							   "multiple inconsistent function prototypes");
+>  	} else {
+>  		btf_encoder__add_func(encoder, fn);
+>  	}
+> @@ -1775,6 +1833,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
+>  		 */
+>  		if (fn->declaration)
+>  			continue;
+> +		if (!fn->external)
+> +			save = true;
+>  		if (!ftype__has_arg_names(&fn->proto))
+>  			continue;
+>  		if (encoder->functions.cnt) {
+> @@ -1790,7 +1850,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
+>  			if (func) {
+>  				if (func->generated)
+>  					continue;
+> -				func->generated = true;
+> +				if (!save)
+> +					func->generated = true;
+>  			} else if (encoder->functions.suffix_cnt) {
+>  				/* falling back to name.isra.0 match if no exact
+>  				 * match is found; only bother if we found any
+> diff --git a/dwarves.h b/dwarves.h
+> index 1ad1b3b..9b80262 100644
+> --- a/dwarves.h
+> +++ b/dwarves.h
+> @@ -830,6 +830,7 @@ struct ftype {
+>  	uint16_t	 nr_parms;
+>  	uint8_t		 unspec_parms:1; /* just one bit is needed */
+>  	uint8_t		 optimized_parms:1;
+> +	uint8_t		 inconsistent_proto:1;
+>  };
+>  
+>  static inline struct ftype *tag__ftype(const struct tag *tag)
+> -- 
+> 1.8.3.1
 > 
-> 
-> On 10/01/2023 22:59, Maxim Mikityanskiy wrote:
->> On Tue, Jan 03, 2023 at 05:21:53PM -0800, Jakub Kicinski wrote:
->>> On Tue, 03 Jan 2023 16:19:49 +0100 Toke Høiland-Jørgensen wrote:
->>>> Hmm, good question! I don't think we've ever explicitly documented any
->>>> assumptions one way or the other. My own mental model has certainly
->>>> always assumed the first frag would continue to be the same size as in
->>>> non-multi-buf packets.
->>>
->>> Interesting! :) My mental model was closer to GRO by frags
->>> so the linear part would have no data, just headers.
->>>
->>> A random datapoint is that bpf_xdp_adjust_head() seems
->>> to enforce that there is at least ETH_HLEN.
->>
->> Also bpf_xdp_frags_increase_tail has the following check:
->>
->>     if (!rxq->frag_size || rxq->frag_size > xdp->frame_sz)
->>         return -EOPNOTSUPP;
->>
->> However, I can't seem to find where the `frag_size > frame_sz` part is
->> actually used. Maybe this condition can be dropped? Can someone shed
->> some light?
->>
->> BTW, Tariq, we seem to have missed setting frag_size to a non-zero
->> value.
-> 
-> Hey Maxim,
-> Indeed. We use xdp_rxq_info_reg, it passes 0 as frag_size.
-> 
->> Could you check that increasing the tail indeed doesn't work on
->> fragmented packets on mlx5e? I can send a oneliner to fix that.
-> 
-> I can test early next week, and update.
-
-Hi Maxim,
-
-Hacking the existing adjust_tail sample program, in between other high 
-prio tasks, to make it work with frags took me some time.
-But I can approve the fix below (or equivalent) is needed. Please go on 
-and submit it.
-
-Regards,
-Tariq
-
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -600,7 +600,7 @@ static int mlx5e_init_rxq_rq(struct mlx5e_channel 
-*c, struct mlx5e_params *param
-         if (err)
-                 return err;
-
--       return xdp_rxq_info_reg(&rq->xdp_rxq, rq->netdev, rq->ix, 
-c->napi.napi_id);
-+       return __xdp_rxq_info_reg(&rq->xdp_rxq, rq->netdev, rq->ix, 
-c->napi.napi_id, PAGE_SIZE);
-  }
-
-  static int mlx5_rq_shampo_alloc(struct mlx5_core_dev *mdev,
