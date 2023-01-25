@@ -2,73 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AC867B763
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 17:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1935767B782
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 17:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235304AbjAYQxr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 11:53:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
+        id S235837AbjAYQ4D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 11:56:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjAYQxp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 11:53:45 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F218972BF
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 08:53:44 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id h16so17679552wrz.12
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 08:53:44 -0800 (PST)
+        with ESMTP id S235852AbjAYQzx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 11:55:53 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A062A9A3
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 08:55:36 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id x4so22039922ybp.1
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 08:55:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WlQUfDinkM8cIY+p9VLBKqc7J5pyv5xcvqS0YrIgVGs=;
-        b=V7EX6+3wf/riQWKx7Fgn8oPs1tyZdQGE0cCOfdHMoyAOlvrWoxgNthrrKtHCtGPtN3
-         ZYMuAJ28jbLGTNM2tCRkDThquzRqTeKZefYrUcM3DzTqD6zBc6yNfmibQ1PhPIZNQcxf
-         /ElCb4oCwQcQ7Yk2bgIybade1/JOsH67XFcT7CuHSkHw0gCbLyRadcMxB5ieboKXV4Hs
-         sbNz3xyUdQxyLpmns6GvdJgPLayft9rhYMUJyfRsbJsaeYxKChwxyGPZPdltmswzlr/8
-         HWMfrU9zx6SaCKWLgmtPPnF7qxwdCPMi1PbjdCwHi1cRoT6GuRql7x7X4xqYxelhh1eB
-         pjMQ==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=49H+5dcfdqsESvQ4qNxkOgTxyGkRYtaMvRra0jMgwoI=;
+        b=S433Z2p/j0oEnqzhdMbCoBVS6yLsoVuhPxi7PQkxnyRK8RoE5tlGqQCWFiSx/y2EvP
+         VAUU6f5te6yd0FF3QKoXQk59fXSc40Ni99FjmOhoS8uoMeuhfG+AT8hg6vTHrAcNtls7
+         iMIrnMdjSfEnhMBuERTLvpM6IdVwE9wobd2Cb3XY0VBKEUGGTBatMri522T6kyoxGdRv
+         R/YHI2CzXA+66ssNNRD0kBHVPl8TI5ear6XOrgI2lTdtmT0YpMoSddNSDob6lG0ADoLk
+         +xTQAwFZ3i/oeH+aroOYDwlOGwYRh8N7mvnq0HFpqRIYUl+jcTUyG7X+0g74P9WaFx1x
+         4nDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WlQUfDinkM8cIY+p9VLBKqc7J5pyv5xcvqS0YrIgVGs=;
-        b=ugJAa/GiADOnZDj2N3LifODT+DcyS655gMt0l1F2PGPW5dc5bPhmtqJc93/7rFZFRG
-         JNaqoJgOPxjcn6XVn/The0rDO5CCBBVX/If9WSh7Og0Tb60663sCqwiItQMqfYumqun8
-         foz3/8EvRuvtMhr70lWfTBCFce3oUzYrSLpSEWHS0O0onW4h0BoFh+FZik7cEa4o/xE0
-         xMjzsGCS/A1AHo9gJLzkn6KKiW+19Wxr8+pAJzO31AIUppkVw6iwYZx1MxMAYGQVsNQi
-         gz4QyGvBX1O/GwDQDFkdP5uLB+6DzZguoiXSi6wdkdPvBi4GSbNi3sqaoOQzNFxZDE9N
-         ThNw==
-X-Gm-Message-State: AFqh2krhZMgCSaWDPz/+KyVJurMqMQq1q4NNWeqwGZRN/X4GQPWHL7ib
-        Iec6OEssWu/o/eeQOWVblm6+v01B6svwcg==
-X-Google-Smtp-Source: AMrXdXui0Q0vT8z/qvh7WMURr5vSrIN1cJ2rknXx8Flj6LftsWAuUlnI6QebDjS9U4cBgGGjeQ6QYg==
-X-Received: by 2002:a5d:6f1c:0:b0:2be:103a:c825 with SMTP id ay28-20020a5d6f1c000000b002be103ac825mr32028636wrb.18.1674665623424;
-        Wed, 25 Jan 2023 08:53:43 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id d24-20020a05600c4c1800b003db0cab0844sm2225639wmp.40.2023.01.25.08.53.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jan 2023 08:53:43 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 25 Jan 2023 17:53:41 +0100
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     acme@kernel.org, yhs@fb.com, ast@kernel.org, olsajiri@gmail.com,
-        timo@incline.eu, daniel@iogearbox.net, andrii@kernel.org,
-        songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
-        martin.lau@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves 1/5] dwarves: help dwarf loader spot functions
- with optimized-out parameters
-Message-ID: <Y9FelQQMDdVgTsfu@krava>
-References: <1674567931-26458-1-git-send-email-alan.maguire@oracle.com>
- <1674567931-26458-2-git-send-email-alan.maguire@oracle.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=49H+5dcfdqsESvQ4qNxkOgTxyGkRYtaMvRra0jMgwoI=;
+        b=EDcWBlotbeN361YlLv2lR2elXKDtmCiuSyhVWhHIQ6nQK/RM+RFXY4QRwq/KE3Sy7e
+         bbDhbbnImC6ROz8FNpYLTHyv2LDDOIMvk3GxFzJzqQnDx9ChpL4FdO3x52lSVKarjeN8
+         B09x2sgbq5idD9LMkW71x8heyeMZ6Rft93zZzhACE1sOqVwuIHKwjtVLaS95ad2LNNFi
+         WGrWswV217ZImG3TOTi2i+ONzEp0xU0gB4UscY9kcux8drHuJ5tKDuD7yzTjE3VES8Qn
+         Rebmp0BGCrl2RUgAY29PrMqpPzhuQ8jpcHzO0vbfMX4Et95Enuet3NobKZlCQKj/zKon
+         N3sg==
+X-Gm-Message-State: AO0yUKWra0ciavM9u74b3ZPkdiTpEfO++wPVIza9JdLM8Ur2PRLWOWol
+        so96pQ7O1vqZRnc4YJQOMYRp2+HKRKihOlT0nL9uao+Z00I6AWmnYqU=
+X-Google-Smtp-Source: AK7set/FwLbWx6yiqkzvjcGbe3t+VxnD8xj+/iXHUbjRIwB0jRkvrcCR+VhH4DhOMzxTzJJlzd0h1TxaYfABci/YfRk=
+X-Received: by 2002:a0d:d456:0:b0:507:26dc:ebd with SMTP id
+ w83-20020a0dd456000000b0050726dc0ebdmr239978ywd.455.1674665724181; Wed, 25
+ Jan 2023 08:55:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1674567931-26458-2-git-send-email-alan.maguire@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230125083851.27759-1-surenb@google.com> <20230125083851.27759-4-surenb@google.com>
+ <Y9D2zXpy+9iyZNun@dhcp22.suse.cz>
+In-Reply-To: <Y9D2zXpy+9iyZNun@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 25 Jan 2023 08:55:12 -0800
+Message-ID: <CAJuCfpG7KWnj3J_t4nN1R4gfiM5jgjsiTfL55hNa=Uvz4E835g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] mm: replace vma->vm_flags direct modifications
+ with modifier calls
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, michel@lespinasse.org,
+        jglisse@google.com, vbabka@suse.cz, hannes@cmpxchg.org,
+        mgorman@techsingularity.net, dave@stgolabs.net,
+        willy@infradead.org, liam.howlett@oracle.com, peterz@infradead.org,
+        ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org,
+        songliubraving@fb.com, peterx@redhat.com, david@redhat.com,
+        dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de,
+        kent.overstreet@linux.dev, punit.agrawal@bytedance.com,
+        lstoakes@gmail.com, peterjung1337@gmail.com, rientjes@google.com,
+        axelrasmussen@google.com, joelaf@google.com, minchan@google.com,
+        jannh@google.com, shakeelb@google.com, tatashin@google.com,
+        edumazet@google.com, gthelen@google.com, gurua@google.com,
+        arjunroy@google.com, soheil@google.com, hughlynch@google.com,
+        leewalsh@google.com, posk@google.com, will@kernel.org,
+        aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
+        chenhuacai@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        qianweili@huawei.com, wangzhou1@hisilicon.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
+        airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, l.stach@pengutronix.de,
+        krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com,
+        matthias.bgg@gmail.com, robdclark@gmail.com,
+        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        tomba@kernel.org, hjc@rock-chips.com, heiko@sntech.de,
+        ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        dimitri.sivanich@hpe.com, zhangfei.gao@linaro.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com,
+        jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de,
+        jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net,
+        xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, miklos@szeredi.hu,
+        mike.kravetz@oracle.com, muchun.song@linux.dev, bhe@redhat.com,
+        andrii@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, tiwai@suse.com,
+        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-graphics-maintainer@vmware.com,
+        linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org,
+        loongarch@lists.linux.dev, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev,
+        dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
+        linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        devel@lists.orangefs.org, kexec@lists.infradead.org,
+        linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
+        selinux@vger.kernel.org, alsa-devel@alsa-project.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,56 +137,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 01:45:27PM +0000, Alan Maguire wrote:
+On Wed, Jan 25, 2023 at 1:30 AM 'Michal Hocko' via kernel-team
+<kernel-team@android.com> wrote:
+>
+> On Wed 25-01-23 00:38:48, Suren Baghdasaryan wrote:
+> > Replace direct modifications to vma->vm_flags with calls to modifier
+> > functions to be able to track flag changes and to keep vma locking
+> > correctness.
+>
+> Is this a manual (git grep) based work or have you used Coccinele for
+> the patch generation?
 
-SNIP
+It was a manual "search and replace" and in the process I temporarily
+renamed vm_flags to ensure I did not miss any usage.
 
->  
->  	return parm;
-> @@ -1450,7 +1504,7 @@ static struct tag *die__create_new_parameter(Dwarf_Die *die,
->  					     struct cu *cu, struct conf_load *conf,
->  					     int param_idx)
->  {
-> -	struct parameter *parm = parameter__new(die, cu, conf);
-> +	struct parameter *parm = parameter__new(die, cu, conf, param_idx);
->  
->  	if (parm == NULL)
->  		return NULL;
-> @@ -2209,6 +2263,10 @@ static void ftype__recode_dwarf_types(struct tag *tag, struct cu *cu)
->  			}
->  			pos->name = tag__parameter(dtype->tag)->name;
->  			pos->tag.type = dtype->tag->type;
-> +			if (pos->optimized) {
-> +				tag__parameter(dtype->tag)->optimized = pos->optimized;
-> +				type->optimized_parms = 1;
-> +			}
->  			continue;
->  		}
->  
-> @@ -2219,6 +2277,20 @@ static void ftype__recode_dwarf_types(struct tag *tag, struct cu *cu)
->  		}
->  		pos->tag.type = dtype->small_id;
->  	}
-> +	/* if parameters were optimized out, set flag for the ftype this
-> +	 * function tag referred to via abstract origin.
-> +	 */
-> +	if (type->optimized_parms) {
-> +		struct dwarf_tag *dtype = type->tag.priv;
-> +		struct dwarf_tag *dftype;
-> +
-> +		dftype = dwarf_cu__find_tag_by_ref(dcu, &dtype->abstract_origin);
-> +		if (dftype && dftype->tag) {
-> +			struct ftype *ftype = tag__ftype(dftype->tag);
-> +
-> +			ftype->optimized_parms = 1;
+>
+> My potentially incomplete check
+> $ git grep ">[[:space:]]*vm_flags[[:space:]]*[&|^]="
+>
+> shows that nothing should be left after this. There is still quite a lot
+> of direct checks of the flags (more than 600). Maybe it would be good to
+> make flags accessible only via accessors which would also prevent any
+> future direct setting of those flags in uncontrolled way as well.
 
-nit, could be:
-   tag__ftype(dftype->tag)->optimized_parms = 1; 
+Yes, I think Peter's suggestion in the first patch would also require
+that. Much more churn but probably worth it for the future
+maintenance. I'll add a patch which converts all readers as well.
 
-as you did above
+>
+> Anyway
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-jirka
+Thanks for all the reviews!
 
-> +		}
-> +	}
->  }
+> --
+> Michal Hocko
+> SUSE Labs
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
