@@ -2,335 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053BE67B596
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 16:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D00767B5F9
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 16:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235042AbjAYPLf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 10:11:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
+        id S236072AbjAYPbh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 10:31:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236007AbjAYPLd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 10:11:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168762BED9
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 07:10:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674659440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V250dp57YvGpsXo8e5z0OqUiYsupt7OECDxcc0HcLsM=;
-        b=YFS7p11MLVxCzJx/QawVVABUbIxPs9YR7DHgEhsyjBHOcekqyEgbWjsqhndRH340LyJvU8
-        mBNAaao5KWbOMgWAmQWEM/JoEY4KNDo37odqTyW2/yEh3zzX7Zsj9R/sRvUTH8tC7fa9Z0
-        1VYrvnwL3zsnmYlIVJIi56jsABHpkfw=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-132-Dacd0zxrNZqyQO2wWVfJOw-1; Wed, 25 Jan 2023 10:10:39 -0500
-X-MC-Unique: Dacd0zxrNZqyQO2wWVfJOw-1
-Received: by mail-ed1-f69.google.com with SMTP id h18-20020a056402281200b0049e5078a6c3so13151721ede.12
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 07:10:37 -0800 (PST)
+        with ESMTP id S235873AbjAYPbW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 10:31:22 -0500
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA3259E6D
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 07:31:20 -0800 (PST)
+Received: by mail-io1-f69.google.com with SMTP id b26-20020a056602331a00b00704cb50e151so10835357ioz.13
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 07:31:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V250dp57YvGpsXo8e5z0OqUiYsupt7OECDxcc0HcLsM=;
-        b=sDs4jQs0iH35ZemwTZbotRAxRq7v4dSlZOiSKpXm9tAUhvl9l2xN1xRsTSQABBHDB9
-         jqwnhRc6fY46n2usEisYtH+7nwVFGbxs/ahIOawgYnbZWskxQsWWuIR4j6bi+6UPHZIZ
-         g4FTj4BAN7hdhcFadGRZVlaXXHMBiXxpELIzjT4Jrv0FwXCa7e9OJy4JNfm+7aya2cEe
-         mfkqM85XLnqMcwrnULGwiryw7HzAECKZA1vE1ebq0pKS4YBMC2JhzdxkUwiOdrfGPSnc
-         0QrcA3f45u/bzRJ3bOQrHGKQtEN61c4nVWA3SrWaXQ8q6i634tWxA8Ule0gWC1VRko1S
-         lLSA==
-X-Gm-Message-State: AFqh2kqF5akip07zZad1cd7Rpvpme+iEgCLln5k6j8V0vjLebXqXVGbH
-        OUOZ9+w5nsBdwYNOx07l3a0smrLWywVH0fFrSev/TmkgbBjMfEbatgJICZS0VlJFUkd6fP7ST1r
-        ORIICQGBxlsaH
-X-Received: by 2002:a05:6402:524f:b0:49e:910:5706 with SMTP id t15-20020a056402524f00b0049e09105706mr47037681edd.2.1674659435855;
-        Wed, 25 Jan 2023 07:10:35 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXv9mD/nNbis0WE/I3tSCVhhJAQmz3Rn4k9HQBDL67wovPMOLXC1R45lFvlBjEtRRY5PLFM19w==
-X-Received: by 2002:a05:6402:524f:b0:49e:910:5706 with SMTP id t15-20020a056402524f00b0049e09105706mr47037641edd.2.1674659435478;
-        Wed, 25 Jan 2023 07:10:35 -0800 (PST)
-Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id fw19-20020a170907501300b0085a958808c6sm2481916ejc.7.2023.01.25.07.10.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Jan 2023 07:10:34 -0800 (PST)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <f3a116dc-1b14-3432-ad20-a36179ef0608@redhat.com>
-Date:   Wed, 25 Jan 2023 16:10:32 +0100
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=udHQk+LlTsImsgasQumCY8J2ntYLpL4el7t+VlKTCIE=;
+        b=lnqHRiaCRpdqmG+9Z72JBB9mNArP2YIZvYBNsK/qffJ3sk/n2jsBXTioIhji7jEo+9
+         N9eURY3Z5RZjWONZkiBZnw437k5YFQdUudbDvBO2Mn9jAH98a2X04te0T+oklz3TaI+g
+         Y6RH7Ns9fh3i+zgnBS4YxvdddEvRO+yYgSwskqd9l4hJDhozyj5B8xpMIc9afeSpWaTX
+         Q2ifp/zKRiiaKYA5oAD9w/IDlObluOWPFDKuejP71cXckii40MIhWFmRdpV59utTuAfM
+         NMrCRUzD2+NQ94zTIAbWE68YRytIvaDN0lZY37vlahIPbj6ekpPvHxFK7AoBvUECFDsf
+         qMMg==
+X-Gm-Message-State: AFqh2kpJrwQNwZyNIRsGqXp9g2MZYAypte2V6Ed4YVIX1cLuaEdMzBu6
+        tBv04xyzercjQr0hgfwcbZ3QN7/pepmgnHrBjyKtvMWmob6g
+X-Google-Smtp-Source: AMrXdXvYuyCeKloGvGCiyTGOeSFAIYlP8RvM+qa/Pn+pUN3KSGjpHp6QfR1gEUZNgdL27egar00ZoXEcvv5hg5cc0eOGQiRY5LDo
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Anatoly Burakov <anatoly.burakov@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-        netdev@vger.kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v8 17/17] selftests/bpf: Simple program to dump
- XDP RX metadata
-Content-Language: en-US
-To:     sdf@google.com, Jesper Dangaard Brouer <jbrouer@redhat.com>
-References: <20230119221536.3349901-1-sdf@google.com>
- <20230119221536.3349901-18-sdf@google.com>
- <71be95ee-b522-b3db-105a-0f25d8dc52cb@redhat.com>
- <CAKH8qBvK-tJxQwBsUvQZ39KyhyAbd76H1xhdzmzeKbbN5Hzq7Q@mail.gmail.com>
- <Y9AoEcjb+MET41NB@google.com>
-In-Reply-To: <Y9AoEcjb+MET41NB@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:c88d:0:b0:3a3:2315:cb3b with SMTP id
+ m13-20020a02c88d000000b003a32315cb3bmr3706135jao.206.1674660679405; Wed, 25
+ Jan 2023 07:31:19 -0800 (PST)
+Date:   Wed, 25 Jan 2023 07:31:19 -0800
+In-Reply-To: <0000000000005d4f3205b9ab95f4@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ea5ad205f31852e8@google.com>
+Subject: Re: [syzbot] WARNING in pskb_expand_head
+From:   syzbot <syzbot+a1c17e56a8a62294c714@syzkaller.appspotmail.com>
+To:     alexanderduyck@fb.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com,
+        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, willemb@google.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+syzbot suspects this issue was fixed by commit:
 
-On 24/01/2023 19.48, sdf@google.com wrote:
-> On 01/24, Stanislav Fomichev wrote:
->> On Tue, Jan 24, 2023 at 7:26 AM Jesper Dangaard Brouer
->> <jbrouer@redhat.com> wrote:
->> >
->> >
->> > Testing this on mlx5 and I'm not getting the RX-timestamp.
->> > See command details below.
-> 
->> CC'ed Toke since I've never tested mlx5 myself.
->> I was pretty close to getting the setup late last week, let me try to
->> see whether it's ready or not.
-> 
->> > On 19/01/2023 23.15, Stanislav Fomichev wrote:
->> > > To be used for verification of driver implementations. Note that
->> > > the skb path is gone from the series, but I'm still keeping the
->> > > implementation for any possible future work.
->> > >
->> > > $ xdp_hw_metadata <ifname>
->> >
->> > sudo ./xdp_hw_metadata mlx5p1
->> >
->> > Output:
->> > [...cut ...]
->> > open bpf program...
->> > load bpf program...
->> > prepare skb endpoint...
->> > XXX timestamping_enable(): setsockopt(SO_TIMESTAMPING) ret:0
->> > prepare xsk map...
->> > map[0] = 3
->> > map[1] = 4
->> > map[2] = 5
->> > map[3] = 6
->> > map[4] = 7
->> > map[5] = 8
->> > attach bpf program...
->> > poll: 0 (0)
->> > poll: 0 (0)
->> > poll: 0 (0)
->> > poll: 1 (0)
->> > xsk_ring_cons__peek: 1
->> > 0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
->> > rx_timestamp: 0
->> > rx_hash: 2773355807
->> > 0x1821788: complete idx=8 addr=8000
->> > poll: 0 (0)
->> >
->> > The trace_pipe:
->> >
->> > $ sudo cat /sys/kernel/debug/tracing/trace_pipe
->> >            <idle>-0       [005] ..s2.  2722.884762: bpf_trace_printk:
->> > forwarding UDP:9091 to AF_XDP
->> >            <idle>-0       [005] ..s2.  2722.884771: bpf_trace_printk:
->> > populated rx_hash with 2773355807
->> >
->> >
->> > > On the other machine:
->> > >
->> > > $ echo -n xdp | nc -u -q1 <target> 9091 # for AF_XDP
->> >
->> > Fixing the source-port to see if RX-hash remains the same.
->> >
->> >   $ echo xdp | nc --source-port=2000 --udp 198.18.1.1 9091
->> >
->> > > $ echo -n skb | nc -u -q1 <target> 9092 # for skb
->> > >
->> > > Sample output:
->> > >
->> > >    # xdp
->> > >    xsk_ring_cons__peek: 1
->> > >    0x19f9090: rx_desc[0]->addr=100000000008000 addr=8100 
->> comp_addr=8000
->> > >    rx_timestamp_supported: 1
->> > >    rx_timestamp: 1667850075063948829
->> > >    0x19f9090: complete idx=8 addr=8000
->> >
->> > xsk_ring_cons__peek: 1
->> > 0x1821788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
->> > rx_timestamp: 0
->> > rx_hash: 2773355807
->> > 0x1821788: complete idx=8 addr=8000
->> >
->> > It doesn't look like hardware RX-timestamps are getting enabled.
->> >
->> > [... cut to relevant code ...]
->> >
->> > > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c 
->> b/tools/testing/selftests/bpf/xdp_hw_metadata.c
->> > > new file mode 100644
->> > > index 000000000000..0008f0f239e8
->> > > --- /dev/null
->> > > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
->> > > @@ -0,0 +1,403 @@
->> > [...]
->> >
->> > > +static void timestamping_enable(int fd, int val)
->> > > +{
->> > > +     int ret;
->> > > +
->> > > +     ret = setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING, &val, 
->> sizeof(val));
->> > > +     if (ret < 0)
->> > > +             error(-1, errno, "setsockopt(SO_TIMESTAMPING)");
->> > > +}
->> > > +
->> > > +int main(int argc, char *argv[])
->> > > +{
->> > [...]
->> >
->> > > +     printf("prepare skb endpoint...\n");
->> > > +     server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092, 
->> 1000);
->> > > +     if (server_fd < 0)
->> > > +             error(-1, errno, "start_server");
->> > > +     timestamping_enable(server_fd,
->> > > +                         SOF_TIMESTAMPING_SOFTWARE |
->> > > +                         SOF_TIMESTAMPING_RAW_HARDWARE);
->> > > +
->> >
->> > I don't think this timestamping_enable() with these flags are enough to
->> > enable hardware timestamping.
-> 
-> Yeah, agreed, looks like that's the issue. timestamping_enable() has
-> been used for the xdp->skb path that I've eventually removed from the
-> series, so it's mostly a noop here..
-> 
-> Maybe you can try the following before I send a proper patch?
+commit dbae2b062824fc2d35ae2d5df2f500626c758e80
+Author: Paolo Abeni <pabeni@redhat.com>
+Date:   Wed Sep 28 08:43:09 2022 +0000
 
-Yes, below patch fixed the issue, thx.
+    net: skb: introduce and use a single page frag cache
 
-Now I get HW timestamps, plus I added some software CLOCK_TAI timestamps
-to compare against.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16a58035480000
+start commit:   bf682942cd26 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b68d4454cd7c7d91
+dashboard link: https://syzkaller.appspot.com/bug?extid=a1c17e56a8a62294c714
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b18438880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=120c9038880000
 
-Output is now:
+If the result looks correct, please mark the issue as fixed by replying with:
 
-  poll: 1 (0)
-  xsk_ring_cons__peek: 1
-  0xf64788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
-  rx_hash: 3697961069
-  rx_timestamp:  1674657672142214773 (sec:1674657672.1422)
-  XDP RX-time:   1674657709561774876 (sec:1674657709.5618) delta sec:37.4196
-  AF_XDP time:   1674657709561871034 (sec:1674657709.5619) delta 
-sec:0.0001 (96.158 usec)
-  0xf64788: complete idx=8 addr=8000
+#syz fix: net: skb: introduce and use a single page frag cache
 
-My NIC hardware clock is clearly not synced with system time, as above 
-delta say 37.4 seconds between HW and XDP timestamps (using 
-bpf_ktime_get_tai_ns()).
-
-Time between XDP and AF_XDP wakeup is reported to be 96 usec, which is 
-also higher than I expected.  As explained in [1] this is caused by CPU 
-sleep states.
-
-My /dev/cpu_dma_latency was set to 2000000000.  Applying tuned-adm 
-profile latency-performance this value change to 2.
-
-  $ sudo hexdump --format '"%d\n"' /dev/cpu_dma_latency
-  2000000000
-  $ sudo hexdump --format '"%d\n"' /dev/cpu_dma_latency
-  2
-
-Now the time between XDP and AF_XDP wakeup is reduced to approx 12 usec.
-
-  rx_timestamp:  1674659206344977544 (sec:1674659206.3450)
-  XDP RX-time:   1674659243776087765 (sec:1674659243.7761) delta sec:37.4311
-  AF_XDP time:   1674659243776099841 (sec:1674659243.7761) delta 
-sec:0.0000 (12.076 usec)
-
-
-[1] 
-https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-interaction
-
-> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c 
-> b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> index 0008f0f239e8..dceddb17fbc9 100644
-> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> @@ -24,6 +24,7 @@
->   #include <linux/net_tstamp.h>
->   #include <linux/udp.h>
->   #include <linux/sockios.h>
-> +#include <linux/net_tstamp.h>
->   #include <sys/mman.h>
->   #include <net/if.h>
->   #include <poll.h>
-> @@ -278,13 +279,37 @@ static int rxq_num(const char *ifname)
-> 
->       ret = ioctl(fd, SIOCETHTOOL, &ifr);
->       if (ret < 0)
-> -        error(-1, errno, "socket");
-> +        error(-1, errno, "ioctl(SIOCETHTOOL)");
-> 
->       close(fd);
-> 
->       return ch.rx_count + ch.combined_count;
->   }
-> 
-> +static void hwtstamp_enable(const char *ifname)
-> +{
-> +    struct hwtstamp_config cfg = {
-> +        .rx_filter = HWTSTAMP_FILTER_ALL,
-> +
-> +    };
-> +
-> +    struct ifreq ifr = {
-> +        .ifr_data = (void *)&cfg,
-> +    };
-> +    strcpy(ifr.ifr_name, ifname);
-> +    int fd, ret;
-> +
-> +    fd = socket(AF_UNIX, SOCK_DGRAM, 0);
-> +    if (fd < 0)
-> +        error(-1, errno, "socket");
-> +
-> +    ret = ioctl(fd, SIOCSHWTSTAMP, &ifr);
-> +    if (ret < 0)
-> +        error(-1, errno, "ioctl(SIOCSHWTSTAMP)");
-> +
-> +    close(fd);
-> +}
-> +
->   static void cleanup(void)
->   {
->       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> @@ -341,6 +366,8 @@ int main(int argc, char *argv[])
-> 
->       printf("rxq: %d\n", rxq);
-> 
-> +    hwtstamp_enable(ifname);
-> +
->       rx_xsk = malloc(sizeof(struct xsk) * rxq);
->       if (!rx_xsk)
->           error(-1, ENOMEM, "malloc");
-> 
-> 
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
