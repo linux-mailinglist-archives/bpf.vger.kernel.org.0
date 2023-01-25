@@ -2,208 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0258867BF5F
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 22:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9B567BFF7
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 23:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjAYV4w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 16:56:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
+        id S229504AbjAYWcK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 17:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236065AbjAYVzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 16:55:25 -0500
-Received: from fx403.security-mail.net (smtpout140.security-mail.net [85.31.212.143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B5F40F9
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 13:55:24 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by fx403.security-mail.net (Postfix) with ESMTP id 947A25792A5
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 22:55:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalray.eu;
-        s=sec-sig-email; t=1674683722;
-        bh=WtoB9JtlKwd4Y8mogATd1m73eAkNffWMtzkgdcOdrFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=jpK3fSfJCzy3ZANEGkjKa68WlzWKHAnxNIOUyHjrFerEyLWvdC7JV4+9BbvbaYOVc
-         zG/WmhbgVQcAC7cuLJSoEk6kP3iplqZGTody8prkX2fh/DSCpiNkfhrN11Nmfvh2q9
-         5rHYkMRf2BwOr/BqbGtWV8yBWOizstOkO2UnIhWc=
-Received: from fx403 (localhost [127.0.0.1]) by fx403.security-mail.net
- (Postfix) with ESMTP id 14D4C578EE2; Wed, 25 Jan 2023 22:55:22 +0100 (CET)
-Received: from zimbra2.kalray.eu (unknown [217.181.231.53]) by
- fx403.security-mail.net (Postfix) with ESMTPS id 194FF578B2C; Wed, 25 Jan
- 2023 22:55:21 +0100 (CET)
-Received: from zimbra2.kalray.eu (localhost [127.0.0.1]) by
- zimbra2.kalray.eu (Postfix) with ESMTPS id D2EB627E0493; Wed, 25 Jan 2023
- 22:55:20 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1]) by zimbra2.kalray.eu
- (Postfix) with ESMTP id AEC3727E0491; Wed, 25 Jan 2023 22:55:20 +0100 (CET)
-Received: from zimbra2.kalray.eu ([127.0.0.1]) by localhost
- (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026) with ESMTP id
- si6Lv1AzzjtE; Wed, 25 Jan 2023 22:55:20 +0100 (CET)
-Received: from tellis.lin.mbt.kalray.eu (unknown [192.168.36.206]) by
- zimbra2.kalray.eu (Postfix) with ESMTPSA id 4AA5127E0461; Wed, 25 Jan 2023
- 22:55:20 +0100 (CET)
-X-Virus-Scanned: E-securemail
-Secumail-id: <13e79.63d1a549.170d1.0>
-DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu AEC3727E0491
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
- s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1674683720;
- bh=OP2H0clmfjMlntXGEQUOupSQETmz7iibW86xdOXdO/c=;
- h=Date:From:To:Message-ID:MIME-Version;
- b=FiSVH+wqDIs88qUIullcsu5BFjd2D7z2E5u8DrTYSpKgGNXgRV/wZx6pLf0jEnjj1
- nq174SqV22wtEYt+DC4eOS10NI0yUL2JmwTj2bfQCvZEO4mxAawGM/7zjbG/MQC8HR
- kpFf4zpnPjbRuo+I0TP0j3cj6aN2Vd984BCzoL6c=
-Date:   Wed, 25 Jan 2023 22:55:19 +0100
-From:   Jules Maselbas <jmaselbas@kalray.eu>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Guillaume Thouvenin <gthouvenin@kalray.eu>,
-        Clement Leger <clement@clement-leger.fr>,
-        Vincent Chardon <vincent.chardon@elsys-design.com>,
-        Marc =?utf-8?b?UG91bGhpw6hz?= <dkm@kataplop.net>,
-        Julian Vetter <jvetter@kalray.eu>,
-        Samuel Jones <sjones@kalray.eu>,
-        Ashley Lesdalons <alesdalons@kalray.eu>,
-        Thomas Costis <tcostis@kalray.eu>,
-        Marius Gligor <mgligor@kalray.eu>,
-        Jonathan Borne <jborne@kalray.eu>,
-        Julien Villette <jvillette@kalray.eu>,
-        Luc Michel <lmichel@kalray.eu>,
-        Louis Morhet <lmorhet@kalray.eu>,
-        Julien Hascoet <jhascoet@kalray.eu>,
-        Jean-Christophe Pince <jcpince@gmail.com>,
-        Guillaume Missonnier <gmissonnier@kalray.eu>,
-        Alex Michon <amichon@kalray.eu>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <git@xen0n.name>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        John Garry <john.garry@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Bharat Bhushan <bbhushan2@marvell.com>,
-        Bibo Mao <maobibo@loongson.cn>,
-        Atish Patra <atishp@atishpatra.org>,
-        Qi Liu <liuqi115@huawei.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-audit@redhat.com,
-        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH v2 12/31] kvx: Add other common headers
-Message-ID: <20230125215519.GE5952@tellis.lin.mbt.kalray.eu>
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-13-ysionneau@kalray.eu> <Y8qlOpYgDefMPqWH@zx2c4.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y8qlOpYgDefMPqWH@zx2c4.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-ALTERMIMEV2_out: done
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229499AbjAYWcK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 17:32:10 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA385A826
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 14:32:08 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 38-20020a630b26000000b004773803dda1so8883861pgl.17
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 14:32:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zcqx6z1kcd3e6viB+aHhZ5+sc79wOe1YQpj1kQy5xVs=;
+        b=itYia700YeqbC4zyrO5oy8suQixVgZWGmNi4fvUTaSPsZ92LH/U3gQzKiOxMXjcH+3
+         Dv74xc7WYVDvx5iZwQOL4yHXVZXW94d2ipYbQXX8n4oMU3/WcRI6V8Z1ZsjQfwTo7QKQ
+         pB37L43Uiw1I//fyizPMpZpiGZHV3OV9O5lZHS25JdyMXqpMomFSXtKxWB042NGAcEmI
+         VqPi2iRIuxIoBCBXbv7SrmLMkSDlEbANZS0X4zhjiDLgQdwFWTLGTP0DISYY2MMsp4Ak
+         aiCj8dVvpDdAzTCQZpFD/aJGLK0F3EGKcGM80QrmCdyhcMe0QeCCTEK4N2fYNJePVRU6
+         8esA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zcqx6z1kcd3e6viB+aHhZ5+sc79wOe1YQpj1kQy5xVs=;
+        b=mt6Y13B6hGKOgbeIdjQqSR0vIxWVeFJ8QR/HLhGxku/RQ9Qy1kka+vJ5E3AdFUbbPR
+         Oi7hSvEgenK3zD0gphVn/9GhcIg7DkFX8CLC1s1Tk3Bc6yGGam5+eQowCgmh5mFzAl9R
+         N9OzRpFUV67tduhaxebX9OWPAFHVbsnIjJzkl3COYanbnV7v8PCImH1Ioip/Bj+OzE/S
+         Sh/M68X4dLYUzIfKJIJammy3zw6Z2CRDyI2J5tCVjljeG3ClA7cymP00FOcPgfHQF7az
+         /ZOoXGp3NkNqvCRiDGf9jrY8/mjt4jHzpBx57OhtgJME2ra3Fg5Md5wPjr4I18ikCBtO
+         g93w==
+X-Gm-Message-State: AFqh2krvP1c5znGRyIUqyoSfvDO1qNch2C+SYgcH3n7uD4bw4zm/9apf
+        1VUkeV4e/Sp2bVI7YWJLH7KjvL++wH7om/83vC4jQyLRe3HoHVUts5OnOrYLLx7RpezzmlY1dJ2
+        BkCH1n12O3AOIkHxrHnz++OCNw+Wkmmf4DsvzSOQtuTQHdEokFA==
+X-Google-Smtp-Source: AMrXdXv7PspxhpsCu8qz4hek5n1U9/yedDTmXRRsw+xTKXzJOPfuY1G3l++cTRXgBx+M9KcrNwbsIEw=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:b96:b0:58d:b8f6:6f6d with SMTP id
+ g22-20020a056a000b9600b0058db8f66f6dmr3507366pfj.32.1674685927905; Wed, 25
+ Jan 2023 14:32:07 -0800 (PST)
+Date:   Wed, 25 Jan 2023 14:32:05 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.1.456.gfc5497dd1b-goog
+Message-ID: <20230125223205.3933482-1-sdf@google.com>
+Subject: [PATCH bpf-next] selftests/bpf: Properly enable hwtstamp in xdp_hw_metadata
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jason,
+The existing timestamping_enable() is a no-op because it applies
+to the socket-related path that we are not verifying here
+anymore. (but still leaving the code around hoping we can
+have xdp->skb path verified here as well)
 
-On Fri, Jan 20, 2023 at 03:29:14PM +0100, Jason A. Donenfeld wrote:
-> Hi Yann,
-> 
-> On Fri, Jan 20, 2023 at 03:09:43PM +0100, Yann Sionneau wrote:
-> > +#include <linux/random.h>
-> > +#include <linux/version.h>
-> > +
-> > +extern unsigned long __stack_chk_guard;
-> > +
-> > +/*
-> > + * Initialize the stackprotector canary value.
-> > + *
-> > + * NOTE: this must only be called from functions that never return,
-> > + * and it must always be inlined.
-> > + */
-> > +static __always_inline void boot_init_stack_canary(void)
-> > +{
-> > +	unsigned long canary;
-> > +
-> > +	/* Try to get a semi random initial value. */
-> > +	get_random_bytes(&canary, sizeof(canary));
-> > +	canary ^= LINUX_VERSION_CODE;
-> > +	canary &= CANARY_MASK;
-> > +
-> > +	current->stack_canary = canary;
-> > +	__stack_chk_guard = current->stack_canary;
-> > +}
-> 
-> 
-> You should rewrite this as:
-> 
->     current->stack_canary = get_random_canary();
->     __stack_chk_guard = current->stack_canary;
-> 
-> which is what the other archs all now do. (They didn't used to, and this
-> looks like it's simply based on older code.)
-Thanks for the suggestion, this will be into v3
+  poll: 1 (0)
+  xsk_ring_cons__peek: 1
+  0xf64788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+  rx_hash: 3697961069
+  rx_timestamp:  1674657672142214773 (sec:1674657672.1422)
+  XDP RX-time:   1674657709561774876 (sec:1674657709.5618) delta sec:37.4196
+  AF_XDP time:   1674657709561871034 (sec:1674657709.5619) delta
+sec:0.0001 (96.158 usec)
+  0xf64788: complete idx=8 addr=8000
 
-> > +#define get_cycles get_cycles
-> > +
-> > +#include <asm/sfr.h>
-> > +#include <asm-generic/timex.h>
-> > +
-> > +static inline cycles_t get_cycles(void)
-> > +{
-> > +	return kvx_sfr_get(PM0);
-> > +}
-> 
-> Glad to see this CPU has a cycle counter. Out of curiosity, what is
-> its resolution?
-This cpu has 4 performance monitor (PM), the first one is reserved to
-count cycles, and it is cycle accurate.
+Also, maybe something to archive here, see [0] for Jesper's note
+about NIC vs host clock delta.
 
-> Also, related, does this CPU happen to have a "RDRAND"-like instruction?
-I didn't knew about the RDRAND insruction, but no this CPU do not have
-an instruction like that.
+0: https://lore.kernel.org/bpf/f3a116dc-1b14-3432-ad20-a36179ef0608@redhat.com/
 
-> (I don't know anything about kvx or even what it is.)
-It's a VLIW core, a bit like Itanium, there are currently not publicly
-available documentation.  We have started a discussion internally at
-Kalray to share more information regarding this CPU and its ABI.
+Fixes: 297a3f124155 ("selftests/bpf: Simple program to dump XDP RX metadata")
+Reported-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Tested-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 28 ++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
-A very crude instruction listing can be found in our fork of
-gdb-binutils: https://raw.githubusercontent.com/kalray/binutils/binutils-2_35_2/coolidge/opcodes/kv3-opc.c
-
-Best regards,
--- Jules
-
-
-
-
+diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+index 0008f0f239e8..dc899c53db5e 100644
+--- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+@@ -24,6 +24,7 @@
+ #include <linux/net_tstamp.h>
+ #include <linux/udp.h>
+ #include <linux/sockios.h>
++#include <linux/net_tstamp.h>
+ #include <sys/mman.h>
+ #include <net/if.h>
+ #include <poll.h>
+@@ -278,13 +279,36 @@ static int rxq_num(const char *ifname)
+ 
+ 	ret = ioctl(fd, SIOCETHTOOL, &ifr);
+ 	if (ret < 0)
+-		error(-1, errno, "socket");
++		error(-1, errno, "ioctl(SIOCETHTOOL)");
+ 
+ 	close(fd);
+ 
+ 	return ch.rx_count + ch.combined_count;
+ }
+ 
++static void hwtstamp_enable(const char *ifname)
++{
++	struct hwtstamp_config cfg = {
++		.rx_filter = HWTSTAMP_FILTER_ALL,
++	};
++
++	struct ifreq ifr = {
++		.ifr_data = (void *)&cfg,
++	};
++	strcpy(ifr.ifr_name, ifname);
++	int fd, ret;
++
++	fd = socket(AF_UNIX, SOCK_DGRAM, 0);
++	if (fd < 0)
++		error(-1, errno, "socket");
++
++	ret = ioctl(fd, SIOCSHWTSTAMP, &ifr);
++	if (ret < 0)
++		error(-1, errno, "ioctl(SIOCSHWTSTAMP)");
++
++	close(fd);
++}
++
+ static void cleanup(void)
+ {
+ 	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
+@@ -341,6 +365,8 @@ int main(int argc, char *argv[])
+ 
+ 	printf("rxq: %d\n", rxq);
+ 
++	hwtstamp_enable(ifname);
++
+ 	rx_xsk = malloc(sizeof(struct xsk) * rxq);
+ 	if (!rx_xsk)
+ 		error(-1, ENOMEM, "malloc");
+-- 
+2.39.1.456.gfc5497dd1b-goog
 
