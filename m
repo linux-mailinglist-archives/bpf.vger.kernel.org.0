@@ -2,197 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC09167A9FE
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 06:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B7567AA0B
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 06:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbjAYFgx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 00:36:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
+        id S229758AbjAYFnX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 00:43:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjAYFgw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 00:36:52 -0500
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800344863A;
-        Tue, 24 Jan 2023 21:36:51 -0800 (PST)
-Received: by mail-pj1-f54.google.com with SMTP id lp10so13965678pjb.4;
-        Tue, 24 Jan 2023 21:36:51 -0800 (PST)
+        with ESMTP id S229621AbjAYFnW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 00:43:22 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8A15FCE;
+        Tue, 24 Jan 2023 21:43:21 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id mp20so44627821ejc.7;
+        Tue, 24 Jan 2023 21:43:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oDtVOJ73kEBKahxq/hQ7f6VV771oO934JDeiC/vYduA=;
+        b=hNzIJq3SQl0VPHRt76YQCyqInqi3HbWJ6LAxF/522oHKb6riVTlGLy1uu5cnGjvoNB
+         CLyQF+26Ptm1obKIFdnkIc0ua76+3zAdJC5NCtbPk6OtN1+WuOlk3s3Tn5evObYf/n6h
+         iqx6Z6QaQ23k7RaMzQlhUlNp8TlQi4KT35/zYUG1fsu7Ym3eRz9oe+npty9L1MtRRZaV
+         C5lLRBq9Nf/EHvPX24NrTYbhy+8zETDvHAigE2XX+P2ydP6ovuqm0aPZxGih4B4g64bU
+         mxgW0PWwM7Ld7Y21c+aHEgAv9on6M71bSF2qApD8Vg+b9/q7HKEVu4STFwKg054e6U5O
+         XMzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ymN2eyp6augZo3R/KSeOQiq6ZFc9iSQ3uGk9w/Giiaw=;
-        b=7kaXHWqW56cbt3lW+1BLfldqXioSFRh4wDF6nxJS3wpI01Ag3Df0b31BTC/Slds7lB
-         4uaKRtwM630E3tDoQxF4lIiXFcHSckgQMlqQqcO8D/Lt8IhjnPGFTotfAqiKDWCBRCbm
-         XCd6ydi3Yor+JbM4cfDM2besJHY1GDDuYCcRyK8HDhVkpAY56Z7ky3RaBivGGdioRh/S
-         JV3rEDYqxhCCbbYtzj5oWYvLucj74woscgSrdDf1xdg0X1EATD32T2BCXAGBE0tDVKRD
-         0qcLFZkVvw8D4pPZB71R1pLUyHUP0ANHS8R/YF6yfeI2QAvNAaid2QdYpRMcytSxAVNd
-         MFTw==
-X-Gm-Message-State: AFqh2krinEUypjGtsEctgkH+nMUz48FwHfRoSFZmp6NZd7TC5ktAgaeg
-        HdLLIEHVjHdfEqOwKuqkZWQd7Ru+PERlLsK+
-X-Google-Smtp-Source: AMrXdXuIbbc4pl/x6kX2I9zLLpprTmPM9W7+iOjaFR0Gb2tay64lIL+D1/tCWJdE7kJE8Et4mGDqiw==
-X-Received: by 2002:a05:6a20:6922:b0:b6:99a4:66bd with SMTP id q34-20020a056a20692200b000b699a466bdmr44578574pzj.38.1674625010797;
-        Tue, 24 Jan 2023 21:36:50 -0800 (PST)
-Received: from maniforge ([2620:10d:c090:400::5:d24a])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902c10c00b0016d72804664sm2617135pli.205.2023.01.24.21.36.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jan 2023 21:36:50 -0800 (PST)
-Date:   Tue, 24 Jan 2023 23:36:45 -0600
-From:   David Vernet <void@manifault.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com, tj@kernel.org,
-        memxor@gmail.com
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oDtVOJ73kEBKahxq/hQ7f6VV771oO934JDeiC/vYduA=;
+        b=3c2PhO6D7oZnWOnFbUPzomN4BPDnJ78vPQL650uQZY2i15D5dd7oawCooUGM1wEBI4
+         9oU3DP62fSDi4BZxaBkNpf456iIiX+mx6XKq/I9X1URcimaSpuKlrOe1CqprYQR3NiCR
+         WpXojie2IWiDwekDjSkOhcKtCh9dLUS4dAFbfxRukfiOojWeoFoXc7Oon+5K9XmqjkZo
+         Bzb6rAjl0v11n2ERbC7qjuWCajiul6HgbG7kqm+5O3Nw7POddKyWwIgN7tXIrCQFoWPv
+         nW9NP31EyQCJrVa6oJsCxBA8My8Q0DvtI5e1gb41EIwXdpLBw63Kd1+iT7No+kSzhJNy
+         CDoA==
+X-Gm-Message-State: AFqh2kpkdH00kRlDBQxxtA1jI9wwukndVN3Xgb/1YZseFcgA0V4kwlKv
+        PHQGcxk6PviY+e0eJmGsUD6SVYA2ENu89QOQ07g=
+X-Google-Smtp-Source: AMrXdXsQX6uvi6Z+NBKczoIE7gBRoqj3XNW1nuhgtKwk+JKe7YhETX1oUnPGoIGAeLpP5y+su90g9KvwsULhYjeQBKw=
+X-Received: by 2002:a17:907:d043:b0:868:dca5:b73c with SMTP id
+ vb3-20020a170907d04300b00868dca5b73cmr2869748ejc.1.1674625399693; Tue, 24 Jan
+ 2023 21:43:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20230120192523.3650503-1-void@manifault.com> <20230120192523.3650503-5-void@manifault.com>
+ <20230125043602.gmpi54ixerelmzzx@iphone-mikan.dhcp.thefacebook.com> <Y9C/7fxsIPXiG6mr@maniforge>
+In-Reply-To: <Y9C/7fxsIPXiG6mr@maniforge>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 24 Jan 2023 21:43:08 -0800
+Message-ID: <CAADnVQLi4ErtgFYvky9fh8Yecx_j+NSKBbC5NdfYOEowBAjr8A@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v2 4/9] bpf: Enable cpumasks to be queried and
  used as kptrs
-Message-ID: <Y9C/7fxsIPXiG6mr@maniforge>
-References: <20230120192523.3650503-1-void@manifault.com>
- <20230120192523.3650503-5-void@manifault.com>
- <20230125043602.gmpi54ixerelmzzx@iphone-mikan.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230125043602.gmpi54ixerelmzzx@iphone-mikan.dhcp.thefacebook.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+To:     David Vernet <void@manifault.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@meta.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>, Tejun Heo <tj@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 08:36:02PM -0800, Alexei Starovoitov wrote:
-> On Fri, Jan 20, 2023 at 01:25:18PM -0600, David Vernet wrote:
-> > +
-> > +/**
-> > + * struct bpf_cpumask - refcounted BPF cpumask wrapper structure
-> > + * @cpumask:	The actual cpumask embedded in the struct.
-> > + * @usage:	Object reference counter. When the refcount goes to 0, the
-> > + *		memory is released back to the BPF allocator, which provides
-> > + *		RCU safety.
-> > + *
-> > + * Note that we explicitly embed a cpumask_t rather than a cpumask_var_t.  This
-> > + * is done to avoid confusing the verifier due to the typedef of cpumask_var_t
-> > + * changing depending on whether CONFIG_CPUMASK_OFFSTACK is defined or not. See
-> > + * the details in <linux/cpumask.h>. The consequence is that this structure is
-> > + * likely a bit larger than it needs to be when CONFIG_CPUMASK_OFFSTACK is
-> > + * defined due to embedding the whole NR_CPUS-size bitmap, but the extra memory
-> > + * overhead is minimal. For the more typical case of CONFIG_CPUMASK_OFFSTACK
-> > + * not being defined, the structure is the same size regardless.
-> > + */
-> > +struct bpf_cpumask {
-> > +	cpumask_t cpumask;
-> > +	refcount_t usage;
-> > +};
-> > +
-> > +static struct bpf_mem_alloc bpf_cpumask_ma;
-> > +
-> > +static bool cpu_valid(u32 cpu)
-> > +{
-> > +	return cpu < nr_cpu_ids;
-> > +}
-> > +
-> > +__diag_push();
-> > +__diag_ignore_all("-Wmissing-prototypes",
-> > +		  "Global kfuncs as their definitions will be in BTF");
-> > +
-> > +struct bpf_cpumask *bpf_cpumask_create(void)
-> > +{
-> > +	struct bpf_cpumask *cpumask;
-> > +
-> > +	cpumask = bpf_mem_alloc(&bpf_cpumask_ma, sizeof(*cpumask));
-> > +	if (!cpumask)
-> > +		return NULL;
-> > +
-> > +	memset(cpumask, 0, sizeof(*cpumask));
-> > +	refcount_set(&cpumask->usage, 1);
-> > +
-> > +	return cpumask;
-> > +}
-> 
-> Applied patches 1 and 2. Patch 3 doesn't apply anymore. Pls rebase.
+On Tue, Jan 24, 2023 at 9:36 PM David Vernet <void@manifault.com> wrote:
+>
+> > The UX will be a bit worse, since bpf prog would need to do !=NULL check
+> > but with future bpf_assert() we may get rid of !=NULL check.
+> >
+> > We can keep direct cpumask accessors as kfuncs:
+> >
+> > u32 bpf_cpumask_first(const struct cpumask *cpumask);
+> > u32 bpf_cpumask_first_zero(const struct cpumask *cpumask);
+> >
+> > and add bpf_find_first_bit() and the rest of bit manipulations.
+>
+> Worth noting as well is that I think struct bpf_bitmap is going to be
+> treated somewhat differently than struct bpf_cpumask and struct cpumask.
+> There is no type-safety for bitmaps in the kernel. They're just
+> represented as unsigned long *, so I don't we'll be able to allow
+> programs to pass bitmaps allocated elsewhere in the kernel to read-only
+> bitmap kfuncs like we do for struct cpumask *, as the verifier will just
+> interpret them as pointers to statically sized scalars.
 
-Ack, will rebase for v3.
+That's a good point. That's where run-time and verification-time
+safety hurts UX too much.
 
-> I'm fine with existing bpf_cpumask proposal, but can we do better?
-> This is so close to be a bitmap template.
+> > Since all of the bpf_cpumask do run-time cpu_valid() check we're not
+> > sacrificing performance.
+> >
+> > Feels more generic with wider applicability at the expense of little bit worse UX.
+> > I haven't thought about acq/rel consequences.
+>
+> The TL;DR from me is that I agree that having bitmap kfuncs is a great
+> idea, but I don't see the need to tie the two at the hip at the cost of
+> a worse UX. I'd prefer to push the extra complexity into the BPF backend
+> in favor of a simpler programming front-end for users.
+>
+> Thoughts?
 
-Agreed that they're close, but I'm not a fan of the UX taxes for what we
-get out of it. More below.
-
-> Can we generalize it as
-> struct bpf_bitmap {
-> 	refcount_t refcnt;
->         int num_bits;
->         u64 bits[];
-> };
-> 
-> struct bpf_bitmap *bpf_bitmap_create(int bits)
-> {
->   bitmap = bpf_mem_alloc(&bpf_cpumask_ma, sizeof(*bitmap) + BITS_TO_LONGS(bits) * sizeof(u64));
->   bitmap->num_bits = bits;
-> }
-
-+1 that having bitmap kfuncs would be nice to expose, and should be
-pretty easy to add. Happy to do so in a follow-on patch set.
-
-> 
-> and special case few custom kfuncs in the verifier that allow
-> type cast from bpf_bitmap with to 'struct cpumask *' ? Like
-> struct cpumask *bpf_bitmap_cast_to_cpumask(struct bpf_bitmap *bitmap)
-> {
->   if (bitmap->num_bits == nr_cpu_ids)
->      return bitmap->bits;
->   return NULL;
-> }
-> BTF_ID_FLAGS(func, bpf_bitmap_cast_to_cpumask, KF_TRUSTED_ARGS | KF_RET_NULL)
-
-This I'm not a huge fan of though. It seems like we're removing a useful
-abstraction and adding a UX tax just to avoid defining and exporting an
-additional small set of kfuncs for allocating, and acquire/releasing a
-struct bpf_cpumask. That logic is very minimal, just around 100 lines of
-code including doxygen comments.
-
-It's kind of unfortunate that cpumask is so close to bitmap, but that's
-nothing new -- <linux/cpumask.h> in the kernel is little more than a
-thin wrapper around a bitmap that simply provides some more ergonomic
-APIs, along with some magic that makes it safe to access cpumask_var_t
-on the stack regardless of NR_CPUS. The latter doesn't apply to BPF, but
-the former does.
-
-> The UX will be a bit worse, since bpf prog would need to do !=NULL check
-> but with future bpf_assert() we may get rid of !=NULL check.
-> 
-> We can keep direct cpumask accessors as kfuncs:
-> 
-> u32 bpf_cpumask_first(const struct cpumask *cpumask);
-> u32 bpf_cpumask_first_zero(const struct cpumask *cpumask);
-> 
-> and add bpf_find_first_bit() and the rest of bit manipulations.
-
-Worth noting as well is that I think struct bpf_bitmap is going to be
-treated somewhat differently than struct bpf_cpumask and struct cpumask.
-There is no type-safety for bitmaps in the kernel. They're just
-represented as unsigned long *, so I don't we'll be able to allow
-programs to pass bitmaps allocated elsewhere in the kernel to read-only
-bitmap kfuncs like we do for struct cpumask *, as the verifier will just
-interpret them as pointers to statically sized scalars.
-
-> Since all of the bpf_cpumask do run-time cpu_valid() check we're not
-> sacrificing performance.
-> 
-> Feels more generic with wider applicability at the expense of little bit worse UX.
-> I haven't thought about acq/rel consequences.
-
-The TL;DR from me is that I agree that having bitmap kfuncs is a great
-idea, but I don't see the need to tie the two at the hip at the cost of
-a worse UX. I'd prefer to push the extra complexity into the BPF backend
-in favor of a simpler programming front-end for users.
-
-Thoughts?
+Fair enough. Let's proceed with what you have.
