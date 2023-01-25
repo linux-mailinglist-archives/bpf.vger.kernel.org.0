@@ -2,161 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7741167AE7F
-	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 10:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E54D67AF46
+	for <lists+bpf@lfdr.de>; Wed, 25 Jan 2023 11:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235364AbjAYJnq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 04:43:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
+        id S234689AbjAYKE5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 05:04:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235371AbjAYJnh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 04:43:37 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C25D5648B;
-        Wed, 25 Jan 2023 01:43:08 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DD33E21C75;
-        Wed, 25 Jan 2023 09:43:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1674639786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/H7fv8j3//amIhsuvsnszBORL7yxYM5gHjte1pGnd6k=;
-        b=cJ84t8+Z/oyAwTTCtaCrRcZJz3vmv0agsy9pwxx1mjpy2wVyb9bbJa/fovrQrusm/Svjk5
-        J6I5Atn+BG/uY1djc0bMaR2EhFHHAjtT6MjckOpioFidRZmoo/SxgZTemFBWI/hmnJ034Z
-        w1GOPFueJOKBcny/L6MDveuVWEd9TYY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FA761358F;
-        Wed, 25 Jan 2023 09:43:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id usqPIqr50GPHIgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 09:43:06 +0000
-Date:   Wed, 25 Jan 2023 10:43:05 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, michel@lespinasse.org,
-        jglisse@google.com, vbabka@suse.cz, hannes@cmpxchg.org,
-        mgorman@techsingularity.net, dave@stgolabs.net,
-        willy@infradead.org, liam.howlett@oracle.com, peterz@infradead.org,
-        ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org,
-        songliubraving@fb.com, peterx@redhat.com, david@redhat.com,
-        dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de,
-        kent.overstreet@linux.dev, punit.agrawal@bytedance.com,
-        lstoakes@gmail.com, peterjung1337@gmail.com, rientjes@google.com,
-        axelrasmussen@google.com, joelaf@google.com, minchan@google.com,
-        jannh@google.com, shakeelb@google.com, tatashin@google.com,
-        edumazet@google.com, gthelen@google.com, gurua@google.com,
-        arjunroy@google.com, soheil@google.com, hughlynch@google.com,
-        leewalsh@google.com, posk@google.com, will@kernel.org,
-        aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
-        chenhuacai@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        qianweili@huawei.com, wangzhou1@hisilicon.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
-        airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, l.stach@pengutronix.de,
-        krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com,
-        matthias.bgg@gmail.com, robdclark@gmail.com,
-        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
-        tomba@kernel.org, hjc@rock-chips.com, heiko@sntech.de,
-        ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        dimitri.sivanich@hpe.com, zhangfei.gao@linaro.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com,
-        jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de,
-        jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net,
-        xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, miklos@szeredi.hu,
-        mike.kravetz@oracle.com, muchun.song@linux.dev, bhe@redhat.com,
-        andrii@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, tiwai@suse.com,
-        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-graphics-maintainer@vmware.com,
-        linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org,
-        loongarch@lists.linux.dev, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
-        linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev,
-        dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
-        linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        devel@lists.orangefs.org, kexec@lists.infradead.org,
-        linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
-        selinux@vger.kernel.org, alsa-devel@alsa-project.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 6/6] mm: export dump_mm()
-Message-ID: <Y9D5qS02j/fPLP/6@dhcp22.suse.cz>
-References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-7-surenb@google.com>
+        with ESMTP id S233829AbjAYKEz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 05:04:55 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4F312F38;
+        Wed, 25 Jan 2023 02:04:52 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id i65so13083472pfc.0;
+        Wed, 25 Jan 2023 02:04:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JwzqINKHCVROHxyUeM7gAg9VP3mqXT4x5vbM4VvtkuE=;
+        b=L/bq7vAfQEmvURcKZ+hAnGqb1ZIfXrTmJAmc0c/k8uPbliRDyHQ2JQepuEBDXqSjCA
+         +T9NA+4whuV6mAZgZYdNES7OB8wdh43LHdmAplureUm9trPO4mHWzTHRdM1mK9cYoTi/
+         OaUN7FuvKOP3Q8QUogWXuH7dFX1Cu5a7RGGqNRfYB65L/FALCGp/49n7dPcBpLziU8Ct
+         ybgTnaZtqNNAg2TmORc1iCinbrj6wdtDO9SukzgdHlyfpn6bRZExjsURpTRlrlVeHmH0
+         q6u4GQiB/XmbT0UmQqA/u7eqg2bAn+Tcl9MJJNGECRTwfsyu6HNvb84mO9NW2tX3z2Ff
+         GQZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JwzqINKHCVROHxyUeM7gAg9VP3mqXT4x5vbM4VvtkuE=;
+        b=6ANq7eodJ9nDLU443uPgzU1UJ/N5Dvsk0LyAIldyOE7aP9GYCBnOhY71GqC2VKvUyg
+         QPuLzBPrQkKTOvI6FwVTE2aHic8iZRlhW4bx04LOKysoQRcLTFhnj3coU+vTEufmE/S4
+         zQ9RHgU1YprxWYgt4pw8dOuKDIi9Y9hrB9p8G8zcdfziUXqut/9MoRdLkM8jrOxVTWsb
+         DiOzTaqIBdFsgBXUIMSPhCIV88S1hBl2nhqGZon8jMfaZbPtrX1osD6EMSEyCFMRhM6m
+         FlEONGKIG9EmzKqfdC1SnBn8wgm7qrZzyQ36TxUg+Bqqm2+tOMXvU0BE7U9wkjzTD4ey
+         kPzA==
+X-Gm-Message-State: AFqh2krOHVQjwAdUkRoptBasc2mBIUS5c5WgagxM2zPjVGYq5xqv3MIw
+        jI/N/A3TgY6+If1Hq805bA==
+X-Google-Smtp-Source: AMrXdXtggbBx++LlOvDs7f+HPSpGdXM2uIoQ1INBv4LsX+ScqQIe/UdMVM5+6ORVsEiDrPbi/5lEow==
+X-Received: by 2002:aa7:9e0c:0:b0:58d:ae6d:14d5 with SMTP id y12-20020aa79e0c000000b0058dae6d14d5mr32492938pfq.27.1674641091344;
+        Wed, 25 Jan 2023 02:04:51 -0800 (PST)
+Received: from WDIR.. ([182.209.58.25])
+        by smtp.gmail.com with ESMTPSA id g12-20020a056a00078c00b0058837da69edsm3171723pfu.128.2023.01.25.02.04.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Jan 2023 02:04:50 -0800 (PST)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [bpf-next v2] selftests/bpf: fix vmtest static compilation error
+Date:   Wed, 25 Jan 2023 19:04:40 +0900
+Message-Id: <20230125100440.21734-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230125083851.27759-7-surenb@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed 25-01-23 00:38:51, Suren Baghdasaryan wrote:
-> mmap_assert_write_locked() is used in vm_flags modifiers. Because
-> mmap_assert_write_locked() uses dump_mm() and vm_flags are sometimes
-> modified from from inside a module, it's necessary to export
-> dump_mm() function.
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+As stated in README.rst, in order to resolve errors with linker errors,
+'LDLIBS=-static' should be used. Most problems will be solved by this
+option, but in the case of urandom_read, this won't fix the problem. So
+the Makefile is currently implemented to strip the 'static' option when
+compiling the urandom_read. However, stripping this static option isn't
+configured properly on $(LDLIBS) correctly, which is now causing errors
+on static compilation.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+    # LDLIBS=-static ./vmtest.sh
+    ld.lld: error: attempted static link of dynamic object liburandom_read.so
+    clang: error: linker command failed with exit code 1 (use -v to see invocation)
+    make: *** [Makefile:190: /linux/tools/testing/selftests/bpf/urandom_read] Error 1
+    make: *** Waiting for unfinished jobs....
 
-> ---
->  mm/debug.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/mm/debug.c b/mm/debug.c
-> index 9d3d893dc7f4..96d594e16292 100644
-> --- a/mm/debug.c
-> +++ b/mm/debug.c
-> @@ -215,6 +215,7 @@ void dump_mm(const struct mm_struct *mm)
->  		mm->def_flags, &mm->def_flags
->  	);
->  }
-> +EXPORT_SYMBOL(dump_mm);
->  
->  static bool page_init_poisoning __read_mostly = true;
->  
-> -- 
-> 2.39.1
+This commit fixes this problem by configuring the strip with $(LDLIBS).
 
+Fixes: 68084a136420 ("selftests/bpf: Fix building bpf selftests statically")
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+
+---
+Changes in V2:
+ - Add extra filter-out logic to LDLIBS
+---
+ tools/testing/selftests/bpf/Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index c22c43bbee19..2323a2b98b81 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -181,14 +181,15 @@ endif
+ # do not fail. Static builds leave urandom_read relying on system-wide shared libraries.
+ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
+ 	$(call msg,LIB,,$@)
+-	$(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $^ $(LDLIBS)   \
++	$(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS))   \
++		     $^ $(filter-out -static,$(LDLIBS))	     \
+ 		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
+ 		     -fPIC -shared -o $@
+ 
+ $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
+-		     liburandom_read.so $(LDLIBS)			       \
++		     liburandom_read.so $(filter-out -static,$(LDLIBS))	     \
+ 		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
+ 		     -Wl,-rpath=. -o $@
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.34.1
+
