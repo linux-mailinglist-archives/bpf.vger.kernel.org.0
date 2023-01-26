@@ -2,77 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F0767D372
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 18:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B566F67D386
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 18:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbjAZRnc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 12:43:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
+        id S231150AbjAZRwJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 12:52:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231546AbjAZRnb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 12:43:31 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9211814C
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 09:43:30 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id r18so1534882pgr.12
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 09:43:30 -0800 (PST)
+        with ESMTP id S229567AbjAZRwI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 12:52:08 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8B34B1B5
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 09:52:07 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id k18so2528768pll.5
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 09:52:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Jb4brqQ/2hQ6pNEAUb9CIxAmJKrnM/gvXK7e4768ziQ=;
-        b=hG05kY0DEp42M5nGP2fZkLLJVS2pDmOCpZWww85ikuH+klB5+4ZyZ/CdvwapLU4QKB
-         DFTIqMw4pXtalsVtt4RWzpQgFVzAAJ3hA7GGVzA6pq21jXqpEgGT06BlX9AlOqwb2YAU
-         DdJJa37y4Uqwt2gj3r8VV7nOlvd64Zy3kgJ0kMnySv8W1y9dcMbJfpfrPpqOSoQ9jDOT
-         fxA5hrPK/KOs/TYrTPTnGXfDz0MUfXG+73cEkY/+cf+9qmlmy34CPglGpSvlRcrKYFNh
-         mopx30AwW2SQOedh++Rm7tT5ySQsqp51d+XNN7CHsKm5gxXLqiBg1oXNt/xQK/L4gGnU
-         rxwA==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bVX8yVQAejQfmtbRtIIcMUEYRWbF1sukdXzrWiHeRvk=;
+        b=ERu7sxFjQFRaFbGz9SEA8NR3U8voabUhnd/wjNYmK5Se34z/f+2dHfGURPgqIEagAa
+         i9FYThokdkfWG6XeIcgRlTHh0GpfHucbN49PYqZr/Tr4/7+LjLwwUYJ5C4lp/VRvWOTz
+         /9q3PSJ5j8cyA7yYCXaLcGcXD3RcaMUkFG1FArBXeRFzS3ygyvgX4OfSJxIDIHXs2NcZ
+         OLCUQBVLSghPq6zfu/AHKzzj9yYPV359gxbZz25uFmHGPntCVPMcSSn064LrsTWNlzN6
+         wPUdBcEO/4F3INi0FJ9HjTaxBzj3IzO3/xL62THRIFACjRLfEOzdcd9+pUHiO3C4atQS
+         0Dyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jb4brqQ/2hQ6pNEAUb9CIxAmJKrnM/gvXK7e4768ziQ=;
-        b=TIVrg1MC05ewdUTAg3MhRo2BwuexyMtqtAE0iO43PTZpMP8563uXNoo2dEeXktihCI
-         sv8/WdxwDB+a8oHKQjtFHrqf3lDA84fuVKbj1C5HpvB2bER31BEKbzN/NWRAY2cgOsPo
-         bFbLZnLyWqmfQD//SbuG5kBkM0YNj1AX0pogneej7k7bGKVQvoxarB+DjKuqnq16JdTm
-         srLrYDqdD2bpEMwIc6KsnbMp2gRtRJmg0OytMm5zcGJ0tE3FjOPsR2POiHttdX3IwRSs
-         YELXqBObwfBW0XvaC7v8uriFDWGzJwWFEi6lnBOM0UNRFqS1jGSy8d0MD5bISxJu/tF1
-         /+NA==
-X-Gm-Message-State: AFqh2kpk1RJrIWX7M1dZICQhK8xOh237TP8D+Q23ghCiNFts7NLjnGjc
-        ToIrrYU97ONe7+p64ic9iGs=
-X-Google-Smtp-Source: AMrXdXtKkj0wUL2tNp6sq7RuIFRDILr2uzOdGe+P57Ous/Mkk4kXFmbN/1ttGInsAUgyBBwUMdd3cw==
-X-Received: by 2002:a62:ae0e:0:b0:58d:cc07:4f9 with SMTP id q14-20020a62ae0e000000b0058dcc0704f9mr30343324pff.2.1674755009923;
-        Thu, 26 Jan 2023 09:43:29 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21e8::13de? ([2620:10d:c090:400::5:80e4])
-        by smtp.gmail.com with ESMTPSA id t22-20020a056a0021d600b0058d9e915891sm1117460pfj.57.2023.01.26.09.43.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Jan 2023 09:43:29 -0800 (PST)
-Message-ID: <9d2a5966-7cef-0c35-8990-368fc6de930d@gmail.com>
-Date:   Thu, 26 Jan 2023 09:43:26 -0800
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bVX8yVQAejQfmtbRtIIcMUEYRWbF1sukdXzrWiHeRvk=;
+        b=3u3TzJrYn+9ar0K/H9VSlGsGRcx8W0DGlZlx+BaPm0ey2mI3SeeRV4wg7YiqTt8GjS
+         RzrFRhvSvNngqjacrTPp20kBrO3QYNbzRIHzJs/BSDL7I8/92mrJ7dbKF85Bmc6x0eEM
+         9afDlvMIAtCUhaE5/1rxwg1z3r7j0Wxlh0vmSUUkPe1u+Qv69xAgsObDLQy0NxnrYmn5
+         WeTGOCMVPhSO+8lrCOGDamMMsFvsGNWFFbndlF8PR5M7OTZDh0o/Zq1YPW33Jkk+BiYx
+         nYlUste9dH70E2nrOwMzjdD1L/ZbIVPlavkYeOO9Er2w9M9wlIZ9Y/QCVcMQnGSLf+W4
+         DT3A==
+X-Gm-Message-State: AFqh2koG5G1l7aaSHlTcq9wRfnll80r8qZEokVTHWa6IVpDvp9iETmsb
+        SREexGfHd/y+f103w0HX516swJQC129HyALjoSk=
+X-Google-Smtp-Source: AMrXdXsjdAjy1oa9ck/K7fKzfVDooVztFzsgJjW76DXtquEAO5pAD8IcskviwXdY/LKIMfi9lY1MaES/A7LWS0iT5fg=
+X-Received: by 2002:a17:90a:31c2:b0:22b:b19e:9feb with SMTP id
+ j2-20020a17090a31c200b0022bb19e9febmr3256779pjf.5.1674755526738; Thu, 26 Jan
+ 2023 09:52:06 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH dwarves 4/5] btf_encoder: represent "."-suffixed optimized
- functions (".isra.0") in BTF
-Content-Language: en-US
-To:     Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org,
-        yhs@fb.com, ast@kernel.org, olsajiri@gmail.com, timo@incline.eu
-Cc:     daniel@iogearbox.net, andrii@kernel.org, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
-        haoluo@google.com, martin.lau@kernel.org, bpf@vger.kernel.org
-References: <1674567931-26458-1-git-send-email-alan.maguire@oracle.com>
- <1674567931-26458-5-git-send-email-alan.maguire@oracle.com>
- <8b915c70-8ed4-9431-cd19-7e3194d29c09@gmail.com>
- <e719fbaf-9387-7818-c9dd-7deb545eb60e@oracle.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <e719fbaf-9387-7818-c9dd-7deb545eb60e@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
+ <878rhty100.fsf@cloudflare.com> <CAMy7=ZVLUpeHM4A_aZ5XT-CYEM8_uj8y=GRcPT89Bf5=jtS+og@mail.gmail.com>
+ <08dce08f-eb4b-d911-28e8-686ca3a85d4e@meta.com> <CAMy7=ZWPc279vnKK6L1fssp5h7cb6cqS9_EuMNbfVBg_ixmTrQ@mail.gmail.com>
+ <3a87b859-d7c9-2dfd-b659-cd3192a67003@linux.dev> <CAMy7=ZWi35SKj9rcKwj0eyH+xY8ZBgiX_vpF=mydxFDahK6trg@mail.gmail.com>
+ <87k01dvt83.fsf@cloudflare.com> <CAMy7=ZXyqCzhosiwpLa9rsFqW2jX4V59-Ef4k-5dQtqKOakTFQ@mail.gmail.com>
+ <CAADnVQJaCTQtmvOdQoeaZbt0wwPp4iYjbvaPvRZw4DBEOSrJYg@mail.gmail.com>
+ <CAMy7=ZVpGMOK_kHk1qB4ywxV88Vvtt=rGw4Q-Fi1F7bGU+6prQ@mail.gmail.com>
+ <CAADnVQLaKyRJwXnU4wZrih4pRduw_eWarA2uNuc=HssKQUAn_Q@mail.gmail.com>
+ <CAMy7=ZU7oEa-VJy1_5WM6+poWsVCyZ0Y7ocQLq3qkFcs2-ftBw@mail.gmail.com>
+ <CAADnVQKbi6JA4tX=uBHvNrYEUeMa3jmB=FSb=1LufE3597c86A@mail.gmail.com>
+ <CAMy7=ZW7tX4ziwJLhGtqQjbdLyJjqTo=Vi=nQ4sDJHASWMCKgQ@mail.gmail.com>
+ <CAADnVQJmpB+bXB_tNXBSVFyG-1KnzKxapLfjUc51_v0-Vho+7w@mail.gmail.com>
+ <CAMy7=ZX+swf7_TzKTHnrMK9d-2PjQK_22vFy_ypBQNsYarqChw@mail.gmail.com>
+ <CAADnVQ++LzKt9Q-GtGXknVBqyMqY=vLJ3tR3NNGG3P66gvVCFQ@mail.gmail.com>
+ <CAMy7=ZUYQEJr9iFqGveLVhXqGoN+uVtUQRwx1F=KNVFVjtoZsw@mail.gmail.com> <CAADnVQ+PX7etG7=zL8URRMRVS7DzZW6fhEYk34uyEk4_dFrKdg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+PX7etG7=zL8URRMRVS7DzZW6fhEYk34uyEk4_dFrKdg@mail.gmail.com>
+From:   Yaniv Agman <yanivagman@gmail.com>
+Date:   Thu, 26 Jan 2023 19:51:55 +0200
+Message-ID: <CAMy7=ZXvKZ_AJF97_f2uYHOOEsUUvgmZSHLYf5L=1w9Lwr+QWg@mail.gmail.com>
+Subject: Re: Are BPF programs preemptible?
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,146 +83,105 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 1/25/23 10:59, Alan Maguire wrote:
-> On 25/01/2023 17:54, Kui-Feng Lee wrote:
->> On 1/24/23 05:45, Alan Maguire wrote:
->>> +/*
->>> + * static functions with suffixes are not added yet - we need to
->>> + * observe across all CUs to see if the static function has
->>> + * optimized parameters in any CU, since in such a case it should
->>> + * not be included in the final BTF.  NF_HOOK.constprop.0() is
->>> + * a case in point - it has optimized-out parameters in some CUs
->>> + * but not others.  In order to have consistency (since we do not
->>> + * know which instance the BTF-specified function signature will
->>> + * apply to), we simply skip adding functions which have optimized
->>> + * out parameters anywhere.
->>> + */
->>> +static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct function *fn)
->>> +{
->>> +    struct btf_encoder *parent = encoder->parent ? encoder->parent : encoder;
->>> +    const char *name = function__name(fn);
->>> +    struct function **nodep;
->>> +    int ret = 0;
->>> +
->>> +    pthread_mutex_lock(&parent->saved_func_lock);
->> Do you have the number of static functions with suffices?
->>
-> There are a few thousand, and around 25000 static functions
-> overall ("."-suffixed are all static) that will participate in
-> the tree representations (see patch 5).  This equates to roughly
-> half of the vmlinux BTF functions.
-
-
-To evaluate the effectiveness of your patchset, I conducted an 
-experiment where I ran a command:
-
-`time env LLVM_OBJCOPY=objcopy pahole -J --btf_gen_floats 
---lang_exclude=rust -j .tmp_vmlinux.btf`.
-
-
-On my machine, it took about
-
-  - 9s w/o the patchset (3s waiting for the worker threads)
-
-  - 13s w/ the patchset (7s waiting for the worker threads)
-
-It was about 4s difference.
-
-If I turned multi-threading off (w/o -j), it took
-
-  - 28s w/o the patchset.
-
-  - 32s w/ the patchset.
-
-It was about 4s difference as sell.
-
-
-Hence, multi-threading does not benefit us in the instance of this 
-patchset. Lock contention should be taken into account heavily here. 
-Approximately 4% of the time is spent when executing a Linux incremental 
-build (about 96s~108s) with an insignificant modification to the source 
-tree for about four seconds.
-
-
-Taking into consideration the previous experience that shows a reduction 
-in BTF info processing time (not including loading and IO) to 13%, I am 
-uncertain if it pays off to invest my time towards reducing 4s to <1s. 
-Though, cutting down 3 seconds every single time I need to rebuild the 
-tree for some small changes might be worth it.
-
-
+=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=94=D7=
+=B3, 26 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-17:29 =D7=9E=D7=90=D7=AA=
+ =E2=80=AAAlexei Starovoitov=E2=80=AC=E2=80=8F
+<=E2=80=AAalexei.starovoitov@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
 >
->> If the number of static functions with suffices is high, the contention of the lock would be an issue.
->>
->> Is it possible to keep a local pool of static functions with suffices? The pool will be combined with its parent either at the completion of a CU, before ending the thread or when merging into the main thread.
->>
-> It's possible alright. I'll try to lay out the possibilities so we
-> can figure out the best way forward.
+> On Wed, Jan 25, 2023 at 10:59 PM Yaniv Agman <yanivagman@gmail.com> wrote=
+:
+> >
+> > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=94=
+=D7=B3, 26 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-4:22 =D7=9E=D7=90=D7=
+=AA =E2=80=AAAlexei Starovoitov=E2=80=AC=E2=80=8F
+> > <=E2=80=AAalexei.starovoitov@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+> > >
+> > > On Wed, Jan 25, 2023 at 11:59 AM Yaniv Agman <yanivagman@gmail.com> w=
+rote:
+> > > >
+> > > > > Anyway back to preempt_disable(). Think of it as a giant spin_loc=
+k
+> > > > > that covers the whole program. In preemptable kernels it hurts
+> > > > > tail latency and fairness, and is completely unacceptable in RT.
+> > > > > That's why we moved to migrate_disable.
+> > > > > Technically we can add bpf_preempt_disable() kfunc, but if we do =
+that
+> > > > > we'll be back to square one. The issues with preemptions and RT
+> > > > > will reappear. So let's figure out a different solution.
+> > > > > Why not use a scratch buffer per program ?
+> > > >
+> > > > Totally understand the reason for avoiding preemption disable,
+> > > > especially in RT kernels.
+> > > > I believe the answer for why not to use a scratch buffer per progra=
+m
+> > > > will simply be memory space.
+> > > > In our use-case, Tracee [1], we let the user choose whatever events=
+ to
+> > > > trace for a specific workload.
+> > > > This list of events is very big, and we have many BPF programs
+> > > > attached to different places of the kernel.
+> > > > Let's assume that we have 100 events, and for each event we have a
+> > > > different BPF program.
+> > > > Then having 32kb per-cpu scratch buffers translates to 3.2MB per on=
+e
+> > > > cpu, and ~100MB per 32 CPUs, which is more common for our case.
+> > >
+> > > Well, 100 bpf progs consume at least a page each,
+> > > so you might want one program attached to all events.
+> > >
+> >
+> > Unfortunately, I don't think that would be possible. We still need to
+> > support kernels with 4096 instructions limit.
+> > We may add some generic programs for events with simpler logic, but
+> > even then, support for bpf cookies needed for such programs was only
+> > added in more recent kernels.
+> >
+> > > > Since we always add new events to Tracee, this will also not be sca=
+lable.
+> > > > Yet, if there is no other solution, I believe we will go in that di=
+rection
+> > > >
+> > > > [1] https://github.com/aquasecurity/tracee/blob/main/pkg/ebpf/c/tra=
+cee.bpf.c
+> > >
+> > > you're talking about BPF_PERCPU_ARRAY(scratch_map, scratch_t, 1); ?
+> >
+> > We actually have 3 different percpu maps there shared between
+> > different programs so we will have to take care of them all.
+> >
+> > >
+> > > Insead of scratch_map per program, use atomic per-cpu counter
+> > > for recursion.
+> > > You'll have 3 levels in the worst case.
+> >
+> > Is it guaranteed that no more than 3 levels exist?
+> > I suggested a similar solution with 2 levels at the beginning of this
+> > thread, but Yonghong Song replied that there is no restriction on
+> > this.
 >
-> Option 1: global tree of static functions, created during DWARF loading
+> There are no restrictions, but I doubt you can construct a case
+> where you'll see more than 3 in practice.
 >
-> Pro: Quick addition/lookup, we can flag optimizations or inconsistent prototypes as
-> we encounter them.
-> Con: Lock contention between encoder threads.
->
-> Option 2: store static functions in a per-encoder tree, traverse them all
-> prior to BTF merging to eliminate unwanted functions
->
-> Pro: limits contention.
-> Con: for each static function in each encoder, we need to look it up in all other
-> encoder trees. In option 1 we paid that price as the function was added, here
-> we pay it later on prior to merging. So processing here is
-> O(number_functions * num_encoders). There may be a cleverer way to handle
-> this but I can't see it right now.
->
-> There may be other approaches to this of course, but these were the two I
-> could come up with. What do you think?
 
+Ok, I see.
 
-Option 2 appears to be the more convenient and effective solution, 
-whereas Option 1, I guess, will require considerable effort for a 
-successful outcome.
-
-
-> Alan
+> > > So it will be:
+> > > BPF_PERCPU_ARRAY(scratch_map, scratch_t, 3);
+> > > On prog entry increment the recursion counter, on exit decrement.
+> > > And use that particular scratch_t in the prog.
+> >
+> > I'm just afraid of potential deadlocks. For sure we will need to
+> > decrement the counter on each return path, but can it happen that a
+> > bpf program crashes, leaving the counter non-zero? I know that's the
+> > job of the verifier to make sure such things won't happen, but can we
+> > be sure of that?
 >
->>> +    nodep = tsearch(fn, &parent->saved_func_tree, function__compare);
->>> +    if (nodep == NULL) {
->>> +        fprintf(stderr, "error: out of memory adding local function '%s'\n",
->>> +            name);
->>> +        ret = -1;
->>> +        goto out;
->>> +    }
->>> +    /* If we find an existing entry, we want to merge observations
->>> +     * across both functions, checking that the "seen optimized-out
->>> +     * parameters" status is reflected in our tree entry.
->>> +     * If the entry is new, record encoder state required
->>> +     * to add the local function later (encoder + type_id_off)
->>> +     * such that we can add the function later.
->>> +     */
->>> +    if (*nodep != fn) {
->>> +        (*nodep)->proto.optimized_parms |= fn->proto.optimized_parms;
->>> +    } else {
->>> +        struct btf_encoder_state *state = zalloc(sizeof(*state));
->>> +
->>> +        if (state == NULL) {
->>> +            fprintf(stderr, "error: out of memory adding local function '%s'\n",
->>> +                name);
->>> +            ret = -1;
->>> +            goto out;
->>> +        }
->>> +        state->encoder = encoder;
->>> +        state->type_id_off = encoder->type_id_off;
->>> +        fn->priv = state;
->>> +        encoder->saved_func_cnt++;
->>> +        if (encoder->verbose)
->>> +            printf("added local function '%s'%s\n", name,
->>> +                   fn->proto.optimized_parms ?
->>> +                   ", optimized-out params" : "");
->>> +    }
->>> +out:
->>> +    pthread_mutex_unlock(&parent->saved_func_lock);
->>> +    return ret;
->>> +}
->>> +
+> if you don't trust the verifier you shouldn't be using bpf in the first p=
+lace.
+
+Oh believe me I trust it, but I must be honest and say that I don't
+know about all the intricacies of the kernel, especially when it comes
+to scheduling and preemption.
+So I am just trying to think if there is a path where this mechanism
+can break, and express my concern about the potential for errors or
+bugs that may lead to unexpected behaviors.
