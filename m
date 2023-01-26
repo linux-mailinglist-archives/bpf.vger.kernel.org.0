@@ -2,138 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC8567CF5A
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 16:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C6267D032
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 16:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbjAZPLc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 10:11:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
+        id S231698AbjAZP3i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 10:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbjAZPLb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 10:11:31 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4F03402A;
-        Thu, 26 Jan 2023 07:11:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EH9adbDOpWNaGYEHl4xrAV40gwHDwqK76tq84Z0eyXc=; b=iqmwaHjxa8hZXZrYCzuWMxG2Kd
-        gUi1Y8eYsd0omFHjfmpVdNaehwIHED+H1VzLiTscJu/MXykaHjjIUo4/UeePSQ/3qO2Scxl5KBcbs
-        rwafzWiMp0gW54lDXpQNTGojrzBrhUSE24qBNrz9Eu8wZKUKM+VJeNVRGRDui4Mjh6zNrJRA9uXJe
-        2WKv1rttzI5041i+Ny9WQoRsYwvuy+Pu29+WLEfQrszB7lQZjKA+bZ/4URx7/yXNldScNG2l8YeYl
-        moQR7vt2oRKUKukioTBGNdLmNI+GiODuZUH9eGz4sLFdnhDHr8CijQAXVN9xNJqlnGwrCU0R4Kh9h
-        Kpe2WfSQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pL3s4-006q4a-Hd; Thu, 26 Jan 2023 15:09:00 +0000
-Date:   Thu, 26 Jan 2023 15:09:00 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-        michel@lespinasse.org, jglisse@google.com, mhocko@suse.com,
-        vbabka@suse.cz, hannes@cmpxchg.org, mgorman@techsingularity.net,
-        dave@stgolabs.net, liam.howlett@oracle.com, peterz@infradead.org,
-        ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org,
-        songliubraving@fb.com, peterx@redhat.com, david@redhat.com,
-        dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de,
-        kent.overstreet@linux.dev, punit.agrawal@bytedance.com,
-        lstoakes@gmail.com, peterjung1337@gmail.com, rientjes@google.com,
-        axelrasmussen@google.com, joelaf@google.com, minchan@google.com,
-        jannh@google.com, shakeelb@google.com, tatashin@google.com,
-        edumazet@google.com, gthelen@google.com, gurua@google.com,
-        arjunroy@google.com, soheil@google.com, hughlynch@google.com,
-        leewalsh@google.com, posk@google.com, will@kernel.org,
-        aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
-        chenhuacai@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        qianweili@huawei.com, wangzhou1@hisilicon.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
-        airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, l.stach@pengutronix.de,
-        krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com,
-        matthias.bgg@gmail.com, robdclark@gmail.com,
-        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
-        tomba@kernel.org, hjc@rock-chips.com, heiko@sntech.de,
-        ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        dimitri.sivanich@hpe.com, zhangfei.gao@linaro.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com,
-        jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de,
-        jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net,
-        xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, miklos@szeredi.hu,
-        mike.kravetz@oracle.com, muchun.song@linux.dev, bhe@redhat.com,
-        andrii@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, tiwai@suse.com,
-        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-graphics-maintainer@vmware.com,
-        linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org,
-        loongarch@lists.linux.dev, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
-        linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev,
-        dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
-        linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        devel@lists.orangefs.org, kexec@lists.infradead.org,
-        linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
-        selinux@vger.kernel.org, alsa-devel@alsa-project.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-Message-ID: <Y9KXjLaFFUvqqdd4@casper.infradead.org>
-References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-2-surenb@google.com>
- <Y9JFFYjfJf9uDijE@kernel.org>
- <Y9KTUw/04FmBVplw@kernel.org>
+        with ESMTP id S231893AbjAZP3h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 10:29:37 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D1546147
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 07:29:32 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id vw16so5927360ejc.12
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 07:29:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6mMvWoIy5iryQMrw20IzkMohGenPUI7earBP0AYk/4Q=;
+        b=ToRCtF91OhufXsAaWRGxGtuKpazClcy0MAmJ8JN26m7LuNApVU3mvNPknftnjBmy3/
+         Hczigdic9urQbZuOtEVz3o4ly4rE/m46YOpuR0nNQ0SSbufiYcQITnepUAN88Iyn4r8A
+         krUV7+1PNHyjf7T721HnVjE4yp9/n963P2t8P67aZFAoU9MjH8n0nOTvxkviytWThtrP
+         uwmRA/pp+QfPqJSU6h1ogx8NlLsT/QQbnIpDV+N/QoIvocYmlIgTsxbVtd2w9RRodQ7J
+         JNmFCDSH17rsmfuYFIcVHktaVuhMrMRLi0Iw/J5qofnNiLuVcfEsuISCy7igmb3/9uHK
+         PouQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6mMvWoIy5iryQMrw20IzkMohGenPUI7earBP0AYk/4Q=;
+        b=MvtfGiKUNF8te4APlHX/ZVmEdiIG4mWAjI3yXgDZKm6uNg5aEy06yPeAvLIT2uqPPo
+         idS4nSXbXJNcvbZdEjJF3n4vH3yX/c+c/ASVz80E/rYQfQyXj+EyD1GFNh7ecldKyHGc
+         shcvwvyQPKRSGh/VRanZHXlBZfN6cIWMgpV9H0GyqRnY34m546KT56LcHQa//YutyMiN
+         OBS7m3Y6FpDy6bMjzNuVMZFoGuIKxGZukZ00XUjqxEVjgURNB9wXwL4IutUY3R98l7rH
+         2b94ZdoE0AVD7qt+Pdx+jyH0OKsJXHDd5BaOm5PjqHXZJLRXcnNv/1rtAUCG6oX5QBOJ
+         wLVw==
+X-Gm-Message-State: AFqh2kr46C7mJGaR3pa/Dk4XaXR71YyRWVDm8R5MMupfSuHI/4jNbS5l
+        89rri/8GDmJ2Z6Me0ZbFjWjDMNJ19nA6mihAD5I=
+X-Google-Smtp-Source: AMrXdXtm9ECQB5CWPkb0ICwYUPwUtnR4GLEp+6Nm/KFyTnuLOzX+YxDniSplKTZTiC/WVYGtuGjHXEL5iKO/bOllRZs=
+X-Received: by 2002:a17:906:380e:b0:877:5b9b:b426 with SMTP id
+ v14-20020a170906380e00b008775b9bb426mr4612212ejc.12.1674746971204; Thu, 26
+ Jan 2023 07:29:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9KTUw/04FmBVplw@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
+ <878rhty100.fsf@cloudflare.com> <CAMy7=ZVLUpeHM4A_aZ5XT-CYEM8_uj8y=GRcPT89Bf5=jtS+og@mail.gmail.com>
+ <08dce08f-eb4b-d911-28e8-686ca3a85d4e@meta.com> <CAMy7=ZWPc279vnKK6L1fssp5h7cb6cqS9_EuMNbfVBg_ixmTrQ@mail.gmail.com>
+ <3a87b859-d7c9-2dfd-b659-cd3192a67003@linux.dev> <CAMy7=ZWi35SKj9rcKwj0eyH+xY8ZBgiX_vpF=mydxFDahK6trg@mail.gmail.com>
+ <87k01dvt83.fsf@cloudflare.com> <CAMy7=ZXyqCzhosiwpLa9rsFqW2jX4V59-Ef4k-5dQtqKOakTFQ@mail.gmail.com>
+ <CAADnVQJaCTQtmvOdQoeaZbt0wwPp4iYjbvaPvRZw4DBEOSrJYg@mail.gmail.com>
+ <CAMy7=ZVpGMOK_kHk1qB4ywxV88Vvtt=rGw4Q-Fi1F7bGU+6prQ@mail.gmail.com>
+ <CAADnVQLaKyRJwXnU4wZrih4pRduw_eWarA2uNuc=HssKQUAn_Q@mail.gmail.com>
+ <CAMy7=ZU7oEa-VJy1_5WM6+poWsVCyZ0Y7ocQLq3qkFcs2-ftBw@mail.gmail.com>
+ <CAADnVQKbi6JA4tX=uBHvNrYEUeMa3jmB=FSb=1LufE3597c86A@mail.gmail.com>
+ <CAMy7=ZW7tX4ziwJLhGtqQjbdLyJjqTo=Vi=nQ4sDJHASWMCKgQ@mail.gmail.com>
+ <CAADnVQJmpB+bXB_tNXBSVFyG-1KnzKxapLfjUc51_v0-Vho+7w@mail.gmail.com>
+ <CAMy7=ZX+swf7_TzKTHnrMK9d-2PjQK_22vFy_ypBQNsYarqChw@mail.gmail.com>
+ <CAADnVQ++LzKt9Q-GtGXknVBqyMqY=vLJ3tR3NNGG3P66gvVCFQ@mail.gmail.com> <CAMy7=ZUYQEJr9iFqGveLVhXqGoN+uVtUQRwx1F=KNVFVjtoZsw@mail.gmail.com>
+In-Reply-To: <CAMy7=ZUYQEJr9iFqGveLVhXqGoN+uVtUQRwx1F=KNVFVjtoZsw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 26 Jan 2023 07:29:19 -0800
+Message-ID: <CAADnVQ+PX7etG7=zL8URRMRVS7DzZW6fhEYk34uyEk4_dFrKdg@mail.gmail.com>
+Subject: Re: Are BPF programs preemptible?
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 04:50:59PM +0200, Mike Rapoport wrote:
-> On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
-> > On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
-> > > +/* Use when VMA is not part of the VMA tree and needs no locking */
-> > > +static inline void init_vm_flags(struct vm_area_struct *vma,
-> > > +				 unsigned long flags)
-> > 
-> > I'd suggest to make it vm_flags_init() etc.
-> 
-> Thinking more about it, it will be even clearer to name these vma_flags_xyz()
+On Wed, Jan 25, 2023 at 10:59 PM Yaniv Agman <yanivagman@gmail.com> wrote:
+>
+> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=94=
+=D7=B3, 26 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2023 =D7=91-4:22 =D7=9E=D7=90=D7=
+=AA =E2=80=AAAlexei Starovoitov=E2=80=AC=E2=80=8F
+> <=E2=80=AAalexei.starovoitov@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+> >
+> > On Wed, Jan 25, 2023 at 11:59 AM Yaniv Agman <yanivagman@gmail.com> wro=
+te:
+> > >
+> > > > Anyway back to preempt_disable(). Think of it as a giant spin_lock
+> > > > that covers the whole program. In preemptable kernels it hurts
+> > > > tail latency and fairness, and is completely unacceptable in RT.
+> > > > That's why we moved to migrate_disable.
+> > > > Technically we can add bpf_preempt_disable() kfunc, but if we do th=
+at
+> > > > we'll be back to square one. The issues with preemptions and RT
+> > > > will reappear. So let's figure out a different solution.
+> > > > Why not use a scratch buffer per program ?
+> > >
+> > > Totally understand the reason for avoiding preemption disable,
+> > > especially in RT kernels.
+> > > I believe the answer for why not to use a scratch buffer per program
+> > > will simply be memory space.
+> > > In our use-case, Tracee [1], we let the user choose whatever events t=
+o
+> > > trace for a specific workload.
+> > > This list of events is very big, and we have many BPF programs
+> > > attached to different places of the kernel.
+> > > Let's assume that we have 100 events, and for each event we have a
+> > > different BPF program.
+> > > Then having 32kb per-cpu scratch buffers translates to 3.2MB per one
+> > > cpu, and ~100MB per 32 CPUs, which is more common for our case.
+> >
+> > Well, 100 bpf progs consume at least a page each,
+> > so you might want one program attached to all events.
+> >
+>
+> Unfortunately, I don't think that would be possible. We still need to
+> support kernels with 4096 instructions limit.
+> We may add some generic programs for events with simpler logic, but
+> even then, support for bpf cookies needed for such programs was only
+> added in more recent kernels.
+>
+> > > Since we always add new events to Tracee, this will also not be scala=
+ble.
+> > > Yet, if there is no other solution, I believe we will go in that dire=
+ction
+> > >
+> > > [1] https://github.com/aquasecurity/tracee/blob/main/pkg/ebpf/c/trace=
+e.bpf.c
+> >
+> > you're talking about BPF_PERCPU_ARRAY(scratch_map, scratch_t, 1); ?
+>
+> We actually have 3 different percpu maps there shared between
+> different programs so we will have to take care of them all.
+>
+> >
+> > Insead of scratch_map per program, use atomic per-cpu counter
+> > for recursion.
+> > You'll have 3 levels in the worst case.
+>
+> Is it guaranteed that no more than 3 levels exist?
+> I suggested a similar solution with 2 levels at the beginning of this
+> thread, but Yonghong Song replied that there is no restriction on
+> this.
 
-Perhaps vma_VERB_flags()?
+There are no restrictions, but I doubt you can construct a case
+where you'll see more than 3 in practice.
 
-vma_init_flags()
-vma_reset_flags()
-vma_set_flags()
-vma_clear_flags()
-vma_mod_flags()
+> > So it will be:
+> > BPF_PERCPU_ARRAY(scratch_map, scratch_t, 3);
+> > On prog entry increment the recursion counter, on exit decrement.
+> > And use that particular scratch_t in the prog.
+>
+> I'm just afraid of potential deadlocks. For sure we will need to
+> decrement the counter on each return path, but can it happen that a
+> bpf program crashes, leaving the counter non-zero? I know that's the
+> job of the verifier to make sure such things won't happen, but can we
+> be sure of that?
 
+if you don't trust the verifier you shouldn't be using bpf in the first pla=
+ce.
