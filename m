@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3057967C2E9
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 03:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D154067C2EA
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 03:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbjAZCsH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 21:48:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
+        id S229957AbjAZCsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 21:48:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjAZCsG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 21:48:06 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121C911EB1
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:48:05 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id h10so552508qvq.7
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:48:05 -0800 (PST)
+        with ESMTP id S229908AbjAZCsX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 21:48:23 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BD064685
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:48:22 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id vw16so1651347ejc.12
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:48:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nzWrsH0yQtsVUMDhVGVL/SOqByOsk//tQmWvKw3fSEA=;
-        b=oIax5OOOr/u8I7BdY6dPN7U2fvlMnwHoYjUiyg3yNO9oqPs4NvHkwUTXVHubQJKRbB
-         owdI76Do00wTFe2791VAzUzqWLd6wSosKB5IXbdhl3X7ksXT2TK4Z+ayM1N3TBNOUolF
-         wPxRN/GNkfy7bILm4fgoDOrRu6lpKuyse5dOtmLGEVqInU5AEaoKLnNBM/H00DM6q7DL
-         8yTT4P8uHqvsA5Im1n77L1x75P7zyEVigOryybzGHHyKNryUNx2yBrte+FRIT3Zw7Zsi
-         gJZmmVxe47OjbQvB+vxBbVU6zSC66adKzTcH7YGrt+u+jwbbnoKSUdxMmThdfbMJ7Z1b
-         Nt4Q==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GuQ8faoWy7oZ+nat6D7YCV0vd7EDEMYhcz6BZfNuwW4=;
+        b=Ab/scE++SdJeCExMbzkiIfXW9drLvMeILDK/rCJLy9OWo3NOxqCSkb6i7JxkJylEMk
+         x2sVEE9ydSK03TdzVP8ekGPs5zi9N9D+AcmYKeLBImn6Gh+HFxxvHuHsBNWI5C2XVjbW
+         NYeR5k26GQJf0DdpBb/AoWC/lOZYQanOWBrVa+10xjxcSGXh/WLK5MWO80qYMYUeb6/a
+         he7u7WSnHsPGoHa6E/nz7HKI5jF+eRCbD7woWl0wFiz4Ngr+kFlZ1PWpQZe3M+T8QJsZ
+         x/g0hfBFztr7+0iKWXdJcmSNUIqVdVSdxkHhaqnwFTwKiGXGKXO3wYUAf8T/e60RmlUT
+         9/rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=nzWrsH0yQtsVUMDhVGVL/SOqByOsk//tQmWvKw3fSEA=;
-        b=wRJcGFWgZafT+Y/BpEjSWoU+O641IyrdXOhHoi2TOYZsYO5yjXhkfvPLndLEM0jZx5
-         GW72MEA1cVX0P3S4MtXjC3A0EJWsFHjsrd2gHhcwMQH2VTkXyY2hse4H1f+A/Dk6Em3E
-         0/sfUV+LUpL5H7j1GQpUr8139/XN0QIAVUiy5Jsjh2JykEKEjpqIbRXB+GEIURpXcHBf
-         WIg4tuRHSHMspCLCWiykxpCKDwmS4rVFmm+9SSOxyoS4XWtRXAnZsuwaqH2Eynr7wEWH
-         mZdp04v8J1zns8BVkF6QyglOoGjpOa4x66MUVmQ6vOFP1H6ZjM+DU/pU82K7cojvH9Xa
-         9Kkg==
-X-Gm-Message-State: AFqh2krM4omLTG91OmOjFWNZOUj9RpP0JM24CfKSJnnCsq2vyNW8KBw1
-        ZlVTCuj8mxf6/63oNiBVCV5I8iLaXj+l5Q==
-X-Google-Smtp-Source: AMrXdXuHujjg6qNWYCfy7GRIGeFgqlK9exE3oc+H/ZtDC8gF6LmeIqRXmpKw375vcmPwv2BsW4wvTw==
-X-Received: by 2002:a0c:ec92:0:b0:531:e436:8e92 with SMTP id u18-20020a0cec92000000b00531e4368e92mr53297486qvo.22.1674701283648;
-        Wed, 25 Jan 2023 18:48:03 -0800 (PST)
-Received: from grant-fedora.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
-        by smtp.gmail.com with ESMTPSA id q29-20020a05620a025d00b006bbf85cad0fsm190309qkn.20.2023.01.25.18.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jan 2023 18:48:03 -0800 (PST)
-From:   Grant Seltzer <grantseltzer@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, grantseltzer@gmail.com
-Subject: [PATCH bpf-next] Fix malformed documentation formatting
-Date:   Wed, 25 Jan 2023 21:47:49 -0500
-Message-Id: <20230126024749.522278-1-grantseltzer@gmail.com>
-X-Mailer: git-send-email 2.39.1
+        bh=GuQ8faoWy7oZ+nat6D7YCV0vd7EDEMYhcz6BZfNuwW4=;
+        b=Evwjz7Ab97ziynMsK+l3996IYecm+gi101xTjoy6wE+0+WOhke+haRH1WR3S3JB9Cf
+         0GaLwjJ0PRQ9vMQP52GBTRQyeN56VwCCrmB8dyfFKYjRKFOFDcXSNmzR1NDYn6+nq7p9
+         TUoR0XKxbK7tDpLXqdwAoyoKv49njjY+pubTviGbF4Qyv6BdhUSPXCA0W3lVtFIgHvhh
+         8jHSZyCzRSdXoOFk3ZFFJcPNNrqTMGcakSXu3rSJLJQrlyw7qWIL77S23+Y9LAbEVX8w
+         a6Bmdht/TAr28k2gFDWvJAKQ3c99q3lIYjyG2dPcsFhj91OdAEtXh+CjD7Sl+CXv20uL
+         Ga2w==
+X-Gm-Message-State: AFqh2kqyZNvHtp7BYH98A61byW4hYK2omSNrJ29bPh6F4NjQLP9t16ma
+        XysT0sF+aSAiX5DDOrkauxUDd2I6X6wJ+Nxxw9oItXsR/nY=
+X-Google-Smtp-Source: AMrXdXtQ2nz/3mwBUacCNlb1wmtvB71Or1Yu37rxvgQTW53l2pMJMVE/2JSQFa9/YPPnHRFWX7jDgPcipU4G37dZ0M8=
+X-Received: by 2002:a17:906:380e:b0:877:5b9b:b426 with SMTP id
+ v14-20020a170906380e00b008775b9bb426mr4120361ejc.12.1674701300655; Wed, 25
+ Jan 2023 18:48:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230123145148.2791939-1-eddyz87@gmail.com> <20230123145148.2791939-5-eddyz87@gmail.com>
+In-Reply-To: <20230123145148.2791939-5-eddyz87@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 25 Jan 2023 18:48:08 -0800
+Message-ID: <CAEf4BzbH-nBdD2N0-bFh0pQrU2o6sqOmrswMRYVgAgeLQWQS9g@mail.gmail.com>
+Subject: Re: [RFC bpf-next 4/5] selftests/bpf: __imm_insn macro to embed raw
+ insns in inline asm
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -67,80 +67,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This fixes the doxygen format documentation above the
-user_ring_buffer__* APIs. There has to be a newline
-before the @brief, otherwise doxygen won't render them
-for libbpf.readthedocs.org.
+On Mon, Jan 23, 2023 at 6:52 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> A convenience macro to allow the following usage:
+>
+>   #include <linux/filter.h>
+>
+>   ...
+>   asm volatile (
+>   ...
+>   ".8byte %[raw_insn];"
+>   ...
+>   :
+>   : __imm_insn(raw_insn, BPF_RAW_INSN(...))
+>   : __clobber_all);
+>
 
-Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
----
- tools/lib/bpf/libbpf.h | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+Ah, now I see why it's __imm_insns. Makes sense. Hopefully this won't
+be used very frequently anyways.
 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 28138579f162..8777ff21ea1d 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1130,7 +1130,8 @@ struct user_ring_buffer_opts {
- 
- #define user_ring_buffer_opts__last_field sz
- 
--/* @brief **user_ring_buffer__new()** creates a new instance of a user ring
-+/**
-+ * @brief **user_ring_buffer__new()** creates a new instance of a user ring
-  * buffer.
-  *
-  * @param map_fd A file descriptor to a BPF_MAP_TYPE_USER_RINGBUF map.
-@@ -1141,7 +1142,8 @@ struct user_ring_buffer_opts {
- LIBBPF_API struct user_ring_buffer *
- user_ring_buffer__new(int map_fd, const struct user_ring_buffer_opts *opts);
- 
--/* @brief **user_ring_buffer__reserve()** reserves a pointer to a sample in the
-+/**
-+ * @brief **user_ring_buffer__reserve()** reserves a pointer to a sample in the
-  * user ring buffer.
-  * @param rb A pointer to a user ring buffer.
-  * @param size The size of the sample, in bytes.
-@@ -1161,7 +1163,8 @@ user_ring_buffer__new(int map_fd, const struct user_ring_buffer_opts *opts);
-  */
- LIBBPF_API void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size);
- 
--/* @brief **user_ring_buffer__reserve_blocking()** reserves a record in the
-+/**
-+ * @brief **user_ring_buffer__reserve_blocking()** reserves a record in the
-  * ring buffer, possibly blocking for up to @timeout_ms until a sample becomes
-  * available.
-  * @param rb The user ring buffer.
-@@ -1205,7 +1208,8 @@ LIBBPF_API void *user_ring_buffer__reserve_blocking(struct user_ring_buffer *rb,
- 						    __u32 size,
- 						    int timeout_ms);
- 
--/* @brief **user_ring_buffer__submit()** submits a previously reserved sample
-+/**
-+ * @brief **user_ring_buffer__submit()** submits a previously reserved sample
-  * into the ring buffer.
-  * @param rb The user ring buffer.
-  * @param sample A reserved sample.
-@@ -1215,7 +1219,8 @@ LIBBPF_API void *user_ring_buffer__reserve_blocking(struct user_ring_buffer *rb,
-  */
- LIBBPF_API void user_ring_buffer__submit(struct user_ring_buffer *rb, void *sample);
- 
--/* @brief **user_ring_buffer__discard()** discards a previously reserved sample.
-+/**
-+ * @brief **user_ring_buffer__discard()** discards a previously reserved sample.
-  * @param rb The user ring buffer.
-  * @param sample A reserved sample.
-  *
-@@ -1224,7 +1229,8 @@ LIBBPF_API void user_ring_buffer__submit(struct user_ring_buffer *rb, void *samp
-  */
- LIBBPF_API void user_ring_buffer__discard(struct user_ring_buffer *rb, void *sample);
- 
--/* @brief **user_ring_buffer__free()** frees a ring buffer that was previously
-+/**
-+ * @brief **user_ring_buffer__free()** frees a ring buffer that was previously
-  * created with **user_ring_buffer__new()**.
-  * @param rb The user ring buffer being freed.
-  */
--- 
-2.39.1
-
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/progs/bpf_misc.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+> index e742a935de98..832bec4818d9 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
+> +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+> @@ -61,6 +61,7 @@
+>  #define __clobber_common "r0", "r1", "r2", "r3", "r4", "r5", "memory"
+>  #define __imm(name) [name]"i"(name)
+>  #define __imm_addr(name) [name]"i"(&name)
+> +#define __imm_insn(name, expr) [name]"i"(*(long *)&(expr))
+>
+>  #if defined(__TARGET_ARCH_x86)
+>  #define SYSCALL_WRAPPER 1
+> --
+> 2.39.0
+>
