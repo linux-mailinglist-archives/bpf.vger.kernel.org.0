@@ -2,250 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5C167D0B8
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 16:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102A967D0FA
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 17:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232395AbjAZP46 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 10:56:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        id S232596AbjAZQKl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 11:10:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbjAZP45 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 10:56:57 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8564741C;
-        Thu, 26 Jan 2023 07:56:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674748614; x=1706284614;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=I/nFjLzcMvYJ8V/A3quQsPPm9oFGgfVcTBd5j3l2oAU=;
-  b=dtzH7mGiZUr008e0Hi1HJuEDUumW7ZJRCNEKhK7VYdAfVU9Ve86y/mjz
-   Vrxci2QVu0BVcCJMJhOTOGvsuQC0d/PevmIAdSVLMJI+l2RXtY0gRQ5V1
-   mVRQO8xMFRyt1Ga6jbfnkhQPL1a78V+3wgymr7vE31Kt7xbeVCkA2iOaw
-   X4ZlNuWsC2yeb7tJQf/rQItZCoH/VM7g7s/Fnb/l6KC8JRzTTRU6/Qt5P
-   q8x8Vt63WQQFy5ftzE0zonrgp5HyDRdHqBVpT2VuMLP1QVibfjbgEVzwR
-   u5q/i+GqbnHE3V66oP/WHoXLKEhc9a/olr0zfSQ5Lx+0KI2IV/uD2IKKC
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="389205010"
-X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; 
-   d="scan'208";a="389205010"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2023 07:56:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="908274865"
-X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; 
-   d="scan'208";a="908274865"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga006.fm.intel.com with ESMTP; 26 Jan 2023 07:56:53 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Thu, 26 Jan 2023 07:56:53 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Thu, 26 Jan 2023 07:56:52 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Thu, 26 Jan 2023 07:56:52 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.102)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Thu, 26 Jan 2023 07:56:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CW36mEHkUGj5BX95SB3Sk0GqntyHgcU8jkvd0UaqoQsEBBJT3KvG0U5GsRJ2Mzk8Ik/Axg7QlOurGLujgbqUIzBDWdQT8AXUIWZMa7YXRIbJrJU6ZZs96h8LLKCflZk5B4an9o4I0VoViATLUem9m19CCAM7hnO1wmn1PjDUpHo0DLNlfCNY/Jsf1ZQ7aFbhVGhcD5zYOgc07HBuvTEyJY9UtinhZhKCwFPiOYzkD57HyzhWMvyFpqmlDzf2Zhype9PxTf9cld0rMT1tcv0R3JrJVafhIrVc/V4byAq8KWyRNzwZxpERR2Y5o3YOwSHeSmzFU2U9GgMD/enPq6WvEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L2zgg7g9W15aOLqBN5VXr9QkM+tjvP8EysC69OCKMfY=;
- b=b9OW5tgxVJvszbye2GL10A4B9E0vj96FHCbDuFk6ZCmljTfpZSTxPtDJ5+BzJ3FApYV5B5BZ+g6JDWn6yTYclbrDK2lxGl2knfFL1fvZyqWRYKPJkiBcHGG8AtTgqxhB9bdzH2E7cg7gtrZhFajYXntc2YeyaIYOKNZQKoCUAnEjQ9eY38gjJ2El0LWEaQS9QGbcOPbcIs1eQCN94X+rnyxccKCh92ynvuvrmMbcja2HrX/p7aPPuwq6Fs1Ctb8GZqEFbzo1Y+acHM70iTVWhV8Kot0yeTgtzYTE0gcbsEg7J2DIbnEuGts1UjD1KZuChqSG0fMXFRMWBVDv777LZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by SN7PR11MB6749.namprd11.prod.outlook.com (2603:10b6:806:267::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.33; Thu, 26 Jan
- 2023 15:56:35 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::3ff6:ca60:f9fe:6934]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::3ff6:ca60:f9fe:6934%3]) with mapi id 15.20.6043.022; Thu, 26 Jan 2023
- 15:56:35 +0000
-Message-ID: <48639eb0-27d9-5754-0687-286e909ceff0@intel.com>
-Date:   Thu, 26 Jan 2023 16:56:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH net] ixgbe: allow to increase MTU to some extent with XDP
- enalbed
-Content-Language: en-US
-To:     Jason Xing <kerneljasonxing@gmail.com>
-CC:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <richardcochran@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.co>, <intel-wired-lan@lists.osuosl.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Jason Xing <kernelxing@tencent.com>,
-        <magnus.karlsson@intel.com>, <tirthendu.sarkar@intel.com>
-References: <20230121085521.9566-1-kerneljasonxing@gmail.com>
- <Y9JvUKBgBifiosOa@boxer>
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-In-Reply-To: <Y9JvUKBgBifiosOa@boxer>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR2P281CA0045.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:92::17) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+        with ESMTP id S231823AbjAZQKk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 11:10:40 -0500
+Received: from fx409.security-mail.net (smtpout140.security-mail.net [85.31.212.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E40D4ED19
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 08:10:38 -0800 (PST)
+Received: from localhost (fx409.security-mail.net [127.0.0.1])
+        by fx409.security-mail.net (Postfix) with ESMTP id EC4DD349712
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 17:10:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalray.eu;
+        s=sec-sig-email; t=1674749437;
+        bh=18h0PvVkWw5cOD2tUF5rJDodhNIHFoyGd3swtBhEV9s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=2j+PLAfcFq/dMJAm7QTIXrm0muDDhYaPROPgytN3gaTJa6LkYepek8NuWASCmXbjk
+         BSj8xuje1RDBvbgEdTd13Bs0SSELaXlSeYbazQnkW+tgJ0bzaaR5DZK2kqeKnsxeVO
+         V/F0b4xMun1FYOPN9Q3rOIJWltJMZCMOaHln8qIs=
+Received: from fx409 (fx409.security-mail.net [127.0.0.1]) by
+ fx409.security-mail.net (Postfix) with ESMTP id 5FEDB3495F6; Thu, 26 Jan
+ 2023 17:10:36 +0100 (CET)
+Received: from zimbra2.kalray.eu (unknown [217.181.231.53]) by
+ fx409.security-mail.net (Postfix) with ESMTPS id 42F9E3496BD; Thu, 26 Jan
+ 2023 17:10:35 +0100 (CET)
+Received: from zimbra2.kalray.eu (localhost [127.0.0.1]) by
+ zimbra2.kalray.eu (Postfix) with ESMTPS id 0E32B27E0492; Thu, 26 Jan 2023
+ 17:10:35 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1]) by zimbra2.kalray.eu
+ (Postfix) with ESMTP id E364B27E0431; Thu, 26 Jan 2023 17:10:34 +0100 (CET)
+Received: from zimbra2.kalray.eu ([127.0.0.1]) by localhost
+ (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026) with ESMTP id
+ DTQUInwcUDo5; Thu, 26 Jan 2023 17:10:34 +0100 (CET)
+Received: from tellis.lin.mbt.kalray.eu (unknown [192.168.36.206]) by
+ zimbra2.kalray.eu (Postfix) with ESMTPSA id 8E3C527E0374; Thu, 26 Jan 2023
+ 17:10:34 +0100 (CET)
+X-Virus-Scanned: E-securemail
+Secumail-id: <4f4e.63d2a5fb.40271.0>
+DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu E364B27E0431
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
+ s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1674749435;
+ bh=9giavlvQOACZW0fqif+Jno6XkcerIxtPM3AoszI6iXA=;
+ h=Date:From:To:Message-ID:MIME-Version;
+ b=gjg/x2TlOcjiKN3NypFbIHFe/byI2jjV8o3VpLfw+6A29RvT0tO7rhyOLP4RSQBmB
+ x4Tx+6M47/jYTq+5ZLA2uCIUhHGzwDXxt8eUceRV5P9eFpkBGwoYQYAzaEc236wUu9
+ 1kIkSP3K+m+aYLf/4oc9MR/KzKUTElR11/fHsdhg=
+Date:   Thu, 26 Jan 2023 17:10:33 +0100
+From:   Jules Maselbas <jmaselbas@kalray.eu>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Guillaume Thouvenin <gthouvenin@kalray.eu>,
+        Clement Leger <clement@clement-leger.fr>,
+        Vincent Chardon <vincent.chardon@elsys-design.com>,
+        Marc =?utf-8?b?UG91bGhpw6hz?= <dkm@kataplop.net>,
+        Julian Vetter <jvetter@kalray.eu>,
+        Samuel Jones <sjones@kalray.eu>,
+        Ashley Lesdalons <alesdalons@kalray.eu>,
+        Thomas Costis <tcostis@kalray.eu>,
+        Marius Gligor <mgligor@kalray.eu>,
+        Jonathan Borne <jborne@kalray.eu>,
+        Julien Villette <jvillette@kalray.eu>,
+        Luc Michel <lmichel@kalray.eu>,
+        Louis Morhet <lmorhet@kalray.eu>,
+        Julien Hascoet <jhascoet@kalray.eu>,
+        Jean-Christophe Pince <jcpince@gmail.com>,
+        Guillaume Missonnier <gmissonnier@kalray.eu>,
+        Alex Michon <amichon@kalray.eu>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <git@xen0n.name>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        John Garry <john.garry@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Bharat Bhushan <bbhushan2@marvell.com>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Atish Patra <atishp@atishpatra.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Qi Liu <liuqi115@huawei.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-audit@redhat.com,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH v2 02/31] Documentation: Add binding for
+ kalray,kv3-1-core-intc
+Message-ID: <20230126161032.GH5952@tellis.lin.mbt.kalray.eu>
+References: <20230120141002.2442-1-ysionneau@kalray.eu>
+ <20230120141002.2442-3-ysionneau@kalray.eu>
+ <d4d998ee-1532-c896-df25-195ec9c72e3f@linaro.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|SN7PR11MB6749:EE_
-X-MS-Office365-Filtering-Correlation-Id: f1468c1f-7e4d-499b-2c78-08daffb5e6c6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lB7lv32QmTCt1vvJ9h/Ff3XPeelxmxAmsnXFAvF2Ovw5lfJMDWAC5UIg2NIPjnLpCeJRHqeeOLpby8qPSa0FWvx1nhpKGpYrqcgpZYkX7/e4lfvl5+SMSuo25OcaMdBBDuZ/kJTmCCF83waU9+bK8JWdu1MZP81GrFd650ZMfN4ve05gl9mv8bGhB/60UGLAg4uOA5z3jTD2l2y2MnoLbNN8qb0D8tl/9npVn5Ch5wsqpV48LSU0JIoHZpsRyXNWALFOZPc1wlVbi9EL6dMx+qp5Kocc7D3H6+Ia0QoEV/GbVvs5SbWwvG4t4H0tQtobwv5TPWg5eBieTcXYU0t+j5yZ718F+SLDld1NVDjobmGhJm7hKyCRewE6aQkG6fy5Z1F4Et6E4rVAuMJR2ojSi+4LEEBSjFQhB3yem34t0cjbMyqFtASU/zynWQgOeGIb1zE1g8omoh5HjU3ExEj7QmAYiGiWc0YOyTKpFGSY+WxHosqqtvf5B/x7pvBg5nQ18eVV8OGzI2D+8sBy9VhzQkSBw9xNMgmwXJ4cSx9O1qx4ony2jCdFe/ZDzSxnh6/5K/8DG1Q0WU+uoV9IwV+2buDA9oci8VXJdlWy884CPfA7TAz+jDRcsU3i/rnD4PIwP6z1mdGFPHoUGAGel7RPJPw13/zMKe7hf/fnZZcCJRL4t9/kGs1hV10W+SHWFqp3I2fBT/jlNgzQNU1foWV0fS63tCbt18HfDlTohZ0lG6E=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(346002)(376002)(39860400002)(396003)(366004)(136003)(451199018)(54906003)(66946007)(6666004)(107886003)(6506007)(6512007)(26005)(2906002)(2616005)(8936002)(8676002)(82960400001)(36756003)(316002)(31696002)(5660300002)(66556008)(41300700001)(38100700002)(83380400001)(86362001)(66476007)(7416002)(4326008)(6916009)(6486002)(478600001)(186003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UDgwbkFITmcxSThHZ2Q1MUNIeWVKdDlTOVM5MCtZckgrbGhLZythcWUyaDBW?=
- =?utf-8?B?VUxpSzFjakNOTjRPL2U1REN4Z290THJqbWVrL3R3OTR6TEp3UUxKRklwd1RB?=
- =?utf-8?B?MDF6ZUlia3dDaHFlWGVSSDJqUjcyNG9KNWRyR1Bub01vUVoyTFJFbExSVEpY?=
- =?utf-8?B?dnRIS1RRZW9sVWV1L29nZ25GODMxR1RodFMyWE13VFhCYTFMajZreDVCL251?=
- =?utf-8?B?aVluazllb3lmYjNzSHR1d0d6bWM5SHFKM3VGV0dRN0w5VjRkMWJyVFdtR1RT?=
- =?utf-8?B?bnM4OEt6QnhzbmFnTlpVYm4rdE9wMHg1MGRSRW9ldnN5ZjFFOGJabDBYOHMv?=
- =?utf-8?B?clFjNFBLVkRlUzJJUnBJOEg3alZwVDNnREJwRlRlNGlVUGh5Y1FJbVp5RFNC?=
- =?utf-8?B?RXpHV3d0ajcwTE9iSU9hN3A0aVQyc0lGR1NBSzY0SnYwbjJRNXhrYXpZWjNr?=
- =?utf-8?B?T1NmYVhTNUZjWVNtWjdNOStIUXU4NVBqeC9DdGxLVzdVd1ZrRUZiaU5nWTFi?=
- =?utf-8?B?Q3NReEtXRyt3OXZlWWZxVmpXTHBZYXo5ampOcHprckZIK3d6bE1OWjFCYjNE?=
- =?utf-8?B?TEpvcjgrWXJWQlpMOTlaVUtJRFZyOENpdmorSmZ1ZnUzRU15Y01nVXlYWkFJ?=
- =?utf-8?B?YkRMbEx4QmZtMm9DZlozSkMvWC83MXFWZ3Y5VGZ0OU14S3dvWTFXeUdwWWV1?=
- =?utf-8?B?Wm9LTzNrc29CeksrZUpaT0JCeisxRW52dklGdlkxQ3Vzc016L1ptWGdxd3Yr?=
- =?utf-8?B?UVhOZlFObEtQR1BGcjVzWDQ2QVV4NXpCL1dwYVRGMi9tV3pmTndFNHB0RmFs?=
- =?utf-8?B?VHNsd0ZoTWlGbUhnRTFDWmdlR0RXQ3BpT3J4MDNaWndPM1BtZDIvYUJXN3A5?=
- =?utf-8?B?SmpVY2kvVHZNVGJCM0NkMjFEcUVTK2pNRXdBVE02RkVzVkt6RUtZeTVyRzZY?=
- =?utf-8?B?bm9yTHJYMk1hM3o3U3F6ZUJMQWZzUVgxSzlYVzRmTG1GNjVTR1hCcXFLdlFM?=
- =?utf-8?B?SWZOYW1yVEZaTE01bkxsRUV5NUlWK1hTVVRYSHQrc2dBOTZTdXRpdndyeThL?=
- =?utf-8?B?R29mYk5SanZTTHhmckJTU1pQQUpJaHZlajNZbHNQUkt0NzZUb2pZZHdTYyth?=
- =?utf-8?B?TVhMRFE1SFFRTU84YVJEaURab29zQWduQzVyUkFlNTFOUGVNdVlub29rVTMw?=
- =?utf-8?B?WXNXRW03bC9yZ3NRVEtWcEh4OEdFL0Y0NGRZajZ0TjlGR1lTVGNKRHJyOEJZ?=
- =?utf-8?B?MlY5ZGwxU2lZSmI5OGRMWjBUY2dmbHM4ajNlY1NRZWJPVDZmZ1JwRE85YjBQ?=
- =?utf-8?B?eWJTOG1Mcno1OWtQMklHUW4wWXdJcWpCWWF2S29JaUR3WnVkck8rN01QWEhI?=
- =?utf-8?B?ZlFMdGNqaEZQbHRpeVo3enZRNXV2OHZXVjkvcnhaWU50SW9RaElEQzh5RGtn?=
- =?utf-8?B?SnhMOVlGaWFJa2l2aE9XVGMxRUVubG5CRFZlcW44UUttL0Z0TUQ0aCszZjM5?=
- =?utf-8?B?cVlmbFdKZFNqVzJVMHhxR3J3Znh3ditKRFpyTnkrak1IdGo1RGdzUGRsdnhD?=
- =?utf-8?B?czJGNDRYT2FqYkdraUZkanM2YUR6ZXk0aU0wSHhLcVZqcjdabDhvbFBCMzJq?=
- =?utf-8?B?L0VjZmRrRnlQN0djbXY1MzVsbEhFbVNlaGlFUGlwNWU0T09nS3RYTGRIcFRk?=
- =?utf-8?B?MzQzeGtCVXMwaEEwbG9uenNyWndrYWJMd0hxandYV3FBSUpVa2drWExFam1p?=
- =?utf-8?B?L3N5L0YyTUQvSWx3MlRUaVY4eExsaEdWTk56b2lJSUJHVThINXNCUXlvSmMr?=
- =?utf-8?B?bGpjTVZQYjJwNVZVNlF4RnRXdEN0TWFubC9CV0l0TldNV0IxZzJyMlRwaFBK?=
- =?utf-8?B?L0pEUkVLWGhTVWVtTEh5SWE2VjVJc1p5Wk83a2I3YnhsY05LeHlsK2pJUGpK?=
- =?utf-8?B?bkhKdUhYc0p0QkduV3BmQ1R0bUVkM1hqdTlXeHhPRXhKTFFjc1NTbldPRHIy?=
- =?utf-8?B?SkQvU3NWMS9DdTR1ajJOV1pRVkdMYm5DQmk2dGNwWEEwZ1d3aHlpeDBDTWI1?=
- =?utf-8?B?enlic0hqQ3BrMFNJaHg1R0lLZXFSTHRvLzZWMVRSOG05STM4djF0SlE5dGRK?=
- =?utf-8?B?a0xZWUR4a1dkeHo4SFVaT3ZWb25rbVNjZ3g0U2E4dGhvQnhmeVJiT2R3QnMz?=
- =?utf-8?B?cHc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1468c1f-7e4d-499b-2c78-08daffb5e6c6
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2023 15:56:35.5225
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KjGQFxDUHyBqCM55n/cAi0fJNJ517fviTNxVSU8uvYIZZhFju6NfjZNXB8YvCt+VCOINrbt+YnZQZ4VMUD+P2+UR9GdNoQ9p/NX8l3mOGg0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6749
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Disposition: inline
+In-Reply-To: <d4d998ee-1532-c896-df25-195ec9c72e3f@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-ALTERMIMEV2_out: done
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Date: Thu, 26 Jan 2023 13:17:20 +0100
+Hi Krzysztof,
 
-> On Sat, Jan 21, 2023 at 04:55:21PM +0800, Jason Xing wrote:
->> From: Jason Xing <kernelxing@tencent.com>
->>
->> I encountered one case where I cannot increase the MTU size with XDP
->> enabled if the server is equipped with IXGBE card, which happened on
->> thousands of servers. I noticed it was prohibited from 2017[1] and
->> added size checks[2] if allowed soon after the previous patch.
->>
->> Interesting part goes like this:
->> 1) Changing MTU directly from 1500 (default value) to 2000 doesn't
->> work because the driver finds out that 'new_frame_size >
->> ixgbe_rx_bufsz(ring)' in ixgbe_change_mtu() function.
->> 2) However, if we change MTU to 1501 then change from 1501 to 2000, it
->> does work, because the driver sets __IXGBE_RX_3K_BUFFER when MTU size
->> is converted to 1501, which later size check policy allows.
->>
->> The default MTU value for most servers is 1500 which cannot be adjusted
->> directly to the value larger than IXGBE_MAX_2K_FRAME_BUILD_SKB (1534 or
->> 1536) if it loads XDP.
->>
->> After I do a quick study on the manner of i40E driver allowing two kinds
->> of buffer size (one is 2048 while another is 3072) to support XDP mode in
->> i40e_max_xdp_frame_size(), I believe the default MTU size is possibly not
->> satisfied in XDP mode when IXGBE driver is in use, we sometimes need to
->> insert a new header, say, vxlan header. So setting the 3K-buffer flag
->> could solve the issue.
->>
->> [1] commit 38b7e7f8ae82 ("ixgbe: Do not allow LRO or MTU change with XDP")
->> [2] commit fabf1bce103a ("ixgbe: Prevent unsupported configurations with
->> XDP")
->>
->> Signed-off-by: Jason Xing <kernelxing@tencent.com>
->> ---
->>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> index ab8370c413f3..dc016582f91e 100644
->> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> @@ -4313,6 +4313,9 @@ static void ixgbe_set_rx_buffer_len(struct ixgbe_adapter *adapter)
->>  		if (IXGBE_2K_TOO_SMALL_WITH_PADDING ||
->>  		    (max_frame > (ETH_FRAME_LEN + ETH_FCS_LEN)))
->>  			set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
->> +
->> +		if (ixgbe_enabled_xdp_adapter(adapter))
->> +			set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
+On Sun, Jan 22, 2023 at 12:44:46PM +0100, Krzysztof Kozlowski wrote:
+> On 20/01/2023 15:09, Yann Sionneau wrote:
+> > From: Jules Maselbas <jmaselbas@kalray.eu>
 > 
-> This will result with unnecessary overhead for 1500 MTU because you will
-> be working on order-1 pages. Instead I would focus on fixing
-> ixgbe_change_mtu() and stop relying on ixgbe_rx_bufsz() in there. You can
-> check what we do on ice/i40e sides.
-> 
-> I'm not looking actively into ixgbe internals but I don't think that there
-> is anything that stops us from using 3k buffers with XDP.
-
-I think it uses the same logics as the rest of drivers: splits a 4k page
-into two 2k buffers when MTU is <= 1536, otherwise uses order-1 pages
-and uses 3k buffers.
-
-OTOH ixgbe is not fully correct in terms how it calculates Rx headroom,
-but the main problem is how it calculates the maximum MTU available when
-XDP is on. Our usual MTU supported when XDP is on is 3046 bytes.
-For MTU <= 1536, 2k buffers are used even for XDP, so the fix is not
-correct. Maciej is right that i40e and ice do that way better and don't
-have such issue.
+> Use subject prefixes matching the subsystem (which you can get for
+> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+> your patch is touching).
+This will be fixed, sorry for the inconvenience.
 
 > 
->>  #endif
->>  	}
->>  }
->> -- 
->> 2.37.3
->>
+> > 
+> > Add documentation for `kalray,kv3-1-core-intc` binding.
+> > 
+> > Co-developed-by: Jules Maselbas <jmaselbas@kalray.eu>
+> > Signed-off-by: Jules Maselbas <jmaselbas@kalray.eu>
+> > Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
+> > ---
+> > 
+> > Notes:
+> >     V1 -> V2: new patch
+> > 
+> >  .../kalray,kv3-1-core-intc.yaml               | 46 +++++++++++++++++++
+> >  1 file changed, 46 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/kalray,kv3-1-core-intc.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/kalray,kv3-1-core-intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/kalray,kv3-1-core-intc.yaml
+> > new file mode 100644
+> > index 000000000000..1e3d0593173a
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/kalray,kv3-1-core-intc.yaml
+> > @@ -0,0 +1,46 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/interrupt-controller/kalray,kv3-1-core-intc#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Kalray kv3-1 Core Interrupt Controller
+> > +
+> > +description: |
+> > +  The Kalray Core Interrupt Controller is tightly integrated in each kv3 core
+> > +  present in the Coolidge SoC.
+> > +
+> > +  It provides the following features:
+> > +  - 32 independent interrupt sources
+> > +  - 2-bit configurable priority level
+> > +  - 2-bit configurable ownership level
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/interrupt-controller.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: kalray,kv3-1-core-intc
+> 
+> Blank line between each of these,
+Ack
+
+> > +  "#interrupt-cells":
+> > +    const: 1
+> > +    description:
+> > +      The IRQ number.
+> > +  reg:
+> > +    maxItems: 0
+> 
+> ??? No way... What's this?
+This (per CPU) interrupt controller is not memory mapped at all, it is
+controlled and configured through system registers.
+
+I do not have found existing .yaml bindings for such devices, only the
+file snps,archs-intc.txt has something similar.
+
+I do not know what is the best way to represent such devices in the
+device-tree.  Any suggestions are welcome.
+
+> 
+> > +  "kalray,intc-nr-irqs":
+> 
+> Drop quotes.
+> 
+> > +    description: Number of irqs handled by the controller.
+> 
+> Why this is variable per board? Why do you need it ?
+This property is not even used in our device-tree, this will be removed
+from the documentation and from the driver as well.
+
+> > +
+> > +required:
+> > +  - compatible
+> > +  - "#interrupt-cells"
+> > +  - interrupt-controller
+> 
+> missing additionalProperties: false
+> 
+> This binding looks poor, like you started from something odd. Please
+> don't. Take the newest reviewed binding or better example-schema and use
+> it to build yours. This would solve several trivial mistakes and style
+> issues.
+I am starting over from the example-schema.
+
+> > +
+> > +examples:
+> > +  - |
+> > +    intc: interrupt-controller {
+> 
+> What's the IO address space?
+As said above, this is not a memory mapped device, but is accessed
+through system registers.
 
 Thanks,
-Olek
+-- Jules
+
+
+
+
