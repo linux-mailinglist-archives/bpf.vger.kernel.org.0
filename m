@@ -2,167 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3823D67D818
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 23:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD93867D8CB
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 23:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233127AbjAZWAj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 17:00:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        id S229846AbjAZWui (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 17:50:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbjAZWAh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 17:00:37 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0254F73773;
-        Thu, 26 Jan 2023 14:00:19 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9D22BB81F29;
-        Thu, 26 Jan 2023 22:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFE06C433D2;
-        Thu, 26 Jan 2023 22:00:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674770417;
-        bh=mG3PIraFDoP2NR/mGww1RDWi7EAzYTplzCN246slWDw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=khERF1GxXIngu4mAhc/cQRMghNSkohz9N2rYq8SBOuiAS5r1em1yMmDOGtDK4GGG9
-         /gxYH8f+YF2biApjK5+AhIKTEpJ1o1Lh40qQYVVPh79QBULrfTmyomUHn022V5bF/h
-         IDcP2U5onKr5ux7dT5JQYKlMv26xt4yFzthbEZkZ/wJ8xt+Tqx5NVDN8DTvgMPmcP7
-         Zs9YPPn8aStUk0NizoSpu9xCaTLZIsXX5sBGCI5Jy6WzwQY3jvtXh9jEzeniGXxORw
-         7GEbwoePVmFNVk3aJkdEu39VChzUzzpi3eCsWGh/LSAahafnAoSbbx3HOXFqyd5a3L
-         3ixe/EFUg6VoQ==
-Date:   Thu, 26 Jan 2023 23:00:13 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Gerhard Engleder <gerhard@engleder-embedded.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
-        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
-        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
-        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
-        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
-        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
-        martin.lau@linux.dev
-Subject: Re: [PATCH v2 bpf-next 2/8] drivers: net: turn on XDP features
-Message-ID: <Y9L37bVacFMYdqVv@lore-desk>
-References: <cover.1674606193.git.lorenzo@kernel.org>
- <c1171111f8af76da11331277b1e4a930c10f3c30.1674606197.git.lorenzo@kernel.org>
- <28eedfd5-4444-112b-bfbc-1c7682385c88@engleder-embedded.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wgPVbgvG3x7so8fA"
-Content-Disposition: inline
-In-Reply-To: <28eedfd5-4444-112b-bfbc-1c7682385c88@engleder-embedded.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230205AbjAZWue (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 17:50:34 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4170438E99
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 14:50:33 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id m13-20020a62f20d000000b005906b270133so1557240pfh.20
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 14:50:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Tq3oKm2ZNiCqSD+4cGqm6lOYyg99eiR+eCWU8TDk5uU=;
+        b=bl9p9CNP1MKzDtdoat2jk5k5dYP2CnohphL+SBw4+MibCEE8P+xRyqAMsA881bbsKb
+         lNzJntWdH80qUyKKmytDaZdKRR4A9CgaP5VK4ECTc5E7u36KoOSMXyzYMt+oYWk4Mf4r
+         N20DXOuGyY4APV3fFDC5pkIebV02eaGw5rZiIN3z4xz3119sTmuIeZnXG/+CMTouSW/K
+         ofofjJ6QgIdgVEwmPG9OPEnrM0s3978GCZF7Fyk9KUBILxpx+8u9IBgMSyFSiwz+BiD6
+         N5TGAVv0/38ewtFPkHfgUWqm/t9LFgM7nPIt+p8AHeN2aOLmAe3ypGTb/lViQ9cYBB7y
+         AxZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Tq3oKm2ZNiCqSD+4cGqm6lOYyg99eiR+eCWU8TDk5uU=;
+        b=mp42LLzIebT+D93YV6oqr2ucsfwumr18q39GaZ3RCy/1jcxsrkNZ7/1dJwiABxahlP
+         GZ7D+wzzWPIQTgJFwuA3CoGBJGHuHe57RJEfb2VDHuJGR9XjtUKTrufzjZMNdcTACT33
+         umnhSmNY6Is6eov7ilyJydi34kdupD6IdR66RjfabkiRKHK4MkRgI6k6lm3pu+e5EHTn
+         Wiop65qIDQ7SHP0jhgYEa8W6ORzvX84QzNDJTPMqdYoGNcVar56zIRGfwrXLApYKcYZv
+         SbL1aO29t7IhCrkpNzsH9Ktc4Vt+Po1sQq/x/QYRw4NP9x0xgsmwo/fcEmlbhDS5EKel
+         3Fbw==
+X-Gm-Message-State: AO0yUKVf+IznQFZQeYhxm673UyQUGRt6R3OHv5pNaALr8bKO87HIN2Ll
+        zmgvyDDLFHCxpFcXZHl6c8KTf7/a7Y2oN96wG1dmAfyqGhn3U7NqbfgBWfAJbNGyfUE3zSdCGPb
+        CQ+eoWfWjqchGp+vN8uhrqOvf4T3+jacl4g47X1Y2f0wnzQN2UQ==
+X-Google-Smtp-Source: AK7set8+PJDqOEh6uet18ucbyc11s63tqvf2ExbnrFaIVc1D9jsyWL8GcwVxWGey6xzLFHah5DX8+mo=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:8b8d:b0:225:eaa2:3f5d with SMTP id
+ z13-20020a17090a8b8d00b00225eaa23f5dmr10275pjn.2.1674773432064; Thu, 26 Jan
+ 2023 14:50:32 -0800 (PST)
+Date:   Thu, 26 Jan 2023 14:50:30 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.1.456.gfc5497dd1b-goog
+Message-ID: <20230126225030.510629-1-sdf@google.com>
+Subject: [PATCH bpf-next v2] selftests/bpf: Properly enable hwtstamp in xdp_hw_metadata
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The existing timestamping_enable() is a no-op because it applies
+to the socket-related path that we are not verifying here
+anymore. (but still leaving the code around hoping we can
+have xdp->skb path verified here as well)
 
---wgPVbgvG3x7so8fA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  poll: 1 (0)
+  xsk_ring_cons__peek: 1
+  0xf64788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+  rx_hash: 3697961069
+  rx_timestamp:  1674657672142214773 (sec:1674657672.1422)
+  XDP RX-time:   1674657709561774876 (sec:1674657709.5618) delta sec:37.4196
+  AF_XDP time:   1674657709561871034 (sec:1674657709.5619) delta
+sec:0.0001 (96.158 usec)
+  0xf64788: complete idx=8 addr=8000
 
-> On 25.01.23 01:33, Lorenzo Bianconi wrote:
-> > From: Marek Majtyka <alardam@gmail.com>
-> >=20
-> > A summary of the flags being set for various drivers is given below.
-> > Note that XDP_F_REDIRECT_TARGET and XDP_F_FRAG_TARGET are features
-> > that can be turned off and on at runtime. This means that these flags
-> > may be set and unset under RTNL lock protection by the driver. Hence,
-> > READ_ONCE must be used by code loading the flag value.
-> >=20
-> > Also, these flags are not used for synchronization against the availabi=
-lity
-> > of XDP resources on a device. It is merely a hint, and hence the read
-> > may race with the actual teardown of XDP resources on the device. This
-> > may change in the future, e.g. operations taking a reference on the XDP
-> > resources of the driver, and in turn inhibiting turning off this flag.
-> > However, for now, it can only be used as a hint to check whether device
-> > supports becoming a redirection target.
-> >=20
-> > Turn 'hw-offload' feature flag on for:
-> >   - netronome (nfp)
-> >   - netdevsim.
-> >=20
-> > Turn 'native' and 'zerocopy' features flags on for:
-> >   - intel (i40e, ice, ixgbe, igc)
-> >   - mellanox (mlx5).
-> >   - stmmac
-> >=20
-> > Turn 'native' features flags on for:
-> >   - amazon (ena)
-> >   - broadcom (bnxt)
-> >   - freescale (dpaa, dpaa2, enetc)
-> >   - funeth
-> >   - intel (igb)
-> >   - marvell (mvneta, mvpp2, octeontx2)
-> >   - mellanox (mlx4)
-> >   - qlogic (qede)
-> >   - sfc
-> >   - socionext (netsec)
-> >   - ti (cpsw)
-> >   - tap
-> >   - veth
-> >   - xen
-> >   - virtio_net.
-> >=20
-> > Turn 'basic' (tx, pass, aborted and drop) features flags on for:
-> >   - netronome (nfp)
-> >   - cavium (thunder)
-> >   - hyperv.
-> >=20
-> > Turn 'redirect_target' feature flag on for:
-> >   - amanzon (ena)
-> >   - broadcom (bnxt)
-> >   - freescale (dpaa, dpaa2)
-> >   - intel (i40e, ice, igb, ixgbe)
-> >   - ti (cpsw)
-> >   - marvell (mvneta, mvpp2)
-> >   - sfc
-> >   - socionext (netsec)
-> >   - qlogic (qede)
-> >   - mellanox (mlx5)
-> >   - tap
-> >   - veth
-> >   - virtio_net
-> >   - xen
->=20
-> XDP support for tsnep was merged to net-next last week. So this driver
-> cannot get XDP feature support in bpf-next as it is not there currently.
-> Should I add these flags with a fix afterwards? Or would net-next be the
-> better target for this patch series?
+Also, maybe something to archive here, see [0] for Jesper's note
+about NIC vs host clock delta.
 
-It is better to target this series to bpf-next I guess since there are some
-libbpf and bpf changes.
-I would say we can fix tsnep with a follow-up patch or I can add it to the
-series if bpf-next will be rebased before the series is merged, it depends =
-on
-the upstream discussion.
+0: https://lore.kernel.org/bpf/f3a116dc-1b14-3432-ad20-a36179ef0608@redhat.com/
 
-Regards,
-Lorenzo
+v2:
+- Restore original value (Martin)
 
->=20
-> Gerhard
+Fixes: 297a3f124155 ("selftests/bpf: Simple program to dump XDP RX metadata")
+Reported-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Tested-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 45 ++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
 
---wgPVbgvG3x7so8fA
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+index 0008f0f239e8..3823b1c499cc 100644
+--- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+@@ -24,6 +24,7 @@
+ #include <linux/net_tstamp.h>
+ #include <linux/udp.h>
+ #include <linux/sockios.h>
++#include <linux/net_tstamp.h>
+ #include <sys/mman.h>
+ #include <net/if.h>
+ #include <poll.h>
+@@ -278,13 +279,53 @@ static int rxq_num(const char *ifname)
+ 
+ 	ret = ioctl(fd, SIOCETHTOOL, &ifr);
+ 	if (ret < 0)
+-		error(-1, errno, "socket");
++		error(-1, errno, "ioctl(SIOCETHTOOL)");
+ 
+ 	close(fd);
+ 
+ 	return ch.rx_count + ch.combined_count;
+ }
+ 
++static void hwtstamp_ioctl(int op, const char *ifname, struct hwtstamp_config *cfg)
++{
++	struct ifreq ifr = {
++		.ifr_data = (void *)cfg,
++	};
++	strcpy(ifr.ifr_name, ifname);
++	int fd, ret;
++
++	fd = socket(AF_UNIX, SOCK_DGRAM, 0);
++	if (fd < 0)
++		error(-1, errno, "socket");
++
++	ret = ioctl(fd, op, &ifr);
++	if (ret < 0)
++		error(-1, errno, "ioctl(%d)", op);
++
++	close(fd);
++}
++
++static struct hwtstamp_config saved_hwtstamp_cfg;
++static const char *saved_hwtstamp_ifname;
++
++static void hwtstamp_restore(void)
++{
++	hwtstamp_ioctl(SIOCSHWTSTAMP, saved_hwtstamp_ifname, &saved_hwtstamp_cfg);
++}
++
++static void hwtstamp_enable(const char *ifname)
++{
++	struct hwtstamp_config cfg = {
++		.rx_filter = HWTSTAMP_FILTER_ALL,
++	};
++
++	hwtstamp_ioctl(SIOCGHWTSTAMP, ifname, &saved_hwtstamp_cfg);
++	saved_hwtstamp_ifname = strdup(ifname);
++	atexit(hwtstamp_restore);
++
++	hwtstamp_ioctl(SIOCSHWTSTAMP, ifname, &cfg);
++}
++
+ static void cleanup(void)
+ {
+ 	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
+@@ -341,6 +382,8 @@ int main(int argc, char *argv[])
+ 
+ 	printf("rxq: %d\n", rxq);
+ 
++	hwtstamp_enable(ifname);
++
+ 	rx_xsk = malloc(sizeof(struct xsk) * rxq);
+ 	if (!rx_xsk)
+ 		error(-1, ENOMEM, "malloc");
+-- 
+2.39.1.456.gfc5497dd1b-goog
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY9L37QAKCRA6cBh0uS2t
-rH69AQChogm+pILXQ5apmdID9EOinCFNzrdmsYfWKZTkNX3DHAD9FLa+koGMdvfi
-Sra3pIlrfq3pfEJtrDxxK+cbpWGBfgE=
-=Pvrl
------END PGP SIGNATURE-----
-
---wgPVbgvG3x7so8fA--
