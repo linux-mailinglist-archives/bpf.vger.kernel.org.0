@@ -2,120 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A7967C2C4
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 03:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B8767C2CA
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 03:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229454AbjAZCWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 21:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
+        id S229876AbjAZCX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 21:23:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjAZCWu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 21:22:50 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156146E8D
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:22:48 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id v6so1640423ejg.6
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:22:48 -0800 (PST)
+        with ESMTP id S229457AbjAZCX5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 21:23:57 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF79D5AB72;
+        Wed, 25 Jan 2023 18:23:54 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id k18so713718pll.5;
+        Wed, 25 Jan 2023 18:23:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XSWfbYATKVvq3OLEfYLefn484zodCItTGe8t9jQorqc=;
-        b=EyTmtbpU7cHyp5mBCeWDldWukvX2ZCCjFFeOAQK1hd6nZi3QC6bhFjjVueQPQaRdpR
-         gIVQ9JHaKWFOP0zFeVbeWZkE+Cy4rz2hLMjBFOzmd3U3ZM9KQt/yAFmuJCfyQ9+XIUIn
-         UKgWfY8JTtc+FrUJ4d/az1ZZ7sTbbmelI58lxb/nKEEOc4icAC36IAzzEBld0k0t/tx7
-         HopyCSFzqgQ1MPx9nwzL8JglggjtNDXRpDXQk8L3ie9Ije6AU1MEsXjCNfK+W6pIx8O7
-         zGkJY2sqBoRhqi/OEKIjLg3pSi0BIwf5xr/wBNkBNgZgCIQAlsdxi4aPvAcdfb9R2D4z
-         fB9w==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YdzDiMhd5Z4Kbptw7LbpvnJl2K3L0BK+iFAqX7khznk=;
+        b=cWKQ3LoRkq2yJUejFpLnrkED2LKr3msUYmGPeKxn1zz9oXsR2Q5y+uBNeQcluKW+Hb
+         t3RYOIc3ExQTYLpI6hzcuYBj/SWWdUhatpoaAZ1lhjyniEeSuRQsANu6geJhcoezuexn
+         2p4A6kFID76IX/8Y0c6UDG+PgC275wJuLtxBwwzp0N9TIvOMGwDZt1yO+zWAr6VRegI4
+         Q+v50gsZDo6AJTpm1LmXUDfg/+diQibnpxpLW84XH+nCkK6Du1urF3rgBfcAwQdqN/aI
+         3mBdOgOt2SPx8npCj1G242UNu68EiGAJQ5Ss3rfAVKGpu98B2MekgUQYevlSzX65x4h2
+         M5tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XSWfbYATKVvq3OLEfYLefn484zodCItTGe8t9jQorqc=;
-        b=BalMj9Q/18zq8WISxGUO4l2Ma/iF7306GqyBY5VGkp0A7mUb5v3iTwipfQ5+4ib9G7
-         oCbg3itvmjQXIURub6GcXwTlWFHdstmSYszY0DKVyi1RHp2AzDX6JHdl8Z8ZxprlvGjo
-         eycWOxBWUNc198Ea1n574yRausJjqv7xYqqY1PhJ4jv1Kse5t7Io3524gmsKvcPHzODO
-         8hV1Jx9uwTDaDBc2TR5I4fs1D3E0HhAZCgdB0XO5cmp1bZASQvCnRkMRSauQOce2JxoQ
-         HYeEwz4+I01J71f8/2PUHXC0it8o2aWYcFmQfI+xWeI2ynsJpixmeK1xXxxb20aekxoV
-         FG/w==
-X-Gm-Message-State: AFqh2kpn84eBzWclHJDz/lzeMvLL0biF+w6HujCKxdl/PmGMOlN0sAuk
-        Vcm6wGjgummq3b+5vdp5oqbOtyPYTYpaGr/hIuk=
-X-Google-Smtp-Source: AMrXdXt6QD5YiNkcY/CUDM1mGPfk+seuCKdxkfLd1Mh4OdRaq2p+p+jhTk4fXqsAlgansTJdR5DteDxyE525Rb30+5A=
-X-Received: by 2002:a17:906:9e95:b0:7c1:98f:c16a with SMTP id
- fx21-20020a1709069e9500b007c1098fc16amr3257822ejc.215.1674699766391; Wed, 25
- Jan 2023 18:22:46 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YdzDiMhd5Z4Kbptw7LbpvnJl2K3L0BK+iFAqX7khznk=;
+        b=1LLJGuGGU7V55SR3OpCapJYeSOZf7Yq6lMLmKrowklW14+lry/JVPLqUNk25XGf8nu
+         jOCcXErI2fiNK8W6SOODXGNJINILtBFZHoP5Pg90zFC3PQ75bt17rE4ITlq2qnN4MLnV
+         EURqlPOfb+8Tbe/6c5AY3kxU6+sLgAePl7QkFR6nT2QmKfQQcQnYgZCUbwbp4rwSCuzO
+         9cIQleMkEEPU1ZvwbGNNThYa1zcDlETWMS+m34CZU4e+8ebg2s/Ud4HqrMG6yWEPNfTb
+         eYVOmoGlaYnHQY75gCSM9s8PrRqLrlSwI5/3v4AcR4LA0M8s6zkGjKBODoyh4LP7tJew
+         y1JA==
+X-Gm-Message-State: AO0yUKWbbE5DGrd6yAtrm1cKM1Rs3BlxjAFoVgLYExLZK0aZJ9YIxHA2
+        1nxM4q6wFJnzDyrqhlXwKTE=
+X-Google-Smtp-Source: AK7set928mFCsBjzluN+Hn1fMUpkX7L+xOL83MZOoHVwK3h3Rnfl0pQuSPbhnC4JnUGrnGbjsxX7hA==
+X-Received: by 2002:a17:902:6b89:b0:193:6520:739a with SMTP id p9-20020a1709026b8900b001936520739amr171911plk.46.1674699834095;
+        Wed, 25 Jan 2023 18:23:54 -0800 (PST)
+Received: from debian.me (subs02-180-214-232-79.three.co.id. [180.214.232.79])
+        by smtp.gmail.com with ESMTPSA id c8-20020a170902d48800b001960706141fsm72958plg.149.2023.01.25.18.23.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Jan 2023 18:23:53 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 8EE9110544A; Thu, 26 Jan 2023 09:23:50 +0700 (WIB)
+Date:   Thu, 26 Jan 2023 09:23:50 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Jules Maselbas <jmaselbas@kalray.eu>
+Cc:     Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Guillaume Thouvenin <gthouvenin@kalray.eu>,
+        Clement Leger <clement@clement-leger.fr>,
+        Vincent Chardon <vincent.chardon@elsys-design.com>,
+        Marc =?utf-8?B?UG91bGhpw6hz?= <dkm@kataplop.net>,
+        Julian Vetter <jvetter@kalray.eu>,
+        Samuel Jones <sjones@kalray.eu>,
+        Ashley Lesdalons <alesdalons@kalray.eu>,
+        Thomas Costis <tcostis@kalray.eu>,
+        Marius Gligor <mgligor@kalray.eu>,
+        Jonathan Borne <jborne@kalray.eu>,
+        Julien Villette <jvillette@kalray.eu>,
+        Luc Michel <lmichel@kalray.eu>,
+        Louis Morhet <lmorhet@kalray.eu>,
+        Julien Hascoet <jhascoet@kalray.eu>,
+        Jean-Christophe Pince <jcpince@gmail.com>,
+        Guillaume Missonnier <gmissonnier@kalray.eu>,
+        Alex Michon <amichon@kalray.eu>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <git@xen0n.name>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        John Garry <john.garry@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Bharat Bhushan <bbhushan2@marvell.com>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Atish Patra <atishp@atishpatra.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Qi Liu <liuqi115@huawei.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-audit@redhat.com,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH v2 01/31] Documentation: kvx: Add basic documentation
+Message-ID: <Y9HkNpD7iQG9WErv@debian.me>
+References: <20230120141002.2442-1-ysionneau@kalray.eu>
+ <20230120141002.2442-2-ysionneau@kalray.eu>
+ <Y8z7v53A/UDKFd7j@debian.me>
+ <20230125182820.GD5952@tellis.lin.mbt.kalray.eu>
 MIME-Version: 1.0
-References: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
- <878rhty100.fsf@cloudflare.com> <CAMy7=ZVLUpeHM4A_aZ5XT-CYEM8_uj8y=GRcPT89Bf5=jtS+og@mail.gmail.com>
- <08dce08f-eb4b-d911-28e8-686ca3a85d4e@meta.com> <CAMy7=ZWPc279vnKK6L1fssp5h7cb6cqS9_EuMNbfVBg_ixmTrQ@mail.gmail.com>
- <3a87b859-d7c9-2dfd-b659-cd3192a67003@linux.dev> <CAMy7=ZWi35SKj9rcKwj0eyH+xY8ZBgiX_vpF=mydxFDahK6trg@mail.gmail.com>
- <87k01dvt83.fsf@cloudflare.com> <CAMy7=ZXyqCzhosiwpLa9rsFqW2jX4V59-Ef4k-5dQtqKOakTFQ@mail.gmail.com>
- <CAADnVQJaCTQtmvOdQoeaZbt0wwPp4iYjbvaPvRZw4DBEOSrJYg@mail.gmail.com>
- <CAMy7=ZVpGMOK_kHk1qB4ywxV88Vvtt=rGw4Q-Fi1F7bGU+6prQ@mail.gmail.com>
- <CAADnVQLaKyRJwXnU4wZrih4pRduw_eWarA2uNuc=HssKQUAn_Q@mail.gmail.com>
- <CAMy7=ZU7oEa-VJy1_5WM6+poWsVCyZ0Y7ocQLq3qkFcs2-ftBw@mail.gmail.com>
- <CAADnVQKbi6JA4tX=uBHvNrYEUeMa3jmB=FSb=1LufE3597c86A@mail.gmail.com>
- <CAMy7=ZW7tX4ziwJLhGtqQjbdLyJjqTo=Vi=nQ4sDJHASWMCKgQ@mail.gmail.com>
- <CAADnVQJmpB+bXB_tNXBSVFyG-1KnzKxapLfjUc51_v0-Vho+7w@mail.gmail.com> <CAMy7=ZX+swf7_TzKTHnrMK9d-2PjQK_22vFy_ypBQNsYarqChw@mail.gmail.com>
-In-Reply-To: <CAMy7=ZX+swf7_TzKTHnrMK9d-2PjQK_22vFy_ypBQNsYarqChw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 25 Jan 2023 18:22:34 -0800
-Message-ID: <CAADnVQ++LzKt9Q-GtGXknVBqyMqY=vLJ3tR3NNGG3P66gvVCFQ@mail.gmail.com>
-Subject: Re: Are BPF programs preemptible?
-To:     Yaniv Agman <yanivagman@gmail.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zOhV12uQumLCQ78f"
+Content-Disposition: inline
+In-Reply-To: <20230125182820.GD5952@tellis.lin.mbt.kalray.eu>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 25, 2023 at 11:59 AM Yaniv Agman <yanivagman@gmail.com> wrote:
->
-> > Anyway back to preempt_disable(). Think of it as a giant spin_lock
-> > that covers the whole program. In preemptable kernels it hurts
-> > tail latency and fairness, and is completely unacceptable in RT.
-> > That's why we moved to migrate_disable.
-> > Technically we can add bpf_preempt_disable() kfunc, but if we do that
-> > we'll be back to square one. The issues with preemptions and RT
-> > will reappear. So let's figure out a different solution.
-> > Why not use a scratch buffer per program ?
->
-> Totally understand the reason for avoiding preemption disable,
-> especially in RT kernels.
-> I believe the answer for why not to use a scratch buffer per program
-> will simply be memory space.
-> In our use-case, Tracee [1], we let the user choose whatever events to
-> trace for a specific workload.
-> This list of events is very big, and we have many BPF programs
-> attached to different places of the kernel.
-> Let's assume that we have 100 events, and for each event we have a
-> different BPF program.
-> Then having 32kb per-cpu scratch buffers translates to 3.2MB per one
-> cpu, and ~100MB per 32 CPUs, which is more common for our case.
 
-Well, 100 bpf progs consume at least a page each,
-so you might want one program attached to all events.
+--zOhV12uQumLCQ78f
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Since we always add new events to Tracee, this will also not be scalable.
-> Yet, if there is no other solution, I believe we will go in that direction
->
-> [1] https://github.com/aquasecurity/tracee/blob/main/pkg/ebpf/c/tracee.bpf.c
+On Wed, Jan 25, 2023 at 07:28:20PM +0100, Jules Maselbas wrote:
+> Hi Bagas,
+>=20
+> Thanks for taking your time and effort to improve the documentation.
+> We not only need to clean the documention syntax and wording but also
+> its content. I am tempted to apply all your proposed changes first and
+> then work on improving and correcting the documentation.
+>=20
+> However I am not very sure on how to integrate your changes and give
+> proper contribution attributions. Any insights on this would be greatly
+> appreciated.
+>=20
 
-you're talking about BPF_PERCPU_ARRAY(scratch_map, scratch_t, 1); ?
+Hi Jules,
 
-Insead of scratch_map per program, use atomic per-cpu counter
-for recursion.
-You'll have 3 levels in the worst case.
-So it will be:
-BPF_PERCPU_ARRAY(scratch_map, scratch_t, 3);
-On prog entry increment the recursion counter, on exit decrement.
-And use that particular scratch_t in the prog.
+The reword diff can be squashed into the doc patch (here, [01/31]).
+
+For the attribution, since the reword is significant,
+
+Co-developed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--zOhV12uQumLCQ78f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY9HkLwAKCRD2uYlJVVFO
+ownGAQCyX0e5qWZ8KCgW6jQ0b0lEDmtwh+WnXNpCfwV6NxpnGgD+ISGQ0LnDB1sd
+Rr3pPueL92j0yk6OhCDekI4gR23BOwo=
+=1//R
+-----END PGP SIGNATURE-----
+
+--zOhV12uQumLCQ78f--
