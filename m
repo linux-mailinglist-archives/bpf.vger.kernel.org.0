@@ -2,66 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD93867D8CB
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 23:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C836567D99B
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 00:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjAZWui (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 17:50:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
+        id S231785AbjAZX3r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 18:29:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbjAZWue (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 17:50:34 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4170438E99
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 14:50:33 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id m13-20020a62f20d000000b005906b270133so1557240pfh.20
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 14:50:33 -0800 (PST)
+        with ESMTP id S229756AbjAZX3q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 18:29:46 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBEA36474
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 15:29:45 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id c4-20020a1c3504000000b003d9e2f72093so4308925wma.1
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 15:29:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Tq3oKm2ZNiCqSD+4cGqm6lOYyg99eiR+eCWU8TDk5uU=;
-        b=bl9p9CNP1MKzDtdoat2jk5k5dYP2CnohphL+SBw4+MibCEE8P+xRyqAMsA881bbsKb
-         lNzJntWdH80qUyKKmytDaZdKRR4A9CgaP5VK4ECTc5E7u36KoOSMXyzYMt+oYWk4Mf4r
-         N20DXOuGyY4APV3fFDC5pkIebV02eaGw5rZiIN3z4xz3119sTmuIeZnXG/+CMTouSW/K
-         ofofjJ6QgIdgVEwmPG9OPEnrM0s3978GCZF7Fyk9KUBILxpx+8u9IBgMSyFSiwz+BiD6
-         N5TGAVv0/38ewtFPkHfgUWqm/t9LFgM7nPIt+p8AHeN2aOLmAe3ypGTb/lViQ9cYBB7y
-         AxZg==
+        bh=5HrUn5I9qfKZcMopHe92od24/2jGYkZVupsVLPzvQP4=;
+        b=qA8hP4xJYb/OhZahIzuKeZIiLiF0ZiyBq1zEUpkPZtCNENsLOMKZAo8PEcHYNbmeIR
+         6Iz0duuycDaEtDv9kmVZkWd2I6WjmO/8kh/ZkxdZ8W2EMEbSk6shRHw7riAIH6uMZtS+
+         UuMnpOADf7glZuN6WLQJQbx1aKQKCHppvnPaV1JPMM4MDyHC3Iy3c/VrkxZMSLwN/gJm
+         VDG8f5zNcHRSSlfS6G3vE6FeZFNmt4MloJDdHfGBJJQwjmbs8mPuF9bnUlbYQWdE+VEA
+         g5QmcvhQ80PLd3eRoQKslTcJz5HqhYjPBH3M8hab3gnDSVDWBcDka77E41jziWgYY8yg
+         XgJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Tq3oKm2ZNiCqSD+4cGqm6lOYyg99eiR+eCWU8TDk5uU=;
-        b=mp42LLzIebT+D93YV6oqr2ucsfwumr18q39GaZ3RCy/1jcxsrkNZ7/1dJwiABxahlP
-         GZ7D+wzzWPIQTgJFwuA3CoGBJGHuHe57RJEfb2VDHuJGR9XjtUKTrufzjZMNdcTACT33
-         umnhSmNY6Is6eov7ilyJydi34kdupD6IdR66RjfabkiRKHK4MkRgI6k6lm3pu+e5EHTn
-         Wiop65qIDQ7SHP0jhgYEa8W6ORzvX84QzNDJTPMqdYoGNcVar56zIRGfwrXLApYKcYZv
-         SbL1aO29t7IhCrkpNzsH9Ktc4Vt+Po1sQq/x/QYRw4NP9x0xgsmwo/fcEmlbhDS5EKel
-         3Fbw==
-X-Gm-Message-State: AO0yUKVf+IznQFZQeYhxm673UyQUGRt6R3OHv5pNaALr8bKO87HIN2Ll
-        zmgvyDDLFHCxpFcXZHl6c8KTf7/a7Y2oN96wG1dmAfyqGhn3U7NqbfgBWfAJbNGyfUE3zSdCGPb
-        CQ+eoWfWjqchGp+vN8uhrqOvf4T3+jacl4g47X1Y2f0wnzQN2UQ==
-X-Google-Smtp-Source: AK7set8+PJDqOEh6uet18ucbyc11s63tqvf2ExbnrFaIVc1D9jsyWL8GcwVxWGey6xzLFHah5DX8+mo=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:8b8d:b0:225:eaa2:3f5d with SMTP id
- z13-20020a17090a8b8d00b00225eaa23f5dmr10275pjn.2.1674773432064; Thu, 26 Jan
- 2023 14:50:32 -0800 (PST)
-Date:   Thu, 26 Jan 2023 14:50:30 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.39.1.456.gfc5497dd1b-goog
-Message-ID: <20230126225030.510629-1-sdf@google.com>
-Subject: [PATCH bpf-next v2] selftests/bpf: Properly enable hwtstamp in xdp_hw_metadata
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
+        bh=5HrUn5I9qfKZcMopHe92od24/2jGYkZVupsVLPzvQP4=;
+        b=GRO0OX3mFsS7l+95HVDCWF0OCLMg6uvBZNYF3Biia363rK9wNgbQpThE6KK+ICbZN4
+         abQSpPPe1/Rh8XVGBxl94FlLRMR1HrONLnIK7eOItAD4n5SISKoG3sG8LcGhSUli9XlP
+         cDv5a5FDJ384AumrsYHar53W0k1Q3YrdwWX/H5jOEuYuwjLNLP4l0YH2RdF93ZN4PkSM
+         hK4Mz1nlSnFYriBphqRZKmaFkV4GCPOxXQoEq4WnfqDQWqVpQ6OUQf7Bn3r07B17PDRB
+         GKcpFTPDPE45o74IVPdC1ttNMGiMDWRiObLILAdJ7xaykjb2KprvCfiDUbpl4BJfoVYg
+         k+LQ==
+X-Gm-Message-State: AFqh2kqKWGF9E9XUc3DD+1Z8Qm6e3gvaZ0OmVtctCQzW+QvoNpDMtfM1
+        jkLSfEv8o05w4yDtlHrl9Iw=
+X-Google-Smtp-Source: AMrXdXvx7rlYM6U8PpkQgC2CDkPlC7dPZplT020aKfJcIRzjOR3vUa0I3wNso6h40foNb7NjK8qo9g==
+X-Received: by 2002:a7b:c5cb:0:b0:3da:fac4:7da3 with SMTP id n11-20020a7bc5cb000000b003dafac47da3mr36704765wmk.36.1674775783865;
+        Thu, 26 Jan 2023 15:29:43 -0800 (PST)
+Received: from [192.168.1.113] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id v6-20020a05600c444600b003db09692364sm6778139wmn.11.2023.01.26.15.29.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Jan 2023 15:29:43 -0800 (PST)
+Message-ID: <aff79e80ef4ae0751f82de42b761b6f27355db1a.camel@gmail.com>
+Subject: Re: [RFC bpf-next 3/5] selftests/bpf: generate boilerplate code for
+ test_loader-based tests
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+Date:   Fri, 27 Jan 2023 01:29:42 +0200
+In-Reply-To: <CAEf4BzaKe3HMmYKvYKarcb7SKvd2Uurd22U5tLjE0RyNMgpSAg@mail.gmail.com>
+References: <20230123145148.2791939-1-eddyz87@gmail.com>
+         <20230123145148.2791939-4-eddyz87@gmail.com>
+         <CAEf4BzaKe3HMmYKvYKarcb7SKvd2Uurd22U5tLjE0RyNMgpSAg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,113 +75,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The existing timestamping_enable() is a no-op because it applies
-to the socket-related path that we are not verifying here
-anymore. (but still leaving the code around hoping we can
-have xdp->skb path verified here as well)
+On Wed, 2023-01-25 at 17:43 -0800, Andrii Nakryiko wrote:
+> On Mon, Jan 23, 2023 at 6:52 AM Eduard Zingerman <eddyz87@gmail.com> wrot=
+e:
+> >=20
+> > Automatically generate boilerplate code necessary to run tests that
+> > use test_loader.c.
+> >=20
+> > Adds a target 'prog_tests/test_loader_auto_wrappers.c' as part of
+> > rulesets for 'test_progs' and 'test_progs-no_alu32'. The content of
+> > this C file is generated by make and has the following structure:
+> >=20
+> >   #include <test_progs.h>
+> >=20
+> >   #include "some_test_1.skel.h"
+> >   #include "some_test_2.skel.h"
+> >   ...
+> >=20
+> >   void test_some_test_1(void) { RUN_TESTS(some_test_1); }
+> >   void test_some_test_2(void) { RUN_TESTS(some_test_2); }
+> >   ...
+> >=20
+> > Here RUN_TESTS is a macro defined in test_progs.h, it expands to a
+> > code that uses test_loader.c:test_loader__run_subtests() function to
+> > load tests specified by appropriate skel.h.
+> >=20
+> > In order to get the list of tests included in
+> > 'test_loader_auto_wrappers.c' the generation script looks for
+> > 'progs/*.c' files that contain a special comment:
+> >=20
+> >   /* Use test_loader marker */
+> >=20
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > ---
+>=20
+> It feels like this is a bit of an overkill, tbh. There are
+>=20
+> $ ls verifier/*.c | wc -l
+> 94
+>=20
+> files. We can move each migrated set of tests from verifier/xxx.c to
+> progs/verifier_xxx.c. And then just have just manually maintained
+> prog_tests/verifier.c file where for each converted test we have one
+> #include and one void test_some_test_1(void) { RUN_TESTS(some_test_1);
+> }.
+>=20
+> It sometimes would useful to add some extra debugging printfs in such
+> a file, so having it auto generated would be actually an
+> inconvenience. And that on top of further Makefile complication.
+>=20
+> For initial conversion we can auto-generate this file, of course. And
+> then for each migrated file adding 2 lines manually doesn't seem like
+> a big deal?
 
-  poll: 1 (0)
-  xsk_ring_cons__peek: 1
-  0xf64788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
-  rx_hash: 3697961069
-  rx_timestamp:  1674657672142214773 (sec:1674657672.1422)
-  XDP RX-time:   1674657709561774876 (sec:1674657709.5618) delta sec:37.4196
-  AF_XDP time:   1674657709561871034 (sec:1674657709.5619) delta
-sec:0.0001 (96.158 usec)
-  0xf64788: complete idx=8 addr=8000
+Ok, I'll remove the makefile changes.
 
-Also, maybe something to archive here, see [0] for Jesper's note
-about NIC vs host clock delta.
-
-0: https://lore.kernel.org/bpf/f3a116dc-1b14-3432-ad20-a36179ef0608@redhat.com/
-
-v2:
-- Restore original value (Martin)
-
-Fixes: 297a3f124155 ("selftests/bpf: Simple program to dump XDP RX metadata")
-Reported-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
-Tested-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 45 ++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 0008f0f239e8..3823b1c499cc 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -24,6 +24,7 @@
- #include <linux/net_tstamp.h>
- #include <linux/udp.h>
- #include <linux/sockios.h>
-+#include <linux/net_tstamp.h>
- #include <sys/mman.h>
- #include <net/if.h>
- #include <poll.h>
-@@ -278,13 +279,53 @@ static int rxq_num(const char *ifname)
- 
- 	ret = ioctl(fd, SIOCETHTOOL, &ifr);
- 	if (ret < 0)
--		error(-1, errno, "socket");
-+		error(-1, errno, "ioctl(SIOCETHTOOL)");
- 
- 	close(fd);
- 
- 	return ch.rx_count + ch.combined_count;
- }
- 
-+static void hwtstamp_ioctl(int op, const char *ifname, struct hwtstamp_config *cfg)
-+{
-+	struct ifreq ifr = {
-+		.ifr_data = (void *)cfg,
-+	};
-+	strcpy(ifr.ifr_name, ifname);
-+	int fd, ret;
-+
-+	fd = socket(AF_UNIX, SOCK_DGRAM, 0);
-+	if (fd < 0)
-+		error(-1, errno, "socket");
-+
-+	ret = ioctl(fd, op, &ifr);
-+	if (ret < 0)
-+		error(-1, errno, "ioctl(%d)", op);
-+
-+	close(fd);
-+}
-+
-+static struct hwtstamp_config saved_hwtstamp_cfg;
-+static const char *saved_hwtstamp_ifname;
-+
-+static void hwtstamp_restore(void)
-+{
-+	hwtstamp_ioctl(SIOCSHWTSTAMP, saved_hwtstamp_ifname, &saved_hwtstamp_cfg);
-+}
-+
-+static void hwtstamp_enable(const char *ifname)
-+{
-+	struct hwtstamp_config cfg = {
-+		.rx_filter = HWTSTAMP_FILTER_ALL,
-+	};
-+
-+	hwtstamp_ioctl(SIOCGHWTSTAMP, ifname, &saved_hwtstamp_cfg);
-+	saved_hwtstamp_ifname = strdup(ifname);
-+	atexit(hwtstamp_restore);
-+
-+	hwtstamp_ioctl(SIOCSHWTSTAMP, ifname, &cfg);
-+}
-+
- static void cleanup(void)
- {
- 	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-@@ -341,6 +382,8 @@ int main(int argc, char *argv[])
- 
- 	printf("rxq: %d\n", rxq);
- 
-+	hwtstamp_enable(ifname);
-+
- 	rx_xsk = malloc(sizeof(struct xsk) * rxq);
- 	if (!rx_xsk)
- 		error(-1, ENOMEM, "malloc");
--- 
-2.39.1.456.gfc5497dd1b-goog
+>=20
+>=20
+>=20
+> >  tools/testing/selftests/bpf/Makefile          | 34 +++++++++++++++++++
+> >  .../selftests/bpf/prog_tests/.gitignore       |  1 +
+> >  2 files changed, 35 insertions(+)
+> >=20
+>=20
+> [...]
 
