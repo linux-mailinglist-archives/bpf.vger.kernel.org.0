@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB1067C22F
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 02:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9546F67C230
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 02:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbjAZBGy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 20:06:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33786 "EHLO
+        id S229774AbjAZBIO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 20:08:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjAZBGx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 20:06:53 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC99126F5
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:06:52 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id ud5so1357892ejc.4
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:06:52 -0800 (PST)
+        with ESMTP id S229736AbjAZBIN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 20:08:13 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EEE13D5D
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:08:11 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id v13so553595eda.11
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:08:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jy4NY9hjvIZY85IuEgExHWlOkHPoirgB27rnoxBpBUM=;
-        b=nC48lCFShQgBBPGM8yVXGrEnb9vaX78BRK+4WLKVENWgufP4+ItbEE/ObhkcgMA188
-         NcldP+OP/A89FSlMaThkO+UeJLMtIxfj5ADSpCbfs/+fNqrjJcrUpUkqvl0cEfWeqQlD
-         UQsFi76Tl06Rb4RzkkTHGoA8bIscLVjMtvNDDM2rP34HlUFLVKviG/sAbgknJfDK7q5V
-         +VjE7KV8UplJ8IZzSomcz9uR9Wx9AWJhX0XiCRQVZmkjhq+1L/E+OZnkF4OB5RvdlTBc
-         kfsg3USRC1LNOl6DJnBWX/QmBSWcYeQAyZOo/VIhOj5DmeB1iWqdp2lvVdcQmGpR6KvV
-         YzoA==
+        bh=9ViWFvs3RBp6itGd80PspuEhuaKTWOL9bKjTSwU1nvI=;
+        b=DSejQGlqsnLwRS6SAT+QdkIOxagMpKptg/SYq65CGWzoRgeSGHObEZLnhd++Pyxjdq
+         KRbTUQIShLm+ZDLrvu23SXJZibB/PPVp1RfS2Tq1jS7YzPyyoIasFeeUuHw0nrHQM4n/
+         eT/Y4KUPHB9UdGovpvcPc1RkD1Hc/6OYToiZDE7jxtA3vzGiJzZZBCTZYs9z/M8J005H
+         uO3/IGL4YMFHacOEttOkX84cHEAEiLpmtRKDAPFfygD4ZFz5534Vr6IasXloLmWmkffD
+         jqd1Leb4aNTJ+nFj/2f5P5HAuFEiVx28tcYMYVUiNnXHqYyAujyf7ceChePgslHANdm1
+         NVkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jy4NY9hjvIZY85IuEgExHWlOkHPoirgB27rnoxBpBUM=;
-        b=2B+2vBPzCOCDrZ/dNsgQ17O19DhEOI2tnUscDfvhS6XNvLb/+5VqsTWCZZw62Nc1F3
-         UJ5d3ixF5U3rK5mi5fjg5SoRwoDxshWwR21/NrSW2uyfObplyXZN8+Kq+71lbfPpASQu
-         97q22UOYZJlBaXplRhk6ofnAx1hngEDPlhy1vhLfpNevksqICCXQnng0J6pcmjpLt/3l
-         zA8xBU2uE7o+3ES55PG+ASMBDWiJygrU10ILtarL8CxsO5WlUql6WwzHQaXJQ6ZYlQe3
-         TyAgIjp0yAvnbnVk5MppAuNWjgq0dvxc2vMKsGX1RNd37tO0Dg9emZk8iarJX+aUiQ3P
-         Yftw==
-X-Gm-Message-State: AFqh2koeiTy2F9iWbMsZzOf1Uiu9Pt+VYbmB8E177gpOwYJ/jvC9nIUO
-        m2D6r6Nu2tUZp+1ixd747VCccQp/NmXXbU/YPuM=
-X-Google-Smtp-Source: AMrXdXundIXdqET38igG+EQqq/SRQdEkh4ru1dnDmxbiI04jyvqenci3hkbwESssRuj0ZNQOFl6Wyf+/+owqWi3uEAk=
-X-Received: by 2002:a17:906:ecb9:b0:86d:97d4:9fea with SMTP id
- qh25-20020a170906ecb900b0086d97d49feamr5509159ejb.141.1674695210745; Wed, 25
- Jan 2023 17:06:50 -0800 (PST)
+        bh=9ViWFvs3RBp6itGd80PspuEhuaKTWOL9bKjTSwU1nvI=;
+        b=kC4diSqKCRiaae/hF22sZcowA3eyvft/nfDFyL//t1aaMUAGPgZ3l/9LzDKGPvzfKk
+         RujQx35OY7MxOekUjiac9sMFEH8w/FVSyuLqnypz06+b3Pug2JyrZtSL27mCDz/K+DO/
+         Csxze1QK2SSxxBcYK3b9/Zk2mhhXa0zRDv3XeE1AC4R2VAOLPLoNyBYo5sZi5qiSBQaJ
+         4bVwNBjtRCKDy+dPA6yVqWs3n9kFIwtCZMjIg5JTrpLgCh1HnIvPAO9nBVOOc5EJR7At
+         0Df5tdnpnAUYRBevcLxGTtR5BGEzpj5MUOkNZ+JuDwUFQXyKDGWDl4LJ5RbGNjXp4je2
+         lWiA==
+X-Gm-Message-State: AFqh2koONIHdCjnlsyNDX+tgJJp9Ocggyoczu2MlnXxQx0X59wtFtMDi
+        MxYl7z32DNopkodvux+dQ3wsoP8bKMywWUc3hQ5eqat7
+X-Google-Smtp-Source: AMrXdXuSZVh8HSBQAJkQm+BGwpFh4OMO+wTfK0Os0fncxTXB7obSIppKLU1+x5GVQPm7BA99ILyI2/q0JYCMgBvYvC0=
+X-Received: by 2002:a05:6402:5288:b0:49e:66b8:a790 with SMTP id
+ en8-20020a056402528800b0049e66b8a790mr4342459edb.47.1674695290253; Wed, 25
+ Jan 2023 17:08:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20230125213817.1424447-1-iii@linux.ibm.com> <20230125213817.1424447-9-iii@linux.ibm.com>
-In-Reply-To: <20230125213817.1424447-9-iii@linux.ibm.com>
+References: <20230125213817.1424447-1-iii@linux.ibm.com> <20230125213817.1424447-2-iii@linux.ibm.com>
+In-Reply-To: <20230125213817.1424447-2-iii@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 25 Jan 2023 17:06:38 -0800
-Message-ID: <CAEf4BzaaC4gn-BjpYWP++0GoHbJ2xaOOZ32ZNwq+_vxHVMKpuA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 08/24] selftests/bpf: Fix verify_pkcs7_sig on s390x
+Date:   Wed, 25 Jan 2023 17:07:58 -0800
+Message-ID: <CAEf4Bzbxvg1a-kqvDeRmPcL2LDQf-cnRwoj4yds1u9JwAZ3HPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/24] selftests/bpf: Fix liburandom_read.so
+ linker error
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -71,97 +72,38 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Jan 25, 2023 at 1:39 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> Use bpf_probe_read_kernel() instead of bpf_probe_read(), which is not
-> defined on all architectures.
+> When building with O=, the following linker error occurs:
 >
-> While at it, improve the error handling: do not hide the verifier log,
-> and check the return values of bpf_probe_read_kernel() and
-> bpf_copy_from_user().
+>     clang: error: no such file or directory: 'liburandom_read.so'
+>
+> Fix by adding $(OUTPUT) to the linker search path.
 >
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->  .../selftests/bpf/prog_tests/verify_pkcs7_sig.c      |  9 +++++++++
->  .../selftests/bpf/progs/test_verify_pkcs7_sig.c      | 12 ++++++++----
->  2 files changed, 17 insertions(+), 4 deletions(-)
+>  tools/testing/selftests/bpf/Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
-> index 579d6ee83ce0..75c256f79f85 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
-> @@ -56,11 +56,17 @@ struct data {
->         __u32 sig_len;
->  };
->
-> +static char libbpf_log[8192];
->  static bool kfunc_not_supported;
->
->  static int libbpf_print_cb(enum libbpf_print_level level, const char *fmt,
->                            va_list args)
->  {
-> +       size_t log_len = strlen(libbpf_log);
-> +
-> +       vsnprintf(libbpf_log + log_len, sizeof(libbpf_log) - log_len,
-> +                 fmt, args);
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index c9b5ed59e1ed..43098eb15d31 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -189,9 +189,9 @@ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
+>  $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
+>         $(call msg,BINARY,,$@)
+>         $(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
+> -                    liburandom_read.so $(filter-out -static,$(LDLIBS))      \
+> +                    $(filter-out -static,$(LDLIBS))                           \
+>                      -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
+> -                    -Wl,-rpath=. -o $@
+> +                    -Wl,-rpath=. -o $@ -lurandom_read -L$(OUTPUT)
 
-it seems like test is written to assume that load might fail and we'll
-get error messages, so not sure it's that useful to print out these
-errors. But at the very least we should filter out DEBUG and INFO
-level messages, and pass through WARN only.
-
-Also, there is no point in having a separate log buffer, just printf
-directly. test_progs will take care to collect overall log and ignore
-it if test succeeds, or emit it if test fails
+why moving to the end? it's nice in verbose logs when the last thing
+is the resulting file ($@), so if possible, let's move it back?
 
 
-> +
->         if (strcmp(fmt, "libbpf: extern (func ksym) '%s': not found in kernel or module BTFs\n"))
->                 return 0;
 >
-> @@ -277,6 +283,7 @@ void test_verify_pkcs7_sig(void)
->         if (!ASSERT_OK_PTR(skel, "test_verify_pkcs7_sig__open"))
->                 goto close_prog;
->
-> +       libbpf_log[0] = 0;
->         old_print_cb = libbpf_set_print(libbpf_print_cb);
->         ret = test_verify_pkcs7_sig__load(skel);
->         libbpf_set_print(old_print_cb);
-> @@ -289,6 +296,8 @@ void test_verify_pkcs7_sig(void)
->                 goto close_prog;
->         }
->
-> +       printf("%s", libbpf_log);
-> +
->         if (!ASSERT_OK(ret, "test_verify_pkcs7_sig__load"))
->                 goto close_prog;
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-> index ce419304ff1f..7748cc23de8a 100644
-> --- a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-> +++ b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-> @@ -59,10 +59,14 @@ int BPF_PROG(bpf, int cmd, union bpf_attr *attr, unsigned int size)
->         if (!data_val)
->                 return 0;
->
-> -       bpf_probe_read(&value, sizeof(value), &attr->value);
-> -
-> -       bpf_copy_from_user(data_val, sizeof(struct data),
-> -                          (void *)(unsigned long)value);
-> +       ret = bpf_probe_read_kernel(&value, sizeof(value), &attr->value);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret = bpf_copy_from_user(data_val, sizeof(struct data),
-> +                                (void *)(unsigned long)value);
-> +       if (ret)
-> +               return ret;
-
-this part looks good, we shouldn't use bpf_probe_read.
-
-You'll have to update progs/profiler.inc.h as well, btw, which still
-uses bpf_probe_read() and bpf_probe_read_str.
->
->         if (data_val->data_len > sizeof(data_val->data))
->                 return -EINVAL;
+>  $(OUTPUT)/sign-file: ../../../../scripts/sign-file.c
+>         $(call msg,SIGN-FILE,,$@)
 > --
 > 2.39.1
 >
