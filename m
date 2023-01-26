@@ -2,114 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D65BE67CE90
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 15:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7229D67CEBE
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 15:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbjAZOpr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 09:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
+        id S230203AbjAZOs4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 09:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjAZOpr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 09:45:47 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8ED3AB6
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 06:45:46 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id tz11so5801045ejc.0
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 06:45:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7nSsfyNEXPrSXuem+7chKXQR9LbBquP+RO1JogAR3bE=;
-        b=h8Qst5Jm0t1zi0sxzwuxgrj7pPKzZMRYv9y+Bx5HfiANi42TZlj93ZMJ3C5QVaBnk5
-         2+NwPuV7kyYWOl5DxTs3scKnaNxxJ0kxzHfGNHvdN5sZkqcukdRbmNvnbmSoQcKnWT8S
-         8Zt+9SFjvi3Txo+vWCRA4Es6RwdYdDcW/yjIzkHh8rGyau6yfV2rGkYHR6PEcmsl9Ejp
-         V3+G/eYeU6Z/QVPmC8qUGAebmt5uBGF2m13jZMXPEGSudiIILKDoe4uJ4JLnWRf6SFsP
-         HZ8aG4yiVMB7lccePFkHCbanbKX/PDnOqzOXCdEbTcMEbMFedi/BYom0IO5gf/nc2EnP
-         CN6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7nSsfyNEXPrSXuem+7chKXQR9LbBquP+RO1JogAR3bE=;
-        b=JXYT4d2pqFYGBXzhFeM/bRjzknfz98yZMWn77OjsZ18Jzlm+sJmroZUnEx3NWKmjBV
-         3f6XRRaWyhdknrGj2UUEMMwyBISD1KLkBr+r8vs7nvrNcyNtFRgxq4jzEPLorxH/61D6
-         KVr3snptuCickMbJYz0efh5ohoHzKFwEzzHzmcgG+K4HeWMCLaKRVLinowTqed8dPXjU
-         SbjeGM8s/kzK9fZ/mhkFPQEy6T3mnX/m+NixM8XNoZfB8B7Kh1NG1H3eF8ZeinriYeTw
-         8JI15NZY5y4RXfDc1bkfbDxB0UHJJfQ2j19RCrKxmPGe5BVJC1gVY4TNJT+RXS3sZ+jt
-         ciYA==
-X-Gm-Message-State: AFqh2kqY71dz6EV39iXZH6P4OSF335hIxKIJD9iX8OZZI7N7rOei+FR9
-        zw24u1Ib8YslCNxlEIWYQuc=
-X-Google-Smtp-Source: AMrXdXvZhbqN7eMM7fynC8tMrz2TUg+pYb4hTdsQIfHB3735MpbRtOkg3tojGXXCQ9uqlOu2JiegRA==
-X-Received: by 2002:a17:906:a051:b0:870:baa6:6762 with SMTP id bg17-20020a170906a05100b00870baa66762mr35944370ejb.14.1674744344524;
-        Thu, 26 Jan 2023 06:45:44 -0800 (PST)
-Received: from krava ([83.240.61.48])
-        by smtp.gmail.com with ESMTPSA id f17-20020a170906049100b0083f91a32131sm710231eja.0.2023.01.26.06.45.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Jan 2023 06:45:44 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 26 Jan 2023 15:45:41 +0100
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next 0/5] bpf: Move kernel test kfuncs into
- bpf_testmod
-Message-ID: <Y9KSFaFYc4WLiCa9@krava>
-References: <20230124143626.250719-1-jolsa@kernel.org>
- <CAADnVQLpk2-fcjgkOssuaT82Pdtu1KzgnxjHXiBV1TJzYXjtWQ@mail.gmail.com>
- <Y9DdDIpVfQ2f+b70@krava>
+        with ESMTP id S229473AbjAZOsz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 09:48:55 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606A94489;
+        Thu, 26 Jan 2023 06:48:53 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EE0DA61856;
+        Thu, 26 Jan 2023 14:48:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05241C4339B;
+        Thu, 26 Jan 2023 14:48:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674744532;
+        bh=WNohoknU9nLfbwIXeO77neZ4yMyv64MASZK2UIAfOfc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OyaVsT5ePzTFS76R1FH5KLxOUgzscan6sLv55lgf+totKkalpj5P4hTJ0CFzpg2nB
+         FjnAcEI6WBL0tfwF/TTw8b+wwY6a9pfQDEoFaNDhDzv4Bx4E//TKL2HIis05iqFTqA
+         6cWnwUhcKJagQmydnhE9MWdKN98RZA7QH0/g2op6Qc+WX5kkWc6P8AxP1IQok4d4Iv
+         rC+rDq5bfpCpp87TX2zmlNbavkxhh4pjEZT5VQ1/5GQQQR5j3P3SiDxYUla0TLmDmY
+         tHoanGw9DWG+oAt/RnrhsxsQ7gltrsJN75kvWssUX4MOKayClNcjWM9UluK5fqquNs
+         P9OGQuC06AeFQ==
+Date:   Thu, 26 Jan 2023 16:48:04 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, michel@lespinasse.org,
+        jglisse@google.com, mhocko@suse.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, mgorman@techsingularity.net, dave@stgolabs.net,
+        willy@infradead.org, liam.howlett@oracle.com, peterz@infradead.org,
+        ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org,
+        songliubraving@fb.com, peterx@redhat.com, david@redhat.com,
+        dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de,
+        kent.overstreet@linux.dev, punit.agrawal@bytedance.com,
+        lstoakes@gmail.com, peterjung1337@gmail.com, rientjes@google.com,
+        axelrasmussen@google.com, joelaf@google.com, minchan@google.com,
+        jannh@google.com, shakeelb@google.com, tatashin@google.com,
+        edumazet@google.com, gthelen@google.com, gurua@google.com,
+        arjunroy@google.com, soheil@google.com, hughlynch@google.com,
+        leewalsh@google.com, posk@google.com, will@kernel.org,
+        aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
+        chenhuacai@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        qianweili@huawei.com, wangzhou1@hisilicon.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
+        airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, l.stach@pengutronix.de,
+        krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com,
+        matthias.bgg@gmail.com, robdclark@gmail.com,
+        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        tomba@kernel.org, hjc@rock-chips.com, heiko@sntech.de,
+        ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        dimitri.sivanich@hpe.com, zhangfei.gao@linaro.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com,
+        jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de,
+        jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net,
+        xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, miklos@szeredi.hu,
+        mike.kravetz@oracle.com, muchun.song@linux.dev, bhe@redhat.com,
+        andrii@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, tiwai@suse.com,
+        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-graphics-maintainer@vmware.com,
+        linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org,
+        loongarch@lists.linux.dev, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev,
+        dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
+        linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        devel@lists.orangefs.org, kexec@lists.infradead.org,
+        linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
+        selinux@vger.kernel.org, alsa-devel@alsa-project.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 6/6] mm: export dump_mm()
+Message-ID: <Y9KSpNJ4y0GMwkrW@kernel.org>
+References: <20230125083851.27759-1-surenb@google.com>
+ <20230125083851.27759-7-surenb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y9DdDIpVfQ2f+b70@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230125083851.27759-7-surenb@google.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 25, 2023 at 08:41:00AM +0100, Jiri Olsa wrote:
-> On Tue, Jan 24, 2023 at 07:49:38PM -0800, Alexei Starovoitov wrote:
-> > On Tue, Jan 24, 2023 at 6:36 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > hi,
-> > > I noticed several times in discussions that we should move test kfuncs
-> > > into kernel module, now perhaps even more pressing with all the kfunc
-> > > effort. This patchset moves all the test kfuncs into bpf_testmod.
-> > >
-> > > I added bpf_testmod/bpf_testmod_kfunc.h header that is shared between
-> > > bpf_testmod kernel module and BPF programs, which brings some difficulties
-> > > with __ksym define. But I'm not sure having separate headers for BPF
-> > > programs and for kernel module would be better.
-> > 
-> > This part looks fine and overall it's great.
-> > Thanks a lot for working on this.
-> > But see failing tests.
-> > test_progs-no_alu32 -t cb_refs
+On Wed, Jan 25, 2023 at 12:38:51AM -0800, Suren Baghdasaryan wrote:
+> mmap_assert_write_locked() is used in vm_flags modifiers. Because
+> mmap_assert_write_locked() uses dump_mm() and vm_flags are sometimes
+> modified from from inside a module, it's necessary to export
+> dump_mm() function.
 > 
-> oops, forgot about alu32 :-\ will check
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-it seems to be related to missing commit in bpf-next/master:
+Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-  74bc3a5acc82 bpf: Add missing btf_put to register_btf_id_dtor_kfuncs
-
-it's in bpf/master now and I have it on my branch,
-when I revert it I see same errors as in CI
-
-I can include it in next post or wait for bpf-next to catch up with bpf
-
-jirka
+> ---
+>  mm/debug.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/mm/debug.c b/mm/debug.c
+> index 9d3d893dc7f4..96d594e16292 100644
+> --- a/mm/debug.c
+> +++ b/mm/debug.c
+> @@ -215,6 +215,7 @@ void dump_mm(const struct mm_struct *mm)
+>  		mm->def_flags, &mm->def_flags
+>  	);
+>  }
+> +EXPORT_SYMBOL(dump_mm);
+>  
+>  static bool page_init_poisoning __read_mostly = true;
+>  
+> -- 
+> 2.39.1
+> 
