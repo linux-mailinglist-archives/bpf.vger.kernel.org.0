@@ -2,67 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E86C067C37D
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 04:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9555E67C455
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 06:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235962AbjAZDZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 22:25:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
+        id S229772AbjAZFe4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 00:34:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235766AbjAZDZe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 22:25:34 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D488B5
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 19:25:33 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id m11so449607pji.0
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 19:25:33 -0800 (PST)
+        with ESMTP id S229677AbjAZFez (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 00:34:55 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D573E60B
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 21:34:54 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id ss4so2234994ejb.11
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 21:34:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9X6noQwThK6tIc1o2QK2Qm/5sXTmHNTq9nYKlBq2vcU=;
-        b=OPOmht6VjozwRAFbk1ylqqX+J1JhWfC6XsqrV+57o8vRIHI2DeCFwbby7GfvOckuLX
-         razAcq0tA9oRzrdrslsfKCFDGEFilIuFkqWFOObwhTzJVOnAdJDqS47iLR5o+FheBrIu
-         N86/PZSyxazjcyU5QjIQrZU/38TMbBZVghyhXe0qk5axKT1GRa3VhrD9TAItqBmntAar
-         Sy5Yapblf3DOJQo0jQp7ighZtiBb1pwrwmlnCqcltgzYVgxGbVvFATtlkLrdAYh1cxGI
-         bMSd08Cq/X0NBjuaQR2rA2B3sPUmxe1Nimbow7aSGLDNsMd6bP3WJerwPuy7LAFRhELr
-         54bQ==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5nkc9F8c5eaagFNz9tx8cGhLPdzPBsitLGelbAuE3MA=;
+        b=BXLMV1sgf3R9yzhnna5kHHHJZd17mVFWDjhFZYUZGn5tII+YdNE9oz3NQUdaaBp6dq
+         8YXR9cwpsVcK7UhYYscVWxfkM4Ony2mlQ3slO+Pt/JOufKOqzgdgUmVE3Uyxqgk+PpHy
+         LycX+y+6P3X2znVuqmshQhyXmitkORvHDle2YpqWPIppF/83mN8h1clIVGfnrRUxi1pR
+         zmRAmoKsDhl8D0kFQvFWD9kO/MpfdNp8fHD1LrBCeL8O/vVQ21ZrnM+hiyJ2CDtoUqmH
+         eLSIPl9Q5kO/8gbIilRwuxP8B+HLqSH7NacWPy1fJQ+ruA2AF5cZbYmt/TwpS4kroYby
+         OAPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9X6noQwThK6tIc1o2QK2Qm/5sXTmHNTq9nYKlBq2vcU=;
-        b=zcUUxllTfgeqaS830EELP85z4ly0Y1vUzP6qfhDMZDnglBz/n6ZpKlGmC+LsTaIlSu
-         OYnL3akQp9VD7W3L1Oq2M29PZsRnOBtIvwbOvDBmzCDCyERuR9XkMCGqcXb5GI7paEHi
-         bs1jimveo1HlKXjNNsLv+BulPhF1fdyuBb32ymNt9NcYPj1hfuwGPeh6HDB87/jRmZrn
-         ZDFs9gk12n2cAHhaQ7/AMV9TzlrAeqoefiGmr/xMaEUUbYM9MOLaGmHXcrpJggpjbqwq
-         NS7HBOIuHTmHKTTZPEFr0zNKbnbg52gY11iIBPZg8rT2VeMokkFsDYpconYLTMf5RhDA
-         y3XQ==
-X-Gm-Message-State: AFqh2krCfpenpqAUucIlWvjBJrhXAC6KUar8npypQg0i+i1D5G/4QFJD
-        e0MTFghwK2UOfhrhugtzkgw=
-X-Google-Smtp-Source: AMrXdXuZBnjYubnWGas8xnqNl26k8z18B0wjgjx/6w13rzU7Mm0+REdM5Irbb4n+R4gI1KqZcJDqeQ==
-X-Received: by 2002:a17:902:e84b:b0:194:ddc2:60e8 with SMTP id t11-20020a170902e84b00b00194ddc260e8mr28934279plg.48.1674703532791;
-        Wed, 25 Jan 2023 19:25:32 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:500::6:b1d5])
-        by smtp.gmail.com with ESMTPSA id u7-20020a170902a60700b00192b0a07891sm147818plq.101.2023.01.25.19.25.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jan 2023 19:25:32 -0800 (PST)
-Date:   Wed, 25 Jan 2023 19:25:30 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, yhs@fb.com
-Subject: Re: [RFC bpf-next 0/5] test_verifier tests migration to inline
- assembly
-Message-ID: <20230126032530.nib7ov5gtt3knmc4@macbook-pro-6.dhcp.thefacebook.com>
-References: <20230123145148.2791939-1-eddyz87@gmail.com>
- <CAEf4Bzbu2zctHntHNRVnEDa_FJz405Ld1Sb58wvJA+JvYdS+Ag@mail.gmail.com>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5nkc9F8c5eaagFNz9tx8cGhLPdzPBsitLGelbAuE3MA=;
+        b=rKKtkhF/VJ6UKSKKdpgTc8vWfMgfIt8GXLtb5IrmEGefnXVr6q/ykFWuP3YS4V0KJs
+         YZ6cfqGsuFIXCxTEB5SU4l5fD+znjvudL9w2M9xQ1kPgDJoJNXLhXAIdk2tTE9Y1UISP
+         utJdiHksFRmQML277OY1jsW6w6st0zMcLlajgzQqv/Y8AUJI5z0CgF4rllcf79+KIakh
+         HN9BIDmIOXy2Ml4ItIMfI9nL0eJsS5nwVzQfYNVvAnSWJyrEXs94F6JavGQUE4Q7Yu5w
+         vSAGD/+1hDbICrDV570zHmsDdaa7+2EK5ZlT5ExPi6QgWsbu4t6LPD9ZhiA25rr7ToXt
+         9bLw==
+X-Gm-Message-State: AFqh2kpFQKvQ+hWsjm9XrxU6Y+lwokzuufvRxv6wN0G72WaI6ZcH/Zrm
+        /TjW+SpACjcww9173w0CyjRPUxOhqysctmFoRJQ=
+X-Google-Smtp-Source: AMrXdXugXMZDovGnyfLXAHzLpjZs3M95/LhoZZ6fn5HwaXcSqBU4A/yK9uWsZ16/tG8AAyzqqhSgzkyRq8yap/Xr/Fc=
+X-Received: by 2002:a17:906:7ac2:b0:86e:429b:6a20 with SMTP id
+ k2-20020a1709067ac200b0086e429b6a20mr3881969ejo.247.1674711293031; Wed, 25
+ Jan 2023 21:34:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbu2zctHntHNRVnEDa_FJz405Ld1Sb58wvJA+JvYdS+Ag@mail.gmail.com>
+References: <20230117212731.442859-1-toke@redhat.com> <CAKH8qBuvBomTXqNB+a6n_PbJKSNFazrAxEWsVT-=4XfztuJ7dw@mail.gmail.com>
+ <87v8l4byyb.fsf@toke.dk> <CAKH8qBs=nEhhy2Qu7CpyAHx6gOaWR25tRF7aopti5-TSuw66HQ@mail.gmail.com>
+ <CAADnVQKy1QzM+wg1BxfYA30QsTaM4M5RRCi+VHN6A7ah2BeZZw@mail.gmail.com>
+ <CAKH8qBvZgoOe24MMY+Jn-6guJzGVuJS9zW4v6H+fhgcp7X_9jQ@mail.gmail.com>
+ <3500bace-de87-0335-3fe3-6a5c0b4ce6ad@iogearbox.net> <20230119043247.tktxsztjcr3ckbby@MacBook-Pro-6.local>
+ <875ycvo1im.fsf@toke.dk>
+In-Reply-To: <875ycvo1im.fsf@toke.dk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 25 Jan 2023 21:34:41 -0800
+Message-ID: <CAADnVQ+q3uq6ex7NHZmP=x9rfsLCydE=97=V=cBcbO8yS0eySg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] Documentation/bpf: Add a description of "stable kfuncs"
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Vernet <void@manifault.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,69 +82,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 25, 2023 at 05:33:42PM -0800, Andrii Nakryiko wrote:
-> 
-> > __naked void invalid_and_of_negative_number(void)
-> >
-> > {
-> >         asm volatile (
-> > "       r1 = 0;                                         \n\
-> 
-> Kumar recently landed similarly formatted inline asm-based test, let's
-> make sure we stick to common style. \n at the end are pretty
-> distracting, IMO (though helpful to debug syntax errors in asm, of
-> course). I'd also move starting " into the same line as asm volatile:
+On Tue, Jan 24, 2023 at 5:18 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > The bpf developers adding new kfunc should assume that it's stable and =
+proceed
+> > to use it in bpf progs and production applications.
+>
+> "Assume all kfuncs are stable" is fine by me, but that is emphatically
+> not what we have been saying thus far, quite the opposite...
+>
+> > The bpf maintainers will keep this stability promise. They obviously wi=
+ll not
+> > reap it out of the kernel on the whim, but they will nuke it if this kf=
+unc
+> > will be in the way of the kernel innovation.
+>
+> ...and it is contradicted by this last bit. I mean "it's stable, but
+> we'll remove it if it's in the way" is not, well, stable.
 
-+1. Pls drop \n.
-You don't have \n anyway in migrator's README on github.
+Schrodinger's kfuncs :)
 
-> asm volatile ("                       \
-> 
-> this will make adding/removing asm lines at the beginning simpler (and
-> you already put closing quote on separate line, so that side is taken
-> care of)
+> [...]
+>
+> > bpf developers and users should assume that all kfuncs are stable and u=
+se them.
+> > When somebody comes to argue that a particular kfunc needs to change
+> > the developer who added that kfunc better to be around to argue that th=
+e kfunc is
+> > perfect the way it is. If developer is gone the maintainers will make a=
+ call.
+> > It's a self regulating system.
+> > kfuncs will be stable if developers/users are around.
+> > Yet the maintainers will have a freedom to change if absolutely necessa=
+ry.
+>
+> This assumes users (i.e., BPF program authors) are around during the
+> development phase, which they are generally not. Except for the users
+> who are also BPF devs, but that's a minority (if not now, hopefully in
+> the future). So I really think we need to document some expectations
+> here.
+>
+> For instance, what happens if we change a kfunc, and a user shows up
+> during the -rc phase saying it broke their application? Are we going to
+> revert that change?
 
-+1
+It depends.
+Obviously we're not going to change/remove/deprecate kfuncs unless
+there is a need to do so.
+And when we do we will consider all users.
 
-Also pls indent the asm code with two tabs the way Kumar did.
-I think it looks cleaner this way and single tab labels align
-with 'asm volatile ('.
+> > Back to deprecation...
+> > I think KF_DEPRECATED is a good idea.
+> > When kfunc will be auto emitted into vmlinux.h (or whatever other file)
+> > or shipped in libbpf header we can emit
+> > __attribute__((deprecated("reason", "replacement")));
+> > to that header file (so it's seen during bpf prog build) and
+> > start dmesg warn on them in the verifier.
+> > Kernel splats do get noticed. The users would have to act quickly.
+>
+> So how about documenting that bit? Something like:
+>
+> "We promise that kfuncs will not be removed without going through a
+> deprecation phase. The length of the deprecation will be proportional to
+> how long that kfunc has existed in the kernel, but will be no shorter
+> than XX kernel releases." ?
 
-> > All in all the current script stats are as follows:
-> > - 62 out of 93 files from progs/*.c can be converted w/o warnings;
+That's not something we can promise.
+Take conntrack kfuncs. If netfilter folks decide to sunset
+conntrack tomorrow we won't be standing in their way.
 
-out of 98 in verifier/*.c ?
+On the other side the dynptr kfuncs are going to stay as-is for
+foreseeable future because they don't rely on other kernel
+subsystems to do the job.
+Both cases may still change if users themselves
+(after using it in prod) come back with reasons to change it.
 
-> > - 55 converted files could be compiled;
-> > - 40 pass testing, 15 fail.
+In the past the kernel devs were dictating the helper uapi to
+users and users had no option, but to shut up and use what's available.
+Now they will be able to use new apis and request changes.
+At that point it will be a set of users X vs a set of users Y.
+If ten users say that this kfunc sucks while one user
+wants to keep it as-is we will introduce another kfunc and
+will start deprecating the one that lost the vote.
+The deprecation time window will depend on case by case
+considering maintenance cost, etc.
 
-I would land this 40 now and continue step by step.
+> > As far as KF_STABLE... I think it hurts the system in the long run.
+> > The developer can argue at one point in time that kfunc has to be KF_ST=
+ABLE.
+> > The patch will be applied, but the developer is off the hook and can di=
+sappear.
+> > The maintainers would have to argue on behalf of the developer
+> > and keep maintaining it? The maintainers won't have a signal whether
+> > kfunc is still useful after initial KF_STABLE patch.
+>
+> Doing the above wrt deprecation without having an explicit stable tag
+> would be OK with me.
+>
+> > I think it's more important to decide how we document kfuncs and
+> > how equivalent of bpf_helper_defs.h can be done.
+>
+> I agree we (also) need to do this. As well as have some support for
+> querying for them from userspace on a running kernel (for CO-RE
+> purposes).
 
-> >
-> > By submitting this RFC I seek the following feedback:
-> > - is community interested in such migration?
-> 
-> +1
-> 
-> This is a great work!
-
-+1
-
-> > - if yes, should I pursue partial or complete tests migration?
-> 
-> I'd start with partial
-> 
-> > - in case of partial migration which tests should be prioritized?
-> 
-> those that work out of the box?
-> 
-> > - should I offer migrated tests one by one or in big butches?
-
-Can you do one patch one file in verifier/*.c that would map
-to one new file in progs/ ?
-
-> >
-> > [1] https://github.com/eddyz87/verifier-tests-migrator
-
-Having this link in patch series is enough.
-The 'migrator' itself doesn't need to be in the kernel tree.
+Of course. That has been brought up many times.
+Just do it. Whoever has time to do it.
