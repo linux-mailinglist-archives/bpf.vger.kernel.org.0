@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EC467C26C
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 02:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFAF67C27E
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 02:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbjAZBeG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 20:34:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
+        id S229515AbjAZBoK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 20:44:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjAZBd7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 20:33:59 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC6B41B47
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:33:55 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id kt14so1484269ejc.3
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:33:55 -0800 (PST)
+        with ESMTP id S229454AbjAZBoJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 20:44:09 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FB14C6D6
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:44:08 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id hw16so1429036ejc.10
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:44:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qoAkGllwhofHEN2TJUFTA0DSHTUwRBvMJKgAIGjkzqE=;
-        b=n6sDpaByDjxgZeFpHUpWrdniJcpbTRBbbwydGS/HOFKw1e3p90DaVzFiJOXBidCXXo
-         8GTxnpJxTKnZZNpk2ObbbDFiWD4zysDlatyIyvPN23dV8szw0npbqhA5t5aRrVsze9xL
-         74c4nvetkIdUAxTy5Sa0FJwWZknt/h02xVj8PLzAln2LZ8hpTVtcaXjEg3unY0YzOphR
-         pHsB/EDgfaELpsVAiOFVtQuC441UOsNiHoU9i93ipyslAhYfURxxHXeiROVJ8rWI78Xz
-         BnP/l5Mdhz/V4JT6fmbpiRF2FceKhF7DEn8cP710VVoexSlhFX8L/s2TEL0j8gLj1vwm
-         IXUg==
+        bh=oUFdRMtG08Wy16Kkd7CGJc41p6cBcl1ykR/VwJwxaOs=;
+        b=Sm4r4XAPVwn3PpL6Noj0sz1cIb7D0uefNtkMaFfW6hgYO9yrwkVlpn6evTCadRt7yN
+         Dsf3XDdhT35R39Q446cf5JSAYw5Oyb5H3tKsZ68gIz1m5V/P1VOo8jtbqfLeHRj9HueM
+         NcEXGKdmIZbM4umToH3fHLoSR4fVWFoG7kDx0zOFbf5CCp4nkkFseweQEJIe2/0C3p9M
+         S6Bl5rN+Bkodq2nmhGqjdkOJktv9XGH9BbfXVUiagjcYqvWJGUiSLvvNnnq16Fa7lu2t
+         +MVyAT0oUiHUKS5LvTAzRS6VhrgWpSBlm724TywKFOZzNdlrZRc27TzzLQCZ/P26wPjR
+         DHhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qoAkGllwhofHEN2TJUFTA0DSHTUwRBvMJKgAIGjkzqE=;
-        b=O82g+VfrVXHsankjH9URfOyHx7lUjtg/1InqVzOrYA2+SVILdsqzGgnyHaac2tUaqM
-         PkfZXM9bCfF2rFTnG0iiL7/MXxlIeXtOg36j+UCRy/V/VQEO+hX3mwsCJn03p1flzAFJ
-         n9OXT3IwuBKUC/0m0pnD80Zb4TuaW2Dtfy7IfNFwiMc861csAmc3wHVbkMLD4/UaaWY/
-         sOFmyV8M+yibfijC6qTwu47ITIp45v1R0+gh+1TDFkbl2hz3ySgm06RZWFh/Vbm4QtxJ
-         gtA4L89zICKMq3stk8yrRkL+Nz03+Z+X0fas/HzByTPB0sMKrL/r+yXhj7iz6cbOXY/b
-         A7EQ==
-X-Gm-Message-State: AFqh2krxHpWM+W2syreM7AugYoWbpaH54/sy0nI63kVOTnKshr1gZXD6
-        zYG63kIuPt15jhaDtCG5x2wsBYZr4Kvn1E+2ACfxGMTs
-X-Google-Smtp-Source: AMrXdXubw440HSMjqz08a04XivyXYN8M/zLIrmy2GGMMJSSVjHFtmBh4o6zV/q6GWowVd8HFLdMsz2M0OyeVAAds8B0=
-X-Received: by 2002:a17:906:380e:b0:877:5b9b:b426 with SMTP id
- v14-20020a170906380e00b008775b9bb426mr4082157ejc.12.1674696834310; Wed, 25
- Jan 2023 17:33:54 -0800 (PST)
+        bh=oUFdRMtG08Wy16Kkd7CGJc41p6cBcl1ykR/VwJwxaOs=;
+        b=ADMqk9Iw0QMSu6jpMDWt2wAjsXSMEao9PorOdrZ/peG2eux51huaN0zx80Ir4gPPGu
+         xNZ1tzQ9g+rYYfal1SlwCJBxy02PxZ/TUtd6hRVnBYtnffwzttllpVePekg5bylTrzX0
+         vIP6ug6mAT+SIz7wxh+kYFML3n9tjaKNzaF/9dsnVGxLzeBtJaDLlM9EeBFmZvCAiIDN
+         viFCKihlbdYKF3WcLmdYws/7+w41bdYfmlYfcF8eMRYnKu/mUNRqXIBLJIOWMYeiLD0u
+         5Pn90WNxeRfPnymfjFnEI0w9lmSycAIdtmcOfptebA0aK6M5+kCgXvIFdkccIMWk9WUj
+         c5Zw==
+X-Gm-Message-State: AFqh2kqyuau5uAD1Pl10Bx6+bAOqweT24Dr+nIZTI1mFxLogkfRb+6Al
+        JVr4EwZmcox82V3+9lE9ax5lP1zp3zQXCeg0kT0=
+X-Google-Smtp-Source: AMrXdXvI7n733dAqcqPj2m3bQIy3D/GZGx29oMXo0ozUSB/gB1QEN59l6xmzmOlPeMLZ/WVLhRkUNt+e0HCWlis6Ws0=
+X-Received: by 2002:a17:906:ecb9:b0:86d:97d4:9fea with SMTP id
+ qh25-20020a170906ecb900b0086d97d49feamr5533384ejb.141.1674697446901; Wed, 25
+ Jan 2023 17:44:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20230123145148.2791939-1-eddyz87@gmail.com>
-In-Reply-To: <20230123145148.2791939-1-eddyz87@gmail.com>
+References: <20230123145148.2791939-1-eddyz87@gmail.com> <20230123145148.2791939-4-eddyz87@gmail.com>
+In-Reply-To: <20230123145148.2791939-4-eddyz87@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 25 Jan 2023 17:33:42 -0800
-Message-ID: <CAEf4Bzbu2zctHntHNRVnEDa_FJz405Ld1Sb58wvJA+JvYdS+Ag@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/5] test_verifier tests migration to inline assembly
+Date:   Wed, 25 Jan 2023 17:43:54 -0800
+Message-ID: <CAEf4BzaKe3HMmYKvYKarcb7SKvd2Uurd22U5tLjE0RyNMgpSAg@mail.gmail.com>
+Subject: Re: [RFC bpf-next 3/5] selftests/bpf: generate boilerplate code for
+ test_loader-based tests
 To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
@@ -68,276 +69,60 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Jan 23, 2023 at 6:52 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> As a part of the discussion started in [2] I developed a script [1]
-> that can convert tests specified in test_verifier.c format to inline
-> BPF assembly compatible for use with test_loader.c.
+> Automatically generate boilerplate code necessary to run tests that
+> use test_loader.c.
 >
-> For example, test definition like below:
+> Adds a target 'prog_tests/test_loader_auto_wrappers.c' as part of
+> rulesets for 'test_progs' and 'test_progs-no_alu32'. The content of
+> this C file is generated by make and has the following structure:
 >
-> {
->         "invalid and of negative number",
->         .insns = {
->         BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
->         BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
->         BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
->         BPF_LD_MAP_FD(BPF_REG_1, 0),
->         BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
->         BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 5),
->         BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_0, 0),
->         BPF_ALU64_IMM(BPF_AND, BPF_REG_1, -4),
->         BPF_ALU64_IMM(BPF_LSH, BPF_REG_1, 2),
->         BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_1),
->         BPF_ST_MEM(BPF_DW, BPF_REG_0, 0, offsetof(struct test_val, foo)),
->         BPF_EXIT_INSN(),
->         },
->         .fixup_map_hash_48b = { 3 },
->         .errstr = "R0 max value is outside of the allowed memory range",
->         .result = REJECT,
->         .flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
-> },
+>   #include <test_progs.h>
 >
-> Is converted to:
+>   #include "some_test_1.skel.h"
+>   #include "some_test_2.skel.h"
+>   ...
 >
-> struct test_val { ... };
+>   void test_some_test_1(void) { RUN_TESTS(some_test_1); }
+>   void test_some_test_2(void) { RUN_TESTS(some_test_2); }
+>   ...
 >
-> struct { ...} map_hash_48b SEC(".maps");
+> Here RUN_TESTS is a macro defined in test_progs.h, it expands to a
+> code that uses test_loader.c:test_loader__run_subtests() function to
+> load tests specified by appropriate skel.h.
 >
-> __description("invalid and of negative number")
-> __failure __msg("R0 max value is outside of the allowed memory range")
-> __failure_unpriv
-> __flag(BPF_F_ANY_ALIGNMENT)
-> SEC("socket")
-
-nit: let's make sure that SEC() is the first annotation, makes
-grepping easier and is consistent with how we use SEC() with BPF
-programs
-
-
-> __naked void invalid_and_of_negative_number(void)
+> In order to get the list of tests included in
+> 'test_loader_auto_wrappers.c' the generation script looks for
+> 'progs/*.c' files that contain a special comment:
 >
-> {
->         asm volatile (
-> "       r1 = 0;                                         \n\
-
-Kumar recently landed similarly formatted inline asm-based test, let's
-make sure we stick to common style. \n at the end are pretty
-distracting, IMO (though helpful to debug syntax errors in asm, of
-course). I'd also move starting " into the same line as asm volatile:
-
-asm volatile ("                       \
-
-this will make adding/removing asm lines at the beginning simpler (and
-you already put closing quote on separate line, so that side is taken
-care of)
-
->         *(u64*)(r10 - 8) = r1;                          \n\
->         r2 = r10;                                       \n\
->         r2 += -8;                                       \n\
->         r1 = %[map_hash_48b] ll;                        \n\
->         call %[bpf_map_lookup_elem];                    \n\
->         if r0 == 0 goto l0_%=;                          \n\
->         r1 = *(u8*)(r0 + 0);                            \n\
->         r1 &= -4;                                       \n\
->         r1 <<= 2;                                       \n\
->         r0 += r1;                                       \n\
->         r1 = %[test_val_foo_offset];                    \n\
->         *(u64*)(r0 + 0) = r1;                           \n\
-> l0_%=:                                                  \n\
->         exit;                                           \n\
-> "       :
->         : [test_val_foo_offset]"i"(offsetof(struct test_val, foo)),
-
-should we use some __imm_const(name, value) macro (or __imm_named, or
-__imm_alias, or something like that) for cases like this?
-
->           __imm(bpf_map_lookup_elem),
->           __imm_addr(map_hash_48b)
->         : __clobber_all);
-> }
+>   /* Use test_loader marker */
 >
-> The script introduces labels for gotos and calls, immediate values for
-> complex expressions like `offsetof(...)', takes care of map
-> instructions patching, inserts map declarations used in the test,
-> transfers comments from test, test fields and instructions. There are
-> some issues with BPF_ST_MEM instruction support as described in [4],
-> thus the script replaces such instructions with pairs of MOV/STX_MEM
-> instructions.
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+
+It feels like this is a bit of an overkill, tbh. There are
+
+$ ls verifier/*.c | wc -l
+94
+
+files. We can move each migrated set of tests from verifier/xxx.c to
+progs/verifier_xxx.c. And then just have just manually maintained
+prog_tests/verifier.c file where for each converted test we have one
+#include and one void test_some_test_1(void) { RUN_TESTS(some_test_1);
+}.
+
+It sometimes would useful to add some extra debugging printfs in such
+a file, so having it auto generated would be actually an
+inconvenience. And that on top of further Makefile complication.
+
+For initial conversion we can auto-generate this file, of course. And
+then for each migrated file adding 2 lines manually doesn't seem like
+a big deal?
+
+
+
+>  tools/testing/selftests/bpf/Makefile          | 34 +++++++++++++++++++
+>  .../selftests/bpf/prog_tests/.gitignore       |  1 +
+>  2 files changed, 35 insertions(+)
 >
-> This patch-set introduces changes necessary for test_loader.c and
-> includes migration of a single test from test_verifier to test_progs
-> format, here are descriptions for individual patches:
->
-> 1. "Support custom per-test flags and multiple expected messages"
->    This patch was shared by Andrii Nakryiko [3], it adds capability
->    to specify flags required by the BPF program.
->
-> 2. "Unprivileged tests for test_loader.c"
->    Extends test_loader.c by capability to load test programs in
->    unprivileged mode and specify separate test outcomes for
->    privileged and unprivileged modes.
->
->    Note: for a reason I do not understand I had to use different set
->    of capabilities compared to test_verifier:
->    - test_verifier: CAP_NET_ADMIN, CAP_PERFMON, CAP_BPF;
->    - test_loader  : CAP_SYS_ADMIN, CAP_PERFMON, CAP_BPF.
 
-CAP_SYS_ADMIN is a superset of PERFMON and BPF, so it should be
-NET_ADMIN... Setting CAP_SYS_ADMIN makes PERFMON and BPF meaningless,
-so we should investigate.
-
->
-> 3. "Generate boilerplate code for test_loader-based tests"
->    Extends selftests/bpf Makefile to automatically generate
->    prog_tests/tests.h entry that uses test_loader for progs/*.c
->    BPF programs if special marker is present.
->
-> 4. "__imm_insn macro to embed raw insns in inline asm"
-
-nit: __raw_insns perhaps, otherwise confusing given __imm and __imm_addr macros
-
->    This macro can be generated by migration script for instructions
->    that cannot be expressed in inline assembly, e.g. invalid instructions.
->
-> 5. "convert jeq_infer_not_null tests to inline assembly"
->    Shows an example of the test migration.
->    The test was updated slightly after automatic translation:
->    - unnecessary comments removed;
->    - functions renamed;
->    - some labels renamed.
->
-> The migration script has some limitations:
-> - Technical, test features that are not yet supported:
->   - few instructions like BPF_ENDIAN;
->   - macro like BPF_SK_LOOKUP or BPF_LD_MAP_VALUE;
->   - program types like BPF_PROG_TYPE_CGROUP_SOCK_ADDR and
->     BPF_PROG_TYPE_TRACING;
->   - tests that specify fields 'expected_attach_type' or 'insn_processed';
->   - a few tests expose complex structure that could not be
->     automatically migrated, e.g.: 'atomic_fetch', 'lwt',
->     'bpf_loop_inline'.
-> - Tests that use .run field cannot be migrated as test_loader.c tests.
-> - Tests with generated bodies, e.g. test_verifier.c:bpf_fill_scale()
->   cannot be migrated as test_loader.c tests.
-> - LLVM related:
->   - BPF_ST instruction is not supported by LLVM BPF assembly yet
->     (I'll take care of it);
->   - Issues with parsing of some assembly instructions like
->     "r0 = cmpxchg_64(r10 - 8, r0, r5)"
->     (I'll take care of it);
-> - libbpf related:
->   - libbpf does not support call instructions within a single
->     function, e.g.:
-
-it's more of an issue of not having valid relocation emitted and also
-corresponding .BTF.ext line/func info (that's my guess)
-
->
->       0: r1 = 1
->       1: r2 = 2
->       2: call 1
->       3: exit
->       4: r0 = r1
->       5: r0 += r2
->       6: exit
-
-so libbpf itself doesn't care, but given we use BTF and send .BTF.ext,
-I suspect kernel just doesn't like that it can't find func_info
-information for subprog. So we'll need to split into proper functions
-or disable .BTF.ext somehow.
-
-
->
->     This pattern is common in verifier tests, I see two possible
->     mitigation:
->     (a) use an additional libbpf flag to allow such code;
-
-I hope not :)
-
->     (b) extend migration script to split such code in several functions.
->     I like (a) more.
-
-see above, this won't be a libbpf flag, rather some code in test
-runner to strip away .BTF.ext information
-
->
->   - libbpf does not allow empty programs.
-
-like:
-
-SEC("kprobe")
-int prog()
-{
-    return 0;
-}
-
-?
-
->
-> All in all the current script stats are as follows:
-> - 62 out of 93 files from progs/*.c can be converted w/o warnings;
-> - 55 converted files could be compiled;
-> - 40 pass testing, 15 fail.
->
-> By submitting this RFC I seek the following feedback:
-> - is community interested in such migration?
-
-+1
-
-This is a great work!
-
-> - if yes, should I pursue partial or complete tests migration?
-
-I'd start with partial
-
-> - in case of partial migration which tests should be prioritized?
-
-those that work out of the box?
-
-> - should I offer migrated tests one by one or in big butches?
-
-they come grouped in files, would it be possible to live them in
-similar groupings?
-
->
-> Thanks,
-> Eduard
->
-> [1] https://github.com/eddyz87/verifier-tests-migrator
-> [2] https://lore.kernel.org/bpf/CAEf4BzYPsDWdRgx+ND1wiKAB62P=WwoLhr2uWkbVpQfbHqi1oA@mail.gmail.com/
-> [3] https://lore.kernel.org/bpf/CAEf4BzZH0ZxorCi7nPDbRqSK9f+410RooNwNJGwfw8=0a5i1nw@mail.gmail.com/
-> [4] https://lore.kernel.org/bpf/20221231163122.1360813-1-eddyz87@gmail.com/
->
-> Andrii Nakryiko (1):
->   selftests/bpf: support custom per-test flags and multiple expected
->     messages
->
-> Eduard Zingerman (4):
->   selftests/bpf: unprivileged tests for test_loader.c
->   selftests/bpf: generate boilerplate code for test_loader-based tests
->   selftests/bpf: __imm_insn macro to embed raw insns in inline asm
->   selftests/bpf: convert jeq_infer_not_null tests to inline assembly
->
->  tools/testing/selftests/bpf/Makefile          |  41 +-
->  tools/testing/selftests/bpf/autoconf_helper.h |   9 +
->  .../selftests/bpf/prog_tests/.gitignore       |   1 +
->  .../bpf/prog_tests/jeq_infer_not_null.c       |   9 -
->  tools/testing/selftests/bpf/progs/bpf_misc.h  |  49 +++
->  .../selftests/bpf/progs/jeq_infer_not_null.c  | 186 +++++++++
->  .../bpf/progs/jeq_infer_not_null_fail.c       |   1 +
->  tools/testing/selftests/bpf/test_loader.c     | 370 +++++++++++++++---
->  tools/testing/selftests/bpf/test_progs.h      |   1 +
->  tools/testing/selftests/bpf/test_verifier.c   |  25 +-
->  tools/testing/selftests/bpf/unpriv_helpers.c  |  26 ++
->  tools/testing/selftests/bpf/unpriv_helpers.h  |   7 +
->  .../bpf/verifier/jeq_infer_not_null.c         | 174 --------
->  13 files changed, 625 insertions(+), 274 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/autoconf_helper.h
->  delete mode 100644 tools/testing/selftests/bpf/prog_tests/jeq_infer_not_null.c
->  create mode 100644 tools/testing/selftests/bpf/progs/jeq_infer_not_null.c
->  create mode 100644 tools/testing/selftests/bpf/unpriv_helpers.c
->  create mode 100644 tools/testing/selftests/bpf/unpriv_helpers.h
->  delete mode 100644 tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c
->
-> --
-> 2.39.0
->
+[...]
