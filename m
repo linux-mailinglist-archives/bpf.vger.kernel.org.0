@@ -2,271 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D91E967C159
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 01:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71F067C163
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 01:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjAZAJm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 19:09:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
+        id S235174AbjAZAUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 19:20:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjAZAJl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 19:09:41 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23448611D4;
-        Wed, 25 Jan 2023 16:09:40 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id v6-20020a17090ad58600b00229eec90a7fso5054447pju.0;
-        Wed, 25 Jan 2023 16:09:40 -0800 (PST)
+        with ESMTP id S230329AbjAZAUG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 19:20:06 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB58551C74
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 16:20:04 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id q10so239485wrm.4
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 16:20:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=l5XuXmavpSaZYzYj4+k/+ajUmojV5SNgAjFshG+/OWQ=;
-        b=JJADm9ZcnjTK0j/Sr1kLk1GqTvHwQGpWMGC7gvei5tGEnhaAAnFHBqxI6DqWCdoa7A
-         mjoNooUzGz5GEmEO1x5QYv7TQspVC6pwjZr4duM0aUgz3V9mY7ct6Be4rbo/VWZ1Xkfe
-         wY+4plFaObGBcG5K+tUM61g15IEISVBg6N9AcLMxUByzzweq/jzeofGn1Zw/rM2SMGW4
-         VzW0qY/SmKGZAaBg5BWKlE1p73zx0gKfGe2fMjhF/t6swa0FXQYRvXjmhN1rKETljPlC
-         iDPLKobdir4TYjVrbSnnMiW+VLWtFUy1erqEZdhb2D1jsp1RdGAPeth+4JD2x2mUHyS9
-         0ejQ==
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=aSdKhk45EGRIDAuj99Ll/rIYSopwgrgDqOPp9SBtJXM=;
+        b=dBGEk1gfvCg89VDUSxqIPv8rliru6CTyUn/Vw68CW86p2FpKkHJ+2VUUUk0B1EFJx0
+         egfTwCD7bFYwNGtewsom9qruqVmrKG8BMa8EINS4AiTp84+TprNLJlS3rus3ccGdhAae
+         1I1xCsdZKw7Q8z4v9yG0ptUgsfEtZfNfETXH16vmVpxZ3ZkUQ1UY4M1HzDflrQF9mx/e
+         4WDiXA7wNPVykMIpxH6uXrAZt0UpKwdHKFMVh6EGpkKfeg2Ef2YL0plCbcwo2iS1M7fH
+         QuATNFFu7V5cm9XOh+pWPOkC0fQdvDgq4d2Nd8+wdB0M22K2+ILNuTAg+uVHBValmiho
+         jjEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l5XuXmavpSaZYzYj4+k/+ajUmojV5SNgAjFshG+/OWQ=;
-        b=ocilVDfpmaJntchqI7wKCNBF2dM33In+vVZZqRfT84CGVlw9ZN2Ccndpu+i85NN6Xi
-         XO+lluytXdgdFDIIMn5p0OtKENXchUJbUdus9pbyb0XWTAmxWC5lvB/y3xV2BnFMt1eM
-         H0r+LCqBDfU/8pGTV7XsTVV4ql442LtL0mpk4o30uUwryw3dUDpxje/lKrYKx9TwtFZs
-         Y37HzByeaJqAIQ8gLpq90DAPSCYDNh3DRnSpX4ZWFmvc+JmfF/QgdcTevSxRkD5ndVgk
-         3GJzlSWlr2NTRBwjP6rIvvv+hcB/g2VxHWBbqyVdnXTkd2b+AT32r317nLCpRvjMNRzM
-         F6Ew==
-X-Gm-Message-State: AFqh2koExvBRNiUrzYhOw1SrmPynllbEEAYIM7RESJ0M76+mbE1gJvoK
-        riy10UktPoX1gM/O3e+vbrw=
-X-Google-Smtp-Source: AMrXdXvhZRnZ/1zz5oVxrQPA1vnOuc3g4M3uAzkecsih4IdzeoRh7kmCZWOTCu07b6YkpYL9KitACA==
-X-Received: by 2002:a05:6a20:8e05:b0:af:ae14:9ecb with SMTP id y5-20020a056a208e0500b000afae149ecbmr52912491pzj.17.1674691779457;
-        Wed, 25 Jan 2023 16:09:39 -0800 (PST)
-Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:29ee:2efb:110e:b369])
-        by smtp.gmail.com with ESMTPSA id j13-20020a170902c3cd00b00177faf558b5sm4216160plj.250.2023.01.25.16.09.38
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aSdKhk45EGRIDAuj99Ll/rIYSopwgrgDqOPp9SBtJXM=;
+        b=Q7fyTI7dI6p0OCN+UWhnDI2WW1f0zy8gkFQPZmtAIsEWfFfHehLJSwJ7QEK8x3hjWN
+         jp92aRCEHVggYTXMF/mq1oTrhLwzEaCgEkZbJLdrTYMYM6ZR6K6ALO9UNSemz+wrSKhe
+         CIDB/Tbunl+MbhUeBdMaK4rR2J/1BWOFmd6NFW56Qysp0BZIluFLNi6Ht/X5XoFKIgp1
+         KUUo4A4w36Oi1cR6dhgGwtV/XJNMcuSO5/fd7ROIWR/4L/gwbcOGcpc0l2qEwlMIjT/t
+         iCHhFBXuVc8ueqGvGsN8R/SjHrP///ZQNpFzF/K9MdU0jH/ZCAdbfPzEwjIP3S9zC4SG
+         c7cQ==
+X-Gm-Message-State: AFqh2koBeaw+kduF7Rsol4f2/2H1MxbpKdcKU8TNwO86uW8XowUV4hUJ
+        fu9xyabwqwzQuHbfYu43Gqw=
+X-Google-Smtp-Source: AMrXdXuvUAI0VFE0xT6tQc6jKZDkAufIPA1fTLJer48D7W6QzuMKQ8ZDhl05/A4ZKC9Alx452s445Q==
+X-Received: by 2002:adf:dd41:0:b0:2be:d9e7:f39a with SMTP id u1-20020adfdd41000000b002bed9e7f39amr16366629wrm.43.1674692403400;
+        Wed, 25 Jan 2023 16:20:03 -0800 (PST)
+Received: from [192.168.1.113] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id m15-20020adffa0f000000b0024cb961b6aesm5528238wrr.104.2023.01.25.16.20.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jan 2023 16:09:38 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        bpf@vger.kernel.org
-Subject: [PATCH] perf lock contention: Add -S/--callstack-filter option
-Date:   Wed, 25 Jan 2023 16:09:36 -0800
-Message-Id: <20230126000936.3017683-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.39.1.456.gfc5497dd1b-goog
+        Wed, 25 Jan 2023 16:20:02 -0800 (PST)
+Message-ID: <9ed96849303fbc3dee1da5dccac05bd11fb04789.camel@gmail.com>
+Subject: Re: [PATCH dwarves 1/5] dwarves: help dwarf loader spot functions
+ with optimized-out parameters
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org,
+        yhs@fb.com, ast@kernel.org, olsajiri@gmail.com, timo@incline.eu
+Cc:     daniel@iogearbox.net, andrii@kernel.org, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
+        haoluo@google.com, martin.lau@kernel.org, bpf@vger.kernel.org
+Date:   Thu, 26 Jan 2023 02:20:01 +0200
+In-Reply-To: <bc50242da1ea8b3b3eafb62e880ed4a278492d2c.camel@gmail.com>
+References: <1674567931-26458-1-git-send-email-alan.maguire@oracle.com>
+         <1674567931-26458-2-git-send-email-alan.maguire@oracle.com>
+         <eb706138246821aafe0f3e88a98933348ba343ac.camel@gmail.com>
+         <3ca14d5e-5466-fb4e-b024-01ba33370372@oracle.com>
+         <f23eb6cfe20966d7b417f29ec782f78fa0ab93d5.camel@gmail.com>
+         <530ea13a-5229-82a8-d976-b0bc141c3448@oracle.com>
+         <bc50242da1ea8b3b3eafb62e880ed4a278492d2c.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The -S/--callstack-filter is to limit display entries having the given
-string in the callstack (not only in the caller in the output).
+On Thu, 2023-01-26 at 01:42 +0200, Eduard Zingerman wrote:
+> On Wed, 2023-01-25 at 22:52 +0000, Alan Maguire wrote:
+> [...]
+> >=20
+> > Thanks for this - I tried it, and we spot the optimization once we upda=
+te
+> > die__create_new_parameter() as follows:
+> >=20
+> > diff --git a/dwarf_loader.c b/dwarf_loader.c
+> > index f96b6ff..605ad45 100644
+> > --- a/dwarf_loader.c
+> > +++ b/dwarf_loader.c
+> > @@ -1529,6 +1530,8 @@ static struct tag *die__create_new_parameter(Dwar=
+f_Die *di
+> > =20
+> >         if (ftype !=3D NULL) {
+> >                 ftype__add_parameter(ftype, parm);
+> > +               if (parm->optimized)
+> > +                       ftype->optimized_parms =3D 1;
+> >                 if (param_idx >=3D 0) {
+> >                         if (add_child_llvm_annotations(die, param_idx, =
+conf, &(t
+> >                                 return NULL;
+> >=20
+>=20
+> Great, looks good.
+>=20
+> > With that change, I see:
+> >=20
+> > $ pahole --verbose --btf_encode_detached=3Dtest.btf test.o
+> > btf_encoder__new: 'test.o' doesn't have '.data..percpu' section
+> > Found 0 per-CPU variables!
+> > Found 2 functions!
+> > File test.o:
+> > [1] INT int size=3D4 nr_bits=3D32 encoding=3DSIGNED
+> > [2] PTR (anon) type_id=3D3
+> > [3] PTR (anon) type_id=3D4
+> > [4] INT char size=3D1 nr_bits=3D8 encoding=3DSIGNED
+> > [5] FUNC_PROTO (anon) return=3D1 args=3D(1 argc, 2 argv)
+> > [6] FUNC main type_id=3D5
+> > added local function 'f', optimized-out params
+> > skipping addition of 'f' due to optimized-out parameters
+>=20
+> Sorry, I have one more silly program.
+>=20
+> I talked to Yonghong today and we discussed if compiler can change a
+> type of a function parameter as a result of some optimization.
+> Consider the following example:
+>=20
+>     $ cat test.c
+>     struct st {
+>       int a;
+>       int b;
+>     };
+>    =20
+>     __attribute__((noinline))
+>     static int f(struct st *s) {
+>       return s->a + s->b;
+>     }
+>    =20
+>     int main(int argc, char *argv[]) {
+>       struct st s =3D {
+>         .a =3D (long)argv[0],
+>         .b =3D (long)argv[1]
+>       };
+>       return f(&s);
+>     }
+>=20
+> When compiled by `clang` with -O3 the prototype of `f` is changed from
+> `int f(struct *st)` to `int f(int, int)`:
+>=20
+>     $ clang -O3 -g -c test.c -o test.o && llvm-objdump -d test.o
+>     ...
+>     0000000000000000 <main>:
+>            0: 8b 3e                        	movl	(%rsi), %edi
+>            2: 8b 76 08                     	movl	0x8(%rsi), %esi
+>            5: eb 09                        	jmp	0x10 <f>
+>            7: 66 0f 1f 84 00 00 00 00 00   	nopw	(%rax,%rax)
+>    =20
+>     0000000000000010 <f>:
+>           10: 8d 04 37                     	leal	(%rdi,%rsi), %eax
+>           13: c3                           	retq
+>    =20
+> But generated DWARF hides this information:
 
-The following example shows lock contention results if the callstack
-has 'net' substring somewhere.  Note that the caller '__dev_queue_xmit'
-does not match to it, but it has 'inet6_csk_xmit' in the callstack.
+Actually, I'm not correct. The information is present because
+`DW_AT_location` attribute is not present (just as 4.1.4 says).
+So I think that the condition for optimized parameters detection has
+to be adjusted one more time:
 
-This applies even if you don't use -v option to show the full callstack.
+			has_location =3D attr_location(die, &loc.expr, &loc.exprlen) =3D=3D 0;
+			has_const_value =3D dwarf_attr(die, DW_AT_const_value, &attr) !=3D NULL;
 
-  $ sudo ./perf lock con -abv -S net sleep 1
-  ...
-   contended   total wait     max wait     avg wait         type   caller
+			if (has_location && loc.exprlen !=3D 0) {
+				Dwarf_Op *expr =3D loc.expr;
 
-           5     70.20 us     16.13 us     14.04 us     spinlock   __dev_queue_xmit+0xb6d
-                          0xffffffffa5dd1c60  _raw_spin_lock+0x30
-                          0xffffffffa5b8f6ed  __dev_queue_xmit+0xb6d
-                          0xffffffffa5cd8267  ip6_finish_output2+0x2c7
-                          0xffffffffa5cdac14  ip6_finish_output+0x1d4
-                          0xffffffffa5cdb477  ip6_xmit+0x457
-                          0xffffffffa5d1fd17  inet6_csk_xmit+0xd7
-                          0xffffffffa5c5f4aa  __tcp_transmit_skb+0x54a
-                          0xffffffffa5c6467d  tcp_keepalive_timer+0x2fd
+				switch (expr->atom) {
+				case DW_OP_reg1 ... DW_OP_reg31:
+				case DW_OP_breg0 ... DW_OP_breg31:
+					break;
+				default:
+					parm->optimized =3D true;
+					break;
+				}
+			} else if (!has_location || has_const_value) {
+				parm->optimized =3D true;
+			}
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/Documentation/perf-lock.txt |  6 +++
- tools/perf/builtin-lock.c              | 68 +++++++++++++++++++++++++-
- tools/perf/util/bpf_lock_contention.c  |  2 +-
- tools/perf/util/lock-contention.h      |  1 +
- 4 files changed, 75 insertions(+), 2 deletions(-)
+(But again, the parameter is marked as optimized but the function is
+ not skipped in the final BTF, so either I applied our last change
+ incorrectly or something additional should be done).
+=20
+wdyt?
 
-diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
-index 0f9f720e599d..11b8901d8d13 100644
---- a/tools/perf/Documentation/perf-lock.txt
-+++ b/tools/perf/Documentation/perf-lock.txt
-@@ -187,6 +187,12 @@ CONTENTION OPTIONS
- --lock-filter=<value>::
- 	Show lock contention only for given lock addresses or names (comma separated list).
- 
-+-S::
-+--callstack-filter=<value>::
-+	Show lock contention only if the callstack contains the given string.
-+	Note that it matches the substring so 'rq' would match both 'raw_spin_rq_lock'
-+	and 'irq_enter_rcu'.
-+
- 
- SEE ALSO
- --------
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index 506c2fe42d52..216a9a252bf4 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -63,11 +63,22 @@ static unsigned long bpf_map_entries = 10240;
- static int max_stack_depth = CONTENTION_STACK_DEPTH;
- static int stack_skip = CONTENTION_STACK_SKIP;
- static int print_nr_entries = INT_MAX / 2;
-+static LIST_HEAD(callstack_filters);
-+
-+struct callstack_filter {
-+	struct list_head list;
-+	char name[];
-+};
- 
- static struct lock_filter filters;
- 
- static enum lock_aggr_mode aggr_mode = LOCK_AGGR_ADDR;
- 
-+static bool needs_callstack(void)
-+{
-+	return verbose > 0 || !list_empty(&callstack_filters);
-+}
-+
- static struct thread_stat *thread_stat_find(u32 tid)
- {
- 	struct rb_node *node;
-@@ -1060,7 +1071,7 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
- 		if (!ls)
- 			return -ENOMEM;
- 
--		if (aggr_mode == LOCK_AGGR_CALLER && verbose > 0) {
-+		if (aggr_mode == LOCK_AGGR_CALLER && needs_callstack()) {
- 			ls->callstack = get_callstack(sample, max_stack_depth);
- 			if (ls->callstack == NULL)
- 				return -ENOMEM;
-@@ -1595,6 +1606,31 @@ static void print_contention_result(struct lock_contention *con)
- 		if (!st->wait_time_total)
- 			continue;
- 
-+		if (aggr_mode == LOCK_AGGR_CALLER && !list_empty(&callstack_filters)) {
-+			struct map *kmap;
-+			struct symbol *sym;
-+			u64 ip;
-+
-+			for (int i = 0; i < max_stack_depth; i++) {
-+				struct callstack_filter *filter;
-+
-+				if (!st->callstack || !st->callstack[i])
-+					break;
-+
-+				ip = st->callstack[i];
-+				sym = machine__find_kernel_symbol(con->machine, ip, &kmap);
-+				if (sym == NULL)
-+					continue;
-+
-+				list_for_each_entry(filter, &callstack_filters, list) {
-+					if (strstr(sym->name, filter->name))
-+						goto found;
-+				}
-+			}
-+			continue;
-+		}
-+
-+found:
- 		list_for_each_entry(key, &lock_keys, list) {
- 			key->print(key, st);
- 			pr_info(" ");
-@@ -1743,6 +1779,7 @@ static int __cmd_contention(int argc, const char **argv)
- 		.max_stack = max_stack_depth,
- 		.stack_skip = stack_skip,
- 		.filters = &filters,
-+		.save_callstack = needs_callstack(),
- 	};
- 
- 	session = perf_session__new(use_bpf ? NULL : &data, &eops);
-@@ -2123,6 +2160,33 @@ static int parse_lock_addr(const struct option *opt __maybe_unused, const char *
- 	return ret;
- }
- 
-+static int parse_call_stack(const struct option *opt __maybe_unused, const char *str,
-+			   int unset __maybe_unused)
-+{
-+	char *s, *tmp, *tok;
-+	int ret = 0;
-+
-+	s = strdup(str);
-+	if (s == NULL)
-+		return -1;
-+
-+	for (tok = strtok_r(s, ", ", &tmp); tok; tok = strtok_r(NULL, ", ", &tmp)) {
-+		struct callstack_filter *entry;
-+
-+		entry = malloc(sizeof(*entry) + strlen(tok) + 1);
-+		if (entry == NULL) {
-+			pr_err("Memory allocation failure\n");
-+			return -1;
-+		}
-+
-+		strcpy(entry->name, tok);
-+		list_add_tail(&entry->list, &callstack_filters);
-+	}
-+
-+	free(s);
-+	return ret;
-+}
-+
- int cmd_lock(int argc, const char **argv)
- {
- 	const struct option lock_options[] = {
-@@ -2190,6 +2254,8 @@ int cmd_lock(int argc, const char **argv)
- 		     "Filter specific type of locks", parse_lock_type),
- 	OPT_CALLBACK('L', "lock-filter", NULL, "ADDRS/NAMES",
- 		     "Filter specific address/symbol of locks", parse_lock_addr),
-+	OPT_CALLBACK('S', "callstack-filter", NULL, "NAMES",
-+		     "Filter specific function in the callstack", parse_call_stack),
- 	OPT_PARENT(lock_options)
- 	};
- 
-diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index 0236334fd69b..4902ac331f41 100644
---- a/tools/perf/util/bpf_lock_contention.c
-+++ b/tools/perf/util/bpf_lock_contention.c
-@@ -268,7 +268,7 @@ int lock_contention_read(struct lock_contention *con)
- 			break;
- 		}
- 
--		if (verbose > 0) {
-+		if (con->save_callstack) {
- 			st->callstack = memdup(stack_trace, stack_size);
- 			if (st->callstack == NULL)
- 				break;
-diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-index b99e83fccf5c..17e594d57a61 100644
---- a/tools/perf/util/lock-contention.h
-+++ b/tools/perf/util/lock-contention.h
-@@ -128,6 +128,7 @@ struct lock_contention {
- 	int max_stack;
- 	int stack_skip;
- 	int aggr_mode;
-+	bool save_callstack;
- };
- 
- #ifdef HAVE_BPF_SKEL
--- 
-2.39.1.456.gfc5497dd1b-goog
+>     $ llvm-dwarfdump test.o
+>     ...
+>     0x0000005c:   DW_TAG_subprogram
+>                     DW_AT_low_pc	(0x0000000000000010)
+>                     DW_AT_high_pc	(0x0000000000000014)
+>                     DW_AT_frame_base	(DW_OP_reg7 RSP)
+>                     DW_AT_call_all_calls	(true)
+>                     DW_AT_name	("f")
+>                     DW_AT_decl_file	("/home/eddy/work/tmp/test.c")
+>                     DW_AT_decl_line	(7)
+>                     DW_AT_prototyped	(true)
+>                     DW_AT_type	(0x00000074 "int")
+>    =20
+>     0x0000006b:     DW_TAG_formal_parameter
+>                       DW_AT_name	("s")
+>                       DW_AT_decl_file	("/home/eddy/work/tmp/test.c")
+>                       DW_AT_decl_line	(7)
+>                       DW_AT_type	(0x0000009e "st *")
+>    =20
+>     0x00000073:     NULL
+>     ...
+>=20
+> Is this important?
+> (gcc does not do this for the particular example, but I don't know if
+>  it could be tricked to under some conditions).
+>=20
+> Thanks,
+> Eduard
+>=20
+> [...]
 
