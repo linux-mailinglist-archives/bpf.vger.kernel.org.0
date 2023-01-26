@@ -2,135 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8739967D53B
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 20:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A4C67D521
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 20:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjAZTR6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 14:17:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
+        id S232465AbjAZTLX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 14:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjAZTR4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 14:17:56 -0500
-X-Greylist: delayed 506 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Jan 2023 11:17:53 PST
-Received: from mx23lb.world4you.com (mx23lb.world4you.com [81.19.149.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1879B758;
-        Thu, 26 Jan 2023 11:17:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:References:Cc:To:Subject:From:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=iI5nfSnVTsfzi2TlCeq92ugJV3Nwoh2wrjkWIusgImY=; b=G0ue/G7tl16TgJINez8QJijHtJ
-        uKd+cqh62/qlUUSdzeAmHvdxGaeG0iUG8xoHEk9E2speQJ1GP/06dlwCf6vz2pEPhiF9hNYldKpOl
-        vL0OhK295xa99LumXda6C2PudttuqpphE4gBWgutC0oI7M7whHtnblynlaGErkcOMDtU=;
-Received: from [88.117.49.184] (helo=[10.0.0.160])
-        by mx23lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1pL7cf-0006HX-88; Thu, 26 Jan 2023 20:09:21 +0100
-Message-ID: <28eedfd5-4444-112b-bfbc-1c7682385c88@engleder-embedded.com>
-Date:   Thu, 26 Jan 2023 20:09:20 +0100
+        with ESMTP id S232456AbjAZTLW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 14:11:22 -0500
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63664530DA
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 11:11:21 -0800 (PST)
+Received: by mail-qt1-f172.google.com with SMTP id d3so2125444qte.8
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 11:11:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YPC7prdPv0OHN7WMGWduIDlO0POg0o2A2WbqJmpehA8=;
+        b=PwQyAN5HoEmY4yK9YC7IBVSy4/gGWPAJ/878JUdQ/aICHDiB3obt3/H1g7oKMpzg+c
+         ptOtbjF25ZTroE/2+SlIfB5dRW5f7H/FHtUOnA2/q9JGIPeLyvle5Sq3u3c+J7KtN+FS
+         YkhiU1S4qpiU3O8LSnQ3HTX4y/GeIRw29+HZrPmtSmyHlx4+8Q/Nd7yxXmpD4E5SpdT2
+         DAb3lRhRImYw9y/bZTUGon90bhe3mcEqEa16PBl90gyk+W/rbbm/2QgBChish+8+Trx7
+         7R4d4vFxkcTY8F5j6YVo/vqhfUaAnj8NcOTAiLxMKfQ20GwdowG1tTpF2TjJMJc/Fyvg
+         H7jQ==
+X-Gm-Message-State: AO0yUKWScIcfNFhAIJRb9N2bJ89uGviI4Wx6pjdoXVNNl3WYavqr3A6C
+        6VOt+hKKP9BQtefugWoVosNBrXh+JLSuwA==
+X-Google-Smtp-Source: AK7set+isViHh5qAZns7K3NPtG/U2ufqQGwkH0uWIkhEKR4rgTkTBpbvXLJoy52ernhcZR/6OWG9NQ==
+X-Received: by 2002:ac8:5ad0:0:b0:3b6:8ad1:3be9 with SMTP id d16-20020ac85ad0000000b003b68ad13be9mr13526388qtd.32.1674760280255;
+        Thu, 26 Jan 2023 11:11:20 -0800 (PST)
+Received: from maniforge ([2620:10d:c091:480::1:78c2])
+        by smtp.gmail.com with ESMTPSA id b19-20020a05620a119300b00706b42c0842sm1401598qkk.49.2023.01.26.11.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Jan 2023 11:11:19 -0800 (PST)
+Date:   Thu, 26 Jan 2023 13:11:17 -0600
+From:   David Vernet <void@manifault.com>
+To:     lsf-pc@lists.linux-foundation.org
+Cc:     bpf@vger.kernel.org
+Subject: Mapping local-storage maps into user space
+Message-ID: <Y9LQVU2uz9SzYARP@maniforge>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-Subject: Re: [PATCH v2 bpf-next 2/8] drivers: net: turn on XDP features
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        toke@redhat.com, memxor@gmail.com, alardam@gmail.com,
-        saeedm@nvidia.com, anthony.l.nguyen@intel.com, gospo@broadcom.com,
-        vladimir.oltean@nxp.com, nbd@nbd.name, john@phrozen.org,
-        leon@kernel.org, simon.horman@corigine.com, aelior@marvell.com,
-        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
-        mst@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
-        lorenzo.bianconi@redhat.com, martin.lau@linux.dev
-References: <cover.1674606193.git.lorenzo@kernel.org>
- <c1171111f8af76da11331277b1e4a930c10f3c30.1674606197.git.lorenzo@kernel.org>
-Content-Language: en-US
-In-Reply-To: <c1171111f8af76da11331277b1e4a930c10f3c30.1674606197.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 25.01.23 01:33, Lorenzo Bianconi wrote:
-> From: Marek Majtyka <alardam@gmail.com>
-> 
-> A summary of the flags being set for various drivers is given below.
-> Note that XDP_F_REDIRECT_TARGET and XDP_F_FRAG_TARGET are features
-> that can be turned off and on at runtime. This means that these flags
-> may be set and unset under RTNL lock protection by the driver. Hence,
-> READ_ONCE must be used by code loading the flag value.
-> 
-> Also, these flags are not used for synchronization against the availability
-> of XDP resources on a device. It is merely a hint, and hence the read
-> may race with the actual teardown of XDP resources on the device. This
-> may change in the future, e.g. operations taking a reference on the XDP
-> resources of the driver, and in turn inhibiting turning off this flag.
-> However, for now, it can only be used as a hint to check whether device
-> supports becoming a redirection target.
-> 
-> Turn 'hw-offload' feature flag on for:
->   - netronome (nfp)
->   - netdevsim.
-> 
-> Turn 'native' and 'zerocopy' features flags on for:
->   - intel (i40e, ice, ixgbe, igc)
->   - mellanox (mlx5).
->   - stmmac
-> 
-> Turn 'native' features flags on for:
->   - amazon (ena)
->   - broadcom (bnxt)
->   - freescale (dpaa, dpaa2, enetc)
->   - funeth
->   - intel (igb)
->   - marvell (mvneta, mvpp2, octeontx2)
->   - mellanox (mlx4)
->   - qlogic (qede)
->   - sfc
->   - socionext (netsec)
->   - ti (cpsw)
->   - tap
->   - veth
->   - xen
->   - virtio_net.
-> 
-> Turn 'basic' (tx, pass, aborted and drop) features flags on for:
->   - netronome (nfp)
->   - cavium (thunder)
->   - hyperv.
-> 
-> Turn 'redirect_target' feature flag on for:
->   - amanzon (ena)
->   - broadcom (bnxt)
->   - freescale (dpaa, dpaa2)
->   - intel (i40e, ice, igb, ixgbe)
->   - ti (cpsw)
->   - marvell (mvneta, mvpp2)
->   - sfc
->   - socionext (netsec)
->   - qlogic (qede)
->   - mellanox (mlx5)
->   - tap
->   - veth
->   - virtio_net
->   - xen
+Hi everyone,
 
-XDP support for tsnep was merged to net-next last week. So this driver
-cannot get XDP feature support in bpf-next as it is not there currently.
-Should I add these flags with a fix afterwards? Or would net-next be the
-better target for this patch series?
+Another proposal from me for LSF/MM/BPF, and the last one for the time
+being. I'd like to discuss enabling local-storage maps (e.g.
+BPF_MAP_TYPE_TASK_STORAGE and BPF_MAP_TYPE_CGRP_STORAGE) to be r/o
+mapped directly into user space. This would allow for quick lookups of
+per-object state from user space, similar to how we allow it for
+BPF_MAP_TYPE_ARRAY, without having to do something like either of the
+following:
 
-Gerhard
+- Allocating a statically sized BPF_MAP_TYPE_ARRAY which is >= the # of
+  possible local-storage elements, which is likely wasteful in terms of
+  memory, and which isn't easy to iterate over.
+
+- Use something like https://docs.kernel.org/bpf/bpf_iterators.html to
+  iterate over tasks or cgroups, and collect information for each which
+  is then dumped to user space. This would probably work, but it's not
+  terribly performant in that it requires copying memory, trapping into
+  the kernel, and full iteration even when it's only necessary to look
+  up e.g. a single element.
+
+Designing and implementing this would be pretty non-trivial. We'd have
+to probably do a few things:
+
+1. Write an allocator that dynamically allocates statically sized
+   local-storage entries for local-storage maps, and populates them into
+   pages which are mapped into user space.
+
+2. Come up with some idr-like mechanism for mapping a local-storage
+   object to an index into the mapping. For example, mapping a task with
+   global pid 12345 to BPF_MAP_TYPE_TASK_STORAGE index 5, and providing
+   ergonomic and safe ways to update these entries in the kernel and
+   communicate them to user space.
+
+3. Related to point 1 above, come up with some way to dynamically extend
+   the user space mapping as more local-storage elements are added. We
+   could potentially reserve a statically sized VA range and map all
+   unused VA pages to the zero page, or instead possibly just leave them
+   unmapped until they're actually needed.
+
+There are a lot of open questions, but I think it could be very useful
+if we can make it work. Let me know what you all think.
+
+Thanks,
+David
