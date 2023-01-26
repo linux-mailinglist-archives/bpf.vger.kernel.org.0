@@ -2,94 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CC567CA2E
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 12:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5A267CABE
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 13:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237252AbjAZLmE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 06:42:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
+        id S229631AbjAZMRu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 07:17:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236303AbjAZLmD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 06:42:03 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86AD3401E
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 03:42:02 -0800 (PST)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30QBMIr8000317;
-        Thu, 26 Jan 2023 11:41:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=vKnQEbUmxXllFL576a0h5gfuJB/XWExl8ktynr58BW4=;
- b=HLuXzFde6EJqh1MHKB+K3V3AHHQukugMKTruyDMD0Tna/lphWuDj897A9QeAmzr7WWLC
- nkw1PM5yXN+D9qs2ZNJF78vHgF3RoOXkcVd4w2s9pJLo1aEKBpN46u7pcrvPu1egOqcF
- IgTP3OKXnanCbtZ0p6yzO7hM8ht1tFA0QSUjCMJZ0S+xLauTH7hTMW0I+qh+UVJ7fAhD
- HQjtNQknOyX0TyIuXYpKbsGN7QvOfuh18PvWp4goUkou18zkhUhZxMvTxE8qU11Vqwkf
- sfCtUGlzFNspoSvpIdpMkppc6cK2vqootKRN71CuI/w4TXjkizvaJHiwAPS+QvPpWCHY Dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3nbrka0dp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Jan 2023 11:41:47 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30QBZPWk019377;
-        Thu, 26 Jan 2023 11:41:46 GMT
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3nbrka0dnk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Jan 2023 11:41:46 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30PEpd9Z016036;
-        Thu, 26 Jan 2023 11:41:45 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma04fra.de.ibm.com (PPS) with ESMTPS id 3n87p6chd0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Jan 2023 11:41:44 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30QBffSI47120818
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Jan 2023 11:41:41 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0C4472004F;
-        Thu, 26 Jan 2023 11:41:41 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4A2520040;
-        Thu, 26 Jan 2023 11:41:40 +0000 (GMT)
-Received: from [9.155.209.149] (unknown [9.155.209.149])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 26 Jan 2023 11:41:40 +0000 (GMT)
-Message-ID: <cd145e29fc2cf9c4772fd61eb2921b2784d983fd.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 17/24] libbpf: Read usdt arg spec with
- bpf_probe_read_kernel()
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Date:   Thu, 26 Jan 2023 12:41:40 +0100
-In-Reply-To: <CAEf4BzamdUMpNeryWa2gGP6KB8uTs5sZTNnU3kMkvJFdchNRiw@mail.gmail.com>
-References: <20230125213817.1424447-1-iii@linux.ibm.com>
-         <20230125213817.1424447-18-iii@linux.ibm.com>
-         <CAEf4BzamdUMpNeryWa2gGP6KB8uTs5sZTNnU3kMkvJFdchNRiw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 77HnJf3HEfobI4AwWvha5L77JDOZsnBd
-X-Proofpoint-GUID: P70uZUG6PmsS_G9PY47JE3WURPQmkwnF
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S235957AbjAZMRt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 07:17:49 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D673D55A2;
+        Thu, 26 Jan 2023 04:17:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1674735467; x=1706271467;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=2q9GOKHV3A2PUayFofIMcpobWbje9Uk7b0NSh8ujw2E=;
+  b=JJ6nuXE0rvRsaB2dVTu+LO8dcViZZBz58krqLYQ/g8MWzIEOrLkslqKX
+   A5MsyRZw/ZjJhZR/o3ulbKLWe6pCnmlPU1LajqRcyLXOzMz0quWENDrFt
+   C6d/ZA/q3gPRJPyKGhkA5QFPb9YT+wGmWh3sXe35HfujxNrX9mDsvFot3
+   2DVkhxffAKBSJt68SKqiav/tfNa7hZOfGYCLISWZe5Xqt+s+NZrTbEt/A
+   HS6AOE2SzHKxRsb9uy3ZYJxlXYCnwZZqMG/o9LSFVoIAC803YZbVYEW6i
+   0f6+5pGJqOfDYS/aza7UO3R0cxDCJjgYBBe98x4X7eiE5XjAiXPZCwFox
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="314702080"
+X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; 
+   d="scan'208";a="314702080"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2023 04:17:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="771120272"
+X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; 
+   d="scan'208";a="771120272"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Jan 2023 04:17:38 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Thu, 26 Jan 2023 04:17:38 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Thu, 26 Jan 2023 04:17:37 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Thu, 26 Jan 2023 04:17:37 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Thu, 26 Jan 2023 04:17:37 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BZ6W7CRKLvtlOBGj8CxWdneqmM08uCKO7kSm8FoFHLb9ovghkXwQbQqyqZF07Q0BnUE2MJZKI9HOfJN6OZHRiODT5Wl8/18Mf8SR6RvFbwj9NVFCY3XjAx0nWay8OIcPVbBlvSSxLdom+rtfUZnoKXpDvcP6vWkW/yoIT1Kx1I4aKUfutl3f0IN24SwT+OWM2OFKNnvzLRjo39uWy/m9HbPBHLDprmNyUgliroIJVotBQRt9i1zWEPiLDEyvFvwjzWD39Sl6bpuQapFzZVfJiqRzPL+hauo46DXuTM0oARuGpgElmIoApdDJ5Uz5MIXklFzvF2wj3e7vJ1ox20cJCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=My1Tkxm2fKeHB+rEbdcgee4flU0z+DEcI5jlmFm7g7Q=;
+ b=lddE6FTPRuKCmQ+624fqPLJ1vJo/ZOS2y6A9s87W6FJOjgKjKfaIq2/B+lKX6cohTanD7xdtoU7JlCiC2SHHDSkeBhZApBB9/acQ5bAXMDJLwfYUd9VfXfW03W6ESUK9cIwXTURhhpEE270xs+OKDG1t+Y9KjoHCDvPZkoUr+u4rgcTNyryyw10EXjFt6EtE3P6k71xNJfw/yCCAm6NvqeOJMXtbg8ln/xu9xcJ9ZFLmBBV8wwIeDG/kn8KfwdhVNJ82p9bj7bfRq2inQ0FS1kg9cZJX3GMhbI5GHG0GJyWFCiL+81Tvy/3hfGhqI792JDzuDDwhICi6IscrUjwThQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ DS0PR11MB7629.namprd11.prod.outlook.com (2603:10b6:8:146::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6043.21; Thu, 26 Jan 2023 12:17:36 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::39d8:836d:fe2c:146]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::39d8:836d:fe2c:146%6]) with mapi id 15.20.5986.019; Thu, 26 Jan 2023
+ 12:17:35 +0000
+Date:   Thu, 26 Jan 2023 13:17:20 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Jason Xing <kerneljasonxing@gmail.com>
+CC:     <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <richardcochran@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.co>, <intel-wired-lan@lists.osuosl.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, Jason Xing <kernelxing@tencent.com>,
+        <magnus.karlsson@intel.com>, <tirthendu.sarkar@intel.com>,
+        <alexandr.lobakin@intel.com>
+Subject: Re: [PATCH net] ixgbe: allow to increase MTU to some extent with XDP
+ enalbed
+Message-ID: <Y9JvUKBgBifiosOa@boxer>
+References: <20230121085521.9566-1-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230121085521.9566-1-kerneljasonxing@gmail.com>
+X-ClientProxiedBy: DUZPR01CA0008.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:3c3::17) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-26_04,2023-01-25_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0 clxscore=1015
- suspectscore=0 malwarescore=0 lowpriorityscore=0 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301260111
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DS0PR11MB7629:EE_
+X-MS-Office365-Filtering-Correlation-Id: b71a773a-6dc8-48f4-0b2a-08daff974ec1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g4gy+WFk8xHe1UUvd/n4uPTurwBtmpRT5PP9S4epVpb5e2JagaMNcHYfNd57Vfrh9cBrvXHzCKZe5zJt8jcxTlTU0Po9uG2U0E1lbJ5wystjrMLFlathbXhRHirPX7zNy5zq0a2p/VDBIAvGDkhEBbQ2vBZRuXbRApqOMlvTZ3F+QTnZCMuaol0kCQT+ftyUDGMZPCfrIsLn+WKkRLrWzk0RJ1zeUwvGWDkqCgeFYziGB/t5CwY8ORRVhdRpMkyaCqE6mvEbfi+MpbViZ21+2/eL2VItKd4iuGzvKUfOiGBlGKiihiwAeHJMKjfc+xMI/XoKa8bq2uayoOP+CuLC9K36TjmUK0JbRhAuYetF0mDYJTohLsfkLHuMwH7VglOWnq+y9RZAw7M/q4fNfFktLnKCrljuO5Mn1f4FLALxiFDmWDG3KKR+6GcFTs+u1BcAPRwyTh+lfET5zDYVjvBaRUlGwI2m8pSCfUL0jMJS4XZf3tSp8wsHjjrEx0x+A0OswetU1t4Ji2aC05cMbgX4fJ+Q8RNFYVQI6nL87FM3gZfbnF/mim0eAIbcUJsFKjvO+2DabFYSs6VLMLulOcBv2LlFj3xlOzC3Y0bFyNqxqg5BYhZja7Z7vlYSJibIMWg/lutCDarRf018dHlDeW/2dw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(376002)(136003)(366004)(396003)(39860400002)(346002)(451199018)(41300700001)(44832011)(8936002)(38100700002)(5660300002)(2906002)(7416002)(82960400001)(83380400001)(6506007)(6486002)(86362001)(6512007)(186003)(26005)(478600001)(107886003)(9686003)(6666004)(66476007)(66946007)(66556008)(4326008)(6916009)(8676002)(316002)(33716001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fc8ln7dpovWR7Aej1VJqx2dKvtsLKKcXeTJANoNbPixcGPya1OdejXYZpD7u?=
+ =?us-ascii?Q?l8l3F1oejGzP1tED+xX+UGN9X4mwA4NMaAV1n/8Ho1Um4J4lwaiD/QqVzIfs?=
+ =?us-ascii?Q?JfPb/Zl42nwAePz35trKkjd3Q2A8G+dM6WD9AhIJxxe39m3lSoPXwZHipuaC?=
+ =?us-ascii?Q?Wcn/BoIhFoEOSP4SEb48ZBzx2uprc92mWzjIAJKQKt/Npp4GSZz4CGQyplsI?=
+ =?us-ascii?Q?+OcwnSZgXqzwPpXE0OU8UH5XLbiznkTgG701eXY1SZsYIoStTaum/GBHJTIv?=
+ =?us-ascii?Q?Fqrx8NJklejqXwsmqYbCSfdZppZbNrKbncRzix/WfVcFWS5Gao6Ke5Bq8xqW?=
+ =?us-ascii?Q?VD5Y/CYHQ1LxxuE0JL8fuJRNNmBWCCSRn1qhFGB0fT5duiw0WfwrOziHgKYg?=
+ =?us-ascii?Q?PU4yHcxP4oY+hdXo/4bUREKGrrehwZLznzc/4i1CWCW6PJ913xVYuhfGa3Bi?=
+ =?us-ascii?Q?fZiZIlpsKAJbCzpJwkw5x72PkfIqC13AE2j9zq6fJqvnK8oDaPSUIyeGyVzz?=
+ =?us-ascii?Q?s2+3BSkViiJwAsi8Te9qtMUQICqZlwYwkDu/Y8gN1lKRkfCqKseMvV2gIqA3?=
+ =?us-ascii?Q?TSfJvWbQ+/gX5lgZBvVhDRoDLcmJWDwFpnUTlH1tNDKqerMs/4lw0JriG60D?=
+ =?us-ascii?Q?edeYjkWlw6nWsLA3af8rwroqewCbGVTRbhSUNBceQxBHRKpV647L4OIwsW46?=
+ =?us-ascii?Q?h8+Lv/opvKKFBePyzj/P/z5zRjaPaP1S+j9k9W11+WVyRyzwl/7G3wwjgLYd?=
+ =?us-ascii?Q?bKgQCVblk8O39Oe+06xMHIGkOtUmJPTYmVbIEKhQqA+8kPRmLpIDKqDKB59V?=
+ =?us-ascii?Q?9Os1NMj8S291HGLa30qyoELjFQIo3rJVBZ99HwC6Rt/HGUYiMt/0KkyP93+F?=
+ =?us-ascii?Q?F9msy6/nJmTt+XTL2iGksZZkNvXk6di4uWOBRbiwwbQskeu07YoUUdXPcFci?=
+ =?us-ascii?Q?CMvx7IwbjO19b13Rrf2etyf9gDTKH4DRcBuLrDned557jPyMz4YcRhk3GfUT?=
+ =?us-ascii?Q?F+jlgwUKpIEQDURe+3jikL8vLisPnuvMynEvTZPObS2wbWPj4tY9ybb3vjAn?=
+ =?us-ascii?Q?SkiPHUCSfm4klxzC3c3KinxxwXJD3Cx9CpFNuOIgxwjLiF7xq0rDCcRsbRg4?=
+ =?us-ascii?Q?RnMoh+8wTx6E/ckRF/CCHbKjxPaOEl4AlZIdc72mYaYtd+M6VKpQKZOUgByU?=
+ =?us-ascii?Q?BLA42TY4s3tMN88trv1qbSE2P804C7LtG7ifx6+jI9TJCZIdwBvFhcqiSiN/?=
+ =?us-ascii?Q?ltL/vigIJNdNNOblKASb9n383CmRLG75JLtXTY9mL5rV9hyHAaa4YYNKkTPD?=
+ =?us-ascii?Q?7UbcLkWNFLKv9fHutg8dnQx3dylYm/gFTFEoNE7VO2oFi4eefdNi8b+z8lw7?=
+ =?us-ascii?Q?BWWJucol62pD4uqL4ZQWps0TUPolZ8lsKIwFJMWJSBszNvM2OAWun2hksZe1?=
+ =?us-ascii?Q?BkzRxYNzeRZ9kevFx0dVbSQZrpszcNiyjpiKNo3yUu5nFJ/MwqLsdPjR3d+n?=
+ =?us-ascii?Q?CRYPvb3p1OE17xUcsIjPctFvrNvLm3WYP5NIgCPqfP6aLMZPVrre3n7khAIJ?=
+ =?us-ascii?Q?vr90lR3rkwRJQKLsQfuSaVy1KHaw2PGyvXi0YMZbOrrNYf7whS/3vbYvycFe?=
+ =?us-ascii?Q?S3BXHBr14puzOkMdDKaRjak=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b71a773a-6dc8-48f4-0b2a-08daff974ec1
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2023 12:17:35.4327
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4W/nCHeIXM9J46uQ1vYYocivowhF84CURCOwWH2K3/rngIwCkduup68ZcPvOCHJfWjH1kqyOlQPbNi6Myzd4Yk1jL+n4+seN/T1/PCuoCO4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7629
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,104 +155,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2023-01-25 at 16:26 -0800, Andrii Nakryiko wrote:
-> On Wed, Jan 25, 2023 at 1:39 PM Ilya Leoshkevich <iii@linux.ibm.com>
-> wrote:
-> >=20
-> > Loading programs that use bpf_usdt_arg() on s390x fails with:
-> >=20
-> > =C2=A0=C2=A0=C2=A0 ; switch (arg_spec->arg_type) {
-> > =C2=A0=C2=A0=C2=A0 139: (61) r1 =3D *(u32 *)(r2 +8)
-> > =C2=A0=C2=A0=C2=A0 R2 unbounded memory access, make sure to bounds chec=
-k any such
-> > access
->=20
-> can you show a bit longer log? we shouldn't just=C2=A0 use
-> bpf_probe_read_kernel for this. I suspect strategically placed
-> barrier_var() calls will solve this. This is usually an issue with
-> compiler reordering operations and doing actual check after it
-> already
-> speculatively adjusted pointer (which is technically safe and ok if
-> we
-> never deref that pointer, but verifier doesn't recognize such
-> pattern)
+On Sat, Jan 21, 2023 at 04:55:21PM +0800, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+> 
+> I encountered one case where I cannot increase the MTU size with XDP
+> enabled if the server is equipped with IXGBE card, which happened on
+> thousands of servers. I noticed it was prohibited from 2017[1] and
+> added size checks[2] if allowed soon after the previous patch.
+> 
+> Interesting part goes like this:
+> 1) Changing MTU directly from 1500 (default value) to 2000 doesn't
+> work because the driver finds out that 'new_frame_size >
+> ixgbe_rx_bufsz(ring)' in ixgbe_change_mtu() function.
+> 2) However, if we change MTU to 1501 then change from 1501 to 2000, it
+> does work, because the driver sets __IXGBE_RX_3K_BUFFER when MTU size
+> is converted to 1501, which later size check policy allows.
+> 
+> The default MTU value for most servers is 1500 which cannot be adjusted
+> directly to the value larger than IXGBE_MAX_2K_FRAME_BUILD_SKB (1534 or
+> 1536) if it loads XDP.
+> 
+> After I do a quick study on the manner of i40E driver allowing two kinds
+> of buffer size (one is 2048 while another is 3072) to support XDP mode in
+> i40e_max_xdp_frame_size(), I believe the default MTU size is possibly not
+> satisfied in XDP mode when IXGBE driver is in use, we sometimes need to
+> insert a new header, say, vxlan header. So setting the 3K-buffer flag
+> could solve the issue.
+> 
+> [1] commit 38b7e7f8ae82 ("ixgbe: Do not allow LRO or MTU change with XDP")
+> [2] commit fabf1bce103a ("ixgbe: Prevent unsupported configurations with
+> XDP")
+> 
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> ---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> index ab8370c413f3..dc016582f91e 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -4313,6 +4313,9 @@ static void ixgbe_set_rx_buffer_len(struct ixgbe_adapter *adapter)
+>  		if (IXGBE_2K_TOO_SMALL_WITH_PADDING ||
+>  		    (max_frame > (ETH_FRAME_LEN + ETH_FCS_LEN)))
+>  			set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
+> +
+> +		if (ixgbe_enabled_xdp_adapter(adapter))
+> +			set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
 
-The full log is here:
+This will result with unnecessary overhead for 1500 MTU because you will
+be working on order-1 pages. Instead I would focus on fixing
+ixgbe_change_mtu() and stop relying on ixgbe_rx_bufsz() in there. You can
+check what we do on ice/i40e sides.
 
-https://gist.github.com/iii-i/b6149ee99b37078ec920ab1d3bb45134
+I'm not looking actively into ixgbe internals but I don't think that there
+is anything that stops us from using 3k buffers with XDP.
 
-The relevant part seems to be:
-
-; if (arg_num >=3D BPF_USDT_MAX_ARG_CNT || arg_num >=3D spec->arg_cnt)
-128: (79) r1 =3D *(u64 *)(r10 -24)      ; frame1:
-R1_w=3Dscalar(umax=3D4294967295,var_off=3D(0x0; 0xffffffff)) R10=3Dfp0
-129: (25) if r1 > 0xb goto pc+83      ; frame1:
-R1_w=3Dscalar(umax=3D11,var_off=3D(0x0; 0xf))
-; if (arg_num >=3D BPF_USDT_MAX_ARG_CNT || arg_num >=3D spec->arg_cnt)
-130: (69) r1 =3D *(u16 *)(r8 +200)      ; frame1:
-R1_w=3Dscalar(umax=3D65535,var_off=3D(0x0; 0xffff))
-R8_w=3Dmap_value(off=3D0,ks=3D4,vs=3D208,imm=3D0)
-131: (67) r1 <<=3D 48                   ; frame1:
-R1_w=3Dscalar(smax=3D9223090561878065152,umax=3D18446462598732840960,var_of=
-f=3D
-(0x0; 0xffff000000000000),s32_min=3D0,s32_max=3D0,u32_max=3D0)
-132: (c7) r1 s>>=3D 48                  ; frame1: R1_w=3Dscalar(smin=3D-
-32768,smax=3D32767)
-; if (arg_num >=3D BPF_USDT_MAX_ARG_CNT || arg_num >=3D spec->arg_cnt)
-133: (79) r2 =3D *(u64 *)(r10 -24)      ; frame1:
-R2=3Dscalar(umax=3D4294967295,var_off=3D(0x0; 0xffffffff)) R10=3Dfp0
-134: (bd) if r1 <=3D r2 goto pc+78      ; frame1: R1=3Dscalar(smin=3D-
-32768,smax=3D32767) R2=3Dscalar(umax=3D4294967295,var_off=3D(0x0; 0xfffffff=
-f))
-; arg_spec =3D &spec->args[arg_num];
-135: (79) r1 =3D *(u64 *)(r10 -24)      ; frame1:
-R1_w=3Dscalar(umax=3D4294967295,var_off=3D(0x0; 0xffffffff)) R10=3Dfp0
-136: (67) r1 <<=3D 4                    ; frame1:
-R1_w=3Dscalar(umax=3D68719476720,var_off=3D(0x0;
-0xffffffff0),s32_max=3D2147483632,u32_max=3D-16)
-137: (bf) r2 =3D r8                     ; frame1:
-R2_w=3Dmap_value(off=3D0,ks=3D4,vs=3D208,imm=3D0)
-R8=3Dmap_value(off=3D0,ks=3D4,vs=3D208,imm=3D0)
-138: (0f) r2 +=3D r1                    ; frame1:
-R1_w=3Dscalar(umax=3D68719476720,var_off=3D(0x0;
-0xffffffff0),s32_max=3D2147483632,u32_max=3D-16)
-R2_w=3Dmap_value(off=3D0,ks=3D4,vs=3D208,umax=3D68719476720,var_off=3D(0x0;
-0xffffffff0),s32_max=3D2147483632,u32_max=3D-16)
-; switch (arg_spec->arg_type) {
-139: (61) r1 =3D *(u32 *)(r2 +8)
-
-#128-#129 make sure that *(u64 *)(r10 -24) <=3D 11, but when #133
-loads it again, this constraint is not there. I guess we need to
-force flushing r1 to stack? The following helps:
-
---- a/tools/lib/bpf/usdt.bpf.h
-+++ b/tools/lib/bpf/usdt.bpf.h
-@@ -130,7 +130,10 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64
-arg_num, long *res)
-        if (!spec)
-                return -ESRCH;
-=20
--       if (arg_num >=3D BPF_USDT_MAX_ARG_CNT || arg_num >=3D spec-
->arg_cnt)
-+       if (arg_num >=3D BPF_USDT_MAX_ARG_CNT)
-+               return -ENOENT;
-+       barrier_var(arg_num);
-+       if (arg_num >=3D spec->arg_cnt)
-                return -ENOENT;
-=20
-        arg_spec =3D &spec->args[arg_num];
-
-I can use this in v2 if it looks good.
-
-
-
-Btw, I looked at the barrier_var() definition:
-
-#define barrier_var(var) asm volatile("" : "=3Dr"(var) : "0"(var))
-
-and I'm curious why it's not defined like this:
-
-#define barrier_var(var) asm volatile("" : "+r"(var))
-
-which is a bit simpler?
->=20
+>  #endif
+>  	}
+>  }
+> -- 
+> 2.37.3
+> 
