@@ -2,172 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 146FE67C463
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 06:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EA067C464
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 06:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235567AbjAZFpa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 00:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
+        id S229556AbjAZFqP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 00:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjAZFp3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 00:45:29 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3DB1A4AD
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 21:45:27 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id g11so879538eda.12
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 21:45:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FveYOsiMd65GK7iPAWBv1At230iwf8BEo8Ey5SfPIfA=;
-        b=S4Zge+RQuskYZqkxySFtgUSlsG5nE+pHkVlCJvm+DunbEgbf1DdCn+KuImSD/P77bJ
-         OKFFrRBlrYOmIQyeyK5yHhE24aJQVGBtkwhkvZMxf8YJhUDYIaGo890FdCXOyM99cG32
-         9yMejlNvRNWuxu3IiqNpffGeVE1AFT32cjKClWq6vTK5lM+6C1OzXHamJPzMRQndC4ud
-         yg3NpUkhffNvtRwpkKe8CTtvUjU7AHJWqO4Y3eRPdnYfFZt0pU6dt+B3q2wlGHsPeuix
-         CGdnK7XMDXSLuMCUPq+QqF7oerp/tgB2tfLqJNge+U4RJkiKhzSkj+yGDxc9xQzE/ZAH
-         giAA==
+        with ESMTP id S235678AbjAZFqM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 00:46:12 -0500
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3B51A4AD
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 21:46:11 -0800 (PST)
+Received: by mail-qt1-f176.google.com with SMTP id q15so607398qtn.0
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 21:46:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FveYOsiMd65GK7iPAWBv1At230iwf8BEo8Ey5SfPIfA=;
-        b=rq1XBO8+SL3ZcpSgu/8a5nCztbDDcfx/MkLsqG5maNLjBllXG54EUG1J9lcOzv04Qa
-         t6A0qBOcbvi5DuHTZerQRiEuDQFNJLoCiEC7bEl+yUokJJqa5/KoY63MmN1g1DoqeeKE
-         wjt41CU51Xpnti5THrZrbziqILkaXQmLhGYXMK8ZllvQDH/FL8W13U6hKhbPJucOPb9I
-         hvF1tnaNiz2tyYqYGMD/79XM0ZD79lfCZ8o8B0kaKI4iFEerwy57sZs505KDY14NuohL
-         6kObuYZmL6Y9tJtLtmH3moSOASsxmS8SEtThTYPKHmKE3EQg6L6CUGG5gNAl0UHf6Fxz
-         pLBw==
-X-Gm-Message-State: AO0yUKWfctdqoCWvKAg93fmE1uJ6ApAy1vA1KK+TaaTnHKfdwGk3sl1J
-        Myzem8oT+ro8tlYIFPwpVFRFXhB5dq3XWvgzjPBfsvr1Ddw=
-X-Google-Smtp-Source: AK7set/zeXyIi1LbtXUG86WV+E3vGBPdo2Ey/WKyCNmapGg+3QgWq1reyTaVJ03dDwaMMHNUvMP9+dDzrAmwYEjK8FE=
-X-Received: by 2002:aa7:cb8d:0:b0:4a0:b690:8ee7 with SMTP id
- r13-20020aa7cb8d000000b004a0b6908ee7mr549984edt.34.1674711926172; Wed, 25 Jan
- 2023 21:45:26 -0800 (PST)
+        bh=v+eHanpk6LZuqRzuz3qKULO1b4PCiKRmK6RZEZ5BCko=;
+        b=OZp8pWexBLWt7GnP6U6u0uEGAbjvxKQL9g8OI1OqvwHaYCDWFEx5/I923jxlbTFEAI
+         EXQrLuWRsuwT3cVYvuZp7vuizd8NfRPaSc5m1r3mxrWXvjIjbK7HsIyrIllHE88kZAIM
+         gCEo9S/E3HEqwN1zhukzRvVa4QIoDkKwPeqxOM4lWQEytLHunBC/WbVvczjZMxvHpp+T
+         Mlmu9j7BPAJA/ZM89Kw/w5CRP2Yo8OVK21JrBVPEVwb3SUI0P1mVb9gEENmiIxZ3B/Bc
+         CLhH5j34YPUe9g2iK0OmwEnodN32mJjYafarA0epPSrvYYajKlUf56kOfH8RnoI8a9rT
+         l+9Q==
+X-Gm-Message-State: AFqh2koSsbJmG4Qmgv2GirWkUteDcjelwNYQlRRwKJ2zEYoZHuzQ4JHh
+        03NzS8fk3WDX6RlqoIolVTY=
+X-Google-Smtp-Source: AMrXdXtMWD6/w45HPmtMNHRjnN/c5DjIjdtvPxoKSRK5w/2MGTDhXoBZX/RIKLskGgpTvpvrfzHtBQ==
+X-Received: by 2002:ac8:6708:0:b0:3a9:818f:db3d with SMTP id e8-20020ac86708000000b003a9818fdb3dmr51000181qtp.53.1674711970645;
+        Wed, 25 Jan 2023 21:46:10 -0800 (PST)
+Received: from maniforge ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id p1-20020ac84081000000b003b2957fb45bsm210655qtl.8.2023.01.25.21.46.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Jan 2023 21:46:10 -0800 (PST)
+Date:   Wed, 25 Jan 2023 23:46:08 -0600
+From:   David Vernet <void@manifault.com>
+To:     lsf-pc@lists.linux-foundation.org
+Cc:     bpf@vger.kernel.org
+Subject: [LSF/MM/BPF TOPIC] Per-arg kfunc flags
+Message-ID: <Y9IToH14bniD00R2@maniforge>
 MIME-Version: 1.0
-References: <20230112155326.26902-1-laoar.shao@gmail.com> <CAADnVQJie8jSNxEio9iu6oXBkXyCjCg6h2mHssPv4mDHubWTwA@mail.gmail.com>
- <CALOAHbAsQ66j77BWC6isTRiKRPgG1Ap2qf6L+wQ+x2SXJt8NjQ@mail.gmail.com>
- <CAADnVQJGF5Xthpn7D2DgHHvZz8+dnuz2xMi6yoSziuauXO7ncA@mail.gmail.com>
- <CALOAHbBVRvTkSxLin+9A20Wv0DZWz4epvNTY1jEaCTf7q0qWJA@mail.gmail.com>
- <CAADnVQJtSZWe0sjvA3YT2LPHJyUqDuhG1f62x2PTjB4WMeLsJw@mail.gmail.com> <CALOAHbCY4fGyAN6q3dd+hULs3hRJcYgvMR7M5wg1yb3vPiK=mw@mail.gmail.com>
-In-Reply-To: <CALOAHbCY4fGyAN6q3dd+hULs3hRJcYgvMR7M5wg1yb3vPiK=mw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 25 Jan 2023 21:45:14 -0800
-Message-ID: <CAADnVQJ9-XEz_JdbUWEK5ZdgnidvNcDZcP2jb7ojyEFtPdPMoA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 00/11] mm, bpf: Add BPF into /proc/meminfo
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, dennis@kernel.org,
-        Chris Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 10:49 PM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > > I just don't want to add many if-elses or switch-cases into
-> > > bpf_map_memory_footprint(), because I think it is a little ugly.
-> > > Introducing a new map ops could make it more clear.  For example,
-> > > static unsigned long bpf_map_memory_footprint(const struct bpf_map *map)
-> > > {
-> > >     unsigned long size;
-> > >
-> > >     if (map->ops->map_mem_footprint)
-> > >         return map->ops->map_mem_footprint(map);
-> > >
-> > >     size = round_up(map->key_size + bpf_map_value_size(map), 8);
-> > >     return round_up(map->max_entries * size, PAGE_SIZE);
-> > > }
-> >
-> > It is also ugly, because bpf_map_value_size() already has if-stmt.
-> > I prefer to keep all estimates in one place.
-> > There is no need to be 100% accurate.
->
-> Per my investigation, it can be almost accurate with little effort.
-> Take the htab for example,
-> static unsigned long htab_mem_footprint(const struct bpf_map *map)
-> {
->     struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
->     unsigned long size = 0;
->
->     if (!htab_is_prealloc(htab)) {
->         size += htab_elements_size(htab);
->     }
->     size += kvsize(htab->elems);
->     size += percpu_size(htab->extra_elems);
->     size += kvsize(htab->buckets);
->     size += bpf_mem_alloc_size(&htab->pcpu_ma);
->     size += bpf_mem_alloc_size(&htab->ma);
->     if (htab->use_percpu_counter)
->         size += percpu_size(htab->pcount.counters);
->     size += percpu_size(htab->map_locked[i]) * HASHTAB_MAP_LOCK_COUNT;
->     size += kvsize(htab);
->     return size;
-> }
+Hi all,
 
-Please don't.
-Above doesn't look maintainable.
-Look at kvsize(htab). Do you really care about hundred bytes?
-Just accept that there will be a small constant difference
-between what show_fdinfo reports and the real memory.
-You cannot make it 100%.
-There is kfence that will allocate 4k though you asked kmalloc(8).
+I would like to discuss how to enable per-arg kfunc flags.
 
-> We just need to get the real memory size from the pointer instead of
-> calculating the size again.
-> For non-preallocated htab, it is a little trouble to get the element
-> size (not the unit_size), but it won't be a big deal.
+As described in [0], kfunc flags are currently at the granularity of the
+entire kfunc. This means that, for example, only a single kfunc argument
+can be acquired (indicated by KF_ACQUIRE), released (indicated by
+KF_RELEASE), RCU-protected (KF_RCU), etc.
 
-You'd have to convince mm folks that kvsize() is worth doing.
-I don't think it will be easy.
+This hasn't really been a problem up to this point, though there are
+some per-arg annotations such as those described in [1], and patches
+here and there such as [2], which collectively indicate that it may be
+time to start aligning on what the design and implemention should look
+like (e.g. should we model the UX for defining kfuncs in a similar to
+way to helpers, go in a different direction, what blockers are there,
+etc).
 
-> > With a callback devs will start thinking that this is somehow
-> > a requirement to report precise memory.
-> >
-> > > > > > bpf side tracks all of its allocation. There is no need to do that
-> > > > > > in generic mm side.
-> > > > > > Exposing an aggregated single number if /proc/meminfo also looks wrong.
-> > > > >
-> > > > > Do you mean that we shouldn't expose it in /proc/meminfo ?
-> > > >
-> > > > We should not because it helps one particular use case only.
-> > > > Somebody else might want map mem info per container,
-> > > > then somebody would need it per user, etc.
-> > >
-> > > It seems we should show memcg info and user info in bpftool map show.
-> >
-> > Show memcg info? What do you have in mind?
-> >
->
-> Each bpf map is charged to a memcg. If we know a bpf map belongs to
-> which memcg, we can know the map mem info per container.
-> Currently we can get the memcg info from the process which loads it,
-> but it can't apply to pinned-bpf-map.
-> So it would be better if we can show it in bpftool-map-show.
+[0]: https://docs.kernel.org/bpf/kfuncs.html#annotating-kfuncs
+[1]: https://docs.kernel.org/bpf/kfuncs.html#annotating-kfunc-parameters
+[2]: https://lore.kernel.org/bpf/20221217082506.1570898-2-davemarchevsky@fb.com/
 
-That sounds useful.
-Have you looked at bpf iterators and how bpftool is using
-them to figure out which process loaded bpf prog and created particular map?
+What do you all think?
+
+Thanks,
+David
