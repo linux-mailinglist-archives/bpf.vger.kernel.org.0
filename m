@@ -2,61 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D154067C2EA
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 03:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86C067C37D
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 04:25:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbjAZCsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 21:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
+        id S235962AbjAZDZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 22:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbjAZCsX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 21:48:23 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BD064685
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:48:22 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id vw16so1651347ejc.12
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:48:22 -0800 (PST)
+        with ESMTP id S235766AbjAZDZe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 22:25:34 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D488B5
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 19:25:33 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id m11so449607pji.0
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 19:25:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GuQ8faoWy7oZ+nat6D7YCV0vd7EDEMYhcz6BZfNuwW4=;
-        b=Ab/scE++SdJeCExMbzkiIfXW9drLvMeILDK/rCJLy9OWo3NOxqCSkb6i7JxkJylEMk
-         x2sVEE9ydSK03TdzVP8ekGPs5zi9N9D+AcmYKeLBImn6Gh+HFxxvHuHsBNWI5C2XVjbW
-         NYeR5k26GQJf0DdpBb/AoWC/lOZYQanOWBrVa+10xjxcSGXh/WLK5MWO80qYMYUeb6/a
-         he7u7WSnHsPGoHa6E/nz7HKI5jF+eRCbD7woWl0wFiz4Ngr+kFlZ1PWpQZe3M+T8QJsZ
-         x/g0hfBFztr7+0iKWXdJcmSNUIqVdVSdxkHhaqnwFTwKiGXGKXO3wYUAf8T/e60RmlUT
-         9/rQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9X6noQwThK6tIc1o2QK2Qm/5sXTmHNTq9nYKlBq2vcU=;
+        b=OPOmht6VjozwRAFbk1ylqqX+J1JhWfC6XsqrV+57o8vRIHI2DeCFwbby7GfvOckuLX
+         razAcq0tA9oRzrdrslsfKCFDGEFilIuFkqWFOObwhTzJVOnAdJDqS47iLR5o+FheBrIu
+         N86/PZSyxazjcyU5QjIQrZU/38TMbBZVghyhXe0qk5axKT1GRa3VhrD9TAItqBmntAar
+         Sy5Yapblf3DOJQo0jQp7ighZtiBb1pwrwmlnCqcltgzYVgxGbVvFATtlkLrdAYh1cxGI
+         bMSd08Cq/X0NBjuaQR2rA2B3sPUmxe1Nimbow7aSGLDNsMd6bP3WJerwPuy7LAFRhELr
+         54bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GuQ8faoWy7oZ+nat6D7YCV0vd7EDEMYhcz6BZfNuwW4=;
-        b=Evwjz7Ab97ziynMsK+l3996IYecm+gi101xTjoy6wE+0+WOhke+haRH1WR3S3JB9Cf
-         0GaLwjJ0PRQ9vMQP52GBTRQyeN56VwCCrmB8dyfFKYjRKFOFDcXSNmzR1NDYn6+nq7p9
-         TUoR0XKxbK7tDpLXqdwAoyoKv49njjY+pubTviGbF4Qyv6BdhUSPXCA0W3lVtFIgHvhh
-         8jHSZyCzRSdXoOFk3ZFFJcPNNrqTMGcakSXu3rSJLJQrlyw7qWIL77S23+Y9LAbEVX8w
-         a6Bmdht/TAr28k2gFDWvJAKQ3c99q3lIYjyG2dPcsFhj91OdAEtXh+CjD7Sl+CXv20uL
-         Ga2w==
-X-Gm-Message-State: AFqh2kqyZNvHtp7BYH98A61byW4hYK2omSNrJ29bPh6F4NjQLP9t16ma
-        XysT0sF+aSAiX5DDOrkauxUDd2I6X6wJ+Nxxw9oItXsR/nY=
-X-Google-Smtp-Source: AMrXdXtQ2nz/3mwBUacCNlb1wmtvB71Or1Yu37rxvgQTW53l2pMJMVE/2JSQFa9/YPPnHRFWX7jDgPcipU4G37dZ0M8=
-X-Received: by 2002:a17:906:380e:b0:877:5b9b:b426 with SMTP id
- v14-20020a170906380e00b008775b9bb426mr4120361ejc.12.1674701300655; Wed, 25
- Jan 2023 18:48:20 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9X6noQwThK6tIc1o2QK2Qm/5sXTmHNTq9nYKlBq2vcU=;
+        b=zcUUxllTfgeqaS830EELP85z4ly0Y1vUzP6qfhDMZDnglBz/n6ZpKlGmC+LsTaIlSu
+         OYnL3akQp9VD7W3L1Oq2M29PZsRnOBtIvwbOvDBmzCDCyERuR9XkMCGqcXb5GI7paEHi
+         bs1jimveo1HlKXjNNsLv+BulPhF1fdyuBb32ymNt9NcYPj1hfuwGPeh6HDB87/jRmZrn
+         ZDFs9gk12n2cAHhaQ7/AMV9TzlrAeqoefiGmr/xMaEUUbYM9MOLaGmHXcrpJggpjbqwq
+         NS7HBOIuHTmHKTTZPEFr0zNKbnbg52gY11iIBPZg8rT2VeMokkFsDYpconYLTMf5RhDA
+         y3XQ==
+X-Gm-Message-State: AFqh2krCfpenpqAUucIlWvjBJrhXAC6KUar8npypQg0i+i1D5G/4QFJD
+        e0MTFghwK2UOfhrhugtzkgw=
+X-Google-Smtp-Source: AMrXdXuZBnjYubnWGas8xnqNl26k8z18B0wjgjx/6w13rzU7Mm0+REdM5Irbb4n+R4gI1KqZcJDqeQ==
+X-Received: by 2002:a17:902:e84b:b0:194:ddc2:60e8 with SMTP id t11-20020a170902e84b00b00194ddc260e8mr28934279plg.48.1674703532791;
+        Wed, 25 Jan 2023 19:25:32 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:500::6:b1d5])
+        by smtp.gmail.com with ESMTPSA id u7-20020a170902a60700b00192b0a07891sm147818plq.101.2023.01.25.19.25.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Jan 2023 19:25:32 -0800 (PST)
+Date:   Wed, 25 Jan 2023 19:25:30 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, yhs@fb.com
+Subject: Re: [RFC bpf-next 0/5] test_verifier tests migration to inline
+ assembly
+Message-ID: <20230126032530.nib7ov5gtt3knmc4@macbook-pro-6.dhcp.thefacebook.com>
+References: <20230123145148.2791939-1-eddyz87@gmail.com>
+ <CAEf4Bzbu2zctHntHNRVnEDa_FJz405Ld1Sb58wvJA+JvYdS+Ag@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230123145148.2791939-1-eddyz87@gmail.com> <20230123145148.2791939-5-eddyz87@gmail.com>
-In-Reply-To: <20230123145148.2791939-5-eddyz87@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 25 Jan 2023 18:48:08 -0800
-Message-ID: <CAEf4BzbH-nBdD2N0-bFh0pQrU2o6sqOmrswMRYVgAgeLQWQS9g@mail.gmail.com>
-Subject: Re: [RFC bpf-next 4/5] selftests/bpf: __imm_insn macro to embed raw
- insns in inline asm
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzbu2zctHntHNRVnEDa_FJz405Ld1Sb58wvJA+JvYdS+Ag@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -67,42 +73,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 6:52 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> A convenience macro to allow the following usage:
->
->   #include <linux/filter.h>
->
->   ...
->   asm volatile (
->   ...
->   ".8byte %[raw_insn];"
->   ...
->   :
->   : __imm_insn(raw_insn, BPF_RAW_INSN(...))
->   : __clobber_all);
->
+On Wed, Jan 25, 2023 at 05:33:42PM -0800, Andrii Nakryiko wrote:
+> 
+> > __naked void invalid_and_of_negative_number(void)
+> >
+> > {
+> >         asm volatile (
+> > "       r1 = 0;                                         \n\
+> 
+> Kumar recently landed similarly formatted inline asm-based test, let's
+> make sure we stick to common style. \n at the end are pretty
+> distracting, IMO (though helpful to debug syntax errors in asm, of
+> course). I'd also move starting " into the same line as asm volatile:
 
-Ah, now I see why it's __imm_insns. Makes sense. Hopefully this won't
-be used very frequently anyways.
++1. Pls drop \n.
+You don't have \n anyway in migrator's README on github.
 
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  tools/testing/selftests/bpf/progs/bpf_misc.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-> index e742a935de98..832bec4818d9 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-> +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-> @@ -61,6 +61,7 @@
->  #define __clobber_common "r0", "r1", "r2", "r3", "r4", "r5", "memory"
->  #define __imm(name) [name]"i"(name)
->  #define __imm_addr(name) [name]"i"(&name)
-> +#define __imm_insn(name, expr) [name]"i"(*(long *)&(expr))
->
->  #if defined(__TARGET_ARCH_x86)
->  #define SYSCALL_WRAPPER 1
-> --
-> 2.39.0
->
+> asm volatile ("                       \
+> 
+> this will make adding/removing asm lines at the beginning simpler (and
+> you already put closing quote on separate line, so that side is taken
+> care of)
+
++1
+
+Also pls indent the asm code with two tabs the way Kumar did.
+I think it looks cleaner this way and single tab labels align
+with 'asm volatile ('.
+
+> > All in all the current script stats are as follows:
+> > - 62 out of 93 files from progs/*.c can be converted w/o warnings;
+
+out of 98 in verifier/*.c ?
+
+> > - 55 converted files could be compiled;
+> > - 40 pass testing, 15 fail.
+
+I would land this 40 now and continue step by step.
+
+> >
+> > By submitting this RFC I seek the following feedback:
+> > - is community interested in such migration?
+> 
+> +1
+> 
+> This is a great work!
+
++1
+
+> > - if yes, should I pursue partial or complete tests migration?
+> 
+> I'd start with partial
+> 
+> > - in case of partial migration which tests should be prioritized?
+> 
+> those that work out of the box?
+> 
+> > - should I offer migrated tests one by one or in big butches?
+
+Can you do one patch one file in verifier/*.c that would map
+to one new file in progs/ ?
+
+> >
+> > [1] https://github.com/eddyz87/verifier-tests-migrator
+
+Having this link in patch series is enough.
+The 'migrator' itself doesn't need to be in the kernel tree.
