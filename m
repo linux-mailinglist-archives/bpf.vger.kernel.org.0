@@ -2,60 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFAF67C27E
-	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 02:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A7967C2C4
+	for <lists+bpf@lfdr.de>; Thu, 26 Jan 2023 03:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjAZBoK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Jan 2023 20:44:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
+        id S229454AbjAZCWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Jan 2023 21:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjAZBoJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Jan 2023 20:44:09 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FB14C6D6
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:44:08 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id hw16so1429036ejc.10
-        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 17:44:08 -0800 (PST)
+        with ESMTP id S229457AbjAZCWu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Jan 2023 21:22:50 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156146E8D
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:22:48 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id v6so1640423ejg.6
+        for <bpf@vger.kernel.org>; Wed, 25 Jan 2023 18:22:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oUFdRMtG08Wy16Kkd7CGJc41p6cBcl1ykR/VwJwxaOs=;
-        b=Sm4r4XAPVwn3PpL6Noj0sz1cIb7D0uefNtkMaFfW6hgYO9yrwkVlpn6evTCadRt7yN
-         Dsf3XDdhT35R39Q446cf5JSAYw5Oyb5H3tKsZ68gIz1m5V/P1VOo8jtbqfLeHRj9HueM
-         NcEXGKdmIZbM4umToH3fHLoSR4fVWFoG7kDx0zOFbf5CCp4nkkFseweQEJIe2/0C3p9M
-         S6Bl5rN+Bkodq2nmhGqjdkOJktv9XGH9BbfXVUiagjcYqvWJGUiSLvvNnnq16Fa7lu2t
-         +MVyAT0oUiHUKS5LvTAzRS6VhrgWpSBlm724TywKFOZzNdlrZRc27TzzLQCZ/P26wPjR
-         DHhw==
+        bh=XSWfbYATKVvq3OLEfYLefn484zodCItTGe8t9jQorqc=;
+        b=EyTmtbpU7cHyp5mBCeWDldWukvX2ZCCjFFeOAQK1hd6nZi3QC6bhFjjVueQPQaRdpR
+         gIVQ9JHaKWFOP0zFeVbeWZkE+Cy4rz2hLMjBFOzmd3U3ZM9KQt/yAFmuJCfyQ9+XIUIn
+         UKgWfY8JTtc+FrUJ4d/az1ZZ7sTbbmelI58lxb/nKEEOc4icAC36IAzzEBld0k0t/tx7
+         HopyCSFzqgQ1MPx9nwzL8JglggjtNDXRpDXQk8L3ie9Ije6AU1MEsXjCNfK+W6pIx8O7
+         zGkJY2sqBoRhqi/OEKIjLg3pSi0BIwf5xr/wBNkBNgZgCIQAlsdxi4aPvAcdfb9R2D4z
+         fB9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=oUFdRMtG08Wy16Kkd7CGJc41p6cBcl1ykR/VwJwxaOs=;
-        b=ADMqk9Iw0QMSu6jpMDWt2wAjsXSMEao9PorOdrZ/peG2eux51huaN0zx80Ir4gPPGu
-         xNZ1tzQ9g+rYYfal1SlwCJBxy02PxZ/TUtd6hRVnBYtnffwzttllpVePekg5bylTrzX0
-         vIP6ug6mAT+SIz7wxh+kYFML3n9tjaKNzaF/9dsnVGxLzeBtJaDLlM9EeBFmZvCAiIDN
-         viFCKihlbdYKF3WcLmdYws/7+w41bdYfmlYfcF8eMRYnKu/mUNRqXIBLJIOWMYeiLD0u
-         5Pn90WNxeRfPnymfjFnEI0w9lmSycAIdtmcOfptebA0aK6M5+kCgXvIFdkccIMWk9WUj
-         c5Zw==
-X-Gm-Message-State: AFqh2kqyuau5uAD1Pl10Bx6+bAOqweT24Dr+nIZTI1mFxLogkfRb+6Al
-        JVr4EwZmcox82V3+9lE9ax5lP1zp3zQXCeg0kT0=
-X-Google-Smtp-Source: AMrXdXvI7n733dAqcqPj2m3bQIy3D/GZGx29oMXo0ozUSB/gB1QEN59l6xmzmOlPeMLZ/WVLhRkUNt+e0HCWlis6Ws0=
-X-Received: by 2002:a17:906:ecb9:b0:86d:97d4:9fea with SMTP id
- qh25-20020a170906ecb900b0086d97d49feamr5533384ejb.141.1674697446901; Wed, 25
- Jan 2023 17:44:06 -0800 (PST)
+        bh=XSWfbYATKVvq3OLEfYLefn484zodCItTGe8t9jQorqc=;
+        b=BalMj9Q/18zq8WISxGUO4l2Ma/iF7306GqyBY5VGkp0A7mUb5v3iTwipfQ5+4ib9G7
+         oCbg3itvmjQXIURub6GcXwTlWFHdstmSYszY0DKVyi1RHp2AzDX6JHdl8Z8ZxprlvGjo
+         eycWOxBWUNc198Ea1n574yRausJjqv7xYqqY1PhJ4jv1Kse5t7Io3524gmsKvcPHzODO
+         8hV1Jx9uwTDaDBc2TR5I4fs1D3E0HhAZCgdB0XO5cmp1bZASQvCnRkMRSauQOce2JxoQ
+         HYeEwz4+I01J71f8/2PUHXC0it8o2aWYcFmQfI+xWeI2ynsJpixmeK1xXxxb20aekxoV
+         FG/w==
+X-Gm-Message-State: AFqh2kpn84eBzWclHJDz/lzeMvLL0biF+w6HujCKxdl/PmGMOlN0sAuk
+        Vcm6wGjgummq3b+5vdp5oqbOtyPYTYpaGr/hIuk=
+X-Google-Smtp-Source: AMrXdXt6QD5YiNkcY/CUDM1mGPfk+seuCKdxkfLd1Mh4OdRaq2p+p+jhTk4fXqsAlgansTJdR5DteDxyE525Rb30+5A=
+X-Received: by 2002:a17:906:9e95:b0:7c1:98f:c16a with SMTP id
+ fx21-20020a1709069e9500b007c1098fc16amr3257822ejc.215.1674699766391; Wed, 25
+ Jan 2023 18:22:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20230123145148.2791939-1-eddyz87@gmail.com> <20230123145148.2791939-4-eddyz87@gmail.com>
-In-Reply-To: <20230123145148.2791939-4-eddyz87@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 25 Jan 2023 17:43:54 -0800
-Message-ID: <CAEf4BzaKe3HMmYKvYKarcb7SKvd2Uurd22U5tLjE0RyNMgpSAg@mail.gmail.com>
-Subject: Re: [RFC bpf-next 3/5] selftests/bpf: generate boilerplate code for
- test_loader-based tests
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+References: <CAMy7=ZW27JeWd-o7dYaXob2BC+qKRqRqpihiN9viTqq1+Eib-g@mail.gmail.com>
+ <878rhty100.fsf@cloudflare.com> <CAMy7=ZVLUpeHM4A_aZ5XT-CYEM8_uj8y=GRcPT89Bf5=jtS+og@mail.gmail.com>
+ <08dce08f-eb4b-d911-28e8-686ca3a85d4e@meta.com> <CAMy7=ZWPc279vnKK6L1fssp5h7cb6cqS9_EuMNbfVBg_ixmTrQ@mail.gmail.com>
+ <3a87b859-d7c9-2dfd-b659-cd3192a67003@linux.dev> <CAMy7=ZWi35SKj9rcKwj0eyH+xY8ZBgiX_vpF=mydxFDahK6trg@mail.gmail.com>
+ <87k01dvt83.fsf@cloudflare.com> <CAMy7=ZXyqCzhosiwpLa9rsFqW2jX4V59-Ef4k-5dQtqKOakTFQ@mail.gmail.com>
+ <CAADnVQJaCTQtmvOdQoeaZbt0wwPp4iYjbvaPvRZw4DBEOSrJYg@mail.gmail.com>
+ <CAMy7=ZVpGMOK_kHk1qB4ywxV88Vvtt=rGw4Q-Fi1F7bGU+6prQ@mail.gmail.com>
+ <CAADnVQLaKyRJwXnU4wZrih4pRduw_eWarA2uNuc=HssKQUAn_Q@mail.gmail.com>
+ <CAMy7=ZU7oEa-VJy1_5WM6+poWsVCyZ0Y7ocQLq3qkFcs2-ftBw@mail.gmail.com>
+ <CAADnVQKbi6JA4tX=uBHvNrYEUeMa3jmB=FSb=1LufE3597c86A@mail.gmail.com>
+ <CAMy7=ZW7tX4ziwJLhGtqQjbdLyJjqTo=Vi=nQ4sDJHASWMCKgQ@mail.gmail.com>
+ <CAADnVQJmpB+bXB_tNXBSVFyG-1KnzKxapLfjUc51_v0-Vho+7w@mail.gmail.com> <CAMy7=ZX+swf7_TzKTHnrMK9d-2PjQK_22vFy_ypBQNsYarqChw@mail.gmail.com>
+In-Reply-To: <CAMy7=ZX+swf7_TzKTHnrMK9d-2PjQK_22vFy_ypBQNsYarqChw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 25 Jan 2023 18:22:34 -0800
+Message-ID: <CAADnVQ++LzKt9Q-GtGXknVBqyMqY=vLJ3tR3NNGG3P66gvVCFQ@mail.gmail.com>
+Subject: Re: Are BPF programs preemptible?
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -67,62 +78,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 6:52 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Wed, Jan 25, 2023 at 11:59 AM Yaniv Agman <yanivagman@gmail.com> wrote:
 >
-> Automatically generate boilerplate code necessary to run tests that
-> use test_loader.c.
+> > Anyway back to preempt_disable(). Think of it as a giant spin_lock
+> > that covers the whole program. In preemptable kernels it hurts
+> > tail latency and fairness, and is completely unacceptable in RT.
+> > That's why we moved to migrate_disable.
+> > Technically we can add bpf_preempt_disable() kfunc, but if we do that
+> > we'll be back to square one. The issues with preemptions and RT
+> > will reappear. So let's figure out a different solution.
+> > Why not use a scratch buffer per program ?
 >
-> Adds a target 'prog_tests/test_loader_auto_wrappers.c' as part of
-> rulesets for 'test_progs' and 'test_progs-no_alu32'. The content of
-> this C file is generated by make and has the following structure:
->
->   #include <test_progs.h>
->
->   #include "some_test_1.skel.h"
->   #include "some_test_2.skel.h"
->   ...
->
->   void test_some_test_1(void) { RUN_TESTS(some_test_1); }
->   void test_some_test_2(void) { RUN_TESTS(some_test_2); }
->   ...
->
-> Here RUN_TESTS is a macro defined in test_progs.h, it expands to a
-> code that uses test_loader.c:test_loader__run_subtests() function to
-> load tests specified by appropriate skel.h.
->
-> In order to get the list of tests included in
-> 'test_loader_auto_wrappers.c' the generation script looks for
-> 'progs/*.c' files that contain a special comment:
->
->   /* Use test_loader marker */
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
+> Totally understand the reason for avoiding preemption disable,
+> especially in RT kernels.
+> I believe the answer for why not to use a scratch buffer per program
+> will simply be memory space.
+> In our use-case, Tracee [1], we let the user choose whatever events to
+> trace for a specific workload.
+> This list of events is very big, and we have many BPF programs
+> attached to different places of the kernel.
+> Let's assume that we have 100 events, and for each event we have a
+> different BPF program.
+> Then having 32kb per-cpu scratch buffers translates to 3.2MB per one
+> cpu, and ~100MB per 32 CPUs, which is more common for our case.
 
-It feels like this is a bit of an overkill, tbh. There are
+Well, 100 bpf progs consume at least a page each,
+so you might want one program attached to all events.
 
-$ ls verifier/*.c | wc -l
-94
-
-files. We can move each migrated set of tests from verifier/xxx.c to
-progs/verifier_xxx.c. And then just have just manually maintained
-prog_tests/verifier.c file where for each converted test we have one
-#include and one void test_some_test_1(void) { RUN_TESTS(some_test_1);
-}.
-
-It sometimes would useful to add some extra debugging printfs in such
-a file, so having it auto generated would be actually an
-inconvenience. And that on top of further Makefile complication.
-
-For initial conversion we can auto-generate this file, of course. And
-then for each migrated file adding 2 lines manually doesn't seem like
-a big deal?
-
-
-
->  tools/testing/selftests/bpf/Makefile          | 34 +++++++++++++++++++
->  .../selftests/bpf/prog_tests/.gitignore       |  1 +
->  2 files changed, 35 insertions(+)
+> Since we always add new events to Tracee, this will also not be scalable.
+> Yet, if there is no other solution, I believe we will go in that direction
 >
+> [1] https://github.com/aquasecurity/tracee/blob/main/pkg/ebpf/c/tracee.bpf.c
 
-[...]
+you're talking about BPF_PERCPU_ARRAY(scratch_map, scratch_t, 1); ?
+
+Insead of scratch_map per program, use atomic per-cpu counter
+for recursion.
+You'll have 3 levels in the worst case.
+So it will be:
+BPF_PERCPU_ARRAY(scratch_map, scratch_t, 3);
+On prog entry increment the recursion counter, on exit decrement.
+And use that particular scratch_t in the prog.
