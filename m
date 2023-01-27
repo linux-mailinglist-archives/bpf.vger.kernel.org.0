@@ -2,70 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E797A67DEC9
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 08:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A4567DEF6
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 09:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbjA0H6k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 02:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
+        id S232142AbjA0IUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 03:20:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbjA0H6j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 02:58:39 -0500
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE7E757BD
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 23:58:37 -0800 (PST)
-Message-ID: <befb819f-abc4-c7a1-1f82-9559542f9138@linux.dev>
+        with ESMTP id S229550AbjA0IUD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 03:20:03 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981DE38EBD;
+        Fri, 27 Jan 2023 00:20:02 -0800 (PST)
+Message-ID: <a208ed96-20e5-43d3-13e9-122776230da1@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1674806315;
+        t=1674807601;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pCyMrk9aN65WEKM1E5bYRN1lFodwyHbxv5dcbOPmgug=;
-        b=J2NFVLZHJjIRQqWiDnmsc+ZdaWRw6e0V7HMwt0c76ud0bxzrZIIfDh1ezD2ysO1kr5bzX4
-        e4jNrGgxnZA2vJ0C9vKhiUS1N4NIZc2dhq4zctkRL8WRrpM6+qVk+xDSBf5TyRqu1FgRJ3
-        buFAnvFFQzLg8RFfl9LAfkjfK1vQZQU=
-Date:   Thu, 26 Jan 2023 23:58:24 -0800
+        bh=ov/FJthsCODGeWj8ILAwNRT93LKgz9Jx2BLZQJFGouA=;
+        b=VvpwaWRgkPXmVGVaxMPg0j7GTF9JSJn1hndRbmKIDgfs8CFaBdUmYJOfni4D7xIfmVL7bN
+        ZrttmyNQPsGKC8xh6GxIWlIDzD9wwK9DjIgVcYjx4tWVV+43dzRET5LsMtobKHNxUfUq09
+        3IabGtps6eJVAfRUs/mF28o+asZtQr0=
+Date:   Fri, 27 Jan 2023 00:19:54 -0800
 MIME-Version: 1.0
-Subject: Re: [PATCH v8 bpf-next 3/5] bpf: Add skb dynptrs
+Subject: Re: [PATCH v3 bpf-next 8/8] selftests/bpf: introduce XDP compliance
+ test tool
 Content-Language: en-US
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, netdev@vger.kernel.org, memxor@gmail.com,
-        kernel-team@fb.com, bpf <bpf@vger.kernel.org>
-References: <20230126233439.3739120-1-joannelkoong@gmail.com>
- <20230126233439.3739120-4-joannelkoong@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
+        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
+        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
+        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
+        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
+        sdf@google.com
+References: <cover.1674737592.git.lorenzo@kernel.org>
+ <0b05b08d4579b017dd96869d1329cd82801bd803.1674737592.git.lorenzo@kernel.org>
+ <Y9LIPaojtpTjYlNu@google.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230126233439.3739120-4-joannelkoong@gmail.com>
+In-Reply-To: <Y9LIPaojtpTjYlNu@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/26/23 3:34 PM, Joanne Koong wrote:
-> +static enum bpf_dynptr_type dynptr_get_type(struct bpf_verifier_env *env,
-> +					    struct bpf_reg_state *reg)
-> +{
-> +	struct bpf_func_state *state = func(env, reg);
-> +	int spi = __get_spi(reg->off);
-> +
-> +	if (spi < 0) {
-> +		verbose(env, "verifier internal error: invalid spi when querying dynptr type\n");
-> +		return BPF_DYNPTR_TYPE_INVALID;
-> +	}
-> +
-> +	return state->stack[spi].spilled_ptr.dynptr.type;
-> +}
+On 1/26/23 10:36 AM, sdf@google.com wrote:
+> 
+>> +    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+>> +    if (sockfd < 0) {
+>> +        fprintf(stderr, "Failed to create echo socket\n");
+>> +        return -errno;
+>> +    }
+>> +
+>> +    err = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval,
+>> +             sizeof(optval));
+>> +    if (err < 0) {
+>> +        fprintf(stderr, "Failed sockopt on echo socket\n");
+>> +        return -errno;
+>> +    }
+>> +
+>> +    err = bind(sockfd, (struct sockaddr *)&addr, sizeof(addr));
+>> +    if (err) {
+>> +        fprintf(stderr, "Failed to bind echo socket\n");
+>> +        return -errno;
+>> +    }
+> 
+> IIRC, Martin mentioned IPv6 support in the previous version. Should we
+> also make the userspace v6 aware by at least using AF_INET6 dualstack
+> sockets? I feel like listening on inaddr_any with AF_INET6 should
+> get us there without too much pain..
 
-CI fails: 
-https://github.com/kernel-patches/bpf/actions/runs/4020275998/jobs/6908210555
-
-My local KASAN also reports the error.
+Yeah. Think about host that only has IPv6 address. A tool not supporting IPv6 is 
+a no-go nowadays.
