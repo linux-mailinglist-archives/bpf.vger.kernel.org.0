@@ -2,69 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A37A167EC6E
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 18:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C571A67ECAB
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 18:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233140AbjA0Ra7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 12:30:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54268 "EHLO
+        id S234849AbjA0Rlc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 12:41:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235149AbjA0Ra6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 12:30:58 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8787B43A
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:30:55 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id gs13so4901376ejc.0
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:30:55 -0800 (PST)
+        with ESMTP id S230080AbjA0Rlb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 12:41:31 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF397CCA9
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:41:17 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id z1-20020a17090a66c100b00226f05b9595so5461527pjl.0
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:41:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=87pnpXPAsiBVuNrR1gBqFSgVVOCo/03PpXsk6OH2y+Q=;
-        b=EzOMELgS/DMATLYl3mTsvIsi7hz77cfltpGBI+Juw+BdZO1X4z/o/g4cIb0HQz7GbO
-         6n7yAqFfzQI4YJfsWe4Fy0YqaP6OX4jUcjqoNZGOh1dzsZYgCb9oK81heU5z5DRyJ10q
-         oWYWumiRl6l4d/ajFCcspXIbF0whGp9neIjHRvc9W0FRVrgCxBDIpBavbQ90t4wax+WL
-         sdQ27wwPJtKj0D5yVvknDHn10k7k8DB35Zgj5LzqyKmDCn2kh5Xhv8nddY3S31rFpb2p
-         bTTbseYHaUJ9tt7PZuaUJSeVlNKS48VIiXefXXbjKSD1RtJhFMllmjwmd7f7MS/rInEe
-         7Q2Q==
+        bh=vaFfeyznNWWLniOTpc7LIMcZgLL/w0JJguh0UKjmu2k=;
+        b=iRHN3MzE1iFEGAMAGuIB6NvnylFL1REExeROTRo7EA9B8whSIprjx/k1HR0+KKgQVu
+         eQekjw2VHMl1v/GTlQpGj+HVLNrKWY31ahyDXScS3RRnRixyZUEscuM+QfyQDF4rkL7d
+         F8h1lOKUheRaPVXD2QjS6suIkV61eBeQJzB64D8ydA98NPQ5+Qi+K9x1cyAgphBORdT2
+         Os387DnSqKBrM7JG+oaQRrr2NxDofndAqUbvHxmUiinn4/AAugk08cpQlW0LFKr4FusA
+         9lP7b2bBv2F5GQohWEdnDx4MLZlcN202k5EFq+D7z5p3S+V3asILxNBPGnZpEv63+8B1
+         fQCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=87pnpXPAsiBVuNrR1gBqFSgVVOCo/03PpXsk6OH2y+Q=;
-        b=0z0m1sQ46Zz14m6j6wV28gEOKQ2wKtKM4odqwfbkf5IfZCoieJgH9LArfw6FBVb3HA
-         p4r5pinns9xxemW/vvT8RDocD7J9VQLEo4JEVOYMW9SsH4O0iiaxupZmioPRel5NpqP3
-         Aw6FQu7T+/3DVWhxKi5vmlQljOjXIsKnsyqOwTmr7c9KPiH3sTJUg1WUWVbgohNYhLzf
-         wu/2Dpk/kD6B3vrnLHrRtX9wwj1cF1YWxtsWh11z0cdJWq5JGcLZKgs42anWnpnIZl/R
-         g7CpNYVmniRSKpIu/VR1G9v4raMgb15obullyCg26TlOGbMUjbdx7O6I9BeuVWVcEe86
-         fpAA==
-X-Gm-Message-State: AFqh2kpET+bd6qB8zAObWTv+QPRr/8RVltroL94TMZ4gWOM7bdi4wcqS
-        NssN0QkNIxzTbIj8peuuCeQrrTQn9omYg9j7OkTqiAlduV8=
-X-Google-Smtp-Source: AMrXdXu0ALB8Aza5PF+ctnnpOlTlB27ZaagSvWcd9uZ3hDzPyfZLJ0NdTNuo3DTny3vGMR3hY7Y/LmMgsdvQORi/lUw=
-X-Received: by 2002:a17:906:4ed8:b0:871:ed54:609f with SMTP id
- i24-20020a1709064ed800b00871ed54609fmr7447367ejv.180.1674840654291; Fri, 27
- Jan 2023 09:30:54 -0800 (PST)
+        bh=vaFfeyznNWWLniOTpc7LIMcZgLL/w0JJguh0UKjmu2k=;
+        b=5O31grfEb5bKmQMTk4uMf5lsQ0USS3AbdmHkXKNkoIA4igPuaoe7P5TV2TaqNkCYrD
+         nCa5bro8K+PDhR2elpiSaKlOfjYOa5tYg+Y2+Y/UCuQlGp1Gk1OG61cUyAQjogRaM2jN
+         1wPFM/9xPOK5kdJX70b1lSJHpo+DpLAe/6RR8NTTR6QeOeVHZeHS3yXYfagX39TJ3R44
+         AsKcP1ihS8rA+H4NZoNqId7DiVpg4aJWC3J5Yp2UL1EiopLgDu7u5J0wYbf7AQeoGIiq
+         R0RqxJE+h+6HizaI5uFv/fwgdekTxgnSI0owbQ7BuLZM3Y6UlcW8WMSSGkizsi2N+Hma
+         e5dg==
+X-Gm-Message-State: AO0yUKX1FGVcr/yfdDK6/vzvekPrrE4cGTAvzgMgHSfI+0al/ObvF0au
+        gnjKXkQL6+vJ98c7HJvvodjhr6UJCsFVbH0OJV9bEw==
+X-Google-Smtp-Source: AK7set/tnCuI9RjTvgVvTHoLjEj61ZxaKD287AXcYVYorLt8jMQJgsYq5f4K/2s+DNufIz5TvDgclZumH8e8H3/rz9o=
+X-Received: by 2002:a17:902:82c6:b0:196:cca:a0b4 with SMTP id
+ u6-20020a17090282c600b001960ccaa0b4mr2381925plz.20.1674841276647; Fri, 27 Jan
+ 2023 09:41:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20230125213817.1424447-1-iii@linux.ibm.com> <20230125213817.1424447-23-iii@linux.ibm.com>
- <CAEf4BzbaNhFw77bECCxf7cKenBTTe6YvMHbm+XiMQbqgukyW8Q@mail.gmail.com>
- <56b6677c73903638b88f331d6e074c595bd489b9.camel@linux.ibm.com>
- <CAEf4BzZO637m4vXNJ3MNb9R+diuJyx4Ck-zbYof5YHPOrApDYA@mail.gmail.com> <ad1dcd67fb0a118175fabf109d89b9df18714020.camel@linux.ibm.com>
-In-Reply-To: <ad1dcd67fb0a118175fabf109d89b9df18714020.camel@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 27 Jan 2023 09:30:42 -0800
-Message-ID: <CAEf4BzZFuoaPZMtVxjop+1+A0-vsTZANvKjqu_aHmb44x853YQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 22/24] s390/bpf: Implement arch_prepare_bpf_trampoline()
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
+References: <cover.1674737592.git.lorenzo@kernel.org> <0b05b08d4579b017dd96869d1329cd82801bd803.1674737592.git.lorenzo@kernel.org>
+ <Y9LIPaojtpTjYlNu@google.com> <Y9QJQHq8X9HZxoW3@lore-desk>
+In-Reply-To: <Y9QJQHq8X9HZxoW3@lore-desk>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 27 Jan 2023 09:41:05 -0800
+Message-ID: <CAKH8qBv9wKzkW8Qk+hDKCmROKem6ajkqhF_KRqdEKWSLL6_HsA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 8/8] selftests/bpf: introduce XDP compliance
+ test tool
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
+        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
+        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
+        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
+        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
+        martin.lau@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,173 +79,400 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 27, 2023 at 3:15 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Fri, Jan 27, 2023 at 9:26 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 >
-> On Thu, 2023-01-26 at 11:06 -0800, Andrii Nakryiko wrote:
-> > On Thu, Jan 26, 2023 at 6:30 AM Ilya Leoshkevich <iii@linux.ibm.com>
-> > wrote:
-> > >
-> > > On Wed, 2023-01-25 at 17:15 -0800, Andrii Nakryiko wrote:
-> > > > On Wed, Jan 25, 2023 at 1:39 PM Ilya Leoshkevich
-> > > > <iii@linux.ibm.com>
-> > > > wrote:
-> > > > >
-> > > > > arch_prepare_bpf_trampoline() is used for direct attachment of
-> > > > > eBPF
-> > > > > programs to various places, bypassing kprobes. It's responsible
-> > > > > for
-> > > > > calling a number of eBPF programs before, instead and/or after
-> > > > > whatever they are attached to.
-> > > > >
-> > > > > Add a s390x implementation, paying attention to the following:
-> > > > >
-> > > > > - Reuse the existing JIT infrastructure, where possible.
-> > > > > - Like the existing JIT, prefer making multiple passes instead
-> > > > > of
-> > > > >   backpatching. Currently 2 passes is enough. If literal pool
-> > > > > is
-> > > > >   introduced, this needs to be raised to 3. However, at the
-> > > > > moment
-> > > > >   adding literal pool only makes the code larger. If branch
-> > > > >   shortening is introduced, the number of passes needs to be
-> > > > >   increased even further.
-> > > > > - Support both regular and ftrace calling conventions,
-> > > > > depending on
-> > > > >   the trampoline flags.
-> > > > > - Use expolines for indirect calls.
-> > > > > - Handle the mismatch between the eBPF and the s390x ABIs.
-> > > > > - Sign-extend fmod_ret return values.
-> > > > >
-> > > > > invoke_bpf_prog() produces about 120 bytes; it might be
-> > > > > possible to
-> > > > > slightly optimize this, but reaching 50 bytes, like on x86_64,
-> > > > > looks
-> > > > > unrealistic: just loading cookie, __bpf_prog_enter, bpf_func,
-> > > > > insnsi
-> > > > > and __bpf_prog_exit as literals already takes at least 5 * 12 =
-> > > > > 60
-> > > > > bytes, and we can't use relative addressing for most of them.
-> > > > > Therefore, lower BPF_MAX_TRAMP_LINKS on s390x.
-> > > > >
-> > > > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > > > ---
-> > > > >  arch/s390/net/bpf_jit_comp.c | 535
-> > > > > +++++++++++++++++++++++++++++++++--
-> > > > >  include/linux/bpf.h          |   4 +
-> > > > >  2 files changed, 517 insertions(+), 22 deletions(-)
-> > > > >
-> > > >
-> > > > [...]
-> > > >
-> > > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > > index cf89504c8dda..52ff43bbf996 100644
-> > > > > --- a/include/linux/bpf.h
-> > > > > +++ b/include/linux/bpf.h
-> > > > > @@ -943,7 +943,11 @@ struct btf_func_model {
-> > > > >  /* Each call __bpf_prog_enter + call bpf_func + call
-> > > > > __bpf_prog_exit is ~50
-> > > > >   * bytes on x86.
-> > > > >   */
-> > > > > +#if defined(__s390x__)
-> > > > > +#define BPF_MAX_TRAMP_LINKS 27
-> > > > > +#else
-> > > > >  #define BPF_MAX_TRAMP_LINKS 38
-> > > > > +#endif
-> > > >
-> > > > if we turn this into enum definition, then on selftests side we
-> > > > can
-> > > > just discover this from vmlinux BTF, instead of hard-coding
-> > > > arch-specific constants. Thoughts?
-> > >
-> > > This seems to work. I can replace 3/24 and 4/24 with that in v2.
-> > > Some random notes:
-> > >
-> > > - It doesn't seem to be possible to #include "vlinux.h" into tests,
-> > >   so one has to go through the btf__load_vmlinux_btf() dance and
-> > >   allocate the fd arrays dynamically.
+> > On 01/26, Lorenzo Bianconi wrote:
+>
+> [...]
+>
 > >
-> > yes, you can't include vmlinux.h into user-space code, of course. And
-> > yes it's true about needing to use btf__load_vmlinux_btf().
+> > Why do we need the namespaces? Why not have two veth peers in the
+> > current namespace?
+>
+> I think we can use just a veth pair here, we do not need two, I will fix it.
+>
 > >
-> > But I didn't get what you are saying about fd arrays, tbh. Can you
-> > please elaborate?
->
-> That's a really minor thing; fexit_fd and and link_fd in fexit_stress
-> now need to be allocated dynamically.
->
-> > > - One has to give this enum an otherwise unnecessary name, so that
-> > >   it's easy to find. This doesn't seem like a big deal though:
-> > >
-> > > enum bpf_max_tramp_links {
+> > (not sure it matters, just wondering)
 > >
-> > not really, you can keep it anonymous enum. We do that in
-> > include/uapi/linux/bpf.h for a lot of constants
+> > > +ret=1
+> > > +
+> > > +setup() {
+> > > +   {
+> > > +           ip netns add ${NS0}
+> > > +           ip netns add ${NS1}
+> > > +
+> > > +           ip link add v01 index 111 type veth peer name v00 netns ${NS0}
+> > > +           ip link add v10 index 222 type veth peer name v11 netns ${NS1}
+> > > +
+> > > +           ip link set v01 up
+> > > +           ip addr add 10.10.0.1/24 dev v01
+> > > +           ip link set v01 address 00:11:22:33:44:55
+> > > +           ip -n ${NS0} link set dev v00 up
+> > > +           ip -n ${NS0} addr add 10.10.0.11/24 dev v00
+> > > +           ip -n ${NS0} route add default via 10.10.0.1
+> > > +           ip -n ${NS0} link set v00 address 00:12:22:33:44:55
+> > > +
+> > > +           ip link set v10 up
+> > > +           ip addr add 10.10.1.1/24 dev v10
+> > > +           ip link set v10 address 00:13:22:33:44:55
+> > > +           ip -n ${NS1} link set dev v11 up
+> > > +           ip -n ${NS1} addr add 10.10.1.11/24 dev v11
+> > > +           ip -n ${NS1} route add default via 10.10.1.1
+> > > +           ip -n ${NS1} link set v11 address 00:14:22:33:44:55
+> > > +
+> > > +           sysctl -w net.ipv4.ip_forward=1
+> > > +           # Enable XDP mode
+> > > +           ethtool -K v01 gro on
+> > > +           ethtool -K v01 tx-checksumming off
+> > > +           ip netns exec ${NS0} ethtool -K v00 gro on
+> > > +           ip netns exec ${NS0} ethtool -K v00 tx-checksumming off
+> > > +           ethtool -K v10 gro on
+> > > +           ethtool -K v10 tx-checksumming off
+> > > +           ip netns exec ${NS1} ethtool -K v11 gro on
+> > > +           ip netns exec ${NS1} ethtool -K v11 tx-checksumming off
+> > > +   } > /dev/null 2>&1
+> > > +}
 >
-> How would you find it then? My current code is:
->
-> int get_bpf_max_tramp_links_from(struct btf *btf)
-> {
->         const struct btf_enum *e;
->         const struct btf_type *t;
->         const char *name;
->         int id;
->
->         id = btf__find_by_name_kind(btf, "bpf_max_tramp_links",
-> BTF_KIND_ENUM);
->         if (!ASSERT_GT(id, 0, "bpf_max_tramp_links id"))
->                 return -1;
->         t = btf__type_by_id(btf, id);
->         if (!ASSERT_OK_PTR(t, "bpf_max_tramp_links type"))
->                 return -1;
->         if (!ASSERT_EQ(btf_vlen(t), 1, "bpf_max_tramp_links vlen"))
->                 return -1;
->         e = btf_enum(t);
->         if (!ASSERT_OK_PTR(e, "bpf_max_tramp_links[0]"))
->                 return -1;
->         name = btf__name_by_offset(btf, e->name_off);
->         if (!ASSERT_OK_PTR(name, "bpf_max_tramp_links[0].name_off") &&
->             !ASSERT_STREQ(name, "BPF_MAX_TRAMP_LINKS",
-> "BPF_MAX_TRAMP_LINKS"))
->                 return -1;
->
->         return e->val;
-> }
->
-> Is there a way to bypass looking up the enum, and go straight for the
-> named member?
-
-
-don't use btf__find_by_name_kind, just iterate all types and look at
-all anonymous enums and its values, roughly
-
-for (i = 1; i < btf__type_cnt(btf); i++) {
-    const btf_type *t = btf__type_by_id(i);
-    if (!btf_is_enum(t) || t->name_off)
-        continue;
-    for (j = 0; j < btf_vlen(t); j++) {
-        if (strcmp(btf__str_by_offset(btf, btf_enum(t)[j].name_off),
-"BPF_MAX_TRAMP_LINKS") != 0)
-            continue;
-        /* found it */
-    }
-}
-
-but cleaner :)
-
-
->
-> > > #if defined(__s390x__)
-> > >         BPF_MAX_TRAMP_LINKS = 27,
-> > > #else
-> > >         BPF_MAX_TRAMP_LINKS = 38,
-> > > #endif
-> > > };
-> > >
-> > > - An alternative might be to expose this via /proc, since the users
-> > >   might be interested in it too.
+> [...]
 > >
-> > I'd say let's not, there is no need, having it in BTF is more than
-> > enough for testing purposes
+> > IIRC, Martin mentioned IPv6 support in the previous version. Should we
+> > also make the userspace v6 aware by at least using AF_INET6 dualstack
+> > sockets? I feel like listening on inaddr_any with AF_INET6 should
+> > get us there without too much pain..
 >
-> Fair enough.
+> ack, I will fix it.
+>
+> >
+> > > +
+> > > +   /* start echo channel */
+> > > +   *echo_sockfd = sockfd;
+> > > +   err = pthread_create(t, NULL, dut_echo_thread, echo_sockfd);
+> > > +   if (err) {
+> > > +           fprintf(stderr, "Failed creating dut_echo thread: %s\n",
+> > > +                   strerror(-err));
+> > > +           close(sockfd);
+> > > +           return -EINVAL;
+> > > +   }
+> > > +
+> > > +   return 0;
+> > > +}
+> > > +
+> > > +static int dut_attach_xdp_prog(struct xdp_features *skel, int feature,
+> > > +                          int flags)
+> > > +{
+> > > +   struct bpf_program *prog;
+> > > +   unsigned int key = 0;
+> > > +   int err, fd = 0;
+> > > +
+> > > +   switch (feature) {
+> > > +   case XDP_FEATURE_TX:
+> > > +           prog = skel->progs.xdp_do_tx;
+> > > +           break;
+> > > +   case XDP_FEATURE_DROP:
+> > > +   case XDP_FEATURE_ABORTED:
+> > > +           prog = skel->progs.xdp_do_drop;
+> > > +           break;
+> > > +   case XDP_FEATURE_PASS:
+> > > +           prog = skel->progs.xdp_do_pass;
+> > > +           break;
+> > > +   case XDP_FEATURE_NDO_XMIT: {
+> > > +           struct bpf_devmap_val entry = {
+> > > +                   .ifindex = env.ifindex,
+> > > +           };
+> > > +
+> > > +           err = bpf_map__update_elem(skel->maps.dev_map,
+> > > +                                      &key, sizeof(key),
+> > > +                                      &entry, sizeof(entry), 0);
+> > > +           if (err < 0)
+> > > +                   return err;
+> > > +
+> > > +           fd = bpf_program__fd(skel->progs.xdp_do_redirect_cpumap);
+> > > +   }
+> > > +   case XDP_FEATURE_REDIRECT: {
+> > > +           struct bpf_cpumap_val entry = {
+> > > +                   .qsize = 2048,
+> > > +                   .bpf_prog.fd = fd,
+> > > +           };
+> > > +
+> > > +           err = bpf_map__update_elem(skel->maps.cpu_map,
+> > > +                                      &key, sizeof(key),
+> > > +                                      &entry, sizeof(entry), 0);
+> > > +           if (err < 0)
+> > > +                   return err;
+> > > +
+> > > +           prog = skel->progs.xdp_do_redirect;
+> > > +           break;
+> > > +   }
+> > > +   default:
+> > > +           return -EINVAL;
+> > > +   }
+> > > +
+> > > +   err = bpf_xdp_attach(env.ifindex, bpf_program__fd(prog), flags, NULL);
+> > > +   if (err)
+> > > +           fprintf(stderr,
+> > > +                   "Failed to attach XDP program to ifindex %d\n",
+> > > +                   env.ifindex);
+> > > +   return err;
+> > > +}
+> > > +
+> > > +static int __recv_msg(int sockfd, void *buf, size_t bufsize,
+> > > +                 unsigned int *val, unsigned int val_size)
+> > > +{
+> > > +   struct tlv_hdr *tlv = (struct tlv_hdr *)buf;
+> > > +   int len, n = sizeof(*tlv), i = 0;
+> > > +
+> > > +   len = recv(sockfd, buf, bufsize, 0);
+> > > +   if (len != ntohs(tlv->len))
+> > > +           return -EINVAL;
+> > > +
+> > > +   while (n < len && i < val_size) {
+> > > +           val[i] = ntohl(tlv->data[i]);
+> > > +           n += sizeof(tlv->data[0]);
+> > > +           i++;
+> > > +   }
+> > > +
+> > > +   return i;
+> > > +}
+> > > +
+> > > +static int recv_msg(int sockfd, void *buf, size_t bufsize)
+> > > +{
+> > > +   return __recv_msg(sockfd, buf, bufsize, NULL, 0);
+> > > +}
+> > > +
+> > > +static int dut_run(struct xdp_features *skel)
+> > > +{
+> > > +   int flags = XDP_FLAGS_UPDATE_IF_NOEXIST | XDP_FLAGS_DRV_MODE;
+> > > +   int state, err, sockfd, ctrl_sockfd, echo_sockfd, optval = 1;
+> > > +   struct sockaddr_in ctrl_addr, addr = {
+> > > +           .sin_family = AF_INET,
+> > > +           .sin_addr.s_addr = htonl(INADDR_ANY),
+> > > +           .sin_port = htons(DUT_CTRL_PORT),
+> > > +   };
+> > > +   unsigned int len = sizeof(ctrl_addr);
+> > > +   pthread_t dut_thread;
+> > > +
+> >
+> > [..]
+> >
+> > > +   sockfd = socket(AF_INET, SOCK_STREAM, 0);
+> > > +   if (sockfd < 0) {
+> > > +           fprintf(stderr, "Failed to create DUT socket\n");
+> > > +           return -errno;
+> > > +   }
+> > > +
+> > > +   err = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval,
+> > > +                    sizeof(optval));
+> > > +   if (err < 0) {
+> > > +           fprintf(stderr, "Failed sockopt on DUT socket\n");
+> > > +           return -errno;
+> > > +   }
+> > > +
+> > > +   err = bind(sockfd, (struct sockaddr *)&addr, sizeof(addr));
+> > > +   if (err < 0) {
+> > > +           fprintf(stderr, "Failed to bind DUT socket\n");
+> > > +           return -errno;
+> > > +   }
+> > > +
+> > > +   err = listen(sockfd, 5);
+> > > +   if (err) {
+> > > +           fprintf(stderr, "Failed to listen DUT socket\n");
+> > > +           return -errno;
+> > > +   }
+> >
+> > Should we use start_server from network_helpers.h here?
+>
+> ack, I will use it.
+>
+> >
+> > > +
+> > > +   ctrl_sockfd = accept(sockfd, (struct sockaddr *)&ctrl_addr, &len);
+> > > +   if (ctrl_sockfd < 0) {
+> > > +           fprintf(stderr, "Failed to accept connection on DUT socket\n");
+> > > +           close(sockfd);
+> > > +           return -errno;
+> > > +   }
+> > > +
+>
+> [...]
+>
+> >
+> > There is also connect_to_fd, maybe we can use that? It should take
+> > care of the timeouts.. (requires plumbing server_fd, not sure whether
+> > it's a problem or not)
+>
+> please correct me if I am wrong, but in order to have server_fd it is mandatory
+> both tester and DUT are running on the same process, right? Here, I guess 99% of
+> the times DUT and tester will run on two separated devices. Agree?
+
+Yes, it's targeting more the case where you have a server fd and a
+bunch of clients in the same process. But I think it's still usable in
+your case, you're not using fork() anywhere afaict, so even if these
+are separate devices, connect_to_fd should still work. (unless I'm
+missing something, haven't looked too closely)
+
+> Regards,
+> Lorenzo
+>
+> >
+> > > +
+> > > +   if (i == 10) {
+> > > +           fprintf(stderr, "Failed to connect to the DUT\n");
+> > > +           return -ETIMEDOUT;
+> > > +   }
+> > > +
+> > > +   err = __send_and_recv_msg(sockfd, CMD_GET_XDP_CAP, val,
+> > > ARRAY_SIZE(val));
+> > > +   if (err < 0) {
+> > > +           close(sockfd);
+> > > +           return err;
+> > > +   }
+> > > +
+> > > +   advertised_cap = tester_collect_advertised_cap(val[0]);
+> > > +
+> > > +   err = bpf_xdp_attach(env.ifindex,
+> > > +                        bpf_program__fd(skel->progs.xdp_tester),
+> > > +                        flags, NULL);
+> > > +   if (err) {
+> > > +           fprintf(stderr, "Failed to attach XDP program to ifindex %d\n",
+> > > +                   env.ifindex);
+> > > +           goto out;
+> > > +   }
+> > > +
+> > > +   err = send_and_recv_msg(sockfd, CMD_START);
+> > > +   if (err)
+> > > +           goto out;
+> > > +
+> > > +   for (i = 0; i < 10 && !exiting; i++) {
+> > > +           err = send_echo_msg();
+> > > +           if (err < 0)
+> > > +                   goto out;
+> > > +
+> > > +           sleep(1);
+> > > +   }
+> > > +
+> > > +   err = __send_and_recv_msg(sockfd, CMD_GET_STATS, val, ARRAY_SIZE(val));
+> > > +   if (err)
+> > > +           goto out;
+> > > +
+> > > +   /* stop the test */
+> > > +   err = send_and_recv_msg(sockfd, CMD_STOP);
+> > > +   /* send a new echo message to wake echo thread of the dut */
+> > > +   send_echo_msg();
+> > > +
+> > > +   detected_cap = tester_collect_detected_cap(skel, val[0]);
+> > > +
+> > > +   fprintf(stdout, "Feature %s: [%s][%s]\n",
+> > > get_xdp_feature_str(env.feature),
+> > > +           detected_cap ? GREEN("DETECTED") : RED("NOT DETECTED"),
+> > > +           advertised_cap ? GREEN("ADVERTISED") : RED("NOT ADVERTISED"));
+> > > +out:
+> > > +   bpf_xdp_detach(env.ifindex, flags, NULL);
+> > > +   close(sockfd);
+> > > +   return err < 0 ? err : 0;
+> > > +}
+> > > +
+> > > +int main(int argc, char **argv)
+> > > +{
+> > > +   struct xdp_features *skel;
+> > > +   int err;
+> > > +
+> > > +   libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+> > > +   libbpf_set_print(libbpf_print_fn);
+> > > +
+> > > +   signal(SIGINT, sig_handler);
+> > > +   signal(SIGTERM, sig_handler);
+> > > +
+> > > +   set_env_defaul();
+> > > +
+> > > +   /* Parse command line arguments */
+> > > +   err = argp_parse(&argp, argc, argv, 0, NULL, NULL);
+> > > +   if (err)
+> > > +           return err;
+> > > +
+> > > +   if (env.ifindex < 0) {
+> > > +           fprintf(stderr, "Invalid ifindex\n");
+> > > +           return -ENODEV;
+> > > +   }
+> > > +
+> > > +   /* Load and verify BPF application */
+> > > +   skel = xdp_features__open();
+> > > +   if (!skel) {
+> > > +           fprintf(stderr, "Failed to open and load BPF skeleton\n");
+> > > +           return -EINVAL;
+> > > +   }
+> > > +
+> > > +   skel->rodata->expected_feature = env.feature;
+> > > +   skel->rodata->dut_ip = env.dut_ip;
+> > > +   skel->rodata->tester_ip = env.tester_ip;
+> > > +
+> > > +   /* Load & verify BPF programs */
+> > > +   err = xdp_features__load(skel);
+> > > +   if (err) {
+> > > +           fprintf(stderr, "Failed to load and verify BPF skeleton\n");
+> > > +           goto cleanup;
+> > > +   }
+> > > +
+> > > +   err = xdp_features__attach(skel);
+> > > +   if (err) {
+> > > +           fprintf(stderr, "Failed to attach BPF skeleton\n");
+> > > +           goto cleanup;
+> > > +   }
+> > > +
+> > > +   if (env.tester) {
+> > > +           /* Tester */
+> > > +           fprintf(stdout, "Starting tester on device %d\n", env.ifindex);
+> > > +           err = tester_run(skel);
+> > > +   } else {
+> > > +           /* DUT */
+> > > +           fprintf(stdout, "Starting DUT on device %d\n", env.ifindex);
+> > > +           err = dut_run(skel);
+> > > +   }
+> > > +
+> > > +cleanup:
+> > > +   xdp_features__destroy(skel);
+> > > +
+> > > +   return err < 0 ? -err : 0;
+> > > +}
+> > > diff --git a/tools/testing/selftests/bpf/xdp_features.h
+> > > b/tools/testing/selftests/bpf/xdp_features.h
+> > > new file mode 100644
+> > > index 000000000000..28d7614c4f02
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/xdp_features.h
+> > > @@ -0,0 +1,33 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +
+> > > +/* test commands */
+> > > +enum test_commands {
+> > > +   CMD_STOP,               /* CMD */
+> > > +   CMD_START,              /* CMD + xdp feature */
+> > > +   CMD_ECHO,               /* CMD */
+> > > +   CMD_ACK,                /* CMD + data */
+> > > +   CMD_GET_XDP_CAP,        /* CMD */
+> > > +   CMD_GET_STATS,          /* CMD */
+> > > +};
+> > > +
+> > > +#define DUT_CTRL_PORT      12345
+> > > +#define DUT_ECHO_PORT      12346
+> > > +
+> > > +struct tlv_hdr {
+> > > +   __be16 type;
+> > > +   __be16 len;
+> > > +   __be32 data[];
+> > > +};
+> > > +
+> > > +enum {
+> > > +   XDP_FEATURE_ABORTED,
+> > > +   XDP_FEATURE_DROP,
+> > > +   XDP_FEATURE_PASS,
+> > > +   XDP_FEATURE_TX,
+> > > +   XDP_FEATURE_REDIRECT,
+> > > +   XDP_FEATURE_NDO_XMIT,
+> > > +   XDP_FEATURE_XSK_ZEROCOPY,
+> > > +   XDP_FEATURE_HW_OFFLOAD,
+> > > +   XDP_FEATURE_RX_SG,
+> > > +   XDP_FEATURE_NDO_XMIT_SG,
+> > > +};
+> > > --
+> > > 2.39.1
 > >
