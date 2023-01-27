@@ -2,195 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB8967F24E
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 00:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F2267F266
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 00:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbjA0XjJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 18:39:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
+        id S231929AbjA0XuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 18:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232043AbjA0XjI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 18:39:08 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4402237B57;
-        Fri, 27 Jan 2023 15:39:07 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id ud5so17762208ejc.4;
-        Fri, 27 Jan 2023 15:39:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OS57Cl1v1ND4yDvQPK9DGvNY074irrM+XZQ4x1tyrxo=;
-        b=lRU2TkbyI3bAuFYzYtDuQtseBVDPNqjLBq6bMmSGyNdOdsBLmiLwa2nst7N2MR0RjD
-         azJY8SpV2g3zLKVc6gfNmaVd00W4rqVJaczLYnrYL3MFy/WUH5QZwX339HqUY5muok4V
-         6ojLt+xHEP2UJI8eM0HJsXZVt5LcIMNMc2pYQhvOXajwW1Ah/PV99LBp4NCGOhMrmsKc
-         IWyEdM8wNw6FgPBQK7YzeVw/klCYW+IZfBp3mcha5SroP4pvnqLMvKUGJKa8TTMYlmdm
-         NYuIulojrRyQ12/3c3WCynoGyiS0xJEDgw7Gn4MSLc7zpB1v2LiDyKezKcBUYms5G6aU
-         +hKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OS57Cl1v1ND4yDvQPK9DGvNY074irrM+XZQ4x1tyrxo=;
-        b=LstS4X8HbXz1kiHYDBRh6bAgxpo5wFd2WKexbsnKot4S9AkmdQ8ZtNysP/2CEEXbG0
-         lIvWNGje5HOY49Kefcez9ouUMKsIiisUEuktpEGRRDlHRrfnRiU1jSV/p/SMrGxuEnBt
-         ooJyjLjkX1jqrFD0/j+RfxUJ4AzXm+35zu3Zy0vf3CxYIY8ifM/GHb3RQN6TG1Oyyzz4
-         ZrC4Qyd8FRNQxab4B9WQGHRuolm6wo8vDb2oD3ETrpZ6FRQtNPeQe0jqOhhQYLa7Zxlc
-         prRucx2BDqEys57gnrl1VKioyApOCrypTJHilHShULe8o6i/yyyP0uMe5Mq14L30uRyj
-         QyWg==
-X-Gm-Message-State: AO0yUKVY85WFSPDnV+Uqju4WKodTXNWtKgGmFdgDqzyAz1pfCRsAYgGp
-        zgOKBhlhtrP8C8KfuH1WAoTxP7adqVhhdLvzMNs=
-X-Google-Smtp-Source: AK7set+iEOmdxvTUlQMzh35XvojPOvTvkl59ca5GGONndB4m9IrJ3m0aYFDTDyHV0cQzXOSCTF41x8omq/wDY1VaSqo=
-X-Received: by 2002:a17:906:ce23:b0:882:665:5135 with SMTP id
- sd3-20020a170906ce2300b0088206655135mr94283ejb.265.1674862745558; Fri, 27 Jan
- 2023 15:39:05 -0800 (PST)
+        with ESMTP id S229478AbjA0XuT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 18:50:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5221384FA5
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 15:50:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E368961DC8
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 23:50:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 436F9C4339B;
+        Fri, 27 Jan 2023 23:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674863417;
+        bh=XpHp0FtQcbvk2gb4SOWgyf0muQLsLRTg8j4k4a2qCuM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=L4XLbwUBKrztcT1EhNFhoYvSKnkwpVTU+1fFIbdZxdY0ucCdrO6T81Uc56PWZKWDZ
+         r3+YIVsV+JA7Oo1smL2EWcb4XB85zUT8HpC0rh1bpkP4BrjLN5HX9SBGAZZYVZuyaS
+         1WdG1AsCQv+FQl3InRQEJSHcjB59gRstPqErvyFduC9iWIPR3IUDKvdaOJjXH5d46N
+         ikamzLb3h5JV86XKlnIlx2JIe5gZBfRfwOLJIKtQ5/4Rp6N/ZVLLGLyG9rhVtLB5lm
+         uUl3XGkQsIRFKAtsP30dgPpkuqhPfqpWtcodjhkbp7vHjNUaalbfycannuK2OJ2BLR
+         DUktp8SKuUyeQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B2F0E52504;
+        Fri, 27 Jan 2023 23:50:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <cover.1674737592.git.lorenzo@kernel.org> <a7e6e8da5b2ba24f44f0d5b44a234e2bf90220fd.1674737592.git.lorenzo@kernel.org>
-In-Reply-To: <a7e6e8da5b2ba24f44f0d5b44a234e2bf90220fd.1674737592.git.lorenzo@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 27 Jan 2023 15:38:53 -0800
-Message-ID: <CAEf4BzYjt3J5_ESMKjRFRh6ROg-CN=QazAZpKd9wnaSxjjKbAg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 5/8] libbpf: add API to get XDP/XSK supported features
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
-        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
-        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
-        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
-        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
-        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
-        martin.lau@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftest/bpf: Make crashes more debuggable in
+ test_progs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167486341710.23162.13568236479995503045.git-patchwork-notify@kernel.org>
+Date:   Fri, 27 Jan 2023 23:50:17 +0000
+References: <20230127215705.1254316-1-sdf@google.com>
+In-Reply-To: <20230127215705.1254316-1-sdf@google.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 4:59 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->
-> Extend bpf_xdp_query routine in order to get XDP/XSK supported features
-> of netdev over route netlink interface.
-> Extend libbpf netlink implementation in order to support netlink_generic
-> protocol.
->
-> Co-developed-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Co-developed-by: Marek Majtyka <alardam@gmail.com>
-> Signed-off-by: Marek Majtyka <alardam@gmail.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  tools/lib/bpf/libbpf.h  |  3 +-
->  tools/lib/bpf/netlink.c | 99 +++++++++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/nlattr.h  | 12 +++++
->  3 files changed, 113 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 898db26e42e9..29cb7040fa77 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -982,9 +982,10 @@ struct bpf_xdp_query_opts {
->         __u32 hw_prog_id;       /* output */
->         __u32 skb_prog_id;      /* output */
->         __u8 attach_mode;       /* output */
-> +       __u64 fflags;           /* output */
->         size_t :0;
->  };
-> -#define bpf_xdp_query_opts__last_field attach_mode
-> +#define bpf_xdp_query_opts__last_field fflags
+Hello:
 
-is "fflags" an obvious name in this context? I'd expect
-"feature_flags", especially that there are already "flags". Is saving
-a few characters worth the confusion?
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Fri, 27 Jan 2023 13:57:05 -0800 you wrote:
+> Reset stdio before printing verbose log of the SIGSEGV'ed test.
+> Otherwise, it's hard to understand what's going on in the cases like [0].
+> 
+> With the following patch applied:
+> 
+> 	--- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> 	+++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> 	@@ -392,6 +392,11 @@ void test_xdp_metadata(void)
+> 	 		       "generate freplace packet"))
+> 	 		goto out;
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] selftest/bpf: Make crashes more debuggable in test_progs
+    https://git.kernel.org/bpf/bpf-next/c/16809afdcbad
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
->
->  LIBBPF_API int bpf_xdp_attach(int ifindex, int prog_fd, __u32 flags,
->                               const struct bpf_xdp_attach_opts *opts);
-> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-> index d2468a04a6c3..674e4d61e67e 100644
-> --- a/tools/lib/bpf/netlink.c
-> +++ b/tools/lib/bpf/netlink.c
-> @@ -9,6 +9,7 @@
->  #include <linux/if_ether.h>
->  #include <linux/pkt_cls.h>
->  #include <linux/rtnetlink.h>
-> +#include <linux/netdev.h>
->  #include <sys/socket.h>
->  #include <errno.h>
->  #include <time.h>
-> @@ -39,6 +40,12 @@ struct xdp_id_md {
->         int ifindex;
->         __u32 flags;
->         struct xdp_link_info info;
-> +       __u64 fflags;
-> +};
-> +
-> +struct xdp_features_md {
-> +       int ifindex;
-> +       __u64 flags;
->  };
->
->  static int libbpf_netlink_open(__u32 *nl_pid, int proto)
-
-[...]
-
->  int bpf_xdp_query(int ifindex, int xdp_flags, struct bpf_xdp_query_opts *opts)
->  {
->         struct libbpf_nla_req req = {
-> @@ -393,6 +460,38 @@ int bpf_xdp_query(int ifindex, int xdp_flags, struct bpf_xdp_query_opts *opts)
->         OPTS_SET(opts, skb_prog_id, xdp_id.info.skb_prog_id);
->         OPTS_SET(opts, attach_mode, xdp_id.info.attach_mode);
->
-> +       if (OPTS_HAS(opts, fflags)) {
-
-maybe invert condition, return early, reduce nesting of the following code?
-
-> +               struct xdp_features_md md = {
-> +                       .ifindex = ifindex,
-> +               };
-> +               __u16 id;
-> +
-> +               err = libbpf_netlink_resolve_genl_family_id("netdev",
-> +                                                           sizeof("netdev"),
-> +                                                           &id);
-
-nit: if it fits under 100 characters, let's leave it on a single line
-
-> +               if (err < 0)
-> +                       return libbpf_err(err);
-> +
-> +               memset(&req, 0, sizeof(req));
-> +               req.nh.nlmsg_len = NLMSG_LENGTH(GENL_HDRLEN);
-> +               req.nh.nlmsg_flags = NLM_F_REQUEST;
-> +               req.nh.nlmsg_type = id;
-> +               req.gnl.cmd = NETDEV_CMD_DEV_GET;
-> +               req.gnl.version = 2;
-> +
-> +               err = nlattr_add(&req, NETDEV_A_DEV_IFINDEX, &ifindex,
-> +                                sizeof(ifindex));
-> +               if (err < 0)
-> +                       return err;
-> +
-> +               err = libbpf_netlink_send_recv(&req, NETLINK_GENERIC,
-> +                                              parse_xdp_features, NULL, &md);
-> +               if (err)
-> +                       return libbpf_err(err);
-> +
-> +               opts->fflags = md.flags;
-> +       }
-> +
->         return 0;
->  }
->
-
-[...]
