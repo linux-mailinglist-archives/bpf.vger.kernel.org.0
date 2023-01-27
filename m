@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9114667ED3B
+	by mail.lfdr.de (Postfix) with ESMTP id EFA3E67ED3C
 	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 19:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbjA0SPx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 13:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
+        id S234067AbjA0SPy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 13:15:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbjA0SPu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 13:15:50 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C44C87161
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 10:15:12 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id v13so5447443eda.11
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 10:15:12 -0800 (PST)
+        with ESMTP id S234663AbjA0SPv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 13:15:51 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F55887346
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 10:15:13 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id u21so5482170edv.3
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 10:15:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wCdr9XgpV/TtRB2gbEnJDhOoDA9hdYNcxPOVyX+Gx4I=;
-        b=pIcJB56jYqzBr1+lJGOoGrVaucvY0fVtWaGVeQEPh+qZXdRXrjQorWU2Tlk8Zc1UGI
-         0D8jKTrJe17EKNR6JlRnG1qDK08Qvww3A+FthpM4isNVaHURD69CPE/07Azd62wfAZ9R
-         Dk5RooYO91UohuUzarLETuPV0P7VkjMYnYytpR6Dx5PYFlTVGJIaEEfIcLvaydfxMQkr
-         lA+8u+GH413mWiCOJfQ1YM0MYXdKAhvFtHrxDERfghMJ8TCuY3J28t3AFraMODBJfTra
-         CWuKdZdKvMh9Pkqi5zlD5exa4KT34jFNO21wfzRCCCVmNiMJhpbETWeid135tV8OOaKJ
-         f4fQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MKRLfQHZlRLGYU7EeqTaJjmPKgZI+D7UIDAiJ92z6P0=;
+        b=X7NLE9HyM3OlCUan7t+ejxD4dvMZu3wnDfyvgkFW+IKhzVOAtZRa4CgPgkT+g2qTpm
+         IknkJVhqU2beEp/f3BQcABs8JeOQFVFu2Yjowc5A4D/1xvOgDuGXXgf1Y/Ta9/pdcJqB
+         vVidacaqcPfVqL0nB8ENcytU9CL+VxJ5tfiiheKP68+Pn2oIbPMftIBy9b0wjAMlxe9v
+         njoOJ0cQMQXEGO8wFEXE7+bb1N04gX6WY0vgTInuIAOwYfKQ1ghhNK/MuxxFO4LAAX+x
+         cQrh+EwL8hkby8PPeR6v/u4Tii42HadTz3oq1cretIVSEd9ls4Clvr3BtdJx3WzGW9/j
+         mA8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wCdr9XgpV/TtRB2gbEnJDhOoDA9hdYNcxPOVyX+Gx4I=;
-        b=zMPVymJImVg6umw7JL8a15fnRoioB5V4QyfBUUBh45BXWLzO2+fgNj0w/Ax+Zkepgi
-         syzLrU1YEthqSQs9yJVY2seBMD6Bwo9EeDAY0en3WF3dbLM+nLuBMi+70EobEZyO2xP3
-         f3gyITNBVQUyrbnkKxSCZcjZCA2RBO3KbM/rPJ25MBj+Sq3kVMq+9SxPMvOJO4/Yp4rm
-         fUwhP0/DaabP89arnxhyISn6r7EinhTpd+X8teTYR+V2dNxLh5ISsyJ86oSB6QMf7Uc5
-         GHmG2p4fTsHcoM9lGRzvAKzflHZCWUhaZJidY2bIT+fzpXiwzf+tXI2lHUirqELUEVmw
-         Zisg==
-X-Gm-Message-State: AFqh2kp46GMI+BwMbWze0jLZEaGXR9sAiI5s5Rx8BXRGoUYT62DgLiF7
-        m0MMJyCACc4k2xNlIOAngeWJWxgV6pnuq6kCtSM=
-X-Google-Smtp-Source: AMrXdXsMdjbnlaoonNvvA4UUSH4pDrU4/h+b4bwZ8Rc6Luvb+XUA6Av8ZJRlgD4uy/M6frtBakZnyw==
-X-Received: by 2002:aa7:c994:0:b0:499:bf81:be6 with SMTP id c20-20020aa7c994000000b00499bf810be6mr45290903edt.37.1674843284899;
-        Fri, 27 Jan 2023 10:14:44 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MKRLfQHZlRLGYU7EeqTaJjmPKgZI+D7UIDAiJ92z6P0=;
+        b=QvYiTGnz0jmH/DG1jqXMlRWrfGZl/QB9jv4kLIbVFXHMJWwx0Srsk0lyzZvEud3gJH
+         1zNnTS0XOWX5vEjcWyNBLoO3KLKJNHBKHSsDfikf0ZENZ97pr3rO7EiCHxLfqlLYScpI
+         FVnLWxvwiV91UnKAIhzu/aP5k0O6HVeNnn7nfacRIc7KLaQVYWy5JGyyQ3t31indoLHB
+         Cb2DXo9MmKNZ6N6b0pQj2ekmIpNr0wZxLMWlL0ucN/q2MdzKWQ9gu8TzBLnt+q1T8KL8
+         lgNTPh0SZ4OrYn0U58OfNIreVnYn1RcUBGW4gtEeFwOG9ONRtx31ybwc0EkNopu+G9x/
+         erhw==
+X-Gm-Message-State: AFqh2kooo2Z3ImJ1dzkeV4Lijh8uCgwwcRqrjO9xdabTRy/0FhYsjASR
+        lH1WFSq+JMCI8qm9QeqMmg0/qSdfr4mw1f10IkQ=
+X-Google-Smtp-Source: AMrXdXvDyyJF12/u1uC3svq/GWf007qnOFci2tro8I8ZsZwvZG5sSfuDvl53uCgn5pgawXD1lKZhrA==
+X-Received: by 2002:a05:6402:448:b0:492:798:385e with SMTP id p8-20020a056402044800b004920798385emr56534958edw.33.1674843285714;
+        Fri, 27 Jan 2023 10:14:45 -0800 (PST)
 Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a16-20020aa7d910000000b00463bc1ddc76sm2639651edr.28.2023.01.27.10.14.44
+        by smtp.gmail.com with ESMTPSA id a16-20020aa7d910000000b00463bc1ddc76sm2639651edr.28.2023.01.27.10.14.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jan 2023 10:14:44 -0800 (PST)
+        Fri, 27 Jan 2023 10:14:45 -0800 (PST)
 From:   Anton Protopopov <aspsk@isovalent.com>
 To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -55,12 +56,13 @@ To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         John Fastabend <john.fastabend@gmail.com>
 Cc:     Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH bpf-next 0/6] New benchmark for hashmap lookups
-Date:   Fri, 27 Jan 2023 18:14:51 +0000
-Message-Id: <20230127181457.21389-1-aspsk@isovalent.com>
+Subject: [PATCH bpf-next 1/6] selftest/bpf/benchs: fix a typo in bpf_hashmap_full_update
+Date:   Fri, 27 Jan 2023 18:14:52 +0000
+Message-Id: <20230127181457.21389-2-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230127181457.21389-1-aspsk@isovalent.com>
+References: <20230127181457.21389-1-aspsk@isovalent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,43 +73,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a new benchmark for hashmap lookups and fix several typos. See individual
-commits for descriptions.
+To call the bpf_hashmap_full_update benchmark, one should say:
 
-One thing to mention here is that in commit 3 I've patched bench so that now
-command line options can be reused by different benchmarks.
+    bench bpf-hashmap-ful-update
 
-The benchmark itself is added in the last commit 6. I am using this benchmark
-to test map lookup productivity when using a different hash function (see
-https://fosdem.org/2023/schedule/event/bpf_hashing/). The results provided by
-the benchmark look reasonable and match the results of my different benchmarks
-(requiring to patch kernel to get actual statistics on map lookups).
+The patch adds a missing 'l' to the benchmark name.
 
-Anton Protopopov (6):
-  selftest/bpf/benchs: fix a typo in bpf_hashmap_full_update
-  selftest/bpf/benchs: make a function static in bpf_hashmap_full_update
-  selftest/bpf/benchs: enhance argp parsing
-  selftest/bpf/benchs: make quiet option common
-  selftest/bpf/benchs: print less if the quiet option is set
-  selftest/bpf/benchs: Add benchmark for hashmap lookups
+Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+---
+ .../selftests/bpf/benchs/bench_bpf_hashmap_full_update.c        | 2 +-
+ .../selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
- tools/testing/selftests/bpf/Makefile          |   5 +-
- tools/testing/selftests/bpf/bench.c           | 126 +++++++-
- tools/testing/selftests/bpf/bench.h           |  24 ++
- .../bpf/benchs/bench_bloom_filter_map.c       |   6 -
- .../benchs/bench_bpf_hashmap_full_update.c    |   4 +-
- .../bpf/benchs/bench_bpf_hashmap_lookup.c     | 277 ++++++++++++++++++
- .../selftests/bpf/benchs/bench_bpf_loop.c     |   4 -
- .../bpf/benchs/bench_local_storage.c          |   5 -
- .../bench_local_storage_rcu_tasks_trace.c     |  20 +-
- .../selftests/bpf/benchs/bench_ringbufs.c     |   8 -
- .../selftests/bpf/benchs/bench_strncmp.c      |   4 -
- .../run_bench_bpf_hashmap_full_update.sh      |   2 +-
- .../selftests/bpf/progs/bpf_hashmap_lookup.c  |  61 ++++
- 13 files changed, 486 insertions(+), 60 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_lookup.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_hashmap_lookup.c
-
+diff --git a/tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c b/tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
+index cec51e0ff4b8..44706acf632a 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
++++ b/tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
+@@ -85,7 +85,7 @@ void hashmap_report_final(struct bench_res res[], int res_cnt)
+ }
+ 
+ const struct bench bench_bpf_hashmap_full_update = {
+-	.name = "bpf-hashmap-ful-update",
++	.name = "bpf-hashmap-full-update",
+ 	.validate = validate,
+ 	.setup = setup,
+ 	.producer_thread = producer,
+diff --git a/tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh b/tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
+index 1e2de838f9fa..cd2efd3fdef3 100755
+--- a/tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
++++ b/tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
+@@ -6,6 +6,6 @@ source ./benchs/run_common.sh
+ set -eufo pipefail
+ 
+ nr_threads=`expr $(cat /proc/cpuinfo | grep "processor"| wc -l) - 1`
+-summary=$($RUN_BENCH -p $nr_threads bpf-hashmap-ful-update)
++summary=$($RUN_BENCH -p $nr_threads bpf-hashmap-full-update)
+ printf "$summary"
+ printf "\n"
 -- 
 2.34.1
 
