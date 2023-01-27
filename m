@@ -2,192 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFEF67DF22
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 09:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1E567DF50
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 09:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232512AbjA0I3z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 03:29:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38892 "EHLO
+        id S232541AbjA0IdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 03:33:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232461AbjA0I3y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 03:29:54 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201022D44;
-        Fri, 27 Jan 2023 00:29:54 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id p24so4246519plw.11;
-        Fri, 27 Jan 2023 00:29:54 -0800 (PST)
+        with ESMTP id S232494AbjA0IdE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 03:33:04 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F70019F27
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 00:33:00 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id j17so2914892wms.0
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 00:33:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8zIr5gAVnWijcyRaLm+OnfSZglQ9EcoIIIGF0BoAjyQ=;
-        b=YWGl3SYdESIJohPgPUPXBxEjhsN3/Q9Bj2pSbYOb7p+IzWMotAiuUlbo8zjzZIqKmd
-         G1MYB98UjDR3xW7mUooubXf8rSMVHoqOFz/P75ulnt3Mki347snb1aWjRsv2JwjWtV1m
-         Xl4oCmO9trDJWVvi9ke7eCGXuhcBwGtSXhA31cL/OvE8amNpsEi5cQ6WNijohbuvGNfl
-         9X/Aoh8rZi8Pdqp4NgIqw32HZWne6kpNA5dn/cm0ZUfwh5nyqUYvQJ1LB8QSFnOSO5Hy
-         7FobIwqhcHEhsJ1X02g5K4EUh5KPNRn8csFksnOIsskRasFQmM5XnOefzhr+OpzyxZ0m
-         6rKw==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mNDzzLve1QZpQMH586QRx6794jByHtxqf4nlX323e/M=;
+        b=wr/faRojnYtopasMYIZ7X5nKWJvOwIFDt6H3ZwcJFlrglXBSFYxDO20pRk+2obypGw
+         lp6sclR+UR+EHorIMkUXCu8LDlgnas4SNpc653G4SjJSFR1rb/7X/I3yuiJXCETM3EDr
+         83A6hXp1UGKXUu8nI40pGKALkiqAnnJSwTfoe6hyBxm7uiUuR3xsh9+osuJIJb55MYPm
+         xywXnOVLUbpg5jrSC6ADmSw5oxb91f64hNGPIz4Cicrdjt0iCGcC4T9y2P5LyHewgFxn
+         l/6Pay8nOL53WWvAYGjjlZhjdln3wsBScLS8KjDf2HPqdzZ2rbkWVTiShk6sY4zXS+1N
+         4Jkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8zIr5gAVnWijcyRaLm+OnfSZglQ9EcoIIIGF0BoAjyQ=;
-        b=MP/E+YY37EIG+S+Zv74gYXlPB0H8E9viUI+SNi+5TEC3A58DoysWT3PJ0ELK1wnmuB
-         brinOUCYuIOaV5jw+DpQlGIYodUgStwnmq4gFQvBNgFni0DqgttryFKMaBjnjqi/dF1G
-         qm8hs8w2Z9Wsmb6HyUArvDDr7t7WH1FkRVhHVNRIh4AAXbKy4Rh4azQHDF/uM7oLn7CE
-         dYhvNwQXUOHL/nKd6E06eupa7yEcJTYrF7vsRhqBUR9gijRB5S6FZDm4j6npX7APIPxk
-         Sitp6vUqHayCyBoTyVVleTgj3sXcA/DbJZin956VLdIHiyuzofJvUDxx1lUjsF5+ywME
-         Tszg==
-X-Gm-Message-State: AO0yUKU2k1muM0z2xikESvGHEK/dJAQdirBeLJm9ZdnBWb9+9+r+jkrt
-        oD94PuVC6bMBD/3zoUj9ryc=
-X-Google-Smtp-Source: AK7set9TFkR92TOLXtRegT9TQsmGNdp61otzkT1Ysia7b69lp2ouzPTQQx9rNlyWk9A6sDr8+yuLTQ==
-X-Received: by 2002:a05:6a20:3f93:b0:b9:5fc6:9ed6 with SMTP id ay19-20020a056a203f9300b000b95fc69ed6mr3975620pzb.37.1674808193509;
-        Fri, 27 Jan 2023 00:29:53 -0800 (PST)
-Received: from debian.me (subs02-180-214-232-24.three.co.id. [180.214.232.24])
-        by smtp.gmail.com with ESMTPSA id t21-20020a056a00139500b00588d5c8b633sm1265496pfg.51.2023.01.27.00.29.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jan 2023 00:29:52 -0800 (PST)
-Received: by debian.me (Postfix, from userid 1000)
-        id 7B1A0105582; Fri, 27 Jan 2023 15:29:50 +0700 (WIB)
-Date:   Fri, 27 Jan 2023 15:29:50 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 04/35] Documentation: bpf: correct spelling
-Message-ID: <Y9OLfsdbciFfn8ci@debian.me>
-References: <20230127064005.1558-1-rdunlap@infradead.org>
- <20230127064005.1558-5-rdunlap@infradead.org>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mNDzzLve1QZpQMH586QRx6794jByHtxqf4nlX323e/M=;
+        b=lZPa6kZ54hjNucp460s5yXg9Khe01poJr1L7ipSrll83xNPPLQNfdlT3IbTPN5UXyx
+         NzqySvxb2Jeuw//f5H7mw+i0Y+1DMGby0vhgDg5KBRDYOfS9nNlvHnITXHEwxbSBL78M
+         gwkzDheW8tSVuqdFRUyYdyB6EiNB9EjuwIGdYuIUq3WEMhna7o0Q+p0Cdh9tWv4WocR1
+         UptohAz7LPnrxFWN6SVlL3s9VAoGbicVE/rC5NCKQZYuKak9s23yOhqmiouK4ts8bbjA
+         Grkn1RukOhclCRn7whfZCdw0BeKk2VqTxc9cvLbx+gMxjWiFd+Ji3AKZlxbZWQWVsA7G
+         OjIw==
+X-Gm-Message-State: AO0yUKU+3WKqGfMOPhpq7KEXO+zsqY+WCBUPzC01YQLKQBFVM8Gl8cLX
+        rupYEd/RBLfFoM+y+AZkyKm45g==
+X-Google-Smtp-Source: AK7set8AUVYQ3DMEqB5mb5eVqgQNd79NxSGC2QpLaYfkKjZyelI9gwbfI++aOYEpI1mjO/SKh2lGNQ==
+X-Received: by 2002:a05:600c:1caa:b0:3dc:4042:5c30 with SMTP id k42-20020a05600c1caa00b003dc40425c30mr177420wms.10.1674808379017;
+        Fri, 27 Jan 2023 00:32:59 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id d10-20020adffbca000000b00287da7ee033sm3318241wrs.46.2023.01.27.00.32.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Jan 2023 00:32:58 -0800 (PST)
+Message-ID: <348c3416-be44-b912-98ef-7f394bd408c0@linaro.org>
+Date:   Fri, 27 Jan 2023 09:32:52 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8VtioyVUTN4tisD6"
-Content-Disposition: inline
-In-Reply-To: <20230127064005.1558-5-rdunlap@infradead.org>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [RFC PATCH v2 02/31] Documentation: Add binding for
+ kalray,kv3-1-core-intc
+Content-Language: en-US
+To:     Jules Maselbas <jmaselbas@kalray.eu>
+Cc:     Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Guillaume Thouvenin <gthouvenin@kalray.eu>,
+        Clement Leger <clement@clement-leger.fr>,
+        Vincent Chardon <vincent.chardon@elsys-design.com>,
+        =?UTF-8?Q?Marc_Poulhi=c3=a8s?= <dkm@kataplop.net>,
+        Julian Vetter <jvetter@kalray.eu>,
+        Samuel Jones <sjones@kalray.eu>,
+        Ashley Lesdalons <alesdalons@kalray.eu>,
+        Thomas Costis <tcostis@kalray.eu>,
+        Marius Gligor <mgligor@kalray.eu>,
+        Jonathan Borne <jborne@kalray.eu>,
+        Julien Villette <jvillette@kalray.eu>,
+        Luc Michel <lmichel@kalray.eu>,
+        Louis Morhet <lmorhet@kalray.eu>,
+        Julien Hascoet <jhascoet@kalray.eu>,
+        Jean-Christophe Pince <jcpince@gmail.com>,
+        Guillaume Missonnier <gmissonnier@kalray.eu>,
+        Alex Michon <amichon@kalray.eu>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <git@xen0n.name>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        John Garry <john.garry@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Bharat Bhushan <bbhushan2@marvell.com>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Atish Patra <atishp@atishpatra.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Qi Liu <liuqi115@huawei.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-audit@redhat.com,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+References: <20230120141002.2442-1-ysionneau@kalray.eu>
+ <20230120141002.2442-3-ysionneau@kalray.eu>
+ <d4d998ee-1532-c896-df25-195ec9c72e3f@linaro.org>
+ <20230126161032.GH5952@tellis.lin.mbt.kalray.eu>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230126161032.GH5952@tellis.lin.mbt.kalray.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 26/01/2023 17:10, Jules Maselbas wrote:
 
---8VtioyVUTN4tisD6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>> +  reg:
+>>> +    maxItems: 0
+>>
+>> ??? No way... What's this?
+> This (per CPU) interrupt controller is not memory mapped at all, it is
+> controlled and configured through system registers.
+> 
+> I do not have found existing .yaml bindings for such devices, only the
+> file snps,archs-intc.txt has something similar.
+> 
+> I do not know what is the best way to represent such devices in the
+> device-tree.  Any suggestions are welcome.
 
-On Thu, Jan 26, 2023 at 10:39:34PM -0800, Randy Dunlap wrote:
-> diff -- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst b/Documen=
-tation/bpf/libbpf/libbpf_naming_convention.rst
-> --- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-> +++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-> @@ -83,8 +83,8 @@ This prevents from accidentally exportin
->  to be a part of ABI what, in turn, improves both libbpf developer- and
->  user-experiences.
-> =20
-> -ABI versionning
-> ----------------
-> +ABI versioning
-> +--------------
-> =20
->  To make future ABI extensions possible libbpf ABI is versioned.
->  Versioning is implemented by ``libbpf.map`` version script that is
-> @@ -148,7 +148,7 @@ API documentation convention
->  The libbpf API is documented via comments above definitions in
->  header files. These comments can be rendered by doxygen and sphinx
->  for well organized html output. This section describes the
-> -convention in which these comments should be formated.
-> +convention in which these comments should be formatted.
-> =20
->  Here is an example from btf.h:
-> =20
-> diff -- a/Documentation/bpf/map_xskmap.rst b/Documentation/bpf/map_xskmap=
-=2Erst
-> --- a/Documentation/bpf/map_xskmap.rst
-> +++ b/Documentation/bpf/map_xskmap.rst
-> @@ -178,7 +178,7 @@ The following code snippet shows how to
-> =20
->  For an example on how create AF_XDP sockets, please see the AF_XDP-examp=
-le and
->  AF_XDP-forwarding programs in the `bpf-examples`_ directory in the `libx=
-dp`_ repository.
-> -For a detailed explaination of the AF_XDP interface please see:
-> +For a detailed explanation of the AF_XDP interface please see:
-> =20
->  - `libxdp-readme`_.
->  - `AF_XDP`_ kernel documentation.
-> diff -- a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rst
-> --- a/Documentation/bpf/ringbuf.rst
-> +++ b/Documentation/bpf/ringbuf.rst
-> @@ -124,7 +124,7 @@ buffer.  Currently 4 are supported:
-> =20
->  - ``BPF_RB_AVAIL_DATA`` returns amount of unconsumed data in ring buffer;
->  - ``BPF_RB_RING_SIZE`` returns the size of ring buffer;
-> -- ``BPF_RB_CONS_POS``/``BPF_RB_PROD_POS`` returns current logical possit=
-ion
-> +- ``BPF_RB_CONS_POS``/``BPF_RB_PROD_POS`` returns current logical positi=
-on
->    of consumer/producer, respectively.
-> =20
->  Returned values are momentarily snapshots of ring buffer state and could=
- be
-> @@ -146,7 +146,7 @@ Design and Implementation
->  This reserve/commit schema allows a natural way for multiple producers, =
-either
->  on different CPUs or even on the same CPU/in the same BPF program, to re=
-serve
->  independent records and work with them without blocking other producers.=
- This
-> -means that if BPF program was interruped by another BPF program sharing =
-the
-> +means that if BPF program was interrupted by another BPF program sharing=
- the
->  same ring buffer, they will both get a record reserved (provided there is
->  enough space left) and can work with it and submit it independently. This
->  applies to NMI context as well, except that due to using a spinlock duri=
-ng
-> diff -- a/Documentation/bpf/verifier.rst b/Documentation/bpf/verifier.rst
-> --- a/Documentation/bpf/verifier.rst
-> +++ b/Documentation/bpf/verifier.rst
-> @@ -192,7 +192,7 @@ checked and found to be non-NULL, all co
->  As well as range-checking, the tracked information is also used for enfo=
-rcing
->  alignment of pointer accesses.  For instance, on most systems the packet=
- pointer
->  is 2 bytes after a 4-byte alignment.  If a program adds 14 bytes to that=
- to jump
-> -over the Ethernet header, then reads IHL and addes (IHL * 4), the result=
-ing
-> +over the Ethernet header, then reads IHL and adds (IHL * 4), the resulti=
-ng
->  pointer will have a variable offset known to be 4n+2 for some n, so addi=
-ng the 2
->  bytes (NET_IP_ALIGN) gives a 4-byte alignment and so word-sized accesses=
- through
->  that pointer are safe.
+You cannot have an array property with 0 items. How would it look like
+in DTS? There are many, many bindings which are expressing it. Just drop
+the reg.
 
-LGTM, thanks!
+> 
+>>
+>>> +  "kalray,intc-nr-irqs":
+>>
+>> Drop quotes.
+>>
+>>> +    description: Number of irqs handled by the controller.
+>>
+>> Why this is variable per board? Why do you need it ?
+> This property is not even used in our device-tree, this will be removed
+> from the documentation and from the driver as well.
+> 
+>>> +
+>>> +required:
+>>> +  - compatible
+>>> +  - "#interrupt-cells"
+>>> +  - interrupt-controller
+>>
+>> missing additionalProperties: false
+>>
+>> This binding looks poor, like you started from something odd. Please
+>> don't. Take the newest reviewed binding or better example-schema and use
+>> it to build yours. This would solve several trivial mistakes and style
+>> issues.
+> I am starting over from the example-schema.
+> 
+>>> +
+>>> +examples:
+>>> +  - |
+>>> +    intc: interrupt-controller {
+>>
+>> What's the IO address space?
+> As said above, this is not a memory mapped device, but is accessed
+> through system registers.
 
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Sure, but then you cannot define a reg which was confusing...
 
---=20
-An old man doll... just what I always wanted! - Clara
+Best regards,
+Krzysztof
 
---8VtioyVUTN4tisD6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY9OLfgAKCRD2uYlJVVFO
-ozuXAQCB5UxjVhQ3xxWchRhur4lG5s9CYc/fsuW7jqlPKj/UXgEA0M4YfwzPwVTX
-Dq1ic3dGsCjSy8H0B+vycS7Kr23SAgc=
-=7ld7
------END PGP SIGNATURE-----
-
---8VtioyVUTN4tisD6--
