@@ -2,208 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E18C67E6DD
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 14:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252FB67E70D
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 14:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbjA0Nhf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 08:37:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
+        id S232987AbjA0Nt6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 08:49:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbjA0Nhe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 08:37:34 -0500
+        with ESMTP id S233231AbjA0Nt5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 08:49:57 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6008243E
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 05:36:41 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FA17E6FE
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 05:49:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674826601;
+        s=mimecast20190719; t=1674827349;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qJB9LE0tuXgyuCIjXl/2aZyvwEk7MvMImJpS89Wbe5A=;
-        b=QbHCo+UXdkokTuQr+rlFXSdPxiLJVAeeBS5K/+3xfJwZVK+fSjFvFlzs504j2vvoQzNFXa
-        C8YdPJgRvb+AoZaW6GZ6axJRw7wlMci7nlbDKK+DCzGhdBCdZJijJKHZq9F+0IlIHyCwYG
-        BAe+QZOc7bULeCLMINXC6atYt3WJQ0I=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-611-XoXRGrMIMmaDm_9qexKj7Q-1; Fri, 27 Jan 2023 08:36:40 -0500
-X-MC-Unique: XoXRGrMIMmaDm_9qexKj7Q-1
-Received: by mail-ed1-f72.google.com with SMTP id b6-20020a056402278600b0049e41edf3cfso3567185ede.2
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 05:36:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qJB9LE0tuXgyuCIjXl/2aZyvwEk7MvMImJpS89Wbe5A=;
-        b=m74FiB9P3LzrqxLYOZ1ut4LnE8aPhQMNLJdXweRh+ZSoGhkWuZt+HkGTGwvqzOzLo/
-         vrtK+97Gzktl0DlIdLzb7y5VscCxpSS12/2WQXJUPMqxQO4J8AiYBBrsu+XKx7MDDCj2
-         b33mhGsQGGA29dR4lRvfnqccGp77kWfH0zXO5Zgk0QYBOq25GWkZ+r7dPOJA1AQeklNK
-         vQczT2fY42JSk77d+i3ieKW5qL+zlZfqQQWmHRiiwuqFafb9990hrv3jLeaWk3Q9IefF
-         3uaQHRZ31e0KmS2UaeMBrJ62/fjlyTNWxyfWQODZsU6S8zGs1//kiw9zV7HgPGTVYpCS
-         o/Ig==
-X-Gm-Message-State: AFqh2kqUcEUUCh1qGHxJBGBHynuDh+rT1yjJ+54D4q5fa1B1PErHN/mO
-        2cFIGeWoPNWFWcJh82xgmwBdNYmICSytlXGX01g9YDjixG+yfy4dMv3rgirmRi7nVqr3qmEcspn
-        40m/h+9bsFsB/
-X-Received: by 2002:a17:906:ddb:b0:7b2:757a:1411 with SMTP id p27-20020a1709060ddb00b007b2757a1411mr47579282eji.9.1674826597232;
-        Fri, 27 Jan 2023 05:36:37 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXs1AgAjEZgzHSTez/9Qk9KtC1cc7ZiCE9gJcKePZsGA28Y0mTiFVBm6+/bkTAssk/QX3EbcUA==
-X-Received: by 2002:a17:906:ddb:b0:7b2:757a:1411 with SMTP id p27-20020a1709060ddb00b007b2757a1411mr47579269eji.9.1674826597031;
-        Fri, 27 Jan 2023 05:36:37 -0800 (PST)
-Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id e24-20020a17090681d800b0087bda70d3efsm745872ejx.118.2023.01.27.05.36.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Jan 2023 05:36:36 -0800 (PST)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <150ce627-856d-d85a-61da-951ba3754537@redhat.com>
-Date:   Fri, 27 Jan 2023 14:36:34 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2mijN+EWYNjnWmPokVgVVtaxLmwBhQgigUaUVnjPuDI=;
+        b=G+t+8TstZfoiECG0ObEPlW79YJAPDF4r7VQXI+KXHOfUnlRZfvflEifuphoWvaOa6VvRr7
+        h5jimSDxcRVlkw0Zvgas0XDqRpJwIubOZXBP0ZzUwwLMbqgUiO3pLVTtv9A3d2cWKcCAL4
+        4YS9fGgzgsG7EZrryRytTiu31MMfnOM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-607-oDiHbX6kOhKyt3kG0xO3vw-1; Fri, 27 Jan 2023 08:49:04 -0500
+X-MC-Unique: oDiHbX6kOhKyt3kG0xO3vw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EC21A858F0E;
+        Fri, 27 Jan 2023 13:49:03 +0000 (UTC)
+Received: from firesoul.localdomain (ovpn-208-9.brq.redhat.com [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 80DB1C15BA0;
+        Fri, 27 Jan 2023 13:49:03 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 836A1300003E0;
+        Fri, 27 Jan 2023 14:49:02 +0100 (CET)
+Subject: [PATCH bpf-next RFC V1] selftests/bpf: xdp_hw_metadata clear metadata
+ when -EOPNOTSUPP
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Properly enable hwtstamp in
- xdp_hw_metadata
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-References: <20230126225030.510629-1-sdf@google.com>
-In-Reply-To: <20230126225030.510629-1-sdf@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        yhs@fb.com, john.fastabend@gmail.com, dsahern@gmail.com,
+        willemb@google.com, void@manifault.com, kuba@kernel.org,
+        xdp-hints@xdp-project.net
+Date:   Fri, 27 Jan 2023 14:49:02 +0100
+Message-ID: <167482734243.892262.18210955230092032606.stgit@firesoul>
+User-Agent: StGit/1.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The AF_XDP userspace part of xdp_hw_metadata see non-zero as a signal of
+the availability of rx_timestamp and rx_hash in data_meta area. The
+kernel-side BPF-prog code doesn't initialize these members when kernel
+returns an error e.g. -EOPNOTSUPP.  This memory area is not guaranteed to
+be zeroed, and can contain garbage/previous values, which will be read
+and interpreted by AF_XDP userspace side.
 
+Tested this on different drivers. The experiences are that for most
+packets they will have zeroed this data_meta area, but occasionally it
+will contain garbage data.
 
-On 26/01/2023 23.50, Stanislav Fomichev wrote:
-> The existing timestamping_enable() is a no-op because it applies
-> to the socket-related path that we are not verifying here
-> anymore. (but still leaving the code around hoping we can
-> have xdp->skb path verified here as well)
-> 
->    poll: 1 (0)
->    xsk_ring_cons__peek: 1
->    0xf64788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
->    rx_hash: 3697961069
->    rx_timestamp:  1674657672142214773 (sec:1674657672.1422)
->    XDP RX-time:   1674657709561774876 (sec:1674657709.5618) delta sec:37.4196
->    AF_XDP time:   1674657709561871034 (sec:1674657709.5619) delta
-> sec:0.0001 (96.158 usec)
->    0xf64788: complete idx=8 addr=8000
-> 
+Example of failure tested on ixgbe:
+ poll: 1 (0)
+ xsk_ring_cons__peek: 1
+ 0x18ec788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+ rx_hash: 3697961069
+ rx_timestamp:  9024981991734834796 (sec:9024981991.7348)
+ 0x18ec788: complete idx=8 addr=8000
 
-Again for the record, this output is from my devel version of
-xdp_hw_metadata and not what is currently upstream.
+Converting to date:
+ date -d @9024981991
+ 2255-12-28T20:26:31 CET
 
-Small nit below, which is too late as this is already applied.
+I choose a simple fix in this patch. When kfunc fails or isn't supported
+assign zero to the corresponding struct meta value.
 
-> Also, maybe something to archive here, see [0] for Jesper's note
-> about NIC vs host clock delta.
-> 
-> 0: https://lore.kernel.org/bpf/f3a116dc-1b14-3432-ad20-a36179ef0608@redhat.com/
-> 
-> v2:
-> - Restore original value (Martin)
-> 
-> Fixes: 297a3f124155 ("selftests/bpf: Simple program to dump XDP RX metadata")
-> Reported-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
-> Tested-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->   tools/testing/selftests/bpf/xdp_hw_metadata.c | 45 ++++++++++++++++++-
->   1 file changed, 44 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> index 0008f0f239e8..3823b1c499cc 100644
-> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> @@ -24,6 +24,7 @@
->   #include <linux/net_tstamp.h>
->   #include <linux/udp.h>
->   #include <linux/sockios.h>
-> +#include <linux/net_tstamp.h>
->   #include <sys/mman.h>
->   #include <net/if.h>
->   #include <poll.h>
-> @@ -278,13 +279,53 @@ static int rxq_num(const char *ifname)
->   
->   	ret = ioctl(fd, SIOCETHTOOL, &ifr);
->   	if (ret < 0)
-> -		error(-1, errno, "socket");
-> +		error(-1, errno, "ioctl(SIOCETHTOOL)");
->   
->   	close(fd);
->   
->   	return ch.rx_count + ch.combined_count;
->   }
->   
-> +static void hwtstamp_ioctl(int op, const char *ifname, struct hwtstamp_config *cfg)
-> +{
-> +	struct ifreq ifr = {
-> +		.ifr_data = (void *)cfg,
-> +	};
-> +	strcpy(ifr.ifr_name, ifname);
+It's up to the individual BPF-programmer to do something smarter e.g.
+that fits their use-case, like getting a software timestamp and marking
+a flag that gives the type of timestamp.
 
-I would use strncpy like:
+Another possibility is for the behavior of kfunc's
+bpf_xdp_metadata_rx_timestamp and bpf_xdp_metadata_rx_hash to require
+clearing return value pointer.
 
-  strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ net/core/xdp.c                                     |    2 ++
+ .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    6 +++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-> +	int fd, ret;
-> +
-> +	fd = socket(AF_UNIX, SOCK_DGRAM, 0);
-> +	if (fd < 0)
-> +		error(-1, errno, "socket");
-> +
-> +	ret = ioctl(fd, op, &ifr);
-> +	if (ret < 0)
-> +		error(-1, errno, "ioctl(%d)", op);
-> +
-> +	close(fd);
-> +}
-> +
-> +static struct hwtstamp_config saved_hwtstamp_cfg;
-> +static const char *saved_hwtstamp_ifname;
-> +
-> +static void hwtstamp_restore(void)
-> +{
-> +	hwtstamp_ioctl(SIOCSHWTSTAMP, saved_hwtstamp_ifname, &saved_hwtstamp_cfg);
-> +}
-> +
-> +static void hwtstamp_enable(const char *ifname)
-> +{
-> +	struct hwtstamp_config cfg = {
-> +		.rx_filter = HWTSTAMP_FILTER_ALL,
-> +	};
-> +
-> +	hwtstamp_ioctl(SIOCGHWTSTAMP, ifname, &saved_hwtstamp_cfg);
-> +	saved_hwtstamp_ifname = strdup(ifname);
-> +	atexit(hwtstamp_restore);
-> +
-> +	hwtstamp_ioctl(SIOCSHWTSTAMP, ifname, &cfg);
-> +}
-> +
->   static void cleanup(void)
->   {
->   	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> @@ -341,6 +382,8 @@ int main(int argc, char *argv[])
->   
->   	printf("rxq: %d\n", rxq);
->   
-> +	hwtstamp_enable(ifname);
-> +
->   	rx_xsk = malloc(sizeof(struct xsk) * rxq);
->   	if (!rx_xsk)
->   		error(-1, ENOMEM, "malloc");
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index a5a7ecf6391c..5ea13554c080 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -724,6 +724,7 @@ __diag_ignore_all("-Wmissing-prototypes",
+  */
+ int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+ {
++	// XXX: Question: Should we clear mem pointed to by @timestamp ?
+ 	return -EOPNOTSUPP;
+ }
+ 
+@@ -736,6 +737,7 @@ int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+  */
+ int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash)
+ {
++	// XXX: Question: Should we clear mem pointed to by @hash ?
+ 	return -EOPNOTSUPP;
+ }
+ 
+diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+index 25b8178735ee..4c55b4d79d3d 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+@@ -70,10 +70,14 @@ int rx(struct xdp_md *ctx)
+ 	}
+ 
+ 	if (!bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp))
+-		bpf_printk("populated rx_timestamp with %u", meta->rx_timestamp);
++		bpf_printk("populated rx_timestamp with %llu", meta->rx_timestamp);
++	else
++		meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
+ 
+ 	if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+ 		bpf_printk("populated rx_hash with %u", meta->rx_hash);
++	else
++		meta->rx_hash = 0; /* Used by AF_XDP as not avail signal */
+ 
+ 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
+ }
+
 
