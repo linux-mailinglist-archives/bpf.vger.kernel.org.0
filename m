@@ -2,64 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CFB67F092
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 22:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA5E67F0B5
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 22:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbjA0Vn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 16:43:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
+        id S232049AbjA0V5J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 16:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbjA0Vn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 16:43:58 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B495C0F7
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 13:43:57 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id h24so5233750qta.12
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 13:43:57 -0800 (PST)
+        with ESMTP id S229530AbjA0V5J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 16:57:09 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1AC81B0E
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 13:57:07 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-506466c484fso69152287b3.13
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 13:57:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UsA+27R3TBfsDeMt4sz63KudYROsIVNdtU+Tupx2XW4=;
-        b=Ci4nubZTqNKPKc2H/ElkjWOQPtQX4aorAUcsOd8yprT5GAePQSIH1pbpyJruJAxdPQ
-         RNhXHkIOR67WwD3oHGnoaFskq6XoK1v9C6AK31RWAUCQbit5ogH8q5v+lrOs8qnqZQem
-         DKzkduFveStXUGs5Sl++YxdRV3O40GQ5NnMRH1WkaExkj+5FKgEtscLwcw3SojsTMx9Q
-         daIR4iE7tVb/crhopT/KZ1GaB4FAdBLCVs9mDqfh7J8IHKwat5VcOPadlI06h7SubKYs
-         7oYomYCtORhmYWEl0xxwS6umufhaz0YMyrSoe4cgAiAiDoPd2g+Wqf6jBHXdCUTHNxzi
-         1GOQ==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fXDXEC0P0HmXmHBkg+xZhNAbb+sCHe1Z2rNKChcsi/c=;
+        b=F3hfQdjIYuBcD0uSuObpbKFWRVt5+qtKRrMxk9PEHxVERlE2SE49Gx0RjhIbZRQ2uU
+         qLptkwdR9mVPGVrFQT8xRtZpBs5MeybYM1XaSxCHxAl+r6vwYkq6TLr0FVh7yovi2yIk
+         ghikIJgEsjChwl7NWRRR98csJ5r1wojpiubN9Ish+2l2NryFcit78ScIhVPgqIhO0aH/
+         rq6K6oYWAGi/b6hZ0l1wv4tPL5zlqckFwMnaEqvK5xCzz2BJFpGOziVwmFpwaAZFvSky
+         KZd/Eg6fbCTNo3FPDBuSFGD3t1xQ7OK9COWtkcu2iREQOIUCJKg/hh8RtGCXehi824Za
+         mBGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UsA+27R3TBfsDeMt4sz63KudYROsIVNdtU+Tupx2XW4=;
-        b=jBWa1dhDUqfmLz9JxQ6XpdVzUCrsFooWetjw4H6DTJjkKg45seomc3w173IXlWWm3I
-         rIvVeMPcLgdwxin3jenzW4Zn87xLtTcLoBXqwwqXwXoJH4mF4qot6G+5Bn+Z+beGGYic
-         L2anFTBesL4JOw03KwqPbO57D7zrfaceMc79zBITy+XPfvn9f0tjE/QRYAmts2s2pQnt
-         AjGMQnWjpOb7SYBo6Ng6T1o/TQFpDuL6MrCu7QzVb2u0e0qRT/8X4aRaf8SXjJUw2aKC
-         qVCqAjWh8K/IBJjYGLxSEK3XE9subNGq5unvUxKmofohxEa0TjYpJkCpBdNACOXeCdtR
-         /1UQ==
-X-Gm-Message-State: AFqh2krWs6xDBKAKmsdlH3LcvsAdOBxpgtVlxSzwUieE3mNeXqM8My6U
-        DbglduvKAweIQYlNFWq0+FtQVX8FgvL/5g==
-X-Google-Smtp-Source: AMrXdXvI8MQ/PEZVKzFa2AIUW7/o8qkzzhnxe/pMFiiw/vQ+8qvD6aMIpIkJhrQOYo6cKnpSdJqM4A==
-X-Received: by 2002:ac8:70d9:0:b0:3b3:7707:9b92 with SMTP id g25-20020ac870d9000000b003b377079b92mr59197589qtp.15.1674855836788;
-        Fri, 27 Jan 2023 13:43:56 -0800 (PST)
-Received: from grant-fedora.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
-        by smtp.gmail.com with ESMTPSA id pe27-20020a05620a851b00b0071883954df4sm2009156qkn.103.2023.01.27.13.43.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jan 2023 13:43:56 -0800 (PST)
-From:   Grant Seltzer <grantseltzer@gmail.com>
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fXDXEC0P0HmXmHBkg+xZhNAbb+sCHe1Z2rNKChcsi/c=;
+        b=M9jhzpGvHfmH6/0L6Xt5cPjXnc5PZ6TG4uSgGbIRDKqjZaXSEK5+IS8xUgnV2bIkAi
+         ny4Z62kZxaHV0RPjUt6q0cKtjKn+COCyy29qY/efF61XAe3d8cpjldhnnTW6z6s/9mmD
+         GfGrQyrMu8yTBXeRWQEN+/VPvbPx6nOu9GzOyYHaZRp3CGykXq79u9sUC33feEHBkB1r
+         EUAGYNOPHuACgv28WtWCD4zXANoXD4mM3xZ9i7Q8ULozjBghuQUzXXALtRRuQqRT7gol
+         aJlLZQyUSafKb2b+NNRqJ7fyY4LdyFs8qtBBe/J1hRlHR4ENauUHixmx60oOnPMvfMT3
+         HJ3A==
+X-Gm-Message-State: AO0yUKXvxtr/4j7X5sDfUet2jFA9/1SgWdK6UGJsZNqvXfxh0SE1vqf/
+        e8Y7aKLzlMq9xrHFSrne0TqJJxyO3pQQYNWyjIt+niBFkVHBgz+HMf0IY8fJgd+8w1SKF5BJlPT
+        LP4SXZ1ShGg4kfbm9ZoWobIT4JD5K/JMu8qqmt/MfK6ZEM9ouaQ==
+X-Google-Smtp-Source: AK7set/1Z1NnhvlMKk8cwFHZcB+zvvPPula9FGeZngM7loxMskpb+zj+nrINEra8RQKABCQR+QrwKUc=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a81:d353:0:b0:507:fb46:dda2 with SMTP id
+ d19-20020a81d353000000b00507fb46dda2mr1209613ywl.39.1674856626670; Fri, 27
+ Jan 2023 13:57:06 -0800 (PST)
+Date:   Fri, 27 Jan 2023 13:57:05 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.39.1.456.gfc5497dd1b-goog
+Message-ID: <20230127215705.1254316-1-sdf@google.com>
+Subject: [PATCH bpf-next] selftest/bpf: Make crashes more debuggable in test_progs
+From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, grantseltzer@gmail.com
-Subject: [PATCH bpf-next] Add support for tracing programs in BPF_PROG_RUN
-Date:   Fri, 27 Jan 2023 16:43:53 -0500
-Message-Id: <20230127214353.628551-1-grantseltzer@gmail.com>
-X-Mailer: git-send-email 2.39.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,118 +68,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch changes the behavior of how BPF_PROG_RUN treats tracing
-(fentry/fexit) programs. Previously only a return value is injected
-but the actual program was not run. New behavior mirrors that of
-running raw tracepoint BPF programs which actually runs the
-instructions of the program via `bpf_prog_run()`
+Reset stdio before printing verbose log of the SIGSEGV'ed test.
+Otherwise, it's hard to understand what's going on in the cases like [0].
 
-Tracing programs only needs to support an input context so we validate
-that non-relevant attributes are not set.
+With the following patch applied:
 
-Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+	--- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+	+++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+	@@ -392,6 +392,11 @@ void test_xdp_metadata(void)
+	 		       "generate freplace packet"))
+	 		goto out;
+
+	+
+	+	ASSERT_EQ(1, 2, "oops");
+	+	int *x = 0;
+	+	*x = 1; /* die */
+	+
+	 	while (!retries--) {
+	 		if (bpf_obj2->bss->called)
+	 			break;
+
+Before:
+
+ #281     xdp_metadata:FAIL
+Caught signal #11!
+Stack trace:
+./test_progs(crash_handler+0x1f)[0x55c919d98bcf]
+/lib/x86_64-linux-gnu/libc.so.6(+0x3bf90)[0x7f36aea5df90]
+./test_progs(test_xdp_metadata+0x1db0)[0x55c919d8c6d0]
+./test_progs(+0x23b438)[0x55c919d9a438]
+./test_progs(main+0x534)[0x55c919d99454]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2718a)[0x7f36aea4918a]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x85)[0x7f36aea49245]
+./test_progs(_start+0x21)[0x55c919b82ef1]
+
+After:
+
+test_xdp_metadata:PASS:ip netns add xdp_metadata 0 nsec
+open_netns:PASS:malloc token 0 nsec
+open_netns:PASS:open /proc/self/ns/net 0 nsec
+open_netns:PASS:open netns fd 0 nsec
+open_netns:PASS:setns 0 nsec
+..
+test_xdp_metadata:FAIL:oops unexpected oops: actual 1 != expected 2
+ #281     xdp_metadata:FAIL
+Caught signal #11!
+Stack trace:
+./test_progs(crash_handler+0x1f)[0x562714a76bcf]
+/lib/x86_64-linux-gnu/libc.so.6(+0x3bf90)[0x7fa663f9cf90]
+./test_progs(test_xdp_metadata+0x1db0)[0x562714a6a6d0]
+./test_progs(+0x23b438)[0x562714a78438]
+./test_progs(main+0x534)[0x562714a77454]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2718a)[0x7fa663f8818a]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x85)[0x7fa663f88245]
+./test_progs(_start+0x21)[0x562714860ef1]
+
+0: https://github.com/kernel-patches/bpf/actions/runs/4019879316/jobs/6907358876
+
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- net/bpf/test_run.c | 72 ++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 67 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/test_progs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 8da0d73b368e..e4023c7b3bc7 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -794,14 +794,34 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
- 	return data;
- }
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 4716e38e153a..c5f852163246 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -975,12 +975,12 @@ void crash_handler(int signum)
  
-+struct bpf_tracing_test_run_info {
-+	struct bpf_prog *prog;
-+	void *ctx;
-+	u32 retval;
-+};
-+
-+static void
-+__bpf_prog_test_run_tracing(void *data)
-+{
-+	struct bpf_tracing_test_run_info *info = data;
-+
-+	rcu_read_lock();
-+	info->retval = bpf_prog_run(info->prog, info->ctx);
-+	rcu_read_unlock();
-+}
-+
- int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 			      const union bpf_attr *kattr,
- 			      union bpf_attr __user *uattr)
- {
- 	struct bpf_fentry_test_t arg = {};
- 	u16 side_effect = 0, ret = 0;
--	int b = 2, err = -EFAULT;
--	u32 retval = 0;
-+	int b = 2, err = -EFAULT, current_cpu;
-+
-+	void __user *ctx_in = u64_to_user_ptr(kattr->test.ctx_in);
-+	__u32 ctx_size_in = kattr->test.ctx_size_in;
-+	struct bpf_tracing_test_run_info info;
-+	int cpu = kattr->test.cpu;
+ 	sz = backtrace(bt, ARRAY_SIZE(bt));
  
- 	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
- 		return -EINVAL;
-@@ -828,11 +848,53 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 		goto out;
++	if (env.stdout)
++		stdio_restore();
+ 	if (env.test) {
+ 		env.test_state->error_cnt++;
+ 		dump_test_log(env.test, env.test_state, true, false);
  	}
- 
--	retval = ((u32)side_effect << 16) | ret;
--	if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval)))
--		goto out;
-+	/* doesn't support data_in/out, ctx_out, duration, or repeat */
-+	if (kattr->test.data_in || kattr->test.data_out ||
-+	    kattr->test.ctx_out || kattr->test.duration ||
-+	    kattr->test.repeat || kattr->test.batch_size)
-+		return -EINVAL;
-+
-+	if (ctx_size_in < prog->aux->max_ctx_offset ||
-+	    ctx_size_in > MAX_BPF_FUNC_ARGS * sizeof(u64))
-+		return -EINVAL;
-+
-+	if ((kattr->test.flags & BPF_F_TEST_RUN_ON_CPU) == 0 && cpu != 0)
-+		return -EINVAL;
-+
-+	if (ctx_size_in) {
-+		info.ctx = memdup_user(ctx_in, ctx_size_in);
-+		if (IS_ERR(info.ctx))
-+			return PTR_ERR(info.ctx);
-+	} else {
-+		info.ctx = NULL;
-+	}
- 
- 	err = 0;
-+	info.prog = prog;
-+
-+	current_cpu = get_cpu();
-+	if ((kattr->test.flags & BPF_F_TEST_RUN_ON_CPU) == 0 ||
-+	    cpu == current_cpu) {
-+		__bpf_prog_test_run_tracing(&info);
-+	} else if (cpu >= nr_cpu_ids || !cpu_online(cpu)) {
-+		/* smp_call_function_single() also checks cpu_online()
-+		 * after csd_lock(). However, since cpu is from user
-+		 * space, let's do an extra quick check to filter out
-+		 * invalid value before smp_call_function_single().
-+		 */
-+		err = -ENXIO;
-+	} else {
-+		err = smp_call_function_single(cpu, __bpf_prog_test_run_tracing,
-+					       &info, 1);
-+	}
-+	put_cpu();
-+
-+	if (!err &&
-+	    copy_to_user(&uattr->test.retval, &info.retval, sizeof(u32)))
-+		err = -EFAULT;
-+
-+	kfree(info.ctx);
-+
- out:
- 	trace_bpf_test_finish(&err);
- 	return err;
+-	if (env.stdout)
+-		stdio_restore();
+ 	if (env.worker_id != -1)
+ 		fprintf(stderr, "[%d]: ", env.worker_id);
+ 	fprintf(stderr, "Caught signal #%d!\nStack trace:\n", signum);
 -- 
-2.39.1
+2.39.1.456.gfc5497dd1b-goog
 
