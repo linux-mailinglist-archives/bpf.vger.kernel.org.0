@@ -2,159 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B9E67E391
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 12:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A1E67E50D
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 13:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbjA0Lid (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 06:38:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56532 "EHLO
+        id S233456AbjA0MXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 07:23:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232475AbjA0Lic (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 06:38:32 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CE462240
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 03:38:04 -0800 (PST)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30RB9WRY026743;
-        Fri, 27 Jan 2023 11:36:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=PTjADg7m27BCig0NX/Srii3XTsu0HcNg3AdhBaiCLf0=;
- b=F4yrwJDprna+VtID+XA8YJmOGFHxh+UHlmdZf6Pt1UJSa9P4L/AXV8/gE/AlfGJ9WphA
- 5lmyjMiflejSM7mKO9WTqVPzNEo6vp1AVOo1bTXprS5982fc+M+ppqiPm40tMu3Q3s5W
- UN2qCf89diESL8Sg1Zq7FHUN9SMXiGCvURRE3n9lxp5mTzmw2G1pzSfy1ruA3tzG7xfu
- hJG6gj1o1+7NnjmZfWalYNYeTiamwR3iuOgTUjobUoZATutuT24mChnYQMXWmjolUQ8n
- dfTYzCx1QYqu7M7+wLRg4kCBOEISq/SA1+yxOT9Zfq6t8b6Fmt80ypqLv4ig38RegEuB ew== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3ncb55uth8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Jan 2023 11:36:39 +0000
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30RBQx9P009758;
-        Fri, 27 Jan 2023 11:36:39 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3ncb55utgf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Jan 2023 11:36:39 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30R5XXWM026670;
-        Fri, 27 Jan 2023 11:36:37 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3n87p6ffnu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Jan 2023 11:36:37 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30RBaX7Q19136800
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Jan 2023 11:36:33 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7506320040;
-        Fri, 27 Jan 2023 11:36:33 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA28220043;
-        Fri, 27 Jan 2023 11:36:32 +0000 (GMT)
-Received: from [9.179.11.57] (unknown [9.179.11.57])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 27 Jan 2023 11:36:32 +0000 (GMT)
-Message-ID: <2dd35469c9df5d6ab81d798467e13eab82b1d254.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 24/24] s390/bpf: Implement
- bpf_jit_supports_kfunc_call()
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Date:   Fri, 27 Jan 2023 12:36:32 +0100
-In-Reply-To: <20230126012812.vqg3oktknpnvvssf@macbook-pro-6.dhcp.thefacebook.com>
-References: <20230125213817.1424447-1-iii@linux.ibm.com>
-         <20230125213817.1424447-25-iii@linux.ibm.com>
-         <20230126012812.vqg3oktknpnvvssf@macbook-pro-6.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
+        with ESMTP id S234240AbjA0MWu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 07:22:50 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6F87F693;
+        Fri, 27 Jan 2023 04:20:26 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id m7-20020a17090a71c700b0022c0c070f2eso7773240pjs.4;
+        Fri, 27 Jan 2023 04:20:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LLT1Nv3FsKGMyXLmpa+ThlcdDGK8ls8MWUnHvX54ufk=;
+        b=H/A/5YZowQIRbQhn7LrdJgM3fSXHE4dLbYV2js9dGcDWk3J5c6Zmz4NIWQskDigE17
+         bw9Q1PyqorE4xx5Hm5CvkH3r77hNYlZJnjKM4Ikv1TeqZuPFO2AL2lUe5HDKu+EaYs9R
+         zCuz5dx81flK7bivAKOoWzkIvGmqKOKyzY6RfDJBJbe7aSm5ThV+ltB4lBVbEYr1R5yS
+         6jI+PLuoqnxrNk6oCd9yexwPIwZd16pMS8Xc4WOhZUgHhV5ipd41qAJCdLteUdHyaVPQ
+         G6Kf3o2QamOfmnhp/ch5ZeQhIcqcQl7SfOLEvfkniZrIaBP+Kik48xH1jgplegwrE3LR
+         fIpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LLT1Nv3FsKGMyXLmpa+ThlcdDGK8ls8MWUnHvX54ufk=;
+        b=X+r7cirXA93CWqiLQ5IJbNnLnvRd70l74ViNlwN9+tIXenv2DaA6DBIVUSHc7Bzb2I
+         6Fwg60zG+TBHEztBWiu3eyI577Jy+fV1FU9ZxCZcpl8RYxwIjCTOB+x3kUZPdJ0n1ytJ
+         C2ulMq5EJmsxlE0863qdCstMYfUHUa8u1sK3Pn0DO96vr/dv1COJ6w9awxMXiJsVrrv/
+         VhR0/qJZMb6+XzwGppI1wlxYJrPpvZ21ZcAWGrvlJR3jMdhtjLrL1WNNhc9QKt7+7Cpt
+         45N36zDHgadseBtKJa/MG+rIqUsi9sbcoV8d20sCYt3c14DyvaS0FW82D3h4Etn/uiat
+         hwCg==
+X-Gm-Message-State: AO0yUKWw89Co7FLh7+9mxKh8/hjM9W/G2DCXWZEXCieYWwl6yEjFATk7
+        pbnDBTYQ3FzN79Ud1bQHZ0k=
+X-Google-Smtp-Source: AK7set82V7nuhM/DZp31PjOW8pLz2TzfBZeTfHCbBHNMeYlsVOHaZWR2stNZ1kLzsMWNujdXcPJ+6g==
+X-Received: by 2002:a17:903:2444:b0:196:15f6:bafc with SMTP id l4-20020a170903244400b0019615f6bafcmr13847684pls.47.1674822025876;
+        Fri, 27 Jan 2023 04:20:25 -0800 (PST)
+Received: from KERNELXING-MB0.tencent.com ([114.253.32.172])
+        by smtp.gmail.com with ESMTPSA id d18-20020a170903231200b0019339f3368asm2762942plh.3.2023.01.27.04.20.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Jan 2023 04:20:25 -0800 (PST)
+From:   Jason Xing <kerneljasonxing@gmail.com>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, richardcochran@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        alexandr.lobakin@intel.com
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kerneljasonxing@gmail.com, Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH v2 net] ixgbe: allow to increase MTU to some extent with XDP enabled
+Date:   Fri, 27 Jan 2023 20:20:18 +0800
+Message-Id: <20230127122018.2839-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nvFXQAorlqvO5kFPpHiUNdNwYoqA3B7A
-X-Proofpoint-ORIG-GUID: SGhVJ5SVmS8g84toSdCMEKXGsF3nvLJq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-27_06,2023-01-27_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
- suspectscore=0 priorityscore=1501 phishscore=0 mlxscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301270109
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTAxLTI1IGF0IDE3OjI4IC0wODAwLCBBbGV4ZWkgU3Rhcm92b2l0b3Ygd3Jv
-dGU6Cj4gT24gV2VkLCBKYW4gMjUsIDIwMjMgYXQgMTA6Mzg6MTdQTSArMDEwMCwgSWx5YSBMZW9z
-aGtldmljaCB3cm90ZToKPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAv
-KiBTaWduLWV4dGVuZCB0aGUga2Z1bmMgYXJndW1lbnRzLiAqLwo+ID4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoGlmIChpbnNuLT5zcmNfcmVnID09IEJQRl9QU0VVRE9fS0ZVTkNfQ0FM
-TCkgewo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBt
-ID0gYnBmX2ppdF9maW5kX2tmdW5jX21vZGVsKGZwLCBpbnNuKTsKPiA+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKCFtKQo+ID4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJu
-IC0xOwo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqBmb3IgKGogPSAwOyBqIDwgbS0+bnJfYXJnczsgaisrKSB7Cj4gPiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoc2ln
-bl9leHRlbmQoaml0LCBCUEZfUkVHXzEgKyBqLAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqBtLT5hcmdfc2l6ZVtqXSwKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgbS0+YXJnX2ZsYWdzW2pdKSkKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqByZXR1cm4gLTE7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoH0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gCj4gSXMgdGhp
-cyBiZWNhdXNlIHMzOTAgZG9lc24ndCBoYXZlIHN1YnJlZ2lzdGVycz8KPiBDb3VsZCB5b3UgZ2l2
-ZSBhbiBleGFtcGxlIHdoZXJlIGl0J3MgbmVjZXNzYXJ5Pwo+IEknbSBndWVzc2luZyBhIGJwZiBw
-cm9nIGNvbXBpbGVkIHdpdGggYWx1MzIgYW5kIG9wZXJhdGVzIG9uIHNpZ25lZAo+IGludAo+IHRo
-YXQgaXMgcGFzc2VkIGludG8gYSBrZnVuYyB0aGF0IGV4cGVjdHMgJ2ludCcgaW4gNjQtYml0IHJl
-Zz8KClByZWNpc2VseS4gVGhlIHRlc3QgYWRkZWQgaW4gMTMvMjQgZmFpbHMgd2l0aG91dCB0aGlz
-OgoKdmVyaWZ5X3N1Y2Nlc3M6UEFTUzpza2VsIDAgbnNlYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIAp2ZXJpZnlfc3VjY2VzczpQQVNTOmJwZl9vYmplY3RfX2ZpbmRfcHJv
-Z3JhbV9ieV9uYW1lIDAgbnNlYyAgICAgICAgICAgCnZlcmlmeV9zdWNjZXNzOlBBU1M6a2Z1bmNf
-Y2FsbF90ZXN0NCAwIG5zZWMgICAgICAgICAgICAgICAgICAgICAgICAgICAKdmVyaWZ5X3N1Y2Nl
-c3M6RkFJTDpyZXR2YWwgdW5leHBlY3RlZCByZXR2YWw6IGFjdHVhbCA0Mjk0OTY2MDY1ICE9CmV4
-cGVjdGVkIC0xMjM0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAKIzk0LzEwICAga2Z1bmNfY2FsbC9rZnVuY19jYWxsX3Rlc3Q0OkZBSUwgICAg
-ICAgICAgICAgICAgICAgIAoKTG9va2luZyBhdCB0aGUgYXNzZW1ibHk6Cgo7IGxvbmcgbm9pbmxp
-bmUgYnBmX2tmdW5jX2NhbGxfdGVzdDQoc2lnbmVkIGNoYXIgYSwgc2hvcnQgYiwgaW50IGMsCmxv
-bmcgZCkKMDAwMDAwMDAwMDkzNmE3OCA8YnBmX2tmdW5jX2NhbGxfdGVzdDQ+OgogIDkzNmE3ODog
-ICAgICAgYzAgMDQgMDAgMDAgMDAgMDAgICAgICAgamdub3AgICA5MzZhNzgKPGJwZl9rZnVuY19j
-YWxsX3Rlc3Q0Pgo7IAlyZXR1cm4gKGxvbmcpYSArIChsb25nKWIgKyAobG9uZyljICsgZDsKICA5
-MzZhN2U6ICAgICAgIGI5IDA4IDAwIDQ1ICAgICAgICAgICAgIGFnciAgICAgJXI0LCVyNQogIDkz
-NmE4MjogICAgICAgYjkgMDggMDAgNDMgICAgICAgICAgICAgYWdyICAgICAlcjQsJXIzCiAgOTM2
-YTg2OiAgICAgICBiOSAwOCAwMCAyNCAgICAgICAgICAgICBhZ3IgICAgICVyMiwlcjQKICA5MzZh
-OGE6ICAgICAgIGMwIGY0IDAwIDFlIDNiIDI3ICAgICAgIGpnICAgICAgY2ZlMGQ4CjxfX3MzOTBf
-aW5kaXJlY3RfanVtcF9yMTQ+CgpBcyBwZXIgdGhlIHMzOTB4IEFCSSwgYnBmX2tmdW5jX2NhbGxf
-dGVzdDQoKSBoYXMgdGhlIHJpZ2h0IHRvIGFzc3VtZQp0aGF0IGEsIGIgYW5kIGMgYXJlIHNpZ24t
-ZXh0ZW5kZWQgYnkgdGhlIGNhbGxlciwgd2hpY2ggcmVzdWx0cyBpbiB1c2luZwo2NC1iaXQgYWRk
-aXRpb25zIChhZ3IpIHdpdGhvdXQgYW55IGFkZGl0aW9uYWwgY29udmVyc2lvbnMuCgpPbiB0aGUg
-SklUZWQgY29kZSBzaWRlICh3aXRob3V0IHRoaXMgaHVuaykgd2UgaGF2ZToKCjsgdG1wID0gYnBm
-X2tmdW5jX2NhbGxfdGVzdDQoLTMsIC0zMCwgLTIwMCwgLTEwMDApOwo7ICAgICAgICA1OiAgICAg
-ICBiNCAxMCAwMCAwMCBmZiBmZiBmZiBmZCB3MSA9IC0zCiAgIDB4M2ZmN2ZkY2RhZDQ6ICAgICAg
-IGxsaWxmICAgJXIyLDB4ZmZmZmZmZmQKOyAgICAgICAgNjogICAgICAgYjQgMjAgMDAgMDAgZmYg
-ZmYgZmYgZTIgdzIgPSAtMzAKICAgMHgzZmY3ZmRjZGFkYTogICAgICAgbGxpbGYgICAlcjMsMHhm
-ZmZmZmZlMgo7ICAgICAgICA3OiAgICAgICBiNCAzMCAwMCAwMCBmZiBmZiBmZiAzOCB3MyA9IC0y
-MDAKICAgMHgzZmY3ZmRjZGFlMDogICAgICAgbGxpbGYgICAlcjQsMHhmZmZmZmYzOAo7ICAgICAg
-IDg6ICAgICAgIGI3IDQwIDAwIDAwIGZmIGZmIGZjIDE4IHI0ID0gLTEwMDAKICAgMHgzZmY3ZmRj
-ZGFlNjogICAgICAgbGdmaSAgICAlcjUsLTEwMDAKICAgMHgzZmY3ZmRjZGFlYzogICAgICAgbXZj
-ICAgICA2NCg0LCVyMTUpLDE2MCglcjE1KQogICAweDNmZjdmZGNkYWYyOiAgICAgICBsZ3JsICAg
-ICVyMSxicGZfa2Z1bmNfY2FsbF90ZXN0NEBHT1QKICAgMHgzZmY3ZmRjZGFmODogICAgICAgYnJh
-c2wgICAlcjE0LF9fczM5MF9pbmRpcmVjdF9qdW1wX3IxCgpUaGlzIGZpcnN0IDMgbGxpbGZzIGFy
-ZSAzMi1iaXQgbG9hZHMsIHRoYXQgbmVlZCB0byBiZSBzaWduLWV4dGVuZGVkCnRvIDY0IGJpdHMu
-Cgo+ID4gK2Jvb2wgYnBmX2ppdF9zdXBwb3J0c19rZnVuY19jYWxsKHZvaWQpCj4gPiArewo+ID4g
-K8KgwqDCoMKgwqDCoMKgcmV0dXJuIHRydWU7Cj4gPiArfQo+IAo+IFRpbWVseSA6KSBUaGFua3Mg
-Zm9yIHdvcmtpbmcgaXQuCgo=
+From: Jason Xing <kernelxing@tencent.com>
+
+I encountered one case where I cannot increase the MTU size directly
+from 1500 to 2000 with XDP enabled if the server is equipped with
+IXGBE card, which happened on thousands of servers in production
+environment.
+
+This patch follows the behavior of changing MTU as i40e/ice does.
+
+Referrences:
+commit 23b44513c3e6f ("ice: allow 3k MTU for XDP")
+commit 0c8493d90b6bb ("i40e: add XDP support for pass and drop actions")
+
+Link: https://lore.kernel.org/lkml/20230121085521.9566-1-kerneljasonxing@gmail.com/
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+v2:
+1) change the commit message.
+2) modify the logic when changing MTU size suggested by Maciej and Alexander.
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 25 ++++++++++++-------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index ab8370c413f3..2c1b6eb60436 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -6777,6 +6777,18 @@ static void ixgbe_free_all_rx_resources(struct ixgbe_adapter *adapter)
+ 			ixgbe_free_rx_resources(adapter->rx_ring[i]);
+ }
+ 
++/**
++ * ixgbe_max_xdp_frame_size - returns the maximum allowed frame size for XDP
++ * @adapter - device handle, pointer to adapter
++ */
++static int ixgbe_max_xdp_frame_size(struct ixgbe_adapter *adapter)
++{
++	if (PAGE_SIZE >= 8192 || adapter->flags2 & IXGBE_FLAG2_RX_LEGACY)
++		return IXGBE_RXBUFFER_2K;
++	else
++		return IXGBE_RXBUFFER_3K;
++}
++
+ /**
+  * ixgbe_change_mtu - Change the Maximum Transfer Unit
+  * @netdev: network interface device structure
+@@ -6788,18 +6800,13 @@ static int ixgbe_change_mtu(struct net_device *netdev, int new_mtu)
+ {
+ 	struct ixgbe_adapter *adapter = netdev_priv(netdev);
+ 
+-	if (adapter->xdp_prog) {
++	if (ixgbe_enabled_xdp_adapter(adapter)) {
+ 		int new_frame_size = new_mtu + ETH_HLEN + ETH_FCS_LEN +
+ 				     VLAN_HLEN;
+-		int i;
+-
+-		for (i = 0; i < adapter->num_rx_queues; i++) {
+-			struct ixgbe_ring *ring = adapter->rx_ring[i];
+ 
+-			if (new_frame_size > ixgbe_rx_bufsz(ring)) {
+-				e_warn(probe, "Requested MTU size is not supported with XDP\n");
+-				return -EINVAL;
+-			}
++		if (new_frame_size > ixgbe_max_xdp_frame_size(adapter)) {
++			e_warn(probe, "Requested MTU size is not supported with XDP\n");
++			return -EINVAL;
+ 		}
+ 	}
+ 
+-- 
+2.37.3
 
