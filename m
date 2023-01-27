@@ -2,302 +2,305 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C4667F15F
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 23:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08C367F163
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 23:51:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjA0Wrd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 17:47:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        id S229470AbjA0WvV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 17:51:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbjA0Wrc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 17:47:32 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2E35CE67
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 14:47:04 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9so6402424pll.9
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 14:47:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zzipOJr47iPyvNOfdx8GYLYk05XSaCbDGO47K+hsrnU=;
-        b=QXtCnZH39cpD4DmomSJnMPgeLKDwxuF2DdSoGEGeig98uk2PEjyZ2q28DjFfliOZ5s
-         OmB9dj9AVBJ9SMWGd15nWmjkqwGPuVwfQk8wbMK8ly54m3C5sQ6JsSpXX29uPuar3pZ+
-         7QV5k9okYsUQCa5Bt6VHqlzpeooAn7dGfBQzM/K4CMX2o5SS+kqKkRU3qaJrkApROrBP
-         nzUquLDllNYsBVUSJ0i86T9/wG3iLqFxzA+8Yms1Yg383fiOyyNwgUN5g+gvO6xnWqQI
-         uUBIsi0vESqpO+Ne7QzqWdnPu76Df4N5wSlYAMUFktLcp0tcOOIH+1I/b+9Dr5WouxZB
-         M0OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zzipOJr47iPyvNOfdx8GYLYk05XSaCbDGO47K+hsrnU=;
-        b=DJX9oQVmCaxhtY1pWl47GIOa8w4qGK/QdjIEm7ga9GqSzPWve7MpCYWXFewqRc+1tC
-         TiVA23fZKWgPeI5/hMGXSuNHWDc7OS/1y4Ai3l/FVQHzQNmTyfb/swqq6u17i0rvhzTh
-         qi0WzevZ4vg7K/lqi5b9+3NtCvpFcGP9JtoLo4VH3bhE499OFqglRao7djAkHmkDGOBT
-         jaqABO6/1yMFAtUBWQ4caXo5JFYlspnzgkpSOtbcV2VDUvFuYSjRFsWcRVTUO1OYrFx7
-         pNeMPicpod2xZQZXaV2NhdS847EbguuxmblPY85kDZt7Y7u7i69M3MlQiN4MXuJXZwt1
-         Zzxw==
-X-Gm-Message-State: AO0yUKWZCG9VLstfMLwr8Tt+Ycn+r3jchgrSHKDpSQbIKmSGsb1JKJeH
-        mzWCCML94DYlMGWj4Nb5JsJKY38iGBs=
-X-Google-Smtp-Source: AK7set+UfQxT1ByYG5gxTrPAx10B3c33e//+TWdxq7KGBm8uEG9MN/JJlOQsmvMOixyWSM4AujaeQg==
-X-Received: by 2002:a17:903:1107:b0:196:191b:6b22 with SMTP id n7-20020a170903110700b00196191b6b22mr18692731plh.59.1674859624044;
-        Fri, 27 Jan 2023 14:47:04 -0800 (PST)
-Received: from mariner-vm.. ([131.107.8.90])
-        by smtp.gmail.com with ESMTPSA id i2-20020a170902c28200b00188fadb71ecsm3373012pld.16.2023.01.27.14.47.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jan 2023 14:47:03 -0800 (PST)
-From:   Dave Thaler <dthaler1968@googlemail.com>
-To:     bpf@vger.kernel.org
-Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
-Subject: [PATCH bpf-next v4] bpf, docs: Use consistent names for the same field
-Date:   Fri, 27 Jan 2023 22:45:55 +0000
-Message-Id: <20230127224555.916-1-dthaler1968@googlemail.com>
-X-Mailer: git-send-email 2.33.4
+        with ESMTP id S229447AbjA0WvU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 17:51:20 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9292365C
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 14:51:18 -0800 (PST)
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30RMXTUF003322;
+        Fri, 27 Jan 2023 22:51:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=vrAQp7Tsb/AANUzsOTtPZt9rSQqoRTiXPriAY3AYRjM=;
+ b=S6HxeYvMVEIvNlH/vuRjuVvBF50s6hwjhwmmW33C8c35kKMHjnxw+IonLVE5Jy0+5zCt
+ Z6K+irRdJRtdtvYNGuucry9BeObQ/hsMlW4qzdVV39bfpXeLhuSYQipIv28/jqSKH8ti
+ 3OsjP2Uy+/02CXy6JTmbzJ0ONH+LQN0G33SyiFq5P7RO9P9bA9rBqoW5IfAq2rkieFTU
+ kFgV6B8sC3lBVbZMUqYSQHv5SiM4XVbvYAhMovPpyFa/1uo8nZpSgT3WyWdRGCWfdc7N
+ g8YdYfro7rGaOXGYp7AKXjR2DBJO5ZTFyE/zMBy5hhf4g/Z5AnlUauAuPOoz6g3C4q+M qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ncqgwran7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Jan 2023 22:51:02 +0000
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30RMja7N012650;
+        Fri, 27 Jan 2023 22:51:01 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ncqgwramq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Jan 2023 22:51:01 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30R3v7wG029886;
+        Fri, 27 Jan 2023 22:50:59 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma04fra.de.ibm.com (PPS) with ESMTPS id 3n87p6dsc3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Jan 2023 22:50:59 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30RMouMf25035232
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Jan 2023 22:50:56 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 12A0E20043;
+        Fri, 27 Jan 2023 22:50:56 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9156420040;
+        Fri, 27 Jan 2023 22:50:55 +0000 (GMT)
+Received: from [9.179.11.57] (unknown [9.179.11.57])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 27 Jan 2023 22:50:55 +0000 (GMT)
+Message-ID: <bed8d554582c171765083c849750af37656aa253.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 00/24] Support bpf trampoline for s390x
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Date:   Fri, 27 Jan 2023 23:50:55 +0100
+In-Reply-To: <CAEf4Bzb3uiSHtUbgVWmkWuJ5Sw1UZd4c_iuS4QXtUkXmTTtXuQ@mail.gmail.com>
+References: <20230125213817.1424447-1-iii@linux.ibm.com>
+         <CAEf4BzZP5771Wbv4w1gM+8vcGwvhmFi2tH-8aSGfnzvb=ZgaJg@mail.gmail.com>
+         <8e9f72c6b43361a778e623085eb5b7aea7bd0fbd.camel@linux.ibm.com>
+         <CAEf4Bzb3uiSHtUbgVWmkWuJ5Sw1UZd4c_iuS4QXtUkXmTTtXuQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: B7onH34S4W5kKyEsiCbva640HbVNqXlZ
+X-Proofpoint-GUID: AU7mxH4gDNqwANmyuAq3dF3ml1lcng6n
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-27_14,2023-01-27_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 impostorscore=0 malwarescore=0 clxscore=1015 phishscore=0
+ spamscore=0 adultscore=0 priorityscore=1501 bulkscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301270207
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Dave Thaler <dthaler@microsoft.com>
+On Fri, 2023-01-27 at 09:24 -0800, Andrii Nakryiko wrote:
+> On Fri, Jan 27, 2023 at 8:51 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> wrote:
+> >=20
+> > On Wed, 2023-01-25 at 16:45 -0800, Andrii Nakryiko wrote:
+> > > On Wed, Jan 25, 2023 at 1:39 PM Ilya Leoshkevich
+> > > <iii@linux.ibm.com>
+> > > wrote:
+> > > >=20
+> > > > Hi,
+> > > >=20
+> > > > This series implements poke, trampoline, kfunc, mixing subprogs
+> > > > and
+> > > > tailcalls, and fixes a number of tests on s390x.
+> > > >=20
+> > > > The following failures still remain:
+> > > >=20
+> > > > #52=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 core_read_macros:FAIL
+> > > > Uses BPF_PROBE_READ(), shouldn't there be
+> > > > BPF_PROBE_READ_KERNEL()?
+> > >=20
+> > > BPF_PROBE_READ(), similarly to BPF_CORE_READ() both use
+> > > bpf_probe_read_kernel() internally, as it's most common use case.
+> > > We
+> > > have separate BPF_PROBE_READ_USER() and BPF_CORE_READ_USER() for
+> > > when
+> > > bpf_probe_read_user() has to be used.
+> >=20
+> > At least purely from the code perspective, BPF_PROBE_READ() seems
+> > to
+> > delegate to bpf_probe_read(). The following therefore helps with
+> > this
+> > test:
+> >=20
+> > --- a/tools/lib/bpf/bpf_core_read.h
+> > +++ b/tools/lib/bpf/bpf_core_read.h
+> > @@ -364,7 +364,7 @@ enum bpf_enum_value_kind {
+> >=20
+> > =C2=A0/* Non-CO-RE variant of BPF_CORE_READ_INTO() */
+> > =C2=A0#define BPF_PROBE_READ_INTO(dst, src, a, ...) ({
+> > \
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ___core_read(bpf_probe_read, bpf_=
+probe_read,
+> > \
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ___core_read(bpf_probe_read_kerne=
+l, bpf_probe_read_kernel,
+> > \
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dst, (src), a, ##__VA_A=
+RGS__)
+> > \
+> > =C2=A0})
+> >=20
+> > @@ -400,7 +400,7 @@ enum bpf_enum_value_kind {
+> >=20
+> > =C2=A0/* Non-CO-RE variant of BPF_CORE_READ_STR_INTO() */
+> > =C2=A0#define BPF_PROBE_READ_STR_INTO(dst, src, a, ...) ({
+> > \
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ___core_read(bpf_probe_read_str, =
+bpf_probe_read,
+> > \
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ___core_read(bpf_probe_read_kerne=
+l_str,
+> > bpf_probe_read_kernel,
+> > \
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dst, (src), a, ##__VA_A=
+RGS__)
+> > \
+> > =C2=A0})
+> >=20
+> > but I'm not sure if there are backward compatibility concerns, or
+> > if
+> > libbpf is supposed to rewrite this when
+> > !ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
+>=20
+> Oh, this is just a bug, it was an omission when we converted
+> BPF_CORE_READ to bpf_probe_read_kernel. If you look at bpf_core_read
+> definition, it is using bpf_probe_read_kernel, which is also the
+> intent for BPF_PROBE_READ. Let's fix this.
+>=20
+> And there is no backwards compat concerns because libbpf will
+> automatically convert calls to bpf_probe_read_{kernel,user}[_str] to
+> bpf_probe_read[_str] if host kernel doesn't yet support kernel or
+> user
+> specific variants.
 
-Use consistent names for the same field, e.g., 'dst' vs 'dst_reg'.
-Previously a mix of terms were used for the same thing in various cases.
+Thanks for confirming! I will include the fix in v2.
 
-Signed-off-by: Dave Thaler <dthaler@microsoft.com>
----
-V3 -> V4: per David Vernet, minimize column widths
+> > > > #82=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 get_stack_raw_tp:FAIL
+> > > > get_stack_print_output:FAIL:user_stack corrupted user stack
+> > > > Known issue:
+> > > > We cannot reliably unwind userspace on s390x without DWARF.
+> > >=20
+> > > like in principle, or frame pointers (or some equivalent) needs
+> > > to be
+> > > configured for this to work?
+> > >=20
+> > > Asking also in the context of [0], where s390x was excluded. If
+> > > there
+> > > is actually a way to enable frame pointer-based stack unwinding
+> > > on
+> > > s390x, would be nice to hear from an expert.
+> > >=20
+> > > =C2=A0 [0] https://pagure.io/fesco/issue/2923
+> >=20
+> > For DWARFless unwinding we have -mbackchain (not to be confused
+> > with
+> > -fno-omit-frame-pointer, which we also have, but which just hurts
+> > performance without providing tangible benefits).
+> > -mbackchain has a few problems though:
+> >=20
+> > - It's not atomic. Here is a typical prologue with -mbackchain:
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1: stmg=C2=A0=C2=A0=C2=A0 %r=
+11,%r15,88(%r15)=C2=A0 # save non-volatile
+> > registers
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2: lgr=C2=A0=C2=A0=C2=A0=C2=
+=A0 %r14,%r15=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #=
+ %r14 =3D sp
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3: lay=C2=A0=C2=A0=C2=A0=C2=
+=A0 %r15,-160(%r15)=C2=A0=C2=A0=C2=A0=C2=A0 # sp -=3D 160
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4: stg=C2=A0=C2=A0=C2=A0=C2=
+=A0 %r14,0(%r15)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 # *(void **)sp =
+=3D %r14
+> >=20
+> > =C2=A0 The invariant here is that *(void **)%r15 is always a pointer to
+> > the
+> > =C2=A0 next frame. This means that if we unwind from (4), we are totally
+> > =C2=A0 broken. This does not happen if we unwind from any other
+> > instruction,
+> > =C2=A0 but still.
+> >=20
+> > - Unwinding from (1)-(3) is not particularly good either. PSW
+> > points to
+> > =C2=A0 the callee, but R15 points to the caller's frame.
+> >=20
+> > - Unwinding leaf functions is like the previous problem, but worse:
+> > =C2=A0 they often do not establish a stack frame at all, so PSW and R15
+> > are
+> > =C2=A0 out of sync for the entire duration of the call.
+> >=20
+> > Therefore .eh_frame-based unwinding is preferred, since it covers
+> > all
+> > these corner cases and is therefore reliable. From what I
+> > understand,
+> > adding .eh_frame unwinding to the kernel is not desirable. In an
+> > internal discussion we had another idea though: would it be
+> > possible to
+> > have an eBPF program that does .eh_frame parsing and unwinding? I
+> > understand that it can be technically challenging at the moment,
+> > but
+> > the end result would not be exploitable by crafting malicious
+> > .eh_frame sections, won't loop endlessly, will have good
+> > performance,
+> > etc.
+>=20
+> Thanks for details. This was all discussed at length in Fedora
+> -fno-omit-frame-pointer discussion I linked above, so no real need to
+> go over this again. .eh_frame-based unwinding on BPF side is
+> possible,
+> but only for processes that you knew about (and preprocessed) before
+> you started profiling session. Pre-processing is memory and
+> cpu-intensive operation on busy systems, and they will miss any
+> processes started during profiling. So as a general approach for
+> system-wide profiling it leaves a lot to be desired.
 
-V2 -> V3: per David Vernet, added bolding and updated terms for reg numbers
+Thanks for the explanation, I'll read the thread and come back if I
+get=C2=A0some new ideas not listed here.
 
-V1 -> V2: addressed comments from Alexei and Stanislav
----
- Documentation/bpf/instruction-set.rst | 113 ++++++++++++++++++--------
- 1 file changed, 77 insertions(+), 36 deletions(-)
+> Should we enable -mbackchain in our CI for s390x to be able to
+> capture
+> stack traces (even if on some instructions they might be incomplete
+> or
+> outright broken)?
 
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index 2d3fe59bd26..c1c17ee60ec 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -30,20 +30,56 @@ Instruction encoding
- eBPF has two instruction encodings:
- 
- * the basic instruction encoding, which uses 64 bits to encode an instruction
--* the wide instruction encoding, which appends a second 64-bit immediate value
--  (imm64) after the basic instruction for a total of 128 bits.
-+* the wide instruction encoding, which appends a second 64-bit immediate (i.e.,
-+  constant) value after the basic instruction for a total of 128 bits.
- 
--The basic instruction encoding looks as follows:
-+The basic instruction encoding is as follows, where MSB and LSB mean the most significant
-+bits and least significant bits, respectively:
- 
--=============  =======  ===============  ====================  ============
--32 bits (MSB)  16 bits  4 bits           4 bits                8 bits (LSB)
--=============  =======  ===============  ====================  ============
--immediate      offset   source register  destination register  opcode
--=============  =======  ===============  ====================  ============
-+=============  =======  =======  =======  ============
-+32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-+=============  =======  =======  =======  ============
-+imm            offset   src_reg  dst_reg  opcode
-+=============  =======  =======  =======  ============
-+
-+**imm**
-+  signed integer immediate value
-+
-+**offset**
-+  signed integer offset used with pointer arithmetic
-+
-+**src_reg**
-+  the source register number (0-10), except where otherwise specified
-+  (`64-bit immediate instructions`_ reuse this field for other purposes)
-+
-+**dst_reg**
-+  destination register number (0-10)
-+
-+**opcode**
-+  operation to perform
- 
- Note that most instructions do not use all of the fields.
- Unused fields shall be cleared to zero.
- 
-+As discussed below in `64-bit immediate instructions`_, a 64-bit immediate
-+instruction uses a 64-bit immediate value that is constructed as follows.
-+The 64 bits following the basic instruction contain a pseudo instruction
-+using the same format but with opcode, dst_reg, src_reg, and offset all set to zero,
-+and imm containing the high 32 bits of the immediate value.
-+
-+=================  ==================
-+64 bits (MSB)      64 bits (LSB)
-+=================  ==================
-+basic instruction  pseudo instruction
-+=================  ==================
-+
-+Thus the 64-bit immediate value is constructed as follows:
-+
-+  imm64 = (next_imm << 32) | imm
-+
-+where 'next_imm' refers to the imm value of the pseudo instruction
-+following the basic instruction.
-+
- Instruction classes
- -------------------
- 
-@@ -71,27 +107,32 @@ For arithmetic and jump instructions (``BPF_ALU``, ``BPF_ALU64``, ``BPF_JMP`` an
- ==============  ======  =================
- 4 bits (MSB)    1 bit   3 bits (LSB)
- ==============  ======  =================
--operation code  source  instruction class
-+code            source  instruction class
- ==============  ======  =================
- 
--The 4th bit encodes the source operand:
-+**code**
-+  the operation code, whose meaning varies by instruction class
- 
--  ======  =====  ========================================
--  source  value  description
--  ======  =====  ========================================
--  BPF_K   0x00   use 32-bit immediate as source operand
--  BPF_X   0x08   use 'src_reg' register as source operand
--  ======  =====  ========================================
-+**source**
-+  the source operand location, which unless otherwise specified is one of:
- 
--The four MSB bits store the operation code.
-+  ======  =====  ==============================================
-+  source  value  description
-+  ======  =====  ==============================================
-+  BPF_K   0x00   use 32-bit 'imm' value as source operand
-+  BPF_X   0x08   use 'src_reg' register value as source operand
-+  ======  =====  ==============================================
- 
-+**instruction class**
-+  the instruction class (see `Instruction classes`_)
- 
- Arithmetic instructions
- -----------------------
- 
- ``BPF_ALU`` uses 32-bit wide operands while ``BPF_ALU64`` uses 64-bit wide operands for
- otherwise identical operations.
--The 'code' field encodes the operation as below:
-+The 'code' field encodes the operation as below, where 'src' and 'dst' refer
-+to the values of the source and destination registers, respectively.
- 
- ========  =====  ==========================================================
- code      value  description
-@@ -121,19 +162,19 @@ the destination register is unchanged whereas for ``BPF_ALU`` the upper
- 
- ``BPF_ADD | BPF_X | BPF_ALU`` means::
- 
--  dst_reg = (u32) dst_reg + (u32) src_reg;
-+  dst = (u32) ((u32) dst + (u32) src)
- 
- ``BPF_ADD | BPF_X | BPF_ALU64`` means::
- 
--  dst_reg = dst_reg + src_reg
-+  dst = dst + src
- 
- ``BPF_XOR | BPF_K | BPF_ALU`` means::
- 
--  dst_reg = (u32) dst_reg ^ (u32) imm32
-+  dst = (u32) dst ^ (u32) imm32
- 
- ``BPF_XOR | BPF_K | BPF_ALU64`` means::
- 
--  dst_reg = dst_reg ^ imm32
-+  dst = dst ^ imm32
- 
- Also note that the division and modulo operations are unsigned. Thus, for
- ``BPF_ALU``, 'imm' is first interpreted as an unsigned 32-bit value, whereas
-@@ -167,11 +208,11 @@ Examples:
- 
- ``BPF_ALU | BPF_TO_LE | BPF_END`` with imm = 16 means::
- 
--  dst_reg = htole16(dst_reg)
-+  dst = htole16(dst)
- 
- ``BPF_ALU | BPF_TO_BE | BPF_END`` with imm = 64 means::
- 
--  dst_reg = htobe64(dst_reg)
-+  dst = htobe64(dst)
- 
- Jump instructions
- -----------------
-@@ -246,15 +287,15 @@ instructions that transfer data between a register and memory.
- 
- ``BPF_MEM | <size> | BPF_STX`` means::
- 
--  *(size *) (dst_reg + off) = src_reg
-+  *(size *) (dst + offset) = src
- 
- ``BPF_MEM | <size> | BPF_ST`` means::
- 
--  *(size *) (dst_reg + off) = imm32
-+  *(size *) (dst + offset) = imm32
- 
- ``BPF_MEM | <size> | BPF_LDX`` means::
- 
--  dst_reg = *(size *) (src_reg + off)
-+  dst = *(size *) (src + offset)
- 
- Where size is one of: ``BPF_B``, ``BPF_H``, ``BPF_W``, or ``BPF_DW``.
- 
-@@ -288,11 +329,11 @@ BPF_XOR   0xa0   atomic xor
- 
- ``BPF_ATOMIC | BPF_W  | BPF_STX`` with 'imm' = BPF_ADD means::
- 
--  *(u32 *)(dst_reg + off16) += src_reg
-+  *(u32 *)(dst + offset) += src
- 
- ``BPF_ATOMIC | BPF_DW | BPF_STX`` with 'imm' = BPF ADD means::
- 
--  *(u64 *)(dst_reg + off16) += src_reg
-+  *(u64 *)(dst + offset) += src
- 
- In addition to the simple atomic operations, there also is a modifier and
- two complex atomic operations:
-@@ -307,16 +348,16 @@ BPF_CMPXCHG  0xf0 | BPF_FETCH  atomic compare and exchange
- 
- The ``BPF_FETCH`` modifier is optional for simple atomic operations, and
- always set for the complex atomic operations.  If the ``BPF_FETCH`` flag
--is set, then the operation also overwrites ``src_reg`` with the value that
-+is set, then the operation also overwrites ``src`` with the value that
- was in memory before it was modified.
- 
--The ``BPF_XCHG`` operation atomically exchanges ``src_reg`` with the value
--addressed by ``dst_reg + off``.
-+The ``BPF_XCHG`` operation atomically exchanges ``src`` with the value
-+addressed by ``dst + offset``.
- 
- The ``BPF_CMPXCHG`` operation atomically compares the value addressed by
--``dst_reg + off`` with ``R0``. If they match, the value addressed by
--``dst_reg + off`` is replaced with ``src_reg``. In either case, the
--value that was at ``dst_reg + off`` before the operation is zero-extended
-+``dst + offset`` with ``R0``. If they match, the value addressed by
-+``dst + offset`` is replaced with ``src``. In either case, the
-+value that was at ``dst + offset`` before the operation is zero-extended
- and loaded back to ``R0``.
- 
- 64-bit immediate instructions
-@@ -329,7 +370,7 @@ There is currently only one such instruction.
- 
- ``BPF_LD | BPF_DW | BPF_IMM`` means::
- 
--  dst_reg = imm64
-+  dst = imm64
- 
- 
- Legacy BPF Packet access instructions
--- 
-2.33.4
+Let's do it, I don't have anything against this.
 
+[...]
+> > >=20
+>=20
+
+> > Here is the full log:
+> >=20
+> > https://gist.github.com/iii-i/8e20100c33ab6f0dffb5e6e51d1330e8
+> >=20
+> > Apparently we do indeed lose a constraint established by
+> > if (hdr->tcp_len < sizeof(*hdr->tcp)). But the naive
+>=20
+> The test is too big and unfamiliar for me to figure this out. And the
+> problem is not upper bound, but lower bound. hdr->tcp_len is not
+> proven to be strictly greater than zero, which is what verifier
+> complains about. Not sure how it works on other arches right now.
+>=20
+>=20
+> But I see that bpf_csum_diff defines size arguments as
+> ARG_CONST_SIZE_OR_ZERO while bpf_tcp_raw_gen_syncookie_ipv4 has
+> ARG_CONST_SIZE. I generally found ARG_CONST_SIZE way too problematic
+> in practice, I'd say we should change it to ARG_CONST_SIZE_OR_ZERO.
+
+Yes, this helps, and doesn't seem to introduce issues, since the=C2=A0
+minimum length is enforced inside this function anyway. I will include
+the change for bpf_tcp_raw_gen_syncookie_ipv{4,6} in v2; I guess some
+other functions may benefit from this as well, but this is outside the
+scope of this series.
+
+[...]
