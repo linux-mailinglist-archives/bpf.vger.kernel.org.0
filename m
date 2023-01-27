@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C512E67EC56
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 18:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEE667EC60
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 18:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbjA0RYz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 12:24:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
+        id S234522AbjA0R0Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 12:26:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235187AbjA0RYx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 12:24:53 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8783A79F1F
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:24:50 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id me3so15579586ejb.7
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:24:50 -0800 (PST)
+        with ESMTP id S234436AbjA0R0X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 12:26:23 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6261A27492
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:26:21 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id m12so5356687edq.5
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:26:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JQsH0hLE9aFiIUOGvA/jXPdaSW7IxHObW5NTY+omaBA=;
-        b=AkmqUprX6tCNM7R8T5jLB+QXSxOAiYvkQ77e18QaLZoAQVdQE9G/Jmo9/54/SLzBm7
-         J8lEJoYjGeqdvLkHqMABLWgdxVkExY/fR0561B+7Q6jDanyqOjLXKkEhrQJK3BpQ+NHS
-         02lzjAPrygBA/Tpbb+iSIxkgYdHZfRg61br1F6Vvqdg5p1rMaukKfGtpyKUBbnD9lj+y
-         TkfV2WIpBF0YfvZakkXWcHaVrU2kYAoFEcbyK36vnVlSR9jm7qwRJnYXgzYp30YoQ1Ez
-         jjMUA8e32z5wwDeH2E5vD1wgmxENZM1ibZuMxirnHQ3/PnHkAHHSqHyVbrTjwIUIvyvU
-         asDw==
+        bh=kRLvn0KfCk4LN5tSor8qrSlBUFCb8EhzNEN8zMdG1Qg=;
+        b=ciY+TH3jSCmdXhsUrro31dFpfDyeKyTmu0e2rWD0vkZOo6QiYeRQtHGtiyS+drlXbI
+         8wcr10/gBusNckXxN4V8F9ycEn9x8g8cWRP1KIuhevufNeu1Fv78gXbFQa3MRc/UI1PF
+         OHxypcTc0S28X6t+dof5asj43Emo3FjlkEQY0hDNBnIv0ET19MotLX291yQ0EtCCWUFx
+         NORo2IbYT9Km9eeXRk16j+RP+Rs/dNGQrrfmpKOmpYpw7bgW9E5z3340Y1VIOHiudPor
+         nIT3MOiwWwdQH2zfasQtvqV5EYZEUHO1RGfdZl3+DEwT63rfBU6JRz2uzru42+gay8el
+         lKkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JQsH0hLE9aFiIUOGvA/jXPdaSW7IxHObW5NTY+omaBA=;
-        b=3lnSNJQM8BWtlylg9f+QjI3BtoLLT0nT0wIIpyQFpcP4gKonfaiE+q5JpuC4n0ZVPF
-         YQ92hsRPYTIyECHjYwrfPjxmN08teIaHGYLJfluGzLZCyB2Bs2DBRh6cNFyggt3zZpmI
-         jo5wFR8f6Aj+qn1hUuvyAwtieNOhcX3zhvc9r8M7sZHurFZCZIfxCcX0Xq8W0Vdlv9vr
-         bGon6ObEFnR+m6+xwvBlFZylKYE4vKOAc+ALeaK9CVWnFMHfAbU9+yh0ihln1eK1h4O2
-         IMdU0ne+tyPbr+Dx4kOsCqNtr+lWxKjz9jaL8q0IA99u+uf3dZMl4cIVuWZPeHTU7JKZ
-         dMzw==
-X-Gm-Message-State: AFqh2kqaNWOof8jTCVNaqE0z53ea6Em20iLaTI8/ertPq/9/+0/A7UPo
-        +6vH9tH/OcwlCVI/yLJJxmc8ocRKzB+c9wOPg8k=
-X-Google-Smtp-Source: AMrXdXskpLLF8tL5PdstbG8XyIR3ngdvzexhLOUhTB9SnpDwvNU/NEvmDNSzO1INQ7OGeuQEUBb/zxCI8ptTqBc2584=
-X-Received: by 2002:a17:906:6d17:b0:84d:33bc:652a with SMTP id
- m23-20020a1709066d1700b0084d33bc652amr7419230ejr.68.1674840288777; Fri, 27
- Jan 2023 09:24:48 -0800 (PST)
+        bh=kRLvn0KfCk4LN5tSor8qrSlBUFCb8EhzNEN8zMdG1Qg=;
+        b=5f6gNrkqe2VFqIdGYpTTpeJnpahqsFknDspssQDwkR1uBCQPlz6Ndd5g4QQu9jrW0h
+         lbxku0GcSEwCISW3e1ObkrxCZL1E2ztQI4YhI64RE0wo/MEwbbdM7z7DMgC6JVR+1mvj
+         PCO9wdQyuUbIRELjKP2UrVk3nNqTKBc/CGcOK4y6Mawg8iLdoFu+Lwca4rameu8qGbSg
+         x2Yv2+K/DKRn78uTE4fKGDJ+9sAp3t01lMqqAOkNSYXYI2gpaNyQ389LwCGKbRuc54Sz
+         P8U7sHt56ijH+dVe48cm3iyZyliRNV7l4+64WnASHxMcKrCHNbhKHURff+b2PUhUGxse
+         X84g==
+X-Gm-Message-State: AFqh2kr5ilEzX9regq7JzO8S1oaoWMELUm8e5ieXZjGufN/Vs8weTljM
+        XW4D88UsnHbyVlPFmloU3LaBpT55ir8omsMq+UQ=
+X-Google-Smtp-Source: AMrXdXtFcvLzgrqUQj56Vt7Hz0WU4k99cPP1CDrqBH8UzSmbNBIjXElz3A8xHGLWqOQFD98O4dzCn+2ltDpXb69UW1s=
+X-Received: by 2002:a05:6402:1008:b0:499:f0f:f788 with SMTP id
+ c8-20020a056402100800b004990f0ff788mr6764356edu.25.1674840379831; Fri, 27 Jan
+ 2023 09:26:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20230125213817.1424447-1-iii@linux.ibm.com> <CAEf4BzZP5771Wbv4w1gM+8vcGwvhmFi2tH-8aSGfnzvb=ZgaJg@mail.gmail.com>
- <8e9f72c6b43361a778e623085eb5b7aea7bd0fbd.camel@linux.ibm.com>
-In-Reply-To: <8e9f72c6b43361a778e623085eb5b7aea7bd0fbd.camel@linux.ibm.com>
+References: <20230125213817.1424447-1-iii@linux.ibm.com> <20230125213817.1424447-9-iii@linux.ibm.com>
+ <CAEf4BzaaC4gn-BjpYWP++0GoHbJ2xaOOZ32ZNwq+_vxHVMKpuA@mail.gmail.com> <924757c3fcda1f17ed68623234a3982e660e2717.camel@linux.ibm.com>
+In-Reply-To: <924757c3fcda1f17ed68623234a3982e660e2717.camel@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 27 Jan 2023 09:24:36 -0800
-Message-ID: <CAEf4Bzb3uiSHtUbgVWmkWuJ5Sw1UZd4c_iuS4QXtUkXmTTtXuQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/24] Support bpf trampoline for s390x
+Date:   Fri, 27 Jan 2023 09:26:07 -0800
+Message-ID: <CAEf4BzY276stJk2MFyKx-R1KRzw9S1z_zKvQqwsFoJWa9Yw_iA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 08/24] selftests/bpf: Fix verify_pkcs7_sig on s390x
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -70,301 +70,149 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 27, 2023 at 8:51 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Fri, Jan 27, 2023 at 4:36 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> On Wed, 2023-01-25 at 16:45 -0800, Andrii Nakryiko wrote:
+> On Wed, 2023-01-25 at 17:06 -0800, Andrii Nakryiko wrote:
 > > On Wed, Jan 25, 2023 at 1:39 PM Ilya Leoshkevich <iii@linux.ibm.com>
 > > wrote:
 > > >
-> > > Hi,
+> > > Use bpf_probe_read_kernel() instead of bpf_probe_read(), which is
+> > > not
+> > > defined on all architectures.
 > > >
-> > > This series implements poke, trampoline, kfunc, mixing subprogs and
-> > > tailcalls, and fixes a number of tests on s390x.
+> > > While at it, improve the error handling: do not hide the verifier
+> > > log,
+> > > and check the return values of bpf_probe_read_kernel() and
+> > > bpf_copy_from_user().
 > > >
-> > > The following failures still remain:
+> > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > > ---
+> > >  .../selftests/bpf/prog_tests/verify_pkcs7_sig.c      |  9
+> > > +++++++++
+> > >  .../selftests/bpf/progs/test_verify_pkcs7_sig.c      | 12
+> > > ++++++++----
+> > >  2 files changed, 17 insertions(+), 4 deletions(-)
 > > >
-> > > #52      core_read_macros:FAIL
-> > > Uses BPF_PROBE_READ(), shouldn't there be BPF_PROBE_READ_KERNEL()?
-> >
-> > BPF_PROBE_READ(), similarly to BPF_CORE_READ() both use
-> > bpf_probe_read_kernel() internally, as it's most common use case. We
-> > have separate BPF_PROBE_READ_USER() and BPF_CORE_READ_USER() for when
-> > bpf_probe_read_user() has to be used.
->
-> At least purely from the code perspective, BPF_PROBE_READ() seems to
-> delegate to bpf_probe_read(). The following therefore helps with this
-> test:
->
-> --- a/tools/lib/bpf/bpf_core_read.h
-> +++ b/tools/lib/bpf/bpf_core_read.h
-> @@ -364,7 +364,7 @@ enum bpf_enum_value_kind {
->
->  /* Non-CO-RE variant of BPF_CORE_READ_INTO() */
->  #define BPF_PROBE_READ_INTO(dst, src, a, ...) ({
-> \
-> -       ___core_read(bpf_probe_read, bpf_probe_read,
-> \
-> +       ___core_read(bpf_probe_read_kernel, bpf_probe_read_kernel,
-> \
->                      dst, (src), a, ##__VA_ARGS__)
-> \
->  })
->
-> @@ -400,7 +400,7 @@ enum bpf_enum_value_kind {
->
->  /* Non-CO-RE variant of BPF_CORE_READ_STR_INTO() */
->  #define BPF_PROBE_READ_STR_INTO(dst, src, a, ...) ({
-> \
-> -       ___core_read(bpf_probe_read_str, bpf_probe_read,
-> \
-> +       ___core_read(bpf_probe_read_kernel_str, bpf_probe_read_kernel,
-> \
->                      dst, (src), a, ##__VA_ARGS__)
-> \
->  })
->
-> but I'm not sure if there are backward compatibility concerns, or if
-> libbpf is supposed to rewrite this when
-> !ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
-
-Oh, this is just a bug, it was an omission when we converted
-BPF_CORE_READ to bpf_probe_read_kernel. If you look at bpf_core_read
-definition, it is using bpf_probe_read_kernel, which is also the
-intent for BPF_PROBE_READ. Let's fix this.
-
-And there is no backwards compat concerns because libbpf will
-automatically convert calls to bpf_probe_read_{kernel,user}[_str] to
-bpf_probe_read[_str] if host kernel doesn't yet support kernel or user
-specific variants.
-
->
+> > > diff --git
+> > > a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+> > > b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+> > > index 579d6ee83ce0..75c256f79f85 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+> > > @@ -56,11 +56,17 @@ struct data {
+> > >         __u32 sig_len;
+> > >  };
 > > >
-> > > #82      get_stack_raw_tp:FAIL
-> > > get_stack_print_output:FAIL:user_stack corrupted user stack
-> > > Known issue:
-> > > We cannot reliably unwind userspace on s390x without DWARF.
+> > > +static char libbpf_log[8192];
+> > >  static bool kfunc_not_supported;
+> > >
+> > >  static int libbpf_print_cb(enum libbpf_print_level level, const
+> > > char *fmt,
+> > >                            va_list args)
+> > >  {
+> > > +       size_t log_len = strlen(libbpf_log);
+> > > +
+> > > +       vsnprintf(libbpf_log + log_len, sizeof(libbpf_log) -
+> > > log_len,
+> > > +                 fmt, args);
 > >
-> > like in principle, or frame pointers (or some equivalent) needs to be
-> > configured for this to work?
+> > it seems like test is written to assume that load might fail and
+> > we'll
+> > get error messages, so not sure it's that useful to print out these
+> > errors. But at the very least we should filter out DEBUG and INFO
+> > level messages, and pass through WARN only.
 > >
-> > Asking also in the context of [0], where s390x was excluded. If there
-> > is actually a way to enable frame pointer-based stack unwinding on
-> > s390x, would be nice to hear from an expert.
-> >
-> >   [0] https://pagure.io/fesco/issue/2923
+> > Also, there is no point in having a separate log buffer, just printf
+> > directly. test_progs will take care to collect overall log and ignore
+> > it if test succeeds, or emit it if test fails
 >
-> For DWARFless unwinding we have -mbackchain (not to be confused with
-> -fno-omit-frame-pointer, which we also have, but which just hurts
-> performance without providing tangible benefits).
-> -mbackchain has a few problems though:
+> Thanks, I completely overlooked the fact that the test framework
+> already hides the output in case of success. With that in mind I can do
+> just this:
 >
-> - It's not atomic. Here is a typical prologue with -mbackchain:
+> --- a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+> @@ -61,6 +61,9 @@ static bool kfunc_not_supported;
+>  static int libbpf_print_cb(enum libbpf_print_level level, const char
+> *fmt,
+>                            va_list args)
+>  {
+> +       if (level == LIBBPF_WARN)
+> +               vprintf(fmt, args);
+> +
+>         if (strcmp(fmt, "libbpf: extern (func ksym) '%s': not found in
+> kernel or module BTFs\n"))
+>                 return 0;
 >
->         1: stmg    %r11,%r15,88(%r15)  # save non-volatile registers
->         2: lgr     %r14,%r15           # %r14 = sp
->         3: lay     %r15,-160(%r15)     # sp -= 160
->         4: stg     %r14,0(%r15)        # *(void **)sp = %r14
->
->   The invariant here is that *(void **)%r15 is always a pointer to the
->   next frame. This means that if we unwind from (4), we are totally
->   broken. This does not happen if we unwind from any other instruction,
->   but still.
->
-> - Unwinding from (1)-(3) is not particularly good either. PSW points to
->   the callee, but R15 points to the caller's frame.
->
-> - Unwinding leaf functions is like the previous problem, but worse:
->   they often do not establish a stack frame at all, so PSW and R15 are
->   out of sync for the entire duration of the call.
->
-> Therefore .eh_frame-based unwinding is preferred, since it covers all
-> these corner cases and is therefore reliable. From what I understand,
-> adding .eh_frame unwinding to the kernel is not desirable. In an
-> internal discussion we had another idea though: would it be possible to
-> have an eBPF program that does .eh_frame parsing and unwinding? I
-> understand that it can be technically challenging at the moment, but
-> the end result would not be exploitable by crafting malicious
-> .eh_frame sections, won't loop endlessly, will have good performance,
-> etc.
+> If the load fails due to missing kfuncs, we'll skip the test - I think
+> in this case the output won't be printed either, so we should be fine.
 
-Thanks for details. This was all discussed at length in Fedora
--fno-omit-frame-pointer discussion I linked above, so no real need to
-go over this again. .eh_frame-based unwinding on BPF side is possible,
-but only for processes that you knew about (and preprocessed) before
-you started profiling session. Pre-processing is memory and
-cpu-intensive operation on busy systems, and they will miss any
-processes started during profiling. So as a general approach for
-system-wide profiling it leaves a lot to be desired.
-
-Should we enable -mbackchain in our CI for s390x to be able to capture
-stack traces (even if on some instructions they might be incomplete or
-outright broken)?
+sgtm
 
 >
-> > > #101     ksyms_module:FAIL
-> > > address of kernel function bpf_testmod_test_mod_kfunc is out of
-> > > range
-> > > Known issue:
-> > > Kernel and modules are too far away from each other on s390x.
+> > > +
+> > >         if (strcmp(fmt, "libbpf: extern (func ksym) '%s': not found
+> > > in kernel or module BTFs\n"))
+> > >                 return 0;
 > > >
-> > > #167     sk_assign:FAIL
-> > > Uses legacy map definitions in 'maps' section.
-> >
-> > Hm.. assuming new enough iproute2, new-style .maps definition should
-> > be supported, right? Let's convert map definition?
->
-> Yep, that worked. Will include in v2.
-
-Nice.
-
->
-> > > #190     stacktrace_build_id:FAIL
-> > > Known issue:
-> > > We cannot reliably unwind userspace on s390x without DWARF.
+> > > @@ -277,6 +283,7 @@ void test_verify_pkcs7_sig(void)
+> > >         if (!ASSERT_OK_PTR(skel, "test_verify_pkcs7_sig__open"))
+> > >                 goto close_prog;
 > > >
-> > > #211     test_bpffs:FAIL
-> > > iterators.bpf.c is broken on s390x, it uses BPF_CORE_READ(),
-> > > shouldn't
-> > > there be BPF_CORE_READ_KERNEL()?
-> >
-> > BPF_CORE_READ() is that, so must be something else
-> >
+> > > +       libbpf_log[0] = 0;
+> > >         old_print_cb = libbpf_set_print(libbpf_print_cb);
+> > >         ret = test_verify_pkcs7_sig__load(skel);
+> > >         libbpf_set_print(old_print_cb);
+> > > @@ -289,6 +296,8 @@ void test_verify_pkcs7_sig(void)
+> > >                 goto close_prog;
+> > >         }
 > > >
-> > > #218     test_profiler:FAIL
-> > > A lot of BPF_PROBE_READ() usages.
-> >
-> > ditto, something else
-> >
+> > > +       printf("%s", libbpf_log);
+> > > +
+> > >         if (!ASSERT_OK(ret, "test_verify_pkcs7_sig__load"))
+> > >                 goto close_prog;
 > > >
-> > > #281     xdp_metadata:FAIL
-> > > See patch 24.
+> > > diff --git
+> > > a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
+> > > b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
+> > > index ce419304ff1f..7748cc23de8a 100644
+> > > --- a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
+> > > +++ b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
+> > > @@ -59,10 +59,14 @@ int BPF_PROG(bpf, int cmd, union bpf_attr
+> > > *attr, unsigned int size)
+> > >         if (!data_val)
+> > >                 return 0;
 > > >
-> > > #284     xdp_synproxy:FAIL
-> > > Verifier error:
-> > > ; value = bpf_tcp_raw_gen_syncookie_ipv4(hdr->ipv4, hdr->tcp,
-> > > 281: (79) r1 = *(u64 *)(r10 -80)      ; R1_w=pkt(off=14,r=74,imm=0)
-> > > R10=fp0
-> > > 282: (bf) r2 = r8                     ;
-> > > R2_w=pkt(id=5,off=14,r=74,umax=60,var_off=(0x0; 0x3c))
-> > > R8=pkt(id=5,off=14,r=74,umax=60,var_off=(0x0; 0x3c))
-> > > 283: (79) r3 = *(u64 *)(r10 -104)     ;
-> > > R3_w=scalar(umax=60,var_off=(0x0; 0x3c)) R10=fp0
-> > > 284: (85) call bpf_tcp_raw_gen_syncookie_ipv4#204
-> > > invalid access to packet, off=14 size=0, R2(id=5,off=14,r=74)
-> > > R2 offset is outside of the packet
+> > > -       bpf_probe_read(&value, sizeof(value), &attr->value);
+> > > -
+> > > -       bpf_copy_from_user(data_val, sizeof(struct data),
+> > > -                          (void *)(unsigned long)value);
+> > > +       ret = bpf_probe_read_kernel(&value, sizeof(value), &attr-
+> > > >value);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       ret = bpf_copy_from_user(data_val, sizeof(struct data),
+> > > +                                (void *)(unsigned long)value);
+> > > +       if (ret)
+> > > +               return ret;
 > >
-> > third arg to bpf_tcp_raw_gen_syncookie_ipv4() is defined as
-> > ARG_CONST_SIZE, so is required to be strictly positive, which doesn't
-> > seem to be "proven" to verifier. Please provided bigger log, it might
-> > another instance of needing to sprinkle barrier_var() around.
+> > this part looks good, we shouldn't use bpf_probe_read.
 > >
-> > And maybe thinking about using ARG_CONST_SIZE_OR_ZERO instead of
-> > ARG_CONST_SIZE.
+> > You'll have to update progs/profiler.inc.h as well, btw, which still
+> > uses bpf_probe_read() and bpf_probe_read_str.
 >
-> Here is the full log:
->
-> https://gist.github.com/iii-i/8e20100c33ab6f0dffb5e6e51d1330e8
->
-> Apparently we do indeed lose a constraint established by
-> if (hdr->tcp_len < sizeof(*hdr->tcp)). But the naive
+> I remember trying this, but there were still failures due to, as I
+> thought back then, usage of BPF_CORE_READ() and the lack of
+> BPF_CORE_READ_KERNEL(). But this seems to be a generic issue. Let me
+> try again and post my findings as a reply to 0/24.
 
-The test is too big and unfamiliar for me to figure this out. And the
-problem is not upper bound, but lower bound. hdr->tcp_len is not
-proven to be strictly greater than zero, which is what verifier
-complains about. Not sure how it works on other arches right now.
-
-
-But I see that bpf_csum_diff defines size arguments as
-ARG_CONST_SIZE_OR_ZERO while bpf_tcp_raw_gen_syncookie_ipv4 has
-ARG_CONST_SIZE. I generally found ARG_CONST_SIZE way too problematic
-in practice, I'd say we should change it to ARG_CONST_SIZE_OR_ZERO.
+Yep, replied there as well: BPF_PROBE_READ still using
+bpf_probe_read() is an omission and we should fix that.
 
 >
-> --- a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-> @@ -401,6 +401,7 @@ static __always_inline int tcp_dissect(void *data,
-> void *data_end,
->         hdr->tcp_len = hdr->tcp->doff * 4;
->         if (hdr->tcp_len < sizeof(*hdr->tcp))
->                 return XDP_DROP;
-> +       barrier_var(hdr->tcp_len);
->
->         return XDP_TX;
->  }
-> @@ -791,6 +792,7 @@ static __always_inline int syncookie_part2(void
-> *ctx, void *data, void *data_end
->         hdr->tcp_len = hdr->tcp->doff * 4;
->         if (hdr->tcp_len < sizeof(*hdr->tcp))
->                 return XDP_ABORTED;
-> +       barrier_var(hdr->tcp_len);
->
->         return hdr->tcp->syn ? syncookie_handle_syn(hdr, ctx, data,
-> data_end, xdp) :
->                                syncookie_handle_ack(hdr);
->
-> does not help.
->
-> >
-> > >
-> > > None of these seem to be due to the new changes.
-> > >
-> > > Best regards,
-> > > Ilya
-> > >
-> > > Ilya Leoshkevich (24):
-> > >   selftests/bpf: Fix liburandom_read.so linker error
-> > >   selftests/bpf: Fix symlink creation error
-> > >   selftests/bpf: Fix fexit_stress on s390x
-> > >   selftests/bpf: Fix trampoline_count on s390x
-> > >   selftests/bpf: Fix kfree_skb on s390x
-> > >   selftests/bpf: Set errno when urand_spawn() fails
-> > >   selftests/bpf: Fix decap_sanity_ns cleanup
-> > >   selftests/bpf: Fix verify_pkcs7_sig on s390x
-> > >   selftests/bpf: Fix xdp_do_redirect on s390x
-> > >   selftests/bpf: Fix cgrp_local_storage on s390x
-> > >   selftests/bpf: Check stack_mprotect() return value
-> > >   selftests/bpf: Increase SIZEOF_BPF_LOCAL_STORAGE_ELEM on s390x
-> > >   selftests/bpf: Add a sign-extension test for kfuncs
-> > >   selftests/bpf: Fix test_lsm on s390x
-> > >   selftests/bpf: Fix test_xdp_adjust_tail_grow2 on s390x
-> > >   selftests/bpf: Fix vmlinux test on s390x
-> > >   libbpf: Read usdt arg spec with bpf_probe_read_kernel()
-> > >   s390/bpf: Fix a typo in a comment
-> > >   s390/bpf: Add expoline to tail calls
-> > >   s390/bpf: Implement bpf_arch_text_poke()
-> > >   bpf: btf: Add BTF_FMODEL_SIGNED_ARG flag
-> > >   s390/bpf: Implement arch_prepare_bpf_trampoline()
-> > >   s390/bpf: Implement bpf_jit_supports_subprog_tailcalls()
-> > >   s390/bpf: Implement bpf_jit_supports_kfunc_call()
-> > >
-> > >  arch/s390/net/bpf_jit_comp.c                  | 708
-> > > +++++++++++++++++-
-> > >  include/linux/bpf.h                           |   8 +
-> > >  include/linux/btf.h                           |  15 +-
-> > >  kernel/bpf/btf.c                              |  16 +-
-> > >  net/bpf/test_run.c                            |   9 +
-> > >  tools/lib/bpf/usdt.bpf.h                      |  33 +-
-> > >  tools/testing/selftests/bpf/Makefile          |   7 +-
-> > >  tools/testing/selftests/bpf/netcnt_common.h   |   6 +-
-> > >  .../selftests/bpf/prog_tests/bpf_cookie.c     |   6 +-
-> > >  .../bpf/prog_tests/cgrp_local_storage.c       |   2 +-
-> > >  .../selftests/bpf/prog_tests/decap_sanity.c   |   2 +-
-> > >  .../selftests/bpf/prog_tests/fexit_stress.c   |   6 +-
-> > >  .../selftests/bpf/prog_tests/kfree_skb.c      |   2 +-
-> > >  .../selftests/bpf/prog_tests/kfunc_call.c     |   1 +
-> > >  .../selftests/bpf/prog_tests/test_lsm.c       |   3 +-
-> > >  .../bpf/prog_tests/trampoline_count.c         |   4 +
-> > >  tools/testing/selftests/bpf/prog_tests/usdt.c |   1 +
-> > >  .../bpf/prog_tests/verify_pkcs7_sig.c         |   9 +
-> > >  .../bpf/prog_tests/xdp_adjust_tail.c          |   7 +-
-> > >  .../bpf/prog_tests/xdp_do_redirect.c          |   4 +
-> > >  .../selftests/bpf/progs/kfunc_call_test.c     |  18 +
-> > >  tools/testing/selftests/bpf/progs/lsm.c       |   7 +-
-> > >  .../bpf/progs/test_verify_pkcs7_sig.c         |  12 +-
-> > >  .../selftests/bpf/progs/test_vmlinux.c        |   4 +-
-> > >  .../bpf/progs/test_xdp_adjust_tail_grow.c     |   8 +-
-> > >  25 files changed, 816 insertions(+), 82 deletions(-)
-> > >
+> > >         if (data_val->data_len > sizeof(data_val->data))
+> > >                 return -EINVAL;
 > > > --
 > > > 2.39.1
 > > >
