@@ -2,197 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1E567DF50
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 09:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6259767E05D
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 10:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjA0IdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 03:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        id S232934AbjA0Jfw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 04:35:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232494AbjA0IdE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 03:33:04 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F70019F27
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 00:33:00 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id j17so2914892wms.0
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 00:33:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mNDzzLve1QZpQMH586QRx6794jByHtxqf4nlX323e/M=;
-        b=wr/faRojnYtopasMYIZ7X5nKWJvOwIFDt6H3ZwcJFlrglXBSFYxDO20pRk+2obypGw
-         lp6sclR+UR+EHorIMkUXCu8LDlgnas4SNpc653G4SjJSFR1rb/7X/I3yuiJXCETM3EDr
-         83A6hXp1UGKXUu8nI40pGKALkiqAnnJSwTfoe6hyBxm7uiUuR3xsh9+osuJIJb55MYPm
-         xywXnOVLUbpg5jrSC6ADmSw5oxb91f64hNGPIz4Cicrdjt0iCGcC4T9y2P5LyHewgFxn
-         l/6Pay8nOL53WWvAYGjjlZhjdln3wsBScLS8KjDf2HPqdzZ2rbkWVTiShk6sY4zXS+1N
-         4Jkw==
+        with ESMTP id S232160AbjA0Jfv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 04:35:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338525245
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 01:35:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1674812105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yKAoa5S5GwcYsMUD12cR2wkCJgw6XMVKgF0u+zR8x+Q=;
+        b=I96zvMP/odkFMAa+yttbqbqmDfJnQPkJPVgIDkJnCsxNSSVPDKl3Vc+PZGt4KK4s/OjPXg
+        T/0bx/jjmXFkLmmV1nbWDIosn+dtpk7ep/YEVNfqcwsR4OLGFuSShFXoQZUb1zjDa+7QkU
+        zYo+PqozVmBr6hpszXodgMq78ZmEA5Q=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-318-zmYtjV50OhauCY8Oncxb7g-1; Fri, 27 Jan 2023 04:35:00 -0500
+X-MC-Unique: zmYtjV50OhauCY8Oncxb7g-1
+Received: by mail-ej1-f71.google.com with SMTP id hr22-20020a1709073f9600b0086ffb73ac1cso3084274ejc.23
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 01:34:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mNDzzLve1QZpQMH586QRx6794jByHtxqf4nlX323e/M=;
-        b=lZPa6kZ54hjNucp460s5yXg9Khe01poJr1L7ipSrll83xNPPLQNfdlT3IbTPN5UXyx
-         NzqySvxb2Jeuw//f5H7mw+i0Y+1DMGby0vhgDg5KBRDYOfS9nNlvHnITXHEwxbSBL78M
-         gwkzDheW8tSVuqdFRUyYdyB6EiNB9EjuwIGdYuIUq3WEMhna7o0Q+p0Cdh9tWv4WocR1
-         UptohAz7LPnrxFWN6SVlL3s9VAoGbicVE/rC5NCKQZYuKak9s23yOhqmiouK4ts8bbjA
-         Grkn1RukOhclCRn7whfZCdw0BeKk2VqTxc9cvLbx+gMxjWiFd+Ji3AKZlxbZWQWVsA7G
-         OjIw==
-X-Gm-Message-State: AO0yUKU+3WKqGfMOPhpq7KEXO+zsqY+WCBUPzC01YQLKQBFVM8Gl8cLX
-        rupYEd/RBLfFoM+y+AZkyKm45g==
-X-Google-Smtp-Source: AK7set8AUVYQ3DMEqB5mb5eVqgQNd79NxSGC2QpLaYfkKjZyelI9gwbfI++aOYEpI1mjO/SKh2lGNQ==
-X-Received: by 2002:a05:600c:1caa:b0:3dc:4042:5c30 with SMTP id k42-20020a05600c1caa00b003dc40425c30mr177420wms.10.1674808379017;
-        Fri, 27 Jan 2023 00:32:59 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
-        by smtp.gmail.com with ESMTPSA id d10-20020adffbca000000b00287da7ee033sm3318241wrs.46.2023.01.27.00.32.53
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yKAoa5S5GwcYsMUD12cR2wkCJgw6XMVKgF0u+zR8x+Q=;
+        b=NTCACqeXu2jHhuYoZU9gAG6R+4JkUNfsX+eHRDjVfkhNi04dy5701BXTuui4FnWvga
+         05rzeTOb0zEasA0X1SLq6VXcP8BD9E9+TmuqDlT6KzT+Y3PEQB7al08BmJaU/gtblUtE
+         1NJc0uyykNMld7mbkFXdj2l0FLAV6hBlPYjAyztfxH2EWHxn169kDIJnOO9s3sTM223A
+         uH5j3+D+GRZbaXHcWhGKclf4cJ5iIZNFcTJiUjhO4jzM8aIb6egA9y6kPswR6Zl/Zlqf
+         36Ca3+fko8qywMtQXfKVxn5vnXjzfGK8R45Iliv2NjmX7cWM3OlxUbGUVXwNnbvOqeA4
+         toLg==
+X-Gm-Message-State: AFqh2krpUHtGp/6OaTikh5oQWx3oGjXaGO/WnkixWF/ITTTp+08XXsQe
+        Oamcxy122v91aPcUcIC0OfEf5ZyBsq7t4JKEJczKxewuOhWEcVJaoLgATmZcvsY3pil5YxxlP4M
+        0DDEEW35o3zB+
+X-Received: by 2002:a17:907:a506:b0:85b:9540:4ca7 with SMTP id vr6-20020a170907a50600b0085b95404ca7mr47277951ejc.30.1674812098683;
+        Fri, 27 Jan 2023 01:34:58 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXvskUBwTbw6MCPqt/0/09C1myWiedTUaoAoxC2FMScEdtV8MikJsXFuPhSR5BI8Xt2ypnSYAw==
+X-Received: by 2002:a17:907:a506:b0:85b:9540:4ca7 with SMTP id vr6-20020a170907a50600b0085b95404ca7mr47277930ejc.30.1674812098461;
+        Fri, 27 Jan 2023 01:34:58 -0800 (PST)
+Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id kv15-20020a17090778cf00b007bd28b50305sm1916177ejc.200.2023.01.27.01.34.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Jan 2023 00:32:58 -0800 (PST)
-Message-ID: <348c3416-be44-b912-98ef-7f394bd408c0@linaro.org>
-Date:   Fri, 27 Jan 2023 09:32:52 +0100
+        Fri, 27 Jan 2023 01:34:57 -0800 (PST)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <43c2dbcb-5f4f-6509-f881-ccf8c707a592@redhat.com>
+Date:   Fri, 27 Jan 2023 10:34:55 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH v2 02/31] Documentation: Add binding for
- kalray,kv3-1-core-intc
+ Thunderbird/102.6.0
+Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Properly enable hwtstamp in
+ xdp_hw_metadata
 Content-Language: en-US
-To:     Jules Maselbas <jmaselbas@kalray.eu>
-Cc:     Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Guillaume Thouvenin <gthouvenin@kalray.eu>,
-        Clement Leger <clement@clement-leger.fr>,
-        Vincent Chardon <vincent.chardon@elsys-design.com>,
-        =?UTF-8?Q?Marc_Poulhi=c3=a8s?= <dkm@kataplop.net>,
-        Julian Vetter <jvetter@kalray.eu>,
-        Samuel Jones <sjones@kalray.eu>,
-        Ashley Lesdalons <alesdalons@kalray.eu>,
-        Thomas Costis <tcostis@kalray.eu>,
-        Marius Gligor <mgligor@kalray.eu>,
-        Jonathan Borne <jborne@kalray.eu>,
-        Julien Villette <jvillette@kalray.eu>,
-        Luc Michel <lmichel@kalray.eu>,
-        Louis Morhet <lmorhet@kalray.eu>,
-        Julien Hascoet <jhascoet@kalray.eu>,
-        Jean-Christophe Pince <jcpince@gmail.com>,
-        Guillaume Missonnier <gmissonnier@kalray.eu>,
-        Alex Michon <amichon@kalray.eu>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <git@xen0n.name>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        John Garry <john.garry@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Bharat Bhushan <bbhushan2@marvell.com>,
-        Bibo Mao <maobibo@loongson.cn>,
-        Atish Patra <atishp@atishpatra.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Qi Liu <liuqi115@huawei.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Benjamin Mugnier <mugnier.benjamin@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-audit@redhat.com,
-        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-3-ysionneau@kalray.eu>
- <d4d998ee-1532-c896-df25-195ec9c72e3f@linaro.org>
- <20230126161032.GH5952@tellis.lin.mbt.kalray.eu>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230126161032.GH5952@tellis.lin.mbt.kalray.eu>
-Content-Type: text/plain; charset=UTF-8
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+References: <20230125223205.3933482-1-sdf@google.com>
+In-Reply-To: <20230125223205.3933482-1-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26/01/2023 17:10, Jules Maselbas wrote:
 
->>> +  reg:
->>> +    maxItems: 0
->>
->> ??? No way... What's this?
-> This (per CPU) interrupt controller is not memory mapped at all, it is
-> controlled and configured through system registers.
-> 
-> I do not have found existing .yaml bindings for such devices, only the
-> file snps,archs-intc.txt has something similar.
-> 
-> I do not know what is the best way to represent such devices in the
-> device-tree.  Any suggestions are welcome.
 
-You cannot have an array property with 0 items. How would it look like
-in DTS? There are many, many bindings which are expressing it. Just drop
-the reg.
-
+On 25/01/2023 23.32, Stanislav Fomichev wrote:
+> The existing timestamping_enable() is a no-op because it applies
+> to the socket-related path that we are not verifying here
+> anymore. (but still leaving the code around hoping we can
+> have xdp->skb path verified here as well)
 > 
->>
->>> +  "kalray,intc-nr-irqs":
->>
->> Drop quotes.
->>
->>> +    description: Number of irqs handled by the controller.
->>
->> Why this is variable per board? Why do you need it ?
-> This property is not even used in our device-tree, this will be removed
-> from the documentation and from the driver as well.
-> 
->>> +
->>> +required:
->>> +  - compatible
->>> +  - "#interrupt-cells"
->>> +  - interrupt-controller
->>
->> missing additionalProperties: false
->>
->> This binding looks poor, like you started from something odd. Please
->> don't. Take the newest reviewed binding or better example-schema and use
->> it to build yours. This would solve several trivial mistakes and style
->> issues.
-> I am starting over from the example-schema.
-> 
->>> +
->>> +examples:
->>> +  - |
->>> +    intc: interrupt-controller {
->>
->> What's the IO address space?
-> As said above, this is not a memory mapped device, but is accessed
-> through system registers.
+>    poll: 1 (0)
+>    xsk_ring_cons__peek: 1
+>    0xf64788: rx_desc[0]->addr=100000000008000 addr=8100 comp_addr=8000
+>    rx_hash: 3697961069
+>    rx_timestamp:  1674657672142214773 (sec:1674657672.1422)
+>    XDP RX-time:   1674657709561774876 (sec:1674657709.5618) delta sec:37.4196
+>    AF_XDP time:   1674657709561871034 (sec:1674657709.5619) delta sec:0.0001 (96.158 usec)
 
-Sure, but then you cannot define a reg which was confusing...
+This output contains some extra output data, which is not part of
+current upstream.
+I will soon submit an RFC-patch with this extra output to discuss and
+figure out what timestamp type we want/expect HW to provide.
 
-Best regards,
-Krzysztof
+>    0xf64788: complete idx=8 addr=8000
+> 
+> Also, maybe something to archive here, see [0] for Jesper's note
+> about NIC vs host clock delta.
+> 
+> 0: https://lore.kernel.org/bpf/f3a116dc-1b14-3432-ad20-a36179ef0608@redhat.com/
+> 
+
+--Jesper
 
