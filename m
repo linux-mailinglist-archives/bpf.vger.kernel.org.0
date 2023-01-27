@@ -2,76 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C571A67ECAB
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 18:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CBE67ECAE
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 18:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbjA0Rlc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 12:41:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
+        id S235034AbjA0Rlw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 12:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbjA0Rlb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 12:41:31 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF397CCA9
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:41:17 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id z1-20020a17090a66c100b00226f05b9595so5461527pjl.0
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:41:17 -0800 (PST)
+        with ESMTP id S235053AbjA0Rlp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 12:41:45 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445F67D2BB
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:41:41 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id n6so2746049edo.9
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 09:41:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vaFfeyznNWWLniOTpc7LIMcZgLL/w0JJguh0UKjmu2k=;
-        b=iRHN3MzE1iFEGAMAGuIB6NvnylFL1REExeROTRo7EA9B8whSIprjx/k1HR0+KKgQVu
-         eQekjw2VHMl1v/GTlQpGj+HVLNrKWY31ahyDXScS3RRnRixyZUEscuM+QfyQDF4rkL7d
-         F8h1lOKUheRaPVXD2QjS6suIkV61eBeQJzB64D8ydA98NPQ5+Qi+K9x1cyAgphBORdT2
-         Os387DnSqKBrM7JG+oaQRrr2NxDofndAqUbvHxmUiinn4/AAugk08cpQlW0LFKr4FusA
-         9lP7b2bBv2F5GQohWEdnDx4MLZlcN202k5EFq+D7z5p3S+V3asILxNBPGnZpEv63+8B1
-         fQCg==
+        bh=GbqHwGc+ppXnlm2paWGTvmJSi2PnLegynGXn//75uDM=;
+        b=Pgr7U7NS65xQWQw4vZne4muoD/bvgGxGOX0Mjb0GL5uooBnaTG1zSemXd4QV+Rv7lf
+         maKEjwh/UPC0MlSe9iujLyqQCyFIPykjImR5KBqglCzF44CB7md/CQeDQuLLnFyo5dnp
+         6w+GbTDs0Aqgc19hF1WPwpaQsU7ZTfqvLriSnuOqDReL0bDJFoN7Vbo6qfTtzpmSgEog
+         EOHfTDUbH9AzOw30A8dLVSwrmBqPGWOSRsk4ECCrjoUJ7k74cP33/Mb15kzQUZ9Ex8xz
+         +xRQA82N4qVu7o7bpdUCPZJA7msEepCKwz4/dOtCZJWzmp8mVB4IQDYKW6M8cQC2xzxK
+         gIyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vaFfeyznNWWLniOTpc7LIMcZgLL/w0JJguh0UKjmu2k=;
-        b=5O31grfEb5bKmQMTk4uMf5lsQ0USS3AbdmHkXKNkoIA4igPuaoe7P5TV2TaqNkCYrD
-         nCa5bro8K+PDhR2elpiSaKlOfjYOa5tYg+Y2+Y/UCuQlGp1Gk1OG61cUyAQjogRaM2jN
-         1wPFM/9xPOK5kdJX70b1lSJHpo+DpLAe/6RR8NTTR6QeOeVHZeHS3yXYfagX39TJ3R44
-         AsKcP1ihS8rA+H4NZoNqId7DiVpg4aJWC3J5Yp2UL1EiopLgDu7u5J0wYbf7AQeoGIiq
-         R0RqxJE+h+6HizaI5uFv/fwgdekTxgnSI0owbQ7BuLZM3Y6UlcW8WMSSGkizsi2N+Hma
-         e5dg==
-X-Gm-Message-State: AO0yUKX1FGVcr/yfdDK6/vzvekPrrE4cGTAvzgMgHSfI+0al/ObvF0au
-        gnjKXkQL6+vJ98c7HJvvodjhr6UJCsFVbH0OJV9bEw==
-X-Google-Smtp-Source: AK7set/tnCuI9RjTvgVvTHoLjEj61ZxaKD287AXcYVYorLt8jMQJgsYq5f4K/2s+DNufIz5TvDgclZumH8e8H3/rz9o=
-X-Received: by 2002:a17:902:82c6:b0:196:cca:a0b4 with SMTP id
- u6-20020a17090282c600b001960ccaa0b4mr2381925plz.20.1674841276647; Fri, 27 Jan
- 2023 09:41:16 -0800 (PST)
+        bh=GbqHwGc+ppXnlm2paWGTvmJSi2PnLegynGXn//75uDM=;
+        b=n+8TCmOQ0u44MKCpoeCvPbM2LLQdfkMo136FtyPcZmOxY2TmuXO+VgNMkhodDwe2k8
+         pbIAoxUhwTI9mLtrVEOYV8l6rcv7xXeWrphSr7dr7ZgIKcIc8LW3toxLIUDLqQie3SL1
+         sdZBH2Hjog3lo/qXtFaf3ck4FW4Cg7YU3t1hB3J0fGcKAsS/2AwchVJfxxc4RT1CPUj6
+         BHi0q12CoA88AxR/O4RIs2YL+Cb+3YT4YGdr6xxYoloWsXbeR7VS/XZ8740YNllcl32w
+         UiUUZRNazXElNwspSIFeZvyWGfu7s53MdvX0/dOQuuuVkY/10tBB3xju9omrH0i58Obi
+         i0TQ==
+X-Gm-Message-State: AO0yUKXMbCMnY11qRZAu3ztypSwTu+/6Y8Obd/IKz84QVTRDEK5zwslq
+        ET6gkxNFpzqN25fmJMvmwDgjsUIgL9ffpSVq+us=
+X-Google-Smtp-Source: AK7set8a5HUA8zQ4OoznLo8kFC7bOAt15pkTQkc0+jAWS7BBfiotDG+PMPInQIVc4ntlmeD/lFBLYtG1vaQWsb/lc8w=
+X-Received: by 2002:a05:6402:510d:b0:4a0:cfed:1a47 with SMTP id
+ m13-20020a056402510d00b004a0cfed1a47mr2305796edd.18.1674841299731; Fri, 27
+ Jan 2023 09:41:39 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1674737592.git.lorenzo@kernel.org> <0b05b08d4579b017dd96869d1329cd82801bd803.1674737592.git.lorenzo@kernel.org>
- <Y9LIPaojtpTjYlNu@google.com> <Y9QJQHq8X9HZxoW3@lore-desk>
-In-Reply-To: <Y9QJQHq8X9HZxoW3@lore-desk>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 27 Jan 2023 09:41:05 -0800
-Message-ID: <CAKH8qBv9wKzkW8Qk+hDKCmROKem6ajkqhF_KRqdEKWSLL6_HsA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 8/8] selftests/bpf: introduce XDP compliance
- test tool
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
-        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
-        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
-        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
-        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
-        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
-        martin.lau@linux.dev
+References: <20230123145148.2791939-1-eddyz87@gmail.com> <CAEf4Bzbu2zctHntHNRVnEDa_FJz405Ld1Sb58wvJA+JvYdS+Ag@mail.gmail.com>
+ <a06cc3ac1698a9d46ec37047415db5634b219a90.camel@gmail.com>
+In-Reply-To: <a06cc3ac1698a9d46ec37047415db5634b219a90.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 27 Jan 2023 09:41:27 -0800
+Message-ID: <CAEf4BzbYF703ndHjM8Un+6bOiRCRDzMhO4SdkTszvry2ps38pA@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/5] test_verifier tests migration to inline assembly
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,400 +67,380 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 27, 2023 at 9:26 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Thu, Jan 26, 2023 at 4:30 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> > On 01/26, Lorenzo Bianconi wrote:
+> On Wed, 2023-01-25 at 17:33 -0800, Andrii Nakryiko wrote:
+> > On Mon, Jan 23, 2023 at 6:52 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+> > >
+> > > As a part of the discussion started in [2] I developed a script [1]
+> > > that can convert tests specified in test_verifier.c format to inline
+> > > BPF assembly compatible for use with test_loader.c.
+> > >
+> > > For example, test definition like below:
+> > >
+> > > {
+> > >         "invalid and of negative number",
+> > >         .insns = {
+> > >         BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+> > >         BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+> > >         BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+> > >         BPF_LD_MAP_FD(BPF_REG_1, 0),
+> > >         BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+> > >         BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 5),
+> > >         BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_0, 0),
+> > >         BPF_ALU64_IMM(BPF_AND, BPF_REG_1, -4),
+> > >         BPF_ALU64_IMM(BPF_LSH, BPF_REG_1, 2),
+> > >         BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_1),
+> > >         BPF_ST_MEM(BPF_DW, BPF_REG_0, 0, offsetof(struct test_val, foo)),
+> > >         BPF_EXIT_INSN(),
+> > >         },
+> > >         .fixup_map_hash_48b = { 3 },
+> > >         .errstr = "R0 max value is outside of the allowed memory range",
+> > >         .result = REJECT,
+> > >         .flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+> > > },
+> > >
+> > > Is converted to:
+> > >
+> > > struct test_val { ... };
+> > >
+> > > struct { ...} map_hash_48b SEC(".maps");
+> > >
+> > > __description("invalid and of negative number")
+> > > __failure __msg("R0 max value is outside of the allowed memory range")
+> > > __failure_unpriv
+> > > __flag(BPF_F_ANY_ALIGNMENT)
+> > > SEC("socket")
+> >
+> > nit: let's make sure that SEC() is the first annotation, makes
+> > grepping easier and is consistent with how we use SEC() with BPF
+> > programs
 >
-> [...]
+> Ok, will move SEC to the top.
 >
 > >
-> > Why do we need the namespaces? Why not have two veth peers in the
-> > current namespace?
->
-> I think we can use just a veth pair here, we do not need two, I will fix it.
->
 > >
-> > (not sure it matters, just wondering)
+> > > __naked void invalid_and_of_negative_number(void)
+> > >
+> > > {
+> > >         asm volatile (
+> > > "       r1 = 0;                                         \n\
 > >
-> > > +ret=1
-> > > +
-> > > +setup() {
-> > > +   {
-> > > +           ip netns add ${NS0}
-> > > +           ip netns add ${NS1}
-> > > +
-> > > +           ip link add v01 index 111 type veth peer name v00 netns ${NS0}
-> > > +           ip link add v10 index 222 type veth peer name v11 netns ${NS1}
-> > > +
-> > > +           ip link set v01 up
-> > > +           ip addr add 10.10.0.1/24 dev v01
-> > > +           ip link set v01 address 00:11:22:33:44:55
-> > > +           ip -n ${NS0} link set dev v00 up
-> > > +           ip -n ${NS0} addr add 10.10.0.11/24 dev v00
-> > > +           ip -n ${NS0} route add default via 10.10.0.1
-> > > +           ip -n ${NS0} link set v00 address 00:12:22:33:44:55
-> > > +
-> > > +           ip link set v10 up
-> > > +           ip addr add 10.10.1.1/24 dev v10
-> > > +           ip link set v10 address 00:13:22:33:44:55
-> > > +           ip -n ${NS1} link set dev v11 up
-> > > +           ip -n ${NS1} addr add 10.10.1.11/24 dev v11
-> > > +           ip -n ${NS1} route add default via 10.10.1.1
-> > > +           ip -n ${NS1} link set v11 address 00:14:22:33:44:55
-> > > +
-> > > +           sysctl -w net.ipv4.ip_forward=1
-> > > +           # Enable XDP mode
-> > > +           ethtool -K v01 gro on
-> > > +           ethtool -K v01 tx-checksumming off
-> > > +           ip netns exec ${NS0} ethtool -K v00 gro on
-> > > +           ip netns exec ${NS0} ethtool -K v00 tx-checksumming off
-> > > +           ethtool -K v10 gro on
-> > > +           ethtool -K v10 tx-checksumming off
-> > > +           ip netns exec ${NS1} ethtool -K v11 gro on
-> > > +           ip netns exec ${NS1} ethtool -K v11 tx-checksumming off
-> > > +   } > /dev/null 2>&1
-> > > +}
+> > Kumar recently landed similarly formatted inline asm-based test, let's
+> > make sure we stick to common style. \n at the end are pretty
 >
-> [...]
-> >
-> > IIRC, Martin mentioned IPv6 support in the previous version. Should we
-> > also make the userspace v6 aware by at least using AF_INET6 dualstack
-> > sockets? I feel like listening on inaddr_any with AF_INET6 should
-> > get us there without too much pain..
+> Tbh, the '\n\' at the end of the line is much less distracting
+> compared to the first variant when each instruction had it's own
+> string ('"r1 = 0;\n"'). And I find it quite useful when compiler
+> points to a bad asm instruction.
 >
-> ack, I will fix it.
->
-> >
-> > > +
-> > > +   /* start echo channel */
-> > > +   *echo_sockfd = sockfd;
-> > > +   err = pthread_create(t, NULL, dut_echo_thread, echo_sockfd);
-> > > +   if (err) {
-> > > +           fprintf(stderr, "Failed creating dut_echo thread: %s\n",
-> > > +                   strerror(-err));
-> > > +           close(sockfd);
-> > > +           return -EINVAL;
-> > > +   }
-> > > +
-> > > +   return 0;
-> > > +}
-> > > +
-> > > +static int dut_attach_xdp_prog(struct xdp_features *skel, int feature,
-> > > +                          int flags)
-> > > +{
-> > > +   struct bpf_program *prog;
-> > > +   unsigned int key = 0;
-> > > +   int err, fd = 0;
-> > > +
-> > > +   switch (feature) {
-> > > +   case XDP_FEATURE_TX:
-> > > +           prog = skel->progs.xdp_do_tx;
-> > > +           break;
-> > > +   case XDP_FEATURE_DROP:
-> > > +   case XDP_FEATURE_ABORTED:
-> > > +           prog = skel->progs.xdp_do_drop;
-> > > +           break;
-> > > +   case XDP_FEATURE_PASS:
-> > > +           prog = skel->progs.xdp_do_pass;
-> > > +           break;
-> > > +   case XDP_FEATURE_NDO_XMIT: {
-> > > +           struct bpf_devmap_val entry = {
-> > > +                   .ifindex = env.ifindex,
-> > > +           };
-> > > +
-> > > +           err = bpf_map__update_elem(skel->maps.dev_map,
-> > > +                                      &key, sizeof(key),
-> > > +                                      &entry, sizeof(entry), 0);
-> > > +           if (err < 0)
-> > > +                   return err;
-> > > +
-> > > +           fd = bpf_program__fd(skel->progs.xdp_do_redirect_cpumap);
-> > > +   }
-> > > +   case XDP_FEATURE_REDIRECT: {
-> > > +           struct bpf_cpumap_val entry = {
-> > > +                   .qsize = 2048,
-> > > +                   .bpf_prog.fd = fd,
-> > > +           };
-> > > +
-> > > +           err = bpf_map__update_elem(skel->maps.cpu_map,
-> > > +                                      &key, sizeof(key),
-> > > +                                      &entry, sizeof(entry), 0);
-> > > +           if (err < 0)
-> > > +                   return err;
-> > > +
-> > > +           prog = skel->progs.xdp_do_redirect;
-> > > +           break;
-> > > +   }
-> > > +   default:
-> > > +           return -EINVAL;
-> > > +   }
-> > > +
-> > > +   err = bpf_xdp_attach(env.ifindex, bpf_program__fd(prog), flags, NULL);
-> > > +   if (err)
-> > > +           fprintf(stderr,
-> > > +                   "Failed to attach XDP program to ifindex %d\n",
-> > > +                   env.ifindex);
-> > > +   return err;
-> > > +}
-> > > +
-> > > +static int __recv_msg(int sockfd, void *buf, size_t bufsize,
-> > > +                 unsigned int *val, unsigned int val_size)
-> > > +{
-> > > +   struct tlv_hdr *tlv = (struct tlv_hdr *)buf;
-> > > +   int len, n = sizeof(*tlv), i = 0;
-> > > +
-> > > +   len = recv(sockfd, buf, bufsize, 0);
-> > > +   if (len != ntohs(tlv->len))
-> > > +           return -EINVAL;
-> > > +
-> > > +   while (n < len && i < val_size) {
-> > > +           val[i] = ntohl(tlv->data[i]);
-> > > +           n += sizeof(tlv->data[0]);
-> > > +           i++;
-> > > +   }
-> > > +
-> > > +   return i;
-> > > +}
-> > > +
-> > > +static int recv_msg(int sockfd, void *buf, size_t bufsize)
-> > > +{
-> > > +   return __recv_msg(sockfd, buf, bufsize, NULL, 0);
-> > > +}
-> > > +
-> > > +static int dut_run(struct xdp_features *skel)
-> > > +{
-> > > +   int flags = XDP_FLAGS_UPDATE_IF_NOEXIST | XDP_FLAGS_DRV_MODE;
-> > > +   int state, err, sockfd, ctrl_sockfd, echo_sockfd, optval = 1;
-> > > +   struct sockaddr_in ctrl_addr, addr = {
-> > > +           .sin_family = AF_INET,
-> > > +           .sin_addr.s_addr = htonl(INADDR_ANY),
-> > > +           .sin_port = htons(DUT_CTRL_PORT),
-> > > +   };
-> > > +   unsigned int len = sizeof(ctrl_addr);
-> > > +   pthread_t dut_thread;
-> > > +
-> >
-> > [..]
-> >
-> > > +   sockfd = socket(AF_INET, SOCK_STREAM, 0);
-> > > +   if (sockfd < 0) {
-> > > +           fprintf(stderr, "Failed to create DUT socket\n");
-> > > +           return -errno;
-> > > +   }
-> > > +
-> > > +   err = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval,
-> > > +                    sizeof(optval));
-> > > +   if (err < 0) {
-> > > +           fprintf(stderr, "Failed sockopt on DUT socket\n");
-> > > +           return -errno;
-> > > +   }
-> > > +
-> > > +   err = bind(sockfd, (struct sockaddr *)&addr, sizeof(addr));
-> > > +   if (err < 0) {
-> > > +           fprintf(stderr, "Failed to bind DUT socket\n");
-> > > +           return -errno;
-> > > +   }
-> > > +
-> > > +   err = listen(sockfd, 5);
-> > > +   if (err) {
-> > > +           fprintf(stderr, "Failed to listen DUT socket\n");
-> > > +           return -errno;
-> > > +   }
-> >
-> > Should we use start_server from network_helpers.h here?
->
-> ack, I will use it.
->
-> >
-> > > +
-> > > +   ctrl_sockfd = accept(sockfd, (struct sockaddr *)&ctrl_addr, &len);
-> > > +   if (ctrl_sockfd < 0) {
-> > > +           fprintf(stderr, "Failed to accept connection on DUT socket\n");
-> > > +           close(sockfd);
-> > > +           return -errno;
-> > > +   }
-> > > +
->
-> [...]
->
-> >
-> > There is also connect_to_fd, maybe we can use that? It should take
-> > care of the timeouts.. (requires plumbing server_fd, not sure whether
-> > it's a problem or not)
->
-> please correct me if I am wrong, but in order to have server_fd it is mandatory
-> both tester and DUT are running on the same process, right? Here, I guess 99% of
-> the times DUT and tester will run on two separated devices. Agree?
+> But I'll remove it if you insist.
 
-Yes, it's targeting more the case where you have a server fd and a
-bunch of clients in the same process. But I think it's still usable in
-your case, you're not using fork() anywhere afaict, so even if these
-are separate devices, connect_to_fd should still work. (unless I'm
-missing something, haven't looked too closely)
+I'm not strongly opposed, but when writing new tests by hand I
+wouldn't want to add all those \n's. So it's mostly style consistency.
 
-> Regards,
-> Lorenzo
+>
+> > distracting, IMO (though helpful to debug syntax errors in asm, of
+> > course). I'd also move starting " into the same line as asm volatile:
+>
+> Ok, no problem, will move the '"'.
 >
 > >
-> > > +
-> > > +   if (i == 10) {
-> > > +           fprintf(stderr, "Failed to connect to the DUT\n");
-> > > +           return -ETIMEDOUT;
-> > > +   }
-> > > +
-> > > +   err = __send_and_recv_msg(sockfd, CMD_GET_XDP_CAP, val,
-> > > ARRAY_SIZE(val));
-> > > +   if (err < 0) {
-> > > +           close(sockfd);
-> > > +           return err;
-> > > +   }
-> > > +
-> > > +   advertised_cap = tester_collect_advertised_cap(val[0]);
-> > > +
-> > > +   err = bpf_xdp_attach(env.ifindex,
-> > > +                        bpf_program__fd(skel->progs.xdp_tester),
-> > > +                        flags, NULL);
-> > > +   if (err) {
-> > > +           fprintf(stderr, "Failed to attach XDP program to ifindex %d\n",
-> > > +                   env.ifindex);
-> > > +           goto out;
-> > > +   }
-> > > +
-> > > +   err = send_and_recv_msg(sockfd, CMD_START);
-> > > +   if (err)
-> > > +           goto out;
-> > > +
-> > > +   for (i = 0; i < 10 && !exiting; i++) {
-> > > +           err = send_echo_msg();
-> > > +           if (err < 0)
-> > > +                   goto out;
-> > > +
-> > > +           sleep(1);
-> > > +   }
-> > > +
-> > > +   err = __send_and_recv_msg(sockfd, CMD_GET_STATS, val, ARRAY_SIZE(val));
-> > > +   if (err)
-> > > +           goto out;
-> > > +
-> > > +   /* stop the test */
-> > > +   err = send_and_recv_msg(sockfd, CMD_STOP);
-> > > +   /* send a new echo message to wake echo thread of the dut */
-> > > +   send_echo_msg();
-> > > +
-> > > +   detected_cap = tester_collect_detected_cap(skel, val[0]);
-> > > +
-> > > +   fprintf(stdout, "Feature %s: [%s][%s]\n",
-> > > get_xdp_feature_str(env.feature),
-> > > +           detected_cap ? GREEN("DETECTED") : RED("NOT DETECTED"),
-> > > +           advertised_cap ? GREEN("ADVERTISED") : RED("NOT ADVERTISED"));
-> > > +out:
-> > > +   bpf_xdp_detach(env.ifindex, flags, NULL);
-> > > +   close(sockfd);
-> > > +   return err < 0 ? err : 0;
-> > > +}
-> > > +
-> > > +int main(int argc, char **argv)
-> > > +{
-> > > +   struct xdp_features *skel;
-> > > +   int err;
-> > > +
-> > > +   libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-> > > +   libbpf_set_print(libbpf_print_fn);
-> > > +
-> > > +   signal(SIGINT, sig_handler);
-> > > +   signal(SIGTERM, sig_handler);
-> > > +
-> > > +   set_env_defaul();
-> > > +
-> > > +   /* Parse command line arguments */
-> > > +   err = argp_parse(&argp, argc, argv, 0, NULL, NULL);
-> > > +   if (err)
-> > > +           return err;
-> > > +
-> > > +   if (env.ifindex < 0) {
-> > > +           fprintf(stderr, "Invalid ifindex\n");
-> > > +           return -ENODEV;
-> > > +   }
-> > > +
-> > > +   /* Load and verify BPF application */
-> > > +   skel = xdp_features__open();
-> > > +   if (!skel) {
-> > > +           fprintf(stderr, "Failed to open and load BPF skeleton\n");
-> > > +           return -EINVAL;
-> > > +   }
-> > > +
-> > > +   skel->rodata->expected_feature = env.feature;
-> > > +   skel->rodata->dut_ip = env.dut_ip;
-> > > +   skel->rodata->tester_ip = env.tester_ip;
-> > > +
-> > > +   /* Load & verify BPF programs */
-> > > +   err = xdp_features__load(skel);
-> > > +   if (err) {
-> > > +           fprintf(stderr, "Failed to load and verify BPF skeleton\n");
-> > > +           goto cleanup;
-> > > +   }
-> > > +
-> > > +   err = xdp_features__attach(skel);
-> > > +   if (err) {
-> > > +           fprintf(stderr, "Failed to attach BPF skeleton\n");
-> > > +           goto cleanup;
-> > > +   }
-> > > +
-> > > +   if (env.tester) {
-> > > +           /* Tester */
-> > > +           fprintf(stdout, "Starting tester on device %d\n", env.ifindex);
-> > > +           err = tester_run(skel);
-> > > +   } else {
-> > > +           /* DUT */
-> > > +           fprintf(stdout, "Starting DUT on device %d\n", env.ifindex);
-> > > +           err = dut_run(skel);
-> > > +   }
-> > > +
-> > > +cleanup:
-> > > +   xdp_features__destroy(skel);
-> > > +
-> > > +   return err < 0 ? -err : 0;
-> > > +}
-> > > diff --git a/tools/testing/selftests/bpf/xdp_features.h
-> > > b/tools/testing/selftests/bpf/xdp_features.h
-> > > new file mode 100644
-> > > index 000000000000..28d7614c4f02
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/xdp_features.h
-> > > @@ -0,0 +1,33 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +
-> > > +/* test commands */
-> > > +enum test_commands {
-> > > +   CMD_STOP,               /* CMD */
-> > > +   CMD_START,              /* CMD + xdp feature */
-> > > +   CMD_ECHO,               /* CMD */
-> > > +   CMD_ACK,                /* CMD + data */
-> > > +   CMD_GET_XDP_CAP,        /* CMD */
-> > > +   CMD_GET_STATS,          /* CMD */
-> > > +};
-> > > +
-> > > +#define DUT_CTRL_PORT      12345
-> > > +#define DUT_ECHO_PORT      12346
-> > > +
-> > > +struct tlv_hdr {
-> > > +   __be16 type;
-> > > +   __be16 len;
-> > > +   __be32 data[];
-> > > +};
-> > > +
-> > > +enum {
-> > > +   XDP_FEATURE_ABORTED,
-> > > +   XDP_FEATURE_DROP,
-> > > +   XDP_FEATURE_PASS,
-> > > +   XDP_FEATURE_TX,
-> > > +   XDP_FEATURE_REDIRECT,
-> > > +   XDP_FEATURE_NDO_XMIT,
-> > > +   XDP_FEATURE_XSK_ZEROCOPY,
-> > > +   XDP_FEATURE_HW_OFFLOAD,
-> > > +   XDP_FEATURE_RX_SG,
-> > > +   XDP_FEATURE_NDO_XMIT_SG,
-> > > +};
+> > asm volatile ("                       \
+> >
+> > this will make adding/removing asm lines at the beginning simpler (and
+> > you already put closing quote on separate line, so that side is taken
+> > care of)
+> >
+> > >         *(u64*)(r10 - 8) = r1;                          \n\
+> > >         r2 = r10;                                       \n\
+> > >         r2 += -8;                                       \n\
+> > >         r1 = %[map_hash_48b] ll;                        \n\
+> > >         call %[bpf_map_lookup_elem];                    \n\
+> > >         if r0 == 0 goto l0_%=;                          \n\
+> > >         r1 = *(u8*)(r0 + 0);                            \n\
+> > >         r1 &= -4;                                       \n\
+> > >         r1 <<= 2;                                       \n\
+> > >         r0 += r1;                                       \n\
+> > >         r1 = %[test_val_foo_offset];                    \n\
+> > >         *(u64*)(r0 + 0) = r1;                           \n\
+> > > l0_%=:                                                  \n\
+> > >         exit;                                           \n\
+> > > "       :
+> > >         : [test_val_foo_offset]"i"(offsetof(struct test_val, foo)),
+> >
+> > should we use some __imm_const(name, value) macro (or __imm_named, or
+> > __imm_alias, or something like that) for cases like this?
+> >
+> > >           __imm(bpf_map_lookup_elem),
+> > >           __imm_addr(map_hash_48b)
+> > >         : __clobber_all);
+> > > }
+> > >
+> > > The script introduces labels for gotos and calls, immediate values for
+> > > complex expressions like `offsetof(...)', takes care of map
+> > > instructions patching, inserts map declarations used in the test,
+> > > transfers comments from test, test fields and instructions. There are
+> > > some issues with BPF_ST_MEM instruction support as described in [4],
+> > > thus the script replaces such instructions with pairs of MOV/STX_MEM
+> > > instructions.
+> > >
+> > > This patch-set introduces changes necessary for test_loader.c and
+> > > includes migration of a single test from test_verifier to test_progs
+> > > format, here are descriptions for individual patches:
+> > >
+> > > 1. "Support custom per-test flags and multiple expected messages"
+> > >    This patch was shared by Andrii Nakryiko [3], it adds capability
+> > >    to specify flags required by the BPF program.
+> > >
+> > > 2. "Unprivileged tests for test_loader.c"
+> > >    Extends test_loader.c by capability to load test programs in
+> > >    unprivileged mode and specify separate test outcomes for
+> > >    privileged and unprivileged modes.
+> > >
+> > >    Note: for a reason I do not understand I had to use different set
+> > >    of capabilities compared to test_verifier:
+> > >    - test_verifier: CAP_NET_ADMIN, CAP_PERFMON, CAP_BPF;
+> > >    - test_loader  : CAP_SYS_ADMIN, CAP_PERFMON, CAP_BPF.
+> >
+> > CAP_SYS_ADMIN is a superset of PERFMON and BPF, so it should be
+> > NET_ADMIN... Setting CAP_SYS_ADMIN makes PERFMON and BPF meaningless,
+> > so we should investigate.
+> >
+>
+> Ok, I'll dig some more and ask for help in case if I would get stuck.
+>
+> > >
+> > > 3. "Generate boilerplate code for test_loader-based tests"
+> > >    Extends selftests/bpf Makefile to automatically generate
+> > >    prog_tests/tests.h entry that uses test_loader for progs/*.c
+> > >    BPF programs if special marker is present.
+> > >
+> > > 4. "__imm_insn macro to embed raw insns in inline asm"
+> >
+> > nit: __raw_insns perhaps, otherwise confusing given __imm and __imm_addr macros
+>
+> Sorry, I'm a bit confused, should I rename it to __raw_insn or
+> __imm_insn is fine?
+
+nope, keep it as __imm_insn, I haven't seen patch 4 before replying
+here, I assumed this raw instruction macro will be used inline in the
+body of asm volatile, but it's done as passing immediate 8-byte value,
+so it makes sense to name it with __imm prefix
+
+>
+> >
+> > >    This macro can be generated by migration script for instructions
+> > >    that cannot be expressed in inline assembly, e.g. invalid instructions.
+> > >
+> > > 5. "convert jeq_infer_not_null tests to inline assembly"
+> > >    Shows an example of the test migration.
+> > >    The test was updated slightly after automatic translation:
+> > >    - unnecessary comments removed;
+> > >    - functions renamed;
+> > >    - some labels renamed.
+> > >
+> > > The migration script has some limitations:
+> > > - Technical, test features that are not yet supported:
+> > >   - few instructions like BPF_ENDIAN;
+> > >   - macro like BPF_SK_LOOKUP or BPF_LD_MAP_VALUE;
+> > >   - program types like BPF_PROG_TYPE_CGROUP_SOCK_ADDR and
+> > >     BPF_PROG_TYPE_TRACING;
+> > >   - tests that specify fields 'expected_attach_type' or 'insn_processed';
+> > >   - a few tests expose complex structure that could not be
+> > >     automatically migrated, e.g.: 'atomic_fetch', 'lwt',
+> > >     'bpf_loop_inline'.
+> > > - Tests that use .run field cannot be migrated as test_loader.c tests.
+> > > - Tests with generated bodies, e.g. test_verifier.c:bpf_fill_scale()
+> > >   cannot be migrated as test_loader.c tests.
+> > > - LLVM related:
+> > >   - BPF_ST instruction is not supported by LLVM BPF assembly yet
+> > >     (I'll take care of it);
+> > >   - Issues with parsing of some assembly instructions like
+> > >     "r0 = cmpxchg_64(r10 - 8, r0, r5)"
+> > >     (I'll take care of it);
+> > > - libbpf related:
+> > >   - libbpf does not support call instructions within a single
+> > >     function, e.g.:
+> >
+> > it's more of an issue of not having valid relocation emitted and also
+> > corresponding .BTF.ext line/func info (that's my guess)
+> >
+> > >
+> > >       0: r1 = 1
+> > >       1: r2 = 2
+> > >       2: call 1
+> > >       3: exit
+> > >       4: r0 = r1
+> > >       5: r0 += r2
+> > >       6: exit
+> >
+> > so libbpf itself doesn't care, but given we use BTF and send .BTF.ext,
+> > I suspect kernel just doesn't like that it can't find func_info
+> > information for subprog. So we'll need to split into proper functions
+> > or disable .BTF.ext somehow.
+>
+> Actual error that I see comes from libbpf itself and looks as follows:
+>
+>   libbpf: prog 'regalloc_in_callee': no .text section found yet sub-program call exists
+>   libbpf: prog 'regalloc_in_callee': failed to relocate calls: -4005
+>   libbpf: failed to load object 'verifier_regalloc'
+>
+> It is reported from 'libbpf.c:bpf_object__reloc_code()' when processed
+> instruction is 'insn_is_subprog_call(insn)' and relocation pointer is NULL.
+> I would like to avoid automatically splitting test cases into
+> functions as it means that tests with invalid CFG can't be represented
+> when test_loader.c is used. However if you are completely against
+> adding a flag to libbpf for this case I'll proceed with "function
+> inference" approach.
+
+Ok, I see. Libbpf has restriction that subprograms have to be in
+.text, they can't be in SEC("kprobe") and whatnot. The latter is due
+to inability to distinguish which function in SEC("kprobe") (as one
+specific example of program section) is entry program and which one is
+subprog. So any subprogram is just an unannotated function in .text.
+
+Have you tried .section directive to temporarily put subprogram into
+.text and then go back to the main program? This probably won't be
+enough, but I'm thinking something like
+
+r1 = 1
+r2 = 2
+call 1
+exit
+.section .text, "rx"
+r0 = r1
+r0 += r2
+exit
+.section kprobe, "rx"
+
+
+We might need more directives to properly annotate subprog (function)
+definition, we can check what compiler generates from C code for
+subprogs.
+
+
+>
+> >
+> >
+> > >
+> > >     This pattern is common in verifier tests, I see two possible
+> > >     mitigation:
+> > >     (a) use an additional libbpf flag to allow such code;
+> >
+> > I hope not :)
+> >
+> > >     (b) extend migration script to split such code in several functions.
+> > >     I like (a) more.
+> >
+> > see above, this won't be a libbpf flag, rather some code in test
+> > runner to strip away .BTF.ext information
+> >
+> > >
+> > >   - libbpf does not allow empty programs.
+> >
+> > like:
+> >
+> > SEC("kprobe")
+> > int prog()
+> > {
+> >     return 0;
+> > }
+> >
+> > ?
+>
+> Like this:
+>
+>   SEC("kprobe") int prog() {}
+>
+> No body at all, we have such test. Probably not a big deal if it is
+> not migrated.
+
+prog returns int, so at the very least it should have `return 0;`. And
+in general, any BPF function should at least have `exit` BPF
+instruction, right?
+
+>
+> > >
+> > > All in all the current script stats are as follows:
+> > > - 62 out of 93 files from progs/*.c can be converted w/o warnings;
+> > > - 55 converted files could be compiled;
+> > > - 40 pass testing, 15 fail.
+> > >
+> > > By submitting this RFC I seek the following feedback:
+> > > - is community interested in such migration?
+> >
+> > +1
+> >
+> > This is a great work!
+> >
+> > > - if yes, should I pursue partial or complete tests migration?
+> >
+> > I'd start with partial
+> >
+> > > - in case of partial migration which tests should be prioritized?
+> >
+> > those that work out of the box?
+>
+> Ok.
+>
+> >
+> > > - should I offer migrated tests one by one or in big butches?
+> >
+> > they come grouped in files, would it be possible to live them in
+> > similar groupings?
+>
+> Yes, file-by-file is how the tool currently works, I will keep the grouping.
+> After this patch-set I can submit 40 patches one-by-one or as a single
+> patch-set. The way I understand you and Alexei a single big patch-set
+> is preferable, is that right?
+
+yes, one larger patch set would be easier to manager than 40 separate
+ones in this particular case
+
+>
+> >
+> > >
+> > > Thanks,
+> > > Eduard
+> > >
+> > > [1] https://github.com/eddyz87/verifier-tests-migrator
+> > > [2] https://lore.kernel.org/bpf/CAEf4BzYPsDWdRgx+ND1wiKAB62P=WwoLhr2uWkbVpQfbHqi1oA@mail.gmail.com/
+> > > [3] https://lore.kernel.org/bpf/CAEf4BzZH0ZxorCi7nPDbRqSK9f+410RooNwNJGwfw8=0a5i1nw@mail.gmail.com/
+> > > [4] https://lore.kernel.org/bpf/20221231163122.1360813-1-eddyz87@gmail.com/
+> > >
+> > > Andrii Nakryiko (1):
+> > >   selftests/bpf: support custom per-test flags and multiple expected
+> > >     messages
+> > >
+> > > Eduard Zingerman (4):
+> > >   selftests/bpf: unprivileged tests for test_loader.c
+> > >   selftests/bpf: generate boilerplate code for test_loader-based tests
+> > >   selftests/bpf: __imm_insn macro to embed raw insns in inline asm
+> > >   selftests/bpf: convert jeq_infer_not_null tests to inline assembly
+> > >
+> > >  tools/testing/selftests/bpf/Makefile          |  41 +-
+> > >  tools/testing/selftests/bpf/autoconf_helper.h |   9 +
+> > >  .../selftests/bpf/prog_tests/.gitignore       |   1 +
+> > >  .../bpf/prog_tests/jeq_infer_not_null.c       |   9 -
+> > >  tools/testing/selftests/bpf/progs/bpf_misc.h  |  49 +++
+> > >  .../selftests/bpf/progs/jeq_infer_not_null.c  | 186 +++++++++
+> > >  .../bpf/progs/jeq_infer_not_null_fail.c       |   1 +
+> > >  tools/testing/selftests/bpf/test_loader.c     | 370 +++++++++++++++---
+> > >  tools/testing/selftests/bpf/test_progs.h      |   1 +
+> > >  tools/testing/selftests/bpf/test_verifier.c   |  25 +-
+> > >  tools/testing/selftests/bpf/unpriv_helpers.c  |  26 ++
+> > >  tools/testing/selftests/bpf/unpriv_helpers.h  |   7 +
+> > >  .../bpf/verifier/jeq_infer_not_null.c         | 174 --------
+> > >  13 files changed, 625 insertions(+), 274 deletions(-)
+> > >  create mode 100644 tools/testing/selftests/bpf/autoconf_helper.h
+> > >  delete mode 100644 tools/testing/selftests/bpf/prog_tests/jeq_infer_not_null.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/jeq_infer_not_null.c
+> > >  create mode 100644 tools/testing/selftests/bpf/unpriv_helpers.c
+> > >  create mode 100644 tools/testing/selftests/bpf/unpriv_helpers.h
+> > >  delete mode 100644 tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c
+> > >
 > > > --
-> > > 2.39.1
-> >
+> > > 2.39.0
+> > >
+>
