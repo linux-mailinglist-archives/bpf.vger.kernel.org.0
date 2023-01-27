@@ -2,191 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED08367EDE2
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 19:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F7267EE04
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 20:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbjA0Sy7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 13:54:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
+        id S233705AbjA0TS5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 14:18:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233920AbjA0Syw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 13:54:52 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843951BEA
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 10:54:50 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id cw4so430259edb.13
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 10:54:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=leSqjJgVHfsUJbAs1ncWTbTUFSvFk2wHwgqfmr1FdFE=;
-        b=fUYbGZrt4ybMyq4WyQpiPW9WcQwiq19AQyINrzW7/4Qc+gl2fgSMJjaSG5I8vaeTpb
-         eQVfKrn08IeHARWFcsmqDN/2yytCBXGTxATdBYga4/OaqXP4eH9o3h5+o9pZkOb3Qzy3
-         oSBu8heJn+NQQ7Fz/voyQhwicK7jeSf/Kjsk6w3cIY3DDdhQsEpYVxCtRcR4ucA8maBx
-         /XyBCIr7cEhAdnGshn4hNoQ9QRYbjlZ9t8G4iRRX9nwvPhGerPecdiTd2XG/JFOXhy+8
-         ptb84T1nL219OAwIrfepJtrKWfZOiZ29k4edNvbc/JeVUkBCQuEyIM1vmvSFlvfpER8V
-         HgkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=leSqjJgVHfsUJbAs1ncWTbTUFSvFk2wHwgqfmr1FdFE=;
-        b=x9WKRiKbzIxySpIPLwza8PRIN0w//W3iI8YVSN3PJM9QhIkkHfxBme98VuuYsboc3y
-         hmcwdiK4dyj2HEpRFW6GHDIiisuQZXeEZYMA0GToD4qHQgb8xN9/V87sWfYt7a4Chd3G
-         yBc+4MU9dX1fWoBcThv4Xu6ns0fhSfktAUaKMq9wluYB9qpBAMU6+1JEirhTdYwBk+ij
-         dnt7HOLc/dpoprRlPADWoV0qG3d1SRsahcxFWnskk1rNFwryDdpF323VxLW81BbogvNw
-         LSXg2h3aBxAdpWaHvmWhKecq7Gx6gjh5LrsVY14urTbK8BE+txBSmzdj5urvOddavWPz
-         dRZw==
-X-Gm-Message-State: AO0yUKXi7rVIyaqRc1LhWuMFZOoB+BImpMLpNQoQw27kOTI8Um0oMjW3
-        EpC4iJn2lw25ERvoQVgVV0Im+x/oeXBc5fg401A70VDf
-X-Google-Smtp-Source: AK7set+fAtsQGvrILJy4TkgkIUmgpsrPq42aZKMStfVW9NRd9lzA/mAFZne6ixlGZcSfIgMGruhkKC7IkqrclJlT9xQ=
-X-Received: by 2002:a05:6402:3901:b0:4a0:9d56:420e with SMTP id
- fe1-20020a056402390100b004a09d56420emr2909629edb.78.1674845688971; Fri, 27
- Jan 2023 10:54:48 -0800 (PST)
+        with ESMTP id S232828AbjA0TSi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 14:18:38 -0500
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D2A7B43F
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 11:18:34 -0800 (PST)
+Received: by devvm15675.prn0.facebook.com (Postfix, from userid 115148)
+        id 76C944CC61FB; Fri, 27 Jan 2023 11:18:22 -0800 (PST)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, netdev@vger.kernel.org, memxor@gmail.com,
+        kernel-team@fb.com, Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH v9 bpf-next 0/5] Add skb + xdp dynptrs
+Date:   Fri, 27 Jan 2023 11:16:58 -0800
+Message-Id: <20230127191703.3864860-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CAGQdkDvVW1QhPdjOS_8yDidZA3qyW8O-H3Seb7RZHU34GGrmiA@mail.gmail.com>
- <Y75zBpkr1tLXKMWX@krava> <CAEf4BzZDfTAaahM3zwkKwcF2RG4C0HPN+ZPzT7XH517QsvDmTw@mail.gmail.com>
- <CAGQdkDsHuR2+zuDiFKJWpAYYf+fBgkpAFJVs5qUEWV-nOhxztA@mail.gmail.com>
-In-Reply-To: <CAGQdkDsHuR2+zuDiFKJWpAYYf+fBgkpAFJVs5qUEWV-nOhxztA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 27 Jan 2023 10:54:37 -0800
-Message-ID: <CAEf4BzbYoGY2e_Nf1EOgzDdjGOLbSjJ5OmHRDFnYUA_VDYD6zQ@mail.gmail.com>
-Subject: Re: [QUESTION] usage of BPF_MAP_TYPE_RINGBUF
-To:     andrea terzolo <andreaterzolo3@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 15, 2023 at 9:10 AM andrea terzolo <andreaterzolo3@gmail.com> wrote:
->
-> Il giorno ven 13 gen 2023 alle ore 23:57 Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> ha scritto:
-> >
-> > On Wed, Jan 11, 2023 at 12:27 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Tue, Jan 10, 2023 at 02:49:59PM +0100, andrea terzolo wrote:
-> > > > Hello!
-> > > >
-> > > > If I can I would ask a question regarding the BPF_MAP_TYPE_RINGBUF
-> > > > map. Looking at the kernel implementation [0] it seems that data pages
-> > > > are mapped 2 times to have a more efficient and simpler
-> > > > implementation. This seems to be a ring buffer peculiarity, the perf
-> > > > buffer didn't have such an implementation. In the Falco project [1] we
-> > > > use huge per-CPU buffers to collect almost all the syscalls that the
-> > > > system throws and the default size of each buffer is 8 MB. This means
-> > > > that using the ring buffer approach on a system with 128 CPUs, we will
-> > > > have (128*8*2) MB, while with the perf buffer only (128*8) MB. The
-> > >
-> > > hum IIUC it's not allocated twice but pages are just mapped twice,
-> > > to cope with wrap around samples, described in git log:
-> > >
-> > >     One interesting implementation bit, that significantly simplifies (and thus
-> > >     speeds up as well) implementation of both producers and consumers is how data
-> > >     area is mapped twice contiguously back-to-back in the virtual memory. This
-> > >     allows to not take any special measures for samples that have to wrap around
-> > >     at the end of the circular buffer data area, because the next page after the
-> > >     last data page would be first data page again, and thus the sample will still
-> > >     appear completely contiguous in virtual memory. See comment and a simple ASCII
-> > >     diagram showing this visually in bpf_ringbuf_area_alloc().
-> >
-> > yes, exactly, there is no duplication of memory, it's just mapped
-> > twice to make working with records that wrap around simple and
-> > efficient
-> >
->
-> Thank you very much for the quick response, my previous question was
-> quite unclear, sorry for that, I will try to explain me better with
-> some data. I've collected in this document [3] some thoughts regarding
-> 2 simple examples with perf buffer and ring buffer. Without going into
-> too many details about the document, I've noticed a strange value of
-> "Resident set size" (RSS) in the ring buffer example. Probably is
-> perfectly fine but I really don't understand why the "RSS" for each
-> ring buffer assumes the same value of the Virtual memory size and I'm
-> just asking myself if this fact could impact the OOM score computation
-> making the program that uses ring buffers more vulnerable to the OOM
-> killer.
->
-> [3]: https://hackmd.io/@l56JYH1SS9-QXhSNXKanMw/r1Z8APWso
->
+This patchset is the 2nd in the dynptr series. The 1st can be found here =
+[0].
 
-I'm not an mm expert, unfortunately. Perhaps because we have twice as
-many pages mapped (even though they are using only 8MB of physical
-memory), it is treated as if process' RSS usage is 2x of that. I can
-see how that might be a concern for OOM score, but I'm not sure what
-can be done about this...
+This patchset adds skb and xdp type dynptrs, which have two main benefits=
+ for
+packet parsing:
+    * allowing operations on sizes that are not statically known at
+      compile-time (eg variable-sized accesses).
+    * more ergonomic and less brittle iteration through data (eg does not=
+ need
+      manual if checking for being within bounds of data_end)
 
-> > >
-> > > > issue is that this memory requirement could be too much for some
-> > > > systems and also in Kubernetes environments where there are strict
-> > > > resource limits... Our actual workaround is to use ring buffers shared
-> > > > between more than one CPU with a BPF_MAP_TYPE_ARRAY_OF_MAPS, so for
-> > > > example we allocate a ring buffer for each CPU pair. Unfortunately,
-> > > > this solution has a price since we increase the contention on the ring
-> > > > buffers and as highlighted here [2], the presence of multiple
-> > > > competing writers on the same buffer could become a real bottleneck...
-> > > > Sorry for the long introduction, my question here is, are there any
-> > > > other approaches to manage such a scenario? Will there be a
-> > > > possibility to use the ring buffer without the kernel double mapping
-> > > > in the near future? The ring buffer has such amazing features with
-> > > > respect to the perf buffer, but in a scenario like the Falco one,
-> > > > where we have aggressive multiple producers, this double mapping could
-> > > > become a limitation.
-> > >
-> > > AFAIK the bpf ring buffer can be used across cpus, so you don't need
-> > > to have extra copy for each cpu if you don't really want to
-> > >
-> >
-> > seems like they do share, but only between CPUs. But nothing prevents
-> > you from sharing between more than 2 CPUs, right? It's a tradeoff
->
-> Yes exactly, we can and we will do it
->
-> > between contention and overall memory usage (but as pointed out,
-> > ringbuf doesn't use 2x more memory). Do you actually see a lot of
-> > contention when sharing ringbuf between 2 CPUs? There are multiple
->
-> Actually no, I've not seen a lot of contention with this
-> configuration, it seems to handle throughput quite well. BTW it's
-> still an experimental solution so it is not much tested against
-> real-world workloads.
->
-> > applications that share a single ringbuf between all CPUs, and no one
-> > really complained about high contention so far. You'd need to push
-> > tons of data non-stop, probably, at which point I'd worry about
-> > consumers not being able to keep up (and definitely not doing much
-> > useful with all this data). But YMMV, of course.
-> >
->
-> We are a little bit worried about the single ring buffer scenario,
-> mainly when we have something like 64 CPUs and all syscalls enabled,
-> but as you correctly highlighted in this case we would have also some
-> issues userspace side because we wouldn't be able to handle all this
-> traffic, causing tons of event drops. BTW thank you for the feedback!
->
+When comparing the differences in runtime for packet parsing without dynp=
+trs
+vs. with dynptrs, there is no noticeable difference. Patch 5 contains mor=
+e
+details as well as examples of how to use skb and xdp dynptrs.
 
-If you decide to use ringbuf, I'd leverage its ability to be used
-across multiple CPUs and thus reduce the OOM score concern. This is
-what we see in practice here at Meta: at the same or even smaller
-total amount of memory used for ringbuf(s), compared to perfbuf, we
-see less (or no) event drops due to bigger shared buffer that can
-absorb temporary spikes in the amount of events produced.
+[0]
+https://lore.kernel.org/bpf/20220523210712.3641569-1-joannelkoong@gmail.c=
+om/
 
-> > > jirka
-> > >
-> > > >
-> > > > Thank you in advance for your time,
-> > > > Andrea
-> > > >
-> > > > 0: https://github.com/torvalds/linux/blob/master/kernel/bpf/ringbuf.c#L107
-> > > > 1: https://github.com/falcosecurity/falco
-> > > > 2: https://patchwork.ozlabs.org/project/netdev/patch/20200529075424.3139988-5-andriin@fb.com/
+--
+Changelog:
+
+v8 =3D https://lore.kernel.org/bpf/20230126233439.3739120-1-joannelkoong@=
+gmail.com/
+v8 -> v9:
+    * Fix dynptr_get_type() to check non-stack dynptrs=20
+
+v7 =3D https://lore.kernel.org/bpf/20221021011510.1890852-1-joannelkoong@=
+gmail.com/
+v7 -> v8:
+    * Change helpers to kfuncs
+    * Add 2 new patches (1/5 and 2/5)
+
+v6 =3D https://lore.kernel.org/bpf/20220907183129.745846-1-joannelkoong@g=
+mail.com/
+v6 -> v7
+    * Change bpf_dynptr_data() to return read-only data slices if the skb=
+ prog
+      is read-only (Martin)
+    * Add test "skb_invalid_write" to test that writes to rd-only data sl=
+ices
+      are rejected
+
+v5 =3D https://lore.kernel.org/bpf/20220831183224.3754305-1-joannelkoong@=
+gmail.com/
+v5 -> v6
+    * Address kernel test robot errors by static inlining
+
+v4 =3D https://lore.kernel.org/bpf/20220822235649.2218031-1-joannelkoong@=
+gmail.com/
+v4 -> v5
+    * Address kernel test robot errors for configs w/out CONFIG_NET set
+    * For data slices, return PTR_TO_MEM instead of PTR_TO_PACKET (Kumar)
+    * Split selftests into subtests (Andrii)
+    * Remove insn patching. Use rdonly and rdwr protos for dynptr skb
+      construction (Andrii)
+    * bpf_dynptr_data() returns NULL for rd-only dynptrs. There will be a
+      separate bpf_dynptr_data_rdonly() added later (Andrii and Kumar)
+
+v3 =3D https://lore.kernel.org/bpf/20220822193442.657638-1-joannelkoong@g=
+mail.com/
+v3 -> v4
+    * Forgot to commit --amend the kernel test robot error fixups
+
+v2 =3D https://lore.kernel.org/bpf/20220811230501.2632393-1-joannelkoong@=
+gmail.com/
+v2 -> v3
+    * Fix kernel test robot build test errors
+
+v1 =3D https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@g=
+mail.com/
+v1 -> v2
+  * Return data slices to rd-only skb dynptrs (Martin)
+  * bpf_dynptr_write allows writes to frags for skb dynptrs, but always
+    invalidates associated data slices (Martin)
+  * Use switch casing instead of ifs (Andrii)
+  * Use 0xFD for experimental kind number in the selftest (Zvi)
+  * Put selftest conversions w/ dynptrs into new files (Alexei)
+  * Add new selftest "test_cls_redirect_dynptr.c"=20
+
+Joanne Koong (5):
+  bpf: Allow "sk_buff" and "xdp_buff" as valid kfunc arg types
+  bpf: Allow initializing dynptrs in kfuncs
+  bpf: Add skb dynptrs
+  bpf: Add xdp dynptrs
+  selftests/bpf: tests for using dynptrs to parse skb and xdp buffers
+
+ include/linux/bpf.h                           |  88 +-
+ include/linux/bpf_verifier.h                  |   3 -
+ include/linux/filter.h                        |  38 +
+ include/uapi/linux/bpf.h                      |  41 +-
+ kernel/bpf/btf.c                              |  22 +
+ kernel/bpf/helpers.c                          | 107 +-
+ kernel/bpf/verifier.c                         | 325 +++---
+ net/core/filter.c                             | 104 +-
+ tools/include/uapi/linux/bpf.h                |  41 +-
+ .../selftests/bpf/prog_tests/cls_redirect.c   |  25 +
+ .../testing/selftests/bpf/prog_tests/dynptr.c |  63 +-
+ .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +
+ .../bpf/prog_tests/parse_tcp_hdr_opt.c        |  93 ++
+ .../selftests/bpf/prog_tests/xdp_attach.c     |  11 +-
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 124 +++
+ .../selftests/bpf/progs/dynptr_success.c      |  28 +
+ .../bpf/progs/test_cls_redirect_dynptr.c      | 973 ++++++++++++++++++
+ .../bpf/progs/test_l4lb_noinline_dynptr.c     | 474 +++++++++
+ .../bpf/progs/test_parse_tcp_hdr_opt.c        | 119 +++
+ .../bpf/progs/test_parse_tcp_hdr_opt_dynptr.c | 112 ++
+ .../selftests/bpf/progs/test_xdp_dynptr.c     | 237 +++++
+ .../selftests/bpf/test_tcp_hdr_options.h      |   1 +
+ 22 files changed, 2827 insertions(+), 204 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/parse_tcp_hdr_=
+opt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect_d=
+ynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_l4lb_noinline_=
+dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_=
+opt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_=
+opt_dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
+
+--=20
+2.30.2
+
