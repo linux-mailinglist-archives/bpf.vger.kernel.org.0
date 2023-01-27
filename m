@@ -2,54 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 497AF67DE8E
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 08:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CCF67DEA4
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 08:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbjA0Hd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 02:33:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        id S232701AbjA0HkU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 02:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbjA0Hd6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 02:33:58 -0500
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1133516332
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 23:33:54 -0800 (PST)
-Message-ID: <b7e314d9-ca96-520c-6923-885baebf20b5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1674804833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CixjqpKSijC3jMDfdwPgZ/kvP+VNGzi5cw6rMqvK1xg=;
-        b=COmj4WrhX5+Efv0au8OH9eorntpJoAilCBOKgiJOrb75GKYPIaRjwRbB3i71Pj/WSJp4mJ
-        gjNcNEtDgZvZZpR9GqrwFJofNwJcNvAYapO2bvUTSxyHmpYrLd7z9jYreeTyzGjBxiXVEn
-        9hBhoj9H/MJtDhVH2OaS4r/cSrUyqYk=
-Date:   Thu, 26 Jan 2023 23:33:51 -0800
+        with ESMTP id S229792AbjA0HkT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 02:40:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E7259E4F
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 23:40:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 47C5F61A1D
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 07:40:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ABB1AC4339C;
+        Fri, 27 Jan 2023 07:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674805217;
+        bh=FLYzVewLagWT7By/gfoK8dA0E9rsdRuFMIA7yIfbnQI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=cfkY6bHGpKzASXVMNh0/Tlp2jgkhq0JHBfwX2iIp2FyE6LwvtLNuBok05a4QnkAXx
+         HEOD2RHSfVRAcoEy97EmEPh7dz14c6Bs1Po1qWxpK3wu3b/K/9L2suLYJfGDBzQINw
+         4zrGUgj56Vt8T6emxp3sfYNXKLzlxrnWvZCWTIbhB9RIPdl1wLrORzwdHXbV36odT9
+         BP91J/J+uLnqFxehJKeQeakexPa3UA53cni2k017/HQ+Q7FRh/f0FpICRhqCguU1Pf
+         RR/i/y+lDNnz0nz7hr0k19kxDRKe2QsKt9QQpENKh3xKwFZ4JJ63rDzE07RM5Bco3+
+         KlZv+L5aG6kdw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 85D3EE52508;
+        Fri, 27 Jan 2023 07:40:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf v2] bpf: Fix the kernel crash caused by
- bpf_setsockopt().
-Content-Language: en-US
-To:     Kui-Feng Lee <kuifeng@meta.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2] bpf: Fix the kernel crash caused by bpf_setsockopt().
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167480521754.25138.13729838846615715515.git-patchwork-notify@kernel.org>
+Date:   Fri, 27 Jan 2023 07:40:17 +0000
 References: <20230127001732.4162630-1-kuifeng@meta.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
-        kernel-team@meta.com
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
 In-Reply-To: <20230127001732.4162630-1-kuifeng@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Kui-Feng Lee <kuifeng@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, kernel-team@meta.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/26/23 4:17 PM, Kui-Feng Lee wrote:
+Hello:
+
+This patch was applied to bpf/bpf.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Thu, 26 Jan 2023 16:17:32 -0800 you wrote:
 > The kernel crash was caused by a BPF program attached to the
 > "lsm_cgroup/socket_sock_rcv_skb" hook, which performed a call to
 > `bpf_setsockopt()` in order to set the TCP_NODELAY flag as an
@@ -62,14 +73,15 @@ On 1/26/23 4:17 PM, Kui-Feng Lee wrote:
 > flush the same socket recursively, which caused a `skbuf` to be
 > unlinked twice.
 > 
-> `security_sock_rcv_skb()` is triggered by `tcp_filter()`. This occurs
-> before the sock ownership is checked in `tcp_v4_rcv()`. Consequently,
-> if a bpf program runs on `security_sock_rcv_skb()` while under softirq
-> conditions, it may not possess the lock needed for `bpf_setsoppt()`,
-> thus presenting an issue.
+> [...]
 
-Fixed a few minor things like s/bpf_setsoppt/bpf_setsockopt/
-and s/skbuf/skbuff/.
+Here is the summary with links:
+  - [bpf,v2] bpf: Fix the kernel crash caused by bpf_setsockopt().
+    https://git.kernel.org/bpf/bpf/c/5416c9aea832
 
-Applied. Thanks.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
