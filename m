@@ -2,63 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F1767DADE
-	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 01:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31CB67DADF
+	for <lists+bpf@lfdr.de>; Fri, 27 Jan 2023 01:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjA0Amf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Jan 2023 19:42:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
+        id S229632AbjA0Anr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Jan 2023 19:43:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjA0Amf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Jan 2023 19:42:35 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF32044BD8
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 16:42:32 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id nm12-20020a17090b19cc00b0022c2155cc0bso3386897pjb.4
-        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 16:42:32 -0800 (PST)
+        with ESMTP id S229940AbjA0Anp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Jan 2023 19:43:45 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA36457CD
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 16:43:44 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id q8so2393664wmo.5
+        for <bpf@vger.kernel.org>; Thu, 26 Jan 2023 16:43:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WkV0Vj5dyxiXPVTEWhcP56A0XGHS6/cRcRvlImxyCM8=;
-        b=cVzQ3DnJuG5egUNgyr5cNUdjRq2nnY1di5WxyHWlY5UnpIhax9608gS5tBOgS40fNo
-         vSsRVYi+Xuv8aSWQto/IzvJVI9JagHFKwoGQ/ATo3SvTsiTv27NAoQ+iHnVxwkz1rFSt
-         JULbuSbrsVScfH9CUlb1F/mWZWRj99sk8FvkFkwNZXfbTp/CRMG4+CsBKiRnd5eP8z5J
-         OSMyoBd3HQABBGDz4ZCtgWxEfoj5G9H0IIRfP6kTqB6TXrW9gIYhzBr+QHr9lhVzA2Xv
-         EZylzRKV/X7K8F2TCXa+/fKZGf1t6m80bEuY6jp38opdOAh84Q4PKxM6mU4E1pEWbqj2
-         a61A==
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=iTRfEeUkn143KWE9f5r8t1UEuBaHqihMC2L3zACrOeA=;
+        b=Sc741u2tcvoApZkVK64f42q/O6mUFrTiGQocdL+8MOwsYU5SOhSzUy7N3ELAED+nGj
+         XXF0ECXjIkl6GN8FkJiDJKgUU98PE/IUT5RgsmYCQ57U7EtxTQ7YhmgI57W33RkiwuXQ
+         Y8M0SEV/Wsn/KM2uYuACcW4xOg/wAFK0SJcA3ZGSrItEqJNgT0RT1qoErxe1xKJXjb7k
+         vzpUIatGUy1Y4vEt5sYyWOSw20CUcfPNq9R7Lduv7xAnjf/eWHEIakXfrbIVJ1v1sl5p
+         Mkw2+aVcn+X+zFSo4jxgkcqINzuRh79ndNSxbM3YzqG7/3TNe2oi6sdc1O05XOLDAqr0
+         UytA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WkV0Vj5dyxiXPVTEWhcP56A0XGHS6/cRcRvlImxyCM8=;
-        b=BT3CTyR3+fl3u851jcIXPVW6nkR2Ec8whPhE9jpKrI2TfPRKEYJBsPjTOG4FmXCc0n
-         4mwifEWiMvv3v4f9/GDjrtDTtqELEDlKd9rGEu12RTk2I9eYd2+bP82g7s8PykKaP8Xi
-         2UzNjda7IVr+3q42ZSWWbJNSE2srC26ZCmF805HsY0scYrA5cLJP56WNLlBqod4gXW/6
-         MpN5jYLjtTRL0Lx2YY/pnRXBLsvn7lUvC+Shj0te9XNP607HzgrYp1CT9KZ/lSMd3Z3g
-         JIwiWENShlUh2z/L1xV02iZoWh3n8mNadM4nFWt4JdBir/aXwU5qGwASwyvuEEqxMZ5y
-         08zQ==
-X-Gm-Message-State: AO0yUKU4Pry5LncHY7SZeSqGHS06BUmAGTUnWS4ma6TWtakbeWcfzYQQ
-        4jG6AhLZ9RSH4oHu1PUebG4aDf7lw5YV2Lhxzhxemc9sHkKXOiw9O1I=
-X-Google-Smtp-Source: AK7set9V+VEJizSvvv25OfgSHSRfMMFCwL/7AzrPTmck8hyO7NQ0JdLJchs4/78eCaFGwok5S64Q5s5a9uzDqsOhdx0=
-X-Received: by 2002:a17:90b:e97:b0:22b:f337:ce9b with SMTP id
- fv23-20020a17090b0e9700b0022bf337ce9bmr2000377pjb.6.1674780152062; Thu, 26
- Jan 2023 16:42:32 -0800 (PST)
-MIME-Version: 1.0
-References: <Y9LQVU2uz9SzYARP@maniforge>
-In-Reply-To: <Y9LQVU2uz9SzYARP@maniforge>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 26 Jan 2023 16:42:20 -0800
-Message-ID: <CA+khW7iLVbK-QSgfR6OwUb_Hzs__=qsH6ho8gKf2vVqkp6Z9LQ@mail.gmail.com>
-Subject: Re: Mapping local-storage maps into user space
-To:     David Vernet <void@manifault.com>
-Cc:     lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iTRfEeUkn143KWE9f5r8t1UEuBaHqihMC2L3zACrOeA=;
+        b=bkHYBHmEQxksV35DEYJhHLVs89wr8e3mWAiRNGKT4oYGI99JCFNw+EGHsS+xWRHyLo
+         t6wvOiP8BEOXFTmf85noKEsViTvhXCI03wDblQ25n3I56q9m3HkCdkpSns3czFSrgFhF
+         ojgOCTqleaGZzvq1KV5cqi1909oVnz0lD0VVHl5mKYGaf11zJKVQ9H8lF5vKYKlEG7Wj
+         2t/8SZyA9CqzvA9bm4QT5rwSR16Mcqd6VwnJNP4h3uiwIcrjUYL1RjI9JcJ9ihTPZkef
+         Ib3ioFxBREMRfBaCoPE6W/j/NYMqOadc8HTBj9JuwzfnCSCBqQdC2+fj8lzF0Yw/PJGR
+         KzfQ==
+X-Gm-Message-State: AFqh2krvMd47/gtPPacr82RotO444mmGPof/BuLJNghKd6vS8K4WpS4c
+        MIHg7m8eL1BkdS5OT4Vqmq4=
+X-Google-Smtp-Source: AMrXdXs7dauPSdhsznj8Moz9rZhyB42I0F337hrbdLmoYA+kZRUvqJRw3CMpr6zOuMNYbL5tvh5bGg==
+X-Received: by 2002:a05:600c:1906:b0:3da:1d51:ef9d with SMTP id j6-20020a05600c190600b003da1d51ef9dmr38277927wmq.15.1674780222977;
+        Thu, 26 Jan 2023 16:43:42 -0800 (PST)
+Received: from [192.168.1.113] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id e38-20020a05600c4ba600b003db11dfc687sm2726786wmp.36.2023.01.26.16.43.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Jan 2023 16:43:42 -0800 (PST)
+Message-ID: <45c747ba5c1e6a77b916a8204db5d77e887ae1d1.camel@gmail.com>
+Subject: Re: [RFC bpf-next 0/5] test_verifier tests migration to inline
+ assembly
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
+Date:   Fri, 27 Jan 2023 02:43:41 +0200
+In-Reply-To: <20230126032530.nib7ov5gtt3knmc4@macbook-pro-6.dhcp.thefacebook.com>
+References: <20230123145148.2791939-1-eddyz87@gmail.com>
+         <CAEf4Bzbu2zctHntHNRVnEDa_FJz405Ld1Sb58wvJA+JvYdS+Ag@mail.gmail.com>
+         <20230126032530.nib7ov5gtt3knmc4@macbook-pro-6.dhcp.thefacebook.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,58 +76,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 11:11 AM David Vernet <void@manifault.com> wrote:
->
-> Hi everyone,
->
-> Another proposal from me for LSF/MM/BPF, and the last one for the time
-> being. I'd like to discuss enabling local-storage maps (e.g.
-> BPF_MAP_TYPE_TASK_STORAGE and BPF_MAP_TYPE_CGRP_STORAGE) to be r/o
-> mapped directly into user space. This would allow for quick lookups of
-> per-object state from user space, similar to how we allow it for
-> BPF_MAP_TYPE_ARRAY, without having to do something like either of the
-> following:
->
-> - Allocating a statically sized BPF_MAP_TYPE_ARRAY which is >= the # of
->   possible local-storage elements, which is likely wasteful in terms of
->   memory, and which isn't easy to iterate over.
->
-> - Use something like https://docs.kernel.org/bpf/bpf_iterators.html to
->   iterate over tasks or cgroups, and collect information for each which
->   is then dumped to user space. This would probably work, but it's not
->   terribly performant in that it requires copying memory, trapping into
->   the kernel, and full iteration even when it's only necessary to look
->   up e.g. a single element.
->
-> Designing and implementing this would be pretty non-trivial. We'd have
-> to probably do a few things:
->
-> 1. Write an allocator that dynamically allocates statically sized
->    local-storage entries for local-storage maps, and populates them into
->    pages which are mapped into user space.
->
-> 2. Come up with some idr-like mechanism for mapping a local-storage
->    object to an index into the mapping. For example, mapping a task with
->    global pid 12345 to BPF_MAP_TYPE_TASK_STORAGE index 5, and providing
->    ergonomic and safe ways to update these entries in the kernel and
->    communicate them to user space.
->
-> 3. Related to point 1 above, come up with some way to dynamically extend
->    the user space mapping as more local-storage elements are added. We
->    could potentially reserve a statically sized VA range and map all
->    unused VA pages to the zero page, or instead possibly just leave them
->    unmapped until they're actually needed.
->
-> There are a lot of open questions, but I think it could be very useful
-> if we can make it work. Let me know what you all think.
->
+On Wed, 2023-01-25 at 19:25 -0800, Alexei Starovoitov wrote:
+> On Wed, Jan 25, 2023 at 05:33:42PM -0800, Andrii Nakryiko wrote:
+> >=20
+> > > __naked void invalid_and_of_negative_number(void)
+> > >=20
+> > > {
+> > >         asm volatile (
+> > > "       r1 =3D 0;                                         \n\
+> >=20
+> > Kumar recently landed similarly formatted inline asm-based test, let's
+> > make sure we stick to common style. \n at the end are pretty
+> > distracting, IMO (though helpful to debug syntax errors in asm, of
+> > course). I'd also move starting " into the same line as asm volatile:
+>=20
+> +1. Pls drop \n.
+> You don't have \n anyway in migrator's README on github.
 
-Hi David,
+I have --newlines switch there :)
 
-I remember, I had a similar idea and played with it last year. I don't
-recall why I needed that feature back then, probably looking for ways
-to pass per-task information from userspace and read it from within
-BPF. I sent an RFC to the mailing list [1]. You could take a look, see
-whether it is of help to you.
+>=20
+> > asm volatile ("                       \
+> >=20
+> > this will make adding/removing asm lines at the beginning simpler (and
+> > you already put closing quote on separate line, so that side is taken
+> > care of)
+>=20
+> +1
+>=20
+> Also pls indent the asm code with two tabs the way Kumar did.
+> I think it looks cleaner this way and single tab labels align
+> with 'asm volatile ('.
 
-[1] https://www.spinics.net/lists/bpf/msg57565.html
+Will do.
+
+>=20
+> > > All in all the current script stats are as follows:
+> > > - 62 out of 93 files from progs/*.c can be converted w/o warnings;
+>=20
+> out of 98 in verifier/*.c ?
+
+Sorry, yes, messed up twice in this statement:
+- meant verifier/*.c not progs/*.c;
+- counted 93 files after migrating one file picked to be an examle.
+I just double checked and there 94 *.c files in that directory on
+bpf-next master branch.
+
+>=20
+> > > - 55 converted files could be compiled;
+> > > - 40 pass testing, 15 fail.
+>=20
+> I would land this 40 now and continue step by step.
+>=20
+> > >=20
+> > > By submitting this RFC I seek the following feedback:
+> > > - is community interested in such migration?
+> >=20
+> > +1
+> >=20
+> > This is a great work!
+>=20
+> +1
+
+Thanks.
+
+>=20
+> > > - if yes, should I pursue partial or complete tests migration?
+> >=20
+> > I'd start with partial
+> >=20
+> > > - in case of partial migration which tests should be prioritized?
+> >=20
+> > those that work out of the box?
+> >=20
+> > > - should I offer migrated tests one by one or in big butches?
+>=20
+> Can you do one patch one file in verifier/*.c that would map
+> to one new file in progs/ ?
+
+Will do.
+
+>=20
+> > >=20
+> > > [1] https://github.com/eddyz87/verifier-tests-migrator
+>=20
+> Having this link in patch series is enough.
+> The 'migrator' itself doesn't need to be in the kernel tree.
+
