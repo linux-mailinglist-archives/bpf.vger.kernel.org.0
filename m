@@ -2,59 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A22767F540
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 07:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B2467F5C7
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 08:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbjA1GkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Jan 2023 01:40:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
+        id S232489AbjA1HuX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Jan 2023 02:50:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbjA1GkW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Jan 2023 01:40:22 -0500
+        with ESMTP id S232438AbjA1HuW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Jan 2023 02:50:22 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F42064A1F0;
-        Fri, 27 Jan 2023 22:40:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B20A3669F;
+        Fri, 27 Jan 2023 23:50:21 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AB686B8121B;
-        Sat, 28 Jan 2023 06:40:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 465A0C4339C;
-        Sat, 28 Jan 2023 06:40:19 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4CB73B80DFA;
+        Sat, 28 Jan 2023 07:50:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D789DC433D2;
+        Sat, 28 Jan 2023 07:50:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674888019;
-        bh=Eqeb1YOaeFH+/4gYrBgLt6DPu9iTXgFy+dVrX3XHPG4=;
+        s=k20201202; t=1674892218;
+        bh=rnhPJsFXtsSuTxpIr9CsLrDqEjtyIAZ5c1xMieB7DQY=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=A88r+y0FKi17nFSkVlcLBv7L3AIEBjUPKNHPCsLRyIG1TGwB4ECXVsYoLHi/mgkPK
-         7q20EnET8+WUdVqFFu2qR1X7R0G9hAf6zdzU85Gymqq23cQ45CbLUPTgQ9dbKyY55X
-         dzgOtmsEoQ/ZMzIBBtofCMd7+uR4rdI8ghB6DPQrve0f8g1r9uKpWV/xwTJPNzuJGf
-         HeW5sDmZ79+16cyqlhytcvMJGtkgLUnC+skNWNZ7kj8hZijXLp1wUx7H1wftlbZzXD
-         4QTedh32AY78raD+BqA5V9r/qno3bciwBfV7fBwd2sRyzW+uM3uEx7Ejds0idf6S3N
-         cuMWJHij+ED9Q==
+        b=RVqR47xntR1q7QsYS9cEk4CFxaNx4b94m1w1HscR1qJ65Dj2CViM9jBz6dTIPtY8C
+         7pAw+U3q4WQ06PlFXHI3zJ0fg1L0ETK9AtCk5QWEErUevBm/PCwymbolVCq9gjmE91
+         peldpdN+Y6SQ3X33rncpJW8L3b0wXNKHrL2UaRquN1JqY0xcQUEZ1D3lhAXhp/jKkZ
+         BJ7O5tsDdW8pVVWUAUyqROf2dwkN16acu+Qc3wyw0kKVMcj2uxFBZCzg0ZiWIDF7VT
+         mME0jUHn8l0DD5eAc4wCcCdhAC5vq2RkLMbI9o6S2U4THeHCcRmCl8/SgmD7w86XN0
+         IHCcoBcgminjQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1D5EDC39564;
-        Sat, 28 Jan 2023 06:40:19 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B5BD9C39564;
+        Sat, 28 Jan 2023 07:50:18 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2 0/5] net: xdp: execute xdp_do_flush() before
- napi_complete_done()
+Subject: Re: pull-request: bpf-next 2023-01-28
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167488801911.1883.7455001304854457036.git-patchwork-notify@kernel.org>
-Date:   Sat, 28 Jan 2023 06:40:19 +0000
-References: <20230125074901.2737-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20230125074901.2737-1-magnus.karlsson@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, maciej.fijalkowski@intel.com,
-        kuba@kernel.org, toke@redhat.com, pabeni@redhat.com,
-        davem@davemloft.net, aelior@marvell.com, manishc@marvell.com,
-        horatiu.vultur@microchip.com, UNGLinuxDriver@microchip.com,
-        mst@redhat.com, jasowang@redhat.com, ioana.ciornei@nxp.com,
-        madalin.bucur@nxp.com, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Message-Id: <167489221874.30137.5005634055300425754.git-patchwork-notify@kernel.org>
+Date:   Sat, 28 Jan 2023 07:50:18 +0000
+References: <20230128004827.21371-1-daniel@iogearbox.net>
+In-Reply-To: <20230128004827.21371-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,33 +58,22 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net.git (master)
+This pull request was applied to netdev/net.git (master)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed, 25 Jan 2023 08:48:56 +0100 you wrote:
-> Make sure that xdp_do_flush() is always executed before
-> napi_complete_done(). This is important for two reasons. First, a
-> redirect to an XSKMAP assumes that a call to xdp_do_redirect() from
-> napi context X on CPU Y will be followed by a xdp_do_flush() from the
-> same napi context and CPU. This is not guaranteed if the
-> napi_complete_done() is executed before xdp_do_flush(), as it tells
-> the napi logic that it is fine to schedule napi context X on another
-> CPU. Details from a production system triggering this bug using the
-> veth driver can be found in [1].
+On Sat, 28 Jan 2023 01:48:27 +0100 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+> 
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 124 non-merge commits during the last 22 day(s) which contain
+> a total of 124 files changed, 6386 insertions(+), 1827 deletions(-).
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2,1/5] qede: execute xdp_do_flush() before napi_complete_done()
-    https://git.kernel.org/netdev/net/c/2ccce20d51fa
-  - [net,v2,2/5] lan966x: execute xdp_do_flush() before napi_complete_done()
-    https://git.kernel.org/netdev/net/c/12b5717990c8
-  - [net,v2,3/5] virtio-net: execute xdp_do_flush() before napi_complete_done()
-    https://git.kernel.org/netdev/net/c/ad7e615f646c
-  - [net,v2,4/5] dpaa_eth: execute xdp_do_flush() before napi_complete_done()
-    https://git.kernel.org/netdev/net/c/b534013798b7
-  - [net,v2,5/5] dpaa2-eth: execute xdp_do_flush() before napi_complete_done()
-    https://git.kernel.org/netdev/net/c/a3191c4d86c5
+  - pull-request: bpf-next 2023-01-28
+    https://git.kernel.org/netdev/net/c/0548c5f26a0f
 
 You are awesome, thank you!
 -- 
