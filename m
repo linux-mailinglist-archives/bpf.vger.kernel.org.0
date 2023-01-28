@@ -2,146 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2E867F3A7
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 02:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A22767F540
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 07:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbjA1BTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 20:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
+        id S232574AbjA1GkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Jan 2023 01:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjA1BTG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 20:19:06 -0500
-Received: from evilolive.daedalian.us (evilolive.daedalian.us [96.126.118.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5D1477B435
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 17:19:05 -0800 (PST)
-Received: by evilolive.daedalian.us (Postfix, from userid 111)
-        id 62587120D9; Fri, 27 Jan 2023 17:13:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=daedalian.us;
-        s=default; t=1674868394;
-        bh=m80g/qcKyF6Y8HG7sLJ+YFMv8oIIC64vqUP0h+rSuYc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RuIDzcGSC3xhxkGbOjKfChdLByh9wYSAX00p+oq+IRvp0Gpju8ZNWadwVK4yMmDYP
-         8TVw1Efbl+orqy9eHox3jN+qfCiaonplOXxwhbxWE/63etr07JH8lfYGPxtF3473OS
-         lfYkqh2obi5WN1cCKmXoh2YMLnbXypnFkQKS6KKpeLzMe6pSGoZU05ryIOXhY1ECkE
-         qgvY3c/gz64w5oOARD3QAIvUyod22RYVrRloGQD9UUKli1aidYN98NUajuilW6EQn6
-         hqNfQK4fm/QS+bN0eWqewKzTYWaFC8CPgq59F3JYhgS4T6JmvyGgdkYOm3Z46sy7Wr
-         LA0D8r3yHZuug==
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
-Received: from localhost.localdomain (static-47-181-121-78.lsan.ca.frontiernet.net [47.181.121.78])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        with ESMTP id S229897AbjA1GkW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Jan 2023 01:40:22 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F42064A1F0;
+        Fri, 27 Jan 2023 22:40:21 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by evilolive.daedalian.us (Postfix) with ESMTPSA id 4D6E812084;
-        Fri, 27 Jan 2023 17:13:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=daedalian.us;
-        s=default; t=1674868388;
-        bh=m80g/qcKyF6Y8HG7sLJ+YFMv8oIIC64vqUP0h+rSuYc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LWdhKwSL1TP2BNDpHoX8FR54V51X2xLvhQuQZ1s7cpGSIMUQqPvKvKq+U5f0/npoP
-         8bbbsE/nl+1flnwe29uTdqd2Na6IgRCBPNturH8x8ckRStUYWDkc6CBECd4F1u/QAC
-         2pVQeaN5t8EweUJIlMAz2QvNPPijF2gwjGm4PxEWXAyWAcRr0muYlj6ISbe/i3PHZI
-         ICYHVKTJSu5/C4+8RsC0/eL7aS+XiJJEWPj1Ro+ZMgN0tq4IXzZfkTpR7xH2DHdDzG
-         VGcL8BiuMEkWqddjEPEhY/Q/LCMvCpqTnTOMGpcydjh1CSPdOmTrCSl4BgN2CWeS6Y
-         YNICl+IGu3erg==
-From:   John Hickey <jjh@daedalian.us>
-To:     anthony.l.nguyen@intel.com
-Cc:     John Hickey <jjh@daedalian.us>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] ixgbe: Panic during XDP_TX with > 64 CPUs
-Date:   Fri, 27 Jan 2023 17:12:12 -0800
-Message-Id: <20230128011213.150171-1-jjh@daedalian.us>
-X-Mailer: git-send-email 2.37.2
+        by ams.source.kernel.org (Postfix) with ESMTPS id AB686B8121B;
+        Sat, 28 Jan 2023 06:40:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 465A0C4339C;
+        Sat, 28 Jan 2023 06:40:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674888019;
+        bh=Eqeb1YOaeFH+/4gYrBgLt6DPu9iTXgFy+dVrX3XHPG4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=A88r+y0FKi17nFSkVlcLBv7L3AIEBjUPKNHPCsLRyIG1TGwB4ECXVsYoLHi/mgkPK
+         7q20EnET8+WUdVqFFu2qR1X7R0G9hAf6zdzU85Gymqq23cQ45CbLUPTgQ9dbKyY55X
+         dzgOtmsEoQ/ZMzIBBtofCMd7+uR4rdI8ghB6DPQrve0f8g1r9uKpWV/xwTJPNzuJGf
+         HeW5sDmZ79+16cyqlhytcvMJGtkgLUnC+skNWNZ7kj8hZijXLp1wUx7H1wftlbZzXD
+         4QTedh32AY78raD+BqA5V9r/qno3bciwBfV7fBwd2sRyzW+uM3uEx7Ejds0idf6S3N
+         cuMWJHij+ED9Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1D5EDC39564;
+        Sat, 28 Jan 2023 06:40:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2 0/5] net: xdp: execute xdp_do_flush() before
+ napi_complete_done()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167488801911.1883.7455001304854457036.git-patchwork-notify@kernel.org>
+Date:   Sat, 28 Jan 2023 06:40:19 +0000
+References: <20230125074901.2737-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20230125074901.2737-1-magnus.karlsson@gmail.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com, maciej.fijalkowski@intel.com,
+        kuba@kernel.org, toke@redhat.com, pabeni@redhat.com,
+        davem@davemloft.net, aelior@marvell.com, manishc@marvell.com,
+        horatiu.vultur@microchip.com, UNGLinuxDriver@microchip.com,
+        mst@redhat.com, jasowang@redhat.com, ioana.ciornei@nxp.com,
+        madalin.bucur@nxp.com, bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In commit 'ixgbe: let the xdpdrv work with more than 64 cpus'
-(4fe815850bdc8d4cc94e06fe1de069424a895826), support was added to allow
-XDP programs to run on systems with more than 64 CPUs by locking the
-XDP TX rings and indexing them using cpu % 64 (IXGBE_MAX_XDP_QS).
+Hello:
 
-Upon trying this out patch via the Intel 5.18.6 out of tree driver
-on a system with more than 64 cores, the kernel paniced with an
-array-index-out-of-bounds at the return in ixgbe_determine_xdp_ring in
-ixgbe.h, which means ixgbe_determine_xdp_q_idx was just returning the
-cpu instead of cpu % IXGBE_MAX_XDP_QS.
+This series was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-I think this is how it happens:
+On Wed, 25 Jan 2023 08:48:56 +0100 you wrote:
+> Make sure that xdp_do_flush() is always executed before
+> napi_complete_done(). This is important for two reasons. First, a
+> redirect to an XSKMAP assumes that a call to xdp_do_redirect() from
+> napi context X on CPU Y will be followed by a xdp_do_flush() from the
+> same napi context and CPU. This is not guaranteed if the
+> napi_complete_done() is executed before xdp_do_flush(), as it tells
+> the napi logic that it is fine to schedule napi context X on another
+> CPU. Details from a production system triggering this bug using the
+> veth driver can be found in [1].
+> 
+> [...]
 
-Upon loading the first XDP program on a system with more than 64 CPUs,
-ixgbe_xdp_locking_key is incremented in ixgbe_xdp_setup.  However,
-immediately after this, the rings are reconfigured by ixgbe_setup_tc.
-ixgbe_setup_tc calls ixgbe_clear_interrupt_scheme which calls
-ixgbe_free_q_vectors which calls ixgbe_free_q_vector in a loop.
-ixgbe_free_q_vector decrements ixgbe_xdp_locking_key once per call if
-it is non-zero.  Commenting out the decrement in ixgbe_free_q_vector
-stopped my system from panicing.
+Here is the summary with links:
+  - [net,v2,1/5] qede: execute xdp_do_flush() before napi_complete_done()
+    https://git.kernel.org/netdev/net/c/2ccce20d51fa
+  - [net,v2,2/5] lan966x: execute xdp_do_flush() before napi_complete_done()
+    https://git.kernel.org/netdev/net/c/12b5717990c8
+  - [net,v2,3/5] virtio-net: execute xdp_do_flush() before napi_complete_done()
+    https://git.kernel.org/netdev/net/c/ad7e615f646c
+  - [net,v2,4/5] dpaa_eth: execute xdp_do_flush() before napi_complete_done()
+    https://git.kernel.org/netdev/net/c/b534013798b7
+  - [net,v2,5/5] dpaa2-eth: execute xdp_do_flush() before napi_complete_done()
+    https://git.kernel.org/netdev/net/c/a3191c4d86c5
 
-I suspect to make the original patch work, I would need to load an XDP
-program and then replace it in order to get ixgbe_xdp_locking_key back
-above 0 since ixgbe_setup_tc is only called when transitioning between
-XDP and non-XDP ring configurations, while ixgbe_xdp_locking_key is
-incremented every time ixgbe_xdp_setup is called.
-
-Also, ixgbe_setup_tc can be called via ethtool --set-channels, so this
-becomes another path to decrement ixgbe_xdp_locking_key to 0 on systems
-with greater than 64 CPUs.
-
-For this patch, I have changed static_branch_inc to static_branch_enable
-in ixgbe_setup_xdp.  We aren't counting references and I don't see any
-reason to turn it off, since all the locking appears to be in the XDP_TX
-path, which isn't run if a XDP program isn't loaded.
-
-Signed-off-by: John Hickey <jjh@daedalian.us>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 3 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 2 +-
- 2 files changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-index f8156fe4b1dc..0ee943db3dc9 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-@@ -1035,9 +1035,6 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
- 	adapter->q_vector[v_idx] = NULL;
- 	__netif_napi_del(&q_vector->napi);
- 
--	if (static_key_enabled(&ixgbe_xdp_locking_key))
--		static_branch_dec(&ixgbe_xdp_locking_key);
--
- 	/*
- 	 * after a call to __netif_napi_del() napi may still be used and
- 	 * ixgbe_get_stats64() might access the rings on this vector,
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index ab8370c413f3..cd2fb72c67be 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -10283,7 +10283,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
- 	if (nr_cpu_ids > IXGBE_MAX_XDP_QS * 2)
- 		return -ENOMEM;
- 	else if (nr_cpu_ids > IXGBE_MAX_XDP_QS)
--		static_branch_inc(&ixgbe_xdp_locking_key);
-+		static_branch_enable(&ixgbe_xdp_locking_key);
- 
- 	old_prog = xchg(&adapter->xdp_prog, prog);
- 	need_reset = (!!prog != !!old_prog);
+You are awesome, thank you!
 -- 
-2.37.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
