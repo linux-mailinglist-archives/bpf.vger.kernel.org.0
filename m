@@ -2,70 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A85B267FA58
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 20:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F1267FA6A
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 20:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbjA1TJA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Jan 2023 14:09:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
+        id S229619AbjA1TXa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Jan 2023 14:23:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjA1TI6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Jan 2023 14:08:58 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5B924C99;
-        Sat, 28 Jan 2023 11:08:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674932937; x=1706468937;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jhxyAYLelEfckoe/PbY7Ef4L4nCPXQSheZkRYAjHAEs=;
-  b=fBBiGRmQ9qgkac44fSToAJtLT194iO/nbI3GxgDf+7zmMcoDCqraGGuS
-   Ps+fvfY1tgTso6dneYwUbVSXfCs11wMEXHxqUxojGFME5qK4gpDekredh
-   Uq4xOg4UY9Xnwro7SJNk224eMgGub/w72hj+pklKuF4ckHJkGZD5egG2a
-   Q234igauJ8tEd7izSSq+QFehmyApanOk0Z1F1Tl1Zzf2UhQ1aduh6827N
-   6xEPgkwY8LSo5ZNL0vFST39gAHn0lweU5R47/7x5DdcQX82o9cBvdZhs6
-   Ow5bAgGVTHQBbnMsKSK0jSUk+YsQ7K4xVGe+MVVlu36ucPBktKPQV/Lar
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10604"; a="354634200"
-X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
-   d="scan'208";a="354634200"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2023 11:08:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10604"; a="613562517"
-X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
-   d="scan'208";a="613562517"
-Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 28 Jan 2023 11:08:48 -0800
-Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pLqZD-00010e-11;
-        Sat, 28 Jan 2023 19:08:47 +0000
-Date:   Sun, 29 Jan 2023 03:07:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        joshdon@google.com, brho@google.com, pjt@google.com,
-        derkling@google.com, haoluo@google.com, dvernet@meta.com,
-        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@meta.com,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 27/30] sched_ext: Implement core-sched support
-Message-ID: <202301290223.0qWZoY9T-lkp@intel.com>
-References: <20230128001639.3510083-28-tj@kernel.org>
+        with ESMTP id S229894AbjA1TX3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Jan 2023 14:23:29 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943DB2885A
+        for <bpf@vger.kernel.org>; Sat, 28 Jan 2023 11:23:27 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id z138-20020a4a4990000000b005175b8ae66cso107912ooa.6
+        for <bpf@vger.kernel.org>; Sat, 28 Jan 2023 11:23:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=87Z7hi5D3eZZr3czbnLE6Ib76WMzxMDlRYTTz9PzzHk=;
+        b=Z/5OE9zcPMdaASg0ZpQMboyurM26QydSA2pkcn+p8+mEJcUq9E2KNL+ru4B95bIWWL
+         idwE5djDfsu2fL0bhSPcQdp/UtByR6c3zf2xbozKUzLN+hcr//tLPmqSFjph77Td/tX3
+         Xl4davlZqrcA4L7Uo2CUnFgsBpESnxmcUl0qBjSA0ve6XppeasLsIgCWkEVauAZanTx6
+         8XD6GjK8C8frC4XySE925+SwVdbJvza1Zkl15FRreb01Kw+yRweuWWEteKGZWItWS6tZ
+         Kc0TdIawlg3N+lddZMBMZ7RL6y9wQp1MHebjIvblcM4oBZv7Qm8u7DQC3gXFutO6IFN3
+         ULxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=87Z7hi5D3eZZr3czbnLE6Ib76WMzxMDlRYTTz9PzzHk=;
+        b=uDRnJMLupIIvmkvJK9kwOHU53ukU8Xxvw5XNVrEV/F1JuaiA/BNzYTd5GusrbTt785
+         TaAAzLaBRFprpK6eJtqqWjBeixIw9JXeAh4RFG6TzMFZwy+iMIOjo2EnIpjfy2wf1WIf
+         jRk6VIVXQqaEv5ZxriqATdUoc/Y/APfBX09vdtmmOcht1ZGrcub1CuBZXetwmZf/PNDE
+         H7CIdtdn5JIaDVyMm1xPRYsL15S11solKT6I18fRlCtn/rY5Wj7C/Y7EERGWNcrUbgVi
+         RuQRtCOEEFjGS61uJhwVKtFOgJS/m2VfRt92Zf1mPrf88BKce72dyIsZogqkUS5BVdXt
+         Ez8g==
+X-Gm-Message-State: AFqh2kqUDjjSa+iVjzWr1zCHQ+GPJx8SLZ1Ti/L93i72oG/q4ofx87VY
+        YuSm4CEOZqbnjZMrmWjMDxrR3P8anZy2yg==
+X-Google-Smtp-Source: AMrXdXu3VVBtG/fSfaPlzkWhWg9IyCpTFIaOunhEW3V70RJ/HEKxLmoFfZfpcNx0WsH0P6JM/5tUyg==
+X-Received: by 2002:a4a:c20a:0:b0:4f3:6e99:e6d2 with SMTP id z10-20020a4ac20a000000b004f36e99e6d2mr18235002oop.3.1674933806675;
+        Sat, 28 Jan 2023 11:23:26 -0800 (PST)
+Received: from ?IPV6:2603:8080:2800:f9bf:eb7:f10d:ceda:48f6? (2603-8080-2800-f9bf-0eb7-f10d-ceda-48f6.res6.spectrum.com. [2603:8080:2800:f9bf:eb7:f10d:ceda:48f6])
+        by smtp.gmail.com with ESMTPSA id c22-20020a4a2856000000b004fb2935d0e7sm3039411oof.36.2023.01.28.11.23.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Jan 2023 11:23:26 -0800 (PST)
+Message-ID: <883a3b03-a596-8279-1278-bc622114aab5@gmail.com>
+Date:   Sat, 28 Jan 2023 13:23:25 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230128001639.3510083-28-tj@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: Kernel build fail with 'btf_encoder__encode: btf__dedup failed!'
+Content-Language: en-US
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com>
+ <Y85AHdWw/l8d1Gsp@krava>
+ <0fbad67e-c359-47c3-8c10-faa003e6519f@app.fastmail.com>
+ <bb569967-d33a-7252-964b-a36501b3366a@gmail.com> <Y9RlpyV5JPz/hk1K@krava>
+From:   Alexandre Peixoto Ferreira <alexandref75@gmail.com>
+In-Reply-To: <Y9RlpyV5JPz/hk1K@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,94 +78,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Tejun,
+Jirka and Daniel,
 
-I love your patch! Yet something to improve:
+On 1/27/23 18:00, Jiri Olsa wrote:
+> On Fri, Jan 27, 2023 at 04:28:54PM -0600, Alexandre Peixoto Ferreira wrote:
+>>
+>> On 1/24/23 00:13, Daniel Xu wrote:
+>>> Hi Jiri,
+>>>
+>>> On Mon, Jan 23, 2023, at 1:06 AM, Jiri Olsa wrote:
+>>>> On Sun, Jan 22, 2023 at 10:48:44AM -0700, Daniel Xu wrote:
+>>>>> Hi,
+>>>>>
+>>>>> I'm getting the following error during build:
+>>>>>
+>>>>>           $ ./tools/testing/selftests/bpf/vmtest.sh -j30
+>>>>>           [...]
+>>>>>             BTF     .btf.vmlinux.bin.o
+>>>>>           btf_encoder__encode: btf__dedup failed!
+>>>>>           Failed to encode BTF
+>>>>>             LD      .tmp_vmlinux.kallsyms1
+>>>>>             NM      .tmp_vmlinux.kallsyms1.syms
+>>>>>             KSYMS   .tmp_vmlinux.kallsyms1.S
+>>>>>             AS      .tmp_vmlinux.kallsyms1.S
+>>>>>             LD      .tmp_vmlinux.kallsyms2
+>>>>>             NM      .tmp_vmlinux.kallsyms2.syms
+>>>>>             KSYMS   .tmp_vmlinux.kallsyms2.S
+>>>>>             AS      .tmp_vmlinux.kallsyms2.S
+>>>>>             LD      .tmp_vmlinux.kallsyms3
+>>>>>             NM      .tmp_vmlinux.kallsyms3.syms
+>>>>>             KSYMS   .tmp_vmlinux.kallsyms3.S
+>>>>>             AS      .tmp_vmlinux.kallsyms3.S
+>>>>>             LD      vmlinux
+>>>>>             BTFIDS  vmlinux
+>>>>>           FAILED: load BTF from vmlinux: No such file or directory
+>>>>>           make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+>>>>>           make[1]: *** Deleting file 'vmlinux'
+>>>>>           make: *** [Makefile:1264: vmlinux] Error 2
+>>>>>
+>>>>> This happens on both bpf-next/master (84150795a49) and 6.2-rc5
+>>>>> (2241ab53cb).
+>>>>>
+>>>>> I've also tried arch linux pahole 1:1.24+r29+g02d67c5-1 as well as
+>>>>> upstream pahole on master (02d67c5176) and upstream pahole on
+>>>>> next (2ca56f4c6f659).
+>>>>>
+>>>>> Of the above 6 combinations, I think I've tried all of them (maybe
+>>>>> missing 1 or 2).
+>>>>>
+>>>>> Looks like GCC got updated recently on my machine, so perhaps
+>>>>> it's related?
+>>>>>
+>>>>>           CONFIG_CC_VERSION_TEXT="gcc (GCC) 12.2.1 20230111"
+>>>>>
+>>>>> I'll try some debugging, but just wanted to report it first.
+>>>> hi,
+>>>> I can't reproduce that.. can you reproduce it outside vmtest.sh?
+>>>>
+>>>> there will be lot of output with patch below, but could contain
+>>>> some more error output
+>>> Thanks for the hints. Doing a regular build outside of vmtest.sh
+>>> seems to work ok. So maybe it's a difference in the build config.
+>>>
+>>> I'll put a little more time into debugging to see if it goes anywhere.
+>>> But I'll have to get back to the regularly scheduled programming
+>>> soon.
+>> 6.2-rc5 compiles correctly when CONFIG_X86_KERNEL_IBT is commented but fails
+>> in pahole when CONFIG_X86_KERNEL_IBT is set.
+> could you plese attach your config and the build error?
+> I can't reproduce that
+>
+> thanks,
+> jirka
 
-[auto build test ERROR on linux/master]
-[also build test ERROR on linus/master v6.2-rc5]
-[cannot apply to tip/sched/core tj-cgroup/for-next next-20230127]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+My working .config is available at https://pastebin.pl/view/bef3765c
+change CONFIG_X86_KERNEL_IBT to y to get the error.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tejun-Heo/sched-Encapsulate-task-attribute-change-sequence-into-a-helper-macro/20230128-123001
-patch link:    https://lore.kernel.org/r/20230128001639.3510083-28-tj%40kernel.org
-patch subject: [PATCH 27/30] sched_ext: Implement core-sched support
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20230129/202301290223.0qWZoY9T-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/750f973dd349cc5c3df29319b0ffae740738a9d2
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Tejun-Heo/sched-Encapsulate-task-attribute-change-sequence-into-a-helper-macro/20230128-123001
-        git checkout 750f973dd349cc5c3df29319b0ffae740738a9d2
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=s390 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash kernel/
+The error is similar to Daniel's and is shown below:
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-
-All error/warnings (new ones prefixed by >>):
-
-   In file included from kernel/sched/build_policy.c:58:
->> kernel/sched/ext.c:3349:25: error: initialization of 'int (*)(const struct btf_type *, const struct btf_member *)' from incompatible pointer type 'int (*)(const struct btf_type *, const struct btf_member *, const struct bpf_prog *)' [-Werror=incompatible-pointer-types]
-    3349 |         .check_member = bpf_scx_check_member,
-         |                         ^~~~~~~~~~~~~~~~~~~~
-   kernel/sched/ext.c:3349:25: note: (near initialization for 'bpf_sched_ext_ops.check_member')
-   kernel/sched/ext.c: In function 'scx_bpf_error_bstr':
->> kernel/sched/ext.c:3906:16: error: variable 'bprintf_data' has initializer but incomplete type
-    3906 |         struct bpf_bprintf_data bprintf_data = { .get_bin_args = true };
-         |                ^~~~~~~~~~~~~~~~
->> kernel/sched/ext.c:3906:51: error: 'struct bpf_bprintf_data' has no member named 'get_bin_args'
-    3906 |         struct bpf_bprintf_data bprintf_data = { .get_bin_args = true };
-         |                                                   ^~~~~~~~~~~~
->> kernel/sched/ext.c:3906:66: warning: excess elements in struct initializer
-    3906 |         struct bpf_bprintf_data bprintf_data = { .get_bin_args = true };
-         |                                                                  ^~~~
-   kernel/sched/ext.c:3906:66: note: (near initialization for 'bprintf_data')
->> kernel/sched/ext.c:3906:33: error: storage size of 'bprintf_data' isn't known
-    3906 |         struct bpf_bprintf_data bprintf_data = { .get_bin_args = true };
-         |                                 ^~~~~~~~~~~~
->> kernel/sched/ext.c:3927:71: warning: passing argument 4 of 'bpf_bprintf_prepare' makes pointer from integer without a cast [-Wint-conversion]
-    3927 |         ret = bpf_bprintf_prepare(fmt, UINT_MAX, bufs->data, data__sz / 8,
-         |                                                              ~~~~~~~~~^~~
-         |                                                                       |
-         |                                                                       u32 {aka unsigned int}
-   In file included from include/linux/bpf_verifier.h:7,
-                    from kernel/sched/ext.c:3193:
-   include/linux/bpf.h:2800:31: note: expected 'u32 **' {aka 'unsigned int **'} but argument is of type 'u32' {aka 'unsigned int'}
-    2800 |                         u32 **bin_buf, u32 num_args);
-         |                         ~~~~~~^~~~~~~
->> kernel/sched/ext.c:3936:9: error: too many arguments to function 'bpf_bprintf_cleanup'
-    3936 |         bpf_bprintf_cleanup(&bprintf_data);
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:2801:6: note: declared here
-    2801 | void bpf_bprintf_cleanup(void);
-         |      ^~~~~~~~~~~~~~~~~~~
-   kernel/sched/ext.c:3906:33: warning: unused variable 'bprintf_data' [-Wunused-variable]
-    3906 |         struct bpf_bprintf_data bprintf_data = { .get_bin_args = true };
-         |                                 ^~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+   LD      .tmp_vmlinux.btf
+   BTF     .btf.vmlinux.bin.o
+btf_encoder__encode: btf__dedup failed!
+Failed to encode BTF
+   LD      .tmp_vmlinux.kallsyms1
+   NM      .tmp_vmlinux.kallsyms1.syms
+   KSYMS   .tmp_vmlinux.kallsyms1.S
+   AS      .tmp_vmlinux.kallsyms1.S
+   LD      .tmp_vmlinux.kallsyms2
+   NM      .tmp_vmlinux.kallsyms2.syms
+   KSYMS   .tmp_vmlinux.kallsyms2.S
+   AS      .tmp_vmlinux.kallsyms2.S
+   LD      .tmp_vmlinux.kallsyms3
+   NM      .tmp_vmlinux.kallsyms3.syms
+   KSYMS   .tmp_vmlinux.kallsyms3.S
+   AS      .tmp_vmlinux.kallsyms3.S
+   LD      vmlinux
+   BTFIDS  vmlinux
+FAILED: load BTF from vmlinux: No such file or directory
+make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+make[1]: *** Deleting file 'vmlinux'
+make: *** [Makefile:1264: vmlinux] Error 2
 
 
-vim +3349 kernel/sched/ext.c
-
-4c016c2bafb66b Tejun Heo 2023-01-27  3344  
-4c016c2bafb66b Tejun Heo 2023-01-27  3345  struct bpf_struct_ops bpf_sched_ext_ops = {
-4c016c2bafb66b Tejun Heo 2023-01-27  3346  	.verifier_ops = &bpf_scx_verifier_ops,
-4c016c2bafb66b Tejun Heo 2023-01-27  3347  	.reg = bpf_scx_reg,
-4c016c2bafb66b Tejun Heo 2023-01-27  3348  	.unreg = bpf_scx_unreg,
-4c016c2bafb66b Tejun Heo 2023-01-27 @3349  	.check_member = bpf_scx_check_member,
-4c016c2bafb66b Tejun Heo 2023-01-27  3350  	.init_member = bpf_scx_init_member,
-4c016c2bafb66b Tejun Heo 2023-01-27  3351  	.init = bpf_scx_init,
-4c016c2bafb66b Tejun Heo 2023-01-27  3352  	.name = "sched_ext_ops",
-4c016c2bafb66b Tejun Heo 2023-01-27  3353  };
-4c016c2bafb66b Tejun Heo 2023-01-27  3354  
+Thanks,
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Alexandre Peixoto Ferreira
+
