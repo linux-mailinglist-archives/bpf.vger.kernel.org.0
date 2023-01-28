@@ -2,233 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DAC67F7AD
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 12:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE3C67F7D9
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 13:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbjA1Lxl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Jan 2023 06:53:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
+        id S231205AbjA1Msx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Jan 2023 07:48:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233971AbjA1Lxi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Jan 2023 06:53:38 -0500
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5C669B30;
-        Sat, 28 Jan 2023 03:53:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674906816; x=1706442816;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kSQdtklRkBESj3j3SCGcfITrf2xNF+8tppB0MBhOsbs=;
-  b=nMk1A09151JnA0odp/3aPwTBambcn6NNYkrhCgtHtEgmqiXtC/WTO+xR
-   bGjhBZs4iMmXS5vyAPbERpQTTxYWYoSZd/ovkMX11QpHC5lu1zyXb/Lsj
-   nGvQO3JvRPrhOxLXM8Ky1pdwgBDHrD5cbvsdCifUkW2IIbRzgV7ttSeeh
-   fp9Uy8FIY2Lhxr7Ak74l+TUWT1tP++ObXfDiYuKzLEgVuNdRwhsvkn/V/
-   YtPGn/lRW/5512fQzrWIaFVySng1YgD2eavF8JOX+0nAxHf03ioBAaxtM
-   c4h+sp3tq2OzqkF+tEc9jd7+zQOJCwIc/lbednJgffFXgy0vCsTFcEJXu
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="306933946"
-X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
-   d="scan'208";a="306933946"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2023 03:53:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="663583231"
-X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
-   d="scan'208";a="663583231"
-Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 28 Jan 2023 03:53:32 -0800
-Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pLjlv-0000cR-0K;
-        Sat, 28 Jan 2023 11:53:27 +0000
-Date:   Sat, 28 Jan 2023 19:52:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, ast@kernel.org,
-        netdev@vger.kernel.org, memxor@gmail.com, kernel-team@fb.com,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH v8 bpf-next 2/5] bpf: Allow initializing dynptrs in kfuncs
-Message-ID: <202301281922.okIebogn-lkp@intel.com>
-References: <20230126233439.3739120-3-joannelkoong@gmail.com>
+        with ESMTP id S229643AbjA1Msw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Jan 2023 07:48:52 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D12126F3;
+        Sat, 28 Jan 2023 04:48:50 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B5E8DB80921;
+        Sat, 28 Jan 2023 12:48:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6647C433D2;
+        Sat, 28 Jan 2023 12:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674910127;
+        bh=q4YmhCFGMeK7V/V0+kIKf74gh6MkUEKWKYKZr0Q1zcM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DPaiMQg27zAkIo+OpClY8AEt4CVLMA7gO+1YHJDC4A1QYsiQN3DAFrSjJR0++Q9om
+         XTq6Pr9y+zogKe3Smxba9zOL4172/aDqY3ZfBCGCP1IRq6DrebB7Bj9oeVDEcefC4C
+         20EwOPn/AWtNSpu0Iis/oQuIuugkPbDNeOzAenp1SslJg61Eo3UDFYhL2YAqJsP7Eu
+         sBgMi2v9YqTAT9518gmPm8YaBzUFpvm9+nmMjMPDa7vVpp+XWWnufFxBnHbs0/QUni
+         jYJbQmE4yzWsi/cR75E+4Zk3QpLnWDDgnayXeh5878o+i0ilnKAb1qTRhssZf1ujQn
+         5s2AcclSllVqw==
+Date:   Sat, 28 Jan 2023 13:48:43 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
+        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
+        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
+        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
+        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
+        martin.lau@linux.dev
+Subject: Re: [PATCH v3 bpf-next 5/8] libbpf: add API to get XDP/XSK supported
+ features
+Message-ID: <Y9UZqxwNPDQ9jEu3@lore-desk>
+References: <cover.1674737592.git.lorenzo@kernel.org>
+ <a7e6e8da5b2ba24f44f0d5b44a234e2bf90220fd.1674737592.git.lorenzo@kernel.org>
+ <CAEf4BzYjt3J5_ESMKjRFRh6ROg-CN=QazAZpKd9wnaSxjjKbAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="H5r5tXaizAjuuM7h"
 Content-Disposition: inline
-In-Reply-To: <20230126233439.3739120-3-joannelkoong@gmail.com>
+In-Reply-To: <CAEf4BzYjt3J5_ESMKjRFRh6ROg-CN=QazAZpKd9wnaSxjjKbAg@mail.gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Joanne,
 
-Thank you for the patch! Perhaps something to improve:
+--H5r5tXaizAjuuM7h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[auto build test WARNING on bpf-next/master]
+> On Thu, Jan 26, 2023 at 4:59 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
+te:
+> >
+> > Extend bpf_xdp_query routine in order to get XDP/XSK supported features
+> > of netdev over route netlink interface.
+> > Extend libbpf netlink implementation in order to support netlink_generic
+> > protocol.
+> >
+> > Co-developed-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > Co-developed-by: Marek Majtyka <alardam@gmail.com>
+> > Signed-off-by: Marek Majtyka <alardam@gmail.com>
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  tools/lib/bpf/libbpf.h  |  3 +-
+> >  tools/lib/bpf/netlink.c | 99 +++++++++++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/nlattr.h  | 12 +++++
+> >  3 files changed, 113 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index 898db26e42e9..29cb7040fa77 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -982,9 +982,10 @@ struct bpf_xdp_query_opts {
+> >         __u32 hw_prog_id;       /* output */
+> >         __u32 skb_prog_id;      /* output */
+> >         __u8 attach_mode;       /* output */
+> > +       __u64 fflags;           /* output */
+> >         size_t :0;
+> >  };
+> > -#define bpf_xdp_query_opts__last_field attach_mode
+> > +#define bpf_xdp_query_opts__last_field fflags
+>=20
+> is "fflags" an obvious name in this context? I'd expect
+> "feature_flags", especially that there are already "flags". Is saving
+> a few characters worth the confusion?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Joanne-Koong/bpf-Allow-sk_buff-and-xdp_buff-as-valid-kfunc-arg-types/20230128-170947
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230126233439.3739120-3-joannelkoong%40gmail.com
-patch subject: [PATCH v8 bpf-next 2/5] bpf: Allow initializing dynptrs in kfuncs
-config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20230128/202301281922.okIebogn-lkp@intel.com/config)
-compiler: ia64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/7993ffba3295a3a3c01c4b62099117b5abd48242
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Joanne-Koong/bpf-Allow-sk_buff-and-xdp_buff-as-valid-kfunc-arg-types/20230128-170947
-        git checkout 7993ffba3295a3a3c01c4b62099117b5abd48242
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash kernel/bpf/ net/core/
+ack, I will fix it.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
+>=20
+>=20
+> >
+> >  LIBBPF_API int bpf_xdp_attach(int ifindex, int prog_fd, __u32 flags,
+> >                               const struct bpf_xdp_attach_opts *opts);
+> > diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+> > index d2468a04a6c3..674e4d61e67e 100644
+> > --- a/tools/lib/bpf/netlink.c
+> > +++ b/tools/lib/bpf/netlink.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/if_ether.h>
+> >  #include <linux/pkt_cls.h>
+> >  #include <linux/rtnetlink.h>
+> > +#include <linux/netdev.h>
+> >  #include <sys/socket.h>
+> >  #include <errno.h>
+> >  #include <time.h>
+> > @@ -39,6 +40,12 @@ struct xdp_id_md {
+> >         int ifindex;
+> >         __u32 flags;
+> >         struct xdp_link_info info;
+> > +       __u64 fflags;
+> > +};
+> > +
+> > +struct xdp_features_md {
+> > +       int ifindex;
+> > +       __u64 flags;
+> >  };
+> >
+> >  static int libbpf_netlink_open(__u32 *nl_pid, int proto)
+>=20
+> [...]
+>=20
+> >  int bpf_xdp_query(int ifindex, int xdp_flags, struct bpf_xdp_query_opt=
+s *opts)
+> >  {
+> >         struct libbpf_nla_req req =3D {
+> > @@ -393,6 +460,38 @@ int bpf_xdp_query(int ifindex, int xdp_flags, stru=
+ct bpf_xdp_query_opts *opts)
+> >         OPTS_SET(opts, skb_prog_id, xdp_id.info.skb_prog_id);
+> >         OPTS_SET(opts, attach_mode, xdp_id.info.attach_mode);
+> >
+> > +       if (OPTS_HAS(opts, fflags)) {
+>=20
+> maybe invert condition, return early, reduce nesting of the following cod=
+e?
 
-All warnings (new ones prefixed by >>):
+ack, fine, I will fix it.
 
->> kernel/bpf/verifier.c:6150:5: warning: no previous prototype for 'process_dynptr_func' [-Wmissing-prototypes]
-    6150 | int process_dynptr_func(struct bpf_verifier_env *env, int regno, int insn_idx,
-         |     ^~~~~~~~~~~~~~~~~~~
+>=20
+> > +               struct xdp_features_md md =3D {
+> > +                       .ifindex =3D ifindex,
+> > +               };
+> > +               __u16 id;
+> > +
+> > +               err =3D libbpf_netlink_resolve_genl_family_id("netdev",
+> > +                                                           sizeof("net=
+dev"),
+> > +                                                           &id);
+>=20
+> nit: if it fits under 100 characters, let's leave it on a single line
 
+ack, fine, I will fix it (I am still used to 79 char limits :))
 
-vim +/process_dynptr_func +6150 kernel/bpf/verifier.c
+Regards,
+Lorenzo
 
-  6124	
-  6125	/* There are two register types representing a bpf_dynptr, one is PTR_TO_STACK
-  6126	 * which points to a stack slot, and the other is CONST_PTR_TO_DYNPTR.
-  6127	 *
-  6128	 * In both cases we deal with the first 8 bytes, but need to mark the next 8
-  6129	 * bytes as STACK_DYNPTR in case of PTR_TO_STACK. In case of
-  6130	 * CONST_PTR_TO_DYNPTR, we are guaranteed to get the beginning of the object.
-  6131	 *
-  6132	 * Mutability of bpf_dynptr is at two levels, one is at the level of struct
-  6133	 * bpf_dynptr itself, i.e. whether the helper is receiving a pointer to struct
-  6134	 * bpf_dynptr or pointer to const struct bpf_dynptr. In the former case, it can
-  6135	 * mutate the view of the dynptr and also possibly destroy it. In the latter
-  6136	 * case, it cannot mutate the bpf_dynptr itself but it can still mutate the
-  6137	 * memory that dynptr points to.
-  6138	 *
-  6139	 * The verifier will keep track both levels of mutation (bpf_dynptr's in
-  6140	 * reg->type and the memory's in reg->dynptr.type), but there is no support for
-  6141	 * readonly dynptr view yet, hence only the first case is tracked and checked.
-  6142	 *
-  6143	 * This is consistent with how C applies the const modifier to a struct object,
-  6144	 * where the pointer itself inside bpf_dynptr becomes const but not what it
-  6145	 * points to.
-  6146	 *
-  6147	 * Helpers which do not mutate the bpf_dynptr set MEM_RDONLY in their argument
-  6148	 * type, and declare it as 'const struct bpf_dynptr *' in their prototype.
-  6149	 */
-> 6150	int process_dynptr_func(struct bpf_verifier_env *env, int regno, int insn_idx,
-  6151				enum bpf_arg_type arg_type)
-  6152	{
-  6153		struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
-  6154		int err;
-  6155	
-  6156		/* MEM_UNINIT and MEM_RDONLY are exclusive, when applied to an
-  6157		 * ARG_PTR_TO_DYNPTR (or ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_*):
-  6158		 */
-  6159		if ((arg_type & (MEM_UNINIT | MEM_RDONLY)) == (MEM_UNINIT | MEM_RDONLY)) {
-  6160			verbose(env, "verifier internal error: misconfigured dynptr helper type flags\n");
-  6161			return -EFAULT;
-  6162		}
-  6163	
-  6164		/*  MEM_UNINIT - Points to memory that is an appropriate candidate for
-  6165		 *		 constructing a mutable bpf_dynptr object.
-  6166		 *
-  6167		 *		 Currently, this is only possible with PTR_TO_STACK
-  6168		 *		 pointing to a region of at least 16 bytes which doesn't
-  6169		 *		 contain an existing bpf_dynptr.
-  6170		 *
-  6171		 *  MEM_RDONLY - Points to a initialized bpf_dynptr that will not be
-  6172		 *		 mutated or destroyed. However, the memory it points to
-  6173		 *		 may be mutated.
-  6174		 *
-  6175		 *  None       - Points to a initialized dynptr that can be mutated and
-  6176		 *		 destroyed, including mutation of the memory it points
-  6177		 *		 to.
-  6178		 */
-  6179		if (arg_type & MEM_UNINIT) {
-  6180			int i, spi;
-  6181	
-  6182			if (base_type(reg->type) == CONST_PTR_TO_DYNPTR) {
-  6183				verbose(env, "verifier internal error: CONST_PTR_TO_DYNPTR cannot be initialized\n");
-  6184				return -EFAULT;
-  6185			}
-  6186	
-  6187			/* For -ERANGE (i.e. spi not falling into allocated stack slots),
-  6188			 * check_mem_access will check and update stack bounds, so this
-  6189			 * is okay.
-  6190			 */
-  6191			spi = dynptr_get_spi(env, reg);
-  6192			if (spi < 0 && spi != -ERANGE)
-  6193				return spi;
-  6194	
-  6195			/* we write BPF_DW bits (8 bytes) at a time */
-  6196			for (i = 0; i < BPF_DYNPTR_SIZE; i += 8) {
-  6197				err = check_mem_access(env, insn_idx, regno,
-  6198						       i, BPF_DW, BPF_WRITE, -1, false);
-  6199				if (err)
-  6200					return err;
-  6201			}
-  6202	
-  6203			/* Please note that we allow overwriting existing unreferenced STACK_DYNPTR
-  6204			 * slots (mark_stack_slots_dynptr calls destroy_if_dynptr_stack_slot
-  6205			 * to ensure dynptr objects at the slots we are touching are completely
-  6206			 * destructed before we reinitialize them for a new one). For referenced
-  6207			 * ones, destroy_if_dynptr_stack_slot returns an error early instead of
-  6208			 * delaying it until the end where the user will get "Unreleased
-  6209			 * reference" error.
-  6210			 */
-  6211			err = mark_stack_slots_dynptr(env, reg, arg_type, insn_idx);
-  6212		} else /* MEM_RDONLY and None case from above */ {
-  6213			/* For the reg->type == PTR_TO_STACK case, bpf_dynptr is never const */
-  6214			if (reg->type == CONST_PTR_TO_DYNPTR && !(arg_type & MEM_RDONLY)) {
-  6215				verbose(env, "cannot pass pointer to const bpf_dynptr, the helper mutates it\n");
-  6216				return -EINVAL;
-  6217			}
-  6218	
-  6219			if (!is_dynptr_reg_valid_init(env, reg)) {
-  6220				verbose(env, "Expected an initialized dynptr as arg #%d\n",
-  6221					regno);
-  6222				return -EINVAL;
-  6223			}
-  6224	
-  6225			/* Fold modifiers (in this case, MEM_RDONLY) when checking expected type */
-  6226			if (!is_dynptr_type_expected(env, reg, arg_type & ~MEM_RDONLY)) {
-  6227				const char *err_extra = "";
-  6228	
-  6229				switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
-  6230				case DYNPTR_TYPE_LOCAL:
-  6231					err_extra = "local";
-  6232					break;
-  6233				case DYNPTR_TYPE_RINGBUF:
-  6234					err_extra = "ringbuf";
-  6235					break;
-  6236				default:
-  6237					err_extra = "<unknown>";
-  6238					break;
-  6239				}
-  6240				verbose(env,
-  6241					"Expected a dynptr of type %s as arg #%d\n",
-  6242					err_extra, regno);
-  6243				return -EINVAL;
-  6244			}
-  6245	
-  6246			err = mark_dynptr_read(env, reg);
-  6247		}
-  6248		return err;
-  6249	}
-  6250	
+>=20
+> > +               if (err < 0)
+> > +                       return libbpf_err(err);
+> > +
+> > +               memset(&req, 0, sizeof(req));
+> > +               req.nh.nlmsg_len =3D NLMSG_LENGTH(GENL_HDRLEN);
+> > +               req.nh.nlmsg_flags =3D NLM_F_REQUEST;
+> > +               req.nh.nlmsg_type =3D id;
+> > +               req.gnl.cmd =3D NETDEV_CMD_DEV_GET;
+> > +               req.gnl.version =3D 2;
+> > +
+> > +               err =3D nlattr_add(&req, NETDEV_A_DEV_IFINDEX, &ifindex,
+> > +                                sizeof(ifindex));
+> > +               if (err < 0)
+> > +                       return err;
+> > +
+> > +               err =3D libbpf_netlink_send_recv(&req, NETLINK_GENERIC,
+> > +                                              parse_xdp_features, NULL=
+, &md);
+> > +               if (err)
+> > +                       return libbpf_err(err);
+> > +
+> > +               opts->fflags =3D md.flags;
+> > +       }
+> > +
+> >         return 0;
+> >  }
+> >
+>=20
+> [...]
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+--H5r5tXaizAjuuM7h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY9UZqwAKCRA6cBh0uS2t
+rBxoAP0cbq7hs6/E0Xww1WyBoVO/koarQuFXB5dQjh+u7148WAD+IB9ZdSVQzt5f
+ogltg73yhQG8hmRf64y75STgSRlB6Qc=
+=/DWr
+-----END PGP SIGNATURE-----
+
+--H5r5tXaizAjuuM7h--
