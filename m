@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E241F67F2BF
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 01:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A9F67F2C0
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 01:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232685AbjA1AIE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Jan 2023 19:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
+        id S232815AbjA1AIP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Jan 2023 19:08:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232489AbjA1AH5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Jan 2023 19:07:57 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB8E8BBA5
-        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 16:07:42 -0800 (PST)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30S076qP026466;
-        Sat, 28 Jan 2023 00:07:30 GMT
+        with ESMTP id S232296AbjA1AIB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Jan 2023 19:08:01 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653068CC61
+        for <bpf@vger.kernel.org>; Fri, 27 Jan 2023 16:07:44 -0800 (PST)
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30RNBlSW024129;
+        Sat, 28 Jan 2023 00:07:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=b14FwBP8CDrEEzbwvMX/y7yoA6BkN1AgjWD6umGP6a4=;
- b=DSIbbca0iDQRfyJvKVNtDrPYy+eBSiU+qwlHhONlxTSInPeU672yvXBcEOdEUfRQU+FK
- 9ui5+u8EgwO0/DJY0psIKcU1BGbXUUi1CQb54aFMe+ZX+KRTf1QrKc3C+mIxcnI+yah9
- c65kGdPpmQGI4dcCoS6FAk+y/x2PNNnqlXbM8HPI0IoVQX/lbIxgw5AXhX2vjXP9l0lR
- 3W13RjfdCeXXJV+B2zEF29FHHyOGbNHnpu/bJiiEbnMOqDQTNHAQTCX+KFCOa7Mqi8W0
- ZcTSrlpVNxu4qtKGcuBh3qEy9GAl47u69AlXFYmg/iunCzASbVFujiY+aQ8yjrRcRkjG qA== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3ncrvs008c-1
+ bh=QlsN8AQYhSjXsgsdW18FPRNDRMxSJxlHr4Jl3d3wlvI=;
+ b=j3kKS1M1sRTliCP+8Bc3A9UaSCrmyfcmmpsolHpGY9lv+Y+MmTV14ZgUdC/tBNSuOwxI
+ 24Mk2EFTRf1HcTyl6TfJ3OLsqpuaYYBY5CXbpye6FgfW6L6GtspYvn6P1W8n7H0DrgYR
+ 6bt56HxgoEyT3Fhm/dGcZajqaieObhplE+I3ULsAqAmfHjJFe67wbBZfWAFBWZwUb1ST
+ i0iyeraSFn+e9DExi+ImnjQsgI7Hz68NDtRCpzbOEHJzzrn6PhYXUW2+48E7XVZHY8VW
+ 7GqQ8yenQaLp7BFz3CM1n6njffc15gIQa7cF4tardWSrMt3I6xxIWvELgm3OMHf0l2Rt Uw== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ncr2nrxr8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 28 Jan 2023 00:07:30 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30RFpFOg032034;
-        Sat, 28 Jan 2023 00:07:28 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3n87p65te6-1
+        Sat, 28 Jan 2023 00:07:31 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30R7xVbJ019104;
+        Sat, 28 Jan 2023 00:07:29 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3n87p6r4e7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Sat, 28 Jan 2023 00:07:28 +0000
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30S07OoB15860316
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30S07PWT43385218
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 28 Jan 2023 00:07:24 GMT
+        Sat, 28 Jan 2023 00:07:25 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D4F82004D;
-        Sat, 28 Jan 2023 00:07:24 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 6C5BC2004D;
+        Sat, 28 Jan 2023 00:07:25 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 12FE42004B;
+        by IMSVA (Postfix) with ESMTP id E8F2720040;
         Sat, 28 Jan 2023 00:07:24 +0000 (GMT)
 Received: from heavy.ibmuc.com (unknown [9.179.11.57])
         by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Sat, 28 Jan 2023 00:07:23 +0000 (GMT)
+        Sat, 28 Jan 2023 00:07:24 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -58,66 +58,209 @@ Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next v2 27/31] s390/bpf: Add expoline to tail calls
-Date:   Sat, 28 Jan 2023 01:06:46 +0100
-Message-Id: <20230128000650.1516334-28-iii@linux.ibm.com>
+Subject: [PATCH bpf-next v2 28/31] s390/bpf: Implement bpf_arch_text_poke()
+Date:   Sat, 28 Jan 2023 01:06:47 +0100
+Message-Id: <20230128000650.1516334-29-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230128000650.1516334-1-iii@linux.ibm.com>
 References: <20230128000650.1516334-1-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: IHerkHRxahwnfIghhEzDKr85rpveIdR9
-X-Proofpoint-GUID: IHerkHRxahwnfIghhEzDKr85rpveIdR9
+X-Proofpoint-GUID: uSXPz8xMfV0l1geUVrADFeWcDta4_Jdc
+X-Proofpoint-ORIG-GUID: uSXPz8xMfV0l1geUVrADFeWcDta4_Jdc
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-27_14,2023-01-27_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 clxscore=1015 impostorscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ definitions=2023-01-27_15,2023-01-27_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 suspectscore=0 priorityscore=1501 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2212070000 definitions=main-2301270220
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-All the indirect jumps in the eBPF JIT already use expolines, except
-for the tail call one.
+bpf_arch_text_poke() is used to hotpatch eBPF programs and trampolines.
+s390x has a very strict hotpatching restriction: the only thing that is
+allowed to be hotpatched is conditional branch mask.
 
-Fixes: de5cb6eb514e ("s390: use expoline thunks in the BPF JIT")
+Take the same approach as commit de5012b41e5c ("s390/ftrace: implement
+hotpatching"): create a conditional jump to a "plt", which loads the
+target address from memory and jumps to it; then first patch this
+address, and then the mask.
+
+Trampolines (introduced in the next patch) respect the ftrace calling
+convention: the return address is in %r0, and %r1 is clobbered. With
+that in mind, bpf_arch_text_poke() does not differentiate between jumps
+and calls.
+
+However, there is a simple optimization for jumps (for the epilogue_ip
+case): if a jump already points to the destination, then there is no
+"plt" and we can just flip the mask.
+
+For simplicity, the "plt" template is defined in assembly, and its size
+is used to define C arrays. There doesn't seem to be a way to convey
+this size to C as a constant, so it's hardcoded and double-checked
+during runtime.
+
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/s390/net/bpf_jit_comp.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ arch/s390/net/bpf_jit_comp.c | 97 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 97 insertions(+)
 
 diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index eb1a78c0e6a8..8400a06c926e 100644
+index 8400a06c926e..c72eb3fc1f98 100644
 --- a/arch/s390/net/bpf_jit_comp.c
 +++ b/arch/s390/net/bpf_jit_comp.c
-@@ -1393,8 +1393,16 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
- 		/* lg %r1,bpf_func(%r1) */
- 		EMIT6_DISP_LH(0xe3000000, 0x0004, REG_1, REG_1, REG_0,
- 			      offsetof(struct bpf_prog, bpf_func));
--		/* bc 0xf,tail_call_start(%r1) */
--		_EMIT4(0x47f01000 + jit->tail_call_start);
-+		if (nospec_uses_trampoline()) {
-+			jit->seen |= SEEN_FUNC;
-+			/* aghi %r1,tail_call_start */
-+			EMIT4_IMM(0xa70b0000, REG_1, jit->tail_call_start);
-+			/* brcl 0xf,__s390_indirect_jump_r1 */
-+			EMIT6_PCREL_RILC(0xc0040000, 0xf, jit->r1_thunk_ip);
-+		} else {
-+			/* bc 0xf,tail_call_start(%r1) */
-+			_EMIT4(0x47f01000 + jit->tail_call_start);
-+		}
- 		/* out: */
- 		if (jit->prg_buf) {
- 			*(u16 *)(jit->prg_buf + patch_1_clrj + 2) =
+@@ -30,6 +30,7 @@
+ #include <asm/facility.h>
+ #include <asm/nospec-branch.h>
+ #include <asm/set_memory.h>
++#include <asm/text-patching.h>
+ #include "bpf_jit.h"
+ 
+ struct bpf_jit {
+@@ -50,6 +51,8 @@ struct bpf_jit {
+ 	int r14_thunk_ip;	/* Address of expoline thunk for 'br %r14' */
+ 	int tail_call_start;	/* Tail call start offset */
+ 	int excnt;		/* Number of exception table entries */
++	int prologue_plt_ret;	/* Return address for prologue hotpatch PLT */
++	int prologue_plt;	/* Start of prologue hotpatch PLT */
+ };
+ 
+ #define SEEN_MEM	BIT(0)		/* use mem[] for temporary storage */
+@@ -506,6 +509,36 @@ static void bpf_skip(struct bpf_jit *jit, int size)
+ 	}
+ }
+ 
++/*
++ * PLT for hotpatchable calls. The calling convention is the same as for the
++ * ftrace hotpatch trampolines: %r0 is return address, %r1 is clobbered.
++ */
++extern const char bpf_plt[];
++extern const char bpf_plt_ret[];
++extern const char bpf_plt_target[];
++extern const char bpf_plt_end[];
++#define BPF_PLT_SIZE 32
++asm(
++	".pushsection .rodata\n"
++	"	.align 8\n"
++	"bpf_plt:\n"
++	"	lgrl %r0,bpf_plt_ret\n"
++	"	lgrl %r1,bpf_plt_target\n"
++	"	br %r1\n"
++	"	.align 8\n"
++	"bpf_plt_ret: .quad 0\n"
++	"bpf_plt_target: .quad 0\n"
++	"bpf_plt_end:\n"
++	"	.popsection\n"
++);
++
++static void bpf_jit_plt(void *plt, void *ret, void *target)
++{
++	memcpy(plt, bpf_plt, BPF_PLT_SIZE);
++	*(void **)((char *)plt + (bpf_plt_ret - bpf_plt)) = ret;
++	*(void **)((char *)plt + (bpf_plt_target - bpf_plt)) = target;
++}
++
+ /*
+  * Emit function prologue
+  *
+@@ -514,6 +547,11 @@ static void bpf_skip(struct bpf_jit *jit, int size)
+  */
+ static void bpf_jit_prologue(struct bpf_jit *jit, u32 stack_depth)
+ {
++	/* No-op for hotpatching */
++	/* brcl 0,prologue_plt */
++	EMIT6_PCREL_RILC(0xc0040000, 0, jit->prologue_plt);
++	jit->prologue_plt_ret = jit->prg;
++
+ 	if (jit->seen & SEEN_TAIL_CALL) {
+ 		/* xc STK_OFF_TCCNT(4,%r15),STK_OFF_TCCNT(%r15) */
+ 		_EMIT6(0xd703f000 | STK_OFF_TCCNT, 0xf000 | STK_OFF_TCCNT);
+@@ -589,6 +627,13 @@ static void bpf_jit_epilogue(struct bpf_jit *jit, u32 stack_depth)
+ 		/* br %r1 */
+ 		_EMIT2(0x07f1);
+ 	}
++
++	jit->prg = ALIGN(jit->prg, 8);
++	jit->prologue_plt = jit->prg;
++	if (jit->prg_buf)
++		bpf_jit_plt(jit->prg_buf + jit->prg,
++			    jit->prg_buf + jit->prologue_plt_ret, NULL);
++	jit->prg += BPF_PLT_SIZE;
+ }
+ 
+ static int get_probe_mem_regno(const u8 *insn)
+@@ -1776,6 +1821,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 	struct bpf_jit jit;
+ 	int pass;
+ 
++	if (WARN_ON_ONCE(bpf_plt_end - bpf_plt != BPF_PLT_SIZE))
++		return orig_fp;
++
+ 	if (!fp->jit_requested)
+ 		return orig_fp;
+ 
+@@ -1867,3 +1915,52 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 					   tmp : orig_fp);
+ 	return fp;
+ }
++
++int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
++		       void *old_addr, void *new_addr)
++{
++	struct {
++		u16 opc;
++		s32 disp;
++	} __packed insn;
++	char expected_plt[BPF_PLT_SIZE];
++	char current_plt[BPF_PLT_SIZE];
++	char *plt;
++	int err;
++
++	/* Verify the branch to be patched. */
++	err = copy_from_kernel_nofault(&insn, ip, sizeof(insn));
++	if (err < 0)
++		return err;
++	if (insn.opc != (0xc004 | (old_addr ? 0xf0 : 0)))
++		return -EINVAL;
++
++	if (t == BPF_MOD_JUMP &&
++	    insn.disp == ((char *)new_addr - (char *)ip) >> 1) {
++		/*
++		 * The branch already points to the destination,
++		 * there is no PLT.
++		 */
++	} else {
++		/* Verify the PLT. */
++		plt = (char *)ip + (insn.disp << 1);
++		err = copy_from_kernel_nofault(current_plt, plt, BPF_PLT_SIZE);
++		if (err < 0)
++			return err;
++		bpf_jit_plt(expected_plt, (char *)ip + 6, old_addr);
++		if (memcmp(current_plt, expected_plt, BPF_PLT_SIZE))
++			return -EINVAL;
++		/* Adjust the call address. */
++		s390_kernel_write(plt + (bpf_plt_target - bpf_plt),
++				  &new_addr, sizeof(void *));
++	}
++
++	/* Adjust the mask of the branch. */
++	insn.opc = 0xc004 | (new_addr ? 0xf0 : 0);
++	s390_kernel_write((char *)ip + 1, (char *)&insn.opc + 1, 1);
++
++	/* Make the new code visible to the other CPUs. */
++	text_poke_sync_lock();
++
++	return 0;
++}
 -- 
 2.39.1
 
