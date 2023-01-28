@@ -2,209 +2,233 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D93267F7A5
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 12:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DAC67F7AD
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 12:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbjA1Ltr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Jan 2023 06:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        id S233987AbjA1Lxl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Jan 2023 06:53:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbjA1Ltq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Jan 2023 06:49:46 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0C723650
-        for <bpf@vger.kernel.org>; Sat, 28 Jan 2023 03:49:45 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id q10so5727213qvt.10
-        for <bpf@vger.kernel.org>; Sat, 28 Jan 2023 03:49:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ePpzN6qRFIEbKg9D3BVBzunxUucei+EPla7AGvFoiyA=;
-        b=AcLZflbFD5YHqYSEh1R1kZ9nXNMTRunbGDaR+QGVZByhqbEAhhoUZieUdfCfs4M7cs
-         GvBJXkzVg/NUXTDG3S+87xG0CQgqj113CVZGKvANKckhp47yfytuLxsLTuPqgB0L1RSQ
-         jFp8Wjq3dmpybwYNY65IOp84Lthlef2CaQDIttQwRgz2F9Z6bOmxGH7dLWLMLaCGjhd1
-         vJdOorFPPG4EMASqzW2Es71tqpsbxbx3Se/Ox5ypJ23xVSom0WVTSC8CONl6FWMMcqeu
-         FDvLLsXI2rHMOEzKy9ybdwcZr2V2Zo0+mBGg0WOAFok1Ai79SHblk3tLtacNdKyMgUS8
-         F2+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ePpzN6qRFIEbKg9D3BVBzunxUucei+EPla7AGvFoiyA=;
-        b=mKpn3dDtXeeBpSr83yBxEAd/mlk4VVKIOiE8DS2AuAS7ydtrFDarjxRuzZOIEgDOw9
-         W0No/uciHUeqd0Xr6ye/JFC8qql3GKnQzqDp7zy8vVEEax5cByIyBltFEjkoKQsrsYOq
-         tLZvT1BQqi1x4NwXL2p37YDjEmJ0DTMngRF3buRnuwko/tp0CRHrF8LrilNPvdaygqIk
-         g9MYRZ6guQMopEloOv07hegnsiA9Eg7f3JnNzmNRrw0H5gOSMGLM08iqmN/NWEOF2MC3
-         6K8zEIwRUC2TYsoQfLmwEegF8qHrOkpEu3IVsorYmPgPLwDGiPrQgeQFIGs8SxhxIQRn
-         eXCQ==
-X-Gm-Message-State: AO0yUKVrOvJftl+o21rhiJG5QFfJAwl931Yfrcjjj8X+uwslF5NB75Yb
-        druLduuh1Oroutifn9T8FrO06cr6g/CVd5rLv0I=
-X-Google-Smtp-Source: AK7set9rMswu63KF4x1RGdf3cnOhRrW9s4JWqiyE3fCHaI98pkqMvJ/fyjdYQxXknuxk4i4QTsehIERQ+ZFi37sWpec=
-X-Received: by 2002:a0c:fe8e:0:b0:538:887f:be54 with SMTP id
- d14-20020a0cfe8e000000b00538887fbe54mr426983qvs.104.1674906584929; Sat, 28
- Jan 2023 03:49:44 -0800 (PST)
+        with ESMTP id S233971AbjA1Lxi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Jan 2023 06:53:38 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5C669B30;
+        Sat, 28 Jan 2023 03:53:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1674906816; x=1706442816;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kSQdtklRkBESj3j3SCGcfITrf2xNF+8tppB0MBhOsbs=;
+  b=nMk1A09151JnA0odp/3aPwTBambcn6NNYkrhCgtHtEgmqiXtC/WTO+xR
+   bGjhBZs4iMmXS5vyAPbERpQTTxYWYoSZd/ovkMX11QpHC5lu1zyXb/Lsj
+   nGvQO3JvRPrhOxLXM8Ky1pdwgBDHrD5cbvsdCifUkW2IIbRzgV7ttSeeh
+   fp9Uy8FIY2Lhxr7Ak74l+TUWT1tP++ObXfDiYuKzLEgVuNdRwhsvkn/V/
+   YtPGn/lRW/5512fQzrWIaFVySng1YgD2eavF8JOX+0nAxHf03ioBAaxtM
+   c4h+sp3tq2OzqkF+tEc9jd7+zQOJCwIc/lbednJgffFXgy0vCsTFcEJXu
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="306933946"
+X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
+   d="scan'208";a="306933946"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2023 03:53:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="663583231"
+X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
+   d="scan'208";a="663583231"
+Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 28 Jan 2023 03:53:32 -0800
+Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pLjlv-0000cR-0K;
+        Sat, 28 Jan 2023 11:53:27 +0000
+Date:   Sat, 28 Jan 2023 19:52:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, ast@kernel.org,
+        netdev@vger.kernel.org, memxor@gmail.com, kernel-team@fb.com,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: Re: [PATCH v8 bpf-next 2/5] bpf: Allow initializing dynptrs in kfuncs
+Message-ID: <202301281922.okIebogn-lkp@intel.com>
+References: <20230126233439.3739120-3-joannelkoong@gmail.com>
 MIME-Version: 1.0
-References: <20230112155326.26902-1-laoar.shao@gmail.com> <CAADnVQJie8jSNxEio9iu6oXBkXyCjCg6h2mHssPv4mDHubWTwA@mail.gmail.com>
- <CALOAHbAsQ66j77BWC6isTRiKRPgG1Ap2qf6L+wQ+x2SXJt8NjQ@mail.gmail.com>
- <CAADnVQJGF5Xthpn7D2DgHHvZz8+dnuz2xMi6yoSziuauXO7ncA@mail.gmail.com>
- <CALOAHbBVRvTkSxLin+9A20Wv0DZWz4epvNTY1jEaCTf7q0qWJA@mail.gmail.com>
- <CAADnVQJtSZWe0sjvA3YT2LPHJyUqDuhG1f62x2PTjB4WMeLsJw@mail.gmail.com>
- <CALOAHbCY4fGyAN6q3dd+hULs3hRJcYgvMR7M5wg1yb3vPiK=mw@mail.gmail.com> <CAADnVQJ9-XEz_JdbUWEK5ZdgnidvNcDZcP2jb7ojyEFtPdPMoA@mail.gmail.com>
-In-Reply-To: <CAADnVQJ9-XEz_JdbUWEK5ZdgnidvNcDZcP2jb7ojyEFtPdPMoA@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 28 Jan 2023 19:49:08 +0800
-Message-ID: <CALOAHbD0u2OPR4psZbtefttyLA8LU5ZzbXoTjbiXaz3wqNGwfw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 00/11] mm, bpf: Add BPF into /proc/meminfo
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, dennis@kernel.org,
-        Chris Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230126233439.3739120-3-joannelkoong@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 1:45 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jan 17, 2023 at 10:49 PM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > > > I just don't want to add many if-elses or switch-cases into
-> > > > bpf_map_memory_footprint(), because I think it is a little ugly.
-> > > > Introducing a new map ops could make it more clear.  For example,
-> > > > static unsigned long bpf_map_memory_footprint(const struct bpf_map *map)
-> > > > {
-> > > >     unsigned long size;
-> > > >
-> > > >     if (map->ops->map_mem_footprint)
-> > > >         return map->ops->map_mem_footprint(map);
-> > > >
-> > > >     size = round_up(map->key_size + bpf_map_value_size(map), 8);
-> > > >     return round_up(map->max_entries * size, PAGE_SIZE);
-> > > > }
-> > >
-> > > It is also ugly, because bpf_map_value_size() already has if-stmt.
-> > > I prefer to keep all estimates in one place.
-> > > There is no need to be 100% accurate.
-> >
-> > Per my investigation, it can be almost accurate with little effort.
-> > Take the htab for example,
-> > static unsigned long htab_mem_footprint(const struct bpf_map *map)
-> > {
-> >     struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
-> >     unsigned long size = 0;
-> >
-> >     if (!htab_is_prealloc(htab)) {
-> >         size += htab_elements_size(htab);
-> >     }
-> >     size += kvsize(htab->elems);
-> >     size += percpu_size(htab->extra_elems);
-> >     size += kvsize(htab->buckets);
-> >     size += bpf_mem_alloc_size(&htab->pcpu_ma);
-> >     size += bpf_mem_alloc_size(&htab->ma);
-> >     if (htab->use_percpu_counter)
-> >         size += percpu_size(htab->pcount.counters);
-> >     size += percpu_size(htab->map_locked[i]) * HASHTAB_MAP_LOCK_COUNT;
-> >     size += kvsize(htab);
-> >     return size;
-> > }
->
-> Please don't.
-> Above doesn't look maintainable.
+Hi Joanne,
 
-It is similar to htab_map_free(). These pointers are the pointers
-which will be freed in map_free().
-We just need to keep map_mem_footprint() in sync with map_free(). It
-won't be a problem for maintenance.
+Thank you for the patch! Perhaps something to improve:
 
-> Look at kvsize(htab). Do you really care about hundred bytes?
-> Just accept that there will be a small constant difference
-> between what show_fdinfo reports and the real memory.
+[auto build test WARNING on bpf-next/master]
 
-The point is we don't have a clear idea what the margin is.
+url:    https://github.com/intel-lab-lkp/linux/commits/Joanne-Koong/bpf-Allow-sk_buff-and-xdp_buff-as-valid-kfunc-arg-types/20230128-170947
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230126233439.3739120-3-joannelkoong%40gmail.com
+patch subject: [PATCH v8 bpf-next 2/5] bpf: Allow initializing dynptrs in kfuncs
+config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20230128/202301281922.okIebogn-lkp@intel.com/config)
+compiler: ia64-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/7993ffba3295a3a3c01c4b62099117b5abd48242
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Joanne-Koong/bpf-Allow-sk_buff-and-xdp_buff-as-valid-kfunc-arg-types/20230128-170947
+        git checkout 7993ffba3295a3a3c01c4b62099117b5abd48242
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash kernel/bpf/ net/core/
 
-> You cannot make it 100%.
-> There is kfence that will allocate 4k though you asked kmalloc(8).
->
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
 
-We already have ksize()[1], which covers the kfence.
+All warnings (new ones prefixed by >>):
 
-[1]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/mm/slab_common.c#n1431
+>> kernel/bpf/verifier.c:6150:5: warning: no previous prototype for 'process_dynptr_func' [-Wmissing-prototypes]
+    6150 | int process_dynptr_func(struct bpf_verifier_env *env, int regno, int insn_idx,
+         |     ^~~~~~~~~~~~~~~~~~~
 
-> > We just need to get the real memory size from the pointer instead of
-> > calculating the size again.
-> > For non-preallocated htab, it is a little trouble to get the element
-> > size (not the unit_size), but it won't be a big deal.
->
-> You'd have to convince mm folks that kvsize() is worth doing.
-> I don't think it will be easy.
->
 
-As I mentioned above, we already have ksize(), so we only need to
-introduce vsize().  Per my understanding, we can simply use
-vm_struct->size to get the vmalloc size, see also the patch #5 in this
-patchset[2].
+vim +/process_dynptr_func +6150 kernel/bpf/verifier.c
 
-Andrew, Uladzislau, Christoph,  do you have any comments on this newly
-introduced vsize()[2] ?
-
-[2]. https://lore.kernel.org/bpf/20230112155326.26902-6-laoar.shao@gmail.com/
-
-> > > With a callback devs will start thinking that this is somehow
-> > > a requirement to report precise memory.
-> > >
-> > > > > > > bpf side tracks all of its allocation. There is no need to do that
-> > > > > > > in generic mm side.
-> > > > > > > Exposing an aggregated single number if /proc/meminfo also looks wrong.
-> > > > > >
-> > > > > > Do you mean that we shouldn't expose it in /proc/meminfo ?
-> > > > >
-> > > > > We should not because it helps one particular use case only.
-> > > > > Somebody else might want map mem info per container,
-> > > > > then somebody would need it per user, etc.
-> > > >
-> > > > It seems we should show memcg info and user info in bpftool map show.
-> > >
-> > > Show memcg info? What do you have in mind?
-> > >
-> >
-> > Each bpf map is charged to a memcg. If we know a bpf map belongs to
-> > which memcg, we can know the map mem info per container.
-> > Currently we can get the memcg info from the process which loads it,
-> > but it can't apply to pinned-bpf-map.
-> > So it would be better if we can show it in bpftool-map-show.
->
-> That sounds useful.
-> Have you looked at bpf iterators and how bpftool is using
-> them to figure out which process loaded bpf prog and created particular map?
-
-Yes, I have looked at it.  I know what you mean. It seems we can
-introduce a memcg_iter or something else to implement it.
+  6124	
+  6125	/* There are two register types representing a bpf_dynptr, one is PTR_TO_STACK
+  6126	 * which points to a stack slot, and the other is CONST_PTR_TO_DYNPTR.
+  6127	 *
+  6128	 * In both cases we deal with the first 8 bytes, but need to mark the next 8
+  6129	 * bytes as STACK_DYNPTR in case of PTR_TO_STACK. In case of
+  6130	 * CONST_PTR_TO_DYNPTR, we are guaranteed to get the beginning of the object.
+  6131	 *
+  6132	 * Mutability of bpf_dynptr is at two levels, one is at the level of struct
+  6133	 * bpf_dynptr itself, i.e. whether the helper is receiving a pointer to struct
+  6134	 * bpf_dynptr or pointer to const struct bpf_dynptr. In the former case, it can
+  6135	 * mutate the view of the dynptr and also possibly destroy it. In the latter
+  6136	 * case, it cannot mutate the bpf_dynptr itself but it can still mutate the
+  6137	 * memory that dynptr points to.
+  6138	 *
+  6139	 * The verifier will keep track both levels of mutation (bpf_dynptr's in
+  6140	 * reg->type and the memory's in reg->dynptr.type), but there is no support for
+  6141	 * readonly dynptr view yet, hence only the first case is tracked and checked.
+  6142	 *
+  6143	 * This is consistent with how C applies the const modifier to a struct object,
+  6144	 * where the pointer itself inside bpf_dynptr becomes const but not what it
+  6145	 * points to.
+  6146	 *
+  6147	 * Helpers which do not mutate the bpf_dynptr set MEM_RDONLY in their argument
+  6148	 * type, and declare it as 'const struct bpf_dynptr *' in their prototype.
+  6149	 */
+> 6150	int process_dynptr_func(struct bpf_verifier_env *env, int regno, int insn_idx,
+  6151				enum bpf_arg_type arg_type)
+  6152	{
+  6153		struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+  6154		int err;
+  6155	
+  6156		/* MEM_UNINIT and MEM_RDONLY are exclusive, when applied to an
+  6157		 * ARG_PTR_TO_DYNPTR (or ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_*):
+  6158		 */
+  6159		if ((arg_type & (MEM_UNINIT | MEM_RDONLY)) == (MEM_UNINIT | MEM_RDONLY)) {
+  6160			verbose(env, "verifier internal error: misconfigured dynptr helper type flags\n");
+  6161			return -EFAULT;
+  6162		}
+  6163	
+  6164		/*  MEM_UNINIT - Points to memory that is an appropriate candidate for
+  6165		 *		 constructing a mutable bpf_dynptr object.
+  6166		 *
+  6167		 *		 Currently, this is only possible with PTR_TO_STACK
+  6168		 *		 pointing to a region of at least 16 bytes which doesn't
+  6169		 *		 contain an existing bpf_dynptr.
+  6170		 *
+  6171		 *  MEM_RDONLY - Points to a initialized bpf_dynptr that will not be
+  6172		 *		 mutated or destroyed. However, the memory it points to
+  6173		 *		 may be mutated.
+  6174		 *
+  6175		 *  None       - Points to a initialized dynptr that can be mutated and
+  6176		 *		 destroyed, including mutation of the memory it points
+  6177		 *		 to.
+  6178		 */
+  6179		if (arg_type & MEM_UNINIT) {
+  6180			int i, spi;
+  6181	
+  6182			if (base_type(reg->type) == CONST_PTR_TO_DYNPTR) {
+  6183				verbose(env, "verifier internal error: CONST_PTR_TO_DYNPTR cannot be initialized\n");
+  6184				return -EFAULT;
+  6185			}
+  6186	
+  6187			/* For -ERANGE (i.e. spi not falling into allocated stack slots),
+  6188			 * check_mem_access will check and update stack bounds, so this
+  6189			 * is okay.
+  6190			 */
+  6191			spi = dynptr_get_spi(env, reg);
+  6192			if (spi < 0 && spi != -ERANGE)
+  6193				return spi;
+  6194	
+  6195			/* we write BPF_DW bits (8 bytes) at a time */
+  6196			for (i = 0; i < BPF_DYNPTR_SIZE; i += 8) {
+  6197				err = check_mem_access(env, insn_idx, regno,
+  6198						       i, BPF_DW, BPF_WRITE, -1, false);
+  6199				if (err)
+  6200					return err;
+  6201			}
+  6202	
+  6203			/* Please note that we allow overwriting existing unreferenced STACK_DYNPTR
+  6204			 * slots (mark_stack_slots_dynptr calls destroy_if_dynptr_stack_slot
+  6205			 * to ensure dynptr objects at the slots we are touching are completely
+  6206			 * destructed before we reinitialize them for a new one). For referenced
+  6207			 * ones, destroy_if_dynptr_stack_slot returns an error early instead of
+  6208			 * delaying it until the end where the user will get "Unreleased
+  6209			 * reference" error.
+  6210			 */
+  6211			err = mark_stack_slots_dynptr(env, reg, arg_type, insn_idx);
+  6212		} else /* MEM_RDONLY and None case from above */ {
+  6213			/* For the reg->type == PTR_TO_STACK case, bpf_dynptr is never const */
+  6214			if (reg->type == CONST_PTR_TO_DYNPTR && !(arg_type & MEM_RDONLY)) {
+  6215				verbose(env, "cannot pass pointer to const bpf_dynptr, the helper mutates it\n");
+  6216				return -EINVAL;
+  6217			}
+  6218	
+  6219			if (!is_dynptr_reg_valid_init(env, reg)) {
+  6220				verbose(env, "Expected an initialized dynptr as arg #%d\n",
+  6221					regno);
+  6222				return -EINVAL;
+  6223			}
+  6224	
+  6225			/* Fold modifiers (in this case, MEM_RDONLY) when checking expected type */
+  6226			if (!is_dynptr_type_expected(env, reg, arg_type & ~MEM_RDONLY)) {
+  6227				const char *err_extra = "";
+  6228	
+  6229				switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
+  6230				case DYNPTR_TYPE_LOCAL:
+  6231					err_extra = "local";
+  6232					break;
+  6233				case DYNPTR_TYPE_RINGBUF:
+  6234					err_extra = "ringbuf";
+  6235					break;
+  6236				default:
+  6237					err_extra = "<unknown>";
+  6238					break;
+  6239				}
+  6240				verbose(env,
+  6241					"Expected a dynptr of type %s as arg #%d\n",
+  6242					err_extra, regno);
+  6243				return -EINVAL;
+  6244			}
+  6245	
+  6246			err = mark_dynptr_read(env, reg);
+  6247		}
+  6248		return err;
+  6249	}
+  6250	
 
 -- 
-Regards
-Yafang
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
