@@ -2,147 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F293067FAF9
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 21:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6792C67FB29
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 22:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjA1Uu0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Jan 2023 15:50:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
+        id S231492AbjA1VfJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Jan 2023 16:35:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjA1UuZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Jan 2023 15:50:25 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1FA10A8A
-        for <bpf@vger.kernel.org>; Sat, 28 Jan 2023 12:50:24 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DF378B80C0A
-        for <bpf@vger.kernel.org>; Sat, 28 Jan 2023 20:50:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8C348C433D2;
-        Sat, 28 Jan 2023 20:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674939021;
-        bh=H3PVqe99UO0RFvltUI92HCDQfw/b/QEVS7rrfJ69tLs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=g5ziABJVSm1xpT6JrwM+IpHbLr/KpeCfwynZkQsUsVIEW3UHYwKFV7S4ZTik/xNWT
-         hSFWeZb90mliHO/3o58WNJcfr8oUlebFjGFtgrdmSFzga8bb12xKp3DpZUp+ziJvAx
-         GCl8R3OJmzbd4kR2gVBUyPbwyyL2EE2P9JilfpUa34GB+hnzKoaGTQmwFMA5m6hbN7
-         RRO+k26kGXQvgppBCfVToTTyZxXREG8XdwIaKL7LizgYYjSEOcnXITgTTP5PoDsr4K
-         meFTgN48wNYgUfwPTtgIYHCcfBI91Lprjr2PnYVn1Ee16tAtwGllKeT1VDM10K9Vn2
-         srWZHjwpp/OwA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 67319E54D2D;
-        Sat, 28 Jan 2023 20:50:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230303AbjA1VfH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Jan 2023 16:35:07 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A92318162;
+        Sat, 28 Jan 2023 13:35:05 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id n6so5059996edo.9;
+        Sat, 28 Jan 2023 13:35:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+zXK+884dLrmhawA8xRQQwxUqchG7ZiNECezW2lOgQA=;
+        b=BVhIi1wAHrJT0sZHx5IKQ6ERyLetJwEsTCVKMe8T2grAtiQV7QwxvxHEmv6xsJAwdF
+         ZjdJF6jjhLdVv89FR55E2mr7soSxcX/14NJjeSkf4/fxXxZDulGyIyUJxu3ZquRtjz2G
+         XW8MQAVmxxM3Vl74UhsCHjfDx+CnMggGvKtlm406tSyFBqQ+JZijnEBmkgYkoXdbJRyd
+         yQ3d6k2fTNJ++nPFl3MpC1tdnjGXp1MU6N2WZW7TgLL7VQTJzMhqLYAtvSXCRxYlJSAt
+         UwufJzQ5QuvrmwBtpfOPcIluWAqJ+1OfWPnZ1fR9JE1IooIaT+JCmWpdNWghdh/+eng5
+         Dqhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+zXK+884dLrmhawA8xRQQwxUqchG7ZiNECezW2lOgQA=;
+        b=HpfVrLsKjzjVKAJjd8AsP0J8fJsxn35tAD/BDuZceBXkjAtEQIC2uNVV1YE/B3JTNe
+         Ha7+ZpoAM8pcbi1/MAeAwN6wLIHPZyw1VZxMf1Pc3d4KAeOGgcwrJVdTOdseJam9QM9W
+         VZpdrGz1xK3oaRJ/dqN+NGndg2lvEeqG9WEQ1v87/Qhl3CbP55iJNtjmcjXYCWdfhl1H
+         sciTxF+MX9H1r6zlwmOrHfkIWVxT0NMgMBvl8dFv8CTBNWHXu5NKMYPF7P3E3DEKX+YK
+         7Bs0QXFwgq4DjEEP7z/G6Pu7GFtk9iGMWG94BGFlnhaTvoZue5jcrKWMX8tQ67njrg4K
+         QZSw==
+X-Gm-Message-State: AFqh2kq6km9aQK1xN73Bnv7ShBtQLOOj7rZ3yX5u116PVFLq4VdSTKre
+        KF1PXoVlTEpcQTaKPpOZRq4BykhQRg1tQFtV+IS4Dgqs
+X-Google-Smtp-Source: AMrXdXsZzarXZgPPZ/o1qFc85WWamUoar/+dUFn/SXh0NavSmkBXF2uugGK4uBHZdiG1JciMajqTm514M4a/kJkg/Jo=
+X-Received: by 2002:a05:6402:3814:b0:49e:6501:57a2 with SMTP id
+ es20-20020a056402381400b0049e650157a2mr6932183edb.43.1674941703860; Sat, 28
+ Jan 2023 13:35:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 00/31] Support bpf trampoline for s390x
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167493902139.8808.2500727230403968304.git-patchwork-notify@kernel.org>
-Date:   Sat, 28 Jan 2023 20:50:21 +0000
-References: <20230128000650.1516334-1-iii@linux.ibm.com>
-In-Reply-To: <20230128000650.1516334-1-iii@linux.ibm.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1674913191.git.lorenzo@kernel.org> <a7eaa7e3e4c0a7e70f68c32314a7f75c9bba4465.1674913191.git.lorenzo@kernel.org>
+In-Reply-To: <a7eaa7e3e4c0a7e70f68c32314a7f75c9bba4465.1674913191.git.lorenzo@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 28 Jan 2023 13:34:52 -0800
+Message-ID: <CAADnVQJhdxM6eqvxRZ7JjxEc+fDG5CwnV_FAGs+H+djNye0e=w@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 8/8] selftests/bpf: introduce XDP compliance
+ test tool
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Marek Majtyka <alardam@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, anthony.l.nguyen@intel.com,
+        Andy Gospodarek <gospo@broadcom.com>, vladimir.oltean@nxp.com,
+        Felix Fietkau <nbd@nbd.name>, john@phrozen.org,
+        Leon Romanovsky <leon@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Ariel Elior <aelior@marvell.com>,
+        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Sat, Jan 28, 2023 at 6:07 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> diff --git a/tools/testing/selftests/bpf/xdp_features.h b/tools/testing/selftests/bpf/xdp_features.h
+> new file mode 100644
+> index 000000000000..28d7614c4f02
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/xdp_features.h
+> @@ -0,0 +1,33 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +/* test commands */
+> +enum test_commands {
+> +       CMD_STOP,               /* CMD */
+> +       CMD_START,              /* CMD + xdp feature */
+> +       CMD_ECHO,               /* CMD */
+> +       CMD_ACK,                /* CMD + data */
+> +       CMD_GET_XDP_CAP,        /* CMD */
+> +       CMD_GET_STATS,          /* CMD */
+> +};
+> +
+> +#define DUT_CTRL_PORT  12345
+> +#define DUT_ECHO_PORT  12346
+> +
+> +struct tlv_hdr {
+> +       __be16 type;
+> +       __be16 len;
+> +       __be32 data[];
+> +};
+> +
+> +enum {
+> +       XDP_FEATURE_ABORTED,
+> +       XDP_FEATURE_DROP,
+> +       XDP_FEATURE_PASS,
+> +       XDP_FEATURE_TX,
+> +       XDP_FEATURE_REDIRECT,
+> +       XDP_FEATURE_NDO_XMIT,
+> +       XDP_FEATURE_XSK_ZEROCOPY,
+> +       XDP_FEATURE_HW_OFFLOAD,
+> +       XDP_FEATURE_RX_SG,
+> +       XDP_FEATURE_NDO_XMIT_SG,
+> +};
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Sat, 28 Jan 2023 01:06:19 +0100 you wrote:
-> v1: https://lore.kernel.org/bpf/20230125213817.1424447-1-iii@linux.ibm.com/#t
-> v1 -> v2:
-> - Fix core_read_macros, sk_assign, test_profiler, test_bpffs (24/31;
->   I'm not quite happy with the fix, but don't have better ideas),
->   and xdp_synproxy. (Andrii)
-> - Prettify liburandom_read and verify_pkcs7_sig fixes. (Andrii)
-> - Fix bpf_usdt_arg using barrier_var(); prettify barrier_var(). (Andrii)
-> - Change BPF_MAX_TRAMP_LINKS to enum and query it using BTF. (Andrii)
-> - Improve bpf_jit_supports_kfunc_call() description. (Alexei)
-> - Always check sign_extend() return value.
-> - Cc: Alexander Gordeev.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v2,01/31] bpf: Use ARG_CONST_SIZE_OR_ZERO for 3rd argument of bpf_tcp_raw_gen_syncookie_ipv{4,6}()
-    https://git.kernel.org/bpf/bpf-next/c/bf3849755ac6
-  - [bpf-next,v2,02/31] bpf: Change BPF_MAX_TRAMP_LINKS to enum
-    https://git.kernel.org/bpf/bpf-next/c/390a07a921b3
-  - [bpf-next,v2,03/31] selftests/bpf: Query BPF_MAX_TRAMP_LINKS using BTF
-    https://git.kernel.org/bpf/bpf-next/c/8fb9fb2f1728
-  - [bpf-next,v2,04/31] selftests/bpf: Fix liburandom_read.so linker error
-    https://git.kernel.org/bpf/bpf-next/c/b14b01f281f7
-  - [bpf-next,v2,05/31] selftests/bpf: Fix symlink creation error
-    https://git.kernel.org/bpf/bpf-next/c/6eab2370d142
-  - [bpf-next,v2,06/31] selftests/bpf: Fix kfree_skb on s390x
-    https://git.kernel.org/bpf/bpf-next/c/31da9be64a11
-  - [bpf-next,v2,07/31] selftests/bpf: Set errno when urand_spawn() fails
-    https://git.kernel.org/bpf/bpf-next/c/804acdd251e8
-  - [bpf-next,v2,08/31] selftests/bpf: Fix decap_sanity_ns cleanup
-    https://git.kernel.org/bpf/bpf-next/c/98e13848cf43
-  - [bpf-next,v2,09/31] selftests/bpf: Fix verify_pkcs7_sig on s390x
-    https://git.kernel.org/bpf/bpf-next/c/56e1a5048319
-  - [bpf-next,v2,10/31] selftests/bpf: Fix xdp_do_redirect on s390x
-    https://git.kernel.org/bpf/bpf-next/c/06c1865b0b0c
-  - [bpf-next,v2,11/31] selftests/bpf: Fix cgrp_local_storage on s390x
-    https://git.kernel.org/bpf/bpf-next/c/06cea99e683c
-  - [bpf-next,v2,12/31] selftests/bpf: Check stack_mprotect() return value
-    https://git.kernel.org/bpf/bpf-next/c/2934565f04fd
-  - [bpf-next,v2,13/31] selftests/bpf: Increase SIZEOF_BPF_LOCAL_STORAGE_ELEM on s390x
-    https://git.kernel.org/bpf/bpf-next/c/80a611904eef
-  - [bpf-next,v2,14/31] selftests/bpf: Add a sign-extension test for kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/be6b5c10ecc4
-  - [bpf-next,v2,15/31] selftests/bpf: Fix test_lsm on s390x
-    https://git.kernel.org/bpf/bpf-next/c/207612eb12b9
-  - [bpf-next,v2,16/31] selftests/bpf: Fix test_xdp_adjust_tail_grow2 on s390x
-    https://git.kernel.org/bpf/bpf-next/c/26e8a0149479
-  - [bpf-next,v2,17/31] selftests/bpf: Fix vmlinux test on s390x
-    https://git.kernel.org/bpf/bpf-next/c/d504270a233d
-  - [bpf-next,v2,18/31] selftests/bpf: Fix sk_assign on s390x
-    (no matching commit)
-  - [bpf-next,v2,19/31] selftests/bpf: Fix xdp_synproxy/tc on s390x
-    https://git.kernel.org/bpf/bpf-next/c/438a2edf26b7
-  - [bpf-next,v2,20/31] selftests/bpf: Fix profiler on s390x
-    https://git.kernel.org/bpf/bpf-next/c/1b5e38532581
-  - [bpf-next,v2,21/31] libbpf: Simplify barrier_var()
-    https://git.kernel.org/bpf/bpf-next/c/e85465e420be
-  - [bpf-next,v2,22/31] libbpf: Fix unbounded memory access in bpf_usdt_arg()
-    https://git.kernel.org/bpf/bpf-next/c/25c76ed42821
-  - [bpf-next,v2,23/31] libbpf: Fix BPF_PROBE_READ{_STR}_INTO() on s390x
-    https://git.kernel.org/bpf/bpf-next/c/42fae973c2b1
-  - [bpf-next,v2,24/31] bpf: iterators: Split iterators.lskel.h into little- and big- endian versions
-    https://git.kernel.org/bpf/bpf-next/c/0f0e5f5bd506
-  - [bpf-next,v2,25/31] bpf: btf: Add BTF_FMODEL_SIGNED_ARG flag
-    https://git.kernel.org/bpf/bpf-next/c/49f67f393ff2
-  - [bpf-next,v2,26/31] s390/bpf: Fix a typo in a comment
-    https://git.kernel.org/bpf/bpf-next/c/07dcbd7325ce
-  - [bpf-next,v2,27/31] s390/bpf: Add expoline to tail calls
-    (no matching commit)
-  - [bpf-next,v2,28/31] s390/bpf: Implement bpf_arch_text_poke()
-    (no matching commit)
-  - [bpf-next,v2,29/31] s390/bpf: Implement arch_prepare_bpf_trampoline()
-    (no matching commit)
-  - [bpf-next,v2,30/31] s390/bpf: Implement bpf_jit_supports_subprog_tailcalls()
-    (no matching commit)
-  - [bpf-next,v2,31/31] s390/bpf: Implement bpf_jit_supports_kfunc_call()
-    (no matching commit)
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+This doesn't match the kernel.
+How did you test this?
+What should be the way to prevent such mistakes in the future?
