@@ -2,139 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 103EF67FA90
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 20:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E0667FAD5
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 21:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbjA1Tuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Jan 2023 14:50:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
+        id S232546AbjA1UaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Jan 2023 15:30:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbjA1Tuu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Jan 2023 14:50:50 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B535A20069;
-        Sat, 28 Jan 2023 11:50:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=qEnfDf+BQe2kIPxLJiV7OZn4deC6AGOYYXUZSW1pSOU=; b=WNESInrEGQ4hgPJTNesLKzpYcK
-        Pd0RAQ4pe+sxVn9f2bquTCMoTbiw+Wq0Xrj4FcUvppge8BH+8/Zch2EsODoEsQ0WiwY4+HzMIu0kb
-        1XkGijy+NtOvuCqxLsp1drtvlw7rlyptGzKEajl8Pui9Z3uihAu7Qo5rF985WgoH/XXUwEAhHdexx
-        weyQmk5nVQ768Ep/mnmNUg0mYhGENa/HnJW8QdAfc4ciur8Nq6hw9BugJM4SsW8nwOG2l0g5FGcKv
-        lvP1KEgS6qHBogL3tRbM2Jo2raFwzBtDx9R7UNayG8jmAIn+tLVLQnomOA8QP4ihLg+MiA7qM5PLe
-        fcAWDVwQ==;
-Received: from [2601:1c2:d00:6a60::9526] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pLrDq-000cy2-RU; Sat, 28 Jan 2023 19:50:46 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH bpf-next v2] Documentation: bpf: correct spelling
-Date:   Sat, 28 Jan 2023 11:50:46 -0800
-Message-Id: <20230128195046.13327-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.39.1
+        with ESMTP id S229975AbjA1UaU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Jan 2023 15:30:20 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC731199EA;
+        Sat, 28 Jan 2023 12:30:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 732A060C50;
+        Sat, 28 Jan 2023 20:30:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CA153C433A0;
+        Sat, 28 Jan 2023 20:30:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674937816;
+        bh=46QGk4R7oBO0/uI3nu8ndxhN+tqx6JxIwIWC5Ee2Hw8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=SAxrYj7964WvJlTaGgiWJnqfz32dV21lO3ivuyLAfdOWxz+GeTnOQyTwQ8d5u88i6
+         KXUCrHUx8+6b/WxZ6u3NSrVl04pBK0q4ludgzwwt4MLIg+Cv0fvvZ4lMmieNxy7ukt
+         G1n57pJFqCWThWswXfyxhBY5bS+r8uZq2+p95COmVEkI5qarKYNFR2C/nTNjfHp9an
+         t3Bguvq3hhX0uOjYqpzoOSqdJwAIHzZW55pcLmpuyLLbBXoev4382et2ko56ayz25/
+         m58SdFez0EXCeizPoeTHr3bZVapCTYpaU8utwetR7EeCU9VBKglELdpHQRJa5zDK1J
+         UUmjkhf6CT8zA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 91082F83ED3;
+        Sat, 28 Jan 2023 20:30:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next] bpf: Build-time assert that cpumask offset is zero
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167493781658.31903.16536653287119334829.git-patchwork-notify@kernel.org>
+Date:   Sat, 28 Jan 2023 20:30:16 +0000
+References: <20230128141537.100777-1-void@manifault.com>
+In-Reply-To: <20230128141537.100777-1-void@manifault.com>
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Correct spelling problems for Documentation/bpf/ as reported
-by codespell.
+Hello:
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
-v2: independent patch targeting bpf-next
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
- Documentation/bpf/libbpf/libbpf_naming_convention.rst |    6 +++---
- Documentation/bpf/map_xskmap.rst                      |    2 +-
- Documentation/bpf/ringbuf.rst                         |    4 ++--
- Documentation/bpf/verifier.rst                        |    2 +-
- 4 files changed, 7 insertions(+), 7 deletions(-)
+On Sat, 28 Jan 2023 08:15:37 -0600 you wrote:
+> The first element of a struct bpf_cpumask is a cpumask_t. This is done
+> to allow struct bpf_cpumask to be cast to a struct cpumask. If this
+> element were ever moved to another field, any BPF program passing a
+> struct bpf_cpumask * to a kfunc expecting a const struct cpumask * would
+> immediately fail to load. Add a build-time assertion so this is
+> assumption is captured and verified.
+> 
+> [...]
 
-diff -- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
---- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-+++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-@@ -83,8 +83,8 @@ This prevents from accidentally exportin
- to be a part of ABI what, in turn, improves both libbpf developer- and
- user-experiences.
- 
--ABI versionning
-----------------
-+ABI versioning
-+--------------
- 
- To make future ABI extensions possible libbpf ABI is versioned.
- Versioning is implemented by ``libbpf.map`` version script that is
-@@ -148,7 +148,7 @@ API documentation convention
- The libbpf API is documented via comments above definitions in
- header files. These comments can be rendered by doxygen and sphinx
- for well organized html output. This section describes the
--convention in which these comments should be formated.
-+convention in which these comments should be formatted.
- 
- Here is an example from btf.h:
- 
-diff -- a/Documentation/bpf/map_xskmap.rst b/Documentation/bpf/map_xskmap.rst
---- a/Documentation/bpf/map_xskmap.rst
-+++ b/Documentation/bpf/map_xskmap.rst
-@@ -178,7 +178,7 @@ The following code snippet shows how to
- 
- For an example on how create AF_XDP sockets, please see the AF_XDP-example and
- AF_XDP-forwarding programs in the `bpf-examples`_ directory in the `libxdp`_ repository.
--For a detailed explaination of the AF_XDP interface please see:
-+For a detailed explanation of the AF_XDP interface please see:
- 
- - `libxdp-readme`_.
- - `AF_XDP`_ kernel documentation.
-diff -- a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rst
---- a/Documentation/bpf/ringbuf.rst
-+++ b/Documentation/bpf/ringbuf.rst
-@@ -124,7 +124,7 @@ buffer.  Currently 4 are supported:
- 
- - ``BPF_RB_AVAIL_DATA`` returns amount of unconsumed data in ring buffer;
- - ``BPF_RB_RING_SIZE`` returns the size of ring buffer;
--- ``BPF_RB_CONS_POS``/``BPF_RB_PROD_POS`` returns current logical possition
-+- ``BPF_RB_CONS_POS``/``BPF_RB_PROD_POS`` returns current logical position
-   of consumer/producer, respectively.
- 
- Returned values are momentarily snapshots of ring buffer state and could be
-@@ -146,7 +146,7 @@ Design and Implementation
- This reserve/commit schema allows a natural way for multiple producers, either
- on different CPUs or even on the same CPU/in the same BPF program, to reserve
- independent records and work with them without blocking other producers. This
--means that if BPF program was interruped by another BPF program sharing the
-+means that if BPF program was interrupted by another BPF program sharing the
- same ring buffer, they will both get a record reserved (provided there is
- enough space left) and can work with it and submit it independently. This
- applies to NMI context as well, except that due to using a spinlock during
-diff -- a/Documentation/bpf/verifier.rst b/Documentation/bpf/verifier.rst
---- a/Documentation/bpf/verifier.rst
-+++ b/Documentation/bpf/verifier.rst
-@@ -192,7 +192,7 @@ checked and found to be non-NULL, all co
- As well as range-checking, the tracked information is also used for enforcing
- alignment of pointer accesses.  For instance, on most systems the packet pointer
- is 2 bytes after a 4-byte alignment.  If a program adds 14 bytes to that to jump
--over the Ethernet header, then reads IHL and addes (IHL * 4), the resulting
-+over the Ethernet header, then reads IHL and adds (IHL * 4), the resulting
- pointer will have a variable offset known to be 4n+2 for some n, so adding the 2
- bytes (NET_IP_ALIGN) gives a 4-byte alignment and so word-sized accesses through
- that pointer are safe.
+Here is the summary with links:
+  - [bpf-next] bpf: Build-time assert that cpumask offset is zero
+    https://git.kernel.org/bpf/bpf-next/c/cb4a21ea592f
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
