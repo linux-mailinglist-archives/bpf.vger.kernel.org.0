@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C59CA67F609
-	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 09:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0234067F665
+	for <lists+bpf@lfdr.de>; Sat, 28 Jan 2023 09:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbjA1IR1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Jan 2023 03:17:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
+        id S232813AbjA1Ihg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Jan 2023 03:37:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjA1IR0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Jan 2023 03:17:26 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4503610405
-        for <bpf@vger.kernel.org>; Sat, 28 Jan 2023 00:17:25 -0800 (PST)
+        with ESMTP id S232455AbjA1Ihf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Jan 2023 03:37:35 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABF137F0F
+        for <bpf@vger.kernel.org>; Sat, 28 Jan 2023 00:37:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674893845; x=1706429845;
+  t=1674895051; x=1706431051;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:content-transfer-encoding:in-reply-to;
-  bh=spM3AE0alRjjB//gXGhV1W5htvQfvEZ2ffYkRQxojPU=;
-  b=c+RE6Y3pnUetE7rlKc8tuh4QfTKalrFfg2S+KQ4xEBmImGxVwralAvhA
-   WK/iw64t0Oao89dblllWq/ymboZZHmXnyjIPSPG/FPVxr7h8QghdOh7qy
-   ceq9kxs+ltw2T8g8OjsOfu8yWOmNxATjOjncJ9sGUcfv5t/r5/rSwElS4
-   iQcysEpODynXF5gkMQvcMjJ4/q41rkz6MzomGOhiZn8iqzp9vZrVKyr7j
-   sgwzrW8YpexY1dHM0fxWGI9C9p8ZQFywQZmDQI4UBedVkIoiXh8H53TkJ
-   rXCBA4DG/36QCfj/nhFI/FLD51BUKLhzaRJ49ARn90QyCgvS1XhgrsZiI
+  bh=DISRV7v/oTwHpYIjTRlE+uOwvlFszaNIrQuxT+Up7mI=;
+  b=CquwjS2mzqr+1MZEBUdI6Snks4Rq0Li5j3rsLXQPT0ZhicQ2kmpYMqLh
+   JjgV4lR5NRIsfM9OyiyEqn0dlRwfOlA27+/Ez2PHs6lhWYGqK/B6n/hXx
+   dLsQRdBxQ90+mGCWxou9ssRGWZFC/rl0G1PIMwTWO8rLQKlyH4FQaAw6r
+   wgw2tn7v4yF2dDo4sAeXZtWwjHABPWtnB0nqbpDWzujNc1P1reT8mlhJl
+   xN6hP5dLGpH+5q0LMM0wyDnsX9562ksvT+WUtZOrchlkQwLRGSgl14vYj
+   RV9isOLUD3sxlDY553e5iQ0VNsDx/Mo3E1tXnbjc5zAA9DzrSRrvIj1w4
    g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="413495705"
+X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="327292357"
 X-IronPort-AV: E=Sophos;i="5.97,253,1669104000"; 
-   d="scan'208";a="413495705"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2023 00:17:24 -0800
+   d="scan'208";a="327292357"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2023 00:37:30 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="992339212"
+X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="806096747"
 X-IronPort-AV: E=Sophos;i="5.97,253,1669104000"; 
-   d="scan'208";a="992339212"
+   d="scan'208";a="806096747"
 Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 28 Jan 2023 00:17:23 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 28 Jan 2023 00:37:29 -0800
 Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pLgOo-0000W9-2H;
-        Sat, 28 Jan 2023 08:17:22 +0000
-Date:   Sat, 28 Jan 2023 16:16:27 +0800
+        id 1pLgiB-0000Wd-12;
+        Sat, 28 Jan 2023 08:37:23 +0000
+Date:   Sat, 28 Jan 2023 16:37:06 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Grant Seltzer <grantseltzer@gmail.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, andrii@kernel.org,
-        grantseltzer@gmail.com
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        andrii@kernel.org, grantseltzer@gmail.com
 Subject: Re: [PATCH bpf-next] Add support for tracing programs in BPF_PROG_RUN
-Message-ID: <202301281606.OPSk1bci-lkp@intel.com>
+Message-ID: <202301281621.DfTZgf4X-lkp@intel.com>
 References: <20230127214353.628551-1-grantseltzer@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
@@ -74,8 +74,8 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Grant-Seltzer/Add-support
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
 patch link:    https://lore.kernel.org/r/20230127214353.628551-1-grantseltzer%40gmail.com
 patch subject: [PATCH bpf-next] Add support for tracing programs in BPF_PROG_RUN
-config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20230128/202301281606.OPSk1bci-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 12.1.0
+config: i386-randconfig-a012-20230123 (https://download.01.org/0day-ci/archive/20230128/202301281621.DfTZgf4X-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
@@ -85,21 +85,21 @@ reproduce (this is a W=1 build):
         git checkout 990088d6233eb15a4a42a83a998f47432305d4d7
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=powerpc olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=powerpc SHELL=/bin/bash net/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash net/bpf/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
 
 All warnings (new ones prefixed by >>):
 
-   net/bpf/test_run.c: In function 'bpf_prog_test_run_tracing':
->> net/bpf/test_run.c:818:30: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
-     818 |         u16 side_effect = 0, ret = 0;
-         |                              ^~~
->> net/bpf/test_run.c:818:13: warning: variable 'side_effect' set but not used [-Wunused-but-set-variable]
-     818 |         u16 side_effect = 0, ret = 0;
-         |             ^~~~~~~~~~~
+>> net/bpf/test_run.c:818:23: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
+           u16 side_effect = 0, ret = 0;
+                                ^
+>> net/bpf/test_run.c:818:6: warning: variable 'side_effect' set but not used [-Wunused-but-set-variable]
+           u16 side_effect = 0, ret = 0;
+               ^
+   2 warnings generated.
 
 
 vim +/ret +818 net/bpf/test_run.c
