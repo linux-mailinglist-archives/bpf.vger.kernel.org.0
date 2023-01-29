@@ -2,60 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CD967FF48
-	for <lists+bpf@lfdr.de>; Sun, 29 Jan 2023 14:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6A36800F1
+	for <lists+bpf@lfdr.de>; Sun, 29 Jan 2023 19:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbjA2NFO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Jan 2023 08:05:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
+        id S229870AbjA2Ssj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 Jan 2023 13:48:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbjA2NFN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 Jan 2023 08:05:13 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B201E5EA;
-        Sun, 29 Jan 2023 05:05:12 -0800 (PST)
+        with ESMTP id S229885AbjA2Ssf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 29 Jan 2023 13:48:35 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176BD1F4BA;
+        Sun, 29 Jan 2023 10:48:08 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B5B860D2F;
-        Sun, 29 Jan 2023 13:05:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EDFFC433D2;
-        Sun, 29 Jan 2023 13:05:11 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A4010B80CBB;
+        Sun, 29 Jan 2023 18:48:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA412C433D2;
+        Sun, 29 Jan 2023 18:48:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674997511;
-        bh=YRnCFG8ntf0bBC/MtPuhGtlsw+ZD+Y1feXB+ZAguOFA=;
+        s=k20201202; t=1675018085;
+        bh=wqWSHpwy3MUpVmsntNqQHtsxLsPh+QcU+TX0EB5Z+4c=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pM7mbhS46Zc3vsSb/cRYRpSBpu4zsXFLTKZKoi2W9W8Gn1mIszVsY3goULoFTBdsL
-         6N7rc9XSk4HmChaH+vMU5CV8tWptrMWwNKzc/fklambxb7qw0KSOA20MjTIwmbBUFD
-         oWhrrJqewgPnftnf8iSQVGr1o8U6saypScis+5Ryll0IjJEFexqbYhzhG4KjXdjPVr
-         rfhVyjmo/z4Chd3f7VXs/+ZQqgWPIVnjQJO+/kXDdupYlDwig+GMIFY5veiNobNGkx
-         88YpSDlIyIZTFbzEWtTNBY0pDEPIxzKptAN2zcX3lFcJ4MPxvSknnTUhv1Q8+iWtiM
-         c8isIlzzXMAdg==
-Date:   Sun, 29 Jan 2023 14:05:07 +0100
+        b=Nz1tZKtoo2WWyX7mMEDJ0juSHAcoJaOdpTBcbcWkG+P8/FhbZM+UEhpuuleS+FLUd
+         4OzJ1t+ZdgzDeJ+nJ4yDp/amMYIlrdWBGOEzygjP42g2g245qB9D3YSX7Pbdh7NvOW
+         5G4KuVbsuWWQ0KnKKM0iPK/t2i+ekATc7EwjAmIiuv6cHg1mOiOx/9Ws+QUbW+Wz9U
+         iOyZMdtrQfBGEEPLquar3kg/yHDyqjMVltQbV/uB/96KSSE2RytjjXyE4kAIQ1je0/
+         KSX1gPVLOhpWEHgNY+q/tEpVTXmBZVKNPWb4FJ1+jipdegmwISU77c+1qKZg14IB+2
+         gkfbLrJHYVGKg==
+Date:   Sun, 29 Jan 2023 19:48:01 +0100
 From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Gerhard Engleder <gerhard@engleder-embedded.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
-        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
-        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
-        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
-        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
-        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
-        martin.lau@linux.dev
-Subject: Re: [PATCH v2 bpf-next 2/8] drivers: net: turn on XDP features
-Message-ID: <Y9ZvA7+RMwbNlFoy@lore-desk>
-References: <cover.1674606193.git.lorenzo@kernel.org>
- <c1171111f8af76da11331277b1e4a930c10f3c30.1674606197.git.lorenzo@kernel.org>
- <28eedfd5-4444-112b-bfbc-1c7682385c88@engleder-embedded.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Marek Majtyka <alardam@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, anthony.l.nguyen@intel.com,
+        Andy Gospodarek <gospo@broadcom.com>, vladimir.oltean@nxp.com,
+        Felix Fietkau <nbd@nbd.name>, john@phrozen.org,
+        Leon Romanovsky <leon@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Ariel Elior <aelior@marvell.com>,
+        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH v4 bpf-next 8/8] selftests/bpf: introduce XDP compliance
+ test tool
+Message-ID: <Y9a/YWBBU/cjofIr@lore-desk>
+References: <cover.1674913191.git.lorenzo@kernel.org>
+ <a7eaa7e3e4c0a7e70f68c32314a7f75c9bba4465.1674913191.git.lorenzo@kernel.org>
+ <CAADnVQJhdxM6eqvxRZ7JjxEc+fDG5CwnV_FAGs+H+djNye0e=w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="U7/gIV1/sudiaFss"
+        protocol="application/pgp-signature"; boundary="Nx0wHPKtgW7QyJuF"
 Content-Disposition: inline
-In-Reply-To: <28eedfd5-4444-112b-bfbc-1c7682385c88@engleder-embedded.com>
+In-Reply-To: <CAADnVQJhdxM6eqvxRZ7JjxEc+fDG5CwnV_FAGs+H+djNye0e=w@mail.gmail.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -66,116 +83,85 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
---U7/gIV1/sudiaFss
+--Nx0wHPKtgW7QyJuF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-> On 25.01.23 01:33, Lorenzo Bianconi wrote:
-> > From: Marek Majtyka <alardam@gmail.com>
-> >=20
-> > A summary of the flags being set for various drivers is given below.
-> > Note that XDP_F_REDIRECT_TARGET and XDP_F_FRAG_TARGET are features
-> > that can be turned off and on at runtime. This means that these flags
-> > may be set and unset under RTNL lock protection by the driver. Hence,
-> > READ_ONCE must be used by code loading the flag value.
-> >=20
-> > Also, these flags are not used for synchronization against the availabi=
-lity
-> > of XDP resources on a device. It is merely a hint, and hence the read
-> > may race with the actual teardown of XDP resources on the device. This
-> > may change in the future, e.g. operations taking a reference on the XDP
-> > resources of the driver, and in turn inhibiting turning off this flag.
-> > However, for now, it can only be used as a hint to check whether device
-> > supports becoming a redirection target.
-> >=20
-> > Turn 'hw-offload' feature flag on for:
-> >   - netronome (nfp)
-> >   - netdevsim.
-> >=20
-> > Turn 'native' and 'zerocopy' features flags on for:
-> >   - intel (i40e, ice, ixgbe, igc)
-> >   - mellanox (mlx5).
-> >   - stmmac
-> >=20
-> > Turn 'native' features flags on for:
-> >   - amazon (ena)
-> >   - broadcom (bnxt)
-> >   - freescale (dpaa, dpaa2, enetc)
-> >   - funeth
-> >   - intel (igb)
-> >   - marvell (mvneta, mvpp2, octeontx2)
-> >   - mellanox (mlx4)
-> >   - qlogic (qede)
-> >   - sfc
-> >   - socionext (netsec)
-> >   - ti (cpsw)
-> >   - tap
-> >   - veth
-> >   - xen
-> >   - virtio_net.
-> >=20
-> > Turn 'basic' (tx, pass, aborted and drop) features flags on for:
-> >   - netronome (nfp)
-> >   - cavium (thunder)
-> >   - hyperv.
-> >=20
-> > Turn 'redirect_target' feature flag on for:
-> >   - amanzon (ena)
-> >   - broadcom (bnxt)
-> >   - freescale (dpaa, dpaa2)
-> >   - intel (i40e, ice, igb, ixgbe)
-> >   - ti (cpsw)
-> >   - marvell (mvneta, mvpp2)
-> >   - sfc
-> >   - socionext (netsec)
-> >   - qlogic (qede)
-> >   - mellanox (mlx5)
-> >   - tap
-> >   - veth
-> >   - virtio_net
-> >   - xen
+On Jan 28, Alexei Starovoitov wrote:
+> On Sat, Jan 28, 2023 at 6:07 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
+te:
+> > diff --git a/tools/testing/selftests/bpf/xdp_features.h b/tools/testing=
+/selftests/bpf/xdp_features.h
+> > new file mode 100644
+> > index 000000000000..28d7614c4f02
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/xdp_features.h
+> > @@ -0,0 +1,33 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +
+> > +/* test commands */
+> > +enum test_commands {
+> > +       CMD_STOP,               /* CMD */
+> > +       CMD_START,              /* CMD + xdp feature */
+> > +       CMD_ECHO,               /* CMD */
+> > +       CMD_ACK,                /* CMD + data */
+> > +       CMD_GET_XDP_CAP,        /* CMD */
+> > +       CMD_GET_STATS,          /* CMD */
+> > +};
+> > +
+> > +#define DUT_CTRL_PORT  12345
+> > +#define DUT_ECHO_PORT  12346
+> > +
+> > +struct tlv_hdr {
+> > +       __be16 type;
+> > +       __be16 len;
+> > +       __be32 data[];
+> > +};
+> > +
+> > +enum {
+> > +       XDP_FEATURE_ABORTED,
+> > +       XDP_FEATURE_DROP,
+> > +       XDP_FEATURE_PASS,
+> > +       XDP_FEATURE_TX,
+> > +       XDP_FEATURE_REDIRECT,
+> > +       XDP_FEATURE_NDO_XMIT,
+> > +       XDP_FEATURE_XSK_ZEROCOPY,
+> > +       XDP_FEATURE_HW_OFFLOAD,
+> > +       XDP_FEATURE_RX_SG,
+> > +       XDP_FEATURE_NDO_XMIT_SG,
+> > +};
 >=20
-> XDP support for tsnep was merged to net-next last week. So this driver
-> cannot get XDP feature support in bpf-next as it is not there currently.
-> Should I add these flags with a fix afterwards? Or would net-next be the
-> better target for this patch series?
+> This doesn't match the kernel.
+> How did you test this?
+> What should be the way to prevent such mistakes in the future?
 
-bpf-next has been rebased on top of net-next so we can add tsnep support to=
- the
-series. Do you think the patch below is fine?
+Hi Alexei,
+
+I added the XDP_FEATURE_* enum above since the XDP compliance test tool nee=
+ds
+to differentiate between actions in NETDEV_XDP_ACT_BASIC (e.g XDP_TX and
+XDP_PASS or XDP_REDIRECT are handled differently in the ebpf programs insta=
+lled
+on the tester and DUT devices). However, combining netdev_xdp_act and xdp_a=
+ction
+enum definitions, I think we can keep this logic in xdp_feature userspace p=
+art
+and we can get rid of the XDP_FEATURE_* enum above.
+I will fix it in v5.
 
 Regards,
 Lorenzo
 
-diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ether=
-net/engleder/tsnep_main.c
-index c3cf427a9409..6982aaa928b5 100644
---- a/drivers/net/ethernet/engleder/tsnep_main.c
-+++ b/drivers/net/ethernet/engleder/tsnep_main.c
-@@ -1926,6 +1926,10 @@ static int tsnep_probe(struct platform_device *pdev)
- 	netdev->features =3D NETIF_F_SG;
- 	netdev->hw_features =3D netdev->features | NETIF_F_LOOPBACK;
-=20
-+	netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
-+			       NETDEV_XDP_ACT_NDO_XMIT |
-+			       NETDEV_XDP_ACT_NDO_XMIT_SG;
-+
- 	/* carrier off reporting is important to ethtool even BEFORE open */
- 	netif_carrier_off(netdev);
-=20
->=20
-> Gerhard
-
---U7/gIV1/sudiaFss
+--Nx0wHPKtgW7QyJuF
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY9ZvAwAKCRA6cBh0uS2t
-rNw7AP0alud03ewTG9GBiClcWsJQ6C9O0dUGXriI2e1W5/22hAEAyOa3eNzEGfre
-fkTdDTwpzezmuA3GUsyCVIEgbzhVrA0=
-=Vws7
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY9a/YQAKCRA6cBh0uS2t
+rA0MAQD14qKZyBuuTUx+gcvcXc9dncuAjpGH/LEYEmvcdZpjPgD/evMoa3V8P0ut
+zGEhB25aPtnf/qiDteYI2cvq8czggAw=
+=A3gE
 -----END PGP SIGNATURE-----
 
---U7/gIV1/sudiaFss--
+--Nx0wHPKtgW7QyJuF--
