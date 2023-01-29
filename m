@@ -2,166 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6A36800F1
-	for <lists+bpf@lfdr.de>; Sun, 29 Jan 2023 19:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 806F568011A
+	for <lists+bpf@lfdr.de>; Sun, 29 Jan 2023 20:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjA2Ssj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Jan 2023 13:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
+        id S235142AbjA2TFe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 Jan 2023 14:05:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbjA2Ssf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 Jan 2023 13:48:35 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176BD1F4BA;
-        Sun, 29 Jan 2023 10:48:08 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A4010B80CBB;
-        Sun, 29 Jan 2023 18:48:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA412C433D2;
-        Sun, 29 Jan 2023 18:48:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675018085;
-        bh=wqWSHpwy3MUpVmsntNqQHtsxLsPh+QcU+TX0EB5Z+4c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nz1tZKtoo2WWyX7mMEDJ0juSHAcoJaOdpTBcbcWkG+P8/FhbZM+UEhpuuleS+FLUd
-         4OzJ1t+ZdgzDeJ+nJ4yDp/amMYIlrdWBGOEzygjP42g2g245qB9D3YSX7Pbdh7NvOW
-         5G4KuVbsuWWQ0KnKKM0iPK/t2i+ekATc7EwjAmIiuv6cHg1mOiOx/9Ws+QUbW+Wz9U
-         iOyZMdtrQfBGEEPLquar3kg/yHDyqjMVltQbV/uB/96KSSE2RytjjXyE4kAIQ1je0/
-         KSX1gPVLOhpWEHgNY+q/tEpVTXmBZVKNPWb4FJ1+jipdegmwISU77c+1qKZg14IB+2
-         gkfbLrJHYVGKg==
-Date:   Sun, 29 Jan 2023 19:48:01 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230082AbjA2TFb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 29 Jan 2023 14:05:31 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9055EFF32
+        for <bpf@vger.kernel.org>; Sun, 29 Jan 2023 11:05:30 -0800 (PST)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30TDckol015323;
+        Sun, 29 Jan 2023 19:05:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=LJM0364MlxZYtQVeh+Rddv/vSRJemfnnBpVgNX6QeZU=;
+ b=CdGc2LJXZzH0055A+CRNUn8/Db/CK/v7SBedpg3HltTbfYTJHg6CR07qFHr9twedQSgN
+ pllr0mrg4Q80XlV6x02fo2CDqk6E+M5oquoTZslkcpnxbWyZAnQ2VzhorsyL5DLZhvTV
+ 3VVM531YJBwxP0/sPjBAttLL8/VhsIXW2dUHo4lvcD/zDx/C5qePk2to5e0vnYeT7kTS
+ y8Z7LdVbT2cYbz+L67NiwGd3tRSqubPvSthudBgoBHvvtzIIjsTN6lOPvhiS9psjfU/c
+ 9nliAjZXNolEffhekMoOCb0q+BaHosyQopCaj4GrYpLl7uGwAb7ebLSL82xkftXs9Umq VA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nddhpdfm8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Jan 2023 19:05:10 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30T5EKLY014953;
+        Sun, 29 Jan 2023 19:05:07 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3ncvttsd7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Jan 2023 19:05:07 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30TJ546m21758554
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 29 Jan 2023 19:05:04 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C0102004B;
+        Sun, 29 Jan 2023 19:05:04 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8F1D820040;
+        Sun, 29 Jan 2023 19:05:03 +0000 (GMT)
+Received: from heavy.ibmuc.com (unknown [9.179.11.57])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Sun, 29 Jan 2023 19:05:03 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Marek Majtyka <alardam@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, anthony.l.nguyen@intel.com,
-        Andy Gospodarek <gospo@broadcom.com>, vladimir.oltean@nxp.com,
-        Felix Fietkau <nbd@nbd.name>, john@phrozen.org,
-        Leon Romanovsky <leon@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Ariel Elior <aelior@marvell.com>,
-        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: Re: [PATCH v4 bpf-next 8/8] selftests/bpf: introduce XDP compliance
- test tool
-Message-ID: <Y9a/YWBBU/cjofIr@lore-desk>
-References: <cover.1674913191.git.lorenzo@kernel.org>
- <a7eaa7e3e4c0a7e70f68c32314a7f75c9bba4465.1674913191.git.lorenzo@kernel.org>
- <CAADnVQJhdxM6eqvxRZ7JjxEc+fDG5CwnV_FAGs+H+djNye0e=w@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next v3 0/8] Support bpf trampoline for s390x
+Date:   Sun, 29 Jan 2023 20:04:53 +0100
+Message-Id: <20230129190501.1624747-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.39.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: OLSl801ZkUq5jcmc8MTmmrPdH6ZlkIL1
+X-Proofpoint-GUID: OLSl801ZkUq5jcmc8MTmmrPdH6ZlkIL1
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Nx0wHPKtgW7QyJuF"
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJhdxM6eqvxRZ7JjxEc+fDG5CwnV_FAGs+H+djNye0e=w@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-29_10,2023-01-27_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=946 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ spamscore=0 impostorscore=0 mlxscore=0 adultscore=0 clxscore=1015
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301290189
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+v2: https://lore.kernel.org/bpf/20230128000650.1516334-1-iii@linux.ibm.com/#t
+v2 -> v3:
+- Make __arch_prepare_bpf_trampoline static.
+  (Reported-by: kernel test robot <lkp@intel.com>)
+- Support both old- and new- style map definitions in sk_assign. (Alexei)
+- Trim DENYLIST.s390x. (Alexei)
+- Adjust s390x vmlinux path in vmtest.sh.
+- Drop merged fixes.
 
---Nx0wHPKtgW7QyJuF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v1: https://lore.kernel.org/bpf/20230125213817.1424447-1-iii@linux.ibm.com/#t
+v1 -> v2:
+- Fix core_read_macros, sk_assign, test_profiler, test_bpffs (24/31;
+  I'm not quite happy with the fix, but don't have better ideas),
+  and xdp_synproxy. (Andrii)
+- Prettify liburandom_read and verify_pkcs7_sig fixes. (Andrii)
+- Fix bpf_usdt_arg using barrier_var(); prettify barrier_var(). (Andrii)
+- Change BPF_MAX_TRAMP_LINKS to enum and query it using BTF. (Andrii)
+- Improve bpf_jit_supports_kfunc_call() description. (Alexei)
+- Always check sign_extend() return value.
+- Cc: Alexander Gordeev.
 
-On Jan 28, Alexei Starovoitov wrote:
-> On Sat, Jan 28, 2023 at 6:07 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
-te:
-> > diff --git a/tools/testing/selftests/bpf/xdp_features.h b/tools/testing=
-/selftests/bpf/xdp_features.h
-> > new file mode 100644
-> > index 000000000000..28d7614c4f02
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/xdp_features.h
-> > @@ -0,0 +1,33 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +
-> > +/* test commands */
-> > +enum test_commands {
-> > +       CMD_STOP,               /* CMD */
-> > +       CMD_START,              /* CMD + xdp feature */
-> > +       CMD_ECHO,               /* CMD */
-> > +       CMD_ACK,                /* CMD + data */
-> > +       CMD_GET_XDP_CAP,        /* CMD */
-> > +       CMD_GET_STATS,          /* CMD */
-> > +};
-> > +
-> > +#define DUT_CTRL_PORT  12345
-> > +#define DUT_ECHO_PORT  12346
-> > +
-> > +struct tlv_hdr {
-> > +       __be16 type;
-> > +       __be16 len;
-> > +       __be32 data[];
-> > +};
-> > +
-> > +enum {
-> > +       XDP_FEATURE_ABORTED,
-> > +       XDP_FEATURE_DROP,
-> > +       XDP_FEATURE_PASS,
-> > +       XDP_FEATURE_TX,
-> > +       XDP_FEATURE_REDIRECT,
-> > +       XDP_FEATURE_NDO_XMIT,
-> > +       XDP_FEATURE_XSK_ZEROCOPY,
-> > +       XDP_FEATURE_HW_OFFLOAD,
-> > +       XDP_FEATURE_RX_SG,
-> > +       XDP_FEATURE_NDO_XMIT_SG,
-> > +};
->=20
-> This doesn't match the kernel.
-> How did you test this?
-> What should be the way to prevent such mistakes in the future?
+Hi,
 
-Hi Alexei,
+This series implements poke, trampoline, kfunc, and mixing subprogs
+and tailcalls on s390x.
 
-I added the XDP_FEATURE_* enum above since the XDP compliance test tool nee=
-ds
-to differentiate between actions in NETDEV_XDP_ACT_BASIC (e.g XDP_TX and
-XDP_PASS or XDP_REDIRECT are handled differently in the ebpf programs insta=
-lled
-on the tester and DUT devices). However, combining netdev_xdp_act and xdp_a=
-ction
-enum definitions, I think we can keep this logic in xdp_feature userspace p=
-art
-and we can get rid of the XDP_FEATURE_* enum above.
-I will fix it in v5.
+The following failures still remain:
 
-Regards,
-Lorenzo
+#82      get_stack_raw_tp:FAIL
+get_stack_print_output:FAIL:user_stack corrupted user stack
+Known issue:
+We cannot reliably unwind userspace on s390x without DWARF.
 
---Nx0wHPKtgW7QyJuF
-Content-Type: application/pgp-signature; name="signature.asc"
+#101     ksyms_module:FAIL
+address of kernel function bpf_testmod_test_mod_kfunc is out of range
+Known issue:
+Kernel and modules are too far away from each other on s390x.
 
------BEGIN PGP SIGNATURE-----
+#190     stacktrace_build_id:FAIL
+Known issue:
+We cannot reliably unwind userspace on s390x without DWARF.
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCY9a/YQAKCRA6cBh0uS2t
-rA0MAQD14qKZyBuuTUx+gcvcXc9dncuAjpGH/LEYEmvcdZpjPgD/evMoa3V8P0ut
-zGEhB25aPtnf/qiDteYI2cvq8czggAw=
-=A3gE
------END PGP SIGNATURE-----
+#281     xdp_metadata:FAIL
+See patch 6.
 
---Nx0wHPKtgW7QyJuF--
+None of these seem to be due to the new changes.
+
+Best regards,
+Ilya
+
+Ilya Leoshkevich (8):
+  selftests/bpf: Fix sk_assign on s390x
+  s390/bpf: Add expoline to tail calls
+  s390/bpf: Implement bpf_arch_text_poke()
+  s390/bpf: Implement arch_prepare_bpf_trampoline()
+  s390/bpf: Implement bpf_jit_supports_subprog_tailcalls()
+  s390/bpf: Implement bpf_jit_supports_kfunc_call()
+  selftests/bpf: Fix s390x vmlinux path
+  selftests/bpf: Trim DENYLIST.s390x
+
+ arch/s390/net/bpf_jit_comp.c                  | 713 +++++++++++++++++-
+ include/linux/bpf.h                           |   4 +
+ tools/testing/selftests/bpf/DENYLIST.s390x    |  69 --
+ .../selftests/bpf/prog_tests/sk_assign.c      |  25 +-
+ .../selftests/bpf/progs/test_sk_assign.c      |  11 +
+ .../bpf/progs/test_sk_assign_libbpf.c         |   3 +
+ tools/testing/selftests/bpf/vmtest.sh         |   2 +-
+ 7 files changed, 715 insertions(+), 112 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sk_assign_libbpf.c
+
+-- 
+2.39.1
+
