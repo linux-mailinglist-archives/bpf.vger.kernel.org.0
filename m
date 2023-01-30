@@ -2,166 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E68681106
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 15:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD2B681111
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 15:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237151AbjA3OJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 09:09:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
+        id S237213AbjA3OJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 09:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237153AbjA3OJn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 09:09:43 -0500
-Received: from mx05lb.world4you.com (mx05lb.world4you.com [81.19.149.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0A23802F;
-        Mon, 30 Jan 2023 06:09:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=dX5joPSrXHt51h5qeLC3Xq8xdcevddD07C/9Rn/Wh2A=; b=m46iI2brqSGyfUUajUeA7OZa3t
-        vcYvSFW2JLP/W4gBxZjJX9vF13bZh+kZTCC+XSSxAUr73cW9EuaJuiRFnXdafpbjZuH/BctPcwJnC
-        C0Nxl72vj+dhI4aFem34n+hOI/pGP5lUrqDsrjZXzMMUbl10Wxf88529acWRhPIgF2Po=;
-Received: from [81.19.149.42] (helo=webmail.world4you.com)
-        by mx05lb.world4you.com with esmtpa (Exim 4.94.2)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1pMUql-0002na-QU; Mon, 30 Jan 2023 15:09:35 +0100
+        with ESMTP id S237181AbjA3OJz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 09:09:55 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0033B3DD;
+        Mon, 30 Jan 2023 06:09:52 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 49BB1B8117B;
+        Mon, 30 Jan 2023 14:09:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAEBDC433D2;
+        Mon, 30 Jan 2023 14:09:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675087789;
+        bh=HJDfDNRtvtMkI/CNFU46URo+WEQ69a9tFSAn18ubN5g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qcx3qYHIRvWNeCs1V8s7ttq24HNGrf8rkU2zTJTwlDKVbjr3arv68tvhDnQzAPgBH
+         4zTiSv/SOVKfAfAjjegeBEorXkJsD0B4ytw5iRqDcM/4NhL0+KmN8S0yfQGOau0a9o
+         RcRVuJSQ682lwb3vBar1oq+ddWIwSyuvulqU0CAeukjPJ3Ok9mmPsV2NsiI0ozpGNh
+         cfeUCJyEJ7mjLoQhpYfSlqJGhGVMjg2TNt5gRvW3GZgQ5dTWGlf11pxWa0ludN/ohy
+         GiQYtxkKiMg5z//WcQxHP59ycpf+FyRPg5C+f8V0jcVGS19IH1cM5wEc/h4j8Uik7N
+         oHlR2PUegZ+5Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4FE08405BE; Mon, 30 Jan 2023 11:09:45 -0300 (-03)
+Date:   Mon, 30 Jan 2023 11:09:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kajoljain <kjain@linux.ibm.com>
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Disha Goel <disgoel@linux.vnet.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf test: Switch basic bpf filtering test to use
+ syscall tracepoint
+Message-ID: <Y9fPqaZ1MksBX/lx@kernel.org>
+References: <20230123083224.276404-1-naveen.n.rao@linux.vnet.ibm.com>
+ <70b60459-2e7a-1944-77dc-54fef2e00975@linux.ibm.com>
 MIME-Version: 1.0
-Date:   Mon, 30 Jan 2023 15:09:35 +0100
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
-        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
-        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
-        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
-        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
-        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
-        martin.lau@linux.dev
-Subject: Re: [PATCH v2 bpf-next 2/8] drivers: net: turn on XDP features
-In-Reply-To: <Y9ZvA7+RMwbNlFoy@lore-desk>
-References: <cover.1674606193.git.lorenzo@kernel.org>
- <c1171111f8af76da11331277b1e4a930c10f3c30.1674606197.git.lorenzo@kernel.org>
- <28eedfd5-4444-112b-bfbc-1c7682385c88@engleder-embedded.com>
- <Y9ZvA7+RMwbNlFoy@lore-desk>
-User-Agent: World4You Webmail
-Message-ID: <6e2e5b8f5735fc3243dea3a050399e34@engleder-embedded.com>
-X-Sender: gerhard@engleder-embedded.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Do-Not-Run: Yes
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70b60459-2e7a-1944-77dc-54fef2e00975@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 29.01.2023 14:05, Lorenzo Bianconi wrote:
->> On 25.01.23 01:33, Lorenzo Bianconi wrote:
->> > From: Marek Majtyka <alardam@gmail.com>
->> >
->> > A summary of the flags being set for various drivers is given below.
->> > Note that XDP_F_REDIRECT_TARGET and XDP_F_FRAG_TARGET are features
->> > that can be turned off and on at runtime. This means that these flags
->> > may be set and unset under RTNL lock protection by the driver. Hence,
->> > READ_ONCE must be used by code loading the flag value.
->> >
->> > Also, these flags are not used for synchronization against the availability
->> > of XDP resources on a device. It is merely a hint, and hence the read
->> > may race with the actual teardown of XDP resources on the device. This
->> > may change in the future, e.g. operations taking a reference on the XDP
->> > resources of the driver, and in turn inhibiting turning off this flag.
->> > However, for now, it can only be used as a hint to check whether device
->> > supports becoming a redirection target.
->> >
->> > Turn 'hw-offload' feature flag on for:
->> >   - netronome (nfp)
->> >   - netdevsim.
->> >
->> > Turn 'native' and 'zerocopy' features flags on for:
->> >   - intel (i40e, ice, ixgbe, igc)
->> >   - mellanox (mlx5).
->> >   - stmmac
->> >
->> > Turn 'native' features flags on for:
->> >   - amazon (ena)
->> >   - broadcom (bnxt)
->> >   - freescale (dpaa, dpaa2, enetc)
->> >   - funeth
->> >   - intel (igb)
->> >   - marvell (mvneta, mvpp2, octeontx2)
->> >   - mellanox (mlx4)
->> >   - qlogic (qede)
->> >   - sfc
->> >   - socionext (netsec)
->> >   - ti (cpsw)
->> >   - tap
->> >   - veth
->> >   - xen
->> >   - virtio_net.
->> >
->> > Turn 'basic' (tx, pass, aborted and drop) features flags on for:
->> >   - netronome (nfp)
->> >   - cavium (thunder)
->> >   - hyperv.
->> >
->> > Turn 'redirect_target' feature flag on for:
->> >   - amanzon (ena)
->> >   - broadcom (bnxt)
->> >   - freescale (dpaa, dpaa2)
->> >   - intel (i40e, ice, igb, ixgbe)
->> >   - ti (cpsw)
->> >   - marvell (mvneta, mvpp2)
->> >   - sfc
->> >   - socionext (netsec)
->> >   - qlogic (qede)
->> >   - mellanox (mlx5)
->> >   - tap
->> >   - veth
->> >   - virtio_net
->> >   - xen
->> 
->> XDP support for tsnep was merged to net-next last week. So this driver
->> cannot get XDP feature support in bpf-next as it is not there 
->> currently.
->> Should I add these flags with a fix afterwards? Or would net-next be 
->> the
->> better target for this patch series?
+Em Mon, Jan 30, 2023 at 02:28:49PM +0530, kajoljain escreveu:
 > 
-> bpf-next has been rebased on top of net-next so we can add tsnep 
-> support to the
-> series. Do you think the patch below is fine?
 > 
-> Regards,
-> Lorenzo
+> On 1/23/23 14:02, Naveen N. Rao wrote:
+> > BPF filtering tests can sometime fail. Running the test in verbose mode
+> > shows the following:
+> >   $ sudo perf test 42
+> >   42: BPF filter                                                      :
+> >   42.1: Basic BPF filtering                                           : FAILED!
+> >   42.2: BPF pinning                                                   : Skip
+> >   42.3: BPF prologue generation                                       : Skip
+> >   $ perf --version
+> >   perf version 4.18.0-425.3.1.el8.ppc64le
+> >   $ sudo perf test -v 42
+> >   42: BPF filter                                                      :
+> >   42.1: Basic BPF filtering                                           :
+> >   --- start ---
+> >   test child forked, pid 711060
+> >   ...
+> >   bpf: config 'func=do_epoll_wait' is ok
+> >   Looking at the vmlinux_path (8 entries long)
+> >   Using /usr/lib/debug/lib/modules/4.18.0-425.3.1.el8.ppc64le/vmlinux for symbols
+> >   Open Debuginfo file: /usr/lib/debug/.build-id/81/56f5a07f92ccb62c5600ba0e4aacfb5f3a7534.debug
+> >   Try to find probe point from debuginfo.
+> >   Matched function: do_epoll_wait [4ef8cb0]
+> >   found inline addr: 0xc00000000061dbe4
+> >   Probe point found: __se_compat_sys_epoll_pwait+196
+> >   found inline addr: 0xc00000000061d9f4
+> >   Probe point found: __se_sys_epoll_pwait+196
+> >   found inline addr: 0xc00000000061d824
+> >   Probe point found: __se_sys_epoll_wait+36
+> >   Found 3 probe_trace_events.
+> >   Opening /sys/kernel/tracing//kprobe_events write=1
+> >   ...
+> >   BPF filter result incorrect, expected 56, got 56 samples
+> >   test child finished with -1
+> >   ---- end ----
+> >   BPF filter subtest 1: FAILED!
 > 
-> diff --git a/drivers/net/ethernet/engleder/tsnep_main.c
-> b/drivers/net/ethernet/engleder/tsnep_main.c
-> index c3cf427a9409..6982aaa928b5 100644
-> --- a/drivers/net/ethernet/engleder/tsnep_main.c
-> +++ b/drivers/net/ethernet/engleder/tsnep_main.c
-> @@ -1926,6 +1926,10 @@ static int tsnep_probe(struct platform_device 
-> *pdev)
->  	netdev->features = NETIF_F_SG;
->  	netdev->hw_features = netdev->features | NETIF_F_LOOPBACK;
+> Patch looks good to me.
 > 
-> +	netdev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT 
-> |
-> +			       NETDEV_XDP_ACT_NDO_XMIT |
-> +			       NETDEV_XDP_ACT_NDO_XMIT_SG;
-> +
+> Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
 
-Looks good. Thanks!
+Thanks, added to that cset, as it is still just on tmp.perf/core.
 
-Gerhard
+- Arnaldo
