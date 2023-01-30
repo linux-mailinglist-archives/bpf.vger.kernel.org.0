@@ -2,191 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFBA681B54
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 21:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D69E681BA5
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 21:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbjA3UXh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 15:23:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
+        id S229557AbjA3UjP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 15:39:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjA3UXg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 15:23:36 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BD537F10
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 12:23:35 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B5AC0B815E9
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 20:23:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4971EC433EF;
-        Mon, 30 Jan 2023 20:23:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675110212;
-        bh=dHOZXO1mZXN14ehqvNT6AU50W9dWKXZTRkOnPJuqSqM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bl+6cytXrb1HtvFqoVbCDd6KQg+IFqbsFPkKELqAj/GRduIZz4diKu5x4TDvoW8Sy
-         TDhFobZKhw/svraARAoeg/OUbVxsLZFL4FOePAmYUtQ5Ac3iwJzhhEwk5dthcyi2Us
-         zxsBlbNMePnK3rOaxMzHaZcr0cqq2ON38Oh/dfHCp3RB7HLJei0FRKGMdGghwSJe20
-         /ScaYR4iOcSSlYi+rUzuCu/GAhwa/rq0JOMDq4iDYNOLjm+//QzbRWg7EwLbR9SblS
-         njSyDpcUxOfktwtNlYUCKc0BJMo2RBOHZy/bHsmzjXDry5oHZ6HUEKWTu3ZwYFj9+z
-         PqbjnUZ6156pA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 827EA405BE; Mon, 30 Jan 2023 17:23:29 -0300 (-03)
-Date:   Mon, 30 Jan 2023 17:23:29 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     yhs@fb.com, ast@kernel.org, olsajiri@gmail.com, eddyz87@gmail.com,
-        sinquersw@gmail.com, timo@incline.eu, daniel@iogearbox.net,
-        andrii@kernel.org, songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
-        martin.lau@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 dwarves 1/5] dwarves: help dwarf loader spot functions
- with optimized-out parameters
-Message-ID: <Y9gnQSUvJQ6WRx8y@kernel.org>
-References: <1675088985-20300-1-git-send-email-alan.maguire@oracle.com>
- <1675088985-20300-2-git-send-email-alan.maguire@oracle.com>
- <Y9gOGZ20aSgsYtPP@kernel.org>
- <Y9gkS6dcXO4HWovW@kernel.org>
+        with ESMTP id S229494AbjA3UjO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 15:39:14 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381583C2AB
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 12:39:14 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id d10so5655994ilc.12
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 12:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0nT5TiK59F4dVt37DfJK9Bll0YITX9f8CMHepmR7VeE=;
+        b=IZa9mIFHrck31VCRcZzKJUjsd9OFmNO4Y4EijYb5f0CdfBrfaEIeXC6NTe2IeuuLLt
+         nhiqU295YFwVM+//XpPJ7LwmcaouKBploPXztnZzseuPu7qJR8gcKItfP41DBUjvG1Mn
+         +72lxpmvjBxRPBTGQ//8/6HvCd1HxxqAkHkauR2YuCVZIxnWgv7T0ibGWO829JuObZPO
+         VOTXCFGgCMdx/MK8z81NV1o3ziHLiwbpr2bQYwMTDcT9VP4sMCK6AzYCwbnb8ejfAI1x
+         mCduhZnM+ZFUhtqO61WTfMPyGyz/2DnIkd9Ez8OvRPCInb+X8GkZkDcLDL89OxCSEmbi
+         /sHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0nT5TiK59F4dVt37DfJK9Bll0YITX9f8CMHepmR7VeE=;
+        b=kWWcW5/dJ8xId4SvcjyCrodKjsC2koaCTHOqCELiro3C0a7oNFJGHSHvR3aFC4KwUc
+         qP8nAPYUD+U6IV8yfrSPFBU8907uqKR+mF8fBrQsQhpcOsaXVw0Xfx4w3nOCZyOVYYzk
+         pq5dlpbhC5N7ZhOeSDcoOYJsvAw704eftniigVfKJ5cwI6U2w2lTRg980LJmuQ4sNjkq
+         glIUdbG5S+TteLqQKoRGYGS5A9qIAvGduCGU0yBKBjYGkpIVsUmteBeoDF59A8YPLZgn
+         YQ5d3vhUidVMrWNl3I/gI+hbOPA0W0nej24AwQgO2nxH6c4jQYGFAsanDYqnb4gFlaax
+         kHNg==
+X-Gm-Message-State: AFqh2kqU2KySyY0qmFX4A0jHRVVqITSpdwLA5d5t4QgSJGpOv6js0PPy
+        WFUYlwV1sXYZ6tJA1F0bHpETHP+hLYWXmnSaXEg=
+X-Google-Smtp-Source: AMrXdXs+Qf8qFByKg4v0vZKBNSzUgOWmdQ3Uz0NCQrHvExt8s7Q2At+X5yRgkE/+cvtV5q4+inZXb49YjtpCzN/thcc=
+X-Received: by 2002:a05:6e02:1a01:b0:30f:299f:9120 with SMTP id
+ s1-20020a056e021a0100b0030f299f9120mr5964454ild.4.1675111153594; Mon, 30 Jan
+ 2023 12:39:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9gkS6dcXO4HWovW@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230127214353.628551-1-grantseltzer@gmail.com> <202301281621.DfTZgf4X-lkp@intel.com>
+In-Reply-To: <202301281621.DfTZgf4X-lkp@intel.com>
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Mon, 30 Jan 2023 15:39:02 -0500
+Message-ID: <CAO658oVzcmr5cm-Re2amK0C=EQMweXLcPMA7cUUfJqJ++=tYWw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] Add support for tracing programs in BPF_PROG_RUN
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jan 30, 2023 at 05:10:51PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, Jan 30, 2023 at 03:36:09PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > +#define NR_REGISTER_PARAMS	8
-> > > +#elif defined(__arc__)
-> > > +#define NR_REGISTER_PARAMS	8
-> > > +#else
-> > > +#define NR_REGISTER_PARAMS      0
-> > > +#endif
-> > 
-> > This should be done as a function, something like:
-> > 
-> > int cu__nr_register_params(struct cu *cu)
-> > {
-> > 	GElf_Ehdr ehdr;
-> > 
-> > 	gelf_getehdr(cu->elf, &ehdr);
-> > 
-> > 	switch (ehdr.machine) {
-> > 	...
-> > 
-> > }
-> > 
-> > I'm coding that now, will send the diff shortly.
-> > 
-> > This is to support cross-builds.
-> 
-> I made this change to this patch, please check.
-
-And added this to that cset:
-
-Committer notes:
-
-Changed the NR_REGISTER_PARAMS definition from a if/elif/endif for the
-native architecture into a function that uses the ELF header e_machine
-to find the target architecture, to allow for cross builds. 
-
----
-
-- Arnaldo
-
-> diff --git a/dwarf_loader.c b/dwarf_loader.c
-> index 752a3c1afc4494f2..81963e71715c8435 100644
-> --- a/dwarf_loader.c
-> +++ b/dwarf_loader.c
-> @@ -994,29 +994,29 @@ static struct class_member *class_member__new(Dwarf_Die *die, struct cu *cu,
->  
->  /* How many function parameters are passed via registers?  Used below in
->   * determining if an argument has been optimized out or if it is simply
-> - * an argument > NR_REGISTER_PARAMS.  Setting NR_REGISTER_PARAMS to 0
-> - * allows unsupported architectures to skip tagging optimized-out
-> + * an argument > cu__nr_register_params().  Making cu__nr_register_params()
-> + * return 0 allows unsupported architectures to skip tagging optimized-out
->   * values.
->   */
-> -#if defined(__x86_64__)
-> -#define NR_REGISTER_PARAMS      6
-> -#elif defined(__s390__)
-> -#define NR_REGISTER_PARAMS	5
-> -#elif defined(__aarch64__)
-> -#define NR_REGISTER_PARAMS      8
-> -#elif defined(__mips__)
-> -#define NR_REGISTER_PARAMS	8
-> -#elif defined(__powerpc__)
-> -#define NR_REGISTER_PARAMS	8
-> -#elif defined(__sparc__)
-> -#define NR_REGISTER_PARAMS	6
-> -#elif defined(__riscv) && __riscv_xlen == 64
-> -#define NR_REGISTER_PARAMS	8
-> -#elif defined(__arc__)
-> -#define NR_REGISTER_PARAMS	8
-> -#else
-> -#define NR_REGISTER_PARAMS      0
-> -#endif
-> +static int arch__nr_register_params(const GElf_Ehdr *ehdr)
-> +{
-> +	switch (ehdr->e_machine) {
-> +	case EM_S390:	 return 5;
-> +	case EM_SPARC:
-> +	case EM_SPARCV9:
-> +	case EM_X86_64:	 return 6;
-> +	case EM_AARCH64:
-> +	case EM_ARC:
-> +	case EM_ARM:
-> +	case EM_MIPS:
-> +	case EM_PPC:
-> +	case EM_PPC64:
-> +	case EM_RISCV:	 return 8;
-> +	default:	 break;
-> +	}
-> +
-> +	return 0;
-> +}
->  
->  static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
->  					struct conf_load *conf, int param_idx)
-> @@ -1031,7 +1031,7 @@ static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
->  		tag__init(&parm->tag, cu, die);
->  		parm->name = attr_string(die, DW_AT_name, conf);
->  
-> -		if (param_idx >= NR_REGISTER_PARAMS)
-> +		if (param_idx >= cu->nr_register_params)
->  			return parm;
->  		/* Parameters which use DW_AT_abstract_origin to point at
->  		 * the original parameter definition (with no name in the DIE)
-> @@ -2870,6 +2870,7 @@ static int cu__set_common(struct cu *cu, struct conf_load *conf,
->  		return DWARF_CB_ABORT;
->  
->  	cu->little_endian = ehdr.e_ident[EI_DATA] == ELFDATA2LSB;
-> +	cu->nr_register_params = arch__nr_register_params(&ehdr);
->  	return 0;
->  }
->  
-> diff --git a/dwarves.h b/dwarves.h
-> index fd1ca3ae9f4ab531..ddf56f0124e0ec03 100644
-> --- a/dwarves.h
-> +++ b/dwarves.h
-> @@ -262,6 +262,7 @@ struct cu {
->  	uint8_t		 has_addr_info:1;
->  	uint8_t		 uses_global_strings:1;
->  	uint8_t		 little_endian:1;
-> +	uint8_t		 nr_register_params;
->  	uint16_t	 language;
->  	unsigned long	 nr_inline_expansions;
->  	size_t		 size_inline_expansions;
-
--- 
-
-- Arnaldo
+I see I left in a couple of unused variables, but I'm now questioning
+their purpose. KP, as the original author, can you explain the purpose
+of the `bpf_modify_return_test`? Since this function is running in the
+context of the bpf syscall and not the bpf program itself, how would
+the side effect of the addition operation (I guess simulating the
+attached function running) ever not happen? If we adopt actually
+running the BPF program, should there just be a check for setting the
+upper 16 bits to represent 'side effects'?
