@@ -2,59 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29771681858
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 19:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F962681892
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 19:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbjA3SJE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 13:09:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44548 "EHLO
+        id S237565AbjA3STq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 13:19:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbjA3SJD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 13:09:03 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3781C4EF5
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 10:08:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D99EFB815CC
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 18:08:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27D95C433EF;
-        Mon, 30 Jan 2023 18:08:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675102132;
-        bh=Z3chGKodOqcxcingj9qzIjQAzQEmK+13Jz9p6cwdMG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JoAzECdQ2e379yYwgHvpnjbKMUPG4ET/9ap8GZjxVv2esawuZ6G8G4Ubi8fD4U7rk
-         kwg//SYnlRAKOwmyN3B2926K02PxNUN20Fd9vSvxjwWe97vQTH6agDD95EjXIDfpwO
-         CpYmno7drtTp6uoY5eKLymzdG48KZRJvVdFaCWDPZvrTgIpNtwnZly5wHFA5ZFDOJm
-         1dKpDc8jgBUBqqAaxRrO5GhP4X43A3FpmXHNtCb19N89hxEBtZ9IDzbOEe2eb4VF7u
-         haCyNrqVAIPjCPT9Q64Kp87XYMoBSwoAbtWgWn9hZI6vT1LYc9wsGTLZuLWKW7W1Uo
-         ojPEyu7X0j0gw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 194EF405BE; Mon, 30 Jan 2023 15:08:49 -0300 (-03)
-Date:   Mon, 30 Jan 2023 15:08:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>, yhs@fb.com, ast@kernel.org,
-        olsajiri@gmail.com, eddyz87@gmail.com, sinquersw@gmail.com,
-        timo@incline.eu, daniel@iogearbox.net, andrii@kernel.org,
-        songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
-        martin.lau@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 dwarves 5/5] btf_encoder: delay function addition to
- check for function prototype inconsistencies
-Message-ID: <Y9gHsXhe1ygOqI8t@kernel.org>
-References: <1675088985-20300-1-git-send-email-alan.maguire@oracle.com>
- <1675088985-20300-6-git-send-email-alan.maguire@oracle.com>
- <20230130172037.vbe55faqcrkkxbge@macbook-pro-6.dhcp.thefacebook.com>
+        with ESMTP id S237431AbjA3STm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 13:19:42 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2014C38B60
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 10:19:41 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id i17so5326360ils.11
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 10:19:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CAFjNasnKQN5LUWGdN7AtadW817QQm7F4FvMhjCHwb0=;
+        b=RfZdv5XTG+8uD8qkRBhdwNBF0cK8e8hji8B33Gj95Q6avMrpQVnYUAuUvQ6T7IR8+p
+         MYCxMzFUWeWWkyawSiU0lbQwLFknwHfAQy3hsCbXbZdWrjCG2Tc3YHS7D6WPN1oWkG0f
+         eFMyiUb05xok2QkhaK8jh7WLReqLeYSqv2qpU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CAFjNasnKQN5LUWGdN7AtadW817QQm7F4FvMhjCHwb0=;
+        b=1kXdvQO+oNxL46KfmeMUbUE90M6VzbBpo2eqOp2XFyB6wknogucwB0E9KHFnWVTBHo
+         3NmqSIWxJ9cuni5Di4ELc72H5xq0FjpBbQAS4FSifp5m93EBWXw/AV5CQnf0JLdkasb/
+         Nmh+7vmi+MQIZn4zPsOfYJGZNwYMikbZFp2BCB7/d6kqHcZBPkNyHxs2NeJhHGB2XPvE
+         xwovsZ7aC54Z5aOXT2F58Dmj0Z1GIIjIV9BTV7AmgXYbfzqyCdjZAgIzwemv2qShKz3d
+         YI46RNjkVp3nD0bogJQiwLa/qAKKgOBMgF41l4/GLIYEOZJSMVfguGK5cZinIn7Sz0FI
+         oDqA==
+X-Gm-Message-State: AO0yUKUWmfgkj0kmYpKZkXPxWLtMMKsnJudiBnOzG9zXRr/bVcOUSrjP
+        PDl3KKqUxu+oe0OwYrkKseNYGg==
+X-Google-Smtp-Source: AK7set+mwFjhaqPt63RqulQxBusxgMUOOgqwMk/p2L94uGQONgxdBYrhcYQqNFbg7qLSnkSytLx+CQ==
+X-Received: by 2002:a05:6e02:1541:b0:310:c510:780c with SMTP id j1-20020a056e02154100b00310c510780cmr12382570ilu.11.1675102780494;
+        Mon, 30 Jan 2023 10:19:40 -0800 (PST)
+Received: from ravnica.bld.corp.google.com ([2620:15c:183:200:fc8a:dd2f:5914:df14])
+        by smtp.gmail.com with ESMTPSA id o16-20020a056e02115000b002f139ba4135sm4189801ill.86.2023.01.30.10.19.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jan 2023 10:19:40 -0800 (PST)
+From:   Ross Zwisler <zwisler@chromium.org>
+X-Google-Original-From: Ross Zwisler <zwisler@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ross Zwisler <zwisler@google.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Tobin C. Harding" <me@tobin.cc>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>, Huang Rui <ray.huang@amd.com>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Wang <jasowang@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Todd E Brandt <todd.e.brandt@linux.intel.com>,
+        Tycho Andersen <tycho@tycho.pizza>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, kvm@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: [PATCH 0/9] use canonical ftrace path whenever possible
+Date:   Mon, 30 Jan 2023 11:19:06 -0700
+Message-Id: <20230130181915.1113313-1-zwisler@google.com>
+X-Mailer: git-send-email 2.39.1.456.gfc5497dd1b-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230130172037.vbe55faqcrkkxbge@macbook-pro-6.dhcp.thefacebook.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,159 +96,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jan 30, 2023 at 09:20:37AM -0800, Alexei Starovoitov escreveu:
-> On Mon, Jan 30, 2023 at 02:29:45PM +0000, Alan Maguire wrote:
-> > There are multiple sources of inconsistency that can result in
-> > functions of the same name having multiple prototypes:
-> > 
-> > - multiple static functions in different CUs share the same name
-> > - static and external functions share the same name
-> > 
-> > Here we attempt to catch such cases by finding inconsistencies
-> > across CUs using the save/compare/merge mechanisms that were
-> > previously introduced to handle optimized-out parameters,
-> > using it for all functions.
-> > 
-> > For two instances of a function to be considered consistent:
-> > 
-> > - number of parameters must match
-> > - parameter names must match
-> > 
-> > The latter is a less strong method than a full type
-> > comparison but suffices to match functions.
-> > 
-> > With these changes, we see 278 functions removed due to
-> > protoype inconsistency.  For example, wakeup_show()
-> > has two distinct prototypes:
-> > 
-> > static ssize_t wakeup_show(struct kobject *kobj,
-> >                            struct kobj_attribute *attr, char *buf)
-> > (from kernel/irq/irqdesc.c)
-> > 
-> > static ssize_t wakeup_show(struct device *dev, struct device_attribute *attr,
-> >                            char *buf)
-> > (from drivers/base/power/sysfs.c)
-> > 
-> > In some other cases, the parameter comparisons weed out additional
-> > inconsistencies in "."-suffixed functions across CUs.
-> > 
-> > We also see a large number of functions eliminated due to
-> > optimized-out parameters; 2542 functions are eliminated for this
-> > reason, both "."-suffixed (1007) and otherwise (1535).
-> 
-> imo it's a good thing.
-> 
-> > Because the save/compare/merge process occurs for all functions
-> > it is important to assess performance effects.  In addition,
-> > prior to these changes the number of functions ultimately
-> > represented in BTF was non-deterministic when pahole was
-> > run with multiple threads.  This was due to the fact that
-> > functions were marked as generated on a per-encoder basis
-> > when first added, and as such the same function could
-> > be added multiple times for different encoders, and if they
-> > encountered inconsistent function prototypes, deduplication
-> > could leave multiple entries in place for the same name.
-> > When run in a single thread, the "generated" state associated
-> > with the name would prevent this.
-> > 
-> > Here we assess both BTF encoding performance and determinism
-> > of the function representation in baseline compared to with
-> > these changes.  Determinism is assessed by counting the
-> > number of functions in BTF.  Comparisons are done for 1,
-> > 4 and 8 threads.
-> > 
-> > Baseline
-> > 
-> > $ time LLVM_OBJCOPY=objcopy pahole -J vmlinux
-> > 
-> > real	0m18.160s
-> > user	0m17.179s
-> > sys	0m0.757s
-> > 
-> > $ grep " FUNC " /tmp/vmlinux.btf.base |awk '{print $3}'|sort|wc -l
-> > 51150
-> > $ grep " FUNC " /tmp/vmlinux.btf.base |awk '{print $3}'|sort|uniq|wc -l
-> > 51150
-> > 
-> > $ time LLVM_OBJCOPY=objcopy pahole -J -j4 vmlinux
-> > 
-> > real	0m8.078s
-> > user	0m17.978s
-> > sys	0m0.732s
-> > 
-> > $ grep " FUNC " /tmp/vmlinux.btf.base |awk '{print $3}'|sort|wc -l
-> > 51592
-> > $ grep " FUNC " /tmp/vmlinux.btf.base |awk '{print $3}'|sort|uniq|wc -l
-> > 51150
-> > 
-> > $ time LLVM_OBJCOPY=objcopy pahole -J -j8 vmlinux
-> > 
-> > real	0m7.075s
-> > user	0m19.010s
-> > sys	0m0.587s
-> > 
-> > $ grep " FUNC " /tmp/vmlinux.btf.base |awk '{print $3}'|sort|wc -l
-> > 51683
-> > $ grep " FUNC " /tmp/vmlinux.btf.base |awk '{print $3}'|sort|uniq|wc -l
-> > 51150
-> 
-> Ouch. I didn't realize it is so random currently.
-> 
-> > Test:
-> > 
-> > $ time LLVM_OBJCOPY=objcopy pahole -J  vmlinux
-> > 
-> > real	0m19.039s
-> > user	0m17.617s
-> > sys	0m1.419s
-> > $ bpftool btf dump file vmlinux | grep ' FUNC ' |sort|wc -l
-> > 49871
-> > $ bpftool btf dump file vmlinux | grep ' FUNC ' |sort|uniq|wc -l
-> > 49871
-> > 
-> > $ time LLVM_OBJCOPY=objcopy pahole -J -j4 vmlinux
-> > 
-> > real	0m8.482s
-> > user	0m18.233s
-> > sys	0m2.412s
-> > $ bpftool btf dump file vmlinux | grep ' FUNC ' |sort|wc -l
-> > 49871
-> > $ bpftool btf dump file vmlinux | grep ' FUNC ' |sort|uniq|wc -l
-> > 49871
-> > 
-> > $ time LLVM_OBJCOPY=objcopy pahole -J -j8 vmlinux
-> > 
-> > real	0m7.614s
-> > user	0m19.384s
-> > sys	0m3.739s
-> > $ bpftool btf dump file vmlinux | grep ' FUNC ' |sort|wc -l
-> > 49871
-> > $ bpftool btf dump file vmlinux | grep ' FUNC ' |sort|uniq|wc -l
-> > 
-> > So there is a small cost in performance, but we improve determinism
-> > and the consistency of representation.
-> 
-> This is a great fix.
-> 
-> I'm not an expert in this code base, but patches look good to me.
-> Thank you for fixing it.
+The canonical location for the tracefs filesystem is at /sys/kernel/tracing.
 
-And all the description of the problem and of the solution, limitations,
-together with a summary of the review comments, its a pleasure to
-process a patch series like this one :-)
+But, from Documentation/trace/ftrace.rst:
 
-Doing that now and performing the usual tests,
+  Before 4.1, all ftrace tracing control files were within the debugfs
+  file system, which is typically located at /sys/kernel/debug/tracing.
+  For backward compatibility, when mounting the debugfs file system,
+  the tracefs file system will be automatically mounted at:
 
-Thanks,
+  /sys/kernel/debug/tracing
 
-- Arnaldo
- 
-> > For now it is better to have an incomplete representation
-> > that more accurately reflects the actual function parameters
-> > used, removing inconsistencies that could otherwise do harm.
-> 
-> +1
+There are many places where this older debugfs path is still used in
+code comments, selftests, examples and tools, so let's update them to
+avoid confusion.
+
+I've broken up the series as best I could by maintainer or directory,
+and I've only sent people the patches that I think they care about to
+avoid spamming everyone.
+
+Ross Zwisler (9):
+  tracing: always use canonical ftrace path
+  bpf: use canonical ftrace path
+  selftests/bpf: use canonical ftrace path
+  perf docs: use canonical ftrace path
+  tools/power: use canonical ftrace path
+  selftests: use canonical ftrace path
+  tools/virtio: use canonical ftrace path
+  leaking_addresses: also skip canonical ftrace path
+  tools/kvm_stat: use canonical ftrace path
+
+ include/linux/kernel.h                        |  2 +-
+ include/linux/tracepoint.h                    |  4 ++--
+ include/uapi/linux/bpf.h                      |  8 ++++----
+ kernel/trace/Kconfig                          | 20 +++++++++----------
+ kernel/trace/kprobe_event_gen_test.c          |  2 +-
+ kernel/trace/ring_buffer.c                    |  2 +-
+ kernel/trace/synth_event_gen_test.c           |  2 +-
+ kernel/trace/trace.c                          |  2 +-
+ samples/bpf/cpustat_kern.c                    |  4 ++--
+ samples/bpf/hbm.c                             |  4 ++--
+ samples/bpf/ibumad_kern.c                     |  4 ++--
+ samples/bpf/lwt_len_hist.sh                   |  2 +-
+ samples/bpf/offwaketime_kern.c                |  2 +-
+ samples/bpf/task_fd_query_user.c              |  4 ++--
+ samples/bpf/test_lwt_bpf.sh                   |  2 +-
+ samples/bpf/test_overhead_tp_kern.c           |  4 ++--
+ samples/user_events/example.c                 |  4 ++--
+ scripts/leaking_addresses.pl                  |  1 +
+ scripts/tracing/draw_functrace.py             |  6 +++---
+ scripts/tracing/ftrace-bisect.sh              |  4 ++--
+ tools/include/uapi/linux/bpf.h                |  8 ++++----
+ tools/kvm/kvm_stat/kvm_stat                   |  2 +-
+ tools/lib/api/fs/tracing_path.c               |  4 ++--
+ tools/lib/traceevent/event-parse.c            |  8 ++++----
+ tools/perf/Documentation/perf-list.txt        |  2 +-
+ tools/perf/Documentation/perf-script-perl.txt |  2 +-
+ .../perf/Documentation/perf-script-python.txt |  4 ++--
+ tools/power/pm-graph/sleepgraph.py            |  4 ++--
+ .../x86/amd_pstate_tracer/amd_pstate_trace.py |  4 ++--
+ .../intel_pstate_tracer.py                    | 10 +++++-----
+ .../selftests/bpf/get_cgroup_id_user.c        |  2 +-
+ .../bpf/prog_tests/kprobe_multi_test.c        |  2 +-
+ .../bpf/prog_tests/task_fd_query_tp.c         |  2 +-
+ .../bpf/prog_tests/tp_attach_query.c          |  2 +-
+ .../selftests/bpf/prog_tests/trace_printk.c   |  2 +-
+ .../selftests/bpf/prog_tests/trace_vprintk.c  |  2 +-
+ .../selftests/bpf/progs/test_stacktrace_map.c |  2 +-
+ .../selftests/bpf/progs/test_tracepoint.c     |  2 +-
+ tools/testing/selftests/bpf/test_ftrace.sh    |  2 +-
+ tools/testing/selftests/bpf/test_tunnel.sh    |  8 ++++----
+ tools/testing/selftests/bpf/trace_helpers.c   |  4 ++--
+ .../testing/selftests/user_events/dyn_test.c  |  2 +-
+ .../selftests/user_events/ftrace_test.c       | 10 +++++-----
+ .../testing/selftests/user_events/perf_test.c |  8 ++++----
+ tools/testing/selftests/vm/protection_keys.c  |  4 ++--
+ tools/tracing/latency/latency-collector.c     |  2 +-
+ tools/virtio/virtio-trace/README              |  2 +-
+ tools/virtio/virtio-trace/trace-agent.c       |  2 +-
+ 48 files changed, 96 insertions(+), 95 deletions(-)
 
 -- 
+2.39.1.456.gfc5497dd1b-goog
 
-- Arnaldo
