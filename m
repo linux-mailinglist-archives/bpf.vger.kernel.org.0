@@ -2,129 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC852681C41
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 22:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF653681C65
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 22:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbjA3VEg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 16:04:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
+        id S229847AbjA3VKy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 16:10:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbjA3VE1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 16:04:27 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E4947EDB;
-        Mon, 30 Jan 2023 13:04:08 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id m2so35242733ejb.8;
-        Mon, 30 Jan 2023 13:04:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7PgfiDJfXr3snHFNvpVEuL8JdLQTDd0vNID/MExBMQw=;
-        b=JymqcdzWTjmwsGWSJ6/Q8tMC8BCwZuJxzPG7pzdb4uIEnKd/Nqag4dBJCYeCTHxtPl
-         Sq4aBvKbZHpQ1YLTymviHFcLlgYAsT05LfOLwOH8eJybmdHBk7Ys7nq1E7mCjlUeJcpE
-         759JFskqVZwYuE2zwAV8XjEOIbKqb1BVASQUKWy+zWvYPkzzakx9PoIGxQOBZXQLcJrF
-         4fI3gO5cVFhL/+KjydxjqvYUvYxfkSfUjMwizRx7142kOtuSLnTfAUOLexRlmLkO2Bw5
-         oxk0/8xNIqpqchG+2nwxUp6rfD9dtbgOMYKD6Id/xqA5E0EcZu0cs+B2vuGNG63yCGCP
-         KJ2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7PgfiDJfXr3snHFNvpVEuL8JdLQTDd0vNID/MExBMQw=;
-        b=6VKESxgncXr4y2ddwy7Dl6/pM1ynpf9xCTGqDBoRZYMHnBbfSsWpgUobZCWve6fXlF
-         EtBQeHeSUYuQ+R4BHI2h0W6OBWm6XvbRtUMQBYLYo/p6+AoHTwvGHqvZnCs6s8RTyVyH
-         5/19hMYP3gdWxzreOrUDT5MIMglTYnpL8Djs55R6Rd6Wbc7tIBh+sfQSzwbAeSRKILyE
-         xGJkb36zlqd0K+fLRnusZamkCN235hIYcWfKogTHiFwwqSJulYDc+LvFZupRREME00ij
-         jarLBWf4AscwYe5taPNk4nxSr/HeNSFigVExRducomm+XMnEupFJAltEnWfgv01Gf6OE
-         csWg==
-X-Gm-Message-State: AO0yUKXVGj31XBgi7mY6QKmsCLk3Hc9I9Tebtqmi7PsQM0tdbgoPNCga
-        Qw7rrUIx6PXHjeP7hEzjkmOAsQCysyqvsqbazKw=
-X-Google-Smtp-Source: AK7set/142GEEA0/4909juyZJfVRjmlJ6/58BsZBMmdfRBeZKiCN/6AL8iJ53MG8sQb1I9hTgaHGJcltO1NuoZzoazs=
-X-Received: by 2002:a17:906:b2d7:b0:883:8fdc:fbba with SMTP id
- cf23-20020a170906b2d700b008838fdcfbbamr1882584ejb.215.1675112646635; Mon, 30
- Jan 2023 13:04:06 -0800 (PST)
+        with ESMTP id S230433AbjA3VKv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 16:10:51 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EFB1CADF;
+        Mon, 30 Jan 2023 13:10:50 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5169C6122C;
+        Mon, 30 Jan 2023 21:10:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D8C4C433D2;
+        Mon, 30 Jan 2023 21:10:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675113049;
+        bh=DnHr1LbMcoGKDw/UbF+UJ3q/uIAGq2Km3uH30O8+GYw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=eOe+m0dD6nNDHlwAZASSqvRRwH+M55+EUNWE8dTSk4sUmMqeBO/fkU3lxWbC7nmvN
+         kgClo8Xp3sEfPJlZ5mtG+ThwvpJwVj6+D3RA4r8KNKohSk5H6eUH71sRrbJLt1OFC/
+         KfC5Qnn+FBzaDH6EhbGghsmIPtWcUgk8oQA0Dxx18SbQdeNF0O5rFPvv0NJgEAiNXP
+         +ox09edXaF+5fftqcJNVyuhxs2xBiNQFRUGj065xeDylbF1Oi9LwUyYKm7LOQAZR2j
+         wbzLnd1jycond8VRuQNVZqtap7wZ1R/mDGobiIawlt3QOEWaByyrRGltcZMqciTEuz
+         I1MQHQgATe3/w==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 4A55C97272C; Mon, 30 Jan 2023 22:10:45 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [RFC] bpf: add bpf_link support for BPF_NETFILTER programs
+In-Reply-To: <20230130180115.GB12902@breakpoint.cc>
+References: <20230130150432.24924-1-fw@strlen.de> <87zg9zx6ro.fsf@toke.dk>
+ <20230130180115.GB12902@breakpoint.cc>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 30 Jan 2023 22:10:45 +0100
+Message-ID: <87o7qfwwx6.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20230130183549.85471-1-mathieu.desnoyers@efficios.com>
-In-Reply-To: <20230130183549.85471-1-mathieu.desnoyers@efficios.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 30 Jan 2023 13:03:55 -0800
-Message-ID: <CAADnVQLve5je3GKesCjn5HhuxgOe2u1OX7GQnx-58dsuUFWbZQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] selftests: bpf: Fix incorrect kernel headers
- search path
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        bpf <bpf@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 10:36 AM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> Use $(KHDR_INCLUDES) as lookup path for kernel headers. This prevents
-> building against kernel headers from the build environment in scenarios
-> where kernel headers are installed into a specific output directory
-> (O=...).
->
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-> Cc: <bpf@vger.kernel.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: linux-kselftest@vger.kernel.org
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Mykola Lysenko <mykolal@fb.com>
-> Cc: <stable@vger.kernel.org>    [5.18+]
-> ---
->  tools/testing/selftests/bpf/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index c22c43bbee19..6998c816afef 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -327,7 +327,7 @@ endif
->  CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
->  BPF_CFLAGS = -g -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)          \
->              -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)                   \
-> -            -I$(abspath $(OUTPUT)/../usr/include)
-> +            $(KHDR_INCLUDES)
+Florian Westphal <fw@strlen.de> writes:
 
-It breaks the build:
-https://github.com/kernel-patches/bpf/actions/runs/4047075637/jobs/6960655246
+> Toke H=C3=B8iland-J=C3=B8rgensen <toke@kernel.org> wrote:
+>> > Is BPF_LINK the right place?  Hook gets removed automatically if the c=
+alling program
+>> > exits, afaict this is intended.
+>>=20
+>> Yes, this is indeed intended for bpf_link. This plays well with
+>> applications that use the API and stick around (because things get
+>> cleaned up after them automatically even if they crash, say), but it
+>> doesn't work so well for programs that don't (which, notably, includes
+>> command line utilities like 'nft').
+>
+> Right, but I did not want to create a dependency on nfnetlink or
+> nftables netlink right from the start.
 
-make[1]: *** No rule to make target '/linux/bpf.h', needed by
-'/tmp/work/bpf/bpf/tools/testing/selftests/bpf/bpf-helpers.rst'. Stop.
+Dependency how? For userspace consumers, you mean?
+
+>> For XDP and TC users can choose between bpf_link and netlink for
+>> attachment and get one of the two semantics (goes away on close or stays
+>> put). Not sure if it would make sense to do the same for nftables?
+>
+> For nftables I suspect that, if nft can emit bpf, it would make sense to
+> pass the bpf descriptor together with nftables netlink, i.e. along with
+> the normal netlink data.
+>
+> nftables kernel side would then know to use the bpf prog for the
+> datapath instead of the interpreter and could even fallback to
+> interpreter.
+>
+> But for the raw hook use case that Alexei and Daniel preferred (cf.
+> initial proposal to call bpf progs from nf_tables interpreter) I think
+> that there should be no nftables dependency.
+>
+> I could add a new nfnetlink subtype for nf-bpf if bpf_link is not
+> appropriate as an alternative.
+
+I don't think there's anything wrong with bpf_link as an initial
+interface at least. I just think it should (eventually) be possible to
+load a BPF-based firewall from the command line via this interface,
+without having to resort to pinning. There was some talk about adding
+this as a mode to the bpf_link interface itself at some point, but that
+never materialised (probably because the need is not great since the
+netlink interface serves this purpose for TC/XDP).
+
+>> > Things like nf_hook_state->in (net_device) could then be exposed via
+>> > kfuncs.
+>>=20
+>> Right, so like:
+>>=20
+>> state =3D bpf_nf_get_hook_state(ctx); ?
+>>=20
+>> Sounds OK to me.
+>
+> Yes, something like that.  Downside is that the nf_hook_state struct
+> is no longer bound by any abi contract, but as I understood it thats
+> fine.
+
+Well, there's an ongoing discussion about what, if any, should be the
+expectations around kfunc stability:
+
+https://lore.kernel.org/r/20230117212731.442859-1-toke@redhat.com
+
+I certainly don't think it's problematic for a subsystem to give *more*
+stability guarantees than BPF core. I mean, if you want the kfunc
+interface to be stable you just... don't change it? :)
+
+>> > nf_hook_run_bpf() (c-function that creates the program context and
+>> > calls the real bpf prog) would be "updated" to use the bpf dispatcher =
+to
+>> > avoid the indirect call overhead.
+>>=20
+>> What 'bpf dispatcher' are you referring to here? We have way too many
+>> things with that name :P
+>
+> I meant 'DEFINE_BPF_DISPATCHER(nf_user_progs);'
+
+Ah, right. Yeah, that can definitely be added later!
+
+-Toke
