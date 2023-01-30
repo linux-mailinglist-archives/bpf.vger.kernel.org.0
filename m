@@ -2,135 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00BF8680696
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 08:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A1A6807EF
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 09:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbjA3HkL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 02:40:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
+        id S230024AbjA3Izx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 03:55:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbjA3HkK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 02:40:10 -0500
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F4A919F09;
-        Sun, 29 Jan 2023 23:40:07 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VaPc4LJ_1675064403;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VaPc4LJ_1675064403)
-          by smtp.aliyun-inc.com;
-          Mon, 30 Jan 2023 15:40:04 +0800
-Message-ID: <1675064346.4139252-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH] vhost-net: support VIRTIO_F_RING_RESET
-Date:   Mon, 30 Jan 2023 15:39:06 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, kvm@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hengqi@linux.alibaba.com,
-        Kangjie Xu <kangjie.xu@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-References: <20220825085610.80315-1-kangjie.xu@linux.alibaba.com>
- <10630d99-e0bd-c067-8766-19266b38d2fe@redhat.com>
-In-Reply-To: <10630d99-e0bd-c067-8766-19266b38d2fe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229888AbjA3Izu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 03:55:50 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEF3EF93
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 00:55:49 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1C3A3B80EBC
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 08:55:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C039C433EF;
+        Mon, 30 Jan 2023 08:55:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675068946;
+        bh=x9RCHyu44d8tNc+crndSMu6mAgLs001/tjW7KudogyY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=N9NFwAi7QMkeWw2fTbXxsCm6BiAS1flOmPVspUguBYBnhiVN1Elhx8+jJygzrUzl3
+         BXw40vJdyAp7M5eybYWm9UEtnpu0t+klg6b907yfxlwl0Uv6DgXpXruAssoOMpIso7
+         zdEtZFRb/PIl443fFJ0cOmgr5og1Y5dBmbbqa1vVYoD5I5p5EWAffY3QZFXo1Hw5Da
+         PLBIgZujHdJt/TcJYQlU+xTaSDAhg09ZGV93I+PMKzj/emNdBPMlvwzK/Um2u5Qxab
+         mdnEAyVi/aiyQXiLTbTIzWE3oA6FaCFfXrQFsH1tC4vwwlWIPqCnXu5mO0rIrL/VLP
+         ZmoWvzfa3AsCQ==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, David Vernet <void@manifault.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Artem Savkov <asavkov@redhat.com>
+Subject: [PATCHv2 bpf-next 0/7] bpf: Move kernel test kfuncs into bpf_testmod
+Date:   Mon, 30 Jan 2023 09:55:33 +0100
+Message-Id: <20230130085540.410638-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.39.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 5 Sep 2022 16:32:19 +0800, Jason Wang <jasowang@redhat.com> wrote:
->
-> =E5=9C=A8 2022/8/25 16:56, Kangjie Xu =E5=86=99=E9=81=93:
-> > Add VIRTIO_F_RING_RESET, which indicates that the driver can reset a
-> > queue individually.
-> >
-> > VIRTIO_F_RING_RESET feature is added to virtio-spec 1.2. The relevant
-> > information is in
-> >      oasis-tcs/virtio-spec#124
-> >      oasis-tcs/virtio-spec#139
-> >
-> > The implementation only adds the feature bit in supported features. It
-> > does not require any other changes because we reuse the existing vhost
-> > protocol.
-> >
-> > The virtqueue reset process can be concluded as two parts:
-> > 1. The driver can reset a virtqueue. When it is triggered, we use the
-> > set_backend to disable the virtqueue.
-> > 2. After the virtqueue is disabled, the driver may optionally re-enable
-> > it. The process is basically similar to when the device is started,
-> > except that the restart process does not need to set features and set
-> > mem table since they do not change. QEMU will send messages containing
-> > size, base, addr, kickfd and callfd of the virtqueue in order.
-> > Specifically, the host kernel will receive these messages in order:
-> >      a. VHOST_SET_VRING_NUM
-> >      b. VHOST_SET_VRING_BASE
-> >      c. VHOST_SET_VRING_ADDR
-> >      d. VHOST_SET_VRING_KICK
-> >      e. VHOST_SET_VRING_CALL
-> >      f. VHOST_NET_SET_BACKEND
-> > Finally, after we use set_backend to attach the virtqueue, the virtqueue
-> > will be enabled and start to work.
-> >
-> > Signed-off-by: Kangjie Xu <kangjie.xu@linux.alibaba.com>
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->
->
-> Acked-by: Jason Wang <jasowang@redhat.com>
+hi,
+I noticed several times in discussions that we should move test kfuncs
+into kernel module, now perhaps even more pressing with all the kfunc
+effort. This patchset moves all the test kfuncs into bpf_testmod.
 
-@mst
+I added bpf_testmod/bpf_testmod_kfunc.h header that is shared between
+bpf_testmod kernel module and BPF programs, which brings some difficulties
+with __ksym define. But I'm not sure having separate headers for BPF
+programs and for kernel module would be better.
 
-Do we miss this?
+This patchset also needs:
+  74bc3a5acc82 bpf: Add missing btf_put to register_btf_id_dtor_kfuncs
+which is only in bpf/master now.
 
-Thanks.
+v2 changes:
+  - add 74bc3a5acc82 into bpf-next/master CI, so the test would pass
+    https://github.com/kernel-patches/vmtest/pull/192
+  - remove extra externs [Artem]
+  - using un/load_bpf_testmod in other tests
+  - rebased
 
->
->
-> > ---
-> >
-> > Test environment and method:
-> >      Host: 5.19.0-rc3
-> >      Qemu: QEMU emulator version 7.0.50 (With vq rset support)
-> >      Guest: 5.19.0-rc3 (With vq reset support)
-> >      Test Cmd: ethtool -g eth1; ethtool -G eth1 rx $1 tx $2; ethtool -g=
- eth1;
-> >
-> >      The drvier can resize the virtio queue, then virtio queue reset fu=
-nction should
-> >      be triggered.
-> >
-> >      The default is split mode, modify Qemu virtio-net to add PACKED fe=
-ature to
-> >      test packed mode.
-> >
-> > Guest Kernel Patch:
-> >      https://lore.kernel.org/bpf/20220801063902.129329-1-xuanzhuo@linux=
-.alibaba.com/
-> >
-> > QEMU Patch:
-> >      https://lore.kernel.org/qemu-devel/cover.1661414345.git.kangjie.xu=
-@linux.alibaba.com/
-> >
-> > Looking forward to your review and comments. Thanks.
-> >
-> >   drivers/vhost/net.c | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-> > index 68e4ecd1cc0e..8a34928d4fef 100644
-> > --- a/drivers/vhost/net.c
-> > +++ b/drivers/vhost/net.c
-> > @@ -73,7 +73,8 @@ enum {
-> >   	VHOST_NET_FEATURES =3D VHOST_FEATURES |
-> >   			 (1ULL << VHOST_NET_F_VIRTIO_NET_HDR) |
-> >   			 (1ULL << VIRTIO_NET_F_MRG_RXBUF) |
-> > -			 (1ULL << VIRTIO_F_ACCESS_PLATFORM)
-> > +			 (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
-> > +			 (1ULL << VIRTIO_F_RING_RESET)
-> >   };
-> >
-> >   enum {
->
+thanks,
+jirka
+
+
+---
+Jiri Olsa (7):
+      selftests/bpf: Move kfunc exports to bpf_testmod/bpf_testmod_kfunc.h
+      selftests/bpf: Move test_progs helpers to testing_helpers object
+      selftests/bpf: Do not unload bpf_testmod in load_bpf_testmod
+      selftests/bpf: Use un/load_bpf_testmod functions in tests
+      selftests/bpf: Load bpf_testmod for verifier test
+      selftests/bpf: Allow to use kfunc from testmod.ko in test_verifier
+      bpf: Move kernel test kfuncs to bpf_testmod
+
+ net/bpf/test_run.c                                          | 262 +------------------------------------------------------------------------------------------
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c       | 198 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h |  92 ++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c       |  34 ++----------
+ tools/testing/selftests/bpf/prog_tests/module_attach.c      |  12 ++---
+ tools/testing/selftests/bpf/progs/cb_refs.c                 |   4 +-
+ tools/testing/selftests/bpf/progs/jit_probe_mem.c           |   4 +-
+ tools/testing/selftests/bpf/progs/kfunc_call_destructive.c  |   3 +-
+ tools/testing/selftests/bpf/progs/kfunc_call_fail.c         |   9 +---
+ tools/testing/selftests/bpf/progs/kfunc_call_race.c         |   3 +-
+ tools/testing/selftests/bpf/progs/kfunc_call_test.c         |  16 +-----
+ tools/testing/selftests/bpf/progs/kfunc_call_test_subprog.c |  17 ++++--
+ tools/testing/selftests/bpf/progs/map_kptr.c                |   6 +--
+ tools/testing/selftests/bpf/progs/map_kptr_fail.c           |   5 +-
+ tools/testing/selftests/bpf/test_progs.c                    |  76 ++++-----------------------
+ tools/testing/selftests/bpf/test_progs.h                    |   1 -
+ tools/testing/selftests/bpf/test_verifier.c                 | 170 +++++++++++++++++++++++++++++++++++++++++++++++++++--------
+ tools/testing/selftests/bpf/testing_helpers.c               |  61 +++++++++++++++++++++
+ tools/testing/selftests/bpf/testing_helpers.h               |  10 ++++
+ 19 files changed, 549 insertions(+), 434 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
