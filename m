@@ -2,159 +2,333 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2F56813EA
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 15:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDA0681408
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 16:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236193AbjA3O6R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 09:58:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
+        id S236875AbjA3PE4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 10:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237907AbjA3O6P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 09:58:15 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FB517CEE
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 06:58:14 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id me3so32480763ejb.7
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 06:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HiGrD1dyHCsxNZSafiiQouritp32iJwUHx6VOOxAvoU=;
-        b=6TyF+8emNxzziWsWUGWqM4UZYfylE0d3H0jPQQo9Ldg+ZbpryIRFo9jTjTrSyX2A9c
-         eXwx+jB+Z2Ytwg4EvHwJD66FjOVkG04QYF/AmsuuoXcwHa3yQThODcqd11Ga2xMyJGgz
-         xsPwN2A4qKINz5jWIdfqUfauE+mjjMVHejGYpVXXf905/B92aW5qo1w6fz5nk+YawpEN
-         KbkvniIuSjt3o+HNjxabCsZrdoc9/0kyj2EDLvqsvix61rTMQ6BaFSuIulHF7ORRNjDI
-         TRb8j20IoT7NIlnwSw2hhdkY7PyGFzpREQvSnoBMNJXhSDqRjbIvsu7yqvlAJU7qe+lq
-         g5JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HiGrD1dyHCsxNZSafiiQouritp32iJwUHx6VOOxAvoU=;
-        b=ied2fH7r4ovfDyHJTk7LcTjbiAedhTwZKtqUsNmxO3TASMNScRcXyB7YMdb77jXgIW
-         gaQleuBu1xe7bBiX9GXSAFmbRkbfDPUjq93PwHZbXusddASgkOdoriQZSgEgnTE2CHhR
-         H+jP6RCcxELX/3cGDbKu/Dz1SQUgE5psGE9+NnyNvPJyQ3zgKCoAjrCNDpVOtgGwskXX
-         LVgYvHGv3Tip+vsWFqDgg7MZ07gi6PCWkTmQfHFZP0HTC8YtiEcpvK61NucxXyn+Nqfe
-         dodfQjIjg3Fj6s/jMcLKkVEL7R06ARVZ7inaESWhm/BdGcUrm+RuSj6+IS8z7jspZrb2
-         vaMA==
-X-Gm-Message-State: AO0yUKVhJ8yHwlAxT4vv0C6ETgdiGMqfaXNQvj7cDtLr7BlZ2EVHr7Yk
-        HNhWaYI3jFTl2tFL9BkBFxgHhA==
-X-Google-Smtp-Source: AK7set9jWVEhwPAGmMP1q6mxH37JVc79+diom5D7Nq0GQOgWQNwmTt77Z+rZGJCp4VHPL8QeLHwHZg==
-X-Received: by 2002:a17:906:4999:b0:87d:f1f9:a2fb with SMTP id p25-20020a170906499900b0087df1f9a2fbmr11258498eju.29.1675090692825;
-        Mon, 30 Jan 2023 06:58:12 -0800 (PST)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id rh16-20020a17090720f000b0084c7029b24dsm7036658ejb.151.2023.01.30.06.58.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jan 2023 06:58:11 -0800 (PST)
-Date:   Mon, 30 Jan 2023 15:58:10 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     John Hickey <jjh@daedalian.us>
-Cc:     anthony.l.nguyen@intel.com,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] ixgbe: Panic during XDP_TX with > 64 CPUs
-Message-ID: <Y9fbAqR+BDhlPb6I@nanopsycho>
-References: <20230128011213.150171-1-jjh@daedalian.us>
+        with ESMTP id S235600AbjA3PEq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 10:04:46 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A9D1814C;
+        Mon, 30 Jan 2023 07:04:45 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1pMVi6-0003mG-S9; Mon, 30 Jan 2023 16:04:42 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     <bpf@vger.kernel.org>
+Cc:     <netfilter-devel@vger.kernel.org>, Florian Westphal <fw@strlen.de>
+Subject: [RFC] bpf: add bpf_link support for BPF_NETFILTER programs
+Date:   Mon, 30 Jan 2023 16:04:32 +0100
+Message-Id: <20230130150432.24924-1-fw@strlen.de>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230128011213.150171-1-jjh@daedalian.us>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sat, Jan 28, 2023 at 02:12:12AM CET, jjh@daedalian.us wrote:
->In commit 'ixgbe: let the xdpdrv work with more than 64 cpus'
->(4fe815850bdc8d4cc94e06fe1de069424a895826), support was added to allow
->XDP programs to run on systems with more than 64 CPUs by locking the
->XDP TX rings and indexing them using cpu % 64 (IXGBE_MAX_XDP_QS).
->
->Upon trying this out patch via the Intel 5.18.6 out of tree driver
->on a system with more than 64 cores, the kernel paniced with an
->array-index-out-of-bounds at the return in ixgbe_determine_xdp_ring in
->ixgbe.h, which means ixgbe_determine_xdp_q_idx was just returning the
->cpu instead of cpu % IXGBE_MAX_XDP_QS.
->
->I think this is how it happens:
->
->Upon loading the first XDP program on a system with more than 64 CPUs,
->ixgbe_xdp_locking_key is incremented in ixgbe_xdp_setup.  However,
->immediately after this, the rings are reconfigured by ixgbe_setup_tc.
->ixgbe_setup_tc calls ixgbe_clear_interrupt_scheme which calls
->ixgbe_free_q_vectors which calls ixgbe_free_q_vector in a loop.
->ixgbe_free_q_vector decrements ixgbe_xdp_locking_key once per call if
->it is non-zero.  Commenting out the decrement in ixgbe_free_q_vector
->stopped my system from panicing.
->
->I suspect to make the original patch work, I would need to load an XDP
->program and then replace it in order to get ixgbe_xdp_locking_key back
->above 0 since ixgbe_setup_tc is only called when transitioning between
->XDP and non-XDP ring configurations, while ixgbe_xdp_locking_key is
->incremented every time ixgbe_xdp_setup is called.
->
->Also, ixgbe_setup_tc can be called via ethtool --set-channels, so this
->becomes another path to decrement ixgbe_xdp_locking_key to 0 on systems
->with greater than 64 CPUs.
->
->For this patch, I have changed static_branch_inc to static_branch_enable
->in ixgbe_setup_xdp.  We aren't counting references and I don't see any
->reason to turn it off, since all the locking appears to be in the XDP_TX
->path, which isn't run if a XDP program isn't loaded.
->
->Signed-off-by: John Hickey <jjh@daedalian.us>
+Doesn't apply, doesn't work -- there is no BPF_NETFILTER program type.
 
-This is missing "Fixes" tag and "net" keyword in "[patch]" subject
-section.
+Sketches the uapi.  Example usage:
 
+	union bpf_attr attr = { };
 
->---
-> drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 3 ---
-> drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 2 +-
-> 2 files changed, 1 insertion(+), 4 deletions(-)
->
->diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
->index f8156fe4b1dc..0ee943db3dc9 100644
->--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
->+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
->@@ -1035,9 +1035,6 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
-> 	adapter->q_vector[v_idx] = NULL;
-> 	__netif_napi_del(&q_vector->napi);
-> 
->-	if (static_key_enabled(&ixgbe_xdp_locking_key))
->-		static_branch_dec(&ixgbe_xdp_locking_key);
->-
-> 	/*
-> 	 * after a call to __netif_napi_del() napi may still be used and
-> 	 * ixgbe_get_stats64() might access the rings on this vector,
->diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->index ab8370c413f3..cd2fb72c67be 100644
->--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->@@ -10283,7 +10283,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
-> 	if (nr_cpu_ids > IXGBE_MAX_XDP_QS * 2)
-> 		return -ENOMEM;
-> 	else if (nr_cpu_ids > IXGBE_MAX_XDP_QS)
->-		static_branch_inc(&ixgbe_xdp_locking_key);
->+		static_branch_enable(&ixgbe_xdp_locking_key);
-> 
-> 	old_prog = xchg(&adapter->xdp_prog, prog);
-> 	need_reset = (!!prog != !!old_prog);
->-- 
->2.37.2
->
+	attr.link_create.prog_fd = progfd;
+	attr.link_create.attach_type = BPF_NETFILTER;
+	attr.link_create.netfilter.pf = PF_INET;
+	attr.link_create.netfilter.hooknum = NF_INET_LOCAL_IN;
+	attr.link_create.netfilter.priority = -128;
+
+	err = bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
+
+... this would attach progfd to ipv4:input hook.
+
+Is BPF_LINK the right place?  Hook gets removed automatically if the calling program
+exits, afaict this is intended.
+
+Should a program running in init_netns be allowed to attach hooks in other netns too?
+
+I could do what BPF_LINK_TYPE_NETNS is doing and fetch net via
+get_net_ns_by_fd(attr->link_create.target_fd);
+
+For the actual BPF_NETFILTER program type I plan to follow what the bpf
+flow dissector is doing, i.e. pretend prototype is
+
+func(struct __sk_buff *skb)
+
+but pass a custom program specific context struct on kernel side.
+Verifier will rewrite accesses as needed.
+
+Things like nf_hook_state->in (net_device) could then be exposed via
+kfuncs.
+
+nf_hook_run_bpf() (c-function that creates the program context and
+calls the real bpf prog) would be "updated" to use the bpf dispatcher to
+avoid the indirect call overhead.
+
+Does that seem ok to you?  I'd ignore the bpf dispatcher for now and
+would work on the needed verifier changes first.
+
+Thanks.
+---
+ include/linux/netfilter.h           |   1 +
+ include/net/netfilter/nf_hook_bpf.h |   3 +
+ include/uapi/linux/bpf.h            |  13 ++++
+ kernel/bpf/syscall.c                |   7 ++
+ net/netfilter/nf_hook_bpf.c         | 114 ++++++++++++++++++++++++++++
+ 5 files changed, 138 insertions(+)
+
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index 6820649a0d46..fbab6e2b463e 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -87,6 +87,7 @@ typedef unsigned int nf_hookfn(void *priv,
+ enum nf_hook_ops_type {
+ 	NF_HOOK_OP_UNDEFINED,
+ 	NF_HOOK_OP_NF_TABLES,
++	NF_HOOK_OP_BPF,
+ };
+ 
+ struct nf_hook_ops {
+diff --git a/include/net/netfilter/nf_hook_bpf.h b/include/net/netfilter/nf_hook_bpf.h
+index d0e865a1843a..7014fd986ad9 100644
+--- a/include/net/netfilter/nf_hook_bpf.h
++++ b/include/net/netfilter/nf_hook_bpf.h
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ struct bpf_dispatcher;
+ struct bpf_prog;
++struct nf_hook_ops;
+ 
+ #if IS_ENABLED(CONFIG_NF_HOOK_BPF)
+ struct bpf_prog *nf_hook_bpf_create(const struct nf_hook_entries *n,
+@@ -21,3 +22,5 @@ nf_hook_bpf_create(const struct nf_hook_entries *n, struct nf_hook_ops * const *
+ 
+ static inline struct bpf_prog *nf_hook_bpf_get_fallback(void) { return NULL; }
+ #endif
++
++int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index bc1a3d232ae4..387944db0228 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -986,6 +986,7 @@ enum bpf_prog_type {
+ 	BPF_PROG_TYPE_LSM,
+ 	BPF_PROG_TYPE_SK_LOOKUP,
+ 	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
++	BPF_PROG_TYPE_NETFILTER,
+ };
+ 
+ enum bpf_attach_type {
+@@ -1033,6 +1034,7 @@ enum bpf_attach_type {
+ 	BPF_PERF_EVENT,
+ 	BPF_TRACE_KPROBE_MULTI,
+ 	BPF_LSM_CGROUP,
++	BPF_NETFILTER,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
+ 
+@@ -1049,6 +1051,7 @@ enum bpf_link_type {
+ 	BPF_LINK_TYPE_PERF_EVENT = 7,
+ 	BPF_LINK_TYPE_KPROBE_MULTI = 8,
+ 	BPF_LINK_TYPE_STRUCT_OPS = 9,
++	BPF_LINK_TYPE_NETFILTER = 10,
+ 
+ 	MAX_BPF_LINK_TYPE,
+ };
+@@ -1538,6 +1541,11 @@ union bpf_attr {
+ 				 */
+ 				__u64		cookie;
+ 			} tracing;
++			struct {
++				__u32		pf;
++				__u32		hooknum;
++				__s32		prio;
++			} netfilter;
+ 		};
+ 	} link_create;
+ 
+@@ -6342,6 +6350,11 @@ struct bpf_link_info {
+ 		struct {
+ 			__u32 ifindex;
+ 		} xdp;
++		struct {
++			__u32 pf;
++			__u32 hooknum;
++			__s32 priority;
++		} netfilter;
+ 	};
+ } __attribute__((aligned(8)));
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a3f969f1aed5..fdfbabdd9222 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -35,6 +35,7 @@
+ #include <linux/rcupdate_trace.h>
+ #include <linux/memcontrol.h>
+ #include <linux/trace_events.h>
++#include <net/netfilter/nf_hook_bpf.h>
+ 
+ #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+ 			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
+@@ -2433,6 +2434,7 @@ static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
+ 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
+ 	case BPF_PROG_TYPE_SOCK_OPS:
+ 	case BPF_PROG_TYPE_EXT: /* extends any prog */
++	case BPF_PROG_TYPE_NETFILTER:
+ 		return true;
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
+ 		/* always unpriv */
+@@ -3452,6 +3454,8 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+ 		return BPF_PROG_TYPE_XDP;
+ 	case BPF_LSM_CGROUP:
+ 		return BPF_PROG_TYPE_LSM;
++	case BPF_NETFILTER:
++		return BPF_PROG_TYPE_NETFILTER;
+ 	default:
+ 		return BPF_PROG_TYPE_UNSPEC;
+ 	}
+@@ -4605,6 +4609,9 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+ 	case BPF_PROG_TYPE_XDP:
+ 		ret = bpf_xdp_link_attach(attr, prog);
+ 		break;
++	case BPF_PROG_TYPE_NETFILTER:
++		ret = bpf_nf_link_attach(attr, prog);
++		break;
+ #endif
+ 	case BPF_PROG_TYPE_PERF_EVENT:
+ 	case BPF_PROG_TYPE_TRACEPOINT:
+diff --git a/net/netfilter/nf_hook_bpf.c b/net/netfilter/nf_hook_bpf.c
+index 55bede6e78cd..922f4c85a7ce 100644
+--- a/net/netfilter/nf_hook_bpf.c
++++ b/net/netfilter/nf_hook_bpf.c
+@@ -648,3 +648,117 @@ void nf_hook_bpf_change_prog_and_release(struct bpf_dispatcher *d, struct bpf_pr
+ 	if (from && from != fallback_nf_hook_slow)
+ 		bpf_prog_put(from);
+ }
++
++static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb, const struct nf_hook_state *s)
++{
++	/* BPF_DISPATCHER_FUNC(nf_hook_base)(state, prog->insnsi, prog->bpf_func); */
++
++	pr_info_ratelimited("%s called at hook %d for pf %d\n", __func__, s->hook, s->pf);
++	return NF_ACCEPT;
++}
++
++struct bpf_nf_link {
++	struct bpf_link link;
++	struct nf_hook_ops hook_ops;
++	struct net *net;
++};
++
++static void bpf_nf_link_release(struct bpf_link *link)
++{
++	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
++
++	nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
++}
++
++static void bpf_nf_link_dealloc(struct bpf_link *link)
++{
++	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
++
++	kfree(nf_link);
++}
++
++static int bpf_nf_link_detach(struct bpf_link *link)
++{
++	bpf_nf_link_release(link);
++	return 0;
++}
++
++static void bpf_nf_link_show_info(const struct bpf_link *link,
++				  struct seq_file *seq)
++{
++	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
++
++	seq_printf(seq, "pf:\t%u\thooknum:\t%u\tprio:\t%d\n",
++		  nf_link->hook_ops.pf, nf_link->hook_ops.hooknum,
++		  nf_link->hook_ops.priority);
++}
++
++static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
++				      struct bpf_link_info *info)
++{
++	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
++
++	info->netfilter.pf = nf_link->hook_ops.pf;
++	info->netfilter.hooknum = nf_link->hook_ops.hooknum;
++	info->netfilter.priority = nf_link->hook_ops.priority;
++
++	return 0;
++}
++
++static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
++			      struct bpf_prog *old_prog)
++{
++	return -EOPNOTSUPP;
++}
++
++static const struct bpf_link_ops bpf_nf_link_lops = {
++	.release = bpf_nf_link_release,
++	.dealloc = bpf_nf_link_dealloc,
++	.detach = bpf_nf_link_detach,
++	.show_fdinfo = bpf_nf_link_show_info,
++	.fill_link_info = bpf_nf_link_fill_link_info,
++	.update_prog = bpf_nf_link_update,
++};
++
++int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
++{
++	struct net *net = current->nsproxy->net_ns;
++	struct bpf_link_primer link_primer;
++	struct bpf_nf_link *link;
++	int err;
++
++	if (attr->link_create.flags)
++		return -EINVAL;
++
++	link = kzalloc(sizeof(*link), GFP_USER);
++	if (!link)
++		return -ENOMEM;
++
++	bpf_link_init(&link->link, BPF_LINK_TYPE_NETFILTER, &bpf_nf_link_lops, prog);
++
++	link->hook_ops.hook = nf_hook_run_bpf;
++	link->hook_ops.hook_ops_type = NF_HOOK_OP_BPF;
++	link->hook_ops.priv = prog;
++
++	link->hook_ops.pf = attr->link_create.netfilter.pf;
++	link->hook_ops.priority = attr->link_create.netfilter.prio;
++	link->hook_ops.hooknum = attr->link_create.netfilter.hooknum;
++
++	link->net = net;
++
++	err = bpf_link_prime(&link->link, &link_primer);
++	if (err)
++		goto out_free;
++
++	err = nf_register_net_hook(net, &link->hook_ops);
++	if (err) {
++		bpf_link_cleanup(&link_primer);
++		goto out_free;
++	}
++
++	return bpf_link_settle(&link_primer);
++
++out_free:
++	kfree(link);
++	return err;
++}
+-- 
+2.39.1
+
