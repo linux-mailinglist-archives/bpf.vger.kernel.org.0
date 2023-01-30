@@ -2,591 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 884256807FF
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 09:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35846680803
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 09:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbjA3I5M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 03:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
+        id S235295AbjA3I7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 03:59:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbjA3I5K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 03:57:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DAF199E2
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 00:57:08 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1529AB80C7B
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 08:57:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D5F6C433D2;
-        Mon, 30 Jan 2023 08:57:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675069025;
-        bh=4dUoNBtQABnq3ugQ3loFMv78QJXkEavxs1gKOnUuxx4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uHS0UbERkPLG++JDsbGn9PNjntPy4jJu5ImCveOtjAfD6y4a9wrPgYdwhWuWpi+Yw
-         WlcXVGVHV5ulCBCvEeggOkYHbhH8I8u0POVQTYSn77phQLDcJ8Zqz02Zj1VuypNNxs
-         flWikDzahMfvbec3ocXJSN14iPQUFaR2rtXdD04OwFHwoMWAkD81Bq+c/1p5ma5Hv8
-         ycq5gBG7eDjz9r9K/sVcqkPEr04Hok/Ui6QZMaBsXAN10aBU1HKC5l8wQIop68a5iv
-         OaOdwZUc01KjtHrAU5Yxi9KsMvWhxqOhuM7+85qHTEThs1v66KIugB0YlNe6L2VVkE
-         ap3hrpN7SSvbg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, David Vernet <void@manifault.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Artem Savkov <asavkov@redhat.com>
-Subject: [PATCHv2 bpf-next 7/7] bpf: Move kernel test kfuncs to bpf_testmod
-Date:   Mon, 30 Jan 2023 09:55:40 +0100
-Message-Id: <20230130085540.410638-8-jolsa@kernel.org>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230130085540.410638-1-jolsa@kernel.org>
-References: <20230130085540.410638-1-jolsa@kernel.org>
+        with ESMTP id S233298AbjA3I7B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 03:59:01 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7554827991;
+        Mon, 30 Jan 2023 00:59:00 -0800 (PST)
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30U8dNVp003841;
+        Mon, 30 Jan 2023 08:58:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=JKrTBhIka4PJq34qWzVGBeakgXLIvGGhUIdQ2PtP3Wo=;
+ b=SgoI9+ylsM5DZmsM+QsWoOiyXjm6hWRmi2a64xadLvOFKCpJFN21eWs+Q+idRrDEAU/4
+ rJZBa0L2iVkgzE1Dn3Tcvs0YlHho+yts+rFfHzY4PvCRnYYmqG1R9NpsrWGt05T8rv5X
+ lEc1RsNym/VVo/FeDW+QTK/1gyA3wCyp8rDtAfbaNTTNEmp3L7bL3ii03vM2MjRbXhs5
+ wPsIeye1L/WlVnswc1sNVH0UMygvirfypCYjePIo7IALoDf6ABJNUh9j+EmqWmb1zKMv
+ kXxqTl1+QvDwFUoyvBMSvvapvLkXo/7ZVNpLdZI9mISSmeZDDVqJuWOtX3Wrc0SKZX5b dg== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nddgsjuqy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Jan 2023 08:58:57 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30U4vO8S026916;
+        Mon, 30 Jan 2023 08:58:55 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3ncvs7hyt2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Jan 2023 08:58:55 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30U8wruI43254210
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Jan 2023 08:58:53 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 501BA20040;
+        Mon, 30 Jan 2023 08:58:53 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F194820043;
+        Mon, 30 Jan 2023 08:58:50 +0000 (GMT)
+Received: from [9.43.101.243] (unknown [9.43.101.243])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 30 Jan 2023 08:58:50 +0000 (GMT)
+Message-ID: <70b60459-2e7a-1944-77dc-54fef2e00975@linux.ibm.com>
+Date:   Mon, 30 Jan 2023 14:28:49 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] perf test: Switch basic bpf filtering test to use syscall
+ tracepoint
+Content-Language: en-US
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Disha Goel <disgoel@linux.vnet.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20230123083224.276404-1-naveen.n.rao@linux.vnet.ibm.com>
+From:   kajoljain <kjain@linux.ibm.com>
+In-Reply-To: <20230123083224.276404-1-naveen.n.rao@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 7dSqWuNS5E9S8z7_SrItYqzDQSXr_pHv
+X-Proofpoint-GUID: 7dSqWuNS5E9S8z7_SrItYqzDQSXr_pHv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-30_07,2023-01-27_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ clxscore=1011 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301300081
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Moving kernel test kfuncs into bpf_testmod kernel module,
-and adding necessary init calls and BTF IDs records.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- net/bpf/test_run.c                            | 262 +-----------------
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 198 ++++++++++++-
- 2 files changed, 198 insertions(+), 262 deletions(-)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 7dbefa4fd2eb..6e203fcbc016 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -535,209 +535,6 @@ int noinline bpf_modify_return_test(int a, int *b)
- 	return a + *b;
- }
- 
--u64 noinline bpf_kfunc_call_test1(struct sock *sk, u32 a, u64 b, u32 c, u64 d)
--{
--	return a + b + c + d;
--}
--
--int noinline bpf_kfunc_call_test2(struct sock *sk, u32 a, u32 b)
--{
--	return a + b;
--}
--
--struct sock * noinline bpf_kfunc_call_test3(struct sock *sk)
--{
--	return sk;
--}
--
--long noinline bpf_kfunc_call_test4(signed char a, short b, int c, long d)
--{
--	/* Provoke the compiler to assume that the caller has sign-extended a,
--	 * b and c on platforms where this is required (e.g. s390x).
--	 */
--	return (long)a + (long)b + (long)c + d;
--}
--
--struct prog_test_member1 {
--	int a;
--};
--
--struct prog_test_member {
--	struct prog_test_member1 m;
--	int c;
--};
--
--struct prog_test_ref_kfunc {
--	int a;
--	int b;
--	struct prog_test_member memb;
--	struct prog_test_ref_kfunc *next;
--	refcount_t cnt;
--};
--
--static struct prog_test_ref_kfunc prog_test_struct = {
--	.a = 42,
--	.b = 108,
--	.next = &prog_test_struct,
--	.cnt = REFCOUNT_INIT(1),
--};
--
--noinline struct prog_test_ref_kfunc *
--bpf_kfunc_call_test_acquire(unsigned long *scalar_ptr)
--{
--	refcount_inc(&prog_test_struct.cnt);
--	return &prog_test_struct;
--}
--
--noinline struct prog_test_member *
--bpf_kfunc_call_memb_acquire(void)
--{
--	WARN_ON_ONCE(1);
--	return NULL;
--}
--
--noinline void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
--{
--	if (!p)
--		return;
--
--	refcount_dec(&p->cnt);
--}
--
--noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
--{
--}
--
--noinline void bpf_kfunc_call_memb1_release(struct prog_test_member1 *p)
--{
--	WARN_ON_ONCE(1);
--}
--
--static int *__bpf_kfunc_call_test_get_mem(struct prog_test_ref_kfunc *p, const int size)
--{
--	if (size > 2 * sizeof(int))
--		return NULL;
--
--	return (int *)p;
--}
--
--noinline int *bpf_kfunc_call_test_get_rdwr_mem(struct prog_test_ref_kfunc *p, const int rdwr_buf_size)
--{
--	return __bpf_kfunc_call_test_get_mem(p, rdwr_buf_size);
--}
--
--noinline int *bpf_kfunc_call_test_get_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size)
--{
--	return __bpf_kfunc_call_test_get_mem(p, rdonly_buf_size);
--}
--
--/* the next 2 ones can't be really used for testing expect to ensure
-- * that the verifier rejects the call.
-- * Acquire functions must return struct pointers, so these ones are
-- * failing.
-- */
--noinline int *bpf_kfunc_call_test_acq_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size)
--{
--	return __bpf_kfunc_call_test_get_mem(p, rdonly_buf_size);
--}
--
--noinline void bpf_kfunc_call_int_mem_release(int *p)
--{
--}
--
--noinline struct prog_test_ref_kfunc *
--bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **pp, int a, int b)
--{
--	struct prog_test_ref_kfunc *p = READ_ONCE(*pp);
--
--	if (!p)
--		return NULL;
--	refcount_inc(&p->cnt);
--	return p;
--}
--
--struct prog_test_pass1 {
--	int x0;
--	struct {
--		int x1;
--		struct {
--			int x2;
--			struct {
--				int x3;
--			};
--		};
--	};
--};
--
--struct prog_test_pass2 {
--	int len;
--	short arr1[4];
--	struct {
--		char arr2[4];
--		unsigned long arr3[8];
--	} x;
--};
--
--struct prog_test_fail1 {
--	void *p;
--	int x;
--};
--
--struct prog_test_fail2 {
--	int x8;
--	struct prog_test_pass1 x;
--};
--
--struct prog_test_fail3 {
--	int len;
--	char arr1[2];
--	char arr2[];
--};
--
--noinline void bpf_kfunc_call_test_pass_ctx(struct __sk_buff *skb)
--{
--}
--
--noinline void bpf_kfunc_call_test_pass1(struct prog_test_pass1 *p)
--{
--}
--
--noinline void bpf_kfunc_call_test_pass2(struct prog_test_pass2 *p)
--{
--}
--
--noinline void bpf_kfunc_call_test_fail1(struct prog_test_fail1 *p)
--{
--}
--
--noinline void bpf_kfunc_call_test_fail2(struct prog_test_fail2 *p)
--{
--}
--
--noinline void bpf_kfunc_call_test_fail3(struct prog_test_fail3 *p)
--{
--}
--
--noinline void bpf_kfunc_call_test_mem_len_pass1(void *mem, int mem__sz)
--{
--}
--
--noinline void bpf_kfunc_call_test_mem_len_fail1(void *mem, int len)
--{
--}
--
--noinline void bpf_kfunc_call_test_mem_len_fail2(u64 *mem, int len)
--{
--}
--
--noinline void bpf_kfunc_call_test_ref(struct prog_test_ref_kfunc *p)
--{
--}
--
--noinline void bpf_kfunc_call_test_destructive(void)
--{
--}
--
- __diag_pop();
- 
- BTF_SET8_START(bpf_test_modify_return_ids)
-@@ -750,34 +547,6 @@ static const struct btf_kfunc_id_set bpf_test_modify_return_set = {
- 	.set   = &bpf_test_modify_return_ids,
- };
- 
--BTF_SET8_START(test_sk_check_kfunc_ids)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test1)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test2)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test3)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test4)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_acquire, KF_ACQUIRE | KF_RET_NULL)
--BTF_ID_FLAGS(func, bpf_kfunc_call_memb_acquire, KF_ACQUIRE | KF_RET_NULL)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_release, KF_RELEASE)
--BTF_ID_FLAGS(func, bpf_kfunc_call_memb_release, KF_RELEASE)
--BTF_ID_FLAGS(func, bpf_kfunc_call_memb1_release, KF_RELEASE)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_get_rdwr_mem, KF_RET_NULL)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_get_rdonly_mem, KF_RET_NULL)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_acq_rdonly_mem, KF_ACQUIRE | KF_RET_NULL)
--BTF_ID_FLAGS(func, bpf_kfunc_call_int_mem_release, KF_RELEASE)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_kptr_get, KF_ACQUIRE | KF_RET_NULL | KF_KPTR_GET)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_pass_ctx)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_pass1)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_pass2)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail1)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail2)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail3)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_pass1)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail1)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail2)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS)
--BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
--BTF_SET8_END(test_sk_check_kfunc_ids)
--
- static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
- 			   u32 size, u32 headroom, u32 tailroom)
- {
-@@ -1660,37 +1429,8 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- 	return err;
- }
- 
--static const struct btf_kfunc_id_set bpf_prog_test_kfunc_set = {
--	.owner = THIS_MODULE,
--	.set   = &test_sk_check_kfunc_ids,
--};
--
--BTF_ID_LIST(bpf_prog_test_dtor_kfunc_ids)
--BTF_ID(struct, prog_test_ref_kfunc)
--BTF_ID(func, bpf_kfunc_call_test_release)
--BTF_ID(struct, prog_test_member)
--BTF_ID(func, bpf_kfunc_call_memb_release)
--
- static int __init bpf_prog_test_run_init(void)
- {
--	const struct btf_id_dtor_kfunc bpf_prog_test_dtor_kfunc[] = {
--		{
--		  .btf_id       = bpf_prog_test_dtor_kfunc_ids[0],
--		  .kfunc_btf_id = bpf_prog_test_dtor_kfunc_ids[1]
--		},
--		{
--		  .btf_id	= bpf_prog_test_dtor_kfunc_ids[2],
--		  .kfunc_btf_id = bpf_prog_test_dtor_kfunc_ids[3],
--		},
--	};
--	int ret;
--
--	ret = register_btf_fmodret_id_set(&bpf_test_modify_return_set);
--	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_prog_test_kfunc_set);
--	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_prog_test_kfunc_set);
--	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &bpf_prog_test_kfunc_set);
--	return ret ?: register_btf_id_dtor_kfuncs(bpf_prog_test_dtor_kfunc,
--						  ARRAY_SIZE(bpf_prog_test_dtor_kfunc),
--						  THIS_MODULE);
-+	return register_btf_fmodret_id_set(&bpf_test_modify_return_set);
- }
- late_initcall(bpf_prog_test_run_init);
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 5085fea3cac5..9307aa60a088 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -9,6 +9,8 @@
- #include <linux/sysfs.h>
- #include <linux/tracepoint.h>
- #include "bpf_testmod.h"
-+#define __ksym
-+#include "bpf_testmod_kfunc.h"
- 
- #define CREATE_TRACE_POINTS
- #include "bpf_testmod-events.h"
-@@ -220,7 +222,180 @@ static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
- 	.write = bpf_testmod_test_write,
- };
- 
-+noinline u64 bpf_kfunc_call_test1(struct sock *sk, u32 a, u64 b, u32 c, u64 d)
-+{
-+	return a + b + c + d;
-+}
-+
-+noinline int bpf_kfunc_call_test2(struct sock *sk, u32 a, u32 b)
-+{
-+	return a + b;
-+}
-+
-+struct sock *noinline bpf_kfunc_call_test3(struct sock *sk)
-+{
-+	return sk;
-+}
-+
-+noinline long bpf_kfunc_call_test4(signed char a, short b, int c, long d)
-+{
-+	/* Provoke the compiler to assume that the caller has sign-extended a,
-+	 * b and c on platforms where this is required (e.g. s390x).
-+	 */
-+	return (long)a + (long)b + (long)c + d;
-+}
-+
-+static struct prog_test_ref_kfunc prog_test_struct = {
-+	.a = 42,
-+	.b = 108,
-+	.next = &prog_test_struct,
-+	.cnt = REFCOUNT_INIT(1),
-+};
-+
-+noinline struct prog_test_ref_kfunc *
-+bpf_kfunc_call_test_acquire(unsigned long *scalar_ptr)
-+{
-+	refcount_inc(&prog_test_struct.cnt);
-+	return &prog_test_struct;
-+}
-+
-+noinline struct prog_test_member *
-+bpf_kfunc_call_memb_acquire(void)
-+{
-+	WARN_ON_ONCE(1);
-+	return NULL;
-+}
-+
-+noinline void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
-+{
-+	if (!p)
-+		return;
-+
-+	refcount_dec(&p->cnt);
-+}
-+
-+noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_memb1_release(struct prog_test_member1 *p)
-+{
-+	WARN_ON_ONCE(1);
-+}
-+
-+static int *__bpf_kfunc_call_test_get_mem(struct prog_test_ref_kfunc *p, const int size)
-+{
-+	if (size > 2 * sizeof(int))
-+		return NULL;
-+
-+	return (int *)p;
-+}
-+
-+noinline int *bpf_kfunc_call_test_get_rdwr_mem(struct prog_test_ref_kfunc *p, const int rdwr_buf_size)
-+{
-+	return __bpf_kfunc_call_test_get_mem(p, rdwr_buf_size);
-+}
-+
-+noinline int *bpf_kfunc_call_test_get_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size)
-+{
-+	return __bpf_kfunc_call_test_get_mem(p, rdonly_buf_size);
-+}
-+
-+/* the next 2 ones can't be really used for testing expect to ensure
-+ * that the verifier rejects the call.
-+ * Acquire functions must return struct pointers, so these ones are
-+ * failing.
-+ */
-+noinline int *bpf_kfunc_call_test_acq_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size)
-+{
-+	return __bpf_kfunc_call_test_get_mem(p, rdonly_buf_size);
-+}
-+
-+noinline void bpf_kfunc_call_int_mem_release(int *p)
-+{
-+}
-+
-+noinline struct prog_test_ref_kfunc *
-+bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **pp, int a, int b)
-+{
-+	struct prog_test_ref_kfunc *p = READ_ONCE(*pp);
-+
-+	if (!p)
-+		return NULL;
-+	refcount_inc(&p->cnt);
-+	return p;
-+}
-+
-+noinline void bpf_kfunc_call_test_pass_ctx(struct __sk_buff *skb)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_pass1(struct prog_test_pass1 *p)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_pass2(struct prog_test_pass2 *p)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_fail1(struct prog_test_fail1 *p)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_fail2(struct prog_test_fail2 *p)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_fail3(struct prog_test_fail3 *p)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_mem_len_pass1(void *mem, int mem__sz)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_mem_len_fail1(void *mem, int len)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_mem_len_fail2(u64 *mem, int len)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_ref(struct prog_test_ref_kfunc *p)
-+{
-+}
-+
-+noinline void bpf_kfunc_call_test_destructive(void)
-+{
-+}
-+
- BTF_SET8_START(bpf_testmod_check_kfunc_ids)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test1)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test2)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test3)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test4)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_acquire, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_memb_acquire, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_release, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_memb_release, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_memb1_release, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_get_rdwr_mem, KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_get_rdonly_mem, KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_acq_rdonly_mem, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_int_mem_release, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_kptr_get, KF_ACQUIRE | KF_RET_NULL | KF_KPTR_GET)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_pass_ctx)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_pass1)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_pass2)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail1)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail2)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail3)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_pass1)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail1)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail2)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
- BTF_ID_FLAGS(func, bpf_testmod_test_mod_kfunc)
- BTF_SET8_END(bpf_testmod_check_kfunc_ids)
- 
-@@ -229,13 +404,34 @@ static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
- 	.set   = &bpf_testmod_check_kfunc_ids,
- };
- 
-+BTF_ID_LIST(bpf_prog_test_dtor_kfunc_ids)
-+BTF_ID(struct, prog_test_ref_kfunc)
-+BTF_ID(func, bpf_kfunc_call_test_release)
-+BTF_ID(struct, prog_test_member)
-+BTF_ID(func, bpf_kfunc_call_memb_release)
-+
- extern int bpf_fentry_test1(int a);
- 
--static int bpf_testmod_init(void)
-+static int __init bpf_testmod_init(void)
- {
-+	const struct btf_id_dtor_kfunc bpf_prog_test_dtor_kfunc[] = {
-+		{
-+		  .btf_id       = bpf_prog_test_dtor_kfunc_ids[0],
-+		  .kfunc_btf_id = bpf_prog_test_dtor_kfunc_ids[1]
-+		},
-+		{
-+		  .btf_id	= bpf_prog_test_dtor_kfunc_ids[2],
-+		  .kfunc_btf_id = bpf_prog_test_dtor_kfunc_ids[3],
-+		},
-+	};
- 	int ret;
- 
- 	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_testmod_kfunc_set);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_testmod_kfunc_set);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &bpf_testmod_kfunc_set);
-+	ret = ret ?: register_btf_id_dtor_kfuncs(bpf_prog_test_dtor_kfunc,
-+						  ARRAY_SIZE(bpf_prog_test_dtor_kfunc),
-+						  THIS_MODULE);
- 	if (ret < 0)
- 		return ret;
- 	if (bpf_fentry_test1(0) < 0)
--- 
-2.39.1
+On 1/23/23 14:02, Naveen N. Rao wrote:
+> BPF filtering tests can sometime fail. Running the test in verbose mode
+> shows the following:
+>   $ sudo perf test 42
+>   42: BPF filter                                                      :
+>   42.1: Basic BPF filtering                                           : FAILED!
+>   42.2: BPF pinning                                                   : Skip
+>   42.3: BPF prologue generation                                       : Skip
+>   $ perf --version
+>   perf version 4.18.0-425.3.1.el8.ppc64le
+>   $ sudo perf test -v 42
+>   42: BPF filter                                                      :
+>   42.1: Basic BPF filtering                                           :
+>   --- start ---
+>   test child forked, pid 711060
+>   ...
+>   bpf: config 'func=do_epoll_wait' is ok
+>   Looking at the vmlinux_path (8 entries long)
+>   Using /usr/lib/debug/lib/modules/4.18.0-425.3.1.el8.ppc64le/vmlinux for symbols
+>   Open Debuginfo file: /usr/lib/debug/.build-id/81/56f5a07f92ccb62c5600ba0e4aacfb5f3a7534.debug
+>   Try to find probe point from debuginfo.
+>   Matched function: do_epoll_wait [4ef8cb0]
+>   found inline addr: 0xc00000000061dbe4
+>   Probe point found: __se_compat_sys_epoll_pwait+196
+>   found inline addr: 0xc00000000061d9f4
+>   Probe point found: __se_sys_epoll_pwait+196
+>   found inline addr: 0xc00000000061d824
+>   Probe point found: __se_sys_epoll_wait+36
+>   Found 3 probe_trace_events.
+>   Opening /sys/kernel/tracing//kprobe_events write=1
+>   ...
+>   BPF filter result incorrect, expected 56, got 56 samples
+>   test child finished with -1
+>   ---- end ----
+>   BPF filter subtest 1: FAILED!
 
+Patch looks good to me.
+
+Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
+
+Thanks,
+Kajol Jain
+> 
+> The statement above about the result being incorrect looks weird, and it
+> is due to that particular perf build missing commit 3e11300cdfd5f1
+> ("perf test: Fix bpf test sample mismatch reporting"). In reality, due
+> to commit 4b04e0decd2518 ("perf test: Fix basic bpf filtering test"),
+> perf expects there to be 56*3 samples.
+> 
+> However, the number of samples we receive is going to be dependent on
+> where the probes are installed, which is dependent on where
+> do_epoll_wait gets inlined. On s390x, it looks like probes at all the
+> inlined locations are hit. But, that is not the case on ppc64le.
+> 
+> Fix this by switching the test to instead use the syscall tracepoint.
+> This ensures that we will only ever install a single event enabling us
+> to reliably determine the sample count.
+> 
+> Reported-by: Disha Goel <disgoel@linux.vnet.ibm.com>
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> ---
+>  tools/perf/tests/bpf-script-example.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/tests/bpf-script-example.c b/tools/perf/tests/bpf-script-example.c
+> index 7981c69ed1b456..b638cc99d5ae56 100644
+> --- a/tools/perf/tests/bpf-script-example.c
+> +++ b/tools/perf/tests/bpf-script-example.c
+> @@ -43,7 +43,7 @@ struct {
+>  	__type(value, int);
+>  } flip_table SEC(".maps");
+>  
+> -SEC("func=do_epoll_wait")
+> +SEC("syscalls:sys_enter_epoll_pwait")
+>  int bpf_func__SyS_epoll_pwait(void *ctx)
+>  {
+>  	int ind =0;
+> 
+> base-commit: 5670ebf54bd26482f57a094c53bdc562c106e0a9
