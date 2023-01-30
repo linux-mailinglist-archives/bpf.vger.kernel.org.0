@@ -2,95 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F0A680E9C
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 14:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E68681106
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 15:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235991AbjA3NO4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 08:14:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
+        id S237151AbjA3OJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 09:09:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236091AbjA3NOo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 08:14:44 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8910611678
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 05:14:43 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id gr7so6985743ejb.5
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 05:14:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U4ot21tosj26w8vKX0wsIMvfJKyxg9HzLw84nCxBKGg=;
-        b=EKmBfppr0esgDRuegyVD3n2yyRvfuYd5Nped5CfdnHnqqYSnKps3uax0Bot5kLLs5w
-         gZChFUP2B3jyhtloZiwtXwwyxDITDbN2ai4gaRcIAVWghKsTQYuibmQQYAsQy+R9f/EM
-         KE0PHzgVpgmdLCyQEJ9j0EJ+NEVc56/CTcMihGPaLni2qNAWMamgUpoKFTl4Wq1FwqlX
-         Y4xGUr+6Dq9d/R7EQcrN6jAmjgxX68P+y9B2Xq62tJAMFyPv+bvOZ/eEDFA5AHY3rw9A
-         MjUXv1e9laY19kcBUssY/KDjuPC1s+NwNWARHTS6SQqBccvCdUgLpwVKYayeyMt6Ea3P
-         0JiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U4ot21tosj26w8vKX0wsIMvfJKyxg9HzLw84nCxBKGg=;
-        b=u9dgaDChgJl4XawXh9P3tKPfN2aH1CGz5Lc6pESFqS3hcVlHVwj55TtYaPjhkj1XAw
-         lTT7/2ZD9+T4dJwy2LaPqvOJnN/yF3je7GFjOMevVtLTQ9XzcAunjF4YBtECOcCrkdSr
-         Y43cOBwaT+/hDCaLyGSNsP9SddTYqOLnBW5nV/20sxvl/nL1JaACa6Y1qOVOjjc3V6gE
-         hc98qhDIEXWYs9wv6yvCnEo+dWeub61ChOHWn/xei8PUhR84h8HlBhlhdw0jNUyiiie4
-         0WGHgooYMCGR22QUrxZrcX1u9N6OB5fYLCHDMAFcdR9hLU3TcLa/r1puyB2FUEuwQn8s
-         3wtQ==
-X-Gm-Message-State: AFqh2krMqnyr8C/ZN4EERqF5776sJkcBWDHaRHa2zZVqubLuRd7CdjrB
-        ZOWwVxBXLQwO9ZApmtF/VN4=
-X-Google-Smtp-Source: AMrXdXtn867dZ1QBqxXMOyN/Cfjr+lRRofBOeP0nBDbtTactpQJ4lkld7omxhBbX2ue8m/LACIr1vA==
-X-Received: by 2002:a17:907:a2cb:b0:871:dd2:4af0 with SMTP id re11-20020a170907a2cb00b008710dd24af0mr59836135ejc.26.1675084481825;
-        Mon, 30 Jan 2023 05:14:41 -0800 (PST)
-Received: from pc636 (host-78-79-169-126.mobileonline.telia.com. [78.79.169.126])
-        by smtp.gmail.com with ESMTPSA id q5-20020a1709060f8500b00883ec4c63ddsm3552862ejj.146.2023.01.30.05.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jan 2023 05:14:41 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 30 Jan 2023 14:14:37 +0100
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, dennis@kernel.org,
-        Chris Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next v2 00/11] mm, bpf: Add BPF into /proc/meminfo
-Message-ID: <Y9fCvZIfvgO+nJ9E@pc636>
-References: <20230112155326.26902-1-laoar.shao@gmail.com>
- <CAADnVQJie8jSNxEio9iu6oXBkXyCjCg6h2mHssPv4mDHubWTwA@mail.gmail.com>
- <CALOAHbAsQ66j77BWC6isTRiKRPgG1Ap2qf6L+wQ+x2SXJt8NjQ@mail.gmail.com>
- <CAADnVQJGF5Xthpn7D2DgHHvZz8+dnuz2xMi6yoSziuauXO7ncA@mail.gmail.com>
- <CALOAHbBVRvTkSxLin+9A20Wv0DZWz4epvNTY1jEaCTf7q0qWJA@mail.gmail.com>
- <CAADnVQJtSZWe0sjvA3YT2LPHJyUqDuhG1f62x2PTjB4WMeLsJw@mail.gmail.com>
- <CALOAHbCY4fGyAN6q3dd+hULs3hRJcYgvMR7M5wg1yb3vPiK=mw@mail.gmail.com>
- <CAADnVQJ9-XEz_JdbUWEK5ZdgnidvNcDZcP2jb7ojyEFtPdPMoA@mail.gmail.com>
- <CALOAHbD0u2OPR4psZbtefttyLA8LU5ZzbXoTjbiXaz3wqNGwfw@mail.gmail.com>
+        with ESMTP id S237153AbjA3OJn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 09:09:43 -0500
+Received: from mx05lb.world4you.com (mx05lb.world4you.com [81.19.149.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0A23802F;
+        Mon, 30 Jan 2023 06:09:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
+        Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=dX5joPSrXHt51h5qeLC3Xq8xdcevddD07C/9Rn/Wh2A=; b=m46iI2brqSGyfUUajUeA7OZa3t
+        vcYvSFW2JLP/W4gBxZjJX9vF13bZh+kZTCC+XSSxAUr73cW9EuaJuiRFnXdafpbjZuH/BctPcwJnC
+        C0Nxl72vj+dhI4aFem34n+hOI/pGP5lUrqDsrjZXzMMUbl10Wxf88529acWRhPIgF2Po=;
+Received: from [81.19.149.42] (helo=webmail.world4you.com)
+        by mx05lb.world4you.com with esmtpa (Exim 4.94.2)
+        (envelope-from <gerhard@engleder-embedded.com>)
+        id 1pMUql-0002na-QU; Mon, 30 Jan 2023 15:09:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbD0u2OPR4psZbtefttyLA8LU5ZzbXoTjbiXaz3wqNGwfw@mail.gmail.com>
+Date:   Mon, 30 Jan 2023 15:09:35 +0100
+From:   Gerhard Engleder <gerhard@engleder-embedded.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, toke@redhat.com, memxor@gmail.com,
+        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
+        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
+        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
+        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
+        martin.lau@linux.dev
+Subject: Re: [PATCH v2 bpf-next 2/8] drivers: net: turn on XDP features
+In-Reply-To: <Y9ZvA7+RMwbNlFoy@lore-desk>
+References: <cover.1674606193.git.lorenzo@kernel.org>
+ <c1171111f8af76da11331277b1e4a930c10f3c30.1674606197.git.lorenzo@kernel.org>
+ <28eedfd5-4444-112b-bfbc-1c7682385c88@engleder-embedded.com>
+ <Y9ZvA7+RMwbNlFoy@lore-desk>
+User-Agent: World4You Webmail
+Message-ID: <6e2e5b8f5735fc3243dea3a050399e34@engleder-embedded.com>
+X-Sender: gerhard@engleder-embedded.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Do-Not-Run: Yes
+X-AV-Do-Run: Yes
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,122 +67,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 28, 2023 at 07:49:08PM +0800, Yafang Shao wrote:
-> On Thu, Jan 26, 2023 at 1:45 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Jan 17, 2023 at 10:49 PM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > > > > I just don't want to add many if-elses or switch-cases into
-> > > > > bpf_map_memory_footprint(), because I think it is a little ugly.
-> > > > > Introducing a new map ops could make it more clear.  For example,
-> > > > > static unsigned long bpf_map_memory_footprint(const struct bpf_map *map)
-> > > > > {
-> > > > >     unsigned long size;
-> > > > >
-> > > > >     if (map->ops->map_mem_footprint)
-> > > > >         return map->ops->map_mem_footprint(map);
-> > > > >
-> > > > >     size = round_up(map->key_size + bpf_map_value_size(map), 8);
-> > > > >     return round_up(map->max_entries * size, PAGE_SIZE);
-> > > > > }
-> > > >
-> > > > It is also ugly, because bpf_map_value_size() already has if-stmt.
-> > > > I prefer to keep all estimates in one place.
-> > > > There is no need to be 100% accurate.
-> > >
-> > > Per my investigation, it can be almost accurate with little effort.
-> > > Take the htab for example,
-> > > static unsigned long htab_mem_footprint(const struct bpf_map *map)
-> > > {
-> > >     struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
-> > >     unsigned long size = 0;
-> > >
-> > >     if (!htab_is_prealloc(htab)) {
-> > >         size += htab_elements_size(htab);
-> > >     }
-> > >     size += kvsize(htab->elems);
-> > >     size += percpu_size(htab->extra_elems);
-> > >     size += kvsize(htab->buckets);
-> > >     size += bpf_mem_alloc_size(&htab->pcpu_ma);
-> > >     size += bpf_mem_alloc_size(&htab->ma);
-> > >     if (htab->use_percpu_counter)
-> > >         size += percpu_size(htab->pcount.counters);
-> > >     size += percpu_size(htab->map_locked[i]) * HASHTAB_MAP_LOCK_COUNT;
-> > >     size += kvsize(htab);
-> > >     return size;
-> > > }
-> >
-> > Please don't.
-> > Above doesn't look maintainable.
+On 29.01.2023 14:05, Lorenzo Bianconi wrote:
+>> On 25.01.23 01:33, Lorenzo Bianconi wrote:
+>> > From: Marek Majtyka <alardam@gmail.com>
+>> >
+>> > A summary of the flags being set for various drivers is given below.
+>> > Note that XDP_F_REDIRECT_TARGET and XDP_F_FRAG_TARGET are features
+>> > that can be turned off and on at runtime. This means that these flags
+>> > may be set and unset under RTNL lock protection by the driver. Hence,
+>> > READ_ONCE must be used by code loading the flag value.
+>> >
+>> > Also, these flags are not used for synchronization against the availability
+>> > of XDP resources on a device. It is merely a hint, and hence the read
+>> > may race with the actual teardown of XDP resources on the device. This
+>> > may change in the future, e.g. operations taking a reference on the XDP
+>> > resources of the driver, and in turn inhibiting turning off this flag.
+>> > However, for now, it can only be used as a hint to check whether device
+>> > supports becoming a redirection target.
+>> >
+>> > Turn 'hw-offload' feature flag on for:
+>> >   - netronome (nfp)
+>> >   - netdevsim.
+>> >
+>> > Turn 'native' and 'zerocopy' features flags on for:
+>> >   - intel (i40e, ice, ixgbe, igc)
+>> >   - mellanox (mlx5).
+>> >   - stmmac
+>> >
+>> > Turn 'native' features flags on for:
+>> >   - amazon (ena)
+>> >   - broadcom (bnxt)
+>> >   - freescale (dpaa, dpaa2, enetc)
+>> >   - funeth
+>> >   - intel (igb)
+>> >   - marvell (mvneta, mvpp2, octeontx2)
+>> >   - mellanox (mlx4)
+>> >   - qlogic (qede)
+>> >   - sfc
+>> >   - socionext (netsec)
+>> >   - ti (cpsw)
+>> >   - tap
+>> >   - veth
+>> >   - xen
+>> >   - virtio_net.
+>> >
+>> > Turn 'basic' (tx, pass, aborted and drop) features flags on for:
+>> >   - netronome (nfp)
+>> >   - cavium (thunder)
+>> >   - hyperv.
+>> >
+>> > Turn 'redirect_target' feature flag on for:
+>> >   - amanzon (ena)
+>> >   - broadcom (bnxt)
+>> >   - freescale (dpaa, dpaa2)
+>> >   - intel (i40e, ice, igb, ixgbe)
+>> >   - ti (cpsw)
+>> >   - marvell (mvneta, mvpp2)
+>> >   - sfc
+>> >   - socionext (netsec)
+>> >   - qlogic (qede)
+>> >   - mellanox (mlx5)
+>> >   - tap
+>> >   - veth
+>> >   - virtio_net
+>> >   - xen
+>> 
+>> XDP support for tsnep was merged to net-next last week. So this driver
+>> cannot get XDP feature support in bpf-next as it is not there 
+>> currently.
+>> Should I add these flags with a fix afterwards? Or would net-next be 
+>> the
+>> better target for this patch series?
 > 
-> It is similar to htab_map_free(). These pointers are the pointers
-> which will be freed in map_free().
-> We just need to keep map_mem_footprint() in sync with map_free(). It
-> won't be a problem for maintenance.
+> bpf-next has been rebased on top of net-next so we can add tsnep 
+> support to the
+> series. Do you think the patch below is fine?
 > 
-> > Look at kvsize(htab). Do you really care about hundred bytes?
-> > Just accept that there will be a small constant difference
-> > between what show_fdinfo reports and the real memory.
+> Regards,
+> Lorenzo
 > 
-> The point is we don't have a clear idea what the margin is.
+> diff --git a/drivers/net/ethernet/engleder/tsnep_main.c
+> b/drivers/net/ethernet/engleder/tsnep_main.c
+> index c3cf427a9409..6982aaa928b5 100644
+> --- a/drivers/net/ethernet/engleder/tsnep_main.c
+> +++ b/drivers/net/ethernet/engleder/tsnep_main.c
+> @@ -1926,6 +1926,10 @@ static int tsnep_probe(struct platform_device 
+> *pdev)
+>  	netdev->features = NETIF_F_SG;
+>  	netdev->hw_features = netdev->features | NETIF_F_LOOPBACK;
 > 
-> > You cannot make it 100%.
-> > There is kfence that will allocate 4k though you asked kmalloc(8).
-> >
-> 
-> We already have ksize()[1], which covers the kfence.
-> 
-> [1]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/mm/slab_common.c#n1431
-> 
-> > > We just need to get the real memory size from the pointer instead of
-> > > calculating the size again.
-> > > For non-preallocated htab, it is a little trouble to get the element
-> > > size (not the unit_size), but it won't be a big deal.
-> >
-> > You'd have to convince mm folks that kvsize() is worth doing.
-> > I don't think it will be easy.
-> >
-> 
-> As I mentioned above, we already have ksize(), so we only need to
-> introduce vsize().  Per my understanding, we can simply use
-> vm_struct->size to get the vmalloc size, see also the patch #5 in this
-> patchset[2].
-> 
-> Andrew, Uladzislau, Christoph,  do you have any comments on this newly
-> introduced vsize()[2] ?
-> 
-> [2]. https://lore.kernel.org/bpf/20230112155326.26902-6-laoar.shao@gmail.com/
-> 
-<snip>
-+/* Report full size of underlying allocation of a vmalloc'ed addr */
-+static inline size_t vsize(const void *addr)
-+{
-+	struct vm_struct *area;
-+
-+	if (!addr)
-+		return 0;
-+
-+	area = find_vm_area(addr);
-+	if (unlikely(!area))
-+		return 0;
-+
-+	return area->size;
-+}
-<snip>
+> +	netdev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT 
+> |
+> +			       NETDEV_XDP_ACT_NDO_XMIT |
+> +			       NETDEV_XDP_ACT_NDO_XMIT_SG;
+> +
 
-You can not access area after the lock is dropped. We do not have any
-ref counters for VA objects. Therefore it should be done like below:
+Looks good. Thanks!
 
-
-<snip>
-  spin_lock(&vmap_area_lock);
-  va = __find_vmap_area(addr, &vmap_area_root);
-  if (va && va->vm)
-    va_size = va->vm->size;
-  spin_unlock(&vmap_area_lock);
-
-  return va_size;
-<snip>
-
---
-Uladzislau Rezki
+Gerhard
