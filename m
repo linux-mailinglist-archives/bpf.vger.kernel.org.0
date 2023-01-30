@@ -2,106 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD2B681111
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 15:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A2A6812F1
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 15:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237213AbjA3OJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 09:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51774 "EHLO
+        id S237719AbjA3O0q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 09:26:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237181AbjA3OJz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 09:09:55 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0033B3DD;
-        Mon, 30 Jan 2023 06:09:52 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 49BB1B8117B;
-        Mon, 30 Jan 2023 14:09:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAEBDC433D2;
-        Mon, 30 Jan 2023 14:09:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675087789;
-        bh=HJDfDNRtvtMkI/CNFU46URo+WEQ69a9tFSAn18ubN5g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qcx3qYHIRvWNeCs1V8s7ttq24HNGrf8rkU2zTJTwlDKVbjr3arv68tvhDnQzAPgBH
-         4zTiSv/SOVKfAfAjjegeBEorXkJsD0B4ytw5iRqDcM/4NhL0+KmN8S0yfQGOau0a9o
-         RcRVuJSQ682lwb3vBar1oq+ddWIwSyuvulqU0CAeukjPJ3Ok9mmPsV2NsiI0ozpGNh
-         cfeUCJyEJ7mjLoQhpYfSlqJGhGVMjg2TNt5gRvW3GZgQ5dTWGlf11pxWa0ludN/ohy
-         GiQYtxkKiMg5z//WcQxHP59ycpf+FyRPg5C+f8V0jcVGS19IH1cM5wEc/h4j8Uik7N
-         oHlR2PUegZ+5Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4FE08405BE; Mon, 30 Jan 2023 11:09:45 -0300 (-03)
-Date:   Mon, 30 Jan 2023 11:09:45 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Disha Goel <disgoel@linux.vnet.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] perf test: Switch basic bpf filtering test to use
- syscall tracepoint
-Message-ID: <Y9fPqaZ1MksBX/lx@kernel.org>
-References: <20230123083224.276404-1-naveen.n.rao@linux.vnet.ibm.com>
- <70b60459-2e7a-1944-77dc-54fef2e00975@linux.ibm.com>
+        with ESMTP id S237488AbjA3O01 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 09:26:27 -0500
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442B840BEF;
+        Mon, 30 Jan 2023 06:25:08 -0800 (PST)
+Received: by mail-vs1-f48.google.com with SMTP id y8so12664585vsq.0;
+        Mon, 30 Jan 2023 06:25:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/EoK2PPnsf9bafcuD3921ajoctS38QF0C7+TFlgrRio=;
+        b=WTiL63muTSPhzf/htiNhZVTeHC9+w4912ydaVgQePyi9kCy2UdVDA/GdAUOD1nM/w0
+         9LmbekFlyJcGvaMrjFVew4xbUBe1+zoFk3BW2b3BRAL164HXjWT+59EJmb0KQ9DS1Oti
+         4zMJpuaYmAlavZ8RT6pZKT7xvT/cqRVb04pJhLEdDlDf8jvTD2EJUC0B4TbTN8PyZWlA
+         EmDKXEhLGMlZG2ab55N7knBcTPGLhZs7jaw+niG1rtqph9pq2yEwAW0Ep9qzgYeX1k/s
+         wYxlVjWz+AxCBo/jSiqoXHMs/Atm5HwYhB38UKyCxJm09/zFh1h8y5JnYGFuk22oox6L
+         W+xA==
+X-Gm-Message-State: AO0yUKUn1U08uMbHDssAZ5erFopc0H4r3VCeVmTjUheZ9Z+DjFZvGpU9
+        sq4Nl4Eqb8eLfLbPQ/B8OO+0d2aP2iv0qQ==
+X-Google-Smtp-Source: AK7set/+lX1Ckygn7G8bMwSVfHbUm1uNzPTyY/G2PzWCaOMCfyxOEAS9304qsXeB7Qkv2NwshzeuPQ==
+X-Received: by 2002:a67:c293:0:b0:3ef:9cd7:eca4 with SMTP id k19-20020a67c293000000b003ef9cd7eca4mr4594028vsj.18.1675088679705;
+        Mon, 30 Jan 2023 06:24:39 -0800 (PST)
+Received: from maniforge ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id m186-20020a37bcc3000000b007068b49b8absm8099922qkf.62.2023.01.30.06.24.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jan 2023 06:24:39 -0800 (PST)
+Date:   Mon, 30 Jan 2023 08:24:36 -0600
+From:   David Vernet <void@manifault.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 04/35] Documentation: bpf: correct spelling
+Message-ID: <Y9fTJLNVc5i2/XV5@maniforge>
+References: <20230127064005.1558-1-rdunlap@infradead.org>
+ <20230127064005.1558-5-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <70b60459-2e7a-1944-77dc-54fef2e00975@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230127064005.1558-5-rdunlap@infradead.org>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jan 30, 2023 at 02:28:49PM +0530, kajoljain escreveu:
+On Thu, Jan 26, 2023 at 10:39:34PM -0800, Randy Dunlap wrote:
+> Correct spelling problems for Documentation/bpf/ as reported
+> by codespell.
 > 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: bpf@vger.kernel.org
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> ---
+>  Documentation/bpf/libbpf/libbpf_naming_convention.rst |    6 +++---
+>  Documentation/bpf/map_xskmap.rst                      |    2 +-
+>  Documentation/bpf/ringbuf.rst                         |    4 ++--
+>  Documentation/bpf/verifier.rst                        |    2 +-
+>  4 files changed, 7 insertions(+), 7 deletions(-)
 > 
-> On 1/23/23 14:02, Naveen N. Rao wrote:
-> > BPF filtering tests can sometime fail. Running the test in verbose mode
-> > shows the following:
-> >   $ sudo perf test 42
-> >   42: BPF filter                                                      :
-> >   42.1: Basic BPF filtering                                           : FAILED!
-> >   42.2: BPF pinning                                                   : Skip
-> >   42.3: BPF prologue generation                                       : Skip
-> >   $ perf --version
-> >   perf version 4.18.0-425.3.1.el8.ppc64le
-> >   $ sudo perf test -v 42
-> >   42: BPF filter                                                      :
-> >   42.1: Basic BPF filtering                                           :
-> >   --- start ---
-> >   test child forked, pid 711060
-> >   ...
-> >   bpf: config 'func=do_epoll_wait' is ok
-> >   Looking at the vmlinux_path (8 entries long)
-> >   Using /usr/lib/debug/lib/modules/4.18.0-425.3.1.el8.ppc64le/vmlinux for symbols
-> >   Open Debuginfo file: /usr/lib/debug/.build-id/81/56f5a07f92ccb62c5600ba0e4aacfb5f3a7534.debug
-> >   Try to find probe point from debuginfo.
-> >   Matched function: do_epoll_wait [4ef8cb0]
-> >   found inline addr: 0xc00000000061dbe4
-> >   Probe point found: __se_compat_sys_epoll_pwait+196
-> >   found inline addr: 0xc00000000061d9f4
-> >   Probe point found: __se_sys_epoll_pwait+196
-> >   found inline addr: 0xc00000000061d824
-> >   Probe point found: __se_sys_epoll_wait+36
-> >   Found 3 probe_trace_events.
-> >   Opening /sys/kernel/tracing//kprobe_events write=1
-> >   ...
-> >   BPF filter result incorrect, expected 56, got 56 samples
-> >   test child finished with -1
-> >   ---- end ----
-> >   BPF filter subtest 1: FAILED!
-> 
-> Patch looks good to me.
-> 
-> Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
+> diff -- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+> --- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+> +++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+> @@ -83,8 +83,8 @@ This prevents from accidentally exportin
+>  to be a part of ABI what, in turn, improves both libbpf developer- and
+>  user-experiences.
+>  
+> -ABI versionning
+> ----------------
+> +ABI versioning
+> +--------------
+>  
+>  To make future ABI extensions possible libbpf ABI is versioned.
+>  Versioning is implemented by ``libbpf.map`` version script that is
+> @@ -148,7 +148,7 @@ API documentation convention
+>  The libbpf API is documented via comments above definitions in
+>  header files. These comments can be rendered by doxygen and sphinx
+>  for well organized html output. This section describes the
+> -convention in which these comments should be formated.
+> +convention in which these comments should be formatted.
+>  
+>  Here is an example from btf.h:
+>  
+> diff -- a/Documentation/bpf/map_xskmap.rst b/Documentation/bpf/map_xskmap.rst
+> --- a/Documentation/bpf/map_xskmap.rst
+> +++ b/Documentation/bpf/map_xskmap.rst
+> @@ -178,7 +178,7 @@ The following code snippet shows how to
+>  
+>  For an example on how create AF_XDP sockets, please see the AF_XDP-example and
+>  AF_XDP-forwarding programs in the `bpf-examples`_ directory in the `libxdp`_ repository.
+> -For a detailed explaination of the AF_XDP interface please see:
+> +For a detailed explanation of the AF_XDP interface please see:
+>  
+>  - `libxdp-readme`_.
+>  - `AF_XDP`_ kernel documentation.
+> diff -- a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rst
+> --- a/Documentation/bpf/ringbuf.rst
+> +++ b/Documentation/bpf/ringbuf.rst
+> @@ -124,7 +124,7 @@ buffer.  Currently 4 are supported:
+>  
+>  - ``BPF_RB_AVAIL_DATA`` returns amount of unconsumed data in ring buffer;
+>  - ``BPF_RB_RING_SIZE`` returns the size of ring buffer;
+> -- ``BPF_RB_CONS_POS``/``BPF_RB_PROD_POS`` returns current logical possition
+> +- ``BPF_RB_CONS_POS``/``BPF_RB_PROD_POS`` returns current logical position
+>    of consumer/producer, respectively.
+>  
+>  Returned values are momentarily snapshots of ring buffer state and could be
+> @@ -146,7 +146,7 @@ Design and Implementation
+>  This reserve/commit schema allows a natural way for multiple producers, either
+>  on different CPUs or even on the same CPU/in the same BPF program, to reserve
+>  independent records and work with them without blocking other producers. This
+> -means that if BPF program was interruped by another BPF program sharing the
+> +means that if BPF program was interrupted by another BPF program sharing the
 
-Thanks, added to that cset, as it is still just on tmp.perf/core.
+While you're here, could you please also fix this:
 
-- Arnaldo
+s/if BPF program/if a BPF program
+
+>  same ring buffer, they will both get a record reserved (provided there is
+>  enough space left) and can work with it and submit it independently. This
+>  applies to NMI context as well, except that due to using a spinlock during
+> diff -- a/Documentation/bpf/verifier.rst b/Documentation/bpf/verifier.rst
+> --- a/Documentation/bpf/verifier.rst
+> +++ b/Documentation/bpf/verifier.rst
+> @@ -192,7 +192,7 @@ checked and found to be non-NULL, all co
+>  As well as range-checking, the tracked information is also used for enforcing
+>  alignment of pointer accesses.  For instance, on most systems the packet pointer
+>  is 2 bytes after a 4-byte alignment.  If a program adds 14 bytes to that to jump
+> -over the Ethernet header, then reads IHL and addes (IHL * 4), the resulting
+> +over the Ethernet header, then reads IHL and adds (IHL * 4), the resulting
+>  pointer will have a variable offset known to be 4n+2 for some n, so adding the 2
+>  bytes (NET_IP_ALIGN) gives a 4-byte alignment and so word-sized accesses through
+>  that pointer are safe.
+
+Otherwise, LGTM. I'll wait to add stamp until the v2 sent to bpf-next
+instead of bpf.
