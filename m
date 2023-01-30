@@ -2,170 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35846680803
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 09:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2122680ACE
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 11:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbjA3I7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 03:59:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
+        id S235655AbjA3Kai (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 05:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233298AbjA3I7B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 03:59:01 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7554827991;
-        Mon, 30 Jan 2023 00:59:00 -0800 (PST)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30U8dNVp003841;
-        Mon, 30 Jan 2023 08:58:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=JKrTBhIka4PJq34qWzVGBeakgXLIvGGhUIdQ2PtP3Wo=;
- b=SgoI9+ylsM5DZmsM+QsWoOiyXjm6hWRmi2a64xadLvOFKCpJFN21eWs+Q+idRrDEAU/4
- rJZBa0L2iVkgzE1Dn3Tcvs0YlHho+yts+rFfHzY4PvCRnYYmqG1R9NpsrWGt05T8rv5X
- lEc1RsNym/VVo/FeDW+QTK/1gyA3wCyp8rDtAfbaNTTNEmp3L7bL3ii03vM2MjRbXhs5
- wPsIeye1L/WlVnswc1sNVH0UMygvirfypCYjePIo7IALoDf6ABJNUh9j+EmqWmb1zKMv
- kXxqTl1+QvDwFUoyvBMSvvapvLkXo/7ZVNpLdZI9mISSmeZDDVqJuWOtX3Wrc0SKZX5b dg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nddgsjuqy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Jan 2023 08:58:57 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30U4vO8S026916;
-        Mon, 30 Jan 2023 08:58:55 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3ncvs7hyt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Jan 2023 08:58:55 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30U8wruI43254210
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Jan 2023 08:58:53 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 501BA20040;
-        Mon, 30 Jan 2023 08:58:53 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F194820043;
-        Mon, 30 Jan 2023 08:58:50 +0000 (GMT)
-Received: from [9.43.101.243] (unknown [9.43.101.243])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 30 Jan 2023 08:58:50 +0000 (GMT)
-Message-ID: <70b60459-2e7a-1944-77dc-54fef2e00975@linux.ibm.com>
-Date:   Mon, 30 Jan 2023 14:28:49 +0530
+        with ESMTP id S231398AbjA3Kah (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 05:30:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77B02D169
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 02:29:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675074589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NUnPVEBBxIK0dhVU8A6ATxwGvwjkqSeEKSc364XgM28=;
+        b=aFZTp/kvygAynfRAbqrrhvJ6wCAt9kIRgnlWq8zy34XcRTddpKTVuf6DN+3JKv7Imy5i/X
+        4LTsZY4a26o8jBmfVE8wRajDMzWpmgWHHludlfCNymufyixGzfGaY/eKG+J64Ri32/qK8n
+        /iu5WNjBd2KlY8T1m6QwZsY9tiIecsU=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-663-9sHdil5HNe6SlFBI_IPliQ-1; Mon, 30 Jan 2023 05:29:48 -0500
+X-MC-Unique: 9sHdil5HNe6SlFBI_IPliQ-1
+Received: by mail-ej1-f72.google.com with SMTP id d10-20020a170906640a00b008787d18c373so6025471ejm.17
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 02:29:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NUnPVEBBxIK0dhVU8A6ATxwGvwjkqSeEKSc364XgM28=;
+        b=3T8bp85XTPdBmNa7R2Gu/MJsH5quhrvlBr2PbTSbZf9RD0pczj5GgNtFB1T14vYhO+
+         mvz/LXG3+/PNfP5MmYl0ZxiMh8e6DuWjfep3YkcFuGAwFVySvbVaBFJB+LELVtaIotUv
+         ed/g+DftSngCYGJchxmUxVrFHHmSt5LS0Gan08GbKzHMw3phxzLjQPRhNN80DRhyFxm3
+         5HB4d2wivQopvJdGv7PTskWguBvi6D3FlYXtUpSyPql0OLagK5Ckira47LkRhs5PJ39O
+         M7MwmYY2HMmIM7NlVF+EYEMeBkFSLuUcbEkFo14AtEktIL/kwMKa7WCP0Uji6kYgkWg2
+         scTg==
+X-Gm-Message-State: AO0yUKUli8pIoyQk/r2L8IFXLwm3WYavC+p4xQUIalLl1WFwpt7OW//X
+        tmR7BGRfvbfPtlGLbNsVP0HAh9y90TBe44qf2odZ/ZfTXO2/wWFmIJsVlVqti74lW3f+K6psSoF
+        rW60m2Nab3n7U
+X-Received: by 2002:a17:907:1c11:b0:889:5861:ad1e with SMTP id nc17-20020a1709071c1100b008895861ad1emr2966817ejc.72.1675074586093;
+        Mon, 30 Jan 2023 02:29:46 -0800 (PST)
+X-Google-Smtp-Source: AK7set9vr6xJ4tOlsEGn0tpljaQxv0SWAz4CKUa/rlY4lr4aGez7CA131y4YgeYOklFXYHFLfxVV9g==
+X-Received: by 2002:a17:907:1c11:b0:889:5861:ad1e with SMTP id nc17-20020a1709071c1100b008895861ad1emr2966802ejc.72.1675074585807;
+        Mon, 30 Jan 2023 02:29:45 -0800 (PST)
+Received: from redhat.com ([2.52.144.173])
+        by smtp.gmail.com with ESMTPSA id n21-20020a170906089500b0087ba1ed4a58sm5439689eje.191.2023.01.30.02.29.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jan 2023 02:29:45 -0800 (PST)
+Date:   Mon, 30 Jan 2023 05:29:41 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hengqi@linux.alibaba.com,
+        Kangjie Xu <kangjie.xu@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH] vhost-net: support VIRTIO_F_RING_RESET
+Message-ID: <20230130052929-mutt-send-email-mst@kernel.org>
+References: <20220825085610.80315-1-kangjie.xu@linux.alibaba.com>
+ <10630d99-e0bd-c067-8766-19266b38d2fe@redhat.com>
+ <1675064346.4139252-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] perf test: Switch basic bpf filtering test to use syscall
- tracepoint
-Content-Language: en-US
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Disha Goel <disgoel@linux.vnet.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20230123083224.276404-1-naveen.n.rao@linux.vnet.ibm.com>
-From:   kajoljain <kjain@linux.ibm.com>
-In-Reply-To: <20230123083224.276404-1-naveen.n.rao@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 7dSqWuNS5E9S8z7_SrItYqzDQSXr_pHv
-X-Proofpoint-GUID: 7dSqWuNS5E9S8z7_SrItYqzDQSXr_pHv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-30_07,2023-01-27_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxscore=0 malwarescore=0 suspectscore=0 spamscore=0
- adultscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
- clxscore=1011 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301300081
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1675064346.4139252-1-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Jan 30, 2023 at 03:39:06PM +0800, Xuan Zhuo wrote:
+> On Mon, 5 Sep 2022 16:32:19 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> >
+> > 在 2022/8/25 16:56, Kangjie Xu 写道:
+> > > Add VIRTIO_F_RING_RESET, which indicates that the driver can reset a
+> > > queue individually.
+> > >
+> > > VIRTIO_F_RING_RESET feature is added to virtio-spec 1.2. The relevant
+> > > information is in
+> > >      oasis-tcs/virtio-spec#124
+> > >      oasis-tcs/virtio-spec#139
+> > >
+> > > The implementation only adds the feature bit in supported features. It
+> > > does not require any other changes because we reuse the existing vhost
+> > > protocol.
+> > >
+> > > The virtqueue reset process can be concluded as two parts:
+> > > 1. The driver can reset a virtqueue. When it is triggered, we use the
+> > > set_backend to disable the virtqueue.
+> > > 2. After the virtqueue is disabled, the driver may optionally re-enable
+> > > it. The process is basically similar to when the device is started,
+> > > except that the restart process does not need to set features and set
+> > > mem table since they do not change. QEMU will send messages containing
+> > > size, base, addr, kickfd and callfd of the virtqueue in order.
+> > > Specifically, the host kernel will receive these messages in order:
+> > >      a. VHOST_SET_VRING_NUM
+> > >      b. VHOST_SET_VRING_BASE
+> > >      c. VHOST_SET_VRING_ADDR
+> > >      d. VHOST_SET_VRING_KICK
+> > >      e. VHOST_SET_VRING_CALL
+> > >      f. VHOST_NET_SET_BACKEND
+> > > Finally, after we use set_backend to attach the virtqueue, the virtqueue
+> > > will be enabled and start to work.
+> > >
+> > > Signed-off-by: Kangjie Xu <kangjie.xu@linux.alibaba.com>
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> >
+> >
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+> 
+> @mst
+> 
+> Do we miss this?
+> 
+> Thanks.
 
+I did, thanks! tagged now.
 
-On 1/23/23 14:02, Naveen N. Rao wrote:
-> BPF filtering tests can sometime fail. Running the test in verbose mode
-> shows the following:
->   $ sudo perf test 42
->   42: BPF filter                                                      :
->   42.1: Basic BPF filtering                                           : FAILED!
->   42.2: BPF pinning                                                   : Skip
->   42.3: BPF prologue generation                                       : Skip
->   $ perf --version
->   perf version 4.18.0-425.3.1.el8.ppc64le
->   $ sudo perf test -v 42
->   42: BPF filter                                                      :
->   42.1: Basic BPF filtering                                           :
->   --- start ---
->   test child forked, pid 711060
->   ...
->   bpf: config 'func=do_epoll_wait' is ok
->   Looking at the vmlinux_path (8 entries long)
->   Using /usr/lib/debug/lib/modules/4.18.0-425.3.1.el8.ppc64le/vmlinux for symbols
->   Open Debuginfo file: /usr/lib/debug/.build-id/81/56f5a07f92ccb62c5600ba0e4aacfb5f3a7534.debug
->   Try to find probe point from debuginfo.
->   Matched function: do_epoll_wait [4ef8cb0]
->   found inline addr: 0xc00000000061dbe4
->   Probe point found: __se_compat_sys_epoll_pwait+196
->   found inline addr: 0xc00000000061d9f4
->   Probe point found: __se_sys_epoll_pwait+196
->   found inline addr: 0xc00000000061d824
->   Probe point found: __se_sys_epoll_wait+36
->   Found 3 probe_trace_events.
->   Opening /sys/kernel/tracing//kprobe_events write=1
->   ...
->   BPF filter result incorrect, expected 56, got 56 samples
->   test child finished with -1
->   ---- end ----
->   BPF filter subtest 1: FAILED!
+> >
+> >
+> > > ---
+> > >
+> > > Test environment and method:
+> > >      Host: 5.19.0-rc3
+> > >      Qemu: QEMU emulator version 7.0.50 (With vq rset support)
+> > >      Guest: 5.19.0-rc3 (With vq reset support)
+> > >      Test Cmd: ethtool -g eth1; ethtool -G eth1 rx $1 tx $2; ethtool -g eth1;
+> > >
+> > >      The drvier can resize the virtio queue, then virtio queue reset function should
+> > >      be triggered.
+> > >
+> > >      The default is split mode, modify Qemu virtio-net to add PACKED feature to
+> > >      test packed mode.
+> > >
+> > > Guest Kernel Patch:
+> > >      https://lore.kernel.org/bpf/20220801063902.129329-1-xuanzhuo@linux.alibaba.com/
+> > >
+> > > QEMU Patch:
+> > >      https://lore.kernel.org/qemu-devel/cover.1661414345.git.kangjie.xu@linux.alibaba.com/
+> > >
+> > > Looking forward to your review and comments. Thanks.
+> > >
+> > >   drivers/vhost/net.c | 3 ++-
+> > >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+> > > index 68e4ecd1cc0e..8a34928d4fef 100644
+> > > --- a/drivers/vhost/net.c
+> > > +++ b/drivers/vhost/net.c
+> > > @@ -73,7 +73,8 @@ enum {
+> > >   	VHOST_NET_FEATURES = VHOST_FEATURES |
+> > >   			 (1ULL << VHOST_NET_F_VIRTIO_NET_HDR) |
+> > >   			 (1ULL << VIRTIO_NET_F_MRG_RXBUF) |
+> > > -			 (1ULL << VIRTIO_F_ACCESS_PLATFORM)
+> > > +			 (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
+> > > +			 (1ULL << VIRTIO_F_RING_RESET)
+> > >   };
+> > >
+> > >   enum {
+> >
 
-Patch looks good to me.
-
-Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
-
-Thanks,
-Kajol Jain
-> 
-> The statement above about the result being incorrect looks weird, and it
-> is due to that particular perf build missing commit 3e11300cdfd5f1
-> ("perf test: Fix bpf test sample mismatch reporting"). In reality, due
-> to commit 4b04e0decd2518 ("perf test: Fix basic bpf filtering test"),
-> perf expects there to be 56*3 samples.
-> 
-> However, the number of samples we receive is going to be dependent on
-> where the probes are installed, which is dependent on where
-> do_epoll_wait gets inlined. On s390x, it looks like probes at all the
-> inlined locations are hit. But, that is not the case on ppc64le.
-> 
-> Fix this by switching the test to instead use the syscall tracepoint.
-> This ensures that we will only ever install a single event enabling us
-> to reliably determine the sample count.
-> 
-> Reported-by: Disha Goel <disgoel@linux.vnet.ibm.com>
-> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> ---
->  tools/perf/tests/bpf-script-example.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/bpf-script-example.c b/tools/perf/tests/bpf-script-example.c
-> index 7981c69ed1b456..b638cc99d5ae56 100644
-> --- a/tools/perf/tests/bpf-script-example.c
-> +++ b/tools/perf/tests/bpf-script-example.c
-> @@ -43,7 +43,7 @@ struct {
->  	__type(value, int);
->  } flip_table SEC(".maps");
->  
-> -SEC("func=do_epoll_wait")
-> +SEC("syscalls:sys_enter_epoll_pwait")
->  int bpf_func__SyS_epoll_pwait(void *ctx)
->  {
->  	int ind =0;
-> 
-> base-commit: 5670ebf54bd26482f57a094c53bdc562c106e0a9
