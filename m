@@ -2,73 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A13681CE8
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 22:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63895681D16
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 22:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbjA3VjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 16:39:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55726 "EHLO
+        id S229878AbjA3VpH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 16:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbjA3Vi7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 16:38:59 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68602126FA
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 13:38:29 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id 203so7546137pfx.6
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 13:38:29 -0800 (PST)
+        with ESMTP id S231439AbjA3VpF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 16:45:05 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35A73591;
+        Mon, 30 Jan 2023 13:44:45 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d3so13056164plr.10;
+        Mon, 30 Jan 2023 13:44:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tyddJd7/BDQFLiv0W0jcUssj4knaaFKB0Era7s1QU18=;
-        b=Rz7BYoxkZNb2J3PQRCPuMSGc03TpKkC0DOxZUQ+brwxmwQy+r693FhqU0xtiZFThot
-         6kEKyjqAo+HkeVRpvyTJ9wnSUR4OUff/ya55KORFjhA40180cp9Zdeg2obRv7Hgy4NLQ
-         VX2jJuTnqdQjJdQrxQIaY3hTdeAIHd2teefPOwlY8pPKauPIkJrxRbtE5QhFxeqvTsK+
-         BIaHPBwaxmogXVTH6TR3YAGI6j+40TB/PRdIZJAzdYdvmx9K0pTiD5CahDZn/ai/5ohj
-         0Ga0+uj6/6VtEnmkmdCqzMP/pS7o0gDeibfbaxrCKvde1WrYQC74+tDjmzc7K0qhwXah
-         nKiA==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9S5F+SIi3K0A2CRSJbfNa++FiSrzn4hSVHAumvoZjgg=;
+        b=VNIxqytIAFa/T/ycXc0B7/G1GtWJBIZL9nwN6W4yRZ2ksq5M4veKxyaFr/+BmCb+Ni
+         OFGKMoGzA4RPZI4Ew+gzfEtm/8IJguPT/78CR2wIgekDtbUzt3kjkmbA1pTxfT4OsRJC
+         yEhq52cmGLeYXFRbJatqeMG3FIu/b93JO2FDakTEo1V0Oufv28AMWueOK36cnapR9yDV
+         CDekA1e1BZ7Sv7AQgUIKzmvQsJtpqS/Q493cxMOgkqB3uxf2BAlQ+FP+6R3esplw3+yo
+         AfVmKz/FceweKX+/BGERqp4Rpaf1qWgvoL8y7MhMjIXjMEcCZx6fgKrLMD0Vos23yFlu
+         bZ8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tyddJd7/BDQFLiv0W0jcUssj4knaaFKB0Era7s1QU18=;
-        b=pVVm6RnKJ3kDLk6I/nsYss1yreyT/eatdPO/E8tS4Fya8N1tqtok9J8in3ImVa8113
-         RrlSd4sBpVaoJepCto3m4tCyaaDUDuB44APio7+0D0aWrj5HNVoJG3dvXzd8tC3rrmgz
-         YncPlnLP6f1Qqsv8Tuu5ugRVMyUQ/CBSFlNudcTSSsyFavLnl4J5MSURruvS2nk3WZaI
-         WMizuU7YCTSmFG9mHc8ZOvZrxGZbumhPeQK19Z2bMk4x/C4YlcqjLHOeRzQUrENc9x6+
-         eD+VHelc5TZIHeXSJG+GbJJCV+EPuLfnrtPoI7mkIDLjbFhbBbZU75wDdpfsc37zIFc5
-         2fMA==
-X-Gm-Message-State: AO0yUKWSsyLfHzezP4k38vM2U4N+8OWfICBZjHajfgLnMi3uJFFXAQWZ
-        GhbE6LjvWU421RD7nS/1hGFIh/PDzvYcaAZ0nvKMNA==
-X-Google-Smtp-Source: AK7set8vR38uMnC+hyU9xXQ6edkPkt2qNJB11lb7sd89FUPmn/s5vSIbZS5NbN5wxGICNf/MTA+KbuUD2D7USnCNfOw=
-X-Received: by 2002:aa7:9792:0:b0:593:de7:3303 with SMTP id
- o18-20020aa79792000000b005930de73303mr1850852pfp.66.1675114707927; Mon, 30
- Jan 2023 13:38:27 -0800 (PST)
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9S5F+SIi3K0A2CRSJbfNa++FiSrzn4hSVHAumvoZjgg=;
+        b=JxkY0Iba9BUz3q+F9SXhpJhv+cgrSuF/bcnAFv/szYYtEOjXLNiws3VQSmJtxRiwvx
+         zA93RaQrF1fpKvM7BZAdmGwQAlGq65byJWjVOhBm33RDyohtl0prsZaw0depXEK7/nQC
+         LnMbbxdYFG8ivQ9v892t7rzeJVixkudqQaUrlhnFwZKHLVj9SdH5fqhHIDSQePzPARyW
+         IviWVFVZoDS39cLIMrPN1+qMcZOy0Qi3M2QZi6QFWxh5GUmnLQWzzbsbncAmpLqMw+C0
+         jlYXPhSMIhAKW+DAvQaBbwpeVgjZuPLUJuLuO7rEmwRmmYSckdez5iQB18rIwQsQNKY5
+         GMog==
+X-Gm-Message-State: AFqh2kr8MHxU7pOAThyAyo9eKyZYzGLvIUM7hT7rEYCgriwzDOZ/Hmmx
+        ZUZCaa29A9ratJ2ZM7VdnA8=
+X-Google-Smtp-Source: AMrXdXu/VvMbzIxptbQW+us/9hFwLEtjztOeQbW9++wfmk9ZrJpAZjUAQgaa2Ln9X+y1r+lS0pNeIw==
+X-Received: by 2002:a05:6a20:9f95:b0:b9:478f:9720 with SMTP id mm21-20020a056a209f9500b000b9478f9720mr43981456pzb.42.1675115085178;
+        Mon, 30 Jan 2023 13:44:45 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:a52d])
+        by smtp.gmail.com with ESMTPSA id v64-20020a626143000000b00574ebfdc721sm8213850pfb.16.2023.01.30.13.44.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jan 2023 13:44:44 -0800 (PST)
+Date:   Mon, 30 Jan 2023 13:44:42 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
+        bpf@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [RFC] bpf: add bpf_link support for BPF_NETFILTER programs
+Message-ID: <20230130214442.robf7ljttx5krjth@macbook-pro-6.dhcp.thefacebook.com>
+References: <20230130150432.24924-1-fw@strlen.de>
+ <87zg9zx6ro.fsf@toke.dk>
+ <20230130180115.GB12902@breakpoint.cc>
 MIME-Version: 1.0
-References: <20230128001639.3510083-1-tj@kernel.org> <20230128001639.3510083-28-tj@kernel.org>
-In-Reply-To: <20230128001639.3510083-28-tj@kernel.org>
-From:   Josh Don <joshdon@google.com>
-Date:   Mon, 30 Jan 2023 13:38:15 -0800
-Message-ID: <CABk29Nt2-CCGnogpfEgJ3ZDk5Esk04n6EwsAqpw_vdeVfKuFUQ@mail.gmail.com>
-Subject: Re: [PATCH 27/30] sched_ext: Implement core-sched support
-To:     Tejun Heo <tj@kernel.org>
-Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        brho@google.com, pjt@google.com, derkling@google.com,
-        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
-        dskarlat@cs.cmu.edu, riel@surriel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230130180115.GB12902@breakpoint.cc>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,55 +74,96 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Tejun,
+On Mon, Jan 30, 2023 at 07:01:15PM +0100, Florian Westphal wrote:
+> Toke Høiland-Jørgensen <toke@kernel.org> wrote:
+> > > Is BPF_LINK the right place?  Hook gets removed automatically if the calling program
+> > > exits, afaict this is intended.
 
-On Fri, Jan 27, 2023 at 4:17 PM Tejun Heo <tj@kernel.org> wrote:
->
-> The core-sched support is composed of the following parts:
+Yes. bpf_link is the right model.
+I'd also allow more than one BPF_NETFILTER prog at the hook.
+When Daniel respins his tc bpf_link set there will be a way to do that
+for tc and hopefully soon for xdp.
+For netfilter hook we can use the same approach.
 
-Thanks, this looks pretty reasonable overall.
+> > 
+> > Yes, this is indeed intended for bpf_link. This plays well with
+> > applications that use the API and stick around (because things get
+> > cleaned up after them automatically even if they crash, say), but it
+> > doesn't work so well for programs that don't (which, notably, includes
+> > command line utilities like 'nft').
+> 
+> Right, but I did not want to create a dependency on nfnetlink or
+> nftables netlink right from the start.
+> 
+> > For XDP and TC users can choose between bpf_link and netlink for
+> > attachment and get one of the two semantics (goes away on close or stays
+> > put). Not sure if it would make sense to do the same for nftables?
+> 
+> For nftables I suspect that, if nft can emit bpf, it would make sense to
+> pass the bpf descriptor together with nftables netlink, i.e. along with
+> the normal netlink data.
+> 
+> nftables kernel side would then know to use the bpf prog for the
+> datapath instead of the interpreter and could even fallback to
+> interpreter.
+> 
+> But for the raw hook use case that Alexei and Daniel preferred (cf.
+> initial proposal to call bpf progs from nf_tables interpreter) I think
+> that there should be no nftables dependency.
+> 
+> I could add a new nfnetlink subtype for nf-bpf if bpf_link is not
+> appropriate as an alternative.
 
-One meta comment is that I think we can shortcircuit from
-touch_core_sched when we have sched_core_disabled().
+Let's start with bpf_link and figure out netlink path when appropriate.
 
-Reviewed-by: Josh Don <joshdon@google.com>
+> > > Should a program running in init_netns be allowed to attach hooks in other netns too?
+> > >
+> > > I could do what BPF_LINK_TYPE_NETNS is doing and fetch net via
+> > > get_net_ns_by_fd(attr->link_create.target_fd);
+> > 
+> > We don't allow that for any other type of BPF program; the expectation
+> > is that the entity doing the attachment will move to the right ns first.
+> > Is there any particular use case for doing something different for
+> > nftables?
+> 
+> Nope, not at all.  I was just curious.  So no special handling for
+> init_netns needed, good.
+> 
+> > > For the actual BPF_NETFILTER program type I plan to follow what the bpf
+> > > flow dissector is doing, i.e. pretend prototype is
+> > >
+> > > func(struct __sk_buff *skb)
+> > >
+> > > but pass a custom program specific context struct on kernel side.
+> > > Verifier will rewrite accesses as needed.
+> > 
+> > This sounds reasonable, and also promotes code reuse between program
+> > types (say, you can write some BPF code to parse a packet and reuse it
+> > between the flow dissector, TC and netfilter).
+> 
+> Ok, thanks.
+> 
+> > > Things like nf_hook_state->in (net_device) could then be exposed via
+> > > kfuncs.
+> > 
+> > Right, so like:
+> > 
+> > state = bpf_nf_get_hook_state(ctx); ?
+> > 
+> > Sounds OK to me.
+> 
+> Yes, something like that.  Downside is that the nf_hook_state struct
+> is no longer bound by any abi contract, but as I understood it thats
+> fine.
 
-> +                       /*
-> +                        * While core-scheduling, rq lock is shared among
-> +                        * siblings but the debug annotations and rq clock
-> +                        * aren't. Do pinning dance to transfer the ownership.
-> +                        */
-> +                       WARN_ON_ONCE(__rq_lockp(rq) != __rq_lockp(srq));
-> +                       rq_unpin_lock(rq, rf);
-> +                       rq_pin_lock(srq, &srf);
-> +
-> +                       update_rq_clock(srq);
-
-Unfortunate that we have to do this superfluous update; maybe we can
-save/restore the clock flags from before the pinning shenanigans?
-
-> +static struct task_struct *pick_task_scx(struct rq *rq)
-> +{
-> +       struct task_struct *curr = rq->curr;
-> +       struct task_struct *first = first_local_task(rq);
-> +
-> +       if (curr->scx.flags & SCX_TASK_QUEUED) {
-> +               /* is curr the only runnable task? */
-> +               if (!first)
-> +                       return curr;
-> +
-> +               /*
-> +                * Does curr trump first? We can always go by core_sched_at for
-> +                * this comparison as it represents global FIFO ordering when
-> +                * the default core-sched ordering is in used and local-DSQ FIFO
-> +                * ordering otherwise.
-> +                */
-> +               if (curr->scx.slice && time_before64(curr->scx.core_sched_at,
-> +                                                    first->scx.core_sched_at))
-> +                       return curr;
-
-So is this to handle the case where we have something running on 'rq'
-to match the cookie of our sibling (which had priority), but now we
-want to switch to running the first thing in the local queue, which
-has a different cookie (and is now the highest priority entity)? Maybe
-being slightly more specific in the comment would help :)
+I'd steer clear from new abi-s.
+Don't look at uapi __sk_buff model. It's not a great example to follow.
+Just pass kernel nf_hook_state into bpf prog and let program deal
+with changes to it via CORE.
+The prog will get a defition of 'struct nf_hook_state' from vmlinux.h
+or via private 'struct nf_hook_state___flavor' with few fields defined
+that prog wants to use. CORE will deal with offset adjustments.
+That's a lot less kernel code. No need for asm style ctx rewrites.
+Just see how much kernel code we already burned on *convert_ctx_access().
+We cannot remove this tech debt due to uapi.
+When you pass struct nf_hook_state directly none of it is needed.
