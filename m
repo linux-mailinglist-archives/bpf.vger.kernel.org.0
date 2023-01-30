@@ -2,116 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2772681FB9
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 00:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539AB681FC6
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 00:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbjA3Xe3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 18:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
+        id S229527AbjA3XlM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 18:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbjA3Xe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 18:34:28 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207813AA2;
-        Mon, 30 Jan 2023 15:34:27 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 8E73ECE1331;
-        Mon, 30 Jan 2023 23:34:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3544C433D2;
-        Mon, 30 Jan 2023 23:34:21 +0000 (UTC)
-Date:   Mon, 30 Jan 2023 18:34:19 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ross Zwisler <zwisler@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ross Zwisler <zwisler@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH 3/9] selftests/bpf: use canonical ftrace path
-Message-ID: <20230130183419.0626dc21@gandalf.local.home>
-In-Reply-To: <CAADnVQ+F3Z70mu3-QyyNFyJ2qCkDXnMJCW-o+fcnZo=LWj5d9g@mail.gmail.com>
-References: <20230130181915.1113313-1-zwisler@google.com>
-        <20230130181915.1113313-4-zwisler@google.com>
-        <CAADnVQJ7KxEK92qOz0Ya4MrACHpxngSpG4W38xuGEgZmXEG-vQ@mail.gmail.com>
-        <20230130145932.37cf6b73@gandalf.local.home>
-        <CAADnVQ+F3Z70mu3-QyyNFyJ2qCkDXnMJCW-o+fcnZo=LWj5d9g@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229460AbjA3XlM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 18:41:12 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DC722A23;
+        Mon, 30 Jan 2023 15:41:08 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 7so8854348pga.1;
+        Mon, 30 Jan 2023 15:41:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1eFw+vUyxAlXvyIKzXin+BYmD1wliXJ2GCQPgnmMqPE=;
+        b=Snt/OPG2tgQ8VVC0fHoRXK5F8u+MEs8vNfrE7F5EYVieTVuQnSTLLkj7I7UadmSNzB
+         qBfPd7mdvtAie6eUa/SAWtMFRatf/cRsILFZLpc4PC/0CFsSZJiZbvwnvti2VzLA4zt6
+         J/KbXXBo2XLxqQIk8ANh7C54MqVwqTJejwJ6j/FDOzvt6pS9ni09j3sAy7d8mF0mRsJn
+         4L2M2mN8koQOmg7J+xMHItxyOj9Y4tGSYjU5bETIjJkCMGqsWC7Ezp5aAEdcpASIseRL
+         qAjNqBa3ClOQ49VUuRaqZpezHZzhUwz1/toBEfoVqt6TtHqNWI+UC2cQObppQ2TifQMl
+         Tx0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1eFw+vUyxAlXvyIKzXin+BYmD1wliXJ2GCQPgnmMqPE=;
+        b=vbKlGO9tT343ywy5MLCyKfBCESTX5YuRBMBkrD7kI1EtyKG3U8lnDTFws7c1J8u7GG
+         c9NMsfUgPuPhEm2G0Qh0McgTKknoOCqKMwHBfbfh4nxhwfEN5vJ4I7xJTWw30uyIQqZj
+         Bbe8sIxf7k/4MErbPOSIxE1BPaAzDuzwDaDbL69L00Vez3QhnRSH3HUJy3bx+xOkO1rE
+         to+xIkRaBnydq9bFYPmrcR0jiFrY0j92xhE/aGvPJcC6TiXTzkV42Hmt4TppJtBjhLKS
+         cL+9WH2kUn7QnH2yHPgB906xN36KIRVM591SUGWqQ+k4iMd64DE61h1x+yWVTVlY/owT
+         u0dw==
+X-Gm-Message-State: AO0yUKUGIfr9+wVu1nSTe7bpfQq73iRVjPV05b++BQBwJQiJdH+BiDNb
+        VDTigHbLEf2zka6YTnanCgA=
+X-Google-Smtp-Source: AK7set91W+OMws+4fUqP4r4tKzPFUXR3RfGq0xeU4+1VuTm6Jw8XNrpgKH4YxYrPfmJMkJejYoWgSg==
+X-Received: by 2002:a05:6a00:2123:b0:592:3e51:d881 with SMTP id n3-20020a056a00212300b005923e51d881mr17105931pfj.14.1675122068136;
+        Mon, 30 Jan 2023 15:41:08 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id e190-20020a621ec7000000b005809d382016sm7952191pfe.74.2023.01.30.15.41.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jan 2023 15:41:07 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 30 Jan 2023 13:41:06 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, brho@google.com, pjt@google.com,
+        derkling@google.com, haoluo@google.com, dvernet@meta.com,
+        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 23/30] sched_ext: Add cgroup support
+Message-ID: <Y9hVkifLuMTYIW97@slm.duckdns.org>
+References: <20230128001639.3510083-24-tj@kernel.org>
+ <202301290107.J4Eavi26-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202301290107.J4Eavi26-lkp@intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 30 Jan 2023 12:03:52 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > So this change will break the tests. We cannot do it.  
-> >
-> > Could we add a way to try to mount it?
-> >
-> > If anything, the tests should not have the path hard coded. It should then
-> > look to see if it is mounted and use the path that is found. Otherwise it
-> > should try mounting it at the correct location.
-> >
-> > Feel free to take the code from libtracefs (and modify it):
-> >
-> > https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/tree/src/tracefs-utils.c#n89
-> >
-> > It will make the test code much more robust.  
+On Sun, Jan 29, 2023 at 02:05:35AM +0800, kernel test robot wrote:
+> Hi Tejun,
 > 
-> The point is not about tests. The point is that this change might break
-> some users that are working today with /sys/kernel/debug/tracing.
+> I love your patch! Perhaps something to improve:
 
-> It also might be mounted differently.
-> For example from another system:
-> cat /proc/mounts|grep trace
-> tracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0
-> tracefs /sys/kernel/debug/tracing tracefs rw,relatime 0 0
+Fixed the build bugs from the two lkp reports. Will include the right base
+tag from the next posting.
 
-Yes, and the code works when it's mounted multiple times.
+Thanks.
 
-> 
-> So I suggest leaving the code as-is.
-
-Why?  I want to make /sys/kernel/debug/tracing deprecated. It's a hack to
-not break old code. I've had complaints about that hack, and there's even
-systems that disable the auto mounting (that is, /sys/kernel/debug/tracing
-would not exist in such configs) This was never expected to be a permanent
-solution.
-
-If anything, leaving hardcoded calls like that forces the user to mount
-debugfs when they may not want to. The entire point of tracefs was to allow
-users to have access to the trace events without having to expose debugfs
-and all the crud it brings with it. This was requested several times before
-it was added.
-
-What is your technical reason for not modifying the code to look for
-tracefs in /sys/kernel/tracing and if it's not there try
-/sys/kernel/debug/tracing, and if both are not found, try mounting it.
-
-That change is not hard and makes the code much more robust and does not
-break anything.
-
--- Steve
-
-
+-- 
+tejun
