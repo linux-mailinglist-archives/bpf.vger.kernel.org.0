@@ -2,175 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2122680ACE
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 11:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1761680C28
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 12:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235655AbjA3Kai (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 05:30:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
+        id S235899AbjA3Lnz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 06:43:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231398AbjA3Kah (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 05:30:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77B02D169
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 02:29:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675074589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NUnPVEBBxIK0dhVU8A6ATxwGvwjkqSeEKSc364XgM28=;
-        b=aFZTp/kvygAynfRAbqrrhvJ6wCAt9kIRgnlWq8zy34XcRTddpKTVuf6DN+3JKv7Imy5i/X
-        4LTsZY4a26o8jBmfVE8wRajDMzWpmgWHHludlfCNymufyixGzfGaY/eKG+J64Ri32/qK8n
-        /iu5WNjBd2KlY8T1m6QwZsY9tiIecsU=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-663-9sHdil5HNe6SlFBI_IPliQ-1; Mon, 30 Jan 2023 05:29:48 -0500
-X-MC-Unique: 9sHdil5HNe6SlFBI_IPliQ-1
-Received: by mail-ej1-f72.google.com with SMTP id d10-20020a170906640a00b008787d18c373so6025471ejm.17
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 02:29:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NUnPVEBBxIK0dhVU8A6ATxwGvwjkqSeEKSc364XgM28=;
-        b=3T8bp85XTPdBmNa7R2Gu/MJsH5quhrvlBr2PbTSbZf9RD0pczj5GgNtFB1T14vYhO+
-         mvz/LXG3+/PNfP5MmYl0ZxiMh8e6DuWjfep3YkcFuGAwFVySvbVaBFJB+LELVtaIotUv
-         ed/g+DftSngCYGJchxmUxVrFHHmSt5LS0Gan08GbKzHMw3phxzLjQPRhNN80DRhyFxm3
-         5HB4d2wivQopvJdGv7PTskWguBvi6D3FlYXtUpSyPql0OLagK5Ckira47LkRhs5PJ39O
-         M7MwmYY2HMmIM7NlVF+EYEMeBkFSLuUcbEkFo14AtEktIL/kwMKa7WCP0Uji6kYgkWg2
-         scTg==
-X-Gm-Message-State: AO0yUKUli8pIoyQk/r2L8IFXLwm3WYavC+p4xQUIalLl1WFwpt7OW//X
-        tmR7BGRfvbfPtlGLbNsVP0HAh9y90TBe44qf2odZ/ZfTXO2/wWFmIJsVlVqti74lW3f+K6psSoF
-        rW60m2Nab3n7U
-X-Received: by 2002:a17:907:1c11:b0:889:5861:ad1e with SMTP id nc17-20020a1709071c1100b008895861ad1emr2966817ejc.72.1675074586093;
-        Mon, 30 Jan 2023 02:29:46 -0800 (PST)
-X-Google-Smtp-Source: AK7set9vr6xJ4tOlsEGn0tpljaQxv0SWAz4CKUa/rlY4lr4aGez7CA131y4YgeYOklFXYHFLfxVV9g==
-X-Received: by 2002:a17:907:1c11:b0:889:5861:ad1e with SMTP id nc17-20020a1709071c1100b008895861ad1emr2966802ejc.72.1675074585807;
-        Mon, 30 Jan 2023 02:29:45 -0800 (PST)
-Received: from redhat.com ([2.52.144.173])
-        by smtp.gmail.com with ESMTPSA id n21-20020a170906089500b0087ba1ed4a58sm5439689eje.191.2023.01.30.02.29.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jan 2023 02:29:45 -0800 (PST)
-Date:   Mon, 30 Jan 2023 05:29:41 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hengqi@linux.alibaba.com,
-        Kangjie Xu <kangjie.xu@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH] vhost-net: support VIRTIO_F_RING_RESET
-Message-ID: <20230130052929-mutt-send-email-mst@kernel.org>
-References: <20220825085610.80315-1-kangjie.xu@linux.alibaba.com>
- <10630d99-e0bd-c067-8766-19266b38d2fe@redhat.com>
- <1675064346.4139252-1-xuanzhuo@linux.alibaba.com>
+        with ESMTP id S235845AbjA3Lnx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 06:43:53 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on20601.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::601])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31A82CC6F;
+        Mon, 30 Jan 2023 03:43:50 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M2h9Z26qMuynlKsM6VHkyoY4hfs1dVuWCqsKWRs5nHLvst1Uf5C70fgjlKjzXOrmX8aGuSla3u2Xo1pB2Um3XGszmd27siNqOFGjruOoj1OkN7M6CzGY8xTV0RNgWxi/qKVnyA9nmnpPgI0IUjhuejXfbR0JgS6n4S7mqlQJYpIszpVbzJV/9atfGGyngsPrvzJz+PWZm4Zwzh4fBP3OtVJvlxQn2qQAvZE586ToNWJPdFR9u7OW0QnQJuUJa0cOrl1QHsstduAXDIWin0GbbVrzA3p/s2IliW5+OxXrtqByzIZRir2Fqp+gqtcWfTw+WaQlZaWWdtIUsPI0PlAocg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rAEhd6lFjlqhsDdSkhLZD2XuXICiUrmsfT/om6jGR28=;
+ b=idqeP40/2oEXsUGO18Typ5iDbXZ0ioYsqJjeVyLHgNcnEUF3TPfZmXWfklNJqBN1Id67q/dTGBxR5M4xYLkWAgXQDHHMeq0hmjOGXa7uvi0enGHl7oYnJXDQcfJljWVpI6iyiHJhjlxudZjHPrsAfHuniA8jlJl4Ws9O0/GjnKLWVt9VFT7VjdlnAmZus+KfjwTI7o+8fZQEITAkj96hvCkWHaDqJixbb5cpLe/py27VuLYT2YqJ8dNTjz31V4ropQw6S6+PpqZLTj77ZEvmNaDUyvmDaqOCLNk9QqA1e9gJCw06gYFBzH2TUnJnj0NS384Zp9ZC+2JJT8KiEcQ3/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rAEhd6lFjlqhsDdSkhLZD2XuXICiUrmsfT/om6jGR28=;
+ b=NhcaMtDdSc7GvoNYC6GXRJW8dIm46N744ndgUWEZuurJdki0rxPvhs6nqT46KdJbDWUU4Y2QhBroK1B3HtGCSvnWFxLlUhCz/6AsJhbVAQYPzZ4u9wzD2m+wruAEb9o7SmBMKZftAelHaq7xi1nIQCD1jn8ZDsItLppDLNryI+c4WV61kuu87Eq/VicY52JQrgZXmzvrit/xgfO33PdK9yPoDZlFoCoWv2WWlezMj4a4k/LNTxjw9u5/YQwQDbsMDao84SqOY1qVsl/GoRlz94oTGGYyheDS8dKOKDtwtYb0amgJKikfB2+tv3PiIdIihdOKw7Q2lo/N2AaiAYtXkw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by DS0PR12MB7608.namprd12.prod.outlook.com (2603:10b6:8:13b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.33; Mon, 30 Jan
+ 2023 11:43:48 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::465a:6564:6198:2f4e]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::465a:6564:6198:2f4e%4]) with mapi id 15.20.6043.023; Mon, 30 Jan 2023
+ 11:43:48 +0000
+References: <cover.f52b9eb2792bccb8a9ecd6bc95055705cfe2ae03.1674538665.git-series.apopple@nvidia.com>
+ <748338ffe4c42d86669923159fe0426808ecb04d.1674538665.git-series.apopple@nvidia.com>
+ <Y8/r91PGGiY5JJvE@nvidia.com>
+User-agent: mu4e 1.8.10; emacs 28.2
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jhubbard@nvidia.com,
+        tjmercier@google.com, hannes@cmpxchg.org, surenb@google.com,
+        mkoutny@suse.com, daniel@ffwll.ch, linuxppc-dev@lists.ozlabs.org,
+        linux-fpga@vger.kernel.org, linux-rdma@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org,
+        bpf@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 01/19] mm: Introduce vm_account
+Date:   Mon, 30 Jan 2023 22:36:43 +1100
+In-reply-to: <Y8/r91PGGiY5JJvE@nvidia.com>
+Message-ID: <87h6w8z1qr.fsf@nvidia.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SY5PR01CA0018.ausprd01.prod.outlook.com
+ (2603:10c6:10:1f9::9) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1675064346.4139252-1-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DS0PR12MB7608:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63676471-5db8-44d1-d5dc-08db02b7400f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uITFThuSePSYf6UfX9hAnQ5ABtfQ9djgBVpBv1CwVbfHxYJNopZ/PA5wtDtuzYSyi51+j8EdFA3q/o5NNh0uvRqaoA6andeyiEMhwgCgRPmJMFjyNRCpQpSpA7Y5ajaKnkJgHW706Hkz9UfQYMIqzplYXbWIZBcPpW59hqJgvIbdbArSKziv6d3P1lbIaOsUIJGR6jl76yUb1NwZxjucINfDaH/lpfXJj7QDG18jcAuGxOaQ/bDsPGr5wuHY1hHJ+ruC6zq7h3WB369yhETBKh8QgvXPEU9SEJVKjkx4K07c3Up143QsRKr0G98grU5gIJP9brKawooyJILWLR6gZ+kanw+ugrz7pAo2+VRvbuWL74mjOWxB2yOTQCIZepOfo3l/6+q31SgQBDD8erVC0GKpxw8J0MM4ajlaBOaHED3f4W7kTJZmt5Ag+8PnyJq8aZgHhNH56ls2intNK6Nilvm8fi4aR4tuzoX3yowahj0rncl2M7h9kMeSdx72yyefq3kPwKLZGy3NLi8djcnUSMfSvDX1f00MmKizs1k7/QZx6VVYu8p79VULzbo/fLHPEM/kUiwMqbuiLHfa8/rjskLXDck3/KW7uBT/Nj5R/0JjTcXD5IKaCWtmr/3sziKas4DbWj/1a9lYfzHXu/FL3Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(451199018)(38100700002)(86362001)(36756003)(2906002)(41300700001)(6666004)(7416002)(478600001)(37006003)(6486002)(186003)(8936002)(5660300002)(66946007)(4326008)(316002)(66476007)(66556008)(83380400001)(8676002)(26005)(6512007)(6636002)(6506007)(6862004)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CrK9itskcDj4GP0CRorgythrPzWZHEJkTrp2yYI7P8Dwv7okOe4mmeIyC/1N?=
+ =?us-ascii?Q?7JqHzYzMKQPdxwZV6r8xSyhhPb5Y+BGyuxAPapvQalUO2+MSfSN3StRrLRFl?=
+ =?us-ascii?Q?AT2VSQA1bGUy57lbLsPWObCYAMyLVqYvCQUx7/7bVvOaUY36YqCNSE8C66Z4?=
+ =?us-ascii?Q?iUpL/uaf6enikRyX7J04UsSBkazsrE6fIIzhIpH3kzl6W3+RqYhn621W/4ip?=
+ =?us-ascii?Q?02uWOTJsYmBDUUB1C+2QmVDW4CwB5bcA0ZjH0NWzc8QxzsCuUuyANtySDiEk?=
+ =?us-ascii?Q?Vi4oLGoRp9CcAnbu3HV1fYY7VIstNyh6Zui7fNo/1WcN9c31BF1EyOpOICdv?=
+ =?us-ascii?Q?hkmPX43sr98uhMMzqWwLTbbjc7/i6gtAVmzextZlUUG/lrnJ2euE7vc/TKRp?=
+ =?us-ascii?Q?ZGWrAw4yLj9VnLLI0WECU/PELqCSQij1E9raROFqaoo04UG6pyHwSKIiGA96?=
+ =?us-ascii?Q?6WrREcYnJ1HIxqCc+gTYnlEsjBX+5Kmwyf1CbsvRwpjWjUBt8ElpqIVg9VaT?=
+ =?us-ascii?Q?N6wBvlsd9ReqypptzdHRJf3raCYjh10WMO0O909AHnP4TgT8ixdbA+Aed1mv?=
+ =?us-ascii?Q?3c71HkzRf/eLWmeZzFXkdLDpEAl56NXmS7hSLLUg/4Q3N3lg9WTHv/PO+WHi?=
+ =?us-ascii?Q?xXs9gQWO9yuQd/lHTQLuiSODxc5VgCHwFgT3VBi8nQItBkHL1CEZgrn0TLqs?=
+ =?us-ascii?Q?32N38Ca3r11gzJfJ/LLrkfLj1JHD3lMw1DIDM86Aymrdy9aqee+soMs5Tx6r?=
+ =?us-ascii?Q?dm1wrpd4SqKt0MJXo2IzndpOn4XZLKzyILn+lzvtL2wb05A4JsiwjCG1FmJP?=
+ =?us-ascii?Q?0nG7jMPU9AyApTKV8RbPvN8VduIlFzPS/C0e07e50zwjO8nonXWSOf9lbSY9?=
+ =?us-ascii?Q?dVbQAkIQZikO1t7LOeOFfnncqrcdYZt3MmGdLw9xAFl7dNSjtnnyBhoBEtkB?=
+ =?us-ascii?Q?Fh0TJbl8o1hS5jC1jg+IUaFZnP80dktvNH88oE0/AqhEn9pw2V5Y/YTxoZVc?=
+ =?us-ascii?Q?EfFIhrPwX/cRg/zTI6p6WjoFjKF7sf9bx5fWyxVcJUPwSvgPeY6eOaToyoz8?=
+ =?us-ascii?Q?Q9g0zBTxDf1xJ4G0JzNHMnqgyv9GYCeKkvSf3058iH+CibEHoHCKhCIJ455v?=
+ =?us-ascii?Q?aSzrIp6nkzqZkVp/5MaFH4Vhac0cBPhqWeEIzZUm6BFD1u5iYOov1wYt1935?=
+ =?us-ascii?Q?izLVourlGwdD7f80UkKDqQzhIptqRrzyep4mmcH/fBaPbD9wQ/xKYzFmcCvw?=
+ =?us-ascii?Q?+n4kGiV+Xllhpnj4U3Ihzl18GBeopUbpRP5cAX6oaA71DPew96oxMgScpyqx?=
+ =?us-ascii?Q?cM49SuFQENyVSXXiNaRCSkLN8E4aN1zBVknBYnDJvRKiHfhGAyjF0fWj8J6M?=
+ =?us-ascii?Q?JqqkyLkgrgoZf52FKPoZS/y0StU3I9puaUuKIHUIecfkv8hEGc3Y/Cci7FO1?=
+ =?us-ascii?Q?9S9IbhFWef2310CNECiqkVH3CdyiAgg1hXv08ExiG53iqGtnGhyDbUpLvnAW?=
+ =?us-ascii?Q?XY7KIC9hx6oKVgleGX2hUYzFSH/kgeydpsxbvvTUuOQ+cgN/JXsCIY9GOWAx?=
+ =?us-ascii?Q?txGFhvvxQ6YpkMdtgv9eP2glnZziyi58vY1Jgwlc?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63676471-5db8-44d1-d5dc-08db02b7400f
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2023 11:43:48.2451
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hMWVFjjUx/ulcyPi3NPfUnsdbArWq0SDPB2f54nJbyllgoeyJ4Sr4t8y10Xg901y58rv3rWQjtS1F8223SCh4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7608
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 03:39:06PM +0800, Xuan Zhuo wrote:
-> On Mon, 5 Sep 2022 16:32:19 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> >
-> > 在 2022/8/25 16:56, Kangjie Xu 写道:
-> > > Add VIRTIO_F_RING_RESET, which indicates that the driver can reset a
-> > > queue individually.
-> > >
-> > > VIRTIO_F_RING_RESET feature is added to virtio-spec 1.2. The relevant
-> > > information is in
-> > >      oasis-tcs/virtio-spec#124
-> > >      oasis-tcs/virtio-spec#139
-> > >
-> > > The implementation only adds the feature bit in supported features. It
-> > > does not require any other changes because we reuse the existing vhost
-> > > protocol.
-> > >
-> > > The virtqueue reset process can be concluded as two parts:
-> > > 1. The driver can reset a virtqueue. When it is triggered, we use the
-> > > set_backend to disable the virtqueue.
-> > > 2. After the virtqueue is disabled, the driver may optionally re-enable
-> > > it. The process is basically similar to when the device is started,
-> > > except that the restart process does not need to set features and set
-> > > mem table since they do not change. QEMU will send messages containing
-> > > size, base, addr, kickfd and callfd of the virtqueue in order.
-> > > Specifically, the host kernel will receive these messages in order:
-> > >      a. VHOST_SET_VRING_NUM
-> > >      b. VHOST_SET_VRING_BASE
-> > >      c. VHOST_SET_VRING_ADDR
-> > >      d. VHOST_SET_VRING_KICK
-> > >      e. VHOST_SET_VRING_CALL
-> > >      f. VHOST_NET_SET_BACKEND
-> > > Finally, after we use set_backend to attach the virtqueue, the virtqueue
-> > > will be enabled and start to work.
-> > >
-> > > Signed-off-by: Kangjie Xu <kangjie.xu@linux.alibaba.com>
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> >
-> >
-> > Acked-by: Jason Wang <jasowang@redhat.com>
-> 
-> @mst
-> 
-> Do we miss this?
-> 
-> Thanks.
 
-I did, thanks! tagged now.
+Jason Gunthorpe <jgg@nvidia.com> writes:
 
-> >
-> >
-> > > ---
-> > >
-> > > Test environment and method:
-> > >      Host: 5.19.0-rc3
-> > >      Qemu: QEMU emulator version 7.0.50 (With vq rset support)
-> > >      Guest: 5.19.0-rc3 (With vq reset support)
-> > >      Test Cmd: ethtool -g eth1; ethtool -G eth1 rx $1 tx $2; ethtool -g eth1;
-> > >
-> > >      The drvier can resize the virtio queue, then virtio queue reset function should
-> > >      be triggered.
-> > >
-> > >      The default is split mode, modify Qemu virtio-net to add PACKED feature to
-> > >      test packed mode.
-> > >
-> > > Guest Kernel Patch:
-> > >      https://lore.kernel.org/bpf/20220801063902.129329-1-xuanzhuo@linux.alibaba.com/
-> > >
-> > > QEMU Patch:
-> > >      https://lore.kernel.org/qemu-devel/cover.1661414345.git.kangjie.xu@linux.alibaba.com/
-> > >
-> > > Looking forward to your review and comments. Thanks.
-> > >
-> > >   drivers/vhost/net.c | 3 ++-
-> > >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-> > > index 68e4ecd1cc0e..8a34928d4fef 100644
-> > > --- a/drivers/vhost/net.c
-> > > +++ b/drivers/vhost/net.c
-> > > @@ -73,7 +73,8 @@ enum {
-> > >   	VHOST_NET_FEATURES = VHOST_FEATURES |
-> > >   			 (1ULL << VHOST_NET_F_VIRTIO_NET_HDR) |
-> > >   			 (1ULL << VIRTIO_NET_F_MRG_RXBUF) |
-> > > -			 (1ULL << VIRTIO_F_ACCESS_PLATFORM)
-> > > +			 (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
-> > > +			 (1ULL << VIRTIO_F_RING_RESET)
-> > >   };
-> > >
-> > >   enum {
-> >
+> On Tue, Jan 24, 2023 at 04:42:30PM +1100, Alistair Popple wrote:
+>> +/**
+>> + * enum vm_account_flags - Determine how pinned/locked memory is accounted.
+>> + * @VM_ACCOUNT_TASK: Account pinned memory to mm->pinned_vm.
+>> + * @VM_ACCOUNT_BYPASS: Don't enforce rlimit on any charges.
+>> + * @VM_ACCOUNT_USER: Accounnt locked memory to user->locked_vm.
+>> + *
+>> + * Determines which statistic pinned/locked memory is accounted
+>> + * against. All limits will be enforced against RLIMIT_MEMLOCK and the
+>> + * pins cgroup if CONFIG_CGROUP_PINS is enabled.
+>> + *
+>> + * New drivers should use VM_ACCOUNT_TASK. VM_ACCOUNT_USER is used by
+>> + * pre-existing drivers to maintain existing accounting against
+>> + * user->locked_mm rather than mm->pinned_mm.
+>
+> I thought the guidance was the opposite of this, it is the newer
+> places in the kernel that are using VM_ACCOUNT_USER?
+
+I'd just assumed mm->pinned_vm was preferred because that's what most
+drivers use. user->locked_mm does seem more sensible though as at least
+it's possible to meaningfully enforce some overall limit. Will switch
+the flags/comment around to suggest new users use VM_ACCOUNT_USER.
+
+> I haven't got to the rest of the patches yet, but isn't there also a
+> mm->pinned_vm vs mm->locked_vm variation in the current drivers as
+> well?
+>
+>> +void vm_account_init_current(struct vm_account *vm_account)
+>> +{
+>> +	vm_account_init(vm_account, current, NULL, VM_ACCOUNT_TASK);
+>> +}
+>> +EXPORT_SYMBOL_GPL(vm_account_init_current);
+>
+> This can probably just be a static inline
+>
+> You might consider putting all this in some new vm_account.h - given
+> how rarely it is used? Compile times and all
+
+Works for me.
+
+> Jason
 
