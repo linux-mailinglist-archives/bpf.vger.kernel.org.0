@@ -2,190 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9388C681DA6
-	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 23:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B55C681DA3
+	for <lists+bpf@lfdr.de>; Mon, 30 Jan 2023 23:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjA3WE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 17:04:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
+        id S229583AbjA3WEn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 17:04:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbjA3WEs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 17:04:48 -0500
-Received: from out-159.mta0.migadu.com (out-159.mta0.migadu.com [91.218.175.159])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FFF38B76
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 14:04:23 -0800 (PST)
-Message-ID: <5715ea83-c4aa-c884-ab95-3d5e630cad05@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1675116261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hzXgITO6Sgy0WWxMEqer8fWo1UpMG1cjijjAJkT2HZE=;
-        b=giIKQyTqsZF3Mzs7oLjM8VoRqPKTISRDT77uvthK/qG/5NKRifRfQs+9srDod5V7HdXL82
-        Zk5u+b83KFNS9seyxiHv1gFahcYqUEYnOo2aUac5CsCVRZ8hBLrMqn6NyCcoE47upc2lw+
-        zDEi5kvMAb3o4o+PxHKE4wr6UGTjSys=
-Date:   Mon, 30 Jan 2023 14:04:08 -0800
+        with ESMTP id S229550AbjA3WEm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 17:04:42 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E945E4997E
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 14:04:14 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id m13so1235147plx.13
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 14:04:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=R03ztAmIihn3Fz+0E5HaX1x1wBSZWWdNMT7FdbVJlIc=;
+        b=k1ZfyB3pS4FVWbFofCTRoi3SxUB22P+NC2al0pXmuCE6uBAEI/PqhCiFzzp0kie3Xm
+         MRG8mDY9c/ZsHsfkJmbEmOSXaQmlcmBbrptp6VVVmqGQpPVdVQn9YY5bTtgwyrCe2og7
+         Uh1mJx/IbC0n2MOZyYwFn4vCHpWMsA/vvVRziTL6tC2tKCMwx9Ywf3a3NhQ6K6UZWLav
+         Cprxxbwev5Go5Mxs3k+OY6jhp7Kaed7H/EfdUnC9ZzHBtZB2CY2h0JPnhcgXSOgitxnA
+         psJA5wkBRUldcRuPETL4HLwIKpCBDLsT7hlYYQnHYXhbRtAuOa45lb6iJ5VedF6e3oBa
+         3VmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R03ztAmIihn3Fz+0E5HaX1x1wBSZWWdNMT7FdbVJlIc=;
+        b=faUM7KrHmGERi6Z/HC6f2xXnTwOWmkXOVRngXKJjHiQJtfNOD1coOOljjsBIL7FoHw
+         Nzl8SGArzvZeg2KaIq6BvDbCWt7My8a1R7C7NuTqrMuTGmur9LzTYwo8h362VYwfWgkV
+         9pVG4bwsM3aeNItcHkjbS3Wg+cMhwbiywJA/jl5v9rZz2P3M/Plim2RpDgGsuLCoBpHD
+         0uVZsaoioeQ54Oz8lC/Ls+XbX8BJ2eKpIyoPclNLBGofXgYWM3PeatwklAkiqZHvxfls
+         MqU49+FhSZb3N0d+RzLdZmFeBR92iQtfVN2TKxuFmCtI7k3TddEwTbF9OI8Cqjn4cA43
+         GsEA==
+X-Gm-Message-State: AO0yUKUVPb7ZeY5+5Y57sZzZd1nclsbgPOtKAE2f9//L3bMjHzt7ZKks
+        VBPsHp8IwEaK9+iZgW6hWfM=
+X-Google-Smtp-Source: AK7set/ITktxOFVKKJGvfLPIO/HxH+XfH4oMdBCZQW+7jyoofGaZHdwSuVYcv3WOpg+ZtDPJrwIGKQ==
+X-Received: by 2002:a17:90b:2250:b0:22c:36a6:71a6 with SMTP id hk16-20020a17090b225000b0022c36a671a6mr17230849pjb.41.1675116252133;
+        Mon, 30 Jan 2023 14:04:12 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:a52d])
+        by smtp.gmail.com with ESMTPSA id g10-20020a17090a67ca00b0022bf4d0f912sm9538287pjm.22.2023.01.30.14.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jan 2023 14:04:11 -0800 (PST)
+Date:   Mon, 30 Jan 2023 14:04:09 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Ori Glassman <ori.glassman@aquasec.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: Interruptable eBPF programs
+Message-ID: <20230130220409.ux33fhwvghqwtujw@macbook-pro-6.dhcp.thefacebook.com>
+References: <DU2PR03MB8006D93D98BD58AFF9657F3F96D39@DU2PR03MB8006.eurprd03.prod.outlook.com>
+ <23537684-afd1-e31d-741e-acaf8a201156@iogearbox.net>
+ <CAADnVQLsXLGk5nOx75r-Os+S8wxKjboV3_SKqUm0QXTZXUeDSA@mail.gmail.com>
+ <DU2PR03MB80069C24EAB81F7D72FD7EF196D39@DU2PR03MB8006.eurprd03.prod.outlook.com>
+ <DU2PR03MB800662EF7057E230662B34B196D39@DU2PR03MB8006.eurprd03.prod.outlook.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
-Content-Language: en-US
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, netdev@vger.kernel.org, memxor@gmail.com,
-        kernel-team@fb.com, bpf@vger.kernel.org
-References: <20230127191703.3864860-1-joannelkoong@gmail.com>
- <20230127191703.3864860-4-joannelkoong@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230127191703.3864860-4-joannelkoong@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DU2PR03MB800662EF7057E230662B34B196D39@DU2PR03MB8006.eurprd03.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/27/23 11:17 AM, Joanne Koong wrote:
-> @@ -8243,6 +8316,28 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->   		mark_reg_known_zero(env, regs, BPF_REG_0);
->   		regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
->   		regs[BPF_REG_0].mem_size = meta.mem_size;
-> +		if (func_id == BPF_FUNC_dynptr_data &&
-> +		    dynptr_type == BPF_DYNPTR_TYPE_SKB) {
-> +			bool seen_direct_write = env->seen_direct_write;
-> +
-> +			regs[BPF_REG_0].type |= DYNPTR_TYPE_SKB;
-> +			if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
-> +				regs[BPF_REG_0].type |= MEM_RDONLY;
-> +			else
-> +				/*
-> +				 * Calling may_access_direct_pkt_data() will set
-> +				 * env->seen_direct_write to true if the skb is
-> +				 * writable. As an optimization, we can ignore
-> +				 * setting env->seen_direct_write.
-> +				 *
-> +				 * env->seen_direct_write is used by skb
-> +				 * programs to determine whether the skb's page
-> +				 * buffers should be cloned. Since data slice
-> +				 * writes would only be to the head, we can skip
-> +				 * this.
-> +				 */
-> +				env->seen_direct_write = seen_direct_write;
-> +		}
+On Mon, Jan 30, 2023 at 06:47:54PM +0000, Ori Glassman wrote:
+> 
+> > security@kernel alias is not the place to ask bpf related questions.
+> I apologise if it was confusing, I wasn't asking a question - rather raising a security concern of mine.
 
-[ ... ]
+That is a security concern with a design of your service.
+sec@kern is about kernel bugs:
+Documentation/admin-guide/security-bugs.rst
 
-> @@ -9263,17 +9361,26 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
->   				return ret;
->   			break;
->   		case KF_ARG_PTR_TO_DYNPTR:
-> +		{
-> +			enum bpf_arg_type dynptr_arg_type = ARG_PTR_TO_DYNPTR;
-> +
->   			if (reg->type != PTR_TO_STACK &&
->   			    reg->type != CONST_PTR_TO_DYNPTR) {
->   				verbose(env, "arg#%d expected pointer to stack or dynptr_ptr\n", i);
->   				return -EINVAL;
->   			}
->   
-> -			ret = process_dynptr_func(env, regno, insn_idx,
-> -						  ARG_PTR_TO_DYNPTR | MEM_RDONLY);
-> +			if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb])
-> +				dynptr_arg_type |= MEM_UNINIT | DYNPTR_TYPE_SKB;
-> +			else
-> +				dynptr_arg_type |= MEM_RDONLY;
-> +
-> +			ret = process_dynptr_func(env, regno, insn_idx, dynptr_arg_type,
-> +						  meta->func_id);
->   			if (ret < 0)
->   				return ret;
->   			break;
-> +		}
->   		case KF_ARG_PTR_TO_LIST_HEAD:
->   			if (reg->type != PTR_TO_MAP_VALUE &&
->   			    reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
-> @@ -15857,6 +15964,14 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->   		   desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
->   		insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
->   		*cnt = 1;
-> +	} else if (desc->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb]) {
-> +		bool is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
+> > Yaniv, from your team, already brought it up here:
+> > https://lore.kernel.org/bpf/CAADnVQ++LzKt9Q-GtGXknVBqyMqY=vLJ3tR3NNGG3P66gvVCFQ@mail.gmail.com/
+> 
+> > You cannot assume that different bpf progs attached to various
+> > events like tracepoints and lsm hooks won't overlap.
+> > It's a bug in your program. Nothing else.
+> How can one use bpf_task_storage_get() without the risk of getting corrupted? Say there's a module that consists of 1 simple program, a single LSM hook on bprm_creds_for_exec, that uses a local task storage pinned map. 
+> An attacker at some point in the future loads his tracepoint program, and maliciously corrupts the local storage *while* the LSM hook is executing, not after or before. What's the bug in the program that consists of the single LSM hook?
 
-Does it need to restore the env->seen_direct_write here also?
+The local storage map is also accessible via bpf syscall map_update_elem command.
+If user can get an FD to that map they can update it.
+It's your job to design the service such that bpf maps are not laying around for everyone to poke into.
+But if user has root access it can do anything.
 
-It seems this 'seen_direct_write' saving/restoring is needed now because 
-'may_access_direct_pkt_data(BPF_WRITE)' is not only called when it is actually 
-writing the packet. Some refactoring can help to avoid issue like this.
+> > These two programs access some task local storage.
+> I'm talking specifically when the programs are executed by the same task and thus accessing the same local storage.
+> > This code racy regardless of preempt_disable vs migrate_disable.
+> > bpf_task_storage_get() of the same task can run on different cpus.
+> Not at the same time though, right? I'm not concerned about the cases where the map is used in multiple programs - I'm concerned about the cases where it's used locally in a single program, but gets corrupted in a timely manner from the outside by an attacker.
 
-While at 'seen_direct_write', Alexei has also pointed out that the verifier 
-needs to track whether the (packet) 'slice' returned by bpf_dynptr_data() has 
-been written. It should be tracked in 'seen_direct_write'. Take a look at how 
-reg_is_pkt_pointer() and may_access_direct_pkt_data() are done in 
-check_mem_access(). iirc, this reg_is_pkt_pointer() part got loss somewhere in 
-v5 (or v4?) when bpf_dynptr_data() was changed to return register typed 
-PTR_TO_MEM instead of PTR_TO_PACKET.
+At the same time.
+Two cpus can observe the same task local storage.
 
+> > Whether trace_sched_process_free and security_bprm_creds_for_exec
+> > can happen on different cpus is kernel implementation detail.
+> 
+> > There looks to be another bug in the above:
+> > doing bpf_get_current_task_btf from raw_tracepoint/sched_process_free
+> > will return task_struct of the worker thread.
+> > I don't think it's the one you want.
+> That's not what I observed - this is the output of bpf_trace_printk where the execution of the LSM hook got interrupted mid-execution:
+> ----
+>  chrony-onofflin-12460   [000] d.s.1  2258.804195: bpf_trace_printk: EXECUTION HIJACK(b=2257261931167) # this is from tp/sched_process_free
+>  chrony-onofflin-12460   [000] d...1  2258.804234: bpf_trace_printk: a=2257261896666. c=2257261971220 # from the lsm hook
 
-[ ... ]
-
-> +int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
-> +			struct bpf_dynptr_kern *ptr, int is_rdonly)
-
-hmm... this exposed kfunc takes "int is_rdonly".
-
-What if the bpf prog calls it like bpf_dynptr_from_skb(..., false) in some hook 
-that is not writable to packet?
-
-> +{
-> +	if (flags) {
-> +		bpf_dynptr_set_null(ptr);
-> +		return -EINVAL;
-> +	}
-> +
-> +	bpf_dynptr_init(ptr, skb, BPF_DYNPTR_TYPE_SKB, 0, skb->len);
-> +
-> +	if (is_rdonly)
-> +		bpf_dynptr_set_rdonly(ptr);
-> +
-> +	return 0;
-> +}
-> +
->   BPF_CALL_1(bpf_sk_fullsock, struct sock *, sk)
->   {
->   	return sk_fullsock(sk) ? (unsigned long)sk : (unsigned long)NULL;
-> @@ -11607,3 +11634,28 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
->   
->   	return func;
->   }
-> +
-> +BTF_SET8_START(bpf_kfunc_check_set_skb)
-> +BTF_ID_FLAGS(func, bpf_dynptr_from_skb)
-> +BTF_SET8_END(bpf_kfunc_check_set_skb)
-> +
-> +static const struct btf_kfunc_id_set bpf_kfunc_set_skb = {
-> +	.owner = THIS_MODULE,
-> +	.set = &bpf_kfunc_check_set_skb,
-> +};
-> +
-> +static int __init bpf_kfunc_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_kfunc_set_skb);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_ACT, &bpf_kfunc_set_skb);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SK_SKB, &bpf_kfunc_set_skb);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCKET_FILTER, &bpf_kfunc_set_skb);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SKB, &bpf_kfunc_set_skb);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_OUT, &bpf_kfunc_set_skb);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_IN, &bpf_kfunc_set_skb);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_XMIT, &bpf_kfunc_set_skb);
-> +	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_SEG6LOCAL, &bpf_kfunc_set_skb);
-> +}
-> +late_initcall(bpf_kfunc_init);
-
-
+It's "working" by accident.
