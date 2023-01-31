@@ -2,182 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D55836833D2
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 18:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA2D6833E2
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 18:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbjAaR0L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 12:26:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33498 "EHLO
+        id S229871AbjAaRbU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 12:31:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231621AbjAaR0J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 12:26:09 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B96530F5;
-        Tue, 31 Jan 2023 09:26:02 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8A3CAB81E23;
-        Tue, 31 Jan 2023 17:21:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49748C433EF;
-        Tue, 31 Jan 2023 17:20:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675185659;
-        bh=+pvUZxvhRwxJP5MRWV/FG2QALpGhPM4yg4kJFt4ZFlI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FPKZBNkr4YMaum4++SVy1d+KjqgdDu04hJDzmRHOeWM9Rw4g69HGsE+J50iv0S43P
-         052q+53XWlexnd48eQqCpsIJNW1uEY7PVJhPoNzXFw2DiD04IXHXB0faQNuLHaSuPS
-         smV8LoJamcPlIQuTxPiKxxEKhyj0NdF9NuypU1FuTHfDnNzma/AfnksxfnhP5Y4LVV
-         w9d2T0xHZWqXIz3nqK2rmYe4yx1tiSzdBBmXLj3vR6waNmcPhyc+MT3Vv3bVGkPzvn
-         sQdaiCVDl566Z+33gbNAQX8emOTxTkm8eUac3GQTTfup+SH+Lit1/NHy5rX/WOiy0a
-         sJYZdK5NKel9A==
-Date:   Tue, 31 Jan 2023 10:20:56 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231881AbjAaRbT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 12:31:19 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9485C561A4;
+        Tue, 31 Jan 2023 09:31:17 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id v17so19422148lfd.7;
+        Tue, 31 Jan 2023 09:31:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gUiDjq2S2vaAEK8eNz2fJgHVZeFErtwWVx84asj9SyU=;
+        b=G2R9ePxcZkjX91SDf4M2gkBjHdGcwHWZf87vYtFCa1uGuRvYcaBBs2+YFrmHGOOr7i
+         jB+zkZxmTaZM6vTl3KSqmwyb430jTLJJWli6g+DrRHO+FxieqXS9gtS0ij9M7uhv7MRW
+         Mlloqv7rImX8tKSkC/X6Kz2oxeU2w0mdcgjOOwCB778mlJirHWCp8Zx9oCszB/PArpdt
+         hHDdOKJwcolT9KrYCKqtrIIbtD+7lGZBd+02/kKpd568bMjh4rMvyxQUQBIOmGfDeZ/b
+         ypGQRNU3/UFZBUYS9eR16H2RU9l5xhNYIr2KDuDt4OLaBsGIdabv1Kz6pbyJXWbNOiEC
+         I8Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gUiDjq2S2vaAEK8eNz2fJgHVZeFErtwWVx84asj9SyU=;
+        b=UruyZQKdAtSxYsPoVdA1ej7yD+r0Qb3aDputTXWrJx31wFyFgT/aYBQc3dgRzDydwi
+         ZpoM8BHKkSk/rqXx95apLijPFNaI0bT8385sbBXqVLKZfOTr387Rh4oBLPMcKJHP5trb
+         XFVtCuY66kpiuEqju8Ro1Nf1YWKRcLpe+0B19a5qY51aMICGVluUMQjj3iIbLMsEGr05
+         eA6os0F85PNLbna3+EMwW7/KsSvmNFNdcKbDoZOKVlwPo7v3TNlq09Ebyqp9vfy6s7hY
+         ta2geuicQMIs88+zDldDedbe25rgxiJ6KNvLYQF0r8wSj3PdPJ/D5M9f3WT4F9XTatDC
+         ygQQ==
+X-Gm-Message-State: AFqh2ko/RKLRXeBh/YMDJmsqLh659u0BFhZx/jmeiEFrYw5Eu3FFslmi
+        J4sWAgKkxNBWwrGRxHsor1TQrNMn0sWo4IEk6Ghp5HSnuUE=
+X-Google-Smtp-Source: AK7set8xhKvw8br45SCrwEarB0blAscO+iGTd2VBtFC0r9ivc0Uzzoe7F3WBwZP7O3Zw5kPMekpXQ3iBw7h9Yur0Yng=
+X-Received: by 2002:a17:907:780c:b0:88c:1d3d:6fab with SMTP id
+ la12-20020a170907780c00b0088c1d3d6fabmr1051698ejc.299.1675186265480; Tue, 31
+ Jan 2023 09:31:05 -0800 (PST)
+MIME-Version: 1.0
+References: <20230123171506.71995-4-void@manifault.com> <20230123183305.2mgoxgw4ca3sfk24@macbook-pro-6.dhcp.thefacebook.com>
+ <Y87We/92xiv5/+g+@maniforge.lan> <20230123185434.ybfhrmbootcnjuoj@macbook-pro-6.dhcp.thefacebook.com>
+ <ebff2166-8a70-af62-b859-6b5c6b008b36@iogearbox.net> <87o7qphspq.fsf@meer.lwn.net>
+ <Y88sMlmrq0wCFSRP@maniforge.lan> <87lelsgf60.fsf@meer.lwn.net>
+ <Y9AFT4pTydKh+PD3@maniforge.lan> <7cecda8c-9499-4fc1-784c-4e6174122a1f@oracle.com>
+ <Y9k3bz5h8VDqDoZw@maniforge>
+In-Reply-To: <Y9k3bz5h8VDqDoZw@maniforge>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 31 Jan 2023 09:30:54 -0800
+Message-ID: <CAADnVQJQ3ofRtvY_55O3yA3eSNrj+kY3=nO0a3QJMyrZgmyBEg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] bpf: Use BPF_KFUNC macro at all kfunc definitions
+To:     David Vernet <void@manifault.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@meta.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Connor OBrien <connoro@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v4 2/2] tools/resolve_btfids: Alter how HOSTCC is forced
-Message-ID: <Y9lN+H3ModGwwKV6@dev-arch.thelio-3990X>
-References: <20230124064324.672022-1-irogers@google.com>
- <20230124064324.672022-2-irogers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230124064324.672022-2-irogers@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Ian,
+On Tue, Jan 31, 2023 at 7:44 AM David Vernet <void@manifault.com> wrote:
+>
+> On Tue, Jan 31, 2023 at 03:15:25PM +0000, Alan Maguire wrote:
+> > On 24/01/2023 16:20, David Vernet wrote:
+> > > On Tue, Jan 24, 2023 at 07:50:31AM -0700, Jonathan Corbet wrote:
+> > >> David Vernet <void@manifault.com> writes:
+> > >>
+> > >>> I was perhaps a bit naive to think we could just throw a __bpf_kfunc
+> > >>> macro onto the function signatures and call it a day :-) I think it's
+> > >>> probably best to table this for now, and either I or someone else can
+> > >>> come back to it when we have bandwidth to solve the problem more
+> > >>> appropriately.
+> > >>
+> > >> Now I feel bad ... I was just tossing out a thought, not wanting to
+> > >> bikeshed this work into oblivion.  If what you have solves a real
+> > >
+> > > No apologies necessary. I don't think this qualifies as bikeshedding.
+> > > IMO folks are raising legitimate UX concerns, which is important and
+> > > worth getting right.
+> > >
+> > >> problem and is the best that can be done now, perhaps it should just go
+> > >> in and a "more appropriate" solution can be adopted later, should
+> > >> somebody manage to come up with it?
+> > >
+> > > That would be my preference, but I also understand folks' sentiment of
+> > > wanting to keep out what they feel like is odd syntax, as Christoph said
+> > > in [0], and Daniel alluded to earlier in this thread.
+> > >
+> > > [0]: https://lore.kernel.org/all/Y8+FeH7rz8jDTubt@infradead.org/
+> > >
+> > > I tested on an LTO build and wrapper kfuncs (with external linkage) were
+> > > not being stripped despite not being called from anywhere else in the
+> > > kernel, so for now I _think_ it's safe to call this patch set more of a
+> > > cleanup / future-proofing than solving an immediate and pressing problem
+> > > (as long as anyone adding kfuncs carefully follows the directions in
+> > > [1]). In other words, I think we have some time to do this the right way
+> > > without paying too much of a cost later. If we set up the UX correctly,
+> > > just adding an EXPORT_SYMBOL_KFUNC call (or something to that effect,
+> > > including just using BTF_ID_FLAGS) should be minimal effort even if
+> > > there are a lot more kfuncs by then.
+> > >
+> > > [1]: https://docs.kernel.org/bpf/kfuncs.html
+> > >
+> > > If it turns out that we start to observe problems in LTO builds without
+> > > specifying __used and/or noinline, or if folks are repeatedly making
+> > > mistakes when adding kfuncs (by e.g. not giving wrapper kfuncs external
+> > > linkage) then I think it would be a stronger case to get this in now and
+> > > fix it up later.
+> > >
+> >
+> > hi David,
+> >
+> > I think I may have stumbled upon such a case. We're working on improving
+> > the relationship between the generated BPF Type Format (BTF) info
+> > for the kernel and the actual function signatures, doing things like
+> > spotting optimized-out parameters and not including such functions
+> > in the final BTF since tracing such functions violates user expectations.
+> > The changes also remove functions with inconsistent prototypes (same
+> > name, different function prototype).
+> >
+> > As part of that work [1], I ran into an issue with kfuncs. Because some of these
+> > functions have minimal definitions, the compiler tries to be clever and as
+> > a result parameters are not represented in DWARF. As a consequence of this,
+> > we do not generate a BTF representation for the kfunc (since DWARF is telling
+> > us the function has optimized-out parameters), and so then don't have BTF ids
+> > for the associated kfunc, which is then not usable. The issue of trace accuracy
+> > is important for users, so we're hoping to land those changes in dwarves soon.
 
-On Mon, Jan 23, 2023 at 10:43:24PM -0800, Ian Rogers wrote:
-> HOSTCC is always wanted when building. Setting CC to HOSTCC happens
-> after tools/scripts/Makefile.include is included, meaning flags are
-> set assuming say CC is gcc, but then it can be later set to HOSTCC
-> which may be clang. tools/scripts/Makefile.include is needed for host
-> set up and common macros in objtool's Makefile. Rather than override
-> CC to HOSTCC, just pass CC as HOSTCC to Makefile.build, the libsubcmd
-> builds and the linkage step. This means the Makefiles don't see things
-> like CC changing and tool flag determination, and similar, work
-> properly.
-> 
-> Also, clear the passed subdir as otherwise an outer build may break by
-> inadvertently passing an inappropriate value.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/bpf/resolve_btfids/Makefile | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> index 1fe0082b2ecc..daed388aa5d7 100644
-> --- a/tools/bpf/resolve_btfids/Makefile
-> +++ b/tools/bpf/resolve_btfids/Makefile
-> @@ -18,14 +18,11 @@ else
->  endif
->  
->  # always use the host compiler
-> -AR       = $(HOSTAR)
-> -CC       = $(HOSTCC)
-> -LD       = $(HOSTLD)
-> -ARCH     = $(HOSTARCH)
-> +HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)" \
-> +		  EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
-> +
->  RM      ?= rm
->  CROSS_COMPILE =
-> -CFLAGS  := $(KBUILD_HOSTCFLAGS)
-> -LDFLAGS := $(KBUILD_HOSTLDFLAGS)
->  
->  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
->  
-> @@ -56,12 +53,12 @@ $(OUTPUT) $(OUTPUT)/libsubcmd $(LIBBPF_OUT):
->  
->  $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
->  	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(SUBCMD_OUT) \
-> -		    DESTDIR=$(SUBCMD_DESTDIR) prefix= \
-> +		    DESTDIR=$(SUBCMD_DESTDIR) $(HOST_OVERRIDES) prefix= subdir= \
->  		    $(abspath $@) install_headers
->  
->  $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUT)
->  	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(LIBBPF_OUT)    \
-> -		    DESTDIR=$(LIBBPF_DESTDIR) prefix= EXTRA_CFLAGS="$(CFLAGS)" \
-> +		    DESTDIR=$(LIBBPF_DESTDIR) $(HOST_OVERRIDES) prefix= subdir= \
->  		    $(abspath $@) install_headers
->  
->  LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
-> @@ -80,11 +77,11 @@ export srctree OUTPUT CFLAGS Q
->  include $(srctree)/tools/build/Makefile.include
->  
->  $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
-> -	$(Q)$(MAKE) $(build)=resolve_btfids
-> +	$(Q)$(MAKE) $(build)=resolve_btfids $(HOST_OVERRIDES)
->  
->  $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
->  	$(call msg,LINK,$@)
-> -	$(Q)$(CC) $(BINARY_IN) $(LDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
-> +	$(Q)$(HOSTCC) $(BINARY_IN) $(KBUILD_HOSTLDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
->  
->  clean_objects := $(wildcard $(OUTPUT)/*.o                \
->                              $(OUTPUT)/.*.o.cmd           \
-> -- 
-> 2.39.0.246.g2a6d74b583-goog
-> 
+Alan,
 
-I just bisected a linking failure when building resolve_btfids with
-clang to this change as commit 13e07691a16f ("tools/resolve_btfids:
-Alter how HOSTCC is forced") in the bpf-next tree.
+which kfuncs suffer from missing dwarf ?
+I'm assuming that issues happens only with your new pahole patches
+that are trying to detect all optimized out args, right?
 
-It appears to be related to whether or not CROSS_COMPILE is specified,
-which we have to do for certain architectures and configurations still.
-arm64 is not one of those but it helps demonstrate the issue.
+> Hi Alan,
+>
+> I see. Thanks for explaining. So it seems that maybe the issue is
+> slightly more urgent than we first thought. Given that folks aren't keen
+> on the BPF_KFUNC macro approach that wraps the function definition,
+> maybe we can go back to the __bpf_kfunc proposal from [0] as a stopgap
+> solution until we can properly support something like
+> EXPORT_SYMBOL_KFUNC. Alexei -- what do you think?
+>
+> [0]: https://lore.kernel.org/bpf/Y7kCsjBZ%2FFrsWW%2Fe@maniforge.lan/T/
+>
+> >
+> > As described in [2] adding a prefixed
+> >
+> > __attribute__ ((optimize("O0")))
 
-  # Turn off CONFIG_DEBUG_INFO_REDUCED and turn on CONFIG_DEBUG_INFO_BTF
-  $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- HOSTLDFLAGS=-fuse-ld=lld LLVM=1 defconfig menuconfig
+That won't work.
+This attr sort-of "works" in gcc only, but it's discouraged
+and officially considered broken by gcc folks.
+There are projects open and close source that use this attr,
+but it's very fragile.
+Also we really don't want to reduce optimizations in kfuncs.
+They need to be fast.
 
-  $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- HOSTLDFLAGS=-fuse-ld=lld LLVM=1 prepare
-  ld.lld: error: $LINUX_SRC/tools/bpf/resolve_btfids//resolve_btfids-in.o is incompatible with elf64-x86-64
-  clang-17: error: linker command failed with exit code 1 (use -v to see invocation)
-  ...
+> >
+> > ...to the kfunc sorts this out, so having that attribute rolled into a prefix
+> > definition like the one you've proposed would solve this in the short term.
+>
+> Does just using __attribute__((__used__)) work? Many of these kfuncs are
+> called on hotpaths in BPF programs, so compiling them with no
+> optimization is not an ideal or likely even realistic option. Not to
+> mention the fact that not all kfuncs are BPF-exclusive (meaning you can
+> export a normal kernel function that's called by the main kernel as a
+> kfunc).
 
-Before your change, with V=1, I see:
-
-clang -Wp,-MD,$LINUX_SRC/tools/bpf/resolve_btfids/.main.o.d -Wp,-MT,$LINUX_SRC/tools/bpf/resolve_btfids/main.o -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu11 -Wdeclaration-after-statement -g -I$LINUX_SRC/tools/include -I$LINUX_SRC/tools/include/uapi -I$LINUX_SRC/tools/bpf/resolve_btfids/libbpf/include -I$LINUX_SRC/tools/bpf/resolve_btfids/libsubcmd/include -D"BUILD_STR(s)=#s" -c -o $LINUX_SRC/tools/bpf/resolve_btfids/main.o main.c
-
-After, I see:
-
-clang -Wp,-MD,$LINUX_SRC/tools/bpf/resolve_btfids/.main.o.d -Wp,-MT,$LINUX_SRC/tools/bpf/resolve_btfids/main.o --target=aarch64-linux-gnu -g -I$LINUX_SRC/tools/include -I$LINUX_SRC/tools/include/uapi -I$LINUX_SRC/tools/bpf/resolve_btfids/libbpf/include -I$LINUX_SRC/tools/bpf/resolve_btfids/libsubcmd/include -D"BUILD_STR(s)=#s" -c -o $LINUX_SRC/tools/bpf/resolve_btfids/main.o main.c
-
-We seem to have taken on a '--target=aarch64-linux-gnu' (changing the
-target of resolve_btfids-in.o) and we dropped the warning flags.
-
-I think this comes from the clang block in
-tools/scripts/Makefile.include, which is included into the
-resolve_btfids Makefile via tools/lib/bpf/Makefile.
-
-I am not super familiar with the tools build system, otherwise I would
-try to provide a patch. I tried moving CROSS_COMPILE from a recursive to
-simple variable ('=' -> ':=') and moving it to HOST_OVERRIDES but those
-did not appear to resolve it for me.
-
-If there is any other information I can provide or patches I can test,
-please let me know.
-
-Cheers,
-Nathan
+let's annotate with __used and __weak to prevent compilers optimizing
+things out. I think just __used won't be enough, but __weak should do
+the trick. And noinline.
+There is also __attribute__((visibility("hidden"))) to experiment with.
