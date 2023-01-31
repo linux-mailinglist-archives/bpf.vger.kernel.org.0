@@ -2,192 +2,297 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E7E68214C
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 02:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1766682150
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 02:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjAaBNd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 20:13:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
+        id S229817AbjAaBRf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 20:17:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbjAaBNc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 20:13:32 -0500
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B182D46;
-        Mon, 30 Jan 2023 17:13:31 -0800 (PST)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-4c24993965eso183777197b3.12;
-        Mon, 30 Jan 2023 17:13:31 -0800 (PST)
+        with ESMTP id S229505AbjAaBRe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 20:17:34 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D2626B0
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 17:17:33 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id u21so12922550edv.3
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 17:17:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dhf4y1fJLEC86HcvqL9Le+F6IAiYYM0N2qL8VT2b4Ic=;
-        b=BXWbpb/DQEulNYbvdjW82Gr7lLZYzbcRTbuaO8+OmomTm5MwvKj2/I/Jk1HxVcUhh0
-         MFvbCC1et7lAqE99hwQQywfZqk6kksSPprx6LO4y+La3QCfB7Ses/xGWP26PWtIGFYDu
-         uWaoEApBWJta2GhPH8kAhjD9DErbk2rKe/L50pTddU/DB3fy8WtOGQ8MNhfw/yzEGlaZ
-         fSIZvD/BxFFQ5LeGxWD1a0eFR39psK8Yd4bjf7BhHDbckRXvKfznfMJXN9GbLobiiJLl
-         DU3KAQR5hbMBwpmDcJO1Zz6m5p0anV8oJPOlkqKXEGQqAzp+AUzIZE8iilupUtBXMHGL
-         POuQ==
+        bh=N5XgGzbFdxRBrwG30TwdomA/gWRCq7QGlGUA1KoeUeY=;
+        b=BG/rb5kSy2KFi8oWFQEL/djbexPoT7zvfMfP27OmiCuKBI49sz3myOC+qwSVNJ15fr
+         eayDHxumgOdn5as+5wdHFN6ypbMj0gbAp17IaIIDwmnL7jmZ+B6lbPeoWkzFphZ1eWEG
+         9AgwxdigbXNsWQYaNcsAFGU1N8chlEqETbj/g80ZKp9ZAE94IM5ompvRoP3Z0NeCtKDM
+         Fny+wWdw2U3q2SKsx9le0884E5U0ihP7M+Eaml2CyX+whNFbK9Sns+pLwIOoLtpWmTOb
+         rW05rGbpxX+AilaN/EDd1ELvM5oymaj6y0hqkG64hZdEI18waucEau+NX/bexyxahsct
+         ICcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Dhf4y1fJLEC86HcvqL9Le+F6IAiYYM0N2qL8VT2b4Ic=;
-        b=2KZOWw8cyjtWbx2bfFAbENG7K9/J3bbOKi+BTngPSS6uhNQ6WJJU9mV59NKWJnYZd4
-         NP5fiUufIAggLWWAeLWBaK2f1268v0a/Y3IZLbJPZqMjWs9zVs4RXFaveb3ZaV5YHQd/
-         vWFiEtSQb2Hb9/nW0VofyAZ3cRJKy7PSyfzSHgDRz2nsqHLI+9qu6V5nNIO2U8ViVpUR
-         crw9aD++jM2m9CFhdivVdQABk0y7JVJS0bBLCnp5r1YAbl6IsuW9fX6dImD+AOAC08dR
-         i9UheDC5gR8hTPnUFXfgRZ7cgTx1Kb15KLIgPxd+pi0HPCRY3xvkfHJmksLC+I5hh43/
-         UHVA==
-X-Gm-Message-State: AO0yUKVBeo5td+DZiPvv9niScON7xwzBwxHv4+bIhX+bvFHZy4JzBCOe
-        Zn2im+2FSMABapLLZsnuSMRiFD+TvgFIz4dTM4Y=
-X-Google-Smtp-Source: AK7set+x2AOlM6LFmLXNFkZ1ypgWXRSclHParwoP+FPRGFwJGxdKFvX1KYFZE6yhs/1T1ASyJCUJoo0MjWh6gyJZJRY=
-X-Received: by 2002:a81:6883:0:b0:506:3b16:8373 with SMTP id
- d125-20020a816883000000b005063b168373mr2868487ywc.24.1675127610929; Mon, 30
- Jan 2023 17:13:30 -0800 (PST)
+        bh=N5XgGzbFdxRBrwG30TwdomA/gWRCq7QGlGUA1KoeUeY=;
+        b=3bLeewuse8/sTHMiUb1LyiCCNnd5hxT2Xl1QZwcPm1eec26krVVA3hS/JNF00Qcegt
+         K260wy99V1sOlEciE1enFTzioOCGoALXHA80UPlUGsaiUAxj0vEiSrh23FBf3zVOw4um
+         QnF/XWtfaWp33RsUPeUaVWXx0PoEtmR5r3OXzJu7NttBdE1tlHYuwDtdZ9v8xAaFdETZ
+         t5JEdCZaYOAFZXov9NNF6gyJsdYN3TXhFjrg9u1JJJs77FuG7SQI3X0eT31vhj6t8QWo
+         eOCsDDe/Si693oFSwOaNF2d+PraeAw59LpK1dUVWg1PssGHCbP92xH7OlSzHgOwjElc3
+         +QEQ==
+X-Gm-Message-State: AFqh2kqgf/SOPyRUKJbpdVZVrh1Q09+ubtNZ5cha2BS29bKV60c675ct
+        kdJhbVbtSqCRn/eaXJud2ZGXVRRc2HEGXiC2zRPH1DpB
+X-Google-Smtp-Source: AMrXdXsUVWbML2G7BzKe2TWFMAweVqE4cKFkvo1vNeI7k19KhzyE9w4C/ARV32KGQqOo9Kz/CeGq123ZHd18xjh4zvc=
+X-Received: by 2002:aa7:dbd9:0:b0:49c:ea59:46b with SMTP id
+ v25-20020aa7dbd9000000b0049cea59046bmr10191418edt.54.1675127851703; Mon, 30
+ Jan 2023 17:17:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20230127191703.3864860-1-joannelkoong@gmail.com>
- <20230127191703.3864860-4-joannelkoong@gmail.com> <CAEf4BzYK2JOtChh4VNTg4L9-u9kay3zzG8X6GqTkak22E37wig@mail.gmail.com>
- <CAJnrk1YEN+9dn4DKQQKAQGR4RU9HVVrVD2A3O7chet4tC6OG5A@mail.gmail.com> <CAEf4BzYA2sT7z+2W1XOd_nk2PC3mKST7MC2X8pRg1HfFK3yFpA@mail.gmail.com>
-In-Reply-To: <CAEf4BzYA2sT7z+2W1XOd_nk2PC3mKST7MC2X8pRg1HfFK3yFpA@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 30 Jan 2023 17:13:19 -0800
-Message-ID: <CAJnrk1Y61=Qc3fndvAPghgu8+iNwzU2wvtwsi2jk_NeEwdP9aw@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, netdev@vger.kernel.org,
-        memxor@gmail.com, kernel-team@fb.com
+References: <20230106142214.1040390-1-eddyz87@gmail.com> <CAEf4BzYoB8Ut7UM62dw6TquHfBMAzjbKR=aG_c74XaCgYYyikg@mail.gmail.com>
+ <e64e8dbea359c1e02b7c38724be72f354257c2f6.camel@gmail.com>
+ <CAEf4BzY3e+ZuC6HUa8dCiUovQRg2SzEk7M-dSkqNZyn=xEmnPA@mail.gmail.com>
+ <b836c36a68b670df8f649db621bb3ec74e03ef9b.camel@gmail.com>
+ <CAEf4Bza8q2P1mqN4LYwiYqssBiQDorjkFaZDsudOQFCb2825Vw@mail.gmail.com>
+ <CAEf4BzY9ikdrT5WN__QJgaYhWJ=h0Do8T7YkiYLpT9VftqecVg@mail.gmail.com>
+ <CAADnVQKs2i1iuZ5SUGuJtxWVfGYR9kDgYKhq3rNV+kBLQCu7rA@mail.gmail.com>
+ <CAADnVQLybn06cYYV3uf3FeAGMjOiL5riRzhV6f9fuFOHr9bL=g@mail.gmail.com> <dd76a0254d08b25d83ad30d6f07acef36e6223e1.camel@gmail.com>
+In-Reply-To: <dd76a0254d08b25d83ad30d6f07acef36e6223e1.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 30 Jan 2023 17:17:19 -0800
+Message-ID: <CAEf4BzYsVOiQLXu8tH75FA0Zvey2b7-0TR3aW2Wuqi+fKEtwgA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/2] bpf: Fix to preserve reg parent/live
+ fields when copying range info
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 5:06 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Jan 30, 2023 at 7:34 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> On Mon, Jan 30, 2023 at 4:56 PM Joanne Koong <joannelkoong@gmail.com> wrote:
-> >
-> > On Mon, Jan 30, 2023 at 4:48 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
+> On Thu, 2023-01-19 at 16:16 -0800, Alexei Starovoitov wrote:
+> [...]
+> > > > >
+> > > > > Just to be clear. My suggestion was to *treat* STACK_INVALID as
+> > > > > equivalent to STACK_MISC in stacksafe(), not really replace all the
+> > > > > uses of STACK_INVALID with STACK_MISC. And to be on the safe side, I'd
+> > > > > do it only if env->allow_ptr_leaks, of course.
+> > > >
+> > > > Well, that, and to allow STACK_INVALID if env->allow_ptr_leaks in
+> > > > check_stack_read_fixed_off(), of course, to avoid "invalid read from
+> > > > stack off %d+%d size %d\n" error (that's fixing at least part of the
+> > > > problem with uninitialized struct padding).
 > > >
-> > > On Fri, Jan 27, 2023 at 11:18 AM Joanne Koong <joannelkoong@gmail.com> wrote:
-> > > >
-> > > > Add skb dynptrs, which are dynptrs whose underlying pointer points
-> > > > to a skb. The dynptr acts on skb data. skb dynptrs have two main
-> > > > benefits. One is that they allow operations on sizes that are not
-> > > > statically known at compile-time (eg variable-sized accesses).
-> > > > Another is that parsing the packet data through dynptrs (instead of
-> > > > through direct access of skb->data and skb->data_end) can be more
-> > > > ergonomic and less brittle (eg does not need manual if checking for
-> > > > being within bounds of data_end).
-> > > >
-> > > > For bpf prog types that don't support writes on skb data, the dynptr is
-> > > > read-only (bpf_dynptr_write() will return an error and bpf_dynptr_data()
-> > > > will return a data slice that is read-only where any writes to it will
-> > > > be rejected by the verifier).
-> > > >
-> > > > For reads and writes through the bpf_dynptr_read() and bpf_dynptr_write()
-> > > > interfaces, reading and writing from/to data in the head as well as from/to
-> > > > non-linear paged buffers is supported. For data slices (through the
-> > > > bpf_dynptr_data() interface), if the data is in a paged buffer, the user
-> > > > must first call bpf_skb_pull_data() to pull the data into the linear
-> > > > portion.
-> > > >
-> > > > Any bpf_dynptr_write() automatically invalidates any prior data slices
-> > > > to the skb dynptr. This is because a bpf_dynptr_write() may be writing
-> > > > to data in a paged buffer, so it will need to pull the buffer first into
-> > > > the head. The reason it needs to be pulled instead of writing directly to
-> > > > the paged buffers is because they may be cloned (only the head of the skb
-> > > > is by default uncloned). As such, any bpf_dynptr_write() will
-> > > > automatically have its prior data slices invalidated, even if the write
-> > > > is to data in the skb head (the verifier has no way of differentiating
-> > > > whether the write is to the head or paged buffers during program load
-> > > > time). Please note as well that any other helper calls that change the
-> > > > underlying packet buffer (eg bpf_skb_pull_data()) invalidates any data
-> > > > slices of the skb dynptr as well. The stack trace for this is
-> > > > check_helper_call() -> clear_all_pkt_pointers() ->
-> > > > __clear_all_pkt_pointers() -> mark_reg_unknown().
-> > > >
-> > > > For examples of how skb dynptrs can be used, please see the attached
-> > > > selftests.
-> > > >
-> > > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > > > ---
-> > > >  include/linux/bpf.h            |  82 +++++++++------
-> > > >  include/linux/filter.h         |  18 ++++
-> > > >  include/uapi/linux/bpf.h       |  37 +++++--
-> > > >  kernel/bpf/btf.c               |  18 ++++
-> > > >  kernel/bpf/helpers.c           |  95 ++++++++++++++---
-> > > >  kernel/bpf/verifier.c          | 185 ++++++++++++++++++++++++++-------
-> > > >  net/core/filter.c              |  60 ++++++++++-
-> > > >  tools/include/uapi/linux/bpf.h |  37 +++++--
-> > > >  8 files changed, 432 insertions(+), 100 deletions(-)
-> > > >
+> > > +1 to Andrii's idea.
+> > > It should help us recover this small increase in processed states.
 > > >
-> > > [...]
+> [...]
 > > >
-> > > >  static const struct bpf_func_proto bpf_dynptr_write_proto = {
-> > > > @@ -1560,6 +1595,8 @@ static const struct bpf_func_proto bpf_dynptr_write_proto = {
-> > > >
-> > > >  BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u32, offset, u32, len)
-> > > >  {
-> > > > +       enum bpf_dynptr_type type;
-> > > > +       void *data;
-> > > >         int err;
-> > > >
-> > > >         if (!ptr->data)
-> > > > @@ -1569,10 +1606,36 @@ BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u32, offset, u3
-> > > >         if (err)
-> > > >                 return 0;
-> > > >
-> > > > -       if (bpf_dynptr_is_rdonly(ptr))
-> > > > -               return 0;
-> > > > +       type = bpf_dynptr_get_type(ptr);
-> > > > +
-> > > > +       switch (type) {
-> > > > +       case BPF_DYNPTR_TYPE_LOCAL:
-> > > > +       case BPF_DYNPTR_TYPE_RINGBUF:
-> > > > +               if (bpf_dynptr_is_rdonly(ptr))
-> > > > +                       return 0;
+> > > I've tried Andrii's suggestion:
 > > >
-> > > will something break if we return ptr->data for read-only LOCAL/RINGBUF dynptr?
-> >
-> > There will be nothing guarding against direct writes into read-only
-> > LOCAL/RINGBUF dynptrs if we return ptr->data. For skb type dynptrs,
-> > it's guarded by the ptr->data return pointer being marked as
-> > MEM_RDONLY in the verifier if the skb is non-writable.
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 7ee218827259..0f71ba6a56e2 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -3591,7 +3591,7 @@ static int check_stack_read_fixed_off(struct
+> > > bpf_verifier_env *env,
+> > >
+> > > copy_register_state(&state->regs[dst_regno], reg);
+> > >                                 state->regs[dst_regno].subreg_def = subreg_def;
+> > >                         } else {
+> > > -                               for (i = 0; i < size; i++) {
+> > > +                               for (i = 0; i < size &&
+> > > !env->allow_uninit_stack; i++) {
+> > >                                         type = stype[(slot - i) % BPF_REG_SIZE];
+> > >                                         if (type == STACK_SPILL)
+> > >                                                 continue;
+> > > @@ -3628,7 +3628,7 @@ static int check_stack_read_fixed_off(struct
+> > > bpf_verifier_env *env,
+> > >                 }
+> > >                 mark_reg_read(env, reg, reg->parent, REG_LIVE_READ64);
+> > >         } else {
+> > > -               for (i = 0; i < size; i++) {
+> > > +               for (i = 0; i < size && !env->allow_uninit_stack; i++) {
+> > >                         type = stype[(slot - i) % BPF_REG_SIZE];
+> > >                         if (type == STACK_MISC)
+> > >                                 continue;
+> > > @@ -13208,6 +13208,10 @@ static bool stacksafe(struct bpf_verifier_env
+> > > *env, struct bpf_func_state *old,
+> > >                 if (old->stack[spi].slot_type[i % BPF_REG_SIZE] ==
+> > > STACK_INVALID)
+> > >                         continue;
+> > >
+> > > +               if (env->allow_uninit_stack &&
+> > > +                   old->stack[spi].slot_type[i % BPF_REG_SIZE] == STACK_MISC)
+> > > +                       continue;
+> > >
+> > > and only dynptr/invalid_read[134] tests failed
+> > > which is expected and acceptable.
+> > > We can tweak those tests.
+> > >
+> > > Could you take over this diff, run veristat analysis and
+> > > submit it as an official patch? I suspect we should see nice
+> > > improvements in states processed.
 > >
 >
-> Ah, so we won't add MEM_RDONLY for bpf_dynptr_data()'s returned
-> PTR_TO_MEM if we know (statically) that dynptr is read-only?
+> Hi Alexei, Andrii,
+>
+> Please note that the patch
+> "bpf: Fix to preserve reg parent/live fields when copying range info"
+> that started this conversation was applied to `bpf` tree, not `bpf-next`,
+> so I'll wait until it gets its way to `bpf-next` before submitting formal
+> patches, as it changes the performance numbers collected by veristat.
+> I did all my experiments with this patch applied on top of `bpf-next`.
+>
+> I adapted the patch suggested by Alexei and put it to my github for
+> now [1]. The performance gains are indeed significant:
+>
+> $ ./veristat -e file,states -C -f 'states_pct<-30' master.log uninit-reads.log
+> File                        States (A)  States (B)  States    (DIFF)
+> --------------------------  ----------  ----------  ----------------
+> bpf_host.o                         349         244    -105 (-30.09%)
+> bpf_host.o                        1320         895    -425 (-32.20%)
+> bpf_lxc.o                         1320         895    -425 (-32.20%)
+> bpf_sock.o                          70          48     -22 (-31.43%)
+> bpf_sock.o                          68          46     -22 (-32.35%)
+> bpf_xdp.o                         1554         803    -751 (-48.33%)
+> bpf_xdp.o                         6457        2473   -3984 (-61.70%)
+> bpf_xdp.o                         7249        3908   -3341 (-46.09%)
+> pyperf600_bpf_loop.bpf.o           287         145    -142 (-49.48%)
+> strobemeta.bpf.o                 15879        4790  -11089 (-69.83%)
+> strobemeta_nounroll2.bpf.o       20505        3931  -16574 (-80.83%)
+> xdp_synproxy_kern.bpf.o          22564        7009  -15555 (-68.94%)
+> xdp_synproxy_kern.bpf.o          24206        6941  -17265 (-71.33%)
+> --------------------------  ----------  ----------  ----------------
+>
+> However, this comes at a cost of allowing reads from uninitialized
+> stack locations. As far as I understand access to uninitialized local
+> variable is one of the most common errors when programming in C
+> (although citation is needed).
 
-I think you meant will, not won't? If so, then yes we only add
-MEM_RDONLY for the returned data slice if we can pre-determine that
-the dynptr is read-only, else bpf_dynptr_data() will return null.
+Yeah, a citation is really needed :) I don't see this often in
+practice, tbh. What I do see in practice is that people are
+unnecessarily __builtint_memset(0) struct and initialize all fields
+with field-by-field initialization, instead of just using a nice C
+syntax:
+
+struct my_struct s = {
+   .field_a = 123,
+   .field_b = 234,
+};
+
+
+And all that just because there is some padding between field_a and
+field_b which the compiler won't zero-initialize.
 
 >
-> Ok, not a big deal, just something that we might want to improve in the future.
+> Also more tests are failing after register parentage chains patch is
+> applied than in Alexei's initial try: 10 verifier tests and 1 progs
+> test (test_global_func10.c, I have not modified it yet, it should wait
+> for my changes for unprivileged execution mode support in
+> test_loader.c). I don't really like how I had to fix those tests.
+>
+> I took a detailed look at the difference in verifier behavior between
+> master and the branch [1] for pyperf600_bpf_loop.bpf.o and identified
+> that the difference is caused by the fact that helper functions do not
+> mark the stack they access as REG_LIVE_WRITTEN, the details are in the
+> commit message [3], but TLDR is the following example:
+>
+>         1: bpf_probe_read_user(&foo, ...);
+>         2: if (*foo) ...
+>
+> Here `*foo` will not get REG_LIVE_WRITTEN mark when (1) is verified,
+> thus `*foo` read at (2) might lead to excessive REG_LIVE_READ marks
+> and thus more verification states.
 
-I'm curious to hear how you think this could be improved. If we're not
-able to know statically whether the dynptr is read-only or writable,
-then there's no way to enforce it in the verifier before the bpf
-program runs. Or is there some way to do this?
+This is a good fix in its own right, of course, we should definitely do this!
 
 >
-> > >
-> > > > +
-> > > > +               data = ptr->data;
-> > > > +               break;
-> > > > +       case BPF_DYNPTR_TYPE_SKB:
-> > > > +       {
-> > > > +               struct sk_buff *skb = ptr->data;
-> > > >
-> > >
-> > > [...]
+> I prepared a patch that changes helper calls verification to apply
+> REG_LIVE_WRITTEN when write size and alignment allow this, again
+> currently on my github [2]. This patch has less dramatic performance
+> impact, but nonetheless significant:
+>
+> $ veristat -e file,states -C -f 'states_pct<-30' master.log helpers-written.log
+> File                        States (A)  States (B)  States    (DIFF)
+> --------------------------  ----------  ----------  ----------------
+> pyperf600_bpf_loop.bpf.o           287         156    -131 (-45.64%)
+> strobemeta.bpf.o                 15879        4772  -11107 (-69.95%)
+> strobemeta_nounroll1.bpf.o        2065        1337    -728 (-35.25%)
+> strobemeta_nounroll2.bpf.o       20505        3788  -16717 (-81.53%)
+> test_cls_redirect.bpf.o           8129        4799   -3330 (-40.96%)
+> --------------------------  ----------  ----------  ----------------
+>
+> I suggest that instead of dropping a useful safety check I can further
+> investigate difference in behavior between "uninit-reads.log" and
+> "helpers-written.log" and maybe figure out other improvements.
+> Unfortunately the comparison process is extremely time consuming.
+>
+> wdyt?
+
+I think reading uninitialized stack slot concerns are overblown in
+practice (in terms of their good implications for programmer's
+productivity), I'd still do it if only in the name of improving user
+experience.
+
+>
+> [1] https://github.com/eddyz87/bpf/tree/allow-uninit-stack-reads
+> [2] https://github.com/eddyz87/bpf/tree/mark-helper-stack-as-written
+> [3] https://github.com/kernel-patches/bpf/commit/b29842309271c21cbcb3f85d56cdf9f45f8382d2
+>
+> > Indeed, some massive improvements:
+> > ./veristat -e file,prog,states -C -f 'states_diff<-10' bb aa
+> > File                              Program                  States (A)
+> > States (B)  States    (DIFF)
+> > --------------------------------  -----------------------  ----------
+> > ----------  ----------------
+> > bpf_flow.bpf.o                    flow_dissector_0                 78
+> >         67     -11 (-14.10%)
+> > loop6.bpf.o                       trace_virtqueue_add_sgs         336
+> >        316      -20 (-5.95%)
+> > pyperf100.bpf.o                   on_event                       6213
+> >       4670   -1543 (-24.84%)
+> > pyperf180.bpf.o                   on_event                      11470
+> >       8364   -3106 (-27.08%)
+> > pyperf50.bpf.o                    on_event                       3263
+> >       2370    -893 (-27.37%)
+> > pyperf600.bpf.o                   on_event                      30335
+> >      22200   -8135 (-26.82%)
+> > pyperf600_bpf_loop.bpf.o          on_event                        287
+> >        145    -142 (-49.48%)
+> > pyperf600_nounroll.bpf.o          on_event                      37101
+> >      34169    -2932 (-7.90%)
+> > strobemeta.bpf.o                  on_event                      15939
+> >       4893  -11046 (-69.30%)
+> > strobemeta_nounroll1.bpf.o        on_event                       1936
+> >       1538    -398 (-20.56%)
+> > strobemeta_nounroll2.bpf.o        on_event                       4436
+> >       3991    -445 (-10.03%)
+> > strobemeta_subprogs.bpf.o         on_event                       2025
+> >       1689    -336 (-16.59%)
+> > test_cls_redirect.bpf.o           cls_redirect                   4865
+> >       4042    -823 (-16.92%)
+> > test_cls_redirect_subprogs.bpf.o  cls_redirect                   4506
+> >       4389     -117 (-2.60%)
+> > test_tcp_hdr_options.bpf.o        estab                           211
+> >        178     -33 (-15.64%)
+> > test_xdp_noinline.bpf.o           balancer_ingress_v4             262
+> >        235     -27 (-10.31%)
+> > test_xdp_noinline.bpf.o           balancer_ingress_v6             253
+> >        210     -43 (-17.00%)
+> > xdp_synproxy_kern.bpf.o           syncookie_tc                  25086
+> >       7016  -18070 (-72.03%)
+> > xdp_synproxy_kern.bpf.o           syncookie_xdp                 24206
+> >       6941  -17265 (-71.33%)
+> > --------------------------------  -----------------------  ----------
+> > ----------  ----------------
+>
