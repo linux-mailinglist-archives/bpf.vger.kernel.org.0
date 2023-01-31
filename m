@@ -2,73 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD8C6835D8
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 19:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D106835FC
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 20:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbjAaS5i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 13:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
+        id S232038AbjAaTCb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 14:02:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231932AbjAaS5g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 13:57:36 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B095998F
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:57:22 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id x7so12156545edr.0
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:57:21 -0800 (PST)
+        with ESMTP id S232067AbjAaTCa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 14:02:30 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B1359B59
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 11:02:09 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 7so10778261pga.1
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 11:02:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KbEz2KJXzbNkHBd/2oxt7Tv/IIxUZtdzNnoYk3cFQzE=;
-        b=gDpvQcSxpngp2SSjT50XqDLTyJHnyy+RGDUjvvy/B3sWXRGAS1GU0vPavG9egKyvwK
-         Kxu62wK8aJDa1xpRmJMn8mB2k1bdTtBG03NA7fpAmUqXehqlBhk5prYzRgrVCuLE9TJL
-         C126NO0vh55qTUZ/7zEXKg4oSmN3te5enk1TqBuGiOywtpl7HCd2DgOI4/FJ29OPL96D
-         i1sW9btdDEF2Jv7AVj1NV/YmmlI/v53hk8SIcQ1bR6IBCu06YskWfALdEZqbODfInYG9
-         nsjkL1+yMoi1elVnBsFfD3fefpXEXjKkyR307Qr2Bwd6BwgUBNb15hskoDqGOcA2518f
-         E6Lg==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iSlbitpVXsAiKWUKOS8hJcan2Um7j/V24BYCeu085pQ=;
+        b=fdvPWwMKP2aLjGaQ8NVXQsaovrWw5foZPtc/QP3r0wy9C/u06t1dfcKtwtMmDD5F12
+         FZtTLNPDw3In1StcXGAVJ/mdFvbA5qNHADV86MCamiZ2ZXKKoSnJojUGhMsTROxc8Glx
+         h/jH0cBg1T8J/4agw+jc7V2tSXMa4jlHuI0aqLB9xLcIg/DW+447kH2fy6uA69JJj0pq
+         3C8evbw5mt/b6SWNqaHToBxE1pxuL5ABD9QJCyQmMeOCjaOJUt9SryikrP80SnjoHrVI
+         0m8djGD8QPjdeDR7Q1jOFvpKMkqm9ls/AgKR0zufuSnHKzp8/HfJ+WiARA1P+nCdBP+c
+         4mqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KbEz2KJXzbNkHBd/2oxt7Tv/IIxUZtdzNnoYk3cFQzE=;
-        b=MXHNmlK6ERRfN3iirQeHv9uly7VeK3OYQRjL0ussvGL/bYfBQJa+epgeeuYib/U2IQ
-         IpQsEiFd4QamThK2RcB41I6y+hsInE9lPe0V+Aivfdkyygd7UwVBsdvop1K4w4EZMsOC
-         3P8wfKlJcP9vKiDZS+78twvuYdtuQugBU/9wH/A4qkSMmPjyicUHc2yR5bXPJjt97Oq3
-         4KzdhyxprptJCYxO7yzw9038r/vJ6donO792kWOhHG6ZF/+K/RbU0w7VjwDE5u3sa0c+
-         7bSenLLK+LVGxpEak2FxT1KC5LCAqsTfrtg8fmlSbWSPNWMoOUVo62IJyjeE9LBSGHFn
-         jRRw==
-X-Gm-Message-State: AO0yUKWIKnBB16c8e3QZ8MCgb4lDtN6iCJ8djyNuAURX/XPFJ0WmEZNK
-        H0LcxKYQlzY49Z0egbneoXHSYPvmbqwyFZJ2XnA=
-X-Google-Smtp-Source: AK7set9kd8D1T6sOOHL9hQdXhrAy9zXYmcM0hc9uTQ8oJ+jEHx4ePx8l+nEnSs+42anVNWRbebqFZA==
-X-Received: by 2002:a05:6402:550f:b0:49f:da00:47a5 with SMTP id fi15-20020a056402550f00b0049fda0047a5mr31758220edb.25.1675191440466;
-        Tue, 31 Jan 2023 10:57:20 -0800 (PST)
-Received: from lavr ([2a02:168:f656:0:fa3:6e35:7858:23ee])
-        by smtp.gmail.com with ESMTPSA id i22-20020a0564020f1600b004a2440f0150sm1296034eda.97.2023.01.31.10.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Jan 2023 10:57:20 -0800 (PST)
-Date:   Tue, 31 Jan 2023 19:57:18 +0100
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 4/6] selftest/bpf/benchs: make quiet option
- common
-Message-ID: <Y9lkjnQ/cSDUW2P+@lavr>
-References: <20230127181457.21389-1-aspsk@isovalent.com>
- <20230127181457.21389-5-aspsk@isovalent.com>
- <CAEf4BzYDnGo+5gZKZc-gYTk0ES+s3hOSv7SKCZ9dV-oSnP6wXQ@mail.gmail.com>
- <Y9j0Mq4W5o+nTR6c@lavr>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iSlbitpVXsAiKWUKOS8hJcan2Um7j/V24BYCeu085pQ=;
+        b=jyPzV5Tf+hXuFmRA4ibj4dqNyMNL2bvVFF9OAF/qFnZwdKtO089F+2BCWyLqf0tEFH
+         UpU2kmICSVVjDDyIH5goQPmCiKoApO6PMYMGd7wcOnE/ayj9HH8Toe9tlSNkYHezn90T
+         UlL1mZr5DCH/WYY8h8pnpkqfH2e4UTrI7xcc4+2MGJE0+rOfiMpa5hXEIwANOxjczqPo
+         lpBdzNQZhatEUfBmKbKjRriiySgkhnH/cqsk61S3vpEK3Io/98eXHACnZH5P2NM9rMbw
+         7zc9fSBCVxUcmFZGqKleaPqVN15H0g3xqZboknElfbTvIVORPXUWyUdDQJitep7Aj5Yt
+         Ho1A==
+X-Gm-Message-State: AFqh2krGA3lgr1GFMcvm1AilfZ/zK7jnzqmJ+bn51botjLBrtyWJbfe1
+        Z5mY8Pm7yFFgTVOV4f70yLyFLQqIWvxLkt/A6F73gA==
+X-Google-Smtp-Source: AMrXdXsQiX/y+zxoMR4fjq09QC3yLQ82xRlHwgrrx86+hvYct8MxPYHtPo6KhXYHINBUEQsWoCXJoGqyQKakDT8vxoI=
+X-Received: by 2002:a63:946:0:b0:4cf:7ba0:dd5a with SMTP id
+ 67-20020a630946000000b004cf7ba0dd5amr6008626pgj.119.1675191728977; Tue, 31
+ Jan 2023 11:02:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9j0Mq4W5o+nTR6c@lavr>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <167482734243.892262.18210955230092032606.stgit@firesoul>
+ <87cz70krjv.fsf@toke.dk> <CAKH8qBtc0TRorF2zsD0dZjgredpzcmczK=KMgt1mpEX_mQG2Kg@mail.gmail.com>
+ <839c6cbb-1572-b3a8-57eb-2aa2488101dd@redhat.com>
+In-Reply-To: <839c6cbb-1572-b3a8-57eb-2aa2488101dd@redhat.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 31 Jan 2023 11:01:57 -0800
+Message-ID: <CAKH8qBtcDqru=_g1h17ogu26FTwRLOgyyNTO-5PY2Ur2o7vhXw@mail.gmail.com>
+Subject: Re: [xdp-hints] [PATCH bpf-next RFC V1] selftests/bpf:
+ xdp_hw_metadata clear metadata when -EOPNOTSUPP
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, dsahern@gmail.com,
+        willemb@google.com, void@manifault.com, kuba@kernel.org,
+        xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,53 +77,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 23/01/31 11:57, Anton Protopopov wrote:
-> On 23/01/30 04:10, Andrii Nakryiko wrote:
-> > On Fri, Jan 27, 2023 at 10:14 AM Anton Protopopov <aspsk@isovalent.com> wrote:
-> > >
-> > > The "local-storage-tasks-trace" benchmark has a `--quiet` option. Move it to
-> > > the list of common options, so that the main code and other benchmarks can use
-> > > (now global) env.quiet as well.
-> > >
-> > > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/bench.c               | 15 +++++++++++++++
-> > >  tools/testing/selftests/bpf/bench.h               |  1 +
-> > >  .../benchs/bench_local_storage_rcu_tasks_trace.c  | 14 +-------------
-> > >  3 files changed, 17 insertions(+), 13 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-> > > index ba93f1b268e1..42bf41a9385e 100644
-> > > --- a/tools/testing/selftests/bpf/bench.c
-> > > +++ b/tools/testing/selftests/bpf/bench.c
-> > > @@ -16,6 +16,7 @@ struct env env = {
-> > >         .warmup_sec = 1,
-> > >         .duration_sec = 5,
-> > >         .affinity = false,
-> > > +       .quiet = false,
-> > >         .consumer_cnt = 1,
-> > >         .producer_cnt = 1,
-> > >  };
-> > > @@ -257,6 +258,7 @@ static const struct argp_option opts[] = {
-> > >         { "consumers", 'c', "NUM", 0, "Number of consumer threads"},
-> > >         { "verbose", 'v', NULL, 0, "Verbose debug output"},
-> > >         { "affinity", 'a', NULL, 0, "Set consumer/producer thread affinity"},
-> > > +       { "quiet", 'q', "{0,1}", OPTION_ARG_OPTIONAL, "If true, be quiet"},
-> > 
-> > given the default is not quiet, why add 0 or 1? -q for quiet, no "-q"
-> > for not quiet? Keeping it simple?
-> 
-> The local-storage-tasks-trace benchmark expected 0 or 1 there, so I didn't want
-> to break any script which utilize this option.
-> 
-> The new parser accepts the old --quiet=0|1 for consistency, but also -q|--quiet
-> without value, as you've suggested (I pass OPTION_ARG_OPTIONAL and set
-> quiet=true if arg is NULL in the new parser).
+On Tue, Jan 31, 2023 at 5:00 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
+>
+>
+>
+> On 27/01/2023 18.18, Stanislav Fomichev wrote:
+> > On Fri, Jan 27, 2023 at 5:58 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+> >>
+> >>> The AF_XDP userspace part of xdp_hw_metadata see non-zero as a signal=
+ of
+> >>> the availability of rx_timestamp and rx_hash in data_meta area. The
+> >>> kernel-side BPF-prog code doesn't initialize these members when kerne=
+l
+> >>> returns an error e.g. -EOPNOTSUPP.  This memory area is not guarantee=
+d to
+> >>> be zeroed, and can contain garbage/previous values, which will be rea=
+d
+> >>> and interpreted by AF_XDP userspace side.
+> >>>
+> >>> Tested this on different drivers. The experiences are that for most
+> >>> packets they will have zeroed this data_meta area, but occasionally i=
+t
+> >>> will contain garbage data.
+> >>>
+> >>> Example of failure tested on ixgbe:
+> >>>   poll: 1 (0)
+> >>>   xsk_ring_cons__peek: 1
+> >>>   0x18ec788: rx_desc[0]->addr=3D100000000008000 addr=3D8100 comp_addr=
+=3D8000
+> >>>   rx_hash: 3697961069
+> >>>   rx_timestamp:  9024981991734834796 (sec:9024981991.7348)
+> >>>   0x18ec788: complete idx=3D8 addr=3D8000
+> >>>
+> >>> Converting to date:
+> >>>   date -d @9024981991
+> >>>   2255-12-28T20:26:31 CET
+> >>>
+> >>> I choose a simple fix in this patch. When kfunc fails or isn't suppor=
+ted
+> >>> assign zero to the corresponding struct meta value.
+> >>>
+> >>> It's up to the individual BPF-programmer to do something smarter e.g.
+> >>> that fits their use-case, like getting a software timestamp and marki=
+ng
+> >>> a flag that gives the type of timestamp.
+> >>>
+> >>> Another possibility is for the behavior of kfunc's
+> >>> bpf_xdp_metadata_rx_timestamp and bpf_xdp_metadata_rx_hash to require
+> >>> clearing return value pointer.
+> >>
+> >> I definitely think we should leave it up to the BPF programmer to reac=
+t
+> >> to failures; that's what the return code is there for, after all :)
+> >
+> > +1
+>
+> +1 I agree.
+> We should keep this default functions as simple as possible, for future
+> "unroll" of BPF-bytecode.
+>
+> I the -EOPNOTSUPP case (default functions for drivers not implementing
+> kfunc), will likely be used runtime by BPF-prog to determine if the
+> hardware have this offload hint, but it comes with the overhead of a
+> function pointer call.
+>
+> I hope we can somehow BPF-bytecode "unroll" these (default functions) at
+> BPF-load time, to remove this overhead, and perhaps even let BPF
+> bytecode do const propagation and code elimination?
+>
+>
+> > Maybe we can unconditionally memset(meta, sizeof(*meta), 0) in
+> > tools/testing/selftests/bpf/progs/xdp_hw_metadata.c?
+> > Since it's not a performance tool, it should be ok functionality-wise.
+>
+> I know this isn't a performance test, but IMHO always memsetting
+> metadata area is a misleading example.  We know from experience that
+> developer simply copy-paste code examples, even quick-n-dirty testing
+> example code.
+>
+> The specific issue in this example can lead to hard-to-find bugs, as my
+> testing shows it is only occasionally that data_meta area contains
+> garbage. We could do a memset, but it deserves a large code comment, why
+> this is needed, so people copy-pasting understand. I choose current
+> approach to keep code close to code people will copy-paste.
 
-Sure will do, for me --quiet=1 looks weird as well.
+SG, I don't think it matters, but agreed that having this stated
+explicitly could help with a blind copy-paste :-)
+Then maybe repost with the TODO's removed from the kfucs? We seem to
+agree that it's the user's job to manage the final buffer..
 
-> > >         { "prod-affinity", ARG_PROD_AFFINITY_SET, "CPUSET", 0,
-> > >           "Set of CPUs for producer threads; implies --affinity"},
-> > >         { "cons-affinity", ARG_CONS_AFFINITY_SET, "CPUSET", 0,
-> > 
-> > [...]
+> --Jesper
+>
