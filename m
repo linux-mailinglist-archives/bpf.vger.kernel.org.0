@@ -2,112 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FAA6836D7
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 20:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D3A6836DB
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 20:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjAaTuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 14:50:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
+        id S229792AbjAaTwK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 14:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230522AbjAaTuy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 14:50:54 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FD7530C8;
-        Tue, 31 Jan 2023 11:50:53 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C1A8B616C2;
-        Tue, 31 Jan 2023 19:50:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C923C433EF;
-        Tue, 31 Jan 2023 19:50:50 +0000 (UTC)
-Date:   Tue, 31 Jan 2023 14:50:48 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ross Zwisler <zwisler@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ross Zwisler <zwisler@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH 3/9] selftests/bpf: use canonical ftrace path
-Message-ID: <20230131145048.6fac87d3@gandalf.local.home>
-In-Reply-To: <20230131005315.phdnhkeeconxxm3e@macbook-pro-6.dhcp.thefacebook.com>
-References: <20230130181915.1113313-1-zwisler@google.com>
-        <20230130181915.1113313-4-zwisler@google.com>
-        <CAADnVQJ7KxEK92qOz0Ya4MrACHpxngSpG4W38xuGEgZmXEG-vQ@mail.gmail.com>
-        <20230130145932.37cf6b73@gandalf.local.home>
-        <CAADnVQ+F3Z70mu3-QyyNFyJ2qCkDXnMJCW-o+fcnZo=LWj5d9g@mail.gmail.com>
-        <20230130183419.0626dc21@gandalf.local.home>
-        <20230131005315.phdnhkeeconxxm3e@macbook-pro-6.dhcp.thefacebook.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229615AbjAaTwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 14:52:09 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621B5166C1
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 11:52:08 -0800 (PST)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pMwfh-000EHe-7w; Tue, 31 Jan 2023 20:52:01 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pMwfg-000CRx-T5; Tue, 31 Jan 2023 20:52:00 +0100
+Subject: Re: [Lsf-pc] LSF/MM/BPF activity proposal: Compiled BPF
+To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+        lsf-pc@lists.linuxfoundation.org
+Cc:     ndesaulniers@google.com, david.faust@oracle.com,
+        elena.zannoni@oracle.com,
+        James Hilliard <james.hilliard1@gmail.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <87edrbhq3k.fsf@oracle.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <cb0532ae-3500-6caf-7e84-c9ed0763c49d@iogearbox.net>
+Date:   Tue, 31 Jan 2023 20:52:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <87edrbhq3k.fsf@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.7/26798/Tue Jan 31 09:21:25 2023)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 30 Jan 2023 16:53:15 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On 1/30/23 6:47 PM, Jose E. Marchesi wrote:
+> 
+> Hello.
+> 
+> We would like to suggest to the LSF/MM/BPF organization to have a
+> working session on "compiled BPF", i.e. on the part of BPF that involves
+> compilers and linkers.  This mainly involves the two mainstream
+> compilers that target BPF: clang and GCC, but other BPF toolchains are
+> slowly appearing (like the Rust compiler) and that makes it even more
+> important to consolidate compiled BPF.
+> 
+> Examples of topics to cover are the covergence of the support in both
+> clang/llvm and GCC, several aspects of the ABI that need to be
+> discussed/clarified/decided in order to avoid undefined compiler
+> behavior and divergences, issues related to the BPF standarization, and
+> suggestions on how to lift some of the existing limitations impacting
+> BPF C programs.
+> 
+> The goal is to reach agreements about particular things, document the
+> agreements, stick to them, and a clear plan to implement whatever is
+> needed in the respective compilers/tools.
+> 
+> Potential participants in case the activity takes place:
+> 
+> - Both David Faust (GNU toolchain, BPF port hacker) and myself (GNU
+>    toolchain, BPF port maintainer) are willing to attend the event,
+>    prepare discussion material, organize and participate in the
+>    discussions.
+> 
+> - Nick Desaulniers (LLVM maintainer) is also interested in attending and
+>    participating, provided other compromises he has in May don't get in
+>    the way.
 
-> I don't think /sys/kernel/debug/tracing can ever be deprecated.
-> There are plenty of user space applications (not bpf related at all) that
-> expect it to be in that location.
-> 
-> Quick search shows:
-> 
-> android profiler:
-> https://android.googlesource.com/platform/external/perfetto/+/refs/heads/master/src/tools/dump_ftrace_stats/main.cc#60
-> 
-> java profiler:
-> https://github.com/jvm-profiling-tools/async-profiler/blob/master/src/perfEvents_linux.cpp#L85
+Plus Yonghong Song with regards to LLVM BPF backend.
 
-These can easily be changed. We have deprecated stuff in the past, by
-making sure all the affected code is updated properly.
-
-One way is to start adding printks when used. Then update to WARN() to get
-people to complain. Yes, the burden is on us (me and others) to go out and
-fix the issues. But it is possible to do, as I've done it before.
-
+> - More? (Please add yourself to this list by replying to this email in
+>    case you are interested.)
 > 
-> > If anything, leaving hardcoded calls like that forces the user to mount
-> > debugfs when they may not want to. The entire point of tracefs was to allow
-> > users to have access to the trace events without having to expose debugfs
-> > and all the crud it brings with it. This was requested several times before
-> > it was added.  
-> 
-> All makes sense.
-> 
-> > What is your technical reason for not modifying the code to look for
-> > tracefs in /sys/kernel/tracing and if it's not there try
-> > /sys/kernel/debug/tracing, and if both are not found, try mounting it.  
-> 
-> libbpf already has code to probe both locations.
-> The point that full deprecation of /sys/kernel/debug/tracing is not possible,
-> hence no point doing the diff:
-> 48 files changed, 96 insertions(+), 95 deletions(-)
-> It doesn't move the needle. Just a code churn.
+> Would the BPF community and the LSF/MM/BPF organization be interested in
+> having such an activity?
 
-As code in the Linux kernel is used as examples for future work, it should
-not be using an interface that is obsolete. That's enough rational for code
-churn. This "we can never deprecated so we won't even try" BS is not an
-answer.
+Yes, we can definitely add this to the agenda for the BPF track. This sounds
+very reasonable to me!
 
--- Steve
+Thanks Jose!
