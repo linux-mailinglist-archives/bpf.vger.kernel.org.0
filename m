@@ -2,123 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 592D6682181
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 02:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 527BF682186
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 02:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbjAaBqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 20:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        id S230194AbjAaBt6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 20:49:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbjAaBqK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 20:46:10 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2606D252BE
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 17:45:40 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id m13so1675247plx.13
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 17:45:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cbM1BOQ4XWE4OUgtCo6C4bdHxYq4OBKrEZY8jLQ57ds=;
-        b=J7nzSQOGmpCmGBqVDqLzDaKqdmThacQyaLPB0hwEiZvvwznIEUic9aw+4OeNlfTMpM
-         jqhHiNK6l7iTxBN6PudMuHzqECrXGGaV/v97OxIrG3237tUu4bmM3wiLV6SkBRnxKETM
-         ghxsrAbZDpwBvLScb3jAYI/cSpbCILEEohizUJq8aF5WlgciyI6Ehl25zn52Y7mmnhLT
-         iXiJ7nlbR+raD/8nKbEZJ5a1zULtWPWsW6gK1CfSE/xwE57rEBBmcRa/20jNRQGF/yhG
-         AUAomNcMCNCDUAkshyxhy40wGcfGs8yYt5smnE0DKNcrT9DQy2VaYFiKdaEZxAi7pqlM
-         +gUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cbM1BOQ4XWE4OUgtCo6C4bdHxYq4OBKrEZY8jLQ57ds=;
-        b=bSNagmqXW2sAK/LeX/LuKnXiAMRyZA4fIiyWB62VmZfRM2/P7JEuAfC3c5kLrPMil+
-         /Y9OmPUxe54F3DDwRtpMM/bKFz5NJKYMKSN+F9TZLB2r4rQznS2vXUDEq1AbXdnhCtmc
-         ZWSp9zfhe6DeOAPbZcSVejOJxhk/7KFbE1bfK+dibJ/aSmBJXb4sp9EwJrx92UmngHrW
-         BCaC2bCk/WbaU11EthIs3YTwtDw3ekSioX3Nwh5N2uRwfwEf1AnP+ckUGt1je/5y/BlF
-         w/yWlBnnGME8pOqN15CIxyuSxf+WQvbGqLQ3vixigy1HVMMX3j2qR9I8v9s1zRgvzbd1
-         Kbmg==
-X-Gm-Message-State: AO0yUKV4izUtHAJDLROldueSsiURLVlWatKG5xnblh3XRi9mCJdV2X/9
-        TrFu8WDLBIuO2pQzg5iPHjdiqyTvrdQtKjV5InLUWw==
-X-Google-Smtp-Source: AK7set9N5P5ldD/yETehszirsCZuTnymewwCNrvHg2d+SXQHdcYE+TA92gT37/hltVGbBH/wAx6boLx8qdTaCxypjo8=
-X-Received: by 2002:a17:902:714c:b0:196:3088:5def with SMTP id
- u12-20020a170902714c00b0019630885defmr3074407plm.32.1675129539114; Mon, 30
- Jan 2023 17:45:39 -0800 (PST)
+        with ESMTP id S229930AbjAaBt5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 20:49:57 -0500
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20D027D51
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 17:49:54 -0800 (PST)
+Message-ID: <4b7b09b5-fd23-2447-7f05-5f903288625f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1675129792;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yzVGdn9aa0LimpYNCCMWH6Ih9b/h62H9vpFUrcqxtUM=;
+        b=vxIxpArmj9UCJtA2eJusgm35MyWt2DcyQG1DbxeYuGZdsKWu030ElOTzscW5fPD3ss18If
+        P3/D7LKyYCDd9StEwCJ++tHQaDhyH2F63AuHBJLWcp5IL5CYpBv9Nk20rMrFlkFcdAWZJw
+        VxLXiSffgG38mAsCVb3yx7jXipe48rs=
+Date:   Mon, 30 Jan 2023 17:49:41 -0800
 MIME-Version: 1.0
-References: <20230128001639.3510083-1-tj@kernel.org> <20230128001639.3510083-28-tj@kernel.org>
- <CABk29Nt2-CCGnogpfEgJ3ZDk5Esk04n6EwsAqpw_vdeVfKuFUQ@mail.gmail.com> <Y9hgLENFI5y3Qtx2@slm.duckdns.org>
-In-Reply-To: <Y9hgLENFI5y3Qtx2@slm.duckdns.org>
-From:   Josh Don <joshdon@google.com>
-Date:   Mon, 30 Jan 2023 17:45:26 -0800
-Message-ID: <CABk29NuwpSDAy6inXD5dPjtw9SqjxNr0hK5SkM98b7jHinWFFw@mail.gmail.com>
-Subject: Re: [PATCH 27/30] sched_ext: Implement core-sched support
-To:     Tejun Heo <tj@kernel.org>
-Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        brho@google.com, pjt@google.com, derkling@google.com,
-        haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
-        dskarlat@cs.cmu.edu, riel@surriel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, ast@kernel.org,
+        netdev@vger.kernel.org, memxor@gmail.com, kernel-team@fb.com,
+        bpf@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20230127191703.3864860-1-joannelkoong@gmail.com>
+ <20230127191703.3864860-4-joannelkoong@gmail.com>
+ <5715ea83-c4aa-c884-ab95-3d5e630cad05@linux.dev>
+ <20230130223141.r24nlg2jp5byvuph@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4Bzb9=q9TKutW8d7fOtCWaLpA12yvSh-BhL=m3+RA1_xhOQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAEf4Bzb9=q9TKutW8d7fOtCWaLpA12yvSh-BhL=m3+RA1_xhOQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 4:26 PM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Mon, Jan 30, 2023 at 01:38:15PM -0800, Josh Don wrote:
-> > > The core-sched support is composed of the following parts:
-> >
-> > Thanks, this looks pretty reasonable overall.
-> >
-> > One meta comment is that I think we can shortcircuit from
-> > touch_core_sched when we have sched_core_disabled().
->
-> Yeah, touch_core_sched() is really cheap (it's just an assignment from an rq
-> field to a task field) but sched_core_disabled() is also just a static
-> branch. Will update.
+On 1/30/23 5:04 PM, Andrii Nakryiko wrote:
+> On Mon, Jan 30, 2023 at 2:31 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Mon, Jan 30, 2023 at 02:04:08PM -0800, Martin KaFai Lau wrote:
+>>> On 1/27/23 11:17 AM, Joanne Koong wrote:
+>>>> @@ -8243,6 +8316,28 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>>>>              mark_reg_known_zero(env, regs, BPF_REG_0);
+>>>>              regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+>>>>              regs[BPF_REG_0].mem_size = meta.mem_size;
+>>>> +           if (func_id == BPF_FUNC_dynptr_data &&
+>>>> +               dynptr_type == BPF_DYNPTR_TYPE_SKB) {
+>>>> +                   bool seen_direct_write = env->seen_direct_write;
+>>>> +
+>>>> +                   regs[BPF_REG_0].type |= DYNPTR_TYPE_SKB;
+>>>> +                   if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
+>>>> +                           regs[BPF_REG_0].type |= MEM_RDONLY;
+>>>> +                   else
+>>>> +                           /*
+>>>> +                            * Calling may_access_direct_pkt_data() will set
+>>>> +                            * env->seen_direct_write to true if the skb is
+>>>> +                            * writable. As an optimization, we can ignore
+>>>> +                            * setting env->seen_direct_write.
+>>>> +                            *
+>>>> +                            * env->seen_direct_write is used by skb
+>>>> +                            * programs to determine whether the skb's page
+>>>> +                            * buffers should be cloned. Since data slice
+>>>> +                            * writes would only be to the head, we can skip
+>>>> +                            * this.
+>>>> +                            */
+>>>> +                           env->seen_direct_write = seen_direct_write;
+>>>> +           }
+>>>
+>>> [ ... ]
+>>>
+>>>> @@ -9263,17 +9361,26 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>>>>                              return ret;
+>>>>                      break;
+>>>>              case KF_ARG_PTR_TO_DYNPTR:
+>>>> +           {
+>>>> +                   enum bpf_arg_type dynptr_arg_type = ARG_PTR_TO_DYNPTR;
+>>>> +
+>>>>                      if (reg->type != PTR_TO_STACK &&
+>>>>                          reg->type != CONST_PTR_TO_DYNPTR) {
+>>>>                              verbose(env, "arg#%d expected pointer to stack or dynptr_ptr\n", i);
+>>>>                              return -EINVAL;
+>>>>                      }
+>>>> -                   ret = process_dynptr_func(env, regno, insn_idx,
+>>>> -                                             ARG_PTR_TO_DYNPTR | MEM_RDONLY);
+>>>> +                   if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb])
+>>>> +                           dynptr_arg_type |= MEM_UNINIT | DYNPTR_TYPE_SKB;
+>>>> +                   else
+>>>> +                           dynptr_arg_type |= MEM_RDONLY;
+>>>> +
+>>>> +                   ret = process_dynptr_func(env, regno, insn_idx, dynptr_arg_type,
+>>>> +                                             meta->func_id);
+>>>>                      if (ret < 0)
+>>>>                              return ret;
+>>>>                      break;
+>>>> +           }
+>>>>              case KF_ARG_PTR_TO_LIST_HEAD:
+>>>>                      if (reg->type != PTR_TO_MAP_VALUE &&
+>>>>                          reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
+>>>> @@ -15857,6 +15964,14 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>>>                 desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
+>>>>              insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
+>>>>              *cnt = 1;
+>>>> +   } else if (desc->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb]) {
+>>>> +           bool is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
+>>>
+>>> Does it need to restore the env->seen_direct_write here also?
+>>>
+>>> It seems this 'seen_direct_write' saving/restoring is needed now because
+>>> 'may_access_direct_pkt_data(BPF_WRITE)' is not only called when it is
+>>> actually writing the packet. Some refactoring can help to avoid issue like
+>>> this.
+>>>
+>>> While at 'seen_direct_write', Alexei has also pointed out that the verifier
+>>> needs to track whether the (packet) 'slice' returned by bpf_dynptr_data()
+>>> has been written. It should be tracked in 'seen_direct_write'. Take a look
+>>> at how reg_is_pkt_pointer() and may_access_direct_pkt_data() are done in
+>>> check_mem_access(). iirc, this reg_is_pkt_pointer() part got loss somewhere
+>>> in v5 (or v4?) when bpf_dynptr_data() was changed to return register typed
+>>> PTR_TO_MEM instead of PTR_TO_PACKET.
+>>
+>> btw tc progs are using gen_prologue() approach because data/data_end are not kfuncs
+>> (nothing is being called by the bpf prog).
+>> In this case we don't need to repeat this approach. If so we don't need to
+>> set seen_direct_write.
+>> Instead bpf_dynptr_data() can call bpf_skb_pull_data() directly.
+>> And technically we don't need to limit it to skb head. It can handle any off/len.
+>> It will work for skb, but there is no equivalent for xdp_pull_data().
+>> I don't think we can implement xdp_pull_data in all drivers.
+>> That's massive amount of work, but we need to be consistent if we want
+>> dynptr to wrap both skb and xdp.
+>> We can say dynptr_data is for head only, but we've seen bugs where people
+>> had to switch from data/data_end to load_bytes.
+>>
+>> Also bpf_skb_pull_data is quite heavy. For progs that only want to parse
+>> the packet calling that in bpf_dynptr_data is a heavy hammer.
+>>
+>> It feels that we need to go back to skb_header_pointer-like discussion.
+>> Something like:
+>> bpf_dynptr_slice(const struct bpf_dynptr *ptr, u32 offset, u32 len, void *buffer)
+>> Whether buffer is a part of dynptr or program provided is tbd.
+> 
+> making it hidden within dynptr would make this approach unreliable
+> (memory allocations, which can fail, etc). But if we ask users to pass
+> it directly, then it should be relatively easy to use in practice with
+> some pre-allocated per-CPU buffer:
+> 
+> 
+> struct {
+>    __int(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+>    __int(max_entries, 1);
+>    __type(key, int);
+>    __type(value, char[4096]);
+> } scratch SEC(".maps");
+> 
+> 
+> ...
+> 
+> 
+> struct dyn_ptr *dp = bpf_dynptr_from_skb(...).
+> void *p, *buf;
+> int zero = 0;
+> 
+> buf = bpf_map_lookup_elem(&scratch, &zero);
+> if (!buf) return 0; /* can't happen */
+> 
+> p = bpf_dynptr_slice(dp, off, 16, buf);
+> if (p == NULL) {
+>     /* out of range */
+> } else {
+>     /* work with p directly */
+> }
+> 
+> /* if we wrote something to p and it was copied to buffer, write it back */
+> if (p == buf) {
+>      bpf_dynptr_write(dp, buf, 16);
+> }
+> 
+> 
+> We'll just need to teach verifier to make sure that buf is at least 16
+> byte long.
 
-Yep, true, I was just going through and reasoning about whether
-anything needed to be done in the !sched_core_disabled() case.
+A fifth __sz arg may do:
+bpf_dynptr_slice(const struct bpf_dynptr *ptr, u32 offset, u32 len, void 
+*buffer, u32 buffer__sz);
 
-> > Reviewed-by: Josh Don <joshdon@google.com>
-> >
-> > > +                       /*
-> > > +                        * While core-scheduling, rq lock is shared among
-> > > +                        * siblings but the debug annotations and rq clock
-> > > +                        * aren't. Do pinning dance to transfer the ownership.
-> > > +                        */
-> > > +                       WARN_ON_ONCE(__rq_lockp(rq) != __rq_lockp(srq));
-> > > +                       rq_unpin_lock(rq, rf);
-> > > +                       rq_pin_lock(srq, &srf);
-> > > +
-> > > +                       update_rq_clock(srq);
-> >
-> > Unfortunate that we have to do this superfluous update; maybe we can
-> > save/restore the clock flags from before the pinning shenanigans?
->
-> So, this one isn't really superflous. There are two rq's involved - self and
-> sibling. self's rq clock is saved and restored through rq_unpin_lock() and
-> rq_repin_lock(). We're transferring the lock owner ship from self to sibling
-> without actually unlocking and relocking the lock as they should be sharing
-> the same lock; however, that doesn't mean that the two queues share rq
-> clocks, so the sibling needs to update its rq clock upon getting the lock
-> transferred to it. It might make sense to make the siblings share the rq
-> clock when core-sched is enabled but that's probably for some other time.
+The bpf prog usually has buffer in the stack for the common small header parsing.
 
-Yep, whoops, I forgot that part didn't make it.
+One side note is the bpf_dynptr_slice() still needs to check if the skb is 
+cloned or not even the off/len is within the head range.
+
+> But I wonder if for simple cases when users are mostly sure that they
+> are going to access only header data directly we can have an option
+> for bpf_dynptr_from_skb() to specify what should be the behavior for
+> bpf_dynptr_slice():
+> 
+>   - either return NULL for anything that crosses into frags (no
+> surprising perf penalty, but surprising NULLs);
+>   - do bpf_skb_pull_data() if bpf_dynptr_data() needs to point to data
+> beyond header (potential perf penalty, but on NULLs, if off+len is
+> within packet).
+> 
+> And then bpf_dynptr_from_skb() can accept a flag specifying this
+> behavior and store it somewhere in struct bpf_dynptr.
+
+xdp does not have the bpf_skb_pull_data() equivalent, so xdp prog will still 
+need the write back handling.
+
