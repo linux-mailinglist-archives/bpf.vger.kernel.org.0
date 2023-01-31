@@ -2,62 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 626A7682104
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 01:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9C5682117
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 01:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbjAaAuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 19:50:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
+        id S229732AbjAaAxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 19:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjAaAuH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 19:50:07 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92994206AA;
-        Mon, 30 Jan 2023 16:50:05 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id p26so25961666ejx.13;
-        Mon, 30 Jan 2023 16:50:05 -0800 (PST)
+        with ESMTP id S229456AbjAaAxV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 19:53:21 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1F2E04D;
+        Mon, 30 Jan 2023 16:53:20 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id nn18-20020a17090b38d200b0022bfb584987so12868901pjb.2;
+        Mon, 30 Jan 2023 16:53:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NnKj2aLdM32Qoihlom2cgtRGZ6PATefqnqoDcKWvAE4=;
-        b=HikrjOogNuwR4zLiktbxxsXjhjzZAJrajy0F4e7npz9Y66frjtK4FdIV1dqRO8fWq6
-         HlRnQTmw4Gh0bej2TwRCeyzk9pNbq0DJ593eBa4kjwEwI12oLBfmeH7/YVmsqffdZ6xV
-         45iXR6/zuCdJ/OXzMJ4tnxDZZ22070FFyH5lyAzKQUb5nBQmSjPgdN57+JQz9CwsziHH
-         WMXMd/rYiqpHONwZOGFW3/ttm1EVDYhuleqJ4RFPrz61yAGI8qatEciHazfOOzQlsBJ3
-         dzEUcX2xHxQM++uv/Og4dli4gZgMAFSAXuLTC50CNF5/qHQ0uWLav9xBTZ0H7vHKAX4n
-         GxEQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jBYldhL8pTWqB3BqjInd39Jcu1r7g+Kxk37exfegHcI=;
+        b=b2JJ+b1c9pBa8vvw60U+wt9PkFe5oyfkppoG3QrQ87BnswsR71K9MpcVrNozZ0KEl9
+         iTWvvLBgatoqKHqb6RGO2U0OBAGlFhmmvTKR+EOnV6G0vmqVsaFbIIZ5mCtMKBQSlwBi
+         3GQRUOXLnd9r8sN1TETlMzsj90KMrqLFo0/MPNPWZpUb3BTndbH3/f0+cUxOoPUWa3r9
+         S45J7wxzZ7ZP1H2+0ZMHL8U43McqdX5yE5c7WbMZ2Gt0sUWoJLCEr3GyfgdL1hsFVrcb
+         ptERI7CQ7JT2q/qCOZLBgsPUgumiZ7Mx46Qt46T+g82ykILDsAjTcEopgWvEaT5LCi19
+         2AWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NnKj2aLdM32Qoihlom2cgtRGZ6PATefqnqoDcKWvAE4=;
-        b=gtKmnWW+z979sCiqh6tqCksUURdoO9Bh9r/1yiiys1dwISdSE8QBk05uES/Nxr0rWc
-         OA7NpJ9LXeQWcXYcrk6zG4ZxUJgU//NIX5gAIaA/3H/swkp94uTM3VwOYbreVQ9vqkEC
-         /NmtBaCGm81Va7ZemUrPkYeVJhE2mYfjjU2EpataPmSgEZsNeXRa5+UJy4DZCHgSwOzs
-         YT1k6CiAf7uftoPSzzGssysvQjvioCcOJppkE11oIIYy+sue6Tv0wWiZhZEoHYMRsXCG
-         XI/G+kJZM7F/LMrbvOOuNvHxbk7ux4Tnt61WZVcoL3M3YUCN1ZxZfBVNYN/L/OQS6IWy
-         rRHA==
-X-Gm-Message-State: AO0yUKV9Ut4nAI3/2KKkPCNWd1JI7HrDQsi0IYmqeQpYgQZYv1YFsOyi
-        t2ynVS65RXLA8leffYNsvw8VmV4Pz4W+N19Dm4gdgsdA
-X-Google-Smtp-Source: AK7set8rONj+RngwjnMwPSCQtI8fm6oMehIf2Yn4p+Vc9eELMlTbp1kZsDAHjY9z9MgWcwo0sx2tlFbHN3resgKZxqY=
-X-Received: by 2002:a17:906:7194:b0:884:d15e:10ff with SMTP id
- h20-20020a170906719400b00884d15e10ffmr2254839ejk.265.1675126203895; Mon, 30
- Jan 2023 16:50:03 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jBYldhL8pTWqB3BqjInd39Jcu1r7g+Kxk37exfegHcI=;
+        b=RoA4DMUskHxKxd4lDfxENUTTGMxG3NnZ9khN3DObgQFROscifoldPZ1nOMbEl6g3TR
+         5SrtBVb6dk4lqzCxPdketEj/M8one+pvG1RF49+rIKLUgYN59q07csUKY1IRinFxgP5y
+         3KcqRwhJEjjtl7H7feWs6mzXH/MtH/umK2rvKBL0ZWQz30rld2EhPlYMaPSOLmA2m7V9
+         dAg5KP02D1i5usAYKEUiLS3n3yN1YVD26fOuevGT3LFn8cb3YI/z24IQ/WgbpJp4eEJe
+         DHstn1LmcTK1c5S3dJuBULDGxaznKsYfYQPWrklQ0lwdiku6xQ5CBXjit5U6aBn8khiC
+         VnCA==
+X-Gm-Message-State: AO0yUKVnh3I8Ohx/Z7RgX8kFEBgyu8fy1gYeyXbljk6wBhanK4+5e1FU
+        w7TaHIeYcvC9mWOUY96q+kE2tnhExHU=
+X-Google-Smtp-Source: AK7set+A0QTFKRqjBMuZoq4Wo4mo09+R9ZCV1G/LpP3BiEvAwLBrdpiNXf+1CYEjx249igNHV4hxTA==
+X-Received: by 2002:a17:902:f095:b0:196:1d89:7002 with SMTP id p21-20020a170902f09500b001961d897002mr7677082pla.31.1675126399830;
+        Mon, 30 Jan 2023 16:53:19 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:a52d])
+        by smtp.gmail.com with ESMTPSA id k17-20020a170902ba9100b001967692d6f5sm3742819pls.227.2023.01.30.16.53.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jan 2023 16:53:19 -0800 (PST)
+Date:   Mon, 30 Jan 2023 16:53:15 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ross Zwisler <zwisler@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ross Zwisler <zwisler@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 3/9] selftests/bpf: use canonical ftrace path
+Message-ID: <20230131005315.phdnhkeeconxxm3e@macbook-pro-6.dhcp.thefacebook.com>
+References: <20230130181915.1113313-1-zwisler@google.com>
+ <20230130181915.1113313-4-zwisler@google.com>
+ <CAADnVQJ7KxEK92qOz0Ya4MrACHpxngSpG4W38xuGEgZmXEG-vQ@mail.gmail.com>
+ <20230130145932.37cf6b73@gandalf.local.home>
+ <CAADnVQ+F3Z70mu3-QyyNFyJ2qCkDXnMJCW-o+fcnZo=LWj5d9g@mail.gmail.com>
+ <20230130183419.0626dc21@gandalf.local.home>
 MIME-Version: 1.0
-References: <20230127191703.3864860-1-joannelkoong@gmail.com> <20230127191703.3864860-6-joannelkoong@gmail.com>
-In-Reply-To: <20230127191703.3864860-6-joannelkoong@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 30 Jan 2023 16:49:52 -0800
-Message-ID: <CAEf4BzbAQ-+wfCzWFr=QWDQFFoBcdwrkDodO8A17b8rTX4ObHw@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 5/5] selftests/bpf: tests for using dynptrs to
- parse skb and xdp buffers
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, netdev@vger.kernel.org,
-        memxor@gmail.com, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230130183419.0626dc21@gandalf.local.home>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,139 +90,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 27, 2023 at 11:18 AM Joanne Koong <joannelkoong@gmail.com> wrote:
->
-> Test skb and xdp dynptr functionality in the following ways:
->
-> 1) progs/test_cls_redirect_dynptr.c
->    * Rewrite "progs/test_cls_redirect.c" test to use dynptrs to parse
->      skb data
->
->    * This is a great example of how dynptrs can be used to simplify a
->      lot of the parsing logic for non-statically known values.
->
->      When measuring the user + system time between the original version
->      vs. using dynptrs, and averaging the time for 10 runs (using
->      "time ./test_progs -t cls_redirect"):
->          original version: 0.092 sec
->          with dynptrs: 0.078 sec
->
-> 2) progs/test_xdp_dynptr.c
->    * Rewrite "progs/test_xdp.c" test to use dynptrs to parse xdp data
->
->      When measuring the user + system time between the original version
->      vs. using dynptrs, and averaging the time for 10 runs (using
->      "time ./test_progs -t xdp_attach"):
->          original version: 0.118 sec
->          with dynptrs: 0.094 sec
->
-> 3) progs/test_l4lb_noinline_dynptr.c
->    * Rewrite "progs/test_l4lb_noinline.c" test to use dynptrs to parse
->      skb data
->
->      When measuring the user + system time between the original version
->      vs. using dynptrs, and averaging the time for 10 runs (using
->      "time ./test_progs -t l4lb_all"):
->          original version: 0.062 sec
->          with dynptrs: 0.081 sec
->
->      For number of processed verifier instructions:
->          original version: 6268 insns
->          with dynptrs: 2588 insns
->
-> 4) progs/test_parse_tcp_hdr_opt_dynptr.c
->    * Add sample code for parsing tcp hdr opt lookup using dynptrs.
->      This logic is lifted from a real-world use case of packet parsing
->      in katran [0], a layer 4 load balancer. The original version
->      "progs/test_parse_tcp_hdr_opt.c" (not using dynptrs) is included
->      here as well, for comparison.
->
->      When measuring the user + system time between the original version
->      vs. using dynptrs, and averaging the time for 10 runs (using
->      "time ./test_progs -t parse_tcp_hdr_opt"):
->          original version: 0.031 sec
->          with dynptrs: 0.045 sec
->
-> 5) progs/dynptr_success.c
->    * Add test case "test_skb_readonly" for testing attempts at writes /
->      data slices on a prog type with read-only skb ctx.
->
-> 6) progs/dynptr_fail.c
->    * Add test cases "skb_invalid_data_slice{1,2}" and
->      "xdp_invalid_data_slice" for testing that helpers that modify the
->      underlying packet buffer automatically invalidate the associated
->      data slice.
->    * Add test cases "skb_invalid_ctx" and "xdp_invalid_ctx" for testing
->      that prog types that do not support bpf_dynptr_from_skb/xdp don't
->      have access to the API.
->    * Add test case "skb_invalid_write" for testing that writes to a
->      read-only data slice are rejected by the verifier.
->
-> [0]
-> https://github.com/facebookincubator/katran/blob/main/katran/lib/bpf/pckt_parsing.h
->
-> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  .../selftests/bpf/prog_tests/cls_redirect.c   |  25 +
->  .../testing/selftests/bpf/prog_tests/dynptr.c |  63 +-
->  .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +
->  .../bpf/prog_tests/parse_tcp_hdr_opt.c        |  93 ++
->  .../selftests/bpf/prog_tests/xdp_attach.c     |  11 +-
->  .../testing/selftests/bpf/progs/dynptr_fail.c | 124 +++
->  .../selftests/bpf/progs/dynptr_success.c      |  28 +
->  .../bpf/progs/test_cls_redirect_dynptr.c      | 973 ++++++++++++++++++
->  .../bpf/progs/test_l4lb_noinline_dynptr.c     | 474 +++++++++
->  .../bpf/progs/test_parse_tcp_hdr_opt.c        | 119 +++
->  .../bpf/progs/test_parse_tcp_hdr_opt_dynptr.c | 112 ++
->  .../selftests/bpf/progs/test_xdp_dynptr.c     | 237 +++++
->  .../selftests/bpf/test_tcp_hdr_options.h      |   1 +
->  13 files changed, 2248 insertions(+), 14 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/parse_tcp_hdr_opt.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect_dynptr.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_l4lb_noinline_dynptr.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_opt.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_opt_dynptr.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
->
+On Mon, Jan 30, 2023 at 06:34:19PM -0500, Steven Rostedt wrote:
+> On Mon, 30 Jan 2023 12:03:52 -0800
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > So this change will break the tests. We cannot do it.  
+> > >
+> > > Could we add a way to try to mount it?
+> > >
+> > > If anything, the tests should not have the path hard coded. It should then
+> > > look to see if it is mounted and use the path that is found. Otherwise it
+> > > should try mounting it at the correct location.
+> > >
+> > > Feel free to take the code from libtracefs (and modify it):
+> > >
+> > > https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/tree/src/tracefs-utils.c#n89
+> > >
+> > > It will make the test code much more robust.  
+> > 
+> > The point is not about tests. The point is that this change might break
+> > some users that are working today with /sys/kernel/debug/tracing.
+> 
+> > It also might be mounted differently.
+> > For example from another system:
+> > cat /proc/mounts|grep trace
+> > tracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0
+> > tracefs /sys/kernel/debug/tracing tracefs rw,relatime 0 0
+> 
+> Yes, and the code works when it's mounted multiple times.
+> 
+> > 
+> > So I suggest leaving the code as-is.
+> 
+> Why?  I want to make /sys/kernel/debug/tracing deprecated. It's a hack to
+> not break old code. I've had complaints about that hack, and there's even
+> systems that disable the auto mounting (that is, /sys/kernel/debug/tracing
+> would not exist in such configs) This was never expected to be a permanent
+> solution.
 
-[...]
+I don't think /sys/kernel/debug/tracing can ever be deprecated.
+There are plenty of user space applications (not bpf related at all) that
+expect it to be in that location.
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-> index 062fbc8c8e5e..28c453bbb84a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-> @@ -4,11 +4,10 @@
->  #define IFINDEX_LO 1
->  #define XDP_FLAGS_REPLACE              (1U << 4)
->
-> -void serial_test_xdp_attach(void)
-> +static void serial_test_xdp_attach(const char *file)
->  {
->         __u32 duration = 0, id1, id2, id0 = 0, len;
->         struct bpf_object *obj1, *obj2, *obj3;
-> -       const char *file = "./test_xdp.bpf.o";
->         struct bpf_prog_info info = {};
->         int err, fd1, fd2, fd3;
->         LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> @@ -85,3 +84,11 @@ void serial_test_xdp_attach(void)
->  out_1:
->         bpf_object__close(obj1);
->  }
-> +
-> +void test_xdp_attach(void)
+Quick search shows:
 
-this test was marked as serial (it starts with "serial_test_"), so we
-probably want to preserve that? Just keep this as
-"serial_test_xdp_attach" and rename above serial_test_xdp_attach to
-something like "subtest_xdp_attach" (this name doesn't matter to
-test_progs runner).
+android profiler:
+https://android.googlesource.com/platform/external/perfetto/+/refs/heads/master/src/tools/dump_ftrace_stats/main.cc#60
 
-> +{
-> +       if (test__start_subtest("xdp_attach"))
-> +               serial_test_xdp_attach("./test_xdp.bpf.o");
-> +       if (test__start_subtest("xdp_attach_dynptr"))
-> +               serial_test_xdp_attach("./test_xdp_dynptr.bpf.o");
-> +}
+java profiler:
+https://github.com/jvm-profiling-tools/async-profiler/blob/master/src/perfEvents_linux.cpp#L85
 
-[...]
+> If anything, leaving hardcoded calls like that forces the user to mount
+> debugfs when they may not want to. The entire point of tracefs was to allow
+> users to have access to the trace events without having to expose debugfs
+> and all the crud it brings with it. This was requested several times before
+> it was added.
+
+All makes sense.
+
+> What is your technical reason for not modifying the code to look for
+> tracefs in /sys/kernel/tracing and if it's not there try
+> /sys/kernel/debug/tracing, and if both are not found, try mounting it.
+
+libbpf already has code to probe both locations.
+The point that full deprecation of /sys/kernel/debug/tracing is not possible,
+hence no point doing the diff:
+48 files changed, 96 insertions(+), 95 deletions(-)
+It doesn't move the needle. Just a code churn.
