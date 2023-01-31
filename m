@@ -2,56 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F356682065
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 01:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95AB68207B
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 01:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjAaAKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 19:10:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
+        id S229653AbjAaAQ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 19:16:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjAaAKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 19:10:18 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FB51A947
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 16:10:17 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id v13so12777962eda.11
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 16:10:16 -0800 (PST)
+        with ESMTP id S229519AbjAaAQ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 19:16:26 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD18A1F5D8
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 16:16:24 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id kt14so37057274ejc.3
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 16:16:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XKikHE9MdFqkhSV5xXdoug4AUCUYnV2PUvk4OlPxBNk=;
-        b=d0XLMATuggJJvEjVBLJNBcdw263eIr5ObxqiyQhKTcU3BpuOnTiXFRgSOmrVBIaJvN
-         nx62Zvrmz5T660JN6vAlew8PQAAMjxn7y8x53dOGpnRlzvfqGUUpnFuPHP6RmNU2Ir6R
-         gdACDp7yaxQysK6+hKVO/vbQ5dzA10zpmyNarnSvgEE1tH+9hS554x8q/TvfiuCuhJd4
-         DT+lQSTCKt2RcjPfjjljFGEeAevm2GioT1wQx+KJYRMinMVpT+IrFRFpNjM1i2DLqI9V
-         saWUHWbbHqGqGzRURmvb06wOZM9k/ym3T5UPaih9N104IoiBp9BZsm4MWWWUmDu65Qql
-         r4LA==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FbFR6VsrA+i8jMUY0OafAz/SsQjZl2kB73G1Ln43lP4=;
+        b=Q5y1jLrTqboZAgIg4wKdnLV6VNPDgxtXp0lwMjhrPlV1KFp+hb4wyc6DC9tuWXItCM
+         XVPXnJTl4ZeFrYGPa3VC7UebfjnS44SnvGZKFZtXx/4b4mmN56QEFyI0StNXADlc7MvT
+         wWnlHpu2PFV9Lb16R3e0l9/dvmn1KubpsZQ9ELmFFzrnmto5vjnwM/KuxT918tc2eNsN
+         PBZDeBpWxubK03kbAD6E2UywAu/+xTkg/s06IQmMi3AuR9kP8gqlyb05yR7VAGLq4c1M
+         drpQ6TNnO0A69EOqI6j6qEpwjMtwCzWuBSZOERUvksjgEKsX/9ghcAuo4dgY+J0w1Wid
+         XPyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XKikHE9MdFqkhSV5xXdoug4AUCUYnV2PUvk4OlPxBNk=;
-        b=ajorvOvNrqR9ptXIag5fXR6xi1diclwlhE1hCgqGlxo49RgGMLSLV6Or5ZsfGEDH1W
-         o+EZlNShVFXnRkWTHqbqKlMbluAlclbmWFWbJNBkubcy4lOr7gqFp6J3SuzrijCtsgiv
-         P30KOvjOh6r5ShDbS9vGmfbf+p0LOJUPsBMqLaNZDVHKotjzNQ99Vak/mr4nsBhVz4ZX
-         RaWMjPJmDnVk1dEkwD+6aM8yS00jKWSHN57feEwbVbhnTQFgYFbPXmNht5ZrrN0+lI5s
-         oW75FlME8JjyzNMkA4CethyX5G7nY6fAqy7ZG5NADqpGE+/GNih3hjUBHvgFNDMyFJUg
-         yceA==
-X-Gm-Message-State: AO0yUKWkBXUpm9oXcLtr1x9lpa3yQEsntq4DVP/qvrHdcVdn277dPnZG
-        EtlHEWWyVSzW8dD5VTvFu07oQ+jC//R8DMdyApiPIVEA
-X-Google-Smtp-Source: AK7set9ma4pt/9PXJSm2dtV6XHbtm6G4C6P7/Ki7p8fjw70m5WXJAu7XjKL7N86VBwaF7LZPUjW1jxeJQk7GhXXeJt8=
-X-Received: by 2002:a05:6402:510d:b0:4a0:cfed:1a47 with SMTP id
- m13-20020a056402510d00b004a0cfed1a47mr5665853edd.18.1675123815439; Mon, 30
- Jan 2023 16:10:15 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FbFR6VsrA+i8jMUY0OafAz/SsQjZl2kB73G1Ln43lP4=;
+        b=ueVMgSq0/rflj/5d+96GTiYw6+R0ldus/06vJlZjdSuWkHexb6HYNwDRZniVXbX9Wx
+         boEru95He24fTckaOgU4fHEur6Pq2ZMrQBxJkLnQONx4T02yYIsyK0DF7rL8Qr5Kq2yY
+         MYMMV+JJDPvq0Do2S7dVtYguitp702K/xy2Aq3X8Ax3bVJm4Igj5QW85uNI+3+C5fuvS
+         ibc3olEygksGbVPCYpoDv/We8tPisFRPpxpLFAOYdGDczAXAPgclSnaKIY1xiPoYthGV
+         aIMnrsWlg9YswddQIy/TlvNiJZ4KvGBZEjocQK0RckCmrRHMFbysE1ldEZtvVy0Ku9ae
+         bGng==
+X-Gm-Message-State: AO0yUKVQdMo3TkWWMaAVWTamiJ+eReBKkJggPJfIzTtzH4ewwSFiZ8BG
+        HdH5LZDQ9tJK9yNRZmKjm2a1wkD0ox4bzjgEfsnabJb0
+X-Google-Smtp-Source: AK7set9oLiu+KZt921BQ/Rm4jAt5bEotnuqNlsTeezPdxmymtkwgvYvhQqBSv+vCVpH40Ae2AEZYOt92or0xEAUghQM=
+X-Received: by 2002:a17:906:46d3:b0:888:1f21:4424 with SMTP id
+ k19-20020a17090646d300b008881f214424mr1807362ejs.141.1675124183256; Mon, 30
+ Jan 2023 16:16:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20230127181457.21389-1-aspsk@isovalent.com> <20230127181457.21389-5-aspsk@isovalent.com>
-In-Reply-To: <20230127181457.21389-5-aspsk@isovalent.com>
+References: <20230127181457.21389-1-aspsk@isovalent.com> <20230127181457.21389-7-aspsk@isovalent.com>
+In-Reply-To: <20230127181457.21389-7-aspsk@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 30 Jan 2023 16:10:03 -0800
-Message-ID: <CAEf4BzYDnGo+5gZKZc-gYTk0ES+s3hOSv7SKCZ9dV-oSnP6wXQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/6] selftest/bpf/benchs: make quiet option common
+Date:   Mon, 30 Jan 2023 16:16:10 -0800
+Message-ID: <CAEf4BzbS-2QdXxU7i0y0oDqBd==FuGxg+mSAMaA3q4Nc2pYTMA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 6/6] selftest/bpf/benchs: Add benchmark for
+ hashmap lookups
 To:     Anton Protopopov <aspsk@isovalent.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -59,6 +61,7 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,42 +72,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 27, 2023 at 10:14 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+On Fri, Jan 27, 2023 at 10:14 AM Anton Protopopov <aspsk@isovalent.com> wro=
+te:
 >
-> The "local-storage-tasks-trace" benchmark has a `--quiet` option. Move it to
-> the list of common options, so that the main code and other benchmarks can use
-> (now global) env.quiet as well.
+> Add a new benchmark which measures hashmap lookup operations speed.  A us=
+er can
+> control the following parameters of the benchmark:
+>
+>     * key_size (max 1024): the key size to use
+>     * max_entries: the hashmap max entries
+>     * nr_entries: the number of entries to insert/lookup
+>     * nr_loops: the number of loops for the benchmark
+>     * map_flags The hashmap flags passed to BPF_MAP_CREATE
+>
+> The BPF program performing the benchmarks calls two nested bpf_loop:
+>
+>     bpf_loop(nr_loops/nr_entries)
+>             bpf_loop(nr_entries)
+>                      bpf_map_lookup()
+>
+> So the nr_loops determines the number of actual map lookups. All lookups =
+are
+> successful.
+>
+> Example (the output is generated on a AMD Ryzen 9 3950X machine):
+>
+>     for nr_entries in `seq 4096 4096 65536`; do echo -n "$((nr_entries*10=
+0/65536))% full: "; sudo ./bench -d2 -a bpf-hashmap-lookup --key_size=3D4 -=
+-nr_entries=3D$nr_entries --max_entries=3D65536 --nr_loops=3D1000000 --map_=
+flags=3D0x40 | grep cpu; done
+>     6% full: cpu01: lookup 50.739M =C2=B1 0.018M events/sec (approximated=
+ from 32 samples of ~19ms)
+>     12% full: cpu01: lookup 47.751M =C2=B1 0.015M events/sec (approximate=
+d from 32 samples of ~20ms)
+>     18% full: cpu01: lookup 45.153M =C2=B1 0.013M events/sec (approximate=
+d from 32 samples of ~22ms)
+>     25% full: cpu01: lookup 43.826M =C2=B1 0.014M events/sec (approximate=
+d from 32 samples of ~22ms)
+>     31% full: cpu01: lookup 41.971M =C2=B1 0.012M events/sec (approximate=
+d from 32 samples of ~23ms)
+>     37% full: cpu01: lookup 41.034M =C2=B1 0.015M events/sec (approximate=
+d from 32 samples of ~24ms)
+>     43% full: cpu01: lookup 39.946M =C2=B1 0.012M events/sec (approximate=
+d from 32 samples of ~25ms)
+>     50% full: cpu01: lookup 38.256M =C2=B1 0.014M events/sec (approximate=
+d from 32 samples of ~26ms)
+>     56% full: cpu01: lookup 36.580M =C2=B1 0.018M events/sec (approximate=
+d from 32 samples of ~27ms)
+>     62% full: cpu01: lookup 36.252M =C2=B1 0.012M events/sec (approximate=
+d from 32 samples of ~27ms)
+>     68% full: cpu01: lookup 35.200M =C2=B1 0.012M events/sec (approximate=
+d from 32 samples of ~28ms)
+>     75% full: cpu01: lookup 34.061M =C2=B1 0.009M events/sec (approximate=
+d from 32 samples of ~29ms)
+>     81% full: cpu01: lookup 34.374M =C2=B1 0.010M events/sec (approximate=
+d from 32 samples of ~29ms)
+>     87% full: cpu01: lookup 33.244M =C2=B1 0.011M events/sec (approximate=
+d from 32 samples of ~30ms)
+>     93% full: cpu01: lookup 32.182M =C2=B1 0.013M events/sec (approximate=
+d from 32 samples of ~31ms)
+>     100% full: cpu01: lookup 31.497M =C2=B1 0.016M events/sec (approximat=
+ed from 32 samples of ~31ms)
 >
 > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
 > ---
->  tools/testing/selftests/bpf/bench.c               | 15 +++++++++++++++
->  tools/testing/selftests/bpf/bench.h               |  1 +
->  .../benchs/bench_local_storage_rcu_tasks_trace.c  | 14 +-------------
->  3 files changed, 17 insertions(+), 13 deletions(-)
+>  tools/testing/selftests/bpf/Makefile          |   5 +-
+>  tools/testing/selftests/bpf/bench.c           |   7 +
+>  tools/testing/selftests/bpf/bench.h           |   3 +
+>  .../bpf/benchs/bench_bpf_hashmap_lookup.c     | 277 ++++++++++++++++++
+>  .../selftests/bpf/progs/bpf_hashmap_lookup.c  |  61 ++++
+>  5 files changed, 352 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_=
+lookup.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_hashmap_lookup.=
+c
 >
-> diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-> index ba93f1b268e1..42bf41a9385e 100644
-> --- a/tools/testing/selftests/bpf/bench.c
-> +++ b/tools/testing/selftests/bpf/bench.c
-> @@ -16,6 +16,7 @@ struct env env = {
->         .warmup_sec = 1,
->         .duration_sec = 5,
->         .affinity = false,
-> +       .quiet = false,
->         .consumer_cnt = 1,
->         .producer_cnt = 1,
->  };
-> @@ -257,6 +258,7 @@ static const struct argp_option opts[] = {
->         { "consumers", 'c', "NUM", 0, "Number of consumer threads"},
->         { "verbose", 'v', NULL, 0, "Verbose debug output"},
->         { "affinity", 'a', NULL, 0, "Set consumer/producer thread affinity"},
-> +       { "quiet", 'q', "{0,1}", OPTION_ARG_OPTIONAL, "If true, be quiet"},
 
-given the default is not quiet, why add 0 or 1? -q for quiet, no "-q"
-for not quiet? Keeping it simple?
+[...]
 
->         { "prod-affinity", ARG_PROD_AFFINITY_SET, "CPUSET", 0,
->           "Set of CPUs for producer threads; implies --affinity"},
->         { "cons-affinity", ARG_CONS_AFFINITY_SET, "CPUSET", 0,
+> +static error_t parse_arg(int key, char *arg, struct argp_state *state)
+> +{
+> +       long ret;
+> +
+> +       switch (key) {
+> +       case ARG_KEY_SIZE:
+> +               ret =3D strtol(arg, NULL, 10);
+> +               if (ret < 1 || ret > MAX_KEY_SIZE) {
+> +                       fprintf(stderr, "invalid key_size");
+> +                       argp_usage(state);
+> +               }
+> +               args.key_size =3D ret;
+> +               break;
+> +       case ARG_MAP_FLAGS:
+> +               if (!strncasecmp(arg, "0x", 2))
+> +                       ret =3D strtol(arg, NULL, 0x10);
+> +               else
+> +                       ret =3D strtol(arg, NULL, 10);
+
+if you pass base as zero, strtol() will do this for you
+
+> +               if (ret < 0 || ret > UINT_MAX) {
+> +                       fprintf(stderr, "invalid map_flags");
+> +                       argp_usage(state);
+> +               }
+> +               args.map_flags =3D ret;
+> +               break;
 
 [...]
