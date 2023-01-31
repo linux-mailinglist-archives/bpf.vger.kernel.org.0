@@ -2,322 +2,269 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCC968234F
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 05:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FF568237A
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 05:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjAaEgz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 23:36:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
+        id S229511AbjAaEoU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 23:44:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbjAaEgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 23:36:25 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7F93A58D
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 20:35:54 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id s4so12354340qtx.6
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 20:35:54 -0800 (PST)
+        with ESMTP id S230154AbjAaEoD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 23:44:03 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8A88A76;
+        Mon, 30 Jan 2023 20:44:01 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id mc11so15685036ejb.10;
+        Mon, 30 Jan 2023 20:44:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=skMwyc22NR9Qk8YVny2dR/jEXQcu8nXYP2om5YcHDp8=;
-        b=vbqASWaYlv8/x9oWVi1jq0jC7/PmzDkGXEQjFiy0sXuRAEqjH0A7jFO8775AstWjlH
-         1x8gnNQaryySG7a0fOiYPxDhGfddCQ0XklaZVrr/n8re5om8WYECP9s90uGxS4q8CKxK
-         s2uEaLAXVG2MjBTBCCTKn2uGh057r+1H3pt53Kl7AWuyM7DIcXzmjvYzG23WWx5WEmk9
-         S04IYBPaUnvghaSOCUFoVn7WwMlS4D3dRo/uPVet+Z7CMcDBFIZZcVLQAtR389pgtGO/
-         uDNNsiX6IEpzwdSiQQfTFLNWp0ddWrGQR4mBNyb02t5DA6hTpNoPn8OxDv7VK0DtGJva
-         d5NA==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hDhEO9nXYlzavDvaS5B48Z4s/QeP4lqi/g8+HXmfGyI=;
+        b=FnuPTOW7OKHzV0KacKT2dlVAXkA04FSQN/CpIIzFdzw/GpT+xzWYjSAkKd2NsEbcyq
+         6/n+p3QmnTgOUygGehbYv/YBjvqYwJMJlvUwB7qKgWL1gzs2zv4cx0vLCZvlqR3scFbx
+         EbnD8FyyJ9t3czPKsDjuLNfGe8pUdtcn7SG57mAwqXIuv+XcyNvRJDcbnTeVBh8ttHX+
+         LPs2G4XONtLCzVdYaIw6yjtgYDGv3rKnOv4jr9M/UlDK9nhODurZhBukeLIGiFHraSRR
+         4XKZP58qZcq9WKM84f3A4tn8bkK/wn5pijeRjevKoKRvkpnnzmaRb/zHCUgISqhVY7rr
+         pHDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=skMwyc22NR9Qk8YVny2dR/jEXQcu8nXYP2om5YcHDp8=;
-        b=6Go6nmn4IbpjR24i98UyEFPnT8u/dkW4boAN/Ngsk5int97BwAwVL8v3cVMDwpLgmJ
-         Tko3KFXln5WMu+77bLRPI9SaZAeBYtpn8CbcMF60Pc5t2oPczswnT/N0mvsjUEKwskNP
-         5WiDg6SLFx37dvlxZ6C0qgdZWUPdGi15inikQyWEEv0JQOzWfIHug691jzhjtquqA7XI
-         0QEroHUCEa9hkkuJs7h778Onw4FRQIH+MLN6RXJn9JGaXECz7kO6mEkRUfjSUt/fbsBP
-         QNtJLYNvZ6/Qun6jwb0tWSr5dArA1kPIIr6sPWIT5iZ7ZzTRt5/9eoJwmRCvelTSnQir
-         UP3w==
-X-Gm-Message-State: AO0yUKX7rVqNa189jAiwR6paKW12Q3lS5+lLstsjQQ/WFejs8GlpXcR+
-        cYihUvj6vDdMFJW3ojDMg0IuJA==
-X-Google-Smtp-Source: AK7set9BM+8iUKiCkpfLTmszHcuZgOQUjyY5cg1pD/EnFFDR3dMjz+xiPonG6jQ4anPf45O7e+VacQ==
-X-Received: by 2002:ac8:7e93:0:b0:3b8:2940:e2e8 with SMTP id w19-20020ac87e93000000b003b82940e2e8mr24857592qtj.14.1675139753541;
-        Mon, 30 Jan 2023 20:35:53 -0800 (PST)
-Received: from C02G8BMUMD6R.bytedance.net ([148.59.24.152])
-        by smtp.gmail.com with ESMTPSA id b13-20020ac801cd000000b003a6a19ee4f0sm9260682qtg.33.2023.01.30.20.35.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Jan 2023 20:35:53 -0800 (PST)
-From:   Bobby Eshleman <bobby.eshleman@bytedance.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Bobby Eshleman <bobbyeshleman@gmail.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        jakub@cloudflare.com, hdanton@sina.com, cong.wang@bytedance.com
-Subject: [PATCH RFC net-next v2 3/3] selftests/bpf: Add a test case for vsock sockmap
-Date:   Mon, 30 Jan 2023 20:35:14 -0800
-Message-Id: <20230118-support-vsock-sockmap-connectible-v2-3-58ffafde0965@bytedance.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230118-support-vsock-sockmap-connectible-v2-0-58ffafde0965@bytedance.com>
-References: <20230118-support-vsock-sockmap-connectible-v2-0-58ffafde0965@bytedance.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hDhEO9nXYlzavDvaS5B48Z4s/QeP4lqi/g8+HXmfGyI=;
+        b=thYUJQfoqD2KNZtZO0ZvykC9/OshtDzQ3hz0PL7RSq5Mea6S54hPutDbL5CY3FBpXJ
+         wQIHtMW8+ZUuIAkE/z47gyrjPBEsOzG6XbN2bLWyCKRQLaA9ztkVhqkRLbOjjpyAT+As
+         cNzAmy3x0mnFimK4Mq3/MeOs4eZQ46hFzGm8LZW1EvmNFYmG2uyvnIwQqY5XPyXwztjB
+         fgGMJr6Fq9QXuB7EdSJiNXlNetde/kAKBukibP3jrGY8P72PZfsvVsVgUzqQJjCe4O7B
+         /nAYh77Fcg1g475RQlPSHQo/51a31v9jDe94z5hFOIsnphJ8Du+TvqHC2yVqrLhJWtPd
+         2xog==
+X-Gm-Message-State: AO0yUKWtSJoxZAmxx8x1SdHPAmUWvXqF0E+GZClEoo1dWLF8H2y47EA0
+        o3x/vu7r5vDPOFSgRFshkg77XsXCNfE1iXTdgV8C1Chp
+X-Google-Smtp-Source: AK7set/9kFWyA0T/+/5inDvbBmwgnctLRa0H884zjgy2KvkWUGOKf+0caxASQDKLNnYG+ZB7Ov1Frd6mocsDkwGWB5I=
+X-Received: by 2002:a17:906:46d3:b0:888:1f21:4424 with SMTP id
+ k19-20020a17090646d300b008881f214424mr1988244ejs.141.1675140239608; Mon, 30
+ Jan 2023 20:43:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.1
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230127191703.3864860-1-joannelkoong@gmail.com>
+ <20230127191703.3864860-4-joannelkoong@gmail.com> <5715ea83-c4aa-c884-ab95-3d5e630cad05@linux.dev>
+ <20230130223141.r24nlg2jp5byvuph@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4Bzb9=q9TKutW8d7fOtCWaLpA12yvSh-BhL=m3+RA1_xhOQ@mail.gmail.com> <4b7b09b5-fd23-2447-7f05-5f903288625f@linux.dev>
+In-Reply-To: <4b7b09b5-fd23-2447-7f05-5f903288625f@linux.dev>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 30 Jan 2023 20:43:47 -0800
+Message-ID: <CAEf4BzaQJe+UZxECg__Aga+YKrxK9KEbAuwdxA4ZBz1bQCEmSA@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, ast@kernel.org,
+        netdev@vger.kernel.org, memxor@gmail.com, kernel-team@fb.com,
+        bpf@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test case testing the redirection from connectible AF_VSOCK
-sockets to connectible AF_UNIX sockets.
+On Mon, Jan 30, 2023 at 5:49 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>
+> On 1/30/23 5:04 PM, Andrii Nakryiko wrote:
+> > On Mon, Jan 30, 2023 at 2:31 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >>
+> >> On Mon, Jan 30, 2023 at 02:04:08PM -0800, Martin KaFai Lau wrote:
+> >>> On 1/27/23 11:17 AM, Joanne Koong wrote:
+> >>>> @@ -8243,6 +8316,28 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >>>>              mark_reg_known_zero(env, regs, BPF_REG_0);
+> >>>>              regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> >>>>              regs[BPF_REG_0].mem_size = meta.mem_size;
+> >>>> +           if (func_id == BPF_FUNC_dynptr_data &&
+> >>>> +               dynptr_type == BPF_DYNPTR_TYPE_SKB) {
+> >>>> +                   bool seen_direct_write = env->seen_direct_write;
+> >>>> +
+> >>>> +                   regs[BPF_REG_0].type |= DYNPTR_TYPE_SKB;
+> >>>> +                   if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
+> >>>> +                           regs[BPF_REG_0].type |= MEM_RDONLY;
+> >>>> +                   else
+> >>>> +                           /*
+> >>>> +                            * Calling may_access_direct_pkt_data() will set
+> >>>> +                            * env->seen_direct_write to true if the skb is
+> >>>> +                            * writable. As an optimization, we can ignore
+> >>>> +                            * setting env->seen_direct_write.
+> >>>> +                            *
+> >>>> +                            * env->seen_direct_write is used by skb
+> >>>> +                            * programs to determine whether the skb's page
+> >>>> +                            * buffers should be cloned. Since data slice
+> >>>> +                            * writes would only be to the head, we can skip
+> >>>> +                            * this.
+> >>>> +                            */
+> >>>> +                           env->seen_direct_write = seen_direct_write;
+> >>>> +           }
+> >>>
+> >>> [ ... ]
+> >>>
+> >>>> @@ -9263,17 +9361,26 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+> >>>>                              return ret;
+> >>>>                      break;
+> >>>>              case KF_ARG_PTR_TO_DYNPTR:
+> >>>> +           {
+> >>>> +                   enum bpf_arg_type dynptr_arg_type = ARG_PTR_TO_DYNPTR;
+> >>>> +
+> >>>>                      if (reg->type != PTR_TO_STACK &&
+> >>>>                          reg->type != CONST_PTR_TO_DYNPTR) {
+> >>>>                              verbose(env, "arg#%d expected pointer to stack or dynptr_ptr\n", i);
+> >>>>                              return -EINVAL;
+> >>>>                      }
+> >>>> -                   ret = process_dynptr_func(env, regno, insn_idx,
+> >>>> -                                             ARG_PTR_TO_DYNPTR | MEM_RDONLY);
+> >>>> +                   if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb])
+> >>>> +                           dynptr_arg_type |= MEM_UNINIT | DYNPTR_TYPE_SKB;
+> >>>> +                   else
+> >>>> +                           dynptr_arg_type |= MEM_RDONLY;
+> >>>> +
+> >>>> +                   ret = process_dynptr_func(env, regno, insn_idx, dynptr_arg_type,
+> >>>> +                                             meta->func_id);
+> >>>>                      if (ret < 0)
+> >>>>                              return ret;
+> >>>>                      break;
+> >>>> +           }
+> >>>>              case KF_ARG_PTR_TO_LIST_HEAD:
+> >>>>                      if (reg->type != PTR_TO_MAP_VALUE &&
+> >>>>                          reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
+> >>>> @@ -15857,6 +15964,14 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >>>>                 desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
+> >>>>              insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
+> >>>>              *cnt = 1;
+> >>>> +   } else if (desc->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb]) {
+> >>>> +           bool is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
+> >>>
+> >>> Does it need to restore the env->seen_direct_write here also?
+> >>>
+> >>> It seems this 'seen_direct_write' saving/restoring is needed now because
+> >>> 'may_access_direct_pkt_data(BPF_WRITE)' is not only called when it is
+> >>> actually writing the packet. Some refactoring can help to avoid issue like
+> >>> this.
+> >>>
+> >>> While at 'seen_direct_write', Alexei has also pointed out that the verifier
+> >>> needs to track whether the (packet) 'slice' returned by bpf_dynptr_data()
+> >>> has been written. It should be tracked in 'seen_direct_write'. Take a look
+> >>> at how reg_is_pkt_pointer() and may_access_direct_pkt_data() are done in
+> >>> check_mem_access(). iirc, this reg_is_pkt_pointer() part got loss somewhere
+> >>> in v5 (or v4?) when bpf_dynptr_data() was changed to return register typed
+> >>> PTR_TO_MEM instead of PTR_TO_PACKET.
+> >>
+> >> btw tc progs are using gen_prologue() approach because data/data_end are not kfuncs
+> >> (nothing is being called by the bpf prog).
+> >> In this case we don't need to repeat this approach. If so we don't need to
+> >> set seen_direct_write.
+> >> Instead bpf_dynptr_data() can call bpf_skb_pull_data() directly.
+> >> And technically we don't need to limit it to skb head. It can handle any off/len.
+> >> It will work for skb, but there is no equivalent for xdp_pull_data().
+> >> I don't think we can implement xdp_pull_data in all drivers.
+> >> That's massive amount of work, but we need to be consistent if we want
+> >> dynptr to wrap both skb and xdp.
+> >> We can say dynptr_data is for head only, but we've seen bugs where people
+> >> had to switch from data/data_end to load_bytes.
+> >>
+> >> Also bpf_skb_pull_data is quite heavy. For progs that only want to parse
+> >> the packet calling that in bpf_dynptr_data is a heavy hammer.
+> >>
+> >> It feels that we need to go back to skb_header_pointer-like discussion.
+> >> Something like:
+> >> bpf_dynptr_slice(const struct bpf_dynptr *ptr, u32 offset, u32 len, void *buffer)
+> >> Whether buffer is a part of dynptr or program provided is tbd.
+> >
+> > making it hidden within dynptr would make this approach unreliable
+> > (memory allocations, which can fail, etc). But if we ask users to pass
+> > it directly, then it should be relatively easy to use in practice with
+> > some pre-allocated per-CPU buffer:
+> >
+> >
+> > struct {
+> >    __int(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+> >    __int(max_entries, 1);
+> >    __type(key, int);
+> >    __type(value, char[4096]);
+> > } scratch SEC(".maps");
+> >
+> >
+> > ...
+> >
+> >
+> > struct dyn_ptr *dp = bpf_dynptr_from_skb(...).
+> > void *p, *buf;
+> > int zero = 0;
+> >
+> > buf = bpf_map_lookup_elem(&scratch, &zero);
+> > if (!buf) return 0; /* can't happen */
+> >
+> > p = bpf_dynptr_slice(dp, off, 16, buf);
+> > if (p == NULL) {
+> >     /* out of range */
+> > } else {
+> >     /* work with p directly */
+> > }
+> >
+> > /* if we wrote something to p and it was copied to buffer, write it back */
+> > if (p == buf) {
+> >      bpf_dynptr_write(dp, buf, 16);
+> > }
+> >
+> >
+> > We'll just need to teach verifier to make sure that buf is at least 16
+> > byte long.
+>
+> A fifth __sz arg may do:
+> bpf_dynptr_slice(const struct bpf_dynptr *ptr, u32 offset, u32 len, void
+> *buffer, u32 buffer__sz);
 
-Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c      | 163 +++++++++++++++++++++
- 1 file changed, 163 insertions(+)
+We'll need to make sure that buffer__sz is >= len (or preferably not
+require extra size at all). We can check that at runtime, of course,
+but rejecting too small buffer at verification time would be a better
+experience.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 2cf0c7a3fe23..8b5a2e09c9ed 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -18,6 +18,7 @@
- #include <string.h>
- #include <sys/select.h>
- #include <unistd.h>
-+#include <linux/vm_sockets.h>
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-@@ -249,6 +250,16 @@ static void init_addr_loopback6(struct sockaddr_storage *ss, socklen_t *len)
- 	*len = sizeof(*addr6);
- }
- 
-+static void init_addr_loopback_vsock(struct sockaddr_storage *ss, socklen_t *len)
-+{
-+	struct sockaddr_vm *addr = memset(ss, 0, sizeof(*ss));
-+
-+	addr->svm_family = AF_VSOCK;
-+	addr->svm_port = VMADDR_PORT_ANY;
-+	addr->svm_cid = VMADDR_CID_LOCAL;
-+	*len = sizeof(*addr);
-+}
-+
- static void init_addr_loopback(int family, struct sockaddr_storage *ss,
- 			       socklen_t *len)
- {
-@@ -259,6 +270,9 @@ static void init_addr_loopback(int family, struct sockaddr_storage *ss,
- 	case AF_INET6:
- 		init_addr_loopback6(ss, len);
- 		return;
-+	case AF_VSOCK:
-+		init_addr_loopback_vsock(ss, len);
-+		return;
- 	default:
- 		FAIL("unsupported address family %d", family);
- 	}
-@@ -1434,6 +1448,8 @@ static const char *family_str(sa_family_t family)
- 		return "IPv6";
- 	case AF_UNIX:
- 		return "Unix";
-+	case AF_VSOCK:
-+		return "VSOCK";
- 	default:
- 		return "unknown";
- 	}
-@@ -1644,6 +1660,151 @@ static void test_unix_redir(struct test_sockmap_listen *skel, struct bpf_map *ma
- 	unix_skb_redir_to_connected(skel, map, sotype);
- }
- 
-+/* Returns two connected loopback vsock sockets */
-+static int vsock_socketpair_connectible(int sotype, int *v0, int *v1)
-+{
-+	struct sockaddr_storage addr;
-+	socklen_t len = sizeof(addr);
-+	int s, p, c;
-+
-+	s = socket_loopback(AF_VSOCK, sotype);
-+	if (s < 0)
-+		return -1;
-+
-+	c = xsocket(AF_VSOCK, sotype | SOCK_NONBLOCK, 0);
-+	if (c == -1)
-+		goto close_srv;
-+
-+	if (getsockname(s, sockaddr(&addr), &len) < 0)
-+		goto close_cli;
-+
-+	if (connect(c, sockaddr(&addr), len) < 0 && errno != EINPROGRESS) {
-+		FAIL_ERRNO("connect");
-+		goto close_cli;
-+	}
-+
-+	len = sizeof(addr);
-+	p = accept_timeout(s, sockaddr(&addr), &len, IO_TIMEOUT_SEC);
-+	if (p < 0)
-+		goto close_cli;
-+
-+	*v0 = p;
-+	*v1 = c;
-+
-+	return 0;
-+
-+close_cli:
-+	close(c);
-+close_srv:
-+	close(s);
-+
-+	return -1;
-+}
-+
-+static void vsock_unix_redir_connectible(int sock_mapfd, int verd_mapfd,
-+					 enum redir_mode mode, int sotype)
-+{
-+	const char *log_prefix = redir_mode_str(mode);
-+	char a = 'a', b = 'b';
-+	int u0, u1, v0, v1;
-+	int sfd[2];
-+	unsigned int pass;
-+	int err, n;
-+	u32 key;
-+
-+	zero_verdict_count(verd_mapfd);
-+
-+	if (socketpair(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0, sfd))
-+		return;
-+
-+	u0 = sfd[0];
-+	u1 = sfd[1];
-+
-+	err = vsock_socketpair_connectible(sotype, &v0, &v1);
-+	if (err) {
-+		FAIL("vsock_socketpair_connectible() failed");
-+		goto close_uds;
-+	}
-+
-+	err = add_to_sockmap(sock_mapfd, u0, v0);
-+	if (err) {
-+		FAIL("add_to_sockmap failed");
-+		goto close_vsock;
-+	}
-+
-+	n = write(v1, &a, sizeof(a));
-+	if (n < 0)
-+		FAIL_ERRNO("%s: write", log_prefix);
-+	if (n == 0)
-+		FAIL("%s: incomplete write", log_prefix);
-+	if (n < 1)
-+		goto out;
-+
-+	n = recv(mode == REDIR_INGRESS ? u0 : u1, &b, sizeof(b), MSG_DONTWAIT);
-+	if (n < 0)
-+		FAIL("%s: recv() err, errno=%d", log_prefix, errno);
-+	if (n == 0)
-+		FAIL("%s: incomplete recv", log_prefix);
-+	if (b != a)
-+		FAIL("%s: vsock socket map failed, %c != %c", log_prefix, a, b);
-+
-+	key = SK_PASS;
-+	err = xbpf_map_lookup_elem(verd_mapfd, &key, &pass);
-+	if (err)
-+		goto out;
-+	if (pass != 1)
-+		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
-+out:
-+	key = 0;
-+	bpf_map_delete_elem(sock_mapfd, &key);
-+	key = 1;
-+	bpf_map_delete_elem(sock_mapfd, &key);
-+
-+close_vsock:
-+	close(v0);
-+	close(v1);
-+
-+close_uds:
-+	close(u0);
-+	close(u1);
-+}
-+
-+static void vsock_unix_skb_redir_connectible(struct test_sockmap_listen *skel,
-+					     struct bpf_map *inner_map,
-+					     int sotype)
-+{
-+	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+	int verdict_map = bpf_map__fd(skel->maps.verdict_map);
-+	int sock_map = bpf_map__fd(inner_map);
-+	int err;
-+
-+	err = xbpf_prog_attach(verdict, sock_map, BPF_SK_SKB_VERDICT, 0);
-+	if (err)
-+		return;
-+
-+	skel->bss->test_ingress = false;
-+	vsock_unix_redir_connectible(sock_map, verdict_map, REDIR_EGRESS, sotype);
-+	skel->bss->test_ingress = true;
-+	vsock_unix_redir_connectible(sock_map, verdict_map, REDIR_INGRESS, sotype);
-+
-+	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
-+}
-+
-+static void test_vsock_redir(struct test_sockmap_listen *skel, struct bpf_map *map)
-+{
-+	const char *family_name, *map_name;
-+	char s[MAX_TEST_NAME];
-+
-+	family_name = family_str(AF_VSOCK);
-+	map_name = map_type_str(map);
-+	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
-+	if (!test__start_subtest(s))
-+		return;
-+
-+	vsock_unix_skb_redir_connectible(skel, map, SOCK_STREAM);
-+	vsock_unix_skb_redir_connectible(skel, map, SOCK_SEQPACKET);
-+}
-+
- static void test_reuseport(struct test_sockmap_listen *skel,
- 			   struct bpf_map *map, int family, int sotype)
- {
-@@ -2015,12 +2176,14 @@ void serial_test_sockmap_listen(void)
- 	run_tests(skel, skel->maps.sock_map, AF_INET6);
- 	test_unix_redir(skel, skel->maps.sock_map, SOCK_DGRAM);
- 	test_unix_redir(skel, skel->maps.sock_map, SOCK_STREAM);
-+	test_vsock_redir(skel, skel->maps.sock_map);
- 
- 	skel->bss->test_sockmap = false;
- 	run_tests(skel, skel->maps.sock_hash, AF_INET);
- 	run_tests(skel, skel->maps.sock_hash, AF_INET6);
- 	test_unix_redir(skel, skel->maps.sock_hash, SOCK_DGRAM);
- 	test_unix_redir(skel, skel->maps.sock_hash, SOCK_STREAM);
-+	test_vsock_redir(skel, skel->maps.sock_hash);
- 
- 	test_sockmap_listen__destroy(skel);
- }
+>
+> The bpf prog usually has buffer in the stack for the common small header parsing.
 
--- 
-2.35.1
+sure, that would work for small chunks
 
+>
+> One side note is the bpf_dynptr_slice() still needs to check if the skb is
+> cloned or not even the off/len is within the head range.
+
+yep, and the above snippet will still do the right thing with
+bpf_dynptr_write(), right? bpf_dynptr_write() will have to pull
+anyways, if I understand correctly?
+
+>
+> > But I wonder if for simple cases when users are mostly sure that they
+> > are going to access only header data directly we can have an option
+> > for bpf_dynptr_from_skb() to specify what should be the behavior for
+> > bpf_dynptr_slice():
+> >
+> >   - either return NULL for anything that crosses into frags (no
+> > surprising perf penalty, but surprising NULLs);
+> >   - do bpf_skb_pull_data() if bpf_dynptr_data() needs to point to data
+> > beyond header (potential perf penalty, but on NULLs, if off+len is
+> > within packet).
+> >
+> > And then bpf_dynptr_from_skb() can accept a flag specifying this
+> > behavior and store it somewhere in struct bpf_dynptr.
+>
+> xdp does not have the bpf_skb_pull_data() equivalent, so xdp prog will still
+> need the write back handling.
+>
+
+Sure, unfortunately, can't have everything. I'm just thinking how to
+make bpf_dynptr_data() generically usable. Think about some common BPF
+routine that calculates hash for all bytes pointed to by dynptr,
+regardless of underlying dynptr type; it can iterate in small chunks,
+get memory slice, if possible, but fallback to generic
+bpf_dynptr_read() if doesn't. This will work for skb, xdp, LOCAL,
+RINGBUF, any other dynptr type.
