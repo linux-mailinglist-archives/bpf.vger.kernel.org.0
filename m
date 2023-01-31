@@ -2,64 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E50FB683538
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 19:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCCC6835A0
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 19:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbjAaSaW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 13:30:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        id S231407AbjAaStb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 13:49:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbjAaSaU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 13:30:20 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316C85974D;
-        Tue, 31 Jan 2023 10:30:15 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id c4-20020a1c3504000000b003d9e2f72093so13148909wma.1;
-        Tue, 31 Jan 2023 10:30:15 -0800 (PST)
+        with ESMTP id S230177AbjAaStH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 13:49:07 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B6B410B0
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:49:01 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id mf7so25732008ejc.6
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:49:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yC+QfTMhv7UIa9RCKmBNebjmmRrerHWnB9uZHjX+4dU=;
-        b=OV6XKfItQjsLuwqVkngpsYLdSPtiqywZ2mX9UWy0CC5ojhNYL5pRqADjY8+D7MWa2C
-         lf8L0NMAnHneGfuhZoIojw9r22+FEePyUnxkl9oXpNwuWYpCUXQOhLB4cVrwwAcBqUV8
-         C8FhfLaYxvyAzUnGuKoLO/WTVWLsrStLJRr1GjVOlkqrcLDfAzB0mp+8o6lQw5MQIBMf
-         06pNEZaU1dKNF8OsgCjmCNmbb6GR8CIKVidZyoknI7lOiX+ZPhhKSvD/9y3LaGnt3TVN
-         y9TidYxvn7asbVzTgDeIBR1uD7jA7B1VQTTbhBeaW2vOODaNU16bx05Ww4LCKjZZKn2v
-         II9w==
+        bh=ba8NxZRc7uJtxvSpXCmKtkRASMfc/Dqs1JdA8itEXDY=;
+        b=iQ476cOEphEnJEsn1erUTtFuPEnwxfvPFifeX0BDqsJz5sL64/mu/P3ZhNoCoAPt0u
+         9gdP6bYlZaG/26xsAQfNdTHpvUglQ/sR35862mSDARy3zaEu7HufARi4PGBDlyAOItmk
+         hmt7HJnn2u2lKwZQo3gKodSp+ZizVrtYEyqNHLdjYfYnV2tX9Qae/TY/UKd3Jv3Q4f5F
+         0F3YUABs6e4YIkrbvwAG34p3+UUulRSkh1GddrGccF5pLQIby9WCxBBzY6W0hCAVFxJA
+         tlYGeZdiVE5dznkeEtVMCJO0+rKWXj5GrEmmuXtKosSU84dVpWXsOTMbsK8riozTKKyj
+         Equg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yC+QfTMhv7UIa9RCKmBNebjmmRrerHWnB9uZHjX+4dU=;
-        b=d5WPzpDmA2PFcKCQ3mv++TXK6+wp169LuVB4gHqCFXOzhNpwqlgdZ5LALc81U7tha1
-         yPPITj2MSTj0hLChr6rSRTLSdWD4yzLD9I667sXinPD7umOP6prL3uVcc5yCaL1hzhEY
-         2i/W+xvtpX0QFEiOKQkc2ZTtPFc1gsu3JKFOhRIqmHpCAegq8TIgr1vO745a3AiVWoaT
-         qW+5iigSGltrLCnMtiF9QagSIp6MfzpwtRrHP+ChUilsnO1f+9/mPjSraPT1BtTcPcYo
-         QwOoPKqjnx/P+uZG8IdrpQLaNPCOQJFH7Wn9uxMTNw9SRfwvyPviH/DR+GuK44pWWvaz
-         mHdA==
-X-Gm-Message-State: AFqh2kpqcWipw03Q/IIj5k9PJ9YVCybs/3fdVjbNeXKTOtIGnQU/LpJM
-        sxh7oayeEtN4H6dLZfIE/ftL/uBvHLUuPswlbNw=
-X-Google-Smtp-Source: AMrXdXu3ghdkSe485ggbifHqvka+XENc8QFIy7vho1D0c37d4M0EJR6OmPdbnAnYcVNIu5f1ABWbzJVOE0yPW5nzubo=
-X-Received: by 2002:a05:600c:444b:b0:3db:74:7ff2 with SMTP id
- v11-20020a05600c444b00b003db00747ff2mr3350072wmn.87.1675189813582; Tue, 31
- Jan 2023 10:30:13 -0800 (PST)
+        bh=ba8NxZRc7uJtxvSpXCmKtkRASMfc/Dqs1JdA8itEXDY=;
+        b=tu5ex4lgwxO6RO0Yokrp+m2a9am/V8Y5Re2SNpiXUk/ksxJsqFOuT5xTdTklbiebNy
+         HtyQFwY0PXDAV/VsQuej1cQTPdoMuvLb2PgvyATEurVCeH6YYmtmi+xNG/8X3dn796T4
+         M5qblv2awf74rVtvWna/ggFrjuN454+5VSfdKSvOR2AQ/NOxtY6xCmVBSNrUCxLCg8bH
+         ewLyi4qo8su9Dr9F9EhXXk0sS+Q16y48O1kjN0Anjnr+0ceqkRQsuZ2tvwYhXUXXzIxq
+         t/3mMS7ZStz6UMnEmjjb5CsQ+72z1pGVzTCUnkEqRHw5hRPWHm/6Xl7xsUlQm6swfj1Q
+         0Cfw==
+X-Gm-Message-State: AO0yUKVJxDOgcTCVE+pSJ27eY+xmQANxpVZXupz+wx3StsfwBvU0/If8
+        V+bLnwMJcjCE6cTzOb+XPo40WFncgHJ+lXR/tLs=
+X-Google-Smtp-Source: AK7set9w6u60OoFulfV3ttoFUyPisz4euz901fFDy/bEp+hTGGa1ggR4Hv0R7pD3/T2Yq1T6Ru8oiRwZkmp791jYcmo=
+X-Received: by 2002:a17:907:2cea:b0:88b:93c0:34f2 with SMTP id
+ hz10-20020a1709072cea00b0088b93c034f2mr1492069ejc.296.1675190940099; Tue, 31
+ Jan 2023 10:49:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20230127191703.3864860-1-joannelkoong@gmail.com>
- <20230127191703.3864860-4-joannelkoong@gmail.com> <5715ea83-c4aa-c884-ab95-3d5e630cad05@linux.dev>
- <20230130223141.r24nlg2jp5byvuph@macbook-pro-6.dhcp.thefacebook.com> <CAEf4Bzb9=q9TKutW8d7fOtCWaLpA12yvSh-BhL=m3+RA1_xhOQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb9=q9TKutW8d7fOtCWaLpA12yvSh-BhL=m3+RA1_xhOQ@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Tue, 31 Jan 2023 10:30:01 -0800
-Message-ID: <CAJnrk1Y9jf7PQ0sHF+hfW0TD+W8r3WzJCu-pJjT3zsZCGt343w@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+References: <20230127181457.21389-1-aspsk@isovalent.com> <CAEf4BzYcMM4hzvD3TSPnK052W2a0Eu2ygm4BixPmMaZioq9TKg@mail.gmail.com>
+ <Y9jxwMhL+O3obDzD@lavr>
+In-Reply-To: <Y9jxwMhL+O3obDzD@lavr>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 31 Jan 2023 10:48:48 -0800
+Message-ID: <CAEf4BzYxZpc8NZssBkpkT86A3ZFc9i08am9s76o6334HwBGMdA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/6] New benchmark for hashmap lookups
+To:     Anton Protopopov <aspsk@isovalent.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, netdev@vger.kernel.org, memxor@gmail.com,
-        kernel-team@fb.com, bpf@vger.kernel.org
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -71,178 +70,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 5:04 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Jan 31, 2023 at 2:47 AM Anton Protopopov <aspsk@isovalent.com> wrote:
 >
-> On Mon, Jan 30, 2023 at 2:31 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On 23/01/30 04:17, Andrii Nakryiko wrote:
+> > On Fri, Jan 27, 2023 at 10:14 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+> > >
+> > > Add a new benchmark for hashmap lookups and fix several typos. See individual
+> > > commits for descriptions.
+> > >
+> > > One thing to mention here is that in commit 3 I've patched bench so that now
+> > > command line options can be reused by different benchmarks.
+> > >
+> > > The benchmark itself is added in the last commit 6. I am using this benchmark
+> > > to test map lookup productivity when using a different hash function (see
+> > > https://fosdem.org/2023/schedule/event/bpf_hashing/). The results provided by
+> > > the benchmark look reasonable and match the results of my different benchmarks
+> > > (requiring to patch kernel to get actual statistics on map lookups).
 > >
-> > On Mon, Jan 30, 2023 at 02:04:08PM -0800, Martin KaFai Lau wrote:
-> > > On 1/27/23 11:17 AM, Joanne Koong wrote:
-> > > > @@ -8243,6 +8316,28 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> > > >             mark_reg_known_zero(env, regs, BPF_REG_0);
-> > > >             regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
-> > > >             regs[BPF_REG_0].mem_size = meta.mem_size;
-> > > > +           if (func_id == BPF_FUNC_dynptr_data &&
-> > > > +               dynptr_type == BPF_DYNPTR_TYPE_SKB) {
-> > > > +                   bool seen_direct_write = env->seen_direct_write;
-> > > > +
-> > > > +                   regs[BPF_REG_0].type |= DYNPTR_TYPE_SKB;
-> > > > +                   if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
-> > > > +                           regs[BPF_REG_0].type |= MEM_RDONLY;
-> > > > +                   else
-> > > > +                           /*
-> > > > +                            * Calling may_access_direct_pkt_data() will set
-> > > > +                            * env->seen_direct_write to true if the skb is
-> > > > +                            * writable. As an optimization, we can ignore
-> > > > +                            * setting env->seen_direct_write.
-> > > > +                            *
-> > > > +                            * env->seen_direct_write is used by skb
-> > > > +                            * programs to determine whether the skb's page
-> > > > +                            * buffers should be cloned. Since data slice
-> > > > +                            * writes would only be to the head, we can skip
-> > > > +                            * this.
-> > > > +                            */
-> > > > +                           env->seen_direct_write = seen_direct_write;
-> > > > +           }
-> > >
-> > > [ ... ]
-> > >
-> > > > @@ -9263,17 +9361,26 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
-> > > >                             return ret;
-> > > >                     break;
-> > > >             case KF_ARG_PTR_TO_DYNPTR:
-> > > > +           {
-> > > > +                   enum bpf_arg_type dynptr_arg_type = ARG_PTR_TO_DYNPTR;
-> > > > +
-> > > >                     if (reg->type != PTR_TO_STACK &&
-> > > >                         reg->type != CONST_PTR_TO_DYNPTR) {
-> > > >                             verbose(env, "arg#%d expected pointer to stack or dynptr_ptr\n", i);
-> > > >                             return -EINVAL;
-> > > >                     }
-> > > > -                   ret = process_dynptr_func(env, regno, insn_idx,
-> > > > -                                             ARG_PTR_TO_DYNPTR | MEM_RDONLY);
-> > > > +                   if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb])
-> > > > +                           dynptr_arg_type |= MEM_UNINIT | DYNPTR_TYPE_SKB;
-> > > > +                   else
-> > > > +                           dynptr_arg_type |= MEM_RDONLY;
-> > > > +
-> > > > +                   ret = process_dynptr_func(env, regno, insn_idx, dynptr_arg_type,
-> > > > +                                             meta->func_id);
-> > > >                     if (ret < 0)
-> > > >                             return ret;
-> > > >                     break;
-> > > > +           }
-> > > >             case KF_ARG_PTR_TO_LIST_HEAD:
-> > > >                     if (reg->type != PTR_TO_MAP_VALUE &&
-> > > >                         reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
-> > > > @@ -15857,6 +15964,14 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-> > > >                desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
-> > > >             insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
-> > > >             *cnt = 1;
-> > > > +   } else if (desc->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb]) {
-> > > > +           bool is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
-> > >
-> > > Does it need to restore the env->seen_direct_write here also?
-> > >
-> > > It seems this 'seen_direct_write' saving/restoring is needed now because
-> > > 'may_access_direct_pkt_data(BPF_WRITE)' is not only called when it is
-> > > actually writing the packet. Some refactoring can help to avoid issue like
-> > > this.
-> > >
-> > > While at 'seen_direct_write', Alexei has also pointed out that the verifier
-> > > needs to track whether the (packet) 'slice' returned by bpf_dynptr_data()
-> > > has been written. It should be tracked in 'seen_direct_write'. Take a look
-> > > at how reg_is_pkt_pointer() and may_access_direct_pkt_data() are done in
-> > > check_mem_access(). iirc, this reg_is_pkt_pointer() part got loss somewhere
-> > > in v5 (or v4?) when bpf_dynptr_data() was changed to return register typed
-> > > PTR_TO_MEM instead of PTR_TO_PACKET.
-> >
-> > btw tc progs are using gen_prologue() approach because data/data_end are not kfuncs
-> > (nothing is being called by the bpf prog).
-> > In this case we don't need to repeat this approach. If so we don't need to
-> > set seen_direct_write.
-> > Instead bpf_dynptr_data() can call bpf_skb_pull_data() directly.
-> > And technically we don't need to limit it to skb head. It can handle any off/len.
-> > It will work for skb, but there is no equivalent for xdp_pull_data().
-> > I don't think we can implement xdp_pull_data in all drivers.
-> > That's massive amount of work, but we need to be consistent if we want
-> > dynptr to wrap both skb and xdp.
-> > We can say dynptr_data is for head only, but we've seen bugs where people
-> > had to switch from data/data_end to load_bytes.
-> >
-> > Also bpf_skb_pull_data is quite heavy. For progs that only want to parse
-> > the packet calling that in bpf_dynptr_data is a heavy hammer.
-> >
-> > It feels that we need to go back to skb_header_pointer-like discussion.
-> > Something like:
-> > bpf_dynptr_slice(const struct bpf_dynptr *ptr, u32 offset, u32 len, void *buffer)
-> > Whether buffer is a part of dynptr or program provided is tbd.
+> > Could you share the results with us? Curious which hash functions did
+> > you try and which one are the most promising :)
 >
-> making it hidden within dynptr would make this approach unreliable
-> (memory allocations, which can fail, etc). But if we ask users to pass
-> it directly, then it should be relatively easy to use in practice with
-> some pre-allocated per-CPU buffer:
->
->
-> struct {
->   __int(type, BPF_MAP_TYPE_PERCPU_ARRAY);
->   __int(max_entries, 1);
->   __type(key, int);
->   __type(value, char[4096]);
-> } scratch SEC(".maps");
->
->
-> ...
->
->
-> struct dyn_ptr *dp = bpf_dynptr_from_skb(...).
-> void *p, *buf;
-> int zero = 0;
->
-> buf = bpf_map_lookup_elem(&scratch, &zero);
-> if (!buf) return 0; /* can't happen */
->
-> p = bpf_dynptr_slice(dp, off, 16, buf);
-> if (p == NULL) {
->    /* out of range */
-> } else {
->    /* work with p directly */
-> }
->
-> /* if we wrote something to p and it was copied to buffer, write it back */
-> if (p == buf) {
->     bpf_dynptr_write(dp, buf, 16);
-> }
->
->
-> We'll just need to teach verifier to make sure that buf is at least 16
-> byte long.
+> For the longer version with pictures see the talk I've referenced above (it's
+> at FOSDEM next Sunday Feb 5). A short version follows.
 
-I'm confused what the benefit of passing in the buffer is. If it's to
-avoid the uncloning, this will still need to happen if the user writes
-back the data to the skb (which will be the majority of cases). If
-it's to avoid uncloning if the user only reads the data of a writable
-prog, then we could add logic in the verifier so that we don't pull
-the data in this case; the uncloning might still happen regardless if
-another part of the program does a direct write. If the benefit is to
-avoid needing to pull the data, then can't the user just use
-bpf_dynptr_read, which takes in a buffer?
+Yep, I'll try to watch it.
 
 >
+> The xxh3 hash works fine for big keys, where "big" is different for different
+> architectures and for different maps sizes. On my Intel i7 machine this means
+> key size >= 8. On my AMD machine xxh3 works better for all keys for small maps,
+> but degrades for keys of size 12,16,20 for bigger maps (>=200K elements or so).
+> Example (map size 100K, 50% full, measuring M ops/second):
+
+Nice, I was hoping you would look at xxh3, as I've been meaning to try
+it out as well (have dirty patches to introduce xxh3 into
+lib/xxhash.c, but didn't get to actual benchmarking).
+
+
+Despite this AMD-specific degradation (which is interesting in its own
+right, could it be some fluke in testing?), I think it's a good idea
+to switch from jhash to xxh3, as it seems almost universally better.
+See also below.
+
 >
-> But I wonder if for simple cases when users are mostly sure that they
-> are going to access only header data directly we can have an option
-> for bpf_dynptr_from_skb() to specify what should be the behavior for
-> bpf_dynptr_slice():
+>     hash_size    4    8   12   16   20   24   28   32   36   40   44   48   52   56   60   64
+>     orig_map  15.7 15.4 14.2 13.9 13.1 13.2 12.0 12.0 11.5 11.2 10.6 10.7 10.0 10.0  9.6  9.3
+>     new_map   15.5 15.9 15.2 15.3 14.3 14.6 14.0 14.2 13.3 13.6 13.1 13.4 12.7 13.1 12.3 12.8
 >
->  - either return NULL for anything that crosses into frags (no
-> surprising perf penalty, but surprising NULLs);
->  - do bpf_skb_pull_data() if bpf_dynptr_data() needs to point to data
-> beyond header (potential perf penalty, but on NULLs, if off+len is
-> within packet).
+> A smaller map (10K, 50% full):
 >
-> And then bpf_dynptr_from_skb() can accept a flag specifying this
-> behavior and store it somewhere in struct bpf_dynptr.
+>     hash_size    4    8   12   16   20   24   28   32   36   40   44   48   52   56   60   64
+>     orig_map  36.1 36.8 32.1 32.4 29.0 29.1 26.2 26.4 23.9 24.3 21.8 22.5 20.4 20.7 19.3 19.1
+>     new_map   37.7 39.6 34.0 36.5 31.5 34.1 30.7 32.7 28.1 29.5 27.4 28.8 27.1 28.1 26.4 27.8
 >
-> Thoughts?
+> Other hash functions I've tried (older xxh32/64, spooky) work _way_ worse for
+> small keys than jhash/xxh3. (Answering a possible question about vector instructions:
+> xxh3 is scalar until key size <= 240, then the xxh64/xxh32 can be used which
+> also provides ~2x map lookup speed gain comparing to jhash for keys >240.)
+
+Yeah, not suprising. xxh32/64 were optimized for long byte arrays, not
+for short keys. While xxh3 puts a lot of attention on short keys. Do
+you see xxh64 being faster than xxh3 for longs keys, as implemented in
+kernel? Kernel doesn't use SSE2/AVX versions, just purely scalars, so
+from reading benchmarks of xxh3/xxh64 author, xxh3 should win in all
+situations.
+
+>
+> Bloom filters for big >= ~40 keys, predictably, work way faster with xxh3 than
+> with jhash. (Why not similar to hashmap? Because Bloom filters use jhash2 for
+> keys % 4 which works faster than jhash for small keys, see also a patch below.)
+>
+> The stacktrace map doesn't work much faster, because 95% of time it spends in
+> get_perf_callchain (the hash part, though, runs ~1.5-2.0 faster with xxh, as
+> hash size is typically about 60-90 bytes, so this makes sense to use xxh3 in
+> stacktrace by default).
+
+For stacktrace very important aspect would be to pay attention (and
+minimize) hash collisions, though. This was a big problem with
+bpf_get_stackid() and STACK_TRACE map (and what motivated
+bpf_get_stack()). Even with a big sparsely populated map we'd get a
+lot of collisions between stack traces. xxh3 should have much better
+distribution, so in production it should result in less
+dropped/replaced stack traces. If you get a chance, it would be nice
+to collect these stats for jhash and xxh3-based implementations. Note
+that kernel's jhash2 seems to be what SMHasher ([0]) denotes as
+lookup3 (as does Jenkins himself). It's not a very good hash anymore
+in terms of distribution (and throughput as well), compared to xxh3
+(and lots of other more modern hashes).
+
+  [0] https://github.com/rurban/smhasher
+
+>
+> One very simple change which brings 5-10% speed gain for all hashmaps is this:
+>
+> static inline u32 htab_map_hash(const void *key, u32 key_len, u32 hashrnd)
+>  {
+> +       if (likely((key_len & 0x3) == 0))
+> +               return jhash2(key, key_len >> 2, hashrnd);
+>         return jhash(key, key_len, hashrnd);
+>  }
+>
+> I will follow up with a patch as simple as this ^ or with a combination of
+> jhash, jhash2, and xxh3 once I will run benchmarks on more architectures to
+> check that there are no degradations.
+
+
+Sounds good, looking forward to it!
