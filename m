@@ -2,88 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 430266822F2
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 04:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E17682343
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 05:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbjAaDnm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 22:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S230096AbjAaEf5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 23:35:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjAaDnm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 22:43:42 -0500
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6556EFBF;
-        Mon, 30 Jan 2023 19:43:40 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VaV42yb_1675136617;
-Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VaV42yb_1675136617)
-          by smtp.aliyun-inc.com;
-          Tue, 31 Jan 2023 11:43:38 +0800
-From:   Heng Qi <hengqi@linux.alibaba.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230032AbjAaEf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 23:35:56 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1919639BA7
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 20:35:29 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id cr22so184329qtb.10
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 20:35:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BzFUUu2PxeLWAubEu7oUk+cl1ljeVkwcyofI8r7Scvs=;
+        b=znZSnDoOe3nDYLRFlNFYnyeYC5gsDn4pxJLz+Tymq1HcbWAhX2QvQwO0kIwjdBiQif
+         qGdDh2whiQPMAgM3htG+azRVdenVxkVm4OlqDqtU7TvwgzggQl69uTYddZQrrSib285g
+         6HBoqIHnqCViCM0BdWaxpGydbecIzlCurs4O/Fc7NsmMSLhjSQ5kncUDGvTU5D3JuHD5
+         odTMcaGJIYLOYMy8065biGmuOsMf+4uNqwfyrpAckCeKpim+IGbbhZt2CjGXmXMtFWcu
+         2lcueqieTEdCKiFUI1+dQ4tZx4u+9VH/pv3S/tTxV6BVuZihPCIBNcRpCsS85mdnao3/
+         KE/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BzFUUu2PxeLWAubEu7oUk+cl1ljeVkwcyofI8r7Scvs=;
+        b=obas1UZNVyhHj7A71l6xnDhgAohjfLl3YGPve6e3a2SNlPfZv7VfLm1hyHj1CuCg40
+         l9AA/szqNO+5Np6hPoe1DNL/QVQ1EdLYD4Xs0lCT0MjZlcaHl52kKeSTRU0zsdhgdQpe
+         PgXNCQazAWBJGq99BmrgqbzGZwIl1sNDnUmTvK8GTFMASqme4PQXdIKXZ3lBMh6p4y+T
+         zqj4BL27Hk7jMWTNVK4n3hRhFkppUQ5l7wWDzJHRpgk0JSBw5aVDB7L2+27F93w4TJ3W
+         y18hK3R7s5C57bnH4dhYnhEN5PujcQZ8P6dm/4r4uCOCYX+/g3aBhy9Bu4xiuCbG33/v
+         xk+w==
+X-Gm-Message-State: AO0yUKXpbsgHPZLMEG/bnaA4yX3/dSzFPvvaFeYfET2l/dDgrBgq/5Mq
+        PZxppg776OTrnjLzCFbA8riIfQ==
+X-Google-Smtp-Source: AK7set//tmyB7YpaKmyC8Ytp0xzz12EorKGUAzk4HnQqqKsuWyeMRIUsyBqK0V+4C/qFrvF+Raq2bw==
+X-Received: by 2002:ac8:574f:0:b0:3b8:3629:7cb7 with SMTP id 15-20020ac8574f000000b003b836297cb7mr20071628qtx.64.1675139728000;
+        Mon, 30 Jan 2023 20:35:28 -0800 (PST)
+Received: from C02G8BMUMD6R.bytedance.net ([148.59.24.152])
+        by smtp.gmail.com with ESMTPSA id b13-20020ac801cd000000b003a6a19ee4f0sm9260682qtg.33.2023.01.30.20.35.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Jan 2023 20:35:27 -0800 (PST)
+From:   Bobby Eshleman <bobby.eshleman@bytedance.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH net-next] virtio-net: fix possible unsigned integer overflow
-Date:   Tue, 31 Jan 2023 11:43:37 +0800
-Message-Id: <20230131034337.55445-1-hengqi@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Bobby Eshleman <bobbyeshleman@gmail.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        jakub@cloudflare.com, hdanton@sina.com, cong.wang@bytedance.com
+Subject: [PATCH RFC net-next v2 0/3] vsock: add support for sockmap
+Date:   Mon, 30 Jan 2023 20:35:11 -0800
+Message-Id: <20230118-support-vsock-sockmap-connectible-v2-0-58ffafde0965@bytedance.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.1
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the single-buffer xdp is loaded and after xdp_linearize_page()
-is called, *num_buf becomes 0 and (*num_buf - 1) may overflow into
-a large integer in virtnet_build_xdp_buff_mrg(), resulting in
-unexpected packet dropping.
+Add support for sockmap to vsock.
 
-Fixes: ef75cb51f139 ("virtio-net: build xdp_buff with multi buffers")
-Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
-Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+We're testing usage of vsock as a way to redirect guest-local UDS requests to
+the host and this patch series greatly improves the performance of such a
+setup.
+
+Compared to copying packets via userspace, this improves throughput by 121% in
+basic testing.
+
+Tested as follows.
+
+Setup: guest unix dgram sender -> guest vsock redirector -> host vsock server
+Threads: 1
+Payload: 64k
+No sockmap:
+- 76.3 MB/s
+- The guest vsock redirector was
+  "socat VSOCK-CONNECT:2:1234 UNIX-RECV:/path/to/sock"
+Using sockmap (this patch):
+- 168.8 MB/s (+121%)
+- The guest redirector was a simple sockmap echo server,
+  redirecting unix ingress to vsock 2:1234 egress.
+- Same sender and server programs
+
+*Note: these numbers are from RFC v1
+
+Only the virtio transport has been tested. The loopback transport was used in
+writing bpf/selftests, but not thoroughly tested otherwise.
+
+This series requires the skb patch.
+
+Changes in v2:
+- vsock/bpf: rename vsock_dgram_* -> vsock_*
+- vsock/bpf: change sk_psock_{get,put} and {lock,release}_sock() order to
+	     minimize slock hold time
+- vsock/bpf: use "new style" wait
+- vsock/bpf: fix bug in wait log
+- vsock/bpf: add check that recvmsg sk_type is one dgram, seqpacket, or stream.
+	     Return error if not one of the three.
+- virtio/vsock: comment __skb_recv_datagram() usage
+- virtio/vsock: do not init copied in read_skb()
+- vsock/bpf: add ifdef guard around struct proto in dgram_recvmsg()
+- selftests/bpf: add vsock loopback config for aarch64
+- selftests/bpf: add vsock loopback config for s390x
+- selftests/bpf: remove vsock device from vmtest.sh qemu machine
+- selftests/bpf: remove CONFIG_VIRTIO_VSOCKETS=y from config.x86_64
+- vsock/bpf: move transport-related (e.g., if (!vsk->transport)) checks out of
+	     fast path
+
+Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
 ---
- drivers/net/virtio_net.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Bobby Eshleman (3):
+      vsock: support sockmap
+      selftests/bpf: add vsock to vmtest.sh
+      selftests/bpf: Add a test case for vsock sockmap
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index aaa6fe9b214a..a8e9462903fa 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1007,6 +1007,9 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
- 	xdp_prepare_buff(xdp, buf - VIRTIO_XDP_HEADROOM,
- 			 VIRTIO_XDP_HEADROOM + vi->hdr_len, len - vi->hdr_len, true);
- 
-+	if (!*num_buf)
-+		return 0;
-+
- 	if (*num_buf > 1) {
- 		/* If we want to build multi-buffer xdp, we need
- 		 * to specify that the flags of xdp_buff have the
-@@ -1020,10 +1023,10 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
- 		shinfo->xdp_frags_size = 0;
- 	}
- 
--	if ((*num_buf - 1) > MAX_SKB_FRAGS)
-+	if (*num_buf > MAX_SKB_FRAGS + 1)
- 		return -EINVAL;
- 
--	while ((--*num_buf) >= 1) {
-+	while (--*num_buf) {
- 		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
- 		if (unlikely(!buf)) {
- 			pr_debug("%s: rx error: %d buffers out of %d missing\n",
+ drivers/vhost/vsock.c                              |   1 +
+ include/linux/virtio_vsock.h                       |   1 +
+ include/net/af_vsock.h                             |  17 ++
+ net/vmw_vsock/Makefile                             |   1 +
+ net/vmw_vsock/af_vsock.c                           |  55 ++++++-
+ net/vmw_vsock/virtio_transport.c                   |   2 +
+ net/vmw_vsock/virtio_transport_common.c            |  24 +++
+ net/vmw_vsock/vsock_bpf.c                          | 175 +++++++++++++++++++++
+ net/vmw_vsock/vsock_loopback.c                     |   2 +
+ tools/testing/selftests/bpf/config.aarch64         |   2 +
+ tools/testing/selftests/bpf/config.s390x           |   3 +
+ tools/testing/selftests/bpf/config.x86_64          |   3 +
+ .../selftests/bpf/prog_tests/sockmap_listen.c      | 163 +++++++++++++++++++
+ 13 files changed, 443 insertions(+), 6 deletions(-)
+---
+base-commit: d83115ce337a632f996e44c9f9e18cadfcf5a094
+change-id: 20230118-support-vsock-sockmap-connectible-2e1297d2111a
+
+Best regards,
 -- 
-2.19.1.6.gb485710b
+Bobby Eshleman <bobby.eshleman@bytedance.com>
 
