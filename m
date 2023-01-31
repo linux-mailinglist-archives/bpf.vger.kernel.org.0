@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0855682270
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 04:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC38A6822A9
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 04:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbjAaDAr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 22:00:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        id S230090AbjAaDOY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 22:14:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjAaDAq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 22:00:46 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950B314485;
-        Mon, 30 Jan 2023 19:00:43 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id mc11so15275739ejb.10;
-        Mon, 30 Jan 2023 19:00:43 -0800 (PST)
+        with ESMTP id S229961AbjAaDON (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 22:14:13 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DCB37B5A
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 19:13:39 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id ud5so37850639ejc.4
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 19:13:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KB1gOc0HcUUYO3AePIdRgc9Asdr8fM6rOImlU/ZlctA=;
-        b=Hxr6l7l0w8hid1jSI/mIuA828FOIZKbq7yp6Icw5g5ab69soHB8NQvs+6d7hqUTa4s
-         /d/PWN3GWpaAFJ3IwnX/9cV0rkWmjsXUfEVCm92NA1y3lt4xKYx0z89PmuE2MhXHjMFh
-         ny3u9OSjIpNsZr7j1GuJxxXBawtqZfBalLItiFwrXo5N0FIjadMd6DAtUo1iAu+Zm2D7
-         wzcigcCtt/oXtYOh2Trh8Q5uGRZNTiKZqDiivazumsrySOgyJFezjUWau90FmxZrTtar
-         VCw4WXZquVWaDeFO+hgpNbiZj/FYq9Ew28ivNr5zb9T6E0vnKZYSZttvWvoWyXDOM6TK
-         FoLA==
+        bh=cRszjgR7Gvq8HchX0JkJbdxjWYy4gbl0N0FXBwYq9b4=;
+        b=p+iK3jjQG+GQKcLDgLEBM25new4Lf2u+PMs29OC39TQoE1KJZrHkkLvTNmLme2rzk4
+         89qNK9QnDDG2+dJ6tLh8r8XjLCY2Tl6maC/xM30z1IAGlOoYza2iIIctM9JPM2F5YbOT
+         h1Jzacpz3bfvDm24gckvU74WI6TAD/74A6rCUKWK+4uG/Rrh8Y+xIbcwK5giF2PPtMQV
+         Z2ImgY/W5FSnMNHYbjFWbKfUmFuI5g/GaMBKwo5hUDZlN7Y+TfRibpSjZZ6Ye18yNPcj
+         WvZDPs8f8pnqeSLnU3gQHxa4T3KD2NmGluGIPjJh7tlE7aRSS69U8SZXDS6nTMpfmLn0
+         FMHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KB1gOc0HcUUYO3AePIdRgc9Asdr8fM6rOImlU/ZlctA=;
-        b=wUAWLQ2BYO0oPGYE0FW8h0IEgxQx5xd2DQz5xXv2f7QBR2f6pcImC3Ftn2slO837/6
-         3O32ns6CTZNF0Oy+Zg+QM24fyGQu0hfgvetCWM075KGasVyjLBuXtaBW9vUXzS0n6Nm+
-         np4g9M+02dkzhH0RppUS64aBWbmd23hh/HuoJobKTMYUIYDyMLbWoayUzElE2PMW+nyC
-         MqGrr3Td8ChbaYdAUKqzDqCdVweAStd8uFer7l0Rj+gTL5+zWgSmx5Z/riZuntCnMtIy
-         Cxg01ZQt5VAXZQkgL6FNGf5GDSoeuVwkpaAWkwfERQ0QcOFgEunkZ4HhzsjPP+FeafzL
-         xhVw==
-X-Gm-Message-State: AO0yUKXp33ZzIl4XeG4ynmrGEyeVvHgT4N2KskMLVr6tc6rUD/2Rb7Q2
-        q0tYbvz9F3mq7wZbw5/ei8S6Q2hSbbP9CLaArxc=
-X-Google-Smtp-Source: AK7set/zjqdVvHTBlPFj7JKAlCcpIE96STET1tKq8wkHLQwfe14R5p89zOB1naAdHEb6BTnZap92epc+f0+eKr4dHYg=
-X-Received: by 2002:a17:906:7108:b0:87b:d4df:32bc with SMTP id
- x8-20020a170906710800b0087bd4df32bcmr3213316ejj.303.1675134041976; Mon, 30
- Jan 2023 19:00:41 -0800 (PST)
+        bh=cRszjgR7Gvq8HchX0JkJbdxjWYy4gbl0N0FXBwYq9b4=;
+        b=sUfHjsEJ77WoyMj2+V+8uZfZzUdBZu7RG8/wC6q97YXa4luv3sR+ToU0NTDk6UbWZS
+         zJEQKg/1GPKL/txmyNwBffDScCUk8eEmVTzcu++3D/nS8oGiGdIaA8Ro9eQpRQuliNzc
+         czUTzlcHYfRO614y9xVjIHTMB8r8uay2p7vwGXhWeTzrh2v3hwmGjhjLjfrUSo7XC3Tp
+         2fweKSSBZvWRHvpa2sozIrsOv+fctkBXexSdJ5aSHe7xmJAxCzQVrhiJi6Go1FDOzEMw
+         kyc3BoQ6mNtB0g6c/peSu9GSfMS6bHQjufQ2TVwSQ1am6wV/ADV/r8BkxjVy589/oPax
+         LG8w==
+X-Gm-Message-State: AO0yUKV47XznDzEY9r0GAXl4yJZa3/+tlqxxxWRcd1J96dMmgSokA9p2
+        NFW036c4jRgAJhkJ7gFcXInC2OwBC7ySlpSPsxY=
+X-Google-Smtp-Source: AK7set+yi2rnbb5+oFf+EMXxDe56yVrdQ0vJPBpCC8mSrjlE4t3iRXP03mYgCSGzRpzEsynOe+hQrGURfYJ9DdH9jaE=
+X-Received: by 2002:a17:906:8514:b0:878:786e:8c39 with SMTP id
+ i20-20020a170906851400b00878786e8c39mr4660833ejx.105.1675134817095; Mon, 30
+ Jan 2023 19:13:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20230127122018.2839-1-kerneljasonxing@gmail.com> <Y9fdRqHp7sVFYbr6@boxer>
-In-Reply-To: <Y9fdRqHp7sVFYbr6@boxer>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Tue, 31 Jan 2023 11:00:05 +0800
-Message-ID: <CAL+tcoBbUKO5Y_dOjZWa4iQyK2C2O76QOLtJ+dFQgr_cpqSiyQ@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH v2 net] ixgbe: allow to increase MTU to
- some extent with XDP enabled
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        alexandr.lobakin@intel.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        bpf@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+References: <20230129190501.1624747-1-iii@linux.ibm.com> <CAADnVQL4Kmk-Hz5XB_AiVC+xVBhVvBqBZTTtedAJC5op2xGD6g@mail.gmail.com>
+ <32bf5c1fc3dcfcf735f34f83e89cbb821878b931.camel@linux.ibm.com>
+In-Reply-To: <32bf5c1fc3dcfcf735f34f83e89cbb821878b931.camel@linux.ibm.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 30 Jan 2023 19:13:25 -0800
+Message-ID: <CAADnVQ+f3_AdYjvOCHystXe1vEmXzpABbLzU4tLZD7Wuu1CCgA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/8] Support bpf trampoline for s390x - CI issue
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Manu Bretelle <chantr4@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -72,121 +72,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 11:09 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
+On Mon, Jan 30, 2023 at 10:56 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> On Fri, Jan 27, 2023 at 08:20:18PM +0800, Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
+> On Sun, 2023-01-29 at 19:28 -0800, Alexei Starovoitov wrote:
+> > On Sun, Jan 29, 2023 at 11:05 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> > wrote:
+> > >
+> > > v2:
+> > > https://lore.kernel.org/bpf/20230128000650.1516334-1-iii@linux.ibm.com/#t
+> > > v2 -> v3:
+> > > - Make __arch_prepare_bpf_trampoline static.
+> > >   (Reported-by: kernel test robot <lkp@intel.com>)
+> > > - Support both old- and new- style map definitions in sk_assign.
+> > > (Alexei)
+> > > - Trim DENYLIST.s390x. (Alexei)
+> > > - Adjust s390x vmlinux path in vmtest.sh.
+> > > - Drop merged fixes.
 > >
-> > I encountered one case where I cannot increase the MTU size directly
-> > from 1500 to 2000 with XDP enabled if the server is equipped with
-> > IXGBE card, which happened on thousands of servers in production
-> > environment.
+> > It looks great. Applied.
+> >
+> > Sadly clang repo is unreliable today. I've kicked BPF CI multiple
+> > times,
+> > but it didn't manage to fetch the clang. Pushed anyway.
+> > Pls watch for BPF CI failures in future runs.
 >
+> I think this is because llvm-toolchain-focal contains llvm 17 now.
+> So we need to either use llvm-toolchain-focal-16, or set
+> llvm_default_version=16 in libbpf/ci.
 
-> You said in this thread that you've done several tests - what were they?
+Yep. That was fixed.
+Looks like only one test is failing on s390:
+test_synproxy:PASS:./xdp_synproxy --iface tmp1 --single 0 nsec
+expect_str:FAIL:SYNACKs after connection unexpected SYNACKs after
+connection: actual '' != expected 'Total SYNACKs generated: 1\x0A'
 
-Tests against XDP are running on the server side when MTU varies from
-1500 to 3050 (not including ETH_HLEN, ETH_FCS_LEN and VLAN_HLEN) for a
-few days.
-I choose the iperf tool to test the maximum throughput and observe the
-behavior when the machines are under greater pressure. Also, I use
-netperf to send different size packets to the server side with
-different modes (TCP_RR/_STREAM) applied.
-
-> Now that you're following logic from other drivers, have you tested 3k MTU
-
-Sure, the maximum MTU size users could set is 3050 (which is 3072 - 14
-- 4 - 4 in ixgbe_change_mtu() function).
-
-> against XDP? Because your commit msg still refer to 2k as your target. If
-> 3k is fine then i would reflect that in the subject of the patch.
-
-I will modify the title and body message both.
-
->
-> >
-> > This patch follows the behavior of changing MTU as i40e/ice does.
-> >
-> > Referrences:
-> > commit 23b44513c3e6f ("ice: allow 3k MTU for XDP")
-> > commit 0c8493d90b6bb ("i40e: add XDP support for pass and drop actions")
-> >
-> > Link: https://lore.kernel.org/lkml/20230121085521.9566-1-kerneljasonxing@gmail.com/
->
-> Why do you share a link to v1 here?
-
-I originally intended to let maintainers trace the previous
-discussion. Well, I'm going to remove the link.
-
->
-> You're also missing Fixes: tag, as you're targetting the net tree.
->
-
-I'll do it in the v3 patch.
-
-Thanks,
-Jason
-
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> > v2:
-> > 1) change the commit message.
-> > 2) modify the logic when changing MTU size suggested by Maciej and Alexander.
-> > ---
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 25 ++++++++++++-------
-> >  1 file changed, 16 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > index ab8370c413f3..2c1b6eb60436 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > @@ -6777,6 +6777,18 @@ static void ixgbe_free_all_rx_resources(struct ixgbe_adapter *adapter)
-> >                       ixgbe_free_rx_resources(adapter->rx_ring[i]);
-> >  }
-> >
-> > +/**
-> > + * ixgbe_max_xdp_frame_size - returns the maximum allowed frame size for XDP
-> > + * @adapter - device handle, pointer to adapter
-> > + */
-> > +static int ixgbe_max_xdp_frame_size(struct ixgbe_adapter *adapter)
-> > +{
-> > +     if (PAGE_SIZE >= 8192 || adapter->flags2 & IXGBE_FLAG2_RX_LEGACY)
-> > +             return IXGBE_RXBUFFER_2K;
-> > +     else
-> > +             return IXGBE_RXBUFFER_3K;
-> > +}
-> > +
-> >  /**
-> >   * ixgbe_change_mtu - Change the Maximum Transfer Unit
-> >   * @netdev: network interface device structure
-> > @@ -6788,18 +6800,13 @@ static int ixgbe_change_mtu(struct net_device *netdev, int new_mtu)
-> >  {
-> >       struct ixgbe_adapter *adapter = netdev_priv(netdev);
-> >
-> > -     if (adapter->xdp_prog) {
-> > +     if (ixgbe_enabled_xdp_adapter(adapter)) {
-> >               int new_frame_size = new_mtu + ETH_HLEN + ETH_FCS_LEN +
-> >                                    VLAN_HLEN;
-> > -             int i;
-> > -
-> > -             for (i = 0; i < adapter->num_rx_queues; i++) {
-> > -                     struct ixgbe_ring *ring = adapter->rx_ring[i];
-> >
-> > -                     if (new_frame_size > ixgbe_rx_bufsz(ring)) {
-> > -                             e_warn(probe, "Requested MTU size is not supported with XDP\n");
-> > -                             return -EINVAL;
-> > -                     }
-> > +             if (new_frame_size > ixgbe_max_xdp_frame_size(adapter)) {
-> > +                     e_warn(probe, "Requested MTU size is not supported with XDP\n");
-> > +                     return -EINVAL;
-> >               }
-> >       }
-> >
-> > --
-> > 2.37.3
-> >
-> > _______________________________________________
-> > Intel-wired-lan mailing list
-> > Intel-wired-lan@osuosl.org
-> > https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
+#284/1 xdp_synproxy/xdp:FAIL
+#284 xdp_synproxy:FAIL
+Summary: 260/1530 PASSED, 31 SKIPPED, 1 FAILED
