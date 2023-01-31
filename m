@@ -2,363 +2,397 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADA968345B
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 18:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B37C68348A
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 19:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjAaRzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 12:55:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
+        id S230110AbjAaSBP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 13:01:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbjAaRzN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 12:55:13 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4124A1D6;
-        Tue, 31 Jan 2023 09:55:04 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id o187so2681112ybg.3;
-        Tue, 31 Jan 2023 09:55:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KIF4ZdeaCeKjYQdmIsFHXDu+2Z1GY+nWSgWFl8nS/YA=;
-        b=RLF+cyB7m4HGu+APfhye7KrE1xi5ilw7MyG8uPHVmSgUWvoWbLjpbpH+b577q+L3uJ
-         3NUR3S1bouDTcJ337rffvNf0PUZSE2thMlzSUz58b9PvqGoimedY6Dg9tZdYI9Ip6u5s
-         inmYBt/YdwCl2KciPPKInJx2knfqKlO6MtYdUNIYlYaFBJ8UtjtxQBcoq4JB7X3Cs1Rd
-         JGBL5fTWqJcaIYo1yz+VuYZyC/YVAaFu/JsCBJqsD8IoHhfkL2Utyiu51LbDhz9Ju2g9
-         odIrji9+x/F8IN5VuT5cqs9/V6D8ljPOugolzx7d9JDggvZOrm6CfEvxSXDUyBYQY9VT
-         anuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KIF4ZdeaCeKjYQdmIsFHXDu+2Z1GY+nWSgWFl8nS/YA=;
-        b=pygI1aycdPJGGMQnRneJ/JBcoc9uOpoTCvC2Z110Nn6FBRznyytuNA4rABZvr1lToB
-         MQt7Ii5BqlVIVwEDBNq777UkNvkKPmMQLeQgoXkJWunApAGXQPT1Twv+qF7HDm9WM4ZV
-         c6mImCSyydUZsT+/HQxSQrZFUAzCkVsHD6LLVeL8Z2wXa9VtVtjw6QhH1oFjDU8Je/tT
-         plbgAUkGQMqRM+jLCdzAtKnbVJqtnUhR2K1LX+4CyWt91GOLKZBzyqBe2cSh+puX5LPm
-         KtJ5qM5Af3xTYwD5kLQ5rKzty2PZ7H+hu2eur1pfSju/FjB5O5NgdRN3HSfliVcZvwqv
-         6AqQ==
-X-Gm-Message-State: AFqh2kp1+wU8jZ9tuDEsZW1U65FJvQQreCELPMeYGc40enqQCyCd+Mzb
-        bJ+uOv5tKwyA0A46FoKhd36QC7ecfAnJxFVZJjCwcs70K2daTg==
-X-Google-Smtp-Source: AMrXdXvYkX+Q+2Nq55Xtg9CBe63p3xz5VxdUcBvFY/u+fBAokjlVxygj4lWCa8/kosL9wcm/BURlq06iUrN4nhNhtKw=
-X-Received: by 2002:a25:7d45:0:b0:802:b7a:4069 with SMTP id
- y66-20020a257d45000000b008020b7a4069mr4671719ybc.433.1675187703400; Tue, 31
- Jan 2023 09:55:03 -0800 (PST)
+        with ESMTP id S231338AbjAaSAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 13:00:48 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3B04859E
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:00:24 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30VGcVHm005671
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:00:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=QC+5PKpMWljBkHFgc8FLCd93o+BgTq03FD8Yye4LrVs=;
+ b=EhRG9wUIqcMl1cCYtvY1mcbpq4HN4X01W+HyW2Jpj4tFyy+n6KV3GfC2zS9KokfyYmNp
+ 46xObOQJ3HgGOFZjTmMGsuMVpSeNyKK6mIg2Rzy59IUrqi+qSwNVneNU0Fv5uwdoUZi6
+ kwVKpDQCpf0anoI9Ebr7rw06pk5EwXNjUO8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nepsg5fm1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:00:24 -0800
+Received: from twshared26225.38.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Tue, 31 Jan 2023 10:00:23 -0800
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id BA0C515D5BB5F; Tue, 31 Jan 2023 10:00:17 -0800 (PST)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH v3 bpf-next 00/11] BPF rbtree next-gen datastructure
+Date:   Tue, 31 Jan 2023 10:00:05 -0800
+Message-ID: <20230131180016.3368305-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: f383FI9YntR_JLHiO1yT75GT85YZjkf3
+X-Proofpoint-ORIG-GUID: f383FI9YntR_JLHiO1yT75GT85YZjkf3
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20230127191703.3864860-1-joannelkoong@gmail.com>
- <20230127191703.3864860-4-joannelkoong@gmail.com> <20230129233928.f3wf6dd6ep75w4vz@MacBook-Pro-6.local>
- <CAJnrk1ap0dsdEzR31x0=9hTaA=4xUU+yvgT8=Ur3tEUYur=Edw@mail.gmail.com> <20230131053605.g7o75yylku6nusnp@macbook-pro-6.dhcp.thefacebook.com>
-In-Reply-To: <20230131053605.g7o75yylku6nusnp@macbook-pro-6.dhcp.thefacebook.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Tue, 31 Jan 2023 09:54:52 -0800
-Message-ID: <CAJnrk1Z_GB_ynL5kEaVQaxYsPFjad+3dk8JWKqDfvb1VHHavwg@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, netdev@vger.kernel.org,
-        memxor@gmail.com, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-31_08,2023-01-31_01,2022-06-22_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 9:36 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Jan 30, 2023 at 04:44:12PM -0800, Joanne Koong wrote:
-> > On Sun, Jan 29, 2023 at 3:39 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Fri, Jan 27, 2023 at 11:17:01AM -0800, Joanne Koong wrote:
-> > > > Add skb dynptrs, which are dynptrs whose underlying pointer points
-> > > > to a skb. The dynptr acts on skb data. skb dynptrs have two main
-> > > > benefits. One is that they allow operations on sizes that are not
-> > > > statically known at compile-time (eg variable-sized accesses).
-> > > > Another is that parsing the packet data through dynptrs (instead of
-> > > > through direct access of skb->data and skb->data_end) can be more
-> > > > ergonomic and less brittle (eg does not need manual if checking for
-> > > > being within bounds of data_end).
-> > > >
-> > > > For bpf prog types that don't support writes on skb data, the dynptr is
-> > > > read-only (bpf_dynptr_write() will return an error and bpf_dynptr_data()
-> > > > will return a data slice that is read-only where any writes to it will
-> > > > be rejected by the verifier).
-> > > >
-> > > > For reads and writes through the bpf_dynptr_read() and bpf_dynptr_write()
-> > > > interfaces, reading and writing from/to data in the head as well as from/to
-> > > > non-linear paged buffers is supported. For data slices (through the
-> > > > bpf_dynptr_data() interface), if the data is in a paged buffer, the user
-> > > > must first call bpf_skb_pull_data() to pull the data into the linear
-> > > > portion.
-> > >
-> > > Looks like there is an assumption in parts of this patch that
-> > > linear part of skb is always writeable. That's not the case.
-> > > See if (ops->gen_prologue || env->seen_direct_write) in convert_ctx_accesses().
-> > > For TC progs it calls bpf_unclone_prologue() which adds hidden
-> > > bpf_skb_pull_data() in the beginning of the prog to make it writeable.
-> >
-> > I think we can make this assumption? For writable progs (referenced in
-> > the may_access_direct_pkt_data() function), all of them have a
-> > gen_prologue that unclones the buffer (eg tc_cls_act, lwt_xmit, sk_skb
-> > progs) or their linear portion is okay to write into by default (eg
-> > xdp, sk_msg, cg_sockopt progs).
->
-> but the patch was preserving seen_direct_write in some cases.
-> I'm still confused.
+This series adds a rbtree datastructure following the "next-gen
+datastructure" precedent set by recently-added linked-list [0]. This is
+a reimplementation of previous rbtree RFC [1] to use kfunc + kptr
+instead of adding a new map type. This series adds a smaller set of API
+functions than that RFC - just the minimum needed to support current
+cgfifo example scheduler in ongoing sched_ext effort [2], namely:
 
-seen_direct_write is used to determine whether to actually unclone or
-not in the program's prologue function (eg tc_cls_act_prologue() ->
-bpf_unclone_prologue() where in bpf_unclone_prologue(), if
-direct_write was not true, then it can skip doing the actual
-uncloning).
+  bpf_rbtree_add
+  bpf_rbtree_remove
+  bpf_rbtree_first
 
-I think the part of the patch you're talking about regarding
-seen_direct_write is this in check_helper_call():
+The meat of this series is bugfixes and verifier infra work to support
+these API functions. Adding more rbtree kfuncs in future patches should
+be straightforward as a result.
 
-+ if (func_id == BPF_FUNC_dynptr_data &&
-+    dynptr_type == BPF_DYNPTR_TYPE_SKB) {
-+   bool seen_direct_write = env->seen_direct_write;
-+
-+   regs[BPF_REG_0].type |= DYNPTR_TYPE_SKB;
-+   if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
-+     regs[BPF_REG_0].type |= MEM_RDONLY;
-+   else
-+     /*
-+     * Calling may_access_direct_pkt_data() will set
-+     * env->seen_direct_write to true if the skb is
-+     * writable. As an optimization, we can ignore
-+     * setting env->seen_direct_write.
-+     *
-+     * env->seen_direct_write is used by skb
-+     * programs to determine whether the skb's page
-+     * buffers should be cloned. Since data slice
-+     * writes would only be to the head, we can skip
-+     * this.
-+     */
-+     env->seen_direct_write = seen_direct_write;
-+ }
+First, the series refactors and extends linked_list's release_on_unlock
+logic. The concept of "reference to node that was added to data
+structure" is formalized as "non-owning reference". From linked_list's
+perspective this non-owning reference after
+linked_list_push_{front,back} has same semantics as release_on_unlock,
+with the addition of writes to such references being valid in the
+critical section. Such references are no longer marked PTR_UNTRUSTED.
+Patches 2 and 13 go into more detail.
 
-If the data slice for a skb dynptr is writable, then seen_direct_write
-gets set to true (done internally in may_access_direct_pkt_data()) so
-that the skb is actually uncloned, whereas if it's read-only, then
-env->seen_direct_write gets reset to its original value (since the
-may_access_direct_pkt_data() call will have set env->seen_direct_write
-to true)
+The series then adds rbtree API kfuncs and necessary verifier support
+for them - namely support for callback args to kfuncs and some
+non-owning reference interactions that linked_list didn't need.
 
->
-> > >
-> > > > Any bpf_dynptr_write() automatically invalidates any prior data slices
-> > > > to the skb dynptr. This is because a bpf_dynptr_write() may be writing
-> > > > to data in a paged buffer, so it will need to pull the buffer first into
-> > > > the head. The reason it needs to be pulled instead of writing directly to
-> > > > the paged buffers is because they may be cloned (only the head of the skb
-> > > > is by default uncloned). As such, any bpf_dynptr_write() will
-> > > > automatically have its prior data slices invalidated, even if the write
-> > > > is to data in the skb head (the verifier has no way of differentiating
-> > > > whether the write is to the head or paged buffers during program load
-> > > > time).
-> > >
-> > > Could you explain the workflow how bpf_dynptr_write() invalidates other
-> > > pkt pointers ?
-> > > I expected bpf_dynptr_write() to be in bpf_helper_changes_pkt_data().
-> > > Looks like bpf_dynptr_write() calls bpf_skb_store_bytes() underneath,
-> > > but that doesn't help the verifier.
-> >
-> > In the verifier in check_helper_call(), for the BPF_FUNC_dynptr_write
-> > case (line 8236) the "changes_data" variable gets set to true if the
-> > dynptr is an skb type. At the end of check_helper_call() on line 8474,
-> > since "changes_data" is true, clear_all_pkt_pointer() gets called,
-> > which invalidates the other packet pointers.
->
-> Ahh. I see. Thanks for explaining.
->
-> > >
-> > > > Please note as well that any other helper calls that change the
-> > > > underlying packet buffer (eg bpf_skb_pull_data()) invalidates any data
-> > > > slices of the skb dynptr as well. The stack trace for this is
-> > > > check_helper_call() -> clear_all_pkt_pointers() ->
-> > > > __clear_all_pkt_pointers() -> mark_reg_unknown().
-> > >
-> > > __clear_all_pkt_pointers isn't present in the tree. Typo ?
-> >
-> > I'll update this message, clear_all_pkt_pointers() and
-> > __clear_all_pkt_pointers() were combined in a previous commit.
-> >
-> > >
-> > > >
-> > > > For examples of how skb dynptrs can be used, please see the attached
-> > > > selftests.
-> > > >
-> > > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > > > ---
-> > > >  include/linux/bpf.h            |  82 +++++++++------
-> > > >  include/linux/filter.h         |  18 ++++
-> > > >  include/uapi/linux/bpf.h       |  37 +++++--
-> > > >  kernel/bpf/btf.c               |  18 ++++
-> > > >  kernel/bpf/helpers.c           |  95 ++++++++++++++---
-> > > >  kernel/bpf/verifier.c          | 185 ++++++++++++++++++++++++++-------
-> > > >  net/core/filter.c              |  60 ++++++++++-
-> > > >  tools/include/uapi/linux/bpf.h |  37 +++++--
-> > > >  8 files changed, 432 insertions(+), 100 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index 14a0264fac57..1ac061b64582 100644
-> > [...]
-> > > > @@ -8243,6 +8316,28 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> > > >               mark_reg_known_zero(env, regs, BPF_REG_0);
-> > > >               regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
-> > > >               regs[BPF_REG_0].mem_size = meta.mem_size;
-> > > > +             if (func_id == BPF_FUNC_dynptr_data &&
-> > > > +                 dynptr_type == BPF_DYNPTR_TYPE_SKB) {
-> > > > +                     bool seen_direct_write = env->seen_direct_write;
-> > > > +
-> > > > +                     regs[BPF_REG_0].type |= DYNPTR_TYPE_SKB;
-> > > > +                     if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
-> > > > +                             regs[BPF_REG_0].type |= MEM_RDONLY;
-> > > > +                     else
-> > > > +                             /*
-> > > > +                              * Calling may_access_direct_pkt_data() will set
-> > > > +                              * env->seen_direct_write to true if the skb is
-> > > > +                              * writable. As an optimization, we can ignore
-> > > > +                              * setting env->seen_direct_write.
-> > > > +                              *
-> > > > +                              * env->seen_direct_write is used by skb
-> > > > +                              * programs to determine whether the skb's page
-> > > > +                              * buffers should be cloned. Since data slice
-> > > > +                              * writes would only be to the head, we can skip
-> > > > +                              * this.
->
-> I was talking about above comment. It reads as 'write to the head are allowed'.
-> But they're not. seen_direct_write is needed to do hidden pull.
->
+BPF rbtree uses struct rb_root_cached + existing rbtree lib under the
+hood. From the BPF program writer's perspective, a BPF rbtree is very
+similar to existing linked list. Consider the following example:
 
-I will remove this line, I agree that it is confusing.
+  struct node_data {
+    long key;
+    long data;
+    struct bpf_rb_node node;
+  }
 
-> > > > +                              */
-> > > > +                             env->seen_direct_write = seen_direct_write;
-> > >
-> > > This looks incorrect. skb head might not be writeable.
-> > >
-> > > > +             }
-> > > >               break;
-> > > >       case RET_PTR_TO_MEM_OR_BTF_ID:
-> > > >       {
-> > > > @@ -8649,6 +8744,7 @@ enum special_kfunc_type {
-> > > >       KF_bpf_list_pop_back,
-> > > >       KF_bpf_cast_to_kern_ctx,
-> > > >       KF_bpf_rdonly_cast,
-> > > > +     KF_bpf_dynptr_from_skb,
-> > > >       KF_bpf_rcu_read_lock,
-> > > >       KF_bpf_rcu_read_unlock,
-> > > >  };
-> > > > @@ -8662,6 +8758,7 @@ BTF_ID(func, bpf_list_pop_front)
-> > > >  BTF_ID(func, bpf_list_pop_back)
-> > > >  BTF_ID(func, bpf_cast_to_kern_ctx)
-> > > >  BTF_ID(func, bpf_rdonly_cast)
-> > > > +BTF_ID(func, bpf_dynptr_from_skb)
-> > > >  BTF_SET_END(special_kfunc_set)
-> > > >
-> > > >  BTF_ID_LIST(special_kfunc_list)
-> > > > @@ -8673,6 +8770,7 @@ BTF_ID(func, bpf_list_pop_front)
-> > > >  BTF_ID(func, bpf_list_pop_back)
-> > > >  BTF_ID(func, bpf_cast_to_kern_ctx)
-> > > >  BTF_ID(func, bpf_rdonly_cast)
-> > > > +BTF_ID(func, bpf_dynptr_from_skb)
-> > > >  BTF_ID(func, bpf_rcu_read_lock)
-> > > >  BTF_ID(func, bpf_rcu_read_unlock)
-> > > >
-> > > > @@ -9263,17 +9361,26 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
-> > > >                               return ret;
-> > > >                       break;
-> > > >               case KF_ARG_PTR_TO_DYNPTR:
-> > > > +             {
-> > > > +                     enum bpf_arg_type dynptr_arg_type = ARG_PTR_TO_DYNPTR;
-> > > > +
-> > > >                       if (reg->type != PTR_TO_STACK &&
-> > > >                           reg->type != CONST_PTR_TO_DYNPTR) {
-> > > >                               verbose(env, "arg#%d expected pointer to stack or dynptr_ptr\n", i);
-> > > >                               return -EINVAL;
-> > > >                       }
-> > > >
-> > > > -                     ret = process_dynptr_func(env, regno, insn_idx,
-> > > > -                                               ARG_PTR_TO_DYNPTR | MEM_RDONLY);
-> > > > +                     if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb])
-> > > > +                             dynptr_arg_type |= MEM_UNINIT | DYNPTR_TYPE_SKB;
-> > > > +                     else
-> > > > +                             dynptr_arg_type |= MEM_RDONLY;
-> > > > +
-> > > > +                     ret = process_dynptr_func(env, regno, insn_idx, dynptr_arg_type,
-> > > > +                                               meta->func_id);
-> > > >                       if (ret < 0)
-> > > >                               return ret;
-> > > >                       break;
-> > > > +             }
-> > > >               case KF_ARG_PTR_TO_LIST_HEAD:
-> > > >                       if (reg->type != PTR_TO_MAP_VALUE &&
-> > > >                           reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
-> > > > @@ -15857,6 +15964,14 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-> > > >                  desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
-> > > >               insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
-> > > >               *cnt = 1;
-> > > > +     } else if (desc->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb]) {
-> > > > +             bool is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
-> > > > +             struct bpf_insn addr[2] = { BPF_LD_IMM64(BPF_REG_4, is_rdonly) };
-> > >
-> > > Why use 16-byte insn to pass boolean in R4 ?
-> > > Single 8-byte MOV would do.
-> >
-> > Great, I'll change it to a 8-byte MOV
-> >
-> > >
-> > > > +
-> > > > +             insn_buf[0] = addr[0];
-> > > > +             insn_buf[1] = addr[1];
-> > > > +             insn_buf[2] = *insn;
-> > > > +             *cnt = 3;
-> > > >       }
-> > > >       return 0;
-> > > >  }
-> > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > index 6da78b3d381e..ddb47126071a 100644
-> > > > --- a/net/core/filter.c
-> > > > +++ b/net/core/filter.c
-> > > > @@ -1684,8 +1684,8 @@ static inline void bpf_pull_mac_rcsum(struct sk_buff *skb)
-> > > >               skb_postpull_rcsum(skb, skb_mac_header(skb), skb->mac_len);
-> > > >  }
-> > > >
-> > > > -BPF_CALL_5(bpf_skb_store_bytes, struct sk_buff *, skb, u32, offset,
-> > > > -        const void *, from, u32, len, u64, flags)
-> > > > +int __bpf_skb_store_bytes(struct sk_buff *skb, u32 offset, const void *from,
-> > > > +                       u32 len, u64 flags)
-> > >
-> > > This change is just to be able to call __bpf_skb_store_bytes() ?
-> > > If so, it's unnecessary.
-> > > See:
-> > > BPF_CALL_4(sk_reuseport_load_bytes,
-> > >            const struct sk_reuseport_kern *, reuse_kern, u32, offset,
-> > >            void *, to, u32, len)
-> > > {
-> > >         return ____bpf_skb_load_bytes(reuse_kern->skb, offset, to, len);
-> > > }
-> > >
-> >
-> > There was prior feedback [0] that using four underscores to call a
-> > helper function is confusing and makes it ungreppable
->
-> There are plenty of ungreppable funcs in the kernel.
-> Try finding where folio_test_dirty() is defined.
-> mm subsystem is full of such 'features'.
-> Not friendly for casual kernel code reader, but useful.
->
-> Since quadruple underscore is already used in the code base
-> I see no reason to sacrifice bpf_skb_load_bytes performance with extra call.
+  static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
+  {
+    struct node_data *node_a;
+    struct node_data *node_b;
 
-I don't have a preference either way, I'll change it to use the
-quadruple underscore in the next version
+    node_a =3D container_of(a, struct node_data, node);
+    node_b =3D container_of(b, struct node_data, node);
+
+    return node_a->key < node_b->key;
+  }
+
+  private(A) struct bpf_spin_lock glock;
+  private(A) struct bpf_rb_root groot __contains(node_data, node);
+
+  /* ... in BPF program */
+  struct node_data *n, *m;
+  struct bpf_rb_node *res;
+
+  n =3D bpf_obj_new(typeof(*n));
+  if (!n)
+    /* skip */
+  n->key =3D 5;
+  n->data =3D 10;
+
+  bpf_spin_lock(&glock);
+  bpf_rbtree_add(&groot, &n->node, less);
+  bpf_spin_unlock(&glock);
+
+  bpf_spin_lock(&glock);
+  res =3D bpf_rbtree_first(&groot);
+  if (!res)
+    /* skip */
+  res =3D bpf_rbtree_remove(&groot, res);
+  if (!res)
+    /* skip */
+  bpf_spin_unlock(&glock);
+
+  m =3D container_of(res, struct node_data, node);
+  bpf_obj_drop(m);
+
+Some obvious similarities:
+
+  * Special bpf_rb_root and bpf_rb_node types have same semantics
+    as bpf_list_head and bpf_list_node, respectively
+  * __contains is used to associated node type with root
+  * The spin_lock associated with a rbtree must be held when using
+    rbtree API kfuncs
+  * Nodes are allocated via bpf_obj_new and dropped via bpf_obj_drop
+  * Rbtree takes ownership of node lifetime when a node is added.
+    Removing a node gives ownership back to the program, requiring a
+    bpf_obj_drop before program exit
+
+Some new additions as well:
+
+  * Support for callbacks in kfunc args is added to enable 'less'
+    callback use above
+  * bpf_rbtree_first is the first graph API function to return a
+    non-owning reference instead of convering an arg from own->non-own
+  * Because all references to nodes already added to the rbtree are
+    non-owning, bpf_rbtree_remove must accept such a reference in order
+    to remove it from the tree
+
+Summary of patches:
+  Patch 1 lays groundwork for release_on_unlock -> non-owning ref
+  changes
+
+  Patches 2 and 3 do release_on_unlock -> non-owning ref migration and
+  update linked_list tests
+
+  Patch 4 is a nonfunctional rename
+
+  Patches 5 - 9 implement the meat of rbtree support in this series,
+  gradually building up to implemented kfuncs that verify as expected.
+
+  Patch 10 adds the bpf_rbtree_{add,first,remove} to bpf_experimental.h.
+
+  Patch 12 adds tests, Patch 13 adds documentation.
+
+  [0]: lore.kernel.org/bpf/20221118015614.2013203-1-memxor@gmail.com
+  [1]: lore.kernel.org/bpf/20220830172759.4069786-1-davemarchevsky@fb.com
+  [2]: lore.kernel.org/bpf/20221130082313.3241517-1-tj@kernel.org
+
+Changelog:
+
+v2 -> v3: lore.kernel.org/bpf/20221217082506.1570898-1-davemarchevsky@fb.co=
+m/
+
+Patch #'s below refer to the patch's number in v2 unless otherwise stated.
+
+* Patch 1 - "bpf: Support multiple arg regs w/ ref_obj_id for kfuncs"
+  * No longer needed as v3 doesn't have multiple ref_obj_id arg regs
+  * The refactoring pieces were submitted separately
+    (https://lore.kernel.org/bpf/20230121002417.1684602-1-davemarchevsky@fb=
+.com/)
+
+* Patch 2 - "bpf: Migrate release_on_unlock logic to non-owning ref semanti=
+cs"
+  * Remove KF_RELEASE_NON_OWN flag from list API push methods, just match
+    against specific kfuncs for now (Alexei, David)
+  * Separate "release non owning reference" logic from KF_RELEASE logic
+    (Alexei, David)
+  * reg_find_field_offset now correctly tests 'rec' instead of 'reg' after
+    calling reg_btf_record (Dan Carpenter)
+
+* New patch added after Patch 2 - "bpf: Improve bpf_reg_state space usage f=
+or non-owning ref lock"
+  * Eliminates extra bpf_reg_state memory usage by using a bool instead of
+    copying lock identity
+
+* Patch 4 - "bpf: rename list_head -> graph_root in field info types"
+  * v2's version was applied to bpf-next, not including in respins
+
+* Patch 6 - "bpf: Add bpf_rbtree_{add,remove,first} kfuncs"
+  * Remove KF_RELEASE_NON_OWN flag from rbtree_add, just add it to specific
+    kfunc matching (Alexei, David)
+
+* Patch 9 - "bpf: Special verifier handling for bpf_rbtree_{remove, first}"
+  * Remove KF_INVALIDATE_NON_OWN kfunc flag, just match against specific kf=
+unc
+    for now (Alexei, David)
+
+* Patch 11 - "libbpf: Make BTF mandatory if program BTF has spin_lock or al=
+loc_obj type"
+  * Drop for now, will submit separately
+
+* Patch 12 - "selftests/bpf: Add rbtree selftests"
+  * Some expected-failure tests have different error messages due to "relea=
+se
+    non-owning reference logic" being separated from KF_RELEASE logic in Pa=
+tch
+    2 changes
+
+* Patch 13 - "bpf, documentation: Add graph documentation for non-owning re=
+fs"
+  * Fix documentation formatting and improve content (David)
+
+
+v1 -> v2: lore.kernel.org/bpf/20221206231000.3180914-1-davemarchevsky@fb.co=
+m/
+
+Series-wide changes:
+  * Rename datastructure_{head,node,api} -> graph_{root,node,api} (Alexei)
+  * "graph datastructure" in patch summaries to refer to linked_list + rbtr=
+ee
+    instead of "next-gen datastructure" (Alexei)
+  * Move from hacky marking of non-owning references as PTR_UNTRUSTED to
+    cleaner implementation (Alexei)
+  * Add invalidation of non-owning refs to rbtree_remove (Kumar, Alexei)
+
+Patch #'s below refer to the patch's number in v1 unless otherwise stated.
+
+Note that in v1 most of the meaty verifier changes were in the latter half
+of the series. Here, about half of that complexity has been moved to
+"bpf: Migrate release_on_unlock logic to non-owning ref semantics" - was Pa=
+tch
+3 in v1.
+
+* Patch 1 - "bpf: Loosen alloc obj test in verifier's reg_btf_record"
+  * Was applied, dropped from further iterations
+
+* Patch 2 - "bpf: map_check_btf should fail if btf_parse_fields fails"
+  * Dropped in favor of verifier check-on-use: when some normal verifier
+    checking expects the map to have btf_fields correctly parsed, it won't
+    find any and verification will fail
+
+* New patch added before Patch 3 - "bpf: Support multiple arg regs w/ ref_o=
+bj_id for kfuncs"
+  * Addition of KF_RELEASE_NON_OWN flag, which requires KF_RELEASE, and tag=
+ging
+    of bpf_list_push_{front,back} KF_RELEASE | KF_RELEASE_NON_OWN, means th=
+at
+    list-in-list push_{front,back} will trigger "only one ref_obj_id arg re=
+g"
+    logic. This is because "head" arg to those functions can be a list-in-l=
+ist,
+    which itself can be an owning reference with ref_obj_id. So need to
+    support multiple ref_obj_id for release kfuncs.
+
+* Patch 3 - "bpf: Minor refactor of ref_set_release_on_unlock"
+  * Now a major refactor w/ a rename to reflect this
+    * "bpf: Migrate release_on_unlock logic to non-owning ref semantics"
+  * Replaces release_on_unlock with active_lock logic as discussed in v1
+
+* New patch added after Patch 3 - "selftests/bpf: Update linked_list tests =
+for non_owning_ref logic"
+  * Removes "write after push" linked_list failure tests - no longer failure
+    scenarios.
+
+* Patch 4 - "bpf: rename list_head -> datastructure_head in field info type=
+s"
+  * rename to graph_root instead. Similar renamings across the series - see
+    series-wide changes.
+
+* Patch 5 - "bpf: Add basic bpf_rb_{root,node} support"
+  * OWNER_FIELD_MASK -> GRAPH_ROOT_MASK, OWNEE_FIELD_MASK -> GRAPH_NODE_MAS=
+K,
+    and change of "owner"/"ownee" in big btf_check_and_fixup_fields comment=
+ to
+    "root"/"node" (Alexei)
+
+* Patch 6 - "bpf: Add bpf_rbtree_{add,remove,first} kfuncs"
+  * bpf_rbtree_remove can no longer return NULL. v2 continues v1's "use type
+    system to prevent remove of node that isn't in a datastructure" approac=
+h,
+    so rbtree_remove should never have been able to return NULL
+
+* Patch 7 - "bpf: Add support for bpf_rb_root and bpf_rb_node in kfunc args"
+  * is_bpf_datastructure_api_kfunc -> is_bpf_graph_api_kfunc (Alexei)
+
+* Patch 8 - "bpf: Add callback validation to kfunc verifier logic"
+  * Explicitly disallow rbtree_remove in rbtree callback
+  * Explicitly disallow bpf_spin_{lock,unlock} call in rbtree callback,
+    preventing possibility of "unbalanced" unlock (Alexei)
+
+* Patch 10 - "bpf, x86: BPF_PROBE_MEM handling for insn->off < 0"
+  * Now that non-owning refs aren't marked PTR_UNTRUSTED it's not necessary=
+ to
+    include this patch as part of the series
+  * After conversation w/ Alexei, did another pass and submitted as an
+    independent series (lore.kernel.org/bpf/20221213182726.325137-1-davemar=
+chevsky@fb.com/)
+
+* Patch 13 - "selftests/bpf: Add rbtree selftests"
+  * Since bpf_rbtree_remove can no longer return null, remove null checks
+  * Remove test confirming that rbtree_first isn't allowed in callback. We =
+want
+    this to be possible
+  * Add failure test confirming that rbtree_remove's new non-owning referen=
+ce
+    invalidation behavior behaves as expected
+  * Add SEC("license") to rbtree_btf_fail__* progs. They were previously
+    failing due to lack of this section. Now they're failing for correct
+    reasons.
+  * rbtree_btf_fail__add_wrong_type.c - add locking around rbtree_add, rena=
+me
+    the bpf prog to something reasonable
+
+* New patch added after patch 13 - "bpf, documentation: Add graph documenta=
+tion for non-owning refs"
+  * Summarizes details of owning and non-owning refs which we hashed out in
+    v1
+
+
+Dave Marchevsky (13):
+  bpf: Support multiple arg regs w/ ref_obj_id for kfuncs
+  bpf: Migrate release_on_unlock logic to non-owning ref semantics
+  selftests/bpf: Update linked_list tests for non-owning ref semantics
+  bpf: rename list_head -> graph_root in field info types
+  bpf: Add basic bpf_rb_{root,node} support
+  bpf: Add bpf_rbtree_{add,remove,first} kfuncs
+  bpf: Add support for bpf_rb_root and bpf_rb_node in kfunc args
+  bpf: Add callback validation to kfunc verifier logic
+  bpf: Special verifier handling for bpf_rbtree_{remove, first}
+  bpf: Add bpf_rbtree_{add,remove,first} decls to bpf_experimental.h
+  libbpf: Make BTF mandatory if program BTF has spin_lock or alloc_obj
+    type
+  selftests/bpf: Add rbtree selftests
+  bpf, documentation: Add graph documentation for non-owning refs
+
+ Documentation/bpf/graph_ds_impl.rst           | 208 +++++
+ Documentation/bpf/other.rst                   |   3 +-
+ include/linux/bpf.h                           |  23 +-
+ include/linux/bpf_verifier.h                  |  39 +-
+ include/linux/btf.h                           |  18 +-
+ include/uapi/linux/bpf.h                      |  11 +
+ kernel/bpf/btf.c                              | 181 ++--
+ kernel/bpf/helpers.c                          |  76 +-
+ kernel/bpf/syscall.c                          |  28 +-
+ kernel/bpf/verifier.c                         | 800 ++++++++++++++----
+ tools/include/uapi/linux/bpf.h                |  11 +
+ tools/lib/bpf/libbpf.c                        |  50 +-
+ .../testing/selftests/bpf/bpf_experimental.h  |  24 +
+ .../selftests/bpf/prog_tests/linked_list.c    |  22 +-
+ .../testing/selftests/bpf/prog_tests/rbtree.c | 186 ++++
+ .../testing/selftests/bpf/progs/linked_list.c |   2 +-
+ .../selftests/bpf/progs/linked_list_fail.c    | 100 ++-
+ tools/testing/selftests/bpf/progs/rbtree.c    | 176 ++++
+ .../progs/rbtree_btf_fail__add_wrong_type.c   |  52 ++
+ .../progs/rbtree_btf_fail__wrong_node_type.c  |  49 ++
+ .../testing/selftests/bpf/progs/rbtree_fail.c | 296 +++++++
+ 21 files changed, 2018 insertions(+), 337 deletions(-)
+ create mode 100644 Documentation/bpf/graph_ds_impl.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rbtree.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rbtree.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rbtree_btf_fail__add_=
+wrong_type.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rbtree_btf_fail__wron=
+g_node_type.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rbtree_fail.c
+
+--=20
+2.30.2
