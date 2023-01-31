@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCCC6835A0
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 19:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A0C6835AF
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 19:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbjAaStb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 13:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
+        id S231745AbjAaSvy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 13:51:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbjAaStH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 13:49:07 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B6B410B0
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:49:01 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id mf7so25732008ejc.6
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:49:01 -0800 (PST)
+        with ESMTP id S231621AbjAaSvo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 13:51:44 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE51856192
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:51:38 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id ml19so20919943ejb.0
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:51:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ba8NxZRc7uJtxvSpXCmKtkRASMfc/Dqs1JdA8itEXDY=;
-        b=iQ476cOEphEnJEsn1erUTtFuPEnwxfvPFifeX0BDqsJz5sL64/mu/P3ZhNoCoAPt0u
-         9gdP6bYlZaG/26xsAQfNdTHpvUglQ/sR35862mSDARy3zaEu7HufARi4PGBDlyAOItmk
-         hmt7HJnn2u2lKwZQo3gKodSp+ZizVrtYEyqNHLdjYfYnV2tX9Qae/TY/UKd3Jv3Q4f5F
-         0F3YUABs6e4YIkrbvwAG34p3+UUulRSkh1GddrGccF5pLQIby9WCxBBzY6W0hCAVFxJA
-         tlYGeZdiVE5dznkeEtVMCJO0+rKWXj5GrEmmuXtKosSU84dVpWXsOTMbsK8riozTKKyj
-         Equg==
+        bh=+zLryEyLsCXkEtMa+lT/EJ68XxAaghRTa0IseT6hIVc=;
+        b=pN3KEvkZUyF6lc3gu+eIY8/qX3wsuep6C98f6SCZ2SUr65w8SJmjpy9637A8+FWo46
+         A4agDRkI99vh09jDE3R3jjeW8f+CxtwgZEz5rELk41vML+ADfzisgJ0Qp//RyXnoz0gh
+         vahOGrAc8j76DpEBgDzini6f2JRB18B+06dX0LPzlQcb9oxd/Oki1fW99ytpgthLrubK
+         rtTvAOa0gA+PH2Hpbk+BdVwV690jihdyU5twlgUE+y4I5wbL9jwxxCqqQYtMStrI/3br
+         GUnaC/PHC6QsbULpd5vbCMBee4CMqUafRainuG93B5l+C/xT9tX0pyg9DN/fR7/g5j4Y
+         3IIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ba8NxZRc7uJtxvSpXCmKtkRASMfc/Dqs1JdA8itEXDY=;
-        b=tu5ex4lgwxO6RO0Yokrp+m2a9am/V8Y5Re2SNpiXUk/ksxJsqFOuT5xTdTklbiebNy
-         HtyQFwY0PXDAV/VsQuej1cQTPdoMuvLb2PgvyATEurVCeH6YYmtmi+xNG/8X3dn796T4
-         M5qblv2awf74rVtvWna/ggFrjuN454+5VSfdKSvOR2AQ/NOxtY6xCmVBSNrUCxLCg8bH
-         ewLyi4qo8su9Dr9F9EhXXk0sS+Q16y48O1kjN0Anjnr+0ceqkRQsuZ2tvwYhXUXXzIxq
-         t/3mMS7ZStz6UMnEmjjb5CsQ+72z1pGVzTCUnkEqRHw5hRPWHm/6Xl7xsUlQm6swfj1Q
-         0Cfw==
-X-Gm-Message-State: AO0yUKVJxDOgcTCVE+pSJ27eY+xmQANxpVZXupz+wx3StsfwBvU0/If8
-        V+bLnwMJcjCE6cTzOb+XPo40WFncgHJ+lXR/tLs=
-X-Google-Smtp-Source: AK7set9w6u60OoFulfV3ttoFUyPisz4euz901fFDy/bEp+hTGGa1ggR4Hv0R7pD3/T2Yq1T6Ru8oiRwZkmp791jYcmo=
-X-Received: by 2002:a17:907:2cea:b0:88b:93c0:34f2 with SMTP id
- hz10-20020a1709072cea00b0088b93c034f2mr1492069ejc.296.1675190940099; Tue, 31
- Jan 2023 10:49:00 -0800 (PST)
+        bh=+zLryEyLsCXkEtMa+lT/EJ68XxAaghRTa0IseT6hIVc=;
+        b=kaPToetSdStWQVHMA2UuJM/oXZs7pYWohYaF2H3Uupl85seRcq5o9IcD0WQ6mblv8h
+         9POpK5AOqtnLGQK0PZIzBJJNNAF6ILpH7AYg9G3uKKhvVJyo+1uITU3c66JA32UWJf7N
+         Q7ygMUz4Es+vP64KWxvy7MCJPi+KvhTvYQjgiR7/zqkNqGOX4fgSJmg6FESlKUS/h0K2
+         GEEByQuL1MfpKjV8JC8sRh1INdZyAoDUEVb71lQ4XhBWaxNCGyTeppRdLFn2ogdE0wlm
+         3qH3kPeWnZYEGnB3JHY9ED28oVLvENyc3dmDsA8AcHq2hE9zGTiNavayT2//URe7N+Xa
+         5i5w==
+X-Gm-Message-State: AO0yUKXJZThInRFH88Dmw6IqlL4ywTHyTuJ6XmfeIuWg3E4E4U5fn51V
+        PJt9yO2Qm/4iePjlx9zNRwlhXWP4xb7rJxO07qA=
+X-Google-Smtp-Source: AK7set+wCH5bEkUD8UghZlKqZWG1skYoO0WSg954t/dTA0S+Jp/gyjZZrO/0lSR0GxGFarW3vuKt3Ac9onu2kM04JNU=
+X-Received: by 2002:a17:906:ad3:b0:878:6f08:39ec with SMTP id
+ z19-20020a1709060ad300b008786f0839ecmr5564969ejf.233.1675191097299; Tue, 31
+ Jan 2023 10:51:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20230127181457.21389-1-aspsk@isovalent.com> <CAEf4BzYcMM4hzvD3TSPnK052W2a0Eu2ygm4BixPmMaZioq9TKg@mail.gmail.com>
- <Y9jxwMhL+O3obDzD@lavr>
-In-Reply-To: <Y9jxwMhL+O3obDzD@lavr>
+References: <20230127181457.21389-1-aspsk@isovalent.com> <20230127181457.21389-5-aspsk@isovalent.com>
+ <CAEf4BzYDnGo+5gZKZc-gYTk0ES+s3hOSv7SKCZ9dV-oSnP6wXQ@mail.gmail.com> <Y9j0Mq4W5o+nTR6c@lavr>
+In-Reply-To: <Y9j0Mq4W5o+nTR6c@lavr>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 Jan 2023 10:48:48 -0800
-Message-ID: <CAEf4BzYxZpc8NZssBkpkT86A3ZFc9i08am9s76o6334HwBGMdA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/6] New benchmark for hashmap lookups
+Date:   Tue, 31 Jan 2023 10:51:25 -0800
+Message-ID: <CAEf4Bza1LYumO5G2Hez0Zy2DKJOAEj6OfX_Sso5O9rsN4a2BdA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/6] selftest/bpf/benchs: make quiet option common
 To:     Anton Protopopov <aspsk@isovalent.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -70,109 +70,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 31, 2023 at 2:47 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+On Tue, Jan 31, 2023 at 2:57 AM Anton Protopopov <aspsk@isovalent.com> wrote:
 >
-> On 23/01/30 04:17, Andrii Nakryiko wrote:
+> On 23/01/30 04:10, Andrii Nakryiko wrote:
 > > On Fri, Jan 27, 2023 at 10:14 AM Anton Protopopov <aspsk@isovalent.com> wrote:
 > > >
-> > > Add a new benchmark for hashmap lookups and fix several typos. See individual
-> > > commits for descriptions.
+> > > The "local-storage-tasks-trace" benchmark has a `--quiet` option. Move it to
+> > > the list of common options, so that the main code and other benchmarks can use
+> > > (now global) env.quiet as well.
 > > >
-> > > One thing to mention here is that in commit 3 I've patched bench so that now
-> > > command line options can be reused by different benchmarks.
+> > > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > > ---
+> > >  tools/testing/selftests/bpf/bench.c               | 15 +++++++++++++++
+> > >  tools/testing/selftests/bpf/bench.h               |  1 +
+> > >  .../benchs/bench_local_storage_rcu_tasks_trace.c  | 14 +-------------
+> > >  3 files changed, 17 insertions(+), 13 deletions(-)
 > > >
-> > > The benchmark itself is added in the last commit 6. I am using this benchmark
-> > > to test map lookup productivity when using a different hash function (see
-> > > https://fosdem.org/2023/schedule/event/bpf_hashing/). The results provided by
-> > > the benchmark look reasonable and match the results of my different benchmarks
-> > > (requiring to patch kernel to get actual statistics on map lookups).
+> > > diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
+> > > index ba93f1b268e1..42bf41a9385e 100644
+> > > --- a/tools/testing/selftests/bpf/bench.c
+> > > +++ b/tools/testing/selftests/bpf/bench.c
+> > > @@ -16,6 +16,7 @@ struct env env = {
+> > >         .warmup_sec = 1,
+> > >         .duration_sec = 5,
+> > >         .affinity = false,
+> > > +       .quiet = false,
+> > >         .consumer_cnt = 1,
+> > >         .producer_cnt = 1,
+> > >  };
+> > > @@ -257,6 +258,7 @@ static const struct argp_option opts[] = {
+> > >         { "consumers", 'c', "NUM", 0, "Number of consumer threads"},
+> > >         { "verbose", 'v', NULL, 0, "Verbose debug output"},
+> > >         { "affinity", 'a', NULL, 0, "Set consumer/producer thread affinity"},
+> > > +       { "quiet", 'q', "{0,1}", OPTION_ARG_OPTIONAL, "If true, be quiet"},
 > >
-> > Could you share the results with us? Curious which hash functions did
-> > you try and which one are the most promising :)
+> > given the default is not quiet, why add 0 or 1? -q for quiet, no "-q"
+> > for not quiet? Keeping it simple?
 >
-> For the longer version with pictures see the talk I've referenced above (it's
-> at FOSDEM next Sunday Feb 5). A short version follows.
-
-Yep, I'll try to watch it.
-
+> The local-storage-tasks-trace benchmark expected 0 or 1 there, so I didn't want
+> to break any script which utilize this option.
 >
-> The xxh3 hash works fine for big keys, where "big" is different for different
-> architectures and for different maps sizes. On my Intel i7 machine this means
-> key size >= 8. On my AMD machine xxh3 works better for all keys for small maps,
-> but degrades for keys of size 12,16,20 for bigger maps (>=200K elements or so).
-> Example (map size 100K, 50% full, measuring M ops/second):
-
-Nice, I was hoping you would look at xxh3, as I've been meaning to try
-it out as well (have dirty patches to introduce xxh3 into
-lib/xxhash.c, but didn't get to actual benchmarking).
-
-
-Despite this AMD-specific degradation (which is interesting in its own
-right, could it be some fluke in testing?), I think it's a good idea
-to switch from jhash to xxh3, as it seems almost universally better.
-See also below.
-
+> The new parser accepts the old --quiet=0|1 for consistency, but also -q|--quiet
+> without value, as you've suggested (I pass OPTION_ARG_OPTIONAL and set
+> quiet=true if arg is NULL in the new parser).
 >
->     hash_size    4    8   12   16   20   24   28   32   36   40   44   48   52   56   60   64
->     orig_map  15.7 15.4 14.2 13.9 13.1 13.2 12.0 12.0 11.5 11.2 10.6 10.7 10.0 10.0  9.6  9.3
->     new_map   15.5 15.9 15.2 15.3 14.3 14.6 14.0 14.2 13.3 13.6 13.1 13.4 12.7 13.1 12.3 12.8
->
-> A smaller map (10K, 50% full):
->
->     hash_size    4    8   12   16   20   24   28   32   36   40   44   48   52   56   60   64
->     orig_map  36.1 36.8 32.1 32.4 29.0 29.1 26.2 26.4 23.9 24.3 21.8 22.5 20.4 20.7 19.3 19.1
->     new_map   37.7 39.6 34.0 36.5 31.5 34.1 30.7 32.7 28.1 29.5 27.4 28.8 27.1 28.1 26.4 27.8
->
-> Other hash functions I've tried (older xxh32/64, spooky) work _way_ worse for
-> small keys than jhash/xxh3. (Answering a possible question about vector instructions:
-> xxh3 is scalar until key size <= 240, then the xxh64/xxh32 can be used which
-> also provides ~2x map lookup speed gain comparing to jhash for keys >240.)
 
-Yeah, not suprising. xxh32/64 were optimized for long byte arrays, not
-for short keys. While xxh3 puts a lot of attention on short keys. Do
-you see xxh64 being faster than xxh3 for longs keys, as implemented in
-kernel? Kernel doesn't use SSE2/AVX versions, just purely scalars, so
-from reading benchmarks of xxh3/xxh64 author, xxh3 should win in all
-situations.
+I think it was mostly due to copy/pasting some other integer-based
+argument handling. We don't need that for boolean flags. Let's just
+fix benchs/run_bench_local_storage_rcu_tasks_trace.sh to do -q and
+keep it simple?
 
->
-> Bloom filters for big >= ~40 keys, predictably, work way faster with xxh3 than
-> with jhash. (Why not similar to hashmap? Because Bloom filters use jhash2 for
-> keys % 4 which works faster than jhash for small keys, see also a patch below.)
->
-> The stacktrace map doesn't work much faster, because 95% of time it spends in
-> get_perf_callchain (the hash part, though, runs ~1.5-2.0 faster with xxh, as
-> hash size is typically about 60-90 bytes, so this makes sense to use xxh3 in
-> stacktrace by default).
-
-For stacktrace very important aspect would be to pay attention (and
-minimize) hash collisions, though. This was a big problem with
-bpf_get_stackid() and STACK_TRACE map (and what motivated
-bpf_get_stack()). Even with a big sparsely populated map we'd get a
-lot of collisions between stack traces. xxh3 should have much better
-distribution, so in production it should result in less
-dropped/replaced stack traces. If you get a chance, it would be nice
-to collect these stats for jhash and xxh3-based implementations. Note
-that kernel's jhash2 seems to be what SMHasher ([0]) denotes as
-lookup3 (as does Jenkins himself). It's not a very good hash anymore
-in terms of distribution (and throughput as well), compared to xxh3
-(and lots of other more modern hashes).
-
-  [0] https://github.com/rurban/smhasher
-
->
-> One very simple change which brings 5-10% speed gain for all hashmaps is this:
->
-> static inline u32 htab_map_hash(const void *key, u32 key_len, u32 hashrnd)
->  {
-> +       if (likely((key_len & 0x3) == 0))
-> +               return jhash2(key, key_len >> 2, hashrnd);
->         return jhash(key, key_len, hashrnd);
->  }
->
-> I will follow up with a patch as simple as this ^ or with a combination of
-> jhash, jhash2, and xxh3 once I will run benchmarks on more architectures to
-> check that there are no degradations.
-
-
-Sounds good, looking forward to it!
+> > >         { "prod-affinity", ARG_PROD_AFFINITY_SET, "CPUSET", 0,
+> > >           "Set of CPUs for producer threads; implies --affinity"},
+> > >         { "cons-affinity", ARG_CONS_AFFINITY_SET, "CPUSET", 0,
+> >
+> > [...]
