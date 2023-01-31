@@ -2,74 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 020136837DA
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 21:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F72268382A
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 21:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbjAaUsW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 15:48:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
+        id S231809AbjAaU7Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 15:59:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbjAaUsV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 15:48:21 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67534AA4D;
-        Tue, 31 Jan 2023 12:48:04 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id t16so19763701ybk.2;
-        Tue, 31 Jan 2023 12:48:04 -0800 (PST)
+        with ESMTP id S231851AbjAaU7W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 15:59:22 -0500
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B7D9EE0
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 12:59:17 -0800 (PST)
+Received: by mail-vk1-xa2c.google.com with SMTP id v5so8006635vkc.10
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 12:59:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1tI1IyFJLPjJm9oh+/cE58Tw8i+0Wo3qGdQ5tLaELw=;
-        b=XruJeBFtDW4aZFmJ0nwXOwgnN3CB3wzaUDKIXxsyu26rSbAI5tVs15MGjEE6cXq+fj
-         8UXnFaH+fpTWtS57XkKGV9B2D/UpcZt12Ae6JTzAtlqAcjwW7/85nFg73QjEAPCAY/WF
-         XN0JHtdBWKCIdXWohEfzInrcr7rREyQ/TVW8tyecpZEvhz1+Vj8OqbDctMZdUK3gTQeU
-         Rb1Dcn4mTLTr53wgtkR9IfXl3W437rG7wLv+pacuWNjwkW8IyQ5DfQU1MHtB0wwOyQlv
-         m7fn2rF72IhjIbpbApj/LsAtENXVK+cttz1y9k5kZriGpXgn0RhsxcawL8w7Rr0WAbAJ
-         TCZQ==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lWhna/Hba4ISz0fCxKP0EiS7JmjiNyE/gZLSSMBsSUE=;
+        b=g/InC7c0ETS6vp4IQnTz2rvHoCh/7UeqaHq/SOo3kcgRJ3e/Z1nto1zis3hrvULPNH
+         ZfA+Z6rSJCXkayn/pxbSv7KzU+SF+6DAwA4YL8ClPxEQcT7H+zdNVaR0AI49txe/PZne
+         qMDZJABWEMXF9iI72+us2P2P8FM6S/BcADyIfvU1qhvgH54ixUZQcB2cYmS5JF8eAqus
+         9BFPw89URcOiqwOlQ8Ue3kgqESOuj+Zvjmz99zj+F37MscryE98eHrrSKep263vu53F0
+         JENKlfS3rMmu9Yx/5lqWrnR9TNvaYbEJRwgjSFPwxBszkOvh0hy5/6BZjxofwmTkGYqV
+         VOdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O1tI1IyFJLPjJm9oh+/cE58Tw8i+0Wo3qGdQ5tLaELw=;
-        b=r/nnPwYwY21wRNlC3HtmLlOQz7VtxHyOm99x6PMZJNNg0PVnMC+j7x/Lo1QFUFlZkH
-         GI9dRBDU8SfrzRT7SQR2A+WI2KW9pfqD+w6QtErISmguFIYgdjygqRKAmY1sNygqTXEe
-         Y9IpjeoVSL/BLG2dLXJgFpesGd3VOZBzQbaaAnSAtSNzSS9C9aBzaeOPJQUtklH3emaE
-         pAlNu00qxN4DL2gv4vRz2Hxs4C0w8V1RZH6YeAC0zKpGJdnCX37t3j4hqqEd+PVBtpqV
-         4qt3QZ0VzUw4s/aW/ChbQ6BD6jXSTiKnDs1R+Cf94Gfnwqj1TSnHEvwqHvv+uIW4XBaY
-         NAWg==
-X-Gm-Message-State: AO0yUKWcK5XfK4832fikF8EB5hBpz5h2F0qCYT+tKG/kujZ2HerKt7He
-        fQj5imqwA0a84AckZ0et+1Rf1KvPiOcJPTPzBek=
-X-Google-Smtp-Source: AK7set8By392iu8l3CB2RALPSoGV29DYhcYo5+oYBv+7e4PYzcR4Z28VXi0SwTFblHPW6nv9WmV/NqCKn5iI9k+oV9Q=
-X-Received: by 2002:a25:6850:0:b0:802:b7a:4069 with SMTP id
- d77-20020a256850000000b008020b7a4069mr36307ybc.433.1675198083834; Tue, 31 Jan
- 2023 12:48:03 -0800 (PST)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lWhna/Hba4ISz0fCxKP0EiS7JmjiNyE/gZLSSMBsSUE=;
+        b=beQUBXASv3Y+aYILgvoDIYxYyhA35UShaYB3uWMU4J8MtbcmytNJP17rPJUX+I9yCH
+         2fBmOU07tNsMSi0wOJKnu5A75OJQb7b6nW9nE85BtrdTnx6e5t3m7mTOYyyCmeq/UKBy
+         8fr35gKwhCx+P2FFfoZc4I1l/VlFNsZm09+og16r757j8mhFnWzEf3VcRsrhKvMn0CSE
+         RaRzyBg15rAZyrWA4XKOGMMzX1drBpu3i+UVKhCif7hxBMoYgr/wOLuylzaNg29F0d3t
+         Xs3Lrh5aV+/fsfMmnF4AFSh/944dOk2ZeDhczEGlvUgKSi+VeAjtJcDCDHO4/5zUPvmK
+         vDLQ==
+X-Gm-Message-State: AO0yUKWTY8w7twYpn1JOdoVjsHCi7hTDrPOGoC3jWeGWQGDx0ubtbt1V
+        OwJ3yQYIM6hdFL+mvj0Ofd64QPR4RcX0xK6jp4Nk4g==
+X-Google-Smtp-Source: AK7set92dDyn3VfFxJm5tt2dLK7NYKHQrq5tdwF3BAHNwWWT+SQEJyPJGa/cxOzFTnF7DC2APGdmuR1jShGrjTXDw4E=
+X-Received: by 2002:a1f:b442:0:b0:3da:bbe7:c9a5 with SMTP id
+ d63-20020a1fb442000000b003dabbe7c9a5mr131108vkf.30.1675198755957; Tue, 31 Jan
+ 2023 12:59:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20230127191703.3864860-1-joannelkoong@gmail.com>
- <20230127191703.3864860-4-joannelkoong@gmail.com> <5715ea83-c4aa-c884-ab95-3d5e630cad05@linux.dev>
- <20230130223141.r24nlg2jp5byvuph@macbook-pro-6.dhcp.thefacebook.com>
- <CAEf4Bzb9=q9TKutW8d7fOtCWaLpA12yvSh-BhL=m3+RA1_xhOQ@mail.gmail.com>
- <CAJnrk1Y9jf7PQ0sHF+hfW0TD+W8r3WzJCu-pJjT3zsZCGt343w@mail.gmail.com> <CAADnVQJ9Pb10boAR=ZVaXOJwjHPkFXKn9n9RWrzXgK3GaQ1N0g@mail.gmail.com>
-In-Reply-To: <CAADnVQJ9Pb10boAR=ZVaXOJwjHPkFXKn9n9RWrzXgK3GaQ1N0g@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Tue, 31 Jan 2023 12:47:52 -0800
-Message-ID: <CAJnrk1a2SY5NqhibczOhd+jqL3W9U1rbTeiQpYw-oUS8_Cr1_g@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
+References: <20230124064324.672022-1-irogers@google.com> <20230124064324.672022-2-irogers@google.com>
+ <Y9lN+H3ModGwwKV6@dev-arch.thelio-3990X> <CAP-5=fWvmEJ3DuKkhOEVg6zoiSKDGW-n=GFqRhse=2dP=C6i3Q@mail.gmail.com>
+ <CAP-5=fWJzTOYj167maEP8=k=iWQJcrF-zOdbkTAUw94qrVOL5g@mail.gmail.com> <Y9ls+nWTwE5we5ah@dev-arch.thelio-3990X>
+In-Reply-To: <Y9ls+nWTwE5we5ah@dev-arch.thelio-3990X>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 31 Jan 2023 12:59:04 -0800
+Message-ID: <CAP-5=fWbd2gNhWXkffQQmVrLY6dzHxH68zumNwp4_a0b83D7qg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] tools/resolve_btfids: Alter how HOSTCC is forced
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Connor OBrien <connoro@google.com>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Kernel Team <kernel-team@fb.com>, bpf <bpf@vger.kernel.org>
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,185 +82,227 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 31, 2023 at 11:59 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Jan 31, 2023 at 11:33 AM Nathan Chancellor <nathan@kernel.org> wrot=
+e:
 >
-> On Tue, Jan 31, 2023 at 10:30 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+> On Tue, Jan 31, 2023 at 11:25:38AM -0800, Ian Rogers wrote:
+> > On Tue, Jan 31, 2023 at 10:08 AM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > On Tue, Jan 31, 2023 at 9:21 AM Nathan Chancellor <nathan@kernel.org>=
+ wrote:
+> > > >
+> > > > Hi Ian,
+> > > >
+> > > > On Mon, Jan 23, 2023 at 10:43:24PM -0800, Ian Rogers wrote:
+> > > > > HOSTCC is always wanted when building. Setting CC to HOSTCC happe=
+ns
+> > > > > after tools/scripts/Makefile.include is included, meaning flags a=
+re
+> > > > > set assuming say CC is gcc, but then it can be later set to HOSTC=
+C
+> > > > > which may be clang. tools/scripts/Makefile.include is needed for =
+host
+> > > > > set up and common macros in objtool's Makefile. Rather than overr=
+ide
+> > > > > CC to HOSTCC, just pass CC as HOSTCC to Makefile.build, the libsu=
+bcmd
+> > > > > builds and the linkage step. This means the Makefiles don't see t=
+hings
+> > > > > like CC changing and tool flag determination, and similar, work
+> > > > > properly.
+> > > > >
+> > > > > Also, clear the passed subdir as otherwise an outer build may bre=
+ak by
+> > > > > inadvertently passing an inappropriate value.
+> > > > >
+> > > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > > ---
+> > > > >  tools/bpf/resolve_btfids/Makefile | 17 +++++++----------
+> > > > >  1 file changed, 7 insertions(+), 10 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolv=
+e_btfids/Makefile
+> > > > > index 1fe0082b2ecc..daed388aa5d7 100644
+> > > > > --- a/tools/bpf/resolve_btfids/Makefile
+> > > > > +++ b/tools/bpf/resolve_btfids/Makefile
+> > > > > @@ -18,14 +18,11 @@ else
+> > > > >  endif
+> > > > >
+> > > > >  # always use the host compiler
+> > > > > -AR       =3D $(HOSTAR)
+> > > > > -CC       =3D $(HOSTCC)
+> > > > > -LD       =3D $(HOSTLD)
+> > > > > -ARCH     =3D $(HOSTARCH)
+> > > > > +HOST_OVERRIDES :=3D AR=3D"$(HOSTAR)" CC=3D"$(HOSTCC)" LD=3D"$(HO=
+STLD)" ARCH=3D"$(HOSTARCH)" \
+> > > > > +               EXTRA_CFLAGS=3D"$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS=
+)"
+> > > > > +
+> > > > >  RM      ?=3D rm
+> > > > >  CROSS_COMPILE =3D
+> > > > > -CFLAGS  :=3D $(KBUILD_HOSTCFLAGS)
+> > > > > -LDFLAGS :=3D $(KBUILD_HOSTLDFLAGS)
+> > > > >
+> > > > >  OUTPUT ?=3D $(srctree)/tools/bpf/resolve_btfids/
+> > > > >
+> > > > > @@ -56,12 +53,12 @@ $(OUTPUT) $(OUTPUT)/libsubcmd $(LIBBPF_OUT):
+> > > > >
+> > > > >  $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
+> > > > >       $(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=3D$(SUBCMD_OUT) \
+> > > > > -                 DESTDIR=3D$(SUBCMD_DESTDIR) prefix=3D \
+> > > > > +                 DESTDIR=3D$(SUBCMD_DESTDIR) $(HOST_OVERRIDES) p=
+refix=3D subdir=3D \
+> > > > >                   $(abspath $@) install_headers
+> > > > >
+> > > > >  $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefil=
+e) | $(LIBBPF_OUT)
+> > > > >       $(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=3D$(L=
+IBBPF_OUT)    \
+> > > > > -                 DESTDIR=3D$(LIBBPF_DESTDIR) prefix=3D EXTRA_CFL=
+AGS=3D"$(CFLAGS)" \
+> > > > > +                 DESTDIR=3D$(LIBBPF_DESTDIR) $(HOST_OVERRIDES) p=
+refix=3D subdir=3D \
+> > > > >                   $(abspath $@) install_headers
+> > > > >
+> > > > >  LIBELF_FLAGS :=3D $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/d=
+ev/null)
+> > > > > @@ -80,11 +77,11 @@ export srctree OUTPUT CFLAGS Q
+> > > > >  include $(srctree)/tools/build/Makefile.include
+> > > > >
+> > > > >  $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
+> > > > > -     $(Q)$(MAKE) $(build)=3Dresolve_btfids
+> > > > > +     $(Q)$(MAKE) $(build)=3Dresolve_btfids $(HOST_OVERRIDES)
+> > > > >
+> > > > >  $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
+> > > > >       $(call msg,LINK,$@)
+> > > > > -     $(Q)$(CC) $(BINARY_IN) $(LDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDO=
+BJ) $(LIBS)
+> > > > > +     $(Q)$(HOSTCC) $(BINARY_IN) $(KBUILD_HOSTLDFLAGS) -o $@ $(BP=
+FOBJ) $(SUBCMDOBJ) $(LIBS)
+> > > > >
+> > > > >  clean_objects :=3D $(wildcard $(OUTPUT)/*.o                \
+> > > > >                              $(OUTPUT)/.*.o.cmd           \
+> > > > > --
+> > > > > 2.39.0.246.g2a6d74b583-goog
+> > > > >
+> > > >
+> > > > I just bisected a linking failure when building resolve_btfids with
+> > > > clang to this change as commit 13e07691a16f ("tools/resolve_btfids:
+> > > > Alter how HOSTCC is forced") in the bpf-next tree.
+> > > >
+> > > > It appears to be related to whether or not CROSS_COMPILE is specifi=
+ed,
+> > > > which we have to do for certain architectures and configurations st=
+ill.
+> > > > arm64 is not one of those but it helps demonstrate the issue.
+> > > >
+> > > >   # Turn off CONFIG_DEBUG_INFO_REDUCED and turn on CONFIG_DEBUG_INF=
+O_BTF
+> > > >   $ make -skj"$(nproc)" ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-=
+gnu- HOSTLDFLAGS=3D-fuse-ld=3Dlld LLVM=3D1 defconfig menuconfig
+> > > >
+> > > >   $ make -skj"$(nproc)" ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-=
+gnu- HOSTLDFLAGS=3D-fuse-ld=3Dlld LLVM=3D1 prepare
+> > > >   ld.lld: error: $LINUX_SRC/tools/bpf/resolve_btfids//resolve_btfid=
+s-in.o is incompatible with elf64-x86-64
+> > > >   clang-17: error: linker command failed with exit code 1 (use -v t=
+o see invocation)
+> > > >   ...
+> > > >
+> > > > Before your change, with V=3D1, I see:
+> > > >
+> > > > clang -Wp,-MD,$LINUX_SRC/tools/bpf/resolve_btfids/.main.o.d -Wp,-MT=
+,$LINUX_SRC/tools/bpf/resolve_btfids/main.o -Wall -Wmissing-prototypes -Wst=
+rict-prototypes -O2 -fomit-frame-pointer -std=3Dgnu11 -Wdeclaration-after-s=
+tatement -g -I$LINUX_SRC/tools/include -I$LINUX_SRC/tools/include/uapi -I$L=
+INUX_SRC/tools/bpf/resolve_btfids/libbpf/include -I$LINUX_SRC/tools/bpf/res=
+olve_btfids/libsubcmd/include -D"BUILD_STR(s)=3D#s" -c -o $LINUX_SRC/tools/=
+bpf/resolve_btfids/main.o main.c
+> > > >
+> > > > After, I see:
+> > > >
+> > > > clang -Wp,-MD,$LINUX_SRC/tools/bpf/resolve_btfids/.main.o.d -Wp,-MT=
+,$LINUX_SRC/tools/bpf/resolve_btfids/main.o --target=3Daarch64-linux-gnu -g=
+ -I$LINUX_SRC/tools/include -I$LINUX_SRC/tools/include/uapi -I$LINUX_SRC/to=
+ols/bpf/resolve_btfids/libbpf/include -I$LINUX_SRC/tools/bpf/resolve_btfids=
+/libsubcmd/include -D"BUILD_STR(s)=3D#s" -c -o $LINUX_SRC/tools/bpf/resolve=
+_btfids/main.o main.c
+> > > >
+> > > > We seem to have taken on a '--target=3Daarch64-linux-gnu' (changing=
+ the
+> > > > target of resolve_btfids-in.o) and we dropped the warning flags.
+> > > >
+> > > > I think this comes from the clang block in
+> > > > tools/scripts/Makefile.include, which is included into the
+> > > > resolve_btfids Makefile via tools/lib/bpf/Makefile.
+> > > >
+> > > > I am not super familiar with the tools build system, otherwise I wo=
+uld
+> > > > try to provide a patch. I tried moving CROSS_COMPILE from a recursi=
+ve to
+> > > > simple variable ('=3D' -> ':=3D') and moving it to HOST_OVERRIDES b=
+ut those
+> > > > did not appear to resolve it for me.
+> > > >
+> > > > If there is any other information I can provide or patches I can te=
+st,
+> > > > please let me know.
+> > > >
+> > > > Cheers,
+> > > > Nathan
+> > >
+> > > Thanks Nathan, and thanks for all the details in the bug report. I'm
+> > > looking into this.
+> > >
+> > > Ian
 > >
-> > On Mon, Jan 30, 2023 at 5:04 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Mon, Jan 30, 2023 at 2:31 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Mon, Jan 30, 2023 at 02:04:08PM -0800, Martin KaFai Lau wrote:
-> > > > > On 1/27/23 11:17 AM, Joanne Koong wrote:
-> > > > > > @@ -8243,6 +8316,28 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> > > > > >             mark_reg_known_zero(env, regs, BPF_REG_0);
-> > > > > >             regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
-> > > > > >             regs[BPF_REG_0].mem_size = meta.mem_size;
-> > > > > > +           if (func_id == BPF_FUNC_dynptr_data &&
-> > > > > > +               dynptr_type == BPF_DYNPTR_TYPE_SKB) {
-> > > > > > +                   bool seen_direct_write = env->seen_direct_write;
-> > > > > > +
-> > > > > > +                   regs[BPF_REG_0].type |= DYNPTR_TYPE_SKB;
-> > > > > > +                   if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
-> > > > > > +                           regs[BPF_REG_0].type |= MEM_RDONLY;
-> > > > > > +                   else
-> > > > > > +                           /*
-> > > > > > +                            * Calling may_access_direct_pkt_data() will set
-> > > > > > +                            * env->seen_direct_write to true if the skb is
-> > > > > > +                            * writable. As an optimization, we can ignore
-> > > > > > +                            * setting env->seen_direct_write.
-> > > > > > +                            *
-> > > > > > +                            * env->seen_direct_write is used by skb
-> > > > > > +                            * programs to determine whether the skb's page
-> > > > > > +                            * buffers should be cloned. Since data slice
-> > > > > > +                            * writes would only be to the head, we can skip
-> > > > > > +                            * this.
-> > > > > > +                            */
-> > > > > > +                           env->seen_direct_write = seen_direct_write;
-> > > > > > +           }
-> > > > >
-> > > > > [ ... ]
-> > > > >
-> > > > > > @@ -9263,17 +9361,26 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
-> > > > > >                             return ret;
-> > > > > >                     break;
-> > > > > >             case KF_ARG_PTR_TO_DYNPTR:
-> > > > > > +           {
-> > > > > > +                   enum bpf_arg_type dynptr_arg_type = ARG_PTR_TO_DYNPTR;
-> > > > > > +
-> > > > > >                     if (reg->type != PTR_TO_STACK &&
-> > > > > >                         reg->type != CONST_PTR_TO_DYNPTR) {
-> > > > > >                             verbose(env, "arg#%d expected pointer to stack or dynptr_ptr\n", i);
-> > > > > >                             return -EINVAL;
-> > > > > >                     }
-> > > > > > -                   ret = process_dynptr_func(env, regno, insn_idx,
-> > > > > > -                                             ARG_PTR_TO_DYNPTR | MEM_RDONLY);
-> > > > > > +                   if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb])
-> > > > > > +                           dynptr_arg_type |= MEM_UNINIT | DYNPTR_TYPE_SKB;
-> > > > > > +                   else
-> > > > > > +                           dynptr_arg_type |= MEM_RDONLY;
-> > > > > > +
-> > > > > > +                   ret = process_dynptr_func(env, regno, insn_idx, dynptr_arg_type,
-> > > > > > +                                             meta->func_id);
-> > > > > >                     if (ret < 0)
-> > > > > >                             return ret;
-> > > > > >                     break;
-> > > > > > +           }
-> > > > > >             case KF_ARG_PTR_TO_LIST_HEAD:
-> > > > > >                     if (reg->type != PTR_TO_MAP_VALUE &&
-> > > > > >                         reg->type != (PTR_TO_BTF_ID | MEM_ALLOC)) {
-> > > > > > @@ -15857,6 +15964,14 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-> > > > > >                desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
-> > > > > >             insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
-> > > > > >             *cnt = 1;
-> > > > > > +   } else if (desc->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb]) {
-> > > > > > +           bool is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
-> > > > >
-> > > > > Does it need to restore the env->seen_direct_write here also?
-> > > > >
-> > > > > It seems this 'seen_direct_write' saving/restoring is needed now because
-> > > > > 'may_access_direct_pkt_data(BPF_WRITE)' is not only called when it is
-> > > > > actually writing the packet. Some refactoring can help to avoid issue like
-> > > > > this.
-> > > > >
-> > > > > While at 'seen_direct_write', Alexei has also pointed out that the verifier
-> > > > > needs to track whether the (packet) 'slice' returned by bpf_dynptr_data()
-> > > > > has been written. It should be tracked in 'seen_direct_write'. Take a look
-> > > > > at how reg_is_pkt_pointer() and may_access_direct_pkt_data() are done in
-> > > > > check_mem_access(). iirc, this reg_is_pkt_pointer() part got loss somewhere
-> > > > > in v5 (or v4?) when bpf_dynptr_data() was changed to return register typed
-> > > > > PTR_TO_MEM instead of PTR_TO_PACKET.
-> > > >
-> > > > btw tc progs are using gen_prologue() approach because data/data_end are not kfuncs
-> > > > (nothing is being called by the bpf prog).
-> > > > In this case we don't need to repeat this approach. If so we don't need to
-> > > > set seen_direct_write.
-> > > > Instead bpf_dynptr_data() can call bpf_skb_pull_data() directly.
-> > > > And technically we don't need to limit it to skb head. It can handle any off/len.
-> > > > It will work for skb, but there is no equivalent for xdp_pull_data().
-> > > > I don't think we can implement xdp_pull_data in all drivers.
-> > > > That's massive amount of work, but we need to be consistent if we want
-> > > > dynptr to wrap both skb and xdp.
-> > > > We can say dynptr_data is for head only, but we've seen bugs where people
-> > > > had to switch from data/data_end to load_bytes.
-> > > >
-> > > > Also bpf_skb_pull_data is quite heavy. For progs that only want to parse
-> > > > the packet calling that in bpf_dynptr_data is a heavy hammer.
-> > > >
-> > > > It feels that we need to go back to skb_header_pointer-like discussion.
-> > > > Something like:
-> > > > bpf_dynptr_slice(const struct bpf_dynptr *ptr, u32 offset, u32 len, void *buffer)
-> > > > Whether buffer is a part of dynptr or program provided is tbd.
-> > >
-> > > making it hidden within dynptr would make this approach unreliable
-> > > (memory allocations, which can fail, etc). But if we ask users to pass
-> > > it directly, then it should be relatively easy to use in practice with
-> > > some pre-allocated per-CPU buffer:
-> > >
-> > >
-> > > struct {
-> > >   __int(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-> > >   __int(max_entries, 1);
-> > >   __type(key, int);
-> > >   __type(value, char[4096]);
-> > > } scratch SEC(".maps");
-> > >
-> > >
-> > > ...
-> > >
-> > >
-> > > struct dyn_ptr *dp = bpf_dynptr_from_skb(...).
-> > > void *p, *buf;
-> > > int zero = 0;
-> > >
-> > > buf = bpf_map_lookup_elem(&scratch, &zero);
-> > > if (!buf) return 0; /* can't happen */
-> > >
-> > > p = bpf_dynptr_slice(dp, off, 16, buf);
-> > > if (p == NULL) {
-> > >    /* out of range */
-> > > } else {
-> > >    /* work with p directly */
-> > > }
-> > >
-> > > /* if we wrote something to p and it was copied to buffer, write it back */
-> > > if (p == buf) {
-> > >     bpf_dynptr_write(dp, buf, 16);
-> > > }
-> > >
-> > >
-> > > We'll just need to teach verifier to make sure that buf is at least 16
-> > > byte long.
+> > Given the somewhat complicated cross compile I wasn't able to get a
+> > reproduction. Could you see if the following addresses the problem:
+>
+> As long as you have an LLVM toolchain that targets AArch64 and your
+> host, you should be able to reproduce this issue with those commands
+> verbatim, as that command should not use any GNU binutils. I am pretty
+> sure I tried it in a fresh container before reporting it but it is
+> possible that I did not.
+
+Thanks, do you have instructions on setting up the container?
+
+> > ```
+> > diff --git a/tools/bpf/resolve_btfids/Makefile
+> > b/tools/bpf/resolve_btfids/Makefile
+> > index daed388aa5d7..a06966841df4 100644
+> > --- a/tools/bpf/resolv
+
+Ian
+e_btfids/Makefile
+> > +++ b/tools/bpf/resolve_btfids/Makefile
+> > @@ -19,10 +19,9 @@ endif
 > >
-> > I'm confused what the benefit of passing in the buffer is. If it's to
-> > avoid the uncloning, this will still need to happen if the user writes
-> > back the data to the skb (which will be the majority of cases). If
-> > it's to avoid uncloning if the user only reads the data of a writable
-> > prog, then we could add logic in the verifier so that we don't pull
-> > the data in this case; the uncloning might still happen regardless if
-> > another part of the program does a direct write. If the benefit is to
-> > avoid needing to pull the data, then can't the user just use
-> > bpf_dynptr_read, which takes in a buffer?
+> > # always use the host compiler
+> > HOST_OVERRIDES :=3D AR=3D"$(HOSTAR)" CC=3D"$(HOSTCC)" LD=3D"$(HOSTLD)"
+> > ARCH=3D"$(HOSTARCH)" \
+> > -                 EXTRA_CFLAGS=3D"$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
+> > +                 EXTRA_CFLAGS=3D"$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
+> > CROSS_COMPILE=3D""
+> >
+> > RM      ?=3D rm
+> > -CROSS_COMPILE =3D
+> >
+> > OUTPUT ?=3D $(srctree)/tools/bpf/resolve_btfids/
+> > ```
+> >
 >
-> There is no unclone and there is no pull in xdp.
-> The main idea of this semantics of bpf_dynptr_slice is to make it
-> work the same way on skb and xdp for _read_ case.
-> Writes are going to be different between skb and xdp anyway.
-> In some rare cases the writes can be the same for skb and xdp
-> with this bpf_dynptr_slice + bpf_dynptr_write logic,
-> but that's a minor feature addition of the api.
-
-bpf_dynptr_read works the same way on skb and xdp. bpf_dynptr_read
-takes in a buffer as well, so what is the added benefit of
-bpf_dynptr_slice?
-
+> Unfortunately, it does not. I still see '--target=3D' end up in the
+> CFLAGS of those files.
 >
-> I'd say in skb cases the progs do reads and either drop
-> or forward the skb.
-> Writes to skb are done from time to time too, because
-> they're a pain to do correctly.
-> nat is the main use case for skb rewrites.
-> In xdp cases the progs do parse, drop, rewrite, xmit more or less equally.
+> Cheers,
+> Nathan
+
+Hmm.. I can see the issue. We avoid this in places like libsubcmd
+because the Makefile there includes tools/scripts/Makefile.include,
+but here the Makefile.build inclusion is direct and we have CC set up
+for cross compilation. This is messy and it will take some playing
+around to come up with a simple fix.
+
+Thanks,
+Ian
