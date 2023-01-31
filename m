@@ -2,84 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9C5682117
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 01:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E35B682122
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 01:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjAaAxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Jan 2023 19:53:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
+        id S229580AbjAaA4C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Jan 2023 19:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjAaAxV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Jan 2023 19:53:21 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1F2E04D;
-        Mon, 30 Jan 2023 16:53:20 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id nn18-20020a17090b38d200b0022bfb584987so12868901pjb.2;
-        Mon, 30 Jan 2023 16:53:20 -0800 (PST)
+        with ESMTP id S229490AbjAaA4C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Jan 2023 19:56:02 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070DF1A970;
+        Mon, 30 Jan 2023 16:56:01 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id m199so16293273ybm.4;
+        Mon, 30 Jan 2023 16:56:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jBYldhL8pTWqB3BqjInd39Jcu1r7g+Kxk37exfegHcI=;
-        b=b2JJ+b1c9pBa8vvw60U+wt9PkFe5oyfkppoG3QrQ87BnswsR71K9MpcVrNozZ0KEl9
-         iTWvvLBgatoqKHqb6RGO2U0OBAGlFhmmvTKR+EOnV6G0vmqVsaFbIIZ5mCtMKBQSlwBi
-         3GQRUOXLnd9r8sN1TETlMzsj90KMrqLFo0/MPNPWZpUb3BTndbH3/f0+cUxOoPUWa3r9
-         S45J7wxzZ7ZP1H2+0ZMHL8U43McqdX5yE5c7WbMZ2Gt0sUWoJLCEr3GyfgdL1hsFVrcb
-         ptERI7CQ7JT2q/qCOZLBgsPUgumiZ7Mx46Qt46T+g82ykILDsAjTcEopgWvEaT5LCi19
-         2AWA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lEFaJKhXjrErP+zmYUVJ/zWHlc8u+DY9fzBbyUntHWw=;
+        b=SuIR5EIcsbJWrL57m7FV3dlcDHEIkUL1SJizMfdWifbaor2yiZ+7XMXRbz5/RrZl3T
+         ZRsZ39cYilG+3Qvxx10M7q3p/NwUR72Rifhv70kCTolYYEhuJ+CtTUJWhg7fjwJ/7IHp
+         XP8IIRobalcgKPBdH/6BUWu6smW5B0DT0yKZtMWtlIU1gM5vCrIbiI6LlYzQwriXg9vc
+         6W3RVUeGnFfZODFmyWRsH8RhEJ19Vcne2ipjChhU9HDh4EjMSCClhu5iBhJSqlPjRicA
+         fYHhNxliyCXPwZErpGoE71Z78wgoh6Ix4gMudrlvVosww/3/od5WbF+40TehZl0wAnzf
+         3URQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jBYldhL8pTWqB3BqjInd39Jcu1r7g+Kxk37exfegHcI=;
-        b=RoA4DMUskHxKxd4lDfxENUTTGMxG3NnZ9khN3DObgQFROscifoldPZ1nOMbEl6g3TR
-         5SrtBVb6dk4lqzCxPdketEj/M8one+pvG1RF49+rIKLUgYN59q07csUKY1IRinFxgP5y
-         3KcqRwhJEjjtl7H7feWs6mzXH/MtH/umK2rvKBL0ZWQz30rld2EhPlYMaPSOLmA2m7V9
-         dAg5KP02D1i5usAYKEUiLS3n3yN1YVD26fOuevGT3LFn8cb3YI/z24IQ/WgbpJp4eEJe
-         DHstn1LmcTK1c5S3dJuBULDGxaznKsYfYQPWrklQ0lwdiku6xQ5CBXjit5U6aBn8khiC
-         VnCA==
-X-Gm-Message-State: AO0yUKVnh3I8Ohx/Z7RgX8kFEBgyu8fy1gYeyXbljk6wBhanK4+5e1FU
-        w7TaHIeYcvC9mWOUY96q+kE2tnhExHU=
-X-Google-Smtp-Source: AK7set+A0QTFKRqjBMuZoq4Wo4mo09+R9ZCV1G/LpP3BiEvAwLBrdpiNXf+1CYEjx249igNHV4hxTA==
-X-Received: by 2002:a17:902:f095:b0:196:1d89:7002 with SMTP id p21-20020a170902f09500b001961d897002mr7677082pla.31.1675126399830;
-        Mon, 30 Jan 2023 16:53:19 -0800 (PST)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:a52d])
-        by smtp.gmail.com with ESMTPSA id k17-20020a170902ba9100b001967692d6f5sm3742819pls.227.2023.01.30.16.53.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jan 2023 16:53:19 -0800 (PST)
-Date:   Mon, 30 Jan 2023 16:53:15 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ross Zwisler <zwisler@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ross Zwisler <zwisler@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH 3/9] selftests/bpf: use canonical ftrace path
-Message-ID: <20230131005315.phdnhkeeconxxm3e@macbook-pro-6.dhcp.thefacebook.com>
-References: <20230130181915.1113313-1-zwisler@google.com>
- <20230130181915.1113313-4-zwisler@google.com>
- <CAADnVQJ7KxEK92qOz0Ya4MrACHpxngSpG4W38xuGEgZmXEG-vQ@mail.gmail.com>
- <20230130145932.37cf6b73@gandalf.local.home>
- <CAADnVQ+F3Z70mu3-QyyNFyJ2qCkDXnMJCW-o+fcnZo=LWj5d9g@mail.gmail.com>
- <20230130183419.0626dc21@gandalf.local.home>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lEFaJKhXjrErP+zmYUVJ/zWHlc8u+DY9fzBbyUntHWw=;
+        b=4hpEyn2/voh6ED7MJlLyZGJTFDLbNOs3/Oiti7cZvenR4cFVXmm7YmUXMB1tziLWYP
+         zJfp9edcAmF7n9w1zbsou+u23zVAwF+yw7oCOAtJtsYnT4C7GEKSBDIap8cGFAMLo6QV
+         ZGi1Y92pJ+gZB/gdqKoLLy1NSgo51c0tkpCSVJa5HWC2hw00gPIE8FfKTgctmSI3O07K
+         JIXQP6PbPgu3IUBWjg5Rxm6kOV12NYF9hV93APBNbSYQId9TGsLeiIqXBnGrzustysnD
+         Ygrp5kWy3uqMKWXgd7jxtHSxJV+5FNyTIjRfdf5SvC2WusYc1Jnv1z10GPGRuDTqwnbi
+         meUg==
+X-Gm-Message-State: AFqh2krrqAXOotqNQKJiNMrYnvFEuYYIk/mb2KyhcU3BEvQ9rWbUFz2/
+        4lrRyFORxjx3Ciln26Z7RuLT3lxYdKg5X3cO2F0=
+X-Google-Smtp-Source: AMrXdXv5XESCldkipkZ2Yl/fsKJLqvrX9Q4/7hczCiCt+yAdmnrkMzh+IoJeT23TncR6MqMKO6Li1lg2ZA4ZZL4/AW0=
+X-Received: by 2002:a25:7e81:0:b0:7e5:ecf1:ebde with SMTP id
+ z123-20020a257e81000000b007e5ecf1ebdemr4209284ybc.375.1675126560249; Mon, 30
+ Jan 2023 16:56:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230130183419.0626dc21@gandalf.local.home>
+References: <20230127191703.3864860-1-joannelkoong@gmail.com>
+ <20230127191703.3864860-4-joannelkoong@gmail.com> <CAEf4BzYK2JOtChh4VNTg4L9-u9kay3zzG8X6GqTkak22E37wig@mail.gmail.com>
+In-Reply-To: <CAEf4BzYK2JOtChh4VNTg4L9-u9kay3zzG8X6GqTkak22E37wig@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Mon, 30 Jan 2023 16:55:49 -0800
+Message-ID: <CAJnrk1YEN+9dn4DKQQKAQGR4RU9HVVrVD2A3O7chet4tC6OG5A@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, netdev@vger.kernel.org,
+        memxor@gmail.com, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -90,70 +68,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 06:34:19PM -0500, Steven Rostedt wrote:
-> On Mon, 30 Jan 2023 12:03:52 -0800
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > So this change will break the tests. We cannot do it.  
-> > >
-> > > Could we add a way to try to mount it?
-> > >
-> > > If anything, the tests should not have the path hard coded. It should then
-> > > look to see if it is mounted and use the path that is found. Otherwise it
-> > > should try mounting it at the correct location.
-> > >
-> > > Feel free to take the code from libtracefs (and modify it):
-> > >
-> > > https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/tree/src/tracefs-utils.c#n89
-> > >
-> > > It will make the test code much more robust.  
-> > 
-> > The point is not about tests. The point is that this change might break
-> > some users that are working today with /sys/kernel/debug/tracing.
-> 
-> > It also might be mounted differently.
-> > For example from another system:
-> > cat /proc/mounts|grep trace
-> > tracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0
-> > tracefs /sys/kernel/debug/tracing tracefs rw,relatime 0 0
-> 
-> Yes, and the code works when it's mounted multiple times.
-> 
-> > 
-> > So I suggest leaving the code as-is.
-> 
-> Why?  I want to make /sys/kernel/debug/tracing deprecated. It's a hack to
-> not break old code. I've had complaints about that hack, and there's even
-> systems that disable the auto mounting (that is, /sys/kernel/debug/tracing
-> would not exist in such configs) This was never expected to be a permanent
-> solution.
+On Mon, Jan 30, 2023 at 4:48 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jan 27, 2023 at 11:18 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > Add skb dynptrs, which are dynptrs whose underlying pointer points
+> > to a skb. The dynptr acts on skb data. skb dynptrs have two main
+> > benefits. One is that they allow operations on sizes that are not
+> > statically known at compile-time (eg variable-sized accesses).
+> > Another is that parsing the packet data through dynptrs (instead of
+> > through direct access of skb->data and skb->data_end) can be more
+> > ergonomic and less brittle (eg does not need manual if checking for
+> > being within bounds of data_end).
+> >
+> > For bpf prog types that don't support writes on skb data, the dynptr is
+> > read-only (bpf_dynptr_write() will return an error and bpf_dynptr_data()
+> > will return a data slice that is read-only where any writes to it will
+> > be rejected by the verifier).
+> >
+> > For reads and writes through the bpf_dynptr_read() and bpf_dynptr_write()
+> > interfaces, reading and writing from/to data in the head as well as from/to
+> > non-linear paged buffers is supported. For data slices (through the
+> > bpf_dynptr_data() interface), if the data is in a paged buffer, the user
+> > must first call bpf_skb_pull_data() to pull the data into the linear
+> > portion.
+> >
+> > Any bpf_dynptr_write() automatically invalidates any prior data slices
+> > to the skb dynptr. This is because a bpf_dynptr_write() may be writing
+> > to data in a paged buffer, so it will need to pull the buffer first into
+> > the head. The reason it needs to be pulled instead of writing directly to
+> > the paged buffers is because they may be cloned (only the head of the skb
+> > is by default uncloned). As such, any bpf_dynptr_write() will
+> > automatically have its prior data slices invalidated, even if the write
+> > is to data in the skb head (the verifier has no way of differentiating
+> > whether the write is to the head or paged buffers during program load
+> > time). Please note as well that any other helper calls that change the
+> > underlying packet buffer (eg bpf_skb_pull_data()) invalidates any data
+> > slices of the skb dynptr as well. The stack trace for this is
+> > check_helper_call() -> clear_all_pkt_pointers() ->
+> > __clear_all_pkt_pointers() -> mark_reg_unknown().
+> >
+> > For examples of how skb dynptrs can be used, please see the attached
+> > selftests.
+> >
+> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > ---
+> >  include/linux/bpf.h            |  82 +++++++++------
+> >  include/linux/filter.h         |  18 ++++
+> >  include/uapi/linux/bpf.h       |  37 +++++--
+> >  kernel/bpf/btf.c               |  18 ++++
+> >  kernel/bpf/helpers.c           |  95 ++++++++++++++---
+> >  kernel/bpf/verifier.c          | 185 ++++++++++++++++++++++++++-------
+> >  net/core/filter.c              |  60 ++++++++++-
+> >  tools/include/uapi/linux/bpf.h |  37 +++++--
+> >  8 files changed, 432 insertions(+), 100 deletions(-)
+> >
+>
+> [...]
+>
+> >  static const struct bpf_func_proto bpf_dynptr_write_proto = {
+> > @@ -1560,6 +1595,8 @@ static const struct bpf_func_proto bpf_dynptr_write_proto = {
+> >
+> >  BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u32, offset, u32, len)
+> >  {
+> > +       enum bpf_dynptr_type type;
+> > +       void *data;
+> >         int err;
+> >
+> >         if (!ptr->data)
+> > @@ -1569,10 +1606,36 @@ BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u32, offset, u3
+> >         if (err)
+> >                 return 0;
+> >
+> > -       if (bpf_dynptr_is_rdonly(ptr))
+> > -               return 0;
+> > +       type = bpf_dynptr_get_type(ptr);
+> > +
+> > +       switch (type) {
+> > +       case BPF_DYNPTR_TYPE_LOCAL:
+> > +       case BPF_DYNPTR_TYPE_RINGBUF:
+> > +               if (bpf_dynptr_is_rdonly(ptr))
+> > +                       return 0;
+>
+> will something break if we return ptr->data for read-only LOCAL/RINGBUF dynptr?
 
-I don't think /sys/kernel/debug/tracing can ever be deprecated.
-There are plenty of user space applications (not bpf related at all) that
-expect it to be in that location.
+There will be nothing guarding against direct writes into read-only
+LOCAL/RINGBUF dynptrs if we return ptr->data. For skb type dynptrs,
+it's guarded by the ptr->data return pointer being marked as
+MEM_RDONLY in the verifier if the skb is non-writable.
 
-Quick search shows:
-
-android profiler:
-https://android.googlesource.com/platform/external/perfetto/+/refs/heads/master/src/tools/dump_ftrace_stats/main.cc#60
-
-java profiler:
-https://github.com/jvm-profiling-tools/async-profiler/blob/master/src/perfEvents_linux.cpp#L85
-
-> If anything, leaving hardcoded calls like that forces the user to mount
-> debugfs when they may not want to. The entire point of tracefs was to allow
-> users to have access to the trace events without having to expose debugfs
-> and all the crud it brings with it. This was requested several times before
-> it was added.
-
-All makes sense.
-
-> What is your technical reason for not modifying the code to look for
-> tracefs in /sys/kernel/tracing and if it's not there try
-> /sys/kernel/debug/tracing, and if both are not found, try mounting it.
-
-libbpf already has code to probe both locations.
-The point that full deprecation of /sys/kernel/debug/tracing is not possible,
-hence no point doing the diff:
-48 files changed, 96 insertions(+), 95 deletions(-)
-It doesn't move the needle. Just a code churn.
+>
+> > +
+> > +               data = ptr->data;
+> > +               break;
+> > +       case BPF_DYNPTR_TYPE_SKB:
+> > +       {
+> > +               struct sk_buff *skb = ptr->data;
+> >
+>
+> [...]
