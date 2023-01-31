@@ -2,183 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C651868244B
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 07:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C53C868246A
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 07:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjAaGGl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 01:06:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
+        id S229810AbjAaG3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 01:29:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbjAaGGk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 01:06:40 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CA33B3E5
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 22:06:39 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id 144so9487321pfv.11
-        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 22:06:39 -0800 (PST)
+        with ESMTP id S229468AbjAaG3B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 01:29:01 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ECF36467
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 22:28:59 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id d13so10520778qvj.8
+        for <bpf@vger.kernel.org>; Mon, 30 Jan 2023 22:28:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aGAVQqa8Y5M61rBsJJuSDw9l073QzNEWTldSMTvVAZ0=;
-        b=DtQkn8ahxh8Q/vglRT+FYYzxq8GbJdGzicd8ZsQzYoWymdGoRmeMlBzxJERm71gzfe
-         lRKImIyXOElxq7QjcsAV/c1Hti+hv3JbsxZNmqbo82LlRPp+CmgvZaL5ZgFS17GY225N
-         VjPxLMaKWa1YUBZe0oAwIei/rb9V4nSuIzQNqen1N+UvmkcSvdDynHBN3yEfVHAQgfs3
-         25IpkXUxGYoO754WkV5/NLQK1v9JqnvbQyoFmvK4e8KjQ5eUROiUcFJJcSUe7o05K2I4
-         X3zyslx+jGikRNQFIJnyyA8UdWj3yboiBpV8xL+UjM6Ut335bqnAKq+y9VsGTH+EEw9d
-         CCCA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OXKnE1Q6JdHrDyzYHAwmA0pvBC/vTqF0R9By7nEYIy8=;
+        b=SdZcC9sg9BHuygD51Fl4j+M9bYlSIcsSygDtD6jIfeEM6ygkgHWQU9tybNnifq/TtE
+         kGpv6hFqw7G9rLWcYmA/lsWGF1utgZ6MEcP4GB6pq13VdXxmLq3T+Lk/2dGritYxTAtb
+         nZgF0fYwYSv06rw+CyBkKdQBpY8t6S/V5VfTtuOxrRxZ+hQfA7+mLMm+NdDpWaS/hwvY
+         yd7HrK6TyLsY/hF8xnRrmPl9h+x/JJG63SZT+Xm3jpvgdfhQOM8ViDWhVFeR11hGkZtv
+         dnsh58ryEapRJ+55dZ6UpExrMgDtif+4FqNgmcKCn5/E7Fqr1Uvx/nPD8tkGRFyntX2u
+         iJFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aGAVQqa8Y5M61rBsJJuSDw9l073QzNEWTldSMTvVAZ0=;
-        b=6HQRsnkR+4y72wM4QY2KwPrSavNU1ypBlzxMsC+pQn+eI7Nd51K6p2UF1uXp0Bo5dU
-         oSwE7Fvj2keEVGixwe2aA5LX9+gaDGmemxk57F0IGvVdj0scPM0RJ1PXBmB6wYr2nMN+
-         S4Io0nCONfqEz1lPpxyN/GIWX7v6o+ayZscLtoZBNDSREPVmCkx6I32uKbr3ywRhL2Oh
-         rqsbjp7Va4R/kLSrIRPpZ+qNtYRs9YdGSt3gN3whu8vJetQKUs66oBZWajrDK3o/S+WY
-         OD6/+S6D+cNkn2mm/WFzaiYWW3J5tcfprNgUHeySco12iNOpurNJIK/JU6AYhktktpIh
-         lhYQ==
-X-Gm-Message-State: AO0yUKX2Um01d5Z8lTiC8WDWM8WiV66HClr7d8EzKGQIfwlRaCSmHIRd
-        3+Cin0+3TC5ZNVeDT/iLPu0=
-X-Google-Smtp-Source: AK7set93jQUdHl2XP6dXES4tM+HY0a0Et0hMAi4q7t+ve1n6hDyXp/0VHaFsW3CVNqjoW0l13BImXQ==
-X-Received: by 2002:a62:1715:0:b0:593:b169:ae51 with SMTP id 21-20020a621715000000b00593b169ae51mr8017210pfx.32.1675145198421;
-        Mon, 30 Jan 2023 22:06:38 -0800 (PST)
-Received: from google.com ([2601:647:6780:ff0:5043:e7ed:e642:f4d2])
-        by smtp.gmail.com with ESMTPSA id t1-20020aa79461000000b0058da7e58008sm8497837pfq.36.2023.01.30.22.06.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jan 2023 22:06:37 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-Date:   Mon, 30 Jan 2023 22:06:34 -0800
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Hao Luo <haoluo@google.com>
-Cc:     Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OXKnE1Q6JdHrDyzYHAwmA0pvBC/vTqF0R9By7nEYIy8=;
+        b=QAKDEKPwQKIoTIH/1mkgJ2Q8sjWZSDlovdxunCnS4Gk+KXEAgMQoLXv8ZyHElKQ63E
+         hWLrhGOABVBi7AcR6SXjJLbeGmXxRvWJtgcM1coV2DJzZfg1HTmy5uh7HsD5/c9ito1S
+         DxISHey99jJtAxZx/k92SdHWkCFKZFEts3SSl+VHdahr+WezScUF15v2Wim97DyqPyfd
+         zVTDWq1Xz0MeiCeGJfV8QawlKAnFeAZ1DT3aleRAyAJDtqTlmOxjLqea5j7lB3ODW37z
+         t6hx5MW8NoNRP30szF+Y5Mz9pSjr8clO8X3r0h6A+zJpPWkkgdjG/ltBQDYdVw537r8Y
+         MuCQ==
+X-Gm-Message-State: AFqh2ko/OaUcYEhLq/XGJeyoCmdYD7doyAZ4PSZhAWM4HJZbZNRBdG48
+        PVOIeoosIBeorpj7BWyjbRbtkTDy1jwzq6JIsgo=
+X-Google-Smtp-Source: AMrXdXsqE5xOOBm/VB9hw0p4F3n+12UIrKfURK3doyrcCWAv5uwmZkPCnjxgvfD9hipk634TLRTksk3uxGMKUgZRXKc=
+X-Received: by 2002:a05:6214:2622:b0:537:2334:7fb3 with SMTP id
+ gv2-20020a056214262200b0053723347fb3mr2248442qvb.59.1675146538591; Mon, 30
+ Jan 2023 22:28:58 -0800 (PST)
+MIME-Version: 1.0
+References: <20230112155326.26902-1-laoar.shao@gmail.com> <CAADnVQJie8jSNxEio9iu6oXBkXyCjCg6h2mHssPv4mDHubWTwA@mail.gmail.com>
+ <CALOAHbAsQ66j77BWC6isTRiKRPgG1Ap2qf6L+wQ+x2SXJt8NjQ@mail.gmail.com>
+ <CAADnVQJGF5Xthpn7D2DgHHvZz8+dnuz2xMi6yoSziuauXO7ncA@mail.gmail.com>
+ <CALOAHbBVRvTkSxLin+9A20Wv0DZWz4epvNTY1jEaCTf7q0qWJA@mail.gmail.com>
+ <CAADnVQJtSZWe0sjvA3YT2LPHJyUqDuhG1f62x2PTjB4WMeLsJw@mail.gmail.com>
+ <CALOAHbCY4fGyAN6q3dd+hULs3hRJcYgvMR7M5wg1yb3vPiK=mw@mail.gmail.com>
+ <CAADnVQJ9-XEz_JdbUWEK5ZdgnidvNcDZcP2jb7ojyEFtPdPMoA@mail.gmail.com>
+ <CALOAHbD0u2OPR4psZbtefttyLA8LU5ZzbXoTjbiXaz3wqNGwfw@mail.gmail.com> <Y9fCvZIfvgO+nJ9E@pc636>
+In-Reply-To: <Y9fCvZIfvgO+nJ9E@pc636>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 31 Jan 2023 14:28:22 +0800
+Message-ID: <CALOAHbB17gTQx4O0+b8oBLQ6ckSFHyS4qwqUn0kXj5U1Wqc3SA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 00/11] mm, bpf: Add BPF into /proc/meminfo
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, kernel-team@meta.com
-Subject: Re: CORE feature request: support checking field type directly
-Message-ID: <Y9iv6i8GBIvT/wPQ@google.com>
-References: <CA+khW7ju-gewZVNxopBi3Uvhiv8Wb=a-D4gaW3MD-NkUg0WSSg@mail.gmail.com>
- <20230117215658.xec7cirlfx2z7z2m@muellerd-fedora-PC2BDTX9>
- <20230117222158.uyezr5ab72ck5fhv@muellerd-fedora-PC2BDTX9>
- <CA+khW7gFq3VKEvF7hZXQsLJagz=HMZ4kJwh=QdmFG1pFbq1xRw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+khW7gFq3VKEvF7hZXQsLJagz=HMZ4kJwh=QdmFG1pFbq1xRw@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Tejun Heo <tj@kernel.org>, dennis@kernel.org,
+        Chris Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Hao,
-
-On Tue, Jan 17, 2023 at 04:55:44PM -0800, Hao Luo wrote:
-> Hi Daniel,
-> 
-> On Tue, Jan 17, 2023 at 2:22 PM Daniel Müller <deso@posteo.net> wrote:
+On Mon, Jan 30, 2023 at 9:14 PM Uladzislau Rezki <urezki@gmail.com> wrote:
+>
+> On Sat, Jan 28, 2023 at 07:49:08PM +0800, Yafang Shao wrote:
+> > On Thu, Jan 26, 2023 at 1:45 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Jan 17, 2023 at 10:49 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > > > > I just don't want to add many if-elses or switch-cases into
+> > > > > > bpf_map_memory_footprint(), because I think it is a little ugly.
+> > > > > > Introducing a new map ops could make it more clear.  For example,
+> > > > > > static unsigned long bpf_map_memory_footprint(const struct bpf_map *map)
+> > > > > > {
+> > > > > >     unsigned long size;
+> > > > > >
+> > > > > >     if (map->ops->map_mem_footprint)
+> > > > > >         return map->ops->map_mem_footprint(map);
+> > > > > >
+> > > > > >     size = round_up(map->key_size + bpf_map_value_size(map), 8);
+> > > > > >     return round_up(map->max_entries * size, PAGE_SIZE);
+> > > > > > }
+> > > > >
+> > > > > It is also ugly, because bpf_map_value_size() already has if-stmt.
+> > > > > I prefer to keep all estimates in one place.
+> > > > > There is no need to be 100% accurate.
+> > > >
+> > > > Per my investigation, it can be almost accurate with little effort.
+> > > > Take the htab for example,
+> > > > static unsigned long htab_mem_footprint(const struct bpf_map *map)
+> > > > {
+> > > >     struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+> > > >     unsigned long size = 0;
+> > > >
+> > > >     if (!htab_is_prealloc(htab)) {
+> > > >         size += htab_elements_size(htab);
+> > > >     }
+> > > >     size += kvsize(htab->elems);
+> > > >     size += percpu_size(htab->extra_elems);
+> > > >     size += kvsize(htab->buckets);
+> > > >     size += bpf_mem_alloc_size(&htab->pcpu_ma);
+> > > >     size += bpf_mem_alloc_size(&htab->ma);
+> > > >     if (htab->use_percpu_counter)
+> > > >         size += percpu_size(htab->pcount.counters);
+> > > >     size += percpu_size(htab->map_locked[i]) * HASHTAB_MAP_LOCK_COUNT;
+> > > >     size += kvsize(htab);
+> > > >     return size;
+> > > > }
+> > >
+> > > Please don't.
+> > > Above doesn't look maintainable.
 > >
-> > I apologize for the response. Somehow Andrii's reply and the entire thread was
-> > lost on me. Anyway, glad it's working for you.
+> > It is similar to htab_map_free(). These pointers are the pointers
+> > which will be freed in map_free().
+> > We just need to keep map_mem_footprint() in sync with map_free(). It
+> > won't be a problem for maintenance.
 > >
-> 
-> Andrii helped me get it work. TYPE_MATCHES is a solution to my
-> problem. Now I have a better understanding on how
-> bpf_core_type_matches works.
-> 
-> For the record, the following works on my old kernel and new kernels:
-> 
-> struct rw_semaphore___old {
->         struct task_struct *owner;
-> };
-> 
-> struct rw_semaphore___new {
->         atomic_long_t owner;
-> };
-> 
-> u64 owner;
-> if (bpf_core_type_matches(struct rw_semaphore___old)) { /* owner is
-> task_struct pointer */
->         struct rw_semaphore___old *old = (struct rw_semaphore___old *)sem;
->         owner = (u64)sem->owner;
-> } else if (bpf_core_type_matches(struct rw_semaphore___new)) { /*
-> owner field is atomic_long_t */
->         struct rw_semaphore___new *new = (struct rw_semaphore___new *)sem;
->         owner = (u64)new->owner.counter;
-> }
- 
-Thanks for taking care of this.  It looks good!
+> > > Look at kvsize(htab). Do you really care about hundred bytes?
+> > > Just accept that there will be a small constant difference
+> > > between what show_fdinfo reports and the real memory.
+> >
+> > The point is we don't have a clear idea what the margin is.
+> >
+> > > You cannot make it 100%.
+> > > There is kfence that will allocate 4k though you asked kmalloc(8).
+> > >
+> >
+> > We already have ksize()[1], which covers the kfence.
+> >
+> > [1]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/mm/slab_common.c#n1431
+> >
+> > > > We just need to get the real memory size from the pointer instead of
+> > > > calculating the size again.
+> > > > For non-preallocated htab, it is a little trouble to get the element
+> > > > size (not the unit_size), but it won't be a big deal.
+> > >
+> > > You'd have to convince mm folks that kvsize() is worth doing.
+> > > I don't think it will be easy.
+> > >
+> >
+> > As I mentioned above, we already have ksize(), so we only need to
+> > introduce vsize().  Per my understanding, we can simply use
+> > vm_struct->size to get the vmalloc size, see also the patch #5 in this
+> > patchset[2].
+> >
+> > Andrew, Uladzislau, Christoph,  do you have any comments on this newly
+> > introduced vsize()[2] ?
+> >
+> > [2]. https://lore.kernel.org/bpf/20230112155326.26902-6-laoar.shao@gmail.com/
+> >
+> <snip>
+> +/* Report full size of underlying allocation of a vmalloc'ed addr */
+> +static inline size_t vsize(const void *addr)
+> +{
+> +       struct vm_struct *area;
+> +
+> +       if (!addr)
+> +               return 0;
+> +
+> +       area = find_vm_area(addr);
+> +       if (unlikely(!area))
+> +               return 0;
+> +
+> +       return area->size;
+> +}
+> <snip>
+>
+> You can not access area after the lock is dropped. We do not have any
+> ref counters for VA objects. Therefore it should be done like below:
+>
+>
+> <snip>
+>   spin_lock(&vmap_area_lock);
+>   va = __find_vmap_area(addr, &vmap_area_root);
+>   if (va && va->vm)
+>     va_size = va->vm->size;
+>   spin_unlock(&vmap_area_lock);
+>
+>   return va_size;
+> <snip>
+>
 
-But I'm seeing a compiler error with this change like below.
-("Incorrect flag for llvm.bpf.preserve.type.info intrinsic")
-Maybe we need to check if the compiler supports it?
+Ah, it should take this global lock.  I missed that.
+Many thanks for the detailed explanation.
 
-Thanks,
-Namhyung
-
-
-    CLANG   /home/namhyung/project/linux/tools/perf/util/bpf_skel/.tmp/lock_contention.bpf.o
-  fatal error: error in backend: Incorrect flag for llvm.bpf.preserve.type.info intrinsic
-  PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace, preprocessed source, and associated run script.
-  Stack dump:
-  0.	Program arguments: clang -g -O2 -target bpf -Wall -Werror -I/home/namhyung/project/linux/tools/perf/util/bpf_skel/.tmp/.. -I/home/namhyung/project/linux/tools/perf/libbpf/include -c util/bpf_skel/lock_contention.bpf.c -o /home/namhyung/project/linux/tools/perf/util/bpf_skel/.tmp/lock_contention.bpf.o
-  1.	<eof> parser at end of file
-  2.	Optimizer
-   #0 0x00007f1a070a5291 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0xea5291)
-   #1 0x00007f1a070a2fbe llvm::sys::RunSignalHandlers() (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0xea2fbe)
-   #2 0x00007f1a070a464b llvm::sys::CleanupOnSignal(unsigned long) (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0xea464b)
-   #3 0x00007f1a06fcb62a (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0xdcb62a)
-   #4 0x00007f1a06fcb5cb (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0xdcb5cb)
-   #5 0x00007f1a0709f627 llvm::sys::Process::Exit(int, bool) (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0xe9f627)
-   #6 0x00000000004142c2 (/usr/lib/llvm-14/bin/clang+0x4142c2)
-   #7 0x00007f1a06fda393 llvm::report_fatal_error(llvm::Twine const&, bool) (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0xdda393)
-   #8 0x00007f1a06fda276 (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0xdda276)
-   #9 0x00007f1a091d4d54 (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0x2fd4d54)
-  #10 0x00007f1a091d0434 (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0x2fd0434)
-  #11 0x00007f1a091d01a5 (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0x2fd01a5)
-  #12 0x00007f1a091e431d (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0x2fe431d)
-  #13 0x00007f1a07214d8e llvm::PassManager<llvm::Function, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0x1014d8e)
-  #14 0x00007f1a08e0ec0d (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0x2c0ec0d)
-  #15 0x00007f1a07218cb1 llvm::ModuleToFunctionPassAdaptor::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0x1018cb1)
-  #16 0x00007f1a08e0ea3d (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0x2c0ea3d)
-  #17 0x00007f1a072139ae llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0x10139ae)
-  #18 0x00007f1a0e4938ee (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x18938ee)
-  #19 0x00007f1a0e4890e6 clang::EmitBackendOutput(clang::DiagnosticsEngine&, clang::HeaderSearchOptions const&, clang::CodeGenOptions const&, clang::TargetOptions const&, clang::LangOptions const&, llvm::StringRef, llvm::Module*, clang::BackendAction, std::unique_ptr<llvm::raw_pwrite_stream, std::default_delete<llvm::raw_pwrite_stream> >) (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x18890e6)
-  #20 0x00007f1a0e7adf95 (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x1badf95)
-  #21 0x00007f1a0d634914 clang::ParseAST(clang::Sema&, bool, bool) (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0xa34914)
-  #22 0x00007f1a0e7aa261 clang::CodeGenAction::ExecuteAction() (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x1baa261)
-  #23 0x00007f1a0f14b887 clang::FrontendAction::Execute() (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x254b887)
-  #24 0x00007f1a0f0a11f6 clang::CompilerInstance::ExecuteAction(clang::FrontendAction&) (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x24a11f6)
-  #25 0x00007f1a0f1c563b clang::ExecuteCompilerInvocation(clang::CompilerInstance*) (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x25c563b)
-  #26 0x0000000000413e93 cc1_main(llvm::ArrayRef<char const*>, char const*, void*) (/usr/lib/llvm-14/bin/clang+0x413e93)
-  #27 0x00000000004120cc (/usr/lib/llvm-14/bin/clang+0x4120cc)
-  #28 0x00007f1a0ed1d052 (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x211d052)
-  #29 0x00007f1a06fcb5ad llvm::CrashRecoveryContext::RunSafely(llvm::function_ref<void ()>) (/lib/x86_64-linux-gnu/libLLVM-14.so.1+0xdcb5ad)
-  #30 0x00007f1a0ed1cb50 clang::driver::CC1Command::Execute(llvm::ArrayRef<llvm::Optional<llvm::StringRef> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, bool*) const (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x211cb50)
-  #31 0x00007f1a0ece70f3 clang::driver::Compilation::ExecuteCommand(clang::driver::Command const&, clang::driver::Command const*&) const (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x20e70f3)
-  #32 0x00007f1a0ece737a clang::driver::Compilation::ExecuteJobs(clang::driver::JobList const&, llvm::SmallVectorImpl<std::pair<int, clang::driver::Command const*> >&) const (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x20e737a)
-  #33 0x00007f1a0ed01677 clang::driver::Driver::ExecuteCompilation(clang::driver::Compilation&, llvm::SmallVectorImpl<std::pair<int, clang::driver::Command const*> >&) (/lib/x86_64-linux-gnu/libclang-cpp.so.14+0x2101677)
-  #34 0x0000000000411b36 main (/usr/lib/llvm-14/bin/clang+0x411b36)
-  #35 0x00007f1a0604618a __libc_start_call_main ./csu/../sysdeps/nptl/libc_start_call_main.h:74:3
-  #36 0x00007f1a06046245 call_init ./csu/../csu/libc-start.c:128:20
-  #37 0x00007f1a06046245 __libc_start_main ./csu/../csu/libc-start.c:368:5
-  #38 0x000000000040efb1 _start (/usr/lib/llvm-14/bin/clang+0x40efb1)
-  clang: error: clang frontend command failed with exit code 70 (use -v to see invocation)
-  Debian clang version 14.0.6
-  Target: bpf
-  Thread model: posix
-  InstalledDir: /usr/bin
-
+-- 
+Regards
+Yafang
