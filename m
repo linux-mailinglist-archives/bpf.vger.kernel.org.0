@@ -2,215 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B638683136
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 16:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 113ED683158
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 16:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbjAaPSl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 10:18:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        id S232767AbjAaPVd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 10:21:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233171AbjAaPSR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 10:18:17 -0500
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998BF45BEA;
-        Tue, 31 Jan 2023 07:16:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1675178186;
-        bh=ef9Tt/UsbJRvNjzO4j1FZEBc8SF5MQJAlbohpOz9LEI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=mfaZkS72+7A/jP2ZUGIQ8OiWNGvRhGmszDMYeYUPQup65pFCOaflsUVm9zc1yPYij
-         WcEjgefJvQldTY9xUXbCx7DTvd9NDnpkH69xV/wBdNdjFN5Q0G5JHvhmgkIyxupkHe
-         krREaYFVi0pd9775S+4YVrpgkYqY/R5O+agZN0EWfKZv/JG6VS9u/v0oPnbUZs1bEl
-         phVt25kx3PLFoJGEH0BKLMF3P2eZBVSu3NsRmGBnh6Z0JA8NX/6ov/QXomrfiDJVYr
-         udsOGn3rdavNiiBhjsn7jTvIhkT1xWivwkI9MwMSheUPXbLfcANp7uivetdt+hyLul
-         4zUZVoqCSSI9A==
-Received: from [172.16.0.188] (192-222-180-24.qc.cable.ebox.net [192.222.180.24])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4P5pY55k65zhyZ;
-        Tue, 31 Jan 2023 10:16:25 -0500 (EST)
-Message-ID: <edad4f4d-f19e-34dc-06f5-7d30fd5d058f@efficios.com>
-Date:   Tue, 31 Jan 2023 10:17:05 -0500
+        with ESMTP id S232778AbjAaPVL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 10:21:11 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80FA59748
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 07:18:56 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id d14so14529800wrr.9
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 07:18:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2O02It3bbn5FBbwbWxOrGitYhsJm8cq1WolvQpSJ05I=;
+        b=CmNuxgyCqX0w4xVCZcQbpOOC/3/PE9D6FagSn0d5eFrJBMDD8E3He9c31CKyQtB7lW
+         FghtF1M7CFGfLsYX3ZWIKWiCYzgR4fIK6kjoU4ZkW+md67ws6p31TYoSsXpxvaX+3YBg
+         rqT81D86ICJMrjU7nuLph+NsRIvg8UwjpHYRfImCS/TFvFZzOcQeajAyWtXj16gqeb/H
+         Az8uS3/IbNGYueeCMAZwYVpkk0jRnNh5wo/xG+EX+BJ13Kw5u93RhHG39uZZs2Rq3m+d
+         ZhXSlPcVCjZLR+uAexlBqumVs9wJ2no+vFlYoNCv+EX69RVhPEOjIzsqL7LW0UE9aBiG
+         nuUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2O02It3bbn5FBbwbWxOrGitYhsJm8cq1WolvQpSJ05I=;
+        b=cEs6Eb8hFvXtqWiayGBViyrWS2tYa5y6Wt9mNwU/TidurI0t9Zy+md8gK6Vcf9uYFv
+         O8Z6fQmRRc/v350dsVCvbblJ73T+/o1U5souOx0WDMzuDmqDANrGEbS9SysJKVFe+AdA
+         TVAhphk3Z3nZbiqfBZ2aOHgFbwrj/JzrQ9eg4/L2g2nKb2j/Qq3Mgx4kfF9BRJI8X9dp
+         6BQcKDPMlRz9qPhTTZIZHBAvUpQ9ZZqZlJWm6ljfud2vYQn32QFq2/s6enkedGYr14rP
+         2PlLbvdS1FDG/WciH39P24TEGzrlmiA6pa/ANVwKD3IlKMaLoujISBoKUGaWHNhktdn4
+         ZIaQ==
+X-Gm-Message-State: AFqh2kqTAWWMLvcDPsqwMCcDls6/IHqDK2X6aad+1FPDjis7ZkZ4KwDK
+        PuGNt89cOqxE4daFr6NTc9s=
+X-Google-Smtp-Source: AMrXdXsZMXa5deoft0LKyIBLqc52w0hVU3mij8inGigkhT53EuBWAF3oVlYPeiIVB1hwgWhesf3yrQ==
+X-Received: by 2002:adf:e9d2:0:b0:242:800:9a7f with SMTP id l18-20020adfe9d2000000b0024208009a7fmr47557178wrn.65.1675178326332;
+        Tue, 31 Jan 2023 07:18:46 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id c7-20020adffb47000000b002ba2646fd30sm16917469wrs.36.2023.01.31.07.18.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Jan 2023 07:18:45 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 31 Jan 2023 16:18:43 +0100
+To:     Alexandre Peixoto Ferreira <alexandref75@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Daniel Xu <dxu@dxuuu.xyz>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: Kernel build fail with 'btf_encoder__encode: btf__dedup failed!'
+Message-ID: <Y9kxUzyfpEQpnN7w@krava>
+References: <57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com>
+ <Y85AHdWw/l8d1Gsp@krava>
+ <0fbad67e-c359-47c3-8c10-faa003e6519f@app.fastmail.com>
+ <bb569967-d33a-7252-964b-a36501b3366a@gmail.com>
+ <Y9RlpyV5JPz/hk1K@krava>
+ <883a3b03-a596-8279-1278-bc622114aab5@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH bpf-next 1/2] selftests: bpf: Fix incorrect kernel headers
- search path
-Content-Language: en-US
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        bpf <bpf@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        stable <stable@vger.kernel.org>
-References: <20230130183549.85471-1-mathieu.desnoyers@efficios.com>
- <CAADnVQLve5je3GKesCjn5HhuxgOe2u1OX7GQnx-58dsuUFWbZQ@mail.gmail.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <CAADnVQLve5je3GKesCjn5HhuxgOe2u1OX7GQnx-58dsuUFWbZQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <883a3b03-a596-8279-1278-bc622114aab5@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2023-01-30 16:03, Alexei Starovoitov wrote:
-> On Mon, Jan 30, 2023 at 10:36 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
->> Use $(KHDR_INCLUDES) as lookup path for kernel headers. This prevents
->> building against kernel headers from the build environment in scenarios
->> where kernel headers are installed into a specific output directory
->> (O=...).
->>
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Acked-by: Shuah Khan <skhan@linuxfoundation.org>
->> Cc: <bpf@vger.kernel.org>
->> Cc: Shuah Khan <shuah@kernel.org>
->> Cc: linux-kselftest@vger.kernel.org
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Alexei Starovoitov <ast@kernel.org>
->> Cc: Daniel Borkmann <daniel@iogearbox.net>
->> Cc: Andrii Nakryiko <andrii@kernel.org>
->> Cc: Martin KaFai Lau <martin.lau@linux.dev>
->> Cc: Song Liu <song@kernel.org>
->> Cc: Yonghong Song <yhs@fb.com>
->> Cc: John Fastabend <john.fastabend@gmail.com>
->> Cc: KP Singh <kpsingh@kernel.org>
->> Cc: Stanislav Fomichev <sdf@google.com>
->> Cc: Hao Luo <haoluo@google.com>
->> Cc: Jiri Olsa <jolsa@kernel.org>
->> Cc: Mykola Lysenko <mykolal@fb.com>
->> Cc: <stable@vger.kernel.org>    [5.18+]
->> ---
->>   tools/testing/selftests/bpf/Makefile | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->> index c22c43bbee19..6998c816afef 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -327,7 +327,7 @@ endif
->>   CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_ARCH))
->>   BPF_CFLAGS = -g -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)          \
->>               -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)                   \
->> -            -I$(abspath $(OUTPUT)/../usr/include)
->> +            $(KHDR_INCLUDES)
+On Sat, Jan 28, 2023 at 01:23:25PM -0600, Alexandre Peixoto Ferreira wrote:
+> Jirka and Daniel,
 > 
-> It breaks the build:
-> https://github.com/kernel-patches/bpf/actions/runs/4047075637/jobs/6960655246
+> On 1/27/23 18:00, Jiri Olsa wrote:
+> > On Fri, Jan 27, 2023 at 04:28:54PM -0600, Alexandre Peixoto Ferreira wrote:
+> > > 
+> > > On 1/24/23 00:13, Daniel Xu wrote:
+> > > > Hi Jiri,
+> > > > 
+> > > > On Mon, Jan 23, 2023, at 1:06 AM, Jiri Olsa wrote:
+> > > > > On Sun, Jan 22, 2023 at 10:48:44AM -0700, Daniel Xu wrote:
+> > > > > > Hi,
+> > > > > > 
+> > > > > > I'm getting the following error during build:
+> > > > > > 
+> > > > > >           $ ./tools/testing/selftests/bpf/vmtest.sh -j30
+> > > > > >           [...]
+> > > > > >             BTF     .btf.vmlinux.bin.o
+> > > > > >           btf_encoder__encode: btf__dedup failed!
+> > > > > >           Failed to encode BTF
+> > > > > >             LD      .tmp_vmlinux.kallsyms1
+> > > > > >             NM      .tmp_vmlinux.kallsyms1.syms
+> > > > > >             KSYMS   .tmp_vmlinux.kallsyms1.S
+> > > > > >             AS      .tmp_vmlinux.kallsyms1.S
+> > > > > >             LD      .tmp_vmlinux.kallsyms2
+> > > > > >             NM      .tmp_vmlinux.kallsyms2.syms
+> > > > > >             KSYMS   .tmp_vmlinux.kallsyms2.S
+> > > > > >             AS      .tmp_vmlinux.kallsyms2.S
+> > > > > >             LD      .tmp_vmlinux.kallsyms3
+> > > > > >             NM      .tmp_vmlinux.kallsyms3.syms
+> > > > > >             KSYMS   .tmp_vmlinux.kallsyms3.S
+> > > > > >             AS      .tmp_vmlinux.kallsyms3.S
+> > > > > >             LD      vmlinux
+> > > > > >             BTFIDS  vmlinux
+> > > > > >           FAILED: load BTF from vmlinux: No such file or directory
+> > > > > >           make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+> > > > > >           make[1]: *** Deleting file 'vmlinux'
+> > > > > >           make: *** [Makefile:1264: vmlinux] Error 2
+> > > > > > 
+> > > > > > This happens on both bpf-next/master (84150795a49) and 6.2-rc5
+> > > > > > (2241ab53cb).
+> > > > > > 
+> > > > > > I've also tried arch linux pahole 1:1.24+r29+g02d67c5-1 as well as
+> > > > > > upstream pahole on master (02d67c5176) and upstream pahole on
+> > > > > > next (2ca56f4c6f659).
+> > > > > > 
+> > > > > > Of the above 6 combinations, I think I've tried all of them (maybe
+> > > > > > missing 1 or 2).
+> > > > > > 
+> > > > > > Looks like GCC got updated recently on my machine, so perhaps
+> > > > > > it's related?
+> > > > > > 
+> > > > > >           CONFIG_CC_VERSION_TEXT="gcc (GCC) 12.2.1 20230111"
+> > > > > > 
+> > > > > > I'll try some debugging, but just wanted to report it first.
+> > > > > hi,
+> > > > > I can't reproduce that.. can you reproduce it outside vmtest.sh?
+> > > > > 
+> > > > > there will be lot of output with patch below, but could contain
+> > > > > some more error output
+> > > > Thanks for the hints. Doing a regular build outside of vmtest.sh
+> > > > seems to work ok. So maybe it's a difference in the build config.
+> > > > 
+> > > > I'll put a little more time into debugging to see if it goes anywhere.
+> > > > But I'll have to get back to the regularly scheduled programming
+> > > > soon.
+> > > 6.2-rc5 compiles correctly when CONFIG_X86_KERNEL_IBT is commented but fails
+> > > in pahole when CONFIG_X86_KERNEL_IBT is set.
+> > could you plese attach your config and the build error?
+> > I can't reproduce that
+> > 
+> > thanks,
+> > jirka
 > 
-> make[1]: *** No rule to make target '/linux/bpf.h', needed by
-> '/tmp/work/bpf/bpf/tools/testing/selftests/bpf/bpf-helpers.rst'. Stop.
+> My working .config is available at https://pastebin.pl/view/bef3765c
+> change CONFIG_X86_KERNEL_IBT to y to get the error.
+> 
+> The error is similar to Daniel's and is shown below:
+> 
+>   LD      .tmp_vmlinux.btf
+>   BTF     .btf.vmlinux.bin.o
+> btf_encoder__encode: btf__dedup failed!
+> Failed to encode BTF
+>   LD      .tmp_vmlinux.kallsyms1
+>   NM      .tmp_vmlinux.kallsyms1.syms
+>   KSYMS   .tmp_vmlinux.kallsyms1.S
+>   AS      .tmp_vmlinux.kallsyms1.S
+>   LD      .tmp_vmlinux.kallsyms2
+>   NM      .tmp_vmlinux.kallsyms2.syms
+>   KSYMS   .tmp_vmlinux.kallsyms2.S
+>   AS      .tmp_vmlinux.kallsyms2.S
+>   LD      .tmp_vmlinux.kallsyms3
+>   NM      .tmp_vmlinux.kallsyms3.syms
+>   KSYMS   .tmp_vmlinux.kallsyms3.S
+>   AS      .tmp_vmlinux.kallsyms3.S
+>   LD      vmlinux
+>   BTFIDS  vmlinux
+> FAILED: load BTF from vmlinux: No such file or directory
+> make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+> make[1]: *** Deleting file 'vmlinux'
+> make: *** [Makefile:1264: vmlinux] Error 2
 
-I finally figured out why I did not catch it in my own testing: it appears
-that the bpf selftest is special: it's not built when issuing "make" from
-tools/testing/selftests/. Perhaps that's also why Shuah did not see any
-issues with my bpf patches:
+I can't reproduce that.. I tried with gcc versions:
 
-tools/testing/selftests/Makefile:
+  gcc (GCC) 13.0.1 20230117 (Red Hat 13.0.1-0)
+  gcc (GCC) 12.2.1 20221121 (Red Hat 12.2.1-4)
 
-# User can optionally provide a TARGETS skiplist.  By default we skip
-# BPF since it has cutting edge build time dependencies which require
-# more effort to install.
-SKIP_TARGETS ?= bpf
+I haven't found fedora setup with 12.2.1 20230111 yet
 
-It appears that the baseline bpf selftest on v6.2-rc6 does not build on
-my system:
+I tried alsa with latest pahole master branch
 
-   CLNG-BPF [test_maps] test_bpf_nf.bpf.o
-progs/test_bpf_nf.c:156:7: error: no member named 'mark' in 'struct nf_conn'
-                 ct->mark = 77;
-                 ~~  ^
-progs/test_bpf_nf.c:160:42: error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
-                 bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
-                                                        ^
-progs/test_bpf_nf.c:163:42: error: use of undeclared identifier 'NF_NAT_MANIP_DST'
-                 bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
-                                                        ^
-progs/test_bpf_nf.c:187:38: error: no member named 'mark' in 'struct nf_conn'
-                                 test_insert_lookup_mark = ct_lk->mark;
-                                                           ~~~~~  ^
-progs/test_bpf_nf.c:189:12: error: use of undeclared identifier 'IPS_CONFIRMED'
-                                                      IPS_CONFIRMED | IPS_SEEN_REPLY);
-                                                      ^
-progs/test_bpf_nf.c:189:28: error: use of undeclared identifier 'IPS_SEEN_REPLY'
-                                                      IPS_CONFIRMED | IPS_SEEN_REPLY);
-                                                                      ^
-progs/test_bpf_nf.c:209:11: error: no member named 'mark' in 'struct nf_conn'
-                 if (ct->mark == 42) {
-                     ~~  ^
-progs/test_bpf_nf.c:210:8: error: no member named 'mark' in 'struct nf_conn'
-                         ct->mark++;
-                         ~~  ^
-progs/test_bpf_nf.c:211:33: error: no member named 'mark' in 'struct nf_conn'
-                         test_exist_lookup_mark = ct->mark;
-                                                  ~~  ^
-9 errors generated.
+were you guys able to get any more verbose output
+that I suggested earlier?
 
-Based on this:
-https://lore.kernel.org/bpf/37649bee-5eb3-93a2-ac57-56eb375ef8cd@iogearbox.net/
-
-It appears that NF_CONNTRACK_MARK should be set to =y. Perhaps it should be
-detected at selftest build time and skipped rather than failing to build ? It
-appears to be a case where a user-space selftest depends on internal kernel data
-structures:
-
-Ref. include/net/netfilter/nf_conntrack.h:struct nf_conn
-
-After setting this config option, it fails at:
-
-   GEN-SKEL [test_progs] test_kfunc_dynptr_param.skel.h
-libbpf: sec '?lsm.s/bpf': corrupted program 'not_ptr_to_stack', offset 48, size 0
-Error: failed to open BPF object file: Invalid argument
-make: *** [Makefile:546: /home/efficios/git/linux/tools/testing/selftests/bpf/test_kfunc_dynptr_param.skel.h] Error 234
-make: *** Deleting file '/home/efficios/git/linux/tools/testing/selftests/bpf/test_kfunc_dynptr_param.skel.h'
-
-Based on this issue: https://github.com/libbpf/libbpf-bootstrap/issues/12 it appears
-that bpf selftests are only meant to be used against a set of pre-specified kernel configurations.
-README.rst confirms that. So let's use tools/testing/selftests/bpf/config.x86_64
-with make olddefconfig for my kernel build then. It would have been less unexpected for the
-bpf selftests to report incorrect or missing kernel config options rather than limiting the
-supported set to specific configuration files provided by the bpf selftests. This limits
-the testing coverage to very few kernel configurations.
-
-It still does not work. I need to explicitly enable BPF_SYSCALL=y which is not present in
-the bpf selftests config.x86_64. Then I can explicitly reenable DEBUG_INFO_BTF=y. It appears
-that config.x86_64 is outdated in the bpf selftests. It also misses NF_CONNTRACK_MARK=y.
-So let's assume that config.x86_64 is outdated and broken and go with
-tools/testing/selftests/bpf/config followed by make olddefconfig.
-
-No more luck, this time the bpf kernel config misses the DEBUG_KERNEL=y, which is needed
-for DEBUG_INFO and DEBUG_INFO_BTF.
-
-Now it's:
-
-   CLANG   /home/efficios/git/linux/tools/testing/selftests/bpf/tools/build/bpftool/profiler.bpf.o
-skeleton/profiler.bpf.c:18:21: error: invalid application of 'sizeof' to an incomplete type 'struct bpf_perf_event_value'
-         __uint(value_size, sizeof(struct bpf_perf_event_value));
-[...]
-
-And that's where I give up. Has anyone else succeeded in building bpf selftests locally ?
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+jirka
