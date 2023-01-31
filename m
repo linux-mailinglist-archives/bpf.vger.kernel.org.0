@@ -2,402 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6761E68349C
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 19:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D006A6834BE
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 19:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbjAaSDW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 13:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        id S231342AbjAaSHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 13:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbjAaSCv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 13:02:51 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3357D4221
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:02:50 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30VGWbHm006495
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:02:49 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=pSe+RWteteuar2Ey627L1ShuQSwlJ/Be8LfcpkzJG90=;
- b=ZS1YM8rBL4jt3AvOufH9FgWuEKvM241I20IYAX8qsH0S1ptHieie2JbvN+l4lg6ePVBM
- l3OyZFa8HZmKgmUf6vQ1kPAix3qu8Y7huLoyZrHr7Jc8YERXkVOX807Bh1GlnNxZaqeu
- xWUCDUCl23oU7ztIWyHPFgRmROzxfpBUFL0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nd1q2rphp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:02:49 -0800
-Received: from twshared5320.05.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 31 Jan 2023 10:02:47 -0800
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id 878DB15D5BB99; Tue, 31 Jan 2023 10:00:22 -0800 (PST)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229637AbjAaSHo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 13:07:44 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A453C2E
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:07:43 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id e6so7686845plg.12
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 10:07:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AEm/WqgIzYy6XXNe3nq7qeuNFp53+is3RzeKFqm0pJQ=;
+        b=SuP9j5SC7uIpYNPpO58S19V69jsCsSdSTjHiro5hXicAit5auRfNadFS76ZfF+rMaR
+         2Z1ZbT3EkS7V6yJXNUxtZDJTolSPNO9l1l7hijkyO4/t95Y6+iL5ZE8hlAEGX5Zdlp53
+         2ozyLYM28UBe/y/DS/BHkE1Wb/cdEFELJL+1DActNKx1ICZKe6Hsx0jmOTGj8JymRiie
+         Of+EuaUrZVedgxBP7xzH2Yj60fJtz2zdHZ6p2tLFHvpE7VEm23HDdfRbWRQ1Gy828jzj
+         GYTqqas/bGkyDh/FvnKm0pxDf4e9NzCpLyiRo/KaXxqTrj36mbMk6rxCc5tXvBl0Dhdl
+         N6zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AEm/WqgIzYy6XXNe3nq7qeuNFp53+is3RzeKFqm0pJQ=;
+        b=2/wrujrc+BPitaxVu6Pwfhg5M6e+zcHknP3QOsD3vpMH7sda5k4NBv9xyTBVwU6YET
+         teZx05sXSiEj0SueuEAI22DkyFlyXXckQwmw5CrPbzaiuSBo3f++nQVQkH5+SAJmyPiW
+         vd5uTERF3kUDvkEQeUz0Nk5NNwDWIqBE+2pqwTUn6cP6dwacvdfd/CqC1WjBvyKnzRyI
+         e2pPzL0XdLAfkWfPjA23nVwhOtWrtdttNYYH/PlTYhG2lTECPQVpaLmjrU3axlcSC6/x
+         AmSCxkxPFdOR5DFbLpqtGrTA+CBvvVNSgQgCXKuXIdMKnsC7NLr9dsbbAe2UJOi0DcpG
+         xI9Q==
+X-Gm-Message-State: AO0yUKVGaWly456AU+ioDlabprX4y79L/SpEdpyCQpPN0W9updSIuPt8
+        u3MAw1AhvLXwkTN0mAgiS2TWCsoKzj5gJo0Vnwb3cA==
+X-Google-Smtp-Source: AK7set9eX5f54oE38QyPpc/u9tBb5UD3Hj/cwbWFKuSl/Gcl7wOu6xcntlftdfpW5/MXKUshAVqf24VtGpGxsiMCaqs=
+X-Received: by 2002:a17:902:82c6:b0:196:cca:a0b4 with SMTP id
+ u6-20020a17090282c600b001960ccaa0b4mr4541216plz.20.1675188462832; Tue, 31 Jan
+ 2023 10:07:42 -0800 (PST)
+MIME-Version: 1.0
+References: <20230130215137.3473320-1-sdf@google.com> <CAADnVQK+zRPa7O9o1Vf3ir9W9UmZnp-XPxMguTF6L_eGK=cOjA@mail.gmail.com>
+In-Reply-To: <CAADnVQK+zRPa7O9o1Vf3ir9W9UmZnp-XPxMguTF6L_eGK=cOjA@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 31 Jan 2023 10:07:31 -0800
+Message-ID: <CAKH8qBtBBUi2E581vbdxzWOHTQACRt7k41fkt-MRvvW9N0zy5A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Try to address xdp_metadata crashes
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Tejun Heo <tj@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v3 bpf-next 11/11] bpf, documentation: Add graph documentation for non-owning refs
-Date:   Tue, 31 Jan 2023 10:00:16 -0800
-Message-ID: <20230131180016.3368305-12-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230131180016.3368305-1-davemarchevsky@fb.com>
-References: <20230131180016.3368305-1-davemarchevsky@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: eNgLDzQZCxbqJuECMkiqL3iKUkkswwEW
-X-Proofpoint-ORIG-GUID: eNgLDzQZCxbqJuECMkiqL3iKUkkswwEW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-31_08,2023-01-31_01,2022-06-22_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It is difficult to intuit the semantics of owning and non-owning
-references from verifier code. In order to keep the high-level details
-from being lost in the mailing list, this patch adds documentation
-explaining semantics and details.
+On Mon, Jan 30, 2023 at 9:41 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jan 30, 2023 at 1:51 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > Commit e04ce9f4040b ("selftests/bpf: Make crashes more debuggable in
+> > test_progs") hasn't uncovered anything interesting besides
+> > confirming that the test passes successfully, but crashes eventually [0].
+> >
+> > I'm assuming the crashes are coming from something overriding
+> > the stack/heap. Probably from the xsk misuse. So I'm trying
+> > a bunch of things to address that:
+> >
+> > - More debugging with real memory pointers for the queues/umem
+> >   - To confirm that everything is sane
+> > - Set proper tx/fill ring sizes
+> >   - In particular, fill ring wasn't fully initialized, but I'm
+> >     assuming no packets should be flowing there regardless
+> >   - Do the same for xdp_hw_metadata
+> > - Don't refill on tx completion; instead, only ack it
+> >
+> > 0: https://github.com/kernel-patches/bpf/actions/runs/4032162075/jobs/6931951300
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/xdp_metadata.c   | 36 +++++++++++++------
+> >  tools/testing/selftests/bpf/xdp_hw_metadata.c |  4 +--
+> >  2 files changed, 28 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> > index e033d48288c0..453b4045a9d1 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> > @@ -54,11 +54,11 @@ static int open_xsk(int ifindex, struct xsk *xsk)
+> >         int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
+> >         const struct xsk_socket_config socket_config = {
+> >                 .rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > -               .tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > +               .tx_size = UMEM_NUM / 2,
+>
+> I'm not following. Is this a fix or just random debug code?
 
-The target audience of doc added in this patch is folks working on BPF
-internals, as there's focus on "what should the verifier do here". Via
-reorganization or copy-and-paste, much of the content can probably be
-repurposed for BPF program writer audience as well.
+This chunk is a potential fix. But the patch overall is a mix of
+potential fixes + debug code.
+I can't reproduce locally, so I'm trying a bunch of potential fixes +
+adding more debugging in case it doesn't help.
 
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
- Documentation/bpf/graph_ds_impl.rst | 228 ++++++++++++++++++++++++++++
- Documentation/bpf/other.rst         |   3 +-
- 2 files changed, 230 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/bpf/graph_ds_impl.rst
+> >                 .bind_flags = XDP_COPY,
+> >         };
+> >         const struct xsk_umem_config umem_config = {
+> > -               .fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > +               .fill_size = UMEM_NUM / 2,
+> >                 .comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
+> >                 .frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
+> >                 .flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG,
+> > @@ -88,13 +88,24 @@ static int open_xsk(int ifindex, struct xsk *xsk)
+> >         if (!ASSERT_OK(ret, "xsk_socket__create"))
+> >                 return ret;
+> >
+> > +       printf("%p: umem=<%p..%p>\n", xsk, xsk->umem_area, xsk->umem_area + UMEM_SIZE);
+> > +       printf("%p: fill=<%p..%p>\n", xsk, xsk->fill.ring,
+> > +              xsk->fill.ring + xsk->fill.size * sizeof(__u64));
+> > +       printf("%p: comp=<%p..%p>\n", xsk, xsk->comp.ring,
+> > +              xsk->comp.ring + xsk->comp.size * sizeof(__u64));
+> > +       printf("%p: rx=<%p..%p>\n", xsk, xsk->rx.ring,
+> > +              xsk->rx.ring + xsk->rx.size * sizeof(struct xdp_desc));
+> > +       printf("%p: tx=<%p..%p>\n", xsk, xsk->tx.ring,
+> > +              xsk->tx.ring + xsk->tx.size * sizeof(struct xdp_desc));
+> > +
+>
+> This is fine as debug.
 
-diff --git a/Documentation/bpf/graph_ds_impl.rst b/Documentation/bpf/grap=
-h_ds_impl.rst
-new file mode 100644
-index 000000000000..7a1fddb9b91f
---- /dev/null
-+++ b/Documentation/bpf/graph_ds_impl.rst
-@@ -0,0 +1,228 @@
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-+BPF Graph Data Structures
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-+
-+This document describes implementation details of new-style "graph" data
-+structures (linked_list, rbtree), with particular focus on the verifier'=
-s
-+implementation of semantics specific to those data structures.
-+
-+Although no specific verifier code is referred to in this document, the =
-document
-+assumes that the reader has general knowledge of BPF verifier internals,=
- BPF
-+maps, and BPF program writing.
-+
-+Note that the intent of this document is to describe the current state o=
-f
-+these graph data structures. **No guarantees** of stability for either
-+semantics or APIs are made or implied here.
-+
-+.. contents::
-+    :local:
-+    :depth: 2
-+
-+Introduction
-+------------
-+
-+The BPF map API has historically been the main way to expose data struct=
-ures
-+of various types for use within BPF programs. Some data structures fit n=
-aturally
-+with the map API (HASH, ARRAY), others less so. Consequentially, program=
-s
-+interacting with the latter group of data structures can be hard to pars=
-e
-+for kernel programmers without previous BPF experience.
-+
-+Luckily, some restrictions which necessitated the use of BPF map semanti=
-cs are
-+no longer relevant. With the introduction of kfuncs, kptrs, and the any-=
-context
-+BPF allocator, it is now possible to implement BPF data structures whose=
- API
-+and semantics more closely match those exposed to the rest of the kernel=
-.
-+
-+Two such data structures - linked_list and rbtree - have many verificati=
-on
-+details in common. Because both have "root"s ("head" for linked_list) an=
-d
-+"node"s, the verifier code and this document refer to common functionali=
-ty
-+as "graph_api", "graph_root", "graph_node", etc.
-+
-+Unless otherwise stated, examples and semantics below apply to both grap=
-h data
-+structures.
-+
-+Non-owning references
-+---------------------
-+
-+**Motivation**
-+
-+Consider the following BPF code:
-+
-+.. code-block:: c
-+
-+        struct node_data *n =3D bpf_obj_new(typeof(*n)); /* BEFORE */
-+
-+        bpf_spin_lock(&lock);
-+
-+        bpf_rbtree_add(&tree, n); /* AFTER */
-+
-+        bpf_spin_unlock(&lock);
-+
-+From the verifier's perspective, the pointer ``n`` returned from ``bpf_o=
-bj_new``
-+has type ``PTR_TO_BTF_ID | MEM_ALLOC``, with a ``btf_id`` of
-+``struct node_data`` and a nonzero ``ref_obj_id``. Because it holds ``n`=
-`, the
-+program has ownership of the pointee's (object pointed to by ``n``) life=
-time.
-+The BPF program must pass off ownership before exiting - either via
-+``bpf_obj_drop``, which ``free``'s the object, or by adding it to ``tree=
-`` with
-+``bpf_rbtree_add``.
-+
-+(``BEFORE`` and ``AFTER`` comments in the example denote beginning of "b=
-efore
-+ownership is passed" and "after ownership is passed")
-+
-+What should the verifier do with ``n`` after ownership is passed off? If=
- the
-+object was ``free``'d with ``bpf_obj_drop`` the answer is obvious: the v=
-erifier
-+should reject programs which attempt to access ``n`` after ``bpf_obj_dro=
-p`` as
-+the object is no longer valid. The underlying memory may have been reuse=
-d for
-+some other allocation, unmapped, etc.
-+
-+When ownership is passed to ``tree`` via ``bpf_rbtree_add`` the answer i=
-s less
-+obvious. The verifier could enforce the same semantics as for ``bpf_obj_=
-drop``,
-+but that would result in programs with useful, common coding patterns be=
-ing
-+rejected, e.g.:
-+
-+.. code-block:: c
-+
-+        int x;
-+        struct node_data *n =3D bpf_obj_new(typeof(*n)); /* BEFORE */
-+
-+        bpf_spin_lock(&lock);
-+
-+        bpf_rbtree_add(&tree, n); /* AFTER */
-+        x =3D n->data;
-+        n->data =3D 42;
-+
-+        bpf_spin_unlock(&lock);
-+
-+Both the read from and write to ``n->data`` would be rejected. The verif=
-ier
-+can do better, though, by taking advantage of two details:
-+
-+  * Graph data structure APIs can only be used when the ``bpf_spin_lock`=
-`
-+    associated with the graph root is held
-+
-+  * Both graph data structures have pointer stability
-+
-+     * Because graph nodes are allocated with ``bpf_obj_new`` and
-+       adding / removing from the root involves fiddling with the
-+       ``bpf_{list,rb}_node`` field of the node struct, a graph node wil=
-l
-+       remain at the same address after either operation.
-+
-+Because the associated ``bpf_spin_lock`` must be held by any program add=
-ing
-+or removing, if we're in the critical section bounded by that lock, we k=
-now
-+that no other program can add or remove until the end of the critical se=
-ction.
-+This combined with pointer stability means that, until the critical sect=
-ion
-+ends, we can safely access the graph node through ``n`` even after it wa=
-s used
-+to pass ownership.
-+
-+The verifier considers such a reference a *non-owning reference*. The re=
-f
-+returned by ``bpf_obj_new`` is accordingly considered an *owning referen=
-ce*.
-+Both terms currently only have meaning in the context of graph nodes and=
- API.
-+
-+**Details**
-+
-+Let's enumerate the properties of both types of references.
-+
-+*owning reference*
-+
-+  * This reference controls the lifetime of the pointee
-+
-+  * Ownership of pointee must be 'released' by passing it to some graph =
-API
-+    kfunc, or via ``bpf_obj_drop``, which ``free``'s the pointee
-+
-+    * If not released before program ends, verifier considers program in=
-valid
-+
-+  * Access to the pointee's memory will not page fault
-+
-+*non-owning reference*
-+
-+  * This reference does not own the pointee
-+
-+     * It cannot be used to add the graph node to a graph root, nor ``fr=
-ee``'d via
-+       ``bpf_obj_drop``
-+
-+  * No explicit control of lifetime, but can infer valid lifetime based =
-on
-+    non-owning ref existence (see explanation below)
-+
-+  * Access to the pointee's memory will not page fault
-+
-+From verifier's perspective non-owning references can only exist
-+between spin_lock and spin_unlock. Why? After spin_unlock another progra=
-m
-+can do arbitrary operations on the data structure like removing and ``fr=
-ee``-ing
-+via bpf_obj_drop. A non-owning ref to some chunk of memory that was remo=
-ve'd,
-+``free``'d, and reused via bpf_obj_new would point to an entirely differ=
-ent thing.
-+Or the memory could go away.
-+
-+To prevent this logic violation all non-owning references are invalidate=
-d by the
-+verifier after a critical section ends. This is necessary to ensure the =
-"will
-+not page fault" property of non-owning references. So if the verifier ha=
-sn't
-+invalidated a non-owning ref, accessing it will not page fault.
-+
-+Currently ``bpf_obj_drop`` is not allowed in the critical section, so
-+if there's a valid non-owning ref, we must be in a critical section, and=
- can
-+conclude that the ref's memory hasn't been dropped-and- ``free``'d or
-+dropped-and-reused.
-+
-+Any reference to a node that is in an rbtree _must_ be non-owning, since
-+the tree has control of the pointee's lifetime. Similarly, any ref to a =
-node
-+that isn't in rbtree _must_ be owning. This results in a nice property:
-+graph API add / remove implementations don't need to check if a node
-+has already been added (or already removed), as the verifier type system
-+prevents such a state from being valid.
-+
-+However, pointer aliasing poses an issue for the above "nice property".
-+Consider the following example:
-+
-+.. code-block:: c
-+
-+        struct node_data *n, *m, *o, *p;
-+        n =3D bpf_obj_new(typeof(*n));     /* 1 */
-+
-+        bpf_spin_lock(&lock);
-+
-+        bpf_rbtree_add(&tree, n);        /* 2 */
-+        m =3D bpf_rbtree_first(&tree);     /* 3 */
-+
-+        o =3D bpf_rbtree_remove(&tree, n); /* 4 */
-+        p =3D bpf_rbtree_remove(&tree, m); /* 5 */
-+
-+        bpf_spin_unlock(&lock);
-+
-+        bpf_obj_drop(o);
-+        bpf_obj_drop(p); /* 6 */
-+
-+Assume the tree is empty before this program runs. If we track verifier =
-state
-+changes here using numbers in above comments:
-+
-+  1) n is an owning reference
-+
-+  2) n is a non-owning reference, it's been added to the tree
-+
-+  3) n and m are non-owning references, they both point to the same node
-+
-+  4) o is an owning reference, n and m non-owning, all point to same nod=
-e
-+
-+  5) o and p are owning, n and m non-owning, all point to the same node
-+
-+  6) a double-free has occurred, since o and p point to same node and o =
-was
-+     ``free``'d in previous statement
-+
-+States 4 and 5 violate our "nice property", as there are non-owning refs=
- to
-+a node which is not in an rbtree. Statement 5 will try to remove a node =
-which
-+has already been removed as a result of this violation. State 6 is a dan=
-gerous
-+double-free.
-+
-+At a minimum we should prevent state 6 from being possible. If we can't =
-also
-+prevent state 5 then we must abandon our "nice property" and check wheth=
-er a
-+node has already been removed at runtime.
-+
-+We prevent both by generalizing the "invalidate non-owning references" b=
-ehavior
-+of ``bpf_spin_unlock`` and doing similar invalidation after
-+``bpf_rbtree_remove``. The logic here being that any graph API kfunc whi=
-ch:
-+
-+  * takes an arbitrary node argument
-+
-+  * removes it from the datastructure
-+
-+  * returns an owning reference to the removed node
-+
-+May result in a state where some other non-owning reference points to th=
-e same
-+node. So ``remove``-type kfuncs must be considered a non-owning referenc=
-e
-+invalidation point as well.
-diff --git a/Documentation/bpf/other.rst b/Documentation/bpf/other.rst
-index 3d61963403b4..7e6b12018802 100644
---- a/Documentation/bpf/other.rst
-+++ b/Documentation/bpf/other.rst
-@@ -6,4 +6,5 @@ Other
-    :maxdepth: 1
-=20
-    ringbuf
--   llvm_reloc
-\ No newline at end of file
-+   llvm_reloc
-+   graph_ds_impl
---=20
-2.30.2
+Right. It should also be irrelevant for when the test passes since we
+are writing this to /dev/null.
 
+> >         /* First half of umem is for TX. This way address matches 1-to-1
+> >          * to the completion queue index.
+> >          */
+> >
+> >         for (i = 0; i < UMEM_NUM / 2; i++) {
+> >                 addr = i * UMEM_FRAME_SIZE;
+> > -               printf("%p: tx_desc[%d] -> %lx\n", xsk, i, addr);
+> > +               printf("%p: tx_desc[%d] -> %lx (%p)\n", xsk, i, addr,
+> > +                      xsk_umem__get_data(xsk->umem_area, addr));
+> >         }
+> >
+> >         /* Second half of umem is for RX. */
+> > @@ -107,7 +118,10 @@ static int open_xsk(int ifindex, struct xsk *xsk)
+> >
+> >         for (i = 0; i < UMEM_NUM / 2; i++) {
+> >                 addr = (UMEM_NUM / 2 + i) * UMEM_FRAME_SIZE;
+> > -               printf("%p: rx_desc[%d] -> %lx\n", xsk, i, addr);
+> > +               printf("%p: rx_desc[%d] -> %lx (%p)\n", xsk, i, addr,
+> > +                      xsk_umem__get_data(xsk->umem_area, addr));
+> > +               printf("%p: fill %lx at %p\n", xsk, addr,
+> > +                      xsk_ring_prod__fill_addr(&xsk->fill, i));
+> >                 *xsk_ring_prod__fill_addr(&xsk->fill, i) = addr;
+> >         }
+> >         xsk_ring_prod__submit(&xsk->fill, ret);
+> > @@ -159,6 +173,7 @@ static int generate_packet(struct xsk *xsk, __u16 dst_port)
+> >         tx_desc->addr = idx % (UMEM_NUM / 2) * UMEM_FRAME_SIZE;
+> >         printf("%p: tx_desc[%u]->addr=%llx\n", xsk, idx, tx_desc->addr);
+> >         data = xsk_umem__get_data(xsk->umem_area, tx_desc->addr);
+> > +       printf("%p: tx %llx (%p) at %p\n", xsk, tx_desc->addr, data, tx_desc);
+> >
+> >         eth = data;
+> >         iph = (void *)(eth + 1);
+> > @@ -205,9 +220,8 @@ static void complete_tx(struct xsk *xsk)
+> >         if (ASSERT_EQ(xsk_ring_cons__peek(&xsk->comp, 1, &idx), 1, "xsk_ring_cons__peek")) {
+> >                 addr = *xsk_ring_cons__comp_addr(&xsk->comp, idx);
+> >
+> > -               printf("%p: refill idx=%u addr=%llx\n", xsk, idx, addr);
+> > -               *xsk_ring_prod__fill_addr(&xsk->fill, idx) = addr;
+> > -               xsk_ring_prod__submit(&xsk->fill, 1);
+> > +               printf("%p: complete tx idx=%u addr=%llx\n", xsk, idx, addr);
+> > +               xsk_ring_cons__release(&xsk->comp, 1);
+>
+> What does this do?
+
+I was incorrectly refilling 'fill' ring on tx completion. Changing it
+to "consume" the completion
+(xsk_ring_cons__peek+xsk_ring_cons__release).
+
+> >         }
+> >  }
+> >
+> > @@ -216,7 +230,9 @@ static void refill_rx(struct xsk *xsk, __u64 addr)
+> >         __u32 idx;
+> >
+> >         if (ASSERT_EQ(xsk_ring_prod__reserve(&xsk->fill, 1, &idx), 1, "xsk_ring_prod__reserve")) {
+> > -               printf("%p: complete idx=%u addr=%llx\n", xsk, idx, addr);
+> > +               printf("%p: complete rx idx=%u addr=%llx\n", xsk, idx, addr);
+> > +               printf("%p: fill %llx at %p\n", xsk, addr,
+> > +                      xsk_ring_prod__fill_addr(&xsk->fill, idx));
+> >                 *xsk_ring_prod__fill_addr(&xsk->fill, idx) = addr;
+> >                 xsk_ring_prod__submit(&xsk->fill, 1);
+> >         }
+> > @@ -253,8 +269,8 @@ static int verify_xsk_metadata(struct xsk *xsk)
+> >         rx_desc = xsk_ring_cons__rx_desc(&xsk->rx, idx);
+> >         comp_addr = xsk_umem__extract_addr(rx_desc->addr);
+> >         addr = xsk_umem__add_offset_to_addr(rx_desc->addr);
+> > -       printf("%p: rx_desc[%u]->addr=%llx addr=%llx comp_addr=%llx\n",
+> > -              xsk, idx, rx_desc->addr, addr, comp_addr);
+> > +       printf("%p: rx_desc[%u]->addr=%llx (%p) addr=%llx comp_addr=%llx\n",
+> > +              xsk, idx, rx_desc->addr, rx_desc, addr, comp_addr);
+> >         data = xsk_umem__get_data(xsk->umem_area, addr);
+> >
+> >         /* Make sure we got the packet offset correctly. */
+> > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > index 3823b1c499cc..6d715f85ea20 100644
+> > --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > @@ -59,11 +59,11 @@ static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
+> >         int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
+> >         const struct xsk_socket_config socket_config = {
+> >                 .rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > -               .tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > +               .tx_size = UMEM_NUM / 2,
+> >                 .bind_flags = XDP_COPY,
+> >         };
+> >         const struct xsk_umem_config umem_config = {
+> > -               .fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > +               .fill_size = UMEM_NUM / 2,
+> >                 .comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
+> >                 .frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
+> >                 .flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG,
+> > --
+> > 2.39.1.456.gfc5497dd1b-goog
+> >
