@@ -2,71 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3596682E10
-	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 14:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FD6682E11
+	for <lists+bpf@lfdr.de>; Tue, 31 Jan 2023 14:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbjAaNfc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Jan 2023 08:35:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
+        id S231585AbjAaNfm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Jan 2023 08:35:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbjAaNf2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Jan 2023 08:35:28 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A912F51435
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 05:35:19 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id lu11so4316587ejb.3
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 05:35:19 -0800 (PST)
+        with ESMTP id S230315AbjAaNfl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Jan 2023 08:35:41 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22C0518D2
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 05:35:28 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id d4-20020a05600c3ac400b003db1de2aef0so10614394wms.2
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 05:35:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KziYAxnITBAIUX9mnX7VfzMAfUqlVfdg/F+svcVxvug=;
-        b=F5hmspb71e5z8+07UPFe1D8OA0mdF784j7ktzgZUYADKpP2i42eW/QOxCcR1oGhjb5
-         ofL777MH7UHhEemvCkARRKS/8pRsl8xTxSkD1du8X2lTbSWg9Y5ifUB6ewshW0+lBN8+
-         +Wb77YKJu9+2NJZN4Z+yWCLX9V+Tsw5Uc+ME3EaStabD/Uf5TGGkiFiHaNJNd1kZGQRh
-         EK+nTzlwylzIyPV85l3V1n05bLcxWo9vMWvOkTiE2BzVfe0M/CjRZarjmIXbgPTnFbrw
-         Wq5DmkfLXz2yQe0SsXBOxgzSiR6HOyp8SoJxBcZatPVWyraJnqJx5orDgkirMJfifkWy
-         kfKw==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qDF+o3k2lJZlIrv8XUH1iJH9CWOTdLmGNVORSGPoZs4=;
+        b=BeWlU69E6iXrJqK7tEiG0z8036kBjeueg0K+phv9j9GUnu6Qk+4lM2GAJkG0fNa3Pl
+         eJNvmV6BoR857Pf8G1Wci69RTtEfjYDroBfbMYuy8xrSPLaMGcqhnDMAw9yinJ6Ssi4c
+         xlNC5CiI0Y1m62uj1RF4o0h6AfsZUzVBBnH+vDWfJyP76S/Pn6T+j9LyGJF+pBaDGnje
+         Sumj0frv0S7+svBpmCvTv7xvAgDSiPMU6Gw6LSk97wzjIZ2QAub0jXDrVlIk3m6nL5sB
+         4xM37ZG0zBcG9O8z2wRS8fM4e0W1X8tLDzA38ViAZ93XMK7fUCj0mQ8uTAIlSDKD4mIA
+         fJWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KziYAxnITBAIUX9mnX7VfzMAfUqlVfdg/F+svcVxvug=;
-        b=WKiVMmJCyWen0ruhKFojpsZKuD+SHTxxldNWGPwVXJFTDtJiBoQFEWSwK5sWjYjsea
-         +kIfaxPj3bbhgM3zbyc1yKBXLhhfJdwhdHFZ7qEFG4ibA+dwu3WoHlpTtT8cN6kDjolz
-         8NSuGb067wM6+JWRk7IRBjZBzfzT83d/tOEEjrsO63BWx3pbaQ3Hsy6g0uOaa0ODM+OF
-         IR9bEhBv+WH+3s0R75KsZlRVJ2+mdK1zvXzUur5an/dAasOiHj92ANacIqfD+PV+s4vQ
-         TlfsOn+BERSUMdujhWKUp/r7E5mH+8BoyKchBL6MsJb1TbPHNyWxSITmhc7ifN248o//
-         uScQ==
-X-Gm-Message-State: AO0yUKXm8tI1VHVqgchBAineauxUpRdJb1e72JwD+suZ1C6N89slqrDm
-        qxUxezmY96MiKrRQ38n0+pqwTg==
-X-Google-Smtp-Source: AK7set8l1H5c8TIJa+RqFs7XxaWeMaOuTjMrgzjOHDm2x0Ae29ud7wO2GaOQvYwUzAB/zLVhoXc3xg==
-X-Received: by 2002:a17:906:ce2c:b0:7c1:4d35:a143 with SMTP id sd12-20020a170906ce2c00b007c14d35a143mr2948392ejb.3.1675172118219;
-        Tue, 31 Jan 2023 05:35:18 -0800 (PST)
-Received: from lavr ([2a02:168:f656:0:fa3:6e35:7858:23ee])
-        by smtp.gmail.com with ESMTPSA id i4-20020a170906264400b0084d35ffbc20sm8433417ejc.68.2023.01.31.05.35.17
+        bh=qDF+o3k2lJZlIrv8XUH1iJH9CWOTdLmGNVORSGPoZs4=;
+        b=OMDdfQ/+K8LR03gIAhHfozwtWK46Yd96JXOQjTa7hwzUMJORShPa8eZOUpVVbTyLE/
+         3KIfFdvhjhwr5MWp1TCl/CSFESFpRbqFWFOYfhCXwY+XSy5t9XlTMkTYQ8hG2fmpplKP
+         eaQYiwZ414OUWjlIq4erZPhZx3rr1IdXKBWnuInZ/U7QyOCh0vkYr9E5TR3IGdiK6DGu
+         fkIbavkyHmLyaJjhzCzWgoegsq+uZIrqP0e1KDiWRF5oc5tpJC3ojHDPeeLJEXVwaKm0
+         jA+oMXUoY4Uax6tu6E9OqAg9uJ/6KlAAqfiUUBzCExksajs0w4FI/7Ddt6ptlqz1KKUH
+         EIGw==
+X-Gm-Message-State: AFqh2krvn675TGXZLpfWW8x6V0iLUqeHqwmv1FCmAr6a7sRGa2I6B3Xr
+        oLS96y08acbVvMDCYY7gIX8=
+X-Google-Smtp-Source: AMrXdXudW0t3ROrrg3YUuBxpfpzzPPRRd8Kt7Kd1gptVRvyvQWZkT7wl/QNBwPnmfDqmEhECr3SboQ==
+X-Received: by 2002:a05:600c:538c:b0:3cf:6f4d:c259 with SMTP id hg12-20020a05600c538c00b003cf6f4dc259mr53609231wmb.39.1675172127316;
+        Tue, 31 Jan 2023 05:35:27 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id j5-20020a05600c1c0500b003dc4aae4739sm13715499wms.27.2023.01.31.05.35.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Jan 2023 05:35:17 -0800 (PST)
-Date:   Tue, 31 Jan 2023 14:35:16 +0100
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 3/6] selftest/bpf/benchs: enhance argp parsing
-Message-ID: <Y9kZFBJP2FPstZzM@lavr>
-References: <20230127181457.21389-1-aspsk@isovalent.com>
- <20230127181457.21389-4-aspsk@isovalent.com>
- <CAEf4BzYk2sBHsPPF5-dx=jnuaob3WvnTFyWH6DtnwF3T_=JVkg@mail.gmail.com>
+        Tue, 31 Jan 2023 05:35:26 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 31 Jan 2023 14:35:24 +0100
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>, yhs@fb.com,
+        ast@kernel.org, olsajiri@gmail.com, eddyz87@gmail.com,
+        sinquersw@gmail.com, timo@incline.eu, daniel@iogearbox.net,
+        andrii@kernel.org, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
+        martin.lau@kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 dwarves 1/5] dwarves: help dwarf loader spot functions
+ with optimized-out parameters
+Message-ID: <Y9kZHCTir3C5o+PI@krava>
+References: <1675088985-20300-1-git-send-email-alan.maguire@oracle.com>
+ <1675088985-20300-2-git-send-email-alan.maguire@oracle.com>
+ <Y9gOGZ20aSgsYtPP@kernel.org>
+ <Y9gkS6dcXO4HWovW@kernel.org>
+ <Y9gnQSUvJQ6WRx8y@kernel.org>
+ <561b2e18-40b3-e04f-d72e-6007e91fd37c@oracle.com>
+ <Y9hf7cgqt6BHt2dH@kernel.org>
+ <Y9hpD0un8d/b+Hb+@kernel.org>
+ <fe5d42d1-faad-d05e-99ad-1c2c04776950@oracle.com>
+ <F9C1B7E8-7A73-49B2-A2EE-235298D260BA@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYk2sBHsPPF5-dx=jnuaob3WvnTFyWH6DtnwF3T_=JVkg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <F9C1B7E8-7A73-49B2-A2EE-235298D260BA@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,216 +86,130 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 23/01/30 04:07, Andrii Nakryiko wrote:
-> On Fri, Jan 27, 2023 at 10:14 AM Anton Protopopov <aspsk@isovalent.com> wrote:
-> >
-> > To parse command line the bench utility uses the argp_parse() function. This
-> > function takes as an argument a parent 'struct argp' structure which defines
-> > common command line options and an array of children 'struct argp' structures
-> > which defines additional command line options for particular benchmarks. This
-> > implementation doesn't allow benchmarks to share option names, e.g., if two
-> > benchmarks want to use, say, the --option option, then only one of them will
-> > succeed (the first one encountered in the array).  This will be convenient if
-> > we could use the same option names in different benchmarks (with the same
-> > semantics, e.g., --nr_loops=N).
-> >
-> > Fix this by calling the argp_parse() function twice. The first call is needed
-> > to find the benchmark name. Given the name, we can patch the list of argp
-> > children to only include the correct list of option. This way the right parser
-> > will be executed. (If there's no a specific list of arguments, then only one
-> > call is enough.) As was mentioned above, arguments with same names should have
-> > the same semantics (which means in this case "taking a parameter or not"), but
-> > can have different description and will have different parsers.
-> >
-> > As we now can share option names, this also makes sense to share the option ids.
-> > Previously every benchmark defined a separate enum, like
-> >
-> >     enum {
-> >            ARG_SMTH = 9000,
-> >            ARG_SMTH_ELSE = 9001,
-> >     };
-> >
-> > These ids were later used to distinguish between command line options:
-> >
-> >     static const struct argp_option opts[] = {
-> >             { "smth", ARG_SMTH, "SMTH", 0,
-> >                     "Set number of smth to configure smth"},
-> >             { "smth_else", ARG_SMTH_ELSE, "SMTH_ELSE", 0,
-> >                     "Set number of smth_else to configure smth else"},
-> >             ...
-> >
-> > Move arguments id definitions to bench.h such that they are visible to every
-> > benchmark (and such that there's no need to grep if this number is defined
-> > already or not).
+On Tue, Jan 31, 2023 at 09:33:49AM -0300, Arnaldo Carvalho de Melo wrote:
 > 
-> On the other hand, if each benchmark defines their own set of IDs and
-> parser, that keeps benchmarks more self-contained. Is there a real
-> need to centralize everything? I don't see much benefit, tbh.
->
-> If we want to centralize, then we can just bypass all the child parser
-> machinery and have one centralized list of arguments. But I think it's
-> good to have each benchmark self-contained and independent from other
-> benchmarks.
-
-When I was adding a new bench, it looked simpler to just add IDs to a global
-list than to grep for what ID is not defined yet. This doesn't matter much
-though, I can switch back to local IDs.
-
+> 
+> On January 31, 2023 9:14:05 AM GMT-03:00, Alan Maguire <alan.maguire@oracle.com> wrote:
+> >On 31/01/2023 01:04, Arnaldo Carvalho de Melo wrote:
+> >> Em Mon, Jan 30, 2023 at 09:25:17PM -0300, Arnaldo Carvalho de Melo escreveu:
+> >>> Em Mon, Jan 30, 2023 at 10:37:56PM +0000, Alan Maguire escreveu:
+> >>>> On 30/01/2023 20:23, Arnaldo Carvalho de Melo wrote:
+> >>>>> Em Mon, Jan 30, 2023 at 05:10:51PM -0300, Arnaldo Carvalho de Melo escreveu:
+> >>>>>> +++ b/dwarves.h
+> >>>>>> @@ -262,6 +262,7 @@ struct cu {
+> >>>>>>  	uint8_t		 has_addr_info:1;
+> >>>>>>  	uint8_t		 uses_global_strings:1;
+> >>>>>>  	uint8_t		 little_endian:1;
+> >>>>>> +	uint8_t		 nr_register_params;
+> >>>>>>  	uint16_t	 language;
+> >>>>>>  	unsigned long	 nr_inline_expansions;
+> >>>>>>  	size_t		 size_inline_expansions;
+> >>>>>
+> >>>  
+> >>>> Thanks for this, never thought of cross-builds to be honest!
+> >>>
+> >>>> Tested just now on x86_64 and aarch64 at my end, just ran
+> >>>> into one small thing on one system; turns out EM_RISCV isn't
+> >>>> defined if using a very old elf.h; below works around this
+> >>>> (dwarves otherwise builds fine on this system).
+> >>>
+> >>> Ok, will add it and will test with containers for older distros too.
+> >> 
+> >> Its on the 'next' branch, so that it gets tested in the libbpf github
+> >> repo at:
+> >> 
+> >> https://github.com/libbpf/libbpf/actions/workflows/pahole.yml
+> >> 
+> >> It failed yesterday and today due to problems with the installation of
+> >> llvm, probably tomorrow it'll be back working as I saw some
+> >> notifications floating by.
+> >> 
+> >> I added the conditional EM_RISCV definition as well as removed the dup
+> >> iterator that Jiri noticed.
+> >>
 > >
-> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> > ---
-> >  tools/testing/selftests/bpf/bench.c           | 98 +++++++++++++++++--
-> >  tools/testing/selftests/bpf/bench.h           | 20 ++++
-> >  .../bpf/benchs/bench_bloom_filter_map.c       |  6 --
-> >  .../selftests/bpf/benchs/bench_bpf_loop.c     |  4 -
-> >  .../bpf/benchs/bench_local_storage.c          |  5 -
-> >  .../bench_local_storage_rcu_tasks_trace.c     |  6 --
-> >  .../selftests/bpf/benchs/bench_ringbufs.c     |  8 --
-> >  .../selftests/bpf/benchs/bench_strncmp.c      |  4 -
-> >  8 files changed, 110 insertions(+), 41 deletions(-)
+> >Thanks again Arnaldo! I've hit an issue with this series in
+> >BTF encoding of kfuncs; specifically we see some kfuncs missing
+> >from the BTF representation, and as a result:
 > >
+> >WARN: resolve_btfids: unresolved symbol bpf_xdp_metadata_rx_hash
+> >WARN: resolve_btfids: unresolved symbol bpf_task_kptr_get
+> >WARN: resolve_btfids: unresolved symbol bpf_ct_change_status
+> >
+> >Not sure why I didn't notice this previously.
+> >
+> >The problem is the DWARF - and therefore BTF - generated for a function like
+> >
+> >int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash)
+> >{
+> >        return -EOPNOTSUPP;
+> >}
+> >
+> >looks like this:
+> >
+> >   <8af83a2>   DW_AT_external    : 1
+> >    <8af83a2>   DW_AT_name        : (indirect string, offset: 0x358bdc): bpf_xdp_metadata_rx_hash
+> >    <8af83a6>   DW_AT_decl_file   : 5
+> >    <8af83a7>   DW_AT_decl_line   : 737
+> >    <8af83a9>   DW_AT_decl_column : 5
+> >    <8af83aa>   DW_AT_prototyped  : 1
+> >    <8af83aa>   DW_AT_type        : <0x8ad8547>
+> >    <8af83ae>   DW_AT_sibling     : <0x8af83cd>
+> > <2><8af83b2>: Abbrev Number: 38 (DW_TAG_formal_parameter)
+> >    <8af83b3>   DW_AT_name        : ctx
+> >    <8af83b7>   DW_AT_decl_file   : 5
+> >    <8af83b8>   DW_AT_decl_line   : 737
+> >    <8af83ba>   DW_AT_decl_column : 51
+> >    <8af83bb>   DW_AT_type        : <0x8af421d>
+> > <2><8af83bf>: Abbrev Number: 35 (DW_TAG_formal_parameter)
+> >    <8af83c0>   DW_AT_name        : (indirect string, offset: 0x27f6a2): hash
+> >    <8af83c4>   DW_AT_decl_file   : 5
+> >    <8af83c5>   DW_AT_decl_line   : 737
+> >    <8af83c7>   DW_AT_decl_column : 61
+> >    <8af83c8>   DW_AT_type        : <0x8adc424>
+> >
+> >...and because there are no further abstract origin references
+> >with location information either, we classify it as lacking 
+> >locations for (some of) the parameters, and as a result
+> >we skip BTF encoding. We can work around that by doing this:
+> >
+> >__attribute__ ((optimize("O0"))) int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash)
+> >{
+> >	return -EOPNOTSUPP;
+> >}
+> >
+> >Should we #define some kind of "kfunc" prefix equivalent to the
+> >above to handle these cases in include/linux/bpf.h perhaps?
+> >If that makes sense, I'll send bpf-next patches to cover the
+> >set of kfuncs.
 > 
-> [...]
-> 
-> > +struct argp *bench_name_to_argp(const char *bench_name)
-> > +{
-> > +
-> > +#define _SCMP(NAME) (!strcmp(bench_name, NAME))
-> > +
-> > +       if (_SCMP("bloom-lookup") ||
-> > +           _SCMP("bloom-update") ||
-> > +           _SCMP("bloom-false-positive") ||
-> > +           _SCMP("hashmap-without-bloom") ||
-> > +           _SCMP("hashmap-with-bloom"))
-> > +               return &bench_bloom_map_argp;
-> > +
-> > +       if (_SCMP("rb-libbpf") ||
-> > +           _SCMP("rb-custom") ||
-> > +           _SCMP("pb-libbpf") ||
-> > +           _SCMP("pb-custom"))
-> > +               return &bench_ringbufs_argp;
-> > +
-> > +       if (_SCMP("local-storage-cache-seq-get") ||
-> > +           _SCMP("local-storage-cache-int-get") ||
-> > +           _SCMP("local-storage-cache-hashmap-control"))
-> > +               return &bench_local_storage_argp;
-> > +
-> > +       if (_SCMP("local-storage-tasks-trace"))
-> > +               return &bench_local_storage_rcu_tasks_trace_argp;
-> > +
-> > +       if (_SCMP("strncmp-no-helper") ||
-> > +           _SCMP("strncmp-helper"))
-> > +               return &bench_strncmp_argp;
-> > +
-> > +       if (_SCMP("bpf-loop"))
-> > +               return &bench_bpf_loop_argp;
-> > +
-> > +       /* no extra arguments */
-> > +       if (_SCMP("count-global") ||
-> > +           _SCMP("count-local") ||
-> > +           _SCMP("rename-base") ||
-> > +           _SCMP("rename-kprobe") ||
-> > +           _SCMP("rename-kretprobe") ||
-> > +           _SCMP("rename-rawtp") ||
-> > +           _SCMP("rename-fentry") ||
-> > +           _SCMP("rename-fexit") ||
-> > +           _SCMP("trig-base") ||
-> > +           _SCMP("trig-tp") ||
-> > +           _SCMP("trig-rawtp") ||
-> > +           _SCMP("trig-kprobe") ||
-> > +           _SCMP("trig-fentry") ||
-> > +           _SCMP("trig-fentry-sleep") ||
-> > +           _SCMP("trig-fmodret") ||
-> > +           _SCMP("trig-uprobe-base") ||
-> > +           _SCMP("trig-uprobe-with-nop") ||
-> > +           _SCMP("trig-uretprobe-with-nop") ||
-> > +           _SCMP("trig-uprobe-without-nop") ||
-> > +           _SCMP("trig-uretprobe-without-nop") ||
-> > +           _SCMP("bpf-hashmap-full-update"))
-> > +               return NULL;
-> > +
-> > +#undef _SCMP
-> > +
-> 
-> it's not good to have to maintain a separate list of benchmark names
-> here. Let's maybe extend struct bench to specify extra parser and use
-> that to figure out if we need to run nested child parser?
+> Jiri?
 
-Yes, right, so then I can do something like
+hum I wonder what's the point of the kfunc if it returns -EOPNOTSUPP,
+at least I can't see any other version of it.. maybe some temporary
+stuff like for bpf_task_kptr_get
 
-struct argp *bench_name_to_argp(const char *bench_name)
-{
-        int i;
+but I think it's good idea to make sure it does not get optimized out,
+so some kfunc macro seems like good idea.. or maybe we could use
+also declaration tag for kfuncs
 
-        for (i = 0; i < ARRAY_SIZE(benchs); i++)
-                if (!strcmp(bench_name, benchs[i]->name))
-                        return benchs[i]->argp;
+David already send some patchset for BPF_KFUNC macro, could be part of
+that
 
-        fprintf(stderr, "benchmark '%s' not found\n", bench_name);
-        exit(1);
-}
+https://lore.kernel.org/bpf/20230123171506.71995-1-void@manifault.com/
+
+jirka
 
 > 
-> > +       fprintf(stderr, "%s: bench %s is unknown\n", __func__, bench_name);
-> > +       exit(1);
-> > +}
-> > +
-> >  static void parse_cmdline_args(int argc, char **argv)
-> >  {
-> >         static const struct argp argp = {
-> > @@ -367,12 +426,35 @@ static void parse_cmdline_args(int argc, char **argv)
-> >                 .doc = argp_program_doc,
-> >                 .children = bench_parsers,
-> >         };
-> > +       static struct argp *bench_argp;
+> >The other thing we might want to do is bump the libbpf version
+> >for dwarves 1.25, what do you think? I've tested with libbpf 1.1
+> >and aside from the above issue all looks good (there's a few dedup
+> >improvements that this version will give us). I can send a patch for
+> >the libbpf update if that makes sense.
 > 
-> nit: do you need static?
-
-No, thanks for noting.
-
 > 
-> > +
-> > +       /* Parse args for the first time to get bench name */
-> >         if (argp_parse(&argp, argc, argv, 0, NULL, NULL))
-> >                 exit(1);
-> > -       if (!env.list && !env.bench_name) {
-
-Also, I will switch to a simpler mode here: just find the bench_name, then
-construct correct `struct argp`, then call argp_parse() once.
-
-> > +
-> > +       if (env.list)
-> > +               return;
-> > +
-> > +       if (!env.bench_name) {
-> >                 argp_help(&argp, stderr, ARGP_HELP_DOC, "bench");
-> >                 exit(1);
-> >         }
-> > +
-> > +       /* Now check if there are custom options available. If not, then
-> > +        * everything is done, if yes, then we need to patch bench_parsers
-> > +        * so that bench_parsers[0] points to the right 'struct argp', and
-> > +        * bench_parsers[1] terminates the list.
-> > +        */
-> > +       bench_argp = bench_name_to_argp(env.bench_name);
-> > +       if (bench_argp) {
-> > +               bench_parsers[0].argp = bench_argp;
-> > +               bench_parsers[0].header = env.bench_name;
-> > +               memset(&bench_parsers[1], 0, sizeof(bench_parsers[1]));
-> > +
-> > +               pos_args = 0;
-> > +               if (argp_parse(&argp, argc, argv, 0, NULL, NULL))
-> > +                       exit(1);
-> > +       }
+> Please send it, then we give it some more days of wider testing,
 > 
-> this also feels like a big hack, why can't you just construct a
-> single-item array based on child parser, instead of overwriting global
-> array?
-
-Sure, thanks.
-
-> >  }
-> >
-> >  static void collect_measurements(long delta_ns);
+> Yonghong, Andrii, comments on updating libbpf in the pahole submodule?
 > 
-> [...]
+> - Arnaldo
