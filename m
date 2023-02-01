@@ -2,180 +2,325 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E2B686980
-	for <lists+bpf@lfdr.de>; Wed,  1 Feb 2023 16:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BCA68698D
+	for <lists+bpf@lfdr.de>; Wed,  1 Feb 2023 16:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbjBAPDt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Feb 2023 10:03:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
+        id S232705AbjBAPGR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Feb 2023 10:06:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232816AbjBAPD0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Feb 2023 10:03:26 -0500
-Received: from BN3PR00CU001-vft-obe.outbound.protection.outlook.com (mail-eastus2azon11020021.outbound.protection.outlook.com [52.101.56.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AFC721F8;
-        Wed,  1 Feb 2023 07:01:04 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CrO4qQZ2w7X6w/SdYSlCW0ilUjtg4akayKq3fPqcbKGkl62LJAb9xl6yUarZ/3KaDAChyJR+hzt6e+y79jjEVADD5WjljBkmDoV8GDHcODzkf8adEVDLU0jYwC/dWxpC46+enykxXuhSy2Ef6Zvt3VnPZDoe1UcNlZlBDciMJVvu/CZdjbpGIgVZnd7FJCTiNIgOpXohmF95dScYVxoOquttt1kxgKRsi7h6DnxmnoDlNi9xTc07IlU56re69ddkOkKysxzJSKorUWIgb+nI/xBhNjnKqXDPAQl5C4Qn1IfPcn30REsfI+7tTZeF8W7C7fAoVcK9ghAy7zLms+x0xA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TIrmxenUitYAtC7Z+5fCF6GxECQVFvyCVI7diy8v4A0=;
- b=cbbQYTUQ5haLeoYOz+BT0I8TY/LEZ2imyYOHULWtAF9t69SJdQu1CXZPEODLGw7Hm6tukEcOMzckytlLYJQCPnmJpFoq9lsfbmOre34NDr9tgogDkSakSnNe0lhZLY01MEFwCzTyMzV3n33AJFAL4ieEDHouVB3RuAFdBuL4neg/tXhwwOswYRpQ3Q9hxGFRtWVmodIasqKvLNah81NFUygOo1j/TrVsoUYp9iAPIf0KR3g0DEA4mH9Hpgriqa29dSsdSRbXdQH2zNosIM0LkKgfTwC4CBd52XFgynOZPekQ9DUIQjKdjXBqUDyt1zAYap9D7sf69iCwaNKv9zeAUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TIrmxenUitYAtC7Z+5fCF6GxECQVFvyCVI7diy8v4A0=;
- b=S3wk1o6K3d4TORmHKnvgC8qlw8+6o78g5e0vAFBVIuPoZXfLXjY6fi3QwyrX4jCBt2ZCyIitXDLNLMDattwKHl7QgoPqs8ZbgsVVpbUOJzNPOKGVZCJr+RKnqWI/GHJtQVsAm99Dkex2NZ1kvZm/M+PPVzsxZ02OIQGKn1lX3v8=
-Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
- by CY8PR21MB3802.namprd21.prod.outlook.com (2603:10b6:930:50::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.6; Wed, 1 Feb
- 2023 14:59:52 +0000
-Received: from PH7PR21MB3878.namprd21.prod.outlook.com
- ([fe80::7d5f:74de:b40e:903c]) by PH7PR21MB3878.namprd21.prod.outlook.com
- ([fe80::7d5f:74de:b40e:903c%6]) with mapi id 15.20.6086.005; Wed, 1 Feb 2023
- 14:59:52 +0000
-From:   Dave Thaler <dthaler@microsoft.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        with ESMTP id S232712AbjBAPF7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Feb 2023 10:05:59 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5EC71665
+        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 07:03:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D2142B8217D
+        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 15:02:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C4FC433EF;
+        Wed,  1 Feb 2023 15:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675263731;
+        bh=TleCHcG8D8+ihjCW/QjgncY+yHvemYzCreFTPumJhB4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KvHGhAn1hFcaIazkk0XA7QdK00dDBFk8IVpWX0LR31oMelvBmmW7vsZdhwbQozGOm
+         chn8uHc59jh3jInmc0nccGT3RU1ogNkJpGQGkSv4Hpz2FpBG9a+lS2Bi56Lo0E1ZZn
+         28SvsnGT8YLGCF4VJpuLbE+/O2C0smbjBgpjSyVAIiFcMo9TxF/izBb1IFeQ418Wkx
+         ogf3VSQSN0KPUHeiLyAM/GyjDRnCWwWYBn+f7vzGlSDXTjxabwxykD4XK5FEekvWgv
+         niXl9ZE1xBfj1Rmh+FZ6Hrai5M8jCd/iE9C3o3l1AQak0Ci4nGnuFisB4VSCqk97Lm
+         fjfTtkuri0sTA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E4506405BE; Wed,  1 Feb 2023 12:02:07 -0300 (-03)
+Date:   Wed, 1 Feb 2023 12:02:07 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     David Vernet <void@manifault.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <olsajiri@gmail.com>, Eddy Z <eddyz87@gmail.com>,
+        sinquersw@gmail.com, Timo Beckers <timo@incline.eu>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@ietf.org" <bpf@ietf.org>
-Subject: RE: [PATCH bpf-next 1/4] bpf: Add new macro BPF_ALU32 and BPF_JMP64
-Thread-Topic: [PATCH bpf-next 1/4] bpf: Add new macro BPF_ALU32 and BPF_JMP64
-Thread-Index: AQHZNjnh+WCGLzafvka+VYSixdj+fa66LtGg
-Date:   Wed, 1 Feb 2023 14:59:52 +0000
-Message-ID: <PH7PR21MB3878AF6D5523240CA579D0E4A3D19@PH7PR21MB3878.namprd21.prod.outlook.com>
-References: <1675254998-4951-1-git-send-email-yangtiezhu@loongson.cn>
- <1675254998-4951-2-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1675254998-4951-2-git-send-email-yangtiezhu@loongson.cn>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=945e3cce-7cce-439b-aa09-98cfb3b5336c;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-02-01T14:58:25Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|CY8PR21MB3802:EE_
-x-ms-office365-filtering-correlation-id: f3ab6beb-82ee-41ee-f50c-08db0464f8e1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HVtdz0bF99vDWWkuxq2mv0gSTp6YpHFriUoCInZHC+Flyigl1HpTgPtzDRYQbcWutp9Ge66Y5iUXm+oQdzhBxGXSQhKDYwZhxvXw2KciVGbERLaE9iBtItmrz8TP2ktv2NGe4gmYzaqlVFQHDajrQb+IlzL6sCY2Zdgq8lPVzviyATVcBfEFvFqna37oRubQq+4PdNP9qU2UCdqWDZa8TMH25FHYpg1YxrO9J4EID2+SVAHXKjvPj/W4nWYJAFVBiLQtfilQOC+FzKt2p1gPUcBIutJxIRU1Xc/gMor6zckOh58PjvxckO3lYgLi5ragX4bIuKBW4L1JaXNaDiDvqV04n7e7B5YQyRruUDcSA7sYDWjv9NarTVWj6m2qhBe0XyYWpluj6y+HrklSDO5hBym2GBHUEtSYNib9827T35C+ujg2JKTuq+U7jH3LtdIlxqJfx0/YrOJGMXnxV3lympneowFWva7LxohT1RzuA0e7W7UW3hkiH6kC0W9ifyzcXuhQBY6kjS4RNCGzywWbhiNJR5ZmxFZPqw1tql4ek5d9wiksg2CCtagOhnjKLTam5ADWSeBvtN9PKUbfgIDv1yGiyI6CIKpJ/seaTJG6azfbObdLfeL1P2sHXiIa+XTENoy11UymAUF11b6p7KKm/gaW1Ae7KmJ6h2OjAbNQjZcarJ4/jponnhfzIYvxxet17mgVa0ZgcnqFWkhkhEiKTvZu2E7aDUWF3B0fRURsrbYjq+xerY4h75NH1q/Edr1p
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3878.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(376002)(136003)(396003)(346002)(366004)(451199018)(66574015)(9686003)(83380400001)(8990500004)(2906002)(186003)(26005)(6506007)(53546011)(82950400001)(38070700005)(10290500003)(8936002)(7696005)(478600001)(71200400001)(66556008)(76116006)(66946007)(122000001)(4326008)(8676002)(66476007)(66446008)(64756008)(82960400001)(38100700002)(41300700001)(52536014)(33656002)(5660300002)(86362001)(55016003)(54906003)(316002)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?22U9PiA0rlbh37EujCZllGTLM9WqdUV2F1yxZiDSPh80rfZi5fZjBnC7mb0U?=
- =?us-ascii?Q?qUhWM6byZVDVVeW9RX0it7lIqUj0YLm8oHMDK8ax7Ti/f0s2UxBWTVYbZ/OO?=
- =?us-ascii?Q?k1QMYv5m1e4oacfRLJORuVreCSqA44+7UlvbzrlWE9Kh0iyptfnwShIT4e86?=
- =?us-ascii?Q?3HUkpLWzZPg8HFDtfiiT0lfrvvzzX8RqeShuGJx5dpdhWebrKdbBrc2Yzz3I?=
- =?us-ascii?Q?tD1jfDKv3ZuPuIadtkDiit/xMPY7muIRFzWUb1XVUZpKWC8/TscNgHCJsp4Z?=
- =?us-ascii?Q?q5WeXP4D4H2IDlOUERpjDzIS/Q6RauLZD4zP12k58L2ku16V4IUXPaFH1oAZ?=
- =?us-ascii?Q?R7/kvYSnOmJ9Q+ql8Yycp7PmL6xS4VmoXDRDAz/lSXPn15gTRDrkyHpwhadg?=
- =?us-ascii?Q?bM/XuVAnYyZr+1Tqq30VbgmfkxNGO03Uaw36oRPh4p3ycqcjqfDjyZoAYgmt?=
- =?us-ascii?Q?EgG97/EYLc8X09Vfs5Woqwj4+dbcIOpSVHXNS4HGZmkWUJjfufcA5bog6+th?=
- =?us-ascii?Q?Lc7UevBvw0wqXSJPdFLT8m9FnFpsQ1KeCPpWE3PMh/Yg1uelExN33eZcPy8/?=
- =?us-ascii?Q?tZe6fLgWXfwL+LXKGIO/bbmL6rZZ0M+GIxafS3GWyH/dTjWtDyoGt0O+DYjJ?=
- =?us-ascii?Q?u8XwBFo/PObzHLXZ2k9TyuOkNnC4laXJ3j1RHQ/B6R0C38Qc99UI/KicN418?=
- =?us-ascii?Q?cAX9JzQOhXQ6QycKcExBzUHNW+TPMRKrkJQ5aMF8ZxMs6XQt2Y6HSY8ELS4A?=
- =?us-ascii?Q?OtL7BXXK5mcJxyEWihUM82iDEUUMAIFg2UFlbphKPz1hYb2DJITKEgRkq1rn?=
- =?us-ascii?Q?zJm3DKpBcEd1vUpOAFGJqjn20biMOIzWQTxOxhmeoefmZdkT/lbGycO6nt+m?=
- =?us-ascii?Q?lB9ZAlNpVPMTMiHuGy1/6b6RA3uwT9AUg6smF/hY9+qFYNVZa991n1gHmH+C?=
- =?us-ascii?Q?R6fMKmNzZM1bJghmc4qbJxfFiY318saOje82mz2NomuLSG8yZ6+XPNau1RSR?=
- =?us-ascii?Q?y16SopIPRcFadTpN1r87W4MHRHXzonyQ6f07QCdLrNR0hGc+Hq/u82SxJ2Rh?=
- =?us-ascii?Q?YWT7y9ONlm+WijWMsUMnB4lcl1LTWRg2UM6+MOXy5nQpA/b0MZ6jj1bbvQbl?=
- =?us-ascii?Q?ZR7OvRNCV+qaqsFXtYBY/gfbmLNAllGNvI7adlXYEGWJWTQeedj9uhZL1LQr?=
- =?us-ascii?Q?x1Te6y3L+pQYQv2ksd9N64Qif3YPdTyemptDRwB2piT8uy0/C4VkGsz3gyGb?=
- =?us-ascii?Q?MtZG7Jt30mJlkuYumG59H9we0EVh3dCISjzO54xBZ3Hu0cO9M2MzUBUapuyC?=
- =?us-ascii?Q?bDyiLUaXIgSae+3cpSsKJJQiUxUn1IPe2q5HalQ4YN9hJKuf9nnYNNOWSHX5?=
- =?us-ascii?Q?l3DrmH/84uCjb9FWTr1xWpdZlxh1/kCbk865CV/NA3Dp+5+DgmtdDvv8Qm+W?=
- =?us-ascii?Q?l57wuzUJZRLITG7m5DlaoV/MiPQd0M4u+RRGSk1asM9CAnzWiFMpoPpBNj8D?=
- =?us-ascii?Q?uyDFgsjUBd/hIHZAkkxUWNG3hXOqj4VRQi4mwjxhf9jDABdnTs3aXzdzV9if?=
- =?us-ascii?Q?5C2VlgfhTp6ry2H3Ds1p3cCJ6JGfhovZDs2C34EAdKvJ02czr7vumRFHyZB6?=
- =?us-ascii?Q?Ig=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 dwarves 1/5] dwarves: help dwarf loader spot functions
+ with optimized-out parameters
+Message-ID: <Y9p+70RzH7QiO2Mw@kernel.org>
+References: <Y9hf7cgqt6BHt2dH@kernel.org>
+ <Y9hpD0un8d/b+Hb+@kernel.org>
+ <fe5d42d1-faad-d05e-99ad-1c2c04776950@oracle.com>
+ <CAADnVQLyFCcO4RowkZVN1kxYsLrTfcmMNOZ9F87av4Y4zfHJsw@mail.gmail.com>
+ <CAADnVQ+5YgYxcEWpyy359_wVF8-xH-5Du2ix4npqdbebyQLsWA@mail.gmail.com>
+ <fac05ba2-8138-cea2-c5b4-d380cc3c6ba6@oracle.com>
+ <Y9mrQkfRFfCNuf+v@maniforge>
+ <CAADnVQ+Bf2b62aAXQ_LG-=ayMAFhYENRghNoFF+Ma0G8oy1QnQ@mail.gmail.com>
+ <Y9nWR7mNGeGCDLYz@maniforge>
+ <9c330c78-e668-fa4c-e0ab-52aa445ccc00@oracle.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3ab6beb-82ee-41ee-f50c-08db0464f8e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2023 14:59:52.1230
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H8U/4+xi2POGPAL7WFk1YG1eVvsj1wmuWjk3Hj6awYghYfck+De0X3zw9VzpMFxfEDdd55IhzXiPo/vj82PBQXHPN+xAlBivELLkwA5oYqU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR21MB3802
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c330c78-e668-fa4c-e0ab-52aa445ccc00@oracle.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Forwarding this to the bpf@ietf.org list for visibility, since the instruct=
-ion-set.rst
-change would affect the Internet Draft proposed for cross-platform standard=
-ization.
+Em Wed, Feb 01, 2023 at 01:59:30PM +0000, Alan Maguire escreveu:
+> On 01/02/2023 03:02, David Vernet wrote:
+> > On Tue, Jan 31, 2023 at 04:14:13PM -0800, Alexei Starovoitov wrote:
+> >> On Tue, Jan 31, 2023 at 3:59 PM David Vernet <void@manifault.com> wrote:
+> >>>
+> >>> On Tue, Jan 31, 2023 at 11:45:29PM +0000, Alan Maguire wrote:
+> >>>> On 31/01/2023 18:16, Alexei Starovoitov wrote:
+> >>>>> On Tue, Jan 31, 2023 at 9:43 AM Alexei Starovoitov
+> >>>>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>>>
+> >>>>>> On Tue, Jan 31, 2023 at 4:14 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> >>>>>>>
+> >>>>>>> On 31/01/2023 01:04, Arnaldo Carvalho de Melo wrote:
+> >>>>>>>> Em Mon, Jan 30, 2023 at 09:25:17PM -0300, Arnaldo Carvalho de Melo escreveu:
+> >>>>>>>>> Em Mon, Jan 30, 2023 at 10:37:56PM +0000, Alan Maguire escreveu:
+> >>>>>>>>>> On 30/01/2023 20:23, Arnaldo Carvalho de Melo wrote:
+> >>>>>>>>>>> Em Mon, Jan 30, 2023 at 05:10:51PM -0300, Arnaldo Carvalho de Melo escreveu:
+> >>>>>>>>>>>> +++ b/dwarves.h
+> >>>>>>>>>>>> @@ -262,6 +262,7 @@ struct cu {
+> >>>>>>>>>>>>   uint8_t          has_addr_info:1;
+> >>>>>>>>>>>>   uint8_t          uses_global_strings:1;
+> >>>>>>>>>>>>   uint8_t          little_endian:1;
+> >>>>>>>>>>>> + uint8_t          nr_register_params;
+> >>>>>>>>>>>>   uint16_t         language;
+> >>>>>>>>>>>>   unsigned long    nr_inline_expansions;
+> >>>>>>>>>>>>   size_t           size_inline_expansions;
+> >>>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>>> Thanks for this, never thought of cross-builds to be honest!
+> >>>>>>>>>
+> >>>>>>>>>> Tested just now on x86_64 and aarch64 at my end, just ran
+> >>>>>>>>>> into one small thing on one system; turns out EM_RISCV isn't
+> >>>>>>>>>> defined if using a very old elf.h; below works around this
+> >>>>>>>>>> (dwarves otherwise builds fine on this system).
+> >>>>>>>>>
+> >>>>>>>>> Ok, will add it and will test with containers for older distros too.
+> >>>>>>>>
+> >>>>>>>> Its on the 'next' branch, so that it gets tested in the libbpf github
+> >>>>>>>> repo at:
+> >>>>>>>>
+> >>>>>>>> https://github.com/libbpf/libbpf/actions/workflows/pahole.yml
+> >>>>>>>>
+> >>>>>>>> It failed yesterday and today due to problems with the installation of
+> >>>>>>>> llvm, probably tomorrow it'll be back working as I saw some
+> >>>>>>>> notifications floating by.
+> >>>>>>>>
+> >>>>>>>> I added the conditional EM_RISCV definition as well as removed the dup
+> >>>>>>>> iterator that Jiri noticed.
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> Thanks again Arnaldo! I've hit an issue with this series in
+> >>>>>>> BTF encoding of kfuncs; specifically we see some kfuncs missing
+> >>>>>>> from the BTF representation, and as a result:
+> >>>>>>>
+> >>>>>>> WARN: resolve_btfids: unresolved symbol bpf_xdp_metadata_rx_hash
+> >>>>>>> WARN: resolve_btfids: unresolved symbol bpf_task_kptr_get
+> >>>>>>> WARN: resolve_btfids: unresolved symbol bpf_ct_change_status
+> >>>>>>>
+> >>>>>>> Not sure why I didn't notice this previously.
+> >>>>>>>
+> >>>>>>> The problem is the DWARF - and therefore BTF - generated for a function like
+> >>>>>>>
+> >>>>>>> int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash)
+> >>>>>>> {
+> >>>>>>>         return -EOPNOTSUPP;
+> >>>>>>> }
+> >>>>>>>
+> >>>>>>> looks like this:
+> >>>>>>>
+> >>>>>>>    <8af83a2>   DW_AT_external    : 1
+> >>>>>>>     <8af83a2>   DW_AT_name        : (indirect string, offset: 0x358bdc): bpf_xdp_metadata_rx_hash
+> >>>>>>>     <8af83a6>   DW_AT_decl_file   : 5
+> >>>>>>>     <8af83a7>   DW_AT_decl_line   : 737
+> >>>>>>>     <8af83a9>   DW_AT_decl_column : 5
+> >>>>>>>     <8af83aa>   DW_AT_prototyped  : 1
+> >>>>>>>     <8af83aa>   DW_AT_type        : <0x8ad8547>
+> >>>>>>>     <8af83ae>   DW_AT_sibling     : <0x8af83cd>
+> >>>>>>>  <2><8af83b2>: Abbrev Number: 38 (DW_TAG_formal_parameter)
+> >>>>>>>     <8af83b3>   DW_AT_name        : ctx
+> >>>>>>>     <8af83b7>   DW_AT_decl_file   : 5
+> >>>>>>>     <8af83b8>   DW_AT_decl_line   : 737
+> >>>>>>>     <8af83ba>   DW_AT_decl_column : 51
+> >>>>>>>     <8af83bb>   DW_AT_type        : <0x8af421d>
+> >>>>>>>  <2><8af83bf>: Abbrev Number: 35 (DW_TAG_formal_parameter)
+> >>>>>>>     <8af83c0>   DW_AT_name        : (indirect string, offset: 0x27f6a2): hash
+> >>>>>>>     <8af83c4>   DW_AT_decl_file   : 5
+> >>>>>>>     <8af83c5>   DW_AT_decl_line   : 737
+> >>>>>>>     <8af83c7>   DW_AT_decl_column : 61
+> >>>>>>>     <8af83c8>   DW_AT_type        : <0x8adc424>
+> >>>>>>>
+> >>>>>>> ...and because there are no further abstract origin references
+> >>>>>>> with location information either, we classify it as lacking
+> >>>>>>> locations for (some of) the parameters, and as a result
+> >>>>>>> we skip BTF encoding. We can work around that by doing this:
+> >>>>>>>
+> >>>>>>> __attribute__ ((optimize("O0"))) int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash)
+> >>>>>>
+> >>>>>> replied in the other thread. This attr is broken and discouraged by gcc.
+> >>>>>>
+> >>>>>> For kfuncs where aregs are unused, please try __used and __may_unused
+> >>>>>> applied to arguments.
+> >>>>>> If that won't work, please add barrier_var(arg) to the body of kfunc
+> >>>>>> the way we do in selftests.
+> >>>>>
+> >>>>> There is also
+> >>>>> # define __visible __attribute__((__externally_visible__))
+> >>>>> that probably fits the best here.
+> >>>>>
+> >>>>
+> >>>> testing thus for seems to show that for x86_64, David's series
+> >>>> (using __used noinline in the BPF_KFUNC() wrapper and extended
+> >>>> to cover recently-arrived kfuncs like cpumask) is sufficient
+> >>>> to avoid resolve_btfids warnings.
+> >>>
+> >>> Nice. Alexei -- lmk how you want to proceed. I think using the
+> >>> __bpf_kfunc macro in the short term (with __used and noinline) is
+> >>> probably the least controversial way to unblock this, but am open to
+> >>> other suggestions.
+> >>
+> >> Sounds good to me, but sounds like __used and noinline are not
+> >> enough to address the issues on aarch64?
+> > 
+> > Indeed, we'll have to make sure that's also addressed. Alan -- did you
+> > try Alexei's suggestion to use __weak? Does that fix the issue for
+> > aarch64? I'm still confused as to why it's only complaining for a small
+> > subset of kfuncs, which include those that have external linkage.
+> > 
+> 
+> I finally got to the bottom of the aarch64 issues; there was a 1-line bug
+> in the changes I made to the DWARF handling code which leads to BTF generation;
+> it was excluding a bunch of functions incorrectly, marking them as optimized out.
+> The fix is:
+> 
+> diff --git a/dwarf_loader.c b/dwarf_loader.c
+> index dba2d37..8364e17 100644
+> --- a/dwarf_loader.c
+> +++ b/dwarf_loader.c
+> @@ -1074,7 +1074,7 @@ static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
+>                         Dwarf_Op *expr = loc.expr;
+>  
+>                         switch (expr->atom) {
+> -                       case DW_OP_reg1 ... DW_OP_reg31:
+> +                       case DW_OP_reg0 ... DW_OP_reg31:
+>                         case DW_OP_breg0 ... DW_OP_breg31:
+>                                 break;
+>                         default:
+> 
+> ..and because reg0 is the first parameter for aarch64, we were
+> incorrectly landing in the "default:" of the switch statement
+> and marking a bunch of functions as optimized out
+> because we thought the first argument was. Sorry about this,
+> and thanks for all the suggestions!
+> 
+> Arnaldo, will I send a v3 series incorporating the above fix
+> to patch 1?
 
-> -----Original Message-----
-> From: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Sent: Wednesday, February 1, 2023 4:37 AM
-> To: Alexei Starovoitov <ast@kernel.org>; Daniel Borkmann
-> <daniel@iogearbox.net>; Andrii Nakryiko <andrii@kernel.org>
-> Cc: bpf@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [PATCH bpf-next 1/4] bpf: Add new macro BPF_ALU32 and
-> BPF_JMP64
->=20
-> In the current code, BPF_ALU means BPF_ALU32, but BPF_JMP means
-> BPF_JMP64, it is a little confusing at the first glance, add new macro
-> BPF_ALU32 and BPF_JMP64, then we can replace the ambiguos macro
-> BPF_ALU and BPF_JMP with new macro BPF_ALU32 and BPF_JMP64 step by
-> step, BPF_ALU and BPF_JMP can be removed from the uapi header file in
-> some day.
->=20
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  include/uapi/linux/bpf.h       | 2 ++
->  tools/include/uapi/linux/bpf.h | 2 ++
->  2 files changed, 4 insertions(+)
->=20
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h index
-> ba0f0cf..a118c43 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -15,6 +15,8 @@
->=20
->  /* instruction classes */
->  #define BPF_JMP32	0x06	/* jmp mode in word width */
-> +#define BPF_JMP64	0x05	/* jmp mode in double word width */
-> +#define BPF_ALU32	0x04	/* alu mode in word width */
->  #define BPF_ALU64	0x07	/* alu mode in double word width */
->=20
->  /* ld/ldx fields */
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index 7f024ac..014b449 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -15,6 +15,8 @@
->=20
->  /* instruction classes */
->  #define BPF_JMP32	0x06	/* jmp mode in word width */
-> +#define BPF_JMP64	0x05	/* jmp mode in double word width */
-> +#define BPF_ALU32	0x04	/* alu mode in word width */
->  #define BPF_ALU64	0x07	/* alu mode in double word width */
->=20
->  /* ld/ldx fields */
-> --
-> 2.1.0
+I can fix it here. Done, I;ll force push it to the 'next' branch.
 
+Also I noted the index_idx usage in parameter__new(), it can be -1 when
+processing:
+
+ <1><2eb2>: Abbrev Number: 18 (DW_TAG_subroutine_type)
+    <2eb3>   DW_AT_prototyped  : 1
+    <2eb3>   DW_AT_sibling     : <0x2ec2>
+ <2><2eb7>: Abbrev Number: 3 (DW_TAG_formal_parameter)
+    <2eb8>   DW_AT_type        : <0x414>
+ <2><2ebc>: Abbrev Number: 3 (DW_TAG_formal_parameter)
+    <2ebd>   DW_AT_type        : <0x69>
+ <2><2ec1>: Abbrev Number: 0
+
+ And in that case we don't have the location expression:
+
+  <1><af36>: Abbrev Number: 77 (DW_TAG_subprogram)
+    <af37>   DW_AT_external    : 1
+    <af37>   DW_AT_name        : (indirect string, offset: 0x4ff7): startup_64_setup_env
+    <af3b>   DW_AT_decl_file   : 1
+    <af3b>   DW_AT_decl_line   : 592
+    <af3d>   DW_AT_decl_column : 13
+    <af3e>   DW_AT_prototyped  : 1
+    <af3e>   DW_AT_low_pc      : 0xffffffff81000570
+    <af46>   DW_AT_high_pc     : 0x6d
+    <af4e>   DW_AT_frame_base  : 1 byte block: 9c       (DW_OP_call_frame_cfa)
+    <af50>   DW_AT_call_all_calls: 1
+    <af50>   DW_AT_sibling     : <0xb11f>
+ <2><af54>: Abbrev Number: 67 (DW_TAG_formal_parameter)
+    <af55>   DW_AT_name        : (indirect string, offset: 0x2a50d): physbase
+    <af59>   DW_AT_decl_file   : 1
+    <af59>   DW_AT_decl_line   : 592
+    <af5b>   DW_AT_decl_column : 48
+    <af5c>   DW_AT_type        : <0x4c>
+    <af60>   DW_AT_location    : 0x10 (location list)
+    <af64>   DW_AT_GNU_locviews: 0xc
+
+I.e. its just a function _type_, not an actual function, so I'm applying
+this on top of that first patch, ok?
+
+diff --git a/dwarf_loader.c b/dwarf_loader.c
+index 7e05fde8a5c3ac26..253c5efaf3b55a93 100644
+--- a/dwarf_loader.c
++++ b/dwarf_loader.c
+@@ -1035,7 +1035,7 @@ static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
+ 		tag__init(&parm->tag, cu, die);
+ 		parm->name = attr_string(die, DW_AT_name, conf);
+ 
+-		if (param_idx >= cu->nr_register_params)
++		if (param_idx >= cu->nr_register_params || param_idx < 0)
+ 			return parm;
+ 		/* Parameters which use DW_AT_abstract_origin to point at
+ 		 * the original parameter definition (with no name in the DIE)
+
+
+- Arnaldo
+ 
+> With this fix in place, prefixing the kfunc functions with
+> 
+> __used noinline
+> 
+> ...did the trick to ensure kfuncs were not excluded on x86_64
+> and aarch64.
+> 
+> >>
+> >>> Yeah, I tend to think we should try to avoid using hidden / visible
+> >>> attributes given that (to my knowledge) they're really more meant for
+> >>> controlling whether a symbol is exported from a shared object rather
+> >>> than controlling what the compiler is doing when it creates the
+> >>> compilation unit. One could imagine that in an LTO build, the compiler
+> >>> would still optimize the function regardless of its visibility for that
+> >>> reason, though it's possible I don't have the full picture.
+> >>
+> >> __visible is specifically done to prevent optimization of
+> >> functions that are externally visible. That should address LTO concerns.
+> >> We haven't seen LTO messing up anything. Just something to keep in mind.
+> > 
+> > Ah, fair enough. I was conflating that with the visibility("...")
+> > attribute. As you pointed out, __visible is something else entirely, and
+> > is meant to avoid possible issues with LTO.
+> > 
+> > One other option we could consider is enforcing that kfuncs must have
+> > global linkage and can't be static. If we did that, it seems like
+> > __visible would be a viable option. Though we'd have to verify that it
+> > addresses the issue w/ aarch64.
+> > 
+
+-- 
+
+- Arnaldo
