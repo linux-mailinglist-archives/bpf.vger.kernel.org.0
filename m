@@ -2,52 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AB0687118
-	for <lists+bpf@lfdr.de>; Wed,  1 Feb 2023 23:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C26A68719C
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 00:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbjBAWkm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Feb 2023 17:40:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
+        id S229481AbjBAXIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Feb 2023 18:08:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbjBAWkm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Feb 2023 17:40:42 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCD26B9AA;
-        Wed,  1 Feb 2023 14:40:23 -0800 (PST)
+        with ESMTP id S229630AbjBAXIL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Feb 2023 18:08:11 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2421F166DD
+        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 15:08:09 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id C6703CE2588;
-        Wed,  1 Feb 2023 22:40:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B7316C433D2;
-        Wed,  1 Feb 2023 22:40:19 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 797FCB82334
+        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 23:08:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EC32C433D2
+        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 23:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675291219;
-        bh=thR4MM+QmMHTRDBkyAUIHEjRBHS0bX0AjuWuC2nnyl0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jKIbZb4skxraDD/NnYFRLFU/+BIZJuXZ6wtTTEvnUONG/gNRmSKEOM7ekn+rjTVsD
-         PBeZZ19Jefw7iqt8paI2JLJX4sY51J0KyZwTAxHeRq2QWHP4NgEuJ2ECNHhFuXvnLn
-         /C0YzVBnjseksMqwQRKnD8rThz5mysp/ScEe+WGDYjM6y/NziXHpF9RuheysaKND1x
-         LoDe68pm5qwbVj2FlrL111f4rNNlBhDbNdkFX9zNsQ9NStXIF4kUhyBZEiEUb6s9hz
-         V0B5vKpDfBZd/ptGrNKAdBiahw894kmukRhBCd96v5YX4IwSpTlbx1Mwv9v+Ma85Jh
-         +KWRSJXrfYFjw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9C339E21EEC;
-        Wed,  1 Feb 2023 22:40:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1675292887;
+        bh=SS3xg7WdqPMnbD+wUvyC3G99kf943ylxgn49okEqNe0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=e/yeLOxy18itLUtbBFvFeg/pKrBBdsvJLrO0MehL/3Z9oNelpqIsakXvHbPdeMlSK
+         flFxwUPlvTeOkDq3nh4octEV0C1qxLX4ydwgcjyyRpB4NlIbFln08SVOo87jMrSsiN
+         iVq1vGE4d/qLWSwTrqJNZVbz6qdrblKTg6LQ+5JBM+xYu1Cotb3afRFK9tRR4uuudW
+         C2qT0bfr29bP+NZHxvJF7k34nXQiYH265gjvHE88tx2GTqKQOAh3859TVXdQQU4qck
+         bHfVbkWCORd/OttIXPsxuzQzjTBJoFMRZl2fgLcp/QKZ+HDNfOpz8qEbe7spu3Nmzn
+         QudaLXyCrHGBA==
+Received: by mail-ej1-f41.google.com with SMTP id ud5so1107811ejc.4
+        for <bpf@vger.kernel.org>; Wed, 01 Feb 2023 15:08:07 -0800 (PST)
+X-Gm-Message-State: AO0yUKWMAYLNO6beUkLYL1yBnQV1HomAqtHfPwZmhjxI2X7HIM9CxGKF
+        bkf/SPcH7KeOw1AjZgNAQmpAWDMp7UHZX830qTsm9A==
+X-Google-Smtp-Source: AK7set9On5BkgvZz79A6J70b3bb+4aii+IzEeNFIFeovyPy+zB5ZNMx6K4vEuXb5iMsfqzsdgw19q8s1on3MrMzHVtg=
+X-Received: by 2002:a17:906:6c86:b0:87c:c2eb:6dfa with SMTP id
+ s6-20020a1709066c8600b0087cc2eb6dfamr1331940ejr.204.1675292885429; Wed, 01
+ Feb 2023 15:08:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 00/13] ice: add XDP mbuf support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167529121963.1862.10552462490697454435.git-patchwork-notify@kernel.org>
-Date:   Wed, 01 Feb 2023 22:40:19 +0000
-References: <20230131204506.219292-1-maciej.fijalkowski@intel.com>
-In-Reply-To: <20230131204506.219292-1-maciej.fijalkowski@intel.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, anthony.l.nguyen@intel.com,
-        magnus.karlsson@intel.com, tirthendu.sarkar@intel.com,
-        alexandr.lobakin@intel.com
+References: <DU2PR03MB8006D93D98BD58AFF9657F3F96D39@DU2PR03MB8006.eurprd03.prod.outlook.com>
+ <23537684-afd1-e31d-741e-acaf8a201156@iogearbox.net> <CAADnVQLsXLGk5nOx75r-Os+S8wxKjboV3_SKqUm0QXTZXUeDSA@mail.gmail.com>
+ <DU2PR03MB80069C24EAB81F7D72FD7EF196D39@DU2PR03MB8006.eurprd03.prod.outlook.com>
+ <DU2PR03MB800662EF7057E230662B34B196D39@DU2PR03MB8006.eurprd03.prod.outlook.com>
+ <20230130220409.ux33fhwvghqwtujw@macbook-pro-6.dhcp.thefacebook.com>
+In-Reply-To: <20230130220409.ux33fhwvghqwtujw@macbook-pro-6.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Thu, 2 Feb 2023 01:07:54 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ7ThF4wFdrM_-ZkMZooxCNXAHqKefizevL-jKUGUprB9A@mail.gmail.com>
+Message-ID: <CACYkzJ7ThF4wFdrM_-ZkMZooxCNXAHqKefizevL-jKUGUprB9A@mail.gmail.com>
+Subject: Re: Interruptable eBPF programs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Ori Glassman <ori.glassman@aquasec.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,55 +66,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Jan 31, 2023 at 12:04 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jan 30, 2023 at 06:47:54PM +0000, Ori Glassman wrote:
+> >
+> > > security@kernel alias is not the place to ask bpf related questions.
+> > I apologise if it was confusing, I wasn't asking a question - rather ra=
+ising a security concern of mine.
+>
+> That is a security concern with a design of your service.
+> sec@kern is about kernel bugs:
+> Documentation/admin-guide/security-bugs.rst
+>
+> > > Yaniv, from your team, already brought it up here:
+> > > https://lore.kernel.org/bpf/CAADnVQ++LzKt9Q-GtGXknVBqyMqY=3DvLJ3tR3NN=
+GG3P66gvVCFQ@mail.gmail.com/
+> >
+> > > You cannot assume that different bpf progs attached to various
+> > > events like tracepoints and lsm hooks won't overlap.
+> > > It's a bug in your program. Nothing else.
+> > How can one use bpf_task_storage_get() without the risk of getting corr=
+upted? Say there's a module that consists of 1 simple program, a single LSM=
+ hook on bprm_creds_for_exec, that uses a local task storage pinned map.
+> > An attacker at some point in the future loads his tracepoint program, a=
+nd maliciously corrupts the local storage *while* the LSM hook is executing=
+, not after or before. What's the bug in the program that consists of the s=
+ingle LSM hook?
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+So, your MAC policy allows unprivileged users (i.e. the attacker) to
+tamper with security blobs (i.e. task_local_storage). This is a bad
+idea, your policy should prevent the helper being accessible to other
+programs. Rather, it should ideally prevent loading of untrusted BPF
+programs completely.
 
-On Tue, 31 Jan 2023 21:44:53 +0100 you wrote:
-> Hi there,
-> 
-> although this work started as an effort to add multi-buffer XDP support
-> to ice driver, as usual it turned out that some other side stuff needed
-> to be addressed, so let me give you an overview.
-> 
-> First patch adjusts legacy-rx in a way that it will be possible to refer
-> to skb_shared_info being at the end of the buffer when gathering up
-> frame fragments within xdp_buff.
-> 
-> [...]
+- KP
 
-Here is the summary with links:
-  - [bpf-next,01/13] ice: prepare legacy-rx for upcoming XDP multi-buffer support
-    https://git.kernel.org/bpf/bpf-next/c/c61bcebde72d
-  - [bpf-next,02/13] ice: add xdp_buff to ice_rx_ring struct
-    https://git.kernel.org/bpf/bpf-next/c/cb0473e0e9dc
-  - [bpf-next,03/13] ice: store page count inside ice_rx_buf
-    https://git.kernel.org/bpf/bpf-next/c/ac0753391195
-  - [bpf-next,04/13] ice: pull out next_to_clean bump out of ice_put_rx_buf()
-    https://git.kernel.org/bpf/bpf-next/c/d7956d81f150
-  - [bpf-next,05/13] ice: inline eop check
-    https://git.kernel.org/bpf/bpf-next/c/e44f4790a2ba
-  - [bpf-next,06/13] ice: centrallize Rx buffer recycling
-    https://git.kernel.org/bpf/bpf-next/c/1dc1a7e7f410
-  - [bpf-next,07/13] ice: use ice_max_xdp_frame_size() in ice_xdp_setup_prog()
-    https://git.kernel.org/bpf/bpf-next/c/60bc72b3c4e9
-  - [bpf-next,08/13] ice: do not call ice_finalize_xdp_rx() unnecessarily
-    https://git.kernel.org/bpf/bpf-next/c/9070fe3da0b1
-  - [bpf-next,09/13] ice: use xdp->frame_sz instead of recalculating truesize
-    https://git.kernel.org/bpf/bpf-next/c/8a11b334ec9b
-  - [bpf-next,10/13] ice: add support for XDP multi-buffer on Rx side
-    https://git.kernel.org/bpf/bpf-next/c/2fba7dc5157b
-  - [bpf-next,11/13] ice: add support for XDP multi-buffer on Tx side
-    https://git.kernel.org/bpf/bpf-next/c/3246a10752a7
-  - [bpf-next,12/13] ice: remove next_{dd,rs} fields from ice_tx_ring
-    https://git.kernel.org/bpf/bpf-next/c/f4db7b314dd5
-  - [bpf-next,13/13] ice: xsk: do not convert to buff to frame for XDP_TX
-    https://git.kernel.org/bpf/bpf-next/c/a24b4c6e9aab
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> The local storage map is also accessible via bpf syscall map_update_elem =
+command.
+> If user can get an FD to that map they can update it.
+> It's your job to design the service such that bpf maps are not laying aro=
+und for everyone to poke into.
+> But if user has root access it can do anything.
+>
+> > > These two programs access some task local storage.
+> > I'm talking specifically when the programs are executed by the same tas=
+k and thus accessing the same local storage.
+> > > This code racy regardless of preempt_disable vs migrate_disable.
+> > > bpf_task_storage_get() of the same task can run on different cpus.
+> > Not at the same time though, right? I'm not concerned about the cases w=
+here the map is used in multiple programs - I'm concerned about the cases w=
+here it's used locally in a single program, but gets corrupted in a timely =
+manner from the outside by an attacker.
+>
+> At the same time.
+> Two cpus can observe the same task local storage.
+>
+> > > Whether trace_sched_process_free and security_bprm_creds_for_exec
+> > > can happen on different cpus is kernel implementation detail.
+> >
+> > > There looks to be another bug in the above:
+> > > doing bpf_get_current_task_btf from raw_tracepoint/sched_process_free
+> > > will return task_struct of the worker thread.
+> > > I don't think it's the one you want.
+> > That's not what I observed - this is the output of bpf_trace_printk whe=
+re the execution of the LSM hook got interrupted mid-execution:
+> > ----
+> >  chrony-onofflin-12460   [000] d.s.1  2258.804195: bpf_trace_printk: EX=
+ECUTION HIJACK(b=3D2257261931167) # this is from tp/sched_process_free
+> >  chrony-onofflin-12460   [000] d...1  2258.804234: bpf_trace_printk: a=
+=3D2257261896666. c=3D2257261971220 # from the lsm hook
+>
+> It's "working" by accident.
