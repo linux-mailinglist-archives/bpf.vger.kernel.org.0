@@ -2,365 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CE6686CAF
-	for <lists+bpf@lfdr.de>; Wed,  1 Feb 2023 18:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F02686D07
+	for <lists+bpf@lfdr.de>; Wed,  1 Feb 2023 18:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbjBART5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Feb 2023 12:19:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45312 "EHLO
+        id S231144AbjBARbN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Feb 2023 12:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232090AbjBARTv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Feb 2023 12:19:51 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE5C42DD5
-        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 09:19:48 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6329F6187F
-        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 17:19:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73847C433D2;
-        Wed,  1 Feb 2023 17:19:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675271987;
-        bh=tAMofY90HkOS+GLMtP1J8kKNAAg7zewYQxNuA9UetGQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TMnqA6lXHGQUTkQmuSziusR1+5zaW65nwbNL8CiX00F7h2AIX/PTm0H5kwuBKKezL
-         ChvJUX1llCmIbCEFMMRtBRYdigpTPx6WMmE9hVodnsDUoENB05vQV+dYg2Z6+qTJr7
-         a5zAHZ6vQfTVvTfWglp8T4l2MndQ190ZvGnml5/E7z46kl8lRiGPeW1Uh4Oi1KXDvk
-         0VgIcLUZlrwGmNCcCqAyeJwjKr+3U0CvCPxkzcwpjp+P+oL8XOA/gc6PCA20DhhJ9j
-         DOxd9HR8ETPmsvx8PolnduCrQ+8Ic4iQqorNsWpA8GH3PB9bYKQL8kxTem63Sy3E2r
-         u8emI2aHKLgeA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 394D4405BE; Wed,  1 Feb 2023 14:19:44 -0300 (-03)
-Date:   Wed, 1 Feb 2023 14:19:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     yhs@fb.com, ast@kernel.org, olsajiri@gmail.com, eddyz87@gmail.com,
-        sinquersw@gmail.com, timo@incline.eu, daniel@iogearbox.net,
-        andrii@kernel.org, songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
-        martin.lau@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 dwarves 2/5] btf_encoder: refactor function addition
- into dedicated btf_encoder__add_func
-Message-ID: <Y9qfMMrdro8PK5J1@kernel.org>
-References: <1675088985-20300-1-git-send-email-alan.maguire@oracle.com>
- <1675088985-20300-3-git-send-email-alan.maguire@oracle.com>
+        with ESMTP id S231630AbjBARav (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Feb 2023 12:30:51 -0500
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0D97D287;
+        Wed,  1 Feb 2023 09:30:22 -0800 (PST)
+Received: by mail-qt1-f176.google.com with SMTP id g7so1886401qto.11;
+        Wed, 01 Feb 2023 09:30:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DcdaAefeXwbBbBzc2pDkWla3pIt9NRsXAraujgnF9fc=;
+        b=ChZaPXcMgr0EpzX7chCBiQZdFfhh7Lics0hxhuH7mQVjJgdUxIcLPxJSb5cAYiEaDO
+         ciI0lk9wU3uZ491jkgwEazo3dw6bT34IReLrBO1ELNN/cuACDsymTrz3bWAXV9dQPoUm
+         oTdnIbrd4MirugzfmLf1fFwWLGgxS3aoKMKbocuedZkhujMrlmT1rQbV/KlaiZ+5E/AY
+         cpRd06HVbqiKzmmRqM/lL2aaeVAvpr6oklxJwgWXq+4x5F6J+ey+LbKvU0C9vhM4UMEG
+         GFh78y70qh8EobYqmufeYs76EUNbyXdNcJy44pPnXJzVR9+rv7UO6i4jHfNssnk7GKLH
+         skkA==
+X-Gm-Message-State: AO0yUKUO5GgdbJ5M+64I3gX0CI2md7ys5K7r+lQOeYdFn/eyqBFjTw9e
+        qfHJ/QzH/yflcbz2sEB7Zd6gZKBwk2zpxeez
+X-Google-Smtp-Source: AK7set+VqfsQuoay9QwgadI7iOhd2rcEec7RTkCwz5zAefOg9FNdxDP8mQoHG6s3kGvVIsmf8F+luQ==
+X-Received: by 2002:ac8:580a:0:b0:3b9:b2ba:9b3f with SMTP id g10-20020ac8580a000000b003b9b2ba9b3fmr5679174qtg.52.1675272620899;
+        Wed, 01 Feb 2023 09:30:20 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:1971])
+        by smtp.gmail.com with ESMTPSA id z77-20020a376550000000b00706c1f7a608sm6809701qkb.89.2023.02.01.09.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Feb 2023 09:30:20 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, corbet@lwn.net, hch@infradead.org,
+        acme@kernel.org, alan.maguire@oracle.com
+Subject: [PATCH bpf-next v3 0/4] bpf: Add __bpf_kfunc tag for kfunc definitions
+Date:   Wed,  1 Feb 2023 11:30:12 -0600
+Message-Id: <20230201173016.342758-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1675088985-20300-3-git-send-email-alan.maguire@oracle.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jan 30, 2023 at 02:29:42PM +0000, Alan Maguire escreveu:
-> This will be useful for postponing local function addition later on.
-> As part of this, store the type id offset and unspecified type in
-> the encoder, as this will simplify late addition of local functions.
-> 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  btf_encoder.c | 101 +++++++++++++++++++++++++++++++++-------------------------
->  1 file changed, 57 insertions(+), 44 deletions(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index a5fa04a..44f1905 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -54,6 +54,8 @@ struct btf_encoder {
->  	struct gobuffer   percpu_secinfo;
->  	const char	  *filename;
->  	struct elf_symtab *symtab;
-> +	uint32_t	  type_id_off;
-> +	uint32_t	  unspecified_type;
->  	bool		  has_index_type,
->  			  need_index_type,
->  			  skip_encoding_vars,
-> @@ -593,20 +595,20 @@ static int32_t btf_encoder__add_func_param(struct btf_encoder *encoder, const ch
->  	}
->  }
->  
-> -static int32_t btf_encoder__tag_type(struct btf_encoder *encoder, uint32_t type_id_off, uint32_t tag_type)
-> +static int32_t btf_encoder__tag_type(struct btf_encoder *encoder, uint32_t tag_type)
->  {
->  	if (tag_type == 0)
->  		return 0;
->  
-> -	if (encoder->cu->unspecified_type.tag && tag_type == encoder->cu->unspecified_type.type) {
-> +	if (tag_type == encoder->unspecified_type) {
->  		// No provision for encoding this, turn it into void.
->  		return 0;
->  	}
+This is v3 of the patchset [0]. v2 can be found at [1].
 
-Humm, are those two lines (above) really equivalent? IIRC I read that as
-encoder->cu->unspecified_type.tag being zero means we still didn't set
-it, not that it is void (zero), right?
+[0]: https://lore.kernel.org/bpf/Y7kCsjBZ%2FFrsWW%2Fe@maniforge.lan/T/
+[1]: https://lore.kernel.org/lkml/20230123171506.71995-1-void@manifault.com/
 
-So if we're passing a tag_type zero, void, we'll return 0, i.e. turn
-into a void, so seems equivalent, try not to combine patches like this
-in the future, i.e. I would expect, from a quick glance, to have:
+Changelog:
+----------
+v2 -> v3:
+- Go back to the __bpf_kfunc approach from v1. The BPF_KFUNC macro
+  received pushback as it didn't match the more typical EXPORT_SYMBOL*
+  APIs used elsewhere in the kernel. It's the longer term plan, but for
+  now we're proposing something less controversial to fix kfuncs and BTF
+  encoding.
+- Add __bpf_kfunc macro to newly added cpumask kfuncs.
+- Add __bpf_kfunc macro to newly added XDP metadata kfuncs, which were
+  failing to be BTF encoded in the thread in [2].
+- Update patch description(s) to reference the discussions in [2].
+- Add a selftest that validates that a static kfunc with unused args is
+  properly BTF encoded and can be invoked.
 
--     if (encoder->cu->unspecified_type.tag && tag_type == encoder->cu->unspecified_type.type) {
-+     if (encoder->unspecified_type && tag_type == encoder->unspecified_type) {
+[2]: https://lore.kernel.org/all/fe5d42d1-faad-d05e-99ad-1c2c04776950@oracle.com/
 
-I.e. just the removal of the indirection thru encoder->cu. Or am I
-missing something here?
+v1 -> v2:
+- Wrap entire function signature in BPF_KFUNC macro instead of using
+  __bpf_kfunc tag (Kumar)
+- Update all kfunc definitions to use this macro.
+- Update kfuncs.rst documentation to describe and illustrate the macro.
+- Also clean up a few small parts of kfuncs.rst, e.g. some grammar, and
+  in general making it a bit tighter.
 
-- Arnaldo
+David Vernet (4):
+  bpf: Add __bpf_kfunc tag for marking kernel functions as kfuncs
+  bpf: Document usage of the new __bpf_kfunc macro
+  bpf: Add __bpf_kfunc tag to all kfuncs
+  selftests/bpf: Add testcase for static kfunc
 
->  
-> -	return type_id_off + tag_type;
-> +	return encoder->type_id_off + tag_type;
->  }
->  
-> -static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct ftype *ftype, uint32_t type_id_off)
-> +static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct ftype *ftype)
->  {
->  	struct btf *btf = encoder->btf;
->  	const struct btf_type *t;
-> @@ -616,7 +618,7 @@ static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct f
->  
->  	/* add btf_type for func_proto */
->  	nr_params = ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
-> -	type_id = btf_encoder__tag_type(encoder, type_id_off, ftype->tag.type);
-> +	type_id = btf_encoder__tag_type(encoder, ftype->tag.type);
->  
->  	id = btf__add_func_proto(btf, type_id);
->  	if (id > 0) {
-> @@ -634,7 +636,7 @@ static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct f
->  	ftype__for_each_parameter(ftype, param) {
->  		const char *name = parameter__name(param);
->  
-> -		type_id = param->tag.type == 0 ? 0 : type_id_off + param->tag.type;
-> +		type_id = param->tag.type == 0 ? 0 : encoder->type_id_off + param->tag.type;
->  		++param_idx;
->  		if (btf_encoder__add_func_param(encoder, name, type_id, param_idx == nr_params))
->  			return -1;
-> @@ -762,6 +764,31 @@ static int32_t btf_encoder__add_decl_tag(struct btf_encoder *encoder, const char
->  	return id;
->  }
->  
-> +static int32_t btf_encoder__add_func(struct btf_encoder *encoder, struct function *fn)
-> +{
-> +	int btf_fnproto_id, btf_fn_id, tag_type_id;
-> +	struct llvm_annotation *annot;
-> +	const char *name;
-> +
-> +	btf_fnproto_id = btf_encoder__add_func_proto(encoder, &fn->proto);
-> +	name = function__name(fn);
-> +	btf_fn_id = btf_encoder__add_ref_type(encoder, BTF_KIND_FUNC, btf_fnproto_id, name, false);
-> +	if (btf_fnproto_id < 0 || btf_fn_id < 0) {
-> +		printf("error: failed to encode function '%s'\n", function__name(fn));
-> +		return -1;
-> +	}
-> +	list_for_each_entry(annot, &fn->annots, node) {
-> +		tag_type_id = btf_encoder__add_decl_tag(encoder, annot->value, btf_fn_id,
-> +							annot->component_idx);
-> +		if (tag_type_id < 0) {
-> +			fprintf(stderr, "error: failed to encode tag '%s' to func %s with component_idx %d\n",
-> +				annot->value, name, annot->component_idx);
-> +			return -1;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
->  /*
->   * This corresponds to the same macro defined in
->   * include/linux/kallsyms.h
-> @@ -859,22 +886,21 @@ static void dump_invalid_symbol(const char *msg, const char *sym,
->  	fprintf(stderr, "PAHOLE: Error: Use '--btf_encode_force' to ignore such symbols and force emit the btf.\n");
->  }
->  
-> -static int tag__check_id_drift(const struct tag *tag,
-> -			       uint32_t core_id, uint32_t btf_type_id,
-> -			       uint32_t type_id_off)
-> +static int tag__check_id_drift(struct btf_encoder *encoder, const struct tag *tag,
-> +			       uint32_t core_id, uint32_t btf_type_id)
->  {
-> -	if (btf_type_id != (core_id + type_id_off)) {
-> +	if (btf_type_id != (core_id + encoder->type_id_off)) {
->  		fprintf(stderr,
->  			"%s: %s id drift, core_id: %u, btf_type_id: %u, type_id_off: %u\n",
->  			__func__, dwarf_tag_name(tag->tag),
-> -			core_id, btf_type_id, type_id_off);
-> +			core_id, btf_type_id, encoder->type_id_off);
->  		return -1;
->  	}
->  
->  	return 0;
->  }
->  
-> -static int32_t btf_encoder__add_struct_type(struct btf_encoder *encoder, struct tag *tag, uint32_t type_id_off)
-> +static int32_t btf_encoder__add_struct_type(struct btf_encoder *encoder, struct tag *tag)
->  {
->  	struct type *type = tag__type(tag);
->  	struct class_member *pos;
-> @@ -896,7 +922,8 @@ static int32_t btf_encoder__add_struct_type(struct btf_encoder *encoder, struct
->  		 * is required.
->  		 */
->  		name = class_member__name(pos);
-> -		if (btf_encoder__add_field(encoder, name, type_id_off + pos->tag.type, pos->bitfield_size, pos->bit_offset))
-> +		if (btf_encoder__add_field(encoder, name, encoder->type_id_off + pos->tag.type,
-> +					   pos->bitfield_size, pos->bit_offset))
->  			return -1;
->  	}
->  
-> @@ -936,11 +963,11 @@ static int32_t btf_encoder__add_enum_type(struct btf_encoder *encoder, struct ta
->  	return type_id;
->  }
->  
-> -static int btf_encoder__encode_tag(struct btf_encoder *encoder, struct tag *tag, uint32_t type_id_off,
-> +static int btf_encoder__encode_tag(struct btf_encoder *encoder, struct tag *tag,
->  				   struct conf_load *conf_load)
->  {
->  	/* single out type 0 as it represents special type "void" */
-> -	uint32_t ref_type_id = tag->type == 0 ? 0 : type_id_off + tag->type;
-> +	uint32_t ref_type_id = tag->type == 0 ? 0 : encoder->type_id_off + tag->type;
->  	struct base_type *bt;
->  	const char *name;
->  
-> @@ -970,7 +997,7 @@ static int btf_encoder__encode_tag(struct btf_encoder *encoder, struct tag *tag,
->  		if (tag__type(tag)->declaration)
->  			return btf_encoder__add_ref_type(encoder, BTF_KIND_FWD, 0, name, tag->tag == DW_TAG_union_type);
->  		else
-> -			return btf_encoder__add_struct_type(encoder, tag, type_id_off);
-> +			return btf_encoder__add_struct_type(encoder, tag);
->  	case DW_TAG_array_type:
->  		/* TODO: Encode one dimension at a time. */
->  		encoder->need_index_type = true;
-> @@ -978,7 +1005,7 @@ static int btf_encoder__encode_tag(struct btf_encoder *encoder, struct tag *tag,
->  	case DW_TAG_enumeration_type:
->  		return btf_encoder__add_enum_type(encoder, tag, conf_load);
->  	case DW_TAG_subroutine_type:
-> -		return btf_encoder__add_func_proto(encoder, tag__ftype(tag), type_id_off);
-> +		return btf_encoder__add_func_proto(encoder, tag__ftype(tag));
->          case DW_TAG_unspecified_type:
->  		/* Just don't encode this for now, converting anything with this type to void (0) instead.
->  		 *
-> @@ -1281,7 +1308,7 @@ static bool ftype__has_arg_names(const struct ftype *ftype)
->  	return true;
->  }
->  
-> -static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder, uint32_t type_id_off)
-> +static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
->  {
->  	struct cu *cu = encoder->cu;
->  	uint32_t core_id;
-> @@ -1366,7 +1393,7 @@ static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder, uint32_
->  			continue;
->  		}
->  
-> -		type = var->ip.tag.type + type_id_off;
-> +		type = var->ip.tag.type + encoder->type_id_off;
->  		linkage = var->external ? BTF_VAR_GLOBAL_ALLOCATED : BTF_VAR_STATIC;
->  
->  		if (encoder->verbose) {
-> @@ -1507,7 +1534,6 @@ void btf_encoder__delete(struct btf_encoder *encoder)
->  
->  int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct conf_load *conf_load)
->  {
-> -	uint32_t type_id_off = btf__type_cnt(encoder->btf) - 1;
->  	struct llvm_annotation *annot;
->  	int btf_type_id, tag_type_id, skipped_types = 0;
->  	uint32_t core_id;
-> @@ -1516,21 +1542,24 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->  	int err = 0;
->  
->  	encoder->cu = cu;
-> +	encoder->type_id_off = btf__type_cnt(encoder->btf) - 1;
-> +	if (encoder->cu->unspecified_type.tag)
-> +		encoder->unspecified_type = encoder->cu->unspecified_type.type;
->  
->  	if (!encoder->has_index_type) {
->  		/* cu__find_base_type_by_name() takes "type_id_t *id" */
->  		type_id_t id;
->  		if (cu__find_base_type_by_name(cu, "int", &id)) {
->  			encoder->has_index_type = true;
-> -			encoder->array_index_id = type_id_off + id;
-> +			encoder->array_index_id = encoder->type_id_off + id;
->  		} else {
->  			encoder->has_index_type = false;
-> -			encoder->array_index_id = type_id_off + cu->types_table.nr_entries;
-> +			encoder->array_index_id = encoder->type_id_off + cu->types_table.nr_entries;
->  		}
->  	}
->  
->  	cu__for_each_type(cu, core_id, pos) {
-> -		btf_type_id = btf_encoder__encode_tag(encoder, pos, type_id_off, conf_load);
-> +		btf_type_id = btf_encoder__encode_tag(encoder, pos, conf_load);
->  
->  		if (btf_type_id == 0) {
->  			++skipped_types;
-> @@ -1538,7 +1567,7 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->  		}
->  
->  		if (btf_type_id < 0 ||
-> -		    tag__check_id_drift(pos, core_id, btf_type_id + skipped_types, type_id_off)) {
-> +		    tag__check_id_drift(encoder, pos, core_id, btf_type_id + skipped_types)) {
->  			err = -1;
->  			goto out;
->  		}
-> @@ -1572,7 +1601,7 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->  			continue;
->  		}
->  
-> -		btf_type_id = type_id_off + core_id;
-> +		btf_type_id = encoder->type_id_off + core_id;
->  		ns = tag__namespace(pos);
->  		list_for_each_entry(annot, &ns->annots, node) {
->  			tag_type_id = btf_encoder__add_decl_tag(encoder, annot->value, btf_type_id, annot->component_idx);
-> @@ -1585,8 +1614,6 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->  	}
->  
->  	cu__for_each_function(cu, core_id, fn) {
-> -		int btf_fnproto_id, btf_fn_id;
-> -		const char *name;
->  
->  		/*
->  		 * Skip functions that:
-> @@ -1616,27 +1643,13 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->  				continue;
->  		}
->  
-> -		btf_fnproto_id = btf_encoder__add_func_proto(encoder, &fn->proto, type_id_off);
-> -		name = function__name(fn);
-> -		btf_fn_id = btf_encoder__add_ref_type(encoder, BTF_KIND_FUNC, btf_fnproto_id, name, false);
-> -		if (btf_fnproto_id < 0 || btf_fn_id < 0) {
-> -			err = -1;
-> -			printf("error: failed to encode function '%s'\n", function__name(fn));
-> +		err = btf_encoder__add_func(encoder, fn);
-> +		if (err)
->  			goto out;
-> -		}
-> -
-> -		list_for_each_entry(annot, &fn->annots, node) {
-> -			tag_type_id = btf_encoder__add_decl_tag(encoder, annot->value, btf_fn_id, annot->component_idx);
-> -			if (tag_type_id < 0) {
-> -				fprintf(stderr, "error: failed to encode tag '%s' to func %s with component_idx %d\n",
-> -					annot->value, name, annot->component_idx);
-> -				goto out;
-> -			}
-> -		}
->  	}
->  
->  	if (!encoder->skip_encoding_vars)
-> -		err = btf_encoder__encode_cu_variables(encoder, type_id_off);
-> +		err = btf_encoder__encode_cu_variables(encoder);
->  out:
->  	encoder->cu = NULL;
->  	return err;
-> -- 
-> 1.8.3.1
-> 
+ Documentation/bpf/kfuncs.rst                  | 20 +++++-
+ Documentation/conf.py                         |  3 +
+ include/linux/btf.h                           |  8 +++
+ kernel/bpf/cpumask.c                          | 60 +++++++++---------
+ kernel/bpf/helpers.c                          | 38 ++++++------
+ kernel/cgroup/rstat.c                         |  4 +-
+ kernel/kexec_core.c                           |  3 +-
+ kernel/trace/bpf_trace.c                      |  8 +--
+ net/bpf/test_run.c                            | 61 +++++++++++--------
+ net/core/xdp.c                                |  5 +-
+ net/ipv4/tcp_bbr.c                            | 16 ++---
+ net/ipv4/tcp_cong.c                           | 10 +--
+ net/ipv4/tcp_cubic.c                          | 12 ++--
+ net/ipv4/tcp_dctcp.c                          | 12 ++--
+ net/netfilter/nf_conntrack_bpf.c              | 20 +++---
+ net/netfilter/nf_nat_bpf.c                    |  6 +-
+ net/xfrm/xfrm_interface_bpf.c                 |  7 +--
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  2 +-
+ .../selftests/bpf/prog_tests/kfunc_call.c     |  1 +
+ .../selftests/bpf/progs/kfunc_call_test.c     | 11 ++++
+ 20 files changed, 176 insertions(+), 131 deletions(-)
 
 -- 
+2.39.0
 
-- Arnaldo
