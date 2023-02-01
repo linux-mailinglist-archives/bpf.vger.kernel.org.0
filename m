@@ -2,129 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB6E6866DA
-	for <lists+bpf@lfdr.de>; Wed,  1 Feb 2023 14:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B876867B0
+	for <lists+bpf@lfdr.de>; Wed,  1 Feb 2023 14:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbjBAN36 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Feb 2023 08:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
+        id S231226AbjBAN5D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Feb 2023 08:57:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbjBAN3y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Feb 2023 08:29:54 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8173E098;
-        Wed,  1 Feb 2023 05:29:22 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id ud5so51433408ejc.4;
-        Wed, 01 Feb 2023 05:29:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=o5RAqFv4pYOa5JzrxZt0vZ4G4DAREm5CcDv+otFo5eA=;
-        b=Al8L1qZd+si5urgDXLIkXeBFPnzdORNbH95yxab8hD1qvx8Eqal1NU6elIBc0ukEJH
-         A98DrQRnm/qhYBbPDzwqu+jnGoUjm+DuxY0NI6p7QPpFvi/q9ZZebFtnfNwnTy3ryNlt
-         883Fyb7evIY7lOs8klZOMcGfFVG+Pt1440+q6tzOwrzPYABFaCw0XqJFhpbtPZ/fYbGY
-         SL1T8pm87YanZtk1jbAvHWFJLRPHIlmaBu0hN4rpJwPUP4fPwUJMGDeqTk2MtDkWWXVO
-         U6vI+80In2Xqjb61seQlZwj1941d9/729RjerPjVboc17rKMH5RQokJ+0tqVMKlaQru6
-         toOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o5RAqFv4pYOa5JzrxZt0vZ4G4DAREm5CcDv+otFo5eA=;
-        b=o18GNFdr2FxYr/ETHeRuV7QOFtc2hMpdP+O7xDCmjSnv7MjeP0iHRY8pZbwxA3eQpu
-         EREPVMin1UG/zGAFHxbtB4ogZjRUrb+MG79DoApPZgraYyhaoILfOqmq4LE8OZAFoSiz
-         vI+zEHiMZnPcz5vAdQVM8ecqKlxcBWvsloCv4BdCzrotLtiLTUU6tNYPKa4vqWBss+sj
-         selgw077+WQ+DorwGxO1Hk5j3B/Stue3LpQ47e7SR7PrbmoO4cZhNLKGM5AVr7wFJTmP
-         jEqClAUB1qnjXIEZaOlEkaifo3jo3PrPTbbqElWsbQsRsERQgFWh/K2PbLEDbRyFxFb/
-         jeaw==
-X-Gm-Message-State: AO0yUKWEwUhx4jkzleJTBZrhSitsw/Ba21353m0fsuZXEA99/8CsVS7a
-        4R3ttWBzrTfUWYNmyHIA+ZIpM2MO1GXQOhFRHXk=
-X-Google-Smtp-Source: AK7set/gpbqxFS5raSbdy7HY4cEfgXV09A04lh/3/z7GW6ctm3ocB6SlI8/7c9gvyGf3I/dbHmBnp9x96j2HSq+CpTw=
-X-Received: by 2002:a17:906:560e:b0:86f:9fb1:30a8 with SMTP id
- f14-20020a170906560e00b0086f9fb130a8mr691205ejq.181.1675258160744; Wed, 01
- Feb 2023 05:29:20 -0800 (PST)
+        with ESMTP id S230372AbjBAN4y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Feb 2023 08:56:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30789DBD3
+        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 05:55:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B92E8617B5
+        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 13:55:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDDBBC433EF;
+        Wed,  1 Feb 2023 13:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675259747;
+        bh=wY6ulHpqGIpfu0BogvoL1mieaEOwL141OJNucUoWIGg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZR+NnzT6aznkNeVZkAquzkrJG2oMqtjKa5mXyUd1ixGhJfaBvARCMagbbDFFjTRRi
+         q999oU4xSKxGA8OkqIWU5kPahRR5N0NGacQ3TAJ44JStA7ipiykneGtusNMPZ4Xe39
+         5yhZhvCSvcuOjIDAJuj4UUrYrVL95ydt7bskTa0MdYQYR6EEy6/axWnXOjASTfNB44
+         er2z4NYqMqDSzmRAEtiw/BFdiGbctIN79JmdieNmtu+Rnsc0hyFNPPmXUr6GAS70XH
+         xKzPKT+1nvDuJksnyLsUemvYY8rlYF7K1FPEcMcmf6JsRj0Cr8WG6ueklYLuJgIVHn
+         UVXXk9nx8ywbA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5597A405BE; Wed,  1 Feb 2023 10:55:44 -0300 (-03)
+Date:   Wed, 1 Feb 2023 10:55:44 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     yhs@fb.com, ast@kernel.org, olsajiri@gmail.com, eddyz87@gmail.com,
+        sinquersw@gmail.com, timo@incline.eu, daniel@iogearbox.net,
+        andrii@kernel.org, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, sdf@google.com, haoluo@google.com,
+        martin.lau@kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves] dwarves: sync with libbpf-1.1
+Message-ID: <Y9pvYFPlFEVXJGK1@kernel.org>
+References: <1675169241-32559-1-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
-References: <20230127122018.2839-1-kerneljasonxing@gmail.com>
- <Y9fdRqHp7sVFYbr6@boxer> <CAL+tcoBbUKO5Y_dOjZWa4iQyK2C2O76QOLtJ+dFQgr_cpqSiyQ@mail.gmail.com>
- <192d7154-78a6-e7a0-2810-109b864bbb4f@intel.com> <CAL+tcoBtQSeGi5diwUeg1LryYsB2wDg1ow19F2eApjh7hYbcsA@mail.gmail.com>
- <af77ad0e-fde7-25da-dc3f-5d19133addba@intel.com>
-In-Reply-To: <af77ad0e-fde7-25da-dc3f-5d19133addba@intel.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Wed, 1 Feb 2023 21:28:44 +0800
-Message-ID: <CAL+tcoD94KByy-Xz=ZiCt5gXZ0YhOjWU=vrOzRxezwRtuQmcJw@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH v2 net] ixgbe: allow to increase MTU to
- some extent with XDP enabled
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1675169241-32559-1-git-send-email-alan.maguire@oracle.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 1, 2023 at 7:15 PM Alexander Lobakin
-<alexandr.lobakin@intel.com> wrote:
->
-> From: Jason Xing <kerneljasonxing@gmail.com>
-> Date: Tue, 31 Jan 2023 19:23:59 +0800
->
-> > On Tue, Jan 31, 2023 at 7:08 PM Alexander Lobakin
-> > <alexandr.lobakin@intel.com> wrote:
->
-> [...]
->
-> >>>> You said in this thread that you've done several tests - what were they?
-> >>>
-> >>> Tests against XDP are running on the server side when MTU varies from
-> >>> 1500 to 3050 (not including ETH_HLEN, ETH_FCS_LEN and VLAN_HLEN) for a
-> >>
-> >
-> >> BTW, if ixgbe allows you to set MTU of 3050, it needs to be fixed. Intel
-> >> drivers at some point didn't include the second VLAN tag into account,
-> >
-> > Yes, I noticed that.
-> >
-> > It should be like "int new_frame_size = new_mtu + ETH_HLEN +
-> > ETH_FCS_LEN + (VLAN_HLEN * 2)" instead of only one VLAN_HLEN, which is
-> > used to compute real size in ixgbe_change_mtu() function.
-> > I'm wondering if I could submit another patch to fix the issue you
-> > mentioned because the current patch tells a different issue. Does it
-> > make sense?
->
+Em Tue, Jan 31, 2023 at 12:47:21PM +0000, Alan Maguire escreveu:
+> This will pull in BTF dedup improvements
+> 
+> 082108f libbpf: Resolve unambigous forward declarations
+> de048b6 libbpf: Resolve enum fwd as full enum64 and vice versa
+> f3c51fe libbpf: Btf dedup identical struct test needs check for nested structs/arrays
 
-> Yes, please send as a separate patch. It's somewhat related to the
-> topic, but better to keep commits atomic.
->
+So, after running cmake in the build directory to update the libbpf
+submodule I'm not finding the above 3 commits:
 
-Roger that, I will write another patch with your suggestions (labeled
-'suggested-by your email address').
+⬢[acme@toolbox bpf]$ git log --oneline -1
+6597330c45d18538 (HEAD, tag: v1.1.0) sync: latest libbpf changes from kernel
+⬢[acme@toolbox bpf]$ 
 
-Thanks,
-Jason
+This matches with the "Subproject commit" below, then:
 
-> >
-> > If you're available, please help me review the v3 patch I've already
-> > sent to the mailing-list. Thanks anyway.
-> > The Link is https://lore.kernel.org/lkml/20230131032357.34029-1-kerneljasonxing@gmail.com/
-> > .
-> >
-> > Thanks,
-> > Jason
->
-> Thanks,
-> Olek
->
+⬢[acme@toolbox bpf]$ git log --oneline | egrep "Resolve unambigous forward declarations"\|"Resolve enum fwd as full enum64 and vice versa"\|"Btf dedup identical struct test needs check for nested structs/arrays"
+758331091179fe47 libbpf: Resolve unambigous forward declarations
+3a387f5a8fa8b25f libbpf: Resolve enum fwd as full enum64 and vice versa
+6ebbbacb5cb11840 libbpf: Btf dedup identical struct test needs check for nested structs/arrays
+⬢[acme@toolbox bpf]$
+
+So I'm updating the commits, ok?
+
+Thanks!
+
+- Arnaldo
+
+ 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  lib/bpf | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/bpf b/lib/bpf
+> index 645500d..6597330 160000
+> --- a/lib/bpf
+> +++ b/lib/bpf
+> @@ -1 +1 @@
+> -Subproject commit 645500dd7d2d6b5bb76e4c0375d597d4f0c4814e
+> +Subproject commit 6597330c45d185381900037f0130712cd326ae59
+> -- 
+> 1.8.3.1
