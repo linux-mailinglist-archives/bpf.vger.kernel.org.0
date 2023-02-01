@@ -2,89 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AD0685FB5
-	for <lists+bpf@lfdr.de>; Wed,  1 Feb 2023 07:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 722FE685FBC
+	for <lists+bpf@lfdr.de>; Wed,  1 Feb 2023 07:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbjBAGRB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Feb 2023 01:17:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
+        id S229891AbjBAG0P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Feb 2023 01:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjBAGRA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Feb 2023 01:17:00 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A578310F9
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 22:16:59 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id m7so16239027wru.8
-        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 22:16:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kel+mityrC9eNLIRxaecNWULDYsgmoq8gcjtounsZM8=;
-        b=jwqwkMFoOJOS2Z4fUJrIiZCm3qs/ffjDnZu/45tfIpLX/fcCPuYTGgKM7fi61z95Q/
-         VEVEbQ4gvBedUGO3hNaQg5pJg9+P2T4MpnLMqeYDryWsqGMmhBneN38p1Bualb8AVS+e
-         gf5/iYEA5twZ9E1Ogc0kcH3TacRkrYIQSYMcbJP85GZMD21OxssilNuoUwRW7s5vsKeF
-         Kqam38y+9uyz0gGsmsLcvu50I1w6Dh9wgui81gyNtztsZEDfUVWBNeftghv1unzLdH+x
-         fa4Po0AHidr+sNoDa3mp6HIrhFhn0gDIjwOkr/qUl9BazoDwjx4vFu8KjbFB1MW5f0kZ
-         DgTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Kel+mityrC9eNLIRxaecNWULDYsgmoq8gcjtounsZM8=;
-        b=6HeJ64VvUk8uhu0SnlB+2OuZiSM7rwNbFbiuDAcPuZnSXOgD6tF67eoEMALG9ty5x0
-         OzGlqCu8xR9Z352L3B1kERl2wCQW4mlYgk+zLdjS4JSk2KftKwSLtJ5h9V1Z0IlInmAw
-         NcMlYgpM31WZo1NZ++m31KtFSfwRT34jqBwk4b7kEX6T7zz2/TZAvfLv5XDeUJVpdsfL
-         zXG3cc69g6crZ10MoI7/eTn8BA+bblMs2Xs2RcixiDZ7z3oNTBs9Zum2eP+ZIwTD9t5N
-         5HwUufDFdNUDTpI4wL/tuHIYd/KJU7V9oU4owFnKtlkQZfV0N4qVA3NENdL6yVB1NKyw
-         PsyA==
-X-Gm-Message-State: AO0yUKWV5SRJ0Mn1Jwsfata9BkqVgWd2XwJfig4k9Q62YB/q/pSFDs6u
-        e+opuJVIFDaAaJumaP6eZ6e/PYnYPh1QM5swKSpT5XBx
-X-Google-Smtp-Source: AK7set9hIwLJ/D+w0bEjiWWDuZeBgKOhczCVHjt3Qg5N7xFfvyQOJHWroXZQDeNrg/hcCrLV0zmc+fy5ZM7VjaIv1EY=
-X-Received: by 2002:a5d:4e45:0:b0:2bf:f7c0:f94c with SMTP id
- r5-20020a5d4e45000000b002bff7c0f94cmr66334wrt.128.1675232217611; Tue, 31 Jan
- 2023 22:16:57 -0800 (PST)
+        with ESMTP id S229719AbjBAG0O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Feb 2023 01:26:14 -0500
+Received: from out-113.mta0.migadu.com (out-113.mta0.migadu.com [IPv6:2001:41d0:1004:224b::71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628CB38EB7
+        for <bpf@vger.kernel.org>; Tue, 31 Jan 2023 22:26:12 -0800 (PST)
+Message-ID: <cd2888bc-0828-e0e1-1a9e-e2a9b5d93181@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1675232769;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o51/xctERUG44DB0qNH2UTmv4u8pAyVO2fLD3z82Bi4=;
+        b=a3sWvmC6ZE1195bzSldEcPeGG6osiydmB1QLUKhQD257NOmJfbaDmLH/Do9s5CUoCLdaEJ
+        NskEgojeCL5SNbrHWzu4HFLWmLcA8rihELPbSmhCf49iRlsTwQfiAaSZYPhNgsVLaU8iIt
+        q6G6O0xrEcKqShrffHOb5JLYCsCPSZw=
+Date:   Tue, 31 Jan 2023 22:25:56 -0800
 MIME-Version: 1.0
-From:   Dushyant Behl <myselfdushyantbehl@gmail.com>
-Date:   Wed, 1 Feb 2023 11:46:45 +0530
-Message-ID: <CAHF350LaCGPZL_e__5s04PO466eGnA9uM61rc1eQAu-0N8jhJA@mail.gmail.com>
-Subject: Adding map read write API to bpftool gen skeleton sub command.
-To:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Cc:     palani.kodeswaran@in.ibm.com, sayandes@in.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [LSF/MM/BPF TOPIC] Multi-kfunc sets / restricted scoping
+Content-Language: en-US
+To:     David Vernet <void@manifault.com>,
+        lsf-pc@lists.linux-foundation.org
+Cc:     bpf@vger.kernel.org
+References: <Y9KLHZ1TNXVHdVKm@maniforge>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <Y9KLHZ1TNXVHdVKm@maniforge>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi folks,
+On 1/26/23 6:15 AM, David Vernet wrote:
+> I would like to propose discussing a potential new kfunc-related feature
+> at LSF/MM/BPF: Enabling kfuncs to be restricted to only being callable
+> from a subset of specific BPF programs, e.g. from only a subset of
+> callbacks defined in a struct_ops struct, rather than from any
+> struct_ops program.
+> 
+> Some kfuncs may not be safe or logical to call from all contexts. For
+> example, the backend kernel implementation which is invoking a
+> struct_ops callback may set some global state before calling into BPF,
+> and may thus expect that the state is set when the program calls back
+> into the kernel from that struct_ops callback, via a kfunc. If the kfunc
+> can't actually rely on that expectation, whether for safety reasons or
+> correctness reasons, it has to implement its own methodology for
+> ensuring it was called from the right context.
+> 
+> Providing developers with an ability to specify the specific programs
+> that a kfunc should be invokable from would address this problem, and
+> would avoid every kfunc implementation from having to implement its own
+> scope checking / validation where required.
+> 
+> I would like to discuss possible design approaches, UX approaches, etc.
+> 
+> Thoughts?
+SG. This can be combined together with your another kfunc topic (per-arg flags).
 
-I have been testing the use of BTF to generate read/write API on maps
-with specific key value types which can be extracted from the BTF
-info.
-I have already developed a small tool to test this which uses the BTF
-information in the ebpf binary to automatically generate map
-type-specific CRUD APIs. This can be built on top of the libbpf api in
-the sense that it can provide key and value type info and type
-checking on top of the existing api.
-
-Our goal is to ease the development of ebpf user space applications
-and was wondering if this feature could be integrated to "bpftool gen
-skeleton" sub command.=E2=80=A8I was wondering if you think that such a
-feature will be inline with the intent of bpftool and will be of value
-to its users.
-I am happy to have more discussion or a meeting on how this could be
-approached and implemented and if it would be a good addition to
-bpftool.
-
-Please let me know.
-
-Thanks,
-Dushyant
