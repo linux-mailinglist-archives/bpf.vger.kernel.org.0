@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CAD687DEB
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 13:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C702687DF6
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 13:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbjBBMx1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 07:53:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
+        id S232459AbjBBMzF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 07:55:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjBBMx0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 07:53:26 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C1D402F6;
-        Thu,  2 Feb 2023 04:53:15 -0800 (PST)
+        with ESMTP id S232285AbjBBMyy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 07:54:54 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F192E7E06E;
+        Thu,  2 Feb 2023 04:54:47 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E6FD8B82655;
-        Thu,  2 Feb 2023 12:53:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E356C433D2;
-        Thu,  2 Feb 2023 12:53:12 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9551DB82642;
+        Thu,  2 Feb 2023 12:54:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 243F9C433D2;
+        Thu,  2 Feb 2023 12:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675342392;
-        bh=lIYG9G3eXXBiCdhqDyaNCFdjb7UufWLfQlCBOY72k3M=;
+        s=k20201202; t=1675342485;
+        bh=+EPHg08aCa9UZ2s6YJYAW2ESddgw2LFkCJGtMrotMJI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V70IZs8WbeayTGg04pECw3Da2UlQG3GhOi/bQtUxZGCglwBd8S7HFVKdiGQH4AVC1
-         gFeJ/g6YEew3OKIkoYZ9ucHAq5GS6AYy7/ewU4H5D5MEKs+17FIl/30fGHsDNEJgZJ
-         sqs5Z+fM8/G7rsMp2/h5ooEYetWeVg/KFn7I4dlHVTLgJb7KLPCj+cqtJgf8KM8GN9
-         0LRbrUCTDY2pppGRssHityIFpwIQLi69kuwPJ22BebVTi4Eph5j9/ndAPtrsK752Ou
-         /ig4iiJ99LNh4FJWv1cK4Y2L2IPBSjqTeUvpMC1npdAFG2RAiPUDyBEDKVRkjJ/eRE
-         vzRgHzEEnmw0A==
+        b=i6ZNiAP/YYxarTe8TF3fVFdYwQGxhD/+w1KC/3dRRH3gSxYgLPjMkkbEYxZuHKVfW
+         Bv7FUzkdL1VmNjxPpAUugklPhaPCz6tafQng1BAne3khq6oqv6T4se2K2oU6Bdf2ZS
+         VOJhoCuFPFlBz4Q7gb6Lj0uZMfFhj2iJrokjprGTrNOQodSZWpz/Sy3/N9bOkj+nU/
+         b86G+PJWi+UWf/l/KI/WF+QrVGPC9lXn4VvySSrz21exBIT2LBLGxWu0oRnhV/I7ka
+         79XbCZsN/en6bVu4DMg7I8O3CaXm9pdhwc0I3pdcpHoMzJ5auhxX9QPVSarA+rmzfm
+         WCSS6Y4j9ut3w==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9F313405BE; Thu,  2 Feb 2023 09:53:09 -0300 (-03)
-Date:   Thu, 2 Feb 2023 09:53:09 -0300
+        id C08FE405BE; Thu,  2 Feb 2023 09:54:42 -0300 (-03)
+Date:   Thu, 2 Feb 2023 09:54:42 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Namhyung Kim <namhyung@kernel.org>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
@@ -43,18 +43,17 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
         Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/4] perf lock contention: Factor out
- lock_contention_get_name()
-Message-ID: <Y9uyNSA+UVjGBgpi@kernel.org>
+Subject: Re: [PATCH 0/4] perf lock contention: Improve aggr x filter
+ combination (v1)
+Message-ID: <Y9uykljo89Ub5ogb@kernel.org>
 References: <20230202050455.2187592-1-namhyung@kernel.org>
- <20230202050455.2187592-2-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230202050455.2187592-2-namhyung@kernel.org>
+In-Reply-To: <20230202050455.2187592-1-namhyung@kernel.org>
 X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,194 +61,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Feb 01, 2023 at 09:04:52PM -0800, Namhyung Kim escreveu:
-> The lock_contention_get_name() returns a name for the lock stat entry
-> based on the current aggregation mode.  As it's called sequentially in a
-> single thread, it can return the address of a static buffer for symbol
-> and offset of the caller.
+Em Wed, Feb 01, 2023 at 09:04:51PM -0800, Namhyung Kim escreveu:
+> Hello,
 > 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/bpf_lock_contention.c | 113 ++++++++++++++------------
->  1 file changed, 63 insertions(+), 50 deletions(-)
+> The callstack filter can be useful to debug lock issues but it has a
+> limitation that it only works with caller aggregation mode (which is the
+> default setting).  IOW it cannot filter by callstack when showing tasks
+> or lock addresses/names.
+
+Thanks, applied, the only nit was for a preexisting problem I only
+caught now in a refactoring, please consider fixing those.
+
+- Arnaldo
+ 
+> But sometimes users want to use the filter for other aggregation mode.
+> Like "show me lock addresses/names from this caller only" or "show me
+> tasks having these callers".
 > 
-> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-> index 4902ac331f41..967ce168f163 100644
-> --- a/tools/perf/util/bpf_lock_contention.c
-> +++ b/tools/perf/util/bpf_lock_contention.c
-> @@ -163,9 +163,68 @@ int lock_contention_stop(void)
->  	return 0;
->  }
->  
-> +static const char *lock_contention_get_name(struct lock_contention *con,
-> +					    struct contention_key *key,
-> +					    u64 *stack_trace)
-> +{
-> +	int idx = 0;
-> +	u64 addr;
-> +	const char *name = "";
-> +	static char name_buf[KSYM_NAME_LEN];
-> +	struct symbol *sym;
-> +	struct map *kmap;
-> +	struct machine *machine = con->machine;
-> +
-> +	if (con->aggr_mode == LOCK_AGGR_TASK) {
-> +		struct contention_task_data task;
-> +		struct thread *t;
-> +		int pid = key->aggr_key;
-> +		int task_fd = bpf_map__fd(skel->maps.task_data);
-> +
-
-I'm processing this as-is, but please consider to reduce the number of
-lines by declaring variables where they are needed, for instance, the
-'t' variable is only used inside the next if block, so it could have
-been:
-
-> +		/* do not update idle comm which contains CPU number */
-> +		if (pid) {
-> +			bpf_map_lookup_elem(task_fd, &pid, &task);
-> +			t = __machine__findnew_thread(machine, /*pid=*/-1, pid);
-
-+			struct thread *t = __machine__findnew_thread(machine, /*pid=*/-1, pid);
-
-But since __machine__findnew_thread() can fail, please check for that
-and send a new patch series... Humm, you're just factoring out, the
-problem was there before, so, to make progress, I'll process it as is
-and later we can add fixes, can you please look into that?
-
-> +			thread__set_comm(t, task.comm, /*timestamp=*/0);
-
-thread__set_comm() can fail as well.
-
-> +			name = task.comm;
-> +		}
-> +		return name;
-> +	}
-> +
-> +	if (con->aggr_mode == LOCK_AGGR_ADDR) {
-> +		sym = machine__find_kernel_symbol(machine, key->aggr_key, &kmap);
-> +		if (sym)
-> +			name = sym->name;
-
-Here you check :-)
-
-> +		return name;
-> +	}
-> +
-> +	/* LOCK_AGGR_CALLER: skip lock internal functions */
-> +	while (machine__is_lock_function(machine, stack_trace[idx]) &&
-> +	       idx < con->max_stack - 1)
-> +		idx++;
-> +
-> +	addr = stack_trace[idx];
-> +	sym = machine__find_kernel_symbol(machine, addr, &kmap);
-> +
-> +	if (sym) {
-> +		unsigned long offset;
-> +
-> +		offset = kmap->map_ip(kmap, addr) - sym->start;
-> +
-> +		if (offset == 0)
-> +			return sym->name;
-> +
-> +		snprintf(name_buf, sizeof(name_buf), "%s+%#lx", sym->name, offset);
-> +	} else {
-> +		snprintf(name_buf, sizeof(name_buf), "%#lx", (unsigned long)addr);
-> +	}
-> +
-> +	return name_buf;
-> +}
-> +
->  int lock_contention_read(struct lock_contention *con)
->  {
-> -	int fd, stack, task_fd, err = 0;
-> +	int fd, stack, err = 0;
->  	struct contention_key *prev_key, key;
->  	struct contention_data data = {};
->  	struct lock_stat *st = NULL;
-> @@ -175,7 +234,6 @@ int lock_contention_read(struct lock_contention *con)
->  
->  	fd = bpf_map__fd(skel->maps.lock_stat);
->  	stack = bpf_map__fd(skel->maps.stacks);
-> -	task_fd = bpf_map__fd(skel->maps.task_data);
->  
->  	con->lost = skel->bss->lost;
->  
-> @@ -195,9 +253,6 @@ int lock_contention_read(struct lock_contention *con)
->  
->  	prev_key = NULL;
->  	while (!bpf_map_get_next_key(fd, prev_key, &key)) {
-> -		struct map *kmap;
-> -		struct symbol *sym;
-> -		int idx = 0;
->  		s32 stack_id;
->  
->  		/* to handle errors in the loop body */
-> @@ -219,61 +274,19 @@ int lock_contention_read(struct lock_contention *con)
->  		st->flags = data.flags;
->  		st->addr = key.aggr_key;
->  
-> -		if (con->aggr_mode == LOCK_AGGR_TASK) {
-> -			struct contention_task_data task;
-> -			struct thread *t;
-> -			int pid = key.aggr_key;
-> -
-> -			/* do not update idle comm which contains CPU number */
-> -			if (st->addr) {
-> -				bpf_map_lookup_elem(task_fd, &pid, &task);
-> -				t = __machine__findnew_thread(machine, /*pid=*/-1, pid);
-> -				thread__set_comm(t, task.comm, /*timestamp=*/0);
-> -			}
-> -			goto next;
-> -		}
-> -
-> -		if (con->aggr_mode == LOCK_AGGR_ADDR) {
-> -			sym = machine__find_kernel_symbol(machine, st->addr, &kmap);
-> -			if (sym)
-> -				st->name = strdup(sym->name);
-> -			goto next;
-> -		}
-> -
->  		stack_id = key.aggr_key;
->  		bpf_map_lookup_elem(stack, &stack_id, stack_trace);
->  
-> -		/* skip lock internal functions */
-> -		while (machine__is_lock_function(machine, stack_trace[idx]) &&
-> -		       idx < con->max_stack - 1)
-> -			idx++;
-> -
-> -		st->addr = stack_trace[idx];
-> -		sym = machine__find_kernel_symbol(machine, st->addr, &kmap);
-> -
-> -		if (sym) {
-> -			unsigned long offset;
-> -			int ret = 0;
-> -
-> -			offset = kmap->map_ip(kmap, st->addr) - sym->start;
-> -
-> -			if (offset)
-> -				ret = asprintf(&st->name, "%s+%#lx", sym->name, offset);
-> -			else
-> -				st->name = strdup(sym->name);
-> -
-> -			if (ret < 0 || st->name == NULL)
-> -				break;
-> -		} else if (asprintf(&st->name, "%#lx", (unsigned long)st->addr) < 0) {
-> +		st->name = strdup(lock_contention_get_name(con, &key, stack_trace));
-> +		if (st->name == NULL)
->  			break;
-> -		}
->  
->  		if (con->save_callstack) {
->  			st->callstack = memdup(stack_trace, stack_size);
->  			if (st->callstack == NULL)
->  				break;
->  		}
-> -next:
-> +
->  		hlist_add_head(&st->hash_entry, con->result);
->  		prev_key = &key;
->  
+> When it's using tracepoint events from the data file, the situation is
+> good since the tracepoints have all the necessary info.  But when using
+> BPF it needs to extend the key of lock stat BPF map to have more than
+> one info like 'pid + stack_id' or 'lock_addr + stack_id'.  As callstack
+> filter works in userspace, it should save the both info.
+> 
+> With this change we can now use the -S/--callstack-filter with the
+> -t/--threads option or -l/--lock-addr option.  It's also possible to use
+> it with other filter options.
+> 
+> The following example shows the top 5 tasks that have contention
+> somewhere in the epoll handling.
+> 
+>   $ sudo perf lock con -abt -S epoll -E5 -- sleep 1
+>    contended   total wait     max wait     avg wait          pid   comm
+> 
+>            2     58.64 us     32.38 us     29.32 us      1514752   Chrome_IOThread
+>            3     29.31 us     12.65 us      9.77 us         3773   Xorg
+>            1     17.45 us     17.45 us     17.45 us      1514906   Chrome_ChildIOT
+>            1     15.41 us     15.41 us     15.41 us      1515382   Chrome_ChildIOT
+>            1     12.52 us     12.52 us     12.52 us       293878   IPC I/O Parent
+> 
+> You get get the code at 'perf/lock-filter-v1' branch in
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+> 
+> Thanks,
+> Namhyung
+> 
+> Namhyung Kim (4):
+>   perf lock contention: Factor out lock_contention_get_name()
+>   perf lock contention: Use lock_stat_find{,new}
+>   perf lock contention: Support filters for different aggregation
+>   perf test: Add more test cases for perf lock contention
+> 
+>  tools/perf/builtin-lock.c                     |  79 ++++----
+>  tools/perf/tests/shell/lock_contention.sh     |  66 ++++++-
+>  tools/perf/util/bpf_lock_contention.c         | 178 +++++++++++-------
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  |  15 +-
+>  tools/perf/util/bpf_skel/lock_data.h          |   4 +-
+>  tools/perf/util/lock-contention.h             |   5 +
+>  6 files changed, 234 insertions(+), 113 deletions(-)
+> 
+> 
+> base-commit: 7cfa9f5e440054db7c7e28e83a045d36993ff958
 > -- 
 > 2.39.1.456.gfc5497dd1b-goog
 > 
