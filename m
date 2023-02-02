@@ -2,167 +2,279 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2B16884E8
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 17:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDA0688536
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 18:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjBBQ5F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 11:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
+        id S231977AbjBBRRe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 12:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjBBQ5E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 11:57:04 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E78646FD33;
-        Thu,  2 Feb 2023 08:57:02 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6999C14;
-        Thu,  2 Feb 2023 08:57:44 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.141])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E0FC3F64C;
-        Thu,  2 Feb 2023 08:57:00 -0800 (PST)
-Date:   Thu, 2 Feb 2023 16:56:57 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Florent Revest <revest@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com
-Subject: Re: [PATCH 5/8] ftrace: Make DIRECT_CALLS work WITH_ARGS and
- !WITH_REGS
-Message-ID: <Y9vrWUM8ypNNwHyv@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230201163420.1579014-1-revest@chromium.org>
- <20230201163420.1579014-6-revest@chromium.org>
- <Y9vcua0+JzjmTICO@FVFF77S0Q05N.cambridge.arm.com>
+        with ESMTP id S232202AbjBBRRb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 12:17:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520EB728F8
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 09:16:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675358209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uy+Vya/fYh3PSRar8kQjLgK1zcHNT7rb/JLZXSZVFNA=;
+        b=SNOU7TdoOjEqs5AeWuHRutft9Vjq95MLBmTrfGfXwfsWuVU14q9s3fmMpnhcLIbBFN2z9C
+        3Vopaxz1s3X0amHtKkqLuHhgGwaPwVC7dxtDv+aZFfewEdYmz8/33tyMwMjUFKl6nmdaJ6
+        8q/HJQGGbzVrVJeW2VXGyEwjOPLVKeY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-549-Fx9rMQkvN5-3-FtFr9vgkw-1; Thu, 02 Feb 2023 12:16:48 -0500
+X-MC-Unique: Fx9rMQkvN5-3-FtFr9vgkw-1
+Received: by mail-wr1-f72.google.com with SMTP id f14-20020a0560001a8e00b002c3b562d76cso356110wry.12
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 09:16:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uy+Vya/fYh3PSRar8kQjLgK1zcHNT7rb/JLZXSZVFNA=;
+        b=cbiCIWX/Yg1miJM30dM9ymrVw6kpcQXj3okd9WuRLHpj0i3m7HTPy4rwbhX7iQfGZC
+         54zlCvPhlXXMCOndhzcd6WHD6olvXvjQLuutiYmZ5LBAikVuCd0hdpaDlAYitcaf0UF5
+         5uXEAWZSJq6pk8NzeDdcmvPwQae4nZ4M2pm8P0Xb8bp103orbQZlBVGjHEwdrSKWPEgs
+         rz1LCMDjg6CaeqcUWPoW4st1unCq088zyZQzf1PRJZ5gCUjsgkU392hLxxISJpS2U07A
+         FfTM/PL6kflFzGa3Qclm7OxsTHG2osArIhZm1FUDhskm8mFlLq/i+tE3UXzkzpTWu4zA
+         rn8w==
+X-Gm-Message-State: AO0yUKU8qSnxYAUtiBl8S56UgUbV1JDtjBibCmIChKL8sBKlG1VADJFV
+        9eDKmc1aXooFYdFGArjTbEidWjEzHc4gNDSfxhSEFqnnIRVUtjwMsFBn9VqxkqP9pS0sFOtY2p8
+        u5OZUM2ESmKo6
+X-Received: by 2002:a5d:678e:0:b0:2bc:aa67:28fb with SMTP id v14-20020a5d678e000000b002bcaa6728fbmr5237728wru.49.1675358206355;
+        Thu, 02 Feb 2023 09:16:46 -0800 (PST)
+X-Google-Smtp-Source: AK7set99wHFHlz7JJlOEHJxXx69qk5APn0sS5AATVtKlYWnjhoL70/xNO1BtCMLkdGIqpqEnGGDDLg==
+X-Received: by 2002:a5d:678e:0:b0:2bc:aa67:28fb with SMTP id v14-20020a5d678e000000b002bcaa6728fbmr5237705wru.49.1675358206151;
+        Thu, 02 Feb 2023 09:16:46 -0800 (PST)
+Received: from redhat.com ([2.52.156.122])
+        by smtp.gmail.com with ESMTPSA id t10-20020adff60a000000b002bbddb89c71sm12704wrp.67.2023.02.02.09.16.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 09:16:45 -0800 (PST)
+Date:   Thu, 2 Feb 2023 12:16:40 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Menglong Dong <imagedong@tencent.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Petr Machata <petrm@nvidia.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 18/33] virtio_net: receive_merageable() use
+ virtnet_xdp_handler()
+Message-ID: <20230202121547-mutt-send-email-mst@kernel.org>
+References: <20230202110058.130695-1-xuanzhuo@linux.alibaba.com>
+ <20230202110058.130695-19-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y9vcua0+JzjmTICO@FVFF77S0Q05N.cambridge.arm.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230202110058.130695-19-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 03:54:33PM +0000, Mark Rutland wrote:
-> On Wed, Feb 01, 2023 at 05:34:17PM +0100, Florent Revest wrote:
-> > -#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
-> > +#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT)
+On Thu, Feb 02, 2023 at 07:00:43PM +0800, Xuan Zhuo wrote:
+> receive_merageable() use virtnet_xdp_handler()
 > 
-> Unfortunately, I think this is broken for architectures where:
+> Meanwhile, support Multi Buffer XDP.
 > 
-> * DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
-> * DYNAMIC_FTRACE_WITH_REGS=y
-> * DYNAMIC_FTRACE_WITH_ARGS=n
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+
+typo
+
+> ---
+>  drivers/net/virtio/main.c | 88 +++++++++++++++------------------------
+>  1 file changed, 33 insertions(+), 55 deletions(-)
 > 
-> ... since those might pass a NULL ftrace_regs around, and so when using the
-> list ops arch_ftrace_set_direct_caller() might blow up accessing an element of
-> ftrace_regs.
-> 
-> It looks like 32-bit x86 is the only case with that combination, and its
-> ftrace_caller implementation passes a NULL regs, so I reckon that'll blow up.
-> However, it looks like there aren't any FTRACE_DIRECT samples wired up for
-> 32-bit x86, so I'm not aware of a test case we can use.
-
-FWIW, the FTRACE_STARTUP_TEST tickles this:
-
-[    1.896209] Testing tracer function_graph: 
-[    2.900282] BUG: kernel NULL pointer dereference, address: 0000002c
-[    2.901171] #PF: supervisor write access in kernel mode
-[    2.901171] #PF: error_code(0x0002) - not-present page
-[    2.901171] *pde = 00000000 
-[    2.901171] Oops: 0002 [#1] PREEMPT SMP
-[    2.901171] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.2.0-rc3-00014-gcfd6340c71ce #1
-[    2.901171] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-[    2.901171] EIP: call_direct_funcs+0xd/0x1c
-[    2.901171] Code: 00 00 00 00 90 a9 00 00 00 01 0f 84 d7 fe ff ff 0d 00 00 80 00 89 46 04 e9 d2 fe ff ff 8b 41 64 85 c0 74 11 55 89 e5 8b 55 08 <89> 42 2c 5d c3 8d b6 00 00 00 00 c3 8d 76 00 89 c1 89 b
-[    2.901171] EAX: cc3620e8 EBX: c1147e44 ECX: c1147e44 EDX: 00000000
-[    2.901171] ESI: fffffeff EDI: cc354208 EBP: c1147dbc ESP: c1147dbc
-[    2.901171] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
-[    2.901171] CR0: 80050033 CR2: 0000002c CR3: 0d703000 CR4: 00350ed0
-[    2.901171] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[    2.901171] DR6: fffe0ff0 DR7: 00000400
-[    2.901171] Call Trace:
-[    2.901171]  arch_ftrace_ops_list_func+0xf5/0x1bc
-[    2.901171]  ? ftrace_enable_ftrace_graph_caller+0x3b/0x44
-[    2.901171]  ? trace_selftest_startup_function_graph+0x1d9/0x298
-[    2.901171]  ? syscall_unregfunc+0xa0/0xa0
-[    2.901171]  ftrace_call+0x5/0x13
-[    2.901171]  trace_selftest_dynamic_test_func+0x5/0xc
-[    2.901171]  trace_selftest_startup_function_graph+0x1d9/0x298
-[    2.901171]  ? trace_selftest_dynamic_test_func+0x5/0xc
-[    2.901171]  ? trace_selftest_startup_function_graph+0x1d9/0x298
-[    2.901171]  ? ftrace_check_record+0x340/0x340
-[    2.901171]  ? ftrace_check_record+0x340/0x340
-[    2.901171]  ? ftrace_stub_graph+0x4/0x4
-[    2.901171]  ? trace_selftest_test_regs_func+0x18/0x18
-[    2.901171]  run_tracer_selftest+0x7d/0x1bc
-[    2.901171]  ? graph_depth_read+0x90/0x90
-[    2.901171]  register_tracer+0xd3/0x284
-[    2.901171]  ? register_trace_event+0xf6/0x180
-[    2.901171]  ? init_graph_tracefs+0x38/0x38
-[    2.901171]  init_graph_trace+0x56/0x78
-[    2.901171]  do_one_initcall+0x53/0x204
-[    2.901171]  ? parse_args+0x143/0x3ec
-[    2.901171]  ? __kmem_cache_alloc_node+0x2d/0x224
-[    2.901171]  kernel_init_freeable+0x198/0x2bc
-[    2.901171]  ? rdinit_setup+0x30/0x30
-[    2.901171]  ? rest_init+0xb0/0xb0
-[    2.901171]  kernel_init+0x1a/0x1d0
-[    2.901171]  ? schedule_tail_wrapper+0x9/0xc
-[    2.901171]  ret_from_fork+0x1c/0x28
-[    2.901171] Modules linked in:
-[    2.901171] CR2: 000000000000002c
-[    2.901171] ---[ end trace 0000000000000000 ]---
-[    2.901171] EIP: call_direct_funcs+0xd/0x1c
-[    2.901171] Code: 00 00 00 00 90 a9 00 00 00 01 0f 84 d7 fe ff ff 0d 00 00 80 00 89 46 04 e9 d2 fe ff ff 8b 41 64 85 c0 74 11 55 89 e5 8b 55 08 <89> 42 2c 5d c3 8d b6 00 00 00 00 c3 8d 76 00 89 c1 89 b
-[    2.901171] EAX: cc3620e8 EBX: c1147e44 ECX: c1147e44 EDX: 00000000
-[    2.901171] ESI: fffffeff EDI: cc354208 EBP: c1147dbc ESP: c1147dbc
-[    2.901171] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
-[    2.901171] CR0: 80050033 CR2: 0000002c CR3: 0d703000 CR4: 00350ed0
-[    2.901171] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[    2.901171] DR6: fffe0ff0 DR7: 00000400
-[    2.901171] note: swapper/0[1] exited with preempt_count 1
-[    2.901175] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
-[    2.902171] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009 ]---
-
-The below diff solved that for me.
-
-Thanks,
-Mark.
-
----->8----
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 84f717f8959e..3d2156e335d7 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -241,6 +241,12 @@ enum {
-        FTRACE_OPS_FL_DIRECT                    = BIT(17),
- };
- 
-+#ifndef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-+#define FTRACE_OPS_FL_SAVE_ARGS                        FTRACE_OPS_FL_SAVE_REGS
-+#else
-+#define FTRACE_OPS_FL_SAVE_ARGS                        0
-+#endif
-+
- /*
-  * FTRACE_OPS_CMD_* commands allow the ftrace core logic to request changes
-  * to a ftrace_ops. Note, the requests may fail.
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 73b6f6489ba1..8e739303b6a2 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5282,7 +5282,7 @@ static LIST_HEAD(ftrace_direct_funcs);
- 
- static int register_ftrace_function_nolock(struct ftrace_ops *ops);
- 
--#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT)
-+#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_ARGS)
- 
- static int check_direct_multi(struct ftrace_ops *ops)
- {
+> diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
+> index d7a856bd8862..fb82035a0b7f 100644
+> --- a/drivers/net/virtio/main.c
+> +++ b/drivers/net/virtio/main.c
+> @@ -483,8 +483,10 @@ int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
+>  			unsigned int *xdp_xmit,
+>  			struct virtnet_rq_stats *stats)
+>  {
+> +	struct skb_shared_info *shinfo;
+>  	struct xdp_frame *xdpf;
+> -	int err;
+> +	struct page *xdp_page;
+> +	int err, i;
+>  	u32 act;
+>  
+>  	act = bpf_prog_run_xdp(xdp_prog, xdp);
+> @@ -527,6 +529,13 @@ int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
+>  		trace_xdp_exception(dev, xdp_prog, act);
+>  		fallthrough;
+>  	case XDP_DROP:
+> +		if (xdp_buff_has_frags(xdp)) {
+> +			shinfo = xdp_get_shared_info_from_buff(xdp);
+> +			for (i = 0; i < shinfo->nr_frags; i++) {
+> +				xdp_page = skb_frag_page(&shinfo->frags[i]);
+> +				put_page(xdp_page);
+> +			}
+> +		}
+>  		return VIRTNET_XDP_RES_DROP;
+>  	}
+>  }
+> @@ -809,7 +818,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>  	unsigned int xdp_frags_truesz = 0;
+>  	struct page *page;
+>  	skb_frag_t *frag;
+> -	int offset;
+> +	int offset, i;
+>  	void *ctx;
+>  
+>  	xdp_init_buff(xdp, frame_sz, &rq->xdp_rxq);
+> @@ -842,7 +851,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>  				 dev->name, *num_buf,
+>  				 virtio16_to_cpu(vi->vdev, hdr->num_buffers));
+>  			dev->stats.rx_length_errors++;
+> -			return -EINVAL;
+> +			goto err;
+>  		}
+>  
+>  		stats->bytes += len;
+> @@ -861,7 +870,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>  			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+>  				 dev->name, len, (unsigned long)(truesize - room));
+>  			dev->stats.rx_length_errors++;
+> -			return -EINVAL;
+> +			goto err;
+>  		}
+>  
+>  		frag = &shinfo->frags[shinfo->nr_frags++];
+> @@ -876,6 +885,14 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>  
+>  	*xdp_frags_truesize = xdp_frags_truesz;
+>  	return 0;
+> +
+> +err:
+> +	for (i = 0; i < shinfo->nr_frags; i++) {
+> +		page = skb_frag_page(&shinfo->frags[i]);
+> +		put_page(page);
+> +	}
+> +
+> +	return -EINVAL;
+>  }
+>  
+>  static struct sk_buff *receive_mergeable(struct net_device *dev,
+> @@ -919,13 +936,10 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>  	xdp_prog = rcu_dereference(rq->xdp_prog);
+>  	if (xdp_prog) {
+>  		unsigned int xdp_frags_truesz = 0;
+> -		struct skb_shared_info *shinfo;
+> -		struct xdp_frame *xdpf;
+>  		struct page *xdp_page;
+>  		struct xdp_buff xdp;
+>  		void *data;
+>  		u32 act;
+> -		int i;
+>  
+>  		/* Transient failure which in theory could occur if
+>  		 * in-flight packets from before XDP was enabled reach
+> @@ -983,69 +997,33 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>  		err = virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, data, len, frame_sz,
+>  						 &num_buf, &xdp_frags_truesz, stats);
+>  		if (unlikely(err))
+> -			goto err_xdp_frags;
+> +			goto err_xdp;
+>  
+> -		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+> -		stats->xdp_packets++;
+> +		act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
+>  
+>  		switch (act) {
+> -		case XDP_PASS:
+> +		case VIRTNET_XDP_RES_PASS:
+>  			if (unlikely(xdp_page != page))
+>  				put_page(page);
+> +
+>  			head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
+>  			rcu_read_unlock();
+>  			return head_skb;
+> -		case XDP_TX:
+> -			stats->xdp_tx++;
+> -			xdpf = xdp_convert_buff_to_frame(&xdp);
+> -			if (unlikely(!xdpf)) {
+> -				netdev_dbg(dev, "convert buff to frame failed for xdp\n");
+> -				goto err_xdp_frags;
+> -			}
+> -			err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
+> -			if (unlikely(!err)) {
+> -				xdp_return_frame_rx_napi(xdpf);
+> -			} else if (unlikely(err < 0)) {
+> -				trace_xdp_exception(vi->dev, xdp_prog, act);
+> -				goto err_xdp_frags;
+> -			}
+> -			*xdp_xmit |= VIRTIO_XDP_TX;
+> -			if (unlikely(xdp_page != page))
+> -				put_page(page);
+> -			rcu_read_unlock();
+> -			goto xdp_xmit;
+> -		case XDP_REDIRECT:
+> -			stats->xdp_redirects++;
+> -			err = xdp_do_redirect(dev, &xdp, xdp_prog);
+> -			if (err)
+> -				goto err_xdp_frags;
+> -			*xdp_xmit |= VIRTIO_XDP_REDIR;
+> +
+> +		case VIRTNET_XDP_RES_CONSUMED:
+>  			if (unlikely(xdp_page != page))
+>  				put_page(page);
+> +
+>  			rcu_read_unlock();
+>  			goto xdp_xmit;
+> -		default:
+> -			bpf_warn_invalid_xdp_action(vi->dev, xdp_prog, act);
+> -			fallthrough;
+> -		case XDP_ABORTED:
+> -			trace_xdp_exception(vi->dev, xdp_prog, act);
+> -			fallthrough;
+> -		case XDP_DROP:
+> -			goto err_xdp_frags;
+> -		}
+> -err_xdp_frags:
+> -		if (unlikely(xdp_page != page))
+> -			__free_pages(xdp_page, 0);
+>  
+> -		if (xdp_buff_has_frags(&xdp)) {
+> -			shinfo = xdp_get_shared_info_from_buff(&xdp);
+> -			for (i = 0; i < shinfo->nr_frags; i++) {
+> -				xdp_page = skb_frag_page(&shinfo->frags[i]);
+> +		case VIRTNET_XDP_RES_DROP:
+> +			if (unlikely(xdp_page != page))
+>  				put_page(xdp_page);
+> -			}
+> -		}
+>  
+> -		goto err_xdp;
+> +			rcu_read_unlock();
+> +			goto err_xdp;
+> +		}
+>  	}
+>  	rcu_read_unlock();
+>  
+> -- 
+> 2.32.0.3.g01195cf9f
 
