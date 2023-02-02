@@ -2,122 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8728688322
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 16:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CEA68846D
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 17:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbjBBPyq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 10:54:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
+        id S230048AbjBBQbJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 11:31:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbjBBPyo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 10:54:44 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 110D0677A2;
-        Thu,  2 Feb 2023 07:54:38 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3FAFC14;
-        Thu,  2 Feb 2023 07:55:19 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.141])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD3763F64C;
-        Thu,  2 Feb 2023 07:54:35 -0800 (PST)
-Date:   Thu, 2 Feb 2023 15:54:33 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Florent Revest <revest@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com
-Subject: Re: [PATCH 5/8] ftrace: Make DIRECT_CALLS work WITH_ARGS and
- !WITH_REGS
-Message-ID: <Y9vcua0+JzjmTICO@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230201163420.1579014-1-revest@chromium.org>
- <20230201163420.1579014-6-revest@chromium.org>
+        with ESMTP id S229595AbjBBQbJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 11:31:09 -0500
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B43B261D7F;
+        Thu,  2 Feb 2023 08:31:04 -0800 (PST)
+Received: by mail-qt1-f179.google.com with SMTP id w3so2439681qts.7;
+        Thu, 02 Feb 2023 08:31:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m+MUUS/4z4ueE6F3pvqkDWo76t810rF7C4WYLJ9AavQ=;
+        b=eJFrJFL5yaSevbbd5mxK92ceN84dvXtb6nBPuI2LwoqHLsnMPh0j/guIHeQ1bFo/YB
+         FMa46jTIyZqXjtDqr2vdj8xTLB9HrVQO9cE7N3XAxPQx1zNR0vL2Vf3761yIFAsOT3vM
+         EEg2Vvh9/UfZ1IqYVnimJ8oUEzYRK5+Wz31ELtBHQzfHtEQtVuJToJQ5X9FzgLTsflmN
+         8kdU5qRcfjJYwOOX+jLeXn+Zuqc4L1+VrEPD/4QiCIhQ1rnz8o7X+jo+a4rXa8FMtA72
+         0P5LK2fQjhC7HXU0SarlGv1h29farwwrlrPGphz7NPc09d6rUPU2AZ4ltQMHHkMzv+ZC
+         hznw==
+X-Gm-Message-State: AO0yUKXCg9Mgiz0kw0mg0Rmfjd3v2G4YNfaOh2IoV2CFw24Hmi4pgeaV
+        Z40q3fw1ej9uhEZ0/MHRQsxVzrO7OkzdsyUN
+X-Google-Smtp-Source: AK7set8pPfzhuGzONBg5A/x7sj1wMDH8Ug5RSliF4jnj0uliOG1ubg0t2xBRgbkWYsy2IRfjN4GzHA==
+X-Received: by 2002:ac8:7d88:0:b0:3b9:a3e3:4d33 with SMTP id c8-20020ac87d88000000b003b9a3e34d33mr13289367qtd.12.1675355463426;
+        Thu, 02 Feb 2023 08:31:03 -0800 (PST)
+Received: from localhost ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id b25-20020ac844d9000000b003b82cb8748dsm11539311qto.96.2023.02.02.08.31.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 08:31:02 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, toke@redhat.com, brouer@redhat.com,
+        corbet@lwn.net, linux-doc@vger.kernel.org
+Subject: [PATCH bpf-next 0/3] Document kfunc lifecycle / stability expectations
+Date:   Thu,  2 Feb 2023 10:30:53 -0600
+Message-Id: <20230202163056.658641-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230201163420.1579014-6-revest@chromium.org>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 01, 2023 at 05:34:17PM +0100, Florent Revest wrote:
-> Direct called trampolines can be called in two ways:
-> - either from the ftrace callsite. In this case, they do not access any
->   struct ftrace_regs nor pt_regs
-> - Or, if a ftrace ops is also attached, from the end of a ftrace
->   trampoline. In this case, the call_direct_funcs ops is in charge of
->   setting the direct call trampoline's address in a struct ftrace_regs
-> 
-> Since "ftrace: pass fregs to arch_ftrace_set_direct_caller()", the later
-> case no longer requires a full pt_regs.
+BPF kernel <-> kernel API stability has been discussed at length over
+the last several weeks and months. Now that we've largely aligned over
+kfuncs being the way forward, and BPF helpers being considered frozen,
+it's time to document the expectations for kfunc lifecycles and
+stability so that everyone (BPF users, kfunc developers, and
+maintainers) are all aligned, and have a crystal-clear understanding of
+the expectations surrounding kfuncs.
 
-Minor nit, but could we please have the commit ID, e.g.
+This patch set adds that documentation to the main kfuncs documentation
+page via a new 'kfunc lifecycle expectations' section. The documentation
+describes how decisions are made in the kernel regarding whether to
+include, keep, deprecate, or change / remove a kfunc. As described very
+overtly in the patch set itself, but likely worth highlighting here:
 
-| Since commit:
-| 
-|   9705bc70960459ae ("ftrace: pass fregs to arch_ftrace_set_direct_caller()")
-| 
-| The latter case no longer requires a full pt_regs.
+"kfunc stability" does not mean, nor ever will mean, "BPF APIs may block
+development elsewhere in the kernel".
 
-> It only needs a struct
-> ftrace_regs so DIRECT_CALLS can work with both WITH_ARGS or WITH_REGS.
-> With architectures like arm64 already abandoning WITH_REGS in favor of
-> WITH_ARGS, it's important to have DIRECT_CALLS work WITH_ARGS only.
-> 
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
->  kernel/trace/Kconfig  | 2 +-
->  kernel/trace/ftrace.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> index 5df427a2321d..4496a7c69810 100644
-> --- a/kernel/trace/Kconfig
-> +++ b/kernel/trace/Kconfig
-> @@ -257,7 +257,7 @@ config DYNAMIC_FTRACE_WITH_REGS
->  
->  config DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->  	def_bool y
-> -	depends on DYNAMIC_FTRACE_WITH_REGS
-> +	depends on DYNAMIC_FTRACE_WITH_REGS || DYNAMIC_FTRACE_WITH_ARGS
->  	depends on HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->  
->  config DYNAMIC_FTRACE_WITH_CALL_OPS
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index b0426de11c45..73b6f6489ba1 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -5282,7 +5282,7 @@ static LIST_HEAD(ftrace_direct_funcs);
->  
->  static int register_ftrace_function_nolock(struct ftrace_ops *ops);
->  
-> -#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
-> +#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT)
+Rather, the intention and expectation is for kfuncs to be treated like
+EXPORT_SYMBOL_GPL symbols in the kernel. The goal is for kfuncs to be a
+safe and valuable option for maintainers and kfunc developers to extend
+the kernel, without tying anyone's hands, or imposing any kind of
+restrictions on maintainers in the same way that UAPI changes do.
 
-Unfortunately, I think this is broken for architectures where:
+Note that other proposals for this documentation have been made as well.
+Toke has proposed several iterations to this doc, with the latest being
+[0].
 
-* DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
-* DYNAMIC_FTRACE_WITH_REGS=y
-* DYNAMIC_FTRACE_WITH_ARGS=n
+[0]: https://lore.kernel.org/all/20230201174449.94650-1-toke@redhat.com/
 
-... since those might pass a NULL ftrace_regs around, and so when using the
-list ops arch_ftrace_set_direct_caller() might blow up accessing an element of
-ftrace_regs.
+David Vernet (3):
+  bpf/docs: Document kfunc lifecycle / stability expectations
+  bpf: Add KF_DEPRECATED kfunc flag
+  selftests/bpf: Add a selftest for the KF_DEPRECATED kfunc flag
 
-It looks like 32-bit x86 is the only case with that combination, and its
-ftrace_caller implementation passes a NULL regs, so I reckon that'll blow up.
-However, it looks like there aren't any FTRACE_DIRECT samples wired up for
-32-bit x86, so I'm not aware of a test case we can use.
+ Documentation/bpf/kfuncs.rst                  | 125 +++++++++++++++++-
+ include/linux/btf.h                           |   1 +
+ kernel/bpf/verifier.c                         |   8 ++
+ net/bpf/test_run.c                            |   5 +
+ .../selftests/bpf/prog_tests/kfunc_call.c     |   2 +
+ .../selftests/bpf/progs/kfunc_call_test.c     |  10 ++
+ 6 files changed, 146 insertions(+), 5 deletions(-)
 
-We could make the FTRACE_OPS_FL_SAVE_REGS flag conditional, or we could
-implement DYNAMIC_FTRACE_WITH_ARGS for 32-bit x86 and have
-DYNAMIC_FTRACE_WITH_DIRECT_CALLS depend solely on that.
+-- 
+2.39.0
 
-Thanks,
-Mark.
