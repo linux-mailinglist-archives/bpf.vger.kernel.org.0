@@ -2,82 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C752688060
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 15:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902F26880E5
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 16:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbjBBOrz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 09:47:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
+        id S231479AbjBBPBn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 10:01:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbjBBOrx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 09:47:53 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F67E8F53D;
-        Thu,  2 Feb 2023 06:47:49 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id y1so1946450wru.2;
-        Thu, 02 Feb 2023 06:47:49 -0800 (PST)
+        with ESMTP id S231478AbjBBPBl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 10:01:41 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09B82BEE7
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 07:01:39 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id pj1so1076668qkn.3
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 07:01:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1jg1FM+l1x90qZRI+1yXniygncn9Da3UxYbqywq4gpY=;
-        b=CrNUnrXXJMEMMhrHPxmBs1XGQMa7YxqjqYblWbTA3uR3de2kBsyU9biCdNkh5y/ykW
-         vuUWKJfKqc3D6zptmk1Jwi2DqdF/89tVGDYjhDcryv6+JrTDH+awQC5lsQGzkVFCM06/
-         kk3Dp33w8kpqYx7gXQz2LaMWTnWPPiRUKA8r7jtGY7OSRNCN2RM1UdfLv9eUDYgPpTAa
-         4i6fdtttpvw9JHfn8LBVSZnAuE80scqklJD80KF+mdfcGs/ugQVjrM2WF/kiO3UEuhC+
-         SvLb4EEX4KJH6P8RCSIVowFebZo3rNb5cUVc2K4KLxoL8v/8Vb89/1gLV+r5dPRKA77l
-         AT3Q==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oLBuC23YlkzNJJ9bFUSG7GcHohwhM4jWe1P5ffpoHfI=;
+        b=BuaU+P4J6x9okg5ikzm1q16mHqfr0E1jhjk539x1XmDXNqZldJwprxkkVo3RPAlvuX
+         wzApobl8hq1rbY7drkgHklzRhrZqasmN2kcest52sAMqleU9oHAikSSvd06y6HWwnINr
+         Zkxb4F6c1twkA2MfTSgND/Pd8877mn9KK7nc9EzvGyhn+zalgI8ZNz//L1PGMfh8vfhJ
+         L10W4c3BIPXAJrGHgj6KwZdVOcp0hBjfAttnfSwdjmuG76Iwk1F4+XQZf1W1WUaXJMYs
+         7KSeP9xm9/tT6GKBZ11IVwJDJOxUc4dzWF5ZqOa44c3ACCWDHrQZoHDQp4iu5E0hAOVP
+         qyyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1jg1FM+l1x90qZRI+1yXniygncn9Da3UxYbqywq4gpY=;
-        b=utAulXnD3EJwFtQ01FL/wiur6wklYgQmq3jJlJHU4i3S7HBUl44AQIPSbAthVDaSVJ
-         dZt1L93fD0L7hEGq86I+5jfUR1eYIAc1A+WKy7Bz2xtUZIsEvI4/wCRtdqh2UUmU83Da
-         Q2Xy8GyQMnr/Zk4T6qy5OilEzZ3URXi0OamIQjJ2c5slTFWHAfmPyr3zitCGVad7jfJs
-         hIHgq8UOPhWacHGR5s69d4kgijiSjE0ziMO9slRLPEx/GS2ORak3Z3DqngEngjAvUpXb
-         KWOGZIa8rzhRrD+UaU2S1YZgxkh+O81bO26IrH6ZLwSRkAsu/aRx7tMb26WJ98YJvDAT
-         8gag==
-X-Gm-Message-State: AO0yUKVyoV/IoQVWXt4gMi+smrAMnS2S03lyvoQaTFRLTSNxJBAzTCh2
-        PoX5xLl7M2pgiqChOJ6BMrQr9d4fr84DN06y
-X-Google-Smtp-Source: AK7set8fehSj0T9hBTlYwSrsIkFREbiUWEWCpLMiuMMQpN0NTg6HQ0be2OEaDS5lWPFDeb+zfp56gQ==
-X-Received: by 2002:adf:ed07:0:b0:2bf:f029:8ac7 with SMTP id a7-20020adfed07000000b002bff0298ac7mr5559202wro.67.1675349267983;
-        Thu, 02 Feb 2023 06:47:47 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id u15-20020a5d6daf000000b002bfe266d710sm1821764wrs.90.2023.02.02.06.47.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 06:47:47 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 2 Feb 2023 15:47:45 +0100
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [RFC 0/5] mm/bpf/perf: Store build id in file object
-Message-ID: <Y9vNEYsx/SQcN79y@krava>
-References: <20230201135737.800527-1-jolsa@kernel.org>
- <CAADnVQ+im7FwSqDcTLmMvfRcT9unwdHBeWG9Snw7W5Q-bcdWvg@mail.gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oLBuC23YlkzNJJ9bFUSG7GcHohwhM4jWe1P5ffpoHfI=;
+        b=zzhnEyMsUtA1NNgewmFYB8P+wsjXw1pyNwsjDdQIxUQXSudVm1vIqy3jGbeu4lQ+RY
+         j3EKJwmTnGsadrYyuJPllJv+1QDbJf7+MThpXqqBDDwEmCC/w3KRXhHr7qf2cjW387J9
+         U6qggwO2m/v7EFGj3XrSmgxNwiflIiHB4GLl1J7NeSG84G6OSCGizNBcFZ2hp9ISpzFD
+         qpn9CQGAG7cQH/w3eSdOmqZI0LkHiYBO9H3pasH+p58DlhwQFokk1P3UPs8E6gwQblNS
+         3y2vmqJNbFynsPA9n4jihs9Kt00u95Dqp57+S3dDKNdvAg8YihAxvEm/oL57tAWfl/1S
+         bJcw==
+X-Gm-Message-State: AO0yUKVrIB6rRk2bZi2OzqSqvPMYWZDZ8Li+tjmD7ustDZo5T8xmUYqi
+        rfUpsA0ZXSmC7cUXrllS98YrBgIlETBe5fR5lrM=
+X-Google-Smtp-Source: AK7set/sRrQmyA1JU85a11weQG62DJ5POsOsuA1qS6Nz5J1tjuvaOKHLgUxrmPYCbBeSOBwtTAnu6iYLQFqLTIJmwpM=
+X-Received: by 2002:a05:620a:2442:b0:728:8e9e:9887 with SMTP id
+ h2-20020a05620a244200b007288e9e9887mr709515qkn.385.1675350098284; Thu, 02 Feb
+ 2023 07:01:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+im7FwSqDcTLmMvfRcT9unwdHBeWG9Snw7W5Q-bcdWvg@mail.gmail.com>
+References: <20230202014158.19616-1-laoar.shao@gmail.com> <20230202014158.19616-3-laoar.shao@gmail.com>
+ <f18a3e-335c-ef3e-b572-73bd651138e4@gentwo.de>
+In-Reply-To: <f18a3e-335c-ef3e-b572-73bd651138e4@gentwo.de>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 2 Feb 2023 23:01:02 +0800
+Message-ID: <CALOAHbCCKF_N+Uu1Ka6fMeApwPNdU3B1Hz4J3_AcqHQ4vJOQ9w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/7] mm: percpu: introduce percpu_size()
+To:     Christoph Lameter <cl@gentwo.de>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+        dennis@kernel.org, akpm@linux-foundation.org, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, vbabka@suse.cz,
+        urezki@gmail.com, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -88,33 +73,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 03:15:39AM -0800, Alexei Starovoitov wrote:
-> On Wed, Feb 1, 2023 at 5:57 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > hi,
-> > we have a use cases for bpf programs to use binary file's build id.
-> >
-> > After some attempts to add helpers/kfuncs [1] [2] Andrii had an idea [3]
-> > to store build id directly in the file object. That would solve our use
-> > case and might be beneficial for other profiling/tracing use cases with
-> > bpf programs.
-> >
-> > This RFC patchset adds new config CONFIG_FILE_BUILD_ID option, which adds
-> > build id object pointer to the file object when enabled. The build id is
-> > read/populated when the file is mmap-ed.
-> >
-> > I also added bpf and perf changes that would benefit from this.
-> >
-> > I'm not sure what's the policy on adding stuff to file object, so apologies
-> > if that's out of line. I'm open to any feedback or suggestions if there's
-> > better place or way to do this.
-> 
-> struct file represents all files while build_id is for executables only,
-> and not all executables, but those currently running, so
-> I think it's cleaner to put it into vm_area_struct.
+On Thu, Feb 2, 2023 at 10:32 PM Christoph Lameter <cl@gentwo.de> wrote:
+>
+> On Thu, 2 Feb 2023, Yafang Shao wrote:
+>
+> > +     bits = end - bit_off;
+> > +     size = bits * PCPU_MIN_ALLOC_SIZE;
+> > +
+> > +     return pcpu_obj_full_size(size);
+>
+> Dont you have to multiply by the number of online cpus? The per cpu area
+> are duplicated for those.
 
-I thought file objects would be shared to some extend and we might save
-some memory keeping the build id objects there, but not sure it's really
-the case now.. will check, using vma might be also easier
+It is multiplied in pcpu_obj_full_size().
 
-jirka
+-- 
+Regards
+Yafang
