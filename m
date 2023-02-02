@@ -2,133 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F456874DE
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 06:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBE26874E1
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 06:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231717AbjBBFBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 00:01:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        id S229642AbjBBFFA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 00:05:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbjBBFBa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 00:01:30 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2045.outbound.protection.outlook.com [40.107.93.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8050E6950F;
-        Wed,  1 Feb 2023 21:01:24 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dA4YuBMSuVI3dUTmzNavMwdXQyAt/CWODHIUael0hXFjiLJrY8dg7tmwHP94iqcCUI1rdH0P5MH1gPhsStVSe6NFzW9NzmUXwLgIlHA2Z1O6ctA8ODHBRHBevb1BXntSZ6dIJS8dZq05xkkprFqV3m6yi8Ph7x4M6Sbip3M23io+aexH/JDERYjy8jBUIY8r+h4Sa8Vx6U5dko2pMpF0qHMStmCNB97WRhTnrWn0BDNLE5wHtJHwyWr+QdLxSZwThK0KVIPTHm/3icNPo/T3PytllCWRoacXdU0UWx4Nx8rTO548KmS6BJlHAZHRtbMv7qo/X+QanGkQaEfidj/g2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iO5HULnnh0BYkJT/o+BWil1sMZO52G1Bx+6MxYfsrV0=;
- b=BRaZZK9jhZCsNfPphapEXURb9GjB1X+aYtNdGY1LNznRUnuFX3bFPf5DEkeDaWcsRNx4aMRLuStTCbqRZcgmL5g+ZQEd9Gk5PDVjfVKH7apYVe3AKnd50/ogcmJ4xFOGhSCiPOKdsGSuTWVXLNsCxKGxR1roe+OaDpkXI3jkjxL0uiHN1fe3zBAL++M4wJs+36F3LCyIaZY/3AQ00fMZLbLHxvlDDqIr141Nro7h88aw2IRHQy56ZZOX2O1a53I7K4Ldkr2OvxOkOvD4xR91U/sKeQqvLNh5HLqhAadm4YPJBJRABhT9Bg4a4b8evzXEnf1ckH839cSQ0o8LB0RV3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iO5HULnnh0BYkJT/o+BWil1sMZO52G1Bx+6MxYfsrV0=;
- b=pi6fT25wui26EkeYjiGN8bwuz0OYPWGMq6XzpZkmcsvMiwh3wHqEu2aJu2QnuFP4IyGPbNUTmf6kVGzr72UglcyoRhcwqOu0XtmTmK8/3nCB8A/yQ3NXNMkw6SGw4qHD7k3MWec9Tch9Hb3AQSP7dXlO8omx26hyMNMMx6M2jrs+AyqeFS+DBwPPxaiZCFF/wppas6ReWP0DgOI9mgQjYNKyeZUdZeEFPJRmWg5naFoebGQ+70hpF4L9bn/wOPC4sAUAX/a+TQwQHIKLJppDi++yaf0h3FwIUvQ+zt+Vgd52ewLIdqWOPIzx0I44GPP3Ldj9S/GpZQvklI4W5TXNBQ==
-Received: from BN9PR03CA0641.namprd03.prod.outlook.com (2603:10b6:408:13b::16)
- by MN0PR12MB6222.namprd12.prod.outlook.com (2603:10b6:208:3c2::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.25; Thu, 2 Feb
- 2023 05:01:22 +0000
-Received: from BN8NAM11FT086.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:13b:cafe::b2) by BN9PR03CA0641.outlook.office365.com
- (2603:10b6:408:13b::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.27 via Frontend
- Transport; Thu, 2 Feb 2023 05:01:22 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN8NAM11FT086.mail.protection.outlook.com (10.13.176.220) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6064.27 via Frontend Transport; Thu, 2 Feb 2023 05:01:22 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Wed, 1 Feb 2023
- 21:01:02 -0800
-Received: from sw-mtx-036.mtx.labs.mlnx (10.126.231.37) by
- rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 1 Feb 2023 21:01:00 -0800
-From:   Parav Pandit <parav@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <netdev@vger.kernel.org>
-CC:     <edumazet@google.com>, <pabeni@redhat.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>,
-        "Parav Pandit" <parav@nvidia.com>
-Subject: [PATCH 2/2] virtio-net: Maintain reverse cleanup order
-Date:   Thu, 2 Feb 2023 07:00:38 +0200
-Message-ID: <20230202050038.3187-3-parav@nvidia.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20230202050038.3187-1-parav@nvidia.com>
-References: <20230202050038.3187-1-parav@nvidia.com>
+        with ESMTP id S229651AbjBBFFA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 00:05:00 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B6813D6F;
+        Wed,  1 Feb 2023 21:04:59 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id b5so734530plz.5;
+        Wed, 01 Feb 2023 21:04:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=R0tc7/8E01DSEPlgGlBLAhea+NkOTJGGCeqxDO2l9is=;
+        b=aYKDxdFzWm0VsQWWGRFnUmPGy5i3KtoBAa5VGTHfg7T6ts0uICPU4COZjD0ANDl2q7
+         sT4hjskqYL+57eAT8sQilzV1p7sNWrseUvS4rgaTcCqsnDfLW0073AZHfBGq5Zsauc3D
+         ZFDRC5ew/sj2xrzl+2qdPJpR05ZU5z5MoP08hOI68X/+n/mjWkSG8gHtwDz7W7SJ3r56
+         itPamYEmXl7Yp8jhDjiivuY/R/xrYvlEnSH4tTbisrLZ2c0B8+0V7ONFmWd3ulHKoDvo
+         hTP1ILuSptmwCJOUZiArTwpvy+/QBKtmspZYaB6aWdzHy7dRceLx5TPXJcN6/gAnrHdN
+         AxFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R0tc7/8E01DSEPlgGlBLAhea+NkOTJGGCeqxDO2l9is=;
+        b=AWorGOX7gnOVqRyHdzWSUyOIfgKRcjP4say+RmBXs5hh0G2Yq8RCQoa1ZEVW0Wbsk0
+         zEYdqs92zpIYkZ1BpQ+ri2glZEXkUDbcDE9wnMjhVrquX0blorqyvfjLGOl7mjfmEmNx
+         nTdJmcFRapNojqQtoeCOAwHips5ZV5NWpr5JCJmcepjQZolo2KTskk8gUNckcmgyWmyQ
+         O93Zc7Uh4CGZEzjoIFYhcgi0OXw+ujmOjCZ0Yj0VO97jDw7+yNxvK2RaxD5VIqkKracD
+         RPXvtPIkDV3Fm5wbdgba6VETqdBAZ5NlI2mhFUDCGUe3Wu4uqBBW78PD0/vkT0NRIS15
+         Fv7A==
+X-Gm-Message-State: AO0yUKUrv4xYRjaqFRJLSRSDZMVI3Qs9Apra9o6EqkS3K70flvzKTNkk
+        O1jInIyfT7zpEb4M7MC4Pko=
+X-Google-Smtp-Source: AK7set/6PXGlxwyxrWotnkRud7UNs3S4vvWO0Nh1F7lFki7c2O8vL8XJnIv/ScKPYPvl6ByiTdnF5Q==
+X-Received: by 2002:a17:90b:1b09:b0:22c:8baa:c7e6 with SMTP id nu9-20020a17090b1b0900b0022c8baac7e6mr5166978pjb.20.1675314298419;
+        Wed, 01 Feb 2023 21:04:58 -0800 (PST)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:ff0:8899:7288:e54d:8b87])
+        by smtp.gmail.com with ESMTPSA id t3-20020a17090aba8300b0022bb3ee9b68sm2238374pjr.13.2023.02.01.21.04.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Feb 2023 21:04:57 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: [PATCH 0/4] perf lock contention: Improve aggr x filter combination (v1)
+Date:   Wed,  1 Feb 2023 21:04:51 -0800
+Message-Id: <20230202050455.2187592-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.39.1.456.gfc5497dd1b-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.126.231.37]
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT086:EE_|MN0PR12MB6222:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3c5d65d4-e7dc-479f-2ea9-08db04da87a4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BFHjnYTTCK39E2rpHn0T6BPjo6So/xSZYV4iMDG0kItoXUXuujgh2jW9S4VYjHn4jMJTwpPv0P+XCk83N6NiIBNstSsnE7Ox0yC8RVtm5lf8EOVSzdlP7SbtI6mJ3hHTupIN6Mkrpvmfq4WKPzeImwcfPou4MxgEZ6dLJTvTS1v8MHB52bokDfznbDsoPTXGIVB3gutHuXMPj0O3IYbRkwrmTvUFpWwvUXGpre7D1qYMkZV/B5XhCM7YRfV6wXH7G7+3lHKxJtewtJSIqslrTJAvB0WC08tDbvfyTjKiDNKAGC/h/aEyfHYH9nQ0hpK9H0sGs0CUDtp3ApzIRqJzggiv5Jh8JlPn2rqxwt7dvngkMGWVexnik/hRfVefsbYYLqULBwYg8tS7ZiEcc45qwrixt0ooH2Z+xazWDFsq+rm/MJ4W4akTVSSoYhCsSLzSns1jx4BP+yYXQmE0UermDR7VdhZG9sL0t6XdI9pdVYMk93inWnEbgcDGJgXwQK0FCtWgdmLUaBZbnZWnzHRftHS+8F9MpsVesmY7pcmNGgDKQgxwodSf5Svf5IE5AztaT8wRyVvytWCAef26MJ2DF3tLlH7xHoboRB5vmNun6FSll6LpOEUHZpso1mgV67ODJFjRmRQzX3j2afHcdkctFJdAj2RDdUACisbaJuHR6F6KJvEilE9qZ5Sz6JsrsHoVDlSqKBQBku2tTW8GPFFFOg==
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230025)(4636009)(396003)(39860400002)(376002)(136003)(346002)(451199018)(40470700004)(36840700001)(46966006)(336012)(83380400001)(6666004)(107886003)(54906003)(110136005)(316002)(47076005)(2616005)(426003)(36756003)(2906002)(82310400005)(7636003)(36860700001)(1076003)(40460700003)(70206006)(16526019)(70586007)(26005)(186003)(8676002)(478600001)(356005)(40480700001)(41300700001)(7416002)(86362001)(4326008)(82740400003)(5660300002)(8936002)(4744005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2023 05:01:22.5935
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c5d65d4-e7dc-479f-2ea9-08db04da87a4
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT086.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6222
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To easily audit the code, better to keep the device stop()
-sequence to be mirror of the device open() sequence.
+Hello,
 
-Signed-off-by: Parav Pandit <parav@nvidia.com>
----
- drivers/net/virtio_net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The callstack filter can be useful to debug lock issues but it has a
+limitation that it only works with caller aggregation mode (which is the
+default setting).  IOW it cannot filter by callstack when showing tasks
+or lock addresses/names.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index b7d0b54c3bb0..1f8168e0f64d 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2279,9 +2279,9 @@ static int virtnet_close(struct net_device *dev)
- 	cancel_delayed_work_sync(&vi->refill);
- 
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		virtnet_napi_tx_disable(&vi->sq[i].napi);
- 		napi_disable(&vi->rq[i].napi);
- 		xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
--		virtnet_napi_tx_disable(&vi->sq[i].napi);
- 	}
- 
- 	return 0;
+But sometimes users want to use the filter for other aggregation mode.
+Like "show me lock addresses/names from this caller only" or "show me
+tasks having these callers".
+
+When it's using tracepoint events from the data file, the situation is
+good since the tracepoints have all the necessary info.  But when using
+BPF it needs to extend the key of lock stat BPF map to have more than
+one info like 'pid + stack_id' or 'lock_addr + stack_id'.  As callstack
+filter works in userspace, it should save the both info.
+
+With this change we can now use the -S/--callstack-filter with the
+-t/--threads option or -l/--lock-addr option.  It's also possible to use
+it with other filter options.
+
+The following example shows the top 5 tasks that have contention
+somewhere in the epoll handling.
+
+  $ sudo perf lock con -abt -S epoll -E5 -- sleep 1
+   contended   total wait     max wait     avg wait          pid   comm
+
+           2     58.64 us     32.38 us     29.32 us      1514752   Chrome_IOThread
+           3     29.31 us     12.65 us      9.77 us         3773   Xorg
+           1     17.45 us     17.45 us     17.45 us      1514906   Chrome_ChildIOT
+           1     15.41 us     15.41 us     15.41 us      1515382   Chrome_ChildIOT
+           1     12.52 us     12.52 us     12.52 us       293878   IPC I/O Parent
+
+You get get the code at 'perf/lock-filter-v1' branch in
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Thanks,
+Namhyung
+
+Namhyung Kim (4):
+  perf lock contention: Factor out lock_contention_get_name()
+  perf lock contention: Use lock_stat_find{,new}
+  perf lock contention: Support filters for different aggregation
+  perf test: Add more test cases for perf lock contention
+
+ tools/perf/builtin-lock.c                     |  79 ++++----
+ tools/perf/tests/shell/lock_contention.sh     |  66 ++++++-
+ tools/perf/util/bpf_lock_contention.c         | 178 +++++++++++-------
+ .../perf/util/bpf_skel/lock_contention.bpf.c  |  15 +-
+ tools/perf/util/bpf_skel/lock_data.h          |   4 +-
+ tools/perf/util/lock-contention.h             |   5 +
+ 6 files changed, 234 insertions(+), 113 deletions(-)
+
+
+base-commit: 7cfa9f5e440054db7c7e28e83a045d36993ff958
 -- 
-2.26.2
+2.39.1.456.gfc5497dd1b-goog
 
