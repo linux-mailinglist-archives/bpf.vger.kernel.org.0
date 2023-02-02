@@ -2,169 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34775687C57
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85253687C6B
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbjBBLdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 06:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+        id S231733AbjBBLgr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Feb 2023 06:36:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232168AbjBBLct (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 06:32:49 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4C48AC19;
-        Thu,  2 Feb 2023 03:32:36 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id d14so1395028wrr.9;
-        Thu, 02 Feb 2023 03:32:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pUsF6Q+s4fboI4afVIjhwNpT1taWE989m3DLZIX71Z0=;
-        b=Bk6GGl6E4nNpoDDwJOi52GtbpFORoTqsWjgYixfUSAJrdE7iziw65rdNE8tnvvvVFH
-         e8dfZokXLs43k9VzST+A5bG8r8P3OnbOSJTq85ov6M67qbUCeSqBIKhMAe1T686gwS0D
-         AX+qt7FVXekdtMm3eofM62Tw8GvPc4Ckx/Y9fQHOyxPWZRq+7a86bTw8YnShGRXoISyL
-         y3jZ8Gm690B+6OyF3QUrcj8ykE9fSYdurYYgY0KASnz11DX51szkNG3VKb5fqPjIeqxg
-         GEvdN00iV+3PYfHoOvIPS1998O+cpSEUqAS85+2yN3mQT8VnfjuBuCrIU77F97qGeGRH
-         Gxug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pUsF6Q+s4fboI4afVIjhwNpT1taWE989m3DLZIX71Z0=;
-        b=BBeHk3UE2jaC7rgu28Np/c0L34z321wGwkQzbNvIVMTkkVb6SacHBGNVydguhuPUrp
-         gdc5jc3ZAfRV0jeBGYHLDCq1Vu+JUc1FijnBffWtPtLS7zq3UYbJa1IpQi0MxTU/kD7P
-         ClRu95gq6szqiwgpOnLm2KxOcIt6JAKYq2TNb3hRxQaccJlCnyDgkPvic64oqca2on6x
-         wB4GCSzXeLw12IVr0i7k++4dqJZ4g75WlsyvsekVgLi2EDCHccQ6efj+CCvLGfARGwa3
-         UKiWFgnsf5i1r44ueSxqjEC3UPM/NvR1NT/sDdkyJTPa5doommxJ+ABTLY/3qvmRXxgP
-         CJ7w==
-X-Gm-Message-State: AO0yUKXWStIt7bgmm99slSq/R/UEv7UmQ0hZoq669ysCehT4qMo97uMs
-        aAfp+Myh96O6l/CXhpSy5sY=
-X-Google-Smtp-Source: AK7set9Gyw3LYvIMkWMgSGVcfZCuXWfjDeOi0kV4eOoEgid6etjDTPPQdj7d9eCr7hCxJii0daVJdw==
-X-Received: by 2002:a05:6000:16c4:b0:2bf:be35:2303 with SMTP id h4-20020a05600016c400b002bfbe352303mr6174926wrf.34.1675337555096;
-        Thu, 02 Feb 2023 03:32:35 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id t1-20020adfe441000000b002bfd524255esm16843929wrm.43.2023.02.02.03.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 03:32:34 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 2 Feb 2023 12:32:33 +0100
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Ian Rogers <irogers@google.com>,
+        with ESMTP id S230003AbjBBLgq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 06:36:46 -0500
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.221.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557768A64
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 03:36:44 -0800 (PST)
+X-QQ-mid: bizesmtp74t1675337782tj4gafyc
+Received: from smtpclient.apple ( [1.202.165.115])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 02 Feb 2023 19:36:19 +0800 (CST)
+X-QQ-SSF: 0100000000000080B000000A0000000
+X-QQ-FEAT: xsBrTKm2GcgjqomKD5+qJx+cTBnvKxMr9MXejoc0z+ITZdnYZT8zgTV+HnC95
+        9EECSRsNVqk8O3X5LHTW8D61aL6BzHHuY1dS3wER8Zrb6snTRRUhAiE4Gg905HWGUt+k9+T
+        S4bHUcI3RB+32xUH9TIFNShaHa7maeWzxGCWkVjcJMTE6Bhu38T8VtAxiNKOuQQGAUg6adk
+        VTgeYy0TM9U7aDPQgBC6KLYgX/sRmmsyCINeIzTDHM2vkiMdP7CHdC9G1ocw47K6sWIu15G
+        YzLF+zyTFXfqmVNA1J7/ib4bT9CTLTX0DG9wg7Ja4CwuVwaDTvWC2blbSozRiVFcIG1SmEs
+        vTd1tQ6AQmE3a4kNwY/nDjY3+GYm4mn4Zu0qcRP
+X-QQ-GoodBg: 0
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [bpf-next v2] bpftool: profile online CPUs instead of possible
+From:   Tonghao Zhang <tong@infragraf.org>
+In-Reply-To: <fb4004dd-597a-e741-27cc-b0cd03bc2172@iogearbox.net>
+Date:   Thu, 2 Feb 2023 19:36:19 +0800
+Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Connor OBrien <connoro@google.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] tools/resolve_btfids: Tidy host CFLAGS forcing
-Message-ID: <Y9ufUdzOSp9y9qQA@krava>
-References: <20230201015015.359535-1-irogers@google.com>
- <Y9o4H61YmbOSCDOG@krava>
- <Y9pCY5IcYEqfNgBX@krava>
- <CAP-5=fVHFMJvaY_UE4QdV-PW+gy1EuyiHDXqWJmHVxS9Mr3XEQ@mail.gmail.com>
- <Y9rQnu6KPj1t8Rog@krava>
- <Y9rXzIm3UY7lzYFt@dev-arch.thelio-3990X>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9rXzIm3UY7lzYFt@dev-arch.thelio-3990X>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <38619A73-7E42-46C7-88CE-27A42DFF4224@infragraf.org>
+References: <20230201122404.4256-1-tong@infragraf.org>
+ <fb4004dd-597a-e741-27cc-b0cd03bc2172@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 01, 2023 at 02:21:16PM -0700, Nathan Chancellor wrote:
 
-SNIP
 
-> > > Should we do this and the hostprogs migration as a follow up? There
-> > > isn't that much use of hostprogs in tools, but I like that your change
-> > > will show HOSTCC rather than CC during compilation. If we use
-> > > hostprogs can we just avoid the overrides altogether?
-> > 
-> > right, I think so.. we can now remove it for the BINARY target and
-> > then for the rest of 'prepare' once they are converted to hostprogs..
-> > not sure how 'hostprogs' will work for library, will need to check
-> > 
-> > I'll try to send the format patch with the fix below tomorrow
-> > 
-> > Nathan, any chance you could test it?
+> On Feb 2, 2023, at 7:15 PM, Daniel Borkmann <daniel@iogearbox.net> wrote:
+> 
+> On 2/1/23 1:24 PM, tong@infragraf.org wrote:
+>> From: Tonghao Zhang <tong@infragraf.org>
+>> The number of online cpu may be not equal to possible cpu.
+>> bpftool prog profile, can not create pmu event on possible
+>> but on online cpu.
+>> $ dmidecode -s system-product-name
+>> PowerEdge R620
+>> $ cat /sys/devices/system/cpu/online
+>> 0-31
+>> $ cat /sys/devices/system/cpu/possible
+>> 0-47
+>> BTW, we can disable CPU dynamically:
+>> $ echo 0 > /sys/devices/system/cpu/cpuX/online
+>> If CPU is offline, perf_event_open will return ENODEV.
+>> To fix this issue, check the value returned and skip
+>> offline CPU.
+>> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
+>> Cc: Quentin Monnet <quentin@isovalent.com>
+>> Cc: Alexei Starovoitov <ast@kernel.org>
+>> Cc: Daniel Borkmann <daniel@iogearbox.net>
+>> Cc: Andrii Nakryiko <andrii@kernel.org>
+>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+>> Cc: Song Liu <song@kernel.org>
+>> Cc: Yonghong Song <yhs@fb.com>
+>> Cc: John Fastabend <john.fastabend@gmail.com>
+>> Cc: KP Singh <kpsingh@kernel.org>
+>> Cc: Stanislav Fomichev <sdf@google.com>
+>> Cc: Hao Luo <haoluo@google.com>
+>> Cc: Jiri Olsa <jolsa@kernel.org>
+>> ---
+>> v1:
+>> https://patchwork.kernel.org/project/netdevbpf/patch/20230117044902.98938-1-tong@infragraf.org/
+>> https://patchwork.kernel.org/project/netdevbpf/patch/20230117044902.98938-2-tong@infragraf.org/
+>> ---
+>>  tools/bpf/bpftool/prog.c | 36 ++++++++++++++++++++++++++++--------
+>>  1 file changed, 28 insertions(+), 8 deletions(-)
+>> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+>> index cfc9fdc1e863..f48067cb0496 100644
+>> --- a/tools/bpf/bpftool/prog.c
+>> +++ b/tools/bpf/bpftool/prog.c
+>> @@ -2233,10 +2233,36 @@ static void profile_close_perf_events(struct profiler_bpf *obj)
+>>  	profile_perf_event_cnt = 0;
+>>  }
+>>  +static int profile_open_perf_event(int mid, int cpu, int map_fd)
+>> +{
+>> +	int pmu_fd;
+>> +
+>> +	pmu_fd = syscall(__NR_perf_event_open, &metrics[mid].attr,
+>> +			 -1/*pid*/, cpu, -1/*group_fd*/, 0);
+>> +	if (pmu_fd < 0) {
+>> +		if (errno == ENODEV) {
+>> +			p_info("cpu %d may be offline, skip %s metric profiling.",
+>> +				cpu, metrics[mid].name);
+>> +			profile_perf_event_cnt++;
+>> +			return 0;
+>> +		}
+>> +		return -1;
+>> +	}
+>> +
+>> +	if (bpf_map_update_elem(map_fd,
+>> +				&profile_perf_event_cnt,
+>> +				&pmu_fd, BPF_ANY) ||
+>> +	    ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0))
+>> +		return -1;
+> 
+> This leaks pmu_fd here, no? We should close fd on error as the later call to
+> profile_close_perf_events() only closes those which are in profile_perf_events[]
+> array.
+Yes. I will fix this issue. Seem this issue introduced by 47c09d6a9f67. I will add fix tag in next version.
+
+Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
+Cc: Song Liu <songliubraving@fb.com>
+
+> 
+>> +	profile_perf_events[profile_perf_event_cnt++] = pmu_fd;
+>> +	return 0;
+>> +}
+>> +
+>>  static int profile_open_perf_events(struct profiler_bpf *obj)
+>>  {
+>>  	unsigned int cpu, m;
+>> -	int map_fd, pmu_fd;
+>> +	int map_fd;
+>>    	profile_perf_events = calloc(
+>>  		sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
+>> @@ -2255,17 +2281,11 @@ static int profile_open_perf_events(struct profiler_bpf *obj)
+>>  		if (!metrics[m].selected)
+>>  			continue;
+>>  		for (cpu = 0; cpu < obj->rodata->num_cpu; cpu++) {
+>> -			pmu_fd = syscall(__NR_perf_event_open, &metrics[m].attr,
+>> -					 -1/*pid*/, cpu, -1/*group_fd*/, 0);
+>> -			if (pmu_fd < 0 ||
+>> -			    bpf_map_update_elem(map_fd, &profile_perf_event_cnt,
+>> -						&pmu_fd, BPF_ANY) ||
+>> -			    ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0)) {
+>> +			if (profile_open_perf_event(m, cpu, map_fd)) {
+>>  				p_err("failed to create event %s on cpu %d",
+>>  				      metrics[m].name, cpu);
+>>  				return -1;
+>>  			}
+>> -			profile_perf_events[profile_perf_event_cnt++] = pmu_fd;
+>>  		}
+>>  	}
+>>  	return 0;
 > 
 > 
-> Sure thing, would you happen to have a single patch file of what I
-> should test? I am a little confused from reading the thread (unless what
-> you want tested has not been sent yet).
 
-I meant the change below, but I posted the formal patch now:
-  https://lore.kernel.org/bpf/20230202112839.1131892-1-jolsa@kernel.org/T/#u
+----
+Best Regards, Tonghao <tong@infragraf.org>
 
-thanks,
-jirka
-
-> 
-> Cheers,
-> Nathan
-> 
-> > > > ---
-> > > > diff --git a/tools/bpf/resolve_btfids/Build b/tools/bpf/resolve_btfids/Build
-> > > > index ae82da03f9bf..077de3829c72 100644
-> > > > --- a/tools/bpf/resolve_btfids/Build
-> > > > +++ b/tools/bpf/resolve_btfids/Build
-> > > > @@ -1,3 +1,5 @@
-> > > > +hostprogs := resolve_btfids
-> > > > +
-> > > >  resolve_btfids-y += main.o
-> > > >  resolve_btfids-y += rbtree.o
-> > > >  resolve_btfids-y += zalloc.o
-> > > > @@ -7,4 +9,4 @@ resolve_btfids-y += str_error_r.o
-> > > >
-> > > >  $(OUTPUT)%.o: ../../lib/%.c FORCE
-> > > >         $(call rule_mkdir)
-> > > > -       $(call if_changed_dep,cc_o_c)
-> > > > +       $(call if_changed_dep,host_cc_o_c)
-> > > > diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> > > > index daed388aa5d7..de513fd08535 100644
-> > > > --- a/tools/bpf/resolve_btfids/Makefile
-> > > > +++ b/tools/bpf/resolve_btfids/Makefile
-> > > > @@ -22,6 +22,9 @@ HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)
-> > > >                   EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
-> > > >
-> > > >  RM      ?= rm
-> > > > +HOSTCC  ?= gcc
-> > > > +HOSTLD  ?= ld
-> > > > +HOSTAR  ?= ar
-> > > >  CROSS_COMPILE =
-> > > >
-> > > >  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
-> > > > @@ -64,7 +67,7 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
-> > > >  LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
-> > > >  LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-> > > >
-> > > > -CFLAGS += -g \
-> > > > +HOSTCFLAGS += -g \
-> > > >            -I$(srctree)/tools/include \
-> > > >            -I$(srctree)/tools/include/uapi \
-> > > >            -I$(LIBBPF_INCLUDE) \
-> > > > @@ -73,7 +76,7 @@ CFLAGS += -g \
-> > > >
-> > > >  LIBS = $(LIBELF_LIBS) -lz
-> > > >
-> > > > -export srctree OUTPUT CFLAGS Q
-> > > > +export srctree OUTPUT HOSTCFLAGS Q HOSTCC HOSTLD HOSTAR
-> > > >  include $(srctree)/tools/build/Makefile.include
-> > > >
-> > > >  $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
