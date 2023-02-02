@@ -2,62 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7AA6875E8
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 07:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C62687702
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 09:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjBBGdP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 01:33:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
+        id S232057AbjBBIIt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 03:08:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjBBGdM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 01:33:12 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE25279B5
-        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 22:33:08 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id 144so471564pfv.11
-        for <bpf@vger.kernel.org>; Wed, 01 Feb 2023 22:33:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BATQZQVWQVtWYZueQrJc9b9Av7XE6C1L8REb5hx4avE=;
-        b=6Xd4P4mLm085ymH5dCRrJLX6qEluc3VUFW3rSTKVgPYo7lWw6L7imxFxJk08ipoIT5
-         ZWwKHDL/yxA2j56xmheo//qUSYEJdFhWRxfRyj4nfzhYu/B9mlRM++XxInK7YUBUQiCS
-         R+lOFochVNsxg81S8GqwMFSzvTm9QK8Abyi6GmcHKe4plSczm4erctrEw/Vch3UOQ4KE
-         r1bAHFCIfNUKOuN9CVwLZ5A8+9KUvWMzG5cZsag/IKGlpuibFpU5iACEw2GWlypk55xT
-         EHVjTUU1I1GUmzQmJeGAmCIjFUsWho5qsRlGs7JgProiEZq+E4kAqKmrxAgwZdQ2DHcw
-         5m9w==
+        with ESMTP id S230287AbjBBIIs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 03:08:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5437F55BE
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 00:07:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675325278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DUOK4FQp2lSGCpYEOOskwI0ksmKn7u5oUNOZROs3CV4=;
+        b=aS0+Gnv1s65YZIY9XxjkhGRD/wUXdqM24cgB2RnzWLWqU7aQjc7bqFH2dvmS0MC79ONvqx
+        9PibpFW1J1NWlJeeuuABz/jWpD0xcG1vK1rMDD+nVQVgPGgPV3Uy1qaOc0Whrn/P6dNePa
+        LlC2oDvoIYQPTKHxbeIjsNypAE8f8yA=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-363-YrzgholoM6qBaLIcrFm0_A-1; Thu, 02 Feb 2023 03:07:57 -0500
+X-MC-Unique: YrzgholoM6qBaLIcrFm0_A-1
+Received: by mail-ed1-f70.google.com with SMTP id c12-20020a05640227cc00b0049e2c079aabso888326ede.1
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 00:07:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BATQZQVWQVtWYZueQrJc9b9Av7XE6C1L8REb5hx4avE=;
-        b=M6d59naAQOFeHVgVXEKlk6XhFvqc6b/iJUfJAHOMMlqTe2nLgrzIYGJE8saRppS+di
-         PaWguBQPU/nk95wWOo9I9VDGsCaa8GUasUfjKjnZEhlj0L93/yQdd6aJZmn47pgy5ZNi
-         EzjsCj1vj7E4h7PUWjeQeqT6pCES8EOgc+DNUtL0rlB87pccKsXkyCAfbtNrc4K1HZaS
-         jmMEtrglg1bCD+j4e3dW6IhkwmbEi31flT/oTaFP7hiByMtaU+WUEWbo1bS4G1nPSUxf
-         gHv2Tk5Kz4bdeZKKGx8JOuCjOToOrhpx4CiWa5rAoxj2pfb8GZiTJQOJU+RyfWfWBkpg
-         r+sg==
-X-Gm-Message-State: AO0yUKXVFGr271FlZvegPBFSteTTXdYfrHaz96DBvvQdI7LjNmH0chJC
-        KXnvXx8eR2Y7QaSMAtM0ZqKiOwjSDyqmVe7rtLUxr3VT9anT20xJ
-X-Google-Smtp-Source: AK7set84qycTclPxL+YdDCrFGISfAFgQeOCJYyVDp9TfIY9CK4KliymjZZMCKvpNF8b3EwNtIQ9/Hna2cL3QhatO8CM=
-X-Received: by 2002:a62:33c4:0:b0:592:ecb5:f51f with SMTP id
- z187-20020a6233c4000000b00592ecb5f51fmr1054974pfz.34.1675319587643; Wed, 01
- Feb 2023 22:33:07 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DUOK4FQp2lSGCpYEOOskwI0ksmKn7u5oUNOZROs3CV4=;
+        b=0lFuWF6lSqWnNmj7Xst1F1ispuEyqKU0wRaZSqn5bVpsPuYlNq5An1PbacGrOcxOUf
+         QTRU8QD5zCWmR05FYCyakOYIOtNsTsh2vKLBfVD+fJv95kbU5WsmfC8uvH5DKrcnA7pb
+         UVyMFedfNwmdG61GXMXlorqwfknN5kQ0acYYp/LoAtG1Xi5/K7u3+0CQVWtTYvImX/+x
+         UpvEqwBGU1oK5kKljlvqB3E1pREqr9cuguPCuuu8ImH6yNbDUQE8Bw6m97we4XxvDu1V
+         zEBGIyRG0WAa/fYVH9Uoq65vDWZWAKAekd8j+jmp2YEAJW8YHxX/4Sf73wrdSIt4B39I
+         hoOw==
+X-Gm-Message-State: AO0yUKULVCPupYY5j9ZXG1ibhqtXJfaeTVh3FZWlcBnK+Iwlgfpwa49W
+        9Klq34NQOt3eaw0zrkuuQjQn6TVbV2sWjNp1WSa3Ro3HU/qq/HIvB7gMpPQ7ccYNKoEI5smDPr2
+        Hdu77yBRZCJtX
+X-Received: by 2002:a50:9b58:0:b0:4a6:8239:d6ad with SMTP id a24-20020a509b58000000b004a68239d6admr1655235edj.14.1675325275762;
+        Thu, 02 Feb 2023 00:07:55 -0800 (PST)
+X-Google-Smtp-Source: AK7set9EB/Qe0qXwBa5fIX1dYI8NGUQ/qA2NHKKVzMR0gG7E5AVPVLuwYtBc2gxM83hN+NIFo0fXfQ==
+X-Received: by 2002:a50:9b58:0:b0:4a6:8239:d6ad with SMTP id a24-20020a509b58000000b004a68239d6admr1655214edj.14.1675325275533;
+        Thu, 02 Feb 2023 00:07:55 -0800 (PST)
+Received: from redhat.com ([2.52.156.122])
+        by smtp.gmail.com with ESMTPSA id r23-20020aa7c157000000b0049e1f167956sm7172831edp.9.2023.02.02.00.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 00:07:54 -0800 (PST)
+Date:   Thu, 2 Feb 2023 03:07:49 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Heng Qi <hengqi@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v2] virtio-net: fix possible unsigned integer
+ overflow
+Message-ID: <20230202030550-mutt-send-email-mst@kernel.org>
+References: <20230131085004.98687-1-hengqi@linux.alibaba.com>
 MIME-Version: 1.0
-From:   "Hao Xiang ." <hao.xiang@bytedance.com>
-Date:   Wed, 1 Feb 2023 22:32:56 -0800
-Message-ID: <CAAYibXgCncBUj8m03iGvOgq8dt2evNHFh0BO1-EnAjtkf+c5yg@mail.gmail.com>
-Subject: [PATCH bpf-next v2 1/1] libbpf: Correctly set the kernel code version
- in Debian kernel.
-To:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Yifei Ma <yifeima@bytedance.com>,
-        "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>,
-        Xiaoning Ding <xiaoning.ding@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230131085004.98687-1-hengqi@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,204 +85,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In a previous commit, Ubuntu kernel code version is correctly set
-by retrieving the information from /proc/version_signature.
+On Tue, Jan 31, 2023 at 04:50:04PM +0800, Heng Qi wrote:
+> When the single-buffer xdp is loaded and after xdp_linearize_page()
+> is called, *num_buf becomes 0 and (*num_buf - 1) may overflow into
+> a large integer in virtnet_build_xdp_buff_mrg(), resulting in
+> unexpected packet dropping.
+> 
+> Fixes: ef75cb51f139 ("virtio-net: build xdp_buff with multi buffers")
+> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+> v1->v2:
+> - Change the type of num_buf from unsigned int to int. @Michael S . Tsirkin
+> - Some cleaner codes. @Michael S . Tsirkin
+> 
+>  drivers/net/virtio_net.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index aaa6fe9b214a..8102861785a2 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -716,7 +716,7 @@ static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+>   * have enough headroom.
+>   */
+>  static struct page *xdp_linearize_page(struct receive_queue *rq,
+> -				       u16 *num_buf,
+> +				       int *num_buf,
+>  				       struct page *p,
+>  				       int offset,
+>  				       int page_off,
+> @@ -816,7 +816,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
+>  		if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
+>  			int offset = buf - page_address(page) + header_offset;
+>  			unsigned int tlen = len + vi->hdr_len;
+> -			u16 num_buf = 1;
+> +			int num_buf = 1;
+>  
+>  			xdp_headroom = virtnet_get_headroom(vi);
+>  			header_offset = VIRTNET_RX_PAD + xdp_headroom;
+> @@ -989,7 +989,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>  				      void *buf,
+>  				      unsigned int len,
+>  				      unsigned int frame_sz,
+> -				      u16 *num_buf,
+> +				      int *num_buf,
+>  				      unsigned int *xdp_frags_truesize,
+>  				      struct virtnet_rq_stats *stats)
+>  {
+> @@ -1007,6 +1007,9 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>  	xdp_prepare_buff(xdp, buf - VIRTIO_XDP_HEADROOM,
+>  			 VIRTIO_XDP_HEADROOM + vi->hdr_len, len - vi->hdr_len, true);
+>  
+> +	if (!*num_buf)
+> +		return 0;
+> +
+>  	if (*num_buf > 1) {
+>  		/* If we want to build multi-buffer xdp, we need
+>  		 * to specify that the flags of xdp_buff have the
 
-commit<5b3d72987701d51bf31823b39db49d10970f5c2d>
-(libbpf: Improve LINUX_VERSION_CODE detection)
+Ouch. Why is this here? Merged so pls remove by a follow up patch, the
+rest of the code handles 0 fine. I'm not sure this introduces a bug by
+we don't want spaghetti code.
 
-The /proc/version_signature file doesn't present in at least the
-older versions of Debian distributions (eg, Debian 9, 10). The Debian
-kernel has a similar issue where the release information from uname()
-syscall doesn't give the kernel code version that matches what the
-kernel actually expects. Below is an example content from Debian 10.
+> @@ -1020,10 +1023,10 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>  		shinfo->xdp_frags_size = 0;
+>  	}
+>  
+> -	if ((*num_buf - 1) > MAX_SKB_FRAGS)
+> +	if (*num_buf > MAX_SKB_FRAGS + 1)
+>  		return -EINVAL;
+>  
+> -	while ((--*num_buf) >= 1) {
+> +	while (--*num_buf > 0) {
+>  		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
+>  		if (unlikely(!buf)) {
+>  			pr_debug("%s: rx error: %d buffers out of %d missing\n",
+> @@ -1076,7 +1079,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>  					 struct virtnet_rq_stats *stats)
+>  {
+>  	struct virtio_net_hdr_mrg_rxbuf *hdr = buf;
+> -	u16 num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+> +	int num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+>  	struct page *page = virt_to_head_page(buf);
+>  	int offset = buf - page_address(page);
+>  	struct sk_buff *head_skb, *curr_skb;
+> -- 
+> 2.19.1.6.gb485710b
 
-release: 4.19.0-23-amd64
-version: #1 SMP Debian 4.19.269-1 (2022-12-20) x86_64
-
-Debian reports incorrect kernel version in utsname::release returned
-by uname() syscall, which in older kernels (Debian 9, 10) leads to
-kprobe BPF programs failing to load due to the version check mismatch.
-
-Fortunately, the correct kernel code version presents in the
-utsname::version returned by uname() syscall in Debian kernels. This
-change adds another get kernel version function to handle Debian in
-addition to the previously added get kernel version function to handle
-Ubuntu. Some minor refactoring work is also done to make the code more
-readable.
-
-Signed-off-by: Hao Xiang <hao.xiang@bytedance.com>
----
-tools/lib/bpf/libbpf.c        | 37 --------------
-tools/lib/bpf/libbpf_probes.c | 93 +++++++++++++++++++++++++++++++++++
-2 files changed, 93 insertions(+), 37 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index eed5cec6f510..4191a78b2815 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -34,7 +34,6 @@
-#include <linux/limits.h>
-#include <linux/perf_event.h>
-#include <linux/ring_buffer.h>
--#include <linux/version.h>
-#include <sys/epoll.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-@@ -870,42 +869,6 @@ bpf_object__add_programs(struct bpf_object *obj,
-Elf_Data *sec_data,
-        return 0;
-}
-
--__u32 get_kernel_version(void)
--{
--        /* On Ubuntu LINUX_VERSION_CODE doesn't correspond to info.release,
--         * but Ubuntu provides /proc/version_signature file, as described at
--         * https://ubuntu.com/kernel, with an example contents below, which we
--         * can use to get a proper LINUX_VERSION_CODE.
--         *
--         *   Ubuntu 5.4.0-12.15-generic 5.4.8
--         *
--         * In the above, 5.4.8 is what kernel is actually expecting, while
--         * uname() call will return 5.4.0 in info.release.
--         */
--        const char *ubuntu_kver_file = "/proc/version_signature";
--        __u32 major, minor, patch;
--        struct utsname info;
--
--        if (faccessat(AT_FDCWD, ubuntu_kver_file, R_OK, AT_EACCESS) == 0) {
--                FILE *f;
--
--                f = fopen(ubuntu_kver_file, "r");
--                if (f) {
--                        if (fscanf(f, "%*s %*s %d.%d.%d\n", &major,
-&minor, &patch) == 3) {
--                                fclose(f);
--                                return KERNEL_VERSION(major, minor, patch);
--                        }
--                        fclose(f);
--                }
--                /* something went wrong, fall back to uname() approach */
--        }
--
--        uname(&info);
--        if (sscanf(info.release, "%u.%u.%u", &major, &minor, &patch) != 3)
--                return 0;
--        return KERNEL_VERSION(major, minor, patch);
--}
--
-static const struct btf_member *
-find_member_by_offset(const struct btf_type *t, __u32 bit_offset)
-{
-diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-index b44fcbb4b42e..8d2a2bc5eec9 100644
---- a/tools/lib/bpf/libbpf_probes.c
-+++ b/tools/lib/bpf/libbpf_probes.c
-@@ -12,11 +12,104 @@
-#include <linux/btf.h>
-#include <linux/filter.h>
-#include <linux/kernel.h>
-+#include <linux/version.h>
-
-#include "bpf.h"
-#include "libbpf.h"
-#include "libbpf_internal.h"
-
-+/* On Ubuntu LINUX_VERSION_CODE doesn't correspond to info.release,
-+ * but Ubuntu provides /proc/version_signature file, as described at
-+ * https://ubuntu.com/kernel, with an example contents below, which we
-+ * can use to get a proper LINUX_VERSION_CODE.
-+ *
-+ *   Ubuntu 5.4.0-12.15-generic 5.4.8
-+ *
-+ * In the above, 5.4.8 is what kernel is actually expecting, while
-+ * uname() call will return 5.4.0 in info.release.
-+ */
-+static __u32 get_ubuntu_kernel_version(void)
-+{
-+        const char *ubuntu_kver_file = "/proc/version_signature";
-+        __u32 major, minor, patch;
-+
-+        if (faccessat(AT_FDCWD, ubuntu_kver_file, R_OK, AT_EACCESS) == 0) {
-+                FILE *f;
-+
-+                f = fopen(ubuntu_kver_file, "r");
-+                if (f) {
-+                        if (fscanf(f, "%*s %*s %d.%d.%d\n", &major,
-&minor, &patch) == 3) {
-+                                fclose(f);
-+                                return KERNEL_VERSION(major, minor, patch);
-+                        }
-+                        fclose(f);
-+                }
-+                /* something went wrong, fall back to uname() approach */
-+        }
-+
-+        return 0;
-+}
-+
-+/* On Debian LINUX_VERSION_CODE doesn't correspond to info.release.
-+ * Instead, it is provided in info.version. An example content of
-+ * Debian 10 looks like the below.
-+ *
-+ *   utsname::release   4.19.0-22-amd64
-+ *   utsname::version   #1 SMP Debian 4.19.260-1 (2022-09-29)
-+ *
-+ * In the above, 4.19.260 is what kernel is actually expecting, while
-+ * uname() call will return 4.19.0 in info.release.
-+ */
-+static __u32 get_debian_kernel_version(struct utsname *info)
-+{
-+        __u32 major, minor, patch;
-+        char *version;
-+        char *p;
-+
-+        version = info->version;
-+
-+        p = strstr(version, "Debian ");
-+        if (!p) {
-+                /* This is not a Debian kernel. */
-+                return 0;
-+        }
-+
-+        if (sscanf(p, "Debian %u.%u.%u", &major, &minor, &patch) != 3)
-+                return 0;
-+
-+        return KERNEL_VERSION(major, minor, patch);
-+}
-+
-+static __u32 get_general_kernel_version(struct utsname *info)
-+{
-+        __u32 major, minor, patch;
-+
-+        if (sscanf(info->release, "%u.%u.%u", &major, &minor, &patch) != 3)
-+                return 0;
-+
-+        return KERNEL_VERSION(major, minor, patch);
-+}
-+
-+__u32 get_kernel_version(void)
-+{
-+        __u32 version;
-+        struct utsname info;
-+
-+        /* Check if this is an Ubuntu kernel. */
-+        version = get_ubuntu_kernel_version();
-+        if (version != 0)
-+                return version;
-+
-+        uname(&info);
-+
-+        /* Check if this is a Debian kernel. */
-+        version = get_debian_kernel_version(&info);
-+        if (version != 0)
-+                return version;
-+
-+        return get_general_kernel_version(&info);
-+}
-+
-static int probe_prog_load(enum bpf_prog_type prog_type,
-                           const struct bpf_insn *insns, size_t insns_cnt,
-                           char *log_buf, size_t log_buf_sz)
---
-2.30.2
