@@ -2,148 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF3768897D
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 23:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E896889A0
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 23:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233241AbjBBWCi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 17:02:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        id S232193AbjBBWUp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 17:20:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233079AbjBBWC2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 17:02:28 -0500
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1869488CE0;
-        Thu,  2 Feb 2023 14:02:00 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id B193A5C0114;
-        Thu,  2 Feb 2023 17:01:39 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 02 Feb 2023 17:01:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1675375299; x=
-        1675461699; bh=YCW7GaAtPaVZlrRCbu29XnWiMCmrl3ppTRURidgtXOY=; b=F
-        wc6nhXMDAmuFGL0TUU8QnKM2LD4H6JRBlwK9lG6zl8OjtKPm5c4SwLr6STgAeIzz
-        hIWugzL2X5B0P0wguXU/0S+HYq9FpUL/VmswIG2pFPM2WVywgSCeHFuwh4hJrD1L
-        JDuK3TX5jEyBhSpmUsZ4TSG1GbZSFMllfUG02zaG2sc+DSEyyhzwRM26tia+D6lX
-        QhSFemjuT4Gop482kCirNGgSozOzFfzhZ1Aj9l3/6umyU0arFgqUbvzSmcUarXO7
-        ocAoCcZyMsej7MwJbvJa4VSnrDGv2Wa9nuQ9qZ/fU4/IKJetK6bclRG+n5tz6piU
-        f9260Ohkvmqka/YCLcYSQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1675375299; x=
-        1675461699; bh=YCW7GaAtPaVZlrRCbu29XnWiMCmrl3ppTRURidgtXOY=; b=k
-        hWTk6kt4+dyIcwJkPWW2IwwH3GBn4laJh5KXGCo0LckiJFHG+9/XMIzARIIBbYXO
-        sAgkBibXMX9TYr/ATLiqaJ4idc26o9MV2gluEHsirR0avE6eYjN04roA0tAsrtJ3
-        9G23q6D93lMD1triUh6M2yP1jP3m2Lf5RqIVt9uYNwNqwvsOYhDsWV/tYmTI+Rty
-        W82SfORbCWVtGNhrmVeY3vbGaubMfo1t55L2v/0aSOkFCzxSrHQD8AdMT1Elhrt6
-        rlpJp4Y90NWPamdgdePjnLbjWxwJ4rKlpGvnfCQ/ninSu1ahcxWcE20M/0QA8Zp/
-        zWaaN9R1PfOQ3IBe6AoHg==
-X-ME-Sender: <xms:wjLcY6nfeO526MV7BTKpwDAfuD747TdEzwbg-s8_cMAogooVeiSdfg>
-    <xme:wjLcYx0tKyjL19DhByStlVm3L-k18lILIKnoLF-wiWzhAdm6vo0Iu2QgDhO8E9WEO
-    n7rnWqLpmPlEn82>
-X-ME-Received: <xmr:wjLcY4qbBplRk0OTvHgFiZV23WoZB_E05kwvWoDu5RzUzv17IREjarId5hCGmWLSn9y0n-OFGyGADsqRWdkHqnnFDN3uh8XWTczENy1wzPMdd63isU8A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudefkedgudehfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepuegv
-    rhhnugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrg
-    hilhdrfhhmqeenucggtffrrghtthgvrhhnpedtueduieefteefheeutdefheehteekuedu
-    teeukeegveektdfhtddthfdujeehvdenucffohhmrghinhepghhithhhuhgsrdgtohhmpd
-    hkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrihhlrdhfmh
-X-ME-Proxy: <xmx:wjLcY-mhqWtThg_P1R9B7fEwTdvAxglEiEGtSGPa-qMs8Al4lg4X6w>
-    <xmx:wjLcY40Kwcu9l8c6mHOz1io61YtVu3voIyBMYcDrdLGXZoN-yqDoWQ>
-    <xmx:wjLcY1vIjrGnngOCkAx0GrV9ZHcaA1IHJP13GDw5-hFMr250DGtY3w>
-    <xmx:wzLcY5k43sx9X8NYcj4tcOCC6nHlCmo6mNXqUMRq3bJtG_gPNKMBig>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 2 Feb 2023 17:01:37 -0500 (EST)
-Message-ID: <283b5344-3ef5-7799-e243-13c707388cd8@fastmail.fm>
-Date:   Thu, 2 Feb 2023 23:01:35 +0100
+        with ESMTP id S230173AbjBBWUo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 17:20:44 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D88466F92
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 14:20:43 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id mc11so10204540ejb.10
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 14:20:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zhKP9YiXZMYpDGl1JnBKmQMwpeHpPkEKiyd3rkB/Pzg=;
+        b=DIe9HOYKuvrsI7LYIzNtA5ir9bm+QFJVaW5NnWc6gD4vVdgh0kE7PZXp3s5zl4Nky1
+         PUiwEEHWW8dD55KzV2ilxOLTa8dhr8ej3B2BRSY6BCDG4XGGiluHkbBnvP+hd/MyGPw6
+         m+rJUeZZX/WaG91lMglYDf/hFP3GYUQqSnaqTsPFxYn10C4cqHmfaMsSJz8kv/Y8aE9b
+         4iGL6CT0Fr7wd9fiEZ0tVCVNmPC+ja7S0IKcDFX7Gu/PZCbquyGTd0hbzhq+i04Gmm56
+         fZx0OgG7csaYLD8RhD/IZktBoP8VdQuvFWOxK//ydYO5pREVQZReGNi+BUwZ/1suQTYi
+         KrtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zhKP9YiXZMYpDGl1JnBKmQMwpeHpPkEKiyd3rkB/Pzg=;
+        b=oC015TikcnmxT4w1gwAueJv+95aCZfxKJroxQ6qHGGg6pX1UZbJTTQsuyO/ZJ2eLop
+         KG5O1hWoOjjV9Wraed9XrrOVmQNQLLeriQtnA64Zy0hL18XAdNr8mHNZcwKZwRrzJMe6
+         pyiw+zwdGKXVL7JSocO3/NI4osmj1DVkDkJX9n/p+mbi5HMPDVlCoonFheZG9gVrdcpT
+         iACGy3zzFn6/jxie4vEotgjQ7BhPiXbBriI1lqpu5P3jRPL9KHI7Q8S99XL2MhpfzPQ4
+         ThF7MbqIWcP2KM8hbt61BO9vGmVa9r0FUHcltH38LXJlz8K+V+CdFiP9n5CWO3FI3IJI
+         spVA==
+X-Gm-Message-State: AO0yUKVGuXw8jlZdTyDsyxiPfNe4dDanrFphNSJreFy4lGIQDlFQgeYG
+        FjVe2m0QsrmS6AnFpAwRk7E=
+X-Google-Smtp-Source: AK7set9iBgYjJZPgugegnoZ4Ej5PYixVUPRv8rbNscd/XyIyKrSWVQ7ZzpHwYZ2PxNwt26VaGf+yIQ==
+X-Received: by 2002:a17:907:6eab:b0:88d:ba89:182f with SMTP id sh43-20020a1709076eab00b0088dba89182fmr3776743ejc.0.1675376441562;
+        Thu, 02 Feb 2023 14:20:41 -0800 (PST)
+Received: from krava ([83.240.61.48])
+        by smtp.gmail.com with ESMTPSA id en14-20020a056402528e00b0049622a61f8fsm292033edb.30.2023.02.02.14.20.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 14:20:41 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 2 Feb 2023 23:20:39 +0100
+To:     Ian Rogers <irogers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Compile resolve_btfids as
+ host program
+Message-ID: <Y9w3N4GHxipREEoO@krava>
+References: <20230202112839.1131892-1-jolsa@kernel.org>
+ <Y9vxFLA6Xj/zPjQu@dev-arch.thelio-3990X>
+ <CAP-5=fXy0wArjfXTQHD6nXZ=8dxb6ypRMef=-M1+uTTvbdfH0A@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem Extension for
- FUSE
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@android.com,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Nikolaus Rath <Nikolaus@rath.org>
-References: <20221122021536.1629178-1-drosen@google.com>
- <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
- <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com>
- <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm>
- <CAOQ4uxiBD5NXLMXFev7vsCLU5-_o8-_H-XcoMY1aqhOwnADo9w@mail.gmail.com>
-Content-Language: en-US, de-DE
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <CAOQ4uxiBD5NXLMXFev7vsCLU5-_o8-_H-XcoMY1aqhOwnADo9w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fXy0wArjfXTQHD6nXZ=8dxb6ypRMef=-M1+uTTvbdfH0A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Feb 02, 2023 at 12:14:14PM -0800, Ian Rogers wrote:
+> On Thu, Feb 2, 2023 at 9:21 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > On Thu, Feb 02, 2023 at 12:28:39PM +0100, Jiri Olsa wrote:
+> > > Making resolve_btfids to be compiled as host program so
+> > > we can avoid cross compile issues as reported by Nathan.
+> > >
+> > > Also we no longer need HOST_OVERRIDES for BINARY target,
+> > > just for 'prepare' targets.
+> > >
+> > > Cc: Ian Rogers <irogers@google.com>
+> > > Fixes: 13e07691a16f ("tools/resolve_btfids: Alter how HOSTCC is forced")
+> > > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> >
+> > Tested-by: Nathan Chancellor <nathan@kernel.org>
+> >
+> 
+> This change has my,
+> Acked-by: Ian Rogers <irogers@google.com>
 
+thanks
 
-On 2/2/23 09:47, Amir Goldstein wrote:
-> On Tue, Nov 22, 2022 at 11:23 PM Bernd Schubert
-> <bernd.schubert@fastmail.fm> wrote:
->>
->>
->>
->> On 11/22/22 21:56, Daniel Rosenberg wrote:
->>> I've been running the generic xfstests against it, with some
->>> modifications to do things like mount/unmount the lower and upper fs
->>> at once. Most of the failures I see there are related to missing
->>> opcodes, like FUSE_SETLK, FUSE_GETLK, and FUSE_IOCTL. The main failure
->>> I have been seeing is generic/126, which is happening due to some
->>> additional checks we're doing in fuse_open_backing. I figured at some
->>> point we'd add some tests into libfuse, and that sounds like a good
->>> place to start.
->>
->>
->> Here is a branch of xfstests that should work with fuse and should not
->> run "rm -fr /" (we are going to give it more testing this week).
->>
->> https://github.com/hbirth/xfstests
->>
->>
+> but I wonder about cleaning HOST_OVERRIDES. From the patch I sent,
+> would it be worth adding:
+> ```
+> --- a/tools/bpf/resolve_btfids/Makefile
+> +++ b/tools/bpf/resolve_btfids/Makefile
+> @@ -17,9 +17,9 @@ else
+>   MAKEFLAGS=--no-print-directory
+> endif
 > 
-> Bernd, Daniel, Vivek,
+> -# always use the host compiler
+> +# Overrides for the prepare step libraries.
+> HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)"
+> ARCH="$(HOSTARCH)" \
+> -                 EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
+> +                 CROSS_COMPILE=""
 > 
-> Did you see LSFMMBPF 2023 CFP [1]?
-> 
-> Did you consider requesting an invitation?
-> I think it could be a good opportunity to sit in a room and discuss the
-> roadmap of "FUSE2" with all the developers involved.
-> 
-> I am on the program committee for the Filesystem track, and I encourage
-> you to request an invite if you are interested to attend and/or nominate
-> other developers that you think will be valuable for this discussion.
+> RM      ?= rm
+> HOSTCC  ?= gcc
+> ```
+> It seems odd passing HOSTCFLAGS this way and mixing HOSTCC as CC with
+> CROSS_COMPILE set seems open to failure. Perhaps we should just get
+> rid of this, add something like a HOST=1 option for building the
+> library and then in the library code do the right thing. That would
+> fix the issue that libsubcmd and libbpf here are being built reporting
+> CC rather than HOSTCC, make the build flags in general more sane.
+
+could you send separate patch with that?
+
+also I'll try to check if we could make prepare libs as hostprogs,
+because I think the changes you suggest might depend on that
+
+jirka
+
 > 
 > Thanks,
-> Amir.
+> Ian
 > 
-> [1] https://lore.kernel.org/linux-fsdevel/Y9qBs82f94aV4%2F78@localhost.localdomain/
-
-
-Thanks a lot Amir, I'm going to send out an invitation tomorrow. Maybe 
-Nikolaus as libfuse maintainer could also attend?
-
-
-Thanks,
-Bernd
+> > > ---
+> > >  tools/bpf/resolve_btfids/Build    | 4 +++-
+> > >  tools/bpf/resolve_btfids/Makefile | 9 ++++++---
+> > >  2 files changed, 9 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/tools/bpf/resolve_btfids/Build b/tools/bpf/resolve_btfids/Build
+> > > index ae82da03f9bf..077de3829c72 100644
+> > > --- a/tools/bpf/resolve_btfids/Build
+> > > +++ b/tools/bpf/resolve_btfids/Build
+> > > @@ -1,3 +1,5 @@
+> > > +hostprogs := resolve_btfids
+> > > +
+> > >  resolve_btfids-y += main.o
+> > >  resolve_btfids-y += rbtree.o
+> > >  resolve_btfids-y += zalloc.o
+> > > @@ -7,4 +9,4 @@ resolve_btfids-y += str_error_r.o
+> > >
+> > >  $(OUTPUT)%.o: ../../lib/%.c FORCE
+> > >       $(call rule_mkdir)
+> > > -     $(call if_changed_dep,cc_o_c)
+> > > +     $(call if_changed_dep,host_cc_o_c)
+> > > diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> > > index daed388aa5d7..abdd68ac08f4 100644
+> > > --- a/tools/bpf/resolve_btfids/Makefile
+> > > +++ b/tools/bpf/resolve_btfids/Makefile
+> > > @@ -22,6 +22,9 @@ HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)
+> > >                 EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
+> > >
+> > >  RM      ?= rm
+> > > +HOSTCC  ?= gcc
+> > > +HOSTLD  ?= ld
+> > > +HOSTAR  ?= ar
+> > >  CROSS_COMPILE =
+> > >
+> > >  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
+> > > @@ -64,7 +67,7 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
+> > >  LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
+> > >  LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
+> > >
+> > > -CFLAGS += -g \
+> > > +HOSTCFLAGS += -g \
+> > >            -I$(srctree)/tools/include \
+> > >            -I$(srctree)/tools/include/uapi \
+> > >            -I$(LIBBPF_INCLUDE) \
+> > > @@ -73,11 +76,11 @@ CFLAGS += -g \
+> > >
+> > >  LIBS = $(LIBELF_LIBS) -lz
+> > >
+> > > -export srctree OUTPUT CFLAGS Q
+> > > +export srctree OUTPUT HOSTCFLAGS Q HOSTCC HOSTLD HOSTAR
+> > >  include $(srctree)/tools/build/Makefile.include
+> > >
+> > >  $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
+> > > -     $(Q)$(MAKE) $(build)=resolve_btfids $(HOST_OVERRIDES)
+> > > +     $(Q)$(MAKE) $(build)=resolve_btfids
+> > >
+> > >  $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
+> > >       $(call msg,LINK,$@)
+> > > --
+> > > 2.39.1
+> > >
