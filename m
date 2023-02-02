@@ -2,204 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E896889A0
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 23:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A096889DF
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 23:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbjBBWUp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 17:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
+        id S232371AbjBBWgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 17:36:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbjBBWUo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 17:20:44 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D88466F92
-        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 14:20:43 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id mc11so10204540ejb.10
-        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 14:20:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhKP9YiXZMYpDGl1JnBKmQMwpeHpPkEKiyd3rkB/Pzg=;
-        b=DIe9HOYKuvrsI7LYIzNtA5ir9bm+QFJVaW5NnWc6gD4vVdgh0kE7PZXp3s5zl4Nky1
-         PUiwEEHWW8dD55KzV2ilxOLTa8dhr8ej3B2BRSY6BCDG4XGGiluHkbBnvP+hd/MyGPw6
-         m+rJUeZZX/WaG91lMglYDf/hFP3GYUQqSnaqTsPFxYn10C4cqHmfaMsSJz8kv/Y8aE9b
-         4iGL6CT0Fr7wd9fiEZ0tVCVNmPC+ja7S0IKcDFX7Gu/PZCbquyGTd0hbzhq+i04Gmm56
-         fZx0OgG7csaYLD8RhD/IZktBoP8VdQuvFWOxK//ydYO5pREVQZReGNi+BUwZ/1suQTYi
-         KrtA==
+        with ESMTP id S230198AbjBBWgC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 17:36:02 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A3169B2B;
+        Thu,  2 Feb 2023 14:36:00 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id h24so3779409qtr.0;
+        Thu, 02 Feb 2023 14:36:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zhKP9YiXZMYpDGl1JnBKmQMwpeHpPkEKiyd3rkB/Pzg=;
-        b=oC015TikcnmxT4w1gwAueJv+95aCZfxKJroxQ6qHGGg6pX1UZbJTTQsuyO/ZJ2eLop
-         KG5O1hWoOjjV9Wraed9XrrOVmQNQLLeriQtnA64Zy0hL18XAdNr8mHNZcwKZwRrzJMe6
-         pyiw+zwdGKXVL7JSocO3/NI4osmj1DVkDkJX9n/p+mbi5HMPDVlCoonFheZG9gVrdcpT
-         iACGy3zzFn6/jxie4vEotgjQ7BhPiXbBriI1lqpu5P3jRPL9KHI7Q8S99XL2MhpfzPQ4
-         ThF7MbqIWcP2KM8hbt61BO9vGmVa9r0FUHcltH38LXJlz8K+V+CdFiP9n5CWO3FI3IJI
-         spVA==
-X-Gm-Message-State: AO0yUKVGuXw8jlZdTyDsyxiPfNe4dDanrFphNSJreFy4lGIQDlFQgeYG
-        FjVe2m0QsrmS6AnFpAwRk7E=
-X-Google-Smtp-Source: AK7set9iBgYjJZPgugegnoZ4Ej5PYixVUPRv8rbNscd/XyIyKrSWVQ7ZzpHwYZ2PxNwt26VaGf+yIQ==
-X-Received: by 2002:a17:907:6eab:b0:88d:ba89:182f with SMTP id sh43-20020a1709076eab00b0088dba89182fmr3776743ejc.0.1675376441562;
-        Thu, 02 Feb 2023 14:20:41 -0800 (PST)
-Received: from krava ([83.240.61.48])
-        by smtp.gmail.com with ESMTPSA id en14-20020a056402528e00b0049622a61f8fsm292033edb.30.2023.02.02.14.20.40
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H1RWtgYPbEvmI/EJRqa0d+Xhxai9DiYB+ycehXpxkH0=;
+        b=t+FlqvpE602P1yRXG3UQjv8lwKREfnnbinBAe/SvlOLVo1jFMIEbuTPvB6LvbgrL75
+         J+rKEEzrAYb/IK3Nwb8VJaAMAt0BpbYMcj7DaEvni5s5y2PVMvor5TAzHFVPbt49/r5u
+         v/1QCMixRpXkbUqkvUJZWkwovRfKg/JjZFu5xofXl13fle+zdvn9dykfS8G1qgEnkkEI
+         xyNLgjIcc0HdpH+6JqedQd7Qi/q7Cv2Z0HNa3vNqpDvQ7E1IE07enNvQFwZ+oU1fuWxI
+         T5JKuYqHOcuw2eMUzggqyoiLzdszn/GFdl2PfGmm6P+14fptaBGY4MFE9C6eUUYKWMns
+         M5yA==
+X-Gm-Message-State: AO0yUKWdNT6QeS8ku7vJv73DshahmNUaCuLwgdXqn01j0kx0KlGz+goo
+        MxAfJTL54Z/i0veXPMIdjHgbYMBPGbB6slcf
+X-Google-Smtp-Source: AK7set9ObD4PUAAhc/hm82X4nvhTIe1K9k7Y8grUQ4drlluCf0MCvUAa9S5FmR5UyIFgxjUsGKyUcQ==
+X-Received: by 2002:a05:622a:44c:b0:3b8:26a7:d608 with SMTP id o12-20020a05622a044c00b003b826a7d608mr15700878qtx.19.1675377359511;
+        Thu, 02 Feb 2023 14:35:59 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:9cc7])
+        by smtp.gmail.com with ESMTPSA id cx4-20020a05620a51c400b0071d2cd07560sm546276qkb.124.2023.02.02.14.35.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 14:20:41 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 2 Feb 2023 23:20:39 +0100
-To:     Ian Rogers <irogers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Compile resolve_btfids as
- host program
-Message-ID: <Y9w3N4GHxipREEoO@krava>
-References: <20230202112839.1131892-1-jolsa@kernel.org>
- <Y9vxFLA6Xj/zPjQu@dev-arch.thelio-3990X>
- <CAP-5=fXy0wArjfXTQHD6nXZ=8dxb6ypRMef=-M1+uTTvbdfH0A@mail.gmail.com>
+        Thu, 02 Feb 2023 14:35:59 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, toke@redhat.com, brouer@redhat.com,
+        corbet@lwn.net, linux-doc@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/1] Document kfunc lifecycle / stability expectations
+Date:   Thu,  2 Feb 2023 16:35:56 -0600
+Message-Id: <20230202223557.744110-1-void@manifault.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fXy0wArjfXTQHD6nXZ=8dxb6ypRMef=-M1+uTTvbdfH0A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 12:14:14PM -0800, Ian Rogers wrote:
-> On Thu, Feb 2, 2023 at 9:21 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > On Thu, Feb 02, 2023 at 12:28:39PM +0100, Jiri Olsa wrote:
-> > > Making resolve_btfids to be compiled as host program so
-> > > we can avoid cross compile issues as reported by Nathan.
-> > >
-> > > Also we no longer need HOST_OVERRIDES for BINARY target,
-> > > just for 'prepare' targets.
-> > >
-> > > Cc: Ian Rogers <irogers@google.com>
-> > > Fixes: 13e07691a16f ("tools/resolve_btfids: Alter how HOSTCC is forced")
-> > > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> >
-> > Tested-by: Nathan Chancellor <nathan@kernel.org>
-> >
-> 
-> This change has my,
-> Acked-by: Ian Rogers <irogers@google.com>
+This is the v2 of the proposal for documenting BPF kfunc lifecycle and
+stability. v1 of this proposal can be found in [0]. As [0] indicates,
+Toke has also provided several RFC proposals, the most recent of which
+is can be found in [1].
 
-thanks
+Much of this proposal is based on Toke's prior patches on this topic,
+and group discussions at BPF office hours. Anyone who participated
+in either prior proposals for kfunc lifecycle / stability documentation,
+or in BPF office-hour discussions, may feel free to submit
+Co-developed-by tags in place of Acked-by, Reviewed-by, etc.
 
-> but I wonder about cleaning HOST_OVERRIDES. From the patch I sent,
-> would it be worth adding:
-> ```
-> --- a/tools/bpf/resolve_btfids/Makefile
-> +++ b/tools/bpf/resolve_btfids/Makefile
-> @@ -17,9 +17,9 @@ else
->   MAKEFLAGS=--no-print-directory
-> endif
-> 
-> -# always use the host compiler
-> +# Overrides for the prepare step libraries.
-> HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)"
-> ARCH="$(HOSTARCH)" \
-> -                 EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
-> +                 CROSS_COMPILE=""
-> 
-> RM      ?= rm
-> HOSTCC  ?= gcc
-> ```
-> It seems odd passing HOSTCFLAGS this way and mixing HOSTCC as CC with
-> CROSS_COMPILE set seems open to failure. Perhaps we should just get
-> rid of this, add something like a HOST=1 option for building the
-> library and then in the library code do the right thing. That would
-> fix the issue that libsubcmd and libbpf here are being built reporting
-> CC rather than HOSTCC, make the build flags in general more sane.
+Changelog
+---------
+v1 -> v2:
+- Move some of the main points of the arguments around. v1 underscored
+  quite strongly that kfuncs don't have _any_ stability guarantees.
+  While true, it may scare away users who misinterpret the implications
+  of that to mean that things will change wildly and at any time.
+  Reframe the general flow of the section to still be clear that no
+  stability is guaranteed, but front-load the content that clarifies why
+  this isn't necessarily something to be afraid of (Toke, Daniel, and
+  others).
+- Add a paragraph explaining that out-of-tree BPF programs that use
+  kfuncs are relevant to discussions surrounding whether kfuncs should
+  be modified or removed. While the onus is on kfunc users to explicitly
+  engage with the upstream community to let them know which kfuncs
+  they're using and why they're useful, the added paragraph also makes
+  it clear that the BPF community will in turn participate in upstream
+  discussions to ensure that such users aren't equated with out-of-tree
+  module users and outright ignored. Also make it clear that our hope is
+  that BPF programs will be upstreamed on a more regular basis (Toke,
+  Daniel, and others).
+- Remove patches that add KF_DEPRECATED flag to <linux/btf.h>. They'll
+  remain in the documentation for now, and will be merged at a later
+  time when it's actually a useful signal for developers (Alexei).
 
-could you send separate patch with that?
+[0]: https://lore.kernel.org/all/20230202163056.658641-1-void@manifault.com/
+[1]: https://lore.kernel.org/all/20230201174449.94650-1-toke@redhat.com/
 
-also I'll try to check if we could make prepare libs as hostprogs,
-because I think the changes you suggest might depend on that
+David Vernet (1):
+  bpf/docs: Document kfunc lifecycle / stability expectations
 
-jirka
+ Documentation/bpf/kfuncs.rst | 139 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 134 insertions(+), 5 deletions(-)
 
-> 
-> Thanks,
-> Ian
-> 
-> > > ---
-> > >  tools/bpf/resolve_btfids/Build    | 4 +++-
-> > >  tools/bpf/resolve_btfids/Makefile | 9 ++++++---
-> > >  2 files changed, 9 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/bpf/resolve_btfids/Build b/tools/bpf/resolve_btfids/Build
-> > > index ae82da03f9bf..077de3829c72 100644
-> > > --- a/tools/bpf/resolve_btfids/Build
-> > > +++ b/tools/bpf/resolve_btfids/Build
-> > > @@ -1,3 +1,5 @@
-> > > +hostprogs := resolve_btfids
-> > > +
-> > >  resolve_btfids-y += main.o
-> > >  resolve_btfids-y += rbtree.o
-> > >  resolve_btfids-y += zalloc.o
-> > > @@ -7,4 +9,4 @@ resolve_btfids-y += str_error_r.o
-> > >
-> > >  $(OUTPUT)%.o: ../../lib/%.c FORCE
-> > >       $(call rule_mkdir)
-> > > -     $(call if_changed_dep,cc_o_c)
-> > > +     $(call if_changed_dep,host_cc_o_c)
-> > > diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> > > index daed388aa5d7..abdd68ac08f4 100644
-> > > --- a/tools/bpf/resolve_btfids/Makefile
-> > > +++ b/tools/bpf/resolve_btfids/Makefile
-> > > @@ -22,6 +22,9 @@ HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)
-> > >                 EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
-> > >
-> > >  RM      ?= rm
-> > > +HOSTCC  ?= gcc
-> > > +HOSTLD  ?= ld
-> > > +HOSTAR  ?= ar
-> > >  CROSS_COMPILE =
-> > >
-> > >  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
-> > > @@ -64,7 +67,7 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
-> > >  LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
-> > >  LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-> > >
-> > > -CFLAGS += -g \
-> > > +HOSTCFLAGS += -g \
-> > >            -I$(srctree)/tools/include \
-> > >            -I$(srctree)/tools/include/uapi \
-> > >            -I$(LIBBPF_INCLUDE) \
-> > > @@ -73,11 +76,11 @@ CFLAGS += -g \
-> > >
-> > >  LIBS = $(LIBELF_LIBS) -lz
-> > >
-> > > -export srctree OUTPUT CFLAGS Q
-> > > +export srctree OUTPUT HOSTCFLAGS Q HOSTCC HOSTLD HOSTAR
-> > >  include $(srctree)/tools/build/Makefile.include
-> > >
-> > >  $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
-> > > -     $(Q)$(MAKE) $(build)=resolve_btfids $(HOST_OVERRIDES)
-> > > +     $(Q)$(MAKE) $(build)=resolve_btfids
-> > >
-> > >  $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
-> > >       $(call msg,LINK,$@)
-> > > --
-> > > 2.39.1
-> > >
+-- 
+2.39.0
+
