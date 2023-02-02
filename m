@@ -2,204 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16639688640
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 19:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D8068868A
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 19:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbjBBSUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 13:20:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56392 "EHLO
+        id S232793AbjBBSbx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 13:31:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232085AbjBBSUK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 13:20:10 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD3572645
-        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 10:20:09 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id cl23-20020a17090af69700b0022c745bfdc3so2619680pjb.3
-        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 10:20:09 -0800 (PST)
+        with ESMTP id S232816AbjBBSbi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 13:31:38 -0500
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7F56778F
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 10:29:51 -0800 (PST)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-4b718cab0e4so37831067b3.9
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 10:29:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3maieeEmJZC4o0A8q+GFnFiJBTaTwler4jjL8HA/rA=;
-        b=ELl2nrkaExkTZyhXgsGEZoN5b/G/i4qsAjrzYt02zjdp8XHC0spN27IZFjIOpxwUFZ
-         e9MZZgYpKjqDaVEutPi72VYDuKyL0jtIXoej7+PJLn5AIf4BDNUzh0VIgwcTUBKi8VrE
-         zFYxpfErxj+cFwF6P0KotMN3Cx38/6fEepcMU=
+        bh=GEZyjJ0mnjQz+NRAeTQHCjCDfKCS7rmfLl1d2MlgIfQ=;
+        b=jCtjIWTIrU92q/gzigttsITW+8OSokaY5YMNzQlfVM401sdNtkY7U25xUmEzNh3hoa
+         zhDJU4rtO8STnKusbbLZickO89AlALZr2fYNukGQxA3lkEj+74iJXukT6IqzQlJrujII
+         HqIfLnm3CgXZ+sgfmzZwdQcMnUKH/gSq+uKMXSS2eRj5n+Q+sC300Wgx/krgd+Vy3KN9
+         WMaenmIH5e4S2nXcdZjjrMoOSh0j5Y3G6uo4YsExaDRwcqtV9Midn8g8f92xktQTWX3E
+         iRAUwgWr+EuAyy2d3C+cwIoaJxTZY16/CxhhFJ31IEGvfxiW3ox7xA/ytYbbdMp6rQaS
+         yWCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Y3maieeEmJZC4o0A8q+GFnFiJBTaTwler4jjL8HA/rA=;
-        b=eGJaG0XQSe1mGIpoZl/8XzXyimGnFjfEQMOav/vcwCsBeGp4sq2PwMjWCzPi9+eT8o
-         C+Vwz70plGiOxkXk7iwplY0W21xM9wBw2YkUKwXSm8MK58ix01sz48OdnHpD2Ylq/MGA
-         qvyGPgzQnjg6hVG65F99lewJLiwIWhk+dAFbWH/H8zXKZ/OIgy/9rq64RWKjPU1K8yz7
-         u2lp/+l/BrJ0NivXIFvixqEMPolaq0HrruUDrU/FzK+/jycifES2KAqmbasUIy8A8xDH
-         0wnRWh5Hpv4poMXfZlUQQWLlp5XVM+cO/DodJ9F1RUTRlCFB8uJZUz7hn1UpxN8kppF/
-         rZ7Q==
-X-Gm-Message-State: AO0yUKU2DvdOnmhwnWN1wVp62DA06WF3TJu3rJ/99CceaoymfbSnOnhD
-        ZvggQfRaa0ynQxeylEUZxaZPMeXxTB/n26HSJSaUgg==
-X-Google-Smtp-Source: AK7set/gpt1tMxjhx/H02FaZVfNtnGXN+ygSIOdk4TKmJa9IJ7PD5HkOEq6vQo77o4muaIT8zuebO3rO64RtSb5mydA=
-X-Received: by 2002:a17:90a:6986:b0:22c:71ed:629d with SMTP id
- s6-20020a17090a698600b0022c71ed629dmr746270pjj.10.1675362008985; Thu, 02 Feb
- 2023 10:20:08 -0800 (PST)
+        bh=GEZyjJ0mnjQz+NRAeTQHCjCDfKCS7rmfLl1d2MlgIfQ=;
+        b=lJ/jIMlylzLfwlAAJyx37afoKmoWoQ90fwNNdXcYpIvONbKTnHLduKqMPgPHPz3Evo
+         Qt97unWpsDZAT8X6Wt1qgY+RWf0TEH6N1wPVlK9eAgg3riW4LRwDuKJzHzUw93anvLgu
+         iXisax01M2tdVNeyKBWt2y/D9EaWXx+HrX5X4W4S3XFVEkkDDGrY3wO63kvegbMOnu2f
+         VuDdEW8h/uavfQrlUxFvXiRuWTeGS814ItHEY0O039NV64dIMpl3Dus1W7WYi7WCAsSt
+         9u2E9ApLS+rHCrxBHDaOjIfJABKAxFjMM0tKhM5iCvc/TfJSIeuxYe0H/ghTjNqb5pGm
+         1sUQ==
+X-Gm-Message-State: AO0yUKXDLQ9f0MhQ5JC6CJjv24Q2INysWtOnLp+jd+RewoYndkQRw9qz
+        pPj5fJKX0BjCuzzm7j7NDu2goh3jSxo9lTAhrQCmCOuoLcEzVw==
+X-Google-Smtp-Source: AK7set93xq+sANBpMRKGc/TW8/f1mqhR8KupyDlEwCv0utIfthWxNJC/WfEpeaDKblA0QNhn/SooLJui86Wk3P+mIyU=
+X-Received: by 2002:a0d:d5c8:0:b0:524:af5a:803e with SMTP id
+ x191-20020a0dd5c8000000b00524af5a803emr43735ywd.264.1675362555367; Thu, 02
+ Feb 2023 10:29:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20230201163420.1579014-1-revest@chromium.org> <20230201163420.1579014-6-revest@chromium.org>
- <Y9vcua0+JzjmTICO@FVFF77S0Q05N.cambridge.arm.com> <Y9vrWUM8ypNNwHyv@FVFF77S0Q05N.cambridge.arm.com>
-In-Reply-To: <Y9vrWUM8ypNNwHyv@FVFF77S0Q05N.cambridge.arm.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Thu, 2 Feb 2023 19:19:58 +0100
-Message-ID: <CABRcYm+nwsyyKEhvz9dr8sDiOWfha-YxOkGMFSx4mH9O+HAiYg@mail.gmail.com>
-Subject: Re: [PATCH 5/8] ftrace: Make DIRECT_CALLS work WITH_ARGS and !WITH_REGS
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com
+References: <20230129190501.1624747-1-iii@linux.ibm.com> <CAADnVQL4Kmk-Hz5XB_AiVC+xVBhVvBqBZTTtedAJC5op2xGD6g@mail.gmail.com>
+ <32bf5c1fc3dcfcf735f34f83e89cbb821878b931.camel@linux.ibm.com>
+ <CAADnVQ+f3_AdYjvOCHystXe1vEmXzpABbLzU4tLZD7Wuu1CCgA@mail.gmail.com> <bdb3f8f0d81c0c2c05fc8003beda2f351ce1a504.camel@linux.ibm.com>
+In-Reply-To: <bdb3f8f0d81c0c2c05fc8003beda2f351ce1a504.camel@linux.ibm.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Thu, 2 Feb 2023 10:29:02 -0800
+Message-ID: <CAJnrk1YvB_n0ie5QiwSJ2_b5tYBWRke2bn+xoR4WAFENObZoBw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/8] Support bpf trampoline for s390x - CI issue
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 2, 2023 at 5:57 PM Mark Rutland <mark.rutland@arm.com> wrote:
+On Tue, Jan 31, 2023 at 5:47 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> On Thu, Feb 02, 2023 at 03:54:33PM +0000, Mark Rutland wrote:
-> > On Wed, Feb 01, 2023 at 05:34:17PM +0100, Florent Revest wrote:
-> > > -#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
-> > > +#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT)
+> On Mon, 2023-01-30 at 19:13 -0800, Alexei Starovoitov wrote:
+> > On Mon, Jan 30, 2023 at 10:56 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> > wrote:
+> > >
+> > > On Sun, 2023-01-29 at 19:28 -0800, Alexei Starovoitov wrote:
+> > > > On Sun, Jan 29, 2023 at 11:05 AM Ilya Leoshkevich
+> > > > <iii@linux.ibm.com>
+> > > > wrote:
+> > > > >
+> > > > > v2:
+> > > > > https://lore.kernel.org/bpf/20230128000650.1516334-1-iii@linux.ibm.com/#t
+> > > > > v2 -> v3:
+> > > > > - Make __arch_prepare_bpf_trampoline static.
+> > > > >   (Reported-by: kernel test robot <lkp@intel.com>)
+> > > > > - Support both old- and new- style map definitions in
+> > > > > sk_assign.
+> > > > > (Alexei)
+> > > > > - Trim DENYLIST.s390x. (Alexei)
+> > > > > - Adjust s390x vmlinux path in vmtest.sh.
+> > > > > - Drop merged fixes.
+> > > >
+> > > > It looks great. Applied.
+> > > >
+> > > > Sadly clang repo is unreliable today. I've kicked BPF CI multiple
+> > > > times,
+> > > > but it didn't manage to fetch the clang. Pushed anyway.
+> > > > Pls watch for BPF CI failures in future runs.
+> > >
+> > > I think this is because llvm-toolchain-focal contains llvm 17 now.
+> > > So we need to either use llvm-toolchain-focal-16, or set
+> > > llvm_default_version=16 in libbpf/ci.
 > >
-> > Unfortunately, I think this is broken for architectures where:
+> > Yep. That was fixed.
+> > Looks like only one test is failing on s390:
+> > test_synproxy:PASS:./xdp_synproxy --iface tmp1 --single 0 nsec
+> > expect_str:FAIL:SYNACKs after connection unexpected SYNACKs after
+> > connection: actual '' != expected 'Total SYNACKs generated: 1\x0A'
 > >
-> > * DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
-> > * DYNAMIC_FTRACE_WITH_REGS=y
-> > * DYNAMIC_FTRACE_WITH_ARGS=n
-> >
-> > ... since those might pass a NULL ftrace_regs around, and so when using the
-> > list ops arch_ftrace_set_direct_caller() might blow up accessing an element of
-> > ftrace_regs.
-> >
-> > It looks like 32-bit x86 is the only case with that combination, and its
-> > ftrace_caller implementation passes a NULL regs, so I reckon that'll blow up.
-> > However, it looks like there aren't any FTRACE_DIRECT samples wired up for
-> > 32-bit x86, so I'm not aware of a test case we can use.
+> > #284/1 xdp_synproxy/xdp:FAIL
+> > #284 xdp_synproxy:FAIL
+> > Summary: 260/1530 PASSED, 31 SKIPPED, 1 FAILED
 >
-> FWIW, the FTRACE_STARTUP_TEST tickles this:
+> Thanks! Where do you see the xdp_synproxy failure? I checked the jobs
+> at [1] and rather see two migrate_reuseport failures ([2], [3]):
 
-Good catch and thanks for reproducing the bug too!
+Hi Ilya,
 
-> [    1.896209] Testing tracer function_graph:
-> [    2.900282] BUG: kernel NULL pointer dereference, address: 0000002c
-> [    2.901171] #PF: supervisor write access in kernel mode
-> [    2.901171] #PF: error_code(0x0002) - not-present page
-> [    2.901171] *pde = 00000000
-> [    2.901171] Oops: 0002 [#1] PREEMPT SMP
-> [    2.901171] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.2.0-rc3-00014-gcfd6340c71ce #1
-> [    2.901171] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-> [    2.901171] EIP: call_direct_funcs+0xd/0x1c
-> [    2.901171] Code: 00 00 00 00 90 a9 00 00 00 01 0f 84 d7 fe ff ff 0d 00 00 80 00 89 46 04 e9 d2 fe ff ff 8b 41 64 85 c0 74 11 55 89 e5 8b 55 08 <89> 42 2c 5d c3 8d b6 00 00 00 00 c3 8d 76 00 89 c1 89 b
-> [    2.901171] EAX: cc3620e8 EBX: c1147e44 ECX: c1147e44 EDX: 00000000
-> [    2.901171] ESI: fffffeff EDI: cc354208 EBP: c1147dbc ESP: c1147dbc
-> [    2.901171] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
-> [    2.901171] CR0: 80050033 CR2: 0000002c CR3: 0d703000 CR4: 00350ed0
-> [    2.901171] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [    2.901171] DR6: fffe0ff0 DR7: 00000400
-> [    2.901171] Call Trace:
-> [    2.901171]  arch_ftrace_ops_list_func+0xf5/0x1bc
-> [    2.901171]  ? ftrace_enable_ftrace_graph_caller+0x3b/0x44
-> [    2.901171]  ? trace_selftest_startup_function_graph+0x1d9/0x298
-> [    2.901171]  ? syscall_unregfunc+0xa0/0xa0
-> [    2.901171]  ftrace_call+0x5/0x13
-> [    2.901171]  trace_selftest_dynamic_test_func+0x5/0xc
-> [    2.901171]  trace_selftest_startup_function_graph+0x1d9/0x298
-> [    2.901171]  ? trace_selftest_dynamic_test_func+0x5/0xc
-> [    2.901171]  ? trace_selftest_startup_function_graph+0x1d9/0x298
-> [    2.901171]  ? ftrace_check_record+0x340/0x340
-> [    2.901171]  ? ftrace_check_record+0x340/0x340
-> [    2.901171]  ? ftrace_stub_graph+0x4/0x4
-> [    2.901171]  ? trace_selftest_test_regs_func+0x18/0x18
-> [    2.901171]  run_tracer_selftest+0x7d/0x1bc
-> [    2.901171]  ? graph_depth_read+0x90/0x90
-> [    2.901171]  register_tracer+0xd3/0x284
-> [    2.901171]  ? register_trace_event+0xf6/0x180
-> [    2.901171]  ? init_graph_tracefs+0x38/0x38
-> [    2.901171]  init_graph_trace+0x56/0x78
-> [    2.901171]  do_one_initcall+0x53/0x204
-> [    2.901171]  ? parse_args+0x143/0x3ec
-> [    2.901171]  ? __kmem_cache_alloc_node+0x2d/0x224
-> [    2.901171]  kernel_init_freeable+0x198/0x2bc
-> [    2.901171]  ? rdinit_setup+0x30/0x30
-> [    2.901171]  ? rest_init+0xb0/0xb0
-> [    2.901171]  kernel_init+0x1a/0x1d0
-> [    2.901171]  ? schedule_tail_wrapper+0x9/0xc
-> [    2.901171]  ret_from_fork+0x1c/0x28
-> [    2.901171] Modules linked in:
-> [    2.901171] CR2: 000000000000002c
-> [    2.901171] ---[ end trace 0000000000000000 ]---
-> [    2.901171] EIP: call_direct_funcs+0xd/0x1c
-> [    2.901171] Code: 00 00 00 00 90 a9 00 00 00 01 0f 84 d7 fe ff ff 0d 00 00 80 00 89 46 04 e9 d2 fe ff ff 8b 41 64 85 c0 74 11 55 89 e5 8b 55 08 <89> 42 2c 5d c3 8d b6 00 00 00 00 c3 8d 76 00 89 c1 89 b
-> [    2.901171] EAX: cc3620e8 EBX: c1147e44 ECX: c1147e44 EDX: 00000000
-> [    2.901171] ESI: fffffeff EDI: cc354208 EBP: c1147dbc ESP: c1147dbc
-> [    2.901171] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
-> [    2.901171] CR0: 80050033 CR2: 0000002c CR3: 0d703000 CR4: 00350ed0
-> [    2.901171] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [    2.901171] DR6: fffe0ff0 DR7: 00000400
-> [    2.901171] note: swapper/0[1] exited with preempt_count 1
-> [    2.901175] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
-> [    2.902171] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009 ]---
->
-> The below diff solved that for me.
->
-> Thanks,
-> Mark.
->
-> ---->8----
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 84f717f8959e..3d2156e335d7 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -241,6 +241,12 @@ enum {
->         FTRACE_OPS_FL_DIRECT                    = BIT(17),
->  };
->
-> +#ifndef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-> +#define FTRACE_OPS_FL_SAVE_ARGS                        FTRACE_OPS_FL_SAVE_REGS
-> +#else
-> +#define FTRACE_OPS_FL_SAVE_ARGS                        0
+I'm seeing these xdp_synproxy failures consistently in CI on
+"test_progs/test_progs_no_alu32 on s390x with gcc" builds. These links
+are to some of the latest ones:
 
-Mh, could we (theoretically) be in a situation where an arch supports
-WITH_ARGS but it also has two ftrace_caller trampolines: one that
-saves the args and the other that saves nothing ? (For example if x86
-migrates their WITH_REGS to WITH_ARGS only)
-Wouldn't it make sense then to define FTRACE_OPS_FL_SAVE_ARGS as an
-extra bit to tell ftrace that we need the args, similarly to
-FTRACE_OPS_FL_SAVE_REGS ?
+https://github.com/kernel-patches/bpf/actions/runs/4074723783/jobs/7021760646
+https://github.com/kernel-patches/bpf/actions/runs/4073866949/jobs/7019322847
+https://github.com/kernel-patches/bpf/actions/runs/4073861356/jobs/7018721175
 
-If that can't happen or if we want to leave this up for later, the
-patch lgtm and I can squash it into my patch 5 in v2. ;)
-
-> +#endif
-> +
->  /*
->   * FTRACE_OPS_CMD_* commands allow the ftrace core logic to request changes
->   * to a ftrace_ops. Note, the requests may fail.
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 73b6f6489ba1..8e739303b6a2 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -5282,7 +5282,7 @@ static LIST_HEAD(ftrace_direct_funcs);
 >
->  static int register_ftrace_function_nolock(struct ftrace_ops *ops);
+>   count_requests:FAIL:count in BPF prog unexpected count in BPF prog:
+> actual 10 != expected 25
+>   #127/7   migrate_reuseport/IPv6 TCP_NEW_SYN_RECV
+> reqsk_timer_handler:FAIL
 >
-> -#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT)
-> +#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_ARGS)
+>   count_requests:FAIL:count in BPF prog unexpected count in BPF prog:
+> actual 14 != expected 25
+>   #127/4   migrate_reuseport/IPv4 TCP_NEW_SYN_RECV
+> inet_csk_complete_hashdance:FAIL
 >
->  static int check_direct_multi(struct ftrace_ops *ops)
->  {
+> I tried running vmtest.sh in a loop, and could not reproduce neither
+> the xdp_synproxy nor the migrate_reuseport failure.
 >
+> In migrate_reuseport, from the userspace perspective everything works,
+> (count_requests:PASS:count in userspace 0 nsec). This means that we
+> always get to the bpf_sk_select_reuseport() call and it succeeds.
+> The eBPF program still records at least some migrations while the
+> connection is in the TCP_NEW_SYN_RECV state, so I wonder if other
+> migrations, for whatever reason, happen in a different state?
+>
+> [1] https://github.com/libbpf/libbpf/actions/workflows/test.yml
+> [2]
+> https://github.com/libbpf/libbpf/actions/runs/4049227053/jobs/6965361085#step:30:8908
+> [3]
+> https://github.com/libbpf/libbpf/actions/runs/4049783307/jobs/6966526594#step:30:8911
