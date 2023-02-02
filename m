@@ -2,108 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 650A56882B8
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 16:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BF06882FD
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 16:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbjBBPgJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 10:36:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        id S232965AbjBBPrO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 10:47:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbjBBPfq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 10:35:46 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A95F234D4;
-        Thu,  2 Feb 2023 07:35:16 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id n13so1700284wmr.4;
-        Thu, 02 Feb 2023 07:35:16 -0800 (PST)
+        with ESMTP id S232659AbjBBPrF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 10:47:05 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1775378ADF
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 07:46:44 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id ml19so7308489ejb.0
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 07:46:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=trv1AGGi2ZldMb5ssniYbBdtJBugUHujIqtgNiIg+Vs=;
-        b=c5Y63VtVWSajudI2t9sYCFJ5AT1CYvsF4csR+nQSPnF7R1hilM1CflU+yEw7hzHGfF
-         zC7c9KRF8Pwl6wbWvUsYRfmMrxm7Qb3DCyPAd/wMtnPYPmj0d8uf+zNsANt4KVhXSSZB
-         uDOmcIVC4rV/VF5glzM7bCdWCZ/LzSSa6SP+GylGOsnJW2VvaH2nFkeJtcA3IlztSaM1
-         C2ZlzMCnCIjE8S1y2apGpv9Gcnkxt6OLU98GQt2B6g86l8H2v/wT8tuZvqZeklbqGkOc
-         ahFu6jjeB+lqaMbkAUbEzXvuREDRnXl/xBLWubfPFJZFM2+V5iOCW2BUgVs9iBPt/3e0
-         Pdzg==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y8Gc65aUVwApOeHyeBrWY9LnhCMXXP4ZkreA7OeG+4U=;
+        b=67VAyORvNbOtmnWVjQlursOQbEnRpUIb8PQ29AvrnI1ROHyz3Be78spBGFafB30mz6
+         wKlDF18QRYFQa5RUBVcuLuF7jvYPaACSnz65hTDC9su12QhMbeMgwsmkkpFLaq8hVuzT
+         7ngvN5B8r5K9/2C6qtC+rjJqxpxPPJC1RYheRSddhGmeBCsvd0cF5A2qydhTiJV7cGvq
+         v9CbrDoLpItIonop4Vn7OYpk9qjRADcHiMQNgbWTiaqmQU6kHx50EgiolP3kToc0rGyU
+         G4VhAQKISk5qG7hnEkVbahol2M4AFU3yyaLilHmzVc+0i2n4SqMTU/cARtECLPEIElkV
+         8AmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=trv1AGGi2ZldMb5ssniYbBdtJBugUHujIqtgNiIg+Vs=;
-        b=Ikp3o5qH5MhPywB6XKS4wIdT6v4+z0s+2D7lBWeTVG7UGjHHFzf3iJI2SNXO9JxP/6
-         hnHLXb3iSZPWkoOhYvTeVuJJ88SaHoewjJHRN/XpbRkH+M/bQduEE1wNRuea+1KCq5e8
-         aTCumQorCQrA9AYJDdXzuIBtZC9c++kPbvFLFIozQIzoXog3BAqK4Nkwy4k198+RqVHd
-         NfXWRI5OwGk9okMiUzJ+XWBsO4nBfs9l3xst352ijDaqt7ifCnHK4JRjvWR4WylEEuqG
-         zKCwrrh6D8TvsmJzU9CQEhttBsWCJ/IRM1esgRxqTG9SbnPGGFFTojt1F2uQmtTIXs/D
-         h5zQ==
-X-Gm-Message-State: AO0yUKUlziFB+u3t0PDrnHtwvYZh2n0FT2lDJZ4Dl3ErwZHXTMOREVOB
-        AjrwgJIWTUjMtNpiPpB3844=
-X-Google-Smtp-Source: AK7set9AnusFcqc2c6udy8lC2Y6wkzqTL1MyGF5uggu+wfO/RWfZBQYHQvqUeEugk2/pBsVxs4pj9Q==
-X-Received: by 2002:a05:600c:1e06:b0:3dc:18de:b20d with SMTP id ay6-20020a05600c1e0600b003dc18deb20dmr6553730wmb.33.1675352038166;
-        Thu, 02 Feb 2023 07:33:58 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id h20-20020a05600c351400b003dc22ee5a2bsm5522893wmq.39.2023.02.02.07.33.56
+        bh=Y8Gc65aUVwApOeHyeBrWY9LnhCMXXP4ZkreA7OeG+4U=;
+        b=hl3jJyk3ZwmOJ12lslJ3V2afXhs3c10/hcOdTI8t9tAIIfhPmEjyoPe23Ij5hdzRxQ
+         3j3WIaTusJaxw4byfYG4XsOkW70RmX1w+AR3Xs1NgJfp1+FRyKWwpB+DaIQW+mJMojDX
+         svvGYAFhx4Zt/UW2QkBON6tu5IXIuZ7ZsSDP8cHnMumJxZ/lczpM3vVivr6A68+g2Wt2
+         BY4XHHBQPnEypfbUQbUcJHbOwttEKSCtD47OfMWbdRJTGFAWC8/55eGA7NPmliOpTKoT
+         msfwSYcLrm8WQq00p0y3er2mBAdzOojVaAvWOHELtQNd9yo7Ms0j+d7QsalPU7zyUkA2
+         7uzw==
+X-Gm-Message-State: AO0yUKVvCewlDBnjnRUNUZlTuFJyL1SsxfYzEHairYBvV5mZ5V9pXmBd
+        MYucu/Res2dvrT9N05IbtZge+Q==
+X-Google-Smtp-Source: AK7set/vvtOpJuh/J1KX2g79Jkm9KHWdxwyC+o/qD9/dF5IauAW+GhEbTVX1t0WBvGA2i55u+YWKLA==
+X-Received: by 2002:a17:907:9c07:b0:88d:ba89:183b with SMTP id ld7-20020a1709079c0700b0088dba89183bmr2463211ejc.12.1675352801454;
+        Thu, 02 Feb 2023 07:46:41 -0800 (PST)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id t12-20020a1709063e4c00b0088a9e083318sm5477031eji.168.2023.02.02.07.46.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 07:33:57 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 2 Feb 2023 16:33:55 +0100
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [RFC 0/5] mm/bpf/perf: Store build id in file object
-Message-ID: <Y9vX49CtDzyg3B/8@krava>
-References: <20230201135737.800527-1-jolsa@kernel.org>
- <Y9vSZhBBCbshI3eM@casper.infradead.org>
+        Thu, 02 Feb 2023 07:46:40 -0800 (PST)
+Date:   Thu, 2 Feb 2023 16:46:39 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     "mst@redhat.com" <mst@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH 2/2] virtio-net: Maintain reverse cleanup order
+Message-ID: <Y9va33VLJ/eRPUbW@nanopsycho>
+References: <20230202050038.3187-1-parav@nvidia.com>
+ <20230202050038.3187-3-parav@nvidia.com>
+ <Y9ur9B6CDIwThMN6@nanopsycho>
+ <PH0PR12MB5481C0C7E46B5DFF85178792DCD69@PH0PR12MB5481.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y9vSZhBBCbshI3eM@casper.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <PH0PR12MB5481C0C7E46B5DFF85178792DCD69@PH0PR12MB5481.namprd12.prod.outlook.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 03:10:30PM +0000, Matthew Wilcox wrote:
-> On Wed, Feb 01, 2023 at 02:57:32PM +0100, Jiri Olsa wrote:
-> > hi,
-> > we have a use cases for bpf programs to use binary file's build id.
-> 
-> What is your use case?  Is it some hobbyist thing or is it something
-> that distro kernels are all going to enable?
-> 
+Thu, Feb 02, 2023 at 04:10:56PM CET, parav@nvidia.com wrote:
+>
+>> From: Jiri Pirko <jiri@resnulli.us>
+>> Sent: Thursday, February 2, 2023 7:26 AM
+>> 
+>> Thu, Feb 02, 2023 at 06:00:38AM CET, parav@nvidia.com wrote:
+>> >To easily audit the code, better to keep the device stop() sequence to
+>> >be mirror of the device open() sequence.
+>> >
+>> >Signed-off-by: Parav Pandit <parav@nvidia.com>
+>> 
+>> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+>> 
+>> If this is not fixing bug (which I believe is the case), you should target it to net-
+>> next ([patch net-next] ..).
+>> 
+>Yes. Right. First one was fix for net-rc, second was for net-next. And 2nd depends on the first to avoid merge conflicts.
+>So, I was unsure how to handle it.
+>Can you please suggest?
 
-our use case is for hubble/tetragon [1] and we are asked to report
-buildid of executed binary.. but the monitoring process is running
-in its own pod and can't access the the binaries outside of it, so
-we need to be able to read it in kernel
+1) Send the fix to -net
+2) Wait until -net is merged into -net-next
+3) Send the second patch to -net-next
 
-I understand Hao Luo has also use case for that [2]
-
-jirka
-
-
-[1] https://github.com/cilium/tetragon/
-[2] https://lore.kernel.org/bpf/CA+khW7gAYHmoUkq0UqTiZjdOqARLG256USj3uFwi6z_FyZf31w@mail.gmail.com/
+>
+>
+>> 
+>> >---
+>> > drivers/net/virtio_net.c | 2 +-
+>> > 1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> >diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c index
+>> >b7d0b54c3bb0..1f8168e0f64d 100644
+>> >--- a/drivers/net/virtio_net.c
+>> >+++ b/drivers/net/virtio_net.c
+>> >@@ -2279,9 +2279,9 @@ static int virtnet_close(struct net_device *dev)
+>> > 	cancel_delayed_work_sync(&vi->refill);
+>> >
+>> > 	for (i = 0; i < vi->max_queue_pairs; i++) {
+>> >+		virtnet_napi_tx_disable(&vi->sq[i].napi);
+>> > 		napi_disable(&vi->rq[i].napi);
+>> > 		xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+>> >-		virtnet_napi_tx_disable(&vi->sq[i].napi);
+>> > 	}
+>> >
+>> > 	return 0;
+>> >--
+>> >2.26.2
+>> >
