@@ -2,110 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C81706877CB
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 09:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C48687840
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 10:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjBBIrv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 03:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
+        id S231664AbjBBJHP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 04:07:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjBBIru (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 03:47:50 -0500
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0B983966;
-        Thu,  2 Feb 2023 00:47:49 -0800 (PST)
-Received: by mail-vk1-xa2e.google.com with SMTP id s76so518659vkb.9;
-        Thu, 02 Feb 2023 00:47:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8jltGU5PEP/8zuh7YjjieGS71K/Iq1B/4kENnhMp90g=;
-        b=AzFT25L7hRsKFB5cbJoScmALOFfvHoplZRE3HEy73xxi5iko5kUBqEcuUiObonr5z0
-         Qy+eZN/PHgsOkRgvm2zaixZ/s5ddKQCuIYlUg8wLtpQ71trBoJ/ixO+F+Dj6Rlt12Tru
-         MSTpMgFk9Q/0cwCNxG9Ka2TIwDrBDIr1yYtH7ybRvabUJhb+1zbTkDjVMMEr26MTnqG2
-         SNJdGB63ZtP2fx0HGOuF9SIDDMnb3gSXZ+eYO7Y/kDPS8Q83IWJ/l9b5p4zugxcefM2u
-         oSpobN59XK8TGPON1ewHV56phizkPEKXnPNIpxHYPRZsgh4K/z9SdjseRCryWDm96GLd
-         j/tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8jltGU5PEP/8zuh7YjjieGS71K/Iq1B/4kENnhMp90g=;
-        b=rDOSftCFDUdEVbM4eNoWhIK14sfB+5gqwWuFMecE6Yq5lcr1Le20odpV9k2RZKhTLC
-         /zCsscVM062SdbG9OO7PjWCx74u4p+XDPE2nMEnXhnSXqnZQXgdnjXdaNsdIwiqxdLAi
-         rRUG8utQZONq48JcQqr3HLwNCBTgUBDdP+B0Vrrhyf7EcXnLOllXP6x5yakwXHAHPLih
-         hSqz+X7NvOtDhmc321goehIFMvC9jwqyxgF30ycITRVh1odoB1hbZLT0hJdlSCgPdZ56
-         UEydWQvRkdjMgFBEmhAfJpVLFULTOfEn2+S0dQP/ZGMkQ+28I8ea73oKEV+yxDOPxatF
-         PfzA==
-X-Gm-Message-State: AO0yUKWmnhvm5GplI86lfFJawNlrLFanbftTVeUFM3w/OsAqvrteo5Oc
-        5lX05nLmXWFiL5zV8c2pcqu9u1xz6kVMTsVouHI=
-X-Google-Smtp-Source: AK7set+odum/96BXUSmaDqKIB8b2b6XGZoasbMzjviqoZJUN++OR+LZo1UWWufoG3tjaNTGS/dFVqhsmqzQhvfit9D4=
-X-Received: by 2002:a1f:de47:0:b0:3e2:446a:18a6 with SMTP id
- v68-20020a1fde47000000b003e2446a18a6mr893548vkg.36.1675327668396; Thu, 02 Feb
- 2023 00:47:48 -0800 (PST)
+        with ESMTP id S232011AbjBBJHO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 04:07:14 -0500
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB20193F2;
+        Thu,  2 Feb 2023 01:07:09 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VakE1qU_1675328825;
+Received: from 30.221.147.171(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VakE1qU_1675328825)
+          by smtp.aliyun-inc.com;
+          Thu, 02 Feb 2023 17:07:06 +0800
+Message-ID: <e321e1f2-10b8-3308-88d5-d4dd6cabc2b6@linux.alibaba.com>
+Date:   Thu, 2 Feb 2023 17:07:04 +0800
 MIME-Version: 1.0
-References: <20221122021536.1629178-1-drosen@google.com> <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
- <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com> <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm>
-In-Reply-To: <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 2 Feb 2023 10:47:36 +0200
-Message-ID: <CAOQ4uxiBD5NXLMXFev7vsCLU5-_o8-_H-XcoMY1aqhOwnADo9w@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem Extension for FUSE
-To:     Bernd Schubert <bernd.schubert@fastmail.fm>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@android.com,
-        Vivek Goyal <vgoyal@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0)
+ Gecko/20100101 Thunderbird/109.0
+Subject: Re: [PATCH net-next v2] virtio-net: fix possible unsigned integer
+ overflow
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20230131085004.98687-1-hengqi@linux.alibaba.com>
+ <20230202030550-mutt-send-email-mst@kernel.org>
+ <f510df2b-25fd-6c88-d796-3e6f6ef6799e@linux.alibaba.com>
+ <20230202031609-mutt-send-email-mst@kernel.org>
+From:   Heng Qi <hengqi@linux.alibaba.com>
+In-Reply-To: <20230202031609-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 11:23 PM Bernd Schubert
-<bernd.schubert@fastmail.fm> wrote:
->
->
->
-> On 11/22/22 21:56, Daniel Rosenberg wrote:
-> > I've been running the generic xfstests against it, with some
-> > modifications to do things like mount/unmount the lower and upper fs
-> > at once. Most of the failures I see there are related to missing
-> > opcodes, like FUSE_SETLK, FUSE_GETLK, and FUSE_IOCTL. The main failure
-> > I have been seeing is generic/126, which is happening due to some
-> > additional checks we're doing in fuse_open_backing. I figured at some
-> > point we'd add some tests into libfuse, and that sounds like a good
-> > place to start.
->
->
-> Here is a branch of xfstests that should work with fuse and should not
-> run "rm -fr /" (we are going to give it more testing this week).
->
-> https://github.com/hbirth/xfstests
->
->
 
-Bernd, Daniel, Vivek,
 
-Did you see LSFMMBPF 2023 CFP [1]?
+在 2023/2/2 下午4:16, Michael S. Tsirkin 写道:
+> On Thu, Feb 02, 2023 at 04:14:51PM +0800, Heng Qi wrote:
+>>
+>> 在 2023/2/2 下午4:07, Michael S. Tsirkin 写道:
+>>> On Tue, Jan 31, 2023 at 04:50:04PM +0800, Heng Qi wrote:
+>>>> When the single-buffer xdp is loaded and after xdp_linearize_page()
+>>>> is called, *num_buf becomes 0 and (*num_buf - 1) may overflow into
+>>>> a large integer in virtnet_build_xdp_buff_mrg(), resulting in
+>>>> unexpected packet dropping.
+>>>>
+>>>> Fixes: ef75cb51f139 ("virtio-net: build xdp_buff with multi buffers")
+>>>> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+>>>> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>>>> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+>>>> ---
+>>>> v1->v2:
+>>>> - Change the type of num_buf from unsigned int to int. @Michael S . Tsirkin
+>>>> - Some cleaner codes. @Michael S . Tsirkin
+>>>>
+>>>>    drivers/net/virtio_net.c | 15 +++++++++------
+>>>>    1 file changed, 9 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>>>> index aaa6fe9b214a..8102861785a2 100644
+>>>> --- a/drivers/net/virtio_net.c
+>>>> +++ b/drivers/net/virtio_net.c
+>>>> @@ -716,7 +716,7 @@ static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+>>>>     * have enough headroom.
+>>>>     */
+>>>>    static struct page *xdp_linearize_page(struct receive_queue *rq,
+>>>> -				       u16 *num_buf,
+>>>> +				       int *num_buf,
+>>>>    				       struct page *p,
+>>>>    				       int offset,
+>>>>    				       int page_off,
+>>>> @@ -816,7 +816,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
+>>>>    		if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
+>>>>    			int offset = buf - page_address(page) + header_offset;
+>>>>    			unsigned int tlen = len + vi->hdr_len;
+>>>> -			u16 num_buf = 1;
+>>>> +			int num_buf = 1;
+>>>>    			xdp_headroom = virtnet_get_headroom(vi);
+>>>>    			header_offset = VIRTNET_RX_PAD + xdp_headroom;
+>>>> @@ -989,7 +989,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>>>>    				      void *buf,
+>>>>    				      unsigned int len,
+>>>>    				      unsigned int frame_sz,
+>>>> -				      u16 *num_buf,
+>>>> +				      int *num_buf,
+>>>>    				      unsigned int *xdp_frags_truesize,
+>>>>    				      struct virtnet_rq_stats *stats)
+>>>>    {
+>>>> @@ -1007,6 +1007,9 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>>>>    	xdp_prepare_buff(xdp, buf - VIRTIO_XDP_HEADROOM,
+>>>>    			 VIRTIO_XDP_HEADROOM + vi->hdr_len, len - vi->hdr_len, true);
+>>>> +	if (!*num_buf)
+>>>> +		return 0;
+>>>> +
+>>>>    	if (*num_buf > 1) {
+>>>>    		/* If we want to build multi-buffer xdp, we need
+>>>>    		 * to specify that the flags of xdp_buff have the
+>>> Ouch. Why is this here? Merged so pls remove by a follow up patch, the
+>>> rest of the code handles 0 fine. I'm not sure this introduces a bug by
+>>> we don't want spaghetti code.
+>> Yes it would work without this, but I was keeping this because I wanted it
+>> to handle 0 early and exit early.
+>>
+>> Do you want to remove this?
+>>
+>> Thanks.
+> why do you want to exit early?
 
-Did you consider requesting an invitation?
-I think it could be a good opportunity to sit in a room and discuss the
-roadmap of "FUSE2" with all the developers involved.
+If num_buf is 0, we don't need to judge the subsequent process, because 
+the latter process
+is used to build multi-buffer xdp, but this fix solves the possible 
+problems of single-buffer xdp.
 
-I am on the program committee for the Filesystem track, and I encourage
-you to request an invite if you are interested to attend and/or nominate
-other developers that you think will be valuable for this discussion.
+Thanks.
 
-Thanks,
-Amir.
+>
+>>>> @@ -1020,10 +1023,10 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>>>>    		shinfo->xdp_frags_size = 0;
+>>>>    	}
+>>>> -	if ((*num_buf - 1) > MAX_SKB_FRAGS)
+>>>> +	if (*num_buf > MAX_SKB_FRAGS + 1)
+>>>>    		return -EINVAL;
+>>>> -	while ((--*num_buf) >= 1) {
+>>>> +	while (--*num_buf > 0) {
+>>>>    		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
+>>>>    		if (unlikely(!buf)) {
+>>>>    			pr_debug("%s: rx error: %d buffers out of %d missing\n",
+>>>> @@ -1076,7 +1079,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>>>>    					 struct virtnet_rq_stats *stats)
+>>>>    {
+>>>>    	struct virtio_net_hdr_mrg_rxbuf *hdr = buf;
+>>>> -	u16 num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+>>>> +	int num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+>>>>    	struct page *page = virt_to_head_page(buf);
+>>>>    	int offset = buf - page_address(page);
+>>>>    	struct sk_buff *head_skb, *curr_skb;
+>>>> -- 
+>>>> 2.19.1.6.gb485710b
 
-[1] https://lore.kernel.org/linux-fsdevel/Y9qBs82f94aV4%2F78@localhost.localdomain/
