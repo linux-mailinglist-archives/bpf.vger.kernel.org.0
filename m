@@ -2,173 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85253687C6B
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88FD687C82
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbjBBLgr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Feb 2023 06:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
+        id S231594AbjBBLnm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 06:43:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjBBLgq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 06:36:46 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.221.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557768A64
-        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 03:36:44 -0800 (PST)
-X-QQ-mid: bizesmtp74t1675337782tj4gafyc
-Received: from smtpclient.apple ( [1.202.165.115])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 02 Feb 2023 19:36:19 +0800 (CST)
-X-QQ-SSF: 0100000000000080B000000A0000000
-X-QQ-FEAT: xsBrTKm2GcgjqomKD5+qJx+cTBnvKxMr9MXejoc0z+ITZdnYZT8zgTV+HnC95
-        9EECSRsNVqk8O3X5LHTW8D61aL6BzHHuY1dS3wER8Zrb6snTRRUhAiE4Gg905HWGUt+k9+T
-        S4bHUcI3RB+32xUH9TIFNShaHa7maeWzxGCWkVjcJMTE6Bhu38T8VtAxiNKOuQQGAUg6adk
-        VTgeYy0TM9U7aDPQgBC6KLYgX/sRmmsyCINeIzTDHM2vkiMdP7CHdC9G1ocw47K6sWIu15G
-        YzLF+zyTFXfqmVNA1J7/ib4bT9CTLTX0DG9wg7Ja4CwuVwaDTvWC2blbSozRiVFcIG1SmEs
-        vTd1tQ6AQmE3a4kNwY/nDjY3+GYm4mn4Zu0qcRP
-X-QQ-GoodBg: 0
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [bpf-next v2] bpftool: profile online CPUs instead of possible
-From:   Tonghao Zhang <tong@infragraf.org>
-In-Reply-To: <fb4004dd-597a-e741-27cc-b0cd03bc2172@iogearbox.net>
-Date:   Thu, 2 Feb 2023 19:36:19 +0800
-Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229479AbjBBLnl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 06:43:41 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E67172E;
+        Thu,  2 Feb 2023 03:43:40 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id ml19so5305315ejb.0;
+        Thu, 02 Feb 2023 03:43:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GeLiQK6PcBpUnJOmrpP/Zz2YKH3F98puIy1y5Mha49U=;
+        b=alHCEPRSqkNk8nJZzRSVP6lTVYuoyGWtjBu1Xi+uRg8/9/QlBOlOPiCgmhu2ioASqo
+         3YDOis8hSLzDvwDIn7sGa6zwuwTmYroVQSgzNVMKADafBsusCsgO1P60LzmhAdZAXIF+
+         nAjQA+YeRPLk3il1gFLiM+cNvxNRgDUg55tWi9XjTmBBSRc0yalLI4iqsYToL7xQp0+m
+         SK5EdBLS65TwwLBxqEsaqvh4eACWv74/CkTYJ97LnOcmVYQyeirZ7MMi82/tbsyJMk3V
+         F02rneihH8br88ZSW9x+Et1FKSXvQmqJT2pjn4XWkXJfRTVwYBW1EzYJ+1y4M1gbLs/8
+         Ihww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GeLiQK6PcBpUnJOmrpP/Zz2YKH3F98puIy1y5Mha49U=;
+        b=FmbCYxUJ2cZD2swuVl2U+fIrnaBST6qr5bycO2wN2tAijSZEqh8qfhP1RB5MD7nj3a
+         bf+JncE60TrKLL8PmfGOP+zy/vTr0t6vsohzwc4Obij6+5hS3vtJSrkSo3yHy5Q/JCf0
+         DQjJ9iCbNt0B7wiz4qw52aAJiB2W6Ip3SF6vvBEsZKqQ67fqetBVgY8C4PonElAftvOx
+         iRyLmO1mgM+kcx6UpZZItvnMuS54JEkMgWPn2jVXFXIAw9ZhXxIzAQuqC1q8FfFdZRzR
+         lce7wi4SpkEFHPqkvUaoZx1jhJ+7lgnX8AHC53l1+CH6TPaZcRs8E3q+IatiY7iffGRk
+         d+dA==
+X-Gm-Message-State: AO0yUKWSDIrbsexd/ovYq9NlnO/A3hXRZasH+cxThfLH5ulqZ53B//c+
+        MTH7dCxrdF7wgSthR5D+CRPebpwq1ldkAMhSt7M=
+X-Google-Smtp-Source: AK7set8H6i7ZlL0/EGE1oK05ljvUoxmpTDERtN9G9awqMMUkKhMr6xH0VS7cKlEmLAONS1kslhequRgSULlSiFEt//Y=
+X-Received: by 2002:a17:906:6d13:b0:878:786e:8c39 with SMTP id
+ m19-20020a1709066d1300b00878786e8c39mr1888863ejr.105.1675338219069; Thu, 02
+ Feb 2023 03:43:39 -0800 (PST)
+MIME-Version: 1.0
+References: <20230127191703.3864860-1-joannelkoong@gmail.com>
+ <20230127191703.3864860-4-joannelkoong@gmail.com> <5715ea83-c4aa-c884-ab95-3d5e630cad05@linux.dev>
+ <20230130223141.r24nlg2jp5byvuph@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4Bzb9=q9TKutW8d7fOtCWaLpA12yvSh-BhL=m3+RA1_xhOQ@mail.gmail.com>
+ <4b7b09b5-fd23-2447-7f05-5f903288625f@linux.dev> <CAEf4BzaQJe+UZxECg__Aga+YKrxK9KEbAuwdxA4ZBz1bQCEmSA@mail.gmail.com>
+ <20230131053042.h7wp3w2zq46swfmk@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzbeUfmE-8Y-mm4RtZ4q=9SZ-_M-K-JF=x84o6cboUneSQ@mail.gmail.com>
+ <20230201004034.sea642affpiu7yfm@macbook-pro-6.dhcp.thefacebook.com> <CAEf4BzbTXqhsKqPd=hDANKeg75UDbKjtX318ucMGw7a1L3693w@mail.gmail.com>
+In-Reply-To: <CAEf4BzbTXqhsKqPd=hDANKeg75UDbKjtX318ucMGw7a1L3693w@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 2 Feb 2023 03:43:27 -0800
+Message-ID: <CAADnVQJ3CXKDJ_bZ3u2jOEPfuhALGvOi+p5cEUFxe2YgyhvB4Q@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <38619A73-7E42-46C7-88CE-27A42DFF4224@infragraf.org>
-References: <20230201122404.4256-1-tong@infragraf.org>
- <fb4004dd-597a-e741-27cc-b0cd03bc2172@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Kernel Team <kernel-team@fb.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Feb 1, 2023 at 5:21 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Jan 31, 2023 at 4:40 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Jan 31, 2023 at 04:11:47PM -0800, Andrii Nakryiko wrote:
+> > > >
+> > > > When prog is just parsing the packet it doesn't need to finalize with bpf_dynptr_write.
+> > > > The prog can always write into the pointer followed by if (p == buf) bpf_dynptr_write.
+> > > > No need for rdonly flag, but extra copy is there in case of cloned which
+> > > > could have been avoided with extra rd_only flag.
+> > >
+> > > Yep, given we are designing bpf_dynptr_slice for performance, extra
+> > > copy on reads is unfortunate. ro/rw flag or have separate
+> > > bpf_dynptr_slice_rw vs bpf_dynptr_slice_ro?
+> >
+> > Either flag or two kfuncs sound good to me.
+>
+> Would it make sense to make bpf_dynptr_slice() as read-only variant,
+> and bpf_dynptr_slice_rw() for read/write? I think the common case is
+> read-only, right? And if users mistakenly use bpf_dynptr_slice() for
+> r/w case, they will get a verifier error when trying to write into the
+> returned pointer. While if we make bpf_dynptr_slice() as read-write,
+> users won't realize they are paying a performance penalty for
+> something that they don't actually need.
 
+Makes sense and it matches skb_header_pointer() usage in the kernel
+which is read-only. Since there is no verifier the read-only-ness
+is not enforced, but we can do it.
 
-> On Feb 2, 2023, at 7:15 PM, Daniel Borkmann <daniel@iogearbox.net> wrote:
-> 
-> On 2/1/23 1:24 PM, tong@infragraf.org wrote:
->> From: Tonghao Zhang <tong@infragraf.org>
->> The number of online cpu may be not equal to possible cpu.
->> bpftool prog profile, can not create pmu event on possible
->> but on online cpu.
->> $ dmidecode -s system-product-name
->> PowerEdge R620
->> $ cat /sys/devices/system/cpu/online
->> 0-31
->> $ cat /sys/devices/system/cpu/possible
->> 0-47
->> BTW, we can disable CPU dynamically:
->> $ echo 0 > /sys/devices/system/cpu/cpuX/online
->> If CPU is offline, perf_event_open will return ENODEV.
->> To fix this issue, check the value returned and skip
->> offline CPU.
->> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
->> Cc: Quentin Monnet <quentin@isovalent.com>
->> Cc: Alexei Starovoitov <ast@kernel.org>
->> Cc: Daniel Borkmann <daniel@iogearbox.net>
->> Cc: Andrii Nakryiko <andrii@kernel.org>
->> Cc: Martin KaFai Lau <martin.lau@linux.dev>
->> Cc: Song Liu <song@kernel.org>
->> Cc: Yonghong Song <yhs@fb.com>
->> Cc: John Fastabend <john.fastabend@gmail.com>
->> Cc: KP Singh <kpsingh@kernel.org>
->> Cc: Stanislav Fomichev <sdf@google.com>
->> Cc: Hao Luo <haoluo@google.com>
->> Cc: Jiri Olsa <jolsa@kernel.org>
->> ---
->> v1:
->> https://patchwork.kernel.org/project/netdevbpf/patch/20230117044902.98938-1-tong@infragraf.org/
->> https://patchwork.kernel.org/project/netdevbpf/patch/20230117044902.98938-2-tong@infragraf.org/
->> ---
->>  tools/bpf/bpftool/prog.c | 36 ++++++++++++++++++++++++++++--------
->>  1 file changed, 28 insertions(+), 8 deletions(-)
->> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
->> index cfc9fdc1e863..f48067cb0496 100644
->> --- a/tools/bpf/bpftool/prog.c
->> +++ b/tools/bpf/bpftool/prog.c
->> @@ -2233,10 +2233,36 @@ static void profile_close_perf_events(struct profiler_bpf *obj)
->>  	profile_perf_event_cnt = 0;
->>  }
->>  +static int profile_open_perf_event(int mid, int cpu, int map_fd)
->> +{
->> +	int pmu_fd;
->> +
->> +	pmu_fd = syscall(__NR_perf_event_open, &metrics[mid].attr,
->> +			 -1/*pid*/, cpu, -1/*group_fd*/, 0);
->> +	if (pmu_fd < 0) {
->> +		if (errno == ENODEV) {
->> +			p_info("cpu %d may be offline, skip %s metric profiling.",
->> +				cpu, metrics[mid].name);
->> +			profile_perf_event_cnt++;
->> +			return 0;
->> +		}
->> +		return -1;
->> +	}
->> +
->> +	if (bpf_map_update_elem(map_fd,
->> +				&profile_perf_event_cnt,
->> +				&pmu_fd, BPF_ANY) ||
->> +	    ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0))
->> +		return -1;
-> 
-> This leaks pmu_fd here, no? We should close fd on error as the later call to
-> profile_close_perf_events() only closes those which are in profile_perf_events[]
-> array.
-Yes. I will fix this issue. Seem this issue introduced by 47c09d6a9f67. I will add fix tag in next version.
-
-Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
-Cc: Song Liu <songliubraving@fb.com>
-
-> 
->> +	profile_perf_events[profile_perf_event_cnt++] = pmu_fd;
->> +	return 0;
->> +}
->> +
->>  static int profile_open_perf_events(struct profiler_bpf *obj)
->>  {
->>  	unsigned int cpu, m;
->> -	int map_fd, pmu_fd;
->> +	int map_fd;
->>    	profile_perf_events = calloc(
->>  		sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
->> @@ -2255,17 +2281,11 @@ static int profile_open_perf_events(struct profiler_bpf *obj)
->>  		if (!metrics[m].selected)
->>  			continue;
->>  		for (cpu = 0; cpu < obj->rodata->num_cpu; cpu++) {
->> -			pmu_fd = syscall(__NR_perf_event_open, &metrics[m].attr,
->> -					 -1/*pid*/, cpu, -1/*group_fd*/, 0);
->> -			if (pmu_fd < 0 ||
->> -			    bpf_map_update_elem(map_fd, &profile_perf_event_cnt,
->> -						&pmu_fd, BPF_ANY) ||
->> -			    ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0)) {
->> +			if (profile_open_perf_event(m, cpu, map_fd)) {
->>  				p_err("failed to create event %s on cpu %d",
->>  				      metrics[m].name, cpu);
->>  				return -1;
->>  			}
->> -			profile_perf_events[profile_perf_event_cnt++] = pmu_fd;
->>  		}
->>  	}
->>  	return 0;
-> 
-> 
-
-----
-Best Regards, Tonghao <tong@infragraf.org>
-
+Looks like we've converged on bpf_dynptr_slice() and bpf_dynptr_slice_rw().
+The question remains what to do with bpf_dynptr_data() backed by skb/xdp.
+Should we return EINVAL to discourage its usage?
+Of course, we can come up with sensible behavior for bpf_dynptr_data(),
+but it will have quirks that will be not easy to document.
+Even with extensive docs the users might be surprised by the behavior.
