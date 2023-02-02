@@ -2,136 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EA0688558
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 18:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4E168856D
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 18:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjBBR1E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 12:27:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49634 "EHLO
+        id S232289AbjBBRcb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 12:32:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbjBBR1B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 12:27:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683506B35E
-        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 09:26:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675358773;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6WKJ+xTBuqvHJA/DgjJYK9bFyVaTh4ihb15FuQHGdbU=;
-        b=NPRTwZXW58S3YBbmdCqzMahGDswTvbD8uAAietX4kOcgjYpqr8cLfwnAd/udJpNSvyF64P
-        M8Xj41uSTXRM3yEgr2uMk5ujWtMfc4Q2bVd1yMaleaaEFYyu6f1BeN8/k7K1UH8mJvNwnR
-        70i31MzSH6J9pA1W+SjEMsG5F7tyb2A=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-669-wTlZzc_MNf2Pj701Bce-Fg-1; Thu, 02 Feb 2023 12:26:06 -0500
-X-MC-Unique: wTlZzc_MNf2Pj701Bce-Fg-1
-Received: by mail-wm1-f71.google.com with SMTP id j37-20020a05600c1c2500b003deaf780ab6so1273370wms.4
-        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 09:26:06 -0800 (PST)
+        with ESMTP id S232640AbjBBRcZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 12:32:25 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C065B74A4E
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 09:32:15 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id rm7-20020a17090b3ec700b0022c05558d22so2497763pjb.5
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 09:32:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HuyVsSMV1aQwyV3j6toXzGhoibHAp15bMSPIrl5X/iQ=;
+        b=ogaLpO6+zk+gU/nMTEHsHZ0Dj7a1J/5FfpnNFOxFzqy2KmIp7DIQzK8Gju+lzl+mqJ
+         tyXoS6NouFltkqIyV+lAryzhRxQ0Uh6tU7+obaR9nuBITSj5y3MPEdCecLGc7/D2VlpE
+         C3Z4ZD+qfSbbanI8pPaFbDTMrSTXoiJGWoXTA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6WKJ+xTBuqvHJA/DgjJYK9bFyVaTh4ihb15FuQHGdbU=;
-        b=EW2FAmby91IOkWOMARwp8I/DZaDaZT0s3a//yngzvhy3QugNz9LqV1cRAEgES/cNSG
-         00SZvT4WJSTtNye5s3vXJklo2ExbLev76nUebzsqY4DueAJH5BCpGBnfzDWagv1SjB3Y
-         g+gMOvZh41F647EvhZI940gsWRqcy2/eX8/FXaFS3abtyEKxTEefGaUfmvX45nu4kwP8
-         JZgs29+mMHnKZAEwTe/U3S+Yd3x86DcD8qN1IM/m9eBHVdHZGk6EV4t/d7i5o0yn9n/2
-         SACGzZWeiKoDlaFmNGKxfiOoWdx+uF8yB/3zK9y+XHXjlC6q+2b7jN22Ecy5RRyoej64
-         mRYQ==
-X-Gm-Message-State: AO0yUKX8B5uGvttSNtUaYGafB2WqsT+kyv5AuotShxZRKKjbHNt/saJq
-        wqGLkh6vebd356zHNr1MXy49AMpxB2/NDWO+K81OhvUfbBT6GrIpwzHkQ6woztaY6dUjBLTWdyM
-        6BkFOZ1S5gkME
-X-Received: by 2002:a05:600c:1e0b:b0:3da:1e35:dfec with SMTP id ay11-20020a05600c1e0b00b003da1e35dfecmr6910500wmb.4.1675358765642;
-        Thu, 02 Feb 2023 09:26:05 -0800 (PST)
-X-Google-Smtp-Source: AK7set/z5RmItaflCIcRIT8kR78dHQV5cx7Dg457PMDawnbySjhpBnXC5/Fk1nq6JbSLeIjJqL5pxQ==
-X-Received: by 2002:a05:600c:1e0b:b0:3da:1e35:dfec with SMTP id ay11-20020a05600c1e0b00b003da1e35dfecmr6910475wmb.4.1675358765455;
-        Thu, 02 Feb 2023 09:26:05 -0800 (PST)
-Received: from redhat.com ([2.52.156.122])
-        by smtp.gmail.com with ESMTPSA id i10-20020a05600c354a00b003dd1c15e7fcsm6365187wmq.15.2023.02.02.09.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 09:26:04 -0800 (PST)
-Date:   Thu, 2 Feb 2023 12:25:59 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Menglong Dong <imagedong@tencent.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Petr Machata <petrm@nvidia.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 24/33] virtio_net: xsk: stop disable tx napi
-Message-ID: <20230202122445-mutt-send-email-mst@kernel.org>
-References: <20230202110058.130695-1-xuanzhuo@linux.alibaba.com>
- <20230202110058.130695-25-xuanzhuo@linux.alibaba.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HuyVsSMV1aQwyV3j6toXzGhoibHAp15bMSPIrl5X/iQ=;
+        b=bo9zDzOc/MWbKPxmY0GN1DwabaBTGxXVxfATtsynPj435pEZeyhnzxXaf84eHAOB6Q
+         ATVVFkUYobpYk9bFoC5T3e1VigJzI+sG6cnFLgRKVWVF92R1P28t2g5cm4NnbgndTYU1
+         rN09J3f13G+C/++mok541jph5ytoTVQTkpVoU3/z+Dx7cq0gAer3eLW5IGShsW26cBZY
+         H+buVkWVoY10M0kgpzFXRmSGVM3+6a+9TAxFmoNg9TL9fK1mAKMT+UgOcuZeofz6vqDu
+         HG8kCzGIhJCVsdqP1lHuGBEt25dIQdVFVIkZ8EuDlLrJ8429b+0lJPKDBXghHv4Gg6at
+         hfWg==
+X-Gm-Message-State: AO0yUKWfbW6XnnUrQUPzXglspW8ayqXXx8BMT3ly8UQ4d1qd6/E73HTQ
+        B+gyqnozDOnqDNrkS0APdM3/gSqi6cK8LMFZgTuNQA==
+X-Google-Smtp-Source: AK7set/ouNligxe7/BceEKZ3iqgAgATXe+6gHnQD9Jx1q+jiw39aWDBDBvb0I7nDvH3TWpIMEhRlwmW+FZLADcRqReg=
+X-Received: by 2002:a17:90a:6986:b0:22c:71ed:629d with SMTP id
+ s6-20020a17090a698600b0022c71ed629dmr716540pjj.10.1675359135127; Thu, 02 Feb
+ 2023 09:32:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230202110058.130695-25-xuanzhuo@linux.alibaba.com>
+References: <20230201163420.1579014-1-revest@chromium.org> <85af713d-00fe-b113-1331-1a44480c016f@huawei.com>
+ <eacfbd23-da92-3572-7f57-3de425117c8a@iogearbox.net>
+In-Reply-To: <eacfbd23-da92-3572-7f57-3de425117c8a@iogearbox.net>
+From:   Florent Revest <revest@chromium.org>
+Date:   Thu, 2 Feb 2023 18:32:04 +0100
+Message-ID: <CABRcYmK8AP7_aL_NqJfNYgGzzpDp2x33qdzOkDxbUECxj2F-RQ@mail.gmail.com>
+Subject: Re: [PATCH 0/8] Add ftrace direct call for arm64
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Xu Kuohai <xukuohai@huawei.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, mark.rutland@arm.com, ast@kernel.org,
+        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
+        xukuohai@huaweicloud.com, Manu Bretelle <chantra@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 07:00:49PM +0800, Xuan Zhuo wrote:
-> Since xsk's TX queue is consumed by TX NAPI, if sq is bound to xsk, then
-> we must stop tx napi from being disabled.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio/main.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-> index ed79e750bc6c..232cf151abff 100644
-> --- a/drivers/net/virtio/main.c
-> +++ b/drivers/net/virtio/main.c
-> @@ -2728,8 +2728,15 @@ static int virtnet_set_coalesce(struct net_device *dev,
->  		return ret;
->  
->  	if (update_napi) {
-> -		for (i = 0; i < vi->max_queue_pairs; i++)
-> +		for (i = 0; i < vi->max_queue_pairs; i++) {
-> +			/* xsk xmit depend on the tx napi. So if xsk is active,
+On Thu, Feb 2, 2023 at 11:50 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 2/2/23 9:36 AM, Xu Kuohai wrote:
+> > On 2/2/2023 12:34 AM, Florent Revest wrote:
+> >> This series adds ftrace direct call support to arm64.
+> >> This makes BPF tracing programs (fentry/fexit/fmod_ret/lsm) work on arm64.
+> >>
+> >> It is meant to apply on top of the arm64 tree which contains Mark Rutland's
+> >> series on CALL_OPS [1] under the for-next/ftrace tag.
+> >> > The first three patches consolidate the two existing ftrace APIs for registering
+> >> direct calls. They are split to make the reviewers lives easier but if it'd be a
+> >> preferred style, I'd be happy to squash them in the next revision.
+> >> Currently, there is both a _ftrace_direct and _ftrace_direct_multi API. Apart
+> >> from samples and selftests, there are no users of the _ftrace_direct API left
+> >> in-tree so this deletes it and renames the _ftrace_direct_multi API to
+> >> _ftrace_direct for simplicity.
+> >>
+> >> The main benefit of this refactoring is that, with the API that's left, an
+> >> ftrace_ops backing a direct call will only ever point to one direct call. We can
+> >> therefore store the direct called trampoline address in the ops (patch 4) and
+> >> look it up from the ftrace trampoline on arm64 (patch 7) in the case when the
+> >> destination would be out of reach of a BL instruction at the ftrace callsite.
+> >> (in this case, ftrace_caller acts as a lightweight intermediary trampoline)
+> >>
+> >> This series has been tested on both arm64 and x86_64 with:
+> >> 1- CONFIG_FTRACE_SELFTEST (cf: patch 6)
+> >> 2- samples/ftrace/*.ko (cf: patch 8)
+> >> 3- tools/testing/selftests/bpf/test_progs (both -t lsm and -t fentry_fexit)
+>
+> Thanks a ton for working on this!
+>
+> > so it's time to update DENYLIST.aarch64 to unblock tests that failed due to lack of direct call.
 
-depends.
+That's a good point Xu, thanks! I'll update the deny list in my next revision.
+It looks like this series fixes *a lot* of these tests, so that's exciting. :)
 
-> +			 * prevent modifications to tx napi.
-> +			 */
-> +			if (rtnl_dereference(vi->sq[i].xsk.pool))
-> +				continue;
-> +
->  			vi->sq[i].napi.weight = napi_weight;
+> +1, with regards to logistics, if possible it might be nice to eventually gets
+> this into a feature branch on arm64 tree, then we could pull it too from there
+> for bpf-next and hash out the BPF CI bits for arm64 in the meantime.
 
-I don't get it.
-changing napi weight does not work then.
-why is this ok?
-
-
-> +		}
->  	}
->  
->  	return ret;
-> -- 
-> 2.32.0.3.g01195cf9f
-
+I believe that Manu Bretelle already wired up the BPF CI for arm64, is
+there more work required ?
+Regarding the logistics, whatever works sgtm... :) I suppose it's up
+to Catalin or Will.
