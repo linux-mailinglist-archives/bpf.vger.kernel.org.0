@@ -2,129 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B963F688497
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 17:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2B16884E8
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 17:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbjBBQh2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 11:37:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48542 "EHLO
+        id S229608AbjBBQ5F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 11:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbjBBQh1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 11:37:27 -0500
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327506ACAD;
-        Thu,  2 Feb 2023 08:37:25 -0800 (PST)
-Received: by mail-qt1-f170.google.com with SMTP id c2so2470856qtw.5;
-        Thu, 02 Feb 2023 08:37:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zZcMZtX0EcrnZWfZ+/LmjRHXr0PdSo84F4e6GziTzqs=;
-        b=AWYqHcgzqxO5ebANia5/Cn+jymsaZwCR+XGYIYTIm+fv05IEEOu21WimGHbwKDvY21
-         mDWsntjP2q9TTfG/zRvXA0nbhGCvUO4oEkBpRcVStc1eqntYFDmcVRFfaA14SHnjNigC
-         k+8hkmAzLa1EOjXUchgQu8YRA3bAlffUSevxcjfln2tpO5bbRfoX7bE2FBic/Bt/VzwR
-         oW700eJHzFHvmOoUYNdyiWGbGhWn0OHyw5lIO0BVvsjJuA7Gg7tpgTWbQzQWvI+8w17v
-         AsdIILEY9DeaC+GqiXjRy9eK0I/hx5ITAcbXHx7YJ3y41cfb36VuC+5uUUrEMzvXudd7
-         5gnw==
-X-Gm-Message-State: AO0yUKX95BWsn07igF/zUYIUebDK0Fx8EaoVlIDnIWovkU2itkWFocUk
-        ECAmfj8OymEuFr/HHKJSSjP09f29zLjGiOeB
-X-Google-Smtp-Source: AK7set+6zZfInvXTRPt5yHf2IXZGocXEZhfejwDDyitrpBIueWTVph19PgBMcotaifge5E1TFUlZJw==
-X-Received: by 2002:a05:622a:211:b0:3b6:4175:5308 with SMTP id b17-20020a05622a021100b003b641755308mr4540882qtx.54.1675355844119;
-        Thu, 02 Feb 2023 08:37:24 -0800 (PST)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id b4-20020a378004000000b0070736988c10sm14532379qkd.110.2023.02.02.08.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 08:37:23 -0800 (PST)
-Date:   Thu, 2 Feb 2023 10:37:20 -0600
-From:   David Vernet <void@manifault.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH v3] Documentation/bpf: Document API stability
- expectations for kfuncs
-Message-ID: <Y9vmwDzb0jhjpEyk@maniforge>
-References: <20230201174449.94650-1-toke@redhat.com>
- <Y9tJY3ayftdowRVS@maniforge>
- <875yckth7n.fsf@toke.dk>
+        with ESMTP id S229881AbjBBQ5E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 11:57:04 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E78646FD33;
+        Thu,  2 Feb 2023 08:57:02 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6999C14;
+        Thu,  2 Feb 2023 08:57:44 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.141])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E0FC3F64C;
+        Thu,  2 Feb 2023 08:57:00 -0800 (PST)
+Date:   Thu, 2 Feb 2023 16:56:57 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Florent Revest <revest@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
+        xukuohai@huaweicloud.com
+Subject: Re: [PATCH 5/8] ftrace: Make DIRECT_CALLS work WITH_ARGS and
+ !WITH_REGS
+Message-ID: <Y9vrWUM8ypNNwHyv@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230201163420.1579014-1-revest@chromium.org>
+ <20230201163420.1579014-6-revest@chromium.org>
+ <Y9vcua0+JzjmTICO@FVFF77S0Q05N.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <875yckth7n.fsf@toke.dk>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <Y9vcua0+JzjmTICO@FVFF77S0Q05N.cambridge.arm.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 12:55:08PM +0100, Toke Høiland-Jørgensen wrote:
-> David Vernet <void@manifault.com> writes:
+On Thu, Feb 02, 2023 at 03:54:33PM +0000, Mark Rutland wrote:
+> On Wed, Feb 01, 2023 at 05:34:17PM +0100, Florent Revest wrote:
+> > -#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
+> > +#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT)
 > 
-> > On Wed, Feb 01, 2023 at 06:44:48PM +0100, Toke Høiland-Jørgensen wrote:
-> >> Following up on the discussion at the BPF office hours (and subsequent
-> >> discussion), this patch adds a description of API stability expectations
-> >> for kfuncs. The goal here is to manage user expectations about what kind of
-> >> stability can be expected for kfuncs exposed by the kernel.
-> >> 
-> >> Since the traditional BPF helpers are basically considered frozen at this
-> >> point, kfuncs will be the way all new functionality will be exposed to BPF
-> >> going forward. This makes it important to document their stability
-> >> guarantees, especially since the perception up until now has been that
-> >> kfuncs should always be considered "unstable" in the sense of "may go away
-> >> or change at any time". Which in turn makes some users reluctant to use
-> >> them because they don't want to rely on functionality that may be removed
-> >> in future kernel versions.
-> >> 
-> >> This patch adds a section to the kfuncs documentation outlining how we as a
-> >> community think about kfunc stability. The description is a bit vague and
-> >> wishy-washy at times, but since there does not seem to be consensus to
-> >> commit to any kind of hard stability guarantees at this point, I feat this
-> >> is the best we can do.
-> >> 
-> >> I put this topic on the agenda again for tomorrow's office hours, but
-> >> wanted to send this out ahead of time, to give people a chance to read it
-> >> and think about whether it makes sense or if there's a better approach.
-> >> 
-> >> Previous discussion:
-> >> https://lore.kernel.org/r/20230117212731.442859-1-toke@redhat.com
-> >
-> > Again, thanks a lot for writing this down and getting a real / tangible
-> > conversation started.
+> Unfortunately, I think this is broken for architectures where:
 > 
-> You're welcome! Just a few quick notes on one or two points below, we
-> can continue the discussion at the office hours:
+> * DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
+> * DYNAMIC_FTRACE_WITH_REGS=y
+> * DYNAMIC_FTRACE_WITH_ARGS=n
+> 
+> ... since those might pass a NULL ftrace_regs around, and so when using the
+> list ops arch_ftrace_set_direct_caller() might blow up accessing an element of
+> ftrace_regs.
+> 
+> It looks like 32-bit x86 is the only case with that combination, and its
+> ftrace_caller implementation passes a NULL regs, so I reckon that'll blow up.
+> However, it looks like there aren't any FTRACE_DIRECT samples wired up for
+> 32-bit x86, so I'm not aware of a test case we can use.
 
-Hey Toke,
+FWIW, the FTRACE_STARTUP_TEST tickles this:
 
-Sounds good, I just read over your notes / points and am happy to
-discuss more in office hours as you suggested. Just wanted to give you a
-heads up well that just I sent out a proposal which you can read in [0].
+[    1.896209] Testing tracer function_graph: 
+[    2.900282] BUG: kernel NULL pointer dereference, address: 0000002c
+[    2.901171] #PF: supervisor write access in kernel mode
+[    2.901171] #PF: error_code(0x0002) - not-present page
+[    2.901171] *pde = 00000000 
+[    2.901171] Oops: 0002 [#1] PREEMPT SMP
+[    2.901171] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.2.0-rc3-00014-gcfd6340c71ce #1
+[    2.901171] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+[    2.901171] EIP: call_direct_funcs+0xd/0x1c
+[    2.901171] Code: 00 00 00 00 90 a9 00 00 00 01 0f 84 d7 fe ff ff 0d 00 00 80 00 89 46 04 e9 d2 fe ff ff 8b 41 64 85 c0 74 11 55 89 e5 8b 55 08 <89> 42 2c 5d c3 8d b6 00 00 00 00 c3 8d 76 00 89 c1 89 b
+[    2.901171] EAX: cc3620e8 EBX: c1147e44 ECX: c1147e44 EDX: 00000000
+[    2.901171] ESI: fffffeff EDI: cc354208 EBP: c1147dbc ESP: c1147dbc
+[    2.901171] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
+[    2.901171] CR0: 80050033 CR2: 0000002c CR3: 0d703000 CR4: 00350ed0
+[    2.901171] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+[    2.901171] DR6: fffe0ff0 DR7: 00000400
+[    2.901171] Call Trace:
+[    2.901171]  arch_ftrace_ops_list_func+0xf5/0x1bc
+[    2.901171]  ? ftrace_enable_ftrace_graph_caller+0x3b/0x44
+[    2.901171]  ? trace_selftest_startup_function_graph+0x1d9/0x298
+[    2.901171]  ? syscall_unregfunc+0xa0/0xa0
+[    2.901171]  ftrace_call+0x5/0x13
+[    2.901171]  trace_selftest_dynamic_test_func+0x5/0xc
+[    2.901171]  trace_selftest_startup_function_graph+0x1d9/0x298
+[    2.901171]  ? trace_selftest_dynamic_test_func+0x5/0xc
+[    2.901171]  ? trace_selftest_startup_function_graph+0x1d9/0x298
+[    2.901171]  ? ftrace_check_record+0x340/0x340
+[    2.901171]  ? ftrace_check_record+0x340/0x340
+[    2.901171]  ? ftrace_stub_graph+0x4/0x4
+[    2.901171]  ? trace_selftest_test_regs_func+0x18/0x18
+[    2.901171]  run_tracer_selftest+0x7d/0x1bc
+[    2.901171]  ? graph_depth_read+0x90/0x90
+[    2.901171]  register_tracer+0xd3/0x284
+[    2.901171]  ? register_trace_event+0xf6/0x180
+[    2.901171]  ? init_graph_tracefs+0x38/0x38
+[    2.901171]  init_graph_trace+0x56/0x78
+[    2.901171]  do_one_initcall+0x53/0x204
+[    2.901171]  ? parse_args+0x143/0x3ec
+[    2.901171]  ? __kmem_cache_alloc_node+0x2d/0x224
+[    2.901171]  kernel_init_freeable+0x198/0x2bc
+[    2.901171]  ? rdinit_setup+0x30/0x30
+[    2.901171]  ? rest_init+0xb0/0xb0
+[    2.901171]  kernel_init+0x1a/0x1d0
+[    2.901171]  ? schedule_tail_wrapper+0x9/0xc
+[    2.901171]  ret_from_fork+0x1c/0x28
+[    2.901171] Modules linked in:
+[    2.901171] CR2: 000000000000002c
+[    2.901171] ---[ end trace 0000000000000000 ]---
+[    2.901171] EIP: call_direct_funcs+0xd/0x1c
+[    2.901171] Code: 00 00 00 00 90 a9 00 00 00 01 0f 84 d7 fe ff ff 0d 00 00 80 00 89 46 04 e9 d2 fe ff ff 8b 41 64 85 c0 74 11 55 89 e5 8b 55 08 <89> 42 2c 5d c3 8d b6 00 00 00 00 c3 8d 76 00 89 c1 89 b
+[    2.901171] EAX: cc3620e8 EBX: c1147e44 ECX: c1147e44 EDX: 00000000
+[    2.901171] ESI: fffffeff EDI: cc354208 EBP: c1147dbc ESP: c1147dbc
+[    2.901171] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
+[    2.901171] CR0: 80050033 CR2: 0000002c CR3: 0d703000 CR4: 00350ed0
+[    2.901171] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+[    2.901171] DR6: fffe0ff0 DR7: 00000400
+[    2.901171] note: swapper/0[1] exited with preempt_count 1
+[    2.901175] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
+[    2.902171] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009 ]---
 
-[0]: https://lore.kernel.org/all/20230202163056.658641-1-void@manifault.com/
-
-I know it's short notice (sorry about that, did my best to get it all
-ready as soon as possible before office hours), but if you happen to
-have time to read over it before we meet that would be great. If not, no
-worries, I can just tell you the gist of what I'm proposing when we talk
-in office hours in half an hour.
+The below diff solved that for me.
 
 Thanks,
-David
+Mark.
+
+---->8----
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 84f717f8959e..3d2156e335d7 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -241,6 +241,12 @@ enum {
+        FTRACE_OPS_FL_DIRECT                    = BIT(17),
+ };
+ 
++#ifndef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
++#define FTRACE_OPS_FL_SAVE_ARGS                        FTRACE_OPS_FL_SAVE_REGS
++#else
++#define FTRACE_OPS_FL_SAVE_ARGS                        0
++#endif
++
+ /*
+  * FTRACE_OPS_CMD_* commands allow the ftrace core logic to request changes
+  * to a ftrace_ops. Note, the requests may fail.
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 73b6f6489ba1..8e739303b6a2 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -5282,7 +5282,7 @@ static LIST_HEAD(ftrace_direct_funcs);
+ 
+ static int register_ftrace_function_nolock(struct ftrace_ops *ops);
+ 
+-#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT)
++#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_ARGS)
+ 
+ static int check_direct_multi(struct ftrace_ops *ops)
+ {
+
