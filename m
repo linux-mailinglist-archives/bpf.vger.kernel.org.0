@@ -2,104 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B22687AE3
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 11:54:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F6F687AEA
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 11:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbjBBKx7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 05:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54904 "EHLO
+        id S230036AbjBBKzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 05:55:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbjBBKx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 05:53:57 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8AB3594
-        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 02:53:54 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-4a263c4ddbaso21678207b3.0
-        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 02:53:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CeUz7W5STdevGt5G9BBQgnVLYpQy3pLUPLWMeOjLAJg=;
-        b=EBLVo/hOzONGPvV+DdZWNZLFJZ4kkNZk8gwAGDAIOOSVHBgq+aFQRxFA/4RQmcvj+P
-         6AsrXQ4y+FaZziJGv2QL40V1+r+f8blrcLlEvj8d7OEjdMuEiPrIp0XITbsHh6jBty43
-         lC/gCF+xkCCfoOvcDxZcqqsymiCJQfx9VjMV8I4TSeKLC/vps8ua+z9AYcJmSFajuI01
-         fOo7fvTRGMYS6WUHoX5l8Zr46Z23Ei13IkXYFoBMfpfeyYVyw6ogKoFdW9yGRrKJ42jt
-         yUaepSLYvGGC8CvW8PJg57CdLf00sjQfCe/4hN66cRKe0pDrlXw7oa/9SpF8DeTMUI8k
-         Yarg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CeUz7W5STdevGt5G9BBQgnVLYpQy3pLUPLWMeOjLAJg=;
-        b=3tWuwvWtKFEGh62IjQOqaYDRHhFbB4+J5XJAUckbyFQvOJ1dFKaQo9avLezReCQf21
-         GD4mo+ELQe5nAr8wEtBVVWSxyrdugdp5lmpCyVOWr70kpA3+8wHKbkzu4Q8ZWzxXSpL2
-         uRI2R61zvfahMcKD6qU9wV+mRkA9m98RxmLuZWlSw+6i3oA05+1g5d97EN2EY1fGF4W6
-         aSNtozfG8BX+0W8sadKBybm7jVkdy70HEUS4WIPjJbHH/CJzTElhdKfQmFtK7LSooU4F
-         mc6j77k7V8A2qX9lhpv6XwCbd349z57RrjwrOJTXv3aiogkUsbyTSOeS9az4soFxgIcP
-         dvAQ==
-X-Gm-Message-State: AO0yUKX9B8ytBJLlygJOPHzFlsjmmy91ueQGjZZVUA+du1v3Xy3FAEkj
-        d/uelWvDHfM+TGJYwOjGfoxkviXaDtu2UJEfaUs=
-X-Google-Smtp-Source: AK7set++D/D1EgoX6W7naLUTyl9bfJAulnCR/oaHucEJk6l0uAn3stQWnEIwuFEkLZ0zF3KxSBIHraq201Bw7yFkSzQ=
-X-Received: by 2002:a0d:e6c4:0:b0:522:6b25:7a with SMTP id p187-20020a0de6c4000000b005226b25007amr182600ywe.342.1675335233936;
- Thu, 02 Feb 2023 02:53:53 -0800 (PST)
+        with ESMTP id S230169AbjBBKzp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 05:55:45 -0500
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D022687;
+        Thu,  2 Feb 2023 02:55:39 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vakpwi2_1675335336;
+Received: from 30.221.147.171(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0Vakpwi2_1675335336)
+          by smtp.aliyun-inc.com;
+          Thu, 02 Feb 2023 18:55:37 +0800
+Message-ID: <cf4a37f7-c9b0-c780-8709-79045e627129@linux.alibaba.com>
+Date:   Thu, 2 Feb 2023 18:55:34 +0800
 MIME-Version: 1.0
-Received: by 2002:a05:7000:580c:b0:467:ccb7:598e with HTTP; Thu, 2 Feb 2023
- 02:53:53 -0800 (PST)
-Reply-To: cynthiaaa199@gmail.com
-From:   Cynthia Lop <cynthiaaaa199@gmail.com>
-Date:   Thu, 2 Feb 2023 10:53:53 +0000
-Message-ID: <CALungV_Cz7H6H50Lkb+n1qvBaU4ZsFvSTQhat1XF8ECfm0mpsA@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.7 required=5.0 tests=BAYES_60,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:1136 listed in]
-        [list.dnswl.org]
-        *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
-        *      [score: 0.7685]
-        *  0.0 HK_RANDOM_ENVFROM Envelope sender username looks random
-        *  1.0 HK_RANDOM_FROM From username looks random
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [cynthiaaa199[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [cynthiaaaa199[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [cynthiaaaa199[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0)
+ Gecko/20100101 Thunderbird/109.0
+Subject: Re: [PATCH net-next v2] virtio-net: fix possible unsigned integer
+ overflow
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20230131085004.98687-1-hengqi@linux.alibaba.com>
+ <20230202030550-mutt-send-email-mst@kernel.org>
+ <f510df2b-25fd-6c88-d796-3e6f6ef6799e@linux.alibaba.com>
+ <20230202031609-mutt-send-email-mst@kernel.org>
+ <e321e1f2-10b8-3308-88d5-d4dd6cabc2b6@linux.alibaba.com>
+ <20230202052930-mutt-send-email-mst@kernel.org>
+From:   Heng Qi <hengqi@linux.alibaba.com>
+In-Reply-To: <20230202052930-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-How are you doing today?
 
-My name is Cynthia Lopez, I am 37 years old and single . My country is
-United States . Now i live in Kiltseva Street Kyiv, 1013.Ukraine . I
-work as bank auditor here in Ukraine .
 
-I have something important to tell you because i contacted you for
-something good important , Please introduce yourself so that i will
-know more whom you are ,
+在 2023/2/2 下午6:31, Michael S. Tsirkin 写道:
+> On Thu, Feb 02, 2023 at 05:07:04PM +0800, Heng Qi wrote:
+>>
+>> 在 2023/2/2 下午4:16, Michael S. Tsirkin 写道:
+>>> On Thu, Feb 02, 2023 at 04:14:51PM +0800, Heng Qi wrote:
+>>>> 在 2023/2/2 下午4:07, Michael S. Tsirkin 写道:
+>>>>> On Tue, Jan 31, 2023 at 04:50:04PM +0800, Heng Qi wrote:
+>>>>>> When the single-buffer xdp is loaded and after xdp_linearize_page()
+>>>>>> is called, *num_buf becomes 0 and (*num_buf - 1) may overflow into
+>>>>>> a large integer in virtnet_build_xdp_buff_mrg(), resulting in
+>>>>>> unexpected packet dropping.
+>>>>>>
+>>>>>> Fixes: ef75cb51f139 ("virtio-net: build xdp_buff with multi buffers")
+>>>>>> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+>>>>>> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>>>>>> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+>>>>>> ---
+>>>>>> v1->v2:
+>>>>>> - Change the type of num_buf from unsigned int to int. @Michael S . Tsirkin
+>>>>>> - Some cleaner codes. @Michael S . Tsirkin
+>>>>>>
+>>>>>>     drivers/net/virtio_net.c | 15 +++++++++------
+>>>>>>     1 file changed, 9 insertions(+), 6 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>>>>>> index aaa6fe9b214a..8102861785a2 100644
+>>>>>> --- a/drivers/net/virtio_net.c
+>>>>>> +++ b/drivers/net/virtio_net.c
+>>>>>> @@ -716,7 +716,7 @@ static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+>>>>>>      * have enough headroom.
+>>>>>>      */
+>>>>>>     static struct page *xdp_linearize_page(struct receive_queue *rq,
+>>>>>> -				       u16 *num_buf,
+>>>>>> +				       int *num_buf,
+>>>>>>     				       struct page *p,
+>>>>>>     				       int offset,
+>>>>>>     				       int page_off,
+>>>>>> @@ -816,7 +816,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
+>>>>>>     		if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
+>>>>>>     			int offset = buf - page_address(page) + header_offset;
+>>>>>>     			unsigned int tlen = len + vi->hdr_len;
+>>>>>> -			u16 num_buf = 1;
+>>>>>> +			int num_buf = 1;
+>>>>>>     			xdp_headroom = virtnet_get_headroom(vi);
+>>>>>>     			header_offset = VIRTNET_RX_PAD + xdp_headroom;
+>>>>>> @@ -989,7 +989,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>>>>>>     				      void *buf,
+>>>>>>     				      unsigned int len,
+>>>>>>     				      unsigned int frame_sz,
+>>>>>> -				      u16 *num_buf,
+>>>>>> +				      int *num_buf,
+>>>>>>     				      unsigned int *xdp_frags_truesize,
+>>>>>>     				      struct virtnet_rq_stats *stats)
+>>>>>>     {
+>>>>>> @@ -1007,6 +1007,9 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>>>>>>     	xdp_prepare_buff(xdp, buf - VIRTIO_XDP_HEADROOM,
+>>>>>>     			 VIRTIO_XDP_HEADROOM + vi->hdr_len, len - vi->hdr_len, true);
+>>>>>> +	if (!*num_buf)
+>>>>>> +		return 0;
+>>>>>> +
+>>>>>>     	if (*num_buf > 1) {
+>>>>>>     		/* If we want to build multi-buffer xdp, we need
+>>>>>>     		 * to specify that the flags of xdp_buff have the
+>>>>> Ouch. Why is this here? Merged so pls remove by a follow up patch, the
+>>>>> rest of the code handles 0 fine. I'm not sure this introduces a bug by
+>>>>> we don't want spaghetti code.
+>>>> Yes it would work without this, but I was keeping this because I wanted it
+>>>> to handle 0 early and exit early.
+>>>>
+>>>> Do you want to remove this?
+>>>>
+>>>> Thanks.
+>>> why do you want to exit early?
+>> If num_buf is 0, we don't need to judge the subsequent process, because the
+>> latter process
+>> is used to build multi-buffer xdp, but this fix solves the possible problems
+>> of single-buffer xdp.
+>>
+>> Thanks.
+> An optimization then? As any optimization I'd like to see some numbers.
+>
+> Should have been documented as such not as part of a bugfix.
+
+Sure, I'm going to remove this with a follow-up patch.😁
+
+Thanks.
+
+>
+>>>>>> @@ -1020,10 +1023,10 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+>>>>>>     		shinfo->xdp_frags_size = 0;
+>>>>>>     	}
+>>>>>> -	if ((*num_buf - 1) > MAX_SKB_FRAGS)
+>>>>>> +	if (*num_buf > MAX_SKB_FRAGS + 1)
+>>>>>>     		return -EINVAL;
+>>>>>> -	while ((--*num_buf) >= 1) {
+>>>>>> +	while (--*num_buf > 0) {
+>>>>>>     		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
+>>>>>>     		if (unlikely(!buf)) {
+>>>>>>     			pr_debug("%s: rx error: %d buffers out of %d missing\n",
+>>>>>> @@ -1076,7 +1079,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>>>>>>     					 struct virtnet_rq_stats *stats)
+>>>>>>     {
+>>>>>>     	struct virtio_net_hdr_mrg_rxbuf *hdr = buf;
+>>>>>> -	u16 num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+>>>>>> +	int num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
+>>>>>>     	struct page *page = virt_to_head_page(buf);
+>>>>>>     	int offset = buf - page_address(page);
+>>>>>>     	struct sk_buff *head_skb, *curr_skb;
+>>>>>> -- 
+>>>>>> 2.19.1.6.gb485710b
+
