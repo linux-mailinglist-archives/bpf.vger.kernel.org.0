@@ -2,145 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A88687ADE
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 11:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B22687AE3
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 11:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbjBBKwH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 05:52:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
+        id S230289AbjBBKx7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 05:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbjBBKwD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 05:52:03 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAEC8A7EA;
-        Thu,  2 Feb 2023 02:51:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=Z9tFqTf2Ygy2QKomIll6AMhCHGv+ELQEI5/5r7xbC98=; b=B7BCJJTSa/NJ20xZKC4ZGqFelI
-        hh0+teQkrP82TPAepMGQtXBKSjSPAemWCh1aSnHNq0X0y4UaIn9iah2oOAxc1TOM2Excq27JpmOCa
-        NNPSEkUB2cLwst1l3kYB/v2kMN9MWj0zrEZOaAV5FRxomHpUweq8IM6+qzhLPANSbjTGWfRzV+z2u
-        8OkiMKuBTSqxWjqJ3j4jX8t2jILK1iUkwtgDlUrO6apJKSfr6k/MGZpdZqtCfLBPQNSnAwRu2uoUg
-        +towGE9bBCbv2LxMS9tWJrzgs9Y4xdTbZe0M0wrclnj6KEIGG8XI80LbjHd1i3j5wiA7okmjr6ClC
-        6RuAx+3g==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pNXAg-000EyE-56; Thu, 02 Feb 2023 11:50:26 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pNXAf-000O2J-Ci; Thu, 02 Feb 2023 11:50:25 +0100
-Subject: Re: [PATCH 0/8] Add ftrace direct call for arm64
-To:     Xu Kuohai <xukuohai@huawei.com>,
-        Florent Revest <revest@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, mark.rutland@arm.com, ast@kernel.org,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com
-References: <20230201163420.1579014-1-revest@chromium.org>
- <85af713d-00fe-b113-1331-1a44480c016f@huawei.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <eacfbd23-da92-3572-7f57-3de425117c8a@iogearbox.net>
-Date:   Thu, 2 Feb 2023 11:50:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S230174AbjBBKx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 05:53:57 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8AB3594
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 02:53:54 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-4a263c4ddbaso21678207b3.0
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 02:53:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CeUz7W5STdevGt5G9BBQgnVLYpQy3pLUPLWMeOjLAJg=;
+        b=EBLVo/hOzONGPvV+DdZWNZLFJZ4kkNZk8gwAGDAIOOSVHBgq+aFQRxFA/4RQmcvj+P
+         6AsrXQ4y+FaZziJGv2QL40V1+r+f8blrcLlEvj8d7OEjdMuEiPrIp0XITbsHh6jBty43
+         lC/gCF+xkCCfoOvcDxZcqqsymiCJQfx9VjMV8I4TSeKLC/vps8ua+z9AYcJmSFajuI01
+         fOo7fvTRGMYS6WUHoX5l8Zr46Z23Ei13IkXYFoBMfpfeyYVyw6ogKoFdW9yGRrKJ42jt
+         yUaepSLYvGGC8CvW8PJg57CdLf00sjQfCe/4hN66cRKe0pDrlXw7oa/9SpF8DeTMUI8k
+         Yarg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CeUz7W5STdevGt5G9BBQgnVLYpQy3pLUPLWMeOjLAJg=;
+        b=3tWuwvWtKFEGh62IjQOqaYDRHhFbB4+J5XJAUckbyFQvOJ1dFKaQo9avLezReCQf21
+         GD4mo+ELQe5nAr8wEtBVVWSxyrdugdp5lmpCyVOWr70kpA3+8wHKbkzu4Q8ZWzxXSpL2
+         uRI2R61zvfahMcKD6qU9wV+mRkA9m98RxmLuZWlSw+6i3oA05+1g5d97EN2EY1fGF4W6
+         aSNtozfG8BX+0W8sadKBybm7jVkdy70HEUS4WIPjJbHH/CJzTElhdKfQmFtK7LSooU4F
+         mc6j77k7V8A2qX9lhpv6XwCbd349z57RrjwrOJTXv3aiogkUsbyTSOeS9az4soFxgIcP
+         dvAQ==
+X-Gm-Message-State: AO0yUKX9B8ytBJLlygJOPHzFlsjmmy91ueQGjZZVUA+du1v3Xy3FAEkj
+        d/uelWvDHfM+TGJYwOjGfoxkviXaDtu2UJEfaUs=
+X-Google-Smtp-Source: AK7set++D/D1EgoX6W7naLUTyl9bfJAulnCR/oaHucEJk6l0uAn3stQWnEIwuFEkLZ0zF3KxSBIHraq201Bw7yFkSzQ=
+X-Received: by 2002:a0d:e6c4:0:b0:522:6b25:7a with SMTP id p187-20020a0de6c4000000b005226b25007amr182600ywe.342.1675335233936;
+ Thu, 02 Feb 2023 02:53:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <85af713d-00fe-b113-1331-1a44480c016f@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26800/Thu Feb  2 09:47:56 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7000:580c:b0:467:ccb7:598e with HTTP; Thu, 2 Feb 2023
+ 02:53:53 -0800 (PST)
+Reply-To: cynthiaaa199@gmail.com
+From:   Cynthia Lop <cynthiaaaa199@gmail.com>
+Date:   Thu, 2 Feb 2023 10:53:53 +0000
+Message-ID: <CALungV_Cz7H6H50Lkb+n1qvBaU4ZsFvSTQhat1XF8ECfm0mpsA@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=6.7 required=5.0 tests=BAYES_60,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:1136 listed in]
+        [list.dnswl.org]
+        *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
+        *      [score: 0.7685]
+        *  0.0 HK_RANDOM_ENVFROM Envelope sender username looks random
+        *  1.0 HK_RANDOM_FROM From username looks random
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [cynthiaaa199[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [cynthiaaaa199[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [cynthiaaaa199[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/2/23 9:36 AM, Xu Kuohai wrote:
-> On 2/2/2023 12:34 AM, Florent Revest wrote:
->> This series adds ftrace direct call support to arm64.
->> This makes BPF tracing programs (fentry/fexit/fmod_ret/lsm) work on arm64.
->>
->> It is meant to apply on top of the arm64 tree which contains Mark Rutland's
->> series on CALL_OPS [1] under the for-next/ftrace tag.
->> > The first three patches consolidate the two existing ftrace APIs for registering
->> direct calls. They are split to make the reviewers lives easier but if it'd be a
->> preferred style, I'd be happy to squash them in the next revision.
->> Currently, there is both a _ftrace_direct and _ftrace_direct_multi API. Apart
->> from samples and selftests, there are no users of the _ftrace_direct API left
->> in-tree so this deletes it and renames the _ftrace_direct_multi API to
->> _ftrace_direct for simplicity.
->>
->> The main benefit of this refactoring is that, with the API that's left, an
->> ftrace_ops backing a direct call will only ever point to one direct call. We can
->> therefore store the direct called trampoline address in the ops (patch 4) and
->> look it up from the ftrace trampoline on arm64 (patch 7) in the case when the
->> destination would be out of reach of a BL instruction at the ftrace callsite.
->> (in this case, ftrace_caller acts as a lightweight intermediary trampoline)
->>
->> This series has been tested on both arm64 and x86_64 with:
->> 1- CONFIG_FTRACE_SELFTEST (cf: patch 6)
->> 2- samples/ftrace/*.ko (cf: patch 8)
->> 3- tools/testing/selftests/bpf/test_progs (both -t lsm and -t fentry_fexit)
+How are you doing today?
 
-Thanks a ton for working on this!
+My name is Cynthia Lopez, I am 37 years old and single . My country is
+United States . Now i live in Kiltseva Street Kyiv, 1013.Ukraine . I
+work as bank auditor here in Ukraine .
 
-> so it's time to update DENYLIST.aarch64 to unblock tests that failed due to lack of direct call.
-
-+1, with regards to logistics, if possible it might be nice to eventually gets
-this into a feature branch on arm64 tree, then we could pull it too from there
-for bpf-next and hash out the BPF CI bits for arm64 in the meantime.
-
->> This follows up on prior art by Xu Kuohai [2].
->> The implementation here is totally different but the fix for ftrace selftests
->> (patch 6) is a trivial rebase of a patch originally by Xu so I kept his
->> authorship and trailers untouched on that patch, I hope that's ok. >
-> 
-> that's ok for me, thanks.
-> 
->> 1: https://lore.kernel.org/all/20230123134603.1064407-1-mark.rutland@arm.com/
->> 2: https://lore.kernel.org/bpf/20220913162732.163631-1-xukuohai@huaweicloud.com/
->>
->> Florent Revest (7):
->>    ftrace: Replace uses of _ftrace_direct APIs with _ftrace_direct_multi
->>    ftrace: Remove the legacy _ftrace_direct API
->>    ftrace: Rename _ftrace_direct_multi APIs to _ftrace_direct APIs
->>    ftrace: Store direct called addresses in their ops
->>    ftrace: Make DIRECT_CALLS work WITH_ARGS and !WITH_REGS
->>    arm64: ftrace: Add direct call support
->>    arm64: ftrace: Add direct called trampoline samples support
->>
->> Xu Kuohai (1):
->>    ftrace: Fix dead loop caused by direct call in ftrace selftest
->>
->>   arch/arm64/Kconfig                          |   4 +
->>   arch/arm64/include/asm/ftrace.h             |  24 ++
->>   arch/arm64/kernel/asm-offsets.c             |   6 +
->>   arch/arm64/kernel/entry-ftrace.S            |  70 +++-
->>   arch/arm64/kernel/ftrace.c                  |  36 +-
->>   include/linux/ftrace.h                      |  51 +--
->>   kernel/bpf/trampoline.c                     |  14 +-
->>   kernel/trace/Kconfig                        |   2 +-
->>   kernel/trace/ftrace.c                       | 433 +-------------------
->>   kernel/trace/trace_selftest.c               |  14 +-
->>   samples/Kconfig                             |   2 +-
->>   samples/ftrace/ftrace-direct-modify.c       |  41 +-
->>   samples/ftrace/ftrace-direct-multi-modify.c |  44 +-
->>   samples/ftrace/ftrace-direct-multi.c        |  28 +-
->>   samples/ftrace/ftrace-direct-too.c          |  35 +-
->>   samples/ftrace/ftrace-direct.c              |  33 +-
->>   16 files changed, 333 insertions(+), 504 deletions(-)
->>
-> 
-
+I have something important to tell you because i contacted you for
+something good important , Please introduce yourself so that i will
+know more whom you are ,
