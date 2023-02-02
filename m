@@ -2,160 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C48687840
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 10:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CB66878C0
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 10:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbjBBJHP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 04:07:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
+        id S231540AbjBBJZs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 04:25:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbjBBJHO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 04:07:14 -0500
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB20193F2;
-        Thu,  2 Feb 2023 01:07:09 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VakE1qU_1675328825;
-Received: from 30.221.147.171(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VakE1qU_1675328825)
-          by smtp.aliyun-inc.com;
-          Thu, 02 Feb 2023 17:07:06 +0800
-Message-ID: <e321e1f2-10b8-3308-88d5-d4dd6cabc2b6@linux.alibaba.com>
-Date:   Thu, 2 Feb 2023 17:07:04 +0800
+        with ESMTP id S232439AbjBBJZc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 04:25:32 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A9D709B5
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 01:25:31 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id m5-20020a05600c4f4500b003db03b2559eso831500wmq.5
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 01:25:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=52IPiBQiqlp1tsu5V2fLJqp7tNuqZnvH9nK9GgrnzeM=;
+        b=COp4Aift2ATUBvh+7mmVNP/SgsyzfmiYToaut+fjabl0dKDkeQlh5GIgXcUye4Vo6w
+         eaTiDb+gBqOuO/2yiXdZuffh3aKfGTzE9+NbKWAerXUe4xxvRrz/GEu1Ad6USID+AJIF
+         in9cVG0NbF8CKZTeNZvqWqOMX6seJewRReO6fPZpyGerefJcDUGyfhZaEq4zMDN211JT
+         jYjZOTFZznyXit9mUJ5N8oqsVvlKKdb/wgN9F2Fc7x4+W2e7gJ5Gf9lUK2oN70U89ugj
+         WeZVqVqKNABYkxQpahlFpX1fyJ6bUaIE3gmk3oWtx/iuoUaz8pshQ2VN0y8y64pVrJyT
+         PiIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=52IPiBQiqlp1tsu5V2fLJqp7tNuqZnvH9nK9GgrnzeM=;
+        b=XgUircckTHyeHW2HAivWCIW/RzX568s7zv/EATojNdqVG0xKHa7+dJTwbFSrpEZp8z
+         xsQ1WgpofFUZA9LuUxNnSLUmuFadDh/p1l6IzqRUsO6H1B642O2IyPaJrduxXXeRwYLW
+         Krbefivrc6z6oCB9Gmk9ipdp53h89XBKrjAFZKdMaQEZRKmezkh5Pw33sQUj/lqpN7wr
+         2VMV4c1d7AFRMlDFkluQ517/sD/y166GP7uUVBQLOhLv+3Jaysc+Bf320ul9cv0h94yA
+         gP+9VMKvOAOSSoyyVauc6RaUPfOS3OXdC6NfJNvFjqf/CpP1wyI2ITJXxrjqg2mgF4Du
+         2TSg==
+X-Gm-Message-State: AO0yUKWY6qqXpV9C09cRK5vwayFhV/9PbMo5zmTVIOIyjmVGPHnhN4hN
+        m3NIqc/y5s6+uiwtFqWmpss=
+X-Google-Smtp-Source: AK7set8YPgAkZ0E6xBwmHKFVwzlKaqlItS8J7d1qvQq8ptn6lgYaw9s8jlFvSMQAUv6VDvlvjgfWJQ==
+X-Received: by 2002:a05:600c:2141:b0:3de:d52:2cd2 with SMTP id v1-20020a05600c214100b003de0d522cd2mr5269947wml.4.1675329930158;
+        Thu, 02 Feb 2023 01:25:30 -0800 (PST)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id c17-20020a7bc851000000b003dc530186e1sm4142080wml.45.2023.02.02.01.25.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Feb 2023 01:25:29 -0800 (PST)
+Subject: Re: [PATCH bpf-next v3 1/1] docs/bpf: Add description of register
+ liveness tracking algorithm
+To:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        kernel-team@fb.com, yhs@fb.com
+References: <20230131181118.733845-1-eddyz87@gmail.com>
+ <20230131181118.733845-2-eddyz87@gmail.com>
+ <99a2eaa9-aebb-f0c8-1d13-62e1533631e7@gmail.com>
+ <48f840c1b879728bda69e059f19c2cea642c1e97.camel@gmail.com>
+ <c26d4287-6603-d44f-58fc-ed4c698ea5b3@gmail.com>
+ <cc8561139d020136d0bfa01684317ef25996d184.camel@gmail.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <b6966500-c25f-cc31-5d61-eabf54f3e3b6@gmail.com>
+Date:   Thu, 2 Feb 2023 09:25:29 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0)
- Gecko/20100101 Thunderbird/109.0
-Subject: Re: [PATCH net-next v2] virtio-net: fix possible unsigned integer
- overflow
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-References: <20230131085004.98687-1-hengqi@linux.alibaba.com>
- <20230202030550-mutt-send-email-mst@kernel.org>
- <f510df2b-25fd-6c88-d796-3e6f6ef6799e@linux.alibaba.com>
- <20230202031609-mutt-send-email-mst@kernel.org>
-From:   Heng Qi <hengqi@linux.alibaba.com>
-In-Reply-To: <20230202031609-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <cc8561139d020136d0bfa01684317ef25996d184.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 01/02/2023 18:28, Eduard Zingerman wrote:
+> How about the following?
+> 
+> ---- 8< ---------------------------
+> 
+> For each processed instruction, the verifier tracks read and written
+> registers and stack slots. The main idea of the algorithm is that read
+> marks propagate back along the state parentage chain until they hit a
+> write mark, which 'screens off' earlier states from the read. The
+> information about reads is propagated by function ``mark_reg_read()``
+> which could be summarized as follows::
+> 
+> ---- >8 ---------------------------
 
-
-在 2023/2/2 下午4:16, Michael S. Tsirkin 写道:
-> On Thu, Feb 02, 2023 at 04:14:51PM +0800, Heng Qi wrote:
->>
->> 在 2023/2/2 下午4:07, Michael S. Tsirkin 写道:
->>> On Tue, Jan 31, 2023 at 04:50:04PM +0800, Heng Qi wrote:
->>>> When the single-buffer xdp is loaded and after xdp_linearize_page()
->>>> is called, *num_buf becomes 0 and (*num_buf - 1) may overflow into
->>>> a large integer in virtnet_build_xdp_buff_mrg(), resulting in
->>>> unexpected packet dropping.
->>>>
->>>> Fixes: ef75cb51f139 ("virtio-net: build xdp_buff with multi buffers")
->>>> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
->>>> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->>>> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
->>>> ---
->>>> v1->v2:
->>>> - Change the type of num_buf from unsigned int to int. @Michael S . Tsirkin
->>>> - Some cleaner codes. @Michael S . Tsirkin
->>>>
->>>>    drivers/net/virtio_net.c | 15 +++++++++------
->>>>    1 file changed, 9 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->>>> index aaa6fe9b214a..8102861785a2 100644
->>>> --- a/drivers/net/virtio_net.c
->>>> +++ b/drivers/net/virtio_net.c
->>>> @@ -716,7 +716,7 @@ static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
->>>>     * have enough headroom.
->>>>     */
->>>>    static struct page *xdp_linearize_page(struct receive_queue *rq,
->>>> -				       u16 *num_buf,
->>>> +				       int *num_buf,
->>>>    				       struct page *p,
->>>>    				       int offset,
->>>>    				       int page_off,
->>>> @@ -816,7 +816,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
->>>>    		if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
->>>>    			int offset = buf - page_address(page) + header_offset;
->>>>    			unsigned int tlen = len + vi->hdr_len;
->>>> -			u16 num_buf = 1;
->>>> +			int num_buf = 1;
->>>>    			xdp_headroom = virtnet_get_headroom(vi);
->>>>    			header_offset = VIRTNET_RX_PAD + xdp_headroom;
->>>> @@ -989,7 +989,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
->>>>    				      void *buf,
->>>>    				      unsigned int len,
->>>>    				      unsigned int frame_sz,
->>>> -				      u16 *num_buf,
->>>> +				      int *num_buf,
->>>>    				      unsigned int *xdp_frags_truesize,
->>>>    				      struct virtnet_rq_stats *stats)
->>>>    {
->>>> @@ -1007,6 +1007,9 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
->>>>    	xdp_prepare_buff(xdp, buf - VIRTIO_XDP_HEADROOM,
->>>>    			 VIRTIO_XDP_HEADROOM + vi->hdr_len, len - vi->hdr_len, true);
->>>> +	if (!*num_buf)
->>>> +		return 0;
->>>> +
->>>>    	if (*num_buf > 1) {
->>>>    		/* If we want to build multi-buffer xdp, we need
->>>>    		 * to specify that the flags of xdp_buff have the
->>> Ouch. Why is this here? Merged so pls remove by a follow up patch, the
->>> rest of the code handles 0 fine. I'm not sure this introduces a bug by
->>> we don't want spaghetti code.
->> Yes it would work without this, but I was keeping this because I wanted it
->> to handle 0 early and exit early.
->>
->> Do you want to remove this?
->>
->> Thanks.
-> why do you want to exit early?
-
-If num_buf is 0, we don't need to judge the subsequent process, because 
-the latter process
-is used to build multi-buffer xdp, but this fix solves the possible 
-problems of single-buffer xdp.
-
-Thanks.
-
->
->>>> @@ -1020,10 +1023,10 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
->>>>    		shinfo->xdp_frags_size = 0;
->>>>    	}
->>>> -	if ((*num_buf - 1) > MAX_SKB_FRAGS)
->>>> +	if (*num_buf > MAX_SKB_FRAGS + 1)
->>>>    		return -EINVAL;
->>>> -	while ((--*num_buf) >= 1) {
->>>> +	while (--*num_buf > 0) {
->>>>    		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
->>>>    		if (unlikely(!buf)) {
->>>>    			pr_debug("%s: rx error: %d buffers out of %d missing\n",
->>>> @@ -1076,7 +1079,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->>>>    					 struct virtnet_rq_stats *stats)
->>>>    {
->>>>    	struct virtio_net_hdr_mrg_rxbuf *hdr = buf;
->>>> -	u16 num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
->>>> +	int num_buf = virtio16_to_cpu(vi->vdev, hdr->num_buffers);
->>>>    	struct page *page = virt_to_head_page(buf);
->>>>    	int offset = buf - page_address(page);
->>>>    	struct sk_buff *head_skb, *curr_skb;
->>>> -- 
->>>> 2.19.1.6.gb485710b
-
+SGTM.
