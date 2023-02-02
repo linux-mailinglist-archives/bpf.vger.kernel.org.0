@@ -2,87 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E95687BC0
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5319E687C01
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbjBBLKg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 06:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
+        id S231997AbjBBLQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 06:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232120AbjBBLKV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 06:10:21 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BE49754;
-        Thu,  2 Feb 2023 03:10:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4109761AE4;
-        Thu,  2 Feb 2023 11:10:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 98283C4339C;
-        Thu,  2 Feb 2023 11:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675336217;
-        bh=i1XmpH5nFD5KatiJd8PdfMED3WBVaS8RfChHbqKsLq8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uDRejtrbeDiNTQ/ZGplqCfS5zDJxYXOWI03wW8o5MosfAkGHU444SKC1zaWkX3m7l
-         hjofhYHR6KBVDCYxBTAo+2ECwX7a0Qw5iCyakdvKamHESwSEHczfe4MxpFIN0oZICP
-         DjMCOw1Sf06SNDJTPFLh68aHOBKZq04/gFV3GR+28Ej6IuhHW1dG3Zx88sshZ1INVc
-         4eEoXZd+gRP6LmhlgRYg8wfS9nttzfimKoBK98rAfZ4Oo+vnA3EjlAAVDQGdRls2FZ
-         vAREUfnhCc6guZ7YRffetldFa7sddnl/s/UE9YwdzLNZ+XCxdaJt6IB9wqXrvGosUl
-         ApHFCVRA/S+MQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 75FA5E50D67;
-        Thu,  2 Feb 2023 11:10:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231207AbjBBLPx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 06:15:53 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855708AC2B;
+        Thu,  2 Feb 2023 03:15:52 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id f7so1619289edw.5;
+        Thu, 02 Feb 2023 03:15:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wpEflEFgONyZvi4WlCVrqQszvFR7vLDMgEvU+XA8+7w=;
+        b=F9HPADDYpgDBMmMTw31hsL/BPt7sHthFt72xAHYYI6C4/tsAnTR9FS5BP08bc1GDo3
+         DlNxEE3klfp5hJgGUiMrrQ2mXMAacJZUbuP6LwQWECphzi485IppWULASmHz4LQ0aNhe
+         xmD+ztykHvf7YxHzipN8QUabxTl21cADcR325iN5Z22Re7fK+YDv+KzZtQndt4y5qkdR
+         FvWv+JZ4jOrSNBvgP++Q08Zn2vgEBArx8wh4B7VvOiWaOtUyeJ4ZEG+usB/Ibqg1JjPd
+         Y7k9q6EN6VNFNdx2Qh5peMUR9I7rEkdi8CWxdUbf7hKziuzJzDOYs8600k1Q5nl5p6ld
+         vFyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wpEflEFgONyZvi4WlCVrqQszvFR7vLDMgEvU+XA8+7w=;
+        b=67jBChMPPxdws5c1h2zFqTRIDYzwaeqeBmQ0s3ErSy3/OP4PtHaRlISfa4KXFy4VRk
+         /ssAPlMuKzKqJMkAzlNtsjtndpTEL+yDu5l6rubtgdKvX5yWFezoviFR8Mv2MNRx6gF5
+         4w1dQRPZ3hQcvT7MOfItHCGRqAKW7hhPQDJr7R6X2skYnyr9qzsYV6F7+r+MUuN5uO8A
+         IGz6tz8Z44IZQargQ6Oc4yfu7CZ5w4Hs6qlNdCcXURM2SqgxgdvVsUe0SHnKM8WdbtNd
+         iK5lJjSmDcUUVDNZJpdaHKVIPhSA71s3nwoMvNs+3otoNTeyZidM1pWt6sFTg+EdFbnZ
+         PNYA==
+X-Gm-Message-State: AO0yUKV7Iely+RYqo802RLDsRqhpIclqTFhFwQyiph83epWiThbtY5sQ
+        pMHp21oc88VEw0jAa/x9T7oZ+ACL4jhAQZNov5Y=
+X-Google-Smtp-Source: AK7set/7vshqxPiS23f8zcEnLOB/WqJuLi7g76SaS9Fq+nI1GtacYnaPHdA3rg1UlpyFnJfbN29NT+FyA7W/0XKnnAM=
+X-Received: by 2002:aa7:d385:0:b0:49e:6501:57a2 with SMTP id
+ x5-20020aa7d385000000b0049e650157a2mr1774099edq.43.1675336550794; Thu, 02 Feb
+ 2023 03:15:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: =?utf-8?q?=5BPATCH=5D_selftests/bpf=3A_remove_duplicate_include_hea?=
-        =?utf-8?q?der_in_files?=
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167533621747.1751.226846406285857027.git-patchwork-notify@kernel.org>
-Date:   Thu, 02 Feb 2023 11:10:17 +0000
-References: <202301311440516312161@zte.com.cn>
-In-Reply-To: <202301311440516312161@zte.com.cn>
-To:     <ye.xingchen@zte.com.cn>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230201135737.800527-1-jolsa@kernel.org>
+In-Reply-To: <20230201135737.800527-1-jolsa@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 2 Feb 2023 03:15:39 -0800
+Message-ID: <CAADnVQ+im7FwSqDcTLmMvfRcT9unwdHBeWG9Snw7W5Q-bcdWvg@mail.gmail.com>
+Subject: Re: [RFC 0/5] mm/bpf/perf: Store build id in file object
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Feb 1, 2023 at 5:57 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> hi,
+> we have a use cases for bpf programs to use binary file's build id.
+>
+> After some attempts to add helpers/kfuncs [1] [2] Andrii had an idea [3]
+> to store build id directly in the file object. That would solve our use
+> case and might be beneficial for other profiling/tracing use cases with
+> bpf programs.
+>
+> This RFC patchset adds new config CONFIG_FILE_BUILD_ID option, which adds
+> build id object pointer to the file object when enabled. The build id is
+> read/populated when the file is mmap-ed.
+>
+> I also added bpf and perf changes that would benefit from this.
+>
+> I'm not sure what's the policy on adding stuff to file object, so apologies
+> if that's out of line. I'm open to any feedback or suggestions if there's
+> better place or way to do this.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Tue, 31 Jan 2023 14:40:51 +0800 (CST) you wrote:
-> From: ye xingchen <ye.xingchen@zte.com.cn>
-> 
-> linux/net_tstamp.h is included more than once.
-> 
-> Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
-> ---
->  tools/testing/selftests/bpf/xdp_hw_metadata.c | 1 -
->  1 file changed, 1 deletion(-)
-
-Here is the summary with links:
-  - selftests/bpf: remove duplicate include header in files
-    https://git.kernel.org/bpf/bpf-next/c/4bc32df7a9c3
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+struct file represents all files while build_id is for executables only,
+and not all executables, but those currently running, so
+I think it's cleaner to put it into vm_area_struct.
