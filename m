@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF68687322
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 02:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56DC687323
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 02:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbjBBBmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Feb 2023 20:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
+        id S229994AbjBBBmp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Feb 2023 20:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbjBBBmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Feb 2023 20:42:39 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC287750D
-        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 17:42:38 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id n13so361601plf.11
-        for <bpf@vger.kernel.org>; Wed, 01 Feb 2023 17:42:38 -0800 (PST)
+        with ESMTP id S229761AbjBBBmo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Feb 2023 20:42:44 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273B07750D
+        for <bpf@vger.kernel.org>; Wed,  1 Feb 2023 17:42:43 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id nm12-20020a17090b19cc00b0022c2155cc0bso383889pjb.4
+        for <bpf@vger.kernel.org>; Wed, 01 Feb 2023 17:42:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lKQM5vml6SlvXVBphY+FPvXDlacnwZjaLK4//iP66Rc=;
-        b=l3QJYqqBg/FLpgLF3w9RJzT6LCxhxV+XkCfXCmvbcqX9dmtvv9gqm2MxgFHNi3KsIH
-         L+1/Jzgydg9Pvnr7vXfwlJEXyt4Oe1rE4kn05ybn6xcyMfcQMRzN4eG0/xL7461EBLbU
-         vf8jElG3ItPsPUFX6RfXXViWPo74PSCLHWNs+XuIEBTlGbqhkMQOkJwZ0PF3jG4JRuIe
-         i7wvYJRzchy9EPmYoVbqXKwf7JSxNNIoB43hXNxIn/Q4QNrIUw3Vxkf18pSPBnzibW3l
-         6u0M80ydQuUtrqXBFb2K8aWPsqAn+/XoHwWw7L3Uk3NbQoeBfk+DJU4Lww1vd2yFr3da
-         kx9g==
+        bh=iXkRPNUKE8d5ftVBz5595yLHB869PZbpQON83mShRx4=;
+        b=YLlTiQVi1W6kOesI/itZUMFMXk0vDTecHCMSOuC1nRnzwzmVJkcWdwmEzp+h6Y0VGF
+         6bRLPxE9ercMM/AzdE83khyPtI6P6KjiTMBbOnPOroS+0coKScYO52fdo2es8e9hms3/
+         muEbfteiVwr3AlG94kSuXrL/2s9PFdcJM40hPW8VnKV67RoXbSDH99li4/gX7D5XNXxR
+         yDPRvkgmp0UJCTbi65CFakuGydXukRwvdFeaUlQffBOvO6OvIGe2xt1Y4hTKY0fUbO3u
+         3qxbAi/x9otJLXP49/B+8xf7CThsGjYnhfm0D00n82xNGWGJPDGO4m+YtkXgJUaH8Ofv
+         S2eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lKQM5vml6SlvXVBphY+FPvXDlacnwZjaLK4//iP66Rc=;
-        b=g1Mp5ASgpROzskQAvHB1u66bDe63l3+JPpKTC8wDTSdhuGbIX28lqkw9Zj65SViVuP
-         gEqz8zghc9O1/DgPRBdZNc1DoBwUsxdfLL3qQUOHapFR322wexB0M7QYYQvzrTUPh+8g
-         ul4vc3SXoObSQJUJ4a2XXcaVQroa1jCntwEOtrxQ+cCIUr+zE5SkGhDkXmnaUcUCw+WN
-         mjeiwsyiOpEiOJzIsMp/l4JDR8C4VXz768epLZCjfnXnZl2Ru8qyjlLj9Hskt9I4xGJy
-         XosPCgZb319RKgd79ksWhHlP6oA1fMymyayy9AnSrrSLF+K452h992HTO4UzyqEYvYNC
-         +8/A==
-X-Gm-Message-State: AO0yUKVZMwlyb58cLC/u8PPMHM3F1DrMTHYqKuwVxFdL7dS9sUuzeKan
-        3HUrDUz195+h2Gofd+y0Edo=
-X-Google-Smtp-Source: AK7set9ELt2JOyjgVr4+8gniE1xArw7bOYKUK5RSQApxYJDzJ0/kzRDbUTtaVk55GHthACef4ci2vQ==
-X-Received: by 2002:a05:6a20:1603:b0:bc:2665:cbe6 with SMTP id l3-20020a056a20160300b000bc2665cbe6mr5916806pzj.5.1675302157573;
-        Wed, 01 Feb 2023 17:42:37 -0800 (PST)
+        bh=iXkRPNUKE8d5ftVBz5595yLHB869PZbpQON83mShRx4=;
+        b=plNTTqUOCrPdneLgtFYVU6mgCQ5zOiPrVzD9seGzZz1L0zbv1Z357JHfcX7Vpr4RSx
+         NT8RgIk55CKw2b+HpP8dgpFPxrVxFMVpRAIXiBwE1oziLk15cQcPlMN1dHAxWWR4NSxc
+         rLLIGuLKKvsOi1ZOuKFoJbTZBqBe/9GRtwOn2pA/XCwJxPWoXWiISX/TQy2bQH0PUiQr
+         Won9J+MSTp+Hcyp/vvOZcAeL0TF512bh06cn0iZD5NeFt+0o1bFCPSJyJ/FQz0PVJ2LE
+         miXKmy04HZgt+nm84sxgzgKCKkMxW/UlrNFuoitnpsSVPA3T5uMb4YsaYVnzxsWt1c6x
+         ZhgA==
+X-Gm-Message-State: AO0yUKWCw7s/aywR3qglXk8s3YDcKIDeXMfncn57FSHCZvZ6SkdBXESS
+        cT+U6q1kAB6roOBlfnQNjgc=
+X-Google-Smtp-Source: AK7set/SrSm3u8TRTQ8rnsLayAXgTID2jYtlbM0umtSssmngdloviUV9lnMNXrqFT2mZKh/SiGuJFQ==
+X-Received: by 2002:a05:6a20:1aa5:b0:be:b878:6d71 with SMTP id ci37-20020a056a201aa500b000beb8786d71mr4543762pzb.7.1675302162662;
+        Wed, 01 Feb 2023 17:42:42 -0800 (PST)
 Received: from vultr.guest ([2001:19f0:7001:3f48:5400:4ff:fe4a:8c8b])
-        by smtp.gmail.com with ESMTPSA id t191-20020a6381c8000000b004e8f7f23c4bsm6594205pgd.76.2023.02.01.17.42.32
+        by smtp.gmail.com with ESMTPSA id t191-20020a6381c8000000b004e8f7f23c4bsm6594205pgd.76.2023.02.01.17.42.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 17:42:37 -0800 (PST)
+        Wed, 01 Feb 2023 17:42:42 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -60,9 +60,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         urezki@gmail.com
 Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 5/7] bpf: add new map ops ->map_mem_usage
-Date:   Thu,  2 Feb 2023 01:41:56 +0000
-Message-Id: <20230202014158.19616-6-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 6/7] bpf: introduce bpf_mem_alloc_size()
+Date:   Thu,  2 Feb 2023 01:41:57 +0000
+Message-Id: <20230202014158.19616-7-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230202014158.19616-1-laoar.shao@gmail.com>
 References: <20230202014158.19616-1-laoar.shao@gmail.com>
@@ -78,76 +78,122 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a new map ops ->map_mem_usage to print the memory usage of a
-bpf map.
-
-->map_mem_usage will get the map memory usage from the pointers
-which will be freed in ->map_free. So it is very similar to ->map_free
-except that it only get the underlaying memory size from the pointers
-rather than freeing them. We just need to keep the pointers used in
-->map_mem_usage in sync with the pointers in ->map_free.
-
-This is a preparation for the followup change.
+Introduce helpers to get the memory usage of bpf_mem_alloc, includes the
+bpf_mem_alloc pool and the in-use elements size. Note that we only count
+the free list size in the bpf_mem_alloc pool but don't count other
+lists, because there won't be too many elements on other lists. Ignoring
+other lists could make the code simple.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/bpf.h  |  2 ++
- kernel/bpf/syscall.c | 18 +++++++++++-------
- 2 files changed, 13 insertions(+), 7 deletions(-)
+ include/linux/bpf_mem_alloc.h |  2 ++
+ kernel/bpf/memalloc.c         | 70 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 72 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index e11db75..10eb8e9 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -160,6 +160,8 @@ struct bpf_map_ops {
- 				     bpf_callback_t callback_fn,
- 				     void *callback_ctx, u64 flags);
+diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
+index 3e164b8..86d8dcf 100644
+--- a/include/linux/bpf_mem_alloc.h
++++ b/include/linux/bpf_mem_alloc.h
+@@ -24,5 +24,7 @@ struct bpf_mem_alloc {
+ /* kmem_cache_alloc/free equivalent: */
+ void *bpf_mem_cache_alloc(struct bpf_mem_alloc *ma);
+ void bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr);
++unsigned long bpf_mem_alloc_size(struct bpf_mem_alloc *ma);
++unsigned long bpf_mem_cache_elem_size(struct bpf_mem_alloc *ma, void *ptr);
  
-+	unsigned long (*map_mem_usage)(const struct bpf_map *map);
+ #endif /* _BPF_MEM_ALLOC_H */
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index ebcc3dd..ebf8964 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -224,6 +224,22 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
+ 	kfree(obj);
+ }
+ 
++unsigned long bpf_mem_cache_size(struct bpf_mem_cache *c, void *obj)
++{
++	unsigned long size;
 +
- 	/* BTF id of struct allocated by map_alloc */
- 	int *map_btf_id;
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 99417b3..df52853 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -758,16 +758,20 @@ static fmode_t map_get_sys_perms(struct bpf_map *map, struct fd f)
- }
- 
- #ifdef CONFIG_PROC_FS
--/* Provides an approximation of the map's memory footprint.
-- * Used only to provide a backward compatibility and display
-- * a reasonable "memlock" info.
-- */
--static unsigned long bpf_map_memory_footprint(const struct bpf_map *map)
-+/* Show the memory usage of a bpf map */
-+static unsigned long bpf_map_memory_usage(const struct bpf_map *map)
++	if (!obj)
++		return 0;
++
++	if (c->percpu_size) {
++		size = percpu_size(((void **)obj)[1]);
++		size += ksize(obj);
++		return size;
++	}
++
++	return ksize(obj);
++}
++
+ static void __free_rcu(struct rcu_head *head)
  {
- 	unsigned long size;
- 
--	size = round_up(map->key_size + bpf_map_value_size(map), 8);
-+	/* ->map_mem_usage will get the map memory size from the pointers
-+	 * which will be freed in ->map_free. So it is very similar to
-+	 * ->map_free except that it only get the underlaying memory size
-+	 * from the pointers rather than freeing them.
-+	 */
-+	if (map->ops->map_mem_usage)
-+		return map->ops->map_mem_usage(map);
- 
-+	size = round_up(map->key_size + bpf_map_value_size(map), 8);
- 	return round_up(map->max_entries * size, PAGE_SIZE);
+ 	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+@@ -559,6 +575,41 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
+ 	}
  }
  
-@@ -799,7 +803,7 @@ static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
- 		   map->max_entries,
- 		   map->map_flags,
- 		   (unsigned long long)map->map_extra,
--		   bpf_map_memory_footprint(map),
-+		   bpf_map_memory_usage(map),
- 		   map->id,
- 		   READ_ONCE(map->frozen));
- 	if (type) {
++/* We only account the elements on free list */
++static unsigned long bpf_mem_cache_free_size(struct bpf_mem_cache *c)
++{
++	return c->unit_size * c->free_cnt;
++}
++
++/* Get the free list size of a bpf_mem_alloc pool. */
++unsigned long bpf_mem_alloc_size(struct bpf_mem_alloc *ma)
++{
++	struct bpf_mem_caches *cc;
++	struct bpf_mem_cache *c;
++	unsigned long size = 0;
++	int cpu, i;
++
++	if (ma->cache) {
++		for_each_possible_cpu(cpu) {
++			c = per_cpu_ptr(ma->cache, cpu);
++			size += bpf_mem_cache_free_size(c);
++		}
++		size += percpu_size(ma->cache);
++	}
++	if (ma->caches) {
++		for_each_possible_cpu(cpu) {
++			cc = per_cpu_ptr(ma->caches, cpu);
++			for (i = 0; i < NUM_CACHES; i++) {
++				c = &cc->cache[i];
++				size += bpf_mem_cache_free_size(c);
++			}
++		}
++		size += percpu_size(ma->caches);
++	}
++
++	return size;
++}
++
+ /* notrace is necessary here and in other functions to make sure
+  * bpf programs cannot attach to them and cause llist corruptions.
+  */
+@@ -675,3 +726,22 @@ void notrace bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr)
+ 
+ 	unit_free(this_cpu_ptr(ma->cache), ptr);
+ }
++
++/* Get elemet size from the element pointer @ptr */
++unsigned long notrace bpf_mem_cache_elem_size(struct bpf_mem_alloc *ma, void *ptr)
++{
++	struct llist_node *llnode;
++	struct bpf_mem_cache *c;
++	unsigned long size;
++
++	if (!ptr)
++		return 0;
++
++	llnode = ptr - LLIST_NODE_SZ;
++	migrate_disable();
++	c = this_cpu_ptr(ma->cache);
++	size = bpf_mem_cache_size(c, llnode);
++	migrate_enable();
++
++	return size;
++}
 -- 
 1.8.3.1
 
