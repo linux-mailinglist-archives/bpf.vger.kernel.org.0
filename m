@@ -2,85 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 369E7687C27
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFF8687C34
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbjBBL0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 06:26:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
+        id S231893AbjBBL2t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 06:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjBBL0o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 06:26:44 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FE889FAE;
-        Thu,  2 Feb 2023 03:26:43 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id ml19so5184078ejb.0;
-        Thu, 02 Feb 2023 03:26:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=O6oWaCj5vHS3jXg8ySUjTa+u1D8hWBtGtNI3mRImg0Y=;
-        b=F79pokKP1WiCid6YMixYPHt5bZLnbK+gTlGo7cZnKIM3lqK2y2k1Llqq5yKcrQgcqC
-         PKnxlxzsvsx8F2//SlQL/bOySmxcrs3fvfKruq38exYlm9Cm78+wOG5K1WS55OX36Gzw
-         aekRgG3rfKDsI+UWJhjoLQ07XH+UKZ3mygLibrwXMjFQWnKQvZS3GyOouYzL/rlCoadz
-         Gg3MyfxVU+iNfEuARuCD989VT2zjga0o91uE4hyrG/ah7xAY28f4ZIWwGZ1mDRGHIY7T
-         Naq54vOrOaiTVtgjZcFszf+0GOsSda+/h1C/GfCVv8wUeP15BDHbEte7YcKFLeAR5gls
-         +GRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O6oWaCj5vHS3jXg8ySUjTa+u1D8hWBtGtNI3mRImg0Y=;
-        b=5wtgLK2enJJDcfzlmMJqGscug3sZPRjj1VR+D0sCGRljnsTbLZhkDhdZ4INmARTaZ3
-         mNi2gyL3jl6MXRniAJj4KP3cyuI667aYc8K453I7/gN34cIV/pqRTDXPCpTfC5erVgTt
-         el7BbiXcaanYQwCnyDKJ2cBO/861YVTAyXLRBh5YiL5uMnlS3FC31jOrQl58F06X00mi
-         Suz8b+DAKZEWNRl6CTodkoRPh2XWL2X4zeAVG5LU7P0SI2wqtn/W7Z37GQBt9ASyKv9P
-         tAAI2RIfWtq3ZRex99r+dRpK0hz266yOUHyC1qAtGGLmyk3jnBZdXKjfrVLTE6Gl+I4y
-         2jcg==
-X-Gm-Message-State: AO0yUKVaMyHXRaRUAvHme0Bjfsgx+uhEHbkDAQBcsh6wR0FDEVyZHwDU
-        tqawqTjzGUYw7vMJNv5jC8w8ECiuOuv189N/vknioi046Bs=
-X-Google-Smtp-Source: AK7set8vT6OFL2YDCpRYuF9hPA/fQW+8qFZprEMIhCW6ignSyaGa0sMCBwDXXsztYK8YzT+AMiIHohCUSGpX4MExO/E=
-X-Received: by 2002:a17:906:4b57:b0:878:74d0:c173 with SMTP id
- j23-20020a1709064b5700b0087874d0c173mr1721816ejv.264.1675337201809; Thu, 02
- Feb 2023 03:26:41 -0800 (PST)
-MIME-Version: 1.0
-References: <1675254998-4951-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1675254998-4951-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 2 Feb 2023 03:26:30 -0800
-Message-ID: <CAADnVQKWWf6==B=X+2zazt1dmfK6ENAaGWWS_2QkX4bDJrJJNg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] bpf: Replace BPF_ALU and BPF_JMP with
- BPF_ALU32 and BPF_JMP64
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231897AbjBBL2r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 06:28:47 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17C26B354
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 03:28:45 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7198861AEF
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 11:28:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5BCCC433EF;
+        Thu,  2 Feb 2023 11:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675337324;
+        bh=32mioVtyrCn0BqVkHG2N+EmqHNh9EUvATrFZ9nL5cIw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iJH/UCb7iKpchxin440dO+iBtCnBzyanBBZ44dpbcRBo8BiNAoK/IYYwkb1Na/fUD
+         VVHa0BK6PkadVu8Go+FCg9YYhOEca85hCf8TCg5LDXmAOBGrq+1A3apRUHlXZhUvvS
+         HcuZYaiywScY/+VO0gxqak05JnwGWyE3FAxa4qgHHaYgcc5q4fZJ1b3va9Q856MFGo
+         oSQhJnlWC7kz/wjMRpYDO01hxjNjh19anjJ/88dZLtDHgjxU8GsG37AYBvCi94u6I+
+         siJM1x4hIqqF+HGTKy3evPiQVhQ1uNk8ykDLpHBJGxDbWw2uaP2V8Br2vZlJ5KdiJe
+         pC1cXP1q1QuLA==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next] tools/resolve_btfids: Compile resolve_btfids as host program
+Date:   Thu,  2 Feb 2023 12:28:39 +0100
+Message-Id: <20230202112839.1131892-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.39.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 1, 2023 at 4:36 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> The intention of this patchset is to make the code more readable,
-> no functional changes, based on bpf-next.
->
-> If this patchset makes no sense, please ignore it and sorry for that.
-...
->  157 files changed, 4299 insertions(+), 4295 deletions(-)
+Making resolve_btfids to be compiled as host program so
+we can avoid cross compile issues as reported by Nathan.
 
-Are you trying to get to the top of lwn's "most active developers by
-lines changed" ?
-I'm sure you knew that it's most likely going to be rejected,
-yet you still sent it. why?
-Your developer's reputation suffers.
-Think quality and not quantity.
+Also we no longer need HOST_OVERRIDES for BINARY target,
+just for 'prepare' targets.
+
+Cc: Ian Rogers <irogers@google.com>
+Fixes: 13e07691a16f ("tools/resolve_btfids: Alter how HOSTCC is forced")
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/bpf/resolve_btfids/Build    | 4 +++-
+ tools/bpf/resolve_btfids/Makefile | 9 ++++++---
+ 2 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/tools/bpf/resolve_btfids/Build b/tools/bpf/resolve_btfids/Build
+index ae82da03f9bf..077de3829c72 100644
+--- a/tools/bpf/resolve_btfids/Build
++++ b/tools/bpf/resolve_btfids/Build
+@@ -1,3 +1,5 @@
++hostprogs := resolve_btfids
++
+ resolve_btfids-y += main.o
+ resolve_btfids-y += rbtree.o
+ resolve_btfids-y += zalloc.o
+@@ -7,4 +9,4 @@ resolve_btfids-y += str_error_r.o
+ 
+ $(OUTPUT)%.o: ../../lib/%.c FORCE
+ 	$(call rule_mkdir)
+-	$(call if_changed_dep,cc_o_c)
++	$(call if_changed_dep,host_cc_o_c)
+diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+index daed388aa5d7..abdd68ac08f4 100644
+--- a/tools/bpf/resolve_btfids/Makefile
++++ b/tools/bpf/resolve_btfids/Makefile
+@@ -22,6 +22,9 @@ HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)
+ 		  EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
+ 
+ RM      ?= rm
++HOSTCC  ?= gcc
++HOSTLD  ?= ld
++HOSTAR  ?= ar
+ CROSS_COMPILE =
+ 
+ OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
+@@ -64,7 +67,7 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
+ LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
+ LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
+ 
+-CFLAGS += -g \
++HOSTCFLAGS += -g \
+           -I$(srctree)/tools/include \
+           -I$(srctree)/tools/include/uapi \
+           -I$(LIBBPF_INCLUDE) \
+@@ -73,11 +76,11 @@ CFLAGS += -g \
+ 
+ LIBS = $(LIBELF_LIBS) -lz
+ 
+-export srctree OUTPUT CFLAGS Q
++export srctree OUTPUT HOSTCFLAGS Q HOSTCC HOSTLD HOSTAR
+ include $(srctree)/tools/build/Makefile.include
+ 
+ $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
+-	$(Q)$(MAKE) $(build)=resolve_btfids $(HOST_OVERRIDES)
++	$(Q)$(MAKE) $(build)=resolve_btfids
+ 
+ $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
+ 	$(call msg,LINK,$@)
+-- 
+2.39.1
+
