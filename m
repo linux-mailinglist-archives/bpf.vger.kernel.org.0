@@ -2,131 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6283687E54
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 14:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDA7687E66
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 14:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbjBBNLz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 08:11:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43648 "EHLO
+        id S231520AbjBBNTS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 08:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjBBNLy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 08:11:54 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4888C1C2;
-        Thu,  2 Feb 2023 05:11:48 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id qw12so5860621ejc.2;
-        Thu, 02 Feb 2023 05:11:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=a+cCNsETz45YshQhIXFqkY19MDAG9vwzg6TDida0acI=;
-        b=FDvJZDzGsgAEMjCpCqlqBT+PBl4a2blZbOek7/96cShN4m9VVf8llxb4QL91Q2pREM
-         IZwYiBAF8Va8EKeZYQqwWF/P2izfpuHDvAMJCnbeR3Sz101I+OyLJGiQpeVnSwDlnzDw
-         q/nwcIkSRIQZaWeopYQeSb9MH+OqsFO9jg7kJBZhMOm3qV6IuGEgUgvLFAtuf0SMJPQR
-         umCYMBYnLJ4iLwx7HEWba+Y8wF8RrL0ZjbK+gEYMj82Q3M1CLrBYaQyEXpLFiIH0yQ9R
-         beFI4wX3Eb64ocRKgbd2Oaba9NFGzek6sR2+pIk2RTZAYwNUJn6lPSPddXeR13scxzhk
-         ty5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=a+cCNsETz45YshQhIXFqkY19MDAG9vwzg6TDida0acI=;
-        b=voUcLJ/WXy/N2vYcASG5yuxseTGFghtakwPG5i/iqIG1E3rBwQQPlkgxdZMeTq1RT7
-         Sec3sCMAqcc9LVLbOVX00kJ5D70UGBp5Tw4ZcEEIE/zFSxnJKcaL0CEuMcAVozmAig/E
-         nE+76bDahxSJ9NF8qn4ko2d1paF9kBho2duiNvuAYoj+jFcSABdZPxo6D5dYDmhtBJR3
-         +A0pUT3fYvUcL1xgT+KjaUHdd5c8LVWMEXK5gE4/1HHd7XgNJCOVq7fdL1i02Lr/hyoy
-         2wWrSOJo58saCrG2Z69Eluj6qys0hT3DujKKtssulFiw0kbxAvI5/xxIeLtF72vqe0/G
-         HWBg==
-X-Gm-Message-State: AO0yUKWwoCjWqAT/xk2gWM8y7GcsLzDsfOX4RIFAKsC+0Z5sIzneRZqz
-        hMxSyRurc/DJLeUs3oyr2oOJRWa3H3cdvr6r0K4=
-X-Google-Smtp-Source: AK7set9hD1sKrfL/oqG07C+GcTpdhn1+P/ka9gwI6H5WuilXBISkfu4T376/iB14fVp+Mh1YUyv8+OJ4heqzUo3pa44=
-X-Received: by 2002:a17:906:8395:b0:888:f761:87aa with SMTP id
- p21-20020a170906839500b00888f76187aamr2079361ejx.163.1675343506695; Thu, 02
- Feb 2023 05:11:46 -0800 (PST)
+        with ESMTP id S229991AbjBBNTR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 08:19:17 -0500
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.221.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45BE6EDE6
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 05:19:14 -0800 (PST)
+X-QQ-mid: bizesmtp81t1675343936tel2ae4q
+Received: from localhost.localdomain ( [1.202.165.115])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 02 Feb 2023 21:18:53 +0800 (CST)
+X-QQ-SSF: 0100000000000080B000000A0000000
+X-QQ-FEAT: UMQM+3VOEYt0uzxHvKIMWYIgkQhSD3FkIWYJYky+/8GN1pohNPdHiedwycHPN
+        Me0Z2TIxLah5ay3Krozxvwd9+uycIKvG824B0QeFOvDldM91i/SuyREv9TN+e4pCx2LVz4G
+        +VkovWLIo+i6GIbr1VdUVvHtthQi19r0xvBOtjGYdQxdu4sReLqE3m5LkHOv5vRDw7RXINm
+        8JsZuWhBF7CaW1TaBikNUtbevuZHPpJ6ErZjI8FRahRP0JokQ33LWKTNGRKentysbQ7K+6s
+        YvaWETn12yCvN5AxvEB05q18akzSUt8Kklt12kUlLlJi9+AGZMToiAd/317677o1DrgJuL1
+        D3hI99gZxkCQRvvcDzNmKXWMDHA5b61ITRbf/DhahBuMGxdRjh+9MFlg2n8pA==
+X-QQ-GoodBg: 0
+From:   tong@infragraf.org
+To:     bpf@vger.kernel.org, quentin@isovalent.com, daniel@iogearbox.net
+Cc:     Tonghao Zhang <tong@infragraf.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: [bpf-next v3] bpftool: profile online CPUs instead of possible
+Date:   Thu,  2 Feb 2023 21:17:01 +0800
+Message-Id: <20230202131701.29519-1-tong@infragraf.org>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-References: <20230127122018.2839-1-kerneljasonxing@gmail.com>
- <Y9fdRqHp7sVFYbr6@boxer> <CAL+tcoBbUKO5Y_dOjZWa4iQyK2C2O76QOLtJ+dFQgr_cpqSiyQ@mail.gmail.com>
- <192d7154-78a6-e7a0-2810-109b864bbb4f@intel.com> <CAL+tcoBtQSeGi5diwUeg1LryYsB2wDg1ow19F2eApjh7hYbcsA@mail.gmail.com>
- <af77ad0e-fde7-25da-dc3f-5d19133addba@intel.com>
-In-Reply-To: <af77ad0e-fde7-25da-dc3f-5d19133addba@intel.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Thu, 2 Feb 2023 21:11:10 +0800
-Message-ID: <CAL+tcoCXFtTATi_=h5Yoh3DUx4NeTDG4SexA=0HP8z99TkipLA@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH v2 net] ixgbe: allow to increase MTU to
- some extent with XDP enabled
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 1, 2023 at 7:15 PM Alexander Lobakin
-<alexandr.lobakin@intel.com> wrote:
->
-> From: Jason Xing <kerneljasonxing@gmail.com>
-> Date: Tue, 31 Jan 2023 19:23:59 +0800
->
-> > On Tue, Jan 31, 2023 at 7:08 PM Alexander Lobakin
-> > <alexandr.lobakin@intel.com> wrote:
->
-> [...]
->
-> >>>> You said in this thread that you've done several tests - what were they?
-> >>>
-> >>> Tests against XDP are running on the server side when MTU varies from
-> >>> 1500 to 3050 (not including ETH_HLEN, ETH_FCS_LEN and VLAN_HLEN) for a
-> >>
-> >
-> >> BTW, if ixgbe allows you to set MTU of 3050, it needs to be fixed. Intel
-> >> drivers at some point didn't include the second VLAN tag into account,
-> >
-> > Yes, I noticed that.
-> >
-> > It should be like "int new_frame_size = new_mtu + ETH_HLEN +
-> > ETH_FCS_LEN + (VLAN_HLEN * 2)" instead of only one VLAN_HLEN, which is
-> > used to compute real size in ixgbe_change_mtu() function.
-> > I'm wondering if I could submit another patch to fix the issue you
-> > mentioned because the current patch tells a different issue. Does it
-> > make sense?
->
-> Yes, please send as a separate patch. It's somewhat related to the
-> topic, but better to keep commits atomic.
+From: Tonghao Zhang <tong@infragraf.org>
 
-Hi Alexander,
+The number of online cpu may be not equal to possible cpu.
+"bpftool prog profile" can not create pmu event on possible
+but on online cpu.
 
-I'm not sure if I should wait for the current patch to get reviewed,
-then I'll write the vlan related patch we talked about based on the
-current patch?
+$ dmidecode -s system-product-name
+PowerEdge R620
+$ cat /sys/devices/system/cpu/possible
+0-47
+$ cat /sys/devices/system/cpu/online
+0-31
 
-Thanks,
-Jason
+Disable cpu dynamically:
+$ echo 0 > /sys/devices/system/cpu/cpuX/online
 
->
-> >
-> > If you're available, please help me review the v3 patch I've already
-> > sent to the mailing-list. Thanks anyway.
-> > The Link is https://lore.kernel.org/lkml/20230131032357.34029-1-kerneljasonxing@gmail.com/
-> > .
-> >
-> > Thanks,
-> > Jason
->
-> Thanks,
-> Olek
->
+If one cpu is offline, perf_event_open will return ENODEV.
+To fix this issue:
+* check value returned and skip offline cpu.
+* close pmu_fd immediately on error path, avoid fd leaking.
+
+Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
+Signed-off-by: Tonghao Zhang <tong@infragraf.org>
+Cc: Quentin Monnet <quentin@isovalent.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+---
+v1:
+https://patchwork.kernel.org/project/netdevbpf/patch/20230117044902.98938-1-tong@infragraf.org/
+https://patchwork.kernel.org/project/netdevbpf/patch/20230117044902.98938-2-tong@infragraf.org/
+
+v2:
+fix pmu_fd leaking
+add fix tag
+---
+ tools/bpf/bpftool/prog.c | 38 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 30 insertions(+), 8 deletions(-)
+
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index cfc9fdc1e863..e87738dbffc1 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -2233,10 +2233,38 @@ static void profile_close_perf_events(struct profiler_bpf *obj)
+ 	profile_perf_event_cnt = 0;
+ }
+ 
++static int profile_open_perf_event(int mid, int cpu, int map_fd)
++{
++	int pmu_fd;
++
++	pmu_fd = syscall(__NR_perf_event_open, &metrics[mid].attr,
++			 -1 /*pid*/, cpu, -1 /*group_fd*/, 0);
++	if (pmu_fd < 0) {
++		if (errno == ENODEV) {
++			p_info("cpu %d may be offline, skip %s profiling.",
++				cpu, metrics[mid].name);
++			profile_perf_event_cnt++;
++			return 0;
++		}
++		return -1;
++	}
++
++	if (bpf_map_update_elem(map_fd,
++				&profile_perf_event_cnt,
++				&pmu_fd, BPF_ANY) ||
++	    ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0)) {
++		close(pmu_fd);
++		return -1;
++	}
++
++	profile_perf_events[profile_perf_event_cnt++] = pmu_fd;
++	return 0;
++}
++
+ static int profile_open_perf_events(struct profiler_bpf *obj)
+ {
+ 	unsigned int cpu, m;
+-	int map_fd, pmu_fd;
++	int map_fd;
+ 
+ 	profile_perf_events = calloc(
+ 		sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
+@@ -2255,17 +2283,11 @@ static int profile_open_perf_events(struct profiler_bpf *obj)
+ 		if (!metrics[m].selected)
+ 			continue;
+ 		for (cpu = 0; cpu < obj->rodata->num_cpu; cpu++) {
+-			pmu_fd = syscall(__NR_perf_event_open, &metrics[m].attr,
+-					 -1/*pid*/, cpu, -1/*group_fd*/, 0);
+-			if (pmu_fd < 0 ||
+-			    bpf_map_update_elem(map_fd, &profile_perf_event_cnt,
+-						&pmu_fd, BPF_ANY) ||
+-			    ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0)) {
++			if (profile_open_perf_event(m, cpu, map_fd)) {
+ 				p_err("failed to create event %s on cpu %d",
+ 				      metrics[m].name, cpu);
+ 				return -1;
+ 			}
+-			profile_perf_events[profile_perf_event_cnt++] = pmu_fd;
+ 		}
+ 	}
+ 	return 0;
+-- 
+2.27.0
+
