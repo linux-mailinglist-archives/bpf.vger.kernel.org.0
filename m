@@ -2,31 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BD0687B66
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE178687BAB
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 12:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbjBBLCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 06:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
+        id S231646AbjBBLKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 06:10:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232390AbjBBLBr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 06:01:47 -0500
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C92889B1;
-        Thu,  2 Feb 2023 03:01:40 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VakkMAt_1675335696;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VakkMAt_1675335696)
-          by smtp.aliyun-inc.com;
-          Thu, 02 Feb 2023 19:01:36 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        with ESMTP id S232234AbjBBLJz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 06:09:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4BE8A7E
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 03:09:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675336140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lz0zTz+Gz36uEjAct9g3W1/HujYGKgEb+bfXh3QBDS8=;
+        b=hM6q4yjMDtBg80xCnTEwdrAsntGNGcVA0Dx7+OHkleyMPNOGdtIMnYJi7cIj6L7aQR6CHI
+        nw3++16UEybvU5a9OMZGWrt3+SLdJJdCWuWZwuD2Ci74IQXZOr2fFAH98JePOpP+zg4YkX
+        xt3X3KM8pF1VJkm2JcUiWUUgs2jdiaI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-627-bC6zHjKZP6yyfCU_AxADQg-1; Thu, 02 Feb 2023 06:08:39 -0500
+X-MC-Unique: bC6zHjKZP6yyfCU_AxADQg-1
+Received: by mail-wm1-f69.google.com with SMTP id o31-20020a05600c511f00b003dc53da325dso2637582wms.8
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 03:08:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lz0zTz+Gz36uEjAct9g3W1/HujYGKgEb+bfXh3QBDS8=;
+        b=ylaWFcTLynxHQPnSY0qFj4qg95sO5QVlfZYkh0MqmBBH+BXU7eNNxQ3poPQNo+8dVa
+         gKnpQMPfzlRKQkqnx8jYHoPkwK27KOjTOELjJOtQ2KQRXWdbVcMSUM5xaIuqbPksQV2P
+         L264omt7fUhZORvgmO2qyP51v77TIJ75lN+DI5RqtlNzIgq83hyygJ1t5fYSLtGP8p9H
+         xdFry7Zu7cKeDKgnhMznZHiykGyBjZryaZzLlJr2VFG3J+nifBBZcTu3UyLTQtbHwnrC
+         Lf5w8hYHFQ/hivCrzUkFUmKqj5O1N1CZ+f3zfPgLqnpe30zMGs4U0E3jJovkMU3hYK+S
+         vQSA==
+X-Gm-Message-State: AO0yUKVSL9fko/k/BsUoHa+LV8qGWLwIKZsE0MrEC6Vg9AyumD4q0zMF
+        OGtNhP6mU6Sz18OVVfDxA0JfXQ5rxNOmCZ0nCCoGqZ+ydzN2NGoMdrP56E/+0OPs61Fs9AFx6xx
+        VSU3eBrvZX8HV
+X-Received: by 2002:a5d:47cc:0:b0:2c3:be89:7c2a with SMTP id o12-20020a5d47cc000000b002c3be897c2amr1585494wrc.13.1675336118325;
+        Thu, 02 Feb 2023 03:08:38 -0800 (PST)
+X-Google-Smtp-Source: AK7set8L6ehiCIHTqXDjFaeDmD8e3MDpBSAuqRb/FSnbN4gHDYlbjhPH+AJMGwS/WUDQOGOLlrDz/A==
+X-Received: by 2002:a5d:47cc:0:b0:2c3:be89:7c2a with SMTP id o12-20020a5d47cc000000b002c3be897c2amr1585462wrc.13.1675336118054;
+        Thu, 02 Feb 2023 03:08:38 -0800 (PST)
+Received: from redhat.com ([2a02:14f:1fc:826d:55d8:70a4:3d30:fc2f])
+        by smtp.gmail.com with ESMTPSA id f12-20020adfdb4c000000b002bfb1de74absm19571527wrj.114.2023.02.02.03.08.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 03:08:37 -0800 (PST)
+Date:   Thu, 2 Feb 2023 06:08:30 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
@@ -39,235 +75,111 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Kuniyuki Iwashima <kuniyu@amazon.com>,
         Petr Machata <petrm@nvidia.com>,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH 33/33] virtio_net: xsk: rx: introduce receive_xsk() to recv xsk buffer
-Date:   Thu,  2 Feb 2023 19:00:58 +0800
-Message-Id: <20230202110058.130695-34-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20230202110058.130695-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH 00/33] virtio-net: support AF_XDP zero copy
+Message-ID: <20230202060757-mutt-send-email-mst@kernel.org>
 References: <20230202110058.130695-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-X-Git-Hash: d7589ab6ea10
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230202110058.130695-1-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Implementing the logic of xsk rx. If this packet is not for XSK
-determined in XDP, then we need to copy once to generate a SKB.
-If it is for XSK, it is a zerocopy receive packet process.
+On Thu, Feb 02, 2023 at 07:00:25PM +0800, Xuan Zhuo wrote:
+> XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
+> copy feature of xsk (XDP socket) needs to be supported by the driver. The
+> performance of zero copy is very good.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio/main.c       |  11 ++-
- drivers/net/virtio/virtio_net.h |   5 ++
- drivers/net/virtio/xsk.c        | 116 ++++++++++++++++++++++++++++++++
- drivers/net/virtio/xsk.h        |   4 ++
- 4 files changed, 130 insertions(+), 6 deletions(-)
+Great! Any numbers to share?
 
-diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-index 2aff0eee35d3..c96183b99e46 100644
---- a/drivers/net/virtio/main.c
-+++ b/drivers/net/virtio/main.c
-@@ -140,11 +140,6 @@ static int rxq2vq(int rxq)
- 	return rxq * 2;
- }
- 
--static inline struct virtio_net_hdr_mrg_rxbuf *skb_vnet_hdr(struct sk_buff *skb)
--{
--	return (struct virtio_net_hdr_mrg_rxbuf *)skb->cb;
--}
--
- /*
-  * private is used to chain pages for big packets, put the whole
-  * most recent used list in the beginning for reuse
-@@ -1161,13 +1156,17 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- 		return;
- 	}
- 
--	if (vi->mergeable_rx_bufs)
-+	rcu_read_lock();
-+	if (rcu_dereference(rq->xsk.pool))
-+		skb = receive_xsk(dev, vi, rq, buf, len, xdp_xmit, stats);
-+	else if (vi->mergeable_rx_bufs)
- 		skb = receive_mergeable(dev, vi, rq, buf, ctx, len, xdp_xmit,
- 					stats);
- 	else if (vi->big_packets)
- 		skb = receive_big(dev, vi, rq, buf, len, stats);
- 	else
- 		skb = receive_small(dev, vi, rq, buf, ctx, len, xdp_xmit, stats);
-+	rcu_read_unlock();
- 
- 	if (unlikely(!skb))
- 		return;
-diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
-index 100ce48c6d55..d9d2e9dcc36c 100644
---- a/drivers/net/virtio/virtio_net.h
-+++ b/drivers/net/virtio/virtio_net.h
-@@ -220,6 +220,11 @@ struct receive_queue {
- 	} xsk;
- };
- 
-+static inline struct virtio_net_hdr_mrg_rxbuf *skb_vnet_hdr(struct sk_buff *skb)
-+{
-+	return (struct virtio_net_hdr_mrg_rxbuf *)skb->cb;
-+}
-+
- static inline bool is_xdp_raw_buffer_queue(struct virtnet_info *vi, int q)
- {
- 	if (q < (vi->curr_queue_pairs - vi->xdp_queue_pairs))
-diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
-index a5e88f919c46..1287b25cb207 100644
---- a/drivers/net/virtio/xsk.c
-+++ b/drivers/net/virtio/xsk.c
-@@ -13,6 +13,18 @@ static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len)
- 	sg->length = len;
- }
- 
-+static unsigned int virtnet_receive_buf_num(struct virtnet_info *vi, char *buf)
-+{
-+	struct virtio_net_hdr_mrg_rxbuf *hdr;
-+
-+	if (vi->mergeable_rx_bufs) {
-+		hdr = (struct virtio_net_hdr_mrg_rxbuf *)buf;
-+		return virtio16_to_cpu(vi->vdev, hdr->num_buffers);
-+	}
-+
-+	return 1;
-+}
-+
- static void virtnet_xsk_check_queue(struct send_queue *sq)
- {
- 	struct virtnet_info *vi = sq->vq->vdev->priv;
-@@ -37,6 +49,110 @@ static void virtnet_xsk_check_queue(struct send_queue *sq)
- 		netif_stop_subqueue(dev, qnum);
- }
- 
-+static void merge_drop_follow_xdp(struct net_device *dev,
-+				  struct receive_queue *rq,
-+				  u32 num_buf,
-+				  struct virtnet_rq_stats *stats)
-+{
-+	struct xdp_buff *xdp;
-+	u32 len;
-+
-+	while (num_buf-- > 1) {
-+		xdp = virtqueue_get_buf(rq->vq, &len);
-+		if (unlikely(!xdp)) {
-+			pr_debug("%s: rx error: %d buffers missing\n",
-+				 dev->name, num_buf);
-+			dev->stats.rx_length_errors++;
-+			break;
-+		}
-+		stats->bytes += len;
-+		xsk_buff_free(xdp);
-+	}
-+}
-+
-+static struct sk_buff *construct_skb(struct receive_queue *rq,
-+				     struct xdp_buff *xdp)
-+{
-+	unsigned int metasize = xdp->data - xdp->data_meta;
-+	struct sk_buff *skb;
-+	unsigned int size;
-+
-+	size = xdp->data_end - xdp->data_hard_start;
-+	skb = napi_alloc_skb(&rq->napi, size);
-+	if (unlikely(!skb))
-+		return NULL;
-+
-+	skb_reserve(skb, xdp->data_meta - xdp->data_hard_start);
-+
-+	size = xdp->data_end - xdp->data_meta;
-+	memcpy(__skb_put(skb, size), xdp->data_meta, size);
-+
-+	if (metasize) {
-+		__skb_pull(skb, metasize);
-+		skb_metadata_set(skb, metasize);
-+	}
-+
-+	return skb;
-+}
-+
-+struct sk_buff *receive_xsk(struct net_device *dev, struct virtnet_info *vi,
-+			    struct receive_queue *rq, void *buf,
-+			    unsigned int len, unsigned int *xdp_xmit,
-+			    struct virtnet_rq_stats *stats)
-+{
-+	struct virtio_net_hdr_mrg_rxbuf *hdr;
-+	struct sk_buff *skb = NULL;
-+	u32 ret, headroom, num_buf;
-+	struct bpf_prog *prog;
-+	struct xdp_buff *xdp;
-+
-+	xdp = (struct xdp_buff *)buf;
-+
-+	hdr = xdp->data - vi->hdr_len;
-+
-+	num_buf = virtnet_receive_buf_num(vi, (char *)hdr);
-+	if (num_buf > 1)
-+		goto drop;
-+
-+	len -= vi->hdr_len;
-+	headroom = xdp->data - xdp->data_hard_start;
-+
-+	xdp_prepare_buff(xdp, xdp->data_hard_start, headroom, len, true);
-+	xsk_buff_dma_sync_for_cpu(xdp, rq->xsk.pool);
-+
-+	ret = VIRTNET_XDP_RES_PASS;
-+	rcu_read_lock();
-+	prog = rcu_dereference(rq->xdp_prog);
-+	if (prog)
-+		ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit, stats);
-+	rcu_read_unlock();
-+
-+	switch (ret) {
-+	case VIRTNET_XDP_RES_PASS:
-+		skb = construct_skb(rq, xdp);
-+		xsk_buff_free(xdp);
-+		break;
-+
-+	case VIRTNET_XDP_RES_DROP:
-+		goto drop;
-+
-+	case VIRTNET_XDP_RES_CONSUMED:
-+		goto consumed;
-+	}
-+
-+	return skb;
-+
-+drop:
-+	stats->drops++;
-+
-+	xsk_buff_free(xdp);
-+
-+	if (num_buf > 1)
-+		merge_drop_follow_xdp(dev, rq, num_buf, stats);
-+consumed:
-+	return NULL;
-+}
-+
- int add_recvbuf_xsk(struct virtnet_info *vi, struct receive_queue *rq,
- 		    struct xsk_buff_pool *pool, gfp_t gfp)
- {
-diff --git a/drivers/net/virtio/xsk.h b/drivers/net/virtio/xsk.h
-index 5549143ef118..ebdee62b9dc8 100644
---- a/drivers/net/virtio/xsk.h
-+++ b/drivers/net/virtio/xsk.h
-@@ -26,4 +26,8 @@ bool virtnet_xsk_xmit(struct send_queue *sq, struct xsk_buff_pool *pool,
- int virtnet_xsk_wakeup(struct net_device *dev, u32 qid, u32 flag);
- int add_recvbuf_xsk(struct virtnet_info *vi, struct receive_queue *rq,
- 		    struct xsk_buff_pool *pool, gfp_t gfp);
-+struct sk_buff *receive_xsk(struct net_device *dev, struct virtnet_info *vi,
-+			    struct receive_queue *rq, void *buf,
-+			    unsigned int len, unsigned int *xdp_xmit,
-+			    struct virtnet_rq_stats *stats);
- #endif
--- 
-2.32.0.3.g01195cf9f
+> mlx5 and intel ixgbe already support
+> this feature, This patch set allows virtio-net to support xsk's zerocopy xmit
+> feature.
+> 
+> Virtio-net did not support per-queue reset, so it was impossible to support XDP
+> Socket Zerocopy. At present, we have completed the work of Virtio Spec and
+> Kernel in Per-Queue Reset. It is time for Virtio-Net to complete the support for
+> the XDP Socket Zerocopy.
+> 
+> Virtio-net can not increase the queue at will, so xsk shares the queue with
+> kernel.
+> 
+> On the other hand, Virtio-Net does not support generate interrupt manually, so
+> when we wakeup tx xmit, we used some tips. If the CPU run by TX NAPI last time
+> is other CPUs, use IPI to wake up NAPI on the remote CPU. If it is also the
+> local CPU, then we wake up sofrirqd.
+> 
+> Please review.
+> 
+> Thanks.
+> 
+> 
+> Xuan Zhuo (33):
+>   virtio_ring: virtqueue_add() support premapped
+>   virtio_ring: split: virtqueue_add_split() support premapped
+>   virtio_ring: packed: virtqueue_add_packed() support premapped
+>   virtio_ring: introduce virtqueue_add_outbuf_premapped()
+>   virtio_ring: introduce virtqueue_add_inbuf_premapped()
+>   virtio_ring: introduce virtqueue_reset()
+>   virtio_ring: add api virtio_dma_map() for advance dma
+>   virtio_ring: introduce dma sync api for virtio
+>   xsk: xsk_buff_pool add callback for dma_sync
+>   xsk: support virtio DMA map
+>   virtio_net: rename free_old_xmit_skbs to free_old_xmit
+>   virtio_net: unify the code for recycling the xmit ptr
+>   virtio_net: virtnet_poll_tx support rescheduled
+>   virtio_net: independent directory
+>   virtio_net: move to virtio_net.h
+>   virtio_net: introduce virtnet_xdp_handler() to seprate the logic of
+>     run xdp
+>   virtio_net: receive_small() use virtnet_xdp_handler()
+>   virtio_net: receive_merageable() use virtnet_xdp_handler()
+>   virtio_net: introduce virtnet_tx_reset()
+>   virtio_net: xsk: introduce virtnet_rq_bind_xsk_pool()
+>   virtio_net: xsk: introduce virtnet_xsk_pool_enable()
+>   virtio_net: xsk: introduce xsk disable
+>   virtio_net: xsk: support xsk setup
+>   virtio_net: xsk: stop disable tx napi
+>   virtio_net: xsk: __free_old_xmit distinguishes xsk buffer
+>   virtio_net: virtnet_sq_free_unused_buf() check xsk buffer
+>   virtio_net: virtnet_rq_free_unused_buf() check xsk buffer
+>   net: introduce napi_tx_raise()
+>   virtio_net: xsk: tx: support tx
+>   virtio_net: xsk: tx: support wakeup
+>   virtio_net: xsk: tx: auto wakeup when free old xmit
+>   virtio_net: xsk: rx: introduce add_recvbuf_xsk()
+>   virtio_net: xsk: rx: introduce receive_xsk() to recv xsk buffer
+> 
+>  MAINTAINERS                                 |   2 +-
+>  drivers/net/Kconfig                         |   8 +-
+>  drivers/net/Makefile                        |   2 +-
+>  drivers/net/virtio/Kconfig                  |  11 +
+>  drivers/net/virtio/Makefile                 |   8 +
+>  drivers/net/{virtio_net.c => virtio/main.c} | 564 +++++++-------------
+>  drivers/net/virtio/virtio_net.h             | 317 +++++++++++
+>  drivers/net/virtio/xsk.c                    | 524 ++++++++++++++++++
+>  drivers/net/virtio/xsk.h                    |  33 ++
+>  drivers/virtio/virtio_ring.c                | 376 +++++++++++--
+>  include/linux/netdevice.h                   |   7 +
+>  include/linux/virtio.h                      |  29 +
+>  include/net/xsk_buff_pool.h                 |   6 +
+>  net/core/dev.c                              |  11 +
+>  net/xdp/xsk_buff_pool.c                     |  79 ++-
+>  15 files changed, 1541 insertions(+), 436 deletions(-)
+>  create mode 100644 drivers/net/virtio/Kconfig
+>  create mode 100644 drivers/net/virtio/Makefile
+>  rename drivers/net/{virtio_net.c => virtio/main.c} (92%)
+>  create mode 100644 drivers/net/virtio/virtio_net.h
+>  create mode 100644 drivers/net/virtio/xsk.c
+>  create mode 100644 drivers/net/virtio/xsk.h
+> 
+> -- 
+> 2.32.0.3.g01195cf9f
 
