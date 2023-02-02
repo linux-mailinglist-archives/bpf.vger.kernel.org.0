@@ -2,74 +2,33 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F23687F9B
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 15:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A991688022
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 15:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbjBBOM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 09:12:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S232094AbjBBO3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 09:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbjBBOMZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 09:12:25 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489229039F
-        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 06:12:02 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id k8-20020a05600c1c8800b003dc57ea0dfeso3844218wms.0
-        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 06:12:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wYyOEBkWxvJgd7OA0mHmSipy8L3OkjsbmgHHm82YhW0=;
-        b=bdGjE5sLdnOc6Oph7Fu5WKF8YQBumY/CplyMSDyibTVkzifBMBAF4t0t9bwmHMeMAk
-         Xi/ClA59CBMc2zx3ZNWcgE3Is4SAYnIvwbsjFIfd+w2DYdkW1WZ0GQo0ZhqxI7vpXpMx
-         Iz1pvJ6lB6KUQ//GUPZ4h8j5rlZm1WwDYgE2QcQqLwoYU9nIiQ2E8TzuFMxsAMkyHeBB
-         iF7JwkwGUUMILibzxhRFce7T5GFaA9z5cbZzvd6HOfqvG/Fn+hPh0OBPo+mSjMtdnrAS
-         mBOgw7lOTUzNLvz5B5t+omjEdyP/TZsxXZxEhqh5SfjdzBTYLYi5D4LuwMr8CtJfvfBx
-         Gl8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wYyOEBkWxvJgd7OA0mHmSipy8L3OkjsbmgHHm82YhW0=;
-        b=jEV/Q1YvQ+8qUb9fJRny2YfT5xRAAqLkWzqKlonfhvyiyjoGCl5nkaCwozNDSVLJS8
-         BWAyWj2lIEeXn5dNMKsDX5kx7AEf5vj8FffKhYaosBqMf76bBL1rVahBNEHBNYwXhs20
-         OUc7T1+R/OYSpa8Kg9gxRxSGO6TZKvMn7lFvbTmmC5stEbHXTMaOvXxCB/CMyZOZoklJ
-         2EG7PpnUI31jgeyT2l5zXBbyR9zIN9xHALshh4A5QWq9A4Z4y3HHtQ5a3mHGqCG42zsR
-         5ojbRg/rtz68QQ9aPEQ9/2vpgJvJM21OI9pNsGDpmA0XhKDOhv5t1OIFBagZk9p1Gyq1
-         xtRA==
-X-Gm-Message-State: AO0yUKXWr6XN7Yd/JQrOGhGK6V1LRvTQTAV4CvZVfwARCbFElxxk9Y5r
-        86lpWtyZyMJt3HQxYSlr4B8=
-X-Google-Smtp-Source: AK7set+zSyZNVRZQRM0q4yC/hS/4n26A7XCmP+izQDcox8cLmbNIht0sFpUycREH/rnwBU7E2D2xRA==
-X-Received: by 2002:a05:600c:1c1c:b0:3df:9858:c02f with SMTP id j28-20020a05600c1c1c00b003df9858c02fmr2058801wms.4.1675347120607;
-        Thu, 02 Feb 2023 06:12:00 -0800 (PST)
-Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
-        by smtp.gmail.com with ESMTPSA id o9-20020a05600c4fc900b003dc1300eab0sm5449470wmq.33.2023.02.02.06.11.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Feb 2023 06:12:00 -0800 (PST)
-Subject: Re: [PATCH bpf-next v4 1/1] docs/bpf: Add description of register
- liveness tracking algorithm
-To:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org
-Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-        kernel-team@fb.com, yhs@fb.com
-References: <20230202125713.821931-1-eddyz87@gmail.com>
- <20230202125713.821931-2-eddyz87@gmail.com>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <26b33f08-4e59-5107-42ff-cb7a3af59318@gmail.com>
-Date:   Thu, 2 Feb 2023 14:11:58 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20230202125713.821931-2-eddyz87@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        with ESMTP id S229593AbjBBO3j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 09:29:39 -0500
+X-Greylist: delayed 611 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Feb 2023 06:29:37 PST
+Received: from sym2.noone.org (sym.noone.org [IPv6:2a01:4f8:120:4161::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BAE65B98
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 06:29:37 -0800 (PST)
+Received: by sym2.noone.org (Postfix, from userid 1002)
+        id 4P71BK5CrJzvjfm; Thu,  2 Feb 2023 15:19:21 +0100 (CET)
+From:   Tobias Klauser <tklauser@distanz.ch>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Subject: [PATCH bpf-next] bpf: Drop always true do_idr_lock parameter to bpf_map_free_id
+Date:   Thu,  2 Feb 2023 15:19:21 +0100
+Message-Id: <20230202141921.4424-1-tklauser@distanz.ch>
+X-Mailer: git-send-email 2.11.0
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,15 +36,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02/02/2023 12:57, Eduard Zingerman wrote:
-> This is a followup for [1], adds an overview for the register liveness
-> tracking, covers the following points:
-> - why register liveness tracking is useful;
-> - how register parentage chains are constructed;
-> - how liveness marks are applied using the parentage chains.
-> 
-> [1] https://lore.kernel.org/bpf/CAADnVQKs2i1iuZ5SUGuJtxWVfGYR9kDgYKhq3rNV+kBLQCu7rA@mail.gmail.com/
-> 
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+The do_idr_lock parameter to bpf_map_free_id was introduced by commit
+bd5f5f4ecb78 ("bpf: Add BPF_MAP_GET_FD_BY_ID"). However, all callers set
+do_idr_lock = true since commit 1e0bd5a091e5 ("bpf: Switch bpf_map ref
+counter to atomic64_t so bpf_map_inc() never fails").
 
-Reviewed-by: Edward Cree <ecree.xilinx@gmail.com>
+While at it also inline __bpf_map_put into its only caller bpf_map_put
+now that do_idr_lock can be dropped from its signature.
+
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+---
+ include/linux/bpf.h  |  2 +-
+ kernel/bpf/offload.c |  2 +-
+ kernel/bpf/syscall.c | 23 ++++++-----------------
+ 3 files changed, 8 insertions(+), 19 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index e11db75094d0..35c18a98c21a 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1846,7 +1846,7 @@ struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
+ void bpf_prog_put(struct bpf_prog *prog);
+ 
+ void bpf_prog_free_id(struct bpf_prog *prog);
+-void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock);
++void bpf_map_free_id(struct bpf_map *map);
+ 
+ struct btf_field *btf_record_find(const struct btf_record *rec,
+ 				  u32 offset, enum btf_field_type type);
+diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+index 88aae38fde66..0c85e06f7ea7 100644
+--- a/kernel/bpf/offload.c
++++ b/kernel/bpf/offload.c
+@@ -136,7 +136,7 @@ static void __bpf_map_offload_destroy(struct bpf_offloaded_map *offmap)
+ {
+ 	WARN_ON(bpf_map_offload_ndo(offmap, BPF_OFFLOAD_MAP_FREE));
+ 	/* Make sure BPF_MAP_GET_NEXT_ID can't find this dead map */
+-	bpf_map_free_id(&offmap->map, true);
++	bpf_map_free_id(&offmap->map);
+ 	list_del_init(&offmap->offloads);
+ 	offmap->netdev = NULL;
+ }
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 99417b387547..bcc97613de76 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -390,7 +390,7 @@ static int bpf_map_alloc_id(struct bpf_map *map)
+ 	return id > 0 ? 0 : id;
+ }
+ 
+-void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
++void bpf_map_free_id(struct bpf_map *map)
+ {
+ 	unsigned long flags;
+ 
+@@ -402,18 +402,12 @@ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
+ 	if (!map->id)
+ 		return;
+ 
+-	if (do_idr_lock)
+-		spin_lock_irqsave(&map_idr_lock, flags);
+-	else
+-		__acquire(&map_idr_lock);
++	spin_lock_irqsave(&map_idr_lock, flags);
+ 
+ 	idr_remove(&map_idr, map->id);
+ 	map->id = 0;
+ 
+-	if (do_idr_lock)
+-		spin_unlock_irqrestore(&map_idr_lock, flags);
+-	else
+-		__release(&map_idr_lock);
++	spin_unlock_irqrestore(&map_idr_lock, flags);
+ }
+ 
+ #ifdef CONFIG_MEMCG_KMEM
+@@ -706,13 +700,13 @@ static void bpf_map_put_uref(struct bpf_map *map)
+ }
+ 
+ /* decrement map refcnt and schedule it for freeing via workqueue
+- * (unrelying map implementation ops->map_free() might sleep)
++ * (underlying map implementation ops->map_free() might sleep)
+  */
+-static void __bpf_map_put(struct bpf_map *map, bool do_idr_lock)
++void bpf_map_put(struct bpf_map *map)
+ {
+ 	if (atomic64_dec_and_test(&map->refcnt)) {
+ 		/* bpf_map_free_id() must be called first */
+-		bpf_map_free_id(map, do_idr_lock);
++		bpf_map_free_id(map);
+ 		btf_put(map->btf);
+ 		INIT_WORK(&map->work, bpf_map_free_deferred);
+ 		/* Avoid spawning kworkers, since they all might contend
+@@ -721,11 +715,6 @@ static void __bpf_map_put(struct bpf_map *map, bool do_idr_lock)
+ 		queue_work(system_unbound_wq, &map->work);
+ 	}
+ }
+-
+-void bpf_map_put(struct bpf_map *map)
+-{
+-	__bpf_map_put(map, true);
+-}
+ EXPORT_SYMBOL_GPL(bpf_map_put);
+ 
+ void bpf_map_put_with_uref(struct bpf_map *map)
+-- 
+2.39.1
+
