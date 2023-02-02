@@ -2,185 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7F368881D
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 21:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0664268883D
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 21:28:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbjBBUOa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 15:14:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        id S232081AbjBBU16 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 15:27:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbjBBUO3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 15:14:29 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2963C4A22D
-        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 12:14:28 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id m14so2742130wrg.13
-        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 12:14:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=H2Sm+srffVa/bWbuBY8DFLL8/hTuLtKAVOyj/q7LSGk=;
-        b=kid3uXCaby0KvWyO2/F2i9i/uBvcGgAw/yO3rlfqM7D1ZI6aCjGPLUeHHayC/QwVYw
-         zl2uygt2CMAlMD8/ZocldvOHeDfBlq7atpmr9JmRRDAod7+7DC+oJasyfC64N0V7I7ms
-         /rEt5jxXJ4Sy9TU7G8MmGuxSOi11sSlmj1uXc9HmsQHO0JQ8t/Dc9us6+7t3YRogeShO
-         nGnqqUF+gDzxqDsJft6uMUVXiZSyB5+1Cn1B9MzmaPUxVNU+/fRyIVUtWiLuswGsMAAP
-         apirGUJVNy2JDDmKdsPCI2DIr4Lr9VjP6HEZ93ErUbrfIfq0nnLy/kyR/0lbwv68R1tz
-         3XpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=H2Sm+srffVa/bWbuBY8DFLL8/hTuLtKAVOyj/q7LSGk=;
-        b=jL0EXIE0v3OfJ3CiWrcKESE6VANP4YZBchiyelViACu74G/Vj6WSSnmkLtxuxvORcK
-         93qyL2zPd4I0TrDa3Wcj/oIjuSWi5O0HV+/omQiyXcxnG81ii2hDSM0J68q9+Ct8SbO4
-         ExaTft/JHDfsIPbWPVG6kveDGY3zlzYnvr+N0y+62TEYroDqpPb2lzcCRs1CWXodbL3j
-         eYkCwR1+R8pwTd+hJm+OAS71dKWX+CPMB0+GzfXcSA2V+cPWx4tUFtcRLcWRPjNwK5UC
-         xFIPDugSkGU4PBlv2zRMc/xzQU75AicrLbxBX8qRkNNfXrO/zGmA56kz+cJ7MU7XOZIt
-         h2EQ==
-X-Gm-Message-State: AO0yUKW2Z6brZ4V/bh76cwYHeoebbRAu2WBCtcRX71gWsqX7Iru6WkaT
-        t+AOqkGePShqggqcDVkZv7NBvxpICd9/SP3H0b6CoA==
-X-Google-Smtp-Source: AK7set9sr3b05QV9TKVRp3Tg4zooaH4c7HKY5TH384D9N7usy4nUGBQt/RWkDYodr9ZYZZjoBNMTf6EolB9SIadOZfE=
-X-Received: by 2002:adf:e351:0:b0:2bf:eba5:b652 with SMTP id
- n17-20020adfe351000000b002bfeba5b652mr180693wrj.19.1675368866471; Thu, 02 Feb
- 2023 12:14:26 -0800 (PST)
+        with ESMTP id S229575AbjBBU15 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 15:27:57 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6A922038;
+        Thu,  2 Feb 2023 12:27:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9B8D6B82778;
+        Thu,  2 Feb 2023 20:27:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6710C433EF;
+        Thu,  2 Feb 2023 20:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675369673;
+        bh=/yv6z44DjS37fPnTEcfK9tOUPF+JjplCO3q90mk7/Nc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rFUOLQ7F6AYZI1xbHoOpVL9ux3EJlQ9bQW12TYvSvyFVAHHLXu0xL83sTnwOl7acU
+         8KKUYvjR5OU0cctleDSHDeMl6I/77YbfQOM8+mfNBvCq7BjrOd/mJM1rr88Szysx4d
+         yohKE5NqpsIxdR5eYQqX4OpvAtjvRK17Sjwk72y1LA0oaNCf6lnuw9X6dsXNqKccoa
+         Y6plnDhy3Mo11kk/kaqRP2dv101IDrZRZAu9LWpci2Tm5yXevcL5eZXqCLTWd2BhL7
+         exT00cbSb7RN58KHIYoSQENrQJt3GZf27YLBlVlHnqPo5hVhZsALrlDVYOD34gF37S
+         c5ZL/usVQQ8hA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 05C42405BE; Thu,  2 Feb 2023 17:27:49 -0300 (-03)
+Date:   Thu, 2 Feb 2023 17:27:49 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 2/4] perf lock contention: Use lock_stat_find{,new}
+Message-ID: <Y9wcxfrL3J+nfp0P@kernel.org>
+References: <20230202050455.2187592-1-namhyung@kernel.org>
+ <20230202050455.2187592-3-namhyung@kernel.org>
 MIME-Version: 1.0
-References: <20230202112839.1131892-1-jolsa@kernel.org> <Y9vxFLA6Xj/zPjQu@dev-arch.thelio-3990X>
-In-Reply-To: <Y9vxFLA6Xj/zPjQu@dev-arch.thelio-3990X>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 2 Feb 2023 12:14:14 -0800
-Message-ID: <CAP-5=fXy0wArjfXTQHD6nXZ=8dxb6ypRMef=-M1+uTTvbdfH0A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Compile resolve_btfids as
- host program
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230202050455.2187592-3-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 2, 2023 at 9:21 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Thu, Feb 02, 2023 at 12:28:39PM +0100, Jiri Olsa wrote:
-> > Making resolve_btfids to be compiled as host program so
-> > we can avoid cross compile issues as reported by Nathan.
-> >
-> > Also we no longer need HOST_OVERRIDES for BINARY target,
-> > just for 'prepare' targets.
-> >
-> > Cc: Ian Rogers <irogers@google.com>
-> > Fixes: 13e07691a16f ("tools/resolve_btfids: Alter how HOSTCC is forced")
-> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
->
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
->
+Em Wed, Feb 01, 2023 at 09:04:53PM -0800, Namhyung Kim escreveu:
+> This is a preparation work to support complex keys of BPF maps.  Now it
+> has single value key according to the aggregation mode like stack_id or
+> pid.  But we want to use a combination of those keys.
+> 
+> Then lock_contention_read() should still aggregate the result based on
+> the key that was requested by user.  The other key info will be used for
+> filtering.
+> 
+> So instead of creating a lock_stat entry always, Check if it's already
+> there using lock_stat_find() first.
 
-This change has my,
-Acked-by: Ian Rogers <irogers@google.com>
-but I wonder about cleaning HOST_OVERRIDES. From the patch I sent,
-would it be worth adding:
-```
---- a/tools/bpf/resolve_btfids/Makefile
-+++ b/tools/bpf/resolve_btfids/Makefile
-@@ -17,9 +17,9 @@ else
-  MAKEFLAGS=--no-print-directory
+Hey, try building without libtraceevent-devel installed, should be
+equivalent to NO_LIBTRACEEVENT=1.
+
+At this point I think you should move bpf_lock_contention.o to inside
+that CONFIG_LIBTRACEEVENT if block.
+
+perf-$(CONFIG_PERF_BPF_SKEL) += bpf_lock_contention.o
+
+ifeq ($(CONFIG_LIBTRACEEVENT),y)
+  perf-$(CONFIG_PERF_BPF_SKEL) += bpf_kwork.o
 endif
 
--# always use the host compiler
-+# Overrides for the prepare step libraries.
-HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)"
-ARCH="$(HOSTARCH)" \
--                 EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
-+                 CROSS_COMPILE=""
+I'm removing this series from tmp.perf/core for now.
 
-RM      ?= rm
-HOSTCC  ?= gcc
-```
-It seems odd passing HOSTCFLAGS this way and mixing HOSTCC as CC with
-CROSS_COMPILE set seems open to failure. Perhaps we should just get
-rid of this, add something like a HOST=1 option for building the
-library and then in the library code do the right thing. That would
-fix the issue that libsubcmd and libbpf here are being built reporting
-CC rather than HOSTCC, make the build flags in general more sane.
+- Arnaldo
+ 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/builtin-lock.c             |  4 +--
+>  tools/perf/util/bpf_lock_contention.c | 41 ++++++++++++++++-----------
+>  tools/perf/util/lock-contention.h     |  3 ++
+>  3 files changed, 30 insertions(+), 18 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> index 216a9a252bf4..0593c6e636c6 100644
+> --- a/tools/perf/builtin-lock.c
+> +++ b/tools/perf/builtin-lock.c
+> @@ -465,7 +465,7 @@ static struct lock_stat *pop_from_result(void)
+>  	return container_of(node, struct lock_stat, rb);
+>  }
+>  
+> -static struct lock_stat *lock_stat_find(u64 addr)
+> +struct lock_stat *lock_stat_find(u64 addr)
+>  {
+>  	struct hlist_head *entry = lockhashentry(addr);
+>  	struct lock_stat *ret;
+> @@ -477,7 +477,7 @@ static struct lock_stat *lock_stat_find(u64 addr)
+>  	return NULL;
+>  }
+>  
+> -static struct lock_stat *lock_stat_findnew(u64 addr, const char *name, int flags)
+> +struct lock_stat *lock_stat_findnew(u64 addr, const char *name, int flags)
+>  {
+>  	struct hlist_head *entry = lockhashentry(addr);
+>  	struct lock_stat *ret, *new;
+> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+> index 967ce168f163..c6f2db603d5a 100644
+> --- a/tools/perf/util/bpf_lock_contention.c
+> +++ b/tools/perf/util/bpf_lock_contention.c
+> @@ -254,12 +254,34 @@ int lock_contention_read(struct lock_contention *con)
+>  	prev_key = NULL;
+>  	while (!bpf_map_get_next_key(fd, prev_key, &key)) {
+>  		s32 stack_id;
+> +		const char *name;
+>  
+>  		/* to handle errors in the loop body */
+>  		err = -1;
+>  
+>  		bpf_map_lookup_elem(fd, &key, &data);
+> -		st = zalloc(sizeof(*st));
+> +
+> +		if (con->save_callstack) {
+> +			stack_id = key.aggr_key;
+> +			bpf_map_lookup_elem(stack, &stack_id, stack_trace);
+> +		}
+> +
+> +		st = lock_stat_find(key.aggr_key);
+> +		if (st != NULL) {
+> +			st->wait_time_total += data.total_time;
+> +			if (st->wait_time_max < data.max_time)
+> +				st->wait_time_max = data.max_time;
+> +			if (st->wait_time_min > data.min_time)
+> +				st->wait_time_min = data.min_time;
+> +
+> +			st->nr_contended += data.count;
+> +			if (st->nr_contended)
+> +				st->avg_wait_time = st->wait_time_total / st->nr_contended;
+> +			goto next;
+> +		}
+> +
+> +		name = lock_contention_get_name(con, &key, stack_trace);
+> +		st = lock_stat_findnew(key.aggr_key, name, data.flags);
+>  		if (st == NULL)
+>  			break;
+>  
+> @@ -272,14 +294,6 @@ int lock_contention_read(struct lock_contention *con)
+>  			st->avg_wait_time = data.total_time / data.count;
+>  
+>  		st->flags = data.flags;
+> -		st->addr = key.aggr_key;
+> -
+> -		stack_id = key.aggr_key;
+> -		bpf_map_lookup_elem(stack, &stack_id, stack_trace);
+> -
+> -		st->name = strdup(lock_contention_get_name(con, &key, stack_trace));
+> -		if (st->name == NULL)
+> -			break;
+>  
+>  		if (con->save_callstack) {
+>  			st->callstack = memdup(stack_trace, stack_size);
+> @@ -287,19 +301,14 @@ int lock_contention_read(struct lock_contention *con)
+>  				break;
+>  		}
+>  
+> -		hlist_add_head(&st->hash_entry, con->result);
+> +next:
+>  		prev_key = &key;
+>  
+> -		/* we're fine now, reset the values */
+> -		st = NULL;
+> +		/* we're fine now, reset the error */
+>  		err = 0;
+>  	}
+>  
+>  	free(stack_trace);
+> -	if (st) {
+> -		free(st->name);
+> -		free(st);
+> -	}
+>  
+>  	return err;
+>  }
+> diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
+> index 17e594d57a61..39d5bfc77f4e 100644
+> --- a/tools/perf/util/lock-contention.h
+> +++ b/tools/perf/util/lock-contention.h
+> @@ -65,6 +65,9 @@ struct lock_stat {
+>   */
+>  #define MAX_LOCK_DEPTH 48
+>  
+> +struct lock_stat *lock_stat_find(u64 addr);
+> +struct lock_stat *lock_stat_findnew(u64 addr, const char *name, int flags);
+> +
+>  /*
+>   * struct lock_seq_stat:
+>   * Place to put on state of one lock sequence
+> -- 
+> 2.39.1.456.gfc5497dd1b-goog
+> 
 
-Thanks,
-Ian
+-- 
 
-> > ---
-> >  tools/bpf/resolve_btfids/Build    | 4 +++-
-> >  tools/bpf/resolve_btfids/Makefile | 9 ++++++---
-> >  2 files changed, 9 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/bpf/resolve_btfids/Build b/tools/bpf/resolve_btfids/Build
-> > index ae82da03f9bf..077de3829c72 100644
-> > --- a/tools/bpf/resolve_btfids/Build
-> > +++ b/tools/bpf/resolve_btfids/Build
-> > @@ -1,3 +1,5 @@
-> > +hostprogs := resolve_btfids
-> > +
-> >  resolve_btfids-y += main.o
-> >  resolve_btfids-y += rbtree.o
-> >  resolve_btfids-y += zalloc.o
-> > @@ -7,4 +9,4 @@ resolve_btfids-y += str_error_r.o
-> >
-> >  $(OUTPUT)%.o: ../../lib/%.c FORCE
-> >       $(call rule_mkdir)
-> > -     $(call if_changed_dep,cc_o_c)
-> > +     $(call if_changed_dep,host_cc_o_c)
-> > diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> > index daed388aa5d7..abdd68ac08f4 100644
-> > --- a/tools/bpf/resolve_btfids/Makefile
-> > +++ b/tools/bpf/resolve_btfids/Makefile
-> > @@ -22,6 +22,9 @@ HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)
-> >                 EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
-> >
-> >  RM      ?= rm
-> > +HOSTCC  ?= gcc
-> > +HOSTLD  ?= ld
-> > +HOSTAR  ?= ar
-> >  CROSS_COMPILE =
-> >
-> >  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
-> > @@ -64,7 +67,7 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
-> >  LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
-> >  LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-> >
-> > -CFLAGS += -g \
-> > +HOSTCFLAGS += -g \
-> >            -I$(srctree)/tools/include \
-> >            -I$(srctree)/tools/include/uapi \
-> >            -I$(LIBBPF_INCLUDE) \
-> > @@ -73,11 +76,11 @@ CFLAGS += -g \
-> >
-> >  LIBS = $(LIBELF_LIBS) -lz
-> >
-> > -export srctree OUTPUT CFLAGS Q
-> > +export srctree OUTPUT HOSTCFLAGS Q HOSTCC HOSTLD HOSTAR
-> >  include $(srctree)/tools/build/Makefile.include
-> >
-> >  $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
-> > -     $(Q)$(MAKE) $(build)=resolve_btfids $(HOST_OVERRIDES)
-> > +     $(Q)$(MAKE) $(build)=resolve_btfids
-> >
-> >  $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
-> >       $(call msg,LINK,$@)
-> > --
-> > 2.39.1
-> >
+- Arnaldo
