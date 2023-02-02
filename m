@@ -2,172 +2,537 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E629B688154
-	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 16:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E859688156
+	for <lists+bpf@lfdr.de>; Thu,  2 Feb 2023 16:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbjBBPLu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 10:11:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
+        id S232761AbjBBPMH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 10:12:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232793AbjBBPLl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 10:11:41 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on20628.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e8a::628])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BC092EDE;
-        Thu,  2 Feb 2023 07:11:25 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZT2WQtIFE3I7RxLpg/Si0HjzpVuBmHsF9CP5UdNOJYpdE7/YT1/ZVXRZjqgAgUAiOWzu4p1JlYR9/3BCKMXonbcS9FrCLZvn1XGeaEUpwXBdAITl745YnFaXmrehQRI8xpZCSqH3sFDex5S0y0HXGfIzaEov2Ki0EVb73tZ7P1SXpu37dgPqvD4cNSZ8lMJEiJtlEH1oYU5lYjj9uLCEtqkPu+cTl2Hk/313bAz0ad0yAxqev2/flyhqUG/iUDGtbYBMVemtvHdd9fD7XgUZncjwXpRrcFA7UPDPkzc5U4mIqqzAZZ5kAbFYBM6/mhDcydAO0YJG+VdlUBlSs+Iznw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fb20mHB6ia2rbuRQNGDbM4H658n10/dDrVH8JUns/ls=;
- b=apQjAB0HfD0teUOj7WuS2jMt/G1YuadCku9kkeCyUQIG3uuljKY7nEQccd2o2bqdunqfWkoRkABsRinvVGAeVlp4+WM7MbAZq+z7OSpbfAeGhdcs2zDKKRe3u01e3wQU9LAPq0bs98O2zUS4rSvLsSkVed2l9KnMfi0s5TWvwH6hv7oqEPZaAyoasI7Qu0K4IUFU8toAnNxU7BOj2XKx8pI1ReDDCRtcW6dVoidyX1n6G38pSQFVdiTJM3If1aMGUCK/rWLdDT9I5oEOuh41TOJmpJE9LjprNEIR0eLPcBdbEp3bdeCeHI32T8c8ZPdhgtJwf/2DRV/r0PAkxjvU2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fb20mHB6ia2rbuRQNGDbM4H658n10/dDrVH8JUns/ls=;
- b=A8Sqyvs0cmM39xOu42/YDGtGLS2hJJwZROZnFA1Dlq0Ta8coUiu12zRcYZ9gbRSYKp+EXDuJ3gFRCSNnvwCMqIEXC+a3WdLQZsb06xjBYXkCFVVQpAnBUzwkDVTaOam41yyI9e45jUc2Jq/BvZDRLu/w32zjXZv3lUXIF0YTt2GLuGHjusvsXHLwNtjpfigAc6BPaETMnjRHco5wuNSlmNKuL2nw89IVLxojggE+m3tQuN98+pHgacGERNp48ii1+SWTgAJmy+0SOYqHHZev6Ea/w+WAyt6SjtH5KV2hXLyQh1ITyxEVeSxtbp0j9rlkm7eM7ls5Y2FGP+GjY4tn1g==
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com (2603:10b6:510:d4::15)
- by CH2PR12MB4874.namprd12.prod.outlook.com (2603:10b6:610:64::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.27; Thu, 2 Feb
- 2023 15:10:56 +0000
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::a891:beb7:5440:3f0]) by PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::a891:beb7:5440:3f0%4]) with mapi id 15.20.6064.025; Thu, 2 Feb 2023
- 15:10:56 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     Jiri Pirko <jiri@resnulli.us>
-CC:     "mst@redhat.com" <mst@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH 2/2] virtio-net: Maintain reverse cleanup order
-Thread-Topic: [PATCH 2/2] virtio-net: Maintain reverse cleanup order
-Thread-Index: AQHZNsNmqB1HoihArUa+/kiDXzADNK67lZ4AgAAtS/A=
-Date:   Thu, 2 Feb 2023 15:10:56 +0000
-Message-ID: <PH0PR12MB5481C0C7E46B5DFF85178792DCD69@PH0PR12MB5481.namprd12.prod.outlook.com>
-References: <20230202050038.3187-1-parav@nvidia.com>
- <20230202050038.3187-3-parav@nvidia.com> <Y9ur9B6CDIwThMN6@nanopsycho>
-In-Reply-To: <Y9ur9B6CDIwThMN6@nanopsycho>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR12MB5481:EE_|CH2PR12MB4874:EE_
-x-ms-office365-filtering-correlation-id: 5c4a892c-ce36-4eaa-d37a-08db052faf3f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bsUPysJU6ghdglXr39xL1o7XRHvqdfC+TLhOmIQzf90zwF+Q3TKZCioBV0+jCFafQi0Ev3bOUxDpDyq+F06lRUaiitbHB3Opqului3ow3GGWLUCcvcNI86zSolyhbiwGQqxxVgk1Apq8sxC+tRsKwy48Uz2aMFOpEqgMwT8LXZYaxa+Axcx+uDws+tAFX4JSqRo5VwLceDckoHNxkMwi03n4zEOF3AKLXurLM1Msv6pefoEnaf9oKpmYWQheJDheyxP0tAQue5aszkPEeIBKnFdQbw9kjkc0NMlJ0u7MDWukCLIgD3lILYr2wsB0X3+xYDij2h5580bAsVw0EYMevajOebI87iVfPKVuWOFR9gdflgXqhLvn56geAoLnFouwB0Ct+p3OOC7xos9b5Nkqg2iYCU2oStZXNMKifutSXTrOXt7izN57orx+xBidQHRP5KXAiykizsxhnx93sAlyqO4auA0WM3aVNNOLpDmmiPYwP5nc1kd6a9srT3s/tMcsnSSWFRwVbdZQWErMLzDwwrhQ73Xj+gCl9qr70xc/C/O4qGZFk3NEZJdQwf66FH1mGOh8aOmRxD3mrgrvMd1bOZodC0nthbAXwxgnOQ9gZgk8U8kYkBv1eRvxFOnvaEvY+kyBXQozu5+jQ8kCV5ty8OrWimxE+d/52zDZh2EeAC9KeOYfywdA/cXuCtuVqADeq7jFYOki23c/WvTcD/Blcw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB5481.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(136003)(396003)(346002)(376002)(39860400002)(366004)(451199018)(76116006)(66556008)(66446008)(66476007)(66946007)(38100700002)(4326008)(83380400001)(64756008)(8676002)(6916009)(54906003)(122000001)(316002)(478600001)(26005)(186003)(6506007)(9686003)(33656002)(7416002)(5660300002)(86362001)(41300700001)(55016003)(71200400001)(38070700005)(52536014)(8936002)(7696005)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ZuNzPXQwireEO2Y5QixRcRF61hIddV1yZciqdXLYX1frE91A0chDwWaT+wth?=
- =?us-ascii?Q?AFJ3Ea1bIlplxJb3rrmsbphiknLhXBFb8B126HdwvwEX10GJLDzKgX9UyYYd?=
- =?us-ascii?Q?RkzHilYvsQePzkgLhRPus9XdAAYgBNSOgYkMKEUV18YDWTnvFMOKGz+4ompE?=
- =?us-ascii?Q?CTa19oteDPdsI2dGgqfjJx4y8/8ZUWVrrF/MuWUW2/ij2S6QtdOWN7A5QO98?=
- =?us-ascii?Q?LLTEBq6UXgV6kwH0aH83hPHvevSCaR6+ej9HMhYjCWKPGbapTih4cMHpki3O?=
- =?us-ascii?Q?tdKYrb/uvVa+ydkLt3wMzE28t5cWJp+xcO4d7Vx7r6uF2nq5dwkbIa9IWuVr?=
- =?us-ascii?Q?G+VD1n/pNXzENvSkUInQi/ZeiI2GWH9DEkN1TNSwwab2+ZgSAJpv2pJAtufz?=
- =?us-ascii?Q?DPrISlA7SoFvx0IDpie/Vwr2K+VaT0layAkfjpIu1fLdVRtlO7LgVMWmgmSi?=
- =?us-ascii?Q?wBk3YP9LdThyMMqPI9PSNHe3F79j3sxzYolcWAwM5ktdHhLBhUQOdlHm1XEa?=
- =?us-ascii?Q?hMf/0tIz1kUYI6sftALt9JPOGpmYK2EyMs6JAsNubThp/xLQrEnII5WTJn9y?=
- =?us-ascii?Q?WLrd0urUUwrhW9uFb7R+ws4xAIjwDGeRoGWaRnvNyIQBSh7MFHC+Zc7kZNiM?=
- =?us-ascii?Q?ghoUcQ80YJM4/+zwYCMauuXL/owtmoXH+mClDQB9hUnyBunC60ytYZf6ZdRs?=
- =?us-ascii?Q?tJWgudcSTFRAn0Bf+qze+iADVz9BUA5z2zM/tJ/PQmgbjwc/fcy5aGN5yn+p?=
- =?us-ascii?Q?BDKIXkNxHD4B1SjF7JmLiyYanXZnnSKkQRYkQUBIVPt4B5JG1wDELfCEm98y?=
- =?us-ascii?Q?0dWhtG0xxpEO4F44PP5KRnWTaSO+tJ7KXGLVsFzFp9dVNynLTFfVxDgEYQ9b?=
- =?us-ascii?Q?8jTIQSsS8rVbK8SXJyWQby6WUzCgNkHwkjxCaZ+4wplfEjsxq6g8+MqPVa8K?=
- =?us-ascii?Q?+oBnkYBkFMFJPnCESYZSZbjw8br+G7npKuCzfJ7Sn/+o7GGIto4Oxizt/bDJ?=
- =?us-ascii?Q?+B+QnWzjgPCtaeXYHIAXJ/hCXgfdXIPVsguBv0HwIj93L+RSMlTEKHJT4Ndg?=
- =?us-ascii?Q?rqQz+1SKioBhuO67I558Ts5cJmZUkn0KckcCYa34YZR0hmwSKwZA5k6KdEE9?=
- =?us-ascii?Q?OTf/5HxfOLFH4TWanB1FE9ALnXJJraoSF3zKP9xSr7Fav150RlqoM/3DnIJv?=
- =?us-ascii?Q?JXrASrAGA3vDlg2QC59FKfRJgVVF0p2O3cTqJofHesjSf1t8vQ8z8S/T81Bc?=
- =?us-ascii?Q?T+e+EHY1hr4/6BZQ4S1+lK/Wt2CWg2F7MXKRZO6+evMxwvjF/W+feDHZqDWA?=
- =?us-ascii?Q?xJsBzfI6x9JsNHToXzWfgR0wr3z0p0Pi+EVsbWzXfLSOGhP8guQ3IFdt6DXD?=
- =?us-ascii?Q?bLBdeG6TzRxQ24nPplf5Nvu74bazoY6cQP5hwVC48CTL6V9On4TxwlLEhlvl?=
- =?us-ascii?Q?jDHpvaWLVw3Gq5mxt8jUqCbDnnCo1kBRdGkovlxnLu5pw7gNshUmZawFiVQG?=
- =?us-ascii?Q?W2x9JI/4HhCQhGaA9/vMG3bxgNPXbGCppUi3WK38KmTygeWt5dMaTKFgxwxZ?=
- =?us-ascii?Q?IEdl+NJl8gOfINaUowk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S232778AbjBBPMC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 10:12:02 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77C1928866;
+        Thu,  2 Feb 2023 07:11:38 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1662C14;
+        Thu,  2 Feb 2023 07:12:01 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.141])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D91843F64C;
+        Thu,  2 Feb 2023 07:11:17 -0800 (PST)
+Date:   Thu, 2 Feb 2023 15:11:15 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Florent Revest <revest@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
+        xukuohai@huaweicloud.com
+Subject: Re: [PATCH 2/8] ftrace: Remove the legacy _ftrace_direct API
+Message-ID: <Y9vSkxdm7jcbJBgy@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230201163420.1579014-1-revest@chromium.org>
+ <20230201163420.1579014-3-revest@chromium.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB5481.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c4a892c-ce36-4eaa-d37a-08db052faf3f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2023 15:10:56.4385
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bMQAd4fYxGISAvjAYv607NLiLRulOAVp9bC64J3VynuX8DJyRJu0a9YJIiDsHn+raKUjW8mVkJKa1jsId61nxA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4874
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230201163420.1579014-3-revest@chromium.org>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Feb 01, 2023 at 05:34:14PM +0100, Florent Revest wrote:
+> This API relies on a single global ops, used for all direct calls
+> registered with it. However, to implement arm64 direct calls, we need
+> each ops to point to a single direct call trampoline.
+> 
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  include/linux/ftrace.h |  32 ----
+>  kernel/trace/ftrace.c  | 393 -----------------------------------------
+>  2 files changed, 425 deletions(-)
 
-> From: Jiri Pirko <jiri@resnulli.us>
-> Sent: Thursday, February 2, 2023 7:26 AM
->=20
-> Thu, Feb 02, 2023 at 06:00:38AM CET, parav@nvidia.com wrote:
-> >To easily audit the code, better to keep the device stop() sequence to
-> >be mirror of the device open() sequence.
-> >
-> >Signed-off-by: Parav Pandit <parav@nvidia.com>
->=20
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
->=20
-> If this is not fixing bug (which I believe is the case), you should targe=
-t it to net-
-> next ([patch net-next] ..).
->=20
-Yes. Right. First one was fix for net-rc, second was for net-next. And 2nd =
-depends on the first to avoid merge conflicts.
-So, I was unsure how to handle it.
-Can you please suggest?
+Nice diffstat! ;)
 
+Testing on x86_64: this builds cleanly, the FTRACE_STARTUP_TESTS pass, and each
+of the ftrace_direct*.ko test modules loads without issue.
 
->=20
-> >---
-> > drivers/net/virtio_net.c | 2 +-
-> > 1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> >diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c index
-> >b7d0b54c3bb0..1f8168e0f64d 100644
-> >--- a/drivers/net/virtio_net.c
-> >+++ b/drivers/net/virtio_net.c
-> >@@ -2279,9 +2279,9 @@ static int virtnet_close(struct net_device *dev)
-> > 	cancel_delayed_work_sync(&vi->refill);
-> >
-> > 	for (i =3D 0; i < vi->max_queue_pairs; i++) {
-> >+		virtnet_napi_tx_disable(&vi->sq[i].napi);
-> > 		napi_disable(&vi->rq[i].napi);
-> > 		xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
-> >-		virtnet_napi_tx_disable(&vi->sq[i].napi);
-> > 	}
-> >
-> > 	return 0;
-> >--
-> >2.26.2
-> >
+So FWIW:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Tested-by: Mark Rutland <mark.rutland@arm.com>
+
+Thanks,
+Mark.
+
+> 
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index 366c730beaa3..2d7c85e47c2d 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -397,14 +397,6 @@ struct ftrace_func_entry {
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+>  extern int ftrace_direct_func_count;
+> -int register_ftrace_direct(unsigned long ip, unsigned long addr);
+> -int unregister_ftrace_direct(unsigned long ip, unsigned long addr);
+> -int modify_ftrace_direct(unsigned long ip, unsigned long old_addr, unsigned long new_addr);
+> -struct ftrace_direct_func *ftrace_find_direct_func(unsigned long addr);
+> -int ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
+> -				struct dyn_ftrace *rec,
+> -				unsigned long old_addr,
+> -				unsigned long new_addr);
+>  unsigned long ftrace_find_rec_direct(unsigned long ip);
+>  int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
+>  int unregister_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
+> @@ -414,30 +406,6 @@ int modify_ftrace_direct_multi_nolock(struct ftrace_ops *ops, unsigned long addr
+>  #else
+>  struct ftrace_ops;
+>  # define ftrace_direct_func_count 0
+> -static inline int register_ftrace_direct(unsigned long ip, unsigned long addr)
+> -{
+> -	return -ENOTSUPP;
+> -}
+> -static inline int unregister_ftrace_direct(unsigned long ip, unsigned long addr)
+> -{
+> -	return -ENOTSUPP;
+> -}
+> -static inline int modify_ftrace_direct(unsigned long ip,
+> -				       unsigned long old_addr, unsigned long new_addr)
+> -{
+> -	return -ENOTSUPP;
+> -}
+> -static inline struct ftrace_direct_func *ftrace_find_direct_func(unsigned long addr)
+> -{
+> -	return NULL;
+> -}
+> -static inline int ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
+> -					      struct dyn_ftrace *rec,
+> -					      unsigned long old_addr,
+> -					      unsigned long new_addr)
+> -{
+> -	return -ENODEV;
+> -}
+>  static inline unsigned long ftrace_find_rec_direct(unsigned long ip)
+>  {
+>  	return 0;
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index e634b80f49d1..5efe201428fa 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -2585,20 +2585,6 @@ static void call_direct_funcs(unsigned long ip, unsigned long pip,
+>  
+>  	arch_ftrace_set_direct_caller(fregs, addr);
+>  }
+> -
+> -struct ftrace_ops direct_ops = {
+> -	.func		= call_direct_funcs,
+> -	.flags		= FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS
+> -			  | FTRACE_OPS_FL_PERMANENT,
+> -	/*
+> -	 * By declaring the main trampoline as this trampoline
+> -	 * it will never have one allocated for it. Allocated
+> -	 * trampolines should not call direct functions.
+> -	 * The direct_ops should only be called by the builtin
+> -	 * ftrace_regs_caller trampoline.
+> -	 */
+> -	.trampoline	= FTRACE_REGS_ADDR,
+> -};
+>  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
+>  
+>  /**
+> @@ -5295,387 +5281,8 @@ struct ftrace_direct_func {
+>  
+>  static LIST_HEAD(ftrace_direct_funcs);
+>  
+> -/**
+> - * ftrace_find_direct_func - test an address if it is a registered direct caller
+> - * @addr: The address of a registered direct caller
+> - *
+> - * This searches to see if a ftrace direct caller has been registered
+> - * at a specific address, and if so, it returns a descriptor for it.
+> - *
+> - * This can be used by architecture code to see if an address is
+> - * a direct caller (trampoline) attached to a fentry/mcount location.
+> - * This is useful for the function_graph tracer, as it may need to
+> - * do adjustments if it traced a location that also has a direct
+> - * trampoline attached to it.
+> - */
+> -struct ftrace_direct_func *ftrace_find_direct_func(unsigned long addr)
+> -{
+> -	struct ftrace_direct_func *entry;
+> -	bool found = false;
+> -
+> -	/* May be called by fgraph trampoline (protected by rcu tasks) */
+> -	list_for_each_entry_rcu(entry, &ftrace_direct_funcs, next) {
+> -		if (entry->addr == addr) {
+> -			found = true;
+> -			break;
+> -		}
+> -	}
+> -	if (found)
+> -		return entry;
+> -
+> -	return NULL;
+> -}
+> -
+> -static struct ftrace_direct_func *ftrace_alloc_direct_func(unsigned long addr)
+> -{
+> -	struct ftrace_direct_func *direct;
+> -
+> -	direct = kmalloc(sizeof(*direct), GFP_KERNEL);
+> -	if (!direct)
+> -		return NULL;
+> -	direct->addr = addr;
+> -	direct->count = 0;
+> -	list_add_rcu(&direct->next, &ftrace_direct_funcs);
+> -	ftrace_direct_func_count++;
+> -	return direct;
+> -}
+> -
+>  static int register_ftrace_function_nolock(struct ftrace_ops *ops);
+>  
+> -/**
+> - * register_ftrace_direct - Call a custom trampoline directly
+> - * @ip: The address of the nop at the beginning of a function
+> - * @addr: The address of the trampoline to call at @ip
+> - *
+> - * This is used to connect a direct call from the nop location (@ip)
+> - * at the start of ftrace traced functions. The location that it calls
+> - * (@addr) must be able to handle a direct call, and save the parameters
+> - * of the function being traced, and restore them (or inject new ones
+> - * if needed), before returning.
+> - *
+> - * Returns:
+> - *  0 on success
+> - *  -EBUSY - Another direct function is already attached (there can be only one)
+> - *  -ENODEV - @ip does not point to a ftrace nop location (or not supported)
+> - *  -ENOMEM - There was an allocation failure.
+> - */
+> -int register_ftrace_direct(unsigned long ip, unsigned long addr)
+> -{
+> -	struct ftrace_direct_func *direct;
+> -	struct ftrace_func_entry *entry;
+> -	struct ftrace_hash *free_hash = NULL;
+> -	struct dyn_ftrace *rec;
+> -	int ret = -ENODEV;
+> -
+> -	mutex_lock(&direct_mutex);
+> -
+> -	ip = ftrace_location(ip);
+> -	if (!ip)
+> -		goto out_unlock;
+> -
+> -	/* See if there's a direct function at @ip already */
+> -	ret = -EBUSY;
+> -	if (ftrace_find_rec_direct(ip))
+> -		goto out_unlock;
+> -
+> -	ret = -ENODEV;
+> -	rec = lookup_rec(ip, ip);
+> -	if (!rec)
+> -		goto out_unlock;
+> -
+> -	/*
+> -	 * Check if the rec says it has a direct call but we didn't
+> -	 * find one earlier?
+> -	 */
+> -	if (WARN_ON(rec->flags & FTRACE_FL_DIRECT))
+> -		goto out_unlock;
+> -
+> -	/* Make sure the ip points to the exact record */
+> -	if (ip != rec->ip) {
+> -		ip = rec->ip;
+> -		/* Need to check this ip for a direct. */
+> -		if (ftrace_find_rec_direct(ip))
+> -			goto out_unlock;
+> -	}
+> -
+> -	ret = -ENOMEM;
+> -	direct = ftrace_find_direct_func(addr);
+> -	if (!direct) {
+> -		direct = ftrace_alloc_direct_func(addr);
+> -		if (!direct)
+> -			goto out_unlock;
+> -	}
+> -
+> -	entry = ftrace_add_rec_direct(ip, addr, &free_hash);
+> -	if (!entry)
+> -		goto out_unlock;
+> -
+> -	ret = ftrace_set_filter_ip(&direct_ops, ip, 0, 0);
+> -
+> -	if (!ret && !(direct_ops.flags & FTRACE_OPS_FL_ENABLED)) {
+> -		ret = register_ftrace_function_nolock(&direct_ops);
+> -		if (ret)
+> -			ftrace_set_filter_ip(&direct_ops, ip, 1, 0);
+> -	}
+> -
+> -	if (ret) {
+> -		remove_hash_entry(direct_functions, entry);
+> -		kfree(entry);
+> -		if (!direct->count) {
+> -			list_del_rcu(&direct->next);
+> -			synchronize_rcu_tasks();
+> -			kfree(direct);
+> -			if (free_hash)
+> -				free_ftrace_hash(free_hash);
+> -			free_hash = NULL;
+> -			ftrace_direct_func_count--;
+> -		}
+> -	} else {
+> -		direct->count++;
+> -	}
+> - out_unlock:
+> -	mutex_unlock(&direct_mutex);
+> -
+> -	if (free_hash) {
+> -		synchronize_rcu_tasks();
+> -		free_ftrace_hash(free_hash);
+> -	}
+> -
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL_GPL(register_ftrace_direct);
+> -
+> -static struct ftrace_func_entry *find_direct_entry(unsigned long *ip,
+> -						   struct dyn_ftrace **recp)
+> -{
+> -	struct ftrace_func_entry *entry;
+> -	struct dyn_ftrace *rec;
+> -
+> -	rec = lookup_rec(*ip, *ip);
+> -	if (!rec)
+> -		return NULL;
+> -
+> -	entry = __ftrace_lookup_ip(direct_functions, rec->ip);
+> -	if (!entry) {
+> -		WARN_ON(rec->flags & FTRACE_FL_DIRECT);
+> -		return NULL;
+> -	}
+> -
+> -	WARN_ON(!(rec->flags & FTRACE_FL_DIRECT));
+> -
+> -	/* Passed in ip just needs to be on the call site */
+> -	*ip = rec->ip;
+> -
+> -	if (recp)
+> -		*recp = rec;
+> -
+> -	return entry;
+> -}
+> -
+> -int unregister_ftrace_direct(unsigned long ip, unsigned long addr)
+> -{
+> -	struct ftrace_direct_func *direct;
+> -	struct ftrace_func_entry *entry;
+> -	struct ftrace_hash *hash;
+> -	int ret = -ENODEV;
+> -
+> -	mutex_lock(&direct_mutex);
+> -
+> -	ip = ftrace_location(ip);
+> -	if (!ip)
+> -		goto out_unlock;
+> -
+> -	entry = find_direct_entry(&ip, NULL);
+> -	if (!entry)
+> -		goto out_unlock;
+> -
+> -	hash = direct_ops.func_hash->filter_hash;
+> -	if (hash->count == 1)
+> -		unregister_ftrace_function(&direct_ops);
+> -
+> -	ret = ftrace_set_filter_ip(&direct_ops, ip, 1, 0);
+> -
+> -	WARN_ON(ret);
+> -
+> -	remove_hash_entry(direct_functions, entry);
+> -
+> -	direct = ftrace_find_direct_func(addr);
+> -	if (!WARN_ON(!direct)) {
+> -		/* This is the good path (see the ! before WARN) */
+> -		direct->count--;
+> -		WARN_ON(direct->count < 0);
+> -		if (!direct->count) {
+> -			list_del_rcu(&direct->next);
+> -			synchronize_rcu_tasks();
+> -			kfree(direct);
+> -			kfree(entry);
+> -			ftrace_direct_func_count--;
+> -		}
+> -	}
+> - out_unlock:
+> -	mutex_unlock(&direct_mutex);
+> -
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL_GPL(unregister_ftrace_direct);
+> -
+> -static struct ftrace_ops stub_ops = {
+> -	.func		= ftrace_stub,
+> -};
+> -
+> -/**
+> - * ftrace_modify_direct_caller - modify ftrace nop directly
+> - * @entry: The ftrace hash entry of the direct helper for @rec
+> - * @rec: The record representing the function site to patch
+> - * @old_addr: The location that the site at @rec->ip currently calls
+> - * @new_addr: The location that the site at @rec->ip should call
+> - *
+> - * An architecture may overwrite this function to optimize the
+> - * changing of the direct callback on an ftrace nop location.
+> - * This is called with the ftrace_lock mutex held, and no other
+> - * ftrace callbacks are on the associated record (@rec). Thus,
+> - * it is safe to modify the ftrace record, where it should be
+> - * currently calling @old_addr directly, to call @new_addr.
+> - *
+> - * This is called with direct_mutex locked.
+> - *
+> - * Safety checks should be made to make sure that the code at
+> - * @rec->ip is currently calling @old_addr. And this must
+> - * also update entry->direct to @new_addr.
+> - */
+> -int __weak ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
+> -				       struct dyn_ftrace *rec,
+> -				       unsigned long old_addr,
+> -				       unsigned long new_addr)
+> -{
+> -	unsigned long ip = rec->ip;
+> -	int ret;
+> -
+> -	lockdep_assert_held(&direct_mutex);
+> -
+> -	/*
+> -	 * The ftrace_lock was used to determine if the record
+> -	 * had more than one registered user to it. If it did,
+> -	 * we needed to prevent that from changing to do the quick
+> -	 * switch. But if it did not (only a direct caller was attached)
+> -	 * then this function is called. But this function can deal
+> -	 * with attached callers to the rec that we care about, and
+> -	 * since this function uses standard ftrace calls that take
+> -	 * the ftrace_lock mutex, we need to release it.
+> -	 */
+> -	mutex_unlock(&ftrace_lock);
+> -
+> -	/*
+> -	 * By setting a stub function at the same address, we force
+> -	 * the code to call the iterator and the direct_ops helper.
+> -	 * This means that @ip does not call the direct call, and
+> -	 * we can simply modify it.
+> -	 */
+> -	ret = ftrace_set_filter_ip(&stub_ops, ip, 0, 0);
+> -	if (ret)
+> -		goto out_lock;
+> -
+> -	ret = register_ftrace_function_nolock(&stub_ops);
+> -	if (ret) {
+> -		ftrace_set_filter_ip(&stub_ops, ip, 1, 0);
+> -		goto out_lock;
+> -	}
+> -
+> -	entry->direct = new_addr;
+> -
+> -	/*
+> -	 * By removing the stub, we put back the direct call, calling
+> -	 * the @new_addr.
+> -	 */
+> -	unregister_ftrace_function(&stub_ops);
+> -	ftrace_set_filter_ip(&stub_ops, ip, 1, 0);
+> -
+> - out_lock:
+> -	mutex_lock(&ftrace_lock);
+> -
+> -	return ret;
+> -}
+> -
+> -/**
+> - * modify_ftrace_direct - Modify an existing direct call to call something else
+> - * @ip: The instruction pointer to modify
+> - * @old_addr: The address that the current @ip calls directly
+> - * @new_addr: The address that the @ip should call
+> - *
+> - * This modifies a ftrace direct caller at an instruction pointer without
+> - * having to disable it first. The direct call will switch over to the
+> - * @new_addr without missing anything.
+> - *
+> - * Returns: zero on success. Non zero on error, which includes:
+> - *  -ENODEV : the @ip given has no direct caller attached
+> - *  -EINVAL : the @old_addr does not match the current direct caller
+> - */
+> -int modify_ftrace_direct(unsigned long ip,
+> -			 unsigned long old_addr, unsigned long new_addr)
+> -{
+> -	struct ftrace_direct_func *direct, *new_direct = NULL;
+> -	struct ftrace_func_entry *entry;
+> -	struct dyn_ftrace *rec;
+> -	int ret = -ENODEV;
+> -
+> -	mutex_lock(&direct_mutex);
+> -
+> -	mutex_lock(&ftrace_lock);
+> -
+> -	ip = ftrace_location(ip);
+> -	if (!ip)
+> -		goto out_unlock;
+> -
+> -	entry = find_direct_entry(&ip, &rec);
+> -	if (!entry)
+> -		goto out_unlock;
+> -
+> -	ret = -EINVAL;
+> -	if (entry->direct != old_addr)
+> -		goto out_unlock;
+> -
+> -	direct = ftrace_find_direct_func(old_addr);
+> -	if (WARN_ON(!direct))
+> -		goto out_unlock;
+> -	if (direct->count > 1) {
+> -		ret = -ENOMEM;
+> -		new_direct = ftrace_alloc_direct_func(new_addr);
+> -		if (!new_direct)
+> -			goto out_unlock;
+> -		direct->count--;
+> -		new_direct->count++;
+> -	} else {
+> -		direct->addr = new_addr;
+> -	}
+> -
+> -	/*
+> -	 * If there's no other ftrace callback on the rec->ip location,
+> -	 * then it can be changed directly by the architecture.
+> -	 * If there is another caller, then we just need to change the
+> -	 * direct caller helper to point to @new_addr.
+> -	 */
+> -	if (ftrace_rec_count(rec) == 1) {
+> -		ret = ftrace_modify_direct_caller(entry, rec, old_addr, new_addr);
+> -	} else {
+> -		entry->direct = new_addr;
+> -		ret = 0;
+> -	}
+> -
+> -	if (unlikely(ret && new_direct)) {
+> -		direct->count++;
+> -		list_del_rcu(&new_direct->next);
+> -		synchronize_rcu_tasks();
+> -		kfree(new_direct);
+> -		ftrace_direct_func_count--;
+> -	}
+> -
+> - out_unlock:
+> -	mutex_unlock(&ftrace_lock);
+> -	mutex_unlock(&direct_mutex);
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL_GPL(modify_ftrace_direct);
+> -
+>  #define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
+>  
+>  static int check_direct_multi(struct ftrace_ops *ops)
+> -- 
+> 2.39.1.519.gcb327c4b5f-goog
+> 
