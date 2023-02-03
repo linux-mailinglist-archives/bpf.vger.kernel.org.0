@@ -2,436 +2,273 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8D4688CFB
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 03:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C017C688CFF
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 03:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbjBCCNq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 21:13:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
+        id S229721AbjBCCOw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 21:14:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbjBCCNk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 21:13:40 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C572269B3A;
-        Thu,  2 Feb 2023 18:13:33 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id m11so3732925pji.0;
-        Thu, 02 Feb 2023 18:13:33 -0800 (PST)
+        with ESMTP id S232056AbjBCCOv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 21:14:51 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A93289341;
+        Thu,  2 Feb 2023 18:14:19 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id jh15so3872321plb.8;
+        Thu, 02 Feb 2023 18:14:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qsl4zDTK13ujlyXZ/hVCCD+IHyADuxL7e1KSOZYRAoo=;
-        b=VpkePtr6jXYhrKCDhIdHwErNGl00IdgqWRUnhHknzgrtMmr9S4oMyYAKJPXppD2s7B
-         jKl9A5Re5YZYkOQlI+YgMDFG66s6BciBUMSZPwXo98LiP1D4TqFl/qVMyD6aCN9pOAtm
-         Uiv/T70K6+w3pAhNSTvBs71ABTj4d4H2L4EqaDBnrwnqrSnW3yYAGMjwQ1Hr1tOv/On8
-         /rPKoXEwAfKJTNs0DF3/w63TXNgifgRt4nUd57ZQYTSzcDt0lZ/7i1Zb/6m9/VPglu/p
-         tMZ4lfTUeHBQn02BxuzKKoYD5R1OY3Mvyan1xkiVoWEng8o9BY9qmnKfnptAmcVflJAg
-         JHGw==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TKAQRjTFaXWS77vgv6q0ZfLRZHBfHqYPvWhJ5n/8Urw=;
+        b=HStmIgqnezSrhFQAflZ152q7o549fqXxmFhj1JKRzJbReJI9NQxcE0ZcfFX8qFv06+
+         /d//M9szyKOznSHB7vCeEy5Bjtb00oCIyoSB1sM0tfLP+HCGgxsrOEnQD5x3sHDSV0Rh
+         zENMfY969UISFeTDv88iAewVZooooFsqs53LB7pV6nYSsNAeizhiMJ9fgzaS3k3zJcen
+         m1wquPLBwGwF55vtVtrIrCpUEaXGWfyYjguWdV5Ukfxy5/8U83oBT6P0EJcNZV981ieM
+         ev9y8jNJfO+VtCeb7XeTfFpLGjr+GyaxzqJtwe3Bi0Rltuo6g1/w5TXnF0dauXw5CVBE
+         I+gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=qsl4zDTK13ujlyXZ/hVCCD+IHyADuxL7e1KSOZYRAoo=;
-        b=nT4oxfV656m2iNI7dbd8jrAf16g5sbqQUzs99ylHADcWYSjg/hlyKPy2ofKPJxCg1z
-         56OpZS5zKyTCaSG6ScVmzQpAXMQ3UVedXIDGBDQcBYdt4ECwPYtrShRvOsS/YaBYz3L9
-         pkJVE9rB8Qltr7nnsXScYYtxtCg2u6ra/EDpKSdHqyHpHIPqLFYtpbHnOO0aYF/ux2Zu
-         pCKnhXGlTLfYoS3wx/R/hH90wTXwKWrFYNDyqFfU38S83uO39MN4+/FRhmLX3lP9e7l3
-         2kS6EhgNJ7aDeUEfmojnCz9kUX6yz0cVSwVJEkFN95JseVLaz+iW31nT7LIqXW96Lan/
-         jhsQ==
-X-Gm-Message-State: AO0yUKXCg1FaF8T3Q21cFmWes2zUEeW2C8ktgrQjokF7miek9MAqZGln
-        VOT8RBhbqx7HyfOTFukpatg=
-X-Google-Smtp-Source: AK7set+Pld6sRcqFkc2T3qKqaS4UVfZaWPXUflb1wLcPNUHA1wCdQcDQo+7fhPPYhKbW9KEjJXGA3w==
-X-Received: by 2002:a17:90b:1b52:b0:22b:f93b:b5ae with SMTP id nv18-20020a17090b1b5200b0022bf93bb5aemr8329918pjb.46.1675390413082;
-        Thu, 02 Feb 2023 18:13:33 -0800 (PST)
-Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:6755:96ed:3f18:dac4])
-        by smtp.gmail.com with ESMTPSA id fs23-20020a17090af29700b0022c942b8683sm497249pjb.56.2023.02.02.18.13.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 18:13:32 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     acme@kernel.org, jolsa@kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, irogers@google.com,
-        linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, song@kernel.org,
-        haoluo@google.com, bpf@vger.kernel.org, juri.lelli@redhat.com
-Subject: [PATCH v2 3/3] perf lock contention: Support filters for different aggregation
-Date:   Thu,  2 Feb 2023 18:13:24 -0800
-Message-Id: <20230203021324.143540-4-namhyung@kernel.org>
-X-Mailer: git-send-email 2.39.1.519.gcb327c4b5f-goog
-In-Reply-To: <20230203021324.143540-1-namhyung@kernel.org>
-References: <20230203021324.143540-1-namhyung@kernel.org>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TKAQRjTFaXWS77vgv6q0ZfLRZHBfHqYPvWhJ5n/8Urw=;
+        b=1V9In1KXGVabN3a9dxLQq+xV1/VysVOX1GaJ+avIbX6RLiEdz1BlUHrAgpYX7822cI
+         S+Yk3Iz2SloIQyzzTvanEfpacRjVvWOmaIiIgk3lvW4Zt22U308xqUD5s0fIAJ7OU52e
+         ZIgTC2QVwP0ydEB1UXX3sqmdfGsW+D5oxRmYnLlTRoe28oxPpEglTj+snUxG0LnEVcZw
+         IvXAwpykbgsjr/BcpGwAf6FSmtaeaLesn5tm2kVVJJzBxeNiRNuP9kNWrVLVSaQ64Bpq
+         bg6YkQmjM40EAF+IN9bzoAVw1ml2OSdaLWK1vuojf988INqv7roq/WlcUaztrpKrwgZa
+         ALOw==
+X-Gm-Message-State: AO0yUKV/yGXNXZ2WEksBTkMh15xmF1BcpdVZc/vxTF58heqdiEkjKz7B
+        W8fQfyyAG7rGirqNK6lg6IY=
+X-Google-Smtp-Source: AK7set830bqUqT4sOcIBCoelkdwbIhhp7J9OP66CNDgnAiEZgxZ9sVYgeDX7KWgXo/0v+ZjvIW4EFA==
+X-Received: by 2002:a17:90b:1bc7:b0:225:a226:9fbb with SMTP id oa7-20020a17090b1bc700b00225a2269fbbmr8462096pjb.39.1675390457708;
+        Thu, 02 Feb 2023 18:14:17 -0800 (PST)
+Received: from [192.168.43.80] (subs02-180-214-232-10.three.co.id. [180.214.232.10])
+        by smtp.gmail.com with ESMTPSA id ij14-20020a17090af80e00b0020a11217682sm534653pjb.27.2023.02.02.18.14.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Feb 2023 18:14:17 -0800 (PST)
+Message-ID: <cb4c5572-baff-6c0c-5aba-d2867664c682@gmail.com>
+Date:   Fri, 3 Feb 2023 09:14:11 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH bpf-next v2] bpf/docs: Document kfunc lifecycle /
+ stability expectations
+Content-Language: en-US
+To:     David Vernet <void@manifault.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@meta.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, toke@redhat.com, brouer@redhat.com,
+        corbet@lwn.net, linux-doc@vger.kernel.org
+References: <20230202223557.744110-1-void@manifault.com>
+ <20230202223557.744110-2-void@manifault.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20230202223557.744110-2-void@manifault.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It'd be useful to filter other than the current aggregation mode.  For
-example, users may want to see callstacks for specific locks only.  Or
-they may want tasks from a certain callstack.
+On 2/3/23 05:35, David Vernet wrote:
+> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> index 0bd07b39c2a4..4135f3111b67 100644
+> --- a/Documentation/bpf/kfuncs.rst
+> +++ b/Documentation/bpf/kfuncs.rst
+> @@ -13,7 +13,7 @@ BPF Kernel Functions or more commonly known as kfuncs are functions in the Linux
+>  kernel which are exposed for use by BPF programs. Unlike normal BPF helpers,
+>  kfuncs do not have a stable interface and can change from one kernel release to
+>  another. Hence, BPF programs need to be updated in response to changes in the
+> -kernel.
+> +kernel. See :ref:`BPF_kfunc_lifecycle_expectations` for more information.
+>  
+>  2. Defining a kfunc
+>  ===================
+> @@ -238,6 +238,32 @@ single argument which must be a trusted argument or a MEM_RCU pointer.
+>  The argument may have reference count of 0 and the kfunc must take this
+>  into consideration.
+>  
+> +.. _KF_deprecated_flag:
+> +
+> +2.4.9 KF_DEPRECATED flag
+> +------------------------
+> +
+> +The KF_DEPRECATED flag is used for kfuncs which are expected to be changed or
+> +removed in a subsequent kernel release. Deprecated kfuncs may be removed at any
+> +time, though if possible (and when applicable), developers are encouraged to
+> +provide users with a deprecation window to ease the burden of migrating off of
+> +the kfunc.
+> +
+> +A kfunc that is marked with KF_DEPRECATED should also have any relevant
+> +information captured in its kernel doc. Such information typically includes the
+> +kfunc's expected remaining lifespan, a recommendation for new functionality
+> +that can replace it if any is available, and possibly a rationale for why it is
+> +being removed.
+> +
+> +Note that while on some occasions, a KF_DEPRECATED kfunc may continue to be
+> +supported and have its KF_DEPRECATED flag removed, it is likely to be far more
+> +difficult to remove a KF_DEPRECATED flag after it's been added than it is to
+> +prevent it from being added in the first place. As described in
+> +:ref:`BPF_kfunc_lifecycle_expectations`, users that rely on specific kfuncs are
+> +highly encouraged to make their use-cases known as early as possible, and
+> +participate in upstream discussions regarding whether to keep, change,
+> +deprecate, or remove those kfuncs if and when such discussions occur.
+> +
+>  2.5 Registering the kfuncs
+>  --------------------------
+>  
+> @@ -304,14 +330,116 @@ In order to accommodate such requirements, the verifier will enforce strict
+>  PTR_TO_BTF_ID type matching if two types have the exact same name, with one
+>  being suffixed with ``___init``.
+>  
+> -3. Core kfuncs
+> +.. _BPF_kfunc_lifecycle_expectations:
+> +
+> +3. kfunc lifecycle expectations
+> +===============================
+> +
+> +kfuncs provide a kernel <-> kernel API, and thus are not bound by any of the
+> +strict stability restrictions associated with kernel <-> user UAPIs. Instead,
+> +they're modeled more similarly to EXPORT_SYMBOL_GPL, and can therefore be
+> +modified or removed by a maintainer of the subsystem they're defined in when
+> +it's deemed necessary.
+> +
+> +Like any other change to the kernel, maintainers will not change or remove a
+> +kfunc without having a reasonable justification.  Whether or not they'll choose
+> +to change a kfunc will ultimately depend on a variety of factors, such as how
+> +widely used the kfunc is, how long the kfunc has been in the kernel, whether an
+> +alternative kfunc exists, what the norm is in terms of stability for the
+> +subsystem in question, and of course what the technical cost is of continuing
+> +to support the kfunc.
+> +
+> +There are several implications of this:
+> +
+> +a) kfuncs that are widely used or have been in the kernel for a long time will
+> +   be more difficult to justify being changed or removed by a maintainer. Said
+> +   in a different way, kfuncs that are known to have a lot of users and provide
+> +   significant value provide stronger incentives for maintainers to invest the
+> +   time and complexity in supporting them. It is therefore important for
+> +   developers that are using kfuncs in their BPF programs to communicate and
+> +   explain how and why those kfuncs are being used, and to participate in
+> +   discussions regarding those kfuncs when they occur upstream.
+> +
+> +b) Because many BPF programs are not upstreamed as part of the kernel tree, it
+> +   is often not possible to change them in-place when a kfunc changes, as it is
+> +   for e.g. an upstreamed driver being updated in place when an
+> +   EXPORT_SYMBOL_GPL symbol is changed. Distributions that bundle BPF programs
+> +   that use kfuncs must therefore ensure that those BPF programs are linking
+> +   against the kfuncs that are supported by the kernel version being used for
+> +   any given release. Additionally, BPF developers are encouraged to upstream
+> +   their BPF programs so they can enjoy the same benefits as upstreamed
+> +   modules, and avoid code churn.
+> +
+> +   On the other hand, while the hope is that it will become the norm to
+> +   upstream BPF programs, the reality is that most BPF programs are still
+> +   out-of-tree. This means that users with out-of-tree BPF programs that use
+> +   kfuncs should be considered relevant to discussions and decisions around
+> +   modifying and removing kfuncs, despite that not being the norm for
+> +   out-of-tree kernel modules. The BPF community will take an active role in
+> +   participating in upstream discussions when necessary to ensure that the
+> +   perspectives of such users are taken into account.
+> +
+> +c) A kfunc will never have any hard stability guarantees. BPF APIs cannot and
+> +   will not ever hard-block a change in the kernel purely for stability
+> +   reasons. In other words, kfuncs have the same stability guarantees as any
+> +   other kernel API, such as those provided by EXPORT_SYMBOL_GPL, though with
+> +   perhaps less burden than EXPORT_SYMBOL_GPL changes thanks to BPF CO-RE.
+> +
+> +   That being said, kfuncs are features that are meant to solve problems and
+> +   provide value to users. The decision of whether to change or remove a kfunc
+> +   is a multivariate technical decision that is made on a case-by-case basis,
+> +   and which is informed by data points such as those mentioned above. It is
+> +   expected that a kfunc being removed or changed with no warning will not be a
+> +   common occurrence or take place without sound justification, but it is a
+> +   possibility that must be accepted if one is to use kfuncs.
+> +
+> +3.1 kfunc deprecation
+> +---------------------
+> +
+> +As described above, while sometimes a maintainer may find that a kfunc must be
+> +changed or removed immediately to accommodate some changes in their subsystem,
+> +other kfuncs may be able to accommodate a longer and more measured deprecation
+> +process. For example, if a new kfunc comes along which provides superior
+> +functionality to an existing kfunc, the existing kfunc may be deprecated for
+> +some period of time to allow users to migrate their BPF programs to use the new
+> +one. Or, if a kfunc has no known users, a decision may be made to remove the
+> +kfunc (without providing an alternative API) after some deprecation period
+> +period so as to provide users with a window to notify the kfunc maintainer if
+> +it turns out that the kfunc is actually being used.
+> +
+> +kfuncs being deprecated (rather than changed or removed with no warning) is
+> +expected to be the common case, and as described in :ref:`KF_deprecated_flag`,
+> +the kfunc framework provides the KF_DEPRECATED flag to kfunc developers to
+> +signal to users that a kfunc has been deprecated. Once a kfunc has been marked
+> +with KF_DEPRECATED, the following procedure is followed for removal:
+> +
+> +1. Any relevant information for deprecated kfuncs is documented in the kfunc's
+> +   kernel docs. This documentation will typically include the kfunc's expected
+> +   remaining lifespan,  a recommendation for new functionality that can replace
+> +   the usage of the deprecated function (or an explanation as to why no such
+> +   replacement exists), etc.
+> +
+> +2. The deprecated kfunc is kept in the kernel for some period of time after it
+> +   was first marked as deprecated. This time period will be chosen on a
+> +   case-by-case basis, and will typically depend on how widespread the use of
+> +   the kfunc is, how long it has been in the kernel, and how hard it is to move
+> +   to alternatives. This deprecation time period is "best effort", and as
+> +   described :ref:`above<BPF_kfunc_lifecycle_expectations>`, circumstances may
+> +   sometimes dictate that the kfunc be removed before the full intended
+> +   deprecation period has elapsed.
+> +
+> +3. After the deprecation period, or sometimes earlier if necessary, the kfunc
+> +   will be removed. At this point, BPF programs calling the kfunc will be
+> +   rejected by the verifier.
+> +
+> +4. Core kfuncs
+>  ==============
+>  
+>  The BPF subsystem provides a number of "core" kfuncs that are potentially
+>  applicable to a wide variety of different possible use cases and programs.
+>  Those kfuncs are documented here.
+>  
+> -3.1 struct task_struct * kfuncs
+> +4.1 struct task_struct * kfuncs
+>  -------------------------------
+>  
+>  There are a number of kfuncs that allow ``struct task_struct *`` objects to be
+> @@ -387,7 +515,7 @@ Here is an example of it being used:
+>  		return 0;
+>  	}
+>  
+> -3.2 struct cgroup * kfuncs
+> +4.2 struct cgroup * kfuncs
+>  --------------------------
+>  
+>  ``struct cgroup *`` objects also have acquire and release functions:
+> @@ -502,7 +630,7 @@ the verifier. bpf_cgroup_ancestor() can be used as follows:
+>  		return 0;
+>  	}
+>  
+> -3.3 struct cpumask * kfuncs
+> +4.3 struct cpumask * kfuncs
+>  ---------------------------
+>  
+>  BPF provides a set of kfuncs that can be used to query, allocate, mutate, and
 
-The tracepoints already collected the information but it needs to check
-the condition again when processing the event.  And it needs to change
-BPF to allow the key combinations.
+LGTM, thanks!
 
-The lock contentions on 'rcu_state' spinlock can be monitored:
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-  $ sudo perf lock con -abv -L rcu_state sleep 1
-  ...
-   contended   total wait     max wait     avg wait         type   caller
-
-           4    151.39 us     62.57 us     37.85 us     spinlock   rcu_core+0xcb
-                          0xffffffff81fd1666  _raw_spin_lock_irqsave+0x46
-                          0xffffffff8172d76b  rcu_core+0xcb
-                          0xffffffff822000eb  __softirqentry_text_start+0xeb
-                          0xffffffff816a0ba9  __irq_exit_rcu+0xc9
-                          0xffffffff81fc0112  sysvec_apic_timer_interrupt+0xa2
-                          0xffffffff82000e46  asm_sysvec_apic_timer_interrupt+0x16
-                          0xffffffff81d49f78  cpuidle_enter_state+0xd8
-                          0xffffffff81d4a259  cpuidle_enter+0x29
-           1     30.21 us     30.21 us     30.21 us     spinlock   rcu_core+0xcb
-                          0xffffffff81fd1666  _raw_spin_lock_irqsave+0x46
-                          0xffffffff8172d76b  rcu_core+0xcb
-                          0xffffffff822000eb  __softirqentry_text_start+0xeb
-                          0xffffffff816a0ba9  __irq_exit_rcu+0xc9
-                          0xffffffff81fc00c4  sysvec_apic_timer_interrupt+0x54
-                          0xffffffff82000e46  asm_sysvec_apic_timer_interrupt+0x16
-           1     28.84 us     28.84 us     28.84 us     spinlock   rcu_accelerate_cbs_unlocked+0x40
-                          0xffffffff81fd1c60  _raw_spin_lock+0x30
-                          0xffffffff81728cf0  rcu_accelerate_cbs_unlocked+0x40
-                          0xffffffff8172da82  rcu_core+0x3e2
-                          0xffffffff822000eb  __softirqentry_text_start+0xeb
-                          0xffffffff816a0ba9  __irq_exit_rcu+0xc9
-                          0xffffffff81fc0112  sysvec_apic_timer_interrupt+0xa2
-                          0xffffffff82000e46  asm_sysvec_apic_timer_interrupt+0x16
-                          0xffffffff81d49f78  cpuidle_enter_state+0xd8
-  ...
-
-To see tasks calling 'rcu_core' function:
-
-  $ sudo perf lock con -abt -S rcu_core sleep 1
-   contended   total wait     max wait     avg wait          pid   comm
-
-          19     23.46 us      2.21 us      1.23 us            0   swapper
-           2     18.37 us     17.01 us      9.19 us      2061859   ThreadPoolForeg
-           3      5.76 us      1.97 us      1.92 us         3909   pipewire-pulse
-           1      2.26 us      2.26 us      2.26 us      1809271   MediaSu~isor #2
-           1      1.97 us      1.97 us      1.97 us      1514882   Chrome_ChildIOT
-           1       987 ns       987 ns       987 ns         3740   pipewire-pulse
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/builtin-lock.c                     | 75 +++++++++++--------
- tools/perf/util/bpf_lock_contention.c         | 44 +++++++----
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 15 ++--
- tools/perf/util/bpf_skel/lock_data.h          |  4 +-
- tools/perf/util/lock-contention.h             |  2 +
- 5 files changed, 89 insertions(+), 51 deletions(-)
-
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index 0593c6e636c6..0d11f301fd72 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -509,6 +509,34 @@ struct lock_stat *lock_stat_findnew(u64 addr, const char *name, int flags)
- 	return NULL;
- }
- 
-+bool match_callstack_filter(struct machine *machine, u64 *callstack)
-+{
-+	struct map *kmap;
-+	struct symbol *sym;
-+	u64 ip;
-+
-+	if (list_empty(&callstack_filters))
-+		return true;
-+
-+	for (int i = 0; i < max_stack_depth; i++) {
-+		struct callstack_filter *filter;
-+
-+		if (!callstack || !callstack[i])
-+			break;
-+
-+		ip = callstack[i];
-+		sym = machine__find_kernel_symbol(machine, ip, &kmap);
-+		if (sym == NULL)
-+			continue;
-+
-+		list_for_each_entry(filter, &callstack_filters, list) {
-+			if (strstr(sym->name, filter->name))
-+				return true;
-+		}
-+	}
-+	return false;
-+}
-+
- struct trace_lock_handler {
- 	/* it's used on CONFIG_LOCKDEP */
- 	int (*acquire_event)(struct evsel *evsel,
-@@ -1070,12 +1098,6 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
- 		ls = lock_stat_findnew(key, name, flags);
- 		if (!ls)
- 			return -ENOMEM;
--
--		if (aggr_mode == LOCK_AGGR_CALLER && needs_callstack()) {
--			ls->callstack = get_callstack(sample, max_stack_depth);
--			if (ls->callstack == NULL)
--				return -ENOMEM;
--		}
- 	}
- 
- 	if (filters.nr_types) {
-@@ -1106,6 +1128,22 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
- 			return 0;
- 	}
- 
-+	if (needs_callstack()) {
-+		u64 *callstack = get_callstack(sample, max_stack_depth);
-+		if (callstack == NULL)
-+			return -ENOMEM;
-+
-+		if (!match_callstack_filter(machine, callstack)) {
-+			free(callstack);
-+			return 0;
-+		}
-+
-+		if (ls->callstack == NULL)
-+			ls->callstack = callstack;
-+		else
-+			free(callstack);
-+	}
-+
- 	ts = thread_stat_findnew(sample->tid);
- 	if (!ts)
- 		return -ENOMEM;
-@@ -1606,31 +1644,6 @@ static void print_contention_result(struct lock_contention *con)
- 		if (!st->wait_time_total)
- 			continue;
- 
--		if (aggr_mode == LOCK_AGGR_CALLER && !list_empty(&callstack_filters)) {
--			struct map *kmap;
--			struct symbol *sym;
--			u64 ip;
--
--			for (int i = 0; i < max_stack_depth; i++) {
--				struct callstack_filter *filter;
--
--				if (!st->callstack || !st->callstack[i])
--					break;
--
--				ip = st->callstack[i];
--				sym = machine__find_kernel_symbol(con->machine, ip, &kmap);
--				if (sym == NULL)
--					continue;
--
--				list_for_each_entry(filter, &callstack_filters, list) {
--					if (strstr(sym->name, filter->name))
--						goto found;
--				}
--			}
--			continue;
--		}
--
--found:
- 		list_for_each_entry(key, &lock_keys, list) {
- 			key->print(key, st);
- 			pr_info(" ");
-diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index ead2898ba377..72cf81114982 100644
---- a/tools/perf/util/bpf_lock_contention.c
-+++ b/tools/perf/util/bpf_lock_contention.c
-@@ -34,13 +34,15 @@ int lock_contention_prepare(struct lock_contention *con)
- 	bpf_map__set_max_entries(skel->maps.lock_stat, con->map_nr_entries);
- 	bpf_map__set_max_entries(skel->maps.tstamp, con->map_nr_entries);
- 
--	if (con->aggr_mode == LOCK_AGGR_TASK) {
-+	if (con->aggr_mode == LOCK_AGGR_TASK)
- 		bpf_map__set_max_entries(skel->maps.task_data, con->map_nr_entries);
--		bpf_map__set_max_entries(skel->maps.stacks, 1);
--	} else {
-+	else
- 		bpf_map__set_max_entries(skel->maps.task_data, 1);
-+
-+	if (con->save_callstack)
- 		bpf_map__set_max_entries(skel->maps.stacks, con->map_nr_entries);
--	}
-+	else
-+		bpf_map__set_max_entries(skel->maps.stacks, 1);
- 
- 	if (target__has_cpu(target))
- 		ncpus = perf_cpu_map__nr(evlist->core.user_requested_cpus);
-@@ -146,6 +148,7 @@ int lock_contention_prepare(struct lock_contention *con)
- 	/* these don't work well if in the rodata section */
- 	skel->bss->stack_skip = con->stack_skip;
- 	skel->bss->aggr_mode = con->aggr_mode;
-+	skel->bss->needs_callstack = con->save_callstack;
- 
- 	lock_contention_bpf__attach(skel);
- 	return 0;
-@@ -177,7 +180,7 @@ static const char *lock_contention_get_name(struct lock_contention *con,
- 
- 	if (con->aggr_mode == LOCK_AGGR_TASK) {
- 		struct contention_task_data task;
--		int pid = key->aggr_key;
-+		int pid = key->pid;
- 		int task_fd = bpf_map__fd(skel->maps.task_data);
- 
- 		/* do not update idle comm which contains CPU number */
-@@ -194,7 +197,7 @@ static const char *lock_contention_get_name(struct lock_contention *con,
- 	}
- 
- 	if (con->aggr_mode == LOCK_AGGR_ADDR) {
--		sym = machine__find_kernel_symbol(machine, key->aggr_key, &kmap);
-+		sym = machine__find_kernel_symbol(machine, key->lock_addr, &kmap);
- 		if (sym)
- 			name = sym->name;
- 		return name;
-@@ -255,20 +258,35 @@ int lock_contention_read(struct lock_contention *con)
- 
- 	prev_key = NULL;
- 	while (!bpf_map_get_next_key(fd, prev_key, &key)) {
--		s32 stack_id;
-+		s64 ls_key;
- 		const char *name;
- 
- 		/* to handle errors in the loop body */
- 		err = -1;
- 
- 		bpf_map_lookup_elem(fd, &key, &data);
--
- 		if (con->save_callstack) {
--			stack_id = key.aggr_key;
--			bpf_map_lookup_elem(stack, &stack_id, stack_trace);
-+			bpf_map_lookup_elem(stack, &key.stack_id, stack_trace);
-+
-+			if (!match_callstack_filter(machine, stack_trace))
-+				goto next;
- 		}
- 
--		st = lock_stat_find(key.aggr_key);
-+		switch (con->aggr_mode) {
-+		case LOCK_AGGR_CALLER:
-+			ls_key = key.stack_id;
-+			break;
-+		case LOCK_AGGR_TASK:
-+			ls_key = key.pid;
-+			break;
-+		case LOCK_AGGR_ADDR:
-+			ls_key = key.lock_addr;
-+			break;
-+		default:
-+			goto next;
-+		}
-+
-+		st = lock_stat_find(ls_key);
- 		if (st != NULL) {
- 			st->wait_time_total += data.total_time;
- 			if (st->wait_time_max < data.max_time)
-@@ -283,7 +301,7 @@ int lock_contention_read(struct lock_contention *con)
- 		}
- 
- 		name = lock_contention_get_name(con, &key, stack_trace);
--		st = lock_stat_findnew(key.aggr_key, name, data.flags);
-+		st = lock_stat_findnew(ls_key, name, data.flags);
- 		if (st == NULL)
- 			break;
- 
-@@ -295,8 +313,6 @@ int lock_contention_read(struct lock_contention *con)
- 		if (data.count)
- 			st->avg_wait_time = data.total_time / data.count;
- 
--		st->flags = data.flags;
--
- 		if (con->save_callstack) {
- 			st->callstack = memdup(stack_trace, stack_size);
- 			if (st->callstack == NULL)
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index ad0ca5d50557..7ce276ed987e 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -82,6 +82,7 @@ int has_cpu;
- int has_task;
- int has_type;
- int has_addr;
-+int needs_callstack;
- int stack_skip;
- 
- /* determine the key of lock stat */
-@@ -173,7 +174,7 @@ int contention_begin(u64 *ctx)
- 	pelem->lock = (__u64)ctx[0];
- 	pelem->flags = (__u32)ctx[1];
- 
--	if (aggr_mode == LOCK_AGGR_CALLER) {
-+	if (needs_callstack) {
- 		pelem->stack_id = bpf_get_stackid(ctx, &stacks,
- 						  BPF_F_FAST_STACK_CMP | stack_skip);
- 		if (pelem->stack_id < 0)
-@@ -188,7 +189,7 @@ int contention_end(u64 *ctx)
- {
- 	__u32 pid;
- 	struct tstamp_data *pelem;
--	struct contention_key key;
-+	struct contention_key key = {};
- 	struct contention_data *data;
- 	__u64 duration;
- 
-@@ -204,14 +205,18 @@ int contention_end(u64 *ctx)
- 
- 	switch (aggr_mode) {
- 	case LOCK_AGGR_CALLER:
--		key.aggr_key = pelem->stack_id;
-+		key.stack_id = pelem->stack_id;
- 		break;
- 	case LOCK_AGGR_TASK:
--		key.aggr_key = pid;
-+		key.pid = pid;
- 		update_task_data(pid);
-+		if (needs_callstack)
-+			key.stack_id = pelem->stack_id;
- 		break;
- 	case LOCK_AGGR_ADDR:
--		key.aggr_key = pelem->lock;
-+		key.lock_addr = pelem->lock;
-+		if (needs_callstack)
-+			key.stack_id = pelem->stack_id;
- 		break;
- 	default:
- 		/* should not happen */
-diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
-index ce71cf1a7e1e..3d35fd4407ac 100644
---- a/tools/perf/util/bpf_skel/lock_data.h
-+++ b/tools/perf/util/bpf_skel/lock_data.h
-@@ -4,7 +4,9 @@
- #define UTIL_BPF_SKEL_LOCK_DATA_H
- 
- struct contention_key {
--	u64 aggr_key;  /* can be stack_id, pid or lock addr */
-+	u32 stack_id;
-+	u32 pid;
-+	u64 lock_addr;
- };
- 
- #define TASK_COMM_LEN  16
-diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-index 39d5bfc77f4e..e5fc036108ec 100644
---- a/tools/perf/util/lock-contention.h
-+++ b/tools/perf/util/lock-contention.h
-@@ -68,6 +68,8 @@ struct lock_stat {
- struct lock_stat *lock_stat_find(u64 addr);
- struct lock_stat *lock_stat_findnew(u64 addr, const char *name, int flags);
- 
-+bool match_callstack_filter(struct machine *machine, u64 *callstack);
-+
- /*
-  * struct lock_seq_stat:
-  * Place to put on state of one lock sequence
 -- 
-2.39.1.519.gcb327c4b5f-goog
+An old man doll... just what I always wanted! - Clara
 
