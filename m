@@ -2,103 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EB06894BC
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 11:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5396894B5
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 11:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbjBCKEJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Feb 2023 05:04:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232957AbjBCKEI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S231888AbjBCKEI (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 3 Feb 2023 05:04:08 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5043110AA0;
-        Fri,  3 Feb 2023 02:03:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YH/8ltZNkKStUJrvFHYeArjsVizSPTMYIhZUjUhNtIY=; b=RjeqYQeuDIs31bqFuDOVNCpJXy
-        SpNnas9yZLnzPYarE3/z3e3WDDvHc3fZjPegGCVejqoPSEvAdO6tM9i+qeJPWqxks6FUe+3fVl7f4
-        eQn3pkY4Hh65yDr6yK2jG++5WK86Yz5gf2vwUdjDJqSDfJcZlR5hgRa1Lx+f0v4rDPE8aCc090skS
-        zbesIES7PWXubGSCZbntIyLgwn0pRnbuFjGeEws9uXjnYe2Glq+Wjoolll9ad525ijsVTVxSPnulC
-        x2FY8YQQ08BQCGSwlC+xkiJP1OsnN5Jg+7so+8vNHwar2Tv8+QOkJJYhhsI6ETPcb+76oWBMHfGaq
-        9N2l/kgQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pNsuh-00EDRc-Qr; Fri, 03 Feb 2023 10:03:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E2ED5300129;
-        Fri,  3 Feb 2023 11:03:21 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 794802136B38A; Fri,  3 Feb 2023 11:03:21 +0100 (CET)
-Date:   Fri, 3 Feb 2023 11:03:21 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [RFC 0/5] mm/bpf/perf: Store build id in file object
-Message-ID: <Y9zb6fUH3mAoPUzz@hirez.programming.kicks-ass.net>
-References: <20230201135737.800527-1-jolsa@kernel.org>
- <CAADnVQ+im7FwSqDcTLmMvfRcT9unwdHBeWG9Snw7W5Q-bcdWvg@mail.gmail.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233048AbjBCKEH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 05:04:07 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E29EC23D9D;
+        Fri,  3 Feb 2023 02:03:43 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D936BC14;
+        Fri,  3 Feb 2023 02:04:25 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.90.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B2013F8D6;
+        Fri,  3 Feb 2023 02:03:41 -0800 (PST)
+Date:   Fri, 3 Feb 2023 10:03:38 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Florent Revest <revest@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
+        xukuohai@huaweicloud.com
+Subject: Re: [PATCH 5/8] ftrace: Make DIRECT_CALLS work WITH_ARGS and
+ !WITH_REGS
+Message-ID: <Y9zb+uKqQN9gJJBI@FVFF77S0Q05N>
+References: <20230201163420.1579014-1-revest@chromium.org>
+ <20230201163420.1579014-6-revest@chromium.org>
+ <Y9vcua0+JzjmTICO@FVFF77S0Q05N.cambridge.arm.com>
+ <Y9vrWUM8ypNNwHyv@FVFF77S0Q05N.cambridge.arm.com>
+ <CABRcYm+nwsyyKEhvz9dr8sDiOWfha-YxOkGMFSx4mH9O+HAiYg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQ+im7FwSqDcTLmMvfRcT9unwdHBeWG9Snw7W5Q-bcdWvg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CABRcYm+nwsyyKEhvz9dr8sDiOWfha-YxOkGMFSx4mH9O+HAiYg@mail.gmail.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 03:15:39AM -0800, Alexei Starovoitov wrote:
-> On Wed, Feb 1, 2023 at 5:57 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Feb 02, 2023 at 07:19:58PM +0100, Florent Revest wrote:
+> On Thu, Feb 2, 2023 at 5:57 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index 84f717f8959e..3d2156e335d7 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> > @@ -241,6 +241,12 @@ enum {
+> >         FTRACE_OPS_FL_DIRECT                    = BIT(17),
+> >  };
 > >
-> > hi,
-> > we have a use cases for bpf programs to use binary file's build id.
-> >
-> > After some attempts to add helpers/kfuncs [1] [2] Andrii had an idea [3]
-> > to store build id directly in the file object. That would solve our use
-> > case and might be beneficial for other profiling/tracing use cases with
-> > bpf programs.
-> >
-> > This RFC patchset adds new config CONFIG_FILE_BUILD_ID option, which adds
-> > build id object pointer to the file object when enabled. The build id is
-> > read/populated when the file is mmap-ed.
-> >
-> > I also added bpf and perf changes that would benefit from this.
-> >
-> > I'm not sure what's the policy on adding stuff to file object, so apologies
-> > if that's out of line. I'm open to any feedback or suggestions if there's
-> > better place or way to do this.
+> > +#ifndef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> > +#define FTRACE_OPS_FL_SAVE_ARGS                        FTRACE_OPS_FL_SAVE_REGS
+> > +#else
+> > +#define FTRACE_OPS_FL_SAVE_ARGS                        0
 > 
-> struct file represents all files while build_id is for executables only,
-> and not all executables, but those currently running, so
-> I think it's cleaner to put it into vm_area_struct.
+> Mh, could we (theoretically) be in a situation where an arch supports
+> WITH_ARGS but it also has two ftrace_caller trampolines: one that
+> saves the args and the other that saves nothing ? (For example if x86
+> migrates their WITH_REGS to WITH_ARGS only)
 
-There can be many vm_area_structs per file, and like for struct file,
-there's vm_area_structs for non-executable ranges too.
+I don't think so -- the point of WITH_ARGS is that we always have to
+save/restore the args, and when WITH_ARGS is selected they're unconditionally
+available (though not necessarily a full pt_regs), which is what other code
+assumes when WITH_ARGS is selected.
 
-Given there's only one buildid per file, struct file seems most
-appropriate to me.
+> Wouldn't it make sense then to define FTRACE_OPS_FL_SAVE_ARGS as an
+> extra bit to tell ftrace that we need the args, similarly to
+> FTRACE_OPS_FL_SAVE_REGS ?
+> 
+> If that can't happen or if we want to leave this up for later, the
+> patch lgtm and I can squash it into my patch 5 in v2. ;)
+
+I think that can't happen, and for now the above should be fine.
+
+Thanks,
+Mark.
