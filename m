@@ -2,99 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1E6688EA1
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 05:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384F8688EA8
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 05:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbjBCEmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 23:42:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        id S229645AbjBCEuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 23:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjBCEmG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 23:42:06 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9954F34E
-        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 20:42:05 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id k4so12213276eje.1
-        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 20:42:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kNGbv56CPpVjdl1Lz+Iq5i6bIlxoDAJdAuM9/NxhDIo=;
-        b=PWS5tDbl+wI8uDBuXpkrGyBMkwI4jSvyEsatH2IKwxeX2xt2fV2dIhdmi10r6ehDCk
-         HQLP+dPcOaS9D/TM9ZZjMHmh3aljeag+lIAdHpvNjXlnRNfIB2ZWFFGCl0GRkgPhnHCD
-         j9i52v7zwZvbdnmWrlPemC/hByGfkrW549qUxPMhLJ/w5cfDU8aoggj0nCFx5studoTw
-         77lAqUY+1XsSSBP8aZ3pUKBAvURedfKAYL5jCIrDhJEdafjRyX5u7P87/UuVlzAn8/4l
-         2TfRMb9ovHGJdr9SnpF2UQH/1+tFpPkE6zTp5E1RXkD13Y1hjHTTVBDNmJS4167awZHr
-         PIuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kNGbv56CPpVjdl1Lz+Iq5i6bIlxoDAJdAuM9/NxhDIo=;
-        b=u/l6gufM5EfXRavCj11iT9yQBfWXeZnHDbVSYkFUynApHJTcrpRqpRNc0HBgNhnHjL
-         sTUcEWjhWiWXl4zHh+vrXosbRt7XjSJfAgpRZOXkdoC5IrcnG4rCU/2PAtcJWidnN97W
-         subVCuf8MDHWVMCBI8qaqBMCRjDIj74SOQa4+gwv+MZJ3mNEHBBTvcQsYsJ9j5PQJ8GL
-         mtO9rS85RnyZHhd2SJFC6E5yAFV8uss8kBTMkM2fwZOMNBpoZvnvan4Ujo/l61/hvkPF
-         MrTF1bALocvvs82+kwI4fEL5DRvEvg3HAjtOcGt1OFhClE1N5leDVzwSUVc74cJfdvsZ
-         rRDA==
-X-Gm-Message-State: AO0yUKUgdQ1+za9LhNglpkkvFXhPaItX73qTLogst0cJYuui0SmHW48T
-        bAr1y1LdyyRpwrttRpP014zlfZ7pQzF8ao1yxLQ=
-X-Google-Smtp-Source: AK7set/bA30W/I7R07U5dke+wNJYL8816EoT0IIiPAX/qby+NC3XVNSZeouKOVasZ08VgAihj1Hoq2s68MnBsuqkQiI=
-X-Received: by 2002:a17:906:6d13:b0:878:786e:8c39 with SMTP id
- m19-20020a1709066d1300b00878786e8c39mr2735618ejr.105.1675399323496; Thu, 02
- Feb 2023 20:42:03 -0800 (PST)
+        with ESMTP id S229554AbjBCEuT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 23:50:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACC470987;
+        Thu,  2 Feb 2023 20:50:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DDDB261D85;
+        Fri,  3 Feb 2023 04:50:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 36B3BC433EF;
+        Fri,  3 Feb 2023 04:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675399817;
+        bh=yEBHazE09WVz9ga/0Zxt2EVoRpcCqPQt7YDFz0YYbSY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=sOC7kZnyKfYK6ypmLbUK3dqTi754rkq915UqZ6lC7wbz7EJfmPDEIQthcB09FGrJa
+         N+1OB7GhKR6mH1cClkUOZRLQRmxhYLpnE6WuO3OX7Jpcj2+PJGMGQ8/dPBfg7gTwhn
+         qWDxuDZ/QPc0idwV89UGjJNafW2KZXe1NGDGzT+Y6t+PJ2DJCBHHBVQpZ58Y8JtB1O
+         wf3DEh46xc3JymE7CyrS6kHs2ozgsDHTPiIxSc/Nns4SEM2Qd6XQYCT7AWiG9uBYuk
+         E2SMBqcKp16JzLJwr86fzXWxdwAPWzDGiieFKCxkBh+Qni59Q3V2xCq7YsZe4a+SI+
+         vVfDvunT9FGww==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 17B6FE270C4;
+        Fri,  3 Feb 2023 04:50:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <CAHF350LaCGPZL_e__5s04PO466eGnA9uM61rc1eQAu-0N8jhJA@mail.gmail.com>
-In-Reply-To: <CAHF350LaCGPZL_e__5s04PO466eGnA9uM61rc1eQAu-0N8jhJA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 2 Feb 2023 20:41:52 -0800
-Message-ID: <CAADnVQ+XNEEj78m-xDgmcsk5hy30nz+gDECht7Ft07DEy_j-gQ@mail.gmail.com>
-Subject: Re: Adding map read write API to bpftool gen skeleton sub command.
-To:     Dushyant Behl <myselfdushyantbehl@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Quentin Monnet <quentin@isovalent.com>,
-        palani.kodeswaran@in.ibm.com, sayandes@in.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/2] bpf: Two small cleanups
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167539981709.16316.14082640306773114847.git-patchwork-notify@kernel.org>
+Date:   Fri, 03 Feb 2023 04:50:17 +0000
+References: <1675319486-27744-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1675319486-27744-1-git-send-email-yangtiezhu@loongson.cn>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 31, 2023 at 10:41 PM Dushyant Behl
-<myselfdushyantbehl@gmail.com> wrote:
->
-> Hi folks,
->
-> I have been testing the use of BTF to generate read/write API on maps
-> with specific key value types which can be extracted from the BTF
-> info.
-> I have already developed a small tool to test this which uses the BTF
-> information in the ebpf binary to automatically generate map
-> type-specific CRUD APIs. This can be built on top of the libbpf api in
-> the sense that it can provide key and value type info and type
-> checking on top of the existing api.
+Hello:
 
-What is 'CRUD APIs' ?
-Could you give an example of what kind of code will be generated?
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-> Our goal is to ease the development of ebpf user space applications
-> and was wondering if this feature could be integrated to "bpftool gen
-> skeleton" sub command.=E2=80=A8I was wondering if you think that such a
-> feature will be inline with the intent of bpftool and will be of value
-> to its users.
-> I am happy to have more discussion or a meeting on how this could be
-> approached and implemented and if it would be a good addition to
-> bpftool.
->
-> Please let me know.
->
-> Thanks,
-> Dushyant
+On Thu,  2 Feb 2023 14:31:24 +0800 you wrote:
+> Tiezhu Yang (2):
+>   tools/bpf: Use tab instead of white spaces to sync bpf.h
+>   selftests/bpf: Use semicolon instead of comma in test_verifier.c
+> 
+>  tools/include/uapi/linux/bpf.h              | 4 ++--
+>  tools/testing/selftests/bpf/test_verifier.c | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+
+Here is the summary with links:
+  - [bpf-next,1/2] tools/bpf: Use tab instead of white spaces to sync bpf.h
+    https://git.kernel.org/bpf/bpf-next/c/e2bd9742989b
+  - [bpf-next,2/2] selftests/bpf: Use semicolon instead of comma in test_verifier.c
+    https://git.kernel.org/bpf/bpf-next/c/150809082aab
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
