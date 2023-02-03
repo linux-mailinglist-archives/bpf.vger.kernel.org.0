@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC4368A4D2
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 22:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D2468A4D8
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 22:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbjBCVmv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Feb 2023 16:42:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45008 "EHLO
+        id S232409AbjBCVri (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Feb 2023 16:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjBCVmt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Feb 2023 16:42:49 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF407696
-        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 13:42:47 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id ud5so19038867ejc.4
-        for <bpf@vger.kernel.org>; Fri, 03 Feb 2023 13:42:47 -0800 (PST)
+        with ESMTP id S229610AbjBCVrh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 16:47:37 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917DD8E063
+        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 13:47:36 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id ml19so19206642ejb.0
+        for <bpf@vger.kernel.org>; Fri, 03 Feb 2023 13:47:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2i3Md4h5dpojAmtbSAiYDyUWHhhQMoNyql3P518/y9A=;
-        b=LFHDC1BNYL4XFUl97sROG91wWFGL2dTJI0IA1cvWWvw2jtXznkALj6aaJscxcXIpKY
-         FdsFHfMYvEXRZJvvVkrUZkwFVP9v6URZ05sA/OpyaZ57W+dUI0CgKcf+ttY/RSTmaseT
-         bj3PX223XIj4Vr8+55aDbxOtAX2cyo5h9y1Tt03NnTGno78KElUBxxzL48czOsZj42ic
-         jrr/orTvf4O6KMedXQKUF6HOx9ab0xOwTUvzLn2QH9NTISqTwDfM/BEVkrN/eYB1hp3J
-         6elllKxemJJxlbRpFpBlb7XM01U9KCt8/+T4rb8HC1oHpg5rcrBulLXhsONGJZ0aSUhl
-         8p7Q==
+        bh=aL+5rVKkcEL5iDK242DQxLEQS1JDoWVjXx852HO1HB4=;
+        b=LjgVZRviCkruwvECrJBwjKfkL/uANLqJPPbfPrhp//tkSmrGJu36Ur/BUDWISxDM9I
+         uXB+w4Xxe13YhsqCOklklNcRsnldCVkH6GsSvHMC6zxlGJtACF9aIXliuqiGh2xMQIQM
+         gFP0ux80xwtS9HU8+hZrvAxZbGs2pZ+fc8AEoVfmdncwIlpOFmuqriUMVEGr71/P/YSN
+         5zoVBsWLhMENPy0MEPT9oSaBRq+F12uAmJ17fPdQa6+T8nmngR4+GSHs3PTx97VQa4hp
+         aD4VM76QvBc8z5iIWdwzR2NvkfE6sAjpl3t1asWegsaDirMGIRF1vj3znMpMspPZadmt
+         Mdgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2i3Md4h5dpojAmtbSAiYDyUWHhhQMoNyql3P518/y9A=;
-        b=vU6qSGxJK+fN+UBQMWKPdpe2WYqMnebYAdChAbIWdi8LCovr91KXdafxJos7E25iGa
-         41ga8kXuzrXFpPGHnpXQopmwONdr+c9A72e16QWzdz6RGtmu8qinCRR3fd4p3BvhXWD/
-         2/JUEQx/Nbn/hQidoTlxbFiavNmnbtsAdvVX3S6DX3z1+8C44s+xmalfJJ0lRuAzAygn
-         YgwM7SKAw1xV9lzBTlPdIkEjUS+SFfzDoEArjoxUVoAWQVfu1oULefgExmKdAL5D6Xvu
-         9E9NNfh+Lzgjp9TvJ/ibtH33fPp/EDxqW092H8M/8jlhx2fPdRcuwhMPiSfy3ooHA2Cw
-         nvXg==
-X-Gm-Message-State: AO0yUKW5adfrF/46+d7ZsrnEVeF/czpn39vtN6CglGnHKNjjlJDeK/o6
-        nlmclMF2Br3bPJSPBivnyIg5RmmeWul0R58eVqpIReQB
-X-Google-Smtp-Source: AK7set/xfuB9t0qZBdwlKYNgs/M0dwtSyB8FUJSXFZTVd5TQsFfOzgyJ4B6S/cj4VTv2+SUBv6OhFKfAHP60ZLtl7Hw=
+        bh=aL+5rVKkcEL5iDK242DQxLEQS1JDoWVjXx852HO1HB4=;
+        b=0hmjsK9cnTBMM/SvtrSgglbLv3JYzmfsKEewmDDO+UUus+Jpk7HOeuOqKhXWxj6VyX
+         R5mOK0SQMdXWIKIG5NShsYpYfIvy/V232XbAOdxsyuNyjqAq122PiIuXwmiLLh4RQc+k
+         bkz5PVY8mJbULnz+N3kSEXoCO+fv2aXA39r4+9RlvFM3/GJnnNlz4iBCJCNwuvfk1d3O
+         TsxFz5Zt6G+jA8NQ5Ri1V2LZ2aUdOt8lSRqBdn1UwoIVjdwENwsLtSw1Wv1QcrUTwBQw
+         FeCFd9OvP1lFoglnOumCIGXTlEJTI6lRHHkktFT93ieBuk9fR1cIqvyo5bGujTaQ41h0
+         vmSg==
+X-Gm-Message-State: AO0yUKUKHbIBTncvQ5H4hYh/jRdnI+9lvI8BOY3zD5Q6eYDxDKSrxadD
+        hRQat6iLA48SUNoQkz1T/Zf2S3eeknMwx7oa3Zo=
+X-Google-Smtp-Source: AK7set/K9KjilbFqCyh1UBgpnhF+2niJaLkl2fGGeioFQwyMEFQW+8PHjJyxuVlMxJV3MQhFS+8GI9E8Nzk8d647LIs=
 X-Received: by 2002:a17:906:cb9a:b0:877:5b9b:b426 with SMTP id
- mf26-20020a170906cb9a00b008775b9bb426mr3130566ejb.12.1675460566321; Fri, 03
- Feb 2023 13:42:46 -0800 (PST)
+ mf26-20020a170906cb9a00b008775b9bb426mr3133751ejb.12.1675460855104; Fri, 03
+ Feb 2023 13:47:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20230202062549.632425-1-arilou@gmail.com> <479c7e94-9502-6f94-c465-ac051f99b2ae@meta.com>
-In-Reply-To: <479c7e94-9502-6f94-c465-ac051f99b2ae@meta.com>
+References: <20230203080849.2462797-1-hao.xiang@bytedance.com>
+In-Reply-To: <20230203080849.2462797-1-hao.xiang@bytedance.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 3 Feb 2023 13:42:34 -0800
-Message-ID: <CAEf4BzbGHucDcFEyjDxSeW1fJxKDAt2mt9WXFagn=y9B+pqBSg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] libbpf: Add wakeup_events to creation options
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Jon Doron <arilou@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org, Jon Doron <jond@wiz.io>
+Date:   Fri, 3 Feb 2023 13:47:23 -0800
+Message-ID: <CAEf4BzZ74W0Vx_7+7CU0co6fKHEmo7XP+wJ+wb2HHxDnSRqP+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/1] libbpf: Correctly set the kernel code
+ version in Debian kernel.
+To:     Hao Xiang <hao.xiang@bytedance.com>
+Cc:     bpf@vger.kernel.org, Ho-Ren Chuang <horenchuang@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -66,66 +66,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 3, 2023 at 10:31 AM Yonghong Song <yhs@meta.com> wrote:
+On Fri, Feb 3, 2023 at 12:17 AM Hao Xiang <hao.xiang@bytedance.com> wrote:
 >
+> In a previous commit, Ubuntu kernel code version is correctly set
+> by retrieving the information from /proc/version_signature.
 >
+> commit<5b3d72987701d51bf31823b39db49d10970f5c2d>
+> (libbpf: Improve LINUX_VERSION_CODE detection)
 >
-> On 2/1/23 10:25 PM, Jon Doron wrote:
-> > From: Jon Doron <jond@wiz.io>
-> >
-> > Add option to set when the perf buffer should wake up, by default the
-> > perf buffer becomes signaled for every event that is being pushed to it.
-> >
-> > In case of a high throughput of events it will be more efficient to wake
-> > up only once you have X events ready to be read.
-> >
-> > So your application can wakeup once and drain the entire perf buffer.
-> >
-> > Signed-off-by: Jon Doron <jond@wiz.io>
-> > ---
-> >   tools/lib/bpf/libbpf.c | 4 ++--
-> >   tools/lib/bpf/libbpf.h | 3 ++-
-> >   2 files changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index eed5cec6f510..6b30ff13922b 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -11719,8 +11719,8 @@ struct perf_buffer *perf_buffer__new(int map_fd, size_t page_cnt,
-> >       attr.config = PERF_COUNT_SW_BPF_OUTPUT;
-> >       attr.type = PERF_TYPE_SOFTWARE;
-> >       attr.sample_type = PERF_SAMPLE_RAW;
-> > -     attr.sample_period = 1;
-> > -     attr.wakeup_events = 1;
-> > +     attr.sample_period = OPTS_GET(opts, wakeup_events, 1);
-> > +     attr.wakeup_events = OPTS_GET(opts, wakeup_events, 1);
-> >
-> >       p.attr = &attr;
-> >       p.sample_cb = sample_cb;
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index 8777ff21ea1d..e83c0a915dc7 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -1246,8 +1246,9 @@ typedef void (*perf_buffer_lost_fn)(void *ctx, int cpu, __u64 cnt);
-> >   /* common use perf buffer options */
-> >   struct perf_buffer_opts {
-> >       size_t sz;
-> > +     __u32 wakeup_events;
+> The /proc/version_signature file doesn't present in at least the
+> older versions of Debian distributions (eg, Debian 9, 10). The Debian
+> kernel has a similar issue where the release information from uname()
+> syscall doesn't give the kernel code version that matches what the
+> kernel actually expects. Below is an example content from Debian 10.
 >
-> Since you are adding wakeup_events here, do you think it make sense
-> to add sample_period to struct perf_buffer_opts as well? In some cases,
-> users might want to have different values for sample_period and
-> wakeup_events, e.g., smaller sample_period to accumulate data and
-> larger wakeup_events to wakeup user space poll?
+> release: 4.19.0-23-amd64
+> version: #1 SMP Debian 4.19.269-1 (2022-12-20) x86_64
+>
+> Debian reports incorrect kernel version in utsname::release returned
+> by uname() syscall, which in older kernels (Debian 9, 10) leads to
+> kprobe BPF programs failing to load due to the version check mismatch.
+>
+> Fortunately, the correct kernel code version presents in the
+> utsname::version returned by uname() syscall in Debian kernels. This
+> change adds another get kernel version function to handle Debian in
+> addition to the previously added get kernel version function to handle
+> Ubuntu. Some minor refactoring work is also done to make the code more
+> readable.
+>
+> Signed-off-by: Hao Xiang <hao.xiang@bytedance.com>
+> Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
+> ---
 
-It's not clear to me from reading perf_event_open manpage what
-"sample_period" means for perf buffer. What will happen when we have
-sample_period != wakeup_events?
+yes, the patch looks correctly formatted, but you haven't addressed
+all the feedback. Please check my last reply on previous version and
+submit a new version with feedback addressed. Thank you.
 
+>  tools/lib/bpf/libbpf.c        | 37 --------------
+>  tools/lib/bpf/libbpf_probes.c | 93 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 93 insertions(+), 37 deletions(-)
 >
-> >   };
-> > -#define perf_buffer_opts__last_field sz
-> > +#define perf_buffer_opts__last_field wakeup_events
-> >
-> >   /**
-> >    * @brief **perf_buffer__new()** creates BPF perfbuf manager for a specified
+
+[...]
