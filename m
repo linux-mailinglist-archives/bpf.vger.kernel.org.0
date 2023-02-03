@@ -2,82 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384F8688EA8
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 05:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF23688EC7
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 06:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjBCEuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 23:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
+        id S231438AbjBCFF5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Feb 2023 00:05:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjBCEuT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 23:50:19 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACC470987;
-        Thu,  2 Feb 2023 20:50:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DDDB261D85;
-        Fri,  3 Feb 2023 04:50:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 36B3BC433EF;
-        Fri,  3 Feb 2023 04:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675399817;
-        bh=yEBHazE09WVz9ga/0Zxt2EVoRpcCqPQt7YDFz0YYbSY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=sOC7kZnyKfYK6ypmLbUK3dqTi754rkq915UqZ6lC7wbz7EJfmPDEIQthcB09FGrJa
-         N+1OB7GhKR6mH1cClkUOZRLQRmxhYLpnE6WuO3OX7Jpcj2+PJGMGQ8/dPBfg7gTwhn
-         qWDxuDZ/QPc0idwV89UGjJNafW2KZXe1NGDGzT+Y6t+PJ2DJCBHHBVQpZ58Y8JtB1O
-         wf3DEh46xc3JymE7CyrS6kHs2ozgsDHTPiIxSc/Nns4SEM2Qd6XQYCT7AWiG9uBYuk
-         E2SMBqcKp16JzLJwr86fzXWxdwAPWzDGiieFKCxkBh+Qni59Q3V2xCq7YsZe4a+SI+
-         vVfDvunT9FGww==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 17B6FE270C4;
-        Fri,  3 Feb 2023 04:50:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231149AbjBCFF4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 00:05:56 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4862708;
+        Thu,  2 Feb 2023 21:05:55 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id ml19so12422074ejb.0;
+        Thu, 02 Feb 2023 21:05:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7fY5j1jAIj7Uxf/jZW/utbpEJzbkP46FJilFzLuPxMw=;
+        b=bbf7KnwRHsVNww7xW2PNvzqncFNGQBVTdV0dxU9LcZpJGyLv6VISNhuCjBSw1t5SPo
+         Ai5nOv1OzagwRSQO/csZ4YTJklCa01o5NeyakaasYfWXytjW8hKTQQR3cMP2qPt1WXuG
+         Bzz5gvpaXdXxk6XYZzS//9mO82G6cR0srMCq/GRocl785IXy18DElb1QgQCiv9l3N24N
+         N1EOyIxixuVSE3EbeT67fg+xxQBVHXUH14n1Vxp1KadyEx/4JqJXKoiJrXRuqIRgdm1H
+         4b2S2xUARsGhx61lQzVtjpH8Ol2O5UsVk31h4CdvHaQ6Q8phn1EFM16cJ+aIDkQ0A5lS
+         nG6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7fY5j1jAIj7Uxf/jZW/utbpEJzbkP46FJilFzLuPxMw=;
+        b=CJjH0G4i9f06kxqo0ck8zABbSBRZgjRk1sshts1897bn/WZQLEzkxAL9iQ3E8/uEgA
+         Rhi30ELAZlwsfhWxBT2IkxO0EfokYV2k5gyDANwLl92MWuB9OV9XFfCQrF4GYg+VPzMq
+         awHbw/5llo/5gOnwfmhAgbiW4bQ9Z5sBf1F7fmKfsKzVgZZmxV2SmRZhyAdUyQvGqtyF
+         kuh8z9sX1Ci4RWoGSQZoFNlQpwmcN7onzb6ilLF/uxBgoAtg5XgUxq2huMq1oaI9H+1d
+         UZ7wjEcf1SVPAYqTKHQj5ARQOtvay9lf1cl+jLar5DLtvurAIc86GpCE453aF12D0ysJ
+         Qn+Q==
+X-Gm-Message-State: AO0yUKVducAm16UZ3ZEGo8Fyih6W3eZN2f6JCaT78f1lVRcV3Diq74rx
+        p2dCkpde4grek/iX1ayQiJhMGpCGM2yjWP3ob9I=
+X-Google-Smtp-Source: AK7set922hbQ0vxTuxQ2UbTgS6R45DiqMDRtcZYe5a+RO0zzG+Ch1ZlSoj4uAzQuiE690kPEWT/SxFBtUax2285mFo8=
+X-Received: by 2002:a17:906:fc20:b0:86e:429b:6a20 with SMTP id
+ ov32-20020a170906fc2000b0086e429b6a20mr2576522ejb.247.1675400754106; Thu, 02
+ Feb 2023 21:05:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/2] bpf: Two small cleanups
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167539981709.16316.14082640306773114847.git-patchwork-notify@kernel.org>
-Date:   Fri, 03 Feb 2023 04:50:17 +0000
-References: <1675319486-27744-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1675319486-27744-1-git-send-email-yangtiezhu@loongson.cn>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1675245257.git.lorenzo@kernel.org> <7c1af8e7e6ef0614cf32fa9e6bdaa2d8d605f859.1675245258.git.lorenzo@kernel.org>
+In-Reply-To: <7c1af8e7e6ef0614cf32fa9e6bdaa2d8d605f859.1675245258.git.lorenzo@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 2 Feb 2023 21:05:42 -0800
+Message-ID: <CAADnVQLTBSTCr4O2kGWSz3ihOZxpXHz-8TuwbwXe6=7-XhiDkA@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 8/8] selftests/bpf: introduce XDP compliance
+ test tool
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Marek Majtyka <alardam@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, anthony.l.nguyen@intel.com,
+        Andy Gospodarek <gospo@broadcom.com>, vladimir.oltean@nxp.com,
+        Felix Fietkau <nbd@nbd.name>, john@phrozen.org,
+        Leon Romanovsky <leon@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Ariel Elior <aelior@marvell.com>,
+        christophe.jaillet@wanadoo.fr, ecree.xilinx@gmail.com,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>,
+        gerhard@engleder-embedded.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Thu,  2 Feb 2023 14:31:24 +0800 you wrote:
-> Tiezhu Yang (2):
->   tools/bpf: Use tab instead of white spaces to sync bpf.h
->   selftests/bpf: Use semicolon instead of comma in test_verifier.c
-> 
->  tools/include/uapi/linux/bpf.h              | 4 ++--
->  tools/testing/selftests/bpf/test_verifier.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-
-Here is the summary with links:
-  - [bpf-next,1/2] tools/bpf: Use tab instead of white spaces to sync bpf.h
-    https://git.kernel.org/bpf/bpf-next/c/e2bd9742989b
-  - [bpf-next,2/2] selftests/bpf: Use semicolon instead of comma in test_verifier.c
-    https://git.kernel.org/bpf/bpf-next/c/150809082aab
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+On Wed, Feb 1, 2023 at 2:25 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> Introduce xdp_features tool in order to test XDP features supported by
+> the NIC and match them against advertised ones.
+> In order to test supported/advertised XDP features, xdp_features must
+> run on the Device Under Test (DUT) and on a Tester device.
+> xdp_features opens a control TCP channel between DUT and Tester devices
+> to send control commands from Tester to the DUT and a UDP data channel
+> where the Tester sends UDP 'echo' packets and the DUT is expected to
+> reply back with the same packet. DUT installs multiple XDP programs on the
+> NIC to test XDP capabilities and reports back to the Tester some XDP stats.
 
 
+'DUT installs...'? what? The device installs XDP programs ?
+
+> +
+> +       ctrl_sockfd = accept(*sockfd, (struct sockaddr *)&ctrl_addr, &addrlen);
+> +       if (ctrl_sockfd < 0) {
+> +               fprintf(stderr, "Failed to accept connection on DUT socket\n");
+
+Applied, but overuse of the word 'DUT' is incorrect and confusing.
+
+'DUT socket' ? what is that?
+'Invalid DUT address' ? what address?
+The UX in general is not user friendly.
+
+./xdp_features
+Invalid ifindex
+
+This is not a helpful message.
+
+./xdp_features eth0
+Starting DUT on device 3
+Failed to accept connection on DUT socket
+
+'Starting DUT' ? What did it start?
