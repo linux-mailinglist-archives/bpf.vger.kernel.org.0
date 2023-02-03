@@ -2,88 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE96688B26
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 00:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 177BD688B53
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 01:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbjBBXyB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 18:54:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
+        id S233398AbjBCADy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 19:03:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbjBBXyB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 18:54:01 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2946B000
-        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 15:54:00 -0800 (PST)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 312NHmYX003057;
-        Thu, 2 Feb 2023 23:53:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=aWFvXS9+mqXkfVDQuF+wiulWVR9yxHk2CYOSz8WQxfw=;
- b=pMnasspt0BBFV2e6n8hPcTQOQoUky5AWqqzw9X+/W2fluDZ3KQhzwOTfAWwBTJAIHutM
- a5vL1HinMSOL3kFS4didda39yM95S/HERonyXCMNoh1XVXyQc9ym6EGNDrmpeKTgjoUE
- m9doTNtwBT5cwK2E6UGFSWbG/h1yRkypScqTWtR8++E+6+rwE7Pb1gwP6B5o7SegefHG
- I8NXawP+B5te0pfnGLmVZdHNerW2EXO/u99Rg6rCTA4FvICZAi73JLWt/E0mze/Bnbs2
- Sjhqyx88JcZlUz5vqv7jR26S0UyeWEadL9EQCQUe8yxnHekM+1VfwV15J82cQvKikpT3 gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ngpqnrk17-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Feb 2023 23:53:45 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 312Nrj43019971;
-        Thu, 2 Feb 2023 23:53:45 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ngpqnrk0w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Feb 2023 23:53:45 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 312JfjSo021107;
-        Thu, 2 Feb 2023 23:53:42 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma06fra.de.ibm.com (PPS) with ESMTPS id 3ncvugmud4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Feb 2023 23:53:42 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 312NrdDU22872766
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Feb 2023 23:53:39 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 01E6E20040;
-        Thu,  2 Feb 2023 23:53:39 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 69F7E20043;
-        Thu,  2 Feb 2023 23:53:38 +0000 (GMT)
-Received: from heavy.ibmuc.com (unknown [9.171.0.211])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  2 Feb 2023 23:53:38 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: Initialize tc in xdp_synproxy
-Date:   Fri,  3 Feb 2023 00:53:35 +0100
-Message-Id: <20230202235335.3403781-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.39.1
+        with ESMTP id S233160AbjBCADx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 19:03:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340077A91
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 16:03:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675382579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jyfxrc/7ZPKLF/u6Ruw0WD2VULIfdrJX3Yw+Mo2r3IQ=;
+        b=erIFwdSTjQ504glmn+LHJ97CFB7gE5cIJrj42rns6LWHss4RyQyIXsL1j3IIAaw2s9EnDA
+        Lpv+GYIwB8DQAEJ7jaNrwevA0piL0xtHAALutpfz7QUkBIziVM4bf+rgP+i67IJTrqTBFt
+        /zoKx7Dzfgg4nu0LOUF2zcN1+9/ekfg=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-133-eOTJuBo5NcG4Slco7pqUyA-1; Thu, 02 Feb 2023 19:02:58 -0500
+X-MC-Unique: eOTJuBo5NcG4Slco7pqUyA-1
+Received: by mail-ed1-f70.google.com with SMTP id s11-20020a056402164b00b004a702699dfaso2123969edx.14
+        for <bpf@vger.kernel.org>; Thu, 02 Feb 2023 16:02:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jyfxrc/7ZPKLF/u6Ruw0WD2VULIfdrJX3Yw+Mo2r3IQ=;
+        b=KKn9O0nLvBoE6Y0QL4Z0seOyMdCj7yHvFHdjGn+N0EITRLzo6I2P+5DliBtCpfs8XI
+         cjy4bBYkEgwMNuBxwNXLM3vcU8LL9ZNy/LbKbBQLvwkgvXbppWY+XVzIwuRfjcZiPtYv
+         +dcx2DZF5buUV8QYPiVM/EuTLUTjIEW3wzKL3NINgGwvJ61eFFBOntMObyq+hZJelyo7
+         jSuCjXd/C8RTfZ8qgJpoamr18wbO1nyh8IliFSjSynwVsxbIbceUI6eYlMurx08XQ0uY
+         lF/EfXkazhHbhnl/cNACk9AfNQEdlJwEAJr+VXGJNym1VdVZTG6jaPz3ucia/mpoumeg
+         F0sw==
+X-Gm-Message-State: AO0yUKVN6e2JzFsgl5al+0VhPMEsvgKK0rB6G5cjqOirwGrtKoQU4x+I
+        r6wdmMCjpUpJhdyCtFq+J73fQSofVFHhuBl8BK0r0YSB3B7gKjWeRWoSJ0pPYVyWXp1yEzJ6DVC
+        HYbfyAe5/Prb0
+X-Received: by 2002:a17:906:c5b:b0:883:be32:cd33 with SMTP id t27-20020a1709060c5b00b00883be32cd33mr8973429ejf.35.1675382577129;
+        Thu, 02 Feb 2023 16:02:57 -0800 (PST)
+X-Google-Smtp-Source: AK7set838NtnsCYnhKppwOgz3AzxWNHBsWqmLSxldhZI0SEnURw3TDrqImN+olXPAlZ6WWiP8gmGgg==
+X-Received: by 2002:a17:906:c5b:b0:883:be32:cd33 with SMTP id t27-20020a1709060c5b00b00883be32cd33mr8973402ejf.35.1675382576789;
+        Thu, 02 Feb 2023 16:02:56 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id ox4-20020a170907100400b008874c903ec5sm501498ejb.43.2023.02.02.16.02.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 16:02:56 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id EDBED972DBC; Fri,  3 Feb 2023 01:02:54 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     David Vernet <void@manifault.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@meta.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add KF_DEPRECATED kfunc flag
+In-Reply-To: <CAADnVQJeaU=F9uym9RctfODHbeV-TTK8DiQFTFm_R=N+qF6gYA@mail.gmail.com>
+References: <20230202163056.658641-1-void@manifault.com>
+ <20230202163056.658641-3-void@manifault.com>
+ <CAADnVQJjmnEpXWL8-SAPt5zYXnFYeF8-wXXpA9shOhqUXNPw=g@mail.gmail.com>
+ <Y9wq1Fy8sgpGB+pe@maniforge>
+ <1ea9adb3-851c-0c04-1655-07d9f3b7f3b0@iogearbox.net>
+ <CAADnVQJeaU=F9uym9RctfODHbeV-TTK8DiQFTFm_R=N+qF6gYA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 03 Feb 2023 01:02:54 +0100
+Message-ID: <87ilgjehu9.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NCH2RX2MQCpUbS3O3UZAoUdBz2XU0wa1
-X-Proofpoint-GUID: ROlkdIiJKy7F0px9EZw3Vir1JQDLyX56
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-02-02_15,2023-02-02_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 clxscore=1015 bulkscore=0
- malwarescore=0 lowpriorityscore=0 mlxscore=0 impostorscore=0 phishscore=0
- spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302020209
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,34 +95,99 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-xdp_synproxy/xdp fails in CI with:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-    Error: bpf_tc_hook_create: File exists
+> On Thu, Feb 2, 2023 at 3:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> On 2/2/23 10:27 PM, David Vernet wrote:
+>> > On Thu, Feb 02, 2023 at 01:21:19PM -0800, Alexei Starovoitov wrote:
+>> >> On Thu, Feb 2, 2023 at 8:31 AM David Vernet <void@manifault.com> wrote:
+>> >>>
+>> >>> Now that we have our kfunc lifecycle expectations clearly documented,
+>> >>> and that KF_DEPRECATED is documented as an optional method for kfunc
+>> >>> developers and maintainers to provide a deprecation story to BPF users,
+>> >>> we need to actually implement the flag.
+>> >>>
+>> >>> This patch adds KF_DEPRECATED, and updates the verifier to issue a
+>> >>> verifier log message if a deprecated kfunc is called. Currently, a BPF
+>> >>> program either has to fail to verify, or be loaded with log level 2 in
+>> >>> order to see the message. We could eventually enhance this to always
+>> >>> be logged regardless of log level or verification status, or we could
+>> >>> instead emit a warning to dmesg. This seems like the least controversial
+>> >>> option for now.
+>> >>>
+>> >>> A subsequent patch will add a selftest that verifies this behavior.
+>> >>>
+>> >>> Signed-off-by: David Vernet <void@manifault.com>
+>> >>> ---
+>> >>>   include/linux/btf.h   | 1 +
+>> >>>   kernel/bpf/verifier.c | 8 ++++++++
+>> >>>   2 files changed, 9 insertions(+)
+>> >>>
+>> >>> diff --git a/include/linux/btf.h b/include/linux/btf.h
+>> >>> index 49e0fe6d8274..a0ea788ee9b0 100644
+>> >>> --- a/include/linux/btf.h
+>> >>> +++ b/include/linux/btf.h
+>> >>> @@ -71,6 +71,7 @@
+>> >>>   #define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
+>> >>>   #define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
+>> >>>   #define KF_RCU          (1 << 7) /* kfunc only takes rcu pointer arguments */
+>> >>> +#define KF_DEPRECATED   (1 << 8) /* kfunc is slated to be removed or deprecated */
+>> >>>
+>> >>>   /*
+>> >>>    * Tag marking a kernel function as a kfunc. This is meant to minimize the
+>> >>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> >>> index 4cc0e70ee71e..22adcf24f9e1 100644
+>> >>> --- a/kernel/bpf/verifier.c
+>> >>> +++ b/kernel/bpf/verifier.c
+>> >>> @@ -8511,6 +8511,11 @@ static bool is_kfunc_rcu(struct bpf_kfunc_call_arg_meta *meta)
+>> >>>          return meta->kfunc_flags & KF_RCU;
+>> >>>   }
+>> >>>
+>> >>> +static bool is_kfunc_deprecated(const struct bpf_kfunc_call_arg_meta *meta)
+>> >>> +{
+>> >>> +       return meta->kfunc_flags & KF_DEPRECATED;
+>> >>> +}
+>> >>> +
+>> >>>   static bool is_kfunc_arg_kptr_get(struct bpf_kfunc_call_arg_meta *meta, int arg)
+>> >>>   {
+>> >>>          return arg == 0 && (meta->kfunc_flags & KF_KPTR_GET);
+>> >>> @@ -9646,6 +9651,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>> >>>                          mark_btf_func_reg_size(env, regno, t->size);
+>> >>>          }
+>> >>>
+>> >>> +       if (is_kfunc_deprecated(&meta))
+>> >>> +               verbose(env, "calling deprecated kfunc %s\n", func_name);
+>> >>> +
+>> >>
+>> >> Since prog will successfully load, no one will notice this message.
+>> >>
+>> >> I think we can skip patches 2 and 3 for now.
+>>
+>> +1, the KF_DEPRECATED could probably for the time being just mentioned
+>> in doc.
+>>
+>> > I can leave them out of the v2 version of the patch set, but the reason
+>> > I included them here is because I thought it would be odd to document
+>> > KF_DEPRECATED without actually upstreaming it. Agreed that it is
+>> > essentially 0 signal in its current form. Hopefully it could be expanded
+>> > soon to be louder and more noticeable by not relying on the env log,
+>> > which is wiped if the verifier passes, but that's separate from whether
+>> > KF_DEPRECATED in general is the API that we want to provide kfunc
+>> > developers (in which case at least 2 and 3 would add that in a
+>> > non-controversial form).
+>>
+>> This ideally needs some form of prog load flag which would error upon
+>> use of kfuncs with deprecation tag, such that tools probing kernel for
+>> feature availability can notice.
+>
+> Interesting idea.
+> By default we can reject loading progs that try to use KF_DEPRECATED,
+> but still allow it with explicit load flag.
 
-The XDP version of the test should not be calling bpf_tc_hook_create();
-the reason it's happening anyway is that if we don't specify --tc on the
-command line, tc variable remains uninitialized.
+If we reject by default then adding the deprecation flag would break
+applications just as much as just removing the kfunc, which would kinda
+defeat the purpose of having the flag in the first place, wouldn't it? :)
 
-Fixes: 784d5dc0efc2 ("selftests/bpf: Add selftests for raw syncookie helpers in TC mode")
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Reported-by: Joanne Koong <joannelkoong@gmail.com>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/xdp_synproxy.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/testing/selftests/bpf/xdp_synproxy.c b/tools/testing/selftests/bpf/xdp_synproxy.c
-index 410a1385a01d..6dbe0b745198 100644
---- a/tools/testing/selftests/bpf/xdp_synproxy.c
-+++ b/tools/testing/selftests/bpf/xdp_synproxy.c
-@@ -116,6 +116,7 @@ static void parse_options(int argc, char *argv[], unsigned int *ifindex, __u32 *
- 	*tcpipopts = 0;
- 	*ports = NULL;
- 	*single = false;
-+	*tc = false;
- 
- 	while (true) {
- 		int opt;
--- 
-2.39.1
+-Toke
 
