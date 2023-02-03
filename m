@@ -2,108 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77048689772
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 12:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C593F6897F9
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 12:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbjBCLBx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Feb 2023 06:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
+        id S232176AbjBCLn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Feb 2023 06:43:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbjBCLBt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Feb 2023 06:01:49 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CEC179639
-        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 03:01:48 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id l4-20020a17090a850400b0023013402671so8433483pjn.5
-        for <bpf@vger.kernel.org>; Fri, 03 Feb 2023 03:01:48 -0800 (PST)
+        with ESMTP id S230134AbjBCLn0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 06:43:26 -0500
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763269D5AA;
+        Fri,  3 Feb 2023 03:43:25 -0800 (PST)
+Received: by mail-vs1-xe2c.google.com with SMTP id y8so5113448vsq.0;
+        Fri, 03 Feb 2023 03:43:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=smoE99lYqF9OtoFAefwmIaEGKk9MXYc6gAi/SfQ6S5o=;
-        b=RiMx8wCN8L74r8xqXqmhHt5YDiuPIUD3lIgV4nA3Jn+HglL2FQHWx4UGSlAoyiwkKZ
-         7QwqypCmr9w1CZfAkFzdnp6mMMSYpNzw4NsqATw7CMFyZFDOZV5zCDrtdi5Tx1cohCXR
-         +oG9oo3w80TVUDO6QZqBipWhDmXOX+cA/cGB8=
+        bh=/O0wfDmh+hVYy+ZkNR4liogCM4hpIictaPGLw3sHiAs=;
+        b=cYd/WRYuLftKmgz18SrIZkr1UV0cfkm9D7jKlFiBkn6zFMSvruJ1rgl/8/bmn8hqMK
+         p7qf+/0iEMyjTgnU1fEQYDdMC6qf5QVxpPI33MqGuKx5ZW+t/3Fnd0UgtvW5DMhYU76q
+         qDRG53Ftek7aMHmOuA/bYxBZFyzlE9skG7VJ4lIkpvfBX0NUZC8CvVEael34U1JrMATm
+         r6awIZZO5uRRM9rSDnEhsM614j3VMzV6cuIVp60cUQX/KqH/tJjJR6qZ9+ItHMsfYVej
+         /dxKdV4UX8khN56fo/TAu5Nek4tB0rZwDIJk8t2jDFWIUHA/LuQjoN4uuKehWZfk+/an
+         y6aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=smoE99lYqF9OtoFAefwmIaEGKk9MXYc6gAi/SfQ6S5o=;
-        b=NaQOS1bfECLl+RJ7/h1CAShIdSlkyQeFlSJLH0l8/4zaD9tgP9aRt7Tg6XScKDxVd0
-         /esogdyWPx21R6t4XzT9QRs93ZXU1hKQjDwCFcjbE//1twPLPtVKovRrpkPAlbzdcWDH
-         DC5MkuKhepqJRm6Cz9HnugCQQ1hHxElntsxYhgOLYmp5VBLZ9QQXdlRzOAnoopPwxjDA
-         XC4czHTbovc/hmFyXEvXFvbUNHTZWuafQNL18wS25SikgJZDaSmfV0D+yUcFnepPyZSo
-         a3OzAwWHjcYA6PVjFlMm7XeGF1EtohhOrMAAWaO7a8iDI87oHPyrR3fqgKFtObXjKOW1
-         7k4Q==
-X-Gm-Message-State: AO0yUKUPZjv/h+HdO1LWlJNrM2lRqt64syz0HTF1dTIiKpiKyaBP7XQi
-        mIHU2O+3axnN1eErh4DbZTJcq/tiXrOBlvdtjDyxjg==
-X-Google-Smtp-Source: AK7set9Z93YpJ222AxyxW4G54MZBshv84MlYZdvH+Ot8YqQbnIBZzX6aPxafVyJxCLs/rYBjxj9uvPTnMVqYSJhBHKE=
-X-Received: by 2002:a17:90b:31ce:b0:22c:3e91:15e6 with SMTP id
- jv14-20020a17090b31ce00b0022c3e9115e6mr1157227pjb.17.1675422107522; Fri, 03
- Feb 2023 03:01:47 -0800 (PST)
+        bh=/O0wfDmh+hVYy+ZkNR4liogCM4hpIictaPGLw3sHiAs=;
+        b=BCDWJOhSdle/MSDnyDX1dxWjB0jAqTBXO3YxbBe93HpZsNp0rSdI7IdgfA61McQ5xz
+         pCCk6x/RcsGk/yS4TAxFPnqAK647Tmo7GOezi94heYm8kvmQTKJCzDtZlBY5yzU5adpa
+         bzwp1II3i2NtaiaSUkJsjosEuUQWCEtGuLPN0Uy1KaSpsgwjSqIbLHg3BBMqtL+U7H0V
+         K6ehnyVOZTxTqDb7TnODgg2wtcoFtG4I9K41uxVc/Ydd7soPPgFetdr8jEaspRddRu4U
+         V3NNYQknWCOJt81LIIoD0Ktt4u2vOzfElI5CO+4MDR29+aZD9XLL+cSsh4a1q0N5oI3+
+         SktA==
+X-Gm-Message-State: AO0yUKVE/VkiVwsySUbSe19pzVQf7y/Hkwl1zecy0MQNLvLY5z7L1D4u
+        aqrJSCMSOFrujwJ7WC3ojmXZPqMDdVCqLYhjs1Y=
+X-Google-Smtp-Source: AK7set8HoY4/ZCAC8QSuult6Rp/Z114p0/1kQL9PigZw3gsjVIDleaMgZ+uaU0cuQkKZ+v8ELYvEVonF51NSkNTnp2c=
+X-Received: by 2002:a67:e102:0:b0:3f0:89e1:7c80 with SMTP id
+ d2-20020a67e102000000b003f089e17c80mr1314417vsl.72.1675424604543; Fri, 03 Feb
+ 2023 03:43:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20230201163420.1579014-1-revest@chromium.org> <20230201163420.1579014-6-revest@chromium.org>
- <Y9vcua0+JzjmTICO@FVFF77S0Q05N.cambridge.arm.com> <Y9vrWUM8ypNNwHyv@FVFF77S0Q05N.cambridge.arm.com>
- <CABRcYm+nwsyyKEhvz9dr8sDiOWfha-YxOkGMFSx4mH9O+HAiYg@mail.gmail.com> <Y9zb+uKqQN9gJJBI@FVFF77S0Q05N>
-In-Reply-To: <Y9zb+uKqQN9gJJBI@FVFF77S0Q05N>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 3 Feb 2023 12:01:36 +0100
-Message-ID: <CABRcYmKMdoEAH=ua+AKJyMTt_xMvV0jisAFcr4UuVOJGDzHdfw@mail.gmail.com>
-Subject: Re: [PATCH 5/8] ftrace: Make DIRECT_CALLS work WITH_ARGS and !WITH_REGS
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com
+References: <20221122021536.1629178-1-drosen@google.com> <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
+ <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com>
+ <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm> <CAOQ4uxiBD5NXLMXFev7vsCLU5-_o8-_H-XcoMY1aqhOwnADo9w@mail.gmail.com>
+ <283b5344-3ef5-7799-e243-13c707388cd8@fastmail.fm>
+In-Reply-To: <283b5344-3ef5-7799-e243-13c707388cd8@fastmail.fm>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 3 Feb 2023 13:43:13 +0200
+Message-ID: <CAOQ4uxjvUukDSBk977csO5cX=-1HiMHmyQxycbYQgrpLaanddw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem Extension for FUSE
+To:     Bernd Schubert <bernd.schubert@fastmail.fm>
+Cc:     Daniel Rosenberg <drosen@google.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@android.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Nikolaus Rath <Nikolaus@rath.org>,
+        Josef Bacik <josef@toxicpanda.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 3, 2023 at 11:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Thu, Feb 02, 2023 at 07:19:58PM +0100, Florent Revest wrote:
-> > On Thu, Feb 2, 2023 at 5:57 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> > > index 84f717f8959e..3d2156e335d7 100644
-> > > --- a/include/linux/ftrace.h
-> > > +++ b/include/linux/ftrace.h
-> > > @@ -241,6 +241,12 @@ enum {
-> > >         FTRACE_OPS_FL_DIRECT                    = BIT(17),
-> > >  };
-> > >
-> > > +#ifndef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-> > > +#define FTRACE_OPS_FL_SAVE_ARGS                        FTRACE_OPS_FL_SAVE_REGS
-> > > +#else
-> > > +#define FTRACE_OPS_FL_SAVE_ARGS                        0
+> > Bernd, Daniel, Vivek,
 > >
-> > Mh, could we (theoretically) be in a situation where an arch supports
-> > WITH_ARGS but it also has two ftrace_caller trampolines: one that
-> > saves the args and the other that saves nothing ? (For example if x86
-> > migrates their WITH_REGS to WITH_ARGS only)
->
-> I don't think so -- the point of WITH_ARGS is that we always have to
-> save/restore the args, and when WITH_ARGS is selected they're unconditionally
-> available (though not necessarily a full pt_regs), which is what other code
-> assumes when WITH_ARGS is selected.
-
-Perfect then!
-
-> > Wouldn't it make sense then to define FTRACE_OPS_FL_SAVE_ARGS as an
-> > extra bit to tell ftrace that we need the args, similarly to
-> > FTRACE_OPS_FL_SAVE_REGS ?
+> > Did you see LSFMMBPF 2023 CFP [1]?
 > >
-> > If that can't happen or if we want to leave this up for later, the
-> > patch lgtm and I can squash it into my patch 5 in v2. ;)
+> > Did you consider requesting an invitation?
+> > I think it could be a good opportunity to sit in a room and discuss the
+> > roadmap of "FUSE2" with all the developers involved.
+> >
+> > I am on the program committee for the Filesystem track, and I encourage
+> > you to request an invite if you are interested to attend and/or nominate
+> > other developers that you think will be valuable for this discussion.
+> >
+> > Thanks,
+> > Amir.
+> >
+> > [1] https://lore.kernel.org/linux-fsdevel/Y9qBs82f94aV4%2F78@localhost.localdomain/
 >
-> I think that can't happen, and for now the above should be fine.
+>
+> Thanks a lot Amir, I'm going to send out an invitation tomorrow. Maybe
+> Nikolaus as libfuse maintainer could also attend?
+>
 
-Yep
+Since this summit is about kernel filesystem development, I am not sure
+on-prem attendance will be the best option for Nikolaus as we do have
+a quota for
+on-prem attendees, but we should have an option for connecting specific
+attendees remotely for specific sessions, so that could be great.
+
+Two more notes:
+1. We realize that companies are going through economic changes and that
+    this may not be the best time to request travel approval or to be able to
+    get it. This should not stop you from requesting to attend!
+    Worse case, you can attend remotely. It is not the same experience, but
+    it is better than not attending at all if you have something to
+contribute to
+    the discussion.
+2. Bernd, I think you have some interesting WIP on "FUSE2" that the majority
+    of fs developers are not aware of.
+    It would be great if you can follow the instructions in CFP and also post
+    a TOPIC suggestion to fsdevel, to get the discussion started ahead of
+    the summit.
+    Daniel, same request for FUSE BFP. The TOPIC suggestion should
+    highlight the remaining open questions about design and API, which
+    may be good to discuss in this forum.
+    Please do not be intimidated by suggesting a TOPIC, you don't need
+    to prepare any slides if you do not want to, nor to submit an abstract
+    or anything of that sort.
+
+Thanks,
+Amir.
