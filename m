@@ -2,153 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF5E688E9B
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 05:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82D3688E9F
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 05:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbjBCEgM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 23:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
+        id S230381AbjBCEkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 23:40:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjBCEgL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 23:36:11 -0500
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45FC60CB9;
-        Thu,  2 Feb 2023 20:36:08 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VanP3zA_1675398963;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VanP3zA_1675398963)
-          by smtp.aliyun-inc.com;
-          Fri, 03 Feb 2023 12:36:04 +0800
-Message-ID: <1675398932.095303-3-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH 19/33] virtio_net: introduce virtnet_tx_reset()
-Date:   Fri, 3 Feb 2023 12:35:32 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        =?utf-8?b?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Menglong Dong <imagedong@tencent.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Petr Machata <petrm@nvidia.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-References: <20230202110058.130695-1-xuanzhuo@linux.alibaba.com>
- <20230202110058.130695-20-xuanzhuo@linux.alibaba.com>
- <20230202121745-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20230202121745-mutt-send-email-mst@kernel.org>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229645AbjBCEkT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 23:40:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2C44F34E
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 20:40:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E2B9461CFD
+        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 04:40:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 37666C4339B;
+        Fri,  3 Feb 2023 04:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675399217;
+        bh=buiwku+NfOKRWeYeLW+4fckzuTI+1uqUh8eOPzHXJ/I=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=vKBpTWlwK3vo8EbSXOF34id846ZCged6CYfnmHG8bbH5ZRMg6XqnmmfcAeZAcweto
+         uBf9psG/22NP6jMT+mlUkZ5WflK49bCT+WpKOvVOatJrzNwf7KOS8pA3ki9glACee2
+         D+dbiRYpHVnOnfYIIYCkuCeIFIMmI9q8DDjCUZbfU6QYwmGk+SX2vk0NkZhk8nOlpG
+         K/bGqu5LP5f+uuUVRkro+FC//DOmf/dXyTcSYRf8g6xoA3TvzxLEtDevU/lmRO4av0
+         nuDetVkORJRcU958yZVzE7QWwwv3dnWnrcxBXoSVI3qZXLdtpi44/u+yzfZ6FcBzRN
+         gEhF13iCbl6/Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1C670E270C4;
+        Fri,  3 Feb 2023 04:40:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: Drop always true do_idr_lock parameter to
+ bpf_map_free_id
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167539921711.12589.8835634003496821011.git-patchwork-notify@kernel.org>
+Date:   Fri, 03 Feb 2023 04:40:17 +0000
+References: <20230202141921.4424-1-tklauser@distanz.ch>
+In-Reply-To: <20230202141921.4424-1-tklauser@distanz.ch>
+To:     Tobias Klauser <tklauser@distanz.ch>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2 Feb 2023 12:23:56 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Thu, Feb 02, 2023 at 07:00:44PM +0800, Xuan Zhuo wrote:
-> > Introduce virtnet_tx_reset() to release the buffers inside virtio ring.
-> >
-> > This is needed for xsk disable. When disable xsk, we need to relese the
->
-> typo
->
-> > buffer from xsk, so this function is needed.
-> >
-> > This patch reuse the virtnet_tx_resize.
->
-> reuses
->
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->
->
-> > ---
-> >  drivers/net/virtio/main.c       | 21 ++++++++++++++++++---
-> >  drivers/net/virtio/virtio_net.h |  1 +
-> >  2 files changed, 19 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-> > index fb82035a0b7f..049a3bb9d88d 100644
-> > --- a/drivers/net/virtio/main.c
-> > +++ b/drivers/net/virtio/main.c
-> > @@ -1806,8 +1806,8 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
-> >  	return err;
-> >  }
-> >
-> > -static int virtnet_tx_resize(struct virtnet_info *vi,
-> > -			     struct send_queue *sq, u32 ring_num)
-> > +static int __virtnet_tx_reset(struct virtnet_info *vi,
-> > +			      struct send_queue *sq, u32 ring_num)
-> >  {
-> >  	bool running = netif_running(vi->dev);
-> >  	struct netdev_queue *txq;
-> > @@ -1833,7 +1833,11 @@ static int virtnet_tx_resize(struct virtnet_info *vi,
-> >
-> >  	__netif_tx_unlock_bh(txq);
-> >
-> > -	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
-> > +	if (ring_num)
-> > +		err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
-> > +	else
-> > +		err = virtqueue_reset(sq->vq, virtnet_sq_free_unused_buf);
-> > +
-> >  	if (err)
-> >  		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
-> >
->
-> This __virtnet_tx_reset is a really weird API.
->
-> Suggest just splitting the common parts:
->
-> __virtnet_tx_pause
-> __virtnet_tx_resume
->
-> we can then implement virtnet_tx_resize and virtnet_tx_reset
-> using these two.
+Hello:
 
-Good idea.
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Thanks.
+On Thu,  2 Feb 2023 15:19:21 +0100 you wrote:
+> The do_idr_lock parameter to bpf_map_free_id was introduced by commit
+> bd5f5f4ecb78 ("bpf: Add BPF_MAP_GET_FD_BY_ID"). However, all callers set
+> do_idr_lock = true since commit 1e0bd5a091e5 ("bpf: Switch bpf_map ref
+> counter to atomic64_t so bpf_map_inc() never fails").
+> 
+> While at it also inline __bpf_map_put into its only caller bpf_map_put
+> now that do_idr_lock can be dropped from its signature.
+> 
+> [...]
 
->
->
-> > @@ -1847,6 +1851,17 @@ static int virtnet_tx_resize(struct virtnet_info *vi,
-> >  	return err;
-> >  }
-> >
-> > +static int virtnet_tx_resize(struct virtnet_info *vi,
-> > +			     struct send_queue *sq, u32 ring_num)
-> > +{
-> > +	return __virtnet_tx_reset(vi, sq, ring_num);
-> > +}
-> > +
-> > +int virtnet_tx_reset(struct virtnet_info *vi, struct send_queue *sq)
-> > +{
-> > +	return __virtnet_tx_reset(vi, sq, 0);
-> > +}
-> > +
-> >  /*
-> >   * Send command via the control virtqueue and check status.  Commands
-> >   * supported by the hypervisor, as indicated by feature bits, should
-> > diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
-> > index af3e7e817f9e..b46f083a630a 100644
-> > --- a/drivers/net/virtio/virtio_net.h
-> > +++ b/drivers/net/virtio/virtio_net.h
-> > @@ -273,4 +273,5 @@ int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
-> >  			struct net_device *dev,
-> >  			unsigned int *xdp_xmit,
-> >  			struct virtnet_rq_stats *stats);
-> > +int virtnet_tx_reset(struct virtnet_info *vi, struct send_queue *sq);
-> >  #endif
-> > --
-> > 2.32.0.3.g01195cf9f
->
+Here is the summary with links:
+  - [bpf-next] bpf: Drop always true do_idr_lock parameter to bpf_map_free_id
+    https://git.kernel.org/bpf/bpf-next/c/158e5e9eeaa0
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
