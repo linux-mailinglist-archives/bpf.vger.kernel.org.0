@@ -2,61 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F7368BE58
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 14:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235EF68C32B
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 17:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjBFNf5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 08:35:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
+        id S230034AbjBFQ0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 11:26:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjBFNf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 08:35:56 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4945C104
-        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 05:35:55 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id z13so1214599wmp.2
-        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 05:35:55 -0800 (PST)
+        with ESMTP id S230038AbjBFQ0L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 11:26:11 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FE922A10;
+        Mon,  6 Feb 2023 08:26:05 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id bg10-20020a17090b0d8a00b00230c7f312d4so2491066pjb.3;
+        Mon, 06 Feb 2023 08:26:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aqfjyzqFb4ymT7jvttdq8kUZtil4InYTkivB788ERSA=;
-        b=S/fWuNmmPHpOUTCLuYcoGyYQHiJKSIZg8j08ezDxYAIKFD5FoOhmp5+G8T2VInzkCX
-         QSADvmX67eSirhoAzm2h01kKyle0z8m1xr6zfGA1B35ACB7y1Suc1C0L6Ru7MODKhkDN
-         ttfg8Af+HscIbC0cV5uXsFCYBldektDpC66MxZvrVlG2YpmL6aWny7pWETAG+txoEdEe
-         so8Gk8kYp99qz3lNKobQ8BWDYwTR/3rxQTz8f8Q2sYEcdU5UPw3kLw10x4g1atqirmwh
-         mF+LmJkrB3ioF7ojDlTm5DboyAjPzQaevGpjwYKBZoo4jK6vBIxNgsP0htvE89Ev22vW
-         PZZw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U4PuUge7HmVvSHLmT7HLFiMDhxJjx5FOHK8on78MzZU=;
+        b=apFrYLiBmdyRCLAG9gSM5+zha9NJFk3kTW0bmaU2lZlqC4wcrUEQ/QZ1Z4B9elSfBc
+         k3gvWGZNBRbC7AhWa/iftbnT9eRpZKkGESRlyRjwPtUW27LNw8hxZ+BbghvC63s8Qd/l
+         bt4Rd9XhkL1hJHM8CNvgjY+kg2kPF7u9S23wo50lax8nvShQMvHzgUo4/MJzUTCzD/T1
+         uT/zUR7trpf72ub0UIrdIPN693GFpqmP/TBim+CygzUnwXZZqxrwSOSWt8DEP3GrObYF
+         AVKdcPOzoSYA7DsDwO2vuHvTY91ddP2eQJuxipnB6aH6JzkU+xltqTfs8onp50/6dhXH
+         zRjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aqfjyzqFb4ymT7jvttdq8kUZtil4InYTkivB788ERSA=;
-        b=TV1P+8YO2hIOtaeEWeobr+1KsNZ7tNRyX3vjuGqyZpzI8B/XXOc6FkSbmkqRbJwyLM
-         ZgGn5kPrD4ZKYAVQi1lbKm/bX05AmaYuPCYE/TZUPh8v6kSSprA2YO0LIr3izmW5UFfr
-         y2KO9GGrsdJtxHWUFfwJ/XT3rsm7nPm79e1bRAP60l8XWXkE5bAA9u7A7LiQwscec3F9
-         RCHliEJt8+jgfFCONafA42pfmECEHuuYPWbzzrO9oGfNRrn0pvF6Qirf+KxWTN0+SOS2
-         TlhmsV7bj+/CSBOCh/mN5oQD+OmIbuY37UuoqOHChXtq6Dz7OsZptsZIDheBfj56burm
-         mP1A==
-X-Gm-Message-State: AO0yUKWbPudmpPCzTs1KE/yCc9ktas2GsYiqHmsW9/dqE4PvLsXr1Y20
-        J2SOL2XyX60IUJqRIxRQxnGOmhn9RF4=
-X-Google-Smtp-Source: AK7set/XrrCo5Q/woB19XyYCSBE3Mq2LndAkXrKfvzau1wYVD5kJBcBjX1VekctLvEPPy9pZsVPTPw==
-X-Received: by 2002:a05:600c:3847:b0:3df:fff4:5f6f with SMTP id s7-20020a05600c384700b003dffff45f6fmr4410616wmr.36.1675690553553;
-        Mon, 06 Feb 2023 05:35:53 -0800 (PST)
-Received: from localhost.localdomain ([87.68.177.114])
-        by smtp.gmail.com with ESMTPSA id u2-20020a7bc042000000b003dd8feea827sm15837670wmc.4.2023.02.06.05.35.52
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U4PuUge7HmVvSHLmT7HLFiMDhxJjx5FOHK8on78MzZU=;
+        b=KkzzzdKojVXySBmEK0Z+J+2pF4Z8oY38yN/Zyh1l2uPvEospE4WPvT8rZ5Z6awqJtn
+         AAG5TTwr3ho0hRJscp8AE3BBl0voOI1n/ALrBvcJHxt6NkQH6eiu3b8fDS/NXhEMznrn
+         3HC/9pViRtGCtsXtKKVMrsHu85Og8NzFM0lys8LtsAZbxCgi8QEubnUoJHxYlc+untkI
+         kMoo+K6LR51xiK5wf+h3YdnAqzKqVfVpmr/+cxxA6ae3WzVGiiUp0NI4wfhTmvgJQxO9
+         f0asla7LB1yvCorh4n98RGB1W6UeykqelNiATzNmwubbH3bZMtoGKN3FWiv9exZFu5Wm
+         2F4Q==
+X-Gm-Message-State: AO0yUKXQkvt0ybsmHE6ZrDR/fFu1Xsui1fDW31rmVH9OMQFenkQN7ZqK
+        I8gqP0yaBC6h+SzgtilSI7E=
+X-Google-Smtp-Source: AK7set/gU0/qYHhMbpJCI3MdQrcgRDOaImjLmlyL71pJN0LwPBMjguFzjYsW3Ksfdc0YEJ9tO+CQMw==
+X-Received: by 2002:a17:902:c702:b0:196:64bf:ed86 with SMTP id p2-20020a170902c70200b0019664bfed86mr16668694plp.62.1675700764448;
+        Mon, 06 Feb 2023 08:26:04 -0800 (PST)
+Received: from localhost (c-73-164-155-12.hsd1.wa.comcast.net. [73.164.155.12])
+        by smtp.gmail.com with ESMTPSA id p20-20020a170902ead400b0017a032d7ae4sm4496349pld.104.2023.02.06.08.26.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Feb 2023 05:35:53 -0800 (PST)
-From:   Jon Doron <arilou@gmail.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
-Cc:     Jon Doron <jond@wiz.io>
-Subject: [PATCH bpf-next v3] libbpf: Add sample_period to creation options
-Date:   Mon,  6 Feb 2023 15:35:32 +0200
-Message-Id: <20230206133532.2973474-1-arilou@gmail.com>
-X-Mailer: git-send-email 2.39.1
+        Mon, 06 Feb 2023 08:26:03 -0800 (PST)
+Date:   Fri, 3 Feb 2023 05:30:07 +0000
+From:   Bobby Eshleman <bobbyeshleman@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, jakub@cloudflare.com,
+        hdanton@sina.com, cong.wang@bytedance.com
+Subject: Re: [PATCH RFC net-next v2 0/3] vsock: add support for sockmap
+Message-ID: <Y9yb301OYUknwUlH@bullseye>
+References: <20230118-support-vsock-sockmap-connectible-v2-0-58ffafde0965@bytedance.com>
+ <Y+AM0VXW54YbvsRT@pop-os.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y+AM0VXW54YbvsRT@pop-os.localdomain>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -67,66 +93,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jon Doron <jond@wiz.io>
+On Sun, Feb 05, 2023 at 12:08:49PM -0800, Cong Wang wrote:
+> On Mon, Jan 30, 2023 at 08:35:11PM -0800, Bobby Eshleman wrote:
+> > Add support for sockmap to vsock.
+> > 
+> > We're testing usage of vsock as a way to redirect guest-local UDS requests to
+> > the host and this patch series greatly improves the performance of such a
+> > setup.
+> > 
+> > Compared to copying packets via userspace, this improves throughput by 121% in
+> > basic testing.
+> > 
+> > Tested as follows.
+> > 
+> > Setup: guest unix dgram sender -> guest vsock redirector -> host vsock server
+> > Threads: 1
+> > Payload: 64k
+> > No sockmap:
+> > - 76.3 MB/s
+> > - The guest vsock redirector was
+> >   "socat VSOCK-CONNECT:2:1234 UNIX-RECV:/path/to/sock"
+> > Using sockmap (this patch):
+> > - 168.8 MB/s (+121%)
+> > - The guest redirector was a simple sockmap echo server,
+> >   redirecting unix ingress to vsock 2:1234 egress.
+> > - Same sender and server programs
+> > 
+> > *Note: these numbers are from RFC v1
+> > 
+> > Only the virtio transport has been tested. The loopback transport was used in
+> > writing bpf/selftests, but not thoroughly tested otherwise.
+> > 
+> > This series requires the skb patch.
+> > 
+> 
+> Looks good to me. Definitely good to go as non-RFC.
+> 
+> Thanks.
 
-Add option to set when the perf buffer should wake up, by default the
-perf buffer becomes signaled for every event that is being pushed to it.
+Thank you for the review.
 
-In case of a high throughput of events it will be more efficient to wake
-up only once you have X events ready to be read.
-
-So your application can wakeup once and drain the entire perf buffer.
-
-Signed-off-by: Jon Doron <jond@wiz.io>
----
- tools/lib/bpf/libbpf.c | 9 +++++++--
- tools/lib/bpf/libbpf.h | 3 ++-
- 2 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index eed5cec6f510..cd0bce5482b2 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -11710,17 +11710,22 @@ struct perf_buffer *perf_buffer__new(int map_fd, size_t page_cnt,
- 	const size_t attr_sz = sizeof(struct perf_event_attr);
- 	struct perf_buffer_params p = {};
- 	struct perf_event_attr attr;
-+	__u32 sample_period;
- 
- 	if (!OPTS_VALID(opts, perf_buffer_opts))
- 		return libbpf_err_ptr(-EINVAL);
- 
-+	sample_period = OPTS_GET(opts, sample_period, 1);
-+	if (!sample_period)
-+		sample_period = 1;
-+
- 	memset(&attr, 0, attr_sz);
- 	attr.size = attr_sz;
- 	attr.config = PERF_COUNT_SW_BPF_OUTPUT;
- 	attr.type = PERF_TYPE_SOFTWARE;
- 	attr.sample_type = PERF_SAMPLE_RAW;
--	attr.sample_period = 1;
--	attr.wakeup_events = 1;
-+	attr.sample_period = sample_period;
-+	attr.wakeup_events = sample_period;
- 
- 	p.attr = &attr;
- 	p.sample_cb = sample_cb;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 8777ff21ea1d..5d3b75a5acde 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1246,8 +1246,9 @@ typedef void (*perf_buffer_lost_fn)(void *ctx, int cpu, __u64 cnt);
- /* common use perf buffer options */
- struct perf_buffer_opts {
- 	size_t sz;
-+	__u32 sample_period;
- };
--#define perf_buffer_opts__last_field sz
-+#define perf_buffer_opts__last_field sample_period
- 
- /**
-  * @brief **perf_buffer__new()** creates BPF perfbuf manager for a specified
--- 
-2.39.1
-
+Best,
+Bobby
