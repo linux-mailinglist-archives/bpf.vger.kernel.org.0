@@ -2,286 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA906898E2
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 13:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F6B6898F7
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 13:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbjBCMfZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Feb 2023 07:35:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
+        id S232125AbjBCMlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Feb 2023 07:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233004AbjBCMfU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Feb 2023 07:35:20 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B4810240
-        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 04:35:12 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id r18so3499918pgr.12
-        for <bpf@vger.kernel.org>; Fri, 03 Feb 2023 04:35:12 -0800 (PST)
+        with ESMTP id S229782AbjBCMlV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 07:41:21 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED75F9AFE5;
+        Fri,  3 Feb 2023 04:41:19 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id j25so999608wrc.4;
+        Fri, 03 Feb 2023 04:41:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=R0ZmwX7PzgCUCsyUzJeQ1L3pz5WBVRB8z9XlMuaOQ0M=;
-        b=ivx2K6V66lJyM7OjP3OIBLR4VK/fMZK1WF6pyxuiUwH9LNJAQxK8/jxW7rSmQCQluj
-         glZrNVwQ7ly07VnSa5d0984X2KHa7giWMAJs7H2WQvmPv9iCantsJ41Spt8AD0vRgmk1
-         ssAGu7zJn4aa9TA7pI92ZFowmfQpdGsJdoG6Q=
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wUsSYIJ5Tz555F5M3p6Mkzprl0XwwXoQ6mbWmaeqKQ4=;
+        b=lqg4jWZOLPMDuJUevwiU3PKXstpBRIxEztaJwC+/yyTe29SI53b7xwTHpHzacE/H3w
+         3GynsjnonNpm+qayq+h7WeEz8mPjMgGEVohgiDrEL2lWfGy7a5n+3TBQapLN0SXP5FVt
+         a4FmdJ7s06Aj0LJJ3W+7V92jU8r6vyWHTVebYnuuXu/nYtMl34/i4xyeTfwyForqoRl4
+         WLyAMFpVx/vsvKW+UN1rmHeUNGIzI2KeHdniOjybE6zZtD5ti305Vc1YH5brRfKVIdSs
+         EB0Ngzpr3hC2u97MsHsP1faEPZ+aCrWpj8E+GPn7Tfh709DSzySLLU5sUNku2s3cp4Y/
+         bRng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R0ZmwX7PzgCUCsyUzJeQ1L3pz5WBVRB8z9XlMuaOQ0M=;
-        b=x909eHnDz8Vpn8sCiUHrXVGj103pfuL6o5x3zz2qxKwJgtR/qbh84Mx/rCj6CWkQr8
-         jwWSPKM5Hj2FZQo37XeWGPg49PCfI0WtdntRiCFcDFnySntrjCe+4PwMB7sN2jDuMcLZ
-         2olAs3j6LVbRZA9EGo9JzcaTYcjKia2vnwRx6r83U0jAzhbcATicC8lSGDVExUXpO2ZS
-         oybnUpXMa1J/+yectG1tK5l0FD5/gTx0CSnWh6CvPHSX9RdjZZ3/gjb19DTT+hroQnHj
-         xE4bMkAXk1Guwd/lAxLa00KfLZL4mMCFEZLTlsmiawRXVxUQQjhODaW8sxw1G0IcAVyY
-         hQTA==
-X-Gm-Message-State: AO0yUKX9iUuNuaUjBUSXAuq0rPEHurDyckk7HiDtAIiDfkE64NAGJhuz
-        VdqteWG2APONyayKqI7HokEmp48MqoK/wbadgV1JcQ==
-X-Google-Smtp-Source: AK7set8gpJr3ml89KO8qp3aklz17nPX9HTI98/Bh26cSXUvvSTFWarLSsCVUa23KUB/x7/v+hNzBlzqOtSGDOUpPquk=
-X-Received: by 2002:a05:6a00:b41:b0:58b:c7ef:25ca with SMTP id
- p1-20020a056a000b4100b0058bc7ef25camr2615283pfo.51.1675427711475; Fri, 03 Feb
- 2023 04:35:11 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wUsSYIJ5Tz555F5M3p6Mkzprl0XwwXoQ6mbWmaeqKQ4=;
+        b=GuyGvAGsCCbiWbq7TaQKw9d8+HRk1bUUbC4cpd4Bg1tUfBxvwDNticnHBgS7zMC9Ad
+         42NR3myaRHKI4sMR1a6rNbceNw7yudL41vXEmA3xtAsaVqWkVp26RclJiXScY2BOPsi5
+         SRRNd362//7yIsNh9AnxERgbaXYi1eCi27IaRvnglFcqt905GstJIYubxlLR8T9IzN8j
+         T/ttB366tNEE+XhPZ0OKuxuCW6ArZOyNuOBT5DxhCQMWgxq/OEkitDEF5SOIkUnnYYZk
+         7kxGE/1vgOpkgAT1+sj+K44x3CQnveGygfjGeq35r3nXBd10X8IbQ7VUHt8JqAFq1pbf
+         gySA==
+X-Gm-Message-State: AO0yUKWGatGa7wmQnLR1x/sSMJxtAu0UOe8smzv8nmb1zY4EX03qzfSS
+        pP29B/T9EZ9IifhfdQtWI68=
+X-Google-Smtp-Source: AK7set/u6ucZ4Xt1/4vhI8xwGCRElt/NfY8y9mqBkVFA5PRChrvrq8xGZRUL81CyHImK8iM11KON6Q==
+X-Received: by 2002:a5d:5958:0:b0:2bf:cfc0:ac71 with SMTP id e24-20020a5d5958000000b002bfcfc0ac71mr7975159wri.53.1675428078335;
+        Fri, 03 Feb 2023 04:41:18 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id c12-20020adffb4c000000b002b6bcc0b64dsm1913495wrs.4.2023.02.03.04.41.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Feb 2023 04:41:17 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 3 Feb 2023 13:41:15 +0100
+To:     Ian Rogers <irogers@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Connor OBrien <connoro@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] tools/resolve_btfids: Tidy HOST_OVERRIDES
+Message-ID: <Y90A67/wRUXMMsHt@krava>
+References: <20230202224253.40283-1-irogers@google.com>
 MIME-Version: 1.0
-References: <20230201163420.1579014-1-revest@chromium.org> <20230201163420.1579014-7-revest@chromium.org>
- <Y9wI93m2frDFGFez@FVFF77S0Q05N.cambridge.arm.com>
-In-Reply-To: <Y9wI93m2frDFGFez@FVFF77S0Q05N.cambridge.arm.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 3 Feb 2023 13:35:00 +0100
-Message-ID: <CABRcYmKRoDeFecvj7e+0SUaoinUa7FdtG1fmYqkRS3YPXVw4-w@mail.gmail.com>
-Subject: Re: [PATCH 6/8] ftrace: Fix dead loop caused by direct call in ftrace selftest
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com, Xu Kuohai <xukuohai@huawei.com>,
-        Li Huafei <lihuafei1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230202224253.40283-1-irogers@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 2, 2023 at 8:03 PM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Wed, Feb 01, 2023 at 05:34:18PM +0100, Florent Revest wrote:
-> > From: Xu Kuohai <xukuohai@huawei.com>
-> >
-> > After direct call is enabled for arm64, ftrace selftest enters a
-> > dead loop:
-> >
-> > <trace_selftest_dynamic_test_func>:
-> > 00  bti     c
-> > 01  mov     x9, x30                            <trace_direct_tramp>:
-> > 02  bl      <trace_direct_tramp>    ---------->     ret
-> >                                                      |
-> >                                          lr/x30 is 03, return to 03
-> >                                                      |
-> > 03  mov     w0, #0x0   <-----------------------------|
-> >      |                                               |
-> >      |                   dead loop!                  |
-> >      |                                               |
-> > 04  ret   ---- lr/x30 is still 03, go back to 03 ----|
-> >
-> > The reason is that when the direct caller trace_direct_tramp() returns
-> > to the patched function trace_selftest_dynamic_test_func(), lr is still
-> > the address after the instrumented instruction in the patched function,
-> > so when the patched function exits, it returns to itself!
-> >
-> > To fix this issue, we need to restore lr before trace_direct_tramp()
-> > exits, so use a dedicated trace_direct_tramp() for arm64.
-> >
-> > Reported-by: Li Huafei <lihuafei1@huawei.com>
-> > Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> > Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > Signed-off-by: Florent Revest <revest@chromium.org>
->
-> Looking at this, I don't think that the existing trace_direct_tramp makes
-> sense -- in general a C function doesn't follow the direct call trampoline
-> calling convention, and cannot be used as a direct call trampoline.
+On Thu, Feb 02, 2023 at 02:42:53PM -0800, Ian Rogers wrote:
+> Don't set EXTRA_CFLAGS to HOSTCFLAGS, ensure CROSS_COMPILE isn't
+> passed through.
+> 
+> This patch is based on top of:
+> https://lore.kernel.org/bpf/20230202112839.1131892-1-jolsa@kernel.org/
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Agreed.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-> Looking further, there's a distinct latent issue on s390, where the mismatch
-> between their regular calling convention and their direct call trampoline
-> calling convention means that trace_direct_tramp() returns into the *caller* of
-> the instrumented function, skipping that entirely (verified locally with QEMU
-> and printk()s added to DYN_FTRACE_TEST_NAME() / DYN_FTRACE_TEST_NAME2()
-> functions).
+jirka
 
-Good catch! I didn't dare to adventure that far into s390 :)
-
-> I think it'd be much better to do something like the below as a preparatory
-> cleanup (tested on s390 under QEMU).
-
-Thanks, that looks great to me. I'll make it a part of the series in v2 then.
-Unless it's preferred that this gets merged separately?
-
-> Thanks,
-> Mark.
->
-> ---->8----
-> From 3b3abc89fe014ea49282622c4312521b710d1463 Mon Sep 17 00:00:00 2001
-> From: Mark Rutland <mark.rutland@arm.com>
-> Date: Thu, 2 Feb 2023 18:37:40 +0000
-> Subject: [PATCH] ftrace: selftest: remove broken trace_direct_tramp
->
-> The ftrace selftest code has a trace_direct_tramp() function which it
-> uses as a direct call trampoline. This happens to work on x86, since the
-> direct call's return address is in the usual place, and can be returned
-> to via a RET, but in general the calling convention for direct calls is
-> different from regular function calls, and requires a trampoline written
-> in assembly.
->
-> On s390, regular function calls place the return address in %r14, and an
-> ftrace patch-site in an instrumented function places the trampoline's
-> return address (which is within the instrumented function) in %r0,
-> preserving the original %r14 value in-place. As a regular C function
-> will return to the address in %r14, using a C function as the trampoline
-> results in the trampoline returning to the caller of the instrumented
-> function, skipping the body of the instrumented function.
->
-> Note that the s390 issue is not detcted by the ftrace selftest code, as
-> the instrumented function is trivial, and returning back into the caller
-> happens to be equivalent.
->
-> On arm64, regular function calls place the return address in x30, and
-> an ftrace patch-site in an instrumented function saves this into r9
-> and places the trampoline's return address (within the instrumented
-> function) in x30. A regular C function will return to the address in
-> x30, but will not restore x9 into x30. Consequently, using a C function
-> as the trampoline results in returning to the trampoline's return
-> address having corrupted x30, such that when the instrumented function
-> returns, it will return back into itself.
->
-> To avoid future issues in this area, remove the trace_direct_tramp()
-> function, and require that each architecture with direct calls provides
-> a stub trampoline, named ftrace_stub_direct_tramp. This can be written
-> to handle the architecture's trampoline calling convention, and in
-> future could be used elsewhere (e.g. in the ftrace ops sample, to
-> measure the overhead of direct calls), so we may as well always build it
-> in.
->
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Li Huafei <lihuafei1@huawei.com>
-> Cc: Xu Kuohai <xukuohai@huawei.com>
-> Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
-> Cc: Florent Revest <revest@chromium.org>
 > ---
->  arch/s390/kernel/mcount.S     |  5 +++++
->  arch/x86/kernel/ftrace_32.S   |  5 +++++
->  arch/x86/kernel/ftrace_64.S   |  4 ++++
->  include/linux/ftrace.h        |  2 ++
->  kernel/trace/trace_selftest.c | 15 ++-------------
->  5 files changed, 18 insertions(+), 13 deletions(-)
->
-> diff --git a/arch/s390/kernel/mcount.S b/arch/s390/kernel/mcount.S
-> index 4786bfe02144..ad13a0e2c307 100644
-> --- a/arch/s390/kernel/mcount.S
-> +++ b/arch/s390/kernel/mcount.S
-> @@ -32,6 +32,11 @@ ENTRY(ftrace_stub)
->         BR_EX   %r14
->  ENDPROC(ftrace_stub)
->
-> +SYM_CODE_START(ftrace_stub_direct_tramp)
-> +       lgr     %r1, %r0
-> +       BR_EX   %r1
-> +SYM_CODE_END(ftrace_stub_direct_tramp)
-> +
->         .macro  ftrace_regs_entry, allregs=0
->         stg     %r14,(__SF_GPRS+8*8)(%r15)      # save traced function caller
->
-> diff --git a/arch/x86/kernel/ftrace_32.S b/arch/x86/kernel/ftrace_32.S
-> index a0ed0e4a2c0c..0d9a14528176 100644
-> --- a/arch/x86/kernel/ftrace_32.S
-> +++ b/arch/x86/kernel/ftrace_32.S
-> @@ -163,6 +163,11 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_GLOBAL)
->         jmp     .Lftrace_ret
->  SYM_CODE_END(ftrace_regs_caller)
->
-> +SYM_FUNC_START(ftrace_stub_direct_tramp)
-> +       CALL_DEPTH_ACCOUNT
-> +       RET
-> +SYM_FUNC_END(ftrace_stub_direct_tramp)
-> +
->  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->  SYM_CODE_START(ftrace_graph_caller)
->         pushl   %eax
-> diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-> index 1265ad519249..8fc77e3e039c 100644
-> --- a/arch/x86/kernel/ftrace_64.S
-> +++ b/arch/x86/kernel/ftrace_64.S
-> @@ -307,6 +307,10 @@ SYM_INNER_LABEL(ftrace_regs_caller_end, SYM_L_GLOBAL)
->  SYM_FUNC_END(ftrace_regs_caller)
->  STACK_FRAME_NON_STANDARD_FP(ftrace_regs_caller)
->
-> +SYM_FUNC_START(ftrace_stub_direct_tramp)
-> +       CALL_DEPTH_ACCOUNT
-> +       RET
-> +SYM_FUNC_END(ftrace_stub_direct_tramp)
->
->  #else /* ! CONFIG_DYNAMIC_FTRACE */
->
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 3d2156e335d7..a9836b40630e 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -412,6 +412,8 @@ int unregister_ftrace_direct(struct ftrace_ops *ops, unsigned long addr);
->  int modify_ftrace_direct(struct ftrace_ops *ops, unsigned long addr);
->  int modify_ftrace_direct_nolock(struct ftrace_ops *ops, unsigned long addr);
->
-> +void ftrace_stub_direct_tramp(void *);
-> +
->  #else
->  struct ftrace_ops;
->  # define ftrace_direct_func_count 0
-> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-> index 06218fc9374b..e6530b7b42e4 100644
-> --- a/kernel/trace/trace_selftest.c
-> +++ b/kernel/trace/trace_selftest.c
-> @@ -784,17 +784,6 @@ static struct fgraph_ops fgraph_ops __initdata  = {
->         .retfunc                = &trace_graph_return,
->  };
->
-> -#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> -#ifndef CALL_DEPTH_ACCOUNT
-> -#define CALL_DEPTH_ACCOUNT ""
-> -#endif
-> -
-> -noinline __noclone static void trace_direct_tramp(void)
-> -{
-> -       asm(CALL_DEPTH_ACCOUNT);
-> -}
-> -#endif
-> -
->  /*
->   * Pretty much the same than for the function tracer from which the selftest
->   * has been borrowed.
-> @@ -875,7 +864,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
->          */
->         ftrace_set_filter_ip(&direct, (unsigned long)DYN_FTRACE_TEST_NAME, 0, 0);
->         ret = register_ftrace_direct(&direct,
-> -                                    (unsigned long)trace_direct_tramp);
-> +                                    (unsigned long)ftrace_stub_direct_tramp);
->         if (ret)
->                 goto out;
->
-> @@ -896,7 +885,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
->         unregister_ftrace_graph(&fgraph_ops);
->
->         ret = unregister_ftrace_direct(&direct,
-> -                                      (unsigned long)trace_direct_tramp);
-> +                                      (unsigned long)ftrace_stub_direct_tramp);
->         if (ret)
->                 goto out;
->
-> --
-> 2.30.2
->
+>  tools/bpf/resolve_btfids/Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> index abdd68ac08f4..2abdd85b4a08 100644
+> --- a/tools/bpf/resolve_btfids/Makefile
+> +++ b/tools/bpf/resolve_btfids/Makefile
+> @@ -17,9 +17,9 @@ else
+>    MAKEFLAGS=--no-print-directory
+>  endif
+>  
+> -# always use the host compiler
+> +# Overrides for the prepare step libraries.
+>  HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)" \
+> -		  EXTRA_CFLAGS="$(HOSTCFLAGS) $(KBUILD_HOSTCFLAGS)"
+> +		  CROSS_COMPILE=""
+>  
+>  RM      ?= rm
+>  HOSTCC  ?= gcc
+> -- 
+> 2.39.1.519.gcb327c4b5f-goog
+> 
