@@ -2,134 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2A66899E4
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 14:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E441689B53
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 15:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbjBCNiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Feb 2023 08:38:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
+        id S233445AbjBCOQP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Feb 2023 09:16:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjBCNiM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Feb 2023 08:38:12 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2067.outbound.protection.outlook.com [40.107.244.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA73E1167B;
-        Fri,  3 Feb 2023 05:38:10 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TFSu07Pwyn87ev+NG9HJauHkbkO3qCGaP2JjVtqbKtajxcqNfilM7cqbmpcAG5b0h8qvaOrdW9Gza0/A/Y+quXg2wGuDh3sSlHTpjZk5aRRrYXX3xYHGO/FbvAc3ef7VUjWQkPbY3s005EoapTk+QcuY7vxHLfITcEkrwf2YPo8xNPpqJNyvW5SyKc1DE0G2u9CcXjRW1B/m/Ghujfa9h92SaZj3yLQ+BAh+PwWUrY0ZN9Ts8lQg8cPmK9bUjRPwoV96rc+Bu3zeFc0miuFLOuXRHpJqgXJ06yViarLifHZiLkZ0NWthIkQZAIGPGyVAMGT23jNFzMlW4ebg0sOWhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0cva6VJDvB1x+ZVPx+3mcK2Hh0vn7JnluBXHff9CISc=;
- b=VdMR7Gqk6g8E+ICxoufJp0i9mJnQS4yury2r6NPqetRdoBKEOpBDD83PmmrnS3bzqrac46GTYJdrxGMFEIYYxRZV0qTKfJBpVu6QDk2la9fPM+T7KF7oPyTK4ycokIRyAjBRgBBUUaBJiliQZocXYR1oAd548Nrp60s9yTnwLB87gz3vjK6w/YVx6OhMbqY79/Ldh1WU7f4u7WIPMLmE//ER3xjhNdOcrlN7ExdVCft3o2iNfUfXrygTdmNipEHTvwKpvSIwwTyUbPOCr4892Y/pvYeyV094NJTttmOUBNoiM9vMKOg7R/+VdRDWawGa4eLngYRBv4t+2b/TM9DH3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0cva6VJDvB1x+ZVPx+3mcK2Hh0vn7JnluBXHff9CISc=;
- b=fGBlukxrXwVyC9CBRag23wM2SYQtXeo3VMjEDSnsNUMZ6364twWZEfX7B3xAR9kYrvbMp2T0ZkYIEBoyMN2qkFZA/X6ZS7cLaGMilK01y95Xk/Uv7dIa7+WHa0t2rf52Ze4Pf2f69NxJg2m6CMCHltZhEZUSpHWxhK0UIwq2cdIys9dJhHahC41WacNN/rS0uBzVtrhNQpnDyVx5YIe9drp+9gAOAspyKqGd1sbsLhbr0P3dmb1t/uZbJU6qyhitbTTcbC6xcIMui9C0qeT050UpGeZz7lTtJToM3Vr6Kpzb0MTnoer6CC3I81tX56SRcbpNZTr8xtABYd/VRE1AGA==
-Received: from CY5PR15CA0064.namprd15.prod.outlook.com (2603:10b6:930:18::17)
- by BN9PR12MB5292.namprd12.prod.outlook.com (2603:10b6:408:105::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.31; Fri, 3 Feb
- 2023 13:38:06 +0000
-Received: from CY4PEPF0000C977.namprd02.prod.outlook.com
- (2603:10b6:930:18:cafe::3) by CY5PR15CA0064.outlook.office365.com
- (2603:10b6:930:18::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.31 via Frontend
- Transport; Fri, 3 Feb 2023 13:38:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000C977.mail.protection.outlook.com (10.167.241.133) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6064.18 via Frontend Transport; Fri, 3 Feb 2023 13:38:06 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Fri, 3 Feb 2023
- 05:37:52 -0800
-Received: from sw-mtx-036.mtx.labs.mlnx (10.126.231.37) by
- rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Fri, 3 Feb 2023 05:37:50 -0800
-From:   Parav Pandit <parav@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <netdev@vger.kernel.org>
-CC:     <edumazet@google.com>, <pabeni@redhat.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>,
-        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>,
-        "Parav Pandit" <parav@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next] virtio-net: Maintain reverse cleanup order
-Date:   Fri, 3 Feb 2023 15:37:38 +0200
-Message-ID: <20230203133738.33527-1-parav@nvidia.com>
-X-Mailer: git-send-email 2.26.2
+        with ESMTP id S233449AbjBCOPm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 09:15:42 -0500
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E412C10436;
+        Fri,  3 Feb 2023 06:14:48 -0800 (PST)
+Received: by mail-qt1-f177.google.com with SMTP id f10so5543466qtv.1;
+        Fri, 03 Feb 2023 06:14:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v8Yzpnt8nduV5q46/kI+D/6W6pPEk+IXknaFd6D41b0=;
+        b=1Qba2Poo3Kx5c/EsKayWDyA7rqOAZEEWUqq1lIShc4ONzwYAivvW9DNKOQEX/tP4pV
+         dObk1QKpMUA6iVCY1DFeqvLsx3GWbar2knh9wJfayFzjkvbq8mI3Z2XddzVXxbqWwHwr
+         XVqQ0swN83C/RCLQtghpBhmNj7X7v7fTnl49ZOIHi/ouBgI3cM/5FpOWpA0KSsEBHv67
+         ODDB0vxrdT4OeER0IL5R4vfxoqYBJqWewatOBIv1IJKO0RkW70Xgh1W3MU4nabquPmZT
+         qZ0BB6WAHm/tAU4pUVZ+y+QIu1aGspWxYEwK8IS+JwOLb9KvEv2SuKC8QY8/T6uz76xI
+         aJ+w==
+X-Gm-Message-State: AO0yUKVqe3PoCIcm0+pF/iRU/8uZiAf/flYJo20ACQDRExg2FETpTtdF
+        OGWRVNWc/sKhtfxX3BQEpTs=
+X-Google-Smtp-Source: AK7set/TCEb+BZe1Ot/eEP4ZVlcBuTrq1jCus8+pq4QhU/GEHxUHRQQcTgIrNP+jhpwEIX4fjPGejw==
+X-Received: by 2002:ac8:7f16:0:b0:3b8:6a20:675e with SMTP id f22-20020ac87f16000000b003b86a20675emr19778349qtk.29.1675433687668;
+        Fri, 03 Feb 2023 06:14:47 -0800 (PST)
+Received: from maniforge ([2620:10d:c091:480::1:dd5a])
+        by smtp.gmail.com with ESMTPSA id h67-20020a376c46000000b0070495934152sm1900397qkc.48.2023.02.03.06.14.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Feb 2023 06:14:47 -0800 (PST)
+Date:   Fri, 3 Feb 2023 08:14:45 -0600
+From:   David Vernet <void@manifault.com>
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        toke@redhat.com, brouer@redhat.com, corbet@lwn.net,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2] bpf/docs: Document kfunc lifecycle /
+ stability expectations
+Message-ID: <Y90W1Zw2JAsb8XNO@maniforge>
+References: <20230202223557.744110-1-void@manifault.com>
+ <20230202223557.744110-2-void@manifault.com>
+ <m2sffnvxbw.fsf@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.126.231.37]
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000C977:EE_|BN9PR12MB5292:EE_
-X-MS-Office365-Filtering-Correlation-Id: da46d0c5-6512-4e7f-6dca-08db05ebe178
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9BfJ+pkTmTGwkhyT1lfBu0s2fxzAYo5f5PLyVr6r6N/7iA8krlHFNvZ+mwaMzzfmrYoFrvu7UBuBS6BKmW45TvsmnY8g+c6oTlGRezJVvHr/CmmHrVnqwBa0+oB53WSM/HrfTHWujfIHdxzK+UaeIi1lPcRtWLyBUHI5ncp/8dmeKx9NOkMTpJZtXnzDVga41D7lrY8ZL7g0F4F72Iw2qawRPKtF9uDKUTlq+7E5TqJ8q+Zhq2Fd+WlIWAikQcseactH+pRhiQoUeBRw5TW63qdGOHtUS4rkSu7YdkDDBBHFN9cqq6LI8tnjxB+OqZLiK5GD8SL7uVNInCSBwXi+WV7f8KOv2p0plMiBUv4SBn29r9rj8UzjysPMCQtVm29Fh1wNPxCerAM7IxDJ0v845LpLlNAbzOrw2qX640qUrUPEzZ4ac8qUXQ2yeVFWmHUS812PNQAFv6Nmba22oVbJqGanVV2Z7goEb0EKmDIa2xj6eEVVhKJiJDRQZv7mc2qE/7pBDVwxnVid9K5kYzJMu8eahxhW3GZvtq25FelIyKM/UAlvslSZ38XuQ79uitIG2WalsXqTXpzscm9NqqE/UUSPr12rs/9WcQnxNPC4spFD0hHuxCKcDCTWWo5Epkj4fe79nZsku3eL2Y9UTZls/+CqNLC+gDjVmz2+xqf4Mal7fa0+4CK7+1/oXLXNFnxk/LneUboVePdx5uDDQya7zQ==
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230025)(4636009)(396003)(136003)(346002)(39860400002)(376002)(451199018)(36840700001)(40470700004)(46966006)(2616005)(36756003)(16526019)(86362001)(186003)(2906002)(26005)(107886003)(6666004)(8676002)(478600001)(36860700001)(5660300002)(1076003)(82310400005)(4744005)(7416002)(336012)(40480700001)(356005)(110136005)(54906003)(83380400001)(426003)(316002)(8936002)(70586007)(70206006)(47076005)(4326008)(40460700003)(41300700001)(7636003)(82740400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2023 13:38:06.0032
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: da46d0c5-6512-4e7f-6dca-08db05ebe178
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000C977.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5292
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m2sffnvxbw.fsf@gmail.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To easily audit the code, better to keep the device stop()
-sequence to be mirror of the device open() sequence.
+On Fri, Feb 03, 2023 at 10:48:35AM +0000, Donald Hunter wrote:
+> David Vernet <void@manifault.com> writes:
+> 
+> > +3. kfunc lifecycle expectations
+> > +===============================
+> > +
+> > +kfuncs provide a kernel <-> kernel API, and thus are not bound by any of the
+> > +strict stability restrictions associated with kernel <-> user UAPIs. Instead,
+> > +they're modeled more similarly to EXPORT_SYMBOL_GPL, and can therefore be
+> > +modified or removed by a maintainer of the subsystem they're defined in when
+> > +it's deemed necessary.
+> > +
+> > +Like any other change to the kernel, maintainers will not change or remove a
+> > +kfunc without having a reasonable justification.  Whether or not they'll choose
+> > +to change a kfunc will ultimately depend on a variety of factors, such as how
+> > +widely used the kfunc is, how long the kfunc has been in the kernel, whether an
+> > +alternative kfunc exists, what the norm is in terms of stability for the
+> > +subsystem in question, and of course what the technical cost is of continuing
+> > +to support the kfunc.
+> > +
+> > +There are several implications of this:
+> > +
+> > +a) kfuncs that are widely used or have been in the kernel for a long time will
+> > +   be more difficult to justify being changed or removed by a maintainer. Said
+> > +   in a different way, kfuncs that are known to have a lot of users and provide
+> > +   significant value provide stronger incentives for maintainers to invest the
+> > +   time and complexity in supporting them. It is therefore important for
+> > +   developers that are using kfuncs in their BPF programs to communicate and
+> > +   explain how and why those kfuncs are being used, and to participate in
+> > +   discussions regarding those kfuncs when they occur upstream.
+> > +
+> > +b) Because many BPF programs are not upstreamed as part of the kernel tree, it
+> > +   is often not possible to change them in-place when a kfunc changes, as it is
+> > +   for e.g. an upstreamed driver being updated in place when an
+> > +   EXPORT_SYMBOL_GPL symbol is changed. Distributions that bundle BPF programs
+> > +   that use kfuncs must therefore ensure that those BPF programs are linking
+> > +   against the kfuncs that are supported by the kernel version being used for
+> > +   any given release. Additionally, BPF developers are encouraged to upstream
+> > +   their BPF programs so they can enjoy the same benefits as upstreamed
+> > +   modules, and avoid code churn.
+> 
+> It seems unrealistic to wish for BPF programs to be upstreamed, for
+> several reasons. A key benefit of BPF programs is that they are
+> decoupled from the kernel lifecycle and packaging. BPF programs are
+> often more tightly coupled with the application they are part of and
+> need to be maintained alongside those applications. There does not seem
+> to be any desire, process or incentive to maintain BPF programs in tree.
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Parav Pandit <parav@nvidia.com>
----
- drivers/net/virtio_net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think this is slowly becoming less true with the "modern BPF"
+described by Alexei in [0], but I agree that it's certainly the vast
+majority of cases now, and I'm fine with removing this from the doc to
+decouple it from the larger kfunc lifecycle discussion. Toke mentioned
+something similar in [1], so I'll remove this in v3.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index b7d0b54c3bb0..1f8168e0f64d 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2279,9 +2279,9 @@ static int virtnet_close(struct net_device *dev)
- 	cancel_delayed_work_sync(&vi->refill);
- 
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		virtnet_napi_tx_disable(&vi->sq[i].napi);
- 		napi_disable(&vi->rq[i].napi);
- 		xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
--		virtnet_napi_tx_disable(&vi->sq[i].napi);
- 	}
- 
- 	return 0;
--- 
-2.26.2
+[0]: https://lwn.net/Articles/909095/
+[1]: https://lore.kernel.org/all/87cz6qew8l.fsf@toke.dk/
 
+> 
+> > +   On the other hand, while the hope is that it will become the norm to
+> > +   upstream BPF programs, the reality is that most BPF programs are still
+> > +   out-of-tree. This means that users with out-of-tree BPF programs that use
+> > +   kfuncs should be considered relevant to discussions and decisions around
+> > +   modifying and removing kfuncs, despite that not being the norm for
+> > +   out-of-tree kernel modules. The BPF community will take an active role in
+> > +   participating in upstream discussions when necessary to ensure that the
+> > +   perspectives of such users are taken into account.
+> > +
+> > +c) A kfunc will never have any hard stability guarantees. BPF APIs cannot and
+> > +   will not ever hard-block a change in the kernel purely for stability
+> > +   reasons. In other words, kfuncs have the same stability guarantees as any
+> > +   other kernel API, such as those provided by EXPORT_SYMBOL_GPL, though with
+> > +   perhaps less burden than EXPORT_SYMBOL_GPL changes thanks to BPF CO-RE.
+> > +
+> > +   That being said, kfuncs are features that are meant to solve problems and
+> > +   provide value to users. The decision of whether to change or remove a kfunc
+> > +   is a multivariate technical decision that is made on a case-by-case basis,
+> > +   and which is informed by data points such as those mentioned above. It is
+> > +   expected that a kfunc being removed or changed with no warning will not be a
+> > +   common occurrence or take place without sound justification, but it is a
+> > +   possibility that must be accepted if one is to use kfuncs.
+> > +
+> > +3.1 kfunc deprecation
+> > +---------------------
+> > +
+> > +As described above, while sometimes a maintainer may find that a kfunc must be
+> > +changed or removed immediately to accommodate some changes in their subsystem,
+> > +other kfuncs may be able to accommodate a longer and more measured deprecation
+> 
+> How about replacing 'other kfuncs may' with 'usually kfuncs will' to
+> re-emphasise that this would be the more common scenario.
+
+Good suggestion, will do.
+
+> 
+> > +process. For example, if a new kfunc comes along which provides superior
+> > +functionality to an existing kfunc, the existing kfunc may be deprecated for
+> > +some period of time to allow users to migrate their BPF programs to use the new
+> > +one. Or, if a kfunc has no known users, a decision may be made to remove the
+> > +kfunc (without providing an alternative API) after some deprecation period
+> > +period so as to provide users with a window to notify the kfunc maintainer if
+> 
+> Duplicate 'period'.
+
+Ack, good catch.
+
+> 
+> > +it turns out that the kfunc is actually being used.
+> > +
+> > +kfuncs being deprecated (rather than changed or removed with no warning) is
+> > +expected to be the common case, and as described in :ref:`KF_deprecated_flag`,
+> > +the kfunc framework provides the KF_DEPRECATED flag to kfunc developers to
+> > +signal to users that a kfunc has been deprecated. Once a kfunc has been marked
+> > +with KF_DEPRECATED, the following procedure is followed for removal:
+> > +
+> > +1. Any relevant information for deprecated kfuncs is documented in the kfunc's
+> > +   kernel docs. This documentation will typically include the kfunc's expected
+> > +   remaining lifespan,  a recommendation for new functionality that can replace
+> > +   the usage of the deprecated function (or an explanation as to why no such
+> > +   replacement exists), etc.
+> > +
+> > +2. The deprecated kfunc is kept in the kernel for some period of time after it
+> > +   was first marked as deprecated. This time period will be chosen on a
+> > +   case-by-case basis, and will typically depend on how widespread the use of
+> > +   the kfunc is, how long it has been in the kernel, and how hard it is to move
+> > +   to alternatives. This deprecation time period is "best effort", and as
+> > +   described :ref:`above<BPF_kfunc_lifecycle_expectations>`, circumstances may
+> > +   sometimes dictate that the kfunc be removed before the full intended
+> > +   deprecation period has elapsed.
+> > +
+> > +3. After the deprecation period, or sometimes earlier if necessary, the kfunc
+> > +   will be removed. At this point, BPF programs calling the kfunc will be
+> > +   rejected by the verifier.
+> > +
