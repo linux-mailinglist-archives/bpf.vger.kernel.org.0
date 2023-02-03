@@ -2,109 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 638E9688E17
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 04:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC21F688E7F
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 05:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjBCDlB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Feb 2023 22:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56286 "EHLO
+        id S230121AbjBCEUV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Feb 2023 23:20:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjBCDlA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Feb 2023 22:41:00 -0500
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE61AEF94;
-        Thu,  2 Feb 2023 19:40:58 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VamyOqZ_1675395653;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VamyOqZ_1675395653)
-          by smtp.aliyun-inc.com;
-          Fri, 03 Feb 2023 11:40:54 +0800
-Message-ID: <1675395211.6279888-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH 00/33] virtio-net: support AF_XDP zero copy
-Date:   Fri, 3 Feb 2023 11:33:31 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        =?utf-8?b?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Menglong Dong <imagedong@tencent.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Petr Machata <petrm@nvidia.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20230202110058.130695-1-xuanzhuo@linux.alibaba.com>
- <5fda6140fa51b4d2944f77b9e24446e4625641e2.camel@redhat.com>
-In-Reply-To: <5fda6140fa51b4d2944f77b9e24446e4625641e2.camel@redhat.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230094AbjBCEUU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Feb 2023 23:20:20 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1D79774
+        for <bpf@vger.kernel.org>; Thu,  2 Feb 2023 20:20:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 573E661D68
+        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 04:20:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9CB8AC4339B;
+        Fri,  3 Feb 2023 04:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675398017;
+        bh=dhqCmpAO0A8lfuvR2pqcWSE+98z5Jub7Mlyv/WjyTUU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=cqFSbiPrYVBcmbmIg4yoyCzlgt8V0yNTir9cZNyi/Yu4+WUB9pgVyzk51kwdAtb2a
+         5YbLtwP89JbXhTP+ncSe7vh0k8mnbQQtgMeN5OJDHxHwWPxd8ukGLLNSECAmKa0j6W
+         gun/0ghBqvarEhu3ZLxUg/+QpgT8JHPolFWmXRYeIwH9h6DbonVRFm0V9eIcBaALar
+         Xtyj0QwGvZEpO17nmWeOgYoqUBjOnAxctCQng4ph1pfzhBptHoiEqXuiRKaodkqCm2
+         g93RDpPSVWK0UX11hgLlKn3SF65FECQaNVHaVvtJ7P2v9zkYiAofdk1mv1Pwm4TZIj
+         uSfAqE76155vg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8028EE21ED1;
+        Fri,  3 Feb 2023 04:20:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Initialize tc in xdp_synproxy
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167539801751.3373.9546426305112362699.git-patchwork-notify@kernel.org>
+Date:   Fri, 03 Feb 2023 04:20:17 +0000
+References: <20230202235335.3403781-1-iii@linux.ibm.com>
+In-Reply-To: <20230202235335.3403781-1-iii@linux.ibm.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, joannelkoong@gmail.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 02 Feb 2023 15:41:44 +0100, Paolo Abeni <pabeni@redhat.com> wrote:
-> On Thu, 2023-02-02 at 19:00 +0800, Xuan Zhuo wrote:
-> > XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
-> > copy feature of xsk (XDP socket) needs to be supported by the driver. The
-> > performance of zero copy is very good. mlx5 and intel ixgbe already support
-> > this feature, This patch set allows virtio-net to support xsk's zerocopy xmit
-> > feature.
-> >
-> > Virtio-net did not support per-queue reset, so it was impossible to support XDP
-> > Socket Zerocopy. At present, we have completed the work of Virtio Spec and
-> > Kernel in Per-Queue Reset. It is time for Virtio-Net to complete the support for
-> > the XDP Socket Zerocopy.
-> >
-> > Virtio-net can not increase the queue at will, so xsk shares the queue with
-> > kernel.
-> >
-> > On the other hand, Virtio-Net does not support generate interrupt manually, so
-> > when we wakeup tx xmit, we used some tips. If the CPU run by TX NAPI last time
-> > is other CPUs, use IPI to wake up NAPI on the remote CPU. If it is also the
-> > local CPU, then we wake up sofrirqd.
->
-> Thank you for the large effort.
->
-> Since this will likely need a few iterations, on next revision please
-> do split the work in multiple chunks to help the reviewer efforts -
-> from Documentation/process/maintainer-netdev.rst:
->
->  - don't post large series (> 15 patches), break them up
->
-> In this case I guess you can split it in 1 (or even 2) pre-req series
-> and another one for the actual xsk zero copy support.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Fri,  3 Feb 2023 00:53:35 +0100 you wrote:
+> xdp_synproxy/xdp fails in CI with:
+> 
+>     Error: bpf_tc_hook_create: File exists
+> 
+> The XDP version of the test should not be calling bpf_tc_hook_create();
+> the reason it's happening anyway is that if we don't specify --tc on the
+> command line, tc variable remains uninitialized.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Initialize tc in xdp_synproxy
+    https://git.kernel.org/bpf/bpf-next/c/354bb4a0e0b6
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-OK.
-
-I can split patch into multiple parts such as
-
-* virtio core
-* xsk
-* virtio-net prepare
-* virtio-net support xsk zerocopy
-
-However, there is a problem, the virtio core part should enter the VHOST branch
-of Michael. Then, should I post follow-up patches to which branch vhost or
-next-next?
-
-Thanks.
-
-
->
-> Thanks!
->
-> Paolo
->
