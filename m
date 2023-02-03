@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0E868937E
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 10:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521066893A2
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 10:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbjBCJUy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Feb 2023 04:20:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
+        id S230070AbjBCJ0K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Feb 2023 04:26:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbjBCJUU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Feb 2023 04:20:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C055D12F
-        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 01:18:28 -0800 (PST)
+        with ESMTP id S232470AbjBCJZm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 04:25:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D9495D0B
+        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 01:24:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675415887;
+        s=mimecast20190719; t=1675416278;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=epRfDPzeCVTwbxr7ZzaPb0BTAgrqd0oxNwKqq2k7gGE=;
-        b=Da+AK1yepzzoZujPzFrN42VasVkb3RY50ooxTYWkG9Qft3tiX8fPF4TTEcZ8NNPh87zBug
-        2OO3/VH/HCmB0VYs14W/lUVXozVdRhwC/Hzq3Xk/OIO4Sm3vMyKvTkum6smkT8nwH+sz7h
-        3D8cymzFHySHbuNrmWxMPyoBwhyG3aM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=hzQ7UoxDCUOIsyyrWZEEJT3XokG9b81p4j2nZwVsXUk=;
+        b=eu7YUVXNnlYoLrqBMmues/51LlqxCLbvTFzxG9eKVmCV+2XmD6lKXsb5ERAztxUO7H+O3U
+        7ExdS+x9QnwLjU0J4qdVOWpgqPbA4/TTxQuOsLatQ2V6nSUh1vNAerFleBUuu24FLCS28D
+        xC0U5WSXao/sDY/FHXaaGt/S2F7V940=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-479-QS9VGPyMOSmcErGJ14lUgA-1; Fri, 03 Feb 2023 04:18:06 -0500
-X-MC-Unique: QS9VGPyMOSmcErGJ14lUgA-1
-Received: by mail-ej1-f69.google.com with SMTP id bw6-20020a170906c1c600b0088e4f4830b1so3499482ejb.7
-        for <bpf@vger.kernel.org>; Fri, 03 Feb 2023 01:18:05 -0800 (PST)
+ us-mta-14-pUvnq6JPMReyJl9y_Chm4Q-1; Fri, 03 Feb 2023 04:24:37 -0500
+X-MC-Unique: pUvnq6JPMReyJl9y_Chm4Q-1
+Received: by mail-ed1-f70.google.com with SMTP id s11-20020a056402164b00b004a702699dfaso2869896edx.14
+        for <bpf@vger.kernel.org>; Fri, 03 Feb 2023 01:24:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=epRfDPzeCVTwbxr7ZzaPb0BTAgrqd0oxNwKqq2k7gGE=;
-        b=sXoixnnDFBzsjzOatB4WG9WF0Ug4IzBia2Cipi6rekYfmLYtZCy0aFCVJrJpEfi78M
-         m3/UUNy34Qs/p7+IUl5IdpJb0SWY1+C+FtnJup/i8d2eqcuLVjR+fU5YktvQTHe9PX/L
-         uQ9FfeoAZFUrCH/X7ogW9o7yll+8L4BcFpycyWuMkuzABhFgJ9vmdhCR2JWIP3nmXOpK
-         +2AnvdshaqsnFBCbsh+yIwT0uZRWS/93Lf/MQwgT1eL7taHeW+H7AYHp+j1KP78tPb6s
-         S3FeqOpqSAgdVwk9vmbOgPVTvPTe8rOihQ0k4dCmonDxH7RIoFTXII4KpVMUjPego4ub
-         lqIA==
-X-Gm-Message-State: AO0yUKU9kOcvZWCVcrKR+mPEWKQ2Lh8eGiZj1hvefYIEhbu0KkiK1h9G
-        S34p3QjoTKt9W8AyvaTJWA0oXfZNgSn4AxVX2JHYRjEpCWGZB2XyEDrDRiYUq38Je6ACMCzWtVR
-        2gowfh0oTNZOq
-X-Received: by 2002:a17:906:4787:b0:884:37fd:bf4c with SMTP id cw7-20020a170906478700b0088437fdbf4cmr10854180ejc.19.1675415884879;
-        Fri, 03 Feb 2023 01:18:04 -0800 (PST)
-X-Google-Smtp-Source: AK7set/r1+CDvVLFdXnEssdesv7QuGqfhjJVfo5pd8868UK6ys7Bboue+Ipv1DMVtJdspKbRue9+hg==
-X-Received: by 2002:a17:906:4787:b0:884:37fd:bf4c with SMTP id cw7-20020a170906478700b0088437fdbf4cmr10854167ejc.19.1675415884639;
-        Fri, 03 Feb 2023 01:18:04 -0800 (PST)
+        bh=hzQ7UoxDCUOIsyyrWZEEJT3XokG9b81p4j2nZwVsXUk=;
+        b=ZK7tVt/0dqHg/W9p1lkAAzG8/TwKzc0p/H2/Rg5ynF4uQ9gOnzNZEc1C0/cp2rtNZ0
+         awTBLEfpGN31wCC0bbnPgT2SEpOba7VkHKOTR8bHUpxN//4mLbpPVSHGbRPSLU1pV2Fl
+         JIF2zQgsj4PrLtf4fm6hHamk5oiFjAjvMpdlN4ILO7JA98tq3+GCt05C7sXX4iE0lTT7
+         p7En4aOs+FA4Mvh6PH448MyW/FNiOcOvCXwh/bAPCdHNNdx6UiKSwIrV/vNqHZDnL0sI
+         coOmd7HXhQCjteloHa2aCMnAJp+E2dqmu1kQah5yYdi86VGid+moB6GtXwa4p0rTXuHo
+         3cDA==
+X-Gm-Message-State: AO0yUKVJIyDDTDC0pxowjFrP5kVxIRG2/FKQRSzIJqijGnJw2UuyCru5
+        UzDSl5tbYBbjXiKx+sfKfya0ZfPtioERi5cm+n72W2BGXH8MJwv5W5floVN538eqqcyTkBWeT4y
+        PCmt3Ifils6sq
+X-Received: by 2002:a17:906:22c7:b0:877:ef84:c7de with SMTP id q7-20020a17090622c700b00877ef84c7demr8845479eja.61.1675416275951;
+        Fri, 03 Feb 2023 01:24:35 -0800 (PST)
+X-Google-Smtp-Source: AK7set+TxlGnu/L3yT0xGpB437kqNK6vjM70U7jlUdSRH3DIj5ht8LTpXWMZWGwS/IflEeUiZZRQzQ==
+X-Received: by 2002:a17:906:22c7:b0:877:ef84:c7de with SMTP id q7-20020a17090622c700b00877ef84c7demr8845459eja.61.1675416275741;
+        Fri, 03 Feb 2023 01:24:35 -0800 (PST)
 Received: from redhat.com ([2.52.156.122])
-        by smtp.gmail.com with ESMTPSA id t24-20020a1709066bd800b0088452ca0666sm1077211ejs.196.2023.02.03.01.18.01
+        by smtp.gmail.com with ESMTPSA id e11-20020a170906314b00b0084c4b87aa18sm1093420eje.37.2023.02.03.01.24.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Feb 2023 01:18:04 -0800 (PST)
-Date:   Fri, 3 Feb 2023 04:17:59 -0500
+        Fri, 03 Feb 2023 01:24:35 -0800 (PST)
+Date:   Fri, 3 Feb 2023 04:24:30 -0500
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
@@ -74,20 +74,18 @@ Cc:     Paolo Abeni <pabeni@redhat.com>,
         Menglong Dong <imagedong@tencent.com>,
         Kuniyuki Iwashima <kuniyu@amazon.com>,
         Petr Machata <petrm@nvidia.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 00/33] virtio-net: support AF_XDP zero copy
-Message-ID: <20230203034212-mutt-send-email-mst@kernel.org>
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 08/33] virtio_ring: introduce dma sync api for virtio
+Message-ID: <20230203042103-mutt-send-email-mst@kernel.org>
 References: <20230202110058.130695-1-xuanzhuo@linux.alibaba.com>
- <5fda6140fa51b4d2944f77b9e24446e4625641e2.camel@redhat.com>
- <1675395211.6279888-2-xuanzhuo@linux.alibaba.com>
+ <20230202110058.130695-9-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1675395211.6279888-2-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20230202110058.130695-9-xuanzhuo@linux.alibaba.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,74 +93,119 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 03, 2023 at 11:33:31AM +0800, Xuan Zhuo wrote:
-> On Thu, 02 Feb 2023 15:41:44 +0100, Paolo Abeni <pabeni@redhat.com> wrote:
-> > On Thu, 2023-02-02 at 19:00 +0800, Xuan Zhuo wrote:
-> > > XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
-> > > copy feature of xsk (XDP socket) needs to be supported by the driver. The
-> > > performance of zero copy is very good. mlx5 and intel ixgbe already support
-> > > this feature, This patch set allows virtio-net to support xsk's zerocopy xmit
-> > > feature.
-> > >
-> > > Virtio-net did not support per-queue reset, so it was impossible to support XDP
-> > > Socket Zerocopy. At present, we have completed the work of Virtio Spec and
-> > > Kernel in Per-Queue Reset. It is time for Virtio-Net to complete the support for
-> > > the XDP Socket Zerocopy.
-> > >
-> > > Virtio-net can not increase the queue at will, so xsk shares the queue with
-> > > kernel.
-> > >
-> > > On the other hand, Virtio-Net does not support generate interrupt manually, so
-> > > when we wakeup tx xmit, we used some tips. If the CPU run by TX NAPI last time
-> > > is other CPUs, use IPI to wake up NAPI on the remote CPU. If it is also the
-> > > local CPU, then we wake up sofrirqd.
-> >
-> > Thank you for the large effort.
-> >
-> > Since this will likely need a few iterations, on next revision please
-> > do split the work in multiple chunks to help the reviewer efforts -
-> > from Documentation/process/maintainer-netdev.rst:
-> >
-> >  - don't post large series (> 15 patches), break them up
-> >
-> > In this case I guess you can split it in 1 (or even 2) pre-req series
-> > and another one for the actual xsk zero copy support.
-> 
-> 
-> OK.
-> 
-> I can split patch into multiple parts such as
-> 
-> * virtio core
-> * xsk
-> * virtio-net prepare
-> * virtio-net support xsk zerocopy
-> 
-> However, there is a problem, the virtio core part should enter the VHOST branch
-> of Michael. Then, should I post follow-up patches to which branch vhost or
-> next-next?
-> 
-> Thanks.
-> 
+On Thu, Feb 02, 2023 at 07:00:33PM +0800, Xuan Zhuo wrote:
+> In the process of dma sync, we involved whether virtio uses dma api. On
+> the other hand, it is also necessary to read vdev->dev.parent. So these
+> API has been introduced.
 
-Here are some ideas on how to make the patchset smaller
-and easier to merge:
-- keep everything in virtio_net.c for now. We can split
-  things out later, but this way your patchset will not
-  conflict with every since change merged meanwhile.
-  Also, split up needs to be done carefully with sane
-  APIs between components, let's maybe not waste time
-  on that now, do the split-up later.
-- you have patches that add APIs then other
-  patches use them. as long as it's only virtio net just
-  add and use in a single patch, review is actually easier this way.
-- we can try merging pre-requisites earlier, then patchset
-  size will shrink.
+you don't need to repeat implementation here.
+just list the new APIs and how they will be used
+with premapped API.
 
 
-> >
-> > Thanks!
-> >
-> > Paolo
-> >
+
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  drivers/virtio/virtio_ring.c | 61 ++++++++++++++++++++++++++++++++++++
+>  include/linux/virtio.h       |  8 +++++
+>  2 files changed, 69 insertions(+)
+> 
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 67eda7bc23ea..7b393133fd27 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -3102,4 +3102,65 @@ void virtio_dma_unmap(struct device *dev, dma_addr_t dma, unsigned int length,
+>  }
+>  EXPORT_SYMBOL_GPL(virtio_dma_unmap);
+>  
+> +/**
+> + * virtio_dma_need_sync - check dma address need sync
+
+.... whether a dma address needs sync
+
+> + * @dev: virtio device
+> + * @addr: DMA address
+> + */
+> +bool virtio_dma_need_sync(struct device *dev, dma_addr_t addr)
+> +{
+> +	struct virtio_device *vdev = dev_to_virtio(dev);
+> +
+> +	if (!vring_use_dma_api(vdev))
+> +		return 0;
+> +
+> +	return dma_need_sync(vdev->dev.parent, addr);
+> +}
+> +EXPORT_SYMBOL_GPL(virtio_dma_need_sync);
+> +
+> +/**
+> + * virtio_dma_sync_signle_range_for_cpu - dma sync for cpu
+> + * @dev: virtio device
+> + * @addr: DMA address
+> + * @offset: DMA address offset
+> + * @size: mem size for sync
+> + * @dir: DMA direction
+> + *
+> + * Before calling this function, use virtio_dma_need_sync() to confirm that the
+> + * DMA address really needs to be synchronized
+> + */
+> +void virtio_dma_sync_signle_range_for_cpu(struct device *dev, dma_addr_t addr,
+> +					  unsigned long offset, size_t size,
+> +					  enum dma_data_direction dir)
+> +{
+> +	struct virtio_device *vdev = dev_to_virtio(dev);
+> +
+> +	dma_sync_single_range_for_cpu(vdev->dev.parent, addr, offset,
+> +				      size, DMA_BIDIRECTIONAL);
+> +}
+> +EXPORT_SYMBOL_GPL(virtio_dma_sync_signle_range_for_cpu);
+> +
+> +/**
+> + * virtio_dma_sync_signle_range_for_device - dma sync for device
+> + * @dev: virtio device
+> + * @addr: DMA address
+> + * @offset: DMA address offset
+> + * @size: mem size for sync
+> + * @dir: DMA direction
+> + *
+> + * Before calling this function, use virtio_dma_need_sync() to confirm that the
+> + * DMA address really needs to be synchronized
+> + */
+> +void virtio_dma_sync_signle_range_for_device(struct device *dev,
+> +					     dma_addr_t addr,
+> +					     unsigned long offset, size_t size,
+> +					     enum dma_data_direction dir)
+> +{
+> +	struct virtio_device *vdev = dev_to_virtio(dev);
+> +
+> +	dma_sync_single_range_for_device(vdev->dev.parent, addr, offset,
+> +					 size, DMA_BIDIRECTIONAL);
+> +}
+> +EXPORT_SYMBOL_GPL(virtio_dma_sync_signle_range_for_device);
+> +
+
+
+Pls document how these APIs are only for pre-mapped buffers,
+for non premapped virtio core handles DMA API internally.
+
+
+>  MODULE_LICENSE("GPL");
+> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> index ce89126becc5..8c2fae318b0c 100644
+> --- a/include/linux/virtio.h
+> +++ b/include/linux/virtio.h
+> @@ -227,4 +227,12 @@ dma_addr_t virtio_dma_map(struct device *dev, void *addr, unsigned int length,
+>  int virtio_dma_mapping_error(struct device *dev, dma_addr_t addr);
+>  void virtio_dma_unmap(struct device *dev, dma_addr_t dma, unsigned int length,
+>  		      enum dma_data_direction dir);
+> +bool virtio_dma_need_sync(struct device *dev, dma_addr_t addr);
+> +void virtio_dma_sync_signle_range_for_cpu(struct device *dev, dma_addr_t addr,
+> +					  unsigned long offset, size_t size,
+> +					  enum dma_data_direction dir);
+> +void virtio_dma_sync_signle_range_for_device(struct device *dev,
+> +					     dma_addr_t addr,
+> +					     unsigned long offset, size_t size,
+> +					     enum dma_data_direction dir);
+>  #endif /* _LINUX_VIRTIO_H */
+> -- 
+> 2.32.0.3.g01195cf9f
 
