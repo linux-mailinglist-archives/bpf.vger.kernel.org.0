@@ -2,126 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6AA68A36B
-	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 21:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DC168A4CF
+	for <lists+bpf@lfdr.de>; Fri,  3 Feb 2023 22:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbjBCUMx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Feb 2023 15:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
+        id S233720AbjBCViC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Feb 2023 16:38:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232760AbjBCUMw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Feb 2023 15:12:52 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CC0A8425;
-        Fri,  3 Feb 2023 12:12:51 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2B1861FE5;
-        Fri,  3 Feb 2023 20:12:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2449C433EF;
-        Fri,  3 Feb 2023 20:12:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675455170;
-        bh=4cYcCPYkEMmGYnotndJDbonkHWa1OTh1uLq8K0ufV2E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IuDt1yfjPrp0UzZ5DrOE7Of/AGHeP9WkPgZcg7g/VdrTgDi0ySUyNyj01FmBvwwao
-         3ufGKChTDu8YBAfotgIuUi4e4CZ0NL9IvmQfO/4DRYiMIUcLjKj3492exZLPpX9g6n
-         sT4s6hAfzI+1IagNAj3Ddslh/DRxnNUNvVEYWNOINhe/w1l7I+tTHUSqJWdK4MDn7r
-         lS4ycYtkcaeD17quUFXktJTl46YPd+quUJcXpCub3lsJbP2Be7qGW6WI2lUzZxZlBn
-         G4l76Wu/1qu5OBKYEbZVpL3fxZqDY2CFJU3qnLDd8d2tM50muuxFXZm5fPDpyb8UHd
-         fJMzauCI5lnng==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5161F405BE; Fri,  3 Feb 2023 17:12:47 -0300 (-03)
-Date:   Fri, 3 Feb 2023 17:12:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        irogers@google.com, linux-kernel@vger.kernel.org,
-        adrian.hunter@intel.com, linux-perf-users@vger.kernel.org,
-        song@kernel.org, haoluo@google.com, bpf@vger.kernel.org,
-        juri.lelli@redhat.com
-Subject: Re: [PATCH v2 0/3] perf lock contention: Improve aggr x filter
- combination
-Message-ID: <Y91qvwSIs2tc2JAk@kernel.org>
-References: <20230203021324.143540-1-namhyung@kernel.org>
+        with ESMTP id S233743AbjBCViB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 16:38:01 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBB81BF3;
+        Fri,  3 Feb 2023 13:37:59 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id qw12so19036433ejc.2;
+        Fri, 03 Feb 2023 13:37:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ZxFQE2LBmgQJ5car0QtxgR3Ka3TtNP91Nkf6qbF3aw=;
+        b=q0zfd883yy3fKrJDxWlwj9GZ9SfD8W/5CG9jv4cjCvXGIDKVhVKMjweUd180CHUrP7
+         MCbA45t6k5qq0wNPx3gZG4/y0cpgrthqezoYDKiHHTobcj+WmuNS2ckRjZS7RvZXGpv2
+         WcjyUctflr93l11KFW1QmEzMtf21y7WYDHufZPcJAT4dThAkECHVTJuykUr3BppyQwgq
+         LalcWT6nSuQ5eyE0LSBxJ2kjfQ/yPFvGPdXfGM8cIm1cS7wqvsXNjrlsmpbDv/9FeKbP
+         5eUsf1EFsk2kepOt9jbsAHnGRBdXo/YEODz9ctHcIIfNtpOD+WA0ucDZCF3dtxy/f5eO
+         1Buw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/ZxFQE2LBmgQJ5car0QtxgR3Ka3TtNP91Nkf6qbF3aw=;
+        b=pTYiKexFc6vOCiROuZy/e7Qs+z6u+5s3EAv3GlluPOBYUra9P4zda+V1hhON6llz5R
+         Eb67X25XBqDYr8Smb0VuuOfJUuhHCrh/pgl6GzfUnhHvr0Accn78W1coHT0Jhu6/PB7Q
+         SbyK6OF+2xDDVE95lUmn1U6rlZ5xO1ei3YTtiaOyqyRvnb2cMqGpPBbLreh7kwAF3mzw
+         U0iMFmQUwkYIny5Njr8SyW031ZYBybIFXmUsCJnTMQwgFDYPBia18Ei/WxbEbEAC3FqX
+         TwMtbbOr34lW8NXaT/D+a6bkYCKZynJcFa2zhK71pIvifdjv18hnVHms6z7QBj8dv+g2
+         wD5Q==
+X-Gm-Message-State: AO0yUKXmuK2B6myjCAkCF6eEGJdH8Uad0tA82YdhGDH9MB+Cu3v5GXyS
+        Ylkr/hGldF/4LWeClVPXfGxWNnDwNNvEFYq6tD0=
+X-Google-Smtp-Source: AK7set9J52eDguZLiTNxT/1ew99SDEMnY7+LLzaq5O4+nG5HSsAsGTpkqjGe5y5uTLlHpbhw0M0Q4rnV7rmpCza6Dy4=
+X-Received: by 2002:a17:906:cb9a:b0:877:5b9b:b426 with SMTP id
+ mf26-20020a170906cb9a00b008775b9bb426mr3127536ejb.12.1675460279299; Fri, 03
+ Feb 2023 13:37:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230203021324.143540-1-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230127191703.3864860-1-joannelkoong@gmail.com>
+ <20230127191703.3864860-4-joannelkoong@gmail.com> <5715ea83-c4aa-c884-ab95-3d5e630cad05@linux.dev>
+ <20230130223141.r24nlg2jp5byvuph@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4Bzb9=q9TKutW8d7fOtCWaLpA12yvSh-BhL=m3+RA1_xhOQ@mail.gmail.com>
+ <4b7b09b5-fd23-2447-7f05-5f903288625f@linux.dev> <CAEf4BzaQJe+UZxECg__Aga+YKrxK9KEbAuwdxA4ZBz1bQCEmSA@mail.gmail.com>
+ <20230131053042.h7wp3w2zq46swfmk@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzbeUfmE-8Y-mm4RtZ4q=9SZ-_M-K-JF=x84o6cboUneSQ@mail.gmail.com>
+ <20230201004034.sea642affpiu7yfm@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzbTXqhsKqPd=hDANKeg75UDbKjtX318ucMGw7a1L3693w@mail.gmail.com> <CAADnVQJ3CXKDJ_bZ3u2jOEPfuhALGvOi+p5cEUFxe2YgyhvB4Q@mail.gmail.com>
+In-Reply-To: <CAADnVQJ3CXKDJ_bZ3u2jOEPfuhALGvOi+p5cEUFxe2YgyhvB4Q@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 3 Feb 2023 13:37:46 -0800
+Message-ID: <CAEf4Bzabg=YsiR6re3XLxFAptFW3sECA4v2_e0AE_TRNsDWm-w@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Kernel Team <kernel-team@fb.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Feb 02, 2023 at 06:13:21PM -0800, Namhyung Kim escreveu:
-> Hello,
-> 
-> The callstack filter can be useful to debug lock issues but it has a
-> limitation that it only works with caller aggregation mode (which is the
-> default setting).  IOW it cannot filter by callstack when showing tasks
-> or lock addresses/names.
+On Thu, Feb 2, 2023 at 3:43 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Feb 1, 2023 at 5:21 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Jan 31, 2023 at 4:40 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Jan 31, 2023 at 04:11:47PM -0800, Andrii Nakryiko wrote:
+> > > > >
+> > > > > When prog is just parsing the packet it doesn't need to finalize with bpf_dynptr_write.
+> > > > > The prog can always write into the pointer followed by if (p == buf) bpf_dynptr_write.
+> > > > > No need for rdonly flag, but extra copy is there in case of cloned which
+> > > > > could have been avoided with extra rd_only flag.
+> > > >
+> > > > Yep, given we are designing bpf_dynptr_slice for performance, extra
+> > > > copy on reads is unfortunate. ro/rw flag or have separate
+> > > > bpf_dynptr_slice_rw vs bpf_dynptr_slice_ro?
+> > >
+> > > Either flag or two kfuncs sound good to me.
+> >
+> > Would it make sense to make bpf_dynptr_slice() as read-only variant,
+> > and bpf_dynptr_slice_rw() for read/write? I think the common case is
+> > read-only, right? And if users mistakenly use bpf_dynptr_slice() for
+> > r/w case, they will get a verifier error when trying to write into the
+> > returned pointer. While if we make bpf_dynptr_slice() as read-write,
+> > users won't realize they are paying a performance penalty for
+> > something that they don't actually need.
+>
+> Makes sense and it matches skb_header_pointer() usage in the kernel
+> which is read-only. Since there is no verifier the read-only-ness
+> is not enforced, but we can do it.
+>
+> Looks like we've converged on bpf_dynptr_slice() and bpf_dynptr_slice_rw().
+> The question remains what to do with bpf_dynptr_data() backed by skb/xdp.
+> Should we return EINVAL to discourage its usage?
+> Of course, we can come up with sensible behavior for bpf_dynptr_data(),
+> but it will have quirks that will be not easy to document.
+> Even with extensive docs the users might be surprised by the behavior.
 
-Thanks, applied.
+I feel like having bpf_dynptr_data() working in the common case for
+skb/xdp would be nice (e.g., so basically at least work in cases when
+we don't need to pull).
 
-- Arnaldo
+But we've been discussing bpf_dynptr_slice() with Joanne today, and we
+came to the conclusion that bpf_dynptr_slice()/bpf_dynptr_slice_rw()
+should work for any kind of dynptr (LOCAL, RINGBUF, SKB, XDP). So
+generic code that wants to work with any dynptr would be able to just
+use bpf_dynptr_slice, even for LOCAL/RINGBUF, even though buffer won't
+ever be filled for LOCAL/RINGBUF.
 
- 
-> But sometimes users want to use the filter for other aggregation mode.
-> Like "show me lock addresses/names from this caller only" or "show me
-> tasks having these callers".
-> 
-> When it's using tracepoint events from the data file, the situation is
-> good since the tracepoints have all the necessary info.  But when using
-> BPF it needs to extend the key of lock stat BPF map to have more than
-> one info like 'pid + stack_id' or 'lock_addr + stack_id'.  As callstack
-> filter works in userspace, it should save the both info.
-> 
-> With this change we can now use the -S/--callstack-filter with the
-> -t/--threads option or -l/--lock-addr option.  It's also possible to use
-> it with other filter options.
-> 
-> The following example shows the top 5 tasks that have contention
-> somewhere in the epoll handling.
-> 
->   $ sudo perf lock con -abt -S epoll -E5 -- sleep 1
->    contended   total wait     max wait     avg wait          pid   comm
-> 
->            2     58.64 us     32.38 us     29.32 us      1514752   Chrome_IOThread
->            3     29.31 us     12.65 us      9.77 us         3773   Xorg
->            1     17.45 us     17.45 us     17.45 us      1514906   Chrome_ChildIOT
->            1     15.41 us     15.41 us     15.41 us      1515382   Chrome_ChildIOT
->            1     12.52 us     12.52 us     12.52 us       293878   IPC I/O Parent
-> 
-> You get get the code at 'perf/lock-filter-v1' branch in
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-> 
-> Thanks,
-> Namhyung
-> 
-> Namhyung Kim (3):
->   perf lock contention: Factor out lock_contention_get_name()
->   perf lock contention: Use lock_stat_find{,new}
->   perf lock contention: Support filters for different aggregation
-> 
->  tools/perf/builtin-lock.c                     |  79 ++++----
->  tools/perf/util/Build                         |   5 +-
->  tools/perf/util/bpf_lock_contention.c         | 180 +++++++++++-------
->  .../perf/util/bpf_skel/lock_contention.bpf.c  |  15 +-
->  tools/perf/util/bpf_skel/lock_data.h          |   4 +-
->  tools/perf/util/lock-contention.h             |   5 +
->  6 files changed, 178 insertions(+), 110 deletions(-)
-> 
-> -- 
-> 2.39.1.519.gcb327c4b5f-goog
-> 
+In application, though, if I know I'm working with LOCAL or RINGBUF
+(or MALLOC, once we have it), I'd use bpf_dynptr_data() to fill out
+fixed parts, of course. bpf_dynptr_slice() would be cumbersome for
+such cases (especially if I have some huge fixed part that I *know* is
+available in RINGBUF/MALLOC case).
 
--- 
-
-- Arnaldo
+With this setup we probably won't ever need bpf_dynptr_data_rdonly(),
+because we can say to use bpf_dynptr_slice() for that (even with an
+unnecessary buffer).
