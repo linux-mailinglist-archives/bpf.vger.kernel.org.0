@@ -2,71 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EB668A804
-	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 04:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C637C68A820
+	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 05:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbjBDDrx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Feb 2023 22:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
+        id S233147AbjBDET1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Feb 2023 23:19:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjBDDrx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Feb 2023 22:47:53 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E9F1C7EB
-        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 19:47:52 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id bd15so5042308pfb.8
-        for <bpf@vger.kernel.org>; Fri, 03 Feb 2023 19:47:52 -0800 (PST)
+        with ESMTP id S229449AbjBDET0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 23:19:26 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D021C651;
+        Fri,  3 Feb 2023 20:19:24 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id h9so7182944plf.9;
+        Fri, 03 Feb 2023 20:19:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7/oPdpjCXEICi0WB7qYNWjYe48S0NxtEX7NoBl8nlPs=;
-        b=X0K1IuuO2V67IUIqK+OnHMr/N2OM1k0AQL8rRzI2HNm8qhLFv9Sl72iLVyer5PklnM
-         GVfS8raikJ/XH2n34fLxUdm04BGyZKnOdlk0HScXwZwTMgbF2Rl1MaMDMI+Im3E0TOOR
-         0+sbo5GHB846vSd9UygAyo9TrX2hbHjL5UMuPRg8zwEC56fRHIrHQNMbCAdrcjYW2rEa
-         UHTwukvhDY+dmvkn5U68Iu5RJyGNbzgkPU4TwwgEyzncJAkooqpJv1kHu6FK2hxioKup
-         PIGGAg3cBR84aj6Xl1BkC65YlXD62y0eviht6mugNBaoBkdcgRf+wLJk73SWGmRQJa6S
-         bULw==
+        bh=8uE1zGV4oE8NP4bFEdcyTsVfeRPl+LQz40mwiE0LafY=;
+        b=lxDIDCZIq9tmu9rweUPBRFcMVXMDfDmiyt0j6yIdj3ut0e165I9sRo0tGsdC2ATWFN
+         vbgvctKcCmFzngWuNJNkB5al7g9AXoWJYxcXInHBp2e4RcLz2TWf8WPGHpGzZ6iuI9qi
+         7PCG1fPF+TNJPOdnz2vGxQvZ8SGa5qFJZ4qqonsxWn3gyR9ESBrFCrWEKXk38EKCIx0H
+         pmftWy7Pqn/e2kf7LtxPA84OceazAyWpQdVTJ/Ye6WPGFDuM0cU50kX3VL7vCX5/jS0y
+         1YNVm0mGlUMP2XSSv7D3MvQYlwbW1R8FYEdce8ErBu4T3Z1ptKyP9So/G68MIqv99a3X
+         2+8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=7/oPdpjCXEICi0WB7qYNWjYe48S0NxtEX7NoBl8nlPs=;
-        b=tLjqYBHcu9T7e+L8JSIQmNKDi5PDGXKrRKU3fQfMov1lBsz4rUNyFcLji7MPK2JuDh
-         woJlJGbkSHaC/BJkxPKq5ECgQZJ26/Hf5pZZ5Ske00sw/y6TI2xl/GfnCBlt3sJNU9g7
-         xMlILEsLhtmpQQGxw0a4+SRbT3kpa/c7exK868TkLnysHvXYY6/EpqOI5Guu3mtWhdUs
-         9L9hwzZbOXKMkSsDQdWDBatLmEpu7A9aKETQabKmsgsFReY13+o65odpFeWCJYkIhOHb
-         xg2vYEN863cwpLb/+fZZXwwxkkuPdnMXZGjI9pHcIXrRNJGDvheTruQt3fAhNZQA32a3
-         mmoQ==
-X-Gm-Message-State: AO0yUKUmAQodg215u9dVXYzd5omrfjVCWCBylCguiv8cSd5e3uZnFiE7
-        v8t1pn5fGmLL1piluMtwMYg=
-X-Google-Smtp-Source: AK7set+dxM+rqI6RQF+VKLQ1oGHl6cwft1lfswmvq89rAIlxVmeEgQ7hRrdEAYRL+8gL8s80xw5mcw==
-X-Received: by 2002:a05:6a00:21d1:b0:58b:ca43:9c05 with SMTP id t17-20020a056a0021d100b0058bca439c05mr14215338pfj.16.1675482471826;
-        Fri, 03 Feb 2023 19:47:51 -0800 (PST)
+        bh=8uE1zGV4oE8NP4bFEdcyTsVfeRPl+LQz40mwiE0LafY=;
+        b=5mxOvU3x/CzoUAQhMSZfGacGJcWYr3TvZJnmS8F9WwiAhhqaTr3aNSh5aZP/OfXLXv
+         C0lUspCLwtWwt1QZWq+WGGQ0uiiqyjWQJDEnbn0Xt00B0OlKqaCS4z/PBuew24iL9TgQ
+         AVilpaisL3osWUkkAfUbyxLdiacBEy4cF4EZIMNdKSeu/ygWuqVGdsTK/GYtvDH6hs5s
+         hD3G0wPLAbsJzTqinzohHUZaOVMYqnFn/lPf0OD9mYNGmlK/FuWyR8tW6xKeuTgVlvGC
+         fAllrLm/eOHuhZmgaODztEN3IB9JMHpbQHEW8VwKekB4BrQq6HJ28GBKb2SxehUgEGND
+         QIIg==
+X-Gm-Message-State: AO0yUKV/EdPIhudXdcQtIhGoMvzEXLmzyKOWSMqBdqCx3uFj6LB3Zz8i
+        StRrIGlyDDY/mWb/pwvmuoo=
+X-Google-Smtp-Source: AK7set9ZRmNQ5f49/zgDdoiei1DXcxnDEXR/thqnm0XdkOJqaDGiXPZK6Las3NUG1gshz3dtTH8NHA==
+X-Received: by 2002:a17:902:cec1:b0:196:88e0:ea1a with SMTP id d1-20020a170902cec100b0019688e0ea1amr15117597plg.47.1675484363962;
+        Fri, 03 Feb 2023 20:19:23 -0800 (PST)
 Received: from localhost ([98.97.116.12])
-        by smtp.gmail.com with ESMTPSA id a77-20020a621a50000000b0058e12658485sm2679453pfa.94.2023.02.03.19.47.50
+        by smtp.gmail.com with ESMTPSA id ja21-20020a170902efd500b001965540395fsm2415875plb.105.2023.02.03.20.19.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Feb 2023 19:47:51 -0800 (PST)
-Date:   Fri, 03 Feb 2023 19:47:47 -0800
+        Fri, 03 Feb 2023 20:19:23 -0800 (PST)
+Date:   Fri, 03 Feb 2023 20:19:21 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     tong@infragraf.org, bpf@vger.kernel.org
-Cc:     Tonghao Zhang <tong@infragraf.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+To:     Hsin-Wei Hung <hsinweih@uci.edu>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-Message-ID: <63ddd56327756_6bb1520881@john.notmuch>
-In-Reply-To: <20230203133220.48919-1-tong@infragraf.org>
-References: <20230203133220.48919-1-tong@infragraf.org>
-Subject: RE: [bpf-next v1] bpf: introduce stats update helper
+        Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <63dddcc92fc31_6bb15208e9@john.notmuch>
+In-Reply-To: <CABcoxUbyxuEaciKLpSeGN-0xnf8H1w1CV9BDZi8++cWhKtQQXw@mail.gmail.com>
+References: <CABcoxUbyxuEaciKLpSeGN-0xnf8H1w1CV9BDZi8++cWhKtQQXw@mail.gmail.com>
+Subject: RE: A potential deadlock in sockhash map
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -81,31 +77,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tong@ wrote:
-> From: Tonghao Zhang <tong@infragraf.org>
+Hsin-Wei Hung wrote:
+> Hi,
 > 
-> This patch introduce a stats update helper to simplify codes.
-> 
-> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Hou Tao <houtao1@huawei.com>
-> ---
->  include/linux/filter.h  | 22 +++++++++++++++-------
->  kernel/bpf/trampoline.c | 10 +---------
->  2 files changed, 16 insertions(+), 16 deletions(-)
+> Our bpf runtime fuzzer (a customized syzkaller) triggered a lockdep warning
+> in the bpf subsystem indicating a potential deadlock. We are able to
+> trigger this bug on v5.15.25 and v5.19. The following code is a BPF PoC,
+> and the lockdep warning is attached at the end.
 
-Seems fine but I'm not sure it makes much difference. I guess see if
-Daniel, Andrii or Alexei want to take it or just drop it as random
-code churn.
+Thanks, but can you test the latest kernel?
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Or at least latest 5.15 stable, 5.15.25 is a bit old and is missing lots of
+fixes. And 5.19 is not even a LTS so wouldn't have many fixes.
+
+Ideally if possible testing bpf tree would be the most helpful.
+
+ https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/
+
+I believe we fixed a similar bug already so hoping this is just hitting an
+already fixed bug. But, would be best to confirm thanks.
+
+Thanks,
+John
