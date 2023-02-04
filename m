@@ -2,160 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5682968AB00
-	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 16:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0F568ABD7
+	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 19:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233704AbjBDPra (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Feb 2023 10:47:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
+        id S232529AbjBDScz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Feb 2023 13:32:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233206AbjBDPr0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Feb 2023 10:47:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BA02BF3D
-        for <bpf@vger.kernel.org>; Sat,  4 Feb 2023 07:46:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675525598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D6iJIruggPm7ZW79w49UxTokI6ilWzp8XnYfnsm2RHI=;
-        b=BJZ1idlbUDOJ1+sMt2ZnPBmzsr2iCXRg+TcMjmP4XtvtAasph7UKJKM4zdom6lF2sT/WQ/
-        337CWaAX4v6sp+aLfSYsQ5iomyztcA6EsYrEST1uwYJFTj5pphp+me9psD6eXbbZnbWcy4
-        qhcyD3N5lYzp7D0ybZy4QYUtSJLogVA=
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
- [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-515-Jp_Uqy1aOQmc5IG3IY8LPw-1; Sat, 04 Feb 2023 10:46:36 -0500
-X-MC-Unique: Jp_Uqy1aOQmc5IG3IY8LPw-1
-Received: by mail-il1-f199.google.com with SMTP id 9-20020a056e0220c900b0030f1b0dfa9dso5250318ilq.4
-        for <bpf@vger.kernel.org>; Sat, 04 Feb 2023 07:46:36 -0800 (PST)
+        with ESMTP id S232338AbjBDScy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Feb 2023 13:32:54 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4DC305E6
+        for <bpf@vger.kernel.org>; Sat,  4 Feb 2023 10:32:48 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id h15so984105plk.12
+        for <bpf@vger.kernel.org>; Sat, 04 Feb 2023 10:32:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hWXqY6vkS6h8Vyi+cCa2wgxLlkbcE67+3y3A1NRgkP0=;
+        b=LExrl+KFcVf2/FYhWCQdYF32QGdh5UXA4AmcX728sSl4odYnnjrrZq16jx3MvQzFcv
+         dQ1H3oGKuIHaSgHT0VSFNVp+YJPAZdUO3p+/taza+s0XIXj0/FP1/7id8OINHB/DuB7T
+         W7YTVEPmQomTURqo0D25gEVKpsdipmXEZZJqw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=D6iJIruggPm7ZW79w49UxTokI6ilWzp8XnYfnsm2RHI=;
-        b=1eVc0ON5TQdqEBwuT6hxkPdWnO2hfBUv4H2Q5TrshiuXKCmqL3bNdOsfKBhZCRHyDW
-         dLK13nK/0v72YfJcQ863JWzC/7HCau8X5QbVsIe3gInrt6R4OooxI1IFWmTtvsL86Ul9
-         AphvVIk9MT980eut6l8CEIlRGGfzlSAFoXJZiSFsjDszDX6WVUW0pIvcP2ehzMIvXhb8
-         u3kXfO6R7slu+W1p4UR/OgRR2JzPiafwwP0Bg0PYGnjXHZ9t/xKxi7eAXXubM6fbKiSZ
-         sdav9IrWo6lFbdThFHGY1+ZQXpYuWoNNY1c10c10Ziw7tbjySiR+T2/p0/fmVguRBQUH
-         3a2g==
-X-Gm-Message-State: AO0yUKWBcaGixD3t1EV8kqIV77YaznJNQ9vJKRipDAplXuUf8Nc0PpzU
-        ONKwYhpRpsNHFdeuUMV9b/R7tYvQWZC7qX4l0FDi83UQSw7LAmnBos42BeDVhe80/zAb3JfiAxG
-        RMdGJekpDjD/y
-X-Received: by 2002:a05:6e02:b4b:b0:310:dc99:a878 with SMTP id f11-20020a056e020b4b00b00310dc99a878mr12922638ilu.32.1675525596109;
-        Sat, 04 Feb 2023 07:46:36 -0800 (PST)
-X-Google-Smtp-Source: AK7set/FHnRnxzLZzqXg3+drbEWQhVstxJOHvElmO6bFnf1mvDBt7pIAGixCTJHQNAffTy4L8sB79Q==
-X-Received: by 2002:a05:6e02:b4b:b0:310:dc99:a878 with SMTP id f11-20020a056e020b4b00b00310dc99a878mr12922620ilu.32.1675525595862;
-        Sat, 04 Feb 2023 07:46:35 -0800 (PST)
-Received: from [192.168.0.241] (192-0-145-146.cpe.teksavvy.com. [192.0.145.146])
-        by smtp.gmail.com with ESMTPSA id n46-20020a02716e000000b003a5d8834734sm1881199jaf.45.2023.02.04.07.46.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 04 Feb 2023 07:46:34 -0800 (PST)
-Message-ID: <38bb7dd4-7b22-8905-8dc8-403125c921da@redhat.com>
-Date:   Sat, 4 Feb 2023 10:46:32 -0500
+        bh=hWXqY6vkS6h8Vyi+cCa2wgxLlkbcE67+3y3A1NRgkP0=;
+        b=VTH4Sa9/ApOURix7IrOvpYMQ/qf8qO5ewmdPjB12tXgtMGSAOfXOMxZpPsgxRgIYkv
+         f1kfmIyGph42NudLE255PhzUxekL6KRtlaSh1JWvGVekViFfCEXyrJKQap7rRAnUSsqP
+         0ZqPF64OoxmZaLgMpCQunrn/om9q2p9gLQocaf9e6GEkueQsBukis6UWI5vEDyznyUIJ
+         01znLnGyNG8iCSKgrrXAL6KoO0SF82/Dn40OE/MizfuVQbMedQaSNIxTd8Kcdd3bATs2
+         7FROkNP7qswcdXwH2Jh4t8GMGtcunzqRc2RemM185reOTkYyTnVEO1cRPJkBrgZ5Zypm
+         YFNw==
+X-Gm-Message-State: AO0yUKWtv6kXUGubtOqYiiePwI19NI1Up91FgsOppI9kphbp0e/U29XC
+        JHytJKFTuvUxWZZgriewkk7hNw==
+X-Google-Smtp-Source: AK7set8ndlru/LQXkvkAKjSEdQnGbFpts6hOxMVbgJ2BfEljDsnEQJjCuV1dzvs6hCZvsRjEvrk7gQ==
+X-Received: by 2002:a17:902:e0cd:b0:194:457d:6dca with SMTP id e13-20020a170902e0cd00b00194457d6dcamr11858096pla.44.1675535567229;
+        Sat, 04 Feb 2023 10:32:47 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g21-20020a170902869500b00194a297cb8esm2109672plo.191.2023.02.04.10.32.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Feb 2023 10:32:46 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] bpf: Replace bpf_lpm_trie_key 0-length array with flexible array
+Date:   Sat,  4 Feb 2023 10:32:44 -0800
+Message-Id: <20230204183241.never.481-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] uapi: add missing ip/ipv6 header dependencies for
- linux/stddef.h
-Content-Language: en-US
-To:     "Herton R. Krzesinski" <herton@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, liuhangbin@gmail.com,
-        pabeni@redhat.com, gnault@redhat.com, jstancek@redhat.com,
-        prarit@redhat.com, torez@redhat.com, dzickus@redhat.com,
-        dhoward@redhat.com, kuba@kernel.org
-References: <20230203160448.1314205-1-herton@redhat.com>
-From:   Carlos O'Donell <carlos@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230203160448.1314205-1-herton@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3245; h=from:subject:message-id; bh=8UjW+Zy+1y3cIspI89jzw8FmWvL6uos84uq4mMimB0Q=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBj3qTM1ht5vMIp0wFAnwtKlrGMR52OBqU2d1wGvknh p4xzmaKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY96kzAAKCRCJcvTf3G3AJvgYD/ 4gbPMJvXXbsBmYsUpuJKym76FsMyPeVmqDsr9eazRsJPrXYT/Cjf+wXXotjT1IukgBmNxSVbq3FsyI jnPq041qMY/zMM3NYurX38M6lIf9VeD7IPwUlsQrDpMOf3RYYrOA/WOCuFbfqW8FvgyQCGRAtW95Jb lW1DpWFeXkiMxxqtJhD7QS04V8887YQ0DkXwbM/t8JVaKudE9LMgVvTxcimzGPC1eBClzkIlw+5L2/ 2Tz50uOg1PRSd6F9LP0m56P3WtX2+0OMRTFg03CMcNcpHYOSQRpkRac8CZG2qRwtiHxVnj0ekeMAj2 c5+8xwXst7vWDPbVucMDYmX5s2JdpD3Qq+M8OWMFzLuHwgLWYevblaB4pF/35yTCbEnT00bS7rEDtI 8fNBCG558+bobc540bAFf4N8wEPwO+GvG2OsBpZWEBQpGoNaAOJywnklLtZgbDyVWuHsGTabmFLqK9 7Osq6wT3O4Z6+vMUvmIJOJnrvi2hPumoSbm0ihHeKhi1HLCVFQs7xgtRVWOOiTtIZTFmVL+Fm79Q+4 tfEMfE6U827t/hEy7qdSFawVFyO8QibSjlvSTDM2/mTRtW5CEHE9plbSRbEcIPVYftHWqn9tBzLWBO aPMvVw8tolEP/BXWNuXMvFT7TAgaVWSiLkd7jpuUNQAdCP85KusshqzXrVsQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/3/23 11:04, Herton R. Krzesinski wrote:
-> Since commit 58e0be1ef6118 ("net: use struct_group to copy ip/ipv6
-> header addresses"), ip and ipv6 headers started to use the __struct_group
-> definition, which is defined at include/uapi/linux/stddef.h. However,
-> linux/stddef.h isn't explicitly included in include/uapi/linux/{ip,ipv6}.h,
-> which breaks build of xskxceiver bpf selftest if you install the uapi
-> headers in the system:
-> 
-> $ make V=1 xskxceiver -C tools/testing/selftests/bpf
-> ...
-> make: Entering directory '(...)/tools/testing/selftests/bpf'
-> gcc -g -O0 -rdynamic -Wall -Werror (...)
-> In file included from xskxceiver.c:79:
-> /usr/include/linux/ip.h:103:9: error: expected specifier-qualifier-list before ‘__struct_group’
->   103 |         __struct_group(/* no tag */, addrs, /* no attrs */,
->       |         ^~~~~~~~~~~~~~
-> ...
-> 
-> Include the missing <linux/stddef.h> dependency in ip.h and do the
-> same for the ipv6.h header.
-> 
-> Fixes: 58e0be1ef611 ("net: use struct_group to copy ip/ipv6 header addresses")
-> Signed-off-by: Herton R. Krzesinski <herton@redhat.com>
+Replace deprecated 0-length array in struct bpf_lpm_trie_key with
+flexible array. Found with GCC 13:
 
-LGTM, if you used it you should #include-it.
+../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+  207 |                                        *(__be16 *)&key->data[i]);
+      |                                                   ^~~~~~~~~~~~~
+../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+  102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+      |                                                      ^
+../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+   97 | #define be16_to_cpu __be16_to_cpu
+      |                     ^~~~~~~~~~~~~
+../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+  206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+^
+      |                            ^~~~~~~~~~~
+In file included from ../include/linux/bpf.h:7:
+../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+   82 |         __u8    data[0];        /* Arbitrary size */
+      |                 ^~~~
 
-Tested with x86_64 defconfig at 0136d86b78522bbd5755f8194c97a987f0586ba5.
+This includes fixing the selftest which was incorrectly using a
+variable length struct as a header, identified earlier[1]. Avoid this
+by just explicitly including the prefixlen member instead of struct
+bpf_lpm_trie_key.
 
-Tested building glibc with the new UAPI headers, and that works too.
+[1] https://lore.kernel.org/all/202206281009.4332AA33@keescook/
 
-Reviewed-by: Carlos O'Donell <carlos@redhat.com>
-Tested-by: Carlos O'Donell <carlos@redhat.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Mykola Lysenko <mykolal@fb.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Haowen Bai <baihaowen@meizu.com>
+Cc: bpf@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/uapi/linux/bpf.h                         | 2 +-
+ tools/testing/selftests/bpf/progs/map_ptr_kern.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> ---
->  include/uapi/linux/ip.h   | 1 +
->  include/uapi/linux/ipv6.h | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/include/uapi/linux/ip.h b/include/uapi/linux/ip.h
-> index 874a92349bf5..283dec7e3645 100644
-> --- a/include/uapi/linux/ip.h
-> +++ b/include/uapi/linux/ip.h
-> @@ -18,6 +18,7 @@
->  #ifndef _UAPI_LINUX_IP_H
->  #define _UAPI_LINUX_IP_H
->  #include <linux/types.h>
-> +#include <linux/stddef.h>
-
-OK. Includes stddef.h because of __struct_group use by struct iphdr.
-
->  #include <asm/byteorder.h>
->  
->  #define IPTOS_TOS_MASK		0x1E
-> diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
-> index 81f4243bebb1..53326dfc59ec 100644
-> --- a/include/uapi/linux/ipv6.h
-> +++ b/include/uapi/linux/ipv6.h
-> @@ -4,6 +4,7 @@
->  
->  #include <linux/libc-compat.h>
->  #include <linux/types.h>
-> +#include <linux/stddef.h>
-
-OK. Includes stddef.h because of __struct_group use by struct ipv6hdr.
-
->  #include <linux/in6.h>
->  #include <asm/byteorder.h>
->  
-
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ba0f0cfb5e42..5930bc5c7e2c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -79,7 +79,7 @@ struct bpf_insn {
+ /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
+ struct bpf_lpm_trie_key {
+ 	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
+-	__u8	data[0];	/* Arbitrary size */
++	__u8	data[];		/* Arbitrary size */
+ };
+ 
+ struct bpf_cgroup_storage_key {
+diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
+index db388f593d0a..543012deb349 100644
+--- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
++++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
+@@ -311,7 +311,7 @@ struct lpm_trie {
+ } __attribute__((preserve_access_index));
+ 
+ struct lpm_key {
+-	struct bpf_lpm_trie_key trie_key;
++	__u32 prefixlen;
+ 	__u32 data;
+ };
+ 
 -- 
-Cheers,
-Carlos.
+2.34.1
 
