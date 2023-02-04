@@ -2,86 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0775368A885
-	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 07:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E8B68A88B
+	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 07:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbjBDGGn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Feb 2023 01:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
+        id S232480AbjBDGUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Feb 2023 01:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjBDGGm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Feb 2023 01:06:42 -0500
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20985D92C
-        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 22:06:41 -0800 (PST)
-Message-ID: <4da7e8dc-25cf-1c4a-bac0-1965df74b645@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1675490799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cu5Wz0uoepKW11ULQP5ZT7Q5lxy/8AHtK4afKm071yA=;
-        b=J90adppd24nW1A3eHsYRuwk4kNxEerppNyQ4fSpLQ5bwiasDqUI6XA/vQLpaDfPcXedosa
-        Wri7GRvl1ftokXLNF7HjsgzqTqLDpzo95vagGobWxz0TCgtSBF4HiTnf4M1Osq8v9uNrE+
-        fxkryNuthdzAhv7Q5meYgH1e3GK7Dio=
-Date:   Fri, 3 Feb 2023 22:06:29 -0800
+        with ESMTP id S229436AbjBDGUV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Feb 2023 01:20:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90A8761C5
+        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 22:20:20 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 52E76B82D0A
+        for <bpf@vger.kernel.org>; Sat,  4 Feb 2023 06:20:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F0B6AC4339B;
+        Sat,  4 Feb 2023 06:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675491618;
+        bh=N93u6+NOMIK88N6teA4tRaQaEG+fW83xdUF+glsSO08=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IilaHJE7TeXeKNltL+n8qKh0e8P3VLFsYaNz3sOZeDDQ1t3g5q42MKsiEYLkaY/cO
+         T/NtXLaBGv4U9Z+5Fep1itNw8EGeyuO7LUIr4cXpaYz+TXJD/L8ZKEIpf20fIFQXp1
+         0z424pBl8dwPkn4J+LlHTsDW1sXT37tODetYTqwJIxY5xWM2mR9xkt+3RivyfJ/0g3
+         /Crasmgp4fQFiB8pReSq3u8mp9u7+jPW/GyOTsvcUPt1bd2gIts3sXzB5N2Bzd7RAj
+         ar/1zZIvCt2rT3Kp8ecOv4NqVnW9JMyNZkJ7zwFIgqyDNYSBOAAMO1wfQusmpkxTVT
+         tJh+Jox8I9GcA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D4FFDE270CA;
+        Sat,  4 Feb 2023 06:20:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [bpf-next v1] bpf: introduce stats update helper
-Content-Language: en-US
-To:     tong@infragraf.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>
-References: <20230203133220.48919-1-tong@infragraf.org>
- <63ddd56327756_6bb1520881@john.notmuch>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <63ddd56327756_6bb1520881@john.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bpf: fix typo in header for bpf_perf_prog_read_value
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167549161786.12375.18239543604495686786.git-patchwork-notify@kernel.org>
+Date:   Sat, 04 Feb 2023 06:20:17 +0000
+References: <20230203121439.25884-1-dev@der-flo.net>
+In-Reply-To: <20230203121439.25884-1-dev@der-flo.net>
+To:     Florian Lehner <dev@der-flo.net>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/3/23 7:47 PM, John Fastabend wrote:
-> tong@ wrote:
->> From: Tonghao Zhang <tong@infragraf.org>
->>
->> This patch introduce a stats update helper to simplify codes.
->>
->> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
->> Cc: Alexei Starovoitov <ast@kernel.org>
->> Cc: Daniel Borkmann <daniel@iogearbox.net>
->> Cc: Andrii Nakryiko <andrii@kernel.org>
->> Cc: Martin KaFai Lau <martin.lau@linux.dev>
->> Cc: Song Liu <song@kernel.org>
->> Cc: Yonghong Song <yhs@fb.com>
->> Cc: John Fastabend <john.fastabend@gmail.com>
->> Cc: KP Singh <kpsingh@kernel.org>
->> Cc: Stanislav Fomichev <sdf@google.com>
->> Cc: Hao Luo <haoluo@google.com>
->> Cc: Jiri Olsa <jolsa@kernel.org>
->> Cc: Hou Tao <houtao1@huawei.com>
->> ---
->>   include/linux/filter.h  | 22 +++++++++++++++-------
->>   kernel/bpf/trampoline.c | 10 +---------
->>   2 files changed, 16 insertions(+), 16 deletions(-)
-> 
-> Seems fine but I'm not sure it makes much difference.
+Hello:
 
-I also don't think it is needed. There are only two places. Also, it is not 
-encouraged to collect more stats. Refactoring it is not going to help in the future.
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Fri,  3 Feb 2023 13:14:39 +0100 you wrote:
+> Fix a simple typo in the documentation for bpf_perf_prog_read_value.
+> 
+> Signed-off-by: Florian Lehner <dev@der-flo.net>
+> ---
+>  include/uapi/linux/bpf.h       | 2 +-
+>  tools/include/uapi/linux/bpf.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+
+Here is the summary with links:
+  - bpf: fix typo in header for bpf_perf_prog_read_value
+    https://git.kernel.org/bpf/bpf-next/c/17c9b4e1a7d1
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
