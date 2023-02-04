@@ -2,82 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E8B68A88B
-	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 07:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3109268A8A3
+	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 07:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbjBDGUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Feb 2023 01:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51666 "EHLO
+        id S229987AbjBDG6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Feb 2023 01:58:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjBDGUV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Feb 2023 01:20:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90A8761C5
-        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 22:20:20 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 52E76B82D0A
-        for <bpf@vger.kernel.org>; Sat,  4 Feb 2023 06:20:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F0B6AC4339B;
-        Sat,  4 Feb 2023 06:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675491618;
-        bh=N93u6+NOMIK88N6teA4tRaQaEG+fW83xdUF+glsSO08=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IilaHJE7TeXeKNltL+n8qKh0e8P3VLFsYaNz3sOZeDDQ1t3g5q42MKsiEYLkaY/cO
-         T/NtXLaBGv4U9Z+5Fep1itNw8EGeyuO7LUIr4cXpaYz+TXJD/L8ZKEIpf20fIFQXp1
-         0z424pBl8dwPkn4J+LlHTsDW1sXT37tODetYTqwJIxY5xWM2mR9xkt+3RivyfJ/0g3
-         /Crasmgp4fQFiB8pReSq3u8mp9u7+jPW/GyOTsvcUPt1bd2gIts3sXzB5N2Bzd7RAj
-         ar/1zZIvCt2rT3Kp8ecOv4NqVnW9JMyNZkJ7zwFIgqyDNYSBOAAMO1wfQusmpkxTVT
-         tJh+Jox8I9GcA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D4FFDE270CA;
-        Sat,  4 Feb 2023 06:20:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229877AbjBDG6b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Feb 2023 01:58:31 -0500
+Received: from out-219.mta0.migadu.com (out-219.mta0.migadu.com [91.218.175.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A501CAEE
+        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 22:58:29 -0800 (PST)
+Message-ID: <6433db0e-5cc6-8acc-b92f-eb5e17f032d6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1675493908;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LnVbDM3tODiOoPOU6J9Bc2hHvqzzwVji+olsb/JrusU=;
+        b=Q5GITzVcjTvOpiwUBE9wrLPyL3ykfA0kvyAihDaOhA6/iz28ItQSfa+nSTWXqAEsHQNSuB
+        qF0eNbRBL6lFwOYftGmAgficCipDmdic+yDNRo8rEzN3ek/i6UM7ocOwcMIrUemYd3FtTX
+        Vr7TbUtu4llyGGj/PIpeSMGT7gflaTw=
+Date:   Fri, 3 Feb 2023 22:58:20 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: fix typo in header for bpf_perf_prog_read_value
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167549161786.12375.18239543604495686786.git-patchwork-notify@kernel.org>
-Date:   Sat, 04 Feb 2023 06:20:17 +0000
-References: <20230203121439.25884-1-dev@der-flo.net>
-In-Reply-To: <20230203121439.25884-1-dev@der-flo.net>
-To:     Florian Lehner <dev@der-flo.net>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 bpf-next] Add support for tracing programs in
+ BPF_PROG_RUN
+Content-Language: en-US
+To:     Grant Seltzer <grantseltzer@gmail.com>
+Cc:     andrii@kernel.org, kpsingh@kernel.org, bpf@vger.kernel.org
+References: <20230203182812.20657-1-grantseltzer@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230203182812.20657-1-grantseltzer@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On 2/3/23 10:28 AM, Grant Seltzer wrote:
+> This patch changes the behavior of how BPF_PROG_RUN treats tracing
+> (fentry/fexit) programs. Previously only a return value is injected
+> but the actual program was not run.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+hmm... I don't understand this. The actual program is run by attaching to the 
+bpf_fentry_test{1,2,3...}. eg. The test in fentry_test.c
 
-On Fri,  3 Feb 2023 13:14:39 +0100 you wrote:
-> Fix a simple typo in the documentation for bpf_perf_prog_read_value.
-> 
-> Signed-off-by: Florian Lehner <dev@der-flo.net>
-> ---
->  include/uapi/linux/bpf.h       | 2 +-
->  tools/include/uapi/linux/bpf.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> New behavior mirrors that of running raw tracepoint BPF programs which
+> actually runs the instructions of the program via `bpf_prog_run()`
 
-Here is the summary with links:
-  - bpf: fix typo in header for bpf_perf_prog_read_value
-    https://git.kernel.org/bpf/bpf-next/c/17c9b4e1a7d1
+Which tracepoint and how is it tested?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+The CI kernel is crashing:
+https://patchwork.kernel.org/project/netdevbpf/patch/20230203182812.20657-1-grantseltzer@gmail.com/
 
