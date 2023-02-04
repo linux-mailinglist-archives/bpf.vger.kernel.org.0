@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B14BA68A7BB
-	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 03:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A1668A7C2
+	for <lists+bpf@lfdr.de>; Sat,  4 Feb 2023 03:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbjBDCBT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Feb 2023 21:01:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
+        id S229694AbjBDCP5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Feb 2023 21:15:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjBDCBR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Feb 2023 21:01:17 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8F666EEF
-        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 18:01:17 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 78so4831687pgb.8
-        for <bpf@vger.kernel.org>; Fri, 03 Feb 2023 18:01:17 -0800 (PST)
+        with ESMTP id S229657AbjBDCP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Feb 2023 21:15:57 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195E465EDF
+        for <bpf@vger.kernel.org>; Fri,  3 Feb 2023 18:15:56 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id g13so2274167ple.10
+        for <bpf@vger.kernel.org>; Fri, 03 Feb 2023 18:15:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MR1UMa9NQuAw0hKniXicFJam+Vk7pdmWl7enSJwds8I=;
-        b=ozNcmix20AdZk6KwMw/XZ8HelBBBmc0ozY0lywRcac8w/cUP01VmmTaFrvVWFM+/FP
-         kE6nS2nKshxAwa8ZCz8E/+TIwsglxSfrtksE3eECAjrVyIGCDpjZMdy2OEt3jaXE2FA8
-         B16VJu0m175moKuDNBp4SSBO6LOyjFow+4m+l3AfURWTGeLRKCIVpaNJN3UTEokA5Re5
-         kgZ0bZQlRASzR4dScx8Zt/8qmkExoR+EQs4Z18bAHOIp4picQJHaX5rEyedQD/fx8ANo
-         gMZ/92Iu86wbyIFkinwNujU7uHdL2hQGiua+jcStIuUI1VCSukYB8VuKc5Hg5280c/yE
-         V1Ig==
+        bh=2YS7B6O70LhbZ3Kdw/RBfmMHaegKvoCD2PlKa2IVQqU=;
+        b=qYTOq6/le9oPQ5cZxjM5k208A3lNIcnE88Ui8w2oxjhwPm31u27bSWiF596qVa4xju
+         YXngzA06e3W2tWpHiu7P47PIwxg7bQg/kCCZd8dwMxf5LQsQjRerHDLlQ8r75UqyocjL
+         zAvkzavYGBFyX31Th/2HNeBIWHrRpB6BJOKxx/HKBYU7PodKbv7+4oDqR4kcBny67kFe
+         Z0J4Z9RdWNaj+3jwoauBU83bYC9FVYEsrusz9uTvY491zB2UL5C7ltnoskLP6w3pcvUR
+         RxUv2d62EuoJ16HZi4TttjCiQpftmhVSVJZtVJTYXQ3s9Xj3c2DiTD41ibBMUFuqwAgB
+         rHAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=MR1UMa9NQuAw0hKniXicFJam+Vk7pdmWl7enSJwds8I=;
-        b=zZ2oEE8AIscANP3Scqxrfyce63W1YCy0ba8yvfW7BpnJBFI5Xp2hG3d4xw4Q1DFMF2
-         UqQGO0oASuw2PWCZxSH/BwLMeths6F1HyPY+0YcjNkOtYhINyfAde7WSAmQFgbZChT8w
-         ZvbJ8GeS0vQEvMPAG80DpjKWMHAXBPcwbrBBGp29NujJX9jpUXB20rFXVAGGvg0YMT46
-         C7/nEAhGm7fKLleT7kwKGoXPehuRoXhrFJB7AZYPz+zwFY8Ryqt9Dt8gj0k6cjIMNwbq
-         13UVKDxL9IhC2URKEvwKWUMlj/Wwfr7yD6FORT/sAT6XfcVTOhA2Ia0vi5pE4qlu9rgP
-         8jHw==
-X-Gm-Message-State: AO0yUKVpJb3/TvfHxusTEIWS5Aud6H5DqsjpxCr5bDQeHmVanBbJkiG0
-        vsLjnb23IVg4peJnFFjr2Dw=
-X-Google-Smtp-Source: AK7set/dEMYMVPk3JtMRcJTMcchyyjHAzFA4l7Y4yBvskaazinjOuyGfquntbpzbCaMTLZGomTaxQw==
-X-Received: by 2002:a05:6a00:23d5:b0:58d:be61:4859 with SMTP id g21-20020a056a0023d500b0058dbe614859mr14370246pfc.11.1675476076637;
-        Fri, 03 Feb 2023 18:01:16 -0800 (PST)
+        bh=2YS7B6O70LhbZ3Kdw/RBfmMHaegKvoCD2PlKa2IVQqU=;
+        b=Ldugnqcz0Hsm1A9La8h25X1Hgj3JDMPPsvhSJUeBXx3KI85MUZgBW7X6uuSQGSvj8+
+         2fUaPOdWyqThZ1jRsOxkWqo7v7lJCnVhD32ueFFmmj6rFLp/+zMCwjLlk6xlWRzGgqg7
+         oNPEaalu8JWez2eipm/5fY9LHxpXa8pDz+DmwGT6+fmNGzy4i2T12QfrzxJImtFbsoFS
+         V0ImGE1Lcd1/iQmylfhNzNqRPDFOGQpWk8ZZtoB1uKrCuEyG+bX8cg07P9NcjARl1hQ9
+         Ltg2YTod2nivtQL+pGi6T0ZVq/NAA/7Er6BbamQPYU7mXapJy0RSSoCjOZgZKG5msJ+8
+         oKFg==
+X-Gm-Message-State: AO0yUKWlyI4yqsXDFL7Mctbdquigrg1KbDnKuF2SAMBl6cF+cDXdhcMB
+        bofBHnWGJ77C1RBOkZiSIos=
+X-Google-Smtp-Source: AK7set9hK8dUsqOb7e3jfmbRblXFhWo9Dfbm1nGlu1Cd3l9cKMuAWF7ZDYR2dX0FffYAvhrXAntZig==
+X-Received: by 2002:a17:902:c402:b0:198:e63d:9a3c with SMTP id k2-20020a170902c40200b00198e63d9a3cmr3551939plk.44.1675476955500;
+        Fri, 03 Feb 2023 18:15:55 -0800 (PST)
 Received: from localhost ([98.97.116.12])
-        by smtp.gmail.com with ESMTPSA id s67-20020a625e46000000b00589c467ed88sm2526143pfb.69.2023.02.03.18.01.15
+        by smtp.gmail.com with ESMTPSA id d19-20020a170902c19300b001947c22185bsm2252508pld.184.2023.02.03.18.15.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Feb 2023 18:01:15 -0800 (PST)
-Date:   Fri, 03 Feb 2023 18:01:13 -0800
+        Fri, 03 Feb 2023 18:15:54 -0800 (PST)
+Date:   Fri, 03 Feb 2023 18:15:53 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
@@ -61,11 +61,10 @@ To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
         42.hyeyoo@gmail.com, vbabka@suse.cz, urezki@gmail.com
 Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Message-ID: <63ddbc69ef50f_6bb1520813@john.notmuch>
-In-Reply-To: <20230202014158.19616-8-laoar.shao@gmail.com>
+Message-ID: <63ddbfd9ae610_6bb1520861@john.notmuch>
+In-Reply-To: <20230202014158.19616-1-laoar.shao@gmail.com>
 References: <20230202014158.19616-1-laoar.shao@gmail.com>
- <20230202014158.19616-8-laoar.shao@gmail.com>
-Subject: RE: [PATCH bpf-next 7/7] bpf: hashtab memory usage
+Subject: RE: [PATCH bpf-next 0/7] bpf, mm: bpf memory usage
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -81,48 +80,99 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Yafang Shao wrote:
-> Get htab memory usage from the htab pointers we have allocated. Some
-> small pointers are ignored as their size are quite small compared with
-> the total size.
+> Currently we can't get bpf memory usage reliably. bpftool now shows the
+> bpf memory footprint, which is difference with bpf memory usage. The
+> difference can be quite great between the footprint showed in bpftool
+> and the memory actually allocated by bpf in some cases, for example,
 > 
-> The result as follows,
-> - before this change
-> 1: hash  name count_map  flags 0x0  <<<< prealloc
->         key 16B  value 24B  max_entries 1048576  memlock 41943040B
-> 2: hash  name count_map  flags 0x1  <<<< non prealloc, fully set
->         key 16B  value 24B  max_entries 1048576  memlock 41943040B
-> 3: hash  name count_map  flags 0x1  <<<< non prealloc, non set
->         key 16B  value 24B  max_entries 1048576  memlock 41943040B
+> - non-preallocated bpf map
+>   The non-preallocated bpf map memory usage is dynamically changed. The
+>   allocated elements count can be from 0 to the max entries. But the
+>   memory footprint in bpftool only shows a fixed number.
+> - bpf metadata consumes more memory than bpf element 
+>   In some corner cases, the bpf metadata can consumes a lot more memory
+>   than bpf element consumes. For example, it can happen when the element
+>   size is quite small.
+
+Just following up slightly on previous comment.
+
+The metadata should be fixed and knowable correct? What I'm getting at
+is if this can be calculated directly instead of through a BPF helper
+and walking the entire map.
+
 > 
-> The memlock is always a fixed number whatever it is preallocated or
-> not, and whatever the allocated elements number is.
+> We need a way to get the bpf memory usage especially there will be more
+> and more bpf programs running on the production environment and thus the
+> bpf memory usage is not trivial.
+
+In our environments we track map usage so we always know how many entries
+are in a map. I don't think we use this to calculate memory footprint
+at the moment, but just for map usage. Seems though once you have this
+calculating memory footprint can be done out of band because element
+and overheads costs are fixed.
+
 > 
-> - after this change
-> 1: hash  name count_map  flags 0x0  <<<< prealloc
->         key 16B  value 24B  max_entries 1048576  memlock 109064464B
-> 2: hash  name count_map  flags 0x1  <<<< non prealloc, fully set
->         key 16B  value 24B  max_entries 1048576  memlock 117464320B
-> 3: hash  name count_map  flags 0x1  <<<< non prealloc, non set
->         key 16B  value 24B  max_entries 1048576  memlock 16797952B
+> This patchset introduces a new map ops ->map_mem_usage to get the memory
+> usage. In this ops, the memory usage is got from the pointers which is
+> already allocated by a bpf map. To make the code simple, we igore some
+> small pointers as their size are quite small compared with the total
+> usage.
 > 
-> The memlock now is hashtab actually allocated.
+> In order to get the memory size from the pointers, some generic mm helpers
+> are introduced firstly, for example, percpu_size(), vsize() and kvsize(). 
 > 
-> At worst, the difference can be 10x, for example,
-> - before this change
-> 4: hash  name count_map  flags 0x0
->         key 4B  value 4B  max_entries 1048576  memlock 8388608B
+> This patchset only implements the bpf memory usage for hashtab. I will
+> extend it to other maps and bpf progs (bpf progs can dynamically allocate
+> memory via bpf_obj_new()) in the future.
+
+My preference would be to calculate this out of band. Walking a
+large map and doing it in a critical section to get the memory
+usage seems not optimal 
+
 > 
-> - after this change
-> 4: hash  name count_map  flags 0x0
->         key 4B  value 4B  max_entries 1048576  memlock 83898640B
+> The detailed result can be found in patch #7.
+> 
+> Patch #1~#4: Generic mm helpers
+> Patch #5   : Introduce new ops
+> Patch #6   : Helpers for bpf_mem_alloc
+> Patch #7   : hashtab memory usage
+> 
+> Future works:
+> - extend it to other maps
+> - extend it to bpf prog
+> - per-container bpf memory usage 
+> 
+> Historical discussions,
+> - RFC PATCH v1 mm, bpf: Add BPF into /proc/meminfo
+>   https://lwn.net/Articles/917647/  
+> - RFC PATCH v2 mm, bpf: Add BPF into /proc/meminfo
+>   https://lwn.net/Articles/919848/
+> 
+> Yafang Shao (7):
+>   mm: percpu: fix incorrect size in pcpu_obj_full_size()
+>   mm: percpu: introduce percpu_size()
+>   mm: vmalloc: introduce vsize()
+>   mm: util: introduce kvsize()
+>   bpf: add new map ops ->map_mem_usage
+>   bpf: introduce bpf_mem_alloc_size()
+>   bpf: hashtab memory usage
+> 
+>  include/linux/bpf.h           |  2 ++
+>  include/linux/bpf_mem_alloc.h |  2 ++
+>  include/linux/percpu.h        |  1 +
+>  include/linux/slab.h          |  1 +
+>  include/linux/vmalloc.h       |  1 +
+>  kernel/bpf/hashtab.c          | 80 ++++++++++++++++++++++++++++++++++++++++++-
+>  kernel/bpf/memalloc.c         | 70 +++++++++++++++++++++++++++++++++++++
+>  kernel/bpf/syscall.c          | 18 ++++++----
+>  mm/percpu-internal.h          |  4 ++-
+>  mm/percpu.c                   | 35 +++++++++++++++++++
+>  mm/util.c                     | 15 ++++++++
+>  mm/vmalloc.c                  | 17 +++++++++
+>  12 files changed, 237 insertions(+), 9 deletions(-)
+> 
+> -- 
+> 1.8.3.1
 > 
 
-This walks the entire map and buckets to get the size? Inside a
-rcu critical section as well :/ it seems.
 
-What am I missing, if you know how many elements are added (which
-you can track on map updates) how come we can't just calculate the
-memory size directly from this?
-
-Thanks,
-John
