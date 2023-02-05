@@ -2,86 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9B468B17A
-	for <lists+bpf@lfdr.de>; Sun,  5 Feb 2023 21:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A80E468B1AC
+	for <lists+bpf@lfdr.de>; Sun,  5 Feb 2023 21:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjBEUIy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Feb 2023 15:08:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
+        id S229541AbjBEUmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Feb 2023 15:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjBEUIx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Feb 2023 15:08:53 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F321B57B;
-        Sun,  5 Feb 2023 12:08:52 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id p185so8271886oif.2;
-        Sun, 05 Feb 2023 12:08:52 -0800 (PST)
+        with ESMTP id S229379AbjBEUmG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Feb 2023 15:42:06 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B5118B35;
+        Sun,  5 Feb 2023 12:42:05 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id f10so10936475qtv.1;
+        Sun, 05 Feb 2023 12:42:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mvIsEYybWu8qfqSxC3SNCLsX1f2a8XyZ+ZzIZVE4ff4=;
-        b=FS2o67HoQ50grlACqBfjs7akK7vkBfdkIAsLQBrgfFho3YlVqkzuQiU8aMyJ/zP+Jy
-         XUBdMDKvT3wZ3rMjRslvmbaGHJovDP5ENMNjSr9wH42xMGvbJ/uLz7KWluzopcoxfFVm
-         0TZH/l0YAHuKXRmysAGEcUWQoAnuSB+s9LLju7juPS14nRGqX2+O8+rzeOdHv4ttAmKk
-         hAnWshRUkwKnwq3EegTYpaT6YEkv4puxnPDzWaXxQS8S/tdDsDzlcHH6Tl7AotBNRH1k
-         BxZPmNrqrwMUcD8tTD7ohxg1242rPv22vcXHE3CyRywCuhye1qQ9x0xQuUQj2ig17voH
-         kTSg==
+        bh=baJmWUdmXVxM+m9C4fBDKrI1jWXWeqNSvEzKDmMn6/M=;
+        b=SSMkxH8xCWttzweeETBFl/UCMnZpy5mKzOFrOqGq8bC0gR0ny3UpATXov8Y5mTan4Q
+         9p+Yafup31xdVV6I7G52LPaIj7ByN8WiHl79X8ZymX9R8MtIl9euWb0rtmM7gGXegFJw
+         KLsfeJusNmHPIunW5AKlIPpUwpeVMBjDqV0D+A9EGKazJ7F9ERSdr3+dZFnUCirZ4Lge
+         PhZZjAtlyNZu+ErqbODBMlpqu69NuOPuyBV4V+PtXZXIaDBWd4bkpM3VNMZKat0PuaH9
+         Ajp/pwWPwLrLwHstHT7H7b3bvGbidkcwksQRvI2xvLoqYSVq0HAhGphgt6pcnehRVyJ3
+         6Hvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mvIsEYybWu8qfqSxC3SNCLsX1f2a8XyZ+ZzIZVE4ff4=;
-        b=juQ4CfdESwh5htRvPy9wyp1FSgWksXbdr4pfrBz/pp58zhLYu0/nbavrmAH26oB3mv
-         U/YqOxxGE8XK1uDjeC6K2zOABjkGPJL5Czwj6/g+x36Bxl4kc409y5/BFGfpQP+YyTi3
-         S4wOEcLmSlwM47n7Qn9oOaUqkAoOL2CH5Eh2Wi/FOFK3IXYkTRLE0bBkKrCwRdlk6AXO
-         EwiJznEQy8qpQhA/65s6lFkl3fBcDsORsF00jvmpALxhuD0Tk5YG7pHIxV7f8yifOopr
-         ggcWHoIwKZ2ugHcWbAdnOG/Hlh9B+hb/WQt1K7AawTJluVNLgcSyPn8yk8IgpibkGgQo
-         d/ew==
-X-Gm-Message-State: AO0yUKWZ/VQCBIHNCY+qqEnG8GayMSp4fG9NpZnwOqhPhnhW5CyXqbSs
-        Y1z9AKNZMJXpvv5xQniWU0g=
-X-Google-Smtp-Source: AK7set+eadtPZR2CC0SGrwp/7LLhs+kYqtEHVr0BtVMqUjTJF8NaoOWH6viBDXx/H5BrXYXlb+/6aA==
-X-Received: by 2002:a05:6808:a07:b0:378:2df5:49f5 with SMTP id n7-20020a0568080a0700b003782df549f5mr7983074oij.2.1675627731912;
-        Sun, 05 Feb 2023 12:08:51 -0800 (PST)
+        bh=baJmWUdmXVxM+m9C4fBDKrI1jWXWeqNSvEzKDmMn6/M=;
+        b=2RTZlsi9/XVEzdWKtVC0NJ8HPJwvgLk4UJ3s7PWqZcvy3LWLLpYk4I649djXXIaY7I
+         WSOegboHxwTg10JDo7ZJRvyyaNmlHSnzX2NopkAI+ZG+g1SqpB2DHmT7ptcBpjNEl13J
+         x+gXD+bi78rXxyXVLZEkxOqEmB1kUL0GyujqX5Qk+6pdCdiKW0JkQJjsATpQlMST2H2n
+         cBqZPxFc6gNkHIf4LNYg/MFNlr8GzSLUdEXIy9AgF2j3VqmNUQp6WkE2/VWhB5vPytXM
+         Ey838Lx1DVEy1v0rOV20RfENZAgtQbAhzZRGJ3nN9WZmPJMb+nT7ebepWT9AMpx2dE4+
+         wABA==
+X-Gm-Message-State: AO0yUKVbfD+Mq/DAKbdvC4LuuXMTGjk0rxNNVIl7oLtQmqeKmzis7vXW
+        cEzGH9lehdoc28DpYzWio80=
+X-Google-Smtp-Source: AK7set/UDuxsSLYZ5O17sdxwiyzq0qjEQT1oXqV2fBG7niXHLPSfrcFUIkUFMq13ygxznuWHKSrqUQ==
+X-Received: by 2002:ac8:7f8e:0:b0:3a9:81f0:d8e9 with SMTP id z14-20020ac87f8e000000b003a981f0d8e9mr31582595qtj.68.1675629724567;
+        Sun, 05 Feb 2023 12:42:04 -0800 (PST)
 Received: from localhost ([2600:1700:65a0:ab60:a80b:31f2:24c8:7c9a])
-        by smtp.gmail.com with ESMTPSA id g17-20020a9d6c51000000b0068d59d15a93sm4005797otq.40.2023.02.05.12.08.50
+        by smtp.gmail.com with ESMTPSA id i9-20020ac813c9000000b003b86d3ca969sm5815755qtj.51.2023.02.05.12.42.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Feb 2023 12:08:50 -0800 (PST)
-Date:   Sun, 5 Feb 2023 12:08:49 -0800
+        Sun, 05 Feb 2023 12:42:04 -0800 (PST)
+Date:   Sun, 5 Feb 2023 12:42:03 -0800
 From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Bobby Eshleman <bobbyeshleman@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        jakub@cloudflare.com, hdanton@sina.com, cong.wang@bytedance.com
-Subject: Re: [PATCH RFC net-next v2 0/3] vsock: add support for sockmap
-Message-ID: <Y+AM0VXW54YbvsRT@pop-os.localdomain>
-References: <20230118-support-vsock-sockmap-connectible-v2-0-58ffafde0965@bytedance.com>
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        toke@redhat.com, corbet@lwn.net, linux-doc@vger.kernel.org,
+        brouer@redhat.com, bagasdotme@gmail.com, linux-api@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3] bpf/docs: Document kfunc lifecycle /
+ stability expectations
+Message-ID: <Y+AUm8cikB6m978j@pop-os.localdomain>
+References: <20230203155727.793518-1-void@manifault.com>
+ <20230203155727.793518-2-void@manifault.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230118-support-vsock-sockmap-connectible-v2-0-58ffafde0965@bytedance.com>
+In-Reply-To: <20230203155727.793518-2-void@manifault.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -92,39 +77,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 30, 2023 at 08:35:11PM -0800, Bobby Eshleman wrote:
-> Add support for sockmap to vsock.
+On Fri, Feb 03, 2023 at 09:57:27AM -0600, David Vernet wrote:
+> BPF kernel <-> kernel API stability has been discussed at length over
+> the last several weeks and months. Now that we've largely aligned over
+> kfuncs being the way forward, and BPF helpers being considered
+> functionally frozen, it's time to document the expectations for kfunc
+> lifecycles and stability so that everyone (BPF users, kfunc developers,
+> and maintainers) are all aligned, and have a crystal-clear understanding
+> of the expectations surrounding kfuncs.
 > 
-> We're testing usage of vsock as a way to redirect guest-local UDS requests to
-> the host and this patch series greatly improves the performance of such a
-> setup.
+> To do that, this patch adds that documentation to the main kfuncs
+> documentation page via a new 'kfunc lifecycle expectations' section. The
+> patch describes how decisions are made in the kernel regarding whether
+> to include, keep, deprecate, or change / remove a kfunc. As described
+> very overtly in the patch itself, but likely worth highlighting here:
 > 
-> Compared to copying packets via userspace, this improves throughput by 121% in
-> basic testing.
+> "kfunc stability" does not mean, nor ever will mean, "BPF APIs may block
+> development elsewhere in the kernel".
 > 
-> Tested as follows.
-> 
-> Setup: guest unix dgram sender -> guest vsock redirector -> host vsock server
-> Threads: 1
-> Payload: 64k
-> No sockmap:
-> - 76.3 MB/s
-> - The guest vsock redirector was
->   "socat VSOCK-CONNECT:2:1234 UNIX-RECV:/path/to/sock"
-> Using sockmap (this patch):
-> - 168.8 MB/s (+121%)
-> - The guest redirector was a simple sockmap echo server,
->   redirecting unix ingress to vsock 2:1234 egress.
-> - Same sender and server programs
-> 
-> *Note: these numbers are from RFC v1
-> 
-> Only the virtio transport has been tested. The loopback transport was used in
-> writing bpf/selftests, but not thoroughly tested otherwise.
-> 
-> This series requires the skb patch.
-> 
+> Rather, the intention and expectation is for kfuncs to be treated like
+> EXPORT_SYMBOL_GPL symbols in the kernel. The goal is for kfuncs to be a
+> safe and valuable option for maintainers and kfunc developers to extend
+> the kernel, without tying anyone's hands, or imposing any kind of
+> restrictions on maintainers in the same way that UAPI changes do.
 
-Looks good to me. Definitely good to go as non-RFC.
+I think they are still different, kernel modules are still considered as
+a part of kernel development, while eBPF code is not that supposed to be
+kernel development, at least much further. Treating them alike is
+misleading, IMHO.
 
-Thanks.
+> 
+> In addition to the 'kfunc lifecycle expectations' section, this patch
+> also adds documentation for a new KF_DEPRECATED kfunc flag which kfunc
+> authors or maintainers can choose to add to kfuncs if and when they
+> decide to deprecate them. Note that as described in the patch itself, a
+> kfunc need not be deprecated before being changed or removed -- this
+> flag is simply provided as an available deprecation mechanism for those
+> that want to provide a deprecation story / timeline to their users.
+> When necessary, kfuncs may be changed or removed to accommodate changes
+> elsewhere in the kernel without any deprecation at all.
+
+This fundamentally contradicts with Compile-Once-Run-Everywhere
+https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-portability-and-co-re.html
+Could you add some clarification for this too? Especically how we could
+respect CO-RE meanwhile deprecating kfuncs?
+
+BTW, not related to compatibility, but still kfuncs related confusion,
+it also contradicts with Documentation/bpf/bpf_design_QA.rst:
+
+"
+Q: Can BPF functionality such as new program or map types, new
+helpers, etc be added out of kernel module code?
+
+A: NO.
+"
+
+The conntrack kfuncs like bpf_skb_ct_alloc() reside in a kernel module.
+
+Thanks!
