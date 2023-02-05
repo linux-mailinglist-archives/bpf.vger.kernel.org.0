@@ -2,66 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7336268AE30
-	for <lists+bpf@lfdr.de>; Sun,  5 Feb 2023 05:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED90268AE94
+	for <lists+bpf@lfdr.de>; Sun,  5 Feb 2023 07:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbjBEEDo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Feb 2023 23:03:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59238 "EHLO
+        id S229490AbjBEG6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Feb 2023 01:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjBEEDn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Feb 2023 23:03:43 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DF11EFE2
-        for <bpf@vger.kernel.org>; Sat,  4 Feb 2023 20:03:42 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id i17so406982qvq.13
-        for <bpf@vger.kernel.org>; Sat, 04 Feb 2023 20:03:42 -0800 (PST)
+        with ESMTP id S229478AbjBEG6W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Feb 2023 01:58:22 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844D923108;
+        Sat,  4 Feb 2023 22:58:20 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 203so6391464pfx.6;
+        Sat, 04 Feb 2023 22:58:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AaRPKrJenXRlZJRlBBTvbxO+nfonIN+I19ij1t4XP64=;
-        b=Aa1mix3e8gLG5LLSupYiWkuEHwoutDVPEZSZ7NJdZJPxtIf+K1HDgEKH2VNSqChHf+
-         VrJ45A874dIqoRl64MuWs58lolMC78y20HtYFJ+FBJRo1FZgH2ITWVFuI8I0JOASynsp
-         0uYKaAR1cwxpQDc6uXzQyypybseh3z5jLWpv/1UVO97bOiqPi4XGa8bAyQHqcxED6WP3
-         qadOIoznP44B1kmPL1vGuS3k4WWq9piCRtkBZRdy4FtrbNNMS1irHz39SayE7rGbg1va
-         9ewW/i094JsrUdettae1Vr8oO5KAc19awwbXWlfEG6D8X1ljdJ0pXrFLul0w7bWenatx
-         DDtA==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NkWRdzEKke7GR8UIzoPrXe0fCR7Zi4RGiPc8wkbTB4w=;
+        b=XSC+bQejMiGP5TbJYVDlLreC8JI6izirwf2lFqkk+LIE4in+7ZH/gEPPm+2/e6s3sj
+         4VfBFEKjaVS6SVUHOiDcEf7TGvyMIphk/+tiH/qgiOeuZIC134Qmja6JNox0NpC+uro0
+         hq/ZslHjhPEmSkhFXVsx1E3GRLJVqS2ou2fUs/S8qLkFZCFqLLlXdfSht5fx2xt0aPTJ
+         wM7CiLm5JJpJYF40pc/jTJpxsXUv5/TfQiDb2/bNX9TsaJVq9fGsjqE8kBNFc6vae5Hm
+         FoQHwrX4C/UuNQiWXiNDSB8joi4VfJQGFFL70FV9ToCJ7K64eB+p2C2OG72S8Paoxqvp
+         hMSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AaRPKrJenXRlZJRlBBTvbxO+nfonIN+I19ij1t4XP64=;
-        b=q3FVwF+ZV3xQmLlRl9qtCILWVVQF1NLZHMwHvHm1VUomwnWAtW97ozOupcRj3msnZO
-         /o+LBQBUyg02J91BEiEbn5+yuUfZRsxOxdMPcqAYq3BUFH/c8aVmZW0U5ohpVSorjYlS
-         HxDKvZ5JVCUKOJEEzDP3aLFUk0rene1Rc53fJkRhnwu4p2CnGN4FL2BhhPSyWnmf2MLV
-         LFwl8lPNe7Kve3YnaocWlpxhbyFjJvClBlezy4Dmm0vcDg6DWbPdCx03ZmATehlFYD7s
-         DhTk+2ZuS26avEWCEYCqI9Vz2p8XiTc6MdzyjfQXpnGBWO/xOQy1ht6ooKZf+1+AjcY9
-         TUJw==
-X-Gm-Message-State: AO0yUKU9RFX7xFfUV8RnMLgUvldZTq6SMyJm+L1NQrxkiL0x7gF7sYsu
-        R+IFTvrok/oGS+tjhytueIZr5HUeYOXaEHEVeuY=
-X-Google-Smtp-Source: AK7set8W7nYgfrENJ4TTYMIbustDq1gYm/g5s7cOtFvu5XJzRHm0MGd9YbMkaAzPRxr56Xb31usjP160ASIBpmqBhbE=
-X-Received: by 2002:a0c:fa52:0:b0:537:762f:48c3 with SMTP id
- k18-20020a0cfa52000000b00537762f48c3mr921710qvo.74.1675569821613; Sat, 04 Feb
- 2023 20:03:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20230202014158.19616-1-laoar.shao@gmail.com> <63ddbfd9ae610_6bb1520861@john.notmuch>
-In-Reply-To: <63ddbfd9ae610_6bb1520861@john.notmuch>
+        bh=NkWRdzEKke7GR8UIzoPrXe0fCR7Zi4RGiPc8wkbTB4w=;
+        b=sqCJakAPz7ESVHGUH1oxjBxagYa/7JxV60M5JAAbfDbnDOdJ32QSgJQyDPoIsv5tvi
+         f6QfgVzGp8fquQLVkNzRhwTduTbpKSwsKY1mOzoBa/OiuLc5rXUV+YrOXwsJFKm6DxAH
+         lKL7Y1Pt0TAjEgoYeRAlVn4jwpNMIDJFb44Jd8B9E5j3D2WASk9aM7mSxPdhVrESeD6c
+         jafaLY7OkxqMg0Eh3Cts6xdg4t8MAPyHpkVN43kaF8W7LSjxV3AlMleZFoHIxAKdwZ92
+         gd/idA+DcPWDc4HOxNpp+FYiSvSA/ONkNlwNSgxQ4v1lc5EA3oXz9+Q0fcVR4hPQNwHB
+         7Usg==
+X-Gm-Message-State: AO0yUKWPz7TFLU/cqaFC6UCLYOMpIQQxIw/0tGjkViAf1S0F3IqVlv+q
+        GbJh50HqAh7d/2y0KMwN3lAwYeViz3JVoG0j
+X-Google-Smtp-Source: AK7set8ZmU5/Kpg6u1AWbZ+6T3Ym9SJiBF6LaA1AfSe3W4zcwl5v6pvvRr1kYum7Kv86G/1Ihb2+vg==
+X-Received: by 2002:a05:6a00:230c:b0:56c:232e:395e with SMTP id h12-20020a056a00230c00b0056c232e395emr18950984pfh.15.1675580299680;
+        Sat, 04 Feb 2023 22:58:19 -0800 (PST)
+Received: from vultr.guest ([2401:c080:1c02:6a5:5400:4ff:fe4b:6fe6])
+        by smtp.gmail.com with ESMTPSA id 144-20020a621596000000b00593ce7ebbaasm4596114pfv.184.2023.02.04.22.58.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Feb 2023 22:58:19 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sun, 5 Feb 2023 12:03:05 +0800
-Message-ID: <CALOAHbAjHqXGZH_p19aYTbqK=sE8ZaMxhVzAoTO4ZKSXLiyx-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/7] bpf, mm: bpf memory usage
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, tj@kernel.org, dennis@kernel.org, cl@linux.com,
-        akpm@linux-foundation.org, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, vbabka@suse.cz, urezki@gmail.com,
-        linux-mm@kvack.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+To:     tj@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, akpm@linux-foundation.org
+Cc:     bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 0/5] bpf, mm: introduce cgroup.memory=nobpf 
+Date:   Sun,  5 Feb 2023 06:58:00 +0000
+Message-Id: <20230205065805.19598-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -72,73 +73,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 4, 2023 at 10:15 AM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Yafang Shao wrote:
-> > Currently we can't get bpf memory usage reliably. bpftool now shows the
-> > bpf memory footprint, which is difference with bpf memory usage. The
-> > difference can be quite great between the footprint showed in bpftool
-> > and the memory actually allocated by bpf in some cases, for example,
-> >
-> > - non-preallocated bpf map
-> >   The non-preallocated bpf map memory usage is dynamically changed. The
-> >   allocated elements count can be from 0 to the max entries. But the
-> >   memory footprint in bpftool only shows a fixed number.
-> > - bpf metadata consumes more memory than bpf element
-> >   In some corner cases, the bpf metadata can consumes a lot more memory
-> >   than bpf element consumes. For example, it can happen when the element
-> >   size is quite small.
->
-> Just following up slightly on previous comment.
->
-> The metadata should be fixed and knowable correct?
+The bpf memory accouting has some known problems in contianer
+environment,
 
-The metadata of BPF itself is fixed, but the medata of MM allocation
-depends on the kernel configuretion.
+- The container memory usage is not consistent if there's pinned bpf
+  program
+  After the container restart, the leftover bpf programs won't account
+  to the new generation, so the memory usage of the container is not
+  consistent. This issue can be resolved by introducing selectable
+  memcg, but we don't have an agreement on the solution yet. See also
+  the discussions at https://lwn.net/Articles/905150/ .
 
-> What I'm getting at
-> is if this can be calculated directly instead of through a BPF helper
-> and walking the entire map.
->
+- The leftover non-preallocated bpf map can't be limited
+  The leftover bpf map will be reparented, and thus it will be limited by 
+  the parent, rather than the container itself. Furthermore, if the
+  parent is destroyed, it be will limited by its parent's parent, and so
+  on. It can also be resolved by introducing selectable memcg.
 
-As I explained in another thread, it doesn't walk the entire map.
+- The memory dynamically allocated in bpf prog is charged into root memcg
+  only
+  Nowdays the bpf prog can dynamically allocate memory, for example via
+  bpf_obj_new(), but it only allocate from the global bpf_mem_alloc
+  pool, so it will charge into root memcg only. That needs to be
+  addressed by a new proposal.
 
-> >
-> > We need a way to get the bpf memory usage especially there will be more
-> > and more bpf programs running on the production environment and thus the
-> > bpf memory usage is not trivial.
->
-> In our environments we track map usage so we always know how many entries
-> are in a map. I don't think we use this to calculate memory footprint
-> at the moment, but just for map usage. Seems though once you have this
-> calculating memory footprint can be done out of band because element
-> and overheads costs are fixed.
->
-> >
-> > This patchset introduces a new map ops ->map_mem_usage to get the memory
-> > usage. In this ops, the memory usage is got from the pointers which is
-> > already allocated by a bpf map. To make the code simple, we igore some
-> > small pointers as their size are quite small compared with the total
-> > usage.
-> >
-> > In order to get the memory size from the pointers, some generic mm helpers
-> > are introduced firstly, for example, percpu_size(), vsize() and kvsize().
-> >
-> > This patchset only implements the bpf memory usage for hashtab. I will
-> > extend it to other maps and bpf progs (bpf progs can dynamically allocate
-> > memory via bpf_obj_new()) in the future.
->
-> My preference would be to calculate this out of band. Walking a
-> large map and doing it in a critical section to get the memory
-> usage seems not optimal
->
+So let's give the user an option to disable bpf memory accouting.
 
-I don't quite understand what you mean by calculating it out of band.
-This patchset introduces a BPF helper which is used in bpftool, so it
-is already out of band, right ?
-We should do it in bpftool, because the sys admin wants a generic way
-to get the system-wide bpf memory usage.
+The idea of "cgroup.memory=nobpf" is originally by Tejun[1].
+
+[1]. https://lwn.net/ml/linux-mm/YxjOawzlgE458ezL@slm.duckdns.org/
+
+Yafang Shao (5):
+  mm: memcontrol: add new kernel parameter cgroup.memory=nobpf
+  bpf: use bpf_map_kvcalloc in bpf_local_storage
+  bpf: introduce bpf_memcg_flags()
+  bpf: allow to disable bpf map memory accounting
+  bpf: allow to disable bpf prog memory accounting
+
+ Documentation/admin-guide/kernel-parameters.txt |  1 +
+ include/linux/bpf.h                             | 16 ++++++++++++++++
+ include/linux/memcontrol.h                      | 11 +++++++++++
+ kernel/bpf/bpf_local_storage.c                  |  4 ++--
+ kernel/bpf/core.c                               | 13 +++++++------
+ kernel/bpf/memalloc.c                           |  3 ++-
+ kernel/bpf/syscall.c                            | 20 ++++++++++++++++++--
+ mm/memcontrol.c                                 | 18 ++++++++++++++++++
+ 8 files changed, 75 insertions(+), 11 deletions(-)
 
 -- 
-Regards
-Yafang
+1.8.3.1
+
