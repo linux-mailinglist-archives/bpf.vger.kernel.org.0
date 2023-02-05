@@ -2,150 +2,297 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9A968B20A
-	for <lists+bpf@lfdr.de>; Sun,  5 Feb 2023 22:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5617168B212
+	for <lists+bpf@lfdr.de>; Sun,  5 Feb 2023 23:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjBEVza (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Feb 2023 16:55:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
+        id S229661AbjBEWEo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Feb 2023 17:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjBEVza (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Feb 2023 16:55:30 -0500
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71441817F;
-        Sun,  5 Feb 2023 13:55:28 -0800 (PST)
-Received: by mail-qv1-f51.google.com with SMTP id mm5so1759240qvb.12;
-        Sun, 05 Feb 2023 13:55:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sd8GC4S22QIGy6feHXloJMiVPEVvynjDdix1hqFzPBQ=;
-        b=FBPRfps8T2YhacRgXSQbPDYzv20vRSufktKfPZMrGnRkACFBqj5si2gODM69mQtePW
-         iETPZbJENpiDqNpgXxoc7x8Lfx1MBe5VhzOXaF6MwarBbVgwJN1Nz6Dq7+i6OedbGvJy
-         jvgyVhIXwDqxZPrJesujS8JAekc1/5CRqsCNQpBA4WG52ZqsnJWos4mt1hbgqdvzmJVz
-         NkT4K8BrR7m7Xi6KFnY6fqU6Ade+gUmAFGIFX5Q0FnNdWx/bJxsL1FqyeqbdBjty+U4v
-         Mr2nlvNDfErMKjmNjBaMHg3yv3siingu03n7TfK/f0Pkb1Bx6ZGMsKkk0klhqtDS5drL
-         MPbw==
-X-Gm-Message-State: AO0yUKVpKCHsDZh+RnrarZKgqi/POjpeDOywUJKCOuvv5LtY5eUFLZ0f
-        gJ5WXcLoxKxEhQ6/y9AMDhRoNAd+v/sR4W+B
-X-Google-Smtp-Source: AK7set9i/PApkfhWFCZNLKgGP+t0zfCW5GxPpLn/Ps+2pE/hqkK7fO1lRr69WHxpSZX83VXjWeBYcw==
-X-Received: by 2002:a0c:c48f:0:b0:53c:e0cb:67ad with SMTP id u15-20020a0cc48f000000b0053ce0cb67admr20628431qvi.43.1675634127869;
-        Sun, 05 Feb 2023 13:55:27 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:8625])
-        by smtp.gmail.com with ESMTPSA id b16-20020a05620a04f000b00705cef9b84asm6023118qkh.131.2023.02.05.13.55.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Feb 2023 13:55:27 -0800 (PST)
-Date:   Sun, 5 Feb 2023 15:55:29 -0600
-From:   David Vernet <void@manifault.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@meta.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        toke@redhat.com, corbet@lwn.net, linux-doc@vger.kernel.org,
-        brouer@redhat.com, bagasdotme@gmail.com, linux-api@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3] bpf/docs: Document kfunc lifecycle /
- stability expectations
-Message-ID: <Y+Al0QKpeTK2XGyV@maniforge.lan>
-References: <20230203155727.793518-1-void@manifault.com>
- <20230203155727.793518-2-void@manifault.com>
- <Y+AUm8cikB6m978j@pop-os.localdomain>
+        with ESMTP id S229457AbjBEWEo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Feb 2023 17:04:44 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8841199E8;
+        Sun,  5 Feb 2023 14:04:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675634682; x=1707170682;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xaVHZI6dtIw3nflt7wyiHWuKYGBbFllA+XtM5p/ijmY=;
+  b=eSs1ODL4dr9AR1EFxp+tTMi/x9kDtLXLCCQrrIml3IwTHUNZQc675nf8
+   yC2UOgYorBHE2K9ZEB1BUFsxHCHWzwp+8rZOTtWLJ7KKaaZe44ajxpoa4
+   knuB/9N4h8m7gwtak9dI+1MX+VJ+DWUG0ICFfKk6vqCodYdd5hGBGgx0N
+   TPxNokWV8709ABSWTmGQCUdxttzbUcW9HS0gQwnHLLK2dX6X46SDIruna
+   H+tzjoYzpL2UgD00X9P11C02VOURlJ5RBiS5Skm5QO4dk0hV8W/XN06Yz
+   8RqyP4dnTokkKtD/0DLy9BcXgrNZkdx6rQiaevo3KW4w1lAnLsxLey73M
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10612"; a="326783294"
+X-IronPort-AV: E=Sophos;i="5.97,275,1669104000"; 
+   d="scan'208";a="326783294"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2023 14:04:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10612"; a="659669395"
+X-IronPort-AV: E=Sophos;i="5.97,275,1669104000"; 
+   d="scan'208";a="659669395"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 05 Feb 2023 14:04:36 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pOn7j-0002FE-2U;
+        Sun, 05 Feb 2023 22:04:35 +0000
+Date:   Mon, 6 Feb 2023 06:04:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Menglong Dong <imagedong@tencent.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Petr Machata <petrm@nvidia.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 10/33] xsk: support virtio DMA map
+Message-ID: <202302060542.IxBGSiKh-lkp@intel.com>
+References: <20230202110058.130695-11-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y+AUm8cikB6m978j@pop-os.localdomain>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230202110058.130695-11-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Feb 05, 2023 at 12:42:03PM -0800, Cong Wang wrote:
-> On Fri, Feb 03, 2023 at 09:57:27AM -0600, David Vernet wrote:
-> > BPF kernel <-> kernel API stability has been discussed at length over
-> > the last several weeks and months. Now that we've largely aligned over
-> > kfuncs being the way forward, and BPF helpers being considered
-> > functionally frozen, it's time to document the expectations for kfunc
-> > lifecycles and stability so that everyone (BPF users, kfunc developers,
-> > and maintainers) are all aligned, and have a crystal-clear understanding
-> > of the expectations surrounding kfuncs.
-> > 
-> > To do that, this patch adds that documentation to the main kfuncs
-> > documentation page via a new 'kfunc lifecycle expectations' section. The
-> > patch describes how decisions are made in the kernel regarding whether
-> > to include, keep, deprecate, or change / remove a kfunc. As described
-> > very overtly in the patch itself, but likely worth highlighting here:
-> > 
-> > "kfunc stability" does not mean, nor ever will mean, "BPF APIs may block
-> > development elsewhere in the kernel".
-> > 
-> > Rather, the intention and expectation is for kfuncs to be treated like
-> > EXPORT_SYMBOL_GPL symbols in the kernel. The goal is for kfuncs to be a
-> > safe and valuable option for maintainers and kfunc developers to extend
-> > the kernel, without tying anyone's hands, or imposing any kind of
-> > restrictions on maintainers in the same way that UAPI changes do.
-> 
-> I think they are still different, kernel modules are still considered as
-> a part of kernel development, while eBPF code is not that supposed to be
-> kernel development, at least much further. Treating them alike is
-> misleading, IMHO.
+Hi Xuan,
 
-I'm not following. How is a BPF program not kernel development?
+Thank you for the patch! Yet something to improve:
 
-> > 
-> > In addition to the 'kfunc lifecycle expectations' section, this patch
-> > also adds documentation for a new KF_DEPRECATED kfunc flag which kfunc
-> > authors or maintainers can choose to add to kfuncs if and when they
-> > decide to deprecate them. Note that as described in the patch itself, a
-> > kfunc need not be deprecated before being changed or removed -- this
-> > flag is simply provided as an available deprecation mechanism for those
-> > that want to provide a deprecation story / timeline to their users.
-> > When necessary, kfuncs may be changed or removed to accommodate changes
-> > elsewhere in the kernel without any deprecation at all.
-> 
-> This fundamentally contradicts with Compile-Once-Run-Everywhere
-> https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-portability-and-co-re.html
+[auto build test ERROR on net-next/master]
+[also build test ERROR on mst-vhost/linux-next linus/master v6.2-rc6 next-20230203]
+[cannot apply to net/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Sorry, but again, I'm not following your point. What exactly about this
-"fundamentally contradicts" with CO-RE? Please elaborate if you're going
-to claim that something is a fundamental contradiction.
+url:    https://github.com/intel-lab-lkp/linux/commits/Xuan-Zhuo/virtio_ring-virtqueue_add-support-premapped/20230202-190707
+patch link:    https://lore.kernel.org/r/20230202110058.130695-11-xuanzhuo%40linux.alibaba.com
+patch subject: [PATCH 10/33] xsk: support virtio DMA map
+config: i386-debian-10.3-kvm (https://download.01.org/0day-ci/archive/20230206/202302060542.IxBGSiKh-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/370aefebcea755f7c4c14e16f8dcb5540769fd26
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Xuan-Zhuo/virtio_ring-virtqueue_add-support-premapped/20230202-190707
+        git checkout 370aefebcea755f7c4c14e16f8dcb5540769fd26
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 olddefconfig
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
 
-> Could you add some clarification for this too? Especically how we could
-> respect CO-RE meanwhile deprecating kfuncs?
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
 
-I don't know what you mean by "respecting CO-RE". You can compile a BPF
-program that calls a kfunc and invoke it on differents, as long as
-whatever kernel you're running on provides that kfunc with the same BTF
-encoding. This is no different than e.g. accessing a struct element on
-two kernel versions.
+All errors (new ones prefixed by >>):
 
-Also, CO-RE doesn't provide any ironclad guarantees either. If you
-access a struct element in a BPF program, and then a kernel version
-removes that element from the struct, that BPF program will fail to load
-on that kernel.
+   ld: net/xdp/xsk_buff_pool.o: in function `xp_alloc':
+>> net/xdp/xsk_buff_pool.c:575: undefined reference to `is_virtio_device'
+>> ld: net/xdp/xsk_buff_pool.c:576: undefined reference to `virtio_dma_sync_signle_range_for_device'
+   ld: net/xdp/xsk_buff_pool.o: in function `__xp_dma_unmap':
+   net/xdp/xsk_buff_pool.c:338: undefined reference to `is_virtio_device'
+>> ld: net/xdp/xsk_buff_pool.c:339: undefined reference to `virtio_dma_unmap'
+   ld: net/xdp/xsk_buff_pool.o: in function `xp_dma_map':
+   net/xdp/xsk_buff_pool.c:443: undefined reference to `is_virtio_device'
+   ld: net/xdp/xsk_buff_pool.c:443: undefined reference to `virtio_dma_sync_signle_range_for_device'
+>> ld: net/xdp/xsk_buff_pool.c:443: undefined reference to `virtio_dma_sync_signle_range_for_cpu'
+>> ld: net/xdp/xsk_buff_pool.c:458: undefined reference to `virtio_dma_map_page'
+>> ld: net/xdp/xsk_buff_pool.c:461: undefined reference to `virtio_dma_mapping_error'
+>> ld: net/xdp/xsk_buff_pool.c:464: undefined reference to `virtio_dma_need_sync'
+>> ld: net/xdp/xsk_buff_pool.c:457: undefined reference to `is_virtio_device'
 
-> BTW, not related to compatibility, but still kfuncs related confusion,
-> it also contradicts with Documentation/bpf/bpf_design_QA.rst:
-> 
-> "
-> Q: Can BPF functionality such as new program or map types, new
-> helpers, etc be added out of kernel module code?
-> 
-> A: NO.
 
-Agreed, we should improve the QA to mention that you can load kfuncs
-from a module -- thanks for pointing that out!
+vim +575 net/xdp/xsk_buff_pool.c
 
-> "
-> 
-> The conntrack kfuncs like bpf_skb_ct_alloc() reside in a kernel module.
-> 
-> Thanks!
+   424	
+   425	int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
+   426		       unsigned long attrs, struct page **pages, u32 nr_pages)
+   427	{
+   428		struct xsk_dma_map *dma_map;
+   429		dma_addr_t dma;
+   430		int err;
+   431		u32 i;
+   432	
+   433		dma_map = xp_find_dma_map(pool);
+   434		if (dma_map) {
+   435			err = xp_init_dma_info(pool, dma_map);
+   436			if (err)
+   437				return err;
+   438	
+   439			refcount_inc(&dma_map->users);
+   440			return 0;
+   441		}
+   442	
+ > 443		if (is_virtio_device(dev)) {
+   444			pool->dma_sync_for_cpu = virtio_dma_sync_signle_range_for_cpu;
+   445			pool->dma_sync_for_device = virtio_dma_sync_signle_range_for_device;
+   446	
+   447		} else {
+   448			pool->dma_sync_for_cpu = dma_sync_for_cpu;
+   449			pool->dma_sync_for_device = dma_sync_for_device;
+   450		}
+   451	
+   452		dma_map = xp_create_dma_map(dev, pool->netdev, nr_pages, pool->umem);
+   453		if (!dma_map)
+   454			return -ENOMEM;
+   455	
+   456		for (i = 0; i < dma_map->dma_pages_cnt; i++) {
+ > 457			if (is_virtio_device(dev)) {
+ > 458				dma = virtio_dma_map_page(dev, pages[i], 0, PAGE_SIZE,
+   459							  DMA_BIDIRECTIONAL);
+   460	
+ > 461				if (virtio_dma_mapping_error(dev, dma))
+   462					goto err;
+   463	
+ > 464				if (virtio_dma_need_sync(dev, dma))
+   465					dma_map->dma_need_sync = true;
+   466	
+   467			} else {
+   468				dma = dma_map_page_attrs(dev, pages[i], 0, PAGE_SIZE,
+   469							 DMA_BIDIRECTIONAL, attrs);
+   470	
+   471				if (dma_mapping_error(dev, dma))
+   472					goto err;
+   473	
+   474				if (dma_need_sync(dev, dma))
+   475					dma_map->dma_need_sync = true;
+   476			}
+   477			dma_map->dma_pages[i] = dma;
+   478		}
+   479	
+   480		if (pool->unaligned)
+   481			xp_check_dma_contiguity(dma_map);
+   482	
+   483		err = xp_init_dma_info(pool, dma_map);
+   484		if (err) {
+   485			__xp_dma_unmap(dma_map, attrs);
+   486			return err;
+   487		}
+   488	
+   489		return 0;
+   490	err:
+   491		__xp_dma_unmap(dma_map, attrs);
+   492		return -ENOMEM;
+   493	}
+   494	EXPORT_SYMBOL(xp_dma_map);
+   495	
+   496	static bool xp_addr_crosses_non_contig_pg(struct xsk_buff_pool *pool,
+   497						  u64 addr)
+   498	{
+   499		return xp_desc_crosses_non_contig_pg(pool, addr, pool->chunk_size);
+   500	}
+   501	
+   502	static bool xp_check_unaligned(struct xsk_buff_pool *pool, u64 *addr)
+   503	{
+   504		*addr = xp_unaligned_extract_addr(*addr);
+   505		if (*addr >= pool->addrs_cnt ||
+   506		    *addr + pool->chunk_size > pool->addrs_cnt ||
+   507		    xp_addr_crosses_non_contig_pg(pool, *addr))
+   508			return false;
+   509		return true;
+   510	}
+   511	
+   512	static bool xp_check_aligned(struct xsk_buff_pool *pool, u64 *addr)
+   513	{
+   514		*addr = xp_aligned_extract_addr(pool, *addr);
+   515		return *addr < pool->addrs_cnt;
+   516	}
+   517	
+   518	static struct xdp_buff_xsk *__xp_alloc(struct xsk_buff_pool *pool)
+   519	{
+   520		struct xdp_buff_xsk *xskb;
+   521		u64 addr;
+   522		bool ok;
+   523	
+   524		if (pool->free_heads_cnt == 0)
+   525			return NULL;
+   526	
+   527		for (;;) {
+   528			if (!xskq_cons_peek_addr_unchecked(pool->fq, &addr)) {
+   529				pool->fq->queue_empty_descs++;
+   530				return NULL;
+   531			}
+   532	
+   533			ok = pool->unaligned ? xp_check_unaligned(pool, &addr) :
+   534			     xp_check_aligned(pool, &addr);
+   535			if (!ok) {
+   536				pool->fq->invalid_descs++;
+   537				xskq_cons_release(pool->fq);
+   538				continue;
+   539			}
+   540			break;
+   541		}
+   542	
+   543		if (pool->unaligned) {
+   544			xskb = pool->free_heads[--pool->free_heads_cnt];
+   545			xp_init_xskb_addr(xskb, pool, addr);
+   546			if (pool->dma_pages_cnt)
+   547				xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
+   548		} else {
+   549			xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
+   550		}
+   551	
+   552		xskq_cons_release(pool->fq);
+   553		return xskb;
+   554	}
+   555	
+   556	struct xdp_buff *xp_alloc(struct xsk_buff_pool *pool)
+   557	{
+   558		struct xdp_buff_xsk *xskb;
+   559	
+   560		if (!pool->free_list_cnt) {
+   561			xskb = __xp_alloc(pool);
+   562			if (!xskb)
+   563				return NULL;
+   564		} else {
+   565			pool->free_list_cnt--;
+   566			xskb = list_first_entry(&pool->free_list, struct xdp_buff_xsk,
+   567						free_list_node);
+   568			list_del_init(&xskb->free_list_node);
+   569		}
+   570	
+   571		xskb->xdp.data = xskb->xdp.data_hard_start + XDP_PACKET_HEADROOM;
+   572		xskb->xdp.data_meta = xskb->xdp.data;
+   573	
+   574		if (pool->dma_need_sync) {
+ > 575			if (is_virtio_device(pool->dev))
+ > 576				virtio_dma_sync_signle_range_for_device(pool->dev, xskb->dma, 0,
+   577									pool->frame_len,
+   578									DMA_BIDIRECTIONAL);
+   579			else
+   580				dma_sync_single_range_for_device(pool->dev, xskb->dma, 0,
+   581								 pool->frame_len,
+   582								 DMA_BIDIRECTIONAL);
+   583		}
+   584		return &xskb->xdp;
+   585	}
+   586	EXPORT_SYMBOL(xp_alloc);
+   587	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
