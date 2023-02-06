@@ -2,69 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C44F68C9B5
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 23:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193B768C9D1
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 23:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbjBFWmp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 17:42:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        id S229910AbjBFWyX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 17:54:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjBFWmo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 17:42:44 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CD327D6B;
-        Mon,  6 Feb 2023 14:42:43 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id v13so13168312eda.11;
-        Mon, 06 Feb 2023 14:42:43 -0800 (PST)
+        with ESMTP id S229893AbjBFWyV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 17:54:21 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9D3305EE;
+        Mon,  6 Feb 2023 14:54:18 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id m8so13215560edd.10;
+        Mon, 06 Feb 2023 14:54:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=t644cczRQka2x/b5p0VZXCNIcITcyshiEjBHQAnHClY=;
-        b=WKv7BijNQKh+zOOhJoiue4NWX7PXRW8jExmIM0aach4T8ONArc8iaqLMVGBECmhiDi
-         Jcp8Tyt9jfet3vq3lDnEQwjADVhqXrxOYhcc7CI+TUIpq/hkJSdf/DBrY+aOZbP5FWnF
-         0n5IqUDO/6AaoJ5w9tsItrgZmMSkJY1tTt5auZDPzc6NPYqQzOiRG8Rncjbem1OzMSKI
-         HU0a2PyHQpp6khPO/CcTP1qEe5u+1NQ2qC3JDFo6qnOJj7lzrRLTpjAgOt3Ip4Co/wpF
-         CqG3sY76kjOp8bX70HEbXSH2cU8ofh06afmkQXjCnRBG4MXBpSmPtzF1nkf9aOd8vtK/
-         rO/A==
+        bh=J75NycyL66W62IiHP4VOFBvEWLmhVQd9tt6hGWKjgIc=;
+        b=SlvuqXgWgd8Ab26YxwngX4tdcDM6KLP6dhJMO4DDoysOSaPX6/dRv87KJ5X6uKOFyM
+         d0a5zALVTofgslMrdrjHXzMKmL6e7Xsm7oywmAdqtbqIh9jT0/xkmQa/Ilt26dTQZgiw
+         +nRIPPEXItuMN7/30ie7uzw6fKTkJ0K6PbZlzOVEMgj/zRKt/KXtne0DG4dbe9IsrLqf
+         tuLoBv+5aYhsWAWZVohkJ+6c4zCn2GR8jZf8a4V+DFVLYjCV1HrdDzIJhO/AD0MiMK/j
+         MkPxc0bQAGOb6Bk5GGZfD+mbpP6Ig3SkPjSrFL22lqM6Q1xwCw5Fhv25Vw5aUCxX8ohD
+         c/1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=t644cczRQka2x/b5p0VZXCNIcITcyshiEjBHQAnHClY=;
-        b=JcL8bmwEMgGI8BPc/MSf5XxOwtQ6w/z9w9l60StUTzLTJMtdQSzENx0t8wzh8/rA76
-         HLuKhk+XbyfpP01gQwBKtRhwzsXtidV8tDUUKGvzWXBp4bBrPIq3C2yEjj9tFWI+iIi/
-         0Yc5aa3W3dcRDsSY915/07rDWTosQ2NE+54AucmZia8zTtRnEIYwyBOKNK9sft8rLmdV
-         6SxVhA831k7bM2vStsfTiziNYlIonjeKbP2jxfb7xTEPE37/fnLvCk4FncrzVmH+5JIL
-         hFwVeInkgoGrWQiCgevxHB4UFCCP76nbdiH3fqzh3UNTege6/7GYJ1XSizCPLg00b8tE
-         bnaw==
-X-Gm-Message-State: AO0yUKUAwcc4xYUZBlCw66IouIjVPl6lb9lG6xZM8csp8FevWdI7wA/T
-        vrLdCJkR1w9CCvkzywCqVG1G0yAYaYXMsRWbhz4=
-X-Google-Smtp-Source: AK7set+Gk56V+eCjod1Ppqj4lbfZwfjYStQkNcusNNltlahiBgLVkLq2nOS35EReRjYadjf1zLOptLf353isaD3TtEQ=
-X-Received: by 2002:a50:9fa8:0:b0:49d:ec5d:28af with SMTP id
- c37-20020a509fa8000000b0049dec5d28afmr33353edf.5.1675723361863; Mon, 06 Feb
- 2023 14:42:41 -0800 (PST)
+        bh=J75NycyL66W62IiHP4VOFBvEWLmhVQd9tt6hGWKjgIc=;
+        b=r+V9JqbKs432gSdnPuwIvbw1csnsV6pJ5xeCy+yFANOD3222+k4Hyanrnv5EXJZZAI
+         o3LRPNIi+wuHIoilmJPsMFalueFEYF3L94XSQk5o06B71BlkOiJbXHK2X8V7r2JwYG6Y
+         Uju+hgP2k3zMmHCGQTumf2fQYEpV944KrLqmYYjHy2gcv3AaE+7GlW7bu1BCMDZr5S0P
+         uNZKev092fzl1xaEhLEZ3yhokdBNfOlDjDiB9eV2rxNHzdnTx/TlteFNm+Bix29B85kA
+         wBBjbUeNfn7k5gz4Xg5XhAQJ+7fz2K4ZK//fzL8J8oiQ/vF5IC4JBPjnrVN6fc/pgNVA
+         T9AA==
+X-Gm-Message-State: AO0yUKXd9vFUiJvvLUZRkS6c/zI0DAUmQlEbeJHH3wD/3SGVpIz7TzXL
+        HANt5WJwcX8Y/HOV7EqXj3WOs0lTCWZlBHMZRtc=
+X-Google-Smtp-Source: AK7set8lu7EDxtJjAdGowJUwSW07rxe3Ns80W1f5Mf9mdP8O9gpTCtTl6d2Lc9xPFAc03N0/UR6G1Em8DAE2XVsr9VQ=
+X-Received: by 2002:a50:f603:0:b0:49d:ec5e:1e98 with SMTP id
+ c3-20020a50f603000000b0049dec5e1e98mr36394edn.5.1675724056464; Mon, 06 Feb
+ 2023 14:54:16 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1675245257.git.lorenzo@kernel.org> <a72609ef4f0de7fee5376c40dbf54ad7f13bfb8d.1675245258.git.lorenzo@kernel.org>
-In-Reply-To: <a72609ef4f0de7fee5376c40dbf54ad7f13bfb8d.1675245258.git.lorenzo@kernel.org>
+References: <tencent_9E0636426959DE97692A50AF79A3D9888B08@qq.com>
+In-Reply-To: <tencent_9E0636426959DE97692A50AF79A3D9888B08@qq.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 6 Feb 2023 14:42:29 -0800
-Message-ID: <CAEf4BzZS-MSen_1q4eotMe3hdkXUXxpwnfbLqEENzU1ogejxUQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 5/8] libbpf: add API to get XDP/XSK supported features
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        hawk@kernel.org, toke@redhat.com, memxor@gmail.com,
-        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
-        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
-        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
-        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
-        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
-        martin.lau@linux.dev, sdf@google.com, gerhard@engleder-embedded.com
+Date:   Mon, 6 Feb 2023 14:54:03 -0800
+Message-ID: <CAEf4BzZa2PxezazfhqUsDjcT0PJpk0rBOh=_9YdcXmc00dh6Kg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] samples: bpf: Add macro SYSCALL() for aarch64
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     ast@kernel.org, Rong Tao <rongtao@cestc.cn>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -76,73 +75,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 1, 2023 at 2:25 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Mon, Feb 6, 2023 at 3:34 AM Rong Tao <rtoax@foxmail.com> wrote:
 >
-> Extend bpf_xdp_query routine in order to get XDP/XSK supported features
-> of netdev over route netlink interface.
-> Extend libbpf netlink implementation in order to support netlink_generic
-> protocol.
+> From: Rong Tao <rongtao@cestc.cn>
 >
-> Co-developed-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Co-developed-by: Marek Majtyka <alardam@gmail.com>
-> Signed-off-by: Marek Majtyka <alardam@gmail.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> kernel arm64/kernel/sys.c macro __SYSCALL() adds a prefix __arm64_, we
+> should support it for aarch64. The following is the output of the bpftrace
+> script:
+>
+>     $ sudo bpftrace -l | grep sys_write
+>     ...
+>     kprobe:__arm64_sys_write
+>     kprobe:__arm64_sys_writev
+>     ...
+>
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
 > ---
->  tools/lib/bpf/libbpf.h  |  3 +-
->  tools/lib/bpf/netlink.c | 96 +++++++++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/nlattr.h  | 12 ++++++
->  3 files changed, 110 insertions(+), 1 deletion(-)
+
+samples were converted to SEC("ksyscall") programs and BPF_KSYSCALL()
+macro, there is not even samples/bpf/trace_common.h there. Please
+check the latest bpf-next/master.
+
+
+>  samples/bpf/trace_common.h | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-
-[...]
-
-> @@ -366,6 +433,10 @@ int bpf_xdp_query(int ifindex, int xdp_flags, struct bpf_xdp_query_opts *opts)
->                 .ifinfo.ifi_family = AF_PACKET,
->         };
->         struct xdp_id_md xdp_id = {};
-> +       struct xdp_features_md md = {
-> +               .ifindex = ifindex,
-> +       };
-> +       __u16 id;
->         int err;
+> diff --git a/samples/bpf/trace_common.h b/samples/bpf/trace_common.h
+> index 8cb5400aed1f..fafc699af0a3 100644
+> --- a/samples/bpf/trace_common.h
+> +++ b/samples/bpf/trace_common.h
+> @@ -6,6 +6,8 @@
+>  #define SYSCALL(SYS) "__x64_" __stringify(SYS)
+>  #elif defined(__s390x__)
+>  #define SYSCALL(SYS) "__s390x_" __stringify(SYS)
+> +#elif defined(__aarch64__)
+> +#define SYSCALL(SYS) "__arm64_" __stringify(SYS)
+>  #else
+>  #define SYSCALL(SYS)  __stringify(SYS)
+>  #endif
+> --
+> 2.39.1
 >
->         if (!OPTS_VALID(opts, bpf_xdp_query_opts))
-> @@ -393,6 +464,31 @@ int bpf_xdp_query(int ifindex, int xdp_flags, struct bpf_xdp_query_opts *opts)
->         OPTS_SET(opts, skb_prog_id, xdp_id.info.skb_prog_id);
->         OPTS_SET(opts, attach_mode, xdp_id.info.attach_mode);
->
-> +       if (!OPTS_HAS(opts, feature_flags))
-> +               return 0;
-> +
-> +       err = libbpf_netlink_resolve_genl_family_id("netdev", sizeof("netdev"), &id);
-> +       if (err < 0)
-> +               return libbpf_err(err);
-> +
-> +       memset(&req, 0, sizeof(req));
-> +       req.nh.nlmsg_len = NLMSG_LENGTH(GENL_HDRLEN);
-> +       req.nh.nlmsg_flags = NLM_F_REQUEST;
-> +       req.nh.nlmsg_type = id;
-> +       req.gnl.cmd = NETDEV_CMD_DEV_GET;
-> +       req.gnl.version = 2;
-> +
-> +       err = nlattr_add(&req, NETDEV_A_DEV_IFINDEX, &ifindex, sizeof(ifindex));
-> +       if (err < 0)
-> +               return err;
-
-just noticed this, we need to use libbpf_err(err) here like in other
-error cases to set errno properly. Can you please send a follow up?
-
-> +
-> +       err = libbpf_netlink_send_recv(&req, NETLINK_GENERIC,
-> +                                      parse_xdp_features, NULL, &md);
-> +       if (err)
-> +               return libbpf_err(err);
-> +
-> +       opts->feature_flags = md.flags;
-> +
->         return 0;
->  }
->
-
-[...]
