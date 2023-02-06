@@ -2,94 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E05AC68B396
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 02:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3225368B437
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 03:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjBFBFv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 5 Feb 2023 20:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
+        id S229447AbjBFCqz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Feb 2023 21:46:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjBFBFv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Feb 2023 20:05:51 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.67.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B62D1816F
-        for <bpf@vger.kernel.org>; Sun,  5 Feb 2023 17:05:44 -0800 (PST)
-X-QQ-mid: bizesmtp65t1675645527tvnoidrq
-Received: from smtpclient.apple ( [1.202.165.115])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 06 Feb 2023 09:05:25 +0800 (CST)
-X-QQ-SSF: 0100000000000090B000000A0000000
-X-QQ-FEAT: +LhgrVJY36KhoUizxHp3wZrAec5LwClDWMLHUdFh+pSqI5S5eUbB1XyUHdqkL
-        /RintEXlJSUVvrRYg1ijj937PpI8DIpGSnH3cVWeii6BXOmgSG/va6/cxndNoT4avhyRYIt
-        elOkETO3FScIQnytJFwzh5sTX2TJYmG/+XnAZMS+SIe8fcI52iCNhRNP3kOJ8FFVYHI2DJx
-        /PWC+K1QkPsxySYbysvgeKmSTTPjZY13EBsfHL7YsV3llFPZSUdDw/2qV8QLWrtQikjAOXX
-        7WkrMSwyZZ2crnbb+UG7p/NzsbHLDF2luVzTwrtQ2jgudtfxl3XXcOqDUDgbyywriy671sq
-        MLwsepqXgu28Dy8QJruIJ2LVsL0GA==
-X-QQ-GoodBg: 0
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [bpf-next v1] bpf: introduce stats update helper
-From:   Tonghao Zhang <tong@infragraf.org>
-In-Reply-To: <4da7e8dc-25cf-1c4a-bac0-1965df74b645@linux.dev>
-Date:   Mon, 6 Feb 2023 09:05:06 +0800
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229448AbjBFCqy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Feb 2023 21:46:54 -0500
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8771A95C;
+        Sun,  5 Feb 2023 18:46:51 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VawTkZu_1675651606;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VawTkZu_1675651606)
+          by smtp.aliyun-inc.com;
+          Mon, 06 Feb 2023 10:46:47 +0800
+Message-ID: <1675651276.3841548-3-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH 00/33] virtio-net: support AF_XDP zero copy
+Date:   Mon, 6 Feb 2023 10:41:16 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        =?utf-8?b?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, bpf@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <A0CBEFBA-719B-4219-9500-489985873FEA@infragraf.org>
-References: <20230203133220.48919-1-tong@infragraf.org>
- <63ddd56327756_6bb1520881@john.notmuch>
- <4da7e8dc-25cf-1c4a-bac0-1965df74b645@linux.dev>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:infragraf.org:qybglogicsvr:qybglogicsvr5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Menglong Dong <imagedong@tencent.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Petr Machata <petrm@nvidia.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20230202110058.130695-1-xuanzhuo@linux.alibaba.com>
+ <5fda6140fa51b4d2944f77b9e24446e4625641e2.camel@redhat.com>
+ <1675395211.6279888-2-xuanzhuo@linux.alibaba.com>
+ <20230203034212-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20230203034212-mutt-send-email-mst@kernel.org>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, 3 Feb 2023 04:17:59 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Fri, Feb 03, 2023 at 11:33:31AM +0800, Xuan Zhuo wrote:
+> > On Thu, 02 Feb 2023 15:41:44 +0100, Paolo Abeni <pabeni@redhat.com> wrote:
+> > > On Thu, 2023-02-02 at 19:00 +0800, Xuan Zhuo wrote:
+> > > > XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
+> > > > copy feature of xsk (XDP socket) needs to be supported by the driver. The
+> > > > performance of zero copy is very good. mlx5 and intel ixgbe already support
+> > > > this feature, This patch set allows virtio-net to support xsk's zerocopy xmit
+> > > > feature.
+> > > >
+> > > > Virtio-net did not support per-queue reset, so it was impossible to support XDP
+> > > > Socket Zerocopy. At present, we have completed the work of Virtio Spec and
+> > > > Kernel in Per-Queue Reset. It is time for Virtio-Net to complete the support for
+> > > > the XDP Socket Zerocopy.
+> > > >
+> > > > Virtio-net can not increase the queue at will, so xsk shares the queue with
+> > > > kernel.
+> > > >
+> > > > On the other hand, Virtio-Net does not support generate interrupt manually, so
+> > > > when we wakeup tx xmit, we used some tips. If the CPU run by TX NAPI last time
+> > > > is other CPUs, use IPI to wake up NAPI on the remote CPU. If it is also the
+> > > > local CPU, then we wake up sofrirqd.
+> > >
+> > > Thank you for the large effort.
+> > >
+> > > Since this will likely need a few iterations, on next revision please
+> > > do split the work in multiple chunks to help the reviewer efforts -
+> > > from Documentation/process/maintainer-netdev.rst:
+> > >
+> > >  - don't post large series (> 15 patches), break them up
+> > >
+> > > In this case I guess you can split it in 1 (or even 2) pre-req series
+> > > and another one for the actual xsk zero copy support.
+> >
+> >
+> > OK.
+> >
+> > I can split patch into multiple parts such as
+> >
+> > * virtio core
+> > * xsk
+> > * virtio-net prepare
+> > * virtio-net support xsk zerocopy
+> >
+> > However, there is a problem, the virtio core part should enter the VHOST branch
+> > of Michael. Then, should I post follow-up patches to which branch vhost or
+> > next-next?
+> >
+> > Thanks.
+> >
+>
+> Here are some ideas on how to make the patchset smaller
+> and easier to merge:
+> - keep everything in virtio_net.c for now. We can split
+>   things out later, but this way your patchset will not
+>   conflict with every since change merged meanwhile.
+>   Also, split up needs to be done carefully with sane
+>   APIs between components, let's maybe not waste time
+>   on that now, do the split-up later.
+> - you have patches that add APIs then other
+>   patches use them. as long as it's only virtio net just
+>   add and use in a single patch, review is actually easier this way.
+
+I will try to merge #16-#18 and #20-#23.
 
 
-> On Feb 4, 2023, at 2:06 PM, Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> 
-> On 2/3/23 7:47 PM, John Fastabend wrote:
->> tong@ wrote:
->>> From: Tonghao Zhang <tong@infragraf.org>
->>> 
->>> This patch introduce a stats update helper to simplify codes.
->>> 
->>> Signed-off-by: Tonghao Zhang <tong@infragraf.org>
->>> Cc: Alexei Starovoitov <ast@kernel.org>
->>> Cc: Daniel Borkmann <daniel@iogearbox.net>
->>> Cc: Andrii Nakryiko <andrii@kernel.org>
->>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
->>> Cc: Song Liu <song@kernel.org>
->>> Cc: Yonghong Song <yhs@fb.com>
->>> Cc: John Fastabend <john.fastabend@gmail.com>
->>> Cc: KP Singh <kpsingh@kernel.org>
->>> Cc: Stanislav Fomichev <sdf@google.com>
->>> Cc: Hao Luo <haoluo@google.com>
->>> Cc: Jiri Olsa <jolsa@kernel.org>
->>> Cc: Hou Tao <houtao1@huawei.com>
->>> ---
->>>  include/linux/filter.h  | 22 +++++++++++++++-------
->>>  kernel/bpf/trampoline.c | 10 +---------
->>>  2 files changed, 16 insertions(+), 16 deletions(-)
->> Seems fine but I'm not sure it makes much difference.
-> 
-> I also don't think it is needed. There are only two places. Also, it is not encouraged to collect more stats. Refactoring it is not going to help in the future.
-It only simply the codes, make the code more readable.
-----
-Best Regards, Tonghao <tong@infragraf.org>
+> - we can try merging pre-requisites earlier, then patchset
+>   size will shrink.
 
+Do you mean the patches of virtio core? Should we put these
+patches to vhost branch?
+
+Thanks.
+
+>
+>
+> > >
+> > > Thanks!
+> > >
+> > > Paolo
+> > >
+>
