@@ -2,263 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1266D68B6C1
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 08:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F54B68B868
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 10:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbjBFHuG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 02:50:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        id S229797AbjBFJPo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 04:15:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbjBFHuB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 02:50:01 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on20603.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaa::603])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED691DB8C;
-        Sun,  5 Feb 2023 23:49:36 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fl0haf409z2GVuUVMTZhi74sVRNd/3eb3P+XKkXnOrz/OZay6AtJ+tlwc1aZhLVpArLa9aEv6XGmL2kHSNcMwyt+TG95tPddfsQYKjHPpki8hvX5nJHMI0SRWQYk0HYIDl5tVq2yKNTTzFGyKmXlNODVjuVz3+ObltL36ZyQhmXQczcaOjDCKjQVydnMHlzEj2nvm3uI5RnIBPEt2D0K+h5xC2bentbNI4CCphhWtQ7112FIsdxQ46MSgEEm3o0iWmd686aof8ngHzfeS8AZGhrqRY1O6c6/a3xfqhNSFJmqJc0mDM9wOw7LxQl+tiuVNqm+r+LdC4dWCQvdxm2fgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ekaPX/00S+h70lFxojvYEzzxngZqMCIdq9dGbDFXgv0=;
- b=BK3OS8gOFEMksJ5VUhjDVC+0VX9SjWKxeKdwBquaqec5ZUx+y7/efgn3BS28Mi6oLOk2KIaEIVrUPXZAhhHJfgOfVbX/hD/pRcWU2zYSIJ5QPgy5Xxd/z1cErKhbtrsLj1glJD+iXd3A0qzkdg9O3XP6yuwMSXCjG7aex+pvBBmYoN8uNFy7e7E0uiOOiUXyoXF08vTnxNOOOopxH5JjpmMk/iHeAdUjuMOW59ncl57U7wTY488D0sGHJx/I5CiPjTWyV1tdIg16qzENQOyS0HVAGHSZS10ISckpLfVCWUQrNDMIs9OXYIJ2htnCq4xqmpC9Axlm8bs93hRI5gblsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ekaPX/00S+h70lFxojvYEzzxngZqMCIdq9dGbDFXgv0=;
- b=dNyGq21XS2lvzTJSJQWV2Dx2hCd50LZlN6ntem5wh+6FJ/wf25TDeGen5qzV/Ru+sSrrRfFfbT2vX0LXlq9OCiuFpBI7KMGEUOyWR6fOXlmu1oVxm+MKYfKxOSs17oG9LlGjoGhF9kxJWb4vSXo/L+2bzdrveRZ7QGe/9BJ6D1ZOXD71dpYeFa9kyJfAUNPBXvBBiuKAoTkCB9TNSundH10vtOke9XV5FGVFHq9TfBBSkuNyXy595aiL5Go9zAK6DAFviaAhBZGTVTWhHUbjkI3iI5WmEX/SU1onOp1pJvG/7mW5f5AdV9KcXE4gbAW5baCMauVktp/tKI5dQecLUQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by DS0PR12MB8573.namprd12.prod.outlook.com (2603:10b6:8:162::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.32; Mon, 6 Feb
- 2023 07:49:27 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::4bd4:de67:b676:67df]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::4bd4:de67:b676:67df%6]) with mapi id 15.20.6064.032; Mon, 6 Feb 2023
- 07:49:27 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     linux-mm@kvack.org, cgroups@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
-        tjmercier@google.com, hannes@cmpxchg.org, surenb@google.com,
-        mkoutny@suse.com, daniel@ffwll.ch,
-        "Daniel P . Berrange" <berrange@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        with ESMTP id S229582AbjBFJPn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 04:15:43 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04B3212D;
+        Mon,  6 Feb 2023 01:15:41 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id bg26so8163773wmb.0;
+        Mon, 06 Feb 2023 01:15:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mZ0xWkPNZ4hmW2vvs+f5UVSQ+AnfRdSc/rJdUnUEKCk=;
+        b=EZiP+qfZZ2vFI66D6cFJ4tRzgZmIsbEzmmRR2YHlhTThxz1noQFtlNiNWoeeFnYET8
+         s1a6r/cX5NaptNTBg3fmI0khxp1XoZJk/xkHc3NiJN35fLQxPqnCG2oi8f8svPXdI1qQ
+         uqXBoD5aRETcnD0iJNwlYu//S9H6VsbNt6ve4Eexrm02kKLo4ENgTMFzyGRodYkOAXrY
+         oEbeY/MjyBxsIVt7ygqfY+mv/hbikLl8WiY69rz58+N4+mhqS7uolIJO3YFwJMhNjMd4
+         EYVoqF5evnOhMdhff5WorqXR84A3q2x1La7KdCNdJ34zPA98NjPRxTfy4rQJCQXCOixj
+         SV0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mZ0xWkPNZ4hmW2vvs+f5UVSQ+AnfRdSc/rJdUnUEKCk=;
+        b=QK0Qw5r8u/rImv3/bV7GbJ2RLl8n/bfJUw1TxcGe082Rj1Gd7VWBNPZmqug93sn6Sp
+         DNMKXuCezXje4SZYdplCxq7Oi+WiPx76ekvAdk793FHMh9lO1FCa9GNH2jnRa2GPw/Ib
+         61Z9XrdTT5QEDtVpJxs8ibRkB5G/OIlDqQ1guBJUorOU5uHAK9CYZEtBpR7DyQqn+qly
+         njTzTE0t4bTN1zcWchwgzXRRopOVjguuV5YVfWyXDR8DnhobghO9YSK95OPKVe17Igo8
+         I+kTHNQAUH1rWu/gDTfXobGMTYZmdwV7XfvONj8K8ss5QrPJXArV6zEq3NGVjAw8raiv
+         Pi/Q==
+X-Gm-Message-State: AO0yUKWe+I7lonqpfg27lZsIH21aTxTynknjKbZf4bfED2gVVqQkvHBs
+        2wa2Z9406zKPlW+URbWYoVE=
+X-Google-Smtp-Source: AK7set9HplAw3gx0hCsrG6659a/FiLOrjP9EhP3KSmy3vi2Ls4ONVAdSWetY0B04BjyyvJJc7wfzEQ==
+X-Received: by 2002:a05:600c:b88:b0:3df:9858:c033 with SMTP id fl8-20020a05600c0b8800b003df9858c033mr10522279wmb.8.1675674940417;
+        Mon, 06 Feb 2023 01:15:40 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id g10-20020a05600c310a00b003de77597f16sm10789353wmo.21.2023.02.06.01.15.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Feb 2023 01:15:39 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 6 Feb 2023 10:15:37 +0100
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 11/19] xdp: convert to use vm_account
-Date:   Mon,  6 Feb 2023 18:47:48 +1100
-Message-Id: <f3b11743f170f4750efa58eba61843563a4b7926.1675669136.git-series.apopple@nvidia.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
-References: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SYAPR01CA0006.ausprd01.prod.outlook.com (2603:10c6:1::18)
- To BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, David Vernet <void@manifault.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Artem Savkov <asavkov@redhat.com>, linux-s390@vger.kernel.org
+Subject: Re: [PATCHv3 bpf-next 0/9] bpf: Move kernel test kfuncs into
+ bpf_testmod
+Message-ID: <Y+DFOWZB21MWhYEO@krava>
+References: <20230203162336.608323-1-jolsa@kernel.org>
+ <CAADnVQKBYgN5nWG26s0s-U0=PMAWEc17aGWx76GLUc_PM22ZAw@mail.gmail.com>
+ <Y9/yrKZkBK6yzXp+@krava>
+ <96db3bf7d0a26b161a9846d8fe492c9bd0cb4c49.camel@linux.ibm.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DS0PR12MB8573:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4e499f2e-8b0b-4fff-206e-08db0816ac13
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U/Hb5bUvPgq/8Bo/zhdDbA4PUQM4ddPIcEFNo7CVj8XX4kbiyc/wkH3Kp1WtHKJMiUG5tR1bYnYSI76gmFHStENAOhqNWW3CXT7bQp6RTqgIEtBpq2hsclqS4KNds1lKhU9c+UnZfOlsJMqDte4FbavG2LRznoGOMIVDtpg9TUojH0btY4kRvyAKcl8enew/vHUNWuEPfUx700I1hHO6teXAPLBXayByqXmuvl1AfcSNaVhLiqbOM+vREwqQEFDAEkqQfTZ7/7U/i6CzV/zDWLKrSZOnahP/PmyinY/kap4pNBnXyi+BCkzGfDfIdDW0XlFcqhSrSubdBDMw5kwQoOhB57LDCDevnsz1+B/xtgk56PDdP4Mxs6Q/o4Zkodw6uThm6TaB6wsN06uBi68F3vUs3Drq40ujckInxTegARQVlbHQ/LegvaWh43lulz+YE7Wy9n9lT6FvIWL7OoYadIzAPPnORUJJRRo1IGAcmzWVfYOQsLyELfGfdSlToN6X7uM46Z9LFTtLL9PFLYnYg2nvm9VJ2p0M/q69vpOc0O6qq4KhQxyvT71NJIC6t9VAQi4aFIfaqIkwVxqiOLYEEhRBpVDR3TkDb7hEJLkVzruSCx69/o0TIZzAbciD9oMN39mkfXEOyrH7vdOChdS+hQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(396003)(136003)(39860400002)(366004)(346002)(451199018)(54906003)(316002)(86362001)(6666004)(6486002)(38100700002)(186003)(2616005)(6506007)(26005)(478600001)(6512007)(7416002)(5660300002)(83380400001)(66574015)(2906002)(36756003)(66946007)(8936002)(4326008)(41300700001)(66476007)(8676002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RDd1eHNyTlNkNGdkanhqWFIzOUV2K2ZCVXY4OHhJZEcrL3Z3NmhRRjREZGlM?=
- =?utf-8?B?NWkwTjFTV2FQU3R5eUhqcmxqeGt4eE41UGhWd2lhcklod24xUFlmaE5zazRF?=
- =?utf-8?B?czZ2eGI5cXZ6MDhOQlJBaWJQQWdvSDVvWXROTGc1L1U4RHB3cTZNcWovOWNQ?=
- =?utf-8?B?M0F0aTZLMkt3VUIxOXg4ZUNmSU5ZOXVEREo1UWo3OVRjcTNVVGRWM1YwWTB5?=
- =?utf-8?B?aS93R0grUTAyTzM4ZDZVeXd0TmI3cVhhSDBLMi9pWjgzc3U2aHdPV2lGYU5s?=
- =?utf-8?B?OEZIUmpBci9pNkdvY0RYblRPMWMyejNQSHo0SDZtY2FOcDczcmxGamNWc2JE?=
- =?utf-8?B?alRxYWVxSS90dkhjTDFFTzRtMi9ReW5jcEEvNG01Lyt0enh0RW9vb01WTnJP?=
- =?utf-8?B?U2JUK1YrOGlVR3E3UC8rc3N3M1o1RE9QeEFwZ3lJNXZ1d1RSbkNBWmhPSURs?=
- =?utf-8?B?SmZIb2NQMnZsS1RtOEVLa1V0cFFvVFJBbWNMT2IyLzFtWmVRNGMzbVc2dWVl?=
- =?utf-8?B?UzBTMFl6anI3RVIxRndGRDRjcFFQekIrMEYvMjNnYVNqeHVrZzJTUDV0R0cx?=
- =?utf-8?B?MXJ2OTUyeUhaRUc4OFlNZE12ek5QdkwrSERYS1VESzI2dW5wcDZCby9aYkZu?=
- =?utf-8?B?bVlGK0dXTmtoVnRRUlQwRU9adGZDNm9qcXBtd0REYzJmWDFhUVhJd1BaVGQx?=
- =?utf-8?B?VmVnVTBpdmRIeWR3cUlObmpsM2FUSSt2VVFaZWZ4ZFZpdVk5SUdLS1JBZllu?=
- =?utf-8?B?Y0hkcktYY01UVGJrckZRT25PWjViNy8yRzJveUhlcnpvNkUrRUZGVW03UzZm?=
- =?utf-8?B?bTBGNkhOTGN0MWZmQVdiT09CV2JSeVBoL0p0WGdJazNTWFJ0QXJJenE0Zjlq?=
- =?utf-8?B?c0s1R0NaTmhBWUozQmtCL3MwWFdRZVdjS0QyNXZOaXlMOTFQdUJVVmlKcVFX?=
- =?utf-8?B?dG1YNWtGUjB5SlVwVVpBV053K2thS1IxQXEwNmZwK1NZRjJsMkg5R1J6ajM5?=
- =?utf-8?B?bWFPYXNRUktud1JPRHpSSmxuK1Z6SXpFcVRNZHAvcDdDd0c2SFNWbGpGdTFD?=
- =?utf-8?B?STlTbGxvSmc4elptVXlBYmhKeHNraGJRYjVzYTRNdGFyMnU2RzFxN09yLzZU?=
- =?utf-8?B?QU5neDlySldpeDU5UWZzdkVYbUNIQ21sd3NXYXh6T2ZleHd6SnE2bmwrY0VF?=
- =?utf-8?B?SEoxYkFtVmNheDJGSnM4SFBnWGczcjlza3RTMU5WQlgzTDZNazdGTkViUmE3?=
- =?utf-8?B?M1pTSFdMOGVRT0FFVU5tTVlNcjdJb2s0Wm0xamE5Uk1qMFVvUmZrUFYwUDQz?=
- =?utf-8?B?REdSUytWVVllMHVkMjgyL3RUK0VPMFV5SUVwZzhPVEdYUDVhazl4NURJRGg1?=
- =?utf-8?B?cU83bDJSMHo1WjF3bzNUek1xUHRIWDd1SjZQM2tlMkswR1U5ZHg1bWVhNjZZ?=
- =?utf-8?B?REpLYjBXQzJjV0V2VmxIRDJ4U0IzZTE5Mk4vOURYMU1MOGJJVzRFdG1DNytm?=
- =?utf-8?B?YjkzS055bllSV2MyWFJSSm5ieXQzM3plZEZZU3k0ZXVZY1lBREJyTnBJcXJl?=
- =?utf-8?B?UnQ1ODRnc0w5ZlZoeEFZbUFrMkYzSWYzOHFIODM2d3Z2V0duNlhobGRCQUdC?=
- =?utf-8?B?b2ZGQ1JISlNhTUx6VERoS015YUp3OGc0cFpoTmE3eHo0SkF4Um15c2Fxb1Jn?=
- =?utf-8?B?VkxsSmRaSEgwSi9PYzNod2wyQXcyb0hsbzhXWWdxdHpHSjhvUFNiRHNvRU9U?=
- =?utf-8?B?ekRSOTlSSVZyZzBTYlZhNVI2VWRXSmZkdlNuUGphcHRsQUxqSGtKYWNoMzBJ?=
- =?utf-8?B?RjUwNG0zeVdxN0F6STZ0UHhYb2k0T3ZvV2ZGV2txU1RIdHNubzQzZXJOLy9W?=
- =?utf-8?B?U3VsYkhxK3Z6L1NvaHMzRXRWTW9GVEpGdEpEWVUycW5PRmdwMGpicGNMV2ZO?=
- =?utf-8?B?MjdxUkJNTFdrRE9uU2xBUGtjNlM5RE01TmFTeTYwTnJXaXhPSDY3Z3VIbm1B?=
- =?utf-8?B?RkhBUmZWZkFwcUQ3M0RDRm1PN09Pb2FESFZiR0t4ZGJCNGUvcVk0ejRIa2hk?=
- =?utf-8?B?eXpOV29SL3hwV2t4SEM3bTlmcFBxRkZxZXJRbmhQVWVadzgwZy9oZjZ3Z0dJ?=
- =?utf-8?Q?6cCAygo0RZv6icGB6AIAhNoyY?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e499f2e-8b0b-4fff-206e-08db0816ac13
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2023 07:49:27.3700
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XJm4eb5u09y5J03JJHgvgQg5AfLScdpIxX+UezKBxSPaIYMXVvTqX7hlUQm5cMjyyZJZmClUqbaQCKoadT1diw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8573
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <96db3bf7d0a26b161a9846d8fe492c9bd0cb4c49.camel@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Switch to using the new vm_account struct to charge pinned pages and
-enforce the rlimit. This will allow a future change to also charge a
-cgroup for limiting the number of pinned pages.
+On Sun, Feb 05, 2023 at 07:36:14PM +0100, Ilya Leoshkevich wrote:
+> On Sun, 2023-02-05 at 19:17 +0100, Jiri Olsa wrote:
+> > On Sat, Feb 04, 2023 at 01:21:13AM -0800, Alexei Starovoitov wrote:
+> > > On Fri, Feb 3, 2023 at 8:23 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > > 
+> > > > hi,
+> > > > I noticed several times in discussions that we should move test
+> > > > kfuncs
+> > > > into kernel module, now perhaps even more pressing with all the
+> > > > kfunc
+> > > > effort. This patchset moves all the test kfuncs into bpf_testmod.
+> > > > 
+> > > > I added bpf_testmod/bpf_testmod_kfunc.h header that is shared
+> > > > between
+> > > > bpf_testmod kernel module and BPF programs, which brings some
+> > > > difficulties
+> > > > with __ksym define. But I'm not sure having separate headers for
+> > > > BPF
+> > > > programs and for kernel module would be better.
+> > > > 
+> > > > This patchset also needs:
+> > > > † 74bc3a5acc82 bpf: Add missing btf_put to
+> > > > register_btf_id_dtor_kfuncs
+> > > > which is only in bpf/master now.
+> > > 
+> > > I thought you've added this patch to CI,
+> > > but cb_refs is still failing on s390...
+> > 
+> > the CI now fails for s390 with messages like:
+> > †† 2023-02-04T07:04:32.5185267Z††† RES: address of kernel function
+> > bpf_kfunc_call_test_fail1 is out of range
+> > 
+> > so now that we have test kfuncs in the module, the 's32 imm' value of
+> > the bpf call instructions can overflow when the offset between module
+> > and kernel is greater than 2GB ... as explained in the commit that
+> > added the verifier check:
+> > 
+> > † 8cbf062a250e bpf: Reject kfunc calls that overflow insn->imm
+> > 
+> > not sure we can do anything about that on bpf side.. cc-ing s390 list
+> > and Ilya for ideas/thoughts
+> > 
+> > maybe we could make bpf_testmod in-tree module and compile it as
+> > module
+> > just for some archs
+> > 
+> > thoughts?
+> 
+> Hi,
+> 
+> I'd rather have this fixed - I guess the problem can affect the users.
+> The ksyms_module test is already denylisted because of that.
+> Unfortunately getting the kernel and the modules close together on
+> s390x is unlikely to happen in the foreseeable future.
+> 
+> What do you think about keeping the BTF ID inside the insn->imm field
+> and putting the 64-bit delta into bpf_insn_aux_data, replacing the
+> call_imm field that we already have there?
 
-Signed-off-by: Alistair Popple <apopple@nvidia.com>
-Cc: "Bj√∂rn T√∂pel" <bjorn@kernel.org>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- include/net/xdp_sock.h |  3 ++-
- net/xdp/xdp_umem.c     | 38 +++++++++++++-------------------------
- 2 files changed, 15 insertions(+), 26 deletions(-)
+seems tricky wrt other archs.. how about saving address of the kfunc
+in bpf_insn_aux_data and use that in s390 jit code instead of the
+'__bpf_call_base + imm' calculation
 
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index 3057e1a..9a21054 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -12,6 +12,7 @@
- #include <linux/mutex.h>
- #include <linux/spinlock.h>
- #include <linux/mm.h>
-+#include <linux/vm_account.h>
- #include <net/sock.h>
- 
- struct net_device;
-@@ -25,7 +26,7 @@ struct xdp_umem {
- 	u32 chunk_size;
- 	u32 chunks;
- 	u32 npgs;
--	struct user_struct *user;
-+	struct vm_account vm_account;
- 	refcount_t users;
- 	u8 flags;
- 	bool zc;
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 4681e8e..4b5fb2f 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -29,12 +29,10 @@ static void xdp_umem_unpin_pages(struct xdp_umem *umem)
- 	umem->pgs = NULL;
- }
- 
--static void xdp_umem_unaccount_pages(struct xdp_umem *umem)
-+static void xdp_umem_unaccount_pages(struct xdp_umem *umem, u32 npgs)
- {
--	if (umem->user) {
--		atomic_long_sub(umem->npgs, &umem->user->locked_vm);
--		free_uid(umem->user);
--	}
-+	vm_unaccount_pinned(&umem->vm_account, npgs);
-+	vm_account_release(&umem->vm_account);
- }
- 
- static void xdp_umem_addr_unmap(struct xdp_umem *umem)
-@@ -54,13 +52,15 @@ static int xdp_umem_addr_map(struct xdp_umem *umem, struct page **pages,
- 
- static void xdp_umem_release(struct xdp_umem *umem)
- {
-+	u32 npgs = umem->npgs;
-+
- 	umem->zc = false;
- 	ida_free(&umem_ida, umem->id);
- 
- 	xdp_umem_addr_unmap(umem);
- 	xdp_umem_unpin_pages(umem);
- 
--	xdp_umem_unaccount_pages(umem);
-+	xdp_umem_unaccount_pages(umem, npgs);
- 	kfree(umem);
- }
- 
-@@ -127,24 +127,13 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
- 
- static int xdp_umem_account_pages(struct xdp_umem *umem)
- {
--	unsigned long lock_limit, new_npgs, old_npgs;
--
--	if (capable(CAP_IPC_LOCK))
--		return 0;
--
--	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
--	umem->user = get_uid(current_user());
-+	vm_account_init(&umem->vm_account, current,
-+			current_user(), VM_ACCOUNT_USER);
-+	if (vm_account_pinned(&umem->vm_account, umem->npgs)) {
-+		vm_account_release(&umem->vm_account);
-+		return -ENOBUFS;
-+	}
- 
--	do {
--		old_npgs = atomic_long_read(&umem->user->locked_vm);
--		new_npgs = old_npgs + umem->npgs;
--		if (new_npgs > lock_limit) {
--			free_uid(umem->user);
--			umem->user = NULL;
--			return -ENOBUFS;
--		}
--	} while (atomic_long_cmpxchg(&umem->user->locked_vm, old_npgs,
--				     new_npgs) != old_npgs);
- 	return 0;
- }
- 
-@@ -204,7 +193,6 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- 	umem->chunks = chunks;
- 	umem->npgs = (u32)npgs;
- 	umem->pgs = NULL;
--	umem->user = NULL;
- 	umem->flags = mr->flags;
- 
- 	INIT_LIST_HEAD(&umem->xsk_dma_list);
-@@ -227,7 +215,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- out_unpin:
- 	xdp_umem_unpin_pages(umem);
- out_account:
--	xdp_umem_unaccount_pages(umem);
-+	xdp_umem_unaccount_pages(umem, npgs);
- 	return err;
- }
- 
--- 
-git-series 0.9.1
+jirka
