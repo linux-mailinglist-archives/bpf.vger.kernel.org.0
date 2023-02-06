@@ -2,83 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB24868C7A8
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 21:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8449B68C7BA
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 21:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjBFUbT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 15:31:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
+        id S229983AbjBFUh2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 15:37:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbjBFUbT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 15:31:19 -0500
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3E029E2F
-        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 12:31:18 -0800 (PST)
-Received: by mail-io1-f71.google.com with SMTP id e16-20020a6b5010000000b00719041c51ebso7729745iob.12
-        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 12:31:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lcUfKfT8kk091mUeNDNyNXV+W/bZwlZUrmiavyzWKVE=;
-        b=rzay4xvEDy30ZHjc/88pDPn32r7wxJuJqe5unMDKMcSmFKu7gattLdzFozq/RReJ/U
-         lUUVu06JO8Ttjin4OE/O0TOcTaRyfGzzSUjsMr6ARlW0835pNX7cty9gKnJP8+Rjv4bQ
-         Hv5z2ib+KHOy7fnHRzef7yAhqjKC+8q6/78UxLi0fZ2lHsWPmpCyaYaRtn4mDyhlzxAR
-         6B2EPUjSFJye4Gd4oUHHTQUFrAsBpJRldBrY5zLBlPNt0J8AhMree8xNjftpv61dTkJc
-         Ohi+Isl4Vw43qC6TNYzjfs7V8A+7u0aQvs4TVQbDP/ZQlG7IA7Bkvc4JLvoEaex/E9NZ
-         GmgQ==
-X-Gm-Message-State: AO0yUKXMbIYiFrdx58l3g9SPcWNDb7jyQYl03CWwFfjezkJdCjadlaly
-        CGUzl6qfE5M5UD9emJstZwzZ1Ub81XF1BkhPZf7EPgYKH8UF
-X-Google-Smtp-Source: AK7set/lIX/2jgf1OGRtFFrJw0DWyiffr52+TS2tT4qR8HmxfNuUDQY4i9GdUbMVWehVVSEfF9bkQInUujE4DKrS6Qceu8NmbEmm
+        with ESMTP id S230084AbjBFUh1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 15:37:27 -0500
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ED328D12
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 12:37:25 -0800 (PST)
+Message-ID: <f2afdc22-a9c1-eaad-fab4-2ff61b409282@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1675715839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6fFGsR8m8qzKjunW3zH95+0KifrcLp8HfHMFh9BcTaA=;
+        b=ZR8Lzvy1QGHzyHrlt+PiEDtnf66ueJYRpcIEx+FmetDzRMgJhA8+UeHZ/6zyfuGZpNVcSY
+        HIkhgG9xo4EPYC1pH3xzWFdeeCQK92WTfHNV6L3lAICkjAe4dblHPstNeSAdaSa4rVQN3o
+        hiOcbHdA0L1L0csqFLA96bd/OBTR0TY=
+Date:   Mon, 6 Feb 2023 12:37:14 -0800
 MIME-Version: 1.0
-X-Received: by 2002:a02:cccb:0:b0:3b1:acaf:d5b2 with SMTP id
- k11-20020a02cccb000000b003b1acafd5b2mr168551jaq.98.1675715477927; Mon, 06 Feb
- 2023 12:31:17 -0800 (PST)
-Date:   Mon, 06 Feb 2023 12:31:17 -0800
-In-Reply-To: <000000000000269f9a05f02be9d8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ce7ebf05f40de992@google.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in copy_verifier_state
-From:   syzbot <syzbot+59af7bf76d795311da8c@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        keescook@chromium.org, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        martin.lau@linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, v4bel@theori.io,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH v2 bpf-next] Add support for tracing programs in
+ BPF_PROG_RUN
+Content-Language: en-US
+To:     Grant Seltzer Richman <grantseltzer@gmail.com>
+Cc:     andrii@kernel.org, kpsingh@kernel.org, bpf@vger.kernel.org
+References: <20230203182812.20657-1-grantseltzer@gmail.com>
+ <6433db0e-5cc6-8acc-b92f-eb5e17f032d6@linux.dev>
+ <CAO658oVRQTL8HfKFJ3X8zjYRLJCQWROjzyOcXeP=uVRML1UYOw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAO658oVRQTL8HfKFJ3X8zjYRLJCQWROjzyOcXeP=uVRML1UYOw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On 2/5/23 9:29 AM, Grant Seltzer Richman wrote:
+> On Sat, Feb 4, 2023 at 1:58 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 2/3/23 10:28 AM, Grant Seltzer wrote:
+>>> This patch changes the behavior of how BPF_PROG_RUN treats tracing
+>>> (fentry/fexit) programs. Previously only a return value is injected
+>>> but the actual program was not run.
+>>
+>> hmm... I don't understand this. The actual program is run by attaching to the
+>> bpf_fentry_test{1,2,3...}. eg. The test in fentry_test.c
+> 
+> I'm not sure what you mean. Are you saying in order to use the
+> BPF_PROG_RUN bpf syscall command the user must first attach to
+> `bpf_fentry_test1` (or any 1-8), and then execute the BPF_PROG_RUN?
 
-commit 45435d8da71f9f3e6860e6e6ea9667b6ec17ec64
-Author: Kees Cook <keescook@chromium.org>
-Date:   Fri Dec 23 18:28:44 2022 +0000
+It is how the fentry/fexit/fmod_ret...BPF_PROG_TYPE_TRACIN_xxx prog is setup to 
+run now in test_run. afaik, these tracing progs require the trampoline setup 
+before calling the bpf prog, so don't understand how __bpf_prog_test_run_tracing 
+will work safely.
 
-    bpf: Always use maximal size for copy_array()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14c62f23480000
-start commit:   041fae9c105a Merge tag 'f2fs-for-6.2-rc1' of git://git.ker..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e2f3d9d232a3cac5
-dashboard link: https://syzkaller.appspot.com/bug?extid=59af7bf76d795311da8c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1650d477880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1305f993880000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: bpf: Always use maximal size for copy_array()
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+A selftest will help how this will work without the traompline but may be first 
+need to understand what it is trying to solve.
