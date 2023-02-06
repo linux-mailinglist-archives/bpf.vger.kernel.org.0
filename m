@@ -2,86 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA70268C9B0
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 23:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C44F68C9B5
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 23:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjBFWkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 17:40:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55160 "EHLO
+        id S229772AbjBFWmp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 17:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjBFWkS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 17:40:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4631930292
-        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 14:40:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFB7D61059
-        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 22:40:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 48465C433EF;
-        Mon,  6 Feb 2023 22:40:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675723217;
-        bh=utveTFJvtbZ9WJsBu+VHukrZb4z0N30a0dcHC1a9By8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uHEVO7p4AOHBNfRZgarnWT6JZyTaIfOtB96yWAccp2j9FYEmwDMebz/jZ3rL1Sb9K
-         SJNv8MxrSymS0kYI2mnwvQ57STNY8lxgCwh+1695ZUGkmKjdD327xfesfnKij09h+Y
-         LHNcig0ZPpIRhCfArltr2MKE0oApDyGuqiRbxqcnE7CBibRwv4AVJ84TWndEC/PNO2
-         G4urdzpm14w4jutAjYVkvpfhrE6jrLfQYn1hWG9MXCrcy2Ppp3RwYNrid+fFPiiro6
-         RfUNBhiYXxf8NAU/dFyvaAkJZjMvs0jA2kAdwzH8dpBNHD84LOd85HEW6eHJ9xt7/S
-         Sn58XKPJ4jEyA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2C4DFE55F07;
-        Mon,  6 Feb 2023 22:40:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229536AbjBFWmo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 17:42:44 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CD327D6B;
+        Mon,  6 Feb 2023 14:42:43 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id v13so13168312eda.11;
+        Mon, 06 Feb 2023 14:42:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=t644cczRQka2x/b5p0VZXCNIcITcyshiEjBHQAnHClY=;
+        b=WKv7BijNQKh+zOOhJoiue4NWX7PXRW8jExmIM0aach4T8ONArc8iaqLMVGBECmhiDi
+         Jcp8Tyt9jfet3vq3lDnEQwjADVhqXrxOYhcc7CI+TUIpq/hkJSdf/DBrY+aOZbP5FWnF
+         0n5IqUDO/6AaoJ5w9tsItrgZmMSkJY1tTt5auZDPzc6NPYqQzOiRG8Rncjbem1OzMSKI
+         HU0a2PyHQpp6khPO/CcTP1qEe5u+1NQ2qC3JDFo6qnOJj7lzrRLTpjAgOt3Ip4Co/wpF
+         CqG3sY76kjOp8bX70HEbXSH2cU8ofh06afmkQXjCnRBG4MXBpSmPtzF1nkf9aOd8vtK/
+         rO/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t644cczRQka2x/b5p0VZXCNIcITcyshiEjBHQAnHClY=;
+        b=JcL8bmwEMgGI8BPc/MSf5XxOwtQ6w/z9w9l60StUTzLTJMtdQSzENx0t8wzh8/rA76
+         HLuKhk+XbyfpP01gQwBKtRhwzsXtidV8tDUUKGvzWXBp4bBrPIq3C2yEjj9tFWI+iIi/
+         0Yc5aa3W3dcRDsSY915/07rDWTosQ2NE+54AucmZia8zTtRnEIYwyBOKNK9sft8rLmdV
+         6SxVhA831k7bM2vStsfTiziNYlIonjeKbP2jxfb7xTEPE37/fnLvCk4FncrzVmH+5JIL
+         hFwVeInkgoGrWQiCgevxHB4UFCCP76nbdiH3fqzh3UNTege6/7GYJ1XSizCPLg00b8tE
+         bnaw==
+X-Gm-Message-State: AO0yUKUAwcc4xYUZBlCw66IouIjVPl6lb9lG6xZM8csp8FevWdI7wA/T
+        vrLdCJkR1w9CCvkzywCqVG1G0yAYaYXMsRWbhz4=
+X-Google-Smtp-Source: AK7set+Gk56V+eCjod1Ppqj4lbfZwfjYStQkNcusNNltlahiBgLVkLq2nOS35EReRjYadjf1zLOptLf353isaD3TtEQ=
+X-Received: by 2002:a50:9fa8:0:b0:49d:ec5d:28af with SMTP id
+ c37-20020a509fa8000000b0049dec5d28afmr33353edf.5.1675723361863; Mon, 06 Feb
+ 2023 14:42:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v5 1/1] libbpf: Correctly set the kernel code version
- in Debian kernel.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167572321717.17917.7525968332821642999.git-patchwork-notify@kernel.org>
-Date:   Mon, 06 Feb 2023 22:40:17 +0000
-References: <20230203234842.2933903-1-hao.xiang@bytedance.com>
-In-Reply-To: <20230203234842.2933903-1-hao.xiang@bytedance.com>
-To:     Hao Xiang <hao.xiang@bytedance.com>
-Cc:     bpf@vger.kernel.org, horenchuang@bytedance.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1675245257.git.lorenzo@kernel.org> <a72609ef4f0de7fee5376c40dbf54ad7f13bfb8d.1675245258.git.lorenzo@kernel.org>
+In-Reply-To: <a72609ef4f0de7fee5376c40dbf54ad7f13bfb8d.1675245258.git.lorenzo@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 6 Feb 2023 14:42:29 -0800
+Message-ID: <CAEf4BzZS-MSen_1q4eotMe3hdkXUXxpwnfbLqEENzU1ogejxUQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 5/8] libbpf: add API to get XDP/XSK supported features
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        hawk@kernel.org, toke@redhat.com, memxor@gmail.com,
+        alardam@gmail.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+        gospo@broadcom.com, vladimir.oltean@nxp.com, nbd@nbd.name,
+        john@phrozen.org, leon@kernel.org, simon.horman@corigine.com,
+        aelior@marvell.com, christophe.jaillet@wanadoo.fr,
+        ecree.xilinx@gmail.com, mst@redhat.com, bjorn@kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        intel-wired-lan@lists.osuosl.org, lorenzo.bianconi@redhat.com,
+        martin.lau@linux.dev, sdf@google.com, gerhard@engleder-embedded.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Feb 1, 2023 at 2:25 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> Extend bpf_xdp_query routine in order to get XDP/XSK supported features
+> of netdev over route netlink interface.
+> Extend libbpf netlink implementation in order to support netlink_generic
+> protocol.
+>
+> Co-developed-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Co-developed-by: Marek Majtyka <alardam@gmail.com>
+> Signed-off-by: Marek Majtyka <alardam@gmail.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  tools/lib/bpf/libbpf.h  |  3 +-
+>  tools/lib/bpf/netlink.c | 96 +++++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/nlattr.h  | 12 ++++++
+>  3 files changed, 110 insertions(+), 1 deletion(-)
+>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+[...]
 
-On Fri,  3 Feb 2023 23:48:42 +0000 you wrote:
-> In a previous commit, Ubuntu kernel code version is correctly set
-> by retrieving the information from /proc/version_signature.
-> 
-> commit<5b3d72987701d51bf31823b39db49d10970f5c2d>
-> (libbpf: Improve LINUX_VERSION_CODE detection)
-> 
-> The /proc/version_signature file doesn't present in at least the
-> older versions of Debian distributions (eg, Debian 9, 10). The Debian
-> kernel has a similar issue where the release information from uname()
-> syscall doesn't give the kernel code version that matches what the
-> kernel actually expects. Below is an example content from Debian 10.
-> 
-> [...]
+> @@ -366,6 +433,10 @@ int bpf_xdp_query(int ifindex, int xdp_flags, struct bpf_xdp_query_opts *opts)
+>                 .ifinfo.ifi_family = AF_PACKET,
+>         };
+>         struct xdp_id_md xdp_id = {};
+> +       struct xdp_features_md md = {
+> +               .ifindex = ifindex,
+> +       };
+> +       __u16 id;
+>         int err;
+>
+>         if (!OPTS_VALID(opts, bpf_xdp_query_opts))
+> @@ -393,6 +464,31 @@ int bpf_xdp_query(int ifindex, int xdp_flags, struct bpf_xdp_query_opts *opts)
+>         OPTS_SET(opts, skb_prog_id, xdp_id.info.skb_prog_id);
+>         OPTS_SET(opts, attach_mode, xdp_id.info.attach_mode);
+>
+> +       if (!OPTS_HAS(opts, feature_flags))
+> +               return 0;
+> +
+> +       err = libbpf_netlink_resolve_genl_family_id("netdev", sizeof("netdev"), &id);
+> +       if (err < 0)
+> +               return libbpf_err(err);
+> +
+> +       memset(&req, 0, sizeof(req));
+> +       req.nh.nlmsg_len = NLMSG_LENGTH(GENL_HDRLEN);
+> +       req.nh.nlmsg_flags = NLM_F_REQUEST;
+> +       req.nh.nlmsg_type = id;
+> +       req.gnl.cmd = NETDEV_CMD_DEV_GET;
+> +       req.gnl.version = 2;
+> +
+> +       err = nlattr_add(&req, NETDEV_A_DEV_IFINDEX, &ifindex, sizeof(ifindex));
+> +       if (err < 0)
+> +               return err;
 
-Here is the summary with links:
-  - [bpf-next,v5,1/1] libbpf: Correctly set the kernel code version in Debian kernel.
-    https://git.kernel.org/bpf/bpf-next/c/d1d7730ff875
+just noticed this, we need to use libbpf_err(err) here like in other
+error cases to set errno properly. Can you please send a follow up?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +
+> +       err = libbpf_netlink_send_recv(&req, NETLINK_GENERIC,
+> +                                      parse_xdp_features, NULL, &md);
+> +       if (err)
+> +               return libbpf_err(err);
+> +
+> +       opts->feature_flags = md.flags;
+> +
+>         return 0;
+>  }
+>
 
-
+[...]
