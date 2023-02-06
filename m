@@ -2,76 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F8E68C6A0
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 20:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E7068C71A
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 20:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbjBFTRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 14:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
+        id S229974AbjBFTzn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 14:55:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbjBFTRc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 14:17:32 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473C42BF05
-        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 11:17:19 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id mi9so12570186pjb.4
-        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 11:17:19 -0800 (PST)
+        with ESMTP id S229517AbjBFTzn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 14:55:43 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B472940B
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 11:55:42 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id f15-20020a17090ac28f00b00230a32f0c9eso4962930pjt.4
+        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 11:55:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HFhCCF6KKc8jrwlIib3xYlcK52nQlU5i7JbQZG5xkXg=;
-        b=WIa7oPHbexPVvg4fvwaR9+kndrbroQz++TujaKD28jY2+pxf0hdMAI3dY/LgXNAy3r
-         Qf5FK0+I9qvhFLMOEo43LueGk5poqBnbYVUnXT0t+Ifb6XFaVyG+8AaZiyAEIC625pot
-         j5zoY+NWeNUrD6vp0+dFxCD4OHCRpwcVf1OmeWPxZ0zzz3Dg5GGORrCgUIr8PZ6IZ/o0
-         tYXlfjF+DeDK+Ae/lA0F56vFNv6gYkD75dK51ejHN3N6XhOMEpgwfYjHaSakMJ1mPjlV
-         e6Lun3AqirDzO4xjcq3dO84B13UX2cnUMP0NyznhT+WZgBIpwXLPOjTmfzCr+0vz16kW
-         iroA==
+        d=googlemail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UpGBrCO33OvBdZWWz9Tt2l1zmPyCy9RZmal6L8y2AWU=;
+        b=jeRrzxZjhIC5zA+XyMZZcS/+XkujED+jMqRhPl3SrxUZZT8X9meD884GzSHqd9MRQn
+         sxfo62q9HMIPw1DiODKaLKEDuyaJMn6NBcSx97+Xucel8cBJKQ10JXBPho5ZQdqSBm2N
+         vzvydk5Ti3PazZ2rzyeMBG93zvL2vEXQA48Bqs8WR5jT+QTZW7GhNFfEgIifPQ2VQtQ/
+         2ZioeSRiXU2MoB/9CNiOYmiugrmXNipJlt2mabJaBDXwvGbXQNIFFgkvUJYEyMaAf/Fe
+         OGsIbeDMVBnjYLfxvfOrs2i2ayM9/1V6oArCBYk1gQWfQBX+H/MvWwYKZVF8UCHU/42d
+         Cdkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HFhCCF6KKc8jrwlIib3xYlcK52nQlU5i7JbQZG5xkXg=;
-        b=tK+4HjR5c4ijjzXpH6okK+ijFjWL2u9z3ud7WalbT8ug5D47Jc4ZwibL4Y/KILaEQo
-         kCzfcK6KMG5fW4gjTBTuhMf1opFeFtqe18xpqTG+EG0zRFqToDmxHm3KYL8o0MCtfGhv
-         T7abXs6kE7vRq/SubqZvCGkcJztyK/YjdFoqX9DdCZ3SC3MoWKE9Nhke+8T739qZJXVW
-         f+Ruq6bX4CBrP5B9Mm+wlf/664ActucOjxB3jNKxb20fX3RujxEIJS1WATXSNLF4XLCC
-         oCDXy9DSVwQHlYJUx7td2khNXm1ZWTXhJmV4SWCtWd3DA0dO7yXHaPpn3wf/Go/gAdgV
-         HREA==
-X-Gm-Message-State: AO0yUKUqmClm2RJy3NnEtsh5zTTmZm5vDSCF9XWsBNW+kzr56//e5W/8
-        FwcjkzDSX700bfIFln7NMNtOlndptOdnRmStHKpoMg==
-X-Google-Smtp-Source: AK7set9Bd4y8RazRLw+FgG1fYKluMFeh9bpugxhLYn9uSsK9r462sJPsTzLTYkh/jbCi2pN9gIlAXA1PsRLtyiap9CM=
-X-Received: by 2002:a17:90a:3d01:b0:230:8961:22c1 with SMTP id
- h1-20020a17090a3d0100b00230896122c1mr167548pjc.95.1675711038558; Mon, 06 Feb
- 2023 11:17:18 -0800 (PST)
+        bh=UpGBrCO33OvBdZWWz9Tt2l1zmPyCy9RZmal6L8y2AWU=;
+        b=DADOPAgg+268aG723oLvpR+dxmyp0VOzXk/PFKA1pUEd0LGI4OMCMV4MMFnRkdxcAt
+         +wyEbgzpYaRdXWxIZPzo1W3CCs1l7AOdIUrR3aQM+0x3K4ZeZO4PyNftalQlptmLMCmg
+         FYv677gB8MZ1/A4++5rWk3KLfGHnwpx0awatVkk0fk5Td/lD9qRvJYiXx8MEhU+ACd8w
+         Zng7wSORzKjmLPJXer8RPi4q3quHsXOhWc5/LRuKYqQzo1JNhX7abI3tOtN5WOW7BXNT
+         x31QCDjGx6Q10lF4yMOXzHXIxeR7emVobiVAfzFdCxjRg6Z9cyFaC5H81Z3pIk1NqVJf
+         wy9g==
+X-Gm-Message-State: AO0yUKVi36kAFVIGYkFtSvFWwQ7cLXRvBx6sf/T13jSIzuCMOS3MGbAc
+        N7ZLRcIQ14HpouKaOKj1+f64nbGhQME=
+X-Google-Smtp-Source: AK7set/jdD6gZTIXyBaqI+fMwFuHm/qJETR2DXBVUhcIdlo7TVJyBWnvCkaGA0tNnt+lSeJrFCzvtg==
+X-Received: by 2002:a17:903:2292:b0:199:190c:3c15 with SMTP id b18-20020a170903229200b00199190c3c15mr4580542plh.49.1675713341721;
+        Mon, 06 Feb 2023 11:55:41 -0800 (PST)
+Received: from mariner-vm.. ([131.107.8.28])
+        by smtp.gmail.com with ESMTPSA id p24-20020a170902b09800b001992181b5d5sm1672901plr.245.2023.02.06.11.55.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Feb 2023 11:55:41 -0800 (PST)
+From:   Dave Thaler <dthaler1968@googlemail.com>
+To:     bpf@vger.kernel.org
+Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
+Subject: [PATCH bpf-next] bpf, docs: Add explanation of endianness
+Date:   Mon,  6 Feb 2023 19:55:32 +0000
+Message-Id: <20230206195532.2436-1-dthaler1968@googlemail.com>
+X-Mailer: git-send-email 2.33.4
 MIME-Version: 1.0
-References: <20230204183241.never.481-kees@kernel.org> <CAKH8qBvqLeR3Wsbpb-v=EUY=Bw0jCP2OAaBn4tOqGmA1AqBZbA@mail.gmail.com>
- <63e14abb.170a0220.ca425.b7bc@mx.google.com>
-In-Reply-To: <63e14abb.170a0220.ca425.b7bc@mx.google.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 6 Feb 2023 11:17:06 -0800
-Message-ID: <CAKH8qBtX0HU4_YtnZ3hU4NhGHSQ9VU70niXFFoqf3k67a1+6aA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Replace bpf_lpm_trie_key 0-length array with
- flexible array
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,138 +67,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 6, 2023 at 10:45 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Feb 06, 2023 at 09:52:17AM -0800, Stanislav Fomichev wrote:
-> > On Sat, Feb 4, 2023 at 10:32 AM Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > Replace deprecated 0-length array in struct bpf_lpm_trie_key with
-> > > flexible array. Found with GCC 13:
-> > >
-> > > ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
-> > >   207 |                                        *(__be16 *)&key->data[i]);
-> > >       |                                                   ^~~~~~~~~~~~~
-> > > ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
-> > >   102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-> > >       |                                                      ^
-> > > ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
-> > >    97 | #define be16_to_cpu __be16_to_cpu
-> > >       |                     ^~~~~~~~~~~~~
-> > > ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
-> > >   206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
-> > > ^
-> > >       |                            ^~~~~~~~~~~
-> > > In file included from ../include/linux/bpf.h:7:
-> > > ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
-> > >    82 |         __u8    data[0];        /* Arbitrary size */
-> > >       |                 ^~~~
-> > >
-> > > This includes fixing the selftest which was incorrectly using a
-> > > variable length struct as a header, identified earlier[1]. Avoid this
-> > > by just explicitly including the prefixlen member instead of struct
-> > > bpf_lpm_trie_key.
-> > >
-> > > [1] https://lore.kernel.org/all/202206281009.4332AA33@keescook/
-> > >
-> > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > > Cc: Song Liu <song@kernel.org>
-> > > Cc: Yonghong Song <yhs@fb.com>
-> > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > Cc: KP Singh <kpsingh@kernel.org>
-> > > Cc: Stanislav Fomichev <sdf@google.com>
-> > > Cc: Hao Luo <haoluo@google.com>
-> > > Cc: Jiri Olsa <jolsa@kernel.org>
-> > > Cc: Mykola Lysenko <mykolal@fb.com>
-> > > Cc: Shuah Khan <shuah@kernel.org>
-> > > Cc: Haowen Bai <baihaowen@meizu.com>
-> > > Cc: bpf@vger.kernel.org
-> > > Cc: linux-kselftest@vger.kernel.org
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  include/uapi/linux/bpf.h                         | 2 +-
-> > >  tools/testing/selftests/bpf/progs/map_ptr_kern.c | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index ba0f0cfb5e42..5930bc5c7e2c 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -79,7 +79,7 @@ struct bpf_insn {
-> > >  /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
-> > >  struct bpf_lpm_trie_key {
-> > >         __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
-> > > -       __u8    data[0];        /* Arbitrary size */
-> > > +       __u8    data[];         /* Arbitrary size */
-> > >  };
-> >
-> > That's a UAPI change, can we do it? The safest option is probably just
-> > to remove this field if it's causing any problems (and not do the
-> > map_ptr_kern.c change below).
->
-> The problem was seen because "data" is used by the kernel (see the
-> compiler warning above). But if it can be removed, sure, that works too,
-> and it much nicer since the resulting structs would have fixed sizes.
+From: Dave Thaler <dthaler@microsoft.com>
 
-I guess I still don't understand why we need the change in map_ptr_kern.c?
+Document the discussion from the email thread on the IETF bpf list,
+where it was explained that the raw format varies by endianness
+of the processor.
 
-Re-reading the description:
+Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+---
+ Documentation/bpf/instruction-set.rst | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-> > > This includes fixing the selftest which was incorrectly using a
-> > > variable length struct as a header, identified earlier[1].
+diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+index 2d3fe59bd26..3358769dc1f 100644
+--- a/Documentation/bpf/instruction-set.rst
++++ b/Documentation/bpf/instruction-set.rst
+@@ -33,7 +33,7 @@ eBPF has two instruction encodings:
+ * the wide instruction encoding, which appends a second 64-bit immediate value
+   (imm64) after the basic instruction for a total of 128 bits.
+ 
+-The basic instruction encoding looks as follows:
++The basic instruction encoding looks as follows for a little-endian processor:
+ 
+ =============  =======  ===============  ====================  ============
+ 32 bits (MSB)  16 bits  4 bits           4 bits                8 bits (LSB)
+@@ -41,6 +41,17 @@ The basic instruction encoding looks as follows:
+ immediate      offset   source register  destination register  opcode
+ =============  =======  ===============  ====================  ============
+ 
++and as follows for a big-endian processor:
++
++=============  =======  ====================  ===============  ============
++32 bits (MSB)  16 bits  4 bits                4 bits           8 bits (LSB)
++=============  =======  ====================  ===============  ============
++immediate      offset   destination register  source register  opcode
++=============  =======  ====================  ===============  ============
++
++Multi-byte fields ('immediate' and 'offset') are similarly stored in
++the byte order of the processor.
++
+ Note that most instructions do not use all of the fields.
+ Unused fields shall be cleared to zero.
+ 
+-- 
+2.33.4
 
-It's my understanding that it's the intended use-case. Users are
-expected to use this struct as a header; at least we've been using it
-that way :-)
-
-For me, both return the same:
-sizeof(struct { __u32 prefix; __u8 data[0]; })
-sizeof(struct { __u32 prefix; __u8 data[]; })
-
-So let's do s/data[0]/data[]/ in the UAPI only? What's wrong with
-using this struct as a header?
-
-> > The usual use-case (at least that's what we do) is to define some new
-> > struct over it:
-> >
-> > struct my_key {
-> >   struct bpf_lpm_trie_key prefix;
-> >   int a, b, c;
-> > };
-> >
-> > So I really doubt that the 'data' is ever touched by any programs at all..
->
-> Horrible alternative:
->
-> struct my_key {
->     union {
->         struct bpf_lpm_trie_key trie;
->         struct {
->             u8 header[sizeof(struct bpf_lpm_trie_key)];
->             int a, b, c;
->         };
->     };
-> };
->
-> Perhaps better might be:
->
-> struct bpf_lpm_trie_key {
->     __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
-> };
->
-> struct bpf_lpm_trie_key_raw {
->     struct bpf_lpm_trie_key_prefix prefix;
->     u8 data[];
-> };
->
-> struct my_key {
->     struct bpf_lpm_trie_key_prefix prefix;
->     int a, b, c;
-> };
->
-> Thoughts?
->
-> --
-> Kees Cook
