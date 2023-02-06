@@ -2,96 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F36868C1E0
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 16:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658CA68C28A
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 17:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbjBFPmC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 10:42:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
+        id S231650AbjBFQIp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 11:08:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjBFPlq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 10:41:46 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06922B29E;
-        Mon,  6 Feb 2023 07:40:51 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S231665AbjBFQIh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 11:08:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80752135
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 08:07:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675699675;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=eGfmMkW0/IkNO+6gsud37g3q2ocmic9bPukgp7KqTXI=;
+        b=blw1xUxzHSROE9hBPxMRSTOaCiwEEZlZQxSuUdr5brE4bZhEztNzZ0jaNrHdzeIwHJPJaw
+        ObNHEA1uNai5GXierK9JJBQs/MQOwL7iEMe2r7SkMi7qJ0wVq8nvRkpsYl237UAGrLYMCh
+        41lcExYA0KZa5L5vcjURxIPi34KwAgE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-251-rgnx-7UmMqyWQQBzag8BwA-1; Mon, 06 Feb 2023 11:07:52 -0500
+X-MC-Unique: rgnx-7UmMqyWQQBzag8BwA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 30D06B8120F;
-        Mon,  6 Feb 2023 15:39:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC0AFC433D2;
-        Mon,  6 Feb 2023 15:38:57 +0000 (UTC)
-Date:   Mon, 6 Feb 2023 10:38:28 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     lsf-pc@lists.linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, Ross Zwisler <zwisler@google.com>,
-        "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Subject: [LSF/MM/BPF TOPIC]  sframe: An orc like stack unwinder for the
- kernel to get a user space stacktrace
-Message-ID: <20230206103828.6efcb28f@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C30BD85CBE2;
+        Mon,  6 Feb 2023 16:07:51 +0000 (UTC)
+Received: from thinkpad.redhat.com (ovpn-192-133.brq.redhat.com [10.40.192.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 93EA640CF8E2;
+        Mon,  6 Feb 2023 16:07:49 +0000 (UTC)
+From:   Felix Maurer <fmaurer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org
+Subject: [PATCH bpf-next] selftests: bpf: Use BTF map in sk_assign
+Date:   Mon,  6 Feb 2023 17:07:36 +0100
+Message-Id: <4ebd4e68dec83863c51a9114e6507524c8feafb7.1675698070.git.fmaurer@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The sk_assign selftest uses tc to load the BPF object file for the test. If
+tc is linked against libbpf 1.0+, this test failed, because the BPF file
+used the legacy maps section. This approach is considered legacy by libbpf
+and tc (see examples/bpf/README in the iproute2 repo).
 
-Title: sframe: An orc like stack unwinder for the kernel to get a user space stacktrace 
+Therefore, switch to the approach recommended by iproute2 and use a BTF
+defined map. This is also well supported by libbpf.
 
-Due to performance reasons, most applications do not enable frame
-pointers (although Fedora has announced that they have done so[1]
-Although, some of the maintainers that did, would prefer another
-solution[2]) Thus getting a reliable user space stack trace for
-profiling or tracing can be difficult. One method that perf uses, is to
-grab a large section of the user space stack and save it into the ring
-buffer, and then use dwarf to later parse this information. This is
-slow and wastes a lot of ring buffer real-estate leading to lost events.
+Signed-off-by: Felix Maurer <fmaurer@redhat.com>
+---
+ .../selftests/bpf/progs/test_sk_assign.c      | 24 +++++--------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
 
-It also requires post processing and after the trace to find where
-these locations exist (the kernel can at least figure out where in the
-file the addresses are by using the proc/$$/maps data).
+diff --git a/tools/testing/selftests/bpf/progs/test_sk_assign.c b/tools/testing/selftests/bpf/progs/test_sk_assign.c
+index 98c6493d9b91..b0536bdc002b 100644
+--- a/tools/testing/selftests/bpf/progs/test_sk_assign.c
++++ b/tools/testing/selftests/bpf/progs/test_sk_assign.c
+@@ -16,25 +16,13 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
+ 
+-/* Pin map under /sys/fs/bpf/tc/globals/<map name> */
+-#define PIN_GLOBAL_NS 2
+-
+-/* Must match struct bpf_elf_map layout from iproute2 */
+ struct {
+-	__u32 type;
+-	__u32 size_key;
+-	__u32 size_value;
+-	__u32 max_elem;
+-	__u32 flags;
+-	__u32 id;
+-	__u32 pinning;
+-} server_map SEC("maps") = {
+-	.type = BPF_MAP_TYPE_SOCKMAP,
+-	.size_key = sizeof(int),
+-	.size_value  = sizeof(__u64),
+-	.max_elem = 1,
+-	.pinning = PIN_GLOBAL_NS,
+-};
++	__uint(type, BPF_MAP_TYPE_SOCKMAP);
++	__uint(key_size, sizeof(int));
++	__uint(value_size, sizeof(__u64));
++	__uint(max_entries, 1);
++	__uint(pinning, LIBBPF_PIN_BY_NAME);
++} server_map SEC(".maps");
+ 
+ char _license[] SEC("license") = "GPL";
+ 
+-- 
+2.39.1
 
-With the a new sframe section that has been introduced by binutils[3],
-this will allow the kernel to get an accurate stack trace from user
-space. This may even be extended to allow for symbol lookup from user
-space as well.
-
-The idea is the following:
-
-1. On exec (binfmt_elf.c) the kernel could see that an sframe section
-exists in the kernel and flag the task struct, and record some
-information of where it exists.
-
-2. perf/ftrace/bpf in any context (NMI, interrupt, etc) wants to take a
-user space stack trace and would request one. This will set a flag in
-the task struct to go the ptrace path before entering back into user
-space. A callback function would need to be registered to handle this
-as well.
-
-3. On the ptrace path (where it's guaranteed to be back into normal
-context and is allowed to fault) it would read the sframe section to
-extract the stack trace (and possibly another section to retrieve a
-symbol table if necessary). It would then call a list of callback
-functions that were added by perf/ftrace/bpf with the stack trace and
-allow them to record it.
-
-We would probably need a system call of some kind to allow the dynamic
-linker to notify the kernel of sframe sections that exist in libraries
-that are loaded after the initial exec as well.
-
-I'd like to discuss the above ideas about getting this implemented.
-
--- Steve
-
-
-[1] https://lwn.net/Articles/919940/
-[2] https://social.kernel.org/notice/ARHY3JdFu2WMYDb888
-[3] https://www.phoronix.com/news/GNU-Binutils-SFrame
