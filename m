@@ -2,73 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8449B68C7BA
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 21:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA70268C9B0
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 23:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjBFUh2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 15:37:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
+        id S229839AbjBFWkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 17:40:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbjBFUh1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 15:37:27 -0500
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ED328D12
-        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 12:37:25 -0800 (PST)
-Message-ID: <f2afdc22-a9c1-eaad-fab4-2ff61b409282@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1675715839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6fFGsR8m8qzKjunW3zH95+0KifrcLp8HfHMFh9BcTaA=;
-        b=ZR8Lzvy1QGHzyHrlt+PiEDtnf66ueJYRpcIEx+FmetDzRMgJhA8+UeHZ/6zyfuGZpNVcSY
-        HIkhgG9xo4EPYC1pH3xzWFdeeCQK92WTfHNV6L3lAICkjAe4dblHPstNeSAdaSa4rVQN3o
-        hiOcbHdA0L1L0csqFLA96bd/OBTR0TY=
-Date:   Mon, 6 Feb 2023 12:37:14 -0800
+        with ESMTP id S229832AbjBFWkS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 17:40:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4631930292
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 14:40:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFB7D61059
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 22:40:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 48465C433EF;
+        Mon,  6 Feb 2023 22:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675723217;
+        bh=utveTFJvtbZ9WJsBu+VHukrZb4z0N30a0dcHC1a9By8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uHEVO7p4AOHBNfRZgarnWT6JZyTaIfOtB96yWAccp2j9FYEmwDMebz/jZ3rL1Sb9K
+         SJNv8MxrSymS0kYI2mnwvQ57STNY8lxgCwh+1695ZUGkmKjdD327xfesfnKij09h+Y
+         LHNcig0ZPpIRhCfArltr2MKE0oApDyGuqiRbxqcnE7CBibRwv4AVJ84TWndEC/PNO2
+         G4urdzpm14w4jutAjYVkvpfhrE6jrLfQYn1hWG9MXCrcy2Ppp3RwYNrid+fFPiiro6
+         RfUNBhiYXxf8NAU/dFyvaAkJZjMvs0jA2kAdwzH8dpBNHD84LOd85HEW6eHJ9xt7/S
+         Sn58XKPJ4jEyA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2C4DFE55F07;
+        Mon,  6 Feb 2023 22:40:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next] Add support for tracing programs in
- BPF_PROG_RUN
-Content-Language: en-US
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     andrii@kernel.org, kpsingh@kernel.org, bpf@vger.kernel.org
-References: <20230203182812.20657-1-grantseltzer@gmail.com>
- <6433db0e-5cc6-8acc-b92f-eb5e17f032d6@linux.dev>
- <CAO658oVRQTL8HfKFJ3X8zjYRLJCQWROjzyOcXeP=uVRML1UYOw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAO658oVRQTL8HfKFJ3X8zjYRLJCQWROjzyOcXeP=uVRML1UYOw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 1/1] libbpf: Correctly set the kernel code version
+ in Debian kernel.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167572321717.17917.7525968332821642999.git-patchwork-notify@kernel.org>
+Date:   Mon, 06 Feb 2023 22:40:17 +0000
+References: <20230203234842.2933903-1-hao.xiang@bytedance.com>
+In-Reply-To: <20230203234842.2933903-1-hao.xiang@bytedance.com>
+To:     Hao Xiang <hao.xiang@bytedance.com>
+Cc:     bpf@vger.kernel.org, horenchuang@bytedance.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/5/23 9:29 AM, Grant Seltzer Richman wrote:
-> On Sat, Feb 4, 2023 at 1:58 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 2/3/23 10:28 AM, Grant Seltzer wrote:
->>> This patch changes the behavior of how BPF_PROG_RUN treats tracing
->>> (fentry/fexit) programs. Previously only a return value is injected
->>> but the actual program was not run.
->>
->> hmm... I don't understand this. The actual program is run by attaching to the
->> bpf_fentry_test{1,2,3...}. eg. The test in fentry_test.c
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Fri,  3 Feb 2023 23:48:42 +0000 you wrote:
+> In a previous commit, Ubuntu kernel code version is correctly set
+> by retrieving the information from /proc/version_signature.
 > 
-> I'm not sure what you mean. Are you saying in order to use the
-> BPF_PROG_RUN bpf syscall command the user must first attach to
-> `bpf_fentry_test1` (or any 1-8), and then execute the BPF_PROG_RUN?
+> commit<5b3d72987701d51bf31823b39db49d10970f5c2d>
+> (libbpf: Improve LINUX_VERSION_CODE detection)
+> 
+> The /proc/version_signature file doesn't present in at least the
+> older versions of Debian distributions (eg, Debian 9, 10). The Debian
+> kernel has a similar issue where the release information from uname()
+> syscall doesn't give the kernel code version that matches what the
+> kernel actually expects. Below is an example content from Debian 10.
+> 
+> [...]
 
-It is how the fentry/fexit/fmod_ret...BPF_PROG_TYPE_TRACIN_xxx prog is setup to 
-run now in test_run. afaik, these tracing progs require the trampoline setup 
-before calling the bpf prog, so don't understand how __bpf_prog_test_run_tracing 
-will work safely.
+Here is the summary with links:
+  - [bpf-next,v5,1/1] libbpf: Correctly set the kernel code version in Debian kernel.
+    https://git.kernel.org/bpf/bpf-next/c/d1d7730ff875
 
-A selftest will help how this will work without the traompline but may be first 
-need to understand what it is trying to solve.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
