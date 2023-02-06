@@ -2,103 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DBA68BB7D
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 12:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F6A68BC16
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 12:53:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbjBFL2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 06:28:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
+        id S229550AbjBFLxY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 06:53:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbjBFL2N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 06:28:13 -0500
-Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540F518162;
-        Mon,  6 Feb 2023 03:28:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1675682882;
-        bh=m8lE4c/d0lvFPxY+CJ5u1aKGsJRsL83fBiMpukDEoQs=;
-        h=From:To:Cc:Subject:Date;
-        b=OeTA8scCOayel03cSxS8hrqzqH+OpxuHnq17tUPvBZn//gadZkNdp/cpyxuDPPF8m
-         tk/lzsndZCZFA7nGk6Yn1im85cvXBzy2rncNG+lUeGu01lTDFio8emQtMw40ImYPsQ
-         SLx6Ys6xecGD/kd6tSct3nxOMyLvgMCBnSPd1LyE=
-Received: from localhost.localdomain ([39.156.73.13])
-        by newxmesmtplogicsvrszc1-0.qq.com (NewEsmtp) with SMTP
-        id 6FAA900C; Mon, 06 Feb 2023 19:27:58 +0800
-X-QQ-mid: xmsmtpt1675682878t3f71k036
-Message-ID: <tencent_9E0636426959DE97692A50AF79A3D9888B08@qq.com>
-X-QQ-XMAILINFO: MOZWoti2yOjRjo6wOkCbZUP9njBujRx4QFk19T5afRKTAYFz+sO/9SegPTNRLO
-         vCg9XniA80NDoMpF6yV0bJEZTmBg70O/oppDr768J5tdnPyujlfxI4nrFW2j8CmkZleFLjql7cNo
-         I1m/lPug4nCUUbMSZ0WuOBeaAE3+38//PVR5ZYrCnTbo0NDfLBTGzlWOrs2vcCPPcU+8K639s59P
-         qrNLDsyVef95fo0wiv+vWTs6ycc5zCw2Vx5GYH8i0DAa6/eCE8ldRi6Z8Y6zLaOFXwVRtasIhuJO
-         JzENlwDseFpvJQypCqt8Z7JyigKqriKJiOXAXcNsiNfm8T77QvbagirHYHP4MTZi5TtqSDOh8JwD
-         agH2R0RUx5aaNj5mkLqvpNkfo+IGyPPF4msL6YgvogRiIrXe29ZA3uruuOHlihjghDIwJc/qZ7bG
-         ToHK4FQzcGxRe1SvDM9bsi9g/dABhBb8+wyftOWwJnS50wwXgJnRafd6MKgecitv4k67ahv2bAGi
-         EZlH3t4zPGkZd8jBuhoZj51cnWboSWaHWjLHP76Zlj7i4+4YsFBTkwAxTWAXQVVCpAvIe/CTAPx9
-         qAr6wp3muKQAsso3LB0F7Sra18bOmLzKJ3G8fVig8gus32Uc3Z76sWETWsAns0vr3anCMzPu1Cq/
-         5LW0ol30Wfof82qJVLvM4sgxgyMfgFsqBB2RtrKiBBMfVzcZcs1HiND/dAra0b/nAlyZBsXLAD5j
-         cLtGotImv0G1Qg4ewtCLf30Z/xNr/yU1zmkI48Yg/43DmQtR+JUYNuL7+nMzMav1cp+Vp+chJ0MI
-         aKuPRc0e0m9oh68KTRFusHqniUj/6tEDKj9kYwWEhsWYI25oLSFrMwsHU1DqRH1o6SjdaG5MGMLF
-         iPGBZpLT+rBKP3ntQ7x6BI3kNutr0CxRxr77hBN/TNkgiv6kuESAWOHR9EYI5n0fcscoWc6j3LMs
-         xYYDLkLNW4I5Oymv8TEgiu+BMsjAoBPAkoHQHamiKKm7wiJmL37A==
-From:   Rong Tao <rtoax@foxmail.com>
-To:     ast@kernel.org
-Cc:     Rong Tao <rongtao@cestc.cn>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next] samples: bpf: Add macro SYSCALL() for aarch64
-Date:   Mon,  6 Feb 2023 19:27:57 +0800
-X-OQ-MSGID: <20230206112757.18550-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.1
+        with ESMTP id S229514AbjBFLxX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 06:53:23 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F4612F29
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 03:53:22 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id b7so2796382qvo.6
+        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 03:53:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WpOlzlgprXcBwzGCC3ZZLrYR97mq4YuOjOiXOKGzquY=;
+        b=jTk8Ff7B/f0cUIwybEahiD0B53JzmMiPAESl+iqnoN2oJbQUsoCKwyFUdfntCHN1Tq
+         RKlSnBIWljYqtCMddu1MfamKAz50vJAh4XxRBgY6BLzVwvXy0BZltifH5NDUAwrcl+1a
+         KOXJ8QtvVSVAtVBxRkDYLajTGYd4JKe40twh0FJcVD+atIriki0tSUDbVVn3620UflNc
+         hGAOXRWZCwOi6kStCYUyUk96yTb6EsU3cbXdAR/ccLyzZAGiGqJLjNJ8benii3BiIk80
+         14Y7N7Vx589pYhsJ6hE4wILwW3aMUXk62LftPQNX4cEjpSYyMabRCOKqX6CPoDnFe3i5
+         TH2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WpOlzlgprXcBwzGCC3ZZLrYR97mq4YuOjOiXOKGzquY=;
+        b=v//qwUG9Wwz4sRrce/B0ABzSXHzYxayNOdkOS20Hasq9ux/5nfA5FqPs3aEcFxFrTH
+         qtNGqewdbsIJZ0A+8R+gNLOWEvL4tgdTaPc+k8ffVxW/2TzOylJbRkesgzBErXSwX10m
+         tcH4iZcZucoRCOVsRxiKgwh31djXHJ6lOI12ZvRLfRkS9e/X8MT+F+vJZcYp3eE4I1pZ
+         Ful4z4esibU9jMIEQ8E8rcNrGTSAATR+2cgDH28wLUm71kIMR09wzgdyjNLBNjqRTpMS
+         fnUVuFzrXuzdTrENBojGdwG9A5WcnVwN005Tt84hyK0qiHAEbdeqYcQ4N5VpEi81YqXK
+         YdwQ==
+X-Gm-Message-State: AO0yUKVu9rcnZSQCzcAqEsemY6y2FWWg5iAUBihYnf3NizY132rKCFg/
+        kTP1yhg4ACI8pEcOx4+43hq8U8DMN7w+yWmLt0VtT3oF6k8S7w==
+X-Google-Smtp-Source: AK7set/qqvbkHL+8abukp/KqPpIpfPhfODhJgn087gy4RZ1tmJw+8wgEKfnzxP7KHhivFpyDl9AZY5So/eb0/7ex3SA=
+X-Received: by 2002:a0c:f40f:0:b0:56a:eed2:704f with SMTP id
+ h15-20020a0cf40f000000b0056aeed2704fmr540110qvl.5.1675684401966; Mon, 06 Feb
+ 2023 03:53:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+References: <20230202014158.19616-1-laoar.shao@gmail.com> <20230202014158.19616-8-laoar.shao@gmail.com>
+ <Y+AqPJSBnAN830p3@pop-os.localdomain>
+In-Reply-To: <Y+AqPJSBnAN830p3@pop-os.localdomain>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Mon, 6 Feb 2023 19:52:45 +0800
+Message-ID: <CALOAHbAT46+joi2Px2c9ACmtkZ6OPjf64uBpCB9ABF7CPzW19g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 7/7] bpf: hashtab memory usage
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+        dennis@kernel.org, cl@linux.com, akpm@linux-foundation.org,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, vbabka@suse.cz,
+        urezki@gmail.com, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+On Mon, Feb 6, 2023 at 6:14 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Thu, Feb 02, 2023 at 01:41:58AM +0000, Yafang Shao wrote:
+> > Get htab memory usage from the htab pointers we have allocated. Some
+> > small pointers are ignored as their size are quite small compared with
+> > the total size.
+> >
+> > The result as follows,
+> > - before this change
+> > 1: hash  name count_map  flags 0x0  <<<< prealloc
+> >         key 16B  value 24B  max_entries 1048576  memlock 41943040B
+> > 2: hash  name count_map  flags 0x1  <<<< non prealloc, fully set
+> >         key 16B  value 24B  max_entries 1048576  memlock 41943040B
+> > 3: hash  name count_map  flags 0x1  <<<< non prealloc, non set
+> >         key 16B  value 24B  max_entries 1048576  memlock 41943040B
+> >
+> > The memlock is always a fixed number whatever it is preallocated or
+> > not, and whatever the allocated elements number is.
+> >
+> > - after this change
+> > 1: hash  name count_map  flags 0x0  <<<< prealloc
+> >         key 16B  value 24B  max_entries 1048576  memlock 109064464B
+> > 2: hash  name count_map  flags 0x1  <<<< non prealloc, fully set
+> >         key 16B  value 24B  max_entries 1048576  memlock 117464320B
+> > 3: hash  name count_map  flags 0x1  <<<< non prealloc, non set
+> >         key 16B  value 24B  max_entries 1048576  memlock 16797952B
+> >
+> > The memlock now is hashtab actually allocated.
+> >
+> > At worst, the difference can be 10x, for example,
+> > - before this change
+> > 4: hash  name count_map  flags 0x0
+> >         key 4B  value 4B  max_entries 1048576  memlock 8388608B
+> >
+> > - after this change
+> > 4: hash  name count_map  flags 0x0
+> >         key 4B  value 4B  max_entries 1048576  memlock 83898640B
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  kernel/bpf/hashtab.c | 80 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+>
+> What about other maps like regular array map?
+>
 
-kernel arm64/kernel/sys.c macro __SYSCALL() adds a prefix __arm64_, we
-should support it for aarch64. The following is the output of the bpftrace
-script:
+I haven't finished the work to support all bpf maps.
 
-    $ sudo bpftrace -l | grep sys_write
-    ...
-    kprobe:__arm64_sys_write
-    kprobe:__arm64_sys_writev
-    ...
+Most of the maps have fixed entries, so we can get the usage directly
+from an map pointer or get the element size and then calculate it, for
+example,
+- arraymap usage
+  size = kvsize(array);
+- percpu arraymap usage
+  size = kvsize(array);
+  size += percpu_size(array->pptrs[0]) * array->map.max_entries;
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- samples/bpf/trace_common.h | 2 ++
- 1 file changed, 2 insertions(+)
+But there's special case like cgroup_storage, the max_entries of which
+is 0, for example,
+122: cgroup_storage  flags 0x0
+        key 16B  value 8B  max_entries 0  memlock 0B
 
-diff --git a/samples/bpf/trace_common.h b/samples/bpf/trace_common.h
-index 8cb5400aed1f..fafc699af0a3 100644
---- a/samples/bpf/trace_common.h
-+++ b/samples/bpf/trace_common.h
-@@ -6,6 +6,8 @@
- #define SYSCALL(SYS) "__x64_" __stringify(SYS)
- #elif defined(__s390x__)
- #define SYSCALL(SYS) "__s390x_" __stringify(SYS)
-+#elif defined(__aarch64__)
-+#define SYSCALL(SYS) "__arm64_" __stringify(SYS)
- #else
- #define SYSCALL(SYS)  __stringify(SYS)
- #endif
+For this case, we should calculate the count of entries first.
+
 -- 
-2.39.1
-
+Regards
+Yafang
