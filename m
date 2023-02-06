@@ -2,173 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6983568C52B
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 18:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708C468C54E
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 19:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbjBFRwc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 12:52:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
+        id S229548AbjBFSAP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 13:00:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjBFRwb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 12:52:31 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752D1FF22
-        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 09:52:29 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id e10-20020a17090a630a00b0022bedd66e6dso15952741pjj.1
-        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 09:52:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zyweaVyiMqk4LHuNuzEqryLINLpiUARVWRIcVZa2lw=;
-        b=Jl2YisgLdiqvhpCBOAhNrDu+USOFqPUBAMNQALaN99jC4eqrKpnaVmcdgUI9YgMhb/
-         aE/stlsmeWlkXNJCUgbhkxMsUGClClfb5Za1b31fmi9dZq5NiRNcFC+H03SQxvVd9olz
-         6zKxlpOrHVApTG9OGfoVYx1cN4JgH1yIzdH2ihtigTJub8FlVQAVQI3Eqpx5BEJmJ62a
-         Q13DT/0Jp/lo3RTQISNRzwHFfVUvbugZv01Ym/FHDtp8zIwrNctMRrK33b4DmNrxhwk7
-         ckLCC8si+AltsVqaM3L7xo2IK1ms8CzckQpKM7hj7gdPYMDUlJLr+KBfbjCccSVpOsAC
-         qLmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0zyweaVyiMqk4LHuNuzEqryLINLpiUARVWRIcVZa2lw=;
-        b=pVcLF/GRxo6IWl/zJ8ioxz5JJLGj3+yc4DHHCCpOzrU9Ygpg5B7M1K9peMoiXvkm+y
-         7FC7DlB/9FTFzfl0RP8gvqBKiXWhphx/RrNxanfc24VQS47sjslJScOVHqiC+1OoRGt3
-         bXuTFWaSkCusztJWjGwQ6/HZu/dm33CFJLh7P5r6ZYYvpHZ6CaMMF39/KbRINcEfSyXr
-         MPRFqRCJK1351HN9vE/WdySI7Bk92WHxmOm7Leg/2U2hKvIn5xQIZC7x8JmiM45wJD9w
-         Yiipv0yu+G3gWSu0prp5PdEq2/7Z95JdL3NV+vPU82H9bki/8BrhTciM5ztDlNkPIguG
-         dCGQ==
-X-Gm-Message-State: AO0yUKX3VK6k+bwIacGxQYZHL71+NKgb2DPqk+4Ayp/Kz6oLLfi3yTFr
-        nSqBq/MqJ6woaES1VEPGEERD4X4t9cv47+jGDXDQaA==
-X-Google-Smtp-Source: AK7set9V9OdoqOHwLvVsBSh6xMOnS76j0J/EJOguL3f2UWTtjvPiP0ISRA9SUhs+FJhcH6k42DfkTHAvGrK64PYZUa8=
-X-Received: by 2002:a17:902:c215:b0:199:26b1:17a7 with SMTP id
- 21-20020a170902c21500b0019926b117a7mr326393pll.10.1675705948668; Mon, 06 Feb
- 2023 09:52:28 -0800 (PST)
+        with ESMTP id S229571AbjBFSAO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 13:00:14 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ACD2BF35;
+        Mon,  6 Feb 2023 10:00:14 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A470160F94;
+        Mon,  6 Feb 2023 18:00:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80A16C433EF;
+        Mon,  6 Feb 2023 18:00:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675706413;
+        bh=1mBYfzPJ7a53DoGi9WpbXN653lhI0Zk9ACSO2DBO/g8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tKhM79pTG087SipJU/E0f0pQTPryoldBqFm5VVXv9V0ZWnoNvG/+6Dw1qCwKns7oz
+         8R8Fj7y96MJLdzilAeMttGgi8STXm5mJu0ujUZ50ql0QPW+MoEwfCbRn2M6j3Km2O8
+         yQuGeciK+NYB0x6VSPE8UKl0Ga7rwGCI1z93ksr1Smzkgn0AIE1zyiHxRAyqI0R0JJ
+         0jjTwUP28Xya8UeiDxZ2OzpMKd+S6wKcBG8YJhe+nqP1gbMnJfoDm8STMmhh5ZfFc3
+         2ATQefM1nUV8JvFfJbm/y7YZhtheYF6MuZcViJioMtjVZ5prLDAF6UNgVA7mlCckji
+         MSgaQDt9SaOnw==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, edumazet@google.com,
+        lorenzo.bianconi@redhat.com, sfr@canb.auug.org.au
+Subject: [PATCH v2 bpf-next] net: add missing xdp_features description
+Date:   Mon,  6 Feb 2023 19:00:06 +0100
+Message-Id: <7878544903d855b49e838c9d59f715bde0b5e63b.1675705948.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-References: <20230204183241.never.481-kees@kernel.org>
-In-Reply-To: <20230204183241.never.481-kees@kernel.org>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 6 Feb 2023 09:52:17 -0800
-Message-ID: <CAKH8qBvqLeR3Wsbpb-v=EUY=Bw0jCP2OAaBn4tOqGmA1AqBZbA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Replace bpf_lpm_trie_key 0-length array with
- flexible array
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 4, 2023 at 10:32 AM Kees Cook <keescook@chromium.org> wrote:
->
-> Replace deprecated 0-length array in struct bpf_lpm_trie_key with
-> flexible array. Found with GCC 13:
->
-> ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
->   207 |                                        *(__be16 *)&key->data[i]);
->       |                                                   ^~~~~~~~~~~~~
-> ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
->   102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
->       |                                                      ^
-> ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
->    97 | #define be16_to_cpu __be16_to_cpu
->       |                     ^~~~~~~~~~~~~
-> ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
->   206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
-> ^
->       |                            ^~~~~~~~~~~
-> In file included from ../include/linux/bpf.h:7:
-> ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
->    82 |         __u8    data[0];        /* Arbitrary size */
->       |                 ^~~~
->
-> This includes fixing the selftest which was incorrectly using a
-> variable length struct as a header, identified earlier[1]. Avoid this
-> by just explicitly including the prefixlen member instead of struct
-> bpf_lpm_trie_key.
->
-> [1] https://lore.kernel.org/all/202206281009.4332AA33@keescook/
->
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Mykola Lysenko <mykolal@fb.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Haowen Bai <baihaowen@meizu.com>
-> Cc: bpf@vger.kernel.org
-> Cc: linux-kselftest@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  include/uapi/linux/bpf.h                         | 2 +-
->  tools/testing/selftests/bpf/progs/map_ptr_kern.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index ba0f0cfb5e42..5930bc5c7e2c 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -79,7 +79,7 @@ struct bpf_insn {
->  /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
->  struct bpf_lpm_trie_key {
->         __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
-> -       __u8    data[0];        /* Arbitrary size */
-> +       __u8    data[];         /* Arbitrary size */
->  };
+Add missing xdp_features field description in the struct net_device
+documentation. This patch fix the following warning:
 
-That's a UAPI change, can we do it? The safest option is probably just
-to remove this field if it's causing any problems (and not do the
-map_ptr_kern.c change below).
-The usual use-case (at least that's what we do) is to define some new
-struct over it:
+./include/linux/netdevice.h:2375: warning: Function parameter or member 'xdp_features' not described in 'net_device'
 
-struct my_key {
-  struct bpf_lpm_trie_key prefix;
-  int a, b, c;
-};
+Fixes: d3d854fd6a1d ("netdev-genl: create a simple family for netdev stuff")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+Changes since v1:
+- fix indentation
+---
+ include/linux/netdevice.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-So I really doubt that the 'data' is ever touched by any programs at all..
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 0f7967591288..9bb11da36ef0 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1819,6 +1819,7 @@ enum netdev_ml_priv_type {
+  *			of Layer 2 headers.
+  *
+  *	@flags:		Interface flags (a la BSD)
++ *	@xdp_features:	XDP capability supported by the device
+  *	@priv_flags:	Like 'flags' but invisible to userspace,
+  *			see if.h for the definitions
+  *	@gflags:	Global flags ( kept as legacy )
+-- 
+2.39.1
 
->
->  struct bpf_cgroup_storage_key {
-> diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> index db388f593d0a..543012deb349 100644
-> --- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> @@ -311,7 +311,7 @@ struct lpm_trie {
->  } __attribute__((preserve_access_index));
->
->  struct lpm_key {
-> -       struct bpf_lpm_trie_key trie_key;
-> +       __u32 prefixlen;
->         __u32 data;
->  };
-> --
-> 2.34.1
->
