@@ -2,304 +2,404 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F49A68BD57
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 13:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7261568BD76
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 14:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbjBFMzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 07:55:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
+        id S230157AbjBFNEc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 08:04:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjBFMzN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 07:55:13 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C83B14EA4;
-        Mon,  6 Feb 2023 04:55:10 -0800 (PST)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Cx_eqt+OBj7ioPAA--.29604S3;
-        Mon, 06 Feb 2023 20:55:09 +0800 (CST)
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxIL+r+OBjYOEqAA--.46519S3;
-        Mon, 06 Feb 2023 20:55:07 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix build errors if
- CONFIG_NF_CONNTRACK=m
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <1674028604-7113-1-git-send-email-yangtiezhu@loongson.cn>
- <CAEf4BzZfBb75smH0uTn4E36T6vk1xhZZ+5_ONtdh9aFQCMH2pw@mail.gmail.com>
- <496935ea-298e-db57-bcd1-b3fb6ae6608d@loongson.cn>
- <CAEf4BzY5VNgPeR4cTkcpVAy4FSek2MaTMPYHKcGdmCVUbBbpfg@mail.gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <cc62c390-7f64-1f55-6f44-4c1c1c9b910f@loongson.cn>
-Date:   Mon, 6 Feb 2023 20:55:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        with ESMTP id S229867AbjBFNEc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 08:04:32 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CEB468A
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 05:04:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3870460ECE
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 13:04:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CEC5C4339C
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 13:04:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675688669;
+        bh=UBAoFwxNyiGvuTmkAnCVSkkb6F2CDQ/bNw6FesuTT+o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O3qWGV5QCUKyqp3eAhGAf6zkhkzIbuH5mTuxUxIA+CZbGPldY56hUj1JpMTQOLCON
+         D1rMJmsvExb7FTSNuXNTUugYXcaGjYIUM95/H7Skd9XTo9h1oHyTgGPDG5D67NCWD6
+         GvOk5TIJZM+xrhD5qR5Z7Tv2dqIGF4cXyHUSfSIifnfVWeLjAwdY+9KPtQp5fAd8gc
+         Bkj6PHv8WODAR+xUObYYrqX/Z7TMNxwxGulGd9XWQeBBOBZOq6bSzcV1xnVg/7aPbf
+         JRmlX3I1BLtq0EYalmIbQZ4vs/46MO5HFaaUovRor7swn+nSoMUqlN0ryArp9S9K0v
+         stJn0L4mypENg==
+Received: by mail-ej1-f41.google.com with SMTP id hr39so4371055ejc.7
+        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 05:04:29 -0800 (PST)
+X-Gm-Message-State: AO0yUKUauuI0QtDuS8mk+9YJnfLeWku/PFlCxQr33Q6WyfeUa3unTjON
+        Zi3r1No9oG1ibvc1fyxvCnziy6TVdjKGRY9vXPY0RQ==
+X-Google-Smtp-Source: AK7set+WtPOXiEb/sjnBI4MqokJ9Ocsztf5JzLCxxnGlSfhAuy4unS8NWGeq4sSTl/HrqxqJXYQjJA5TDESveAy88PI=
+X-Received: by 2002:a17:906:6c86:b0:87c:c2eb:6dfa with SMTP id
+ s6-20020a1709066c8600b0087cc2eb6dfamr6023618ejr.204.1675688667651; Mon, 06
+ Feb 2023 05:04:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzY5VNgPeR4cTkcpVAy4FSek2MaTMPYHKcGdmCVUbBbpfg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8AxIL+r+OBjYOEqAA--.46519S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjvJXoWxtw43Kry5tFWfur4rZF43Wrg_yoWfXw43pF
-        W8AFWqyF1vqw4Y9F12va97CFyrtFs29ryUGw1kJrWYkrs0vFn8Jr1xtr47Cr98Xr40k3Wr
-        Z34jqr9ruF1rAw7anT9S1TB71UUUUjUqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        bqxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAa
-        w2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44
-        I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2
-        jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62
-        AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCa
-        FVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8qXdUUUUUU==
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230120000818.1324170-1-kpsingh@kernel.org> <20230120000818.1324170-4-kpsingh@kernel.org>
+ <202301192004.777AEFFE@keescook>
+In-Reply-To: <202301192004.777AEFFE@keescook>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Mon, 6 Feb 2023 14:04:16 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ75nYnunhcAaE-20p9YHLzVynUEAA+uK1tmGeOWA83MjA@mail.gmail.com>
+Message-ID: <CACYkzJ75nYnunhcAaE-20p9YHLzVynUEAA+uK1tmGeOWA83MjA@mail.gmail.com>
+Subject: Re: [PATCH RESEND bpf-next 3/4] security: Replace indirect LSM hook
+ calls with static calls
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, jackmanb@google.com,
+        renauld@google.com, paul@paul-moore.com, casey@schaufler-ca.com,
+        song@kernel.org, revest@chromium.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 02/04/2023 06:16 AM, Andrii Nakryiko wrote:
-> On Sat, Jan 28, 2023 at 10:25 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->>
->>
->>
->> On 01/24/2023 07:17 AM, Andrii Nakryiko wrote:
->>> On Tue, Jan 17, 2023 at 11:57 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->>>>
->>>> If CONFIG_NF_CONNTRACK=m, there are no definitions of NF_NAT_MANIP_SRC
->>>> and NF_NAT_MANIP_DST in vmlinux.h, build test_bpf_nf.c failed.
->>>>
->>>> $ make -C tools/testing/selftests/bpf/
->>>>
->>>>   CLNG-BPF [test_maps] test_bpf_nf.bpf.o
->>>> progs/test_bpf_nf.c:160:42: error: use of undeclared identifier 'NF_NAT_MANIP_SRC'
->>>>                 bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
->>>>                                                        ^
->>>> progs/test_bpf_nf.c:163:42: error: use of undeclared identifier 'NF_NAT_MANIP_DST'
->>>>                 bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
->>>>                                                        ^
->>>> 2 errors generated.
->>>>
->>>> Copy the definitions in include/net/netfilter/nf_nat.h to test_bpf_nf.c,
->>>> in order to avoid redefinitions if CONFIG_NF_CONNTRACK=y, rename them with
->>>> ___local suffix. This is similar with commit 1058b6a78db2 ("selftests/bpf:
->>>> Do not fail build if CONFIG_NF_CONNTRACK=m/n").
->>>>
->>>> Fixes: b06b45e82b59 ("selftests/bpf: add tests for bpf_ct_set_nat_info kfunc")
->>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->>>> ---
->>>>  tools/testing/selftests/bpf/progs/test_bpf_nf.c | 11 ++++++++---
->>>>  1 file changed, 8 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
->>>> index 227e85e..9fc603c 100644
->>>> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
->>>> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
->>>> @@ -34,6 +34,11 @@ __be16 dport = 0;
->>>>  int test_exist_lookup = -ENOENT;
->>>>  u32 test_exist_lookup_mark = 0;
->>>>
->>>> +enum nf_nat_manip_type___local {
->>>> +       NF_NAT_MANIP_SRC___local,
->>>> +       NF_NAT_MANIP_DST___local
->>>> +};
->>>> +
->>>>  struct nf_conn;
->>>>
->>>>  struct bpf_ct_opts___local {
->>>> @@ -58,7 +63,7 @@ int bpf_ct_change_timeout(struct nf_conn *, u32) __ksym;
->>>>  int bpf_ct_set_status(struct nf_conn *, u32) __ksym;
->>>>  int bpf_ct_change_status(struct nf_conn *, u32) __ksym;
->>>>  int bpf_ct_set_nat_info(struct nf_conn *, union nf_inet_addr *,
->>>> -                       int port, enum nf_nat_manip_type) __ksym;
->>>> +                       int port, enum nf_nat_manip_type___local) __ksym;
->>>>
->>>>  static __always_inline void
->>>>  nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
->>>> @@ -157,10 +162,10 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
->>>>
->>>>                 /* snat */
->>>>                 saddr.ip = bpf_get_prandom_u32();
->>>> -               bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC);
->>>> +               bpf_ct_set_nat_info(ct, &saddr, sport, NF_NAT_MANIP_SRC___local);
->>>>                 /* dnat */
->>>>                 daddr.ip = bpf_get_prandom_u32();
->>>> -               bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST);
->>>> +               bpf_ct_set_nat_info(ct, &daddr, dport, NF_NAT_MANIP_DST___local);
->>>>
->>>
->>> it would be a bit more reliable if you used `bpf_core_enum_value(enum
->>> nf_nat_manip_type___local, NF_NAT_MANIP_DST___local)`. That would make
->>> libbpf substitute correct absolute value, if actual enum
->>> nf_nat_manip_type in kernel ever changed. Please consider a follow up
->>> patch for this.
->>
->> Sorry for the late reply, I tested the code as your suggestion, but it
->> failed.
->>
->> failed to resolve CO-RE relocation <enumval_value> [101] enum
->> nf_nat_manip_type___local::NF_NAT_MANIP_SRC___local = 0
+On Fri, Jan 20, 2023 at 5:36 AM Kees Cook <keescook@chromium.org> wrote:
 >
+> On Fri, Jan 20, 2023 at 01:08:17AM +0100, KP Singh wrote:
+> > The indirect calls are not really needed as one knows the addresses of
+
+[...]
+
+> > A static key guards whether an LSM static call is enabled or not,
+> > without this static key, for LSM hooks that return an int, the presence
+> > of the hook that returns a default value can create side-effects which
+> > has resulted in bugs [1].
 >
-> Was nf_conntrack kernel module loaded at the time when you ran the
-> test? If yes, what's the output of
+> I think this patch has too many logic changes in it. There are basically
+> two things going on here:
+>
+> - replace list with unrolled calls
+> - replace calls with static calls
+>
+> I see why it was merged, since some of the logic that would be added for
+> step 1 would be immediate replaced, but I think it might make things a
+> bit more clear.
+>
+> There is likely a few intermediate steps here too, to rename things,
+> etc.
 
-Yes, nf_conntrack was loaded when ran the test.
-
-[root@fedora bpf]# lsmod | grep -w nf_conntrack
-nf_conntrack          188416  4 
-nf_nat,nft_ct,nf_conntrack_netbios_ns,nf_conntrack_broadcast
-nf_defrag_ipv6         24576  1 nf_conntrack
-nf_defrag_ipv4         16384  1 nf_conntrack
-
-[root@fedora bpf]# ./test_progs -a bpf_nf
-...
-218: <invalid CO-RE relocation>
-failed to resolve CO-RE relocation <enumval_value> [101] enum 
-nf_nat_manip_type___local::NF_NAT_MANIP_SRC___local = 0
-processed 170 insns (limit 1000000) max_states_per_insn 0 total_states 
-12 peak_states 12 mark_read 2
--- END PROG LOAD LOG --
-libbpf: prog 'nf_xdp_ct_test': failed to load: -22
-libbpf: failed to load object 'test_bpf_nf'
-libbpf: failed to load BPF skeleton 'test_bpf_nf': -22
-test_bpf_nf_ct:FAIL:test_bpf_nf__open_and_load unexpected error: -22
-#16/2    bpf_nf/tc-bpf-ct:FAIL
-#16      bpf_nf:FAIL
-Summary: 0/8 PASSED, 0 SKIPPED, 1 FAILED
+I can try to split this patch, but I am not able to find a decent
+slice without duplicating a lot of work which will get squashed in the
+end anyways.
 
 >
-> bpftool btf dump file /sys/kernel/btf/nf_conntrack | grep nf_nat_manip_type
+> > There are some hooks that don't use the call_int_hook and
+> > call_void_hook. These hooks are updated to use a new macro called
+> > security_for_each_hook where the lsm_callback is directly invoked as an
+
+[...]
+
+> > + * Call the macro M for each LSM hook MAX_LSM_COUNT times.
+> > + */
+> > +#define LSM_UNROLL(M, ...) UNROLL(MAX_LSM_COUNT, M, __VA_ARGS__)
 >
-> ?
+> I think this should be:
+>
+> #define LSM_UNROLL(M, ...)      do {                    \
+>                 UNROLL(MAX_LSM_COUNT, M, __VA_ARGS__);  \
+>         } while (0)
+>
+> or maybe UNROLL needs the do/while.
+
+UNROLL is used for both declaration and loop unrolling. So I have
+split the LSM macros into LSM_UNROLL to LSM_LOOP_UNROLL (which is
+surrounded by a do/while) and an LSM_DEFINE_UNROLL which is not.
+
+>
+> >
+> >  /**
+> >   * union security_list_options - Linux Security Module hook function list
+> > @@ -1657,21 +1677,48 @@ union security_list_options {
+> >       #define LSM_HOOK(RET, DEFAULT, NAME, ...) RET (*NAME)(__VA_ARGS__);
+> >       #include "lsm_hook_defs.h"
+> >       #undef LSM_HOOK
+> > +     void *lsm_callback;
+> >  };
+> >
+> > -struct security_hook_heads {
+> > -     #define LSM_HOOK(RET, DEFAULT, NAME, ...) struct hlist_head NAME;
+> > -     #include "lsm_hook_defs.h"
+> > +/*
+> > + * @key: static call key as defined by STATIC_CALL_KEY
+> > + * @trampoline: static call trampoline as defined by STATIC_CALL_TRAMP
+> > + * @hl: The security_hook_list as initialized by the owning LSM.
+
+[...]
+
+> > +             struct lsm_static_call NAME[MAX_LSM_COUNT];
+> > +     #include <linux/lsm_hook_defs.h>
+> >       #undef LSM_HOOK
+> >  } __randomize_layout;
+> >
+> >  /*
+> >   * Security module hook list structure.
+> >   * For use with generic list macros for common operations.
+> > + *
+> > + * struct security_hook_list - Contents of a cacheable, mappable object.
+
+[...]
+
+> > -#define LSM_HOOK_INIT(HEAD, HOOK) \
+> > -     { .head = &security_hook_heads.HEAD, .hook = { .HEAD = HOOK } }
+> > +#define LSM_HOOK_INIT(NAME, CALLBACK)                        \
+> > +     {                                               \
+> > +             .scalls = static_calls_table.NAME,      \
+> > +             .hook = { .NAME = CALLBACK }            \
+> > +     }
+> >
+> > -extern struct security_hook_heads security_hook_heads;
+> >  extern char *lsm_names;
+> >
+> >  extern void security_add_hooks(struct security_hook_list *hooks, int count,
+> > @@ -1756,10 +1805,21 @@ extern struct lsm_info __start_early_lsm_info[], __end_early_lsm_info[];
+> >  static inline void security_delete_hooks(struct security_hook_list *hooks,
+> >                                               int count)
+>
+> Hey Paul, can we get rid of CONFIG_SECURITY_SELINUX_DISABLE yet? It's
+> been deprecated for years....
+>
+> >  {
+> > -     int i;
+> > +     struct lsm_static_call *scalls;
+> > +     int i, j;
+> > +
+> > +     for (i = 0; i < count; i++) {
+> > +             scalls = hooks[i].scalls;
+> > +             for (j = 0; j < MAX_LSM_COUNT; j++) {
+> > +                     if (scalls[j].hl != &hooks[i])
+> > +                             continue;
+> >
+> > -     for (i = 0; i < count; i++)
+> > -             hlist_del_rcu(&hooks[i].list);
+> > +                     static_key_disable(scalls[j].enabled_key);
+> > +                     __static_call_update(scalls[j].key,
+> > +                                          scalls[j].trampoline, NULL);
+> > +                     scalls[j].hl = NULL;
+> > +             }
+> > +     }
+> >  }
+> >  #endif /* CONFIG_SECURITY_SELINUX_DISABLE */
+> >
+> > @@ -1771,5 +1831,6 @@ static inline void security_delete_hooks(struct security_hook_list *hooks,
+> >  #endif /* CONFIG_SECURITY_WRITABLE_HOOKS */
+> >
+> >  extern int lsm_inode_alloc(struct inode *inode);
+> > +extern struct lsm_static_calls_table static_calls_table __ro_after_init;
+
+[...]
+
+> >
+> > +/*
+> > + * Define static calls and static keys for each LSM hook.
+> > + */
+> > +
+> > +#define DEFINE_LSM_STATIC_CALL(NUM, NAME, RET, ...)                  \
+> > +     DEFINE_STATIC_CALL_NULL(LSM_STATIC_CALL(NAME, NUM),             \
+> > +                             *((RET(*)(__VA_ARGS__))NULL));          \
+> > +     DEFINE_STATIC_KEY_FALSE(SECURITY_HOOK_ENABLED_KEY(NAME, NUM));
+>
+> Hm, another place where we would benefit from having separated logic for
+> "is it built?" and "is it enabled by default?" and we could use
+> DEFINE_STATIC_KEY_MAYBE(). But, since we don't, I think we need to use
+> DEFINE_STATIC_KEY_TRUE() here or else won't all the calls be
+> out-of-line? (i.e. the default compiled state will be NOPs?) If we're
+> trying to optimize for having LSMs, I think we should default to inline
+> calls. (The machine code in the commit log seems to indicate that they
+> are out of line -- it uses jumps.)
 >
 
-[root@fedora bpf]# ./bpftool btf dump file /sys/kernel/btf/nf_conntrack 
-| grep nf_nat_manip_type
-[130070] ENUM 'nf_nat_manip_type' encoding=UNSIGNED size=4 vlen=2
-[root@fedora bpf]# ./bpftool btf dump file /sys/kernel/btf/nf_conntrack 
-| grep NF_NAT_MANIP_SRC
-	'NF_NAT_MANIP_SRC' val=0
-[root@fedora bpf]# ./bpftool btf dump file /sys/kernel/btf/nf_conntrack 
-| grep NF_NAT_MANIP_DST
-	'NF_NAT_MANIP_DST' val=1
+I should have added it in the commit description, actually we are
+optimizing for "hot paths are less likely to have LSM hooks enabled"
+(eg. socket_sendmsg). But I do see that there are LSMs that have these
+enabled. Maybe we can put this behind a config option, possibly
+depending on CONFIG_EXPERT?
+
+> > [...]
+> > +#define __CALL_STATIC_VOID(NUM, HOOK, ...)                                   \
+> > +     if (static_branch_unlikely(&SECURITY_HOOK_ENABLED_KEY(HOOK, NUM))) { \
+> > +             static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__);        \
+> > +     }
+>
+> Same here -- I would expect this to be static_branch_likely() or we'll
+> get out-of-line branches. Also, IMO, this should be:
+>
+>         do {
+>                 if (...)
+>                         static_call(...);
+>         } while (0)
+>
+
+Note we cannot really omit the semicolon here. We also use the UNROLL
+macro for declaring struct members which cannot assume that the MACRO
+to UNROLL will be terminated by a semicolon.
+
+>
+> > +#define call_void_hook(FUNC, ...)                                 \
+> > +     do {                                                      \
+> > +             LSM_UNROLL(__CALL_STATIC_VOID, FUNC, __VA_ARGS__) \
+> >       } while (0)
+>
+> With the do/while in LSM_UNROLL, this is more readable.
+
+Agreed, done.
+
+>
+> >
+> > -#define call_int_hook(FUNC, IRC, ...) ({                     \
+> > -     int RC = IRC;                                           \
+> > -     do {                                                    \
+> > -             struct security_hook_list *P;                   \
+> > -                                                             \
+> > -             hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
+> > -                     RC = P->hook.FUNC(__VA_ARGS__);         \
+> > -                     if (RC != 0)                            \
+> > -                             break;                          \
+> > -             }                                               \
+> > -     } while (0);                                            \
+> > -     RC;                                                     \
+> > -})
+> > +#define __CALL_STATIC_INT(NUM, R, HOOK, ...)                                 \
+> > +     if (static_branch_unlikely(&SECURITY_HOOK_ENABLED_KEY(HOOK, NUM))) { \
+> > +             R = static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__);    \
+> > +             if (R != 0)                                                  \
+> > +                     goto out;                                            \
+> > +     }
+>
+> I would expect the label to be a passed argument, but maybe since it
+> never changes, it's fine as-is?
+
+I think passing the label as an argument is cleaner, so I went ahead
+and did that.
+
+>
+> And again, I'd expect a do/while wrapper, and for it to be s_b_likely.
+
+The problem with the do/while wrapper here again is that UNROLL macros
+are terminated by semi-colons which does not work for unrolling struct
+member initialization, in particular for the static_calls_table where
+it's used to initialize the array.
+
+Now we could do what I suggested in LSM_LOOP_UNROLL and
+LSM_DEFINE_UNROLL and push the logic up to UNROLL into:
+
+* UNROLL_LOOP: Which expects a macro that will be surrounded by a
+do/while and terminated by a semicolon in the unroll body
+* UNROLL_DEFINE (or UNROLL_RAW) where you can pass anything.
+
+What do you think?
+
+>
+> > +
+> > +#define call_int_hook(FUNC, IRC, ...)                                        \
+> > +     ({                                                                   \
+> > +             __label__ out;                                               \
+> > +             int RC = IRC;                                                \
+> > +             do {                                                         \
+> > +                     LSM_UNROLL(__CALL_STATIC_INT, RC, FUNC, __VA_ARGS__) \
+> > +                                                                          \
+> > +             } while (0);                                                 \
+>
+> Then this becomes:
+>
+> ({
+>         int RC = IRC;
+>         LSM_UNROLL(__CALL_STATIC_INT, RC, FUNC, __VA_ARGS__);
+> out:
+>         RC;
+> })
+>
+> > +#define security_for_each_hook(scall, NAME, expression)                  \
+> > +     for (scall = static_calls_table.NAME;                            \
+> > +          scall - static_calls_table.NAME < MAX_LSM_COUNT; scall++) { \
+> > +             if (!static_key_enabled(scall->enabled_key))             \
+> > +                     continue;                                        \
+> > +             (expression);                                            \
+> > +     }
+>
+> Why isn't this using static_branch_enabled()? I would expect this to be:
+
+I am guessing you mean static_branch_likely, I tried using
+static_branch_likely here and it does not work, the key is now being
+visited from a loop counter and the static_branch_likely needs it at
+compile time. So one needs to resort to the underlying static_key
+implementation. Doing this causes:
+
+./arch/x86/include/asm/jump_label.h:27:20: error: invalid operand for
+inline asm constraint 'i'
+./arch/x86/include/asm/jump_label.h:27:20: error: invalid operand for
+inline asm constraint 'i'
+
+The operand needs to be an immediate operand and needs patching at
+runtime. I think it's okay we are already not doing any optimization
+here as we still have the indirect call.
+
+TL; DR static_branch_likely  cannot depend on runtime computations
+
+>
+> #define security_for_each_hook(scall, NAME)                             \
+>         for (scall = static_calls_table.NAME;                           \
+>              scall - static_calls_table.NAME < MAX_LSM_COUNT; scall++)  \
+>                 if (static_branch_likely(scall->enabled_key))
+
+I like this macro, it does make the code easier to read thanks.
+
+>
+> >
+> >  /* Security operations */
+> >
+> > @@ -859,7 +924,7 @@ int security_settime64(const struct timespec64 *ts, const struct timezone *tz)
+> >
+> >  int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
+> >  {
+> > -     struct security_hook_list *hp;
+> > +     struct lsm_static_call *scall;
+> >       int cap_sys_admin = 1;
+> >       int rc;
+> >
+> > @@ -870,13 +935,13 @@ int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
+> >        * agree that it should be set it will. If any module
+> >        * thinks it should not be set it won't.
+> >        */
+> > -     hlist_for_each_entry(hp, &security_hook_heads.vm_enough_memory, list) {
+> > -             rc = hp->hook.vm_enough_memory(mm, pages);
+> > +     security_for_each_hook(scall, vm_enough_memory, ({
+> > +             rc = scall->hl->hook.vm_enough_memory(mm, pages);
+> >               if (rc <= 0) {
+> >                       cap_sys_admin = 0;
+> >                       break;
+> >               }
+> > -     }
+> > +     }));
+>
+> Then these replacements don't look weird. This would just be:
+>
+>         security_for_each_hook(scall, vm_enough_memory) {
+>                 rc = scall->hl->hook.vm_enough_memory(mm, pages);
+>                 if (rc <= 0) {
+>                         cap_sys_admin = 0;
+>                         break;
+>                 }
+>         }
+
+Agreed, Thanks!
+
+>
+> I'm excited to have this. The speed improvements are pretty nice.
+
+Yay!
 
 
-Thanks,
-Tiezhu
-
->>
->> Is it necessary to send a follow patch now? Thank you.
->>
->> Here are the test results.
->>
->> (1) bpf_nf passed with the current code if CONFIG_NF_CONNTRACK=m:
->>
->> [root@fedora bpf]# ./test_progs -a bpf_nf
->> #16/1    bpf_nf/xdp-ct:OK
->> #16/2    bpf_nf/tc-bpf-ct:OK
->> #16/3    bpf_nf/alloc_release:OK
->> #16/4    bpf_nf/insert_insert:OK
->> #16/5    bpf_nf/lookup_insert:OK
->> #16/6    bpf_nf/set_timeout_after_insert:OK
->> #16/7    bpf_nf/set_status_after_insert:OK
->> #16/8    bpf_nf/change_timeout_after_alloc:OK
->> #16/9    bpf_nf/change_status_after_alloc:OK
->> #16/10   bpf_nf/write_not_allowlisted_field:OK
->> #16      bpf_nf:OK
->> Summary: 1/10 PASSED, 0 SKIPPED, 0 FAILED
->>
->> (2) bpf_nf failed with the following changes if CONFIG_NF_CONNTRACK=m:
->>
->> [yangtiezhu@fedora bpf.git]$ git diff
->> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
->> b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
->> index 9fc603c9d673..f56ba60ab809 100644
->> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
->> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
->> @@ -2,6 +2,7 @@
->>   #include <vmlinux.h>
->>   #include <bpf/bpf_helpers.h>
->>   #include <bpf/bpf_endian.h>
->> +#include <bpf/bpf_core_read.h>
->>
->>   #define EAFNOSUPPORT 97
->>   #define EPROTO 71
->> @@ -162,10 +163,14 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *,
->> struct bpf_sock_tuple *, u32,
->>
->>                  /* snat */
->>                  saddr.ip = bpf_get_prandom_u32();
->> -               bpf_ct_set_nat_info(ct, &saddr, sport,
->> NF_NAT_MANIP_SRC___local);
->> +               bpf_ct_set_nat_info(ct, &saddr, sport,
->> +                                   bpf_core_enum_value(enum
->> nf_nat_manip_type___local,
->> +
->> NF_NAT_MANIP_SRC___local));
->>                  /* dnat */
->>                  daddr.ip = bpf_get_prandom_u32();
->> -               bpf_ct_set_nat_info(ct, &daddr, dport,
->> NF_NAT_MANIP_DST___local);
->> +               bpf_ct_set_nat_info(ct, &daddr, dport,
->> +                                   bpf_core_enum_value(enum
->> nf_nat_manip_type___local,
->> +
->> NF_NAT_MANIP_DST___local));
->>
->>                  ct_ins = bpf_ct_insert_entry(ct);
->>                  if (ct_ins) {
->>
->> [root@fedora bpf]# ./test_progs -a bpf_nf
->> ...
->> All error logs:
->> libbpf: prog 'nf_xdp_ct_test': BPF program load failed: Invalid argument
->> libbpf: prog 'nf_xdp_ct_test': -- BEGIN PROG LOAD LOG --
->> ...
->> libbpf: failed to load object 'test_bpf_nf'
->> libbpf: failed to load BPF skeleton 'test_bpf_nf': -22
->> test_bpf_nf_ct:FAIL:test_bpf_nf__open_and_load unexpected error: -22
->> #16/1    bpf_nf/xdp-ct:FAIL
->> libbpf: prog 'nf_xdp_ct_test': BPF program load failed: Invalid argument
->> libbpf: prog 'nf_xdp_ct_test': -- BEGIN PROG LOAD LOG --
->> ...
->> 217: (bf) r1 = r7                     ;
->> R1_w=ptr_nf_conn___init(ref_obj_id=18,off=0,imm=0)
->> R7=ptr_nf_conn___init(ref_obj_id=18,off=0,imm=0) refs=18
->> 218: <invalid CO-RE relocation>
->> failed to resolve CO-RE relocation <enumval_value> [101] enum
->> nf_nat_manip_type___local::NF_NAT_MANIP_SRC___local = 0
->> processed 170 insns (limit 1000000) max_states_per_insn 0 total_states
->> 12 peak_states 12 mark_read 2
->> -- END PROG LOAD LOG --
->> libbpf: prog 'nf_xdp_ct_test': failed to load: -22
->> libbpf: failed to load object 'test_bpf_nf'
->> libbpf: failed to load BPF skeleton 'test_bpf_nf': -22
->> test_bpf_nf_ct:FAIL:test_bpf_nf__open_and_load unexpected error: -22
->> #16/2    bpf_nf/tc-bpf-ct:FAIL
->> #16      bpf_nf:FAIL
->> Summary: 0/8 PASSED, 0 SKIPPED, 1 FAILED
->>
->> Thanks,
->> Tiezhu
->>
-
+>
+> --
+> Kees Cook
