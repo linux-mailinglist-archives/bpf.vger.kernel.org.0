@@ -2,64 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0CF68C69B
-	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 20:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F8E68C6A0
+	for <lists+bpf@lfdr.de>; Mon,  6 Feb 2023 20:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjBFTRP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 14:17:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46818 "EHLO
+        id S230324AbjBFTRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 14:17:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjBFTRO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 14:17:14 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3772B094
-        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 11:16:53 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id a23so8876740pga.13
-        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 11:16:53 -0800 (PST)
+        with ESMTP id S230307AbjBFTRc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 14:17:32 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473C42BF05
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 11:17:19 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id mi9so12570186pjb.4
+        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 11:17:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cORpCioTr+BojKiAQLNPWyjTCgpSASj/W1aFgjzOu88=;
-        b=dsTV9cv1hg5eE1lZmgRUXDztrLBNm0IEWDQ0H4F7gra2p5eGBAmtXpNxZly4erIobU
-         sRu7/idnHuBlc0Vy610YWBMUKXEU6w1H6EHurqeI2Tr9LfZT9NhGjhzyS2+EEd581Uar
-         rmJ55AvpFppRXXCssGza7gM4YyPnVy8iKB8OIWoWCu9zRkJdJfu3c5UO/8nPIARdxbr3
-         BrPxbQttHpn46qxLwQabmQop53lR3RukklHuUzx+haeGnumiXLS/7yD+TyW0ZD30QKpE
-         D8zYfKCxQ0j/xbZHxBhC1KtH+XDcToyw4gBb9xnClFGwGaejSPTKndsnPQjESM+HOGrL
-         Nz4Q==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HFhCCF6KKc8jrwlIib3xYlcK52nQlU5i7JbQZG5xkXg=;
+        b=WIa7oPHbexPVvg4fvwaR9+kndrbroQz++TujaKD28jY2+pxf0hdMAI3dY/LgXNAy3r
+         Qf5FK0+I9qvhFLMOEo43LueGk5poqBnbYVUnXT0t+Ifb6XFaVyG+8AaZiyAEIC625pot
+         j5zoY+NWeNUrD6vp0+dFxCD4OHCRpwcVf1OmeWPxZ0zzz3Dg5GGORrCgUIr8PZ6IZ/o0
+         tYXlfjF+DeDK+Ae/lA0F56vFNv6gYkD75dK51ejHN3N6XhOMEpgwfYjHaSakMJ1mPjlV
+         e6Lun3AqirDzO4xjcq3dO84B13UX2cnUMP0NyznhT+WZgBIpwXLPOjTmfzCr+0vz16kW
+         iroA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=cORpCioTr+BojKiAQLNPWyjTCgpSASj/W1aFgjzOu88=;
-        b=C/x7Ki/VXbOqtqcRyTt0hRDQvceNtMBHbZhfkpLDvHRlpg8OtX2w9OIRgLnGnhIJ0T
-         4K9MFYr2CuYb88tTCJtjnM4TlsxCMYph10XaPI6qIztYLvd/M1uxqz3vzAmzenmw+6J6
-         UGcUM6Rt7cv7oZB/JJeESb+11pImMJ/10YZv6b0raqHiQNSkhEU3NNUn8gVWavSWQoqP
-         xnBbYFPJ+bN53vxHYY8qIwWRDim19E978VVFB9RsuS6R/fBnrVJfipVvh8HjlgXc3WsP
-         1q301whKu1WO2s0NF6gM2UZIsyEHuSRk0NJkOH5ExuM7cpoLASm03mpYLvtOTaWFP3JF
-         53bA==
-X-Gm-Message-State: AO0yUKUbhrdRDPS4wspXieQ64ug2cWSLdZQQ+tonQyNkkDuvDP+aWTp3
-        H+L1ATGKCCjOqWjrht/LHcLXGnDcQIY=
-X-Google-Smtp-Source: AK7set9vxSJktTU1krqm8armTxGvVRwF5NzjNF8Jaba2NTIR2WQQ575MveWbMVwI4D+0hLLO2VkCTg==
-X-Received: by 2002:a62:8412:0:b0:58d:c1ca:9360 with SMTP id k18-20020a628412000000b0058dc1ca9360mr567493pfd.17.1675711011129;
-        Mon, 06 Feb 2023 11:16:51 -0800 (PST)
-Received: from mariner-vm.. ([131.107.147.156])
-        by smtp.gmail.com with ESMTPSA id a24-20020aa79718000000b00593b82ea1cesm7474607pfg.49.2023.02.06.11.16.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Feb 2023 11:16:50 -0800 (PST)
-From:   Dave Thaler <dthaler1968@googlemail.com>
-To:     bpf@vger.kernel.org
-Cc:     bpf@ietf.org, Dave Thaler <dthaler@microsoft.com>
-Subject: [PATCH bpf-next v2] bpf, docs: Explain helper functions
-Date:   Mon,  6 Feb 2023 19:16:47 +0000
-Message-Id: <20230206191647.2075-1-dthaler1968@googlemail.com>
-X-Mailer: git-send-email 2.33.4
+        bh=HFhCCF6KKc8jrwlIib3xYlcK52nQlU5i7JbQZG5xkXg=;
+        b=tK+4HjR5c4ijjzXpH6okK+ijFjWL2u9z3ud7WalbT8ug5D47Jc4ZwibL4Y/KILaEQo
+         kCzfcK6KMG5fW4gjTBTuhMf1opFeFtqe18xpqTG+EG0zRFqToDmxHm3KYL8o0MCtfGhv
+         T7abXs6kE7vRq/SubqZvCGkcJztyK/YjdFoqX9DdCZ3SC3MoWKE9Nhke+8T739qZJXVW
+         f+Ruq6bX4CBrP5B9Mm+wlf/664ActucOjxB3jNKxb20fX3RujxEIJS1WATXSNLF4XLCC
+         oCDXy9DSVwQHlYJUx7td2khNXm1ZWTXhJmV4SWCtWd3DA0dO7yXHaPpn3wf/Go/gAdgV
+         HREA==
+X-Gm-Message-State: AO0yUKUqmClm2RJy3NnEtsh5zTTmZm5vDSCF9XWsBNW+kzr56//e5W/8
+        FwcjkzDSX700bfIFln7NMNtOlndptOdnRmStHKpoMg==
+X-Google-Smtp-Source: AK7set9Bd4y8RazRLw+FgG1fYKluMFeh9bpugxhLYn9uSsK9r462sJPsTzLTYkh/jbCi2pN9gIlAXA1PsRLtyiap9CM=
+X-Received: by 2002:a17:90a:3d01:b0:230:8961:22c1 with SMTP id
+ h1-20020a17090a3d0100b00230896122c1mr167548pjc.95.1675711038558; Mon, 06 Feb
+ 2023 11:17:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230204183241.never.481-kees@kernel.org> <CAKH8qBvqLeR3Wsbpb-v=EUY=Bw0jCP2OAaBn4tOqGmA1AqBZbA@mail.gmail.com>
+ <63e14abb.170a0220.ca425.b7bc@mx.google.com>
+In-Reply-To: <63e14abb.170a0220.ca425.b7bc@mx.google.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Mon, 6 Feb 2023 11:17:06 -0800
+Message-ID: <CAKH8qBtX0HU4_YtnZ3hU4NhGHSQ9VU70niXFFoqf3k67a1+6aA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Replace bpf_lpm_trie_key 0-length array with
+ flexible array
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,76 +79,138 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Dave Thaler <dthaler@microsoft.com>
+On Mon, Feb 6, 2023 at 10:45 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Mon, Feb 06, 2023 at 09:52:17AM -0800, Stanislav Fomichev wrote:
+> > On Sat, Feb 4, 2023 at 10:32 AM Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > Replace deprecated 0-length array in struct bpf_lpm_trie_key with
+> > > flexible array. Found with GCC 13:
+> > >
+> > > ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+> > >   207 |                                        *(__be16 *)&key->data[i]);
+> > >       |                                                   ^~~~~~~~~~~~~
+> > > ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+> > >   102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+> > >       |                                                      ^
+> > > ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+> > >    97 | #define be16_to_cpu __be16_to_cpu
+> > >       |                     ^~~~~~~~~~~~~
+> > > ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+> > >   206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+> > > ^
+> > >       |                            ^~~~~~~~~~~
+> > > In file included from ../include/linux/bpf.h:7:
+> > > ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+> > >    82 |         __u8    data[0];        /* Arbitrary size */
+> > >       |                 ^~~~
+> > >
+> > > This includes fixing the selftest which was incorrectly using a
+> > > variable length struct as a header, identified earlier[1]. Avoid this
+> > > by just explicitly including the prefixlen member instead of struct
+> > > bpf_lpm_trie_key.
+> > >
+> > > [1] https://lore.kernel.org/all/202206281009.4332AA33@keescook/
+> > >
+> > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > > Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> > > Cc: Song Liu <song@kernel.org>
+> > > Cc: Yonghong Song <yhs@fb.com>
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Cc: KP Singh <kpsingh@kernel.org>
+> > > Cc: Stanislav Fomichev <sdf@google.com>
+> > > Cc: Hao Luo <haoluo@google.com>
+> > > Cc: Jiri Olsa <jolsa@kernel.org>
+> > > Cc: Mykola Lysenko <mykolal@fb.com>
+> > > Cc: Shuah Khan <shuah@kernel.org>
+> > > Cc: Haowen Bai <baihaowen@meizu.com>
+> > > Cc: bpf@vger.kernel.org
+> > > Cc: linux-kselftest@vger.kernel.org
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  include/uapi/linux/bpf.h                         | 2 +-
+> > >  tools/testing/selftests/bpf/progs/map_ptr_kern.c | 2 +-
+> > >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index ba0f0cfb5e42..5930bc5c7e2c 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -79,7 +79,7 @@ struct bpf_insn {
+> > >  /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
+> > >  struct bpf_lpm_trie_key {
+> > >         __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
+> > > -       __u8    data[0];        /* Arbitrary size */
+> > > +       __u8    data[];         /* Arbitrary size */
+> > >  };
+> >
+> > That's a UAPI change, can we do it? The safest option is probably just
+> > to remove this field if it's causing any problems (and not do the
+> > map_ptr_kern.c change below).
+>
+> The problem was seen because "data" is used by the kernel (see the
+> compiler warning above). But if it can be removed, sure, that works too,
+> and it much nicer since the resulting structs would have fixed sizes.
 
-Add text explaining helper functions.
-Note that text about runtime functions (kfuncs) is part of a separate patch,
-not this one.
+I guess I still don't understand why we need the change in map_ptr_kern.c?
 
-Signed-off-by: Dave Thaler <dthaler@microsoft.com>
----
-V1 -> V2: addressed comments from Alexei and Stanislav
----
- Documentation/bpf/clang-notes.rst     |  5 +++++
- Documentation/bpf/instruction-set.rst | 22 +++++++++++++++++++++-
- 2 files changed, 26 insertions(+), 1 deletion(-)
+Re-reading the description:
 
-diff --git a/Documentation/bpf/clang-notes.rst b/Documentation/bpf/clang-notes.rst
-index 528feddf2db..40c6185513a 100644
---- a/Documentation/bpf/clang-notes.rst
-+++ b/Documentation/bpf/clang-notes.rst
-@@ -20,6 +20,11 @@ Arithmetic instructions
- For CPU versions prior to 3, Clang v7.0 and later can enable ``BPF_ALU`` support with
- ``-Xclang -target-feature -Xclang +alu32``.  In CPU version 3, support is automatically included.
- 
-+Reserved instructions
-+====================
-+
-+Clang will generate the reserved ``BPF_CALL | BPF_X | BPF_JMP`` (0x8d) instruction if ``-O0`` is used.
-+
- Atomic operations
- =================
- 
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index 2d3fe59bd26..89a13f1cdeb 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -191,7 +191,7 @@ BPF_JSET  0x40   PC += off if dst & src
- BPF_JNE   0x50   PC += off if dst != src
- BPF_JSGT  0x60   PC += off if dst > src     signed
- BPF_JSGE  0x70   PC += off if dst >= src    signed
--BPF_CALL  0x80   function call
-+BPF_CALL  0x80   function call              see `Helper functions`_
- BPF_EXIT  0x90   function / program return  BPF_JMP only
- BPF_JLT   0xa0   PC += off if dst < src     unsigned
- BPF_JLE   0xb0   PC += off if dst <= src    unsigned
-@@ -202,6 +202,26 @@ BPF_JSLE  0xd0   PC += off if dst <= src    signed
- The eBPF program needs to store the return value into register R0 before doing a
- BPF_EXIT.
- 
-+Helper functions
-+~~~~~~~~~~~~~~~~
-+
-+Helper functions are a concept whereby BPF programs can call into a
-+set of function calls exposed by the runtime.  Each helper
-+function is identified by an integer used in a ``BPF_CALL`` instruction.
-+The available helper functions may differ for each program type.
-+
-+Conceptually, each helper function is implemented with a commonly shared function
-+signature defined as:
-+
-+  u64 function(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5)
-+
-+In actuality, each helper function is defined as taking between 0 and 5 arguments,
-+with the remaining registers being ignored.  The definition of a helper function
-+is responsible for specifying the type (e.g., integer, pointer, etc.) of the value returned,
-+the number of arguments, and the type of each argument.
-+
-+Note that ``BPF_CALL | BPF_X | BPF_JMP`` (0x8d), where the helper function integer
-+would be read from a specified register, is reserved and currently not permitted.
- 
- Load and store instructions
- ===========================
--- 
-2.33.4
+> > > This includes fixing the selftest which was incorrectly using a
+> > > variable length struct as a header, identified earlier[1].
 
+It's my understanding that it's the intended use-case. Users are
+expected to use this struct as a header; at least we've been using it
+that way :-)
+
+For me, both return the same:
+sizeof(struct { __u32 prefix; __u8 data[0]; })
+sizeof(struct { __u32 prefix; __u8 data[]; })
+
+So let's do s/data[0]/data[]/ in the UAPI only? What's wrong with
+using this struct as a header?
+
+> > The usual use-case (at least that's what we do) is to define some new
+> > struct over it:
+> >
+> > struct my_key {
+> >   struct bpf_lpm_trie_key prefix;
+> >   int a, b, c;
+> > };
+> >
+> > So I really doubt that the 'data' is ever touched by any programs at all..
+>
+> Horrible alternative:
+>
+> struct my_key {
+>     union {
+>         struct bpf_lpm_trie_key trie;
+>         struct {
+>             u8 header[sizeof(struct bpf_lpm_trie_key)];
+>             int a, b, c;
+>         };
+>     };
+> };
+>
+> Perhaps better might be:
+>
+> struct bpf_lpm_trie_key {
+>     __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
+> };
+>
+> struct bpf_lpm_trie_key_raw {
+>     struct bpf_lpm_trie_key_prefix prefix;
+>     u8 data[];
+> };
+>
+> struct my_key {
+>     struct bpf_lpm_trie_key_prefix prefix;
+>     int a, b, c;
+> };
+>
+> Thoughts?
+>
+> --
+> Kees Cook
