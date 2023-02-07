@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C7168DEBC
-	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 18:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E391568DEBD
+	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 18:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbjBGRRE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Feb 2023 12:17:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
+        id S232064AbjBGRRG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Feb 2023 12:17:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjBGRQo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Feb 2023 12:16:44 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B773E63E
-        for <bpf@vger.kernel.org>; Tue,  7 Feb 2023 09:15:52 -0800 (PST)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 317GmZst017968;
-        Tue, 7 Feb 2023 17:15:28 GMT
+        with ESMTP id S231608AbjBGRQs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Feb 2023 12:16:48 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130733E0B3
+        for <bpf@vger.kernel.org>; Tue,  7 Feb 2023 09:16:00 -0800 (PST)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 317GngII011637;
+        Tue, 7 Feb 2023 17:15:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2022-7-12;
- bh=LVyqRp8Rgn/Zh85+qQJetBJ6wiFtj/VXa4tB3l1YOWI=;
- b=GIy8hEFoLNJHtdiAD21QA+0yebakBTWU+71BfK309nEs4tW4xiV8LVSAXv1lnfPf3wer
- 82gmLFQP1FTPa6mbTrvzsRnNK1nb4R5oTxTvR5ujbICnm4gFDQIeutrGszUtukqKdxRg
- 6xRXMSBBc6GcOj5jx6xq51qOoq7ZCygbnTRXBOJkhhXC3pleee7iUw7YCc63L90RkXV1
- qELvfqRo29mFc3hqAuh2Gu0WuWkI0MeoVVodfFUdxLzKDmBaqzmqzQz0siV1sYGEQLWA
- 4RG3Or8VnDbVsm8j4nndutS4/OzjebCfcaG/ss6R4un3mc+wp9FHS5TZDwLZ0C+ZSRHM /Q== 
+ bh=oJ3zrJonM5mqloIWdd9NeNC28YbJ8Odj+uUsC7TSJ84=;
+ b=onjBkjz+fo5jNmeyGD4CQHszgZZeuvzhTg05oxEXd9hBylJrWsGHrZH4uPxUbchoIibE
+ WQSm+6bDMhGWpSXxHNy8EXgj9iSXNsFDTbo9saDZ3PQkV28DnnQ9xpYGuAyu8OJiQXIJ
+ cQmAAjS+klyhxRQHFBAtfLF++Nb9IUQXd8beGdJbs9hR66W2lm9x4vVkS7BbtsHL23N7
+ jdV5kw58g9ZcnxYi1Ta9fxZ5usAnEhazgbY5Atn+hB3rucg6ypHargQocQVtPzzfLnD0
+ ApkioGK+B16ALHi3GSOl20SBLaWZ7T1JeYF4WfY/o4Z9ULI5KfsTrfmDXLAxuJWYxXGQ vQ== 
 Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3nhfdce5kp-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3nhe9ne3yq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Feb 2023 17:15:28 +0000
+        Tue, 07 Feb 2023 17:15:32 +0000
 Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 317GV69d007878;
-        Tue, 7 Feb 2023 17:15:27 GMT
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 317GYiLD007804;
+        Tue, 7 Feb 2023 17:15:31 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3nhdt6e87y-1
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3nhdt6e8an-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Feb 2023 17:15:27 +0000
+        Tue, 07 Feb 2023 17:15:31 +0000
 Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 317HF7gW007936;
-        Tue, 7 Feb 2023 17:15:26 GMT
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 317HF7gY007936;
+        Tue, 7 Feb 2023 17:15:30 GMT
 Received: from myrouter.uk.oracle.com (dhcp-10-175-168-65.vpn.oracle.com [10.175.168.65])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3nhdt6e7g6-6;
-        Tue, 07 Feb 2023 17:15:26 +0000
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3nhdt6e7g6-7;
+        Tue, 07 Feb 2023 17:15:30 +0000
 From:   Alan Maguire <alan.maguire@oracle.com>
 To:     acme@kernel.org
 Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
@@ -50,9 +50,9 @@ Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
         sinquersw@gmail.com, martin.lau@kernel.org, songliubraving@fb.com,
         sdf@google.com, timo@incline.eu, yhs@fb.com, bpf@vger.kernel.org,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v3 dwarves 5/8] btf_encoder: Represent "."-suffixed functions (".isra.0") in BTF
-Date:   Tue,  7 Feb 2023 17:14:59 +0000
-Message-Id: <1675790102-23037-6-git-send-email-alan.maguire@oracle.com>
+Subject: [PATCH v3 dwarves 6/8] btf_encoder: support delaying function addition to check for function prototype inconsistencies
+Date:   Tue,  7 Feb 2023 17:15:00 +0000
+Message-Id: <1675790102-23037-7-git-send-email-alan.maguire@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1675790102-23037-1-git-send-email-alan.maguire@oracle.com>
 References: <1675790102-23037-1-git-send-email-alan.maguire@oracle.com>
@@ -63,8 +63,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspe
  mlxlogscore=999 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2212070000 definitions=main-2302070153
-X-Proofpoint-GUID: xOtZe07ZAs0OmhAJCEojDgDScTu1xJwe
-X-Proofpoint-ORIG-GUID: xOtZe07ZAs0OmhAJCEojDgDScTu1xJwe
+X-Proofpoint-ORIG-GUID: 7XQZftLQ989meQM2Fv0duV3MvLhn7cV1
+X-Proofpoint-GUID: 7XQZftLQ989meQM2Fv0duV3MvLhn7cV1
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -75,68 +75,121 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-At gcc optimization level O2 or higher, many function optimizations
-occur such as
+There are multiple sources of inconsistency that can result in functions
+of the same name having multiple prototypes:
 
-- constant propagation (.constprop.0);
-- interprocedural scalar replacement of aggregates, removal of
-  unused parameters and replacement of parameters passed by
-  reference by parameters passed by value (.isra.0)
+- multiple static functions in different CUs share the same name
+- static and external functions share the same name
 
-See [1] for details.
+In addition a function may have optimized-out parameters in some
+CUs but not others.
 
-Currently BTF encoding does not handle such optimized functions that get
-renamed with a "." suffix such as ".isra.0", ".constprop.0".  This is
-safer because such suffixes can often indicate parameters have been
-optimized out.  Since we can now spot this, support matching to a "."
-suffix and represent the function in BTF if it does not have
-optimized-out parameters.  First an attempt to match by exact name is
-made; if that fails we fall back to checking for a "."-suffixed name.
-The BTF representation will use the original function name "foo" not
-"foo.isra.0" for consistency with DWARF representation.
+Here we attempt to catch such cases by finding inconsistencies across
+CUs using the save/compare/merge mechanisms that were previously
+introduced to handle optimized-out parameters.
 
-There is a complication however, and this arises because we process each
-CU separately and merge BTF when complete.  Different CUs may optimize
-differently, so in one CU, a function may have optimized-out parameters
-- and thus be ineligible for BTF - while in another it does not have
-  optimized-out parameters - making it eligible for BTF.  The NF_HOOK
-function is an example of this.
+For two instances of a function to be considered consistent:
 
-To avoid disrupting BTF generation parallelism, the approach taken is to
-save pointers to the function representations in the ELF function table;
-it is per-encoder, but the same representation is used across encoders,
-so we can use the same array index to find the same function when
-merging for efficiency.  Using the ELF function is ideal also as we
-already have to carry out a name lookup for matching from DWARF to
-ELF.
+- number of parameters must match
+- parameter names must match
 
-At thread collection time, observations about optimizations are
-merged across encoders and we know whether it is safe to add a
-"."-suffixed function or not.
+The latter is a less strong method than a full type comparison but
+suffices to match functions.
 
-The result of this is we add 1180 "."-suffixed functions to the BTF
-representation.
+To enable inconsistency checking, the --skip_encoding_btf_inconsistent_proto
+option is introduced.
 
-Encoding of "."-suffixed functions is done only if the
-"--btf_gen_optimized" function is specified.
+With it, and the --btf_gen_optimized options in place:
 
-Because we need to ensure consistency across encoders, there is
-a performance cost to the save/merge/apply approach. Comparing
-baseline to test times:
+- 285 functions are omitted due to inconsistent function prototypes
+- 2495 functions are omitted due to optimized-out parameters, of these
+  803 are functions with optimization-related suffixes ".isra", etc,
+  leaving 1692 other functions without such suffixes.
+
+Below performance effects and variability in encoded BTF are detailed.
+It can be seen that due to the approach used - where functions are
+marked "generated" on a per-encoder basis, we see quite variable
+numbers of multiply-defined functions in the baseline case, some
+with inconsistent prototypes.  With --skip_encoding_btf_inconsistent_proto
+specified, this variability disappears, at the cost of a longer time
+to carry out encoding due to the need to compare representations across
+encoders at thread collection time.
+
+Baseline:
+
+Single-threaded:
+
+$ time LLVM_OBJCOPY=objcopy pahole -J vmlinux
+
+real    0m17.534s
+user    0m17.019s
+sys     0m0.514s
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |wc -l
+51529
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |uniq|wc -l
+51529
+
+2 threads:
+
+$ time LLVM_OBJCOPY=objcopy pahole -J -j2 vmlinux
+
+real    0m10.942s
+user    0m17.309s
+sys     0m0.592s
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |wc -l
+51798
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |uniq|wc -l
+51529
+
+4 threads:
 
 $ time LLVM_OBJCOPY=objcopy pahole -J -j4 vmlinux
 
-real	0m7.788s
-user	0m17.629s
-sys	0m0.652s
+real    0m7.890s
+user    0m18.067s
+sys     0m0.661s
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |wc -l
+52028
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |uniq|wc -l
+51529
 
-$ time LLVM_OBJCOPY=objcopy pahole -J -j4 --btf_gen_optimized vmlinux
+Test:
 
-real	0m10.839s
-user	0m19.473s
-sys	0m5.932s
+Single-threaded:
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
+$ time LLVM_OBJCOPY=objcopy pahole -J --skip_encoding_btf_inconsistent_proto --btf_gen_optimized vmlinux
+
+real    0m19.216s
+user    0m17.590s
+sys     0m1.624s
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |wc -l
+50246
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |uniq|wc -l
+50246
+
+2 threads:
+
+$ time LLVM_OBJCOPY=objcopy pahole -J -j2 --skip_encoding_btf_inconsistent_proto --btf_gen_optimized vmlinux
+
+real    0m13.147s
+user    0m18.179s
+sys     0m3.486s
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |wc -l
+50246
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |uniq|wc -l
+50246
+
+4 threads:
+
+$ time LLVM_OBJCOPY=objcopy pahole -J -j4 --skip_encoding_btf_inconsistent_proto --btf_gen_optimized vmlinux
+
+real    0m11.090s
+user    0m19.613s
+sys     0m5.895s
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |wc -l
+50246
+$ bpftool btf dump file vmlinux|grep " FUNC "| awk '{print $3}'|sort |uniq|wc -l
+50246
 
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -155,375 +208,218 @@ Cc: Timo Beckers <timo@incline.eu>
 Cc: Yonghong Song <yhs@fb.com>
 Cc: bpf@vger.kernel.org
 ---
- btf_encoder.c | 148 +++++++++++++++++++++++++++++++++++++++++++++++---
- dwarves.h     |   3 +
- pahole.c      |  22 +++++---
- 3 files changed, 159 insertions(+), 14 deletions(-)
+ btf_encoder.c | 95 ++++++++++++++++++++++++++++++++++++++++++++++-----
+ dwarves.h     |  2 ++
+ pahole.c      |  8 +++++
+ 3 files changed, 96 insertions(+), 9 deletions(-)
 
 diff --git a/btf_encoder.c b/btf_encoder.c
-index 74ab61b..cb50401 100644
+index cb50401..35fb60a 100644
 --- a/btf_encoder.c
 +++ b/btf_encoder.c
-@@ -30,11 +30,20 @@
- 
- #include <errno.h>
- #include <stdint.h>
-+#include <search.h> /* for tsearch(), tfind() and tdestroy() */
+@@ -33,9 +33,13 @@
+ #include <search.h> /* for tsearch(), tfind() and tdestroy() */
  #include <pthread.h>
  
-+/* state used to do later encoding of saved functions */
-+struct btf_encoder_state {
-+	uint32_t type_id_off;
-+};
++#define BTF_ENCODER_MAX_PARAMETERS	12
 +
+ /* state used to do later encoding of saved functions */
+ struct btf_encoder_state {
+ 	uint32_t type_id_off;
++	bool got_parameter_names;
++	const char *parameter_names[BTF_ENCODER_MAX_PARAMETERS];
+ };
+ 
  struct elf_function {
- 	const char	*name;
- 	bool		 generated;
-+	size_t		prefixlen;
-+	struct function	*function;
-+	struct btf_encoder_state state;
- };
- 
- #define MAX_PERCPU_VAR_CNT 4096
-@@ -57,6 +66,7 @@ struct btf_encoder {
- 	struct elf_symtab *symtab;
- 	uint32_t	  type_id_off;
- 	uint32_t	  unspecified_type;
-+	int		  saved_func_cnt;
- 	bool		  has_index_type,
- 			  need_index_type,
- 			  skip_encoding_vars,
-@@ -77,12 +87,15 @@ struct btf_encoder {
- 		struct elf_function *entries;
- 		int		    allocated;
- 		int		    cnt;
-+		int		    suffix_cnt; /* number of .isra, .part etc */
- 	} functions;
- };
- 
- static LIST_HEAD(encoders);
- static pthread_mutex_t encoders__lock = PTHREAD_MUTEX_INITIALIZER;
- 
-+static void btf_encoder__add_saved_funcs(struct btf_encoder *encoder);
-+
- /* mutex only needed for add/delete, as this can happen in multiple encoding
-  * threads.  Traversal of the list is currently confined to thread collection.
-  */
-@@ -707,6 +720,11 @@ int32_t btf_encoder__add_encoder(struct btf_encoder *encoder, struct btf_encoder
- 	int32_t i, id;
- 	struct btf_var_secinfo *vsi;
- 
-+	if (encoder == other)
-+		return 0;
-+
-+	btf_encoder__add_saved_funcs(other);
-+
- 	for (i = 0; i < nr_var_secinfo; i++) {
- 		vsi = (struct btf_var_secinfo *)var_secinfo_buf->entries + i;
- 		type_id = next_type_id + vsi->type - 1; /* Type ID starts from 1 */
-@@ -782,6 +800,27 @@ static int32_t btf_encoder__add_decl_tag(struct btf_encoder *encoder, const char
+@@ -800,6 +804,66 @@ static int32_t btf_encoder__add_decl_tag(struct btf_encoder *encoder, const char
  	return id;
  }
  
-+static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct function *fn, struct elf_function *func)
++static void parameter_names__get(struct ftype *ftype, size_t nr_parameters,
++				 const char **parameter_names)
 +{
-+	if (func->function) {
-+		struct function *existing = func->function;
++	struct parameter *parameter;
++	int i = 0;
 +
-+		/* If saving and we find an existing entry, we want to merge
-+		 * observations across both functions, checking that the
-+		 * "seen optimized parameters" status is reflected in the func
-+		 * entry. If the entry is new, record encoder state required
-+		 * to add the local function later (encoder + type_id_off)
-+		 * such that we can add the function later.
-+		 */
-+		existing->proto.optimized_parms |= fn->proto.optimized_parms;
-+	} else {
-+		func->state.type_id_off = encoder->type_id_off;
-+		func->function = fn;
-+		encoder->saved_func_cnt++;
++	ftype__for_each_parameter(ftype, parameter) {
++		if (i >= nr_parameters)
++			return;
++		parameter_names[i++] = parameter__name(parameter);
 +	}
-+	return 0;
 +}
 +
- static int32_t btf_encoder__add_func(struct btf_encoder *encoder, struct function *fn)
- {
- 	int btf_fnproto_id, btf_fn_id, tag_type_id;
-@@ -807,6 +846,50 @@ static int32_t btf_encoder__add_func(struct btf_encoder *encoder, struct functio
- 	return 0;
- }
- 
-+static void btf_encoder__add_saved_funcs(struct btf_encoder *encoder)
++static bool funcs__match(struct btf_encoder *encoder, struct elf_function *func, struct function *f2)
 +{
++	const char *parameter_names[BTF_ENCODER_MAX_PARAMETERS];
++	struct function *f1 = func->function;
++	const char *name;
 +	int i;
 +
-+	for (i = 0; i < encoder->functions.cnt; i++) {
-+		struct function *fn = encoder->functions.entries[i].function;
-+		struct btf_encoder *other_encoder;
++	if (!f1)
++		return false;
 +
-+		if (!fn || fn->proto.processed)
-+			continue;
++	name = function__name(f1);
 +
-+		/* merge optimized-out status across encoders; since each
-+		 * encoder has the same elf symbol table we can use the
-+		 * same index to access the same elf symbol.
-+		 */
-+		btf_encoders__for_each_encoder(other_encoder) {
-+			struct function *other_fn;
-+
-+			if (other_encoder == encoder)
-+				continue;
-+
-+			other_fn = other_encoder->functions.entries[i].function;
-+			if (!other_fn)
-+				continue;
-+			fn->proto.optimized_parms |= other_fn->proto.optimized_parms;
-+			other_fn->proto.processed = 1;
-+		}
-+		if (fn->proto.optimized_parms) {
-+			if (encoder->verbose) {
-+				const char *name = function__name(fn);
-+
-+				printf("skipping addition of '%s'(%s) due to optimized-out parameters\n",
-+				       name, fn->alias ?: name);
-+			}
-+		} else {
-+			struct elf_function *func = &encoder->functions.entries[i];
-+
-+			encoder->type_id_off = func->state.type_id_off;
-+			btf_encoder__add_func(encoder, fn);
-+		}
-+		fn->proto.processed = 1;
++	if (f1->proto.nr_parms != f2->proto.nr_parms) {
++		if (encoder->verbose)
++			printf("function mismatch for '%s'(%s): %d params != %d params\n",
++			       name, f1->alias ?: name,
++			       f1->proto.nr_parms, f2->proto.nr_parms);
++		return false;
 +	}
++	if (f1->proto.nr_parms == 0)
++		return true;
++
++	if (!func->state.got_parameter_names) {
++		parameter_names__get(&f1->proto, BTF_ENCODER_MAX_PARAMETERS,
++				     func->state.parameter_names);
++		func->state.got_parameter_names = true;
++	}
++	parameter_names__get(&f2->proto, BTF_ENCODER_MAX_PARAMETERS, parameter_names);
++	for (i = 0; i < f1->proto.nr_parms && i < BTF_ENCODER_MAX_PARAMETERS; i++) {
++		if (!func->state.parameter_names[i]) {
++			if (!parameter_names[i])
++				continue;
++		} else if (parameter_names[i]) {
++			if (strcmp(func->state.parameter_names[i], parameter_names[i]) == 0)
++				continue;
++		}
++		if (encoder->verbose) {
++			printf("function mismatch for '%s'(%s): parameter #%d '%s' != '%s'\n",
++			       name, f1->alias ?: name, i,
++			       func->state.parameter_names[i] ?: "<null>",
++			       parameter_names[i] ?: "<null>");
++		}
++		return false;
++	}
++	return true;
 +}
 +
- /*
-  * This corresponds to the same macro defined in
-  * include/linux/kallsyms.h
-@@ -818,6 +901,11 @@ static int functions_cmp(const void *_a, const void *_b)
- 	const struct elf_function *a = _a;
- 	const struct elf_function *b = _b;
- 
-+	/* if search key allows prefix match, verify target has matching
-+	 * prefix len and prefix matches.
-+	 */
-+	if (a->prefixlen && a->prefixlen == b->prefixlen)
-+		return strncmp(a->name, b->name, b->prefixlen);
- 	return strcmp(a->name, b->name);
- }
- 
-@@ -850,14 +938,22 @@ static int btf_encoder__collect_function(struct btf_encoder *encoder, GElf_Sym *
- 	}
- 
- 	encoder->functions.entries[encoder->functions.cnt].name = name;
-+	if (strchr(name, '.')) {
-+		const char *suffix = strchr(name, '.');
-+
-+		encoder->functions.suffix_cnt++;
-+		encoder->functions.entries[encoder->functions.cnt].prefixlen = suffix - name;
-+	}
- 	encoder->functions.entries[encoder->functions.cnt].generated = false;
-+	encoder->functions.entries[encoder->functions.cnt].function = NULL;
- 	encoder->functions.cnt++;
- 	return 0;
- }
- 
--static struct elf_function *btf_encoder__find_function(const struct btf_encoder *encoder, const char *name)
-+static struct elf_function *btf_encoder__find_function(const struct btf_encoder *encoder,
-+						       const char *name, size_t prefixlen)
+ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct function *fn, struct elf_function *func)
  {
--	struct elf_function key = { .name = name };
-+	struct elf_function key = { .name = name, .prefixlen = prefixlen };
+ 	if (func->function) {
+@@ -807,12 +871,16 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
  
- 	return bsearch(&key, encoder->functions.entries, encoder->functions.cnt, sizeof(key), functions_cmp);
- }
-@@ -1187,6 +1283,9 @@ int btf_encoder__encode(struct btf_encoder *encoder)
- {
- 	int err;
+ 		/* If saving and we find an existing entry, we want to merge
+ 		 * observations across both functions, checking that the
+-		 * "seen optimized parameters" status is reflected in the func
+-		 * entry. If the entry is new, record encoder state required
++		 * "seen optimized parameters" and "inconsistent prototype"
++		 * status is reflected in the func entry.
++		 * If the entry is new, record encoder state required
+ 		 * to add the local function later (encoder + type_id_off)
+ 		 * such that we can add the function later.
+ 		 */
+ 		existing->proto.optimized_parms |= fn->proto.optimized_parms;
++		if (!existing->proto.optimized_parms && !existing->proto.inconsistent_proto &&
++		     !funcs__match(encoder, func, fn))
++			existing->proto.inconsistent_proto = 1;
+ 	} else {
+ 		func->state.type_id_off = encoder->type_id_off;
+ 		func->function = fn;
+@@ -851,7 +919,8 @@ static void btf_encoder__add_saved_funcs(struct btf_encoder *encoder)
+ 	int i;
  
-+	/* for single-threaded case, saved funcs are added here */
-+	btf_encoder__add_saved_funcs(encoder);
-+
- 	if (gobuffer__size(&encoder->percpu_secinfo) != 0)
- 		btf_encoder__add_datasec(encoder, PERCPU_SECTION);
+ 	for (i = 0; i < encoder->functions.cnt; i++) {
+-		struct function *fn = encoder->functions.entries[i].function;
++		struct elf_function *func = &encoder->functions.entries[i];
++		struct function *fn = func->function;
+ 		struct btf_encoder *other_encoder;
  
-@@ -1634,6 +1733,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
- 	}
- 
- 	cu__for_each_function(cu, core_id, fn) {
-+		struct elf_function *func = NULL;
-+		bool save = false;
- 
- 		/*
- 		 * Skip functions that:
-@@ -1647,29 +1748,62 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
- 		if (!ftype__has_arg_names(&fn->proto))
- 			continue;
- 		if (encoder->functions.cnt) {
--			struct elf_function *func;
- 			const char *name;
- 
- 			name = function__name(fn);
- 			if (!name)
+ 		if (!fn || fn->proto.processed)
+@@ -871,18 +940,23 @@ static void btf_encoder__add_saved_funcs(struct btf_encoder *encoder)
+ 			if (!other_fn)
  				continue;
- 
--			func = btf_encoder__find_function(encoder, name);
--			if (!func || func->generated)
-+			/* prefer exact function name match... */
-+			func = btf_encoder__find_function(encoder, name, 0);
-+			if (func) {
-+				if (func->generated)
-+					continue;
-+				func->generated = true;
-+			} else if (encoder->functions.suffix_cnt &&
-+				   conf_load->btf_gen_optimized) {
-+				/* falling back to name.isra.0 match if no exact
-+				 * match is found; only bother if we found any
-+				 * .suffix function names.  The function
-+				 * will be saved and added once we ensure
-+				 * it does not have optimized-out parameters
-+				 * in any cu.
-+				 */
-+				func = btf_encoder__find_function(encoder, name,
-+								  strlen(name));
-+				if (func) {
-+					save = true;
-+					if (encoder->verbose)
-+						printf("matched function '%s' with '%s'%s\n",
-+						       name, func->name,
-+						       fn->proto.optimized_parms ?
-+						       ", has optimized-out parameters" : "");
-+					fn->alias = func->name;
-+				}
-+			}
-+			if (!func)
- 				continue;
--			func->generated = true;
- 		} else {
- 			if (!fn->external)
- 				continue;
+ 			fn->proto.optimized_parms |= other_fn->proto.optimized_parms;
++			if (other_fn->proto.inconsistent_proto)
++				fn->proto.inconsistent_proto = 1;
++			if (!fn->proto.optimized_parms && !fn->proto.inconsistent_proto &&
++			    !funcs__match(encoder, func, other_fn))
++				fn->proto.inconsistent_proto = 1;
+ 			other_fn->proto.processed = 1;
  		}
+-		if (fn->proto.optimized_parms) {
++		if (fn->proto.optimized_parms || fn->proto.inconsistent_proto) {
+ 			if (encoder->verbose) {
+ 				const char *name = function__name(fn);
  
--		err = btf_encoder__add_func(encoder, fn);
-+		if (save)
-+			err = btf_encoder__save_func(encoder, fn, func);
-+		else
-+			err = btf_encoder__add_func(encoder, fn);
- 		if (err)
- 			goto out;
- 	}
- 
- 	if (!encoder->skip_encoding_vars)
- 		err = btf_encoder__encode_cu_variables(encoder);
-+
-+	/* It is only safe to delete this CU if we have not stashed any static
-+	 * functions for later addition.
-+	 */
-+	if (!err)
-+		err = encoder->saved_func_cnt > 0 ? LSK__KEEPIT : LSK__DELETE;
- out:
- 	encoder->cu = NULL;
- 	return err;
+-				printf("skipping addition of '%s'(%s) due to optimized-out parameters\n",
+-				       name, fn->alias ?: name);
++				printf("skipping addition of '%s'(%s) due to %s\n",
++				       name, fn->alias ?: name,
++				       fn->proto.optimized_parms ? "optimized-out parameters" :
++								   "multiple inconsistent function prototypes");
+ 			}
+ 		} else {
+-			struct elf_function *func = &encoder->functions.entries[i];
+-
+ 			encoder->type_id_off = func->state.type_id_off;
+ 			btf_encoder__add_func(encoder, fn);
+ 		}
+@@ -1759,7 +1833,10 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
+ 			if (func) {
+ 				if (func->generated)
+ 					continue;
+-				func->generated = true;
++				if (conf_load->skip_encoding_btf_inconsistent_proto)
++					save = true;
++				else
++					func->generated = true;
+ 			} else if (encoder->functions.suffix_cnt &&
+ 				   conf_load->btf_gen_optimized) {
+ 				/* falling back to name.isra.0 match if no exact
 diff --git a/dwarves.h b/dwarves.h
-index 1cd95f7..bb2c3bb 100644
+index bb2c3bb..c9d2bf9 100644
 --- a/dwarves.h
 +++ b/dwarves.h
-@@ -66,6 +66,7 @@ struct conf_load {
- 	bool			skip_missing;
+@@ -67,6 +67,7 @@ struct conf_load {
  	bool			skip_encoding_btf_type_tag;
  	bool			skip_encoding_btf_enum64;
-+	bool			btf_gen_optimized;
+ 	bool			btf_gen_optimized;
++	bool			skip_encoding_btf_inconsistent_proto;
  	uint8_t			hashtable_bits;
  	uint8_t			max_hashtable_bits;
  	uint16_t		kabi_prefix_len;
-@@ -832,6 +833,7 @@ struct ftype {
- 	uint16_t	 nr_parms;
+@@ -834,6 +835,7 @@ struct ftype {
  	uint8_t		 unspec_parms:1; /* just one bit is needed */
  	uint8_t		 optimized_parms:1;
-+	uint8_t		 processed:1;
+ 	uint8_t		 processed:1;
++	uint8_t		 inconsistent_proto:1;
  };
  
  static inline struct ftype *tag__ftype(const struct tag *tag)
-@@ -884,6 +886,7 @@ struct function {
- 	struct rb_node	 rb_node;
- 	const char	 *name;
- 	const char	 *linkage_name;
-+	const char	 *alias;	/* name.isra.0 */
- 	uint32_t	 cu_total_size_inline_expansions;
- 	uint16_t	 cu_total_nr_inline_expansions;
- 	uint8_t		 inlined:2;
 diff --git a/pahole.c b/pahole.c
-index 6f4f87c..f48b66d 100644
+index f48b66d..2992f43 100644
 --- a/pahole.c
 +++ b/pahole.c
-@@ -1221,6 +1221,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
- #define ARGP_languages_exclude	   336
+@@ -1222,6 +1222,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
  #define ARGP_skip_encoding_btf_enum64 337
  #define ARGP_skip_emitting_atomic_typedefs 338
-+#define ARGP_btf_gen_optimized  339
+ #define ARGP_btf_gen_optimized  339
++#define ARGP_skip_encoding_btf_inconsistent_proto 340
  
  static const struct argp_option pahole__options[] = {
  	{
-@@ -1633,6 +1634,11 @@ static const struct argp_option pahole__options[] = {
- 		.key  = ARGP_skip_emitting_atomic_typedefs,
- 		.doc  = "Do not emit 'typedef _Atomic int atomic_int' & friends."
+@@ -1639,6 +1640,11 @@ static const struct argp_option pahole__options[] = {
+ 		.key  = ARGP_btf_gen_optimized,
+ 		.doc  = "Generate BTF for functions with optimization-related suffixes (.isra, .constprop).  BTF will only be generated if a function does not optimize out parameters."
  	},
 +	{
-+		.name = "btf_gen_optimized",
-+		.key  = ARGP_btf_gen_optimized,
-+		.doc  = "Generate BTF for functions with optimization-related suffixes (.isra, .constprop).  BTF will only be generated if a function does not optimize out parameters."
++		.name = "skip_encoding_btf_inconsistent_proto",
++		.key = ARGP_skip_encoding_btf_inconsistent_proto,
++		.doc = "Skip functions that have multiple inconsistent function prototypes sharing the same name, or have optimized-out parameters."
 +	},
  	{
  		.name = NULL,
  	}
-@@ -1802,6 +1808,8 @@ static error_t pahole__options_parser(int key, char *arg,
- 		conf_load.skip_encoding_btf_enum64 = true;	break;
- 	case ARGP_skip_emitting_atomic_typedefs:
+@@ -1810,6 +1816,8 @@ static error_t pahole__options_parser(int key, char *arg,
  		conf.skip_emitting_atomic_typedefs = true;	break;
-+	case ARGP_btf_gen_optimized:
-+		conf_load.btf_gen_optimized = true;		break;
+ 	case ARGP_btf_gen_optimized:
+ 		conf_load.btf_gen_optimized = true;		break;
++	case ARGP_skip_encoding_btf_inconsistent_proto:
++		conf_load.skip_encoding_btf_inconsistent_proto = true; break;
  	default:
  		return ARGP_ERR_UNKNOWN;
- 	}
-@@ -2980,20 +2988,20 @@ static int pahole_threads_collect(struct conf_load *conf, int nr_threads, void *
- 		 * Merge content of the btf instances of worker threads to the btf
- 		 * instance of the primary btf_encoder.
-                 */
--		if (!threads[i]->btf || threads[i]->encoder == btf_encoder)
--			continue; /* The primary btf_encoder */
-+		if (!threads[i]->btf)
-+			continue;
- 		err = btf_encoder__add_encoder(btf_encoder, threads[i]->encoder);
- 		if (err < 0)
- 			goto out;
--		btf_encoder__delete(threads[i]->encoder);
--		threads[i]->encoder = NULL;
- 	}
- 	err = 0;
- 
- out:
- 	for (i = 0; i < nr_threads; i++) {
--		if (threads[i]->encoder && threads[i]->encoder != btf_encoder)
-+		if (threads[i]->encoder && threads[i]->encoder != btf_encoder) {
- 			btf_encoder__delete(threads[i]->encoder);
-+			threads[i]->encoder = NULL;
-+		}
- 	}
- 	free(threads[0]);
- 
-@@ -3077,11 +3085,11 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
- 			encoder = btf_encoder;
- 		}
- 
--		if (btf_encoder__encode_cu(encoder, cu, conf_load)) {
-+		ret = btf_encoder__encode_cu(encoder, cu, conf_load);
-+		if (ret < 0) {
- 			fprintf(stderr, "Encountered error while encoding BTF.\n");
- 			exit(1);
- 		}
--		ret = LSK__DELETE;
- out_btf:
- 		return ret;
  	}
 -- 
 2.31.1
