@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF5A68DD19
-	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 16:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F0068DD1C
+	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 16:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbjBGPef (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Feb 2023 10:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
+        id S231556AbjBGPfK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Feb 2023 10:35:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232466AbjBGPeY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Feb 2023 10:34:24 -0500
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A583F38035
-        for <bpf@vger.kernel.org>; Tue,  7 Feb 2023 07:34:23 -0800 (PST)
-Received: by mail-qt1-f178.google.com with SMTP id w3so17096833qts.7
-        for <bpf@vger.kernel.org>; Tue, 07 Feb 2023 07:34:23 -0800 (PST)
+        with ESMTP id S232004AbjBGPfJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Feb 2023 10:35:09 -0500
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC57538EB0
+        for <bpf@vger.kernel.org>; Tue,  7 Feb 2023 07:35:05 -0800 (PST)
+Received: by mail-qt1-f179.google.com with SMTP id 5so7157879qtp.9
+        for <bpf@vger.kernel.org>; Tue, 07 Feb 2023 07:35:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=user-agent:in-reply-to:content-disposition:mime-version:references
          :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7ExZwnS9J++PvOSyh/nwAGeW+qal9kZeJBKwsuQBF0k=;
-        b=z3DsovRb0k2fBl2btms3M4cizXuZ4qX2owTZtud+mDKh/4K9YXlGNGQ0nN+l/V4kEU
-         KbmIkhs1BQfP57p5OJhNr/fRLeIelrDyiSdfAknS5cRShywOb4JNth4vfiot6kWls26u
-         tRMy5QyuxE0tXy3uAwYqCnCRcqwQOEg9+eoELvVuXvat5Qa3YuncO3nekwGGAHDi5jmz
-         88BUEojjL3uqb5QGJAGopMP/CJfx22SlVbp977aoYzJzIWOSps5gkJ+vrdig8lt7Cu1I
-         NDgdPfppurSHDI6ARcxOuCF7BBme/YCDUfgBBIGl3q/OLWJ9O33xtGSPeVEVoAVmF4bC
-         GEYg==
-X-Gm-Message-State: AO0yUKU+omHlX1TKhgpVug294jon2PsEcJIy2wNBxxwfFTOVZKjGmVqO
-        75NZiJilM4o3wdRzV4o2UzU=
-X-Google-Smtp-Source: AK7set/3zgcfWMu01AAx8ePW1FLQ4WmuTmtoBVW4hEh6jyOleOi5ui2VrLhzYSg011Wyq1oL/WbewA==
-X-Received: by 2002:ac8:5884:0:b0:3b9:b1ea:2d0f with SMTP id t4-20020ac85884000000b003b9b1ea2d0fmr6227460qta.34.1675784062545;
-        Tue, 07 Feb 2023 07:34:22 -0800 (PST)
+        bh=lSEKfRJDc685nE+ruWwUrtuSKx5CqhEGU5RBFwsJp+M=;
+        b=dtgdErhg9WybhWzka0oCqJWZ8g7XG0QxQjoDJjzL+PVkupREmiYiN87d2eGTdPNLQ7
+         r/RyFk3O3k6vt984hxgF0OJMN15awu3GyI4U7lJbJT1RYYzREqYO9BKRj/qEMwpIn5LB
+         ooChgilgpl6imMW+Jl8OseNHg8bml0fZREWGbf9BWabYwewlNf2dzs1h7i2iypGMgRK9
+         AWSR/HvAjefSm+PCyErkzleMYsJPsLUBQNurANGqthMxiW2m4zXx4YAhNm2FD1C4Vs4I
+         HUKjhS25HutJgvLV6uvymQO366TMpT3VjbVRluIQl8zkQgfBJ21heuGb5wEAYMzVuMqf
+         GVmA==
+X-Gm-Message-State: AO0yUKVOs8UD4InWI8WHJkk5Jso3cuFqMjFJySePxDLoZbtNEwZiW0hp
+        XwFjKwKdfH6fb77bMiTlxfw=
+X-Google-Smtp-Source: AK7set9hPs9LWqYhTVgeuBEpGFvCH5BEkx3/tulkCeUjg3TnJNNZwgZvrTi+TAibGlQzsO8v+p0l/g==
+X-Received: by 2002:a05:622a:294:b0:3b8:2844:b7e1 with SMTP id z20-20020a05622a029400b003b82844b7e1mr6261821qtw.46.1675784104632;
+        Tue, 07 Feb 2023 07:35:04 -0800 (PST)
 Received: from maniforge.lan ([2620:10d:c091:480::1:9bc3])
-        by smtp.gmail.com with ESMTPSA id t9-20020a05620a034900b0071eddd3bebbsm9622985qkm.81.2023.02.07.07.34.21
+        by smtp.gmail.com with ESMTPSA id el18-20020a05622a431200b003a81eef14efsm9486335qtb.45.2023.02.07.07.35.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 07:34:21 -0800 (PST)
-Date:   Tue, 7 Feb 2023 09:34:26 -0600
+        Tue, 07 Feb 2023 07:35:04 -0800 (PST)
+Date:   Tue, 7 Feb 2023 09:35:07 -0600
 From:   David Vernet <void@manifault.com>
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -51,15 +51,15 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Hao Luo <haoluo@google.com>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Artem Savkov <asavkov@redhat.com>
-Subject: Re: [PATCHv3 bpf-next 7/9] selftests/bpf: Allow to use kfunc from
- testmod.ko in test_verifier
-Message-ID: <Y+JvgtTQvT7kd9wz@maniforge.lan>
+Subject: Re: [PATCHv3 bpf-next 8/9] selftests/bpf: Remove extern from kfuncs
+ declarations
+Message-ID: <Y+Jvq2AG5B/dKMIq@maniforge.lan>
 References: <20230203162336.608323-1-jolsa@kernel.org>
- <20230203162336.608323-8-jolsa@kernel.org>
+ <20230203162336.608323-9-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230203162336.608323-8-jolsa@kernel.org>
+In-Reply-To: <20230203162336.608323-9-jolsa@kernel.org>
 User-Agent: Mutt/2.2.9 (2022-11-12)
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -71,270 +71,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 03, 2023 at 05:23:34PM +0100, Jiri Olsa wrote:
-> Currently the test_verifier allows test to specify kfunc symbol
-> and search for it in the kernel BTF.
+On Fri, Feb 03, 2023 at 05:23:35PM +0100, Jiri Olsa wrote:
+> There's no need to keep the extern in kfuncs declarations.
 > 
-> Adding the possibility to search for kfunc also in bpf_testmod
-> module when it's not found in kernel BTF.
-> 
-> To find bpf_testmod btf we need to get back SYS_ADMIN cap.
-
-This observation and any subsequent discussion is certainly outside the
-scope of your patch set, but it feels like a bit of a weird /
-inconsistent UX to force users to have SYS_ADMIN cap for loading kfuncs
-from modules, but not from vmlinux BTF.
-
-I realize that you need to have SYS_ADMIN cap for BPF_PROG_GET_FD_BY_ID,
-BPF_MAP_GET_FD_BY_ID, etc, so the consistency makes sense there, but it
-would be nice if we could eventually make the UX consistent for programs
-linking against module kfuncs, because I don't really see the difference
-in terms of permissions from the user's perspective.
-
-> 
+> Suggested-by: David Vernet <void@manifault.com>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-
-LGTM in general -- just left one comment below.
+> ---
 
 Acked-by: David Vernet <void@manifault.com>
 
-> ---
->  tools/testing/selftests/bpf/test_verifier.c | 161 +++++++++++++++++---
->  1 file changed, 139 insertions(+), 22 deletions(-)
+>  .../bpf/bpf_testmod/bpf_testmod_kfunc.h       | 38 +++++++++----------
+>  1 file changed, 19 insertions(+), 19 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index 14f11f2dfbce..0a570195be37 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -879,8 +879,140 @@ static int create_map_kptr(void)
->  	return fd;
->  }
+> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+> index 86d94257716a..27d4494444c8 100644
+> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+> @@ -10,32 +10,32 @@
+>  #define __ksym
+>  #endif
 >  
-> +static void set_root(bool set)
-> +{
-> +	__u64 caps;
-> +
-> +	if (set) {
-> +		if (cap_enable_effective(1ULL << CAP_SYS_ADMIN, &caps))
-> +			perror("cap_disable_effective(CAP_SYS_ADMIN)");
-> +	} else {
-> +		if (cap_disable_effective(1ULL << CAP_SYS_ADMIN, &caps))
-> +			perror("cap_disable_effective(CAP_SYS_ADMIN)");
-> +	}
-> +}
-> +
-> +static inline __u64 ptr_to_u64(const void *ptr)
-> +{
-> +	return (__u64) (unsigned long) ptr;
-
-Small nit / suggestion -- IMO this is slightly preferable just to keep
-it a bit more in-line with the C-standard:
-
-return (uintptr_t)ptr;
-
-The standard of course doesn't dictate that you can do
-ptr -> uintptr_t -> __u64 -> uintptr_t -> ptr, but it at least does dictate that you can do
-ptr -> uintptr_t -> ptr, whereas it does not say the same for
-ptr -> unsigned long -> ptr
-
-Also, I don't think the 'inline' keyword is necessary. The compiler will
-probably figure this out on its own.
-
-> +}
-> +
-> +static struct btf *btf__load_testmod_btf(struct btf *vmlinux)
-
-Would be nice if some of this code could be shared from libbpf at some
-point, but ok, a cleanup for another time.
-
-> +{
-> +	struct bpf_btf_info info;
-> +	__u32 len = sizeof(info);
-> +	struct btf *btf = NULL;
-> +	char name[64];
-> +	__u32 id = 0;
-> +	int err, fd;
-> +
-> +	/* Iterate all loaded BTF objects and find bpf_testmod,
-> +	 * we need SYS_ADMIN cap for that.
-> +	 */
-> +	set_root(true);
-> +
-> +	while (true) {
-> +		err = bpf_btf_get_next_id(id, &id);
-> +		if (err) {
-> +			if (errno == ENOENT)
-> +				break;
-> +			perror("bpf_btf_get_next_id failed");
-> +			break;
-> +		}
-> +
-> +		fd = bpf_btf_get_fd_by_id(id);
-> +		if (fd < 0) {
-> +			if (errno == ENOENT)
-> +				continue;
-> +			perror("bpf_btf_get_fd_by_id failed");
-> +			break;
-> +		}
-> +
-> +		memset(&info, 0, sizeof(info));
-> +		info.name_len = sizeof(name);
-> +		info.name = ptr_to_u64(name);
-> +		len = sizeof(info);
-> +
-> +		err = bpf_obj_get_info_by_fd(fd, &info, &len);
-> +		if (err) {
-> +			close(fd);
-> +			perror("bpf_obj_get_info_by_fd failed");
-> +			break;
-> +		}
-> +
-> +		if (strcmp("bpf_testmod", name)) {
-> +			close(fd);
-> +			continue;
-> +		}
-> +
-> +		btf = btf__load_from_kernel_by_id_split(id, vmlinux);
-> +		if (!btf) {
-> +			close(fd);
-> +			break;
-> +		}
-> +
-> +		/* We need the fd to stay open so it can be used in fd_array.
-> +		 * The final cleanup call to btf__free will free btf object
-> +		 * and close the file descriptor.
-> +		 */
-> +		btf__set_fd(btf, fd);
-> +		break;
-> +	}
-> +
-> +	set_root(false);
-> +	return btf;
-> +}
-> +
-> +static struct btf *testmod_btf;
-> +static struct btf *vmlinux_btf;
-> +
-> +static void kfuncs_cleanup(void)
-> +{
-> +	btf__free(testmod_btf);
-> +	btf__free(vmlinux_btf);
-> +}
-> +
-> +static void fixup_prog_kfuncs(struct bpf_insn *prog, int *fd_array,
-> +			      struct kfunc_btf_id_pair *fixup_kfunc_btf_id)
-> +{
-> +	/* Patch in kfunc BTF IDs */
-> +	while (fixup_kfunc_btf_id->kfunc) {
-> +		int btf_id = 0;
-> +
-> +		/* try to find kfunc in kernel BTF */
-> +		vmlinux_btf = vmlinux_btf ?: btf__load_vmlinux_btf();
-> +		if (vmlinux_btf) {
-> +			btf_id = btf__find_by_name_kind(vmlinux_btf,
-> +							fixup_kfunc_btf_id->kfunc,
-> +							BTF_KIND_FUNC);
-> +			btf_id = btf_id < 0 ? 0 : btf_id;
-> +		}
-> +
-> +		/* kfunc not found in kernel BTF, try bpf_testmod BTF */
-> +		if (!btf_id) {
-> +			testmod_btf = testmod_btf ?: btf__load_testmod_btf(vmlinux_btf);
-> +			if (testmod_btf) {
-> +				btf_id = btf__find_by_name_kind(testmod_btf,
-> +								fixup_kfunc_btf_id->kfunc,
-> +								BTF_KIND_FUNC);
-> +				btf_id = btf_id < 0 ? 0 : btf_id;
-> +				if (btf_id) {
-> +					/* We put bpf_testmod module fd into fd_array
-> +					 * and its index 1 into instruction 'off'.
-> +					 */
-> +					*fd_array = btf__fd(testmod_btf);
-> +					prog[fixup_kfunc_btf_id->insn_idx].off = 1;
-> +				}
-> +			}
-> +		}
-> +
-> +		prog[fixup_kfunc_btf_id->insn_idx].imm = btf_id;
-> +		fixup_kfunc_btf_id++;
-> +	}
-> +}
-> +
->  static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
-> -			  struct bpf_insn *prog, int *map_fds)
-> +			  struct bpf_insn *prog, int *map_fds, int *fd_array)
->  {
->  	int *fixup_map_hash_8b = test->fixup_map_hash_8b;
->  	int *fixup_map_hash_48b = test->fixup_map_hash_48b;
-> @@ -905,7 +1037,6 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
->  	int *fixup_map_ringbuf = test->fixup_map_ringbuf;
->  	int *fixup_map_timer = test->fixup_map_timer;
->  	int *fixup_map_kptr = test->fixup_map_kptr;
-> -	struct kfunc_btf_id_pair *fixup_kfunc_btf_id = test->fixup_kfunc_btf_id;
+> -extern struct prog_test_ref_kfunc *
+> +struct prog_test_ref_kfunc *
+>  bpf_kfunc_call_test_acquire(unsigned long *scalar_ptr) __ksym;
+> -extern struct prog_test_ref_kfunc *
+> +struct prog_test_ref_kfunc *
+>  bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b) __ksym;
+> -extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
+> +void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
 >  
->  	if (test->fill_helper) {
->  		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
-> @@ -1106,25 +1237,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
->  		} while (*fixup_map_kptr);
->  	}
+> -extern void bpf_kfunc_call_test_mem_len_pass1(void *mem, int len) __ksym;
+> -extern int *bpf_kfunc_call_test_get_rdwr_mem(struct prog_test_ref_kfunc *p, const int rdwr_buf_size) __ksym;
+> -extern int *bpf_kfunc_call_test_get_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size) __ksym;
+> -extern int *bpf_kfunc_call_test_acq_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size) __ksym;
+> -extern void bpf_kfunc_call_int_mem_release(int *p) __ksym;
+> -extern u32 bpf_kfunc_call_test_static_unused_arg(u32 arg, u32 unused) __ksym;
+> +void bpf_kfunc_call_test_mem_len_pass1(void *mem, int len) __ksym;
+> +int *bpf_kfunc_call_test_get_rdwr_mem(struct prog_test_ref_kfunc *p, const int rdwr_buf_size) __ksym;
+> +int *bpf_kfunc_call_test_get_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size) __ksym;
+> +int *bpf_kfunc_call_test_acq_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size) __ksym;
+> +void bpf_kfunc_call_int_mem_release(int *p) __ksym;
+> +u32 bpf_kfunc_call_test_static_unused_arg(u32 arg, u32 unused) __ksym;
 >  
-> -	/* Patch in kfunc BTF IDs */
-> -	if (fixup_kfunc_btf_id->kfunc) {
-> -		struct btf *btf;
-> -		int btf_id;
-> -
-> -		do {
-> -			btf_id = 0;
-> -			btf = btf__load_vmlinux_btf();
-> -			if (btf) {
-> -				btf_id = btf__find_by_name_kind(btf,
-> -								fixup_kfunc_btf_id->kfunc,
-> -								BTF_KIND_FUNC);
-> -				btf_id = btf_id < 0 ? 0 : btf_id;
-> -			}
-> -			btf__free(btf);
-> -			prog[fixup_kfunc_btf_id->insn_idx].imm = btf_id;
-> -			fixup_kfunc_btf_id++;
-> -		} while (fixup_kfunc_btf_id->kfunc);
-> -	}
-> +	fixup_prog_kfuncs(prog, fd_array, test->fixup_kfunc_btf_id);
->  }
+> -extern void bpf_testmod_test_mod_kfunc(int i) __ksym;
+> +void bpf_testmod_test_mod_kfunc(int i) __ksym;
 >  
->  struct libcap {
-> @@ -1451,6 +1564,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->  	int run_errs, run_successes;
->  	int map_fds[MAX_NR_MAPS];
->  	const char *expected_err;
-> +	int fd_array[2] = { -1, -1 };
->  	int saved_errno;
->  	int fixup_skips;
->  	__u32 pflags;
-> @@ -1464,7 +1578,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->  	if (!prog_type)
->  		prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
->  	fixup_skips = skips;
-> -	do_test_fixup(test, prog_type, prog, map_fds);
-> +	do_test_fixup(test, prog_type, prog, map_fds, &fd_array[1]);
->  	if (test->fill_insns) {
->  		prog = test->fill_insns;
->  		prog_len = test->prog_len;
-> @@ -1498,6 +1612,8 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->  	else
->  		opts.log_level = DEFAULT_LIBBPF_LOG_LEVEL;
->  	opts.prog_flags = pflags;
-> +	if (fd_array[1] != -1)
-> +		opts.fd_array = &fd_array[0];
+> -extern __u64 bpf_kfunc_call_test1(struct sock *sk, __u32 a, __u64 b,
+> +__u64 bpf_kfunc_call_test1(struct sock *sk, __u32 a, __u64 b,
+>  				__u32 c, __u64 d) __ksym;
+> -extern int bpf_kfunc_call_test2(struct sock *sk, __u32 a, __u32 b) __ksym;
+> -extern struct sock *bpf_kfunc_call_test3(struct sock *sk) __ksym;
+> -extern long bpf_kfunc_call_test4(signed char a, short b, int c, long d) __ksym;
+> +int bpf_kfunc_call_test2(struct sock *sk, __u32 a, __u32 b) __ksym;
+> +struct sock *bpf_kfunc_call_test3(struct sock *sk) __ksym;
+> +long bpf_kfunc_call_test4(signed char a, short b, int c, long d) __ksym;
 >  
->  	if ((prog_type == BPF_PROG_TYPE_TRACING ||
->  	     prog_type == BPF_PROG_TYPE_LSM) && test->kfunc) {
-> @@ -1740,6 +1856,7 @@ static int do_test(bool unpriv, unsigned int from, unsigned int to)
->  	}
+> -extern void bpf_kfunc_call_test_pass_ctx(struct __sk_buff *skb) __ksym;
+> -extern void bpf_kfunc_call_test_pass1(struct prog_test_pass1 *p) __ksym;
+> -extern void bpf_kfunc_call_test_pass2(struct prog_test_pass2 *p) __ksym;
+> -extern void bpf_kfunc_call_test_mem_len_fail2(__u64 *mem, int len) __ksym;
+> +void bpf_kfunc_call_test_pass_ctx(struct __sk_buff *skb) __ksym;
+> +void bpf_kfunc_call_test_pass1(struct prog_test_pass1 *p) __ksym;
+> +void bpf_kfunc_call_test_pass2(struct prog_test_pass2 *p) __ksym;
+> +void bpf_kfunc_call_test_mem_len_fail2(__u64 *mem, int len) __ksym;
 >  
->  	unload_bpf_testmod(verbose);
-> +	kfuncs_cleanup();
+> -extern void bpf_kfunc_call_test_destructive(void) __ksym;
+> +void bpf_kfunc_call_test_destructive(void) __ksym;
 >  
->  	printf("Summary: %d PASSED, %d SKIPPED, %d FAILED\n", passes,
->  	       skips, errors);
+>  #endif /* _BPF_TESTMOD_KFUNC_H */
 > -- 
 > 2.39.1
 > 
