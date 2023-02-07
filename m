@@ -2,232 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53BA468CA6D
-	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 00:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5117C68CB10
+	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 01:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229447AbjBFXT4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 18:19:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
+        id S229574AbjBGAYO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Feb 2023 19:24:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjBFXTz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 18:19:55 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A199A23DB7;
-        Mon,  6 Feb 2023 15:19:54 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4P9j0840nlz4wgv;
-        Tue,  7 Feb 2023 10:19:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1675725593;
-        bh=ni+bLM6l7ZkTck+F3T4d2YIdoOVQvjtejmkcOYZePOU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eKRlzXq8KKU9teDIlnQo2POgDWpoyjxDu8J091pnc+cYSxbcWudHKwwrp1iib9B8s
-         clYXeTMRFuMw2x+uFDOSxkRWegEi30aimjsfKLYD9yvoMXd3cHFmtNw9jl6RscbmAs
-         DsFZD1cDyk7qChXtzbjovaB66gKHU7Mt351WbkdDj3Y+pADmozNr15XtNSks0zidVS
-         wgXrS7FPr3zeWJYQOKSB5IhrUjHfc6h0W6Yw/JTnD3cTGlGeeea9yUccyxHW0PRf1u
-         dNvXue9YLCsN/a8u5cBRjwyAQ+/QCorlC1RjSNCsGXnsfctFOF4BruMwsYU0+VQ4zh
-         ///hZ30M7Lk1g==
-Date:   Tue, 7 Feb 2023 10:19:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        David Miller <davem@davemloft.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Marek Majtyka <alardam@gmail.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: linux-next: manual merge of the bpf-next tree with the net-next
- tree
-Message-ID: <20230207101951.21a114fa@canb.auug.org.au>
+        with ESMTP id S229517AbjBGAYN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Feb 2023 19:24:13 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1304531E13;
+        Mon,  6 Feb 2023 16:24:07 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id be8so13986421plb.7;
+        Mon, 06 Feb 2023 16:24:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=2GfCwFBQTq1hrL2JKXUDvrtcTopmGh5P2OuyRAmZh+4=;
+        b=jxWU9GFOU8XwBsIFioQNYtJgX4fjvDHF3f90qKRhK95Q/qHoOlnArDv6sOGVUYOxKz
+         qnof+8akBLDprLx26h7MGWSoXPE/rM/LSIpRDJs88n9OD91Xn3i2s+FCV9Lue371b5kB
+         THonrpCL1hJScpwSN+33zqPmXG+XAro+sM6/9kxgvYjysDaRSivQ50vnTAxfLgm/3Fd3
+         nmwiALdctvjKexRvQvY+aor+QuCc65OMNlGUu7Te8Mllhcb/Dprm+BxrZNUkn94DE3RD
+         D80W7kcrqjs2QF+i0L5sfyYhKbrFCJNBaMDaBNR08CkA0zhJ4g+wmR4x8L2BBXzBN+pP
+         UnHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2GfCwFBQTq1hrL2JKXUDvrtcTopmGh5P2OuyRAmZh+4=;
+        b=l+TyDQ5pteeogZyFQAMs6ubg8vzTRQwRCvG+XoHErx3HNtjQxeWf9U7nSOQHXkyiFS
+         U3NQjBrxIIkzhDITjHd3inX4Y4yNzMC+AVJG8Tze5tzSyGcyAovLqBv9+vlt7QnVzDQ6
+         7I13OGWuMdFNd6VEyqiW5bDqLzAwQq+99PSOaTlSM0e/kMX5uK8sGOHjfQAe22zyRVD0
+         0B3LqTgZ9/DuDz0HoGbxt52OSqqMH5sBflifj2bFY0tb/FoW74HJs2DIkjrJuDyE0knp
+         DeI9csxQk1+pETgcAC4i44N2h9UPGDFSMhXZAy8dTc89QvF/m1GtdRzeeNPYa/pFdO5x
+         h1cw==
+X-Gm-Message-State: AO0yUKVEd3YZRSVz4JrahHLMI/SYTduxhQXuQHnUCB1DpLuZJHp0VEaf
+        i5cwqJzfD29O3r/R4sUTs0U=
+X-Google-Smtp-Source: AK7set9maURHywP6RmkNNCYUWDn7xGtqnx1e0uW2kL2SF4TpX8BY5hEB9bE6MhcN0bbtAezlPE4OSA==
+X-Received: by 2002:a17:902:f0ca:b0:194:5fc9:f55a with SMTP id v10-20020a170902f0ca00b001945fc9f55amr713210pla.35.1675729446422;
+        Mon, 06 Feb 2023 16:24:06 -0800 (PST)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:ff0:47cc:64dd:1572:cf18])
+        by smtp.gmail.com with ESMTPSA id y1-20020a1709029b8100b00189b2b8dbedsm3544080plp.228.2023.02.06.16.24.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Feb 2023 16:24:05 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        bpf@vger.kernel.org
+Subject: [RFC/PATCH 0/3] perf lock contention: Track lock owner (v2)
+Date:   Mon,  6 Feb 2023 16:24:00 -0800
+Message-Id: <20230207002403.63590-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.39.1.519.gcb327c4b5f-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ncoCfePRb/8QXm18p12O9Kq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/ncoCfePRb/8QXm18p12O9Kq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+When there're many lock contentions in the system, people sometimes
+want to know who caused the contention, IOW who's the owner of the
+locks.
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+This patchset adds -o/--lock-owner option to track the owner info
+if it's available.  Right now, it supports mutex and rwsem as they
+have the owner fields in themselves.  Please see the patch 2 for the
+details.
 
-  drivers/net/ethernet/intel/ice/ice_main.c
+Changes in v2)
+ * fix missing callstacks
+ * support old rwsem type with recent clang (>= 15.0)
 
-between commit:
+The patch 1 is a fix for missing callstacks and the patch 2 is the
+main change.  The patch 3 adds support for old kernels when compiler
+supports a recent builtin to check field type in a struct (Thanks
+to Hao).
 
-  5b246e533d01 ("ice: split probe into smaller functions")
+Example output (for mutex only):
 
-from the net-next tree and commit:
+  $ sudo ./perf lock con -abo -Y mutex -- ./perf bench sched pipe
+  # Running 'sched/pipe' benchmark:
+  # Executed 1000000 pipe operations between two processes
 
-  66c0e13ad236 ("drivers: net: turn on XDP features")
+       Total time: 4.910 [sec]
 
-from the bpf-next tree.
+         4.910435 usecs/op
+           203647 ops/sec
+   contended   total wait     max wait     avg wait          pid   owner
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+           2     15.50 us      8.29 us      7.75 us      1582852   sched-pipe
+           7      7.20 us      2.47 us      1.03 us           -1   Unknown
+           1      6.74 us      6.74 us      6.74 us      1582851   sched-pipe
 
---=20
-Cheers,
-Stephen Rothwell
+You can get it from 'perf/lock-owner-v2' branch in
 
-diff --cc drivers/net/ethernet/intel/ice/ice_main.c
-index 433298d0014a,074b0e6d0e2d..000000000000
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@@ -4485,116 -4619,6 +4501,118 @@@ static int ice_register_netdev(struct i
-  		return -EIO;
- =20
-  	err =3D register_netdev(vsi->netdev);
- +	if (err)
- +		return err;
- +
- +	set_bit(ICE_VSI_NETDEV_REGISTERED, vsi->state);
- +	netif_carrier_off(vsi->netdev);
- +	netif_tx_stop_all_queues(vsi->netdev);
- +
- +	return 0;
- +}
- +
- +static void ice_unregister_netdev(struct ice_vsi *vsi)
- +{
- +	if (!vsi || !vsi->netdev)
- +		return;
- +
- +	unregister_netdev(vsi->netdev);
- +	clear_bit(ICE_VSI_NETDEV_REGISTERED, vsi->state);
- +}
- +
- +/**
- + * ice_cfg_netdev - Allocate, configure and register a netdev
- + * @vsi: the VSI associated with the new netdev
- + *
- + * Returns 0 on success, negative value on failure
- + */
- +static int ice_cfg_netdev(struct ice_vsi *vsi)
- +{
- +	struct ice_netdev_priv *np;
- +	struct net_device *netdev;
- +	u8 mac_addr[ETH_ALEN];
- +
- +	netdev =3D alloc_etherdev_mqs(sizeof(*np), vsi->alloc_txq,
- +				    vsi->alloc_rxq);
- +	if (!netdev)
- +		return -ENOMEM;
- +
- +	set_bit(ICE_VSI_NETDEV_ALLOCD, vsi->state);
- +	vsi->netdev =3D netdev;
- +	np =3D netdev_priv(netdev);
- +	np->vsi =3D vsi;
- +
- +	ice_set_netdev_features(netdev);
-++	netdev->xdp_features =3D NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
-++			       NETDEV_XDP_ACT_XSK_ZEROCOPY;
- +	ice_set_ops(netdev);
- +
- +	if (vsi->type =3D=3D ICE_VSI_PF) {
- +		SET_NETDEV_DEV(netdev, ice_pf_to_dev(vsi->back));
- +		ether_addr_copy(mac_addr, vsi->port_info->mac.perm_addr);
- +		eth_hw_addr_set(netdev, mac_addr);
- +	}
- +
- +	netdev->priv_flags |=3D IFF_UNICAST_FLT;
- +
- +	/* Setup netdev TC information */
- +	ice_vsi_cfg_netdev_tc(vsi, vsi->tc_cfg.ena_tc);
- +
- +	netdev->max_mtu =3D ICE_MAX_MTU;
- +
- +	return 0;
- +}
- +
- +static void ice_decfg_netdev(struct ice_vsi *vsi)
- +{
- +	clear_bit(ICE_VSI_NETDEV_ALLOCD, vsi->state);
- +	free_netdev(vsi->netdev);
- +	vsi->netdev =3D NULL;
- +}
- +
- +static int ice_start_eth(struct ice_vsi *vsi)
- +{
- +	int err;
- +
- +	err =3D ice_init_mac_fltr(vsi->back);
- +	if (err)
- +		return err;
- +
- +	rtnl_lock();
- +	err =3D ice_vsi_open(vsi);
- +	rtnl_unlock();
- +
- +	return err;
- +}
- +
- +static int ice_init_eth(struct ice_pf *pf)
- +{
- +	struct ice_vsi *vsi =3D ice_get_main_vsi(pf);
- +	int err;
- +
- +	if (!vsi)
- +		return -EINVAL;
- +
- +	/* init channel list */
- +	INIT_LIST_HEAD(&vsi->ch_list);
- +
- +	err =3D ice_cfg_netdev(vsi);
- +	if (err)
- +		return err;
- +	/* Setup DCB netlink interface */
- +	ice_dcbnl_setup(vsi);
- +
- +	err =3D ice_init_mac_fltr(pf);
- +	if (err)
- +		goto err_init_mac_fltr;
- +
- +	err =3D ice_devlink_create_pf_port(pf);
- +	if (err)
- +		goto err_devlink_create_pf_port;
- +
- +	SET_NETDEV_DEVLINK_PORT(vsi->netdev, &pf->devlink_port);
- +
- +	err =3D ice_register_netdev(vsi);
-  	if (err)
-  		goto err_register_netdev;
- =20
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
 
---Sig_/ncoCfePRb/8QXm18p12O9Kq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks,
+Namhyung
 
------BEGIN PGP SIGNATURE-----
+Namhyung Kim (3):
+  perf lock contention: Fix to save callstack for the default modified
+  perf lock contention: Add -o/--lock-owner option
+  perf lock contention: Support old rw_semaphore type
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmPhixcACgkQAVBC80lX
-0GyOrQf/WjUIV9sxXfz6tzSy1t581UV9rgMLQYWFP50vbEM6F72r189CjT8WpmcK
-fQTyAJ3S501Y3Eo47WbP5txvmefEe6/FvO3Y3ZKdvBv0EiIR9T5YlcZlMw4iOjXC
-rGMZOeR9xV550CDiylzw+ZhIwba85OK/lE/HapVPXdX6V6rU4+FkUsMKAu8cA5vL
-xiU0/2xvTkKDTA8igVG47GfIuu5KL8a6OdWwQUdCPsvotm6dHaIA1m8Q+CWKPYhH
-kEqPSZwgM4s88SlRU2bVBXKGW+NbdYXkQmICdhD3Qxp3oQxgyCFZ8AEovS8Z5u0o
-S2eHIhtmly3NMY5IC01RyLD6tTahKQ==
-=pEET
------END PGP SIGNATURE-----
+ tools/perf/Documentation/perf-lock.txt        |  5 +
+ tools/perf/builtin-lock.c                     | 52 +++++++++--
+ tools/perf/util/bpf_lock_contention.c         |  1 +
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 91 ++++++++++++++++++-
+ tools/perf/util/lock-contention.h             |  1 +
+ 5 files changed, 136 insertions(+), 14 deletions(-)
 
---Sig_/ncoCfePRb/8QXm18p12O9Kq--
+
+base-commit: 17f248aa8664ff5b3643491136283e73b5c18166
+-- 
+2.39.1.519.gcb327c4b5f-goog
+
