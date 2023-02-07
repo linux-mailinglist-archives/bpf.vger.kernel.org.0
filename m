@@ -2,104 +2,339 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E395C68DCD9
-	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 16:22:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF5A68DD19
+	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 16:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231990AbjBGPWM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Feb 2023 10:22:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
+        id S232045AbjBGPef (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Feb 2023 10:34:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232463AbjBGPWH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Feb 2023 10:22:07 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77C034308
-        for <bpf@vger.kernel.org>; Tue,  7 Feb 2023 07:22:01 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id ea13so1716100pfb.13
-        for <bpf@vger.kernel.org>; Tue, 07 Feb 2023 07:22:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MoFBSQBzSf0fT1cCkVolLoLGiXS5UnRqIR10/tmIk94=;
-        b=RoIqDNrJkIIHVHTPel0ZaBUhNb0n/kA5KK7s0gplBhuaQyxi1cPqqzpFkQdoZzZsp+
-         YvpEiGr1gDnoPafg9nmE0w9Jo7j4ev+mDF7i4pwC/nsXygGihj6arBE3wRR7F7tDLUUP
-         xn5QiX9oFg3htVkVXflhc9/qEh5Igqmp7X66k=
+        with ESMTP id S232466AbjBGPeY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Feb 2023 10:34:24 -0500
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A583F38035
+        for <bpf@vger.kernel.org>; Tue,  7 Feb 2023 07:34:23 -0800 (PST)
+Received: by mail-qt1-f178.google.com with SMTP id w3so17096833qts.7
+        for <bpf@vger.kernel.org>; Tue, 07 Feb 2023 07:34:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MoFBSQBzSf0fT1cCkVolLoLGiXS5UnRqIR10/tmIk94=;
-        b=lIgnLvSIeztrO4BijvP+OtMP5WoHvkq6/UnCYgctyBQTtYrw2UmBeieptX1lZOj56l
-         w5ka/HskrkCnpvuaWVX0ME40Mkqg70zdbEPykQTNhim9sicuY9y4/zIZ2j31Ad9xZYPK
-         aJdW6EOSa6oj1U/7hgN5S7+afD2hD0Or6rM954VRvW+Fg8/lc2qmZM5kFbwIs8oTeQTN
-         O+5IIuwOCKmkUVVKRcrpXAlKHFSAXjuYzu43BY5p7lbr4SNy/5rLmZQcZl0em/XnRxeT
-         Nzw7eeCTHdnbw1N5OL6wZNp8/XsBxmByT+qxfOzwubqYISjM4eF3cbz1cU/0sNwnIm/W
-         VlIw==
-X-Gm-Message-State: AO0yUKV99zB6oq18DMxpC39ktLIdBl+TZbYtSeo4cQcE+v4brtsD7Cao
-        nqMgoRLYQfxGl7z4Ks0kviNocQN6oE+zTYm9iIe1/w==
-X-Google-Smtp-Source: AK7set/0dDymGJs4u4sgWflAsdvJCYNyuErraEjKyIDbTpV24ZUFw+mbiYTq1CpYkfoC+9AvD31u1QIn1095Vh9xPOA=
-X-Received: by 2002:a62:3808:0:b0:5a6:5841:6570 with SMTP id
- f8-20020a623808000000b005a658416570mr923337pfa.51.1675783321117; Tue, 07 Feb
- 2023 07:22:01 -0800 (PST)
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7ExZwnS9J++PvOSyh/nwAGeW+qal9kZeJBKwsuQBF0k=;
+        b=z3DsovRb0k2fBl2btms3M4cizXuZ4qX2owTZtud+mDKh/4K9YXlGNGQ0nN+l/V4kEU
+         KbmIkhs1BQfP57p5OJhNr/fRLeIelrDyiSdfAknS5cRShywOb4JNth4vfiot6kWls26u
+         tRMy5QyuxE0tXy3uAwYqCnCRcqwQOEg9+eoELvVuXvat5Qa3YuncO3nekwGGAHDi5jmz
+         88BUEojjL3uqb5QGJAGopMP/CJfx22SlVbp977aoYzJzIWOSps5gkJ+vrdig8lt7Cu1I
+         NDgdPfppurSHDI6ARcxOuCF7BBme/YCDUfgBBIGl3q/OLWJ9O33xtGSPeVEVoAVmF4bC
+         GEYg==
+X-Gm-Message-State: AO0yUKU+omHlX1TKhgpVug294jon2PsEcJIy2wNBxxwfFTOVZKjGmVqO
+        75NZiJilM4o3wdRzV4o2UzU=
+X-Google-Smtp-Source: AK7set/3zgcfWMu01AAx8ePW1FLQ4WmuTmtoBVW4hEh6jyOleOi5ui2VrLhzYSg011Wyq1oL/WbewA==
+X-Received: by 2002:ac8:5884:0:b0:3b9:b1ea:2d0f with SMTP id t4-20020ac85884000000b003b9b1ea2d0fmr6227460qta.34.1675784062545;
+        Tue, 07 Feb 2023 07:34:22 -0800 (PST)
+Received: from maniforge.lan ([2620:10d:c091:480::1:9bc3])
+        by smtp.gmail.com with ESMTPSA id t9-20020a05620a034900b0071eddd3bebbsm9622985qkm.81.2023.02.07.07.34.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Feb 2023 07:34:21 -0800 (PST)
+Date:   Tue, 7 Feb 2023 09:34:26 -0600
+From:   David Vernet <void@manifault.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Artem Savkov <asavkov@redhat.com>
+Subject: Re: [PATCHv3 bpf-next 7/9] selftests/bpf: Allow to use kfunc from
+ testmod.ko in test_verifier
+Message-ID: <Y+JvgtTQvT7kd9wz@maniforge.lan>
+References: <20230203162336.608323-1-jolsa@kernel.org>
+ <20230203162336.608323-8-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <20230201163420.1579014-1-revest@chromium.org> <20230201163420.1579014-2-revest@chromium.org>
- <Y9vPAdFBJF/gKXaO@FVFF77S0Q05N.cambridge.arm.com> <CABRcYmLrYXuP-yio0dy4WskENn81Qw2WS0ArMp=rdHuiGyjYhQ@mail.gmail.com>
-In-Reply-To: <CABRcYmLrYXuP-yio0dy4WskENn81Qw2WS0ArMp=rdHuiGyjYhQ@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 7 Feb 2023 16:21:49 +0100
-Message-ID: <CABRcYmL7exDGnBTzj-DHLSf49_tz6bSDfjn9CDLO9ZEbfFyh-w@mail.gmail.com>
-Subject: Re: [PATCH 1/8] ftrace: Replace uses of _ftrace_direct APIs with _ftrace_direct_multi
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230203162336.608323-8-jolsa@kernel.org>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 2, 2023 at 6:37 PM Florent Revest <revest@chromium.org> wrote:
->
-> On Thu, Feb 2, 2023 at 4:02 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > Looking at samples/ftrace/, as of this patch we have a few samples that are
-> > almost identical, modulo the function being traced, and some different register
-> > shuffling for arguments:
-> >
-> > * ftrace-direct.c and ftrace-direct-multi.c
-> > * ftrace-direct-modify.c and ftrace-direct-modify
-> >
-> > ... perhaps it would be better to just delete the !multi versions ?
->
-> The multi versions hook two functions and the !multi hook just one but
-> I agree that this granularity in coverage is probably just a
-> maintenance burden and doesn't help with much! :)
-> I'll delete the !multi in v2, as part of the patch 2 and patch 1 will
-> just migrate the selftest to use the multi API.
+On Fri, Feb 03, 2023 at 05:23:34PM +0100, Jiri Olsa wrote:
+> Currently the test_verifier allows test to specify kfunc symbol
+> and search for it in the kernel BTF.
+> 
+> Adding the possibility to search for kfunc also in bpf_testmod
+> module when it's not found in kernel BTF.
+> 
+> To find bpf_testmod btf we need to get back SYS_ADMIN cap.
 
-Actually, I'm not sure anymore if we should delete the !multi samples...
+This observation and any subsequent discussion is certainly outside the
+scope of your patch set, but it feels like a bit of a weird /
+inconsistent UX to force users to have SYS_ADMIN cap for loading kfuncs
+from modules, but not from vmlinux BTF.
 
-I realized that they are also used as part of the ftrace selftests in:
-- tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc
-- tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc
+I realize that you need to have SYS_ADMIN cap for BPF_PROG_GET_FD_BY_ID,
+BPF_MAP_GET_FD_BY_ID, etc, so the consistency makes sense there, but it
+would be nice if we could eventually make the UX consistent for programs
+linking against module kfuncs, because I don't really see the difference
+in terms of permissions from the user's perspective.
 
-It does not really make sense to use the ftrace-direct-muti sample as
-a drop-in replacement for the ftrace-direct sample there since they
-don't really do the same thing so we would either need to change the
-test a bit or the multi sample.
-Also, we would still need to adapt the ftrace-direct-too sample since
-it has no multi equivalent and is required there.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-It's certainly doable but now it feels to me like going one step too
-far with the refactoring within the scope of this series. Do you think
-it's worth it ? I have 70% of that work done already so I'm happy to
-finish it but I thought I should check back before sending a v2 that's
-more complex than anticipated.
+LGTM in general -- just left one comment below.
+
+Acked-by: David Vernet <void@manifault.com>
+
+> ---
+>  tools/testing/selftests/bpf/test_verifier.c | 161 +++++++++++++++++---
+>  1 file changed, 139 insertions(+), 22 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+> index 14f11f2dfbce..0a570195be37 100644
+> --- a/tools/testing/selftests/bpf/test_verifier.c
+> +++ b/tools/testing/selftests/bpf/test_verifier.c
+> @@ -879,8 +879,140 @@ static int create_map_kptr(void)
+>  	return fd;
+>  }
+>  
+> +static void set_root(bool set)
+> +{
+> +	__u64 caps;
+> +
+> +	if (set) {
+> +		if (cap_enable_effective(1ULL << CAP_SYS_ADMIN, &caps))
+> +			perror("cap_disable_effective(CAP_SYS_ADMIN)");
+> +	} else {
+> +		if (cap_disable_effective(1ULL << CAP_SYS_ADMIN, &caps))
+> +			perror("cap_disable_effective(CAP_SYS_ADMIN)");
+> +	}
+> +}
+> +
+> +static inline __u64 ptr_to_u64(const void *ptr)
+> +{
+> +	return (__u64) (unsigned long) ptr;
+
+Small nit / suggestion -- IMO this is slightly preferable just to keep
+it a bit more in-line with the C-standard:
+
+return (uintptr_t)ptr;
+
+The standard of course doesn't dictate that you can do
+ptr -> uintptr_t -> __u64 -> uintptr_t -> ptr, but it at least does dictate that you can do
+ptr -> uintptr_t -> ptr, whereas it does not say the same for
+ptr -> unsigned long -> ptr
+
+Also, I don't think the 'inline' keyword is necessary. The compiler will
+probably figure this out on its own.
+
+> +}
+> +
+> +static struct btf *btf__load_testmod_btf(struct btf *vmlinux)
+
+Would be nice if some of this code could be shared from libbpf at some
+point, but ok, a cleanup for another time.
+
+> +{
+> +	struct bpf_btf_info info;
+> +	__u32 len = sizeof(info);
+> +	struct btf *btf = NULL;
+> +	char name[64];
+> +	__u32 id = 0;
+> +	int err, fd;
+> +
+> +	/* Iterate all loaded BTF objects and find bpf_testmod,
+> +	 * we need SYS_ADMIN cap for that.
+> +	 */
+> +	set_root(true);
+> +
+> +	while (true) {
+> +		err = bpf_btf_get_next_id(id, &id);
+> +		if (err) {
+> +			if (errno == ENOENT)
+> +				break;
+> +			perror("bpf_btf_get_next_id failed");
+> +			break;
+> +		}
+> +
+> +		fd = bpf_btf_get_fd_by_id(id);
+> +		if (fd < 0) {
+> +			if (errno == ENOENT)
+> +				continue;
+> +			perror("bpf_btf_get_fd_by_id failed");
+> +			break;
+> +		}
+> +
+> +		memset(&info, 0, sizeof(info));
+> +		info.name_len = sizeof(name);
+> +		info.name = ptr_to_u64(name);
+> +		len = sizeof(info);
+> +
+> +		err = bpf_obj_get_info_by_fd(fd, &info, &len);
+> +		if (err) {
+> +			close(fd);
+> +			perror("bpf_obj_get_info_by_fd failed");
+> +			break;
+> +		}
+> +
+> +		if (strcmp("bpf_testmod", name)) {
+> +			close(fd);
+> +			continue;
+> +		}
+> +
+> +		btf = btf__load_from_kernel_by_id_split(id, vmlinux);
+> +		if (!btf) {
+> +			close(fd);
+> +			break;
+> +		}
+> +
+> +		/* We need the fd to stay open so it can be used in fd_array.
+> +		 * The final cleanup call to btf__free will free btf object
+> +		 * and close the file descriptor.
+> +		 */
+> +		btf__set_fd(btf, fd);
+> +		break;
+> +	}
+> +
+> +	set_root(false);
+> +	return btf;
+> +}
+> +
+> +static struct btf *testmod_btf;
+> +static struct btf *vmlinux_btf;
+> +
+> +static void kfuncs_cleanup(void)
+> +{
+> +	btf__free(testmod_btf);
+> +	btf__free(vmlinux_btf);
+> +}
+> +
+> +static void fixup_prog_kfuncs(struct bpf_insn *prog, int *fd_array,
+> +			      struct kfunc_btf_id_pair *fixup_kfunc_btf_id)
+> +{
+> +	/* Patch in kfunc BTF IDs */
+> +	while (fixup_kfunc_btf_id->kfunc) {
+> +		int btf_id = 0;
+> +
+> +		/* try to find kfunc in kernel BTF */
+> +		vmlinux_btf = vmlinux_btf ?: btf__load_vmlinux_btf();
+> +		if (vmlinux_btf) {
+> +			btf_id = btf__find_by_name_kind(vmlinux_btf,
+> +							fixup_kfunc_btf_id->kfunc,
+> +							BTF_KIND_FUNC);
+> +			btf_id = btf_id < 0 ? 0 : btf_id;
+> +		}
+> +
+> +		/* kfunc not found in kernel BTF, try bpf_testmod BTF */
+> +		if (!btf_id) {
+> +			testmod_btf = testmod_btf ?: btf__load_testmod_btf(vmlinux_btf);
+> +			if (testmod_btf) {
+> +				btf_id = btf__find_by_name_kind(testmod_btf,
+> +								fixup_kfunc_btf_id->kfunc,
+> +								BTF_KIND_FUNC);
+> +				btf_id = btf_id < 0 ? 0 : btf_id;
+> +				if (btf_id) {
+> +					/* We put bpf_testmod module fd into fd_array
+> +					 * and its index 1 into instruction 'off'.
+> +					 */
+> +					*fd_array = btf__fd(testmod_btf);
+> +					prog[fixup_kfunc_btf_id->insn_idx].off = 1;
+> +				}
+> +			}
+> +		}
+> +
+> +		prog[fixup_kfunc_btf_id->insn_idx].imm = btf_id;
+> +		fixup_kfunc_btf_id++;
+> +	}
+> +}
+> +
+>  static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
+> -			  struct bpf_insn *prog, int *map_fds)
+> +			  struct bpf_insn *prog, int *map_fds, int *fd_array)
+>  {
+>  	int *fixup_map_hash_8b = test->fixup_map_hash_8b;
+>  	int *fixup_map_hash_48b = test->fixup_map_hash_48b;
+> @@ -905,7 +1037,6 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
+>  	int *fixup_map_ringbuf = test->fixup_map_ringbuf;
+>  	int *fixup_map_timer = test->fixup_map_timer;
+>  	int *fixup_map_kptr = test->fixup_map_kptr;
+> -	struct kfunc_btf_id_pair *fixup_kfunc_btf_id = test->fixup_kfunc_btf_id;
+>  
+>  	if (test->fill_helper) {
+>  		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
+> @@ -1106,25 +1237,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
+>  		} while (*fixup_map_kptr);
+>  	}
+>  
+> -	/* Patch in kfunc BTF IDs */
+> -	if (fixup_kfunc_btf_id->kfunc) {
+> -		struct btf *btf;
+> -		int btf_id;
+> -
+> -		do {
+> -			btf_id = 0;
+> -			btf = btf__load_vmlinux_btf();
+> -			if (btf) {
+> -				btf_id = btf__find_by_name_kind(btf,
+> -								fixup_kfunc_btf_id->kfunc,
+> -								BTF_KIND_FUNC);
+> -				btf_id = btf_id < 0 ? 0 : btf_id;
+> -			}
+> -			btf__free(btf);
+> -			prog[fixup_kfunc_btf_id->insn_idx].imm = btf_id;
+> -			fixup_kfunc_btf_id++;
+> -		} while (fixup_kfunc_btf_id->kfunc);
+> -	}
+> +	fixup_prog_kfuncs(prog, fd_array, test->fixup_kfunc_btf_id);
+>  }
+>  
+>  struct libcap {
+> @@ -1451,6 +1564,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+>  	int run_errs, run_successes;
+>  	int map_fds[MAX_NR_MAPS];
+>  	const char *expected_err;
+> +	int fd_array[2] = { -1, -1 };
+>  	int saved_errno;
+>  	int fixup_skips;
+>  	__u32 pflags;
+> @@ -1464,7 +1578,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+>  	if (!prog_type)
+>  		prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+>  	fixup_skips = skips;
+> -	do_test_fixup(test, prog_type, prog, map_fds);
+> +	do_test_fixup(test, prog_type, prog, map_fds, &fd_array[1]);
+>  	if (test->fill_insns) {
+>  		prog = test->fill_insns;
+>  		prog_len = test->prog_len;
+> @@ -1498,6 +1612,8 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+>  	else
+>  		opts.log_level = DEFAULT_LIBBPF_LOG_LEVEL;
+>  	opts.prog_flags = pflags;
+> +	if (fd_array[1] != -1)
+> +		opts.fd_array = &fd_array[0];
+>  
+>  	if ((prog_type == BPF_PROG_TYPE_TRACING ||
+>  	     prog_type == BPF_PROG_TYPE_LSM) && test->kfunc) {
+> @@ -1740,6 +1856,7 @@ static int do_test(bool unpriv, unsigned int from, unsigned int to)
+>  	}
+>  
+>  	unload_bpf_testmod(verbose);
+> +	kfuncs_cleanup();
+>  
+>  	printf("Summary: %d PASSED, %d SKIPPED, %d FAILED\n", passes,
+>  	       skips, errors);
+> -- 
+> 2.39.1
+> 
