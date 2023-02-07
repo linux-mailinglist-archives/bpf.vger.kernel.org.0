@@ -2,130 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E66B368CCA8
-	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 03:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A753368CF21
+	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 06:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbjBGCjV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Feb 2023 21:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39888 "EHLO
+        id S229563AbjBGFvz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Feb 2023 00:51:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjBGCjV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Feb 2023 21:39:21 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56B11BCF;
-        Mon,  6 Feb 2023 18:39:19 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id x8so8503149ybt.13;
-        Mon, 06 Feb 2023 18:39:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X/DM3ZHFWH9+5S1qy4cWZ8ku1jvaebrV19OOb7VPWCE=;
-        b=E4fEMnY3w6e/c+JBeP/QCib+VbVtKssBHY7FUZxS0phG4XsyqJMZrF0ZsO+zJ1epw3
-         HAtT/bA6uxjwaVyMzsMHcPhITBLECR1tX/9AI77Xel6kBlG4dPeCJadLrn8Rx0ydq9nN
-         aaYHn/Q0Izel+P2z1Nyb2IfWsmarbuSv/Wqo6BMwKyLtgnEhBugkPLcQcNsft1HbliEV
-         bUDgENAF2xwW6V8V2XxgMEBjtKQYyctlihlNrcoBCU0TBDUZzXqjlZkZhUKegm1Ke2CR
-         dLWM9OMM1fhB5ByOwtI4DgefYMgbfVPgw47R/tiRhYCOBT8YNZeMrIKLZoY2U9s2/INJ
-         DSSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X/DM3ZHFWH9+5S1qy4cWZ8ku1jvaebrV19OOb7VPWCE=;
-        b=JdrNyH0pOOqbJGFvn14PK0iTTgQb3cnW9ChWVYUdstWuZ5w6KudUJwGyWerk2kIDMf
-         2eYMejHACS7z6pCM/k8vRfix/6odDhHpfKVnEW7PYczvc2VDvii2jh120aOB2OwfFucU
-         Ds/rfQSV84enYdIe4f0MdjI6kUwq1C1EV+DA9asv1lMFUv8sd6C7rLBQZe0/Hkwq2y84
-         vUcf1iIPS8p5NhnNO27HSvZ13X0GUDMuTIQy6zO4kfr0jI51m2AB7+TaJtb0gXcHQmQV
-         DMEv8ZQbqtQ3u/QajjAoTGD8R9vNCV0JsIoKKw7b1TY5c0HUAp9vW6BbVFkaHEwi6fkc
-         UeqQ==
-X-Gm-Message-State: AO0yUKXGr7jeGz5KBeTJe+neNR3pokZ1hlEO1HETpS67sQfyeZTx73Q5
-        xMFuHCQ+YUR3OWp5fXnHsFOjnqgdfaRMEHsTlq6i3+CL
-X-Google-Smtp-Source: AK7set9x+pCh4zkjdzoTJfNRupzo3lOSBI7ynBJQraf4uzfSI6TylOwOwDUh2q7lsTxp2cIWb5YqYbMPMgYXsfUBKhE=
-X-Received: by 2002:a25:2414:0:b0:86a:3232:d062 with SMTP id
- k20-20020a252414000000b0086a3232d062mr243212ybk.222.1675737559025; Mon, 06
- Feb 2023 18:39:19 -0800 (PST)
+        with ESMTP id S229831AbjBGFvx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Feb 2023 00:51:53 -0500
+Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8E24688;
+        Mon,  6 Feb 2023 21:51:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1675749108;
+        bh=Uu61Vvpzjinsk/7u3/2Vpkwh2/C9o/qwdZRPl3mAju0=;
+        h=From:To:Cc:Subject:Date;
+        b=k/28aNCZ1pbZo/hziwCSRJIUND6/wtWkgTZYt8y5Wne7zhTcGIoThOXThT2CDHtZH
+         dHv9efK4tz5Tm+sywDdTuRknyrWMJgENIiPcVxhYGcQNzm/CPbBjm2A+4SbOCN2xAT
+         KZEBQD2rm16AOwxjfEwkCBoUp66A71If3znTu0t0=
+Received: from localhost.localdomain ([39.156.73.13])
+        by newxmesmtplogicsvrszc1-0.qq.com (NewEsmtp) with SMTP
+        id CECA622A; Tue, 07 Feb 2023 13:51:44 +0800
+X-QQ-mid: xmsmtpt1675749104t5lb8r96s
+Message-ID: <tencent_FB3E886D062242FF59A997492A3BAF2BA308@qq.com>
+X-QQ-XMAILINFO: MfWa+adQHcqu+8EeLx0JfjUibiXx6BH1nky7gewpqUpbCit5tXLw7ZM97tuebC
+         JDsGBtRhHUZn+vAw8CVyztAWNOusoMiJECiPyTf7q+kiP6GJaC8qkxEO2cGrzxTswH208L179I4j
+         lLls9pAM6hCJwnBPsgVNKmqQqP1CJfHKiySD0UEe9YNBizMxY9d9E2IAUqLm8DiBEVv96M2h+AqF
+         o2r6K4ip7RZTdLUQS9liHjTCxGDv+c/X1ESN0EU9jtAVSa+Cp9cdEteAr74YafNbFrZQSyotfFIF
+         Ied0z+S9YRPkiyRgEg7Tjxv+EOKqbWnfi4L5/3oY65hZpFBTkqdR2bBX462ncPTDJVEmj4e69TKg
+         hfzZH4eShxjPmtm22p5gqiatZ+nKo0eBgmdZOBOi8Ar0oB3FqtMCFUeWJMoqLmQW+gRbzIsz6drT
+         cJJx6/uQVTHKhH+zkpKNjQxlyV09QwLZ1fUiRYwMZJY7qgudiqNezI5o/xw9VXtGM3gFylHhRfFI
+         FDRITUY7lE56bi0jDbiA2a6jcHmUrDUQIrj3Q5s+Ug96po0E68999C9f1Ax2kLQpOfv6pi1evzy+
+         u1+Qp9noah2MbSzXXFkqIVeyPEBoOgVsjOUJUWllmh976XhweHUdviBWBIsBKCuD8ymrbwq8kuqZ
+         KjNcOeq5/5W8O43R30BxUTheGUWN3cInKnqsgoxVoM4UHg6kLOkZ8SzAg+kBXdtl0HdKf6L2es76
+         dfNGCVlvBf/IkyEBFP3XhySW5Wi/zKjAs0tN6PjIOQqTy8I3n361CmueOuP/VskXeRuMKV4TlNw1
+         mc/cXMIZXy2RVXHvETx/GtlX+Kei8n5BzDbmroC1FU3c7TZsv1cvXF3r66HG1O3RawS2mL6q3n/E
+         Bipiw1MwS9ATcZjCfN7eKeFsY81z4jgfvfrQf7x6+UEwvZUypjaOCqqZb0wDHXTk0IOkwMx8qJRQ
+         9bNZD6oPdUyxzo25P/6E4tHWVCCeyK0WzU+S+oSyg=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     ast@kernel.org
+Cc:     Rong Tao <rongtao@cestc.cn>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
+        Tools)), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] samples: bpf: syscall_tp: Add syscall openat2 enter/exit tracepoint
+Date:   Tue,  7 Feb 2023 13:51:43 +0800
+X-OQ-MSGID: <20230207055143.37936-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-References: <20230203031742.1730761-1-imagedong@tencent.com>
- <20230203031742.1730761-3-imagedong@tencent.com> <CAEf4BzYh90NyyYvfTT=M=-KLspydMX4PZK8jCwNDydAP=kFgYw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYh90NyyYvfTT=M=-KLspydMX4PZK8jCwNDydAP=kFgYw@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Tue, 7 Feb 2023 10:39:07 +0800
-Message-ID: <CADxym3a6_wBHW_c_ZYtZ5QXbbunhKxau6k-fn4TNrn+6qzW6fw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add test for legacy/perf
- kprobe/uprobe attach mode
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     alan.maguire@oracle.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 7, 2023 at 4:05 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Feb 2, 2023 at 7:18 PM <menglong8.dong@gmail.com> wrote:
-> >
-> > From: Menglong Dong <imagedong@tencent.com>
-> >
-> > Add the testing for kprobe/uprobe attaching in legacy and perf mode.
-> > And the testing passed:
-> >
-> > ./test_progs -t attach_probe
-> > $5       attach_probe:OK
-> > Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> >
-> > Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> > ---
->
-> Do you mind refactoring attach_probe test into multiple subtests,
-> where each subtest will only test one of the attach mode and type. The
-> reason is that libbpf CI runs tests with latest selftests and libbpf
-> against old kernels (4.9 and 5.5, currently). Due to attach_probe
-> testing all these uprobe/kprobe attach modes with extra features (like
-> cookie, ref count, etc), we had to disable attach_probe test in libbpf
-> CI on old kernels.
->
-> If we can split each individual uprobe/kprobe mode, that will give us
-> flexibility to selectively allowlist those tests that don't force
-> libbpf to use newer features (like cookies, LINK or PERF mode, etc).
->
-> It would be a great improvement and highly appreciated! If you don't
-> mind doing this, let's do the split of existing use cases into subtest
-> in a separate patch, and then add PERF/LEGACY/LINK mode tests on top
-> of that patch.
->
+From: Rong Tao <rongtao@cestc.cn>
 
-Of course, with pleasure. For the existing use cases, we split it into
-subtests, such as:
+commit fe3300897cbf("samples: bpf: fix syscall_tp due to unused syscall")
+add openat() syscall trapoints, this submit support openat2().
 
-  kprobe/kretprobe auto attach
-  kprobe/kretprobe manual attach
-  uprobe/uretprobe ref_ctr test
-  uprobe/uretprobe auto attach
-  sleepable kprobe/uprobe
-  ......
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ samples/bpf/syscall_tp_kern.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Am I right?
+diff --git a/samples/bpf/syscall_tp_kern.c b/samples/bpf/syscall_tp_kern.c
+index 50231c2eff9c..e7121dd1ee37 100644
+--- a/samples/bpf/syscall_tp_kern.c
++++ b/samples/bpf/syscall_tp_kern.c
+@@ -58,6 +58,13 @@ int trace_enter_open_at(struct syscalls_enter_open_args *ctx)
+ 	return 0;
+ }
+ 
++SEC("tracepoint/syscalls/sys_enter_openat2")
++int trace_enter_open_at2(struct syscalls_enter_open_args *ctx)
++{
++	count(&enter_open_map);
++	return 0;
++}
++
+ SEC("tracepoint/syscalls/sys_exit_open")
+ int trace_enter_exit(struct syscalls_exit_open_args *ctx)
+ {
+@@ -71,3 +78,10 @@ int trace_enter_exit_at(struct syscalls_exit_open_args *ctx)
+ 	count(&exit_open_map);
+ 	return 0;
+ }
++
++SEC("tracepoint/syscalls/sys_exit_openat2")
++int trace_enter_exit_at2(struct syscalls_exit_open_args *ctx)
++{
++	count(&exit_open_map);
++	return 0;
++}
+-- 
+2.39.1
 
-Thanks!
-Dongmeng Long
-
->
-> >  .../selftests/bpf/prog_tests/attach_probe.c   | 61 ++++++++++++++++++-
-> >  .../selftests/bpf/progs/test_attach_probe.c   | 32 ++++++++++
-> >  2 files changed, 92 insertions(+), 1 deletion(-)
-> >
->
-> [...]
