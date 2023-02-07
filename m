@@ -2,161 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B6F68DFF5
-	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 19:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B72268E016
+	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 19:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbjBGS01 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Feb 2023 13:26:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
+        id S232660AbjBGScT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Feb 2023 13:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbjBGS0O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Feb 2023 13:26:14 -0500
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA12ABBAE
-        for <bpf@vger.kernel.org>; Tue,  7 Feb 2023 10:25:52 -0800 (PST)
-Received: by mail-qt1-f170.google.com with SMTP id h24so17761241qta.12
-        for <bpf@vger.kernel.org>; Tue, 07 Feb 2023 10:25:52 -0800 (PST)
+        with ESMTP id S232492AbjBGScJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Feb 2023 13:32:09 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AD6EC5A;
+        Tue,  7 Feb 2023 10:31:50 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id l14so7353026eds.4;
+        Tue, 07 Feb 2023 10:31:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hRPGNYx4zbkv1vK8uhe4WUCPicC2777gx0KAHFULHZs=;
+        b=RtWKXiMTdXXGVxqDHUyLmmVnzRy7u20T0gb5ZlUTdaQiGgRB4H5I0bAb9ZyE0X/eZQ
+         6pnweIOvqDggJhafj2YVp921cAi1cY6D2IjSGTXcI3xoM2KPpiozIz+w7QmSbMHwmJNP
+         mlTRBCLUPMXrLSxxe3sudEDhLV8VtqAwlUZoyJefvEYht4BXGVc6v2NVsc2hQydVk5Za
+         2PxIZ/eHBtK2YcfWCHHtSnPQG7cHgQO3hRIZFS1AWk/FGNPICEsB04gAIl/qk+rx9FBf
+         XLPcC4SsYO0fX+L3LwaOzcqTcliP6cTyxuMKxc8BYcOvJUzLPXV8DuF6zjLLxQixFvXT
+         xURQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GxF3m0wkFWNxXYpyLaviTEWCnYsxyIrprcvTzUEetXk=;
-        b=IX6CKKhuGVQsw1/Gpjuc1ROL65WRFdFzqfo1wREHhFDXBdsA4JU/MYKCLjx8XsFELr
-         3T1gYoQbGBQPyGAJBqO+PlN36B4IcGKnya+LxqbCTPeoSNlmvyOXNUJFCN0Ih1PXeyB3
-         xH45eJB9G1/mMAM5iG/xg9kG7dFDQA0P8+zDqtZkqf1HLRvkk5aOyOoZYrljIOvgs954
-         TLivqWtu33uCD8BJpHIefdcXW0JVHjKhCnL+Jk7qSMg20zVMWDcpxNmQ1u542KJIrplb
-         LdWX+vdiq+JC+laBGaO29K/WL9unKuRffJy+xCBTyG0Av/4M88qn1Q27oKOZxh0aGMWc
-         3x6A==
-X-Gm-Message-State: AO0yUKXWj4CYvpJjO5PdNMRFbic59C4alv0BnJ3V8FpvzQ6zYMzH2hxM
-        ML6GJUf0+N3UIk7mgL2TpLOo/EFeTkxfEA==
-X-Google-Smtp-Source: AK7set9/MRGCE/Sa2f2mcdSR5X2TZqzWvhCo0TofhH/BE0ydmd1oEweqyv8yFdQAu8GeV04uGu+sNA==
-X-Received: by 2002:a05:622a:1a03:b0:3b8:2dac:b5e1 with SMTP id f3-20020a05622a1a0300b003b82dacb5e1mr6692127qtb.37.1675794311931;
-        Tue, 07 Feb 2023 10:25:11 -0800 (PST)
-Received: from maniforge.lan ([2620:10d:c091:480::1:3f8])
-        by smtp.gmail.com with ESMTPSA id n3-20020ac86743000000b003b80a69d353sm9785921qtp.49.2023.02.07.10.25.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 10:25:11 -0800 (PST)
-Date:   Tue, 7 Feb 2023 12:25:16 -0600
-From:   David Vernet <void@manifault.com>
-To:     Hao Luo <haoluo@google.com>
-Cc:     lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: Mapping local-storage maps into user space
-Message-ID: <Y+KXjKK+ncbket1C@maniforge.lan>
-References: <Y9LQVU2uz9SzYARP@maniforge>
- <CA+khW7iLVbK-QSgfR6OwUb_Hzs__=qsH6ho8gKf2vVqkp6Z9LQ@mail.gmail.com>
+        bh=hRPGNYx4zbkv1vK8uhe4WUCPicC2777gx0KAHFULHZs=;
+        b=pLvMyps8ERlTXfswikiq88HSqL9JuBHzwcb/A+jxKKU3MIEGn9u249/MEIj0N/VrqA
+         M0RDYtjTM3dyHyT/Wd/7tIs3dbmEgsr/drOlfSgISAFtksuyFvH4AUMA2Xfj9dm0y+zA
+         I9FFaOA/Unq3AR3Du2QmHC3Bv0b9SQ8GwLUpbN2hixW3RkSdIgyRzNnVbRBOrTBtoGKm
+         Nccr200sY5qS+C+/Zi05KLamaDtIwJWIZfTzsDaWgku2Tn34Mcps+8nmSn8KakF3vKF/
+         bJbuImVVOLru2x530+YEWN1wz8FaCqzruTuSn1diMD1Q/cxJH3BgUByOZNT4hnzoPWXO
+         92nw==
+X-Gm-Message-State: AO0yUKV+JtC9H2JiJTKn0c/X/gBuc8zGpCgCs8PPmTaOpY7fMx6WC6tK
+        LkCO0Ub72r+VZDc5H32ZxYK/UCpZzoUx1UF3rhGZGEzK2C8=
+X-Google-Smtp-Source: AK7set9uMqQcs3pigv7hrBgOYXeLNRFHwOkt11G6mk0WHPSfaIqWxVBTMZYp0BxWjRNd8yRNlcRViTFklg2hwzYIkBo=
+X-Received: by 2002:a50:9ecb:0:b0:49d:ec5d:28b4 with SMTP id
+ a69-20020a509ecb000000b0049dec5d28b4mr896586edf.6.1675794708436; Tue, 07 Feb
+ 2023 10:31:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+khW7iLVbK-QSgfR6OwUb_Hzs__=qsH6ho8gKf2vVqkp6Z9LQ@mail.gmail.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <d1440852-3a3b-7b46-6ad6-a06cd5a3fb62@uliege.be>
+In-Reply-To: <d1440852-3a3b-7b46-6ad6-a06cd5a3fb62@uliege.be>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 7 Feb 2023 10:31:37 -0800
+Message-ID: <CAADnVQL87R07UM3prVPwVmz_e2+uuO67QmXJxXqECgjt3S=54w@mail.gmail.com>
+Subject: Re: [QUESTION] bpf, iproute2/tc: verifier fails because of a map
+To:     Justin Iurman <justin.iurman@uliege.be>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 04:42:20PM -0800, Hao Luo wrote:
-> On Thu, Jan 26, 2023 at 11:11 AM David Vernet <void@manifault.com> wrote:
-> >
-> > Hi everyone,
-> >
-> > Another proposal from me for LSF/MM/BPF, and the last one for the time
-> > being. I'd like to discuss enabling local-storage maps (e.g.
-> > BPF_MAP_TYPE_TASK_STORAGE and BPF_MAP_TYPE_CGRP_STORAGE) to be r/o
-> > mapped directly into user space. This would allow for quick lookups of
-> > per-object state from user space, similar to how we allow it for
-> > BPF_MAP_TYPE_ARRAY, without having to do something like either of the
-> > following:
-> >
-> > - Allocating a statically sized BPF_MAP_TYPE_ARRAY which is >= the # of
-> >   possible local-storage elements, which is likely wasteful in terms of
-> >   memory, and which isn't easy to iterate over.
-> >
-> > - Use something like https://docs.kernel.org/bpf/bpf_iterators.html to
-> >   iterate over tasks or cgroups, and collect information for each which
-> >   is then dumped to user space. This would probably work, but it's not
-> >   terribly performant in that it requires copying memory, trapping into
-> >   the kernel, and full iteration even when it's only necessary to look
-> >   up e.g. a single element.
-> >
-> > Designing and implementing this would be pretty non-trivial. We'd have
-> > to probably do a few things:
-> >
-> > 1. Write an allocator that dynamically allocates statically sized
-> >    local-storage entries for local-storage maps, and populates them into
-> >    pages which are mapped into user space.
-> >
-> > 2. Come up with some idr-like mechanism for mapping a local-storage
-> >    object to an index into the mapping. For example, mapping a task with
-> >    global pid 12345 to BPF_MAP_TYPE_TASK_STORAGE index 5, and providing
-> >    ergonomic and safe ways to update these entries in the kernel and
-> >    communicate them to user space.
-> >
-> > 3. Related to point 1 above, come up with some way to dynamically extend
-> >    the user space mapping as more local-storage elements are added. We
-> >    could potentially reserve a statically sized VA range and map all
-> >    unused VA pages to the zero page, or instead possibly just leave them
-> >    unmapped until they're actually needed.
-> >
-> > There are a lot of open questions, but I think it could be very useful
-> > if we can make it work. Let me know what you all think.
-> >
-> 
-> Hi David,
-> 
-> I remember, I had a similar idea and played with it last year. I don't
-> recall why I needed that feature back then, probably looking for ways
-> to pass per-task information from userspace and read it from within
-> BPF. I sent an RFC to the mailing list [1]. You could take a look, see
-> whether it is of help to you.
-> 
-> [1] https://www.spinics.net/lists/bpf/msg57565.html
+On Tue, Feb 7, 2023 at 3:09 AM Justin Iurman <justin.iurman@uliege.be> wrot=
+e:
+>
+> Hello,
+>
+> CC'ing netdev as well, since I initially suspected an issue in iproute2.
+> However, after having recompiled iproute2 with libbpf, I'm still stuck
+> facing the same problem.
+>
+> Environment:
+>   - OS: Ubuntu 20.04.5 LTS
+>   - kernel: 5.4.0-137-generic x86_64 (CONFIG_DEBUG_INFO_BTF=3Dy)
+>   - clang version 10.0.0-4ubuntu1
+>   - iproute2-6.1.0, libbpf 1.2.0 (iproute2-ss200127 installed by default
+> without libbpf)
+>
+> Note: same result with kernel 6.2.0-rc6+ (net-next), as a test to be
+> aligned with latest iproute2 version (just in case).
+>
+> Long story short: I can't for the life of me make the ebpf program load
+> correctly with tc. What's the cause? Well, a map, and the verifier
+> doesn't like it. I must definitely be doing something wrong, but can't
+> find what. Here is a reproducible and minimal example:
+>
+> #include "vmlinux.h"
+> #include <bpf/bpf_helpers.h>
+>
+> #define TC_ACT_OK 0
+> #define MAX_BYTES 2048
+>
+> char _license[] SEC("license") =3D "GPL";
+>
+> struct mystruct_t {
+>         __u8 bytes[MAX_BYTES];
+> };
+>
+> struct {
+>         __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+>         __uint(key_size, sizeof(__u8));
+>         __uint(value_size, sizeof(struct mystruct_t));
+>         __uint(max_entries, 1);
+> } percpu_map SEC(".maps");
+>
+> SEC("egress")
+> int xxx(struct __sk_buff *skb)
+> {
+>         __u8 idx =3D 0;
+>         struct mystruct_t *x =3D bpf_map_lookup_elem(&percpu_map, &idx);
+>         return TC_ACT_OK;
+> }
+>
+>
+> Here is how I compile the whole thing:
+>
+> git clone --recursive --depth 1 https://github.com/libbpf/libbpf
+> ./deps/libbpf
+> make -j -C deps/libbpf/src/ BUILD_STATIC_ONLY=3Dy DESTDIR=3D"build"
+> INCLUDEDIR=3D LIBDIR=3D UAPIDIR=3D install
+>
+> git clone --recursive --depth 1 https://github.com/libbpf/bpftool
+> ./deps/bpftool
+> make -j -C deps/bpftool/src/
+> deps/bpftool/src/bpftool btf dump file /sys/kernel/btf/vmlinux format c
+>  > build/vmlinux.h
+>
+> clang -g -O2 -Wall -Wextra -target bpf -D__TARGET_ARCH_x86_64 -I build/
+> -c program.c -o build/program.o
+>
+>
+> I noticed that "clang-bpf-co-re" is OFF when compiling bpftool, don't
+> know if it's part of the problem or not. Here is what the "build"
+> directory looks like after that:
+>
+> $ ls -al build
+> [...]
+> drwxr-xr-x 2 justin justin    4096 f=C3=A9v  6 18:20 bpf
+> -rw-rw-r-- 1 justin justin 3936504 f=C3=A9v  6 18:20 libbpf.a
+> drwxr-xr-x 2 justin justin    4096 f=C3=A9v  6 18:20 pkgconfig
+> -rw-rw-r-- 1 justin justin   10592 f=C3=A9v  7 10:42 program.o
+> -rw-rw-r-- 1 justin justin 2467774 f=C3=A9v  7 10:42 vmlinux.h
+>
+>
+> And here is the verifier error I got when loading it with tc (qdisc
+> clsact already attached):
+>
+> $ sudo ../deps/iproute2/tc/tc filter add dev eno2 egress bpf da obj
+> program.o sec egress
+>
+> libbpf: map 'percpu_map': failed to create: Invalid argument(-22)
+> libbpf: failed to load object 'program.o'
+> Unable to load program
 
-Hi Hao,
+It's likely due to
+__uint(key_size, sizeof(__u8));
 
-Thanks for sharing that thread, it's great to see that there is already
-interest from other folks. It looks like the main use case you were
-trying to enable was passing an fd from user space to a TLS element for
-the current task, which the BPF prog would then pass to helpers that
-take an fd. There was a need specifically to enable this for
-unprivileged programs which can't e.g.  use bpf_prog_test_run to set the
-fd. Alexei proposed an alternative option in [0] which it seemed like
-everyone was on-board with.
-
-[0]: https://lore.kernel.org/bpf/20220329232956.gbsr65jdbe4lw2m6@ast-mbp/
-
-The use-case I was envisioning is a bit different in a couple ways:
-
-- I was anticipating that user space could map an entire task (or
-  cgroup, sk, etc) local-storage map, rather than a task only being able
-  to mmap its own TLS entry. I think this approach would be more
-  generalizable for other local-storage map types like cgroup and sk,
-  and would also be useful for ghOSt, sched_ext, etc. It could also
-  serve as a higher-performance alternative to bpf-iter for user space
-  applications that don't want to have to trap into the kernel.
-
-- I was envisioning this being read-only, though I expect it would be
-  possible to enable writeable mappings as well. The tricky part here is
-  that we will eventually certainly want to enable referenced kptrs in
-  local-storage maps, so it's not always safe to let user space mutate
-  local-storage entries.
-
-- I'd like to avoid allocating an entire page for each entry. Most of
-  the local-storage entries that I've used are far smaller than a page,
-  so it seems prudent to have some kind of allocator that we could use
-  to pack multiple entries into a single page. This would also have the
-  benefit of potentially allowing an O(1) lookup for a map entry as
-  well, rather than requiring us to do an O(n) iteration over a task's
-  local storage entries when doing a lookup from a program. This is a
-  super hand-wavey claim though -- a lot more details and validation
-  need to be ironed out.
-
-What do you think?
-
-Thanks,
-David
+https://docs.kernel.org/bpf/map_array.html
+"The key type is an unsigned 32-bit integer (4 bytes) and the map is
+of constant size."
