@@ -2,117 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 100A068DEBF
-	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 18:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BECF368DFDA
+	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 19:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbjBGRRJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Feb 2023 12:17:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
+        id S232535AbjBGSWq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Feb 2023 13:22:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232070AbjBGRQy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Feb 2023 12:16:54 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7673E63F
-        for <bpf@vger.kernel.org>; Tue,  7 Feb 2023 09:16:10 -0800 (PST)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 317Gns9A000470;
-        Tue, 7 Feb 2023 17:15:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2022-7-12;
- bh=snKeriiGA2pAFMRQpKK+bUr69rjXvxtjwCvtoBdthhI=;
- b=iwSpbUUUMNr1jdriNdMuwMpVrj+MYq/oQmMGN2cR9827Q1vMT42ctLTgugm22UYAH3N0
- cFOLsR1sq6t6HAocH32deKXs2yMscFJZktUZiWScFlF7GvfTjQ+5Y6SjA22B5yqLYkRN
- d+FeUei5eUUg8vtxFsT/e5aqquxtiV2KnFNuXdzmiFaSFAIQCNwmHttYWBlea1RZ91e9
- 5+oavVNDYUuEcCnOrjwgXr5xRpGOwf9e1WmrDh7pb9te7P9cGN/F8Yp/Nf6LmAcp/ymO
- GMKYtwSWM00zcUmG7fNycCy5aS49r54PRDEejs9OWn24MsWS1kG3bXpQFBE7l4fhhXZG Lg== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3nhdy165mg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Feb 2023 17:15:40 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 317GWgYb008568;
-        Tue, 7 Feb 2023 17:15:39 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3nhdt6e8f7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Feb 2023 17:15:39 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 317HF7gc007936;
-        Tue, 7 Feb 2023 17:15:38 GMT
-Received: from myrouter.uk.oracle.com (dhcp-10-175-168-65.vpn.oracle.com [10.175.168.65])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3nhdt6e7g6-9;
-        Tue, 07 Feb 2023 17:15:38 +0000
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     acme@kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        eddyz87@gmail.com, haoluo@google.com, jolsa@kernel.org,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        sinquersw@gmail.com, martin.lau@kernel.org, songliubraving@fb.com,
-        sdf@google.com, timo@incline.eu, yhs@fb.com, bpf@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v3 dwarves 8/8] dwarves: document --skip_encoding_btf_inconsistent_proto option
-Date:   Tue,  7 Feb 2023 17:15:02 +0000
-Message-Id: <1675790102-23037-9-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1675790102-23037-1-git-send-email-alan.maguire@oracle.com>
-References: <1675790102-23037-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-02-07_09,2023-02-06_03,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- mlxlogscore=999 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302070153
-X-Proofpoint-GUID: 2j34l7y7Zvr5NsUvbQqk5p5LL97l5SGa
-X-Proofpoint-ORIG-GUID: 2j34l7y7Zvr5NsUvbQqk5p5LL97l5SGa
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S231248AbjBGSWc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Feb 2023 13:22:32 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E043AD3B
+        for <bpf@vger.kernel.org>; Tue,  7 Feb 2023 10:22:01 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id u10so8618001wmj.3
+        for <bpf@vger.kernel.org>; Tue, 07 Feb 2023 10:22:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BPGxlRJ9ItK95pG3qxT0FtHt32aGKUoX/1BboanRbq8=;
+        b=Yqv6j338RUp7g0MUxWQki0lWU9i1bVwT9yl9yff3Egv6DDyoizhDSVWZuN/Fdfn9N4
+         4yc+0X2KBTxmHpm1cgXSbOXnYeQ+EuHtSg9rOnUMIgq+yNRqiyBgxRR7Wcav5IZjOTQI
+         JoPWNnnrH4g7Xc7XI4zXyI0eC2Lq3LuFnPvdk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BPGxlRJ9ItK95pG3qxT0FtHt32aGKUoX/1BboanRbq8=;
+        b=Sl4kNIVkCZSUoTWwqYejbEJtPty1FIJXugWSQy7pZfkEZzI8CIjr80TWBxn2LUEhAv
+         hpm5bOWa9MQ3AoQDZrg0ZY9myKdMCx16i/0SqagrQxICbytx27dJ3/GPAgaOj7scPUZT
+         t5uYhsIj0q0NB4UwKv5UC2FvywSWByMRZo9kLZS/Gp9dgk9/8Esa1UjmC7UNX0afwrpS
+         rsBjBomkMHbD2xEW/xpBk92TT+AwcZQoxYi6gj+si2NK8tf/LHM/reNgdoM7/flBdcB7
+         XXmynIx4FhF9E/aChaGQaIuI7wEv5YFAuP2v2ss6DefCFRF6E/iEBIHB9qHOddagB6LK
+         t39A==
+X-Gm-Message-State: AO0yUKWeytdZsXc4fCgA92DxNXzQ/sPEezo2on34K1zUEBaqgHhL8hIz
+        lsmVduO52qFGytdEjrexK/3DkQ==
+X-Google-Smtp-Source: AK7set8yvKzsPzd1NqHPmYe3Bs4uyOrcz69GoXhyQgH7RR75m6SdTWtnYOE7HjpEWd5FEYzEcVCv6Q==
+X-Received: by 2002:a05:600c:1d8b:b0:3dc:198c:dde with SMTP id p11-20020a05600c1d8b00b003dc198c0ddemr3770794wms.41.1675794120175;
+        Tue, 07 Feb 2023 10:22:00 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:9d:6:5307:c0c0:ff97:80de])
+        by smtp.gmail.com with ESMTPSA id n6-20020a05600c4f8600b003daf672a616sm15578369wmq.22.2023.02.07.10.21.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Feb 2023 10:21:59 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, mark.rutland@arm.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kpsingh@kernel.org,
+        jolsa@kernel.org, xukuohai@huaweicloud.com, lihuafei1@huawei.com,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH v2 00/10] Add ftrace direct call for arm64
+Date:   Tue,  7 Feb 2023 19:21:25 +0100
+Message-Id: <20230207182135.2671106-1-revest@chromium.org>
+X-Mailer: git-send-email 2.39.1.519.gcb327c4b5f-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Describe the option in the manual page.
+This series adds ftrace direct call support to arm64.
+This makes BPF tracing programs (fentry/fexit/fmod_ret/lsm) work on arm64.
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@chromium.org>
-Cc: Kui-Feng Lee <sinquersw@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@kernel.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Timo Beckers <timo@incline.eu>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
----
- man-pages/pahole.1 | 5 +++++
- 1 file changed, 5 insertions(+)
+It is meant to apply on top of the arm64 tree which contains Mark Rutland's
+series on CALL_OPS [1] under the for-next/ftrace tag.
+  https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
-diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
-index 1a85f6d..bfa20dc 100644
---- a/man-pages/pahole.1
-+++ b/man-pages/pahole.1
-@@ -229,6 +229,11 @@ Do not encode enum64 in BTF.
- .B \-\-skip_encoding_btf_type_tag
- Do not encode type tags in BTF.
- 
-+.TP
-+.B \-\-skip_encoding_btf_inconsistent_proto
-+Do not encode functions with multiple inconsistent prototypes or optimized-out
-+parameters.
-+
- .TP
- .B \-j, \-\-jobs=N
- Run N jobs in parallel. Defaults to number of online processors + 10% (like
+The first three patches consolidate the two existing ftrace APIs for registering
+direct calls. They are split to make the reviewers lives easier but if it'd be a
+preferred style, I'd be happy to squash them in the next revision.
+Currently, there is both a _ftrace_direct and _ftrace_direct_multi API. Apart
+from samples and selftests, there are no users of the _ftrace_direct API left
+in-tree so this deletes it and renames the _ftrace_direct_multi API to
+_ftrace_direct for simplicity.
+
+The main benefit of this refactoring is that, with the API that's left, an
+ftrace_ops backing a direct call will only ever point to one direct call. We can
+therefore store the direct called trampoline address in the ops (patch 4) and
+look it up from the ftrace trampoline on arm64 (patch 7) in the case when the
+destination would be out of reach of a BL instruction at the ftrace callsite.
+(in this case, ftrace_caller acts as a lightweight intermediary trampoline)
+
+This series has been tested on both arm64 and x86_64 with:
+1- CONFIG_FTRACE_SELFTEST (cf: patch 6)
+2- samples/ftrace/*.ko (cf: patch 9)
+3- tools/testing/selftests/bpf/test_progs (cf: patch 10)
+
+Changes since v1 [2]:
+- Updated the bpf selftests denylist according to newly passing tests
+- Refactored the ftrace_caller assembly according to Mark's feedback
+- Replaced Xu's stub trampoline patch for selftests with Mark's take on this
+- Fixed direct calls on arch WITH_REGS=y and WITH_ARGS=n (x86 32-bit)
+- Fixed the ftrace_regs stack alignment
+- Simplified get_ftrace_plt() (cf: patch 8)
+- Fixed a possible race when writing ops->direct_call
+- Renamed "custom_tramp" to "direct_tramp"
+- Referenced the commit id when mentioning a previous commit
+- Linked the arm64 tree in the cover letter
+
+This followed up on prior series by Xu Kuohai [3] and a RFC by me [4].
+
+1: https://lore.kernel.org/all/20230123134603.1064407-1-mark.rutland@arm.com/
+2: https://lore.kernel.org/all/20230201163420.1579014-1-revest@chromium.org/
+3: https://lore.kernel.org/all/20220913162732.163631-1-xukuohai@huaweicloud.com/
+4: https://lore.kernel.org/all/20221108220651.24492-1-revest@chromium.org/
+
+Florent Revest (9):
+  ftrace: Replace uses of _ftrace_direct APIs with _ftrace_direct_multi
+  ftrace: Remove the legacy _ftrace_direct API
+  ftrace: Rename _ftrace_direct_multi APIs to _ftrace_direct APIs
+  ftrace: Store direct called addresses in their ops
+  ftrace: Make DIRECT_CALLS work WITH_ARGS and !WITH_REGS
+  arm64: ftrace: Add direct call support
+  arm64: ftrace: Simplify get_ftrace_plt
+  arm64: ftrace: Add direct call trampoline samples support
+  selftests/bpf: Update the tests deny list on aarch64
+
+Mark Rutland (1):
+  ftrace: selftest: remove broken trace_direct_tramp
+
+ arch/arm64/Kconfig                           |   4 +
+ arch/arm64/include/asm/ftrace.h              |  22 +
+ arch/arm64/kernel/asm-offsets.c              |   6 +
+ arch/arm64/kernel/entry-ftrace.S             |  90 +++-
+ arch/arm64/kernel/ftrace.c                   |  46 +-
+ arch/s390/kernel/mcount.S                    |   5 +
+ arch/x86/kernel/ftrace_32.S                  |   5 +
+ arch/x86/kernel/ftrace_64.S                  |   4 +
+ include/linux/ftrace.h                       |  59 +--
+ kernel/bpf/trampoline.c                      |  14 +-
+ kernel/trace/Kconfig                         |   2 +-
+ kernel/trace/ftrace.c                        | 433 +------------------
+ kernel/trace/trace_selftest.c                |  23 +-
+ samples/Kconfig                              |   2 +-
+ samples/ftrace/ftrace-direct-modify.c        |  42 +-
+ samples/ftrace/ftrace-direct-multi-modify.c  |  44 +-
+ samples/ftrace/ftrace-direct-multi.c         |  26 +-
+ samples/ftrace/ftrace-direct-too.c           |  35 +-
+ samples/ftrace/ftrace-direct.c               |  33 +-
+ tools/testing/selftests/bpf/DENYLIST.aarch64 |  82 +---
+ 20 files changed, 382 insertions(+), 595 deletions(-)
+
 -- 
-2.31.1
+2.39.1.519.gcb327c4b5f-goog
 
