@@ -2,112 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A753368CF21
-	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 06:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9EDF68D00D
+	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 08:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbjBGFvz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Feb 2023 00:51:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
+        id S229695AbjBGHDR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Feb 2023 02:03:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbjBGFvx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Feb 2023 00:51:53 -0500
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8E24688;
-        Mon,  6 Feb 2023 21:51:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1675749108;
-        bh=Uu61Vvpzjinsk/7u3/2Vpkwh2/C9o/qwdZRPl3mAju0=;
-        h=From:To:Cc:Subject:Date;
-        b=k/28aNCZ1pbZo/hziwCSRJIUND6/wtWkgTZYt8y5Wne7zhTcGIoThOXThT2CDHtZH
-         dHv9efK4tz5Tm+sywDdTuRknyrWMJgENIiPcVxhYGcQNzm/CPbBjm2A+4SbOCN2xAT
-         KZEBQD2rm16AOwxjfEwkCBoUp66A71If3znTu0t0=
-Received: from localhost.localdomain ([39.156.73.13])
-        by newxmesmtplogicsvrszc1-0.qq.com (NewEsmtp) with SMTP
-        id CECA622A; Tue, 07 Feb 2023 13:51:44 +0800
-X-QQ-mid: xmsmtpt1675749104t5lb8r96s
-Message-ID: <tencent_FB3E886D062242FF59A997492A3BAF2BA308@qq.com>
-X-QQ-XMAILINFO: MfWa+adQHcqu+8EeLx0JfjUibiXx6BH1nky7gewpqUpbCit5tXLw7ZM97tuebC
-         JDsGBtRhHUZn+vAw8CVyztAWNOusoMiJECiPyTf7q+kiP6GJaC8qkxEO2cGrzxTswH208L179I4j
-         lLls9pAM6hCJwnBPsgVNKmqQqP1CJfHKiySD0UEe9YNBizMxY9d9E2IAUqLm8DiBEVv96M2h+AqF
-         o2r6K4ip7RZTdLUQS9liHjTCxGDv+c/X1ESN0EU9jtAVSa+Cp9cdEteAr74YafNbFrZQSyotfFIF
-         Ied0z+S9YRPkiyRgEg7Tjxv+EOKqbWnfi4L5/3oY65hZpFBTkqdR2bBX462ncPTDJVEmj4e69TKg
-         hfzZH4eShxjPmtm22p5gqiatZ+nKo0eBgmdZOBOi8Ar0oB3FqtMCFUeWJMoqLmQW+gRbzIsz6drT
-         cJJx6/uQVTHKhH+zkpKNjQxlyV09QwLZ1fUiRYwMZJY7qgudiqNezI5o/xw9VXtGM3gFylHhRfFI
-         FDRITUY7lE56bi0jDbiA2a6jcHmUrDUQIrj3Q5s+Ug96po0E68999C9f1Ax2kLQpOfv6pi1evzy+
-         u1+Qp9noah2MbSzXXFkqIVeyPEBoOgVsjOUJUWllmh976XhweHUdviBWBIsBKCuD8ymrbwq8kuqZ
-         KjNcOeq5/5W8O43R30BxUTheGUWN3cInKnqsgoxVoM4UHg6kLOkZ8SzAg+kBXdtl0HdKf6L2es76
-         dfNGCVlvBf/IkyEBFP3XhySW5Wi/zKjAs0tN6PjIOQqTy8I3n361CmueOuP/VskXeRuMKV4TlNw1
-         mc/cXMIZXy2RVXHvETx/GtlX+Kei8n5BzDbmroC1FU3c7TZsv1cvXF3r66HG1O3RawS2mL6q3n/E
-         Bipiw1MwS9ATcZjCfN7eKeFsY81z4jgfvfrQf7x6+UEwvZUypjaOCqqZb0wDHXTk0IOkwMx8qJRQ
-         9bNZD6oPdUyxzo25P/6E4tHWVCCeyK0WzU+S+oSyg=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     ast@kernel.org
-Cc:     Rong Tao <rongtao@cestc.cn>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] samples: bpf: syscall_tp: Add syscall openat2 enter/exit tracepoint
-Date:   Tue,  7 Feb 2023 13:51:43 +0800
-X-OQ-MSGID: <20230207055143.37936-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.1
+        with ESMTP id S229726AbjBGHDQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Feb 2023 02:03:16 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5C9CC2A
+        for <bpf@vger.kernel.org>; Mon,  6 Feb 2023 23:02:44 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id w3so15716356qts.7
+        for <bpf@vger.kernel.org>; Mon, 06 Feb 2023 23:02:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HLc/Voxttk0K0bVFTOEyEs7YtG6EdmZ9JU6ezjA/V4E=;
+        b=XUcOiTKoLp7N8D5HWAZ0RVmAkrdVGzS0olVQfGxJdZqDmJxrYBAP6uuzXwIybTMdX+
+         dcqAZ9HBuqk5381R729H63bu3mTie3wDs4Lqc8yO4LdMuy9VocZ2kjxnBYftu66W/Bd9
+         AZ0yOkgl/dUkRAL8j1pgIc/QTUsGFqSG3F7323KG7R6Z0zddKr5VJJt0IOUr93mWlW84
+         83hM4YCqBhcAPSrsKNIzGj+Gszxu6R4quNA9H6t3MIutRKQFU4B7Xpsu9BubJ8Q2skDT
+         Mr6VTnpGrNemQP3OZWjlcMZU+EG2Rc/8S8A/N3uN/pqzgwZPYbX+Avuro39+HPfAJAWa
+         ayCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HLc/Voxttk0K0bVFTOEyEs7YtG6EdmZ9JU6ezjA/V4E=;
+        b=Ai0bzxyk299ObZRkToJHD0HAVZWPf1SYT5Vd7xCzygdw/INynG/vuYJFd6LzqdD+aX
+         QFY3JG2rsPe6ofKjNlj+5/l3Az+aYVU7zuTQL3IUqeTxSr+jZA5Ivo8CB30pAOjbIeuY
+         m8ZXCbntggZ3eJjtqoGxKDm5YjUCff/uQ7jakS+50zYJfB0eLf0O8XzwTgSTRuH9NlzM
+         W13XIU4kcEO/h2rArUo0NL8qGQYhW4PdCDy94uz5IIplmYJb8pFgbumj+ay8lmNnqJNO
+         zZWDsL44wtPSMK2UuQlT9+pe9VbXJRlGNV8oCYLlz6ZwWpOA5YHeEEOukixF3MNiyhew
+         JcVw==
+X-Gm-Message-State: AO0yUKUUQYIDlBOA4ztR00JlrPHjmvlutrwfncRAAGrkR3VbfJjuzg2S
+        4NVOLXj8Fhn9IZRM8YUxCy+S1xNxlJmpDolStz4=
+X-Google-Smtp-Source: AK7set+WOA8AnDxtDT4nbRZMQ4Wlm75cF5E3fHaSldoIhx1lTXHU43C7MRy15kUBNDtFlHQMFCY5a3w/YvSV+VYFV7c=
+X-Received: by 2002:a05:622a:50c:b0:3b9:a6ca:a603 with SMTP id
+ l12-20020a05622a050c00b003b9a6caa603mr384493qtx.101.1675753363188; Mon, 06
+ Feb 2023 23:02:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+References: <20230202014158.19616-1-laoar.shao@gmail.com> <63ddbfd9ae610_6bb1520861@john.notmuch>
+ <CALOAHbAjHqXGZH_p19aYTbqK=sE8ZaMxhVzAoTO4ZKSXLiyx-w@mail.gmail.com> <CAOfppAUgB1qtFQfSb7WnGTJ+0fP2NL_T9EJYHgwQyW0mx4vnXA@mail.gmail.com>
+In-Reply-To: <CAOfppAUgB1qtFQfSb7WnGTJ+0fP2NL_T9EJYHgwQyW0mx4vnXA@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 7 Feb 2023 15:02:07 +0800
+Message-ID: <CALOAHbBiQ28rCHzhEsWQ7vs89nsY0W5sMNSc6YDerd19z7ddvw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/7] bpf, mm: bpf memory usage
+To:     Ho-Ren Chuang <horenc@vt.edu>
+Cc:     John Fastabend <john.fastabend@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+        dennis@kernel.org, cl@linux.com, akpm@linux-foundation.org,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, vbabka@suse.cz,
+        urezki@gmail.com, linux-mm@kvack.org, bpf@vger.kernel.org,
+        hao.xiang@bytedance.com, yifeima@bytedance.com,
+        Xiaoning Ding <xiaoning.ding@bytedance.com>,
+        horenchuang@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+On Tue, Feb 7, 2023 at 8:49 AM Ho-Ren Chuang <horenc@vt.edu> wrote:
+>
+> Hi Yafang and everyone,
+>
+> We've proposed very similar features at https://lore.kernel.org/bpf/CAAYibXgiCOOEY9NvLXbY4ve7pH8xWrZjnczrj6SHy3x_TtOU1g@mail.gmail.com/#t
+>
 
-commit fe3300897cbf("samples: bpf: fix syscall_tp due to unused syscall")
-add openat() syscall trapoints, this submit support openat2().
+I have looked through your patchset. Maybe we can use max_entires  to
+show the used_enties for preallocated hashtab?  Because for the
+preallocated hashtab, the memory is already allocated, so it doesn't
+matter how many entries it is using now. Then we can avoid the runtime
+overhead which Alexei is worried about.
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- samples/bpf/syscall_tp_kern.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+>
+> We are very excited seeing we are not the only ones eager to have this feature upstream to monitor eBPF map's actual usage. This shows the need for having such an ability in eBPF.
+>
 
-diff --git a/samples/bpf/syscall_tp_kern.c b/samples/bpf/syscall_tp_kern.c
-index 50231c2eff9c..e7121dd1ee37 100644
---- a/samples/bpf/syscall_tp_kern.c
-+++ b/samples/bpf/syscall_tp_kern.c
-@@ -58,6 +58,13 @@ int trace_enter_open_at(struct syscalls_enter_open_args *ctx)
- 	return 0;
- }
- 
-+SEC("tracepoint/syscalls/sys_enter_openat2")
-+int trace_enter_open_at2(struct syscalls_enter_open_args *ctx)
-+{
-+	count(&enter_open_map);
-+	return 0;
-+}
-+
- SEC("tracepoint/syscalls/sys_exit_open")
- int trace_enter_exit(struct syscalls_exit_open_args *ctx)
- {
-@@ -71,3 +78,10 @@ int trace_enter_exit_at(struct syscalls_exit_open_args *ctx)
- 	count(&exit_open_map);
- 	return 0;
- }
-+
-+SEC("tracepoint/syscalls/sys_exit_openat2")
-+int trace_enter_exit_at2(struct syscalls_exit_open_args *ctx)
-+{
-+	count(&exit_open_map);
-+	return 0;
-+}
+Happy to hear that this feature could help you.
+I think over time there will be more users who want to monitor the bpf
+memory usage :)
+
+>
+> Regarding the use cases please also check https://lore.kernel.org/all/CAADnVQLBt0snxv4bKwg1WKQ9wDFbaDCtZ03v1-LjOTYtsKPckQ@mail.gmail.com/#t . We are developing an app to monitor memory footprints used by eBPF programs/maps similar to Linux `top` command.
+>
+>
+> Thank you,
+>
+
 -- 
-2.39.1
-
+Regards
+Yafang
