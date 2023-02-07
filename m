@@ -2,48 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3214468E365
-	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 23:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E51268E367
+	for <lists+bpf@lfdr.de>; Tue,  7 Feb 2023 23:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjBGWUx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Feb 2023 17:20:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
+        id S229512AbjBGWWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Feb 2023 17:22:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbjBGWUw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Feb 2023 17:20:52 -0500
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D45402F1;
-        Tue,  7 Feb 2023 14:20:38 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-520dad0a7d2so213673127b3.5;
-        Tue, 07 Feb 2023 14:20:38 -0800 (PST)
+        with ESMTP id S229490AbjBGWWg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Feb 2023 17:22:36 -0500
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BAF86AA;
+        Tue,  7 Feb 2023 14:22:35 -0800 (PST)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-52bdbd30328so6776927b3.8;
+        Tue, 07 Feb 2023 14:22:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6OBgEG4l01lhqajOHblxU1C+eiQQ6UiZVRxQ4THUYV8=;
-        b=7QRHga+cHibGix3DXCjpIuQ0IwZZep4aftHBkSo9R3qJ04W2KEO1e65zhUazD6mPhI
-         cAwMrUQ17oWymxFO9ZjDiW46FgbGudUL+VoD/bfKx+E7oqv1rmhC0PWa9Um3Wt+PO8XU
-         hDsJsY/I3dqESdgCd6IUAkT3ovPVCDQkTAx9bWQoJ5DjbAET3nizxW/9hOc4QnSaJCo2
-         1tF9ZQJOZpja6Q3LDrftUPSR7ofLlAqtYVjZ/4H1CGi57a5Izs87FOZRCJoWKVOlMByS
-         /z6hLMaGW/U/Zq4pxP6Hp1fEfB3IefqX/jJMvY2qX9ddSw0SYq6ALooXmejo+DgIygAt
-         6gUQ==
-X-Gm-Message-State: AO0yUKVd6jJtnxarXTo0bR3hJResEwAUGIKkroF1lUdFI4vaG3Avflty
-        yfQGVCeLgX/wcwsP02oI6fD7GiaO4CVCMZ6xRsqDDakh
-X-Google-Smtp-Source: AK7set/cxwex6mwPyNRHHtnaVTXqiNJ1UGJxRliLiUmTAM1G33g8S2TkpqMsoeAvAUi4vvttpzPbutWX2zcZgfr8MvI=
-X-Received: by 2002:a81:6dcc:0:b0:526:c7d5:dddd with SMTP id
- i195-20020a816dcc000000b00526c7d5ddddmr516406ywc.401.1675808437584; Tue, 07
- Feb 2023 14:20:37 -0800 (PST)
+        bh=u5/ICA1zuDi5UMCa0OSVrQXJ51oSoYHr0B2mFzKfu14=;
+        b=CKQHWwn4d10Y+q0EpzsTDyer4kRcFczoy8CpG+X8c9rkAMzitZkE7ETTokcAQhGaEA
+         A8mgrHkIMTf9Y+r7TN4IZ5gCUK1dYF62Ys9ZZLL8oapRFLHyRRQQ6xB4fHro2/ZpEr76
+         2d41uqIaFJh41c0Ba9iqiJ5r+3D3JlEZIbyYAS+ZRjFHCBo1gF6GlZVz+2Qn0+X/o6lZ
+         HPhe/wrPadm9YYO2PxSL8CgRQXNSH88MWUeDm3PEiVgw6VYkfsErtXXHtZd+9oZRMn0u
+         O7gsVsz63fXK63T3XHMI5ueAvz/qpnpcRL9OuSPZ38zxGxC+c1gm0UyD9QLvQEHQkZ37
+         jquQ==
+X-Gm-Message-State: AO0yUKUlCtvbUW2Up30e5XyQLMay745XafGDM4hCtWNz5o4bf5XgzKzS
+        o16YW4pHe1wYj34r5A2A8r2rjuZLl+P2wWnE++KckmDn
+X-Google-Smtp-Source: AK7set9ZKue0HJ9TiJY3C0a9PTqzN0SD0gVYQJz+jTL8EOqyR0v2eq9x9lv/fyjxaXHVNOLE3J/MJF2k+qgBZn0X62k=
+X-Received: by 2002:a0d:e24f:0:b0:52a:772e:3e84 with SMTP id
+ l76-20020a0de24f000000b0052a772e3e84mr424614ywe.390.1675808554545; Tue, 07
+ Feb 2023 14:22:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20230207002403.63590-1-namhyung@kernel.org> <20230207002403.63590-3-namhyung@kernel.org>
- <Y+JqNuGA5tavdPce@kernel.org>
-In-Reply-To: <Y+JqNuGA5tavdPce@kernel.org>
+References: <20230207002403.63590-1-namhyung@kernel.org> <20230207002403.63590-2-namhyung@kernel.org>
+In-Reply-To: <20230207002403.63590-2-namhyung@kernel.org>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 7 Feb 2023 14:20:26 -0800
-Message-ID: <CAM9d7ciLYdbH=K78cwy9L7Ppo0rhAsqKuJkpzfYExpNMk6FQwA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] perf lock contention: Add -o/--lock-owner option
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+Date:   Tue, 7 Feb 2023 14:22:23 -0800
+Message-ID: <CAM9d7ch4k8PFt1fB4MPaGVmz6P4HJZ48Yi6HA_Ec5Pe9GL_F9A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] perf lock contention: Fix to save callstack for the
+ default modified
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Ian Rogers <irogers@google.com>,
@@ -65,34 +66,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Arnaldo,
+On Mon, Feb 6, 2023 at 4:24 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> The previous change missed to set the con->save_callstack for the
+> LOCK_AGGR_CALLER mode resulting in no caller information.
+>
+> Fixes: ebab291641be ("perf lock contention: Support filters for different aggregation")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-On Tue, Feb 7, 2023 at 7:11 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> Em Mon, Feb 06, 2023 at 04:24:02PM -0800, Namhyung Kim escreveu:
-> > When there're many lock contentions in the system, people sometimes
-> > want to know who caused the contention, IOW who's the owner of the
-> > locks.
-> >
-> > The -o/--lock-owner option tries to follow the lock owners for the
-> > contended mutexes and rwsems from BPF, and then attributes the
-> > contention time to the owner instead of the waiter.  It's a best
-> > effort approach to get the owner info at the time of the contention
-> > and doesn't guarantee to have the precise tracking of owners if it's
-> > changing over time.
->
-> Having this in the documentation as limitations of the approach helps,
-> but I'm not seeing this on this specific patch, where I think it should
-> be.
->
-> Furthermore probably its a good idea to have this as a warning on the
-> actual output of the tool, no?
->
-> Generally having cool commit log messages, as this one has, is great,
-> but people have difficulty looking at docs, imagine expecting them to
-> read commit log messages... :-)
-
-I see.  I'll add this limitation to the doc and tool output.
+Arnaldo, can you please take this one asap?
 
 Thanks,
 Namhyung
+
+
+> ---
+>  tools/perf/builtin-lock.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> index 0d11f301fd72..a4b5c481129c 100644
+> --- a/tools/perf/builtin-lock.c
+> +++ b/tools/perf/builtin-lock.c
+> @@ -1806,6 +1806,9 @@ static int __cmd_contention(int argc, const char **argv)
+>         con.aggr_mode = aggr_mode = show_thread_stats ? LOCK_AGGR_TASK :
+>                 show_lock_addrs ? LOCK_AGGR_ADDR : LOCK_AGGR_CALLER;
+>
+> +       if (con.aggr_mode == LOCK_AGGR_CALLER)
+> +               con.save_callstack = true;
+> +
+>         /* for lock function check */
+>         symbol_conf.sort_by_name = true;
+>         symbol_conf.allow_aliases = true;
+> --
+> 2.39.1.519.gcb327c4b5f-goog
+>
