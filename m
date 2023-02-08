@@ -2,150 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E205668F324
-	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 17:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F00B68F343
+	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 17:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjBHQ22 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 11:28:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39322 "EHLO
+        id S230353AbjBHQg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 11:36:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjBHQ21 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 11:28:27 -0500
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D4F45BEB;
-        Wed,  8 Feb 2023 08:28:26 -0800 (PST)
+        with ESMTP id S231235AbjBHQgy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 11:36:54 -0500
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBBC125BA;
+        Wed,  8 Feb 2023 08:36:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675873706; x=1707409706;
+  t=1675874211; x=1707410211;
   h=date:from:to:cc:subject:message-id:references:
    in-reply-to:mime-version;
-  bh=Z89rTPitGUrbWuo9gZTw7VpNJ+i3jfBlqVuJvGDq/qc=;
-  b=LKXo1Maq/lPbARkLsg6qNkexwiCaDFy6q+R8sDlnl63tkVLVD+97EUtg
-   tJChJ+3YlC9RlJRIqY1uDz6gy/S7CLQGVFcmPZk8kwVTYvh8mfIp9lU/Z
-   ph6X8TUftBtWc4ws5J1eFOXjVK05RQ18y2CA77n1d4GJPsJUelikSILVB
-   YJlZkllyF0D/cQNK0vBSBHcawNhGJo0SAmRFADOgezg1K/0rg0c3toRnN
-   bN66ZM12elNcb0NZC8PvJz2ru0SP1+4OKnuUBvfJcQfbZcxjr9t6o5k9a
-   RnuqwsBIa1GJpY5h+6j/K/xlwLAh5p7Df7tenJW+L7HH+UFbGnIBiXtCu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="331131433"
+  bh=uDjxiZCpJ5YKucWCwn9INEpyKBTrRWuPg0H+PvygxsQ=;
+  b=V7/MjOVD1w9spNq6NxqCkj3c9QJbeTsYY3hLZkfzrTvm+0Cyiv6C+bJ+
+   KjUmn7q3BAdlO6Ehhup1WyzuO9pHxpP1XUYNIX02RxfEuvduQWYuYZUaQ
+   bImf4C6Dp2F/XYCDhaBC3ukPDB5FSJALf07Kp2R+97yHiewaxLsdgXwRf
+   X1+HALuX9Z6UyYcoIZfPNrQoCTQzmVCadiT8nBtHkzVhxCsyTdmvq1Ytr
+   J6iCFKBv74ANuUi2cLw/Ia6OJNr3r2Fws8nVpzg06dysfoB2YMtb+040n
+   E4a5E5p0GG+zMLWa4SbG9r3S1gLJ7Sq38UlMyp+2av1HBesMUQWcMgD8M
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="357247138"
 X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="331131433"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 08:28:25 -0800
+   d="scan'208";a="357247138"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 08:36:50 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="667305537"
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="912775045"
 X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="667305537"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga002.jf.intel.com with ESMTP; 08 Feb 2023 08:28:24 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+   d="scan'208";a="912775045"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga006.fm.intel.com with ESMTP; 08 Feb 2023 08:36:49 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Wed, 8 Feb 2023 08:28:24 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ 15.1.2507.16; Wed, 8 Feb 2023 08:36:48 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Wed, 8 Feb 2023 08:28:23 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Wed, 8 Feb 2023 08:28:23 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ 15.1.2507.16 via Frontend Transport; Wed, 8 Feb 2023 08:36:48 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Wed, 8 Feb 2023 08:28:23 -0800
+ 15.1.2507.16; Wed, 8 Feb 2023 08:36:47 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J7w/bhnpenBlM7oETyDMDPGF1KD0ui5XtF3u8bdiMUfs05Gm79Uapan+OacJZGgg8DWkQ5Hera9+N15KgBi4NP5O24LTVk5n0UwYTIkcHGTKk3rsQasi0sX8F4U0FDaENi1O2pBY2ePSP6vn+kdp8rp29blHZxOEKIhHWDyUssM/WZ1IibK+ROkg4TnwT6/B68fru4ReNhdNvH18WMivf3tP2MtFAHZQxu4zMW+1wD344ctZsmyTIsyyzbB3LwfVR1X/Qq+jHaoeK63K0hS1Lgb6WkERSFMqqBd3ZF5+amtxCWj23qtT5xSI7BJIogVA+gNCY2A6Nr2qmNyDrLXueg==
+ b=KKTCDLGXR5l3IG9vM0NaLnYCHNez2RChvX5HhgtaxwJfllm12q/nP69id9yOwQTke9mXf98Zxykzex68jpQJn6YzNQc2fO1idtHnnKVTcjtV794eZ6zM9HTDyEAIuSK0qdXb58QZtYVgHev4zFhloHNZBScKU5TcXkzyRLHk/1BTgPNC8k4gwP7mLk+pv30lhtcWpqUGPgBwwytfooyG3QjwoEOUlOOlgacvF7FqeuIYmKePJ0HMm7nFA22/9qJ36HqeN55rbV/jZRwLNBURyd2dpvUgHxIAbFhNnaQO8WOdX8q82B2ovKNiIJ5r5GCsgaw9JDR0aEiHXA5YAQ11bQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gea97zMvkQWUD+j64Pn48sKeSEt38GfDi0BzE86ylCg=;
- b=RypHhQcTXP6agpuNwMzTvQJrm2w+aYj2biHeELxEV/NdL6S+pGfUZzJhaPHNvsrsRmgnd6CEDSmjrvOMEdW8bEm0vfYOyImLoI5zqCRXGqD/q+8OMVdy4Y+zzoqZf+/D8wAR10W/1TUWF/eR+kb/pBaFjFf7Aicl4kAM/wSKFFfvpyxggF7/87LI9RCoEb4I/PR7KdxEe2zX0Wj89aplfH00kQOWEB7zlntkjnhwkpnQMVDWXfwIBALCBXUKSo98vQHma2YwNXkRc9P9jVRH2oD1TFyVrkDvXfRIm+3sQ66E8bxy9Wnc5CeHZLbGLk5GrG/DznblhoHZgyqRkT4log==
+ bh=cTj5zkKhrBeL14fjJB+RQEZk4POfpwVoISkIcgFEWoA=;
+ b=VAC2lMf02cDXMzs8Jd1NHTslRPdWV5j0tudl5WOyd2dSnWHFKKvSUD9opAYfGlHdrHIauptZVChDrf6lLjnraY15SawN6StbZIOh6caH9mE4gYlRfc0p56+4bRxomupp7iRkSeBMRA77arkejfkrkXZOSRvnAGheVM9MgMPbbBwdgCO/GS3ozHlUGC/4aPOQqyk/uSjU0sRdXWFZkiXyuoDNjRMG6nFhHivxmGwb2rxJt72hFVxA9KR6PvHoVb8rhIOcBY+oAiGKVRZiQMUNRZVw7H7G1bdM5NPykQJTX4TmnFpmMugh0NlCc94J9+SY4imb5u6N+xu15hX8+Wt0ag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- SN7PR11MB7638.namprd11.prod.outlook.com (2603:10b6:806:34b::22) with
+ LV2PR11MB5998.namprd11.prod.outlook.com (2603:10b6:408:17e::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.34; Wed, 8 Feb
- 2023 16:28:15 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.17; Wed, 8 Feb
+ 2023 16:36:40 +0000
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::39d8:836d:fe2c:146]) by DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::39d8:836d:fe2c:146%6]) with mapi id 15.20.5986.019; Wed, 8 Feb 2023
- 16:28:13 +0000
-Date:   Wed, 8 Feb 2023 17:27:57 +0100
+ 16:36:40 +0000
+Date:   Wed, 8 Feb 2023 17:36:33 +0100
 From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Alexander H Duyck <alexander.duyck@gmail.com>
-CC:     Jason Xing <kerneljasonxing@gmail.com>,
-        <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <richardcochran@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <alexandr.lobakin@intel.com>,
-        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net v4 1/3] ixgbe: allow to increase MTU to 3K with XDP
- enabled
-Message-ID: <Y+PNjcrSxKc0vD3s@boxer>
-References: <20230208024333.10465-1-kerneljasonxing@gmail.com>
- <2bfcd7d92a6971416f58d9aac6e74840d5ae240a.camel@gmail.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 10/11] net: enetc: add RX support for
+ zero-copy XDP sockets
+Message-ID: <Y+PPkcu1aS+oIH0o@boxer>
+References: <20230206100837.451300-1-vladimir.oltean@nxp.com>
+ <20230206100837.451300-11-vladimir.oltean@nxp.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <2bfcd7d92a6971416f58d9aac6e74840d5ae240a.camel@gmail.com>
-X-ClientProxiedBy: LNXP265CA0048.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:5c::36) To DM4PR11MB6117.namprd11.prod.outlook.com
+In-Reply-To: <20230206100837.451300-11-vladimir.oltean@nxp.com>
+X-ClientProxiedBy: LO4P123CA0180.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18a::23) To DM4PR11MB6117.namprd11.prod.outlook.com
  (2603:10b6:8:b3::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|SN7PR11MB7638:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3221f783-3ead-42a8-1b68-08db09f17976
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|LV2PR11MB5998:EE_
+X-MS-Office365-Filtering-Correlation-Id: e82d3413-bebf-4b63-ba14-08db09f2a7a1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fmOshQERTKN0MEj6nBLKCgn/896MSi6CelxSsjILApP6BlezxQgdeH2bbqKrIwovEMrtaNYoNwchkX/DwkzaRlNk+nJt/NaulIeTIVcUA1i6CTWUsd2aaL4/TcnbvgNm1/Xku5e9vYixaiLxmUQTLvcy+oi1zMcqspn83I7bwAWMsbFCcuv4XTVN2I8eF3uWKaiX7vykd+4J5uI36RzptHIJwzEEL6DuRCEZovthDS4qSDunhkw5LJixUCodGLclo2H+jIIgeu5wzaL3+l8nj5DhgnxPRw1YWMJ/5PvBfp/E0RNzSbrXdRhcWdUOOJefw7WBYJDyeooVt9JzEbQet6V9kJVqM2Zqz3uCVGPEo5O5l3+Y/KHNUw5vgPlfSs+Ri9GGQN9bZBIUDd2fbHBXxtkg+O6WAFN8k/rRjkCV7co5U3RnSfy45TsV9Fl93lggdJ1JopKCf9TrCie5ZCFTiJ8ssTEMrgOCGFPp8qCw1zIs/wIIrBMZxSdWgGiwM7E+/syCR5r0gTeRalfwel8/i6BLx01fyJxVrPbHBpJTnhJU+V/C9PRw+y5+GBMou7LzR/3AkhBRKMvAPxaCElDZWsBsArmb79btK7U/uhk7EjJ37OkIPAueSpw1NDFLRkP93p0raG79eoNnnbA6r7M7zDUMTDqm0ZrbGhBENyJeoiUkugYayyy4H0w4g0z03NWT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(376002)(396003)(39860400002)(346002)(366004)(136003)(451199018)(316002)(83380400001)(54906003)(8676002)(44832011)(8936002)(2906002)(41300700001)(7416002)(5660300002)(33716001)(86362001)(38100700002)(6916009)(66946007)(66556008)(66476007)(82960400001)(4326008)(26005)(9686003)(478600001)(186003)(6512007)(6486002)(6506007)(6666004)(67856001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: rcS549H/rPFB1Exs5bOQMpXRqYcwlI9ZajMKmoDncvjlSiP5Ky/OwUgvDW5YME6X1nVpelMez5vc6BUanUvblv3UwXF5oUz00zgPm/OU3giumOlii3GWYnk/yEJMo1+FphUgua90xPGltOp8rxndXPbqJXiSJDI7XyujmuDb1xDE01+lvXpSHfwrTSIfAv3b3aB1t2InK/CQ4kCwJYxS60u7JJ6kzabICxbePIllF8oXp+J5P6tOtmgarcoucRJPlOgzxrpOYC1oTX4hsoRHIfKKA+Xz86gOUPuB5DNWRiH0koBdayYSMB16gKdyqdulsEsuIVvMHz49aDSLiSbppK+w7g9U+GfvJVhsEJfRKx3Nr7eX7wzsx+jxxhb3RWTIWGeY1+L4YF1CUhDOjhUCQ3IPwMroWHBBT5iQhFsd5uCxtvQmbTejHeosnW3Cy86etArbxLOOUlOGCRWL3MbDLuhLxSn3cH3ILhvYNYOjQN5fZchFX1sNxv2KPwvZXXcKvvdK+SaBchs8h1woTigLOPj0Xmf/bdSbCXi6c5PYa/vzRIbjQy99JwH9m8g3kV+CQmG8Bvd8OX7pPYRKE8JU5pcgubokUYbRPnvuga9ehoL+qDnLvvgBkdKmU1jBhj+IiGQlSksfB0/nGBAYbPfjlg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(396003)(39860400002)(366004)(376002)(346002)(136003)(451199018)(6486002)(8936002)(9686003)(6512007)(186003)(26005)(5660300002)(7416002)(6666004)(4326008)(316002)(66946007)(66556008)(6916009)(8676002)(41300700001)(6506007)(2906002)(54906003)(83380400001)(86362001)(478600001)(33716001)(66476007)(44832011)(38100700002)(82960400001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?V9qcTQJjWts6DBA6llvgLOkNx/cTaIdaqdos4N1n7HsAdKI3KCJrjFWJJpe5?=
- =?us-ascii?Q?DgVrnpwpcMiOR7WpTDOdvU/2JVabtPk3Tzbgs/eQENMbBLlSEGhGZ4T7hE2O?=
- =?us-ascii?Q?EKgqWztl61amyWebwzPmaCISpxmb/FaKlke5tP9bbpalu6f2f4kiF0KxlV6d?=
- =?us-ascii?Q?DDdl+Kd8/pA/BNKYkOreSthWDi5YPrZZmMjIrTLCmVbbCGPD3pfW6O6s2Egx?=
- =?us-ascii?Q?jn08hH0bB8P9a82sRHAAfcn1mXqCvutCsskdonmr6wlkOZ0kbR1IOUtwNxFY?=
- =?us-ascii?Q?6ccpsvsLsirTzLzsj0S7Epu2yzbJk6dpWL/k0rrx3PpDON0ChYT+wpC4CT1A?=
- =?us-ascii?Q?xwIuGlBVR4ph2xsey6hPFct+T3eyekMafPdG/KcVKYSMMmg8ErN+ip5j0CDa?=
- =?us-ascii?Q?GxS8wk5GAsXelqT2l1YVALR6eU3jfxNqsVYmoTYWMyXyLjjn8uFbmzSMjO8U?=
- =?us-ascii?Q?cRBA3RjcTmL03I+QwWf3Lbn26rbQmwkDzwWfMu7GvHHftpeKseGQkHBFHfoZ?=
- =?us-ascii?Q?Hrg/2LNgOY7B+e8Sz11cJb9bBoqFSM8vtY/rWhhovajzFsBCvZyoHlV6jv4k?=
- =?us-ascii?Q?kvKHr/OFsWOyvMaiMq7mXDmsS7SiHJmzTovKuO9x1WAMmcOVGvA4bsit72m4?=
- =?us-ascii?Q?j9JayXIE63rkl1URFHI90s3iSOVWdt/z8SNCU0SOTpv8c9AyrO8OuYytjRWn?=
- =?us-ascii?Q?qWLZngah1KHYoPk12yEaG6p152kU9S5IztiXQVgo7c8ACdG8HeQvZny08Rhq?=
- =?us-ascii?Q?Ytc0+keE/GWtgWyBtEtSCNOhHC4RRGMTNhIoqDbihM8b1WMSrzu8YwEpZ5Ao?=
- =?us-ascii?Q?3FqI0s+66kVn1Oh1dYSLda+zJVGt2uHR2KvVshv3ZW6AwqakAKc/chbEl3ep?=
- =?us-ascii?Q?tffMR44ojXycD1YOi6U8f8Or11QjHgeUSw32/8PgT6gbmgm+3klg7kdl1Yh5?=
- =?us-ascii?Q?C5dTMos8KX0xxMYgC5v70pgzWQ+t7NoROffZ0o4ErSZF9UB24+CHGzSuPKJR?=
- =?us-ascii?Q?RQg8PZstMm0zB8m20a62uEQEoOOZlC8LPewdRyVBUCKTt32Tlhl3NbLMEX9O?=
- =?us-ascii?Q?jPCZgiXQFn+hEj6LbLlN5olJYR+P3JnAMUBA4frCjhCPPQEuZnULuyw0OqAs?=
- =?us-ascii?Q?N7+uCu66XH6PCHEJlS6wwaFaCDXYwwYPAxmmQLhP+n95AoPBgAuEdF5Kg8JO?=
- =?us-ascii?Q?YFSlCjLzbPlAyaPHuPYxQ2uz07hnaSiou4fPEu15gGhEDVBnb+LYw9dzoJxe?=
- =?us-ascii?Q?YrWo/CvZUhlJSzv/cMxsAIOkStbMzeIvKTDa8j1A3OdIhh7A7uDZkgcb85SP?=
- =?us-ascii?Q?rzgoHMsrVJX7cCMVD0TUL4rETjxFks7WimB00KzVuyce+HS8e7RNMOGIL5Uq?=
- =?us-ascii?Q?KnYnIQT2RpX6af2ApND3j9t005pH9hT5Vu0BpSGFzocBLT1WnRPcq295X/Fd?=
- =?us-ascii?Q?Ow5ktjasQ10PBaFagA/e+Q+BUgbJ7cBPulwR9gByvsSFhi7FoGWGdGC8H7yM?=
- =?us-ascii?Q?eUh3v06TlO1+Q4xPiqGvWvpHVQBPZmF2rKfk167FOZHDY3Mequh9Wm4rXl/k?=
- =?us-ascii?Q?4bZOHbrEJ7vHEvc8Cr/CPXr/S/eXosvHUrTxvo37sFEMh0JslIeI0l2gv/RV?=
- =?us-ascii?Q?A1Bqw04o1B/WodebZkburq8=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3221f783-3ead-42a8-1b68-08db09f17976
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7aEhDipLs8jfxnS+vClkquW26oymNk8lBik/f2zwNV4L3AGoRbshjMRZCWw5?=
+ =?us-ascii?Q?WWF0ukagiOeTkl1WAvwO1DDWFmnZDJrJuQTn044Fg7xokjsQ3eXnsRmvT1Vb?=
+ =?us-ascii?Q?gW4qi6sFo27BoKalcn7P0U2sT5wfiWiD7BQpMz2Lb1Fc5GImY6MWYEY5Y8d+?=
+ =?us-ascii?Q?xOWb0HAyQawqXSfNUYDTVbJD5SrvjZpHADZdCa3uL7A66srcTKouBfl6xlaL?=
+ =?us-ascii?Q?/QwP/Faw4VlygJg6zlwIXC9zXjH36vk2Ga+BCsuV5uoG2/7KtUuDKrLwNkQF?=
+ =?us-ascii?Q?dKsi6LW8mOrx5f3blQDwauyUamaQ6oIdfyYz+lmpBEslCwGfhcmgb1/h/lAj?=
+ =?us-ascii?Q?Vowmrj66dV1nH0Z4CG8ZcgHCWPEx3SHETgp+8ZwdY1WROG5qmUXLAU4HNATd?=
+ =?us-ascii?Q?zSOuMllw8GZQCMftyx40rZ9JStAeinUGH8YIX6jNEYYqFjDOJ3/gTNPLRdxW?=
+ =?us-ascii?Q?YywtP30/sQTwECP8LGxbMoInmhxjlanr8Up5/dMy8k5QvAnb1yjW7PRjchPs?=
+ =?us-ascii?Q?8Hbny2CHAXCb8NYpihw1p/OHAj/6/WeOQiwC3fyTEkccAOXaZz3GzynNNuzl?=
+ =?us-ascii?Q?O2ep8bzwU/AEtB9WnIF1KNN3Cd6qUG+UJYEg6fKh+/UfDJjRymuIV/84HHub?=
+ =?us-ascii?Q?cPAN2gm/9F8+Xcf0PdGMvUSPaa/EcFAiuXLu0TaZ3l/5T4ZXDWEsqe8rr621?=
+ =?us-ascii?Q?EYOVlgkV89SGWuUwKZ3qJoxIZE32Y5Xq9VkBNZAdfHcvzO+cXfLwuXONt/l7?=
+ =?us-ascii?Q?1LzMjhUFB4PGBd/xuJ/YTKjFvMN7PYvMxJcoi7B7CJPk0wBg9ZCP67JpRbjA?=
+ =?us-ascii?Q?3cIKyQBGycQnn52MBj2EcXt67ADasQN2u1GlPHrdSC1BfHcKByOgkOkib5uC?=
+ =?us-ascii?Q?m+giCITRunsuNw7Fr75dA6UmkYC3queNFnSV+Y5pL544Qk9PJvn07rY7I1t4?=
+ =?us-ascii?Q?d6tAXbXdJp3Jl9812vXZEUaMJ2O/tsMGKH9GdULh3EtYSx/6rNn83Znbw1zB?=
+ =?us-ascii?Q?zs0/eH1ttdZNRcBSMdHgrxs7b2oWownHezEH6BNmZTFifs2ZJpD2O4LrD198?=
+ =?us-ascii?Q?I+HDYi9PyYZaizSnrp8nds8IPik0tCi6PUfkQbnwjqjU8ueIw1z86LwsmsHg?=
+ =?us-ascii?Q?WeM5C+DdNbkYUwtLBJbRGybNbfxib+QznHNOvyQDtGBWBStqcuScVakTOWQ4?=
+ =?us-ascii?Q?+yCbSJ1J0FwDjHiSIaywcW43NQt0q+MH/KjWDMR7dy1FmujY3pFDt6QUufgb?=
+ =?us-ascii?Q?nptS/GkU8MldttaGELMNUE3+/+HMflwlcCR7iFDxC4U9hYNUdGNVym3xsgY3?=
+ =?us-ascii?Q?2vYOewNBumHoyWbKRVQ6QZ9sKCazzRVOGJKNe8rW/J9//iWvHwovhDDNkF43?=
+ =?us-ascii?Q?WdcDq9qz1+aMeQirIolEOS3/15CHsk3vaGa3eMMXTBYDSD2AIz0x5Ezay5z2?=
+ =?us-ascii?Q?xdKWB9cmoI6GKPo5aTo3sREyhAdollLy94aqkVg2HKNOiisXlHpPjaN4/jnp?=
+ =?us-ascii?Q?AOT/6IJS6JVx3NmX2LqFczSoJFD0vbEsGzMajTblx4nMBwYbnKY/dZbYDX+1?=
+ =?us-ascii?Q?YcuCGT8xPQ7u9SBTVES3lIBBFk4ME31lVksUTzDmO3e0cMBRKUkOVglCCKmx?=
+ =?us-ascii?Q?GVlJlP9NItZReOILQAe2vV0=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e82d3413-bebf-4b63-ba14-08db09f2a7a1
 X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2023 16:28:13.4327
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2023 16:36:40.4061
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2z0K3ZleH42H9YTEgDfM/mPmM728udb5rcuk/Q1LWDZoOhxfDeuiNLi6kqwTlO7VNWa23TNj2KemPuMpElXDm12RF2OUFVxiJtuUFU6YdMg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7638
+X-MS-Exchange-CrossTenant-UserPrincipalName: PpQ7G8/WccWiLJTtGGYuBRxOVfy8OjEo8tKHETe8epFgNuqTUhP43Ya5Qq5DzDneqkHVihvc2oJHRM88H/msdUuHg292S9fLofLbtQURQqU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR11MB5998
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -157,130 +156,325 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 07:37:57AM -0800, Alexander H Duyck wrote:
-> On Wed, 2023-02-08 at 10:43 +0800, Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
-> > 
-> > Recently I encountered one case where I cannot increase the MTU size
-> > directly from 1500 to a much bigger value with XDP enabled if the
-> > server is equipped with IXGBE card, which happened on thousands of
-> > servers in production environment. After appling the current patch,
-> > we can set the maximum MTU size to 3K.
-> > 
-> > This patch follows the behavior of changing MTU as i40e/ice does.
-> > 
-> > Referrences:
-> > [1] commit 23b44513c3e6 ("ice: allow 3k MTU for XDP")
-> > [2] commit 0c8493d90b6b ("i40e: add XDP support for pass and drop actions")
-> > 
-> > Fixes: fabf1bce103a ("ixgbe: Prevent unsupported configurations with XDP")
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+On Mon, Feb 06, 2023 at 12:08:36PM +0200, Vladimir Oltean wrote:
+> Add support for filling an RX ring with buffers coming from an XSK umem.
+> Although enetc has up to 8 RX rings, we still use one of the 2 per-CPU
+> RX rings for XSK.
 > 
-> This is based on the broken premise that w/ XDP we are using a 4K page.
-> The ixgbe driver isn't using page pool and is therefore running on
-> different limitations. The ixgbe driver is only using 2K slices of the
-> 4K page. In addition that is reduced to 1.5K to allow for headroom and
-> the shared info in the buffer.
+> To set up an XSK pool on one of the RX queues, we use the
+> reconfiguration procedure which temporarily stops the rings.
 > 
-> Currently the only way a 3K buffer would work is if FCoE is enabled and
-> in that case the driver is using order 1 pages and still using the
-> split buffer approach.
+> Since the RX procedure in the NAPI poll function is completely different
+> (both the API for creating an xdp_buff, as well as refilling the ring
+> with memory from user space), create a separate enetc_clean_rx_ring_xsk()
+> function which gets called when we have both an XSK pool and an XDK
+> program on this RX queue.
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
+>  drivers/net/ethernet/freescale/enetc/enetc.c  | 377 +++++++++++++++++-
+>  drivers/net/ethernet/freescale/enetc/enetc.h  |   3 +
+>  .../net/ethernet/freescale/enetc/enetc_pf.c   |   1 +
+>  3 files changed, 373 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+> index dee432cacf85..3990c006c011 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+> @@ -10,6 +10,7 @@
+>  #include <net/ip6_checksum.h>
+>  #include <net/pkt_sched.h>
+>  #include <net/tso.h>
+> +#include <net/xdp_sock_drv.h>
+>  
+>  u32 enetc_port_mac_rd(struct enetc_si *si, u32 reg)
+>  {
+> @@ -103,6 +104,9 @@ static void enetc_free_rx_swbd(struct enetc_bdr *rx_ring,
+>  			       rx_swbd->dir);
+>  		__free_page(rx_swbd->page);
+>  		rx_swbd->page = NULL;
+> +	} else if (rx_swbd->xsk_buff) {
+> +		xsk_buff_free(rx_swbd->xsk_buff);
+> +		rx_swbd->xsk_buff = NULL;
+>  	}
+>  }
+>  
+> @@ -979,6 +983,44 @@ static int enetc_refill_rx_ring(struct enetc_bdr *rx_ring, const int buff_cnt)
+>  	return j;
+>  }
+>  
+> +static int enetc_refill_rx_ring_xsk(struct enetc_bdr *rx_ring, int buff_cnt)
+> +{
+> +	struct xsk_buff_pool *pool = rx_ring->xdp.xsk_pool;
+> +	struct enetc_rx_swbd *rx_swbd;
+> +	struct xdp_buff *xsk_buff;
+> +	union enetc_rx_bd *rxbd;
+> +	int i, j;
+> +
+> +	i = rx_ring->next_to_use;
+> +	rxbd = enetc_rxbd(rx_ring, i);
+> +
+> +	for (j = 0; j < buff_cnt; j++) {
+> +		xsk_buff = xsk_buff_alloc(pool); // TODO use _batch?
 
-Hey Alex, interesting, we based this on the following logic from
-ixgbe_set_rx_buffer_len() I guess:
+yes, use batch:P
 
-#if (PAGE_SIZE < 8192)
-		if (adapter->flags2 & IXGBE_FLAG2_RSC_ENABLED)
-			set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
+> +		if (!xsk_buff)
+> +			break;
+> +
+> +		rx_swbd = &rx_ring->rx_swbd[i];
+> +		rx_swbd->xsk_buff = xsk_buff;
+> +		rx_swbd->dma = xsk_buff_xdp_get_dma(xsk_buff);
+> +
+> +		/* update RxBD */
+> +		rxbd->w.addr = cpu_to_le64(rx_swbd->dma);
+> +		/* clear 'R" as well */
+> +		rxbd->r.lstatus = 0;
+> +
+> +		enetc_rxbd_next(rx_ring, &rxbd, &i);
+> +	}
+> +
+> +	if (likely(j)) {
+> +		rx_ring->next_to_use = i;
+> +
+> +		/* update ENETC's consumer index */
+> +		enetc_wr_reg_hot(rx_ring->rcir, rx_ring->next_to_use);
+> +	}
+> +
+> +	return j;
+> +}
+> +
+>  #ifdef CONFIG_FSL_ENETC_PTP_CLOCK
+>  static void enetc_get_rx_tstamp(struct net_device *ndev,
+>  				union enetc_rx_bd *rxbd,
+> @@ -1128,6 +1170,18 @@ static void enetc_add_rx_buff_to_skb(struct enetc_bdr *rx_ring, int i,
+>  	enetc_flip_rx_buff(rx_ring, rx_swbd);
+>  }
+>  
+> +static void enetc_put_rx_swbd(struct enetc_bdr *rx_ring, int i)
+> +{
+> +	struct enetc_rx_swbd *rx_swbd = &rx_ring->rx_swbd[i];
+> +
+> +	if (rx_swbd->xsk_buff) {
+> +		xsk_buff_free(rx_swbd->xsk_buff);
+> +		rx_swbd->xsk_buff = NULL;
+> +	} else {
+> +		enetc_put_rx_buff(rx_ring, rx_swbd);
+> +	}
+> +}
+> +
+>  static bool enetc_check_bd_errors_and_consume(struct enetc_bdr *rx_ring,
+>  					      u32 bd_status,
+>  					      union enetc_rx_bd **rxbd, int *i,
+> @@ -1136,7 +1190,7 @@ static bool enetc_check_bd_errors_and_consume(struct enetc_bdr *rx_ring,
+>  	if (likely(!(bd_status & ENETC_RXBD_LSTATUS(ENETC_RXBD_ERR_MASK))))
+>  		return false;
+>  
+> -	enetc_put_rx_buff(rx_ring, &rx_ring->rx_swbd[*i]);
+> +	enetc_put_rx_swbd(rx_ring, *i);
+>  	(*buffs_missing)++;
+>  	enetc_rxbd_next(rx_ring, rxbd, i);
+>  
+> @@ -1144,7 +1198,7 @@ static bool enetc_check_bd_errors_and_consume(struct enetc_bdr *rx_ring,
+>  		dma_rmb();
+>  		bd_status = le32_to_cpu((*rxbd)->r.lstatus);
+>  
+> -		enetc_put_rx_buff(rx_ring, &rx_ring->rx_swbd[*i]);
+> +		enetc_put_rx_swbd(rx_ring, *i);
+>  		(*buffs_missing)++;
+>  		enetc_rxbd_next(rx_ring, rxbd, i);
+>  	}
+> @@ -1484,6 +1538,43 @@ static void enetc_build_xdp_buff(struct enetc_bdr *rx_ring, u32 bd_status,
+>  	}
+>  }
+>  
+> +static struct xdp_buff *enetc_build_xsk_buff(struct xsk_buff_pool *pool,
+> +					     struct enetc_bdr *rx_ring,
+> +					     u32 bd_status,
+> +					     union enetc_rx_bd **rxbd, int *i,
+> +					     int *buffs_missing, int *rx_byte_cnt)
+> +{
+> +	struct enetc_rx_swbd *rx_swbd = &rx_ring->rx_swbd[*i];
+> +	u16 size = le16_to_cpu((*rxbd)->r.buf_len);
+> +	struct xdp_buff *xsk_buff;
+> +
+> +	/* Multi-buffer frames are not supported in XSK mode */
 
-		if (IXGBE_2K_TOO_SMALL_WITH_PADDING ||
-		    (max_frame > (ETH_FRAME_LEN + ETH_FCS_LEN)))
-			set_bit(__IXGBE_RX_3K_BUFFER, &rx_ring->state);
-#endif
+Nice! I realized we need to forbid that on ice now.
 
-so we assumed that ixgbe is no different than i40e/ice in these terms, but
-we ignored whole overhead of LRO/RSC that ixgbe carries.
+> +	if (unlikely(!(bd_status & ENETC_RXBD_LSTATUS_F))) {
+> +		while (!(bd_status & ENETC_RXBD_LSTATUS_F)) {
+> +			enetc_put_rx_swbd(rx_ring, *i);
+> +
+> +			(*buffs_missing)++;
+> +			enetc_rxbd_next(rx_ring, rxbd, i);
+> +			dma_rmb();
+> +			bd_status = le32_to_cpu((*rxbd)->r.lstatus);
+> +		}
+> +
+> +		return NULL;
+> +	}
+> +
+> +	xsk_buff = rx_swbd->xsk_buff;
+> +	xsk_buff_set_size(xsk_buff, size);
+> +	xsk_buff_dma_sync_for_cpu(xsk_buff, pool);
+> +
+> +	rx_swbd->xsk_buff = NULL;
+> +
+> +	(*buffs_missing)++;
+> +	(*rx_byte_cnt) += size;
+> +	enetc_rxbd_next(rx_ring, rxbd, i);
+> +
+> +	return xsk_buff;
+> +}
+> +
+>  /* Convert RX buffer descriptors to TX buffer descriptors. These will be
+>   * recycled back into the RX ring in enetc_clean_tx_ring.
+>   */
+> @@ -1659,11 +1750,136 @@ static int enetc_clean_rx_ring_xdp(struct enetc_bdr *rx_ring,
+>  	return rx_frm_cnt;
+>  }
+>  
+> +static void enetc_xsk_buff_to_skb(struct xdp_buff *xsk_buff,
+> +				  struct enetc_bdr *rx_ring,
+> +				  union enetc_rx_bd *rxbd,
+> +				  struct napi_struct *napi)
+> +{
+> +	size_t len = xdp_get_buff_len(xsk_buff);
+> +	struct sk_buff *skb;
+> +
+> +	skb = napi_alloc_skb(napi, len);
+> +	if (unlikely(!skb)) {
+> +		rx_ring->stats.rx_alloc_errs++;
+> +		goto out;
+> +	}
+> +
+> +	skb_put_data(skb, xsk_buff->data, len);
+> +
+> +	enetc_get_offloads(rx_ring, rxbd, skb);
+> +
+> +	skb_record_rx_queue(skb, rx_ring->index);
+> +	skb->protocol = eth_type_trans(skb, rx_ring->ndev);
+> +
+> +	rx_ring->stats.packets += skb->len;
+> +	rx_ring->stats.bytes++;
+> +
+> +	napi_gro_receive(napi, skb);
+> +out:
+> +	xsk_buff_free(xsk_buff);
+> +}
+> +
+> +static int enetc_clean_rx_ring_xsk(struct enetc_bdr *rx_ring,
+> +				   struct napi_struct *napi, int work_limit,
+> +				   struct bpf_prog *prog,
+> +				   struct xsk_buff_pool *pool)
+> +{
+> +	struct net_device *ndev = rx_ring->ndev;
+> +	union enetc_rx_bd *rxbd, *orig_rxbd;
+> +	int rx_frm_cnt = 0, rx_byte_cnt = 0;
+> +	int xdp_redirect_frm_cnt = 0;
+> +	struct xdp_buff *xsk_buff;
+> +	int buffs_missing, err, i;
+> +	bool wakeup_xsk = false;
+> +	u32 bd_status, xdp_act;
+> +
+> +	buffs_missing = enetc_bd_unused(rx_ring);
+> +	/* next descriptor to process */
+> +	i = rx_ring->next_to_clean;
+> +
+> +	while (likely(rx_frm_cnt < work_limit)) {
+> +		if (buffs_missing >= ENETC_RXBD_BUNDLE) {
+> +			buffs_missing -= enetc_refill_rx_ring_xsk(rx_ring,
+> +								  buffs_missing);
+> +			wakeup_xsk |= (buffs_missing != 0);
+> +		}
+> +
+> +		rxbd = enetc_rxbd(rx_ring, i);
+> +		bd_status = le32_to_cpu(rxbd->r.lstatus);
+> +		if (!bd_status)
+> +			break;
+> +
+> +		enetc_wr_reg_hot(rx_ring->idr, BIT(rx_ring->index));
+> +		dma_rmb(); /* for reading other rxbd fields */
+> +
+> +		if (enetc_check_bd_errors_and_consume(rx_ring, bd_status,
+> +						      &rxbd, &i,
+> +						      &buffs_missing))
+> +			continue;
+> +
+> +		orig_rxbd = rxbd;
+> +
+> +		xsk_buff = enetc_build_xsk_buff(pool, rx_ring, bd_status,
+> +						&rxbd, &i, &buffs_missing,
+> +						&rx_byte_cnt);
+> +		if (!xsk_buff)
+> +			continue;
+> +
+> +		xdp_act = bpf_prog_run_xdp(prog, xsk_buff);
+> +		switch (xdp_act) {
+> +		default:
+> +			bpf_warn_invalid_xdp_action(ndev, prog, xdp_act);
+> +			fallthrough;
+> +		case XDP_ABORTED:
+> +			trace_xdp_exception(ndev, prog, xdp_act);
+> +			fallthrough;
+> +		case XDP_DROP:
+> +			xsk_buff_free(xsk_buff);
+> +			break;
+> +		case XDP_PASS:
+> +			enetc_xsk_buff_to_skb(xsk_buff, rx_ring, orig_rxbd,
+> +					      napi);
+> +			break;
+> +		case XDP_REDIRECT:
+> +			err = xdp_do_redirect(ndev, xsk_buff, prog);
+> +			if (unlikely(err)) {
+> +				if (err == -ENOBUFS)
+> +					wakeup_xsk = true;
+> +				xsk_buff_free(xsk_buff);
+> +				rx_ring->stats.xdp_redirect_failures++;
+> +			} else {
+> +				xdp_redirect_frm_cnt++;
+> +				rx_ring->stats.xdp_redirect++;
+> +			}
 
-I am not actively working with ixgbe but I know that you were the main dev
-of it, so without premature dive into the datasheet and codebase, are you
-really sure that 3k mtu for XDP is a no go?
+no XDP_TX support? I don't see it being added on next patch.
 
-> 
-> Changing the MTU to more than 1.5K will allow multi-buffer frames which
-> would break things when you try to use XDP_REDIRECT or XDP_TX on frames
-> over 1.5K in size. For things like XDP_PASS, XDP_DROP, and XDP_ABORT it
-> should still work as long as you don't attempt to reach beyond the 1.5K
-> boundary.
-> 
-> Until this driver supports XDP multi-buffer I don't think you can
-> increase the MTU past 1.5K. If you are wanting a larger MTU you should
-> look at enabling XDP multi-buffer and then just drop the XDP
-> limitations entirely.
-> 
-> > ---
-> > v4:
-> > 1) use ':' instead of '-' for kdoc
-> > 
-> > v3:
-> > 1) modify the titile and body message.
-> > 
-> > v2:
-> > 1) change the commit message.
-> > 2) modify the logic when changing MTU size suggested by Maciej and Alexander.
-> > ---
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 25 ++++++++++++-------
-> >  1 file changed, 16 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > index ab8370c413f3..25ca329f7d3c 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > @@ -6777,6 +6777,18 @@ static void ixgbe_free_all_rx_resources(struct ixgbe_adapter *adapter)
-> >  			ixgbe_free_rx_resources(adapter->rx_ring[i]);
-> >  }
-> >  
-> > +/**
-> > + * ixgbe_max_xdp_frame_size - returns the maximum allowed frame size for XDP
-> > + * @adapter: device handle, pointer to adapter
-> > + */
-> > +static int ixgbe_max_xdp_frame_size(struct ixgbe_adapter *adapter)
-> > +{
-> > +	if (PAGE_SIZE >= 8192 || adapter->flags2 & IXGBE_FLAG2_RX_LEGACY)
-> > +		return IXGBE_RXBUFFER_2K;
-> > +	else
-> > +		return IXGBE_RXBUFFER_3K;
-> > +}
-> > +
-> 
-> There is no difference in the buffer allocation approach for LEGACY vs
-> non-legacy. The difference is if we are building the frame around the
-> buffer using build_skb or we are adding it as a frag and then copying
-> out the header.
-> 
-> >  /**
-> >   * ixgbe_change_mtu - Change the Maximum Transfer Unit
-> >   * @netdev: network interface device structure
-> > @@ -6788,18 +6800,13 @@ static int ixgbe_change_mtu(struct net_device *netdev, int new_mtu)
-> >  {
-> >  	struct ixgbe_adapter *adapter = netdev_priv(netdev);
-> >  
-> > -	if (adapter->xdp_prog) {
-> > +	if (ixgbe_enabled_xdp_adapter(adapter)) {
-> >  		int new_frame_size = new_mtu + ETH_HLEN + ETH_FCS_LEN +
-> >  				     VLAN_HLEN;
-> > -		int i;
-> > -
-> > -		for (i = 0; i < adapter->num_rx_queues; i++) {
-> > -			struct ixgbe_ring *ring = adapter->rx_ring[i];
-> >  
-> > -			if (new_frame_size > ixgbe_rx_bufsz(ring)) {
-> > -				e_warn(probe, "Requested MTU size is not supported with XDP\n");
-> > -				return -EINVAL;
-> > -			}
-> > +		if (new_frame_size > ixgbe_max_xdp_frame_size(adapter)) {
-> > +			e_warn(probe, "Requested MTU size is not supported with XDP\n");
-> > +			return -EINVAL;
-> >  		}
-> >  	}
-> >  
-> 
+> +		}
+> +
+> +		rx_frm_cnt++;
+> +	}
+> +
+> +	rx_ring->next_to_clean = i;
+> +
+> +	rx_ring->stats.packets += rx_frm_cnt;
+> +	rx_ring->stats.bytes += rx_byte_cnt;
+> +
+> +	if (xdp_redirect_frm_cnt)
+> +		xdp_do_flush_map();
+> +
+> +	if (xsk_uses_need_wakeup(pool)) {
+> +		if (wakeup_xsk)
+> +			xsk_set_rx_need_wakeup(pool);
+> +		else
+> +			xsk_clear_rx_need_wakeup(pool);
+> +	}
+> +
+> +	return rx_frm_cnt;
+> +}
+> +
+>  static int enetc_poll(struct napi_struct *napi, int budget)
+>  {
+>  	struct enetc_int_vector
+>  		*v = container_of(napi, struct enetc_int_vector, napi);
+>  	struct enetc_bdr *rx_ring = &v->rx_ring;
+> +	struct xsk_buff_pool *pool;
+>  	struct bpf_prog *prog;
+>  	bool complete = true;
+>  	int work_done;
+> @@ -1676,10 +1892,15 @@ static int enetc_poll(struct napi_struct *napi, int budget)
+>  			complete = false;
+>  
+>  	prog = rx_ring->xdp.prog;
+> -	if (prog)
+
+(...)
