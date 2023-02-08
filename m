@@ -2,68 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D2968FB18
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 00:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C4668FB2F
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 00:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjBHXXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 18:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
+        id S229727AbjBHXbG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 18:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjBHXXF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 18:23:05 -0500
+        with ESMTP id S229516AbjBHXbG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 18:31:06 -0500
 Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2616F12F10;
-        Wed,  8 Feb 2023 15:23:04 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id lu11so1542109ejb.3;
-        Wed, 08 Feb 2023 15:23:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF9EBBAA;
+        Wed,  8 Feb 2023 15:31:04 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id u22so1499006ejj.10;
+        Wed, 08 Feb 2023 15:31:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X1n7NNor3zS2ODqtpCXJROvyu+9CFBDKnMybRjAFIPg=;
-        b=FGM/knYfNDUAtPxi75lCFS1RDqLvwiPJdQ6FfERl5ejRKDNPfUjQE1paZSk2hcW3Vx
-         fRS72h16BJeOhF//JWZuBZdc2B5Or0MWicILrVLTRNgv/aO2LkmOkuTwtgXEib4HMvBI
-         fv58QP2MNDva5X1+aF+hiB4NDwasNNcyLkshtiUMxfoMEvtcH/3qCHCZDTogzfMJvwC5
-         P1ktibclIBsVxYQR3hj+ebukJanrsCzGTjugeUmc5clKhJ7EudUs5Mns8B7+gbO5Z4DP
-         Jw+5k5/ajUeWCawpmlS3hsyOwHRKmdV3Nb/F727M3V4NLsrXTymM5NNVQZfgU9QZ7aYU
-         lykQ==
+        bh=WZ4xSQGtDTmivX4P00tlfaiaMy+3i6nGamkuws/1MpQ=;
+        b=hNefvENfOyTSE5CtJfhup0Zowj7f5Zz5ahWwAZGlA1HE9pPLSzprXwnNEOPIQZSZtQ
+         2o2EGyvXLT0NGF/J094PmdHDokKOFsmRLrjkL2cfE6dJ3Qox3HPqvYXcCYmRHu5mWVuE
+         ZSYhZC5jDCFncharYXBbQb/0Bar7Ub7NBxg7Vnneo006A7i05+WNn5LrIcXYyYDoVVA2
+         7E4pF81wD8q27s9o2A3RsLb9elzs8Qji75l/esvwGnUZXzzCxfBSrzgjPclvTG1zP9Xq
+         x9dbtPNjqUBMr4BYpUVaWYs7KtgDK4AemqHNKUKUSOPojmk/oFQPYCy+1i0KHAb5IGe0
+         3ppg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X1n7NNor3zS2ODqtpCXJROvyu+9CFBDKnMybRjAFIPg=;
-        b=A8H3T7hfc7pVrkeBBL54l9OU678HMGx8CFyXRFrWFqOrkAQsqhun0v8OnGKEbGekp4
-         5O8J+450BUbj/BPUe5sU6AduXGNfINTq9cmEIas0QFxcSdHva58Kzmlugn6WRusss8SG
-         1D+y1ESzRlE7KN8VodxwsiV6qLpHsphYLD2FBBbbKBj45ZPU41CCjV2+AcT6VVbB/vY3
-         BHAJy+zWV6Cl7ZAUhB/L8ZiUZk/2OJj2lPEInOgxdMvDDGbKpdaOBEo6zVahcGXeqZi2
-         FbDGVvQWDKkp7rNVxSJEdVwruCiT48H+pyRYrS4f/zovamthkm3o0ulWRKLwBUT960ec
-         jTcw==
-X-Gm-Message-State: AO0yUKV4BmmJgpWPCP/DFUk3F7IDbgZEwhHi4zkaKgMd3oZAVyxueHKU
-        tJxLGbFICvVjdVbg0ROIhyJDovXsuw7oXuJWO+QEU4WJcqU=
-X-Google-Smtp-Source: AK7set9GEmhdEFXZqKETwRPf2Gm9FPpSetM+Kv1huiP5DmCeyDVvfYwL6WiLlzdfzTJizx4pyEbHTbmCqza2aSFhFos=
-X-Received: by 2002:a17:906:eb8f:b0:878:786e:8c39 with SMTP id
- mh15-20020a170906eb8f00b00878786e8c39mr2226891ejb.105.1675898582447; Wed, 08
- Feb 2023 15:23:02 -0800 (PST)
+        bh=WZ4xSQGtDTmivX4P00tlfaiaMy+3i6nGamkuws/1MpQ=;
+        b=QNic+4KamREwmUaA7R1J/4+XIq7jWPVpqAtkIE0GVgX1e3f6DrQP+2nSZIL7piXkwH
+         YuDeLRm2O8rUgaFfn7Hyv+W0j6qfuiJ9YGy9CG8OnoTVJsi05MVGDJHB33PxR+31DnXr
+         WpW/bSi9s8Jiv3v6ZenmKF5lH/nBpZYmTs4VSQIslNvVh6+ColMRtC2FVJ/tLbiYoDXT
+         2LR4s6The/RsA8LSsAP6vR+ucG/Vw/PgMJJ6EzBz9vpO0gFWr0ay87al/WpTDb30LONh
+         XwImgeDtoBjxS/hrJHVZ3kmy2oTpUbvcWrFzVmlEA7FR0TafiicRoOEFsvWNVkMACMMr
+         tgiA==
+X-Gm-Message-State: AO0yUKWUKxgzXRzO+BuGs8Kpo153P4UVnjr0QsXNgS4sNQdwlCVBvOOb
+        BzisVGBTnx5tcz+nUhCmA3uCib86snZAHIYel/w=
+X-Google-Smtp-Source: AK7set9nvDTwPa7Oy1kFOSVeBjKEhm5a5BqEpYfNyFTC/Ctpmq1SBVNBKJ6B1efKvn8McOIxg7/LUzm/xaQNNJFsFxM=
+X-Received: by 2002:a17:906:5a60:b0:8aa:bdec:d9ae with SMTP id
+ my32-20020a1709065a6000b008aabdecd9aemr1300706ejc.12.1675899063105; Wed, 08
+ Feb 2023 15:31:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20230127191703.3864860-1-joannelkoong@gmail.com>
- <20230127191703.3864860-4-joannelkoong@gmail.com> <20230129233928.f3wf6dd6ep75w4vz@MacBook-Pro-6.local>
- <CAJnrk1ap0dsdEzR31x0=9hTaA=4xUU+yvgT8=Ur3tEUYur=Edw@mail.gmail.com>
- <20230131053605.g7o75yylku6nusnp@macbook-pro-6.dhcp.thefacebook.com>
- <CAJnrk1Z_GB_ynL5kEaVQaxYsPFjad+3dk8JWKqDfvb1VHHavwg@mail.gmail.com> <CAJnrk1bxm3_QQFK_aqiApiu5vYC+z++jRj9HF2jO6a+WWkswpQ@mail.gmail.com>
-In-Reply-To: <CAJnrk1bxm3_QQFK_aqiApiu5vYC+z++jRj9HF2jO6a+WWkswpQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 8 Feb 2023 15:22:50 -0800
-Message-ID: <CAADnVQJYOR7YMEFV7c1e4p8hvrEmoa3VA2wp0oJSgmuAjSF+EA@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
+References: <20230203031742.1730761-1-imagedong@tencent.com>
+ <20230203031742.1730761-3-imagedong@tencent.com> <CAEf4BzYh90NyyYvfTT=M=-KLspydMX4PZK8jCwNDydAP=kFgYw@mail.gmail.com>
+ <CADxym3a6_wBHW_c_ZYtZ5QXbbunhKxau6k-fn4TNrn+6qzW6fw@mail.gmail.com>
+ <CAEf4BzZAo6Bfio3pbY3j5yUDArCbdiWPC-r=XhFM9Bwq+4VVMg@mail.gmail.com> <75421c53-fa5c-d7c7-4b19-2d97e3e6d7f6@oracle.com>
+In-Reply-To: <75421c53-fa5c-d7c7-4b19-2d97e3e6d7f6@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Feb 2023 15:30:51 -0800
+Message-ID: <CAEf4BzZicf3B7BwPj=fWkcVJz0JayB9qUUbJFBPunxOJwQoMdw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add test for legacy/perf
+ kprobe/uprobe attach mode
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,68 +74,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 8, 2023 at 1:47 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+On Wed, Feb 8, 2023 at 3:49 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> On Tue, Jan 31, 2023 at 9:54 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+> On 07/02/2023 22:50, Andrii Nakryiko wrote:
+> > On Mon, Feb 6, 2023 at 6:39 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
+> >>
+> >> On Tue, Feb 7, 2023 at 4:05 AM Andrii Nakryiko
+> >> <andrii.nakryiko@gmail.com> wrote:
+> >>>
+> >>> On Thu, Feb 2, 2023 at 7:18 PM <menglong8.dong@gmail.com> wrote:
+> >>>>
+> >>>> From: Menglong Dong <imagedong@tencent.com>
+> >>>>
+> >>>> Add the testing for kprobe/uprobe attaching in legacy and perf mode.
+> >>>> And the testing passed:
+> >>>>
+> >>>> ./test_progs -t attach_probe
+> >>>> $5       attach_probe:OK
+> >>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> >>>>
+> >>>> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> >>>> ---
+> >>>
+> >>> Do you mind refactoring attach_probe test into multiple subtests,
+> >>> where each subtest will only test one of the attach mode and type. The
+> >>> reason is that libbpf CI runs tests with latest selftests and libbpf
+> >>> against old kernels (4.9 and 5.5, currently). Due to attach_probe
+> >>> testing all these uprobe/kprobe attach modes with extra features (like
+> >>> cookie, ref count, etc), we had to disable attach_probe test in libbpf
+> >>> CI on old kernels.
+> >>>
+> >>> If we can split each individual uprobe/kprobe mode, that will give us
+> >>> flexibility to selectively allowlist those tests that don't force
+> >>> libbpf to use newer features (like cookies, LINK or PERF mode, etc).
+> >>>
+> >>> It would be a great improvement and highly appreciated! If you don't
+> >>> mind doing this, let's do the split of existing use cases into subtest
+> >>> in a separate patch, and then add PERF/LEGACY/LINK mode tests on top
+> >>> of that patch.
+> >>>
+> >>
+> >> Of course, with pleasure. For the existing use cases, we split it into
+> >> subtests, such as:
+> >>
+> >>   kprobe/kretprobe auto attach
+> >>   kprobe/kretprobe manual attach
+> >>   uprobe/uretprobe ref_ctr test
+> >>   uprobe/uretprobe auto attach
+> >>   sleepable kprobe/uprobe
+> >>   ......
+> >>
+> >> Am I right?
 > >
-> > On Mon, Jan 30, 2023 at 9:36 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Jan 30, 2023 at 04:44:12PM -0800, Joanne Koong wrote:
-> > > > On Sun, Jan 29, 2023 at 3:39 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jan 27, 2023 at 11:17:01AM -0800, Joanne Koong wrote:
-> [...]
-> > > > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > > > index 6da78b3d381e..ddb47126071a 100644
-> > > > > > --- a/net/core/filter.c
-> > > > > > +++ b/net/core/filter.c
-> > > > > > @@ -1684,8 +1684,8 @@ static inline void bpf_pull_mac_rcsum(struct sk_buff *skb)
-> > > > > >               skb_postpull_rcsum(skb, skb_mac_header(skb), skb->mac_len);
-> > > > > >  }
-> > > > > >
-> > > > > > -BPF_CALL_5(bpf_skb_store_bytes, struct sk_buff *, skb, u32, offset,
-> > > > > > -        const void *, from, u32, len, u64, flags)
-> > > > > > +int __bpf_skb_store_bytes(struct sk_buff *skb, u32 offset, const void *from,
-> > > > > > +                       u32 len, u64 flags)
-> > > > >
-> > > > > This change is just to be able to call __bpf_skb_store_bytes() ?
-> > > > > If so, it's unnecessary.
-> > > > > See:
-> > > > > BPF_CALL_4(sk_reuseport_load_bytes,
-> > > > >            const struct sk_reuseport_kern *, reuse_kern, u32, offset,
-> > > > >            void *, to, u32, len)
-> > > > > {
-> > > > >         return ____bpf_skb_load_bytes(reuse_kern->skb, offset, to, len);
-> > > > > }
-> > > > >
-> > > >
-> > > > There was prior feedback [0] that using four underscores to call a
-> > > > helper function is confusing and makes it ungreppable
-> > >
-> > > There are plenty of ungreppable funcs in the kernel.
-> > > Try finding where folio_test_dirty() is defined.
-> > > mm subsystem is full of such 'features'.
-> > > Not friendly for casual kernel code reader, but useful.
-> > >
-> > > Since quadruple underscore is already used in the code base
-> > > I see no reason to sacrifice bpf_skb_load_bytes performance with extra call.
+> > I haven't analysed all the different cases, but roughly it makes
+> > sense. With more granular subtests we can also drop `legacy` flag and
+> > rely on subtest allowlisting in CI.
 > >
-> > I don't have a preference either way, I'll change it to use the
-> > quadruple underscore in the next version
 >
-> I think we still need these extra __bpf_skb_store/load_bytes()
-> functions, because BPF_CALL_x static inlines the
-> bpf_skb_store/load_bytes helpers in net/core/filter.c, and we need to
-> call these bpf_skb_store/load_bytes helpers from another file
-> (kernel/bpf/helpers.c). I think the only other alternative is moving
-> the BPF_CALL_x declaration of bpf_skb_store/load bytes to
-> include/linux/filter.h, but I think having the extra
-> __bpf_skb_store/load_bytes() is cleaner.
+> I'm probably rusty on the details, but when you talk about subtest
+> splitting for the [uk]probe manual attach, are we talking about running
+> the same manual attach test for the different modes, with each as a
+> separate subtest, such that each registers as a distinct pass/fail (and
+> can thus be allowlisted as appropriate)? So in other words
+>
+> test__start_subtest("manual_attach_kprobe_link");
+> attach_kprobe_manual(link_options);
+> test__start_subtest("manual_attach_kprobe_legacy");
+> attach_kprobe_manual(legay_options);
+> test__start_subtest("manual_attach_kprobe_perf");
+> attach_kprobe_manual(perf_options);
+>
+> ?
 
-bpf_skb_load_bytes() is a performance critical function.
-I'm worried about the cost of the extra call.
-Will compiler be smart enough to inline __bpf_skb_load_bytes()
-in both cases? Probably not if they're in different .c files.
-Not sure how to solve it. Make it a static inline in skbuff.h ?
+Yep. One of the reasons is that on 4.9 kernel there won't be link or
+perf method available, so it is expected for such modes to fail. I
+want to be able to still test the legacy code path on 4.9, though.
+Similarly tests that are using ref_ctr_offset or bpf_cookie won't work
+on older kernels as well. Right now because of all of them being in a
+single test, I have to block entire test, losing coverage on older
+kernels.
+
+>
+> >>
+> >> Thanks!
+> >> Dongmeng Long
+> >>
+> >>>
+> >>>>  .../selftests/bpf/prog_tests/attach_probe.c   | 61 ++++++++++++++++++-
+> >>>>  .../selftests/bpf/progs/test_attach_probe.c   | 32 ++++++++++
+> >>>>  2 files changed, 92 insertions(+), 1 deletion(-)
+> >>>>
+> >>>
+> >>> [...]
