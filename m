@@ -2,145 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5DE68F9F1
-	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 22:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A011768FA79
+	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 23:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbjBHV4G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 16:56:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
+        id S232400AbjBHWyy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 17:54:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbjBHV4F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 16:56:05 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F054328D26
-        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 13:56:00 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id f6so535458pln.12
-        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 13:56:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WrzQdBMb984GoLwSermZKSUJHb2Pj08MtfAszXlgQ/k=;
-        b=X3Q+qaLof/eu0DFR89m7gQn/6gT+BTyfg6uW5GUTN9076Tc/H7WEg3Rn9nCbIYk9to
-         sFk8ItAXccaAM10ROnONd4cmr4F88/N/PKhJCEuuN9EngNYzN+wCkhiXHHzrGbjsOj5c
-         Fg/zSiwQZc1Cmg5B1mowGhhJdKsrlLIIiw04r+NUiQpcTf70tDIcsvZo1+IibxXFTIoO
-         KITAEPIX3cfaqDGsEv9ZT1g8yQ0DzXX01fusCwzAB58px3qFyBiOcYoSAo4QBTjxdgE9
-         Yd6KmjOmsP61c2aSSvYd/3vLMvRKxtMs2KdH2Z3v/xZQWAiBS5fNRul6faGsMl5rMtTY
-         /WHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WrzQdBMb984GoLwSermZKSUJHb2Pj08MtfAszXlgQ/k=;
-        b=y1DkUqe5i0bkuHn0T9d7yrOZLW8a4tEdL1S6XyXUVZf2E7fkN2qtC5iwuvkruStV9L
-         /0sE7SScjVC84u0RxLNQNqw+Go9pjHMCr3GkznqBwa4pdoHz5tcARWEhCWbkQc/VO4R8
-         J1o8RwjLA+wvMQlypdL+7u87lMO+7j9ARDMZdnNvHWKcGHsxE+PVSp0CQHfoxB2wJaze
-         f12tJylpFOpDXIMVywyaiH9K1pPP6soF0fpt+OuTe5+1DYjxrbD/e52tQVysjRh6keqd
-         /0+JpyZmZkLC/tdpC0tbZpW9Rj8cXJqysW98O3uApcfqHsCXzA1xhKi6pIep3R3LB67E
-         wStA==
-X-Gm-Message-State: AO0yUKVsu9lOsTP8XCu+fjeKCxalDCuGDF4b60iyuOhRztGy0+bs9EFd
-        83kWysyb7/Vlu95f0N7Ytwpc
-X-Google-Smtp-Source: AK7set94ohGg+ZPN8FmhK2vwun0FMjWaJ4yRKKML6EHTABq5z5LP5TMYNz3fYPfypqrE+agTNEfmnw==
-X-Received: by 2002:a17:902:a604:b0:198:d5cc:44a8 with SMTP id u4-20020a170902a60400b00198d5cc44a8mr352677plq.19.1675893360186;
-        Wed, 08 Feb 2023 13:56:00 -0800 (PST)
-Received: from google.com (238.76.127.34.bc.googleusercontent.com. [34.127.76.238])
-        by smtp.gmail.com with ESMTPSA id 25-20020aa79119000000b0058d8f23af26sm3938910pfh.157.2023.02.08.13.55.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Feb 2023 13:55:59 -0800 (PST)
-Date:   Wed, 8 Feb 2023 21:55:50 +0000
-From:   John Stultz <jstultz@google.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Qais Yousef <qyousef@google.com>,
-        Daniele Di Proietto <ddiproietto@google.com>
-Subject: Re: [PATCH v2 7/7] tools/testing/selftests/bpf: replace open-coded
- 16 with TASK_COMM_LEN
-Message-ID: <Y+QaZtz55LIirsUO@google.com>
-References: <20211120112738.45980-1-laoar.shao@gmail.com>
- <20211120112738.45980-8-laoar.shao@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211120112738.45980-8-laoar.shao@gmail.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232174AbjBHWyx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 17:54:53 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A605B12F07
+        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 14:54:52 -0800 (PST)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 318Kwpt3010848;
+        Wed, 8 Feb 2023 22:54:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2022-7-12;
+ bh=ywwq9Y/KSov+6ClQUXW65RZv+LIzDSjcJ8ddMWqeyNc=;
+ b=23P+toNWGae6QzdPAwgzBOVuKYumvAsAL9AfDqywJuwlntUVH8vzzdUgFEvQl9Me047Z
+ YEomodJ7Ci4/Y7Xvr6jIoObsp+NixMP5k1W3gP790rnyhiM2o9ObbKZj1hhKtPCY9u2L
+ UKUqthKZfKdcJEjlEJiDw4Z10QvU5w8tU/ldZFYu+6Gp/F5OZA5SWa4kqpgUJvszJir5
+ tO1OlIkOsLBMZN9Qv/iKk9mJx4iek+ns68aDSMCyRMi1tEMSSXrbS3i1PC3e1wHf0GZY
+ m6aOgasifQjzFTiVinYD7sUq8pjCRAPwxOYy3R5T9jZwRCdDo3J5898oMK+xIcIujfvt Xg== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3nhdsdsggm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Feb 2023 22:54:34 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 318MY6QC021344;
+        Wed, 8 Feb 2023 22:54:33 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3nhdt7w5yu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Feb 2023 22:54:33 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 318Mo0Ha039811;
+        Wed, 8 Feb 2023 22:54:32 GMT
+Received: from myrouter.uk.oracle.com (dhcp-10-175-222-60.vpn.oracle.com [10.175.222.60])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3nhdt7w5ww-1;
+        Wed, 08 Feb 2023 22:54:32 +0000
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     acme@kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        eddyz87@gmail.com, haoluo@google.com, jolsa@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        sinquersw@gmail.com, martin.lau@kernel.org, songliubraving@fb.com,
+        sdf@google.com, timo@incline.eu, yhs@fb.com, bpf@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH dwarves] btf_encoder: ensure elf function representation is fully initialized
+Date:   Wed,  8 Feb 2023 22:54:28 +0000
+Message-Id: <1675896868-26339-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-02-08_09,2023-02-08_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=912 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302080194
+X-Proofpoint-ORIG-GUID: HoCpSvaOYVfM226xBgDfnbXTNOEkYR86
+X-Proofpoint-GUID: HoCpSvaOYVfM226xBgDfnbXTNOEkYR86
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 11:27:38AM +0000, Yafang Shao wrote:
-> As the sched:sched_switch tracepoint args are derived from the kernel,
-> we'd better make it same with the kernel. So the macro TASK_COMM_LEN is
-> converted to type enum, then all the BPF programs can get it through BTF.
-> 
-> The BPF program which wants to use TASK_COMM_LEN should include the header
-> vmlinux.h. Regarding the test_stacktrace_map and test_tracepoint, as the
-> type defined in linux/bpf.h are also defined in vmlinux.h, so we don't
-> need to include linux/bpf.h again.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Acked-by: David Hildenbrand <david@redhat.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> ---
->  include/linux/sched.h                                   | 9 +++++++--
->  tools/testing/selftests/bpf/progs/test_stacktrace_map.c | 6 +++---
->  tools/testing/selftests/bpf/progs/test_tracepoint.c     | 6 +++---
->  3 files changed, 13 insertions(+), 8 deletions(-)
+new fields in BTF encoder state (used to support save and later
+addition of function) of ELF function representation need to
+be initialized.  No need to set parameter names to NULL as
+got_parameter_names guards their use.
 
-Hey all,
-  I know this is a little late, but I recently got a report that
-this change was causiing older versions of perfetto to stop
-working. 
+A follow-on patch intended to be applied after the series [1].
 
-Apparently newer versions of perfetto has worked around this
-via the following changes:
-  https://android.googlesource.com/platform/external/perfetto/+/c717c93131b1b6e3705a11092a70ac47c78b731d%5E%21/
-  https://android.googlesource.com/platform/external/perfetto/+/160a504ad5c91a227e55f84d3e5d3fe22af7c2bb%5E%21/
+[1] https://lore.kernel.org/bpf/1675790102-23037-1-git-send-email-alan.maguire@oracle.com/
 
-But for older versions of perfetto, reverting upstream commit
-3087c61ed2c4 ("tools/testing/selftests/bpf: replace open-coded 16
-with TASK_COMM_LEN") is necessary to get it back to working.
+Suggested-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ btf_encoder.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I haven't dug very far into the details, and obviously this doesn't
-break with the updated perfetto, but from a high level this does
-seem to be a breaking-userland regression.
+diff --git a/btf_encoder.c b/btf_encoder.c
+index 35fb60a..ea5b47b 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -1020,6 +1020,8 @@ static int btf_encoder__collect_function(struct btf_encoder *encoder, GElf_Sym *
+ 	}
+ 	encoder->functions.entries[encoder->functions.cnt].generated = false;
+ 	encoder->functions.entries[encoder->functions.cnt].function = NULL;
++	encoder->functions.entries[encoder->functions.cnt].state.got_parameter_names = false;
++	encoder->functions.entries[encoder->functions.cnt].state.type_id_off = 0;
+ 	encoder->functions.cnt++;
+ 	return 0;
+ }
+-- 
+1.8.3.1
 
-So I wanted to reach out to see if there was more context for this
-breakage? I don't want to raise a unnecessary stink if this was
-an unfortuante but forced situation.
-
-thanks
--john
