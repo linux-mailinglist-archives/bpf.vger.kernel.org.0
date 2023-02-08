@@ -2,62 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D6768F238
-	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 16:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E20B068F239
+	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 16:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbjBHPlK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 10:41:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        id S230262AbjBHPlT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 10:41:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjBHPlJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 10:41:09 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19C94615D
-        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 07:41:04 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id y7so7080221iob.6
-        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 07:41:04 -0800 (PST)
+        with ESMTP id S230196AbjBHPlS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 10:41:18 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FEE48A08;
+        Wed,  8 Feb 2023 07:41:17 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id y4so943507pfe.4;
+        Wed, 08 Feb 2023 07:41:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JkZ58MYpEhG2IwgSBdaX6mp9aV0KvO0RkSxNMsdPhHc=;
-        b=oD1cHhuFwSExgigEC5/cuhqv5oBMKXkmYj7TI/9ME8tU3GuxLC37Ghu++ISVQL2wN7
-         rBdkgBzOv5AG/Yp4ObjbJGIGTe31fdYt09XdtHeESFH4URp706nPVddaaZIXgHXrJnDt
-         DnjD1ajs9ErVnghYA0vw/ZVe89CICfxRKlQ0jiezXiYycxtCcPT1nCWjbMa/KkzJXw5+
-         336AxghiMNGUfUB1QnBLYYsWX+8mNDWT2vaqbtNJI7L1YMPEddrYAbeetbjPEXBtIf6u
-         B6EufycjRxQ1A7ba0TVIBvSmyqToC8r4ok5AJCf7WmX6qL/ajqojBR3x8AxOyENl+Emo
-         0NHA==
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ve+9b2Qi4QH55+IMknZLZqZvNPVOjzseuDH+jH0F2bw=;
+        b=nFZZf8nrA50gOQ72uyOrle9KCurosMmlUpiG0iNBwvVzo0CJNEqBsFR9mwYqo+vT5q
+         13SDT6AEY9ijHCTLwswiCL9N8iwESh/qNheiBTyDj9OTabF/UL5+kuoU2l9Obgg+Sbfk
+         dYoqKqou8dNgiEIlwQ8TrzQtZ2DJjPvotNTxyd/SfYwh/Xx9gEut7Gpc7jJ6KpEfNV68
+         zdtULC+NovJxCq8N287T9+kkTlZPElZcfsH9IRjMNBlDdn4+m1sHY35q4pSuxvQZO00m
+         T9lAlEpDRU9g7DpqpeEq0kKfNhI3kKW0qE/xFVa435Rxho/6JHg2/vUhs2bq91jecRdS
+         JamA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JkZ58MYpEhG2IwgSBdaX6mp9aV0KvO0RkSxNMsdPhHc=;
-        b=DcHkMYLWn4pF0m0AM81beoLY9Kc274MezFrbalJxRqMFRAeE6UM4uqvsTfYhIK5BYC
-         4+pR0SnIJXzhZf7iV4dxcNI73jRDg9TbOBRsEKvQzBhnUJHapxpwzeXxnT32EWvbMwI+
-         PlboXEacF9I/iuBJp2bRFbQSZiTinib10qm/72P/dO4x7trjeoz0zNGH7p2+icKpIjOk
-         SYe4oQOxD6h46vHfc7PNqlYMB7m8XZR1rgCyOGiiPKblG6qObUUbze/j2y8DI3vj/3Ek
-         ecCAMYLDPJEPaUKB1HSJ1YcmBdZP4yiD4bUXyCDnxZMGID656GxlXHOWcKu1TrRHJoER
-         en1A==
-X-Gm-Message-State: AO0yUKXHWwCXFWkYTD40bCTFO2wdZVz+bCyxaxD2vyuNTKYGZD7d1VqH
-        SsJjfoThXkIxuKseu51Ry3WxCil+QmuocPNGBfuSSeLHxTKxXw==
-X-Google-Smtp-Source: AK7set9F+qi9hhqT1pb8ssTepVxMc/R33bV88CYbyXLiEVrpY2H5lmWnTCt4NXHjSGYxqs+Qa+QrXkL+ogppS3kRQkc=
-X-Received: by 2002:a02:b707:0:b0:38a:4b1f:f69b with SMTP id
- g7-20020a02b707000000b0038a4b1ff69bmr216754jam.4.1675870864203; Wed, 08 Feb
- 2023 07:41:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20230203182812.20657-1-grantseltzer@gmail.com>
- <6433db0e-5cc6-8acc-b92f-eb5e17f032d6@linux.dev> <CAO658oVRQTL8HfKFJ3X8zjYRLJCQWROjzyOcXeP=uVRML1UYOw@mail.gmail.com>
- <f2afdc22-a9c1-eaad-fab4-2ff61b409282@linux.dev> <CAO658oUUZf2eAA-hRvGm8=u9bX-g2xXxB_Vvr1b5Bg=wKX6xQw@mail.gmail.com>
- <616140cf-b2e1-5bca-a6cb-8057c7d9ae0d@linux.dev>
-In-Reply-To: <616140cf-b2e1-5bca-a6cb-8057c7d9ae0d@linux.dev>
-From:   Grant Seltzer Richman <grantseltzer@gmail.com>
-Date:   Wed, 8 Feb 2023 10:40:53 -0500
-Message-ID: <CAO658oUgbed5r9K6fEBoqoxjUeZDd4kBwOxa2c8-nq5YDpy+8A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] Add support for tracing programs in BPF_PROG_RUN
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     andrii@kernel.org, kpsingh@kernel.org, bpf@vger.kernel.org
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ve+9b2Qi4QH55+IMknZLZqZvNPVOjzseuDH+jH0F2bw=;
+        b=Uh6q2pE6KA+j2RVjKcMzoxsZ1TuNL0+5KXB4Ll08/nOOIU/vV6miUM5L3BZmf7OrhE
+         tLv1Nl1AnQWlsYbCxZp5uuTajDbECRzcb8NOGX+vF7JmKauImqsDgBwBc4ArBXX6zpmS
+         MoR8Xbmzbmw9ieBE4yv2ZlrxJmwMUcQs4KBvh3MqRIznY4qT2chScBfiv4lRjRSnq6i7
+         CP2+Nr1GdybNSoEonCIMdr4tyjeviF3rmhKMkHdzY/hv55qgr+Qu1/E4EWeJUAq7nn9F
+         jvGgsO9KV7OSoscC6C01DdHfQZPLPTWpVuQTJE6h7cRp0VgCoVRXStSPfdljvot1DBqV
+         gZVA==
+X-Gm-Message-State: AO0yUKWUzd8U+YAFrHViMrEjrfyBCKRqLBe/i0VpccqHtYuBbWnYXG4t
+        vuAmnx1zEiPb+8ZIFP+bOlk=
+X-Google-Smtp-Source: AK7set9UTWY6Rr3Hk/2ig1fM62OTMBVuuEEnv8lQWsr64vq7cs1K+rvyb9/y3awDxGi46NxWBdhMgQ==
+X-Received: by 2002:a62:4e48:0:b0:5a7:a688:cd8a with SMTP id c69-20020a624e48000000b005a7a688cd8amr5546379pfb.33.1675870877091;
+        Wed, 08 Feb 2023 07:41:17 -0800 (PST)
+Received: from [192.168.0.128] ([98.97.119.54])
+        by smtp.googlemail.com with ESMTPSA id 187-20020a6217c4000000b005825b8e0540sm11359357pfx.204.2023.02.08.07.41.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Feb 2023 07:41:16 -0800 (PST)
+Message-ID: <c33e26364b18039e3632218d8e2a76f3b6a08577.camel@gmail.com>
+Subject: Re: [PATCH net v2 2/3] i40e: add double of VLAN header when
+ computing the max MTU
+From:   Alexander H Duyck <alexander.duyck@gmail.com>
+To:     Jason Xing <kerneljasonxing@gmail.com>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        alexandr.lobakin@intel.com, maciej.fijalkowski@intel.com
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Jason Xing <kernelxing@tencent.com>
+Date:   Wed, 08 Feb 2023 07:41:14 -0800
+In-Reply-To: <20230208024333.10465-2-kerneljasonxing@gmail.com>
+References: <20230208024333.10465-1-kerneljasonxing@gmail.com>
+         <20230208024333.10465-2-kerneljasonxing@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,66 +80,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 7, 2023 at 8:05 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 2/7/23 7:46 AM, Grant Seltzer Richman wrote:
-> > On Mon, Feb 6, 2023 at 3:37 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> >>
-> >> On 2/5/23 9:29 AM, Grant Seltzer Richman wrote:
-> >>> On Sat, Feb 4, 2023 at 1:58 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> >>>>
-> >>>> On 2/3/23 10:28 AM, Grant Seltzer wrote:
-> >>>>> This patch changes the behavior of how BPF_PROG_RUN treats tracing
-> >>>>> (fentry/fexit) programs. Previously only a return value is injected
-> >>>>> but the actual program was not run.
-> >>>>
-> >>>> hmm... I don't understand this. The actual program is run by attaching to the
-> >>>> bpf_fentry_test{1,2,3...}. eg. The test in fentry_test.c
-> >>>
-> >>> I'm not sure what you mean. Are you saying in order to use the
-> >>> BPF_PROG_RUN bpf syscall command the user must first attach to
-> >>> `bpf_fentry_test1` (or any 1-8), and then execute the BPF_PROG_RUN?
-> >>
-> >> It is how the fentry/fexit/fmod_ret...BPF_PROG_TYPE_TRACIN_xxx prog is setup to
-> >> run now in test_run. afaik, these tracing progs require the trampoline setup
-> >> before calling the bpf prog, so don't understand how __bpf_prog_test_run_tracing
-> >> will work safely.
-> >
-> > My goal is to be able to take a bpf program of type
-> > BPF_PROG_TYPE_TRACING and run it via BPF_PROG_TEST_RUN without having
-> > to attach it. The motivation is testing. You can run tracing programs
-> > but the actual program isn't run, from the users perspective the
-> > syscall just returns 0. You can see how I'm testing this here [1].
-> >
-> > If I understand you correctly, it's possible to do something like
-> > this, can you give me more information on how I can and I'll be sure
-> > to submit documentation for it?
-> >
-> > [1] https://github.com/grantseltzer/bpf-prog-test-run/tree/main/programs
->
-> In raw tracepoint, the "ctx" is just a u64 array for the args.
->
-> fentry/fexit/fmod_ret is much demanding than preparing a u64 array. The
-> trampoline is preparing more than just 'args'. The trampoline is likely to be
-> expanded and changed in the future also. You can take a look at
-> arch_prepare_bpf_trampoline().
->
-> Yes, might be the trampoline preparation can be reused. However, I am not
-> convinced tracing program can be tested through test_run in a meaningful and
-> reliable way to worth this complication. eg. A tracing function taking 'struct
-> task_struct *task'. It is not easy for the user space program to prepare the ctx
-> containing a task_struct and the task_struct layout may change also. There are
-> so many traceable kernel functions and I don't think test_run can ever become a
-> single point to test tracing prog for all kernel functions.
-> [ Side-note: test_run for skb/xdp has much narrower focus in terms of argument
-> because it is driven by the packet header like the standard IPv6/TCP/UDP. ]
->
-> Even for bpf_prog_test_run_raw_tp, the raw_tp_test_run.c is mostly testing if
-> the prog is running on a particular cpu. It is not looking into the args which
-> is what the tracing prog usually does.
->
-> Please attach the tracing prog to the kernel function to test
-> or reuse the existing bpf_prog_test_run_raw_tp to test it if it does not care
-> the args.
+On Wed, 2023-02-08 at 10:43 +0800, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+>=20
+> Include the second VLAN HLEN into account when computing the maximum
+> MTU size as other drivers do.
+>=20
+> Fixes: 0c8493d90b6b ("i40e: add XDP support for pass and drop actions")
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> ---
+> v2: drop the duplicate definition
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/et=
+hernet/intel/i40e/i40e_main.c
+> index 53d0083e35da..d039928f3646 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+> @@ -2921,7 +2921,7 @@ static int i40e_change_mtu(struct net_device *netde=
+v, int new_mtu)
+>  	struct i40e_pf *pf =3D vsi->back;
+> =20
+>  	if (i40e_enabled_xdp_vsi(vsi)) {
+> -		int frame_size =3D new_mtu + ETH_HLEN + ETH_FCS_LEN + VLAN_HLEN;
+> +		int frame_size =3D new_mtu + I40E_PACKET_HDR_PAD;
+> =20
+>  		if (frame_size > i40e_max_xdp_frame_size(vsi))
+>  			return -EINVAL;
 
-Thank you for the explanation, I understand!
+Looks good to me.
+
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
