@@ -2,171 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDCC68F3AB
-	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 17:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B61B868F3A8
+	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 17:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbjBHQpE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 11:45:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S231670AbjBHQoq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 11:44:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231834AbjBHQov (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 11:44:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3160E30C0
-        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 08:43:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675874512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1YNZbpe0n60mPrJnwiUAdm1/ZMHBphP6DStDV17ccyQ=;
-        b=Nlt94guvwrB9HjEyOoZH6NSMEdbo0aOvnooBFgzfbGBwHr32Lb4Y4CEZ7qKG4TzncXog9s
-        G3TUZVU925F8kkwWOFeMOPqPR6EHuKuor5RXGZZwj4XW+06yoaJFiOrNIXufu2rjy3R2A0
-        24iNTYOK8VoOQ5P02BURlb3vMmajIk0=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-568-nmoY7XMuNxC358zbsT9oeg-1; Wed, 08 Feb 2023 11:41:48 -0500
-X-MC-Unique: nmoY7XMuNxC358zbsT9oeg-1
-Received: by mail-ej1-f70.google.com with SMTP id vq12-20020a170907a4cc00b00896db1c78aaso7968296ejc.9
-        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 08:41:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1YNZbpe0n60mPrJnwiUAdm1/ZMHBphP6DStDV17ccyQ=;
-        b=x/JL3u/XmyV54EauFbLz9BbiWi1JMTUD0v0TDQhOGg9fNDj+xYIEZc2dvJUFpq4eLY
-         /TogqzG25j1E0g74uwnlqCfy5PsPQQoO1VKUTOG5WBjgMnkLubsw0GZ+4/HCeRRvH7KA
-         ofTvw5hCA7WhwK8HPp00VkfHJgcSYzH5QAj842ATocZZpJcnmjxp4cn0vEonNJhMI2pk
-         ZMFb0NTOaxhsR5f1JdoiOMT1VyLBlcDTGs2tZsnlr12vptGsRT9KrUMqiV03M1+akGUq
-         MmRZnNUfTd/LxezV+zvAZ2PTL4tqU6fMPJNiKIcEf82VF80cbGRXLiGcHdAFdlbtmXM+
-         jW/g==
-X-Gm-Message-State: AO0yUKUe7rEQoFN0TTmpCWn1eEWCQ01d0qa3zEG3YWrw74RoEFb50UgW
-        MsN2gtSOvdLA9XD/UdlbcSqWPNy75HwLSzpCESbBwAhm/CtTFwIaFtS1beUB4kWP8us+scJHvy2
-        wFeneNqTWmXA3
-X-Received: by 2002:a50:8e5b:0:b0:4aa:aa90:eeb0 with SMTP id 27-20020a508e5b000000b004aaaa90eeb0mr8686718edx.10.1675874506972;
-        Wed, 08 Feb 2023 08:41:46 -0800 (PST)
-X-Google-Smtp-Source: AK7set8hipcNP0yhKThKsAPXHkhiewTa/uYVgDASPJB06br2zp93oOwb/wVBxDoSNQXEboSlumCupw==
-X-Received: by 2002:a50:8e5b:0:b0:4aa:aa90:eeb0 with SMTP id 27-20020a508e5b000000b004aaaa90eeb0mr8686676edx.10.1675874506015;
-        Wed, 08 Feb 2023 08:41:46 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a30-20020a50c31e000000b004aaf8decec4sm1192212edb.44.2023.02.08.08.41.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Feb 2023 08:41:45 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 37F9B973CE0; Wed,  8 Feb 2023 17:41:44 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        with ESMTP id S231738AbjBHQod (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 11:44:33 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3C065BE;
+        Wed,  8 Feb 2023 08:44:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675874654; x=1707410654;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=PyXTGQfUErLeQ23C3SbhI2QMLrNff7z6okg3IQck72c=;
+  b=K619qy1k3PdsrVhTjb7o27evvi8IDcxdl8rYVUx0QjT/ofKNwZOA8eZZ
+   fir7tJdEZz3Xrk7LLMU5ihOlPPC5vMoaaiIXrRPFH79y5Wn2MEeadAJMJ
+   RoPV4K0MRKxjetxWUC89EQtM9G0CBbNPUnhaQckYV9Bei8tqVdQFlXWHG
+   gfIXhLdL3Hfs6sYLec8y1F6HcQ+Jd808KsHqlaTOj9yYG/OpKO9eLJmhk
+   T+d5+11W5x2IKqDJOcaYoYz3BQWifx5fsJYg8Vw9Fq+TiTs0u/BV5J+cs
+   /u7Yp2GT95M1IF0RgLf9oSCAyYvZdCj3q+2F2X0YAvArs+5K+dQ7lm9jo
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="317855549"
+X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
+   d="scan'208";a="317855549"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 08:42:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="841251106"
+X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
+   d="scan'208";a="841251106"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga005.jf.intel.com with ESMTP; 08 Feb 2023 08:42:09 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Wed, 8 Feb 2023 08:42:09 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Wed, 8 Feb 2023 08:42:09 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Wed, 8 Feb 2023 08:42:09 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.42) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Wed, 8 Feb 2023 08:42:08 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NPw61QwO62xXh5qB/2WnzyGbIqeunOJSIGtNWgScweWrKMT7UuV9Lk9kZsKKBK0Y6w6VsNxKST1K1OkU3Er8PAhffn1o7Mmwyq/5dlbU0vrY8S/cT8HunaPGZO8l6IOqlIpVYj38pcKVJDFpxMy74VPktgzNdlER4SufZoy7gmKiy+90cL8fIM06NzwzT1JCm35glBEI2nSKVIQLrlRtua6HoavHAuxgFvSsmSnf3QhdYAdYXmmgzF6p4Tdtub5v5tEWdzCdhEq/kCdVwFexydpl4Bfqd5j32uyC/Ozuw4vlaaiebY6iNnKSNxC+ihzLmJT5X4PQONhkrtQksp49MA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yCQSHK78RH7e0VURKzt7v2TdLZss9TFN6S3Foz0xZx8=;
+ b=UDQk1MqgdTLJ8rBOj5ePsb6+RRQkXnudBP7iI+hAXycaGv4zKpqb3X9vX4Xqs6vrLiYys31/Ws2GVV+xuuomszG8D50TCcMEt+SrqUeO9CV2Ry23dSz3SPye7y7A1WJnxxyzl4yT5W6bCTnd3Gteh2DOEBkYZZOOc79tvevCm30UV0vs0GGG6U9MdgF5Db74RaDMD2aPxSdKtYYDmhkDafJqoGIerWEcrxFqq12f30ctarhcpGvnli3SnELHGILPiN7cTz6K/Q2kF/Wyj+Dy5UHRB9lz4uWa/uOJIc4sq6tSTj3IS0IHxpztFBu1pTburrlB3UKZgalmTA9Ek6tsdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ MW4PR11MB6737.namprd11.prod.outlook.com (2603:10b6:303:20d::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.36; Wed, 8 Feb
+ 2023 16:42:07 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::39d8:836d:fe2c:146]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::39d8:836d:fe2c:146%6]) with mapi id 15.20.5986.019; Wed, 8 Feb 2023
+ 16:42:07 +0000
+Date:   Wed, 8 Feb 2023 17:41:59 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        David Vernet <void@manifault.com>,
-        Jonathan Corbet <corbet@lwn.net>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH bpf-next v3] bpf/docs: Update design QA to be consistent with kfunc lifecycle docs
-Date:   Wed,  8 Feb 2023 17:41:43 +0100
-Message-Id: <20230208164143.286392-1-toke@redhat.com>
-X-Mailer: git-send-email 2.39.1
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 00/11] NXP ENETC AF_XDP zero-copy sockets
+Message-ID: <Y+PQ1+j0l/h/6dx+@boxer>
+References: <20230206100837.451300-1-vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230206100837.451300-1-vladimir.oltean@nxp.com>
+X-ClientProxiedBy: LO4P265CA0140.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:2c4::13) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|MW4PR11MB6737:EE_
+X-MS-Office365-Filtering-Correlation-Id: a844ae6e-79a6-4416-a229-08db09f36a67
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GEwAntXAlIu5ywR85MU3REDsNOkpzqw1dCX1IPkUY64QQcs0YZx5eetoaq1BbZkFZYWfWG60zTRjtscfIzzI9q8JcgkAHCcKay5HkfjEP+vbMiF617rcQlqVgkGJFBzgZRwqQZEXQ1UyLrMDksbTmdEi2IZiiAJ8y2bg9R68l57+7Azokx7JWJ06JdbqmdETfLl7kEaM419NNFq08/p2MzxYltsphNCEEiyskprOw/ITo/4WdCvF5eGt96dxaNBmW5yX0O7N7OxCG2P9Wk/ZH0MdOfgs4dcjFewx+EHtuX/VhC2ys6dIQ6nNQwi6G5xIxxEbIfMCTHnXYcAupTv0bChcbSF1KGjN9acINdU0PsfhpVPaqXTthflr78VfNfNoG+PIHhKlM5FDqySMdT1rjns4xVdOe1AcXi3oOpszfZT1I0/LbTiKz+9vFj2IsfNbo8pU9dTUyQZRO35lPDYEzd1qnooAlOutVKjq2IMGJk/UjqQFF/ObcuzipF3xvjnHx8P9k8Tl4c9sXk76C7osbuEZ2Oby0Dzej2OArEEbo2msTrjlrfRjsdvr3F/xCQbdtj9KtoGDjVGnrifA05xuPeMGOr84jXkOnT8Gz5yrvm6mW4nf8A5PNibD38cMiTiXsrfXCdw47VQl/4aD3Ezk0g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(366004)(136003)(346002)(396003)(376002)(39860400002)(451199018)(7416002)(44832011)(33716001)(5660300002)(8936002)(2906002)(83380400001)(66946007)(82960400001)(186003)(316002)(26005)(38100700002)(6506007)(54906003)(41300700001)(66556008)(6916009)(66476007)(8676002)(6512007)(4326008)(86362001)(478600001)(6486002)(9686003)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8AXwB3wNBzbPMKGeUdVY35LGWumbXPWN707cny/meBmmfOYVJMZIwozoAqW8?=
+ =?us-ascii?Q?zXUIWEi/XVEzDwP5ntOr9V4nWxEdeLURm4Qhvpe6ArD7e7h/raLhbHxwtmJf?=
+ =?us-ascii?Q?Ir7uvHpsWJUNOTe3fbz/mLvscoRZc7s/tkJRtjFHLK1LQw2HyPNiNmWVm0Zr?=
+ =?us-ascii?Q?y0toJT6R9ZUL93RHyGLD2Vd/hWCqO2HxlX/8fcmrYYnAZleuHncVBkAYYZpc?=
+ =?us-ascii?Q?O8TUsFID7wpbZIJPkck/i1WIxuR+Swu0NPoudPAzoVcaoMQ+VkZlNuqp83mx?=
+ =?us-ascii?Q?HslOH6yB/WgwaQZ9SlSSW11dQxE4gtIULfJVq+ug0fJKWqe34dwMrqA/Cext?=
+ =?us-ascii?Q?BePD1HHeIVF7+2VM2m2Khjw6J5s7s3ZnLd2MvgKHZ9wQDBDFaGn3Z/Xb9dF4?=
+ =?us-ascii?Q?/wuHzwx2KWQbIKEKnWKEYBtlhKR/O8+fnTcnd1ZScGDvItvkHtXv4lH7jEKl?=
+ =?us-ascii?Q?sm/iIJLokfvjYwVcnFzrkMmemGwVzIhUaSJwjhOZmNrgcSmUAmQopP0l4Bkl?=
+ =?us-ascii?Q?B6yA/BTw+FBaQeW6IGVg7uIsHP6pkZ6bxlMoioZdBwqsHXcrXma1331VIk3y?=
+ =?us-ascii?Q?5/UfQSSn2QVP2iy+RUR2fHrszpwvTaMXArHMZakM+KXKI5bp29ZO+E9YGukY?=
+ =?us-ascii?Q?d+MFs36WHWqKMXPTNUp3RRuwzHfGhg3uLZMY5n/LUjpBsXX0OjWYgP56n3/W?=
+ =?us-ascii?Q?1VL8JcGwnNdaimVztdiOClnd6cgzyOd19pATGUFHjfcsVkaT2lAyZcZN1kvb?=
+ =?us-ascii?Q?kyGLnNUj9xorwrzWasicbVWdD/j7NUKcJdzCdPi8JL4dl3nDU3kmXIVfQofk?=
+ =?us-ascii?Q?+qgDusbQndiOrbxXIBPCg4kWrR8/XxTnvERzkEMTknvO0I2FrS8eRVfMfJqe?=
+ =?us-ascii?Q?ZSIu3kGpX0n27YrI3MkJ9oGXemsa1JQvaSylihC0aDFINB8DgFqI3/LECmVA?=
+ =?us-ascii?Q?3sHntsxcymw8K4ZmsCM2BoMi1sgQTEI4NW6OzRCRGFlKzxuEYosmB9sDButP?=
+ =?us-ascii?Q?GZZ/dE9kDL3tRNdHnp69wkEk0jsUJB7YEKOIrfFeddRdlz08al9a3PPeL8HQ?=
+ =?us-ascii?Q?bv6ikNXc7KB0Zd9NopWwCHSAQA9S2qw+oc3V8P48HbvvkKbr2g2f6z3l3swV?=
+ =?us-ascii?Q?lnhEQUDEJEBVnmDCd9dZR5raQJy3//YwSOotnq6+Rbq/cSNv9896SX5feCP3?=
+ =?us-ascii?Q?5k1gt0ZqdWbVtMk/gv2X/nFGj3zs/CyhEEPuF57TvlufrSEzZtgg5O798Kr6?=
+ =?us-ascii?Q?OarD6Umw8dwnz5Scx1x1n5Z5XFhb7pVq2fEw0k+YbYnbxT9XJVa4Ks2JSQT0?=
+ =?us-ascii?Q?WRHxKLLiY+qxlrSkj1J1noI+HsxJDZwqfMUQGPOoGSYneZ5q2ZSl3rs9Vkf1?=
+ =?us-ascii?Q?15iXikut5ndE3VQ/cRnrneR/m7hrCecGoDyiDCtd7pVGVs1N/gjI8eH5vj38?=
+ =?us-ascii?Q?NWvwVhcHscC0UzYowTUzLLxBrG4X/kHvTyBaMD2SdEd+A4NUfWo9MT/+tvAy?=
+ =?us-ascii?Q?zyNFJqjVemHi1J3QBo/kxm6ntPPXAW2CgyTvMK4yCN9vEtgITep9QUm706Qb?=
+ =?us-ascii?Q?VVpYTN+kfBtUeYYSUAQO7Wmy20egP2QzANvWn9ejhITFg918U07VndaRXZL3?=
+ =?us-ascii?Q?c/BCbM6ZQnu320Nw/N5vE5o=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a844ae6e-79a6-4416-a229-08db09f36a67
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2023 16:42:07.1498
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8O+l6ZvFanwv02YvhEgsrHQnq3+CGHyano7Oa7lqQylWVgC6Dx3Fi1cSHmWko0CQUT3BXt1+wLQbAkhaKpckh1vFJbeZdfL74Ye9hpueLbI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6737
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong pointed out that there are some inconsistencies between the BPF design
-QA and the lifecycle expectations documentation we added for kfuncs. Let's
-update the QA file to be consistent with the kfunc docs, and add references
-where it makes sense. Also document that modules may export kfuncs now.
+On Mon, Feb 06, 2023 at 12:08:26PM +0200, Vladimir Oltean wrote:
+> This is RFC because I have a few things I'm not 100% certain about.
+> I've tested this with the xdpsock test application, I don't have very
+> detailed knowledge about the internals of AF_XDP sockets.
+> 
+> Patches where I'd appreciate if people took a look are 02/11, 05/11,
+> 10/11 and 11/11.
 
-v3:
-- Grammar nit + ack from David
+All of that looks rather sane to me. Can you point out explicitly your
+issues here? Is it around concurrent access to XDP Tx rings or something
+more?
 
-v2:
-- Fix repeated word (s/defined defined/defined/)
+I commented on 10 and 11. For 2 it seems fine and 5 has always been
+controversial.
 
-Reported-by: Cong Wang <xiyou.wangcong@gmail.com>
-Acked-by: David Vernet <void@manifault.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- Documentation/bpf/bpf_design_QA.rst | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
-index cec2371173d7..bfff0e7e37c2 100644
---- a/Documentation/bpf/bpf_design_QA.rst
-+++ b/Documentation/bpf/bpf_design_QA.rst
-@@ -208,6 +208,10 @@ data structures and compile with kernel internal headers. Both of these
- kernel internals are subject to change and can break with newer kernels
- such that the program needs to be adapted accordingly.
- 
-+New BPF functionality is generally added through the use of kfuncs instead of
-+new helpers. Kfuncs are not considered part of the stable API, and have their own
-+lifecycle expectations as described in :ref:`BPF_kfunc_lifecycle_expectations`.
-+
- Q: Are tracepoints part of the stable ABI?
- ------------------------------------------
- A: NO. Tracepoints are tied to internal implementation details hence they are
-@@ -236,8 +240,8 @@ A: NO. Classic BPF programs are converted into extend BPF instructions.
- 
- Q: Can BPF call arbitrary kernel functions?
- -------------------------------------------
--A: NO. BPF programs can only call a set of helper functions which
--is defined for every program type.
-+A: NO. BPF programs can only call specific functions exposed as BPF helpers or
-+kfuncs. The set of available functions is defined for every program type.
- 
- Q: Can BPF overwrite arbitrary kernel memory?
- ---------------------------------------------
-@@ -263,7 +267,12 @@ Q: New functionality via kernel modules?
- Q: Can BPF functionality such as new program or map types, new
- helpers, etc be added out of kernel module code?
- 
--A: NO.
-+A: Yes, through kfuncs and kptrs
-+
-+The core BPF functionality such as program types, maps and helpers cannot be
-+added to by modules. However, modules can expose functionality to BPF programs
-+by exporting kfuncs (which may return pointers to module-internal data
-+structures as kptrs).
- 
- Q: Directly calling kernel function is an ABI?
- ----------------------------------------------
-@@ -278,7 +287,8 @@ kernel functions have already been used by other kernel tcp
- cc (congestion-control) implementations.  If any of these kernel
- functions has changed, both the in-tree and out-of-tree kernel tcp cc
- implementations have to be changed.  The same goes for the bpf
--programs and they have to be adjusted accordingly.
-+programs and they have to be adjusted accordingly. See
-+:ref:`BPF_kfunc_lifecycle_expectations` for details.
- 
- Q: Attaching to arbitrary kernel functions is an ABI?
- -----------------------------------------------------
-@@ -340,6 +350,7 @@ compatibility for these features?
- 
- A: NO.
- 
--Unlike map value types, there are no stability guarantees for this case. The
--whole API to work with allocated objects and any support for special fields
--inside them is unstable (since it is exposed through kfuncs).
-+Unlike map value types, the API to work with allocated objects and any support
-+for special fields inside them is exposed through kfuncs, and thus has the same
-+lifecycle expectations as the kfuncs themselves. See
-+:ref:`BPF_kfunc_lifecycle_expectations` for details.
--- 
-2.39.1
-
+> 
+> Vladimir Oltean (11):
+>   net: enetc: optimize struct enetc_rx_swbd layout
+>   net: enetc: perform XDP RX queue registration at enetc_setup_bpf()
+>     time
+>   net: enetc: rename "cleaned_cnt" to "buffs_missing"
+>   net: enetc: continue NAPI processing on frames with RX errors
+>   net: enetc: add support for ethtool --show-channels
+>   net: enetc: consolidate rx_swbd freeing
+>   net: enetc: rename enetc_free_tx_frame() to enetc_free_tx_swbd()
+>   net: enetc: increment rx_byte_cnt for XDP data path
+>   net: enetc: move setting of ENETC_TXBD_FLAGS_F flag to
+>     enetc_xdp_map_tx_buff()
+>   net: enetc: add RX support for zero-copy XDP sockets
+>   net: enetc: add TX support for zero-copy XDP sockets
+> 
+>  drivers/net/ethernet/freescale/enetc/enetc.c  | 676 +++++++++++++++---
+>  drivers/net/ethernet/freescale/enetc/enetc.h  |   9 +-
+>  .../ethernet/freescale/enetc/enetc_ethtool.c  |  10 +
+>  .../net/ethernet/freescale/enetc/enetc_pf.c   |   1 +
+>  4 files changed, 606 insertions(+), 90 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
