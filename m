@@ -2,217 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C998C68F09E
-	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 15:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E5568F0AD
+	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 15:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbjBHOW6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 09:22:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39560 "EHLO
+        id S231237AbjBHOZc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 09:25:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjBHOW5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 09:22:57 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1691B11E8A
-        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 06:22:54 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id j9so11501851qvt.0
-        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 06:22:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n6oF9j80LVBPF/KMmx1PXi5SmA7WM0UIQRKbeBKyQgI=;
-        b=E89lUuqeLZS3ADFJnvoOQl6yUCAWs+K5M9M4EGkQuTzbQTD6xGf7ip58voQlIaA6ci
-         +uPoV/BJKVDRaliJIAorRILur/DjVSStTvhauGDXmThLZDpj6oLqp/o6Z2GMcU3wCKI+
-         vexE9gWqCJ36u+IWSN9Eo0QwM04flZaqZZwPYZIBhiDOEiNuTFvHLv7QD+jfAiz+1MLy
-         xDQjS1Fv1i14g/PSVYvsWt2pCCJS7+PQ0909gkv1sQ/IQZW1SRA/OwWVIhPsYwFa/C8h
-         44Rsr7t83hEASpqYoSiC3UYoeuONieIxLkoIYjLv+QNmuiXJWCXZjpzgyYhbWBu50NbK
-         A6zA==
+        with ESMTP id S231326AbjBHOZY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 09:25:24 -0500
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB5546D49
+        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 06:25:15 -0800 (PST)
+Received: by mail-qt1-f177.google.com with SMTP id w3so20823664qts.7
+        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 06:25:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n6oF9j80LVBPF/KMmx1PXi5SmA7WM0UIQRKbeBKyQgI=;
-        b=nVcEPwDFthaZLoc4Bm7VE+CcSTOK/9fFhx1oFNtmdpegBHVdQ7fF6DGADbSEHJUGok
-         JZPNJH4sOh9iODLBnbYr86cn06UfMvrewPplFqEYZarrfmnNpZ+Op34EwB3jy1TLauRU
-         hq47f77NNe53faVGsHB7zkBed7WVG83xWk9DrLf/f6DgNxP6ds4H+CtKxiNyK+Ahuv9I
-         lDcTi0YatnzvJKLghlZxlYkTW+2pX6LhvfyIvzwvSeLb/wB7zTwRBTIKP47QQRfSPghV
-         I/wyLCJAkBkyLh7dS2EV2sdI+YLx7W0R+ovRtGQWMUS/cHmxFLoZLR3vK7eHqvTMVmWz
-         sGdQ==
-X-Gm-Message-State: AO0yUKXHZ0BKJMnHbU3C+MgLQZXtkhu1nU2Y++s78oT6mNT33iN0qPBx
-        cmqnvVd2a4QxrgDZ1h+T06n9e1l6pv3aanckp7g=
-X-Google-Smtp-Source: AK7set9pEr6SGniaXDs+fgtB00D1pgrh0Y4TXWMUSNUg1OrEr8NpOfoqYNccPZdFN2vc0DBM1tg3WEqikFFyHNoiA/o=
-X-Received: by 2002:a0c:aa0d:0:b0:537:6e55:eeb7 with SMTP id
- d13-20020a0caa0d000000b005376e55eeb7mr720491qvb.66.1675866173212; Wed, 08 Feb
- 2023 06:22:53 -0800 (PST)
+        bh=5RejkMD8T9ZkXyT9zhnrzWJ3HvCPQxyQ/kx9OwSLTuc=;
+        b=jXohf14WXVRmaMtk3kEiZfgwRzbYA4Ls4cQ772jupKEJmLiq6WjjJyM4vV2h93/yPT
+         wieAReA1UP1poa9UkqvI/bHCynblcTbSrgckgH904B5K4dDRWOJbRRAM8i9PvLgGa78G
+         jwhNtZEDCVfAKbFeMh8EqrokItubLsK93GK1LGLkjod8XgPClJgL4Ym/3FdsXF38gFsK
+         xoS7gosjdqpDrZjVNloR/G+60GxEW/IWYYPXv194tRHesIp7dUnTHbaj5He4T8cMmwP2
+         uBouzdgNl/+24tKU7Y4DGc2mbsySPckbmnn/JMLGFU9eYStWAYp74UxIk9VCZ3x/LL7s
+         s6AQ==
+X-Gm-Message-State: AO0yUKVbd7daXtKF8Vi3Adl70NtYjUyp9UX9VvmOGoQLNi59dDZ7bZKo
+        BPxnM/tNxNAzvmhVmhx6Fvc=
+X-Google-Smtp-Source: AK7set+J5rnAFcyutwza8nWHTPTu4b9WwAjZCnC52fngmP7QV9wSzasC1koKFZ2Th8iIoIcQQIT32g==
+X-Received: by 2002:ac8:5bd6:0:b0:3b8:2eca:e6a5 with SMTP id b22-20020ac85bd6000000b003b82ecae6a5mr12610920qtb.29.1675866314510;
+        Wed, 08 Feb 2023 06:25:14 -0800 (PST)
+Received: from maniforge.lan ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id e21-20020ac80115000000b003b62e9c82ebsm11719550qtg.48.2023.02.08.06.25.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Feb 2023 06:25:13 -0800 (PST)
+Date:   Wed, 8 Feb 2023 08:25:18 -0600
+From:   David Vernet <void@manifault.com>
+To:     dthaler1968@googlemail.com
+Cc:     bpf@vger.kernel.org, bpf@ietf.org,
+        Dave Thaler <dthaler@microsoft.com>
+Subject: Re: [PATCH] bpf, docs: Add note about type convention
+Message-ID: <Y+OwzhVglY4Bpy54@maniforge.lan>
+References: <Y9GPssH+6Yo5/MY9@maniforge>
+ <20230127014706.1005-1-dthaler1968@googlemail.com>
 MIME-Version: 1.0
-References: <20230202014158.19616-1-laoar.shao@gmail.com> <20230202014158.19616-8-laoar.shao@gmail.com>
- <63ddbc69ef50f_6bb1520813@john.notmuch> <CALOAHbDUk7CymPco4s12EdFauFroVBhQM6yNJQzji1D=jmkM5g@mail.gmail.com>
- <CAADnVQLe9OVF2xUpsA6buPPRhFuRgPEgk2Mxe8UWPZrhfFAwCw@mail.gmail.com>
- <CALOAHbCzCprMhRHSBQ5NC8b=4DuuUT=H8Zx+3Eb1aTcb_XgEkA@mail.gmail.com> <CAADnVQLT4p0m5Z=WhSEJv5s3x_o8KZZyd48zEKabAfj7kHTT2A@mail.gmail.com>
-In-Reply-To: <CAADnVQLT4p0m5Z=WhSEJv5s3x_o8KZZyd48zEKabAfj7kHTT2A@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 8 Feb 2023 22:22:17 +0800
-Message-ID: <CALOAHbBfev35GEq+r8_HCP1g6+p0bhad0t+02pir811FyqGccw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/7] bpf: hashtab memory usage
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, dennis@kernel.org,
-        Chris Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, urezki@gmail.com,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230127014706.1005-1-dthaler1968@googlemail.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 8, 2023 at 12:29 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Feb 7, 2023 at 7:34 PM Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > On Wed, Feb 8, 2023 at 9:56 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Sat, Feb 4, 2023 at 7:56 PM Yafang Shao <laoar.shao@gmail.com> wro=
-te:
-> > > >
-> > > > On Sat, Feb 4, 2023 at 10:01 AM John Fastabend <john.fastabend@gmai=
-l.com> wrote:
-> > > > >
-> > > > > Yafang Shao wrote:
-> > > > > > Get htab memory usage from the htab pointers we have allocated.=
- Some
-> > > > > > small pointers are ignored as their size are quite small compar=
-ed with
-> > > > > > the total size.
-> > > > > >
-> > > > > > The result as follows,
-> > > > > > - before this change
-> > > > > > 1: hash  name count_map  flags 0x0  <<<< prealloc
-> > > > > >         key 16B  value 24B  max_entries 1048576  memlock 419430=
-40B
-> > > > > > 2: hash  name count_map  flags 0x1  <<<< non prealloc, fully se=
-t
-> > > > > >         key 16B  value 24B  max_entries 1048576  memlock 419430=
-40B
-> > > > > > 3: hash  name count_map  flags 0x1  <<<< non prealloc, non set
-> > > > > >         key 16B  value 24B  max_entries 1048576  memlock 419430=
-40B
-> > > > > >
-> > > > > > The memlock is always a fixed number whatever it is preallocate=
-d or
-> > > > > > not, and whatever the allocated elements number is.
-> > > > > >
-> > > > > > - after this change
-> > > > > > 1: hash  name count_map  flags 0x0  <<<< prealloc
-> > > > > >         key 16B  value 24B  max_entries 1048576  memlock 109064=
-464B
-> > > > > > 2: hash  name count_map  flags 0x1  <<<< non prealloc, fully se=
-t
-> > > > > >         key 16B  value 24B  max_entries 1048576  memlock 117464=
-320B
-> > > > > > 3: hash  name count_map  flags 0x1  <<<< non prealloc, non set
-> > > > > >         key 16B  value 24B  max_entries 1048576  memlock 167979=
-52B
-> > > > > >
-> > > > > > The memlock now is hashtab actually allocated.
-> > > > > >
-> > > > > > At worst, the difference can be 10x, for example,
-> > > > > > - before this change
-> > > > > > 4: hash  name count_map  flags 0x0
-> > > > > >         key 4B  value 4B  max_entries 1048576  memlock 8388608B
-> > > > > >
-> > > > > > - after this change
-> > > > > > 4: hash  name count_map  flags 0x0
-> > > > > >         key 4B  value 4B  max_entries 1048576  memlock 83898640=
-B
-> > > > > >
-> > > > >
-> > > > > This walks the entire map and buckets to get the size? Inside a
-> > > > > rcu critical section as well :/ it seems.
-> > > > >
-> > > >
-> > > > No, it doesn't walk the entire map and buckets, but just gets one
-> > > > random element.
-> > > > So it won't be a problem to do it inside a rcu critical section.
-> > > >
-> > > > > What am I missing, if you know how many elements are added (which
-> > > > > you can track on map updates) how come we can't just calculate th=
-e
-> > > > > memory size directly from this?
-> > > > >
-> > > >
-> > > > It is less accurate and hard to understand. Take non-preallocated
-> > > > percpu hashtab for example,
-> > > > The size can be calculated as follows,
-> > > >     key_size =3D round_up(htab->map.key_size, 8)=EF=BC=9B
-> > > >     value_size =3D round_up(htab->map.value_size, 8);
-> > > >     pcpu_meta_size =3D sizeof(struct llist_node) + sizeof(void *);
-> > > >     usage =3D ((value_size * num_possible_cpus() +\
-> > > >                     pcpu_meta_size + key_size) * max_entries
-> > > >
-> > > > That is quite unfriendly to the newbies, and may be error-prone.
-> > >
-> > > Please do that instead.
-> >
-> > I can do it as you suggested, but it seems we shouldn't keep all
-> > estimates in one place. Because ...
-> >
-> > > map_mem_usage callback is a no go as I mentioned earlier.
-> >
-> > ...we have to introduce the map_mem_usage callback. Take the lpm_trie
-> > for example, its usage is
-> > usage =3D (sizeof(struct lpm_trie_node) + trie->data_size) * trie->n_en=
-tries;
->
-> sizeof(struct lpm_trie_node) + trie->data_size + trie->map.value_size.
->
+On Fri, Jan 27, 2023 at 01:47:06AM +0000, dthaler1968@googlemail.com wrote:
+> From: Dave Thaler <dthaler@microsoft.com>
+> 
+> Add explanation about use of "u64", "u32", etc. as
+> the type convention used in BPF documentation.
+> 
+> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
 
-Thanks for correcting it.
+Acked-by: David Vernet <void@manifault.com>
 
-> and it won't count the inner nodes, but _it is ok_.
->
-> > I don't think we want  to declare struct lpm_trie_node in kernel/bpf/sy=
-scall.c.
-> > WDYT ?
->
-> Good point. Fine. Let's go with callback, but please keep it
-> to a single function without loops like htab_non_prealloc_elems_size()
-> and htab_prealloc_elems_size().
->
-> Also please implement it for all maps.
-
-Sure, I will do it.
-
-> Doing it just for hash and arguing that every byte of accuracy matters
-> while not addressing lpm and other maps doesn't give credibility
-> to the accuracy argument.
-
-
-
---=20
-Regards
-Yafang
+> ---
+> V2 -> V3: updated commit message to respond to David Vernet
+> 
+> V1 -> V2: addressed comments from Alexei and Stanislav
+> by using u64 instead of uint64_t
+> ---
+>  Documentation/bpf/instruction-set.rst | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+> index 2d3fe59bd26..77990c97b5e 100644
+> --- a/Documentation/bpf/instruction-set.rst
+> +++ b/Documentation/bpf/instruction-set.rst
+> @@ -7,6 +7,11 @@ eBPF Instruction Set Specification, v1.0
+>  
+>  This document specifies version 1.0 of the eBPF instruction set.
+>  
+> +Documentation conventions
+> +=========================
+> +
+> +For brevity, this document uses the type notion "u64", "u32", etc.
+> +to mean an unsigned integer whose width is the specified number of bits.
+>  
+>  Registers and calling convention
+>  ================================
+> @@ -123,6 +128,8 @@ the destination register is unchanged whereas for ``BPF_ALU`` the upper
+>  
+>    dst_reg = (u32) dst_reg + (u32) src_reg;
+>  
+> +where '(u32)' indicates that the upper 32 bits are zeroed.
+> +
+>  ``BPF_ADD | BPF_X | BPF_ALU64`` means::
+>  
+>    dst_reg = dst_reg + src_reg
+> -- 
+> 2.33.4
+> 
