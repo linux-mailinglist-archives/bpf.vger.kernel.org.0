@@ -2,67 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC7068E5D9
-	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 03:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA91668E605
+	for <lists+bpf@lfdr.de>; Wed,  8 Feb 2023 03:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbjBHCJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Feb 2023 21:09:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
+        id S229674AbjBHCZS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Feb 2023 21:25:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjBHCJu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Feb 2023 21:09:50 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28E5367E8;
-        Tue,  7 Feb 2023 18:09:46 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id a10so11541717edu.9;
-        Tue, 07 Feb 2023 18:09:46 -0800 (PST)
+        with ESMTP id S229457AbjBHCZQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Feb 2023 21:25:16 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C7A1EBF9;
+        Tue,  7 Feb 2023 18:25:15 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id bg10-20020a17090b0d8a00b00230c7f312d4so802767pjb.3;
+        Tue, 07 Feb 2023 18:25:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=SpgS7vzqoUvjQY9Jf7h1UeSDSMCNGIGVVJBydDqIcdo=;
-        b=mO/tqcWEQCm9hB0QmsatDqD6dE1M+15ufD/mZhTiJZH9Sfgsz9M9tt9XbiIS6RVRzF
-         Eqv1EeRwOBVZmHJkF/AqGEB4A+jT5wwyvyDRIz1Le/Fgm7+phnWppwfm1oU+ykO1UzRt
-         wX8KvkRiZJiyvLnVC+kuy+wHo/kBvrZpqyVlKSFBdFDUNY42dT7w/GTIqgzkDWhXRTSG
-         DbrVe3V80Or9F8lsTtQ1iohICvclSIwAvzAN6Q7wAomWPsc5Hs9OrlgPgUM5CKQRCvRA
-         4btD88X89lbAbRROWCTWYxAOSpRQcu2NPoVNXUPVCa+Vz0AGT6hjQjxHde/PSbFOG36u
-         Te1g==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JfqGk5wMOrYNgmKWtE6YY496xj2xTnNZkY5IUVgJtE4=;
+        b=XnNpVt7HK4isrOXWfC3uIBCEk3bgPsYneNd4NNSJHHAETMgJQZn1+sOjbtuiNtxdI0
+         tpsabV/skmm6Nbn8nBHgPkJOHF+/2cuk/C0h4wvMZU/PigTj9dpUXh6PNue6P/O12XH2
+         8UGZS5IaP8rIorfX8EDyDn6bYdR8NAvnVKhxh25o+5DOagotBX+b0FdvOVG6G71zoKVH
+         Ytt9Bo19Diu9TXAEMczWNToNWD3V+MeITyvzKdsAhTVLfFXiIao+50gYGqAIwcpMvukv
+         z2bm3vrCMGGXmtk52O66/yVBedAzm6rHY3GYCSltM6DL42UmlJFe82Ij+XHsxiEly0hh
+         0Row==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SpgS7vzqoUvjQY9Jf7h1UeSDSMCNGIGVVJBydDqIcdo=;
-        b=uFREO1bjvBEHYGhHxmaUtzFa8AMUcRBXig/mjL0b4DpE9qtD7DfvBgJbDkJi7Fp34O
-         SLRIxxdppBy9lPNDRfJPI/VmAq4g73/X1/G1BKVZHcg/88kcKfRAz4RFWTOsGEyjfOyC
-         8xZsN1tqc5TXHliuq0bi4ZHCQILT2bNpI5Nc+gNdIK99NyWzZV3MEl6K3FCYKamm7P2i
-         i9wOJ14rBDFpR5WTsy2tGxZst64+f+/FB4sBTIYVGeBSnzRv5RDgv3IcR3u33W01PcBK
-         +uTzeHx0RMPB8r45JJq3sABCtE0xLQ4dh/PtmBCOqWQIDArwTMhgAwt7qKTJkbj6BxzG
-         KB2g==
-X-Gm-Message-State: AO0yUKV6bcF2uXX/zTNilInIIZqXoE9dUHnRxkMQ2czIki1MgiAd3ta1
-        CTM71aNObqJ/OkH0+8SdSoejM48VvzJEdMOo99k=
-X-Google-Smtp-Source: AK7set9t8xvkYsqVc61Bps7bR6RXA1/dv8gBL704YBC5h/c6B/SI52m96vZJbR0FtaE4LydM3TgqvsV7yXxSPoB1t0Y=
-X-Received: by 2002:a50:8e1a:0:b0:4aa:b408:7dc1 with SMTP id
- 26-20020a508e1a000000b004aab4087dc1mr1471827edw.43.1675822185146; Tue, 07 Feb
- 2023 18:09:45 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JfqGk5wMOrYNgmKWtE6YY496xj2xTnNZkY5IUVgJtE4=;
+        b=HH3WWflq24Qbe3WwmbkicKGe+xDzrj0VedLAEOi/KRz4LXY4IpiDDOgf/PKnd682/w
+         uwDS909iXk/NPds96yZ9KTqLGrM2zYiouO68bQLu2k6F0XJl5e4Y2ONFwJLlJZ+dfcd5
+         +Dm8rgR5HgC4BTgicaLPKK7lcDHUAV48njbUFtLVMJ5PL2MKclbiNdOsF3v0HSn4B9cO
+         VTX3d8cc5q+ht0qQ40buO1NW8vBuDtFdrwp6s3kwU7+Ct+0Gn5I6uufRMz7k1COVH8B+
+         PW/02M/oj8mvOid+j+LYkomAf27gai4QTQOnT9VPMIaK3YuzFOzvpkfaOdw6lhdwgpNm
+         MI0w==
+X-Gm-Message-State: AO0yUKVoQ55fDOZsN2t1TnZ/i3Ka2ZqvJ+g+ZTYiueWflkVyBh8RR+9v
+        lHb+EyJrUSnZkTu/PIGxa0U=
+X-Google-Smtp-Source: AK7set+8oNQfUic1d1B+yOgs/C6Qim/QoLUKk/uACAd6LZ0vn46rSElS9k9uJwutq/gdVYQOZnn94A==
+X-Received: by 2002:a17:902:ea01:b0:199:4362:93f2 with SMTP id s1-20020a170902ea0100b00199436293f2mr1030360plg.65.1675823114887;
+        Tue, 07 Feb 2023 18:25:14 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:98f0])
+        by smtp.gmail.com with ESMTPSA id w8-20020a1709027b8800b0019602b2c00csm5174478pll.175.2023.02.07.18.25.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Feb 2023 18:25:14 -0800 (PST)
+Date:   Tue, 7 Feb 2023 18:25:11 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Kernel Team <kernel-team@fb.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v9 bpf-next 3/5] bpf: Add skb dynptrs
+Message-ID: <20230208022511.qhkyqio2b2jvcaid@macbook-pro-6.dhcp.thefacebook.com>
+References: <20230130223141.r24nlg2jp5byvuph@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4Bzb9=q9TKutW8d7fOtCWaLpA12yvSh-BhL=m3+RA1_xhOQ@mail.gmail.com>
+ <4b7b09b5-fd23-2447-7f05-5f903288625f@linux.dev>
+ <CAEf4BzaQJe+UZxECg__Aga+YKrxK9KEbAuwdxA4ZBz1bQCEmSA@mail.gmail.com>
+ <20230131053042.h7wp3w2zq46swfmk@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzbeUfmE-8Y-mm4RtZ4q=9SZ-_M-K-JF=x84o6cboUneSQ@mail.gmail.com>
+ <20230201004034.sea642affpiu7yfm@macbook-pro-6.dhcp.thefacebook.com>
+ <CAEf4BzbTXqhsKqPd=hDANKeg75UDbKjtX318ucMGw7a1L3693w@mail.gmail.com>
+ <CAADnVQJ3CXKDJ_bZ3u2jOEPfuhALGvOi+p5cEUFxe2YgyhvB4Q@mail.gmail.com>
+ <CAEf4Bzabg=YsiR6re3XLxFAptFW3sECA4v2_e0AE_TRNsDWm-w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230204133535.99921-1-kerneljasonxing@gmail.com>
- <20230204133535.99921-2-kerneljasonxing@gmail.com> <8d2ec49e-9023-5180-54c4-c09db24d2225@intel.com>
-In-Reply-To: <8d2ec49e-9023-5180-54c4-c09db24d2225@intel.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Wed, 8 Feb 2023 10:09:09 +0800
-Message-ID: <CAL+tcoBnwC7=Z-jNv69R2baQyDgYKsvS8SQtRqLePn6ac_+A6A@mail.gmail.com>
-Subject: Re: [PATCH net v3 1/3] ixgbe: allow to increase MTU to 3K with XDP enabled
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     jesse.brandeburg@intel.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        alexandr.lobakin@intel.com, maciej.fijalkowski@intel.com,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzabg=YsiR6re3XLxFAptFW3sECA4v2_e0AE_TRNsDWm-w@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,46 +86,96 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 8, 2023 at 3:03 AM Tony Nguyen <anthony.l.nguyen@intel.com> wrote:
->
-> On 2/4/2023 5:35 AM, Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
->
-> ...
->
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > index ab8370c413f3..2c1b6eb60436 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > @@ -6777,6 +6777,18 @@ static void ixgbe_free_all_rx_resources(struct ixgbe_adapter *adapter)
-> >                       ixgbe_free_rx_resources(adapter->rx_ring[i]);
-> >   }
+On Fri, Feb 03, 2023 at 01:37:46PM -0800, Andrii Nakryiko wrote:
+> On Thu, Feb 2, 2023 at 3:43 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > +/**
-> > + * ixgbe_max_xdp_frame_size - returns the maximum allowed frame size for XDP
-> > + * @adapter - device handle, pointer to adapter
-> > + */
->
-> Please use ':' instead of '-' for kdoc
->
-> drivers/net/ethernet/intel/ixgbe/ixgbe_main.c:6785: warning: Function
-> parameter or member 'adapter' not described in 'ixgbe_max_xdp_frame_size'
->
-> i.e.
->
-> @adapter: device handle, pointer to adapter
+> > On Wed, Feb 1, 2023 at 5:21 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Tue, Jan 31, 2023 at 4:40 PM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Tue, Jan 31, 2023 at 04:11:47PM -0800, Andrii Nakryiko wrote:
+> > > > > >
+> > > > > > When prog is just parsing the packet it doesn't need to finalize with bpf_dynptr_write.
+> > > > > > The prog can always write into the pointer followed by if (p == buf) bpf_dynptr_write.
+> > > > > > No need for rdonly flag, but extra copy is there in case of cloned which
+> > > > > > could have been avoided with extra rd_only flag.
+> > > > >
+> > > > > Yep, given we are designing bpf_dynptr_slice for performance, extra
+> > > > > copy on reads is unfortunate. ro/rw flag or have separate
+> > > > > bpf_dynptr_slice_rw vs bpf_dynptr_slice_ro?
+> > > >
+> > > > Either flag or two kfuncs sound good to me.
+> > >
+> > > Would it make sense to make bpf_dynptr_slice() as read-only variant,
+> > > and bpf_dynptr_slice_rw() for read/write? I think the common case is
+> > > read-only, right? And if users mistakenly use bpf_dynptr_slice() for
+> > > r/w case, they will get a verifier error when trying to write into the
+> > > returned pointer. While if we make bpf_dynptr_slice() as read-write,
+> > > users won't realize they are paying a performance penalty for
+> > > something that they don't actually need.
+> >
+> > Makes sense and it matches skb_header_pointer() usage in the kernel
+> > which is read-only. Since there is no verifier the read-only-ness
+> > is not enforced, but we can do it.
+> >
+> > Looks like we've converged on bpf_dynptr_slice() and bpf_dynptr_slice_rw().
+> > The question remains what to do with bpf_dynptr_data() backed by skb/xdp.
+> > Should we return EINVAL to discourage its usage?
+> > Of course, we can come up with sensible behavior for bpf_dynptr_data(),
+> > but it will have quirks that will be not easy to document.
+> > Even with extensive docs the users might be surprised by the behavior.
+> 
+> I feel like having bpf_dynptr_data() working in the common case for
+> skb/xdp would be nice (e.g., so basically at least work in cases when
+> we don't need to pull).
+> 
+> But we've been discussing bpf_dynptr_slice() with Joanne today, and we
+> came to the conclusion that bpf_dynptr_slice()/bpf_dynptr_slice_rw()
+> should work for any kind of dynptr (LOCAL, RINGBUF, SKB, XDP). So
+> generic code that wants to work with any dynptr would be able to just
+> use bpf_dynptr_slice, even for LOCAL/RINGBUF, even though buffer won't
+> ever be filled for LOCAL/RINGBUF.
 
-Thanks for correcting the format. Now I understand.
+great
 
-Thanks,
-Jason
+> In application, though, if I know I'm working with LOCAL or RINGBUF
+> (or MALLOC, once we have it), I'd use bpf_dynptr_data() to fill out
+> fixed parts, of course. bpf_dynptr_slice() would be cumbersome for
+> such cases (especially if I have some huge fixed part that I *know* is
+> available in RINGBUF/MALLOC case).
 
->
-> > +static int ixgbe_max_xdp_frame_size(struct ixgbe_adapter *adapter)
-> > +{
-> > +     if (PAGE_SIZE >= 8192 || adapter->flags2 & IXGBE_FLAG2_RX_LEGACY)
-> > +             return IXGBE_RXBUFFER_2K;
-> > +     else
-> > +             return IXGBE_RXBUFFER_3K;
-> > +}
-> > +
+bpf_dynptr_data() for local and ringbuf is fine, of course.
+It already exists and has to continue working.
+bpf_dynptr_data() for xdp is probably ok as well,
+but bpf_dynptr_data() for skb is problematic.
+data/data_end concept looked great back in 2016 when it was introduced
+and lots of programs were written, but we underestimated the impact
+of driver's copybreak on programs.
+Network parsing progs consume headers one by one and would typically
+be written as:
+if (header > data_end)
+   return DROP;
+Some drivers copybreak fixed number of bytes. Others try to be smart
+and copy only headers into linear part of skb.
+The drivers also change. At one point we tried to upgrade the kernel
+and suddenly bpf firewall started blocking valid traffic.
+Turned out the driver copybreak heuristic was changed in that kernel.
+The bpf prog was converted to use skb_load_bytes() and the fire was extinguished.
+It was a hard lesson.
+Others learned the danger of data/data_end the hard way as well.
+Take a look at cloudflare's progs/test_cls_redirect.c.
+It's a complicated combination of data/data_end and skb_load_bytes().
+It's essentially implementing skb_header_pointer.
+I wish we could use bpf_dynptr_slice only and remove data/data_end,
+but we cannot, since it's uapi.
+But we shouldn't repeat the same mistake. If we do bpf_dynptr_data()
+that returns linear part people will be hitting the same fragility and
+difficult to debug bugs.
+bpf_dynptr_data() for XDP is ok-ish, since most of XDP is still
+page-per-packet, but patches to split headers in HW are starting to appear.
+So even for XDP data/data_end concept may bite us.
+Hence my preference is to EINVAL in bpf_dynptr_data() at least for skb,
+since bpf_dynptr_slice() is a strictly better alternative.
