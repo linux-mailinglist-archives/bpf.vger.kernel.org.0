@@ -2,85 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E0368FBD6
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 01:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D413568FBE9
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 01:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjBIALO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 19:11:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
+        id S229775AbjBIAU2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 19:20:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjBIALN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 19:11:13 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBC811EA1;
-        Wed,  8 Feb 2023 16:11:11 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id m8so624588edd.10;
-        Wed, 08 Feb 2023 16:11:11 -0800 (PST)
+        with ESMTP id S229712AbjBIAU2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 19:20:28 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FE620D39
+        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 16:20:26 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id m8so640126edd.10
+        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 16:20:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dOTjgYcWhqkMuhNenPNI1XlMmaNHM0OOaClLZboB/Wg=;
-        b=T83OX4EGnLSsuZ/1Jmo85gnC4KAwJ/j8TzibjPSwXWVdj4nwI3zeuGIoCvSxp02BTW
-         RshIZyAY861CFrHXzK77FTX2kzrdkwR/vluOLyHkxzSFc8e5uPOyFK9yYRoGtWEbox4s
-         A6gZ1ghgDQCpqgGLg/3FKJZyq64z4RE7lCTqPu9GS29CWM07AuPsk4/Zv94ySlXfgpx3
-         ytoKJiluVr90bcEo4hD/jynwQFykTla7UkQ0+iVm/rsMMElH9Wt7trRi+atzFnDPGTI3
-         gLpbBja79tGys+tPZf+E1Ew0ccBS+Bv1d4UrMtuT8Mb14xuuATLgA9DpiG/t05MSrffr
-         EnnQ==
+        bh=o9QxIZOdM5v4f5MQJbtjugxxZb2quKjgGH/S1rMvPhs=;
+        b=YS/Csto797754c60tpNBifjucoqoSgYUt8vIPgIZ2pE0uT2fLBIzGZexV0ta59q0gQ
+         nRuRiCje+BUhbz49vmCM1aXCyyYgCHjyA7tr7zsW5/4mop2qr8iy2laR4jqNyS4evQzH
+         y5SJ6AH73yU4UeBbLC+2UzIJZ65d1oyWRk8azNN04ISyxH9DfAXKeaedg/awd/HEnZkp
+         wTv6MwMk+HECnhvMoRu2kJKoKPUmTCjMH6Y/CLsotMHzb4Vja4wwGoMNXbfuod4ZXMlx
+         GxH/ysCpwvoMcUauh5A4HQNijPNagwQVzNJA1jrgaAxkdzualWZT0IaP9Dlul/A7uRfQ
+         lNJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dOTjgYcWhqkMuhNenPNI1XlMmaNHM0OOaClLZboB/Wg=;
-        b=MX5aaqPXZmnpSFrFELVhGWe5Kheb/hnbgppsKyhG9kSm+ynxgcKCotaXVMfcgvHYK4
-         we174NP0ad7dEYBvSRastqf7D1T98jAOo4rAN1wJLpOQUlD/YBDkKL0Iqg5MYD+OMOmB
-         gxKHALi3omBeHUNLFXKEtkMNViuOAcWn1+54I9OBriS30UAitnAI6bfLCnhtg2xi8q50
-         1cU1ZJsbtxBapKb6y9zP6Q5si1d2JPoaSEDQMKm+K2Lw8P2JGlIZMAPbZiqVn5STfEqR
-         Ak7uc8yZTdRdj5akfWZ4SuSD9WGXaB3UGJ3FcGFx0nZ0UHdyuD882PwpKoNJmtptkPRG
-         azTA==
-X-Gm-Message-State: AO0yUKWZsVVPeGf444edRjxKaoDI83JzKC9r+DFsWC3wcg3jEPdR3uRl
-        sjzanFUeHTMrpaUD4Uw8l7SaQHlfO2MlGpUUKmFMhWVrxCM=
-X-Google-Smtp-Source: AK7set8WGUS985JMz7z6vFLrlEJRzZJTSTm0/SygyG7AOs5OLC2GbWPDFFSscHF6uKvNYoysgu3zyt3I2z9+U9IhvvA=
-X-Received: by 2002:a50:d717:0:b0:4aa:a4e6:b323 with SMTP id
- t23-20020a50d717000000b004aaa4e6b323mr2388298edi.34.1675901470226; Wed, 08
- Feb 2023 16:11:10 -0800 (PST)
+        bh=o9QxIZOdM5v4f5MQJbtjugxxZb2quKjgGH/S1rMvPhs=;
+        b=aWiW0jL0u+m/PTDlH8C/xKDMbz6M8B7r7/Z5aguq0hTaMZX5AePsD0TOCC8UuULyXF
+         QDiXiENRAcux6+ABGt3VcSF9dHjxRJrqwSuIAnCIpECBT8ndgd1RQmjJvrNxuklj2nrk
+         mLbtfNbzimDoFve1E5hzKa5sQ0kNzCg3Uw7q6yVXXmh0xUwzjBo+lvit/SCg6TIt77wm
+         et1T4gk5jZE0EEeKG6+mqKxp2QeOQMLyOQm9/nlFtxcbwq9HeNBakTK+F5kNwIHJEYOU
+         ICAGPUYL0xKKZJRCkwdPd3/0+U7zEouItmXVVeEpXelxoCns967MW712kpZIX/1KQCYu
+         fn2Q==
+X-Gm-Message-State: AO0yUKXgeOTmlGd/n/lha/RZFtdiF17FopuDfLeoS7KkbK6aaPI1vLFf
+        xn0kERfhk3v0vQu55/wxVVF6yaXoX1zYU+zHn54=
+X-Google-Smtp-Source: AK7set+soAVQR+sd55FJon6mYyj4acpgCIPZeNdwDpCkxJRtpxUYjqkkt/PY4i6ebKCG2MU0ltOR0shh/ROhLzYewz8=
+X-Received: by 2002:a50:875d:0:b0:49e:1638:1071 with SMTP id
+ 29-20020a50875d000000b0049e16381071mr2115506edv.5.1675902025218; Wed, 08 Feb
+ 2023 16:20:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20211120112738.45980-1-laoar.shao@gmail.com> <20211120112738.45980-8-laoar.shao@gmail.com>
- <Y+QaZtz55LIirsUO@google.com>
-In-Reply-To: <Y+QaZtz55LIirsUO@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 8 Feb 2023 16:10:59 -0800
-Message-ID: <CAADnVQ+nf8MmRWP+naWwZEKBFOYr7QkZugETgAVfjKcEVxmOtg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] tools/testing/selftests/bpf: replace open-coded 16
- with TASK_COMM_LEN
-To:     John Stultz <jstultz@google.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Qais Yousef <qyousef@google.com>,
-        Daniele Di Proietto <ddiproietto@google.com>
+References: <20230203162336.608323-1-jolsa@kernel.org> <20230203162336.608323-2-jolsa@kernel.org>
+ <Y+JgEIwzW7+UkCj9@maniforge.lan>
+In-Reply-To: <Y+JgEIwzW7+UkCj9@maniforge.lan>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Feb 2023 16:20:13 -0800
+Message-ID: <CAEf4BzbQdpgkBjqK2eO53ZkLb5Zy0n3oVj9en10kO8JH2ANYHA@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 1/9] selftests/bpf: Move kfunc exports to bpf_testmod/bpf_testmod_kfunc.h
+To:     David Vernet <void@manifault.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Artem Savkov <asavkov@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -92,91 +76,120 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 8, 2023 at 2:01 PM John Stultz <jstultz@google.com> wrote:
+On Tue, Feb 7, 2023 at 6:28 AM David Vernet <void@manifault.com> wrote:
 >
-> On Sat, Nov 20, 2021 at 11:27:38AM +0000, Yafang Shao wrote:
-> > As the sched:sched_switch tracepoint args are derived from the kernel,
-> > we'd better make it same with the kernel. So the macro TASK_COMM_LEN is
-> > converted to type enum, then all the BPF programs can get it through BTF.
+> On Fri, Feb 03, 2023 at 05:23:28PM +0100, Jiri Olsa wrote:
+> > Move all kfunc exports into separate bpf_testmod_kfunc.h header file
+> > and include it in tests that need it.
 > >
-> > The BPF program which wants to use TASK_COMM_LEN should include the header
-> > vmlinux.h. Regarding the test_stacktrace_map and test_tracepoint, as the
-> > type defined in linux/bpf.h are also defined in vmlinux.h, so we don't
-> > need to include linux/bpf.h again.
+> > We will move all test kfuncs into bpf_testmod in following change,
+> > so it's convenient to have declarations in single place.
 > >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > Acked-by: David Hildenbrand <david@redhat.com>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: David Hildenbrand <david@redhat.com>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Petr Mladek <pmladek@suse.com>
+> > The bpf_testmod_kfunc.h is included by both bpf_testmod and bpf
+> > programs that use test kfuncs.
+> >
+> > As suggested by David, the bpf_testmod_kfunc.h includes vmlinux.h
+> > and bpf/bpf_helpers.h for bpf programs build, so the declarations
+> > have proper __ksym attribute and we can resolve all the structs.
+> >
+> > Note in kfunc_call_test_subprog.c we can no longer use the sk_state
+> > define from bpf_tcp_helpers.h (because it clashed with vmlinux.h)
+> > and we need to address __sk_common.skc_state field directly.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  include/linux/sched.h                                   | 9 +++++++--
-> >  tools/testing/selftests/bpf/progs/test_stacktrace_map.c | 6 +++---
-> >  tools/testing/selftests/bpf/progs/test_tracepoint.c     | 6 +++---
-> >  3 files changed, 13 insertions(+), 8 deletions(-)
+> >  .../bpf/bpf_testmod/bpf_testmod_kfunc.h       | 41 +++++++++++++++++++
+> >  tools/testing/selftests/bpf/progs/cb_refs.c   |  4 +-
+> >  .../selftests/bpf/progs/jit_probe_mem.c       |  4 +-
+> >  .../bpf/progs/kfunc_call_destructive.c        |  3 +-
+> >  .../selftests/bpf/progs/kfunc_call_fail.c     |  9 +---
+> >  .../selftests/bpf/progs/kfunc_call_race.c     |  3 +-
+> >  .../selftests/bpf/progs/kfunc_call_test.c     | 17 +-------
+> >  .../bpf/progs/kfunc_call_test_subprog.c       |  9 +---
+> >  tools/testing/selftests/bpf/progs/map_kptr.c  |  6 +--
+> >  .../selftests/bpf/progs/map_kptr_fail.c       |  5 +--
+> >  10 files changed, 51 insertions(+), 50 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+> >
+> > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+> > new file mode 100644
+> > index 000000000000..86d94257716a
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+> > @@ -0,0 +1,41 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +
+> > +#ifndef _BPF_TESTMOD_KFUNC_H
+> > +#define _BPF_TESTMOD_KFUNC_H
+> > +
+> > +#ifndef __KERNEL__
+> > +#include <vmlinux.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#else
+> > +#define __ksym
+> > +#endif
+> > +
+> > +extern struct prog_test_ref_kfunc *
+> > +bpf_kfunc_call_test_acquire(unsigned long *scalar_ptr) __ksym;
+> > +extern struct prog_test_ref_kfunc *
+> > +bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b) __ksym;
+> > +extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
+> > +
+> > +extern void bpf_kfunc_call_test_mem_len_pass1(void *mem, int len) __ksym;
+> > +extern int *bpf_kfunc_call_test_get_rdwr_mem(struct prog_test_ref_kfunc *p, const int rdwr_buf_size) __ksym;
+> > +extern int *bpf_kfunc_call_test_get_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size) __ksym;
+> > +extern int *bpf_kfunc_call_test_acq_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size) __ksym;
+> > +extern void bpf_kfunc_call_int_mem_release(int *p) __ksym;
+> > +extern u32 bpf_kfunc_call_test_static_unused_arg(u32 arg, u32 unused) __ksym;
+> > +
+> > +extern void bpf_testmod_test_mod_kfunc(int i) __ksym;
+> > +
+> > +extern __u64 bpf_kfunc_call_test1(struct sock *sk, __u32 a, __u64 b,
+> > +                             __u32 c, __u64 d) __ksym;
+> > +extern int bpf_kfunc_call_test2(struct sock *sk, __u32 a, __u32 b) __ksym;
+> > +extern struct sock *bpf_kfunc_call_test3(struct sock *sk) __ksym;
+> > +extern long bpf_kfunc_call_test4(signed char a, short b, int c, long d) __ksym;
+> > +
+> > +extern void bpf_kfunc_call_test_pass_ctx(struct __sk_buff *skb) __ksym;
+> > +extern void bpf_kfunc_call_test_pass1(struct prog_test_pass1 *p) __ksym;
+> > +extern void bpf_kfunc_call_test_pass2(struct prog_test_pass2 *p) __ksym;
+> > +extern void bpf_kfunc_call_test_mem_len_fail2(__u64 *mem, int len) __ksym;
+> > +
+> > +extern void bpf_kfunc_call_test_destructive(void) __ksym;
+> > +
+> > +#endif /* _BPF_TESTMOD_KFUNC_H */
+> > diff --git a/tools/testing/selftests/bpf/progs/cb_refs.c b/tools/testing/selftests/bpf/progs/cb_refs.c
+> > index 7653df1bc787..823901c1b839 100644
+> > --- a/tools/testing/selftests/bpf/progs/cb_refs.c
+> > +++ b/tools/testing/selftests/bpf/progs/cb_refs.c
+> > @@ -2,6 +2,7 @@
+> >  #include <vmlinux.h>
+> >  #include <bpf/bpf_tracing.h>
+> >  #include <bpf/bpf_helpers.h>
+> > +#include "bpf_testmod/bpf_testmod_kfunc.h"
 >
-> Hey all,
->   I know this is a little late, but I recently got a report that
-> this change was causiing older versions of perfetto to stop
-> working.
+> Feel free to ignore if you disagree, but here and elsewhere, should we
+> do this:
 >
-> Apparently newer versions of perfetto has worked around this
-> via the following changes:
->   https://android.googlesource.com/platform/external/perfetto/+/c717c93131b1b6e3705a11092a70ac47c78b731d%5E%21/
->   https://android.googlesource.com/platform/external/perfetto/+/160a504ad5c91a227e55f84d3e5d3fe22af7c2bb%5E%21/
+> #include <bpf_testmod/bpf_testmod_kfunc.h>
 >
-> But for older versions of perfetto, reverting upstream commit
-> 3087c61ed2c4 ("tools/testing/selftests/bpf: replace open-coded 16
-> with TASK_COMM_LEN") is necessary to get it back to working.
+> rather than using #include "bpf_testmod/bpf_testmod_kfunc.h". Doesn't
+> matter much, but IMO it's just slightly more readable to use the <> to
+> show that we're relying on -I rather than expecting
+> bpf_testmod/bpf_testmod_kfunc.h to be found at a path relative to the
+> progs. #include "bpf_misc.h" makes more sense because it really is
+> located in the progs/ directory.
+
+We do <> for headers that are expected to be installed in the system
+(even if we cheat with -I sometimes). But in this case it's a local
+header, so using "" makes more sense to me. But shouldn't it be
+"../bpf_testmod/bpf_testmod_kfunc.h"?
+
 >
-> I haven't dug very far into the details, and obviously this doesn't
-> break with the updated perfetto, but from a high level this does
-> seem to be a breaking-userland regression.
+> Either way:
 >
-> So I wanted to reach out to see if there was more context for this
-> breakage? I don't want to raise a unnecessary stink if this was
-> an unfortuante but forced situation.
+> Acked-by: David Vernet <void@manifault.com>
+>
+> >
 
-Let me understand what you're saying...
-
-The commit 3087c61ed2c4 did
-
--/* Task command name length: */
--#define TASK_COMM_LEN                  16
-+/*
-+ * Define the task command name length as enum, then it can be visible to
-+ * BPF programs.
-+ */
-+enum {
-+       TASK_COMM_LEN = 16,
-+};
-
-
-and that caused:
-
-cat /sys/kernel/debug/tracing/events/task/task_newtask/format
-
-to print
-field:char comm[TASK_COMM_LEN];    offset:12;    size:16;    signed:0;
-instead of
-field:char comm[16];    offset:12;    size:16;    signed:0;
-
-so the ftrace parsing android tracing tool had to do:
-
--  if (Match(type_and_name.c_str(), R"(char [a-zA-Z_]+\[[0-9]+\])")) {
-+  if (Match(type_and_name.c_str(),
-+            R"(char [a-zA-Z_][a-zA-Z_0-9]*\[[a-zA-Z_0-9]+\])")) {
-
-to workaround this change.
-Right?
-
-And what are you proposing?
+[...]
