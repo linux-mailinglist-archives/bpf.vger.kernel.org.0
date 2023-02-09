@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E19690F6B
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A92690F6A
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbjBIRm3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 12:42:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
+        id S229871AbjBIRm1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 12:42:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjBIRm2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 12:42:28 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5375BA52
+        with ESMTP id S229468AbjBIRm1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 12:42:27 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FF05BA4B
         for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 09:42:25 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 319H5sEf012939
-        for <bpf@vger.kernel.org>; Thu, 9 Feb 2023 09:42:24 -0800
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 319GxPiO003175
+        for <bpf@vger.kernel.org>; Thu, 9 Feb 2023 09:42:25 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=4vcjPRUTvbxFDMtXL+r3XOmUswZAwkBKj4lHdAcLA9c=;
- b=hNYDOPYc+2PzUjZhGPi/WZXfa3OP5uLhXZb/hB/Mgii79KlWd/omwRHmuHnuLo/VQ99Z
- RJzPbr1wCzB7fTi3iRZBv0vA1jBbcoAAEIMIL3e30xxZYFEE6YdbSo5GujJ1DGozXMSI
- VIW5zwfpO1WZx5idzTnw5K/XmEeWmmHhK/c= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nn1bxj71r-6
+ bh=4nDDd7K36eBIN8HRYf/GWx9ZAnQs6hN8IYnvpwI6emM=;
+ b=khNLe8J9KW8nsOySJ51SlFqaszeuuHMatXXgfytjIwB5AyuM9PAoMUnDBDTDs4YEg+3L
+ aPq8H6XsOdcuWygMTCec2YssgGrzKzgs2DaNRSZor58fFW/RjaTggpshlHO3ghTs7OXh
+ yClfrS06bN7J5KXjU6XrDwTf6Szm1jqzVX4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nmce228de-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 09:42:24 -0800
-Received: from twshared19883.07.ash9.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+Received: from twshared6017.02.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 9 Feb 2023 09:42:20 -0800
+ 15.1.2507.6; Thu, 9 Feb 2023 09:42:20 -0800
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id EC96816906063; Thu,  9 Feb 2023 09:42:10 -0800 (PST)
+        id 80BE816906069; Thu,  9 Feb 2023 09:42:11 -0800 (PST)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -43,9 +43,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Tejun Heo <tj@kernel.org>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v4 bpf-next 10/11] selftests/bpf: Add rbtree selftests
-Date:   Thu, 9 Feb 2023 09:41:43 -0800
-Message-ID: <20230209174144.3280955-11-davemarchevsky@fb.com>
+Subject: [PATCH v4 bpf-next 11/11] bpf, documentation: Add graph documentation for non-owning refs
+Date:   Thu, 9 Feb 2023 09:41:44 -0800
+Message-ID: <20230209174144.3280955-12-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230209174144.3280955-1-davemarchevsky@fb.com>
 References: <20230209174144.3280955-1-davemarchevsky@fb.com>
@@ -53,8 +53,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Ejkmo69rGdfiTsegjq_KVh2YRndBjKGp
-X-Proofpoint-GUID: Ejkmo69rGdfiTsegjq_KVh2YRndBjKGp
+X-Proofpoint-ORIG-GUID: 8aiB57dJNeoqLdVB5YGFmzE930o3Fr_n
+X-Proofpoint-GUID: 8aiB57dJNeoqLdVB5YGFmzE930o3Fr_n
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
  definitions=2023-02-09_13,2023-02-09_03,2023-02-09_01
@@ -68,879 +68,387 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds selftests exercising the logic changed/added in the
-previous patches in the series. A variety of successful and unsuccessful
-rbtree usages are validated:
+It is difficult to intuit the semantics of owning and non-owning
+references from verifier code. In order to keep the high-level details
+from being lost in the mailing list, this patch adds documentation
+explaining semantics and details.
 
-Success:
-  * Add some nodes, let map_value bpf_rbtree_root destructor clean them
-    up
-  * Add some nodes, remove one using the non-owning ref leftover by
-    successful rbtree_add() call
-  * Add some nodes, remove one using the non-owning ref returned by
-    rbtree_first() call
-
-Failure:
-  * BTF where bpf_rb_root owns bpf_list_node should fail to load
-  * BTF where node of type X is added to tree containing nodes of type Y
-    should fail to load
-  * No calling rbtree api functions in 'less' callback for rbtree_add
-  * No releasing lock in 'less' callback for rbtree_add
-  * No removing a node which hasn't been added to any tree
-  * No adding a node which has already been added to a tree
-  * No escaping of non-owning references past their lock's
-    critical section
-  * No escaping of non-owning references past other invalidation points
-    (rbtree_remove)
-
-These tests mostly focus on rbtree-specific additions, but some of the
-failure cases revalidate scenarios common to both linked_list and rbtree
-which are covered in the former's tests. Better to be a bit redundant in
-case linked_list and rbtree semantics deviate over time.
+The target audience of doc added in this patch is folks working on BPF
+internals, as there's focus on "what should the verifier do here". Via
+reorganization or copy-and-paste, much of the content can probably be
+repurposed for BPF program writer audience as well.
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- .../testing/selftests/bpf/prog_tests/rbtree.c | 184 +++++++++++
- tools/testing/selftests/bpf/progs/rbtree.c    | 176 +++++++++++
- .../progs/rbtree_btf_fail__add_wrong_type.c   |  52 +++
- .../progs/rbtree_btf_fail__wrong_node_type.c  |  49 +++
- .../testing/selftests/bpf/progs/rbtree_fail.c | 296 ++++++++++++++++++
- 5 files changed, 757 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/rbtree.c
- create mode 100644 tools/testing/selftests/bpf/progs/rbtree.c
- create mode 100644 tools/testing/selftests/bpf/progs/rbtree_btf_fail__ad=
-d_wrong_type.c
- create mode 100644 tools/testing/selftests/bpf/progs/rbtree_btf_fail__wr=
-ong_node_type.c
- create mode 100644 tools/testing/selftests/bpf/progs/rbtree_fail.c
+ Documentation/bpf/graph_ds_impl.rst | 266 ++++++++++++++++++++++++++++
+ Documentation/bpf/other.rst         |   3 +-
+ 2 files changed, 268 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/bpf/graph_ds_impl.rst
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/rbtree.c b/tools/test=
-ing/selftests/bpf/prog_tests/rbtree.c
+diff --git a/Documentation/bpf/graph_ds_impl.rst b/Documentation/bpf/grap=
+h_ds_impl.rst
 new file mode 100644
-index 000000000000..733db8d79a2d
+index 000000000000..8bbf1815efe7
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/rbtree.c
-@@ -0,0 +1,184 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+#include "rbtree.skel.h"
-+#include "rbtree_fail.skel.h"
-+#include "rbtree_btf_fail__wrong_node_type.skel.h"
-+#include "rbtree_btf_fail__add_wrong_type.skel.h"
-+
-+static char log_buf[1024 * 1024];
-+
-+static struct {
-+	const char *prog_name;
-+	const char *err_msg;
-+} rbtree_fail_tests[] =3D {
-+	{"rbtree_api_nolock_add", "bpf_spin_lock at off=3D16 must be held for b=
-pf_rb_root"},
-+	{"rbtree_api_nolock_remove", "bpf_spin_lock at off=3D16 must be held fo=
-r bpf_rb_root"},
-+	{"rbtree_api_nolock_first", "bpf_spin_lock at off=3D16 must be held for=
- bpf_rb_root"},
-+
-+	/* Specific failure string for these three isn't very important, but it=
- shouldn't be
-+	 * possible to call rbtree api func from within add() callback
-+	 */
-+	{"rbtree_api_add_bad_cb_bad_fn_call_add", "allocated object must be ref=
-erenced"},
-+	{"rbtree_api_add_bad_cb_bad_fn_call_remove", "rbtree_remove not allowed=
- in rbtree cb"},
-+	{"rbtree_api_add_bad_cb_bad_fn_call_first_unlock_after",
-+	 "can't spin_{lock,unlock} in rbtree cb"},
-+
-+	{"rbtree_api_remove_unadded_node", "rbtree_remove node input must be no=
-n-owning ref"},
-+	{"rbtree_api_add_to_multiple_trees", "allocated object must be referenc=
-ed"},
-+	{"rbtree_api_add_release_unlock_escape", "arg#1 expected pointer to all=
-ocated object"},
-+	{"rbtree_api_first_release_unlock_escape", "arg#1 expected pointer to a=
-llocated object"},
-+	{"rbtree_api_remove_no_drop", "Unreleased reference id=3D2 alloc_insn=3D=
-11"},
-+	{"rbtree_api_release_aliasing", "arg#1 expected pointer to allocated ob=
-ject"},
-+};
-+
-+static void test_rbtree_fail_prog(const char *prog_name, const char *err=
-_msg)
-+{
-+	LIBBPF_OPTS(bpf_object_open_opts, opts,
-+		    .kernel_log_buf =3D log_buf,
-+		    .kernel_log_size =3D sizeof(log_buf),
-+		    .kernel_log_level =3D 1
-+	);
-+	struct rbtree_fail *skel;
-+	struct bpf_program *prog;
-+	int ret;
-+
-+	skel =3D rbtree_fail__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(skel, "rbtree_fail__open_opts"))
-+		return;
-+
-+	prog =3D bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+		goto end;
-+
-+	bpf_program__set_autoload(prog, true);
-+
-+	ret =3D rbtree_fail__load(skel);
-+	if (!ASSERT_ERR(ret, "rbtree_fail__load must fail"))
-+		goto end;
-+
-+	if (!ASSERT_OK_PTR(strstr(log_buf, err_msg), "expected error message"))=
- {
-+		fprintf(stderr, "Expected: %s\n", err_msg);
-+		fprintf(stderr, "Verifier: %s\n", log_buf);
-+	}
-+
-+end:
-+	rbtree_fail__destroy(skel);
-+}
-+
-+static void test_rbtree_add_nodes(void)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		    .data_in =3D &pkt_v4,
-+		    .data_size_in =3D sizeof(pkt_v4),
-+		    .repeat =3D 1,
-+	);
-+	struct rbtree *skel;
-+	int ret;
-+
-+	skel =3D rbtree__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "rbtree__open_and_load"))
-+		return;
-+
-+	ret =3D bpf_prog_test_run_opts(bpf_program__fd(skel->progs.rbtree_add_n=
-odes), &opts);
-+	ASSERT_OK(ret, "rbtree_add_nodes run");
-+	ASSERT_OK(opts.retval, "rbtree_add_nodes retval");
-+	ASSERT_EQ(skel->data->less_callback_ran, 1, "rbtree_add_nodes less_call=
-back_ran");
-+
-+	rbtree__destroy(skel);
-+}
-+
-+static void test_rbtree_add_and_remove(void)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		    .data_in =3D &pkt_v4,
-+		    .data_size_in =3D sizeof(pkt_v4),
-+		    .repeat =3D 1,
-+	);
-+	struct rbtree *skel;
-+	int ret;
-+
-+	skel =3D rbtree__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "rbtree__open_and_load"))
-+		return;
-+
-+	ret =3D bpf_prog_test_run_opts(bpf_program__fd(skel->progs.rbtree_add_a=
-nd_remove), &opts);
-+	ASSERT_OK(ret, "rbtree_add_and_remove");
-+	ASSERT_OK(opts.retval, "rbtree_add_and_remove retval");
-+	ASSERT_EQ(skel->data->removed_key, 5, "rbtree_add_and_remove first remo=
-ved key");
-+
-+	rbtree__destroy(skel);
-+}
-+
-+static void test_rbtree_first_and_remove(void)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		    .data_in =3D &pkt_v4,
-+		    .data_size_in =3D sizeof(pkt_v4),
-+		    .repeat =3D 1,
-+	);
-+	struct rbtree *skel;
-+	int ret;
-+
-+	skel =3D rbtree__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "rbtree__open_and_load"))
-+		return;
-+
-+	ret =3D bpf_prog_test_run_opts(bpf_program__fd(skel->progs.rbtree_first=
-_and_remove), &opts);
-+	ASSERT_OK(ret, "rbtree_first_and_remove");
-+	ASSERT_OK(opts.retval, "rbtree_first_and_remove retval");
-+	ASSERT_EQ(skel->data->first_data[0], 2, "rbtree_first_and_remove first =
-rbtree_first()");
-+	ASSERT_EQ(skel->data->removed_key, 1, "rbtree_first_and_remove first re=
-moved key");
-+	ASSERT_EQ(skel->data->first_data[1], 4, "rbtree_first_and_remove second=
- rbtree_first()");
-+
-+	rbtree__destroy(skel);
-+}
-+
-+void test_rbtree_success(void)
-+{
-+	if (test__start_subtest("rbtree_add_nodes"))
-+		test_rbtree_add_nodes();
-+	if (test__start_subtest("rbtree_add_and_remove"))
-+		test_rbtree_add_and_remove();
-+	if (test__start_subtest("rbtree_first_and_remove"))
-+		test_rbtree_first_and_remove();
-+}
-+
-+#define BTF_FAIL_TEST(suffix)									\
-+void test_rbtree_btf_fail__##suffix(void)							\
-+{												\
-+	struct rbtree_btf_fail__##suffix *skel;							\
-+												\
-+	skel =3D rbtree_btf_fail__##suffix##__open_and_load();					\
-+	if (!ASSERT_ERR_PTR(skel,								\
-+			    "rbtree_btf_fail__" #suffix "__open_and_load unexpected success")=
-)	\
-+		rbtree_btf_fail__##suffix##__destroy(skel);					\
-+}
-+
-+#define RUN_BTF_FAIL_TEST(suffix)				\
-+	if (test__start_subtest("rbtree_btf_fail__" #suffix))	\
-+		test_rbtree_btf_fail__##suffix();
-+
-+BTF_FAIL_TEST(wrong_node_type);
-+BTF_FAIL_TEST(add_wrong_type);
-+
-+void test_rbtree_btf_fail(void)
-+{
-+	RUN_BTF_FAIL_TEST(wrong_node_type);
-+	RUN_BTF_FAIL_TEST(add_wrong_type);
-+}
-+
-+void test_rbtree_fail(void)
-+{
-+	int i;
-+
-+	for (i =3D 0; i < ARRAY_SIZE(rbtree_fail_tests); i++) {
-+		if (!test__start_subtest(rbtree_fail_tests[i].prog_name))
-+			continue;
-+		test_rbtree_fail_prog(rbtree_fail_tests[i].prog_name,
-+				      rbtree_fail_tests[i].err_msg);
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/progs/rbtree.c b/tools/testing/s=
-elftests/bpf/progs/rbtree.c
-new file mode 100644
-index 000000000000..e5db1a4287e5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/rbtree.c
-@@ -0,0 +1,176 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include "bpf_experimental.h"
-+
-+struct node_data {
-+	long key;
-+	long data;
-+	struct bpf_rb_node node;
-+};
-+
-+long less_callback_ran =3D -1;
-+long removed_key =3D -1;
-+long first_data[2] =3D {-1, -1};
-+
-+#define private(name) SEC(".data." #name) __hidden __attribute__((aligne=
-d(8)))
-+private(A) struct bpf_spin_lock glock;
-+private(A) struct bpf_rb_root groot __contains(node_data, node);
-+
-+static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
-+{
-+	struct node_data *node_a;
-+	struct node_data *node_b;
-+
-+	node_a =3D container_of(a, struct node_data, node);
-+	node_b =3D container_of(b, struct node_data, node);
-+	less_callback_ran =3D 1;
-+
-+	return node_a->key < node_b->key;
-+}
-+
-+static long __add_three(struct bpf_rb_root *root, struct bpf_spin_lock *=
-lock)
-+{
-+	struct node_data *n, *m;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+	n->key =3D 5;
-+
-+	m =3D bpf_obj_new(typeof(*m));
-+	if (!m) {
-+		bpf_obj_drop(n);
-+		return 2;
-+	}
-+	m->key =3D 1;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less);
-+	bpf_rbtree_add(&groot, &m->node, less);
-+	bpf_spin_unlock(&glock);
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 3;
-+	n->key =3D 3;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less);
-+	bpf_spin_unlock(&glock);
-+	return 0;
-+}
-+
-+SEC("tc")
-+long rbtree_add_nodes(void *ctx)
-+{
-+	return __add_three(&groot, &glock);
-+}
-+
-+SEC("tc")
-+long rbtree_add_and_remove(void *ctx)
-+{
-+	struct bpf_rb_node *res =3D NULL;
-+	struct node_data *n, *m;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		goto err_out;
-+	n->key =3D 5;
-+
-+	m =3D bpf_obj_new(typeof(*m));
-+	if (!m)
-+		goto err_out;
-+	m->key =3D 3;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less);
-+	bpf_rbtree_add(&groot, &m->node, less);
-+	res =3D bpf_rbtree_remove(&groot, &n->node);
-+	bpf_spin_unlock(&glock);
-+
-+	n =3D container_of(res, struct node_data, node);
-+	removed_key =3D n->key;
-+
-+	bpf_obj_drop(n);
-+
-+	return 0;
-+err_out:
-+	if (n)
-+		bpf_obj_drop(n);
-+	if (m)
-+		bpf_obj_drop(m);
-+	return 1;
-+}
-+
-+SEC("tc")
-+long rbtree_first_and_remove(void *ctx)
-+{
-+	struct bpf_rb_node *res =3D NULL;
-+	struct node_data *n, *m, *o;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+	n->key =3D 3;
-+	n->data =3D 4;
-+
-+	m =3D bpf_obj_new(typeof(*m));
-+	if (!m)
-+		goto err_out;
-+	m->key =3D 5;
-+	m->data =3D 6;
-+
-+	o =3D bpf_obj_new(typeof(*o));
-+	if (!o)
-+		goto err_out;
-+	o->key =3D 1;
-+	o->data =3D 2;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less);
-+	bpf_rbtree_add(&groot, &m->node, less);
-+	bpf_rbtree_add(&groot, &o->node, less);
-+
-+	res =3D bpf_rbtree_first(&groot);
-+	if (!res) {
-+		bpf_spin_unlock(&glock);
-+		return 2;
-+	}
-+
-+	o =3D container_of(res, struct node_data, node);
-+	first_data[0] =3D o->data;
-+
-+	res =3D bpf_rbtree_remove(&groot, &o->node);
-+	bpf_spin_unlock(&glock);
-+
-+	o =3D container_of(res, struct node_data, node);
-+	removed_key =3D o->key;
-+
-+	bpf_obj_drop(o);
-+
-+	bpf_spin_lock(&glock);
-+	res =3D bpf_rbtree_first(&groot);
-+	if (!res) {
-+		bpf_spin_unlock(&glock);
-+		return 3;
-+	}
-+
-+	o =3D container_of(res, struct node_data, node);
-+	first_data[1] =3D o->data;
-+	bpf_spin_unlock(&glock);
-+
-+	return 0;
-+err_out:
-+	if (n)
-+		bpf_obj_drop(n);
-+	if (m)
-+		bpf_obj_drop(m);
-+	return 1;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/rbtree_btf_fail__add_wrong=
-_type.c b/tools/testing/selftests/bpf/progs/rbtree_btf_fail__add_wrong_ty=
-pe.c
-new file mode 100644
-index 000000000000..60079b202c07
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/rbtree_btf_fail__add_wrong_type.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include "bpf_experimental.h"
-+
-+struct node_data {
-+	int key;
-+	int data;
-+	struct bpf_rb_node node;
-+};
-+
-+struct node_data2 {
-+	int key;
-+	struct bpf_rb_node node;
-+	int data;
-+};
-+
-+static bool less2(struct bpf_rb_node *a, const struct bpf_rb_node *b)
-+{
-+	struct node_data2 *node_a;
-+	struct node_data2 *node_b;
-+
-+	node_a =3D container_of(a, struct node_data2, node);
-+	node_b =3D container_of(b, struct node_data2, node);
-+
-+	return node_a->key < node_b->key;
-+}
-+
-+#define private(name) SEC(".data." #name) __hidden __attribute__((aligne=
-d(8)))
-+private(A) struct bpf_spin_lock glock;
-+private(A) struct bpf_rb_root groot __contains(node_data, node);
-+
-+SEC("tc")
-+long rbtree_api_add__add_wrong_type(void *ctx)
-+{
-+	struct node_data2 *n;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less2);
-+	bpf_spin_unlock(&glock);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/rbtree_btf_fail__wrong_nod=
-e_type.c b/tools/testing/selftests/bpf/progs/rbtree_btf_fail__wrong_node_=
-type.c
-new file mode 100644
-index 000000000000..340f97da1084
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/rbtree_btf_fail__wrong_node_type.=
-c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include "bpf_experimental.h"
-+
-+/* BTF load should fail as bpf_rb_root __contains this type and points t=
-o
-+ * 'node', but 'node' is not a bpf_rb_node
-+ */
-+struct node_data {
-+	int key;
-+	int data;
-+	struct bpf_list_node node;
-+};
-+
-+static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
-+{
-+	struct node_data *node_a;
-+	struct node_data *node_b;
-+
-+	node_a =3D container_of(a, struct node_data, node);
-+	node_b =3D container_of(b, struct node_data, node);
-+
-+	return node_a->key < node_b->key;
-+}
-+
-+#define private(name) SEC(".data." #name) __hidden __attribute__((aligne=
-d(8)))
-+private(A) struct bpf_spin_lock glock;
-+private(A) struct bpf_rb_root groot __contains(node_data, node);
-+
-+SEC("tc")
-+long rbtree_api_add__wrong_node_type(void *ctx)
-+{
-+	struct node_data *n;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_first(&groot);
-+	bpf_spin_unlock(&glock);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/rbtree_fail.c b/tools/test=
-ing/selftests/bpf/progs/rbtree_fail.c
-new file mode 100644
-index 000000000000..df6e2a39fcee
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/rbtree_fail.c
-@@ -0,0 +1,296 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include "bpf_experimental.h"
-+
-+struct node_data {
-+	long key;
-+	long data;
-+	struct bpf_rb_node node;
-+};
-+
-+#define private(name) SEC(".data." #name) __hidden __attribute__((aligne=
-d(8)))
-+private(A) struct bpf_spin_lock glock;
-+private(A) struct bpf_rb_root groot __contains(node_data, node);
-+private(A) struct bpf_rb_root groot2 __contains(node_data, node);
-+
-+static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
-+{
-+	struct node_data *node_a;
-+	struct node_data *node_b;
-+
-+	node_a =3D container_of(a, struct node_data, node);
-+	node_b =3D container_of(b, struct node_data, node);
-+
-+	return node_a->key < node_b->key;
-+}
-+
-+SEC("?tc")
-+long rbtree_api_nolock_add(void *ctx)
-+{
-+	struct node_data *n;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+
-+	bpf_rbtree_add(&groot, &n->node, less);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+long rbtree_api_nolock_remove(void *ctx)
-+{
-+	struct node_data *n;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less);
-+	bpf_spin_unlock(&glock);
-+
-+	bpf_rbtree_remove(&groot, &n->node);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+long rbtree_api_nolock_first(void *ctx)
-+{
-+	bpf_rbtree_first(&groot);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+long rbtree_api_remove_unadded_node(void *ctx)
-+{
-+	struct node_data *n, *m;
-+	struct bpf_rb_node *res;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+
-+	m =3D bpf_obj_new(typeof(*m));
-+	if (!m) {
-+		bpf_obj_drop(n);
-+		return 1;
-+	}
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less);
-+
-+	/* This remove should pass verifier */
-+	res =3D bpf_rbtree_remove(&groot, &n->node);
-+	n =3D container_of(res, struct node_data, node);
-+
-+	/* This remove shouldn't, m isn't in an rbtree */
-+	res =3D bpf_rbtree_remove(&groot, &m->node);
-+	m =3D container_of(res, struct node_data, node);
-+	bpf_spin_unlock(&glock);
-+
-+	if (n)
-+		bpf_obj_drop(n);
-+	if (m)
-+		bpf_obj_drop(m);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+long rbtree_api_remove_no_drop(void *ctx)
-+{
-+	struct bpf_rb_node *res;
-+	struct node_data *n;
-+
-+	bpf_spin_lock(&glock);
-+	res =3D bpf_rbtree_first(&groot);
-+	if (!res)
-+		goto unlock_err;
-+
-+	res =3D bpf_rbtree_remove(&groot, res);
-+
-+	n =3D container_of(res, struct node_data, node);
-+	bpf_spin_unlock(&glock);
-+
-+	/* bpf_obj_drop(n) is missing here */
-+	return 0;
-+
-+unlock_err:
-+	bpf_spin_unlock(&glock);
-+	return 1;
-+}
-+
-+SEC("?tc")
-+long rbtree_api_add_to_multiple_trees(void *ctx)
-+{
-+	struct node_data *n;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less);
-+
-+	/* This add should fail since n already in groot's tree */
-+	bpf_rbtree_add(&groot2, &n->node, less);
-+	bpf_spin_unlock(&glock);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+long rbtree_api_add_release_unlock_escape(void *ctx)
-+{
-+	struct node_data *n;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less);
-+	bpf_spin_unlock(&glock);
-+
-+	bpf_spin_lock(&glock);
-+	/* After add() in previous critical section, n should be
-+	 * release_on_unlock and released after previous spin_unlock,
-+	 * so should not be possible to use it here
-+	 */
-+	bpf_rbtree_remove(&groot, &n->node);
-+	bpf_spin_unlock(&glock);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+long rbtree_api_release_aliasing(void *ctx)
-+{
-+	struct node_data *n, *m, *o;
-+	struct bpf_rb_node *res;
-+
-+	n =3D bpf_obj_new(typeof(*n));
-+	if (!n)
-+		return 1;
-+
-+	bpf_spin_lock(&glock);
-+	bpf_rbtree_add(&groot, &n->node, less);
-+	bpf_spin_unlock(&glock);
-+
-+	bpf_spin_lock(&glock);
-+
-+	/* m and o point to the same node,
-+	 * but verifier doesn't know this
-+	 */
-+	res =3D bpf_rbtree_first(&groot);
-+	if (!res)
-+		return 1;
-+	o =3D container_of(res, struct node_data, node);
-+
-+	res =3D bpf_rbtree_first(&groot);
-+	if (!res)
-+		return 1;
-+	m =3D container_of(res, struct node_data, node);
-+
-+	bpf_rbtree_remove(&groot, &m->node);
-+	/* This second remove shouldn't be possible. Retval of previous
-+	 * remove returns owning reference to m, which is the same
-+	 * node o's non-owning ref is pointing at
-+	 *
-+	 * In order to preserve property
-+	 *   * owning ref must not be in rbtree
-+	 *   * non-owning ref must be in rbtree
-+	 *
-+	 * o's ref must be invalidated after previous remove. Otherwise
-+	 * we'd have non-owning ref to node that isn't in rbtree, and
-+	 * verifier wouldn't be able to use type system to prevent remove
-+	 * of ref that already isn't in any tree. Would have to do runtime
-+	 * checks in that case.
-+	 */
-+	bpf_rbtree_remove(&groot, &o->node);
-+
-+	bpf_spin_unlock(&glock);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+long rbtree_api_first_release_unlock_escape(void *ctx)
-+{
-+	struct bpf_rb_node *res;
-+	struct node_data *n;
-+
-+	bpf_spin_lock(&glock);
-+	res =3D bpf_rbtree_first(&groot);
-+	if (res)
-+		n =3D container_of(res, struct node_data, node);
-+	bpf_spin_unlock(&glock);
-+
-+	bpf_spin_lock(&glock);
-+	/* After first() in previous critical section, n should be
-+	 * release_on_unlock and released after previous spin_unlock,
-+	 * so should not be possible to use it here
-+	 */
-+	bpf_rbtree_remove(&groot, &n->node);
-+	bpf_spin_unlock(&glock);
-+	return 0;
-+}
-+
-+static bool less__bad_fn_call_add(struct bpf_rb_node *a, const struct bp=
-f_rb_node *b)
-+{
-+	struct node_data *node_a;
-+	struct node_data *node_b;
-+
-+	node_a =3D container_of(a, struct node_data, node);
-+	node_b =3D container_of(b, struct node_data, node);
-+	bpf_rbtree_add(&groot, &node_a->node, less);
-+
-+	return node_a->key < node_b->key;
-+}
-+
-+static bool less__bad_fn_call_remove(struct bpf_rb_node *a, const struct=
- bpf_rb_node *b)
-+{
-+	struct node_data *node_a;
-+	struct node_data *node_b;
-+
-+	node_a =3D container_of(a, struct node_data, node);
-+	node_b =3D container_of(b, struct node_data, node);
-+	bpf_rbtree_remove(&groot, &node_a->node);
-+
-+	return node_a->key < node_b->key;
-+}
-+
-+static bool less__bad_fn_call_first_unlock_after(struct bpf_rb_node *a, =
-const struct bpf_rb_node *b)
-+{
-+	struct node_data *node_a;
-+	struct node_data *node_b;
-+
-+	node_a =3D container_of(a, struct node_data, node);
-+	node_b =3D container_of(b, struct node_data, node);
-+	bpf_rbtree_first(&groot);
-+	bpf_spin_unlock(&glock);
-+
-+	return node_a->key < node_b->key;
-+}
-+
-+#define RBTREE_API_ADD_BAD_CB(cb_suffix)				\
-+SEC("?tc")								\
-+long rbtree_api_add_bad_cb_##cb_suffix(void *ctx)			\
-+{									\
-+	struct node_data *n;						\
-+									\
-+	n =3D bpf_obj_new(typeof(*n));					\
-+	if (!n)								\
-+		return 1;						\
-+									\
-+	bpf_spin_lock(&glock);						\
-+	bpf_rbtree_add(&groot, &n->node, less__##cb_suffix);		\
-+	bpf_spin_unlock(&glock);					\
-+	return 0;							\
-+}
-+
-+RBTREE_API_ADD_BAD_CB(bad_fn_call_add);
-+RBTREE_API_ADD_BAD_CB(bad_fn_call_remove);
-+RBTREE_API_ADD_BAD_CB(bad_fn_call_first_unlock_after);
-+
-+char _license[] SEC("license") =3D "GPL";
++++ b/Documentation/bpf/graph_ds_impl.rst
+@@ -0,0 +1,266 @@
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
++BPF Graph Data Structures
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
++
++This document describes implementation details of new-style "graph" data
++structures (linked_list, rbtree), with particular focus on the verifier'=
+s
++implementation of semantics specific to those data structures.
++
++Although no specific verifier code is referred to in this document, the =
+document
++assumes that the reader has general knowledge of BPF verifier internals,=
+ BPF
++maps, and BPF program writing.
++
++Note that the intent of this document is to describe the current state o=
+f
++these graph data structures. **No guarantees** of stability for either
++semantics or APIs are made or implied here.
++
++.. contents::
++    :local:
++    :depth: 2
++
++Introduction
++------------
++
++The BPF map API has historically been the main way to expose data struct=
+ures
++of various types for use within BPF programs. Some data structures fit n=
+aturally
++with the map API (HASH, ARRAY), others less so. Consequentially, program=
+s
++interacting with the latter group of data structures can be hard to pars=
+e
++for kernel programmers without previous BPF experience.
++
++Luckily, some restrictions which necessitated the use of BPF map semanti=
+cs are
++no longer relevant. With the introduction of kfuncs, kptrs, and the any-=
+context
++BPF allocator, it is now possible to implement BPF data structures whose=
+ API
++and semantics more closely match those exposed to the rest of the kernel=
+.
++
++Two such data structures - linked_list and rbtree - have many verificati=
+on
++details in common. Because both have "root"s ("head" for linked_list) an=
+d
++"node"s, the verifier code and this document refer to common functionali=
+ty
++as "graph_api", "graph_root", "graph_node", etc.
++
++Unless otherwise stated, examples and semantics below apply to both grap=
+h data
++structures.
++
++Unstable API
++------------
++
++Data structures implemented using the BPF map API have historically used=
+ BPF
++helper functions - either standard map API helpers like ``bpf_map_update=
+_elem``
++or map-specific helpers. The new-style graph data structures instead use=
+ kfuncs
++to define their manipulation helpers. Because there are no stability gua=
+rantees
++for kfuncs, the API and semantics for these data structures can be evolv=
+ed in
++a way that breaks backwards compatibility if necessary.
++
++Root and node types for the new data structures are opaquely defined in =
+the
++``uapi/linux/bpf.h`` header.
++
++Locking
++-------
++
++The new-style data structures are intrusive and are defined similarly to=
+ their
++vanilla kernel counterparts:
++
++.. code-block:: c
++        struct node_data {
++          long key;
++          long data;
++          struct bpf_rb_node node;
++        };
++
++        struct bpf_spin_lock glock;
++        struct bpf_rb_root groot __contains(node_data, node);
++
++The "root" type for both linked_list and rbtree expects to be in a map_v=
+alue
++which also contains a ``bpf_spin_lock`` - in the above example both glob=
+al
++variables are placed in a single-value arraymap. The verifier considers =
+this
++spin_lock to be associated with the ``bpf_rb_root`` by virtue of both be=
+ing in
++the same map_value and will enforce that the correct lock is held when
++verifying BPF programs that manipulate the tree. Since this lock checkin=
+g
++happens at verification time, there is no runtime penalty.
++
++Non-owning references
++---------------------
++
++**Motivation**
++
++Consider the following BPF code:
++
++.. code-block:: c
++
++        struct node_data *n =3D bpf_obj_new(typeof(*n)); /* ACQUIRED */
++
++        bpf_spin_lock(&lock);
++
++        bpf_rbtree_add(&tree, n); /* PASSED */
++
++        bpf_spin_unlock(&lock);
++
++From the verifier's perspective, the pointer ``n`` returned from ``bpf_o=
+bj_new``
++has type ``PTR_TO_BTF_ID | MEM_ALLOC``, with a ``btf_id`` of
++``struct node_data`` and a nonzero ``ref_obj_id``. Because it holds ``n`=
+`, the
++program has ownership of the pointee's (object pointed to by ``n``) life=
+time.
++The BPF program must pass off ownership before exiting - either via
++``bpf_obj_drop``, which ``free``'s the object, or by adding it to ``tree=
+`` with
++``bpf_rbtree_add``.
++
++(``ACQUIRED`` and ``PASSED`` comments in the example denote statements w=
+here
++"ownership is acquired" and "ownership is passed", respectively)
++
++What should the verifier do with ``n`` after ownership is passed off? If=
+ the
++object was ``free``'d with ``bpf_obj_drop`` the answer is obvious: the v=
+erifier
++should reject programs which attempt to access ``n`` after ``bpf_obj_dro=
+p`` as
++the object is no longer valid. The underlying memory may have been reuse=
+d for
++some other allocation, unmapped, etc.
++
++When ownership is passed to ``tree`` via ``bpf_rbtree_add`` the answer i=
+s less
++obvious. The verifier could enforce the same semantics as for ``bpf_obj_=
+drop``,
++but that would result in programs with useful, common coding patterns be=
+ing
++rejected, e.g.:
++
++.. code-block:: c
++
++        int x;
++        struct node_data *n =3D bpf_obj_new(typeof(*n)); /* ACQUIRED */
++
++        bpf_spin_lock(&lock);
++
++        bpf_rbtree_add(&tree, n); /* PASSED */
++        x =3D n->data;
++        n->data =3D 42;
++
++        bpf_spin_unlock(&lock);
++
++Both the read from and write to ``n->data`` would be rejected. The verif=
+ier
++can do better, though, by taking advantage of two details:
++
++  * Graph data structure APIs can only be used when the ``bpf_spin_lock`=
+`
++    associated with the graph root is held
++
++  * Both graph data structures have pointer stability
++
++     * Because graph nodes are allocated with ``bpf_obj_new`` and
++       adding / removing from the root involves fiddling with the
++       ``bpf_{list,rb}_node`` field of the node struct, a graph node wil=
+l
++       remain at the same address after either operation.
++
++Because the associated ``bpf_spin_lock`` must be held by any program add=
+ing
++or removing, if we're in the critical section bounded by that lock, we k=
+now
++that no other program can add or remove until the end of the critical se=
+ction.
++This combined with pointer stability means that, until the critical sect=
+ion
++ends, we can safely access the graph node through ``n`` even after it wa=
+s used
++to pass ownership.
++
++The verifier considers such a reference a *non-owning reference*. The re=
+f
++returned by ``bpf_obj_new`` is accordingly considered an *owning referen=
+ce*.
++Both terms currently only have meaning in the context of graph nodes and=
+ API.
++
++**Details**
++
++Let's enumerate the properties of both types of references.
++
++*owning reference*
++
++  * This reference controls the lifetime of the pointee
++
++  * Ownership of pointee must be 'released' by passing it to some graph =
+API
++    kfunc, or via ``bpf_obj_drop``, which ``free``'s the pointee
++
++    * If not released before program ends, verifier considers program in=
+valid
++
++  * Access to the pointee's memory will not page fault
++
++*non-owning reference*
++
++  * This reference does not own the pointee
++
++     * It cannot be used to add the graph node to a graph root, nor ``fr=
+ee``'d via
++       ``bpf_obj_drop``
++
++  * No explicit control of lifetime, but can infer valid lifetime based =
+on
++    non-owning ref existence (see explanation below)
++
++  * Access to the pointee's memory will not page fault
++
++From verifier's perspective non-owning references can only exist
++between spin_lock and spin_unlock. Why? After spin_unlock another progra=
+m
++can do arbitrary operations on the data structure like removing and ``fr=
+ee``-ing
++via bpf_obj_drop. A non-owning ref to some chunk of memory that was remo=
+ve'd,
++``free``'d, and reused via bpf_obj_new would point to an entirely differ=
+ent thing.
++Or the memory could go away.
++
++To prevent this logic violation all non-owning references are invalidate=
+d by the
++verifier after a critical section ends. This is necessary to ensure the =
+"will
++not page fault" property of non-owning references. So if the verifier ha=
+sn't
++invalidated a non-owning ref, accessing it will not page fault.
++
++Currently ``bpf_obj_drop`` is not allowed in the critical section, so
++if there's a valid non-owning ref, we must be in a critical section, and=
+ can
++conclude that the ref's memory hasn't been dropped-and- ``free``'d or
++dropped-and-reused.
++
++Any reference to a node that is in an rbtree _must_ be non-owning, since
++the tree has control of the pointee's lifetime. Similarly, any ref to a =
+node
++that isn't in rbtree _must_ be owning. This results in a nice property:
++graph API add / remove implementations don't need to check if a node
++has already been added (or already removed), as the ownership model
++allows the verifier to prevent such a state from being valid by simply c=
+hecking
++types.
++
++However, pointer aliasing poses an issue for the above "nice property".
++Consider the following example:
++
++.. code-block:: c
++
++        struct node_data *n, *m, *o, *p;
++        n =3D bpf_obj_new(typeof(*n));     /* 1 */
++
++        bpf_spin_lock(&lock);
++
++        bpf_rbtree_add(&tree, n);        /* 2 */
++        m =3D bpf_rbtree_first(&tree);     /* 3 */
++
++        o =3D bpf_rbtree_remove(&tree, n); /* 4 */
++        p =3D bpf_rbtree_remove(&tree, m); /* 5 */
++
++        bpf_spin_unlock(&lock);
++
++        bpf_obj_drop(o);
++        bpf_obj_drop(p); /* 6 */
++
++Assume the tree is empty before this program runs. If we track verifier =
+state
++changes here using numbers in above comments:
++
++  1) n is an owning reference
++
++  2) n is a non-owning reference, it's been added to the tree
++
++  3) n and m are non-owning references, they both point to the same node
++
++  4) o is an owning reference, n and m non-owning, all point to same nod=
+e
++
++  5) o and p are owning, n and m non-owning, all point to the same node
++
++  6) a double-free has occurred, since o and p point to same node and o =
+was
++     ``free``'d in previous statement
++
++States 4 and 5 violate our "nice property", as there are non-owning refs=
+ to
++a node which is not in an rbtree. Statement 5 will try to remove a node =
+which
++has already been removed as a result of this violation. State 6 is a dan=
+gerous
++double-free.
++
++At a minimum we should prevent state 6 from being possible. If we can't =
+also
++prevent state 5 then we must abandon our "nice property" and check wheth=
+er a
++node has already been removed at runtime.
++
++We prevent both by generalizing the "invalidate non-owning references" b=
+ehavior
++of ``bpf_spin_unlock`` and doing similar invalidation after
++``bpf_rbtree_remove``. The logic here being that any graph API kfunc whi=
+ch:
++
++  * takes an arbitrary node argument
++
++  * removes it from the data structure
++
++  * returns an owning reference to the removed node
++
++May result in a state where some other non-owning reference points to th=
+e same
++node. So ``remove``-type kfuncs must be considered a non-owning referenc=
+e
++invalidation point as well.
+diff --git a/Documentation/bpf/other.rst b/Documentation/bpf/other.rst
+index 3d61963403b4..7e6b12018802 100644
+--- a/Documentation/bpf/other.rst
++++ b/Documentation/bpf/other.rst
+@@ -6,4 +6,5 @@ Other
+    :maxdepth: 1
+=20
+    ringbuf
+-   llvm_reloc
+\ No newline at end of file
++   llvm_reloc
++   graph_ds_impl
 --=20
 2.30.2
 
