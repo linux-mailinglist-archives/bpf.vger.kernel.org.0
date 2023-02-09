@@ -2,69 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9897B690EF5
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D46690EFE
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbjBIRNn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 12:13:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        id S229501AbjBIRRD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 12:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbjBIRNm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 12:13:42 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FEF66ED5;
-        Thu,  9 Feb 2023 09:13:38 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id m8so2654278edd.10;
-        Thu, 09 Feb 2023 09:13:38 -0800 (PST)
+        with ESMTP id S229479AbjBIRRC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 12:17:02 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BF4658F2;
+        Thu,  9 Feb 2023 09:17:00 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id dr8so8381634ejc.12;
+        Thu, 09 Feb 2023 09:17:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=z+Ov3XaXRvzeO63TK3217oyLNCEzuRnIKM04ym/Z/co=;
-        b=R5hnYLdFauYb+iFUd+3kQcrTgL1E6nMZniQ0REuV6rS7Ia9OxAglfqRHkn9NjyR1a7
-         3RQ06EWEUd7py2YMwGx4L66Ti9hMJGjY7ZBS1Luz3hDR3fz7bYn+HJYDtUbLai2tdt/d
-         pWRjVGjBVU9B2eRBJBPSXkqsyNfUDA7KFodxi646Wa4RDIlfQQ1qwn02QyvLnlAORteM
-         DPijxGGXvzzjGi0FQMSRnDL0S7KKikPWT7qQzK1j/TZxGvZdgqUyeKfOJ/IEdr+6+lA5
-         hI+CoHqv81tjzPwBQhk6Lq5r6O3t7kA2VKMHnacmlFfdmtPYKH1feHL0LxsAWewh7uRJ
-         CkiQ==
+        bh=hOaWLeC8ipHRmcLbRfn6JATZO77iIGtuyhLGc5wCYsg=;
+        b=eMz4/BTebHTthy7QIrMrF8piEjMCHk5gkyR04gPH0mQnoNxtk+juSI73WZpFmbv2gf
+         FuQFYTsppEmm2CuV586y5L0Zop+4pJCnUHDtqT3b1tZbv9JE4w8f8tC43Bd7PWCBOhlA
+         AsdznGOUVVgd38zrLID94UUU38wQwt+tzDz5OCKpX0LKf0HG/twtUODLrFm2TzC4gIbn
+         eKt3ivD976xMgctdzkH8i6UWi2e8vGsJhFXzQSHSRHiNdET92IQNqFeDURxJh9zasCwY
+         ba/IBqZzqb1CVIjc4JYx/HTf8p3zctAx4W8wNNb3BsvxutDM41yczWIevc6TIF0h5mL3
+         NXgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=z+Ov3XaXRvzeO63TK3217oyLNCEzuRnIKM04ym/Z/co=;
-        b=zfH1DciBzZzd6pFyR1i/gQGwR4UNhdnb2PSklCy6l4UnZW3wpQiSuxk8DqriOjhUTp
-         Y/RQRFjmpHms2Bx7xQzNel9FKe5DMs/rYJ99PfyKkup0hVUlJc6q+42WfncEgajqoHsW
-         Uq6Qwzfq3hQL/KujrfxpqXqV8WtKRrXlP5icKdV7JtfbFuZ0zOvhBJBb8KtCJCupJulk
-         48AJCR6CwPvXqoK3ePVWA6RJQzz5z9ZjGayYmp6WFuXSeKAJsla55cAkj2JEPMLIOb8N
-         nxJENqp7ayj5dT2khmsfPGtheAqqxda7qiTv9rRpiITnxipqkYTV7yWsMfPEpYPNMCei
-         HE+Q==
-X-Gm-Message-State: AO0yUKW1ErnzbAKYc+g4RIVq1TVydEWc1gkoTwA21hVkjKK4QHo8osmv
-        o4WayQ+hCV1bK/goVLNNQGI9Z5ih8lhCO23MsuM=
-X-Google-Smtp-Source: AK7set+cQvw8bqTZ44P4Wog2413dySGEtLrxdcgnenr/aMxhp1YAZFMd7VDLxtDjuaKrzVuPMYMzKfwtkHSNLTp3ppk=
-X-Received: by 2002:a50:9f43:0:b0:4ab:1712:b268 with SMTP id
- b61-20020a509f43000000b004ab1712b268mr881368edf.5.1675962816860; Thu, 09 Feb
- 2023 09:13:36 -0800 (PST)
+        bh=hOaWLeC8ipHRmcLbRfn6JATZO77iIGtuyhLGc5wCYsg=;
+        b=0pUZQ55hzkDuZUQDSU1Cu85hM34JD8q+yA0PiU5/e11hUApwWxY0543MFG+NFQ2drB
+         9bB3YfeiYdLQ0lk398v9UAU7hvu1yyRRgfv7Cuz8LnFXmyRFBCjZqS5P4kWQq9eEEqFA
+         Tn4pKK9o3I0Y+7sH985vA5KTiHkGNp6MkB7kkIyO35D4CANDMkwVev0AXwDDyoHS37cJ
+         UcmITOcfRseiyweQFAjoIP6Izo2Wies+wRLtwkiSwy6b6IEOIhK+mxzkspnq7yIU6dWf
+         YSV/QVqDN9iLg0WzQJbfYA+W1AneU9LZjAbTZBov0gP9kPDmCw7LQwXJ8N8Wdeqv4xKI
+         BrWA==
+X-Gm-Message-State: AO0yUKUIp7sAZgQaxd1aWMsWCpcsEIHEOqofqDtO98CvlkcbdWT4Pst1
+        eMXiiwMbOv4gCXYMF00QqyROnF/7SgqD7K2wOjE=
+X-Google-Smtp-Source: AK7set+twhKV+Ooh2gn/db6SF56f0jFgx/U8eC4Rup6g9uqGZ3eD9dYBHu34t+9OvtxJPnu0EFSQVSdwEy9TKbvAPXM=
+X-Received: by 2002:a17:906:aec1:b0:889:8f1a:a153 with SMTP id
+ me1-20020a170906aec100b008898f1aa153mr660783ejb.15.1675963018825; Thu, 09 Feb
+ 2023 09:16:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20230203031742.1730761-1-imagedong@tencent.com>
- <20230203031742.1730761-3-imagedong@tencent.com> <CAEf4BzYh90NyyYvfTT=M=-KLspydMX4PZK8jCwNDydAP=kFgYw@mail.gmail.com>
- <CADxym3a6_wBHW_c_ZYtZ5QXbbunhKxau6k-fn4TNrn+6qzW6fw@mail.gmail.com>
- <CAEf4BzZAo6Bfio3pbY3j5yUDArCbdiWPC-r=XhFM9Bwq+4VVMg@mail.gmail.com>
- <75421c53-fa5c-d7c7-4b19-2d97e3e6d7f6@oracle.com> <CAEf4BzZicf3B7BwPj=fWkcVJz0JayB9qUUbJFBPunxOJwQoMdw@mail.gmail.com>
- <CADxym3YR6PS_0XfzH6p1CNUAbDxX=gO_aAoOu7fEkx1pAn2AKQ@mail.gmail.com>
-In-Reply-To: <CADxym3YR6PS_0XfzH6p1CNUAbDxX=gO_aAoOu7fEkx1pAn2AKQ@mail.gmail.com>
+References: <20230201135737.800527-1-jolsa@kernel.org> <20230201135737.800527-6-jolsa@kernel.org>
+ <CAEf4BzYGQGdydeVbZf5YTnDTvGduA_wbeQ=t5nSc6Wi=S17+=A@mail.gmail.com> <Y+T9XNkDWla1+3NV@krava>
+In-Reply-To: <Y+T9XNkDWla1+3NV@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Feb 2023 09:13:24 -0800
-Message-ID: <CAEf4BzYTE8OqL5f9i1v+2OGnvgN+_Rx46yVWjqw5rAi_yFcALg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add test for legacy/perf
- kprobe/uprobe attach mode
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Date:   Thu, 9 Feb 2023 09:16:46 -0800
+Message-ID: <CAEf4BzZ0yWJX0iNHEeSmWMmy_SiSCvhPjJdfcaET-3RHeb38Hg@mail.gmail.com>
+Subject: Re: [PATCH RFC 5/5] selftests/bpf: Add iter_task_vma_buildid test
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -76,129 +81,140 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 9, 2023 at 6:08 AM Menglong Dong <menglong8.dong@gmail.com> wrote:
+On Thu, Feb 9, 2023 at 6:04 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> On Thu, Feb 9, 2023 at 7:31 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Wed, Feb 08, 2023 at 04:01:42PM -0800, Andrii Nakryiko wrote:
+>
+> SNIP
+>
+> > > +static void test_task_vma_buildid(void)
+> > > +{
+> > > +       int err, iter_fd = -1, proc_maps_fd = -1;
+> > > +       struct bpf_iter_task_vma_buildid *skel;
+> > > +       char key[D_PATH_BUF_SIZE], *prev_key;
+> > > +       char bpf_build_id[BUILDID_STR_SIZE];
+> > > +       int len, files_fd, i, cnt = 0;
+> > > +       struct build_id val;
+> > > +       char *build_id;
+> > > +       char c;
+> > > +
+> > > +       skel = bpf_iter_task_vma_buildid__open();
+> > > +       if (!ASSERT_OK_PTR(skel, "bpf_iter_task_vma_buildid__open"))
+> > > +               return;
+> > > +
+> > > +       err = bpf_iter_task_vma_buildid__load(skel);
+> > > +       if (!ASSERT_OK(err, "bpf_iter_task_vma_buildid__load"))
+> > > +               goto out;
 > >
-> > On Wed, Feb 8, 2023 at 3:49 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > >
-> > > On 07/02/2023 22:50, Andrii Nakryiko wrote:
-> > > > On Mon, Feb 6, 2023 at 6:39 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
-> > > >>
-> > > >> On Tue, Feb 7, 2023 at 4:05 AM Andrii Nakryiko
-> > > >> <andrii.nakryiko@gmail.com> wrote:
-> > > >>>
-> > > >>> On Thu, Feb 2, 2023 at 7:18 PM <menglong8.dong@gmail.com> wrote:
-> > > >>>>
-> > > >>>> From: Menglong Dong <imagedong@tencent.com>
-> > > >>>>
-> > > >>>> Add the testing for kprobe/uprobe attaching in legacy and perf mode.
-> > > >>>> And the testing passed:
-> > > >>>>
-> > > >>>> ./test_progs -t attach_probe
-> > > >>>> $5       attach_probe:OK
-> > > >>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> > > >>>>
-> > > >>>> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> > > >>>> ---
-> > > >>>
-> > > >>> Do you mind refactoring attach_probe test into multiple subtests,
-> > > >>> where each subtest will only test one of the attach mode and type. The
-> > > >>> reason is that libbpf CI runs tests with latest selftests and libbpf
-> > > >>> against old kernels (4.9 and 5.5, currently). Due to attach_probe
-> > > >>> testing all these uprobe/kprobe attach modes with extra features (like
-> > > >>> cookie, ref count, etc), we had to disable attach_probe test in libbpf
-> > > >>> CI on old kernels.
-> > > >>>
-> > > >>> If we can split each individual uprobe/kprobe mode, that will give us
-> > > >>> flexibility to selectively allowlist those tests that don't force
-> > > >>> libbpf to use newer features (like cookies, LINK or PERF mode, etc).
-> > > >>>
-> > > >>> It would be a great improvement and highly appreciated! If you don't
-> > > >>> mind doing this, let's do the split of existing use cases into subtest
-> > > >>> in a separate patch, and then add PERF/LEGACY/LINK mode tests on top
-> > > >>> of that patch.
-> > > >>>
-> > > >>
-> > > >> Of course, with pleasure. For the existing use cases, we split it into
-> > > >> subtests, such as:
-> > > >>
-> > > >>   kprobe/kretprobe auto attach
-> > > >>   kprobe/kretprobe manual attach
-> > > >>   uprobe/uretprobe ref_ctr test
-> > > >>   uprobe/uretprobe auto attach
-> > > >>   sleepable kprobe/uprobe
-> > > >>   ......
-> > > >>
-> > > >> Am I right?
-> > > >
-> > > > I haven't analysed all the different cases, but roughly it makes
-> > > > sense. With more granular subtests we can also drop `legacy` flag and
-> > > > rely on subtest allowlisting in CI.
-> > > >
-> > >
-> > > I'm probably rusty on the details, but when you talk about subtest
-> > > splitting for the [uk]probe manual attach, are we talking about running
-> > > the same manual attach test for the different modes, with each as a
-> > > separate subtest, such that each registers as a distinct pass/fail (and
-> > > can thus be allowlisted as appropriate)? So in other words
-> > >
-> > > test__start_subtest("manual_attach_kprobe_link");
-> > > attach_kprobe_manual(link_options);
-> > > test__start_subtest("manual_attach_kprobe_legacy");
-> > > attach_kprobe_manual(legay_options);
-> > > test__start_subtest("manual_attach_kprobe_perf");
-> > > attach_kprobe_manual(perf_options);
-> > >
-> > > ?
+> > minor: you can do __open_and_load() in one step
+>
+> right, I copied that from another test, but removed all the
+> setup in between, so we can actually call just __open_and_load
+>
+> SNIP
+>
+> > > +               memset(bpf_build_id, 0x0, sizeof(bpf_build_id));
+> > > +               for (i = 0; i < val.sz; i++) {
+> > > +                       sprintf(bpf_build_id + i*2, "%02x",
+> > > +                               (unsigned char) val.data[i]);
+> > > +               }
+> > > +
+> > > +               if (!ASSERT_OK(read_buildid(key, &build_id), "read_buildid"))
+> > > +                       break;
+> > > +
+> > > +               printf("BUILDID %s %s %s\n", bpf_build_id, build_id, key);
 > >
-> > Yep. One of the reasons is that on 4.9 kernel there won't be link or
-> > perf method available, so it is expected for such modes to fail. I
-> > want to be able to still test the legacy code path on 4.9, though.
-> > Similarly tests that are using ref_ctr_offset or bpf_cookie won't work
-> > on older kernels as well. Right now because of all of them being in a
-> > single test, I have to block entire test, losing coverage on older
-> > kernels.
+> > debugging leftover or intentional?
 > >
+> > > +               ASSERT_OK(strncmp(bpf_build_id, build_id, strlen(bpf_build_id)), "buildid_cmp");
+> > > +
+> > > +               free(build_id);
+> > > +               prev_key = key;
+> > > +               cnt++;
+> > > +       }
+> > > +
+> > > +       printf("checked %d files\n", cnt);
+> >
+> > ditto
 >
-> I think I am beginning to understand it now. So we need 2 patches
-> for the selftests part. In the 1th patch, we split the existing testings
-> into multi subtests, such as:
+> both intentional, first one can go out I guess, but the
+> number of checked files seemed interesting to me ;-)
 >
-> test__start_subtest("manual_attach_probe") // test kprobe/uprobe manual attach
-> test__start_subtest("auto_attach_probe") // test kprobe/uprobe auto attach
-> test__start_subtest("bpf_cookie") // test bpf_cookie
-> test__start_subtest("ref_ctr_offset") test ref_ctr_offset
-> test__start_subtest("sleepable_probe") // test sleepable
-> uprobe/uretprobe, and sleepable kprobe
-> ......
+> SNIP
 >
-> And in the 2th patch, we change the subtest "manual_attach_probe" into
-> the following tests:
+> > > diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c
+> > > new file mode 100644
+> > > index 000000000000..25e2179ae5f4
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c
+> > > @@ -0,0 +1,49 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +
+> > > +#include "bpf_iter.h"
+> > > +#include <bpf/bpf_helpers.h>
+> > > +#include <string.h>
+> > > +
+> > > +char _license[] SEC("license") = "GPL";
+> > > +
+> > > +#define VM_EXEC                0x00000004
+> > > +#define D_PATH_BUF_SIZE        1024
+> > > +
+> > > +struct {
+> > > +       __uint(type, BPF_MAP_TYPE_HASH);
+> > > +       __uint(max_entries, 10000);
+> > > +       __type(key, char[D_PATH_BUF_SIZE]);
+> > > +       __type(value, struct build_id);
+> > > +} files SEC(".maps");
+> > > +
+> > > +static char tmp_key[D_PATH_BUF_SIZE];
+> > > +static struct build_id tmp_data;
+> > > +
+> > > +SEC("iter/task_vma") int proc_maps(struct bpf_iter__task_vma *ctx)
+> >
+> > nit: let's keep SEC() on separate line from function itself
 >
-> test__start_subtest("manual_attach_kprobe_link");
-> test__start_subtest("manual_attach_kprobe_legacy");
-> test__start_subtest("manual_attach_kprobe_perf");
+> ok
 >
-> Therefore, every feature can be tested in a subtest alone.
+> >
+> > > +{
+> > > +       struct vm_area_struct *vma = ctx->vma;
+> > > +       struct seq_file *seq = ctx->meta->seq;
+> > > +       struct task_struct *task = ctx->task;
+> > > +       unsigned long file_key;
+> > > +       struct file *file;
+> > > +
+> > > +       if (task == (void *)0 || vma == (void *)0)
+> > > +               return 0;
+> > > +
+> > > +       if (!(vma->vm_flags & VM_EXEC))
+> > > +               return 0;
+> > > +
+> > > +       file = vma->vm_file;
+> > > +       if (!file)
+> > > +               return 0;
+> > > +
+> > > +       memset(tmp_key, 0x0, D_PATH_BUF_SIZE);
+> >
+> > __builtin_memset() to not rely on compiler optimization?
+> >
+> > > +       bpf_d_path(&file->f_path, (char *) &tmp_key, D_PATH_BUF_SIZE);
+> > > +
+> > > +       if (bpf_map_lookup_elem(&files, &tmp_key))
+> > > +               return 0;
+> > > +
+> > > +       memcpy(&tmp_data, file->f_bid, sizeof(*file->f_bid));
+> >
+> > same about __builtin_memcpy()
 >
-> Am I right?
+> ah ok, did not know that, will check.. curious what could
+> go wrong by using not '__builtin_...' version?
 
-yep, exactly!
+if compiler doesn't optimize it into __builtin_memcpy() (which results
+in just explicit assembly code to copy/set data word-by-word), then
+BPF program will do actual call to memset(), which with C rules would
+be inferred as extern symbol, which would fail BPF object loading with
+error along the lines of "couldn't resolve memset extern".
 
 >
-> Thanks!
-> Menglong Dong
-> > >
-> > > >>
-> > > >> Thanks!
-> > > >> Dongmeng Long
-> > > >>
-> > > >>>
-> > > >>>>  .../selftests/bpf/prog_tests/attach_probe.c   | 61 ++++++++++++++++++-
-> > > >>>>  .../selftests/bpf/progs/test_attach_probe.c   | 32 ++++++++++
-> > > >>>>  2 files changed, 92 insertions(+), 1 deletion(-)
-> > > >>>>
-> > > >>>
-> > > >>> [...]
+> thanks,
+> jirka
