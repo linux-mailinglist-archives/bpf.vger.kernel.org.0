@@ -2,70 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F6368FC20
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 01:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 238E968FC39
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 01:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbjBIAru (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 19:47:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        id S230400AbjBIAyT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 19:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbjBIArt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 19:47:49 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D242C1A948;
-        Wed,  8 Feb 2023 16:47:48 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id dr8so1862269ejc.12;
-        Wed, 08 Feb 2023 16:47:48 -0800 (PST)
+        with ESMTP id S229882AbjBIAyS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 19:54:18 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB70125A7
+        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 16:54:16 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 23so523731ybf.10
+        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 16:54:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=csaUFD9XPMWnOfebSojpED5cJqAQggMa/pYn+VL37CM=;
-        b=Hcmg3NcuxMZp48JVIaeNVjLdopmTTlbGWWNWRC0ISw5Pvr2pPh4vnggQh4el9ERapf
-         ejxxuI1Z7/Fn69Qt/JUjfqKKUYMswGzh+1KVA9a6wkHn3SdGYkAqjeh1Pobu9RjQyo9o
-         +3RVtr7/bnatz9htnfW/CeAgNdKHTtjM6bn/E3HqVakJwEtHR+B1DwYty3cmGVW9VYq8
-         t9/PFo4ibQWMxq5N77EzESOZMrQDBV1GC7rvh4ceoT53EemhHA0GweR3E0stN1TKKrkc
-         JmCYO0d9qun5EpFHVkwOrfX9e42UXZCb0wOQXqFNjeNfkgiSEJ+oYPMRksCHz/6I5lLJ
-         zhzA==
+        bh=HA3fnt3w/WkldBLqUixquvviOvTsBAQjIdHUUjb56M0=;
+        b=sBenSKQ7FVZf9KJQB47/1z3eFo5uPqCWNUETrOZxLzOJtcLUPNVIZaxX+GVCS8uFqv
+         iwRXjPWW2bB7JalEf8dr+4OdWdJW799KnVv5wR3Re1phRxVIyLFcHw8DCeqrZtz8wpVy
+         XIQufLeg9mKvB3udTuoMH/+0CfFZbJdy/ZyhssQ4fqr17mtOH/3uHYHZZM4TwzEBnk1c
+         ETarg2Djh7AnXFAKIXF7pYXNcN+vvceHsCfOFtij66RhDNrLMs1FODaLt+CFqesZPH49
+         wQnMqvfxtvRKT7lRAJvvjBs1NxndyUcfpXc7Mg5lNSVf9hg2QrUDTpTa+8R2UV3OhcvX
+         IYYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=csaUFD9XPMWnOfebSojpED5cJqAQggMa/pYn+VL37CM=;
-        b=4JUKPNhaHumwrEZabho6DZaJ38FHdr0l7Ay82FLvKYR6g1U29oKNOt+7gd1U56YFe8
-         ayJk6PPxE+8gPQhKe2tUncwIHN3NTyMkpFG+I1M7bpD9l42zYkE3FkG1KbNsFjjSYsRQ
-         7DwbzC9VN8WwrnoKMY1VA/IuaE2pPb1/2c4QW+Y47/wiwd7IDgPCRksmP/zz7prj1nDM
-         z/X8GOrjp6qyeeb24r5aAfut5AbjbrHNFCZXBPZiqvyXiMomS7FYYpSUptY33rgiEy5q
-         bYTYosQNBKoMGVJGmnwlZw4WlUmFfzxv2RXs5yf9RhWuq4w3DLeGS0SMdehtUhu2Nr6g
-         KDpw==
-X-Gm-Message-State: AO0yUKUXYY6VjWFh5jfvldqQa/ONHyvtQ+hTQL079DuAasZMXCvg2L/i
-        SPDiONbsUmCVDJZJhZ4A8xeH9i6nvhslzao4Sdk=
-X-Google-Smtp-Source: AK7set/d76zdEJveJUcIvOlKGZ+pCq9PFMXT1MU7EPKOOnVom4NJ66HyMBsOZb5jDHvehUhyf1m5btZIT5sSn3a/jxM=
-X-Received: by 2002:a17:907:2cec:b0:87b:dce7:c245 with SMTP id
- hz12-20020a1709072cec00b0087bdce7c245mr121870ejc.3.1675903667369; Wed, 08 Feb
- 2023 16:47:47 -0800 (PST)
+        bh=HA3fnt3w/WkldBLqUixquvviOvTsBAQjIdHUUjb56M0=;
+        b=qPRn1Vs/6D3ViQA/9oXNsV4Vnlvz+JDH8KbD4izgztCuRinvRC02YEFD4ueby6zAfx
+         Z+gqdDAXtFDps/jx1aRxFYS4Zd/9YsYOqJuE5jeR609yOkiPGnJYGxDfh0e9aPK3pqfx
+         gy2YqEto3Ztnx/8/TLkB5Fa5orIAUV9fcybsK9WhZSCAn6Rz80NKYq7uJtmhpo4WfxBq
+         d7zP+Mxv+bs5CDWWrkrLF16m4OYxztdADRjS6kIIvya3Z5Sfj3h+88VukphlKT9kSpx9
+         6DiH4MAaxPSWcxv7bC2KSqVCrgDMerXN1uULpSn+/dB95qDDgNZFA6tHfL9lclhlWRvk
+         Gtfg==
+X-Gm-Message-State: AO0yUKVaO4pcYKKfT/ugo7ftc5gFJN1KgcZMeNZ2hZ0MBTzJkmnhbWdn
+        MjwgaSKLEALTpl/w7MA/KyveQf/Q6Qbd2Puajr0GIcW01EEZ8CNtsw==
+X-Google-Smtp-Source: AK7set9ZNH349+n5tqrkBZ3G/4EXSKW8hwOrbG7RXJtrVdxo+rv0LsXkOz6w3KeCd3ROkx+iQMrf5PG0n+BJqgs4m/M=
+X-Received: by 2002:a5b:b87:0:b0:8b6:6ae:3bbe with SMTP id l7-20020a5b0b87000000b008b606ae3bbemr1101327ybq.340.1675904055502;
+ Wed, 08 Feb 2023 16:54:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20230204133535.99921-1-kerneljasonxing@gmail.com> <20230204133535.99921-4-kerneljasonxing@gmail.com>
-In-Reply-To: <20230204133535.99921-4-kerneljasonxing@gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Thu, 9 Feb 2023 08:47:09 +0800
-Message-ID: <CAL+tcoD9nE-Ad7+XoshoQ8qp7C0H+McKX=F6xt2+UF1BeWXKbg@mail.gmail.com>
-Subject: Re: [PATCH net 3/3] ixgbe: add double of VLAN header when computing
- the max MTU
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        alexandr.lobakin@intel.com, maciej.fijalkowski@intel.com,
-        alexander.duyck@gmail.com
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jason Xing <kernelxing@tencent.com>
+References: <20211120112738.45980-1-laoar.shao@gmail.com> <20211120112738.45980-8-laoar.shao@gmail.com>
+ <Y+QaZtz55LIirsUO@google.com> <CAADnVQ+nf8MmRWP+naWwZEKBFOYr7QkZugETgAVfjKcEVxmOtg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+nf8MmRWP+naWwZEKBFOYr7QkZugETgAVfjKcEVxmOtg@mail.gmail.com>
+From:   John Stultz <jstultz@google.com>
+Date:   Wed, 8 Feb 2023 16:54:03 -0800
+Message-ID: <CANDhNCo_=Q3pWc7h=ruGyHdRVGpsMKRY=C2AtZgLDwtGzRz8Kw@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] tools/testing/selftests/bpf: replace open-coded 16
+ with TASK_COMM_LEN
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Qais Yousef <qyousef@google.com>,
+        Daniele Di Proietto <ddiproietto@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,55 +92,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-CC Alexander Duyck
+On Wed, Feb 8, 2023 at 4:11 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Feb 8, 2023 at 2:01 PM John Stultz <jstultz@google.com> wrote:
+> >
+> > On Sat, Nov 20, 2021 at 11:27:38AM +0000, Yafang Shao wrote:
+> > > As the sched:sched_switch tracepoint args are derived from the kernel,
+> > > we'd better make it same with the kernel. So the macro TASK_COMM_LEN is
+> > > converted to type enum, then all the BPF programs can get it through BTF.
+> > >
+> > > The BPF program which wants to use TASK_COMM_LEN should include the header
+> > > vmlinux.h. Regarding the test_stacktrace_map and test_tracepoint, as the
+> > > type defined in linux/bpf.h are also defined in vmlinux.h, so we don't
+> > > need to include linux/bpf.h again.
+> > >
+> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > > Acked-by: David Hildenbrand <david@redhat.com>
+> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > > Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+> > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > Cc: Matthew Wilcox <willy@infradead.org>
+> > > Cc: David Hildenbrand <david@redhat.com>
+> > > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > > Cc: Kees Cook <keescook@chromium.org>
+> > > Cc: Petr Mladek <pmladek@suse.com>
+> > > ---
+> > >  include/linux/sched.h                                   | 9 +++++++--
+> > >  tools/testing/selftests/bpf/progs/test_stacktrace_map.c | 6 +++---
+> > >  tools/testing/selftests/bpf/progs/test_tracepoint.c     | 6 +++---
+> > >  3 files changed, 13 insertions(+), 8 deletions(-)
+> >
+> > Hey all,
+> >   I know this is a little late, but I recently got a report that
+> > this change was causiing older versions of perfetto to stop
+> > working.
+> >
+> > Apparently newer versions of perfetto has worked around this
+> > via the following changes:
+> >   https://android.googlesource.com/platform/external/perfetto/+/c717c93131b1b6e3705a11092a70ac47c78b731d%5E%21/
+> >   https://android.googlesource.com/platform/external/perfetto/+/160a504ad5c91a227e55f84d3e5d3fe22af7c2bb%5E%21/
+> >
+> > But for older versions of perfetto, reverting upstream commit
+> > 3087c61ed2c4 ("tools/testing/selftests/bpf: replace open-coded 16
+> > with TASK_COMM_LEN") is necessary to get it back to working.
+> >
+> > I haven't dug very far into the details, and obviously this doesn't
+> > break with the updated perfetto, but from a high level this does
+> > seem to be a breaking-userland regression.
+> >
+> > So I wanted to reach out to see if there was more context for this
+> > breakage? I don't want to raise a unnecessary stink if this was
+> > an unfortuante but forced situation.
+>
+> Let me understand what you're saying...
+>
+> The commit 3087c61ed2c4 did
+>
+> -/* Task command name length: */
+> -#define TASK_COMM_LEN                  16
+> +/*
+> + * Define the task command name length as enum, then it can be visible to
+> + * BPF programs.
+> + */
+> +enum {
+> +       TASK_COMM_LEN = 16,
+> +};
+>
+>
+> and that caused:
+>
+> cat /sys/kernel/debug/tracing/events/task/task_newtask/format
+>
+> to print
+> field:char comm[TASK_COMM_LEN];    offset:12;    size:16;    signed:0;
+> instead of
+> field:char comm[16];    offset:12;    size:16;    signed:0;
+>
+> so the ftrace parsing android tracing tool had to do:
+>
+> -  if (Match(type_and_name.c_str(), R"(char [a-zA-Z_]+\[[0-9]+\])")) {
+> +  if (Match(type_and_name.c_str(),
+> +            R"(char [a-zA-Z_][a-zA-Z_0-9]*\[[a-zA-Z_0-9]+\])")) {
+>
+> to workaround this change.
+> Right?
 
-Hello Alexander, thanks for reviewing the other two patches of this
-patchset last night. Would you mind reviewing the last one? :)
+I believe so.
 
-Thanks,
-Jason
+> And what are you proposing?
 
-On Sat, Feb 4, 2023 at 9:36 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
->
-> From: Jason Xing <kernelxing@tencent.com>
->
-> Include the second VLAN HLEN into account when computing the maximum
-> MTU size as other drivers do.
->
-> Fixes: fabf1bce103a ("ixgbe: Prevent unsupported configurations with XDP")
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe.h      | 2 ++
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 +--
->  2 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> index bc68b8f2176d..8736ca4b2628 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> @@ -73,6 +73,8 @@
->  #define IXGBE_RXBUFFER_4K    4096
->  #define IXGBE_MAX_RXBUFFER  16384  /* largest size for a single descriptor */
->
-> +#define IXGBE_PKT_HDR_PAD   (ETH_HLEN + ETH_FCS_LEN + (VLAN_HLEN * 2))
-> +
->  /* Attempt to maximize the headroom available for incoming frames.  We
->   * use a 2K buffer for receives and need 1536/1534 to store the data for
->   * the frame.  This leaves us with 512 bytes of room.  From that we need
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> index 2c1b6eb60436..149f7baf40fe 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> @@ -6801,8 +6801,7 @@ static int ixgbe_change_mtu(struct net_device *netdev, int new_mtu)
->         struct ixgbe_adapter *adapter = netdev_priv(netdev);
->
->         if (ixgbe_enabled_xdp_adapter(adapter)) {
-> -               int new_frame_size = new_mtu + ETH_HLEN + ETH_FCS_LEN +
-> -                                    VLAN_HLEN;
-> +               int new_frame_size = new_mtu + IXGBE_PKT_HDR_PAD;
->
->                 if (new_frame_size > ixgbe_max_xdp_frame_size(adapter)) {
->                         e_warn(probe, "Requested MTU size is not supported with XDP\n");
-> --
-> 2.37.3
->
+I'm not proposing anything. I was just wanting to understand more
+context around this, as it outwardly appears to be a user-breaking
+change, and that is usually not done, so I figured it was an issue
+worth raising.
+
+If the debug/tracing/*/format output is in the murky not-really-abi
+space, that's fine, but I wanted to know if this was understood as
+something that may require userland updates or if this was a
+unexpected side-effect.
+
+thanks
+-john
