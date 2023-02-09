@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E06C2690F65
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD23A690F64
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbjBIRmM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 12:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
+        id S229551AbjBIRmK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 12:42:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbjBIRmM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 12:42:12 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81A85ACFB
-        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 09:42:07 -0800 (PST)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 319H5sBa025691
-        for <bpf@vger.kernel.org>; Thu, 9 Feb 2023 09:42:07 -0800
+        with ESMTP id S229702AbjBIRmJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 12:42:09 -0500
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B9B5ACFE
+        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 09:42:06 -0800 (PST)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 319Gx4ok019676
+        for <bpf@vger.kernel.org>; Thu, 9 Feb 2023 09:42:05 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=M0WgfFeUqIjZhLU5NdtcL8coyaxGGEBrlNGnc7mSicY=;
- b=a2ykjPTIaEH32EMW+wKyDjysg9H15Yrn8fzOk7rDiMV2ZY9VEQ7a+ThWD6whIycRylKx
- fFfH4isIw6c6oy4yANOOh1Ki3pJuuiJlZH3wI6HE1y3VLOKY7auSCWpD8u4+RvxiXw/F
- xa7k3esburWborxSqrkwDrK13Il2NbSuOno= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nmqy2w1va-2
+ bh=Jddr6EGn5H4lyjgYwsiW8+HyYTBdVcfomb8DGCCOTKU=;
+ b=Km9wdOMRoG8o+s2z0RXsZlhfZa03FwGM/TQcp6cme2Re3QizReUlWeyrQzlnrnve4cwj
+ K6vEq0pDRQatZi/NKa2HkC0uKbXOiOw5IE9JrKQrXSVci674HqorhaWiGsbNbAP9Y1KC
+ DmcpxJXJ04kGDaj2q4rUsCYy6thCFMhy9XA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3nmsercq6b-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 09:42:07 -0800
-Received: from twshared9608.03.ash7.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 09:42:05 -0800
+Received: from twshared24004.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2507.17; Thu, 9 Feb 2023 09:42:04 -0800
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id 8EFBB16905FEA; Thu,  9 Feb 2023 09:41:49 -0800 (PST)
+        id 1F10216905FEF; Thu,  9 Feb 2023 09:41:50 -0800 (PST)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -43,9 +43,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Tejun Heo <tj@kernel.org>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v4 bpf-next 03/11] selftests/bpf: Update linked_list tests for non-owning ref semantics
-Date:   Thu, 9 Feb 2023 09:41:36 -0800
-Message-ID: <20230209174144.3280955-4-davemarchevsky@fb.com>
+Subject: [PATCH v4 bpf-next 04/11] bpf: Add basic bpf_rb_{root,node} support
+Date:   Thu, 9 Feb 2023 09:41:37 -0800
+Message-ID: <20230209174144.3280955-5-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230209174144.3280955-1-davemarchevsky@fb.com>
 References: <20230209174144.3280955-1-davemarchevsky@fb.com>
@@ -53,8 +53,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: kh0hVCw7FbDgYcpLKTzsvteF7iar8cVr
-X-Proofpoint-ORIG-GUID: kh0hVCw7FbDgYcpLKTzsvteF7iar8cVr
+X-Proofpoint-GUID: hKXxJwC6u9bjMA9RP7cOY7DedYIV4lhu
+X-Proofpoint-ORIG-GUID: hKXxJwC6u9bjMA9RP7cOY7DedYIV4lhu
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
  definitions=2023-02-09_13,2023-02-09_03,2023-02-09_01
@@ -68,210 +68,707 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Current linked_list semantics for release_on_unlock node refs are almost
-exactly the same as newly-introduced "non-owning reference" concept. The
-only difference: writes to a release_on_unlock node ref are not allowed,
-while writes to non-owning reference pointees are.
+This patch adds special BPF_RB_{ROOT,NODE} btf_field_types similar to
+BPF_LIST_{HEAD,NODE}, adds the necessary plumbing to detect the new
+types, and adds bpf_rb_root_free function for freeing bpf_rb_root in
+map_values.
 
-As a result the linked_list "write after push" failure tests are no
-longer scenarios that should fail.
+structs bpf_rb_root and bpf_rb_node are opaque types meant to
+obscure structs rb_root_cached rb_node, respectively.
 
-The test##_missing_lock_##op and test##_incorrect_lock_##op
-macro-generated failure tests need to have a valid node argument in
-order to have the same error output as before. Otherwise verification
-will fail early and the expected error output won't be seen.
+btf_struct_access will prevent BPF programs from touching these special
+fields automatically now that they're recognized.
 
-Some other tests have minor changes in error output, but fail for the
-same reason.
+btf_check_and_fixup_fields now groups list_head and rb_root together as
+"graph root" fields and {list,rb}_node as "graph node", and does same
+ownership cycle checking as before. Note that this function does _not_
+prevent ownership type mixups (e.g. rb_root owning list_node) - that's
+handled by btf_parse_graph_root.
+
+After this patch, a bpf program can have a struct bpf_rb_root in a
+map_value, but not add anything to nor do anything useful with it.
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- .../selftests/bpf/prog_tests/linked_list.c    |   6 +-
- .../testing/selftests/bpf/progs/linked_list.c |   2 +-
- .../selftests/bpf/progs/linked_list_fail.c    | 100 +++++++++++-------
- 3 files changed, 65 insertions(+), 43 deletions(-)
+ include/linux/bpf.h                           |  20 ++-
+ include/uapi/linux/bpf.h                      |  11 ++
+ kernel/bpf/btf.c                              | 162 ++++++++++++------
+ kernel/bpf/helpers.c                          |  40 +++++
+ kernel/bpf/syscall.c                          |  28 ++-
+ kernel/bpf/verifier.c                         |   5 +-
+ tools/include/uapi/linux/bpf.h                |  11 ++
+ .../selftests/bpf/prog_tests/linked_list.c    |  12 +-
+ 8 files changed, 216 insertions(+), 73 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools=
-/testing/selftests/bpf/prog_tests/linked_list.c
-index 9a7d4c47af63..0a0fdaec98bd 100644
---- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
-+++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-@@ -78,12 +78,10 @@ static struct {
- 	{ "direct_write_head", "direct access to bpf_list_head is disallowed" }=
-,
- 	{ "direct_read_node", "direct access to bpf_list_node is disallowed" },
- 	{ "direct_write_node", "direct access to bpf_list_node is disallowed" }=
-,
--	{ "write_after_push_front", "only read is supported" },
--	{ "write_after_push_back", "only read is supported" },
- 	{ "use_after_unlock_push_front", "invalid mem access 'scalar'" },
- 	{ "use_after_unlock_push_back", "invalid mem access 'scalar'" },
--	{ "double_push_front", "arg#1 expected pointer to allocated object" },
--	{ "double_push_back", "arg#1 expected pointer to allocated object" },
-+	{ "double_push_front", "allocated object must be referenced" },
-+	{ "double_push_back", "allocated object must be referenced" },
- 	{ "no_node_value_type", "bpf_list_node not found at offset=3D0" },
- 	{ "incorrect_value_type",
- 	  "operation on bpf_list_head expects arg#1 bpf_list_node at offset=3D0=
- in struct foo, "
-diff --git a/tools/testing/selftests/bpf/progs/linked_list.c b/tools/test=
-ing/selftests/bpf/progs/linked_list.c
-index 4ad88da5cda2..4fa4a9b01bde 100644
---- a/tools/testing/selftests/bpf/progs/linked_list.c
-+++ b/tools/testing/selftests/bpf/progs/linked_list.c
-@@ -260,7 +260,7 @@ int test_list_push_pop_multiple(struct bpf_spin_lock =
-*lock, struct bpf_list_head
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 9a79ebe1774c..0074bc6e42a5 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -180,7 +180,10 @@ enum btf_field_type {
+ 	BPF_KPTR       =3D BPF_KPTR_UNREF | BPF_KPTR_REF,
+ 	BPF_LIST_HEAD  =3D (1 << 4),
+ 	BPF_LIST_NODE  =3D (1 << 5),
+-	BPF_GRAPH_NODE_OR_ROOT =3D BPF_LIST_NODE | BPF_LIST_HEAD,
++	BPF_RB_ROOT    =3D (1 << 6),
++	BPF_RB_NODE    =3D (1 << 7),
++	BPF_GRAPH_NODE_OR_ROOT =3D BPF_LIST_NODE | BPF_LIST_HEAD |
++				 BPF_RB_NODE | BPF_RB_ROOT,
+ };
+=20
+ struct btf_field_kptr {
+@@ -284,6 +287,10 @@ static inline const char *btf_field_type_name(enum b=
+tf_field_type type)
+ 		return "bpf_list_head";
+ 	case BPF_LIST_NODE:
+ 		return "bpf_list_node";
++	case BPF_RB_ROOT:
++		return "bpf_rb_root";
++	case BPF_RB_NODE:
++		return "bpf_rb_node";
+ 	default:
+ 		WARN_ON_ONCE(1);
+ 		return "unknown";
+@@ -304,6 +311,10 @@ static inline u32 btf_field_type_size(enum btf_field=
+_type type)
+ 		return sizeof(struct bpf_list_head);
+ 	case BPF_LIST_NODE:
+ 		return sizeof(struct bpf_list_node);
++	case BPF_RB_ROOT:
++		return sizeof(struct bpf_rb_root);
++	case BPF_RB_NODE:
++		return sizeof(struct bpf_rb_node);
+ 	default:
+ 		WARN_ON_ONCE(1);
+ 		return 0;
+@@ -324,6 +335,10 @@ static inline u32 btf_field_type_align(enum btf_fiel=
+d_type type)
+ 		return __alignof__(struct bpf_list_head);
+ 	case BPF_LIST_NODE:
+ 		return __alignof__(struct bpf_list_node);
++	case BPF_RB_ROOT:
++		return __alignof__(struct bpf_rb_root);
++	case BPF_RB_NODE:
++		return __alignof__(struct bpf_rb_node);
+ 	default:
+ 		WARN_ON_ONCE(1);
+ 		return 0;
+@@ -434,6 +449,9 @@ void copy_map_value_locked(struct bpf_map *map, void =
+*dst, void *src,
+ void bpf_timer_cancel_and_free(void *timer);
+ void bpf_list_head_free(const struct btf_field *field, void *list_head,
+ 			struct bpf_spin_lock *spin_lock);
++void bpf_rb_root_free(const struct btf_field *field, void *rb_root,
++		      struct bpf_spin_lock *spin_lock);
++
+=20
+ int bpf_obj_name_cpy(char *dst, const char *src, unsigned int size);
+=20
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 17afd2b35ee5..1503f61336b6 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6917,6 +6917,17 @@ struct bpf_list_node {
+ 	__u64 :64;
+ } __attribute__((aligned(8)));
+=20
++struct bpf_rb_root {
++	__u64 :64;
++	__u64 :64;
++} __attribute__((aligned(8)));
++
++struct bpf_rb_node {
++	__u64 :64;
++	__u64 :64;
++	__u64 :64;
++} __attribute__((aligned(8)));
++
+ struct bpf_sysctl {
+ 	__u32	write;		/* Sysctl is being read (=3D 0) or written (=3D 1).
+ 				 * Allows 1,2,4-byte read, but no write.
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 1622a3b15d6f..8a09da37045e 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3324,12 +3324,14 @@ static const char *btf_find_decl_tag_value(const =
+struct btf *btf,
+ 	return NULL;
+ }
+=20
+-static int btf_find_list_head(const struct btf *btf, const struct btf_ty=
+pe *pt,
+-			      const struct btf_type *t, int comp_idx,
+-			      u32 off, int sz, struct btf_field_info *info)
++static int
++btf_find_graph_root(const struct btf *btf, const struct btf_type *pt,
++		    const struct btf_type *t, int comp_idx, u32 off,
++		    int sz, struct btf_field_info *info,
++		    enum btf_field_type head_type)
  {
- 	int ret;
++	const char *node_field_name;
+ 	const char *value_type;
+-	const char *list_node;
+ 	s32 id;
 =20
--	ret =3D list_push_pop_multiple(lock ,head, false);
-+	ret =3D list_push_pop_multiple(lock, head, false);
- 	if (ret)
- 		return ret;
- 	return list_push_pop_multiple(lock, head, true);
-diff --git a/tools/testing/selftests/bpf/progs/linked_list_fail.c b/tools=
-/testing/selftests/bpf/progs/linked_list_fail.c
-index 1d9017240e19..69cdc07cba13 100644
---- a/tools/testing/selftests/bpf/progs/linked_list_fail.c
-+++ b/tools/testing/selftests/bpf/progs/linked_list_fail.c
-@@ -54,28 +54,44 @@
- 		return 0;                                   \
+ 	if (!__btf_type_is_struct(t))
+@@ -3339,26 +3341,32 @@ static int btf_find_list_head(const struct btf *b=
+tf, const struct btf_type *pt,
+ 	value_type =3D btf_find_decl_tag_value(btf, pt, comp_idx, "contains:");
+ 	if (!value_type)
+ 		return -EINVAL;
+-	list_node =3D strstr(value_type, ":");
+-	if (!list_node)
++	node_field_name =3D strstr(value_type, ":");
++	if (!node_field_name)
+ 		return -EINVAL;
+-	value_type =3D kstrndup(value_type, list_node - value_type, GFP_KERNEL =
+| __GFP_NOWARN);
++	value_type =3D kstrndup(value_type, node_field_name - value_type, GFP_K=
+ERNEL | __GFP_NOWARN);
+ 	if (!value_type)
+ 		return -ENOMEM;
+ 	id =3D btf_find_by_name_kind(btf, value_type, BTF_KIND_STRUCT);
+ 	kfree(value_type);
+ 	if (id < 0)
+ 		return id;
+-	list_node++;
+-	if (str_is_empty(list_node))
++	node_field_name++;
++	if (str_is_empty(node_field_name))
+ 		return -EINVAL;
+-	info->type =3D BPF_LIST_HEAD;
++	info->type =3D head_type;
+ 	info->off =3D off;
+ 	info->graph_root.value_btf_id =3D id;
+-	info->graph_root.node_name =3D list_node;
++	info->graph_root.node_name =3D node_field_name;
+ 	return BTF_FIELD_FOUND;
+ }
+=20
++#define field_mask_test_name(field_type, field_type_str) \
++	if (field_mask & field_type && !strcmp(name, field_type_str)) { \
++		type =3D field_type;					\
++		goto end;						\
++	}
++
+ static int btf_get_field_type(const char *name, u32 field_mask, u32 *see=
+n_mask,
+ 			      int *align, int *sz)
+ {
+@@ -3382,18 +3390,11 @@ static int btf_get_field_type(const char *name, u=
+32 field_mask, u32 *seen_mask,
+ 			goto end;
+ 		}
  	}
+-	if (field_mask & BPF_LIST_HEAD) {
+-		if (!strcmp(name, "bpf_list_head")) {
+-			type =3D BPF_LIST_HEAD;
+-			goto end;
+-		}
+-	}
+-	if (field_mask & BPF_LIST_NODE) {
+-		if (!strcmp(name, "bpf_list_node")) {
+-			type =3D BPF_LIST_NODE;
+-			goto end;
+-		}
+-	}
++	field_mask_test_name(BPF_LIST_HEAD, "bpf_list_head");
++	field_mask_test_name(BPF_LIST_NODE, "bpf_list_node");
++	field_mask_test_name(BPF_RB_ROOT,   "bpf_rb_root");
++	field_mask_test_name(BPF_RB_NODE,   "bpf_rb_node");
++
+ 	/* Only return BPF_KPTR when all other types with matchable names fail =
+*/
+ 	if (field_mask & BPF_KPTR) {
+ 		type =3D BPF_KPTR_REF;
+@@ -3406,6 +3407,8 @@ static int btf_get_field_type(const char *name, u32=
+ field_mask, u32 *seen_mask,
+ 	return type;
+ }
 =20
--CHECK(kptr, push_front, &f->head);
--CHECK(kptr, push_back, &f->head);
- CHECK(kptr, pop_front, &f->head);
- CHECK(kptr, pop_back, &f->head);
++#undef field_mask_test_name
++
+ static int btf_find_struct_field(const struct btf *btf,
+ 				 const struct btf_type *t, u32 field_mask,
+ 				 struct btf_field_info *info, int info_cnt)
+@@ -3438,6 +3441,7 @@ static int btf_find_struct_field(const struct btf *=
+btf,
+ 		case BPF_SPIN_LOCK:
+ 		case BPF_TIMER:
+ 		case BPF_LIST_NODE:
++		case BPF_RB_NODE:
+ 			ret =3D btf_find_struct(btf, member_type, off, sz, field_type,
+ 					      idx < info_cnt ? &info[idx] : &tmp);
+ 			if (ret < 0)
+@@ -3451,8 +3455,11 @@ static int btf_find_struct_field(const struct btf =
+*btf,
+ 				return ret;
+ 			break;
+ 		case BPF_LIST_HEAD:
+-			ret =3D btf_find_list_head(btf, t, member_type, i, off, sz,
+-						 idx < info_cnt ? &info[idx] : &tmp);
++		case BPF_RB_ROOT:
++			ret =3D btf_find_graph_root(btf, t, member_type,
++						  i, off, sz,
++						  idx < info_cnt ? &info[idx] : &tmp,
++						  field_type);
+ 			if (ret < 0)
+ 				return ret;
+ 			break;
+@@ -3499,6 +3506,7 @@ static int btf_find_datasec_var(const struct btf *b=
+tf, const struct btf_type *t,
+ 		case BPF_SPIN_LOCK:
+ 		case BPF_TIMER:
+ 		case BPF_LIST_NODE:
++		case BPF_RB_NODE:
+ 			ret =3D btf_find_struct(btf, var_type, off, sz, field_type,
+ 					      idx < info_cnt ? &info[idx] : &tmp);
+ 			if (ret < 0)
+@@ -3512,8 +3520,11 @@ static int btf_find_datasec_var(const struct btf *=
+btf, const struct btf_type *t,
+ 				return ret;
+ 			break;
+ 		case BPF_LIST_HEAD:
+-			ret =3D btf_find_list_head(btf, var, var_type, -1, off, sz,
+-						 idx < info_cnt ? &info[idx] : &tmp);
++		case BPF_RB_ROOT:
++			ret =3D btf_find_graph_root(btf, var, var_type,
++						  -1, off, sz,
++						  idx < info_cnt ? &info[idx] : &tmp,
++						  field_type);
+ 			if (ret < 0)
+ 				return ret;
+ 			break;
+@@ -3615,8 +3626,11 @@ static int btf_parse_kptr(const struct btf *btf, s=
+truct btf_field *field,
+ 	return ret;
+ }
 =20
--CHECK(global, push_front, &ghead);
--CHECK(global, push_back, &ghead);
- CHECK(global, pop_front, &ghead);
- CHECK(global, pop_back, &ghead);
+-static int btf_parse_list_head(const struct btf *btf, struct btf_field *=
+field,
+-			       struct btf_field_info *info)
++static int btf_parse_graph_root(const struct btf *btf,
++				struct btf_field *field,
++				struct btf_field_info *info,
++				const char *node_type_name,
++				size_t node_type_align)
+ {
+ 	const struct btf_type *t, *n =3D NULL;
+ 	const struct btf_member *member;
+@@ -3638,13 +3652,13 @@ static int btf_parse_list_head(const struct btf *=
+btf, struct btf_field *field,
+ 		n =3D btf_type_by_id(btf, member->type);
+ 		if (!__btf_type_is_struct(n))
+ 			return -EINVAL;
+-		if (strcmp("bpf_list_node", __btf_name_by_offset(btf, n->name_off)))
++		if (strcmp(node_type_name, __btf_name_by_offset(btf, n->name_off)))
+ 			return -EINVAL;
+ 		offset =3D __btf_member_bit_offset(n, member);
+ 		if (offset % 8)
+ 			return -EINVAL;
+ 		offset /=3D 8;
+-		if (offset % __alignof__(struct bpf_list_node))
++		if (offset % node_type_align)
+ 			return -EINVAL;
 =20
--CHECK(map, push_front, &v->head);
--CHECK(map, push_back, &v->head);
- CHECK(map, pop_front, &v->head);
- CHECK(map, pop_back, &v->head);
-=20
--CHECK(inner_map, push_front, &iv->head);
--CHECK(inner_map, push_back, &iv->head);
- CHECK(inner_map, pop_front, &iv->head);
- CHECK(inner_map, pop_back, &iv->head);
-=20
- #undef CHECK
-=20
-+#define CHECK(test, op, hexpr, nexpr)					\
-+	SEC("?tc")							\
-+	int test##_missing_lock_##op(void *ctx)				\
-+	{								\
-+		INIT;							\
-+		void (*p)(void *, void *) =3D (void *)&bpf_list_##op;	\
-+		p(hexpr, nexpr);					\
-+		return 0;						\
-+	}
-+
-+CHECK(kptr, push_front, &f->head, b);
-+CHECK(kptr, push_back, &f->head, b);
-+
-+CHECK(global, push_front, &ghead, f);
-+CHECK(global, push_back, &ghead, f);
-+
-+CHECK(map, push_front, &v->head, f);
-+CHECK(map, push_back, &v->head, f);
-+
-+CHECK(inner_map, push_front, &iv->head, f);
-+CHECK(inner_map, push_back, &iv->head, f);
-+
-+#undef CHECK
-+
- #define CHECK(test, op, lexpr, hexpr)                       \
- 	SEC("?tc")                                          \
- 	int test##_incorrect_lock_##op(void *ctx)           \
-@@ -108,11 +124,47 @@ CHECK(inner_map, pop_back, &iv->head);
- 	CHECK(inner_map_global, op, &iv->lock, &ghead);        \
- 	CHECK(inner_map_map, op, &iv->lock, &v->head);
-=20
--CHECK_OP(push_front);
--CHECK_OP(push_back);
- CHECK_OP(pop_front);
- CHECK_OP(pop_back);
-=20
-+#undef CHECK
-+#undef CHECK_OP
-+
-+#define CHECK(test, op, lexpr, hexpr, nexpr)				\
-+	SEC("?tc")							\
-+	int test##_incorrect_lock_##op(void *ctx)			\
-+	{								\
-+		INIT;							\
-+		void (*p)(void *, void*) =3D (void *)&bpf_list_##op;	\
-+		bpf_spin_lock(lexpr);					\
-+		p(hexpr, nexpr);					\
-+		return 0;						\
-+	}
-+
-+#define CHECK_OP(op)							\
-+	CHECK(kptr_kptr, op, &f1->lock, &f2->head, b);			\
-+	CHECK(kptr_global, op, &f1->lock, &ghead, f);			\
-+	CHECK(kptr_map, op, &f1->lock, &v->head, f);			\
-+	CHECK(kptr_inner_map, op, &f1->lock, &iv->head, f);		\
-+									\
-+	CHECK(global_global, op, &glock2, &ghead, f);			\
-+	CHECK(global_kptr, op, &glock, &f1->head, b);			\
-+	CHECK(global_map, op, &glock, &v->head, f);			\
-+	CHECK(global_inner_map, op, &glock, &iv->head, f);		\
-+									\
-+	CHECK(map_map, op, &v->lock, &v2->head, f);			\
-+	CHECK(map_kptr, op, &v->lock, &f2->head, b);			\
-+	CHECK(map_global, op, &v->lock, &ghead, f);			\
-+	CHECK(map_inner_map, op, &v->lock, &iv->head, f);		\
-+									\
-+	CHECK(inner_map_inner_map, op, &iv->lock, &iv2->head, f);	\
-+	CHECK(inner_map_kptr, op, &iv->lock, &f2->head, b);		\
-+	CHECK(inner_map_global, op, &iv->lock, &ghead, f);		\
-+	CHECK(inner_map_map, op, &iv->lock, &v->head, f);
-+
-+CHECK_OP(push_front);
-+CHECK_OP(push_back);
-+
- #undef CHECK
- #undef CHECK_OP
- #undef INIT
-@@ -303,34 +355,6 @@ int direct_write_node(void *ctx)
+ 		field->graph_root.btf =3D (struct btf *)btf;
+@@ -3656,6 +3670,20 @@ static int btf_parse_list_head(const struct btf *b=
+tf, struct btf_field *field,
  	return 0;
  }
 =20
--static __always_inline
--int write_after_op(void (*push_op)(void *head, void *node))
--{
--	struct foo *f;
--
--	f =3D bpf_obj_new(typeof(*f));
--	if (!f)
--		return 0;
--	bpf_spin_lock(&glock);
--	push_op(&ghead, &f->node);
--	f->data =3D 42;
--	bpf_spin_unlock(&glock);
--
--	return 0;
--}
--
--SEC("?tc")
--int write_after_push_front(void *ctx)
--{
--	return write_after_op((void *)bpf_list_push_front);
--}
--
--SEC("?tc")
--int write_after_push_back(void *ctx)
--{
--	return write_after_op((void *)bpf_list_push_back);
--}
--
- static __always_inline
- int use_after_unlock(void (*op)(void *head, void *node))
++static int btf_parse_list_head(const struct btf *btf, struct btf_field *=
+field,
++			       struct btf_field_info *info)
++{
++	return btf_parse_graph_root(btf, field, info, "bpf_list_node",
++					    __alignof__(struct bpf_list_node));
++}
++
++static int btf_parse_rb_root(const struct btf *btf, struct btf_field *fi=
+eld,
++			     struct btf_field_info *info)
++{
++	return btf_parse_graph_root(btf, field, info, "bpf_rb_node",
++					    __alignof__(struct bpf_rb_node));
++}
++
+ struct btf_record *btf_parse_fields(const struct btf *btf, const struct =
+btf_type *t,
+ 				    u32 field_mask, u32 value_size)
  {
+@@ -3718,7 +3746,13 @@ struct btf_record *btf_parse_fields(const struct b=
+tf *btf, const struct btf_type
+ 			if (ret < 0)
+ 				goto end;
+ 			break;
++		case BPF_RB_ROOT:
++			ret =3D btf_parse_rb_root(btf, &rec->fields[i], &info_arr[i]);
++			if (ret < 0)
++				goto end;
++			break;
+ 		case BPF_LIST_NODE:
++		case BPF_RB_NODE:
+ 			break;
+ 		default:
+ 			ret =3D -EFAULT;
+@@ -3727,8 +3761,9 @@ struct btf_record *btf_parse_fields(const struct bt=
+f *btf, const struct btf_type
+ 		rec->cnt++;
+ 	}
+=20
+-	/* bpf_list_head requires bpf_spin_lock */
+-	if (btf_record_has_field(rec, BPF_LIST_HEAD) && rec->spin_lock_off < 0)=
+ {
++	/* bpf_{list_head, rb_node} require bpf_spin_lock */
++	if ((btf_record_has_field(rec, BPF_LIST_HEAD) ||
++	     btf_record_has_field(rec, BPF_RB_ROOT)) && rec->spin_lock_off < 0)=
+ {
+ 		ret =3D -EINVAL;
+ 		goto end;
+ 	}
+@@ -3739,22 +3774,28 @@ struct btf_record *btf_parse_fields(const struct =
+btf *btf, const struct btf_type
+ 	return ERR_PTR(ret);
+ }
+=20
++#define GRAPH_ROOT_MASK (BPF_LIST_HEAD | BPF_RB_ROOT)
++#define GRAPH_NODE_MASK (BPF_LIST_NODE | BPF_RB_NODE)
++
+ int btf_check_and_fixup_fields(const struct btf *btf, struct btf_record =
+*rec)
+ {
+ 	int i;
+=20
+-	/* There are two owning types, kptr_ref and bpf_list_head. The former
+-	 * only supports storing kernel types, which can never store references
+-	 * to program allocated local types, atleast not yet. Hence we only nee=
+d
+-	 * to ensure that bpf_list_head ownership does not form cycles.
++	/* There are three types that signify ownership of some other type:
++	 *  kptr_ref, bpf_list_head, bpf_rb_root.
++	 * kptr_ref only supports storing kernel types, which can't store
++	 * references to program allocated local types.
++	 *
++	 * Hence we only need to ensure that bpf_{list_head,rb_root} ownership
++	 * does not form cycles.
+ 	 */
+-	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & BPF_LIST_HEAD))
++	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & GRAPH_ROOT_MASK))
+ 		return 0;
+ 	for (i =3D 0; i < rec->cnt; i++) {
+ 		struct btf_struct_meta *meta;
+ 		u32 btf_id;
+=20
+-		if (!(rec->fields[i].type & BPF_LIST_HEAD))
++		if (!(rec->fields[i].type & GRAPH_ROOT_MASK))
+ 			continue;
+ 		btf_id =3D rec->fields[i].graph_root.value_btf_id;
+ 		meta =3D btf_find_struct_meta(btf, btf_id);
+@@ -3762,39 +3803,47 @@ int btf_check_and_fixup_fields(const struct btf *=
+btf, struct btf_record *rec)
+ 			return -EFAULT;
+ 		rec->fields[i].graph_root.value_rec =3D meta->record;
+=20
+-		if (!(rec->field_mask & BPF_LIST_NODE))
++		/* We need to set value_rec for all root types, but no need
++		 * to check ownership cycle for a type unless it's also a
++		 * node type.
++		 */
++		if (!(rec->field_mask & GRAPH_NODE_MASK))
+ 			continue;
+=20
+ 		/* We need to ensure ownership acyclicity among all types. The
+ 		 * proper way to do it would be to topologically sort all BTF
+ 		 * IDs based on the ownership edges, since there can be multiple
+-		 * bpf_list_head in a type. Instead, we use the following
+-		 * reasoning:
++		 * bpf_{list_head,rb_node} in a type. Instead, we use the
++		 * following resaoning:
+ 		 *
+ 		 * - A type can only be owned by another type in user BTF if it
+-		 *   has a bpf_list_node.
++		 *   has a bpf_{list,rb}_node. Let's call these node types.
+ 		 * - A type can only _own_ another type in user BTF if it has a
+-		 *   bpf_list_head.
++		 *   bpf_{list_head,rb_root}. Let's call these root types.
+ 		 *
+-		 * We ensure that if a type has both bpf_list_head and
+-		 * bpf_list_node, its element types cannot be owning types.
++		 * We ensure that if a type is both a root and node, its
++		 * element types cannot be root types.
+ 		 *
+ 		 * To ensure acyclicity:
+ 		 *
+-		 * When A only has bpf_list_head, ownership chain can be:
++		 * When A is an root type but not a node, its ownership
++		 * chain can be:
+ 		 *	A -> B -> C
+ 		 * Where:
+-		 * - B has both bpf_list_head and bpf_list_node.
+-		 * - C only has bpf_list_node.
++		 * - A is an root, e.g. has bpf_rb_root.
++		 * - B is both a root and node, e.g. has bpf_rb_node and
++		 *   bpf_list_head.
++		 * - C is only an root, e.g. has bpf_list_node
+ 		 *
+-		 * When A has both bpf_list_head and bpf_list_node, some other
+-		 * type already owns it in the BTF domain, hence it can not own
+-		 * another owning type through any of the bpf_list_head edges.
++		 * When A is both a root and node, some other type already
++		 * owns it in the BTF domain, hence it can not own
++		 * another root type through any of the ownership edges.
+ 		 *	A -> B
+ 		 * Where:
+-		 * - B only has bpf_list_node.
++		 * - A is both an root and node.
++		 * - B is only an node.
+ 		 */
+-		if (meta->record->field_mask & BPF_LIST_HEAD)
++		if (meta->record->field_mask & GRAPH_ROOT_MASK)
+ 			return -ELOOP;
+ 	}
+ 	return 0;
+@@ -5256,6 +5305,8 @@ static const char *alloc_obj_fields[] =3D {
+ 	"bpf_spin_lock",
+ 	"bpf_list_head",
+ 	"bpf_list_node",
++	"bpf_rb_root",
++	"bpf_rb_node",
+ };
+=20
+ static struct btf_struct_metas *
+@@ -5329,7 +5380,8 @@ btf_parse_struct_metas(struct bpf_verifier_log *log=
+, struct btf *btf)
+=20
+ 		type =3D &tab->types[tab->cnt];
+ 		type->btf_id =3D i;
+-		record =3D btf_parse_fields(btf, t, BPF_SPIN_LOCK | BPF_LIST_HEAD | BP=
+F_LIST_NODE, t->size);
++		record =3D btf_parse_fields(btf, t, BPF_SPIN_LOCK | BPF_LIST_HEAD | BP=
+F_LIST_NODE |
++						  BPF_RB_ROOT | BPF_RB_NODE, t->size);
+ 		/* The record cannot be unset, treat it as an error if so */
+ 		if (IS_ERR_OR_NULL(record)) {
+ 			ret =3D PTR_ERR_OR_ZERO(record) ?: -EFAULT;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 2dae44581922..192184b5156e 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1772,6 +1772,46 @@ void bpf_list_head_free(const struct btf_field *fi=
+eld, void *list_head,
+ 	}
+ }
+=20
++/* Like rbtree_postorder_for_each_entry_safe, but 'pos' and 'n' are
++ * 'rb_node *', so field name of rb_node within containing struct is not
++ * needed.
++ *
++ * Since bpf_rb_tree's node type has a corresponding struct btf_field wi=
+th
++ * graph_root.node_offset, it's not necessary to know field name
++ * or type of node struct
++ */
++#define bpf_rbtree_postorder_for_each_entry_safe(pos, n, root) \
++	for (pos =3D rb_first_postorder(root); \
++	    pos && ({ n =3D rb_next_postorder(pos); 1; }); \
++	    pos =3D n)
++
++void bpf_rb_root_free(const struct btf_field *field, void *rb_root,
++		      struct bpf_spin_lock *spin_lock)
++{
++	struct rb_root_cached orig_root, *root =3D rb_root;
++	struct rb_node *pos, *n;
++	void *obj;
++
++	BUILD_BUG_ON(sizeof(struct rb_root_cached) > sizeof(struct bpf_rb_root)=
+);
++	BUILD_BUG_ON(__alignof__(struct rb_root_cached) > __alignof__(struct bp=
+f_rb_root));
++
++	__bpf_spin_lock_irqsave(spin_lock);
++	orig_root =3D *root;
++	*root =3D RB_ROOT_CACHED;
++	__bpf_spin_unlock_irqrestore(spin_lock);
++
++	bpf_rbtree_postorder_for_each_entry_safe(pos, n, &orig_root.rb_root) {
++		obj =3D pos;
++		obj -=3D field->graph_root.node_offset;
++
++		bpf_obj_free_fields(field->graph_root.value_rec, obj);
++
++		migrate_disable();
++		bpf_mem_free(&bpf_global_ma, obj);
++		migrate_enable();
++	}
++}
++
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in vmlinux BTF");
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index bcc97613de76..0806cb9f8a1c 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -521,9 +521,6 @@ void btf_record_free(struct btf_record *rec)
+ 		return;
+ 	for (i =3D 0; i < rec->cnt; i++) {
+ 		switch (rec->fields[i].type) {
+-		case BPF_SPIN_LOCK:
+-		case BPF_TIMER:
+-			break;
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 			if (rec->fields[i].kptr.module)
+@@ -532,7 +529,11 @@ void btf_record_free(struct btf_record *rec)
+ 			break;
+ 		case BPF_LIST_HEAD:
+ 		case BPF_LIST_NODE:
+-			/* Nothing to release for bpf_list_head */
++		case BPF_RB_ROOT:
++		case BPF_RB_NODE:
++		case BPF_SPIN_LOCK:
++		case BPF_TIMER:
++			/* Nothing to release */
+ 			break;
+ 		default:
+ 			WARN_ON_ONCE(1);
+@@ -565,9 +566,6 @@ struct btf_record *btf_record_dup(const struct btf_re=
+cord *rec)
+ 	new_rec->cnt =3D 0;
+ 	for (i =3D 0; i < rec->cnt; i++) {
+ 		switch (fields[i].type) {
+-		case BPF_SPIN_LOCK:
+-		case BPF_TIMER:
+-			break;
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 			btf_get(fields[i].kptr.btf);
+@@ -578,7 +576,11 @@ struct btf_record *btf_record_dup(const struct btf_r=
+ecord *rec)
+ 			break;
+ 		case BPF_LIST_HEAD:
+ 		case BPF_LIST_NODE:
+-			/* Nothing to acquire for bpf_list_head */
++		case BPF_RB_ROOT:
++		case BPF_RB_NODE:
++		case BPF_SPIN_LOCK:
++		case BPF_TIMER:
++			/* Nothing to acquire */
+ 			break;
+ 		default:
+ 			ret =3D -EFAULT;
+@@ -658,7 +660,13 @@ void bpf_obj_free_fields(const struct btf_record *re=
+c, void *obj)
+ 				continue;
+ 			bpf_list_head_free(field, field_ptr, obj + rec->spin_lock_off);
+ 			break;
++		case BPF_RB_ROOT:
++			if (WARN_ON_ONCE(rec->spin_lock_off < 0))
++				continue;
++			bpf_rb_root_free(field, field_ptr, obj + rec->spin_lock_off);
++			break;
+ 		case BPF_LIST_NODE:
++		case BPF_RB_NODE:
+ 			break;
+ 		default:
+ 			WARN_ON_ONCE(1);
+@@ -994,7 +1002,8 @@ static int map_check_btf(struct bpf_map *map, const =
+struct btf *btf,
+ 		return -EINVAL;
+=20
+ 	map->record =3D btf_parse_fields(btf, value_type,
+-				       BPF_SPIN_LOCK | BPF_TIMER | BPF_KPTR | BPF_LIST_HEAD,
++				       BPF_SPIN_LOCK | BPF_TIMER | BPF_KPTR | BPF_LIST_HEAD |
++				       BPF_RB_ROOT,
+ 				       map->value_size);
+ 	if (!IS_ERR_OR_NULL(map->record)) {
+ 		int i;
+@@ -1042,6 +1051,7 @@ static int map_check_btf(struct bpf_map *map, const=
+ struct btf *btf,
+ 				}
+ 				break;
+ 			case BPF_LIST_HEAD:
++			case BPF_RB_ROOT:
+ 				if (map->map_type !=3D BPF_MAP_TYPE_HASH &&
+ 				    map->map_type !=3D BPF_MAP_TYPE_LRU_HASH &&
+ 				    map->map_type !=3D BPF_MAP_TYPE_ARRAY) {
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 89c09752421c..ec4d7e19ed41 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -14685,9 +14685,10 @@ static int check_map_prog_compatibility(struct b=
+pf_verifier_env *env,
+ {
+ 	enum bpf_prog_type prog_type =3D resolve_prog_type(prog);
+=20
+-	if (btf_record_has_field(map->record, BPF_LIST_HEAD)) {
++	if (btf_record_has_field(map->record, BPF_LIST_HEAD) ||
++	    btf_record_has_field(map->record, BPF_RB_ROOT)) {
+ 		if (is_tracing_prog_type(prog_type)) {
+-			verbose(env, "tracing progs cannot use bpf_list_head yet\n");
++			verbose(env, "tracing progs cannot use bpf_{list_head,rb_root} yet\n"=
+);
+ 			return -EINVAL;
+ 		}
+ 	}
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index 17afd2b35ee5..1503f61336b6 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -6917,6 +6917,17 @@ struct bpf_list_node {
+ 	__u64 :64;
+ } __attribute__((aligned(8)));
+=20
++struct bpf_rb_root {
++	__u64 :64;
++	__u64 :64;
++} __attribute__((aligned(8)));
++
++struct bpf_rb_node {
++	__u64 :64;
++	__u64 :64;
++	__u64 :64;
++} __attribute__((aligned(8)));
++
+ struct bpf_sysctl {
+ 	__u32	write;		/* Sysctl is being read (=3D 0) or written (=3D 1).
+ 				 * Allows 1,2,4-byte read, but no write.
+diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools=
+/testing/selftests/bpf/prog_tests/linked_list.c
+index 0a0fdaec98bd..7fde4a95dd49 100644
+--- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
++++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+@@ -58,12 +58,12 @@ static struct {
+ 	TEST(inner_map, pop_front)
+ 	TEST(inner_map, pop_back)
+ #undef TEST
+-	{ "map_compat_kprobe", "tracing progs cannot use bpf_list_head yet" },
+-	{ "map_compat_kretprobe", "tracing progs cannot use bpf_list_head yet" =
+},
+-	{ "map_compat_tp", "tracing progs cannot use bpf_list_head yet" },
+-	{ "map_compat_perf", "tracing progs cannot use bpf_list_head yet" },
+-	{ "map_compat_raw_tp", "tracing progs cannot use bpf_list_head yet" },
+-	{ "map_compat_raw_tp_w", "tracing progs cannot use bpf_list_head yet" }=
+,
++	{ "map_compat_kprobe", "tracing progs cannot use bpf_{list_head,rb_root=
+} yet" },
++	{ "map_compat_kretprobe", "tracing progs cannot use bpf_{list_head,rb_r=
+oot} yet" },
++	{ "map_compat_tp", "tracing progs cannot use bpf_{list_head,rb_root} ye=
+t" },
++	{ "map_compat_perf", "tracing progs cannot use bpf_{list_head,rb_root} =
+yet" },
++	{ "map_compat_raw_tp", "tracing progs cannot use bpf_{list_head,rb_root=
+} yet" },
++	{ "map_compat_raw_tp_w", "tracing progs cannot use bpf_{list_head,rb_ro=
+ot} yet" },
+ 	{ "obj_type_id_oor", "local type ID argument must be in range [0, U32_M=
+AX]" },
+ 	{ "obj_new_no_composite", "bpf_obj_new type ID argument must be of a st=
+ruct" },
+ 	{ "obj_new_no_struct", "bpf_obj_new type ID argument must be of a struc=
+t" },
 --=20
 2.30.2
 
