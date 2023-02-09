@@ -2,111 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D14B690EAE
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 17:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE54690ED9
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjBIQ4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 11:56:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        id S229958AbjBIRHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 12:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjBIQ4N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 11:56:13 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1909D658C6
-        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 08:56:09 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id d2so2644451pjd.5
-        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 08:56:09 -0800 (PST)
+        with ESMTP id S229698AbjBIRHr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 12:07:47 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1775757772;
+        Thu,  9 Feb 2023 09:07:45 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id e10-20020a17090a630a00b0022bedd66e6dso6944711pjj.1;
+        Thu, 09 Feb 2023 09:07:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=vSUYbG4jVWl2xCjF0Serf/tGjpIWSuQjwXGgOB7JPGo=;
-        b=TV5RB2VKmFDl+6XbBT8eTObx5P3NMEvQomv4ix5vmhKRTnzrbZTySY/yAY2CTDm+sR
-         rwFn5jkRlY5NRbtR1LFayd19uUKCTYc7eWimgxPYt7dJZBJQOgeL9jMs/Vm43wXHtfqi
-         R4F3BBvW+x6raRBgTo1E9MF0Myx4tb575us78=
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xUosuIF6sT5guNvUVmM1J2U0v0EW8fMgv/3In3ljd+Q=;
+        b=UQnllC1ZZ4jQ17yePRdiNfhz3zNiiVIDcQMgpV9o6hCkmYQZ7hMu4BMI/bRlw2hJBG
+         naBcn8KX0IP2FEdzrGDktnanCLjjseYna0D5yipRJ8eVLjUR+BSbtHX/PE900AP74QSB
+         UIMle0AZ/WH4FRjynkvks0qEAl2yyl+ILBP7M4/AUDx6ZS4WQQi5st3iIGWVN0tFA6OG
+         +D3IP3sIiunuLeO3dktp18VGclAh0ORX4BmBA7V5IZuAJvU7f4ZWkQGhx+NIRHs+PDVW
+         1SFInSe9TGL49be7SV8T1H6NOnWzABljM8CNdp/KoS24WB5q99ES7if2R/OlOiW0Y+3f
+         p93g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vSUYbG4jVWl2xCjF0Serf/tGjpIWSuQjwXGgOB7JPGo=;
-        b=XQGXH2+m7e8B+TwgNR9EJCbeIOUSTbXFvYYYdnClrBTjB39v6Xbalh3cDb3OIWhkAZ
-         /XTuhU56IwqPyZWtQ/M8HDmXrxZK/f+iy4rB23gsrxtPqVEXtvvpFCjNHhNvt8NSQOn5
-         PSDSmd8xZQBfZ5VSBHa42xRPKxhFfmsqgST4MvfdEkDF4BRzeP1LlxwkfHbOmW863Iyo
-         dJXWqBrU3VVnVnhl4Wy3HDYbu5uaH58EqXWloKTJwn0bZZNPIUhyXVyK6GGnXwwlVwLx
-         UgrzCcgEa2TM1Va6xd96SewpY4oAPIeZZcigl+5ODNSZdLEP/i0ikmosmFoQZrJBl5Sw
-         jC1w==
-X-Gm-Message-State: AO0yUKVNptyHm3h5nOSlCzIE/MX7M0Qg3IwXqxJ/Ssm9wW1ZwzC521EU
-        S/c2m41VcSQBmi8M4whye5qOLg==
-X-Google-Smtp-Source: AK7set/RO3/yjk0+J1lmhGuWIWTHW4dZ7JYqlfByG3YjDWTpvo/LX4f46cRkksH1IqHV8A79s/KRYQ==
-X-Received: by 2002:a17:902:f243:b0:198:f1e2:25f6 with SMTP id j3-20020a170902f24300b00198f1e225f6mr4567126plc.5.1675961768567;
-        Thu, 09 Feb 2023 08:56:08 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a4-20020a170902710400b00194c90ca320sm1720648pll.204.2023.02.09.08.56.07
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xUosuIF6sT5guNvUVmM1J2U0v0EW8fMgv/3In3ljd+Q=;
+        b=DPaCM3Kqj59TNMxeXnlYDYMQITm79oHyM3/I6jk980dsi4dz2smRTkym8HqX5lJnP/
+         Jlnz/Gu3As0hU12VLV38vb2zbEczMrZI/9aLJVTE1oShSTaJuwJaYO9sQ0g+9XSOZHJ9
+         BYg6w2ohEP9nLaQC12Db3GOJY3+sydzw9RwyFbCfTtixEnXdG7yFRNORXNZCSMplPQq1
+         9i2/SiHFEF5thzsNMrohPcjNRF/GeX+8/Weg8woz2k/N5+u80Nu1nRQL9Mq15FWhg7yX
+         DMxCxmyHi6pY/l4/dBewIQhc2+3/va2pjMD575YQDQl+r7jldtvTEYlGZ0iHxMomIrzT
+         b2rQ==
+X-Gm-Message-State: AO0yUKWxV7egHxjwtrMBe498lEAxE0EFXYsmTmzb+f5X0Im5LLwytYK1
+        CcIYQ3XaCT/LMEAjRlOfqHc=
+X-Google-Smtp-Source: AK7set/hs6ehC54fBLh5SB3HwfgV3uku3FUfIyro6MSNNzqA8SU2MLhqOTbKnngRHVpx/vntKyuRqg==
+X-Received: by 2002:a17:90b:4a4e:b0:230:8f39:d92e with SMTP id lb14-20020a17090b4a4e00b002308f39d92emr14346783pjb.20.1675962464488;
+        Thu, 09 Feb 2023 09:07:44 -0800 (PST)
+Received: from [192.168.0.128] ([98.97.119.54])
+        by smtp.googlemail.com with ESMTPSA id i1-20020a17090acf8100b0023347886e80sm565202pju.16.2023.02.09.09.07.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Feb 2023 08:56:08 -0800 (PST)
-Message-ID: <63e525a8.170a0220.e8217.2fdb@mx.google.com>
-X-Google-Original-Message-ID: <202302090853.@keescook>
-Date:   Thu, 9 Feb 2023 08:56:07 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     KP Singh <kpsingh@kernel.org>,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, jackmanb@google.com,
-        renauld@google.com, casey@schaufler-ca.com, song@kernel.org,
-        revest@chromium.org
-Subject: Re: [PATCH bpf-next 0/4] Reduce overhead of LSMs with static calls
-References: <20230119231033.1307221-1-kpsingh@kernel.org>
- <CAHC9VhRpsXME9Wht_RuSACuU97k359dihye4hW15nWwSQpxtng@mail.gmail.com>
+        Thu, 09 Feb 2023 09:07:43 -0800 (PST)
+Message-ID: <c3fc2a72a567e26613824001324bcac6fc8c3640.camel@gmail.com>
+Subject: Re: [PATCH net] ice: xsk: Fix cleaning of XDP_TX frames
+From:   Alexander H Duyck <alexander.duyck@gmail.com>
+To:     Larysa Zaremba <larysa.zaremba@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     intel-wired-lan@osuosl.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Date:   Thu, 09 Feb 2023 09:07:42 -0800
+In-Reply-To: <20230209160130.1779890-1-larysa.zaremba@intel.com>
+References: <20230209160130.1779890-1-larysa.zaremba@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhRpsXME9Wht_RuSACuU97k359dihye4hW15nWwSQpxtng@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 27, 2023 at 03:16:38PM -0500, Paul Moore wrote:
-> On Thu, Jan 19, 2023 at 6:10 PM KP Singh <kpsingh@kernel.org> wrote:
-> >
-> > # Background
-> >
-> > LSM hooks (callbacks) are currently invoked as indirect function calls. These
-> > callbacks are registered into a linked list at boot time as the order of the
-> > LSMs can be configured on the kernel command line with the "lsm=" command line
-> > parameter.
-> 
-> Thanks for sending this KP.  I had hoped to make a proper pass through
-> this patchset this week but I ended up getting stuck trying to wrap my
-> head around some network segmentation offload issues and didn't quite
-> make it here.  Rest assured it is still in my review queue.
-> 
-> However, I did manage to take a quick look at the patches and one of
-> the first things that jumped out at me is it *looks* like this
-> patchset is attempting two things: fix a problem where one LSM could
-> trample another (especially problematic with the BPF LSM due to its
-> nature), and reduce the overhead of making LSM calls.  I realize that
-> in this patchset the fix and the optimization are heavily
-> intermingled, but I wonder what it would take to develop a standalone
-> fix using the existing indirect call approach?  I'm guessing that is
-> going to potentially be a pretty significant patch, but if we could
-> add a little standardization to the LSM hooks without adding too much
-> in the way of code complexity or execution overhead I think that might
-> be a win independent of any changes to how we call the hooks.
-> 
-> Of course this could be crazy too, but I'm the guy who has to ask
-> these questions :)
+On Thu, 2023-02-09 at 17:01 +0100, Larysa Zaremba wrote:
+> Incrementation of xsk_frames inside the for-loop produces
+> infinite loop, if we have both normal AF_XDP-TX and XDP_TXed
+> buffers to complete.
+>=20
+> Split xsk_frames into 2 variables (xsk_frames and completed_frames)
+> to eliminate this bug.
+>=20
+> Fixes: 29322791bc8b ("ice: xsk: change batched Tx descriptor cleaning")
+> Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> ---
+> To Tony: this is urgent and should go directly via net. It's tested and a=
+cked.
+> ---
+>  drivers/net/ethernet/intel/ice/ice_xsk.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ether=
+net/intel/ice/ice_xsk.c
+> index 7105de6fb344..374b7f10b549 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> @@ -800,6 +800,7 @@ static void ice_clean_xdp_irq_zc(struct ice_tx_ring *=
+xdp_ring)
+>  	struct ice_tx_desc *tx_desc;
+>  	u16 cnt =3D xdp_ring->count;
+>  	struct ice_tx_buf *tx_buf;
+> +	u16 completed_frames =3D 0;
+>  	u16 xsk_frames =3D 0;
+>  	u16 last_rs;
+>  	int i;
+> @@ -809,19 +810,21 @@ static void ice_clean_xdp_irq_zc(struct ice_tx_ring=
+ *xdp_ring)
+>  	if ((tx_desc->cmd_type_offset_bsz &
+>  	    cpu_to_le64(ICE_TX_DESC_DTYPE_DESC_DONE))) {
+>  		if (last_rs >=3D ntc)
+> -			xsk_frames =3D last_rs - ntc + 1;
+> +			completed_frames =3D last_rs - ntc + 1;
+>  		else
+> -			xsk_frames =3D last_rs + cnt - ntc + 1;
+> +			completed_frames =3D last_rs + cnt - ntc + 1;
+>  	}
+> =20
+> -	if (!xsk_frames)
+> +	if (!completed_frames)
+>  		return;
+> =20
+> -	if (likely(!xdp_ring->xdp_tx_active))
+> +	if (likely(!xdp_ring->xdp_tx_active)) {
+> +		xsk_frames =3D completed_frames;
+>  		goto skip;
+> +	}
+> =20
+>  	ntc =3D xdp_ring->next_to_clean;
+> -	for (i =3D 0; i < xsk_frames; i++) {
+> +	for (i =3D 0; i < completed_frames; i++) {
+>  		tx_buf =3D &xdp_ring->tx_buf[ntc];
+> =20
+>  		if (tx_buf->raw_buf) {
+> @@ -837,7 +840,7 @@ static void ice_clean_xdp_irq_zc(struct ice_tx_ring *=
+xdp_ring)
+>  	}
+>  skip:
+>  	tx_desc->cmd_type_offset_bsz =3D 0;
+> -	xdp_ring->next_to_clean +=3D xsk_frames;
+> +	xdp_ring->next_to_clean +=3D completed_frames;
+>  	if (xdp_ring->next_to_clean >=3D cnt)
+>  		xdp_ring->next_to_clean -=3D cnt;
+>  	if (xsk_frames)
 
-Hm, I am expecting this patch series to _not_ change any semantics of
-the LSM "stack". I would agree: nothing should change in this series, as
-it should be strictly a mechanical change from "iterate a list of
-indirect calls" to "make a series of direct calls". Perhaps I missed
-a logical change?
+Looks good to me.
 
--- 
-Kees Cook
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+
+
