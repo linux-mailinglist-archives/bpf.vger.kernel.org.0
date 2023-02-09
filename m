@@ -2,60 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD6C6900BB
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 08:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAA0690134
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 08:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjBIHMu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 02:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
+        id S229868AbjBIHYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 02:24:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjBIHMr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 02:12:47 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF1041B4A
-        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 23:12:46 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id f6so1859715pln.12
-        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 23:12:46 -0800 (PST)
+        with ESMTP id S230102AbjBIHXv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 02:23:51 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F214ED1A
+        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 23:23:27 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id g9so749868pfo.5
+        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 23:23:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4WVs22Kg7Btgcs7NcU/V4V2lSD7tkAUiSfve9Y1LNwY=;
-        b=AoYrrJJs6k9GtmQ4jMGk0yXnsurRdiogv4N9KaUtAvk7czZiKUvynb//Bfa2EC5y3x
-         bThSbc2PuWdlSa6zqhkSM3mNpiJHJPK8QHZP0bb0ANnmBRq9y6M6tosCkqa0HtjZEr7m
-         pdZWvIjuSCgtmifIjb6P+QJwoD6nwQX/OA31bMpYqq3qigQS8QSqGSlSiq47cdl+XVQx
-         2JCuvOxpC3CK/kIQhAqtz+Zi7zTcsXfsqIKsjnrCzTvJoB5FP4M6IVUUoVQ4vN1tGuCr
-         X41zK9YDiG7cBtw8BW3R1Jb/SbukYgAhUI7qDCI7mUA4yRA0v5Gq7Ipcnhb/YmqWIm3T
-         qicw==
+        bh=tddsbJmipDadgZuL4C+TKbP9J2syeyMjmHZxy6JDTt4=;
+        b=QTvuFq/7v+CdkDisGU23a4Mg4sCbIx93MNu51rqdsSFelRH+bzFtnIoxiDz5XLtECD
+         mVOdxoI+TDOdkZ+OftJL3dm7+U+HdYpulqUrb2jLjjKCqVg0ACdWdD2HO+m/yRYZ3tuw
+         wkdhJGyPozWn+PtKhMrcQXV0lfoFGh+g0xgtz67cOirBzeCAtoScHKwH/q5zla5Efj+F
+         bOGjzkshWM0wd9jjds9Jgo9wbbEimVjRaN2G/fPBSRVYTKbJ7QTToZAfK2O0wuDdv6lJ
+         yO49Rn6wsAx0XAY45aXkgHk7bVpHRoWTWItBRJR4rEGqsJGkEgeumTF3u+UwIkz1j6EL
+         2c3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4WVs22Kg7Btgcs7NcU/V4V2lSD7tkAUiSfve9Y1LNwY=;
-        b=nHonb1DkS5ONsx837GbRbe2OCq7vawLXVk154HWQNOzMRn8yVy3OQpM0Kprmj1X3z/
-         2r9nnXc67VyRYBsGiSGL9+R3Pa2QKjyoIbhVbM+d0VFWhcV0Id0BjQA0rTpHhkESLVda
-         Z3kQyezdG2vyBth/5n10u5PolhIFImokUGQX87NktPAhuRvL4kYICgB6k0uxD66Ugyfk
-         d665KavVkCEx5OipAMQdAawl9RdfxvA9mhzZDebZZjq83EQF1wjupi7uELGPNwy5zHHy
-         GCR8ZVhlgnLuroEwctwVYJruH/9s9O6Khww/LY3UNcTok5jS9YVAmiKo0rF9+gyhEdBI
-         ZsFA==
-X-Gm-Message-State: AO0yUKVATgtIXiY8B+O0DBEIKgl7F3Wlxn0+VL3TTeIwIC93CaFvM/7y
-        qvVDtr6O7JCpIi7oJ/cxBJWuf9Ddv8F3KLiDAANXDQ==
-X-Google-Smtp-Source: AK7set/JAGjMaYyKUc3wik1Zpc3z1fF27fTbmID4hmKb+mM1VoQt/VnzqKCHgPPcXP/4CDxya8Ss+VkiNAm6JDV2cqw=
-X-Received: by 2002:a17:902:b78a:b0:199:26df:77b6 with SMTP id
- e10-20020a170902b78a00b0019926df77b6mr2518442pls.3.1675926766145; Wed, 08 Feb
- 2023 23:12:46 -0800 (PST)
+        bh=tddsbJmipDadgZuL4C+TKbP9J2syeyMjmHZxy6JDTt4=;
+        b=Kas1nyarhgW9WYIztfZHz5o4UszytAfcnNFV81UoaJrOe7WbGWTlVTPIEfJ/WLeqqz
+         Dt3tpzU8D/vmj7pOhULwalxVj9YTO0M01DYNqoolEWUmv9jBsyUZjD+AJKrs4mpUr3k7
+         s+BluOPd04hWkiPzG5/Y2TCp4HVMha57Y+4rg/PvQo0yWvJSDrII6cZqaUXY23oG8SRE
+         6sSU6V3QzA6hcrb/6nQ8rA3EswZ2LWTzF0qwVDcq6NEHuRKFGGS5nuqJlyiMX2zSM/In
+         cF6lp5UMJC9bQ27WtPiesm5bLR0HdxVFlXdrTusZy9PVjdJEqlJRz2YLwmOLRzKAmGQz
+         efzQ==
+X-Gm-Message-State: AO0yUKWSEbUde9P0g2x1f+MWP9xM2J+43tcDhZkFOSFsZGToOEkE4sB1
+        CN7WrsQSGyn7iyRwnsr0z1M/1Wxjqt7AtgK+V3TMfQ==
+X-Google-Smtp-Source: AK7set8147oifuJImE5p0zRAylkYykGYufjK3B5xwMaz7PIg/QVSQ6RfLCFlhgyJPReztt3sdy3IK2VJ1VcQgxbPxyU=
+X-Received: by 2002:a63:8f0c:0:b0:4fb:3232:8f70 with SMTP id
+ n12-20020a638f0c000000b004fb32328f70mr1164056pgd.9.1675927404760; Wed, 08 Feb
+ 2023 23:23:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20230201135737.800527-1-jolsa@kernel.org> <Y9vSZhBBCbshI3eM@casper.infradead.org>
- <Y9vX49CtDzyg3B/8@krava>
-In-Reply-To: <Y9vX49CtDzyg3B/8@krava>
+References: <20230201135737.800527-1-jolsa@kernel.org> <20230201135737.800527-3-jolsa@kernel.org>
+In-Reply-To: <20230201135737.800527-3-jolsa@kernel.org>
 From:   Hao Luo <haoluo@google.com>
-Date:   Wed, 8 Feb 2023 23:12:34 -0800
-Message-ID: <CA+khW7juLEcrTOd7iKG3C_WY8L265XKNo0iLzV1fE=o-cyeHcQ@mail.gmail.com>
-Subject: Re: [RFC 0/5] mm/bpf/perf: Store build id in file object
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 8 Feb 2023 23:23:13 -0800
+Message-ID: <CA+khW7iGj=Y3NVxc9Y-MnwmPxCz5jHDmSfW-S6KS9Hko=jgJOg@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/5] bpf: Use file object build id in stackmap
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -74,7 +72,7 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,36 +80,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 2, 2023 at 7:33 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Wed, Feb 1, 2023 at 5:58 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Thu, Feb 02, 2023 at 03:10:30PM +0000, Matthew Wilcox wrote:
-> > On Wed, Feb 01, 2023 at 02:57:32PM +0100, Jiri Olsa wrote:
-> > > hi,
-> > > we have a use cases for bpf programs to use binary file's build id.
-> >
-> > What is your use case?  Is it some hobbyist thing or is it something
-> > that distro kernels are all going to enable?
-> >
+> Use build id from file object in stackmap if it's available.
 >
-> our use case is for hubble/tetragon [1] and we are asked to report
-> buildid of executed binary.. but the monitoring process is running
-> in its own pod and can't access the the binaries outside of it, so
-> we need to be able to read it in kernel
->
-> I understand Hao Luo has also use case for that [2]
->
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
 
-Sorry for the late reply.
+Can we insert the lookup from vma->vm_file in build_id_parse() rather
+than its callers?
 
-We use BPF to profile stacktraces and build id is more useful than
-instruction addresses. However, sometimes we need to record
-stacktraces from an atomic context. In that case, if the page that
-contains the build id string is not in the page cache, we would fail
-to get build id. Storing the build id in file object solves this
-problem and helps us get build id more reliably.
-
-> jirka
+>  kernel/bpf/stackmap.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
+> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> index aecea7451b61..944cb260a42c 100644
+> --- a/kernel/bpf/stackmap.c
+> +++ b/kernel/bpf/stackmap.c
+> @@ -156,7 +156,15 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+>                         goto build_id_valid;
+>                 }
+>                 vma = find_vma(current->mm, ips[i]);
+> +#ifdef CONFIG_FILE_BUILD_ID
+> +               if (vma && vma->vm_file && vma->vm_file->f_bid) {
+> +                       memcpy(id_offs[i].build_id,
+> +                              vma->vm_file->f_bid->data,
+> +                              vma->vm_file->f_bid->sz);
+> +               } else {
+> +#else
+>                 if (!vma || build_id_parse(vma, id_offs[i].build_id, NULL)) {
+> +#endif
+>                         /* per entry fall back to ips */
+>                         id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+>                         id_offs[i].ip = ips[i];
+> --
+> 2.39.1
 >
-> [1] https://github.com/cilium/tetragon/
-> [2] https://lore.kernel.org/bpf/CA+khW7gAYHmoUkq0UqTiZjdOqARLG256USj3uFwi6z_FyZf31w@mail.gmail.com/
