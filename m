@@ -2,45 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C326906DA
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 12:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2576906E3
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 12:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbjBILVT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 06:21:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
+        id S231137AbjBILVl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 06:21:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbjBILUk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 06:20:40 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6DF5AB26;
-        Thu,  9 Feb 2023 03:17:48 -0800 (PST)
+        with ESMTP id S231144AbjBILUs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 06:20:48 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56C45AB33;
+        Thu,  9 Feb 2023 03:17:54 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F59561A2F;
-        Thu,  9 Feb 2023 11:17:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74668C433EF;
-        Thu,  9 Feb 2023 11:17:40 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 67001B81FFE;
+        Thu,  9 Feb 2023 11:17:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D49CEC43443;
+        Thu,  9 Feb 2023 11:17:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675941461;
-        bh=z6P+nbavqPCCSnqZJNVDs0VWHj0jFLX6EBinl3xYbdc=;
+        s=k20201202; t=1675941468;
+        bh=i+O2QE7ECDHdDy0YYxQm3+SVGfxD/NJ028txP+HoMKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zed8tZE8JWmqxsxwlwMmwUXoh6tovJuihoz7W0magvnnMMkUEIBMbHPSkc7p02q36
-         1mQ+EkOYPa3aKBaPpoMKiBfiaamNC4yMX38WNaVE9lNd350R+rQ5RawWP+ODCTW8V/
-         W7bpWQNQgziFWUiJE1mFNr26fzeQ9RPomwJIKPdgYwuK6RU7SDfgGP/C/VCP5S0dt1
-         IlwMElyWI2VSkWSP1kPsj6QW7gMqNelHoQLCyTRqym+nkdakDjCYfMyr/QzrEeyo/L
-         RVupltvofVxI3FqFUZCTQYMU6RgZaK0DuI5obuqB3YAhCkZu94+oai5fPGb36Ea0gr
-         Foe3ge8umuE+g==
+        b=T+uAbl9PHKLcDljAY0C95RR9W3OA0YyYYb/wwKEc1CZeDO28cBKKKHTojdZJieT1w
+         3MiNhZ5OL6P0Ww4fhvHqZ/Y532G8dqDtdNQLLGdEyrfOeUhwZwWK4su2NgrvSHLEsi
+         5SJI14JIokOLu3jUic9r+ouCB3u4qR+gbOSSiCHI5HgftU1hDdTC6/q8+Uapd4fEqh
+         +IeIkGcMXM2UHvBueRkJxgDub88IVLPg4TNn3XiySpak2ZRj9Lx6iJ/2oY1op3/mAF
+         /yeTYbVfVrwkC6dWwTXbyADZBREIAEaujp/GcxSsmXyhSCM3xtnoUMYEneFa/dXEZY
+         JL4zUA6GXzsdg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eduard Zingerman <eddyz87@gmail.com>,
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Eric Dumazet <edumazet@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        andrii@kernel.org, shuah@kernel.org, mykolal@fb.com,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 03/17] selftests/bpf: Verify copy_register_state() preserves parent/live fields
-Date:   Thu,  9 Feb 2023 06:17:15 -0500
-Message-Id: <20230209111731.1892569-3-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 05/17] bpf, sockmap: Don't let sock_map_{close,destroy,unhash} call itself
+Date:   Thu,  9 Feb 2023 06:17:17 -0500
+Message-Id: <20230209111731.1892569-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230209111731.1892569-1-sashal@kernel.org>
 References: <20230209111731.1892569-1-sashal@kernel.org>
@@ -57,65 +59,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Eduard Zingerman <eddyz87@gmail.com>
+From: Jakub Sitnicki <jakub@cloudflare.com>
 
-[ Upstream commit b9fa9bc839291020b362ab5392e5f18ba79657ac ]
+[ Upstream commit 5b4a79ba65a1ab479903fff2e604865d229b70a9 ]
 
-A testcase to check that verifier.c:copy_register_state() preserves
-register parentage chain and livness information.
+sock_map proto callbacks should never call themselves by design. Protect
+against bugs like [1] and break out of the recursive loop to avoid a stack
+overflow in favor of a resource leak.
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-Link: https://lore.kernel.org/r/20230106142214.1040390-3-eddyz87@gmail.com
+[1] https://lore.kernel.org/all/00000000000073b14905ef2e7401@google.com/
+
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/r/20230113-sockmap-fix-v2-1-1e0ee7ac2f90@cloudflare.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/verifier/search_pruning.c   | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ net/core/sock_map.c | 61 +++++++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 27 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/verifier/search_pruning.c b/tools/testing/selftests/bpf/verifier/search_pruning.c
-index 7e50cb80873a5..7e36078f8f482 100644
---- a/tools/testing/selftests/bpf/verifier/search_pruning.c
-+++ b/tools/testing/selftests/bpf/verifier/search_pruning.c
-@@ -154,3 +154,39 @@
- 	.result_unpriv = ACCEPT,
- 	.insn_processed = 15,
- },
-+/* The test performs a conditional 64-bit write to a stack location
-+ * fp[-8], this is followed by an unconditional 8-bit write to fp[-8],
-+ * then data is read from fp[-8]. This sequence is unsafe.
-+ *
-+ * The test would be mistakenly marked as safe w/o dst register parent
-+ * preservation in verifier.c:copy_register_state() function.
-+ *
-+ * Note the usage of BPF_F_TEST_STATE_FREQ to force creation of the
-+ * checkpoint state after conditional 64-bit assignment.
-+ */
-+{
-+	"write tracking and register parent chain bug",
-+	.insns = {
-+	/* r6 = ktime_get_ns() */
-+	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
-+	BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
-+	/* r0 = ktime_get_ns() */
-+	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
-+	/* if r0 > r6 goto +1 */
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_0, BPF_REG_6, 1),
-+	/* *(u64 *)(r10 - 8) = 0xdeadbeef */
-+	BPF_ST_MEM(BPF_DW, BPF_REG_FP, -8, 0xdeadbeef),
-+	/* r1 = 42 */
-+	BPF_MOV64_IMM(BPF_REG_1, 42),
-+	/* *(u8 *)(r10 - 8) = r1 */
-+	BPF_STX_MEM(BPF_B, BPF_REG_FP, BPF_REG_1, -8),
-+	/* r2 = *(u64 *)(r10 - 8) */
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_FP, -8),
-+	/* exit(0) */
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.flags = BPF_F_TEST_STATE_FREQ,
-+	.errstr = "invalid read from stack off -8+1 size 8",
-+	.result = REJECT,
-+},
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index ae6013a8bce53..86b4e8909ad1e 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1514,15 +1514,16 @@ void sock_map_unhash(struct sock *sk)
+ 	psock = sk_psock(sk);
+ 	if (unlikely(!psock)) {
+ 		rcu_read_unlock();
+-		if (sk->sk_prot->unhash)
+-			sk->sk_prot->unhash(sk);
+-		return;
++		saved_unhash = READ_ONCE(sk->sk_prot)->unhash;
++	} else {
++		saved_unhash = psock->saved_unhash;
++		sock_map_remove_links(sk, psock);
++		rcu_read_unlock();
+ 	}
+-
+-	saved_unhash = psock->saved_unhash;
+-	sock_map_remove_links(sk, psock);
+-	rcu_read_unlock();
+-	saved_unhash(sk);
++	if (WARN_ON_ONCE(saved_unhash == sock_map_unhash))
++		return;
++	if (saved_unhash)
++		saved_unhash(sk);
+ }
+ EXPORT_SYMBOL_GPL(sock_map_unhash);
+ 
+@@ -1535,17 +1536,18 @@ void sock_map_destroy(struct sock *sk)
+ 	psock = sk_psock_get(sk);
+ 	if (unlikely(!psock)) {
+ 		rcu_read_unlock();
+-		if (sk->sk_prot->destroy)
+-			sk->sk_prot->destroy(sk);
+-		return;
++		saved_destroy = READ_ONCE(sk->sk_prot)->destroy;
++	} else {
++		saved_destroy = psock->saved_destroy;
++		sock_map_remove_links(sk, psock);
++		rcu_read_unlock();
++		sk_psock_stop(psock);
++		sk_psock_put(sk, psock);
+ 	}
+-
+-	saved_destroy = psock->saved_destroy;
+-	sock_map_remove_links(sk, psock);
+-	rcu_read_unlock();
+-	sk_psock_stop(psock);
+-	sk_psock_put(sk, psock);
+-	saved_destroy(sk);
++	if (WARN_ON_ONCE(saved_destroy == sock_map_destroy))
++		return;
++	if (saved_destroy)
++		saved_destroy(sk);
+ }
+ EXPORT_SYMBOL_GPL(sock_map_destroy);
+ 
+@@ -1560,16 +1562,21 @@ void sock_map_close(struct sock *sk, long timeout)
+ 	if (unlikely(!psock)) {
+ 		rcu_read_unlock();
+ 		release_sock(sk);
+-		return sk->sk_prot->close(sk, timeout);
++		saved_close = READ_ONCE(sk->sk_prot)->close;
++	} else {
++		saved_close = psock->saved_close;
++		sock_map_remove_links(sk, psock);
++		rcu_read_unlock();
++		sk_psock_stop(psock);
++		release_sock(sk);
++		cancel_work_sync(&psock->work);
++		sk_psock_put(sk, psock);
+ 	}
+-
+-	saved_close = psock->saved_close;
+-	sock_map_remove_links(sk, psock);
+-	rcu_read_unlock();
+-	sk_psock_stop(psock);
+-	release_sock(sk);
+-	cancel_work_sync(&psock->work);
+-	sk_psock_put(sk, psock);
++	/* Make sure we do not recurse. This is a bug.
++	 * Leak the socket instead of crashing on a stack overflow.
++	 */
++	if (WARN_ON_ONCE(saved_close == sock_map_close))
++		return;
+ 	saved_close(sk, timeout);
+ }
+ EXPORT_SYMBOL_GPL(sock_map_close);
 -- 
 2.39.0
 
