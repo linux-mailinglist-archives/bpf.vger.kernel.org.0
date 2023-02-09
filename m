@@ -2,121 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0A368FD43
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 03:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5607568FDAA
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 04:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbjBICpL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 21:45:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
+        id S232618AbjBIDDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 22:03:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbjBICof (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 21:44:35 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C2D305E5;
-        Wed,  8 Feb 2023 18:42:30 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 78so693087pgb.8;
-        Wed, 08 Feb 2023 18:42:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YwyVoI4Z6gSEgdiik3NvZJTmr5o1kD+IT2yiCTwHCu4=;
-        b=dD+5Wo8qKJ+aYIFvRi2FocY3k8H1Y47OfiqwD3r8eJ1Kzc5icSgAMNxDdaFnA4Qegl
-         wIpncp6VGKKL7/uiI/T93YnnO41JK1FC2LWZ54liJhZPe11aGXMydfgMQyD+UKCelUzM
-         cci0afAQSaUOFGiSEz6rga66CznxgWZXb+OJ/ugK9cXCJUmkednXa3meKnhGsh4hNaxP
-         60LP+y6Um0vNYThUDyoK6HBp9nvzJ7UyLU6nPd3MdoLFoFhYrFjus8EbbtMxKTCq8etg
-         qUzTeOrg8B+kxFXaOnv2l1e0VmCAkEp3WyDwjmjzvCo+4gIPatuy7L7HW4GJ8FREV/CZ
-         17Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YwyVoI4Z6gSEgdiik3NvZJTmr5o1kD+IT2yiCTwHCu4=;
-        b=y+ixJinolDsWhDexdw8Uc4LqzjoMMtkQUNIzZbwHwsWHyqdCRQZn12zPLBC9MT+s9b
-         IPXg3QNlTX+7gGSQxkXpovxykkQnvGKx+kc0jJdcUW6coaEK3JlPy8fMPF2pS7shvPWX
-         2gz556aV1FtlJWBd0EKJIeqA/Sbdo5RjKOLiHufzBxgCNfGJyzIWy76HWnaDg3zRo7Ch
-         osPw3/SsMgoc1O8ftmdhM/lHbBYOhAugw3tZLtyK5DzYecYTN5bg+bv2m+9Gjo9xbk6B
-         mu3ZeZgVSFpZTT038UM3K0cl0CYgnqnd4OF3j3UgWxblhM0qH0jsLqaficLU04EHHoe5
-         GCLA==
-X-Gm-Message-State: AO0yUKV3frPT6BL56os2JNMhtvCaTSmc0ukO+Uz14wATHA5FWhW9AbWG
-        mVnx1ceEKF4I1t7zqoBvgC4=
-X-Google-Smtp-Source: AK7set9DUTP8YMTdiY3P82E80fZ2YE4bBm5y04IAl6FhAq6TRgHtyLSB+KIbFsz0H7dafUNupr3/nA==
-X-Received: by 2002:aa7:8bdd:0:b0:5a8:5424:d12f with SMTP id s29-20020aa78bdd000000b005a85424d12fmr646119pfd.21.1675910539477;
-        Wed, 08 Feb 2023 18:42:19 -0800 (PST)
-Received: from KERNELXING-MB0.tencent.com ([103.7.29.31])
-        by smtp.gmail.com with ESMTPSA id f15-20020aa782cf000000b005a84de344a6sm165538pfn.14.2023.02.08.18.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Feb 2023 18:42:19 -0800 (PST)
-From:   Jason Xing <kerneljasonxing@gmail.com>
-To:     alexander.duyck@gmail.com, jesse.brandeburg@intel.com,
+        with ESMTP id S232048AbjBIDBs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 22:01:48 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816D438013;
+        Wed,  8 Feb 2023 18:57:50 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 210A16186B;
+        Thu,  9 Feb 2023 02:57:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B614FC4339B;
+        Thu,  9 Feb 2023 02:57:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675911469;
+        bh=a28hWGAgXHcKzAwvAl61mkMfOBl1pXY4hll/Ho3lNJU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hFGueY1iBFTGzvoCXw8WuYMojfQ7hm/W72zRL2305nodv0mlftmUGZavHgrsI4p9c
+         TG5mJ5zSKf6rzrUOpIIJN225l2j2nVRUoKxRulY6qucGkDe2QxVBBvQSOLt7ONNURk
+         KXrFIoTiQRzoE2gSh9f90/8Qgke2CQMQV68kCVqLMcHb+//khyYuJ9iUmG28FQq1oI
+         sEPqYWPur0GwmuZ8Fdy7H2L1Rw9gWCii0xeNTpmYrmDyuBXY3Ve05uqQjCn2IvxTEv
+         z/exISKVOoMgyRHdC2rWmDW2eIQcMKLpPA8yEDhAC+8EmNjBdtHLqsth5lnn11BG4F
+         9oHzLIq+aNUuA==
+Date:   Wed, 8 Feb 2023 18:57:47 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Jason Xing <kerneljasonxing@gmail.com>, jesse.brandeburg@intel.com,
         anthony.l.nguyen@intel.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        alexandr.lobakin@intel.com, maciej.fijalkowski@intel.com
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kerneljasonxing@gmail.com, Jason Xing <kernelxing@tencent.com>,
-        Alexander Duyck <alexanderduyck@fb.com>
-Subject: [PATCH net v2 3/3] ixgbe: add double of VLAN header when computing the max MTU
-Date:   Thu,  9 Feb 2023 10:41:28 +0800
-Message-Id: <20230209024128.4695-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        edumazet@google.com, pabeni@redhat.com, richardcochran@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, alexandr.lobakin@intel.com,
+        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Subject: Re: [PATCH net 3/3] ixgbe: add double of VLAN header when computing
+ the max MTU
+Message-ID: <20230208185747.1266ff72@kernel.org>
+In-Reply-To: <CAL+tcoBEv6tiAES-JPF4er_bkQWuqZ1m0ouVc19EARCOcaDidQ@mail.gmail.com>
+References: <20230204133535.99921-1-kerneljasonxing@gmail.com>
+        <20230204133535.99921-4-kerneljasonxing@gmail.com>
+        <CAL+tcoD9nE-Ad7+XoshoQ8qp7C0H+McKX=F6xt2+UF1BeWXKbg@mail.gmail.com>
+        <CAKgT0Uc7d5iomJnrvPdngt6u9ns7S1ismhH_C2R1YWarg04wWg@mail.gmail.com>
+        <CAL+tcoBEv6tiAES-JPF4er_bkQWuqZ1m0ouVc19EARCOcaDidQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jason Xing <kernelxing@tencent.com>
+On Thu, 9 Feb 2023 10:22:19 +0800 Jason Xing wrote:
+> > It looks like this patch isn't in the patch queue at:
+> > https://patchwork.kernel.org/project/netdevbpf/list/
+> 
+> I got it.
+> 
+> I have no clue on how patchwork works, I searched the current email,
+> see https://patchwork.kernel.org/project/netdevbpf/patch/20230204133535.99921-4-kerneljasonxing@gmail.com/.
+> 
+> > I believe you will need to resubmit it to get it accepted upstream.
 
-Include the second VLAN HLEN into account when computing the maximum
-MTU size as other drivers do.
-
-Fixes: fabf1bce103a ("ixgbe: Prevent unsupported configurations with XDP")
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
----
-v2: add reviewed-by label.
----
- drivers/net/ethernet/intel/ixgbe/ixgbe.h      | 2 ++
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 +--
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-index bc68b8f2176d..8736ca4b2628 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-@@ -73,6 +73,8 @@
- #define IXGBE_RXBUFFER_4K    4096
- #define IXGBE_MAX_RXBUFFER  16384  /* largest size for a single descriptor */
- 
-+#define IXGBE_PKT_HDR_PAD   (ETH_HLEN + ETH_FCS_LEN + (VLAN_HLEN * 2))
-+
- /* Attempt to maximize the headroom available for incoming frames.  We
-  * use a 2K buffer for receives and need 1536/1534 to store the data for
-  * the frame.  This leaves us with 512 bytes of room.  From that we need
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 25ca329f7d3c..4507fba8747a 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -6801,8 +6801,7 @@ static int ixgbe_change_mtu(struct net_device *netdev, int new_mtu)
- 	struct ixgbe_adapter *adapter = netdev_priv(netdev);
- 
- 	if (ixgbe_enabled_xdp_adapter(adapter)) {
--		int new_frame_size = new_mtu + ETH_HLEN + ETH_FCS_LEN +
--				     VLAN_HLEN;
-+		int new_frame_size = new_mtu + IXGBE_PKT_HDR_PAD;
- 
- 		if (new_frame_size > ixgbe_max_xdp_frame_size(adapter)) {
- 			e_warn(probe, "Requested MTU size is not supported with XDP\n");
--- 
-2.37.3
-
+The patches are marked as Awaiting Upstream, that's why they don't show
+up. We usually let Tony pick up patches for Intel's drivers rather than
+applying directly.
