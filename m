@@ -2,81 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19590690B4B
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 15:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CD3690B58
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 15:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjBIOFJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 09:05:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35260 "EHLO
+        id S229733AbjBIOIa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 09:08:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbjBIOFH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 09:05:07 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29C34B740;
-        Thu,  9 Feb 2023 06:05:03 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id bg5-20020a05600c3c8500b003e00c739ce4so1587793wmb.5;
-        Thu, 09 Feb 2023 06:05:03 -0800 (PST)
+        with ESMTP id S229669AbjBIOIa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 09:08:30 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E1C5D3C9;
+        Thu,  9 Feb 2023 06:08:28 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id x71so1551779ybg.6;
+        Thu, 09 Feb 2023 06:08:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FnUKwrf3QmUwHRYbPJhz1oxuhL0RjLzvi0U8XbLlOpg=;
-        b=RnfF8r6WdKv8s7KDGECSXbdB+Dek6BzSaaDqDq42vhSJ7zuuK7XDZovNmyitEjA2zS
-         UKSbw03VN/NKFo5OKrh1NqG7I8uCfs4LYo4HEZPKZr7L4Epo2bXLBpUrUTJgpReErF+E
-         mN/EDanqdDS54R3YVZ20ue01rk9K3nosbqM7I8bnH3tvH7c76KRnX0L67kyAXiIggrcd
-         lrpDewkEcV/xw0Jzk/qJwswf8D/+xzJmz8slTGA7ltTCL7fJveqpfPXdUhmyObv9K3ix
-         PpUmVpAqJc6lClWSquZT8nI4aE/jQbB+JOeUwINSRfzXLXfZpmwkch38I863B+HY0LiA
-         R/hw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zTk6c7xxPoE+rwd+rpVS+Rn18/CnyngZ+h+vq3GImYA=;
+        b=mMuAVI0L/O4e8lyP0mgsBY0VHx4Ld0Fo2w4jL50qICuexc5hlBgpX8vH6/LB+W7iVT
+         DUz5YQfVX3A7Mwi25p3U/9vdVEVAJeMf3pmsACemtFyhnPQoHCZ0GsVwNvLpAbyQao0L
+         sA73C077Kk91uiCxZ/al97biL1eS30b9I2pZElh35nF9hnn9oCsDCfYshKTWSqKeEzHe
+         YrhGSQe5BtPN0UbZL8IZpB1OnssTcrKbL6YTT+X0dRdjQnnfuTfPwQ8sAu1XQ/9ppoBG
+         QWx8ymsIDj2WL9iuKzRwJ43KkLV/z2VKTnQeI9m9IvtBqVYSE81YLqOJ34ZROEx+xkM5
+         Z7zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FnUKwrf3QmUwHRYbPJhz1oxuhL0RjLzvi0U8XbLlOpg=;
-        b=P0Vz/OUfHYaThOXqYfktEBO4TXDVu74g8QC/4vMov3rmrxERDjmRMEhyon6b8rcoYe
-         IdQ0gm8buU5Bfoay6vWW2Omh//ZhO9kSaMqRt6okywNMmON47HZdVdLspuT2hAxoPOOW
-         Z5+lUah4sMII2x+kyP0n9vQyxsqaY9mvXkgz6vHtk3c6IIYECLq+do3UwFYiDqht7ayP
-         L+C+iFys/Ov8E+ufXxxVASYGvYSe+0FjV8I320Jb2agZjKxriwQm4c5ab7ZfuiHn+Kds
-         lS4GzzwgMnINMogupPJDjprMj0HUwZ528fPC4DQf7PhM7KBPQoBTKiP+Xnx50PHmPyfx
-         GNVA==
-X-Gm-Message-State: AO0yUKXP7SiqcKexubn1/COkoMrjiakaxRY6b6nVhGd2mBKX7o9DOwgJ
-        iR9eQb78SZCYhwuZVR54BehU7r5qvt5eAYSI
-X-Google-Smtp-Source: AK7set/JJyWcN/ZigLNQVpbyMC5FbBQwDmTp/uGnEBqtMWRRn8UgHASP8FT2mp83fiKVHo+M2g04Rw==
-X-Received: by 2002:a05:600c:998:b0:3dc:59ee:7978 with SMTP id w24-20020a05600c099800b003dc59ee7978mr10073277wmp.38.1675951502499;
-        Thu, 09 Feb 2023 06:05:02 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id n13-20020a05600c3b8d00b003dc434900e1sm2144836wms.34.2023.02.09.06.05.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Feb 2023 06:05:02 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 9 Feb 2023 15:04:59 +0100
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH RFC 1/5] mm: Store build id in file object
-Message-ID: <Y+T9iwfvj23gtDMA@krava>
-References: <20230201135737.800527-1-jolsa@kernel.org>
- <20230201135737.800527-2-jolsa@kernel.org>
- <CAEf4BzZHwXiLPuaAwz3vexzaJbBC90p5pCawbrsu4-Rk3XZOYw@mail.gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zTk6c7xxPoE+rwd+rpVS+Rn18/CnyngZ+h+vq3GImYA=;
+        b=jdSod7X/BpBBKMGDLHilgMMvJGPPQuMcPu57H8GHF2NtCn497WbPydgFhpe3Ng6G5t
+         odov7S3LFGF61kP3bbrb4Cn+Gi6V/spdU/5T8XpNYjP7OGJkb5+HWF6T8+B70KntcOME
+         L/LPZIFHTHGYIqu0vXjO+kwsA+MbpOVuoSAioNKv64iM6ZVgJj/sgJBw3E+a6c4xRDdF
+         QWitUK7mFM8z/4k+kRkwbpGnKaO3v/9hq9TWJu2jtb4GYIwaWecdRTqIkFXdQzMEi5td
+         lkFCs/t18xdprqm/WmVZYzPMsv7gVgsxUNMHRZOihdXdQlSh//5lVFO80pXgiO8OLK8N
+         Nf0g==
+X-Gm-Message-State: AO0yUKWpbIBwZs9GoffWaaV2UCpVg78Nwm+NKvdoJca5MdAXh7omrKIH
+        mXvnGZKkjb57z1/pdgiziHeb/5VXKSODlNsQqp4=
+X-Google-Smtp-Source: AK7set+BF8dIBnhSDmbVZKebbFLMPnR35VaCGnuFoKxHBFulMnf8WDhFJOOYtg6wGwkFZH2ju3P9h0+o2X0T4RKzzOM=
+X-Received: by 2002:a25:73d1:0:b0:87e:d379:a629 with SMTP id
+ o200-20020a2573d1000000b0087ed379a629mr1232996ybc.285.1675951707531; Thu, 09
+ Feb 2023 06:08:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZHwXiLPuaAwz3vexzaJbBC90p5pCawbrsu4-Rk3XZOYw@mail.gmail.com>
+References: <20230203031742.1730761-1-imagedong@tencent.com>
+ <20230203031742.1730761-3-imagedong@tencent.com> <CAEf4BzYh90NyyYvfTT=M=-KLspydMX4PZK8jCwNDydAP=kFgYw@mail.gmail.com>
+ <CADxym3a6_wBHW_c_ZYtZ5QXbbunhKxau6k-fn4TNrn+6qzW6fw@mail.gmail.com>
+ <CAEf4BzZAo6Bfio3pbY3j5yUDArCbdiWPC-r=XhFM9Bwq+4VVMg@mail.gmail.com>
+ <75421c53-fa5c-d7c7-4b19-2d97e3e6d7f6@oracle.com> <CAEf4BzZicf3B7BwPj=fWkcVJz0JayB9qUUbJFBPunxOJwQoMdw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZicf3B7BwPj=fWkcVJz0JayB9qUUbJFBPunxOJwQoMdw@mail.gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Thu, 9 Feb 2023 22:08:16 +0800
+Message-ID: <CADxym3YR6PS_0XfzH6p1CNUAbDxX=gO_aAoOu7fEkx1pAn2AKQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add test for legacy/perf
+ kprobe/uprobe attach mode
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -87,103 +75,124 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 03:52:40PM -0800, Andrii Nakryiko wrote:
-
-SNIP
-
-> > diff --git a/include/linux/buildid.h b/include/linux/buildid.h
-> > index 3b7a0ff4642f..7c818085ad2c 100644
-> > --- a/include/linux/buildid.h
-> > +++ b/include/linux/buildid.h
-> > @@ -3,9 +3,15 @@
-> >  #define _LINUX_BUILDID_H
+On Thu, Feb 9, 2023 at 7:31 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Feb 8, 2023 at 3:49 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 > >
-> >  #include <linux/mm_types.h>
-> > +#include <linux/slab.h>
+> > On 07/02/2023 22:50, Andrii Nakryiko wrote:
+> > > On Mon, Feb 6, 2023 at 6:39 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
+> > >>
+> > >> On Tue, Feb 7, 2023 at 4:05 AM Andrii Nakryiko
+> > >> <andrii.nakryiko@gmail.com> wrote:
+> > >>>
+> > >>> On Thu, Feb 2, 2023 at 7:18 PM <menglong8.dong@gmail.com> wrote:
+> > >>>>
+> > >>>> From: Menglong Dong <imagedong@tencent.com>
+> > >>>>
+> > >>>> Add the testing for kprobe/uprobe attaching in legacy and perf mode.
+> > >>>> And the testing passed:
+> > >>>>
+> > >>>> ./test_progs -t attach_probe
+> > >>>> $5       attach_probe:OK
+> > >>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> > >>>>
+> > >>>> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > >>>> ---
+> > >>>
+> > >>> Do you mind refactoring attach_probe test into multiple subtests,
+> > >>> where each subtest will only test one of the attach mode and type. The
+> > >>> reason is that libbpf CI runs tests with latest selftests and libbpf
+> > >>> against old kernels (4.9 and 5.5, currently). Due to attach_probe
+> > >>> testing all these uprobe/kprobe attach modes with extra features (like
+> > >>> cookie, ref count, etc), we had to disable attach_probe test in libbpf
+> > >>> CI on old kernels.
+> > >>>
+> > >>> If we can split each individual uprobe/kprobe mode, that will give us
+> > >>> flexibility to selectively allowlist those tests that don't force
+> > >>> libbpf to use newer features (like cookies, LINK or PERF mode, etc).
+> > >>>
+> > >>> It would be a great improvement and highly appreciated! If you don't
+> > >>> mind doing this, let's do the split of existing use cases into subtest
+> > >>> in a separate patch, and then add PERF/LEGACY/LINK mode tests on top
+> > >>> of that patch.
+> > >>>
+> > >>
+> > >> Of course, with pleasure. For the existing use cases, we split it into
+> > >> subtests, such as:
+> > >>
+> > >>   kprobe/kretprobe auto attach
+> > >>   kprobe/kretprobe manual attach
+> > >>   uprobe/uretprobe ref_ctr test
+> > >>   uprobe/uretprobe auto attach
+> > >>   sleepable kprobe/uprobe
+> > >>   ......
+> > >>
+> > >> Am I right?
+> > >
+> > > I haven't analysed all the different cases, but roughly it makes
+> > > sense. With more granular subtests we can also drop `legacy` flag and
+> > > rely on subtest allowlisting in CI.
+> > >
 > >
-> >  #define BUILD_ID_SIZE_MAX 20
+> > I'm probably rusty on the details, but when you talk about subtest
+> > splitting for the [uk]probe manual attach, are we talking about running
+> > the same manual attach test for the different modes, with each as a
+> > separate subtest, such that each registers as a distinct pass/fail (and
+> > can thus be allowlisted as appropriate)? So in other words
 > >
-> > +struct build_id {
-> > +       u32 sz;
-> > +       char data[BUILD_ID_SIZE_MAX];
-> 
-> don't know if 21 vs 24 matters for kmem_cache_create(), but we don't
-> need 4 bytes to store build_id size, given max size is 20, so maybe
-> use u8 for sz?
-
-ok
-
-> 
-> > +};
-> > +
-> >  int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
-> >                    __u32 *size);
-> >  int build_id_parse_buf(const void *buf, unsigned char *build_id, u32 buf_size);
-> > @@ -17,4 +23,15 @@ void init_vmlinux_build_id(void);
-> >  static inline void init_vmlinux_build_id(void) { }
-> >  #endif
+> > test__start_subtest("manual_attach_kprobe_link");
+> > attach_kprobe_manual(link_options);
+> > test__start_subtest("manual_attach_kprobe_legacy");
+> > attach_kprobe_manual(legay_options);
+> > test__start_subtest("manual_attach_kprobe_perf");
+> > attach_kprobe_manual(perf_options);
 > >
-> > +#ifdef CONFIG_FILE_BUILD_ID
-> > +void __init build_id_init(void);
-> > +void build_id_free(struct build_id *bid);
-> > +int vma_get_build_id(struct vm_area_struct *vma, struct build_id **bidp);
-> > +void file_build_id_free(struct file *f);
-> > +#else
-> > +static inline void __init build_id_init(void) { }
-> > +static inline void build_id_free(struct build_id *bid) { }
-> > +static inline void file_build_id_free(struct file *f) { }
-> > +#endif /* CONFIG_FILE_BUILD_ID */
-> > +
-> >  #endif
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index c1769a2c5d70..9ad5e5fbf680 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -975,6 +975,9 @@ struct file {
-> >         struct address_space    *f_mapping;
-> >         errseq_t                f_wb_err;
-> >         errseq_t                f_sb_err; /* for syncfs */
-> > +#ifdef CONFIG_FILE_BUILD_ID
-> > +       struct build_id         *f_bid;
-> 
-> naming nit: anything wrong with f_buildid or f_build_id? all the
-> related APIs use fully spelled out "build_id"
+> > ?
+>
+> Yep. One of the reasons is that on 4.9 kernel there won't be link or
+> perf method available, so it is expected for such modes to fail. I
+> want to be able to still test the legacy code path on 4.9, though.
+> Similarly tests that are using ref_ctr_offset or bpf_cookie won't work
+> on older kernels as well. Right now because of all of them being in a
+> single test, I have to block entire test, losing coverage on older
+> kernels.
+>
 
-ok
+I think I am beginning to understand it now. So we need 2 patches
+for the selftests part. In the 1th patch, we split the existing testings
+into multi subtests, such as:
 
-SNIP
+test__start_subtest("manual_attach_probe") // test kprobe/uprobe manual attach
+test__start_subtest("auto_attach_probe") // test kprobe/uprobe auto attach
+test__start_subtest("bpf_cookie") // test bpf_cookie
+test__start_subtest("ref_ctr_offset") test ref_ctr_offset
+test__start_subtest("sleepable_probe") // test sleepable
+uprobe/uretprobe, and sleepable kprobe
+......
 
-> > diff --git a/mm/mmap.c b/mm/mmap.c
-> > index 425a9349e610..a06f744206e3 100644
-> > --- a/mm/mmap.c
-> > +++ b/mm/mmap.c
-> > @@ -2530,6 +2530,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
-> >         pgoff_t vm_pgoff;
-> >         int error;
-> >         MA_STATE(mas, &mm->mm_mt, addr, end - 1);
-> > +       struct build_id *bid = NULL;
+And in the 2th patch, we change the subtest "manual_attach_probe" into
+the following tests:
+
+test__start_subtest("manual_attach_kprobe_link");
+test__start_subtest("manual_attach_kprobe_legacy");
+test__start_subtest("manual_attach_kprobe_perf");
+
+Therefore, every feature can be tested in a subtest alone.
+
+Am I right?
+
+Thanks!
+Menglong Dong
 > >
-> >         /* Check against address space limit. */
-> >         if (!may_expand_vm(mm, vm_flags, len >> PAGE_SHIFT)) {
-> > @@ -2626,6 +2627,13 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
-> >                 if (error)
-> >                         goto unmap_and_free_vma;
-> >
-> > +#ifdef CONFIG_FILE_BUILD_ID
-> > +               if (vma->vm_flags & VM_EXEC && !file->f_bid) {
-> > +                       error = vma_get_build_id(vma, &bid);
-> > +                       if (error)
-> > +                               goto close_and_free_vma;
-> 
-> do we want to fail mmap_region() if we get -ENOMEM from
-> vma_get_build_id()? can't we just store ERR_PTR(error) in f_bid field?
-> So we'll have f_bid == NULL for non-exec files, ERR_PTR() for when we
-> tried and failed to get build ID, and a valid pointer if we succeeded?
-
-I guess we can do that.. might be handy for debugging
-
-also build_id_parse might fail on missing build id, so you're right,
-we should not fail mmap_region in here
-
-thanks,
-jirka
+> > >>
+> > >> Thanks!
+> > >> Dongmeng Long
+> > >>
+> > >>>
+> > >>>>  .../selftests/bpf/prog_tests/attach_probe.c   | 61 ++++++++++++++++++-
+> > >>>>  .../selftests/bpf/progs/test_attach_probe.c   | 32 ++++++++++
+> > >>>>  2 files changed, 92 insertions(+), 1 deletion(-)
+> > >>>>
+> > >>>
+> > >>> [...]
