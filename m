@@ -2,74 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D46690EFE
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3F5690F05
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjBIRRD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 12:17:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
+        id S230037AbjBIRRd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 12:17:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjBIRRC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 12:17:02 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BF4658F2;
-        Thu,  9 Feb 2023 09:17:00 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id dr8so8381634ejc.12;
-        Thu, 09 Feb 2023 09:17:00 -0800 (PST)
+        with ESMTP id S230029AbjBIRR2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 12:17:28 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D3566EC9
+        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 09:17:26 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id jg8so8468246ejc.6
+        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 09:17:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hOaWLeC8ipHRmcLbRfn6JATZO77iIGtuyhLGc5wCYsg=;
-        b=eMz4/BTebHTthy7QIrMrF8piEjMCHk5gkyR04gPH0mQnoNxtk+juSI73WZpFmbv2gf
-         FuQFYTsppEmm2CuV586y5L0Zop+4pJCnUHDtqT3b1tZbv9JE4w8f8tC43Bd7PWCBOhlA
-         AsdznGOUVVgd38zrLID94UUU38wQwt+tzDz5OCKpX0LKf0HG/twtUODLrFm2TzC4gIbn
-         eKt3ivD976xMgctdzkH8i6UWi2e8vGsJhFXzQSHSRHiNdET92IQNqFeDURxJh9zasCwY
-         ba/IBqZzqb1CVIjc4JYx/HTf8p3zctAx4W8wNNb3BsvxutDM41yczWIevc6TIF0h5mL3
-         NXgQ==
+        bh=Fo82YNkdVX9z9RYOxQu5aQBHSokhQG8AohIMC2Dw6l4=;
+        b=EZEyChzAJ0ykLoKM+xGKbWNx17S591Id+MAJSKo9MRwh/QKhfOLJ8M/IesKdRZqSsW
+         TGoOxVJpywS9VL2U7ScEbZ7r/XhWo/hmtINd79Vhnglvb7r63fpu+XuollEGlbuR98s/
+         naVWeJf9H4vxbhQfgpC0BIODI4dUJhmSsE2ArtHz1XQNsDJUcTzew8ixehW5F64QdsQR
+         GERjj/pzXIx/he/1lB5qJRW8LLrsVoNSC5NOaCQtsJCZstngTCO4CX2QXi3zF/AIICiX
+         mzn3BrBJxFZjw8ETIG4fuaxQcJPDpxfM/odHC829PEBJZQ6SJdEwSzDCIJezVysf3AlC
+         uFCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hOaWLeC8ipHRmcLbRfn6JATZO77iIGtuyhLGc5wCYsg=;
-        b=0pUZQ55hzkDuZUQDSU1Cu85hM34JD8q+yA0PiU5/e11hUApwWxY0543MFG+NFQ2drB
-         9bB3YfeiYdLQ0lk398v9UAU7hvu1yyRRgfv7Cuz8LnFXmyRFBCjZqS5P4kWQq9eEEqFA
-         Tn4pKK9o3I0Y+7sH985vA5KTiHkGNp6MkB7kkIyO35D4CANDMkwVev0AXwDDyoHS37cJ
-         UcmITOcfRseiyweQFAjoIP6Izo2Wies+wRLtwkiSwy6b6IEOIhK+mxzkspnq7yIU6dWf
-         YSV/QVqDN9iLg0WzQJbfYA+W1AneU9LZjAbTZBov0gP9kPDmCw7LQwXJ8N8Wdeqv4xKI
-         BrWA==
-X-Gm-Message-State: AO0yUKUIp7sAZgQaxd1aWMsWCpcsEIHEOqofqDtO98CvlkcbdWT4Pst1
-        eMXiiwMbOv4gCXYMF00QqyROnF/7SgqD7K2wOjE=
-X-Google-Smtp-Source: AK7set+twhKV+Ooh2gn/db6SF56f0jFgx/U8eC4Rup6g9uqGZ3eD9dYBHu34t+9OvtxJPnu0EFSQVSdwEy9TKbvAPXM=
-X-Received: by 2002:a17:906:aec1:b0:889:8f1a:a153 with SMTP id
- me1-20020a170906aec100b008898f1aa153mr660783ejb.15.1675963018825; Thu, 09 Feb
- 2023 09:16:58 -0800 (PST)
+        bh=Fo82YNkdVX9z9RYOxQu5aQBHSokhQG8AohIMC2Dw6l4=;
+        b=z4GY+IftKKb5bSxnuUXzaqSFeACKR4nUluyF85g+YFEFkBCdACWplQxpStH58QXMgt
+         RHJJW7SaWDbpG9PUdaEGeByuPN0gKX9EHLMtCCefUJ32mWtht4fuy6ww4OWhTk9Nvfwv
+         cXxZQj+2SFFmfOdnO23I3IV00RpbdPunFO3GunhVExaMn3eZioRFHd7wl+rsVngV8AiA
+         Otj2mZTbS8RC9alnpfRv7GeofZ+lidWRf953zxIJCOjc769kwZaiiHEbuQp7gn9Ema/G
+         t47qA/J5m6XKD9VAfwfG13r4aQcy4vf2+kk1qeFPQT0ng67qb9z0hET1Wc/We97S56Ds
+         dWvQ==
+X-Gm-Message-State: AO0yUKXpD9evJCmKat1tyeG//1oDv3HJCvJkPwMT80I2DsFPfbaVQKNu
+        Ly01x+5VXIDRPj7NTPKQywYmY8mDWDzr9OBNNXk=
+X-Google-Smtp-Source: AK7set8boTowieXlcQKRuu6EuWduoE+0ZorIsz+s+ZXnQJFpquy3fm9oC06vkHig0MNYC4S6NF8tCmoEONYFcNqgi5M=
+X-Received: by 2002:a17:906:5a60:b0:8aa:bdec:d9ae with SMTP id
+ my32-20020a1709065a6000b008aabdecd9aemr1785196ejc.12.1675963045338; Thu, 09
+ Feb 2023 09:17:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20230201135737.800527-1-jolsa@kernel.org> <20230201135737.800527-6-jolsa@kernel.org>
- <CAEf4BzYGQGdydeVbZf5YTnDTvGduA_wbeQ=t5nSc6Wi=S17+=A@mail.gmail.com> <Y+T9XNkDWla1+3NV@krava>
-In-Reply-To: <Y+T9XNkDWla1+3NV@krava>
+References: <20230208205642.270567-1-iii@linux.ibm.com> <20230208205642.270567-5-iii@linux.ibm.com>
+ <CAEf4BzbWjs7N=cQF2PYXKeDG2dB8JKrV0Jw=i_rvVxm4Kv02Aw@mail.gmail.com> <804f5a8ef91933c3796e61ad1e51c1c4fe261d27.camel@linux.ibm.com>
+In-Reply-To: <804f5a8ef91933c3796e61ad1e51c1c4fe261d27.camel@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Feb 2023 09:16:46 -0800
-Message-ID: <CAEf4BzZ0yWJX0iNHEeSmWMmy_SiSCvhPjJdfcaET-3RHeb38Hg@mail.gmail.com>
-Subject: Re: [PATCH RFC 5/5] selftests/bpf: Add iter_task_vma_buildid test
-To:     Jiri Olsa <olsajiri@gmail.com>
+Date:   Thu, 9 Feb 2023 09:17:13 -0800
+Message-ID: <CAEf4BzbtxDC7hBg1Mbx32+CZSMvcaK3mNkeNN3AqhdT=pYZ-Uw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/9] selftests/bpf: Forward SAN_CFLAGS and
+ SAN_LDFLAGS to runqslower and libbpf
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -81,140 +72,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 9, 2023 at 6:04 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Thu, Feb 9, 2023 at 1:55 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> On Wed, Feb 08, 2023 at 04:01:42PM -0800, Andrii Nakryiko wrote:
->
-> SNIP
->
-> > > +static void test_task_vma_buildid(void)
-> > > +{
-> > > +       int err, iter_fd = -1, proc_maps_fd = -1;
-> > > +       struct bpf_iter_task_vma_buildid *skel;
-> > > +       char key[D_PATH_BUF_SIZE], *prev_key;
-> > > +       char bpf_build_id[BUILDID_STR_SIZE];
-> > > +       int len, files_fd, i, cnt = 0;
-> > > +       struct build_id val;
-> > > +       char *build_id;
-> > > +       char c;
-> > > +
-> > > +       skel = bpf_iter_task_vma_buildid__open();
-> > > +       if (!ASSERT_OK_PTR(skel, "bpf_iter_task_vma_buildid__open"))
-> > > +               return;
-> > > +
-> > > +       err = bpf_iter_task_vma_buildid__load(skel);
-> > > +       if (!ASSERT_OK(err, "bpf_iter_task_vma_buildid__load"))
-> > > +               goto out;
+> On Wed, 2023-02-08 at 17:03 -0800, Andrii Nakryiko wrote:
+> > On Wed, Feb 8, 2023 at 12:57 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> > wrote:
+> > >
+> > > To get useful results from the Memory Sanitizer, all code running
+> > > in a
+> > > process needs to be instrumented. When building tests with other
+> > > sanitizers, it's not strictly necessary, but is also helpful.
+> > > So make sure runqslower and libbpf are compiled with SAN_CFLAGS and
+> > > linked with SAN_LDFLAGS.
+> > >
+> > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > > ---
+> > >  tools/testing/selftests/bpf/Makefile | 7 +++++--
+> > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/Makefile
+> > > b/tools/testing/selftests/bpf/Makefile
+> > > index 9b5786ac676e..c4b5c44cdee2 100644
+> > > --- a/tools/testing/selftests/bpf/Makefile
+> > > +++ b/tools/testing/selftests/bpf/Makefile
+> > > @@ -215,7 +215,9 @@ $(OUTPUT)/runqslower: $(BPFOBJ) |
+> > > $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
+> > >                     OUTPUT=$(RUNQSLOWER_OUTPUT)
+> > > VMLINUX_BTF=$(VMLINUX_BTF)     \
+> > >
+> > > BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/                  \
+> > >
+> > > BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf                          \
+> > > -                   BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)
+> > > &&             \
+> > > +                   BPFOBJ=$(BPFOBJ)
+> > > BPF_INCLUDE=$(INCLUDE_DIR)                \
+> > > +                   EXTRA_CFLAGS='-g -O0
+> > > $(SAN_CFLAGS)'                        \
+> > > +                   EXTRA_LDFLAGS='$(SAN_LDFLAGS)'
+> > > &&                          \
+> > >                     cp $(RUNQSLOWER_OUTPUT)runqslower $@
+> > >
 > >
-> > minor: you can do __open_and_load() in one step
+> > I wouldn't do it for runqslower, we just make sure that it compiles,
+> > we don't really run it at all. No need to complicate its build, IMO.
 >
-> right, I copied that from another test, but removed all the
-> setup in between, so we can actually call just __open_and_load
->
-> SNIP
->
-> > > +               memset(bpf_build_id, 0x0, sizeof(bpf_build_id));
-> > > +               for (i = 0; i < val.sz; i++) {
-> > > +                       sprintf(bpf_build_id + i*2, "%02x",
-> > > +                               (unsigned char) val.data[i]);
-> > > +               }
-> > > +
-> > > +               if (!ASSERT_OK(read_buildid(key, &build_id), "read_buildid"))
-> > > +                       break;
-> > > +
-> > > +               printf("BUILDID %s %s %s\n", bpf_build_id, build_id, key);
-> >
-> > debugging leftover or intentional?
-> >
-> > > +               ASSERT_OK(strncmp(bpf_build_id, build_id, strlen(bpf_build_id)), "buildid_cmp");
-> > > +
-> > > +               free(build_id);
-> > > +               prev_key = key;
-> > > +               cnt++;
-> > > +       }
-> > > +
-> > > +       printf("checked %d files\n", cnt);
-> >
-> > ditto
->
-> both intentional, first one can go out I guess, but the
-> number of checked files seemed interesting to me ;-)
->
-> SNIP
->
-> > > diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c
-> > > new file mode 100644
-> > > index 000000000000..25e2179ae5f4
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c
-> > > @@ -0,0 +1,49 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +#include "bpf_iter.h"
-> > > +#include <bpf/bpf_helpers.h>
-> > > +#include <string.h>
-> > > +
-> > > +char _license[] SEC("license") = "GPL";
-> > > +
-> > > +#define VM_EXEC                0x00000004
-> > > +#define D_PATH_BUF_SIZE        1024
-> > > +
-> > > +struct {
-> > > +       __uint(type, BPF_MAP_TYPE_HASH);
-> > > +       __uint(max_entries, 10000);
-> > > +       __type(key, char[D_PATH_BUF_SIZE]);
-> > > +       __type(value, struct build_id);
-> > > +} files SEC(".maps");
-> > > +
-> > > +static char tmp_key[D_PATH_BUF_SIZE];
-> > > +static struct build_id tmp_data;
-> > > +
-> > > +SEC("iter/task_vma") int proc_maps(struct bpf_iter__task_vma *ctx)
-> >
-> > nit: let's keep SEC() on separate line from function itself
->
-> ok
->
-> >
-> > > +{
-> > > +       struct vm_area_struct *vma = ctx->vma;
-> > > +       struct seq_file *seq = ctx->meta->seq;
-> > > +       struct task_struct *task = ctx->task;
-> > > +       unsigned long file_key;
-> > > +       struct file *file;
-> > > +
-> > > +       if (task == (void *)0 || vma == (void *)0)
-> > > +               return 0;
-> > > +
-> > > +       if (!(vma->vm_flags & VM_EXEC))
-> > > +               return 0;
-> > > +
-> > > +       file = vma->vm_file;
-> > > +       if (!file)
-> > > +               return 0;
-> > > +
-> > > +       memset(tmp_key, 0x0, D_PATH_BUF_SIZE);
-> >
-> > __builtin_memset() to not rely on compiler optimization?
-> >
-> > > +       bpf_d_path(&file->f_path, (char *) &tmp_key, D_PATH_BUF_SIZE);
-> > > +
-> > > +       if (bpf_map_lookup_elem(&files, &tmp_key))
-> > > +               return 0;
-> > > +
-> > > +       memcpy(&tmp_data, file->f_bid, sizeof(*file->f_bid));
-> >
-> > same about __builtin_memcpy()
->
-> ah ok, did not know that, will check.. curious what could
-> go wrong by using not '__builtin_...' version?
+> runqslower is linked with target libbpf, which is instrumented.
+> This produces undefined symbol errors, since MSan runtime is expected
+> to be a part of an executable.
 
-if compiler doesn't optimize it into __builtin_memcpy() (which results
-in just explicit assembly code to copy/set data word-by-word), then
-BPF program will do actual call to memset(), which with C rules would
-be inferred as extern symbol, which would fail BPF object loading with
-error along the lines of "couldn't resolve memset extern".
+ah, ok then, never mind
 
 >
-> thanks,
-> jirka
+> [...]
