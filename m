@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1104C68FC7B
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 02:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D420B68FCA3
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 02:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbjBIBOx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 20:14:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S230091AbjBIB3y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 20:29:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbjBIBOr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 20:14:47 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41DBDF2
-        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 17:14:46 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id qb15so14604ejc.1
-        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 17:14:46 -0800 (PST)
+        with ESMTP id S229911AbjBIB3y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 20:29:54 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596AA20D3F
+        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 17:29:53 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id gr7so2161312ejb.5
+        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 17:29:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DF0dqdRSyQOQ9sB7BlswYy+TEzCFrxU4U976rBlE6tI=;
-        b=XP2U5pmeHBIupbRlq0EdSZAXBCkRJYnlkkyO7N1tttWvC9EF4IsIapTi/PaMr01BvE
-         8vPK5mrI1ByG+wOcI2Fi6lynZN46UYzj29s+Zg53sVsMF4PlqqnJ80aKUSiwqfTQrU6x
-         ay9MFNd+uNxA4KvY9h6JNBhdj1IIsvsICFoyu91fMZwVj7PNvxoGYC3a1y4z6kJiQMke
-         EmL+dZ8uZiwch8tAQ7qz6rj38gIrS5RbOgSlMpV75mJelGSiaHkKfBJxUGS/lDDzldqn
-         4B6pLiGLgCzOsYfX6N8myJQz6D+fszpL7kbUVbESir2m22BuKNA/AJMn8D+/NEVKtZl+
-         XgNA==
+        bh=9jk7Vr0tQojUzDcB9iHmioSmuhJsMDiBZTCzVUr+Z+4=;
+        b=U7BemW3pdFHQLb+3KB2TuaU0f+gw+WMMoTmFoB9hWFRbXYWPASGR2bAbJdNkDoaMsx
+         u8tyctJoYee4vmJZ4T2Hlmz2caeOme8QXQzQh2VO52hcDIOa4b89di7ZjmN2SsdYlhmC
+         /rD/LWgGUEPIM9fNum+LEmv4gN+MTmj7Gnac93488hp+FpCbUt2NDnbFeMB3557XZPV8
+         gqBT2cqyNhGXukepD3/u0ruMOcZeCMdFD0gWKVlbavd0A+8fPo+X9sMb2Ibpc9Euwv32
+         OeTncF7kgvjp1nLd9C8X3DOGjlLUOcO004UmwaXV14WfnkD2F6FUesJWYxphM4nMlEK3
+         xXfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DF0dqdRSyQOQ9sB7BlswYy+TEzCFrxU4U976rBlE6tI=;
-        b=WpKcQfilI34JGCMSGBEVicEGDxZNVwx2xNIK02hsqfVNZknO5+U4QTohFX6wSNJRcV
-         TZvEsm56Zmab9dqLHOXRR2Wm6KOxzD6FtDA1bywwYGwvvvnpgYE6nTbaJsHqsAUq+eB+
-         PKMwMlmBWucS/A+HDHZ/5YTHcv/EgC5EiK1HUip+tw6BUppRPwYBcLSYAU+LEWrwPs25
-         /xXnK0lp20GkZBkYEa0m9bF+59HykH4sKBLjR9q4Un+Owounu4mG4/kl84EYwToVd4Ab
-         cxqBUjE6isvpHRI1hWT760LSR27AvVTI9+77nO1rT5O0he4IWsoReIHHLv17hw6TU6xo
-         CjFg==
-X-Gm-Message-State: AO0yUKWpVyxalWjvdqfrCKe9Y7qAtd8ckg6hfyI5x/POUDL4eXlNYXQg
-        KvRMNN0AfKAmwQK6UU04058sm5cU4n/aON/dGCs=
-X-Google-Smtp-Source: AK7set/Zqu8kTv53KjR4HqEThjgenEQUu2NYPioO/T37Wr/LeGEFNrJuSzKNIbgyexVmlXinOhIrwtoTmS+Y2R57Vrs=
+        bh=9jk7Vr0tQojUzDcB9iHmioSmuhJsMDiBZTCzVUr+Z+4=;
+        b=y8pG0HZPRSpxpKZyp6/U2gDSqyUWcfIABpI1oow9j5opifIfSMo9JAWhphpwkwrgoV
+         eR16ZurqX2Xd3LTaVtgfNSDG5baS4psV5gaARepAyfmJhj77Xzz/i82Q1J7/P4GKEk0D
+         j9S8dvfmeqoLXNEJ/BDgo16iNkT0qbI5+4l5KT6AuBeGNMwEvKfzGASiCoBIQeV2Muia
+         BwyhEh8tbtaRJU3IT/6hp8+a8WgLkKGs6dbdIr9agEkagXZbJrK9ICd7p6PvFYnj8yrZ
+         hG/e+7hZ+WeMUyoj0CkeRLdwVwSP3NlN+lqd8j3v59iBbGxhonkUndT7u0fBU5gROfHr
+         5vng==
+X-Gm-Message-State: AO0yUKWhza1F5VusrT5HYd9AIBaJJP+zZK2B5l6rSbJHqyyNkt6J42Uz
+        HaAD5CrL2V3iSS8r0TMvi+kobhaKpxRi6michJTAgFM6XKk=
+X-Google-Smtp-Source: AK7set8jV9IM9vR2R+KuP5KhC/I6sX8FRqf7GjeK6Wxg38p/NPBYVo2EbgEXhpGKeujtszWLcme9tka6tSMj/yasH4U=
 X-Received: by 2002:a17:906:5a60:b0:8aa:bdec:d9ae with SMTP id
- my32-20020a1709065a6000b008aabdecd9aemr1338338ejc.12.1675905284855; Wed, 08
- Feb 2023 17:14:44 -0800 (PST)
+ my32-20020a1709065a6000b008aabdecd9aemr1343448ejc.12.1675906191937; Wed, 08
+ Feb 2023 17:29:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20230208205642.270567-1-iii@linux.ibm.com> <20230208205642.270567-8-iii@linux.ibm.com>
-In-Reply-To: <20230208205642.270567-8-iii@linux.ibm.com>
+References: <20230208205642.270567-1-iii@linux.ibm.com> <20230208205642.270567-9-iii@linux.ibm.com>
+In-Reply-To: <20230208205642.270567-9-iii@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Feb 2023 17:14:32 -0800
-Message-ID: <CAEf4BzaCs+SPDoWO+hRL1t-3KYy4e6NGEK5j4OrSR5a63qA3JA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/9] libbpf: Fix alen calculation in libbpf_nla_dump_errormsg()
+Date:   Wed, 8 Feb 2023 17:29:40 -0800
+Message-ID: <CAEf4BzYCNNROXcEx5w3St6TLWS3YP4C6_uCWfgfS3t_p5uaxyQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 8/9] libbpf: Add MSan annotations
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -72,33 +72,80 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Feb 8, 2023 at 12:57 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> The code assumes that everything that comes after nlmsgerr are nlattrs.
-> When calculating their size, it does not account for the initial
-> nlmsghdr. This may lead to accessing uninitialized memory.
+> MSan runs into a few false positives in libbpf. They all come from the
+> fact that MSan does not know anything about the bpf syscall,
+> particularly, what it writes to.
+>
+> Add libbpf_mark_defined() function to mark memory modified by the bpf
+> syscall. Use the abstract name (it could be e.g.
+> libbpf_msan_unpoison()), because it can be used for valgrind in the
+> future as well.
 >
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->  tools/lib/bpf/nlattr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/nlattr.c b/tools/lib/bpf/nlattr.c
-> index 3900d052ed19..c5da7662bb04 100644
-> --- a/tools/lib/bpf/nlattr.c
-> +++ b/tools/lib/bpf/nlattr.c
-> @@ -178,7 +178,7 @@ int libbpf_nla_dump_errormsg(struct nlmsghdr *nlh)
->                 hlen += nlmsg_len(&err->msg);
->
->         attr = (struct nlattr *) ((void *) err + hlen);
-> -       alen = nlh->nlmsg_len - hlen;
-> +       alen = (char *)nlh + nlh->nlmsg_len - (char *)attr;
 
-we use (void *) for pointer manipulations, let's be consistent?
-Otherwise looks good (I think, this whole nlattr stuff is very cryptic
-to me).
+This is a lot to satisfy MSan, especially mark_map_value_defined which
+has to do bpf_obj_get_info_by_fd()... Is there any other way? What
+happens if we don't do it?
 
+As for libbpf_mark_defined, wouldn't it be cleaner to teach it to
+handle NULL pointer and/or zero size transparently? Also, we can have
+libbpf_mark_defined_if(void *ptr, size_t sz, bool cond), so in code we
+don't have to have those explicit if conditions. Instead of:
+
+> +       if (!ret && prog_ids)
+> +               libbpf_mark_defined(prog_ids,
+> +                                   attr.query.prog_cnt * sizeof(*prog_ids));
+
+we can write just
+
+libbpf_mark_defined_if(prog_ids, attr.query.prog_cnt *
+sizeof(*prog_ids), ret == 0);
+
+?
+
+Should we also call a helper something like 'libbpf_mark_mem_written',
+because that's what we are saying here, right?
+
+>  tools/lib/bpf/bpf.c             | 70 +++++++++++++++++++++++++++++++--
+>  tools/lib/bpf/btf.c             |  1 +
+>  tools/lib/bpf/libbpf.c          |  1 +
+>  tools/lib/bpf/libbpf_internal.h | 14 +++++++
+>  4 files changed, 82 insertions(+), 4 deletions(-)
 >
->         if (libbpf_nla_parse(tb, NLMSGERR_ATTR_MAX, attr, alen,
->                              extack_policy) != 0) {
+
+[...]
+
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> index fbaf68335394..4e4622f66fdf 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -577,4 +577,18 @@ static inline bool is_pow_of_2(size_t x)
+>  #define PROG_LOAD_ATTEMPTS 5
+>  int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
+>
+> +#if defined(__has_feature)
+> +#if __has_feature(memory_sanitizer)
+> +#define LIBBPF_MSAN
+> +#endif
+> +#endif
+> +
+> +#ifdef LIBBPF_MSAN
+
+would below work:
+
+#if defined(__has_feature) && __has_feature(memory_sanitizer)
+
+?
+
+> +#define HAVE_LIBBPF_MARK_DEFINED
+> +#include <sanitizer/msan_interface.h>
+> +#define libbpf_mark_defined __msan_unpoison
+> +#else
+> +static inline void libbpf_mark_defined(void *s, size_t n) {}
+> +#endif
+> +
+>  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
 > --
 > 2.39.1
 >
