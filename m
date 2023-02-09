@@ -2,69 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CD3690B58
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 15:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0D8690B83
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 15:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjBIOIa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 09:08:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
+        id S230412AbjBIOSd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 09:18:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjBIOIa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 09:08:30 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E1C5D3C9;
-        Thu,  9 Feb 2023 06:08:28 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id x71so1551779ybg.6;
-        Thu, 09 Feb 2023 06:08:28 -0800 (PST)
+        with ESMTP id S230071AbjBIOSc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 09:18:32 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6A82E823;
+        Thu,  9 Feb 2023 06:18:30 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id j29-20020a05600c1c1d00b003dc52fed235so1646194wms.1;
+        Thu, 09 Feb 2023 06:18:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zTk6c7xxPoE+rwd+rpVS+Rn18/CnyngZ+h+vq3GImYA=;
-        b=mMuAVI0L/O4e8lyP0mgsBY0VHx4Ld0Fo2w4jL50qICuexc5hlBgpX8vH6/LB+W7iVT
-         DUz5YQfVX3A7Mwi25p3U/9vdVEVAJeMf3pmsACemtFyhnPQoHCZ0GsVwNvLpAbyQao0L
-         sA73C077Kk91uiCxZ/al97biL1eS30b9I2pZElh35nF9hnn9oCsDCfYshKTWSqKeEzHe
-         YrhGSQe5BtPN0UbZL8IZpB1OnssTcrKbL6YTT+X0dRdjQnnfuTfPwQ8sAu1XQ/9ppoBG
-         QWx8ymsIDj2WL9iuKzRwJ43KkLV/z2VKTnQeI9m9IvtBqVYSE81YLqOJ34ZROEx+xkM5
-         Z7zw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n6rfU3Snjl72LWDE6qX15Ocps4cU89fmRgYsFNMufWk=;
+        b=ptrgdRIUbWXZm/c9lvzocxPMYQ+eryxsewr3pbMPofs6WTJXzB1Ds06zzWNlpBFdfE
+         y52VbKkz22dnSCkSuVB6Kqy3Bn0EYvx/voJ6fcGkXc58mN+umM38sBmb1NfC6eTgR5/g
+         Qf4APaaY5Q4j3X5wFir1KJ4coiw/6UX1yJdqYkpE8FxOrw5mgdwYIa0ulh3uF+ZoVJ+5
+         ZQwXYAh9ubL1aXAeRfScDXJx+1YpSXNUVuWCwt2sfQeC6U5GThIdQyWV3OUK6IRbji9x
+         ErxpRJynYb6LskLmbQBbz9a93hHFi7tmhPeCzwsN8HHYsmcdIEvrpMGPKtABOHieEgSX
+         jkiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zTk6c7xxPoE+rwd+rpVS+Rn18/CnyngZ+h+vq3GImYA=;
-        b=jdSod7X/BpBBKMGDLHilgMMvJGPPQuMcPu57H8GHF2NtCn497WbPydgFhpe3Ng6G5t
-         odov7S3LFGF61kP3bbrb4Cn+Gi6V/spdU/5T8XpNYjP7OGJkb5+HWF6T8+B70KntcOME
-         L/LPZIFHTHGYIqu0vXjO+kwsA+MbpOVuoSAioNKv64iM6ZVgJj/sgJBw3E+a6c4xRDdF
-         QWitUK7mFM8z/4k+kRkwbpGnKaO3v/9hq9TWJu2jtb4GYIwaWecdRTqIkFXdQzMEi5td
-         lkFCs/t18xdprqm/WmVZYzPMsv7gVgsxUNMHRZOihdXdQlSh//5lVFO80pXgiO8OLK8N
-         Nf0g==
-X-Gm-Message-State: AO0yUKWpbIBwZs9GoffWaaV2UCpVg78Nwm+NKvdoJca5MdAXh7omrKIH
-        mXvnGZKkjb57z1/pdgiziHeb/5VXKSODlNsQqp4=
-X-Google-Smtp-Source: AK7set+BF8dIBnhSDmbVZKebbFLMPnR35VaCGnuFoKxHBFulMnf8WDhFJOOYtg6wGwkFZH2ju3P9h0+o2X0T4RKzzOM=
-X-Received: by 2002:a25:73d1:0:b0:87e:d379:a629 with SMTP id
- o200-20020a2573d1000000b0087ed379a629mr1232996ybc.285.1675951707531; Thu, 09
- Feb 2023 06:08:27 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n6rfU3Snjl72LWDE6qX15Ocps4cU89fmRgYsFNMufWk=;
+        b=yf4AAuEn8AoNkJoA6DsVt3yXwDWzQK3iCZDwMlc7gHDCX9GcuULMjmd3AxIBKXW8BK
+         h1svAFYUUJYhBMAnxNQmxRcmHSfTjcOOHPyoLNiYY1QhYL2MnEu7XKlKY003l7jEvM4p
+         MXfixi7HJ0DC34xn4pQD7dhwCc9avFi2Mz4lnFRE9MsrcxOtWpjtTBjBE9L2wT43dXpw
+         4QW+w5E3y80VQYRSmjMUZ5Owhh30HJB7h3dOnAOLC2CdshfM3e4FUwe6mrMzvyEjE+4o
+         H6JpwtIIMgL0+9JXF4y0Tj5e1BwDbAtXnZdocjYIezWnY+1kixuAXvxvAOrxjEZn+cES
+         uVFA==
+X-Gm-Message-State: AO0yUKUnc93qe0TOUt+PEoNyjQnSqeod7S98TQky8gsmOvIokxbLbfB/
+        LrjLNSPjZglkwmz6T5ouUBY=
+X-Google-Smtp-Source: AK7set/oU2MQE6PRrUGZeem/G28nDvWH2jZGBGq/aX3yec9+KFq5SeSvdk3RbW/QsABFEFJLifd0VA==
+X-Received: by 2002:a05:600c:4d21:b0:3de:e447:8025 with SMTP id u33-20020a05600c4d2100b003dee4478025mr9943371wmp.21.1675952309295;
+        Thu, 09 Feb 2023 06:18:29 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id o41-20020a05600c512900b003dc4aae4739sm5886452wms.27.2023.02.09.06.18.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Feb 2023 06:18:28 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 9 Feb 2023 15:18:26 +0100
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [RFC 0/5] mm/bpf/perf: Store build id in file object
+Message-ID: <Y+UAsr8A+xT0bUY/@krava>
+References: <20230201135737.800527-1-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <20230203031742.1730761-1-imagedong@tencent.com>
- <20230203031742.1730761-3-imagedong@tencent.com> <CAEf4BzYh90NyyYvfTT=M=-KLspydMX4PZK8jCwNDydAP=kFgYw@mail.gmail.com>
- <CADxym3a6_wBHW_c_ZYtZ5QXbbunhKxau6k-fn4TNrn+6qzW6fw@mail.gmail.com>
- <CAEf4BzZAo6Bfio3pbY3j5yUDArCbdiWPC-r=XhFM9Bwq+4VVMg@mail.gmail.com>
- <75421c53-fa5c-d7c7-4b19-2d97e3e6d7f6@oracle.com> <CAEf4BzZicf3B7BwPj=fWkcVJz0JayB9qUUbJFBPunxOJwQoMdw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZicf3B7BwPj=fWkcVJz0JayB9qUUbJFBPunxOJwQoMdw@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 9 Feb 2023 22:08:16 +0800
-Message-ID: <CADxym3YR6PS_0XfzH6p1CNUAbDxX=gO_aAoOu7fEkx1pAn2AKQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add test for legacy/perf
- kprobe/uprobe attach mode
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230201135737.800527-1-jolsa@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,124 +85,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 9, 2023 at 7:31 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Feb 8, 2023 at 3:49 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >
-> > On 07/02/2023 22:50, Andrii Nakryiko wrote:
-> > > On Mon, Feb 6, 2023 at 6:39 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
-> > >>
-> > >> On Tue, Feb 7, 2023 at 4:05 AM Andrii Nakryiko
-> > >> <andrii.nakryiko@gmail.com> wrote:
-> > >>>
-> > >>> On Thu, Feb 2, 2023 at 7:18 PM <menglong8.dong@gmail.com> wrote:
-> > >>>>
-> > >>>> From: Menglong Dong <imagedong@tencent.com>
-> > >>>>
-> > >>>> Add the testing for kprobe/uprobe attaching in legacy and perf mode.
-> > >>>> And the testing passed:
-> > >>>>
-> > >>>> ./test_progs -t attach_probe
-> > >>>> $5       attach_probe:OK
-> > >>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> > >>>>
-> > >>>> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> > >>>> ---
-> > >>>
-> > >>> Do you mind refactoring attach_probe test into multiple subtests,
-> > >>> where each subtest will only test one of the attach mode and type. The
-> > >>> reason is that libbpf CI runs tests with latest selftests and libbpf
-> > >>> against old kernels (4.9 and 5.5, currently). Due to attach_probe
-> > >>> testing all these uprobe/kprobe attach modes with extra features (like
-> > >>> cookie, ref count, etc), we had to disable attach_probe test in libbpf
-> > >>> CI on old kernels.
-> > >>>
-> > >>> If we can split each individual uprobe/kprobe mode, that will give us
-> > >>> flexibility to selectively allowlist those tests that don't force
-> > >>> libbpf to use newer features (like cookies, LINK or PERF mode, etc).
-> > >>>
-> > >>> It would be a great improvement and highly appreciated! If you don't
-> > >>> mind doing this, let's do the split of existing use cases into subtest
-> > >>> in a separate patch, and then add PERF/LEGACY/LINK mode tests on top
-> > >>> of that patch.
-> > >>>
-> > >>
-> > >> Of course, with pleasure. For the existing use cases, we split it into
-> > >> subtests, such as:
-> > >>
-> > >>   kprobe/kretprobe auto attach
-> > >>   kprobe/kretprobe manual attach
-> > >>   uprobe/uretprobe ref_ctr test
-> > >>   uprobe/uretprobe auto attach
-> > >>   sleepable kprobe/uprobe
-> > >>   ......
-> > >>
-> > >> Am I right?
-> > >
-> > > I haven't analysed all the different cases, but roughly it makes
-> > > sense. With more granular subtests we can also drop `legacy` flag and
-> > > rely on subtest allowlisting in CI.
-> > >
-> >
-> > I'm probably rusty on the details, but when you talk about subtest
-> > splitting for the [uk]probe manual attach, are we talking about running
-> > the same manual attach test for the different modes, with each as a
-> > separate subtest, such that each registers as a distinct pass/fail (and
-> > can thus be allowlisted as appropriate)? So in other words
-> >
-> > test__start_subtest("manual_attach_kprobe_link");
-> > attach_kprobe_manual(link_options);
-> > test__start_subtest("manual_attach_kprobe_legacy");
-> > attach_kprobe_manual(legay_options);
-> > test__start_subtest("manual_attach_kprobe_perf");
-> > attach_kprobe_manual(perf_options);
-> >
-> > ?
->
-> Yep. One of the reasons is that on 4.9 kernel there won't be link or
-> perf method available, so it is expected for such modes to fail. I
-> want to be able to still test the legacy code path on 4.9, though.
-> Similarly tests that are using ref_ctr_offset or bpf_cookie won't work
-> on older kernels as well. Right now because of all of them being in a
-> single test, I have to block entire test, losing coverage on older
-> kernels.
->
+On Wed, Feb 01, 2023 at 02:57:32PM +0100, Jiri Olsa wrote:
+> hi,
+> we have a use cases for bpf programs to use binary file's build id.
+> 
+> After some attempts to add helpers/kfuncs [1] [2] Andrii had an idea [3]
+> to store build id directly in the file object. That would solve our use
+> case and might be beneficial for other profiling/tracing use cases with
+> bpf programs.
+> 
+> This RFC patchset adds new config CONFIG_FILE_BUILD_ID option, which adds
+> build id object pointer to the file object when enabled. The build id is
+> read/populated when the file is mmap-ed.
+> 
+> I also added bpf and perf changes that would benefit from this.
+> 
+> I'm not sure what's the policy on adding stuff to file object, so apologies
+> if that's out of line. I'm open to any feedback or suggestions if there's
+> better place or way to do this.
 
-I think I am beginning to understand it now. So we need 2 patches
-for the selftests part. In the 1th patch, we split the existing testings
-into multi subtests, such as:
+hi,
+Matthew suggested on irc to consider inode for storing build id
 
-test__start_subtest("manual_attach_probe") // test kprobe/uprobe manual attach
-test__start_subtest("auto_attach_probe") // test kprobe/uprobe auto attach
-test__start_subtest("bpf_cookie") // test bpf_cookie
-test__start_subtest("ref_ctr_offset") test ref_ctr_offset
-test__start_subtest("sleepable_probe") // test sleepable
-uprobe/uretprobe, and sleepable kprobe
-......
+I tried that and it seems to have better stats wrt allocated build
+id objects, because inode is being shared among file objects
 
-And in the 2th patch, we change the subtest "manual_attach_probe" into
-the following tests:
+I took /proc/slabinfo output after running bpf tests
 
-test__start_subtest("manual_attach_kprobe_link");
-test__start_subtest("manual_attach_kprobe_legacy");
-test__start_subtest("manual_attach_kprobe_perf");
+- build id stored in file:
 
-Therefore, every feature can be tested in a subtest alone.
+  # name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
+  build_id             668    775    160   25    1 : tunables    0    0    0 : slabdata     31     31      0
 
-Am I right?
+- build id stored in inode:
 
-Thanks!
-Menglong Dong
-> >
-> > >>
-> > >> Thanks!
-> > >> Dongmeng Long
-> > >>
-> > >>>
-> > >>>>  .../selftests/bpf/prog_tests/attach_probe.c   | 61 ++++++++++++++++++-
-> > >>>>  .../selftests/bpf/progs/test_attach_probe.c   | 32 ++++++++++
-> > >>>>  2 files changed, 92 insertions(+), 1 deletion(-)
-> > >>>>
-> > >>>
-> > >>> [...]
+  # name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
+  build_id             222    225    160   25    1 : tunables    0    0    0 : slabdata      9      9      0
+
+
+I'm stranger to inode/fs/mm code so I'll spend some time checking on
+what I possibly broke in there before I send it, but I'd appreciate
+any early feedback ;-)
+
+the code is in here:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  inode_build_id
+
+I'll send another version with inode if there's no objection
+
+thanks,
+jirka
+
+
+> 
+> thanks,
+> jirka
+> 
+> 
+> [1] https://lore.kernel.org/bpf/20221108222027.3409437-1-jolsa@kernel.org/
+> [2] https://lore.kernel.org/bpf/20221128132915.141211-1-jolsa@kernel.org/
+> [3] https://lore.kernel.org/bpf/CAEf4BzaZCUoxN_X2ALXwQeFTCwtL17R4P_B_-hUCcidfyO2xyQ@mail.gmail.com/
+> ---
+> Jiri Olsa (5):
+>       mm: Store build id in file object
+>       bpf: Use file object build id in stackmap
+>       perf: Use file object build id in perf_event_mmap_event
+>       selftests/bpf: Add file_build_id test
+>       selftests/bpf: Add iter_task_vma_buildid test
+> 
+>  fs/file_table.c                                               |  3 +++
+>  include/linux/buildid.h                                       | 17 +++++++++++++++++
+>  include/linux/fs.h                                            |  3 +++
+>  kernel/bpf/stackmap.c                                         |  8 ++++++++
+>  kernel/events/core.c                                          | 43 +++++++++++++++++++++++++++++++++++++++----
+>  lib/buildid.c                                                 | 44 ++++++++++++++++++++++++++++++++++++++++++++
+>  mm/Kconfig                                                    |  7 +++++++
+>  mm/mmap.c                                                     | 15 +++++++++++++++
+>  tools/testing/selftests/bpf/prog_tests/bpf_iter.c             | 88 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/prog_tests/file_build_id.c        | 70 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/file_build_id.c             | 34 ++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/trace_helpers.c                   | 35 +++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/trace_helpers.h                   |  1 +
+>  14 files changed, 413 insertions(+), 4 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/file_build_id.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/file_build_id.c
