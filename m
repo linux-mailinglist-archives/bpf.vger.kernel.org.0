@@ -2,288 +2,374 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBABF690FD2
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 19:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D292691144
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 20:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjBISCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 13:02:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
+        id S229655AbjBITXs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 14:23:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjBISCp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 13:02:45 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECA645219
-        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 10:02:41 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id z1so3725210plg.6
-        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 10:02:41 -0800 (PST)
+        with ESMTP id S229834AbjBITXq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 14:23:46 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B842B69517
+        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 11:23:43 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id r18so2226163pgr.12
+        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 11:23:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Ln0g7w4oqlNhsZQhqyQ8lclO74u/J8hFDhcCp3K8mTQ=;
-        b=nausA29Fo+6rTP317RVYT0Tw+fOsllaz8aKOhpG7IInO4x18lhC8QPyAbP+t3IjLDb
-         DCGpnq4Bx001F5jaJ0hOPHgdnAH9krE4WJ9nRLgdZxCsYnf4M4/4cIT+yy+K1lH3dxIY
-         6sQfsLC9bKZxg3t5EmVAIxWVBG5+J6ZBsIv4/gBYUx4JNx9Ab5NyuORjPpgbfXI0IRFO
-         6fAwiKewAnG9e5EdrcLO8D85vlAV28gyy2XR1+YG/NaNFltnp1zKYOjwNy0UgvNpdtMj
-         kw4q8Nw27iySxWTb4xPJw1rq2qU4aMdhO/paLonj72W1VmG8xUGezEK/Q7CuI/hzhcVW
-         YM9g==
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=95HxeBvzenu+ijIXFcOlNVKQdoWMdAneLWKscet2sE4=;
+        b=BDAO7jx7KdqPedFQPrdTWfuyEDJC1PN9Bysq2Xo5zyh/C+lhvMzeTx6RtclgYDrV3v
+         qSZgwQuXU+LzV2FHx/p3VYZ4Tvo+o1L6f/65gvupTIAsxwrBCt80sfQCf8tdZj7ipt6Z
+         e+3xQGYtck+pjDbwAKDRrzWTGUOg0rlRr8seo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ln0g7w4oqlNhsZQhqyQ8lclO74u/J8hFDhcCp3K8mTQ=;
-        b=2oUJGYxKNXy9O0yvCMGYYDR6KkbQREVEUdTmSP1NWdpCGKWXFmzZ97/+fjJqHi0bRd
-         6FdbNJjHoU2AeQHhYocv0cP1Ivby5Zy7xnAMr7GEue23iGqPuVDjtSeRhGvOd6fEWFaa
-         lxuK6YCsSEXxtAABDGIeomotSV4lcPFf6kz82uChp353KM1r+qGvDwYh5BzwgdEJvpZm
-         Gfl/32VjMd5VamE+4S1aVTb4ycL+sYvw4iD+Kgb5SXzi6fXnQNJaBBMT2sp+3JXzIktd
-         CqI2TpXow3zyoVcgO2h1XN/w+NWiKrP85NBoyGfkChQnuk5w1KgfOdmObcEz9n9p87EG
-         iV0g==
-X-Gm-Message-State: AO0yUKWLxJ3ffg1LyAA3eSDZoYspFJrkzX63JaMHaYExbZB0FZAMPtwK
-        ZDqj8QQqLZSZ/so2OxqtKKZ+YAIlk9InN8NUVbmi1X3lgfo=
-X-Google-Smtp-Source: AK7set/yu4l2Lo/BxzTV0yy/CvwJzfxokefGqzdZdwZoz2FFp9szlCbJrBaR2JVvyJGUHB6vT/Yp0NcpApVUT0tiMRY=
-X-Received: by 2002:a17:902:76c6:b0:199:4934:9d1b with SMTP id
- j6-20020a17090276c600b0019949349d1bmr1770215plt.23.1675965760415; Thu, 09 Feb
- 2023 10:02:40 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=95HxeBvzenu+ijIXFcOlNVKQdoWMdAneLWKscet2sE4=;
+        b=0tD2mlPNh3n/+UqtjKLzNsCvkBgKIZZ2lMN5JkwjG2zyv/Ew3exAUBX//BeIkOWOkb
+         BIeiJa19DLMcbWOjOQLb37Bg6y/hv9Lc2iWRUsQgCm6vzaJJhqU98mFRBCuf1nRC9i7s
+         g5DXVtEuwmZ+q9sO+hZexy+B3YpOJgNa4YLOvPH4STCzgxORaZgW75uL5L+d6R/qHW4f
+         /CWmiJwKmxpZhbjkV4jcu1it6hHxXkb7C64Ews15mF4TdwhoAecJWyHIQmcgR3MErobk
+         m3BJvlWQU8LE+vDd7vvk6bYv2hcuOqbvnUmhrmdyA1Kj60t/Lko1VxFM+KJKWGKN9GNs
+         0HqQ==
+X-Gm-Message-State: AO0yUKWygJXpeNAlukzCO9cTILHeN8n+m+8s2pE5+SDOXJ+SeV30cTVE
+        DIHrxIrZcV2rlKydeSGOpdqYtg==
+X-Google-Smtp-Source: AK7set/iKISfX4STDLBfTHgHasnaPFpDw/LhXElJRde7iIlzGSeOTIdimXbThAWtEzOwyjZEGwydtQ==
+X-Received: by 2002:a05:6a00:1d0a:b0:5a8:473e:2fdc with SMTP id a10-20020a056a001d0a00b005a8473e2fdcmr4503466pfx.12.1675970623175;
+        Thu, 09 Feb 2023 11:23:43 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id y19-20020a62b513000000b00589a7824703sm1784567pfe.194.2023.02.09.11.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Feb 2023 11:23:42 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] bpf: Deprecate "data" member of bpf_lpm_trie_key
+Date:   Thu,  9 Feb 2023 11:23:41 -0800
+Message-Id: <20230209192337.never.690-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-From:   Vincent Li <vincent.mc.li@gmail.com>
-Date:   Thu, 9 Feb 2023 10:02:28 -0800
-Message-ID: <CAK3+h2wv6D+ZnOJ9HwXZLF8HN2zcqv2gKn=p3y40z+qoeeiegw@mail.gmail.com>
-Subject: XDP SYNProxy SYN+ACK packet missing?
-To:     bpf <bpf@vger.kernel.org>
-Cc:     maximmi@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=12186; h=from:subject:message-id; bh=9CDGuuBIAFANWICcv8yRx8EyXbGptyp5vGwRbdTQpPU=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBj5Ug8X1KSIuD8fW/lSvneIGxbcZoZyQmf+3nRXvx3 xxj+pEGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY+VIPAAKCRCJcvTf3G3AJisCD/ oCjOJhcBmsEVwaEpp16vu0DTw3/9s26uvI/Ri4f37vZngY3Zbn5VwWed6ssOsXO3jnrBgPtWIO9uQa dN9FG7bECnVjRB2qUgvBbymFmpujN1SORfuIcRd8qUw/1iDSYE8oYDvY7aV+uI2sKIJphLnf9tLJdE AEoUaatVMuWqbAU1MgLYL3eSG2WiwudQ5cp9XC+6kLlwg3wUpuwUUgiPmwjk/pNqUJiUWoj3SBx5Dr 9AFbSVQgZUSRpN+4zhQoUp+1dbvJ8e8wAvttA0KAo87k8O92WiMIy6do0dAF02Ls5W3wnf3XgO5ICR wpZnqKtLOyy+CU13ShKoINTKLF4zE+tE/kf3nP5wHBDZY0GkWg0OhEspuAFR9Y/yXLTn2s0nr5Wt+X BYoh6rKN6OVjZ+iYW17FriuRLlKTBaJU45x6u0CT3EwWYO4lPfSCLgI4qULx8ByMbG9aytWrrwefo8 PaOYexquNLddZ+q7agEpbv4CSd1N2J5R0JkzarKExfwGC/dsBXz4R0UsVsSP6xNo7zjFDyZi+5FyOL 5UBeKokzuk5nn3LRvKMXiQtd70ravZpUrHd8rYFQYONnu764gxTG1xKonwrSduO9RehS+1ZUdiXtTd Ru0DBoTuUBIAVfnUwxK8m5poKfJMZbYIcA5QogC+VPWrdrEtHzZ1QWNZOxuA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+The kernel is globally removing the ambiguous 0-length and 1-element
+arrays in favor of flexible arrays, so that we can gain both compile-time
+and run-time array bounds checking[1]. Most cases of these changes are
+trivial, but this case in BPF is not. It faces some difficulties:
 
-Sorry for the lengthy and user related question, I configured firehol
-synproxy https://firehol.org/firehol-manual/firehol-synproxy/ to use
-iptables synproxy, which works great. Then I  thought about why not
-use the almost production ready XDP synproxy acceleration code to
-accelerate the synproxy. so I compiled the
-xdp_synproxy.c/xdp_synproxy.kern.bpf.c from bpf-next and copied the
-xdp_synproxy binary and xdp_synproxy.kern.bpf.o to an Ubuntu 20.04
-running Ubuntu PPA mainline kernel 6.1.10
-https://kernel.ubuntu.com/~kernel-ppa/mainline/v6.1.10/
+1) struct bpf_lpm_trie_key is part of UAPI so changes can be fragile in
+   the sense that projects external to Linux may be impacted.
 
-attached the XDP program
+2) The struct is intended to be used as a header, which means it may
+   be within another structure, resulting in the "data" array member
+   overlapping with the surrounding structure's following members. When
+   converting from [0]-style to []-style, this overlap elicits warnings
+   under Clang, and GCC considers it a deprecated extension (and similarly
+   warns under -pedantic): https://godbolt.org/z/vWzqs41h6
 
-root@vli-2004:/home/vincent# ./xdp_synproxy --iface ens192  --mss4
-1460 --mss6 1440 --ports 80 --wscale 7 --ttl 64 --single
+3) Both the kernel and userspace access the existing "data" member
+   for more than just static initializers and offsetof() calculations.
+   For example:
 
-Replacing allowed ports
-Added port 80
-Replacing TCP/IP options
-Total SYNACKs generated: 0
+      cilium:
+        struct egress_gw_policy_key in_key = {
+                .lpm_key = { 32 + 24, {} },
+                .saddr   = CLIENT_IP,
+                .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
+        };
 
-root@vli-2004:/home/vincent# ip l list dev ens192
+      systemd:
+        ipv6_map_fd = bpf_map_new(
+                        BPF_MAP_TYPE_LPM_TRIE,
+                        offsetof(struct bpf_lpm_trie_key, data) + sizeof(uint32_t)*4,
+                        sizeof(uint64_t), ...);
+	...
+        struct bpf_lpm_trie_key *key_ipv4, *key_ipv6;
+	...
+	memcpy(key_ipv4->data, &a->address, sizeof(uint32_t));
 
-3: ens192: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc
-mq state UP mode DEFAULT group default qlen 1000
-    link/ether 00:50:56:9d:b2:72 brd ff:ff:ff:ff:ff:ff
-    prog/xdp id 18 tag f895ef43d8481528 jited
-    altname enp11s0
+   Searching for other uses in Debian Code Search seem to be just copies
+   of UAPI headers:
+   https://codesearch.debian.net/search?q=struct+bpf_lpm_trie_key&literal=1&perpkg=1
 
-I ran curl test to the target 10.169.72.117 which should be DNAT to
-protected real server 10.1.72.187, it works
+Introduce struct bpf_lpm_trie_key_u8 for the kernel (and future userspace)
+to use for walking the individual bytes following the header, and leave
+the "data" member of struct bpf_lpm_trie_key as-is (i.e. a [0]-style
+array). This will allow existing userspace code to continue to use "data"
+as a fake flexible array. The kernel (and future userspace code) building
+with -fstrict-flex-arrays=3 will see struct bpf_lpm_trie_key::data has
+having 0 bytes so there will be no overlap warnings, and can instead
+use struct bpf_lpm_trie_key_u8::data for accessing the actual byte
+array contents. The definition of struct bpf_lpm_trie_key_u8 uses a
+union with struct bpf_lpm_trie_key so that things like container_of()
+can be used instead of doing explicit casting, all while leaving the
+member names un-namespaced (i.e. key->prefixlen == key_u8->prefixlen,
+key->data == key_u8->data), allowing for trivial drop-in replacement
+without collateral member renaming.
 
-I ran client hping3 to send one SYN packet to the target 10.169.72.117
-which should be dropped by XDP SYNPROXY, it works great
+This will avoid structure overlap warnings and array bounds warnings
+while enabling run-time array bounds checking under CONFIG_UBSAN_BOUNDS=y
+and -fstrict-flex-arrays=3.
 
- hping3 10.169.72.117 -S -p 80 -c 1
+For reference, the current warning under GCC 13 with -fstrict-flex-arrays=3
+and -Warray-bounds is:
 
-but I did not see SYN+ACK with syncookie packet sent to the client
-when I run tcpdump on the hping3 client side ( I understand I will not
-see SYN and SYN+ACK on firewall with tcpdump because XDP processed
-packet early in the path)
+../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+  207 |                                        *(__be16 *)&key->data[i]);
+      |                                                   ^~~~~~~~~~~~~
+../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+  102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+      |                                                      ^
+../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+   97 | #define be16_to_cpu __be16_to_cpu
+      |                     ^~~~~~~~~~~~~
+../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+  206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+^
+      |                            ^~~~~~~~~~~
+In file included from ../include/linux/bpf.h:7:
+../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+   82 |         __u8    data[0];        /* Arbitrary size */
+      |                 ^~~~
 
-I used pwru to trace the SYN packet:
+Additionally update the samples and selftests to use the new structure,
+for demonstrating best practices.
 
-root@vli-2004:/home/vincent# time ./pwru --filter-src-ip 10.169.72.114
---output-tuple --backend kprobe-multi
+[1] For lots of details, see both:
+    https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+    https://people.kernel.org/kees/bounded-flexible-arrays-in-c
 
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Mykola Lysenko <mykolal@fb.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Haowen Bai <baihaowen@meizu.com>
+Cc: bpf@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/uapi/linux/bpf.h                   | 15 +++++++++++++--
+ kernel/bpf/lpm_trie.c                      | 16 +++++++++-------
+ samples/bpf/map_perf_test_user.c           |  2 +-
+ samples/bpf/xdp_router_ipv4_user.c         |  2 +-
+ tools/testing/selftests/bpf/test_lpm_map.c | 14 +++++++-------
+ 5 files changed, 31 insertions(+), 18 deletions(-)
 
-2023/02/09 04:15:42 Per cpu buffer size: 4096 bytes
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ba0f0cfb5e42..f843a7582456 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -76,10 +76,21 @@ struct bpf_insn {
+ 	__s32	imm;		/* signed immediate constant */
+ };
+ 
+-/* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
++/* Header for a key of a BPF_MAP_TYPE_LPM_TRIE entry */
+ struct bpf_lpm_trie_key {
+ 	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
+-	__u8	data[0];	/* Arbitrary size */
++	__u8	data[0];	/* Deprecated field: use struct bpf_lpm_trie_key_u8 */
++};
++
++/* Raw (u8 byte array) key of a BPF_MAP_TYPE_LPM_TRIE entry */
++struct bpf_lpm_trie_key_u8 {
++	union {
++		struct bpf_lpm_trie_key hdr;
++		struct {
++			__u32	prefixlen;
++			__u8	data[];
++		};
++	};
+ };
+ 
+ struct bpf_cgroup_storage_key {
+diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
+index d833496e9e42..3a93ace62c87 100644
+--- a/kernel/bpf/lpm_trie.c
++++ b/kernel/bpf/lpm_trie.c
+@@ -164,13 +164,15 @@ static inline int extract_bit(const u8 *data, size_t index)
+  */
+ static size_t longest_prefix_match(const struct lpm_trie *trie,
+ 				   const struct lpm_trie_node *node,
+-				   const struct bpf_lpm_trie_key *key)
++				   const struct bpf_lpm_trie_key_u8 *key)
+ {
+ 	u32 limit = min(node->prefixlen, key->prefixlen);
+ 	u32 prefixlen = 0, i = 0;
+ 
+-	BUILD_BUG_ON(offsetof(struct lpm_trie_node, data) % sizeof(u32));
+-	BUILD_BUG_ON(offsetof(struct bpf_lpm_trie_key, data) % sizeof(u32));
++	BUILD_BUG_ON(offsetof(typeof(*node), data) % sizeof(u32));
++	BUILD_BUG_ON(offsetof(typeof(*key), data) % sizeof(u32));
++	BUILD_BUG_ON(offsetof(typeof(*key), data) !=
++		     offsetof(typeof(key->hdr), data));
+ 
+ #if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) && defined(CONFIG_64BIT)
+ 
+@@ -229,7 +231,7 @@ static void *trie_lookup_elem(struct bpf_map *map, void *_key)
+ {
+ 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
+ 	struct lpm_trie_node *node, *found = NULL;
+-	struct bpf_lpm_trie_key *key = _key;
++	struct bpf_lpm_trie_key_u8 *key = _key;
+ 
+ 	/* Start walking the trie from the root node ... */
+ 
+@@ -306,7 +308,7 @@ static int trie_update_elem(struct bpf_map *map,
+ 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
+ 	struct lpm_trie_node *node, *im_node = NULL, *new_node = NULL;
+ 	struct lpm_trie_node __rcu **slot;
+-	struct bpf_lpm_trie_key *key = _key;
++	struct bpf_lpm_trie_key_u8 *key = _key;
+ 	unsigned long irq_flags;
+ 	unsigned int next_bit;
+ 	size_t matchlen = 0;
+@@ -434,7 +436,7 @@ static int trie_update_elem(struct bpf_map *map,
+ static int trie_delete_elem(struct bpf_map *map, void *_key)
+ {
+ 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
+-	struct bpf_lpm_trie_key *key = _key;
++	struct bpf_lpm_trie_key_u8 *key = _key;
+ 	struct lpm_trie_node __rcu **trim, **trim2;
+ 	struct lpm_trie_node *node, *parent;
+ 	unsigned long irq_flags;
+@@ -616,7 +618,7 @@ static int trie_get_next_key(struct bpf_map *map, void *_key, void *_next_key)
+ {
+ 	struct lpm_trie_node *node, *next_node = NULL, *parent, *search_root;
+ 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
+-	struct bpf_lpm_trie_key *key = _key, *next_key = _next_key;
++	struct bpf_lpm_trie_key_u8 *key = _key, *next_key = _next_key;
+ 	struct lpm_trie_node **node_stack = NULL;
+ 	int err = 0, stack_ptr = -1;
+ 	unsigned int next_bit;
+diff --git a/samples/bpf/map_perf_test_user.c b/samples/bpf/map_perf_test_user.c
+index d2fbcf963cdf..07ff471ed6ae 100644
+--- a/samples/bpf/map_perf_test_user.c
++++ b/samples/bpf/map_perf_test_user.c
+@@ -370,7 +370,7 @@ static void run_perf_test(int tasks)
+ 
+ static void fill_lpm_trie(void)
+ {
+-	struct bpf_lpm_trie_key *key;
++	struct bpf_lpm_trie_key_u8 *key;
+ 	unsigned long value = 0;
+ 	unsigned int i;
+ 	int r;
+diff --git a/samples/bpf/xdp_router_ipv4_user.c b/samples/bpf/xdp_router_ipv4_user.c
+index 9d41db09c480..266fdd0b025d 100644
+--- a/samples/bpf/xdp_router_ipv4_user.c
++++ b/samples/bpf/xdp_router_ipv4_user.c
+@@ -91,7 +91,7 @@ static int recv_msg(struct sockaddr_nl sock_addr, int sock)
+ static void read_route(struct nlmsghdr *nh, int nll)
+ {
+ 	char dsts[24], gws[24], ifs[16], dsts_len[24], metrics[24];
+-	struct bpf_lpm_trie_key *prefix_key;
++	struct bpf_lpm_trie_key_u8 *prefix_key;
+ 	struct rtattr *rt_attr;
+ 	struct rtmsg *rt_msg;
+ 	int rtm_family;
+diff --git a/tools/testing/selftests/bpf/test_lpm_map.c b/tools/testing/selftests/bpf/test_lpm_map.c
+index c028d621c744..e2e822759e13 100644
+--- a/tools/testing/selftests/bpf/test_lpm_map.c
++++ b/tools/testing/selftests/bpf/test_lpm_map.c
+@@ -211,7 +211,7 @@ static void test_lpm_map(int keysize)
+ 	volatile size_t n_matches, n_matches_after_delete;
+ 	size_t i, j, n_nodes, n_lookups;
+ 	struct tlpm_node *t, *list = NULL;
+-	struct bpf_lpm_trie_key *key;
++	struct bpf_lpm_trie_key_u8 *key;
+ 	uint8_t *data, *value;
+ 	int r, map;
+ 
+@@ -331,8 +331,8 @@ static void test_lpm_map(int keysize)
+ static void test_lpm_ipaddr(void)
+ {
+ 	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_NO_PREALLOC);
+-	struct bpf_lpm_trie_key *key_ipv4;
+-	struct bpf_lpm_trie_key *key_ipv6;
++	struct bpf_lpm_trie_key_u8 *key_ipv4;
++	struct bpf_lpm_trie_key_u8 *key_ipv6;
+ 	size_t key_size_ipv4;
+ 	size_t key_size_ipv6;
+ 	int map_fd_ipv4;
+@@ -423,7 +423,7 @@ static void test_lpm_ipaddr(void)
+ static void test_lpm_delete(void)
+ {
+ 	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_NO_PREALLOC);
+-	struct bpf_lpm_trie_key *key;
++	struct bpf_lpm_trie_key_u8 *key;
+ 	size_t key_size;
+ 	int map_fd;
+ 	__u64 value;
+@@ -532,7 +532,7 @@ static void test_lpm_delete(void)
+ static void test_lpm_get_next_key(void)
+ {
+ 	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_NO_PREALLOC);
+-	struct bpf_lpm_trie_key *key_p, *next_key_p;
++	struct bpf_lpm_trie_key_u8 *key_p, *next_key_p;
+ 	size_t key_size;
+ 	__u32 value = 0;
+ 	int map_fd;
+@@ -693,7 +693,7 @@ static void *lpm_test_command(void *arg)
+ {
+ 	int i, j, ret, iter, key_size;
+ 	struct lpm_mt_test_info *info = arg;
+-	struct bpf_lpm_trie_key *key_p;
++	struct bpf_lpm_trie_key_u8 *key_p;
+ 
+ 	key_size = sizeof(struct bpf_lpm_trie_key) + sizeof(__u32);
+ 	key_p = alloca(key_size);
+@@ -717,7 +717,7 @@ static void *lpm_test_command(void *arg)
+ 				ret = bpf_map_lookup_elem(info->map_fd, key_p, &value);
+ 				assert(ret == 0 || errno == ENOENT);
+ 			} else {
+-				struct bpf_lpm_trie_key *next_key_p = alloca(key_size);
++				struct bpf_lpm_trie_key_u8 *next_key_p = alloca(key_size);
+ 				ret = bpf_map_get_next_key(info->map_fd, key_p, next_key_p);
+ 				assert(ret == 0 || errno == ENOENT || errno == ENOMEM);
+ 			}
+-- 
+2.34.1
 
-2023/02/09 04:15:42 Attaching kprobes (via kprobe-multi)...
-
-1517 / 1517 [-----------------------------------------------------------------------------------------------------------------------------]
-100.00% ? p/s
-
-2023/02/09 04:15:42 Attached (ignored 0)
-
-2023/02/09 04:15:42 Listening for events..
-
-               SKB    CPU          PROCESS                     FUNC
-0xffff8fbc5939c900      0        [<empty>]           do_xdp_generic
-10.169.72.114:17664->10.169.72.117:40(tcp)
-0xffff8fbc5939c900      0        [<empty>] netif_receive_generic_xdp
-10.169.72.114:17664->10.169.72.117:40(tcp)
-0xffff8fbc5939c900      0        [<empty>]         pskb_expand_head
-10.169.72.114:17664->10.169.72.117:40(tcp)
-0xffff8fbc5939c900      0        [<empty>]            skb_free_head
-10.169.72.114:17664->10.169.72.117:40(tcp)
-0xffff8fbc5939c900      0        [<empty>] bpf_prog_run_generic_xdp
-10.169.72.114:17664->10.169.72.117:40(tcp)
-0xffff8fbc5939c900      0        [<empty>]
-kfree_skb_reason(SKB_DROP_REASON_NOT_SPECIFIED)
-10.169.72.114:17664->10.169.72.117:40(tcp)
-0xffff8fbc5939c900      0        [<empty>]   skb_release_head_state
-10.169.72.114:17664->10.169.72.117:40(tcp)
-0xffff8fbc5939c900      0        [<empty>]         skb_release_data
-10.169.72.114:17664->10.169.72.117:40(tcp)
-0xffff8fbc5939c900      0        [<empty>]            skb_free_head
-10.169.72.114:17664->10.169.72.117:40(tcp)
-0xffff8fbc5939c900      0        [<empty>]             kfree_skbmem
-10.169.72.114:17664->10.169.72.117:40(tcp)
-
-This is not big deal since the protection works :)  but I am just
-curious why I did not see the SYN+ACK with syncookie packet sent to
-the hping3 client.
-
-here is my firehol.conf
-
-version 6
-
-# The network of our eth0 LAN.
-
-home_ips="10.1.72.0/24"
-mgmt_ips="10.3.0.0/16"
-
-ipv4 synproxy input inface ens192 dst 10.169.72.117 dport 80 dnat to 10.1.72.187
-
-interface4 ens160 mgmt src "${mgmt_ips}"
-    policy accept
-    server "http ssh icmp"        accept
-    client "icmp"                 accept
-
-interface4 ens224 home src "${home_ips}"
-    policy reject
-    server "http ssh icmp"        accept
-    client "icmp"                 accept
-
-interface4 ens192 internet src not "${home_ips} ${UNROUTABLE_IPS}"
-    protection strong 10/sec 10
-    server "http icmp" accept
-    client all    accept
-
-router4 internet2home inface ens192 outface ens224
-    masquerade reverse
-    server "http" accept dst 10.1.72.187
-    client all   accept
-    server ident reject with tcp-reset
-
-
-Resulting iptables rules related to SYNPROXY
-
-*raw
-
-:PREROUTING ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-:SYNPROXY2SERVER_OUT - [0:0]
-:SYNPROXY2SERVER_PRE - [0:0]
-[0:0] -A PREROUTING -p tcp -m mark --mark 0x2000/0x2000 -j SYNPROXY2SERVER_PRE
-[0:0] -A PREROUTING -d 10.169.72.117/32 -i ens192 -p tcp -m tcp
---dport 80 -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j CT --notrack
-[0:0] -A OUTPUT -p tcp -m mark --mark 0x2000/0x2000 -j SYNPROXY2SERVER_OUT
-[0:0] -A SYNPROXY2SERVER_OUT -j ACCEPT
-[0:0] -A SYNPROXY2SERVER_PRE -j ACCEPT
-COMMIT
-
-*nat
-
-:PREROUTING ACCEPT [0:0]
-:INPUT ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
-:SYNPROXY2SERVER_OUT - [0:0]
-:SYNPROXY2SERVER_PRE - [0:0]
-[0:0] -A PREROUTING -p tcp -m conntrack --ctstate NEW -m mark --mark
-0x2000/0x2000 -j SYNPROXY2SERVER_PRE
-[0:0] -A OUTPUT -p tcp -m conntrack --ctstate NEW -m mark --mark
-0x2000/0x2000 -j SYNPROXY2SERVER_OUT
-[0:0] -A POSTROUTING -o ens192 -m conntrack --ctstate NEW -j MASQUERADE
-[0:0] -A SYNPROXY2SERVER_OUT -d 10.169.72.117/32 -p tcp -m tcp --dport
-80 -m conntrack --ctstate NEW -j DNAT --to-destination 10.1.72.187
-[0:0] -A SYNPROXY2SERVER_OUT -j ACCEPT
-[0:0] -A SYNPROXY2SERVER_PRE -j ACCEPT
-COMMIT
-
-*mangle
-
-:PREROUTING ACCEPT [0:0]
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
-[0:0] -A PREROUTING -m conntrack --ctstate RELATED,ESTABLISHED -j
-CONNMARK --restore-mark --nfmask 0x1fff --ctmask 0x1fff
-[0:0] -A INPUT -m conntrack --ctstate NEW -j CONNMARK --save-mark
---nfmask 0x1fff --ctmask 0x1fff
-[0:0] -A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j CONNMARK
---restore-mark --nfmask 0x1fff --ctmask 0x1fff
-[0:0] -A OUTPUT -d 10.169.72.117/32 -p tcp -m tcp --dport 80 -m
-conntrack --ctstate NEW -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j MARK
---set-xmark 0x2000/0x2000
-[0:0] -A POSTROUTING -m conntrack --ctstate NEW -j CONNMARK
---save-mark --nfmask 0x1fff --ctmask 0x1fff
-COMMIT
-
-*filter
-
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
-:SMART_REJECT - [0:0]
-:SYNPROXY2SERVER_IN - [0:0]
-:SYNPROXY2SERVER_OUT - [0:0]
-
-[0:0] -A INPUT -p tcp -m conntrack --ctstate NEW -m mark --mark
-0x2000/0x2000 -j SYNPROXY2SERVER_IN
-[0:0] -A INPUT -d 10.169.72.117/32 -i ens192 -p tcp -m tcp --dport 80
--m conntrack --ctstate INVALID,UNTRACKED -j SYNPROXY --sack-perm
---timestamp --wscale 7 --mss 1460
-
-[0:0] -A FORWARD -s 10.1.72.187/32 -o ens192 -p tcp -m tcp --sport 80
--m conntrack --ctstate INVALID -m tcp --tcp-flags RST,ACK ACK -j DROP
-[0:0] -A FORWARD -p tcp -m tcp --tcp-flags FIN,ACK FIN,ACK -m
-conntrack --ctstate INVALID,NEW -j DROP
-[0:0] -A FORWARD -p tcp -m tcp --tcp-flags RST,ACK RST,ACK -m
-conntrack --ctstate INVALID,NEW -j DROP
-[0:0] -A FORWARD -p tcp -m tcp --tcp-flags ACK ACK -m conntrack
---ctstate INVALID,NEW -j DROP
-[0:0] -A FORWARD -p tcp -m tcp --tcp-flags RST RST -m conntrack
---ctstate INVALID,NEW -j DROP
-[0:0] -A FORWARD -p icmp -m icmp --icmp-type 3 -m conntrack --ctstate
-INVALID,NEW -j DROP
-[0:0] -A FORWARD -m conntrack --ctstate INVALID -m limit --limit 1/sec
--j LOG --log-prefix "BLOCKED INVALID FORWARD:"
-[0:0] -A FORWARD -m conntrack --ctstate INVALID -j DROP
-[0:0] -A FORWARD -p icmp -m conntrack --ctstate RELATED -j ACCEPT
-[0:0] -A FORWARD -p tcp -m conntrack --ctstate RELATED -m tcp
---tcp-flags FIN,SYN,RST,PSH,ACK,URG RST,ACK -j ACCEPT
-[0:0] -A FORWARD -m limit --limit 1/sec -j LOG --log-prefix "PASS-unknown:"
-[0:0] -A FORWARD -j DROP
-
-[0:0] -A OUTPUT -p tcp -m conntrack --ctstate NEW -m mark --mark
-0x2000/0x2000 -j SYNPROXY2SERVER_OUT
-[0:0] -A OUTPUT -s 10.169.72.117/32 -o ens192 -p tcp -m tcp --sport 80
--m conntrack --ctstate INVALID,UNTRACKED -m tcp --tcp-flags
-SYN,RST,ACK SYN,ACK -j ACCEPT
-
-[0:0] -A SYNPROXY2SERVER_IN -m limit --limit 1/sec -j LOG --log-prefix
-"ORPHAN SYNPROXY->SERVER filte"
-[0:0] -A SYNPROXY2SERVER_IN -j DROP
-[0:0] -A SYNPROXY2SERVER_OUT -d 10.1.72.187/32 -p tcp -m tcp --dport
-80 -j ACCEPT
-[0:0] -A SYNPROXY2SERVER_OUT -m limit --limit 1/sec -j LOG
---log-prefix "ORPHAN SYNPROXY->SERVER filte"
-[0:0] -A SYNPROXY2SERVER_OUT -j DROP
