@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D437E68FC5B
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 02:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D6E68FC5D
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 02:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbjBIBDf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 20:03:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
+        id S230489AbjBIBFY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 20:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjBIBDe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 20:03:34 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE9A12851
-        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 17:03:33 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id r3so689400edq.13
-        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 17:03:33 -0800 (PST)
+        with ESMTP id S230465AbjBIBFX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 20:05:23 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA5012F0B
+        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 17:05:22 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id da9so701079edb.12
+        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 17:05:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KGIT0L6AEvodw795ztROXOhTSxLUeDrFPXprGfxUA9M=;
-        b=QhZg7l2BYMFzG/6vwCgFPGcQE5hijY0AcRpyFFyCt8strqMqwLiIF5iKv8K9rWdnjL
-         i+BRCiVPoqYw99JLPcZM5VKz2My/TJ5y5XTQDBdBMW7Z5ZZmMeV4ujshUnlUuhmCi9ob
-         St6V0vPtBBpEMHWwctwh8dsukDYbx/YYgyIlRdaoEmbi3cEWLhsshe1xZn5C+ba2OCVN
-         eisNWIlzznbLumiOAnKHBo5RLKCtlxK48hpWyZTutnrfR1URYfn0Ftmp4VLbvvWTJp+g
-         UorpwfXz214s5NW1FcysAAIXj7TTjYE8CqjfxL/CoijVly6a9PROhdXYq9+KxCmCiZFe
-         EO4w==
+        bh=8qud9usRdJwrWKec2zU4rCYoylXwjhgNFCnniJZMJig=;
+        b=i9MeLGRoKVt3YcMuyxFNloXLZeUfA5SoD+HZN9CNN5Jzc5Nj9oX8OQdAmNmAwCj9QL
+         h1AtPGSu+zoQnQGG0vW5SP7J4+lUlM5BcwNLsOsUIh9n07cRKnS4vhtIdsmyQhQ2MC9d
+         UmnQ9p9VxuZgNPF+68Bjapwk4ME3/WrT6qZLjKGByscBnohzYO/IILYrVLWNbeMTCpEp
+         KCYPRepOLIfHKEtHPhbEayniJsoMbZpDbAwxAz6kvfjQh9tzLvV2lHr0HkBjT787IhfP
+         4b4nJjvZFgDfcgmLOZpBJqFi0KkjqTFdi5XNvejHxXqOaViNXMwR15SxmPdCqSMVK3iK
+         Q1tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KGIT0L6AEvodw795ztROXOhTSxLUeDrFPXprGfxUA9M=;
-        b=Ioy6BWKW1Kr/6RAXhrTH1EWFAhLyajbhnHH5z/2YwqAyL8nc4XNTCezlb+N40L8r5T
-         3MKoi/YeIEGoexuLqQsqQkENEXC5k0eJF7do7XXy52420+raK1SvEU2dpTED7Hjtz0Gt
-         Yzh1ph3Y9qobRu9r0cMbV5dKEhIZHiUhTLG/eaUT5NLOnGOs31jqug8nrHTsgc/XxI80
-         xoqbjAq5VP7u3SfWVkFHKINC0echSgKHm23+By0KvNs2Rv+AsMUZLPfZaGfBPzqUrNyN
-         gNAo0I8Voc+OWFWnbFu98dUlVYEyjrggWYSi0oCrWPQx1Ul0THgalPkgjMlglWtd1x/l
-         rI8w==
-X-Gm-Message-State: AO0yUKXBMbKwI5J5KGup/PW5iXbhn3eT9AB18IzunA+JsZs3YTOCOGL/
-        L4OXIL4fdQdgoEMM+ekZ4r+ZlRDp/hpWu0ptVzc=
-X-Google-Smtp-Source: AK7set879pzCfNCVP40ZBnY8zj9ZnqT/0Gv1+xE8STMmtsiBTm9QPH1FZA8nv/f3phwrxB9Ko8dqDSe9ZXz8qY342fI=
-X-Received: by 2002:a50:9f43:0:b0:4ab:1712:b268 with SMTP id
- b61-20020a509f43000000b004ab1712b268mr294060edf.5.1675904612380; Wed, 08 Feb
- 2023 17:03:32 -0800 (PST)
+        bh=8qud9usRdJwrWKec2zU4rCYoylXwjhgNFCnniJZMJig=;
+        b=XpZupzs9Zh5V2OvKVYQaM/21iuzPiNCK/hyZacPISdwkxIEO/38zc8Uc570TQsgcno
+         fouFGPqhhqlP8n7EpFShMuXumkA27sCnPsbpe59Pne5/43NLrp8/m1YRS9ArP197D8NB
+         XG538n/wY49INKflNMudXupxBY6nP9RHkq3D5rCowqVQV7cus5EzMdlRchXWsggrIU01
+         N8nQu8s53WVRKDMKzDJBgnLii6HaG96W8ZY4ljoMtRkOCYtyZMUaNy82pG5ZaqjxxBa0
+         poM35zuD2m6lc2yDpN2xqWU9wpp5ly5RE5pWI2FwKRF/NpADkx/uOGlGkBQOMTPyDL4m
+         14dg==
+X-Gm-Message-State: AO0yUKWsL/6Wy0UOYL1lZ6kdm3tdMZVoaDcp4ox2FkpS4nTM2U429zCO
+        0+GkY8agfjVdONaopfYWs9t+T15eza+8w9zvAvA=
+X-Google-Smtp-Source: AK7set/lEs4KWsyEcD8qsiEpbkcyytXMmumtwIaW3DDzwECq8uuZs2d01CJIyfCcjjTinG/kiK9hRoDb7bC3r4auynU=
+X-Received: by 2002:a50:f603:0:b0:49d:ec5e:1e98 with SMTP id
+ c3-20020a50f603000000b0049dec5e1e98mr1740567edn.5.1675904721191; Wed, 08 Feb
+ 2023 17:05:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20230208205642.270567-1-iii@linux.ibm.com> <20230208205642.270567-5-iii@linux.ibm.com>
-In-Reply-To: <20230208205642.270567-5-iii@linux.ibm.com>
+References: <20230208205642.270567-1-iii@linux.ibm.com> <20230208205642.270567-6-iii@linux.ibm.com>
+In-Reply-To: <20230208205642.270567-6-iii@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Feb 2023 17:03:20 -0800
-Message-ID: <CAEf4BzbWjs7N=cQF2PYXKeDG2dB8JKrV0Jw=i_rvVxm4Kv02Aw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/9] selftests/bpf: Forward SAN_CFLAGS and
- SAN_LDFLAGS to runqslower and libbpf
+Date:   Wed, 8 Feb 2023 17:05:09 -0800
+Message-ID: <CAEf4Bzb6-JOL7SQGoiNK-Mfed-qh5pnbirEULu4Miw8-tZh9CA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/9] selftests/bpf: Attach to fopen()/fclose() in uprobe_autoattach
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -73,46 +72,106 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Feb 8, 2023 at 12:57 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> To get useful results from the Memory Sanitizer, all code running in a
-> process needs to be instrumented. When building tests with other
-> sanitizers, it's not strictly necessary, but is also helpful.
-> So make sure runqslower and libbpf are compiled with SAN_CFLAGS and
-> linked with SAN_LDFLAGS.
+> malloc() and free() may be completely replaced by sanitizers, use
+> fopen() and fclose() instead.
 >
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->  tools/testing/selftests/bpf/Makefile | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  .../selftests/bpf/prog_tests/uprobe_autoattach.c     | 12 ++++++------
+>  .../selftests/bpf/progs/test_uprobe_autoattach.c     | 10 +++++-----
+>  2 files changed, 11 insertions(+), 11 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 9b5786ac676e..c4b5c44cdee2 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -215,7 +215,9 @@ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
->                     OUTPUT=$(RUNQSLOWER_OUTPUT) VMLINUX_BTF=$(VMLINUX_BTF)     \
->                     BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/                  \
->                     BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf                          \
-> -                   BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR) &&             \
-> +                   BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)                \
-> +                   EXTRA_CFLAGS='-g -O0 $(SAN_CFLAGS)'                        \
-> +                   EXTRA_LDFLAGS='$(SAN_LDFLAGS)' &&                          \
->                     cp $(RUNQSLOWER_OUTPUT)runqslower $@
+> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c b/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c
+> index 82807def0d24..b862948f95a8 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c
+> @@ -16,10 +16,10 @@ static noinline int autoattach_trigger_func(int arg1, int arg2, int arg3,
 >
+>  void test_uprobe_autoattach(void)
+>  {
+> +       const char *devnull_str = "/dev/null";
+>         struct test_uprobe_autoattach *skel;
+>         int trigger_ret;
+> -       size_t malloc_sz = 1;
+> -       char *mem;
+> +       FILE *devnull;
+>
+>         skel = test_uprobe_autoattach__open_and_load();
+>         if (!ASSERT_OK_PTR(skel, "skel_open"))
+> @@ -36,16 +36,16 @@ void test_uprobe_autoattach(void)
+>         skel->bss->test_pid = getpid();
+>
+>         /* trigger & validate shared library u[ret]probes attached by name */
+> -       mem = malloc(malloc_sz);
+> +       devnull = fopen(devnull_str, "r");
+>
+>         ASSERT_EQ(skel->bss->uprobe_byname_parm1, 1, "check_uprobe_byname_parm1");
+>         ASSERT_EQ(skel->bss->uprobe_byname_ran, 1, "check_uprobe_byname_ran");
+>         ASSERT_EQ(skel->bss->uretprobe_byname_rc, trigger_ret, "check_uretprobe_byname_rc");
+>         ASSERT_EQ(skel->bss->uretprobe_byname_ret, trigger_ret, "check_uretprobe_byname_ret");
+>         ASSERT_EQ(skel->bss->uretprobe_byname_ran, 2, "check_uretprobe_byname_ran");
+> -       ASSERT_EQ(skel->bss->uprobe_byname2_parm1, malloc_sz, "check_uprobe_byname2_parm1");
+> +       ASSERT_EQ(skel->bss->uprobe_byname2_parm1, devnull_str, "check_uprobe_byname2_parm1");
+>         ASSERT_EQ(skel->bss->uprobe_byname2_ran, 3, "check_uprobe_byname2_ran");
+> -       ASSERT_EQ(skel->bss->uretprobe_byname2_rc, mem, "check_uretprobe_byname2_rc");
+> +       ASSERT_EQ(skel->bss->uretprobe_byname2_rc, (void *)devnull, "check_uretprobe_byname2_rc");
+>         ASSERT_EQ(skel->bss->uretprobe_byname2_ran, 4, "check_uretprobe_byname2_ran");
+>
+>         ASSERT_EQ(skel->bss->a[0], 1, "arg1");
+> @@ -67,7 +67,7 @@ void test_uprobe_autoattach(void)
+>         ASSERT_EQ(skel->bss->a[7], 8, "arg8");
+>  #endif
+>
+> -       free(mem);
+> +       fclose(devnull);
+>  cleanup:
+>         test_uprobe_autoattach__destroy(skel);
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/test_uprobe_autoattach.c b/tools/testing/selftests/bpf/progs/test_uprobe_autoattach.c
+> index 774ddeb45898..72f5e7a82c58 100644
+> --- a/tools/testing/selftests/bpf/progs/test_uprobe_autoattach.c
+> +++ b/tools/testing/selftests/bpf/progs/test_uprobe_autoattach.c
+> @@ -13,9 +13,9 @@ int uprobe_byname_ran = 0;
+>  int uretprobe_byname_rc = 0;
+>  int uretprobe_byname_ret = 0;
+>  int uretprobe_byname_ran = 0;
+> -size_t uprobe_byname2_parm1 = 0;
+> +void *uprobe_byname2_parm1 = NULL;
+>  int uprobe_byname2_ran = 0;
+> -char *uretprobe_byname2_rc = NULL;
+> +void *uretprobe_byname2_rc = NULL;
 
-I wouldn't do it for runqslower, we just make sure that it compiles,
-we don't really run it at all. No need to complicate its build, IMO.
 
->  TEST_GEN_PROGS_EXTENDED += $(DEFAULT_BPFTOOL)
-> @@ -272,7 +274,8 @@ $(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)                 \
->            $(APIDIR)/linux/bpf.h                                               \
->            | $(BUILD_DIR)/libbpf
->         $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/ \
-> -                   EXTRA_CFLAGS='-g -O0'                                      \
-> +                   EXTRA_CFLAGS='-g -O0 $(SAN_CFLAGS)'                        \
-> +                   EXTRA_LDFLAGS='$(SAN_LDFLAGS)'                             \
->                     DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
+ugh... shall we use u64 and avoid problems with 32-bit host vs 64-bit
+BPF mismatch? Maybe it will never bite us, but why risking?
+
+>  int uretprobe_byname2_ran = 0;
 >
->  ifneq ($(BPFOBJ),$(HOST_BPFOBJ))
+>  int test_pid;
+> @@ -88,7 +88,7 @@ int BPF_URETPROBE(handle_uretprobe_byname, int ret)
+>  }
+>
+>
+> -SEC("uprobe/libc.so.6:malloc")
+> +SEC("uprobe/libc.so.6:fopen")
+>  int handle_uprobe_byname2(struct pt_regs *ctx)
+>  {
+>         int pid = bpf_get_current_pid_tgid() >> 32;
+> @@ -96,12 +96,12 @@ int handle_uprobe_byname2(struct pt_regs *ctx)
+>         /* ignore irrelevant invocations */
+>         if (test_pid != pid)
+>                 return 0;
+> -       uprobe_byname2_parm1 = PT_REGS_PARM1_CORE(ctx);
+> +       uprobe_byname2_parm1 = (void *)(long)PT_REGS_PARM1_CORE(ctx);
+>         uprobe_byname2_ran = 3;
+>         return 0;
+>  }
+>
+> -SEC("uretprobe/libc.so.6:malloc")
+> +SEC("uretprobe/libc.so.6:fopen")
+>  int handle_uretprobe_byname2(struct pt_regs *ctx)
+>  {
+>         int pid = bpf_get_current_pid_tgid() >> 32;
 > --
 > 2.39.1
 >
