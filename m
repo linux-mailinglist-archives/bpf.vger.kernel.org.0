@@ -2,146 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F2369038E
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 10:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E9B6903F2
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 10:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbjBIJYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 04:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59344 "EHLO
+        id S229517AbjBIJgp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 04:36:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbjBIJYn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 04:24:43 -0500
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2EB2D41;
-        Thu,  9 Feb 2023 01:24:39 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VbFdlam_1675934676;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VbFdlam_1675934676)
-          by smtp.aliyun-inc.com;
-          Thu, 09 Feb 2023 17:24:37 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: [PATCH net-next] xsk: support use vaddr as ring
-Date:   Thu,  9 Feb 2023 17:24:36 +0800
-Message-Id: <20230209092436.87795-1-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+        with ESMTP id S229476AbjBIJgo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 04:36:44 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87073B0EB
+        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 01:36:43 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id j23so1177419wra.0
+        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 01:36:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v4rZUPQLVqroK30jLiXTt8XO8kHAVLptOPKZCKsy2lQ=;
+        b=WIN3RC25/s3JmamYwNSuDO/kkVzmrSo0GEO18NXZqhpnG2MJFxPMpkH8tPVxbUcl/d
+         CzB1bhJI0Ulcb/9FLiiTSOS6cusv88J5u8r9Oy+oyhlodYg2DKDpLtTEikoU0bt0SCNd
+         BihjLrGfPX1K5b2eurOQCFgPeLwh/sEA/yvS6qMMq43FGOR5RnF9atJt8eh4BcMKJuii
+         4YlJ0loD5rG4TWVvx7avTpeUEt+DtOxRjI1BiizipZFPbhvIOC+1QuZbVLTy7ly/z48B
+         WsKeFov9joH0tMyFGlJ8Mc4Min0JZxiclVWom1imF+NPmbvG1x7u6C/he6Q36mPOy+Y5
+         FNVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v4rZUPQLVqroK30jLiXTt8XO8kHAVLptOPKZCKsy2lQ=;
+        b=2PLv5HChmrjefBNGy1LVmSu3Ih76bhSz3cXu7QC0MjXu9Mnevpfxr1apgCBZ8VUPzN
+         IioU1yrvlUxof6l7ijRo7tBhSN6a0a2qYCht0ONow37phE0sO/mzehLDU5gXvlGPwh4A
+         gqedz/EKHZw9g+Tz7LV7E1zqESS34vA2yvnsNUpb/KfIvh4Pl3g3DeuZKiEvd4prMOJQ
+         e7Lcz2iGAVWozcomVQe4rJrmLtswr7QzTDzpr3RnzQXfRIB+YRcvVOLjO3pb+jfWTrtq
+         tulSkYMUpq5G+95bIIE/rFU5PnEwq5RRmuKC2u9VqBRo0D3RR79cSmrPkor/BjRxVrzn
+         ZO+g==
+X-Gm-Message-State: AO0yUKWkBiw/YVczXHnRRwME8Jqfyy954uTuy1qMjmbsIbahhjN2t4ON
+        PMTgV8c20QaC7xvDdOMjb3s=
+X-Google-Smtp-Source: AK7set+kzZRRWTxj3RmUQ33W4nvJ8VRKNj2qHvl5sWfneflKUABMAhb3jUCQpCO9YLC28WYOapSKQQ==
+X-Received: by 2002:a5d:591c:0:b0:2c4:759:a33d with SMTP id v28-20020a5d591c000000b002c40759a33dmr3199098wrd.43.1675935402174;
+        Thu, 09 Feb 2023 01:36:42 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id q12-20020adffecc000000b002c3ea9655easm765140wrs.108.2023.02.09.01.36.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Feb 2023 01:36:41 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 9 Feb 2023 10:36:39 +0100
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     acme@kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        sinquersw@gmail.com, martin.lau@kernel.org, songliubraving@fb.com,
+        sdf@google.com, timo@incline.eu, yhs@fb.com, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves] btf_encoder: ensure elf function representation
+ is fully initialized
+Message-ID: <Y+S+p3RuPg7KIFft@krava>
+References: <1675896868-26339-1-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
-X-Git-Hash: bf93c857e4ef
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1675896868-26339-1-git-send-email-alan.maguire@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When we try to start AF_XDP on some machines with long running time, due
-to the machine's memory fragmentation problem, there is no sufficient
-continuous physical memory that will cause the start failure.
+On Wed, Feb 08, 2023 at 10:54:28PM +0000, Alan Maguire wrote:
+> new fields in BTF encoder state (used to support save and later
+> addition of function) of ELF function representation need to
+> be initialized.  No need to set parameter names to NULL as
+> got_parameter_names guards their use.
+> 
+> A follow-on patch intended to be applied after the series [1].
+> 
+> [1] https://lore.kernel.org/bpf/1675790102-23037-1-git-send-email-alan.maguire@oracle.com/
+> 
+> Suggested-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 
-After AF_XDP fails to apply for continuous physical memory, this patch
-tries to use vmalloc() to allocate memory to solve this problem.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- net/xdp/xsk.c       |  8 +++++---
- net/xdp/xsk_queue.c | 20 ++++++++++++++------
- net/xdp/xsk_queue.h |  1 +
- 3 files changed, 20 insertions(+), 9 deletions(-)
+thanks,
+jirka
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 9f0561b67c12..33db57548ee3 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -1296,7 +1296,6 @@ static int xsk_mmap(struct file *file, struct socket *sock,
- 	struct xdp_sock *xs = xdp_sk(sock->sk);
- 	struct xsk_queue *q = NULL;
- 	unsigned long pfn;
--	struct page *qpg;
- 
- 	if (READ_ONCE(xs->state) != XSK_READY)
- 		return -EBUSY;
-@@ -1319,10 +1318,13 @@ static int xsk_mmap(struct file *file, struct socket *sock,
- 
- 	/* Matches the smp_wmb() in xsk_init_queue */
- 	smp_rmb();
--	qpg = virt_to_head_page(q->ring);
--	if (size > page_size(qpg))
-+
-+	if (PAGE_ALIGN(q->ring_size) < size)
- 		return -EINVAL;
- 
-+	if (is_vmalloc_addr(q->ring))
-+		return remap_vmalloc_range(vma, q->ring, 0);
-+
- 	pfn = virt_to_phys(q->ring) >> PAGE_SHIFT;
- 	return remap_pfn_range(vma, vma->vm_start, pfn,
- 			       size, vma->vm_page_prot);
-diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
-index 6cf9586e5027..6582d394b7e2 100644
---- a/net/xdp/xsk_queue.c
-+++ b/net/xdp/xsk_queue.c
-@@ -37,14 +37,18 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
- 		    __GFP_COMP  | __GFP_NORETRY;
- 	size = xskq_get_ring_size(q, umem_queue);
- 
-+	q->ring_size = size;
- 	q->ring = (struct xdp_ring *)__get_free_pages(gfp_flags,
- 						      get_order(size));
--	if (!q->ring) {
--		kfree(q);
--		return NULL;
--	}
-+	if (q->ring)
-+		return q;
-+
-+	q->ring = vmalloc_user(size);
-+	if (q->ring)
-+		return q;
- 
--	return q;
-+	kfree(q);
-+	return NULL;
- }
- 
- void xskq_destroy(struct xsk_queue *q)
-@@ -52,6 +56,10 @@ void xskq_destroy(struct xsk_queue *q)
- 	if (!q)
- 		return;
- 
--	page_frag_free(q->ring);
-+	if (is_vmalloc_addr(q->ring))
-+		vfree(q->ring);
-+	else
-+		page_frag_free(q->ring);
-+
- 	kfree(q);
- }
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index c6fb6b763658..35922b8b92a8 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -45,6 +45,7 @@ struct xsk_queue {
- 	struct xdp_ring *ring;
- 	u64 invalid_descs;
- 	u64 queue_empty_descs;
-+	size_t ring_size;
- };
- 
- /* The structure of the shared state of the rings are a simple
--- 
-2.32.0.3.g01195cf9f
-
+> ---
+>  btf_encoder.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 35fb60a..ea5b47b 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -1020,6 +1020,8 @@ static int btf_encoder__collect_function(struct btf_encoder *encoder, GElf_Sym *
+>  	}
+>  	encoder->functions.entries[encoder->functions.cnt].generated = false;
+>  	encoder->functions.entries[encoder->functions.cnt].function = NULL;
+> +	encoder->functions.entries[encoder->functions.cnt].state.got_parameter_names = false;
+> +	encoder->functions.entries[encoder->functions.cnt].state.type_id_off = 0;
+>  	encoder->functions.cnt++;
+>  	return 0;
+>  }
+> -- 
+> 1.8.3.1
+> 
