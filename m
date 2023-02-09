@@ -2,138 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A15690DDE
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 17:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636E3690E6A
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 17:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbjBIQFk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 11:05:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
+        id S229698AbjBIQgj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 11:36:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbjBIQF1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 11:05:27 -0500
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA98466EC4
-        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 08:04:42 -0800 (PST)
-Received: by mail-qt1-f171.google.com with SMTP id h24so2501016qtr.0
-        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 08:04:42 -0800 (PST)
+        with ESMTP id S229647AbjBIQgj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 11:36:39 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E6B5D1ED
+        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 08:36:28 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id iz19so2054303plb.13
+        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 08:36:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=iY3uRKwhFfCWuwUwhi+08QCo3PpICPwRsioQ65qL5sg=;
+        b=VI20u5uoBpf9UK7HeP3X9PWxRHyYcNmwbb70VwajQqkf4A/TbhP6zN+pvbSViyerKA
+         Yr9iXGCl7HIacfWhBmqh2+4DF8/Ynp80GNmeuI8c+OQLWyp7l8FJO1Wj/+yOEgHd8tvy
+         k6eMTzJRNmQ6iIt+i8IZUyQ2im7k/0F+EqUio=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s4P+40N3bBS4Fq/14YMs0jzb31JM5tH+x53FqKfD21s=;
-        b=G/KG7W1fw0x9HBdRRYZVaUqzobjOY/OrROwvtYvHZg2wmLUiw18wlzDDXgVOX4HuCN
-         B4faDBfVKWobjpd3QkKNXCo/x4DTDqWtYGrQcz35qIq7z+OfAOGI6rA6+HThYKR7JXoo
-         OhAcGrOc4uEINXy6QicLZjN3Rj9G72oxA5UyLtLugmOsiO8uUqnGuTRltX5G5cJmRP3B
-         KVlhBx0S69j3+rT/zU0COYumzNGohz713E/ZwQR8exnRW8A90d9D9i2A5e1JvKYu1Idh
-         6uh9KrOssn49v5zpkTFCPrcujPQ/4faL0MgL0MoiVE3h81HfWbDCvl2BQ0F8Q8mKFq+O
-         03ug==
-X-Gm-Message-State: AO0yUKVJjWr+JbbAOb+rst/Bn8v6zXoRCh7tG0TA2gS/OAsNZMvxlfWs
-        MbjROe6cQUqLPmPOQdELMUc=
-X-Google-Smtp-Source: AK7set+F5C2oNQ0IlPHoQX6/N++BuJfsyRrQYCHDjcLWtiJZekSByKBm2WsFpugN2AF1zVSFRW4nfg==
-X-Received: by 2002:a05:622a:c4:b0:3b9:a4fe:e86c with SMTP id p4-20020a05622a00c400b003b9a4fee86cmr18475428qtw.16.1675958680080;
-        Thu, 09 Feb 2023 08:04:40 -0800 (PST)
-Received: from maniforge ([2620:10d:c091:480::1:66f6])
-        by smtp.gmail.com with ESMTPSA id 17-20020ac82091000000b003b960aad697sm1526560qtd.9.2023.02.09.08.04.38
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iY3uRKwhFfCWuwUwhi+08QCo3PpICPwRsioQ65qL5sg=;
+        b=Pdxyr/Fc6lYeaIZKAATIg/QWFNXEO9lz5S+Sk4Y9UJVKRDpOV4CJHsfbfiN+BP3s/e
+         C8g0gIDfcbb3kfjiHDtFkSS9eT9QN2Ud7mIAAdaqxnWXwBJsUPLIigHmuj5dfCeFEa9B
+         B5/GUADqQKMhSowCkeweu0363KkdkJbqJIS1Xg5OLng/KnPjgS5PmGnNwB8vwxkTQ9Th
+         EtLgdAiAY0FYjL3oQ5UgLT4MQZ+RxdEzT40inpL7xTEvzNwq5+LyPZReVfUvhh42zRTu
+         eWCOAPvVJUg7Ph9A9Rd25IbkkdeHXyr6Nisxwg9xubmXe0A4jCX8d3gU65Gk+vzqq6YW
+         +30Q==
+X-Gm-Message-State: AO0yUKW+5XYDzUPNj/4MSR/fqU1HN5ho7Ho8RETnuaEhZDh0EYR8XWLD
+        PWwylUQmWUuIvq6LAqZ3h/utbw==
+X-Google-Smtp-Source: AK7set8ois8OCnNC4k8umzsF3UAu3C8IbTzhjMPobTuOdqwAaSOkMwrUfCZEAH0rWkAprUP6HYjgIA==
+X-Received: by 2002:a17:90b:3ece:b0:22c:5241:b8e with SMTP id rm14-20020a17090b3ece00b0022c52410b8emr13839260pjb.25.1675960588110;
+        Thu, 09 Feb 2023 08:36:28 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id i10-20020a63bf4a000000b004fadb547d0csm1498660pgo.61.2023.02.09.08.36.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Feb 2023 08:04:39 -0800 (PST)
-Date:   Thu, 9 Feb 2023 10:04:37 -0600
-From:   David Vernet <void@manifault.com>
-To:     Dave Thaler <dthaler@microsoft.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Dave Thaler <dthaler1968@googlemail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "bpf@ietf.org" <bpf@ietf.org>
-Subject: Re: [Bpf] [PATCH bpf-next v2] bpf, docs: Explain helper functions
-Message-ID: <Y+UZlXKpX/DweajS@maniforge>
-References: <20230206191647.2075-1-dthaler1968@googlemail.com>
- <Y+O7b5iKBUpskWLg@maniforge.lan>
- <PH7PR21MB387847C84B7D6DA43607692DA3D89@PH7PR21MB3878.namprd21.prod.outlook.com>
- <CAADnVQ+hgqw4fL8Vvq7GkP8VkO3wvFbhVD-LFU+h9-8vQC+0RQ@mail.gmail.com>
- <Y+PefizA09h21XSF@maniforge.lan>
- <PH7PR21MB387839E8170EB572814FA63FA3D89@PH7PR21MB3878.namprd21.prod.outlook.com>
+        Thu, 09 Feb 2023 08:36:27 -0800 (PST)
+Message-ID: <63e5210b.630a0220.c17be.27ff@mx.google.com>
+X-Google-Original-Message-ID: <202302090821.@keescook>
+Date:   Thu, 9 Feb 2023 08:36:27 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] bpf: Replace bpf_lpm_trie_key 0-length array with
+ flexible array
+References: <20230204183241.never.481-kees@kernel.org>
+ <CAKH8qBvqLeR3Wsbpb-v=EUY=Bw0jCP2OAaBn4tOqGmA1AqBZbA@mail.gmail.com>
+ <63e14abb.170a0220.ca425.b7bc@mx.google.com>
+ <CAKH8qBtX0HU4_YtnZ3hU4NhGHSQ9VU70niXFFoqf3k67a1+6aA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH7PR21MB387839E8170EB572814FA63FA3D89@PH7PR21MB3878.namprd21.prod.outlook.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAKH8qBtX0HU4_YtnZ3hU4NhGHSQ9VU70niXFFoqf3k67a1+6aA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 05:45:59PM +0000, Dave Thaler wrote:
-> > -----Original Message-----
-> > From: David Vernet <void@manifault.com>
-> > Sent: Wednesday, February 8, 2023 9:40 AM
-> > To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > Cc: Dave Thaler <dthaler@microsoft.com>; Dave Thaler
-> > <dthaler1968@googlemail.com>; bpf@vger.kernel.org; bpf@ietf.org
-> > Subject: Re: [Bpf] [PATCH bpf-next v2] bpf, docs: Explain helper functions
-> > 
-> > On Wed, Feb 08, 2023 at 09:31:18AM -0800, Alexei Starovoitov wrote:
-> > > On Wed, Feb 8, 2023 at 9:26 AM Dave Thaler
-> > > <dthaler=40microsoft.com@dmarc.ietf.org> wrote:
-> > > >
-> > > > David Vernet wrote:
-> > > > > > +Reserved instructions
-> > > > > > +====================
-> > > > >
-> > > > > small nit: Missing a =
-> > > >
-> > > > Ack.
-> > > >
-> > > > > > +Clang will generate the reserved ``BPF_CALL | BPF_X | BPF_JMP``
-> > > > > > +(0x8d)
-> > > > > instruction if ``-O0`` is used.
-> > > > >
-> > > > > Are we calling this out here to say that BPF_CALL in clang -O0
-> > > > > builds is not supported? That would seem to be the case given that
-> > > > > we say that BPF_CALL
-> > > > > | BPF_X | BPF_JMP in reserved and not permitted in instruction-set.rst.
-> > > >
-> > > > Yes, exactly.  I could update the language to add something like
-> > > > "... so BPF_CALL in clang -O0 builds is not supported".
-> > >
-> > > That will not be a correct statement.
-> > > BPF_CALL is a valid insn regardless of optimization flags.
-> > > BPF_CALLX will be a valid insn when the verifier support is added.
-> > > Compilers need to make a choice which insn to use on a case by case basis.
-> > > When compilers have no choice, but to use call by register they will
-> > > use callx. That what happens with = (void *)1 hack that we use for
-> > > helpers.
-> > > It can happen with -O2 just as well.
-> > 
-> > In that case, I suggest we update the verbiage in instruction-set.rst to
-> > say:
-> > 
-> > Note that ``BPF_CALL | BPF_X | BPF_JMP`` (0x8d), where the helper function
-> > integer would be read from a specified register, is not currently supported by
-> > the verifier. Any programs with this instruction will fail to load until such
-> > support is added.
+On Mon, Feb 06, 2023 at 11:17:06AM -0800, Stanislav Fomichev wrote:
+> It's my understanding that it's the intended use-case. Users are
+> expected to use this struct as a header; at least we've been using it
+> that way :-)
 > 
-> The problem with that wording is that it implies that there is "the" verifier,
-> whereas the point of standard documentation (since this file is also being used
-> to generate the IETF spec) is to keep statements about any specific verifier
-> or compiler out of instruction-set.rst.  That's why there's separate files like
+> For me, both return the same:
+> sizeof(struct { __u32 prefix; __u8 data[0]; })
+> sizeof(struct { __u32 prefix; __u8 data[]; })
+> 
+> So let's do s/data[0]/data[]/ in the UAPI only? What's wrong with
+> using this struct as a header?
 
-Yes, good point.
+For the whole struct, yup, the above sizeof()s are correct. However:
 
-> clang-notes.rst for the clang compiler, etc.   The instruction set rst is,
-> in my view, should apply across all compilers, all verifiers, all runtimes, etc.
-> It could potentially say certain things are optional to support, but there is
-> a distinction between "defined" vs "reserved" where it currently means
-> such support is "reserved" not "defined".
+sizeof(foo->data) == 0             // when data[0]
+sizeof(foo->data) == compile error // when data[]
 
-That makes sense. IMO we should just say that the instruction is valid
-then, and not make a distinction. 'reserved' should imply that the bits
-for the instruction in question have no definition whatsoever, e.g.
-reserved bits in control registers in x86, etc. In this case, the
-instruction is valid, we just haven't chosen to implement support for it
-yet in the Linux verifier. That's par for the course for implementing
-standards. Usually we don't implement something until it's needed.
+The [0]-array GNU extension doesn't have consistent behavior, so it's
+being removed from the kernel in favor of the proper C99 [] flexible
+arrays, so we can enable -fstrict-flex-arrays=3 to remove all the
+ambiguities with array bounds:
+https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+https://people.kernel.org/kees/bounded-flexible-arrays-in-c
+
+As a header, this kind of overlap isn't well supported. Clang already
+warns, and GCC is going to be removing support for overlapping composite
+structs with a flex array in the middle (and also warns under -pedantic):
+https://godbolt.org/z/vWzqs41h6
+
+I talk about dealing with these specific cases in my recent write-up
+on array bounds checking -- see "Overlapping composite structure members"
+in the people.kernel.org post above.
+
+> > Perhaps better might be:
+> >
+> > struct bpf_lpm_trie_key {
+> >     __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
+> > };
+> >
+> > struct bpf_lpm_trie_key_raw {
+> >     struct bpf_lpm_trie_key_prefix prefix;
+> >     u8 data[];
+> > };
+> >
+> > struct my_key {
+> >     struct bpf_lpm_trie_key_prefix prefix;
+> >     int a, b, c;
+> > };
+
+This approach is, perhaps, the best way to go? Besides the selftest,
+what things in userspace consumes struct bpf_lpm_trie_key?
+
+-- 
+Kees Cook
