@@ -2,73 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE54690ED9
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9897B690EF5
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 18:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbjBIRHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 12:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
+        id S229986AbjBIRNn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 12:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjBIRHr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 12:07:47 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1775757772;
-        Thu,  9 Feb 2023 09:07:45 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id e10-20020a17090a630a00b0022bedd66e6dso6944711pjj.1;
-        Thu, 09 Feb 2023 09:07:45 -0800 (PST)
+        with ESMTP id S229875AbjBIRNm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 12:13:42 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FEF66ED5;
+        Thu,  9 Feb 2023 09:13:38 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id m8so2654278edd.10;
+        Thu, 09 Feb 2023 09:13:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xUosuIF6sT5guNvUVmM1J2U0v0EW8fMgv/3In3ljd+Q=;
-        b=UQnllC1ZZ4jQ17yePRdiNfhz3zNiiVIDcQMgpV9o6hCkmYQZ7hMu4BMI/bRlw2hJBG
-         naBcn8KX0IP2FEdzrGDktnanCLjjseYna0D5yipRJ8eVLjUR+BSbtHX/PE900AP74QSB
-         UIMle0AZ/WH4FRjynkvks0qEAl2yyl+ILBP7M4/AUDx6ZS4WQQi5st3iIGWVN0tFA6OG
-         +D3IP3sIiunuLeO3dktp18VGclAh0ORX4BmBA7V5IZuAJvU7f4ZWkQGhx+NIRHs+PDVW
-         1SFInSe9TGL49be7SV8T1H6NOnWzABljM8CNdp/KoS24WB5q99ES7if2R/OlOiW0Y+3f
-         p93g==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=z+Ov3XaXRvzeO63TK3217oyLNCEzuRnIKM04ym/Z/co=;
+        b=R5hnYLdFauYb+iFUd+3kQcrTgL1E6nMZniQ0REuV6rS7Ia9OxAglfqRHkn9NjyR1a7
+         3RQ06EWEUd7py2YMwGx4L66Ti9hMJGjY7ZBS1Luz3hDR3fz7bYn+HJYDtUbLai2tdt/d
+         pWRjVGjBVU9B2eRBJBPSXkqsyNfUDA7KFodxi646Wa4RDIlfQQ1qwn02QyvLnlAORteM
+         DPijxGGXvzzjGi0FQMSRnDL0S7KKikPWT7qQzK1j/TZxGvZdgqUyeKfOJ/IEdr+6+lA5
+         hI+CoHqv81tjzPwBQhk6Lq5r6O3t7kA2VKMHnacmlFfdmtPYKH1feHL0LxsAWewh7uRJ
+         CkiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xUosuIF6sT5guNvUVmM1J2U0v0EW8fMgv/3In3ljd+Q=;
-        b=DPaCM3Kqj59TNMxeXnlYDYMQITm79oHyM3/I6jk980dsi4dz2smRTkym8HqX5lJnP/
-         Jlnz/Gu3As0hU12VLV38vb2zbEczMrZI/9aLJVTE1oShSTaJuwJaYO9sQ0g+9XSOZHJ9
-         BYg6w2ohEP9nLaQC12Db3GOJY3+sydzw9RwyFbCfTtixEnXdG7yFRNORXNZCSMplPQq1
-         9i2/SiHFEF5thzsNMrohPcjNRF/GeX+8/Weg8woz2k/N5+u80Nu1nRQL9Mq15FWhg7yX
-         DMxCxmyHi6pY/l4/dBewIQhc2+3/va2pjMD575YQDQl+r7jldtvTEYlGZ0iHxMomIrzT
-         b2rQ==
-X-Gm-Message-State: AO0yUKWxV7egHxjwtrMBe498lEAxE0EFXYsmTmzb+f5X0Im5LLwytYK1
-        CcIYQ3XaCT/LMEAjRlOfqHc=
-X-Google-Smtp-Source: AK7set/hs6ehC54fBLh5SB3HwfgV3uku3FUfIyro6MSNNzqA8SU2MLhqOTbKnngRHVpx/vntKyuRqg==
-X-Received: by 2002:a17:90b:4a4e:b0:230:8f39:d92e with SMTP id lb14-20020a17090b4a4e00b002308f39d92emr14346783pjb.20.1675962464488;
-        Thu, 09 Feb 2023 09:07:44 -0800 (PST)
-Received: from [192.168.0.128] ([98.97.119.54])
-        by smtp.googlemail.com with ESMTPSA id i1-20020a17090acf8100b0023347886e80sm565202pju.16.2023.02.09.09.07.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Feb 2023 09:07:43 -0800 (PST)
-Message-ID: <c3fc2a72a567e26613824001324bcac6fc8c3640.camel@gmail.com>
-Subject: Re: [PATCH net] ice: xsk: Fix cleaning of XDP_TX frames
-From:   Alexander H Duyck <alexander.duyck@gmail.com>
-To:     Larysa Zaremba <larysa.zaremba@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     intel-wired-lan@osuosl.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Date:   Thu, 09 Feb 2023 09:07:42 -0800
-In-Reply-To: <20230209160130.1779890-1-larysa.zaremba@intel.com>
-References: <20230209160130.1779890-1-larysa.zaremba@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z+Ov3XaXRvzeO63TK3217oyLNCEzuRnIKM04ym/Z/co=;
+        b=zfH1DciBzZzd6pFyR1i/gQGwR4UNhdnb2PSklCy6l4UnZW3wpQiSuxk8DqriOjhUTp
+         Y/RQRFjmpHms2Bx7xQzNel9FKe5DMs/rYJ99PfyKkup0hVUlJc6q+42WfncEgajqoHsW
+         Uq6Qwzfq3hQL/KujrfxpqXqV8WtKRrXlP5icKdV7JtfbFuZ0zOvhBJBb8KtCJCupJulk
+         48AJCR6CwPvXqoK3ePVWA6RJQzz5z9ZjGayYmp6WFuXSeKAJsla55cAkj2JEPMLIOb8N
+         nxJENqp7ayj5dT2khmsfPGtheAqqxda7qiTv9rRpiITnxipqkYTV7yWsMfPEpYPNMCei
+         HE+Q==
+X-Gm-Message-State: AO0yUKW1ErnzbAKYc+g4RIVq1TVydEWc1gkoTwA21hVkjKK4QHo8osmv
+        o4WayQ+hCV1bK/goVLNNQGI9Z5ih8lhCO23MsuM=
+X-Google-Smtp-Source: AK7set+cQvw8bqTZ44P4Wog2413dySGEtLrxdcgnenr/aMxhp1YAZFMd7VDLxtDjuaKrzVuPMYMzKfwtkHSNLTp3ppk=
+X-Received: by 2002:a50:9f43:0:b0:4ab:1712:b268 with SMTP id
+ b61-20020a509f43000000b004ab1712b268mr881368edf.5.1675962816860; Thu, 09 Feb
+ 2023 09:13:36 -0800 (PST)
 MIME-Version: 1.0
+References: <20230203031742.1730761-1-imagedong@tencent.com>
+ <20230203031742.1730761-3-imagedong@tencent.com> <CAEf4BzYh90NyyYvfTT=M=-KLspydMX4PZK8jCwNDydAP=kFgYw@mail.gmail.com>
+ <CADxym3a6_wBHW_c_ZYtZ5QXbbunhKxau6k-fn4TNrn+6qzW6fw@mail.gmail.com>
+ <CAEf4BzZAo6Bfio3pbY3j5yUDArCbdiWPC-r=XhFM9Bwq+4VVMg@mail.gmail.com>
+ <75421c53-fa5c-d7c7-4b19-2d97e3e6d7f6@oracle.com> <CAEf4BzZicf3B7BwPj=fWkcVJz0JayB9qUUbJFBPunxOJwQoMdw@mail.gmail.com>
+ <CADxym3YR6PS_0XfzH6p1CNUAbDxX=gO_aAoOu7fEkx1pAn2AKQ@mail.gmail.com>
+In-Reply-To: <CADxym3YR6PS_0XfzH6p1CNUAbDxX=gO_aAoOu7fEkx1pAn2AKQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 9 Feb 2023 09:13:24 -0800
+Message-ID: <CAEf4BzYTE8OqL5f9i1v+2OGnvgN+_Rx46yVWjqw5rAi_yFcALg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add test for legacy/perf
+ kprobe/uprobe attach mode
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,79 +76,129 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2023-02-09 at 17:01 +0100, Larysa Zaremba wrote:
-> Incrementation of xsk_frames inside the for-loop produces
-> infinite loop, if we have both normal AF_XDP-TX and XDP_TXed
-> buffers to complete.
->=20
-> Split xsk_frames into 2 variables (xsk_frames and completed_frames)
-> to eliminate this bug.
->=20
-> Fixes: 29322791bc8b ("ice: xsk: change batched Tx descriptor cleaning")
-> Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> ---
-> To Tony: this is urgent and should go directly via net. It's tested and a=
-cked.
-> ---
->  drivers/net/ethernet/intel/ice/ice_xsk.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ether=
-net/intel/ice/ice_xsk.c
-> index 7105de6fb344..374b7f10b549 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> @@ -800,6 +800,7 @@ static void ice_clean_xdp_irq_zc(struct ice_tx_ring *=
-xdp_ring)
->  	struct ice_tx_desc *tx_desc;
->  	u16 cnt =3D xdp_ring->count;
->  	struct ice_tx_buf *tx_buf;
-> +	u16 completed_frames =3D 0;
->  	u16 xsk_frames =3D 0;
->  	u16 last_rs;
->  	int i;
-> @@ -809,19 +810,21 @@ static void ice_clean_xdp_irq_zc(struct ice_tx_ring=
- *xdp_ring)
->  	if ((tx_desc->cmd_type_offset_bsz &
->  	    cpu_to_le64(ICE_TX_DESC_DTYPE_DESC_DONE))) {
->  		if (last_rs >=3D ntc)
-> -			xsk_frames =3D last_rs - ntc + 1;
-> +			completed_frames =3D last_rs - ntc + 1;
->  		else
-> -			xsk_frames =3D last_rs + cnt - ntc + 1;
-> +			completed_frames =3D last_rs + cnt - ntc + 1;
->  	}
-> =20
-> -	if (!xsk_frames)
-> +	if (!completed_frames)
->  		return;
-> =20
-> -	if (likely(!xdp_ring->xdp_tx_active))
-> +	if (likely(!xdp_ring->xdp_tx_active)) {
-> +		xsk_frames =3D completed_frames;
->  		goto skip;
-> +	}
-> =20
->  	ntc =3D xdp_ring->next_to_clean;
-> -	for (i =3D 0; i < xsk_frames; i++) {
-> +	for (i =3D 0; i < completed_frames; i++) {
->  		tx_buf =3D &xdp_ring->tx_buf[ntc];
-> =20
->  		if (tx_buf->raw_buf) {
-> @@ -837,7 +840,7 @@ static void ice_clean_xdp_irq_zc(struct ice_tx_ring *=
-xdp_ring)
->  	}
->  skip:
->  	tx_desc->cmd_type_offset_bsz =3D 0;
-> -	xdp_ring->next_to_clean +=3D xsk_frames;
-> +	xdp_ring->next_to_clean +=3D completed_frames;
->  	if (xdp_ring->next_to_clean >=3D cnt)
->  		xdp_ring->next_to_clean -=3D cnt;
->  	if (xsk_frames)
+On Thu, Feb 9, 2023 at 6:08 AM Menglong Dong <menglong8.dong@gmail.com> wrote:
+>
+> On Thu, Feb 9, 2023 at 7:31 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Feb 8, 2023 at 3:49 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> > >
+> > > On 07/02/2023 22:50, Andrii Nakryiko wrote:
+> > > > On Mon, Feb 6, 2023 at 6:39 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
+> > > >>
+> > > >> On Tue, Feb 7, 2023 at 4:05 AM Andrii Nakryiko
+> > > >> <andrii.nakryiko@gmail.com> wrote:
+> > > >>>
+> > > >>> On Thu, Feb 2, 2023 at 7:18 PM <menglong8.dong@gmail.com> wrote:
+> > > >>>>
+> > > >>>> From: Menglong Dong <imagedong@tencent.com>
+> > > >>>>
+> > > >>>> Add the testing for kprobe/uprobe attaching in legacy and perf mode.
+> > > >>>> And the testing passed:
+> > > >>>>
+> > > >>>> ./test_progs -t attach_probe
+> > > >>>> $5       attach_probe:OK
+> > > >>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> > > >>>>
+> > > >>>> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > > >>>> ---
+> > > >>>
+> > > >>> Do you mind refactoring attach_probe test into multiple subtests,
+> > > >>> where each subtest will only test one of the attach mode and type. The
+> > > >>> reason is that libbpf CI runs tests with latest selftests and libbpf
+> > > >>> against old kernels (4.9 and 5.5, currently). Due to attach_probe
+> > > >>> testing all these uprobe/kprobe attach modes with extra features (like
+> > > >>> cookie, ref count, etc), we had to disable attach_probe test in libbpf
+> > > >>> CI on old kernels.
+> > > >>>
+> > > >>> If we can split each individual uprobe/kprobe mode, that will give us
+> > > >>> flexibility to selectively allowlist those tests that don't force
+> > > >>> libbpf to use newer features (like cookies, LINK or PERF mode, etc).
+> > > >>>
+> > > >>> It would be a great improvement and highly appreciated! If you don't
+> > > >>> mind doing this, let's do the split of existing use cases into subtest
+> > > >>> in a separate patch, and then add PERF/LEGACY/LINK mode tests on top
+> > > >>> of that patch.
+> > > >>>
+> > > >>
+> > > >> Of course, with pleasure. For the existing use cases, we split it into
+> > > >> subtests, such as:
+> > > >>
+> > > >>   kprobe/kretprobe auto attach
+> > > >>   kprobe/kretprobe manual attach
+> > > >>   uprobe/uretprobe ref_ctr test
+> > > >>   uprobe/uretprobe auto attach
+> > > >>   sleepable kprobe/uprobe
+> > > >>   ......
+> > > >>
+> > > >> Am I right?
+> > > >
+> > > > I haven't analysed all the different cases, but roughly it makes
+> > > > sense. With more granular subtests we can also drop `legacy` flag and
+> > > > rely on subtest allowlisting in CI.
+> > > >
+> > >
+> > > I'm probably rusty on the details, but when you talk about subtest
+> > > splitting for the [uk]probe manual attach, are we talking about running
+> > > the same manual attach test for the different modes, with each as a
+> > > separate subtest, such that each registers as a distinct pass/fail (and
+> > > can thus be allowlisted as appropriate)? So in other words
+> > >
+> > > test__start_subtest("manual_attach_kprobe_link");
+> > > attach_kprobe_manual(link_options);
+> > > test__start_subtest("manual_attach_kprobe_legacy");
+> > > attach_kprobe_manual(legay_options);
+> > > test__start_subtest("manual_attach_kprobe_perf");
+> > > attach_kprobe_manual(perf_options);
+> > >
+> > > ?
+> >
+> > Yep. One of the reasons is that on 4.9 kernel there won't be link or
+> > perf method available, so it is expected for such modes to fail. I
+> > want to be able to still test the legacy code path on 4.9, though.
+> > Similarly tests that are using ref_ctr_offset or bpf_cookie won't work
+> > on older kernels as well. Right now because of all of them being in a
+> > single test, I have to block entire test, losing coverage on older
+> > kernels.
+> >
+>
+> I think I am beginning to understand it now. So we need 2 patches
+> for the selftests part. In the 1th patch, we split the existing testings
+> into multi subtests, such as:
+>
+> test__start_subtest("manual_attach_probe") // test kprobe/uprobe manual attach
+> test__start_subtest("auto_attach_probe") // test kprobe/uprobe auto attach
+> test__start_subtest("bpf_cookie") // test bpf_cookie
+> test__start_subtest("ref_ctr_offset") test ref_ctr_offset
+> test__start_subtest("sleepable_probe") // test sleepable
+> uprobe/uretprobe, and sleepable kprobe
+> ......
+>
+> And in the 2th patch, we change the subtest "manual_attach_probe" into
+> the following tests:
+>
+> test__start_subtest("manual_attach_kprobe_link");
+> test__start_subtest("manual_attach_kprobe_legacy");
+> test__start_subtest("manual_attach_kprobe_perf");
+>
+> Therefore, every feature can be tested in a subtest alone.
+>
+> Am I right?
 
-Looks good to me.
+yep, exactly!
 
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-
-
+>
+> Thanks!
+> Menglong Dong
+> > >
+> > > >>
+> > > >> Thanks!
+> > > >> Dongmeng Long
+> > > >>
+> > > >>>
+> > > >>>>  .../selftests/bpf/prog_tests/attach_probe.c   | 61 ++++++++++++++++++-
+> > > >>>>  .../selftests/bpf/progs/test_attach_probe.c   | 32 ++++++++++
+> > > >>>>  2 files changed, 92 insertions(+), 1 deletion(-)
+> > > >>>>
+> > > >>>
+> > > >>> [...]
