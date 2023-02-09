@@ -2,63 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7F768FC5E
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 02:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3A868FC68
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 02:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbjBIBGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 20:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
+        id S231144AbjBIBIy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Feb 2023 20:08:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbjBIBGT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 20:06:19 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B34F12F0B
-        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 17:06:18 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id rp23so2016532ejb.7
-        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 17:06:18 -0800 (PST)
+        with ESMTP id S230487AbjBIBIy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Feb 2023 20:08:54 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4099ED6;
+        Wed,  8 Feb 2023 17:08:53 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id n20-20020a17090aab9400b00229ca6a4636so4605117pjq.0;
+        Wed, 08 Feb 2023 17:08:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CbbHzi8xHNNqgK8nu7a66pFrpiCdCpe9BK4WvJWbq6U=;
-        b=G/LqFOB0xxbekjxA3kiM9mCgh6rclgKPhb5OaYIuxRz4jTybRsqW9qmAQR2+kM6g5L
-         cU0lwRz+nriGmC4hCu1F8sc91imF+TwZr+LEL955sUueJVQtgQbHy5IC4Xl18Ul11e3e
-         AkY9MPeWbrXsxe5t1ft43NpkQBPy80TlcOmIJVsci0Ij84Ge/Ce7N/62heGdug+zPBlq
-         7vJKH9nbJARyrCrMn8tNr/Cp+yOU/89udrDlpS7j59KDf/94MhreK7Pt5o3ZzxKsCtPQ
-         zWYRQrb+zKKHrGcPOPHXJoOH1gh08QLItZoHYCNLe2svnR3VeCy/Rdq/KQQ6oANftdNg
-         3O1A==
+        bh=aeYFdVMeaGXZ8pQboFFMn+nx5SREQ527KN43sqYMZK4=;
+        b=m5qVYRU6vrrvo3NCP1kIhk82cUP8n1q+wscOOGZ3Nfs+BH1TzSokfpoFyz7E0llJIA
+         elebF+cIMLkX4iASQm6US6FGFeK2eb967qwsEuc6dK+SliWi+3mVW7iNnIsQ8ps5T6Cj
+         wooz9gfrvTvIcdOe+VN1eFXF0LrDpvAJH62ZxRIADFWqMfRAMFGWorIAUmIlhJMazU53
+         TNRbW+lPDu7Pmr+6HjfwqtrrumxoQuhTSHkGpAu41pIGW84aiZa+ylKWYPH5oeZVYwj/
+         J1AllVYSAPExNzjWfNc85MJSUrPWoJcaAqIsJqxf/64ofhZGS9V+CbzrW3J5ePkXNDQa
+         HkAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CbbHzi8xHNNqgK8nu7a66pFrpiCdCpe9BK4WvJWbq6U=;
-        b=LzmbHOousajSl71UdsfRPewtxxCV+jbxLD6NWJ5SC0YOzb5tg8npFiXO+X+/qv5Gd7
-         EFIxMbLlHTYpL1ieYtTG8nUr+F3ktzO8JwLQJa9gjAkdNMChZcHaEzML9R4GHooNxObD
-         hIajjT1fgmYjf8h+LeG+2+9WkYkjONwKUWN0V40xZBtYoykOcm4nZFUUCaBrOQr07+aN
-         q5QJQQSS+x2J9poKn4VAGcGXFdmbJWhtelCi7EmplOKnDXQywUcDZMGE/qy22x8mFYcK
-         sCvPJcbVeX+0jBQ5qngNVZqdZ4w1a9cD9++1fEFvdCY0zDtZCjwQzcrU4Ci/AstSDifX
-         1MVg==
-X-Gm-Message-State: AO0yUKU1WIRzFvimBhH0S+G6pbobCAQywT3aXkYZ2s9TW2TRqjgEfMZw
-        q+vJ9+7cNazMG0NAgJKQswI88Uotz559pXzNMQg=
-X-Google-Smtp-Source: AK7set+sYimnbZBmG8bi1Q4pab5246FBycm3HIt8qGn2FMAUsWltHF3fndQK3Liy0ntRLCsKaAAFkxDlAAKDcEqwQok=
-X-Received: by 2002:a17:906:5a60:b0:8aa:bdec:d9ae with SMTP id
- my32-20020a1709065a6000b008aabdecd9aemr1335539ejc.12.1675904776709; Wed, 08
- Feb 2023 17:06:16 -0800 (PST)
+        bh=aeYFdVMeaGXZ8pQboFFMn+nx5SREQ527KN43sqYMZK4=;
+        b=MZIGTNuJyIw5n1XkwyMdUNjBLIY1n/IyI56OYGwWW+6wDaGqg9MMpKXp+Pn2/l3eGr
+         OriIwbtckoREcqjIqZOb9mU13C8jwPLqp6NjtH6Ycfbgj4mW57dXpBN5NBLMKPahCAtt
+         0eT4DM3rU085rfW6z98LVB50D+UDmYF+k/Jn1itvdk/L9OUGL/V36G3yelDAKa49fkFa
+         RvO+FAHM2L7qfdiQweiWKSHA5fS984taho6w2q1fQYhF30fBdl7D4mATFJvrtQJG/d/O
+         L2ZX6Z9tWI96FqVjBet2DwXyW0J3gG1jODOcAa4iSqWpn9DmGrHuEWKckW/NMcf3lDta
+         9uDQ==
+X-Gm-Message-State: AO0yUKWEoDWm0BfvIluKay6Z52yq6R3jsWdxq+TkPoMyY/aXA+qLLdsH
+        B4Y8fQQQ9jMYGKJjgASb+tvbLw+x0C4swk5kkaM=
+X-Google-Smtp-Source: AK7set/L/4PK5i4Nk/tyPcro29I7KmIGdPeypqvLUROocj5T/PUnxi+fk2QbitZqJPpg97x6sOnqA/3zjYpVYE3ZEg4=
+X-Received: by 2002:a17:90a:3f10:b0:22c:1179:3b8f with SMTP id
+ l16-20020a17090a3f1000b0022c11793b8fmr1157190pjc.118.1675904932512; Wed, 08
+ Feb 2023 17:08:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20230208205642.270567-1-iii@linux.ibm.com> <20230208205642.270567-7-iii@linux.ibm.com>
-In-Reply-To: <20230208205642.270567-7-iii@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Feb 2023 17:06:04 -0800
-Message-ID: <CAEf4BzZ-_0sC71U_u9sQ8bBU-KZFpF23W-UqJzecPGTMifMcFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/9] selftests/bpf: Attach to fopen()/fclose() in attach_probe
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
+References: <20230204133535.99921-1-kerneljasonxing@gmail.com>
+ <20230204133535.99921-4-kerneljasonxing@gmail.com> <CAL+tcoD9nE-Ad7+XoshoQ8qp7C0H+McKX=F6xt2+UF1BeWXKbg@mail.gmail.com>
+In-Reply-To: <CAL+tcoD9nE-Ad7+XoshoQ8qp7C0H+McKX=F6xt2+UF1BeWXKbg@mail.gmail.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 8 Feb 2023 17:08:41 -0800
+Message-ID: <CAKgT0Uc7d5iomJnrvPdngt6u9ns7S1ismhH_C2R1YWarg04wWg@mail.gmail.com>
+Subject: Re: [PATCH net 3/3] ixgbe: add double of VLAN header when computing
+ the max MTU
+To:     Jason Xing <kerneljasonxing@gmail.com>
+Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, richardcochran@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        alexandr.lobakin@intel.com, maciej.fijalkowski@intel.com,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Jason Xing <kernelxing@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,83 +74,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 8, 2023 at 12:57 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Wed, Feb 8, 2023 at 4:47 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
 >
-> malloc() and free() may be completely replaced by sanitizers, use
-> fopen() and fclose() instead.
+> CC Alexander Duyck
 >
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/attach_probe.c | 10 +++++-----
->  tools/testing/selftests/bpf/progs/test_attach_probe.c |  8 +++++---
->  2 files changed, 10 insertions(+), 8 deletions(-)
+> Hello Alexander, thanks for reviewing the other two patches of this
+> patchset last night. Would you mind reviewing the last one? :)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> index 9566d9d2f6ee..56374c8b5436 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> @@ -33,8 +33,8 @@ void test_attach_probe(void)
->         struct test_attach_probe* skel;
->         ssize_t uprobe_offset, ref_ctr_offset;
->         struct bpf_link *uprobe_err_link;
-> +       FILE *devnull;
->         bool legacy;
-> -       char *mem;
->
->         /* Check if new-style kprobe/uprobe API is supported.
->          * Kernels that support new FD-based kprobe and uprobe BPF attachment
-> @@ -147,7 +147,7 @@ void test_attach_probe(void)
->         /* test attach by name for a library function, using the library
->          * as the binary argument. libc.so.6 will be resolved via dlopen()/dlinfo().
->          */
-> -       uprobe_opts.func_name = "malloc";
-> +       uprobe_opts.func_name = "fopen";
->         uprobe_opts.retprobe = false;
->         skel->links.handle_uprobe_byname2 =
->                         bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe_byname2,
-> @@ -157,7 +157,7 @@ void test_attach_probe(void)
->         if (!ASSERT_OK_PTR(skel->links.handle_uprobe_byname2, "attach_uprobe_byname2"))
->                 goto cleanup;
->
-> -       uprobe_opts.func_name = "free";
-> +       uprobe_opts.func_name = "fclose";
->         uprobe_opts.retprobe = true;
->         skel->links.handle_uretprobe_byname2 =
->                         bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe_byname2,
-> @@ -195,8 +195,8 @@ void test_attach_probe(void)
->         usleep(1);
->
->         /* trigger & validate shared library u[ret]probes attached by name */
-> -       mem = malloc(1);
-> -       free(mem);
-> +       devnull = fopen("/dev/null", "r");
-> +       fclose(devnull);
->
->         /* trigger & validate uprobe & uretprobe */
->         trigger_func();
-> diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-> index a1e45fec8938..269a184c265c 100644
-> --- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
-> +++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-> @@ -94,10 +94,12 @@ int handle_uretprobe_byname(struct pt_regs *ctx)
->  SEC("uprobe")
->  int handle_uprobe_byname2(struct pt_regs *ctx)
->  {
-> -       unsigned int size = PT_REGS_PARM1(ctx);
-> +       void *mode_ptr = (void *)(long)PT_REGS_PARM2(ctx);
+> Thanks,
+> Jason
 
-let's use BPF_UPROBE() macro instead of PT_REGS_xxx() calls?
+It looks like this patch isn't in the patch queue at:
+https://patchwork.kernel.org/project/netdevbpf/list/
 
-> +       char mode[2] = {};
->
-> -       /* verify malloc size */
-> -       if (size == 1)
-> +       /* verify fopen mode */
-> +       bpf_probe_read_user(mode, sizeof(mode), mode_ptr);
-> +       if (mode[0] == 'r' && mode[1] == 0)
->                 uprobe_byname2_res = 7;
->         return 0;
->  }
-> --
-> 2.39.1
->
+I believe you will need to resubmit it to get it accepted upstream.
+
+The patch itself looks fine. Feel free to add my reviewed by when you submit it.
+
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
