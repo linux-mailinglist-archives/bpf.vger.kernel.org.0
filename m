@@ -2,326 +2,267 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A28AC68FE54
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 05:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F63690032
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 07:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjBIERu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Feb 2023 23:17:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
+        id S229667AbjBIGGx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 01:06:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjBIERt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Feb 2023 23:17:49 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8180EC17B
-        for <bpf@vger.kernel.org>; Wed,  8 Feb 2023 20:16:50 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id j6-20020a9d7686000000b0068d4ba9d141so218721otl.6
-        for <bpf@vger.kernel.org>; Wed, 08 Feb 2023 20:16:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kIYuQlL0b+1UWZxfzgSTYgkUPg5xtNdv7gdQ4CEZyyk=;
-        b=C4WnWbFMTIDzI6S4+iXb05xdKS1IyXewwDyBAFyVRSNLTwNJqBDKMcBLd3A/r5LNPK
-         v/N9iclVolyvQ4btP0yIdaRaPUI04tf3FbwImfyvCjowmBjeaaFClFbB4k3IYF8X50N7
-         BGrZBHoKhdf+DMutXyPy1yhxHJWZtrptAr90Wf6kbouvLLy/5bOvWf+wuuoXfZvBUiZE
-         9qN48BsQB+oIrncuwOQ4bF2VW9l12/lRWf+ZTrUx5jcIMiuzhKWK/dRMNXEKYEFDhMjs
-         /2zFgdrPu3oSLFNqRFd103+Tqt6jwv1fWjyFEhico9FzGm0BqWwhG8RrNKGDghzAxPFY
-         BsyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kIYuQlL0b+1UWZxfzgSTYgkUPg5xtNdv7gdQ4CEZyyk=;
-        b=bdK2fQ2vTw2WqJ+UFJ7Q7A88CxELMrClqmu66oLUOhhLrzG5QFPpKoBmGIpFTK6Ko6
-         g3IZC7T25N1YdgNq2F98cSPdbkDQEWRc0LjJQH8Ax6Tbug89sjU2umae3Qw6N8Gprz+a
-         tuFoBxiAePTMky472pGDsmXZ0JZZME/z7XSaulqk5w8b+xOOL/1jUej2mUaei/2/VNpn
-         Wn/xeTaVM4bAcE9Hw0BEi8sDDAoWvYKNi8cDbeB86yflZNhHq2XSDyljc8pFSdmSptvI
-         lWEt8pCcSHksQbJgHjEdrA6uUSu73yX9LT62VeqsQGjIoUyQXGEpCls2f2RwRdHXeu93
-         GNrA==
-X-Gm-Message-State: AO0yUKUv/q1YrRjz+BEyoL79AfytfTd31X85TFnICAdRZ/Yzqumc8M6w
-        joAn6VJzk5r8o217mzhXhzzKQg8wAk4=
-X-Google-Smtp-Source: AK7set/xvaJ81XRuC+G9Qi6FXguSruZFo2bHJLwOvNbYLQI7HZn2hCbhoSo4nxtKWoIv2twE53+Ddg==
-X-Received: by 2002:a05:6830:4784:b0:68b:cdc3:78d7 with SMTP id df4-20020a056830478400b0068bcdc378d7mr4791454otb.8.1675916112346;
-        Wed, 08 Feb 2023 20:15:12 -0800 (PST)
-Received: from ?IPV6:2603:8080:2800:f9bf:eb7:f10d:ceda:48f6? (2603-8080-2800-f9bf-0eb7-f10d-ceda-48f6.res6.spectrum.com. [2603:8080:2800:f9bf:eb7:f10d:ceda:48f6])
-        by smtp.gmail.com with ESMTPSA id f17-20020a9d7b51000000b0068bdfa56717sm148587oto.36.2023.02.08.20.15.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Feb 2023 20:15:11 -0800 (PST)
-Message-ID: <d880b3b3-d6fb-c891-bfc2-9c05c321ddac@gmail.com>
-Date:   Wed, 8 Feb 2023 22:15:10 -0600
+        with ESMTP id S229643AbjBIGGv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 01:06:51 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CEE55AD;
+        Wed,  8 Feb 2023 22:06:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9C17EB81FCF;
+        Thu,  9 Feb 2023 06:06:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E82C5C433EF;
+        Thu,  9 Feb 2023 06:06:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675922805;
+        bh=F4Dini/3haDAbJX9+qU9F/d91A/VtBRaWh0rj4yOi2g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IwKXRqxQN1zEYly4MlLknqtKCZ/u5TD1K9JUngVcfxFa0TnDYNOjhNt++ZA1+e5MV
+         Yo1BvrfPf6cjM8cOkDIJCTy2BvePUZHCzQr9ye3mzsToo58pkuujs5ld6UJtr1kjL+
+         nOLjceycPltc4GaWl0tdTzfjZU16aPe+85Ri5fPOnVcXN/yry/qrjgb54zuVs5voam
+         Nf7tCOA5Vtss6QO59VHZpUJTwJ6noboga/c3BERYjw9j12T27HX7NePOdEmWs7dlF2
+         iyNQDBo6j+v1sSx3pUEUkRpA6E/+80DNlCDbSdz3Hxct/IvcgrTVGMidNenYqGx6nW
+         FUrfu3TX9/8Vg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com,
+        bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net-next] net: skbuff: drop the word head from skb cache
+Date:   Wed,  8 Feb 2023 22:06:42 -0800
+Message-Id: <20230209060642.115752-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: Kernel build fail with 'btf_encoder__encode: btf__dedup failed!'
-Content-Language: en-US
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com>
- <Y85AHdWw/l8d1Gsp@krava>
- <0fbad67e-c359-47c3-8c10-faa003e6519f@app.fastmail.com>
- <bb569967-d33a-7252-964b-a36501b3366a@gmail.com> <Y9RlpyV5JPz/hk1K@krava>
- <883a3b03-a596-8279-1278-bc622114aab5@gmail.com> <Y9kxUzyfpEQpnN7w@krava>
-From:   Alexandre Peixoto Ferreira <alexandref75@gmail.com>
-In-Reply-To: <Y9kxUzyfpEQpnN7w@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri,
+skbuff_head_cache is misnamed (perhaps for historical reasons?)
+because it does not hold heads. Head is the buffer which skb->data
+points to, and also where shinfo lives. struct sk_buff is a metadata
+structure, not the head.
 
-On 1/31/23 09:18, Jiri Olsa wrote:
-> On Sat, Jan 28, 2023 at 01:23:25PM -0600, Alexandre Peixoto Ferreira wrote:
->> Jirka and Daniel,
->>
->> On 1/27/23 18:00, Jiri Olsa wrote:
->>> On Fri, Jan 27, 2023 at 04:28:54PM -0600, Alexandre Peixoto Ferreira wrote:
->>>> On 1/24/23 00:13, Daniel Xu wrote:
->>>>> Hi Jiri,
->>>>>
->>>>> On Mon, Jan 23, 2023, at 1:06 AM, Jiri Olsa wrote:
->>>>>> On Sun, Jan 22, 2023 at 10:48:44AM -0700, Daniel Xu wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> I'm getting the following error during build:
->>>>>>>
->>>>>>>            $ ./tools/testing/selftests/bpf/vmtest.sh -j30
->>>>>>>            [...]
->>>>>>>              BTF     .btf.vmlinux.bin.o
->>>>>>>            btf_encoder__encode: btf__dedup failed!
->>>>>>>            Failed to encode BTF
->>>>>>>              LD      .tmp_vmlinux.kallsyms1
->>>>>>>              NM      .tmp_vmlinux.kallsyms1.syms
->>>>>>>              KSYMS   .tmp_vmlinux.kallsyms1.S
->>>>>>>              AS      .tmp_vmlinux.kallsyms1.S
->>>>>>>              LD      .tmp_vmlinux.kallsyms2
->>>>>>>              NM      .tmp_vmlinux.kallsyms2.syms
->>>>>>>              KSYMS   .tmp_vmlinux.kallsyms2.S
->>>>>>>              AS      .tmp_vmlinux.kallsyms2.S
->>>>>>>              LD      .tmp_vmlinux.kallsyms3
->>>>>>>              NM      .tmp_vmlinux.kallsyms3.syms
->>>>>>>              KSYMS   .tmp_vmlinux.kallsyms3.S
->>>>>>>              AS      .tmp_vmlinux.kallsyms3.S
->>>>>>>              LD      vmlinux
->>>>>>>              BTFIDS  vmlinux
->>>>>>>            FAILED: load BTF from vmlinux: No such file or directory
->>>>>>>            make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
->>>>>>>            make[1]: *** Deleting file 'vmlinux'
->>>>>>>            make: *** [Makefile:1264: vmlinux] Error 2
->>>>>>>
->>>>>>> This happens on both bpf-next/master (84150795a49) and 6.2-rc5
->>>>>>> (2241ab53cb).
->>>>>>>
->>>>>>> I've also tried arch linux pahole 1:1.24+r29+g02d67c5-1 as well as
->>>>>>> upstream pahole on master (02d67c5176) and upstream pahole on
->>>>>>> next (2ca56f4c6f659).
->>>>>>>
->>>>>>> Of the above 6 combinations, I think I've tried all of them (maybe
->>>>>>> missing 1 or 2).
->>>>>>>
->>>>>>> Looks like GCC got updated recently on my machine, so perhaps
->>>>>>> it's related?
->>>>>>>
->>>>>>>            CONFIG_CC_VERSION_TEXT="gcc (GCC) 12.2.1 20230111"
->>>>>>>
->>>>>>> I'll try some debugging, but just wanted to report it first.
->>>>>> hi,
->>>>>> I can't reproduce that.. can you reproduce it outside vmtest.sh?
->>>>>>
->>>>>> there will be lot of output with patch below, but could contain
->>>>>> some more error output
->>>>> Thanks for the hints. Doing a regular build outside of vmtest.sh
->>>>> seems to work ok. So maybe it's a difference in the build config.
->>>>>
->>>>> I'll put a little more time into debugging to see if it goes anywhere.
->>>>> But I'll have to get back to the regularly scheduled programming
->>>>> soon.
->>>> 6.2-rc5 compiles correctly when CONFIG_X86_KERNEL_IBT is commented but fails
->>>> in pahole when CONFIG_X86_KERNEL_IBT is set.
->>> could you plese attach your config and the build error?
->>> I can't reproduce that
->>>
->>> thanks,
->>> jirka
->> My working .config is available at https://pastebin.pl/view/bef3765c
->> change CONFIG_X86_KERNEL_IBT to y to get the error.
->>
->> The error is similar to Daniel's and is shown below:
->>
->>    LD      .tmp_vmlinux.btf
->>    BTF     .btf.vmlinux.bin.o
->> btf_encoder__encode: btf__dedup failed!
->> Failed to encode BTF
->>    LD      .tmp_vmlinux.kallsyms1
->>    NM      .tmp_vmlinux.kallsyms1.syms
->>    KSYMS   .tmp_vmlinux.kallsyms1.S
->>    AS      .tmp_vmlinux.kallsyms1.S
->>    LD      .tmp_vmlinux.kallsyms2
->>    NM      .tmp_vmlinux.kallsyms2.syms
->>    KSYMS   .tmp_vmlinux.kallsyms2.S
->>    AS      .tmp_vmlinux.kallsyms2.S
->>    LD      .tmp_vmlinux.kallsyms3
->>    NM      .tmp_vmlinux.kallsyms3.syms
->>    KSYMS   .tmp_vmlinux.kallsyms3.S
->>    AS      .tmp_vmlinux.kallsyms3.S
->>    LD      vmlinux
->>    BTFIDS  vmlinux
->> FAILED: load BTF from vmlinux: No such file or directory
->> make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
->> make[1]: *** Deleting file 'vmlinux'
->> make: *** [Makefile:1264: vmlinux] Error 2
-> I can't reproduce that.. I tried with gcc versions:
->
->    gcc (GCC) 13.0.1 20230117 (Red Hat 13.0.1-0)
->    gcc (GCC) 12.2.1 20221121 (Red Hat 12.2.1-4)
->
-> I haven't found fedora setup with 12.2.1 20230111 yet
->
-> I tried alsa with latest pahole master branch
->
-> were you guys able to get any more verbose output
-> that I suggested earlier?
->
-> jirka
+Eric recently added skb_small_head_cache (which allocates actual
+head buffers), let that serve as an excuse to finally clean this up :)
 
-I compiled with and without IBT using the -V on pahole 
-(LLVM_OBJCOPY=objcopy pahole -V -J --btf_gen_floats -j .tmp_vmlinux.btf) 
-and the outfiles are a little too big (540MB). The error happens with 
-this CONST type pointing to itself. That does not happen with the IBT 
-option removed.
+Leave the user-space visible name intact, it could possibly be uAPI.
 
-$ grep  -n "CONST (anon) type_id" /tmp/with_IBT  | more
-346:[2] CONST (anon) type_id=2
-349:[5] CONST (anon) type_id=5
-351:[7] CONST (anon) type_id=7
-356:[12] CONST (anon) type_id=12
-363:[19] CONST (anon) type_id=19
-373:[29] CONST (anon) type_id=29
-375:[31] CONST (anon) type_id=31
-409:[63] CONST (anon) type_id=63
-444:[89] CONST (anon) type_id=0
-472:[97] CONST (anon) type_id=97
-616:[129] CONST (anon) type_id=129
-652:[131] CONST (anon) type_id=131
-1319:[234] CONST (anon) type_id=234
-1372:[246] CONST (anon) type_id=246
-....
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+ include/linux/skbuff.h |  2 +-
+ kernel/bpf/cpumap.c    |  2 +-
+ net/bpf/test_run.c     |  2 +-
+ net/core/skbuff.c      | 31 +++++++++++++++----------------
+ net/core/xdp.c         |  5 ++---
+ 5 files changed, 20 insertions(+), 22 deletions(-)
 
-$diff -ru with_IBT without_IBT
---- with_IBT 2023-01-31 09:39:24.915912735 -0600
-+++ without_IBT 2023-01-31 09:46:23.456005278 -0600
-@@ -340,346 +340,14800 @@
-  Found per-CPU symbol 'cpu_tlbstate_shared' at address 0x2c040
-  Found per-CPU symbol 'mce_poll_banks' at address 0x1ad20
-  Found 341 per-CPU variables!
--Found 61470 functions!
-+Found 61462 functions!
-+File .tmp_vmlinux.btf:
-+[1] FUNC_PROTO (anon) return=0 args=(void)
-+[2] FUNC verify_cpu type_id=1
-+[3] FUNC_PROTO (anon) return=0 args=(void)
-+[4] FUNC sev_verify_cbit type_id=3
-+search cu 'arch/x86/kernel/head_64.S' for percpu global variables.
-+Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-+Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
-+Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
-+Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
-+Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
-+Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-+Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-+Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
-+Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
-+Found per-CPU symbol 'current_tsc_ratio' at address 0x19fa0
-+Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-+Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-+Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
-+Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
-+Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
-+Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
-+Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
-+Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
-+Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-+Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
-+Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
-+Found per-CPU symbol 'last_nmi_rip' at address 0x1a018
-+Found per-CPU symbol 'nmi_stats' at address 0x1a030
-+Found per-CPU symbol 'swallow_nmi' at address 0x1a020
-+Found per-CPU symbol 'nmi_state' at address 0x1a010
-+Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
-+Found per-CPU symbol 'nmi_cr2' at address 0x1a008
-+Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
-+Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
-+Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
-+Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
-+Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-...
-
-And the lines 342-365 of the with_IBT result:
-      342 Found 341 per-CPU variables!
-      343 Found 61470 functions!
-      344 File .tmp_vmlinux.btf:
-      345 [1] INT long unsigned int size=8 nr_bits=64 encoding=(none)
-      346 [2] CONST (anon) type_id=2
-      347 [3] PTR (anon) type_id=6
-      348 [4] INT char size=1 nr_bits=8 encoding=(none)
-      349 [5] CONST (anon) type_id=5
-      350 [6] INT unsigned int size=4 nr_bits=32 encoding=(none)
-      351 [7] CONST (anon) type_id=7
-      352 [8] TYPEDEF __s8 type_id=10
-      353 [9] INT signed char size=1 nr_bits=8 encoding=SIGNED
-      354 [10] TYPEDEF __u8 type_id=12
-      355 [11] INT unsigned char size=1 nr_bits=8 encoding=(none)
-      356 [12] CONST (anon) type_id=12
-      357 [13] TYPEDEF __s16 type_id=15
-      358 [14] INT short int size=2 nr_bits=16 encoding=SIGNED
-      359 [15] TYPEDEF __u16 type_id=17
-      360 [16] INT short unsigned int size=2 nr_bits=16 encoding=(none)
-      361 [17] TYPEDEF __s32 type_id=19
-      362 [18] INT int size=4 nr_bits=32 encoding=SIGNED
-      363 [19] CONST (anon) type_id=19
-      364 [20] TYPEDEF __u32 type_id=7
-      365 [21] TYPEDEF __s64 type_id=23
-
-lines 342-362 of without_IBT
-
-      342 Found 341 per-CPU variables!
-      343 Found 61462 functions!
-      344 File .tmp_vmlinux.btf:
-      345 [1] FUNC_PROTO (anon) return=0 args=(void)
-      346 [2] FUNC verify_cpu type_id=1
-      347 [3] FUNC_PROTO (anon) return=0 args=(void)
-      348 [4] FUNC sev_verify_cbit type_id=3
-      349 search cu 'arch/x86/kernel/head_64.S' for percpu global variables.
-      350 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-      351 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
-      352 Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
-      353 Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
-      354 Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
-      355 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-      356 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-      357 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
-      358 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
-      359 Found per-CPU symbol 'current_tsc_ratio' at address 0x19fa0
-      360 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-      361 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
-      362 Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
-
-If the full debug files are useful or a target grep or diff is better 
-let me know.
-
-Thanks,
-
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index c3df3b55da97..47ab28a37f2f 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -1243,7 +1243,7 @@ static inline void consume_skb(struct sk_buff *skb)
+ 
+ void __consume_stateless_skb(struct sk_buff *skb);
+ void  __kfree_skb(struct sk_buff *skb);
+-extern struct kmem_cache *skbuff_head_cache;
++extern struct kmem_cache *skbuff_cache;
+ 
+ void kfree_skb_partial(struct sk_buff *skb, bool head_stolen);
+ bool skb_try_coalesce(struct sk_buff *to, struct sk_buff *from,
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index e0b2d016f0bf..d2110c1f6fa6 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -361,7 +361,7 @@ static int cpu_map_kthread_run(void *data)
+ 		/* Support running another XDP prog on this CPU */
+ 		nframes = cpu_map_bpf_prog_run(rcpu, frames, xdp_n, &stats, &list);
+ 		if (nframes) {
+-			m = kmem_cache_alloc_bulk(skbuff_head_cache, gfp, nframes, skbs);
++			m = kmem_cache_alloc_bulk(skbuff_cache, gfp, nframes, skbs);
+ 			if (unlikely(m == 0)) {
+ 				for (i = 0; i < nframes; i++)
+ 					skbs[i] = NULL; /* effect: xdp_return_frame */
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 8da0d73b368e..2b954326894f 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -234,7 +234,7 @@ static int xdp_recv_frames(struct xdp_frame **frames, int nframes,
+ 	int i, n;
+ 	LIST_HEAD(list);
+ 
+-	n = kmem_cache_alloc_bulk(skbuff_head_cache, gfp, nframes, (void **)skbs);
++	n = kmem_cache_alloc_bulk(skbuff_cache, gfp, nframes, (void **)skbs);
+ 	if (unlikely(n == 0)) {
+ 		for (i = 0; i < nframes; i++)
+ 			xdp_return_frame(frames[i]);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index bdb1e015e32b..23779b68f7d2 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -84,7 +84,7 @@
+ #include "dev.h"
+ #include "sock_destructor.h"
+ 
+-struct kmem_cache *skbuff_head_cache __ro_after_init;
++struct kmem_cache *skbuff_cache __ro_after_init;
+ static struct kmem_cache *skbuff_fclone_cache __ro_after_init;
+ #ifdef CONFIG_SKB_EXTENSIONS
+ static struct kmem_cache *skbuff_ext_cache __ro_after_init;
+@@ -285,7 +285,7 @@ static struct sk_buff *napi_skb_cache_get(void)
+ 	struct sk_buff *skb;
+ 
+ 	if (unlikely(!nc->skb_count)) {
+-		nc->skb_count = kmem_cache_alloc_bulk(skbuff_head_cache,
++		nc->skb_count = kmem_cache_alloc_bulk(skbuff_cache,
+ 						      GFP_ATOMIC,
+ 						      NAPI_SKB_CACHE_BULK,
+ 						      nc->skb_cache);
+@@ -294,7 +294,7 @@ static struct sk_buff *napi_skb_cache_get(void)
+ 	}
+ 
+ 	skb = nc->skb_cache[--nc->skb_count];
+-	kasan_unpoison_object_data(skbuff_head_cache, skb);
++	kasan_unpoison_object_data(skbuff_cache, skb);
+ 
+ 	return skb;
+ }
+@@ -352,7 +352,7 @@ struct sk_buff *slab_build_skb(void *data)
+ 	struct sk_buff *skb;
+ 	unsigned int size;
+ 
+-	skb = kmem_cache_alloc(skbuff_head_cache, GFP_ATOMIC);
++	skb = kmem_cache_alloc(skbuff_cache, GFP_ATOMIC);
+ 	if (unlikely(!skb))
+ 		return NULL;
+ 
+@@ -403,7 +403,7 @@ struct sk_buff *__build_skb(void *data, unsigned int frag_size)
+ {
+ 	struct sk_buff *skb;
+ 
+-	skb = kmem_cache_alloc(skbuff_head_cache, GFP_ATOMIC);
++	skb = kmem_cache_alloc(skbuff_cache, GFP_ATOMIC);
+ 	if (unlikely(!skb))
+ 		return NULL;
+ 
+@@ -585,7 +585,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+ 	u8 *data;
+ 
+ 	cache = (flags & SKB_ALLOC_FCLONE)
+-		? skbuff_fclone_cache : skbuff_head_cache;
++		? skbuff_fclone_cache : skbuff_cache;
+ 
+ 	if (sk_memalloc_socks() && (flags & SKB_ALLOC_RX))
+ 		gfp_mask |= __GFP_MEMALLOC;
+@@ -921,7 +921,7 @@ static void kfree_skbmem(struct sk_buff *skb)
+ 
+ 	switch (skb->fclone) {
+ 	case SKB_FCLONE_UNAVAILABLE:
+-		kmem_cache_free(skbuff_head_cache, skb);
++		kmem_cache_free(skbuff_cache, skb);
+ 		return;
+ 
+ 	case SKB_FCLONE_ORIG:
+@@ -1035,7 +1035,7 @@ static void kfree_skb_add_bulk(struct sk_buff *skb,
+ 	sa->skb_array[sa->skb_count++] = skb;
+ 
+ 	if (unlikely(sa->skb_count == KFREE_SKB_BULK_SIZE)) {
+-		kmem_cache_free_bulk(skbuff_head_cache, KFREE_SKB_BULK_SIZE,
++		kmem_cache_free_bulk(skbuff_cache, KFREE_SKB_BULK_SIZE,
+ 				     sa->skb_array);
+ 		sa->skb_count = 0;
+ 	}
+@@ -1060,8 +1060,7 @@ kfree_skb_list_reason(struct sk_buff *segs, enum skb_drop_reason reason)
+ 	}
+ 
+ 	if (sa.skb_count)
+-		kmem_cache_free_bulk(skbuff_head_cache, sa.skb_count,
+-				     sa.skb_array);
++		kmem_cache_free_bulk(skbuff_cache, sa.skb_count, sa.skb_array);
+ }
+ EXPORT_SYMBOL(kfree_skb_list_reason);
+ 
+@@ -1215,15 +1214,15 @@ static void napi_skb_cache_put(struct sk_buff *skb)
+ 	struct napi_alloc_cache *nc = this_cpu_ptr(&napi_alloc_cache);
+ 	u32 i;
+ 
+-	kasan_poison_object_data(skbuff_head_cache, skb);
++	kasan_poison_object_data(skbuff_cache, skb);
+ 	nc->skb_cache[nc->skb_count++] = skb;
+ 
+ 	if (unlikely(nc->skb_count == NAPI_SKB_CACHE_SIZE)) {
+ 		for (i = NAPI_SKB_CACHE_HALF; i < NAPI_SKB_CACHE_SIZE; i++)
+-			kasan_unpoison_object_data(skbuff_head_cache,
++			kasan_unpoison_object_data(skbuff_cache,
+ 						   nc->skb_cache[i]);
+ 
+-		kmem_cache_free_bulk(skbuff_head_cache, NAPI_SKB_CACHE_HALF,
++		kmem_cache_free_bulk(skbuff_cache, NAPI_SKB_CACHE_HALF,
+ 				     nc->skb_cache + NAPI_SKB_CACHE_HALF);
+ 		nc->skb_count = NAPI_SKB_CACHE_HALF;
+ 	}
+@@ -1807,7 +1806,7 @@ struct sk_buff *skb_clone(struct sk_buff *skb, gfp_t gfp_mask)
+ 		if (skb_pfmemalloc(skb))
+ 			gfp_mask |= __GFP_MEMALLOC;
+ 
+-		n = kmem_cache_alloc(skbuff_head_cache, gfp_mask);
++		n = kmem_cache_alloc(skbuff_cache, gfp_mask);
+ 		if (!n)
+ 			return NULL;
+ 
+@@ -4677,7 +4676,7 @@ static void skb_extensions_init(void) {}
+ 
+ void __init skb_init(void)
+ {
+-	skbuff_head_cache = kmem_cache_create_usercopy("skbuff_head_cache",
++	skbuff_cache = kmem_cache_create_usercopy("skbuff_head_cache",
+ 					      sizeof(struct sk_buff),
+ 					      0,
+ 					      SLAB_HWCACHE_ALIGN|SLAB_PANIC,
+@@ -5550,7 +5549,7 @@ void kfree_skb_partial(struct sk_buff *skb, bool head_stolen)
+ {
+ 	if (head_stolen) {
+ 		skb_release_head_state(skb);
+-		kmem_cache_free(skbuff_head_cache, skb);
++		kmem_cache_free(skbuff_cache, skb);
+ 	} else {
+ 		__kfree_skb(skb);
+ 	}
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index a5a7ecf6391c..03938fe6d33a 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -603,8 +603,7 @@ EXPORT_SYMBOL_GPL(xdp_warn);
+ 
+ int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp)
+ {
+-	n_skb = kmem_cache_alloc_bulk(skbuff_head_cache, gfp,
+-				      n_skb, skbs);
++	n_skb = kmem_cache_alloc_bulk(skbuff_cache, gfp, n_skb, skbs);
+ 	if (unlikely(!n_skb))
+ 		return -ENOMEM;
+ 
+@@ -673,7 +672,7 @@ struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ {
+ 	struct sk_buff *skb;
+ 
+-	skb = kmem_cache_alloc(skbuff_head_cache, GFP_ATOMIC);
++	skb = kmem_cache_alloc(skbuff_cache, GFP_ATOMIC);
+ 	if (unlikely(!skb))
+ 		return NULL;
+ 
 -- 
-Alexandre Peixoto Ferreira
+2.39.1
 
