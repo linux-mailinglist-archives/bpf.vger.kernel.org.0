@@ -2,64 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9F469116F
-	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 20:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC13A691174
+	for <lists+bpf@lfdr.de>; Thu,  9 Feb 2023 20:38:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbjBIThQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Feb 2023 14:37:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
+        id S230171AbjBITi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Feb 2023 14:38:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjBIThP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Feb 2023 14:37:15 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF887457E6
-        for <bpf@vger.kernel.org>; Thu,  9 Feb 2023 11:37:13 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id q19so3075119edd.2
-        for <bpf@vger.kernel.org>; Thu, 09 Feb 2023 11:37:13 -0800 (PST)
+        with ESMTP id S229525AbjBITi0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Feb 2023 14:38:26 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE52F457E6;
+        Thu,  9 Feb 2023 11:38:25 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id y2so1102202iot.4;
+        Thu, 09 Feb 2023 11:38:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=P7r35QariJt8FIr4ScLxkbJGD85TFr5FAmlYiYMamss=;
-        b=YHYqeUT3PrKOEUdIeG3y7x3oS1PQQ7T9scaXc9USxv+pev7LLweGIihh58Xe4wNigs
-         QYW2ooScjkTYHi+Ju52tl+bRUQJ15Zih29FU3VBEWC+ZSjL4o4VLk4JfbHgQ4QYnv4Qz
-         M2H1NffzNmJIhl21sUKfBpJV7FJzMFy2/xdiJwXagPD3AWo7hxuk9HS65kMWJma73+bY
-         A7A53f2kqOC++bl8KagHQjHlWRxdteedjb2UTGEAyzhLdkttzNRVq3olNp22V2KOcmc2
-         MZMdwwBp2fQx+8XoW8jxjrOi7L/fjltyv0CHr/evFzg3G8cICKSoZvGmBNNzI3ttlZpD
-         wbgw==
+        bh=6Jdh4VULJ6F+h4MAiYTsb2LTjagqLadibqRKQMHpvOE=;
+        b=eZBK7bsG54sHx0p7PAQy2iX/zWTjNGA/Qd2/ZdxdVyvp0yXbv8yOGGG3EWPo99DRtz
+         D41JPGxHrKpnMA2ZENevlEV6JriYGPcTumXjSnsCJZwn5IrH5m3MDKobvNnUu2QaxaNv
+         +WiUlme18JXjpbjqrOg7uTaDWpVBzldrKQFEOrgFo/ISWjXyFrg8oofCUNE5uxKa4fQa
+         qqPF0R2NmRh4nBz+9U9FaEP7AHFZCLVSA96LHlfeeqzN265jRXHEQ9O8YMYBZcK9PUrQ
+         esy+bkwI35pyARvJmzRbZzKGOtkGzjGwSFU7dXqiDzoO47SEOS2+of7u8fQwhZszP01/
+         yFIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=P7r35QariJt8FIr4ScLxkbJGD85TFr5FAmlYiYMamss=;
-        b=OhmhIWggI/Ux0+TPmvWOXdCOW4VFJ9MD7Ysq2Hl+8lQN3H3ejtluv7rR7dePlLPyN7
-         GWcC1B4w3CfITH7FHT4TFSxx2rHmQInARRBF0cvEDhIJ/ZIAuu8wYIfnNRyj7mSgEJRL
-         XgGzbb6RNQtBFbr7WGERiSoJM8kCTsUlKO3EieDxuYkBmJtxSIqLyhAqfqnsQH1ZxoOl
-         spXoY8aFs+iUX8flXnMc9nH/LPbmvinUh49EJn8CCH5eJOQrCo92w9DgjEquTakZBlRg
-         LXILEg0x/PCAYnJiIlDK6fUN5DfSaMkwI1vi/GLJcD66KlREzW5R9nY3N+BTtsZ/wPlm
-         FTsA==
-X-Gm-Message-State: AO0yUKV1jhzq/NSCyfsAVi7f42k0LmilHBPS4bkBVNPlWvshn4cZZkzj
-        Ae4txgIRru9mT4kdavOfxFhpJU+PcSR/3vMFc2pCTLx1i9o=
-X-Google-Smtp-Source: AK7set/jNw24CiPXthayvx8RKlCV0I/HXqw/5q13dyoCKMzApNgqJcgOEczl4xwGDIw8mBROzO5lsUPHl+/NeSCPgFQ=
-X-Received: by 2002:a05:6402:2420:b0:4ab:1f1b:95a1 with SMTP id
- t32-20020a056402242000b004ab1f1b95a1mr709318eda.0.1675971432401; Thu, 09 Feb
- 2023 11:37:12 -0800 (PST)
+        bh=6Jdh4VULJ6F+h4MAiYTsb2LTjagqLadibqRKQMHpvOE=;
+        b=Svdjr43RbYt5Jx0V4oC/1rRJVds3RQ2vK8eAaClS5JELVPoFPvrODxkEpi34s4Qhua
+         UTAN+Hc3dxki0miSH6a3v0Ys7cp2tbTYAa/AQj50XGwQDqP/Bb+QQOb2wbiqEURbc2aD
+         uHl+5NMRLUWdQIMhn74QIaS2gbX6ZRCaHYNmXoNahRXKogoHlj1XW7zn+/pJH//Pfwm/
+         E6fgKopLJ33x3CroIspNXANkc5elwrhLNcCqs/uYF30C7tLgC5rtwrF03eX1hrOTouEo
+         BGyAqOg3j5ezp3llTE+TY1N4KxfHub2EicRuD1aZDu0/MAiT2ktaCcEB0Bkmw/9kiqyA
+         lGkA==
+X-Gm-Message-State: AO0yUKV6g7DJlh1MVTl2SKW9rO9kbwtGPDzGCwA12GdA3WafOkQbgPZ2
+        Iv3A8xPde789SDpUS8+59DyV/V7K2JCphaKp19E=
+X-Google-Smtp-Source: AK7set/SRwK2j1K6/X1ct4MebC7m2uZKEvZh2iPzd2xeOuLUL++LqTwMGYRVKWqAXTayJdIPTpmag/h5t3V8QGEoDGA=
+X-Received: by 2002:a02:b80a:0:b0:3b0:5216:258a with SMTP id
+ o10-20020a02b80a000000b003b05216258amr7282175jam.23.1675971505154; Thu, 09
+ Feb 2023 11:38:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20230208205642.270567-1-iii@linux.ibm.com> <20230208205642.270567-9-iii@linux.ibm.com>
- <CAEf4BzYCNNROXcEx5w3St6TLWS3YP4C6_uCWfgfS3t_p5uaxyQ@mail.gmail.com> <f1731f2b3008964d3c7c8c25c5a4d8799ac10c57.camel@linux.ibm.com>
-In-Reply-To: <f1731f2b3008964d3c7c8c25c5a4d8799ac10c57.camel@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Feb 2023 11:37:00 -0800
-Message-ID: <CAEf4BzbToAz40eCBoGTeN67pStmkj7zLSWvetKO1xHRj1b4C9A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 8/9] libbpf: Add MSan annotations
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
+References: <20230201135737.800527-1-jolsa@kernel.org> <Y+UAsr8A+xT0bUY/@krava>
+In-Reply-To: <Y+UAsr8A+xT0bUY/@krava>
+From:   Namhyung Kim <namhyung@gmail.com>
+Date:   Thu, 9 Feb 2023 11:38:13 -0800
+Message-ID: <CAM9d7cgrwyzrnDkkU2sAExonKbjSrs=p7Qyr=cww2zg4DTDBFw@mail.gmail.com>
+Subject: Re: [RFC 0/5] mm/bpf/perf: Store build id in file object
+To:     Jiri Olsa <olsajiri@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -71,121 +81,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 9, 2023 at 2:02 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+Hi Jiri,
+
+On Thu, Feb 9, 2023 at 6:25 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> On Wed, 2023-02-08 at 17:29 -0800, Andrii Nakryiko wrote:
-> > On Wed, Feb 8, 2023 at 12:57 PM Ilya Leoshkevich <iii@linux.ibm.com>
-> > wrote:
-> > >
-> > > MSan runs into a few false positives in libbpf. They all come from
-> > > the
-> > > fact that MSan does not know anything about the bpf syscall,
-> > > particularly, what it writes to.
-> > >
-> > > Add libbpf_mark_defined() function to mark memory modified by the
-> > > bpf
-> > > syscall. Use the abstract name (it could be e.g.
-> > > libbpf_msan_unpoison()), because it can be used for valgrind in the
-> > > future as well.
-> > >
-> > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > ---
+> On Wed, Feb 01, 2023 at 02:57:32PM +0100, Jiri Olsa wrote:
+> > hi,
+> > we have a use cases for bpf programs to use binary file's build id.
 > >
-> > This is a lot to satisfy MSan, especially mark_map_value_defined
-> > which
-> > has to do bpf_obj_get_info_by_fd()... Is there any other way? What
-> > happens if we don't do it?
->
-> It would generate false positives when accessing the resulting map
-> values, which is not nice. The main complexity in this case comes not
-> from mark_map_value_defined() per se, but from the fact that we don't
-> know the value size, especially for percpu maps.
->
-> I toyed with the idea to extend the BPF_MAP_LOOKUP_ELEM interface to
-> return the number of bytes written, but decided against it - the only
-> user of this would be MSan, and at least for the beginning it's better
-> to have extra complexity in userspace, rather than in kernel.
+> > After some attempts to add helpers/kfuncs [1] [2] Andrii had an idea [3]
+> > to store build id directly in the file object. That would solve our use
+> > case and might be beneficial for other profiling/tracing use cases with
+> > bpf programs.
+> >
+> > This RFC patchset adds new config CONFIG_FILE_BUILD_ID option, which adds
+> > build id object pointer to the file object when enabled. The build id is
+> > read/populated when the file is mmap-ed.
+> >
+> > I also added bpf and perf changes that would benefit from this.
 
-yep, I know, it's a source of very confusing problems in some cases.
-Which is why bpf_map__lookup_elem() and such expect user to provide
-total key/value size (and checks it against struct bpf_map's knowledge
-of key/value size, taking into account if map is per-CPU)
+Thanks for working on this!
 
-Ok, I don't see any other way around this as well. Just please extract
-this check of whether the map is per-cpu or not into a separate
-helper, so we can maintain this list in only one place. Currently we
-have this check in validate_map_op() and I don't want to duplicate
-this.
+> >
+> > I'm not sure what's the policy on adding stuff to file object, so apologies
+> > if that's out of line. I'm open to any feedback or suggestions if there's
+> > better place or way to do this.
+>
+> hi,
+> Matthew suggested on irc to consider inode for storing build id
+
+Yeah, that's my idea too.
 
 >
-> > As for libbpf_mark_defined, wouldn't it be cleaner to teach it to
-> > handle NULL pointer and/or zero size transparently? Also, we can have
-> > libbpf_mark_defined_if(void *ptr, size_t sz, bool cond), so in code
-> > we
-> > don't have to have those explicit if conditions. Instead of:
-> >
-> > > +       if (!ret && prog_ids)
-> > > +               libbpf_mark_defined(prog_ids,
-> > > +                                   attr.query.prog_cnt *
-> > > sizeof(*prog_ids));
-> >
-> > we can write just
-> >
-> > libbpf_mark_defined_if(prog_ids, attr.query.prog_cnt *
-> > sizeof(*prog_ids), ret == 0);
-> >
-> > ?
-> >
-> > Should we also call a helper something like
-> > 'libbpf_mark_mem_written',
-> > because that's what we are saying here, right?
+> I tried that and it seems to have better stats wrt allocated build
+> id objects, because inode is being shared among file objects
 >
-> Sure, all this sounds reasonable. Will do.
+> I took /proc/slabinfo output after running bpf tests
 >
-> >
-> > >  tools/lib/bpf/bpf.c             | 70
-> > > +++++++++++++++++++++++++++++++--
-> > >  tools/lib/bpf/btf.c             |  1 +
-> > >  tools/lib/bpf/libbpf.c          |  1 +
-> > >  tools/lib/bpf/libbpf_internal.h | 14 +++++++
-> > >  4 files changed, 82 insertions(+), 4 deletions(-)
-> > >
-> >
-> > [...]
-> >
-> > > diff --git a/tools/lib/bpf/libbpf_internal.h
-> > > b/tools/lib/bpf/libbpf_internal.h
-> > > index fbaf68335394..4e4622f66fdf 100644
-> > > --- a/tools/lib/bpf/libbpf_internal.h
-> > > +++ b/tools/lib/bpf/libbpf_internal.h
-> > > @@ -577,4 +577,18 @@ static inline bool is_pow_of_2(size_t x)
-> > >  #define PROG_LOAD_ATTEMPTS 5
-> > >  int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int
-> > > attempts);
-> > >
-> > > +#if defined(__has_feature)
-> > > +#if __has_feature(memory_sanitizer)
-> > > +#define LIBBPF_MSAN
-> > > +#endif
-> > > +#endif
-> > > +
-> > > +#ifdef LIBBPF_MSAN
-> >
-> > would below work:
-> >
-> > #if defined(__has_feature) && __has_feature(memory_sanitizer)
-> >
-> > ?
-> >
-> > > +#define HAVE_LIBBPF_MARK_DEFINED
-> > > +#include <sanitizer/msan_interface.h>
-> > > +#define libbpf_mark_defined __msan_unpoison
-> > > +#else
-> > > +static inline void libbpf_mark_defined(void *s, size_t n) {}
-> > > +#endif
-> > > +
-> > >  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
-> > > --
-> > > 2.39.1
-> > >
+> - build id stored in file:
 >
+>   # name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
+>   build_id             668    775    160   25    1 : tunables    0    0    0 : slabdata     31     31      0
+>
+> - build id stored in inode:
+>
+>   # name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
+>   build_id             222    225    160   25    1 : tunables    0    0    0 : slabdata      9      9      0
+
+Cool!
+
+>
+>
+> I'm stranger to inode/fs/mm code so I'll spend some time checking on
+> what I possibly broke in there before I send it, but I'd appreciate
+> any early feedback ;-)
+>
+> the code is in here:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>   inode_build_id
+>
+> I'll send another version with inode if there's no objection
+
+I'll take a look.
+
+Thanks,
+Namhyung
+
+
+> >
+> > [1] https://lore.kernel.org/bpf/20221108222027.3409437-1-jolsa@kernel.org/
+> > [2] https://lore.kernel.org/bpf/20221128132915.141211-1-jolsa@kernel.org/
+> > [3] https://lore.kernel.org/bpf/CAEf4BzaZCUoxN_X2ALXwQeFTCwtL17R4P_B_-hUCcidfyO2xyQ@mail.gmail.com/
+> > ---
+> > Jiri Olsa (5):
+> >       mm: Store build id in file object
+> >       bpf: Use file object build id in stackmap
+> >       perf: Use file object build id in perf_event_mmap_event
+> >       selftests/bpf: Add file_build_id test
+> >       selftests/bpf: Add iter_task_vma_buildid test
+> >
+> >  fs/file_table.c                                               |  3 +++
+> >  include/linux/buildid.h                                       | 17 +++++++++++++++++
+> >  include/linux/fs.h                                            |  3 +++
+> >  kernel/bpf/stackmap.c                                         |  8 ++++++++
+> >  kernel/events/core.c                                          | 43 +++++++++++++++++++++++++++++++++++++++----
+> >  lib/buildid.c                                                 | 44 ++++++++++++++++++++++++++++++++++++++++++++
+> >  mm/Kconfig                                                    |  7 +++++++
+> >  mm/mmap.c                                                     | 15 +++++++++++++++
+> >  tools/testing/selftests/bpf/prog_tests/bpf_iter.c             | 88 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  tools/testing/selftests/bpf/prog_tests/file_build_id.c        | 70 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+> >  tools/testing/selftests/bpf/progs/file_build_id.c             | 34 ++++++++++++++++++++++++++++++++++
+> >  tools/testing/selftests/bpf/trace_helpers.c                   | 35 +++++++++++++++++++++++++++++++++++
+> >  tools/testing/selftests/bpf/trace_helpers.h                   |  1 +
+> >  14 files changed, 413 insertions(+), 4 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/file_build_id.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_vma_buildid.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/file_build_id.c
