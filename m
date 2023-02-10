@@ -2,116 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5571691D50
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 11:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF611691DBA
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 12:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbjBJKyE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 05:54:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
+        id S231710AbjBJLLV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 06:11:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjBJKyD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 05:54:03 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8F3126D8
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 02:54:02 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id m2so14732532ejb.8
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 02:54:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IY4Whe06KZr/dCRKC/k3Pnuiy/Cav2kBFD8hLrrOg8g=;
-        b=nY/IGLGNDxwn530xHObj2thmUqHZRExRlPumHRiXuRfiSoGNDPEVEF+L5oTEXv8PcP
-         ETbaF/URLWOEk55Yq0H8SNZ5bXxPS/Ze9/GJ9GFYZs9XeTEJ7dl9t9krGUkdAC3wi0WF
-         U3t/xZxHsaRWpDmZSXBrwiZnSO7RT+1smDyvY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IY4Whe06KZr/dCRKC/k3Pnuiy/Cav2kBFD8hLrrOg8g=;
-        b=EKD+qImOXsfcL+Pj+Rf+eWgOAwqJxpn5a4YTVoQOxV5paR/4bwSk6ttPo3IaJfmB4/
-         Tc3a5hHU5zN+Ht2AVxLqnWJAhYirrBNgoaI+SIGJlSy5yG43+nvjjrKkCCDCKH/c/qBy
-         7zvm0XeH6t/jPxJ/0GTu8BmDj50xXX07Kx06gPKztFerWr2Zaq4d0iJVZTQExNwhEaVB
-         I+tbq8g1cgMLQyQKYB43/dsqby1pHdbZfkZZvxwSuUPDmzglZ2cKooVaYl0h6uH0dweY
-         jfp1l77KT6ETOKnEV1DxNrWDYsyZVegKBWHbxlIHfy/DcPmZkC6uNTZmz7xnOQhGJV0n
-         WtVg==
-X-Gm-Message-State: AO0yUKXKOJpvHQTD9vQXz33z7To6aDEh2mGF7RxbtlzUzSX1d8qj/tsn
-        ijL6g+xq8RAhbPK93WYIMEZn44dP1eI/VFceWkaJAQ==
-X-Google-Smtp-Source: AK7set8xkzxBOD+wDzOrHdqZR4xd8pnPuGMx8oY9OQNbChtJSYSGC6AgESAHznUmU7N13mMocyUpTYWHP03Gt0TCi8c=
-X-Received: by 2002:a17:906:7242:b0:889:a006:7db5 with SMTP id
- n2-20020a170906724200b00889a0067db5mr3270379ejk.138.1676026440994; Fri, 10
- Feb 2023 02:54:00 -0800 (PST)
+        with ESMTP id S231609AbjBJLLU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 06:11:20 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7436B70CC0;
+        Fri, 10 Feb 2023 03:11:19 -0800 (PST)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31AB22Xc025691;
+        Fri, 10 Feb 2023 03:11:01 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=JAuLymnNE/u5iGZm4nsypW2ETFfa16v3l6QcgBBvYnM=;
+ b=BCZCbizSxau995RDANdlKipgsYGJysthJdZQ5OIEJA2W7ns+sz6pBFf3E/toDzmiIsrG
+ 2Q6gGwVFtRXg2KiaCVkju2ETPbdENzF7MFbVMrAXyfd22LXFfmpvn5XD6Az78Y/Ydqmc
+ 3y6j9N4eK6Ggd5XcpLjPCl5ulJjC8xMy5as1fqbwhYn1V8mS56d/AeYyY1tKGLPgagIh
+ /c+clCCitE2HEJDGDYT3jjAoB3akYqaS0ZCylgO3ThlL+tx5DiYN1pFNoXYg71b3lSFy
+ iynGfkKAL8tLt2J076jDYs+CbtGxD+QD7ebQ2I8NUFgRT8Xz640fxemV+2B4kRNvQfo5 Kg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3nnf7wgqka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 10 Feb 2023 03:11:00 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 10 Feb
+ 2023 03:10:59 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.42 via Frontend
+ Transport; Fri, 10 Feb 2023 03:10:59 -0800
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 11D715B6939;
+        Fri, 10 Feb 2023 03:10:52 -0800 (PST)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
+        <edumazet@google.com>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
+        <sbhatta@marvell.com>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <saeedm@nvidia.com>, <richardcochran@gmail.com>,
+        <tariqt@nvidia.com>, <linux-rdma@vger.kernel.org>,
+        <maxtram95@gmail.com>, <naveenm@marvell.com>,
+        <bpf@vger.kernel.org>, <hariprasad.netdev@gmail.com>
+Subject: [net-next Patch V4 0/4] octeontx2-pf: HTB offload support
+Date:   Fri, 10 Feb 2023 16:40:47 +0530
+Message-ID: <20230210111051.13654-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20221122021536.1629178-1-drosen@google.com> <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
- <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com>
- <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm> <CAOQ4uxiBD5NXLMXFev7vsCLU5-_o8-_H-XcoMY1aqhOwnADo9w@mail.gmail.com>
- <283b5344-3ef5-7799-e243-13c707388cd8@fastmail.fm> <CAOQ4uxjvUukDSBk977csO5cX=-1HiMHmyQxycbYQgrpLaanddw@mail.gmail.com>
- <CAJfpegvHKkCn0UnNRVxFXjjnkOuq0N4xLN4WzpqVX+56DqdjUw@mail.gmail.com> <81e010cc-b52b-4b20-8d08-631ce8ca7fad@app.fastmail.com>
-In-Reply-To: <81e010cc-b52b-4b20-8d08-631ce8ca7fad@app.fastmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 10 Feb 2023 11:53:50 +0100
-Message-ID: <CAJfpegsocoi-KobnSpD9dHvZDeDwG+ZPKRV9Yo-4i8utZa5Jww@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem Extension for FUSE
-To:     Nikolaus Rath <nikolaus@rath.org>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Bernd Schubert <bernd.schubert@fastmail.fm>,
-        Daniel Rosenberg <drosen@google.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@android.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: X_egeSChvYkVjMM1dHctWy1udNcOsTPL
+X-Proofpoint-GUID: X_egeSChvYkVjMM1dHctWy1udNcOsTPL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-10_06,2023-02-09_03,2023-02-09_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 10 Feb 2023 at 10:42, Nikolaus Rath <nikolaus@rath.org> wrote:
->
-> On Fri, 10 Feb 2023, at 09:38, Miklos Szeredi wrote:
-> > On Fri, 3 Feb 2023 at 12:43, Amir Goldstein <amir73il@gmail.com> wrote:
-> >
-> >> > Thanks a lot Amir, I'm going to send out an invitation tomorrow. Maybe
-> >> > Nikolaus as libfuse maintainer could also attend?
-> >> >
-> >>
-> >> Since this summit is about kernel filesystem development, I am not sure
-> >> on-prem attendance will be the best option for Nikolaus as we do have
-> >> a quota for
-> >> on-prem attendees, but we should have an option for connecting specific
-> >> attendees remotely for specific sessions, so that could be great.
-> >
-> > Not sure.  I think including non-kernel people might be beneficial to
-> > the whole fs development community.  Not saying LSF is the best place,
-> > but it's certainly a possibility.
-> >
-> > Nikolaus, I don't even know where you're located.  Do you think it
-> > would make sense for you to attend?
->
-> Hi folks,
->
-> I'm located in London.
->
-> I've never been at LHS, so it's hard for me to tell if I'd be useful there or not. If there's interest, then I would make an effort to attend.
->
-> Are we talking about the event in Vancouver on May 8th?
+octeontx2 silicon and CN10K transmit interface consists of five
+transmit levels starting from MDQ, TL4 to TL1. Once packets are
+submitted to MDQ, hardware picks all active MDQs using strict
+priority, and MDQs having the same priority level are chosen using
+round robin. Each packet will traverse MDQ, TL4 to TL1 levels.
+Each level contains an array of queues to support scheduling and
+shaping.
 
-Yes, that's the one.
+As HTB supports classful queuing mechanism by supporting rate and
+ceil and allow the user to control the absolute bandwidth to
+particular classes of traffic the same can be achieved by
+configuring shapers and schedulers on different transmit levels.
 
-I'd certainly think it would be useful, since there will be people
-with interest in fuse filesystems and hashing out the development
-direction involves libfuse as well.
+This series of patches adds support for HTB offload,
 
-Here's the CFP and attendance request if you are interested:
+Patch1: Allow strict priority parameter in HTB offload mode.
 
-  https://events.linuxfoundation.org/lsfmm/program/cfp/
+Patch2: defines APIs such that the driver can dynamically initialize/
+        deinitialize the send queues.
 
-Thanks,
-Miklos
+Patch3: Refactors transmit alloc/free calls as preparation for QOS
+        offload code.
+
+Patch4:  Adds actual HTB offload support.
+
+
+Hariprasad Kelam (1):
+  octeontx2-pf: Refactor schedular queue alloc/free calls
+
+Naveen Mamindlapalli (2):
+  sch_htb: Allow HTB priority parameter in offload mode
+  octeontx2-pf: Add support for HTB offload
+
+Subbaraya Sundeep (1):
+  octeontx2-pf: qos send queues management
+-----
+v1 -> v2 :
+          ensure other drivers won't affect by allowing 'prio'
+          a parameter in htb offload mode.
+
+v2 -> v3 :
+          1. discard patch supporting devlink to configure TL1 round
+             robin priority
+          2. replace NL_SET_ERR_MSG with NL_SET_ERR_MSG_MOD
+          3. use max3 instead of using max couple of times and use a better
+             naming convention in send queue management code.
+
+v3 -> v4:
+	  1. fix sparse warnings.
+	  2. release mutex lock in error conditions.
+          2. reuse "dev_reset_queue" instead defining new function.
+
+
+ .../ethernet/marvell/octeontx2/af/common.h    |    2 +-
+ .../marvell/octeontx2/af/rvu_debugfs.c        |    5 +
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   |   45 +
+ .../ethernet/marvell/octeontx2/nic/Makefile   |    2 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |  113 +-
+ .../marvell/octeontx2/nic/otx2_common.h       |   36 +-
+ .../marvell/octeontx2/nic/otx2_ethtool.c      |   31 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  102 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_reg.h |   13 +
+ .../ethernet/marvell/octeontx2/nic/otx2_tc.c  |    7 +-
+ .../marvell/octeontx2/nic/otx2_txrx.c         |   25 +-
+ .../marvell/octeontx2/nic/otx2_txrx.h         |    3 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |   13 +-
+ .../net/ethernet/marvell/octeontx2/nic/qos.c  | 1541 +++++++++++++++++
+ .../net/ethernet/marvell/octeontx2/nic/qos.h  |   71 +
+ .../ethernet/marvell/octeontx2/nic/qos_sq.c   |  304 ++++
+ .../net/ethernet/mellanox/mlx5/core/en/qos.c  |    7 +-
+ include/net/pkt_cls.h                         |    1 +
+ include/net/sch_generic.h                     |    2 +
+ net/sched/sch_generic.c                       |    5 +-
+ net/sched/sch_htb.c                           |    7 +-
+ 21 files changed, 2239 insertions(+), 96 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/qos.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/qos.h
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/qos_sq.c
+
+--
+2.17.1
