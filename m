@@ -2,168 +2,349 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 679CA692048
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 14:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DF1692065
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 15:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbjBJNzr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 08:55:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
+        id S232381AbjBJOCb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 09:02:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbjBJNzq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 08:55:46 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165191C5BC
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 05:55:45 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id rp23so16015557ejb.7
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 05:55:45 -0800 (PST)
+        with ESMTP id S232369AbjBJOCa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 09:02:30 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15807499F
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 06:02:26 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id r28so4503406oiw.3
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 06:02:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KjBVJN436c7cYcZZ30ILBonljKmQq8TDsmNtnn8Qsm8=;
-        b=mgD9HufvHGlyDCfqalRuzOsmDpholhdwVK/twsGkk0ZxzPs6MIMDl2gUv+5hzhtCpg
-         nq6zrDDKV7ahTzYY7ofmZy4owjGco/3J1xToMAsPVdXnIEPvZp/ezg1TYuK9JYLEa8Ds
-         bkhmSBe09iOT/s6zSTjfRzqvsmSgyyYBA5PjQQiHwCZCTfVCNVNNTsP2DUHw+z/qB9Jq
-         IcVXtdjXn6VSQtvYKNTZGJjkAQsHgXAUmXYsoXrdjxG5zEXHxKvqvwTrMPuYrWGw4fDK
-         S2woJu33YitFPSOEGvQnJxq+wwo6FJRwIEvdOBT0IYSsc9KC3UfLBzudqm9KLH7l7blX
-         fY9A==
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ilHOy6M6sjD4Tkj+UQst9qQ6eLEJf2lEsCJgMT40MrM=;
+        b=mvhV3fQmdUeT7TloZYSYtvaMMrU1crjCkeeiKPeX9ZPNHHEux95GjaOzAsUEjYHV2E
+         ygEXOBGEVpCurG6xUpBwbeg14cTAF/da2Zh+XxJQ8BQLz1/xTSo95lBsOGXwSbo/XkxG
+         HdMvLBOZJnnbsDxe5Nc5/Xqt5HNBpKGTXuv0qsY0f9CKkQJcdDdA3egnV0IbTK/5XXBQ
+         xkMgyJlVFI0tLoia1mkMr6UjG10G15j8dF789U3dalzQoErLRJaECtwxWygNfIaKSoo/
+         JzJT2bc4lySPHJK76JesJhAA0iZ8i0DO88Tpn3ytt8ZrlU4x9QHxTpQqJAJKpefye9zY
+         b3sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KjBVJN436c7cYcZZ30ILBonljKmQq8TDsmNtnn8Qsm8=;
-        b=4i7azfFGCys6mjpd+z9WHO+jOaao6ifMQ6kWp0veUpa1arMohuI6/Ei72h5jJI9pFD
-         VXEQF56+PQ1NfV78JOTgy34kAwVhsTkJFSWavkvNXkIANBVZqgj1DH9MiU0r4juytIJz
-         ZgVeXTY+ApB0jg8vWDd7fjp8H5zjzOQqWOfN7vSLRQeZJBu+UCLUixrr8spYQJIexXlt
-         akGFcXlF4fwqXz3al8sc5R/6SmQHPJTvHnJmRWhaGfRSBoirwagDsggm4N9oV3/AuaKw
-         C7k2hUEtQrBWcIfE04U8RnN+2KrPc1QHCbUbwqA7t3UnY7XUjKkuqWV3cJgG+Z35Xf9t
-         RJJg==
-X-Gm-Message-State: AO0yUKVf/oNi961UfJY4LKBevHfew8DaD0dE4NjDeTuRwRaqyDn0MqTn
-        zvRKS2U4NR/x71AjLJDrBhc=
-X-Google-Smtp-Source: AK7set+p9lYg8EBxzZhBH3xmkEeJ9IWGThGhPVom7SfLXiqeSXIfZroi9+fnszqawZdY/1p4yC2dSw==
-X-Received: by 2002:a17:906:4c8a:b0:87b:d60a:fcbb with SMTP id q10-20020a1709064c8a00b0087bd60afcbbmr14777117eju.47.1676037343534;
-        Fri, 10 Feb 2023 05:55:43 -0800 (PST)
-Received: from localhost ([2001:620:618:580:2:80b3:0:ed0])
-        by smtp.gmail.com with ESMTPSA id gs4-20020a170906f18400b008a5cbd8f7d1sm2396966ejb.127.2023.02.10.05.55.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 05:55:43 -0800 (PST)
-Date:   Fri, 10 Feb 2023 14:55:41 +0100
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v4 bpf-next 08/11] bpf: Special verifier handling for
- bpf_rbtree_{remove, first}
-Message-ID: <20230210135541.xtwn6wzng7mspgrm@apollo>
-References: <20230209174144.3280955-1-davemarchevsky@fb.com>
- <20230209174144.3280955-9-davemarchevsky@fb.com>
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ilHOy6M6sjD4Tkj+UQst9qQ6eLEJf2lEsCJgMT40MrM=;
+        b=GkXM+4XigmvNaxiDq+02kmtSjqOsN3XPo8ZRM9pqT3MpyuBcu/w4KITVn1G853ih92
+         N9Thi98KLelRuxB5MVKq6kT0PX5uhDVFFJ04go7NEJg7eIAL9ofz8fZZe8A75PeB8dEZ
+         PBKSa7upicJ0HQgLlFzWM7+zMVM1xVnliC1wLw37/PHttlbta24GkKp2FoSP8akRXmFR
+         1kpPpxzOVVmisLnVJMeYAEE751tw8OahJYnopJyJPKhxmDhDcKvGneViEs0s17dEZb7M
+         soaVW977M2wMYmELQUq3puS0eIKC7g+2kYhgXyq4zgvv6B6/E4oXw1VQFWZApQnKXqFm
+         KGRg==
+X-Gm-Message-State: AO0yUKVXgQMEhHdLQi+RLQVeSeESIw5Lmd2HlTXNgmDQPZT/U/6SCfkJ
+        uz957Slb6I317lAJCEMLdwQ=
+X-Google-Smtp-Source: AK7set/FSSjad7pVG2RH2ClllTD/pK6jNNWTT+NfbsJOslptAh8kGf968pveypnotxOa+Le+JwkzVw==
+X-Received: by 2002:a05:6808:6341:b0:37a:db50:1908 with SMTP id eb1-20020a056808634100b0037adb501908mr6760265oib.1.1676037745812;
+        Fri, 10 Feb 2023 06:02:25 -0800 (PST)
+Received: from ?IPV6:2603:8080:2800:f9bf:eb7:f10d:ceda:48f6? (2603-8080-2800-f9bf-0eb7-f10d-ceda-48f6.res6.spectrum.com. [2603:8080:2800:f9bf:eb7:f10d:ceda:48f6])
+        by smtp.gmail.com with ESMTPSA id y66-20020aca3245000000b00378ce4197casm2168749oiy.8.2023.02.10.06.02.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Feb 2023 06:02:24 -0800 (PST)
+Message-ID: <949c176c-2788-3959-34b1-90e1f6fe03d1@gmail.com>
+Date:   Fri, 10 Feb 2023 08:02:23 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230209174144.3280955-9-davemarchevsky@fb.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: Kernel build fail with 'btf_encoder__encode: btf__dedup failed!'
+To:     Alan Maguire <alan.maguire@oracle.com>,
+        Jiri Olsa <olsajiri@gmail.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com>
+ <Y85AHdWw/l8d1Gsp@krava>
+ <0fbad67e-c359-47c3-8c10-faa003e6519f@app.fastmail.com>
+ <bb569967-d33a-7252-964b-a36501b3366a@gmail.com> <Y9RlpyV5JPz/hk1K@krava>
+ <883a3b03-a596-8279-1278-bc622114aab5@gmail.com> <Y9kxUzyfpEQpnN7w@krava>
+ <d880b3b3-d6fb-c891-bfc2-9c05c321ddac@gmail.com>
+ <0474fbe7-14a3-71bc-02ed-73ad44b4b2a2@oracle.com>
+Content-Language: en-US
+From:   Alexandre Peixoto Ferreira <alexandref75@gmail.com>
+In-Reply-To: <0474fbe7-14a3-71bc-02ed-73ad44b4b2a2@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 09, 2023 at 06:41:41PM CET, Dave Marchevsky wrote:
-> Newly-added bpf_rbtree_{remove,first} kfuncs have some special properties
-> that require handling in the verifier:
+Alam,
+
+On 2/9/23 07:07, Alan Maguire wrote:
+> On 09/02/2023 04:15, Alexandre Peixoto Ferreira wrote:
+>> Jiri,
+>>
+>> On 1/31/23 09:18, Jiri Olsa wrote:
+>>> On Sat, Jan 28, 2023 at 01:23:25PM -0600, Alexandre Peixoto Ferreira wrote:
+>>>> Jirka and Daniel,
+>>>>
+>>>> On 1/27/23 18:00, Jiri Olsa wrote:
+>>>>> On Fri, Jan 27, 2023 at 04:28:54PM -0600, Alexandre Peixoto Ferreira wrote:
+>>>>>> On 1/24/23 00:13, Daniel Xu wrote:
+>>>>>>> Hi Jiri,
+>>>>>>>
+>>>>>>> On Mon, Jan 23, 2023, at 1:06 AM, Jiri Olsa wrote:
+>>>>>>>> On Sun, Jan 22, 2023 at 10:48:44AM -0700, Daniel Xu wrote:
+>>>>>>>>> Hi,
+>>>>>>>>>
+>>>>>>>>> I'm getting the following error during build:
+>>>>>>>>>
+>>>>>>>>>             $ ./tools/testing/selftests/bpf/vmtest.sh -j30
+>>>>>>>>>             [...]
+>>>>>>>>>               BTF     .btf.vmlinux.bin.o
+>>>>>>>>>             btf_encoder__encode: btf__dedup failed!
+>>>>>>>>>             Failed to encode BTF
+>>>>>>>>>               LD      .tmp_vmlinux.kallsyms1
+>>>>>>>>>               NM      .tmp_vmlinux.kallsyms1.syms
+>>>>>>>>>               KSYMS   .tmp_vmlinux.kallsyms1.S
+>>>>>>>>>               AS      .tmp_vmlinux.kallsyms1.S
+>>>>>>>>>               LD      .tmp_vmlinux.kallsyms2
+>>>>>>>>>               NM      .tmp_vmlinux.kallsyms2.syms
+>>>>>>>>>               KSYMS   .tmp_vmlinux.kallsyms2.S
+>>>>>>>>>               AS      .tmp_vmlinux.kallsyms2.S
+>>>>>>>>>               LD      .tmp_vmlinux.kallsyms3
+>>>>>>>>>               NM      .tmp_vmlinux.kallsyms3.syms
+>>>>>>>>>               KSYMS   .tmp_vmlinux.kallsyms3.S
+>>>>>>>>>               AS      .tmp_vmlinux.kallsyms3.S
+>>>>>>>>>               LD      vmlinux
+>>>>>>>>>               BTFIDS  vmlinux
+>>>>>>>>>             FAILED: load BTF from vmlinux: No such file or directory
+>>>>>>>>>             make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+>>>>>>>>>             make[1]: *** Deleting file 'vmlinux'
+>>>>>>>>>             make: *** [Makefile:1264: vmlinux] Error 2
+>>>>>>>>>
+>>>>>>>>> This happens on both bpf-next/master (84150795a49) and 6.2-rc5
+>>>>>>>>> (2241ab53cb).
+>>>>>>>>>
+>>>>>>>>> I've also tried arch linux pahole 1:1.24+r29+g02d67c5-1 as well as
+>>>>>>>>> upstream pahole on master (02d67c5176) and upstream pahole on
+>>>>>>>>> next (2ca56f4c6f659).
+>>>>>>>>>
+>>>>>>>>> Of the above 6 combinations, I think I've tried all of them (maybe
+>>>>>>>>> missing 1 or 2).
+>>>>>>>>>
+>>>>>>>>> Looks like GCC got updated recently on my machine, so perhaps
+>>>>>>>>> it's related?
+>>>>>>>>>
+>>>>>>>>>             CONFIG_CC_VERSION_TEXT="gcc (GCC) 12.2.1 20230111"
+>>>>>>>>>
+>>>>>>>>> I'll try some debugging, but just wanted to report it first.
+>>>>>>>> hi,
+>>>>>>>> I can't reproduce that.. can you reproduce it outside vmtest.sh?
+>>>>>>>>
+>>>>>>>> there will be lot of output with patch below, but could contain
+>>>>>>>> some more error output
+>>>>>>> Thanks for the hints. Doing a regular build outside of vmtest.sh
+>>>>>>> seems to work ok. So maybe it's a difference in the build config.
+>>>>>>>
+>>>>>>> I'll put a little more time into debugging to see if it goes anywhere.
+>>>>>>> But I'll have to get back to the regularly scheduled programming
+>>>>>>> soon.
+>>>>>> 6.2-rc5 compiles correctly when CONFIG_X86_KERNEL_IBT is commented but fails
+>>>>>> in pahole when CONFIG_X86_KERNEL_IBT is set.
+>>>>> could you plese attach your config and the build error?
+>>>>> I can't reproduce that
+>>>>>
+>>>>> thanks,
+>>>>> jirka
+>>>> My working .config is available at https://pastebin.pl/view/bef3765c
+>>>> change CONFIG_X86_KERNEL_IBT to y to get the error.
+>>>>
+>>>> The error is similar to Daniel's and is shown below:
+>>>>
+>>>>     LD      .tmp_vmlinux.btf
+>>>>     BTF     .btf.vmlinux.bin.o
+>>>> btf_encoder__encode: btf__dedup failed!
+>>>> Failed to encode BTF
+>>>>     LD      .tmp_vmlinux.kallsyms1
+>>>>     NM      .tmp_vmlinux.kallsyms1.syms
+>>>>     KSYMS   .tmp_vmlinux.kallsyms1.S
+>>>>     AS      .tmp_vmlinux.kallsyms1.S
+>>>>     LD      .tmp_vmlinux.kallsyms2
+>>>>     NM      .tmp_vmlinux.kallsyms2.syms
+>>>>     KSYMS   .tmp_vmlinux.kallsyms2.S
+>>>>     AS      .tmp_vmlinux.kallsyms2.S
+>>>>     LD      .tmp_vmlinux.kallsyms3
+>>>>     NM      .tmp_vmlinux.kallsyms3.syms
+>>>>     KSYMS   .tmp_vmlinux.kallsyms3.S
+>>>>     AS      .tmp_vmlinux.kallsyms3.S
+>>>>     LD      vmlinux
+>>>>     BTFIDS  vmlinux
+>>>> FAILED: load BTF from vmlinux: No such file or directory
+>>>> make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+>>>> make[1]: *** Deleting file 'vmlinux'
+>>>> make: *** [Makefile:1264: vmlinux] Error 2
+>>> I can't reproduce that.. I tried with gcc versions:
+>>>
+>>>     gcc (GCC) 13.0.1 20230117 (Red Hat 13.0.1-0)
+>>>     gcc (GCC) 12.2.1 20221121 (Red Hat 12.2.1-4)
+>>>
+>>> I haven't found fedora setup with 12.2.1 20230111 yet
+>>>
+>>> I tried alsa with latest pahole master branch
+>>>
+>>> were you guys able to get any more verbose output
+>>> that I suggested earlier?
+>>>
+>>> jirka
+>> I compiled with and without IBT using the -V on pahole (LLVM_OBJCOPY=objcopy pahole -V -J --btf_gen_floats -j .tmp_vmlinux.btf) and the outfiles are a little too big (540MB). The error happens with this CONST type pointing to itself. That does not happen with the IBT option removed.
+>>
+>> $ grep  -n "CONST (anon) type_id" /tmp/with_IBT  | more
+>> 346:[2] CONST (anon) type_id=2
+>> 349:[5] CONST (anon) type_id=5
+>> 351:[7] CONST (anon) type_id=7
+>> 356:[12] CONST (anon) type_id=12
+>> 363:[19] CONST (anon) type_id=19
+>> 373:[29] CONST (anon) type_id=29
+>> 375:[31] CONST (anon) type_id=31
+>> 409:[63] CONST (anon) type_id=63
+>> 444:[89] CONST (anon) type_id=0
+>> 472:[97] CONST (anon) type_id=97
+>> 616:[129] CONST (anon) type_id=129
+>> 652:[131] CONST (anon) type_id=131
+>> 1319:[234] CONST (anon) type_id=234
+>> 1372:[246] CONST (anon) type_id=246
+>> ....
+>>
+>> $diff -ru with_IBT without_IBT
+>> --- with_IBT 2023-01-31 09:39:24.915912735 -0600
+>> +++ without_IBT 2023-01-31 09:46:23.456005278 -0600
+>> @@ -340,346 +340,14800 @@
+>>   Found per-CPU symbol 'cpu_tlbstate_shared' at address 0x2c040
+>>   Found per-CPU symbol 'mce_poll_banks' at address 0x1ad20
+>>   Found 341 per-CPU variables!
+>> -Found 61470 functions!
+>> +Found 61462 functions!
+>> +File .tmp_vmlinux.btf:
+>> +[1] FUNC_PROTO (anon) return=0 args=(void)
+>> +[2] FUNC verify_cpu type_id=1
+>> +[3] FUNC_PROTO (anon) return=0 args=(void)
+>> +[4] FUNC sev_verify_cbit type_id=3
+>> +search cu 'arch/x86/kernel/head_64.S' for percpu global variables.
+>> +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>> +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+>> +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+>> +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+>> +Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+>> +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>> +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>> +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+>> +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+>> +Found per-CPU symbol 'current_tsc_ratio' at address 0x19fa0
+>> +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>> +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>> +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+>> +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+>> +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+>> +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+>> +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+>> +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+>> +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>> +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+>> +Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+>> +Found per-CPU symbol 'last_nmi_rip' at address 0x1a018
+>> +Found per-CPU symbol 'nmi_stats' at address 0x1a030
+>> +Found per-CPU symbol 'swallow_nmi' at address 0x1a020
+>> +Found per-CPU symbol 'nmi_state' at address 0x1a010
+>> +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+>> +Found per-CPU symbol 'nmi_cr2' at address 0x1a008
+>> +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+>> +Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+>> +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+>> +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+>> +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>> ...
+>>
+>> And the lines 342-365 of the with_IBT result:
+>>       342 Found 341 per-CPU variables!
+>>       343 Found 61470 functions!
+>>       344 File .tmp_vmlinux.btf:
+>>       345 [1] INT long unsigned int size=8 nr_bits=64 encoding=(none)
+>>       346 [2] CONST (anon) type_id=2
+>>       347 [3] PTR (anon) type_id=6
+>>       348 [4] INT char size=1 nr_bits=8 encoding=(none)
+>>       349 [5] CONST (anon) type_id=5
+>>       350 [6] INT unsigned int size=4 nr_bits=32 encoding=(none)
+>>       351 [7] CONST (anon) type_id=7
+>>       352 [8] TYPEDEF __s8 type_id=10
+>>       353 [9] INT signed char size=1 nr_bits=8 encoding=SIGNED
+>>       354 [10] TYPEDEF __u8 type_id=12
+>>       355 [11] INT unsigned char size=1 nr_bits=8 encoding=(none)
+>>       356 [12] CONST (anon) type_id=12
+>>       357 [13] TYPEDEF __s16 type_id=15
+>>       358 [14] INT short int size=2 nr_bits=16 encoding=SIGNED
+>>       359 [15] TYPEDEF __u16 type_id=17
+>>       360 [16] INT short unsigned int size=2 nr_bits=16 encoding=(none)
+>>       361 [17] TYPEDEF __s32 type_id=19
+>>       362 [18] INT int size=4 nr_bits=32 encoding=SIGNED
+>>       363 [19] CONST (anon) type_id=19
+>>       364 [20] TYPEDEF __u32 type_id=7
+>>       365 [21] TYPEDEF __s64 type_id=23
+>>
+>> lines 342-362 of without_IBT
+>>
+>>       342 Found 341 per-CPU variables!
+>>       343 Found 61462 functions!
+>>       344 File .tmp_vmlinux.btf:
+>>       345 [1] FUNC_PROTO (anon) return=0 args=(void)
+>>       346 [2] FUNC verify_cpu type_id=1
+>>       347 [3] FUNC_PROTO (anon) return=0 args=(void)
+>>       348 [4] FUNC sev_verify_cbit type_id=3
+>>       349 search cu 'arch/x86/kernel/head_64.S' for percpu global variables.
+>>       350 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>>       351 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+>>       352 Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+>>       353 Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+>>       354 Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+>>       355 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>>       356 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>>       357 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+>>       358 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+>>       359 Found per-CPU symbol 'current_tsc_ratio' at address 0x19fa0
+>>       360 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>>       361 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+>>       362 Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+>>
+>> If the full debug files are useful or a target grep or diff is better let me know.
+>>
+> I managed to reproduce this too with IBT enabled; one thing I
+> noticed is with pahole built with an up-to-date libbpf and the
+> changes in https://github.com/acmel/dwarves/tree/next, the problem
+> went away. I didn't have time to root-cause it yet however.
 >
->   * both bpf_rbtree_remove and bpf_rbtree_first return the type containing
->     the bpf_rb_node field, with the offset set to that field's offset,
->     instead of a struct bpf_rb_node *
->     * mark_reg_graph_node helper added in previous patch generalizes
->       this logic, use it
+> Not sure if you're in a position to do this, but if you can,
+> would you mind building pahole from
 >
->   * bpf_rbtree_remove's node input is a node that's been inserted
->     in the tree - a non-owning reference.
+> https://github.com/acmel/dwarves/tree/next
 >
->   * bpf_rbtree_remove must invalidate non-owning references in order to
->     avoid aliasing issue. Use previously-added
->     invalidate_non_owning_refs helper to mark this function as a
->     non-owning ref invalidation point.
+> ...and re-testing to see if that helps? Thanks!
 >
->   * Unlike other functions, which convert one of their input arg regs to
->     non-owning reference, bpf_rbtree_first takes no arguments and just
->     returns a non-owning reference (possibly null)
->     * For now verifier logic for this is special-cased instead of
->       adding new kfunc flag.
->
-> This patch, along with the previous one, complete special verifier
-> handling for all rbtree API functions added in this series.
->
+> Alan
+>   
+>> Thanks,
+>>
+I tried with libbpf compiled from master 
+https://github.com/libbpf/libbpf.git and pahole compiled from next 
+branch on https://github.com/acmel/dwarve with the same result.
+With IBT enabled pahole fails and removing it results in a successful 
+kernel.
 
-I think there are two issues with the current approach. The fundamental
-assumption with non-owning references is that it is part of the collection. So
-bpf_rbtree_{add,first}, bpf_list_push_{front,back} will create them, as no node
-is being removed from collection. Marking bpf_rbtree_remove (and in the future
-bpf_list_del) as invalidation points is also right, since once a node has been
-removed it is going to be unclear whether existing non-owning references have
-the same value, and thus the property of 'part of the collection' will be
-broken.
+Alex,
 
-The first issue relates to usability. If I have non-owning references to nodes
-inserted into both a list and an rbtree, bpf_rbtree_remove should only
-invalidate the ones that are part of the particular rbtree. It should have no
-effect on others. Likewise for the bpf_list_del operation in the future.
-Therefore, we need to track the collection identity associated with each
-non-owning reference, then only invalidate non-owning references associated with
-the same collection.
+-- 
+Alexandre Peixoto Ferreira
 
-The case of bpf_spin_unlock is different, which should invalidate all non-owning
-references.
-
-The second issue is more serious. By not tracking the collection identity, we
-will currently allow a non-owning reference for an object inserted into a list
-to be passed to bpf_rbtree_remove, because the verifier cannot discern between
-'inserted into rbtree' vs 'inserted into list'. For it, both are currently
-equivalent in the verifier state. An object is allowed to have both
-bpf_list_node and bpf_rb_node, but it can only be part of one collection at a
-time (because of no shared ownership).
-
-	struct obj {
-		bpf_list_node ln;
-		bpf_rb_node rn;
-	};
-
-	bpf_list_push_front(head, &obj->ln); // node is non-own-ref
-	bpf_rbtree_remove(&obj->rn); // should not work, but does
-
-So some notion of a collection identity needs to be constructed, the amount of
-data which needs to be remembered in each non-owning reference's register state
-depends on our requirements.
-
-The first sanity check is that bpf_rbtree_remove only removes something in an
-rbtree, so probably an enum member indicating whether collection is a list or
-rbtree. To ensure proper scoped invalidation, we will unfortunately need more
-than just the reg->id of the reg holding the graph root, since map values of
-different maps may have same id (0). Hence, we need id and ptr similar to the
-active lock case for proper matching. Even this won't be enough, as there can be
-multiple list or rbtree roots in a particular memory region, therefore the
-offset also needs to be part of the collection identity.
-
-So it seems it will amount to:
-
-	struct bpf_collection_id {
-		enum bpf_collection_type type;
-		void *ptr;
-		int id;
-		int off;
-	};
-
-There might be ways to optimize the memory footprint of this struct, but I'm
-just trying to state why we'll need to include all four, so we don't miss out on
-a corner case again.
-
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
-> [...]
