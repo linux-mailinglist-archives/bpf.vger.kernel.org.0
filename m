@@ -2,172 +2,410 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65609692213
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 16:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52766692261
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 16:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232396AbjBJPYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 10:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
+        id S232684AbjBJPhm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 10:37:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232394AbjBJPYu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 10:24:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588BC75F42
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:23:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1676042627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RWOkmCoae5bj7doNl9U80aK5H1Z/48L9J7BCWykdr7Y=;
-        b=BV/KNEPZzdn/yt3eLLHRabCt/LZ8NLTGf4cs/L2865f7LbapqCDMmkYg5mJvNocBrb2uEP
-        tflyvJQvBs6hujJYGJXJtyoZ6rzF3PFmhJZcvk06mUXjtvkz/Zsg7c3Bedxs8+mUvkQDsx
-        6nWy2yb552Do66SSIHrc0wEqv8DpANQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-589-wfljqPvsM1SCyztHgEqfig-1; Fri, 10 Feb 2023 10:23:46 -0500
-X-MC-Unique: wfljqPvsM1SCyztHgEqfig-1
-Received: by mail-ed1-f71.google.com with SMTP id z19-20020a05640235d300b004aaca83cd87so3764689edc.20
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:23:46 -0800 (PST)
+        with ESMTP id S232040AbjBJPhm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 10:37:42 -0500
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938273757E
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:37:39 -0800 (PST)
+Received: by mail-vk1-xa31.google.com with SMTP id v189so2820471vkf.6
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:37:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R8hGVfsICqsIqYE96XJlOAJ0ZkmVIg/be4zwdKODYFc=;
+        b=ZLEzF1dccUTFrjfXSnK63mc94+MwwXovd1AQfL2Ipzpge+POeU6AvWz2zYVOOmzwDK
+         GmYbgRy61g37u2D4nGakMy4zYShAq/5KB9KnBwrmFaie2i5w7oeLNl2PAWgwYMwE9Lk3
+         LgbOvX/p+19zKMuiPLIdokX7531W8g1uhe7eA4Zhtdg+Tq/B+aZ7vMfvAJXxcLEQFT0d
+         igvWG5FOPKSB8Ltuc8XGn9HMW5TM4wgKOJGJu1KbrDIIQTJd/kgSo73z8ysk1KNp/irW
+         KPuCT7Mrt7h/ZGZfJdV1q/5gNKlEX8wZCwH922Uy2M9+6e2XiANYzJWBRpDRLAoLO8v/
+         oJwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RWOkmCoae5bj7doNl9U80aK5H1Z/48L9J7BCWykdr7Y=;
-        b=nyEV1o/tswGprHSqqBUVIEqnKr18Bf7bCb0sG9TzHW9bkYTqE+qQXGBOqurWseDSPP
-         WIqQmcKR7tSPMdVlLLN4Mt+PwOSvg79hlC/joZAOafA7l91vFcDOZrAOWhlBjLS9cFhS
-         DMto/uVovmqFV/0nNt6IgkZ6bdpbo8BPYAbGFy4rNIIswWbyfbeWwesysEp6gaCNWPYD
-         TiB4h5o3RYtbEgab3/f7lDOE/1zJrLZVE+EkScmXS3hu5f5AEPI3ki4GufcPSUpYwQWp
-         4sPO4dIS/saMgxEpHQUiurZgjudK7lwBX+gK0P9GN1BP0Q0PT/XmX+urEQ6sWsFhVT7D
-         CgNw==
-X-Gm-Message-State: AO0yUKXPEzGpKyj9l2vl+qVt95vo32qhBv0m2Lw2yPIJpoOzZRIO4XcQ
-        y5iZUCk7icKz8bJfDhfrse6DkGMuVXCxxKXauwksOs5rNzGT0zSZ55qcm3RbIMQPwiu9kO+DBKi
-        +5PbZkMpl11r2H8RyODbN7R2Q6K0GXsO4rXc3ixeGW25Bfd46kHSAFSrFtwdAf9FYiIt1
-X-Received: by 2002:a17:907:9c04:b0:8ae:27d1:511a with SMTP id ld4-20020a1709079c0400b008ae27d1511amr11276173ejc.61.1676042625139;
-        Fri, 10 Feb 2023 07:23:45 -0800 (PST)
-X-Google-Smtp-Source: AK7set/Dv0ROzBQbObyzo0Y2IdUhDynWiuzWOvrXTZsWu/DA//Xm5WEuTrVPmZF2W0ITkYnPV8JMOg==
-X-Received: by 2002:a17:907:9c04:b0:8ae:27d1:511a with SMTP id ld4-20020a1709079c0400b008ae27d1511amr11276151ejc.61.1676042624873;
-        Fri, 10 Feb 2023 07:23:44 -0800 (PST)
-Received: from [192.168.42.100] (nat-cgn9-185-107-15-52.static.kviknet.net. [185.107.15.52])
-        by smtp.gmail.com with ESMTPSA id op5-20020a170906bce500b0088e682e3a4csm2485103ejb.185.2023.02.10.07.23.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Feb 2023 07:23:44 -0800 (PST)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <c40de89d-2977-5c8d-e049-006df2431f47@redhat.com>
-Date:   Fri, 10 Feb 2023 16:23:43 +0100
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R8hGVfsICqsIqYE96XJlOAJ0ZkmVIg/be4zwdKODYFc=;
+        b=crJ/1y8nfS/mf+TN3iwAFb58CNqgNoP0tE0axv7UIkfW3TnZg6c6LBO8C5M+vU4wJy
+         jMUaxPH4R2Kq5b1ZaAxnX3mryJ6jXogrdQ69E9t5G19l3KimdOi8U99eBj3HcWI6CYtV
+         ZqH2wpBmF8hkMYeUw2Q6jPsYrPBeNOvH6I8R5x4FlpfQ4Wk/Dsx/avsi653BVFCEFFnn
+         WJKnlWZyHuAl6NiCfbDXJueEVm5Ycyo9lQYlH2WrAwwBCmO/Mc3ABw+t9KyZOgyrPN5X
+         h/Pz59eU/Mwxo3YWyXTlFzfED3qJTu9IOGWiqziMhzxAit+cPIqTtp4xPgFtzhMB40iJ
+         USEw==
+X-Gm-Message-State: AO0yUKUvpS7c/VT4o9Iv/oDDJaQUWl4koD9qXPppeSglFWstrAbQSD/A
+        Jz2mnzWqBBiNqt3wwbz3cqckUHyJG5HtBDxzUBc=
+X-Google-Smtp-Source: AK7set8aKK8+VJAM6CDhlDxIOAxeBGtGDE1ZSUaj9nK/GG1N4PmOsbwLVh0dW6ISqPYmfuDjrR4zS2I0W+P+jyoYg5E=
+X-Received: by 2002:a1f:90d5:0:b0:401:14db:fa58 with SMTP id
+ s204-20020a1f90d5000000b0040114dbfa58mr876635vkd.5.1676043458493; Fri, 10 Feb
+ 2023 07:37:38 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Cc:     brouer@redhat.com, netdev@vger.kernel.org,
-        Stanislav Fomichev <sdf@google.com>, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        yoong.siang.song@intel.com, anthony.l.nguyen@intel.com,
-        intel-wired-lan@lists.osuosl.org, xdp-hints@xdp-project.net
-Subject: Re: [PATCH bpf-next V1] igc: enable and fix RX hash usage by netstack
-Content-Language: en-US
-To:     bpf@vger.kernel.org
-References: <167604167956.1726972.7266620647404438534.stgit@firesoul>
-In-Reply-To: <167604167956.1726972.7266620647404438534.stgit@firesoul>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com>
+ <Y85AHdWw/l8d1Gsp@krava> <0fbad67e-c359-47c3-8c10-faa003e6519f@app.fastmail.com>
+ <bb569967-d33a-7252-964b-a36501b3366a@gmail.com> <Y9RlpyV5JPz/hk1K@krava>
+ <883a3b03-a596-8279-1278-bc622114aab5@gmail.com> <Y9kxUzyfpEQpnN7w@krava>
+ <d880b3b3-d6fb-c891-bfc2-9c05c321ddac@gmail.com> <0474fbe7-14a3-71bc-02ed-73ad44b4b2a2@oracle.com>
+ <949c176c-2788-3959-34b1-90e1f6fe03d1@gmail.com> <Y+ZWAesOAY5wjG6i@krava>
+In-Reply-To: <Y+ZWAesOAY5wjG6i@krava>
+From:   Alexandre Ferreira <alexandref75@gmail.com>
+Date:   Fri, 10 Feb 2023 09:37:27 -0600
+Message-ID: <CAMHq1ZuhecqT-YX8+yzUyhx8tmnQ7CDyuXV4GOuG=z44XTFsaw@mail.gmail.com>
+Subject: Re: Kernel build fail with 'btf_encoder__encode: btf__dedup failed!'
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>, Daniel Xu <dxu@dxuuu.xyz>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Jiri,
 
-On 10/02/2023 16.07, Jesper Dangaard Brouer wrote:
-> When function igc_rx_hash() was introduced in v4.20 via commit 0507ef8a0372
-> ("igc: Add transmit and receive fastpath and interrupt handlers"), the
-> hardware wasn't configured to provide RSS hash, thus it made sense to not
-> enable net_device NETIF_F_RXHASH feature bit.
-> 
-> The NIC hardware was configured to enable RSS hash info in v5.2 via commit
-> 2121c2712f82 ("igc: Add multiple receive queues control supporting"), but
-> forgot to set the NETIF_F_RXHASH feature bit.
+On Fri, Feb 10, 2023 at 8:34 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-
-Sending this fix against bpf-next, as I found this issue while playing
-with implementing XDP-hints kfunc for xmo_rx_hash. I will hopefully send
-kfunc patches next week, on top of this.IMHO this fix isn't very 
-critical and I hope it can simply go though the
-bpf-next tree as it would ease followup kfunc patches.
-
-
-> The original implementation of igc_rx_hash() didn't extract the associated
-> pkt_hash_type, but statically set PKT_HASH_TYPE_L3. The largest portions of
-> this patch are about extracting the RSS Type from the hardware and mapping
-> this to enum pkt_hash_types. This were based on Foxville i225 software user
-> manual rev-1.3.1 and tested on Intel Ethernet Controller I225-LM (rev 03).
-> 
-> For UDP it's worth noting that RSS (type) hashing have been disabled both for
-> IPv4 and IPv6 (see IGC_MRQC_RSS_FIELD_IPV4_UDP + IGC_MRQC_RSS_FIELD_IPV6_UDP)
-> because hardware RSS doesn't handle fragmented pkts well when enabled (can
-> cause out-of-order). This result in PKT_HASH_TYPE_L3 for UDP packets, and
-> hash value doesn't include UDP port numbers. Not being PKT_HASH_TYPE_L4, have
-> the effect that netstack will do a software based hash calc calling into
-> flow_dissect, but only when code calls skb_get_hash(), which doesn't
-> necessary happen for local delivery.
+> On Fri, Feb 10, 2023 at 08:02:23AM -0600, Alexandre Peixoto Ferreira wrot=
+e:
+> > Alam,
+> >
+> > On 2/9/23 07:07, Alan Maguire wrote:
+> > > On 09/02/2023 04:15, Alexandre Peixoto Ferreira wrote:
+> > > > Jiri,
+> > > >
+> > > > On 1/31/23 09:18, Jiri Olsa wrote:
+> > > > > On Sat, Jan 28, 2023 at 01:23:25PM -0600, Alexandre Peixoto Ferre=
+ira wrote:
+> > > > > > Jirka and Daniel,
+> > > > > >
+> > > > > > On 1/27/23 18:00, Jiri Olsa wrote:
+> > > > > > > On Fri, Jan 27, 2023 at 04:28:54PM -0600, Alexandre Peixoto F=
+erreira wrote:
+> > > > > > > > On 1/24/23 00:13, Daniel Xu wrote:
+> > > > > > > > > Hi Jiri,
+> > > > > > > > >
+> > > > > > > > > On Mon, Jan 23, 2023, at 1:06 AM, Jiri Olsa wrote:
+> > > > > > > > > > On Sun, Jan 22, 2023 at 10:48:44AM -0700, Daniel Xu wro=
+te:
+> > > > > > > > > > > Hi,
+> > > > > > > > > > >
+> > > > > > > > > > > I'm getting the following error during build:
+> > > > > > > > > > >
+> > > > > > > > > > >             $ ./tools/testing/selftests/bpf/vmtest.sh=
+ -j30
+> > > > > > > > > > >             [...]
+> > > > > > > > > > >               BTF     .btf.vmlinux.bin.o
+> > > > > > > > > > >             btf_encoder__encode: btf__dedup failed!
+> > > > > > > > > > >             Failed to encode BTF
+> > > > > > > > > > >               LD      .tmp_vmlinux.kallsyms1
+> > > > > > > > > > >               NM      .tmp_vmlinux.kallsyms1.syms
+> > > > > > > > > > >               KSYMS   .tmp_vmlinux.kallsyms1.S
+> > > > > > > > > > >               AS      .tmp_vmlinux.kallsyms1.S
+> > > > > > > > > > >               LD      .tmp_vmlinux.kallsyms2
+> > > > > > > > > > >               NM      .tmp_vmlinux.kallsyms2.syms
+> > > > > > > > > > >               KSYMS   .tmp_vmlinux.kallsyms2.S
+> > > > > > > > > > >               AS      .tmp_vmlinux.kallsyms2.S
+> > > > > > > > > > >               LD      .tmp_vmlinux.kallsyms3
+> > > > > > > > > > >               NM      .tmp_vmlinux.kallsyms3.syms
+> > > > > > > > > > >               KSYMS   .tmp_vmlinux.kallsyms3.S
+> > > > > > > > > > >               AS      .tmp_vmlinux.kallsyms3.S
+> > > > > > > > > > >               LD      vmlinux
+> > > > > > > > > > >               BTFIDS  vmlinux
+> > > > > > > > > > >             FAILED: load BTF from vmlinux: No such fi=
+le or directory
+> > > > > > > > > > >             make[1]: *** [scripts/Makefile.vmlinux:35=
+: vmlinux] Error 255
+> > > > > > > > > > >             make[1]: *** Deleting file 'vmlinux'
+> > > > > > > > > > >             make: *** [Makefile:1264: vmlinux] Error =
+2
+> > > > > > > > > > >
+> > > > > > > > > > > This happens on both bpf-next/master (84150795a49) an=
+d 6.2-rc5
+> > > > > > > > > > > (2241ab53cb).
+> > > > > > > > > > >
+> > > > > > > > > > > I've also tried arch linux pahole 1:1.24+r29+g02d67c5=
+-1 as well as
+> > > > > > > > > > > upstream pahole on master (02d67c5176) and upstream p=
+ahole on
+> > > > > > > > > > > next (2ca56f4c6f659).
+> > > > > > > > > > >
+> > > > > > > > > > > Of the above 6 combinations, I think I've tried all o=
+f them (maybe
+> > > > > > > > > > > missing 1 or 2).
+> > > > > > > > > > >
+> > > > > > > > > > > Looks like GCC got updated recently on my machine, so=
+ perhaps
+> > > > > > > > > > > it's related?
+> > > > > > > > > > >
+> > > > > > > > > > >             CONFIG_CC_VERSION_TEXT=3D"gcc (GCC) 12.2.=
+1 20230111"
+> > > > > > > > > > >
+> > > > > > > > > > > I'll try some debugging, but just wanted to report it=
+ first.
+> > > > > > > > > > hi,
+> > > > > > > > > > I can't reproduce that.. can you reproduce it outside v=
+mtest.sh?
+> > > > > > > > > >
+> > > > > > > > > > there will be lot of output with patch below, but could=
+ contain
+> > > > > > > > > > some more error output
+> > > > > > > > > Thanks for the hints. Doing a regular build outside of vm=
+test.sh
+> > > > > > > > > seems to work ok. So maybe it's a difference in the build=
+ config.
+> > > > > > > > >
+> > > > > > > > > I'll put a little more time into debugging to see if it g=
+oes anywhere.
+> > > > > > > > > But I'll have to get back to the regularly scheduled prog=
+ramming
+> > > > > > > > > soon.
+> > > > > > > > 6.2-rc5 compiles correctly when CONFIG_X86_KERNEL_IBT is co=
+mmented but fails
+> > > > > > > > in pahole when CONFIG_X86_KERNEL_IBT is set.
+> > > > > > > could you plese attach your config and the build error?
+> > > > > > > I can't reproduce that
+> > > > > > >
+> > > > > > > thanks,
+> > > > > > > jirka
+> > > > > > My working .config is available at https://pastebin.pl/view/bef=
+3765c
+> > > > > > change CONFIG_X86_KERNEL_IBT to y to get the error.
+> > > > > >
+> > > > > > The error is similar to Daniel's and is shown below:
+> > > > > >
+> > > > > >     LD      .tmp_vmlinux.btf
+> > > > > >     BTF     .btf.vmlinux.bin.o
+> > > > > > btf_encoder__encode: btf__dedup failed!
+> > > > > > Failed to encode BTF
+> > > > > >     LD      .tmp_vmlinux.kallsyms1
+> > > > > >     NM      .tmp_vmlinux.kallsyms1.syms
+> > > > > >     KSYMS   .tmp_vmlinux.kallsyms1.S
+> > > > > >     AS      .tmp_vmlinux.kallsyms1.S
+> > > > > >     LD      .tmp_vmlinux.kallsyms2
+> > > > > >     NM      .tmp_vmlinux.kallsyms2.syms
+> > > > > >     KSYMS   .tmp_vmlinux.kallsyms2.S
+> > > > > >     AS      .tmp_vmlinux.kallsyms2.S
+> > > > > >     LD      .tmp_vmlinux.kallsyms3
+> > > > > >     NM      .tmp_vmlinux.kallsyms3.syms
+> > > > > >     KSYMS   .tmp_vmlinux.kallsyms3.S
+> > > > > >     AS      .tmp_vmlinux.kallsyms3.S
+> > > > > >     LD      vmlinux
+> > > > > >     BTFIDS  vmlinux
+> > > > > > FAILED: load BTF from vmlinux: No such file or directory
+> > > > > > make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+> > > > > > make[1]: *** Deleting file 'vmlinux'
+> > > > > > make: *** [Makefile:1264: vmlinux] Error 2
+> > > > > I can't reproduce that.. I tried with gcc versions:
+> > > > >
+> > > > >     gcc (GCC) 13.0.1 20230117 (Red Hat 13.0.1-0)
+> > > > >     gcc (GCC) 12.2.1 20221121 (Red Hat 12.2.1-4)
+> > > > >
+> > > > > I haven't found fedora setup with 12.2.1 20230111 yet
+> > > > >
+> > > > > I tried alsa with latest pahole master branch
+> > > > >
+> > > > > were you guys able to get any more verbose output
+> > > > > that I suggested earlier?
+> > > > >
+> > > > > jirka
+> > > > I compiled with and without IBT using the -V on pahole (LLVM_OBJCOP=
+Y=3Dobjcopy pahole -V -J --btf_gen_floats -j .tmp_vmlinux.btf) and the outf=
+iles are a little too big (540MB). The error happens with this CONST type p=
+ointing to itself. That does not happen with the IBT option removed.
+> > > >
+> > > > $ grep  -n "CONST (anon) type_id" /tmp/with_IBT  | more
+> > > > 346:[2] CONST (anon) type_id=3D2
+> > > > 349:[5] CONST (anon) type_id=3D5
+> > > > 351:[7] CONST (anon) type_id=3D7
+> > > > 356:[12] CONST (anon) type_id=3D12
+> > > > 363:[19] CONST (anon) type_id=3D19
+> > > > 373:[29] CONST (anon) type_id=3D29
+> > > > 375:[31] CONST (anon) type_id=3D31
+> > > > 409:[63] CONST (anon) type_id=3D63
+> > > > 444:[89] CONST (anon) type_id=3D0
+> > > > 472:[97] CONST (anon) type_id=3D97
+> > > > 616:[129] CONST (anon) type_id=3D129
+> > > > 652:[131] CONST (anon) type_id=3D131
+> > > > 1319:[234] CONST (anon) type_id=3D234
+> > > > 1372:[246] CONST (anon) type_id=3D246
+> > > > ....
+> > > >
+> > > > $diff -ru with_IBT without_IBT
+> > > > --- with_IBT 2023-01-31 09:39:24.915912735 -0600
+> > > > +++ without_IBT 2023-01-31 09:46:23.456005278 -0600
+> > > > @@ -340,346 +340,14800 @@
+> > > >   Found per-CPU symbol 'cpu_tlbstate_shared' at address 0x2c040
+> > > >   Found per-CPU symbol 'mce_poll_banks' at address 0x1ad20
+> > > >   Found 341 per-CPU variables!
+> > > > -Found 61470 functions!
+> > > > +Found 61462 functions!
+> > > > +File .tmp_vmlinux.btf:
+> > > > +[1] FUNC_PROTO (anon) return=3D0 args=3D(void)
+> > > > +[2] FUNC verify_cpu type_id=3D1
+> > > > +[3] FUNC_PROTO (anon) return=3D0 args=3D(void)
+> > > > +[4] FUNC sev_verify_cbit type_id=3D3
+> > > > +search cu 'arch/x86/kernel/head_64.S' for percpu global variables.
+> > > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > > +Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+> > > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > > +Found per-CPU symbol 'current_tsc_ratio' at address 0x19fa0
+> > > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > > +Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+> > > > +Found per-CPU symbol 'last_nmi_rip' at address 0x1a018
+> > > > +Found per-CPU symbol 'nmi_stats' at address 0x1a030
+> > > > +Found per-CPU symbol 'swallow_nmi' at address 0x1a020
+> > > > +Found per-CPU symbol 'nmi_state' at address 0x1a010
+> > > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > > +Found per-CPU symbol 'nmi_cr2' at address 0x1a008
+> > > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > > +Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+> > > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > > ...
+> > > >
+> > > > And the lines 342-365 of the with_IBT result:
+> > > >       342 Found 341 per-CPU variables!
+> > > >       343 Found 61470 functions!
+> > > >       344 File .tmp_vmlinux.btf:
+> > > >       345 [1] INT long unsigned int size=3D8 nr_bits=3D64 encoding=
+=3D(none)
+> > > >       346 [2] CONST (anon) type_id=3D2
+> > > >       347 [3] PTR (anon) type_id=3D6
+> > > >       348 [4] INT char size=3D1 nr_bits=3D8 encoding=3D(none)
+> > > >       349 [5] CONST (anon) type_id=3D5
+> > > >       350 [6] INT unsigned int size=3D4 nr_bits=3D32 encoding=3D(no=
+ne)
+> > > >       351 [7] CONST (anon) type_id=3D7
+> > > >       352 [8] TYPEDEF __s8 type_id=3D10
+> > > >       353 [9] INT signed char size=3D1 nr_bits=3D8 encoding=3DSIGNE=
+D
+> > > >       354 [10] TYPEDEF __u8 type_id=3D12
+> > > >       355 [11] INT unsigned char size=3D1 nr_bits=3D8 encoding=3D(n=
+one)
+> > > >       356 [12] CONST (anon) type_id=3D12
+> > > >       357 [13] TYPEDEF __s16 type_id=3D15
+> > > >       358 [14] INT short int size=3D2 nr_bits=3D16 encoding=3DSIGNE=
+D
+> > > >       359 [15] TYPEDEF __u16 type_id=3D17
+> > > >       360 [16] INT short unsigned int size=3D2 nr_bits=3D16 encodin=
+g=3D(none)
+> > > >       361 [17] TYPEDEF __s32 type_id=3D19
+> > > >       362 [18] INT int size=3D4 nr_bits=3D32 encoding=3DSIGNED
+> > > >       363 [19] CONST (anon) type_id=3D19
+> > > >       364 [20] TYPEDEF __u32 type_id=3D7
+> > > >       365 [21] TYPEDEF __s64 type_id=3D23
+> > > >
+> > > > lines 342-362 of without_IBT
+> > > >
+> > > >       342 Found 341 per-CPU variables!
+> > > >       343 Found 61462 functions!
+> > > >       344 File .tmp_vmlinux.btf:
+> > > >       345 [1] FUNC_PROTO (anon) return=3D0 args=3D(void)
+> > > >       346 [2] FUNC verify_cpu type_id=3D1
+> > > >       347 [3] FUNC_PROTO (anon) return=3D0 args=3D(void)
+> > > >       348 [4] FUNC sev_verify_cbit type_id=3D3
+> > > >       349 search cu 'arch/x86/kernel/head_64.S' for percpu global v=
+ariables.
+> > > >       350 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x1=
+8a08
+> > > >       351 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > >       352 Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f8=
+0
+> > > >       353 Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > >       354 Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+> > > >       355 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x1=
+8a08
+> > > >       356 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x1=
+8a08
+> > > >       357 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > >       358 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > >       359 Found per-CPU symbol 'current_tsc_ratio' at address 0x19f=
+a0
+> > > >       360 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x1=
+8a08
+> > > >       361 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x1=
+8a08
+> > > >       362 Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f8=
+0
+> > > >
+> > > > If the full debug files are useful or a target grep or diff is bett=
+er let me know.
+> > > >
+> > > I managed to reproduce this too with IBT enabled; one thing I
+> > > noticed is with pahole built with an up-to-date libbpf and the
+> > > changes in https://github.com/acmel/dwarves/tree/next, the problem
+> > > went away. I didn't have time to root-cause it yet however.
+> > >
+> > > Not sure if you're in a position to do this, but if you can,
+> > > would you mind building pahole from
+> > >
+> > > https://github.com/acmel/dwarves/tree/next
+> > >
+> > > ...and re-testing to see if that helps? Thanks!
+> > >
+> > > Alan
+> > > > Thanks,
+> > > >
+> > I tried with libbpf compiled from master
+> > https://github.com/libbpf/libbpf.git and pahole compiled from next bran=
+ch on
+> > https://github.com/acmel/dwarve with the same result.
+> > With IBT enabled pahole fails and removing it results in a successful
+> > kernel.
 >
+> hi,
+> in case it slipped, you also need to add new options for pahole:
+>   https://lore.kernel.org/bpf/1675949331-27935-1-git-send-email-alan.magu=
+ire@oracle.com/
+>
+> should be added for version 124 for now
+>
+> jirka
 
 
-Intel QA tester wanting to verify this patch can use the small bpftrace
-tool I wrote and placed here:
+Added the patch to include options on pahole but same problem.
+$ pahole --version
+v1.25
+$ ls -l /usr/lib64/libbpf.so.1.2.0
+-rwxr-xr-x 1 root root 422088 Feb  9 13:23 /usr/lib64/libbpf.so.1.2.0
 
- 
-https://github.com/xdp-project/xdp-project/blob/master/areas/hints/monitor_skb_hash_on_dev.bt
+  UPD     include/generated/utsversion.h
+  CC      init/version-timestamp.o
+  LD      .tmp_vmlinux.btf
+  BTF     .btf.vmlinux.bin.o
+LLVM_OBJCOPY=3Dobjcopy pahole -J --btf_gen_floats -j
+--skip_encoding_btf_inconsistent_proto --btf_gen_optimized
+.tmp_vmlinux.btf
+btf_encoder__encode: btf__dedup failed!
+Failed to encode BTF
 
-Failure scenarios:
-
-$ sudo ./monitor_skb_hash_on_dev.bt igc1
-Attaching 2 probes...
-Monitor net_device: igc1
-Hit Ctrl-C to end.
-IFNAME           HASH      Hash-type:L4    Software-hash
-igc1             00000000  0               0
-igc1             00000000  0               0
-igc1             00000000  0               0
-^C
-
-
-Example output with patch:
-
-$ sudo ./monitor_skb_hash_on_dev.bt igc1
-Attaching 2 probes...
-Monitor net_device: igc1
-Hit Ctrl-C to end.
-IFNAME           HASH      Hash-type:L4    Software-hash
-igc1             FEF98EFE  0               0
-igc1             00000000  0               0
-igc1             00000000  0               0
-igc1             FEF98EFE  0               0
-igc1             FEF98EFE  0               0
-igc1             FEF98EFE  0               0
-igc1             310AF9EA  1               0
-igc1             A229FA51  1               0
-
-The repeating hash FEF98EFE is UDP packets that as desc note doesn't
-have Hash-type:L4.  The UDP has is repeating as port numbers aren't part
-of the hash, and I was sending to same IP. The hash values with L4=1
-were TCP packets.
-
-Hope this eases QA work.
-
-> Fixes: 2121c2712f82 ("igc: Add multiple receive queues control supporting")
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->   drivers/net/ethernet/intel/igc/igc.h      |   52 +++++++++++++++++++++++++++++
->   drivers/net/ethernet/intel/igc/igc_main.c |   35 +++++++++++++++++---
->   2 files changed, 83 insertions(+), 4 deletions(-)
-
---Jesper
-
+Thanks,
