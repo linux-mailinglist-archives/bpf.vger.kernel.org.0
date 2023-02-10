@@ -2,148 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BED6920D5
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 15:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C91046920E3
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 15:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbjBJO3w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 09:29:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
+        id S232238AbjBJOex (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 09:34:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbjBJO3v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 09:29:51 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A23C171
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 06:29:50 -0800 (PST)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31AAndT2002117;
-        Fri, 10 Feb 2023 14:29:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : content-type :
- mime-version; s=corp-2022-7-12;
- bh=uURldFF7K4+wrTShb1mPU/L0D5zeGpytg/kCJB6S9K4=;
- b=oDXMw7vZuCU6XGD6Uq/rXVqp037KfhCbRcyht+pgZq6QTG4DYx7yFkzEipNK0dnl4d+d
- VPvJwsprW7Pi1M+kvdgF6fbQWjEsq/asJUrj4o7Qexzumxof/puFLFNgp6DBji/MdD9U
- rWsNoeEjthZeb1wGs0rtZyVvVsWaflloIWus7PhS+qqtxQPhaUpO6RiVAMWK+TM+YBCz
- R2TnRWGwemySyTLV+Un2h4j1E9xvxjaRHwLmNIyJnCexcyS6VgjGn8OlTYAxnZpW+vWZ
- WvP7inmROEDgX5Y1npmwdzeh/5TiYOQ+G+Se6czE/JAKWGoobDAfyVsjBWV69IYGLiEL Mg== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3nhfwudakt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Feb 2023 14:29:31 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 31ADR3cL003027;
-        Fri, 10 Feb 2023 14:29:30 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2172.outbound.protection.outlook.com [104.47.57.172])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3nhdtatm3j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Feb 2023 14:29:30 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A1tAp8Gd0TSs5wYsGz2SISrQ/ZYRsT0W4rVdJJuZV4yZUHXZNnqL8q0QZr3ioy8e+X4JeHvPoWxmE2NQhkx0VOjYDZkp4qZ3eaHq7Rz/+FRWjPC3SyCA4UTNHsenO9FRiRqJayfQORi5jpOnxoGVxfbU/Eb6Bmb5mmcAa454MxJ94oB2a6f79Ms/a2BXIv1StcVe4Lu4RdVDg1+0GOcQYxhhUU9zhVS9V28w6qEohQUk8zwCNuJ9M40csF+A3MNn4e69v4B0s3cbUJYdBHpHtv5OcMPvqyQEuZZnDFkWXYgpYTpl+gbWVGWrhnpED04jPEsGUMB7lMKs75yzXtByyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uURldFF7K4+wrTShb1mPU/L0D5zeGpytg/kCJB6S9K4=;
- b=XipIjiDA9iedHdJ3l5d92jCVM9B722Hc/jPlvWigi3niE3jzhDtCR2vYB1mWfc9X0jbYb9z3jWwC63pOTdTTdbLkdouYN6fDIp4mbLsGu2DV6GRGHQevZ8wUOJZ+dXa2lZC6kG0AFnCS6yoKBCsdZT+VB2krPJwcBLl/Qjfb4EI30eCOWMndfPTzf3rjhfheT8qO8SJKeQFKh4cH8HT/ic8p/6SMYU0+uDwvujYVxhX5vonydrUoI2Pdyz8V5smAMmdFm76mdNnZJ/HJv0D5DMxcOIHSgzcdrmsU0DUwU+2bLpB/8ANFqNm0RMafBXR/WKrbzRsKaEtyLb5s34SRCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S231749AbjBJOew (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 09:34:52 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92564635A0
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 06:34:50 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id ba1so5261558wrb.5
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 06:34:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uURldFF7K4+wrTShb1mPU/L0D5zeGpytg/kCJB6S9K4=;
- b=BiR/PdKSMdExnc/dIpzRaR7ghQ2vXMqSuNfOlXl5AidRhxrXW4LZYrMNibsBPKArBPBu8BGALpX42dO8nNq9mS7YTYGvESIty6xW8U0EyNx550XPA1mTrjkzTPoFo/XV3fHRT9IbZugLl0KtrWqT4xCIWX0hWaAMd8E4LLtLOgE=
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
- by SJ0PR10MB4704.namprd10.prod.outlook.com (2603:10b6:a03:2db::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.6; Fri, 10 Feb
- 2023 14:29:28 +0000
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::3cd3:9bef:83f:5a85]) by BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::3cd3:9bef:83f:5a85%7]) with mapi id 15.20.6111.007; Fri, 10 Feb 2023
- 14:29:28 +0000
-From:   "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To:     Yonghong Song <yhs@meta.com>
-Cc:     alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        David Faust <david.faust@oracle.com>,
-        James Hilliard <james.hilliard1@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>
-Subject: Re: bpf: Propose some new instructions for -mcpu=v4
-In-Reply-To: <87357e8f9m.fsf@oracle.com> (Jose E. Marchesi's message of "Fri,
-        10 Feb 2023 02:45:25 +0100")
-References: <01515302-c37d-2ee5-c950-2f556a4caad0@meta.com>
-        <87fsbe8l8n.fsf@oracle.com> <87357e8f9m.fsf@oracle.com>
-Date:   Fri, 10 Feb 2023 15:29:22 +0100
-Message-ID: <878rh5h9vh.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Content-Type: text/plain
-X-ClientProxiedBy: LO3P265CA0006.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:bb::11) To BYAPR10MB2888.namprd10.prod.outlook.com
- (2603:10b6:a03:88::32)
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vlt5ubaIg0OE3RbMDqOhnX6FrunjoqsyBs5mKyL60tQ=;
+        b=UWb8j6ipGxxPPDTJ3m2hSmXMhEmJQL+YMx4m1oK00dxEYPRIVPx8oAcr0tDR6JtRmi
+         DtnBuRRDMXgyItalTsCizKBe//hDj4l68l6x5MoqtH9ZfOkTNAKrXIcvW2XksJKwpAVd
+         NHFbj3aVrUkITTUICxarGqX10OXAJyw5S7hUG/L5ZoBTS6RZGDULq8/W+BP2/Mf57WF0
+         EmTncnVYrmhXfwoShno0SBkCtx2KV0ZPXtLDOaIl81RX3z95g4Jzfauya9qCqjjbsNqu
+         YQ9TOSNH5bzFyLpbsmnS+ZRE80HFMJvFGrKDes5JGf9rmDA00dbr4s9u+4BGsr4YhO0o
+         P/kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vlt5ubaIg0OE3RbMDqOhnX6FrunjoqsyBs5mKyL60tQ=;
+        b=OBVhiKkI4Th4WRJcAokNzRvzZcoo3HZ2hRxf81bluBF9tI6pzv0eQRECdrHH18yF7e
+         Fk5X1MnrQhaUMQLbC1WgaD7i+gBSAk369nD6fno+H8yhdNuEiTQCJMsWUsIoNLC9ycwH
+         M7JodT6IlyE/ZjVY4bfh/754MiZYfQxqFnUgJHLcqJCi9RmeDAJQZtX2f4frTfb3C+Mk
+         KjwO87VcZVXDeLZvXm/8jTT0Ylf2wDa8kCpjgLH4Iovtvv1/Bjnq0yeXoHKu5HkVCDdG
+         XSKUR8p+FWnJ0S37oClR/J/vpdNRrvY6qu9+7lE7a0vcwu3W1XRVbCkip5c5qG/QnA/b
+         vrmQ==
+X-Gm-Message-State: AO0yUKWRqI2Rmz4GmOHYasK0nwdiAELL0ghFahM5knnFbHFGsUxt0zjr
+        I1khf7i90Q8EzFN9QgArNBM=
+X-Google-Smtp-Source: AK7set9fDgKLRD/gE2ZEf6oy5ix2b4htY5QlFgaK6yE0FvauF9wTiKGNfJK5VCk8v4wiO+uWrGttlA==
+X-Received: by 2002:adf:ee92:0:b0:2c5:4c0e:3736 with SMTP id b18-20020adfee92000000b002c54c0e3736mr1743843wro.24.1676039688932;
+        Fri, 10 Feb 2023 06:34:48 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id q14-20020a5d574e000000b002bfb02153d1sm3813387wrw.45.2023.02.10.06.34.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Feb 2023 06:34:48 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 10 Feb 2023 15:34:41 +0100
+To:     Alexandre Peixoto Ferreira <alexandref75@gmail.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Jiri Olsa <olsajiri@gmail.com>, Daniel Xu <dxu@dxuuu.xyz>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: Kernel build fail with 'btf_encoder__encode: btf__dedup failed!'
+Message-ID: <Y+ZWAesOAY5wjG6i@krava>
+References: <57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com>
+ <Y85AHdWw/l8d1Gsp@krava>
+ <0fbad67e-c359-47c3-8c10-faa003e6519f@app.fastmail.com>
+ <bb569967-d33a-7252-964b-a36501b3366a@gmail.com>
+ <Y9RlpyV5JPz/hk1K@krava>
+ <883a3b03-a596-8279-1278-bc622114aab5@gmail.com>
+ <Y9kxUzyfpEQpnN7w@krava>
+ <d880b3b3-d6fb-c891-bfc2-9c05c321ddac@gmail.com>
+ <0474fbe7-14a3-71bc-02ed-73ad44b4b2a2@oracle.com>
+ <949c176c-2788-3959-34b1-90e1f6fe03d1@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2888:EE_|SJ0PR10MB4704:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1551d7f1-a4d0-438f-73b6-08db0b73374e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E+AL78MrR3KSsEnZlJf5D5pGtETFWeLE34QKwL2LKQDXXj7GPS98qM01s2NyyUWlfu9piMjdmeOsn4wFf/Lryf29AQIC/q1mmHZwYM0tViVL8il127saZ/PuDieXNQ/C0/lz4gHRBdYzvX48Z2mh0Q4G0TOP6mClLnLFZz/fyqBRnKjjdq/5MkfZAhYeCyn4H24167hucffGynMYdw1rgg+F82fhA0K6Gox8kj5rIB1lHY7Iz5gUjEyLvCVAxl0NckvFmn7e13E1sCuTGCMd6CDu34yPy8rpAvUCjKGTp+NNdpfwLbK8zOMjE/9o+H0pkIRgrfQBLpJFD8wbWN69b8aIBD7nWcn9rEHHSdjsVnBKHlYr7BViecFBInir35ZLA9zksYOLCZj4PtGPK73zp/OaVWvQIgXuSJ3YmmyvZtz7dNl4Od8DH9GaV9fIGplPjorCUXbeJarEjvWfBqEkyw9ekiP7LhAupb+GG0msLNs32gX3E02x/REOnipoRtwiriavkI3vNigwvaB6RrecM5fmk7PDyrSEDMPl3mtW63lG8SGcE128J7lBcnO8SoEcD+xUbsywwib7LQgVC27JTb7wDqB/djenAEVZj3XljBLzC7YdkcsIsjSbptOZF693yhzMGdqhP/Ss6U6jlidklg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2888.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(376002)(346002)(136003)(396003)(39860400002)(366004)(451199018)(36756003)(86362001)(38100700002)(41300700001)(66476007)(66556008)(66946007)(4326008)(8676002)(5660300002)(8936002)(6916009)(316002)(2906002)(6506007)(2616005)(83380400001)(478600001)(6486002)(54906003)(6512007)(186003)(26005)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GvTEXTt9Y85/O7pm6Wx4x9dx06cHBma5TPwsmdF7kxupvc2rCd9rnkZAnIm6?=
- =?us-ascii?Q?By8LWOq0A2NihxE6IGYfxmaZ3n6NDCq9QE9gklUF90BApPS3Suo0eT4wHzYf?=
- =?us-ascii?Q?tjT2nYZME4r630OlZHEDjzLVHxOYm7XDB+5PCcnGm3Z+mcqbcYQklABueSr6?=
- =?us-ascii?Q?UI3+PWTddlKMIsvTzrQ5Ras8uDMwUvpFfooUFORQmXyhRWM1dT8hIIRTpANX?=
- =?us-ascii?Q?UOJFpPpAbeHUV5/4Vju8+4QZ90RWOWf5MenldGoX77se10REprjm6bNsqem+?=
- =?us-ascii?Q?C1uvry2JFSS607dCtUsayAMfoJcklXQABN5V/fzUjAV66ij/yDvm/NmO9ovg?=
- =?us-ascii?Q?GMpem2FKdgWWuWVu0yMqg9KGrVfbLJnKb9RYUMwHpulelJPGv37hhWQXPG4M?=
- =?us-ascii?Q?Qge9icw2UIPZYj0MjefEtiXPGe2MdW19R7xLHpLq+WlNSGORDMXL6WpAttVF?=
- =?us-ascii?Q?WSjdSnogFarUldEKSQi1jNfgFfHwxi5T26LzRWJCbWBY7txP4wg/9bJbWkMu?=
- =?us-ascii?Q?7XFI0Qhtn8xAke10FzbfBY0spRXsPAOavEW9OUpiZeH9+qqlaw8ExBX2z1Rs?=
- =?us-ascii?Q?BS5bjL+tT2cYowzGmyTKYSU56mgOhzFgQhSMuxdVXdP8bM9bBVkME1nlxGrF?=
- =?us-ascii?Q?jN0NnHj4s/zfp57PZkugNV9UCOTXrTNk/cUR1PNHkfOC+sLHkCTj30Ma0ZFs?=
- =?us-ascii?Q?k1r1vnb2d0RYLvp2+aMjqKlC75HOoQYWTy8YoAb3GMyRZqRl8vJ/Mw+g+FsR?=
- =?us-ascii?Q?XGHVwKcjVuatzG2E6VKuuR/8MxQwNg10WMA3v4e0sbaEzIkXobV2NEEANQzb?=
- =?us-ascii?Q?6xMA+rxPnaJWMshJa2Y1jIcj8wGLW5ZbUwelZ2gms7HV/fscjwlB1x3KsBAb?=
- =?us-ascii?Q?pikKyJX1o/GOPFBlFVrLLYz6X734dpnTFJy4nO01FtNJdGIIC2/bULQtZGTA?=
- =?us-ascii?Q?7nDoQ0yLEgpVCkA6a0sLKMJ+ackN3lux7ECcoJ2dVUbhCLOxVO9RRi9jVvg4?=
- =?us-ascii?Q?geUyHNFv/jda0GFVUiF/rhO5cRZ3wS6+Pwsxrxnn0TwyeiVW6s3+6tqudppO?=
- =?us-ascii?Q?bACUXTwzLrl6HZpsbqP9/RLzDnK8IsWcX+Dk6OBkmKrL1QBC6Fo8IlmUNv5W?=
- =?us-ascii?Q?BpQvxTedJfJf+GW8Kr5Aw6GISMr++sHKMmjONPXMrJ+ykWiDkv/BQyGdNDph?=
- =?us-ascii?Q?uh4byBHhV61DAtyXhdnu0v092cdL/PJBDUD0ehV44g/pmRGkQ0OROGKp8olA?=
- =?us-ascii?Q?WXGbNv9ywVDE1UztezAarknvTcKb7DnE/CpjJsJHa+1Pk1kM2grrmczFTp1+?=
- =?us-ascii?Q?SZ0NUmgI4pYWVyNRKYqhm9C2j5iObD20doGzhTpA9KNsqkwlKs6vxNtC2/dV?=
- =?us-ascii?Q?H/GBbW0b9Vxo95+BvTACeKQie1pP6gCinEB44cSXymaLP2WP4TMo/nzl3gKs?=
- =?us-ascii?Q?wMoOuqdFpKBG49iOk1LxhAKswfjRPXVkUccZ94Ba+6wAc7XbVBTl0PUEWYGi?=
- =?us-ascii?Q?wcmRKEGqk/COQBoPT3I0fxcOxcmLniFNI6KA2ysZ6gieJWeqAs3PQQkQ+XuZ?=
- =?us-ascii?Q?18oyyCgnKsmAa2E9lZtH+nBoPmqIB/m3nvZdF970ibUffBc3mdo2HWZHuRb8?=
- =?us-ascii?Q?9g=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: hdU2RtB0iMCOJz5WWhHLk5PCwgHYWKxLTYucJqh2uKEE8y/l49sYpnXDv49fFLZmds62N6+jYOnQnJgInqVEOy9fNkGjJgSCfGSbcdTV9amAyOofS8YwWkkOhR7rp3QpyxFo4MePybORf+hbaW0+mZZ5R9g+stFLXEZyIyrh5vA3p8zGt5kyjOu6CBV0jpFoJnlMLPQMVEefMgXVz/9UvH3h1SXWwdvu4n8hRdE2/YtaPNYJE/YqoKKiCasrJ5pqkgDzrdE5bbWvm/KRYlhsEol5Jla1q+CHeDcxxuN8EjTffPyqI/epIpYV+A/tVAhA3eUdifIo0ojN9I5RbPMPVwSuV1PMWidxkNkHrmikMgkACgMQtbu7JTK7c+7LEgeIzt7guDlwHe8rbR28ZbnQ+d4mx68bYK/AZ+oxeJi+Sq1yzvRAniQ5N+n96sZtIg/5gQtgsxiLHt5YgPys7fqlupvMu5ij8UDj8+7Y+zBHTYjYSwkuGuUTwhCr4u1DX8i3rQSxqXpneAWycDFusbzpUNTYyJmiZ5022/sGIb6GS1jHujtEwRV6W/Fcin6LyCXE60OtxqtJRfYPdAuLCYKF68aSz00TRMCl0M96Nvm1RSJRlcLQhc/B4dri9A/yVHurpVN8yHH6qpuuIvfBg/lB7c8Kik0/Shp/kCj7H6GNiCZm4MBERl/IgFyjb6DKtasCxZO3khe+S5pUW+4zZuOzo6FlY4ioJPKIz7iGUC3yj9Ar8mhz7HfTBmEN93rFDSMfmdqbbySW7BR4bTRue1UsT/dWhIQgVMK8Leg4NztVHs2VePPdoGhm7h2ZBRpaKhvdbHWFCoc2ACMBJe/5vFJYl/7wWorQ6Kgb4geBKc974r1RpdArFuhuHUDKV87c4tA2F8JdeRinQz2RqzFBt+qf7Q==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1551d7f1-a4d0-438f-73b6-08db0b73374e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2023 14:29:28.3683
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yqgRiU2KOjkclHW3Wcope82/cT1IOjE7hMpRqxxAeXfWO+mstVTCiUHLMn+SiukypjZ40ZU4ZtQxmllS9G1MYMwSv+QxezDjnwQy73MffYU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4704
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-10_09,2023-02-09_03,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- mlxlogscore=908 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302100119
-X-Proofpoint-GUID: 4Mce8Zniz4ub9OHO7jqTR_S8BvcHOMP_
-X-Proofpoint-ORIG-GUID: 4Mce8Zniz4ub9OHO7jqTR_S8BvcHOMP_
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <949c176c-2788-3959-34b1-90e1f6fe03d1@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -151,149 +84,271 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Feb 10, 2023 at 08:02:23AM -0600, Alexandre Peixoto Ferreira wrote:
+> Alam,
+> 
+> On 2/9/23 07:07, Alan Maguire wrote:
+> > On 09/02/2023 04:15, Alexandre Peixoto Ferreira wrote:
+> > > Jiri,
+> > > 
+> > > On 1/31/23 09:18, Jiri Olsa wrote:
+> > > > On Sat, Jan 28, 2023 at 01:23:25PM -0600, Alexandre Peixoto Ferreira wrote:
+> > > > > Jirka and Daniel,
+> > > > > 
+> > > > > On 1/27/23 18:00, Jiri Olsa wrote:
+> > > > > > On Fri, Jan 27, 2023 at 04:28:54PM -0600, Alexandre Peixoto Ferreira wrote:
+> > > > > > > On 1/24/23 00:13, Daniel Xu wrote:
+> > > > > > > > Hi Jiri,
+> > > > > > > > 
+> > > > > > > > On Mon, Jan 23, 2023, at 1:06 AM, Jiri Olsa wrote:
+> > > > > > > > > On Sun, Jan 22, 2023 at 10:48:44AM -0700, Daniel Xu wrote:
+> > > > > > > > > > Hi,
+> > > > > > > > > > 
+> > > > > > > > > > I'm getting the following error during build:
+> > > > > > > > > > 
+> > > > > > > > > >             $ ./tools/testing/selftests/bpf/vmtest.sh -j30
+> > > > > > > > > >             [...]
+> > > > > > > > > >               BTF     .btf.vmlinux.bin.o
+> > > > > > > > > >             btf_encoder__encode: btf__dedup failed!
+> > > > > > > > > >             Failed to encode BTF
+> > > > > > > > > >               LD      .tmp_vmlinux.kallsyms1
+> > > > > > > > > >               NM      .tmp_vmlinux.kallsyms1.syms
+> > > > > > > > > >               KSYMS   .tmp_vmlinux.kallsyms1.S
+> > > > > > > > > >               AS      .tmp_vmlinux.kallsyms1.S
+> > > > > > > > > >               LD      .tmp_vmlinux.kallsyms2
+> > > > > > > > > >               NM      .tmp_vmlinux.kallsyms2.syms
+> > > > > > > > > >               KSYMS   .tmp_vmlinux.kallsyms2.S
+> > > > > > > > > >               AS      .tmp_vmlinux.kallsyms2.S
+> > > > > > > > > >               LD      .tmp_vmlinux.kallsyms3
+> > > > > > > > > >               NM      .tmp_vmlinux.kallsyms3.syms
+> > > > > > > > > >               KSYMS   .tmp_vmlinux.kallsyms3.S
+> > > > > > > > > >               AS      .tmp_vmlinux.kallsyms3.S
+> > > > > > > > > >               LD      vmlinux
+> > > > > > > > > >               BTFIDS  vmlinux
+> > > > > > > > > >             FAILED: load BTF from vmlinux: No such file or directory
+> > > > > > > > > >             make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+> > > > > > > > > >             make[1]: *** Deleting file 'vmlinux'
+> > > > > > > > > >             make: *** [Makefile:1264: vmlinux] Error 2
+> > > > > > > > > > 
+> > > > > > > > > > This happens on both bpf-next/master (84150795a49) and 6.2-rc5
+> > > > > > > > > > (2241ab53cb).
+> > > > > > > > > > 
+> > > > > > > > > > I've also tried arch linux pahole 1:1.24+r29+g02d67c5-1 as well as
+> > > > > > > > > > upstream pahole on master (02d67c5176) and upstream pahole on
+> > > > > > > > > > next (2ca56f4c6f659).
+> > > > > > > > > > 
+> > > > > > > > > > Of the above 6 combinations, I think I've tried all of them (maybe
+> > > > > > > > > > missing 1 or 2).
+> > > > > > > > > > 
+> > > > > > > > > > Looks like GCC got updated recently on my machine, so perhaps
+> > > > > > > > > > it's related?
+> > > > > > > > > > 
+> > > > > > > > > >             CONFIG_CC_VERSION_TEXT="gcc (GCC) 12.2.1 20230111"
+> > > > > > > > > > 
+> > > > > > > > > > I'll try some debugging, but just wanted to report it first.
+> > > > > > > > > hi,
+> > > > > > > > > I can't reproduce that.. can you reproduce it outside vmtest.sh?
+> > > > > > > > > 
+> > > > > > > > > there will be lot of output with patch below, but could contain
+> > > > > > > > > some more error output
+> > > > > > > > Thanks for the hints. Doing a regular build outside of vmtest.sh
+> > > > > > > > seems to work ok. So maybe it's a difference in the build config.
+> > > > > > > > 
+> > > > > > > > I'll put a little more time into debugging to see if it goes anywhere.
+> > > > > > > > But I'll have to get back to the regularly scheduled programming
+> > > > > > > > soon.
+> > > > > > > 6.2-rc5 compiles correctly when CONFIG_X86_KERNEL_IBT is commented but fails
+> > > > > > > in pahole when CONFIG_X86_KERNEL_IBT is set.
+> > > > > > could you plese attach your config and the build error?
+> > > > > > I can't reproduce that
+> > > > > > 
+> > > > > > thanks,
+> > > > > > jirka
+> > > > > My working .config is available at https://pastebin.pl/view/bef3765c
+> > > > > change CONFIG_X86_KERNEL_IBT to y to get the error.
+> > > > > 
+> > > > > The error is similar to Daniel's and is shown below:
+> > > > > 
+> > > > >     LD      .tmp_vmlinux.btf
+> > > > >     BTF     .btf.vmlinux.bin.o
+> > > > > btf_encoder__encode: btf__dedup failed!
+> > > > > Failed to encode BTF
+> > > > >     LD      .tmp_vmlinux.kallsyms1
+> > > > >     NM      .tmp_vmlinux.kallsyms1.syms
+> > > > >     KSYMS   .tmp_vmlinux.kallsyms1.S
+> > > > >     AS      .tmp_vmlinux.kallsyms1.S
+> > > > >     LD      .tmp_vmlinux.kallsyms2
+> > > > >     NM      .tmp_vmlinux.kallsyms2.syms
+> > > > >     KSYMS   .tmp_vmlinux.kallsyms2.S
+> > > > >     AS      .tmp_vmlinux.kallsyms2.S
+> > > > >     LD      .tmp_vmlinux.kallsyms3
+> > > > >     NM      .tmp_vmlinux.kallsyms3.syms
+> > > > >     KSYMS   .tmp_vmlinux.kallsyms3.S
+> > > > >     AS      .tmp_vmlinux.kallsyms3.S
+> > > > >     LD      vmlinux
+> > > > >     BTFIDS  vmlinux
+> > > > > FAILED: load BTF from vmlinux: No such file or directory
+> > > > > make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+> > > > > make[1]: *** Deleting file 'vmlinux'
+> > > > > make: *** [Makefile:1264: vmlinux] Error 2
+> > > > I can't reproduce that.. I tried with gcc versions:
+> > > > 
+> > > >     gcc (GCC) 13.0.1 20230117 (Red Hat 13.0.1-0)
+> > > >     gcc (GCC) 12.2.1 20221121 (Red Hat 12.2.1-4)
+> > > > 
+> > > > I haven't found fedora setup with 12.2.1 20230111 yet
+> > > > 
+> > > > I tried alsa with latest pahole master branch
+> > > > 
+> > > > were you guys able to get any more verbose output
+> > > > that I suggested earlier?
+> > > > 
+> > > > jirka
+> > > I compiled with and without IBT using the -V on pahole (LLVM_OBJCOPY=objcopy pahole -V -J --btf_gen_floats -j .tmp_vmlinux.btf) and the outfiles are a little too big (540MB). The error happens with this CONST type pointing to itself. That does not happen with the IBT option removed.
+> > > 
+> > > $ grep  -n "CONST (anon) type_id" /tmp/with_IBT  | more
+> > > 346:[2] CONST (anon) type_id=2
+> > > 349:[5] CONST (anon) type_id=5
+> > > 351:[7] CONST (anon) type_id=7
+> > > 356:[12] CONST (anon) type_id=12
+> > > 363:[19] CONST (anon) type_id=19
+> > > 373:[29] CONST (anon) type_id=29
+> > > 375:[31] CONST (anon) type_id=31
+> > > 409:[63] CONST (anon) type_id=63
+> > > 444:[89] CONST (anon) type_id=0
+> > > 472:[97] CONST (anon) type_id=97
+> > > 616:[129] CONST (anon) type_id=129
+> > > 652:[131] CONST (anon) type_id=131
+> > > 1319:[234] CONST (anon) type_id=234
+> > > 1372:[246] CONST (anon) type_id=246
+> > > ....
+> > > 
+> > > $diff -ru with_IBT without_IBT
+> > > --- with_IBT 2023-01-31 09:39:24.915912735 -0600
+> > > +++ without_IBT 2023-01-31 09:46:23.456005278 -0600
+> > > @@ -340,346 +340,14800 @@
+> > >   Found per-CPU symbol 'cpu_tlbstate_shared' at address 0x2c040
+> > >   Found per-CPU symbol 'mce_poll_banks' at address 0x1ad20
+> > >   Found 341 per-CPU variables!
+> > > -Found 61470 functions!
+> > > +Found 61462 functions!
+> > > +File .tmp_vmlinux.btf:
+> > > +[1] FUNC_PROTO (anon) return=0 args=(void)
+> > > +[2] FUNC verify_cpu type_id=1
+> > > +[3] FUNC_PROTO (anon) return=0 args=(void)
+> > > +[4] FUNC sev_verify_cbit type_id=3
+> > > +search cu 'arch/x86/kernel/head_64.S' for percpu global variables.
+> > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > +Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+> > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > +Found per-CPU symbol 'current_tsc_ratio' at address 0x19fa0
+> > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > +Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > > +Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+> > > +Found per-CPU symbol 'last_nmi_rip' at address 0x1a018
+> > > +Found per-CPU symbol 'nmi_stats' at address 0x1a030
+> > > +Found per-CPU symbol 'swallow_nmi' at address 0x1a020
+> > > +Found per-CPU symbol 'nmi_state' at address 0x1a010
+> > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > +Found per-CPU symbol 'nmi_cr2' at address 0x1a008
+> > > +Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > +Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+> > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > +Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > > +Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > > ...
+> > > 
+> > > And the lines 342-365 of the with_IBT result:
+> > >       342 Found 341 per-CPU variables!
+> > >       343 Found 61470 functions!
+> > >       344 File .tmp_vmlinux.btf:
+> > >       345 [1] INT long unsigned int size=8 nr_bits=64 encoding=(none)
+> > >       346 [2] CONST (anon) type_id=2
+> > >       347 [3] PTR (anon) type_id=6
+> > >       348 [4] INT char size=1 nr_bits=8 encoding=(none)
+> > >       349 [5] CONST (anon) type_id=5
+> > >       350 [6] INT unsigned int size=4 nr_bits=32 encoding=(none)
+> > >       351 [7] CONST (anon) type_id=7
+> > >       352 [8] TYPEDEF __s8 type_id=10
+> > >       353 [9] INT signed char size=1 nr_bits=8 encoding=SIGNED
+> > >       354 [10] TYPEDEF __u8 type_id=12
+> > >       355 [11] INT unsigned char size=1 nr_bits=8 encoding=(none)
+> > >       356 [12] CONST (anon) type_id=12
+> > >       357 [13] TYPEDEF __s16 type_id=15
+> > >       358 [14] INT short int size=2 nr_bits=16 encoding=SIGNED
+> > >       359 [15] TYPEDEF __u16 type_id=17
+> > >       360 [16] INT short unsigned int size=2 nr_bits=16 encoding=(none)
+> > >       361 [17] TYPEDEF __s32 type_id=19
+> > >       362 [18] INT int size=4 nr_bits=32 encoding=SIGNED
+> > >       363 [19] CONST (anon) type_id=19
+> > >       364 [20] TYPEDEF __u32 type_id=7
+> > >       365 [21] TYPEDEF __s64 type_id=23
+> > > 
+> > > lines 342-362 of without_IBT
+> > > 
+> > >       342 Found 341 per-CPU variables!
+> > >       343 Found 61462 functions!
+> > >       344 File .tmp_vmlinux.btf:
+> > >       345 [1] FUNC_PROTO (anon) return=0 args=(void)
+> > >       346 [2] FUNC verify_cpu type_id=1
+> > >       347 [3] FUNC_PROTO (anon) return=0 args=(void)
+> > >       348 [4] FUNC sev_verify_cbit type_id=3
+> > >       349 search cu 'arch/x86/kernel/head_64.S' for percpu global variables.
+> > >       350 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > >       351 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > >       352 Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > >       353 Found per-CPU symbol 'cpu_kick_mask' at address 0x19f78
+> > >       354 Found per-CPU symbol 'cpu_tsc_khz' at address 0x19f88
+> > >       355 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > >       356 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > >       357 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > >       358 Found per-CPU symbol 'perf_nmi_tstamp' at address 0x19f70
+> > >       359 Found per-CPU symbol 'current_tsc_ratio' at address 0x19fa0
+> > >       360 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > >       361 Found per-CPU symbol 'cpu_loops_per_jiffy' at address 0x18a08
+> > >       362 Found per-CPU symbol 'kvm_running_vcpu' at address 0x19f80
+> > > 
+> > > If the full debug files are useful or a target grep or diff is better let me know.
+> > > 
+> > I managed to reproduce this too with IBT enabled; one thing I
+> > noticed is with pahole built with an up-to-date libbpf and the
+> > changes in https://github.com/acmel/dwarves/tree/next, the problem
+> > went away. I didn't have time to root-cause it yet however.
+> > 
+> > Not sure if you're in a position to do this, but if you can,
+> > would you mind building pahole from
+> > 
+> > https://github.com/acmel/dwarves/tree/next
+> > 
+> > ...and re-testing to see if that helps? Thanks!
+> > 
+> > Alan
+> > > Thanks,
+> > > 
+> I tried with libbpf compiled from master
+> https://github.com/libbpf/libbpf.git and pahole compiled from next branch on
+> https://github.com/acmel/dwarve with the same result.
+> With IBT enabled pahole fails and removing it results in a successful
+> kernel.
 
->> Hi Yonghong.
->> Thanks for the proposal!
->>
->>> SDIV/SMOD (signed div and mod)
->>> ==============================
->>>
->>> bpf already has unsigned DIV and MOD. They are encoded as
->>>
->>>   insn    code(4 bits)     source(1 bit)     instruction class(3 bit)
->>>   off(16 bits)
->>>   DIV     0x3              0/1               BPF_ALU/BPF_ALU64          0
->>>   MOD     0x9              0/1               BPF_ALU/BPF_ALU64          0
->>>
->>> The current 'code' field only has two value left, 0xe and 0xf.
->>> gcc used these two values (0xe and 0xf) for SDIV and SMOD.
->>> But using these two values takes up all 'code' space and makes
->>> future extension hard.
->>>
->>> Here, I propose to encode SDIV/SMOD like below:
->>>
->>>   insn    code(4 bits)     source(1 bit)     instruction class(3 bit)
->>>   off(16 bits)
->>>   DIV     0x3              0/1               BPF_ALU/BPF_ALU64          1
->>>   MOD     0x9              0/1               BPF_ALU/BPF_ALU64          1
->>>
->>> Basically, we reuse the same 'code' value but changing 'off' from 0 to 1
->>> to indicate signed div/mod.
->>
->> I have a general concern about using instruction operands to encode
->> opcodes (in this case, 'off').
->>
->> At the moment we have two BPF instruction formats:
->>
->>  - The 64-bit instructions:
->>
->>     code:8 regs:8 offset:16 imm:32
->>
->>  - The 128-bit instructions:
->>
->>     code:8 regs:8 offset:16 imm:32 unused:32 imm:32 
->>
->> Of these, `code', `regs' and `unused' are what is commonly known as
->> instruction fields.  These are typically used for register numbers,
->> flags, and opcodes.
->>
->> On the other hand, offset, imm32 and imm:32:::imm:32 are instruction
->> operands (the later is non-contiguous and conforms the 64-bit operand in
->> the 128-bit instruction).
->>
->> The main difference between these is that the bytes conforming
->> instruction operands are themselves impacted by endianness, on top on
->> the endianness effect on the whole instruction.  (The weird endian-flip
->> in the two nibbles of `regs' is unfortunate, but I guess there is
->> nothing we can do about it at this point and I count them as
->> non-operands.)
->>
->> If you use an instruction operand (such as `offset') in order to act as
->> an opcode, you incur in two inconveniences:
->>
->> 1) In effect you have "moving" opcodes that depend on the endianness.
->>    The opcode for signed-operation will be 0x1 in big-endian BPF, but
->>    0x8000 in little-endian bpf.
->>
->> 2) You lose the ability of easily adding more complementary opcodes in
->>    these 16 bits in the future, in case you ever need them.
->>
->> As far as I have seen in other architectures, the usual way of doing
->> this is to add an additional instruction format, in this case for the
->> class of arithmetic instructions, where the bits dedicated to the unused
->> operand (offset) becomes a new opcodes field:
->>
->>   - 32-bit arithmetic instructions:
->>
->>     code:8 regs:8 code2:16 imm:32
->>
->> Where code2 is now an additional field (not an operand) that provides
->> extra additional opcode space for this particular class of instructions.
->> This can be divided in a 1-bit field to signify "signed" and the rest
->> reserved for future use:
->>
->>    opcode2 ::= unused(15) signed(1)
->
-> Actually this would be just for DIV/MOD instructions, so the new format
-> should only apply to them.  The new format would be something like:
->
->   - 64-bit ALU/ALU64 div/mod instructions (code=3,9):
->
->     code:8 regs:8 unused:15 signed:1 imm:32
->
-> And for the rest of the ALU and ALU64 instructions
-> (code=0,1,2,4,5,6,7,8,a,b,c,d):
->
->   - 64-bit ALU/ALU64 instructions:
->
->     code:8 regs:8 unused:16 imm:32
+hi,
+in case it slipped, you also need to add new options for pahole:
+  https://lore.kernel.org/bpf/1675949331-27935-1-git-send-email-alan.maguire@oracle.com/
 
-Re-reading what I wrote above I realize that it is messy and uses
-confusing terms that are not used in instruction-set.rst, and it also
-has mistakes.  Sorry about that, 3:30AM posting.
+should be added for version 124 for now
 
-After sleeping over it I figured I better start over and this time I
-keep it short and stick to instruction-set.rst terminology :)
-
-What I am proposing is, instead of using the `offset' multi-byte field
-to encode an opcode:
-
-  =============  =======  =======  =======  ============
-  32 bits (MSB)  16 bits  4 bits   4 bits   8 bits (LSB)
-  =============  =======  =======  =======  ============
-  imm            offset   src_reg  dst_reg  opcode
-  =============  =======  =======  =======  ============
-
-To introduce a new opcode2 field for ALU32/ALU instructions like this:
-
-  =============  ======= ======= =======  =======  ============
-  32 bits (MSB)  8 bits  8 bits  4 bits   4 bits   8 bits (LSB)
-  =============  ======= ======= =======  =======  ============
-  imm            opcode2 unused  src_reg  dst_reg  opcode
-  =============  ======= ======= =======  =======  ============
-
-This way:
-
-1) The opcode2 field's stored value will be the same regardless of
-   endianness.
-
-2) The remaining 8 bits stay free for future extensions.
-
-That is from a purely ISA perspective.  But then this morning I thought
-about the kernel and its uapi.  This is in uapi/linux/bpf.h:
-
-  struct bpf_insn {
-  	__u8	code;		/* opcode */
-  	__u8	dst_reg:4;	/* dest register */
-  	__u8	src_reg:4;	/* source register */
-  	__s16	off;		/* signed offset */
-  	__s32	imm;		/* signed immediate constant */
-  };
-
-If the bpf_insn struct is supposed to reflect the encoding of stored BPF
-instructions, and since it is part of the uapi, does this mean we are
-stuck with that instruction format (and only that format) forever?
-
-Because if changing the internal structure of the bpf_insn struct is a
-no-no, then there is no way to expand the existing opcode space without
-using unused multi-byte fields like `off' as such :/
+jirka
