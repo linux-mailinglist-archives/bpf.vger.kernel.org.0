@@ -2,466 +2,249 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 020D8692511
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 19:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A486469257A
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 19:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232813AbjBJSKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 13:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
+        id S232755AbjBJSi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 13:38:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232083AbjBJSKT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 13:10:19 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5DF36F22C;
-        Fri, 10 Feb 2023 10:10:15 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C30D82F4;
-        Fri, 10 Feb 2023 10:10:57 -0800 (PST)
-Received: from e126311.manchester.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 133843F71E;
-        Fri, 10 Feb 2023 10:10:09 -0800 (PST)
-Date:   Fri, 10 Feb 2023 18:09:30 +0000
-From:   Kajetan Puchalski <kajetan.puchalski@arm.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        John Stultz <jstultz@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
+        with ESMTP id S233135AbjBJSiY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 13:38:24 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859ED79B07
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 10:38:16 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31AIQrTJ008149;
+        Fri, 10 Feb 2023 10:37:59 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=92Tf/H4f2oSM3qwpipTCKJTrV1fyMz2MDtunCM7Duw0=;
+ b=FPtoRoGGmhLxIN/Ay0Ewt5HXiTLX0fnMGUbHipJGBrl5T54hw2kHVZYtn2RLeV88pxn9
+ 2sctqZfD/UahGKpUdbWdanK01LIbPyTTeUKZV53QU8WYKuHqNJ2+YA+TbsMm1eUdafSn
+ PP3apjVC/V6VJOzWcBkXoHON3nvU8mvoJTUJtXeL1xUBQRC29ObmCZIhYO/qjElXRHG5
+ D41dElDKJLOGXCeQt4oSAXbGNCOnq652bRzBKFIUNtQJgI1ao50LqIOf7ss50nuvDRBt
+ YkpUsTXXuKS8Li7b2jk4m2QIr+6SPWFGivDZqFaKoV7atmRdYseyaP+X/eqjMLJsye9e IQ== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3nnu5eg3nj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Feb 2023 10:37:58 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kShrVutoD3BrOw1L+LIX4VsoW0oqPh3zwJdNa0AuZ2x4V/yPGoNuVXyyohVy7H0S3GZKzPs9ufW0MQYqCncR8EluvtpAOh/6e97Xp/R3inGqkioE/IIjUyl8SjQsD7+qonsvelbL1LSw53z600hObMMXkLCXtQcSS01YTfBuGLTPQDa4zyYtTAOU1Kg7QnaKk1Tk0fLoTNai42y8ArBTNOiZ1+m0+///pJwuIUfztQ/Wzps9ubzFVpA5q/daHJ81NO8dYF2lHClgtPWnJNeDqwhplEBy8PMx5Xn/mgltcYYQiD4cp8lrVV5AFEa17BYqodbDfTL52IakxQ709CYOAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=92Tf/H4f2oSM3qwpipTCKJTrV1fyMz2MDtunCM7Duw0=;
+ b=Cg6To8U/8DE/7/ncVT2vizF9lUu9UH1O8K3MxcNYJwM7WCVX1Z5sQ8cyUxqDsI1w6CFhw0+8cR1KiiWQFQM1VU885xc7m4z367OtTJCXVu4DY/PMXPhtgYaKnBFGHvD6i9hvw9Wkelc7TXRIn/8EeukWk7NHECzb+JLM/VV7tnVzMcD8WO42+Zm3ppbovY6FB4LuGy/TMT8r8SC09EXgdRfyH+Mz2F2e7NRxLMgRSNhBpF46Jw9VdyrpADWKhNyqerSjUUokZlV1PE2UBLH9hMWQK8o41Fgqg1pT9lnMIf3l+Bktw8qO7zAR6QTnPRP0GMMfsKF1HQqe2AoFNr691Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DM4PR15MB6009.namprd15.prod.outlook.com (2603:10b6:8:17f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.19; Fri, 10 Feb
+ 2023 18:37:52 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::a595:5e4d:d501:dc18]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::a595:5e4d:d501:dc18%4]) with mapi id 15.20.6086.017; Fri, 10 Feb 2023
+ 18:37:52 +0000
+Message-ID: <9c14efb2-5fdc-66b8-8b0a-1335674554ce@meta.com>
+Date:   Fri, 10 Feb 2023 10:37:49 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+Subject: Re: bpf: Propose some new instructions for -mcpu=v4
+Content-Language: en-US
+To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc:     alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Qais Yousef <qyousef@google.com>,
-        Daniele Di Proietto <ddiproietto@google.com>
-Subject: Re: [PATCH v2 7/7] tools/testing/selftests/bpf: replace open-coded
- 16 with TASK_COMM_LEN
-Message-ID: <Y+aISmbGPdAJrg/R@e126311.manchester.arm.com>
-References: <20211120112738.45980-1-laoar.shao@gmail.com>
- <20211120112738.45980-8-laoar.shao@gmail.com>
- <Y+QaZtz55LIirsUO@google.com>
- <CAADnVQ+nf8MmRWP+naWwZEKBFOYr7QkZugETgAVfjKcEVxmOtg@mail.gmail.com>
- <CANDhNCo_=Q3pWc7h=ruGyHdRVGpsMKRY=C2AtZgLDwtGzRz8Kw@mail.gmail.com>
- <08e1c9d0-376f-d669-6fe8-559b2fbc2f2b@efficios.com>
- <CALOAHbBsmajStJ8TrnqEL_pv=UOt-vv0CH30EqThVq=JYXfi8A@mail.gmail.com>
- <Y+UCxSktKM0CzMlA@e126311.manchester.arm.com>
- <CALOAHbCdNZ21oBE2ii_XBxecYLSxM7Ws2LRMirdEOpeULiNk4g@mail.gmail.com>
+        David Faust <david.faust@oracle.com>,
+        James Hilliard <james.hilliard1@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>
+References: <01515302-c37d-2ee5-c950-2f556a4caad0@meta.com>
+ <87fsbe8l8n.fsf@oracle.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <87fsbe8l8n.fsf@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR01CA0014.prod.exchangelabs.com (2603:10b6:a02:80::27)
+ To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbCdNZ21oBE2ii_XBxecYLSxM7Ws2LRMirdEOpeULiNk4g@mail.gmail.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM4PR15MB6009:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16cfdf93-973b-48f1-0891-08db0b95ead3
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PUoqeAAKMurZfRrXrGPCwKKmlUCq7eQBuc9O0EhVOLKPMSCUxitHiptoJVKtOz8YVLXCLDNkhsqSoB2FqbQz0m4/ly4le7jtGRGEhoLoOXqHKykOir5wKmD53u3ay7WHbOCfiI6AWK/4UAbjtNxzHPoYoRo2l8g3yv+oQEWl5tqhIQjbv2nvPXASR04E5FNovi+8KjXCruk4wAxx8O0LIS0Ofk/mqlEboycKFhTb8OPutbxzUebuJaZEdu+kM6G57/hO/hBJEj6C+xLaGkrSfVvdj3Mys6adPMAdLtcXzTUZ2qgpCKHnz6675Rf4SNdf1MF+q6UXoEI0aH03MB/etm72V7N3AoCBxn18VBbJU6N8gX/gDNAoZN99Y8o9bhxqXKsZ5nGjfwwrGl2AgHEdM3z+ksgVlsqzL7NMPMsJdSR1eaDhUy6fp5oO8AaI6vOVNwWvD+4eAHH4Ii/gY+GHFOR+pMrKiEiKG76vQfpO6IW/Qg2RM86ACdE2L+hrfrqMhGRLXA6VWKtIDM713sgNvwerRKXZBpGPHkSwKS8OLQaFgz/5Y8uOVqeEgbSDXtxSCERx8yldI60r/cV1aM3SnsRzdUXJl22OvlAqJ0lHis/GIymE4DtQlbJlF/4/J8I5DHQrZ0w9FyAOXw+dZT0qlFpXJ3NuevI/p4HIVCEJisW4WFqgkfr2RTIMWSu29PZGUa7RDrO/aGk/JCaxnt2cyy69YhsKfepMoMYWWrEBqfo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(39860400002)(346002)(376002)(366004)(136003)(451199018)(6666004)(6506007)(478600001)(186003)(53546011)(6486002)(36756003)(6512007)(54906003)(316002)(86362001)(38100700002)(31696002)(2906002)(2616005)(83380400001)(66946007)(31686004)(8936002)(5660300002)(66556008)(41300700001)(4326008)(66476007)(6916009)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QkNvaDFtUXVzS1VuVXFxVlE5NXpETm5QR3pmaVlnNUFiSzhFajZqQW82bDg1?=
+ =?utf-8?B?N1B2WllLRnlVdVYrTzZJWnY3TDIwWXhEV0ZQT1Qxd0dSQlBpeFNuQ0VCSjJp?=
+ =?utf-8?B?TmtGcjZYdGptNGcxM1J3UHFkR0ordlEwdjk1TWk1RWFnZ2ZGaVU2eWE4NENv?=
+ =?utf-8?B?SFI4K1RvRjlnNmRkRzdVUHM5QWtsMkdFZjNiTlBZV2FxZER5WVVrVFUwT2pI?=
+ =?utf-8?B?NkVxcEJZVHFaYUJZcmlpakQvZXp6bHhtcGlhSm45MW5hNEdoRSsyb1Y2UGtD?=
+ =?utf-8?B?S1dvd1VWa29qOFRjZGluZFE3YVBRc28zRGNWZnJPTjREeTNITzV5VHpXQzJO?=
+ =?utf-8?B?ckhQWGJ5cXVHQlVRV25LTWdhd01ZZWpkQ1ppaElQNzBjcVk5OWU5VUwwZlFj?=
+ =?utf-8?B?dTRKU2ttV0ROL3RxeXJ0UDhtcVJ6SzNlVnlxTmdOWmZkWmlGTVlRZzJHcjlu?=
+ =?utf-8?B?MG4xeERUaEtzMjdna2R4ZmlmQW82VzdDOGVjRmpUVnBnaTZpbjJSYW1ac29m?=
+ =?utf-8?B?b25mT2cwL1RFeVQ1eW1RT3Z6SGtyZjZENG5VMENzRC9iSHgyRm5DRGprTjJn?=
+ =?utf-8?B?VE1RYTd0b01wYnR1aGdyVEswRGNUUjBmTlh6K0VzcHJBaTlmY0pVTkpVNnF3?=
+ =?utf-8?B?ZGx4THFjM2dSRHNIc01ESjNkN3VVbG53Z3F6dElkcUxvcVdUTjQzaUxIYlps?=
+ =?utf-8?B?V1hFRCtWZFExcjE5Wi91ZHlZNFhZclhqMkpXc2VTTU12eXBTZEMrRVdLdnJ0?=
+ =?utf-8?B?ZEt4L1M3Y2Ivd0xmVEgrd2loR1JXcEtNKzVXdXJmOTd5MHNPdXI3S0FWUnc3?=
+ =?utf-8?B?UkR1WlNjREdQVWNPa3dMa3VDcU1JUXdSVXg5SE1XdkJidDNaRnVvVnkyZEpB?=
+ =?utf-8?B?aGEwb1NTQnhyRWxScUt4WEpOek5jRlp3R2xWM2xvZGp3ODdyWGJvRjZyZHlD?=
+ =?utf-8?B?RHdRN2VlL2tuZWFidGluUnRFdnBjTWhCSW95UTAwbmE0WnVPcmxpblZEZ21L?=
+ =?utf-8?B?b3NvR1dhc00zY0VibTdrTjVrRk94L0YwcVZrOFpxbEhZZVJ2RFdXNWI0RXll?=
+ =?utf-8?B?aWUwUEcwb0NaY2lVWWRzTWpycTFXQjFOOUhJVFFocktoNUZaUUNhYzVUWEMw?=
+ =?utf-8?B?YUMydmczazdYS3gvSUdWdDN3SnhsbmovcVBURTBFcVd1UmVybzhyMjYzWmhu?=
+ =?utf-8?B?WGpjQ3M2eTF3OVJ2YmQrOEtZdmMvSnJadldQSTFaNlczaG5oOTJpNnNtK3VW?=
+ =?utf-8?B?VzlMa0ordndwUUNxVjZBS3JxUktQalJFVStSWFJ5YlNtQjlMajJrMDhJNUIv?=
+ =?utf-8?B?RisvVi9VbEU4NzFBbExTSnNCZjJpSFRYSCtYdjRBdjYzM2ZOWDIyUVlrQzVZ?=
+ =?utf-8?B?aGlCNXdreTRESTEwTmtEMkszazVMSUFicnBBY054RmlBK0Z1cDRIWWliV2xh?=
+ =?utf-8?B?Z0FLZFZGcmxaL0hza0ViM3VORlZja21reTBHRTJLR3RrRHdjbGVUZVFhRkZj?=
+ =?utf-8?B?MTE2N3J0RmtPakhGWllVVDNKNHBaQW5YNStpang3d2VsSC9DeG8yREZTbXQr?=
+ =?utf-8?B?SEJXWTNGMDZjS0hKOUZCSWk5MTZWWUZ6ekI4bmNLOU1pTXpsWTlRcEVtWjBo?=
+ =?utf-8?B?OFRLUGxud2tHa1dHdkM4ZjVTMFRqNU4wZnpURmhvbWVKMUpwcDRaRmlZTHlj?=
+ =?utf-8?B?SEM1ai9FL2hTQStNT2w1dlo0MkNDdWJ4VzN6amtVV2xVYUV0ZDljRmFTUis2?=
+ =?utf-8?B?RTVabFZoUXJpaEpXbjRWUVNXT094K2VXZ2lXOWlTZWtzaGFjSWpCaEo2WS9a?=
+ =?utf-8?B?Z2w5RnNtLzNFRm5wWTZHYlN2TXJiNVJaZDAxU25WamswZXhIQkgwL1FFcTVu?=
+ =?utf-8?B?YzFtMWFYZy9mOTRLT05URExUb1hyVy9jd01oZFVtbjUzTktCU1RTYi9oQkd4?=
+ =?utf-8?B?S3UrR1B0V1dpeTlDZ2JvU3VnWGk4eE15U0FRcUxIYnhadi9PTExMMUt5VVp3?=
+ =?utf-8?B?MWxjMkZDd2RWWUNMNktBZ2FKVjFpR0tKR3ZaKzBLNTc4akRIcFNVcVRqeEVR?=
+ =?utf-8?B?TWx1a0FQSEM1ZFJYVkhtNFcwR0FETUsrNmdDU2NQbWlZaE93N1g4akVTUWk1?=
+ =?utf-8?B?bkNjbmloVTI4bDgzWC9DbitPSGV3b3JDRG85cFZXR0U4RGNUWDNTcGxCajNU?=
+ =?utf-8?B?aGc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16cfdf93-973b-48f1-0891-08db0b95ead3
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2023 18:37:52.2975
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: q+dwEIEmEBd3tvCBaV7GTYFhPG7Yct40/XwKtK41q4cmZufJjHr28haCZ3f15H+m
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR15MB6009
+X-Proofpoint-ORIG-GUID: Gf8RsHaTz2yvhTm5BAyrE04wXia9HChM
+X-Proofpoint-GUID: Gf8RsHaTz2yvhTm5BAyrE04wXia9HChM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-10_13,2023-02-09_03,2023-02-09_01
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 09, 2023 at 11:37:44PM +0800, Yafang Shao wrote:
-> 
-> > It goes from "not working at all" to "mostly working but missing data"
-> > compared to what happens if I just revert 3087c61ed2c48548b74dd343a5209b87082c682d.
-> >
-> 
-> Do you mean there are no errors at all if revert
-> 3087c61ed2c48548b74dd343a5209b87082c682d ?
 
-Correct yes, the revert makes it work perfectly.
 
-> > I'm just an end user so can't really speak to the underlying causes but
-> > for those more familiar with how Perfetto works this is what I'm getting:
-> >
+On 2/9/23 3:36 PM, Jose E. Marchesi wrote:
 > 
-> The sched_switch tracepoint format file has the same output with
-> reverting the commit,
+> Hi Yonghong.
+> Thanks for the proposal!
 > 
-> $ cat /sys/kernel/debug/tracing/events/sched/sched_switch/format
-> name: sched_switch
-> ID: 286
-> format:
-> field:unsigned short common_type; offset:0; size:2; signed:0;
-> field:unsigned char common_flags; offset:2; size:1; signed:0;
-> field:unsigned char common_preempt_count; offset:3; size:1; signed:0;
-> field:int common_pid; offset:4; size:4; signed:1;
-> field:char prev_comm[16]; offset:8; size:16; signed:0;
-> field:pid_t prev_pid; offset:24; size:4; signed:1;
-> field:int prev_prio; offset:28; size:4; signed:1;
-> field:long prev_state; offset:32; size:8; signed:1;
-> field:char next_comm[16]; offset:40; size:16; signed:0;
-> field:pid_t next_pid; offset:56; size:4; signed:1;
-> field:int next_prio; offset:60; size:4; signed:1;
+>> SDIV/SMOD (signed div and mod)
+>> ==============================
+>>
+>> bpf already has unsigned DIV and MOD. They are encoded as
+>>
+>>    insn    code(4 bits)     source(1 bit)     instruction class(3 bit)
+>>    off(16 bits)
+>>    DIV     0x3              0/1               BPF_ALU/BPF_ALU64          0
+>>    MOD     0x9              0/1               BPF_ALU/BPF_ALU64          0
+>>
+>> The current 'code' field only has two value left, 0xe and 0xf.
+>> gcc used these two values (0xe and 0xf) for SDIV and SMOD.
+>> But using these two values takes up all 'code' space and makes
+>> future extension hard.
+>>
+>> Here, I propose to encode SDIV/SMOD like below:
+>>
+>>    insn    code(4 bits)     source(1 bit)     instruction class(3 bit)
+>>    off(16 bits)
+>>    DIV     0x3              0/1               BPF_ALU/BPF_ALU64          1
+>>    MOD     0x9              0/1               BPF_ALU/BPF_ALU64          1
+>>
+>> Basically, we reuse the same 'code' value but changing 'off' from 0 to 1
+>> to indicate signed div/mod.
 > 
-> print fmt: "prev_comm=%s prev_pid=%d prev_prio=%d prev_state=%s%s ==>
-> next_comm=%s next_pid=%d next_prio=%d", REC->prev_comm, REC->prev_pid,
-> REC->prev_prio, (REC->prev_state & ((((0x00000000 | 0x00000001 |
-> 0x00000002 | 0x00000004 | 0x00000008 | 0x00000010 | 0x00000020 |
-> 0x00000040) + 1) << 1) - 1)) ? __print_flags(REC->prev_state &
-> ((((0x00000000 | 0x00000001 | 0x00000002 | 0x00000004 | 0x00000008 |
-> 0x00000010 | 0x00000020 | 0x00000040) + 1) << 1) - 1), "|", {
-> 0x00000001, "S" }, { 0x00000002, "D" }, { 0x00000004, "T" }, {
-> 0x00000008, "t" }, { 0x00000010, "X" }, { 0x00000020, "Z" }, {
-> 0x00000040, "P" }, { 0x00000080, "I" }) : "R", REC->prev_state &
-> (((0x00000000 | 0x00000001 | 0x00000002 | 0x00000004 | 0x00000008 |
-> 0x00000010 | 0x00000020 | 0x00000040) + 1) << 1) ? "+" : "",
-> REC->next_comm, REC->next_pid, REC->next_prio
+> I have a general concern about using instruction operands to encode
+> opcodes (in this case, 'off').
 > 
-> So may be these errors were caused by other issues ?
+> At the moment we have two BPF instruction formats:
+> 
+>   - The 64-bit instructions:
+> 
+>      code:8 regs:8 offset:16 imm:32
+> 
+>   - The 128-bit instructions:
+> 
+>      code:8 regs:8 offset:16 imm:32 unused:32 imm:32
+> 
+> Of these, `code', `regs' and `unused' are what is commonly known as
+> instruction fields.  These are typically used for register numbers,
+> flags, and opcodes.
+> 
+> On the other hand, offset, imm32 and imm:32:::imm:32 are instruction
+> operands (the later is non-contiguous and conforms the 64-bit operand in
+> the 128-bit instruction).
+> 
+> The main difference between these is that the bytes conforming
+> instruction operands are themselves impacted by endianness, on top on
+> the endianness effect on the whole instruction.  (The weird endian-flip
+> in the two nibbles of `regs' is unfortunate, but I guess there is
+> nothing we can do about it at this point and I count them as
+> non-operands.)
+> 
+> If you use an instruction operand (such as `offset') in order to act as
+> an opcode, you incur in two inconveniences:
+> 
+> 1) In effect you have "moving" opcodes that depend on the endianness.
+>     The opcode for signed-operation will be 0x1 in big-endian BPF, but
+>     0x8000 in little-endian bpf.
+> 
+> 2) You lose the ability of easily adding more complementary opcodes in
+>     these 16 bits in the future, in case you ever need them.
+> 
+> As far as I have seen in other architectures, the usual way of doing
+> this is to add an additional instruction format, in this case for the
+> class of arithmetic instructions, where the bits dedicated to the unused
+> operand (offset) becomes a new opcodes field:
+> 
+>    - 32-bit arithmetic instructions:
+> 
+>      code:8 regs:8 code2:16 imm:32
+> 
+> Where code2 is now an additional field (not an operand) that provides
+> extra additional opcode space for this particular class of instructions.
+> This can be divided in a 1-bit field to signify "signed" and the rest
+> reserved for future use:
+> 
+>     opcode2 ::= unused(15) signed(1)
+> 
+> Thoughts?
 
-As I said not really sure why it's happening but there's definitely an
-issue somewhere.
+If I understand correctly, you proposed something like
 
-I'm hoping someone more familiar with how Perfetto works might have an
-idea.
+insn    code(4 bits)     source(1 bit)     instruction class(3 bit)
+EXT     0xe              0/1               BPF_ALU/BPF_ALU64
 
-> > Error stats for this trace:
-> >                                     name                                      idx                                   source                                    value
-> > ---------------------------------------- ---------------------------------------- ---------------------------------------- ----------------------------------------
-> > mismatched_sched_switch_tids             [NULL]                                   analysis                                                                    11101
-> > systrace_parse_failure                   [NULL]                                   analysis                                                                    19040
-> >
-> > The trace explorer window ends up containing the ftrace-specific tracks
-> > but missing the tracks related to Android-specific callbacks and such.
-> >
-> > Debug stats below in case they're relevant:
-> >
-> > Name    Value   Type
-> > android_br_parse_errors 0       error (trace)
-> > android_log_format_invalid      0       error (trace)
-> > android_log_num_failed  0       error (trace)
-> > android_log_num_skipped 0       info (trace)
-> > android_log_num_total   0       info (trace)
-> > clock_sync_cache_miss   181     info (analysis)
-> > clock_sync_failure      0       error (analysis)
-> > compact_sched_has_parse_errors  0       error (trace)
-> > compact_sched_switch_skipped    0       info (analysis)
-> > compact_sched_waking_skipped    0       info (analysis)
-> > counter_events_out_of_order     0       error (analysis)
-> > deobfuscate_location_parse_error        0       error (trace)
-> > empty_chrome_metadata   0       error (trace)
-> > energy_breakdown_missing_values 0       error (analysis)
-> > energy_descriptor_invalid       0       error (analysis)
-> > energy_uid_breakdown_missing_values     0       error (analysis)
-> > flow_duplicate_id       0       error (trace)
-> > flow_end_without_start  0       info (trace)
-> > flow_invalid_id 0       error (trace)
-> > flow_no_enclosing_slice 0       error (trace)
-> > flow_step_without_start 0       info (trace)
-> > flow_without_direction  0       error (trace)
-> > frame_timeline_event_parser_errors      0       info (analysis)
-> > ftrace_bundle_tokenizer_errors  0       error (analysis)
-> > ftrace_cpu_bytes_read_begin[0]  0       info (trace)
-> > ftrace_cpu_bytes_read_begin[1]  264     info (trace)
-> > ftrace_cpu_bytes_read_begin[2]  0       info (trace)
-> > ftrace_cpu_bytes_read_begin[3]  224     info (trace)
-> > ftrace_cpu_bytes_read_begin[4]  0       info (trace)
-> > ftrace_cpu_bytes_read_begin[5]  0       info (trace)
-> > ftrace_cpu_bytes_read_begin[6]  0       info (trace)
-> > ftrace_cpu_bytes_read_begin[7]  0       info (trace)
-> > ftrace_cpu_bytes_read_delta[0]  6919836 info (trace)
-> > ftrace_cpu_bytes_read_delta[1]  7197556 info (trace)
-> > ftrace_cpu_bytes_read_delta[2]  6381828 info (trace)
-> > ftrace_cpu_bytes_read_delta[3]  5988336 info (trace)
-> > ftrace_cpu_bytes_read_delta[4]  5933528 info (trace)
-> > ftrace_cpu_bytes_read_delta[5]  4858400 info (trace)
-> > ftrace_cpu_bytes_read_delta[6]  6175260 info (trace)
-> > ftrace_cpu_bytes_read_delta[7]  4633460 info (trace)
-> > ftrace_cpu_bytes_read_end[0]    6919836 info (trace)
-> > ftrace_cpu_bytes_read_end[1]    7197820 info (trace)
-> > ftrace_cpu_bytes_read_end[2]    6381828 info (trace)
-> > ftrace_cpu_bytes_read_end[3]    5988560 info (trace)
-> > ftrace_cpu_bytes_read_end[4]    5933528 info (trace)
-> > ftrace_cpu_bytes_read_end[5]    4858400 info (trace)
-> > ftrace_cpu_bytes_read_end[6]    6175260 info (trace)
-> > ftrace_cpu_bytes_read_end[7]    4633460 info (trace)
-> > ftrace_cpu_commit_overrun_begin[0]      0       info (trace)
-> > ftrace_cpu_commit_overrun_begin[1]      0       info (trace)
-> > ftrace_cpu_commit_overrun_begin[2]      0       info (trace)
-> > ftrace_cpu_commit_overrun_begin[3]      0       info (trace)
-> > ftrace_cpu_commit_overrun_begin[4]      0       info (trace)
-> > ftrace_cpu_commit_overrun_begin[5]      0       info (trace)
-> > ftrace_cpu_commit_overrun_begin[6]      0       info (trace)
-> > ftrace_cpu_commit_overrun_begin[7]      0       info (trace)
-> > ftrace_cpu_commit_overrun_delta[0]      0       error (trace)
-> > ftrace_cpu_commit_overrun_delta[1]      0       error (trace)
-> > ftrace_cpu_commit_overrun_delta[2]      0       error (trace)
-> > ftrace_cpu_commit_overrun_delta[3]      0       error (trace)
-> > ftrace_cpu_commit_overrun_delta[4]      0       error (trace)
-> > ftrace_cpu_commit_overrun_delta[5]      0       error (trace)
-> > ftrace_cpu_commit_overrun_delta[6]      0       error (trace)
-> > ftrace_cpu_commit_overrun_delta[7]      0       error (trace)
-> > ftrace_cpu_commit_overrun_end[0]        0       info (trace)
-> > ftrace_cpu_commit_overrun_end[1]        0       info (trace)
-> > ftrace_cpu_commit_overrun_end[2]        0       info (trace)
-> > ftrace_cpu_commit_overrun_end[3]        0       info (trace)
-> > ftrace_cpu_commit_overrun_end[4]        0       info (trace)
-> > ftrace_cpu_commit_overrun_end[5]        0       info (trace)
-> > ftrace_cpu_commit_overrun_end[6]        0       info (trace)
-> > ftrace_cpu_commit_overrun_end[7]        0       info (trace)
-> > ftrace_cpu_dropped_events_begin[0]      0       info (trace)
-> > ftrace_cpu_dropped_events_begin[1]      0       info (trace)
-> > ftrace_cpu_dropped_events_begin[2]      0       info (trace)
-> > ftrace_cpu_dropped_events_begin[3]      0       info (trace)
-> > ftrace_cpu_dropped_events_begin[4]      0       info (trace)
-> > ftrace_cpu_dropped_events_begin[5]      0       info (trace)
-> > ftrace_cpu_dropped_events_begin[6]      0       info (trace)
-> > ftrace_cpu_dropped_events_begin[7]      0       info (trace)
-> > ftrace_cpu_dropped_events_delta[0]      0       error (trace)
-> > ftrace_cpu_dropped_events_delta[1]      0       error (trace)
-> > ftrace_cpu_dropped_events_delta[2]      0       error (trace)
-> > ftrace_cpu_dropped_events_delta[3]      0       error (trace)
-> > ftrace_cpu_dropped_events_delta[4]      0       error (trace)
-> > ftrace_cpu_dropped_events_delta[5]      0       error (trace)
-> > ftrace_cpu_dropped_events_delta[6]      0       error (trace)
-> > ftrace_cpu_dropped_events_delta[7]      0       error (trace)
-> > ftrace_cpu_dropped_events_end[0]        0       info (trace)
-> > ftrace_cpu_dropped_events_end[1]        0       info (trace)
-> > ftrace_cpu_dropped_events_end[2]        0       info (trace)
-> > ftrace_cpu_dropped_events_end[3]        0       info (trace)
-> > ftrace_cpu_dropped_events_end[4]        0       info (trace)
-> > ftrace_cpu_dropped_events_end[5]        0       info (trace)
-> > ftrace_cpu_dropped_events_end[6]        0       info (trace)
-> > ftrace_cpu_dropped_events_end[7]        0       info (trace)
-> > ftrace_cpu_entries_begin[0]     0       info (trace)
-> > ftrace_cpu_entries_begin[1]     6       info (trace)
-> > ftrace_cpu_entries_begin[2]     0       info (trace)
-> > ftrace_cpu_entries_begin[3]     5       info (trace)
-> > ftrace_cpu_entries_begin[4]     0       info (trace)
-> > ftrace_cpu_entries_begin[5]     0       info (trace)
-> > ftrace_cpu_entries_begin[6]     0       info (trace)
-> > ftrace_cpu_entries_begin[7]     0       info (trace)
-> > ftrace_cpu_entries_delta[0]     6       info (trace)
-> > ftrace_cpu_entries_delta[1]     -6      info (trace)
-> > ftrace_cpu_entries_delta[2]     0       info (trace)
-> > ftrace_cpu_entries_delta[3]     2       info (trace)
-> > ftrace_cpu_entries_delta[4]     0       info (trace)
-> > ftrace_cpu_entries_delta[5]     0       info (trace)
-> > ftrace_cpu_entries_delta[6]     0       info (trace)
-> > ftrace_cpu_entries_delta[7]     0       info (trace)
-> > ftrace_cpu_entries_end[0]       6       info (trace)
-> > ftrace_cpu_entries_end[1]       0       info (trace)
-> > ftrace_cpu_entries_end[2]       0       info (trace)
-> > ftrace_cpu_entries_end[3]       7       info (trace)
-> > ftrace_cpu_entries_end[4]       0       info (trace)
-> > ftrace_cpu_entries_end[5]       0       info (trace)
-> > ftrace_cpu_entries_end[6]       0       info (trace)
-> > ftrace_cpu_entries_end[7]       0       info (trace)
-> > ftrace_cpu_now_ts_begin[0]      93305027000     info (trace)
-> > ftrace_cpu_now_ts_begin[1]      93305103000     info (trace)
-> > ftrace_cpu_now_ts_begin[2]      93305159000     info (trace)
-> > ftrace_cpu_now_ts_begin[3]      93305207000     info (trace)
-> > ftrace_cpu_now_ts_begin[4]      93305262000     info (trace)
-> > ftrace_cpu_now_ts_begin[5]      93305312000     info (trace)
-> > ftrace_cpu_now_ts_begin[6]      93305362000     info (trace)
-> > ftrace_cpu_now_ts_begin[7]      93305411000     info (trace)
-> > ftrace_cpu_now_ts_end[0]        282906571000    info (trace)
-> > ftrace_cpu_now_ts_end[1]        282906676000    info (trace)
-> > ftrace_cpu_now_ts_end[2]        282906738000    info (trace)
-> > ftrace_cpu_now_ts_end[3]        282906803000    info (trace)
-> > ftrace_cpu_now_ts_end[4]        282906863000    info (trace)
-> > ftrace_cpu_now_ts_end[5]        282906925000    info (trace)
-> > ftrace_cpu_now_ts_end[6]        282906987000    info (trace)
-> > ftrace_cpu_now_ts_end[7]        282907048000    info (trace)
-> > ftrace_cpu_oldest_event_ts_begin[0]     0       info (trace)
-> > ftrace_cpu_oldest_event_ts_begin[1]     93304642000     info (trace)
-> > ftrace_cpu_oldest_event_ts_begin[2]     0       info (trace)
-> > ftrace_cpu_oldest_event_ts_begin[3]     93304876000     info (trace)
-> > ftrace_cpu_oldest_event_ts_begin[4]     0       info (trace)
-> > ftrace_cpu_oldest_event_ts_begin[5]     0       info (trace)
-> > ftrace_cpu_oldest_event_ts_begin[6]     0       info (trace)
-> > ftrace_cpu_oldest_event_ts_begin[7]     0       info (trace)
-> > ftrace_cpu_oldest_event_ts_end[0]       282905715000    info (trace)
-> > ftrace_cpu_oldest_event_ts_end[1]       282903723000    info (trace)
-> > ftrace_cpu_oldest_event_ts_end[2]       282903881000    info (trace)
-> > ftrace_cpu_oldest_event_ts_end[3]       282816175000    info (trace)
-> > ftrace_cpu_oldest_event_ts_end[4]       282896619000    info (trace)
-> > ftrace_cpu_oldest_event_ts_end[5]       282884168000    info (trace)
-> > ftrace_cpu_oldest_event_ts_end[6]       282783221000    info (trace)
-> > ftrace_cpu_oldest_event_ts_end[7]       282880081000    info (trace)
-> > ftrace_cpu_overrun_begin[0]     0       info (trace)
-> > ftrace_cpu_overrun_begin[1]     0       info (trace)
-> > ftrace_cpu_overrun_begin[2]     0       info (trace)
-> > ftrace_cpu_overrun_begin[3]     0       info (trace)
-> > ftrace_cpu_overrun_begin[4]     0       info (trace)
-> > ftrace_cpu_overrun_begin[5]     0       info (trace)
-> > ftrace_cpu_overrun_begin[6]     0       info (trace)
-> > ftrace_cpu_overrun_begin[7]     0       info (trace)
-> > ftrace_cpu_overrun_delta[0]help_outline 0       data_loss (trace)
-> > ftrace_cpu_overrun_delta[1]help_outline 0       data_loss (trace)
-> > ftrace_cpu_overrun_delta[2]help_outline 0       data_loss (trace)
-> > ftrace_cpu_overrun_delta[3]help_outline 0       data_loss (trace)
-> > ftrace_cpu_overrun_delta[4]help_outline 0       data_loss (trace)
-> > ftrace_cpu_overrun_delta[5]help_outline 0       data_loss (trace)
-> > ftrace_cpu_overrun_delta[6]help_outline 0       data_loss (trace)
-> > ftrace_cpu_overrun_delta[7]help_outline 0       data_loss (trace)
-> > ftrace_cpu_overrun_end[0]       0       info (trace)
-> > ftrace_cpu_overrun_end[1]       0       info (trace)
-> > ftrace_cpu_overrun_end[2]       0       info (trace)
-> > ftrace_cpu_overrun_end[3]       0       info (trace)
-> > ftrace_cpu_overrun_end[4]       0       info (trace)
-> > ftrace_cpu_overrun_end[5]       0       info (trace)
-> > ftrace_cpu_overrun_end[6]       0       info (trace)
-> > ftrace_cpu_overrun_end[7]       0       info (trace)
-> > ftrace_cpu_read_events_begin[0] 0       info (trace)
-> > ftrace_cpu_read_events_begin[1] 0       info (trace)
-> > ftrace_cpu_read_events_begin[2] 0       info (trace)
-> > ftrace_cpu_read_events_begin[3] 0       info (trace)
-> > ftrace_cpu_read_events_begin[4] 0       info (trace)
-> > ftrace_cpu_read_events_begin[5] 0       info (trace)
-> > ftrace_cpu_read_events_begin[6] 0       info (trace)
-> > ftrace_cpu_read_events_begin[7] 0       info (trace)
-> > ftrace_cpu_read_events_delta[0] 454848  info (trace)
-> > ftrace_cpu_read_events_delta[1] 453484  info (trace)
-> > ftrace_cpu_read_events_delta[2] 386290  info (trace)
-> > ftrace_cpu_read_events_delta[3] 356432  info (trace)
-> > ftrace_cpu_read_events_delta[4] 393337  info (trace)
-> > ftrace_cpu_read_events_delta[5] 325244  info (trace)
-> > ftrace_cpu_read_events_delta[6] 392637  info (trace)
-> > ftrace_cpu_read_events_delta[7] 350623  info (trace)
-> > ftrace_cpu_read_events_end[0]   454848  info (trace)
-> > ftrace_cpu_read_events_end[1]   453484  info (trace)
-> > ftrace_cpu_read_events_end[2]   386290  info (trace)
-> > ftrace_cpu_read_events_end[3]   356432  info (trace)
-> > ftrace_cpu_read_events_end[4]   393337  info (trace)
-> > ftrace_cpu_read_events_end[5]   325244  info (trace)
-> > ftrace_cpu_read_events_end[6]   392637  info (trace)
-> > ftrace_cpu_read_events_end[7]   350623  info (trace)
-> > ftrace_packet_before_tracing_starthelp_outline  0       info (analysis)
-> > ftrace_setup_errorshelp_outline 0       error (trace)
-> > fuchsia_invalid_event   0       error (analysis)
-> > fuchsia_non_numeric_counters    0       error (analysis)
-> > fuchsia_timestamp_overflow      0       error (analysis)
-> > game_intervention_has_parse_errorshelp_outline  0       error (trace)
-> > game_intervention_has_read_errorshelp_outline   0       error (trace)
-> > gpu_counters_invalid_spec       0       error (analysis)
-> > gpu_counters_missing_spec       0       error (analysis)
-> > gpu_render_stage_parser_errors  0       error (analysis)
-> > graphics_frame_event_parser_errors      0       info (analysis)
-> > guess_trace_type_duration_ns    7654    info (analysis)
-> > heap_graph_non_finalized_graph  0       error (trace)
-> > heapprofd_missing_packet        0       error (trace)
-> > heapprofd_non_finalized_profile 0       error (trace)
-> > interned_data_tokenizer_errors  0       info (analysis)
-> > invalid_clock_snapshots 0       error (analysis)
-> > invalid_cpu_times       0       error (analysis)
-> > json_display_time_unithelp_outline      0       info (trace)
-> > json_parser_failure     0       error (trace)
-> > json_tokenizer_failure  0       error (trace)
-> > meminfo_unknown_keys    0       error (analysis)
-> > memory_snapshot_parser_failure  0       error (analysis)
-> > metatrace_overruns      0       error (trace)
-> > mismatched_sched_switch_tids    11101   error (analysis)
-> > misplaced_end_event     0       data_loss (analysis)
-> > mm_unknown_type 0       error (analysis)
-> > ninja_parse_errors      0       error (trace)
-> > packages_list_has_parse_errors  0       error (trace)
-> > packages_list_has_read_errors   0       error (trace)
-> > parse_trace_duration_ns 1780589548      info (analysis)
-> > perf_samples_skipped    0       info (trace)
-> > perf_samples_skipped_dataloss   0       data_loss (trace)
-> > power_rail_unknown_index        0       error (trace)
-> > proc_stat_unknown_counters      0       error (analysis)
-> > process_tracker_errors  0       error (analysis)
-> > rss_stat_negative_size  0       info (analysis)
-> > rss_stat_unknown_keys   0       error (analysis)
-> > rss_stat_unknown_thread_for_mm_id       0       info (analysis)
-> > sched_switch_out_of_order       0       error (analysis)
-> > sched_waking_out_of_order       0       error (analysis)
-> > slice_out_of_order      0       error (analysis)
-> > sorter_push_event_out_of_orderhelp_outline      0       error (trace)
-> > stackprofile_invalid_callstack_id       0       error (trace)
-> > stackprofile_invalid_frame_id   0       error (trace)
-> > stackprofile_invalid_mapping_id 0       error (trace)
-> > stackprofile_invalid_string_id  0       error (trace)
-> > stackprofile_parser_error       0       error (trace)
-> > symbolization_tmp_build_id_not_foundhelp_outline        0       error (analysis)
-> > systrace_parse_failure  19040   error (analysis)
-> > task_state_invalid      0       error (analysis)
-> > thread_time_in_state_out_of_order       0       error (analysis)
-> > thread_time_in_state_unknown_cpu_freq   0       error (analysis)
-> > tokenizer_skipped_packets       0       info (analysis)
-> > traced_buf_abi_violations[0]    0       data_loss (trace)
-> > traced_buf_abi_violations[1]    0       data_loss (trace)
-> > traced_buf_buffer_size[0]       534773760       info (trace)
-> > traced_buf_buffer_size[1]       2097152 info (trace)
-> > traced_buf_bytes_overwritten[0] 0       info (trace)
-> > traced_buf_bytes_overwritten[1] 0       info (trace)
-> > traced_buf_bytes_read[0]        78929920        info (trace)
-> > traced_buf_bytes_read[1]        425984  info (trace)
-> > traced_buf_bytes_written[0]     78962688        info (trace)
-> > traced_buf_bytes_written[1]     425984  info (trace)
-> > traced_buf_chunks_committed_out_of_order[0]     0       info (trace)
-> > traced_buf_chunks_committed_out_of_order[1]     0       info (trace)
-> > traced_buf_chunks_discarded[0]  0       info (trace)
-> > traced_buf_chunks_discarded[1]  0       info (trace)
-> > traced_buf_chunks_overwritten[0]        0       info (trace)
-> > traced_buf_chunks_overwritten[1]        0       info (trace)
-> > traced_buf_chunks_read[0]       2428    info (trace)
-> > traced_buf_chunks_read[1]       13      info (trace)
-> > traced_buf_chunks_rewritten[0]  6       info (trace)
-> > traced_buf_chunks_rewritten[1]  0       info (trace)
-> > traced_buf_chunks_written[0]    2429    info (trace)
-> > traced_buf_chunks_written[1]    13      info (trace)
-> > traced_buf_padding_bytes_cleared[0]     0       info (trace)
-> > traced_buf_padding_bytes_cleared[1]     0       info (trace)
-> > traced_buf_padding_bytes_written[0]     0       info (trace)
-> > traced_buf_padding_bytes_written[1]     0       info (trace)
-> > traced_buf_patches_failed[0]    0       data_loss (trace)
-> > traced_buf_patches_failed[1]    0       data_loss (trace)
-> > traced_buf_patches_succeeded[0] 5633    info (trace)
-> > traced_buf_patches_succeeded[1] 8       info (trace)
-> > traced_buf_readaheads_failed[0] 115     info (trace)
-> > traced_buf_readaheads_failed[1] 18      info (trace)
-> > traced_buf_readaheads_succeeded[0]      2257    info (trace)
-> > traced_buf_readaheads_succeeded[1]      6       info (trace)
-> > traced_buf_trace_writer_packet_loss[0]  0       data_loss (trace)
-> > traced_buf_trace_writer_packet_loss[1]  0       data_loss (trace)
-> > traced_buf_write_wrap_count[0]  0       info (trace)
-> > traced_buf_write_wrap_count[1]  0       info (trace)
-> > traced_chunks_discarded 0       info (trace)
-> > traced_data_sources_registered  16      info (trace)
-> > traced_data_sources_seen        6       info (trace)
-> > traced_final_flush_failed       0       data_loss (trace)
-> > traced_final_flush_succeeded    0       info (trace)
-> > traced_flushes_failed   0       data_loss (trace)
-> > traced_flushes_requested        0       info (trace)
-> > traced_flushes_succeeded        0       info (trace)
-> > traced_patches_discarded        0       info (trace)
-> > traced_producers_connected      3       info (trace)
-> > traced_producers_seen   3       info (trace)
-> > traced_total_buffers    2       info (trace)
-> > traced_tracing_sessions 1       info (trace)
-> > track_event_dropped_packets_outside_of_range_of_interesthelp_outline    0       info (analysis)
-> > track_event_parser_errors       0       info (analysis)
-> > track_event_thread_invalid_endhelp_outline      0       error (trace)
-> > track_event_tokenizer_errors    0       info (analysis)
-> > truncated_sys_write_durationhelp_outline        0       data_loss (analysis)
-> > unknown_extension_fieldshelp_outline    0       error (trace)
-> > vmstat_unknown_keys     0       error (analysis)
-> > vulkan_allocations_invalid_string_id    0       error (trace)
-> >
-> > > --
-> > > Regards
-> > > Yafang
-> >
-> >
-> 
-> 
-> -- 
-> Regards
-> Yafang
+The insn BPF_EXT means the actual 'code' is in 'off' (16 bits), right?
+I think this could work.
+
+But we already have precedence to use off/imm fields for insn encoding,
+e.g., newer atomic insns like XCHG using imm for the 'code' and we use
+the BPF_ATOMIC to indicate a 'class' of atomic operations.
+In this specific case, we use MOD/DIV as the 'code' which implies
+a class of mod/div variants and the 'off' is the way to differentiate.
+
+There are pro's and con's for each approach for the above EXT vs.
+my proposal. But maybe we could reserve EXT for future use?
