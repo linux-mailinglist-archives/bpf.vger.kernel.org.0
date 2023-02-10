@@ -2,225 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620636928A5
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 21:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D716928E9
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 22:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbjBJUso (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 15:48:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
+        id S232950AbjBJVHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 16:07:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233044AbjBJUsm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 15:48:42 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCE47E8EF;
-        Fri, 10 Feb 2023 12:48:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 173AE61E9F;
-        Fri, 10 Feb 2023 20:48:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 210F6C433D2;
-        Fri, 10 Feb 2023 20:48:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676062119;
-        bh=+fgkUm0vl9CjZ8x/GwVY8bF0uT0e0hNkbSJWaJfo0eU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GSPSmtwGisUu3/b56ypj0AeAhwwjNqcX/mvBTM80UEQXkXTPwdQ0ESyXQyHh5RmMF
-         SzR8MYbdNLAtYkLkxKqXSPZgdBHpWtPpUelhOmXT6+V9CvErAmQtAH93n3jNX5Mze6
-         vVy70SgEo7zIdurlsPZIh6XlEnYPcJ2RByDnnEV0WuiQlrsoG4i64rZ14Ganm0XS8W
-         /fDcxjWbBOEIOD8HSmlFAXxMBiYmMBMNWnDIFOgOdAAblTdcXSMI6eCfxoD+B+tGz1
-         KPMyntcoBw6yg5L34yBbXD/BpeL2e75hO0GfPUBDFrF2zNJBtnNUSvUf9eY8LDk7GE
-         0mC6ahfmeR/3Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 742C940025; Fri, 10 Feb 2023 17:48:36 -0300 (-03)
-Date:   Fri, 10 Feb 2023 17:48:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        linux-kernel@vger.kernel.org, Neal Gompa <neal@gompa.dev>,
-        Eric Curtin <ecurtin@redhat.com>, bpf@vger.kernel.org,
-        rust-for-linux@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>
-Subject: [PATCH 1/1] pahole/Rust: Check that we're adding DW_TAG_member
- sorted by byte offset
-Message-ID: <Y+atpJV5rqo08dQJ@kernel.org>
-References: <20230111152050.559334-1-yakoyoku@gmail.com>
- <aaf97a61-73c9-ff90-422d-9f3a79b0acd6@iogearbox.net>
- <CANiq72m+8D8OGtkyEjmyqCynp48DCKEw4-zLZ4pm6-OmFe4p1w@mail.gmail.com>
- <bec74b32-e35f-9489-4748-cbb241b31be7@iogearbox.net>
- <CANiq72nLrUTcQ+Gx6FTBtOR7+Ad2cNAC-0dEE7mUdk7nQ8T6ag@mail.gmail.com>
+        with ESMTP id S232764AbjBJVHH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 16:07:07 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5047B171;
+        Fri, 10 Feb 2023 13:07:05 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id qw12so19069950ejc.2;
+        Fri, 10 Feb 2023 13:07:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5c2ACZuFFTh4lLYq1CMAdfAXqUF+vpuoKUlv20dnV8Y=;
+        b=V1/zcRhANAMqVMDBwCttFnH86sIZHQU2VTtOS9zQl1ci/BBDfW/w8lOPvgAetemYtc
+         wnaHiwTjuVOHoFDpbytc536rEPNeSaUGcCzEuDLCtavaudwYe+Kx8jmIHlUhQIsXV5Vo
+         mBaP5NSLIlVQbZEJ6eWWQ/+hdlrkjdOlK/2RW0bXK5xXgUAgIiPEEThCgQopMF1nOLPM
+         QpHdT9P9lwZ/WF1tvzctLVF9LlNZjQXiOXm6dsMz5CF99oCdn0kWsoEEpW0hgF1zTlko
+         EvawMp3UyKX8hOYRcPJC4soapdMXyPKa0ITzRx8mFQRud7gI1hTiKo7pJhWCWxW+ljzA
+         3Www==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5c2ACZuFFTh4lLYq1CMAdfAXqUF+vpuoKUlv20dnV8Y=;
+        b=kOffC0ZWvpdOQDYloaox2HTGWznRYsLTelW7/R9ejwKnbr0NcXTKvloqTCQfGYy8ST
+         1bk7DvHXlya90wA0lH8OQ1GaOnYzzFdINbk2JfLKuMbUTPrZcuDdHxX63h20KY7P6u/8
+         PxezTsbr1oJ6dpGEaMXUnUdFo5f6hU5Ue2A7Cm4glHhDcMCgKmfxChhyvC7EwtSNheim
+         RZ/iuzh8GFS1USuqjwHvaihjkV2PSKzTSrAPUnt8vjgmvzBZHbn+TNXt68z93BFpZO7D
+         rX2omwVJRGwqHV7T8R9aWBl+a+wcnSW94KTq82HY6V/0cF3zUrtnxOfdOzhxybrtL58o
+         jG+g==
+X-Gm-Message-State: AO0yUKXSWdB3TwcN9JX+KVSLClIg1XbBR0va7mWfx8YIf4cxxNo3VwGU
+        0DmtPSsoEpJYAKxvTiCIu8Ya+lQyRGbWEevCF/0=
+X-Google-Smtp-Source: AK7set902w2IBDigxPYSpnFcScVLX36wjNm3vw0Rz6XjCFJR2FTtGF1eAXym/q5Y2MVJMty7rhpe8TwnHsb6BupwgRk=
+X-Received: by 2002:a17:906:4ccf:b0:883:ba3b:eb94 with SMTP id
+ q15-20020a1709064ccf00b00883ba3beb94mr1525913ejt.3.1676063223676; Fri, 10 Feb
+ 2023 13:07:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72nLrUTcQ+Gx6FTBtOR7+Ad2cNAC-0dEE7mUdk7nQ8T6ag@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com> <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com> <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com> <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+ <20230210163258.phekigglpquitq33@apollo>
+In-Reply-To: <20230210163258.phekigglpquitq33@apollo>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 10 Feb 2023 13:06:52 -0800
+Message-ID: <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Yonghong Song <yhs@meta.com>, Hou Tao <houtao@huaweicloud.com>,
+        bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Miguel, after a long winter, I'm trying to get Rust properly
-supported on pahole, please check that this specific use case is working
-for you as well.
+On Fri, Feb 10, 2023 at 8:33 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Wed, Jan 04, 2023 at 07:26:12PM CET, Alexei Starovoitov wrote:
+> > On Tue, Jan 3, 2023 at 11:14 PM Yonghong Song <yhs@meta.com> wrote:
+> > >
+> > >
+> > >
+> > > On 1/3/23 10:30 PM, Hou Tao wrote:
+> > > > Hi,
+> > > >
+> > > > On 1/4/2023 2:10 PM, Yonghong Song wrote:
+> > > >>
+> > > >>
+> > > >> On 1/3/23 5:47 AM, Hou Tao wrote:
+> > > >>> Hi,
+> > > >>>
+> > > >>> On 1/2/2023 2:48 AM, Yonghong Song wrote:
+> > > >>>>
+> > > >>>>
+> > > >>>> On 12/31/22 5:26 PM, Alexei Starovoitov wrote:
+> > > >>>>> On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
+> > > >>>>>> From: Hou Tao <houtao1@huawei.com>
+> > > >>>>>>
+> > > >>>>>> Hi,
+> > > >>>>>>
+> > > >>>>>> The patchset tries to fix the problems found when checking how htab map
+> > > >>>>>> handles element reuse in bpf memory allocator. The immediate reuse of
+> > > >>>>>> freed elements may lead to two problems in htab map:
+> > > >>>>>>
+> > > >>>>>> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
+> > > >>>>>>        htab map value and it may corrupt lookup procedure with BFP_F_LOCK
+> > > >>>>>>        flag which acquires bpf-spin-lock during value copying. The
+> > > >>>>>>        corruption of bpf-spin-lock may result in hard lock-up.
+> > > >>>>>> (2) lookup procedure may get incorrect map value if the found element is
+> > > >>>>>>        freed and then reused.
+> > > >>>>>>
+> > > >>>>>> Because the type of htab map elements are the same, so problem #1 can be
+> > > >>>>>> fixed by supporting ctor in bpf memory allocator. The ctor initializes
+> > > >>>>>> these special fields in map element only when the map element is newly
+> > > >>>>>> allocated. If it is just a reused element, there will be no
+> > > >>>>>> reinitialization.
+> > > >>>>>
+> > > >>>>> Instead of adding the overhead of ctor callback let's just
+> > > >>>>> add __GFP_ZERO to flags in __alloc().
+> > > >>>>> That will address the issue 1 and will make bpf_mem_alloc behave just
+> > > >>>>> like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
+> > > >>>>> will behave the same way.
+> > > >>>>
+> > > >>>> Patch https://lore.kernel.org/all/20220809213033.24147-3-memxor@gmail.com/
+> > > >>>> tried to address a similar issue for lru hash table.
+> > > >>>> Maybe we need to do similar things after bpf_mem_cache_alloc() for
+> > > >>>> hash table?
+> > > >>> IMO ctor or __GFP_ZERO will fix the issue. Did I miss something here ?
+> > > >>
+> > > >> The following is my understanding:
+> > > >> in function alloc_htab_elem() (hashtab.c), we have
+> > > >>
+> > > >>                  if (is_map_full(htab))
+> > > >>                          if (!old_elem)
+> > > >>                                  /* when map is full and update() is replacing
+> > > >>                                   * old element, it's ok to allocate, since
+> > > >>                                   * old element will be freed immediately.
+> > > >>                                   * Otherwise return an error
+> > > >>                                   */
+> > > >>                                  return ERR_PTR(-E2BIG);
+> > > >>                  inc_elem_count(htab);
+> > > >>                  l_new = bpf_mem_cache_alloc(&htab->ma);
+> > > >>                  if (!l_new) {
+> > > >>                          l_new = ERR_PTR(-ENOMEM);
+> > > >>                          goto dec_count;
+> > > >>                  }
+> > > >>                  check_and_init_map_value(&htab->map,
+> > > >>                                           l_new->key + round_up(key_size, 8));
+> > > >>
+> > > >> In the above check_and_init_map_value() intends to do initializing
+> > > >> for an element from bpf_mem_cache_alloc (could be reused from the free list).
+> > > >>
+> > > >> The check_and_init_map_value() looks like below (in include/linux/bpf.h)
+> > > >>
+> > > >> static inline void bpf_obj_init(const struct btf_field_offs *foffs, void *obj)
+> > > >> {
+> > > >>          int i;
+> > > >>
+> > > >>          if (!foffs)
+> > > >>                  return;
+> > > >>          for (i = 0; i < foffs->cnt; i++)
+> > > >>                  memset(obj + foffs->field_off[i], 0, foffs->field_sz[i]);
+> > > >> }
+> > > >>
+> > > >> static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
+> > > >> {
+> > > >>          bpf_obj_init(map->field_offs, dst);
+> > > >> }
+> > > >>
+> > > >> IIUC, bpf_obj_init() will bzero those fields like spin_lock, timer,
+> > > >> list_head, list_node, etc.
+> > > >>
+> > > >> This is the problem for above problem #1.
+> > > >> Maybe I missed something?
+> > > > Yes. It is the problem patch #1 tries to fix exactly. Patch #1 tries to fix the
+> > > > problem by only calling check_and_init_map_value() once for the newly-allocated
+> > > > element, so if a freed element is reused, its special fields will not be zeroed
+> > > > again. Is there any other cases which are not covered by the solution or any
+> > > > other similar problems in hash-tab ?
+> > >
+> > > No, I checked all cases of check_and_init_map_value() and didn't find
+> > > any other instances.
+> >
+> > check_and_init_map_value() is called in two other cases:
+> > lookup_and_delete[_batch].
+> > There the zeroing of the fields is necessary because the 'value'
+> > is a temp buffer that is going to be copied to user space.
+> > I think the way forward is to add GFP_ZERO to mem_alloc
+> > (to make it equivalent to prealloc), remove one case
+> > of check_and_init_map_value from hashmap, add short comments
+> > to two other cases and add a big comment to check_and_init_map_value()
+> > that should say that 'dst' must be a temp buffer and should not
+> > point to memory that could be used in parallel by a bpf prog.
+> > It feels like we've dealt with this issue a couple times already
+> > and keep repeating this mistake, so the more comments the better.
+>
+> Hou, are you plannning to resubmit this change? I also hit this while testing my
+> changes on bpf-next.
 
-I'll go thru the others to see if they are easy (or at least restricted
-to Rust CUs) as this one.
-
-Thanks,
-
-- Arnaldo
-
----
-
-Rust may reorder struct fields and pahole assumes them to be in order,
-as is the case for languages like C and C++, etc. So after having the
-class member bit and byte offsets sorted out, sort Rust CU types by
-offset.
-
-Using: https://github.com/Rust-for-Linux/pahole-rust-cases/blob/main/inverted.o
-
-Before:
-
-  $ pahole --show_private_classes ../pahole-rust-cases/inverted.o
-  struct S {
-
-  	/* XXX 4 bytes hole, try to pack */
-
-  	bool                       a __attribute__((__aligned__(1))); /*     4     1 */
-
-  	/* XXX 65531 bytes hole, try to pack */
-  	/* Bitfield combined with previous fields */
-
-  	u32                        b __attribute__((__aligned__(4))); /*     0     4 */
-
-  	/* size: 8, cachelines: 1, members: 2 */
-  	/* sum members: 5, holes: 2, sum holes: 65535 */
-  	/* padding: 4 */
-  	/* forced alignments: 2, forced holes: 2, sum forced holes: 65535 */
-  	/* last cacheline: 8 bytes */
-
-  	/* BRAIN FART ALERT! 8 bytes != 5 (member bytes) + 0 (member bits) + 65535 (byte holes) + 0 (bit holes), diff = -524288 bits */
-  } __attribute__((__aligned__(4)));
-  $
-
-After:
-
-  $ readelf -wi ../pahole-rust-cases/inverted.o | grep DW_TAG_compile_unit -A9
-   <0><b>: Abbrev Number: 1 (DW_TAG_compile_unit)
-      <c>   DW_AT_producer    : (indirect string, offset: 0x0): clang LLVM (rustc version 1.60.0 (7737e0b5c 2022-04-04))
-      <10>   DW_AT_language    : 28	(Rust)
-      <12>   DW_AT_name        : (indirect string, offset: 0x39): inverted.rs/@/inverted.c4dda47b-cgu.0
-      <16>   DW_AT_stmt_list   : 0x0
-      <1a>   DW_AT_comp_dir    : (indirect string, offset: 0x5f): /root/pahole-rust
-      <1e>   DW_AT_GNU_pubnames: 1
-      <1e>   DW_AT_low_pc      : 0x0
-      <26>   DW_AT_high_pc     : 0x62
-   <1><2a>: Abbrev Number: 2 (DW_TAG_namespace)
-  $ pahole --show_private_classes ../pahole-rust-cases/inverted.o
-  struct S {
-  	u32                        b __attribute__((__aligned__(4))); /*     0     4 */
-  	bool                       a __attribute__((__aligned__(1))); /*     4     1 */
-
-  	/* size: 8, cachelines: 1, members: 2 */
-  	/* padding: 3 */
-  	/* forced alignments: 2 */
-  	/* last cacheline: 8 bytes */
-  } __attribute__((__aligned__(4)));
-  $
-
-  $ cp ../pahole-rust-cases/inverted.o .
-  $ pahole --btf_encode inverted.o
-  $ readelf -SW inverted.o  | grep -i BTF
-    [26] .BTF              PROGBITS        0000000000000000 000922 00006c 00      0   0  1
-  $
-  $ pahole -F btf inverted.o
-  struct S {
-  	u32                        b;                    /*     0     4 */
-  	bool                       a;                    /*     4     1 */
-
-  	/* size: 8, cachelines: 1, members: 2 */
-  	/* padding: 3 */
-  	/* last cacheline: 8 bytes */
-  };
-  $
-
-Reported-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Eric Curtin <ecurtin@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Cc: Neal Gompa <neal@gompa.dev>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- dwarf_loader.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
-
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index 253c5efaf3b55a93..a77598dc3affca88 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -2835,9 +2835,51 @@ static int class_member__cache_byte_size(struct tag *tag, struct cu *cu,
- 	return 0;
- }
- 
-+static bool cu__language_reorders_offsets(const struct cu *cu)
-+{
-+	return cu->language == DW_LANG_Rust;
-+}
-+
-+static int type__sort_by_offset(struct tag *tag, struct cu *cu, void *cookie __maybe_unused)
-+{
-+	if (!tag__is_type(tag))
-+		return 0;
-+
-+	struct type *type = tag__type(tag);
-+	struct class_member *current_member;
-+
-+	// There may be more than DW_TAG_members entries in the type tags, so do a simple
-+	// bubble sort for now, so that the other non tags stay where they are.
-+restart:
-+	type__for_each_data_member(type, current_member) {
-+		if (list_is_last(&current_member->tag.node, &type->namespace.tags))
-+		       break;
-+
-+		struct class_member *next_member = list_entry(current_member->tag.node.next, typeof(*current_member), tag.node);
-+
-+		if (current_member->byte_offset < next_member->byte_offset)
-+			continue;
-+
-+		list_del(&current_member->tag.node);
-+		list_add(&current_member->tag.node, &next_member->tag.node);
-+		goto restart;
-+	}
-+
-+	return 0;
-+}
-+
-+static void cu__sort_types_by_offset(struct cu *cu, struct conf_load *conf)
-+{
-+	cu__for_all_tags(cu, type__sort_by_offset, conf);
-+}
-+
- static int cu__finalize(struct cu *cu, struct conf_load *conf, void *thr_data)
- {
- 	cu__for_all_tags(cu, class_member__cache_byte_size, conf);
-+
-+	if (cu__language_reorders_offsets(cu))
-+		cu__sort_types_by_offset(cu, conf);
-+
- 	if (conf && conf->steal) {
- 		return conf->steal(cu, conf, thr_data);
- 	}
--- 
-2.39.1
-
+Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
+The former will take a long time to settle.
+The latter is trivial.
+To unblock yourself just add GFP_ZERO in an extra patch?
