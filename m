@@ -2,85 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F26D6924AE
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 18:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBC96924FF
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 19:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbjBJRjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 12:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
+        id S232717AbjBJSDz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 13:03:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232588AbjBJRjf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 12:39:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB257A7F5
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 09:38:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1676050731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FBaTiXgA5iu27pt+tBu2HMCwel4WBbOncMhPaoLql4w=;
-        b=XRg/NoCf3zSLFnT68nlu/ZtrIjrfFQobyu7ay+XxGKZN81vPYmcdQWn4LtkYbRN6c6ykVA
-        rvWnD6Iqi5o9ei75+pOJ4rnm4CMg37ZNhJdlsUOXEDjLYW8CUpfM9f8n03+xfptBbVWatw
-        YyPcix9K1eCh0krLFh+XrgAttJsG9QA=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-556-r2Q_PHT_MOWzifhttZ7wEg-1; Fri, 10 Feb 2023 12:38:49 -0500
-X-MC-Unique: r2Q_PHT_MOWzifhttZ7wEg-1
-Received: by mail-ej1-f69.google.com with SMTP id ti11-20020a170907c20b00b00886244203fcso3947712ejc.2
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 09:38:49 -0800 (PST)
+        with ESMTP id S232545AbjBJSDy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 13:03:54 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6405268AD5
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 10:03:50 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id p26so17972883ejx.13
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 10:03:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jmwfam9DJbnwiiG/ygCnmu0PqCcKObX3h3u43lZA4Jw=;
+        b=KWHw9iTjhKNfnXKH8fkLnkmnD3pK0PMZmaIecC6cHYXAPah2UAJ/mojCSFqTp5A23G
+         Nd45ChnmnZ7OpvQ7rfhx6HzhxRhyVKTacOYNXvsqs+dtVclZSN3tSmh59ddrv/r2RgAx
+         JI7/7kzTIptx14Z37nQMlk9jakP7ZJtrflH9XOLZV6A4h8UxeLOeu5A/WEHV1tQ29Ysd
+         An0MBLIGl/K02RTEw/6vsVMVx6B+bgK4DYKV7ZDyqOzTGTJNbkkX+RUZ0KIRilwdk+xg
+         WZlGxJzSPPezLagwgLhwOE1EUs93J6MVUCmCGxL9fC0HVDSiLO2SU1OKkhm9gm5ztqOE
+         lZWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FBaTiXgA5iu27pt+tBu2HMCwel4WBbOncMhPaoLql4w=;
-        b=YY29Y1Ftz9SVxPA5d8ZpoIpNSrvTSac5YbokLJdWhM1daNLkd9ADJkb7wu2g4ZQYJK
-         u4BeaVTTsQkSEKYTPPoE1iJRjFaE2MIoFTBvXtWl2CRWWxwJWsK0TFE1iS/2AIJ5umIq
-         n8l0ufhX+Tl5fyMo4/w0Dy3Q5M3PUK5ceGCFCTJbRNC2XNRFNZjZhip3E8EfQfKS++1j
-         E44Yfj9+KR3VoHKiUiTcaWUTp+DQoVjEHYHwnLvc/k/DGplKVzbVMl2mRRxv6A4FrN9S
-         sEEyIsCZIZJPbPdICmrInCZamSYFhNczBVIG8sFGy6evk424n1p78xCYS91VDG23H0rl
-         ARAw==
-X-Gm-Message-State: AO0yUKUfCSP2PDROJjC6LWEb6ziQgdGnd/dIc6RJO2hFf9WKevZ9U+gZ
-        PST9PPL3Ka9tgjv3KrssCORBoAnwdrxS3LtV8gguhCRdWu3Udmc7fUx1+AR6HHxhPq2m2JWSQ8y
-        SgDZZgmgSWuzn
-X-Received: by 2002:a50:8aca:0:b0:4aa:a65c:69a6 with SMTP id k10-20020a508aca000000b004aaa65c69a6mr12350293edk.15.1676050728258;
-        Fri, 10 Feb 2023 09:38:48 -0800 (PST)
-X-Google-Smtp-Source: AK7set9bEH/8h3yh6LKh4ctPhmTHDSNi6mYoWvZ2Unm9hPDdyGeZywj8mdzzSzg4h/gUy1JNJcbudA==
-X-Received: by 2002:a50:8aca:0:b0:4aa:a65c:69a6 with SMTP id k10-20020a508aca000000b004aaa65c69a6mr12350267edk.15.1676050727949;
-        Fri, 10 Feb 2023 09:38:47 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id s6-20020a50d486000000b004aab36ad060sm2522011edi.92.2023.02.10.09.38.47
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jmwfam9DJbnwiiG/ygCnmu0PqCcKObX3h3u43lZA4Jw=;
+        b=IAIW9VzVahR9r2z5EqCpdF3L0bvO9tEWgik1/dyqmtqLOCJT2csfAzB2LsJvPV6WR1
+         pKElD22psl/e4HpvWLWgfDmuHOx8RIBAU8tVjuyiS8N2LZIFFCiDDyUg9fjk9walk0PB
+         XM6ziMH+1nW1/zZCj1+bsrqaTn1wqdVx6dt/S4xXce0WkbSyD+U+YLE4mmUn7eGcHs0O
+         4KTrGPjwocNyQwPh2rEWB9QiiZCgEMoiCDzdi4oXhp6MB4080GdNSs5BCooViuhevfvf
+         ReYBU6uAR9LeovUS9KVR/2opGr+H9X6Fg3bwm8EZa5wdMyd2siO1GmlR2ZxB/pnBFNrd
+         Tdmw==
+X-Gm-Message-State: AO0yUKVR+COIdluRaHuNRYSL9dWDdGOEjcS/TpDnZL0kDfsdJe+RuWRD
+        f8BIp5T/fkcoyX2jNidNulXKfsEU7PG/7Q==
+X-Google-Smtp-Source: AK7set8jq9gFmWHDoP0Iwex1Jd6KNslMY6AHevDJJWS7EPBNEUMf8nXTFVwCX6UxBdpy2tlrVNEcBw==
+X-Received: by 2002:a17:906:dc9:b0:888:33a:e359 with SMTP id p9-20020a1709060dc900b00888033ae359mr16330542eji.38.1676052228386;
+        Fri, 10 Feb 2023 10:03:48 -0800 (PST)
+Received: from localhost ([2001:620:618:580:2:80b3:0:2d0])
+        by smtp.gmail.com with ESMTPSA id r1-20020a17090638c100b0088091cca1besm2677424ejd.134.2023.02.10.10.03.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 09:38:47 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C88DB973E6F; Fri, 10 Feb 2023 18:38:45 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Fri, 10 Feb 2023 10:03:47 -0800 (PST)
+Date:   Fri, 10 Feb 2023 19:03:46 +0100
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf] bpf, test_run: fix &xdp_frame misplacement for
- LIVE_FRAMES
-In-Reply-To: <8d3a9feb-9ee5-4a49-330a-9a475e459228@intel.com>
-References: <20230209172827.874728-1-alexandr.lobakin@intel.com>
- <87v8ka7gh5.fsf@toke.dk> <8d3a9feb-9ee5-4a49-330a-9a475e459228@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 10 Feb 2023 18:38:45 +0100
-Message-ID: <87lel5774q.fsf@toke.dk>
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 08/11] bpf: Special verifier handling for
+ bpf_rbtree_{remove, first}
+Message-ID: <20230210180346.ae43pl7i6zwidno7@apollo>
+References: <20230209174144.3280955-1-davemarchevsky@fb.com>
+ <20230209174144.3280955-9-davemarchevsky@fb.com>
+ <20230210135541.xtwn6wzng7mspgrm@apollo>
+ <20230210172137.jwqynnjtmjcv4dqe@MacBook-Pro-6.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230210172137.jwqynnjtmjcv4dqe@MacBook-Pro-6.local>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,101 +77,136 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexander Lobakin <alexandr.lobakin@intel.com> writes:
-
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Date: Thu, 09 Feb 2023 21:04:38 +0100
+On Fri, Feb 10, 2023 at 06:21:37PM CET, Alexei Starovoitov wrote:
+> On Fri, Feb 10, 2023 at 02:55:41PM +0100, Kumar Kartikeya Dwivedi wrote:
+> > On Thu, Feb 09, 2023 at 06:41:41PM CET, Dave Marchevsky wrote:
+> > > Newly-added bpf_rbtree_{remove,first} kfuncs have some special properties
+> > > that require handling in the verifier:
+> > >
+> > >   * both bpf_rbtree_remove and bpf_rbtree_first return the type containing
+> > >     the bpf_rb_node field, with the offset set to that field's offset,
+> > >     instead of a struct bpf_rb_node *
+> > >     * mark_reg_graph_node helper added in previous patch generalizes
+> > >       this logic, use it
+> > >
+> > >   * bpf_rbtree_remove's node input is a node that's been inserted
+> > >     in the tree - a non-owning reference.
+> > >
+> > >   * bpf_rbtree_remove must invalidate non-owning references in order to
+> > >     avoid aliasing issue. Use previously-added
+> > >     invalidate_non_owning_refs helper to mark this function as a
+> > >     non-owning ref invalidation point.
+> > >
+> > >   * Unlike other functions, which convert one of their input arg regs to
+> > >     non-owning reference, bpf_rbtree_first takes no arguments and just
+> > >     returns a non-owning reference (possibly null)
+> > >     * For now verifier logic for this is special-cased instead of
+> > >       adding new kfunc flag.
+> > >
+> > > This patch, along with the previous one, complete special verifier
+> > > handling for all rbtree API functions added in this series.
+> > >
+> >
+> > I think there are two issues with the current approach. The fundamental
+> > assumption with non-owning references is that it is part of the collection. So
+> > bpf_rbtree_{add,first}, bpf_list_push_{front,back} will create them, as no node
+> > is being removed from collection. Marking bpf_rbtree_remove (and in the future
+> > bpf_list_del) as invalidation points is also right, since once a node has been
+> > removed it is going to be unclear whether existing non-owning references have
+> > the same value, and thus the property of 'part of the collection' will be
+> > broken.
 >
->> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
->>=20
->>> &xdp_buff and &xdp_frame are bound in a way that
->>>
->>> xdp_buff->data_hard_start =3D=3D xdp_frame
->>>
->>> It's always the case and e.g. xdp_convert_buff_to_frame() relies on
->>> this.
->>> IOW, the following:
->>>
->>> 	for (u32 i =3D 0; i < 0xdead; i++) {
->>> 		xdpf =3D xdp_convert_buff_to_frame(&xdp);
->>> 		xdp_convert_frame_to_buff(xdpf, &xdp);
->>> 	}
->>>
->>> shouldn't ever modify @xdpf's contents or the pointer itself.
->>> However, "live packet" code wrongly treats &xdp_frame as part of its
->>> context placed *before* the data_hard_start. With such flow,
->>> data_hard_start is sizeof(*xdpf) off to the right and no longer points
->>> to the XDP frame.
->>=20
->> Oh, nice find!
->>=20
->>> Instead of replacing `sizeof(ctx)` with `offsetof(ctx, xdpf)` in several
->>> places and praying that there are no more miscalcs left somewhere in the
->>> code, unionize ::frm with ::data in a flex array, so that both starts
->>> pointing to the actual data_hard_start and the XDP frame actually starts
->>> being a part of it, i.e. a part of the headroom, not the context.
->>> A nice side effect is that the maximum frame size for this mode gets
->>> increased by 40 bytes, as xdp_buff::frame_sz includes everything from
->>> data_hard_start (-> includes xdpf already) to the end of XDP/skb shared
->>> info.
->>=20
->> I like the union approach, however...
->>=20
->>> (was found while testing XDP traffic generator on ice, which calls
->>>  xdp_convert_frame_to_buff() for each XDP frame)
->>>
->>> Fixes: b530e9e1063e ("bpf: Add "live packet" mode for XDP in BPF_PROG_R=
-UN")
->>> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
->>> ---
->>>  net/bpf/test_run.c | 13 ++++++++-----
->>>  1 file changed, 8 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->>> index 2723623429ac..c3cce7a8d47d 100644
->>> --- a/net/bpf/test_run.c
->>> +++ b/net/bpf/test_run.c
->>> @@ -97,8 +97,11 @@ static bool bpf_test_timer_continue(struct bpf_test_=
-timer *t, int iterations,
->>>  struct xdp_page_head {
->>>  	struct xdp_buff orig_ctx;
->>>  	struct xdp_buff ctx;
->>> -	struct xdp_frame frm;
->>> -	u8 data[];
->>> +	union {
->>> +		/* ::data_hard_start starts here */
->>> +		DECLARE_FLEX_ARRAY(struct xdp_frame, frm);
->>> +		DECLARE_FLEX_ARRAY(u8, data);
->>> +	};
->>=20
->> ...why does the xdp_frame need to be a flex array? Shouldn't this just b=
-e:
->>=20
->>  +	union {
->>  +		/* ::data_hard_start starts here */
->>  +		struct xdp_frame frm;
->>  +		DECLARE_FLEX_ARRAY(u8, data);
->>  +	};
->>=20
->> which would also get rid of the other three hunks of the patch?
+> correct, but the patch set does invalidate after bpf_rbtree_remove(),
+> so it's not an issue.
 >
-> That was my first thought. However, as I mentioned in between the lines
-> in the commitmsg, this doesn't decrease the sizeof(ctx), so we'd have to
-> replace those sizeofs with offsetof() in a couple places (-> the patch
-> length would be the same). So I went this way to declare that frm
-> doesn't belong to ctx but to the headroom.
+> > The first issue relates to usability. If I have non-owning references to nodes
+> > inserted into both a list and an rbtree, bpf_rbtree_remove should only
+> > invalidate the ones that are part of the particular rbtree. It should have no
+> > effect on others. Likewise for the bpf_list_del operation in the future.
+> > Therefore, we need to track the collection identity associated with each
+> > non-owning reference, then only invalidate non-owning references associated with
+> > the same collection.
+> >
+> > The case of bpf_spin_unlock is different, which should invalidate all non-owning
+> > references.
+> >
+> > The second issue is more serious. By not tracking the collection identity, we
+> > will currently allow a non-owning reference for an object inserted into a list
+> > to be passed to bpf_rbtree_remove, because the verifier cannot discern between
+> > 'inserted into rbtree' vs 'inserted into list'. For it, both are currently
+> > equivalent in the verifier state. An object is allowed to have both
+> > bpf_list_node and bpf_rb_node, but it can only be part of one collection at a
+> > time (because of no shared ownership).
+> >
+> > 	struct obj {
+> > 		bpf_list_node ln;
+> > 		bpf_rb_node rn;
+> > 	};
+> >
+> > 	bpf_list_push_front(head, &obj->ln); // node is non-own-ref
+> > 	bpf_rbtree_remove(&obj->rn); // should not work, but does
+>
+> Also correct, but inserting the same single owner node into rbtree and link list
+> is not supported. Only 'shared ownership' node can be inserted into
+> two collections.
 
-Ah, right, I see! Okay, let's keep both as flex arrays, then. One other
-nit, though: after your patch, we'll end up with this:
+What is supported is having an object be part of a list and an rbtree one at a
+time, which is what I'm talking about here. Shared ownership has nothing to do
+with this.
 
-	frm =3D head->frm;
-	data =3D &head->data;
+> The check to disallow bpf_list_node and bpf_rb_node in the same obj
+> can be a follow up patch to close this hole.
+>
 
-both of those assignments refer to flex arrays, which seems a bit
-inconsistent. The second one works because it's assigning to a void
-pointer, so the compiler doesn't complain about the type mismatch; but
-it should work with just 'data =3D head->data' as well, so can we update
-that as well for consistency?
+Fine, that would also 'fix' this problem, where a non-owning reference part of a
+list could be passed to bpf_rbtree_remove etc. If there can only be a list node
+or an rbtree node in an object, such a case cannot be constructed. But I think
+it's an awkward limitation.
 
--Toke
+> > So some notion of a collection identity needs to be constructed, the amount of
+> > data which needs to be remembered in each non-owning reference's register state
+> > depends on our requirements.
+> >
+> > The first sanity check is that bpf_rbtree_remove only removes something in an
+> > rbtree, so probably an enum member indicating whether collection is a list or
+> > rbtree. To ensure proper scoped invalidation, we will unfortunately need more
+> > than just the reg->id of the reg holding the graph root, since map values of
+> > different maps may have same id (0). Hence, we need id and ptr similar to the
+> > active lock case for proper matching. Even this won't be enough, as there can be
+> > multiple list or rbtree roots in a particular memory region, therefore the
+> > offset also needs to be part of the collection identity.
+> >
+> > So it seems it will amount to:
+> >
+> > 	struct bpf_collection_id {
+> > 		enum bpf_collection_type type;
+> > 		void *ptr;
+> > 		int id;
+> > 		int off;
+> > 	};
+> >
+> > There might be ways to optimize the memory footprint of this struct, but I'm
+> > just trying to state why we'll need to include all four, so we don't miss out on
+> > a corner case again.
+>
+> The trade-off doesn't feel right here. Tracking collection id complexity in
+> the verifier for single owner case is not worth it imo.
 
+It was more about correctness after this set is applied than being worth it. We
+could argue it's not worth it for the first issue which relates to usability.
+Dave has already mentioned that point. But the second one is simply incorrect to
+allow. As soon as you want an object which can be part of both a list and rbtree
+at different times (e.g., an item usually part of an rbtree but which is popped
+out and moved to a list for some processing), people will be able to trigger it.
+
+Simply disallowing that (as you said above) is also an option. But whenever you
+do allow it, you will need to add something like this. It has little to do with
+whether shared ownership is supported or not.
+
+> We should focus on adding support for 'shared ownership' with explicit refcount in the obj.
+> Then the same obj can be inserted into two rbtrees or into rbtree and link list.
+>
+> Single owner rb-tree is a big step and we've been trying to make this step for the last ~6 month.
+> I prefer to do it now and worry about UX, shared owner, etc in the follow ups.
+> We need to start using lists and rbtree in bpf progs that do real work to get a feel
+> on whether UX is right or unusable or somewhere in-between.
