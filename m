@@ -2,118 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D8F6921B1
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 16:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65609692213
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 16:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbjBJPNR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 10:13:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41028 "EHLO
+        id S232396AbjBJPYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 10:24:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232317AbjBJPNQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 10:13:16 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2094.outbound.protection.outlook.com [40.107.244.94])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD87D4673D;
-        Fri, 10 Feb 2023 07:13:14 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b4puLoq+WcQYN2ThI3T+C+wyHGak1wpYV3xbUfvM71ycPTXQ1IvBTU4RA40ldBBU6woAnnAj4wTUFqL8HJ9mPCBz5cQr1Hqr4X1497QdD+trn+dVVpIiBjQmr/6WCrhIadQ0ttZEmRTHa3z11nxM6kbcw/b+miuF2sV4/YwUOYfXNfOb3EVb7mZmZuUXdS9WOhYRmsymvkG+UmWqubNpkdre5IKemQeNQ1+B5UqMH4kmFiAqIVUIrOR0IU4T7DlnnOSLEUtBS5yEodo4NltTgIaM4DbHno0lzenWC+Ua38WCAvD7mL97Hk/Gu2O8SbrbhMSPoKxymvtpqbA/zlpmzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EYuHEcs0/SkbyH2VsVZbN4LMkhogXTkouTH+Z6oqw/M=;
- b=NNGkPXmmh5FeThFwMAQ3KbMj2lRfarqf/hTo13oqV3V5X1qrN1OMkeQ5ovzZfl0xJz0AOEw639OFh5JhVQBmQ1dL1fGsG+RGBBP+F3gfR47OnFn38Ix4VnZ7MYa+ZZ9mrRHKOWzlpcuox8l0bh9HDDFvW44vk7I2hbMJnzd1BU/clWtpy/06gb1A+CK6u0jL28+9h8eG7Pz5j8ms5pi7NHxnC+vWQ9A5mke3Z8WkilLxhr2+AhyVA0362FQtdSKAVM846vAO6fZzsN9UH/Dobm9vqLtzbJkqBDxYSbOBU9b2Bg61Nd5PlKIHS1ZKy3JDjuCAbeZJmpvw59lABADuMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EYuHEcs0/SkbyH2VsVZbN4LMkhogXTkouTH+Z6oqw/M=;
- b=WKH74PeFbpJhJgXFlQPMEDjF0m5/ey9Mja0CSM8LL8wOoyXtzdOLLPDvFwvK18x6qsUMJSn4TnayfwooUQoo2Ewpb9g3yoPvRa0Z4Ydh7l4BmF+unReo9doExk8ZrDe8qxd4KhemUm4ShARWv/ZuBHvLU7dFKudt+2lG5p/kkc0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by DM6PR13MB4496.namprd13.prod.outlook.com (2603:10b6:5:1be::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.21; Fri, 10 Feb
- 2023 15:13:12 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::eb5c:910f:3730:fd65]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::eb5c:910f:3730:fd65%9]) with mapi id 15.20.6086.021; Fri, 10 Feb 2023
- 15:13:12 +0000
-Date:   Fri, 10 Feb 2023 16:13:04 +0100
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-        edumazet@google.com, sgoutham@marvell.com, lcherian@marvell.com,
-        gakula@marvell.com, jerinj@marvell.com, sbhatta@marvell.com,
-        jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        saeedm@nvidia.com, richardcochran@gmail.com, tariqt@nvidia.com,
-        linux-rdma@vger.kernel.org, maxtram95@gmail.com,
-        naveenm@marvell.com, bpf@vger.kernel.org,
-        hariprasad.netdev@gmail.com
-Subject: Re: [net-next Patch V4 2/4] octeontx2-pf: qos send queues management
-Message-ID: <Y+ZfAC/5NjiuPfQE@corigine.com>
-References: <20230210111051.13654-1-hkelam@marvell.com>
- <20230210111051.13654-3-hkelam@marvell.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230210111051.13654-3-hkelam@marvell.com>
-X-ClientProxiedBy: AM0P190CA0029.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:208:190::39) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+        with ESMTP id S232394AbjBJPYu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 10:24:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588BC75F42
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:23:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676042627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RWOkmCoae5bj7doNl9U80aK5H1Z/48L9J7BCWykdr7Y=;
+        b=BV/KNEPZzdn/yt3eLLHRabCt/LZ8NLTGf4cs/L2865f7LbapqCDMmkYg5mJvNocBrb2uEP
+        tflyvJQvBs6hujJYGJXJtyoZ6rzF3PFmhJZcvk06mUXjtvkz/Zsg7c3Bedxs8+mUvkQDsx
+        6nWy2yb552Do66SSIHrc0wEqv8DpANQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-589-wfljqPvsM1SCyztHgEqfig-1; Fri, 10 Feb 2023 10:23:46 -0500
+X-MC-Unique: wfljqPvsM1SCyztHgEqfig-1
+Received: by mail-ed1-f71.google.com with SMTP id z19-20020a05640235d300b004aaca83cd87so3764689edc.20
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 07:23:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RWOkmCoae5bj7doNl9U80aK5H1Z/48L9J7BCWykdr7Y=;
+        b=nyEV1o/tswGprHSqqBUVIEqnKr18Bf7bCb0sG9TzHW9bkYTqE+qQXGBOqurWseDSPP
+         WIqQmcKR7tSPMdVlLLN4Mt+PwOSvg79hlC/joZAOafA7l91vFcDOZrAOWhlBjLS9cFhS
+         DMto/uVovmqFV/0nNt6IgkZ6bdpbo8BPYAbGFy4rNIIswWbyfbeWwesysEp6gaCNWPYD
+         TiB4h5o3RYtbEgab3/f7lDOE/1zJrLZVE+EkScmXS3hu5f5AEPI3ki4GufcPSUpYwQWp
+         4sPO4dIS/saMgxEpHQUiurZgjudK7lwBX+gK0P9GN1BP0Q0PT/XmX+urEQ6sWsFhVT7D
+         CgNw==
+X-Gm-Message-State: AO0yUKXPEzGpKyj9l2vl+qVt95vo32qhBv0m2Lw2yPIJpoOzZRIO4XcQ
+        y5iZUCk7icKz8bJfDhfrse6DkGMuVXCxxKXauwksOs5rNzGT0zSZ55qcm3RbIMQPwiu9kO+DBKi
+        +5PbZkMpl11r2H8RyODbN7R2Q6K0GXsO4rXc3ixeGW25Bfd46kHSAFSrFtwdAf9FYiIt1
+X-Received: by 2002:a17:907:9c04:b0:8ae:27d1:511a with SMTP id ld4-20020a1709079c0400b008ae27d1511amr11276173ejc.61.1676042625139;
+        Fri, 10 Feb 2023 07:23:45 -0800 (PST)
+X-Google-Smtp-Source: AK7set/Dv0ROzBQbObyzo0Y2IdUhDynWiuzWOvrXTZsWu/DA//Xm5WEuTrVPmZF2W0ITkYnPV8JMOg==
+X-Received: by 2002:a17:907:9c04:b0:8ae:27d1:511a with SMTP id ld4-20020a1709079c0400b008ae27d1511amr11276151ejc.61.1676042624873;
+        Fri, 10 Feb 2023 07:23:44 -0800 (PST)
+Received: from [192.168.42.100] (nat-cgn9-185-107-15-52.static.kviknet.net. [185.107.15.52])
+        by smtp.gmail.com with ESMTPSA id op5-20020a170906bce500b0088e682e3a4csm2485103ejb.185.2023.02.10.07.23.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Feb 2023 07:23:44 -0800 (PST)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <c40de89d-2977-5c8d-e049-006df2431f47@redhat.com>
+Date:   Fri, 10 Feb 2023 16:23:43 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|DM6PR13MB4496:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2e616a76-6f94-479a-960a-08db0b79533c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Yz3rczhTu1mmvDGLwRWYftvT+PoBhHmMNhN3NloOdR63ywN+jlZcx6qBo9Fv4mYJckUdRquyXP7+bLB3CuS1+k4oZnBM0NA72XwzKqXXAtby3MmIpPU2Yia2ZDIXcIJ22F/cAC9321LpAk6nbUrB+QO2WRr4Cizzwn5Hmh5KooA0q4zs32BZrtFrcmHG8mSu1hmrENt1cQYQa6bbOWSeF30/coc3Zj0nnvl0kkz59FkjPeoF4KQspT4ZcUsIm7dKDY+EaE3HFqQ1KgCThPu0IazB6++C2RAo5IJjRWem2IcIL6tKibe2p9hQgj809G7xPOJIUR4cW8TsWaO3R1D/0GMQmV19yNi15tjYMPUlp0UXL5xsCOCvRv72++vGMhxPQr7e4Soxb5/1EmxRPfY5ZbWuGJ5sdsVZdY1FtwloxcoeDlO/ntAhSuTPokwkHeXtR+6UVYPj2d5J7uN+owilfldAH9XqlmMqXDt/qki+lQ+y+HpfTplz9BTxA9RZZHkmAe4tc3jqztTE/Q2uB98iKPcl21OUaJ2lUmQNB6HOh1aq05szilgQhiGbvj7DClDWI2PhRaNHOgKxlzvXBKm9q3AxMMN/Dvs67F5jx8iQ+LFPWJ85CAz/NbNUU1cMyVzKK+UJEn6hJ7so2FGcrF14Qg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(366004)(396003)(346002)(39840400004)(136003)(451199018)(316002)(5660300002)(8676002)(4326008)(66946007)(66476007)(6916009)(66556008)(41300700001)(86362001)(36756003)(38100700002)(6506007)(6512007)(186003)(6486002)(6666004)(2616005)(66899018)(2906002)(7416002)(44832011)(8936002)(478600001)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PftRIJIVoCai694UG6ZTeOWnuDD+OJo02E5SkzP3RjccBuG8xVbhpHiPaJu4?=
- =?us-ascii?Q?3r7TJF5c9Z81O5uGCXbchEhA9/6s2JeGQyn4zFUI58jYYb6p/TtsFhqPCRRE?=
- =?us-ascii?Q?Zo6ia2NpTDBjSAsbBtIJwrOa36zDLTf0vpjXlvQ0m6NrbrI742yEM6tJ6XkV?=
- =?us-ascii?Q?0tujPTh26eNwxKYtMWkHcVAm0Gux05oVjJhWL9ZbjHbawTDNMPtlZO8g74us?=
- =?us-ascii?Q?yEs2vVo6sdaUcZA3X3EtyAyIb/G9bdxbk4PJT8+e1+mF2ntITd6P6T2oIjzn?=
- =?us-ascii?Q?9Hglmt6nQsAn8UGCDzyeIePKm3fhsOTI+mR9SETGpjVmaydhnZNuPKGbcpvx?=
- =?us-ascii?Q?3HsvWoRpSwkpP3UMGWLlqZ+H9WAoFOXz9hLodmT/8CHpxuyNMVdw8EPPNMS0?=
- =?us-ascii?Q?K6DB8dhNbVG/PZNYLzrxFn/M5nZlqWRlOgQvD90lwTcmNCCGwc+USHv0JJ68?=
- =?us-ascii?Q?r37yejuN+XwiLJZtPhr9ZmndpZ0Y4aAQ+9fMQGhkz9JD/1viO8F3g9fLAjB7?=
- =?us-ascii?Q?8AxG4Qch4nRFSNy7fMk+i4wVJabSHGsG2qnXDDS4hbQPYC2VsEWNGWzMJJQO?=
- =?us-ascii?Q?Dz7wD1FRFQodGcteuq/k0f6ePXgdgVCkKdKbur6FV1kiS89Hvhuk8K2Ku3Fl?=
- =?us-ascii?Q?yVBFA7D5Zdv9AXxaOqL3T3yVxeYmTdbGrE2sJxml516B45LEf8eh2G5EcfRY?=
- =?us-ascii?Q?du7koaAgqkfc9gr+L1AbZE0OGkN4BaKXuZum0x/XBAH3bk4Jborl9IlEk4M8?=
- =?us-ascii?Q?KKtRCqEkug1bM8Qp7zgYQ8z+ceLyzduZuXcQhowrrJxLTNRi18X6TwXp6kVT?=
- =?us-ascii?Q?gJgwVwWpPnKbCVBvV1iNq92S/DJZbBp/IOKU4wjDx3Xx2EA9GZhnZycdmzr5?=
- =?us-ascii?Q?1eFXAM+0vBEaFLBmNkeg4us5NH8/5EUs9zqJhPVKHYEFqvbxCsjvmCpMllS4?=
- =?us-ascii?Q?uGy/iRO7EmmrxWw5EgmuY3tF/uOgznN6dxrCPbOjUcvYRUpIo02RT9pHgSHO?=
- =?us-ascii?Q?fqMmFL+QQNCm6JkkRISqFs+Vy+mg4oU+vVp+jfT7qdyoqjK0OjVvQZ4/o/Go?=
- =?us-ascii?Q?0Qs1r1VdBH4vE9j1t3P45piafmnmJTH6Vo6CUOjMg2NagCxQ2KRFRgswQbHv?=
- =?us-ascii?Q?qZRKln4mCFLE9ByZgcZK/fMSl3wl32l19kMIaDGxnQs8nEY1fVuB+8Ktjw23?=
- =?us-ascii?Q?yScbcNBCv9b4UQOri3+KpRpSefSOPPat64oRxgNn8UxsvKpgujFf9krxJM4A?=
- =?us-ascii?Q?llL8YIcw2q30BOt8JuseA0rG3A85UxkFBhaAl1YjXJyvL6br5VNWASooPvUR?=
- =?us-ascii?Q?M8NLOC8a+LAdNEWdd4Nm+/XFWPapzxn6Ii+1SYRHzaRH6uGfpQ5l+8ckEdQ9?=
- =?us-ascii?Q?qiP/QqEsQsV2odVXOuo67aRmgMj3bnRvInZT/gxJ4TQ7A01F0oykVT9C+eks?=
- =?us-ascii?Q?gelQkrjOlA7b2MUVTuy57F2mNPkJXz4jhtYKEW1KP3VDtoUFDGFFj2xleLR6?=
- =?us-ascii?Q?mXN9JaDC4Epwi3LhnO3peR98Ua4BFNoiGNMWMd1/xJKfU+Z7zNgJnZrifOiU?=
- =?us-ascii?Q?q77nbaTrFf95kf1p1PrnV6r3X6YY8bacGSEno79gbNyb6TR1OeI6tU9nKi32?=
- =?us-ascii?Q?lO3Aly9wzZS/uMpJpkssFRS5aIqepWTprRmoLfIvBb3ovI/yLDeFiyFHiHvI?=
- =?us-ascii?Q?H0OJtw=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e616a76-6f94-479a-960a-08db0b79533c
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2023 15:13:12.1453
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VAV3g9FUMrBY13BVoGM5yRxnAeJRONUk0Tkn1qHMyvxBis5pHc6YNmxmMGxM1SIlgJGK9IOzedpwnXBG9wzR7XeVl4qlaklHoz9uwZiFxYw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB4496
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Cc:     brouer@redhat.com, netdev@vger.kernel.org,
+        Stanislav Fomichev <sdf@google.com>, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        yoong.siang.song@intel.com, anthony.l.nguyen@intel.com,
+        intel-wired-lan@lists.osuosl.org, xdp-hints@xdp-project.net
+Subject: Re: [PATCH bpf-next V1] igc: enable and fix RX hash usage by netstack
+Content-Language: en-US
+To:     bpf@vger.kernel.org
+References: <167604167956.1726972.7266620647404438534.stgit@firesoul>
+In-Reply-To: <167604167956.1726972.7266620647404438534.stgit@firesoul>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -121,62 +84,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 10, 2023 at 04:40:49PM +0530, Hariprasad Kelam wrote:
-> From: Subbaraya Sundeep <sbhatta@marvell.com>
+
+On 10/02/2023 16.07, Jesper Dangaard Brouer wrote:
+> When function igc_rx_hash() was introduced in v4.20 via commit 0507ef8a0372
+> ("igc: Add transmit and receive fastpath and interrupt handlers"), the
+> hardware wasn't configured to provide RSS hash, thus it made sense to not
+> enable net_device NETIF_F_RXHASH feature bit.
 > 
-> Current implementation is such that the number of Send queues (SQs)
-> are decided on the device probe which is equal to the number of online
-> cpus. These SQs are allocated and deallocated in interface open and c
-> lose calls respectively.
+> The NIC hardware was configured to enable RSS hash info in v5.2 via commit
+> 2121c2712f82 ("igc: Add multiple receive queues control supporting"), but
+> forgot to set the NETIF_F_RXHASH feature bit.
+>
+
+Sending this fix against bpf-next, as I found this issue while playing
+with implementing XDP-hints kfunc for xmo_rx_hash. I will hopefully send
+kfunc patches next week, on top of this.IMHO this fix isn't very 
+critical and I hope it can simply go though the
+bpf-next tree as it would ease followup kfunc patches.
+
+
+> The original implementation of igc_rx_hash() didn't extract the associated
+> pkt_hash_type, but statically set PKT_HASH_TYPE_L3. The largest portions of
+> this patch are about extracting the RSS Type from the hardware and mapping
+> this to enum pkt_hash_types. This were based on Foxville i225 software user
+> manual rev-1.3.1 and tested on Intel Ethernet Controller I225-LM (rev 03).
 > 
-> This patch defines new APIs for initializing and deinitializing Send
-> queues dynamically and allocates more number of transmit queues for
-> QOS feature.
-> 
-> Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-> Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+> For UDP it's worth noting that RSS (type) hashing have been disabled both for
+> IPv4 and IPv6 (see IGC_MRQC_RSS_FIELD_IPV4_UDP + IGC_MRQC_RSS_FIELD_IPV6_UDP)
+> because hardware RSS doesn't handle fragmented pkts well when enabled (can
+> cause out-of-order). This result in PKT_HASH_TYPE_L3 for UDP packets, and
+> hash value doesn't include UDP port numbers. Not being PKT_HASH_TYPE_L4, have
+> the effect that netstack will do a software based hash calc calling into
+> flow_dissect, but only when code calls skb_get_hash(), which doesn't
+> necessary happen for local delivery.
+>
+
+
+Intel QA tester wanting to verify this patch can use the small bpftrace
+tool I wrote and placed here:
+
+ 
+https://github.com/xdp-project/xdp-project/blob/master/areas/hints/monitor_skb_hash_on_dev.bt
+
+Failure scenarios:
+
+$ sudo ./monitor_skb_hash_on_dev.bt igc1
+Attaching 2 probes...
+Monitor net_device: igc1
+Hit Ctrl-C to end.
+IFNAME           HASH      Hash-type:L4    Software-hash
+igc1             00000000  0               0
+igc1             00000000  0               0
+igc1             00000000  0               0
+^C
+
+
+Example output with patch:
+
+$ sudo ./monitor_skb_hash_on_dev.bt igc1
+Attaching 2 probes...
+Monitor net_device: igc1
+Hit Ctrl-C to end.
+IFNAME           HASH      Hash-type:L4    Software-hash
+igc1             FEF98EFE  0               0
+igc1             00000000  0               0
+igc1             00000000  0               0
+igc1             FEF98EFE  0               0
+igc1             FEF98EFE  0               0
+igc1             FEF98EFE  0               0
+igc1             310AF9EA  1               0
+igc1             A229FA51  1               0
+
+The repeating hash FEF98EFE is UDP packets that as desc note doesn't
+have Hash-type:L4.  The UDP has is repeating as port numbers aren't part
+of the hash, and I was sending to same IP. The hash values with L4=1
+were TCP packets.
+
+Hope this eases QA work.
+
+> Fixes: 2121c2712f82 ("igc: Add multiple receive queues control supporting")
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > ---
->  .../marvell/octeontx2/af/rvu_debugfs.c        |   5 +
->  .../ethernet/marvell/octeontx2/nic/Makefile   |   2 +-
->  .../marvell/octeontx2/nic/otx2_common.c       |  40 ++-
->  .../marvell/octeontx2/nic/otx2_common.h       |  29 +-
->  .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  51 ++-
->  .../marvell/octeontx2/nic/otx2_txrx.c         |  25 +-
->  .../marvell/octeontx2/nic/otx2_txrx.h         |   3 +-
->  .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |   9 +-
->  .../net/ethernet/marvell/octeontx2/nic/qos.h  |  19 ++
->  .../ethernet/marvell/octeontx2/nic/qos_sq.c   | 290 ++++++++++++++++++
->  10 files changed, 430 insertions(+), 43 deletions(-)
->  create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/qos.h
->  create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/qos_sq.c
+>   drivers/net/ethernet/intel/igc/igc.h      |   52 +++++++++++++++++++++++++++++
+>   drivers/net/ethernet/intel/igc/igc_main.c |   35 +++++++++++++++++---
+>   2 files changed, 83 insertions(+), 4 deletions(-)
 
-nit: this patch is a little long
+--Jesper
 
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> index ef10aef3cda0..050be13dfa46 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> @@ -463,12 +463,14 @@ static int otx2_tx_napi_handler(struct otx2_nic *pfvf,
->  			break;
->  		}
->  
-> -		if (cq->cq_type == CQ_XDP) {
-> +		qidx = cq->cq_idx - pfvf->hw.rx_queues;
-> +
-> +		if (cq->cq_type == CQ_XDP)
->  			otx2_xdp_snd_pkt_handler(pfvf, sq, cqe);
-> -		} else {
-> -			otx2_snd_pkt_handler(pfvf, cq, sq, cqe, budget,
-> -					     &tx_pkts, &tx_bytes);
-> -		}
-> +		else
-> +			otx2_snd_pkt_handler(pfvf, cq, &pfvf->qset.sq[qidx],
-> +					     cqe, budget, &tx_pkts, &tx_bytes);
-> +
->  
-
-nit: there are now two blank lines here
-
->  		cqe->hdr.cqe_type = NIX_XQE_TYPE_INVALID;
->  		processed_cqe++;
