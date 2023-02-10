@@ -2,138 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE30691BB7
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 10:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DA3691BF3
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 10:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjBJJmb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 04:42:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
+        id S231538AbjBJJwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 04:52:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbjBJJma (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 04:42:30 -0500
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0578A2DE4A;
-        Fri, 10 Feb 2023 01:42:28 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id C6EEE3200077;
-        Fri, 10 Feb 2023 04:42:24 -0500 (EST)
-Received: from imap45 ([10.202.2.95])
-  by compute3.internal (MEProxy); Fri, 10 Feb 2023 04:42:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rath.org; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1676022144; x=
-        1676108544; bh=csaH5JqKW2ltQ68oF2bGv2SKpBtE8d9nzCpkPamxqns=; b=N
-        j48S9SJK4v9ijnY4RyecfXH8GwfC69HIDCSDIEBsgE4vh8ZO0hvHqr7l4EF3F4BP
-        y4SBZ4R4IoaLw8c3Aoc4xJODXesbUpwlwHEqXdyHl/QdFCMMo5IV1JXDje5DjeCj
-        BQLTqy63tau/JVJG5qgJeILlG05ufXusAfAfGtjOiMloQ4y4OZITY90UsafwOWEL
-        zbsK1QSRTF4JpO9gYmsPaIeAp/LDSmxPvARh1BTJlKksHcljxzKUivu89Hp9vu3X
-        O3KXvckf41Ut1rK8tm6DsV3WV/2VFOUwNffWkHehmdIktv96PZPsCsjhF+YuGncO
-        8bobGh8G8eVFwFy1F1LAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1676022144; x=
-        1676108544; bh=csaH5JqKW2ltQ68oF2bGv2SKpBtE8d9nzCpkPamxqns=; b=H
-        EmizJ/DjNAJv6esw9RjOwrqu1EsAXFODal+zizsIJPQwWGoGRQn23j6ZVyXep0hn
-        ksrf4UxzNwMgjTZn7hJf6PaGyAw8la7ueb3v1qpn9t859NwYUSv3OB+d9/XVGHCG
-        4nuN18AR3Zg+7bsKCqqNfKuCyrFaTU4aAMGZIj8STackkdJrcXCm0rFt2BF8S1t1
-        XtWfH9FIrLqANZU4V5C3Asxw3K9FrxQqQ+hHNNnKahBhQkh5qmXlNy4shXN9CxaL
-        tKFrp3Cw34tz5mPCcZwXMBtOCjmdFEUiKwRZ5gqfTlQdw3XJsUZvY+XTrnYpGjDh
-        K84hCMQAO2VoUe9m/hmKg==
-X-ME-Sender: <xms:gBHmY0oblqeEz92CNx6nYYqH8YqIEBDa8otFHqLWHpaoJ6FS9kjknA>
-    <xme:gBHmY6o2nNN9ATKXLAQ3UmiTBjVZhuyRo0gQQjz-yywQBNS9TrDzNHSgj3LMRf-wg
-    jyORhvp6n4DS-sU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudehhedgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfp
-    ihhkohhlrghushcutfgrthhhfdcuoehnihhkohhlrghushesrhgrthhhrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpeejffdttedtieekheehhfduhfevvddugfelveehjefhteevlefh
-    feefheehhffgteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehnihhkohhlrghushesrhgrthhhrdhorhhg
-X-ME-Proxy: <xmx:gBHmY5NauDoe0skY_IrmoKeNBshxCrYQr8MYZciukA1Jkgpg1tBJkQ>
-    <xmx:gBHmY74ORuBlLSLvbU_SIm7IsP7DJ4S-iCF08wVWdzUJji4j7ksnkQ>
-    <xmx:gBHmYz6_fgaQTnxx6cvHJ_IOLt8maqBjZm1Q0fpNngBbPVRLw8qTqQ>
-    <xmx:gBHmYwydKxxH5ZXqcI4kl4tWFERRuycflqWmYdaKzFHD4o2OBVDCCw>
-Feedback-ID: i53a843ae:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 343C6272007A; Fri, 10 Feb 2023 04:42:24 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-156-g081acc5ed5-fm-20230206.001-g081acc5e
-Mime-Version: 1.0
-Message-Id: <81e010cc-b52b-4b20-8d08-631ce8ca7fad@app.fastmail.com>
-In-Reply-To: <CAJfpegvHKkCn0UnNRVxFXjjnkOuq0N4xLN4WzpqVX+56DqdjUw@mail.gmail.com>
-References: <20221122021536.1629178-1-drosen@google.com>
- <CAOQ4uxiyRxsZjkku_V2dBMvh1AGiKQx-iPjsD5tmGPv1PgJHvQ@mail.gmail.com>
- <CA+PiJmRLTXfjJmgJm9VRBQeLVkWgaqSq0RMrRY1Vj7q6pV+omw@mail.gmail.com>
- <2dc5e840-0ce8-dae9-99b9-e33d6ccbb016@fastmail.fm>
- <CAOQ4uxiBD5NXLMXFev7vsCLU5-_o8-_H-XcoMY1aqhOwnADo9w@mail.gmail.com>
- <283b5344-3ef5-7799-e243-13c707388cd8@fastmail.fm>
- <CAOQ4uxjvUukDSBk977csO5cX=-1HiMHmyQxycbYQgrpLaanddw@mail.gmail.com>
- <CAJfpegvHKkCn0UnNRVxFXjjnkOuq0N4xLN4WzpqVX+56DqdjUw@mail.gmail.com>
-Date:   Fri, 10 Feb 2023 09:41:30 +0000
-From:   "Nikolaus Rath" <nikolaus@rath.org>
-To:     "Miklos Szeredi" <miklos@szeredi.hu>,
-        "Amir Goldstein" <amir73il@gmail.com>
-Cc:     "Bernd Schubert" <bernd.schubert@fastmail.fm>,
-        "Daniel Rosenberg" <drosen@google.com>,
-        "Linux FS Devel" <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@android.com>,
-        "Vivek Goyal" <vgoyal@redhat.com>,
-        "Josef Bacik" <josef@toxicpanda.com>
-Subject: Re: [RFC PATCH v2 00/21] FUSE BPF: A Stacked Filesystem Extension for FUSE
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231405AbjBJJwf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 04:52:35 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA06E8A5D;
+        Fri, 10 Feb 2023 01:52:33 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id jg8so14304150ejc.6;
+        Fri, 10 Feb 2023 01:52:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kU2UMSdVf6ATg2sdzEwIyGZLq0FY+uJF2CLbcEvZ/Gg=;
+        b=MCBeOKGH9aSNHAdUJpAsDjpVN0CkK+o96HXDfN68uXXdXNs4X9LJe1l4iud926JjD0
+         llaww1wsoZNX+aMgljfw0Y98kfEwzFcIdNQJehoRkP80uGDi9dN+0ovOh3SdfOqxxb23
+         wmnPfDHIDQ2fUVTH98TeO4uEOGPNzyNoQfzDUuUTxfQApJa02OAK02hYZOgFedWj8XKB
+         +YjIcnNUNuSAYtLa+lLQaQs/oRJ88TgGR8f47X5bi9bi7bTz6/Rfzb2e0WIj7Yqp/KZV
+         Z3Z/RSxhOKWxdXwD0o0Idruxu5s1JP+SCCzm2P/URUMzcHUHxvkcZcijcDWV7i74hRmX
+         Oq1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kU2UMSdVf6ATg2sdzEwIyGZLq0FY+uJF2CLbcEvZ/Gg=;
+        b=wXXZxf+4sZ0EjFGsHcTXHG+hz1o7lZG22fNQkY9wZKgmQISAA6rkrN2I3E2JraccO4
+         CkNQssJegm7Edr76H7s/da9XNb2Fi8KI8XmrHsYypdkEPoMO7FtcClLf0gZeLszJ9BrQ
+         1nzRk9dxMbV/gvHrMmLfyw1GZMHya0bUcRz3gAHrBlenT0leFukv9DquZ3/8n1cAwMfZ
+         MhjykGzPIDie/rj12mIpvlXVFWF34FRlTtjB3QmYXhAkcrSvFRWlA4B2MfB0FFahhdG9
+         RUtc8SmV0+qB6NMuvkoLy8c2isMn23tY1Zn4YSlvEb+0uOhOsEjt7Q3Ak1yug9AGqDMc
+         p9wQ==
+X-Gm-Message-State: AO0yUKXynwqFZckuePMskmRCJGgrr29DhJ+7zexoBWVBovDBtnJfgoHZ
+        Vw7aomE0ExglFuMYpm7dXHC+IGeAWuKJCVPE1kY=
+X-Google-Smtp-Source: AK7set9OBqhHTYvltqTQkSQcNeaU3sDaS3zqSnOalhCYu1ZVdEmhXWNE0bb1PLTNY8YrM3ZCFgvgiyQ648nFXN3mM3o=
+X-Received: by 2002:a17:906:2cc4:b0:887:2895:d26e with SMTP id
+ r4-20020a1709062cc400b008872895d26emr1149540ejr.4.1676022752346; Fri, 10 Feb
+ 2023 01:52:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20230210021232.108211-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20230210021232.108211-1-xuanzhuo@linux.alibaba.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 10 Feb 2023 10:52:20 +0100
+Message-ID: <CAJ8uoz0EqC81hJRw=3dj6vE99Y6+Y6daN3ugrSWhAUzrgYUT1Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v1] xsk: support use vaddr as ring
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 10 Feb 2023, at 09:38, Miklos Szeredi wrote:
-> On Fri, 3 Feb 2023 at 12:43, Amir Goldstein <amir73il@gmail.com> wrote:
+On Fri, 10 Feb 2023 at 03:14, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
 >
->> > Thanks a lot Amir, I'm going to send out an invitation tomorrow. Ma=
-ybe
->> > Nikolaus as libfuse maintainer could also attend?
->> >
->>
->> Since this summit is about kernel filesystem development, I am not su=
-re
->> on-prem attendance will be the best option for Nikolaus as we do have
->> a quota for
->> on-prem attendees, but we should have an option for connecting specif=
-ic
->> attendees remotely for specific sessions, so that could be great.
+> When we try to start AF_XDP on some machines with long running time, due
+> to the machine's memory fragmentation problem, there is no sufficient
+> continuous physical memory that will cause the start failure.
 >
-> Not sure.  I think including non-kernel people might be beneficial to
-> the whole fs development community.  Not saying LSF is the best place,
-> but it's certainly a possibility.
+> After AF_XDP fails to apply for continuous physical memory, this patch
+> tries to use vmalloc() to allocate memory to solve this problem.
 >
-> Nikolaus, I don't even know where you're located.  Do you think it
-> would make sense for you to attend?
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/oe-kbuild-all/202302091850.0HBmsDAq-lkp@intel.com
+> ---
+>  net/xdp/xsk.c       |  8 +++++---
+>  net/xdp/xsk_queue.c | 21 +++++++++++++++------
+>  net/xdp/xsk_queue.h |  1 +
+>  3 files changed, 21 insertions(+), 9 deletions(-)
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 9f0561b67c12..33db57548ee3 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -1296,7 +1296,6 @@ static int xsk_mmap(struct file *file, struct socket *sock,
+>         struct xdp_sock *xs = xdp_sk(sock->sk);
+>         struct xsk_queue *q = NULL;
+>         unsigned long pfn;
+> -       struct page *qpg;
+>
+>         if (READ_ONCE(xs->state) != XSK_READY)
+>                 return -EBUSY;
+> @@ -1319,10 +1318,13 @@ static int xsk_mmap(struct file *file, struct socket *sock,
+>
+>         /* Matches the smp_wmb() in xsk_init_queue */
+>         smp_rmb();
+> -       qpg = virt_to_head_page(q->ring);
+> -       if (size > page_size(qpg))
+> +
+> +       if (PAGE_ALIGN(q->ring_size) < size)
+>                 return -EINVAL;
+>
+> +       if (is_vmalloc_addr(q->ring))
+> +               return remap_vmalloc_range(vma, q->ring, 0);
+> +
+>         pfn = virt_to_phys(q->ring) >> PAGE_SHIFT;
+>         return remap_pfn_range(vma, vma->vm_start, pfn,
+>                                size, vma->vm_page_prot);
+> diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
+> index 6cf9586e5027..7b03102d1672 100644
+> --- a/net/xdp/xsk_queue.c
+> +++ b/net/xdp/xsk_queue.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/overflow.h>
+>  #include <net/xdp_sock_drv.h>
+> +#include <linux/vmalloc.h>
+>
+>  #include "xsk_queue.h"
+>
+> @@ -37,14 +38,18 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
+>                     __GFP_COMP  | __GFP_NORETRY;
+>         size = xskq_get_ring_size(q, umem_queue);
+>
+> +       q->ring_size = size;
+>         q->ring = (struct xdp_ring *)__get_free_pages(gfp_flags,
+>                                                       get_order(size));
+> -       if (!q->ring) {
+> -               kfree(q);
+> -               return NULL;
+> -       }
+> +       if (q->ring)
+> +               return q;
+> +
+> +       q->ring = (struct xdp_ring *)vmalloc_user(size);
+> +       if (q->ring)
+> +               return q;
 
-Hi folks,
+Thanks for bringing this to attention. Interesting to see how hard it
+gets after a while to find consecutive memory since this is not a
+large area.
 
-I'm located in London.=20
+I am wondering if it would be better to remove the __get_free_pages()
+and just go for vmalloc_user. There is no particular reason here for
+allocating consecutive physical pages for the ring. Does anyone see
+any problem with removing this? If not, please just remove
+__get_free_pages(), test it, and post a v2.
 
-I've never been at LHS, so it's hard for me to tell if I'd be useful the=
-re or not. If there's interest, then I would make an effort to attend.=20
-
-Are we talking about the event in Vancouver on May 8th?
-
-Best,
--Nikolaus
---
-GPG Fingerprint: ED31 791B 2C5C 1613 AF38 8B8A D113 FCAC 3C4E 599F
-
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- =C2=BBTime flies like an arrow, fruit flies like a Banana.=C2=AB
-
+> -       return q;
+> +       kfree(q);
+> +       return NULL;
+>  }
+>
+>  void xskq_destroy(struct xsk_queue *q)
+> @@ -52,6 +57,10 @@ void xskq_destroy(struct xsk_queue *q)
+>         if (!q)
+>                 return;
+>
+> -       page_frag_free(q->ring);
+> +       if (is_vmalloc_addr(q->ring))
+> +               vfree(q->ring);
+> +       else
+> +               page_frag_free(q->ring);
+> +
+>         kfree(q);
+>  }
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index c6fb6b763658..35922b8b92a8 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -45,6 +45,7 @@ struct xsk_queue {
+>         struct xdp_ring *ring;
+>         u64 invalid_descs;
+>         u64 queue_empty_descs;
+> +       size_t ring_size;
+>  };
+>
+>  /* The structure of the shared state of the rings are a simple
+> --
+> 2.32.0.3.g01195cf9f
+>
