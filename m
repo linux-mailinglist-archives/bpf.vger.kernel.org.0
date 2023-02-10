@@ -2,70 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A06B692457
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 18:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76ACB692470
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 18:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbjBJRVm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 12:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
+        id S232681AbjBJRak (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 12:30:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbjBJRVl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 12:21:41 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7406D61A
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 09:21:40 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id d13-20020a17090ad3cd00b0023127b2d602so6147605pjw.2
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 09:21:40 -0800 (PST)
+        with ESMTP id S231889AbjBJRaj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 12:30:39 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F73749B4
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 09:30:38 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id f16-20020a17090a9b1000b0023058bbd7b2so6196270pjp.0
+        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 09:30:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=reEF9Lvznpgd0LeoufTTHDfe9Y6R8lp7su8bXLtKyVo=;
-        b=FIPz9gHLO5BDs/lPOAimik7BG4467Kq8uRlzx+QTtyU0bHL9dRXhHqeIDS2Pr/JvqF
-         CKrFH86D/eRxsguo1anTEg/O2dLlCTJ1lJLvqKyD8kZI0IPiQWB4ffclOLArggsPIR6i
-         MAy5GM/zURCgSF/bLxsjwK9nkrALR953ED3qwFGiwR+PbmWK+kJJVuCUamOFE735FMxu
-         iPMfhuKOM8TSD7efT1ztTZ4dbUUWx8s0iWtZ3klkWtfWU5VxLEiqhv+C2MuUba7I4z1v
-         O4K+CUSYMqIkwcdn2hd2i7n3QMBLGfQ3UVGJiIENiaSmMWpFHJUe/xmdaTd5/sRfe8Vm
-         9vwA==
+        bh=wDBqco4G0IbzXNBbfcfeUFwc6+8wABeRDA0cnfcvNTk=;
+        b=BfWPGX4MAKbzQtxYM4sPbvwAEz9kBiXmpaq9d2aJsWWMj04OSrgnUr1zAG2jwNtNXa
+         zzx8wSdRLsYpRdKL77zIptLyEzLSuLYiI3LQHaWJUwp+vkOxJtlSzQ6zrrWzng8HSi//
+         hWKAfsWQ8MrsTbAM8OUhTkBKISGSSZPMLftGfQoUbJjnl9y57/rrcMj7B6q9+drRui1L
+         +kpleHjKTjLHi0h7TuTWCsvf6nf87OuOaoCpicW7IO9Y/URdhkAnvuJ1F5O8R1ko9nSm
+         ftIIB8CPBnhCTbIi3R+N44KVeB884Exoq8TATtSicYT+qsMfwu9BKchmVgSTMD05peim
+         7NXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=reEF9Lvznpgd0LeoufTTHDfe9Y6R8lp7su8bXLtKyVo=;
-        b=QJHgXrmMM3tkRNNEp+WCjojLMCvD8Mm46irJIqHjSQI36OicSHy8yg1llTnbtXRw30
-         NC/BbTJwdY3aQUCuDxDTiZVVRKuxthS5UraPGSvDgj0KTlMydBTso9SHZrQZ9niSTgYU
-         YkAZDoIkVRrSZ5ligS0zk/Ouy+zP/jVUs6OfbZht0S/UG5bzzSTuuFeiI1ySFBwY1SAJ
-         anfLj/JLknUQVbR0qtoSF22+c/cBD4Wj/Gt7ed6z9WKG2G1ZJNYk6tceWsf58QfSDBF0
-         R/ttDaqxXFxZt0Mtsg7JHYN0dHBgoTPFprqlz/d9FWFAqLfa7v4/1+16pl/C2J5Idxoa
-         xG9A==
-X-Gm-Message-State: AO0yUKVAYxLTSHPIykh8nj8aFMw3klq/T6BQyUepvz/XoH5ClIOsgs2g
-        kAX+Yd4CNYcWLyIGVWyGKTw=
-X-Google-Smtp-Source: AK7set8WIy7zr6tIcBHpOsEpFzjuUjVAtCKwL0h7lWHsboTudttirL0nrn1Ix8CruUbI4Fc4ngM5xA==
-X-Received: by 2002:a17:902:7c11:b0:198:e7f3:169a with SMTP id x17-20020a1709027c1100b00198e7f3169amr11340528pll.44.1676049700110;
-        Fri, 10 Feb 2023 09:21:40 -0800 (PST)
+        bh=wDBqco4G0IbzXNBbfcfeUFwc6+8wABeRDA0cnfcvNTk=;
+        b=Cl9J9brgcamv5N/7v0uCtZqtp3rEvTzF/ok8F0IncsAyF3sbhQUsdRd0RFbk5ON9e+
+         bkHPIFvmx+3GekFKRXlZ9Q5b6Unp3lLUU4qHkorsRl8L27CQWeOmT16pieHooH96VFS1
+         HvMmK5tOXpU2FiaLOf4AdB06riVqwqT/BUHtmJfr7PlY+tB88W6FMdAp0nYJ3bBwDg8n
+         7853/iOgZgJKr90KZKyYky4V7lwEFjV4O/nQ29YzuLvtYLtSz9Jv+4p8Ljm4wtQLq7CG
+         eJOZN6JRno8etUy/hW7dzaw75boLjztD/uRenPZ6/JETh3JmI4648dDTzqLhAb+/659y
+         WNDQ==
+X-Gm-Message-State: AO0yUKVduqxHLS8swbVUmILYrcp9FJaYJt79I8lxRv2LNsjvrkBkcmnD
+        LdQfnSXcXX9Fvf14cV3DhYc=
+X-Google-Smtp-Source: AK7set8ut0QzIABwI+8oLURKG/47ORbC93lEvl6b9Epspj0DpVLnmsGVljYDUo5vHCsXJQnHvRQxag==
+X-Received: by 2002:a17:902:dac9:b0:199:4934:9d31 with SMTP id q9-20020a170902dac900b0019949349d31mr11805739plx.20.1676050237574;
+        Fri, 10 Feb 2023 09:30:37 -0800 (PST)
 Received: from MacBook-Pro-6.local ([2620:10d:c090:400::5:c6db])
-        by smtp.gmail.com with ESMTPSA id io20-20020a17090312d400b0017f5ad327casm3638806plb.103.2023.02.10.09.21.38
+        by smtp.gmail.com with ESMTPSA id d17-20020a170902b71100b001990028c0c9sm3622961pls.68.2023.02.10.09.30.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 09:21:39 -0800 (PST)
-Date:   Fri, 10 Feb 2023 09:21:37 -0800
+        Fri, 10 Feb 2023 09:30:37 -0800 (PST)
+Date:   Fri, 10 Feb 2023 09:30:34 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Dave Marchevsky <davemarchevsky@meta.com>
 Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Tejun Heo <tj@kernel.org>
 Subject: Re: [PATCH v4 bpf-next 08/11] bpf: Special verifier handling for
  bpf_rbtree_{remove, first}
-Message-ID: <20230210172137.jwqynnjtmjcv4dqe@MacBook-Pro-6.local>
+Message-ID: <20230210173034.s26rciroliea4tgq@MacBook-Pro-6.local>
 References: <20230209174144.3280955-1-davemarchevsky@fb.com>
  <20230209174144.3280955-9-davemarchevsky@fb.com>
- <20230210135541.xtwn6wzng7mspgrm@apollo>
+ <20230210031125.ckngdktylhslsxwd@MacBook-Pro-6.local>
+ <87fff67e-6f94-e516-28d0-0fe973f61f0e@meta.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230210135541.xtwn6wzng7mspgrm@apollo>
+In-Reply-To: <87fff67e-6f94-e516-28d0-0fe973f61f0e@meta.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,112 +79,176 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 10, 2023 at 02:55:41PM +0100, Kumar Kartikeya Dwivedi wrote:
-> On Thu, Feb 09, 2023 at 06:41:41PM CET, Dave Marchevsky wrote:
-> > Newly-added bpf_rbtree_{remove,first} kfuncs have some special properties
-> > that require handling in the verifier:
-> >
-> >   * both bpf_rbtree_remove and bpf_rbtree_first return the type containing
-> >     the bpf_rb_node field, with the offset set to that field's offset,
-> >     instead of a struct bpf_rb_node *
-> >     * mark_reg_graph_node helper added in previous patch generalizes
-> >       this logic, use it
-> >
-> >   * bpf_rbtree_remove's node input is a node that's been inserted
-> >     in the tree - a non-owning reference.
-> >
-> >   * bpf_rbtree_remove must invalidate non-owning references in order to
-> >     avoid aliasing issue. Use previously-added
-> >     invalidate_non_owning_refs helper to mark this function as a
-> >     non-owning ref invalidation point.
-> >
-> >   * Unlike other functions, which convert one of their input arg regs to
-> >     non-owning reference, bpf_rbtree_first takes no arguments and just
-> >     returns a non-owning reference (possibly null)
-> >     * For now verifier logic for this is special-cased instead of
-> >       adding new kfunc flag.
-> >
-> > This patch, along with the previous one, complete special verifier
-> > handling for all rbtree API functions added in this series.
-> >
+On Fri, Feb 10, 2023 at 03:22:43AM -0500, Dave Marchevsky wrote:
+> On 2/9/23 10:11 PM, Alexei Starovoitov wrote:
+> > On Thu, Feb 09, 2023 at 09:41:41AM -0800, Dave Marchevsky wrote:
+> >> @@ -9924,11 +9934,12 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >>  				   meta.func_id == special_kfunc_list[KF_bpf_list_pop_back]) {
+> >>  				struct btf_field *field = meta.arg_list_head.field;
+> >>  
+> >> -				mark_reg_known_zero(env, regs, BPF_REG_0);
+> >> -				regs[BPF_REG_0].type = PTR_TO_BTF_ID | MEM_ALLOC;
+> >> -				regs[BPF_REG_0].btf = field->graph_root.btf;
+> >> -				regs[BPF_REG_0].btf_id = field->graph_root.value_btf_id;
+> >> -				regs[BPF_REG_0].off = field->graph_root.node_offset;
+> >> +				mark_reg_graph_node(regs, BPF_REG_0, &field->graph_root);
+> >> +			} else if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_remove] ||
+> >> +				   meta.func_id == special_kfunc_list[KF_bpf_rbtree_first]) {
+> >> +				struct btf_field *field = meta.arg_rbtree_root.field;
+> >> +
+> >> +				mark_reg_graph_node(regs, BPF_REG_0, &field->graph_root);
+> >>  			} else if (meta.func_id == special_kfunc_list[KF_bpf_cast_to_kern_ctx]) {
+> >>  				mark_reg_known_zero(env, regs, BPF_REG_0);
+> >>  				regs[BPF_REG_0].type = PTR_TO_BTF_ID | PTR_TRUSTED;
+> >> @@ -9994,7 +10005,13 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >>  			if (is_kfunc_ret_null(&meta))
+> >>  				regs[BPF_REG_0].id = id;
+> >>  			regs[BPF_REG_0].ref_obj_id = id;
+> >> +		} else if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_first]) {
+> >> +			ref_set_non_owning_lock(env, &regs[BPF_REG_0]);
+> >>  		}
+> > 
+> > Looking at the above code where R0 state is set across two different if-s
+> > it feels that bool non_owning_ref_lock from patch 2 shouldn't be a bool.
 > 
-> I think there are two issues with the current approach. The fundamental
-> assumption with non-owning references is that it is part of the collection. So
-> bpf_rbtree_{add,first}, bpf_list_push_{front,back} will create them, as no node
-> is being removed from collection. Marking bpf_rbtree_remove (and in the future
-> bpf_list_del) as invalidation points is also right, since once a node has been
-> removed it is going to be unclear whether existing non-owning references have
-> the same value, and thus the property of 'part of the collection' will be
-> broken.
+> Re: "set across two different if-s" - I see what you mean, and the fact that
+> both are doing 'meta.func_id == whatever' checks doesn't make it clear why
+> they're separate. But note that above the else if that the second check
+> is adding is "if (is_kfunc_acquire(&meta))" check, acquire_reference_state, etc.
 
-correct, but the patch set does invalidate after bpf_rbtree_remove(),
-so it's not an issue.
+fair enough. let's keep it split.
 
-> The first issue relates to usability. If I have non-owning references to nodes
-> inserted into both a list and an rbtree, bpf_rbtree_remove should only
-> invalidate the ones that are part of the particular rbtree. It should have no
-> effect on others. Likewise for the bpf_list_del operation in the future.
-> Therefore, we need to track the collection identity associated with each
-> non-owning reference, then only invalidate non-owning references associated with
-> the same collection.
-> 
-> The case of bpf_spin_unlock is different, which should invalidate all non-owning
-> references.
-> 
-> The second issue is more serious. By not tracking the collection identity, we
-> will currently allow a non-owning reference for an object inserted into a list
-> to be passed to bpf_rbtree_remove, because the verifier cannot discern between
-> 'inserted into rbtree' vs 'inserted into list'. For it, both are currently
-> equivalent in the verifier state. An object is allowed to have both
-> bpf_list_node and bpf_rb_node, but it can only be part of one collection at a
-> time (because of no shared ownership).
-> 
-> 	struct obj {
-> 		bpf_list_node ln;
-> 		bpf_rb_node rn;
-> 	};
-> 
-> 	bpf_list_push_front(head, &obj->ln); // node is non-own-ref
-> 	bpf_rbtree_remove(&obj->rn); // should not work, but does
+> "Is function acquire" is a function-level property and, as the kfunc flags I
+> tried to add in previous versions of this series indicate, I think that
+> "returns a non-owning reference" and "need to invalidate non-owning refs"
+> are function-level properties as well.
 
-Also correct, but inserting the same single owner node into rbtree and link list
-is not supported. Only 'shared ownership' node can be inserted into
-two collections.
-The check to disallow bpf_list_node and bpf_rb_node in the same obj
-can be a follow up patch to close this hole.
+agree
 
-> So some notion of a collection identity needs to be constructed, the amount of
-> data which needs to be remembered in each non-owning reference's register state
-> depends on our requirements.
+> As a contrast, the first addition - with mark_reg_graph_node - is more of a
+> return-type-level property. Instead of doing meta.func_id checks in that change,
+> we could instead assume that any kfunc returning "bpf_rb_node *" is actually
+> returning a graph node type w/ bpf_rb_node field. It's certainly a blurry line
+> in this case since it's necessary to peek at the bpf_rb_root arg in order to
+> provide info about the node type to mark_reg_graph_node. But this is similar
+> to RET_PTR_TO_MAP_VALUE logic which requires a bpf_map * to provide info about
+> the map value being returned.
 > 
-> The first sanity check is that bpf_rbtree_remove only removes something in an
-> rbtree, so probably an enum member indicating whether collection is a list or
-> rbtree. To ensure proper scoped invalidation, we will unfortunately need more
-> than just the reg->id of the reg holding the graph root, since map values of
-> different maps may have same id (0). Hence, we need id and ptr similar to the
-> active lock case for proper matching. Even this won't be enough, as there can be
-> multiple list or rbtree roots in a particular memory region, therefore the
-> offset also needs to be part of the collection identity.
+> Why does this distinction matter at all? Because I'd like to eventually merge
+> helper and kfunc verification as much as possible / reasonable, especially the
+> different approaches to func_proto-like logic. Currently, the bpf_func_proto
+> approach used by bpf helpers is better at expressing 
+> {arg,return}-type level properties. A helper func_proto can do
 > 
-> So it seems it will amount to:
+>   .arg2_type = ARG_PTR_TO_BTF_ID_OR_NULL | OBJ_RELEASE,
 > 
-> 	struct bpf_collection_id {
-> 		enum bpf_collection_type type;
-> 		void *ptr;
-> 		int id;
-> 		int off;
-> 	};
+> and it's obvious which arg is being released, whereas kfunc equivalent is
+> KF_RELEASE flag on the kfunc itself and verifier needs to assume that there's
+> a single arg w/ ref_obj_id which is being released. Sure, kfunc annotations
+> (e.g. __sz, __alloc) could be extended to support all of this, but that's
+> not the current state of things, and such name suffixes wouldn't work for
+> retval.
 > 
-> There might be ways to optimize the memory footprint of this struct, but I'm
-> just trying to state why we'll need to include all four, so we don't miss out on
-> a corner case again.
+> Similarly, current kfunc definition scheme is better at expressing function-
+> level properties:
+> 
+>   BTF_ID_FLAGS(func, whatever, KF_ACQUIRE)
+> 
+> There's no func_proto equivalent, the is_acquire_function helper used in
+> check_helper_call resorts to "func_id ==" checks. For acquire specifically
+> it could be faked with a OBJ_ACQUIRE flag on retval in the proto, but I
+> don't know if the same would make sense for "need to invalidate non-owning
+> refs" or something like KF_TRUSTED_ARGS.
+> 
+> Anyways, this was a long-winded way of saying that separating this logic across
+> two different if-s was intentional and will help with future refactoring.
 
-The trade-off doesn't feel right here. Tracking collection id complexity in
-the verifier for single owner case is not worth it imo.
-We should focus on adding support for 'shared ownership' with explicit refcount in the obj.
-Then the same obj can be inserted into two rbtrees or into rbtree and link list.
+Agree with all of the above. We need to address this tech debt and merge
+kfunc and helper validation, but this is orthogonal to this patch set.
+It's a separate discussion to have with lots of bike shedding ahead.
 
-Single owner rb-tree is a big step and we've been trying to make this step for the last ~6 month.
-I prefer to do it now and worry about UX, shared owner, etc in the follow ups.
-We need to start using lists and rbtree in bpf progs that do real work to get a feel
-on whether UX is right or unusable or somewhere in-between.
+> > Patch 7 also has this split initialization of the reg state.
+> > First it does mark_reg_graph_node() which sets regs[regno].type = PTR_TO_BTF_ID | MEM_ALLOC
+> > and then it does ref_set_non_owning_lock() that sets that bool flag.
+> > Setting PTR_TO_BTF_ID | MEM_ALLOC in the helper without setting ref_obj_id > 0
+> > at the same time feels error prone.
+> 
+> It's unfortunate that the reg type isn't really complete for rbtree_first
+> until after the second chunk of code, but this was already happening with
+> bpf_list_pop_{front,back}, which rely on KF_ACQUIRE flag and
+> is_kfunc_acquire check to set ref_obj_id on the popped owning reference.
+> 
+> Maybe to assuage your 'error prone' concern some check can be added at
+> the end of check_kfunc_call which ensures that PTR_TO_BTF_ID | MEM_ALLOC
+> types are properly configured, and dies with 'verifier internal error'
+> if not. I'm not convinced it's necessary, but regardless it would be
+> similar to commit 47e34cb74d37 ("bpf: Add verifier check for BPF_PTR_POISON retval and arg")
+> which I added a few months ago.
+
+I think it's a good idea to add such safety check, but let's do it in the follow up.
+
+> > This non_owning_ref_lock bool flag is actually a just flag.
+> > I think it would be cleaner to make it similar to MEM_ALLOC and call it
+> > NON_OWN_REF = BIT(14 + BPF_BASE_TYPE_BITS).
+> > 
+> > Then we can set it at once in this patch and in patch 7 and avoid this split init.
+> > The check in patch 2 also will become cleaner.
+> > Instead of:
+> > if (type_is_ptr_alloc_obj(reg->type) && reg->non_owning_ref_lock)
+> > it will be
+> > if (reg->type == PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF)
+> 
+> Minor tangent: this is why I like helpers like type_is_ptr_alloc_obj - they make
+> it obvious what properties a reg should have to be considered a certain type by
+> the verifier, and provide more context as to what specific type check is
+> happening vs a raw check.
+> 
+> IMO the cleanest version of that check would be if(reg_is_non_owning_ref(reg))
+> with the newly-added helper doing what you'd expect.
+
+Like
+static bool type_is_non_owning_ref(u32 type)
+{
+        return base_type(type) == PTR_TO_BTF_ID &&  type_flag(type) & (MEM_ALLOC | NON_OWN_REF);
+}
+
+?
+If so that makes sense.
+
+> > 
+> > the transition from owning to non-owning would be easier to follow as well:
+> > PTR_TO_BTF_ID | MEM_ALLOC with ref_obj_id > 0
+> >  -> 
+> >    PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF with ref_obj_id == 0
+> > 
+> > and it will probably help to avoid bugs where PTR_TO_BTF_ID | MEM_ALLOC is accepted
+> > but we forgot to check ref_obj_id. There are no such places now, but it feels
+> > less error prone with proper flag instead of bool.
+> 
+> I'm not strongly opposed to a NON_OWN_REF type flag. It's a more granular
+> version of the KF_RELEASE_NON_OWN flag which I tried to add in a previous
+> version of this series. But some comments:
+> 
+> * Such a flag would eliminate the need to change bpf_reg_state in this
+>   series, but I think this will be temporary. If we add support for nested
+>   locks we'll need to reintroduce some "lock identity" again. If we want
+>   to improve UX for non-owning reference invalidation in the case where
+>   a list_head and rb_root share the same lock, we'll need to introduce some
+>   "datastructure root identity" to allow invalidation of only the list's
+>   non-owning refs on list_pop.
+
+As replied to Kumar I prefer to minimize the complexity now and worry about
+list_head and rb_root under the same lock later.
+
+> * Sure, we could have both the NON_OWN_REF flag and additional {lock,root}
+>   identity structures. But there isn't infinite room for type flags and
+>   currently non-owning ref concept is contained to just two data structures.
+>   IMO in terms of generality this flag is closer to MEM_RINGBUF than
+>   PTR_MAYBE_NULL. If we're going to need {lock,root} identity structs
+>   and can use them to disambiguate between owning/non-owning refs quickly,
+>   why bother with an extra flag?
+
+Let's cross that bridge when we get there.
+Currently NON_OWN_REF flag looks strictly cleaner to me than extra 'bool' in reg_state.
+If we need to refactor it later we can certainly do that.
+I really want to move this feature forward.
