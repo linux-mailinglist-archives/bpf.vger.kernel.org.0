@@ -2,120 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27EB9692332
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 17:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0D769235A
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 17:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbjBJQWc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 11:22:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
+        id S232855AbjBJQdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 11:33:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232047AbjBJQWb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 11:22:31 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3321CADC
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 08:22:27 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id qb15so15186708ejc.1
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 08:22:26 -0800 (PST)
+        with ESMTP id S232882AbjBJQdD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 11:33:03 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2637A71F2F;
+        Fri, 10 Feb 2023 08:33:02 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id rp23so17308648ejb.7;
+        Fri, 10 Feb 2023 08:33:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KEhwVLBjChhK6i3IlnyyjqYdz5D+IzhEfJKipY92B1A=;
-        b=jMNSSl9HoLF2U+Rkdua5iPXAikFU6kD5x7p8DIl6052ZPjbONJtjeLwSw5aTXJbbwG
-         GZ3iBVMEz1V8c0r3ARAZhMl6KBVGbFIoS2oA3K53FyblmcJZDqEMsLiLNBWD3TPzqO/P
-         7uoMMm5X1/V4UWFRVh5gVLkjFHfnWD0RYKzkYPc00ZqVvAPPj2ipuj62Xne4UCS+La+V
-         V2v5XtDFPGxWUUOCv+UnuLLb72IX/u6OUskRqMCsT4ot1xMLWPbPgUYci7HLXYGicg9b
-         qeTtitDzt/D1Djbz18M7gbyy/t9Y0RMk3+KwrSa1XgyH6An6C7KvIrWGGq87RF7AvPMU
-         v8DA==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=36jfRfjpqhmNS1duPNkwxJx3IHGqur1VspGy4Ua1oiQ=;
+        b=KlPsEcLIuiSdvhUROlVLCP9c0G7mgvflpGqsFum0tOO2YzABNUGWEGUUTD2+RsXRQa
+         ZTNRWnQZxj4Bm4uyDzuZsSwhJZaVK/wOTCb4Tvl04xYri9maWCcxInbS3GrddC+iuRNF
+         pzJ24gR8pin4MP4QRiZ5B9VbmhQCNibNG7LymTPMzn0uuM7N9SjkdnHh0p75h+0D9n3E
+         8ulWZmjthpU5hHLqr3uNu67Gi4WWMcs7ot0zYqoGHJBjVailbOqD5B8CsizRcMW6BEHI
+         Rp1gJs7iN02px1WDFedgIeltOR7X9wljjuByth30O0swkUTwx4fFA3Sin3zEpftGJekY
+         I6ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KEhwVLBjChhK6i3IlnyyjqYdz5D+IzhEfJKipY92B1A=;
-        b=F9tS4ZFPQaOWK4z5HPceBu2DDV6HaH6DAsgFDAmtYw1Lwzzb5WQLcOLM5jzlcZK8Rz
-         XW7SCtF4kR+DFDs/MJoNPOuyfhM/z1EmcwrR+zsBS2vi6UDrg0QyW7BJl8ewk3qD2wTp
-         aDuagVXVScPBc5KjV2Sff954A7BIAMddzDYsLpfQuARMQ1pogR1SaMFAQq6/wb3+Loqg
-         6rQUK33i9UmfZNH4vvzLaexJ5XT43HmhFhHXn2F1l2zaci8bAMJMAD+3FIRDIf/BDDEG
-         fDJEaDLY4unNva8jDv2EEybAf+0+wa2DgbxEBOIxIHoS2LY832/hrW5DPGa3Lf042kV2
-         +1mA==
-X-Gm-Message-State: AO0yUKVpNSWe4VYMqt7/OAgtXeMSrnCkkgRlpjmhylInAaiccnSA3k0o
-        rcsmp5PmmpS2oAbEwO2711Fk+g==
-X-Google-Smtp-Source: AK7set+3YfULw1kTxf3qFffGXDUDjZkeoUSY2n9ekPb7p7FzKfdw74DFAmWrrWeD3RSVbwRNEh3pmg==
-X-Received: by 2002:a17:906:c310:b0:86a:833d:e7d8 with SMTP id s16-20020a170906c31000b0086a833de7d8mr14833032ejz.17.1676046145572;
-        Fri, 10 Feb 2023 08:22:25 -0800 (PST)
-Received: from [10.44.2.5] ([81.246.10.41])
-        by smtp.gmail.com with ESMTPSA id n8-20020a1709065e0800b0087fa83790d8sm2613656eju.13.2023.02.10.08.22.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Feb 2023 08:22:25 -0800 (PST)
-Message-ID: <6f0a72ee-ec30-8c97-0285-6c53db3d4477@tessares.net>
-Date:   Fri, 10 Feb 2023 17:22:24 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH bpf] selftests/bpf: enable mptcp before testing
-Content-Language: en-GB
-To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=36jfRfjpqhmNS1duPNkwxJx3IHGqur1VspGy4Ua1oiQ=;
+        b=WzAnEjU6Q4Ubqp0Iv/eDOXfsj1IRAUs3mHkGxa+TfFegziQ8836ZQxpL3zu78633kP
+         bVWFc8XOrQyuaNMzpJfDeM7tQ7C4By795K/0UDGxrfRyHsaR/mchWFE8hX5ltJOI/8R4
+         XujTRcjdmqpkuci3qfXT58opo/nQSJ/9p6L8qCJRZyAkXGh0CLyuDPqormTtdRgam0KR
+         lfVAGEzfJcbGHJoKFfGNuKiG5cHfJfAQnCCyYy9GJuMplc7aFHqfrgef0ucQ4+WPGYVH
+         tVqm9Ulp9R0/GwqmOm5msXQKoTr4jsIgTY9LT0/jNLEDSriXRkNf3nc7+IlLk7jpjxf3
+         A8GA==
+X-Gm-Message-State: AO0yUKXW5aKVTIAePLWjdyvcahekvnP8YAJGWZS87i0UIgWq6k1P1dh1
+        DJnZezD4mwp16QwnV/3RJzg=
+X-Google-Smtp-Source: AK7set8DE7gfT4eECNAkT57ZQlfLptfGdu85VnKZFp4cev3WIP8r/ys3Lv3HgDZTB3eOjj79CR0dWA==
+X-Received: by 2002:a17:907:62a1:b0:86f:64bb:47eb with SMTP id nd33-20020a17090762a100b0086f64bb47ebmr22733938ejc.3.1676046780586;
+        Fri, 10 Feb 2023 08:33:00 -0800 (PST)
+Received: from localhost ([2001:620:618:580:2:80b3:0:2d0])
+        by smtp.gmail.com with ESMTPSA id n4-20020a170906164400b008a586200573sm2588517ejd.66.2023.02.10.08.32.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Feb 2023 08:32:59 -0800 (PST)
+Date:   Fri, 10 Feb 2023 17:32:58 +0100
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@meta.com>, Hou Tao <houtao@huaweicloud.com>,
+        bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Felix Maurer <fmaurer@redhat.com>,
-        Nicolas Rybowski <nicolas.rybowski@tessares.net>,
-        Davide Caratti <dcaratti@redhat.com>
-References: <20230210093205.1378597-1-liuhangbin@gmail.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-In-Reply-To: <20230210093205.1378597-1-liuhangbin@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+Message-ID: <20230210163258.phekigglpquitq33@apollo>
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
+ <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
+ <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
+ <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Hangbin Liu,
+On Wed, Jan 04, 2023 at 07:26:12PM CET, Alexei Starovoitov wrote:
+> On Tue, Jan 3, 2023 at 11:14 PM Yonghong Song <yhs@meta.com> wrote:
+> >
+> >
+> >
+> > On 1/3/23 10:30 PM, Hou Tao wrote:
+> > > Hi,
+> > >
+> > > On 1/4/2023 2:10 PM, Yonghong Song wrote:
+> > >>
+> > >>
+> > >> On 1/3/23 5:47 AM, Hou Tao wrote:
+> > >>> Hi,
+> > >>>
+> > >>> On 1/2/2023 2:48 AM, Yonghong Song wrote:
+> > >>>>
+> > >>>>
+> > >>>> On 12/31/22 5:26 PM, Alexei Starovoitov wrote:
+> > >>>>> On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
+> > >>>>>> From: Hou Tao <houtao1@huawei.com>
+> > >>>>>>
+> > >>>>>> Hi,
+> > >>>>>>
+> > >>>>>> The patchset tries to fix the problems found when checking how htab map
+> > >>>>>> handles element reuse in bpf memory allocator. The immediate reuse of
+> > >>>>>> freed elements may lead to two problems in htab map:
+> > >>>>>>
+> > >>>>>> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
+> > >>>>>>        htab map value and it may corrupt lookup procedure with BFP_F_LOCK
+> > >>>>>>        flag which acquires bpf-spin-lock during value copying. The
+> > >>>>>>        corruption of bpf-spin-lock may result in hard lock-up.
+> > >>>>>> (2) lookup procedure may get incorrect map value if the found element is
+> > >>>>>>        freed and then reused.
+> > >>>>>>
+> > >>>>>> Because the type of htab map elements are the same, so problem #1 can be
+> > >>>>>> fixed by supporting ctor in bpf memory allocator. The ctor initializes
+> > >>>>>> these special fields in map element only when the map element is newly
+> > >>>>>> allocated. If it is just a reused element, there will be no
+> > >>>>>> reinitialization.
+> > >>>>>
+> > >>>>> Instead of adding the overhead of ctor callback let's just
+> > >>>>> add __GFP_ZERO to flags in __alloc().
+> > >>>>> That will address the issue 1 and will make bpf_mem_alloc behave just
+> > >>>>> like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
+> > >>>>> will behave the same way.
+> > >>>>
+> > >>>> Patch https://lore.kernel.org/all/20220809213033.24147-3-memxor@gmail.com/
+> > >>>> tried to address a similar issue for lru hash table.
+> > >>>> Maybe we need to do similar things after bpf_mem_cache_alloc() for
+> > >>>> hash table?
+> > >>> IMO ctor or __GFP_ZERO will fix the issue. Did I miss something here ?
+> > >>
+> > >> The following is my understanding:
+> > >> in function alloc_htab_elem() (hashtab.c), we have
+> > >>
+> > >>                  if (is_map_full(htab))
+> > >>                          if (!old_elem)
+> > >>                                  /* when map is full and update() is replacing
+> > >>                                   * old element, it's ok to allocate, since
+> > >>                                   * old element will be freed immediately.
+> > >>                                   * Otherwise return an error
+> > >>                                   */
+> > >>                                  return ERR_PTR(-E2BIG);
+> > >>                  inc_elem_count(htab);
+> > >>                  l_new = bpf_mem_cache_alloc(&htab->ma);
+> > >>                  if (!l_new) {
+> > >>                          l_new = ERR_PTR(-ENOMEM);
+> > >>                          goto dec_count;
+> > >>                  }
+> > >>                  check_and_init_map_value(&htab->map,
+> > >>                                           l_new->key + round_up(key_size, 8));
+> > >>
+> > >> In the above check_and_init_map_value() intends to do initializing
+> > >> for an element from bpf_mem_cache_alloc (could be reused from the free list).
+> > >>
+> > >> The check_and_init_map_value() looks like below (in include/linux/bpf.h)
+> > >>
+> > >> static inline void bpf_obj_init(const struct btf_field_offs *foffs, void *obj)
+> > >> {
+> > >>          int i;
+> > >>
+> > >>          if (!foffs)
+> > >>                  return;
+> > >>          for (i = 0; i < foffs->cnt; i++)
+> > >>                  memset(obj + foffs->field_off[i], 0, foffs->field_sz[i]);
+> > >> }
+> > >>
+> > >> static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
+> > >> {
+> > >>          bpf_obj_init(map->field_offs, dst);
+> > >> }
+> > >>
+> > >> IIUC, bpf_obj_init() will bzero those fields like spin_lock, timer,
+> > >> list_head, list_node, etc.
+> > >>
+> > >> This is the problem for above problem #1.
+> > >> Maybe I missed something?
+> > > Yes. It is the problem patch #1 tries to fix exactly. Patch #1 tries to fix the
+> > > problem by only calling check_and_init_map_value() once for the newly-allocated
+> > > element, so if a freed element is reused, its special fields will not be zeroed
+> > > again. Is there any other cases which are not covered by the solution or any
+> > > other similar problems in hash-tab ?
+> >
+> > No, I checked all cases of check_and_init_map_value() and didn't find
+> > any other instances.
+>
+> check_and_init_map_value() is called in two other cases:
+> lookup_and_delete[_batch].
+> There the zeroing of the fields is necessary because the 'value'
+> is a temp buffer that is going to be copied to user space.
+> I think the way forward is to add GFP_ZERO to mem_alloc
+> (to make it equivalent to prealloc), remove one case
+> of check_and_init_map_value from hashmap, add short comments
+> to two other cases and add a big comment to check_and_init_map_value()
+> that should say that 'dst' must be a temp buffer and should not
+> point to memory that could be used in parallel by a bpf prog.
+> It feels like we've dealt with this issue a couple times already
+> and keep repeating this mistake, so the more comments the better.
 
-On 10/02/2023 10:32, Hangbin Liu wrote:
-> Some distros may not enable mptcp by default. Enable it before start the
-> mptcp server. To use the {read/write}_int_sysctl() functions, I moved
-> them to test_progs.c
-> 
-> Fixes: 8039d353217c ("selftests/bpf: Add MPTCP test base")
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  .../testing/selftests/bpf/prog_tests/mptcp.c  | 15 ++++++-
-
-Thank you for the patch!
-
-The modifications linked to MPTCP look good to me.
-
-But I don't think it is needed here: I maybe didn't look properly at
-'bpf/test_progs.c' file but I think each program from 'prog_tests'
-directory is executed in a dedicated netns, no?
-
-I don't have an environment ready to validate that but if yes, it means
-that on a "vanilla" kernel, net.mptcp.enabled sysctl knob should be set
-to 1. In this case, this modification would be specific to these distros
-patching MPTCP code to disable it by default. It might then be better to
-add this patch next to the one disabling MPTCP by default, no? (or
-revert it to have MPTCP available by default for the applications asking
-for it :) )
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+Hou, are you plannning to resubmit this change? I also hit this while testing my
+changes on bpf-next.
