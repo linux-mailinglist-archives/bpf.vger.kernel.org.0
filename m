@@ -2,67 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A41B691AD0
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 10:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 848CC691B21
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 10:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbjBJJHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 04:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
+        id S231642AbjBJJUm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 04:20:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbjBJJGr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 04:06:47 -0500
-X-Greylist: delayed 462 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Feb 2023 01:06:24 PST
-Received: from mail.businesleads.pl (mail.businesleads.pl [141.95.1.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E67B76C
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 01:06:24 -0800 (PST)
-Received: by mail.businesleads.pl (Postfix, from userid 1002)
-        id CE2FFA5B35; Fri, 10 Feb 2023 08:56:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=businesleads.pl;
-        s=mail; t=1676019426;
-        bh=so3xiFooQ9N0D/cd/+ivPaO6nnHsd9cY/G2xa/w5Tfg=;
-        h=Date:From:To:Subject:From;
-        b=WTklQDr2VAQMX3uS0oUMU6NiH7CwjmWSXcfjTB9gTfSExFoBvl4Qe8NQYU5wT+H1p
-         qg0nF45AP70v9Itq2KYRb5B6NRJXUWPb31PuIOLWC7KxHF6Jis/YkHxcbzt8cgGu0i
-         MVVG3vvt0Fp/Q03chlJkPDcZjftE0iqAFKFz/FJhwM8DK76TffH3p0ng1+0DHh6Xtn
-         dUPyv2voT6NMQ+JmrLdYNF5W1f3YvX/TJwniduu3wL1/ioIZeaQtHjASOA15x7xnFX
-         PXNnph/Wky5fjceunholUak3P3x+Ap2/ELg0oz4CyodKkPUSn+N+T4w4geSFgyEP0S
-         i47DCnQ9+/mYA==
-Received: by mail.businesleads.pl for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 08:55:38 GMT
-Message-ID: <20230210074500-0.1.57.hq67.0.mq66hef8mr@businesleads.pl>
-Date:   Fri, 10 Feb 2023 08:55:38 GMT
-From:   "Konrad Trojanowski" <konrad.trojanowski@businesleads.pl>
-To:     <bpf@vger.kernel.org>
-Subject: W sprawie samochodu
-X-Mailer: mail.businesleads.pl
+        with ESMTP id S231806AbjBJJUj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 04:20:39 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FECC72891;
+        Fri, 10 Feb 2023 01:20:21 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5D3FCB82424;
+        Fri, 10 Feb 2023 09:20:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 01C4FC4339B;
+        Fri, 10 Feb 2023 09:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676020818;
+        bh=JtjkZpU7dXfLrUx5EwURb8CsXyg/h7GD6ek5FjsINNs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ZBiTgHGUYP7n3VIu9Rnx+u1MqnW22p8PMWzZ0HLAm8CzMOgf00DxxG+6Ap3mheJ/n
+         Y9celWY9atwJvvtc1U0vOKOYfDBREtnS6wLKICK31JiO8wqdlxcxjzIgiQGXAr2OAS
+         Y3MfPqMfLQA1ym8e84mGxthlAf4Omc8ljNCN2UqKbNbIhe9DxV2jLEzl94I2sJStTB
+         O5MkrOMRFDAdUaqZYI8fyLscO/upVgrssgCMO1zVh2sG+UfSvEZUQtVKfnHtraWvGr
+         sZsDVNpjYPMzS20VYj8yAPN+jSgYxylJ3GpHsFvK7iuFBTX929COXI4PV811cCQeir
+         eTiC8/EW1hLVg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D9966C41677;
+        Fri, 10 Feb 2023 09:20:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_05,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: skbuff: drop the word head from skb cache
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167602081788.32282.1728914965774061293.git-patchwork-notify@kernel.org>
+Date:   Fri, 10 Feb 2023 09:20:17 +0000
+References: <20230209060642.115752-1-kuba@kernel.org>
+In-Reply-To: <20230209060642.115752-1-kuba@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+        pabeni@redhat.com, bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Hello:
 
-chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
-, je=C5=9Bli chodzi o system monitoringu GPS.
+This patch was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
-e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
-a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
+On Wed,  8 Feb 2023 22:06:42 -0800 you wrote:
+> skbuff_head_cache is misnamed (perhaps for historical reasons?)
+> because it does not hold heads. Head is the buffer which skb->data
+> points to, and also where shinfo lives. struct sk_buff is a metadata
+> structure, not the head.
+> 
+> Eric recently added skb_small_head_cache (which allocates actual
+> head buffers), let that serve as an excuse to finally clean this up :)
+> 
+> [...]
 
-Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
-dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
-szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
-mne znaczenie.
+Here is the summary with links:
+  - [net-next] net: skbuff: drop the word head from skb cache
+    https://git.kernel.org/netdev/net-next/c/025a785ff083
 
-Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
-b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Pozdrawiam
-Konrad Trojanowski
