@@ -2,68 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9C36920A9
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 15:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2DB6920CD
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 15:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbjBJOSX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 09:18:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        id S232461AbjBJO1Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 09:27:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbjBJOSW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 09:18:22 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDEA30E98
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 06:18:20 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id fi26so4836066edb.7
-        for <bpf@vger.kernel.org>; Fri, 10 Feb 2023 06:18:20 -0800 (PST)
+        with ESMTP id S232095AbjBJO1X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 09:27:23 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B0671F22;
+        Fri, 10 Feb 2023 06:27:22 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id qw12so16359452ejc.2;
+        Fri, 10 Feb 2023 06:27:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tuZsVNSNo7wg8UTPxpuHXZJSgHI2v8msj2ITKl1Ovc8=;
-        b=QhJStUT0+AG825S2iFuvcyv6o0+v+vCc1vNIAWxggVG4ggCxBgntpDzRe6f01gxhWF
-         tgbgwVt7mOVrisGIhvEo1ilDhFD5moiD2YiL4QC2Ak2sCimQPqxguxEis9KmtwdK7pYr
-         RjZ0Yc24ydLhuqyyZDz+UnSxvHd4MtKIGerMafaZmgOulaSz2WK1SClJMDWkUQboVdtB
-         0oe0TgBaR5/58YvAcajT9/gj+0D9YRQq4La133rIF/xHMtv66KxRoFSsfnxNuTP5nb6B
-         BGbYBjSEcYCqOXhJU6zmmv9cbKLb1SFtStN/ESceaFHz0Kv+LNE8bLJgt0By8vROht7W
-         guPw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gqvwEiy6tjXgs0TxUyVWIpsJZntx//0YIrMnR/vNlgM=;
+        b=kvwi0saH70qtxqTpaqWhTFRUBsirM9swVU5fbdwmsvEl4Y3Fb1hTWfcu3/yeaXlhMw
+         PQc16k7Dt2qYESoj0D0FwFBof8TL6MxksyIpGmCCvIxF1J+UzyPArYx+CqvfupxIPXEk
+         NZwP6T5fTD9QtIZloYk87cx4sg+UsY8OvIo5tnQ06wT0cqtA7iV01/wF2KL22TbgGnJc
+         TlI72Rr4Dy2TgzlgLfQSNGjwWtM6gle4s0hJ6dQ4ORGUc5CYqoxMCg4pus5IOQEWJzBN
+         huOpAYth+jnJjgpmRrz2PQJxbs2wXLWG3E+xwoKXIfMP1P/dzC8h0PE8N1yjgHAmD9cV
+         G7iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tuZsVNSNo7wg8UTPxpuHXZJSgHI2v8msj2ITKl1Ovc8=;
-        b=qIpBtLc4aaVGaupgjfLznn02kUUwo2oB03kyYYN8UAoG+JgqQtYS0swyPK4qmIbk20
-         SDEgREoN6X04oQ+gYGPC0kUu0pwPF7GXVfSiYCaJtVKA3SCWvJlxQJJOvqXtOZ2AH//z
-         n1H65TgUANGGX0+1QO0YTFTycaTLYtZqfOS+srVdzlifvyHGJBXfIvmJxMRVgoVmzRLX
-         4Xbx7+sUuptPnhx9UAAG3peCtetf7qjubrlSXGUIlquW7IUY39aIlXarc8wT5R5wBrgo
-         7zYLjaJD3xZxDwO/Rmn1tdpd3H2ySdRn4cCXBmbco1/I9zSx9Af1mOWhVzOgY3YmvYnt
-         Snmg==
-X-Gm-Message-State: AO0yUKXGSvlrBPKeUb8BkO4EkYSM9hj79+ctaU2MYBl9fjO5mh1MnGLC
-        PRhJW8hrNeTSGQ7PDqQTlc1elHn11gYPQQ==
-X-Google-Smtp-Source: AK7set/rLpRu0Vah+yK87qkkU0oy3mg7ZWYdUTHbgiOHjvgRWnDoDoKjPtwFulecUbgL+tfq18FH8Q==
-X-Received: by 2002:a50:cdc2:0:b0:4ab:d0de:f7ec with SMTP id h2-20020a50cdc2000000b004abd0def7ecmr1135764edj.5.1676038699265;
-        Fri, 10 Feb 2023 06:18:19 -0800 (PST)
-Received: from localhost ([2001:620:618:580:2:80b3:0:2d0])
-        by smtp.gmail.com with ESMTPSA id n2-20020a5099c2000000b0048ecd372fc9sm2289326edb.2.2023.02.10.06.18.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 06:18:18 -0800 (PST)
-Date:   Fri, 10 Feb 2023 15:18:17 +0100
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v4 bpf-next 04/11] bpf: Add basic bpf_rb_{root,node}
- support
-Message-ID: <20230210141817.idcbotzn4uof4yfu@apollo>
-References: <20230209174144.3280955-1-davemarchevsky@fb.com>
- <20230209174144.3280955-5-davemarchevsky@fb.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gqvwEiy6tjXgs0TxUyVWIpsJZntx//0YIrMnR/vNlgM=;
+        b=IZKHgTvCJaiFSn8CP1M16a1UDtzbgmIC2k0cggT9vFWvWM5ZeeYeLainr/SH304cbA
+         QEfo9+3/9FhiDqtyO9OeOg9sFAngRCEiQe+oDW01qtluMzMRb/AhPWgKFGPsaNKX+w6A
+         nolmt3jDxznsAc3BqEZuYMrpTed2wW3jiw6MYi/dnmVPicEgyvvuh45T5JEj51jB0Z07
+         eXGPOpCPvvDzoACswEYn4/gIbvrtwRFKnZPOrwHa2+1hUvcy/QSmIUevaMo1QrdNtbIK
+         S/Tl34mYjWFPyuaAymPIi/rqHrmT8oRkwor7f6HS3RP71UkXu/dkJ0vKik9Dur/AFHnO
+         VtMA==
+X-Gm-Message-State: AO0yUKVHaU7Abu4aUYiniJzXHn0l257VGj16t2XuICy3GWVmvcqOsoc2
+        6Pyq081n4Od7qIhoW8dEA+WDQnwuSEbVSSny1hkiaNaB0p68K/h+
+X-Google-Smtp-Source: AK7set+8HhWkAVH4MuZiTGKVHraLDHMznvLcs+IhbRMH7QE3sxljYDmWYzuGptMPsXg8O66N4Ey5j3xds4HQvTsneAo=
+X-Received: by 2002:a17:906:28d5:b0:878:5f93:e797 with SMTP id
+ p21-20020a17090628d500b008785f93e797mr2714283ejd.4.1676039240442; Fri, 10 Feb
+ 2023 06:27:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230209174144.3280955-5-davemarchevsky@fb.com>
+References: <20230210021232.108211-1-xuanzhuo@linux.alibaba.com>
+ <CAJ8uoz0EqC81hJRw=3dj6vE99Y6+Y6daN3ugrSWhAUzrgYUT1Q@mail.gmail.com> <1676031148.2384832-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1676031148.2384832-1-xuanzhuo@linux.alibaba.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 10 Feb 2023 15:27:08 +0100
+Message-ID: <CAJ8uoz0Ayfbtf0ENciXoJxmzQUk4tHL58v3QWPdWmc01Y7Pz=A@mail.gmail.com>
+Subject: Re: [PATCH net-next v1] xsk: support use vaddr as ring
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,123 +79,143 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 09, 2023 at 06:41:37PM CET, Dave Marchevsky wrote:
-> This patch adds special BPF_RB_{ROOT,NODE} btf_field_types similar to
-> BPF_LIST_{HEAD,NODE}, adds the necessary plumbing to detect the new
-> types, and adds bpf_rb_root_free function for freeing bpf_rb_root in
-> map_values.
+On Fri, 10 Feb 2023 at 13:21, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
 >
-> structs bpf_rb_root and bpf_rb_node are opaque types meant to
-> obscure structs rb_root_cached rb_node, respectively.
+> On Fri, 10 Feb 2023 10:52:20 +0100, Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+> > On Fri, 10 Feb 2023 at 03:14, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+> > >
+> > > When we try to start AF_XDP on some machines with long running time, due
+> > > to the machine's memory fragmentation problem, there is no sufficient
+> > > continuous physical memory that will cause the start failure.
+> > >
+> > > After AF_XDP fails to apply for continuous physical memory, this patch
+> > > tries to use vmalloc() to allocate memory to solve this problem.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Link: https://lore.kernel.org/oe-kbuild-all/202302091850.0HBmsDAq-lkp@intel.com
+> > > ---
+> > >  net/xdp/xsk.c       |  8 +++++---
+> > >  net/xdp/xsk_queue.c | 21 +++++++++++++++------
+> > >  net/xdp/xsk_queue.h |  1 +
+> > >  3 files changed, 21 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > index 9f0561b67c12..33db57548ee3 100644
+> > > --- a/net/xdp/xsk.c
+> > > +++ b/net/xdp/xsk.c
+> > > @@ -1296,7 +1296,6 @@ static int xsk_mmap(struct file *file, struct socket *sock,
+> > >         struct xdp_sock *xs = xdp_sk(sock->sk);
+> > >         struct xsk_queue *q = NULL;
+> > >         unsigned long pfn;
+> > > -       struct page *qpg;
+> > >
+> > >         if (READ_ONCE(xs->state) != XSK_READY)
+> > >                 return -EBUSY;
+> > > @@ -1319,10 +1318,13 @@ static int xsk_mmap(struct file *file, struct socket *sock,
+> > >
+> > >         /* Matches the smp_wmb() in xsk_init_queue */
+> > >         smp_rmb();
+> > > -       qpg = virt_to_head_page(q->ring);
+> > > -       if (size > page_size(qpg))
+> > > +
+> > > +       if (PAGE_ALIGN(q->ring_size) < size)
+> > >                 return -EINVAL;
+> > >
+> > > +       if (is_vmalloc_addr(q->ring))
+> > > +               return remap_vmalloc_range(vma, q->ring, 0);
+> > > +
+> > >         pfn = virt_to_phys(q->ring) >> PAGE_SHIFT;
+> > >         return remap_pfn_range(vma, vma->vm_start, pfn,
+> > >                                size, vma->vm_page_prot);
+> > > diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
+> > > index 6cf9586e5027..7b03102d1672 100644
+> > > --- a/net/xdp/xsk_queue.c
+> > > +++ b/net/xdp/xsk_queue.c
+> > > @@ -7,6 +7,7 @@
+> > >  #include <linux/slab.h>
+> > >  #include <linux/overflow.h>
+> > >  #include <net/xdp_sock_drv.h>
+> > > +#include <linux/vmalloc.h>
+> > >
+> > >  #include "xsk_queue.h"
+> > >
+> > > @@ -37,14 +38,18 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
+> > >                     __GFP_COMP  | __GFP_NORETRY;
+> > >         size = xskq_get_ring_size(q, umem_queue);
+> > >
+> > > +       q->ring_size = size;
+> > >         q->ring = (struct xdp_ring *)__get_free_pages(gfp_flags,
+> > >                                                       get_order(size));
+> > > -       if (!q->ring) {
+> > > -               kfree(q);
+> > > -               return NULL;
+> > > -       }
+> > > +       if (q->ring)
+> > > +               return q;
+> > > +
+> > > +       q->ring = (struct xdp_ring *)vmalloc_user(size);
+> > > +       if (q->ring)
+> > > +               return q;
+> >
+> > Thanks for bringing this to attention. Interesting to see how hard it
+> > gets after a while to find consecutive memory since this is not a
+> > large area.
 >
-> btf_struct_access will prevent BPF programs from touching these special
-> fields automatically now that they're recognized.
+> If the size of the queue is 8 * 1024, then the size of the desc[] is
+> 8 * 1024 * 8 = 16 * PAGE, but we also add  struct xdp_ring size, so it is
+> 16page+. This is necessary to apply for a 4-order memory. If there are a
+> lot of queues, it is difficult.
 >
-> btf_check_and_fixup_fields now groups list_head and rb_root together as
-> "graph root" fields and {list,rb}_node as "graph node", and does same
-> ownership cycle checking as before. Note that this function does _not_
-> prevent ownership type mixups (e.g. rb_root owning list_node) - that's
-> handled by btf_parse_graph_root.
->
-> After this patch, a bpf program can have a struct bpf_rb_root in a
-> map_value, but not add anything to nor do anything useful with it.
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
-> [...]
-> +#define GRAPH_ROOT_MASK (BPF_LIST_HEAD | BPF_RB_ROOT)
-> +#define GRAPH_NODE_MASK (BPF_LIST_NODE | BPF_RB_NODE)
-> +
->  int btf_check_and_fixup_fields(const struct btf *btf, struct btf_record *rec)
->  {
->  	int i;
->
-> -	/* There are two owning types, kptr_ref and bpf_list_head. The former
-> -	 * only supports storing kernel types, which can never store references
-> -	 * to program allocated local types, atleast not yet. Hence we only need
-> -	 * to ensure that bpf_list_head ownership does not form cycles.
-> +	/* There are three types that signify ownership of some other type:
-> +	 *  kptr_ref, bpf_list_head, bpf_rb_root.
-> +	 * kptr_ref only supports storing kernel types, which can't store
-> +	 * references to program allocated local types.
-> +	 *
-> +	 * Hence we only need to ensure that bpf_{list_head,rb_root} ownership
-> +	 * does not form cycles.
->  	 */
-> -	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & BPF_LIST_HEAD))
-> +	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & GRAPH_ROOT_MASK))
->  		return 0;
->  	for (i = 0; i < rec->cnt; i++) {
->  		struct btf_struct_meta *meta;
->  		u32 btf_id;
->
-> -		if (!(rec->fields[i].type & BPF_LIST_HEAD))
-> +		if (!(rec->fields[i].type & GRAPH_ROOT_MASK))
->  			continue;
->  		btf_id = rec->fields[i].graph_root.value_btf_id;
->  		meta = btf_find_struct_meta(btf, btf_id);
-> @@ -3762,39 +3803,47 @@ int btf_check_and_fixup_fields(const struct btf *btf, struct btf_record *rec)
->  			return -EFAULT;
->  		rec->fields[i].graph_root.value_rec = meta->record;
->
-> -		if (!(rec->field_mask & BPF_LIST_NODE))
-> +		/* We need to set value_rec for all root types, but no need
-> +		 * to check ownership cycle for a type unless it's also a
-> +		 * node type.
-> +		 */
-> +		if (!(rec->field_mask & GRAPH_NODE_MASK))
->  			continue;
->
->  		/* We need to ensure ownership acyclicity among all types. The
->  		 * proper way to do it would be to topologically sort all BTF
->  		 * IDs based on the ownership edges, since there can be multiple
-> -		 * bpf_list_head in a type. Instead, we use the following
-> -		 * reasoning:
-> +		 * bpf_{list_head,rb_node} in a type. Instead, we use the
-> +		 * following resaoning:
->  		 *
->  		 * - A type can only be owned by another type in user BTF if it
-> -		 *   has a bpf_list_node.
-> +		 *   has a bpf_{list,rb}_node. Let's call these node types.
->  		 * - A type can only _own_ another type in user BTF if it has a
-> -		 *   bpf_list_head.
-> +		 *   bpf_{list_head,rb_root}. Let's call these root types.
->  		 *
-> -		 * We ensure that if a type has both bpf_list_head and
-> -		 * bpf_list_node, its element types cannot be owning types.
-> +		 * We ensure that if a type is both a root and node, its
-> +		 * element types cannot be root types.
->  		 *
->  		 * To ensure acyclicity:
->  		 *
-> -		 * When A only has bpf_list_head, ownership chain can be:
-> +		 * When A is an root type but not a node, its ownership
-> +		 * chain can be:
->  		 *	A -> B -> C
->  		 * Where:
-> -		 * - B has both bpf_list_head and bpf_list_node.
-> -		 * - C only has bpf_list_node.
-> +		 * - A is an root, e.g. has bpf_rb_root.
-> +		 * - B is both a root and node, e.g. has bpf_rb_node and
-> +		 *   bpf_list_head.
-> +		 * - C is only an root, e.g. has bpf_list_node
->  		 *
-> -		 * When A has both bpf_list_head and bpf_list_node, some other
-> -		 * type already owns it in the BTF domain, hence it can not own
-> -		 * another owning type through any of the bpf_list_head edges.
-> +		 * When A is both a root and node, some other type already
-> +		 * owns it in the BTF domain, hence it can not own
-> +		 * another root type through any of the ownership edges.
->  		 *	A -> B
->  		 * Where:
-> -		 * - B only has bpf_list_node.
-> +		 * - A is both an root and node.
-> +		 * - B is only an node.
->  		 */
-> -		if (meta->record->field_mask & BPF_LIST_HEAD)
-> +		if (meta->record->field_mask & GRAPH_ROOT_MASK)
->  			return -ELOOP;
+> Here, that we actually waste 15 pages. 4-Order memory is 32 pages, but we only
+> use 17 pages.
 
-While you are at it, can you include BTF selftests (similar to what linked list
-tests are doing in test_btf) to ensure all of this being correctly rejected for
-rbtree and mixed rbtree + list cases?
+One more good argument to stop using __get_free_pages() in this function.
+
+> >
+> > I am wondering if it would be better to remove the __get_free_pages()
+> > and just go for vmalloc_user. There is no particular reason here for
+> > allocating consecutive physical pages for the ring. Does anyone see
+> > any problem with removing this? If not, please just remove
+> > __get_free_pages(), test it, and post a v2.
+>
+>
+> I agree.
+>
+> Thanks.
+>
+>
+> >
+> > > -       return q;
+> > > +       kfree(q);
+> > > +       return NULL;
+> > >  }
+> > >
+> > >  void xskq_destroy(struct xsk_queue *q)
+> > > @@ -52,6 +57,10 @@ void xskq_destroy(struct xsk_queue *q)
+> > >         if (!q)
+> > >                 return;
+> > >
+> > > -       page_frag_free(q->ring);
+> > > +       if (is_vmalloc_addr(q->ring))
+> > > +               vfree(q->ring);
+> > > +       else
+> > > +               page_frag_free(q->ring);
+> > > +
+> > >         kfree(q);
+> > >  }
+> > > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> > > index c6fb6b763658..35922b8b92a8 100644
+> > > --- a/net/xdp/xsk_queue.h
+> > > +++ b/net/xdp/xsk_queue.h
+> > > @@ -45,6 +45,7 @@ struct xsk_queue {
+> > >         struct xdp_ring *ring;
+> > >         u64 invalid_descs;
+> > >         u64 queue_empty_descs;
+> > > +       size_t ring_size;
+> > >  };
+> > >
+> > >  /* The structure of the shared state of the rings are a simple
+> > > --
+> > > 2.32.0.3.g01195cf9f
+> > >
