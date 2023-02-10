@@ -2,154 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD82691A31
-	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 09:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A913691A68
+	for <lists+bpf@lfdr.de>; Fri, 10 Feb 2023 09:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbjBJIni (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Feb 2023 03:43:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
+        id S231222AbjBJIzH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Feb 2023 03:55:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbjBJInh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Feb 2023 03:43:37 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9011CF5E;
-        Fri, 10 Feb 2023 00:43:36 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 18DCEB82400;
-        Fri, 10 Feb 2023 08:43:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0D59C433EF;
-        Fri, 10 Feb 2023 08:43:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676018614;
-        bh=1u042cYBsvXuLk8fikYK1wNFgZJi8z1lXcs+toDaNiE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=niPEkkykQiF2AUnkE4SeGXUPDnEJrA0E2m0xk4DGnsiPsh/W+uQe0NVY+BEOThVoT
-         9kplVQaCe8gs6eIxmPiY2fG+T6/aWyeCKJLbkrZa2nUSW/NN095YDbwEt27St9CEyG
-         z+/biM7eYk3iFSGumr42hSM9DGT1ExhSVDlclPKM0RSqAqHVVyk7hoil4c3tPQYeDR
-         kA5oU6nbcdD4Sz+QpuFOjT9SHXvTa/OqAStmBnvr+veyyDqN6qIZqmiaB82qfuFx94
-         HC80ohp95Lhk3+Ew3gNhn/rdgU5Z6w15dOYzLIkZvIYpZdwp/Czr674IpIBekRiYW4
-         6mMYlBH/DFsEg==
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: Cross-compile bpftool
-Date:   Fri, 10 Feb 2023 09:43:26 +0100
-Message-Id: <20230210084326.1802597-1-bjorn@kernel.org>
-X-Mailer: git-send-email 2.37.2
+        with ESMTP id S231642AbjBJIzG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Feb 2023 03:55:06 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3F58661C;
+        Fri, 10 Feb 2023 00:55:04 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id r2so4298546wrv.7;
+        Fri, 10 Feb 2023 00:55:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oytTrK8uB+n9m87mo+0OrCa0wPjo42ng3CF/hRN1mgo=;
+        b=imuXWPqYwuc6dboQ7oTX2sgb8gbWly9VRi5V5YWOWlJxYDht3KPRrjDXAxFmu/DiyO
+         aLsa07O32Qx3LfHhZGdU+1jjnEve7gJTHEqd1X8mjEsnvNfdWW6XakOdj2HsB4AjlNPk
+         d8TIS7GGhN8NzLOEwkOLQEKDQRaz6w/ulqEQxJikrfiHwq3dUmxpC7DnR6e4ARA/c/6S
+         UsZUMBrRtQlQVdADILW6x5ke84IAnp+rHiHX7T8y9tVQWxTxehVOo7oVxRYK3klCssjl
+         Mixo1MrNden0Az9D5zyNWDuUgsX36PnvHIncwwjoTtzlI5Tds3EY0TEZRMqyxfUHhBcA
+         mgGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oytTrK8uB+n9m87mo+0OrCa0wPjo42ng3CF/hRN1mgo=;
+        b=LqFdUk1Qy9soJpEurxl+ORAJ8r0MrnTFOA/AuZ42iizSvdia4FVbfiSJALJy+Z9V9F
+         d3KJthopX/Q5dBNZ6azhlkt5h4f2vGgZrducl1hvvXhAW7fr53bKfKUR/Al8GQObi99F
+         v0jqnmOHtX5j8wN1qepzqK3jp1SM97QO/yJeS3V5tLbh5cwoLvZXRZfBy9oKgM2S/BtC
+         insROWYr37eLkKNJ5hafo4a2WGomDUasx8e9ZQIwfoLX9/EsmuNgV4Jyi3P3gVE2/pZ0
+         J9MfEtdmgaMSJuBuy00iezpD7czhIr0wDwDTiYAtocIFK28wvexsv8+mV+lV+bTAV3Yv
+         fRlg==
+X-Gm-Message-State: AO0yUKUyMndsVFeEq8mYpkjDJFOg/HtJHlLcJW/gmqqHtOi5UaJyRZK+
+        gnOsWmJk3Jeg+/kke5IJcEM=
+X-Google-Smtp-Source: AK7set/HUlksUVTBiTkjiUx/uv+vpEANaskWuC0xd+CtGZe4IIna+vpYFpEsHAlXkLx9UWUbkdeyDQ==
+X-Received: by 2002:adf:db88:0:b0:2c1:28dc:1551 with SMTP id u8-20020adfdb88000000b002c128dc1551mr13101970wri.1.1676019302694;
+        Fri, 10 Feb 2023 00:55:02 -0800 (PST)
+Received: from gmail.com ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id m6-20020adffe46000000b002c3ed120cf8sm3106684wrs.61.2023.02.10.00.55.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Feb 2023 00:55:02 -0800 (PST)
+Date:   Fri, 10 Feb 2023 08:55:00 +0000
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        lorenzo.bianconi@redhat.com, ecree.xilinx@gmail.com
+Subject: Re: [PATCH bpf-next] sfc: move xdp_features configuration in
+ efx_pci_probe_post_io()
+Message-ID: <Y+YGZLdd6/WmY6s7@gmail.com>
+Mail-Followup-To: Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        lorenzo.bianconi@redhat.com, ecree.xilinx@gmail.com
+References: <9bd31c9a29bcf406ab90a249a28fc328e5578fd1.1675875404.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9bd31c9a29bcf406ab90a249a28fc328e5578fd1.1675875404.git.lorenzo@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn@rivosinc.com>
+Many thanks Lorenzo. It got applied in record time!
+Martin
 
-When the BPF selftests are cross-compiled, only the a host version of
-bpftool is built. This version of bpftool is used to generate various
-intermediates, e.g., skeletons.
-
-The test runners are also using bpftool. The Makefile will symlink
-bpftool from the selftest/bpf root, where the test runners will look
-for the tool:
-
-  | ...
-  | $(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bootstrap/bpftool \
-  |    $(OUTPUT)/$(if $2,$2/)bpftool
-
-There are two issues for cross-compilation builds:
-
- 1. There is no native (cross-compilation target) build of bpftool
- 2. The bootstrap variant of bpftool is never cross-compiled (by
-    design)
-
-Make sure that a native/cross-compiled version of bpftool is built,
-and if CROSS_COMPILE is set, symlink to the native/non-bootstrap
-version.
-
-Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
----
- tools/testing/selftests/bpf/Makefile | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index b2eb3201b85a..b706750f71e2 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -157,8 +157,9 @@ $(notdir $(TEST_GEN_PROGS)						\
- 	 $(TEST_CUSTOM_PROGS)): %: $(OUTPUT)/% ;
- 
- # sort removes libbpf duplicates when not cross-building
--MAKE_DIRS := $(sort $(BUILD_DIR)/libbpf $(HOST_BUILD_DIR)/libbpf	       \
--	       $(HOST_BUILD_DIR)/bpftool $(HOST_BUILD_DIR)/resolve_btfids      \
-+MAKE_DIRS := $(sort $(BUILD_DIR)/libbpf $(HOST_BUILD_DIR)/libbpf	\
-+	       $(BUILD_DIR)/bpftool $(HOST_BUILD_DIR)/bpftool		\
-+	       $(HOST_BUILD_DIR)/resolve_btfids				\
- 	       $(RUNQSLOWER_OUTPUT) $(INCLUDE_DIR))
- $(MAKE_DIRS):
- 	$(call msg,MKDIR,,$@)
-@@ -208,6 +209,14 @@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_tes
- 	$(Q)cp bpf_testmod/bpf_testmod.ko $@
- 
- DEFAULT_BPFTOOL := $(HOST_SCRATCH_DIR)/sbin/bpftool
-+ifneq ($(CROSS_COMPILE),)
-+CROSS_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
-+TRUNNER_BPFTOOL := $(CROSS_BPFTOOL)
-+USE_BOOTSTRAP := ""
-+else
-+TRUNNER_BPFTOOL := $(DEFAULT_BPFTOOL)
-+USE_BOOTSTRAP := "bootstrap"
-+endif
- 
- $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
- 	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	       \
-@@ -255,6 +264,18 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
- 		    LIBBPF_DESTDIR=$(HOST_SCRATCH_DIR)/			       \
- 		    prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install-bin
- 
-+ifneq ($(CROSS_COMPILE),)
-+$(CROSS_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)	\
-+		    $(BPFOBJ) | $(BUILD_DIR)/bpftool
-+	$(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)				\
-+		    ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE)			\
-+		    EXTRA_CFLAGS='-g -O0'					\
-+		    OUTPUT=$(BUILD_DIR)/bpftool/				\
-+		    LIBBPF_OUTPUT=$(BUILD_DIR)/libbpf/				\
-+		    LIBBPF_DESTDIR=$(SCRATCH_DIR)/				\
-+		    prefix= DESTDIR=$(SCRATCH_DIR)/ install-bin
-+endif
-+
- all: docs
- 
- docs:
-@@ -518,11 +539,12 @@ endif
- $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     $(TRUNNER_EXTRA_OBJS) $$(BPFOBJ)		\
- 			     $(RESOLVE_BTFIDS)				\
-+			     $(TRUNNER_BPFTOOL)				\
- 			     | $(TRUNNER_BINARY)-extras
- 	$$(call msg,BINARY,,$$@)
- 	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
- 	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@
--	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bootstrap/bpftool \
-+	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/$(USE_BOOTSTRAP)/bpftool \
- 		   $(OUTPUT)/$(if $2,$2/)bpftool
- 
- endef
-
-base-commit: 06744f24696e1e7598412c3df61a538b57ebec22
--- 
-2.37.2
-
+On Wed, Feb 08, 2023 at 05:58:40PM +0100, Lorenzo Bianconi wrote:
+> Move xdp_features configuration from efx_pci_probe() to
+> efx_pci_probe_post_io() since it is where all the other basic netdev
+> features are initialised.
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  drivers/net/ethernet/sfc/efx.c       | 8 ++++----
+>  drivers/net/ethernet/sfc/siena/efx.c | 8 ++++----
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/sfc/efx.c b/drivers/net/ethernet/sfc/efx.c
+> index 18ff8d8cff42..9569c3356b4a 100644
+> --- a/drivers/net/ethernet/sfc/efx.c
+> +++ b/drivers/net/ethernet/sfc/efx.c
+> @@ -1025,6 +1025,10 @@ static int efx_pci_probe_post_io(struct efx_nic *efx)
+>  	net_dev->features &= ~NETIF_F_HW_VLAN_CTAG_FILTER;
+>  	net_dev->features |= efx->fixed_features;
+>  
+> +	net_dev->xdp_features = NETDEV_XDP_ACT_BASIC |
+> +				NETDEV_XDP_ACT_REDIRECT |
+> +				NETDEV_XDP_ACT_NDO_XMIT;
+> +
+>  	rc = efx_register_netdev(efx);
+>  	if (!rc)
+>  		return 0;
+> @@ -1078,10 +1082,6 @@ static int efx_pci_probe(struct pci_dev *pci_dev,
+>  
+>  	pci_info(pci_dev, "Solarflare NIC detected\n");
+>  
+> -	efx->net_dev->xdp_features = NETDEV_XDP_ACT_BASIC |
+> -				     NETDEV_XDP_ACT_REDIRECT |
+> -				     NETDEV_XDP_ACT_NDO_XMIT;
+> -
+>  	if (!efx->type->is_vf)
+>  		efx_probe_vpd_strings(efx);
+>  
+> diff --git a/drivers/net/ethernet/sfc/siena/efx.c b/drivers/net/ethernet/sfc/siena/efx.c
+> index a6ef21845224..ef52ec71d197 100644
+> --- a/drivers/net/ethernet/sfc/siena/efx.c
+> +++ b/drivers/net/ethernet/sfc/siena/efx.c
+> @@ -1007,6 +1007,10 @@ static int efx_pci_probe_post_io(struct efx_nic *efx)
+>  	net_dev->features &= ~NETIF_F_HW_VLAN_CTAG_FILTER;
+>  	net_dev->features |= efx->fixed_features;
+>  
+> +	net_dev->xdp_features = NETDEV_XDP_ACT_BASIC |
+> +				NETDEV_XDP_ACT_REDIRECT |
+> +				NETDEV_XDP_ACT_NDO_XMIT;
+> +
+>  	rc = efx_register_netdev(efx);
+>  	if (!rc)
+>  		return 0;
+> @@ -1048,10 +1052,6 @@ static int efx_pci_probe(struct pci_dev *pci_dev,
+>  
+>  	pci_info(pci_dev, "Solarflare NIC detected\n");
+>  
+> -	efx->net_dev->xdp_features = NETDEV_XDP_ACT_BASIC |
+> -				     NETDEV_XDP_ACT_REDIRECT |
+> -				     NETDEV_XDP_ACT_NDO_XMIT;
+> -
+>  	if (!efx->type->is_vf)
+>  		efx_probe_vpd_strings(efx);
+>  
+> -- 
+> 2.39.1
